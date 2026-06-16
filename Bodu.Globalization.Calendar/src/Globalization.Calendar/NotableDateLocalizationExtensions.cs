@@ -52,7 +52,7 @@ public static class NotableDateLocalizationExtensions
         ThrowHelper.ThrowIfNull(localizer);
         ThrowHelper.ThrowIfNull(culture);
 
-        var localized = localizer.GetDisplayName(notableDate, culture);
+        string? localized = localizer.GetDisplayName(notableDate, culture);
         return localized is null ? notableDate : notableDate with { DisplayName = localized };
     }
 
@@ -74,7 +74,7 @@ public static class NotableDateLocalizationExtensions
         ThrowHelper.ThrowIfNull(culture);
 
         var localized = new NotableDate[occurrences.Count];
-        for (var i = 0; i < occurrences.Count; i++)
+        for (int i = 0; i < occurrences.Count; i++)
             localized[i] = occurrences[i].Localize(localizer, culture);
 
         return localized;

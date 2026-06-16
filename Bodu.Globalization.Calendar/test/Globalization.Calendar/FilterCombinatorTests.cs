@@ -75,7 +75,7 @@ public sealed class FilterCombinatorTests
     /// <param name="year">The calendar year to resolve.</param>
     private static void AssertResolves(string[] expected, NotableDateFilter filter, int year = 2026)
     {
-        var sorted = expected.OrderBy(s => s, StringComparer.Ordinal).ToArray();
+        string[] sorted = expected.OrderBy(s => s, StringComparer.Ordinal).ToArray();
 
         CollectionAssert.AreEqual(sorted, ResolveIds(filter, year));
     }

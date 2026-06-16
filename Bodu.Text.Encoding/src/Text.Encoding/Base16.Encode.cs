@@ -45,7 +45,7 @@ public static partial class Base16
         if (bytes.IsEmpty)
             return options.HasFlag(BaseFormattingOptions.IncludePrefix) ? Prefix : string.Empty;
 
-        var simpleUpper = (options & ~BaseFormattingOptions.UpperCase) == 0;
+        bool simpleUpper = (options & ~BaseFormattingOptions.UpperCase) == 0;
         return simpleUpper
             ? EncodeFast(bytes, options.HasFlag(BaseFormattingOptions.UpperCase))
             : EncodeWithFormatting(bytes, options);
@@ -69,7 +69,7 @@ public static partial class Base16
     {
         EnsureSpanOutputOptionsSupported(options);
 
-        var required = bytes.Length * 2;
+        int required = bytes.Length * 2;
         if (destination.Length < required)
             throw new ArgumentException(EncodingResourceStrings.Arg_Invalid_DestinationTooSmallForEncoded, nameof(destination));
 
@@ -129,7 +129,7 @@ public static partial class Base16
     {
         EnsureSpanOutputOptionsSupported(options);
 
-        var required = bytes.Length * 2;
+        int required = bytes.Length * 2;
         if (destination.Length < required)
         {
             charsWritten = 0;
@@ -287,7 +287,7 @@ public static partial class Base16
 #if NET9_0_OR_GREATER
         return Convert.ToHexStringLower(bytes);
 #else
-        var buffer = new char[bytes.Length * 2];
+        char[] buffer = new char[bytes.Length * 2];
         EncodeToHexCore(bytes, buffer, upperCase: false);
         return new string(buffer);
 #endif
@@ -305,9 +305,9 @@ public static partial class Base16
     private static void EncodeToHexCore(ReadOnlySpan<byte> bytes, Span<char> chars, bool upperCase)
     {
         ReadOnlySpan<char> map = (upperCase ? HexUpperAlphabet : HexLowerAlphabet).AsSpan();
-        for (var i = 0; i < bytes.Length; i++)
+        for (int i = 0; i < bytes.Length; i++)
         {
-            var b = bytes[i];
+            byte b = bytes[i];
             chars[i * 2] = map[b >> 4];
             chars[(i * 2) + 1] = map[b & 0x0F];
         }
@@ -324,19 +324,19 @@ public static partial class Base16
     /// </remarks>
     private static string EncodeWithFormatting(ReadOnlySpan<byte> bytes, BaseFormattingOptions options)
     {
-        var upper = options.HasFlag(BaseFormattingOptions.UpperCase);
-        var spacing = options.HasFlag(BaseFormattingOptions.InsertSpacing);
-        var lineBreaks = options.HasFlag(BaseFormattingOptions.InsertLineBreaks);
-        var prefix = options.HasFlag(BaseFormattingOptions.IncludePrefix);
+        bool upper = options.HasFlag(BaseFormattingOptions.UpperCase);
+        bool spacing = options.HasFlag(BaseFormattingOptions.InsertSpacing);
+        bool lineBreaks = options.HasFlag(BaseFormattingOptions.InsertLineBreaks);
+        bool prefix = options.HasFlag(BaseFormattingOptions.IncludePrefix);
 
         StringBuilder sb = new(GetEncodedLength(bytes.Length, options));
         if (prefix)
             sb.Append(Prefix);
 
         ReadOnlySpan<char> map = (upper ? HexUpperAlphabet : HexLowerAlphabet).AsSpan();
-        var encodedCharsInLine = prefix ? Prefix.Length : 0;
+        int encodedCharsInLine = prefix ? Prefix.Length : 0;
 
-        for (var i = 0; i < bytes.Length; i++)
+        for (int i = 0; i < bytes.Length; i++)
         {
             if (spacing && i > 0)
             {
@@ -350,7 +350,7 @@ public static partial class Base16
                 encodedCharsInLine = 0;
             }
 
-            var b = bytes[i];
+            byte b = bytes[i];
             sb.Append(map[b >> 4]);
             sb.Append(map[b & 0x0F]);
             encodedCharsInLine += 2;

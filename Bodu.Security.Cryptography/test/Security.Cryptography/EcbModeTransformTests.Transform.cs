@@ -18,9 +18,9 @@ public sealed partial class EcbModeTransformTests
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA); // XOR cipher
         EcbModeTransform transform = CreateTransform(cipher, iv: null!); // ECB ignores IV
 
-        var original = Enumerable.Range(0, ExpectedBlockSize * 2).Select(i => (byte)i).ToArray();
-        var encrypted = original.Select(b => (byte)(b ^ 0xAA)).ToArray();
-        var decrypted = new byte[encrypted.Length];
+        byte[] original = Enumerable.Range(0, ExpectedBlockSize * 2).Select(i => (byte)i).ToArray();
+        byte[] encrypted = original.Select(b => (byte)(b ^ 0xAA)).ToArray();
+        byte[] decrypted = new byte[encrypted.Length];
 
         transform.Transform(encrypted, decrypted, encrypt: false);
 
@@ -36,14 +36,14 @@ public sealed partial class EcbModeTransformTests
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA); // Applies XOR with 0xAA per byte
         EcbModeTransform transform = CreateTransform(cipher, iv: null!); // ECB ignores IV
 
-        var plaintext = Enumerable.Range(0, ExpectedBlockSize * 2).Select(i => (byte)i).ToArray();
-        var output = new byte[plaintext.Length];
+        byte[] plaintext = Enumerable.Range(0, ExpectedBlockSize * 2).Select(i => (byte)i).ToArray();
+        byte[] output = new byte[plaintext.Length];
 
         transform.Transform(plaintext, output, encrypt: true);
 
         // ECB should apply the block transform directly to each block
-        var expectedBlock1 = plaintext[..ExpectedBlockSize].Select(b => (byte)(b ^ 0xAA)).ToArray();
-        var expectedBlock2 = plaintext[ExpectedBlockSize..].Select(b => (byte)(b ^ 0xAA)).ToArray();
+        byte[] expectedBlock1 = plaintext[..ExpectedBlockSize].Select(b => (byte)(b ^ 0xAA)).ToArray();
+        byte[] expectedBlock2 = plaintext[ExpectedBlockSize..].Select(b => (byte)(b ^ 0xAA)).ToArray();
 
         CollectionAssert.AreEqual(expectedBlock1, output[..ExpectedBlockSize].ToArray(), "First block did not match expected ECB output.");
         CollectionAssert.AreEqual(expectedBlock2, output[ExpectedBlockSize..].ToArray(), "Second block did not match expected ECB output.");
@@ -59,9 +59,9 @@ public sealed partial class EcbModeTransformTests
         EcbModeTransform transform = CreateTransform(cipher, iv: null!);
 
         // Two identical plaintext blocks
-        var block = Enumerable.Range(0, ExpectedBlockSize).Select(i => (byte)i).ToArray();
-        var plaintext = block.Concat(block).ToArray();
-        var output = new byte[plaintext.Length];
+        byte[] block = Enumerable.Range(0, ExpectedBlockSize).Select(i => (byte)i).ToArray();
+        byte[] plaintext = block.Concat(block).ToArray();
+        byte[] output = new byte[plaintext.Length];
 
         transform.Transform(plaintext, output, encrypt: true);
 

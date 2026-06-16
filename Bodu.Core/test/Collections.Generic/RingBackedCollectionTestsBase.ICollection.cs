@@ -20,7 +20,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
         TCollection collection = CreateCollection(3);
         AddToTail(collection, 1);
 
-        var multiDim = new int[2, 2];
+        int[,] multiDim = new int[2, 2];
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
             ((ICollection)collection).CopyTo(multiDim, 0);
@@ -54,7 +54,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
         AddToTail(collection, 2);
         AddToTail(collection, 3);
 
-        var target = new int[2];
+        int[] target = new int[2];
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
             ((ICollection)collection).CopyTo(target, 0);
@@ -71,7 +71,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
         AddToTail(collection, 2);
         AddToTail(collection, 3);
 
-        var target = new int[3];
+        int[] target = new int[3];
         ((ICollection)collection).CopyTo(target, 0);
 
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, target);
@@ -86,7 +86,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
         TCollection collection = CreateCollection(3);
         AddToTail(collection, 1);
 
-        var wrongType = new string[2];
+        string[] wrongType = new string[2];
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
             ((ICollection)collection).CopyTo(wrongType, 0);
@@ -110,8 +110,8 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     public void ICollection_SyncRoot_ShouldBeStable()
     {
         TCollection collection = CreateCollection(3);
-        var first = ((ICollection)collection).SyncRoot;
-        var second = ((ICollection)collection).SyncRoot;
+        object first = ((ICollection)collection).SyncRoot;
+        object second = ((ICollection)collection).SyncRoot;
 
         Assert.IsNotNull(first);
         Assert.AreSame(first, second);

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateSeriesBuilderTests.Upsert.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -22,7 +22,7 @@ public partial class ExchangeRateSeriesBuilderTests
         builder.Upsert(new DateOnly(2026, 6, 1), 1.50m);
 
         Assert.AreEqual(1, builder.Count);
-        Assert.IsTrue(builder.TryGetRate(new DateOnly(2026, 6, 1), out var rate));
+        Assert.IsTrue(builder.TryGetRate(new DateOnly(2026, 6, 1), out decimal rate));
         Assert.AreEqual(1.50m, rate);
     }
 
@@ -39,7 +39,7 @@ public partial class ExchangeRateSeriesBuilderTests
         builder.Upsert(new DateOnly(2026, 6, 1), 1.75m);
 
         Assert.AreEqual(1, builder.Count);
-        Assert.IsTrue(builder.TryGetRate(new DateOnly(2026, 6, 1), out var rate));
+        Assert.IsTrue(builder.TryGetRate(new DateOnly(2026, 6, 1), out decimal rate));
         Assert.AreEqual(1.75m, rate);
     }
 

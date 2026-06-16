@@ -22,7 +22,7 @@ public sealed partial class IniTests
     [TestMethod]
     public void Parse_WhenPreserveCommentsAndCommentsPrecedeEntry_ShouldAttachToEntry()
     {
-        var source = "# leading comment\n; second\nkey = value\n";
+        string source = "# leading comment\n; second\nkey = value\n";
 
         IniDocument doc = Ini.Parse(source);
 
@@ -40,7 +40,7 @@ public sealed partial class IniTests
     [TestMethod]
     public void Parse_WhenPreserveCommentsAndCommentsPrecedeSection_ShouldAttachToSection()
     {
-        var source = "# applies to server\n[server]\nhost = localhost\n";
+        string source = "# applies to server\n[server]\nhost = localhost\n";
 
         IniDocument doc = Ini.Parse(source);
 
@@ -56,7 +56,7 @@ public sealed partial class IniTests
     [TestMethod]
     public void Parse_WhenPreserveCommentsIsFalse_ShouldDropAllComments()
     {
-        var source = "# leading\n[server]\n; before host\nhost = localhost\n";
+        string source = "# leading\n[server]\n; before host\nhost = localhost\n";
 
         IniDocument doc = Ini.Parse(source, new IniParseOptions { PreserveComments = false });
 
@@ -71,7 +71,7 @@ public sealed partial class IniTests
     [TestMethod]
     public void Parse_WhenCommentsPresent_ShouldAttachLineNumber()
     {
-        var source = "# line one\n# line two\nkey = value\n";
+        string source = "# line one\n# line two\nkey = value\n";
 
         IniDocument doc = Ini.Parse(source);
 

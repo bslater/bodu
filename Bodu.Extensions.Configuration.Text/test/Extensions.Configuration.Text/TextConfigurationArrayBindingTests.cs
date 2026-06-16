@@ -56,7 +56,7 @@ items.2 = third
             .AddBoduConfigurationStream(stream)
             .Build();
 
-        var items = configuration.GetSection("items").Get<string[]>();
+        string[]? items = configuration.GetSection("items").Get<string[]>();
 
         Assert.IsNotNull(items);
         CollectionAssert.AreEqual(new[] { "first", "second", "third" }, items);

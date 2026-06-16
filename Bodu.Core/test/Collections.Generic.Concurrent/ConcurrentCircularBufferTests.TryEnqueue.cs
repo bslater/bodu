@@ -43,7 +43,7 @@ public partial class ConcurrentCircularBufferTests
         TestItem? evicted = null;
         buffer.ItemEvicted += x => evicted = x;
 
-        var ok = buffer.TryEnqueue(new TestItem(3));
+        bool ok = buffer.TryEnqueue(new TestItem(3));
 
         Assert.IsTrue(ok, "TryEnqueue should return true in overwrite mode.");
         Assert.IsNotNull(evicted, "ItemEvicted should fire when the oldest item is displaced.");
@@ -59,7 +59,7 @@ public partial class ConcurrentCircularBufferTests
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(MinCapacity, allowOverwrite: true);
 
-        for (var i = 0; i < 1000; i++)
+        for (int i = 0; i < 1000; i++)
             Assert.IsTrue(buffer.TryEnqueue(new TestItem(i)));
 
         Assert.IsTrue(buffer.Count is >= 0 and <= MinCapacity);
@@ -72,7 +72,7 @@ public partial class ConcurrentCircularBufferTests
     public void TryEnqueue_WhenConcurrentProducersNoOverwrite_ShouldAcceptUpToCapacity()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(100, allowOverwrite: false);
-        var successes = 0;
+        int successes = 0;
 
         Parallel.For(0, 150, i =>
         {
@@ -114,7 +114,7 @@ public partial class ConcurrentCircularBufferTests
         buffer.Enqueue(new TestItem(1));
         buffer.Enqueue(new TestItem(2));
 
-        var ok = buffer.TryEnqueue(new TestItem(3));
+        bool ok = buffer.TryEnqueue(new TestItem(3));
         Assert.IsFalse(ok, "TryEnqueue must return false when full and overwrite disabled.");
     }
 
@@ -142,7 +142,7 @@ public partial class ConcurrentCircularBufferTests
 
         Task[] tasks = Enumerable.Range(0, 5).Select(t => Task.Run(() =>
         {
-            for (var i = 0; i < 10; i++)
+            for (int i = 0; i < 10; i++)
             {
                 try
                 {
@@ -172,7 +172,7 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsTrue(buffer.TryEnqueue(null));
         Assert.IsTrue(buffer.TryEnqueue("X"));
 
-        var snapshot = buffer.ToArray();
+        string[] snapshot = buffer.ToArray();
         CollectionAssert.AreEqual(new[] { (string?)null, "X" }, snapshot);
     }
 
@@ -183,7 +183,7 @@ public partial class ConcurrentCircularBufferTests
     public void TryEnqueue_WhenOverwriteDisabledAndFull_ShouldReturnFalseUnderContention()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(4, allowOverwrite: false);
-        for (var i = 0; i < 4; i++) buffer.Enqueue(new TestItem(i));
+        for (int i = 0; i < 4; i++) buffer.Enqueue(new TestItem(i));
 
         int successes = 0, failures = 0;
 

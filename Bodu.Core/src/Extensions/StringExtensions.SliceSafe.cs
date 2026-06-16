@@ -51,9 +51,9 @@ public static partial class StringExtensions
         ThrowHelper.ThrowIfNull(value);
 
         if (length <= 0) return string.Empty;
-        var start = startIndex < 0 ? 0 : startIndex;
+        int start = startIndex < 0 ? 0 : startIndex;
         if (start >= value.Length) return string.Empty;
-        var take = Math.Min(length, value.Length - start);
+        int take = Math.Min(length, value.Length - start);
         return start == 0 && take == value.Length ? value : value.Substring(start, take);
     }
 }

@@ -77,7 +77,7 @@ public readonly partial struct Fraction<T> :
     /// <exception cref="FormatException">Thrown if <paramref name="format" /> is not a supported specifier.</exception>
     public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format, IFormatProvider? provider)
     {
-        var text = Format(format, provider);
+        string text = Format(format, provider);
         if (text.Length <= destination.Length)
         {
             text.CopyTo(destination);
@@ -100,7 +100,7 @@ public readonly partial struct Fraction<T> :
     /// <exception cref="FormatException">Thrown if <paramref name="format" /> is not a supported specifier.</exception>
     public bool TryFormat(Span<byte> utf8Destination, out int bytesWritten, ReadOnlySpan<char> format, IFormatProvider? provider)
     {
-        var text = Format(format, provider);
+        string text = Format(format, provider);
         return Encoding.UTF8.TryGetBytes(text, utf8Destination, out bytesWritten);
     }
 
@@ -148,7 +148,7 @@ public readonly partial struct Fraction<T> :
     /// <exception cref="FormatException">Thrown if <paramref name="format" /> is not a supported specifier.</exception>
     private string Format(ReadOnlySpan<char> format, IFormatProvider? provider)
     {
-        var specifier = format.IsEmpty ? 'G' : char.ToUpperInvariant(format[0]);
+        char specifier = format.IsEmpty ? 'G' : char.ToUpperInvariant(format[0]);
 
         return specifier switch
         {
@@ -213,10 +213,10 @@ public readonly partial struct Fraction<T> :
 
         if (denominator <= 16
             && remainder >= BigInteger.One
-            && s_vulgarFractions.TryGetValue(((int)remainder, (int)denominator), out var glyph))
+            && s_vulgarFractions.TryGetValue(((int)remainder, (int)denominator), out char glyph))
         {
-            var sign = numerator.Sign < 0 ? "-" : string.Empty;
-            var wholePart = whole.IsZero ? string.Empty : whole.ToString(provider);
+            string sign = numerator.Sign < 0 ? "-" : string.Empty;
+            string wholePart = whole.IsZero ? string.Empty : whole.ToString(provider);
             return $"{sign}{wholePart}{glyph}";
         }
 

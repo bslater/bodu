@@ -49,12 +49,12 @@ public partial class Blake3Tests
     [TestCategory("Regression")]
     public void ComputeHash_WhenGivenOfficialBlake3ReferenceVector_ShouldMatchExpectedDigest(int inputLen, string expectedHex)
     {
-        var input = new byte[inputLen];
-        for (var i = 0; i < inputLen; i++)
+        byte[] input = new byte[inputLen];
+        for (int i = 0; i < inputLen; i++)
             input[i] = (byte)(i % 251);
 
         using var hasher = new Blake3();
-        var actual = hasher.ComputeHash(input);
+        byte[] actual = hasher.ComputeHash(input);
 
         Assert.AreEqual(expectedHex, Convert.ToHexString(actual).ToLowerInvariant(),
             $"BLAKE3 digest for input_len={inputLen} must match the official reference vector.");

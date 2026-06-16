@@ -49,7 +49,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     public void AddToTail_WhenItemsAdded_ShouldIncrementCount(int itemCount)
     {
         TCollection collection = CreateCollection(Math.Max(itemCount, 1));
-        for (var i = 0; i < itemCount; i++)
+        for (int i = 0; i < itemCount; i++)
         {
             AddToTail(collection, i);
             Assert.AreEqual(i + 1, GetCount(collection));

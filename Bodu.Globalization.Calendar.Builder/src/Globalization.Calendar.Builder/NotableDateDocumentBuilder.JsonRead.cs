@@ -55,7 +55,7 @@ public sealed partial class NotableDateDocumentBuilder
             return;
 
         WeekPattern? workingWeek = null;
-        var workingDays = (string?)policyJson["workingDays"];
+        string? workingDays = (string?)policyJson["workingDays"];
         if (!string.IsNullOrEmpty(workingDays) && WeekPattern.TryParse(workingDays, out WeekPattern parsed))
             workingWeek = parsed;
 
@@ -271,8 +271,8 @@ public sealed partial class NotableDateDocumentBuilder
     /// <returns>The reconstructed override entry.</returns>
     private static OverrideEntry ReadOverrideJson(JsonObject overrideJson)
     {
-        var notableDateRef = (string?)overrideJson["notableDateRef"] ?? string.Empty;
-        var operation = (string?)overrideJson["operation"] ?? string.Empty;
+        string notableDateRef = (string?)overrideJson["notableDateRef"] ?? string.Empty;
+        string operation = (string?)overrideJson["operation"] ?? string.Empty;
 
         switch (operation)
         {
@@ -298,7 +298,7 @@ public sealed partial class NotableDateDocumentBuilder
     /// <returns>The reconstructed patch override entry.</returns>
     private static OverrideEntry ReadPatchOverrideJson(JsonObject overrideJson, string notableDateRef)
     {
-        var ruleRef = (string?)overrideJson["ruleRef"] ?? string.Empty;
+        string ruleRef = (string?)overrideJson["ruleRef"] ?? string.Empty;
         NotableDateRuleBuilder rule = new(ruleRef);
         rule.SetParsedScalars(
             (int?)overrideJson["priority"],
@@ -330,7 +330,7 @@ public sealed partial class NotableDateDocumentBuilder
 
         foreach (KeyValuePair<string, JsonNode?> property in strategyJson)
         {
-            if (property.Value is not JsonObject body || !s_jsonStrategyElementNames.TryGetValue(property.Key, out var elementName))
+            if (property.Value is not JsonObject body || !s_jsonStrategyElementNames.TryGetValue(property.Key, out string? elementName))
                 continue;
 
             XElement element = new(BuilderXml.Namespace + elementName);

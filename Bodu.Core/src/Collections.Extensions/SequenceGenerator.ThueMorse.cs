@@ -45,7 +45,7 @@ public static partial class SequenceGenerator
     {
         ThrowHelper.ThrowIfLessThan(count, 0);
 
-        for (var i = 0; i < count; i++)
+        for (int i = 0; i < count; i++)
         {
             int parity = 0, n = i;
             while (n > 0)

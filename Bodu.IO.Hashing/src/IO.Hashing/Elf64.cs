@@ -105,12 +105,12 @@ public sealed class Elf64
         if (source.Length == 0)
             return;
 
-        var v = _workingHash;
-        foreach (var b in source)
+        ulong v = _workingHash;
+        foreach (byte b in source)
         {
             v = (v << 4) + b;
 
-            var high = v & HighBitsMask;
+            ulong high = v & HighBitsMask;
             v ^= high >> HighBitsShift;
             v &= ~high;
         }

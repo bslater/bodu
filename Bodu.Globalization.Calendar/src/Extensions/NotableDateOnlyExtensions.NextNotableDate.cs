@@ -26,7 +26,7 @@ public static partial class NotableDateOnlyExtensions
         ThrowHelper.ThrowIfNull(service);
         ThrowHelper.ThrowIfNull(territory);
 
-        for (var year = date.Year; year <= DateOnly.MaxValue.Year; year++)
+        for (int year = date.Year; year <= DateOnly.MaxValue.Year; year++)
         {
             foreach (NotableDate notable in ResolveYear(year, service, territory, filter))
             {

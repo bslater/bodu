@@ -86,12 +86,12 @@ public sealed class Cusip
     /// </exception>
     public static char Compute(ReadOnlySpan<char> body)
     {
-        var sum = 0;
-        for (var i = 0; i < body.Length; i++)
+        int sum = 0;
+        for (int i = 0; i < body.Length; i++)
         {
-            var value = Alphanumeric.ExpandCusip(body[i]);
-            var weight = (i & 1) == 0 ? 1 : 2;
-            var product = value * weight;
+            int value = Alphanumeric.ExpandCusip(body[i]);
+            int weight = (i & 1) == 0 ? 1 : 2;
+            int product = value * weight;
             sum += (product / 10) + (product % 10);
         }
 
@@ -112,10 +112,10 @@ public sealed class Cusip
     {
         if (valueIncludingCheck.Length != SequenceLength) return false;
 
-        var sum = 0;
-        for (var i = 0; i < BodyLength; i++)
+        int sum = 0;
+        for (int i = 0; i < BodyLength; i++)
         {
-            var ch = valueIncludingCheck[i];
+            char ch = valueIncludingCheck[i];
             int value;
             if ((uint)(ch - '0') <= 9u) value = ch - '0';
             else if ((uint)(ch - 'A') <= 25u) value = ch - 'A' + 10;
@@ -124,12 +124,12 @@ public sealed class Cusip
             else if (ch == '#') value = 38;
             else return false;
 
-            var weight = (i & 1) == 0 ? 1 : 2;
-            var product = value * weight;
+            int weight = (i & 1) == 0 ? 1 : 2;
+            int product = value * weight;
             sum += (product / 10) + (product % 10);
         }
 
-        var checkChar = valueIncludingCheck[BodyLength];
+        char checkChar = valueIncludingCheck[BodyLength];
         if ((uint)(checkChar - '0') > 9u) return false;
         sum += checkChar - '0';
 
@@ -139,14 +139,14 @@ public sealed class Cusip
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> body)
     {
-        var sum = _sum;
-        var count = _count;
+        int sum = _sum;
+        int count = _count;
 
-        for (var i = 0; i < body.Length; i++)
+        for (int i = 0; i < body.Length; i++)
         {
-            var value = Alphanumeric.ExpandCusip(body[i]);
-            var weight = (count & 1) == 0 ? 1 : 2;
-            var product = value * weight;
+            int value = Alphanumeric.ExpandCusip(body[i]);
+            int weight = (count & 1) == 0 ? 1 : 2;
+            int product = value * weight;
             sum += (product / 10) + (product % 10);
             count++;
         }

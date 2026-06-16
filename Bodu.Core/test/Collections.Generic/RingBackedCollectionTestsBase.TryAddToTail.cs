@@ -17,7 +17,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     public void TryAddToTail_WhenBelowInitialCapacity_ShouldReturnTrue()
     {
         TCollection collection = CreateCollection(5);
-        for (var i = 0; i < 5; i++)
+        for (int i = 0; i < 5; i++)
             Assert.IsTrue(TryAddToTail(collection, i));
     }
     /// <summary>

@@ -123,7 +123,7 @@ public partial class MoneyOfTCurrencyTests
     public void Addition_WhenSummingItemisedAmountsForUsd_ShouldMatchExpectedTotal(double[] amounts, double expected)
     {
         Money<USD> total = Money<USD>.Zero;
-        foreach (var a in amounts)
+        foreach (double a in amounts)
             total += new Money<USD>((decimal)a);
 
         Assert.AreEqual(new Money<USD>((decimal)expected), total);
@@ -197,7 +197,7 @@ public partial class MoneyOfTCurrencyTests
         Money<USD>[] shares = new Money<USD>((decimal)amount).Allocate(parts);
 
         Assert.AreEqual(expectedShares.Length, shares.Length);
-        for (var i = 0; i < expectedShares.Length; i++)
+        for (int i = 0; i < expectedShares.Length; i++)
         {
             Assert.AreEqual(new Money<USD>((decimal)expectedShares[i]), shares[i], $"Share index {i}");
         }
@@ -221,12 +221,12 @@ public partial class MoneyOfTCurrencyTests
 
     private static double[] EquallyDistributedShares(double amount, int parts)
     {
-        var cents = decimal.Round((decimal)amount * 100m, 0);
-        var total = (long)cents;
-        var basePer = total / parts;
-        var residual = total - (basePer * parts);
-        var result = new double[parts];
-        for (var i = 0; i < parts; i++)
+        decimal cents = decimal.Round((decimal)amount * 100m, 0);
+        long total = (long)cents;
+        long basePer = total / parts;
+        long residual = total - (basePer * parts);
+        double[] result = new double[parts];
+        for (int i = 0; i < parts; i++)
             result[i] = (double)((basePer + (i < residual ? 1 : 0)) / 100m);
         return result;
     }
@@ -239,13 +239,13 @@ public partial class MoneyOfTCurrencyTests
     [DynamicData(nameof(RatioAllocationCases))]
     public void Allocate_WhenRatioBasedUsd_ShouldDistributeProportionallyAndPreserveTotal(double amount, double[] ratios, double[] expectedShares)
     {
-        var ratioDecimals = Array.ConvertAll(ratios, r => (decimal)r);
+        decimal[] ratioDecimals = Array.ConvertAll(ratios, r => (decimal)r);
 
         Money<USD>[] shares = new Money<USD>((decimal)amount).Allocate(ratioDecimals);
 
         Assert.AreEqual(expectedShares.Length, shares.Length);
         Money<USD> sum = Money<USD>.Zero;
-        for (var i = 0; i < expectedShares.Length; i++)
+        for (int i = 0; i < expectedShares.Length; i++)
         {
             Assert.AreEqual(new Money<USD>((decimal)expectedShares[i]), shares[i], $"Share index {i}");
             sum += shares[i];
@@ -311,15 +311,15 @@ public partial class MoneyOfTCurrencyTests
     {
         Type currencyType = ResolveCurrencyType(iso);
         Type moneyType = typeof(Money<>).MakeGenericType(currencyType);
-        var original = Activator.CreateInstance(moneyType, (decimal)amount)!;
+        object original = Activator.CreateInstance(moneyType, (decimal)amount)!;
 
         var shares = (Array)moneyType
             .GetMethod("Allocate", [typeof(int)])!
             .Invoke(original, [parts])!;
 
-        var sum = Activator.CreateInstance(moneyType)!;
+        object sum = Activator.CreateInstance(moneyType)!;
         System.Reflection.MethodInfo addOp = moneyType.GetMethod("op_Addition")!;
-        foreach (var share in shares)
+        foreach (object? share in shares)
             sum = addOp.Invoke(null, [sum, share])!;
 
         Assert.AreEqual(original, sum);
@@ -440,7 +440,7 @@ public partial class MoneyOfTCurrencyTests
         Fraction<BigInteger> growth = Fraction<BigInteger>.One + monthlyRate;             // 1 + r
 
         var balance = principal.ToFraction();
-        for (var i = 0; i < 12; i++)
+        for (int i = 0; i < 12; i++)
             balance *= growth;
 
         var result = Money<USD>.FromFraction(balance);
@@ -505,10 +505,10 @@ public partial class MoneyOfTCurrencyTests
     public void RepeatedMultiplication_WhenChainedThirteenTimes_ShouldDriftFromSingleEquivalent()
     {
         var start = new Money<USD>(100m);
-        var factor = 1.01m;
+        decimal factor = 1.01m;
 
         Money<USD> chained = start;
-        for (var i = 0; i < 13; i++)
+        for (int i = 0; i < 13; i++)
             chained *= factor;
 
         var oneShot = new Money<USD>(start.Amount * (decimal)Math.Pow((double)factor, 13));

@@ -41,8 +41,8 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
         using TAlgorithm algorithm = CreateAlgorithm();
 
         byte[] key = null!;
-        var iv = new byte[algorithm.BlockSize / 8];
-        var tweak = new byte[algorithm.TweakSize / 8];
+        byte[] iv = new byte[algorithm.BlockSize / 8];
+        byte[] tweak = new byte[algorithm.TweakSize / 8];
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -59,8 +59,8 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     {
         using TAlgorithm algorithm = CreateAlgorithm();    // default mode is CBC
 
-        var key = new byte[algorithm.KeySize / 8];
-        var tweak = new byte[algorithm.TweakSize / 8];
+        byte[] key = new byte[algorithm.KeySize / 8];
+        byte[] tweak = new byte[algorithm.TweakSize / 8];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
@@ -81,9 +81,9 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
 
         using TAlgorithm algorithm = CreateAlgorithm();    // default mode is CBC
 
-        var key = new byte[algorithm.KeySize / 8];
-        var badIv = new byte[blockSize];
-        var tweak = new byte[algorithm.TweakSize / 8];
+        byte[] key = new byte[algorithm.KeySize / 8];
+        byte[] badIv = new byte[blockSize];
+        byte[] tweak = new byte[algorithm.TweakSize / 8];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
@@ -105,9 +105,9 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
         using TAlgorithm algorithm = CreateAlgorithm();
         SetEcbMode(algorithm);
 
-        var key = new byte[algorithm.KeySize / 8];
-        var badIv = new byte[blockSize];
-        var tweak = new byte[algorithm.TweakSize / 8];
+        byte[] key = new byte[algorithm.KeySize / 8];
+        byte[] badIv = new byte[blockSize];
+        byte[] tweak = new byte[algorithm.TweakSize / 8];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
@@ -127,9 +127,9 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
 
         using TAlgorithm algorithm = CreateAlgorithm();
 
-        var badKey = new byte[keySize];
-        var iv = new byte[algorithm.BlockSize / 8];
-        var tweak = new byte[algorithm.TweakSize / 8];
+        byte[] badKey = new byte[keySize];
+        byte[] iv = new byte[algorithm.BlockSize / 8];
+        byte[] tweak = new byte[algorithm.TweakSize / 8];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
@@ -146,8 +146,8 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     {
         using TAlgorithm algorithm = CreateAlgorithm();
 
-        var key = new byte[algorithm.KeySize / 8];
-        var iv = new byte[algorithm.BlockSize / 8];
+        byte[] key = new byte[algorithm.KeySize / 8];
+        byte[] iv = new byte[algorithm.BlockSize / 8];
         byte[] badTweak = null!;
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
@@ -180,9 +180,9 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
 
         using TAlgorithm algorithm = CreateAlgorithm();
 
-        var key = new byte[algorithm.KeySize / 8];
-        var iv = new byte[algorithm.BlockSize / 8];
-        var badTweak = new byte[tweakSize];
+        byte[] key = new byte[algorithm.KeySize / 8];
+        byte[] iv = new byte[algorithm.BlockSize / 8];
+        byte[] badTweak = new byte[tweakSize];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
@@ -200,8 +200,8 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
         using TAlgorithm algorithm = CreateAlgorithm();
         SetEcbMode(algorithm);
 
-        var key = new byte[algorithm.KeySize / 8];
-        var tweak = new byte[algorithm.TweakSize / 8];
+        byte[] key = new byte[algorithm.KeySize / 8];
+        byte[] tweak = new byte[algorithm.TweakSize / 8];
 
         using ICryptoTransform transform = algorithm.CreateDecryptor(key, null, tweak);
         Assert.IsNotNull(transform);
@@ -217,9 +217,9 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
         using TAlgorithm algorithm = CreateAlgorithm();
         SetEcbMode(algorithm);
 
-        var key = new byte[algorithm.KeySize / 8];
-        var iv = new byte[algorithm.BlockSize / 8];
-        var tweak = new byte[algorithm.TweakSize / 8];
+        byte[] key = new byte[algorithm.KeySize / 8];
+        byte[] iv = new byte[algorithm.BlockSize / 8];
+        byte[] tweak = new byte[algorithm.TweakSize / 8];
 
         using ICryptoTransform transform = algorithm.CreateDecryptor(key, iv, tweak);
         Assert.IsNotNull(transform);
@@ -234,9 +234,9 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     {
         using TAlgorithm algorithm = CreateAlgorithm();    // default mode is CBC
 
-        var key = new byte[algorithm.KeySize / 8];
-        var iv = new byte[algorithm.BlockSize / 8];
-        var tweak = new byte[algorithm.TweakSize / 8];
+        byte[] key = new byte[algorithm.KeySize / 8];
+        byte[] iv = new byte[algorithm.BlockSize / 8];
+        byte[] tweak = new byte[algorithm.TweakSize / 8];
 
         using ICryptoTransform transform = algorithm.CreateDecryptor(key, iv, tweak);
         Assert.IsNotNull(transform);

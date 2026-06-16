@@ -339,7 +339,7 @@ public abstract class CachingExchangeRateProviderBase
 
         IReadOnlyList<CachedExchangeRate> direct = _cache.GetRates(pair, duration, now);
 
-        var allowInverse = options?.AllowInverse ?? ExchangeRateLookupOptions.Exact.AllowInverse;
+        bool allowInverse = options?.AllowInverse ?? ExchangeRateLookupOptions.Exact.AllowInverse;
         IReadOnlyList<CachedExchangeRate> inverse = allowInverse
             ? _cache.GetRates(pair.Inverse(), duration, now)
             : Array.Empty<CachedExchangeRate>();
@@ -351,7 +351,7 @@ public abstract class CachingExchangeRateProviderBase
             return false;
         }
 
-        var provider = _cache.Provider;
+        string provider = _cache.Provider;
         List<ExchangeRate> rates = new(direct.Count + inverse.Count);
         foreach (CachedExchangeRate rate in direct)
             rates.Add(new ExchangeRate(fromIsoCode, toIsoCode, rate.Date, rate.Rate, provider));
@@ -403,7 +403,7 @@ public abstract class CachingExchangeRateProviderBase
             return false;
         }
 
-        var provider = _cache.Provider;
+        string provider = _cache.Provider;
         IReadOnlyList<CachedExchangeRate> fresh = _cache.GetRates(pair, duration, now);
         List<ExchangeRate> rates = new();
         DateTimeOffset? oldest = null;
@@ -465,7 +465,7 @@ public abstract class CachingExchangeRateProviderBase
     private ExchangeRateCacheWriteStatus StoreFetchedRange(TimeSpan duration, ExchangeRatePair pair, IReadOnlyList<ExchangeRate> rates, DateOnly startDate, DateOnly endDate, DateTimeOffset now)
     {
         var rows = new CachedExchangeRate[rates.Count];
-        for (var i = 0; i < rates.Count; i++)
+        for (int i = 0; i < rates.Count; i++)
             rows[i] = new CachedExchangeRate(rates[i].Date, rates[i].Rate, now, rates[i].FetchedAtUtc);
 
         return _cache.StoreFetchedRange(pair, rows, startDate, endDate, duration, now);

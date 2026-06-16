@@ -30,8 +30,8 @@ public static partial class NotableDateOnlyExtensions
         if (count == 0)
             return date;
 
-        var direction = count > 0 ? 1 : -1;
-        var remaining = Math.Abs(count);
+        int direction = count > 0 ? 1 : -1;
+        int remaining = Math.Abs(count);
         DateOnly current = date;
 
         while (remaining > 0)

@@ -175,7 +175,7 @@ public partial class MoneyTests
     [TestMethod]
     public void TryParse_WhenIsoCodeIsUnregistered_ShouldReturnFalse()
     {
-        var parsed = Money.TryParse("XYZ 10.00", System.Globalization.CultureInfo.InvariantCulture, out Money result);
+        bool parsed = Money.TryParse("XYZ 10.00", System.Globalization.CultureInfo.InvariantCulture, out Money result);
 
         Assert.IsFalse(parsed);
         Assert.AreEqual(default, result);

@@ -19,7 +19,7 @@ public partial class CryptoHelpersTests
 
         CryptographyHelper.Clear(memory);
 
-        foreach (var b in memory.Span)
+        foreach (byte b in memory.Span)
             Assert.AreEqual(0, b);
     }
 
@@ -29,12 +29,12 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void Clear_Span_WhenInvoked_ShouldZeroAllBytes()
     {
-        var array = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 };
+        byte[] array = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 };
         Span<byte> span = array;
 
         CryptographyHelper.Clear(span);
 
-        foreach (var b in array)
+        foreach (byte b in array)
             Assert.AreEqual(0, b);
     }
 
@@ -44,7 +44,7 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void Clear_ByteArray_WhenInvoked_ShouldZeroAllBytes()
     {
-        var array = new byte[] { 1, 2, 3, 4 };
+        byte[] array = new byte[] { 1, 2, 3, 4 };
 
         CryptographyHelper.Clear(array);
 
@@ -67,7 +67,7 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void Clear_GenericArray_WhenInvoked_ShouldZeroAllElements()
     {
-        var array = new ulong[] { 0x1122334455667788UL, 0x99AABBCCDDEEFF00UL };
+        ulong[] array = new ulong[] { 0x1122334455667788UL, 0x99AABBCCDDEEFF00UL };
 
         CryptographyHelper.Clear(array);
 
@@ -88,7 +88,7 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void Clear_RefValue_WhenInvoked_ShouldZeroAllBytes()
     {
-        var value = 0xDEADBEEFCAFEBABEUL;
+        ulong value = 0xDEADBEEFCAFEBABEUL;
 
         CryptographyHelper.Clear(ref value);
 

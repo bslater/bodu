@@ -349,7 +349,7 @@ public sealed class DistributedExchangeRateCache
     /// </remarks>
     private bool WriteEntry(ExchangeRatePair pair, PairState state)
     {
-        var key = _options.BuildKey(pair);
+        string key = _options.BuildKey(pair);
 
         try
         {
@@ -381,7 +381,7 @@ public sealed class DistributedExchangeRateCache
                 });
             }
 
-            var payload = JsonSerializer.SerializeToUtf8Bytes(entry, s_serializerOptions);
+            byte[] payload = JsonSerializer.SerializeToUtf8Bytes(entry, s_serializerOptions);
             _cache.Set(key, payload);
             return true;
         }

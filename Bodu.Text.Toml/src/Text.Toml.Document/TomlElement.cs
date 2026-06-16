@@ -190,7 +190,7 @@ public readonly partial struct TomlElement
     {
         ThrowHelper.ThrowIfNull(propertyName);
 
-        if (_document.TryGetProperty(_index, propertyName, out var valueRow))
+        if (_document.TryGetProperty(_index, propertyName, out int valueRow))
             return new TomlElement(_document, valueRow);
 
         throw new KeyNotFoundException(string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.IO_KeyNotFound_Property, propertyName));
@@ -217,7 +217,7 @@ public readonly partial struct TomlElement
     {
         ThrowHelper.ThrowIfNull(propertyName);
 
-        if (_document.TryGetProperty(_index, propertyName, out var valueRow))
+        if (_document.TryGetProperty(_index, propertyName, out int valueRow))
         {
             value = new TomlElement(_document, valueRow);
             return true;
@@ -237,7 +237,7 @@ public readonly partial struct TomlElement
     /// </exception>
     public ArrayEnumerator EnumerateArray()
     {
-        var length = _document.GetArrayLength(_index);
+        int length = _document.GetArrayLength(_index);
         return new ArrayEnumerator(_document, _index, length);
     }
 
@@ -251,7 +251,7 @@ public readonly partial struct TomlElement
     /// </exception>
     public ObjectEnumerator EnumerateObject()
     {
-        var pairs = _document.GetTablePairCount(_index);
+        int pairs = _document.GetTablePairCount(_index);
         return new ObjectEnumerator(_document, _index, pairs);
     }
 

@@ -166,7 +166,7 @@ public sealed class XorShiftRandom :
 
         // Compute range in long-space so the subtraction never overflows, even for the
         // full-int span Next(int.MinValue, int.MaxValue) — every int range fits in uint.
-        var range = (uint)((long)maxValue - (long)minValue);
+        uint range = (uint)((long)maxValue - (long)minValue);
         return range == 0
             ? minValue
             : (int)((long)minValue + BoundedNextUInt32(range, _bitsSource));
@@ -178,11 +178,11 @@ public sealed class XorShiftRandom :
     {
         ThrowHelper.ThrowIfNull(buffer);
 
-        for (var i = 0; i < buffer.Length; i++)
+        for (int i = 0; i < buffer.Length; i++)
         {
             if ((i & 3) == 0)
             {
-                var rnd = NextUInt32();
+                uint rnd = NextUInt32();
                 buffer[i++] = (byte)(rnd & 0xFF);
                 if (i < buffer.Length) buffer[i++] = (byte)((rnd >> 8) & 0xFF);
                 if (i < buffer.Length) buffer[i++] = (byte)((rnd >> 16) & 0xFF);
@@ -234,12 +234,12 @@ public sealed class XorShiftRandom :
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static uint BoundedNextUInt32(uint maxExclusive, Func<uint> source)
     {
-        var product = (ulong)source() * maxExclusive;
-        var lowBits = (uint)product;
+        ulong product = (ulong)source() * maxExclusive;
+        uint lowBits = (uint)product;
         if (lowBits < maxExclusive)
         {
             // threshold = 2^32 mod maxExclusive; lowBits below this are biased and must be redrawn.
-            var threshold = (0u - maxExclusive) % maxExclusive;
+            uint threshold = (0u - maxExclusive) % maxExclusive;
             while (lowBits < threshold)
             {
                 product = (ulong)source() * maxExclusive;
@@ -257,7 +257,7 @@ public sealed class XorShiftRandom :
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private uint NextUInt32()
     {
-        var t = _x ^ (_x << 11);
+        uint t = _x ^ (_x << 11);
         _x = _y;
         _y = _z;
         _z = _w;

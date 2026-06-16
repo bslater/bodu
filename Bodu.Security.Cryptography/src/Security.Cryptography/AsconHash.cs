@@ -170,7 +170,7 @@ public abstract partial class AsconHash<T>
         // The final padded block must use 12 rounds (Ascon-p12) because it corresponds to the
         // initial permutation of the squeeze phase in the reference algorithm. Regular absorption
         // blocks use _absorptionRounds (12 for HASH256, 8 for HASHA256).
-        var rounds = _useP12ForFinalPad ? 12 : _absorptionRounds;
+        int rounds = _useP12ForFinalPad ? 12 : _absorptionRounds;
         _useP12ForFinalPad = false;
         _state.Permute(rounds);
     }
@@ -182,7 +182,7 @@ public abstract partial class AsconHash<T>
     /// <returns>A 32-byte array containing the final hash digest.</returns>
     protected override byte[] ProcessFinalBlock()
     {
-        var hash = new byte[32];
+        byte[] hash = new byte[32];
 
         _state.SqueezeRate64(hash.AsSpan(0, 8));
         _state.Permute(_absorptionRounds);

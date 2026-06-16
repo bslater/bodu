@@ -128,7 +128,7 @@ public partial class IndexedPriorityQueueTests
     public void Update_WhenInternalNode_ShouldRepairHeap()
     {
         var queue = new IndexedPriorityQueue<int, int>();
-        for (var i = 0; i < 16; i++)
+        for (int i = 0; i < 16; i++)
             queue.Enqueue(i, i * 10);
 
         queue.Update(7, -1);
@@ -150,13 +150,13 @@ public partial class IndexedPriorityQueueTests
         var queue = new IndexedPriorityQueue<int, int>();
         var rng = new Random(12345);
 
-        for (var i = 0; i < 200; i++)
+        for (int i = 0; i < 200; i++)
             queue.Enqueue(i, rng.Next(0, 1_000_000));
 
-        for (var i = 0; i < 200; i += 3)
+        for (int i = 0; i < 200; i += 3)
             queue.Update(i, rng.Next(0, 1_000_000));
 
-        for (var i = 0; i < 200; i += 7)
+        for (int i = 0; i < 200; i += 7)
             queue.Remove(i);
 
         KeyValuePair<int, int>[] drained = DrainAll(queue);
@@ -208,7 +208,7 @@ public partial class IndexedPriorityQueueTests
 
         using IEnumerator<KeyValuePair<string, int>> enumerator = ((IEnumerable<KeyValuePair<string, int>>)queue).GetEnumerator();
         queue.Update("a", 5);
-        var moved = enumerator.MoveNext();
+        bool moved = enumerator.MoveNext();
 
         Assert.IsTrue(moved);
     }

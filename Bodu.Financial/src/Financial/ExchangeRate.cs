@@ -146,7 +146,7 @@ public readonly record struct ExchangeRate
     {
         ThrowHelper.ThrowIfZeroOrNegative(observedRate);
 
-        var rate = isInverted ? 1m / observedRate : observedRate;
+        decimal rate = isInverted ? 1m / observedRate : observedRate;
         return new ExchangeRate(fromIsoCode, toIsoCode, date, rate, observedRate, provider, isInverted, fetchedAtUtc);
     }
 

@@ -96,7 +96,7 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void ThrowIfInvalidBlockSize_WhenLengthMatches_ShouldNotThrow()
     {
-        var value = new byte[8];
+        byte[] value = new byte[8];
         KeySizes[] legal = [new KeySizes(64, 64, 0)];
 
         CryptographyThrowHelper.ThrowIfInvalidBlockSize(value, 64, legal);
@@ -124,7 +124,7 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void ThrowIfInvalidBlockSize_WhenLegalSizesIsNull_ShouldThrowExactly()
     {
-        var value = new byte[8];
+        byte[] value = new byte[8];
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -139,7 +139,7 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void ThrowIfInvalidBlockSize_WhenLengthDoesNotMatch_ShouldThrowExactly()
     {
-        var value = new byte[6];
+        byte[] value = new byte[6];
         KeySizes[] legal = [new KeySizes(64, 64, 0)];
 
         Assert.ThrowsExactly<CryptographicException>(() =>

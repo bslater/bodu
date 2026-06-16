@@ -18,7 +18,7 @@ public partial class EvictingDictionaryTests
         var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.LeastRecentlyUsed);
         dictionary.Add("key", 123);
 
-        var before = dictionary.TotalTouches;
+        long before = dictionary.TotalTouches;
         dictionary.Touch("nope");
 
         Assert.AreEqual(before, dictionary.TotalTouches);
@@ -33,7 +33,7 @@ public partial class EvictingDictionaryTests
         var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.LeastRecentlyUsed);
         dictionary.Add("key", 123);
 
-        var before = dictionary.TotalTouches;
+        long before = dictionary.TotalTouches;
         dictionary.Touch("key");
 
         Assert.AreEqual(before + 1, dictionary.TotalTouches);
@@ -65,7 +65,7 @@ public partial class EvictingDictionaryTests
         var dictionary = new EvictingDictionary<string, int>(2);
         dictionary.Add("a", 1);
 
-        var actual = dictionary.Touch("missing");
+        bool actual = dictionary.Touch("missing");
 
         Assert.IsFalse(actual);
     }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SqliteExchangeRateCacheContractTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -30,7 +30,7 @@ public sealed class SqliteExchangeRateCacheContractTests
     /// <inheritdoc />
     protected override SqliteExchangeRateCache CreateCache()
     {
-        var path = Path.Combine(Path.GetTempPath(), "bodu-exchange-rates-sqlite-tests", $"{Guid.NewGuid():N}.db");
+        string path = Path.Combine(Path.GetTempPath(), "bodu-exchange-rates-sqlite-tests", $"{Guid.NewGuid():N}.db");
         Directory.CreateDirectory(Path.GetDirectoryName(path)!);
         _files.Add(path);
 
@@ -48,7 +48,7 @@ public sealed class SqliteExchangeRateCacheContractTests
         foreach (SqliteExchangeRateCache cache in _caches)
             cache.Dispose();
 
-        foreach (var file in _files)
+        foreach (string file in _files)
         {
             try
             {

@@ -25,7 +25,7 @@ public sealed partial class IEnumerableExtensionsTests_Cache
     [TestCategory("Stress")]
     public void Cache_WhenEnumeratedConcurrently_ShouldYieldEveryElementToEveryReader()
     {
-        var readerCount = Math.Max(4, Environment.ProcessorCount);
+        int readerCount = Math.Max(4, Environment.ProcessorCount);
         const int iterations = 20_000;
         const int length = 16;
         const int deadlockTimeoutMs = 120_000;
@@ -36,8 +36,8 @@ public sealed partial class IEnumerableExtensionsTests_Cache
         IEnumerable<int>? current = null;
         var results = new List<int>?[readerCount];
         var errors = new Exception?[readerCount];
-        var mismatches = 0;
-        var faults = 0;
+        int mismatches = 0;
+        int faults = 0;
         Exception? firstException = null;
         string? firstMismatch = null;
 
@@ -45,7 +45,7 @@ public sealed partial class IEnumerableExtensionsTests_Cache
         // control back. Exceptions are captured rather than thrown so the barrier never desynchronizes.
         Task[] readers = Enumerable.Range(0, readerCount).Select(readerIndex => StartWorker(() =>
         {
-            for (var i = 0; i < iterations; i++)
+            for (int i = 0; i < iterations; i++)
             {
                 barrier.SignalAndWait();
                 try
@@ -67,14 +67,14 @@ public sealed partial class IEnumerableExtensionsTests_Cache
         // finish, then validates that every reader observed the full sequence.
         var controller = StartWorker(() =>
         {
-            for (var i = 0; i < iterations; i++)
+            for (int i = 0; i < iterations; i++)
             {
                 Volatile.Write(ref current, new TrackingEnumerable<int>(SpacedSequence(length)).Cache());
 
                 barrier.SignalAndWait(); // release readers onto the fresh cache
                 barrier.SignalAndWait(); // wait for every reader to finish this iteration
 
-                for (var r = 0; r < readerCount; r++)
+                for (int r = 0; r < readerCount; r++)
                 {
                     if (errors[r] is not null)
                     {
@@ -92,7 +92,7 @@ public sealed partial class IEnumerableExtensionsTests_Cache
             }
         });
 
-        var completed = Task.WaitAll([.. readers, controller], deadlockTimeoutMs);
+        bool completed = Task.WaitAll([.. readers, controller], deadlockTimeoutMs);
 
         TestContext.WriteLine(
             $"Iterations={iterations}, Readers={readerCount}, Length={length}, " +
@@ -120,7 +120,7 @@ public sealed partial class IEnumerableExtensionsTests_Cache
     /// <returns>An <see cref="IEnumerable{T}" /> that yields <c>1</c> through <paramref name="count" />.</returns>
     private static IEnumerable<int> SpacedSequence(int count)
     {
-        for (var i = 1; i <= count; i++)
+        for (int i = 1; i <= count; i++)
         {
             Thread.SpinWait(40);
             yield return i;

@@ -351,7 +351,7 @@ public class BencodeArrayTests
     {
         var array = new BencodeArray(3, 1, 2);
 
-        var bytes = array.ToByteArray();
+        byte[] bytes = array.ToByteArray();
 
         Assert.AreEqual("li3ei1ei2ee", Encoding.Latin1.GetString(bytes));
     }

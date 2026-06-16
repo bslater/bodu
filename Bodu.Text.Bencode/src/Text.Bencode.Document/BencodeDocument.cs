@@ -154,7 +154,7 @@ public sealed partial class BencodeDocument
         if (!_pooled)
             return;
 
-        var data = _data;
+        byte[]? data = _data;
         if (data is null)
             return;
 
@@ -187,7 +187,7 @@ public sealed partial class BencodeDocument
     /// <returns>A document over a private, plainly allocated copy of <paramref name="data" />.</returns>
     internal static BencodeDocument ParseUnpooled(ReadOnlySpan<byte> data, BencodeReaderOptions readerOptions = default)
     {
-        var buffer = data.ToArray();
+        byte[] buffer = data.ToArray();
         return new BencodeDocument(buffer, ParseRows(buffer, readerOptions), pooled: false);
     }
 
@@ -220,8 +220,8 @@ public sealed partial class BencodeDocument
         // Report the public element indexer's parameter name, which is the caller-facing contract for this guard.
         ThrowHelper.ThrowIfGreaterThanOrEqual((uint)elementIndex, (uint)row.ChildCount, nameof(index));
 
-        var child = index + 1;
-        for (var i = 0; i < elementIndex; i++)
+        int child = index + 1;
+        for (int i = 0; i < elementIndex; i++)
             child += _rows[child].NumberOfRows;
 
         return child;
@@ -253,7 +253,7 @@ public sealed partial class BencodeDocument
     /// <exception cref="InvalidOperationException">Thrown when the element is not a byte string.</exception>
     internal byte[] GetBytes(int index)
     {
-        var data = EnsureNotDisposed();
+        byte[] data = EnsureNotDisposed();
         ref readonly Row row = ref _rows[index];
         if (row.Kind != BencodeValueKind.ByteString)
             throw KindMismatch(BencodeValueKind.ByteString, row.Kind);
@@ -292,7 +292,7 @@ public sealed partial class BencodeDocument
     /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
     internal string GetKey(int keyRow)
     {
-        var data = EnsureNotDisposed();
+        byte[] data = EnsureNotDisposed();
         ref readonly Row row = ref _rows[keyRow];
         return Encoding.UTF8.GetString(data, row.Location, row.Length);
     }
@@ -338,11 +338,11 @@ public sealed partial class BencodeDocument
     /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
     internal (string Name, int ValueRow, int NextPairRow) GetPair(int keyRow)
     {
-        var data = EnsureNotDisposed();
+        byte[] data = EnsureNotDisposed();
         ref readonly Row key = ref _rows[keyRow];
-        var name = Encoding.UTF8.GetString(data, key.Location, key.Length);
-        var valueRow = keyRow + 1;
-        var nextPairRow = valueRow + _rows[valueRow].NumberOfRows;
+        string name = Encoding.UTF8.GetString(data, key.Location, key.Length);
+        int valueRow = keyRow + 1;
+        int nextPairRow = valueRow + _rows[valueRow].NumberOfRows;
         return (name, valueRow, nextPairRow);
     }
 
@@ -355,7 +355,7 @@ public sealed partial class BencodeDocument
     /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
     internal ReadOnlySpan<byte> GetRawSpan(int index)
     {
-        var data = EnsureNotDisposed();
+        byte[] data = EnsureNotDisposed();
         ref readonly Row row = ref _rows[index];
         return data.AsSpan(row.RawLocation, row.RawLength);
     }
@@ -369,7 +369,7 @@ public sealed partial class BencodeDocument
     /// <exception cref="InvalidOperationException">Thrown when the element is not a byte string.</exception>
     internal string GetString(int index)
     {
-        var data = EnsureNotDisposed();
+        byte[] data = EnsureNotDisposed();
         ref readonly Row row = ref _rows[index];
         if (row.Kind != BencodeValueKind.ByteString)
             throw KindMismatch(BencodeValueKind.ByteString, row.Kind);
@@ -446,24 +446,24 @@ public sealed partial class BencodeDocument
     /// <exception cref="InvalidOperationException">Thrown when the element is not an object.</exception>
     internal bool TryGetProperty(int objIndex, string name, out int valueRow)
     {
-        var data = EnsureNotDisposed();
+        byte[] data = EnsureNotDisposed();
         ref readonly Row obj = ref _rows[objIndex];
         if (obj.Kind != BencodeValueKind.Object)
             throw KindMismatch(BencodeValueKind.Object, obj.Kind);
 
         // Compare against the raw key bytes so byte strings that are not valid UTF-8 still match correctly.
-        var byteCount = Encoding.UTF8.GetByteCount(name);
-        var needle = ArrayPool<byte>.Shared.Rent(byteCount);
+        int byteCount = Encoding.UTF8.GetByteCount(name);
+        byte[] needle = ArrayPool<byte>.Shared.Rent(byteCount);
         try
         {
             Encoding.UTF8.GetBytes(name, needle);
             ReadOnlySpan<byte> needleSpan = needle.AsSpan(0, byteCount);
 
-            var cur = objIndex + 1;
-            for (var i = 0; i < obj.ChildCount; i++)
+            int cur = objIndex + 1;
+            for (int i = 0; i < obj.ChildCount; i++)
             {
                 ref readonly Row key = ref _rows[cur];
-                var valueRowCandidate = cur + 1;
+                int valueRowCandidate = cur + 1;
                 if (data.AsSpan(key.Location, key.Length).SequenceEqual(needleSpan))
                 {
                     valueRow = valueRowCandidate;
@@ -502,7 +502,7 @@ public sealed partial class BencodeDocument
     /// </exception>
     private static BencodeDocument Parse(ReadOnlySpan<byte> data, BencodeReaderOptions readerOptions)
     {
-        var buffer = ArrayPool<byte>.Shared.Rent(data.Length);
+        byte[] buffer = ArrayPool<byte>.Shared.Rent(data.Length);
         try
         {
             data.CopyTo(buffer);
@@ -557,7 +557,7 @@ public sealed partial class BencodeDocument
         switch (reader.TokenType)
         {
             case BencodeTokenType.Integer:
-                rows.Add(reader.TryGetInt64(out var integer)
+                rows.Add(reader.TryGetInt64(out long integer)
                     ? Row.Int(integer, valueStart, reader.BytesConsumed - valueStart)
                     : Row.UInt(reader.GetUInt64(), valueStart, reader.BytesConsumed - valueStart));
                 return;
@@ -568,12 +568,12 @@ public sealed partial class BencodeDocument
 
             case BencodeTokenType.StartList:
                 {
-                    var self = rows.Count;
+                int self = rows.Count;
                     rows.Add(default);
-                    var count = 0;
+                int count = 0;
                     while (true)
                     {
-                        var childStart = reader.BytesConsumed;
+                    int childStart = reader.BytesConsumed;
                         if (!reader.Read() || reader.TokenType == BencodeTokenType.EndList)
                             break;
 
@@ -587,19 +587,19 @@ public sealed partial class BencodeDocument
 
             case BencodeTokenType.StartDictionary:
                 {
-                    var self = rows.Count;
+                int self = rows.Count;
                     rows.Add(default);
-                    var pairs = 0;
+                int pairs = 0;
                     while (true)
                     {
-                        var keyStart = reader.BytesConsumed;
+                    int keyStart = reader.BytesConsumed;
                         if (!reader.Read() || reader.TokenType == BencodeTokenType.EndDictionary)
                             break;
 
                         // The key is a property-name token; store it as a byte-string row.
                         rows.Add(Row.Bytes(reader.BytesConsumed - reader.ValueSpan.Length, reader.ValueSpan.Length, keyStart, reader.BytesConsumed - keyStart));
 
-                        var pairValueStart = reader.BytesConsumed;
+                    int pairValueStart = reader.BytesConsumed;
                         reader.Read();
                         ReadValue(ref reader, rows, pairValueStart);
                         pairs++;

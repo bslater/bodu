@@ -216,7 +216,7 @@ public ref struct Utf8BencodeReader
         if (_tokenType is not (BencodeTokenType.ByteString or BencodeTokenType.PropertyName))
             throw new InvalidOperationException();
 
-        var charCount = Encoding.UTF8.GetCharCount(ValueSpan);
+        int charCount = Encoding.UTF8.GetCharCount(ValueSpan);
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(destination, charCount);
 
         return Encoding.UTF8.GetChars(ValueSpan, destination);
@@ -244,7 +244,7 @@ public ref struct Utf8BencodeReader
     /// </exception>
     public readonly int GetInt32()
     {
-        if (!TryGetInt32(out var value))
+        if (!TryGetInt32(out int value))
             throw Error(string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Format_Invalid_BencodeIntegerOutOfTypeRange, nameof(Int32)), _tokenStart);
 
         return value;
@@ -333,7 +333,7 @@ public ref struct Utf8BencodeReader
 
         Frame? top = _frames.Count > 0 ? _frames[^1] : null;
         _tokenStart = _position;
-        var b = _data[_position];
+        byte b = _data[_position];
 
         if (b == (byte)'e')
         {
@@ -349,7 +349,7 @@ public ref struct Utf8BencodeReader
             return true;
         }
 
-        var inDictKey = top is { IsDict: true, ExpectKey: true };
+        bool inDictKey = top is { IsDict: true, ExpectKey: true };
 
         switch (b)
         {
@@ -411,7 +411,7 @@ public ref struct Utf8BencodeReader
         if (_tokenType is not (BencodeTokenType.StartList or BencodeTokenType.StartDictionary))
             return;
 
-        var depth = _frames.Count;
+        int depth = _frames.Count;
         while (_frames.Count >= depth && Read())
         {
             // Read until the matching container end returns control to the original depth.
@@ -542,11 +542,11 @@ public ref struct Utf8BencodeReader
         if (_tokenType is not (BencodeTokenType.ByteString or BencodeTokenType.PropertyName))
             throw new InvalidOperationException();
 
-        var byteCount = Encoding.UTF8.GetByteCount(text);
+        int byteCount = Encoding.UTF8.GetByteCount(text);
         if (byteCount != _valueLength)
             return false;
 
-        var rented = ArrayPool<byte>.Shared.Rent(byteCount);
+        byte[] rented = ArrayPool<byte>.Shared.Rent(byteCount);
         try
         {
             _ = Encoding.UTF8.GetBytes(text, rented);
@@ -621,11 +621,11 @@ public ref struct Utf8BencodeReader
     /// </summary>
     private void ReadByteString()
     {
-        var start = _position;
+        int start = _position;
         while (_position < _data.Length && _data[_position] is >= (byte)'0' and <= (byte)'9')
             _position++;
 
-        var lengthDigits = _position - start;
+        int lengthDigits = _position - start;
         if (lengthDigits == 0 || (_data[start] == (byte)'0' && lengthDigits > 1))
             throw Error(BencodeResourceStrings.Format_Invalid_BencodeStringLengthLeadingZeros, start);
 
@@ -649,22 +649,22 @@ public ref struct Utf8BencodeReader
     /// </summary>
     private void ReadInteger()
     {
-        var start = _position;
+        int start = _position;
         _position++;
 
-        var signStart = _position;
+        int signStart = _position;
         if (_position < _data.Length && _data[_position] == (byte)'-')
             _position++;
 
-        var digitsStart = _position;
+        int digitsStart = _position;
         while (_position < _data.Length && _data[_position] is >= (byte)'0' and <= (byte)'9')
             _position++;
 
         if (_position >= _data.Length || _data[_position] != (byte)'e')
             throw Error(BencodeResourceStrings.Format_Invalid_BencodeUnterminatedInteger, start);
 
-        var digitCount = _position - digitsStart;
-        var negative = digitsStart != signStart;
+        int digitCount = _position - digitsStart;
+        bool negative = digitsStart != signStart;
         if (digitCount == 0)
             throw Error(BencodeResourceStrings.Format_Invalid_BencodeInvalidInteger, start);
         if (_data[digitsStart] == (byte)'0' && digitCount > 1)
@@ -676,7 +676,7 @@ public ref struct Utf8BencodeReader
         if (negative)
         {
             // A negative literal must fit the signed 64-bit range; there is no wider negative representation.
-            if (!Utf8Parser.TryParse(number, out long value, out var consumed) || consumed != number.Length)
+            if (!Utf8Parser.TryParse(number, out long value, out int consumed) || consumed != number.Length)
                 throw Error(BencodeResourceStrings.Format_Invalid_BencodeIntegerOutOfRange, start);
 
             _intValue = value;
@@ -687,7 +687,7 @@ public ref struct Utf8BencodeReader
         {
             // Bencode integers are arbitrary-precision per BEP 3; the reader accepts the full unsigned 64-bit range
             // and defers the signed-range check to GetInt64 so GetUInt64 can serve the wider values.
-            if (!Utf8Parser.TryParse(number, out ulong value, out var consumed) || consumed != number.Length)
+            if (!Utf8Parser.TryParse(number, out ulong value, out int consumed) || consumed != number.Length)
                 throw Error(BencodeResourceStrings.Format_Invalid_BencodeIntegerOutOfRange, start);
 
             _uintValue = value;
@@ -717,7 +717,7 @@ public ref struct Utf8BencodeReader
             // both unordered and duplicate keys.
             if (top.PreviousKeyStart >= 0)
             {
-                var comparison = key.SequenceCompareTo(_data.Slice(top.PreviousKeyStart, top.PreviousKeyLength));
+                int comparison = key.SequenceCompareTo(_data.Slice(top.PreviousKeyStart, top.PreviousKeyLength));
                 if (comparison == 0 && !_allowDuplicateKeys)
                     throw Error(BencodeResourceStrings.Format_Invalid_BencodeDuplicateDictionaryKeys, _valueStart);
                 if (comparison < 0)
@@ -731,7 +731,7 @@ public ref struct Utf8BencodeReader
         {
             // Without an ordering guarantee duplicates can appear anywhere, so the frame remembers every key seen.
             top.SeenKeys ??= [];
-            foreach ((var start, var length) in top.SeenKeys)
+            foreach ((int start, int length) in top.SeenKeys)
             {
                 if (length == _valueLength && key.SequenceEqual(_data.Slice(start, length)))
                     throw Error(BencodeResourceStrings.Format_Invalid_BencodeDuplicateDictionaryKeys, _valueStart);

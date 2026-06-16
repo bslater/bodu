@@ -175,7 +175,7 @@ public sealed class MerkleTreeHash
         ArgumentNullException.ThrowIfNull(input);
         Reset();
 
-        var buffer = ArrayPool<byte>.Shared.Rent(_blockSize * 4);
+        byte[] buffer = ArrayPool<byte>.Shared.Rent(_blockSize * 4);
         try
         {
             int bytesRead;
@@ -249,7 +249,7 @@ public sealed class MerkleTreeHash
     {
         while (!data.IsEmpty)
         {
-            var toWrite = Math.Min(_blockSize - (int)_buffer.Length, data.Length);
+            int toWrite = Math.Min(_blockSize - (int)_buffer.Length, data.Length);
             _buffer.Write(data[..toWrite]);
             data = data[toWrite..];
 
@@ -280,15 +280,15 @@ public sealed class MerkleTreeHash
         // Reduce level by level until a single root hash remains.
         while (_currentLevel.Count > 1)
         {
-            var hashLength = _currentLevel[0].Length;
+            int hashLength = _currentLevel[0].Length;
             var nextLevel = new List<byte[]>((_currentLevel.Count / _fanOut) + 1);
 
-            for (var i = 0; i < _currentLevel.Count; i += _fanOut)
+            for (int i = 0; i < _currentLevel.Count; i += _fanOut)
             {
-                var groupSize = Math.Min(_fanOut, _currentLevel.Count - i);
+                int groupSize = Math.Min(_fanOut, _currentLevel.Count - i);
 
                 using var bufferBuilder = new PooledBufferBuilder<byte>(hashLength * groupSize);
-                for (var j = 0; j < groupSize; j++)
+                for (int j = 0; j < groupSize; j++)
                     bufferBuilder.AppendRange(_currentLevel[i + j].AsSpan());
 
                 nextLevel.Add(ComputeLeafHash(bufferBuilder.WrittenSpan));
@@ -326,13 +326,13 @@ public sealed class MerkleTreeHash
     private byte[] ComputeLeafHash(ReadOnlySpan<byte> span)
     {
         using HashAlgorithm hasher = _algorithmFactory();
-        var result = new byte[hasher.HashSize >> 3];
+        byte[] result = new byte[hasher.HashSize >> 3];
         CryptographyThrowHelper.ThrowIfHashAlgorithmDestinationTooSmall(
-            hasher.TryComputeHash(span, result, out var bytesWritten));
+            hasher.TryComputeHash(span, result, out int bytesWritten));
         if (bytesWritten == result.Length)
             return result;
 
-        var trimmed = new byte[bytesWritten];
+        byte[] trimmed = new byte[bytesWritten];
         Buffer.BlockCopy(result, 0, trimmed, 0, bytesWritten);
         return trimmed;
     }

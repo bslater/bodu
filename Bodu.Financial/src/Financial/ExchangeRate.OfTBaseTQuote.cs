@@ -148,8 +148,8 @@ public readonly record struct ExchangeRate<TBase, TQuote>
     /// </returns>
     public ExchangeRate<TQuote, TBase> Inverse()
     {
-        var inverted = !IsInverted;
-        var rate = inverted ? 1m / _observedRate : _observedRate;
+        bool inverted = !IsInverted;
+        decimal rate = inverted ? 1m / _observedRate : _observedRate;
         return ExchangeRate<TQuote, TBase>.FromComponents(rate, _observedRate, Date, Provider, inverted);
     }
 
@@ -174,8 +174,8 @@ public readonly record struct ExchangeRate<TBase, TQuote>
     /// </exception>
     public static ExchangeRate<TBase, TQuote> FromRuntime(ExchangeRate rate)
     {
-        var baseIso = CurrencyMetadata<TBase>.Value.IsoCode;
-        var quoteIso = CurrencyMetadata<TQuote>.Value.IsoCode;
+        string baseIso = CurrencyMetadata<TBase>.Value.IsoCode;
+        string quoteIso = CurrencyMetadata<TQuote>.Value.IsoCode;
 
         if (!string.Equals(rate.FromIsoCode, baseIso, StringComparison.Ordinal) ||
             !string.Equals(rate.ToIsoCode, quoteIso, StringComparison.Ordinal))

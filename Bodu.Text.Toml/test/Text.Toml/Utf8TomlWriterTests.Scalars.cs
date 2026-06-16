@@ -25,7 +25,7 @@ public sealed partial class Utf8TomlWriterTests
     [DataRow(long.MinValue, "-9223372036854775808", DisplayName = "Int64 min")]
     public void Write_WhenInteger_ShouldEmitDecimal(long value, string expected)
     {
-        var actual = WriteDocument((ref Utf8TomlWriter writer) =>
+        string actual = WriteDocument((ref Utf8TomlWriter writer) =>
         {
             writer.WriteStartTable();
             writer.WritePropertyName("v");
@@ -46,7 +46,7 @@ public sealed partial class Utf8TomlWriterTests
     [DataRow(false, "false", DisplayName = "false")]
     public void Write_WhenBoolean_ShouldEmitKeyword(bool value, string expected)
     {
-        var actual = WriteDocument((ref Utf8TomlWriter writer) =>
+        string actual = WriteDocument((ref Utf8TomlWriter writer) =>
         {
             writer.WriteStartTable();
             writer.WritePropertyName("v");
@@ -80,7 +80,7 @@ public sealed partial class Utf8TomlWriterTests
     [TestCategory("Regression")]
     public void Write_WhenFloat_ShouldEmitShortestRoundTrippableSpelling(double value, string expected)
     {
-        var actual = WriteDocument((ref Utf8TomlWriter writer) =>
+        string actual = WriteDocument((ref Utf8TomlWriter writer) =>
         {
             writer.WriteStartTable();
             writer.WritePropertyName("v");
@@ -102,7 +102,7 @@ public sealed partial class Utf8TomlWriterTests
     [DataRow(double.NaN, "nan", DisplayName = "not a number")]
     public void Write_WhenFloatSentinel_ShouldEmitKeyword(double value, string expected)
     {
-        var actual = WriteDocument((ref Utf8TomlWriter writer) =>
+        string actual = WriteDocument((ref Utf8TomlWriter writer) =>
         {
             writer.WriteStartTable();
             writer.WritePropertyName("v");
@@ -119,7 +119,7 @@ public sealed partial class Utf8TomlWriterTests
     [TestMethod]
     public void Write_WhenFloatIsNegativeZero_ShouldEmitSignedZero()
     {
-        var actual = WriteDocument((ref Utf8TomlWriter writer) =>
+        string actual = WriteDocument((ref Utf8TomlWriter writer) =>
         {
             writer.WriteStartTable();
             writer.WritePropertyName("v");
@@ -136,7 +136,7 @@ public sealed partial class Utf8TomlWriterTests
     [TestMethod]
     public void Write_WhenStringIsEmpty_ShouldEmitEmptyQuotes()
     {
-        var actual = WriteDocument((ref Utf8TomlWriter writer) =>
+        string actual = WriteDocument((ref Utf8TomlWriter writer) =>
         {
             writer.WriteStartTable();
             writer.WritePropertyName("v");
@@ -164,7 +164,7 @@ public sealed partial class Utf8TomlWriterTests
     [TestCategory("Regression")]
     public void Write_WhenStringContainsReservedCharacter_ShouldEscape(string value, string expectedInner)
     {
-        var actual = WriteDocument((ref Utf8TomlWriter writer) =>
+        string actual = WriteDocument((ref Utf8TomlWriter writer) =>
         {
             writer.WriteStartTable();
             writer.WritePropertyName("v");
@@ -182,9 +182,9 @@ public sealed partial class Utf8TomlWriterTests
     [TestMethod]
     public void Write_WhenStringContainsBareControlCharacters_ShouldEmitUnicodeEscapes()
     {
-        var value = "a" + (char)0x00 + (char)0x01 + (char)0x7F + "b";
+        string value = "a" + (char)0x00 + (char)0x01 + (char)0x7F + "b";
 
-        var actual = WriteDocument((ref Utf8TomlWriter writer) =>
+        string actual = WriteDocument((ref Utf8TomlWriter writer) =>
         {
             writer.WriteStartTable();
             writer.WritePropertyName("v");
@@ -203,7 +203,7 @@ public sealed partial class Utf8TomlWriterTests
     [TestCategory("Regression")]
     public void Write_WhenDateTimeKindsWithFractions_ShouldEmitRfc3339()
     {
-        var actual = WriteDocument((ref Utf8TomlWriter writer) =>
+        string actual = WriteDocument((ref Utf8TomlWriter writer) =>
         {
             writer.WriteStartTable();
 
@@ -225,7 +225,7 @@ public sealed partial class Utf8TomlWriterTests
             writer.WriteEndTable();
         });
 
-        var expected =
+        string expected =
             "odt = 2020-01-01T12:30:45.5+02:00\n" +
             "odtz = 2020-01-01T12:30:45Z\n" +
             "ldt = 2020-01-01T12:30:45.1234567\n" +

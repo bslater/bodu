@@ -53,7 +53,7 @@ public partial class ExchangeRateTableBuilderTests
         ExchangeRateTableBuilder table = new();
         table.GetOrAddSeries(s_usdAud, "RBA").Add(new DateOnly(2026, 6, 1), 1.50m);
 
-        var removed = table.Remove(s_usdAud, "RBA");
+        bool removed = table.Remove(s_usdAud, "RBA");
 
         Assert.IsTrue(removed);
         Assert.IsFalse(table.ContainsSeries(s_usdAud, "RBA"));
@@ -67,7 +67,7 @@ public partial class ExchangeRateTableBuilderTests
     {
         ExchangeRateTableBuilder table = new();
 
-        var removed = table.Remove(s_usdAud, "RBA");
+        bool removed = table.Remove(s_usdAud, "RBA");
 
         Assert.IsFalse(removed);
     }
@@ -97,7 +97,7 @@ public partial class ExchangeRateTableBuilderTests
     {
         ExchangeRateTableBuilder table = new();
 
-        var found = table.TryGetBuilder(s_usdAud, "RBA", out ExchangeRateSeriesBuilder? builder);
+        bool found = table.TryGetBuilder(s_usdAud, "RBA", out ExchangeRateSeriesBuilder? builder);
 
         Assert.IsFalse(found);
         Assert.IsNull(builder);
@@ -113,7 +113,7 @@ public partial class ExchangeRateTableBuilderTests
         ExchangeRateSeriesBuilder seeded = table.GetOrAddSeries(s_usdAud, "RBA");
         seeded.Add(new DateOnly(2026, 6, 1), 1.50m);
 
-        var found = table.TryGetBuilder(s_usdAud, "RBA", out ExchangeRateSeriesBuilder? builder);
+        bool found = table.TryGetBuilder(s_usdAud, "RBA", out ExchangeRateSeriesBuilder? builder);
 
         Assert.IsTrue(found);
         Assert.AreSame(seeded, builder);

@@ -36,7 +36,7 @@ public partial class OrderedSetTests
     {
         OrderedSet<int> sut = CreateSet([1, 2, 3]);
 
-        var added = sut.Add(2);
+        bool added = sut.Add(2);
 
         Assert.IsFalse(added);
         Assert.AreEqual(3, sut.Count);
@@ -72,7 +72,7 @@ public partial class OrderedSetTests
     {
         var sut = new OrderedSet<int>();
 
-        var added = sut.Add(99);
+        bool added = sut.Add(99);
 
         Assert.IsTrue(added);
         Assert.AreEqual(1, sut.Count);
@@ -87,11 +87,11 @@ public partial class OrderedSetTests
     {
         var sut = new OrderedSet<int>();
 
-        for (var i = 0; i < 1000; i++)
+        for (int i = 0; i < 1000; i++)
             Assert.IsTrue(sut.Add(i));
 
         Assert.AreEqual(1000, sut.Count);
-        for (var i = 0; i < 1000; i++)
+        for (int i = 0; i < 1000; i++)
             Assert.AreEqual(i, sut[i]);
     }
 
@@ -108,7 +108,7 @@ public partial class OrderedSetTests
     {
         OrderedSet<int> sut = CreateSet([1, 2]);
 
-        var added = sut.AddRange([2, 3, 4, 4, 5]);
+        int added = sut.AddRange([2, 3, 4, 4, 5]);
 
         Assert.AreEqual(3, added);
         CollectionAssert.AreEqual(new[] { 1, 2, 3, 4, 5 }, SnapshotByIndexer(sut));
@@ -138,7 +138,7 @@ public partial class OrderedSetTests
     {
         OrderedSet<int> sut = CreateSet([1, 2]);
 
-        var added = sut.AddRange([]);
+        int added = sut.AddRange([]);
 
         Assert.AreEqual(0, added);
         CollectionAssert.AreEqual(new[] { 1, 2 }, SnapshotByIndexer(sut));

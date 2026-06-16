@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConfigurationReaderTests.ErrorPaths.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -66,7 +66,7 @@ public sealed class ConfigurationReaderErrorPathTests
     public void Parse_WhenKeyContainsControlCharacter_ShouldEmitInvalidKeyCharacter()
     {
         ConfigurationParseOptions options = new() { DiagnosticMode = ConfigurationDiagnosticMode.Throw };
-        var source = "[*]\na" + (char)1 + "b = 1\n";
+        string source = "[*]\na" + (char)1 + "b = 1\n";
 
         ConfigurationParseException ex = ParseAndCapture(source, options);
 

@@ -43,10 +43,10 @@ public partial class DequeTests
     public void AllowGrow_WhenToggledOff_ShouldNotShrinkCapacity()
     {
         var deque = new Deque<int>(4, allowGrow: true);
-        for (var i = 0; i < 100; i++)
+        for (int i = 0; i < 100; i++)
             deque.AddLast(i);
 
-        var capacityBefore = deque.Capacity;
+        int capacityBefore = deque.Capacity;
         deque.AllowGrow = false;
 
         Assert.AreEqual(capacityBefore, deque.Capacity);
@@ -97,7 +97,7 @@ public partial class DequeTests
     public void EnsureCapacity_WhenAllowGrowFalse_ShouldStillExpand()
     {
         var deque = new Deque<int>(4, allowGrow: false);
-        var newCap = deque.EnsureCapacity(50);
+        int newCap = deque.EnsureCapacity(50);
 
         Assert.IsGreaterThanOrEqualTo(50, newCap);
         Assert.IsGreaterThanOrEqualTo(50, deque.Capacity);

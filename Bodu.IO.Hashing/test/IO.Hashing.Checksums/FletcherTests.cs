@@ -33,7 +33,7 @@ public abstract partial class FletcherTests<TTest, TAlgorithm>
     public void GetCurrentHash_WhenInputIsEmpty_ShouldReturnAllZero()
     {
         TAlgorithm algorithm = CreateAlgorithm();
-        var digest = algorithm.GetCurrentHash();
+        byte[] digest = algorithm.GetCurrentHash();
 
         Assert.IsTrue(digest.All(b => b == 0), $"Expected all-zero digest, was {Convert.ToHexString(digest)}.");
     }
@@ -46,7 +46,7 @@ public abstract partial class FletcherTests<TTest, TAlgorithm>
     {
         TAlgorithm algorithm = CreateAlgorithm();
         algorithm.Append(new byte[16]);
-        var digest = algorithm.GetCurrentHash();
+        byte[] digest = algorithm.GetCurrentHash();
 
         Assert.IsTrue(digest.All(b => b == 0), $"Expected all-zero digest, was {Convert.ToHexString(digest)}.");
     }

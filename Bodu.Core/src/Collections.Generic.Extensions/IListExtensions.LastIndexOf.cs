@@ -136,8 +136,8 @@ public static partial class IListExtensions
     /// <returns>The zero-based index of the last matching element; otherwise, <c>-1</c>.</returns>
     private static int LastIndexOfCore<TSource>(IList<TSource> list, Func<TSource, bool> predicate, int startIndex, int count)
     {
-        var end = startIndex - count;
-        for (var i = startIndex; i > end; i--)
+        int end = startIndex - count;
+        for (int i = startIndex; i > end; i--)
         {
             if (predicate(list[i]))
                 return i;

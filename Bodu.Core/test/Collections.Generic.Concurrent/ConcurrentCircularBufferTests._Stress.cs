@@ -39,26 +39,26 @@ public partial class ConcurrentCircularBufferTests
         using var cts = new CancellationTokenSource();
         using var startGate = new ManualResetEventSlim(false);
 
-        var generation = 0;
-        var futureValueViolations = 0;
-        var unexpectedFaults = 0;
-        var reads = 0;
-        var writeAttempts = 0;
-        var dequeueAttempts = 0;
+        int generation = 0;
+        int futureValueViolations = 0;
+        int unexpectedFaults = 0;
+        int reads = 0;
+        int writeAttempts = 0;
+        int dequeueAttempts = 0;
 
         Exception? unexpectedException = null;
 
         // Seed the buffer before contention begins. This gives the indexer a populated starting
         // window and avoids the test degenerating into an immediate empty-buffer race.
-        for (var i = 0; i < capacity; i++)
+        for (int i = 0; i < capacity; i++)
         {
-            var gen = Interlocked.Increment(ref generation);
+            int gen = Interlocked.Increment(ref generation);
             Assert.IsTrue(buffer.TryEnqueue(new TestItem(gen)));
         }
 
-        var writerThreads = Math.Max(2, Environment.ProcessorCount / 2);
-        var readerThreads = 2;
-        var consumerThreads = 1;
+        int writerThreads = Math.Max(2, Environment.ProcessorCount / 2);
+        int readerThreads = 2;
+        int consumerThreads = 1;
 
         // Producers continuously publish new generations. With overwrite enabled, this keeps the
         // buffer changing even if consumers are unable to keep up.
@@ -71,7 +71,7 @@ public partial class ConcurrentCircularBufferTests
                 {
                     try
                     {
-                        var gen = Interlocked.Increment(ref generation);
+                        int gen = Interlocked.Increment(ref generation);
                         buffer.TryEnqueue(new TestItem(gen));
                         Interlocked.Increment(ref writeAttempts);
                     }
@@ -124,9 +124,9 @@ public partial class ConcurrentCircularBufferTests
 
                 while (!cts.Token.IsCancellationRequested)
                 {
-                    var count = buffer.Count;
+                    int count = buffer.Count;
 
-                    for (var i = 0; i < count; i++)
+                    for (int i = 0; i < count; i++)
                     {
                         try
                         {
@@ -135,7 +135,7 @@ public partial class ConcurrentCircularBufferTests
                             // Sample generation after the indexer returns. Sampling before the
                             // call would incorrectly classify legitimate concurrent writes as
                             // future-value violations.
-                            var latest = Volatile.Read(ref generation);
+                            int latest = Volatile.Read(ref generation);
 
                             if (item is not null && item.Value > latest)
                             {
@@ -174,7 +174,7 @@ public partial class ConcurrentCircularBufferTests
         // producer/consumer/read sequence.
         startGate.Set();
 
-        var completedBeforeTimeout = SpinWait.SpinUntil(
+        bool completedBeforeTimeout = SpinWait.SpinUntil(
             () =>
                 Volatile.Read(ref reads) >= targetSuccessfulReads ||
                 Volatile.Read(ref unexpectedFaults) > 0 ||
@@ -183,7 +183,7 @@ public partial class ConcurrentCircularBufferTests
 
         cts.Cancel();
 
-        var completed = Task.WaitAll(allTasks, deadlockTimeoutMs);
+        bool completed = Task.WaitAll(allTasks, deadlockTimeoutMs);
 
         TestContext.WriteLine(
             $"Reads={reads}, WriteAttempts={writeAttempts}, DequeueAttempts={dequeueAttempts}, " +
@@ -253,17 +253,17 @@ public partial class ConcurrentCircularBufferTests
         using var cts = new CancellationTokenSource();
         using var startGate = new ManualResetEventSlim(false);
 
-        var faults = 0;
-        var countViolations = 0;
-        var capacityViolations = 0;
-        var writeAttempts = 0;
-        var readAttempts = 0;
-        var toggleOperations = 0;
-        var inspectionAttempts = 0;
+        int faults = 0;
+        int countViolations = 0;
+        int capacityViolations = 0;
+        int writeAttempts = 0;
+        int readAttempts = 0;
+        int toggleOperations = 0;
+        int inspectionAttempts = 0;
 
         Exception? firstException = null;
 
-        var workerCount = Math.Max(4, Environment.ProcessorCount * 2);
+        int workerCount = Math.Max(4, Environment.ProcessorCount * 2);
 
         Task StartWorker(Action action) =>
             Task.Factory.StartNew(
@@ -273,7 +273,7 @@ public partial class ConcurrentCircularBufferTests
                 TaskScheduler.Default);
 
         // Seed the buffer so inspectors observe both populated and drained states as workers churn.
-        for (var i = 0; i < capacity / 2; i++)
+        for (int i = 0; i < capacity / 2; i++)
             buffer.Enqueue(new TestItem(i));
 
         IEnumerable<Task> writers = Enumerable.Range(0, workerCount / 2).Select(workerIndex =>
@@ -281,7 +281,7 @@ public partial class ConcurrentCircularBufferTests
             {
                 startGate.Wait();
 
-                var value = workerIndex * 1_000_000;
+                int value = workerIndex * 1_000_000;
 
                 while (!cts.Token.IsCancellationRequested)
                 {
@@ -329,7 +329,7 @@ public partial class ConcurrentCircularBufferTests
             {
                 startGate.Wait();
 
-                var value = 0;
+                int value = 0;
 
                 while (!cts.Token.IsCancellationRequested)
                 {
@@ -358,8 +358,8 @@ public partial class ConcurrentCircularBufferTests
                 {
                     try
                     {
-                        var count = buffer.Count;
-                        var observedCapacity = buffer.Capacity;
+                        int count = buffer.Count;
+                        int observedCapacity = buffer.Capacity;
                         _ = buffer.AllowOverwrite;
 
                         if (count < 0 || count > observedCapacity)
@@ -389,9 +389,9 @@ public partial class ConcurrentCircularBufferTests
         Thread.Sleep(durationMs);
         cts.Cancel();
 
-        var completed = Task.WaitAll(allTasks, deadlockTimeoutMs);
+        bool completed = Task.WaitAll(allTasks, deadlockTimeoutMs);
 
-        var finalCount = buffer.Count;
+        int finalCount = buffer.Count;
         TestItem[] snapshot = buffer.ToArray();
 
         TestContext.WriteLine(
@@ -461,19 +461,19 @@ public partial class ConcurrentCircularBufferTests
         using var cts = new CancellationTokenSource();
         using var startGate = new ManualResetEventSlim(false);
 
-        var sequence = 0;
-        var dequeueAttempts = 0;
-        var dequeueSuccesses = 0;
-        var enqueueAttempts = 0;
-        var enqueueSuccesses = 0;
-        var inspectionAttempts = 0;
-        var faults = 0;
+        int sequence = 0;
+        int dequeueAttempts = 0;
+        int dequeueSuccesses = 0;
+        int enqueueAttempts = 0;
+        int enqueueSuccesses = 0;
+        int inspectionAttempts = 0;
+        int faults = 0;
 
         Exception? firstException = null;
 
         // Keep the role count high enough to create contention, but run each worker as a dedicated
         // long-running task so writer hot loops cannot starve readers or inspectors on the thread pool.
-        var workersPerRole = Math.Max(2, Environment.ProcessorCount);
+        int workersPerRole = Math.Max(2, Environment.ProcessorCount);
         const int durationMs = 2_000;
         const int deadlockTimeoutMs = durationMs + 5_000;
 
@@ -527,7 +527,7 @@ public partial class ConcurrentCircularBufferTests
                         {
                             Interlocked.Increment(ref enqueueAttempts);
 
-                            var value = Interlocked.Increment(ref sequence);
+                            int value = Interlocked.Increment(ref sequence);
                             TestItem item = value % 2 == 0
                                 ? new TestItem(value)
                                 : new TestItem(-value);
@@ -583,7 +583,7 @@ public partial class ConcurrentCircularBufferTests
             Thread.Sleep(durationMs);
             cts.Cancel();
 
-            var completed = Task.WaitAll(allTasks, deadlockTimeoutMs);
+            bool completed = Task.WaitAll(allTasks, deadlockTimeoutMs);
 
             TestContext.WriteLine(
                 $"Count={buffer.Count}, Capacity={buffer.Capacity}, WorkersPerRole={workersPerRole}, " +
@@ -677,20 +677,20 @@ public partial class ConcurrentCircularBufferTests
         using var firstToggleObserved = new ManualResetEventSlim(false);
         using var workersReady = new CountdownEvent(workerCount);
 
-        var unexpectedFaults = 0;
-        var expectedEnqueueFaults = 0;
-        var enqueueSuccesses = 0;
-        var enqueueAttempts = 0;
-        var readAttempts = 0;
-        var toggleOperations = 0;
+        int unexpectedFaults = 0;
+        int expectedEnqueueFaults = 0;
+        int enqueueSuccesses = 0;
+        int enqueueAttempts = 0;
+        int readAttempts = 0;
+        int toggleOperations = 0;
 
-        var warmupExpectedEnqueueFaults = 0;
-        var warmupEnqueueSuccesses = 0;
+        int warmupExpectedEnqueueFaults = 0;
+        int warmupEnqueueSuccesses = 0;
 
         Exception? firstUnexpectedException = null;
 
         // Start from a full buffer to maximise rejection pressure when AllowOverwrite is false.
-        for (var i = 0; i < capacity; i++)
+        for (int i = 0; i < capacity; i++)
             buffer.Enqueue(new TestItem(i));
 
         // Deterministic warmup proves both throwing Enqueue branches are reachable without
@@ -728,7 +728,7 @@ public partial class ConcurrentCircularBufferTests
                 workersReady.Signal();
                 startGate.Wait();
 
-                var value = 0;
+                int value = 0;
 
                 while (!cts.Token.IsCancellationRequested)
                 {
@@ -791,7 +791,7 @@ public partial class ConcurrentCircularBufferTests
                 workersReady.Signal();
                 startGate.Wait();
 
-                var value = 0;
+                int value = 0;
 
                 while (Volatile.Read(ref unexpectedFaults) == 0 &&
                        (!cts.Token.IsCancellationRequested ||
@@ -801,7 +801,7 @@ public partial class ConcurrentCircularBufferTests
                     {
                         buffer.AllowOverwrite = ++value % 2 == 0;
 
-                        var operations = Interlocked.Increment(ref toggleOperations);
+                        int operations = Interlocked.Increment(ref toggleOperations);
                         if (operations == 1)
                             firstToggleObserved.Set();
                     }
@@ -822,7 +822,7 @@ public partial class ConcurrentCircularBufferTests
         // Do not open the gate until every long-running worker is scheduled on a thread and
         // parked at the gate. This guarantees that the stress window is dominated by concurrent
         // work rather than by thread-pool startup latency on a busy CI runner.
-        var workersStarted = workersReady.Wait(startupTimeoutMs);
+        bool workersStarted = workersReady.Wait(startupTimeoutMs);
 
         // Release writers, readers, and togglers together so the throwing Enqueue path races
         // with AllowOverwrite transitions and capacity changes.
@@ -831,14 +831,14 @@ public partial class ConcurrentCircularBufferTests
         // Do not start the timed stress window until at least one toggle has actually occurred.
         // This keeps the test focused on concurrent AllowOverwrite transitions rather than on
         // whether the toggler tasks happened to receive a timeslice before cancellation.
-        var togglersStarted = workersStarted && firstToggleObserved.Wait(participationTimeoutMs);
+        bool togglersStarted = workersStarted && firstToggleObserved.Wait(participationTimeoutMs);
 
         if (togglersStarted)
             Thread.Sleep(durationMs);
 
         cts.Cancel();
 
-        var completed = Task.WaitAll(allTasks, deadlockTimeoutMs);
+        bool completed = Task.WaitAll(allTasks, deadlockTimeoutMs);
 
         TestContext.WriteLine(
             $"Count={buffer.Count}, Capacity={buffer.Capacity}, EnqueueAttempts={enqueueAttempts}, " +
@@ -917,16 +917,16 @@ public partial class ConcurrentCircularBufferTests
         using var cts = new CancellationTokenSource();
         using var startGate = new ManualResetEventSlim(false);
 
-        var faults = 0;
-        var countViolations = 0;
-        var writeAttempts = 0;
-        var readAttempts = 0;
+        int faults = 0;
+        int countViolations = 0;
+        int writeAttempts = 0;
+        int readAttempts = 0;
 
         Exception? firstException = null;
 
         // Use many workers, but have each worker exercise both mutating paths so the test cannot
         // pass through writer-only scheduler dominance while never reaching TryDequeue.
-        var workerCount = Math.Max(4, Environment.ProcessorCount * 2);
+        int workerCount = Math.Max(4, Environment.ProcessorCount * 2);
         const int durationMs = 2_000;
         const int deadlockTimeoutMs = durationMs + 5_000;
 
@@ -942,7 +942,7 @@ public partial class ConcurrentCircularBufferTests
             {
                 startGate.Wait();
 
-                var value = workerIndex * 1_000_000;
+                int value = workerIndex * 1_000_000;
 
                 while (!cts.Token.IsCancellationRequested)
                 {
@@ -951,14 +951,14 @@ public partial class ConcurrentCircularBufferTests
                         buffer.TryEnqueue(new TestItem(++value));
                         Interlocked.Increment(ref writeAttempts);
 
-                        var countAfterWrite = buffer.Count;
+                        int countAfterWrite = buffer.Count;
                         if (countAfterWrite is < 0 or > MinCapacity)
                             Interlocked.Increment(ref countViolations);
 
                         buffer.TryDequeue(out TestItem? _);
                         Interlocked.Increment(ref readAttempts);
 
-                        var countAfterRead = buffer.Count;
+                        int countAfterRead = buffer.Count;
                         if (countAfterRead is < 0 or > MinCapacity)
                             Interlocked.Increment(ref countViolations);
                     }
@@ -983,7 +983,7 @@ public partial class ConcurrentCircularBufferTests
         Thread.Sleep(durationMs);
         cts.Cancel();
 
-        var completed = Task.WaitAll(allTasks, deadlockTimeoutMs);
+        bool completed = Task.WaitAll(allTasks, deadlockTimeoutMs);
 
         TestContext.WriteLine(
             $"Count={buffer.Count}, Capacity={buffer.Capacity}, WorkerCount={workerCount}, " +
@@ -1055,15 +1055,15 @@ public partial class ConcurrentCircularBufferTests
         using var cts = new CancellationTokenSource();
         using var startGate = new ManualResetEventSlim(false);
 
-        var countViolations = 0;
-        var faults = 0;
-        var writeAttempts = 0;
-        var readAttempts = 0;
-        var clearAttempts = 0;
+        int countViolations = 0;
+        int faults = 0;
+        int writeAttempts = 0;
+        int readAttempts = 0;
+        int clearAttempts = 0;
 
         Exception? firstException = null;
 
-        var workerCount = Math.Max(4, Environment.ProcessorCount * 2);
+        int workerCount = Math.Max(4, Environment.ProcessorCount * 2);
         const int durationMs = 2_000;
         const int deadlockTimeoutMs = durationMs + 5_000;
 
@@ -1079,8 +1079,8 @@ public partial class ConcurrentCircularBufferTests
             {
                 startGate.Wait();
 
-                var value = workerIndex * 1_000_000;
-                var iteration = 0;
+                int value = workerIndex * 1_000_000;
+                int iteration = 0;
 
                 while (!cts.Token.IsCancellationRequested)
                 {
@@ -1091,7 +1091,7 @@ public partial class ConcurrentCircularBufferTests
                         buffer.TryEnqueue(new TestItem(++value));
                         Interlocked.Increment(ref writeAttempts);
 
-                        var countAfterWrite = buffer.Count;
+                        int countAfterWrite = buffer.Count;
                         if (countAfterWrite < 0 || countAfterWrite > buffer.Capacity)
                             Interlocked.Increment(ref countViolations);
 
@@ -1099,7 +1099,7 @@ public partial class ConcurrentCircularBufferTests
                         buffer.TryDequeue(out TestItem? _);
                         Interlocked.Increment(ref readAttempts);
 
-                        var countAfterRead = buffer.Count;
+                        int countAfterRead = buffer.Count;
                         if (countAfterRead < 0 || countAfterRead > buffer.Capacity)
                             Interlocked.Increment(ref countViolations);
 
@@ -1111,7 +1111,7 @@ public partial class ConcurrentCircularBufferTests
                             buffer.Clear();
                             Interlocked.Increment(ref clearAttempts);
 
-                            var countAfterClear = buffer.Count;
+                            int countAfterClear = buffer.Count;
                             if (countAfterClear < 0 || countAfterClear > buffer.Capacity)
                                 Interlocked.Increment(ref countViolations);
                         }
@@ -1135,9 +1135,9 @@ public partial class ConcurrentCircularBufferTests
         Thread.Sleep(durationMs);
         cts.Cancel();
 
-        var completed = Task.WaitAll(allTasks, deadlockTimeoutMs);
+        bool completed = Task.WaitAll(allTasks, deadlockTimeoutMs);
 
-        var finalCount = buffer.Count;
+        int finalCount = buffer.Count;
         TestItem[] snapshot = buffer.ToArray();
 
         TestContext.WriteLine(
@@ -1218,16 +1218,16 @@ public partial class ConcurrentCircularBufferTests
         using var cts = new CancellationTokenSource();
         using var startGate = new ManualResetEventSlim(false);
 
-        var faults = 0;
-        var writeAttempts = 0;
-        var readAttempts = 0;
-        var enumerationAttempts = 0;
-        var enumerationLengthViolations = 0;
-        var maxEnumeratedLength = 0;
+        int faults = 0;
+        int writeAttempts = 0;
+        int readAttempts = 0;
+        int enumerationAttempts = 0;
+        int enumerationLengthViolations = 0;
+        int maxEnumeratedLength = 0;
 
         Exception? firstException = null;
 
-        var workerCount = Math.Max(4, Environment.ProcessorCount * 2);
+        int workerCount = Math.Max(4, Environment.ProcessorCount * 2);
 
         Task StartWorker(Action action) =>
             Task.Factory.StartNew(
@@ -1237,7 +1237,7 @@ public partial class ConcurrentCircularBufferTests
                 TaskScheduler.Default);
 
         // Seed the buffer so early enumerations see a non-empty snapshot.
-        for (var i = 0; i < capacity / 2; i++)
+        for (int i = 0; i < capacity / 2; i++)
             buffer.Enqueue(new TestItem(i));
 
         IEnumerable<Task> workers = Enumerable.Range(0, workerCount).Select(workerIndex =>
@@ -1245,8 +1245,8 @@ public partial class ConcurrentCircularBufferTests
             {
                 startGate.Wait();
 
-                var value = workerIndex * 1_000_000;
-                var iteration = 0;
+                int value = workerIndex * 1_000_000;
+                int iteration = 0;
 
                 while (!cts.Token.IsCancellationRequested)
                 {
@@ -1268,7 +1268,7 @@ public partial class ConcurrentCircularBufferTests
                         // are allowed for TestItem because the buffer is reference-type constrained and
                         // snapshot fallback paths may use default(T); the invariant here is safety and
                         // bounded snapshot size.
-                        var enumerated = 0;
+                        int enumerated = 0;
                         foreach (TestItem? item in buffer)
                         {
                             _ = item;
@@ -1284,7 +1284,7 @@ public partial class ConcurrentCircularBufferTests
 
                         Interlocked.Increment(ref enumerationAttempts);
 
-                        var observedMax = Volatile.Read(ref maxEnumeratedLength);
+                        int observedMax = Volatile.Read(ref maxEnumeratedLength);
                         while (enumerated > observedMax &&
                                Interlocked.CompareExchange(ref maxEnumeratedLength, enumerated, observedMax) != observedMax)
                         {
@@ -1310,7 +1310,7 @@ public partial class ConcurrentCircularBufferTests
         Thread.Sleep(durationMs);
         cts.Cancel();
 
-        var completed = Task.WaitAll(allTasks, deadlockTimeoutMs);
+        bool completed = Task.WaitAll(allTasks, deadlockTimeoutMs);
 
         TestContext.WriteLine(
             $"AllowOverwrite={allowOverwrite}, Count={buffer.Count}, Capacity={buffer.Capacity}, WorkerCount={workerCount}, " +
@@ -1387,16 +1387,16 @@ public partial class ConcurrentCircularBufferTests
         using var workersReady = new CountdownEvent(workerCount);
         using var subscribersExercised = new CountdownEvent(subscriberCount);
 
-        var faults = 0;
-        var stableHandlerEvictions = 0;
-        var transientHandlerEvictions = 0;
-        var subscribeOperations = 0;
-        var unsubscribeOperations = 0;
-        var writeAttempts = 0;
+        int faults = 0;
+        int stableHandlerEvictions = 0;
+        int transientHandlerEvictions = 0;
+        int subscribeOperations = 0;
+        int unsubscribeOperations = 0;
+        int writeAttempts = 0;
 
         Exception? firstException = null;
 
-        for (var i = 0; i < capacity; i++)
+        for (int i = 0; i < capacity; i++)
         {
             buffer.Enqueue(new TestItem(i));
         }
@@ -1421,7 +1421,7 @@ public partial class ConcurrentCircularBufferTests
                     workersReady.Signal();
                     startGate.Wait();
 
-                    var value = 0;
+                    int value = 0;
 
                     while (!cts.Token.IsCancellationRequested)
                     {
@@ -1448,12 +1448,12 @@ public partial class ConcurrentCircularBufferTests
                     workersReady.Signal();
                     startGate.Wait();
 
-                    var signaledFirstSubscribe = false;
+                    bool signaledFirstSubscribe = false;
                     Action<TestItem?> transientHandler = _ => Interlocked.Increment(ref transientHandlerEvictions);
 
                     while (!cts.Token.IsCancellationRequested)
                     {
-                        var subscribed = false;
+                        bool subscribed = false;
 
                         try
                         {
@@ -1501,7 +1501,7 @@ public partial class ConcurrentCircularBufferTests
 
             Task[] allTasks = writers.Concat(subscribers).ToArray();
 
-            var allWorkersReachedStartGate = workersReady.Wait(startupTimeoutMs);
+            bool allWorkersReachedStartGate = workersReady.Wait(startupTimeoutMs);
 
             if (!allWorkersReachedStartGate)
             {
@@ -1516,7 +1516,7 @@ public partial class ConcurrentCircularBufferTests
 
             startGate.Set();
 
-            var allSubscribersStarted = subscribersExercised.Wait(startupTimeoutMs);
+            bool allSubscribersStarted = subscribersExercised.Wait(startupTimeoutMs);
 
             if (!allSubscribersStarted)
             {
@@ -1532,7 +1532,7 @@ public partial class ConcurrentCircularBufferTests
             Thread.Sleep(durationMs);
             cts.Cancel();
 
-            var completed = Task.WaitAll(allTasks, deadlockTimeoutMs);
+            bool completed = Task.WaitAll(allTasks, deadlockTimeoutMs);
 
             TestContext.WriteLine(
                 $"Count={buffer.Count}, Capacity={buffer.Capacity}, WriteAttempts={writeAttempts}, " +
@@ -1606,17 +1606,17 @@ public partial class ConcurrentCircularBufferTests
         using var cts = new CancellationTokenSource();
         using var startGate = new ManualResetEventSlim(false);
 
-        var faults = 0;
-        var writeAttempts = 0;
-        var readAttempts = 0;
-        var inspectionAttempts = 0;
+        int faults = 0;
+        int writeAttempts = 0;
+        int readAttempts = 0;
+        int inspectionAttempts = 0;
 
         Exception? firstException = null;
 
         // Use a high number of workers. Each worker performs all operation categories so the test
         // cannot pass through writer-only scheduler dominance while never reaching reader or
         // inspector paths.
-        var workerCount = Math.Max(8, Environment.ProcessorCount * 4);
+        int workerCount = Math.Max(8, Environment.ProcessorCount * 4);
 
         Task StartWorker(Action action) =>
             Task.Factory.StartNew(
@@ -1630,7 +1630,7 @@ public partial class ConcurrentCircularBufferTests
             {
                 startGate.Wait();
 
-                var value = workerIndex * 1_000_000;
+                int value = workerIndex * 1_000_000;
 
                 while (!cts.Token.IsCancellationRequested)
                 {
@@ -1678,7 +1678,7 @@ public partial class ConcurrentCircularBufferTests
 
         // A false result means at least one worker did not leave its loop after cancellation,
         // consistent with a deadlock, blocked internal operation, or non-terminating retry path.
-        var completed = Task.WaitAll(allTasks, deadlockTimeoutMs);
+        bool completed = Task.WaitAll(allTasks, deadlockTimeoutMs);
 
         TestContext.WriteLine(
             $"Count={buffer.Count}, Capacity={buffer.Capacity}, WorkerCount={workerCount}, " +
@@ -1743,25 +1743,25 @@ public partial class ConcurrentCircularBufferTests
         using var cts = new CancellationTokenSource();
         using var startGate = new ManualResetEventSlim(false);
 
-        var unexpectedFaults = 0;
-        var expectedInvalidOperationFaults = 0;
-        var countViolations = 0;
-        var snapshotLengthViolations = 0;
+        int unexpectedFaults = 0;
+        int expectedInvalidOperationFaults = 0;
+        int countViolations = 0;
+        int snapshotLengthViolations = 0;
 
-        var tryEnqueueAttempts = 0;
-        var enqueueAttempts = 0;
-        var tryDequeueAttempts = 0;
-        var dequeueAttempts = 0;
-        var tryPeekAttempts = 0;
-        var containsAttempts = 0;
-        var toArrayAttempts = 0;
-        var copyToAttempts = 0;
-        var clearAttempts = 0;
-        var inspectionAttempts = 0;
+        int tryEnqueueAttempts = 0;
+        int enqueueAttempts = 0;
+        int tryDequeueAttempts = 0;
+        int dequeueAttempts = 0;
+        int tryPeekAttempts = 0;
+        int containsAttempts = 0;
+        int toArrayAttempts = 0;
+        int copyToAttempts = 0;
+        int clearAttempts = 0;
+        int inspectionAttempts = 0;
 
         Exception? firstUnexpectedException = null;
 
-        var workerCount = Math.Max(4, Environment.ProcessorCount * 2);
+        int workerCount = Math.Max(4, Environment.ProcessorCount * 2);
 
         Task StartWorker(Action action) =>
             Task.Factory.StartNew(
@@ -1772,7 +1772,7 @@ public partial class ConcurrentCircularBufferTests
 
         // Seed the buffer so the mixed workload starts from a meaningful state rather than an
         // entirely empty buffer.
-        for (var i = 0; i < capacity / 2; i++)
+        for (int i = 0; i < capacity / 2; i++)
             buffer.Enqueue(new TestItem(i));
 
         IEnumerable<Task> workers = Enumerable.Range(0, workerCount).Select(workerIndex =>
@@ -1780,8 +1780,8 @@ public partial class ConcurrentCircularBufferTests
             {
                 startGate.Wait();
 
-                var value = workerIndex * 1_000_000;
-                var operation = workerIndex;
+                int value = workerIndex * 1_000_000;
+                int operation = workerIndex;
 
                 while (!cts.Token.IsCancellationRequested)
                 {
@@ -1871,7 +1871,7 @@ public partial class ConcurrentCircularBufferTests
 
                             default:
                                 // Basic read-side inspection paths.
-                                var count = buffer.Count;
+                                int count = buffer.Count;
                                 _ = buffer.Capacity;
                                 Interlocked.Increment(ref inspectionAttempts);
 
@@ -1909,7 +1909,7 @@ public partial class ConcurrentCircularBufferTests
         Thread.Sleep(durationMs);
         cts.Cancel();
 
-        var completed = Task.WaitAll(allTasks, deadlockTimeoutMs);
+        bool completed = Task.WaitAll(allTasks, deadlockTimeoutMs);
 
         TestContext.WriteLine(
             $"AllowOverwrite={allowOverwrite}, Count={buffer.Count}, Capacity={buffer.Capacity}, WorkerCount={workerCount}, " +
@@ -1986,16 +1986,16 @@ public partial class ConcurrentCircularBufferTests
         using var cts = new CancellationTokenSource();
         using var startGate = new ManualResetEventSlim(false);
 
-        var faults = 0;
-        var snapshotLengthViolations = 0;
-        var writeAttempts = 0;
-        var readAttempts = 0;
-        var snapshotAttempts = 0;
-        var copyAttempts = 0;
+        int faults = 0;
+        int snapshotLengthViolations = 0;
+        int writeAttempts = 0;
+        int readAttempts = 0;
+        int snapshotAttempts = 0;
+        int copyAttempts = 0;
 
         Exception? firstException = null;
 
-        var workerCount = Math.Max(4, Environment.ProcessorCount * 2);
+        int workerCount = Math.Max(4, Environment.ProcessorCount * 2);
 
         Task StartWorker(Action action) =>
             Task.Factory.StartNew(
@@ -2005,7 +2005,7 @@ public partial class ConcurrentCircularBufferTests
                 TaskScheduler.Default);
 
         // Seed the buffer so snapshot and copy operations immediately encounter a non-trivial state.
-        for (var i = 0; i < capacity / 2; i++)
+        for (int i = 0; i < capacity / 2; i++)
             buffer.Enqueue(new TestItem(i));
 
         IEnumerable<Task> workers = Enumerable.Range(0, workerCount).Select(workerIndex =>
@@ -2013,7 +2013,7 @@ public partial class ConcurrentCircularBufferTests
             {
                 startGate.Wait();
 
-                var value = workerIndex * 1_000_000;
+                int value = workerIndex * 1_000_000;
 
                 while (!cts.Token.IsCancellationRequested)
                 {
@@ -2058,7 +2058,7 @@ public partial class ConcurrentCircularBufferTests
         Thread.Sleep(durationMs);
         cts.Cancel();
 
-        var completed = Task.WaitAll(allTasks, deadlockTimeoutMs);
+        bool completed = Task.WaitAll(allTasks, deadlockTimeoutMs);
 
         TestContext.WriteLine(
             $"Count={buffer.Count}, Capacity={buffer.Capacity}, WorkerCount={workerCount}, " +
@@ -2130,20 +2130,20 @@ public partial class ConcurrentCircularBufferTests
         using var cts = new CancellationTokenSource();
         using var startGate = new ManualResetEventSlim(false);
 
-        var unexpectedEnqueueFaults = 0;
-        var unexpectedDequeueFaults = 0;
-        var expectedEnqueueFaults = 0;
-        var expectedDequeueFaults = 0;
-        var enqueueAttempts = 0;
-        var dequeueAttempts = 0;
-        var enqueueSuccesses = 0;
-        var dequeueSuccesses = 0;
+        int unexpectedEnqueueFaults = 0;
+        int unexpectedDequeueFaults = 0;
+        int expectedEnqueueFaults = 0;
+        int expectedDequeueFaults = 0;
+        int enqueueAttempts = 0;
+        int dequeueAttempts = 0;
+        int enqueueSuccesses = 0;
+        int dequeueSuccesses = 0;
 
-        var warmupExpectedEnqueueFaults = 0;
+        int warmupExpectedEnqueueFaults = 0;
 
         Exception? firstUnexpectedException = null;
 
-        var workerCount = Math.Max(4, Environment.ProcessorCount * 2);
+        int workerCount = Math.Max(4, Environment.ProcessorCount * 2);
         const int durationMs = 2_000;
         const int deadlockTimeoutMs = durationMs + 5_000;
 
@@ -2158,7 +2158,7 @@ public partial class ConcurrentCircularBufferTests
         // without letting that observation satisfy the concurrent-phase counters.
         if (!allowOverwrite)
         {
-            for (var i = 0; i < capacity; i++)
+            for (int i = 0; i < capacity; i++)
                 buffer.Enqueue(new TestItem(-i - 1));
 
             try
@@ -2181,7 +2181,7 @@ public partial class ConcurrentCircularBufferTests
             {
                 startGate.Wait();
 
-                var value = workerIndex * 1_000_000;
+                int value = workerIndex * 1_000_000;
 
                 while (!cts.Token.IsCancellationRequested)
                 {
@@ -2238,7 +2238,7 @@ public partial class ConcurrentCircularBufferTests
         Thread.Sleep(durationMs);
         cts.Cancel();
 
-        var completed = Task.WaitAll(allTasks, deadlockTimeoutMs);
+        bool completed = Task.WaitAll(allTasks, deadlockTimeoutMs);
 
         TestContext.WriteLine(
             $"Count={buffer.Count}, Capacity={buffer.Capacity}, WorkerCount={workerCount}, " +
@@ -2338,34 +2338,34 @@ public partial class ConcurrentCircularBufferTests
         using var cts = new CancellationTokenSource();
         using var startGate = new ManualResetEventSlim(false);
 
-        var generation = 0;
-        var monotonicityViolations = 0;
-        var windowViolations = 0;
-        var snapshotFaults = 0;
-        var mutationFaults = 0;
-        var snapshotsTaken = 0;
-        var snapshotsValidated = 0;
-        var writeAttempts = 0;
-        var readAttempts = 0;
+        int generation = 0;
+        int monotonicityViolations = 0;
+        int windowViolations = 0;
+        int snapshotFaults = 0;
+        int mutationFaults = 0;
+        int snapshotsTaken = 0;
+        int snapshotsValidated = 0;
+        int writeAttempts = 0;
+        int readAttempts = 0;
 
         Exception? unexpectedException = null;
 
         // Serialise successful generation publication with enqueue. This ensures generation
         // order matches insertion order and prevents failed TryEnqueue attempts from creating
         // artificial generation gaps in the allowOverwrite:false case.
-        var writerLock = new object();
+        object writerLock = new object();
 
         // Start from a full buffer so overwrite mode immediately exercises eviction and
         // non-overwrite mode begins from the pressure point where writers must wait for consumers.
-        for (var i = 0; i < capacity; i++)
+        for (int i = 0; i < capacity; i++)
         {
-            var gen = ++generation;
+            int gen = ++generation;
             Assert.IsTrue(buffer.TryEnqueue(new TestItem(gen)));
         }
 
-        var writerThreads = Math.Max(2, Environment.ProcessorCount / 2);
-        var readerThreads = 2;
-        var consumerThreads = 1;
+        int writerThreads = Math.Max(2, Environment.ProcessorCount / 2);
+        int readerThreads = 2;
+        int consumerThreads = 1;
 
         // Producers continuously attempt to publish the next generation. The generation is only
         // committed after TryEnqueue succeeds, so snapshots never contain gaps caused solely by
@@ -2379,11 +2379,11 @@ public partial class ConcurrentCircularBufferTests
                 {
                     try
                     {
-                        var enqueued = false;
+                        bool enqueued = false;
 
                         lock (writerLock)
                         {
-                            var next = generation + 1;
+                            int next = generation + 1;
 
                             if (buffer.TryEnqueue(new TestItem(next)))
                             {
@@ -2465,7 +2465,7 @@ public partial class ConcurrentCircularBufferTests
 
                     // Find the first non-null item. A snapshot containing only fallback/default
                     // entries does not provide a useful generation window to validate.
-                    var firstNonNull = 0;
+                    int firstNonNull = 0;
                     while (firstNonNull < snap.Length && snap[firstNonNull] is null)
                         firstNonNull++;
 
@@ -2473,20 +2473,20 @@ public partial class ConcurrentCircularBufferTests
                         continue;
 
                     TestItem first = snap[firstNonNull]!;
-                    var min = first.Value;
-                    var max = first.Value;
-                    var previous = first.Value;
-                    var nonNullCount = 1;
-                    var monotonic = true;
+                    int min = first.Value;
+                    int max = first.Value;
+                    int previous = first.Value;
+                    int nonNullCount = 1;
+                    bool monotonic = true;
 
-                    for (var i = firstNonNull + 1; i < snap.Length; i++)
+                    for (int i = firstNonNull + 1; i < snap.Length; i++)
                     {
                         TestItem? item = snap[i];
 
                         if (item is null)
                             continue;
 
-                        var value = item.Value;
+                        int value = item.Value;
 
                         if (value <= previous)
                             monotonic = false;
@@ -2528,7 +2528,7 @@ public partial class ConcurrentCircularBufferTests
         // Release all workers together so ToArray is tested under actual concurrent mutation.
         startGate.Set();
 
-        var reachedTargetOrFault = SpinWait.SpinUntil(
+        bool reachedTargetOrFault = SpinWait.SpinUntil(
             () =>
                 Volatile.Read(ref snapshotsValidated) >= targetValidatedSnapshots ||
                 Volatile.Read(ref snapshotFaults) > 0 ||
@@ -2539,7 +2539,7 @@ public partial class ConcurrentCircularBufferTests
 
         cts.Cancel();
 
-        var completed = Task.WaitAll(allTasks, deadlockTimeoutMs);
+        bool completed = Task.WaitAll(allTasks, deadlockTimeoutMs);
 
         TestContext.WriteLine(
             $"AllowOverwrite={allowOverwrite}, SnapshotsTaken={snapshotsTaken}, SnapshotsValidated={snapshotsValidated}, " +
@@ -2625,28 +2625,28 @@ public partial class ConcurrentCircularBufferTests
         using var cts = new CancellationTokenSource();
         using var startGate = new ManualResetEventSlim(false);
 
-        var generation = 0;
-        var writeAttempts = 0;
-        var dequeueAttempts = 0;
-        var peekAttempts = 0;
-        var successfulPeeks = 0;
-        var emptyPeeks = 0;
-        var nullPeekViolations = 0;
-        var futureValueViolations = 0;
-        var unexpectedFaults = 0;
+        int generation = 0;
+        int writeAttempts = 0;
+        int dequeueAttempts = 0;
+        int peekAttempts = 0;
+        int successfulPeeks = 0;
+        int emptyPeeks = 0;
+        int nullPeekViolations = 0;
+        int futureValueViolations = 0;
+        int unexpectedFaults = 0;
 
         Exception? unexpectedException = null;
 
         // Seed the buffer before contention begins so TryPeek has an immediately meaningful state.
-        for (var i = 0; i < capacity; i++)
+        for (int i = 0; i < capacity; i++)
         {
-            var gen = Interlocked.Increment(ref generation);
+            int gen = Interlocked.Increment(ref generation);
             Assert.IsTrue(buffer.TryEnqueue(new TestItem(gen)));
         }
 
-        var writerThreads = Math.Max(2, Environment.ProcessorCount / 2);
-        var peekerThreads = 2;
-        var consumerThreads = 1;
+        int writerThreads = Math.Max(2, Environment.ProcessorCount / 2);
+        int peekerThreads = 2;
+        int consumerThreads = 1;
 
         IEnumerable<Task> writers = Enumerable.Range(0, writerThreads).Select(_ =>
             Task.Run(() =>
@@ -2657,7 +2657,7 @@ public partial class ConcurrentCircularBufferTests
                 {
                     try
                     {
-                        var gen = Interlocked.Increment(ref generation);
+                        int gen = Interlocked.Increment(ref generation);
                         buffer.TryEnqueue(new TestItem(gen));
                         Interlocked.Increment(ref writeAttempts);
                     }
@@ -2724,7 +2724,7 @@ public partial class ConcurrentCircularBufferTests
 
                             // Sample after TryPeek returns. Sampling before the call would classify
                             // legitimate concurrent writes as future values.
-                            var latest = Volatile.Read(ref generation);
+                            int latest = Volatile.Read(ref generation);
 
                             if (item.Value > latest)
                             {
@@ -2756,7 +2756,7 @@ public partial class ConcurrentCircularBufferTests
         // Release all workers together so TryPeek races with live enqueue, dequeue, and overwrite.
         startGate.Set();
 
-        var reachedTargetOrFault = SpinWait.SpinUntil(
+        bool reachedTargetOrFault = SpinWait.SpinUntil(
             () =>
                 Volatile.Read(ref successfulPeeks) >= targetSuccessfulPeeks ||
                 Volatile.Read(ref unexpectedFaults) > 0 ||
@@ -2766,7 +2766,7 @@ public partial class ConcurrentCircularBufferTests
 
         cts.Cancel();
 
-        var completed = Task.WaitAll(allTasks, deadlockTimeoutMs);
+        bool completed = Task.WaitAll(allTasks, deadlockTimeoutMs);
 
         TestContext.WriteLine(
             $"SuccessfulPeeks={successfulPeeks}, TargetSuccessfulPeeks={targetSuccessfulPeeks}, " +

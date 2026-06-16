@@ -19,7 +19,7 @@ public partial class DateOnlyExtensionsTests
     public void DaysInYear_WhenCalled_ShouldReturnCorrectDays(DateTime inputDateTime, int expected)
     {
         var input = DateOnly.FromDateTime(inputDateTime);
-        var actual = input.DaysInYear();
+        int actual = input.DaysInYear();
         Assert.AreEqual(expected, actual);
     }
 
@@ -38,8 +38,8 @@ public partial class DateOnlyExtensionsTests
             CultureInfo.CurrentCulture = customCulture;
 
             DateOnly input = new(1445, 1, 1); // 1445 AH (2023-07-19 Gregorian)
-            var expected = customCulture.DateTimeFormat.Calendar.GetDaysInYear(1445);
-            var actual = input.DaysInYear(); // Should use current culture calendar
+            int expected = customCulture.DateTimeFormat.Calendar.GetDaysInYear(1445);
+            int actual = input.DaysInYear(); // Should use current culture calendar
 
             Assert.AreEqual(expected, actual);
         }
@@ -57,7 +57,7 @@ public partial class DateOnlyExtensionsTests
     public void DaysInYear_WhenUsingCustomCalendar_ShouldMatchExpected(int year, Calendar calendar, int expectedDays)
     {
         var input = new DateOnly(year, 1, 1);
-        var actual = input.DaysInYear(calendar);
+        int actual = input.DaysInYear(calendar);
         Assert.AreEqual(expectedDays, actual, $"{calendar.GetType().Name} returned {actual} days for year {year}.");
     }
 

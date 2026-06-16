@@ -52,7 +52,7 @@ public partial class MultiValueDictionaryTests
     {
         var mvd = new MultiValueDictionary<string, int>();
         mvd.Add("k", 1);
-        var countBefore = mvd.Count;
+        int countBefore = mvd.Count;
 
         mvd.AddRange("k", []);
 
@@ -154,7 +154,7 @@ public partial class MultiValueDictionaryTests
     public void AddRange_WhenSequenceHasVaryingLength_ShouldAppendAllInOrder(int length)
     {
         var mvd = new MultiValueDictionary<string, int>();
-        var values = Enumerable.Range(0, length).ToArray();
+        int[] values = Enumerable.Range(0, length).ToArray();
 
         mvd.AddRange("k", values);
 
@@ -169,7 +169,7 @@ public partial class MultiValueDictionaryTests
     public void AddRange_WhenSourceIsDeferred_ShouldEnumerateSourceOnce()
     {
         var mvd = new MultiValueDictionary<string, int>();
-        var enumerationCount = 0;
+        int enumerationCount = 0;
 
         IEnumerable<int> Source()
         {

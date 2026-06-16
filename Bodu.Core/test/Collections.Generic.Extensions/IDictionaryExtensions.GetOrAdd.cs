@@ -18,7 +18,7 @@ public sealed partial class IDictionaryExtensionsTests_GetOrAdd
     {
         Dictionary<string, int> dictionary = new();
 
-        var result = dictionary.GetOrAdd("a", 1);
+        int result = dictionary.GetOrAdd("a", 1);
 
         Assert.AreEqual(1, result);
         Assert.AreEqual(1, dictionary["a"]);
@@ -32,7 +32,7 @@ public sealed partial class IDictionaryExtensionsTests_GetOrAdd
     {
         Dictionary<string, int> dictionary = new() { ["a"] = 1 };
 
-        var result = dictionary.GetOrAdd("a", 99);
+        int result = dictionary.GetOrAdd("a", 99);
 
         Assert.AreEqual(1, result);
         Assert.AreEqual(1, dictionary["a"]);
@@ -46,7 +46,7 @@ public sealed partial class IDictionaryExtensionsTests_GetOrAdd
     {
         Dictionary<string, int> dictionary = new();
 
-        var result = dictionary.GetOrAdd("key", k => k.Length);
+        int result = dictionary.GetOrAdd("key", k => k.Length);
 
         Assert.AreEqual(3, result);
         Assert.AreEqual(3, dictionary["key"]);
@@ -59,9 +59,9 @@ public sealed partial class IDictionaryExtensionsTests_GetOrAdd
     public void GetOrAdd_WhenKeyIsPresent_ForFactoryOverload_ShouldNotInvokeFactory()
     {
         Dictionary<string, int> dictionary = new() { ["a"] = 1 };
-        var invoked = false;
+        bool invoked = false;
 
-        var result = dictionary.GetOrAdd("a", _ =>
+        int result = dictionary.GetOrAdd("a", _ =>
         {
             invoked = true;
             return 99;

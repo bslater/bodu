@@ -260,10 +260,10 @@ public sealed partial class Tiger
     /// <inheritdoc />
     protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength)
     {
-        var inputLength = block.Length;
-        var blockBytes = BlockSize / 8;
-        var needsSecondBlock = inputLength >= blockBytes - 8;
-        var totalLength = needsSecondBlock ? blockBytes * 2 : blockBytes;
+        int inputLength = block.Length;
+        int blockBytes = BlockSize / 8;
+        bool needsSecondBlock = inputLength >= blockBytes - 8;
+        int totalLength = needsSecondBlock ? blockBytes * 2 : blockBytes;
 
         // Use stackalloc if small enough; fallback to heap if larger
         Span<byte> padded = totalLength <= 128
@@ -280,7 +280,7 @@ public sealed partial class Tiger
         padded.Slice(inputLength + 1, totalLength - inputLength - 1 - 8).Clear();
 
         // Append message length in bits in little-endian at end
-        var bitLength = messageLength * 8;
+        ulong bitLength = messageLength * 8;
         BinaryPrimitives.WriteUInt64LittleEndian(padded[(totalLength - 8)..], bitLength);
 
         return padded[..totalLength].ToArray();
@@ -366,7 +366,7 @@ public sealed partial class Tiger
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void Round(ref ulong a, ref ulong b, ref ulong c, ulong x, int mul)
     {
-        var tmp = c ^= x;
+        ulong tmp = c ^= x;
 
         a -=
             s_sBox0[(byte)(tmp >> 0)] ^

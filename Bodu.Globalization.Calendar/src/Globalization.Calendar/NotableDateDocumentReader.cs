@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateDocumentReader.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -110,7 +110,7 @@ internal static class NotableDateDocumentReader
     private static IReadOnlyDictionary<string, string>? ReadHandlerParameters(IDocumentNode policy)
     {
         Dictionary<string, string> parameters = new(StringComparer.Ordinal);
-        foreach ((var key, var value) in policy.KeyValueList("Parameters", "Param", "key", "value", "parameters"))
+        foreach ((string? key, string? value) in policy.KeyValueList("Parameters", "Param", "key", "value", "parameters"))
         {
             if (key.Length > 0)
                 parameters[key] = value;
@@ -153,7 +153,7 @@ internal static class NotableDateDocumentReader
 
         foreach (IDocumentNode notableDate in root.List("NotableDates", "NotableDate", "notableDates"))
         {
-            var id = notableDate.Scalar("id") ?? string.Empty;
+            string id = notableDate.Scalar("id") ?? string.Empty;
 
             definitions.Add(new NotableDateDefinition(
                 id,
@@ -194,7 +194,7 @@ internal static class NotableDateDocumentReader
     /// <returns>The parsed <see cref="NotableDateRule" />.</returns>
     private static NotableDateRule ReadRule(IDocumentNode node, string notableDateId, ICollection<NotableDateValidationDiagnostic> diagnostics)
     {
-        var id = node.Scalar("id") ?? string.Empty;
+        string id = node.Scalar("id") ?? string.Empty;
         RuleApplicability applicability = ReadApplicability(node.Child("applicability"));
 
         return new NotableDateRule(
@@ -246,7 +246,7 @@ internal static class NotableDateDocumentReader
 
         if (node.Child("fixed") is IDocumentNode fixedStrategy)
         {
-            (var month, var monthAlias) = ParseFixedMonth(fixedStrategy.Scalar("month"), calendar, notableDateId, ruleId, diagnostics);
+            (int month, string? monthAlias) = ParseFixedMonth(fixedStrategy.Scalar("month"), calendar, notableDateId, ruleId, diagnostics);
             return new FixedDateStrategy(
                 month,
                 Math.Clamp(ParseInt(fixedStrategy.Scalar("day"), 1), 1, 31),
@@ -285,7 +285,7 @@ internal static class NotableDateDocumentReader
 
         if (node.Child("offsetFromRule") is IDocumentNode offsetFromRule)
         {
-            var ruleRef = offsetFromRule.Scalar("ruleRef");
+            string? ruleRef = offsetFromRule.Scalar("ruleRef");
             return new OffsetFromRuleStrategy(
                 offsetFromRule.Scalar("notableDateRef") ?? string.Empty,
                 string.IsNullOrEmpty(ruleRef) ? null : ruleRef,
@@ -310,7 +310,7 @@ internal static class NotableDateDocumentReader
 
         foreach (IDocumentNode operation in root.List("Overrides", null, "overrides"))
         {
-            var notableDateRef = operation.Scalar("notableDateRef") ?? string.Empty;
+            string notableDateRef = operation.Scalar("notableDateRef") ?? string.Empty;
 
             switch (operation.Discriminator("operation"))
             {
@@ -343,7 +343,7 @@ internal static class NotableDateDocumentReader
     /// <returns>The parsed <see cref="PatchRuleOverride" />.</returns>
     private static PatchRuleOverride ReadPatchRule(IDocumentNode operation, string notableDateRef, ICollection<NotableDateValidationDiagnostic> diagnostics)
     {
-        var ruleRef = operation.Scalar("ruleRef") ?? string.Empty;
+        string ruleRef = operation.Scalar("ruleRef") ?? string.Empty;
 
         IDocumentNode? applicabilityNode = operation.Child("applicability");
         IDocumentNode? strategyNode = operation.Child("strategy");

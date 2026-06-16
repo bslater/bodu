@@ -42,9 +42,9 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void EnsureTrailingNewLine_WhenAlreadyTerminated_ShouldReturnSameInstance()
     {
-        var value = "hello\n";
+        string value = "hello\n";
 
-        var actual = value.EnsureTrailingNewLine();
+        string actual = value.EnsureTrailingNewLine();
 
         Assert.AreSame(value, actual);
     }

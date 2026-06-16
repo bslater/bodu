@@ -25,7 +25,7 @@ public partial class WeekPatternTests
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void TryParse_WhenInputIsValid_ShouldReturnTrueAndSetExpectedValue(WeekPatternParseKat kat)
     {
-        var success = WeekPattern.TryParse(kat.Input, out WeekPattern actual);
+        bool success = WeekPattern.TryParse(kat.Input, out WeekPattern actual);
 
         Assert.IsTrue(success);
         Assert.AreEqual(kat.Expected, (byte)actual);
@@ -45,7 +45,7 @@ public partial class WeekPatternTests
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void TryParse_WhenInputIsInvalid_ShouldReturnFalseAndSetEmpty(InvalidWeekPatternParseKat kat)
     {
-        var success = WeekPattern.TryParse(kat.Input, out WeekPattern actual);
+        bool success = WeekPattern.TryParse(kat.Input, out WeekPattern actual);
 
         Assert.IsFalse(success);
         Assert.AreEqual(WeekPattern.Empty, actual);
@@ -58,7 +58,7 @@ public partial class WeekPatternTests
     [TestMethod]
     public void TryParse_WhenInputContainsInvalidCharacter_ShouldReturnFalseAndSetEmpty()
     {
-        var success = WeekPattern.TryParse("SMTWTFX", out WeekPattern result);
+        bool success = WeekPattern.TryParse("SMTWTFX", out WeekPattern result);
 
         Assert.IsFalse(success);
         Assert.AreEqual(WeekPattern.Empty, result);
@@ -71,7 +71,7 @@ public partial class WeekPatternTests
     [TestMethod]
     public void TryParse_WhenInputHasInvalidLength_ShouldReturnFalseAndSetEmpty()
     {
-        var success = WeekPattern.TryParse("SMTWTF", out WeekPattern result);
+        bool success = WeekPattern.TryParse("SMTWTF", out WeekPattern result);
 
         Assert.IsFalse(success);
         Assert.AreEqual(WeekPattern.Empty, result);
@@ -84,7 +84,7 @@ public partial class WeekPatternTests
     [TestMethod]
     public void TryParse_WhenInputIsBinary_ShouldReturnTrueAndSetCorrectDays()
     {
-        var success = WeekPattern.TryParse("0111110", out WeekPattern result);
+        bool success = WeekPattern.TryParse("0111110", out WeekPattern result);
 
         Assert.IsTrue(success);
         Assert.IsFalse(result.Contains(DayOfWeek.Sunday));
@@ -100,7 +100,7 @@ public partial class WeekPatternTests
     [TestMethod]
     public void TryParse_WhenInputIsNull_ShouldReturnFalseAndSetEmpty()
     {
-        var success = WeekPattern.TryParse(null, out WeekPattern result);
+        bool success = WeekPattern.TryParse(null, out WeekPattern result);
 
         Assert.IsFalse(success);
         Assert.AreEqual(WeekPattern.Empty, result);
@@ -113,7 +113,7 @@ public partial class WeekPatternTests
     [TestMethod]
     public void TryParse_WhenInputIsValidSundayFirst_ShouldReturnTrueAndSetCorrectDays()
     {
-        var success = WeekPattern.TryParse("_M_W_F_", out WeekPattern result);
+        bool success = WeekPattern.TryParse("_M_W_F_", out WeekPattern result);
 
         Assert.IsTrue(success);
         Assert.IsTrue(result.Contains(DayOfWeek.Monday));
@@ -129,7 +129,7 @@ public partial class WeekPatternTests
     [TestMethod]
     public void TryParse_WhenInputRepresentsNoDaysSelected_ShouldReturnTrueAndSetEmpty()
     {
-        var success = WeekPattern.TryParse("_______", out WeekPattern result);
+        bool success = WeekPattern.TryParse("_______", out WeekPattern result);
 
         Assert.IsTrue(success);
         Assert.AreEqual(0, result.Count);

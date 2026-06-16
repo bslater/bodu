@@ -19,8 +19,8 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     {
         TCollection collection = CreateCollection(3);
 
-        var count = 0;
-        foreach (var _ in collection)
+        int count = 0;
+        foreach (int _ in collection)
             count++;
 
         Assert.AreEqual(0, count);
@@ -38,9 +38,9 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
         AddToTail(collection, 20);
         AddToTail(collection, 30);
 
-        var copyResult = new int[GetCount(collection)];
+        int[] copyResult = new int[GetCount(collection)];
         ((ICollection)collection).CopyTo(copyResult, 0);
-        var enumResult = ToArray(collection);
+        int[] enumResult = ToArray(collection);
 
         CollectionAssert.AreEqual(copyResult, enumResult);
     }
@@ -61,9 +61,9 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
         _ = RemoveFromHead(collection);
         AddToTail(collection, 6);
 
-        var copyResult = new int[GetCount(collection)];
+        int[] copyResult = new int[GetCount(collection)];
         ((ICollection)collection).CopyTo(copyResult, 0);
-        var enumResult = ToArray(collection);
+        int[] enumResult = ToArray(collection);
 
         CollectionAssert.AreEqual(copyResult, enumResult);
     }
@@ -79,7 +79,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
         AddToTail(collection, 3);
 
         var results = new List<int>();
-        foreach (var item in collection)
+        foreach (int item in collection)
             results.Add(item);
 
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, results);
@@ -98,7 +98,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
         AddToTail(collection, 3);
 
         var actual = new List<int>();
-        foreach (var item in (IEnumerable)collection)
+        foreach (object? item in (IEnumerable)collection)
             actual.Add((int)item);
 
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, actual);

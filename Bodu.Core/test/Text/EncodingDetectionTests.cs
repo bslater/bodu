@@ -19,9 +19,9 @@ public sealed class EncodingDetectionTests
     [TestMethod]
     public void TryDetectByPreamble_WhenInputStartsWithUtf8Bom_ShouldReturnUtf8()
     {
-        var bytes = new byte[] { 0xEF, 0xBB, 0xBF, 0x41 };
+        byte[] bytes = new byte[] { 0xEF, 0xBB, 0xBF, 0x41 };
 
-        var ok = EncodingDetection.TryDetectByPreamble(bytes, out System.Text.Encoding? encoding);
+        bool ok = EncodingDetection.TryDetectByPreamble(bytes, out System.Text.Encoding? encoding);
 
         Assert.IsTrue(ok);
         Assert.IsNotNull(encoding);
@@ -35,9 +35,9 @@ public sealed class EncodingDetectionTests
     [TestMethod]
     public void TryDetectByPreamble_WhenInputStartsWithUtf16LeBom_ShouldReturnUnicode()
     {
-        var bytes = new byte[] { 0xFF, 0xFE, 0x41, 0x00 };
+        byte[] bytes = new byte[] { 0xFF, 0xFE, 0x41, 0x00 };
 
-        var ok = EncodingDetection.TryDetectByPreamble(bytes, out System.Text.Encoding? encoding);
+        bool ok = EncodingDetection.TryDetectByPreamble(bytes, out System.Text.Encoding? encoding);
 
         Assert.IsTrue(ok);
         Assert.IsNotNull(encoding);
@@ -50,9 +50,9 @@ public sealed class EncodingDetectionTests
     [TestMethod]
     public void TryDetectByPreamble_WhenInputStartsWithUtf16BeBom_ShouldReturnBigEndianUnicode()
     {
-        var bytes = new byte[] { 0xFE, 0xFF, 0x00, 0x41 };
+        byte[] bytes = new byte[] { 0xFE, 0xFF, 0x00, 0x41 };
 
-        var ok = EncodingDetection.TryDetectByPreamble(bytes, out System.Text.Encoding? encoding);
+        bool ok = EncodingDetection.TryDetectByPreamble(bytes, out System.Text.Encoding? encoding);
 
         Assert.IsTrue(ok);
         Assert.IsNotNull(encoding);
@@ -66,9 +66,9 @@ public sealed class EncodingDetectionTests
     [TestMethod]
     public void TryDetectByPreamble_WhenInputStartsWithUtf32LeBom_ShouldReturnUtf32()
     {
-        var bytes = new byte[] { 0xFF, 0xFE, 0x00, 0x00, 0x41, 0x00, 0x00, 0x00 };
+        byte[] bytes = new byte[] { 0xFF, 0xFE, 0x00, 0x00, 0x41, 0x00, 0x00, 0x00 };
 
-        var ok = EncodingDetection.TryDetectByPreamble(bytes, out System.Text.Encoding? encoding);
+        bool ok = EncodingDetection.TryDetectByPreamble(bytes, out System.Text.Encoding? encoding);
 
         Assert.IsTrue(ok);
         Assert.IsNotNull(encoding);
@@ -81,9 +81,9 @@ public sealed class EncodingDetectionTests
     [TestMethod]
     public void TryDetectByPreamble_WhenInputStartsWithUtf32BeBom_ShouldReturnBigEndianUtf32()
     {
-        var bytes = new byte[] { 0x00, 0x00, 0xFE, 0xFF, 0x00, 0x00, 0x00, 0x41 };
+        byte[] bytes = new byte[] { 0x00, 0x00, 0xFE, 0xFF, 0x00, 0x00, 0x00, 0x41 };
 
-        var ok = EncodingDetection.TryDetectByPreamble(bytes, out System.Text.Encoding? encoding);
+        bool ok = EncodingDetection.TryDetectByPreamble(bytes, out System.Text.Encoding? encoding);
 
         Assert.IsTrue(ok);
         Assert.IsNotNull(encoding);
@@ -97,9 +97,9 @@ public sealed class EncodingDetectionTests
     [TestMethod]
     public void TryDetectByPreamble_WhenInputHasNoBom_ShouldReturnFalseAndNull()
     {
-        var bytes = System.Text.Encoding.UTF8.GetBytes("hello");
+        byte[] bytes = System.Text.Encoding.UTF8.GetBytes("hello");
 
-        var ok = EncodingDetection.TryDetectByPreamble(bytes, out System.Text.Encoding? encoding);
+        bool ok = EncodingDetection.TryDetectByPreamble(bytes, out System.Text.Encoding? encoding);
 
         Assert.IsFalse(ok);
         Assert.IsNull(encoding);
@@ -112,7 +112,7 @@ public sealed class EncodingDetectionTests
     [TestMethod]
     public void TryDetectByPreamble_WhenInputIsEmpty_ShouldReturnFalseAndNull()
     {
-        var ok = EncodingDetection.TryDetectByPreamble([], out System.Text.Encoding? encoding);
+        bool ok = EncodingDetection.TryDetectByPreamble([], out System.Text.Encoding? encoding);
 
         Assert.IsFalse(ok);
         Assert.IsNull(encoding);
@@ -125,9 +125,9 @@ public sealed class EncodingDetectionTests
     [TestMethod]
     public void TryDetectByPreamble_WhenOnlyTwoBytesAndMatchUtf16Le_ShouldReturnUnicode()
     {
-        var bytes = new byte[] { 0xFF, 0xFE };
+        byte[] bytes = new byte[] { 0xFF, 0xFE };
 
-        var ok = EncodingDetection.TryDetectByPreamble(bytes, out System.Text.Encoding? encoding);
+        bool ok = EncodingDetection.TryDetectByPreamble(bytes, out System.Text.Encoding? encoding);
 
         Assert.IsTrue(ok);
         Assert.IsNotNull(encoding);

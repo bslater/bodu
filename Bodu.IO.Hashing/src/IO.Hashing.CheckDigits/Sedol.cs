@@ -89,10 +89,10 @@ public sealed class Sedol
     {
         Alphanumeric.ValidateSedol(body, nameof(body));
 
-        var sum = 0;
-        for (var i = 0; i < body.Length; i++)
+        int sum = 0;
+        for (int i = 0; i < body.Length; i++)
         {
-            var weight = i < s_weights.Length ? s_weights[i] : 1;
+            int weight = i < s_weights.Length ? s_weights[i] : 1;
             sum += Alphanumeric.ExpandLetterDigit(body[i]) * weight;
         }
 
@@ -113,10 +113,10 @@ public sealed class Sedol
     {
         if (valueIncludingCheck.Length != SequenceLength) return false;
 
-        var sum = 0;
-        for (var i = 0; i < BodyLength; i++)
+        int sum = 0;
+        for (int i = 0; i < BodyLength; i++)
         {
-            var ch = valueIncludingCheck[i];
+            char ch = valueIncludingCheck[i];
             if (Alphanumeric.IsVowel(ch)) return false;
             int v;
             if ((uint)(ch - '0') <= 9u) v = ch - '0';
@@ -126,7 +126,7 @@ public sealed class Sedol
             sum += v * s_weights[i];
         }
 
-        var checkChar = valueIncludingCheck[BodyLength];
+        char checkChar = valueIncludingCheck[BodyLength];
         if ((uint)(checkChar - '0') > 9u) return false;
         sum += checkChar - '0';
 
@@ -136,12 +136,12 @@ public sealed class Sedol
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> body)
     {
-        var sum = _sum;
-        var count = _count;
+        int sum = _sum;
+        int count = _count;
 
-        for (var i = 0; i < body.Length; i++)
+        for (int i = 0; i < body.Length; i++)
         {
-            var ch = body[i];
+            char ch = body[i];
             if (Alphanumeric.IsVowel(ch) || ((uint)(ch - '0') > 9u && (uint)(ch - 'A') > 25u))
                 throw new ArgumentOutOfRangeException(
                     nameof(body),
@@ -152,7 +152,7 @@ public sealed class Sedol
                         ch,
                         (int)ch));
 
-            var weight = count < s_weights.Length ? s_weights[count] : 1;
+            int weight = count < s_weights.Length ? s_weights[count] : 1;
             sum += Alphanumeric.ExpandLetterDigit(ch) * weight;
             count++;
         }

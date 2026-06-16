@@ -129,10 +129,10 @@ public sealed class TomlConfigurationProvider
     /// <returns>The distinct child key segments in configuration order.</returns>
     public IEnumerable<string> GetChildKeys(IEnumerable<string> earlierKeys, string? parentPath)
     {
-        var prefix = parentPath is null ? string.Empty : parentPath + ConfigurationPath.KeyDelimiter;
+        string prefix = parentPath is null ? string.Empty : parentPath + ConfigurationPath.KeyDelimiter;
 
         var results = new List<string>();
-        foreach (var key in _data.Keys)
+        foreach (string key in _data.Keys)
         {
             if (key.Length > prefix.Length && key.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
                 results.Add(Segment(key, prefix.Length));
@@ -151,7 +151,7 @@ public sealed class TomlConfigurationProvider
     /// <returns>The segment up to the next delimiter, or to the end of the key.</returns>
     private static string Segment(string key, int prefixLength)
     {
-        var delimiterIndex = key.IndexOf(ConfigurationPath.KeyDelimiter, prefixLength, StringComparison.OrdinalIgnoreCase);
+        int delimiterIndex = key.IndexOf(ConfigurationPath.KeyDelimiter, prefixLength, StringComparison.OrdinalIgnoreCase);
         return delimiterIndex < 0 ? key[prefixLength..] : key[prefixLength..delimiterIndex];
     }
 }

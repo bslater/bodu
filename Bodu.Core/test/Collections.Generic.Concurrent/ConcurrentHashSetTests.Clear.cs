@@ -74,7 +74,7 @@ public partial class ConcurrentHashSetTests
     public void Clear_WhenConcurrencyLevelExceedsDefaultCapacity_ShouldKeepBucketCountAtLeastLockCount()
     {
         var set = new ConcurrentHashSet<int>(concurrencyLevel: 64, capacity: 4, comparer: null);
-        for (var i = 0; i < 100; i++)
+        for (int i = 0; i < 100; i++)
             set.Add(i);
 
         set.Clear();
@@ -92,7 +92,7 @@ public partial class ConcurrentHashSetTests
     public void Clear_WhenTableHasGrown_ShouldNotShrinkBelowGrownCapacity()
     {
         var set = new ConcurrentHashSet<int>(Enumerable.Range(0, 20_000));
-        var grownBucketCount = set.BucketCount;
+        int grownBucketCount = set.BucketCount;
 
         set.Clear();
 
@@ -108,11 +108,11 @@ public partial class ConcurrentHashSetTests
         var set = new ConcurrentHashSet<int>(Enumerable.Range(0, 20_000));
 
         set.Clear();
-        for (var i = 0; i < 5_000; i++)
+        for (int i = 0; i < 5_000; i++)
             Assert.IsTrue(set.Add(i), $"Add of key {i} after Clear must succeed.");
 
         Assert.AreEqual(5_000, set.Count);
-        for (var i = 0; i < 5_000; i++)
+        for (int i = 0; i < 5_000; i++)
             Assert.IsTrue(set.Contains(i), $"Key {i} was lost after Clear and reuse.");
     }
 }

@@ -37,7 +37,7 @@ public partial class MonitoringHashAlgorithmTests
     public void Seed_WhenSetAfterHashingStarted_ShouldThrowExactly()
     {
         MonitoringHashAlgorithm algorithm = CreateAlgorithm();
-        var input = new byte[] { 1, 2, 3 };
+        byte[] input = new byte[] { 1, 2, 3 };
         algorithm.TransformBlock(input, 0, input.Length, input, 0);
 
         Assert.ThrowsExactly<CryptographicUnexpectedOperationException>(() => algorithm.Seed = 1234);
@@ -50,7 +50,7 @@ public partial class MonitoringHashAlgorithmTests
     public void Seed_WhenSetAfterHashing_ShouldNotThrow()
     {
         MonitoringHashAlgorithm algorithm = CreateAlgorithm();
-        var input = new byte[] { 1, 2, 3 };
+        byte[] input = new byte[] { 1, 2, 3 };
 
         algorithm.ComputeHash(input);
 
@@ -65,13 +65,13 @@ public partial class MonitoringHashAlgorithmTests
     [TestMethod]
     public void ComputeHash_WithDifferentSeeds_ShouldReturnDifferentResults()
     {
-        var input = new byte[] { 0x10, 0x20, 0x30 };
+        byte[] input = new byte[] { 0x10, 0x20, 0x30 };
 
         var algorithmA = new MonitoringHashAlgorithm { Seed = 10 };
         var algorithmB = new MonitoringHashAlgorithm { Seed = 20 };
 
-        var resultA = algorithmA.ComputeHash(input);
-        var resultB = algorithmB.ComputeHash(input);
+        byte[] resultA = algorithmA.ComputeHash(input);
+        byte[] resultB = algorithmB.ComputeHash(input);
 
         CollectionAssert.AreNotEqual(resultA, resultB);
     }
@@ -87,10 +87,10 @@ public partial class MonitoringHashAlgorithmTests
         _ = algorithm.ComputeHash([0x01, 0x02]);
         algorithm.Initialize();
 
-        var fresh = algorithm.ComputeHash([]);
+        byte[] fresh = algorithm.ComputeHash([]);
 
         // Should match seed state as algorithm result
-        var expected = BitConverter.GetBytes((uint)10);
+        byte[] expected = BitConverter.GetBytes((uint)10);
 
         CollectionAssert.AreEqual(expected, fresh);
     }

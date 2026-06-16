@@ -24,7 +24,7 @@ public partial class EvictingDictionaryTests
         dictionary.Add("A", 1);
         dictionary.Add("B", 2);
 
-        var predicted = dictionary.PeekEvictionCandidate();
+        string? predicted = dictionary.PeekEvictionCandidate();
         Assert.AreEqual(expectedEvicted, predicted);
 
         dictionary.Add("C", 3);
@@ -65,7 +65,7 @@ public partial class EvictingDictionaryTests
         dictionary.Add("second", 2);
         dictionary.Add("third", 3);
 
-        var keys = dictionary.Select(kvp => kvp.Key).ToArray();
+        string[] keys = dictionary.Select(kvp => kvp.Key).ToArray();
 
         CollectionAssert.AreEqual(new[] { "first", "second", "third" }, keys);
     }
@@ -104,7 +104,7 @@ public partial class EvictingDictionaryTests
         dictionary.Add("C", 3);
         dictionary.Touch("A"); // A becomes most recent
 
-        var keys = dictionary.Select(kvp => kvp.Key).ToArray();
+        string[] keys = dictionary.Select(kvp => kvp.Key).ToArray();
 
         CollectionAssert.AreEqual(new[] { "B", "C", "A" }, keys);
     }
@@ -121,7 +121,7 @@ public partial class EvictingDictionaryTests
         dictionary.Add("B", 2);
         dictionary.Add("C", 3);
 
-        var keys = dictionary.Select(kvp => kvp.Key).ToArray();
+        string[] keys = dictionary.Select(kvp => kvp.Key).ToArray();
 
         CollectionAssert.AreEqual(new[] { "C", "B", "A" }, keys);
     }
@@ -138,12 +138,12 @@ public partial class EvictingDictionaryTests
         dictionary.Add("B", 2);
         dictionary.Add("C", 3);
 
-        var beforeKeys = dictionary.Keys.ToArray();
-        var beforeTouches = dictionary.TotalTouches;
-        var beforeEvictions = dictionary.EvictionCount;
+        string[] beforeKeys = dictionary.Keys.ToArray();
+        long beforeTouches = dictionary.TotalTouches;
+        long beforeEvictions = dictionary.EvictionCount;
 
-        var candidate1 = dictionary.PeekEvictionCandidate();
-        var candidate2 = dictionary.PeekEvictionCandidate();
+        string? candidate1 = dictionary.PeekEvictionCandidate();
+        string? candidate2 = dictionary.PeekEvictionCandidate();
 
         Assert.AreEqual(candidate1, candidate2);
         CollectionAssert.AreEqual(beforeKeys, dictionary.Keys.ToArray());

@@ -56,7 +56,7 @@ internal sealed class YahooChartExchangeRateSource
         ThrowHelper.ThrowIfNull(request);
 
         Uri url = BuildRequestUri(request);
-        var json = await _httpClient.GetByteArrayAsync(url, cancellationToken).ConfigureAwait(false);
+        byte[] json = await _httpClient.GetByteArrayAsync(url, cancellationToken).ConfigureAwait(false);
 
         return YahooChartResponseParser.Parse(json, request, _options);
     }
@@ -70,15 +70,15 @@ internal sealed class YahooChartExchangeRateSource
     {
         // The ticker is built from validated ISO letters plus a safe suffix, so it is substituted into the path
         // segment directly; escaping the '=' would change the resource Yahoo serves.
-        var path = _options.ChartPath.Replace(
+        string path = _options.ChartPath.Replace(
             YahooExchangeRateOptions.SymbolPlaceholder,
             request.Symbol,
             StringComparison.Ordinal);
 
-        var period1 = ToUnixSeconds(request.StartDate);
+        long period1 = ToUnixSeconds(request.StartDate);
 
         // period2 is exclusive at the source, so add a day to keep the requested end date inclusive.
-        var period2 = ToUnixSeconds(request.EndDate.AddDays(1));
+        long period2 = ToUnixSeconds(request.EndDate.AddDays(1));
 
         UriBuilder builder = new(new Uri(_options.BaseAddress, path))
         {

@@ -33,7 +33,7 @@ logging.level.default = Debug
     public void Reload_WhenFileChangesOnDisk_ShouldFireToken()
     {
         using TempDirectoryScope scope = new();
-        var path = scope.WriteFile("reload.boduconfig", InitialContent);
+        string path = scope.WriteFile("reload.boduconfig", InitialContent);
         File.SetLastWriteTimeUtc(path, DateTime.UtcNow.AddSeconds(-30));
 
         PhysicalFileProvider fileProvider = new(scope.Path)
@@ -58,7 +58,7 @@ logging.level.default = Debug
         File.WriteAllText(path, UpdatedContent);
         File.SetLastWriteTimeUtc(path, DateTime.UtcNow);
 
-        var reloaded = signal.Wait(TimeSpan.FromSeconds(15));
+        bool reloaded = signal.Wait(TimeSpan.FromSeconds(15));
 
         Assert.IsTrue(reloaded, "Expected the reload token to fire after the file changed on disk.");
         Assert.AreEqual("Debug", configuration["logging:level:default"]);

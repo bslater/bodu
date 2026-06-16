@@ -19,8 +19,8 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     public void Encrypt_WhenOutputIsTooSmall_ShouldThrowExactly()
     {
         TTransform transform = MakeTransform();
-        var plaintext = new byte[ExpectedBlockSize];
-        var tooSmall = new byte[1]; // needs at least plaintext.Length + TagSize
+        byte[] plaintext = new byte[ExpectedBlockSize];
+        byte[] tooSmall = new byte[1]; // needs at least plaintext.Length + TagSize
 
         Assert.ThrowsExactly<ArgumentException>(() =>
             transform.Encrypt(plaintext, tooSmall));
@@ -36,11 +36,11 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     public void Encrypt_OutputLengthShouldEqualPlaintextLengthPlusTagSize()
     {
         TTransform transform = MakeTransform();
-        var plaintext = new byte[ExpectedBlockSize * 2];
-        var tagBytes = transform.TagSize / 8;
-        var buf = new byte[plaintext.Length + tagBytes];
+        byte[] plaintext = new byte[ExpectedBlockSize * 2];
+        int tagBytes = transform.TagSize / 8;
+        byte[] buf = new byte[plaintext.Length + tagBytes];
 
-        var written = transform.Encrypt(plaintext, buf);
+        int written = transform.Encrypt(plaintext, buf);
 
         Assert.AreEqual(plaintext.Length + tagBytes, written,
             "Encrypt must return plaintext.Length + TagSize bytes written.");
@@ -56,10 +56,10 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     public void Encrypt_WithEmptyPlaintext_ShouldProduceTagOnly()
     {
         TTransform transform = MakeTransform();
-        var tagBytes = transform.TagSize / 8;
-        var output = new byte[tagBytes];
+        int tagBytes = transform.TagSize / 8;
+        byte[] output = new byte[tagBytes];
 
-        var written = transform.Encrypt([], output);
+        int written = transform.Encrypt([], output);
 
         Assert.AreEqual(tagBytes, written,
             "Encrypting empty plaintext must write exactly TagSize / 8 bytes.");
@@ -75,14 +75,14 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     public void Encrypt_ShouldProduceNonZeroTag()
     {
         TTransform transform = MakeTransform();
-        var plaintext = new byte[ExpectedBlockSize];
+        byte[] plaintext = new byte[ExpectedBlockSize];
         plaintext[0] = 0x42;
-        var output = new byte[plaintext.Length + (transform.TagSize / 8)];
+        byte[] output = new byte[plaintext.Length + (transform.TagSize / 8)];
 
         transform.Encrypt(plaintext, output);
 
-        var tagIsAllZero = true;
-        for (var i = plaintext.Length; i < output.Length; i++)
+        bool tagIsAllZero = true;
+        for (int i = plaintext.Length; i < output.Length; i++)
         {
             if (output[i] != 0)
             {
@@ -112,19 +112,19 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
             return;
         }
 
-        var plaintext = new byte[ExpectedBlockSize];
+        byte[] plaintext = new byte[ExpectedBlockSize];
 
-        var iv1 = CreateInitializationVector();
+        byte[] iv1 = CreateInitializationVector();
         iv1[0] = 0x01;
-        var iv2 = CreateInitializationVector();
+        byte[] iv2 = CreateInitializationVector();
         iv2[0] = 0x02;
 
         TTransform t1 = MakeTransform(iv1);
-        var out1 = new byte[plaintext.Length + (t1.TagSize / 8)];
+        byte[] out1 = new byte[plaintext.Length + (t1.TagSize / 8)];
         t1.Encrypt(plaintext, out1);
 
         TTransform t2 = MakeTransform(iv2);
-        var out2 = new byte[plaintext.Length + (t2.TagSize / 8)];
+        byte[] out2 = new byte[plaintext.Length + (t2.TagSize / 8)];
         t2.Encrypt(plaintext, out2);
 
         CollectionAssert.AreNotEqual(out1, out2,
@@ -139,17 +139,17 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     [TestMethod]
     public void Encrypt_WithDifferentAad_ShouldProduceDifferentTag()
     {
-        var iv = CreateInitializationVector();
-        var plaintext = new byte[ExpectedBlockSize];
+        byte[] iv = CreateInitializationVector();
+        byte[] plaintext = new byte[ExpectedBlockSize];
 
         TTransform t1 = MakeTransform((byte[])iv.Clone());
         t1.ProcessAssociatedData([0x01]);
-        var out1 = new byte[plaintext.Length + (t1.TagSize / 8)];
+        byte[] out1 = new byte[plaintext.Length + (t1.TagSize / 8)];
         t1.Encrypt(plaintext, out1);
 
         TTransform t2 = MakeTransform((byte[])iv.Clone());
         t2.ProcessAssociatedData([0xFF]);
-        var out2 = new byte[plaintext.Length + (t2.TagSize / 8)];
+        byte[] out2 = new byte[plaintext.Length + (t2.TagSize / 8)];
         t2.Encrypt(plaintext, out2);
 
         CollectionAssert.AreNotEqual(out1[plaintext.Length..], out2[plaintext.Length..],
@@ -164,18 +164,18 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     [TestMethod]
     public void Encrypt_WithDifferentPlaintext_ShouldProduceDifferentTag()
     {
-        var iv = CreateInitializationVector();
+        byte[] iv = CreateInitializationVector();
 
-        var pt1 = new byte[ExpectedBlockSize];
+        byte[] pt1 = new byte[ExpectedBlockSize];
         pt1[0] = 0xAA;
         TTransform t1 = MakeTransform((byte[])iv.Clone());
-        var out1 = new byte[pt1.Length + (t1.TagSize / 8)];
+        byte[] out1 = new byte[pt1.Length + (t1.TagSize / 8)];
         t1.Encrypt(pt1, out1);
 
-        var pt2 = new byte[ExpectedBlockSize];
+        byte[] pt2 = new byte[ExpectedBlockSize];
         pt2[0] = 0xBB;
         TTransform t2 = MakeTransform((byte[])iv.Clone());
-        var out2 = new byte[pt2.Length + (t2.TagSize / 8)];
+        byte[] out2 = new byte[pt2.Length + (t2.TagSize / 8)];
         t2.Encrypt(pt2, out2);
 
         CollectionAssert.AreNotEqual(out1[pt1.Length..], out2[pt2.Length..],
@@ -197,19 +197,19 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     [TestMethod]
     public void Encrypt_WithIdenticalInputs_ShouldAlwaysProduceSameOutput()
     {
-        var iv = CreateInitializationVector();
-        var aad = new byte[] { 0x01, 0x02, 0x03 };
-        var plaintext = new byte[ExpectedBlockSize * 2];
-        for (var i = 0; i < plaintext.Length; i++) plaintext[i] = (byte)i;
+        byte[] iv = CreateInitializationVector();
+        byte[] aad = new byte[] { 0x01, 0x02, 0x03 };
+        byte[] plaintext = new byte[ExpectedBlockSize * 2];
+        for (int i = 0; i < plaintext.Length; i++) plaintext[i] = (byte)i;
 
         TTransform t1 = MakeTransform((byte[])iv.Clone());
         t1.ProcessAssociatedData(aad);
-        var out1 = new byte[plaintext.Length + (t1.TagSize / 8)];
+        byte[] out1 = new byte[plaintext.Length + (t1.TagSize / 8)];
         t1.Encrypt(plaintext, out1);
 
         TTransform t2 = MakeTransform((byte[])iv.Clone());
         t2.ProcessAssociatedData(aad);
-        var out2 = new byte[plaintext.Length + (t2.TagSize / 8)];
+        byte[] out2 = new byte[plaintext.Length + (t2.TagSize / 8)];
         t2.Encrypt(plaintext, out2);
 
         CollectionAssert.AreEqual(out1, out2,
@@ -232,16 +232,16 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     [TestMethod]
     public void Encrypt_WithExplicitEmptyAad_ShouldProduceSameOutputAsNoAadCall()
     {
-        var iv = CreateInitializationVector();
-        var plaintext = new byte[ExpectedBlockSize * 2];
+        byte[] iv = CreateInitializationVector();
+        byte[] plaintext = new byte[ExpectedBlockSize * 2];
 
         TTransform withEmpty = MakeTransform((byte[])iv.Clone());
         withEmpty.ProcessAssociatedData([]);
-        var ct1 = new byte[plaintext.Length + (withEmpty.TagSize / 8)];
+        byte[] ct1 = new byte[plaintext.Length + (withEmpty.TagSize / 8)];
         withEmpty.Encrypt(plaintext, ct1);
 
         TTransform withNone = MakeTransform((byte[])iv.Clone());
-        var ct2 = new byte[plaintext.Length + (withNone.TagSize / 8)];
+        byte[] ct2 = new byte[plaintext.Length + (withNone.TagSize / 8)];
         withNone.Encrypt(plaintext, ct2);
 
         CollectionAssert.AreEqual(ct1, ct2,

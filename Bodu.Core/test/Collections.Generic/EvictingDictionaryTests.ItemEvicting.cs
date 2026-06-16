@@ -59,7 +59,7 @@ public partial class EvictingDictionaryTests
     [TestMethod]
     public void ItemEvicting_WhenCapacityNotExceeded_ShouldNotTriggerEvent()
     {
-        var anyEventFired = false;
+        bool anyEventFired = false;
         var dictionary = new EvictingDictionary<string, int>(3);
 
         dictionary.ItemEvicting += (_, _) => anyEventFired = true;
@@ -77,7 +77,7 @@ public partial class EvictingDictionaryTests
     [TestMethod]
     public void ItemEvicting_WhenUsingRemoveOrClear_ShouldNotTriggerEvent()
     {
-        var eventFired = false;
+        bool eventFired = false;
         var dictionary = new EvictingDictionary<string, int>(3);
         dictionary.Add("A", 1);
 

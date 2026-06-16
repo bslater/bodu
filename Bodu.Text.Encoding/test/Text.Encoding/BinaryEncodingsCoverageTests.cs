@@ -58,19 +58,19 @@ public sealed class BinaryEncodingsCoverageTests
     {
         IBinaryEncoding encoding = BinaryEncodings.Ascii85;
 
-        var encoded = encoding.Encode(Payload);
+        string encoded = encoding.Encode(Payload);
 
         Assert.AreEqual(Base85.Encode(Payload), encoded);
         Assert.IsTrue(encoding.IsValid(encoded.AsSpan()));
         Assert.IsTrue(encoding.GetMaxEncodedLength(Payload.Length) >= encoded.Length);
         Assert.IsTrue(encoding.GetMaxDecodedLength(encoded.Length) >= Payload.Length);
 
-        var charBuffer = new char[encoding.GetMaxEncodedLength(Payload.Length)];
-        Assert.IsTrue(encoding.TryEncode(Payload, charBuffer, out var charsWritten));
+        char[] charBuffer = new char[encoding.GetMaxEncodedLength(Payload.Length)];
+        Assert.IsTrue(encoding.TryEncode(Payload, charBuffer, out int charsWritten));
         Assert.AreEqual(encoded.Length, charsWritten);
 
-        var byteBuffer = new byte[encoding.GetMaxDecodedLength(encoded.Length)];
-        Assert.IsTrue(encoding.TryDecode(encoded.AsSpan(), byteBuffer, out var bytesWritten));
+        byte[] byteBuffer = new byte[encoding.GetMaxDecodedLength(encoded.Length)];
+        Assert.IsTrue(encoding.TryDecode(encoded.AsSpan(), byteBuffer, out int bytesWritten));
         Assert.AreEqual(Payload.Length, bytesWritten);
     }
 
@@ -83,8 +83,8 @@ public sealed class BinaryEncodingsCoverageTests
     {
         IBinaryEncoding encoding = BinaryEncodings.Base16Lower;
 
-        var encoded = encoding.Encode(Payload);
-        var decoded = encoding.Decode(encoded.AsSpan());
+        string encoded = encoding.Encode(Payload);
+        byte[] decoded = encoding.Decode(encoded.AsSpan());
 
         Assert.AreEqual(Base16.Encode(Payload), encoded);
         CollectionAssert.AreEqual(Payload, decoded);
@@ -92,12 +92,12 @@ public sealed class BinaryEncodingsCoverageTests
         Assert.IsTrue(encoding.GetMaxEncodedLength(Payload.Length) >= encoded.Length);
         Assert.IsTrue(encoding.GetMaxDecodedLength(encoded.Length) >= decoded.Length);
 
-        var charBuffer = new char[encoding.GetMaxEncodedLength(Payload.Length)];
-        Assert.IsTrue(encoding.TryEncode(Payload, charBuffer, out var charsWritten));
+        char[] charBuffer = new char[encoding.GetMaxEncodedLength(Payload.Length)];
+        Assert.IsTrue(encoding.TryEncode(Payload, charBuffer, out int charsWritten));
         Assert.AreEqual(encoded.Length, charsWritten);
 
-        var byteBuffer = new byte[encoding.GetMaxDecodedLength(encoded.Length)];
-        Assert.IsTrue(encoding.TryDecode(encoded.AsSpan(), byteBuffer, out var bytesWritten));
+        byte[] byteBuffer = new byte[encoding.GetMaxDecodedLength(encoded.Length)];
+        Assert.IsTrue(encoding.TryDecode(encoded.AsSpan(), byteBuffer, out int bytesWritten));
         Assert.AreEqual(decoded.Length, bytesWritten);
     }
 
@@ -110,19 +110,19 @@ public sealed class BinaryEncodingsCoverageTests
     {
         IBinaryEncoding encoding = BinaryEncodings.Base16Upper;
 
-        var encoded = encoding.Encode(Payload);
+        string encoded = encoding.Encode(Payload);
 
         Assert.AreEqual(Base16.Encode(Payload, BaseFormattingOptions.UpperCase), encoded);
         Assert.IsTrue(encoding.IsValid(encoded.AsSpan()));
         Assert.IsTrue(encoding.GetMaxEncodedLength(Payload.Length) >= encoded.Length);
         Assert.IsTrue(encoding.GetMaxDecodedLength(encoded.Length) >= Payload.Length);
 
-        var charBuffer = new char[encoding.GetMaxEncodedLength(Payload.Length)];
-        Assert.IsTrue(encoding.TryEncode(Payload, charBuffer, out var charsWritten));
+        char[] charBuffer = new char[encoding.GetMaxEncodedLength(Payload.Length)];
+        Assert.IsTrue(encoding.TryEncode(Payload, charBuffer, out int charsWritten));
         Assert.AreEqual(encoded.Length, charsWritten);
 
-        var byteBuffer = new byte[encoding.GetMaxDecodedLength(encoded.Length)];
-        Assert.IsTrue(encoding.TryDecode(encoded.AsSpan(), byteBuffer, out var bytesWritten));
+        byte[] byteBuffer = new byte[encoding.GetMaxDecodedLength(encoded.Length)];
+        Assert.IsTrue(encoding.TryDecode(encoded.AsSpan(), byteBuffer, out int bytesWritten));
         Assert.AreEqual(Payload.Length, bytesWritten);
     }
 
@@ -135,19 +135,19 @@ public sealed class BinaryEncodingsCoverageTests
     {
         IBinaryEncoding encoding = BinaryEncodings.Base32;
 
-        var encoded = encoding.Encode(Payload);
+        string encoded = encoding.Encode(Payload);
 
         Assert.AreEqual(Base32.Encode(Payload), encoded);
         Assert.IsTrue(encoding.IsValid(encoded.AsSpan()));
         Assert.IsTrue(encoding.GetMaxEncodedLength(Payload.Length) >= encoded.Length);
         Assert.IsTrue(encoding.GetMaxDecodedLength(encoded.Length) >= Payload.Length);
 
-        var charBuffer = new char[encoding.GetMaxEncodedLength(Payload.Length)];
-        Assert.IsTrue(encoding.TryEncode(Payload, charBuffer, out var charsWritten));
+        char[] charBuffer = new char[encoding.GetMaxEncodedLength(Payload.Length)];
+        Assert.IsTrue(encoding.TryEncode(Payload, charBuffer, out int charsWritten));
         Assert.AreEqual(encoded.Length, charsWritten);
 
-        var byteBuffer = new byte[encoding.GetMaxDecodedLength(encoded.Length)];
-        Assert.IsTrue(encoding.TryDecode(encoded.AsSpan(), byteBuffer, out var bytesWritten));
+        byte[] byteBuffer = new byte[encoding.GetMaxDecodedLength(encoded.Length)];
+        Assert.IsTrue(encoding.TryDecode(encoded.AsSpan(), byteBuffer, out int bytesWritten));
         Assert.AreEqual(Payload.Length, bytesWritten);
     }
 
@@ -160,19 +160,19 @@ public sealed class BinaryEncodingsCoverageTests
     {
         IBinaryEncoding encoding = BinaryEncodings.Base58;
 
-        var encoded = encoding.Encode(Payload);
+        string encoded = encoding.Encode(Payload);
 
         Assert.AreEqual(Base58.Encode(Payload), encoded);
         Assert.IsTrue(encoding.IsValid(encoded.AsSpan()));
         Assert.IsTrue(encoding.GetMaxEncodedLength(Payload.Length) >= encoded.Length);
         Assert.IsTrue(encoding.GetMaxDecodedLength(encoded.Length) >= Payload.Length);
 
-        var charBuffer = new char[encoding.GetMaxEncodedLength(Payload.Length)];
-        Assert.IsTrue(encoding.TryEncode(Payload, charBuffer, out var charsWritten));
+        char[] charBuffer = new char[encoding.GetMaxEncodedLength(Payload.Length)];
+        Assert.IsTrue(encoding.TryEncode(Payload, charBuffer, out int charsWritten));
         Assert.AreEqual(encoded.Length, charsWritten);
 
-        var byteBuffer = new byte[encoding.GetMaxDecodedLength(encoded.Length)];
-        Assert.IsTrue(encoding.TryDecode(encoded.AsSpan(), byteBuffer, out var bytesWritten));
+        byte[] byteBuffer = new byte[encoding.GetMaxDecodedLength(encoded.Length)];
+        Assert.IsTrue(encoding.TryDecode(encoded.AsSpan(), byteBuffer, out int bytesWritten));
         Assert.AreEqual(Payload.Length, bytesWritten);
     }
 
@@ -184,19 +184,19 @@ public sealed class BinaryEncodingsCoverageTests
     {
         IBinaryEncoding encoding = BinaryEncodings.Base64;
 
-        var encoded = encoding.Encode(Payload);
+        string encoded = encoding.Encode(Payload);
 
         Assert.AreEqual(Base64.Encode(Payload), encoded);
         Assert.IsTrue(encoding.IsValid(encoded.AsSpan()));
         Assert.IsTrue(encoding.GetMaxEncodedLength(Payload.Length) >= encoded.Length);
         Assert.IsTrue(encoding.GetMaxDecodedLength(encoded.Length) >= Payload.Length);
 
-        var charBuffer = new char[encoding.GetMaxEncodedLength(Payload.Length)];
-        Assert.IsTrue(encoding.TryEncode(Payload, charBuffer, out var charsWritten));
+        char[] charBuffer = new char[encoding.GetMaxEncodedLength(Payload.Length)];
+        Assert.IsTrue(encoding.TryEncode(Payload, charBuffer, out int charsWritten));
         Assert.AreEqual(encoded.Length, charsWritten);
 
-        var byteBuffer = new byte[encoding.GetMaxDecodedLength(encoded.Length)];
-        Assert.IsTrue(encoding.TryDecode(encoded.AsSpan(), byteBuffer, out var bytesWritten));
+        byte[] byteBuffer = new byte[encoding.GetMaxDecodedLength(encoded.Length)];
+        Assert.IsTrue(encoding.TryDecode(encoded.AsSpan(), byteBuffer, out int bytesWritten));
         Assert.AreEqual(Payload.Length, bytesWritten);
     }
 
@@ -210,8 +210,8 @@ public sealed class BinaryEncodingsCoverageTests
     {
         IBinaryEncoding encoding = BinaryEncodings.Base16Lower;
 
-        var encoded = Payload.Encode(encoding);
-        var decoded = encoded.Decode(encoding);
+        string encoded = Payload.Encode(encoding);
+        byte[] decoded = encoded.Decode(encoding);
 
         Assert.AreEqual(Base16.Encode(Payload), encoded);
         CollectionAssert.AreEqual(Payload, decoded);

@@ -31,7 +31,7 @@ public partial class BencodeNodeTests
     [TestCategory("Smoke")]
     public void Parse_WhenInputIsDictionary_ShouldReturnReadableObject()
     {
-        var data = Encoding.UTF8.GetBytes("d3:cow3:moo4:spam4:eggse");
+        byte[] data = Encoding.UTF8.GetBytes("d3:cow3:moo4:spam4:eggse");
 
         var node = BencodeNode.Parse(data);
 
@@ -55,7 +55,7 @@ public partial class BencodeNodeTests
         o["len"] = 5L;
         o["list"] = new BencodeArray(1, 2, 3);
 
-        var bytes = o.ToByteArray();
+        byte[] bytes = o.ToByteArray();
 
         Assert.AreEqual("d3:leni5e4:listli1ei2ei3ee4:name1:xe", Encoding.Latin1.GetString(bytes));
     }
@@ -66,9 +66,9 @@ public partial class BencodeNodeTests
     [TestMethod]
     public void ToByteArray_WhenRoundTrippingCanonicalInput_ShouldBeByteEqual()
     {
-        var bytes = Encoding.UTF8.GetBytes("d8:announce17:http://tracker.tx4:infod6:lengthi1024e4:name4:testee");
+        byte[] bytes = Encoding.UTF8.GetBytes("d8:announce17:http://tracker.tx4:infod6:lengthi1024e4:name4:testee");
 
-        var roundTripped = BencodeNode.Parse(bytes)!.ToByteArray();
+        byte[] roundTripped = BencodeNode.Parse(bytes)!.ToByteArray();
 
         CollectionAssert.AreEqual(bytes, roundTripped);
     }
@@ -152,7 +152,7 @@ public partial class BencodeNodeTests
     {
         var value = BencodeValue.Create("hello");
 
-        var result = value.TryGetValue(out long converted);
+        bool result = value.TryGetValue(out long converted);
 
         Assert.IsFalse(result);
         Assert.AreEqual(0L, converted);
@@ -326,7 +326,7 @@ public partial class BencodeNodeTests
         o["announce"] = "http://t";
         o["length"] = 1024L;
 
-        var serialized = BencodeSerializer.Serialize((BencodeNode)o);
+        byte[] serialized = BencodeSerializer.Serialize((BencodeNode)o);
 
         CollectionAssert.AreEqual(o.ToByteArray(), serialized);
     }
@@ -338,7 +338,7 @@ public partial class BencodeNodeTests
     [TestMethod]
     public void Deserialize_WhenTargetIsBencodeObject_ShouldReturnEqualTree()
     {
-        var bytes = Encoding.UTF8.GetBytes("d8:announce8:http://t6:lengthi1024ee");
+        byte[] bytes = Encoding.UTF8.GetBytes("d8:announce8:http://t6:lengthi1024ee");
 
         BencodeObject deserialized = BencodeSerializer.Deserialize<BencodeObject>(bytes);
 

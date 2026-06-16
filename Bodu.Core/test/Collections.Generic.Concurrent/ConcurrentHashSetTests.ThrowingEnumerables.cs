@@ -14,7 +14,7 @@ public partial class ConcurrentHashSetTests
     /// </summary>
     private static IEnumerable<int> EnumerableThatThrowsAfter(int yieldCount)
     {
-        for (var i = 0; i < yieldCount; i++)
+        for (int i = 0; i < yieldCount; i++)
             yield return i;
 
         throw new InvalidOperationException("Enumerable fault.");

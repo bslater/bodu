@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CachingExchangeRateProviderTests.Inverse.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -19,7 +19,7 @@ public sealed partial class CachingExchangeRateProviderTests
         SeedCache(new ExchangeRatePair("AUD", "USD"), (new DateOnly(2023, 1, 3), 0.5m));
         CachingExchangeRateProvider sut = CreateDecorator(inner);
 
-        var found = sut.TryGetRate("USD", "AUD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact, out ExchangeRateLookupResult result);
+        bool found = sut.TryGetRate("USD", "AUD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact, out ExchangeRateLookupResult result);
 
         Assert.IsTrue(found);
         Assert.IsTrue(result.Rate.IsInverted);
@@ -39,7 +39,7 @@ public sealed partial class CachingExchangeRateProviderTests
         CachingExchangeRateProvider sut = CreateDecorator(inner);
 
         var options = new ExchangeRateLookupOptions(ExchangeRateDateResolution.Exact, allowInverse: false);
-        var found = sut.TryGetRate("USD", "AUD", new DateOnly(2023, 1, 3), options, out _);
+        bool found = sut.TryGetRate("USD", "AUD", new DateOnly(2023, 1, 3), options, out _);
 
         Assert.IsFalse(found);
         Assert.AreEqual(1, inner.TryGetRateCallCount);

@@ -22,7 +22,7 @@ public partial class IntervalTests
     [DataRow("[-3, 7]", -3, 7, true, true)]
     public void TryParse_WhenWellFormed_ShouldRecoverBoundsAndInclusivity(string text, int expectedLower, int expectedUpper, bool expectedLowerInclusive, bool expectedUpperInclusive)
     {
-        var ok = Interval<int>.TryParse(text, CultureInfo.InvariantCulture, out Interval<int> result);
+        bool ok = Interval<int>.TryParse(text, CultureInfo.InvariantCulture, out Interval<int> result);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(expectedLower, result.Lower);
@@ -37,7 +37,7 @@ public partial class IntervalTests
     [TestMethod]
     public void TryParse_WhenInputIsEmptySetGlyph_ShouldReturnEmpty()
     {
-        var ok = Interval<int>.TryParse("∅", CultureInfo.InvariantCulture, out Interval<int> result);
+        bool ok = Interval<int>.TryParse("∅", CultureInfo.InvariantCulture, out Interval<int> result);
 
         Assert.IsTrue(ok);
         Assert.IsTrue(result.IsEmpty);
@@ -49,7 +49,7 @@ public partial class IntervalTests
     [TestMethod]
     public void TryParse_WhenSurroundedByWhitespace_ShouldStillParse()
     {
-        var ok = Interval<int>.TryParse("  [ 1 ,  5 ]  ", CultureInfo.InvariantCulture, out Interval<int> result);
+        bool ok = Interval<int>.TryParse("  [ 1 ,  5 ]  ", CultureInfo.InvariantCulture, out Interval<int> result);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(Interval<int>.Closed(1, 5), result);
@@ -69,7 +69,7 @@ public partial class IntervalTests
     [DataRow("[1, ]")]
     public void TryParse_WhenMalformed_ShouldReturnFalse(string? text)
     {
-        var ok = Interval<int>.TryParse(text, CultureInfo.InvariantCulture, out Interval<int> result);
+        bool ok = Interval<int>.TryParse(text, CultureInfo.InvariantCulture, out Interval<int> result);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(default, result);
@@ -121,8 +121,8 @@ public partial class IntervalTests
 
         foreach (Interval<int> original in originals)
         {
-            var text = original.ToString();
-            var ok = Interval<int>.TryParse(text, CultureInfo.InvariantCulture, out Interval<int> parsed);
+            string text = original.ToString();
+            bool ok = Interval<int>.TryParse(text, CultureInfo.InvariantCulture, out Interval<int> parsed);
 
             Assert.IsTrue(ok, $"Failed to parse '{text}'.");
             Assert.AreEqual(original, parsed, $"Round-trip failed for '{text}'.");

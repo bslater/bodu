@@ -52,8 +52,8 @@ internal static partial class MLDsaEngine
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(publicKey, parameters.PublicKeySize);
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(privateKey, parameters.PrivateKeySize);
 
-        var k = parameters.K;
-        var l = parameters.L;
+        int k = parameters.K;
+        int l = parameters.L;
 
         // (ρ, ρ′, K) = H(ξ ‖ k ‖ ℓ, 128).
         Span<byte> dims = stackalloc byte[2];
@@ -71,16 +71,16 @@ internal static partial class MLDsaEngine
         ReadOnlySpan<byte> rhoPrime = expanded.Slice(32, 64);
         ReadOnlySpan<byte> capK = expanded[96..];
 
-        var s1 = SamplePolyVector(parameters, rhoPrime, l, 0);
-        var s2 = SamplePolyVector(parameters, rhoPrime, k, l);
+        int[][] s1 = SamplePolyVector(parameters, rhoPrime, l, 0);
+        int[][] s2 = SamplePolyVector(parameters, rhoPrime, k, l);
 
         // t = NTT⁻¹(Â ∘ NTT(s₁)) + s₂.
-        var s1Hat = ClonePolyVector(s1);
-        foreach (var poly in s1Hat)
+        int[][] s1Hat = ClonePolyVector(s1);
+        foreach (int[] poly in s1Hat)
             Ntt(poly);
 
-        var t = MultiplyMatrixVector(parameters, rho, s1Hat);
-        for (var i = 0; i < k; i++)
+        int[][] t = MultiplyMatrixVector(parameters, rho, s1Hat);
+        for (int i = 0; i < k; i++)
         {
             InvNtt(t[i]);
             AddInto(t[i], s2[i]);
@@ -119,22 +119,22 @@ internal static partial class MLDsaEngine
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(rnd, 32);
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(signature, parameters.SignatureSize);
 
-        var k = parameters.K;
-        var l = parameters.L;
+        int k = parameters.K;
+        int l = parameters.L;
 
         DecodePrivateKey(
             parameters, privateKey,
-            out var rho, out var capK, out var tr, out var s1Hat, out var s2Hat, out var t0Hat);
+            out var rho, out var capK, out var tr, out int[][]? s1Hat, out int[][]? s2Hat, out int[][]? t0Hat);
 
         // ŝ₁, ŝ₂, t̂₀ are kept in the NTT domain for the per-iteration products.
-        foreach (var poly in s1Hat)
+        foreach (int[] poly in s1Hat)
             Ntt(poly);
-        foreach (var poly in s2Hat)
+        foreach (int[] poly in s2Hat)
             Ntt(poly);
-        foreach (var poly in t0Hat)
+        foreach (int[] poly in t0Hat)
             Ntt(poly);
 
-        var matrix = ExpandA(parameters, rho);
+        int[][][] matrix = ExpandA(parameters, rho);
 
         // μ = H(tr ‖ M′, 64); ρ″ = H(K ‖ rnd ‖ μ, 64).
         Span<byte> mu = stackalloc byte[64];
@@ -148,38 +148,38 @@ internal static partial class MLDsaEngine
         seedSponge.Squeeze(rhoDoublePrime);
         seedSponge.Clear();
 
-        var y = CreatePolyVector(l);
-        var w = CreatePolyVector(k);
-        var w1 = CreatePolyVector(k);
-        var z = CreatePolyVector(l);
-        var wMinusCs2 = CreatePolyVector(k);
-        var hints = CreatePolyVector(k);
-        var c = new int[N];
-        var product = new int[N];
+        int[][] y = CreatePolyVector(l);
+        int[][] w = CreatePolyVector(k);
+        int[][] w1 = CreatePolyVector(k);
+        int[][] z = CreatePolyVector(l);
+        int[][] wMinusCs2 = CreatePolyVector(k);
+        int[][] hints = CreatePolyVector(k);
+        int[] c = new int[N];
+        int[] product = new int[N];
         Span<byte> commitmentHash = signature[..(parameters.Lambda / 4)];
-        var w1Encoded = new byte[32 * parameters.W1Bits * k];
+        byte[] w1Encoded = new byte[32 * parameters.W1Bits * k];
 
-        for (var kappa = 0; ; kappa += l)
+        for (int kappa = 0; ; kappa += l)
         {
             // y = ExpandMask(ρ″, κ); w = NTT⁻¹(Â ∘ NTT(y)); w₁ = HighBits(w).
-            for (var r = 0; r < l; r++)
+            for (int r = 0; r < l; r++)
                 ExpandMask(parameters, rhoDoublePrime, kappa + r, y[r]);
 
-            var yHat = ClonePolyVector(y);
-            foreach (var poly in yHat)
+            int[][] yHat = ClonePolyVector(y);
+            foreach (int[] poly in yHat)
                 Ntt(poly);
 
-            for (var i = 0; i < k; i++)
+            for (int i = 0; i < k; i++)
             {
                 Array.Clear(w[i]);
-                for (var s = 0; s < l; s++)
+                for (int s = 0; s < l; s++)
                 {
                     MultiplyNtt(matrix[i][s], yHat[s], product);
                     AddInto(w[i], product);
                 }
 
                 InvNtt(w[i]);
-                for (var j = 0; j < N; j++)
+                for (int j = 0; j < N; j++)
                     w1[i][j] = HighBits(parameters.Gamma2, w[i][j]);
             }
 
@@ -192,29 +192,29 @@ internal static partial class MLDsaEngine
             Ntt(c);
 
             // z = y + NTT⁻¹(ĉ ∘ ŝ₁); reject when ‖z‖∞ ≥ γ₁ − β.
-            var rejected = false;
-            for (var r = 0; r < l; r++)
+            bool rejected = false;
+            for (int r = 0; r < l; r++)
             {
                 MultiplyNtt(c, s1Hat[r], product);
                 InvNtt(product);
-                for (var j = 0; j < N; j++)
+                for (int j = 0; j < N; j++)
                     z[r][j] = (y[r][j] + product[j]) % Q;
 
                 rejected |= InfinityNorm(z[r]) >= parameters.Gamma1 - parameters.Beta;
             }
 
             // r₀ = LowBits(w − NTT⁻¹(ĉ ∘ ŝ₂)); reject when ‖r₀‖∞ ≥ γ₂ − β.
-            for (var i = 0; i < k && !rejected; i++)
+            for (int i = 0; i < k && !rejected; i++)
             {
                 MultiplyNtt(c, s2Hat[i], product);
                 InvNtt(product);
-                for (var j = 0; j < N; j++)
+                for (int j = 0; j < N; j++)
                     wMinusCs2[i][j] = (w[i][j] - product[j] + Q) % Q;
 
-                var lowNorm = 0;
-                for (var j = 0; j < N; j++)
+                int lowNorm = 0;
+                for (int j = 0; j < N; j++)
                 {
-                    Decompose(parameters.Gamma2, wMinusCs2[i][j], out _, out var r0);
+                    Decompose(parameters.Gamma2, wMinusCs2[i][j], out _, out int r0);
                     lowNorm = Math.Max(lowNorm, Math.Abs(r0));
                 }
 
@@ -225,18 +225,18 @@ internal static partial class MLDsaEngine
                 continue;
 
             // h = MakeHint(−⟨ĉ ∘ t̂₀⟩, w − cs₂ + ct₀); reject when ‖ct₀‖∞ ≥ γ₂ or the hint weight exceeds ω.
-            var hintWeight = 0;
-            for (var i = 0; i < k && !rejected; i++)
+            int hintWeight = 0;
+            for (int i = 0; i < k && !rejected; i++)
             {
                 MultiplyNtt(c, t0Hat[i], product);
                 InvNtt(product);
 
                 rejected |= InfinityNorm(product) >= parameters.Gamma2;
 
-                for (var j = 0; j < N; j++)
+                for (int j = 0; j < N; j++)
                 {
-                    var negated = (Q - product[j]) % Q;
-                    var basis = (wMinusCs2[i][j] + product[j]) % Q;
+                    int negated = (Q - product[j]) % Q;
+                    int basis = (wMinusCs2[i][j] + product[j]) % Q;
                     hints[i][j] = MakeHint(parameters.Gamma2, negated, basis);
                     hintWeight += hints[i][j];
                 }
@@ -287,9 +287,9 @@ internal static partial class MLDsaEngine
         if (signature.Length != parameters.SignatureSize)
             return false;
 
-        var k = parameters.K;
-        var l = parameters.L;
-        var zBytes = 32 * parameters.Gamma1Bits;
+        int k = parameters.K;
+        int l = parameters.L;
+        int zBytes = 32 * parameters.Gamma1Bits;
 
         ReadOnlySpan<byte> rho = publicKey[..32];
         ReadOnlySpan<byte> commitmentHash = signature[..(parameters.Lambda / 4)];
@@ -297,15 +297,15 @@ internal static partial class MLDsaEngine
         ReadOnlySpan<byte> hintPacked = signature[((parameters.Lambda / 4) + (l * zBytes))..];
 
         // Decode z and reject ‖z‖∞ ≥ γ₁ − β; reject non-canonical hint encodings.
-        var z = CreatePolyVector(l);
-        for (var r = 0; r < l; r++)
+        int[][] z = CreatePolyVector(l);
+        for (int r = 0; r < l; r++)
         {
             BitUnpackSigned(parameters.Gamma1Bits, parameters.Gamma1, zPacked.Slice(r * zBytes, zBytes), z[r]);
             if (InfinityNorm(z[r]) >= parameters.Gamma1 - parameters.Beta)
                 return false;
         }
 
-        var hints = CreatePolyVector(k);
+        int[][] hints = CreatePolyVector(k);
         if (!TryHintBitUnpack(parameters, hintPacked, hints))
             return false;
 
@@ -319,32 +319,32 @@ internal static partial class MLDsaEngine
         Span<byte> mu = stackalloc byte[64];
         ComputeMu(tr, context, message, mu);
 
-        var c = new int[N];
+        int[] c = new int[N];
         SampleInBall(parameters, commitmentHash, c);
         Ntt(c);
 
-        foreach (var poly in z)
+        foreach (int[] poly in z)
             Ntt(poly);
 
-        var matrix = ExpandA(parameters, rho);
+        int[][][] matrix = ExpandA(parameters, rho);
 
         // w′ ≈ NTT⁻¹(Â ∘ ẑ − ĉ ∘ NTT(t₁·2ᵈ)); w₁′ = UseHint(h, w′).
-        var t1 = new int[N];
-        var w = new int[N];
-        var product = new int[N];
-        var w1 = CreatePolyVector(k);
+        int[] t1 = new int[N];
+        int[] w = new int[N];
+        int[] product = new int[N];
+        int[][] w1 = CreatePolyVector(k);
 
-        for (var i = 0; i < k; i++)
+        for (int i = 0; i < k; i++)
         {
             Array.Clear(w);
-            for (var s = 0; s < l; s++)
+            for (int s = 0; s < l; s++)
             {
                 MultiplyNtt(matrix[i][s], z[s], product);
                 AddInto(w, product);
             }
 
             SimpleBitUnpack(10, publicKey.Slice(32 + (i * 320), 320), t1);
-            for (var j = 0; j < N; j++)
+            for (int j = 0; j < N; j++)
                 t1[j] = (int)(((long)t1[j] << D) % Q);
 
             Ntt(t1);
@@ -352,12 +352,12 @@ internal static partial class MLDsaEngine
             SubtractFrom(w, product);
             InvNtt(w);
 
-            for (var j = 0; j < N; j++)
+            for (int j = 0; j < N; j++)
                 w1[i][j] = UseHint(parameters.Gamma2, hints[i][j], w[j]);
         }
 
         // Valid iff c̃ = H(μ ‖ w1Encode(w₁′), λ/4).
-        var w1Encoded = new byte[32 * parameters.W1Bits * k];
+        byte[] w1Encoded = new byte[32 * parameters.W1Bits * k];
         W1Encode(parameters, w1, w1Encoded);
 
         Span<byte> expectedHash = stackalloc byte[64];
@@ -384,27 +384,27 @@ internal static partial class MLDsaEngine
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(privateKey, parameters.PrivateKeySize);
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(publicKey, parameters.PublicKeySize);
 
-        var k = parameters.K;
+        int k = parameters.K;
 
         DecodePrivateKey(
             parameters, privateKey,
-            out var rho, out _, out var tr, out var s1, out var s2, out var t0);
+            out var rho, out _, out var tr, out int[][]? s1, out int[][]? s2, out int[][]? t0);
 
         // t = NTT⁻¹(Â ∘ NTT(s₁)) + s₂ = t₁·2ᵈ + t₀; rebuild t₁ and the pk encoding from it.
-        var s1Hat = ClonePolyVector(s1);
-        foreach (var poly in s1Hat)
+        int[][] s1Hat = ClonePolyVector(s1);
+        foreach (int[] poly in s1Hat)
             Ntt(poly);
 
-        var t = MultiplyMatrixVector(parameters, rho, s1Hat);
-        var t1 = new int[N];
+        int[][] t = MultiplyMatrixVector(parameters, rho, s1Hat);
+        int[] t1 = new int[N];
         rho.CopyTo(publicKey[..32]);
 
-        for (var i = 0; i < k; i++)
+        for (int i = 0; i < k; i++)
         {
             InvNtt(t[i]);
             AddInto(t[i], s2[i]);
 
-            for (var j = 0; j < N; j++)
+            for (int j = 0; j < N; j++)
                 Power2Round(t[i][j], out t1[j], out _);
 
             SimpleBitPack(10, t1, publicKey.Slice(32 + (i * 320), 320));
@@ -416,7 +416,7 @@ internal static partial class MLDsaEngine
         trSponge.Squeeze(actualTr);
         trSponge.Clear();
 
-        var matches = System.Security.Cryptography.CryptographicOperations.FixedTimeEquals(tr, actualTr);
+        bool matches = System.Security.Cryptography.CryptographicOperations.FixedTimeEquals(tr, actualTr);
 
         ClearPolyVector(s1);
         ClearPolyVector(s1Hat);
@@ -458,11 +458,11 @@ internal static partial class MLDsaEngine
     /// <returns>The k×ℓ matrix of NTT-domain polynomials.</returns>
     private static int[][][] ExpandA(MLDsaParameters parameters, ReadOnlySpan<byte> rho)
     {
-        var matrix = new int[parameters.K][][];
-        for (var r = 0; r < parameters.K; r++)
+        int[][][] matrix = new int[parameters.K][][];
+        for (int r = 0; r < parameters.K; r++)
         {
             matrix[r] = new int[parameters.L][];
-            for (var s = 0; s < parameters.L; s++)
+            for (int s = 0; s < parameters.L; s++)
             {
                 matrix[r][s] = new int[N];
                 RejNttPoly(rho, (byte)s, (byte)r, matrix[r][s]);
@@ -481,13 +481,13 @@ internal static partial class MLDsaEngine
     /// <returns>The k NTT-domain result polynomials.</returns>
     private static int[][] MultiplyMatrixVector(MLDsaParameters parameters, ReadOnlySpan<byte> rho, int[][] vectorHat)
     {
-        var result = CreatePolyVector(parameters.K);
-        var row = new int[N];
-        var product = new int[N];
+        int[][] result = CreatePolyVector(parameters.K);
+        int[] row = new int[N];
+        int[] product = new int[N];
 
-        for (var i = 0; i < parameters.K; i++)
+        for (int i = 0; i < parameters.K; i++)
         {
-            for (var s = 0; s < parameters.L; s++)
+            for (int s = 0; s < parameters.L; s++)
             {
                 RejNttPoly(rho, (byte)s, (byte)i, row);
                 MultiplyNtt(row, vectorHat[s], product);
@@ -508,8 +508,8 @@ internal static partial class MLDsaEngine
     /// <returns>The sampled polynomials with centered coefficients folded into [0, q).</returns>
     private static int[][] SamplePolyVector(MLDsaParameters parameters, ReadOnlySpan<byte> rhoPrime, int count, int nonceBase)
     {
-        var vector = CreatePolyVector(count);
-        for (var r = 0; r < count; r++)
+        int[][] vector = CreatePolyVector(count);
+        for (int r = 0; r < count; r++)
             RejBoundedPoly(parameters.Eta, rhoPrime, nonceBase + r, vector[r]);
 
         return vector;
@@ -536,23 +536,23 @@ internal static partial class MLDsaEngine
         Span<byte> publicKey,
         Span<byte> privateKey)
     {
-        var k = parameters.K;
-        var l = parameters.L;
-        var etaBytes = 32 * parameters.EtaBits;
+        int k = parameters.K;
+        int l = parameters.L;
+        int etaBytes = 32 * parameters.EtaBits;
 
-        var t1 = new int[N];
-        var t0 = new int[N];
+        int[] t1 = new int[N];
+        int[] t0 = new int[N];
 
         rho.CopyTo(publicKey[..32]);
         rho.CopyTo(privateKey[..32]);
         capK.CopyTo(privateKey.Slice(32, 32));
 
         Span<byte> t0Section = privateKey[(128 + ((k + l) * etaBytes))..];
-        for (var i = 0; i < k; i++)
+        for (int i = 0; i < k; i++)
         {
-            for (var j = 0; j < N; j++)
+            for (int j = 0; j < N; j++)
             {
-                Power2Round(t[i][j], out t1[j], out var low);
+                Power2Round(t[i][j], out t1[j], out int low);
                 t0[j] = (low + Q) % Q;
             }
 
@@ -560,10 +560,10 @@ internal static partial class MLDsaEngine
             BitPackSigned(13, 1 << (D - 1), t0, t0Section.Slice(i * 32 * 13, 32 * 13));
         }
 
-        for (var r = 0; r < l; r++)
+        for (int r = 0; r < l; r++)
             BitPackSigned(parameters.EtaBits, parameters.Eta, s1[r], privateKey.Slice(128 + (r * etaBytes), etaBytes));
 
-        for (var r = 0; r < k; r++)
+        for (int r = 0; r < k; r++)
             BitPackSigned(parameters.EtaBits, parameters.Eta, s2[r], privateKey.Slice(128 + ((l + r) * etaBytes), etaBytes));
 
         // tr = H(pk, 64) is stored inside the private key for the signing digest.
@@ -597,25 +597,25 @@ internal static partial class MLDsaEngine
         out int[][] s2,
         out int[][] t0)
     {
-        var k = parameters.K;
-        var l = parameters.L;
-        var etaBytes = 32 * parameters.EtaBits;
+        int k = parameters.K;
+        int l = parameters.L;
+        int etaBytes = 32 * parameters.EtaBits;
 
         rho = privateKey[..32];
         capK = privateKey.Slice(32, 32);
         tr = privateKey.Slice(64, 64);
 
         s1 = CreatePolyVector(l);
-        for (var r = 0; r < l; r++)
+        for (int r = 0; r < l; r++)
             BitUnpackSigned(parameters.EtaBits, parameters.Eta, privateKey.Slice(128 + (r * etaBytes), etaBytes), s1[r]);
 
         s2 = CreatePolyVector(k);
-        for (var r = 0; r < k; r++)
+        for (int r = 0; r < k; r++)
             BitUnpackSigned(parameters.EtaBits, parameters.Eta, privateKey.Slice(128 + ((l + r) * etaBytes), etaBytes), s2[r]);
 
         t0 = CreatePolyVector(k);
         ReadOnlySpan<byte> t0Section = privateKey[(128 + ((k + l) * etaBytes))..];
-        for (var r = 0; r < k; r++)
+        for (int r = 0; r < k; r++)
             BitUnpackSigned(13, 1 << (D - 1), t0Section.Slice(r * 32 * 13, 32 * 13), t0[r]);
     }
 
@@ -629,10 +629,10 @@ internal static partial class MLDsaEngine
     /// <param name="signature">The full signature buffer; the commitment hash occupies its first λ/4 bytes.</param>
     private static void EncodeSignature(MLDsaParameters parameters, int[][] z, int[][] hints, Span<byte> signature)
     {
-        var zBytes = 32 * parameters.Gamma1Bits;
+        int zBytes = 32 * parameters.Gamma1Bits;
         Span<byte> zSection = signature.Slice(parameters.Lambda / 4, parameters.L * zBytes);
 
-        for (var r = 0; r < parameters.L; r++)
+        for (int r = 0; r < parameters.L; r++)
             BitPackSigned(parameters.Gamma1Bits, parameters.Gamma1, z[r], zSection.Slice(r * zBytes, zBytes));
 
         HintBitPack(parameters, hints, signature[((parameters.Lambda / 4) + (parameters.L * zBytes))..]);
@@ -645,8 +645,8 @@ internal static partial class MLDsaEngine
     /// <returns>The allocated vector.</returns>
     private static int[][] CreatePolyVector(int count)
     {
-        var vector = new int[count][];
-        for (var i = 0; i < count; i++)
+        int[][] vector = new int[count][];
+        for (int i = 0; i < count; i++)
             vector[i] = new int[N];
 
         return vector;
@@ -659,8 +659,8 @@ internal static partial class MLDsaEngine
     /// <returns>The copy.</returns>
     private static int[][] ClonePolyVector(int[][] source)
     {
-        var copy = new int[source.Length][];
-        for (var i = 0; i < source.Length; i++)
+        int[][] copy = new int[source.Length][];
+        for (int i = 0; i < source.Length; i++)
             copy[i] = (int[])source[i].Clone();
 
         return copy;
@@ -672,7 +672,7 @@ internal static partial class MLDsaEngine
     /// <param name="vector">The vector to clear.</param>
     private static void ClearPolyVector(int[][] vector)
     {
-        foreach (var poly in vector)
+        foreach (int[] poly in vector)
             CryptographyHelper.Clear(poly);
     }
 }

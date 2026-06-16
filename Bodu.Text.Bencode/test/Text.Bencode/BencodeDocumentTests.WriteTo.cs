@@ -23,7 +23,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void WriteTo_WhenWritingWholeDocument_ShouldRoundTripExactBytes()
     {
-        var source = Bytes(TorrentSource);
+        byte[] source = Bytes(TorrentSource);
         using var document = BencodeDocument.Parse(source);
         var buffer = new ArrayBufferWriter<byte>();
         var writer = new Utf8BencodeWriter(buffer);

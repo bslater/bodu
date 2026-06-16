@@ -141,8 +141,8 @@ public sealed partial class BlowfishBlockCipher
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockSizeInBytes);
 
         // Blowfish specifies a 64-bit block as two big-endian 32-bit halves.
-        var xl = BinaryPrimitives.ReadUInt32BigEndian(input);
-        var xr = BinaryPrimitives.ReadUInt32BigEndian(input[4..]);
+        uint xl = BinaryPrimitives.ReadUInt32BigEndian(input);
+        uint xr = BinaryPrimitives.ReadUInt32BigEndian(input[4..]);
 
         // Walk the Feistel network in reverse P-array order.
         DecipherBlock(ref xl, ref xr);
@@ -174,8 +174,8 @@ public sealed partial class BlowfishBlockCipher
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockSizeInBytes);
 
         // Blowfish specifies a 64-bit block as two big-endian 32-bit halves.
-        var xl = BinaryPrimitives.ReadUInt32BigEndian(input);
-        var xr = BinaryPrimitives.ReadUInt32BigEndian(input[4..]);
+        uint xl = BinaryPrimitives.ReadUInt32BigEndian(input);
+        uint xr = BinaryPrimitives.ReadUInt32BigEndian(input[4..]);
 
         // Apply the 16-round Feistel network using the fully expanded P-array and S-boxes.
         EncipherBlock(ref xl, ref xr);
@@ -198,10 +198,10 @@ public sealed partial class BlowfishBlockCipher
     private uint F(uint x)
     {
         // Interpret the input as four most-significant-byte-first S-box indices.
-        var a = _s0[(int)(x >> 24)];
-        var b = _s1[(int)((x >> 16) & 0xFF)];
-        var c = _s2[(int)((x >> 8) & 0xFF)];
-        var d = _s3[(int)(x & 0xFF)];
+        uint a = _s0[(int)(x >> 24)];
+        uint b = _s1[(int)((x >> 16) & 0xFF)];
+        uint c = _s2[(int)((x >> 8) & 0xFF)];
+        uint d = _s3[(int)(x & 0xFF)];
 
         // Blowfish F: ((S0[a] + S1[b]) xor S2[c]) + S3[d].
         return ((a + b) ^ c) + d;
@@ -221,7 +221,7 @@ public sealed partial class BlowfishBlockCipher
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void EncipherBlock(ref uint xl, ref uint xr)
     {
-        for (var i = 0; i < FeistelRounds; i++)
+        for (int i = 0; i < FeistelRounds; i++)
         {
             // Round i: XOR the left half with P[i], feed it through F, XOR into the right half, then swap.
             xl ^= _p[i];
@@ -248,7 +248,7 @@ public sealed partial class BlowfishBlockCipher
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void DecipherBlock(ref uint xl, ref uint xr)
     {
-        for (var i = 17; i >= 2; i--)
+        for (int i = 17; i >= 2; i--)
         {
             // Reverse round i: same F-based Feistel step, with P-array entries consumed backwards.
             xl ^= _p[i];
@@ -289,13 +289,13 @@ public sealed partial class BlowfishBlockCipher
 
         // Phase 2: XOR the P-array entries with successive 32-bit big-endian words derived from the key.
         // If the key is shorter than the required 72 bytes, cycle through it exactly as the Blowfish specification requires.
-        var keyLen = key.Length;
-        var keyIndex = 0;
+        int keyLen = key.Length;
+        int keyIndex = 0;
 
-        for (var i = 0; i < PArrayLength; i++)
+        for (int i = 0; i < PArrayLength; i++)
         {
             uint word = 0;
-            for (var b = 0; b < 4; b++)
+            for (int b = 0; b < 4; b++)
             {
                 // Assemble the key material most-significant byte first before XORing it into P[i].
                 word = (word << 8) | key[keyIndex];
@@ -310,7 +310,7 @@ public sealed partial class BlowfishBlockCipher
         uint xl = 0;
         uint xr = 0;
 
-        for (var i = 0; i < PArrayLength; i += 2)
+        for (int i = 0; i < PArrayLength; i += 2)
         {
             EncipherBlock(ref xl, ref xr);
             _p[i] = xl;
@@ -318,28 +318,28 @@ public sealed partial class BlowfishBlockCipher
         }
 
         // Expand all four S-boxes in P-array order. Each call uses the P-array and any S-box entries already replaced.
-        for (var i = 0; i < SBoxLength; i += 2)
+        for (int i = 0; i < SBoxLength; i += 2)
         {
             EncipherBlock(ref xl, ref xr);
             _s0[i] = xl;
             _s0[i + 1] = xr;
         }
 
-        for (var i = 0; i < SBoxLength; i += 2)
+        for (int i = 0; i < SBoxLength; i += 2)
         {
             EncipherBlock(ref xl, ref xr);
             _s1[i] = xl;
             _s1[i + 1] = xr;
         }
 
-        for (var i = 0; i < SBoxLength; i += 2)
+        for (int i = 0; i < SBoxLength; i += 2)
         {
             EncipherBlock(ref xl, ref xr);
             _s2[i] = xl;
             _s2[i + 1] = xr;
         }
 
-        for (var i = 0; i < SBoxLength; i += 2)
+        for (int i = 0; i < SBoxLength; i += 2)
         {
             EncipherBlock(ref xl, ref xr);
             _s3[i] = xl;

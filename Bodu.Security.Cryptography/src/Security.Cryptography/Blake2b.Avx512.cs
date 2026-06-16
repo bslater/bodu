@@ -71,25 +71,25 @@ public sealed partial class Blake2b
     {
         // Load the 16 message words. Used to build the per-step (mx, my) gather vectors below.
         Span<ulong> m = stackalloc ulong[16];
-        ref var blockRef = ref MemoryMarshal.GetReference(block);
+        ref byte blockRef = ref MemoryMarshal.GetReference(block);
         if (BitConverter.IsLittleEndian)
         {
-            ref var wordRef = ref Unsafe.As<byte, ulong>(ref blockRef);
-            for (var i = 0; i < 16; i++)
+            ref ulong wordRef = ref Unsafe.As<byte, ulong>(ref blockRef);
+            for (int i = 0; i < 16; i++)
                 m[i] = Unsafe.Add(ref wordRef, i);
         }
         else
         {
-            for (var i = 0; i < 16; i++)
+            for (int i = 0; i < 16; i++)
                 m[i] = BinaryPrimitives.ReadUInt64LittleEndian(block.Slice(i * 8, 8));
         }
 
-        ref var mRef = ref MemoryMarshal.GetReference(m);
+        ref ulong mRef = ref MemoryMarshal.GetReference(m);
 
         // Build the four rows of the working vector. a/b come from the chaining state; c/d come from the
         // IV with the counter XORed into lane 0 of d (= v[12]) and the finalization flag conditionally
         // inverting lane 2 of d (= v[14]).
-        ref var hRef = ref MemoryMarshal.GetArrayDataReference(_h);
+        ref ulong hRef = ref MemoryMarshal.GetArrayDataReference(_h);
         var a = Vector256.Create(
             Unsafe.Add(ref hRef, 0),
             Unsafe.Add(ref hRef, 1),
@@ -109,9 +109,9 @@ public sealed partial class Blake2b
 
         // 12 rounds, each consisting of a column step followed by a diagonal step. Each step applies the
         // SIMD G kernel once across all four columns / diagonals in parallel.
-        for (var r = 0; r < 12; r++)
+        for (int r = 0; r < 12; r++)
         {
-            var s = Blake2Constants.Sigma[r % 10];
+            byte[] s = Blake2Constants.Sigma[r % 10];
 
             // Column step: G applied to columns (0,4,8,12), (1,5,9,13), (2,6,10,14), (3,7,11,15) — i.e.
             // each column of the 4x4 v matrix. With a/b/c/d holding rows, lane i of each row is column i,

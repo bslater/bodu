@@ -57,8 +57,8 @@ public static partial class StringExtensions
     {
         ThrowHelper.ThrowIfNull(value);
 
-        var preserveAcronyms = (options & TitleCaseOptions.PreserveAcronyms) == TitleCaseOptions.PreserveAcronyms;
-        var lowerSmall = (options & TitleCaseOptions.LowerCaseSmallWords) == TitleCaseOptions.LowerCaseSmallWords;
+        bool preserveAcronyms = (options & TitleCaseOptions.PreserveAcronyms) == TitleCaseOptions.PreserveAcronyms;
+        bool lowerSmall = (options & TitleCaseOptions.LowerCaseSmallWords) == TitleCaseOptions.LowerCaseSmallWords;
 
         WordCasingOptions casing = new()
         {
@@ -105,7 +105,7 @@ public static partial class StringExtensions
 
         if (value.Length == 0) return string.Empty;
 
-        var phraseMode = ContainsWhiteSpace(value);
+        bool phraseMode = ContainsWhiteSpace(value);
         List<string> tokens = phraseMode
             ? EnumeratePhraseWords(value, options)
             : EnumerateWords(value, options);
@@ -128,22 +128,22 @@ public static partial class StringExtensions
         HashSet<string> minorWords = BuildMinorWordSet(options.MinorWords);
         CultureInfo culture = options.Culture;
 
-        var realWordCount = 0;
-        for (var i = 0; i < tokens.Count; i++)
+        int realWordCount = 0;
+        for (int i = 0; i < tokens.Count; i++)
         {
             if (!IsPunctuationMarker(tokens[i])) realWordCount++;
         }
 
         StringBuilder builder = new();
-        var needsSpace = false;
-        var realRank = 0;
-        for (var i = 0; i < tokens.Count; i++)
+        bool needsSpace = false;
+        int realRank = 0;
+        for (int i = 0; i < tokens.Count; i++)
         {
-            var token = tokens[i];
+            string token = tokens[i];
             if (IsPunctuationMarker(token))
             {
                 // A joining hyphen attaches directly; a terminator adds a trailing space.
-                var punctuation = token[1..];
+                string punctuation = token[1..];
                 builder.Append(punctuation);
                 needsSpace = punctuation is not "-";
                 continue;
@@ -152,7 +152,7 @@ public static partial class StringExtensions
             if (needsSpace && builder.Length > 0) builder.Append(' ');
             needsSpace = true;
 
-            var isInterior = realRank > 0 && realRank < realWordCount - 1;
+            bool isInterior = realRank > 0 && realRank < realWordCount - 1;
             realRank++;
 
             if (options.PreserveAcronyms && IsAllUpper(token))
@@ -194,22 +194,22 @@ public static partial class StringExtensions
         Dictionary<string, string> canonical = BuildAcronymLookup(options.Acronyms);
         List<string> tokens = new();
 
-        var i = 0;
+        int i = 0;
         while (i < value.Length)
         {
-            var c = value[i];
+            char c = value[i];
             if (char.IsLetterOrDigit(c) || c == '\'')
             {
-                var start = i;
+                int start = i;
                 while (i < value.Length && (char.IsLetterOrDigit(value[i]) || value[i] == '\'')) i++;
-                var word = value[start..i];
+                string word = value[start..i];
                 ProcessChunk(word, canonical, options, tokens);
                 continue;
             }
 
-            var sepStart = i;
+            int sepStart = i;
             while (i < value.Length && !(char.IsLetterOrDigit(value[i]) || value[i] == '\'')) i++;
-            var separator = value[sepStart..i];
+            string separator = value[sepStart..i];
             EmitSeparatorMarker(separator, sepStart == 0, i == value.Length, tokens);
         }
 
@@ -229,9 +229,9 @@ public static partial class StringExtensions
         // A leading run never contributes punctuation.
         if (isLeading) return;
 
-        var joiner = '\0';
-        var terminator = '\0';
-        foreach (var c in separator)
+        char joiner = '\0';
+        char terminator = '\0';
+        foreach (char c in separator)
         {
             if (c == '-') joiner = '-';
             else if (c is '.' or ',' or '!' or '?' or ';' or ':') terminator = c;
@@ -267,7 +267,7 @@ public static partial class StringExtensions
     /// </returns>
     private static bool ContainsWhiteSpace(string value)
     {
-        for (var i = 0; i < value.Length; i++)
+        for (int i = 0; i < value.Length; i++)
         {
             if (char.IsWhiteSpace(value[i])) return true;
         }
@@ -283,7 +283,7 @@ public static partial class StringExtensions
     private static HashSet<string> BuildMinorWordSet(IReadOnlyCollection<string> minorWords)
     {
         HashSet<string> set = new(StringComparer.OrdinalIgnoreCase);
-        foreach (var word in minorWords)
+        foreach (string word in minorWords)
         {
             if (!string.IsNullOrEmpty(word)) set.Add(word);
         }
@@ -301,10 +301,10 @@ public static partial class StringExtensions
     {
         if (word.Length == 0) return false;
 
-        var hasLetter = false;
-        for (var i = 0; i < word.Length; i++)
+        bool hasLetter = false;
+        for (int i = 0; i < word.Length; i++)
         {
-            var c = word[i];
+            char c = word[i];
             if (char.IsLetter(c))
             {
                 hasLetter = true;

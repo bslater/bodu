@@ -59,7 +59,7 @@ public partial class ConfigurationViewTests
         var doc = ConfigurationDocument.Parse("[*]\nsize = 42\nbad = abc\n");
         ConfigurationView view = doc.Resolve("any.cs");
 
-        Assert.IsTrue(view.TryGetInt64("size", out var value));
+        Assert.IsTrue(view.TryGetInt64("size", out long value));
         Assert.AreEqual(42L, value);
         Assert.IsFalse(view.TryGetInt64("missing", out _));
         Assert.IsFalse(view.TryGetInt64("bad", out _));

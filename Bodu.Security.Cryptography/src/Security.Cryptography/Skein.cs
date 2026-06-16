@@ -133,8 +133,8 @@ public abstract partial class Skein<T>
         _cipher = cipher;
         HashSizeValue = hashSizeBits;
 
-        var blockBytes = cipher.BlockSize / 8;
-        var stateWords = blockBytes / sizeof(ulong);
+        int blockBytes = cipher.BlockSize / 8;
+        int stateWords = blockBytes / sizeof(ulong);
         _state = new ulong[stateWords];
         _initialChainingValue = new ulong[stateWords];
         _pendingBlock = new byte[blockBytes];
@@ -275,8 +275,8 @@ public abstract partial class Skein<T>
 
         // Process the final message block. The tweak's position field carries the total number of real message bytes
         // absorbed (excluding any zero padding applied to bring the block up to the Skein state size).
-        var residual = _pendingBytes;
-        var blockBytes = BlockSize / 8;
+        int residual = _pendingBytes;
+        int blockBytes = BlockSize / 8;
         if (residual < blockBytes)
         {
             CryptographyHelper.Clear(_pendingBlock.AsSpan(residual, blockBytes - residual));
@@ -290,8 +290,8 @@ public abstract partial class Skein<T>
             final: true,
             position: _messageBytesProcessed);
 
-        var outputBytes = HashSizeValue / 8;
-        var digest = GC.AllocateUninitializedArray<byte>(outputBytes);
+        int outputBytes = HashSizeValue / 8;
+        byte[] digest = GC.AllocateUninitializedArray<byte>(outputBytes);
         GenerateOutput(digest);
 
         _pendingBytes = 0;

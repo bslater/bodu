@@ -18,7 +18,7 @@ public abstract partial class AlphanumericCheckDigitAlgorithmTests<TTest, TAlgor
     public void Append_WhenCharacterIsOutsideInputAlphabet_ShouldThrowExactly()
     {
         AlphanumericCheckDigitAlgorithmSpecification spec = GetSpecification();
-        var invalid = spec.InputAlphabet == CheckDigitInputAlphabet.DecimalDigits ? 'A' : '!';
+        char invalid = spec.InputAlphabet == CheckDigitInputAlphabet.DecimalDigits ? 'A' : '!';
 
         TAlgorithm algorithm = CreateAlgorithm();
 
@@ -62,7 +62,7 @@ public abstract partial class AlphanumericCheckDigitAlgorithmTests<TTest, TAlgor
         _ = name;
         TAlgorithm algorithm = CreateAlgorithm();
 
-        foreach (var ch in body)
+        foreach (char ch in body)
             algorithm.Append(ch);
 
         Assert.AreEqual(expectedCheck, algorithm.GetCurrentCheckDigit());
@@ -84,7 +84,7 @@ public abstract partial class AlphanumericCheckDigitAlgorithmTests<TTest, TAlgor
         if (body.Length < 2) return;
 
         TAlgorithm algorithm = CreateAlgorithm();
-        var split = body.Length / 2;
+        int split = body.Length / 2;
 
         algorithm.Append(body.AsSpan(0, split));
         algorithm.Append(body.AsSpan(split));
@@ -100,7 +100,7 @@ public abstract partial class AlphanumericCheckDigitAlgorithmTests<TTest, TAlgor
     {
         TAlgorithm algorithm = CreateAlgorithm();
         algorithm.Append("123".AsSpan());
-        var initial = algorithm.GetCurrentCheckDigit();
+        char initial = algorithm.GetCurrentCheckDigit();
 
         algorithm.Append([]);
 

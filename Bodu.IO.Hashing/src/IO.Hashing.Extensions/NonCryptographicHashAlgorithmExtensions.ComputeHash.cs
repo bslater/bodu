@@ -143,7 +143,7 @@ public static partial class NonCryptographicHashAlgorithmExtensions
 
         algorithm.Reset();
 
-        var buffer = ArrayPool<byte>.Shared.Rent(bufferSize);
+        byte[] buffer = ArrayPool<byte>.Shared.Rent(bufferSize);
         try
         {
             int bytesRead;

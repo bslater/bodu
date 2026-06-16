@@ -201,7 +201,7 @@ public sealed class DelimitedReader
         if (!_drainedForAsync && !_initialized)
         {
             _drainedForAsync = true;
-            var remaining = await _reader.ReadToEndAsync(cancellationToken).ConfigureAwait(false);
+            string remaining = await _reader.ReadToEndAsync(cancellationToken).ConfigureAwait(false);
             TextReader previous = _reader;
             _reader = new StringReader(remaining);
             previous.Dispose();
@@ -237,7 +237,7 @@ public sealed class DelimitedReader
             if (IsExhausted)
                 return false;
 
-            var c = _buffer[_pos];
+            char c = _buffer[_pos];
 
             if (c == '\n')
             {
@@ -274,8 +274,8 @@ public sealed class DelimitedReader
             // Refill if the delimiter consumed at end of last iteration exhausted the buffer.
             EnsureData();
 
-            var isQuoted = !IsExhausted && _buffer[_pos] == _options.Quote;
-            var field = isQuoted ? ParseQuotedField() : ParseUnquotedField();
+            bool isQuoted = !IsExhausted && _buffer[_pos] == _options.Quote;
+            string field = isQuoted ? ParseQuotedField() : ParseUnquotedField();
 
             if (_options.TrimFields && !isQuoted)
                 field = field.Trim();
@@ -287,7 +287,7 @@ public sealed class DelimitedReader
             if (IsExhausted)
                 break;
 
-            var next = _buffer[_pos];
+            char next = _buffer[_pos];
 
             if (next == _options.Delimiter)
             {
@@ -317,10 +317,10 @@ public sealed class DelimitedReader
     /// <returns>The field content with surrounding quotes removed and escape sequences resolved.</returns>
     private string ParseQuotedField()
     {
-        var startLine = _lineNumber;
+        int startLine = _lineNumber;
         _pos++; // consume opening quote
 
-        var quote = _options.Quote;
+        char quote = _options.Quote;
         StringBuilder sb = new();
 
         while (true)
@@ -330,7 +330,7 @@ public sealed class DelimitedReader
             if (IsExhausted)
                 Delimited.ThrowUnterminatedQuotedField(startLine);
 
-            var c = _buffer[_pos++];
+            char c = _buffer[_pos++];
 
             if (c == quote)
             {
@@ -379,13 +379,13 @@ public sealed class DelimitedReader
     /// <returns>The raw field text, or an empty string when the next character is a terminator or EOF.</returns>
     private string ParseUnquotedField()
     {
-        var delimiter = _options.Delimiter;
+        char delimiter = _options.Delimiter;
         StringBuilder? sb = null;
 
         while (true)
         {
             // Fast path: locate the terminator inside the current buffer window.
-            var end = _pos;
+            int end = _pos;
             while (end < _bufferLen &&
                    _buffer[end] != delimiter &&
                    _buffer[end] != '\n' &&
@@ -398,7 +398,7 @@ public sealed class DelimitedReader
             {
                 if (sb is null)
                 {
-                    var value = new string(_buffer, _pos, end - _pos);
+                    string value = new string(_buffer, _pos, end - _pos);
                     _pos = end;
                     return value;
                 }
@@ -453,7 +453,7 @@ public sealed class DelimitedReader
             if (IsExhausted)
                 return;
 
-            var c = _buffer[_pos];
+            char c = _buffer[_pos];
 
             if (c is '\n' or '\r')
                 return;

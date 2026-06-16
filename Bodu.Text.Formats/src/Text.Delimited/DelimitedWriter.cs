@@ -188,10 +188,10 @@ public sealed class DelimitedWriter
     /// </exception>
     private void WriteFields(IEnumerable<string> fields, string paramName)
     {
-        var delimiter = _options.Delimiter;
-        var first = true;
+        char delimiter = _options.Delimiter;
+        bool first = true;
 
-        foreach (var field in fields)
+        foreach (string? field in fields)
         {
             if (field is null)
                 throw new ArgumentException(FormatsResourceStrings.Arg_Invalid_NullListElement, paramName);
@@ -214,10 +214,10 @@ public sealed class DelimitedWriter
     /// <param name="field">The field value to write.</param>
     private void WriteField(string field)
     {
-        var delimiter = _options.Delimiter;
-        var quote = _options.Quote;
+        char delimiter = _options.Delimiter;
+        char quote = _options.Quote;
 
-        var needsQuoting = field.Length == 0 ||
+        bool needsQuoting = field.Length == 0 ||
                             field.Contains(delimiter) ||
                             field.Contains(quote) ||
                             field.Contains('\n') ||
@@ -231,7 +231,7 @@ public sealed class DelimitedWriter
 
         _writer.Write(quote);
 
-        foreach (var c in field)
+        foreach (char c in field)
         {
             if (c == quote)
                 _writer.Write(quote); // RFC 4180 doubled-quote escape
@@ -254,11 +254,11 @@ public sealed class DelimitedWriter
     /// </exception>
     private string BuildRow(IEnumerable<string> fields, string paramName)
     {
-        var delimiter = _options.Delimiter;
+        char delimiter = _options.Delimiter;
         StringBuilder sb = new();
-        var first = true;
+        bool first = true;
 
-        foreach (var field in fields)
+        foreach (string? field in fields)
         {
             if (field is null)
                 throw new ArgumentException(FormatsResourceStrings.Arg_Invalid_NullListElement, paramName);
@@ -282,10 +282,10 @@ public sealed class DelimitedWriter
     /// <param name="field">The field value to append.</param>
     private void AppendField(StringBuilder sb, string field)
     {
-        var delimiter = _options.Delimiter;
-        var quote = _options.Quote;
+        char delimiter = _options.Delimiter;
+        char quote = _options.Quote;
 
-        var needsQuoting = field.Length == 0 ||
+        bool needsQuoting = field.Length == 0 ||
                            field.Contains(delimiter) ||
                            field.Contains(quote) ||
                            field.Contains('\n') ||
@@ -299,7 +299,7 @@ public sealed class DelimitedWriter
 
         sb.Append(quote);
 
-        foreach (var c in field)
+        foreach (char c in field)
         {
             if (c == quote)
                 sb.Append(quote);

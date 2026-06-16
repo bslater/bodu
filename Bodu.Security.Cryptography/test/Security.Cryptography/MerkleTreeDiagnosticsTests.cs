@@ -41,7 +41,7 @@ public sealed class MerkleTreeDiagnosticsTests
     public void RecordLeaf_ShouldMakeLeafTheRoot()
     {
         var diagnostics = new MerkleTreeDiagnostics();
-        var leafHash = new byte[] { 0xAA, 0xBB, 0xCC };
+        byte[] leafHash = new byte[] { 0xAA, 0xBB, 0xCC };
 
         diagnostics.RecordLeaf(index: 0, hash: leafHash);
 
@@ -62,7 +62,7 @@ public sealed class MerkleTreeDiagnosticsTests
     public void RecordLeaf_ShouldStoreDefensiveCopyOfHash()
     {
         var diagnostics = new MerkleTreeDiagnostics();
-        var leafHash = new byte[] { 0x01, 0x02, 0x03 };
+        byte[] leafHash = new byte[] { 0x01, 0x02, 0x03 };
 
         diagnostics.RecordLeaf(index: 0, hash: leafHash);
         leafHash[0] = 0xFF;
@@ -149,15 +149,15 @@ public sealed class MerkleTreeDiagnosticsTests
     {
         var diagnostics = new MerkleTreeDiagnostics();
 
-        var leaf0 = new byte[] { 0x01 };
-        var leaf1 = new byte[] { 0x02 };
-        var expectedParent = ComputeSha256(Concat(leaf0, leaf1));
+        byte[] leaf0 = new byte[] { 0x01 };
+        byte[] leaf1 = new byte[] { 0x02 };
+        byte[] expectedParent = ComputeSha256(Concat(leaf0, leaf1));
 
         diagnostics.RecordLeaf(0, leaf0);
         diagnostics.RecordLeaf(1, leaf1);
         diagnostics.RecordInternal(level: 1, index: 0, childHashes: [leaf0, leaf1], hash: expectedParent);
 
-        var ok = diagnostics.Validate(SHA256.Create, out IReadOnlyList<string>? errors);
+        bool ok = diagnostics.Validate(SHA256.Create, out IReadOnlyList<string>? errors);
 
         Assert.IsTrue(ok, $"Validate should pass — got errors: {string.Join(", ", errors)}");
         Assert.AreEqual(0, errors.Count);
@@ -172,15 +172,15 @@ public sealed class MerkleTreeDiagnosticsTests
     {
         var diagnostics = new MerkleTreeDiagnostics();
 
-        var leaf0 = new byte[] { 0x01 };
-        var leaf1 = new byte[] { 0x02 };
-        var corruptedParent = new byte[] { 0xFF, 0xFF, 0xFF };
+        byte[] leaf0 = new byte[] { 0x01 };
+        byte[] leaf1 = new byte[] { 0x02 };
+        byte[] corruptedParent = new byte[] { 0xFF, 0xFF, 0xFF };
 
         diagnostics.RecordLeaf(0, leaf0);
         diagnostics.RecordLeaf(1, leaf1);
         diagnostics.RecordInternal(level: 1, index: 0, childHashes: [leaf0, leaf1], hash: corruptedParent);
 
-        var ok = diagnostics.Validate(SHA256.Create, out IReadOnlyList<string>? errors);
+        bool ok = diagnostics.Validate(SHA256.Create, out IReadOnlyList<string>? errors);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(1, errors.Count);
@@ -199,7 +199,7 @@ public sealed class MerkleTreeDiagnosticsTests
         diagnostics.RecordLeaf(0, [0x01]);
         diagnostics.RecordLeaf(1, [0x02]);
 
-        var ok = diagnostics.Validate(SHA256.Create, out IReadOnlyList<string>? errors);
+        bool ok = diagnostics.Validate(SHA256.Create, out IReadOnlyList<string>? errors);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(0, errors.Count);
@@ -247,7 +247,7 @@ public sealed class MerkleTreeDiagnosticsTests
 
         diagnostics.WriteTo(writer);
 
-        var output = writer.ToString();
+        string output = writer.ToString();
         Assert.IsTrue(output.Contains("(no nodes recorded)", StringComparison.Ordinal),
             $"Expected the 'no nodes recorded' placeholder; got: {output}");
     }
@@ -260,8 +260,8 @@ public sealed class MerkleTreeDiagnosticsTests
     public void WriteTo_WhenValidationPasses_ShouldAppendPassLine()
     {
         var diagnostics = new MerkleTreeDiagnostics();
-        var leaf0 = new byte[] { 0x01 };
-        var leaf1 = new byte[] { 0x02 };
+        byte[] leaf0 = new byte[] { 0x01 };
+        byte[] leaf1 = new byte[] { 0x02 };
 
         diagnostics.RecordLeaf(0, leaf0);
         diagnostics.RecordLeaf(1, leaf1);
@@ -271,7 +271,7 @@ public sealed class MerkleTreeDiagnosticsTests
         var writer = new StringWriter();
         diagnostics.WriteTo(writer, SHA256.Create);
 
-        var output = writer.ToString();
+        string output = writer.ToString();
         Assert.IsTrue(output.Contains("Validation: PASS", StringComparison.Ordinal),
             $"Expected 'Validation: PASS' summary; got: {output}");
     }
@@ -294,7 +294,7 @@ public sealed class MerkleTreeDiagnosticsTests
         var writer = new StringWriter();
         diagnostics.WriteTo(writer, SHA256.Create);
 
-        var output = writer.ToString();
+        string output = writer.ToString();
         Assert.IsTrue(output.Contains("Validation: FAIL", StringComparison.Ordinal),
             $"Expected 'Validation: FAIL' summary; got: {output}");
         Assert.IsTrue(output.Contains("[1:0]", StringComparison.Ordinal),
@@ -312,8 +312,8 @@ public sealed class MerkleTreeDiagnosticsTests
         // Records with byte[] fields use reference equality on the array, so two records with
         // different array instances containing identical bytes are NOT equal — pin this contract
         // so consumers don't assume value-equality.
-        var hashA = new byte[] { 0x01 };
-        var hashB = new byte[] { 0x01 };
+        byte[] hashA = new byte[] { 0x01 };
+        byte[] hashB = new byte[] { 0x01 };
 
         var nodeA = new MerkleTreeDiagnosticNode(
             Level: 0, Index: 0, IsLeaf: true, Hash: hashA, ChildHashes: Array.Empty<byte[]>());
@@ -330,7 +330,7 @@ public sealed class MerkleTreeDiagnosticsTests
     [TestMethod]
     public void DiagnosticNode_RecordsSharingByteArrayReferences_ShouldBeEqual()
     {
-        var hash = new byte[] { 0x01 };
+        byte[] hash = new byte[] { 0x01 };
         IReadOnlyList<byte[]> children = Array.Empty<byte[]>();
 
         var nodeA = new MerkleTreeDiagnosticNode(0, 0, true, hash, children);
@@ -347,7 +347,7 @@ public sealed class MerkleTreeDiagnosticsTests
 
     private static byte[] Concat(byte[] a, byte[] b)
     {
-        var result = new byte[a.Length + b.Length];
+        byte[] result = new byte[a.Length + b.Length];
         Buffer.BlockCopy(a, 0, result, 0, a.Length);
         Buffer.BlockCopy(b, 0, result, a.Length, b.Length);
         return result;

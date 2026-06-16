@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SingleFlightCoordinatorTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -24,7 +24,7 @@ public sealed class SingleFlightCoordinatorTests
     public async Task RunAsync_WhenSingleCaller_ShouldRunOperationOnce()
     {
         SingleFlightCoordinator<string> coordinator = new();
-        var runCount = 0;
+        int runCount = 0;
 
         await coordinator.RunAsync("key", () =>
         {
@@ -44,7 +44,7 @@ public sealed class SingleFlightCoordinatorTests
     {
         SingleFlightCoordinator<string> coordinator = new();
         TaskCompletionSource gate = new(TaskCreationOptions.RunContinuationsAsynchronously);
-        var runCount = 0;
+        int runCount = 0;
 
         Task Operation()
         {
@@ -69,8 +69,8 @@ public sealed class SingleFlightCoordinatorTests
     public async Task RunAsync_WhenDifferentKeys_ShouldRunEachOperation()
     {
         SingleFlightCoordinator<string> coordinator = new();
-        var firstRuns = 0;
-        var secondRuns = 0;
+        int firstRuns = 0;
+        int secondRuns = 0;
 
         await Task.WhenAll(
             coordinator.RunAsync("a", () =>
@@ -96,7 +96,7 @@ public sealed class SingleFlightCoordinatorTests
     public async Task RunAsync_WhenKeyReusedAfterCompletion_ShouldRunOperationAgain()
     {
         SingleFlightCoordinator<string> coordinator = new();
-        var runCount = 0;
+        int runCount = 0;
 
         Task Operation()
         {
@@ -119,7 +119,7 @@ public sealed class SingleFlightCoordinatorTests
     {
         SingleFlightCoordinator<string> coordinator = new();
         TaskCompletionSource gate = new(TaskCreationOptions.RunContinuationsAsynchronously);
-        var runCount = 0;
+        int runCount = 0;
 
         async Task Operation()
         {
@@ -137,7 +137,7 @@ public sealed class SingleFlightCoordinatorTests
         await Assert.ThrowsExactlyAsync<InvalidOperationException>(async () => await second);
         Assert.AreEqual(1, runCount);
 
-        var reran = false;
+        bool reran = false;
         await coordinator.RunAsync("key", () =>
         {
             reran = true;
@@ -156,7 +156,7 @@ public sealed class SingleFlightCoordinatorTests
     {
         SingleFlightCoordinator<string> coordinator = new();
         TaskCompletionSource gate = new(TaskCreationOptions.RunContinuationsAsynchronously);
-        var runCount = 0;
+        int runCount = 0;
 
         async Task<int> Operation()
         {
@@ -238,7 +238,7 @@ public sealed class SingleFlightCoordinatorTests
     {
         SingleFlightCoordinator<string> coordinator = new();
         TaskCompletionSource gate = new(TaskCreationOptions.RunContinuationsAsynchronously);
-        var runCount = 0;
+        int runCount = 0;
 
         async Task<int> Operation(CancellationToken _)
         {
@@ -260,7 +260,7 @@ public sealed class SingleFlightCoordinatorTests
 
         // The winner's wait is unaffected: releasing the gate lets the shared operation finish and yield its result.
         gate.SetResult();
-        var result = await winner;
+        int result = await winner;
 
         Assert.AreEqual(42, result);
         Assert.AreEqual(1, runCount);
@@ -275,7 +275,7 @@ public sealed class SingleFlightCoordinatorTests
     {
         SingleFlightCoordinator<string> coordinator = new();
         TaskCompletionSource gate = new(TaskCreationOptions.RunContinuationsAsynchronously);
-        var runCount = 0;
+        int runCount = 0;
 
         async Task<int> Operation(CancellationToken _)
         {
@@ -294,7 +294,7 @@ public sealed class SingleFlightCoordinatorTests
         await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () => await winner);
 
         gate.SetResult();
-        var result = await joiner;
+        int result = await joiner;
 
         Assert.AreEqual(7, result);
         Assert.AreEqual(1, runCount);
@@ -345,7 +345,7 @@ public sealed class SingleFlightCoordinatorTests
     {
         SingleFlightCoordinator<string> coordinator = new();
         TaskCompletionSource gate = new(TaskCreationOptions.RunContinuationsAsynchronously);
-        var runCount = 0;
+        int runCount = 0;
 
         async Task Operation(CancellationToken _)
         {
@@ -376,7 +376,7 @@ public sealed class SingleFlightCoordinatorTests
     {
         SingleFlightCoordinator<string> coordinator = new();
         TaskCompletionSource gate = new(TaskCreationOptions.RunContinuationsAsynchronously);
-        var runCount = 0;
+        int runCount = 0;
 
         async Task Operation(CancellationToken _)
         {
@@ -394,7 +394,7 @@ public sealed class SingleFlightCoordinatorTests
         await Assert.ThrowsExactlyAsync<InvalidOperationException>(async () => await joiner);
         Assert.AreEqual(1, runCount);
 
-        var reran = false;
+        bool reran = false;
         await coordinator.RunAsync("key", _ =>
         {
             reran = true;

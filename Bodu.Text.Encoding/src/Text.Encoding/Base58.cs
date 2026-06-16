@@ -97,7 +97,7 @@ public static partial class Base58
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     public static bool IsBase58Digit(char value, Base58Variant variant = Base58Variant.BitcoinFlickr)
     {
-        var lookup = GetLookup(variant);
+        sbyte[] lookup = GetLookup(variant);
         return value < lookup.Length && lookup[value] >= 0;
     }
 
@@ -114,10 +114,10 @@ public static partial class Base58
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     public static bool IsValid(ReadOnlySpan<char> source, Base58Variant variant = Base58Variant.BitcoinFlickr, BaseFormatStyles styles = BaseFormatStyles.None)
     {
-        var lookup = GetLookup(variant);
-        var ignoreWhitespace = styles.HasFlag(BaseFormatStyles.IgnoreWhitespace);
+        sbyte[] lookup = GetLookup(variant);
+        bool ignoreWhitespace = styles.HasFlag(BaseFormatStyles.IgnoreWhitespace);
 
-        foreach (var c in source)
+        foreach (char c in source)
         {
             if (ignoreWhitespace && c is ' ' or '\t' or '\r' or '\n')
                 continue;
@@ -136,12 +136,12 @@ public static partial class Base58
     /// <returns>The lookup table.</returns>
     private static sbyte[] BuildLookup(string alphabet)
     {
-        var table = new sbyte[128];
+        sbyte[] table = new sbyte[128];
         Array.Fill(table, (sbyte)-1);
 
-        for (var i = 0; i < alphabet.Length; i++)
+        for (int i = 0; i < alphabet.Length; i++)
         {
-            var c = alphabet[i];
+            char c = alphabet[i];
             table[c] = (sbyte)i;
         }
 

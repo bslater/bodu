@@ -109,11 +109,11 @@ public partial class MultisetTests
     public void Add_WhenManyDistinctItemsAdded_ShouldTrackAllCountsAccurately()
     {
         var mvd = new Multiset<int>();
-        var expectedTotal = 0;
+        int expectedTotal = 0;
 
-        for (var i = 0; i < 1000; i++)
+        for (int i = 0; i < 1000; i++)
         {
-            var count = (i % 5) + 1;
+            int count = (i % 5) + 1;
             mvd.Add(i, count);
             expectedTotal += count;
         }
@@ -121,7 +121,7 @@ public partial class MultisetTests
         Assert.AreEqual(expectedTotal, mvd.Count);
         Assert.AreEqual(1000, mvd.DistinctCount);
 
-        for (var i = 0; i < 1000; i++)
+        for (int i = 0; i < 1000; i++)
             Assert.AreEqual((i % 5) + 1, mvd.CountOf(i));
     }
 

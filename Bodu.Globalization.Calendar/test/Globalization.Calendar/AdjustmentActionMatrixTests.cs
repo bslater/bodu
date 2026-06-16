@@ -50,7 +50,7 @@ public sealed class AdjustmentActionMatrixTests
     /// <returns>A service over the generated fixture.</returns>
     private static INotableDateService AddDaysService(int days)
     {
-        var xml = $"""
+        string xml = $"""
         <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.add-days">
           <ResolutionPolicy duplicatePolicy="Error" priorityDirection="HigherWins" />
           <AdjustmentPolicies>
@@ -135,7 +135,7 @@ public sealed class AdjustmentActionMatrixTests
     /// <returns>A service over the generated fixture.</returns>
     private static INotableDateService WeekdayMoveService(string action, string targetWeekday, int strategyDay)
     {
-        var xml = $"""
+        string xml = $"""
         <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.weekday-move">
           <ResolutionPolicy duplicatePolicy="Error" priorityDirection="HigherWins" />
           <AdjustmentPolicies>
@@ -221,7 +221,7 @@ public sealed class AdjustmentActionMatrixTests
     /// <returns>A service over the generated fixture.</returns>
     private static INotableDateService WorkingDayService(string action, int strategyDay, int maxSearchDays)
     {
-        var xml = $"""
+        string xml = $"""
         <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.working-day">
           <ResolutionPolicy duplicatePolicy="Error" priorityDirection="HigherWins" />
           <AdjustmentPolicies>

@@ -29,7 +29,7 @@ public class ThueMorseTests
     [TestMethod]
     public void ThueMorse_WhenCountIsSixteen_ShouldReturnCanonicalPrefix()
     {
-        var actual = SequenceGenerator.ThueMorse(16).ToArray();
+        int[] actual = SequenceGenerator.ThueMorse(16).ToArray();
         CollectionAssert.AreEqual(new[] { 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1, 0 }, actual);
     }
 
@@ -39,7 +39,7 @@ public class ThueMorseTests
     [TestMethod]
     public void ThueMorse_WhenCountIsZero_ShouldReturnEmptySequence()
     {
-        var actual = SequenceGenerator.ThueMorse(0).ToArray();
+        int[] actual = SequenceGenerator.ThueMorse(0).ToArray();
         Assert.IsEmpty(actual);
     }
 
@@ -50,9 +50,9 @@ public class ThueMorseTests
     public void ThueMorse_WhenEnumerated_ShouldMatchPopcountParity()
     {
         const int count = 64;
-        var actual = SequenceGenerator.ThueMorse(count).ToArray();
+        int[] actual = SequenceGenerator.ThueMorse(count).ToArray();
 
-        for (var i = 0; i < count; i++)
+        for (int i = 0; i < count; i++)
         {
             int parity = 0, n = i;
             while (n > 0) { parity ^= n & 1; n >>= 1; }
@@ -66,7 +66,7 @@ public class ThueMorseTests
     [TestMethod]
     public void ThueMorse_WhenEnumerated_ShouldYieldOnlyZeroOrOne()
     {
-        foreach (var v in SequenceGenerator.ThueMorse(32))
+        foreach (int v in SequenceGenerator.ThueMorse(32))
             Assert.IsTrue(v is 0 or 1, $"Expected 0 or 1, got {v}.");
     }
 

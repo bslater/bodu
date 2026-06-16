@@ -67,7 +67,7 @@ public sealed class UnitedStatesKnownAnswerTests
     [TestMethod]
     public void Resolve_WhenJuneteenthBefore2021_ReturnsNoResult()
     {
-        var count = CreateService()
+        int count = CreateService()
             .Resolve(new DateRange(new DateOnly(2020, 1, 1), new DateOnly(2020, 12, 31)), "US")
             .Count(r => r.NotableDateId == "juneteenth");
 

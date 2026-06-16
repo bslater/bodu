@@ -19,11 +19,11 @@ public partial class CryptoHelpersTests
     public void TryPadBlock_WhenValidInput_ShouldReturnTrue(
         PaddingMode padding, string inputHex, int blockSizeBytes, string expectedHex)
     {
-        var input = Convert.FromHexString(inputHex);
-        var expectedLength = expectedHex.Length / 2;
+        byte[] input = Convert.FromHexString(inputHex);
+        int expectedLength = expectedHex.Length / 2;
         Span<byte> destination = new byte[expectedLength];
 
-        var result = CryptographyHelper.TryPadBlock(padding, blockSizeBytes * 8, input, destination, out var written);
+        bool result = CryptographyHelper.TryPadBlock(padding, blockSizeBytes * 8, input, destination, out int written);
 
         Assert.IsTrue(result);
     }
@@ -37,11 +37,11 @@ public partial class CryptoHelpersTests
     public void TryPadBlock_WhenValidInput_ShouldReturnExpectedLength(
         PaddingMode padding, string inputHex, int blockSizeBytes, string expectedHex)
     {
-        var input = Convert.FromHexString(inputHex);
-        var expectedLength = expectedHex.Length / 2;
+        byte[] input = Convert.FromHexString(inputHex);
+        int expectedLength = expectedHex.Length / 2;
         Span<byte> destination = new byte[expectedLength];
 
-        var result = CryptographyHelper.TryPadBlock(padding, blockSizeBytes * 8, input, destination, out var written);
+        bool result = CryptographyHelper.TryPadBlock(padding, blockSizeBytes * 8, input, destination, out int written);
 
         Assert.AreEqual(expectedLength, written);
     }
@@ -55,11 +55,11 @@ public partial class CryptoHelpersTests
     public void TryPadBlock_WhenValidInput_ShouldPreserveOriginalBytes(
         PaddingMode padding, string inputHex, int blockSizeBytes, string expectedHex)
     {
-        var input = Convert.FromHexString(inputHex);
-        var expectedLength = expectedHex.Length / 2;
+        byte[] input = Convert.FromHexString(inputHex);
+        int expectedLength = expectedHex.Length / 2;
         Span<byte> destination = new byte[expectedLength];
 
-        CryptographyHelper.TryPadBlock(padding, blockSizeBytes * 8, input, destination, out var written);
+        CryptographyHelper.TryPadBlock(padding, blockSizeBytes * 8, input, destination, out int written);
 
         Assert.IsTrue(destination.Slice(0, input.Length).SequenceEqual(input));
     }
@@ -73,14 +73,14 @@ public partial class CryptoHelpersTests
     public void TryPadBlock_WhenInvalidInput_ShouldReturnFalse(
         PaddingMode padding, string inputHex, int blockSizeBytes, Type exceptionType, int? destinationLength = null)
     {
-        var input = Convert.FromHexString(inputHex);
+        byte[] input = Convert.FromHexString(inputHex);
         destinationLength ??= (blockSizeBytes * 2);
 
         Span<byte> destination = destinationLength.Value <= 128
             ? stackalloc byte[destinationLength.Value]
             : new byte[destinationLength.Value];
 
-        var result = CryptographyHelper.TryPadBlock(padding, blockSizeBytes * 8, input, destination, out var written);
+        bool result = CryptographyHelper.TryPadBlock(padding, blockSizeBytes * 8, input, destination, out int written);
 
         Assert.IsFalse(result);
     }
@@ -94,14 +94,14 @@ public partial class CryptoHelpersTests
     public void TryPadBlock_WhenInvalidInput_ShouldReturnZeroWritten(
         PaddingMode padding, string inputHex, int blockSizeBytes, Type exceptionType, int? destinationLength = null)
     {
-        var input = Convert.FromHexString(inputHex);
+        byte[] input = Convert.FromHexString(inputHex);
         destinationLength ??= (blockSizeBytes * 2);
 
         Span<byte> destination = destinationLength.Value <= 128
             ? stackalloc byte[destinationLength.Value]
             : new byte[destinationLength.Value];
 
-        _ = CryptographyHelper.TryPadBlock(padding, blockSizeBytes * 8, input, destination, out var written);
+        _ = CryptographyHelper.TryPadBlock(padding, blockSizeBytes * 8, input, destination, out int written);
 
         Assert.AreEqual(0, written);
     }

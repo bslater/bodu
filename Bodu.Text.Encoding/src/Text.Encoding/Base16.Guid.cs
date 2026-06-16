@@ -18,7 +18,7 @@ public static partial class Base16
     public static Guid DecodeGuid(ReadOnlySpan<char> source, BaseFormatStyles styles = BaseFormatStyles.None)
     {
         Span<byte> bytes = stackalloc byte[16];
-        return !TryDecode(source, bytes, out var written, styles) || written != 16
+        return !TryDecode(source, bytes, out int written, styles) || written != 16
             ? throw new FormatException(EncodingResourceStrings.Format_Invalid_GuidNotSixteenBytes)
             : new Guid(bytes);
     }
@@ -58,7 +58,7 @@ public static partial class Base16
     public static bool TryDecodeGuid(ReadOnlySpan<char> source, out Guid value, BaseFormatStyles styles = BaseFormatStyles.None)
     {
         Span<byte> bytes = stackalloc byte[16];
-        if (!TryDecode(source, bytes, out var written, styles) || written != 16)
+        if (!TryDecode(source, bytes, out int written, styles) || written != 16)
         {
             value = Guid.Empty;
             return false;

@@ -30,7 +30,7 @@ public partial class DequeFixedCapacityTests
     [TestMethod]
     public void Ctor_WhenAllowGrowFalseAndCollectionExceedsCapacity_ShouldThrowExactly()
     {
-        var source = new[] { 1, 2, 3, 4 };
+        int[] source = new[] { 1, 2, 3, 4 };
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
@@ -44,7 +44,7 @@ public partial class DequeFixedCapacityTests
     [TestMethod]
     public void Ctor_WhenAllowGrowFalseAndCollectionFits_ShouldAdoptElements()
     {
-        var source = new[] { 1, 2, 3 };
+        int[] source = new[] { 1, 2, 3 };
         var deque = new Deque<int>(source, capacity: 5, allowGrow: false);
 
         Assert.AreEqual(5, deque.Capacity);

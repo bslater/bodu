@@ -37,7 +37,7 @@ public partial class DateTimeExtensionsTests
         {
             CultureInfo.CurrentCulture = new CultureInfo("fr-FR"); // Starts week on Monday
             DateTime input = new(2024, 01, 08); // 2nd Monday of Jan 2024
-            var week = input.WeekOfMonth(); // Should use fr-FR's firstDayOfWeek (Monday)
+            int week = input.WeekOfMonth(); // Should use fr-FR's firstDayOfWeek (Monday)
 
             Assert.AreEqual(2, week); // Jan 8 falls in 2nd full week
         }
@@ -76,8 +76,8 @@ public partial class DateTimeExtensionsTests
     {
         var date = new DateTime(2024, 04, 05);
         var culture = new CultureInfo(cultureName);
-        var expected = date.WeekOfMonth(culture.DateTimeFormat.CalendarWeekRule, culture.DateTimeFormat.FirstDayOfWeek);
-        var actual = date.WeekOfMonth(culture);
+        int expected = date.WeekOfMonth(culture.DateTimeFormat.CalendarWeekRule, culture.DateTimeFormat.FirstDayOfWeek);
+        int actual = date.WeekOfMonth(culture);
         Assert.AreEqual(expected, actual, $"Culture: {cultureName}");
     }
 
@@ -89,8 +89,8 @@ public partial class DateTimeExtensionsTests
     {
         var date = new DateTime(2024, 05, 15);
         var culture = new CultureInfo("en-US") { DateTimeFormat = { FirstDayOfWeek = DayOfWeek.Sunday } };
-        var expected = date.WeekOfMonth(culture.DateTimeFormat.CalendarWeekRule, culture.DateTimeFormat.FirstDayOfWeek);
-        var actual = date.WeekOfMonth(culture);
+        int expected = date.WeekOfMonth(culture.DateTimeFormat.CalendarWeekRule, culture.DateTimeFormat.FirstDayOfWeek);
+        int actual = date.WeekOfMonth(culture);
         Assert.AreEqual(expected, actual);
     }
 
@@ -101,9 +101,9 @@ public partial class DateTimeExtensionsTests
     public void WeekOfMonth_WhenUsingDefaultCulture_ShouldMatchExplicitCall()
     {
         var date = new DateTime(2024, 05, 15);
-        var expected = date.WeekOfMonth(CultureInfo.CurrentCulture.DateTimeFormat.CalendarWeekRule,
+        int expected = date.WeekOfMonth(CultureInfo.CurrentCulture.DateTimeFormat.CalendarWeekRule,
                                         CultureInfo.CurrentCulture.DateTimeFormat.FirstDayOfWeek);
-        var actual = date.WeekOfMonth();
+        int actual = date.WeekOfMonth();
         Assert.AreEqual(expected, actual);
     }
     /// <summary>
@@ -113,7 +113,7 @@ public partial class DateTimeExtensionsTests
     [DynamicData(nameof(WeekOfMonthCalendarWeekRuleTestData))]
     public void WeekOfMonth_WithCalendarWeekAndRule_ShouldReturnExpected(DateTime input, CalendarWeekRule rule, DayOfWeek firstDay, int expected)
     {
-        var actual = input.WeekOfMonth(rule, firstDay);
+        int actual = input.WeekOfMonth(rule, firstDay);
         Assert.AreEqual(expected, actual);
     }
 
@@ -124,7 +124,7 @@ public partial class DateTimeExtensionsTests
     [DynamicData(nameof(WeekOfMonthCultureTestData))]
     public void WeekOfMonth_WithCulture_ShouldReturnExpected(DateTime input, CultureInfo culture, int expected)
     {
-        var actual = input.WeekOfMonth(culture);
+        int actual = input.WeekOfMonth(culture);
         Assert.AreEqual(expected, actual);
     }
 

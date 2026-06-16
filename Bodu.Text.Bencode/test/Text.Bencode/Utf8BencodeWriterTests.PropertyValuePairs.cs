@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Utf8BencodeWriterTests.PropertyValuePairs.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -26,7 +26,7 @@ public partial class Utf8BencodeWriterTests
     [TestMethod]
     public void WriteInteger_WhenCombinedWithPropertyName_ShouldMatchSeparateCalls()
     {
-        var combined = Write(w =>
+        string combined = Write(w =>
         {
             w.WriteStartDictionary();
             w.WriteInteger("count", 42);
@@ -42,7 +42,7 @@ public partial class Utf8BencodeWriterTests
             w.WriteEndDictionary();
         });
 
-        var separate = Write(w =>
+        string separate = Write(w =>
         {
             w.WriteStartDictionary();
             w.WritePropertyName("count");
@@ -75,7 +75,7 @@ public partial class Utf8BencodeWriterTests
     [TestMethod]
     public void WritePropertyName_WhenNameIsCharSpan_ShouldEncodeAsUtf8()
     {
-        var actual = Write(w =>
+        string actual = Write(w =>
         {
             w.WriteStartDictionary();
             w.WritePropertyName("café".AsSpan());
@@ -83,7 +83,7 @@ public partial class Utf8BencodeWriterTests
             w.WriteEndDictionary();
         });
 
-        var expected = Write(w =>
+        string expected = Write(w =>
         {
             w.WriteStartDictionary();
             w.WritePropertyName("café");

@@ -101,8 +101,8 @@ public sealed class ParserEnumSurfaceTests
     [DataRow("Custom", AdjustmentTrigger.Custom)]
     public void Load_WhenTriggerUsesSupportedValue_ShouldResolveExpectedTrigger(string token, AdjustmentTrigger expected)
     {
-        var handlerKey = token == "Custom" ? " handlerKey=\"k\"" : string.Empty;
-        var xml =
+        string handlerKey = token == "Custom" ? " handlerKey=\"k\"" : string.Empty;
+        string xml =
             $"""
             <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.enum">
               <AdjustmentPolicies>
@@ -116,8 +116,8 @@ public sealed class ParserEnumSurfaceTests
             </NotableDateResource>
             """;
 
-        var jsonHandler = token == "Custom" ? ", \"handlerKey\": \"k\"" : string.Empty;
-        var json =
+        string jsonHandler = token == "Custom" ? ", \"handlerKey\": \"k\"" : string.Empty;
+        string json =
             $$"""
             {
               "schemaVersion": "1.0", "resourceId": "test.enum",
@@ -156,13 +156,13 @@ public sealed class ParserEnumSurfaceTests
     [DataRow("Custom", AdjustmentAction.Custom)]
     public void Load_WhenActionUsesSupportedValue_ShouldResolveExpectedAction(string token, AdjustmentAction expected)
     {
-        var xmlAttrs = token switch
+        string xmlAttrs = token switch
         {
             "Custom" => " handlerKey=\"k\"",
             "ReplaceWithRule" => " notableDateRef=\"x\" ruleRef=\"r\"",
             _ => string.Empty,
         };
-        var xml =
+        string xml =
             $"""
             <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.enum">
               <AdjustmentPolicies>
@@ -176,13 +176,13 @@ public sealed class ParserEnumSurfaceTests
             </NotableDateResource>
             """;
 
-        var jsonAttrs = token switch
+        string jsonAttrs = token switch
         {
             "Custom" => ", \"handlerKey\": \"k\"",
             "ReplaceWithRule" => ", \"notableDateRef\": \"x\", \"ruleRef\": \"r\"",
             _ => string.Empty,
         };
-        var json =
+        string json =
             $$"""
             {
               "schemaVersion": "1.0", "resourceId": "test.enum",
@@ -215,7 +215,7 @@ public sealed class ParserEnumSurfaceTests
     [DataRow("Suppress", EmissionMode.Suppress)]
     public void Load_WhenEmissionUsesSupportedValue_ShouldResolveExpectedEmission(string token, EmissionMode expected)
     {
-        var xml =
+        string xml =
             $"""
             <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.enum">
               <AdjustmentPolicies>
@@ -229,7 +229,7 @@ public sealed class ParserEnumSurfaceTests
             </NotableDateResource>
             """;
 
-        var json =
+        string json =
             $$"""
             {
               "schemaVersion": "1.0", "resourceId": "test.enum",
@@ -264,7 +264,7 @@ public sealed class ParserEnumSurfaceTests
     [DataRow("Sunday", DayOfWeek.Sunday)]
     public void Load_WhenDayOfWeekInMonthUsesSupportedWeekday_ShouldResolveExpectedWeekday(string token, DayOfWeek expected)
     {
-        var xml =
+        string xml =
             $"""
             <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.enum">
               <NotableDates>
@@ -275,7 +275,7 @@ public sealed class ParserEnumSurfaceTests
             </NotableDateResource>
             """;
 
-        var json =
+        string json =
             $$"""
             {
               "schemaVersion": "1.0", "resourceId": "test.enum",
@@ -309,7 +309,7 @@ public sealed class ParserEnumSurfaceTests
     [DataRow("Last", WeekOrdinal.Last)]
     public void Load_WhenDayOfWeekInMonthUsesSupportedOrdinal_ShouldResolveExpectedOrdinal(string token, WeekOrdinal expected)
     {
-        var xml =
+        string xml =
             $"""
             <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.enum">
               <NotableDates>
@@ -320,7 +320,7 @@ public sealed class ParserEnumSurfaceTests
             </NotableDateResource>
             """;
 
-        var json =
+        string json =
             $$"""
             {
               "schemaVersion": "1.0", "resourceId": "test.enum",
@@ -353,7 +353,7 @@ public sealed class ParserEnumSurfaceTests
     [DataRow("After", WeekdayProximity.After)]
     public void Load_WhenWeekdayNearDateUsesSupportedProximity_ShouldResolveExpectedProximity(string token, WeekdayProximity expected)
     {
-        var xml =
+        string xml =
             $"""
             <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.enum">
               <NotableDates>
@@ -364,7 +364,7 @@ public sealed class ParserEnumSurfaceTests
             </NotableDateResource>
             """;
 
-        var json =
+        string json =
             $$"""
             {
               "schemaVersion": "1.0", "resourceId": "test.enum",

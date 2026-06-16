@@ -79,7 +79,7 @@ public sealed class FractionJsonConverterFactory
 
         Type componentType = typeToConvert.GetGenericArguments()[0];
         Type converterType = typeof(FractionJsonConverter<>).MakeGenericType(componentType);
-        var converter = Activator.CreateInstance(converterType, _policy)
+        object converter = Activator.CreateInstance(converterType, _policy)
             ?? throw new InvalidOperationException(
                 string.Format(CultureInfo.CurrentCulture, NumericsResourceStrings.Op_Invalid_UnableToCreateConverter, typeToConvert));
 

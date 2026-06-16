@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlFileExchangeRateCacheContractTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -22,7 +22,7 @@ public sealed class TomlFileExchangeRateCacheContractTests
     /// <inheritdoc />
     protected override TomlFileExchangeRateCache CreateCache()
     {
-        var directory = Path.Combine(Path.GetTempPath(), "bodu-exchange-rates-tests", Guid.NewGuid().ToString("N"));
+        string directory = Path.Combine(Path.GetTempPath(), "bodu-exchange-rates-tests", Guid.NewGuid().ToString("N"));
         _directories.Add(directory);
         return new TomlFileExchangeRateCache(new FileExchangeRateCacheOptions { Provider = Provider, CacheDirectory = directory });
     }
@@ -33,7 +33,7 @@ public sealed class TomlFileExchangeRateCacheContractTests
     [TestCleanup]
     public void Cleanup()
     {
-        foreach (var directory in _directories)
+        foreach (string directory in _directories)
         {
             try
             {

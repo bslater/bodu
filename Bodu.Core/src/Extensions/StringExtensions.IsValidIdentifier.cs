@@ -41,7 +41,7 @@ public static partial class StringExtensions
         if (value.Length == 0) return false;
         if (!IsIdentifierStart(value[0])) return false;
 
-        for (var i = 1; i < value.Length; i++)
+        for (int i = 1; i < value.Length; i++)
         {
             if (!IsIdentifierPart(value[i])) return false;
         }

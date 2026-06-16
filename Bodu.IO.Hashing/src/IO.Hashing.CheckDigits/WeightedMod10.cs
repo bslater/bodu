@@ -51,10 +51,10 @@ internal static class WeightedMod10
         // itself toward the left the pattern is {3, 1, 7, 3, 1, 7, 3, 1, 7}; including the check position makes
         // the total sum a multiple of ten for a consistent sequence.
         ReadOnlySpan<int> weights = [7, 3, 1];
-        var sum = 0;
+        int sum = 0;
         for (int i = digits.Length - 1, j = 0; i >= 0; i--, j++)
         {
-            var ch = digits[i];
+            char ch = digits[i];
             if ((uint)(ch - '0') > 9u)
                 ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(digits));
 
@@ -75,14 +75,14 @@ internal static class WeightedMod10
     /// </exception>
     public static char ComputeIsbn13(ReadOnlySpan<char> digits)
     {
-        var sum = 0;
+        int sum = 0;
         for (int i = digits.Length - 1, j = 0; i >= 0; i--, j++)
         {
-            var ch = digits[i];
+            char ch = digits[i];
             if ((uint)(ch - '0') > 9u)
                 ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(digits));
 
-            var v = ch - '0';
+            int v = ch - '0';
 
             // The check position is the rightmost (j = 0) with implicit weight 1; the rightmost data digit
             // therefore receives weight 3, the next weight 1, and so on alternating 3/1 toward the left.
@@ -107,10 +107,10 @@ internal static class WeightedMod10
         if (digitsIncludingCheck.IsEmpty) return false;
 
         ReadOnlySpan<int> weights = [1, 7, 3];
-        var sum = 0;
+        int sum = 0;
         for (int i = digitsIncludingCheck.Length - 1, j = 0; i >= 0; i--, j++)
         {
-            var ch = digitsIncludingCheck[i];
+            char ch = digitsIncludingCheck[i];
             if ((uint)(ch - '0') > 9u) return false;
 
             sum += (ch - '0') * weights[j % 3];
@@ -133,13 +133,13 @@ internal static class WeightedMod10
     {
         if (digitsIncludingCheck.IsEmpty) return false;
 
-        var sum = 0;
+        int sum = 0;
         for (int i = digitsIncludingCheck.Length - 1, j = 0; i >= 0; i--, j++)
         {
-            var ch = digitsIncludingCheck[i];
+            char ch = digitsIncludingCheck[i];
             if ((uint)(ch - '0') > 9u) return false;
 
-            var v = ch - '0';
+            int v = ch - '0';
 
             // Including the check position itself, positions j = 0, 2, 4, ... carry weight 1 while j = 1, 3, 5,
             // ... carry weight 3. When the sum is a multiple of 10 the sequence is internally consistent.

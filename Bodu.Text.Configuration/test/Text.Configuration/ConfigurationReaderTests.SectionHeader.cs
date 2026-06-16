@@ -205,7 +205,7 @@ public class ConfigurationReaderSectionHeaderTests
 
         ConfigurationParseResult result = ConfigurationDocument.ParseWithDiagnostics("[]\nkey = value\n", options);
 
-        var emptyCount = 0;
+        int emptyCount = 0;
         foreach (ConfigurationDiagnostic d in result.Diagnostics)
         {
             if (d.Code == ConfigurationDiagnosticCode.EmptySectionHeader)

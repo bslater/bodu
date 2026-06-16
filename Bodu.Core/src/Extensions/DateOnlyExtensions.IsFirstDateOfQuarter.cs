@@ -28,7 +28,7 @@ public static partial class DateOnlyExtensions
     /// </remarks>
     public static bool IsFirstDateOfQuarter(this DateOnly date)
     {
-        (var year, var quarter) = GetQuarterAndYearFromDate(CalendarQuarterDefinition.JanuaryToDecember, referenceDate: date);
+        (int year, int quarter) = GetQuarterAndYearFromDate(CalendarQuarterDefinition.JanuaryToDecember, referenceDate: date);
         return date.DayNumber == ComputeQuarterStartDayNumber(year, quarter, GetQuarterDefinition(CalendarQuarterDefinition.JanuaryToDecember));
     }
 
@@ -57,7 +57,7 @@ public static partial class DateOnlyExtensions
         ThrowHelper.ThrowIfEnumValueIsUndefined(definition);
         if (definition == CalendarQuarterDefinition.Custom) throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_ProviderInterface, nameof(IQuarterDefinitionProvider)));
 
-        (var year, var quarter) = GetQuarterAndYearFromDate(definition, referenceDate: date);
+        (int year, int quarter) = GetQuarterAndYearFromDate(definition, referenceDate: date);
         return date.DayNumber == ComputeQuarterStartDayNumber(year, quarter, GetQuarterDefinition(definition));
     }
 

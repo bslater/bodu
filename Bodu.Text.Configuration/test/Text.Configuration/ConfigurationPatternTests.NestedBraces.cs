@@ -70,9 +70,9 @@ public partial class ConfigurationPatternTests
     {
         StringBuilder source = new();
         source.Append("prefix.");
-        for (var i = 0; i < 8; i++) source.Append("{a,");
+        for (int i = 0; i < 8; i++) source.Append("{a,");
         source.Append('b');
-        for (var i = 0; i < 8; i++) source.Append('}');
+        for (int i = 0; i < 8; i++) source.Append('}');
         source.Append(".suffix");
 
         var pattern = ConfigurationPattern.Compile(source.ToString());

@@ -279,7 +279,7 @@ public sealed partial class Blake2b
     {
         // Read the 16 message words in little-endian order.
         Span<ulong> m = stackalloc ulong[16];
-        for (var i = 0; i < 16; i++)
+        for (int i = 0; i < 16; i++)
             m[i] = BinaryPrimitives.ReadUInt64LittleEndian(block.Slice(i * 8, 8));
 
         // Initialize the 16-element working vector.
@@ -306,9 +306,9 @@ public sealed partial class Blake2b
             v[14] = ~v[14];
 
         // 12 rounds of G mixing.
-        for (var r = 0; r < 12; r++)
+        for (int r = 0; r < 12; r++)
         {
-            var s = Blake2Constants.Sigma[r % 10];
+            byte[] s = Blake2Constants.Sigma[r % 10];
 
             G(v, 0, 4, 8, 12, m[s[0]], m[s[1]]);
             G(v, 1, 5, 9, 13, m[s[2]], m[s[3]]);
@@ -321,7 +321,7 @@ public sealed partial class Blake2b
         }
 
         // Fold the working vector back into the hash state.
-        for (var i = 0; i < 8; i++)
+        for (int i = 0; i < 8; i++)
             _h[i] ^= v[i] ^ v[i + 8];
     }
 
@@ -332,12 +332,12 @@ public sealed partial class Blake2b
     /// </remarks>
     protected override byte[] ProcessFinalBlock()
     {
-        var outputBytes = HashSizeValue / 8;
-        var output = new byte[outputBytes];
-        var wordCount = (outputBytes + 7) / 8;
+        int outputBytes = HashSizeValue / 8;
+        byte[] output = new byte[outputBytes];
+        int wordCount = (outputBytes + 7) / 8;
 
         Span<byte> tmp = stackalloc byte[8];
-        for (var i = 0; i < wordCount; i++)
+        for (int i = 0; i < wordCount; i++)
         {
             Span<byte> wordSpan = output.AsSpan(i * 8, Math.Min(8, outputBytes - (i * 8)));
             if (wordSpan.Length == 8)
@@ -365,8 +365,8 @@ public sealed partial class Blake2b
         s_iv.CopyTo(_h, 0);
 
         // Parameter block: fan-out=1, max depth=1, digest length=nn, key length=kk.
-        var nn = HashSizeValue / 8;
-        var kk = KeyValue?.Length ?? 0;
+        int nn = HashSizeValue / 8;
+        int kk = KeyValue?.Length ?? 0;
         _h[0] ^= 0x01010000UL ^ ((ulong)kk << 8) ^ (ulong)nn;
     }
 

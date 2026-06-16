@@ -19,7 +19,7 @@ public partial class DateOnlyExtensionsTests
     {
         var input = DateOnly.FromDateTime(inputDateTime);
 
-        var actual = input.DaysInMonth();
+        int actual = input.DaysInMonth();
 
         Assert.AreEqual(expected, actual);
     }

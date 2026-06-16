@@ -44,7 +44,7 @@ internal sealed class ObjectConverter<T>
         Dictionary<string, TomlNode?>? extensionEntries = null;
         while (reader.Read() && reader.TokenType != TomlTokenType.EndTable)
         {
-            var name = reader.GetString();
+            string name = reader.GetString();
             reader.Read();
 
             if (metadata.TryGetProperty(name, out PropertyMetadata? property) && property is not null)
@@ -113,7 +113,7 @@ internal sealed class ObjectConverter<T>
             return;
 
         // A value type cannot participate in a reference cycle, so only reference instances are tracked.
-        var tracked = !typeof(T).IsValueType;
+        bool tracked = !typeof(T).IsValueType;
         if (tracked && state is not null && !state.TryEnterReference(value!))
         {
             state.SetFailure(string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Op_Invalid_CycleDetected, typeof(T)));
@@ -141,7 +141,7 @@ internal sealed class ObjectConverter<T>
             writer.WriteStartTable();
             foreach (PropertyMetadata property in metadata.Properties)
             {
-                var memberValue = property.GetValue(value);
+                object? memberValue = property.GetValue(value);
                 if (ShouldSkip(property, memberValue, options))
                     continue;
 
@@ -275,11 +275,11 @@ internal sealed class ObjectConverter<T>
     {
         if (metadata.UsesParameterizedConstructor)
         {
-            var arguments = new object?[metadata.ConstructorParameterCount];
-            for (var i = 0; i < arguments.Length; i++)
+            object?[] arguments = new object?[metadata.ConstructorParameterCount];
+            for (int i = 0; i < arguments.Length; i++)
             {
                 PropertyMetadata? parameter = metadata.GetConstructorParameter(i);
-                arguments[i] = parameter is not null && values.TryGetValue(parameter, out var value)
+                arguments[i] = parameter is not null && values.TryGetValue(parameter, out object? value)
                     ? value
                     : metadata.GetConstructorDefault(i);
             }
@@ -310,7 +310,7 @@ internal sealed class ObjectConverter<T>
     /// </remarks>
     private static void AssignSettableMembers(TypeMetadata metadata, Dictionary<PropertyMetadata, object?> values, object instance, TomlSerializerOptions options)
     {
-        var skipConstructorBound = metadata.UsesParameterizedConstructor;
+        bool skipConstructorBound = metadata.UsesParameterizedConstructor;
         foreach (KeyValuePair<PropertyMetadata, object?> entry in values)
         {
             PropertyMetadata property = entry.Key;
@@ -346,7 +346,7 @@ internal sealed class ObjectConverter<T>
     /// </remarks>
     private static bool TryPopulate(PropertyMetadata property, object instance, object? bufferedValue)
     {
-        var existing = property.GetValue(instance);
+        object? existing = property.GetValue(instance);
         if (existing is null || bufferedValue is null)
             return false;
 
@@ -363,7 +363,7 @@ internal sealed class ObjectConverter<T>
 
         if (existing is System.Collections.IList existingList)
         {
-            foreach (var item in bufferedItems)
+            foreach (object? item in bufferedItems)
                 existingList.Add(item);
 
             return true;
@@ -396,8 +396,8 @@ internal sealed class ObjectConverter<T>
         if (add is null)
             return false;
 
-        var argument = new object?[1];
-        foreach (var item in bufferedItems)
+        object?[] argument = new object?[1];
+        foreach (object? item in bufferedItems)
         {
             argument[0] = item;
             add.Invoke(existing, argument);

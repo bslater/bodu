@@ -101,10 +101,10 @@ public sealed class CrcCatalogKatTests
                 xOrOut: kat.XorOut);
 
             Crc crc = new(standard);
-            var hash = crc.ComputeHash(CheckInput);
+            byte[] hash = crc.ComputeHash(CheckInput);
 
-            var actual = 0UL;
-            for (var i = 0; i < hash.Length; i++)
+            ulong actual = 0UL;
+            for (int i = 0; i < hash.Length; i++)
                 actual |= (ulong)hash[i] << (i * 8);
 
             Assert.AreEqual(

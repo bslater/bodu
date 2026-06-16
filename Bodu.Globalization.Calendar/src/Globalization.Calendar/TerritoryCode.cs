@@ -172,9 +172,9 @@ public readonly struct TerritoryCode
         if (string.IsNullOrEmpty(value))
             return false;
 
-        var dash = value.IndexOf('-', StringComparison.Ordinal);
-        var country = dash < 0 ? value : value.Substring(0, dash);
-        var subdivision = dash < 0 ? null : value.Substring(dash + 1);
+        int dash = value.IndexOf('-', StringComparison.Ordinal);
+        string country = dash < 0 ? value : value.Substring(0, dash);
+        string? subdivision = dash < 0 ? null : value.Substring(dash + 1);
 
         if (!IsValidCountry(country) || (subdivision is not null && !IsValidSubdivision(subdivision)))
             return false;
@@ -201,9 +201,9 @@ public readonly struct TerritoryCode
         if (string.IsNullOrWhiteSpace(value))
             return [];
 
-        var parts = value.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        string[] parts = value.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
         var result = new TerritoryCode[parts.Length];
-        for (var i = 0; i < parts.Length; i++)
+        for (int i = 0; i < parts.Length; i++)
             result[i] = Parse(parts[i]);
 
         return result;
@@ -270,7 +270,7 @@ public readonly struct TerritoryCode
         if (value.Length is < 1 or > 3)
             return false;
 
-        foreach (var c in value)
+        foreach (char c in value)
         {
             if (!char.IsAsciiLetterOrDigit(c))
                 return false;

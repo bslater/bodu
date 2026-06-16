@@ -21,7 +21,7 @@ public sealed class CircularBufferEnumeratorContractTests
     protected override CircularBuffer<int> Create(params int[] items)
     {
         CircularBuffer<int> buffer = new(capacity: Math.Max(16, items.Length));
-        foreach (var item in items)
+        foreach (int item in items)
             buffer.Enqueue(item);
         return buffer;
     }

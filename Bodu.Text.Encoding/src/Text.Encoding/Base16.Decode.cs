@@ -56,7 +56,7 @@ public static partial class Base16
             if ((chars.Length & 1) != 0)
                 throw new FormatException(EncodingResourceStrings.Format_Invalid_HexDigitCountOdd);
 
-            var result = new byte[chars.Length / 2];
+            byte[] result = new byte[chars.Length / 2];
             return !DecodeHexPairs(chars, result) ? throw new FormatException(EncodingResourceStrings.Format_Invalid_HexCharacters) : result;
         }
 
@@ -64,11 +64,11 @@ public static partial class Base16
             ? stackalloc char[chars.Length]
             : new char[chars.Length];
 
-        var digitCount = StripDecorationsInto(chars, style, scratch);
+        int digitCount = StripDecorationsInto(chars, style, scratch);
         if ((digitCount & 1) != 0)
             throw new FormatException(EncodingResourceStrings.Format_Invalid_HexDigitCountOddAfterDecorations);
 
-        var decoded = new byte[digitCount / 2];
+        byte[] decoded = new byte[digitCount / 2];
         return !DecodeHexPairs(scratch.Slice(0, digitCount), decoded)
             ? throw new FormatException(EncodingResourceStrings.Format_Invalid_HexCharacters)
             : decoded;
@@ -132,7 +132,7 @@ public static partial class Base16
             if ((chars.Length & 1) != 0)
                 return false;
 
-            var need = chars.Length / 2;
+            int need = chars.Length / 2;
             if (destination.Length < need)
                 return false;
 
@@ -147,11 +147,11 @@ public static partial class Base16
             ? stackalloc char[chars.Length]
             : new char[chars.Length];
 
-        var digitCount = StripDecorationsInto(chars, style, scratch);
+        int digitCount = StripDecorationsInto(chars, style, scratch);
         if ((digitCount & 1) != 0)
             return false;
 
-        var needBytes = digitCount / 2;
+        int needBytes = digitCount / 2;
         if (destination.Length < needBytes)
             return false;
 
@@ -176,11 +176,11 @@ public static partial class Base16
     /// </remarks>
     private static bool DecodeHexPairs(ReadOnlySpan<char> chars, Span<byte> bytes)
     {
-        var bi = 0;
-        for (var i = 0; i < chars.Length; i += 2)
+        int bi = 0;
+        for (int i = 0; i < chars.Length; i += 2)
         {
-            var hi = Nibble(chars[i]);
-            var lo = Nibble(chars[i + 1]);
+            int hi = Nibble(chars[i]);
+            int lo = Nibble(chars[i + 1]);
             if ((hi | lo) < 0)
                 return false;
 
@@ -220,8 +220,8 @@ public static partial class Base16
     /// </remarks>
     private static int StripDecorationsInto(ReadOnlySpan<char> source, BaseFormatStyles style, Span<char> scratch)
     {
-        var j = 0;
-        var i = 0;
+        int j = 0;
+        int i = 0;
 
         if (style.HasFlag(BaseFormatStyles.AllowPrefix) &&
             source.Length >= Prefix.Length &&
@@ -230,10 +230,10 @@ public static partial class Base16
             i = Prefix.Length;
         }
 
-        var ignoreWhitespace = style.HasFlag(BaseFormatStyles.IgnoreWhitespace);
+        bool ignoreWhitespace = style.HasFlag(BaseFormatStyles.IgnoreWhitespace);
         for (; i < source.Length; i++)
         {
-            var c = source[i];
+            char c = source[i];
             if (ignoreWhitespace && c is ' ' or '\t' or '\r' or '\n')
                 continue;
 

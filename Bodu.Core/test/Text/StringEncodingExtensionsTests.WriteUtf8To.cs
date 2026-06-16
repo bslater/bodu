@@ -18,7 +18,7 @@ public sealed partial class StringEncodingExtensionsTests
     [TestMethod]
     public void WriteUtf8To_WhenInvoked_ShouldWriteUtf8BytesIntoWriter()
     {
-        var expected = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
+        byte[] expected = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
         using var writer = new PooledBufferBuilder<byte>(16);
 
         MultiByteText.WriteUtf8To(writer);

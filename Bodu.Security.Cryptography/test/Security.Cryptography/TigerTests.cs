@@ -94,7 +94,7 @@ public partial class TigerTests
 
     private static HashAlgorithmKnownAnswers BuildKnownAnswers(TigerVariant variant)
     {
-        (var isTiger2, var hashBits) = GetTigerHashBits(variant);
+        (bool isTiger2, int hashBits) = GetTigerHashBits(variant);
 
         (string Empty, string Abc, string Zeros16, string QuickBrownFox, string Sequential0To255, string Tiger) full = isTiger2
             ? (
@@ -134,9 +134,9 @@ public partial class TigerTests
     /// <inheritdoc />
     protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(TigerTests.TigerVariant variant)
     {
-        (var isTiger2, var hashBits) = GetTigerHashBits(variant);
+        (bool isTiger2, int hashBits) = GetTigerHashBits(variant);
 
-        var fullHashes = isTiger2
+        string[] fullHashes = isTiger2
             ? new[]
             {
                 "4441BE75F6018773C206C22745374B924AA8313FEF919F41", "860F73A57072EFACBBEA35F7DB67D97AA829C53463805093", "FEF05EE7A34522E5D942D172E88CF1BE6733D9B51602C60E", "63A98123AEC6638FE54DAAC7D3B556BB3EA89C3161B8442C",
@@ -183,15 +183,15 @@ public partial class TigerTests
 
     private static string TruncateHex(string fullHex, int bits)
     {
-        var hexLength = bits / 4; // 4 bits per hex digit
+        int hexLength = bits / 4; // 4 bits per hex digit
         return fullHex[..hexLength];
     }
 
     private static (bool IsTiger2, int HashSizeBits) GetTigerHashBits(TigerTests.TigerVariant variant)
     {
-        var name = variant.ToString(); // e.g., "Tiger2_160"
-        var isTiger2 = name.StartsWith("Tiger2", StringComparison.OrdinalIgnoreCase);
-        var hashBits = int.Parse(name[^3..]); // get the last 3 characters (128, 160, or 192)
+        string name = variant.ToString(); // e.g., "Tiger2_160"
+        bool isTiger2 = name.StartsWith("Tiger2", StringComparison.OrdinalIgnoreCase);
+        int hashBits = int.Parse(name[^3..]); // get the last 3 characters (128, 160, or 192)
         return (isTiger2, hashBits);
     }
 

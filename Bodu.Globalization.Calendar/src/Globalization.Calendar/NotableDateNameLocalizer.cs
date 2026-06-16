@@ -60,7 +60,7 @@ public sealed class NotableDateNameLocalizer
         CultureInfo current = culture;
         while (true)
         {
-            if (_names.TryGetValue((notableDate.NotableDateId, current.Name), out var name))
+            if (_names.TryGetValue((notableDate.NotableDateId, current.Name), out string? name))
                 return name;
 
             // The invariant culture (empty name) is the parent of its own parent and the end of every fallback chain.

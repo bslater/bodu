@@ -19,7 +19,7 @@ public partial class ConfigurationDocumentTests
     public void Save_WhenPathProvided_ShouldRoundTripThroughDisk()
     {
         var original = ConfigurationDocument.Parse(ConfigurationFixtures.Representative);
-        var outPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".boduconfig");
+        string outPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".boduconfig");
         try
         {
             ConfigurationDocument.Save(original, outPath);

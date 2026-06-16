@@ -85,14 +85,14 @@ public sealed partial class MoneyBag
 
         FinancialThrowHelper.ThrowIfMoneyBagRoundingPolicyUndefined(policy);
 
-        var targetIso = CurrencyMetadata<TTarget>.Value.IsoCode;
+        string targetIso = CurrencyMetadata<TTarget>.Value.IsoCode;
         List<MoneyBagConversionLine> lines = new(_balances.Count);
 
         // Enumerate in ISO-lexicographic order so per-line audit output is stable and matches bag iteration.
         IEnumerable<KeyValuePair<string, decimal>> ordered =
             _balances.OrderBy(p => p.Key, StringComparer.Ordinal);
 
-        var rawTotal = 0m;
+        decimal rawTotal = 0m;
         Money<TTarget> roundedTotal = Money<TTarget>.Zero;
         foreach (KeyValuePair<string, decimal> entry in ordered)
         {

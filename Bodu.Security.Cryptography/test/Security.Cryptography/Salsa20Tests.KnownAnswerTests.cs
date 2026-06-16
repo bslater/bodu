@@ -119,14 +119,14 @@ public sealed partial class Salsa20Tests
     public void CreateEncryptor_WhenGivenKeystreamVector_ShouldMatchExpected(
         int keySizeBits, string keyHex, string nonceHex, string keystreamHex, string displayName)
     {
-        var key = Convert.FromHexString(keyHex);
-        var nonce = Convert.FromHexString(nonceHex);
-        var expected = Convert.FromHexString(keystreamHex);
-        var zeros = new byte[expected.Length];
+        byte[] key = Convert.FromHexString(keyHex);
+        byte[] nonce = Convert.FromHexString(nonceHex);
+        byte[] expected = Convert.FromHexString(keystreamHex);
+        byte[] zeros = new byte[expected.Length];
 
         using var cipher = new Salsa20 { KeySize = keySizeBits };
         using ICryptoTransform encryptor = cipher.CreateEncryptor(key, nonce);
-        var keystream = encryptor.TransformFinalBlock(zeros, 0, zeros.Length);
+        byte[] keystream = encryptor.TransformFinalBlock(zeros, 0, zeros.Length);
 
         CollectionAssert.AreEqual(expected, keystream, $"Salsa20 keystream mismatch for {displayName}.");
     }
@@ -139,9 +139,9 @@ public sealed partial class Salsa20Tests
     [TestCategory("Regression")]
     public void CreateEncryptor_WhenGeneratingLongStream_ShouldMatchEcryptXorDigest()
     {
-        var key = Convert.FromHexString("0053a6f94c9ff24598eb3e91e4378add3083d6297ccf2275c81b6ec11467ba0d");
-        var nonce = Convert.FromHexString("0d74db42a91077de");
-        var expected = Convert.FromHexString(
+        byte[] key = Convert.FromHexString("0053a6f94c9ff24598eb3e91e4378add3083d6297ccf2275c81b6ec11467ba0d");
+        byte[] nonce = Convert.FromHexString("0d74db42a91077de");
+        byte[] expected = Convert.FromHexString(
             "c349b6a51a3ec9b712eaed3f90d8bcee69b7628645f251a996f55260c62ef31f" +
             "d6c6b0aea94e136c9d984ad2df3578f78e457527b03a0450580dd874f63b1ab9");
 
@@ -151,9 +151,9 @@ public sealed partial class Salsa20Tests
         using (ICryptoTransform encryptor = cipher.CreateEncryptor(key, nonce))
             keystream = encryptor.TransformFinalBlock(new byte[total], 0, total);
 
-        var digest = new byte[64];
-        for (var offset = 0; offset < total; offset += 64)
-            for (var i = 0; i < 64; i++)
+        byte[] digest = new byte[64];
+        for (int offset = 0; offset < total; offset += 64)
+            for (int i = 0; i < 64; i++)
                 digest[i] ^= keystream[offset + i];
 
         CollectionAssert.AreEqual(expected, digest, "Salsa20 long-stream XOR digest mismatch.");
@@ -166,18 +166,18 @@ public sealed partial class Salsa20Tests
     [TestMethod]
     public void CreateEncryptor_WhenInitialCounterChangedAfterCreation_ShouldUseCapturedCounter()
     {
-        var key = new byte[32];
-        var nonce = new byte[8];
-        var plaintext = new byte[128];
+        byte[] key = new byte[32];
+        byte[] nonce = new byte[8];
+        byte[] plaintext = new byte[128];
 
         using var cipher = new Salsa20 { InitialCounter = 5 };
         using ICryptoTransform transform = cipher.CreateEncryptor(key, nonce);
         cipher.InitialCounter = 9;
-        var actual = transform.TransformFinalBlock(plaintext, 0, plaintext.Length);
+        byte[] actual = transform.TransformFinalBlock(plaintext, 0, plaintext.Length);
 
         using var reference = new Salsa20 { InitialCounter = 5 };
         using ICryptoTransform referenceTransform = reference.CreateEncryptor(key, nonce);
-        var expected = referenceTransform.TransformFinalBlock(plaintext, 0, plaintext.Length);
+        byte[] expected = referenceTransform.TransformFinalBlock(plaintext, 0, plaintext.Length);
 
         CollectionAssert.AreEqual(expected, actual,
             "The transform must use the counter captured at creation, not the algorithm's later value.");

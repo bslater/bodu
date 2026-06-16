@@ -17,23 +17,23 @@ public sealed partial class CtrModeTransformTests
     public void Transform_WhenEncrypting_ShouldXorWithIncrementingCounterKeystream()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0x00);
-        var initialCounter = new byte[ExpectedBlockSize]; // all zeros
+        byte[] initialCounter = new byte[ExpectedBlockSize]; // all zeros
         CtrModeTransform transform = CreateTransform(cipher, (byte[])initialCounter.Clone());
 
-        var plaintext = Enumerable.Repeat((byte)0xFF, ExpectedBlockSize * 2).ToArray();
-        var output = new byte[plaintext.Length];
+        byte[] plaintext = Enumerable.Repeat((byte)0xFF, ExpectedBlockSize * 2).ToArray();
+        byte[] output = new byte[plaintext.Length];
 
         transform.Transform(plaintext, output, encrypt: true);
 
         // NIST big-endian increment: rightmost byte first.
         //   keystream_0 = [0, 0, …, 0]
         //   keystream_1 = [0, 0, …, 0, 1]  (last byte incremented)
-        var keystream0 = new byte[ExpectedBlockSize];
-        var keystream1 = new byte[ExpectedBlockSize];
+        byte[] keystream0 = new byte[ExpectedBlockSize];
+        byte[] keystream1 = new byte[ExpectedBlockSize];
         keystream1[ExpectedBlockSize - 1] = 1;
 
-        var exp0 = plaintext[..ExpectedBlockSize].Zip(keystream0, (a, b) => (byte)(a ^ b)).ToArray();
-        var exp1 = plaintext[ExpectedBlockSize..].Zip(keystream1, (a, b) => (byte)(a ^ b)).ToArray();
+        byte[] exp0 = plaintext[..ExpectedBlockSize].Zip(keystream0, (a, b) => (byte)(a ^ b)).ToArray();
+        byte[] exp1 = plaintext[ExpectedBlockSize..].Zip(keystream1, (a, b) => (byte)(a ^ b)).ToArray();
 
         CollectionAssert.AreEqual(exp0, output[..ExpectedBlockSize].ToArray(),
             "First CTR block did not match expected counter keystream.");
@@ -48,13 +48,13 @@ public sealed partial class CtrModeTransformTests
     public void Transform_EncryptAndDecrypt_ShouldBeSymmetric()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
-        var counter = Enumerable.Range(0, ExpectedBlockSize).Select(i => (byte)(i * 3)).ToArray();
+        byte[] counter = Enumerable.Range(0, ExpectedBlockSize).Select(i => (byte)(i * 3)).ToArray();
 
         CtrModeTransform encrypt = CreateTransform(cipher, (byte[])counter.Clone());
         CtrModeTransform decrypt = CreateTransform(cipher, (byte[])counter.Clone());
-        var plaintext = Enumerable.Range(0, ExpectedBlockSize * 3).Select(i => (byte)i).ToArray();
-        var ct = new byte[plaintext.Length];
-        var recovered = new byte[plaintext.Length];
+        byte[] plaintext = Enumerable.Range(0, ExpectedBlockSize * 3).Select(i => (byte)i).ToArray();
+        byte[] ct = new byte[plaintext.Length];
+        byte[] recovered = new byte[plaintext.Length];
 
         encrypt.Transform(plaintext, ct, encrypt: true);
         decrypt.Transform(ct, recovered, encrypt: false);
@@ -69,8 +69,8 @@ public sealed partial class CtrModeTransformTests
     public void Transform_WhenEncrypting_ShouldNotMutateInitialCounter()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
-        var initialCounter = Enumerable.Repeat((byte)0x99, ExpectedBlockSize).ToArray();
-        var counterCopy = (byte[])initialCounter.Clone();
+        byte[] initialCounter = Enumerable.Repeat((byte)0x99, ExpectedBlockSize).ToArray();
+        byte[] counterCopy = (byte[])initialCounter.Clone();
         CtrModeTransform transform = CreateTransform(cipher, initialCounter);
 
         transform.Transform(new byte[ExpectedBlockSize * 2], new byte[ExpectedBlockSize * 2], encrypt: true);
@@ -99,12 +99,12 @@ public sealed partial class CtrModeTransformTests
     public void Transform_WhenCalledTwice_ShouldContinueCounterAcrossCalls()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
-        var ic = new byte[ExpectedBlockSize];
+        byte[] ic = new byte[ExpectedBlockSize];
         CtrModeTransform single = CreateTransform(cipher, (byte[])ic.Clone());
         CtrModeTransform streamed = CreateTransform(cipher, (byte[])ic.Clone());
-        var pt = Enumerable.Range(0, ExpectedBlockSize * 2).Select(i => (byte)i).ToArray();
-        var sOut = new byte[pt.Length];
-        var dOut = new byte[pt.Length];
+        byte[] pt = Enumerable.Range(0, ExpectedBlockSize * 2).Select(i => (byte)i).ToArray();
+        byte[] sOut = new byte[pt.Length];
+        byte[] dOut = new byte[pt.Length];
 
         single.Transform(pt, sOut, encrypt: true);
         streamed.Transform(pt.AsSpan(0, ExpectedBlockSize), dOut.AsSpan(0, ExpectedBlockSize), encrypt: true);
@@ -120,15 +120,15 @@ public sealed partial class CtrModeTransformTests
     public void Transform_WithDifferentInitialCounters_ShouldProduceDifferentCiphertext()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
-        var counterA = new byte[ExpectedBlockSize];
-        var counterB = new byte[ExpectedBlockSize];
+        byte[] counterA = new byte[ExpectedBlockSize];
+        byte[] counterB = new byte[ExpectedBlockSize];
         counterB[ExpectedBlockSize - 1] = 0x80;
 
         CtrModeTransform a = CreateTransform(cipher, counterA);
         CtrModeTransform b = CreateTransform(cipher, counterB);
-        var pt = new byte[ExpectedBlockSize];
-        var oA = new byte[ExpectedBlockSize];
-        var oB = new byte[ExpectedBlockSize];
+        byte[] pt = new byte[ExpectedBlockSize];
+        byte[] oA = new byte[ExpectedBlockSize];
+        byte[] oB = new byte[ExpectedBlockSize];
 
         a.Transform(pt, oA, encrypt: true);
         b.Transform(pt, oB, encrypt: true);

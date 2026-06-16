@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Utf8BencodeReaderTests.IntegerWidths.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -45,7 +45,7 @@ public partial class Utf8BencodeReaderTests
     [DataRow("i9223372036854775808e")]
     public void GetInt32_WhenValueOutsideInt32Range_ShouldThrowBencodeFormatException(string input)
     {
-        var data = Bytes(input);
+        byte[] data = Bytes(input);
 
         _ = Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
@@ -64,12 +64,12 @@ public partial class Utf8BencodeReaderTests
     {
         var fits = new Utf8BencodeReader(Bytes("i42e"));
         Assert.IsTrue(fits.Read());
-        Assert.IsTrue(fits.TryGetInt32(out var value));
+        Assert.IsTrue(fits.TryGetInt32(out int value));
         Assert.AreEqual(42, value);
 
         var exceeds = new Utf8BencodeReader(Bytes("i2147483648e"));
         Assert.IsTrue(exceeds.Read());
-        Assert.IsFalse(exceeds.TryGetInt32(out var overflow));
+        Assert.IsFalse(exceeds.TryGetInt32(out int overflow));
         Assert.AreEqual(0, overflow);
     }
 
@@ -82,12 +82,12 @@ public partial class Utf8BencodeReaderTests
     {
         var fits = new Utf8BencodeReader(Bytes("i-9223372036854775808e"));
         Assert.IsTrue(fits.Read());
-        Assert.IsTrue(fits.TryGetInt64(out var value));
+        Assert.IsTrue(fits.TryGetInt64(out long value));
         Assert.AreEqual(long.MinValue, value);
 
         var exceeds = new Utf8BencodeReader(Bytes("i9223372036854775808e"));
         Assert.IsTrue(exceeds.Read());
-        Assert.IsFalse(exceeds.TryGetInt64(out var overflow));
+        Assert.IsFalse(exceeds.TryGetInt64(out long overflow));
         Assert.AreEqual(0L, overflow);
         Assert.AreEqual(9223372036854775808UL, exceeds.GetUInt64());
     }
@@ -99,7 +99,7 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void GetInt32_WhenTokenIsNotInteger_ShouldThrowInvalidOperationException()
     {
-        var data = Bytes("4:spam");
+        byte[] data = Bytes("4:spam");
 
         _ = Assert.ThrowsExactly<InvalidOperationException>(() =>
         {

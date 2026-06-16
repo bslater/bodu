@@ -146,8 +146,8 @@ public sealed partial class RangeSet<T>
             return;
         }
 
-        var index = LowerBound(startInclusive);
-        var mergeFrom = index;
+        int index = LowerBound(startInclusive);
+        int mergeFrom = index;
         T start = startInclusive;
         T end = endExclusive;
 
@@ -158,7 +158,7 @@ public sealed partial class RangeSet<T>
             end = Max(_ends[mergeFrom], end);
         }
 
-        var mergeTo = index;
+        int mergeTo = index;
         while (mergeTo < _count && _comparer.Compare(_starts[mergeTo], end) <= 0)
         {
             end = Max(end, _ends[mergeTo]);
@@ -174,7 +174,7 @@ public sealed partial class RangeSet<T>
         _starts[mergeFrom] = start;
         _ends[mergeFrom] = end;
 
-        var removeCount = mergeTo - mergeFrom - 1;
+        int removeCount = mergeTo - mergeFrom - 1;
         if (removeCount > 0)
             RemoveRange(mergeFrom + 1, removeCount);
 
@@ -207,8 +207,8 @@ public sealed partial class RangeSet<T>
         if (_count == 0)
             return false;
 
-        var changed = false;
-        var index = Math.Max(0, UpperBound(startInclusive) - 1);
+        bool changed = false;
+        int index = Math.Max(0, UpperBound(startInclusive) - 1);
 
         while (index < _count)
         {
@@ -224,8 +224,8 @@ public sealed partial class RangeSet<T>
             T rangeStart = _starts[index];
             T rangeEnd = _ends[index];
 
-            var removesLeft = _comparer.Compare(startInclusive, rangeStart) <= 0;
-            var removesRight = _comparer.Compare(endExclusive, rangeEnd) >= 0;
+            bool removesLeft = _comparer.Compare(startInclusive, rangeStart) <= 0;
+            bool removesRight = _comparer.Compare(endExclusive, rangeEnd) >= 0;
 
             if (removesLeft && removesRight)
             {
@@ -309,7 +309,7 @@ public sealed partial class RangeSet<T>
     {
         Range<T>.ValidateRange(startInclusive, endExclusive, _comparer);
 
-        var index = FindContainingIndex(startInclusive);
+        int index = FindContainingIndex(startInclusive);
         return index >= 0 && _comparer.Compare(endExclusive, _ends[index]) <= 0;
     }
 
@@ -331,7 +331,7 @@ public sealed partial class RangeSet<T>
     {
         Range<T>.ValidateRange(startInclusive, endExclusive, _comparer);
 
-        var index = Math.Max(0, UpperBound(startInclusive) - 1);
+        int index = Math.Max(0, UpperBound(startInclusive) - 1);
 
         while (index < _count && _comparer.Compare(_starts[index], endExclusive) < 0)
         {
@@ -357,10 +357,10 @@ public sealed partial class RangeSet<T>
         RangeSet<T> result = new(_comparer);
         result.EnsureCapacity(_count + other._count);
 
-        for (var i = 0; i < _count; i++)
+        for (int i = 0; i < _count; i++)
             result.Add(_starts[i], _ends[i]);
 
-        for (var i = 0; i < other._count; i++)
+        for (int i = 0; i < other._count; i++)
             result.Add(other._starts[i], other._ends[i]);
 
         return result;
@@ -378,8 +378,8 @@ public sealed partial class RangeSet<T>
 
         RangeSet<T> result = new(_comparer);
 
-        var left = 0;
-        var right = 0;
+        int left = 0;
+        int right = 0;
 
         while (left < _count && right < other._count)
         {
@@ -411,10 +411,10 @@ public sealed partial class RangeSet<T>
         RangeSet<T> result = new(_comparer);
         result.EnsureCapacity(_count);
 
-        for (var i = 0; i < _count; i++)
+        for (int i = 0; i < _count; i++)
             result.Add(_starts[i], _ends[i]);
 
-        for (var i = 0; i < other._count; i++)
+        for (int i = 0; i < other._count; i++)
             result.Remove(other._starts[i], other._ends[i]);
 
         return result;
@@ -444,7 +444,7 @@ public sealed partial class RangeSet<T>
     {
         var result = new Range<T>[_count];
 
-        for (var i = 0; i < _count; i++)
+        for (int i = 0; i < _count; i++)
             result[i] = new Range<T>(_starts[i], _ends[i]);
 
         return result;
@@ -467,7 +467,7 @@ public sealed partial class RangeSet<T>
     {
         ThrowHelper.ThrowIfNull(value);
 
-        var index = UpperBound(value) - 1;
+        int index = UpperBound(value) - 1;
 
         return index < 0 ? -1 : _comparer.Compare(value, _ends[index]) < 0 ? index : -1;
     }
@@ -500,7 +500,7 @@ public sealed partial class RangeSet<T>
     /// <param name="index">The index of the range to remove.</param>
     private void RemoveAt(int index)
     {
-        var moveCount = _count - index - 1;
+        int moveCount = _count - index - 1;
 
         if (moveCount > 0)
         {
@@ -523,7 +523,7 @@ public sealed partial class RangeSet<T>
     /// <param name="count">The number of ranges to remove. Must be greater than zero.</param>
     private void RemoveRange(int index, int count)
     {
-        var moveCount = _count - index - count;
+        int moveCount = _count - index - count;
 
         if (moveCount > 0)
         {
@@ -545,12 +545,12 @@ public sealed partial class RangeSet<T>
     /// <returns>The lower-bound index for <paramref name="value" />.</returns>
     private int LowerBound(T value)
     {
-        var low = 0;
-        var high = _count;
+        int low = 0;
+        int high = _count;
 
         while (low < high)
         {
-            var middle = low + ((high - low) >> 1);
+            int middle = low + ((high - low) >> 1);
 
             if (_comparer.Compare(_starts[middle], value) < 0)
                 low = middle + 1;
@@ -568,12 +568,12 @@ public sealed partial class RangeSet<T>
     /// <returns>The upper-bound index for <paramref name="value" />.</returns>
     private int UpperBound(T value)
     {
-        var low = 0;
-        var high = _count;
+        int low = 0;
+        int high = _count;
 
         while (low < high)
         {
-            var middle = low + ((high - low) >> 1);
+            int middle = low + ((high - low) >> 1);
 
             if (_comparer.Compare(_starts[middle], value) <= 0)
                 low = middle + 1;
@@ -630,7 +630,7 @@ public sealed partial class RangeSet<T>
     /// <returns>The chosen capacity.</returns>
     private int GrowCapacity(int minimum)
     {
-        var capacity = _starts.Length == 0 ? DefaultCapacity : _starts.Length * 2;
+        int capacity = _starts.Length == 0 ? DefaultCapacity : _starts.Length * 2;
 
         if ((uint)capacity > Array.MaxLength)
             capacity = Array.MaxLength;

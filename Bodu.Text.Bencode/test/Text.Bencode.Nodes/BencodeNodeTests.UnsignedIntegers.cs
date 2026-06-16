@@ -19,7 +19,7 @@ public partial class BencodeNodeTests
     [TestMethod]
     public void Parse_WhenIntegerExceedsInt64_ShouldRoundTripThroughUInt64()
     {
-        var data = "i9223372036854775808e"u8.ToArray();
+        byte[] data = "i9223372036854775808e"u8.ToArray();
 
         var node = BencodeNode.Parse(data);
 

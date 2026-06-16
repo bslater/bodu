@@ -88,7 +88,7 @@ public sealed class AustraliaKnownAnswerTests
     [DataRow("AU-QLD", 2015, "kings-birthday")]
     public void Resolve_WhenBeforeFirstYear_ReturnsNoResult(string territory, int year, string notableDateId)
     {
-        var count = CreateService()
+        int count = CreateService()
             .Resolve(new DateRange(new DateOnly(year, 1, 1), new DateOnly(year, 12, 31)), territory)
             .Count(r => r.NotableDateId == notableDateId);
 
@@ -102,7 +102,7 @@ public sealed class AustraliaKnownAnswerTests
     [TestMethod]
     public void Resolve_WhenNationalQuery_ExcludesSubdivisionHolidays()
     {
-        var count = CreateService()
+        int count = CreateService()
             .Resolve(new DateRange(new DateOnly(2026, 1, 1), new DateOnly(2026, 12, 31)), "AU")
             .Count(r => r.NotableDateId == "labour-day");
 

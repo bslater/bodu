@@ -54,7 +54,7 @@ public class ExchangeRateObservationTests
     {
         ExchangeRateObservation observation = new(new DateOnly(2026, 6, 1), 1.5m);
 
-        (DateOnly date, var rate) = observation;
+        (DateOnly date, decimal rate) = observation;
 
         Assert.AreEqual(new DateOnly(2026, 6, 1), date);
         Assert.AreEqual(1.5m, rate);

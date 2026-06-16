@@ -26,7 +26,7 @@ public sealed class HashAlgorithmHelperBodyTests
         DelegateHashAlgorithmFactory<SHA256> factory = HashAlgorithmFactory.From<SHA256>(SHA256.Create);
         Span<byte> destination = stackalloc byte[32];
 
-        var result = HashAlgorithmHelper.TryHashData(factory, [1, 2, 3, 4], destination, out var bytesWritten);
+        bool result = HashAlgorithmHelper.TryHashData(factory, [1, 2, 3, 4], destination, out int bytesWritten);
 
         Assert.IsTrue(result);
         Assert.AreEqual(32, bytesWritten);
@@ -42,7 +42,7 @@ public sealed class HashAlgorithmHelperBodyTests
         DelegateHashAlgorithmFactory<SHA256> factory = HashAlgorithmFactory.From<SHA256>(SHA256.Create);
         Span<byte> destination = stackalloc byte[8];
 
-        var result = HashAlgorithmHelper.TryHashData(factory, [1, 2, 3], destination, out var bytesWritten);
+        bool result = HashAlgorithmHelper.TryHashData(factory, [1, 2, 3], destination, out int bytesWritten);
 
         Assert.IsFalse(result);
         Assert.AreEqual(0, bytesWritten);
@@ -58,7 +58,7 @@ public sealed class HashAlgorithmHelperBodyTests
     {
         DelegateHashAlgorithmFactory<ShortHashAlgorithm> factory = HashAlgorithmFactory.From(() => new ShortHashAlgorithm());
 
-        var result = HashAlgorithmHelper.HashData(factory, [1, 2, 3]);
+        byte[] result = HashAlgorithmHelper.HashData(factory, [1, 2, 3]);
 
         Assert.AreEqual(ShortHashAlgorithm.ActualBytes, result.Length);
     }
@@ -90,11 +90,11 @@ public sealed class HashAlgorithmHelperBodyTests
     public async Task HashDataAsync_Stream_ShouldMatchSpanOverloadForSameContent()
     {
         DelegateHashAlgorithmFactory<SHA256> factory = HashAlgorithmFactory.From<SHA256>(SHA256.Create);
-        var input = Enumerable.Range(0, 4096).Select(i => (byte)(i & 0xFF)).ToArray();
+        byte[] input = Enumerable.Range(0, 4096).Select(i => (byte)(i & 0xFF)).ToArray();
 
-        var viaSpan = HashAlgorithmHelper.HashData(factory, input);
+        byte[] viaSpan = HashAlgorithmHelper.HashData(factory, input);
         using var stream = new MemoryStream(input);
-        var viaAsync = await HashAlgorithmHelper.HashDataAsync(factory, stream);
+        byte[] viaAsync = await HashAlgorithmHelper.HashDataAsync(factory, stream);
 
         CollectionAssert.AreEqual(viaSpan, viaAsync);
     }

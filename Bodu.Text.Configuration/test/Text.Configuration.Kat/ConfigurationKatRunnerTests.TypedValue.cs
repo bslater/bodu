@@ -55,7 +55,7 @@ public partial class ConfigurationKatRunnerTests
 
     private static void ExecuteTypedPass(ConfigurationKat kat, ConfigurationView view)
     {
-        var key = kat.Key!.Replace('.', ':');
+        string key = kat.Key!.Replace('.', ':');
 
         switch (kat.TypedAccessor)
         {
@@ -93,7 +93,7 @@ public partial class ConfigurationKatRunnerTests
         if (kat.ExpectedException is null)
             Assert.Fail($"{kat.Id} is a fail KAT but has no ExpectedException.");
 
-        var key = kat.Key!.Replace('.', ':');
+        string key = kat.Key!.Replace('.', ':');
 
         AssertThrowsExactlyByName(kat.ExpectedException!, () =>
         {

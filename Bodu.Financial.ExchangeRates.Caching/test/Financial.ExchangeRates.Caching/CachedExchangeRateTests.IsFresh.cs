@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CachedExchangeRateTests.IsFresh.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -27,7 +27,7 @@ public sealed class CachedExchangeRateTests
         var asOf = new DateTimeOffset(2023, 1, 4, 0, 0, 0, TimeSpan.Zero);
         CachedExchangeRate rate = new(new DateOnly(2023, 1, 3), 0.5m, asOf - TimeSpan.FromHours(ageHours));
 
-        var fresh = rate.IsFresh(asOf, TimeSpan.FromHours(24));
+        bool fresh = rate.IsFresh(asOf, TimeSpan.FromHours(24));
 
         Assert.AreEqual(expectedFresh, fresh);
     }

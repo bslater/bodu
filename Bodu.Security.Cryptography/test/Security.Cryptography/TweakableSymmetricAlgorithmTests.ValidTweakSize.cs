@@ -21,9 +21,9 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
 
         foreach (KeySizes range in algorithm.LegalTweakSizes)
         {
-            var step = range.SkipSize == 0 ? range.MaxSize - range.MinSize : range.SkipSize;
+            int step = range.SkipSize == 0 ? range.MaxSize - range.MinSize : range.SkipSize;
 
-            for (var bits = range.MinSize; bits <= range.MaxSize; bits += step)
+            for (int bits = range.MinSize; bits <= range.MaxSize; bits += step)
             {
                 Assert.IsTrue(
                     algorithm.ValidTweakSize(bits),

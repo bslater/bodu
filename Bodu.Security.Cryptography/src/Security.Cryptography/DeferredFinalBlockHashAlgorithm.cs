@@ -122,9 +122,9 @@ public abstract class DeferredFinalBlockHashAlgorithm<T>
         ThrowIfDisposed();
 
 
-        var pos = 0;
-        var remaining = source.Length;
-        var blockBytes = BlockSize / 8;
+        int pos = 0;
+        int remaining = source.Length;
+        int blockBytes = BlockSize / 8;
         Span<byte> residualSpan = _residualBlock.Span;
 
         while (remaining > 0)
@@ -138,7 +138,7 @@ public abstract class DeferredFinalBlockHashAlgorithm<T>
                 _residualBytes = 0;
             }
 
-            var canCopy = Math.Min(blockBytes - _residualBytes, remaining);
+            int canCopy = Math.Min(blockBytes - _residualBytes, remaining);
             source.Slice(pos, canCopy).CopyTo(residualSpan[_residualBytes..]);
             _residualBytes += canCopy;
             pos += canCopy;
@@ -167,7 +167,7 @@ public abstract class DeferredFinalBlockHashAlgorithm<T>
         if (_residualBytes < BlockSize / 8)
             residualSpan[_residualBytes..].Clear();
 
-        var counter = _totalBytes + (ulong)_residualBytes;
+        ulong counter = _totalBytes + (ulong)_residualBytes;
         ProcessBlock(residualSpan, counter, isFinal: true);
 
         return ProcessFinalBlock();

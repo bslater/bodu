@@ -71,11 +71,11 @@ public sealed class AverageStrategy
         ThrowHelper.ThrowIfNull(options);
         ThrowHelper.ThrowIfNull(candidates);
 
-        var sum = 0m;
-        var count = 0;
-        var maxOffset = 0;
+        decimal sum = 0m;
+        int count = 0;
+        int maxOffset = 0;
 
-        for (var i = 0; i < candidates.Count; i++)
+        for (int i = 0; i < candidates.Count; i++)
         {
             if (candidates[i].Provider.TryGetRate(fromIsoCode, toIsoCode, date, options, out ExchangeRateLookupResult candidate))
             {
@@ -178,7 +178,7 @@ public sealed class AverageStrategy
     {
         // Drive the join from the smallest candidate so the membership probes are minimized.
         Dictionary<DateOnly, decimal> smallest = perCandidate[0];
-        for (var i = 1; i < perCandidate.Count; i++)
+        for (int i = 1; i < perCandidate.Count; i++)
         {
             if (perCandidate[i].Count < smallest.Count)
                 smallest = perCandidate[i];
@@ -187,12 +187,12 @@ public sealed class AverageStrategy
         List<ExchangeRate> result = new(smallest.Count);
         foreach (DateOnly date in smallest.Keys)
         {
-            var sum = 0m;
-            var present = true;
+            decimal sum = 0m;
+            bool present = true;
 
             foreach (Dictionary<DateOnly, decimal> byDate in perCandidate)
             {
-                if (!byDate.TryGetValue(date, out var rate))
+                if (!byDate.TryGetValue(date, out decimal rate))
                 {
                     present = false;
                     break;

@@ -58,7 +58,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
 
         using TAlgorithm algorithm = CreateAlgorithm();
 
-        var invalidKey = new byte[keySize];
+        byte[] invalidKey = new byte[keySize];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
@@ -75,8 +75,8 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     public void Key_WhenSet_ShouldReturnSameValueOnGet()
     {
         using TAlgorithm algorithm = CreateAlgorithm();
-        var size = algorithm.LegalKeySizes[0].MinSize;
-        var key = new byte[size / 8];
+        int size = algorithm.LegalKeySizes[0].MinSize;
+        byte[] key = new byte[size / 8];
         CryptographyHelper.FillWithRandomNonZeroBytes(key);
 
         algorithm.Key = key;
@@ -90,8 +90,8 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     public void Key_WhenSet_ShouldReturnDefensiveCopy()
     {
         using TAlgorithm algorithm = CreateAlgorithm();
-        var size = algorithm.LegalKeySizes[0].MinSize;
-        var key = new byte[size / 8];
+        int size = algorithm.LegalKeySizes[0].MinSize;
+        byte[] key = new byte[size / 8];
         CryptographyHelper.FillWithRandomNonZeroBytes(key);
 
         algorithm.Key = key;
@@ -106,16 +106,16 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     public void Key_WhenReturnedArrayIsModified_ShouldNotChangeInternalValue()
     {
         using TAlgorithm algorithm = CreateAlgorithm();
-        var size = algorithm.LegalKeySizes[0].MinSize;
-        var expected = Enumerable.Range(1, size / 8).Select(i => (byte)i).ToArray();
+        int size = algorithm.LegalKeySizes[0].MinSize;
+        byte[] expected = Enumerable.Range(1, size / 8).Select(i => (byte)i).ToArray();
 
         algorithm.KeySize = size;
         algorithm.Key = expected;
 
-        var returned = algorithm.Key;
+        byte[] returned = algorithm.Key;
         returned[0] ^= 0xFF;
 
-        var actual = algorithm.Key;
+        byte[] actual = algorithm.Key;
 
         CollectionAssert.AreEqual(expected, actual);
         CollectionAssert.AreNotEqual(returned, actual);
@@ -128,7 +128,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     public void GenerateKey_WhenCalled_ShouldChangeKey()
     {
         using TAlgorithm algorithm = CreateAlgorithm();
-        var initialKey = algorithm.Key;
+        byte[] initialKey = algorithm.Key;
 
         algorithm.GenerateKey();
         CollectionAssert.AreNotEqual(initialKey, algorithm.Key);

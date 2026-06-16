@@ -20,8 +20,8 @@ public partial class Elf64Tests
         algorithm.Append(new byte[] { 0x01, 0x02 });
         algorithm.Reset();
 
-        var actual = algorithm.GetCurrentHash();
-        var expected = new byte[8];
+        byte[] actual = algorithm.GetCurrentHash();
+        byte[] expected = new byte[8];
         System.Buffers.Binary.BinaryPrimitives.WriteUInt64BigEndian(expected, 131UL);
 
         CollectionAssert.AreEqual(expected, actual);

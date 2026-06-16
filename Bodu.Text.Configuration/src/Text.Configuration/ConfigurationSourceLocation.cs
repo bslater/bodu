@@ -152,7 +152,7 @@ public readonly struct ConfigurationSourceLocation
         if (LineNumber == 0 && LinePosition == 0)
             return "<unknown>";
 
-        var core = string.Format(
+        string core = string.Format(
             CultureInfo.InvariantCulture,
             "line {0}, column {1}",
             LineNumber,

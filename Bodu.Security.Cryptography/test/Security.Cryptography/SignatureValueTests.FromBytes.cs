@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SignatureValueTests.FromBytes.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -19,7 +19,7 @@ public sealed partial class SignatureValueTests
     [DataRow(SignatureFormat.P1363)]
     public void FromBytes_WhenFormatIsDefined_ShouldRecordFormatAndBytes(SignatureFormat format)
     {
-        var source = new byte[] { 0x30, 0x06, 0x02, 0x01, 0x01, 0x02 };
+        byte[] source = new byte[] { 0x30, 0x06, 0x02, 0x01, 0x01, 0x02 };
 
         var signature = SignatureValue.FromBytes(source, format);
 
@@ -35,7 +35,7 @@ public sealed partial class SignatureValueTests
     [TestMethod]
     public void FromBytes_WhenSourceMutatedAfterwards_ShouldNotAffectValue()
     {
-        var source = new byte[] { 0x01, 0x02, 0x03 };
+        byte[] source = new byte[] { 0x01, 0x02, 0x03 };
         var signature = SignatureValue.FromBytes(source, SignatureFormat.Raw);
 
         source[0] = 0xFF;

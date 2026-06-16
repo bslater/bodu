@@ -21,7 +21,7 @@ public partial class ConcurrentCircularBufferTests
         Parallel.Invoke(
             () =>
             {
-                for (var i = 0; i < 1000; i++)
+                for (int i = 0; i < 1000; i++)
                 {
                     buffer.TryEnqueue(new TestItem(i));
                     Thread.SpinWait(10);
@@ -29,7 +29,7 @@ public partial class ConcurrentCircularBufferTests
             },
             () =>
             {
-                for (var i = 0; i < 1000; i++)
+                for (int i = 0; i < 1000; i++)
                 {
                     buffer.TryDequeue(out _);
                     Thread.SpinWait(10);
@@ -51,11 +51,11 @@ public partial class ConcurrentCircularBufferTests
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(7, allowOverwrite: false);
         var cts = new CancellationTokenSource();
-        var violations = 0;
+        int violations = 0;
 
         var writer = Task.Run(() =>
         {
-            var i = 0;
+            int i = 0;
             while (!cts.IsCancellationRequested)
             {
                 buffer.TryEnqueue(new TestItem(i++));
@@ -65,10 +65,10 @@ public partial class ConcurrentCircularBufferTests
 
         var toggler = Task.Run(() =>
         {
-            for (var i = 0; i < 200; i++)
+            for (int i = 0; i < 200; i++)
             {
                 buffer.AllowOverwrite = (i % 2 == 0);
-                var count = buffer.Count;
+                int count = buffer.Count;
                 if (count < 0 || count > buffer.Capacity) Interlocked.Increment(ref violations);
                 Thread.SpinWait(40);
             }
@@ -108,7 +108,7 @@ public partial class ConcurrentCircularBufferTests
     [TestMethod]
     public void Count_WhenBufferJustConstructed_ShouldBeZeroRegardlessOfCapacity()
     {
-        foreach (var cap in new[] { MinCapacity, 3, 8, 16, 64 })
+        foreach (int cap in new[] { MinCapacity, 3, 8, 16, 64 })
         {
             var buffer = new ConcurrentCircularBuffer<TestItem>(cap);
             Assert.AreEqual(0, buffer.Count, $"New buffer with capacity {cap} should have Count = 0.");
@@ -122,11 +122,11 @@ public partial class ConcurrentCircularBufferTests
     public void Count_WhenClearedDuringMutation_ShouldEventuallyResetWithinRange()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(5);
-        for (var i = 0; i < 5; i++) buffer.Enqueue(new TestItem(i));
+        for (int i = 0; i < 5; i++) buffer.Enqueue(new TestItem(i));
 
         var clearer = Task.Run(() =>
         {
-            for (var i = 0; i < 50; i++)
+            for (int i = 0; i < 50; i++)
             {
                 buffer.Clear();
                 Thread.SpinWait(100);
@@ -135,7 +135,7 @@ public partial class ConcurrentCircularBufferTests
 
         var writer = Task.Run(() =>
         {
-            for (var i = 0; i < 1000; i++)
+            for (int i = 0; i < 1000; i++)
             {
                 buffer.TryEnqueue(new TestItem(i));
                 buffer.TryDequeue(out _);
@@ -153,7 +153,7 @@ public partial class ConcurrentCircularBufferTests
     public void Count_WhenDequeueUntilEmpty_ShouldReachZero()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(5);
-        for (var i = 0; i < 5; i++) buffer.Enqueue(new TestItem(i));
+        for (int i = 0; i < 5; i++) buffer.Enqueue(new TestItem(i));
         while (buffer.TryDequeue(out _)) { /* drain */ }
         Assert.AreEqual(0, buffer.Count);
     }
@@ -165,7 +165,7 @@ public partial class ConcurrentCircularBufferTests
     public void Count_WhenDequeuingConcurrently_ShouldNeverBeNegative()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(5);
-        for (var i = 0; i < 5; i++) buffer.Enqueue(new TestItem(i));
+        for (int i = 0; i < 5; i++) buffer.Enqueue(new TestItem(i));
 
         Parallel.For(0, 10, i => buffer.TryDequeue(out _));
 
@@ -219,17 +219,17 @@ public partial class ConcurrentCircularBufferTests
     public void Count_WhenMutatingConcurrently_ShouldAlwaysRemainInRange()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(8);
-        for (var i = 0; i < 4; i++) buffer.Enqueue(new TestItem(i));
+        for (int i = 0; i < 4; i++) buffer.Enqueue(new TestItem(i));
 
-        var failed = false;
+        bool failed = false;
 
         var worker = Task.Run(() =>
         {
-            for (var i = 0; i < 1000; i++)
+            for (int i = 0; i < 1000; i++)
             {
                 buffer.TryEnqueue(new TestItem(i));
                 buffer.TryDequeue(out _);
-                var count = buffer.Count;
+                int count = buffer.Count;
                 if (count < 0 || count > buffer.Capacity) failed = true;
             }
         });
@@ -250,7 +250,7 @@ public partial class ConcurrentCircularBufferTests
         buffer.Enqueue(new TestItem(3));
 
         // Overwrite oldest repeatedly; count should never exceed capacity
-        for (var i = 4; i <= 20; i++)
+        for (int i = 4; i <= 20; i++)
             buffer.Enqueue(new TestItem(i));
 
         Assert.AreEqual(3, buffer.Count);

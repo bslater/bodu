@@ -41,7 +41,7 @@ public partial class BlockNonCryptographicHashAlgorithmTests
             // Return exactly two blocks of BlockSizeBytes — the residual (zero-padded) followed by a
             // length-encoding block. Aligns with the ShouldPadFinalBlock=true, AllowUnalignedFinalBlock=false
             // contract where GetCurrentHashCore slices the output into BlockSizeBytes chunks.
-            var output = new byte[BlockSizeBytes * 2];
+            byte[] output = new byte[BlockSizeBytes * 2];
             block.CopyTo(output);
             output[BlockSizeBytes] = unchecked((byte)messageLength);
             return output;

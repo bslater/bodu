@@ -15,7 +15,7 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void RemoveWhere_WhenPredicateSupplied_ShouldRemoveMatchingCharacters()
     {
-        var actual = "a1b2c3".RemoveWhere(char.IsDigit);
+        string actual = "a1b2c3".RemoveWhere(char.IsDigit);
 
         Assert.AreEqual("abc", actual);
     }

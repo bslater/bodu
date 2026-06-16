@@ -325,7 +325,7 @@ public sealed class AdjustmentPolicy
         if (TriggerMonth is not int month || TriggerDay is not int day || month is < 1 or > 12)
             return false;
 
-        var clampedDay = Math.Min(day, DateTime.DaysInMonth(date.Year, month));
+        int clampedDay = Math.Min(day, DateTime.DaysInMonth(date.Year, month));
         DateOnly pivot = new(date.Year, month, clampedDay);
 
         return before ? date < pivot : date > pivot;
@@ -384,10 +384,10 @@ public sealed class AdjustmentPolicy
     /// <returns>The first working day found, or the last scanned day when the bound is reached.</returns>
     private DateOnly SeekWorkingDay(DateOnly date, int step, Func<DateOnly, bool> isOccupied, WeekPattern workingWeek)
     {
-        var bound = MaxSearchDays ?? DefaultMaxSearchDays;
+        int bound = MaxSearchDays ?? DefaultMaxSearchDays;
 
         DateOnly cursor = date.AddDays(step);
-        for (var i = 0; i < bound && IsBlocked(cursor, isOccupied, workingWeek); i++)
+        for (int i = 0; i < bound && IsBlocked(cursor, isOccupied, workingWeek); i++)
             cursor = cursor.AddDays(step);
 
         return cursor;

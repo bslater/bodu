@@ -88,13 +88,13 @@ public sealed class ExchangeRatePairJsonConverter
         if (reader.TokenType != JsonTokenType.String)
             throw new JsonException(FinancialResourceStrings.Json_Invalid_ExpectedCompactString_ExchangeRatePair);
 
-        var text = reader.GetString()!;
-        var slashIndex = text.IndexOf('/');
+        string text = reader.GetString()!;
+        int slashIndex = text.IndexOf('/');
         if (slashIndex <= 0 || slashIndex >= text.Length - 1 || text.LastIndexOf('/') != slashIndex)
             throw CompactPairFormatException(text);
 
-        var from = text[..slashIndex];
-        var to = text[(slashIndex + 1)..];
+        string from = text[..slashIndex];
+        string to = text[(slashIndex + 1)..];
 
         try
         {
@@ -121,8 +121,8 @@ public sealed class ExchangeRatePairJsonConverter
 
         string? from = null;
         string? to = null;
-        var fromSeen = false;
-        var toSeen = false;
+        bool fromSeen = false;
+        bool toSeen = false;
 
         while (reader.Read())
         {
@@ -132,7 +132,7 @@ public sealed class ExchangeRatePairJsonConverter
             if (reader.TokenType != JsonTokenType.PropertyName)
                 throw new JsonException(FinancialResourceStrings.Json_Invalid_ExpectedPropertyName);
 
-            var propertyName = reader.GetString()!;
+            string propertyName = reader.GetString()!;
             if (!reader.Read())
                 throw new JsonException(FinancialResourceStrings.Json_Invalid_UnexpectedEnd);
 

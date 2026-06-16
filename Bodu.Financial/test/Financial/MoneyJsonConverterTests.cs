@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyJsonConverterTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -25,7 +25,7 @@ public class MoneyJsonConverterTests
     [TestMethod]
     public void Strict_WhenRoundTripped_ShouldPreserveValue()
     {
-        var json = JsonSerializer.Serialize(new Money(19.99m, "USD"));
+        string json = JsonSerializer.Serialize(new Money(19.99m, "USD"));
 
         Assert.AreEqual("{\"amount\":19.99,\"currency\":\"USD\"}", json);
         Assert.AreEqual(new Money(19.99m, "USD"), JsonSerializer.Deserialize<Money>(json));
@@ -57,7 +57,7 @@ public class MoneyJsonConverterTests
     {
         JsonSerializerOptions options = OptionsFor(FinancialJsonPolicy.Compact);
 
-        var json = JsonSerializer.Serialize(new Money(19.99m, "USD"), options);
+        string json = JsonSerializer.Serialize(new Money(19.99m, "USD"), options);
 
         Assert.AreEqual("\"19.99 USD\"", json);
         Assert.AreEqual(new Money(19.99m, "USD"), JsonSerializer.Deserialize<Money>(json, options));

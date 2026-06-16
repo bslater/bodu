@@ -208,7 +208,7 @@ public partial class EvictingDictionaryTests
     {
         var dictionary = new EvictingDictionary<string, int>(3, EvictingDictionaryPolicy.FirstInFirstOut);
         dictionary.Add("a", 1);
-        var before = dictionary.TotalTouches;
+        long before = dictionary.TotalTouches;
 
         dictionary.Touch("a");
 

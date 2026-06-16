@@ -137,7 +137,7 @@ public partial class MoneyOfTCurrencyTests
     public void Allocate_WhenRatiosEmpty_ShouldThrowArgumentException()
     {
         var money = new Money<USD>(10m);
-        var ratios = Array.Empty<decimal>();
+        decimal[] ratios = Array.Empty<decimal>();
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {

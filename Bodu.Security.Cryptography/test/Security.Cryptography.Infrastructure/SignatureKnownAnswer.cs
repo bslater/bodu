@@ -48,7 +48,7 @@ public sealed record SignatureKnownAnswer(
                 Convert.FromHexString(HexFieldKatReader.GetRequired(record, "Msg")),
                 Convert.FromHexString(HexFieldKatReader.GetRequired(record, "Sig")),
                 bool.Parse(HexFieldKatReader.GetRequired(record, "Valid")),
-                record.TryGetValue("Private", out var privateHex) ? Convert.FromHexString(privateHex) : null);
+                record.TryGetValue("Private", out string? privateHex) ? Convert.FromHexString(privateHex) : null);
         }
     }
 }

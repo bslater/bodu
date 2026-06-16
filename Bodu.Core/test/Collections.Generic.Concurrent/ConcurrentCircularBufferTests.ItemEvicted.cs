@@ -18,13 +18,13 @@ public partial class ConcurrentCircularBufferTests
     public void ItemEvicted_WhenAllowOverwriteFalse_ShouldNotFire()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(2, allowOverwrite: false);
-        var fired = false;
+        bool fired = false;
 
         buffer.ItemEvicted += _ => fired = true;
 
         buffer.Enqueue(new TestItem(1));
         buffer.Enqueue(new TestItem(2));
-        var success = buffer.TryEnqueue(new TestItem(3)); // Should fail, no eviction
+        bool success = buffer.TryEnqueue(new TestItem(3)); // Should fail, no eviction
 
         Assert.IsFalse(success, "TryEnqueue should fail when full and overwriting disabled.");
         Assert.IsFalse(fired, "Eviction event should not fire when overwriting is disabled.");
@@ -37,7 +37,7 @@ public partial class ConcurrentCircularBufferTests
     public void ItemEvicted_WhenBufferNotFull_ShouldNotFire()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(5, allowOverwrite: true);
-        var fired = false;
+        bool fired = false;
 
         buffer.ItemEvicted += _ => fired = true;
 
@@ -54,7 +54,7 @@ public partial class ConcurrentCircularBufferTests
     public void ItemEvicted_WhenFirstHandlerThrows_ShouldStillInvokeSecondHandler()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(MinCapacity, allowOverwrite: true);
-        var secondHandlerFired = false;
+        bool secondHandlerFired = false;
 
         buffer.ItemEvicted += _ => throw new InvalidOperationException("first");
         buffer.ItemEvicted += _ => secondHandlerFired = true;
@@ -90,7 +90,7 @@ public partial class ConcurrentCircularBufferTests
     public void ItemEvicted_WhenHandlerUnsubscribed_ShouldNotReceiveFurtherEvents()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(MinCapacity, allowOverwrite: true);
-        var count = 0;
+        int count = 0;
 
         Action<TestItem?> handler = _ => Interlocked.Increment(ref count);
         buffer.ItemEvicted += handler;
@@ -114,8 +114,8 @@ public partial class ConcurrentCircularBufferTests
     public void ItemEvicted_WhenMultipleHandlersRegistered_ShouldInvokeAll()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(2, allowOverwrite: true);
-        var count1 = 0;
-        var count2 = 0;
+        int count1 = 0;
+        int count2 = 0;
 
         buffer.ItemEvicted += item => Interlocked.Increment(ref count1);
         buffer.ItemEvicted += item => Interlocked.Increment(ref count2);
@@ -139,7 +139,7 @@ public partial class ConcurrentCircularBufferTests
         buffer.Enqueue(new TestItem(1));
 
         var received = new TestItem(-1); // sentinel to distinguish from default(null)
-        var fired = false;
+        bool fired = false;
         buffer.ItemEvicted += x => { received = x; fired = true; };
 
         buffer.Enqueue(new TestItem(2)); // should evict null
@@ -164,7 +164,7 @@ public partial class ConcurrentCircularBufferTests
         };
 
         // Fill buffer
-        for (var i = 0; i < 5; i++)
+        for (int i = 0; i < 5; i++)
             buffer.Enqueue(new TestItem(i));
 
         // Concurrent overwrites

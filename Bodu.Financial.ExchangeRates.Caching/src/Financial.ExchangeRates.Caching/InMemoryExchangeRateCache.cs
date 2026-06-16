@@ -86,11 +86,11 @@ public sealed class InMemoryExchangeRateCache
         }
 
         var entries = new CachedExchangeRate[state.Entries.Count];
-        for (var i = 0; i < state.Entries.Count; i++)
+        for (int i = 0; i < state.Entries.Count; i++)
             entries[i] = state.Entries[i];
 
         var coverage = new CoverageWindow[state.Coverage.Count];
-        for (var i = 0; i < state.Coverage.Count; i++)
+        for (int i = 0; i < state.Coverage.Count; i++)
             coverage[i] = state.Coverage[i];
 
         _store[pair] = new CachePairState(entries, coverage);

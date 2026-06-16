@@ -68,7 +68,7 @@ public partial class BencodeDocumentTests
     {
         using var document = BencodeDocument.Parse(Encoding.UTF8.GetBytes("4:spam"));
 
-        var bytes = document.RootElement.GetBytes();
+        byte[] bytes = document.RootElement.GetBytes();
 
         CollectionAssert.AreEqual(Encoding.UTF8.GetBytes("spam"), bytes);
     }

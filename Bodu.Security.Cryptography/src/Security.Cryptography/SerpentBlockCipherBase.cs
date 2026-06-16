@@ -202,10 +202,10 @@ public abstract partial class SerpentBlockCipherBase
         uint y0 = 0, y1 = 0, y2 = 0, y3 = 0;
 
         // Process the four-word state as 32 independent bitsliced S-box inputs.
-        for (var i = 0; i < 32; i++)
+        for (int i = 0; i < 32; i++)
         {
             // Gather one 4-bit input from bit position i across x0..x3.
-            var nibble = (int)(((x0 >> i) & 1u)
+            int nibble = (int)(((x0 >> i) & 1u)
                              | (((x1 >> i) & 1u) << 1)
                              | (((x2 >> i) & 1u) << 2)
                              | (((x3 >> i) & 1u) << 3));
@@ -244,10 +244,10 @@ public abstract partial class SerpentBlockCipherBase
         uint y0 = 0, y1 = 0, y2 = 0, y3 = 0;
 
         // Process the four-word state as 32 independent inverse S-box inputs.
-        for (var i = 0; i < 32; i++)
+        for (int i = 0; i < 32; i++)
         {
             // Gather one 4-bit input from bit position i across x0..x3.
-            var nibble = (int)(((x0 >> i) & 1u)
+            int nibble = (int)(((x0 >> i) & 1u)
                              | (((x1 >> i) & 1u) << 1)
                              | (((x2 >> i) & 1u) << 2)
                              | (((x3 >> i) & 1u) << 3));
@@ -369,11 +369,11 @@ public abstract partial class SerpentBlockCipherBase
         // Seed the recurrence with the padded key words prepared by the concrete cipher implementation.
         seed.CopyTo(prekeys);
 
-        for (var i = 0; i + window < prekeys.Length; i++)
+        for (int i = 0; i + window < prekeys.Length; i++)
         {
             // Compute the next prekey word from the Serpent recurrence, then rotate left by 11 bits.
             // The use of i + window maps the specification's w[i] output onto the caller's seeded buffer layout.
-            var value = prekeys[i] ^ prekeys[i + window - 5] ^ prekeys[i + window - 3] ^ prekeys[i + window - 1] ^ Phi ^ (uint)i;
+            uint value = prekeys[i] ^ prekeys[i + window - 5] ^ prekeys[i + window - 3] ^ prekeys[i + window - 1] ^ Phi ^ (uint)i;
             prekeys[i + window] = BitOperations.RotateLeft(value, 11);
         }
     }
@@ -393,7 +393,7 @@ public abstract partial class SerpentBlockCipherBase
     private protected static int KeyScheduleSBoxIndex(int roundIndex)
     {
         // Bitwise AND with 7 performs modulo 8 for the descending S-box schedule.
-        var value = (3 - roundIndex) & 7;
+        int value = (3 - roundIndex) & 7;
         return value;
     }
 }

@@ -89,12 +89,12 @@ public sealed partial class Whirlpool
     /// </remarks>
     private static byte[] BuildMiniBoxSBox()
     {
-        var einv = new byte[16];
-        for (var i = 0; i < s_miniBoxE.Length; i++)
+        byte[] einv = new byte[16];
+        for (int i = 0; i < s_miniBoxE.Length; i++)
             einv[s_miniBoxE[i]] = (byte)i;
 
-        var sbox = new byte[256];
-        for (var i = 0; i < 256; i++)
+        byte[] sbox = new byte[256];
+        for (int i = 0; i < 256; i++)
         {
             int left = s_miniBoxE[i >> 4];
             int right = einv[i & 0xF];
@@ -115,14 +115,14 @@ public sealed partial class Whirlpool
     {
         int a = x;
         int b = y;
-        var result = 0;
+        int result = 0;
 
         while (b != 0)
         {
             if ((b & 1) != 0)
                 result ^= a;
 
-            var highBit = a & 0x80;
+            int highBit = a & 0x80;
             a = (a << 1) & 0xFF;
             if (highBit != 0)
                 a ^= GaloisReductionPolynomial & 0xFF;
@@ -146,15 +146,15 @@ public sealed partial class Whirlpool
     /// </returns>
     private static ulong[] BuildMultiplicationTable(byte[] sbox, byte[] mds)
     {
-        var table = new ulong[8 * 256];
+        ulong[] table = new ulong[8 * 256];
 
-        for (var i = 0; i < 256; i++)
+        for (int i = 0; i < 256; i++)
         {
             ulong vector = 0;
-            for (var j = 0; j < 8; j++)
+            for (int j = 0; j < 8; j++)
                 vector |= (ulong)GaloisMultiply(sbox[i], mds[j]) << ((7 - j) * 8);
 
-            for (var j = 0; j < 8; j++)
+            for (int j = 0; j < 8; j++)
                 table[(j << 8) | i] = System.Numerics.BitOperations.RotateRight(vector, j * 8);
         }
 
@@ -172,11 +172,11 @@ public sealed partial class Whirlpool
     /// </remarks>
     private static ulong[] BuildRoundConstants(byte[] sbox)
     {
-        var rcon = new ulong[RoundCount];
-        for (var i = 0; i < RoundCount; i++)
+        ulong[] rcon = new ulong[RoundCount];
+        for (int i = 0; i < RoundCount; i++)
         {
             ulong value = 0;
-            for (var j = 0; j < 8; j++)
+            for (int j = 0; j < 8; j++)
                 value |= (ulong)sbox[(8 * i) + j] << ((7 - j) * 8);
 
             rcon[i] = value;

@@ -21,15 +21,15 @@ public sealed partial class Base16Tests
     [DataRow(1024)]
     public void TryEncode_WhenDestinationExactlyRequiredSize_ShouldReturnTrueAndFillBuffer(int byteCount)
     {
-        var bytes = new byte[byteCount];
-        for (var i = 0; i < byteCount; i++)
+        byte[] bytes = new byte[byteCount];
+        for (int i = 0; i < byteCount; i++)
         {
             bytes[i] = (byte)i;
         }
 
-        var destination = new char[byteCount * 2];
+        char[] destination = new char[byteCount * 2];
 
-        var ok = Base16.TryEncode(bytes.AsSpan(), destination, out var charsWritten);
+        bool ok = Base16.TryEncode(bytes.AsSpan(), destination, out int charsWritten);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(byteCount * 2, charsWritten);
@@ -41,9 +41,9 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void TryEncode_WhenDestinationLargeEnough_ShouldReturnTrueAndExactCharCount()
     {
-        var destination = new char[CanonicalBytes.Length * 2];
+        char[] destination = new char[CanonicalBytes.Length * 2];
 
-        var ok = Base16.TryEncode(CanonicalBytes.AsSpan(), destination, out var charsWritten);
+        bool ok = Base16.TryEncode(CanonicalBytes.AsSpan(), destination, out int charsWritten);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(8, charsWritten);
@@ -62,10 +62,10 @@ public sealed partial class Base16Tests
     [DataRow(64)]
     public void TryEncode_WhenDestinationOneCharShort_ShouldReturnFalseAndZeroCharsWritten(int byteCount)
     {
-        var bytes = new byte[byteCount];
-        var destination = new char[(byteCount * 2) - 1];
+        byte[] bytes = new byte[byteCount];
+        char[] destination = new char[(byteCount * 2) - 1];
 
-        var ok = Base16.TryEncode(bytes.AsSpan(), destination, out var charsWritten);
+        bool ok = Base16.TryEncode(bytes.AsSpan(), destination, out int charsWritten);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0, charsWritten);
@@ -78,16 +78,16 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void TryEncode_WhenDestinationOversized_ShouldReturnExactCharCount()
     {
-        var bytes = new byte[8];
-        var destination = new char[100];
+        byte[] bytes = new byte[8];
+        char[] destination = new char[100];
 
-        var ok = Base16.TryEncode(bytes.AsSpan(), destination, out var charsWritten);
+        bool ok = Base16.TryEncode(bytes.AsSpan(), destination, out int charsWritten);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(16, charsWritten);
 
         // Trailing positions beyond charsWritten must not be touched.
-        for (var i = charsWritten; i < destination.Length; i++)
+        for (int i = charsWritten; i < destination.Length; i++)
         {
             Assert.AreEqual('\0', destination[i],
                 $"Position {i} beyond charsWritten should remain untouched.");
@@ -101,9 +101,9 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void TryEncode_WhenDestinationTooSmall_ShouldReturnFalseAndZeroCharsWritten()
     {
-        var destination = new char[1];
+        char[] destination = new char[1];
 
-        var ok = Base16.TryEncode(CanonicalBytes.AsSpan(), destination, out var charsWritten);
+        bool ok = Base16.TryEncode(CanonicalBytes.AsSpan(), destination, out int charsWritten);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0, charsWritten);
@@ -116,9 +116,9 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void TryEncode_WhenInputIsEmpty_ShouldReturnTrueAndZeroCharsWritten()
     {
-        var destination = new char[4];
+        char[] destination = new char[4];
 
-        var ok = Base16.TryEncode([], destination, out var charsWritten);
+        bool ok = Base16.TryEncode([], destination, out int charsWritten);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(0, charsWritten);
@@ -131,7 +131,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void TryEncode_WhenUnsupportedFlagsRequested_ShouldThrowExactly()
     {
-        var destination = new char[16];
+        char[] destination = new char[16];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -146,9 +146,9 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void TryEncode_WhenUpperCaseFlag_ShouldWriteUpperCaseDigits()
     {
-        var destination = new char[CanonicalBytes.Length * 2];
+        char[] destination = new char[CanonicalBytes.Length * 2];
 
-        var ok = Base16.TryEncode(CanonicalBytes.AsSpan(), destination, out _, BaseFormattingOptions.UpperCase);
+        bool ok = Base16.TryEncode(CanonicalBytes.AsSpan(), destination, out _, BaseFormattingOptions.UpperCase);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(CanonicalHexUpper, new string(destination));

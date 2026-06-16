@@ -66,7 +66,7 @@ public sealed partial class ConfigurationPattern
     {
         var sb = new StringBuilder(pattern.Length * 2);
 
-        var hasSlash = pattern.Contains('/');
+        bool hasSlash = pattern.Contains('/');
 
         // Anchor unconditionally to the end. The start is anchored only when the pattern contains a slash;
         // EditorConfig treats slashless patterns as matching at any directory depth.
@@ -89,9 +89,9 @@ public sealed partial class ConfigurationPattern
     /// <exception cref="ConfigurationParseException">The pattern contains an unbalanced brace or bracket.</exception>
     private static void TranslateExpression(string pattern, StringBuilder sb)
     {
-        for (var i = 0; i < pattern.Length;)
+        for (int i = 0; i < pattern.Length;)
         {
-            var c = pattern[i];
+            char c = pattern[i];
 
             switch (c)
             {
@@ -167,7 +167,7 @@ public sealed partial class ConfigurationPattern
     /// <exception cref="ConfigurationParseException">The bracket is unbalanced.</exception>
     private static int TranslateCharClass(string pattern, int start, StringBuilder sb)
     {
-        var close = FindClosingBracket(pattern, start);
+        int close = FindClosingBracket(pattern, start);
         if (close < 0)
             throw new ConfigurationParseException(new ConfigurationDiagnostic(
                 ConfigurationDiagnosticSeverity.Error,
@@ -175,9 +175,9 @@ public sealed partial class ConfigurationPattern
                 ConfigurationResourceStrings.Format_Invalid_UnbalancedBracket,
                 ConfigurationSourceLocation.None));
 
-        var body = pattern.Substring(start + 1, close - start - 1);
+        string body = pattern.Substring(start + 1, close - start - 1);
         sb.Append('[');
-        var j = 0;
+        int j = 0;
         if (body.Length > 0 && body[0] == '!')
         {
             sb.Append('^');
@@ -186,7 +186,7 @@ public sealed partial class ConfigurationPattern
 
         for (; j < body.Length; j++)
         {
-            var ch = body[j];
+            char ch = body[j];
             if (ch == '\\' && j + 1 < body.Length)
             {
                 sb.Append(Regex.Escape(body[j + 1].ToString()));
@@ -214,7 +214,7 @@ public sealed partial class ConfigurationPattern
     /// <returns>The index of the closing <c>]</c>, or <c>-1</c> when none is found.</returns>
     private static int FindClosingBracket(string pattern, int start)
     {
-        for (var i = start + 1; i < pattern.Length; i++)
+        for (int i = start + 1; i < pattern.Length; i++)
         {
             if (pattern[i] == '\\' && i + 1 < pattern.Length)
             {
@@ -240,7 +240,7 @@ public sealed partial class ConfigurationPattern
     /// <exception cref="ConfigurationParseException">The brace is unbalanced.</exception>
     private static int TranslateBraceGroup(string pattern, int start, StringBuilder sb)
     {
-        var close = FindMatchingBrace(pattern, start);
+        int close = FindMatchingBrace(pattern, start);
         if (close < 0)
             throw new ConfigurationParseException(new ConfigurationDiagnostic(
                 ConfigurationDiagnosticSeverity.Error,
@@ -248,7 +248,7 @@ public sealed partial class ConfigurationPattern
                 ConfigurationResourceStrings.Format_Invalid_UnbalancedBrace,
                 ConfigurationSourceLocation.None));
 
-        var body = pattern.Substring(start + 1, close - start - 1);
+        string body = pattern.Substring(start + 1, close - start - 1);
 
         // Numeric range {n1..n2}?
         if (TryTranslateNumericRange(body, sb))
@@ -257,7 +257,7 @@ public sealed partial class ConfigurationPattern
         // Brace alternation {a,b,c} with possible nesting.
         List<string> alternatives = SplitTopLevelCommas(body);
         sb.Append("(?:");
-        for (var i = 0; i < alternatives.Count; i++)
+        for (int i = 0; i < alternatives.Count; i++)
         {
             if (i > 0)
                 sb.Append('|');
@@ -284,8 +284,8 @@ public sealed partial class ConfigurationPattern
     /// </remarks>
     private static int FindMatchingBrace(string pattern, int start)
     {
-        var depth = 0;
-        for (var i = start; i < pattern.Length; i++)
+        int depth = 0;
+        for (int i = start; i < pattern.Length; i++)
         {
             if (pattern[i] == '\\' && i + 1 < pattern.Length)
             {
@@ -328,11 +328,11 @@ public sealed partial class ConfigurationPattern
     private static List<string> SplitTopLevelCommas(string body)
     {
         List<string> result = new();
-        var depth = 0;
-        var start = 0;
-        for (var i = 0; i < body.Length; i++)
+        int depth = 0;
+        int start = 0;
+        for (int i = 0; i < body.Length; i++)
         {
-            var c = body[i];
+            char c = body[i];
             if (c == '\\' && i + 1 < body.Length)
             {
                 i++;
@@ -366,15 +366,15 @@ public sealed partial class ConfigurationPattern
     /// </returns>
     private static bool TryTranslateNumericRange(string body, StringBuilder sb)
     {
-        var dot = body.IndexOf("..", StringComparison.Ordinal);
+        int dot = body.IndexOf("..", StringComparison.Ordinal);
         if (dot <= 0 || dot + 2 >= body.Length)
             return false;
 
-        var leftText = body[..dot];
-        var rightText = body[(dot + 2)..];
+        string leftText = body[..dot];
+        string rightText = body[(dot + 2)..];
 
-        if (!long.TryParse(leftText, NumberStyles.Integer, CultureInfo.InvariantCulture, out var left)
-            || !long.TryParse(rightText, NumberStyles.Integer, CultureInfo.InvariantCulture, out var right))
+        if (!long.TryParse(leftText, NumberStyles.Integer, CultureInfo.InvariantCulture, out long left)
+            || !long.TryParse(rightText, NumberStyles.Integer, CultureInfo.InvariantCulture, out long right))
         {
             return false;
         }
@@ -384,7 +384,7 @@ public sealed partial class ConfigurationPattern
 
         // Cap expansion to keep pathological ranges (e.g. {1..1000000000}) from allocating gigabytes of regex
         // text. Long.Subtract is safe here because the range was just normalized so right >= left.
-        var count = right - left + 1;
+        long count = right - left + 1;
         if (count > MaxNumericRangeExpansion)
         {
             throw new ConfigurationParseException(new ConfigurationDiagnostic(
@@ -403,7 +403,7 @@ public sealed partial class ConfigurationPattern
         // Build an alternation over every integer in the range. Acceptable for the modest ranges typical of
         // .editorconfig files (e.g. {1..10}); callers requesting huge ranges will pay the regex compile cost.
         sb.Append("(?:");
-        for (var value = left; value <= right; value++)
+        for (long value = left; value <= right; value++)
         {
             if (value > left)
                 sb.Append('|');

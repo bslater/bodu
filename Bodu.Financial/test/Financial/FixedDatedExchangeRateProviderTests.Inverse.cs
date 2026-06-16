@@ -22,7 +22,7 @@ public partial class FixedDatedExchangeRateProviderTests
 
         FixedDatedExchangeRateProvider table = new(direct);
 
-        var found = table.TryGetRate(
+        bool found = table.TryGetRate(
             "AUD",
             "USD",
             s_d1,
@@ -54,7 +54,7 @@ public partial class FixedDatedExchangeRateProviderTests
 
         var previousTwoDays = ExchangeRateLookupOptions.PreviousWithin(2);
 
-        var found = table.TryGetRate(
+        bool found = table.TryGetRate(
             "AUD",
             "USD",
             new DateOnly(2024, 1, 11),

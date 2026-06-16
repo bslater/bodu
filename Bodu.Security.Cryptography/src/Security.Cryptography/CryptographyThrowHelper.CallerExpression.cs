@@ -351,7 +351,7 @@ internal static partial class CryptographyThrowHelper
         ThrowHelper.ThrowIfNull(key);
         ThrowHelper.ThrowIfNull(legalKeySizes);
 
-        var keyBits = key.Length * 8;
+        int keyBits = key.Length * 8;
         if (!IsValidSize(keyBits, legalKeySizes))
             throw new CryptographicException(
                 string.Format(
@@ -378,7 +378,7 @@ internal static partial class CryptographyThrowHelper
         byte[]? nonce, int expectedBytes,
         [CallerArgumentExpression(nameof(nonce))] string? paramName = null)
     {
-        var actualBits = (nonce?.Length ?? 0) * 8;
+        int actualBits = (nonce?.Length ?? 0) * 8;
         if (nonce is null || nonce.Length != expectedBytes)
         {
             throw new CryptographicException(
@@ -619,7 +619,7 @@ internal static partial class CryptographyThrowHelper
         if (input.IsEmpty || output.IsEmpty)
             return;
 
-        if (!input.Overlaps(output, out var elementOffset))
+        if (!input.Overlaps(output, out int elementOffset))
             return;
 
         if (allowExactInPlace && elementOffset == 0 && input.Length == output.Length)

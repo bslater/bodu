@@ -41,11 +41,11 @@ public static partial class Base58
     /// <exception cref="FormatException">Thrown when the input is not valid Base58.</exception>
     public static byte[] Decode(ReadOnlySpan<char> chars, Base58Variant variant = Base58Variant.BitcoinFlickr, BaseFormatStyles style = BaseFormatStyles.None)
     {
-        var lookup = GetLookup(variant);
+        sbyte[] lookup = GetLookup(variant);
 
         return chars.IsEmpty
             ? []
-            : TryDecodeCore(chars, lookup, style, out var result, out var error)
+            : TryDecodeCore(chars, lookup, style, out byte[]? result, out string? error)
                 ? result!
                 : throw new FormatException(error);
     }
@@ -94,13 +94,13 @@ public static partial class Base58
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     public static bool TryDecode(ReadOnlySpan<char> chars, Span<byte> destination, out int bytesWritten, Base58Variant variant = Base58Variant.BitcoinFlickr, BaseFormatStyles style = BaseFormatStyles.None)
     {
-        var lookup = GetLookup(variant);
+        sbyte[] lookup = GetLookup(variant);
         bytesWritten = 0;
 
         if (chars.IsEmpty)
             return true;
 
-        if (!TryDecodeCore(chars, lookup, style, out var result, out _))
+        if (!TryDecodeCore(chars, lookup, style, out byte[]? result, out _))
             return false;
 
         if (destination.Length < result!.Length)
@@ -127,15 +127,15 @@ public static partial class Base58
         result = null;
         error = null;
 
-        var ignoreWhitespace = style.HasFlag(BaseFormatStyles.IgnoreWhitespace);
+        bool ignoreWhitespace = style.HasFlag(BaseFormatStyles.IgnoreWhitespace);
 
-        var leadingZeros = 0;
+        int leadingZeros = 0;
         BigInteger value = BigInteger.Zero;
-        var seenNonZero = false;
+        bool seenNonZero = false;
 
-        for (var i = 0; i < chars.Length; i++)
+        for (int i = 0; i < chars.Length; i++)
         {
-            var c = chars[i];
+            char c = chars[i];
             if (ignoreWhitespace && c is ' ' or '\t' or '\r' or '\n')
                 continue;
 
@@ -162,7 +162,7 @@ public static partial class Base58
             value = (value * 58) + symbolValue;
         }
 
-        var decoded = value.IsZero
+        byte[] decoded = value.IsZero
             ? []
             : value.ToByteArray(isUnsigned: true, isBigEndian: true);
 
@@ -172,7 +172,7 @@ public static partial class Base58
             return true;
         }
 
-        var combined = new byte[leadingZeros + decoded.Length];
+        byte[] combined = new byte[leadingZeros + decoded.Length];
         Buffer.BlockCopy(decoded, 0, combined, leadingZeros, decoded.Length);
         result = combined;
         return true;

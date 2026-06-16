@@ -19,7 +19,7 @@ public partial class PooledBufferBuilderTests
         builder.AppendRange([10, 20, 30]);
         Span<int> destination = stackalloc int[3];
 
-        var copied = builder.TryCopyTo(destination);
+        bool copied = builder.TryCopyTo(destination);
 
         Assert.IsTrue(copied);
         CollectionAssert.AreEqual(new[] { 10, 20, 30 }, destination.ToArray());
@@ -34,9 +34,9 @@ public partial class PooledBufferBuilderTests
     {
         using var builder = new PooledBufferBuilder<int>();
         builder.AppendRange([1, 2, 3]);
-        var destination = new[] { -1, -1, -1, -1, -1 };
+        int[] destination = new[] { -1, -1, -1, -1, -1 };
 
-        var copied = builder.TryCopyTo(destination);
+        bool copied = builder.TryCopyTo(destination);
 
         Assert.IsTrue(copied);
         CollectionAssert.AreEqual(new[] { 1, 2, 3, -1, -1 }, destination);
@@ -52,9 +52,9 @@ public partial class PooledBufferBuilderTests
     {
         using var builder = new PooledBufferBuilder<int>();
         builder.AppendRange([1, 2, 3, 4]);
-        var destination = new[] { 99, 99, 99 };
+        int[] destination = new[] { 99, 99, 99 };
 
-        var copied = builder.TryCopyTo(destination);
+        bool copied = builder.TryCopyTo(destination);
 
         Assert.IsFalse(copied);
         CollectionAssert.AreEqual(new[] { 99, 99, 99 }, destination);
@@ -68,10 +68,10 @@ public partial class PooledBufferBuilderTests
     public void TryCopyTo_WhenBuilderIsEmpty_ShouldReturnTrueAndWriteNothing()
     {
         using var builder = new PooledBufferBuilder<int>();
-        var destination = new[] { 7, 8, 9 };
+        int[] destination = new[] { 7, 8, 9 };
 
-        var copied = builder.TryCopyTo(destination);
-        var copiedToEmpty = builder.TryCopyTo([]);
+        bool copied = builder.TryCopyTo(destination);
+        bool copiedToEmpty = builder.TryCopyTo([]);
 
         Assert.IsTrue(copied);
         Assert.IsTrue(copiedToEmpty);

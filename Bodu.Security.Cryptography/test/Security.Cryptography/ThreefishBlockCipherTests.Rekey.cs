@@ -135,13 +135,13 @@ internal sealed partial class ThreefishBlockCipherTests
     {
         using var cipher = new Threefish256Cipher(s_validKey256, s_validTweak);
 
-        var plaintext = new byte[32];
-        var outputBefore = new byte[32];
-        var outputAfter = new byte[32];
+        byte[] plaintext = new byte[32];
+        byte[] outputBefore = new byte[32];
+        byte[] outputAfter = new byte[32];
 
         cipher.Encrypt(plaintext, outputBefore);
 
-        var newKey = new byte[32];
+        byte[] newKey = new byte[32];
         newKey[0] = 0x01;
         cipher.Rekey(newKey, s_validTweak);
 

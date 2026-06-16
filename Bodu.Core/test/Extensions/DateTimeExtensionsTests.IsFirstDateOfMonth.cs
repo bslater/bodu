@@ -17,7 +17,7 @@ public partial class DateTimeExtensionsTests
     [DynamicData(nameof(IsFirstDateOfMonthTestData))]
     public void IsFirstDateOfMonth_WhenDateIsFirstDay_ShouldReturnTrue(DateTime input)
     {
-        var actual = input.IsFirstDateOfMonth();
+        bool actual = input.IsFirstDateOfMonth();
 
         Assert.IsTrue(actual);
     }
@@ -30,7 +30,7 @@ public partial class DateTimeExtensionsTests
     [DynamicData(nameof(IsNotFirstDateOfMonthTestData))]
     public void IsFirstDateOfMonth_WhenDateIsNotFirstDay_ShouldReturnFalse(DateTime input)
     {
-        var actual = input.IsFirstDateOfMonth();
+        bool actual = input.IsFirstDateOfMonth();
 
         Assert.IsFalse(actual);
     }

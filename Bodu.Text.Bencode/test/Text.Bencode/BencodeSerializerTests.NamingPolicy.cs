@@ -33,10 +33,10 @@ public partial class BencodeSerializerTests
         ArgumentNullException.ThrowIfNull(kat);
 
         var options = new BencodeSerializerOptions { PropertyNamingPolicy = kat.Input };
-        var bytes = BencodeSerializer.Serialize(new TwoWordModel { FirstName = "x" }, options);
+        byte[] bytes = BencodeSerializer.Serialize(new TwoWordModel { FirstName = "x" }, options);
 
         // The single member "FirstName" carries value "x", so the expected dictionary is d<key>1:xe.
-        var expected = $"d{kat.Expected.Length}:{kat.Expected}1:xe";
+        string expected = $"d{kat.Expected.Length}:{kat.Expected}1:xe";
         Assert.AreEqual(expected, Encoding.Latin1.GetString(bytes));
     }
 
@@ -53,7 +53,7 @@ public partial class BencodeSerializerTests
         ArgumentNullException.ThrowIfNull(kat);
 
         var options = new BencodeSerializerOptions { PropertyNamingPolicy = kat.Input };
-        var bytes = BencodeSerializer.Serialize(new TwoWordModel { FirstName = "value" }, options);
+        byte[] bytes = BencodeSerializer.Serialize(new TwoWordModel { FirstName = "value" }, options);
 
         var roundTripped = BencodeSerializer.Deserialize<TwoWordModel>(bytes, options);
         Assert.AreEqual("value", roundTripped.FirstName);
@@ -110,7 +110,7 @@ public partial class BencodeSerializerTests
         // The options select kebab-lower, but the type selects snake-lower; the type policy must win.
         var options = new BencodeSerializerOptions { PropertyNamingPolicy = BencodeNamingPolicy.KebabCaseLower };
 
-        var bytes = BencodeSerializer.Serialize(new SnakeTypeModel { FirstName = "x" }, options);
+        byte[] bytes = BencodeSerializer.Serialize(new SnakeTypeModel { FirstName = "x" }, options);
 
         Assert.AreEqual("d10:first_name1:xe", Encoding.Latin1.GetString(bytes));
     }
@@ -124,7 +124,7 @@ public partial class BencodeSerializerTests
     {
         var options = new BencodeSerializerOptions { PropertyNamingPolicy = BencodeNamingPolicy.CamelCase };
 
-        var bytes = BencodeSerializer.Serialize(new UnspecifiedTypeModel { FirstName = "x" }, options);
+        byte[] bytes = BencodeSerializer.Serialize(new UnspecifiedTypeModel { FirstName = "x" }, options);
 
         Assert.AreEqual("d9:firstName1:xe", Encoding.Latin1.GetString(bytes));
     }

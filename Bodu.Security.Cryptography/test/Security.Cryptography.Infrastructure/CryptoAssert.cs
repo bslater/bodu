@@ -28,7 +28,7 @@ internal static class CryptoAssert
         if (expected.SequenceEqual(actual))
             return;
 
-        var prefix = string.IsNullOrEmpty(message) ? string.Empty : message + " ";
+        string prefix = string.IsNullOrEmpty(message) ? string.Empty : message + " ";
 
         if (expected.Length != actual.Length)
         {
@@ -37,7 +37,7 @@ internal static class CryptoAssert
                 $"Expected: <{Convert.ToHexString(expected)}> Actual: <{Convert.ToHexString(actual)}>");
         }
 
-        var firstDifference = expected.CommonPrefixLength(actual);
+        int firstDifference = expected.CommonPrefixLength(actual);
 
         Assert.Fail(
             $"{prefix}Byte sequences differ at index {firstDifference} " +

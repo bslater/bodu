@@ -88,7 +88,7 @@ public partial class ConcurrentCircularBufferTests
         // retry budget; the fallback path then reads via ToArray (which itself falls back to
         // BestEffortSnapshot, writing default for each unstable slot). Default values cannot
         // match a real element so the final result is false.
-        for (var i = 0; i < 3; i++)
+        for (int i = 0; i < 3; i++)
             CorruptSlotSequence(buffer, slotIndex: i, newSequence: int.MinValue);
 
         Assert.IsFalse(buffer.Contains(target));
@@ -110,7 +110,7 @@ public partial class ConcurrentCircularBufferTests
         // Force every slot's published sequence to a non-matching value. With no slot satisfying
         // the expected publication mark, the seqlock pre-check fails on every retry, exhausting the
         // outer retry budget and steering ToArray into the BestEffortSnapshot fallback.
-        for (var i = 0; i < 3; i++)
+        for (int i = 0; i < 3; i++)
             CorruptSlotSequence(buffer, slotIndex: i, newSequence: int.MinValue);
 
         TestItem[] snapshot = buffer.ToArray();
@@ -138,7 +138,7 @@ public partial class ConcurrentCircularBufferTests
             ?? throw new InvalidOperationException("_buffer field not found.");
 
         var slotArray = (Array)bufferField.GetValue(buffer)!;
-        var slot = slotArray.GetValue(slotIndex)!;
+        object slot = slotArray.GetValue(slotIndex)!;
         FieldInfo sequenceField = slot.GetType().GetField("Sequence", BindingFlags.Instance | BindingFlags.Public)
             ?? throw new InvalidOperationException("Slot.Sequence field not found.");
 

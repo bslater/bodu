@@ -15,9 +15,9 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void SplitLines_WhenMixedLineEndings_ShouldSplitOnEachBoundary()
     {
-        var value = "alpha\nbeta\r\ngamma\rdelta";
+        string value = "alpha\nbeta\r\ngamma\rdelta";
 
-        var actual = value.SplitLines().ToArray();
+        string[] actual = value.SplitLines().ToArray();
 
         CollectionAssert.AreEqual(new[] { "alpha", "beta", "gamma", "delta" }, actual);
     }
@@ -29,9 +29,9 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void SplitLines_WhenInputEndsWithNewline_ShouldNotEmitTrailingEmptyLine()
     {
-        var value = "alpha\nbeta\n";
+        string value = "alpha\nbeta\n";
 
-        var actual = value.SplitLines().ToArray();
+        string[] actual = value.SplitLines().ToArray();
 
         CollectionAssert.AreEqual(new[] { "alpha", "beta" }, actual);
     }
@@ -43,9 +43,9 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void SplitLines_WhenRemoveEmptyLinesIsTrue_ShouldSkipEmptyEntries()
     {
-        var value = "alpha\n\nbeta\r\n\r\ngamma";
+        string value = "alpha\n\nbeta\r\n\r\ngamma";
 
-        var actual = value.SplitLines(removeEmptyLines: true).ToArray();
+        string[] actual = value.SplitLines(removeEmptyLines: true).ToArray();
 
         CollectionAssert.AreEqual(new[] { "alpha", "beta", "gamma" }, actual);
     }

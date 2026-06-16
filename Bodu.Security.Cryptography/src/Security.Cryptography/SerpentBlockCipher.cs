@@ -128,23 +128,23 @@ public abstract partial class SerpentBlockCipher
                 string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_BlockLength, BlockSize / 8));
         }
 
-        var w = BlockWords;
-        var rounds = Rounds;
+        int w = BlockWords;
+        int rounds = Rounds;
 
         // Load the wide block as little-endian 32-bit words. Canonical Serpent is word-oriented, and the wide-block variants
         // preserve that representation across the expanded state width.
         Span<uint> state = stackalloc uint[w];
-        for (var i = 0; i < w; i++)
+        for (int i = 0; i < w; i++)
             state[i] = BinaryPrimitives.ReadUInt32LittleEndian(input.Slice(i * 4, 4));
 
-        var rk = _roundKeys;
-        var tw = _tweakSchedule;
-        var injection = 0;
+        uint[] rk = _roundKeys;
+        uint[] tw = _tweakSchedule;
+        int injection = 0;
 
         // All rounds except the final round use the Serpent-style sequence:
         //   state ^= K_r; state = S_r(state); state = L(state);
         // followed by this construction's additional tweak injection every four rounds.
-        for (var r = 0; r < rounds - 1; r++)
+        for (int r = 0; r < rounds - 1; r++)
         {
             XorRoundKey(state, rk, r * w);
             ApplySBoxLayer(state, r & 7);
@@ -167,7 +167,7 @@ public abstract partial class SerpentBlockCipher
         ApplySBoxLayer(state, (rounds - 1) & 7);
         XorRoundKey(state, rk, rounds * w);
 
-        for (var i = 0; i < w; i++)
+        for (int i = 0; i < w; i++)
             BinaryPrimitives.WriteUInt32LittleEndian(output.Slice(i * 4, 4), state[i]);
 
         CryptographyHelper.Clear(state);
@@ -183,20 +183,20 @@ public abstract partial class SerpentBlockCipher
                 string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_BlockLength, BlockSize / 8));
         }
 
-        var w = BlockWords;
-        var rounds = Rounds;
+        int w = BlockWords;
+        int rounds = Rounds;
 
         // Load the ciphertext using the same little-endian word layout used by encryption.
         Span<uint> state = stackalloc uint[w];
-        for (var i = 0; i < w; i++)
+        for (int i = 0; i < w; i++)
             state[i] = BinaryPrimitives.ReadUInt32LittleEndian(input.Slice(i * 4, 4));
 
-        var rk = _roundKeys;
-        var tw = _tweakSchedule;
+        uint[] rk = _roundKeys;
+        uint[] tw = _tweakSchedule;
 
         // The last encryption tweak injection occurs after the final completed four-round group before the final round.
         // Decryption starts from that counter value and decrements as each injection is removed.
-        var injection = (rounds / 4) - 1;
+        int injection = (rounds / 4) - 1;
 
         // Reverse the final Serpent-shaped round: undo final key XOR, inverse S-box, then undo the previous round key.
         XorRoundKey(state, rk, rounds * w);
@@ -205,7 +205,7 @@ public abstract partial class SerpentBlockCipher
 
         // Walk the remaining rounds backwards. Each step removes any tweak injection that followed the corresponding
         // encryption round, then applies inverse linear transform, inverse S-box, and round-key XOR.
-        for (var r = rounds - 2; r >= 0; r--)
+        for (int r = rounds - 2; r >= 0; r--)
         {
             if (((r + 1) & 3) == 0)
             {
@@ -220,7 +220,7 @@ public abstract partial class SerpentBlockCipher
             XorRoundKey(state, rk, r * w);
         }
 
-        for (var i = 0; i < w; i++)
+        for (int i = 0; i < w; i++)
             BinaryPrimitives.WriteUInt32LittleEndian(output.Slice(i * 4, 4), state[i]);
 
         CryptographyHelper.Clear(state);
@@ -251,7 +251,7 @@ public abstract partial class SerpentBlockCipher
     /// </remarks>
     private static void XorRoundKey(Span<uint> state, uint[] source, int offset)
     {
-        for (var i = 0; i < state.Length; i++)
+        for (int i = 0; i < state.Length; i++)
             state[i] ^= source[offset + i];
     }
 
@@ -268,12 +268,12 @@ public abstract partial class SerpentBlockCipher
     /// </remarks>
     private static void ApplySBoxLayer(Span<uint> state, int sBoxIndex)
     {
-        for (var g = 0; g < state.Length; g += 4)
+        for (int g = 0; g < state.Length; g += 4)
         {
-            var x0 = state[g];
-            var x1 = state[g + 1];
-            var x2 = state[g + 2];
-            var x3 = state[g + 3];
+            uint x0 = state[g];
+            uint x1 = state[g + 1];
+            uint x2 = state[g + 2];
+            uint x3 = state[g + 3];
 
             ApplySBox(sBoxIndex, ref x0, ref x1, ref x2, ref x3);
 
@@ -296,12 +296,12 @@ public abstract partial class SerpentBlockCipher
     /// </remarks>
     private static void ApplyInverseSBoxLayer(Span<uint> state, int sBoxIndex)
     {
-        for (var g = 0; g < state.Length; g += 4)
+        for (int g = 0; g < state.Length; g += 4)
         {
-            var x0 = state[g];
-            var x1 = state[g + 1];
-            var x2 = state[g + 2];
-            var x3 = state[g + 3];
+            uint x0 = state[g];
+            uint x1 = state[g + 1];
+            uint x2 = state[g + 2];
+            uint x3 = state[g + 3];
 
             ApplyInverseSBox(sBoxIndex, ref x0, ref x1, ref x2, ref x3);
 
@@ -332,12 +332,12 @@ public abstract partial class SerpentBlockCipher
     private static void ApplyLinearLayer(Span<uint> state)
     {
         // Apply canonical Serpent local diffusion to each four-word sub-state.
-        for (var g = 0; g < state.Length; g += 4)
+        for (int g = 0; g < state.Length; g += 4)
         {
-            var x0 = state[g];
-            var x1 = state[g + 1];
-            var x2 = state[g + 2];
-            var x3 = state[g + 3];
+            uint x0 = state[g];
+            uint x1 = state[g + 1];
+            uint x2 = state[g + 2];
+            uint x3 = state[g + 3];
 
             LinearTransform(ref x0, ref x1, ref x2, ref x3);
 
@@ -348,8 +348,8 @@ public abstract partial class SerpentBlockCipher
         }
 
         // Cross-lane permutation: rotate word positions by one to the left.
-        var first = state[0];
-        for (var i = 0; i < state.Length - 1; i++)
+        uint first = state[0];
+        for (int i = 0; i < state.Length - 1; i++)
             state[i] = state[i + 1];
         state[^1] = first;
     }
@@ -366,18 +366,18 @@ public abstract partial class SerpentBlockCipher
     private static void ApplyInverseLinearLayer(Span<uint> state)
     {
         // Inverse cross-lane permutation: rotate word positions by one to the right.
-        var last = state[^1];
-        for (var i = state.Length - 1; i > 0; i--)
+        uint last = state[^1];
+        for (int i = state.Length - 1; i > 0; i--)
             state[i] = state[i - 1];
         state[0] = last;
 
         // Undo canonical Serpent local diffusion for each four-word sub-state.
-        for (var g = 0; g < state.Length; g += 4)
+        for (int g = 0; g < state.Length; g += 4)
         {
-            var x0 = state[g];
-            var x1 = state[g + 1];
-            var x2 = state[g + 2];
-            var x3 = state[g + 3];
+            uint x0 = state[g];
+            uint x1 = state[g + 1];
+            uint x2 = state[g + 2];
+            uint x3 = state[g + 3];
 
             InverseLinearTransform(ref x0, ref x1, ref x2, ref x3);
 
@@ -402,10 +402,10 @@ public abstract partial class SerpentBlockCipher
     private static void BuildTweakSchedule(ReadOnlySpan<byte> tweak, uint[] schedule)
     {
         // Interpret the 128-bit tweak as four little-endian 32-bit words.
-        var t0 = BinaryPrimitives.ReadUInt32LittleEndian(tweak[..4]);
-        var t1 = BinaryPrimitives.ReadUInt32LittleEndian(tweak.Slice(4, 4));
-        var t2 = BinaryPrimitives.ReadUInt32LittleEndian(tweak.Slice(8, 4));
-        var t3 = BinaryPrimitives.ReadUInt32LittleEndian(tweak.Slice(12, 4));
+        uint t0 = BinaryPrimitives.ReadUInt32LittleEndian(tweak[..4]);
+        uint t1 = BinaryPrimitives.ReadUInt32LittleEndian(tweak.Slice(4, 4));
+        uint t2 = BinaryPrimitives.ReadUInt32LittleEndian(tweak.Slice(8, 4));
+        uint t3 = BinaryPrimitives.ReadUInt32LittleEndian(tweak.Slice(12, 4));
 
         schedule[0] = t0;
         schedule[1] = t1;
@@ -428,17 +428,17 @@ public abstract partial class SerpentBlockCipher
     /// </remarks>
     private void BuildRoundKeys(ReadOnlySpan<byte> key)
     {
-        var w = BlockWords;
+        int w = BlockWords;
 
         // Seed the widened prekey recurrence with the raw key words. Serpent-1024 has the widest state
         // (32 words = 128 bytes), which is still small enough for stack allocation.
         Span<uint> seed = stackalloc uint[w];
-        for (var i = 0; i < w; i++)
+        for (int i = 0; i < w; i++)
             seed[i] = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(i * 4, 4));
 
         // The recurrence emits enough words to cover every full-width round key after the initial seed window.
-        var prekeyLength = w + _roundKeys.Length;
-        var prekeysArray = new uint[prekeyLength];
+        int prekeyLength = w + _roundKeys.Length;
+        uint[] prekeysArray = new uint[prekeyLength];
         try
         {
             Span<uint> prekeys = prekeysArray;
@@ -446,24 +446,24 @@ public abstract partial class SerpentBlockCipher
 
             // Each full-width round key is partitioned into canonical four-word Serpent groups. The key-schedule S-box
             // for round r is applied to every group in that round key.
-            var groupsPerRoundKey = w / 4;
+            int groupsPerRoundKey = w / 4;
 
-            for (var r = 0; r <= Rounds; r++)
+            for (int r = 0; r <= Rounds; r++)
             {
-                var sboxIndex = KeyScheduleSBoxIndex(r);
-                var roundStart = w + (r * w);
+                int sboxIndex = KeyScheduleSBoxIndex(r);
+                int roundStart = w + (r * w);
 
-                for (var g = 0; g < groupsPerRoundKey; g++)
+                for (int g = 0; g < groupsPerRoundKey; g++)
                 {
-                    var src = roundStart + (g * 4);
-                    var x0 = prekeys[src];
-                    var x1 = prekeys[src + 1];
-                    var x2 = prekeys[src + 2];
-                    var x3 = prekeys[src + 3];
+                    int src = roundStart + (g * 4);
+                    uint x0 = prekeys[src];
+                    uint x1 = prekeys[src + 1];
+                    uint x2 = prekeys[src + 2];
+                    uint x3 = prekeys[src + 3];
 
                     ApplySBox(sboxIndex, ref x0, ref x1, ref x2, ref x3);
 
-                    var dst = (r * w) + (g * 4);
+                    int dst = (r * w) + (g * 4);
                     _roundKeys[dst] = x0;
                     _roundKeys[dst + 1] = x1;
                     _roundKeys[dst + 2] = x2;

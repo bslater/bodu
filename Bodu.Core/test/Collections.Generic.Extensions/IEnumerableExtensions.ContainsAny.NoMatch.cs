@@ -23,7 +23,7 @@ public sealed partial class IEnumerableExtensionsTests_ContainsAny
 
         static IEnumerable<int> LazyYield(int start, int count)
         {
-            for (var i = 0; i < count; i++)
+            for (int i = 0; i < count; i++)
                 yield return start + i;
         }
     }
@@ -35,7 +35,7 @@ public sealed partial class IEnumerableExtensionsTests_ContainsAny
     public void ContainsAny_WhenSourceIsSmallerAndNoOverlap_ShouldReturnFalse()
     {
         int[] source = [-1, -2];                              // small ICollection<int>
-        var items = Enumerable.Range(0, 50).ToArray();        // larger ICollection<int> with no overlap
+        int[] items = Enumerable.Range(0, 50).ToArray();        // larger ICollection<int> with no overlap
 
         Assert.IsFalse(source.ContainsAny(items));
     }

@@ -19,7 +19,7 @@ public partial class MultiValueDictionaryTests
         mvd.Add("Alpha", 1);
         mvd.Add("Beta", 2);
 
-        var removed = mvd.RemoveAll("alpha");
+        bool removed = mvd.RemoveAll("alpha");
 
         Assert.IsTrue(removed);
         Assert.IsFalse(mvd.ContainsKey("ALPHA"));
@@ -54,7 +54,7 @@ public partial class MultiValueDictionaryTests
     {
         var mvd = new MultiValueDictionary<string, int>();
 
-        var result = mvd.RemoveAll("missing");
+        bool result = mvd.RemoveAll("missing");
 
         Assert.IsFalse(result);
     }
@@ -70,11 +70,11 @@ public partial class MultiValueDictionaryTests
     public void RemoveAll_WhenKeyHasVariousValueCounts_ShouldRemoveAllAndUpdateCount(int valueCount)
     {
         var mvd = new MultiValueDictionary<string, int>();
-        for (var i = 0; i < valueCount; i++)
+        for (int i = 0; i < valueCount; i++)
             mvd.Add("k", i);
         mvd.Add("other", 99);
 
-        var result = mvd.RemoveAll("k");
+        bool result = mvd.RemoveAll("k");
 
         Assert.IsTrue(result);
         Assert.AreEqual(1, mvd.Count);
@@ -108,7 +108,7 @@ public partial class MultiValueDictionaryTests
         mvd.Add("x", 3);
         mvd.Add("y", 4);
 
-        var result = mvd.RemoveAll("x");
+        bool result = mvd.RemoveAll("x");
 
         Assert.IsTrue(result);
         Assert.AreEqual(1, mvd.Count);

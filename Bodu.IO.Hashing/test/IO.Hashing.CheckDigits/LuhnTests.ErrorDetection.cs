@@ -19,18 +19,18 @@ public sealed partial class LuhnTests
     [TestMethod]
     public void IsValid_WhenAdjacentDigitsAreTransposed_ShouldReturnFalseExceptFor09Transposition()
     {
-        var check = Luhn.Compute(SingleDigitSeedBody.AsSpan());
-        var valid = SingleDigitSeedBody + check;
-        var buffer = valid.ToCharArray();
+        char check = Luhn.Compute(SingleDigitSeedBody.AsSpan());
+        string valid = SingleDigitSeedBody + check;
+        char[] buffer = valid.ToCharArray();
 
-        for (var i = 0; i < buffer.Length - 1; i++)
+        for (int i = 0; i < buffer.Length - 1; i++)
         {
             if (buffer[i] == buffer[i + 1]) continue;
 
             (buffer[i], buffer[i + 1]) = (buffer[i + 1], buffer[i]);
 
-            var isValid = Luhn.IsValid(buffer);
-            var isZeroNineSwap = (buffer[i] == '0' && buffer[i + 1] == '9') || (buffer[i] == '9' && buffer[i + 1] == '0');
+            bool isValid = Luhn.IsValid(buffer);
+            bool isZeroNineSwap = (buffer[i] == '0' && buffer[i + 1] == '9') || (buffer[i] == '9' && buffer[i + 1] == '0');
 
             if (isZeroNineSwap)
                 Assert.IsTrue(isValid, $"The 0<->9 transposition at index {i} ({new string(buffer)}) is the documented Luhn exception and should remain valid.");
@@ -48,16 +48,16 @@ public sealed partial class LuhnTests
     [TestMethod]
     public void IsValid_WhenAnySingleDigitIsSubstituted_ShouldReturnFalse()
     {
-        var check = Luhn.Compute(SingleDigitSeedBody.AsSpan());
-        var valid = SingleDigitSeedBody + check;
+        char check = Luhn.Compute(SingleDigitSeedBody.AsSpan());
+        string valid = SingleDigitSeedBody + check;
 
         Assert.IsTrue(Luhn.IsValid(valid.AsSpan()), "Precondition: baseline must be valid.");
 
-        var buffer = valid.ToCharArray();
-        for (var i = 0; i < buffer.Length; i++)
+        char[] buffer = valid.ToCharArray();
+        for (int i = 0; i < buffer.Length; i++)
         {
-            var original = buffer[i];
-            for (var c = '0'; c <= '9'; c++)
+            char original = buffer[i];
+            for (char c = '0'; c <= '9'; c++)
             {
                 if (c == original) continue;
                 buffer[i] = c;

@@ -17,7 +17,7 @@ public abstract partial class SipHashTests<TTest, TAlgorithm>
     public void CompressionRounds_WhenSetToValidValue_ShouldUpdateCorrectly(int size)
     {
         using TAlgorithm algorithm = CreateAlgorithm();
-        var original = algorithm.CompressionRounds;
+        int original = algorithm.CompressionRounds;
         algorithm.CompressionRounds = size;
 
         Assert.AreEqual(size, algorithm.CompressionRounds);
@@ -30,7 +30,7 @@ public abstract partial class SipHashTests<TTest, TAlgorithm>
     [TestMethod]
     public void CompressionRounds_WhenDifferent_ShouldProduceDifferentHash()
     {
-        var input = Enumerable.Range(0, 32).Select(i => (byte)i).ToArray();
+        byte[] input = Enumerable.Range(0, 32).Select(i => (byte)i).ToArray();
         byte[] hashWithRounds4;
         byte[] hashWithRounds8;
 

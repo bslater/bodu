@@ -20,9 +20,9 @@ public sealed partial class EncodingExtensionsTests
     [DynamicData(nameof(CanonicalEncodings))]
     public void GetEncodedByteCount_WhenCalledOnSpan_ShouldMatchBclEncoding(System.Text.Encoding encoding)
     {
-        var expected = encoding.GetByteCount(MultiByteText);
+        int expected = encoding.GetByteCount(MultiByteText);
 
-        var actual = MultiByteText.AsSpan().GetEncodedByteCount(encoding);
+        int actual = MultiByteText.AsSpan().GetEncodedByteCount(encoding);
 
         Assert.AreEqual(expected, actual);
     }
@@ -34,7 +34,7 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void GetEncodedByteCount_WhenSpanIsEmpty_ShouldReturnZero()
     {
-        var actual = ReadOnlySpan<char>.Empty.GetEncodedByteCount(System.Text.Encoding.UTF8);
+        int actual = ReadOnlySpan<char>.Empty.GetEncodedByteCount(System.Text.Encoding.UTF8);
 
         Assert.AreEqual(0, actual);
     }
@@ -64,9 +64,9 @@ public sealed partial class EncodingExtensionsTests
     [DynamicData(nameof(CanonicalEncodings))]
     public void ToBytes_WhenCalledOnSpan_ShouldMatchBclEncoding(System.Text.Encoding encoding)
     {
-        var expected = encoding.GetBytes(SampleText);
+        byte[] expected = encoding.GetBytes(SampleText);
 
-        var actual = SampleText.AsSpan().ToBytes(encoding);
+        byte[] actual = SampleText.AsSpan().ToBytes(encoding);
 
         CollectionAssert.AreEqual(expected, actual);
     }
@@ -78,7 +78,7 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void ToBytes_WhenSpanIsEmpty_ShouldReturnEmptyArray()
     {
-        var result = ReadOnlySpan<char>.Empty.ToBytes(System.Text.Encoding.UTF8);
+        byte[] result = ReadOnlySpan<char>.Empty.ToBytes(System.Text.Encoding.UTF8);
 
         Assert.AreEqual(0, result.Length);
         Assert.AreSame([], result);
@@ -106,10 +106,10 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void EncodeTo_WhenDestinationIsExactlySized_ShouldWriteAndReturnCount()
     {
-        var required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
+        int required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
         Span<byte> destination = new byte[required];
 
-        var written = MultiByteText.AsSpan().EncodeTo(System.Text.Encoding.UTF8, destination);
+        int written = MultiByteText.AsSpan().EncodeTo(System.Text.Encoding.UTF8, destination);
 
         Assert.AreEqual(required, written);
         CollectionAssert.AreEqual(
@@ -124,8 +124,8 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void EncodeTo_WhenDestinationIsOneByteTooSmall_ShouldThrowExactly()
     {
-        var required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
-        var backing = new byte[required - 1];
+        int required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
+        byte[] backing = new byte[required - 1];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -140,7 +140,7 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void EncodeTo_WhenEncodingIsNull_ShouldThrowExactly()
     {
-        var backing = new byte[64];
+        byte[] backing = new byte[64];
 
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -157,10 +157,10 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void EncodeExactlyTo_WhenDestinationIsExactlySized_ShouldWriteAndReturnCount()
     {
-        var required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
+        int required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
         Span<byte> destination = new byte[required];
 
-        var written = MultiByteText.AsSpan().EncodeExactlyTo(System.Text.Encoding.UTF8, destination);
+        int written = MultiByteText.AsSpan().EncodeExactlyTo(System.Text.Encoding.UTF8, destination);
 
         Assert.AreEqual(required, written);
     }
@@ -172,8 +172,8 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void EncodeExactlyTo_WhenDestinationIsLargerThanRequired_ShouldThrowExactly()
     {
-        var required = System.Text.Encoding.UTF8.GetByteCount(SampleText);
-        var backing = new byte[required + 1];
+        int required = System.Text.Encoding.UTF8.GetByteCount(SampleText);
+        byte[] backing = new byte[required + 1];
 
         ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -190,8 +190,8 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void EncodeExactlyTo_WhenDestinationIsSmallerThanRequired_ShouldThrowExactly()
     {
-        var required = System.Text.Encoding.UTF8.GetByteCount(SampleText);
-        var backing = new byte[required - 1];
+        int required = System.Text.Encoding.UTF8.GetByteCount(SampleText);
+        byte[] backing = new byte[required - 1];
 
         ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -208,7 +208,7 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void EncodeExactlyTo_WhenEncodingIsNull_ShouldThrowExactly()
     {
-        var backing = new byte[64];
+        byte[] backing = new byte[64];
 
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -225,10 +225,10 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void TryEncodeTo_WhenDestinationFits_ShouldReturnTrueAndReportCount()
     {
-        var required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
+        int required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
         Span<byte> destination = new byte[required];
 
-        var ok = MultiByteText.AsSpan().TryEncodeTo(System.Text.Encoding.UTF8, destination, out var written);
+        bool ok = MultiByteText.AsSpan().TryEncodeTo(System.Text.Encoding.UTF8, destination, out int written);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(required, written);
@@ -241,10 +241,10 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void TryEncodeTo_WhenDestinationIsOneByteTooSmall_ShouldReturnFalseAndZeroBytesWritten()
     {
-        var required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
-        var backing = new byte[required - 1];
+        int required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
+        byte[] backing = new byte[required - 1];
 
-        var ok = MultiByteText.AsSpan().TryEncodeTo(System.Text.Encoding.UTF8, backing, out var written);
+        bool ok = MultiByteText.AsSpan().TryEncodeTo(System.Text.Encoding.UTF8, backing, out int written);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0, written);
@@ -257,7 +257,7 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void TryEncodeTo_WhenEncodingIsNull_ShouldThrowExactly()
     {
-        var backing = new byte[64];
+        byte[] backing = new byte[64];
 
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -277,7 +277,7 @@ public sealed partial class EncodingExtensionsTests
     [DynamicData(nameof(CanonicalEncodings))]
     public void ToOwnedBytes_WhenInvoked_ShouldReturnExactSizedOwnerWithEncodedContent(System.Text.Encoding encoding)
     {
-        var expected = encoding.GetBytes(MultiByteText);
+        byte[] expected = encoding.GetBytes(MultiByteText);
 
         using IMemoryOwner<byte> owner = MultiByteText.AsSpan().ToOwnedBytes(encoding);
 

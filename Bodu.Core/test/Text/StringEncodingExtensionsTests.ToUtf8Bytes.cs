@@ -30,9 +30,9 @@ public sealed partial class StringEncodingExtensionsTests
     [DynamicData(nameof(GetToUtf8BytesCases))]
     public void ToUtf8Bytes_WhenInvoked_ShouldMatchBclUtf8(string text)
     {
-        var expected = System.Text.Encoding.UTF8.GetBytes(text);
+        byte[] expected = System.Text.Encoding.UTF8.GetBytes(text);
 
-        var actual = text.ToUtf8Bytes();
+        byte[] actual = text.ToUtf8Bytes();
 
         CollectionAssert.AreEqual(expected, actual);
     }

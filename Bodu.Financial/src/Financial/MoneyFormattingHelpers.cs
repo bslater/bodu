@@ -76,7 +76,7 @@ internal static class MoneyFormattingHelpers
         var nfi = (NumberFormatInfo)source.Clone();
         nfi.CurrencyDecimalDigits = decimals;
 
-        var isoBeforeAmount = source.CurrencyPositivePattern is 0 or 2;
+        bool isoBeforeAmount = source.CurrencyPositivePattern is 0 or 2;
         if (isoBeforeAmount)
         {
             nfi.CurrencySymbol = isoCode + " ";
@@ -155,9 +155,9 @@ internal static class MoneyFormattingHelpers
     /// <returns>The composed currency string with the magnitude suffix attached to the numeric portion.</returns>
     private static string ApplyCurrencyPattern(decimal amount, int decimals, string symbol, string magnitudeSuffix, NumberFormatInfo nfi)
     {
-        var decimalsSuffix = decimals.ToString(CultureInfo.InvariantCulture);
-        var numberPart = Math.Abs(amount).ToString("N" + decimalsSuffix, nfi) + magnitudeSuffix;
-        var pattern = amount < 0
+        string decimalsSuffix = decimals.ToString(CultureInfo.InvariantCulture);
+        string numberPart = Math.Abs(amount).ToString("N" + decimalsSuffix, nfi) + magnitudeSuffix;
+        string pattern = amount < 0
             ? s_currencyNegativePatterns[nfi.CurrencyNegativePattern]
             : s_currencyPositivePatterns[nfi.CurrencyPositivePattern];
 

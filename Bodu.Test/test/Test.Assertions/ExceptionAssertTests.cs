@@ -114,7 +114,7 @@ public sealed class ExceptionAssertTests
     [TestMethod]
     public void AssertGuard_WithGuardValidKat_ShouldInvokeHelperAndPass()
     {
-        var invoked = false;
+        bool invoked = false;
         GuardValidKat<int> kat = new("distinct values", 1, 2);
 
         ExceptionAssert.AssertGuard(kat, (value, other, _) =>

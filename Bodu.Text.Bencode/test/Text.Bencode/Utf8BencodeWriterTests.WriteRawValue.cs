@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Utf8BencodeWriterTests.WriteRawValue.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -23,7 +23,7 @@ public partial class Utf8BencodeWriterTests
     [TestMethod]
     public void WriteRawValue_WhenRawScalarAtRoot_ShouldEmitVerbatim()
     {
-        var actual = Write(w => w.WriteRawValue("i42e"u8));
+        string actual = Write(w => w.WriteRawValue("i42e"u8));
 
         Assert.AreEqual("i42e", actual);
     }
@@ -35,7 +35,7 @@ public partial class Utf8BencodeWriterTests
     [TestMethod]
     public void WriteRawValue_WhenRawContainerAsDictionaryValue_ShouldEmitWithinSortedDictionary()
     {
-        var actual = Write(w =>
+        string actual = Write(w =>
         {
             w.WriteStartDictionary();
             w.WritePropertyName("b");
@@ -152,7 +152,7 @@ public partial class Utf8BencodeWriterTests
     [TestMethod]
     public void WriteRawValue_WhenRawSliceFromParsedDocument_ShouldRoundTripExactBytes()
     {
-        var source = Write(w =>
+        string source = Write(w =>
         {
             w.WriteStartDictionary();
             w.WritePropertyName("info");
@@ -166,9 +166,9 @@ public partial class Utf8BencodeWriterTests
         });
 
         // Extract the encoded value of "info" (everything between the key and the final closing 'e').
-        var infoSlice = source["d4:info".Length..^1];
+        string infoSlice = source["d4:info".Length..^1];
 
-        var actual = Write(w =>
+        string actual = Write(w =>
         {
             w.WriteStartDictionary();
             w.WritePropertyName("info");

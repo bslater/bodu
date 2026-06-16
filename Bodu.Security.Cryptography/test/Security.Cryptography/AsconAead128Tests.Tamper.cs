@@ -27,9 +27,9 @@ public partial class AsconAead128Tests
     [TestMethod]
     public void Decrypt_WhenCiphertextByteTampered_ShouldThrowExactly()
     {
-        var ciphertext = (byte[])s_tamperBaseCiphertext.Clone();
+        byte[] ciphertext = (byte[])s_tamperBaseCiphertext.Clone();
         ciphertext[0] ^= 0x01;
-        var ctWithTag = ConcatTag(ciphertext, s_tamperBaseTag);
+        byte[] ctWithTag = ConcatTag(ciphertext, s_tamperBaseTag);
         using AsconAead128 aead = new(s_tamperReferenceKey, s_tamperReferenceNonce);
         aead.ProcessAssociatedData(ReadOnlySpan<byte>.Empty);
 
@@ -46,9 +46,9 @@ public partial class AsconAead128Tests
     [TestMethod]
     public void Decrypt_WhenTagByteTampered_ShouldThrowExactly()
     {
-        var tag = (byte[])s_tamperBaseTag.Clone();
+        byte[] tag = (byte[])s_tamperBaseTag.Clone();
         tag[0] ^= 0x01;
-        var ctWithTag = ConcatTag(s_tamperBaseCiphertext, tag);
+        byte[] ctWithTag = ConcatTag(s_tamperBaseCiphertext, tag);
         using AsconAead128 aead = new(s_tamperReferenceKey, s_tamperReferenceNonce);
         aead.ProcessAssociatedData(ReadOnlySpan<byte>.Empty);
 
@@ -65,7 +65,7 @@ public partial class AsconAead128Tests
     [TestMethod]
     public void Decrypt_WhenAssociatedDataIntroduced_ShouldThrowExactly()
     {
-        var ctWithTag = ConcatTag(s_tamperBaseCiphertext, s_tamperBaseTag);
+        byte[] ctWithTag = ConcatTag(s_tamperBaseCiphertext, s_tamperBaseTag);
         using AsconAead128 aead = new(s_tamperReferenceKey, s_tamperReferenceNonce);
         aead.ProcessAssociatedData([0x01]);
 
@@ -82,9 +82,9 @@ public partial class AsconAead128Tests
     [TestMethod]
     public void Decrypt_WhenNonceByteTampered_ShouldThrowExactly()
     {
-        var nonce = (byte[])s_tamperReferenceNonce.Clone();
+        byte[] nonce = (byte[])s_tamperReferenceNonce.Clone();
         nonce[0] ^= 0x01;
-        var ctWithTag = ConcatTag(s_tamperBaseCiphertext, s_tamperBaseTag);
+        byte[] ctWithTag = ConcatTag(s_tamperBaseCiphertext, s_tamperBaseTag);
         using AsconAead128 aead = new(s_tamperReferenceKey, nonce);
         aead.ProcessAssociatedData(ReadOnlySpan<byte>.Empty);
 
@@ -96,7 +96,7 @@ public partial class AsconAead128Tests
 
     private static byte[] ConcatTag(byte[] ciphertext, byte[] tag)
     {
-        var result = new byte[ciphertext.Length + tag.Length];
+        byte[] result = new byte[ciphertext.Length + tag.Length];
         Buffer.BlockCopy(ciphertext, 0, result, 0, ciphertext.Length);
         Buffer.BlockCopy(tag, 0, result, ciphertext.Length, tag.Length);
         return result;

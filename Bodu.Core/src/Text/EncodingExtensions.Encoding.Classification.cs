@@ -136,7 +136,7 @@ public static partial class EncodingExtensions
     {
         ThrowHelper.ThrowIfNull(encoding);
 
-        var suffix = encoding.HasPreamble() ? "-BOM" : string.Empty;
+        string suffix = encoding.HasPreamble() ? "-BOM" : string.Empty;
         return encoding.CodePage switch
         {
             65001 => "UTF-8" + suffix,

@@ -285,7 +285,7 @@ public static class NotableDateResourceLoader
 
         NotableDateRuleValidator.Validate(resource, diagnostics, algorithms);
 
-        var errorCount = diagnostics.Count(d => d.Severity == NotableDateValidationSeverity.Error);
+        int errorCount = diagnostics.Count(d => d.Severity == NotableDateValidationSeverity.Error);
         if (errorCount > 0)
         {
             Log.ResourceValidationFailed(log, errorCount);
@@ -330,7 +330,7 @@ public static class NotableDateResourceLoader
 
             try
             {
-                var content = resourceResolver(import.Resource);
+                string? content = resourceResolver(import.Resource);
                 if (content is null)
                 {
                     AddError(diagnostics, "BODU-CAL-IMPORT-MISSING", CalendarResourceStrings.Validation_ImportResourceNotFound, import.Resource);
@@ -410,12 +410,12 @@ public static class NotableDateResourceLoader
     /// <returns>The renamed and overridden concept.</returns>
     private static NotableDateDefinition ApplyUse(NotableDateDefinition concept, NotableDateImportUse use)
     {
-        var id = string.IsNullOrEmpty(use.As) ? concept.Id : use.As!;
+        string id = string.IsNullOrEmpty(use.As) ? concept.Id : use.As!;
         NotableDateCategory category = use.Category ?? concept.Category;
-        var nonWorking = use.NonWorking ?? concept.DefaultNonWorkingDay;
+        bool nonWorking = use.NonWorking ?? concept.DefaultNonWorkingDay;
 
-        var overrideTerritory = !string.IsNullOrEmpty(use.Territory);
-        var overrideAdjustments = use.AdjustmentPolicyRefs is not null;
+        bool overrideTerritory = !string.IsNullOrEmpty(use.Territory);
+        bool overrideAdjustments = use.AdjustmentPolicyRefs is not null;
 
         IReadOnlyList<NotableDateRule> rules = concept.Rules;
         if (overrideTerritory || overrideAdjustments)
@@ -468,7 +468,7 @@ public static class NotableDateResourceLoader
     /// </returns>
     private static bool LooksLikeJson(string content)
     {
-        foreach (var character in content)
+        foreach (char character in content)
         {
             if (character == '\uFEFF' || char.IsWhiteSpace(character))
                 continue;

@@ -28,7 +28,7 @@ public partial class BencodeSerializerTests
     {
         var original = new ReadWriteModel { Value = 42 };
 
-        var bytes = BencodeSerializer.Serialize(original);
+        byte[] bytes = BencodeSerializer.Serialize(original);
         Assert.AreEqual("d5:Valuei42ee", Encoding.Latin1.GetString(bytes));
 
         var roundTripped = BencodeSerializer.Deserialize<ReadWriteModel>(bytes);
@@ -43,7 +43,7 @@ public partial class BencodeSerializerTests
     {
         var original = new InitOnlyModel { Value = 7 };
 
-        var bytes = BencodeSerializer.Serialize(original);
+        byte[] bytes = BencodeSerializer.Serialize(original);
         Assert.AreEqual("d5:Valuei7ee", Encoding.Latin1.GetString(bytes));
 
         var roundTripped = BencodeSerializer.Deserialize<InitOnlyModel>(bytes);
@@ -57,7 +57,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Serialize_WhenGetOnlyScalarProperty_ShouldWriteMember()
     {
-        var bytes = BencodeSerializer.Serialize(new GetOnlyScalarModel(42));
+        byte[] bytes = BencodeSerializer.Serialize(new GetOnlyScalarModel(42));
 
         Assert.AreEqual("d5:Valuei42ee", Encoding.Latin1.GetString(bytes));
     }
@@ -69,7 +69,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenGetOnlyScalarProperty_ShouldNotAssignMember()
     {
-        var bytes = Encoding.Latin1.GetBytes("d5:Valuei99ee");
+        byte[] bytes = Encoding.Latin1.GetBytes("d5:Valuei99ee");
 
         var model = BencodeSerializer.Deserialize<GetOnlyScalarModel>(bytes);
 
@@ -84,7 +84,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Serialize_WhenPrivateSetterProperty_ShouldWriteMember()
     {
-        var bytes = BencodeSerializer.Serialize(new PrivateSetterModel(5));
+        byte[] bytes = BencodeSerializer.Serialize(new PrivateSetterModel(5));
 
         Assert.AreEqual("d5:Valuei5ee", Encoding.Latin1.GetString(bytes));
     }
@@ -98,7 +98,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenPrivateSetterProperty_ShouldNotAssignMember()
     {
-        var bytes = Encoding.Latin1.GetBytes("d5:Valuei99ee");
+        byte[] bytes = Encoding.Latin1.GetBytes("d5:Valuei99ee");
 
         var model = BencodeSerializer.Deserialize<PrivateSetterModel>(bytes);
 
@@ -115,7 +115,7 @@ public partial class BencodeSerializerTests
     {
         var original = new IncludedPrivateSetterModel(5);
 
-        var bytes = BencodeSerializer.Serialize(original);
+        byte[] bytes = BencodeSerializer.Serialize(original);
         Assert.AreEqual("d5:Valuei5ee", Encoding.Latin1.GetString(bytes));
 
         var roundTripped = BencodeSerializer.Deserialize<IncludedPrivateSetterModel>(bytes);

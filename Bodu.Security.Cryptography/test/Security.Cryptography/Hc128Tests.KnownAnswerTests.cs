@@ -113,13 +113,13 @@ public sealed partial class Hc128Tests
     public void CreateEncryptor_WhenGivenSpecificationVector_ShouldMatchExpected(
         string keyHex, string ivHex, string keystreamHex, string displayName)
     {
-        var key = Convert.FromHexString(keyHex);
-        var iv = Convert.FromHexString(ivHex);
-        var expected = Convert.FromHexString(keystreamHex);
+        byte[] key = Convert.FromHexString(keyHex);
+        byte[] iv = Convert.FromHexString(ivHex);
+        byte[] expected = Convert.FromHexString(keystreamHex);
 
         using var cipher = new Hc128();
         using ICryptoTransform encryptor = cipher.CreateEncryptor(key, iv);
-        var keystream = encryptor.TransformFinalBlock(new byte[expected.Length], 0, expected.Length);
+        byte[] keystream = encryptor.TransformFinalBlock(new byte[expected.Length], 0, expected.Length);
 
         CollectionAssert.AreEqual(expected, keystream, $"HC-128 keystream mismatch for {displayName}.");
     }
@@ -142,24 +142,24 @@ public sealed partial class Hc128Tests
             "9cf8236f", "0131be21", "c3a51de9", "d12290de",
         ];
 
-        var expected = new uint[16];
-        for (var i = 0; i < 16; i++)
+        uint[] expected = new uint[16];
+        for (int i = 0; i < 16; i++)
             expected[i] = uint.Parse(expectedWords[i], System.Globalization.NumberStyles.HexNumber, System.Globalization.CultureInfo.InvariantCulture);
 
-        var key = new byte[16];
-        var iv = new byte[16];
-        var zero = new byte[64];
-        var block = new byte[64];
-        var accumulator = new uint[16];
+        byte[] key = new byte[16];
+        byte[] iv = new byte[16];
+        byte[] zero = new byte[64];
+        byte[] block = new byte[64];
+        uint[] accumulator = new uint[16];
 
         const int repetitions = 1 << 20;
         using var cipher = new Hc128();
         using ICryptoTransform encryptor = cipher.CreateEncryptor(key, iv);
 
-        for (var j = 0; j < repetitions; j++)
+        for (int j = 0; j < repetitions; j++)
         {
             encryptor.TransformBlock(zero, 0, 64, block, 0);
-            for (var i = 0; i < 16; i++)
+            for (int i = 0; i < 16; i++)
                 accumulator[i] ^= BinaryPrimitives.ReadUInt32LittleEndian(block.AsSpan(i * 4, 4));
         }
 

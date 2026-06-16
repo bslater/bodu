@@ -53,7 +53,7 @@ public static partial class StringExtensions
         CultureInfo culture = options.Culture;
         StringBuilder builder = new(value.Length);
         builder.Append(words[0].ToLower(culture));
-        for (var i = 1; i < words.Count; i++)
+        for (int i = 1; i < words.Count; i++)
         {
             builder.Append(IsPreservedMixedCaseWord(words[i]) ? words[i] : CapitalizeWord(words[i], culture));
         }

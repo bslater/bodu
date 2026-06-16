@@ -63,7 +63,7 @@ public sealed class IniExtensionsTests
     [TestMethod]
     public void TryParseIni_OnString_WhenInputIsValid_ShouldReturnTrue()
     {
-        var success = CanonicalSource.TryParseIni(out IniDocument? document);
+        bool success = CanonicalSource.TryParseIni(out IniDocument? document);
 
         Assert.IsTrue(success);
         Assert.IsNotNull(document);
@@ -77,8 +77,8 @@ public sealed class IniExtensionsTests
     [TestMethod]
     public void TryParseIni_OnReadOnlySpan_ShouldMatchStaticCanonical()
     {
-        var extSuccess = CanonicalSource.AsSpan().TryParseIni(out IniDocument? extDocument);
-        var staticSuccess = Ini.TryParse(CanonicalSource, out IniDocument? staticDocument);
+        bool extSuccess = CanonicalSource.AsSpan().TryParseIni(out IniDocument? extDocument);
+        bool staticSuccess = Ini.TryParse(CanonicalSource, out IniDocument? staticDocument);
 
         Assert.AreEqual(staticSuccess, extSuccess);
         Assert.AreEqual(
@@ -95,8 +95,8 @@ public sealed class IniExtensionsTests
     {
         IniDocument document = Ini.Parse(CanonicalSource);
 
-        var fromExtension = document.FormatIni();
-        var fromStatic = Ini.Format(document);
+        string fromExtension = document.FormatIni();
+        string fromStatic = Ini.Format(document);
 
         Assert.AreEqual(fromStatic, fromExtension);
     }
@@ -109,7 +109,7 @@ public sealed class IniExtensionsTests
     public void ParseIniThenFormatIni_ShouldRoundTrip()
     {
         IniDocument first = CanonicalSource.ParseIni();
-        var emitted = first.FormatIni();
+        string emitted = first.FormatIni();
         IniDocument second = emitted.ParseIni();
 
         Assert.AreEqual(first.GetSection("database")!["host"], second.GetSection("database")!["host"]);
@@ -148,7 +148,7 @@ public sealed class IniExtensionsTests
     [TestMethod]
     public void TryParseIni_OnReadOnlySpanWithOptions_ShouldReturnTrueAndDocument()
     {
-        var parsed = CanonicalSource.AsSpan().TryParseIni(IniParseOptions.Default, out IniDocument? doc);
+        bool parsed = CanonicalSource.AsSpan().TryParseIni(IniParseOptions.Default, out IniDocument? doc);
 
         Assert.IsTrue(parsed);
         Assert.IsNotNull(doc);
@@ -161,7 +161,7 @@ public sealed class IniExtensionsTests
     [TestMethod]
     public void TryParseIni_OnStringWithOptions_ShouldReturnTrueAndDocument()
     {
-        var parsed = CanonicalSource.TryParseIni(IniParseOptions.Default, out IniDocument? doc);
+        bool parsed = CanonicalSource.TryParseIni(IniParseOptions.Default, out IniDocument? doc);
 
         Assert.IsTrue(parsed);
         Assert.IsNotNull(doc);

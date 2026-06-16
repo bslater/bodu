@@ -163,7 +163,7 @@ public readonly partial struct Money<TCurrency>
 
         BigInteger scaledNumerator = numerator * BigInteger.Pow(10, metadata.MinorUnits);
         BigInteger roundedMinorUnits = DivideRound(scaledNumerator, denominator, rounding);
-        var amount = (decimal)roundedMinorUnits / metadata.MinorUnitFactor;
+        decimal amount = (decimal)roundedMinorUnits / metadata.MinorUnitFactor;
         return FromNormalizedAmount(amount);
     }
 
@@ -254,9 +254,9 @@ public readonly partial struct Money<TCurrency>
         bool tiesAwayFromZero)
     {
         BigInteger absDoubleRem = BigInteger.Abs(remainder) * 2;
-        var cmp = absDoubleRem.CompareTo(denominator);
+        int cmp = absDoubleRem.CompareTo(denominator);
 
-        var roundAway = cmp > 0 || (cmp == 0 && (tiesAwayFromZero || !quotient.IsEven));
+        bool roundAway = cmp > 0 || (cmp == 0 && (tiesAwayFromZero || !quotient.IsEven));
 
         return !roundAway
             ? quotient

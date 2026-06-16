@@ -20,7 +20,7 @@ public partial class MoneyOfTCurrencyTests
     {
         var money = new Money<USD>(19.99m);
 
-        var json = JsonSerializer.Serialize(money);
+        string json = JsonSerializer.Serialize(money);
 
         Assert.AreEqual("{\"amount\":19.99,\"currency\":\"USD\"}", json);
     }
@@ -33,7 +33,7 @@ public partial class MoneyOfTCurrencyTests
     {
         var original = new Money<USD>(123.45m);
 
-        var json = JsonSerializer.Serialize(original);
+        string json = JsonSerializer.Serialize(original);
         Money<USD> recovered = JsonSerializer.Deserialize<Money<USD>>(json);
 
         Assert.AreEqual(original, recovered);
@@ -46,7 +46,7 @@ public partial class MoneyOfTCurrencyTests
     [TestMethod]
     public void JsonDeserialize_WhenCurrencyMismatch_ShouldThrowJsonException()
     {
-        var json = "{\"amount\":19.99,\"currency\":\"JPY\"}";
+        string json = "{\"amount\":19.99,\"currency\":\"JPY\"}";
 
         Assert.ThrowsExactly<JsonException>(() =>
         {
@@ -60,7 +60,7 @@ public partial class MoneyOfTCurrencyTests
     [TestMethod]
     public void JsonDeserialize_WhenAmountMissing_ShouldThrowJsonException()
     {
-        var json = "{\"currency\":\"USD\"}";
+        string json = "{\"currency\":\"USD\"}";
 
         Assert.ThrowsExactly<JsonException>(() =>
         {
@@ -74,7 +74,7 @@ public partial class MoneyOfTCurrencyTests
     [TestMethod]
     public void JsonDeserialize_WhenCurrencyMissing_ShouldThrowJsonException()
     {
-        var json = "{\"amount\":19.99}";
+        string json = "{\"amount\":19.99}";
 
         Assert.ThrowsExactly<JsonException>(() =>
         {
@@ -88,7 +88,7 @@ public partial class MoneyOfTCurrencyTests
     [TestMethod]
     public void JsonDeserialize_WhenPropertyNamesCasedDifferently_ShouldStillSucceed()
     {
-        var json = "{\"Amount\":19.99,\"Currency\":\"USD\"}";
+        string json = "{\"Amount\":19.99,\"Currency\":\"USD\"}";
 
         Money<USD> result = JsonSerializer.Deserialize<Money<USD>>(json);
 

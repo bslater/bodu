@@ -85,7 +85,7 @@ public static partial class DateOnlyExtensions
 
         if (definition == CalendarQuarterDefinition.Custom) throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_ProviderInterface, nameof(IQuarterDefinitionProvider)));
 
-        (var year, var quarter) = GetQuarterAndYearFromDate(definition, referenceDate: date);
+        (int year, int quarter) = GetQuarterAndYearFromDate(definition, referenceDate: date);
         return DateOnly.FromDayNumber(ComputeQuarterEndDayNumber(year, quarter, GetQuarterDefinition(definition)));
     }
 

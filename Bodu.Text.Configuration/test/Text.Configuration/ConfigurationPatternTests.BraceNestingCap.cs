@@ -35,7 +35,7 @@ public partial class ConfigurationPatternTests
     [TestMethod]
     public void Compile_WhenBraceNestingExceedsCap_ShouldThrowWithBraceNestingTooDeepCode()
     {
-        var source = BuildNestedAlternation(ConfigurationPattern.MaxBraceNestingDepth + 1);
+        string source = BuildNestedAlternation(ConfigurationPattern.MaxBraceNestingDepth + 1);
 
         ConfigurationParseException ex = Assert.ThrowsExactly<ConfigurationParseException>(() =>
         {
@@ -55,7 +55,7 @@ public partial class ConfigurationPatternTests
     {
         StringBuilder source = new();
         source.Append("prefix");
-        for (var i = 0; i < ConfigurationPattern.MaxBraceNestingDepth + 16; i++)
+        for (int i = 0; i < ConfigurationPattern.MaxBraceNestingDepth + 16; i++)
             source.Append(@"\{");
 
         source.Append(".log");
@@ -65,7 +65,7 @@ public partial class ConfigurationPatternTests
 
         StringBuilder expectedMatch = new();
         expectedMatch.Append("prefix");
-        for (var i = 0; i < ConfigurationPattern.MaxBraceNestingDepth + 16; i++)
+        for (int i = 0; i < ConfigurationPattern.MaxBraceNestingDepth + 16; i++)
             expectedMatch.Append('{');
 
         expectedMatch.Append(".log");
@@ -84,11 +84,11 @@ public partial class ConfigurationPatternTests
     {
         StringBuilder source = new();
         source.Append("prefix.");
-        for (var i = 0; i < depth; i++)
+        for (int i = 0; i < depth; i++)
             source.Append("{a,");
 
         source.Append('b');
-        for (var i = 0; i < depth; i++)
+        for (int i = 0; i < depth; i++)
             source.Append('}');
 
         source.Append(".suffix");

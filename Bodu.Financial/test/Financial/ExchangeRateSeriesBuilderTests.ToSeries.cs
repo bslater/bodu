@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateSeriesBuilderTests.ToSeries.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -69,7 +69,7 @@ public partial class ExchangeRateSeriesBuilderTests
         builder.Add(new DateOnly(2026, 6, 2), 1.51m);
 
         Assert.AreEqual(1, snapshot.Count);
-        Assert.IsTrue(snapshot.TryGetRate(new DateOnly(2026, 6, 1), ExchangeRateLookupOptions.Exact, out _, out var rate));
+        Assert.IsTrue(snapshot.TryGetRate(new DateOnly(2026, 6, 1), ExchangeRateLookupOptions.Exact, out _, out decimal rate));
         Assert.AreEqual(1.50m, rate);
     }
 
@@ -85,9 +85,9 @@ public partial class ExchangeRateSeriesBuilderTests
 
         ExchangeRateSeries updated = original.WithRate(new DateOnly(2026, 6, 1), 99m);
 
-        Assert.IsTrue(builder.TryGetRate(new DateOnly(2026, 6, 1), out var rate));
+        Assert.IsTrue(builder.TryGetRate(new DateOnly(2026, 6, 1), out decimal rate));
         Assert.AreEqual(1.50m, rate);
-        Assert.IsTrue(updated.TryGetRate(new DateOnly(2026, 6, 1), ExchangeRateLookupOptions.Exact, out _, out var updatedRate));
+        Assert.IsTrue(updated.TryGetRate(new DateOnly(2026, 6, 1), ExchangeRateLookupOptions.Exact, out _, out decimal updatedRate));
         Assert.AreEqual(99m, updatedRate);
     }
 }

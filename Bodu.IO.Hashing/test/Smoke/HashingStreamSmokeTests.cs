@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HashingStreamSmokeTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -24,7 +24,7 @@ public sealed class HashingStreamSmokeTests
     [TestCategory("Smoke")]
     public void HashingStream_CopyThrough_ShouldMatchDirectDigest()
     {
-        var payload = Encoding.ASCII.GetBytes("Hashing while copying with HashingStream.");
+        byte[] payload = Encoding.ASCII.GetBytes("Hashing while copying with HashingStream.");
         Fnv1a32 reference = new();
         reference.Append(payload);
 

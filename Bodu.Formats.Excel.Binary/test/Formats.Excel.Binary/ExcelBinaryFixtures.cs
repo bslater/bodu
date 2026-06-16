@@ -26,7 +26,7 @@ internal static class ExcelBinaryFixtures
     /// </exception>
     public static MemoryStream OpenStream(string fileName)
     {
-        var resourceName = "Bodu.Formats.Excel.Binary.Fixtures." + fileName;
+        string resourceName = "Bodu.Formats.Excel.Binary.Fixtures." + fileName;
         using Stream stream = typeof(ExcelBinaryFixtures).Assembly.GetManifestResourceStream(resourceName)
             ?? throw new InvalidOperationException($"Missing embedded fixture '{resourceName}'.");
         MemoryStream buffer = new();

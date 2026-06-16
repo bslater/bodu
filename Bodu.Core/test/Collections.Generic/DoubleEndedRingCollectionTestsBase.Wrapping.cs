@@ -80,19 +80,19 @@ public abstract partial class DoubleEndedRingCollectionTestsBase<TTest, TCollect
     public void Wrapping_WhenFilledFromBothEnds_ShouldPreserveLogicalOrder(int capacity)
     {
         TCollection collection = CreateCollection(capacity);
-        var half = capacity / 2;
+        int half = capacity / 2;
 
         // Fill the right half via tail (values [half, half+1, ..., capacity-1])
-        for (var i = 0; i < half; i++)
+        for (int i = 0; i < half; i++)
             AddToTail(collection, half + i);
 
         // Fill the left half via head (values [half-1, half-2, ..., 0]; head-side prepends reverse the order)
-        for (var i = 0; i < half; i++)
+        for (int i = 0; i < half; i++)
             AddToHead(collection, half - 1 - i);
 
         // Logical order should be 0, 1, ..., capacity-1
-        var expected = new int[capacity];
-        for (var i = 0; i < capacity; i++)
+        int[] expected = new int[capacity];
+        for (int i = 0; i < capacity; i++)
             expected[i] = i;
 
         CollectionAssert.AreEqual(expected, ToArray(collection));

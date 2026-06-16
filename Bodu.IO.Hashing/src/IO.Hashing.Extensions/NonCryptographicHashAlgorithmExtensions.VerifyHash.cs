@@ -56,7 +56,7 @@ public static partial class NonCryptographicHashAlgorithmExtensions
 
         algorithm.Reset();
         algorithm.Append(input);
-        var actualHash = algorithm.GetHashAndReset();
+        byte[] actualHash = algorithm.GetHashAndReset();
 
         return actualHash.AsSpan().SequenceEqual(expectedHash);
     }
@@ -125,7 +125,7 @@ public static partial class NonCryptographicHashAlgorithmExtensions
 
         algorithm.Reset();
         algorithm.Append(input);
-        var actualHash = algorithm.GetHashAndReset();
+        byte[] actualHash = algorithm.GetHashAndReset();
 
         return actualHash.AsSpan().SequenceEqual(expectedBytes);
     }
@@ -173,7 +173,7 @@ public static partial class NonCryptographicHashAlgorithmExtensions
 
         algorithm.Reset();
         algorithm.AppendData(stream);
-        var actualHash = algorithm.GetHashAndReset();
+        byte[] actualHash = algorithm.GetHashAndReset();
 
         return actualHash.AsSpan().SequenceEqual(expectedHash);
     }
@@ -241,7 +241,7 @@ public static partial class NonCryptographicHashAlgorithmExtensions
 
         algorithm.Reset();
         algorithm.AppendData(stream);
-        var actualHash = algorithm.GetHashAndReset();
+        byte[] actualHash = algorithm.GetHashAndReset();
 
         return actualHash.AsSpan().SequenceEqual(expectedBytes);
     }
@@ -287,7 +287,7 @@ public static partial class NonCryptographicHashAlgorithmExtensions
 
         algorithm.Reset();
         algorithm.Append(input);
-        var actualHash = algorithm.GetHashAndReset();
+        byte[] actualHash = algorithm.GetHashAndReset();
 
         return actualHash.AsSpan().SequenceEqual(expectedHash);
     }
@@ -378,7 +378,7 @@ public static partial class NonCryptographicHashAlgorithmExtensions
         ArgumentNullException.ThrowIfNull(encoding);
         ArgumentNullException.ThrowIfNull(expectedHash);
 
-        var data = encoding.GetBytes(text);
+        byte[] data = encoding.GetBytes(text);
 
         return algorithm.VerifyHash(data, expectedHash);
     }

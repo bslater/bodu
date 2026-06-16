@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateSeriesBuilderTests.Remove.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -19,7 +19,7 @@ public partial class ExchangeRateSeriesBuilderTests
         builder.Add(new DateOnly(2026, 6, 1), 1.50m);
         builder.Add(new DateOnly(2026, 6, 3), 1.52m);
 
-        var removed = builder.Remove(new DateOnly(2026, 6, 1));
+        bool removed = builder.Remove(new DateOnly(2026, 6, 1));
 
         Assert.IsTrue(removed);
         Assert.AreEqual(1, builder.Count);
@@ -36,7 +36,7 @@ public partial class ExchangeRateSeriesBuilderTests
         ExchangeRateSeriesBuilder builder = new(s_usdAud, "RBA");
         builder.Add(new DateOnly(2026, 6, 1), 1.50m);
 
-        var removed = builder.Remove(new DateOnly(2026, 6, 2));
+        bool removed = builder.Remove(new DateOnly(2026, 6, 2));
 
         Assert.IsFalse(removed);
         Assert.AreEqual(1, builder.Count);

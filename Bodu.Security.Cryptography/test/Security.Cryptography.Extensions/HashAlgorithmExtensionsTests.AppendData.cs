@@ -41,7 +41,7 @@ public partial class HashAlgorithmExtensionsTests
         algorithm.AppendData([]);
         algorithm.TransformFinalBlock([], 0, 0);
 
-        var expected = BitConverter.GetBytes((uint)0);
+        byte[] expected = BitConverter.GetBytes((uint)0);
         CollectionAssert.AreEqual(expected, algorithm.Hash);
     }
 
@@ -56,7 +56,7 @@ public partial class HashAlgorithmExtensionsTests
         algorithm.AppendData(new ReadOnlySpan<byte>([0xFF]));
         algorithm.TransformFinalBlock([], 0, 0);
 
-        var expected = BitConverter.GetBytes((uint)0xFF);
+        byte[] expected = BitConverter.GetBytes((uint)0xFF);
         CollectionAssert.AreEqual(expected, algorithm.Hash);
     }
 
@@ -74,7 +74,7 @@ public partial class HashAlgorithmExtensionsTests
         algorithm.TransformFinalBlock([], 0, 0);
 
         // MonitoringHashAlgorithm accumulates input bytes as an unsigned 32-bit sum.
-        var expected = BitConverter.GetBytes((uint)(1 + 2 + 3 + 4));
+        byte[] expected = BitConverter.GetBytes((uint)(1 + 2 + 3 + 4));
         CollectionAssert.AreEqual(expected, algorithm.Hash);
     }
 
@@ -90,7 +90,7 @@ public partial class HashAlgorithmExtensionsTests
         algorithm.AppendData(new ReadOnlySpan<byte>([30, 40]));
         algorithm.TransformFinalBlock([], 0, 0);
 
-        var expected = BitConverter.GetBytes((uint)(10 + 20 + 30 + 40));
+        byte[] expected = BitConverter.GetBytes((uint)(10 + 20 + 30 + 40));
         CollectionAssert.AreEqual(expected, algorithm.Hash);
     }
 
@@ -125,7 +125,7 @@ public partial class HashAlgorithmExtensionsTests
     public void AppendData_WhenCalled_ShouldInvokeHashCoreOnce()
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
-        var before = algorithm.HashCoreCallCount;
+        int before = algorithm.HashCoreCallCount;
 
         algorithm.AppendData(new ReadOnlySpan<byte>([1, 2, 3]));
 

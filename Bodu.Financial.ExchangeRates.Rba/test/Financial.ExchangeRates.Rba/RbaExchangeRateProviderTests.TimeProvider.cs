@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RbaExchangeRateProviderTests.TimeProvider.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -21,7 +21,7 @@ public partial class RbaExchangeRateProviderTests
         RbaExchangeRateProvider provider = new(source, options, logger: null, timeProvider);
         await provider.LoadRangeAsync(new DateOnly(2023, 1, 1), new DateOnly(2026, 12, 31));
 
-        var rate = provider.GetRate("AUD", "USD").Rate.Rate;
+        decimal rate = provider.GetRate("AUD", "USD").Rate.Rate;
 
         Assert.AreEqual(0.6828m, rate);
     }

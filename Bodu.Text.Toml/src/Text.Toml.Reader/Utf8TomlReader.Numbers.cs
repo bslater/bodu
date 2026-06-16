@@ -18,7 +18,7 @@ public ref partial struct Utf8TomlReader
     /// </returns>
     private bool TryScanBoolean()
     {
-        if (TryMatchKeyword("true"u8, out var incomplete))
+        if (TryMatchKeyword("true"u8, out bool incomplete))
         {
             _boolValue = true;
         }
@@ -51,7 +51,7 @@ public ref partial struct Utf8TomlReader
     {
         incomplete = false;
 
-        var available = Math.Min(keyword.Length, _source.Length - _pos);
+        int available = Math.Min(keyword.Length, _source.Length - _pos);
         if (!_source.Slice(_pos, available).SequenceEqual(keyword[..available]))
             return false;
 
@@ -61,7 +61,7 @@ public ref partial struct Utf8TomlReader
             return false;
         }
 
-        var after = _pos + keyword.Length;
+        int after = _pos + keyword.Length;
         if (after >= _source.Length)
         {
             // The terminator is unseen; on a non-final block the bare token may still grow.
@@ -105,7 +105,7 @@ public ref partial struct Utf8TomlReader
     /// </returns>
     private bool TryScanNumber()
     {
-        var start = _pos;
+        int start = _pos;
         while (!Eof && !IsValueTerminator(Current))
             Advance();
 
@@ -155,7 +155,7 @@ public ref partial struct Utf8TomlReader
             }
         }
 
-        var isFloat = token.IndexOf((byte)'.') >= 0 || token.IndexOf((byte)'e') >= 0 || token.IndexOf((byte)'E') >= 0;
+        bool isFloat = token.IndexOf((byte)'.') >= 0 || token.IndexOf((byte)'e') >= 0 || token.IndexOf((byte)'E') >= 0;
         if (isFloat)
             SetFloat(ParseFloat(token));
         else
@@ -191,8 +191,8 @@ public ref partial struct Utf8TomlReader
     /// <returns>The integer value.</returns>
     private readonly long ParseDecimalInteger(ReadOnlySpan<byte> token)
     {
-        var i = 0;
-        var negative = false;
+        int i = 0;
+        bool negative = false;
         if (token[0] == (byte)'+' || token[0] == (byte)'-')
         {
             negative = token[0] == (byte)'-';
@@ -203,11 +203,11 @@ public ref partial struct Utf8TomlReader
         if (body.IsEmpty)
             throw Error(TomlResourceStrings.Format_Invalid_TomlInvalidNumber);
 
-        var digitCount = 0;
+        int digitCount = 0;
         byte firstDigit = 0;
-        for (var j = 0; j < body.Length; j++)
+        for (int j = 0; j < body.Length; j++)
         {
-            var b = body[j];
+            byte b = body[j];
             if (b == (byte)'_')
             {
                 if (j == 0 || j == body.Length - 1 || !IsDigit(body[j - 1]) || !IsDigit(body[j + 1]))
@@ -229,12 +229,12 @@ public ref partial struct Utf8TomlReader
             throw Error(TomlResourceStrings.Format_Invalid_TomlInvalidNumber);
 
         ulong magnitude = 0;
-        foreach (var b in body)
+        foreach (byte b in body)
         {
             if (b == (byte)'_')
                 continue;
 
-            var d = (uint)(b - (byte)'0');
+            uint d = (uint)(b - (byte)'0');
             if (magnitude > (ulong.MaxValue - d) / 10)
                 throw Error(TomlResourceStrings.Format_Invalid_TomlIntegerOutOfRange);
             magnitude = (magnitude * 10) + d;
@@ -264,8 +264,8 @@ public ref partial struct Utf8TomlReader
         if (body.IsEmpty)
             throw Error(TomlResourceStrings.Format_Invalid_TomlInvalidNumber);
 
-        var allowHexLetters = radix == 16;
-        for (var j = 0; j < body.Length; j++)
+        bool allowHexLetters = radix == 16;
+        for (int j = 0; j < body.Length; j++)
         {
             if (body[j] != (byte)'_')
                 continue;
@@ -275,12 +275,12 @@ public ref partial struct Utf8TomlReader
         }
 
         ulong value = 0;
-        foreach (var b in body)
+        foreach (byte b in body)
         {
             if (b == (byte)'_')
                 continue;
 
-            var d = HexValue(b);
+            int d = HexValue(b);
             if (d < 0 || d >= radix)
                 throw Error(TomlResourceStrings.Format_Invalid_TomlInvalidNumber);
             if (value > (ulong.MaxValue - (ulong)d) / (ulong)radix)
@@ -301,10 +301,10 @@ public ref partial struct Utf8TomlReader
     private readonly double ParseFloat(ReadOnlySpan<byte> token)
     {
         Span<char> buffer = token.Length <= 128 ? stackalloc char[128] : new char[token.Length];
-        var n = 0;
-        for (var j = 0; j < token.Length; j++)
+        int n = 0;
+        for (int j = 0; j < token.Length; j++)
         {
-            var b = token[j];
+            byte b = token[j];
             if (b == (byte)'_')
             {
                 if (j == 0 || j == token.Length - 1 || !IsDigit(token[j - 1]) || !IsDigit(token[j + 1]))
@@ -329,40 +329,40 @@ public ref partial struct Utf8TomlReader
     /// <returns><see langword="true" /> when the literal is a valid TOML float.</returns>
     private static bool IsValidFloatLiteral(ReadOnlySpan<char> s)
     {
-        var i = 0;
+        int i = 0;
         if (i < s.Length && (s[i] == '+' || s[i] == '-'))
             i++;
 
         // Integer part: 0 or [1-9][0-9]*.
-        var intStart = i;
+        int intStart = i;
         while (i < s.Length && s[i] is >= '0' and <= '9')
             i++;
-        var intLen = i - intStart;
+        int intLen = i - intStart;
         if (intLen == 0)
             return false;
         if (intLen > 1 && s[intStart] == '0')
             return false;
 
-        var hasFraction = false;
+        bool hasFraction = false;
         if (i < s.Length && s[i] == '.')
         {
             hasFraction = true;
             i++;
-            var fracStart = i;
+            int fracStart = i;
             while (i < s.Length && s[i] is >= '0' and <= '9')
                 i++;
             if (i == fracStart)
                 return false;
         }
 
-        var hasExponent = false;
+        bool hasExponent = false;
         if (i < s.Length && (s[i] == 'e' || s[i] == 'E'))
         {
             hasExponent = true;
             i++;
             if (i < s.Length && (s[i] == '+' || s[i] == '-'))
                 i++;
-            var expStart = i;
+            int expStart = i;
             while (i < s.Length && s[i] is >= '0' and <= '9')
                 i++;
             if (i == expStart)

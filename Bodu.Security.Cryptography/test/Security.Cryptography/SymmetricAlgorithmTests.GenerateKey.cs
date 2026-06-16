@@ -17,7 +17,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     public void GenerateKey_WhenCalled_ShouldInitializeKeyCorrectly()
     {
         using TAlgorithm algorithm = CreateAlgorithm();
-        var size = algorithm.LegalKeySizes[0].MinSize;
+        int size = algorithm.LegalKeySizes[0].MinSize;
         algorithm.KeySize = size;
         algorithm.GenerateKey();
 

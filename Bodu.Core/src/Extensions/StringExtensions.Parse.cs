@@ -61,7 +61,7 @@ public static partial class StringExtensions
     {
         ThrowHelper.ThrowIfNull(value);
 
-        var ok = T.TryParse(value, CultureInfo.InvariantCulture, out T? parsed);
+        bool ok = T.TryParse(value, CultureInfo.InvariantCulture, out T? parsed);
         result = parsed!;
         return ok;
     }
@@ -114,7 +114,7 @@ public static partial class StringExtensions
     {
         ThrowHelper.ThrowIfNull(value);
 
-        var ok = T.TryParse(value.AsSpan(), CultureInfo.InvariantCulture, out T? parsed);
+        bool ok = T.TryParse(value.AsSpan(), CultureInfo.InvariantCulture, out T? parsed);
         result = parsed!;
         return ok;
     }

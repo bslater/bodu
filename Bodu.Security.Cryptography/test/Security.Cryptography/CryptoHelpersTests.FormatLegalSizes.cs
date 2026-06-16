@@ -17,7 +17,7 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void FormatLegalSizes_WhenArrayIsNull_ShouldReturnEmptyString()
     {
-        var result = CryptographyHelper.FormatLegalSizes(null);
+        string result = CryptographyHelper.FormatLegalSizes(null);
 
         Assert.AreEqual(string.Empty, result);
     }
@@ -29,7 +29,7 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void FormatLegalSizes_WhenArrayIsEmpty_ShouldReturnEmptyString()
     {
-        var result = CryptographyHelper.FormatLegalSizes([]);
+        string result = CryptographyHelper.FormatLegalSizes([]);
 
         Assert.AreEqual(string.Empty, result);
     }
@@ -43,7 +43,7 @@ public partial class CryptoHelpersTests
     {
         KeySizes[] sizes = [new KeySizes(128, 128, 0)];
 
-        var result = CryptographyHelper.FormatLegalSizes(sizes);
+        string result = CryptographyHelper.FormatLegalSizes(sizes);
 
         Assert.AreEqual("128", result);
     }
@@ -57,7 +57,7 @@ public partial class CryptoHelpersTests
     {
         KeySizes[] sizes = [new KeySizes(128, 256, 64)];
 
-        var result = CryptographyHelper.FormatLegalSizes(sizes);
+        string result = CryptographyHelper.FormatLegalSizes(sizes);
 
         Assert.AreEqual("128, 192, 256", result);
     }
@@ -75,7 +75,7 @@ public partial class CryptoHelpersTests
             new KeySizes(128, 192, 64)
         ];
 
-        var result = CryptographyHelper.FormatLegalSizes(sizes);
+        string result = CryptographyHelper.FormatLegalSizes(sizes);
 
         Assert.AreEqual("128, 192, 256", result);
     }

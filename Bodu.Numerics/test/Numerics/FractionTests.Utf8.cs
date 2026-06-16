@@ -27,7 +27,7 @@ public partial class FractionTests
     [TestMethod]
     public void TryParse_WhenGivenValidUtf8Bytes_ShouldReturnTrueAndValue()
     {
-        var parsed = Fraction<int>.TryParse("5/8"u8, null, out Fraction<int> value);
+        bool parsed = Fraction<int>.TryParse("5/8"u8, null, out Fraction<int> value);
 
         Assert.IsTrue(parsed);
         Assert.AreEqual(new Fraction<int>(5, 8), value);
@@ -39,7 +39,7 @@ public partial class FractionTests
     [TestMethod]
     public void TryParse_WhenGivenInvalidUtf8Bytes_ShouldReturnFalse()
     {
-        var parsed = Fraction<int>.TryParse("bad"u8, null, out _);
+        bool parsed = Fraction<int>.TryParse("bad"u8, null, out _);
 
         Assert.IsFalse(parsed);
     }
@@ -52,7 +52,7 @@ public partial class FractionTests
     {
         Span<byte> buffer = stackalloc byte[16];
 
-        var formatted = new Fraction<int>(3, 4).TryFormat(buffer, out var written, default, null);
+        bool formatted = new Fraction<int>(3, 4).TryFormat(buffer, out int written, default, null);
 
         Assert.IsTrue(formatted);
         Assert.AreEqual("3/4", Encoding.UTF8.GetString(buffer[..written]));

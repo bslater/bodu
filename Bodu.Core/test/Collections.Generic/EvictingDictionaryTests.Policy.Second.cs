@@ -109,7 +109,7 @@ public partial class EvictingDictionaryTests
         dictionary.Touch("c"); // all have second chance
 
         // All items have the second-chance flag; peek should return the oldest (first in order).
-        var candidate = dictionary.PeekEvictionCandidate();
+        string? candidate = dictionary.PeekEvictionCandidate();
 
         Assert.IsNotNull(candidate);
         Assert.IsTrue(dictionary.ContainsKey(candidate!));
@@ -135,7 +135,7 @@ public partial class EvictingDictionaryTests
         dictionary.Add("C", 3); // cycles A and B; A is evicted
 
         // B was cycled to the tail — its node reference must have been updated.
-        var result = dictionary.Remove("B");
+        bool result = dictionary.Remove("B");
 
         Assert.IsTrue(result);
         Assert.AreEqual(1, dictionary.Count);

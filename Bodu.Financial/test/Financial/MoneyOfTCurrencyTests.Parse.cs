@@ -75,7 +75,7 @@ public partial class MoneyOfTCurrencyTests
     [TestMethod]
     public void TryParse_WhenInputNull_ShouldReturnFalse()
     {
-        var ok = Money<USD>.TryParse((string?)null, CultureInfo.InvariantCulture, out Money<USD> result);
+        bool ok = Money<USD>.TryParse((string?)null, CultureInfo.InvariantCulture, out Money<USD> result);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(default, result);
@@ -106,7 +106,7 @@ public partial class MoneyOfTCurrencyTests
     {
         var original = new Money<USD>((decimal)amount);
 
-        var formatted = original.ToString(null, CultureInfo.InvariantCulture);
+        string formatted = original.ToString(null, CultureInfo.InvariantCulture);
         var recovered = Money<USD>.Parse(formatted, CultureInfo.InvariantCulture);
 
         Assert.AreEqual(original, recovered);

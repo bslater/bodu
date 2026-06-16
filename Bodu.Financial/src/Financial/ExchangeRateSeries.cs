@@ -228,7 +228,7 @@ public sealed class ExchangeRateSeries
     {
         FinancialThrowHelper.ThrowIfExchangeRateNotPositive(rate);
 
-        if (_storage.TryGetExactRate(date, out var existing) && existing == rate)
+        if (_storage.TryGetExactRate(date, out decimal existing) && existing == rate)
             return this;
 
         ExchangeRateSeriesBuilder builder = ToBuilder();

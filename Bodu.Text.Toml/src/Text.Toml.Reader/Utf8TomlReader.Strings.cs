@@ -21,8 +21,8 @@ public ref partial struct Utf8TomlReader
     {
         Advance();
 
-        var start = _pos;
-        var escapes = false;
+        int start = _pos;
+        bool escapes = false;
         while (true)
         {
             if (Eof)
@@ -38,7 +38,7 @@ public ref partial struct Utf8TomlReader
             if (AtNewline())
                 throw Error(TomlResourceStrings.Format_Invalid_TomlUnterminatedString);
 
-            var b = Current;
+            byte b = Current;
             if (b == (byte)'"')
             {
                 SetValueSpan(start, _pos - start);
@@ -83,7 +83,7 @@ public ref partial struct Utf8TomlReader
     {
         Advance();
 
-        var start = _pos;
+        int start = _pos;
         while (true)
         {
             if (Eof)
@@ -99,7 +99,7 @@ public ref partial struct Utf8TomlReader
             if (AtNewline())
                 throw Error(TomlResourceStrings.Format_Invalid_TomlUnterminatedString);
 
-            var b = Current;
+            byte b = Current;
             if (b == (byte)'\'')
             {
                 SetValueSpan(start, _pos - start);
@@ -140,8 +140,8 @@ public ref partial struct Utf8TomlReader
         if (AtNewline())
             ConsumeNewline();
 
-        var start = _pos;
-        var escapes = false;
+        int start = _pos;
+        bool escapes = false;
         while (true)
         {
             if (Eof)
@@ -151,10 +151,10 @@ public ref partial struct Utf8TomlReader
                 throw Error(TomlResourceStrings.Format_Invalid_TomlUnterminatedString);
             }
 
-            var b = Current;
+            byte b = Current;
             if (b == (byte)'"')
             {
-                var run = CountRun((byte)'"');
+                int run = CountRun((byte)'"');
 
                 // A quote run touching the end of a non-final buffer may still grow.
                 if (!_isFinalBlock && _pos + run >= _source.Length)
@@ -236,7 +236,7 @@ public ref partial struct Utf8TomlReader
         if (AtNewline())
             ConsumeNewline();
 
-        var start = _pos;
+        int start = _pos;
         while (true)
         {
             if (Eof)
@@ -246,10 +246,10 @@ public ref partial struct Utf8TomlReader
                 throw Error(TomlResourceStrings.Format_Invalid_TomlUnterminatedString);
             }
 
-            var b = Current;
+            byte b = Current;
             if (b == (byte)'\'')
             {
-                var run = CountRun((byte)'\'');
+                int run = CountRun((byte)'\'');
 
                 // An apostrophe run touching the end of a non-final buffer may still grow.
                 if (!_isFinalBlock && _pos + run >= _source.Length)
@@ -313,7 +313,7 @@ public ref partial struct Utf8TomlReader
             throw Error(TomlResourceStrings.Format_Invalid_TomlInvalidEscape);
         }
 
-        var e = Current;
+        byte e = Current;
 
         // The \e (escape) and \xHH (hex byte) escapes were introduced in TOML v1.1.0; reject them under v1.0.
         if (_specVersion != TomlSpecVersion.V1_1 && (e == (byte)'e' || e == (byte)'x'))
@@ -367,9 +367,9 @@ public ref partial struct Utf8TomlReader
         }
 
         long value = 0;
-        for (var i = 0; i < digits; i++)
+        for (int i = 0; i < digits; i++)
         {
-            var d = HexValue(_source[_pos + i]);
+            int d = HexValue(_source[_pos + i]);
             if (d < 0)
                 throw Error(TomlResourceStrings.Format_Invalid_TomlInvalidEscape);
             value = (value << 4) | (uint)d;
@@ -390,7 +390,7 @@ public ref partial struct Utf8TomlReader
     /// <returns><see langword="true" /> when the classification needs more data.</returns>
     private readonly bool IsPotentialLineEndingBackslash()
     {
-        var j = _pos + 1;
+        int j = _pos + 1;
         while (j < _source.Length && (_source[j] == (byte)' ' || _source[j] == (byte)'\t'))
             j++;
         if (j >= _source.Length)
@@ -405,7 +405,7 @@ public ref partial struct Utf8TomlReader
     /// <returns><see langword="true" /> when a line-ending backslash begins at the cursor.</returns>
     private readonly bool IsLineEndingBackslash()
     {
-        var j = _pos + 1;
+        int j = _pos + 1;
         while (j < _source.Length && (_source[j] == (byte)' ' || _source[j] == (byte)'\t'))
             j++;
         return j < _source.Length && (_source[j] == (byte)'\n' || (_source[j] == (byte)'\r' && j + 1 < _source.Length && _source[j + 1] == (byte)'\n'));
@@ -438,14 +438,14 @@ public ref partial struct Utf8TomlReader
     internal static string DecodeEscapedString(ReadOnlySpan<byte> content)
     {
         var sb = new StringBuilder(content.Length);
-        var i = 0;
+        int i = 0;
         while (i < content.Length)
         {
             if (content[i] != (byte)'\\')
             {
                 // Copy the verbatim run up to the next escape in one transcode.
                 var run = content[i..];
-                var next = run.IndexOf((byte)'\\');
+                int next = run.IndexOf((byte)'\\');
                 if (next < 0)
                     next = run.Length;
 
@@ -455,7 +455,7 @@ public ref partial struct Utf8TomlReader
             }
 
             i++;
-            var e = content[i];
+            byte e = content[i];
             switch (e)
             {
                 case (byte)'"': sb.Append('"'); i++; break;
@@ -505,8 +505,8 @@ public ref partial struct Utf8TomlReader
     /// <param name="digits">The number of hexadecimal digits to read.</param>
     private static void AppendUnicodeScalar(StringBuilder sb, ReadOnlySpan<byte> content, ref int i, int digits)
     {
-        var value = 0;
-        for (var d = 0; d < digits; d++)
+        int value = 0;
+        for (int d = 0; d < digits; d++)
             value = (value << 4) | HexValue(content[i + d]);
 
         i += digits;

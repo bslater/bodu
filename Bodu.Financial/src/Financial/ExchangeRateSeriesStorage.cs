@@ -91,11 +91,11 @@ internal sealed class ExchangeRateSeriesStorage
         out DateOnly resolvedDate,
         out decimal rate)
     {
-        var dayNumbers = _dayNumbers;
-        var rates = _rates;
-        var requestedDayNumber = requestedDate.DayNumber;
+        int[] dayNumbers = _dayNumbers;
+        decimal[] rates = _rates;
+        int requestedDayNumber = requestedDate.DayNumber;
 
-        var index = Array.BinarySearch(dayNumbers, requestedDayNumber);
+        int index = Array.BinarySearch(dayNumbers, requestedDayNumber);
 
         if (index >= 0)
         {
@@ -111,17 +111,17 @@ internal sealed class ExchangeRateSeriesStorage
             return false;
         }
 
-        var next = ~index;
-        var previous = next - 1;
+        int next = ~index;
+        int previous = next - 1;
 
-        if (!ExchangeRateDateSearch.TrySelectCandidate(dayNumbers, requestedDayNumber, options.DateResolution, previous, next, out var candidate))
+        if (!ExchangeRateDateSearch.TrySelectCandidate(dayNumbers, requestedDayNumber, options.DateResolution, previous, next, out int candidate))
         {
             resolvedDate = default;
             rate = default;
             return false;
         }
 
-        var offsetDays = Math.Abs(dayNumbers[candidate] - requestedDayNumber);
+        int offsetDays = Math.Abs(dayNumbers[candidate] - requestedDayNumber);
 
         if (offsetDays > options.ToleranceDays)
         {
@@ -141,7 +141,7 @@ internal sealed class ExchangeRateSeriesStorage
     /// <returns>A lazy sequence of <see cref="ExchangeRateObservation" /> values.</returns>
     public IEnumerable<ExchangeRateObservation> Enumerate()
     {
-        for (var i = 0; i < _dayNumbers.Length; i++)
+        for (int i = 0; i < _dayNumbers.Length; i++)
         {
             yield return new ExchangeRateObservation(DateOnly.FromDayNumber(_dayNumbers[i]), _rates[i]);
         }
@@ -165,7 +165,7 @@ internal sealed class ExchangeRateSeriesStorage
     /// <returns><see langword="true" /> if an observation exists for <paramref name="date" />.</returns>
     public bool TryGetExactRate(DateOnly date, out decimal rate)
     {
-        var index = Array.BinarySearch(_dayNumbers, date.DayNumber);
+        int index = Array.BinarySearch(_dayNumbers, date.DayNumber);
         if (index < 0)
         {
             rate = default;
@@ -275,7 +275,7 @@ internal sealed class ExchangeRateSeriesStorage
     /// </returns>
     private static bool IsStrictlyAscending(int[] dayNumbers)
     {
-        for (var i = 1; i < dayNumbers.Length; i++)
+        for (int i = 1; i < dayNumbers.Length; i++)
         {
             if (dayNumbers[i] <= dayNumbers[i - 1])
                 return false;
@@ -291,7 +291,7 @@ internal sealed class ExchangeRateSeriesStorage
     /// <returns><see langword="true" /> if every rate is &gt; 0; otherwise <see langword="false" />.</returns>
     private static bool AllPositive(decimal[] rates)
     {
-        for (var i = 0; i < rates.Length; i++)
+        for (int i = 0; i < rates.Length; i++)
         {
             if (rates[i] <= 0m)
                 return false;
@@ -307,10 +307,10 @@ internal sealed class ExchangeRateSeriesStorage
     /// <returns>A new <see cref="ExchangeRateSeriesStorage" /> wrapping the materialised arrays.</returns>
     private static ExchangeRateSeriesStorage MaterialiseFromNormalised(List<(int DayNumber, decimal Rate)> normalised)
     {
-        var dayNumbers = new int[normalised.Count];
-        var rateArray = new decimal[normalised.Count];
+        int[] dayNumbers = new int[normalised.Count];
+        decimal[] rateArray = new decimal[normalised.Count];
 
-        for (var i = 0; i < normalised.Count; i++)
+        for (int i = 0; i < normalised.Count; i++)
         {
             dayNumbers[i] = normalised[i].DayNumber;
             rateArray[i] = normalised[i].Rate;

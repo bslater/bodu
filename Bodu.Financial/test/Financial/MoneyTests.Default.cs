@@ -132,7 +132,7 @@ public partial class MoneyTests
     {
         Money money = default;
 
-        var text = money.ToString();
+        string text = money.ToString();
 
         Assert.IsNotNull(text);
     }

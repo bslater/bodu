@@ -16,14 +16,14 @@ public sealed partial class Iso7816_4PaddingTests
     public void Pad_WhenInputHasResidual_ShouldWriteTerminatorFollowedByZeroBytes()
     {
         Iso7816_4Padding padding = CreatePadding();
-        var plaintext = CreatePlaintextWithResidual(BlockSize - 5);
+        byte[] plaintext = CreatePlaintextWithResidual(BlockSize - 5);
 
-        var padded = padding.Pad(plaintext, BlockSizeBits);
+        byte[] padded = padding.Pad(plaintext, BlockSizeBits);
 
         Assert.AreEqual(BlockSize, padded.Length);
         Assert.AreEqual((byte)0x80, padded[plaintext.Length], "First pad byte must be 0x80.");
 
-        for (var i = plaintext.Length + 1; i < padded.Length; i++)
+        for (int i = plaintext.Length + 1; i < padded.Length; i++)
             Assert.AreEqual((byte)0x00, padded[i], $"Pad byte after the terminator at index {i} must be 0x00.");
     }
 
@@ -36,14 +36,14 @@ public sealed partial class Iso7816_4PaddingTests
     public void Pad_WhenInputIsBlockAligned_ShouldAppendFullBlockOfPadding()
     {
         Iso7816_4Padding padding = CreatePadding();
-        var plaintext = CreatePlaintextWithResidual(0);
+        byte[] plaintext = CreatePlaintextWithResidual(0);
 
-        var padded = padding.Pad(plaintext, BlockSizeBits);
+        byte[] padded = padding.Pad(plaintext, BlockSizeBits);
 
         Assert.AreEqual(plaintext.Length + BlockSize, padded.Length);
         Assert.AreEqual((byte)0x80, padded[plaintext.Length], "Terminator must sit at the start of the appended block.");
 
-        for (var i = plaintext.Length + 1; i < padded.Length; i++)
+        for (int i = plaintext.Length + 1; i < padded.Length; i++)
             Assert.AreEqual((byte)0x00, padded[i]);
     }
 }

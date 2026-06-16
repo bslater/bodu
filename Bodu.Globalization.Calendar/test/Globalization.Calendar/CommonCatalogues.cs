@@ -34,7 +34,7 @@ internal static class CommonCatalogues
     /// <exception cref="InvalidOperationException">The catalogue is not a bundled resource.</exception>
     public static NotableDateService Service(string catalogueName)
     {
-        var content = CommonNotableDateResources.Resolve(catalogueName)
+        string content = CommonNotableDateResources.Resolve(catalogueName)
             ?? throw new InvalidOperationException($"Unknown common catalogue '{catalogueName}'.");
         NotableDateResource resource = NotableDateResourceLoader.Load(content, CommonNotableDateResources.Resolver);
 

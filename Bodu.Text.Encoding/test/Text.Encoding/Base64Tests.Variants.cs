@@ -18,8 +18,8 @@ public sealed partial class Base64Tests
     public void Decode_WhenUrlSafeVariantWithMinusAndUnderscore_ShouldDecodeAsPlusAndSlash()
     {
         // Standard "+//+" - encoded form of 0xFB, 0xFF, 0xFE; URL-safe equivalent is "-__-".
-        var urlSafe = Base64.Decode("-__-", Base64Variant.UrlSafe);
-        var standard = Base64.Decode("+//+");
+        byte[] urlSafe = Base64.Decode("-__-", Base64Variant.UrlSafe);
+        byte[] standard = Base64.Decode("+//+");
 
         CollectionAssert.AreEqual(standard, urlSafe);
     }
@@ -32,10 +32,10 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void Decode_WhenUrlSafeVariantWithoutPadding_ShouldRecoverOriginalBytes()
     {
-        var original = new byte[] { 0xFB, 0xFF, 0xFE, 0xFB, 0xFF };
+        byte[] original = new byte[] { 0xFB, 0xFF, 0xFE, 0xFB, 0xFF };
 
-        var encoded = Base64.Encode(original, Base64Variant.UrlSafe);
-        var decoded = Base64.Decode(encoded, Base64Variant.UrlSafe);
+        string encoded = Base64.Encode(original, Base64Variant.UrlSafe);
+        byte[] decoded = Base64.Decode(encoded, Base64Variant.UrlSafe);
 
         CollectionAssert.AreEqual(original, decoded);
     }
@@ -47,11 +47,11 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void Encode_WhenMimeVariant_ShouldEmitPaddingByDefault()
     {
-        var actual = Base64.Encode(Ascii("foo"), Base64Variant.Mime);
+        string actual = Base64.Encode(Ascii("foo"), Base64Variant.Mime);
 
         Assert.AreEqual("Zm9v", actual);
 
-        var actualPadded = Base64.Encode(Ascii("foob"), Base64Variant.Mime);
+        string actualPadded = Base64.Encode(Ascii("foob"), Base64Variant.Mime);
         Assert.IsTrue(actualPadded.EndsWith("=="), "MIME output should retain padding for non-aligned inputs.");
     }
 
@@ -62,7 +62,7 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void Encode_WhenUrlSafeVariant_ShouldOmitPaddingByDefault()
     {
-        var actual = Base64.Encode(Ascii("foo"), Base64Variant.UrlSafe);
+        string actual = Base64.Encode(Ascii("foo"), Base64Variant.UrlSafe);
 
         Assert.IsFalse(actual.Contains('='), "URL-safe output should not include padding by default.");
     }
@@ -73,10 +73,10 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void Encode_WhenUrlSafeVariant_ShouldSwapPlusAndSlash()
     {
-        var bytes = new byte[] { 0xFB, 0xFF, 0xFE };
+        byte[] bytes = new byte[] { 0xFB, 0xFF, 0xFE };
 
-        var standard = Base64.Encode(bytes);
-        var urlSafe = Base64.Encode(bytes, Base64Variant.UrlSafe);
+        string standard = Base64.Encode(bytes);
+        string urlSafe = Base64.Encode(bytes, Base64Variant.UrlSafe);
 
         Assert.IsTrue(standard.Contains('+') || standard.Contains('/'),
             "Test vector should produce at least one '+' or '/' character in the Standard variant.");

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base62.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -110,9 +110,9 @@ public static partial class Base62
     /// </returns>
     public static bool IsValid(ReadOnlySpan<char> source, BaseFormatStyles styles = BaseFormatStyles.None)
     {
-        var ignoreWhitespace = styles.HasFlag(BaseFormatStyles.IgnoreWhitespace);
+        bool ignoreWhitespace = styles.HasFlag(BaseFormatStyles.IgnoreWhitespace);
 
-        foreach (var c in source)
+        foreach (char c in source)
         {
             if (ignoreWhitespace && c is ' ' or '\t' or '\r' or '\n')
                 continue;
@@ -131,10 +131,10 @@ public static partial class Base62
     /// <returns>The lookup table, with <c>-1</c> for every non-alphabet code point.</returns>
     private static sbyte[] BuildLookup(string alphabet)
     {
-        var table = new sbyte[128];
+        sbyte[] table = new sbyte[128];
         Array.Fill(table, (sbyte)-1);
 
-        for (var i = 0; i < alphabet.Length; i++)
+        for (int i = 0; i < alphabet.Length; i++)
             table[alphabet[i]] = (sbyte)i;
 
         return table;

@@ -36,7 +36,7 @@ public partial class TomlSerializerTests
 
         Assert.AreEqual(kind, element.ValueKind);
 
-        var text = TomlSerializer.Serialize(new ValueModel<TomlElement> { Value = element });
+        string text = TomlSerializer.Serialize(new ValueModel<TomlElement> { Value = element });
         TomlElement again = TomlSerializer.Deserialize<ValueModel<TomlElement>>(text).Value;
         Assert.AreEqual(kind, again.ValueKind);
     }
@@ -63,7 +63,7 @@ public partial class TomlSerializerTests
         using var document = TomlDocument.Parse("Inner = 5\n");
         TomlElement element = document.RootElement.GetProperty("Inner");
 
-        var text = TomlSerializer.Serialize(new ValueModel<TomlElement> { Value = element });
+        string text = TomlSerializer.Serialize(new ValueModel<TomlElement> { Value = element });
 
         Assert.AreEqual("Value = 5\n", text);
     }

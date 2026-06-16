@@ -138,8 +138,8 @@ public partial class SymmetricAlgorithmExtensionTests
         using SymmetricAlgorithm algorithm = CreateAlgorithm();
         algorithm.Padding = PaddingMode.None;
 
-        var plainText = CryptoTestUtilities.ByteSequence64;
-        var encrypted = algorithm.Encrypt(plainText);
+        byte[] plainText = CryptoTestUtilities.ByteSequence64;
+        byte[] encrypted = algorithm.Encrypt(plainText);
 
         using var input = new MemoryStream(encrypted);
         using var output = new MemoryStream();
@@ -160,8 +160,8 @@ public partial class SymmetricAlgorithmExtensionTests
         using SymmetricAlgorithm algorithm = CreateAlgorithm();
         algorithm.Padding = PaddingMode.None;
 
-        var original = CryptoTestUtilities.ByteSequence128;
-        var encrypted = algorithm.Encrypt(original);
+        byte[] original = CryptoTestUtilities.ByteSequence128;
+        byte[] encrypted = algorithm.Encrypt(original);
 
         using var input = new MemoryStream(encrypted);
         using var throttledOutput = new ThrottledOutputMemoryStream(delayMilliseconds: 50);
@@ -187,8 +187,8 @@ public partial class SymmetricAlgorithmExtensionTests
         using SymmetricAlgorithm algorithm = CreateAlgorithm();
         algorithm.Padding = PaddingMode.None;
 
-        var plainText = CryptoTestUtilities.ByteSequence64;
-        var cipherText = algorithm.Encrypt(plainText);
+        byte[] plainText = CryptoTestUtilities.ByteSequence64;
+        byte[] cipherText = algorithm.Encrypt(plainText);
 
         using var input = new FixedChunkStream(cipherText, chunkSize: 1);
         using var output = new MemoryStream();
@@ -209,8 +209,8 @@ public partial class SymmetricAlgorithmExtensionTests
         using SymmetricAlgorithm algorithm = CreateAlgorithm();
         algorithm.Padding = PaddingMode.None;
 
-        var plainText = CryptoTestUtilities.ByteSequence128;
-        var cipherText = algorithm.Encrypt(plainText);
+        byte[] plainText = CryptoTestUtilities.ByteSequence128;
+        byte[] cipherText = algorithm.Encrypt(plainText);
 
         using var input = new FixedChunkStream(cipherText, chunkSize: 5);
         using var output = new MemoryStream();
@@ -231,8 +231,8 @@ public partial class SymmetricAlgorithmExtensionTests
         using SymmetricAlgorithm algorithm = CreateAlgorithm();
         algorithm.Padding = PaddingMode.None;
 
-        var plainText = CryptoTestUtilities.ByteSequence128;
-        var cipherText = algorithm.Encrypt(plainText);
+        byte[] plainText = CryptoTestUtilities.ByteSequence128;
+        byte[] cipherText = algorithm.Encrypt(plainText);
 
         using var input = new NonSeekableStream(cipherText);
         using var output = new MemoryStream();
@@ -255,7 +255,7 @@ public partial class SymmetricAlgorithmExtensionTests
         using SymmetricAlgorithm algorithm = CreateAlgorithm();
         algorithm.Padding = PaddingMode.None;
 
-        var cipherText = algorithm.Encrypt(CryptoTestUtilities.ByteSequence128);
+        byte[] cipherText = algorithm.Encrypt(CryptoTestUtilities.ByteSequence128);
 
         // Fault after 32 bytes — mid-way through the ciphertext stream.
         using var input = new FaultingStream(cipherText, throwAfterBytes: 32);
@@ -277,8 +277,8 @@ public partial class SymmetricAlgorithmExtensionTests
 
         // Use a block-aligned deterministic input large enough that the throttled
         // output write does not complete before the cancellation deadline fires.
-        var plainText = CryptoTestUtilities.ByteSequence256;
-        var encrypted = algorithm.Encrypt(plainText);
+        byte[] plainText = CryptoTestUtilities.ByteSequence256;
+        byte[] encrypted = algorithm.Encrypt(plainText);
 
         using var input = new MemoryStream(encrypted);
         using var output = new ThrottledOutputMemoryStream(delayMilliseconds: 1000);
@@ -299,7 +299,7 @@ public partial class SymmetricAlgorithmExtensionTests
         using SymmetricAlgorithm algorithm = CreateAlgorithm();
         algorithm.Padding = PaddingMode.None;
 
-        var cipherText = algorithm.Encrypt(CryptoTestUtilities.ByteSequence128);
+        byte[] cipherText = algorithm.Encrypt(CryptoTestUtilities.ByteSequence128);
 
         using var cts = new CancellationTokenSource();
         using var inner = new MemoryStream(cipherText);

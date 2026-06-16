@@ -45,7 +45,7 @@ public partial class ConcurrentCircularBufferTests
     public void GetEnumerator_WhenConcurrentDequeueInProgress_ShouldReturnBoundedSnapshotAndNotThrow()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(10);
-        for (var i = 0; i < 10; i++) buffer.Enqueue(new TestItem(i));
+        for (int i = 0; i < 10; i++) buffer.Enqueue(new TestItem(i));
 
         var errors = new ConcurrentBag<Exception>();
         var start = new ManualResetEventSlim(false);
@@ -55,7 +55,7 @@ public partial class ConcurrentCircularBufferTests
             try
             {
                 start.Wait();
-                for (var i = 0; i < 10; i++)
+                for (int i = 0; i < 10; i++)
                     buffer.TryDequeue(out TestItem? _);
             }
             catch (Exception ex) { errors.Add(ex); }
@@ -94,7 +94,7 @@ public partial class ConcurrentCircularBufferTests
             try
             {
                 start.Wait();
-                for (var i = 0; i < 100; i++)
+                for (int i = 0; i < 100; i++)
                     buffer.Enqueue(new TestItem(i));
             }
             catch (Exception ex) { errors.Add(ex); }
@@ -105,7 +105,7 @@ public partial class ConcurrentCircularBufferTests
             try
             {
                 start.Wait();
-                for (var i = 0; i < 20; i++)
+                for (int i = 0; i < 20; i++)
                 {
                     TestItem[] snapshot = buffer.ToArray();
                     snapshotLengths.Add(snapshot.Length);
@@ -153,7 +153,7 @@ public partial class ConcurrentCircularBufferTests
         buffer.Enqueue(new TestItem(2));
         buffer.Enqueue(new TestItem(3));
 
-        var values = buffer.Select(x => x?.Value).ToArray();
+        int?[] values = buffer.Select(x => x?.Value).ToArray();
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, values);
     }
 

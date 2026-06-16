@@ -17,9 +17,9 @@ public sealed partial class Iso10126PaddingTests
     public void Pad_WhenInputHasResidual_ShouldWritePadLengthInTrailingByte()
     {
         Iso10126Padding padding = CreatePadding();
-        var plaintext = CreatePlaintextWithResidual(BlockSize - 5);
+        byte[] plaintext = CreatePlaintextWithResidual(BlockSize - 5);
 
-        var padded = padding.Pad(plaintext, BlockSizeBits);
+        byte[] padded = padding.Pad(plaintext, BlockSizeBits);
 
         Assert.AreEqual(BlockSize, padded.Length);
         Assert.AreEqual((byte)5, padded[padded.Length - 1]);
@@ -36,13 +36,13 @@ public sealed partial class Iso10126PaddingTests
         // Residual leaves 10 pad bytes (9 random interior + 1 length) — enough room that
         // a repeat collision across two draws is astronomically unlikely.
         Iso10126Padding padding = CreatePadding();
-        var plaintext = CreatePlaintextWithResidual(BlockSize - 10);
+        byte[] plaintext = CreatePlaintextWithResidual(BlockSize - 10);
 
-        var first = padding.Pad(plaintext, BlockSizeBits);
-        var second = padding.Pad(plaintext, BlockSizeBits);
+        byte[] first = padding.Pad(plaintext, BlockSizeBits);
+        byte[] second = padding.Pad(plaintext, BlockSizeBits);
 
-        var interiorDiffers = false;
-        for (var i = plaintext.Length; i < first.Length - 1; i++)
+        bool interiorDiffers = false;
+        for (int i = plaintext.Length; i < first.Length - 1; i++)
         {
             if (first[i] != second[i])
             {

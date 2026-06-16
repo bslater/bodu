@@ -18,7 +18,7 @@ public partial class OrderedSetStorageTests
     {
         OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
 
-        var added = sut.Add(2);
+        bool added = sut.Add(2);
 
         Assert.IsFalse(added);
         Assert.AreEqual(3, sut.Count);
@@ -55,7 +55,7 @@ public partial class OrderedSetStorageTests
     {
         var sut = new OrderedSetStorage<int>(0, null);
 
-        var added = sut.Add(7);
+        bool added = sut.Add(7);
 
         Assert.IsTrue(added);
         Assert.AreEqual(1, sut.Count);
@@ -74,11 +74,11 @@ public partial class OrderedSetStorageTests
     {
         var sut = new OrderedSetStorage<int>(0, null);
 
-        for (var i = 10; i < 20; i++)
+        for (int i = 10; i < 20; i++)
             Assert.IsTrue(sut.Add(i));
 
         Assert.AreEqual(10, sut.Count);
-        for (var i = 0; i < 10; i++)
+        for (int i = 0; i < 10; i++)
             Assert.AreEqual(10 + i, sut.GetAt(i));
     }
 
@@ -112,7 +112,7 @@ public partial class OrderedSetStorageTests
     {
         var sut = new OrderedSetStorage<int>(0, null);
 
-        for (var i = 0; i < 100; i++)
+        for (int i = 0; i < 100; i++)
             Assert.IsTrue(sut.Add(i));
 
         Assert.AreEqual(100, sut.Count);
@@ -150,7 +150,7 @@ public partial class OrderedSetStorageTests
     {
         OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
 
-        var added = sut.AddRange([2, 3, 4, 5, 5]);
+        int added = sut.AddRange([2, 3, 4, 5, 5]);
 
         Assert.AreEqual(2, added);
         Assert.AreEqual(5, sut.Count);
@@ -179,9 +179,9 @@ public partial class OrderedSetStorageTests
     public void AddRange_WhenCollectionIsEmpty_ShouldReturnZero()
     {
         OrderedSetStorage<int> sut = CreateStorage([1, 2]);
-        var versionBefore = sut._version;
+        int versionBefore = sut._version;
 
-        var added = sut.AddRange([]);
+        int added = sut.AddRange([]);
 
         Assert.AreEqual(0, added);
         Assert.AreEqual(versionBefore, sut._version);

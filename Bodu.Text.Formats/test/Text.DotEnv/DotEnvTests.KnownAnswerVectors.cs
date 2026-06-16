@@ -25,7 +25,7 @@ public sealed partial class DotEnvTests
         Assert.AreEqual(vector.ExpectedEntries.Length, doc.Entries.Count,
             $"Entry count mismatch for vector: {vector.Description}");
 
-        for (var i = 0; i < vector.ExpectedEntries.Length; i++)
+        for (int i = 0; i < vector.ExpectedEntries.Length; i++)
         {
             Assert.AreEqual(vector.ExpectedEntries[i].Key, doc.Entries[i].Key,
                 $"Key mismatch at index {i} for vector: {vector.Description}");
@@ -48,13 +48,13 @@ public sealed partial class DotEnvTests
         DotEnvParseOptions options = vector.Options ?? DotEnvParseOptions.Default;
 
         DotEnvDocument original = DotEnv.Parse(vector.Input, options);
-        var formatted = DotEnv.Format(original);
+        string formatted = DotEnv.Format(original);
         DotEnvDocument roundTripped = DotEnv.Parse(formatted, options);
 
         Assert.AreEqual(vector.ExpectedEntries.Length, roundTripped.Entries.Count,
             $"Round-trip entry count mismatch for vector: {vector.Description}");
 
-        for (var i = 0; i < vector.ExpectedEntries.Length; i++)
+        for (int i = 0; i < vector.ExpectedEntries.Length; i++)
         {
             Assert.AreEqual(vector.ExpectedEntries[i].Key, roundTripped.Entries[i].Key,
                 $"Round-trip key mismatch at index {i} for vector: {vector.Description}");

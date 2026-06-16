@@ -96,7 +96,7 @@ public static partial class BufferConverter
         where T : unmanaged
     {
 #if NET5_0_OR_GREATER
-        var size = System.Runtime.CompilerServices.Unsafe.SizeOf<T>();
+        int size = System.Runtime.CompilerServices.Unsafe.SizeOf<T>();
 #else
         int size = Marshal.SizeOf<T>();
 #endif
@@ -104,10 +104,10 @@ public static partial class BufferConverter
             return; // No need to swap single-byte types
 
         Span<byte> bytes = MemoryMarshal.AsBytes(span);
-        for (var i = 0; i < bytes.Length; i += size)
+        for (int i = 0; i < bytes.Length; i += size)
         {
-            var left = 0;
-            var right = size - 1;
+            int left = 0;
+            int right = size - 1;
             while (left < right)
             {
                 (bytes[i + left], bytes[i + right]) = (bytes[i + right], bytes[i + left]);
@@ -145,7 +145,7 @@ public static partial class BufferConverter
         if (destination.Length < source.Length)
             ThrowHelper.ThrowIfCountExceedsAvailable(source.Length, destination.Length);
 
-        for (var i = 0; i < source.Length; i += elementSize)
+        for (int i = 0; i < source.Length; i += elementSize)
         {
             for (int left = 0, right = elementSize - 1; left <= right; left++, right--)
             {

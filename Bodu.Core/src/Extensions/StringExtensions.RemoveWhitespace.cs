@@ -32,9 +32,9 @@ public static partial class StringExtensions
         if (value.Length == 0) return value;
 
         StringBuilder? builder = null;
-        for (var i = 0; i < value.Length; i++)
+        for (int i = 0; i < value.Length; i++)
         {
-            var c = value[i];
+            char c = value[i];
             if (char.IsWhiteSpace(c))
             {
                 builder ??= new StringBuilder(value.Length).Append(value, 0, i);

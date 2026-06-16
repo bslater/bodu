@@ -17,27 +17,27 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
     [TestMethod]
     public void Transform_WhenInputIsSegmented_ShouldMatchOneShotTransform()
     {
-        var key = CreateKey();
-        var nonce = CreateNonce();
-        var plaintext = CreatePayload(4097);
+        byte[] key = CreateKey();
+        byte[] nonce = CreateNonce();
+        byte[] plaintext = CreatePayload(4097);
 
         byte[] oneShot;
         using (TAlgorithm cipher = CreateAlgorithm())
         using (ICryptoTransform e = cipher.CreateEncryptor(key, nonce))
             oneShot = e.TransformFinalBlock(plaintext, 0, plaintext.Length);
 
-        var segmented = new byte[plaintext.Length];
+        byte[] segmented = new byte[plaintext.Length];
         using (TAlgorithm cipher = CreateAlgorithm())
         using (ICryptoTransform e = cipher.CreateEncryptor(key, nonce))
         {
-            var offset = 0;
-            foreach (var chunk in new[] { 1, 63, 64, 65, 127, 200, 1024, 0 })
+            int offset = 0;
+            foreach (int chunk in new[] { 1, 63, 64, 65, 127, 200, 1024, 0 })
             {
-                var count = Math.Min(chunk, plaintext.Length - offset);
+                int count = Math.Min(chunk, plaintext.Length - offset);
                 offset += e.TransformBlock(plaintext, offset, count, segmented, offset);
             }
 
-            var tail = e.TransformFinalBlock(plaintext, offset, plaintext.Length - offset);
+            byte[] tail = e.TransformFinalBlock(plaintext, offset, plaintext.Length - offset);
             tail.CopyTo(segmented.AsSpan(offset));
         }
 
@@ -51,8 +51,8 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
     [TestMethod]
     public void Transform_WhenPlaintextIsZero_ShouldEqualGeneratedKeystream()
     {
-        var key = CreateKey();
-        var nonce = CreateNonce();
+        byte[] key = CreateKey();
+        byte[] nonce = CreateNonce();
 
         // Two independent instances under the same key/nonce must produce identical keystream.
         byte[] first;
@@ -108,7 +108,7 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
         using TAlgorithm cipher = CreateAlgorithm();
         using ICryptoTransform e = cipher.CreateEncryptor(CreateKey(), CreateNonce());
 
-        var payload = CreatePayload(16);
+        byte[] payload = CreatePayload(16);
         _ = e.TransformFinalBlock(payload, 0, payload.Length);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
@@ -127,7 +127,7 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
         using TAlgorithm cipher = CreateAlgorithm();
         using ICryptoTransform e = cipher.CreateEncryptor(CreateKey(), CreateNonce());
 
-        var payload = CreatePayload(16);
+        byte[] payload = CreatePayload(16);
         _ = e.TransformFinalBlock(payload, 0, payload.Length);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
@@ -146,8 +146,8 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
         using TAlgorithm cipher = CreateAlgorithm();
         using ICryptoTransform e = cipher.CreateEncryptor(CreateKey(), CreateNonce());
 
-        var output = new byte[8];
-        var written = e.TransformBlock(new byte[8], 0, 0, output, 0);
+        byte[] output = new byte[8];
+        int written = e.TransformBlock(new byte[8], 0, 0, output, 0);
 
         Assert.AreEqual(0, written);
         CollectionAssert.AreEqual(new byte[8], output);
@@ -162,7 +162,7 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
     {
         using TAlgorithm cipher = CreateAlgorithm();
         ICryptoTransform e = cipher.CreateEncryptor(CreateKey(), CreateNonce());
-        var payload = CreatePayload(16);
+        byte[] payload = CreatePayload(16);
         e.Dispose();
 
         Assert.ThrowsExactly<ObjectDisposedException>(() =>
@@ -181,7 +181,7 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
     {
         using TAlgorithm cipher = CreateAlgorithm();
         ICryptoTransform e = cipher.CreateEncryptor(CreateKey(), CreateNonce());
-        var payload = CreatePayload(16);
+        byte[] payload = CreatePayload(16);
         e.Dispose();
 
         Assert.ThrowsExactly<ObjectDisposedException>(() =>
@@ -214,7 +214,7 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
         using TAlgorithm cipher = CreateAlgorithm();
         using ICryptoTransform e = cipher.CreateEncryptor(CreateKey(), CreateNonce());
 
-        var result = e.TransformFinalBlock([], 0, 0);
+        byte[] result = e.TransformFinalBlock([], 0, 0);
 
         Assert.AreEqual(0, result.Length);
         Assert.ThrowsExactly<InvalidOperationException>(() =>

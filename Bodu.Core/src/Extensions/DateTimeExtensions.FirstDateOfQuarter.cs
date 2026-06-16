@@ -230,7 +230,7 @@ public static partial class DateTimeExtensions
     /// </remarks>
     private static DateTime FirstDateOfQuarterInternal(this DateTime dateTime, CalendarQuarterDefinition definition)
     {
-        (var year, var quarter) = GetQuarterAndYearFromDate(definition, referenceDate: dateTime);
+        (int year, int quarter) = GetQuarterAndYearFromDate(definition, referenceDate: dateTime);
         return new DateTime(ComputeQuarterStartTicks(year, quarter, GetQuarterDefinition(definition)), dateTime.Kind);
     }
 }

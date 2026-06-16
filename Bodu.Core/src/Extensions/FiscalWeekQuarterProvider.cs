@@ -169,9 +169,9 @@ public sealed class FiscalWeekQuarterProvider
     /// <inheritdoc />
     public int GetQuarter(DateTime dateTime)
     {
-        var fiscalYear = GetFiscalYearFor(dateTime);
-        var fiscalYearStartTicks = GetFiscalYearStartTicks(fiscalYear);
-        var weeksFromStart = (int)((dateTime.Ticks - fiscalYearStartTicks) / DateTimeExtensions.TicksPerWeek);
+        int fiscalYear = GetFiscalYearFor(dateTime);
+        long fiscalYearStartTicks = GetFiscalYearStartTicks(fiscalYear);
+        int weeksFromStart = (int)((dateTime.Ticks - fiscalYearStartTicks) / DateTimeExtensions.TicksPerWeek);
 
         // In a 53-week year the final week computes as quarter 5; clamp it back to Q4.
         return Math.Min((weeksFromStart / 13) + 1, 4);
@@ -199,8 +199,8 @@ public sealed class FiscalWeekQuarterProvider
         DateTime start = GetQuarterStart(quarter, fiscalYear);
 
         // Q4 absorbs the additional week in a 53-week fiscal year; all other quarters are exactly 13 weeks.
-        var weeks = (quarter == 4 && Is53WeekFiscalYear(fiscalYear)) ? 14 : 13;
-        var endTicks = start.Ticks + ((long)weeks * DateTimeExtensions.TicksPerWeek) - DateTimeExtensions.TicksPerDay;
+        int weeks = (quarter == 4 && Is53WeekFiscalYear(fiscalYear)) ? 14 : 13;
+        long endTicks = start.Ticks + ((long)weeks * DateTimeExtensions.TicksPerWeek) - DateTimeExtensions.TicksPerDay;
 
         return new DateTime(DateTimeExtensions.GetDateAsTicks(endTicks), DateTimeKind.Unspecified);
     }
@@ -234,8 +234,8 @@ public sealed class FiscalWeekQuarterProvider
     {
         ThrowHelper.ThrowIfOutOfRange(quarter, 1, 4);
 
-        var offsetTicks = (long)(quarter - 1) * 13L * DateTimeExtensions.TicksPerWeek;
-        var startTicks = GetFiscalYearStartTicks(fiscalYear) + offsetTicks;
+        long offsetTicks = (long)(quarter - 1) * 13L * DateTimeExtensions.TicksPerWeek;
+        long startTicks = GetFiscalYearStartTicks(fiscalYear) + offsetTicks;
 
         return new DateTime(DateTimeExtensions.GetDateAsTicks(startTicks), DateTimeKind.Unspecified);
     }
@@ -306,13 +306,13 @@ public sealed class FiscalWeekQuarterProvider
     {
         const int DaysIn52Weeks = 364;
 
-        var nextYearAnchorTicks = DateTimeExtensions.GetDateTicks(year + 1, startMonth, 1);
+        long nextYearAnchorTicks = DateTimeExtensions.GetDateTicks(year + 1, startMonth, 1);
 
-        var nextFiscalYearStartTicks = useNearestDayOfWeek
+        long nextFiscalYearStartTicks = useNearestDayOfWeek
             ? AlignToNearestDayOfWeek(nextYearAnchorTicks, anchorDayOfWeek)
             : AlignToOnOrBeforeDayOfWeek(nextYearAnchorTicks, anchorDayOfWeek);
 
-        var daysInFiscalYear =
+        long daysInFiscalYear =
             (nextFiscalYearStartTicks - fiscalYearStartTicks) / DateTimeExtensions.TicksPerDay;
 
         return daysInFiscalYear > DaysIn52Weeks;
@@ -326,7 +326,7 @@ public sealed class FiscalWeekQuarterProvider
     /// <returns>The tick value of the first day of the fiscal year, aligned to the configured week start.</returns>
     private long GetFiscalYearStartTicks(int fiscalYear)
     {
-        var anchorTicks = DateTimeExtensions.GetDateTicks(fiscalYear, _anchorMonth, 1);
+        long anchorTicks = DateTimeExtensions.GetDateTicks(fiscalYear, _anchorMonth, 1);
         return _useNearestDayOfWeek
             ? AlignToNearestDayOfWeek(anchorTicks, _anchorDayOfWeek)
             : AlignToOnOrBeforeDayOfWeek(anchorTicks, _anchorDayOfWeek);
@@ -350,17 +350,17 @@ public sealed class FiscalWeekQuarterProvider
     /// </exception>
     private int GetFiscalYearFor(DateTime dateTime)
     {
-        var weekStartTicks = dateTime.Ticks
+        long weekStartTicks = dateTime.Ticks
             - DateTimeExtensions.GetTicksSincePreviousOrSameDayOfWeek(dateTime.Ticks, _anchorDayOfWeek);
 
-        var calendarYear = dateTime.Year;
-        for (var candidate = calendarYear - 1; candidate <= calendarYear + 1; candidate++)
+        int calendarYear = dateTime.Year;
+        for (int candidate = calendarYear - 1; candidate <= calendarYear + 1; candidate++)
         {
-            var start = GetFiscalYearStartTicks(candidate);
-            var is53 = ComputeIs53WeekYear(start, candidate, _anchorMonth, _anchorDayOfWeek, _useNearestDayOfWeek);
-            var lengthDays = is53 ? 371 : 364;
+            long start = GetFiscalYearStartTicks(candidate);
+            bool is53 = ComputeIs53WeekYear(start, candidate, _anchorMonth, _anchorDayOfWeek, _useNearestDayOfWeek);
+            int lengthDays = is53 ? 371 : 364;
 
-            var deltaDays = (weekStartTicks - start) / DateTimeExtensions.TicksPerDay;
+            long deltaDays = (weekStartTicks - start) / DateTimeExtensions.TicksPerDay;
             if (deltaDays >= 0 && deltaDays < lengthDays)
                 return candidate;
         }

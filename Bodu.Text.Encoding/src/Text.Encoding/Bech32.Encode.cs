@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Bech32.Encode.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -60,7 +60,7 @@ public static partial class Bech32
         ValidateHrp(hrp);
 
         // 8-bit input always converts cleanly into 5-bit groups, so ConvertBits cannot fail here.
-        var groups = ConvertBits(data, 8, 5, pad: true);
+        byte[]? groups = ConvertBits(data, 8, 5, pad: true);
         return EncodeCore(hrp, groups!, encoding);
     }
 
@@ -97,22 +97,22 @@ public static partial class Bech32
     /// <returns>The lower-case encoded string.</returns>
     private static string EncodeCore(string hrp, ReadOnlySpan<byte> data, Bech32Encoding encoding)
     {
-        var lowerHrp = hrp.ToLowerInvariant();
+        string lowerHrp = hrp.ToLowerInvariant();
 
         Span<byte> checksum = stackalloc byte[ChecksumSymbols];
         CreateChecksum(lowerHrp, data, encoding, checksum);
 
-        var output = new char[lowerHrp.Length + 1 + data.Length + ChecksumSymbols];
-        var position = 0;
+        char[] output = new char[lowerHrp.Length + 1 + data.Length + ChecksumSymbols];
+        int position = 0;
 
         lowerHrp.AsSpan().CopyTo(output);
         position += lowerHrp.Length;
         output[position++] = Separator;
 
-        foreach (var value in data)
+        foreach (byte value in data)
             output[position++] = Charset[value];
 
-        foreach (var value in checksum)
+        foreach (byte value in checksum)
             output[position++] = Charset[value];
 
         return new string(output);
@@ -150,7 +150,7 @@ public static partial class Bech32
         if (hrp.Length == 0)
             return false;
 
-        foreach (var c in hrp)
+        foreach (char c in hrp)
         {
             if (c < MinHrpChar || c > MaxHrpChar)
                 return false;
@@ -166,7 +166,7 @@ public static partial class Bech32
     /// <returns><see langword="true" /> when every value is in range.</returns>
     private static bool IsValidData(ReadOnlySpan<byte> data)
     {
-        foreach (var value in data)
+        foreach (byte value in data)
         {
             if (value > 31)
                 return false;

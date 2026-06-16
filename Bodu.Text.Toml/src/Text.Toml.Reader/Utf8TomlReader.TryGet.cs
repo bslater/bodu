@@ -19,7 +19,7 @@ public ref partial struct Utf8TomlReader
     /// </exception>
     /// <exception cref="FormatException">Thrown when the value does not fit in a <see cref="byte" />.</exception>
     public readonly byte GetByte() =>
-        TryGetByte(out var value) ? value : throw new FormatException();
+        TryGetByte(out byte value) ? value : throw new FormatException();
 
     /// <summary>
     /// Attempts to read the current token as an 8-bit unsigned integer.
@@ -33,7 +33,7 @@ public ref partial struct Utf8TomlReader
     /// </exception>
     public readonly bool TryGetByte(out byte value)
     {
-        var raw = GetInt64();
+        long raw = GetInt64();
         if (raw is < byte.MinValue or > byte.MaxValue)
         {
             value = 0;
@@ -53,7 +53,7 @@ public ref partial struct Utf8TomlReader
     /// </exception>
     /// <exception cref="FormatException">Thrown when the value does not fit in an <see cref="sbyte" />.</exception>
     public readonly sbyte GetSByte() =>
-        TryGetSByte(out var value) ? value : throw new FormatException();
+        TryGetSByte(out sbyte value) ? value : throw new FormatException();
 
     /// <summary>
     /// Attempts to read the current token as an 8-bit signed integer.
@@ -67,7 +67,7 @@ public ref partial struct Utf8TomlReader
     /// </exception>
     public readonly bool TryGetSByte(out sbyte value)
     {
-        var raw = GetInt64();
+        long raw = GetInt64();
         if (raw is < sbyte.MinValue or > sbyte.MaxValue)
         {
             value = 0;
@@ -87,7 +87,7 @@ public ref partial struct Utf8TomlReader
     /// </exception>
     /// <exception cref="FormatException">Thrown when the value does not fit in a <see cref="short" />.</exception>
     public readonly short GetInt16() =>
-        TryGetInt16(out var value) ? value : throw new FormatException();
+        TryGetInt16(out short value) ? value : throw new FormatException();
 
     /// <summary>
     /// Attempts to read the current token as a 16-bit signed integer.
@@ -101,7 +101,7 @@ public ref partial struct Utf8TomlReader
     /// </exception>
     public readonly bool TryGetInt16(out short value)
     {
-        var raw = GetInt64();
+        long raw = GetInt64();
         if (raw is < short.MinValue or > short.MaxValue)
         {
             value = 0;
@@ -121,7 +121,7 @@ public ref partial struct Utf8TomlReader
     /// </exception>
     /// <exception cref="FormatException">Thrown when the value does not fit in an <see cref="int" />.</exception>
     public readonly int GetInt32() =>
-        TryGetInt32(out var value) ? value : throw new FormatException();
+        TryGetInt32(out int value) ? value : throw new FormatException();
 
     /// <summary>
     /// Attempts to read the current token as a 32-bit signed integer.
@@ -135,7 +135,7 @@ public ref partial struct Utf8TomlReader
     /// </exception>
     public readonly bool TryGetInt32(out int value)
     {
-        var raw = GetInt64();
+        long raw = GetInt64();
         if (raw is < int.MinValue or > int.MaxValue)
         {
             value = 0;
@@ -155,7 +155,7 @@ public ref partial struct Utf8TomlReader
     /// </exception>
     /// <exception cref="FormatException">Thrown when the value does not fit in a <see cref="ushort" />.</exception>
     public readonly ushort GetUInt16() =>
-        TryGetUInt16(out var value) ? value : throw new FormatException();
+        TryGetUInt16(out ushort value) ? value : throw new FormatException();
 
     /// <summary>
     /// Attempts to read the current token as a 16-bit unsigned integer.
@@ -169,7 +169,7 @@ public ref partial struct Utf8TomlReader
     /// </exception>
     public readonly bool TryGetUInt16(out ushort value)
     {
-        var raw = GetInt64();
+        long raw = GetInt64();
         if (raw is < ushort.MinValue or > ushort.MaxValue)
         {
             value = 0;
@@ -189,7 +189,7 @@ public ref partial struct Utf8TomlReader
     /// </exception>
     /// <exception cref="FormatException">Thrown when the value does not fit in a <see cref="uint" />.</exception>
     public readonly uint GetUInt32() =>
-        TryGetUInt32(out var value) ? value : throw new FormatException();
+        TryGetUInt32(out uint value) ? value : throw new FormatException();
 
     /// <summary>
     /// Attempts to read the current token as a 32-bit unsigned integer.
@@ -203,7 +203,7 @@ public ref partial struct Utf8TomlReader
     /// </exception>
     public readonly bool TryGetUInt32(out uint value)
     {
-        var raw = GetInt64();
+        long raw = GetInt64();
         if (raw is < uint.MinValue or > uint.MaxValue)
         {
             value = 0;
@@ -223,7 +223,7 @@ public ref partial struct Utf8TomlReader
     /// </exception>
     /// <exception cref="FormatException">Thrown when the value is negative.</exception>
     public readonly ulong GetUInt64() =>
-        TryGetUInt64(out var value) ? value : throw new FormatException();
+        TryGetUInt64(out ulong value) ? value : throw new FormatException();
 
     /// <summary>
     /// Attempts to read the current token as a 64-bit unsigned integer.
@@ -241,7 +241,7 @@ public ref partial struct Utf8TomlReader
     /// </remarks>
     public readonly bool TryGetUInt64(out ulong value)
     {
-        var raw = GetInt64();
+        long raw = GetInt64();
         if (raw < 0)
         {
             value = 0;
@@ -260,7 +260,7 @@ public ref partial struct Utf8TomlReader
     /// Thrown when the current token is not a <see cref="TomlTokenType.Float" />.
     /// </exception>
     public readonly float GetSingle() =>
-        TryGetSingle(out var value) ? value : throw new FormatException();
+        TryGetSingle(out float value) ? value : throw new FormatException();
 
     /// <summary>
     /// Attempts to read the current token as an IEEE 754 binary32 floating-point value.
@@ -275,7 +275,7 @@ public ref partial struct Utf8TomlReader
     /// </exception>
     public readonly bool TryGetSingle(out float value)
     {
-        var raw = GetDouble();
+        double raw = GetDouble();
         if (double.IsNaN(raw) || double.IsInfinity(raw))
         {
             value = (float)raw;
@@ -298,7 +298,7 @@ public ref partial struct Utf8TomlReader
     /// <see cref="decimal" /> range.
     /// </exception>
     public readonly decimal GetDecimal() =>
-        TryGetDecimal(out var value) ? value : throw new FormatException();
+        TryGetDecimal(out decimal value) ? value : throw new FormatException();
 
     /// <summary>
     /// Attempts to read the current token as a decimal, parsed exactly from the raw float literal.
@@ -316,7 +316,7 @@ public ref partial struct Utf8TomlReader
     /// </remarks>
     public readonly bool TryGetDecimal(out decimal value)
     {
-        var raw = GetDouble();
+        double raw = GetDouble();
         if (double.IsNaN(raw) || double.IsInfinity(raw))
         {
             value = 0;
@@ -363,9 +363,9 @@ public ref partial struct Utf8TomlReader
     /// <returns>The literal characters with underscores removed.</returns>
     private static ReadOnlySpan<char> StripNumberUnderscores(ReadOnlySpan<byte> literal)
     {
-        var buffer = new char[literal.Length];
-        var n = 0;
-        foreach (var b in literal)
+        char[] buffer = new char[literal.Length];
+        int n = 0;
+        foreach (byte b in literal)
         {
             if (b != (byte)'_')
                 buffer[n++] = (char)b;

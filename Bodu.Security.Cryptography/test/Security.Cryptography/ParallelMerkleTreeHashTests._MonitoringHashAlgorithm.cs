@@ -62,7 +62,7 @@ public partial class ParallelMerkleTreeHashTests
     public void MonitoringAlgorithm_WhenSingleBlock_ShouldCreateExactlyOneHasherInstance()
     {
         // 1 full block → 1 leaf hasher, no internal nodes (leaf is the root directly).
-        var factoryCalls = 0;
+        int factoryCalls = 0;
         Func<HashAlgorithm> countingFactory = () =>
         {
             Interlocked.Increment(ref factoryCalls);
@@ -84,7 +84,7 @@ public partial class ParallelMerkleTreeHashTests
     public void MonitoringAlgorithm_WhenTwoFullBlocks_ShouldCreateThreeHasherInstances()
     {
         // 2 leaves + 1 internal node = 3 factory calls.
-        var factoryCalls = 0;
+        int factoryCalls = 0;
         Func<HashAlgorithm> countingFactory = () =>
         {
             Interlocked.Increment(ref factoryCalls);
@@ -107,7 +107,7 @@ public partial class ParallelMerkleTreeHashTests
     {
         // Tree: 3 leaves → internal0(L0,L1) + internal1(L2) → internal2(I0,I1) → root
         // Factory calls: 3 leaves + 3 internal = 6.
-        var factoryCalls = 0;
+        int factoryCalls = 0;
         Func<HashAlgorithm> countingFactory = () =>
         {
             Interlocked.Increment(ref factoryCalls);
@@ -133,10 +133,10 @@ public partial class ParallelMerkleTreeHashTests
     [TestMethod]
     public void MonitoringAlgorithm_LeafHashers_ShouldUseSpanCoreAndTryHashFinalPath()
     {
-        var leafTryHashFinalCount = 0;
-        var leafHashCoreSpanCount = 0;
-        var leafHashFinalCount = 0;    // must remain 0 for leaf hashers
-        var leafHashCoreCount = 0;    // must remain 0 for leaf hashers
+        int leafTryHashFinalCount = 0;
+        int leafHashCoreSpanCount = 0;
+        int leafHashFinalCount = 0;    // must remain 0 for leaf hashers
+        int leafHashCoreCount = 0;    // must remain 0 for leaf hashers
 
         Func<HashAlgorithm> factory = () =>
         {
@@ -178,8 +178,8 @@ public partial class ParallelMerkleTreeHashTests
     [TestMethod]
     public void MonitoringAlgorithm_LeafHashers_ShouldAccessHashSizeOnceAndNeverAccessHash()
     {
-        var totalHashSizeAccesses = 0;
-        var totalHashAccesses = 0;
+        int totalHashSizeAccesses = 0;
+        int totalHashAccesses = 0;
 
         Func<HashAlgorithm> factory = () =>
         {
@@ -216,10 +216,10 @@ public partial class ParallelMerkleTreeHashTests
     [TestMethod]
     public void MonitoringAlgorithm_InternalHashers_ShouldUseArrayCoreAndHashFinalPath()
     {
-        var internalHashFinalCount = 0;
-        var internalHashCoreCount = 0;
-        var internalTryHashFinalCount = 0; // must remain 0
-        var internalHashCoreSpanCount = 0; // must remain 0
+        int internalHashFinalCount = 0;
+        int internalHashCoreCount = 0;
+        int internalTryHashFinalCount = 0; // must remain 0
+        int internalHashCoreSpanCount = 0; // must remain 0
 
         Func<HashAlgorithm> factory = () =>
         {
@@ -261,8 +261,8 @@ public partial class ParallelMerkleTreeHashTests
     [TestMethod]
     public void MonitoringAlgorithm_InternalHashers_ShouldAccessHashOnceAndNeverAccessHashSize()
     {
-        var totalHashAccesses = 0;
-        var totalHashSizeAccesses = 0;
+        int totalHashAccesses = 0;
+        int totalHashSizeAccesses = 0;
 
         Func<HashAlgorithm> factory = () =>
         {
@@ -323,7 +323,7 @@ public partial class ParallelMerkleTreeHashTests
         using var hasher = new ParallelMerkleTreeHash(factory, blockSize, fanOut);
         hasher.ComputeHash(MakeData(dataLength));
 
-        foreach (var bytes in leafBytesObserved)
+        foreach (long bytes in leafBytesObserved)
             Assert.AreEqual(expectedLeafBytes, bytes,
                 $"Leaf hasher processed {bytes} bytes but expected {expectedLeafBytes} " +
                 $"(blockSize={blockSize}, dataLength={dataLength}).");
@@ -416,7 +416,7 @@ public partial class ParallelMerkleTreeHashTests
     public void MonitoringAlgorithm_InternalHashers_WhenFullGroup_ShouldCallHashCoreOncePerChild(int fanOut)
     {
         // Produce exactly fanOut leaves so there is one internal node covering all of them.
-        var dataLength = 4 * fanOut; // fanOut complete blocks
+        int dataLength = 4 * fanOut; // fanOut complete blocks
         var hashCoreCounts = new ConcurrentBag<int>();
 
         Func<HashAlgorithm> factory = () =>
@@ -467,7 +467,7 @@ public partial class ParallelMerkleTreeHashTests
         using var hasher = new ParallelMerkleTreeHash(factory, blockSize: 4, fanOut: 2);
         hasher.ComputeHash(MakeData(12));
 
-        foreach (var count in initCounts)
+        foreach (int count in initCounts)
             Assert.AreEqual(1, count,
                 "Every hasher instance must call Initialize exactly once (from the constructor).");
     }
@@ -491,11 +491,11 @@ public partial class ParallelMerkleTreeHashTests
     public void MonitoringAlgorithm_IncrementalByteSum_ShouldProduceExpectedRootHash(
         int blockSize, int fanOut, int dataLength)
     {
-        var data = MakeData(dataLength);
-        var expected = ComputeAdditiveRoot(data, blockSize, fanOut);
+        byte[] data = MakeData(dataLength);
+        byte[] expected = ComputeAdditiveRoot(data, blockSize, fanOut);
 
         using var hasher = new ParallelMerkleTreeHash(Factory, blockSize, fanOut);
-        var actual = hasher.ComputeHash(data);
+        byte[] actual = hasher.ComputeHash(data);
 
         CollectionAssert.AreEqual(expected, actual,
             $"Incremental sum mismatch: blockSize={blockSize}, fanOut={fanOut}, " +
@@ -547,14 +547,14 @@ public partial class ParallelMerkleTreeHashTests
         };
 
         using var hasher = new ParallelMerkleTreeHash(factory, blockSize: 4, fanOut: 2);
-        var root = hasher.ComputeHash(data);
+        byte[] root = hasher.ComputeHash(data);
 
         // Structural assertions.
         Assert.AreEqual(2, capturedLeafHashes.Count, "Expected two leaf hashers.");
         Assert.AreEqual(1, capturedInternalSums.Count, "Expected one internal node hasher.");
 
         // The root hash must equal the hand-computed expected value.
-        var expected = BitConverter.GetBytes((uint)36);
+        byte[] expected = BitConverter.GetBytes((uint)36);
         CollectionAssert.AreEqual(expected, root,
             $"Root hash mismatch. Expected {Convert.ToHexString(expected)}, " +
             $"got {Convert.ToHexString(root)}.");
@@ -573,15 +573,15 @@ public partial class ParallelMerkleTreeHashTests
         //   Leaf 1: { 5,0,0,0 } padded → sum=5 (padding contributes 0)
         //   Root: hash({ 10,0,0,0, 5,0,0,0 }) = 15 → { 15,0,0,0 }
         byte[] data = [1, 2, 3, 4, 5];
-        var expected = BitConverter.GetBytes((uint)15);
+        byte[] expected = BitConverter.GetBytes((uint)15);
 
-        var totalInputByteSum = 1 + 2 + 3 + 4 + 5;
+        int totalInputByteSum = 1 + 2 + 3 + 4 + 5;
 
         using var hasher = new ParallelMerkleTreeHash(Factory, blockSize: 4, fanOut: 2);
-        var root = hasher.ComputeHash(data);
+        byte[] root = hasher.ComputeHash(data);
 
         // The root value (as uint32-LE) must equal the sum of the input bytes.
-        var rootValue = BitConverter.ToUInt32(root);
+        uint rootValue = BitConverter.ToUInt32(root);
         Assert.AreEqual((uint)totalInputByteSum, rootValue,
             $"Root value {rootValue} should equal the sum of all input bytes {totalInputByteSum}. " +
             "Zero padding must not increase the hash value.");
@@ -596,8 +596,8 @@ public partial class ParallelMerkleTreeHashTests
     [TestMethod]
     public void MonitoringAlgorithm_WhenComputationComplete_AllInstancesShouldBeDisposed()
     {
-        var factoryCallCount = 0;
-        var disposeCallCount = 0;
+        int factoryCallCount = 0;
+        int disposeCallCount = 0;
 
         Func<HashAlgorithm> factory = () =>
         {

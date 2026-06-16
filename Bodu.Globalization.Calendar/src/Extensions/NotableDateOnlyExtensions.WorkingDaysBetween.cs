@@ -28,7 +28,7 @@ public static partial class NotableDateOnlyExtensions
         DateOnly lower = start <= end ? start : end;
         DateOnly upper = start <= end ? end : start;
 
-        var count = 0;
+        int count = 0;
         for (DateOnly cursor = lower; cursor <= upper; cursor = cursor.AddDays(1))
         {
             if (cursor.IsWorkingDay(service, territory, workingWeek))

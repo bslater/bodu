@@ -114,7 +114,7 @@ public abstract class Poly1305AeadTransform
         ThrowIfCompleted();
         ThrowIfAssociatedDataUnsupported(associatedData);
 
-        var required = checked(plaintext.Length + TagBytes);
+        int required = checked(plaintext.Length + TagBytes);
         if (output.Length < required)
             throw new ArgumentException(
                 string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, required),
@@ -145,7 +145,7 @@ public abstract class Poly1305AeadTransform
                 string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_CiphertextTooShort, TagBytes),
                 nameof(ciphertextWithTag));
 
-        var plaintextLength = ciphertextWithTag.Length - TagBytes;
+        int plaintextLength = ciphertextWithTag.Length - TagBytes;
         if (output.Length < plaintextLength)
             throw new ArgumentException(
                 string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, plaintextLength),
@@ -232,7 +232,7 @@ public abstract class Poly1305AeadTransform
     /// <exception cref="ArgumentException">The buffers partially overlap.</exception>
     private static void ThrowIfPartialOverlap(ReadOnlySpan<byte> input, ReadOnlySpan<byte> output)
     {
-        if (input.Overlaps(output, out var elementOffset) && elementOffset != 0)
+        if (input.Overlaps(output, out int elementOffset) && elementOffset != 0)
             throw new ArgumentException(CryptoResourceStrings.Crypt_Invalid_PartialBufferOverlap, nameof(output));
     }
 

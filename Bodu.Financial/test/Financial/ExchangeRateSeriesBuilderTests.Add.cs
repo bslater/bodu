@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateSeriesBuilderTests.Add.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -90,7 +90,7 @@ public partial class ExchangeRateSeriesBuilderTests
     {
         ExchangeRateSeriesBuilder builder = new(s_usdAud, "RBA");
 
-        var inserted = builder.TryAdd(new DateOnly(2026, 6, 1), 1.50m);
+        bool inserted = builder.TryAdd(new DateOnly(2026, 6, 1), 1.50m);
 
         Assert.IsTrue(inserted);
         Assert.AreEqual(1, builder.Count);
@@ -106,10 +106,10 @@ public partial class ExchangeRateSeriesBuilderTests
         ExchangeRateSeriesBuilder builder = new(s_usdAud, "RBA");
         builder.Add(new DateOnly(2026, 6, 1), 1.50m);
 
-        var inserted = builder.TryAdd(new DateOnly(2026, 6, 1), 1.60m);
+        bool inserted = builder.TryAdd(new DateOnly(2026, 6, 1), 1.60m);
 
         Assert.IsFalse(inserted);
-        Assert.IsTrue(builder.TryGetRate(new DateOnly(2026, 6, 1), out var rate));
+        Assert.IsTrue(builder.TryGetRate(new DateOnly(2026, 6, 1), out decimal rate));
         Assert.AreEqual(1.50m, rate);
     }
 

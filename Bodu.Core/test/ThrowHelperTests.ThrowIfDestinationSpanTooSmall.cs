@@ -18,8 +18,8 @@ public partial class ThrowHelperTests
     [DataRow(0, 0)]
     public void ThrowIfDestinationSpanTooSmall_WhenDestinationSufficient_ShouldNotThrow(int sourceLength, int destinationLength)
     {
-        var source = new int[sourceLength];
-        var destination = new int[destinationLength];
+        int[] source = new int[sourceLength];
+        int[] destination = new int[destinationLength];
 
         ThrowHelper.ThrowIfDestinationSpanTooSmall<int, int>(source.AsSpan(), destination.AsSpan());
     }
@@ -32,8 +32,8 @@ public partial class ThrowHelperTests
     [DataRow(5, 4)]
     public void ThrowIfDestinationSpanTooSmall_WhenDestinationTooSmall_ShouldThrowExactly(int sourceLength, int destinationLength)
     {
-        var source = new byte[sourceLength];
-        var destination = new byte[destinationLength];
+        byte[] source = new byte[sourceLength];
+        byte[] destination = new byte[destinationLength];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -55,8 +55,8 @@ public partial class ThrowHelperTests
     public void ThrowIfDestinationSpanTooSmall_WhenDestinationFits_ShouldNotThrowAndReportNothing(
         string testName, int sourceLength, int destinationLength)
     {
-        var source = new byte[sourceLength];
-        var destination = new byte[destinationLength];
+        byte[] source = new byte[sourceLength];
+        byte[] destination = new byte[destinationLength];
 
         AssertGuard(
             testName,
@@ -78,8 +78,8 @@ public partial class ThrowHelperTests
     public void ThrowIfDestinationSpanTooSmall_WhenDestinationTooShort_ShouldThrowOnDestination(
         string testName, int sourceLength, int destinationLength)
     {
-        var source = new byte[sourceLength];
-        var destination = new byte[destinationLength];
+        byte[] source = new byte[sourceLength];
+        byte[] destination = new byte[destinationLength];
 
         AssertGuard(
             testName,

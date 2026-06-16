@@ -39,7 +39,7 @@ public static partial class StringExtensions
 
         if (replacements.Count == 0) return value;
 
-        var current = value;
+        string current = value;
         foreach (KeyValuePair<string, string> pair in replacements)
         {
             ThrowHelper.ThrowIfNull(pair.Key);

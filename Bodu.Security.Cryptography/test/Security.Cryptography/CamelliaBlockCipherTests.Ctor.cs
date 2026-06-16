@@ -25,7 +25,7 @@ internal sealed partial class CamelliaBlockCipherTests
     [DataRow(33)]
     public void Ctor_WhenKeyLengthIsInvalid_ShouldThrowExactly(int keyLength)
     {
-        var key = new byte[keyLength];
+        byte[] key = new byte[keyLength];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {

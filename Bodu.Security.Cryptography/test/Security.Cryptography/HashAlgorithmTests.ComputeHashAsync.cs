@@ -27,7 +27,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
         using var stream = new FixedLengthIncrementingStream(length);
         using TAlgorithm algorithm = CreateAlgorithm();
 
-        var result = await algorithm.ComputeHashAsync(stream);
+        byte[] result = await algorithm.ComputeHashAsync(stream);
 
         Assert.IsNotNull(result);
         Assert.AreEqual(algorithm.HashSize / 8, result.Length);
@@ -105,8 +105,8 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
         using TAlgorithm algorithmA = CreateAlgorithm();
         using TAlgorithm algorithmB = CreateAlgorithm();
 
-        var hashA = await algorithmA.ComputeHashAsync(streamA);
-        var hashB = await algorithmB.ComputeHashAsync(streamB);
+        byte[] hashA = await algorithmA.ComputeHashAsync(streamA);
+        byte[] hashB = await algorithmB.ComputeHashAsync(streamB);
 
         CollectionAssert.AreEqual(hashA, hashB, "Hashes from identical input should match.");
     }
@@ -120,7 +120,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
         using TAlgorithm algorithm = CreateAlgorithm();
         using var stream = new MemoryStream([]);
 
-        var actual = await algorithm.ComputeHashAsync(stream);
+        byte[] actual = await algorithm.ComputeHashAsync(stream);
 
         CollectionAssert.AreEqual(ExpectedEmptyInputHash, actual);
     }
@@ -181,7 +181,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
         using TAlgorithm algorithm = CreateAlgorithm(variant);
         await using var stream = new MemoryStream(input);
 
-        var actual = await algorithm.ComputeHashAsync(stream);
+        byte[] actual = await algorithm.ComputeHashAsync(stream);
 
         TestHelpers.TraceWriteIfNotEqual(expected, actual);
 

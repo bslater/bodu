@@ -153,7 +153,7 @@ internal sealed partial class RabbitStreamCipher
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static uint SubKey(ReadOnlySpan<byte> key, int index)
     {
-        var offset = 14 - (index * 2);
+        int offset = 14 - (index * 2);
         return (uint)((key[offset] << 8) | key[offset + 1]);
     }
 
@@ -167,7 +167,7 @@ internal sealed partial class RabbitStreamCipher
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static uint IvWord(ReadOnlySpan<byte> nonce, int index)
     {
-        var offset = 6 - (index * 2);
+        int offset = 6 - (index * 2);
         return (uint)((nonce[offset] << 8) | nonce[offset + 1]);
     }
 
@@ -179,7 +179,7 @@ internal sealed partial class RabbitStreamCipher
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static uint G(uint u)
     {
-        var square = (ulong)u * u;
+        ulong square = (ulong)u * u;
         return (uint)(square ^ (square >> 32));
     }
 
@@ -191,11 +191,11 @@ internal sealed partial class RabbitStreamCipher
     {
         ExpandKey(key);
 
-        for (var i = 0; i < 4; i++)
+        for (int i = 0; i < 4; i++)
             NextState();
 
         // Re-key the counters from the iterated state.
-        for (var i = 0; i < 8; i++)
+        for (int i = 0; i < 8; i++)
             _c[i] ^= _x[(i + 4) & 7];
     }
 
@@ -207,7 +207,7 @@ internal sealed partial class RabbitStreamCipher
     {
         MixIv(nonce);
 
-        for (var i = 0; i < 4; i++)
+        for (int i = 0; i < 4; i++)
             NextState();
     }
 
@@ -252,14 +252,14 @@ internal sealed partial class RabbitStreamCipher
             _c[7] = c7 + A1 + (_c[6] < c6 ? 1u : 0u);
             _carry = _c[7] < c7 ? 1u : 0u;
 
-            var g0 = G(_x[0] + _c[0]);
-            var g1 = G(_x[1] + _c[1]);
-            var g2 = G(_x[2] + _c[2]);
-            var g3 = G(_x[3] + _c[3]);
-            var g4 = G(_x[4] + _c[4]);
-            var g5 = G(_x[5] + _c[5]);
-            var g6 = G(_x[6] + _c[6]);
-            var g7 = G(_x[7] + _c[7]);
+            uint g0 = G(_x[0] + _c[0]);
+            uint g1 = G(_x[1] + _c[1]);
+            uint g2 = G(_x[2] + _c[2]);
+            uint g3 = G(_x[3] + _c[3]);
+            uint g4 = G(_x[4] + _c[4]);
+            uint g5 = G(_x[5] + _c[5]);
+            uint g6 = G(_x[6] + _c[6]);
+            uint g7 = G(_x[7] + _c[7]);
 
             _x[0] = g0 + BitOperations.RotateLeft(g7, 16) + BitOperations.RotateLeft(g6, 16);
             _x[1] = g1 + BitOperations.RotateLeft(g0, 8) + g7;

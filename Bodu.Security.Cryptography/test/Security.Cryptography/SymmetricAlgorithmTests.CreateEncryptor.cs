@@ -41,7 +41,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
         using TAlgorithm algorithm = CreateAlgorithm();
 
         byte[] key = null!;
-        var iv = new byte[algorithm.BlockSize / 8];
+        byte[] iv = new byte[algorithm.BlockSize / 8];
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -62,8 +62,8 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
 
         using TAlgorithm algorithm = CreateAlgorithm();
 
-        var badKey = new byte[keySize];
-        var iv = new byte[algorithm.BlockSize / 8];
+        byte[] badKey = new byte[keySize];
+        byte[] iv = new byte[algorithm.BlockSize / 8];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
@@ -81,7 +81,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     {
         using TAlgorithm algorithm = CreateAlgorithm();    // default mode is CBC
 
-        var key = new byte[algorithm.KeySize / 8];
+        byte[] key = new byte[algorithm.KeySize / 8];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
@@ -102,8 +102,8 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
 
         using TAlgorithm algorithm = CreateAlgorithm();    // default mode is CBC
 
-        var key = new byte[algorithm.KeySize / 8];
-        var badIv = new byte[blockSize];
+        byte[] key = new byte[algorithm.KeySize / 8];
+        byte[] badIv = new byte[blockSize];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
@@ -148,7 +148,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
         using TAlgorithm algorithm = CreateAlgorithm();
         SetEcbMode(algorithm);
 
-        var key = new byte[algorithm.KeySize / 8];
+        byte[] key = new byte[algorithm.KeySize / 8];
 
         using ICryptoTransform transform = algorithm.CreateEncryptor(key, null);
         Assert.IsNotNull(transform);
@@ -164,8 +164,8 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
         using TAlgorithm algorithm = CreateAlgorithm();
         SetEcbMode(algorithm);
 
-        var key = new byte[algorithm.KeySize / 8];
-        var iv = new byte[algorithm.BlockSize / 8];
+        byte[] key = new byte[algorithm.KeySize / 8];
+        byte[] iv = new byte[algorithm.BlockSize / 8];
 
         using ICryptoTransform transform = algorithm.CreateEncryptor(key, iv);
         Assert.IsNotNull(transform);
@@ -185,8 +185,8 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
         using TAlgorithm algorithm = CreateAlgorithm();
         SetEcbMode(algorithm);
 
-        var key = new byte[algorithm.KeySize / 8];
-        var badIv = new byte[blockSize];
+        byte[] key = new byte[algorithm.KeySize / 8];
+        byte[] badIv = new byte[blockSize];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
@@ -203,8 +203,8 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     {
         using TAlgorithm algorithm = CreateAlgorithm();    // default mode is CBC
 
-        var key = new byte[algorithm.KeySize / 8];
-        var iv = new byte[algorithm.BlockSize / 8];
+        byte[] key = new byte[algorithm.KeySize / 8];
+        byte[] iv = new byte[algorithm.BlockSize / 8];
 
         using ICryptoTransform transform = algorithm.CreateEncryptor(key, iv);
         Assert.IsNotNull(transform);

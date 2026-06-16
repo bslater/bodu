@@ -130,7 +130,7 @@ public readonly partial struct Fraction<T> :
         if (s.IsEmpty)
             return false;
 
-        var percent = s[^1] == '%';
+        bool percent = s[^1] == '%';
         if (percent)
         {
             s = s[..^1].Trim();
@@ -138,7 +138,7 @@ public readonly partial struct Fraction<T> :
                 return false;
         }
 
-        var negative = false;
+        bool negative = false;
         if (s[0] == '-')
         {
             negative = true;
@@ -201,7 +201,7 @@ public readonly partial struct Fraction<T> :
             return true;
         }
 
-        var slash = s.IndexOf('/');
+        int slash = s.IndexOf('/');
         if (slash < 0)
             return BigInteger.TryParse(s, NumberStyles.None, provider, out numerator);
 
@@ -213,7 +213,7 @@ public readonly partial struct Fraction<T> :
         if (!BigInteger.TryParse(rightText, NumberStyles.None, provider, out denominator))
             return false;
 
-        var space = leftText.IndexOfAny(' ', '\t');
+        int space = leftText.IndexOfAny(' ', '\t');
         if (space < 0)
             return BigInteger.TryParse(leftText, NumberStyles.None, provider, out numerator);
 

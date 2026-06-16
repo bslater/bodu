@@ -28,8 +28,8 @@ public abstract partial class SkeinTests<TTest, TAlgorithm, TVariant>
         using var algorithm = new TAlgorithm();
         algorithm.Key = [];
 
-        var first = algorithm.GetInitialChainingValueWords();
-        var second = algorithm.GetInitialChainingValueWords();
+        ulong[] first = algorithm.GetInitialChainingValueWords();
+        ulong[] second = algorithm.GetInitialChainingValueWords();
 
         CollectionAssert.AreEqual(first, second);
     }
@@ -44,10 +44,10 @@ public abstract partial class SkeinTests<TTest, TAlgorithm, TVariant>
         using var algorithm = new TAlgorithm();
         algorithm.Key = [];
 
-        var first = algorithm.GetInitialChainingValueWords();
+        ulong[] first = algorithm.GetInitialChainingValueWords();
         first[0] = 0xDEADBEEFDEADBEEFUL;
 
-        var second = algorithm.GetInitialChainingValueWords();
+        ulong[] second = algorithm.GetInitialChainingValueWords();
 
         Assert.AreNotEqual(0xDEADBEEFDEADBEEFUL, second[0],
             "GetInitialChainingValueWords must return a defensive copy; caller mutation must not affect the cached state.");
@@ -66,7 +66,7 @@ public abstract partial class SkeinTests<TTest, TAlgorithm, TVariant>
         using var algorithm = new TAlgorithm();
         algorithm.Key = [];
 
-        var words = algorithm.GetInitialChainingValueWords();
+        ulong[] words = algorithm.GetInitialChainingValueWords();
 
         int[] permitted = [4, 8, 16];
         Assert.IsTrue(System.Array.IndexOf(permitted, words.Length) >= 0,
@@ -84,10 +84,10 @@ public abstract partial class SkeinTests<TTest, TAlgorithm, TVariant>
         using var algorithm = new TAlgorithm();
 
         algorithm.Key = [];
-        var unkeyed = algorithm.GetInitialChainingValueWords();
+        ulong[] unkeyed = algorithm.GetInitialChainingValueWords();
 
         algorithm.Key = SkeinTestKey;
-        var keyed = algorithm.GetInitialChainingValueWords();
+        ulong[] keyed = algorithm.GetInitialChainingValueWords();
 
         Assert.IsFalse(unkeyed.SequenceEqual(keyed),
             "Setting a non-empty key must invalidate the cached IV and produce a different KEY-UBI-then-CFG-UBI chaining value.");
@@ -104,10 +104,10 @@ public abstract partial class SkeinTests<TTest, TAlgorithm, TVariant>
         using var algorithm = new TAlgorithm();
 
         algorithm.Key = SkeinTestKey;
-        var first = algorithm.GetInitialChainingValueWords();
+        ulong[] first = algorithm.GetInitialChainingValueWords();
 
         algorithm.Key = (byte[])SkeinTestKey.Clone();
-        var second = algorithm.GetInitialChainingValueWords();
+        ulong[] second = algorithm.GetInitialChainingValueWords();
 
         CollectionAssert.AreEqual(first, second);
     }

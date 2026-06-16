@@ -80,7 +80,7 @@ public static partial class HashAlgorithmExtensions
 
         cancellationToken.ThrowIfCancellationRequested();
 
-        var buffer = ArrayPool<byte>.Shared.Rent(bufferSize);
+        byte[] buffer = ArrayPool<byte>.Shared.Rent(bufferSize);
         try
         {
             int bytesRead;

@@ -17,8 +17,8 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void ThrowIfInvalidOverlap_WhenSpansInDifferentArrays_ShouldNotThrow()
     {
-        var input = new byte[16];
-        var output = new byte[16];
+        byte[] input = new byte[16];
+        byte[] output = new byte[16];
 
         CryptographyThrowHelper.ThrowIfInvalidOverlap(input, output);
     }
@@ -30,7 +30,7 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void ThrowIfInvalidOverlap_WhenSpansAreDisjointInSameArray_ShouldNotThrow()
     {
-        var buffer = new byte[32];
+        byte[] buffer = new byte[32];
 
         CryptographyThrowHelper.ThrowIfInvalidOverlap(buffer.AsSpan(0, 16), buffer.AsSpan(16, 16));
     }
@@ -42,7 +42,7 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void ThrowIfInvalidOverlap_WhenExactInPlace_ShouldNotThrow()
     {
-        var buffer = new byte[16];
+        byte[] buffer = new byte[16];
 
         CryptographyThrowHelper.ThrowIfInvalidOverlap(buffer.AsSpan(), buffer.AsSpan());
     }
@@ -54,7 +54,7 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void ThrowIfInvalidOverlap_WhenExactInPlaceAndNotAllowed_ShouldThrowCryptographicException()
     {
-        var buffer = new byte[16];
+        byte[] buffer = new byte[16];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
@@ -69,7 +69,7 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void ThrowIfInvalidOverlap_WhenOutputStartsInsideInput_ShouldThrowCryptographicException()
     {
-        var buffer = new byte[32];
+        byte[] buffer = new byte[32];
 
         // input [0, 16); output [8, 24) → shares [8, 16).
         Assert.ThrowsExactly<CryptographicException>(() =>
@@ -85,7 +85,7 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void ThrowIfInvalidOverlap_WhenInputStartsInsideOutput_ShouldThrowCryptographicException()
     {
-        var buffer = new byte[32];
+        byte[] buffer = new byte[32];
 
         // output [0, 16); input [8, 24) → shares [8, 16).
         Assert.ThrowsExactly<CryptographicException>(() =>
@@ -101,7 +101,7 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void ThrowIfInvalidOverlap_WhenOneByteOverlap_ShouldThrowCryptographicException()
     {
-        var buffer = new byte[32];
+        byte[] buffer = new byte[32];
 
         // input [0, 16); output [15, 31) → shares [15, 16).
         Assert.ThrowsExactly<CryptographicException>(() =>
@@ -117,7 +117,7 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void ThrowIfInvalidOverlap_WhenSameStartDifferentLength_ShouldThrowCryptographicException()
     {
-        var buffer = new byte[32];
+        byte[] buffer = new byte[32];
 
         // input [0, 16); output [0, 24): same start, different length → not "exact in-place".
         Assert.ThrowsExactly<CryptographicException>(() =>
@@ -132,7 +132,7 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void ThrowIfInvalidOverlap_WhenInputIsEmpty_ShouldNotThrow()
     {
-        var buffer = new byte[16];
+        byte[] buffer = new byte[16];
 
         CryptographyThrowHelper.ThrowIfInvalidOverlap([], buffer.AsSpan());
     }
@@ -143,7 +143,7 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void ThrowIfInvalidOverlap_WhenOutputIsEmpty_ShouldNotThrow()
     {
-        var buffer = new byte[16];
+        byte[] buffer = new byte[16];
 
         CryptographyThrowHelper.ThrowIfInvalidOverlap(buffer.AsSpan(), []);
     }

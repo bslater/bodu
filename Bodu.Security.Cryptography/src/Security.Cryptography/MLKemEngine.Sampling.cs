@@ -36,13 +36,13 @@ internal static partial class MLKemEngine
         sponge.Absorb(indices);
 
         Span<byte> block = stackalloc byte[3];
-        var count = 0;
+        int count = 0;
         while (count < N)
         {
             sponge.Squeeze(block);
 
-            var d1 = block[0] | ((block[1] & 0x0F) << 8);
-            var d2 = (block[1] >> 4) | (block[2] << 4);
+            int d1 = block[0] | ((block[1] & 0x0F) << 8);
+            int d2 = (block[1] >> 4) | (block[2] << 4);
 
             if (d1 < Q)
                 destination[count++] = d1;
@@ -71,12 +71,12 @@ internal static partial class MLKemEngine
         Span<byte> bytes = stream[..(64 * eta)];
         KeccakSponge.Shake256(seed, counterByte, bytes);
 
-        for (var i = 0; i < N; i++)
+        for (int i = 0; i < N; i++)
         {
-            var positive = 0;
-            var negative = 0;
+            int positive = 0;
+            int negative = 0;
 
-            for (var j = 0; j < eta; j++)
+            for (int j = 0; j < eta; j++)
             {
                 positive += GetBit(bytes, (2 * i * eta) + j);
                 negative += GetBit(bytes, (2 * i * eta) + eta + j);

@@ -47,8 +47,8 @@ public partial class ParallelMerkleTreeHashTests
     public async Task StressTest_WhenManyIndependentInstancesRunConcurrently_ShouldAllProduceCorrectResults(
         int parallelism, int blockSize, int fanOut, int dataLength)
     {
-        var data = MakeData(dataLength);
-        var expected = ComputeAdditiveRoot(data, blockSize, fanOut);
+        byte[] data = MakeData(dataLength);
+        byte[] expected = ComputeAdditiveRoot(data, blockSize, fanOut);
 
         using var startGate = new ManualResetEventSlim(false);
         var errors = new ConcurrentBag<string>();
@@ -59,7 +59,7 @@ public partial class ParallelMerkleTreeHashTests
             try
             {
                 using var hasher = new ParallelMerkleTreeHash(Factory, blockSize, fanOut);
-                var result = hasher.ComputeHash((byte[])data.Clone());
+                byte[] result = hasher.ComputeHash((byte[])data.Clone());
                 if (!result.SequenceEqual(expected))
                     errors.Add($"Hash mismatch: {Convert.ToHexString(result)}");
             }
@@ -71,7 +71,7 @@ public partial class ParallelMerkleTreeHashTests
 
         startGate.Set();
 
-        var completed = await Task.WhenAll(tasks)
+        bool completed = await Task.WhenAll(tasks)
             .WaitAsync(TimeSpan.FromMilliseconds(StressDeadlockTimeoutMs))
             .ContinueWith(t => !t.IsFaulted && !t.IsCanceled);
 
@@ -110,7 +110,7 @@ public partial class ParallelMerkleTreeHashTests
             startGate.Wait();
             try
             {
-                var data = MakeData(8 + i % 8, seed: i); // each instance sees distinct data
+                byte[] data = MakeData(8 + i % 8, seed: i); // each instance sees distinct data
                 using var hasher = new ParallelMerkleTreeHash(Factory, blockSize, fanOut);
                 results[i] = hasher.ComputeHash(data);
             }
@@ -122,7 +122,7 @@ public partial class ParallelMerkleTreeHashTests
 
         startGate.Set();
 
-        var completed = await Task.WhenAll(tasks)
+        bool completed = await Task.WhenAll(tasks)
             .WaitAsync(TimeSpan.FromMilliseconds(StressDeadlockTimeoutMs))
             .ContinueWith(t => !t.IsFaulted && !t.IsCanceled);
 
@@ -133,10 +133,10 @@ public partial class ParallelMerkleTreeHashTests
         Assert.AreEqual(parallelism, results.Count, "Not all instances returned a result.");
 
         // Cross-validate each instance's result against the hand-computed reference.
-        for (var i = 0; i < parallelism; i++)
+        for (int i = 0; i < parallelism; i++)
         {
-            var data = MakeData(8 + i % 8, seed: i);
-            var expected = ComputeAdditiveRoot(data, blockSize, fanOut);
+            byte[] data = MakeData(8 + i % 8, seed: i);
+            byte[] expected = ComputeAdditiveRoot(data, blockSize, fanOut);
             CollectionAssert.AreEqual(expected, results[i], $"Instance {i} produced a wrong hash.");
         }
     }
@@ -153,16 +153,16 @@ public partial class ParallelMerkleTreeHashTests
     [TestMethod]
     public async Task StressTest_WhenHighConcurrency_ShouldNotDeadlockOrLivelock()
     {
-        var parallelism = Math.Max(8, Environment.ProcessorCount * 4);
+        int parallelism = Math.Max(8, Environment.ProcessorCount * 4);
         const int blockSize = 4;
         const int fanOut = 2;
         const int dataLength = 20;
 
-        var data = MakeData(dataLength);
-        var expected = ComputeAdditiveRoot(data, blockSize, fanOut);
+        byte[] data = MakeData(dataLength);
+        byte[] expected = ComputeAdditiveRoot(data, blockSize, fanOut);
 
         using var startGate = new ManualResetEventSlim(false);
-        var faults = 0;
+        int faults = 0;
 
         Task[] tasks = Enumerable.Range(0, parallelism).Select(_ => Task.Run(() =>
         {
@@ -170,7 +170,7 @@ public partial class ParallelMerkleTreeHashTests
             try
             {
                 using var hasher = new ParallelMerkleTreeHash(Factory, blockSize, fanOut);
-                var result = hasher.ComputeHash((byte[])data.Clone());
+                byte[] result = hasher.ComputeHash((byte[])data.Clone());
                 if (!result.SequenceEqual(expected))
                     Interlocked.Increment(ref faults);
             }
@@ -182,7 +182,7 @@ public partial class ParallelMerkleTreeHashTests
 
         startGate.Set();
 
-        var completed = await Task.WhenAll(tasks)
+        bool completed = await Task.WhenAll(tasks)
             .WaitAsync(TimeSpan.FromMilliseconds(StressDeadlockTimeoutMs))
             .ContinueWith(t => !t.IsFaulted && !t.IsCanceled);
 
@@ -214,10 +214,10 @@ public partial class ParallelMerkleTreeHashTests
         const int fanOut = 2;
         const int dataLength = 12;
 
-        var data = MakeData(dataLength);
-        var expected = ComputeAdditiveRoot(data, blockSize, fanOut);
+        byte[] data = MakeData(dataLength);
+        byte[] expected = ComputeAdditiveRoot(data, blockSize, fanOut);
 
-        for (var wave = 0; wave < waves; wave++)
+        for (int wave = 0; wave < waves; wave++)
         {
             Task<byte[]>[] tasks = Enumerable.Range(0, perWave).Select(_ => Task.Run(() =>
             {
@@ -225,9 +225,9 @@ public partial class ParallelMerkleTreeHashTests
                 return hasher.ComputeHash((byte[])data.Clone());
             })).ToArray();
 
-            var results = await Task.WhenAll(tasks);
+            byte[][] results = await Task.WhenAll(tasks);
 
-            for (var i = 0; i < results.Length; i++)
+            for (int i = 0; i < results.Length; i++)
                 CollectionAssert.AreEqual(expected, results[i],
                     $"Wave {wave}, instance {i}: incorrect result.");
 
@@ -251,8 +251,8 @@ public partial class ParallelMerkleTreeHashTests
         const int fanOut = 4;
         const int dataLength = 10_007; // intentionally uneven: 39 full + 1 partial block
 
-        var data = MakeData(dataLength);
-        var expected = ComputeAdditiveRoot(data, blockSize, fanOut);
+        byte[] data = MakeData(dataLength);
+        byte[] expected = ComputeAdditiveRoot(data, blockSize, fanOut);
 
         using var startGate = new ManualResetEventSlim(false);
         var errors = new ConcurrentBag<string>();
@@ -263,7 +263,7 @@ public partial class ParallelMerkleTreeHashTests
             try
             {
                 using var hasher = new ParallelMerkleTreeHash(Factory, blockSize, fanOut);
-                var result = hasher.ComputeHash((byte[])data.Clone());
+                byte[] result = hasher.ComputeHash((byte[])data.Clone());
                 if (!result.SequenceEqual(expected))
                     errors.Add($"[{i}] hash mismatch");
             }
@@ -275,7 +275,7 @@ public partial class ParallelMerkleTreeHashTests
 
         startGate.Set();
 
-        var completed = await Task.WhenAll(tasks)
+        bool completed = await Task.WhenAll(tasks)
             .WaitAsync(TimeSpan.FromMilliseconds(StressDeadlockTimeoutMs))
             .ContinueWith(t => !t.IsFaulted && !t.IsCanceled);
 
@@ -302,7 +302,7 @@ public partial class ParallelMerkleTreeHashTests
         const int fanOut = 2;
         const int dataLength = 12;
 
-        var data = MakeData(dataLength);
+        byte[] data = MakeData(dataLength);
 
         using var startGate = new ManualResetEventSlim(false);
         var diagnosticsList = new ConcurrentBag<MerkleTreeDiagnostics>();
@@ -326,7 +326,7 @@ public partial class ParallelMerkleTreeHashTests
 
         startGate.Set();
 
-        var completed = await Task.WhenAll(tasks)
+        bool completed = await Task.WhenAll(tasks)
             .WaitAsync(TimeSpan.FromMilliseconds(StressDeadlockTimeoutMs))
             .ContinueWith(t => !t.IsFaulted && !t.IsCanceled);
 
@@ -336,7 +336,7 @@ public partial class ParallelMerkleTreeHashTests
 
         foreach (MerkleTreeDiagnostics diag in diagnosticsList)
         {
-            var valid = diag.Validate(Factory, out IReadOnlyList<string>? validationErrors);
+            bool valid = diag.Validate(Factory, out IReadOnlyList<string>? validationErrors);
             Assert.IsTrue(valid, string.Join("; ", validationErrors));
         }
     }

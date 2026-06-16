@@ -40,7 +40,7 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void ToTitleCase_WithLowerCaseSmallWords_ShouldLowerInteriorConnectives()
     {
-        var actual = "the lord of the rings".ToTitleCase(TitleCaseOptions.LowerCaseSmallWords);
+        string actual = "the lord of the rings".ToTitleCase(TitleCaseOptions.LowerCaseSmallWords);
 
         Assert.AreEqual("The Lord of the Rings", actual);
     }
@@ -53,7 +53,7 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void ToTitleCase_WithPreserveAcronyms_ShouldKeepAllUpperWords()
     {
-        var actual = "html parser API design".ToTitleCase(TitleCaseOptions.PreserveAcronyms);
+        string actual = "html parser API design".ToTitleCase(TitleCaseOptions.PreserveAcronyms);
 
         Assert.AreEqual("Html Parser API Design", actual);
     }

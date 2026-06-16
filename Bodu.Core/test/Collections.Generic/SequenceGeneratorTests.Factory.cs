@@ -24,7 +24,7 @@ public partial class SequenceGeneratorTests
     [TestMethod]
     public void Factory_WhenEnumeratorIsValid_ShouldReturnExpectedSequence()
     {
-        var actual = SequenceGenerator.Factory(() => new List<int> { 1, 2, 3 }.GetEnumerator()).ToArray();
+        int[] actual = SequenceGenerator.Factory(() => new List<int> { 1, 2, 3 }.GetEnumerator()).ToArray();
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, actual);
     }
 

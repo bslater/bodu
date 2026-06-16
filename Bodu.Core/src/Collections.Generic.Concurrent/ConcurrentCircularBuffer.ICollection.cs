@@ -33,9 +33,9 @@ public partial class ConcurrentCircularBuffer<T>
     {
         get
         {
-            var head = Volatile.Read(ref _head);
-            var tail = Volatile.Read(ref _tail);
-            var diff = tail - head;
+            int head = Volatile.Read(ref _head);
+            int tail = Volatile.Read(ref _tail);
+            int diff = tail - head;
             if (diff < 0) diff = 0;
             if (diff > _capacity) diff = _capacity;
             return diff;

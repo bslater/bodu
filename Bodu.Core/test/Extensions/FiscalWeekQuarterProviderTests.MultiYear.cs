@@ -66,14 +66,14 @@ public partial class FiscalWeekQuarterProviderTests
             isFiscalYearEnd: true,
             useNearestDayOfWeek: useNearestDayOfWeek);
 
-        for (var year = 2001; year <= 2040; year++)
+        for (int year = 2001; year <= 2040; year++)
         {
             DateTime q4PrevEnd = provider.GetQuarterEnd(4, year - 1);
             DateTime q1Start = provider.GetQuarterStart(1, year);
             Assert.AreEqual(q4PrevEnd.AddDays(1), q1Start,
                 $"Q1 of FY {year} must begin the day after Q4 of FY {year - 1}.");
 
-            for (var q = 1; q <= 3; q++)
+            for (int q = 1; q <= 3; q++)
             {
                 DateTime end = provider.GetQuarterEnd(q, year);
                 DateTime nextStart = provider.GetQuarterStart(q + 1, year);
@@ -81,15 +81,15 @@ public partial class FiscalWeekQuarterProviderTests
                     $"FY {year} Q{q} end must be the day before Q{q + 1} start.");
             }
 
-            var totalDays = 0;
-            for (var q = 1; q <= 4; q++)
+            int totalDays = 0;
+            for (int q = 1; q <= 4; q++)
             {
                 DateTime start = provider.GetQuarterStart(q, year);
                 DateTime end = provider.GetQuarterEnd(q, year);
                 totalDays += (int)(end - start).TotalDays + 1;
             }
 
-            var expectedDays = provider.GetWeeksInFiscalYear(year) * 7;
+            int expectedDays = provider.GetWeeksInFiscalYear(year) * 7;
             Assert.AreEqual(expectedDays, totalDays,
                 $"FY {year} must contain exactly {expectedDays} days across all four quarters.");
         }
@@ -107,19 +107,19 @@ public partial class FiscalWeekQuarterProviderTests
             dayOfWeek: DayOfWeek.Saturday,
             isFiscalYearEnd: true);
 
-        var fiscalYear = FindFirst53WeekYear(provider, 2000, 2040);
+        int fiscalYear = FindFirst53WeekYear(provider, 2000, 2040);
 
-        for (var q = 1; q <= 3; q++)
+        for (int q = 1; q <= 3; q++)
         {
             DateTime start = provider.GetQuarterStart(q, fiscalYear);
             DateTime end = provider.GetQuarterEnd(q, fiscalYear);
-            var days = (int)(end - start).TotalDays + 1;
+            int days = (int)(end - start).TotalDays + 1;
             Assert.AreEqual(91, days, $"Q{q} of FY {fiscalYear} must span 91 days.");
         }
 
         DateTime q4Start = provider.GetQuarterStart(4, fiscalYear);
         DateTime q4End = provider.GetQuarterEnd(4, fiscalYear);
-        var q4Days = (int)(q4End - q4Start).TotalDays + 1;
+        int q4Days = (int)(q4End - q4Start).TotalDays + 1;
         Assert.AreEqual(98, q4Days, $"Q4 of FY {fiscalYear} must span 98 days (14 weeks).");
     }
 
@@ -136,9 +136,9 @@ public partial class FiscalWeekQuarterProviderTests
             dayOfWeek: DayOfWeek.Saturday,
             isFiscalYearEnd: true);
 
-        for (var year = 2000; year <= 2040; year++)
+        for (int year = 2000; year <= 2040; year++)
         {
-            var expected = provider.Is53WeekFiscalYear(year) ? 53 : 52;
+            int expected = provider.Is53WeekFiscalYear(year) ? 53 : 52;
             Assert.AreEqual(expected, provider.GetWeeksInFiscalYear(year),
                 $"GetWeeksInFiscalYear({year}) must agree with Is53WeekFiscalYear({year}).");
         }
@@ -174,7 +174,7 @@ public partial class FiscalWeekQuarterProviderTests
 
     private static int FindFirst53WeekYear(FiscalWeekQuarterProvider provider, int fromYear, int toYear)
     {
-        for (var year = fromYear; year <= toYear; year++)
+        for (int year = fromYear; year <= toYear; year++)
         {
             if (provider.Is53WeekFiscalYear(year))
                 return year;

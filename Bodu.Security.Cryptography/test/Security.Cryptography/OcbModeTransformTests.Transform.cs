@@ -30,16 +30,16 @@ public sealed partial class OcbModeTransformTests
     public void EncryptThenDecrypt_WithNonDefaultTagSize_ShouldRoundTrip(int tagSize)
     {
         using var cipher = new AesBlockCipherFixture(new byte[16]);
-        var iv = Enumerable.Repeat((byte)0x5A, ExpectedBlockSize).ToArray();
-        var plaintext = TestHelpers.GenerateRandomNonZeroBytes(ExpectedBlockSize * 3);
+        byte[] iv = Enumerable.Repeat((byte)0x5A, ExpectedBlockSize).ToArray();
+        byte[] plaintext = TestHelpers.GenerateRandomNonZeroBytes(ExpectedBlockSize * 3);
 
-        var tagBytes = tagSize / 8;
+        int tagBytes = tagSize / 8;
         OcbModeTransform enc = CreateTransform(cipher, (byte[])iv.Clone(), tagSize);
-        var ct = new byte[plaintext.Length + tagBytes];
+        byte[] ct = new byte[plaintext.Length + tagBytes];
         enc.Encrypt(plaintext, ct);
 
         OcbModeTransform dec = CreateTransform(cipher, (byte[])iv.Clone(), tagSize);
-        var recovered = new byte[plaintext.Length];
+        byte[] recovered = new byte[plaintext.Length];
         dec.Decrypt(ct, recovered);
 
         CollectionAssert.AreEqual(plaintext, recovered,
@@ -78,15 +78,15 @@ public sealed partial class OcbModeTransformTests
     public void EncryptThenDecrypt_WithLongPlaintext_ShouldRoundTrip(int plaintextLength)
     {
         using var cipher = new AesBlockCipherFixture(new byte[16]);
-        var iv = new byte[ExpectedBlockSize];
-        var plaintext = TestHelpers.GenerateRandomNonZeroBytes(plaintextLength);
+        byte[] iv = new byte[ExpectedBlockSize];
+        byte[] plaintext = TestHelpers.GenerateRandomNonZeroBytes(plaintextLength);
 
         OcbModeTransform enc = CreateTransform(cipher, (byte[])iv.Clone());
-        var ct = new byte[plaintext.Length + (enc.TagSize / 8)];
+        byte[] ct = new byte[plaintext.Length + (enc.TagSize / 8)];
         enc.Encrypt(plaintext, ct);
 
         OcbModeTransform dec = CreateTransform(cipher, (byte[])iv.Clone());
-        var recovered = new byte[plaintext.Length];
+        byte[] recovered = new byte[plaintext.Length];
         dec.Decrypt(ct, recovered);
 
         CollectionAssert.AreEqual(plaintext, recovered,
@@ -116,15 +116,15 @@ public sealed partial class OcbModeTransformTests
     public void EncryptThenDecrypt_WithPlaintextAtBlockBoundaryLengths_ShouldRoundTrip(int ptLen)
     {
         using var cipher = new AesBlockCipherFixture(new byte[16]);
-        var iv = new byte[ExpectedBlockSize];
-        var plaintext = Enumerable.Range(0, ptLen).Select(i => (byte)(i & 0xFF)).ToArray();
+        byte[] iv = new byte[ExpectedBlockSize];
+        byte[] plaintext = Enumerable.Range(0, ptLen).Select(i => (byte)(i & 0xFF)).ToArray();
 
         var enc = new OcbModeTransform(cipher, (byte[])iv.Clone());
-        var ct = new byte[ptLen + (enc.TagSize / 8)];
+        byte[] ct = new byte[ptLen + (enc.TagSize / 8)];
         enc.Encrypt(plaintext, ct);
 
         var dec = new OcbModeTransform(cipher, (byte[])iv.Clone());
-        var recovered = new byte[ptLen];
+        byte[] recovered = new byte[ptLen];
         dec.Decrypt(ct, recovered);
 
         CollectionAssert.AreEqual(plaintext, recovered,
@@ -155,18 +155,18 @@ public sealed partial class OcbModeTransformTests
     public void EncryptThenDecrypt_WithAadAtBlockBoundaryLengths_ShouldRoundTrip(int aadLen)
     {
         using var cipher = new AesBlockCipherFixture(new byte[16]);
-        var iv = new byte[ExpectedBlockSize];
-        var aad = Enumerable.Range(0, aadLen).Select(i => (byte)(i & 0xFF)).ToArray();
-        var plaintext = new byte[ExpectedBlockSize * 2]; // fixed 32-byte plaintext
+        byte[] iv = new byte[ExpectedBlockSize];
+        byte[] aad = Enumerable.Range(0, aadLen).Select(i => (byte)(i & 0xFF)).ToArray();
+        byte[] plaintext = new byte[ExpectedBlockSize * 2]; // fixed 32-byte plaintext
 
         var enc = new OcbModeTransform(cipher, (byte[])iv.Clone());
         enc.ProcessAssociatedData(aad);
-        var ct = new byte[plaintext.Length + (enc.TagSize / 8)];
+        byte[] ct = new byte[plaintext.Length + (enc.TagSize / 8)];
         enc.Encrypt(plaintext, ct);
 
         var dec = new OcbModeTransform(cipher, (byte[])iv.Clone());
         dec.ProcessAssociatedData(aad);
-        var recovered = new byte[plaintext.Length];
+        byte[] recovered = new byte[plaintext.Length];
         dec.Decrypt(ct, recovered);
 
         CollectionAssert.AreEqual(plaintext, recovered,
@@ -191,17 +191,17 @@ public sealed partial class OcbModeTransformTests
     {
         using var cipher1 = new AesBlockCipherFixture(new byte[16]);
         using var cipher2 = new AesBlockCipherFixture(new byte[16]);
-        var iv1 = new byte[ExpectedBlockSize];            // all zeros
-        var iv2 = (byte[])iv1.Clone();
+        byte[] iv1 = new byte[ExpectedBlockSize];            // all zeros
+        byte[] iv2 = (byte[])iv1.Clone();
         iv2[12] = 0xAA; iv2[13] = 0xBB; iv2[14] = 0xCC; iv2[15] = 0xDD; // only padding differs
-        var plaintext = new byte[ExpectedBlockSize];
+        byte[] plaintext = new byte[ExpectedBlockSize];
 
         var enc1 = new OcbModeTransform(cipher1, iv1);
-        var ct1 = new byte[plaintext.Length + (enc1.TagSize / 8)];
+        byte[] ct1 = new byte[plaintext.Length + (enc1.TagSize / 8)];
         enc1.Encrypt(plaintext, ct1);
 
         var enc2 = new OcbModeTransform(cipher2, iv2);
-        var ct2 = new byte[plaintext.Length + (enc2.TagSize / 8)];
+        byte[] ct2 = new byte[plaintext.Length + (enc2.TagSize / 8)];
         enc2.Encrypt(plaintext, ct2);
 
         CollectionAssert.AreEqual(ct1, ct2,

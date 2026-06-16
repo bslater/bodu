@@ -102,11 +102,11 @@ public sealed partial class MoneyBag
     {
         FinancialThrowHelper.ThrowIfMoneyBagRoundingPolicyUndefined(policy);
 
-        var targetIso = CurrencyMetadata<TTarget>.Value.IsoCode;
+        string targetIso = CurrencyMetadata<TTarget>.Value.IsoCode;
 
         if (policy == MoneyBagConversionRoundingPolicy.SumRawThenRound)
         {
-            var total = 0m;
+            decimal total = 0m;
             foreach (KeyValuePair<string, decimal> entry in _balances)
             {
                 if (string.Equals(entry.Key, targetIso, StringComparison.Ordinal))
@@ -115,7 +115,7 @@ public sealed partial class MoneyBag
                 }
                 else
                 {
-                    var rate = ValidateRate(rateLookup, entry.Key, targetIso);
+                    decimal rate = ValidateRate(rateLookup, entry.Key, targetIso);
                     total += entry.Value * rate;
                 }
             }
@@ -134,7 +134,7 @@ public sealed partial class MoneyBag
             }
             else
             {
-                var rate = ValidateRate(rateLookup, entry.Key, targetIso);
+                decimal rate = ValidateRate(rateLookup, entry.Key, targetIso);
                 contribution = new Money<TTarget>(entry.Value * rate);
             }
 
@@ -154,7 +154,7 @@ public sealed partial class MoneyBag
     /// <exception cref="InvalidOperationException">The rate is zero or negative.</exception>
     private static decimal ValidateRate(Func<string, string, decimal> rateLookup, string from, string to)
     {
-        var rate = rateLookup(from, to);
+        decimal rate = rateLookup(from, to);
         return rate <= 0m
             ? throw new InvalidOperationException(
                 string.Format(

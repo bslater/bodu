@@ -18,13 +18,13 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void FromBase32String_ForCharSpan_OperationStatus_ShouldReturnDoneWithCounts()
     {
-        var destination = new byte[6];
+        byte[] destination = new byte[6];
 
         OperationStatus status = Base32.FromBase32String(
             "MZXW6YTBOI======".AsSpan(),
             destination,
-            out var charsConsumed,
-            out var bytesWritten);
+            out int charsConsumed,
+            out int bytesWritten);
 
         Assert.AreEqual(OperationStatus.Done, status);
         Assert.AreEqual(16, charsConsumed);
@@ -39,13 +39,13 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void FromBase32String_ForCharSpan_OperationStatus_WhenInvalidChar_ShouldReturnInvalidData()
     {
-        var destination = new byte[6];
+        byte[] destination = new byte[6];
 
         OperationStatus status = Base32.FromBase32String(
             "MZ!W6YTBOI======".AsSpan(),
             destination,
-            out var _,
-            out var _);
+            out int _,
+            out int _);
 
         Assert.AreEqual(OperationStatus.InvalidData, status);
     }
@@ -56,7 +56,7 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void FromBase32String_ForString_ShouldStrictlyDecode()
     {
-        var actual = Base32.FromBase32String("MZXW6YTBOI======");
+        byte[] actual = Base32.FromBase32String("MZXW6YTBOI======");
 
         CollectionAssert.AreEqual(Ascii("foobar"), actual);
     }
@@ -67,9 +67,9 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void FromBase32String_ForUtf8Source_ShouldDecode()
     {
-        var utf8 = System.Text.Encoding.ASCII.GetBytes("MZXW6YTBOI======");
+        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("MZXW6YTBOI======");
 
-        var actual = Base32.FromBase32String(utf8);
+        byte[] actual = Base32.FromBase32String(utf8);
 
         CollectionAssert.AreEqual(Ascii("foobar"), actual);
     }
@@ -81,10 +81,10 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void FromBase32String_ForUtf8Span_OperationStatus_ShouldReturnDoneWithCounts()
     {
-        var utf8 = System.Text.Encoding.ASCII.GetBytes("MZXW6YTBOI======");
-        var destination = new byte[6];
+        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("MZXW6YTBOI======");
+        byte[] destination = new byte[6];
 
-        OperationStatus status = Base32.FromBase32String(utf8, destination, out var bytesConsumed, out var bytesWritten);
+        OperationStatus status = Base32.FromBase32String(utf8, destination, out int bytesConsumed, out int bytesWritten);
 
         Assert.AreEqual(OperationStatus.Done, status);
         Assert.AreEqual(16, bytesConsumed);
@@ -109,7 +109,7 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void ToBase32String_ForByteArray_ShouldReturnStandardVariantOutput()
     {
-        var actual = Base32.ToBase32String(Ascii("foobar"));
+        string actual = Base32.ToBase32String(Ascii("foobar"));
 
         Assert.AreEqual("MZXW6YTBOI======", actual);
     }
@@ -120,9 +120,9 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void ToBase32String_ForByteArraySlice_ShouldEncodeSliceOnly()
     {
-        var bytes = Ascii("xxxfoobaryyy");
+        byte[] bytes = Ascii("xxxfoobaryyy");
 
-        var actual = Base32.ToBase32String(bytes, 3, 6);
+        string actual = Base32.ToBase32String(bytes, 3, 6);
 
         Assert.AreEqual("MZXW6YTBOI======", actual);
     }
@@ -133,7 +133,7 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void ToBase32String_ForReadOnlySpan_ShouldReturnStandardVariantOutput()
     {
-        var actual = Base32.ToBase32String(Ascii("foobar").AsSpan());
+        string actual = Base32.ToBase32String(Ascii("foobar").AsSpan());
 
         Assert.AreEqual("MZXW6YTBOI======", actual);
     }
@@ -145,9 +145,9 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void TryToBase32String_ForCharSpan_ShouldWriteStandardOutput()
     {
-        var destination = new char[16];
+        char[] destination = new char[16];
 
-        var ok = Base32.TryToBase32String(Ascii("foobar").AsSpan(), destination, out var charsWritten);
+        bool ok = Base32.TryToBase32String(Ascii("foobar").AsSpan(), destination, out int charsWritten);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(16, charsWritten);
@@ -161,9 +161,9 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void TryToBase32String_ForUtf8Span_ShouldWriteStandardOutputAsAsciiBytes()
     {
-        var destination = new byte[16];
+        byte[] destination = new byte[16];
 
-        var ok = Base32.TryToBase32String(Ascii("foobar").AsSpan(), destination.AsSpan(), out var bytesWritten);
+        bool ok = Base32.TryToBase32String(Ascii("foobar").AsSpan(), destination.AsSpan(), out int bytesWritten);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(16, bytesWritten);

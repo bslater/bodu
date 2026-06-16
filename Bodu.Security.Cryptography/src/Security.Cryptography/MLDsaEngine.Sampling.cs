@@ -31,12 +31,12 @@ internal static partial class MLDsaEngine
         sponge.Absorb(indices);
 
         Span<byte> block = stackalloc byte[3];
-        var count = 0;
+        int count = 0;
         while (count < N)
         {
             sponge.Squeeze(block);
 
-            var candidate = block[0] | (block[1] << 8) | ((block[2] & 0x7F) << 16);
+            int candidate = block[0] | (block[1] << 8) | ((block[2] & 0x7F) << 16);
             if (candidate < Q)
                 destination[count++] = candidate;
         }
@@ -65,18 +65,18 @@ internal static partial class MLDsaEngine
         sponge.Absorb(nonceBytes);
 
         Span<byte> block = stackalloc byte[1];
-        var count = 0;
+        int count = 0;
         while (count < N)
         {
             sponge.Squeeze(block);
 
-            var low = block[0] & 0x0F;
-            var high = block[0] >> 4;
+            int low = block[0] & 0x0F;
+            int high = block[0] >> 4;
 
-            if (TryCoeffFromHalfByte(eta, low, out var first) && count < N)
+            if (TryCoeffFromHalfByte(eta, low, out int first) && count < N)
                 destination[count++] = first;
 
-            if (TryCoeffFromHalfByte(eta, high, out var second) && count < N)
+            if (TryCoeffFromHalfByte(eta, high, out int second) && count < N)
                 destination[count++] = second;
         }
 
@@ -151,9 +151,9 @@ internal static partial class MLDsaEngine
         sponge.Squeeze(signBytes);
 
         Span<byte> candidate = stackalloc byte[1];
-        var signIndex = 0;
+        int signIndex = 0;
 
-        for (var i = N - parameters.Tau; i < N; i++)
+        for (int i = N - parameters.Tau; i < N; i++)
         {
             int j;
             do
@@ -163,7 +163,7 @@ internal static partial class MLDsaEngine
             }
             while (j > i);
 
-            var sign = (signBytes[signIndex >> 3] >> (signIndex & 7)) & 1;
+            int sign = (signBytes[signIndex >> 3] >> (signIndex & 7)) & 1;
             signIndex++;
 
             destination[i] = destination[j];

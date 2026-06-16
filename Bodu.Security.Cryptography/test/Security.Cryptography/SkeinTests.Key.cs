@@ -38,7 +38,7 @@ public abstract partial class SkeinTests<TTest, TAlgorithm, TVariant>
     [TestMethod]
     public void Key_WhenReassignedFromMacToEmpty_ShouldRestorePlainHashOutput()
     {
-        var input = Enumerable.Range(0, 64).Select(i => (byte)i).ToArray();
+        byte[] input = Enumerable.Range(0, 64).Select(i => (byte)i).ToArray();
 
         byte[] plainHash;
         using (var plain = new TAlgorithm())
@@ -48,7 +48,7 @@ public abstract partial class SkeinTests<TTest, TAlgorithm, TVariant>
         _ = skein.ComputeHash(input);
 
         skein.Key = [];
-        var reverted = skein.ComputeHash(input);
+        byte[] reverted = skein.ComputeHash(input);
 
         CollectionAssert.AreEqual(plainHash, reverted,
             "Reassigning Key to an empty array must restore the canonical plain-hash digest.");

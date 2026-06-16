@@ -31,7 +31,7 @@ public sealed class BlockCipherModeTransformOverlapTests
     {
         using var mode = new CbcModeTransform(CreateCipher(), CreateIv());
 
-        var buffer = new byte[BlockSizeBytes * 4];
+        byte[] buffer = new byte[BlockSizeBytes * 4];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
@@ -48,7 +48,7 @@ public sealed class BlockCipherModeTransformOverlapTests
     {
         using var mode = new EcbModeTransform(CreateCipher());
 
-        var buffer = new byte[BlockSizeBytes * 4];
+        byte[] buffer = new byte[BlockSizeBytes * 4];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
@@ -65,7 +65,7 @@ public sealed class BlockCipherModeTransformOverlapTests
     {
         using var mode = new CtrModeTransform(CreateCipher(), CreateIv());
 
-        var buffer = new byte[BlockSizeBytes * 4];
+        byte[] buffer = new byte[BlockSizeBytes * 4];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
@@ -82,7 +82,7 @@ public sealed class BlockCipherModeTransformOverlapTests
     {
         using var mode = new CfbModeTransform(CreateCipher(), CreateIv());
 
-        var buffer = new byte[BlockSizeBytes * 4];
+        byte[] buffer = new byte[BlockSizeBytes * 4];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
@@ -99,7 +99,7 @@ public sealed class BlockCipherModeTransformOverlapTests
     {
         using var mode = new OfbModeTransform(CreateCipher(), CreateIv());
 
-        var buffer = new byte[BlockSizeBytes * 4];
+        byte[] buffer = new byte[BlockSizeBytes * 4];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
@@ -116,7 +116,7 @@ public sealed class BlockCipherModeTransformOverlapTests
     {
         using var mode = new CtsModeTransform(CreateCipher(), CreateIv());
 
-        var buffer = new byte[BlockSizeBytes * 4];
+        byte[] buffer = new byte[BlockSizeBytes * 4];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {

@@ -56,18 +56,18 @@ public sealed class Iso10126Padding
     {
         CryptographyThrowHelper.ThrowIfNotPositiveMultipleOf(blockSize, 8);
 
-        var size = blockSize / 8;
-        var paddingLength = size - (input.Length % size);
+        int size = blockSize / 8;
+        int paddingLength = size - (input.Length % size);
         if (paddingLength == 0)
             paddingLength = size;
 
-        var result = new byte[input.Length + paddingLength];
+        byte[] result = new byte[input.Length + paddingLength];
         input.CopyTo(result);
 
         // Fill the interior pad region with random bytes, then overwrite the final byte
         // with the pad length. paddingLength - 1 can be zero (when paddingLength == 1),
         // in which case the interior region is empty and only the length byte is written.
-        var interiorLength = paddingLength - 1;
+        int interiorLength = paddingLength - 1;
         if (interiorLength > 0)
         {
             Span<byte> interior = result.AsSpan(input.Length, interiorLength);
@@ -96,12 +96,12 @@ public sealed class Iso10126Padding
     {
         CryptographyThrowHelper.ThrowIfNotPositiveMultipleOf(blockSize, 8);
 
-        var size = blockSize / 8;
+        int size = blockSize / 8;
 
         if (input.Length == 0 || input.Length % size != 0)
             CryptographyHelper.ThrowInvalidPaddedSequence("ISO 10126", nameof(input));
 
-        var length = input.Length;
+        int length = input.Length;
         int padLen = input[length - 1];
 
         // Only the trailing length byte can be validated; interior pad bytes are random.

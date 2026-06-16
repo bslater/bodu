@@ -201,7 +201,7 @@ public sealed class IniReader
 
         if (line[0] == '[')
         {
-            var closeBracket = line.IndexOf(']');
+            int closeBracket = line.IndexOf(']');
 
             if (closeBracket < 0)
                 Ini.ThrowMalformedSectionHeader(_lineNumber);
@@ -219,8 +219,8 @@ public sealed class IniReader
         if (_inGlobal && !_options.AllowGlobalSection)
             Ini.ThrowGlobalKeyDisallowed(_lineNumber);
 
-        var sepIdx = -1;
-        for (var i = 0; i < line.Length; i++)
+        int sepIdx = -1;
+        for (int i = 0; i < line.Length; i++)
         {
             if (line[i] is '=' or ':')
             {

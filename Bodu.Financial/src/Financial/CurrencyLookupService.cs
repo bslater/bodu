@@ -160,7 +160,7 @@ public sealed class CurrencyLookupService
                 Append(index, info.Symbol, info);
             if (!string.IsNullOrEmpty(info.InternationalSymbol))
                 Append(index, info.InternationalSymbol, info);
-            foreach (var symbol in info.AlternativeSymbols)
+            foreach (string symbol in info.AlternativeSymbols)
             {
                 if (!string.IsNullOrEmpty(symbol))
                     Append(index, symbol, info);
@@ -179,7 +179,7 @@ public sealed class CurrencyLookupService
         Dictionary<string, List<CurrencyInfo>> index = new(StringComparer.Ordinal);
         foreach (CurrencyInfo info in CurrencyRegistry.All)
         {
-            foreach (var region in info.RegionCodes)
+            foreach (string region in info.RegionCodes)
             {
                 if (!string.IsNullOrEmpty(region))
                     Append(index, region, info);

@@ -41,8 +41,8 @@ public static partial class DateOnlyExtensions
         ThrowHelper.ThrowIfEnumValueIsUndefined(dayOfWeek);
         ThrowHelper.ThrowIfEnumValueIsUndefined(definition);
 
-        (var year, var quarter) = GetQuarterAndYearFromDate(definition, referenceDate: date);
-        var days = ComputeQuarterStartDayNumber(year, quarter, GetQuarterDefinition(definition));
+        (int year, int quarter) = GetQuarterAndYearFromDate(definition, referenceDate: date);
+        int days = ComputeQuarterStartDayNumber(year, quarter, GetQuarterDefinition(definition));
         days += (dayOfWeek - DateOnlyExtensions.GetDayOfWeekFromDayNumber(days) + 7) % 7;
         return DateOnly.FromDayNumber(days);
     }
@@ -82,7 +82,7 @@ public static partial class DateOnlyExtensions
         ThrowHelper.ThrowIfOutOfRange(quarter, 1, 4);
         ThrowHelper.ThrowIfEnumValueIsUndefined(dayOfWeek);
 
-        var days = ComputeQuarterStartDayNumber(year, quarter, GetQuarterDefinition(definition));
+        int days = ComputeQuarterStartDayNumber(year, quarter, GetQuarterDefinition(definition));
         days += (dayOfWeek - DateOnlyExtensions.GetDayOfWeekFromDayNumber(days) + 7) % 7;
         return DateOnly.FromDayNumber(days);
     }

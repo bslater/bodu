@@ -24,7 +24,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
 
         Assert.ThrowsExactly<ObjectDisposedException>(() =>
         {
-            var _ = algorithm.Tweak;
+            byte[] _ = algorithm.Tweak;
         });
     }
 
@@ -35,12 +35,12 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     public void Tweak_WhenGenerated_ShouldMatchInternalTweakValue()
     {
         using TAlgorithm algorithm = CreateAlgorithm();
-        var size = algorithm.LegalTweakSizes[0].MinSize;
+        int size = algorithm.LegalTweakSizes[0].MinSize;
 
         algorithm.TweakSize = size;
         algorithm.GenerateTweak();
 
-        var tweak = algorithm.Tweak;
+        byte[] tweak = algorithm.Tweak;
         Assert.AreEqual(size / 8, tweak.Length);
         Assert.IsTrue(tweak.Any(b => b != 0), "Generated tweak should not be all zero.");
     }
@@ -55,8 +55,8 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     {
         using TAlgorithm algorithm = CreateAlgorithm();
 
-        var tweak1 = algorithm.Tweak;
-        var tweak2 = algorithm.Tweak;
+        byte[] tweak1 = algorithm.Tweak;
+        byte[] tweak2 = algorithm.Tweak;
 
         CollectionAssert.AreEqual(tweak1, tweak2);
     }
@@ -69,7 +69,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     {
         using TAlgorithm algorithm = CreateAlgorithm();
 
-        var tweak = algorithm.Tweak;
+        byte[] tweak = algorithm.Tweak;
         Assert.AreEqual(algorithm.TweakSize / 8, tweak.Length);
         Assert.IsTrue(tweak.Any(b => b != 0), "Generated tweak should not be all zero.");
     }
@@ -81,14 +81,14 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     public void Tweak_WhenNotReassigned_ShouldRemainUnchanged()
     {
         using TAlgorithm algorithm = CreateAlgorithm();
-        var size = algorithm.LegalTweakSizes[0].MinSize;
-        var expected = Enumerable.Repeat((byte)0xAA, size / 8).ToArray();
+        int size = algorithm.LegalTweakSizes[0].MinSize;
+        byte[] expected = Enumerable.Repeat((byte)0xAA, size / 8).ToArray();
 
         algorithm.TweakSize = size;
         algorithm.Tweak = expected;
 
-        var first = algorithm.Tweak;
-        var second = algorithm.Tweak;
+        byte[] first = algorithm.Tweak;
+        byte[] second = algorithm.Tweak;
 
         CollectionAssert.AreEqual(first, second);
     }
@@ -100,12 +100,12 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     public void Tweak_WhenSet_ShouldReturnExpectedValue()
     {
         using TAlgorithm algorithm = CreateAlgorithm();
-        var size = algorithm.LegalTweakSizes[0].MinSize;
-        var expected = Enumerable.Range(0, size / 8).Select(i => (byte)(i + 1)).ToArray();
+        int size = algorithm.LegalTweakSizes[0].MinSize;
+        byte[] expected = Enumerable.Range(0, size / 8).Select(i => (byte)(i + 1)).ToArray();
 
         algorithm.TweakSize = size;
         algorithm.Tweak = expected;
-        var actual = algorithm.Tweak;
+        byte[] actual = algorithm.Tweak;
 
         CollectionAssert.AreEqual(expected, actual);
     }
@@ -164,7 +164,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
 
         using TAlgorithm algorithm = CreateAlgorithm();
 
-        var invalidTweak = new byte[tweakSize];
+        byte[] invalidTweak = new byte[tweakSize];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {

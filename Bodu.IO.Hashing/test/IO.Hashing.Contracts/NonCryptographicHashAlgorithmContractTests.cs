@@ -72,7 +72,7 @@ public abstract class NonCryptographicHashAlgorithmContractTests<TAlgorithm>
         {
             TAlgorithm algorithm = Create();
             algorithm.Append(kat.Input);
-            var actual = Convert.ToHexString(algorithm.GetHashAndReset());
+            string actual = Convert.ToHexString(algorithm.GetHashAndReset());
 
             Assert.AreEqual(
                 kat.ExpectedHex,
@@ -92,14 +92,14 @@ public abstract class NonCryptographicHashAlgorithmContractTests<TAlgorithm>
         foreach (HashStreamingKat kat in StreamingCases)
         {
             TAlgorithm streamed = Create();
-            var offset = 0;
-            foreach (var segmentSize in kat.SegmentSizes)
+            int offset = 0;
+            foreach (int segmentSize in kat.SegmentSizes)
             {
                 streamed.Append(kat.Input.AsSpan(offset, segmentSize));
                 offset += segmentSize;
             }
 
-            var actual = Convert.ToHexString(streamed.GetHashAndReset());
+            string actual = Convert.ToHexString(streamed.GetHashAndReset());
 
             Assert.AreEqual(
                 kat.ExpectedHex,
@@ -120,7 +120,7 @@ public abstract class NonCryptographicHashAlgorithmContractTests<TAlgorithm>
             return;
 
         TAlgorithm algorithm = Create();
-        var actual = Convert.ToHexString(algorithm.GetCurrentHash());
+        string actual = Convert.ToHexString(algorithm.GetCurrentHash());
 
         Assert.AreEqual(EmptyInputExpectedHex, actual, ignoreCase: true);
     }
@@ -141,8 +141,8 @@ public abstract class NonCryptographicHashAlgorithmContractTests<TAlgorithm>
         algorithm.Append(KnownAnswers[0].Input);
         algorithm.Reset();
 
-        var after = Convert.ToHexString(algorithm.GetCurrentHash());
-        var fresh = Convert.ToHexString(reference.GetCurrentHash());
+        string after = Convert.ToHexString(algorithm.GetCurrentHash());
+        string fresh = Convert.ToHexString(reference.GetCurrentHash());
 
         Assert.AreEqual(fresh, after);
     }

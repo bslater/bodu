@@ -43,7 +43,7 @@ public sealed class SchemaValidationTests
     [TestMethod]
     public void Load_WhenXmlIsNotWellFormed_ThrowsFormatException()
     {
-        var xml = NotableDateFixtures.ReadText("invalid-not-wellformed.xml");
+        string xml = NotableDateFixtures.ReadText("invalid-not-wellformed.xml");
 
         _ = Assert.ThrowsExactly<FormatException>(() =>
         {
@@ -82,7 +82,7 @@ public sealed class SchemaValidationTests
     [DataRow("invalid-override-missing-rule.xml", "BODU-CAL-OVERRIDE-RULE")]
     public void Load_WhenDocumentIsInvalid_ThrowsWithExpectedDiagnostic(string fileName, string expectedCode)
     {
-        var xml = NotableDateFixtures.ReadText(fileName);
+        string xml = NotableDateFixtures.ReadText(fileName);
 
         NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
         {

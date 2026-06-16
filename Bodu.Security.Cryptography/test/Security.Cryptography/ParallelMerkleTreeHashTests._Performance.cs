@@ -44,12 +44,12 @@ public partial class ParallelMerkleTreeHashTests
     public void Performance_WhenHashingLargeInput_ShouldCompleteWithinTimeout(
         int kilobytes, int blockSize, int fanOut)
     {
-        var data = MakeData(kilobytes * 1024);
-        var expected = ComputeAdditiveRoot(data, blockSize, fanOut);
+        byte[] data = MakeData(kilobytes * 1024);
+        byte[] expected = ComputeAdditiveRoot(data, blockSize, fanOut);
 
         var sw = Stopwatch.StartNew();
         using var hasher = new ParallelMerkleTreeHash(Factory, blockSize, fanOut);
-        var actual = hasher.ComputeHash(data);
+        byte[] actual = hasher.ComputeHash(data);
         sw.Stop();
 
         TestContext.WriteLine(
@@ -72,12 +72,12 @@ public partial class ParallelMerkleTreeHashTests
     public async Task Performance_WhenHashingLargeStreamAsync_ShouldCompleteWithinTimeout(
         int kilobytes, int blockSize, int fanOut)
     {
-        var data = MakeData(kilobytes * 1024);
-        var expected = ComputeAdditiveRoot(data, blockSize, fanOut);
+        byte[] data = MakeData(kilobytes * 1024);
+        byte[] expected = ComputeAdditiveRoot(data, blockSize, fanOut);
 
         var sw = Stopwatch.StartNew();
         using var hasher = new ParallelMerkleTreeHash(Factory, blockSize, fanOut);
-        var actual = await hasher.ComputeHashAsync(new MemoryStream(data));
+        byte[] actual = await hasher.ComputeHashAsync(new MemoryStream(data));
         sw.Stop();
 
         TestContext.WriteLine(
@@ -104,15 +104,15 @@ public partial class ParallelMerkleTreeHashTests
     public void Performance_WhenManySequentialInstances_ShouldRemainCorrectAndFinishInTime(
         int iterations, int blockSize, int fanOut, int dataLength)
     {
-        var data = MakeData(dataLength);
-        var expected = ComputeAdditiveRoot(data, blockSize, fanOut);
+        byte[] data = MakeData(dataLength);
+        byte[] expected = ComputeAdditiveRoot(data, blockSize, fanOut);
 
         var sw = Stopwatch.StartNew();
 
-        for (var i = 0; i < iterations; i++)
+        for (int i = 0; i < iterations; i++)
         {
             using var hasher = new ParallelMerkleTreeHash(Factory, blockSize, fanOut);
-            var result = hasher.ComputeHash(data);
+            byte[] result = hasher.ComputeHash(data);
             CollectionAssert.AreEqual(expected, result,
                 $"Result mismatch on iteration {i}.");
         }
@@ -141,16 +141,16 @@ public partial class ParallelMerkleTreeHashTests
     public async Task Performance_WhenManyParallelInstances_ShouldRemainCorrectAndFinishInTime(
         int parallelism, int blockSize, int fanOut, int dataLength)
     {
-        var data = MakeData(dataLength);
-        var expected = ComputeAdditiveRoot(data, blockSize, fanOut);
+        byte[] data = MakeData(dataLength);
+        byte[] expected = ComputeAdditiveRoot(data, blockSize, fanOut);
 
         var sw = Stopwatch.StartNew();
 
         var tasks = new List<Task<byte[]>>(parallelism);
-        for (var i = 0; i < parallelism; i++)
+        for (int i = 0; i < parallelism; i++)
         {
             // Capture loop variable for closure safety.
-            var capturedData = data;
+            byte[] capturedData = data;
             tasks.Add(Task.Run(() =>
             {
                 using var hasher = new ParallelMerkleTreeHash(Factory, blockSize, fanOut);
@@ -158,7 +158,7 @@ public partial class ParallelMerkleTreeHashTests
             }));
         }
 
-        var results = await Task.WhenAll(tasks);
+        byte[][] results = await Task.WhenAll(tasks);
         sw.Stop();
 
         TestContext.WriteLine(
@@ -168,7 +168,7 @@ public partial class ParallelMerkleTreeHashTests
         Assert.IsTrue(sw.ElapsedMilliseconds < SingleOperationTimeoutMs,
             $"Parallel instance race exceeded timeout: {sw.ElapsedMilliseconds} ms");
 
-        for (var i = 0; i < results.Length; i++)
+        for (int i = 0; i < results.Length; i++)
             CollectionAssert.AreEqual(expected, results[i],
                 $"Result mismatch on parallel instance {i}.");
     }
@@ -192,12 +192,12 @@ public partial class ParallelMerkleTreeHashTests
         const int blockSize = 4;
         const int dataLength = 64;
 
-        var data = MakeData(dataLength);
-        var expected = ComputeAdditiveRoot(data, blockSize, fanOut);
+        byte[] data = MakeData(dataLength);
+        byte[] expected = ComputeAdditiveRoot(data, blockSize, fanOut);
 
         var sw = Stopwatch.StartNew();
         using var hasher = new ParallelMerkleTreeHash(Factory, blockSize, fanOut);
-        var actual = hasher.ComputeHash(data);
+        byte[] actual = hasher.ComputeHash(data);
         sw.Stop();
 
         TestContext.WriteLine($"fanOut={fanOut}: {sw.ElapsedMilliseconds} ms");

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlConfigurationTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -65,7 +65,7 @@ public sealed class TomlConfigurationTests
         IConfigurationSection server = config.GetSection("server");
         Assert.AreEqual("localhost", server["host"]);
 
-        var childKeys = server.GetChildren().Select(c => c.Key).OrderBy(k => k, StringComparer.Ordinal).ToArray();
+        string[] childKeys = server.GetChildren().Select(c => c.Key).OrderBy(k => k, StringComparer.Ordinal).ToArray();
         CollectionAssert.AreEqual(new[] { "enabled", "host", "port" }, childKeys);
     }
 

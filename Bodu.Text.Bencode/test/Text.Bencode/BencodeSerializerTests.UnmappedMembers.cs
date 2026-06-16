@@ -25,7 +25,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenUnmappedKeyAndDefaultHandling_ShouldSkip()
     {
-        var bytes = Encoding.Latin1.GetBytes("d4:Name1:n7:unknowni1ee");
+        byte[] bytes = Encoding.Latin1.GetBytes("d4:Name1:n7:unknowni1ee");
 
         var model = BencodeSerializer.Deserialize<PlainNameModel>(bytes);
 
@@ -40,7 +40,7 @@ public partial class BencodeSerializerTests
     public void Deserialize_WhenUnmappedKeyAndOptionsDisallow_ShouldThrowBencodeSerializationException()
     {
         var options = new BencodeSerializerOptions { UnmappedMemberHandling = BencodeUnmappedMemberHandling.Disallow };
-        var bytes = Encoding.Latin1.GetBytes("d4:Name1:n7:unknowni1ee");
+        byte[] bytes = Encoding.Latin1.GetBytes("d4:Name1:n7:unknowni1ee");
 
         var ex = Assert.ThrowsExactly<BencodeSerializationException>(() =>
         {
@@ -59,7 +59,7 @@ public partial class BencodeSerializerTests
     public void Deserialize_WhenAllKeysMappedAndOptionsDisallow_ShouldNotThrow()
     {
         var options = new BencodeSerializerOptions { UnmappedMemberHandling = BencodeUnmappedMemberHandling.Disallow };
-        var bytes = Encoding.Latin1.GetBytes("d4:Name1:ne");
+        byte[] bytes = Encoding.Latin1.GetBytes("d4:Name1:ne");
 
         var model = BencodeSerializer.Deserialize<PlainNameModel>(bytes, options);
 
@@ -74,7 +74,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenAttributeDisallowsAndOptionsDefault_ShouldThrowBencodeSerializationException()
     {
-        var bytes = Encoding.Latin1.GetBytes("d4:Name1:n7:unknowni1ee");
+        byte[] bytes = Encoding.Latin1.GetBytes("d4:Name1:n7:unknowni1ee");
 
         var ex = Assert.ThrowsExactly<BencodeSerializationException>(() =>
         {
@@ -94,7 +94,7 @@ public partial class BencodeSerializerTests
     public void Deserialize_WhenAttributeSkipsAndOptionsDisallow_ShouldSkip()
     {
         var options = new BencodeSerializerOptions { UnmappedMemberHandling = BencodeUnmappedMemberHandling.Disallow };
-        var bytes = Encoding.Latin1.GetBytes("d4:Name1:n7:unknowni1ee");
+        byte[] bytes = Encoding.Latin1.GetBytes("d4:Name1:n7:unknowni1ee");
 
         var model = BencodeSerializer.Deserialize<SkipAttributeModel>(bytes, options);
 
@@ -109,7 +109,7 @@ public partial class BencodeSerializerTests
     public void Deserialize_WhenUnmappedKeyDisallowed_ShouldReportKeyAndTypeInMessage()
     {
         var options = new BencodeSerializerOptions { UnmappedMemberHandling = BencodeUnmappedMemberHandling.Disallow };
-        var bytes = Encoding.Latin1.GetBytes("d7:unknowni1ee");
+        byte[] bytes = Encoding.Latin1.GetBytes("d7:unknowni1ee");
 
         var ex = Assert.ThrowsExactly<BencodeSerializationException>(() =>
         {

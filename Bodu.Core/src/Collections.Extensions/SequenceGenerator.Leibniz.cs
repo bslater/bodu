@@ -67,9 +67,9 @@ public static partial class SequenceGenerator
         ThrowHelper.ThrowIfLessThan(max, 0);
         ThrowHelper.ThrowIfGreaterThanOther(min, max);
 
-        for (var n = 0; ; n++)
+        for (int n = 0; ; n++)
         {
-            var term = Math.Pow(-1, n) / ((2 * n) + 1);
+            double term = Math.Pow(-1, n) / ((2 * n) + 1);
 
             if (Math.Abs(term) < min)
                 continue;

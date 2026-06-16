@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base64Tests.Coverage.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -16,7 +16,7 @@ public partial class Base64Tests
     [TestMethod]
     public void DecodeFromUtf8_WhenSourceEmpty_ShouldReturnDone()
     {
-        OperationStatus status = Base64.DecodeFromUtf8(ReadOnlySpan<byte>.Empty, Span<byte>.Empty, out var consumed, out var written);
+        OperationStatus status = Base64.DecodeFromUtf8(ReadOnlySpan<byte>.Empty, Span<byte>.Empty, out int consumed, out int written);
 
         Assert.AreEqual((OperationStatus.Done, 0, 0), (status, consumed, written));
     }
@@ -27,7 +27,7 @@ public partial class Base64Tests
     [TestMethod]
     public void FromBase64String_WhenSourceEmpty_ShouldReturnDone()
     {
-        OperationStatus status = Base64.FromBase64String(ReadOnlySpan<char>.Empty, Span<byte>.Empty, out var consumed, out var written);
+        OperationStatus status = Base64.FromBase64String(ReadOnlySpan<char>.Empty, Span<byte>.Empty, out int consumed, out int written);
 
         Assert.AreEqual((OperationStatus.Done, 0, 0), (status, consumed, written));
     }
@@ -38,7 +38,7 @@ public partial class Base64Tests
     [TestMethod]
     public void TryEncodeToUtf8_WhenSourceEmpty_ShouldReturnTrueAndWriteNothing()
     {
-        var encoded = Base64.TryEncodeToUtf8(ReadOnlySpan<byte>.Empty, Span<byte>.Empty, out var written);
+        bool encoded = Base64.TryEncodeToUtf8(ReadOnlySpan<byte>.Empty, Span<byte>.Empty, out int written);
 
         Assert.IsTrue(encoded);
         Assert.AreEqual(0, written);
@@ -53,7 +53,7 @@ public partial class Base64Tests
         Span<byte> destination = stackalloc byte[3];
 
         OperationStatus status = Base64.DecodeFromUtf8(
-            "TW Fu"u8, destination, out _, out var written, Base64Variant.Standard, BaseFormatStyles.IgnoreWhitespace);
+            "TW Fu"u8, destination, out _, out int written, Base64Variant.Standard, BaseFormatStyles.IgnoreWhitespace);
 
         Assert.AreEqual((OperationStatus.Done, 3), (status, written));
     }
@@ -80,7 +80,7 @@ public partial class Base64Tests
     [TestMethod]
     public void FromBase64String_WhenDecodedShorterThanEstimate_ShouldTrim()
     {
-        var bytes = Base64.FromBase64String("TQ=="u8);
+        byte[] bytes = Base64.FromBase64String("TQ=="u8);
 
         Assert.AreEqual(1, bytes.Length);
     }
@@ -93,7 +93,7 @@ public partial class Base64Tests
     {
         ArrayBufferWriter<char> writer = new();
 
-        var written = Base64.Encode(ReadOnlySpan<byte>.Empty, writer);
+        int written = Base64.Encode(ReadOnlySpan<byte>.Empty, writer);
 
         Assert.AreEqual((0, 0), (written, writer.WrittenCount));
     }
@@ -106,7 +106,7 @@ public partial class Base64Tests
     {
         ArrayBufferWriter<byte> writer = new();
 
-        var written = Base64.EncodeToUtf8("Man"u8, writer);
+        int written = Base64.EncodeToUtf8("Man"u8, writer);
 
         Assert.AreEqual("TWFu", System.Text.Encoding.ASCII.GetString(writer.WrittenSpan));
         Assert.AreEqual(4, written);

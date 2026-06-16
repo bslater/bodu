@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FinancialJsonConverterGuardsTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -35,7 +35,7 @@ public class FinancialJsonConverterGuardsTests
     /// <param name="allowComments"><see langword="true" /> to surface comment tokens to the converter.</param>
     private static void AssertReadThrowsJsonException<T>(JsonConverter<T> converter, string json, bool isFinalBlock = true, bool allowComments = false)
     {
-        var utf8 = Encoding.UTF8.GetBytes(json);
+        byte[] utf8 = Encoding.UTF8.GetBytes(json);
         var readerOptions = new JsonReaderOptions
         {
             CommentHandling = allowComments ? JsonCommentHandling.Allow : JsonCommentHandling.Disallow,
@@ -44,7 +44,7 @@ public class FinancialJsonConverterGuardsTests
         var reader = new Utf8JsonReader(utf8, isFinalBlock, new JsonReaderState(readerOptions));
         Assert.IsTrue(reader.Read(), "Expected the fragment to begin with a readable token.");
 
-        var threw = false;
+        bool threw = false;
         try
         {
             _ = converter.Read(ref reader, typeof(T), s_options);

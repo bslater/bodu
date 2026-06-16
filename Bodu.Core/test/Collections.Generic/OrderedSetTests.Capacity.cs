@@ -50,7 +50,7 @@ public partial class OrderedSetTests
     {
         var sut = new OrderedSet<int>();
 
-        var reported = sut.EnsureCapacity(128);
+        int reported = sut.EnsureCapacity(128);
 
         Assert.IsGreaterThanOrEqualTo(128, reported);
         Assert.IsGreaterThanOrEqualTo(128, sut.Capacity);
@@ -64,9 +64,9 @@ public partial class OrderedSetTests
     public void EnsureCapacity_WhenSmallerCapacityRequested_ShouldNotShrink()
     {
         var sut = new OrderedSet<int>(64);
-        var capacityBefore = sut.Capacity;
+        int capacityBefore = sut.Capacity;
 
-        var reported = sut.EnsureCapacity(4);
+        int reported = sut.EnsureCapacity(4);
 
         Assert.AreEqual(capacityBefore, sut.Capacity);
         Assert.AreEqual(capacityBefore, reported);

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="PriorityFallbackStrategyTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -29,7 +29,7 @@ public sealed class PriorityFallbackStrategyTests
             Named("Second", ("USD", "AUD", D1, 1.6m)),
         };
 
-        var ok = PriorityFallbackStrategy.Instance.TryAggregate("USD", "AUD", D1, ExchangeRateLookupOptions.Exact, candidates, out ExchangeRateLookupResult result);
+        bool ok = PriorityFallbackStrategy.Instance.TryAggregate("USD", "AUD", D1, ExchangeRateLookupOptions.Exact, candidates, out ExchangeRateLookupResult result);
 
         Assert.IsTrue(ok);
         Assert.AreEqual("First", result.Rate.Provider);
@@ -47,7 +47,7 @@ public sealed class PriorityFallbackStrategyTests
             Named("Second", ("USD", "AUD", D1, 1.6m)),
         };
 
-        var ok = PriorityFallbackStrategy.Instance.TryAggregate("USD", "AUD", D1, ExchangeRateLookupOptions.Exact, candidates, out ExchangeRateLookupResult result);
+        bool ok = PriorityFallbackStrategy.Instance.TryAggregate("USD", "AUD", D1, ExchangeRateLookupOptions.Exact, candidates, out ExchangeRateLookupResult result);
 
         Assert.IsTrue(ok);
         Assert.AreEqual("Second", result.Rate.Provider);

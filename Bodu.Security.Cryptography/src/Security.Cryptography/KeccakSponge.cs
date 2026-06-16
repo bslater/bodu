@@ -109,7 +109,7 @@ internal struct KeccakSponge
         if (_squeezing) throw new InvalidOperationException(CryptoResourceStrings.Crypt_Invalid_XofSqueezeAfterAbsorb);
 
         Span<ulong> state = _state;
-        for (var i = 0; i < data.Length; i++)
+        for (int i = 0; i < data.Length; i++)
         {
             state[_position >> 3] ^= (ulong)data[i] << (8 * (_position & 7));
             _position++;
@@ -142,7 +142,7 @@ internal struct KeccakSponge
             _squeezing = true;
         }
 
-        for (var i = 0; i < destination.Length; i++)
+        for (int i = 0; i < destination.Length; i++)
         {
             if (_position == _rateBytes)
             {

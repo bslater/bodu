@@ -24,8 +24,8 @@ public partial class NumericExtensionsTests
     [DataRow(int.MinValue)]
     public void GetBytes_WhenBigEndianRequested_ForInt_ShouldProduceExactReversalOfLittleEndian(int value)
     {
-        var le = value.GetBytes(asBigEndian: false);
-        var be = value.GetBytes(asBigEndian: true);
+        byte[] le = value.GetBytes(asBigEndian: false);
+        byte[] be = value.GetBytes(asBigEndian: true);
         Array.Reverse(le);
         CollectionAssert.AreEqual(le, be);
     }
@@ -94,7 +94,7 @@ public partial class NumericExtensionsTests
         if (!BitConverter.IsLittleEndian)
             return; // Skip: on a big-endian system GetBytes(LE) and GetBytes(BE) differ differently.
 
-        var expected = BitConverter.GetBytes(value);
+        byte[] expected = BitConverter.GetBytes(value);
         Array.Reverse(expected);
 
         CollectionAssert.AreEqual(expected, value.GetBytes(asBigEndian: true));
@@ -127,7 +127,7 @@ public partial class NumericExtensionsTests
     [DataRow(1.0)]
     public void GetBytes_WhenValueIsEightByteType_ShouldReturnEightBytes(object value)
     {
-        var length = value switch
+        int length = value switch
         {
             long l => l.GetBytes().Length,
             ulong u => u.GetBytes().Length,
@@ -150,12 +150,12 @@ public partial class NumericExtensionsTests
     [DataRow(float.NaN)]
     public void GetBytes_WhenValueIsFloat_AndBigEndianRequested_ShouldReturnReversedBytes(float value)
     {
-        var leBytes = BitConverter.GetBytes(value);
+        byte[] leBytes = BitConverter.GetBytes(value);
 
         if (!BitConverter.IsLittleEndian)
             return; // Skip: on a big-endian system GetBytes(LE) and GetBytes(BE) differ differently.
 
-        var expected = (byte[])leBytes.Clone();
+        byte[] expected = (byte[])leBytes.Clone();
         Array.Reverse(expected);
 
         CollectionAssert.AreEqual(expected, value.GetBytes(asBigEndian: true));
@@ -192,7 +192,7 @@ public partial class NumericExtensionsTests
     [DataRow(1.0f)]
     public void GetBytes_WhenValueIsFourByteType_ShouldReturnFourBytes(object value)
     {
-        var length = value switch
+        int length = value switch
         {
             int i => i.GetBytes().Length,
             uint u => u.GetBytes().Length,
@@ -337,7 +337,7 @@ public partial class NumericExtensionsTests
     [DataRow((ushort)1)]
     public void GetBytes_WhenValueIsTwoByteType_ShouldReturnTwoBytes(object value)
     {
-        var length = value switch
+        int length = value switch
         {
             short s => s.GetBytes().Length,
             ushort u => u.GetBytes().Length,

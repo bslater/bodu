@@ -219,7 +219,7 @@ public partial class Blake2sTests
     [TestMethod]
     public void Ctor_WhenHashSizeIsUnsupported_ShouldThrowExactly()
     {
-        var hashSize = 300;
+        int hashSize = 300;
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -244,7 +244,7 @@ public partial class Blake2sTests
         if (variant != Blake2sVariant.Blake2s_256)
             yield break;
 
-        var key = Enumerable.Range(0, Blake2s.MaxKeySize / 8).Select(i => (byte)i).ToArray();
+        byte[] key = Enumerable.Range(0, Blake2s.MaxKeySize / 8).Select(i => (byte)i).ToArray();
 
         // (name, input-length, expected-hex) — all use the same 32-byte sequential key.
         (string Name, int Length, string Hex)[] entries =
@@ -260,7 +260,7 @@ public partial class Blake2sTests
             ("KAT-65", 65, "21FE0CEB0052BE7FB0F004187CACD7DE67FA6EB0938D927677F2398C132317A8"),
         ];
 
-        foreach ((var name, var length, var hex) in entries)
+        foreach ((string? name, int length, string? hex) in entries)
         {
             yield return new KnownAnswerTest
             {

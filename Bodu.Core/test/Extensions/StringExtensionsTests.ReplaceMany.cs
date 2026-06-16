@@ -21,7 +21,7 @@ public partial class StringExtensionsTests
             ["{role}"] = "admin",
         };
 
-        var actual = "Hi {name}, your role is {role}.".ReplaceMany(replacements);
+        string actual = "Hi {name}, your role is {role}.".ReplaceMany(replacements);
 
         Assert.AreEqual("Hi Alice, your role is admin.", actual);
     }
@@ -33,9 +33,9 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void ReplaceMany_WhenDictionaryIsEmpty_ShouldReturnSameInstance()
     {
-        var value = "hello";
+        string value = "hello";
 
-        var actual = value.ReplaceMany(new Dictionary<string, string>());
+        string actual = value.ReplaceMany(new Dictionary<string, string>());
 
         Assert.AreSame(value, actual);
     }
@@ -53,7 +53,7 @@ public partial class StringExtensionsTests
             ["b"] = "c",
         };
 
-        var actual = "a".ReplaceMany(replacements);
+        string actual = "a".ReplaceMany(replacements);
 
         Assert.AreEqual("c", actual);
     }

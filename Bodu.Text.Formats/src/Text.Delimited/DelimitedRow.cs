@@ -112,7 +112,7 @@ public sealed class DelimitedRow
 
             ThrowHelper.ThrowIfNull(header);
 
-            if (!_headerIndex.TryGetValue(header, out var index))
+            if (!_headerIndex.TryGetValue(header, out int index))
                 ThrowHeaderNotFound(header);
 
             return index < Fields.Count ? Fields[index] : string.Empty;
@@ -185,7 +185,7 @@ public sealed class DelimitedRow
     public T GetValue<T>(string header)
         where T : ISpanParsable<T>
     {
-        var field = this[header];
+        string field = this[header];
         return T.Parse(field.AsSpan(), CultureInfo.InvariantCulture);
     }
 
@@ -206,13 +206,13 @@ public sealed class DelimitedRow
     public bool TryGetValue<T>(string header, [MaybeNullWhen(false)] out T value)
         where T : ISpanParsable<T>
     {
-        if (_headerIndex is null || header is null || !_headerIndex.TryGetValue(header, out var index))
+        if (_headerIndex is null || header is null || !_headerIndex.TryGetValue(header, out int index))
         {
             value = default;
             return false;
         }
 
-        var field = index < Fields.Count ? Fields[index] : string.Empty;
+        string field = index < Fields.Count ? Fields[index] : string.Empty;
         return T.TryParse(field.AsSpan(), CultureInfo.InvariantCulture, out value);
     }
 

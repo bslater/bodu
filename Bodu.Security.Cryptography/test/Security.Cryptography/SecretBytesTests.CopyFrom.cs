@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SecretBytesTests.CopyFrom.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -15,7 +15,7 @@ public sealed partial class SecretBytesTests
     [TestMethod]
     public void CopyFrom_WhenSourceMutatedAfterwards_ShouldNotAffectSecret()
     {
-        var source = new byte[] { 0x01, 0x02, 0x03 };
+        byte[] source = new byte[] { 0x01, 0x02, 0x03 };
         using var secret = SecretBytes.CopyFrom(source);
 
         source[0] = 0xFF;
@@ -42,12 +42,12 @@ public sealed partial class SecretBytesTests
     [TestMethod]
     public void CopyFrom_WhenInputIsNonEmpty_ShouldExposeCopiedBytes()
     {
-        var source = new byte[] { 0x0A, 0x0B, 0x0C };
+        byte[] source = new byte[] { 0x0A, 0x0B, 0x0C };
         using var secret = SecretBytes.CopyFrom(source);
 
         Assert.IsTrue(secret.AsSpan().SequenceEqual(source));
 
-        var copy = secret.ToArray();
+        byte[] copy = secret.ToArray();
         CollectionAssert.AreEqual(source, copy);
 
         copy[0] = 0xFF;

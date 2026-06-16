@@ -19,7 +19,7 @@ public abstract partial class KeyedDeferredFinalBlockHashAlgorithmTests<TTest, T
     {
         using TAlgorithm sut = CreateAlgorithm();
 
-        var key = sut.Key;
+        byte[] key = sut.Key;
 
         Assert.IsNotNull(key);
         Assert.AreEqual(0, key.Length);
@@ -65,7 +65,7 @@ public abstract partial class KeyedDeferredFinalBlockHashAlgorithmTests<TTest, T
     public void Key_WhenSetToMaximumSizeKey_ShouldNotThrow()
     {
         using TAlgorithm sut = CreateAlgorithm();
-        var key = new byte[sut.MaximumKeySize / 8];
+        byte[] key = new byte[sut.MaximumKeySize / 8];
 
         sut.Key = key;
 
@@ -80,11 +80,11 @@ public abstract partial class KeyedDeferredFinalBlockHashAlgorithmTests<TTest, T
     public void Key_WhenGetterInvoked_ShouldReturnDefensiveCopy()
     {
         using TAlgorithm sut = CreateAlgorithm();
-        var keySize = Math.Max(1, sut.MaximumKeySize / 16);
-        var key = Enumerable.Range(1, keySize).Select(i => (byte)i).ToArray();
+        int keySize = Math.Max(1, sut.MaximumKeySize / 16);
+        byte[] key = Enumerable.Range(1, keySize).Select(i => (byte)i).ToArray();
         sut.Key = key;
 
-        var retrieved = sut.Key;
+        byte[] retrieved = sut.Key;
         retrieved[0] = 0xFF;
 
         Assert.AreNotEqual(0xFF, sut.Key[0]);
@@ -98,11 +98,11 @@ public abstract partial class KeyedDeferredFinalBlockHashAlgorithmTests<TTest, T
     public void Key_WhenOriginalArrayMutatedAfterSetting_ShouldNotAffectInternalKey()
     {
         using TAlgorithm sut = CreateAlgorithm();
-        var keySize = Math.Max(1, sut.MaximumKeySize / 16);
-        var key = Enumerable.Range(1, keySize).Select(i => (byte)i).ToArray();
+        int keySize = Math.Max(1, sut.MaximumKeySize / 16);
+        byte[] key = Enumerable.Range(1, keySize).Select(i => (byte)i).ToArray();
         sut.Key = key;
 
-        var snapshot = sut.Key;
+        byte[] snapshot = sut.Key;
         key[0] = 0xFF;
 
         CollectionAssert.AreEqual(snapshot, sut.Key);
@@ -132,7 +132,7 @@ public abstract partial class KeyedDeferredFinalBlockHashAlgorithmTests<TTest, T
     public void Key_WhenSetAfterHashingBegins_ShouldThrowExactly()
     {
         using TAlgorithm sut = CreateAlgorithm();
-        var input = new byte[32];
+        byte[] input = new byte[32];
         sut.TransformBlock(input, 0, input.Length, null, 0);
 
         Assert.ThrowsExactly<CryptographicUnexpectedOperationException>(() =>

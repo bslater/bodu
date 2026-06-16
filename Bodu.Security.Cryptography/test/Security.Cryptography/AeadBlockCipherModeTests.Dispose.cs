@@ -65,8 +65,8 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
         TTransform transform = MakeTransform();
         transform.Dispose();
 
-        var plaintext = new byte[ExpectedBlockSize];
-        var output = new byte[plaintext.Length + 16];
+        byte[] plaintext = new byte[ExpectedBlockSize];
+        byte[] output = new byte[plaintext.Length + 16];
 
         Assert.ThrowsExactly<ObjectDisposedException>(() =>
             transform.Encrypt(plaintext, output));
@@ -82,8 +82,8 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
         TTransform transform = MakeTransform();
         transform.Dispose();
 
-        var ciphertextWithTag = new byte[ExpectedBlockSize + 16];
-        var output = new byte[ExpectedBlockSize];
+        byte[] ciphertextWithTag = new byte[ExpectedBlockSize + 16];
+        byte[] output = new byte[ExpectedBlockSize];
 
         Assert.ThrowsExactly<ObjectDisposedException>(() =>
             transform.Decrypt(ciphertextWithTag, output));
@@ -129,13 +129,13 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
 
         transform.ProcessAssociatedData([0x01, 0x02, 0x03, 0x04]);
 
-        var plaintext = new byte[ExpectedBlockSize];
-        var output = new byte[plaintext.Length + (transform.TagSize / 8)];
+        byte[] plaintext = new byte[ExpectedBlockSize];
+        byte[] output = new byte[plaintext.Length + (transform.TagSize / 8)];
         _ = transform.Encrypt(plaintext, output);
 
         transform.Dispose();
 
-        var label = $"Field '{field.DeclaringType?.Name}.{field.Name}' was not cleared by Dispose.";
+        string label = $"Field '{field.DeclaringType?.Name}.{field.Name}' was not cleared by Dispose.";
 
         Assert.IsTrue(
             TestHelpers.AssertFieldValueIsNullOrDefault(field, transform),

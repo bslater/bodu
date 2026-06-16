@@ -31,7 +31,7 @@ public partial class PooledBufferBuilderTests
     {
         using var builder = new PooledBufferBuilder<int>(16);
         builder.AppendRange(Enumerable.Range(1, 10));
-        var capacityBeforeReset = builder.Capacity;
+        int capacityBeforeReset = builder.Capacity;
 
         builder.Reset();
 

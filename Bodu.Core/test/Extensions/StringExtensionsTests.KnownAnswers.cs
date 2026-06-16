@@ -49,7 +49,7 @@ public partial class StringExtensionsTests
             NormalizeDiacritics = kat.NormalizeDiacritics,
         };
 
-        var actual = kat.Operation switch
+        string actual = kat.Operation switch
         {
             StringFormattingOperation.TitleCase => kat.Input.ToTitleCase(casing),
             StringFormattingOperation.SentenceCase => kat.Input.ToSentenceCase(casing),

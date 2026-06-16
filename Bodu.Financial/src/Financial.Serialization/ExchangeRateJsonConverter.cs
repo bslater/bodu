@@ -83,18 +83,18 @@ public sealed class ExchangeRateJsonConverter
         DateOnly? date = null;
         decimal? rate = null;
         string? provider = null;
-        var isInverted = false;
+        bool isInverted = false;
         decimal? observedRate = null;
         DateTimeOffset? fetchedAtUtc = null;
-        var seenFrom = false;
-        var seenTo = false;
-        var seenPair = false;
-        var seenDate = false;
-        var seenRate = false;
-        var seenProvider = false;
-        var seenIsInverted = false;
-        var seenObservedRate = false;
-        var seenFetchedAtUtc = false;
+        bool seenFrom = false;
+        bool seenTo = false;
+        bool seenPair = false;
+        bool seenDate = false;
+        bool seenRate = false;
+        bool seenProvider = false;
+        bool seenIsInverted = false;
+        bool seenObservedRate = false;
+        bool seenFetchedAtUtc = false;
 
         while (reader.Read())
         {
@@ -104,7 +104,7 @@ public sealed class ExchangeRateJsonConverter
             if (reader.TokenType != JsonTokenType.PropertyName)
                 throw new JsonException(FinancialResourceStrings.Json_Invalid_ExpectedPropertyName);
 
-            var propertyName = reader.GetString()!;
+            string propertyName = reader.GetString()!;
             if (!reader.Read())
                 throw new JsonException(FinancialResourceStrings.Json_Invalid_UnexpectedEnd);
 
@@ -248,8 +248,8 @@ public sealed class ExchangeRateJsonConverter
         if (reader.TokenType != JsonTokenType.String)
             throw new JsonException(FinancialResourceStrings.Json_Invalid_ExpectedCompactString_ExchangeRatePair);
 
-        var text = reader.GetString()!;
-        var slashIndex = text.IndexOf('/');
+        string text = reader.GetString()!;
+        int slashIndex = text.IndexOf('/');
         return slashIndex <= 0 || slashIndex >= text.Length - 1 || text.LastIndexOf('/') != slashIndex
             ? throw new JsonException(
                 string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Json_Invalid_CompactExchangeRatePairForm, text))
@@ -284,8 +284,8 @@ public sealed class ExchangeRateJsonConverter
 
         if (reader.TokenType == JsonTokenType.String)
         {
-            var text = reader.GetString();
-            if (text is not null && decimal.TryParse(text, NumberStyles.Number, CultureInfo.InvariantCulture, out var parsed))
+            string? text = reader.GetString();
+            if (text is not null && decimal.TryParse(text, NumberStyles.Number, CultureInfo.InvariantCulture, out decimal parsed))
                 return parsed;
         }
 
@@ -305,7 +305,7 @@ public sealed class ExchangeRateJsonConverter
             throw new JsonException(
                 string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Json_Invalid_PropertyMustBeDateString, propertyName));
 
-        var text = reader.GetString();
+        string? text = reader.GetString();
         return text is not null
             && DateOnly.TryParseExact(text, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateOnly parsed)
             ? parsed
@@ -328,7 +328,7 @@ public sealed class ExchangeRateJsonConverter
             throw new JsonException(
                 string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Json_Invalid_PropertyMustBeDateString, propertyName));
 
-        var text = reader.GetString();
+        string? text = reader.GetString();
         return text is not null
             && DateTimeOffset.TryParse(text, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out DateTimeOffset parsed)
             ? parsed

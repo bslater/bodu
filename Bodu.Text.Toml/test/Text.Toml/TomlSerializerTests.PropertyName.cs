@@ -96,7 +96,7 @@ public partial class TomlSerializerTests
         var options = new TomlSerializerOptions { PropertyNamingPolicy = TomlNamingPolicy.CamelCase };
         var original = new ExplicitNameModel { FirstName = "a", LastName = "b" };
 
-        var text = TomlSerializer.Serialize(original, options);
+        string text = TomlSerializer.Serialize(original, options);
 
         // FirstName follows the camel-case policy; LastName keeps its explicit wire name "surname".
         Assert.AreEqual("firstName = \"a\"\nsurname = \"b\"\n", text);

@@ -71,7 +71,7 @@ public abstract class DebugViewContractTests<TCollection>
         Type proxyType = ResolveProxyType(proxyAttribute, typeof(TCollection));
         TCollection collection = Create();
 
-        var proxy = Activator.CreateInstance(proxyType, [collection]);
+        object? proxy = Activator.CreateInstance(proxyType, [collection]);
         Assert.IsNotNull(proxy);
     }
 
@@ -80,7 +80,7 @@ public abstract class DebugViewContractTests<TCollection>
         if (attribute.Target is not null)
             return attribute.Target;
 
-        var typeName = attribute.ProxyTypeName
+        string typeName = attribute.ProxyTypeName
             ?? throw new AssertFailedException("DebuggerTypeProxyAttribute carried neither a Target nor a ProxyTypeName.");
 
         // The proxy may be a nested type expressed as "Outer+Proxy"; try the owner's assembly first.
@@ -91,7 +91,7 @@ public abstract class DebugViewContractTests<TCollection>
         {
             // The framework's AssemblyQualifiedName is sometimes truncated for generic proxies; try the
             // declaring-type-relative lookup as a fallback.
-            var shortName = typeName[(ownerType.Namespace!.Length + 1)..];
+            string shortName = typeName[(ownerType.Namespace!.Length + 1)..];
             resolved = ownerType.Assembly.GetType($"{ownerType.Namespace}.{shortName}", throwOnError: false);
         }
 

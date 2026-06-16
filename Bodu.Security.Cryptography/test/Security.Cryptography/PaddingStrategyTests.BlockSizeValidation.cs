@@ -42,7 +42,7 @@ public abstract partial class PaddingStrategyTests<TPadding>
     public void Pad_WhenBlockSizeIsZero_ShouldThrowExactly()
     {
         TPadding padding = CreatePadding();
-        var input = new byte[BlockSize];
+        byte[] input = new byte[BlockSize];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
@@ -62,7 +62,7 @@ public abstract partial class PaddingStrategyTests<TPadding>
     public void Pad_WhenBlockSizeIsNegative_ShouldThrowExactly(int blockSize)
     {
         TPadding padding = CreatePadding();
-        var input = new byte[BlockSize];
+        byte[] input = new byte[BlockSize];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
@@ -86,7 +86,7 @@ public abstract partial class PaddingStrategyTests<TPadding>
         }
 
         TPadding padding = CreatePadding();
-        var input = new byte[BlockSize];
+        byte[] input = new byte[BlockSize];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
@@ -112,7 +112,7 @@ public abstract partial class PaddingStrategyTests<TPadding>
         }
 
         TPadding padding = CreatePadding();
-        var input = new byte[BlockSize];
+        byte[] input = new byte[BlockSize];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
@@ -134,7 +134,7 @@ public abstract partial class PaddingStrategyTests<TPadding>
     public void Pad_WhenBlockSizeIsNotMultipleOfEight_ShouldThrowExactly(int blockSize)
     {
         TPadding padding = CreatePadding();
-        var input = new byte[BlockSize];
+        byte[] input = new byte[BlockSize];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
@@ -161,7 +161,7 @@ public abstract partial class PaddingStrategyTests<TPadding>
         }
 
         TPadding padding = CreatePadding();
-        var input = new byte[BlockSize];
+        byte[] input = new byte[BlockSize];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {

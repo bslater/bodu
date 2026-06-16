@@ -41,7 +41,7 @@ public static partial class ThrowHelper
         if (array is null)
             throw new ArgumentNullException(paramName);
 
-        foreach (var item in array)
+        foreach (object? item in array)
         {
             if (item is null) continue;
 

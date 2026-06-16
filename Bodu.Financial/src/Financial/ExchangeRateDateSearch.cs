@@ -52,8 +52,8 @@ internal static class ExchangeRateDateSearch
         int next,
         out int candidate)
     {
-        var hasPrevious = previous >= 0;
-        var hasNext = next < dayNumbers.Length;
+        bool hasPrevious = previous >= 0;
+        bool hasNext = next < dayNumbers.Length;
 
         switch (resolution)
         {
@@ -125,8 +125,8 @@ internal static class ExchangeRateDateSearch
             return true;
         }
 
-        var previousDistance = requestedDayNumber - dayNumbers[previous];
-        var nextDistance = dayNumbers[next] - requestedDayNumber;
+        int previousDistance = requestedDayNumber - dayNumbers[previous];
+        int nextDistance = dayNumbers[next] - requestedDayNumber;
 
         if (previousDistance < nextDistance)
         {

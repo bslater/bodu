@@ -20,7 +20,7 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
         using TAlgorithm cipher = CreateAlgorithm();
         KeySizes[] legal = cipher.LegalKeySizes;
 
-        var covered = false;
+        bool covered = false;
         foreach (KeySizes size in legal)
         {
             if (cipher.KeySize < size.MinSize || cipher.KeySize > size.MaxSize)
@@ -78,7 +78,7 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
 
         foreach (KeySizes keySize in cipher.LegalKeySizes)
         {
-            for (var size = keySize.MinSize; size <= keySize.MaxSize; size += keySize.SkipSize == 0 ? int.MaxValue : keySize.SkipSize)
+            for (int size = keySize.MinSize; size <= keySize.MaxSize; size += keySize.SkipSize == 0 ? int.MaxValue : keySize.SkipSize)
             {
                 Assert.IsTrue(uniqueSizes.Add(size), $"Duplicate or overlapping key size detected: {size}.");
             }

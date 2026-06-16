@@ -62,7 +62,7 @@ public static partial class StringExtensions
         if (words.Count == 0) return string.Empty;
 
         CultureInfo culture = options.Culture;
-        for (var i = 0; i < words.Count; i++) words[i] = words[i].ToLower(culture);
+        for (int i = 0; i < words.Count; i++) words[i] = words[i].ToLower(culture);
         return string.Join(separator, words);
     }
 }

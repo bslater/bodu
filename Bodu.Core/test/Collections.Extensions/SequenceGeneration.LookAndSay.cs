@@ -32,7 +32,7 @@ public class LookAndSayTests
     [TestMethod]
     public void LookAndSay_WhenCountIsOne_ShouldReturnSeedOnly()
     {
-        var actual = SequenceGenerator.LookAndSay(1).ToArray();
+        string[] actual = SequenceGenerator.LookAndSay(1).ToArray();
         CollectionAssert.AreEqual(new[] { "1" }, actual);
     }
 
@@ -42,7 +42,7 @@ public class LookAndSayTests
     [TestMethod]
     public void LookAndSay_WhenCountIsSix_ShouldReturnCanonicalPrefix()
     {
-        var actual = SequenceGenerator.LookAndSay(6).ToArray();
+        string[] actual = SequenceGenerator.LookAndSay(6).ToArray();
         CollectionAssert.AreEqual(new[] { "1", "11", "21", "1211", "111221", "312211" }, actual);
     }
 
@@ -53,8 +53,8 @@ public class LookAndSayTests
     [TestMethod]
     public void LookAndSay_WhenEnumerated_ShouldProduceNonDecreasingLengths()
     {
-        var actual = SequenceGenerator.LookAndSay(10).ToArray();
-        for (var i = 1; i < actual.Length; i++)
+        string[] actual = SequenceGenerator.LookAndSay(10).ToArray();
+        for (int i = 1; i < actual.Length; i++)
         {
             Assert.IsGreaterThanOrEqualTo(actual[i - 1].Length, actual[i].Length,
                 $"Term at index {i} ({actual[i].Length}) is shorter than the previous term ({actual[i - 1].Length}).");
@@ -67,9 +67,9 @@ public class LookAndSayTests
     [TestMethod]
     public void LookAndSay_WhenEnumerated_ShouldYieldOnlyDigitCharacters()
     {
-        foreach (var term in SequenceGenerator.LookAndSay(8))
+        foreach (string term in SequenceGenerator.LookAndSay(8))
         {
-            foreach (var ch in term)
+            foreach (char ch in term)
                 Assert.IsTrue(ch is >= '0' and <= '9', $"Term '{term}' contained a non-digit character '{ch}'.");
         }
     }

@@ -25,7 +25,7 @@ internal sealed class CharConverter
                 string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Op_Invalid_ExpectedString, reader.TokenType));
         }
 
-        var text = reader.GetString();
+        string text = reader.GetString();
         return text.Length == 1
             ? text[0]
             : throw new TomlSerializationException(TomlResourceStrings.Op_Invalid_CharLength);

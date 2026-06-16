@@ -133,7 +133,7 @@ public sealed class AggregatingExchangeRateProvider
             throw new ArgumentException(CachingResourceStrings.Arg_Invalid_ProvidersEmpty, nameof(children));
 
         _byName = new Dictionary<string, IDatedExchangeRateProvider>(snapshot.Length, StringComparer.Ordinal);
-        for (var i = 0; i < snapshot.Length; i++)
+        for (int i = 0; i < snapshot.Length; i++)
         {
             NamedDatedExchangeRateProvider child = snapshot[i];
 
@@ -231,7 +231,7 @@ public sealed class AggregatingExchangeRateProvider
 
         if (_logger.IsEnabled(_options.RouteSelectedLogLevel))
         {
-            var providerOrder = FormatNames(candidates);
+            string providerOrder = FormatNames(candidates);
             Log.RouteSelected(_logger, _options.RouteSelectedLogLevel, fromIsoCode, toIsoCode, providerOrder);
         }
 
@@ -261,7 +261,7 @@ public sealed class AggregatingExchangeRateProvider
 
         if (_logger.IsEnabled(_options.RouteSelectedLogLevel))
         {
-            var providerOrder = FormatNames(candidates);
+            string providerOrder = FormatNames(candidates);
             Log.RouteSelected(_logger, _options.RouteSelectedLogLevel, fromIsoCode, toIsoCode, providerOrder);
         }
 
@@ -285,7 +285,7 @@ public sealed class AggregatingExchangeRateProvider
 
         if (_logger.IsEnabled(_options.RouteSelectedLogLevel))
         {
-            var providerOrder = FormatNames(candidates);
+            string providerOrder = FormatNames(candidates);
             Log.RouteSelected(_logger, _options.RouteSelectedLogLevel, fromIsoCode, toIsoCode, providerOrder);
         }
 
@@ -327,7 +327,7 @@ public sealed class AggregatingExchangeRateProvider
     private NamedDatedExchangeRateProvider[] ResolveNames(IReadOnlyList<string> names)
     {
         var resolved = new NamedDatedExchangeRateProvider[names.Count];
-        for (var i = 0; i < names.Count; i++)
+        for (int i = 0; i < names.Count; i++)
             resolved[i] = new NamedDatedExchangeRateProvider(names[i], _byName[names[i]]);
 
         return resolved;
@@ -342,13 +342,13 @@ public sealed class AggregatingExchangeRateProvider
     {
         if (_options.DefaultProviderOrder is not null)
         {
-            foreach (var name in _options.DefaultProviderOrder)
+            foreach (string name in _options.DefaultProviderOrder)
                 ThrowIfUnknownChild(name, optionsParamName);
         }
 
         foreach (KeyValuePair<ExchangeRatePair, ExchangeRatePairRoute> entry in _options.Routes)
         {
-            foreach (var name in entry.Value.ProviderOrder)
+            foreach (string name in entry.Value.ProviderOrder)
                 ThrowIfUnknownChild(name, optionsParamName);
         }
     }
@@ -376,8 +376,8 @@ public sealed class AggregatingExchangeRateProvider
     /// <returns>The comma-separated candidate names.</returns>
     private static string FormatNames(NamedDatedExchangeRateProvider[] candidates)
     {
-        var names = new string[candidates.Length];
-        for (var i = 0; i < candidates.Length; i++)
+        string[] names = new string[candidates.Length];
+        for (int i = 0; i < candidates.Length; i++)
             names[i] = candidates[i].Name;
 
         return string.Join(", ", names);

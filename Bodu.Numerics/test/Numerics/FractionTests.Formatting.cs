@@ -74,7 +74,7 @@ public partial class FractionTests
     {
         Span<char> buffer = stackalloc char[16];
 
-        var formatted = new Fraction<int>(3, 4).TryFormat(buffer, out var written, default, null);
+        bool formatted = new Fraction<int>(3, 4).TryFormat(buffer, out int written, default, null);
 
         Assert.IsTrue(formatted);
         Assert.AreEqual("3/4", new string(buffer[..written]));
@@ -92,7 +92,7 @@ public partial class FractionTests
     {
         var value = new Fraction<int>(7, 4);
 
-        var text = value.ToString(format, CultureInfo.InvariantCulture);
+        string text = value.ToString(format, CultureInfo.InvariantCulture);
 
         Assert.AreEqual(value, Fraction<int>.Parse(text, CultureInfo.InvariantCulture));
     }
@@ -201,7 +201,7 @@ public partial class FractionTests
     {
         Span<char> destination = stackalloc char[1];
 
-        Assert.IsFalse(new Fraction<int>(123, 457).TryFormat(destination, out var charsWritten, [], CultureInfo.InvariantCulture));
+        Assert.IsFalse(new Fraction<int>(123, 457).TryFormat(destination, out int charsWritten, [], CultureInfo.InvariantCulture));
         Assert.AreEqual(0, charsWritten);
     }
 }

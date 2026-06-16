@@ -96,7 +96,7 @@ public sealed class StrategyResolutionWeekdayNearKnownAnswerTests
     /// <param name="year">The Gregorian year to scan.</param>
     private static void AssertNoOccurrenceInYear(string notableDateId, int year)
     {
-        var count = s_service
+        int count = s_service
             .Resolve(new DateRange(new DateOnly(year, 1, 1), new DateOnly(year, 12, 31)), "XX")
             .Count(r => r.NotableDateId == notableDateId);
 

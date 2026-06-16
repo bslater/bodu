@@ -47,7 +47,7 @@ public sealed class ImportResolutionTests
     private static Func<string, string?> Resolver(params (string Name, string Content)[] resources)
     {
         Dictionary<string, string> map = resources.ToDictionary(r => r.Name, r => r.Content, StringComparer.Ordinal);
-        return name => map.TryGetValue(name, out var content) ? content : null;
+        return name => map.TryGetValue(name, out string? content) ? content : null;
     }
 
     /// <summary>

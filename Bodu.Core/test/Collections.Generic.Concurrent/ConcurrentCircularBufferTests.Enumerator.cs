@@ -20,7 +20,7 @@ public partial class ConcurrentCircularBufferTests
         buffer.Enqueue(null);
         buffer.Enqueue("B");
 
-        var items = buffer.ToArray();
+        string[] items = buffer.ToArray();
         CollectionAssert.AreEqual(new[] { "A", null, "B" }, items);
     }
 
@@ -31,7 +31,7 @@ public partial class ConcurrentCircularBufferTests
     public void Enumerator_WhenBufferIsEmpty_ForeachShouldNotIterate()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(4);
-        var count = 0;
+        int count = 0;
         foreach (TestItem _ in buffer) count++;
         Assert.AreEqual(0, count);
     }
@@ -54,7 +54,7 @@ public partial class ConcurrentCircularBufferTests
     public void Enumerator_WhenConcurrentDequeueOccurs_ShouldYieldStableSnapshot()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(10);
-        for (var i = 0; i < 10; i++) buffer.Enqueue(new TestItem(i));
+        for (int i = 0; i < 10; i++) buffer.Enqueue(new TestItem(i));
 
         var reader = Task.Run(() =>
         {
@@ -64,7 +64,7 @@ public partial class ConcurrentCircularBufferTests
 
         var remover = Task.Run(() =>
         {
-            for (var i = 0; i < 10; i++)
+            for (int i = 0; i < 10; i++)
                 buffer.TryDequeue(out TestItem? _);
         });
 
@@ -78,7 +78,7 @@ public partial class ConcurrentCircularBufferTests
     public void Enumerator_WhenConcurrentMutationsOccur_ShouldYieldPartialConsistentView()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(100);
-        for (var i = 0; i < 100; i++) buffer.Enqueue(new TestItem(i));
+        for (int i = 0; i < 100; i++) buffer.Enqueue(new TestItem(i));
 
         var enumeratorTask = Task.Run(() =>
         {
@@ -88,7 +88,7 @@ public partial class ConcurrentCircularBufferTests
 
         var mutateTask = Task.Run(() =>
         {
-            for (var i = 100; i < 200; i++)
+            for (int i = 100; i < 200; i++)
             {
                 buffer.TryDequeue(out TestItem? _);
                 buffer.TryEnqueue(new TestItem(i));
@@ -187,7 +187,7 @@ public partial class ConcurrentCircularBufferTests
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(20);
 
-        for (var i = 0; i < 10; i++)
+        for (int i = 0; i < 10; i++)
             buffer.Enqueue(new TestItem(i));
 
         var reader = Task.Run(() =>
@@ -198,7 +198,7 @@ public partial class ConcurrentCircularBufferTests
 
         var writer = Task.Run(() =>
         {
-            for (var i = 10; i < 30; i++)
+            for (int i = 10; i < 30; i++)
                 buffer.TryEnqueue(new TestItem(i));
         });
 
@@ -218,7 +218,7 @@ public partial class ConcurrentCircularBufferTests
         buffer.Dequeue();       // removes 1
         buffer.Enqueue(new TestItem(4)); // wraparound
 
-        var result = buffer.ToArray().Select(x => x.Value).ToArray();
+        int[] result = buffer.ToArray().Select(x => x.Value).ToArray();
         CollectionAssert.AreEqual(new[] { 2, 3, 4 }, result);
     }
 

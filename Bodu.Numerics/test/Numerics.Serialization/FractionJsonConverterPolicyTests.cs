@@ -34,7 +34,7 @@ public class FractionJsonConverterPolicyTests
     {
         var fraction = new Fraction<int>(3, 4);
 
-        var json = JsonSerializer.Serialize(fraction);
+        string json = JsonSerializer.Serialize(fraction);
 
         Assert.AreEqual("{\"numerator\":3,\"denominator\":4}", json);
     }
@@ -62,7 +62,7 @@ public class FractionJsonConverterPolicyTests
         var original = new Fraction<int>(numerator, denominator);
         JsonSerializerOptions options = Options(NumericsJsonPolicy.Strict);
 
-        var json = JsonSerializer.Serialize(original, options);
+        string json = JsonSerializer.Serialize(original, options);
         Fraction<int> recovered = JsonSerializer.Deserialize<Fraction<int>>(json, options);
 
         Assert.AreEqual(original, recovered);
@@ -76,7 +76,7 @@ public class FractionJsonConverterPolicyTests
     {
         var fraction = new Fraction<int>(3, 4);
 
-        var json = JsonSerializer.Serialize(fraction, Options(NumericsJsonPolicy.Compact));
+        string json = JsonSerializer.Serialize(fraction, Options(NumericsJsonPolicy.Compact));
 
         Assert.AreEqual("\"3/4\"", json);
     }
@@ -90,7 +90,7 @@ public class FractionJsonConverterPolicyTests
         var original = new Fraction<int>(-7, 8);
         JsonSerializerOptions options = Options(NumericsJsonPolicy.Compact);
 
-        var json = JsonSerializer.Serialize(original, options);
+        string json = JsonSerializer.Serialize(original, options);
         Fraction<int> recovered = JsonSerializer.Deserialize<Fraction<int>>(json, options);
 
         Assert.AreEqual(original, recovered);
@@ -102,7 +102,7 @@ public class FractionJsonConverterPolicyTests
     [TestMethod]
     public void CompactPolicy_WhenReadingObjectForm_ShouldThrowJsonException()
     {
-        var json = "{\"numerator\":3,\"denominator\":4}";
+        string json = "{\"numerator\":3,\"denominator\":4}";
 
         Assert.ThrowsExactly<JsonException>(() =>
         {
@@ -116,7 +116,7 @@ public class FractionJsonConverterPolicyTests
     [TestMethod]
     public void CompactPolicy_WhenReadingNumericToken_ShouldThrowJsonException()
     {
-        var json = "123";
+        string json = "123";
 
         Assert.ThrowsExactly<JsonException>(() =>
         {
@@ -130,7 +130,7 @@ public class FractionJsonConverterPolicyTests
     [TestMethod]
     public void CompactPolicy_WhenReadingMalformedString_ShouldThrowJsonException()
     {
-        var json = "\"not a fraction\"";
+        string json = "\"not a fraction\"";
 
         Assert.ThrowsExactly<JsonException>(() =>
         {
@@ -144,7 +144,7 @@ public class FractionJsonConverterPolicyTests
     [TestMethod]
     public void StrictPolicy_WhenReadingCompactString_ShouldThrowJsonException()
     {
-        var json = "\"3/4\"";
+        string json = "\"3/4\"";
 
         Assert.ThrowsExactly<JsonException>(() =>
         {
@@ -158,7 +158,7 @@ public class FractionJsonConverterPolicyTests
     [TestMethod]
     public void StrictPolicy_WhenReadingDuplicateNumerator_ShouldThrowJsonException()
     {
-        var json = "{\"numerator\":3,\"numerator\":5,\"denominator\":4}";
+        string json = "{\"numerator\":3,\"numerator\":5,\"denominator\":4}";
 
         Assert.ThrowsExactly<JsonException>(() =>
         {
@@ -172,7 +172,7 @@ public class FractionJsonConverterPolicyTests
     [TestMethod]
     public void StrictPolicy_WhenReadingMissingDenominator_ShouldThrowJsonException()
     {
-        var json = "{\"numerator\":3}";
+        string json = "{\"numerator\":3}";
 
         Assert.ThrowsExactly<JsonException>(() =>
         {
@@ -186,7 +186,7 @@ public class FractionJsonConverterPolicyTests
     [TestMethod]
     public void StrictPolicy_WhenReadingZeroDenominator_ShouldThrowJsonException()
     {
-        var json = "{\"numerator\":3,\"denominator\":0}";
+        string json = "{\"numerator\":3,\"denominator\":0}";
 
         Assert.ThrowsExactly<JsonException>(() =>
         {
@@ -200,7 +200,7 @@ public class FractionJsonConverterPolicyTests
     [TestMethod]
     public void StrictPolicy_WhenPropertyNamesUsePascalCase_ShouldStillRead()
     {
-        var json = "{\"Numerator\":3,\"Denominator\":4}";
+        string json = "{\"Numerator\":3,\"Denominator\":4}";
 
         Fraction<int> result = JsonSerializer.Deserialize<Fraction<int>>(json, Options(NumericsJsonPolicy.Strict));
 
@@ -214,7 +214,7 @@ public class FractionJsonConverterPolicyTests
     [TestMethod]
     public void StrictPolicy_WhenPropertyValuesAreStrings_ShouldStillRead()
     {
-        var json = "{\"numerator\":\"3\",\"denominator\":\"4\"}";
+        string json = "{\"numerator\":\"3\",\"denominator\":\"4\"}";
 
         Fraction<int> result = JsonSerializer.Deserialize<Fraction<int>>(json, Options(NumericsJsonPolicy.Strict));
 
@@ -227,7 +227,7 @@ public class FractionJsonConverterPolicyTests
     [TestMethod]
     public void StrictPolicy_WhenObjectCarriesUnknownProperty_ShouldIgnoreIt()
     {
-        var json = "{\"numerator\":3,\"denominator\":4,\"unused\":\"x\"}";
+        string json = "{\"numerator\":3,\"denominator\":4,\"unused\":\"x\"}";
 
         Fraction<int> result = JsonSerializer.Deserialize<Fraction<int>>(json, Options(NumericsJsonPolicy.Strict));
 
@@ -240,7 +240,7 @@ public class FractionJsonConverterPolicyTests
     [TestMethod]
     public void LenientPolicy_WhenReadingCompactString_ShouldSucceed()
     {
-        var json = "\"3/4\"";
+        string json = "\"3/4\"";
 
         Fraction<int> result = JsonSerializer.Deserialize<Fraction<int>>(json, Options(NumericsJsonPolicy.Lenient));
 
@@ -253,7 +253,7 @@ public class FractionJsonConverterPolicyTests
     [TestMethod]
     public void LenientPolicy_WhenReadingCanonicalObject_ShouldSucceed()
     {
-        var json = "{\"numerator\":3,\"denominator\":4}";
+        string json = "{\"numerator\":3,\"denominator\":4}";
 
         Fraction<int> result = JsonSerializer.Deserialize<Fraction<int>>(json, Options(NumericsJsonPolicy.Lenient));
 
@@ -270,7 +270,7 @@ public class FractionJsonConverterPolicyTests
         var original = new Fraction<BigInteger>(BigInteger.Pow(10, 30), 3);
         JsonSerializerOptions options = Options(NumericsJsonPolicy.Strict);
 
-        var json = JsonSerializer.Serialize(original, options);
+        string json = JsonSerializer.Serialize(original, options);
         Fraction<BigInteger> recovered = JsonSerializer.Deserialize<Fraction<BigInteger>>(json, options);
 
         Assert.AreEqual(original, recovered);
@@ -285,7 +285,7 @@ public class FractionJsonConverterPolicyTests
         var original = new Fraction<BigInteger>(BigInteger.Pow(10, 30), 3);
         JsonSerializerOptions options = Options(NumericsJsonPolicy.Compact);
 
-        var json = JsonSerializer.Serialize(original, options);
+        string json = JsonSerializer.Serialize(original, options);
         Fraction<BigInteger> recovered = JsonSerializer.Deserialize<Fraction<BigInteger>>(json, options);
 
         Assert.AreEqual(original, recovered);

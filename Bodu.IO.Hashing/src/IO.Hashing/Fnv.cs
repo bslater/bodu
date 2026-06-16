@@ -173,9 +173,9 @@ public abstract class Fnv<TSelf>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void AppendFnv1(ReadOnlySpan<byte> source)
     {
-        var hash = _workingHash;
-        var prime = _prime;
-        for (var i = 0; i < source.Length; i++)
+        ulong hash = _workingHash;
+        ulong prime = _prime;
+        for (int i = 0; i < source.Length; i++)
         {
             hash *= prime;
             hash ^= source[i];
@@ -192,9 +192,9 @@ public abstract class Fnv<TSelf>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void AppendFnv1a(ReadOnlySpan<byte> source)
     {
-        var hash = _workingHash;
-        var prime = _prime;
-        for (var i = 0; i < source.Length; i++)
+        ulong hash = _workingHash;
+        ulong prime = _prime;
+        for (int i = 0; i < source.Length; i++)
         {
             hash ^= source[i];
             hash *= prime;

@@ -96,7 +96,7 @@ public partial class EvictingDictionaryTests
         var dictionary = new EvictingDictionary<string, int>(1);
         dictionary["A"] = 1;
 
-        var array = new object[1, 1];
+        object[,] array = new object[1, 1];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -139,8 +139,8 @@ public partial class EvictingDictionaryTests
     public void ICollection_SyncRoot_WhenCalledMultipleTimes_ShouldReturnSameInstance()
     {
         var dictionary = new EvictingDictionary<string, int>(3);
-        var sync1 = ((ICollection)dictionary).SyncRoot;
-        var sync2 = ((ICollection)dictionary).SyncRoot;
+        object sync1 = ((ICollection)dictionary).SyncRoot;
+        object sync2 = ((ICollection)dictionary).SyncRoot;
 
         Assert.IsNotNull(sync1);
         Assert.AreSame(sync1, sync2);

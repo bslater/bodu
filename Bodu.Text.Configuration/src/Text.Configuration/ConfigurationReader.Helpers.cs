@@ -77,7 +77,7 @@ internal sealed partial class ConfigurationReader
     /// <returns>The zero-based index, or <c>-1</c> when the line is blank.</returns>
     private static int FindFirstNonWhitespace(string line)
     {
-        for (var i = 0; i < line.Length; i++)
+        for (int i = 0; i < line.Length; i++)
         {
             if (!char.IsWhiteSpace(line[i]))
                 return i;
@@ -97,7 +97,7 @@ internal sealed partial class ConfigurationReader
     /// <returns>The index of the last <c>]</c>, or <c>-1</c> when none is found.</returns>
     private static int FindLastClosingBracket(string line, int firstNonWs)
     {
-        for (var i = line.Length - 1; i > firstNonWs; i--)
+        for (int i = line.Length - 1; i > firstNonWs; i--)
         {
             if (line[i] == ']')
                 return i;
@@ -116,7 +116,7 @@ internal sealed partial class ConfigurationReader
     /// <returns>The zero-based index, or <c>-1</c> when no unescaped occurrence is found.</returns>
     private static int FindFirstUnescaped(string line, char target, int from)
     {
-        for (var i = from; i < line.Length; i++)
+        for (int i = from; i < line.Length; i++)
         {
             if (line[i] == '\\' && i + 1 < line.Length)
             {
@@ -140,7 +140,7 @@ internal sealed partial class ConfigurationReader
     /// <returns>The trimmed substring.</returns>
     private static string TrimTrailing(string line, int firstNonWs)
     {
-        var end = line.Length - 1;
+        int end = line.Length - 1;
         while (end >= firstNonWs && char.IsWhiteSpace(line[end]))
             end--;
         return line.Substring(firstNonWs, end - firstNonWs + 1);
@@ -160,9 +160,9 @@ internal sealed partial class ConfigurationReader
         ConfigurationInlineCommentMode mode,
         int lineNumber)
     {
-        for (var i = 0; i < value.Length; i++)
+        for (int i = 0; i < value.Length; i++)
         {
-            var c = value[i];
+            char c = value[i];
             if (c == '\\' && i + 1 < value.Length)
             {
                 i++;
@@ -172,15 +172,15 @@ internal sealed partial class ConfigurationReader
             if (c is not '#' and not ';')
                 continue;
 
-            var whitespaceBefore = i > 0 && char.IsWhiteSpace(value[i - 1]);
-            var isInlineComment = mode == ConfigurationInlineCommentMode.Always
+            bool whitespaceBefore = i > 0 && char.IsWhiteSpace(value[i - 1]);
+            bool isInlineComment = mode == ConfigurationInlineCommentMode.Always
                                    || (mode == ConfigurationInlineCommentMode.WhitespaceIntroduced && whitespaceBefore);
 
             if (!isInlineComment)
                 continue;
 
-            var commentText = value[(i + 1)..];
-            var remaining = value[..i].TrimEnd();
+            string commentText = value[(i + 1)..];
+            string remaining = value[..i].TrimEnd();
             value = remaining;
             return new IniComment(c, commentText, lineNumber);
         }

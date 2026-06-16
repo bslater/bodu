@@ -85,16 +85,16 @@ internal static class SolarTermCalculator
     /// <returns>The tropical ecliptic longitude in degrees, normalized to the range <c>[0, 360)</c>.</returns>
     public static double SunTropicalLongitude(DateOnly date)
     {
-        var t = (1721425.5 + date.DayNumber - J2000JulianDay) / 36525.0;
-        var meanLongitude = 280.46646 + (36000.76983 * t) + (0.0003032 * t * t);
-        var meanAnomaly = DegreesToRadians(357.52911 + (35999.05029 * t) - (0.0001537 * t * t));
+        double t = (1721425.5 + date.DayNumber - J2000JulianDay) / 36525.0;
+        double meanLongitude = 280.46646 + (36000.76983 * t) + (0.0003032 * t * t);
+        double meanAnomaly = DegreesToRadians(357.52911 + (35999.05029 * t) - (0.0001537 * t * t));
 
-        var equationOfCentre =
+        double equationOfCentre =
             ((1.914602 - (0.004817 * t) - (0.000014 * t * t)) * Math.Sin(meanAnomaly))
             + ((0.019993 - (0.000101 * t)) * Math.Sin(2.0 * meanAnomaly))
             + (0.000289 * Math.Sin(3.0 * meanAnomaly));
 
-        var longitude = (meanLongitude + equationOfCentre) % 360.0;
+        double longitude = (meanLongitude + equationOfCentre) % 360.0;
         return longitude < 0.0 ? longitude + 360.0 : longitude;
     }
 
@@ -108,18 +108,18 @@ internal static class SolarTermCalculator
     /// <returns>The Julian Ephemeris Day of the equinox.</returns>
     private static double ComputeEquinoxJulianDay(int year, bool vernal)
     {
-        var y = (year - 2000) / 1000.0;
+        double y = (year - 2000) / 1000.0;
 
-        var jde0 = vernal
+        double jde0 = vernal
             ? 2451623.80984 + (365242.37404 * y) + (0.05169 * y * y) - (0.00411 * y * y * y) - (0.00057 * y * y * y * y)
             : 2451810.21715 + (365242.01767 * y) - (0.11575 * y * y) + (0.00337 * y * y * y) + (0.00078 * y * y * y * y);
 
-        var t = (jde0 - J2000JulianDay) / 36525.0;
-        var w = DegreesToRadians((35999.373 * t) - 2.47);
-        var lambda = 1.0 + (0.0334 * Math.Cos(w)) + (0.0007 * Math.Cos(2.0 * w));
+        double t = (jde0 - J2000JulianDay) / 36525.0;
+        double w = DegreesToRadians((35999.373 * t) - 2.47);
+        double lambda = 1.0 + (0.0334 * Math.Cos(w)) + (0.0007 * Math.Cos(2.0 * w));
 
-        var s = 0.0;
-        foreach ((var amplitude, var phase, var rate) in s_correctionTerms)
+        double s = 0.0;
+        foreach ((double amplitude, double phase, double rate) in s_correctionTerms)
             s += amplitude * Math.Cos(DegreesToRadians(phase + (rate * t)));
 
         return jde0 + (0.00001 * s / lambda);

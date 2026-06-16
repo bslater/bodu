@@ -55,7 +55,7 @@ public sealed class MonitoringNonCryptographicHashAlgorithm
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<byte> source)
     {
-        foreach (var b in source)
+        foreach (byte b in source)
             _sum += b;
 
         BytesAppended += source.Length;

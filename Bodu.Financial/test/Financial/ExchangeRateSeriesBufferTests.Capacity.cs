@@ -18,7 +18,7 @@ public partial class ExchangeRateSeriesBufferTests
         ExchangeRateSeriesBuffer buffer = NewBuffer();
         const int Total = 100;
 
-        for (var i = 0; i < Total; i++)
+        for (int i = 0; i < Total; i++)
         {
             buffer.Add(1000 + i, 1m + (decimal)i / 1000m, RateParam, DateParam);
         }
@@ -26,7 +26,7 @@ public partial class ExchangeRateSeriesBufferTests
         Assert.AreEqual(Total, buffer.Count);
 
         ExchangeRateObservation[] observations = buffer.Enumerate().ToArray();
-        for (var i = 0; i < Total; i++)
+        for (int i = 0; i < Total; i++)
         {
             Assert.AreEqual(DateOnly.FromDayNumber(1000 + i), observations[i].Date);
             Assert.AreEqual(1m + (decimal)i / 1000m, observations[i].Rate);
@@ -43,7 +43,7 @@ public partial class ExchangeRateSeriesBufferTests
         ExchangeRateSeriesBuffer buffer = NewBuffer();
         const int Total = 64;
 
-        for (var i = Total - 1; i >= 0; i--)
+        for (int i = Total - 1; i >= 0; i--)
         {
             buffer.Add(1000 + i, 1m + (decimal)i / 1000m, RateParam, DateParam);
         }
@@ -51,7 +51,7 @@ public partial class ExchangeRateSeriesBufferTests
         Assert.AreEqual(Total, buffer.Count);
 
         ExchangeRateObservation[] observations = buffer.Enumerate().ToArray();
-        for (var i = 0; i < Total; i++)
+        for (int i = 0; i < Total; i++)
         {
             Assert.AreEqual(DateOnly.FromDayNumber(1000 + i), observations[i].Date);
         }
@@ -68,7 +68,7 @@ public partial class ExchangeRateSeriesBufferTests
         const int Total = 200;
 
         var batch = new ExchangeRateObservation[Total];
-        for (var i = 0; i < Total; i++)
+        for (int i = 0; i < Total; i++)
         {
             batch[i] = new ExchangeRateObservation(DateOnly.FromDayNumber(1000 + i), 1m + (decimal)i / 1000m);
         }
@@ -89,19 +89,19 @@ public partial class ExchangeRateSeriesBufferTests
     {
         ExchangeRateSeriesBuffer buffer = NewBuffer();
 
-        for (var i = 0; i < 50; i++)
+        for (int i = 0; i < 50; i++)
         {
             buffer.Add(2000 + i, 1m, RateParam, DateParam);
         }
 
-        for (var i = 0; i < 50; i += 2)
+        for (int i = 0; i < 50; i += 2)
         {
             buffer.Remove(2000 + i);
         }
 
         Assert.AreEqual(25, buffer.Count);
         ExchangeRateObservation[] observations = buffer.Enumerate().ToArray();
-        for (var i = 0; i < 25; i++)
+        for (int i = 0; i < 25; i++)
         {
             Assert.AreEqual(DateOnly.FromDayNumber(2001 + 2 * i), observations[i].Date);
         }

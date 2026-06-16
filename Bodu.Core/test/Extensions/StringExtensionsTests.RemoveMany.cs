@@ -15,7 +15,7 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void RemoveMany_WhenMultipleValuesSupplied_ShouldRemoveEach()
     {
-        var actual = "Hello, World!".RemoveMany(",", "!", "o");
+        string actual = "Hello, World!".RemoveMany(",", "!", "o");
 
         Assert.AreEqual("Hell Wrld", actual);
     }
@@ -27,9 +27,9 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void RemoveMany_WhenArrayIsEmpty_ShouldReturnSameInstance()
     {
-        var value = "hello";
+        string value = "hello";
 
-        var actual = value.RemoveMany();
+        string actual = value.RemoveMany();
 
         Assert.AreSame(value, actual);
     }

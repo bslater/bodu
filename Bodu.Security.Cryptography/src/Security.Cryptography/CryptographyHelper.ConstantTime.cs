@@ -28,8 +28,8 @@ internal static partial class CryptographyHelper
     {
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(right, left.Length);
 
-        var accumulator = 0;
-        for (var i = 0; i < left.Length; i++)
+        int accumulator = 0;
+        for (int i = 0; i < left.Length; i++)
             accumulator |= left[i] ^ right[i];
 
         return accumulator;
@@ -57,9 +57,9 @@ internal static partial class CryptographyHelper
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(destination, whenZero.Length);
 
         // (x | -x) has its sign bit set exactly when x != 0; the arithmetic shift smears it into 0 or -1.
-        var mask = (byte)((difference | -difference) >> 31);
+        byte mask = (byte)((difference | -difference) >> 31);
 
-        for (var i = 0; i < destination.Length; i++)
+        for (int i = 0; i < destination.Length; i++)
             destination[i] = (byte)((whenNonZero[i] & mask) | (whenZero[i] & (byte)~mask));
     }
 }

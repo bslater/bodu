@@ -23,7 +23,7 @@ public partial class SequenceGeneratorTests
 
         IEnumerable nonGeneric = sequence;
         var observed = new List<int>();
-        foreach (var item in nonGeneric)
+        foreach (object? item in nonGeneric)
             observed.Add((int)item);
 
         CollectionAssert.AreEqual(new[] { 10, 20, 30 }, observed);

@@ -83,7 +83,7 @@ public sealed partial class EncodingExtensionsTests
         System.Text.Encoding utf8WithBom = new System.Text.UTF8Encoding(true);
         Span<byte> destination = new byte[16];
 
-        var ok = utf8WithBom.TryWritePreamble(destination, out var written);
+        bool ok = utf8WithBom.TryWritePreamble(destination, out int written);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(utf8WithBom.Preamble.Length, written);
@@ -99,7 +99,7 @@ public sealed partial class EncodingExtensionsTests
     {
         Span<byte> destination = new byte[16];
 
-        var ok = new System.Text.UTF8Encoding(false).TryWritePreamble(destination, out var written);
+        bool ok = new System.Text.UTF8Encoding(false).TryWritePreamble(destination, out int written);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(0, written);
@@ -113,9 +113,9 @@ public sealed partial class EncodingExtensionsTests
     public void TryWritePreamble_WhenDestinationIsTooSmall_ShouldReturnFalseAndZeroBytes()
     {
         System.Text.Encoding utf8WithBom = new System.Text.UTF8Encoding(true);
-        var backing = new byte[utf8WithBom.Preamble.Length - 1];
+        byte[] backing = new byte[utf8WithBom.Preamble.Length - 1];
 
-        var ok = utf8WithBom.TryWritePreamble(backing, out var written);
+        bool ok = utf8WithBom.TryWritePreamble(backing, out int written);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0, written);
@@ -129,8 +129,8 @@ public sealed partial class EncodingExtensionsTests
     public void StartsWithPreamble_WhenBytesStartWithBom_ShouldReturnTrue()
     {
         System.Text.Encoding utf8WithBom = new System.Text.UTF8Encoding(true);
-        var bytes = utf8WithBom.GetBytes(MultiByteText);
-        var withPreamble = new byte[utf8WithBom.Preamble.Length + bytes.Length];
+        byte[] bytes = utf8WithBom.GetBytes(MultiByteText);
+        byte[] withPreamble = new byte[utf8WithBom.Preamble.Length + bytes.Length];
         utf8WithBom.Preamble.CopyTo(withPreamble);
         bytes.CopyTo(withPreamble, utf8WithBom.Preamble.Length);
 
@@ -169,8 +169,8 @@ public sealed partial class EncodingExtensionsTests
     public void StripPreamble_WhenBytesStartWithBom_ShouldReturnSpanAfterPreamble()
     {
         System.Text.Encoding utf8WithBom = new System.Text.UTF8Encoding(true);
-        var payload = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
-        var withPreamble = new byte[utf8WithBom.Preamble.Length + payload.Length];
+        byte[] payload = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
+        byte[] withPreamble = new byte[utf8WithBom.Preamble.Length + payload.Length];
         utf8WithBom.Preamble.CopyTo(withPreamble);
         payload.CopyTo(withPreamble, utf8WithBom.Preamble.Length);
 
@@ -187,7 +187,7 @@ public sealed partial class EncodingExtensionsTests
     public void StripPreamble_WhenBytesDoNotStartWithBom_ShouldReturnInputUnchanged()
     {
         System.Text.Encoding utf8WithBom = new System.Text.UTF8Encoding(true);
-        var payload = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
+        byte[] payload = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
 
         ReadOnlySpan<byte> result = utf8WithBom.StripPreamble(payload);
 
@@ -202,11 +202,11 @@ public sealed partial class EncodingExtensionsTests
     public void GetStringSkippingPreamble_WhenBytesStartWithBom_ShouldDecodeWithoutBom()
     {
         System.Text.Encoding utf8WithBom = new System.Text.UTF8Encoding(true);
-        var payload = utf8WithBom.GetPreamble()
+        byte[] payload = utf8WithBom.GetPreamble()
             .Concat(System.Text.Encoding.UTF8.GetBytes(MultiByteText))
             .ToArray();
 
-        var actual = utf8WithBom.GetStringSkippingPreamble(payload);
+        string actual = utf8WithBom.GetStringSkippingPreamble(payload);
 
         Assert.AreEqual(MultiByteText, actual);
     }
@@ -219,7 +219,7 @@ public sealed partial class EncodingExtensionsTests
     public void GetByteCountWithPreamble_WhenEncodingHasPreamble_ShouldIncludePreambleLength()
     {
         System.Text.Encoding utf8WithBom = new System.Text.UTF8Encoding(true);
-        var expected = utf8WithBom.Preamble.Length + utf8WithBom.GetByteCount(MultiByteText);
+        int expected = utf8WithBom.Preamble.Length + utf8WithBom.GetByteCount(MultiByteText);
 
         Assert.AreEqual(expected, utf8WithBom.GetByteCountWithPreamble(MultiByteText));
     }
@@ -233,9 +233,9 @@ public sealed partial class EncodingExtensionsTests
     {
         System.Text.Encoding utf8WithBom = new System.Text.UTF8Encoding(true);
 
-        var actual = utf8WithBom.GetBytesWithPreamble(MultiByteText);
+        byte[] actual = utf8WithBom.GetBytesWithPreamble(MultiByteText);
 
-        var expected = utf8WithBom.GetPreamble()
+        byte[] expected = utf8WithBom.GetPreamble()
             .Concat(System.Text.Encoding.UTF8.GetBytes(MultiByteText))
             .ToArray();
         CollectionAssert.AreEqual(expected, actual);
@@ -249,13 +249,13 @@ public sealed partial class EncodingExtensionsTests
     public void GetBytesWithPreamble_SpanOverload_WhenDestinationFits_ShouldWriteAndReturnTotal()
     {
         System.Text.Encoding utf8WithBom = new System.Text.UTF8Encoding(true);
-        var total = utf8WithBom.GetByteCountWithPreamble(MultiByteText);
+        int total = utf8WithBom.GetByteCountWithPreamble(MultiByteText);
         Span<byte> destination = new byte[total];
 
-        var written = utf8WithBom.GetBytesWithPreamble(MultiByteText, destination);
+        int written = utf8WithBom.GetBytesWithPreamble(MultiByteText, destination);
 
         Assert.AreEqual(total, written);
-        var expected = utf8WithBom.GetPreamble()
+        byte[] expected = utf8WithBom.GetPreamble()
             .Concat(System.Text.Encoding.UTF8.GetBytes(MultiByteText))
             .ToArray();
         CollectionAssert.AreEqual(expected, destination.ToArray());
@@ -269,8 +269,8 @@ public sealed partial class EncodingExtensionsTests
     public void GetBytesWithPreamble_SpanOverload_WhenDestinationIsTooSmall_ShouldThrowExactly()
     {
         System.Text.Encoding utf8WithBom = new System.Text.UTF8Encoding(true);
-        var total = utf8WithBom.GetByteCountWithPreamble(MultiByteText);
-        var backing = new byte[total - 1];
+        int total = utf8WithBom.GetByteCountWithPreamble(MultiByteText);
+        byte[] backing = new byte[total - 1];
 
         ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -293,10 +293,10 @@ public sealed partial class EncodingExtensionsTests
     public void TryGetBytesWithPreamble_ShouldRespectDestinationSize(int extra, bool expectedOk)
     {
         System.Text.Encoding utf8WithBom = new System.Text.UTF8Encoding(true);
-        var total = utf8WithBom.GetByteCountWithPreamble(MultiByteText);
-        var backing = new byte[total + extra];
+        int total = utf8WithBom.GetByteCountWithPreamble(MultiByteText);
+        byte[] backing = new byte[total + extra];
 
-        var ok = utf8WithBom.TryGetBytesWithPreamble(MultiByteText, backing, out var written);
+        bool ok = utf8WithBom.TryGetBytesWithPreamble(MultiByteText, backing, out int written);
 
         Assert.AreEqual(expectedOk, ok);
         Assert.AreEqual(expectedOk ? total : 0, written);

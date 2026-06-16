@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="UInt128Converter.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -35,7 +35,7 @@ internal sealed class UInt128Converter
                 reader.BytesConsumed);
         }
 
-        if (reader.TryGetUInt64(out var value))
+        if (reader.TryGetUInt64(out ulong value))
             return value;
 
         // The token is a negative integer; report it as an overflow of the target type, mirroring UInt64Converter.

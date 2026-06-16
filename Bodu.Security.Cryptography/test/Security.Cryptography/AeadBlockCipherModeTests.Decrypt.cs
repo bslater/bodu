@@ -21,7 +21,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     public void Decrypt_WhenInputShorterThanTag_ShouldThrowExactly()
     {
         TTransform transform = MakeTransform();
-        var tooShort = new byte[1]; // shorter than TagSize
+        byte[] tooShort = new byte[1]; // shorter than TagSize
 
         Assert.ThrowsExactly<ArgumentException>(() =>
             transform.Decrypt(tooShort, new byte[64]));
@@ -36,13 +36,13 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     public void Decrypt_WhenOutputIsTooSmall_ShouldThrowExactly()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
-        var iv = CreateInitializationVector();
+        byte[] iv = CreateInitializationVector();
 
         // Produce valid ciphertext+tag so the buffer-size check is the only failure path.
-        var plaintext = new byte[ExpectedBlockSize];
+        byte[] plaintext = new byte[ExpectedBlockSize];
 
         TTransform encTransform = CreateTransform(cipher, iv);
-        var ciphertextWithTag = new byte[plaintext.Length + (encTransform.TagSize / 8)];
+        byte[] ciphertextWithTag = new byte[plaintext.Length + (encTransform.TagSize / 8)];
 
         _ = encTransform.Encrypt(plaintext, ciphertextWithTag);
 
@@ -63,11 +63,11 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     public void Decrypt_WhenCalledTwice_ShouldThrowExactly()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
-        var iv = CreateInitializationVector();
-        var plaintext = new byte[ExpectedBlockSize];
+        byte[] iv = CreateInitializationVector();
+        byte[] plaintext = new byte[ExpectedBlockSize];
 
         TTransform encTransform = CreateTransform(cipher, (byte[])iv.Clone());
-        var buf = new byte[plaintext.Length + (encTransform.TagSize / 8)];
+        byte[] buf = new byte[plaintext.Length + (encTransform.TagSize / 8)];
         encTransform.Encrypt(plaintext, buf);
 
         TTransform decTransform = CreateTransform(cipher, (byte[])iv.Clone());
@@ -89,11 +89,11 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     public void Decrypt_WhenCiphertextTampered_ShouldThrowExactly()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
-        var iv = CreateInitializationVector();
-        var plaintext = new byte[ExpectedBlockSize];
+        byte[] iv = CreateInitializationVector();
+        byte[] plaintext = new byte[ExpectedBlockSize];
 
         TTransform encTransform = CreateTransform(cipher, iv);
-        var buf = new byte[plaintext.Length + (encTransform.TagSize / 8)];
+        byte[] buf = new byte[plaintext.Length + (encTransform.TagSize / 8)];
         encTransform.Encrypt(plaintext, buf);
 
         buf[0] ^= 0x01; // flip one bit in the ciphertext body
@@ -113,11 +113,11 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     public void Decrypt_WhenTagTampered_ShouldThrowExactly()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
-        var iv = CreateInitializationVector();
-        var plaintext = new byte[ExpectedBlockSize];
+        byte[] iv = CreateInitializationVector();
+        byte[] plaintext = new byte[ExpectedBlockSize];
 
         TTransform encTransform = CreateTransform(cipher, iv);
-        var buf = new byte[plaintext.Length + (encTransform.TagSize / 8)];
+        byte[] buf = new byte[plaintext.Length + (encTransform.TagSize / 8)];
         encTransform.Encrypt(plaintext, buf);
 
         buf[plaintext.Length] ^= 0x01; // flip one bit in the tag
@@ -144,13 +144,13 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
         }
 
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
-        var ivEnc = CreateInitializationVector();
-        var ivDec = CreateInitializationVector();
+        byte[] ivEnc = CreateInitializationVector();
+        byte[] ivDec = CreateInitializationVector();
         ivDec[0] = 0x01; // nonce differs
-        var plaintext = new byte[ExpectedBlockSize];
+        byte[] plaintext = new byte[ExpectedBlockSize];
 
         TTransform encTransform = CreateTransform(cipher, ivEnc);
-        var buf = new byte[plaintext.Length + (encTransform.TagSize / 8)];
+        byte[] buf = new byte[plaintext.Length + (encTransform.TagSize / 8)];
         encTransform.Encrypt(plaintext, buf);
 
         TTransform decTransform = CreateTransform(cipher, ivDec);
@@ -168,12 +168,12 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     public void Decrypt_WhenAadDoesNotMatch_ShouldThrowExactly()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
-        var iv = CreateInitializationVector();
-        var plaintext = new byte[ExpectedBlockSize];
+        byte[] iv = CreateInitializationVector();
+        byte[] plaintext = new byte[ExpectedBlockSize];
 
         TTransform encTransform = CreateTransform(cipher, iv);
         encTransform.ProcessAssociatedData([0x01, 0x02]);
-        var buf = new byte[plaintext.Length + (encTransform.TagSize / 8)];
+        byte[] buf = new byte[plaintext.Length + (encTransform.TagSize / 8)];
         encTransform.Encrypt(plaintext, buf);
 
         TTransform decTransform = CreateTransform(cipher, iv);
@@ -195,16 +195,16 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     public void EncryptThenDecrypt_WithNoAad_ShouldRecoverPlaintext()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
-        var iv = CreateInitializationVector();
-        var plaintext = new byte[ExpectedBlockSize * 3];
-        for (var i = 0; i < plaintext.Length; i++) plaintext[i] = (byte)i;
+        byte[] iv = CreateInitializationVector();
+        byte[] plaintext = new byte[ExpectedBlockSize * 3];
+        for (int i = 0; i < plaintext.Length; i++) plaintext[i] = (byte)i;
 
         TTransform encTransform = CreateTransform(cipher, iv);
-        var buf = new byte[plaintext.Length + (encTransform.TagSize / 8)];
+        byte[] buf = new byte[plaintext.Length + (encTransform.TagSize / 8)];
         encTransform.Encrypt(plaintext, buf);
 
         TTransform decTransform = CreateTransform(cipher, iv);
-        var recovered = new byte[plaintext.Length];
+        byte[] recovered = new byte[plaintext.Length];
         decTransform.Decrypt(buf, recovered);
 
         CollectionAssert.AreEqual(plaintext, recovered,
@@ -220,19 +220,19 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     public void EncryptThenDecrypt_WithAad_ShouldRecoverPlaintext()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
-        var iv = CreateInitializationVector();
-        var aad = new byte[] { 0xDE, 0xAD, 0xBE, 0xEF };
-        var plaintext = new byte[ExpectedBlockSize * 2];
-        for (var i = 0; i < plaintext.Length; i++) plaintext[i] = (byte)(i + 1);
+        byte[] iv = CreateInitializationVector();
+        byte[] aad = new byte[] { 0xDE, 0xAD, 0xBE, 0xEF };
+        byte[] plaintext = new byte[ExpectedBlockSize * 2];
+        for (int i = 0; i < plaintext.Length; i++) plaintext[i] = (byte)(i + 1);
 
         TTransform encTransform = CreateTransform(cipher, iv);
         encTransform.ProcessAssociatedData(aad);
-        var buf = new byte[plaintext.Length + (encTransform.TagSize / 8)];
+        byte[] buf = new byte[plaintext.Length + (encTransform.TagSize / 8)];
         encTransform.Encrypt(plaintext, buf);
 
         TTransform decTransform = CreateTransform(cipher, iv);
         decTransform.ProcessAssociatedData(aad);
-        var recovered = new byte[plaintext.Length];
+        byte[] recovered = new byte[plaintext.Length];
         decTransform.Decrypt(buf, recovered);
 
         CollectionAssert.AreEqual(plaintext, recovered,
@@ -247,13 +247,13 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     public void EncryptThenDecrypt_WithEmptyPlaintext_ShouldSucceed()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
-        var iv = CreateInitializationVector();
+        byte[] iv = CreateInitializationVector();
         TTransform encTransform = CreateTransform(cipher, iv);
-        var buf = new byte[encTransform.TagSize / 8];
+        byte[] buf = new byte[encTransform.TagSize / 8];
         encTransform.Encrypt([], buf);
 
         TTransform decTransform = CreateTransform(cipher, iv);
-        var written = decTransform.Decrypt(buf, []);
+        int written = decTransform.Decrypt(buf, []);
 
         Assert.AreEqual(0, written, "Decrypting empty ciphertext must return 0.");
     }
@@ -268,24 +268,24 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     public void EncryptThenDecrypt_WithMultiBlockAad_ShouldRecoverPlaintext()
     {
         using var cipher = new AesBlockCipherFixture(new byte[16]);
-        var iv = CreateInitializationVector();
+        byte[] iv = CreateInitializationVector();
 
         // Three full cipher blocks of AAD (48 bytes for a 16-byte block size) so the AAD-hashing
         // path iterates beyond a single block on every implementation.
-        var aad = new byte[ExpectedBlockSize * 3];
-        for (var i = 0; i < aad.Length; i++) aad[i] = (byte)(i + 0xA0);
+        byte[] aad = new byte[ExpectedBlockSize * 3];
+        for (int i = 0; i < aad.Length; i++) aad[i] = (byte)(i + 0xA0);
 
-        var plaintext = new byte[ExpectedBlockSize * 2];
-        for (var i = 0; i < plaintext.Length; i++) plaintext[i] = (byte)i;
+        byte[] plaintext = new byte[ExpectedBlockSize * 2];
+        for (int i = 0; i < plaintext.Length; i++) plaintext[i] = (byte)i;
 
         TTransform encTransform = CreateTransform(cipher, (byte[])iv.Clone());
         encTransform.ProcessAssociatedData(aad);
-        var buf = new byte[plaintext.Length + (encTransform.TagSize / 8)];
+        byte[] buf = new byte[plaintext.Length + (encTransform.TagSize / 8)];
         encTransform.Encrypt(plaintext, buf);
 
         TTransform decTransform = CreateTransform(cipher, (byte[])iv.Clone());
         decTransform.ProcessAssociatedData(aad);
-        var recovered = new byte[plaintext.Length];
+        byte[] recovered = new byte[plaintext.Length];
         decTransform.Decrypt(buf, recovered);
 
         CollectionAssert.AreEqual(plaintext, recovered,
@@ -309,16 +309,16 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     public void Decrypt_OnAuthenticationFailure_ShouldZeroOutputBuffer()
     {
         using var cipher = new AesBlockCipherFixture(new byte[16]);
-        var iv = CreateInitializationVector();
-        var plaintext = new byte[ExpectedBlockSize * 2];
-        for (var i = 0; i < plaintext.Length; i++) plaintext[i] = (byte)(i + 1);
+        byte[] iv = CreateInitializationVector();
+        byte[] plaintext = new byte[ExpectedBlockSize * 2];
+        for (int i = 0; i < plaintext.Length; i++) plaintext[i] = (byte)(i + 1);
 
         TTransform encTransform = CreateTransform(cipher, (byte[])iv.Clone());
-        var buf = new byte[plaintext.Length + (encTransform.TagSize / 8)];
+        byte[] buf = new byte[plaintext.Length + (encTransform.TagSize / 8)];
         encTransform.Encrypt(plaintext, buf);
         buf[0] ^= 0xFF; // tamper the ciphertext
 
-        var output = new byte[plaintext.Length];
+        byte[] output = new byte[plaintext.Length];
         Array.Fill(output, (byte)0xCC); // sentinel — any non-zero value
 
         TTransform decTransform = CreateTransform(cipher, (byte[])iv.Clone());

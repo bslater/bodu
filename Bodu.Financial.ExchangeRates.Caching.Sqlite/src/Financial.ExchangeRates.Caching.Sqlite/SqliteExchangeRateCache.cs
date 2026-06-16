@@ -322,7 +322,7 @@ public sealed class SqliteExchangeRateCache
         command.CommandText = "PRAGMA table_info(rates);";
 
         using SqliteDataReader reader = command.ExecuteReader();
-        var nameOrdinal = reader.GetOrdinal("name");
+        int nameOrdinal = reader.GetOrdinal("name");
         while (reader.Read())
         {
             if (string.Equals(reader.GetString(nameOrdinal), "observed_at", StringComparison.Ordinal))

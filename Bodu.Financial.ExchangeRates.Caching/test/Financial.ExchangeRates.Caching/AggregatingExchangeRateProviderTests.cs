@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AggregatingExchangeRateProviderTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -158,7 +158,7 @@ public sealed partial class AggregatingExchangeRateProviderTests
         NamedDatedExchangeRateProvider rba = Named("RBA", ("USD", "AUD", D1, 1.5m));
         AggregatingExchangeRateProvider agg = new(new[] { rba });
 
-        var found = agg.TryGetProvider("RBA", out IDatedExchangeRateProvider? provider);
+        bool found = agg.TryGetProvider("RBA", out IDatedExchangeRateProvider? provider);
 
         Assert.IsTrue(found);
         Assert.AreSame(rba.Provider, provider);
@@ -184,7 +184,7 @@ public sealed partial class AggregatingExchangeRateProviderTests
         MutableTimeProvider clock = new(new DateTimeOffset(D1.Year, D1.Month, D1.Day, 12, 0, 0, TimeSpan.Zero));
         AggregatingExchangeRateProvider agg = new(new[] { Named("RBA", ("USD", "AUD", D1, 1.5m)) }, options: null, timeProvider: clock);
 
-        var rate = ((IExchangeRateProvider)agg).GetRate("USD", "AUD");
+        decimal rate = ((IExchangeRateProvider)agg).GetRate("USD", "AUD");
 
         Assert.AreEqual(1.5m, rate);
     }

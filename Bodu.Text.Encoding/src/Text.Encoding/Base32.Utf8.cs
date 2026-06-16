@@ -31,7 +31,7 @@ public static partial class Base32
         if (source.IsEmpty)
             return OperationStatus.Done;
 
-        (_, var lookup) = GetVariantConfig(variant);
+        (_, sbyte[]? lookup) = GetVariantConfig(variant);
         return DecodeBitStream<Utf8Source>(default, source, destination, lookup, styles, isFinalBlock, variant, ref bytesConsumed, ref bytesWritten);
     }
 
@@ -58,13 +58,13 @@ public static partial class Base32
         if (source.IsEmpty)
             return [];
 
-        var required = GetEncodedLength(source.Length, variant, options);
-        var result = new byte[required];
-        var written = EncodeIntoUtf8Span(source, result, variant, options);
+        int required = GetEncodedLength(source.Length, variant, options);
+        byte[] result = new byte[required];
+        int written = EncodeIntoUtf8Span(source, result, variant, options);
         if (written == result.Length)
             return result;
 
-        var trimmed = new byte[written];
+        byte[] trimmed = new byte[written];
         Buffer.BlockCopy(result, 0, trimmed, 0, written);
         return trimmed;
     }
@@ -90,7 +90,7 @@ public static partial class Base32
     {
         EnsureUtf8EncodeOptionsSupported(options);
 
-        var required = GetEncodedLength(source.Length, variant, options);
+        int required = GetEncodedLength(source.Length, variant, options);
         if (destination.Length < required)
         {
             bytesWritten = 0;
@@ -140,24 +140,24 @@ public static partial class Base32
         ref int written)
         where TSource : struct
     {
-        var isUtf8 = typeof(TSource) == typeof(Utf8Source);
-        var length = isUtf8 ? utf8Source.Length : charSource.Length;
-        var ignoreWhitespace = styles.HasFlag(BaseFormatStyles.IgnoreWhitespace);
-        var padIsRequired = !styles.HasFlag(BaseFormatStyles.AllowMissingPadding) && variant is Base32Variant.Standard or Base32Variant.HexExtended;
+        bool isUtf8 = typeof(TSource) == typeof(Utf8Source);
+        int length = isUtf8 ? utf8Source.Length : charSource.Length;
+        bool ignoreWhitespace = styles.HasFlag(BaseFormatStyles.IgnoreWhitespace);
+        bool padIsRequired = !styles.HasFlag(BaseFormatStyles.AllowMissingPadding) && variant is Base32Variant.Standard or Base32Variant.HexExtended;
 
-        var accumulator = 0;
-        var bitsAccumulated = 0;
-        var symbolsConsumed = 0;
-        var paddingSeen = 0;
+        int accumulator = 0;
+        int bitsAccumulated = 0;
+        int symbolsConsumed = 0;
+        int paddingSeen = 0;
 
         // Quantum-boundary checkpoint: every 8 Base32 symbols (40 bits = 5 bytes) align the accumulator back to 0.
         // On DestinationTooSmall / NeedMoreData / InvalidData we roll back to the last such boundary so partial-quantum
         // work is not claimed as consumed. Bytes already written into the destination past checkpointWritten are
         // abandoned and the caller treats them as garbage based on the returned bytesWritten.
-        var checkpointConsumed = 0;
-        var checkpointWritten = 0;
+        int checkpointConsumed = 0;
+        int checkpointWritten = 0;
 
-        for (var i = 0; i < length; i++)
+        for (int i = 0; i < length; i++)
         {
             int rawValue = isUtf8 ? utf8Source[i] : charSource[i];
 
@@ -237,7 +237,7 @@ public static partial class Base32
         // Final block — validate alignment and padding.
         if (padIsRequired)
         {
-            var totalSymbols = symbolsConsumed + paddingSeen;
+            int totalSymbols = symbolsConsumed + paddingSeen;
             if ((totalSymbols % 8) != 0)
             {
                 consumed = checkpointConsumed;
@@ -245,7 +245,7 @@ public static partial class Base32
                 return OperationStatus.InvalidData;
             }
 
-            var expectedPadding = (8 - (symbolsConsumed % 8)) % 8;
+            int expectedPadding = (8 - (symbolsConsumed % 8)) % 8;
             if (paddingSeen != expectedPadding)
             {
                 consumed = checkpointConsumed;
@@ -256,8 +256,8 @@ public static partial class Base32
 
         // RFC 4648 §6 — terminal quantum data character count must be 2, 4, 5, 7, or 8. Crockford and Z-Base32 do
         // not impose this rule, so the check is gated by variant.
-        var strictQuantum = variant is Base32Variant.Standard or Base32Variant.HexExtended;
-        var dataMod = symbolsConsumed % 8;
+        bool strictQuantum = variant is Base32Variant.Standard or Base32Variant.HexExtended;
+        int dataMod = symbolsConsumed % 8;
         if (strictQuantum && dataMod is 1 or 3 or 6)
         {
             consumed = checkpointConsumed;
@@ -269,7 +269,7 @@ public static partial class Base32
         // decoder accepts multiple distinct inputs that round-trip to the same byte sequence (RFC 4648 §3.5).
         if (styles.HasFlag(BaseFormatStyles.RequireCanonicalEncoding) && bitsAccumulated > 0)
         {
-            var leftoverMask = (1 << bitsAccumulated) - 1;
+            int leftoverMask = (1 << bitsAccumulated) - 1;
             if ((accumulator & leftoverMask) != 0)
             {
                 consumed = checkpointConsumed;
@@ -300,7 +300,7 @@ public static partial class Base32
         if (source.IsEmpty)
             return OperationStatus.Done;
 
-        (_, var lookup) = GetVariantConfig(variant);
+        (_, sbyte[]? lookup) = GetVariantConfig(variant);
         return DecodeBitStream<CharSource>(source, default, destination, lookup, styles, isFinalBlock, variant, ref charsConsumed, ref bytesWritten);
     }
 
@@ -317,15 +317,15 @@ public static partial class Base32
     /// <returns>The number of UTF-8 bytes written.</returns>
     private static int EncodeIntoUtf8Span(ReadOnlySpan<byte> source, Span<byte> destination, Base32Variant variant, BaseFormattingOptions options)
     {
-        (var alphabet, _) = GetVariantConfig(variant);
-        var emitPadding = ShouldEmitPadding(variant, options);
+        (string? alphabet, _) = GetVariantConfig(variant);
+        bool emitPadding = ShouldEmitPadding(variant, options);
 
-        var position = 0;
-        var dataChars = 0;
-        var accumulator = 0;
-        var bitsAccumulated = 0;
+        int position = 0;
+        int dataChars = 0;
+        int accumulator = 0;
+        int bitsAccumulated = 0;
 
-        foreach (var b in source)
+        foreach (byte b in source)
         {
             accumulator = (accumulator << 8) | b;
             bitsAccumulated += 8;
@@ -333,7 +333,7 @@ public static partial class Base32
             while (bitsAccumulated >= 5)
             {
                 bitsAccumulated -= 5;
-                var symbolIndex = (accumulator >> bitsAccumulated) & 0x1F;
+                int symbolIndex = (accumulator >> bitsAccumulated) & 0x1F;
                 destination[position++] = (byte)alphabet[symbolIndex];
                 dataChars++;
             }
@@ -341,15 +341,15 @@ public static partial class Base32
 
         if (bitsAccumulated > 0)
         {
-            var symbolIndex = (accumulator << (5 - bitsAccumulated)) & 0x1F;
+            int symbolIndex = (accumulator << (5 - bitsAccumulated)) & 0x1F;
             destination[position++] = (byte)alphabet[symbolIndex];
             dataChars++;
         }
 
         if (emitPadding)
         {
-            var paddingChars = (8 - (dataChars % 8)) % 8;
-            for (var i = 0; i < paddingChars; i++)
+            int paddingChars = (8 - (dataChars % 8)) % 8;
+            for (int i = 0; i < paddingChars; i++)
                 destination[position++] = (byte)PaddingChar;
         }
 

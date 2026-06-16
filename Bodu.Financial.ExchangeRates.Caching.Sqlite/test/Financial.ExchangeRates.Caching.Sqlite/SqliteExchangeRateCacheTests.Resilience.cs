@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SqliteExchangeRateCacheTests.Resilience.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -18,7 +18,7 @@ public sealed partial class SqliteExchangeRateCacheTests
     [TestMethod]
     public void Constructor_WhenFileIsNotADatabase_ShouldNotThrow()
     {
-        var path = NewCorruptDatabaseFile();
+        string path = NewCorruptDatabaseFile();
 
         var cache = new SqliteExchangeRateCache(new SqliteExchangeRateCacheOptions { Provider = Provider, DatabaseFilePath = path });
         _caches.Add(cache);
@@ -32,7 +32,7 @@ public sealed partial class SqliteExchangeRateCacheTests
     [TestMethod]
     public void GetRates_WhenDatabaseIsCorrupt_ShouldReturnEmpty()
     {
-        var path = NewCorruptDatabaseFile();
+        string path = NewCorruptDatabaseFile();
 
         var cache = new SqliteExchangeRateCache(new SqliteExchangeRateCacheOptions { Provider = Provider, DatabaseFilePath = path });
         _caches.Add(cache);
@@ -48,7 +48,7 @@ public sealed partial class SqliteExchangeRateCacheTests
     [TestMethod]
     public void GetCoverage_WhenDatabaseIsCorrupt_ShouldReturnEmpty()
     {
-        var path = NewCorruptDatabaseFile();
+        string path = NewCorruptDatabaseFile();
 
         var cache = new SqliteExchangeRateCache(new SqliteExchangeRateCacheOptions { Provider = Provider, DatabaseFilePath = path });
         _caches.Add(cache);
@@ -64,7 +64,7 @@ public sealed partial class SqliteExchangeRateCacheTests
     [TestMethod]
     public void Store_WhenDatabaseIsCorrupt_ShouldBeNoOp()
     {
-        var path = NewCorruptDatabaseFile();
+        string path = NewCorruptDatabaseFile();
         var now = DateTimeOffset.UtcNow;
 
         var cache = new SqliteExchangeRateCache(new SqliteExchangeRateCacheOptions { Provider = Provider, DatabaseFilePath = path });
@@ -83,7 +83,7 @@ public sealed partial class SqliteExchangeRateCacheTests
     [TestMethod]
     public void RecordCoverage_WhenDatabaseIsCorrupt_ShouldBeNoOp()
     {
-        var path = NewCorruptDatabaseFile();
+        string path = NewCorruptDatabaseFile();
         var now = DateTimeOffset.UtcNow;
 
         var cache = new SqliteExchangeRateCache(new SqliteExchangeRateCacheOptions { Provider = Provider, DatabaseFilePath = path });
@@ -100,7 +100,7 @@ public sealed partial class SqliteExchangeRateCacheTests
     /// <returns>The path to a corrupt database file.</returns>
     private string NewCorruptDatabaseFile()
     {
-        var path = NewDatabasePath();
+        string path = NewDatabasePath();
         File.WriteAllText(path, "this is not a sqlite database file");
         return path;
     }

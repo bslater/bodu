@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AuthenticationTagTests.FromBytes.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -15,7 +15,7 @@ public sealed partial class AuthenticationTagTests
     [TestMethod]
     public void FromBytes_WhenSourceMutatedAfterwards_ShouldNotAffectValue()
     {
-        var source = new byte[] { 0x01, 0x02, 0x03 };
+        byte[] source = new byte[] { 0x01, 0x02, 0x03 };
         var tag = AuthenticationTag.FromBytes(source);
 
         source[0] = 0xFF;
@@ -42,7 +42,7 @@ public sealed partial class AuthenticationTagTests
     [TestMethod]
     public void FromBytes_WhenInputIsNonEmpty_ShouldExposeSameBytes()
     {
-        var source = new byte[] { 0x0A, 0x0B, 0x0C, 0x0D };
+        byte[] source = new byte[] { 0x0A, 0x0B, 0x0C, 0x0D };
 
         var tag = AuthenticationTag.FromBytes(source);
 

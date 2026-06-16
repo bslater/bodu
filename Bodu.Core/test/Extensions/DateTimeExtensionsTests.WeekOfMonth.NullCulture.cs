@@ -19,11 +19,11 @@ public partial class DateTimeExtensionsTests
     public void WeekOfMonth_DateTime_WhenCultureIsNull_ShouldUseCurrentCulture()
     {
         var date = new DateTime(2024, 1, 8);
-        var expected = date.WeekOfMonth(
+        int expected = date.WeekOfMonth(
             Thread.CurrentThread.CurrentCulture.DateTimeFormat.CalendarWeekRule,
             Thread.CurrentThread.CurrentCulture.DateTimeFormat.FirstDayOfWeek);
 
-        var actual = date.WeekOfMonth((CultureInfo?)null);
+        int actual = date.WeekOfMonth((CultureInfo?)null);
 
         Assert.AreEqual(expected, actual);
     }

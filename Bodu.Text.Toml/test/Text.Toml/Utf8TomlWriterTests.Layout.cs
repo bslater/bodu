@@ -16,7 +16,7 @@ public sealed partial class Utf8TomlWriterTests
     [TestMethod]
     public void Write_WhenRootTableEmpty_ShouldEmitNothing()
     {
-        var actual = WriteDocument((ref Utf8TomlWriter writer) =>
+        string actual = WriteDocument((ref Utf8TomlWriter writer) =>
         {
             writer.WriteStartTable();
             writer.WriteEndTable();
@@ -31,7 +31,7 @@ public sealed partial class Utf8TomlWriterTests
     [TestMethod]
     public void Write_WhenSubTableEmpty_ShouldEmitBareHeader()
     {
-        var actual = WriteDocument((ref Utf8TomlWriter writer) =>
+        string actual = WriteDocument((ref Utf8TomlWriter writer) =>
         {
             writer.WriteStartTable();
             writer.WritePropertyName("t");
@@ -49,7 +49,7 @@ public sealed partial class Utf8TomlWriterTests
     [TestMethod]
     public void Write_WhenArrayEmpty_ShouldEmitInlineEmptyArray()
     {
-        var actual = WriteDocument((ref Utf8TomlWriter writer) =>
+        string actual = WriteDocument((ref Utf8TomlWriter writer) =>
         {
             writer.WriteStartTable();
             writer.WritePropertyName("a");
@@ -67,7 +67,7 @@ public sealed partial class Utf8TomlWriterTests
     [TestMethod]
     public void Write_WhenArrayOfScalars_ShouldEmitInlineArray()
     {
-        var actual = WriteDocument((ref Utf8TomlWriter writer) =>
+        string actual = WriteDocument((ref Utf8TomlWriter writer) =>
         {
             writer.WriteStartTable();
             writer.WritePropertyName("a");
@@ -89,7 +89,7 @@ public sealed partial class Utf8TomlWriterTests
     [TestMethod]
     public void Write_WhenScalarsFollowedBySubTable_ShouldEmitScalarsFirst()
     {
-        var actual = WriteDocument((ref Utf8TomlWriter writer) =>
+        string actual = WriteDocument((ref Utf8TomlWriter writer) =>
         {
             writer.WriteStartTable();
 
@@ -115,7 +115,7 @@ public sealed partial class Utf8TomlWriterTests
     [TestMethod]
     public void Write_WhenEmptyTableIsArrayElement_ShouldEmitInlineEmptyTable()
     {
-        var actual = WriteDocument((ref Utf8TomlWriter writer) =>
+        string actual = WriteDocument((ref Utf8TomlWriter writer) =>
         {
             writer.WriteStartTable();
             writer.WritePropertyName("a");
@@ -138,7 +138,7 @@ public sealed partial class Utf8TomlWriterTests
     [TestMethod]
     public void Write_WhenArrayOfTables_ShouldEmitRepeatedDoubleHeaders()
     {
-        var actual = WriteDocument((ref Utf8TomlWriter writer) =>
+        string actual = WriteDocument((ref Utf8TomlWriter writer) =>
         {
             writer.WriteStartTable();
             writer.WritePropertyName("item");
@@ -167,7 +167,7 @@ public sealed partial class Utf8TomlWriterTests
     [TestMethod]
     public void Write_WhenTablesNestedThreeLevels_ShouldEmitDottedHeaders()
     {
-        var actual = WriteDocument((ref Utf8TomlWriter writer) =>
+        string actual = WriteDocument((ref Utf8TomlWriter writer) =>
         {
             writer.WriteStartTable();
             writer.WritePropertyName("a");

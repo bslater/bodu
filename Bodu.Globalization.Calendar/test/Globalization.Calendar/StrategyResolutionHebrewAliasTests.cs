@@ -61,7 +61,7 @@ public sealed class StrategyResolutionHebrewAliasTests
     [TestMethod]
     public void Load_UnknownHebrewAlias_ThrowsValidationException()
     {
-        var xml = NotableDateFixtures.ReadText("invalid-unknown-hebrew-alias.xml");
+        string xml = NotableDateFixtures.ReadText("invalid-unknown-hebrew-alias.xml");
 
         NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
         {

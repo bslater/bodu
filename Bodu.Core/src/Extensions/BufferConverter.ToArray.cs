@@ -33,7 +33,7 @@ public static partial class BufferConverter
     {
         ThrowHelper.ThrowIfNull(sourceArray);
 #if NET5_0_OR_GREATER
-        var elementSize = Unsafe.SizeOf<T>();
+        int elementSize = Unsafe.SizeOf<T>();
 #else
         int elementSize = Marshal.SizeOf<T>();
 #endif
@@ -68,7 +68,7 @@ public static partial class BufferConverter
         where T : unmanaged
     {
 #if NET5_0_OR_GREATER
-        var elementSize = Unsafe.SizeOf<T>();
+        int elementSize = Unsafe.SizeOf<T>();
 #else
         int elementSize = Marshal.SizeOf<T>();
 #endif

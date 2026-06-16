@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base58Tests.Coverage.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -16,7 +16,7 @@ public partial class Base58Tests
     [TestMethod]
     public void DecodeFromUtf8_WhenSourceEmpty_ShouldReturnDone()
     {
-        OperationStatus status = Base58.DecodeFromUtf8(ReadOnlySpan<byte>.Empty, Span<byte>.Empty, out var consumed, out var written);
+        OperationStatus status = Base58.DecodeFromUtf8(ReadOnlySpan<byte>.Empty, Span<byte>.Empty, out int consumed, out int written);
 
         Assert.AreEqual((OperationStatus.Done, 0, 0), (status, consumed, written));
     }
@@ -71,7 +71,7 @@ public partial class Base58Tests
     [TestMethod]
     public void TryDecode_WhenDestinationTooSmall_ShouldReturnFalse()
     {
-        var encoded = Base58.Encode(new byte[] { 1, 2, 3, 4, 5 });
+        string encoded = Base58.Encode(new byte[] { 1, 2, 3, 4, 5 });
 
         Assert.IsFalse(Base58.TryDecode(encoded, Span<byte>.Empty, out _));
     }

@@ -81,9 +81,9 @@ public sealed partial class Base45Tests
     public void BinaryEncodingsBase45_WhenRoundTripped_ShouldReturnOriginalBytes()
     {
         IBinaryEncoding encoding = BinaryEncodings.Base45;
-        var payload = "base-45"u8.ToArray();
+        byte[] payload = "base-45"u8.ToArray();
 
-        var encoded = encoding.Encode(payload);
+        string encoded = encoding.Encode(payload);
 
         Assert.AreEqual("UJCLQE7W581", encoded);
         CollectionAssert.AreEqual(payload, encoding.Decode(encoded));

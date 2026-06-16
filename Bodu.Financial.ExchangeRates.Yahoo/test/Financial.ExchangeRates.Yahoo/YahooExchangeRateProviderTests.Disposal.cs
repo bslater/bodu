@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YahooExchangeRateProviderTests.Disposal.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -25,7 +25,7 @@ public partial class YahooExchangeRateProviderTests
         provider.Dispose();
 
         // The caller still owns the supplied client; disposing the provider must leave it usable.
-        var bytes = await client.GetByteArrayAsync(new Uri("https://query1.finance.yahoo.com/probe"));
+        byte[] bytes = await client.GetByteArrayAsync(new Uri("https://query1.finance.yahoo.com/probe"));
         Assert.IsTrue(bytes.Length > 0);
     }
 

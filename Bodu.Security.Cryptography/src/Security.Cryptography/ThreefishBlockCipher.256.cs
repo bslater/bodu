@@ -143,21 +143,21 @@ public sealed partial class Threefish256Cipher
         // Load the ciphertext block as four 64-bit little-endian words into registers, skipping the
         // intermediate stackalloc + MemoryMarshal.Cast + CopyTo trip through the stack the prior
         // implementation used.
-        ref var inputRef = ref MemoryMarshal.GetReference(input);
-        var b0 = LoadWordLittleEndian(ref inputRef, 0);
-        var b1 = LoadWordLittleEndian(ref inputRef, 8);
-        var b2 = LoadWordLittleEndian(ref inputRef, 16);
-        var b3 = LoadWordLittleEndian(ref inputRef, 24);
+        ref byte inputRef = ref MemoryMarshal.GetReference(input);
+        ulong b0 = LoadWordLittleEndian(ref inputRef, 0);
+        ulong b1 = LoadWordLittleEndian(ref inputRef, 8);
+        ulong b2 = LoadWordLittleEndian(ref inputRef, 16);
+        ulong b3 = LoadWordLittleEndian(ref inputRef, 24);
 
         // Capture interior refs to the key and tweak schedule arrays so each subkey-injection access
         // skips the per-element bounds check that ulong[] indexing would otherwise emit.
-        ref var keyRef = ref MemoryMarshal.GetArrayDataReference(_keySchedule);
-        ref var tweakRef = ref MemoryMarshal.GetArrayDataReference(_tweakSchedule);
+        ref ulong keyRef = ref MemoryMarshal.GetArrayDataReference(_keySchedule);
+        ref ulong tweakRef = ref MemoryMarshal.GetArrayDataReference(_tweakSchedule);
 
-        for (var d = (72 / 4) - 1; d >= 1; d -= 2)
+        for (int d = (72 / 4) - 1; d >= 1; d -= 2)
         {
-            var dm5 = d % 5;
-            var dm3 = d % 3;
+            int dm5 = d % 5;
+            int dm3 = d % 3;
 
             // Reverse post-round subkey injection
             b0 -= Unsafe.Add(ref keyRef, dm5 + 1);
@@ -199,7 +199,7 @@ public sealed partial class Threefish256Cipher
         b3 -= Unsafe.Add(ref keyRef, 3);
 
         // Commit the four plaintext words to the output buffer in little-endian byte order.
-        ref var outputRef = ref MemoryMarshal.GetReference(output);
+        ref byte outputRef = ref MemoryMarshal.GetReference(output);
         StoreWordLittleEndian(ref outputRef, 0, b0);
         StoreWordLittleEndian(ref outputRef, 8, b1);
         StoreWordLittleEndian(ref outputRef, 16, b2);
@@ -252,14 +252,14 @@ public sealed partial class Threefish256Cipher
     private void EncryptScalar(ReadOnlySpan<byte> input, Span<byte> output)
     {
         // Load the plaintext block as four 64-bit little-endian words into registers.
-        ref var inputRef = ref MemoryMarshal.GetReference(input);
-        var b0 = LoadWordLittleEndian(ref inputRef, 0);
-        var b1 = LoadWordLittleEndian(ref inputRef, 8);
-        var b2 = LoadWordLittleEndian(ref inputRef, 16);
-        var b3 = LoadWordLittleEndian(ref inputRef, 24);
+        ref byte inputRef = ref MemoryMarshal.GetReference(input);
+        ulong b0 = LoadWordLittleEndian(ref inputRef, 0);
+        ulong b1 = LoadWordLittleEndian(ref inputRef, 8);
+        ulong b2 = LoadWordLittleEndian(ref inputRef, 16);
+        ulong b3 = LoadWordLittleEndian(ref inputRef, 24);
 
-        ref var keyRef = ref MemoryMarshal.GetArrayDataReference(_keySchedule);
-        ref var tweakRef = ref MemoryMarshal.GetArrayDataReference(_tweakSchedule);
+        ref ulong keyRef = ref MemoryMarshal.GetArrayDataReference(_keySchedule);
+        ref ulong tweakRef = ref MemoryMarshal.GetArrayDataReference(_tweakSchedule);
 
         // Initial key injection (round 0)
         b0 += Unsafe.Add(ref keyRef, 0);
@@ -267,10 +267,10 @@ public sealed partial class Threefish256Cipher
         b2 += Unsafe.Add(ref keyRef, 2) + Unsafe.Add(ref tweakRef, 1);
         b3 += Unsafe.Add(ref keyRef, 3);
 
-        for (var d = 1; d < 72 / 4; d += 2)
+        for (int d = 1; d < 72 / 4; d += 2)
         {
-            var dm5 = d % 5;
-            var dm3 = d % 3;
+            int dm5 = d % 5;
+            int dm3 = d % 3;
 
             // First 4 MIX rounds
             Mix(ref b0, ref b1, R0);
@@ -305,7 +305,7 @@ public sealed partial class Threefish256Cipher
             b3 += Unsafe.Add(ref keyRef, dm5 + 4) + (ulong)d + 1;
         }
 
-        ref var outputRef = ref MemoryMarshal.GetReference(output);
+        ref byte outputRef = ref MemoryMarshal.GetReference(output);
         StoreWordLittleEndian(ref outputRef, 0, b0);
         StoreWordLittleEndian(ref outputRef, 8, b1);
         StoreWordLittleEndian(ref outputRef, 16, b2);

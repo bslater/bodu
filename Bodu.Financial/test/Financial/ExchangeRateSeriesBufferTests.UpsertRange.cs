@@ -39,9 +39,9 @@ public partial class ExchangeRateSeriesBufferTests
         buffer.UpsertRange(batch, ObservationsParam);
 
         Assert.AreEqual(3, buffer.Count);
-        Assert.IsTrue(buffer.TryGetRate(1000, out var r1));
-        Assert.IsTrue(buffer.TryGetRate(1010, out var r2));
-        Assert.IsTrue(buffer.TryGetRate(1020, out var r3));
+        Assert.IsTrue(buffer.TryGetRate(1000, out decimal r1));
+        Assert.IsTrue(buffer.TryGetRate(1010, out decimal r2));
+        Assert.IsTrue(buffer.TryGetRate(1020, out decimal r3));
         Assert.AreEqual(1.4m, r1);
         Assert.AreEqual(2.5m, r2);
         Assert.AreEqual(2.6m, r3);

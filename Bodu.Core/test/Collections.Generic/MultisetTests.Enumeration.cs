@@ -51,7 +51,7 @@ public partial class MultisetTests
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
-            foreach (var _ in mvd.Distinct())
+            foreach (int _ in mvd.Distinct())
                 mvd.Add(99);
         });
     }
@@ -70,7 +70,7 @@ public partial class MultisetTests
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
-            foreach (var _ in mvd.Distinct())
+            foreach (int _ in mvd.Distinct())
                 mvd.RemoveAll(1);
         });
     }
@@ -127,7 +127,7 @@ public partial class MultisetTests
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
-            foreach (var _ in mvd)
+            foreach (int _ in mvd)
                 mvd.Clear();
         });
     }
@@ -172,7 +172,7 @@ public partial class MultisetTests
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
-            foreach (var _ in mvd)
+            foreach (int _ in mvd)
                 mvd.Add(99);
         });
     }
@@ -191,7 +191,7 @@ public partial class MultisetTests
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
-            foreach (var _ in mvd)
+            foreach (int _ in mvd)
                 mvd.Add(99, 3);
         });
     }
@@ -206,7 +206,7 @@ public partial class MultisetTests
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
-            foreach (var _ in mvd)
+            foreach (int _ in mvd)
                 mvd.Remove(1);
         });
     }
@@ -225,7 +225,7 @@ public partial class MultisetTests
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
-            foreach (var _ in mvd)
+            foreach (int _ in mvd)
                 mvd.RemoveAll(1);
         });
     }
@@ -361,10 +361,10 @@ public partial class MultisetTests
         mvd.Add(5, 2);
         mvd.Add(6, 1);
 
-        var dest = new object[3];
+        object[] dest = new object[3];
         ((System.Collections.ICollection)mvd).CopyTo(dest, 0);
 
-        var values = dest.Cast<int>().OrderBy(x => x).ToArray();
+        int[] values = dest.Cast<int>().OrderBy(x => x).ToArray();
         CollectionAssert.AreEqual(new[] { 5, 5, 6 }, values);
     }
 

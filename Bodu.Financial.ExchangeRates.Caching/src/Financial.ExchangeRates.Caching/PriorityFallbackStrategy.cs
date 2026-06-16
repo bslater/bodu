@@ -42,7 +42,7 @@ public sealed class PriorityFallbackStrategy
     {
         ThrowHelper.ThrowIfNull(candidates);
 
-        for (var i = 0; i < candidates.Count; i++)
+        for (int i = 0; i < candidates.Count; i++)
         {
             if (candidates[i].Provider.TryGetRate(fromIsoCode, toIsoCode, date, options, out result))
                 return true;
@@ -63,7 +63,7 @@ public sealed class PriorityFallbackStrategy
     {
         ThrowHelper.ThrowIfNull(candidates);
 
-        for (var i = 0; i < candidates.Count; i++)
+        for (int i = 0; i < candidates.Count; i++)
         {
             IReadOnlyList<ExchangeRate> rates =
                 [.. await candidates[i].Provider.GetRatesAsync(fromIsoCode, toIsoCode, startDate, endDate, cancellationToken).ConfigureAwait(false)];
@@ -85,7 +85,7 @@ public sealed class PriorityFallbackStrategy
     {
         ThrowHelper.ThrowIfNull(candidates);
 
-        for (var i = 0; i < candidates.Count; i++)
+        for (int i = 0; i < candidates.Count; i++)
         {
             IReadOnlyList<ExchangeRate> rates =
                 [.. candidates[i].Provider.GetRates(fromIsoCode, toIsoCode, startDate, endDate)];

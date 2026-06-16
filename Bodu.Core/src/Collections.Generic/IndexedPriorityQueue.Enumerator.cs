@@ -92,7 +92,7 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
             if (_version != _queue._version)
                 throw new InvalidOperationException(ResourceStrings.Op_Invalid_CollectionModified);
 
-            var next = _index + 1;
+            int next = _index + 1;
             if (next >= _queue._size)
             {
                 // Park at _size (not -1) so subsequent MoveNext calls cannot regress into the

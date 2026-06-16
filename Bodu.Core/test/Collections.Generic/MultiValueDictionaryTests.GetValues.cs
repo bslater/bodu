@@ -115,8 +115,8 @@ public partial class MultiValueDictionaryTests
     public void GetValues_WhenRetrieved_ShouldPreserveInsertionOrder(int valueCount)
     {
         var mvd = new MultiValueDictionary<string, int>();
-        var expected = Enumerable.Range(0, valueCount).Select(i => i * 7).ToArray();
-        foreach (var v in expected)
+        int[] expected = Enumerable.Range(0, valueCount).Select(i => i * 7).ToArray();
+        foreach (int v in expected)
             mvd.Add("k", v);
 
         System.Collections.Generic.IReadOnlyList<int> actual = mvd.GetValues("k");

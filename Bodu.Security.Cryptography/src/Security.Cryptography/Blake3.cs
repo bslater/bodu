@@ -282,10 +282,10 @@ public sealed partial class Blake3
     {
         // Derive chunk position. Subtracting 1 maps [1, 64] → block 0 of chunk 0, etc.
         // The zero guard handles the empty-input case where totalBytes is 0.
-        var adjustedTotal = totalBytesIncludingThisBlock == 0 ? 0UL : totalBytesIncludingThisBlock - 1;
-        var chunkIndex = adjustedTotal / (ulong)ChunkSize;
-        var isFirstBlock = (adjustedTotal % (ulong)ChunkSize) / (ulong)BlockSize == 0;
-        var isLastBlock = totalBytesIncludingThisBlock % (ulong)ChunkSize == 0 || isFinal;
+        ulong adjustedTotal = totalBytesIncludingThisBlock == 0 ? 0UL : totalBytesIncludingThisBlock - 1;
+        ulong chunkIndex = adjustedTotal / (ulong)ChunkSize;
+        bool isFirstBlock = (adjustedTotal % (ulong)ChunkSize) / (ulong)BlockSize == 0;
+        bool isLastBlock = totalBytesIncludingThisBlock % (ulong)ChunkSize == 0 || isFinal;
 
         // Non-final blocks are always full; the final block carries the true byte count.
         uint blockLen;
@@ -299,7 +299,7 @@ public sealed partial class Blake3
         }
         else
         {
-            var rem = totalBytesIncludingThisBlock % (ulong)BlockSize;
+            ulong rem = totalBytesIncludingThisBlock % (ulong)BlockSize;
             blockLen = (uint)(rem == 0 ? BlockSize : (int)rem);
         }
 
@@ -307,7 +307,7 @@ public sealed partial class Blake3
         if (isFirstBlock)
             s_iv.CopyTo(_chunkCv, 0);
 
-        var flags = 0u;
+        uint flags = 0u;
         if (isFirstBlock) flags |= FlagChunkStart;
         if (isLastBlock) flags |= FlagChunkEnd;
 
@@ -316,10 +316,10 @@ public sealed partial class Blake3
         // merge is deferred to ProcessFinalBlock so that FlagRoot lands on the final parent compression.
         if (isFinal && _cvStackDepth == 0) flags |= FlagRoot;
 
-        var blockWords = ReadBlockWords(block);
-        var state = Compress(_chunkCv, blockWords, chunkIndex, blockLen, flags);
+        uint[] blockWords = ReadBlockWords(block);
+        uint[] state = Compress(_chunkCv, blockWords, chunkIndex, blockLen, flags);
 
-        for (var i = 0; i < 8; i++)
+        for (int i = 0; i < 8; i++)
             _chunkCv[i] = state[i];
 
         // Completed non-final chunks are pushed to the stack for pairwise tree merging.
@@ -345,9 +345,9 @@ public sealed partial class Blake3
         else
             MergeStackWithFinalChunk(_chunkCv, rootCv);
 
-        var digest = new byte[OutLen];
+        byte[] digest = new byte[OutLen];
 
-        for (var i = 0; i < 8; i++)
+        for (int i = 0; i < 8; i++)
             BinaryPrimitives.WriteUInt32LittleEndian(digest.AsSpan(i * 4), rootCv[i]);
 
         return digest;
@@ -395,7 +395,7 @@ public sealed partial class Blake3
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     private static uint[] CompressScalar(uint[] cv, uint[] blockWords, ulong counter, uint blockLen, uint flags)
     {
-        var state = new uint[16];
+        uint[] state = new uint[16];
 
         // Upper half: chaining value.
         state[0] = cv[0];
@@ -418,7 +418,7 @@ public sealed partial class Blake3
         state[15] = flags;
 
         // Seven rounds of column then diagonal mixing, each using a permuted view of the message block.
-        for (var round = 0; round < 7; round++)
+        for (int round = 0; round < 7; round++)
         {
             // Column step.
             G(state, 0, 4, 8, 12, blockWords[s_msgSchedule[round, 0]], blockWords[s_msgSchedule[round, 1]]);
@@ -434,11 +434,11 @@ public sealed partial class Blake3
         }
 
         // Finalize: XOR the two halves of the state.
-        for (var i = 0; i < 8; i++)
+        for (int i = 0; i < 8; i++)
             state[i] ^= state[i + 8];
 
         // Mix the original chaining value into the high half.
-        for (var i = 8; i < 16; i++)
+        for (int i = 8; i < 16; i++)
             state[i] ^= cv[i - 8];
 
         return state;
@@ -480,9 +480,9 @@ public sealed partial class Blake3
         padded.Clear();
         block.CopyTo(padded);
 
-        var words = new uint[16];
+        uint[] words = new uint[16];
 
-        for (var i = 0; i < 16; i++)
+        for (int i = 0; i < 16; i++)
             words[i] = BinaryPrimitives.ReadUInt32LittleEndian(padded[(i * 4)..]);
 
         return words;
@@ -515,7 +515,7 @@ public sealed partial class Blake3
             _cvStackDepth--;
             ReadOnlySpan<uint> leftCv = _cvStack.AsSpan(_cvStackDepth * 8, 8);
 
-            var isRoot = _cvStackDepth == 0;
+            bool isRoot = _cvStackDepth == 0;
             ParentCv(leftCv, working, isRoot, working);
         }
 
@@ -547,13 +547,13 @@ public sealed partial class Blake3
         leftCv.CopyTo(_parentBlockWords.AsSpan(0, 8));
         rightCv.CopyTo(_parentBlockWords.AsSpan(8, 8));
 
-        var flags = FlagParent;
+        uint flags = FlagParent;
 
         if (isRoot)
             flags |= FlagRoot;
 
         // Parent nodes always use the IV as their chaining value input, counter = 0.
-        var outState = Compress(s_iv, _parentBlockWords, 0UL, BlockSize, flags);
+        uint[] outState = Compress(s_iv, _parentBlockWords, 0UL, BlockSize, flags);
 
         outState.AsSpan(0, 8).CopyTo(output);
     }
@@ -593,10 +593,10 @@ public sealed partial class Blake3
 
         // BLAKE3 specifies merging one level for every trailing zero of the post-completion chunk count: each such bit
         // marks a balanced subtree boundary completing at this chunk.
-        var completed = chunkIdx + 1;
-        var mergeCount = System.Numerics.BitOperations.TrailingZeroCount(completed);
+        ulong completed = chunkIdx + 1;
+        int mergeCount = System.Numerics.BitOperations.TrailingZeroCount(completed);
 
-        for (var i = 0; i < mergeCount; i++)
+        for (int i = 0; i < mergeCount; i++)
         {
             _cvStackDepth--;
             ReadOnlySpan<uint> left = _cvStack.AsSpan(_cvStackDepth * 8, 8);

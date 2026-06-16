@@ -50,8 +50,8 @@ public static partial class DateOnlyExtensions
         if (after < start)
             return start;
 
-        var daysPassed = after.DayNumber - start.DayNumber;
-        var intervalsPassed = (daysPassed + intervalDays) / intervalDays;
+        int daysPassed = after.DayNumber - start.DayNumber;
+        int intervalsPassed = (daysPassed + intervalDays) / intervalDays;
         return start.AddDays(intervalsPassed * intervalDays);
     }
 }

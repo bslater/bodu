@@ -20,7 +20,7 @@ public partial class ConcurrentCircularBufferTests
         var buffer = new ConcurrentCircularBuffer<string>(2);
         buffer.Enqueue("hello");
         buffer.Enqueue("world");
-        var array = new object[2];
+        object[] array = new object[2];
         ((ICollection)buffer).CopyTo(array, 0);
         Assert.AreEqual("hello", array[0],
             "First element should be \"hello\" when copied into a compatible object array.");
@@ -118,7 +118,7 @@ public partial class ConcurrentCircularBufferTests
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(2);
         buffer.Enqueue(new TestItem(1));
-        var wrongType = new string[2];
+        string[] wrongType = new string[2];
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
             ((ICollection)buffer).CopyTo(wrongType, 0);

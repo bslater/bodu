@@ -46,7 +46,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
 
         foreach (KeySizes keySize in keySizes)
         {
-            for (var size = keySize.MinSize; size <= keySize.MaxSize; size += keySize.SkipSize == 0 ? int.MaxValue : keySize.SkipSize)
+            for (int size = keySize.MinSize; size <= keySize.MaxSize; size += keySize.SkipSize == 0 ? int.MaxValue : keySize.SkipSize)
             {
                 Assert.IsTrue(uniqueSizes.Add(size), $"Duplicate or overlapping key size detected: {size}.");
             }

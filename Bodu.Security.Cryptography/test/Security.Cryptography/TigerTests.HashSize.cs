@@ -37,7 +37,7 @@ public partial class TigerTests
     public void HashSize_WhenSetAfterHashing_ShouldNotThrow()
     {
         Tiger algorithm = CreateAlgorithm();
-        var input = new byte[] { 1, 2, 3 };
+        byte[] input = new byte[] { 1, 2, 3 };
 
         algorithm.ComputeHash(input);
 
@@ -89,8 +89,8 @@ public partial class TigerTests
     public void HashSize_WhenSetToValidValue_ShouldUpdateCorrectly()
     {
         using Tiger algorithm = CreateAlgorithm();
-        var size = 160;
-        var original = algorithm.HashSize;
+        int size = 160;
+        int original = algorithm.HashSize;
         algorithm.HashSize = size;
 
         Assert.AreEqual(size, algorithm.HashSize);
@@ -139,7 +139,7 @@ public partial class TigerTests
     public void HashSize_WhenSetAfterTransformBlock_ShouldThrowExactly()
     {
         using Tiger algorithm = CreateAlgorithm();
-        var input = new byte[] { 0x01, 0x02, 0x03 };
+        byte[] input = new byte[] { 0x01, 0x02, 0x03 };
         algorithm.TransformBlock(input, 0, input.Length, null, 0);
 
         Assert.ThrowsExactly<CryptographicUnexpectedOperationException>(() =>

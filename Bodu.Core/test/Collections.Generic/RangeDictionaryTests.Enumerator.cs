@@ -151,7 +151,7 @@ public partial class RangeDictionaryTests
         IEnumerable untyped = sut;
         var seen = new List<string>();
 
-        foreach (var item in untyped)
+        foreach (object? item in untyped)
             seen.Add(((ValueRange<int, string>)item).Value);
 
         CollectionAssert.AreEqual(new[] { "A", "B" }, seen);

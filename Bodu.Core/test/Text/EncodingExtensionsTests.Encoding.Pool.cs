@@ -18,9 +18,9 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void GetBytesRented_WhenInvoked_ShouldReportExactCountAndContainEncodedContent()
     {
-        var expected = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
+        byte[] expected = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
 
-        var rented = System.Text.Encoding.UTF8.GetBytesRented(MultiByteText, out var written);
+        byte[] rented = System.Text.Encoding.UTF8.GetBytesRented(MultiByteText, out int written);
         try
         {
             Assert.AreEqual(expected.Length, written);
@@ -39,7 +39,7 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void GetBytesRented_WhenSpanIsEmpty_ShouldReturnEmptyArrayWithZeroWritten()
     {
-        var rented = System.Text.Encoding.UTF8.GetBytesRented([], out var written);
+        byte[] rented = System.Text.Encoding.UTF8.GetBytesRented([], out int written);
 
         Assert.AreEqual(0, written);
         Assert.AreSame([], rented);
@@ -67,9 +67,9 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void GetCharsRented_WhenInvoked_ShouldReportExactCountAndContainDecodedContent()
     {
-        var bytes = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
+        byte[] bytes = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
 
-        var rented = System.Text.Encoding.UTF8.GetCharsRented(bytes, out var written);
+        char[] rented = System.Text.Encoding.UTF8.GetCharsRented(bytes, out int written);
         try
         {
             Assert.AreEqual(MultiByteText.Length, written);
@@ -88,7 +88,7 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void GetCharsRented_WhenSpanIsEmpty_ShouldReturnEmptyArrayWithZeroWritten()
     {
-        var rented = System.Text.Encoding.UTF8.GetCharsRented([], out var written);
+        char[] rented = System.Text.Encoding.UTF8.GetCharsRented([], out int written);
 
         Assert.AreEqual(0, written);
         Assert.AreSame([], rented);
@@ -116,7 +116,7 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void GetBytesOwner_WhenInvoked_ShouldReturnExactSizedOwnerWithEncodedContent()
     {
-        var expected = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
+        byte[] expected = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
 
         using IMemoryOwner<byte> owner = System.Text.Encoding.UTF8.GetBytesOwner(MultiByteText);
 
@@ -146,7 +146,7 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void GetCharsOwner_WhenInvoked_ShouldReturnExactSizedOwnerWithDecodedContent()
     {
-        var bytes = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
+        byte[] bytes = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
 
         using IMemoryOwner<char> owner = System.Text.Encoding.UTF8.GetCharsOwner(bytes);
 
@@ -176,7 +176,7 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void GetBytesPooled_WhenInvoked_ShouldReturnBuilderWhoseWrittenSpanMatchesEncoded()
     {
-        var expected = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
+        byte[] expected = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
 
         using PooledBufferBuilder<byte> builder = System.Text.Encoding.UTF8.GetBytesPooled(MultiByteText);
 
@@ -219,7 +219,7 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void GetCharsPooled_WhenInvoked_ShouldReturnBuilderWhoseWrittenSpanMatchesDecoded()
     {
-        var bytes = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
+        byte[] bytes = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
 
         using PooledBufferBuilder<char> builder = System.Text.Encoding.UTF8.GetCharsPooled(bytes);
 

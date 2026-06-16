@@ -73,7 +73,7 @@ public sealed class IListExtensionsTests_LastIndexOf
     {
         IList<int> list = new List<int>();
 
-        var index = list.LastIndexOf(_ => true);
+        int index = list.LastIndexOf(_ => true);
 
         Assert.AreEqual(-1, index);
     }
@@ -86,7 +86,7 @@ public sealed class IListExtensionsTests_LastIndexOf
     {
         IList<int> list = new List<int>();
 
-        var index = list.LastIndexOf(x => x == 1, -1);
+        int index = list.LastIndexOf(x => x == 1, -1);
 
         Assert.AreEqual(-1, index);
     }
@@ -119,7 +119,7 @@ public sealed class IListExtensionsTests_LastIndexOf
     {
         IList<string> list = new Collection<string> { "a", "b", "c", "b" };
 
-        var index = list.LastIndexOf(x => x == "b");
+        int index = list.LastIndexOf(x => x == "b");
 
         Assert.AreEqual(3, index);
     }
@@ -147,7 +147,7 @@ public sealed class IListExtensionsTests_LastIndexOf
     {
         IList<int> list = new List<int> { 1, 2, 3, 2, 1 };
 
-        var index = list.LastIndexOf(x => x == 2);
+        int index = list.LastIndexOf(x => x == 2);
 
         Assert.AreEqual(3, index);
     }
@@ -161,7 +161,7 @@ public sealed class IListExtensionsTests_LastIndexOf
     {
         IList<int> list = new List<int>(data);
 
-        var index = list.LastIndexOf(x => x == 5);
+        int index = list.LastIndexOf(x => x == 5);
 
         Assert.AreEqual(expected, index);
     }
@@ -174,7 +174,7 @@ public sealed class IListExtensionsTests_LastIndexOf
     {
         IList<int> list = new List<int> { 1, 2, 3 };
 
-        var index = list.LastIndexOf(x => x > 100);
+        int index = list.LastIndexOf(x => x > 100);
 
         Assert.AreEqual(-1, index);
     }
@@ -233,9 +233,9 @@ public sealed class IListExtensionsTests_LastIndexOf
     public void LastIndexOf_WithRange_WhenCountIsZeroOnNonEmptyList_ShouldReturnMinusOne()
     {
         IList<int> list = new List<int> { 1, 2, 3 };
-        var predicateCalls = 0;
+        int predicateCalls = 0;
 
-        var index = list.LastIndexOf(_ => { predicateCalls++; return true; }, 2, 0);
+        int index = list.LastIndexOf(_ => { predicateCalls++; return true; }, 2, 0);
 
         Assert.AreEqual(-1, index);
         Assert.AreEqual(0, predicateCalls);
@@ -249,7 +249,7 @@ public sealed class IListExtensionsTests_LastIndexOf
     {
         IList<int> list = new List<int> { 5, 0, 0, 0 };
 
-        var index = list.LastIndexOf(x => x == 5, 3, 4);
+        int index = list.LastIndexOf(x => x == 5, 3, 4);
 
         Assert.AreEqual(0, index);
     }
@@ -262,7 +262,7 @@ public sealed class IListExtensionsTests_LastIndexOf
     {
         IList<int> list = new List<int> { 0, 0, 0, 5 };
 
-        var index = list.LastIndexOf(x => x == 5, 3, 4);
+        int index = list.LastIndexOf(x => x == 5, 3, 4);
 
         Assert.AreEqual(3, index);
     }
@@ -275,7 +275,7 @@ public sealed class IListExtensionsTests_LastIndexOf
     {
         IList<int> list = new List<int> { 1, 0, 0, 0, 0 };
 
-        var index = list.LastIndexOf(x => x == 1, 4, 5);
+        int index = list.LastIndexOf(x => x == 1, 4, 5);
 
         Assert.AreEqual(0, index);
     }
@@ -289,7 +289,7 @@ public sealed class IListExtensionsTests_LastIndexOf
     {
         IList<int> list = new List<int> { 1, 0, 0, 0, 0 };
 
-        var index = list.LastIndexOf(x => x == 1, 4, 4);
+        int index = list.LastIndexOf(x => x == 1, 4, 4);
 
         Assert.AreEqual(-1, index);
     }
@@ -303,7 +303,7 @@ public sealed class IListExtensionsTests_LastIndexOf
     {
         IList<int> list = new List<int> { 5, 5, 5, 5, 5 };
 
-        var index = list.LastIndexOf(x => x == 5, 2, 2);
+        int index = list.LastIndexOf(x => x == 5, 2, 2);
 
         Assert.AreEqual(2, index);
     }
@@ -327,7 +327,7 @@ public sealed class IListExtensionsTests_LastIndexOf
     {
         IList<int> list = new List<int> { 2, 0, 2, 0, 0, 2 };
 
-        var index = list.LastIndexOf(x => x == 2, 3);
+        int index = list.LastIndexOf(x => x == 2, 3);
 
         Assert.AreEqual(2, index);
     }

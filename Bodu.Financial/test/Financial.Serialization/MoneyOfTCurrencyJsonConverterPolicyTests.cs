@@ -35,7 +35,7 @@ public class MoneyOfTCurrencyJsonConverterPolicyTests
     {
         var money = new Money<USD>(19.99m);
 
-        var json = JsonSerializer.Serialize(money);
+        string json = JsonSerializer.Serialize(money);
 
         Assert.AreEqual("{\"amount\":19.99,\"currency\":\"USD\"}", json);
     }
@@ -61,7 +61,7 @@ public class MoneyOfTCurrencyJsonConverterPolicyTests
     {
         var money = new Money<USD>(19.99m);
 
-        var json = JsonSerializer.Serialize(money, Options(FinancialJsonPolicy.Compact));
+        string json = JsonSerializer.Serialize(money, Options(FinancialJsonPolicy.Compact));
 
         Assert.AreEqual("\"19.99 USD\"", json);
     }
@@ -76,7 +76,7 @@ public class MoneyOfTCurrencyJsonConverterPolicyTests
         var original = new Money<USD>(1234.56m);
         JsonSerializerOptions options = Options(FinancialJsonPolicy.Compact);
 
-        var json = JsonSerializer.Serialize(original, options);
+        string json = JsonSerializer.Serialize(original, options);
         Money<USD> recovered = JsonSerializer.Deserialize<Money<USD>>(json, options);
 
         Assert.AreEqual(original, recovered);
@@ -90,7 +90,7 @@ public class MoneyOfTCurrencyJsonConverterPolicyTests
     [TestMethod]
     public void CompactPolicy_WhenReadingMoneyWithIsoPrefix_ShouldSucceed()
     {
-        var json = "\"USD 19.99\"";
+        string json = "\"USD 19.99\"";
 
         Money<USD> result = JsonSerializer.Deserialize<Money<USD>>(json, Options(FinancialJsonPolicy.Compact));
 
@@ -106,7 +106,7 @@ public class MoneyOfTCurrencyJsonConverterPolicyTests
     {
         var money = new Money<JPY>(2000m);
 
-        var json = JsonSerializer.Serialize(money, Options(FinancialJsonPolicy.Compact));
+        string json = JsonSerializer.Serialize(money, Options(FinancialJsonPolicy.Compact));
 
         Assert.AreEqual("\"2000 JPY\"", json);
     }
@@ -119,7 +119,7 @@ public class MoneyOfTCurrencyJsonConverterPolicyTests
     {
         var money = new Money<BHD>(12.345m);
 
-        var json = JsonSerializer.Serialize(money, Options(FinancialJsonPolicy.Compact));
+        string json = JsonSerializer.Serialize(money, Options(FinancialJsonPolicy.Compact));
 
         Assert.AreEqual("\"12.345 BHD\"", json);
     }
@@ -130,7 +130,7 @@ public class MoneyOfTCurrencyJsonConverterPolicyTests
     [TestMethod]
     public void CompactPolicy_WhenReadingObjectForm_ShouldThrowJsonException()
     {
-        var json = "{\"amount\":19.99,\"currency\":\"USD\"}";
+        string json = "{\"amount\":19.99,\"currency\":\"USD\"}";
 
         Assert.ThrowsExactly<JsonException>(() =>
         {
@@ -144,7 +144,7 @@ public class MoneyOfTCurrencyJsonConverterPolicyTests
     [TestMethod]
     public void CompactPolicy_WhenReadingMismatchedCurrency_ShouldThrowJsonException()
     {
-        var json = "\"19.99 JPY\"";
+        string json = "\"19.99 JPY\"";
 
         Assert.ThrowsExactly<JsonException>(() =>
         {
@@ -158,7 +158,7 @@ public class MoneyOfTCurrencyJsonConverterPolicyTests
     [TestMethod]
     public void CompactPolicy_WhenReadingNumericToken_ShouldThrowJsonException()
     {
-        var json = "19.99";
+        string json = "19.99";
 
         Assert.ThrowsExactly<JsonException>(() =>
         {
@@ -172,7 +172,7 @@ public class MoneyOfTCurrencyJsonConverterPolicyTests
     [TestMethod]
     public void LenientPolicy_WhenReadingLowercaseCurrency_ShouldSucceed()
     {
-        var json = "{\"amount\":19.99,\"currency\":\"usd\"}";
+        string json = "{\"amount\":19.99,\"currency\":\"usd\"}";
 
         Money<USD> result = JsonSerializer.Deserialize<Money<USD>>(json, Options(FinancialJsonPolicy.Lenient));
 
@@ -185,7 +185,7 @@ public class MoneyOfTCurrencyJsonConverterPolicyTests
     [TestMethod]
     public void LenientPolicy_WhenReadingPaddedCurrency_ShouldSucceed()
     {
-        var json = "{\"amount\":19.99,\"currency\":\"  USD  \"}";
+        string json = "{\"amount\":19.99,\"currency\":\"  USD  \"}";
 
         Money<USD> result = JsonSerializer.Deserialize<Money<USD>>(json, Options(FinancialJsonPolicy.Lenient));
 
@@ -199,7 +199,7 @@ public class MoneyOfTCurrencyJsonConverterPolicyTests
     [TestMethod]
     public void StrictPolicy_WhenReadingLowercaseCurrency_ShouldThrowJsonException()
     {
-        var json = "{\"amount\":19.99,\"currency\":\"usd\"}";
+        string json = "{\"amount\":19.99,\"currency\":\"usd\"}";
 
         Assert.ThrowsExactly<JsonException>(() =>
         {

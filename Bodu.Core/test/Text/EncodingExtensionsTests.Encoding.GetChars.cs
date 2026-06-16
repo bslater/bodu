@@ -15,11 +15,11 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void TryGetChars_WhenDestinationFits_ShouldReturnTrueAndReportCount()
     {
-        var bytes = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
-        var required = System.Text.Encoding.UTF8.GetCharCount(bytes);
+        byte[] bytes = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
+        int required = System.Text.Encoding.UTF8.GetCharCount(bytes);
         Span<char> destination = new char[required];
 
-        var ok = System.Text.Encoding.UTF8.TryGetChars(bytes, destination, out var written);
+        bool ok = System.Text.Encoding.UTF8.TryGetChars(bytes, destination, out int written);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(required, written);
@@ -32,11 +32,11 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void TryGetChars_WhenDestinationIsOneCharTooSmall_ShouldReturnFalse()
     {
-        var bytes = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
-        var required = System.Text.Encoding.UTF8.GetCharCount(bytes);
-        var backing = new char[required - 1];
+        byte[] bytes = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
+        int required = System.Text.Encoding.UTF8.GetCharCount(bytes);
+        char[] backing = new char[required - 1];
 
-        var ok = System.Text.Encoding.UTF8.TryGetChars(bytes, backing, out var written);
+        bool ok = System.Text.Encoding.UTF8.TryGetChars(bytes, backing, out int written);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0, written);
@@ -49,7 +49,7 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void TryGetChars_WhenEncodingIsNull_ShouldThrowExactly()
     {
-        var backing = new char[64];
+        char[] backing = new char[64];
 
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -66,11 +66,11 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void GetCharsExactly_WhenDestinationIsExactlySized_ShouldWriteAndReturnCount()
     {
-        var bytes = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
-        var required = System.Text.Encoding.UTF8.GetCharCount(bytes);
+        byte[] bytes = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
+        int required = System.Text.Encoding.UTF8.GetCharCount(bytes);
         Span<char> destination = new char[required];
 
-        var written = System.Text.Encoding.UTF8.GetCharsExactly(bytes, destination);
+        int written = System.Text.Encoding.UTF8.GetCharsExactly(bytes, destination);
 
         Assert.AreEqual(required, written);
         Assert.AreEqual(MultiByteText, new string(destination));
@@ -83,9 +83,9 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void GetCharsExactly_WhenDestinationIsLargerThanRequired_ShouldThrowExactly()
     {
-        var bytes = System.Text.Encoding.UTF8.GetBytes(SampleText);
-        var required = System.Text.Encoding.UTF8.GetCharCount(bytes);
-        var backing = new char[required + 1];
+        byte[] bytes = System.Text.Encoding.UTF8.GetBytes(SampleText);
+        int required = System.Text.Encoding.UTF8.GetCharCount(bytes);
+        char[] backing = new char[required + 1];
 
         ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -102,9 +102,9 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void GetCharsExactly_WhenDestinationIsSmallerThanRequired_ShouldThrowExactly()
     {
-        var bytes = System.Text.Encoding.UTF8.GetBytes(SampleText);
-        var required = System.Text.Encoding.UTF8.GetCharCount(bytes);
-        var backing = new char[required - 1];
+        byte[] bytes = System.Text.Encoding.UTF8.GetBytes(SampleText);
+        int required = System.Text.Encoding.UTF8.GetCharCount(bytes);
+        char[] backing = new char[required - 1];
 
         ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -121,7 +121,7 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void GetCharsExactly_WhenEncodingIsNull_ShouldThrowExactly()
     {
-        var backing = new char[64];
+        char[] backing = new char[64];
 
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

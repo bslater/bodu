@@ -24,8 +24,8 @@ public partial class AsconAead128Tests
 
     static AsconAead128Tests()
     {
-        for (var i = 0; i < s_validKey.Length; i++) s_validKey[i] = (byte)i;
-        for (var i = 0; i < s_validNonce.Length; i++) s_validNonce[i] = (byte)(i + 0x10);
+        for (int i = 0; i < s_validKey.Length; i++) s_validKey[i] = (byte)i;
+        for (int i = 0; i < s_validNonce.Length; i++) s_validNonce[i] = (byte)(i + 0x10);
     }
 
     private static readonly string[] s_disposableFieldExclusions =

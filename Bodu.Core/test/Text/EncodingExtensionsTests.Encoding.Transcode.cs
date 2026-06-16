@@ -15,10 +15,10 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void EncodingReceiver_Transcode_ShouldMatchSpanReceiver()
     {
-        var utf8 = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
-        var expected = ((ReadOnlySpan<byte>)utf8).Transcode(System.Text.Encoding.UTF8, System.Text.Encoding.Unicode);
+        byte[] utf8 = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
+        byte[] expected = ((ReadOnlySpan<byte>)utf8).Transcode(System.Text.Encoding.UTF8, System.Text.Encoding.Unicode);
 
-        var actual = System.Text.Encoding.UTF8.Transcode(utf8, System.Text.Encoding.Unicode);
+        byte[] actual = System.Text.Encoding.UTF8.Transcode(utf8, System.Text.Encoding.Unicode);
 
         CollectionAssert.AreEqual(expected, actual);
     }
@@ -30,10 +30,10 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void GetTranscodedByteCount_WhenInvoked_ShouldReturnExactBytesOfDestinationEncoding()
     {
-        var utf8 = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
-        var expected = System.Text.Encoding.Convert(System.Text.Encoding.UTF8, System.Text.Encoding.Unicode, utf8).Length;
+        byte[] utf8 = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
+        int expected = System.Text.Encoding.Convert(System.Text.Encoding.UTF8, System.Text.Encoding.Unicode, utf8).Length;
 
-        var actual = System.Text.Encoding.UTF8.GetTranscodedByteCount(utf8, System.Text.Encoding.Unicode);
+        int actual = System.Text.Encoding.UTF8.GetTranscodedByteCount(utf8, System.Text.Encoding.Unicode);
 
         Assert.AreEqual(expected, actual);
     }
@@ -45,7 +45,7 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void GetTranscodedByteCount_WhenInputIsEmpty_ShouldReturnZero()
     {
-        var actual = System.Text.Encoding.UTF8.GetTranscodedByteCount([], System.Text.Encoding.Unicode);
+        int actual = System.Text.Encoding.UTF8.GetTranscodedByteCount([], System.Text.Encoding.Unicode);
 
         Assert.AreEqual(0, actual);
     }
@@ -56,12 +56,12 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void EncodingReceiver_TranscodeTo_ShouldMatchSpanReceiver()
     {
-        var utf8 = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
-        var required = System.Text.Encoding.UTF8.GetTranscodedByteCount(utf8, System.Text.Encoding.Unicode);
-        var expected = ((ReadOnlySpan<byte>)utf8).Transcode(System.Text.Encoding.UTF8, System.Text.Encoding.Unicode);
+        byte[] utf8 = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
+        int required = System.Text.Encoding.UTF8.GetTranscodedByteCount(utf8, System.Text.Encoding.Unicode);
+        byte[] expected = ((ReadOnlySpan<byte>)utf8).Transcode(System.Text.Encoding.UTF8, System.Text.Encoding.Unicode);
         Span<byte> destination = new byte[required];
 
-        var written = System.Text.Encoding.UTF8.TranscodeTo(utf8, System.Text.Encoding.Unicode, destination);
+        int written = System.Text.Encoding.UTF8.TranscodeTo(utf8, System.Text.Encoding.Unicode, destination);
 
         Assert.AreEqual(required, written);
         CollectionAssert.AreEqual(expected, destination.ToArray());
@@ -73,11 +73,11 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void EncodingReceiver_TryTranscodeTo_ShouldMatchSpanReceiver()
     {
-        var utf8 = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
-        var required = System.Text.Encoding.UTF8.GetTranscodedByteCount(utf8, System.Text.Encoding.Unicode);
-        var backing = new byte[required];
+        byte[] utf8 = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
+        int required = System.Text.Encoding.UTF8.GetTranscodedByteCount(utf8, System.Text.Encoding.Unicode);
+        byte[] backing = new byte[required];
 
-        var ok = System.Text.Encoding.UTF8.TryTranscodeTo(utf8, System.Text.Encoding.Unicode, backing, out var written);
+        bool ok = System.Text.Encoding.UTF8.TryTranscodeTo(utf8, System.Text.Encoding.Unicode, backing, out int written);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(required, written);

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EcbExchangeRateXmlParserTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -71,7 +71,7 @@ public class EcbExchangeRateXmlParserTests
     [TestMethod]
     public void Parse_WhenRateIsNonPositive_ShouldSkipCell()
     {
-        var xml =
+        string xml =
             $"<gesmes:Envelope {Namespaces}><Cube><Cube time=\"2023-01-03\">" +
             "<Cube currency=\"USD\" rate=\"0\"/><Cube currency=\"JPY\" rate=\"140.06\"/>" +
             "</Cube></Cube></gesmes:Envelope>";
@@ -88,7 +88,7 @@ public class EcbExchangeRateXmlParserTests
     [TestMethod]
     public void Parse_WhenCurrencyAliasConfigured_ShouldMapToIsoCode()
     {
-        var xml =
+        string xml =
             $"<gesmes:Envelope {Namespaces}><Cube><Cube time=\"2023-01-03\">" +
             "<Cube currency=\"SDR\" rate=\"1.2500\"/></Cube></Cube></gesmes:Envelope>";
         EcbExchangeRateOptions options = new();
@@ -106,7 +106,7 @@ public class EcbExchangeRateXmlParserTests
     [TestMethod]
     public void Parse_WhenNoDatedRows_ShouldThrowFormatException()
     {
-        var xml = $"<gesmes:Envelope {Namespaces}><Cube></Cube></gesmes:Envelope>";
+        string xml = $"<gesmes:Envelope {Namespaces}><Cube></Cube></gesmes:Envelope>";
 
         _ = Assert.ThrowsExactly<EcbExchangeRateFormatException>(() =>
         {

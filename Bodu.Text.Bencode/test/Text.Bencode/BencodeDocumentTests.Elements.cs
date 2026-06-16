@@ -321,9 +321,9 @@ public partial class BencodeDocumentTests
     {
         using var document = BencodeDocument.Parse(Bytes("4:spam"));
 
-        var first = document.RootElement.GetBytes();
+        byte[] first = document.RootElement.GetBytes();
         first[0] = (byte)'X';
-        var second = document.RootElement.GetBytes();
+        byte[] second = document.RootElement.GetBytes();
 
         Assert.AreEqual((byte)'s', second[0]);
     }

@@ -204,7 +204,7 @@ public class BencodeValueTests
     [DataRow(0L, "i0e")]
     public void ToByteArray_WhenInteger_ShouldEmitIntegerToken(long value, string expected)
     {
-        var bytes = BencodeValue.Create(value).ToByteArray();
+        byte[] bytes = BencodeValue.Create(value).ToByteArray();
 
         Assert.AreEqual(expected, Encoding.Latin1.GetString(bytes));
     }
@@ -215,7 +215,7 @@ public class BencodeValueTests
     [TestMethod]
     public void ToByteArray_WhenEmptyString_ShouldEmitZeroLengthByteString()
     {
-        var bytes = BencodeValue.Create(string.Empty).ToByteArray();
+        byte[] bytes = BencodeValue.Create(string.Empty).ToByteArray();
 
         Assert.AreEqual("0:", Encoding.Latin1.GetString(bytes));
     }

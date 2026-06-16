@@ -48,7 +48,7 @@ public class TorrentFixtureTests
     [TestMethod]
     public void Read_WhenTorrentFixture_ShouldRecoverBinaryPiecesLosslessly()
     {
-        var data = LoadFixture();
+        byte[] data = LoadFixture();
         byte[]? pieces = null;
 
         var reader = new Utf8BencodeReader(data);
@@ -74,7 +74,7 @@ public class TorrentFixtureTests
     [TestMethod]
     public void Parse_WhenTorrentFixture_ShouldComputeKnownInfoHashFromRawBytes()
     {
-        var data = LoadFixture();
+        byte[] data = LoadFixture();
         using var document = BencodeDocument.Parse(data);
         BencodeElement root = document.RootElement;
 
@@ -87,7 +87,7 @@ public class TorrentFixtureTests
         Assert.AreEqual(32768L, info.GetProperty("length").GetInt64());
         Assert.AreEqual(40, info.GetProperty("pieces").GetBytes().Length);
 
-        var infoHash = Convert.ToHexString(SHA1.HashData(info.GetRawBytes())).ToLowerInvariant();
+        string infoHash = Convert.ToHexString(SHA1.HashData(info.GetRawBytes())).ToLowerInvariant();
         Assert.AreEqual(ExpectedInfoHash, infoHash);
     }
 
@@ -98,7 +98,7 @@ public class TorrentFixtureTests
     [TestMethod]
     public void Parse_WhenTorrentFixtureAsNodeTree_ShouldRoundTripExactBytes()
     {
-        var data = LoadFixture();
+        byte[] data = LoadFixture();
 
         var node = BencodeNode.Parse(data);
 
@@ -114,7 +114,7 @@ public class TorrentFixtureTests
     [TestMethod]
     public void Deserialize_WhenTorrentFixture_ShouldBindPocoAndRoundTripExactBytes()
     {
-        var data = LoadFixture();
+        byte[] data = LoadFixture();
 
         TorrentModel torrent = BencodeSerializer.Deserialize<TorrentModel>(data);
 

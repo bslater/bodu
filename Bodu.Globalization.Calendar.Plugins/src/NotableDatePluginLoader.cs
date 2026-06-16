@@ -85,10 +85,10 @@ public static class NotableDatePluginLoader
         ILogger log = logger ?? NullLogger.Instance;
 
         AssemblyName assemblyName = assembly.GetName();
-        var name = assemblyName.Name ?? assembly.FullName ?? "<unknown>";
-        var path = string.IsNullOrEmpty(assembly.Location) ? null : assembly.Location;
-        var hash = path is not null && File.Exists(path) ? ComputeHash(path) : null;
-        var token = FormatPublicKeyToken(assemblyName.GetPublicKeyToken());
+        string name = assemblyName.Name ?? assembly.FullName ?? "<unknown>";
+        string? path = string.IsNullOrEmpty(assembly.Location) ? null : assembly.Location;
+        byte[]? hash = path is not null && File.Exists(path) ? ComputeHash(path) : null;
+        string? token = FormatPublicKeyToken(assemblyName.GetPublicKeyToken());
 
         PluginTrustResult trust = trustPolicy.Evaluate(new PluginTrustContext(name, path, hash, token));
         if (!trust.IsTrusted)
@@ -135,7 +135,7 @@ public static class NotableDatePluginLoader
         ThrowHelper.ThrowIfNull(assemblyPath);
         ThrowHelper.ThrowIfNull(trustPolicy);
 
-        var fullPath = Path.GetFullPath(assemblyPath);
+        string fullPath = Path.GetFullPath(assemblyPath);
         AssemblyLoadContext context = new($"NotableDatePlugin:{Path.GetFileNameWithoutExtension(fullPath)}", isCollectible: false);
         Assembly assembly = context.LoadFromAssemblyPath(fullPath);
 
@@ -163,7 +163,7 @@ public static class NotableDatePluginLoader
         if (plugin is not INotableDateAlgorithmPlugin algorithmPlugin)
             return 0;
 
-        var count = 0;
+        int count = 0;
         foreach (KeyValuePair<string, INotableDateAlgorithm> pair in algorithmPlugin.GetAlgorithms())
         {
             registry.Register(pair.Key, pair.Value);

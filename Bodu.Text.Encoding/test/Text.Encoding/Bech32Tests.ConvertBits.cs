@@ -15,7 +15,7 @@ public sealed partial class Bech32Tests
     [TestMethod]
     public void ConvertBits_When8To5WithPadding_ShouldProduceExpectedGroups()
     {
-        var result = Bech32.ConvertBits([0xFF], 8, 5, pad: true)!;
+        byte[] result = Bech32.ConvertBits([0xFF], 8, 5, pad: true)!;
 
         CollectionAssert.AreEqual(new byte[] { 31, 28 }, result);
     }
@@ -28,8 +28,8 @@ public sealed partial class Bech32Tests
     {
         byte[] payload = [0x00, 0x7F, 0x80, 0xAB, 0xCD, 0xEF];
 
-        var groups = Bech32.ConvertBits(payload, 8, 5, pad: true)!;
-        var restored = Bech32.ConvertBits(groups, 5, 8, pad: false);
+        byte[] groups = Bech32.ConvertBits(payload, 8, 5, pad: true)!;
+        byte[]? restored = Bech32.ConvertBits(groups, 5, 8, pad: false);
 
         CollectionAssert.AreEqual(payload, restored);
     }

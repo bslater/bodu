@@ -57,9 +57,9 @@ public partial class ExchangeRateSeriesBuilderTests
         builder.UpsertRange(replacements);
 
         Assert.AreEqual(3, builder.Count);
-        Assert.IsTrue(builder.TryGetRate(new DateOnly(2026, 6, 1), out var rate1));
-        Assert.IsTrue(builder.TryGetRate(new DateOnly(2026, 6, 3), out var rate3));
-        Assert.IsTrue(builder.TryGetRate(new DateOnly(2026, 6, 5), out var rate5));
+        Assert.IsTrue(builder.TryGetRate(new DateOnly(2026, 6, 1), out decimal rate1));
+        Assert.IsTrue(builder.TryGetRate(new DateOnly(2026, 6, 3), out decimal rate3));
+        Assert.IsTrue(builder.TryGetRate(new DateOnly(2026, 6, 5), out decimal rate5));
         Assert.AreEqual(2.00m, rate1);
         Assert.AreEqual(2.10m, rate3);
         Assert.AreEqual(1.54m, rate5);

@@ -20,7 +20,7 @@ public partial class MultisetTests
     {
         var mvd = new Multiset<int>();
 
-        var result = mvd.Remove(99);
+        bool result = mvd.Remove(99);
 
         Assert.IsFalse(result);
     }
@@ -34,7 +34,7 @@ public partial class MultisetTests
         var mvd = new Multiset<int>();
         mvd.Add(1, 3);
 
-        var result = mvd.Remove(1);
+        bool result = mvd.Remove(1);
 
         Assert.IsTrue(result);
         Assert.AreEqual(2, mvd.CountOf(1));
@@ -101,7 +101,7 @@ public partial class MultisetTests
     {
         var mvd = new Multiset<int>();
 
-        var result = mvd.RemoveAll(42);
+        bool result = mvd.RemoveAll(42);
 
         Assert.IsFalse(result);
     }
@@ -114,7 +114,7 @@ public partial class MultisetTests
     {
         var mvd = new Multiset<string>(["x", "x", "x", "y"]);
 
-        var result = mvd.RemoveAll("x");
+        bool result = mvd.RemoveAll("x");
 
         Assert.IsTrue(result);
         Assert.AreEqual(0, mvd.CountOf("x"));

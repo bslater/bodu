@@ -130,8 +130,8 @@ public sealed class SimpleReversingCryptoTransform
         }
         else
         {
-            var stripPadding = _padding is Pkcs7Padding;
-            var blockBytes = _cipher.BlockSize / 8;
+            bool stripPadding = _padding is Pkcs7Padding;
+            int blockBytes = _cipher.BlockSize / 8;
 
             if (stripPadding && input.Length <= blockBytes)
             {
@@ -140,7 +140,7 @@ public sealed class SimpleReversingCryptoTransform
             }
             else
             {
-                var bytesToProcess = input.Length;
+                int bytesToProcess = input.Length;
                 if (stripPadding)
                 {
                     bytesToProcess -= blockBytes;
@@ -176,20 +176,20 @@ public sealed class SimpleReversingCryptoTransform
 
         if (_encrypt)
         {
-            var padded = _padding.Pad(input, _cipher.BlockSize);
+            byte[] padded = _padding.Pad(input, _cipher.BlockSize);
 
             // CryptoStream calls TransformFinalBlock with zero bytes after consuming all complete
             // blocks via TransformBlock when input is block-aligned. Nothing left to encrypt.
             if (padded.Length == 0)
                 return [];
 
-            var output = new byte[padded.Length];
+            byte[] output = new byte[padded.Length];
             _mode.Transform(padded, output, true);
             result = output;
         }
         else
         {
-            var combined = Combine(_deferredInput, input);
+            byte[] combined = Combine(_deferredInput, input);
 
             if (combined.Length == 0)
             {
@@ -202,7 +202,7 @@ public sealed class SimpleReversingCryptoTransform
                 return [];
             }
 
-            var decrypted = new byte[combined.Length];
+            byte[] decrypted = new byte[combined.Length];
             _mode.Transform(combined, decrypted, false);
             result = _padding.Unpad(decrypted, _cipher.BlockSize);
         }
@@ -245,7 +245,7 @@ public sealed class SimpleReversingCryptoTransform
         if (first == null || first.Length == 0)
             return second.ToArray();
 
-        var result = new byte[first.Length + second.Length];
+        byte[] result = new byte[first.Length + second.Length];
         Buffer.BlockCopy(first, 0, result, 0, first.Length);
         second.CopyTo(result.AsSpan(first.Length));
         return result;

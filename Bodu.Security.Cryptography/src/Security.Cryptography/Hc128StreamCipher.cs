@@ -78,7 +78,7 @@ internal sealed class Hc128StreamCipher
     {
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(destination, 0, BlockSizeBytes);
 
-        for (var offset = 0; offset < BlockSizeBytes; offset += 4)
+        for (int offset = 0; offset < BlockSizeBytes; offset += 4)
             BinaryPrimitives.WriteUInt32LittleEndian(destination.Slice(offset, 4), GenerateWord());
     }
 
@@ -164,33 +164,33 @@ internal sealed class Hc128StreamCipher
         Span<uint> w = stackalloc uint[1280];
 
         // W[0..7] = key (repeated), W[8..15] = IV (repeated).
-        for (var i = 0; i < 4; i++)
+        for (int i = 0; i < 4; i++)
         {
-            var k = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(i * 4, 4));
+            uint k = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(i * 4, 4));
             w[i] = k;
             w[i + 4] = k;
         }
 
-        for (var i = 0; i < 4; i++)
+        for (int i = 0; i < 4; i++)
         {
-            var v = BinaryPrimitives.ReadUInt32LittleEndian(nonce.Slice(i * 4, 4));
+            uint v = BinaryPrimitives.ReadUInt32LittleEndian(nonce.Slice(i * 4, 4));
             w[i + 8] = v;
             w[i + 12] = v;
         }
 
-        for (var i = 16; i < 1280; i++)
+        for (int i = 16; i < 1280; i++)
             w[i] = unchecked(F2(w[i - 2]) + w[i - 7] + F1(w[i - 15]) + w[i - 16] + (uint)i);
 
-        for (var i = 0; i < TableSize; i++)
+        for (int i = 0; i < TableSize; i++)
         {
             _p[i] = w[i + 256];
             _q[i] = w[i + 768];
         }
 
         // Run 1024 steps, feeding the output back into the tables instead of releasing it.
-        for (var i = 0; i < 1024; i++)
+        for (int i = 0; i < 1024; i++)
         {
-            var j = i & TableMask;
+            int j = i & TableMask;
             if ((i & 1023) < 512)
                 _p[j] = unchecked((_p[j] + G1(_p[(j - 3) & TableMask], _p[(j - 10) & TableMask], _p[(j - 511) & TableMask])) ^ H1(_p[(j - 12) & TableMask]));
             else
@@ -206,7 +206,7 @@ internal sealed class Hc128StreamCipher
     /// <returns>The next keystream word.</returns>
     private uint GenerateWord()
     {
-        var j = (int)(_counter & TableMask);
+        int j = (int)(_counter & TableMask);
         uint word;
 
         if ((_counter & 1023) < 512)

@@ -38,7 +38,7 @@ public partial class BlockNonCryptographicHashAlgorithmTests
 
         protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength)
         {
-            var output = new byte[BlockSizeBytes + 3];
+            byte[] output = new byte[BlockSizeBytes + 3];
             block.CopyTo(output);
             output[BlockSizeBytes] = unchecked((byte)messageLength);
             return output;

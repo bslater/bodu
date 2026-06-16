@@ -18,7 +18,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void Ctor_WhenSingleSegmentSequence_ShouldMatchSpanTokenStream()
     {
-        var data = Encoding.UTF8.GetBytes(TortureDocument);
+        byte[] data = Encoding.UTF8.GetBytes(TortureDocument);
 
         Utf8TomlReader spanReader = Create(TortureDocument);
         List<string> expected = Drain(ref spanReader);
@@ -34,7 +34,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void Ctor_WhenMultiSegmentSequence_ShouldMatchSpanTokenStream()
     {
-        var data = Encoding.UTF8.GetBytes(TortureDocument);
+        byte[] data = Encoding.UTF8.GetBytes(TortureDocument);
 
         Utf8TomlReader spanReader = Create(TortureDocument);
         List<string> expected = Drain(ref spanReader);
@@ -50,9 +50,9 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void Ctor_WhenSequence_ForTomlDocumentReader_ShouldYieldNormalizedStream()
     {
-        var data = Encoding.UTF8.GetBytes("[a]\nb = 1\n");
+        byte[] data = Encoding.UTF8.GetBytes("[a]\nb = 1\n");
 
-        foreach (var segmentSize in new[] { int.MaxValue, 3 })
+        foreach (int segmentSize in new[] { int.MaxValue, 3 })
         {
             ReadOnlySequence<byte> sequence = segmentSize == int.MaxValue
                 ? new ReadOnlySequence<byte>(data)
@@ -89,7 +89,7 @@ public sealed partial class Utf8TomlReaderTests
     {
         var first = new ByteSegment(data.AsMemory(0, Math.Min(segmentSize, data.Length)));
         ByteSegment last = first;
-        for (var offset = first.Memory.Length; offset < data.Length; offset += segmentSize)
+        for (int offset = first.Memory.Length; offset < data.Length; offset += segmentSize)
             last = last.Append(data.AsMemory(offset, Math.Min(segmentSize, data.Length - offset)));
 
         return new ReadOnlySequence<byte>(first, 0, last, last.Memory.Length);

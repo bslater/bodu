@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyFormatter.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -66,7 +66,7 @@ public sealed class MoneyFormatter
     /// <returns>The format specifier understood by the monetary types.</returns>
     private static string BuildFormat(MoneyFormatOptions options)
     {
-        var specifier = options.CurrencyDisplay switch
+        string specifier = options.CurrencyDisplay switch
         {
             CurrencyDisplay.IsoCode => "G",
             CurrencyDisplay.Symbol => "C",
@@ -79,11 +79,11 @@ public sealed class MoneyFormatter
         };
 
         // The "~" elide prefix and the numeric precision suffix apply only to designator-bearing specifiers.
-        var elide = options.ElideWhenCultureMatches && options.CurrencyDisplay is CurrencyDisplay.IsoCode or CurrencyDisplay.Symbol or CurrencyDisplay.EnglishName
+        string elide = options.ElideWhenCultureMatches && options.CurrencyDisplay is CurrencyDisplay.IsoCode or CurrencyDisplay.Symbol or CurrencyDisplay.EnglishName
             ? "~"
             : string.Empty;
 
-        var precision = options.MinorUnitsOverride is int p
+        string precision = options.MinorUnitsOverride is int p
             ? p.ToString(CultureInfo.InvariantCulture)
             : string.Empty;
 

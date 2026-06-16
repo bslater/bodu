@@ -61,7 +61,7 @@ public class ConfigurationSourceLocationTests
     {
         ConfigurationSourceLocation location = new(7, 13, 1);
 
-        var text = location.ToString();
+        string text = location.ToString();
 
         StringAssert.Contains(text, "7");
         StringAssert.Contains(text, "13");

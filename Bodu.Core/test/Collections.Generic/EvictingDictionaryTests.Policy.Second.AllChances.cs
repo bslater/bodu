@@ -49,7 +49,7 @@ public partial class EvictingDictionaryTests
         // Mark A so the next candidate is B (first non-second-chance item).
         dictionary.Touch("A");
 
-        var candidate = dictionary.PeekEvictionCandidate();
+        string? candidate = dictionary.PeekEvictionCandidate();
         Assert.AreEqual("B", candidate);
 
         // Peek must not mutate the order or count.
@@ -75,7 +75,7 @@ public partial class EvictingDictionaryTests
         dictionary.Touch("B");
         dictionary.Touch("C");
 
-        var candidate = dictionary.PeekEvictionCandidate();
+        string? candidate = dictionary.PeekEvictionCandidate();
         Assert.AreEqual("A", candidate);
     }
 

@@ -54,7 +54,7 @@ public static partial class Base85
     {
         EnsureValidVariant(variant);
 
-        var emitDelimiters = ShouldEmitAscii85Delimiters(variant, options);
+        bool emitDelimiters = ShouldEmitAscii85Delimiters(variant, options);
 
         if (bytes.IsEmpty)
             return emitDelimiters ? Ascii85DelimiterStart + Ascii85DelimiterEnd : string.Empty;
@@ -62,12 +62,12 @@ public static partial class Base85
         if (variant == Base85Variant.Z85 && (bytes.Length & 3) != 0)
             throw new ArgumentException(EncodingResourceStrings.Arg_Invalid_Z85InputMultipleOfFour, nameof(bytes));
 
-        var upperBound = GetMaxEncodedLength(bytes.Length, variant);
+        int upperBound = GetMaxEncodedLength(bytes.Length, variant);
         if (emitDelimiters)
             upperBound += Ascii85DelimiterLength;
 
-        var buffer = new char[upperBound];
-        var written = 0;
+        char[] buffer = new char[upperBound];
+        int written = 0;
 
         if (emitDelimiters)
         {
@@ -108,7 +108,7 @@ public static partial class Base85
     {
         EnsureValidVariant(variant);
 
-        var emitDelimiters = ShouldEmitAscii85Delimiters(variant, options);
+        bool emitDelimiters = ShouldEmitAscii85Delimiters(variant, options);
 
         if (bytes.IsEmpty)
         {
@@ -130,15 +130,15 @@ public static partial class Base85
         if (variant == Base85Variant.Z85 && (bytes.Length & 3) != 0)
             throw new ArgumentException(EncodingResourceStrings.Arg_Invalid_Z85InputMultipleOfFour, nameof(bytes));
 
-        var upperBound = GetMaxEncodedLength(bytes.Length, variant);
-        var totalUpper = emitDelimiters ? upperBound + Ascii85DelimiterLength : upperBound;
+        int upperBound = GetMaxEncodedLength(bytes.Length, variant);
+        int totalUpper = emitDelimiters ? upperBound + Ascii85DelimiterLength : upperBound;
 
         // If destination already meets the worst-case bound we can encode directly into it. Otherwise we encode
         // into a rented scratch buffer and copy only when the ACTUAL written length fits — so callers that pre-size
         // destination for the actual output (which may be shorter when the Ascii85 'z' shortcut is used) succeed.
         if (destination.Length >= totalUpper)
         {
-            var pos = 0;
+            int pos = 0;
             if (emitDelimiters)
             {
                 destination[pos++] = '<';
@@ -156,17 +156,17 @@ public static partial class Base85
             return pos;
         }
 
-        var scratch = System.Buffers.ArrayPool<char>.Shared.Rent(upperBound);
+        char[] scratch = System.Buffers.ArrayPool<char>.Shared.Rent(upperBound);
         try
         {
-            var written = EncodeIntoBuffer(bytes, variant, scratch);
-            var required = emitDelimiters ? written + Ascii85DelimiterLength : written;
+            int written = EncodeIntoBuffer(bytes, variant, scratch);
+            int required = emitDelimiters ? written + Ascii85DelimiterLength : written;
             if (destination.Length < required)
                 throw new ArgumentException(
                     string.Format(System.Globalization.CultureInfo.CurrentCulture, EncodingResourceStrings.Arg_Invalid_Base85DestinationSize, required),
                     nameof(destination));
 
-            var pos = 0;
+            int pos = 0;
             if (emitDelimiters)
             {
                 destination[pos++] = '<';
@@ -237,7 +237,7 @@ public static partial class Base85
     {
         EnsureValidVariant(variant);
 
-        var emitDelimiters = ShouldEmitAscii85Delimiters(variant, options);
+        bool emitDelimiters = ShouldEmitAscii85Delimiters(variant, options);
 
         if (bytes.IsEmpty)
         {
@@ -264,13 +264,13 @@ public static partial class Base85
         if (variant == Base85Variant.Z85 && (bytes.Length & 3) != 0)
             throw new ArgumentException(EncodingResourceStrings.Arg_Invalid_Z85InputMultipleOfFour, nameof(bytes));
 
-        var upperBound = GetMaxEncodedLength(bytes.Length, variant);
-        var totalUpper = emitDelimiters ? upperBound + Ascii85DelimiterLength : upperBound;
+        int upperBound = GetMaxEncodedLength(bytes.Length, variant);
+        int totalUpper = emitDelimiters ? upperBound + Ascii85DelimiterLength : upperBound;
 
         // Fast path: destination meets the worst-case bound — encode in place.
         if (destination.Length >= totalUpper)
         {
-            var pos = 0;
+            int pos = 0;
             if (emitDelimiters)
             {
                 destination[pos++] = '<';
@@ -291,18 +291,18 @@ public static partial class Base85
 
         // Slow path: encode into a rented scratch then copy if the ACTUAL output (which may be shorter when the
         // Ascii85 'z' shortcut is used) fits the caller's destination.
-        var scratch = System.Buffers.ArrayPool<char>.Shared.Rent(upperBound);
+        char[] scratch = System.Buffers.ArrayPool<char>.Shared.Rent(upperBound);
         try
         {
-            var written = EncodeIntoBuffer(bytes, variant, scratch);
-            var required = emitDelimiters ? written + Ascii85DelimiterLength : written;
+            int written = EncodeIntoBuffer(bytes, variant, scratch);
+            int required = emitDelimiters ? written + Ascii85DelimiterLength : written;
             if (destination.Length < required)
             {
                 charsWritten = 0;
                 return false;
             }
 
-            var pos = 0;
+            int pos = 0;
             if (emitDelimiters)
             {
                 destination[pos++] = '<';
@@ -336,16 +336,16 @@ public static partial class Base85
     /// <returns>The number of characters written.</returns>
     private static int EncodeIntoBuffer(ReadOnlySpan<byte> bytes, Base85Variant variant, Span<char> destination)
     {
-        var alphabet = GetAlphabet(variant);
-        var allowShortcut = variant == Base85Variant.Ascii85;
+        string alphabet = GetAlphabet(variant);
+        bool allowShortcut = variant == Base85Variant.Ascii85;
 
-        var position = 0;
-        var sourcePos = 0;
+        int position = 0;
+        int sourcePos = 0;
 
         Span<char> group = stackalloc char[5];
         while (sourcePos + 4 <= bytes.Length)
         {
-            var value =
+            uint value =
                 ((uint)bytes[sourcePos] << 24) |
                 ((uint)bytes[sourcePos + 1] << 16) |
                 ((uint)bytes[sourcePos + 2] << 8) |
@@ -357,7 +357,7 @@ public static partial class Base85
             }
             else
             {
-                for (var i = 4; i >= 0; i--)
+                for (int i = 4; i >= 0; i--)
                 {
                     group[i] = alphabet[(int)(value % 85)];
                     value /= 85;
@@ -370,16 +370,16 @@ public static partial class Base85
             sourcePos += 4;
         }
 
-        var remaining = bytes.Length - sourcePos;
+        int remaining = bytes.Length - sourcePos;
         if (remaining > 0)
         {
             uint value = 0;
-            for (var i = 0; i < remaining; i++)
+            for (int i = 0; i < remaining; i++)
             {
                 value |= (uint)bytes[sourcePos + i] << ((3 - i) * 8);
             }
 
-            for (var i = 4; i >= 0; i--)
+            for (int i = 4; i >= 0; i--)
             {
                 group[i] = alphabet[(int)(value % 85)];
                 value /= 85;

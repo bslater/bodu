@@ -273,7 +273,7 @@ public static partial class NonCryptographicHashAlgorithmExtensions
 
         try
         {
-            var inputBytes = encoding.GetBytes(input);
+            byte[] inputBytes = encoding.GetBytes(input);
             using var stream = new MemoryStream(inputBytes, writable: false);
             return await algorithm.VerifyHashAsync(stream, expectedHash, cancellationToken).ConfigureAwait(false);
         }

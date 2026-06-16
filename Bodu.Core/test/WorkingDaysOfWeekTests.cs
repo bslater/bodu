@@ -108,7 +108,7 @@ public class WorkingDaysOfWeekTests
     {
         var pattern = value.ToWeekPattern();
 
-        var success = pattern.TryGetWorkingDaysOfWeek(out WorkingDaysOfWeek actual);
+        bool success = pattern.TryGetWorkingDaysOfWeek(out WorkingDaysOfWeek actual);
 
         Assert.IsTrue(success);
         Assert.AreEqual(value, actual);
@@ -123,7 +123,7 @@ public class WorkingDaysOfWeekTests
     {
         var oddPattern = new WeekPattern(DayOfWeek.Tuesday, DayOfWeek.Thursday);
 
-        var success = oddPattern.TryGetWorkingDaysOfWeek(out WorkingDaysOfWeek value);
+        bool success = oddPattern.TryGetWorkingDaysOfWeek(out WorkingDaysOfWeek value);
 
         Assert.IsFalse(success);
         Assert.AreEqual(WorkingDaysOfWeek.Custom, value);
@@ -139,7 +139,7 @@ public class WorkingDaysOfWeekTests
         var pattern = WorkingDaysOfWeek.AllDays.ToWeekPattern();
 
         Assert.AreEqual(7, pattern.Count);
-        for (var i = 0; i < 7; i++)
+        for (int i = 0; i < 7; i++)
             Assert.IsTrue(pattern.Contains((DayOfWeek)i), $"Expected AllDays to include {(DayOfWeek)i}.");
     }
 

@@ -39,12 +39,12 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     {
         NonCryptographicHashAlgorithm snapshot = CreateAlgorithm(variant);
         snapshot.Append(NonCryptographicHashSharedInputs.Abc);
-        var expected = snapshot.GetCurrentHash();
+        byte[] expected = snapshot.GetCurrentHash();
 
         TAlgorithm algorithm = CreateAlgorithm(variant);
         algorithm.Append(NonCryptographicHashSharedInputs.Abc);
 
-        var actual = algorithm.GetHashAndReset();
+        byte[] actual = algorithm.GetHashAndReset();
 
         CollectionAssert.AreEqual(expected, actual);
     }
@@ -78,8 +78,8 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
         TAlgorithm algorithm = CreateAlgorithm(variant);
         algorithm.Append(NonCryptographicHashSharedInputs.Sequential0To255);
 
-        var destination = new byte[algorithm.HashLengthInBytes];
-        var written = algorithm.GetHashAndReset(destination);
+        byte[] destination = new byte[algorithm.HashLengthInBytes];
+        int written = algorithm.GetHashAndReset(destination);
 
         Assert.AreEqual(algorithm.HashLengthInBytes, written);
 

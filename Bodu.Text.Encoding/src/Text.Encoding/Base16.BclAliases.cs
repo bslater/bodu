@@ -49,7 +49,7 @@ public static partial class Base16
         if ((utf8Source.Length & 1) != 0)
             throw new FormatException(EncodingResourceStrings.Format_Invalid_HexDigitCountOdd);
 
-        var result = new byte[utf8Source.Length / 2];
+        byte[] result = new byte[utf8Source.Length / 2];
         return !DecodeHexPairsFromUtf8(utf8Source, result)
             ? throw new FormatException(EncodingResourceStrings.Format_Invalid_HexCharacters)
             : result;

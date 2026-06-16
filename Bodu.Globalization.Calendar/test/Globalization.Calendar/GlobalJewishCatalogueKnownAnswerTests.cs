@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="GlobalJewishCatalogueKnownAnswerTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -39,7 +39,7 @@ public sealed class GlobalJewishCatalogueKnownAnswerTests
             .Select(r => r.NotableDateId)
             .ToHashSet(StringComparer.Ordinal);
 
-        foreach (var id in new[]
+        foreach (string? id in new[]
         {
             "tu-bishvat", "purim", "passover", "lag-baomer", "shavuot", "tisha-bav", "rosh-hashanah", "yom-kippur",
             "sukkot", "shemini-atzeret", "simchat-torah-israel", "simchat-torah-diaspora", "hanukkah",

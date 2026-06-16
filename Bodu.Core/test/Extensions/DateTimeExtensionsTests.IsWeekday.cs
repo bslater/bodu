@@ -20,7 +20,7 @@ public partial class DateTimeExtensionsTests
     {
         IWeekendDefinitionProvider? provider = providerType is null ? null : (IWeekendDefinitionProvider)Activator.CreateInstance(providerType)!;
 
-        var actual = DateTimeExtensions.IsWeekday(input.DayOfWeek, weekend, provider);
+        bool actual = DateTimeExtensions.IsWeekday(input.DayOfWeek, weekend, provider);
 
         Assert.AreEqual(!expected, actual, $"Failed for {input.DayOfWeek} with weekend {weekend}");
     }
@@ -60,7 +60,7 @@ public partial class DateTimeExtensionsTests
     {
         IWeekendDefinitionProvider? provider = providerType is null ? null : (IWeekendDefinitionProvider)Activator.CreateInstance(providerType)!;
 
-        var actual = input.IsWeekday(weekend, provider);
+        bool actual = input.IsWeekday(weekend, provider);
         Assert.AreEqual(!expected, actual, $"Failed for {input} with weekend {weekend}");
     }
 

@@ -15,9 +15,9 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void ToSafePathSegment_WhenInputContainsPrimaryDirectorySeparator_ShouldReplaceWithUnderscore()
     {
-        var input = $"foo{Path.DirectorySeparatorChar}bar";
+        string input = $"foo{Path.DirectorySeparatorChar}bar";
 
-        var actual = input.ToSafePathSegment();
+        string actual = input.ToSafePathSegment();
 
         Assert.AreEqual("foo_bar", actual);
     }
@@ -29,9 +29,9 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void ToSafePathSegment_WhenInputContainsAltDirectorySeparator_ShouldReplaceWithUnderscore()
     {
-        var input = $"foo{Path.AltDirectorySeparatorChar}bar";
+        string input = $"foo{Path.AltDirectorySeparatorChar}bar";
 
-        var actual = input.ToSafePathSegment();
+        string actual = input.ToSafePathSegment();
 
         Assert.AreEqual("foo_bar", actual);
     }
@@ -45,7 +45,7 @@ public partial class StringExtensionsTests
     {
         const string input = "report-2024.txt";
 
-        var actual = input.ToSafePathSegment();
+        string actual = input.ToSafePathSegment();
 
         Assert.AreEqual(input, actual);
     }

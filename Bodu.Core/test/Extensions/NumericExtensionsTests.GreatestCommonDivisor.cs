@@ -60,8 +60,8 @@ public partial class NumericExtensionsTests
     [DataRow(100, 75, 50)]
     public void GreatestCommonDivisor_Int_ShouldBeAssociative(int a, int b, int c)
     {
-        var leftGroup = a.GreatestCommonDivisor(b).GreatestCommonDivisor(c);
-        var rightGroup = a.GreatestCommonDivisor(b.GreatestCommonDivisor(c));
+        int leftGroup = a.GreatestCommonDivisor(b).GreatestCommonDivisor(c);
+        int rightGroup = a.GreatestCommonDivisor(b.GreatestCommonDivisor(c));
         Assert.AreEqual(leftGroup, rightGroup);
     }
 

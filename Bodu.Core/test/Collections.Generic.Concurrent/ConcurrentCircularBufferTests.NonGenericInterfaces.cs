@@ -168,7 +168,7 @@ public partial class ConcurrentCircularBufferTests
 
         IEnumerable nonGeneric = buffer;
         var observed = new List<string>();
-        foreach (var item in nonGeneric)
+        foreach (object? item in nonGeneric)
             observed.Add((string)item);
 
         CollectionAssert.AreEqual(new[] { "a", "b", "c" }, observed);
@@ -241,7 +241,7 @@ public partial class ConcurrentCircularBufferTests
         var buffer = new ConcurrentCircularBuffer<TestItem>(2);
         ICollection collection = buffer;
 
-        for (var i = 0; i < 3; i++)
+        for (int i = 0; i < 3; i++)
         {
             Assert.ThrowsExactly<NotSupportedException>(() =>
             {

@@ -19,11 +19,11 @@ public abstract partial class FnvTests<TTest, TAlgorithm>
     public void AlgorithmName_WhenUsingVariant_ShouldReturnCorrectlyFormattedString(SingleTestVariant variant)
     {
         TAlgorithm algorithm = CreateAlgorithm(variant);
-        var typeName = algorithm.GetType().Name;
+        string typeName = algorithm.GetType().Name;
 
-        var expectedVariant = typeName.Contains("1a", StringComparison.OrdinalIgnoreCase) ? "1a" : "1";
-        var bits = algorithm.HashLengthInBytes * 8;
-        var expected = $"FNV-{expectedVariant}-{bits}";
+        string expectedVariant = typeName.Contains("1a", StringComparison.OrdinalIgnoreCase) ? "1a" : "1";
+        int bits = algorithm.HashLengthInBytes * 8;
+        string expected = $"FNV-{expectedVariant}-{bits}";
 
         Assert.AreEqual(expected, algorithm.AlgorithmName);
     }

@@ -116,7 +116,7 @@ public sealed class MonitoringBlockCipher
 
         DecryptCalled?.Invoke(this, EventArgs.Empty);
 
-        for (var i = 0; i < input.Length; i++)
+        for (int i = 0; i < input.Length; i++)
             output[i] = (byte)(input[i] ^ xorMask); // reversible
     }
 
@@ -155,7 +155,7 @@ public sealed class MonitoringBlockCipher
 
         EncryptCalled?.Invoke(this, EventArgs.Empty);
 
-        for (var i = 0; i < input.Length; i++)
+        for (int i = 0; i < input.Length; i++)
             output[i] = (byte)(input[i] ^ xorMask);
     }
 }

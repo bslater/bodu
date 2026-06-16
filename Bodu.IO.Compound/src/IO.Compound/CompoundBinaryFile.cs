@@ -218,7 +218,7 @@ public sealed class CompoundBinaryFile
     /// <returns>A read-only <see cref="CompoundStream" /> over the entry's bytes.</returns>
     private CompoundStream MaterializeStream(CompoundDirectoryEntry entry)
     {
-        var bytes = entry.Size < _header.MiniStreamCutoff
+        byte[] bytes = entry.Size < _header.MiniStreamCutoff
             ? _sectors.ReadMiniChain(entry.StartSector, entry.Size)
             : _sectors.ReadChain(entry.StartSector, entry.Size);
 
@@ -231,11 +231,11 @@ public sealed class CompoundBinaryFile
     /// <returns>The parsed directory entries in directory order.</returns>
     private List<CompoundDirectoryEntry> ReadDirectory()
     {
-        var directory = _sectors.ReadChainToEnd(_header.FirstDirectorySector);
-        var count = directory.Length / DirectoryEntrySize;
+        byte[] directory = _sectors.ReadChainToEnd(_header.FirstDirectorySector);
+        int count = directory.Length / DirectoryEntrySize;
         List<CompoundDirectoryEntry> entries = new(count);
 
-        for (var i = 0; i < count; i++)
+        for (int i = 0; i < count; i++)
         {
             ReadOnlySpan<byte> record = directory.AsSpan(i * DirectoryEntrySize, DirectoryEntrySize);
 
@@ -251,13 +251,13 @@ public sealed class CompoundBinaryFile
                 continue;
             }
 
-            var characters = (nameLength / 2) - 1;
-            var name = characters > 0 ? Encoding.Unicode.GetString(record.Slice(0, characters * 2)) : string.Empty;
+            int characters = (nameLength / 2) - 1;
+            string name = characters > 0 ? Encoding.Unicode.GetString(record.Slice(0, characters * 2)) : string.Empty;
             uint startSector = BinaryPrimitives.ReadUInt32LittleEndian(record.Slice(116));
             ulong rawSize = BinaryPrimitives.ReadUInt64LittleEndian(record.Slice(120));
 
             // Version-3 files (512-byte sectors) store the size in the low 32 bits; the high DWORD must be ignored.
-            var size = _header.SectorSize == 512 ? (long)(rawSize & 0xFFFFFFFF) : (long)rawSize;
+            long size = _header.SectorSize == 512 ? (long)(rawSize & 0xFFFFFFFF) : (long)rawSize;
 
             entries.Add(new CompoundDirectoryEntry(name, type, startSector, size));
         }

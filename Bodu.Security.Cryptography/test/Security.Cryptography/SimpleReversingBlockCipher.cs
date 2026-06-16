@@ -125,7 +125,7 @@ internal sealed class SimpleReversingBlockCipher
         ThrowIfDisposed();
         ValidateSpans(input, output);
 
-        var blockBytes = BlockSize / 8;
+        int blockBytes = BlockSize / 8;
         ReadOnlySpan<byte> block = input.Slice(0, blockBytes);
         Span<byte> dest = output.Slice(0, blockBytes);
 
@@ -153,7 +153,7 @@ internal sealed class SimpleReversingBlockCipher
         ThrowIfDisposed();
         ValidateSpans(input, output);
 
-        var blockBytes = BlockSize / 8;
+        int blockBytes = BlockSize / 8;
         ReadOnlySpan<byte> block = input.Slice(0, blockBytes);
         Span<byte> dest = output.Slice(0, blockBytes);
 
@@ -174,7 +174,7 @@ internal sealed class SimpleReversingBlockCipher
     {
         if (disposed) return;
 
-        CryptographyHelper.Clear(this.Key);
+        CryptographyHelper.Clear(Key);
         CryptographicOperations.ZeroMemory(Key);
         Key = [];
 
@@ -195,8 +195,8 @@ internal sealed class SimpleReversingBlockCipher
     /// </summary>
     private static void ApplyTweak(Span<byte> block, byte[] tweakBytes)
     {
-        var tweakLen = tweakBytes.Length;
-        for (var i = 0; i < block.Length; i++)
+        int tweakLen = tweakBytes.Length;
+        for (int i = 0; i < block.Length; i++)
             block[i] ^= tweakBytes[i % tweakLen];
     }
 
@@ -211,7 +211,7 @@ internal sealed class SimpleReversingBlockCipher
 
     private void ValidateSpans(ReadOnlySpan<byte> input, Span<byte> output)
     {
-        var blockBytes = BlockSize / 8;
+        int blockBytes = BlockSize / 8;
         if (input.Length != blockBytes)
             throw new ArgumentException(
                 $"Input span must be exactly {blockBytes} bytes but was {input.Length}.", nameof(input));

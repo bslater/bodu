@@ -50,14 +50,14 @@ public static class VariantDisplayNameHelper
         if (variant is null)
             return "Variant: Default";
 
-        var variantText = variant.ToString();
+        string? variantText = variant.ToString();
         if (!string.IsNullOrWhiteSpace(variantText) &&
             !string.Equals(variantText, variant.GetType().FullName, StringComparison.Ordinal))
         {
             return $"Variant: {variantText}";
         }
 
-        var properties = variant.GetType()
+        string[] properties = variant.GetType()
             .GetProperties(BindingFlags.Instance | BindingFlags.Public)
             .Where(p => p.CanRead && p.GetIndexParameters().Length == 0)
             .Select(p => $"{p.Name}={p.GetValue(variant)}")

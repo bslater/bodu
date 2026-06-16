@@ -48,7 +48,7 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
 
         FieldInfo keyField = typeof(SymmetricStreamAlgorithm)
             .GetField("_key", BindingFlags.NonPublic | BindingFlags.Instance)!;
-        var capturedKey = (byte[]?)keyField.GetValue(cipher);
+        byte[]? capturedKey = (byte[]?)keyField.GetValue(cipher);
 
         Assert.IsNotNull(capturedKey, "Internal key buffer must exist after GenerateKey.");
         Assert.IsTrue(Array.Exists(capturedKey, b => b != 0), "Generated key must not be all-zero before disposal.");
@@ -74,7 +74,7 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
 
         FieldInfo nonceField = typeof(SymmetricStreamAlgorithm)
             .GetField("_nonce", BindingFlags.NonPublic | BindingFlags.Instance)!;
-        var capturedNonce = (byte[]?)nonceField.GetValue(cipher);
+        byte[]? capturedNonce = (byte[]?)nonceField.GetValue(cipher);
 
         Assert.IsNotNull(capturedNonce, "Internal nonce buffer must exist after GenerateNonce.");
         Assert.IsTrue(Array.Exists(capturedNonce, b => b != 0), "Generated nonce must not be all-zero before disposal.");
@@ -102,10 +102,10 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
         ICryptoTransform transform = cipher.CreateEncryptor();
         transform.Dispose();
 
-        var input = new byte[16];
-        var output = new byte[16];
+        byte[] input = new byte[16];
+        byte[] output = new byte[16];
 
-        var threw = false;
+        bool threw = false;
         try
         {
             transform.TransformBlock(input, 0, input.Length, output, 0);

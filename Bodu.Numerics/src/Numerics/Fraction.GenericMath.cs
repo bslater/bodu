@@ -271,7 +271,7 @@ public readonly partial struct Fraction<T> :
             return false;
         }
 
-        var approximation = double.CreateChecked(value);
+        double approximation = double.CreateChecked(value);
         if (!double.IsFinite(approximation))
         {
             result = default;
@@ -320,7 +320,7 @@ public readonly partial struct Fraction<T> :
     /// <returns>The argument with the greater magnitude.</returns>
     private static Fraction<T> MaxMagnitudeInternal(Fraction<T> x, Fraction<T> y)
     {
-        var comparison = Compare(x.Abs(), y.Abs());
+        int comparison = Compare(x.Abs(), y.Abs());
         return comparison > 0
             ? x
             : comparison < 0
@@ -338,7 +338,7 @@ public readonly partial struct Fraction<T> :
     /// <returns>The argument with the smaller magnitude.</returns>
     private static Fraction<T> MinMagnitudeInternal(Fraction<T> x, Fraction<T> y)
     {
-        var comparison = Compare(x.Abs(), y.Abs());
+        int comparison = Compare(x.Abs(), y.Abs());
         return comparison < 0
             ? x
             : comparison > 0

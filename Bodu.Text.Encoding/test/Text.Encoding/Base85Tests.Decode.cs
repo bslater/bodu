@@ -18,7 +18,7 @@ public sealed partial class Base85Tests
     [DynamicData(nameof(Base85KnownAnswerVectors.Ascii85Vectors), typeof(Base85KnownAnswerVectors))]
     public void Decode_ForAscii85KnownAnswerVector_ShouldRecoverBytes(EncodingKnownAnswerVector vector)
     {
-        var actual = Base85.Decode(vector.Encoded, Base85Variant.Ascii85);
+        byte[] actual = Base85.Decode(vector.Encoded, Base85Variant.Ascii85);
 
         CollectionAssert.AreEqual(vector.DecodedBytes, actual);
     }
@@ -56,7 +56,7 @@ public sealed partial class Base85Tests
     [DynamicData(nameof(Base85KnownAnswerVectors.Z85Vectors), typeof(Base85KnownAnswerVectors))]
     public void Decode_ForZ85KnownAnswerVector_ShouldRecoverBytes(EncodingKnownAnswerVector vector)
     {
-        var actual = Base85.Decode(vector.Encoded, Base85Variant.Z85);
+        byte[] actual = Base85.Decode(vector.Encoded, Base85Variant.Z85);
 
         CollectionAssert.AreEqual(vector.DecodedBytes, actual);
     }
@@ -143,7 +143,7 @@ public sealed partial class Base85Tests
     [TestMethod]
     public void Decode_WhenAscii85ZShortcut_ShouldExpandToFourZeroBytes()
     {
-        var actual = Base85.Decode("z");
+        byte[] actual = Base85.Decode("z");
 
         CollectionAssert.AreEqual(new byte[] { 0, 0, 0, 0 }, actual);
     }
@@ -169,13 +169,13 @@ public sealed partial class Base85Tests
     public void Decode_WhenIgnoreWhitespace_ShouldStripAndDecode()
     {
         // First encode some bytes
-        var original = Ascii("Hello world!");
-        var encoded = Base85.Encode(original);
+        byte[] original = Ascii("Hello world!");
+        string encoded = Base85.Encode(original);
 
         // Inject whitespace
-        var decorated = string.Concat(encoded.Select((c, i) => i % 2 == 0 ? c.ToString() + " " : c.ToString()));
+        string decorated = string.Concat(encoded.Select((c, i) => i % 2 == 0 ? c.ToString() + " " : c.ToString()));
 
-        var decoded = Base85.Decode(decorated, Base85Variant.Ascii85, BaseFormatStyles.IgnoreWhitespace);
+        byte[] decoded = Base85.Decode(decorated, Base85Variant.Ascii85, BaseFormatStyles.IgnoreWhitespace);
 
         CollectionAssert.AreEqual(original, decoded);
     }
@@ -204,7 +204,7 @@ public sealed partial class Base85Tests
     [DataRow(';')]
     public void Decode_WhenZ85AlphabetExcludedCharacter_ShouldThrowExactly(char excluded)
     {
-        var input = "abcd" + excluded;
+        string input = "abcd" + excluded;
 
         Assert.ThrowsExactly<FormatException>(() =>
         {

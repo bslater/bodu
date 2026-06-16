@@ -21,7 +21,7 @@ public partial class CompoundBinaryFileTests
 
         Assert.AreEqual(461504L, workbook.Length);
 
-        var header = new byte[2];
+        byte[] header = new byte[2];
         _ = workbook.Read(header, 0, 2);
 
         // The BIFF8 workbook globals substream opens with a BOF record (record id 0x0809, little-endian).
@@ -38,7 +38,7 @@ public partial class CompoundBinaryFileTests
     {
         using CompoundBinaryFile file = OpenSample();
 
-        var found = file.TryGetStream("DoesNotExist", out CompoundStream? stream);
+        bool found = file.TryGetStream("DoesNotExist", out CompoundStream? stream);
 
         Assert.IsFalse(found);
         Assert.IsNull(stream);

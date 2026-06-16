@@ -16,10 +16,10 @@ public partial class IndexedPriorityQueueTests
     public void Remove_WhenAllElementsRemoved_ShouldEmptyQueue()
     {
         var queue = new IndexedPriorityQueue<int, int>();
-        for (var i = 0; i < 20; i++)
+        for (int i = 0; i < 20; i++)
             queue.Enqueue(i, (i * 17) % 53);
 
-        foreach (var key in new[] { 7, 0, 19, 12, 3, 15, 1, 8, 11, 4, 18, 2, 16, 6, 13, 5, 10, 14, 9, 17 })
+        foreach (int key in new[] { 7, 0, 19, 12, 3, 15, 1, 8, 11, 4, 18, 2, 16, 6, 13, 5, 10, 14, 9, 17 })
             Assert.IsTrue(queue.Remove(key));
 
         Assert.AreEqual(0, queue.Count);
@@ -63,7 +63,7 @@ public partial class IndexedPriorityQueueTests
     public void Remove_WhenElementIsLastInStorage_ShouldRemoveCleanly()
     {
         var queue = new IndexedPriorityQueue<int, int>();
-        for (var i = 0; i < 10; i++)
+        for (int i = 0; i < 10; i++)
             queue.Enqueue(i, i);
 
         // The last storage slot's element is implementation-defined; remove every element by
@@ -124,11 +124,11 @@ public partial class IndexedPriorityQueueTests
     public void Remove_WhenManyMixedElements_ShouldMaintainHeapInvariant()
     {
         var queue = new IndexedPriorityQueue<int, int>();
-        for (var i = 0; i < 50; i++)
+        for (int i = 0; i < 50; i++)
             queue.Enqueue(i, (i * 13) % 97);
 
         // Remove a scattered subset.
-        foreach (var key in new[] { 0, 5, 10, 15, 25, 35, 49 })
+        foreach (int key in new[] { 0, 5, 10, 15, 25, 35, 49 })
             Assert.IsTrue(queue.Remove(key));
 
         KeyValuePair<int, int>[] drained = DrainAll(queue);

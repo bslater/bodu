@@ -387,7 +387,7 @@ public sealed class RbaExchangeRateProvider
             foreach (RbaSeriesInfo info in table.GetSeriesInfo())
                 _series[info.Pair] = info;
 
-            var count = AddObservations(table.EnumerateRates(), fetchedAt);
+            int count = AddObservations(table.EnumerateRates(), fetchedAt);
             RebuildSnapshot();
 
             Log.EraLoaded(_logger, _options.DownloadCompletedLogLevel, era.Label, count);

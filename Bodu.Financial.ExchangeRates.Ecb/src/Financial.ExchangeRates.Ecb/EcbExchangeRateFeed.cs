@@ -158,7 +158,7 @@ public sealed class EcbExchangeRateFeed
     {
         ThrowHelper.ThrowIfNull(feeds);
 
-        for (var i = 0; i < feeds.Count; i++)
+        for (int i = 0; i < feeds.Count; i++)
         {
             if (feeds[i].Covers(date, asOf))
                 return feeds[i];

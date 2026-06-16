@@ -121,7 +121,7 @@ public sealed class XSalsa20Poly1305
     /// </exception>
     public static void ToLibsodiumCombined(ReadOnlySpan<byte> ciphertextThenTag, Span<byte> tagThenCiphertext)
     {
-        var ciphertextLength = ValidateCombined(ciphertextThenTag, tagThenCiphertext);
+        int ciphertextLength = ValidateCombined(ciphertextThenTag, tagThenCiphertext);
 
         Span<byte> tag = stackalloc byte[TagBytes];
         ciphertextThenTag[ciphertextLength..].CopyTo(tag);
@@ -144,7 +144,7 @@ public sealed class XSalsa20Poly1305
     /// </exception>
     public static void FromLibsodiumCombined(ReadOnlySpan<byte> tagThenCiphertext, Span<byte> ciphertextThenTag)
     {
-        var ciphertextLength = ValidateCombined(tagThenCiphertext, ciphertextThenTag);
+        int ciphertextLength = ValidateCombined(tagThenCiphertext, ciphertextThenTag);
 
         Span<byte> tag = stackalloc byte[TagBytes];
         tagThenCiphertext[..TagBytes].CopyTo(tag);

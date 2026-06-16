@@ -32,8 +32,8 @@ public static partial class Base45
         if (bytes.IsEmpty)
             return string.Empty;
 
-        var length = GetEncodedLength(bytes.Length);
-        var buffer = System.Buffers.ArrayPool<char>.Shared.Rent(length);
+        int length = GetEncodedLength(bytes.Length);
+        char[] buffer = System.Buffers.ArrayPool<char>.Shared.Rent(length);
         try
         {
             EncodeInto(bytes, buffer.AsSpan(0, length));
@@ -82,7 +82,7 @@ public static partial class Base45
         if (bytes.IsEmpty)
             return 0;
 
-        var length = GetEncodedLength(bytes.Length);
+        int length = GetEncodedLength(bytes.Length);
         if (destination.Length < length)
             throw new ArgumentException(
                 string.Format(System.Globalization.CultureInfo.CurrentCulture, EncodingResourceStrings.Arg_Invalid_Base45DestinationSize, length),
@@ -109,7 +109,7 @@ public static partial class Base45
             return true;
         }
 
-        var length = GetEncodedLength(bytes.Length);
+        int length = GetEncodedLength(bytes.Length);
         if (destination.Length < length)
         {
             charsWritten = 0;
@@ -129,13 +129,13 @@ public static partial class Base45
     /// <param name="destination">The destination span sized to the exact encoded length.</param>
     private static void EncodeInto(ReadOnlySpan<byte> bytes, Span<char> destination)
     {
-        var position = 0;
-        var i = 0;
+        int position = 0;
+        int i = 0;
 
         // Encode whole byte pairs as three least-significant-first base-45 digits.
         for (; i + 1 < bytes.Length; i += 2)
         {
-            var n = (bytes[i] << 8) | bytes[i + 1];
+            int n = (bytes[i] << 8) | bytes[i + 1];
             destination[position++] = Alphabet[n % Radix];
             n /= Radix;
             destination[position++] = Alphabet[n % Radix];
@@ -145,7 +145,7 @@ public static partial class Base45
         // A trailing odd byte encodes as two base-45 digits.
         if (i < bytes.Length)
         {
-            var n = bytes[i];
+            byte n = bytes[i];
             destination[position++] = Alphabet[n % Radix];
             destination[position] = Alphabet[n / Radix];
         }

@@ -66,7 +66,7 @@ public abstract partial class Skein<T>
         ReadOnlySpan<ulong> cipherWords = MemoryMarshal.Cast<byte, ulong>(_ubiCipherOutput);
         ReadOnlySpan<ulong> blockWords = MemoryMarshal.Cast<byte, ulong>(block);
 
-        for (var i = 0; i < stateWords.Length; i++)
+        for (int i = 0; i < stateWords.Length; i++)
             stateWords[i] = cipherWords[i] ^ blockWords[i];
     }
 
@@ -83,7 +83,7 @@ public abstract partial class Skein<T>
     {
         // T0 carries the low 64 bits of the position; the upper 32 bits of the 96-bit position field are always zero
         // for sequential hashing, so the derived T1 simply encodes the block type and the first/final flags.
-        var t1 = ((ulong)(byte)type << 56)
+        ulong t1 = ((ulong)(byte)type << 56)
             | (first ? 1UL << 62 : 0UL)
             | (final ? 1UL << 63 : 0UL);
 
@@ -144,12 +144,12 @@ public abstract partial class Skein<T>
     /// <param name="key">The key material to absorb.</param>
     private void AbsorbKeyPhase(ReadOnlySpan<byte> key)
     {
-        var blockBytes = BlockSize / 8;
+        int blockBytes = BlockSize / 8;
         Span<byte> block = stackalloc byte[blockBytes];
-        var absorbed = 0UL;
-        var first = true;
-        var remaining = key.Length;
-        var offset = 0;
+        ulong absorbed = 0UL;
+        bool first = true;
+        int remaining = key.Length;
+        int offset = 0;
 
         while (remaining > blockBytes)
         {
@@ -163,7 +163,7 @@ public abstract partial class Skein<T>
         }
 
         // Final key block: remaining is in [0..blockSize]; an empty key is not allowed to reach this method.
-        var finalLength = remaining;
+        int finalLength = remaining;
         block.Clear();
         key.Slice(offset, finalLength).CopyTo(block);
         absorbed += (ulong)finalLength;
@@ -177,12 +177,12 @@ public abstract partial class Skein<T>
     /// <param name="source">The next chunk of input data.</param>
     private void AbsorbMessage(ReadOnlySpan<byte> source)
     {
-        var blockSize = BlockSize / 8;
+        int blockSize = BlockSize / 8;
 
         // Merge the tail of the previous call with the head of this one until we hold a full block of pending data.
         if (_pendingBytes > 0 && _pendingBytes + source.Length > blockSize)
         {
-            var toCopy = blockSize - _pendingBytes;
+            int toCopy = blockSize - _pendingBytes;
             source[..toCopy].CopyTo(_pendingBlock.AsSpan(_pendingBytes));
             _pendingBytes = blockSize;
             source = source[toCopy..];
@@ -239,15 +239,15 @@ public abstract partial class Skein<T>
     /// </remarks>
     private void GenerateOutput(Span<byte> destination)
     {
-        var blockSize = BlockSize / 8;
-        var stateWords = _state.Length;
+        int blockSize = BlockSize / 8;
+        int stateWords = _state.Length;
 
         Span<ulong> savedChainingValue = stackalloc ulong[stateWords];
         _state.AsSpan().CopyTo(savedChainingValue);
 
         Span<byte> outputBlock = stackalloc byte[blockSize];
-        var written = 0;
-        var counter = 0UL;
+        int written = 0;
+        ulong counter = 0UL;
 
         while (written < destination.Length)
         {
@@ -259,8 +259,8 @@ public abstract partial class Skein<T>
 
             Ubi(outputBlock, SkeinTweakType.Out, first: true, final: true, position: sizeof(ulong));
 
-            var remaining = destination.Length - written;
-            var toCopy = remaining < blockSize ? remaining : blockSize;
+            int remaining = destination.Length - written;
+            int toCopy = remaining < blockSize ? remaining : blockSize;
             MemoryMarshal.AsBytes(_state.AsSpan())[..toCopy].CopyTo(destination[written..]);
             written += toCopy;
             counter++;

@@ -54,7 +54,7 @@ public sealed class FileSystemBoeResponseCache
     /// <inheritdoc />
     public bool TryGet(DateOnly startDate, DateOnly endDate, TimeSpan refreshInterval, [MaybeNullWhen(false)] out byte[] bytes)
     {
-        var path = Path.Combine(_directory, FileName(startDate, endDate));
+        string path = Path.Combine(_directory, FileName(startDate, endDate));
 
         try
         {

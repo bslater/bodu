@@ -97,11 +97,11 @@ public partial class ParallelMerkleTreeHashTests
 
         using var parallel = new ParallelMerkleTreeHash(Factory, blockSize, fanOut);
 
-        foreach (var data in inputs)
+        foreach (byte[] data in inputs)
         {
             using var sequential = new MerkleTreeHash(Factory, blockSize, fanOut);
-            var expected = sequential.ComputeHash(data);
-            var actual = parallel.ComputeHash(data);
+            byte[] expected = sequential.ComputeHash(data);
+            byte[] actual = parallel.ComputeHash(data);
 
             CollectionAssert.AreEqual(expected, actual,
                 $"Parity failure on reuse: length={data.Length}. " +
@@ -126,13 +126,13 @@ public partial class ParallelMerkleTreeHashTests
     public async Task Parity_WhenAsyncOverloadUsed_ShouldMatchSequentialResult(
         int blockSize, int fanOut, int dataLength)
     {
-        var data = MakeData(dataLength);
+        byte[] data = MakeData(dataLength);
 
         using var sequential = new MerkleTreeHash(Factory, blockSize, fanOut);
-        var expected = sequential.ComputeHash(data);
+        byte[] expected = sequential.ComputeHash(data);
 
         using var parallel = new ParallelMerkleTreeHash(Factory, blockSize, fanOut);
-        var actual = await parallel.ComputeHashAsync(new MemoryStream(data));
+        byte[] actual = await parallel.ComputeHashAsync(new MemoryStream(data));
 
         CollectionAssert.AreEqual(expected, actual,
             $"Async parity mismatch: blockSize={blockSize}, fanOut={fanOut}, length={dataLength}");
@@ -153,14 +153,14 @@ public partial class ParallelMerkleTreeHashTests
     public void Parity_WhenDiagnosticsAttachedPerCall_ShouldStillMatchSequentialResult(
         int blockSize, int fanOut, int dataLength)
     {
-        var data = MakeData(dataLength);
+        byte[] data = MakeData(dataLength);
 
         using var sequential = new MerkleTreeHash(Factory, blockSize, fanOut);
-        var expected = sequential.ComputeHash(data);
+        byte[] expected = sequential.ComputeHash(data);
 
         var diagnostics = new MerkleTreeDiagnostics();
         using var parallel = new ParallelMerkleTreeHash(Factory, blockSize, fanOut);
-        var actual = parallel.ComputeHash(data, diagnostics);
+        byte[] actual = parallel.ComputeHash(data, diagnostics);
 
         CollectionAssert.AreEqual(expected, actual,
             "Diagnostics must not affect the computed root hash.");
@@ -202,10 +202,10 @@ public partial class ParallelMerkleTreeHashTests
     private static void AssertParityWithSequential(byte[] data, int blockSize, int fanOut)
     {
         using var sequential = new MerkleTreeHash(Factory, blockSize, fanOut);
-        var expected = sequential.ComputeHash(data);
+        byte[] expected = sequential.ComputeHash(data);
 
         using var parallel = new ParallelMerkleTreeHash(Factory, blockSize, fanOut);
-        var actual = parallel.ComputeHash(data);
+        byte[] actual = parallel.ComputeHash(data);
 
         CollectionAssert.AreEqual(expected, actual,
             $"Parity failure: blockSize={blockSize}, fanOut={fanOut}, length={data.Length}. " +

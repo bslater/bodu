@@ -207,7 +207,7 @@ public partial class IEnumerableExtensionsTests_RecursiveSelect
     [TestMethod]
     public void RecursiveSelect_WhenChildSelectorIsNull_ShouldThrowExactly()
     {
-        var source = new[] { new object() };
+        object[] source = new[] { new object() };
         Func<object, IEnumerable<object>>? childSelector = null!;
         Assert.ThrowsExactly<ArgumentNullException>(
             () => source.RecursiveSelect(childSelector).ToList())
@@ -248,7 +248,7 @@ public partial class IEnumerableExtensionsTests_RecursiveSelect
     [TestMethod]
     public void RecursiveSelect_WhenSelectorThrows_ShouldPropagateException()
     {
-        var tree = new object[] { NodeSampleTree.BuildSampleTree() };
+        object[] tree = new object[] { NodeSampleTree.BuildSampleTree() };
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
@@ -291,7 +291,7 @@ public partial class IEnumerableExtensionsTests_RecursiveSelect
     [TestMethod]
     public void RecursiveSelect_WithIndexAndDepthSelector_WhenSelectorIsNull_ShouldThrowExactly()
     {
-        var source = new[] { new object() };
+        object[] source = new[] { new object() };
         Assert.ThrowsExactly<ArgumentNullException>(
             () => source.RecursiveSelect(
                 childSelector: _ => [],
@@ -307,7 +307,7 @@ public partial class IEnumerableExtensionsTests_RecursiveSelect
     [TestMethod]
     public void RecursiveSelect_WithIndexSelector_WhenSelectorIsNull_ShouldThrowExactly()
     {
-        var source = new[] { new object() };
+        object[] source = new[] { new object() };
         Assert.ThrowsExactly<ArgumentNullException>(
             () => source.RecursiveSelect(
                 childSelector: _ => [],
@@ -323,7 +323,7 @@ public partial class IEnumerableExtensionsTests_RecursiveSelect
     [TestMethod]
     public void RecursiveSelect_WithRecursionControl_WhenRecursionControlIsNull_ShouldThrowExactly()
     {
-        var source = new[] { new object() };
+        object[] source = new[] { new object() };
         Assert.ThrowsExactly<ArgumentNullException>(
             () => source.RecursiveSelect(
                 childSelector: _ => [],
@@ -340,7 +340,7 @@ public partial class IEnumerableExtensionsTests_RecursiveSelect
     [TestMethod]
     public void RecursiveSelect_WithRecursionControl_WhenSelectorIsNull_ShouldThrowExactly()
     {
-        var source = new[] { new object() };
+        object[] source = new[] { new object() };
         Assert.ThrowsExactly<ArgumentNullException>(
             () => source.RecursiveSelect(
                 childSelector: _ => [],
@@ -357,7 +357,7 @@ public partial class IEnumerableExtensionsTests_RecursiveSelect
     [TestMethod]
     public void RecursiveSelect_WithSelector_WhenSelectorIsNull_ShouldThrowExactly()
     {
-        var source = new[] { new object() };
+        object[] source = new[] { new object() };
         Assert.ThrowsExactly<ArgumentNullException>(
             () => source.RecursiveSelect(
                 childSelector: _ => [],

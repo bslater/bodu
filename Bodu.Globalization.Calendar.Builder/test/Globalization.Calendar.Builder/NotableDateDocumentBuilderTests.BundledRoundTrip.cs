@@ -40,9 +40,9 @@ public partial class NotableDateDocumentBuilderTests
         string[] territories = ["US", "CA-ON", "AU-NSW", "GB-ENG", "FR", "DE", "IN", "IL", "SA", "JP", "CN", "NZ"];
         NotableDateService service = new(resource);
         var rows = new List<(string, string, DateOnly, bool)>();
-        foreach (var territory in territories)
+        foreach (string territory in territories)
         {
-            for (var year = 2024; year <= 2026; year++)
+            for (int year = 2024; year <= 2026; year++)
             {
                 foreach (NotableDate n in service.Resolve(year, territory))
                     rows.Add((territory, n.NotableDateId, n.Date, n.IsObserved));
@@ -62,7 +62,7 @@ public partial class NotableDateDocumentBuilderTests
     [DynamicData(nameof(BundledCatalogues))]
     public void FromXml_WhenBundledCatalogue_ShouldRoundTripToEquivalentResource(string catalogue)
     {
-        var xml = CommonNotableDateResources.Resolve(catalogue)
+        string xml = CommonNotableDateResources.Resolve(catalogue)
             ?? throw new InvalidOperationException($"Bundled catalogue '{catalogue}' was not found.");
 
         NotableDateResource direct = NotableDateResourceLoader.Load(xml, CommonNotableDateResources.Resolver);

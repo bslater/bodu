@@ -33,7 +33,7 @@ public static partial class DateOnlyExtensions
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(dayOfWeek);
 
-        var baseDayNumber = DateTimeExtensions.GetDayNumberUnchecked(date.Year, date.Month, 1);
+        int baseDayNumber = DateTimeExtensions.GetDayNumberUnchecked(date.Year, date.Month, 1);
         return DateOnly.FromDayNumber(baseDayNumber + (((int)dayOfWeek - (int)GetDayOfWeekFromDayNumber(baseDayNumber) + 7) % 7));
     }
 }

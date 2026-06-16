@@ -30,7 +30,7 @@ public static partial class ArrayExtensions
         if (totalLength < array.Length) throw new ArgumentOutOfRangeException(nameof(totalLength));
 
         var result = new T[totalLength];
-        var padCount = totalLength - array.Length;
+        int padCount = totalLength - array.Length;
 
         if (padCount > 0)
             Array.Fill(result, padValue, 0, padCount);
@@ -63,7 +63,7 @@ public static partial class ArrayExtensions
         var result = new T[totalLength];
         Array.Copy(array, 0, result, 0, array.Length);
 
-        var padCount = totalLength - array.Length;
+        int padCount = totalLength - array.Length;
         if (padCount > 0)
             Array.Fill(result, padValue, array.Length, padCount);
 

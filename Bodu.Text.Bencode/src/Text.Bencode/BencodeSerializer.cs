@@ -109,7 +109,7 @@ public static class BencodeSerializer
         ThrowHelper.ThrowIfNull(destination);
         BencodeThrowHelper.ThrowIfStreamNotWritable(destination);
 
-        var bytes = Serialize(value, options);
+        byte[] bytes = Serialize(value, options);
         destination.Write(bytes, 0, bytes.Length);
     }
 
@@ -189,7 +189,7 @@ public static class BencodeSerializer
         ThrowHelper.ThrowIfNull(destination);
         BencodeThrowHelper.ThrowIfStreamNotWritable(destination);
 
-        var bytes = Serialize(value, options);
+        byte[] bytes = Serialize(value, options);
         return destination.WriteAsync(bytes, cancellationToken);
     }
 

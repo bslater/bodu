@@ -45,7 +45,7 @@ public partial class ConfigurationKatRunnerTests
             Assert.AreEqual(ev.Value, view[ev.Key], $"{kat.Id}: expected value for '{ev.Key}'.");
         }
 
-        foreach (var absent in kat.UnexpectedKeys)
+        foreach (string absent in kat.UnexpectedKeys)
         {
             Assert.IsNull(view[absent], $"{kat.Id}: '{absent}' should be absent from the resolved view.");
         }

@@ -231,12 +231,12 @@ internal static class CalendarSystems
 
         List<DateOnly> matches = new();
 
-        for (var calendarYear = firstCalendarYear; calendarYear <= lastCalendarYear; calendarYear++)
+        for (int calendarYear = firstCalendarYear; calendarYear <= lastCalendarYear; calendarYear++)
         {
             int monthNumber;
             if (monthAlias is not null)
             {
-                var isLeapYear = SafeGetMonthsInYear(calendar, calendarYear) == 13;
+                bool isLeapYear = SafeGetMonthsInYear(calendar, calendarYear) == 13;
                 monthNumber = ResolveHebrewMonthAlias(monthAlias, isLeapYear);
                 if (monthNumber < 0)
                     continue;
@@ -290,12 +290,12 @@ internal static class CalendarSystems
         if (gregorianYear < calendar.MinSupportedDateTime.Year || gregorianYear >= calendar.MaxSupportedDateTime.Year)
             return null;
 
-        var monthsInYear = calendar.GetMonthsInYear(gregorianYear);
-        var leapMonth = calendar.GetLeapMonth(gregorianYear);
+        int monthsInYear = calendar.GetMonthsInYear(gregorianYear);
+        int leapMonth = calendar.GetLeapMonth(gregorianYear);
 
         // GetLeapMonth returns the 1-based position of the intercalary month, or 0 in a common year. A conventional
         // month at or after that slot is shifted forward one index to step over the inserted month.
-        var calendarMonth = leapMonth > 0 && month >= leapMonth ? month + 1 : month;
+        int calendarMonth = leapMonth > 0 && month >= leapMonth ? month + 1 : month;
         if (calendarMonth > monthsInYear)
             return null;
 

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HashingStreamTests.WriteAsync.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -16,7 +16,7 @@ public sealed partial class HashingStreamTests
     [TestMethod]
     public async Task WriteAsync_WhenPayloadWritten_ShouldForwardBytesAndAccumulateSameDigest()
     {
-        var payload = CreatePayload(2048);
+        byte[] payload = CreatePayload(2048);
         using MemoryStream inner = new();
         using HashingStream stream = new(inner, new Fnv1a32());
 
@@ -36,7 +36,7 @@ public sealed partial class HashingStreamTests
     [TestMethod]
     public async Task WriteAsync_ForArrayOverload_ShouldForwardSegmentAndHashIt()
     {
-        var payload = CreatePayload(100);
+        byte[] payload = CreatePayload(100);
         using MemoryStream inner = new();
         using HashingStream stream = new(inner, new Fnv1a32());
 

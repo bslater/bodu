@@ -129,7 +129,7 @@ public partial class FractionTests
     [DataRow(-3, 1, "-3")]
     public void ToContinuedFraction_WhenExpanded_ShouldYieldKnownCoefficients(int numerator, int denominator, string expected)
     {
-        var coefficients = new Fraction<int>(numerator, denominator).ToContinuedFraction();
+        int[] coefficients = new Fraction<int>(numerator, denominator).ToContinuedFraction();
 
         CollectionAssert.AreEqual(ParseCoefficients(expected), coefficients);
     }

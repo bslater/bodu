@@ -59,7 +59,7 @@ public partial class BlockNonCryptographicHashAlgorithmTests
 
         hasher.Append(new byte[] { 0xAA, 0xBB });
 
-        var copy = hasher.ResidualBytesExposed.ToArray();
+        byte[] copy = hasher.ResidualBytesExposed.ToArray();
         Assert.AreEqual(2, copy.Length);
         Assert.AreEqual(0xAA, copy[0]);
         Assert.AreEqual(0xBB, copy[1]);

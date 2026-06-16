@@ -59,7 +59,7 @@ public sealed partial class ThrowHelperTests
         Array? array = arrayLength < 0 ? null : new int[arrayLength];
         Type expected = Type.GetType($"System.{expectedExceptionTypeName}, System.Private.CoreLib")
             ?? throw new InvalidOperationException($"Unknown exception type '{expectedExceptionTypeName}'.");
-        var param = expectedParamName.Length == 0 ? null : expectedParamName;
+        string? param = expectedParamName.Length == 0 ? null : expectedParamName;
 
         AssertGuard(
             testName,
@@ -78,7 +78,7 @@ public sealed partial class ThrowHelperTests
     [DataRow(2, 10)]  // Count > array length
     public void ThrowIfArrayOffsetOrCountInvalid_WhenOffsetOrCountOutOfRange_ShouldThrowExactly(int offset, int count)
     {
-        var array = new int[5];
+        int[] array = new int[5];
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(array, offset, count);
@@ -96,7 +96,7 @@ public sealed partial class ThrowHelperTests
     [DataRow(4, 1)]
     public void ThrowIfArrayOffsetOrCountInvalid_WhenParametersAreValid_ShouldNotThrow(int offset, int count)
     {
-        var array = new int[5];
+        int[] array = new int[5];
         ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(array, offset, count);
     }
 
@@ -108,7 +108,7 @@ public sealed partial class ThrowHelperTests
     [DataRow(4, 2)]  // Offset + count exceeds array length
     public void ThrowIfArrayOffsetOrCountInvalid_WhenSumExceedsLength_ShouldThrowExactly(int offset, int count)
     {
-        var array = new int[5];
+        int[] array = new int[5];
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
             ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(array, offset, count);

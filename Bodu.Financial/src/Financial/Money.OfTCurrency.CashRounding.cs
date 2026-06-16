@@ -54,13 +54,13 @@ public readonly partial struct Money<TCurrency>
     public Money<TCurrency> RoundToCash(MidpointRounding rounding)
     {
         CurrencyMetadataDescriptor metadata = CurrencyMetadata<TCurrency>.Value;
-        var increment = metadata.CashRoundingIncrement;
+        decimal increment = metadata.CashRoundingIncrement;
         if (increment == 0m)
             return this;
 
         // increment is validated to be representable at MinorUnits, so multiplier × increment is also at
         // MinorUnit precision and can take the FromNormalizedAmount fast path without a second rounding step.
-        var multiplier = decimal.Round(_amount / increment, 0, rounding);
+        decimal multiplier = decimal.Round(_amount / increment, 0, rounding);
         return FromNormalizedAmount(multiplier * increment);
     }
 

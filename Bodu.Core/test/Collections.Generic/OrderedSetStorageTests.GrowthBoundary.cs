@@ -20,13 +20,13 @@ public partial class OrderedSetStorageTests
         var sut = new OrderedSetStorage<int>(capacity: 0, comparer: null);
 
         // Force several growth cycles by adding well beyond the default 4-bucket capacity.
-        for (var i = 0; i < 50; i++)
+        for (int i = 0; i < 50; i++)
             sut.Add(i);
 
         Assert.AreEqual(50, sut.Count);
 
         // All inserted items must remain findable after every rehash that occurred during the run.
-        for (var i = 0; i < 50; i++)
+        for (int i = 0; i < 50; i++)
             Assert.IsTrue(sut.Contains(i), $"Storage lost item {i} during rehash.");
     }
 
@@ -39,9 +39,9 @@ public partial class OrderedSetStorageTests
     public void AddRange_WhenSourceIsEmpty_ShouldNotGrowStorage()
     {
         var sut = new OrderedSetStorage<int>(capacity: 0, comparer: null);
-        var capacityBefore = sut.Capacity;
+        int capacityBefore = sut.Capacity;
 
-        var added = sut.AddRange([]);
+        int added = sut.AddRange([]);
 
         Assert.AreEqual(0, added);
         Assert.AreEqual(capacityBefore, sut.Capacity);
@@ -58,7 +58,7 @@ public partial class OrderedSetStorageTests
     {
         var sut = new OrderedSetStorage<int>(capacity: 4, comparer: null);
 
-        var reported = sut.EnsureCapacity(1024);
+        int reported = sut.EnsureCapacity(1024);
 
         Assert.IsGreaterThanOrEqualTo(1024, reported);
         Assert.IsGreaterThanOrEqualTo(1024, sut.Capacity);
@@ -74,7 +74,7 @@ public partial class OrderedSetStorageTests
     {
         var sut = new OrderedSetStorage<int>(capacity: 0, comparer: null);
 
-        var reported = sut.EnsureCapacity(1);
+        int reported = sut.EnsureCapacity(1);
 
         Assert.IsGreaterThanOrEqualTo(4, reported, $"Expected at least DefaultCapacity (4), got {reported}.");
     }

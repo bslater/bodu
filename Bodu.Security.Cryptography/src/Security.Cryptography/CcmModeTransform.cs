@@ -155,13 +155,13 @@ public sealed class CcmModeTransform
         ThrowIfDisposed();
         ThrowIfCompleted();
 
-        var required = plaintext.Length + (TagSizeBits / 8);
+        int required = plaintext.Length + (TagSizeBits / 8);
         CryptographyThrowHelper.ThrowIfOutputBufferTooSmall(output, required);
 
         EnsureAadProcessed();
 
-        var mac = ComputeCbcMac(_aad.AsSpan(), plaintext);
-        var encTag = XorWithCtrBlock(mac, counterIndex: 0);
+        byte[] mac = ComputeCbcMac(_aad.AsSpan(), plaintext);
+        byte[] encTag = XorWithCtrBlock(mac, counterIndex: 0);
 
         EncryptCtr(plaintext, output[..plaintext.Length], startIndex: 1);
         encTag.AsSpan(0, TagSizeBits / 8).CopyTo(output[plaintext.Length..]);
@@ -183,7 +183,7 @@ public sealed class CcmModeTransform
 
         CryptographyThrowHelper.ThrowIfCiphertextTooShort(ciphertextWithTag, TagSizeBits / 8);
 
-        var plaintextLength = ciphertextWithTag.Length - (TagSizeBits / 8);
+        int plaintextLength = ciphertextWithTag.Length - (TagSizeBits / 8);
         CryptographyThrowHelper.ThrowIfOutputBufferTooSmall(output, plaintextLength);
 
         EnsureAadProcessed();
@@ -193,8 +193,8 @@ public sealed class CcmModeTransform
 
         EncryptCtr(ciphertext, output[..plaintextLength], startIndex: 1);
 
-        var mac = ComputeCbcMac(_aad.AsSpan(), output[..plaintextLength]);
-        var encTag = XorWithCtrBlock(mac, counterIndex: 0);
+        byte[] mac = ComputeCbcMac(_aad.AsSpan(), output[..plaintextLength]);
+        byte[] encTag = XorWithCtrBlock(mac, counterIndex: 0);
 
         if (!CryptographicOperations.FixedTimeEquals(encTag.AsSpan(0, TagSizeBits / 8), receivedTag))
         {
@@ -272,17 +272,17 @@ public sealed class CcmModeTransform
     /// <returns>The computed CBC-MAC tag, truncated to the configured tag length.</returns>
     private byte[] ComputeCbcMac(ReadOnlySpan<byte> aad, ReadOnlySpan<byte> plaintext)
     {
-        var blockSize = _cipher.BlockSize / 8;
-        var mac = new byte[blockSize];
+        int blockSize = _cipher.BlockSize / 8;
+        byte[] mac = new byte[blockSize];
 
         // Block B0.
-        var hasAad = aad.Length > 0;
-        var b0 = new byte[blockSize];
+        bool hasAad = aad.Length > 0;
+        byte[] b0 = new byte[blockSize];
         b0[0] = hasAad ? BaseB0WithAad : BaseB0NoAad;
         _nonce.CopyTo(b0, 1);
 
         // Message length in last 3 bytes (big-endian, q=3).
-        var len = (uint)plaintext.Length;
+        uint len = (uint)plaintext.Length;
         b0[15] = (byte)len;
         b0[14] = (byte)(len >> 8);
         b0[13] = (byte)(len >> 16);
@@ -298,20 +298,20 @@ public sealed class CcmModeTransform
             }
 
             // Encode: 2-byte length + aad + zero-padding to block multiple.
-            var encodedLen = 2 + aad.Length;
-            var padded = ((encodedLen + blockSize - 1) / blockSize) * blockSize;
-            var aadEncoded = new byte[padded];
+            int encodedLen = 2 + aad.Length;
+            int padded = ((encodedLen + blockSize - 1) / blockSize) * blockSize;
+            byte[] aadEncoded = new byte[padded];
             aadEncoded[0] = (byte)(aad.Length >> 8);
             aadEncoded[1] = (byte)aad.Length;
             aad.CopyTo(aadEncoded.AsSpan(2));
-            for (var i = 0; i < aadEncoded.Length; i += blockSize)
+            for (int i = 0; i < aadEncoded.Length; i += blockSize)
                 CbcMacUpdate(mac, aadEncoded.AsSpan(i, blockSize));
         }
 
         // Plaintext blocks (zero-padded last block).
-        for (var i = 0; i < plaintext.Length; i += blockSize)
+        for (int i = 0; i < plaintext.Length; i += blockSize)
         {
-            var block = new byte[blockSize];
+            byte[] block = new byte[blockSize];
             plaintext.Slice(i, Math.Min(blockSize, plaintext.Length - i)).CopyTo(block);
             CbcMacUpdate(mac, block);
         }
@@ -328,7 +328,7 @@ public sealed class CcmModeTransform
     private void CbcMacUpdate(byte[] mac, ReadOnlySpan<byte> block)
     {
         Span<byte> xored = stackalloc byte[mac.Length];
-        for (var i = 0; i < mac.Length; i++) xored[i] = (byte)(mac[i] ^ block[i]);
+        for (int i = 0; i < mac.Length; i++) xored[i] = (byte)(mac[i] ^ block[i]);
         _cipher.Encrypt(xored, mac);
     }
 
@@ -340,8 +340,8 @@ public sealed class CcmModeTransform
     /// <returns>A fresh array holding <c>input XOR keystream</c>.</returns>
     private byte[] XorWithCtrBlock(ReadOnlySpan<byte> input, int counterIndex)
     {
-        var blockSize = _cipher.BlockSize / 8;
-        var ctr = new byte[blockSize];
+        int blockSize = _cipher.BlockSize / 8;
+        byte[] ctr = new byte[blockSize];
 
         ctr[0] = CounterFlagByte;
 
@@ -351,10 +351,10 @@ public sealed class CcmModeTransform
         ctr[14] = (byte)(counterIndex >> 8);
         ctr[13] = (byte)(counterIndex >> 16);
 
-        var ks = new byte[blockSize];
+        byte[] ks = new byte[blockSize];
         _cipher.Encrypt(ctr, ks);
 
-        for (var i = 0; i < Math.Min(input.Length, blockSize); i++)
+        for (int i = 0; i < Math.Min(input.Length, blockSize); i++)
             ks[i] ^= input[i];
 
         return ks;
@@ -369,13 +369,13 @@ public sealed class CcmModeTransform
     /// <param name="startIndex">The starting counter-block index in the CTR sequence.</param>
     private void EncryptCtr(ReadOnlySpan<byte> input, Span<byte> output, int startIndex)
     {
-        var blockSize = _cipher.BlockSize / 8;
+        int blockSize = _cipher.BlockSize / 8;
         Span<byte> ks = stackalloc byte[blockSize];
 
-        for (var offset = 0; offset < input.Length; offset += blockSize)
+        for (int offset = 0; offset < input.Length; offset += blockSize)
         {
-            var idx = startIndex + (offset / blockSize);
-            var ctr = new byte[blockSize];
+            int idx = startIndex + (offset / blockSize);
+            byte[] ctr = new byte[blockSize];
 
             ctr[0] = CounterFlagByte;
 
@@ -387,9 +387,9 @@ public sealed class CcmModeTransform
 
             _cipher.Encrypt(ctr, ks);
 
-            var rem = Math.Min(blockSize, input.Length - offset);
+            int rem = Math.Min(blockSize, input.Length - offset);
 
-            for (var i = 0; i < rem; i++)
+            for (int i = 0; i < rem; i++)
                 output[offset + i] = (byte)(input[offset + i] ^ ks[i]);
         }
     }

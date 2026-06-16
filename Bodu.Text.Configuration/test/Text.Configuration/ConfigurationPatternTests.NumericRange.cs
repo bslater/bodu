@@ -20,7 +20,7 @@ public partial class ConfigurationPatternTests
     {
         var pattern = ConfigurationPattern.Compile("file-{1..10}.txt");
 
-        for (var i = 1; i <= 10; i++)
+        for (int i = 1; i <= 10; i++)
             Assert.IsTrue(pattern.IsMatch($"file-{i}.txt"), $"expected match for {i}");
 
         Assert.IsFalse(pattern.IsMatch("file-0.txt"));
@@ -36,7 +36,7 @@ public partial class ConfigurationPatternTests
     {
         var pattern = ConfigurationPattern.Compile("file-{5..1}.txt");
 
-        for (var i = 1; i <= 5; i++)
+        for (int i = 1; i <= 5; i++)
             Assert.IsTrue(pattern.IsMatch($"file-{i}.txt"), $"expected match for {i}");
 
         Assert.IsFalse(pattern.IsMatch("file-0.txt"));

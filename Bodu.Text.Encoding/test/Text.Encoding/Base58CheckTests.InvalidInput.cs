@@ -35,12 +35,12 @@ public sealed class Base58CheckTests_InvalidInput
     /// <returns>The corrupted Base58Check-encoded string.</returns>
     private static string MakePayloadCorruptedAddress(int index, byte mask)
     {
-        var payload = (byte[])GenesisPayload.Clone();
-        var canonical = Base58Check.Encode(payload);
+        byte[] payload = (byte[])GenesisPayload.Clone();
+        string canonical = Base58Check.Encode(payload);
 
         // Re-encode after corrupting the payload but reuse the original checksum bytes. Easiest path: decode raw
         // via Base58, mutate the payload slice, append the original checksum bytes, then re-encode.
-        var decodedWithChecksum = Base58.Decode(canonical.AsSpan());
+        byte[] decodedWithChecksum = Base58.Decode(canonical.AsSpan());
         decodedWithChecksum[index] ^= mask;
         return Base58.Encode(decodedWithChecksum);
     }
@@ -53,7 +53,7 @@ public sealed class Base58CheckTests_InvalidInput
     [TestMethod]
     public void Decode_WhenPayloadByteIsCorrupted_ShouldThrowFormatException()
     {
-        var corrupted = MakePayloadCorruptedAddress(index: 1, mask: 0x01);
+        string corrupted = MakePayloadCorruptedAddress(index: 1, mask: 0x01);
 
         FormatException ex = Assert.ThrowsExactly<FormatException>(() =>
         {
@@ -70,10 +70,10 @@ public sealed class Base58CheckTests_InvalidInput
     [TestMethod]
     public void TryDecode_WhenPayloadByteIsCorrupted_ShouldReturnFalse()
     {
-        var corrupted = MakePayloadCorruptedAddress(index: 10, mask: 0x80);
-        var destination = new byte[GenesisPayload.Length];
+        string corrupted = MakePayloadCorruptedAddress(index: 10, mask: 0x80);
+        byte[] destination = new byte[GenesisPayload.Length];
 
-        var ok = Base58Check.TryDecode(corrupted.AsSpan(), destination, out var bytesWritten);
+        bool ok = Base58Check.TryDecode(corrupted.AsSpan(), destination, out int bytesWritten);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0, bytesWritten);
@@ -86,7 +86,7 @@ public sealed class Base58CheckTests_InvalidInput
     [TestMethod]
     public void IsValid_WhenPayloadByteIsCorrupted_ShouldReturnFalse()
     {
-        var corrupted = MakePayloadCorruptedAddress(index: 5, mask: 0x40);
+        string corrupted = MakePayloadCorruptedAddress(index: 5, mask: 0x40);
 
         Assert.IsFalse(Base58Check.IsValid(corrupted.AsSpan()));
     }

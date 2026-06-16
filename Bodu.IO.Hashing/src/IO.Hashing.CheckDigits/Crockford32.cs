@@ -95,8 +95,8 @@ public sealed class Crockford32
     /// </exception>
     public static char Compute(ReadOnlySpan<char> body)
     {
-        var value = 0;
-        for (var i = 0; i < body.Length; i++)
+        int value = 0;
+        for (int i = 0; i < body.Length; i++)
             value = (value * Radix + DecodeBody(body[i], nameof(body))) % Modulus;
 
         return CheckSymbols[value];
@@ -116,16 +116,16 @@ public sealed class Crockford32
     {
         if (valueIncludingCheck.IsEmpty) return false;
 
-        var value = 0;
-        for (var i = 0; i < valueIncludingCheck.Length - 1; i++)
+        int value = 0;
+        for (int i = 0; i < valueIncludingCheck.Length - 1; i++)
         {
-            var digit = TryDecodeBody(valueIncludingCheck[i]);
+            int digit = TryDecodeBody(valueIncludingCheck[i]);
             if (digit < 0) return false;
 
             value = (value * Radix + digit) % Modulus;
         }
 
-        var check = TryDecodeCheck(valueIncludingCheck[^1]);
+        int check = TryDecodeCheck(valueIncludingCheck[^1]);
         if (check < 0) return false;
 
         return check == value;
@@ -134,8 +134,8 @@ public sealed class Crockford32
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> body)
     {
-        var value = _value;
-        for (var i = 0; i < body.Length; i++)
+        int value = _value;
+        for (int i = 0; i < body.Length; i++)
             value = (value * Radix + DecodeBody(body[i], nameof(body))) % Modulus;
 
         _value = value;
@@ -160,7 +160,7 @@ public sealed class Crockford32
     {
         if ((uint)(ch - '0') <= 9u) return ch - '0';
 
-        var u = char.ToUpperInvariant(ch);
+        char u = char.ToUpperInvariant(ch);
         return u switch
         {
             'O' => 0,
@@ -194,7 +194,7 @@ public sealed class Crockford32
     /// </returns>
     private static int TryDecodeCheck(char ch)
     {
-        var value = TryDecodeBody(ch);
+        int value = TryDecodeBody(ch);
         if (value >= 0) return value;
 
         return char.ToUpperInvariant(ch) switch
@@ -219,7 +219,7 @@ public sealed class Crockford32
     /// </exception>
     private static int DecodeBody(char ch, string paramName)
     {
-        var value = TryDecodeBody(ch);
+        int value = TryDecodeBody(ch);
         if (value < 0)
             throw new ArgumentOutOfRangeException(
                 paramName,

@@ -33,11 +33,11 @@ internal static class PhcString
     /// <exception cref="FormatException"><paramref name="text" /> is not valid Base64.</exception>
     internal static byte[] DecodeBase64(string text)
     {
-        var padding = (4 - (text.Length % 4)) % 4;
+        int padding = (4 - (text.Length % 4)) % 4;
         if (padding == 3)
             throw new FormatException(CryptoResourceStrings.Format_Invalid_PhcString);
 
-        var padded = padding == 0 ? text : text + new string('=', padding);
+        string padded = padding == 0 ? text : text + new string('=', padding);
 
         try
         {

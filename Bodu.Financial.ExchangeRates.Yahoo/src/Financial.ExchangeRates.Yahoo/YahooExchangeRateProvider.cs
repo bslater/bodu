@@ -324,7 +324,7 @@ public sealed class YahooExchangeRateProvider
                 return;
         }
 
-        var symbol = _options.BuildSymbol(pair.FromIsoCode, pair.ToIsoCode);
+        string symbol = _options.BuildSymbol(pair.FromIsoCode, pair.ToIsoCode);
         YahooChartRequest request = new(pair, symbol, startDate, endDate);
 
         Log.PairLoadStarting(_logger, _options.DownloadStartingLogLevel, symbol);
@@ -348,7 +348,7 @@ public sealed class YahooExchangeRateProvider
             YahooSeriesInfo info = chart.GetSeriesInfo();
             _series[info.Pair] = info;
 
-            var count = AddObservations(chart.EnumerateRates(), fetchedAt);
+            int count = AddObservations(chart.EnumerateRates(), fetchedAt);
             ExtendCoveredRange(pair, startDate, endDate);
             RebuildSnapshot();
 

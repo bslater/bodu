@@ -33,9 +33,9 @@ public static partial class StringExtensions
 
         if (value.Length == 0) return "_";
 
-        var invalid = Path.GetInvalidFileNameChars();
+        char[] invalid = Path.GetInvalidFileNameChars();
         StringBuilder builder = new(value.Length);
-        foreach (var c in value)
+        foreach (char c in value)
         {
             builder.Append(Array.IndexOf(invalid, c) >= 0 ? '_' : c);
         }

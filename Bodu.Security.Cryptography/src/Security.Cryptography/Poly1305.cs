@@ -245,8 +245,8 @@ public sealed class Poly1305
         ulong h0 = _acc[0], h1 = _acc[1], h2 = _acc[2], h3 = _acc[3], h4 = _acc[4];
 
         // Convert padded input block into 130-bit number split into 5 26-bit limbs (as per RFC)
-        var t0 = BinaryPrimitives.ReadUInt64LittleEndian(padded);
-        var t1 = BinaryPrimitives.ReadUInt64LittleEndian(padded[8..]);
+        ulong t0 = BinaryPrimitives.ReadUInt64LittleEndian(padded);
+        ulong t1 = BinaryPrimitives.ReadUInt64LittleEndian(padded[8..]);
         h0 += (uint)(t0 & 0x3ffffff);
         h1 += (uint)((t0 >> 26) & 0x3ffffff);
         h2 += (uint)(((t0 >> 52) | (t1 << 12)) & 0x3ffffff);
@@ -261,18 +261,18 @@ public sealed class Poly1305
         ulong r0 = _r[0], r1 = _r[1], r2 = _r[2], r3 = _r[3], r4 = _r[4];
 
         // Compute limb products with optimized carry structure
-        var t00 = (h0 * r0) + (h1 * _s[3]) + (h2 * _s[2]) + (h3 * _s[1]) + (h4 * _s[0]);
-        var t01 = (h0 * r1) + (h1 * r0) + (h2 * _s[3]) + (h3 * _s[2]) + (h4 * _s[1]);
-        var t02 = (h0 * r2) + (h1 * r1) + (h2 * r0) + (h3 * _s[3]) + (h4 * _s[2]);
-        var t03 = (h0 * r3) + (h1 * r2) + (h2 * r1) + (h3 * r0) + (h4 * _s[3]);
-        var t04 = (h0 * r4) + (h1 * r3) + (h2 * r2) + (h3 * r1) + (h4 * r0);
+        ulong t00 = (h0 * r0) + (h1 * _s[3]) + (h2 * _s[2]) + (h3 * _s[1]) + (h4 * _s[0]);
+        ulong t01 = (h0 * r1) + (h1 * r0) + (h2 * _s[3]) + (h3 * _s[2]) + (h4 * _s[1]);
+        ulong t02 = (h0 * r2) + (h1 * r1) + (h2 * r0) + (h3 * _s[3]) + (h4 * _s[2]);
+        ulong t03 = (h0 * r3) + (h1 * r2) + (h2 * r1) + (h3 * r0) + (h4 * _s[3]);
+        ulong t04 = (h0 * r4) + (h1 * r3) + (h2 * r2) + (h3 * r1) + (h4 * r0);
 
         // Perform carry propagation and modular reduction mod 2^130 - 5
         t01 += t00 >> 26; h0 = (uint)(t00 & Mask26);
         t02 += t01 >> 26; h1 = (uint)(t01 & Mask26);
         t03 += t02 >> 26; h2 = (uint)(t02 & Mask26);
         t04 += t03 >> 26; h3 = (uint)(t03 & Mask26);
-        var carry = t04 >> 26; h4 = (uint)(t04 & Mask26);
+        ulong carry = t04 >> 26; h4 = (uint)(t04 & Mask26);
 
         // Fold final carry into h0 (modulo 2^130 - 5 reduction)
         h0 += (uint)(carry * 5);
@@ -314,7 +314,7 @@ public sealed class Poly1305
 
         // If h + 5 carried into bit 130, c starts at 0 and the reduced value is used.
         // Otherwise, c starts at -5, which cancels the test addition above.
-        var c = ((int)(h4 >> 26) - 1) * 5L;
+        long c = ((int)(h4 >> 26) - 1) * 5L;
 
         c += (long)_key[0] + (h0 | (h1 << 26));
         BinaryPrimitives.WriteUInt32LittleEndian(tag[..], (uint)c);
@@ -381,10 +381,10 @@ public sealed class Poly1305
 
         // Load and clamp the first 128 bits of the key as the polynomial 'r' key Clamp 'r' by setting/clearing specific bits to avoid
         // vulnerabilities as per RFC 8439, Section 2.5.1
-        var t0 = BinaryPrimitives.ReadUInt32LittleEndian(key[..]);
-        var t1 = BinaryPrimitives.ReadUInt32LittleEndian(key[4..]);
-        var t2 = BinaryPrimitives.ReadUInt32LittleEndian(key[8..]);
-        var t3 = BinaryPrimitives.ReadUInt32LittleEndian(key[12..]);
+        uint t0 = BinaryPrimitives.ReadUInt32LittleEndian(key[..]);
+        uint t1 = BinaryPrimitives.ReadUInt32LittleEndian(key[4..]);
+        uint t2 = BinaryPrimitives.ReadUInt32LittleEndian(key[8..]);
+        uint t3 = BinaryPrimitives.ReadUInt32LittleEndian(key[12..]);
 
         // Split 128-bit r into 5 x 26-bit limbs with clamping (see RFC for bitmask values)
         _r[0] = t0 & 0x03FFFFFFU;

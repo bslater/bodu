@@ -122,7 +122,7 @@ public readonly struct HashValue
     public static HashValue ParseHex(string text)
     {
         ThrowHelper.ThrowIfNull(text);
-        if (!CryptographyHelper.TryFromHexString(text, out var bytes)) throw new FormatException(CryptoResourceStrings.Format_Invalid_HexString);
+        if (!CryptographyHelper.TryFromHexString(text, out byte[]? bytes)) throw new FormatException(CryptoResourceStrings.Format_Invalid_HexString);
 
         return bytes.Length == 0 ? default : new HashValue(bytes);
     }
@@ -142,7 +142,7 @@ public readonly struct HashValue
     {
         result = default;
 
-        if (text is null || !CryptographyHelper.TryFromHexString(text, out var bytes))
+        if (text is null || !CryptographyHelper.TryFromHexString(text, out byte[]? bytes))
             return false;
 
         result = bytes.Length == 0 ? default : new HashValue(bytes);

@@ -40,7 +40,7 @@ public static partial class Base45
     public static byte[] Decode(ReadOnlySpan<char> chars, BaseFormatStyles styles = BaseFormatStyles.None) =>
         chars.IsEmpty
             ? []
-            : TryDecodeCore(chars, styles, out var result, out var error)
+            : TryDecodeCore(chars, styles, out byte[]? result, out string? error)
                 ? result!
                 : throw new FormatException(error);
 
@@ -89,7 +89,7 @@ public static partial class Base45
         if (chars.IsEmpty)
             return true;
 
-        if (!TryDecodeCore(chars, styles, out var result, out _))
+        if (!TryDecodeCore(chars, styles, out byte[]? result, out _))
             return false;
 
         if (destination.Length < result!.Length)
@@ -115,16 +115,16 @@ public static partial class Base45
         result = null;
         error = null;
 
-        var ignoreWhitespace = styles.HasFlag(BaseFormatStyles.IgnoreWhitespace);
+        bool ignoreWhitespace = styles.HasFlag(BaseFormatStyles.IgnoreWhitespace);
 
-        var upperBytes = GetMaxDecodedLength(chars.Length);
-        var output = upperBytes == 0 ? [] : new byte[upperBytes];
-        var byteCount = 0;
+        int upperBytes = GetMaxDecodedLength(chars.Length);
+        byte[] output = upperBytes == 0 ? [] : new byte[upperBytes];
+        int byteCount = 0;
 
         Span<int> group = stackalloc int[3];
-        var groupLength = 0;
+        int groupLength = 0;
 
-        foreach (var c in chars)
+        foreach (char c in chars)
         {
             if (ignoreWhitespace && IsIgnorableWhitespace(c))
                 continue;
@@ -140,7 +140,7 @@ public static partial class Base45
             if (groupLength != 3)
                 continue;
 
-            var pair = group[0] + (group[1] * Radix) + (group[2] * Radix * Radix);
+            int pair = group[0] + (group[1] * Radix) + (group[2] * Radix * Radix);
             if (pair > MaxPairValue)
             {
                 error = EncodingResourceStrings.Format_Invalid_Base45GroupOverflow;
@@ -160,7 +160,7 @@ public static partial class Base45
 
         if (groupLength == 2)
         {
-            var single = group[0] + (group[1] * Radix);
+            int single = group[0] + (group[1] * Radix);
             if (single > MaxSingleValue)
             {
                 error = EncodingResourceStrings.Format_Invalid_Base45GroupOverflow;

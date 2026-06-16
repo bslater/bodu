@@ -89,7 +89,7 @@ public partial class RbaExchangeRateProviderTests
     {
         (RbaExchangeRateProvider provider, FixtureRbaExchangeRateTableSource source) = Create(allowSync: true);
 
-        var found = provider.TryGetRate("AUD", "USD", new DateOnly(2023, 1, 3), null, out ExchangeRateLookupResult result);
+        bool found = provider.TryGetRate("AUD", "USD", new DateOnly(2023, 1, 3), null, out ExchangeRateLookupResult result);
 
         Assert.IsTrue(found);
         Assert.AreEqual(0.6828m, result.Rate.Rate);
@@ -104,7 +104,7 @@ public partial class RbaExchangeRateProviderTests
     {
         (RbaExchangeRateProvider provider, FixtureRbaExchangeRateTableSource source) = Create(allowSync: false);
 
-        var found = provider.TryGetRate("AUD", "USD", new DateOnly(2023, 1, 3), null, out _);
+        bool found = provider.TryGetRate("AUD", "USD", new DateOnly(2023, 1, 3), null, out _);
 
         Assert.IsFalse(found);
         Assert.AreEqual(0, source.GetTableCallCount);
@@ -118,7 +118,7 @@ public partial class RbaExchangeRateProviderTests
     {
         RbaExchangeRateProvider provider = await CreatePreloadedAsync();
 
-        var latest = provider.GetRate("AUD", "USD").Rate.Rate;
+        decimal latest = provider.GetRate("AUD", "USD").Rate.Rate;
 
         Assert.AreEqual(0.7029m, latest);
     }

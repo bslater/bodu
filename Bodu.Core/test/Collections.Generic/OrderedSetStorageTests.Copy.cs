@@ -83,7 +83,7 @@ public partial class OrderedSetStorageTests
     public void CopyTo_WhenIndexIsZero_ShouldCopyInInsertionOrder()
     {
         OrderedSetStorage<int> sut = CreateStorage([10, 20, 30]);
-        var target = new int[3];
+        int[] target = new int[3];
 
         sut.CopyTo(target, 0);
 
@@ -127,7 +127,7 @@ public partial class OrderedSetStorageTests
     public void ToArray_WhenCalled_ShouldReturnDisconnectedSnapshot()
     {
         OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
-        var snapshot = sut.ToArray();
+        int[] snapshot = sut.ToArray();
 
         sut.Add(4);
 
@@ -147,7 +147,7 @@ public partial class OrderedSetStorageTests
     {
         var sut = new OrderedSetStorage<int>(0, null);
 
-        var array = sut.ToArray();
+        int[] array = sut.ToArray();
 
         Assert.IsEmpty(array);
     }
@@ -161,7 +161,7 @@ public partial class OrderedSetStorageTests
     {
         OrderedSetStorage<int> sut = CreateStorage([10, 20, 30]);
 
-        var array = sut.ToArray();
+        int[] array = sut.ToArray();
 
         CollectionAssert.AreEqual(new[] { 10, 20, 30 }, array);
         Assert.HasCount(sut.Count, array);

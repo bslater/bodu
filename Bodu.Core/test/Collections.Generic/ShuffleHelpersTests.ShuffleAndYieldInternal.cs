@@ -17,8 +17,8 @@ public partial class ShuffleHelpersTests
     [TestMethod]
     public void ShuffleAndYieldInternal_WhenCountEqualsLength_ShouldYieldAllElementsExactlyOnce()
     {
-        var buffer = new[] { 1, 2, 3, 4, 5 };
-        var actual = ShuffleHelpers.ShuffleAndYieldInternal(buffer, new XorShiftRandom(7), buffer.Length).ToArray();
+        int[] buffer = new[] { 1, 2, 3, 4, 5 };
+        int[] actual = ShuffleHelpers.ShuffleAndYieldInternal(buffer, new XorShiftRandom(7), buffer.Length).ToArray();
 
         Assert.HasCount(5, actual);
         CollectionAssert.AreEquivalent(new[] { 1, 2, 3, 4, 5 }, actual);
@@ -32,13 +32,13 @@ public partial class ShuffleHelpersTests
     [TestMethod]
     public void ShuffleAndYieldInternal_WhenCountIsLessThanLength_ShouldYieldRequestedSubset()
     {
-        var buffer = new[] { 10, 20, 30, 40, 50 };
+        int[] buffer = new[] { 10, 20, 30, 40, 50 };
 
-        var actual = ShuffleHelpers.ShuffleAndYieldInternal(buffer, new XorShiftRandom(13), 3).ToArray();
+        int[] actual = ShuffleHelpers.ShuffleAndYieldInternal(buffer, new XorShiftRandom(13), 3).ToArray();
 
         Assert.HasCount(3, actual);
         CollectionAssert.AllItemsAreUnique(actual);
-        foreach (var value in actual)
+        foreach (int value in actual)
             Assert.IsTrue(value is 10 or 20 or 30 or 40 or 50);
     }
 
@@ -49,9 +49,9 @@ public partial class ShuffleHelpersTests
     [TestMethod]
     public void ShuffleAndYieldInternal_WhenCountIsZero_ShouldYieldNoElements()
     {
-        var buffer = new[] { 1, 2, 3 };
+        int[] buffer = new[] { 1, 2, 3 };
 
-        var actual = ShuffleHelpers.ShuffleAndYieldInternal(buffer, new XorShiftRandom(7), 0).ToArray();
+        int[] actual = ShuffleHelpers.ShuffleAndYieldInternal(buffer, new XorShiftRandom(7), 0).ToArray();
 
         Assert.IsEmpty(actual);
     }

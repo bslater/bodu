@@ -60,8 +60,8 @@ internal static class MerkleTestData
     /// <param name="seed">The starting byte value for the sequence.</param>
     internal static byte[] MakeData(int length, int seed)
     {
-        var data = new byte[length];
-        for (var i = 0; i < length; i++)
+        byte[] data = new byte[length];
+        for (int i = 0; i < length; i++)
             data[i] = (byte)((seed + i) % 251);
         return data;
     }
@@ -97,10 +97,10 @@ internal static class MerkleTestData
 
         // Level 0: one leaf hash per block. Partial tail blocks are zero-padded to blockSize.
         var level = new List<byte[]>();
-        for (var offset = 0; offset < data.Length; offset += blockSize)
+        for (int offset = 0; offset < data.Length; offset += blockSize)
         {
-            var len = Math.Min(blockSize, data.Length - offset);
-            var block = new byte[blockSize];              // zero-initialised; tail bytes remain 0
+            int len = Math.Min(blockSize, data.Length - offset);
+            byte[] block = new byte[blockSize];              // zero-initialised; tail bytes remain 0
             Array.Copy(data, offset, block, 0, len);
             level.Add(AdditiveHash(block));
         }
@@ -110,9 +110,9 @@ internal static class MerkleTestData
         while (level.Count > 1)
         {
             var next = new List<byte[]>();
-            for (var i = 0; i < level.Count; i += fanOut)
+            for (int i = 0; i < level.Count; i += fanOut)
             {
-                var groupSize = Math.Min(fanOut, level.Count - i);
+                int groupSize = Math.Min(fanOut, level.Count - i);
                 next.Add(AdditiveHashConcat(level.GetRange(i, groupSize)));
             }
             level = next;
@@ -129,7 +129,7 @@ internal static class MerkleTestData
     internal static byte[] AdditiveHash(byte[] block)
     {
         uint sum = 0;
-        foreach (var b in block)
+        foreach (byte b in block)
             sum += b;
         return BitConverter.GetBytes(sum);
     }
@@ -147,8 +147,8 @@ internal static class MerkleTestData
     internal static byte[] AdditiveHashConcat(List<byte[]> hashes)
     {
         uint sum = 0;
-        foreach (var h in hashes)
-            foreach (var b in h)
+        foreach (byte[] h in hashes)
+            foreach (byte b in h)
                 sum += b;
         return BitConverter.GetBytes(sum);
     }

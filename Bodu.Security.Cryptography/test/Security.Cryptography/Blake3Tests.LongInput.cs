@@ -33,16 +33,16 @@ public partial class Blake3Tests
     {
         const int InputLength = 102_400;
 
-        var input = new byte[InputLength];
-        for (var i = 0; i < InputLength; i++)
+        byte[] input = new byte[InputLength];
+        for (int i = 0; i < InputLength; i++)
             input[i] = (byte)(i % 251);
 
         byte[] oneShotHash;
         using (var hasher = new Blake3())
             oneShotHash = hasher.ComputeHash(input);
 
-        var blockStreamHash = HashInFixedBlocks(input, 1024);
-        var randomChunkHash = HashWithPseudoRandomChunks(input, seed: 2027);
+        byte[] blockStreamHash = HashInFixedBlocks(input, 1024);
+        byte[] randomChunkHash = HashWithPseudoRandomChunks(input, seed: 2027);
 
         CollectionAssert.AreEqual(
             oneShotHash,
@@ -58,10 +58,10 @@ public partial class Blake3Tests
     private static byte[] HashInFixedBlocks(byte[] input, int blockSize)
     {
         using var hasher = new Blake3();
-        var offset = 0;
+        int offset = 0;
         while (offset < input.Length)
         {
-            var chunk = Math.Min(blockSize, input.Length - offset);
+            int chunk = Math.Min(blockSize, input.Length - offset);
             hasher.TransformBlock(input, offset, chunk, null, 0);
             offset += chunk;
         }

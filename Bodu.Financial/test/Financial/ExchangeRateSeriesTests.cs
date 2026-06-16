@@ -50,11 +50,11 @@ public partial class ExchangeRateSeriesTests
 
         ExchangeRateSeries series = new(s_usdAud, "RBA", unsorted);
 
-        var found = series.TryGetRate(
+        bool found = series.TryGetRate(
             new DateOnly(2024, 1, 3),
             ExchangeRateLookupOptions.Exact,
             out _,
-            out var rate);
+            out decimal rate);
 
         Assert.IsTrue(found);
         Assert.AreEqual(1.51m, rate);

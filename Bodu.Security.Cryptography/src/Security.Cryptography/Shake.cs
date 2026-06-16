@@ -289,12 +289,12 @@ public sealed class Shake
     {
         ThrowIfDisposed();
         Span<byte> rateBuffer = _residualBlock.Span;
-        var rateBytes = BlockSize / 8;
+        int rateBytes = BlockSize / 8;
 
         while (source.Length > 0)
         {
-            var available = rateBytes - _residualBytes;
-            var take = Math.Min(available, source.Length);
+            int available = rateBytes - _residualBytes;
+            int take = Math.Min(available, source.Length);
 
             source[..take].CopyTo(rateBuffer[_residualBytes..]);
             _residualBytes += take;
@@ -321,7 +321,7 @@ public sealed class Shake
     {
         ThrowIfDisposed();
         Span<byte> rateBuffer = _residualBlock.Span;
-        var rateBytes = BlockSize / 8;
+        int rateBytes = BlockSize / 8;
 
         // Apply multi-rate padding: domain suffix byte at the current buffer position, then 0x80 at the last byte.
         rateBuffer[_residualBytes] ^= DomainSuffix;
@@ -332,14 +332,14 @@ public sealed class Shake
         KeccakF(_state);
 
         // Squeeze output bytes from the state (little-endian lane serialization).
-        var outputBytes = HashSizeValue / 8;
-        var output = new byte[outputBytes];
-        var written = 0;
-        var remaining = outputBytes;
+        int outputBytes = HashSizeValue / 8;
+        byte[] output = new byte[outputBytes];
+        int written = 0;
+        int remaining = outputBytes;
 
         while (remaining > 0)
         {
-            var take = Math.Min(remaining, rateBytes);
+            int take = Math.Min(remaining, rateBytes);
             WriteLanesToBytes(_state, output.AsSpan(written, take));
             written += take;
             remaining -= take;
@@ -359,19 +359,19 @@ public sealed class Shake
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void KeccakF(ulong[] state)
     {
-        var c = new ulong[5];
-        var b = new ulong[StateWords];
+        ulong[] c = new ulong[5];
+        ulong[] b = new ulong[StateWords];
 
-        for (var round = 0; round < 24; round++)
+        for (int round = 0; round < 24; round++)
         {
             // θ (theta): column parity and mixing.
-            for (var x = 0; x < 5; x++)
+            for (int x = 0; x < 5; x++)
                 c[x] = state[x] ^ state[x + 5] ^ state[x + 10] ^ state[x + 15] ^ state[x + 20];
 
-            for (var x = 0; x < 5; x++)
+            for (int x = 0; x < 5; x++)
             {
-                var d = c[(x + 4) % 5] ^ c[(x + 1) % 5].RotateBitsLeftUnchecked(1);
-                for (var y = 0; y < 5; y++)
+                ulong d = c[(x + 4) % 5] ^ c[(x + 1) % 5].RotateBitsLeftUnchecked(1);
+                for (int y = 0; y < 5; y++)
                     state[x + (y * 5)] ^= d;
             }
 
@@ -379,13 +379,13 @@ public sealed class Shake
             // s_rho[0] is 0; RotateBitsLeftUnchecked delegates to BitOperations.RotateLeft, which
             // handles a zero shift correctly without the undefined `value >> 64` shift the hand-rolled
             // form would produce.
-            for (var i = 0; i < StateWords; i++)
+            for (int i = 0; i < StateWords; i++)
                 b[s_pi[i]] = state[i].RotateBitsLeftUnchecked(s_rho[i]);
 
             // χ (chi): non-linear mixing within each row.
-            for (var y = 0; y < 5; y++)
+            for (int y = 0; y < 5; y++)
             {
-                for (var x = 0; x < 5; x++)
+                for (int x = 0; x < 5; x++)
                     state[x + (y * 5)] = b[x + (y * 5)] ^ ((~b[((x + 1) % 5) + (y * 5)]) & b[((x + 2) % 5) + (y * 5)]);
             }
 
@@ -405,17 +405,17 @@ public sealed class Shake
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void XorBlockIntoState(ReadOnlySpan<byte> block, ulong[] state, int rateBytes)
     {
-        var lanes = rateBytes / 8;
-        for (var i = 0; i < lanes; i++)
+        int lanes = rateBytes / 8;
+        for (int i = 0; i < lanes; i++)
             state[i] ^= BinaryPrimitives.ReadUInt64LittleEndian(block.Slice(i * 8, 8));
 
         // Handle any trailing bytes that do not fill a complete 8-byte lane.
-        var remainder = rateBytes % 8;
+        int remainder = rateBytes % 8;
         if (remainder > 0)
         {
             ulong partial = 0;
-            var baseOffset = lanes * 8;
-            for (var b = 0; b < remainder; b++)
+            int baseOffset = lanes * 8;
+            for (int b = 0; b < remainder; b++)
                 partial |= (ulong)block[baseOffset + b] << (8 * b);
 
             state[lanes] ^= partial;
@@ -432,17 +432,17 @@ public sealed class Shake
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void WriteLanesToBytes(ulong[] state, Span<byte> destination)
     {
-        var lanes = destination.Length / 8;
-        for (var i = 0; i < lanes; i++)
+        int lanes = destination.Length / 8;
+        for (int i = 0; i < lanes; i++)
             BinaryPrimitives.WriteUInt64LittleEndian(destination.Slice(i * 8, 8), state[i]);
 
         // Serialize any sub-lane tail bytes.
-        var remainder = destination.Length % 8;
+        int remainder = destination.Length % 8;
         if (remainder > 0)
         {
-            var lane = state[lanes];
-            var baseOffset = lanes * 8;
-            for (var b = 0; b < remainder; b++)
+            ulong lane = state[lanes];
+            int baseOffset = lanes * 8;
+            for (int b = 0; b < remainder; b++)
                 destination[baseOffset + b] = (byte)(lane >> (8 * b));
         }
     }

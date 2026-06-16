@@ -216,7 +216,7 @@ public abstract class WebExchangeRateProvider
             FinancialThrowHelper.ThrowIfNotValidIsoCode(toIsoCode);
 
             ExchangeRatePair pair = new(fromIsoCode, toIsoCode);
-            var startDate = date.AddDays(-(int)DefaultLookback.TotalDays);
+            DateOnly startDate = date.AddDays(-(int)DefaultLookback.TotalDays);
             await EnsureLoadedAsync(pair, startDate, date, cancellationToken).ConfigureAwait(false);
         }
 
@@ -329,7 +329,7 @@ public abstract class WebExchangeRateProvider
     {
         ThrowHelper.ThrowIfNull(rates);
 
-        var count = 0;
+        int count = 0;
         foreach (ExchangeRate rate in rates)
         {
             _builder.Upsert(new ExchangeRatePair(rate.FromIsoCode, rate.ToIsoCode), ProviderId, rate.Date, rate.Rate, fetchedAtUtc);
@@ -440,7 +440,7 @@ public abstract class WebExchangeRateProvider
             return false;
 
         ExchangeRatePair pair = new(fromIsoCode, toIsoCode);
-        var startDate = date.AddDays(-(int)DefaultLookback.TotalDays);
+        DateOnly startDate = date.AddDays(-(int)DefaultLookback.TotalDays);
 
         if (IsLoaded(pair, startDate, date))
             return false;

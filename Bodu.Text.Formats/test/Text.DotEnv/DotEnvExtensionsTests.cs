@@ -63,7 +63,7 @@ public sealed class DotEnvExtensionsTests
     [TestMethod]
     public void TryParseDotEnv_OnString_WhenInputIsValid_ShouldReturnTrue()
     {
-        var success = CanonicalSource.TryParseDotEnv(out DotEnvDocument? document);
+        bool success = CanonicalSource.TryParseDotEnv(out DotEnvDocument? document);
 
         Assert.IsTrue(success);
         Assert.IsNotNull(document);
@@ -77,8 +77,8 @@ public sealed class DotEnvExtensionsTests
     [TestMethod]
     public void TryParseDotEnv_OnReadOnlySpan_ShouldMatchStaticCanonical()
     {
-        var extSuccess = CanonicalSource.AsSpan().TryParseDotEnv(out DotEnvDocument? extDocument);
-        var staticSuccess = DotEnv.TryParse(CanonicalSource, out DotEnvDocument? staticDocument);
+        bool extSuccess = CanonicalSource.AsSpan().TryParseDotEnv(out DotEnvDocument? extDocument);
+        bool staticSuccess = DotEnv.TryParse(CanonicalSource, out DotEnvDocument? staticDocument);
 
         Assert.AreEqual(staticSuccess, extSuccess);
         Assert.AreEqual(staticDocument!["PORT"], extDocument!["PORT"]);
@@ -93,8 +93,8 @@ public sealed class DotEnvExtensionsTests
     {
         DotEnvDocument document = DotEnv.Parse(CanonicalSource);
 
-        var fromExtension = document.FormatDotEnv();
-        var fromStatic = DotEnv.Format(document);
+        string fromExtension = document.FormatDotEnv();
+        string fromStatic = DotEnv.Format(document);
 
         Assert.AreEqual(fromStatic, fromExtension);
     }
@@ -107,7 +107,7 @@ public sealed class DotEnvExtensionsTests
     public void ParseDotEnvThenFormatDotEnv_ShouldRoundTrip()
     {
         DotEnvDocument first = CanonicalSource.ParseDotEnv();
-        var emitted = first.FormatDotEnv();
+        string emitted = first.FormatDotEnv();
         DotEnvDocument second = emitted.ParseDotEnv();
 
         Assert.AreEqual(first["PORT"], second["PORT"]);
@@ -146,7 +146,7 @@ public sealed class DotEnvExtensionsTests
     [TestMethod]
     public void TryParseDotEnv_OnReadOnlySpanWithOptions_ShouldReturnTrueAndDocument()
     {
-        var parsed = CanonicalSource.AsSpan().TryParseDotEnv(DotEnvParseOptions.Default, out DotEnvDocument? doc);
+        bool parsed = CanonicalSource.AsSpan().TryParseDotEnv(DotEnvParseOptions.Default, out DotEnvDocument? doc);
 
         Assert.IsTrue(parsed);
         Assert.IsNotNull(doc);
@@ -159,7 +159,7 @@ public sealed class DotEnvExtensionsTests
     [TestMethod]
     public void TryParseDotEnv_OnStringWithOptions_ShouldReturnTrueAndDocument()
     {
-        var parsed = CanonicalSource.TryParseDotEnv(DotEnvParseOptions.Default, out DotEnvDocument? doc);
+        bool parsed = CanonicalSource.TryParseDotEnv(DotEnvParseOptions.Default, out DotEnvDocument? doc);
 
         Assert.IsTrue(parsed);
         Assert.IsNotNull(doc);

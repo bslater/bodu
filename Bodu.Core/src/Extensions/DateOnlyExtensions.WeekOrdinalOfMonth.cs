@@ -30,7 +30,7 @@ public static partial class DateOnlyExtensions
     /// </remarks>
     public static WeekOrdinal WeekOrdinalOfMonth(this DateOnly date)
     {
-        var ordinal = ((date.Day - 1) / 7) + 1;
+        int ordinal = ((date.Day - 1) / 7) + 1;
         return (WeekOrdinal)ordinal;
     }
 }

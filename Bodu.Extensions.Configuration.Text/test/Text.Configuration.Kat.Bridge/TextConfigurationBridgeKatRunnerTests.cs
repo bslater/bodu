@@ -40,7 +40,7 @@ public class TextConfigurationBridgeKatRunnerTests
 
     private static void ExecuteBridgePass(ConfigurationKat kat)
     {
-        var optionalMissing = kat.Options is "OptionalTrueMissingFile";
+        bool optionalMissing = kat.Options is "OptionalTrueMissingFile";
 
         if (kat.Source is null)
         {

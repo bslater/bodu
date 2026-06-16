@@ -117,7 +117,7 @@ internal struct Curve25519FieldElement
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static void ConditionalMove(ref Curve25519FieldElement destination, in Curve25519FieldElement source, ulong condition)
     {
-        var mask = 0UL - condition;
+        ulong mask = 0UL - condition;
 
         destination.L0 ^= mask & (destination.L0 ^ source.L0);
         destination.L1 ^= mask & (destination.L1 ^ source.L1);
@@ -136,13 +136,13 @@ internal struct Curve25519FieldElement
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static void ConditionalSwap(ref Curve25519FieldElement left, ref Curve25519FieldElement right, ulong condition)
     {
-        var mask = 0UL - condition;
+        ulong mask = 0UL - condition;
 
-        var x0 = mask & (left.L0 ^ right.L0);
-        var x1 = mask & (left.L1 ^ right.L1);
-        var x2 = mask & (left.L2 ^ right.L2);
-        var x3 = mask & (left.L3 ^ right.L3);
-        var x4 = mask & (left.L4 ^ right.L4);
+        ulong x0 = mask & (left.L0 ^ right.L0);
+        ulong x1 = mask & (left.L1 ^ right.L1);
+        ulong x2 = mask & (left.L2 ^ right.L2);
+        ulong x3 = mask & (left.L3 ^ right.L3);
+        ulong x4 = mask & (left.L4 ^ right.L4);
 
         left.L0 ^= x0;
         left.L1 ^= x1;
@@ -203,42 +203,42 @@ internal struct Curve25519FieldElement
         t1 = Multiply(t1, t2);                                        // z^31 = z^(2^5 - 1)
 
         t2 = Square(t1);
-        for (var i = 1; i < 5; i++)
+        for (int i = 1; i < 5; i++)
             t2 = Square(t2);
         t1 = Multiply(t2, t1);                                        // z^(2^10 - 1)
 
         t2 = Square(t1);
-        for (var i = 1; i < 10; i++)
+        for (int i = 1; i < 10; i++)
             t2 = Square(t2);
         t2 = Multiply(t2, t1);                                        // z^(2^20 - 1)
 
         Curve25519FieldElement t3 = Square(t2);
-        for (var i = 1; i < 20; i++)
+        for (int i = 1; i < 20; i++)
             t3 = Square(t3);
         t2 = Multiply(t3, t2);                                        // z^(2^40 - 1)
 
         t2 = Square(t2);
-        for (var i = 1; i < 10; i++)
+        for (int i = 1; i < 10; i++)
             t2 = Square(t2);
         t1 = Multiply(t2, t1);                                        // z^(2^50 - 1)
 
         t2 = Square(t1);
-        for (var i = 1; i < 50; i++)
+        for (int i = 1; i < 50; i++)
             t2 = Square(t2);
         t2 = Multiply(t2, t1);                                        // z^(2^100 - 1)
 
         t3 = Square(t2);
-        for (var i = 1; i < 100; i++)
+        for (int i = 1; i < 100; i++)
             t3 = Square(t3);
         t2 = Multiply(t3, t2);                                        // z^(2^200 - 1)
 
         t2 = Square(t2);
-        for (var i = 1; i < 50; i++)
+        for (int i = 1; i < 50; i++)
             t2 = Square(t2);
         t1 = Multiply(t2, t1);                                        // z^(2^250 - 1)
 
         t1 = Square(t1);
-        for (var i = 1; i < 5; i++)
+        for (int i = 1; i < 5; i++)
             t1 = Square(t1);
 
         return Multiply(t1, t0);                                      // z^(2^255 - 21) = z^(p - 2)
@@ -312,37 +312,37 @@ internal struct Curve25519FieldElement
         t0 = Multiply(t1, t0);                                        // z^31 = z^(2^5 - 1)
 
         t1 = Square(t0);
-        for (var i = 1; i < 5; i++)
+        for (int i = 1; i < 5; i++)
             t1 = Square(t1);
         t0 = Multiply(t1, t0);                                        // z^(2^10 - 1)
 
         t1 = Square(t0);
-        for (var i = 1; i < 10; i++)
+        for (int i = 1; i < 10; i++)
             t1 = Square(t1);
         t1 = Multiply(t1, t0);                                        // z^(2^20 - 1)
 
         Curve25519FieldElement t2 = Square(t1);
-        for (var i = 1; i < 20; i++)
+        for (int i = 1; i < 20; i++)
             t2 = Square(t2);
         t1 = Multiply(t2, t1);                                        // z^(2^40 - 1)
 
         t1 = Square(t1);
-        for (var i = 1; i < 10; i++)
+        for (int i = 1; i < 10; i++)
             t1 = Square(t1);
         t0 = Multiply(t1, t0);                                        // z^(2^50 - 1)
 
         t1 = Square(t0);
-        for (var i = 1; i < 50; i++)
+        for (int i = 1; i < 50; i++)
             t1 = Square(t1);
         t1 = Multiply(t1, t0);                                        // z^(2^100 - 1)
 
         t2 = Square(t1);
-        for (var i = 1; i < 100; i++)
+        for (int i = 1; i < 100; i++)
             t2 = Square(t2);
         t1 = Multiply(t2, t1);                                        // z^(2^200 - 1)
 
         t1 = Square(t1);
-        for (var i = 1; i < 50; i++)
+        for (int i = 1; i < 50; i++)
             t1 = Square(t1);
         t0 = Multiply(t1, t0);                                        // z^(2^250 - 1)
 
@@ -409,7 +409,7 @@ internal struct Curve25519FieldElement
         Span<byte> encoded = stackalloc byte[EncodedSizeInBytes];
         ToBytes(encoded);
 
-        var negative = (encoded[0] & 1) == 1;
+        bool negative = (encoded[0] & 1) == 1;
         CryptographyHelper.Clear(encoded);
 
         return negative;
@@ -425,8 +425,8 @@ internal struct Curve25519FieldElement
         Span<byte> encoded = stackalloc byte[EncodedSizeInBytes];
         ToBytes(encoded);
 
-        var accumulator = 0;
-        for (var i = 0; i < encoded.Length; i++)
+        int accumulator = 0;
+        for (int i = 0; i < encoded.Length; i++)
             accumulator |= encoded[i];
 
         CryptographyHelper.Clear(encoded);
@@ -451,7 +451,7 @@ internal struct Curve25519FieldElement
         ulong t0 = L0, t1 = L1, t2 = L2, t3 = L3, t4 = L4;
 
         // Two carry passes bring every limb below 2^51 (plus a tiny excess on t0), so the value is below 2p.
-        for (var pass = 0; pass < 2; pass++)
+        for (int pass = 0; pass < 2; pass++)
         {
             t1 += t0 >> 51;
             t0 &= LimbMask;
@@ -467,7 +467,7 @@ internal struct Curve25519FieldElement
 
         // Compute q = 1 when the value is >= p, else 0, by propagating the carry of (value + 19) past bit 254;
         // adding 19q then dropping bit 255 subtracts q * p without a data-dependent branch.
-        var q = (t0 + 19) >> 51;
+        ulong q = (t0 + 19) >> 51;
         q = (t1 + q) >> 51;
         q = (t2 + q) >> 51;
         q = (t3 + q) >> 51;
@@ -502,23 +502,23 @@ internal struct Curve25519FieldElement
     /// <returns>The reduced element with all limbs below 2^52.</returns>
     private static Curve25519FieldElement CarryReduce(UInt128 t0, UInt128 t1, UInt128 t2, UInt128 t3, UInt128 t4)
     {
-        var r0 = (ulong)t0 & LimbMask;
-        var carry = (ulong)(t0 >> 51);
+        ulong r0 = (ulong)t0 & LimbMask;
+        ulong carry = (ulong)(t0 >> 51);
 
         t1 += carry;
-        var r1 = (ulong)t1 & LimbMask;
+        ulong r1 = (ulong)t1 & LimbMask;
         carry = (ulong)(t1 >> 51);
 
         t2 += carry;
-        var r2 = (ulong)t2 & LimbMask;
+        ulong r2 = (ulong)t2 & LimbMask;
         carry = (ulong)(t2 >> 51);
 
         t3 += carry;
-        var r3 = (ulong)t3 & LimbMask;
+        ulong r3 = (ulong)t3 & LimbMask;
         carry = (ulong)(t3 >> 51);
 
         t4 += carry;
-        var r4 = (ulong)t4 & LimbMask;
+        ulong r4 = (ulong)t4 & LimbMask;
         carry = (ulong)(t4 >> 51);
 
         // Fold the overflow above bit 254 back into limb 0 (2^255 ≡ 19), then settle the remaining small carries.

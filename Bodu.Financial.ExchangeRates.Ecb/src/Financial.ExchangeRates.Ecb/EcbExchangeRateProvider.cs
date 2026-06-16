@@ -376,7 +376,7 @@ public sealed class EcbExchangeRateProvider
             foreach (EcbSeriesInfo info in table.GetSeriesInfo())
                 _series[info.Pair] = info;
 
-            var count = AddObservations(table.EnumerateRates(), fetchedAt);
+            int count = AddObservations(table.EnumerateRates(), fetchedAt);
             RebuildSnapshot();
 
             Log.FeedLoaded(_logger, _options.DownloadCompletedLogLevel, feed.Name, count);
@@ -403,7 +403,7 @@ public sealed class EcbExchangeRateProvider
     private EcbExchangeRateFeed SelectWidestFeed()
     {
         IReadOnlyList<EcbExchangeRateFeed> feeds = _options.Feeds;
-        for (var i = 0; i < feeds.Count; i++)
+        for (int i = 0; i < feeds.Count; i++)
         {
             if (feeds[i].IsFullHistory)
                 return feeds[i];

@@ -88,7 +88,7 @@ public static partial class NotableDateOnlyExtensions
         ThrowHelper.ThrowIfNull(service);
         ThrowHelper.ThrowIfNull(territory);
 
-        for (var probe = 0; probe < TraversalGuard; probe++)
+        for (int probe = 0; probe < TraversalGuard; probe++)
         {
             date = date.AddDays(direction);
             if (date.IsWorkingDay(service, territory, workingWeek))
@@ -116,7 +116,7 @@ public static partial class NotableDateOnlyExtensions
         ThrowHelper.ThrowIfNull(service);
         ThrowHelper.ThrowIfNull(territory);
 
-        for (var probe = 0; probe < TraversalGuard; probe++)
+        for (int probe = 0; probe < TraversalGuard; probe++)
         {
             date = date.AddDays(direction);
             if (date.IsNonWorkingDay(service, territory, workingWeek))

@@ -166,7 +166,7 @@ public sealed class YahooExchangeRateOptions
     /// </exception>
     public void Validate()
     {
-        if (!TryValidate(out var error))
+        if (!TryValidate(out string? error))
             throw new ArgumentException(error);
     }
 
@@ -263,5 +263,5 @@ public sealed class YahooExchangeRateOptions
     /// <param name="isoCode">The ISO code to map.</param>
     /// <returns>The aliased symbol component, or <paramref name="isoCode" /> when unmapped.</returns>
     private string MapCurrency(string isoCode) =>
-        CurrencyAliases.TryGetValue(isoCode, out var alias) ? alias : isoCode;
+        CurrencyAliases.TryGetValue(isoCode, out string? alias) ? alias : isoCode;
 }

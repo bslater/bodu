@@ -37,7 +37,7 @@ public partial class ExchangeRateLookupOptionsTests
                 (new DateOnly(2024, 1, 1), 1.5m),
             ]);
 
-        var found = series.TryGetRate(new DateOnly(2024, 1, 1), options: null, out DateOnly resolvedDate, out var rate);
+        bool found = series.TryGetRate(new DateOnly(2024, 1, 1), options: null, out DateOnly resolvedDate, out decimal rate);
 
         Assert.IsTrue(found);
         Assert.AreEqual(new DateOnly(2024, 1, 1), resolvedDate);
@@ -59,7 +59,7 @@ public partial class ExchangeRateLookupOptionsTests
                 (new DateOnly(2024, 1, 1), 1.5m),
             ]);
 
-        var found = series.TryGetRate(new DateOnly(2024, 1, 2), options: null, out _, out _);
+        bool found = series.TryGetRate(new DateOnly(2024, 1, 2), options: null, out _, out _);
 
         Assert.IsFalse(found);
     }

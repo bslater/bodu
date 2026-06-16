@@ -104,7 +104,7 @@ public static partial class NumericExtensions
         if (value == 2) return true;
         if ((value & 1UL) == 0) return false;
 
-        var limit = (ulong)Math.Sqrt(value);
+        ulong limit = (ulong)Math.Sqrt(value);
         for (ulong divisor = 3; divisor <= limit; divisor += 2)
         {
             if (value % divisor == 0)

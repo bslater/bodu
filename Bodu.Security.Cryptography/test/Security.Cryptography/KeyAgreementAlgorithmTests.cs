@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="KeyAgreementAlgorithmTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -44,8 +44,8 @@ public abstract class KeyAgreementAlgorithmTests<TTest, TAlgorithm>
         using TAlgorithm alice = CreateAlgorithmWithGeneratedKey();
         using TAlgorithm bob = CreateAlgorithmWithGeneratedKey();
 
-        var aliceShared = DeriveSharedSecret(alice, ExportPublicKey(bob));
-        var bobShared = DeriveSharedSecret(bob, ExportPublicKey(alice));
+        byte[] aliceShared = DeriveSharedSecret(alice, ExportPublicKey(bob));
+        byte[] bobShared = DeriveSharedSecret(bob, ExportPublicKey(alice));
 
         Assert.AreEqual(SharedSecretSizeBytes, aliceShared.Length);
         CollectionAssert.AreEqual(aliceShared, bobShared);
@@ -59,7 +59,7 @@ public abstract class KeyAgreementAlgorithmTests<TTest, TAlgorithm>
     {
         using TAlgorithm local = CreateAlgorithmWithGeneratedKey();
         using TAlgorithm peer = CreateAlgorithmWithGeneratedKey();
-        var peerPublic = ExportPublicKey(peer);
+        byte[] peerPublic = ExportPublicKey(peer);
 
         CollectionAssert.AreEqual(DeriveSharedSecret(local, peerPublic), DeriveSharedSecret(local, peerPublic));
     }
@@ -72,7 +72,7 @@ public abstract class KeyAgreementAlgorithmTests<TTest, TAlgorithm>
     public void DeriveSharedSecret_WhenNoPrivateKeyPresent_ShouldThrowCryptographicException()
     {
         using TAlgorithm donor = CreateAlgorithmWithGeneratedKey();
-        var peerPublic = ExportPublicKey(donor);
+        byte[] peerPublic = ExportPublicKey(donor);
 
         using TAlgorithm empty = CreateAlgorithm();
         Assert.ThrowsExactly<CryptographicException>(() => { _ = DeriveSharedSecret(empty, peerPublic); });
@@ -90,7 +90,7 @@ public abstract class KeyAgreementAlgorithmTests<TTest, TAlgorithm>
         AsymmetricAlgorithmSpecification spec = GetSpecification();
         using TAlgorithm algorithm = CreateAlgorithmWithGeneratedKey();
 
-        foreach (var length in new[] { 0, spec.PublicKeySizeBytes - 1, spec.PublicKeySizeBytes + 1 })
+        foreach (int length in new[] { 0, spec.PublicKeySizeBytes - 1, spec.PublicKeySizeBytes + 1 })
         {
             Assert.ThrowsExactly<ArgumentException>(
                 () => { _ = DeriveSharedSecret(algorithm, new byte[length]); },
@@ -106,7 +106,7 @@ public abstract class KeyAgreementAlgorithmTests<TTest, TAlgorithm>
     public void Dispose_WhenCalled_ShouldMakeDeriveSharedSecretThrowObjectDisposedException()
     {
         using TAlgorithm peer = CreateAlgorithmWithGeneratedKey();
-        var peerPublic = ExportPublicKey(peer);
+        byte[] peerPublic = ExportPublicKey(peer);
 
         TAlgorithm algorithm = CreateAlgorithmWithGeneratedKey();
         algorithm.Dispose();

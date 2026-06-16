@@ -259,7 +259,7 @@ public sealed class TomlValue
     /// </returns>
     private bool TryGetInteger<T>(out T value)
     {
-        var integer = (long)_value;
+        long integer = (long)_value;
         try
         {
             object? boxed = Type.GetTypeCode(typeof(T)) switch

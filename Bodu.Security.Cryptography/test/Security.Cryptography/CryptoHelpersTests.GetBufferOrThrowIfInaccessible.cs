@@ -49,7 +49,7 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void GetBufferOrThrowIfInaccessible_WhenStreamHidesBuffer_ShouldThrowExactly()
     {
-        var bytes = new byte[] { 0x01, 0x02, 0x03 };
+        byte[] bytes = new byte[] { 0x01, 0x02, 0x03 };
         using var stream = new MemoryStream(bytes, index: 0, count: bytes.Length, writable: false, publiclyVisible: false);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>

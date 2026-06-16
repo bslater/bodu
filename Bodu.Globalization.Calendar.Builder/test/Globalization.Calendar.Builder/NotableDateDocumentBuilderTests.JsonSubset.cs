@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateDocumentBuilderTests.JsonSubset.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -145,7 +145,7 @@ public partial class NotableDateDocumentBuilderTests
             .AddNotableDate("nd", "ND", NotableDateCategory.Observance, d => d
                 .AddRule("r", x => x.Fixed(1, 1)));
 
-        var json = builder.ToJson();
+        string json = builder.ToJson();
 
         Assert.AreEqual(json, NotableDateDocumentBuilder.FromJson(json).ToJson());
     }
@@ -161,7 +161,7 @@ public partial class NotableDateDocumentBuilderTests
             .AddNotableDate("nd", "ND", NotableDateCategory.Observance, d => d
                 .AddRule("r", x => x.Fixed(2, 29, skipLeapMonth: true, sweepCalendarYears: true)));
 
-        var json = builder.ToJson();
+        string json = builder.ToJson();
 
         Assert.AreEqual(json, NotableDateDocumentBuilder.FromJson(json).ToJson());
     }
@@ -248,7 +248,7 @@ public partial class NotableDateDocumentBuilderTests
     [DataRow("""{ "fixed": { "month": "January", "day": 1, "skipLeapMonth": null } }""", "skipLeapMonth=\"\"", DisplayName = "null attribute")]
     public void FromJson_WhenStrategyAttributeVaries_ShouldNormalizeInXml(string strategyJson, string expectedFragment)
     {
-        var xml = NotableDateDocumentBuilder.FromJson(JsonWithRule($$"""{ "id": "r", "strategy": {{strategyJson}} }""")).ToXml();
+        string xml = NotableDateDocumentBuilder.FromJson(JsonWithRule($$"""{ "id": "r", "strategy": {{strategyJson}} }""")).ToXml();
 
         Assert.Contains(expectedFragment, xml);
     }

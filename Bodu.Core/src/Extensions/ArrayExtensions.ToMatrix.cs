@@ -32,20 +32,20 @@ public static partial class ArrayExtensions
         ThrowHelper.ThrowIfArrayLengthIsZero(source);
 
         T[] firstRow = source[0] ?? throw new ArgumentNullException(nameof(source));
-        var rows = source.Length;
-        var cols = firstRow.Length;
+        int rows = source.Length;
+        int cols = firstRow.Length;
 
-        for (var i = 1; i < rows; i++)
+        for (int i = 1; i < rows; i++)
         {
             T[] row = source[i] ?? throw new ArgumentNullException(nameof(source));
             if (row.Length != cols) throw new ArgumentException(ResourceStrings.Arg_Invalid_JaggedArrayInnerLength, nameof(source));
         }
 
         T[,] matrix = transpose ? new T[cols, rows] : new T[rows, cols];
-        for (var i = 0; i < rows; i++)
+        for (int i = 0; i < rows; i++)
         {
             T[] row = source[i];
-            for (var j = 0; j < cols; j++)
+            for (int j = 0; j < cols; j++)
             {
                 if (transpose)
                     matrix[j, i] = row[j];

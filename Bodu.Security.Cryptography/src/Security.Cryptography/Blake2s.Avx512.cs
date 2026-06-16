@@ -72,25 +72,25 @@ public sealed partial class Blake2s
     {
         // Load the 16 message words. Used to build the per-step (mx, my) gather vectors below.
         Span<uint> m = stackalloc uint[16];
-        ref var blockRef = ref MemoryMarshal.GetReference(block);
+        ref byte blockRef = ref MemoryMarshal.GetReference(block);
         if (BitConverter.IsLittleEndian)
         {
-            ref var wordRef = ref Unsafe.As<byte, uint>(ref blockRef);
-            for (var i = 0; i < 16; i++)
+            ref uint wordRef = ref Unsafe.As<byte, uint>(ref blockRef);
+            for (int i = 0; i < 16; i++)
                 m[i] = Unsafe.Add(ref wordRef, i);
         }
         else
         {
-            for (var i = 0; i < 16; i++)
+            for (int i = 0; i < 16; i++)
                 m[i] = BinaryPrimitives.ReadUInt32LittleEndian(block.Slice(i * 4, 4));
         }
 
-        ref var mRef = ref MemoryMarshal.GetReference(m);
+        ref uint mRef = ref MemoryMarshal.GetReference(m);
 
         // Build the four rows of the working vector. a/b come from the chaining state; c/d come from the
         // IV with the 64-bit counter XORed into lanes 0 and 1 of d (= v[12] and v[13]) and the
         // finalization flag conditionally inverting lane 2 of d (= v[14]).
-        ref var hRef = ref MemoryMarshal.GetArrayDataReference(_h);
+        ref uint hRef = ref MemoryMarshal.GetArrayDataReference(_h);
         var a = Vector128.Create(
             Unsafe.Add(ref hRef, 0),
             Unsafe.Add(ref hRef, 1),
@@ -110,9 +110,9 @@ public sealed partial class Blake2s
 
         // 10 rounds, each consisting of a column step followed by a diagonal step. Each step applies the
         // SIMD G kernel once across all four columns / diagonals in parallel.
-        for (var r = 0; r < 10; r++)
+        for (int r = 0; r < 10; r++)
         {
-            var s = Blake2Constants.Sigma[r];
+            byte[] s = Blake2Constants.Sigma[r];
 
             // Column step.
             var mx = Vector128.Create(

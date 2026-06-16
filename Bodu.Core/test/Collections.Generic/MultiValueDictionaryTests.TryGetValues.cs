@@ -37,7 +37,7 @@ public partial class MultiValueDictionaryTests
         var mvd = new MultiValueDictionary<string, int>(StringComparer.OrdinalIgnoreCase);
         mvd.Add("Alpha", 1);
 
-        var found = mvd.TryGetValues("alpha", out IReadOnlyList<int> values);
+        bool found = mvd.TryGetValues("alpha", out IReadOnlyList<int> values);
 
         Assert.IsTrue(found);
         Assert.HasCount(1, values);
@@ -52,7 +52,7 @@ public partial class MultiValueDictionaryTests
     {
         var mvd = new MultiValueDictionary<string, int>();
 
-        var found = mvd.TryGetValues("missing", out IReadOnlyList<int> values);
+        bool found = mvd.TryGetValues("missing", out IReadOnlyList<int> values);
 
         Assert.IsFalse(found);
         Assert.IsNotNull(values);
@@ -82,7 +82,7 @@ public partial class MultiValueDictionaryTests
         mvd.Add("k", 5);
         mvd.Add("k", 10);
 
-        var found = mvd.TryGetValues("k", out IReadOnlyList<int> values);
+        bool found = mvd.TryGetValues("k", out IReadOnlyList<int> values);
 
         Assert.IsTrue(found);
         Assert.HasCount(2, values);
@@ -97,7 +97,7 @@ public partial class MultiValueDictionaryTests
         var mvd = new MultiValueDictionary<string, int>();
         mvd.Add("k", 10);
 
-        var found = mvd.TryGetValues("k", out IReadOnlyList<int> view);
+        bool found = mvd.TryGetValues("k", out IReadOnlyList<int> view);
         Assert.IsTrue(found);
 
         mvd.Add("k", 20);

@@ -57,7 +57,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
         using TAlgorithm algorithm = CreateAlgorithm();
 
         // Begin the hashing operation
-        var buffer = new byte[8];
+        byte[] buffer = new byte[8];
         algorithm.TransformBlock(buffer, 0, buffer.Length, null, 0);
 
         object? currentValue;
@@ -96,8 +96,8 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     {
         using TAlgorithm algorithm = CreateAlgorithm();
 
-        var input = CryptoTestUtilities.ByteSequence256[..32];
-        var output = new byte[input.Length];
+        byte[] input = CryptoTestUtilities.ByteSequence256[..32];
+        byte[] output = new byte[input.Length];
 
         _ = algorithm.TransformBlock(input, 0, input.Length, output, 0);
 
@@ -113,10 +113,10 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     {
         using TAlgorithm algorithm = CreateAlgorithm();
 
-        var input = CryptoTestUtilities.ByteSequence256[..32];
-        var output = Enumerable.Repeat((byte)0xA5, input.Length + 8).ToArray();
+        byte[] input = CryptoTestUtilities.ByteSequence256[..32];
+        byte[] output = Enumerable.Repeat((byte)0xA5, input.Length + 8).ToArray();
 
-        var expected = Enumerable.Repeat((byte)0xA5, input.Length + 8).ToArray();
+        byte[] expected = Enumerable.Repeat((byte)0xA5, input.Length + 8).ToArray();
         Buffer.BlockCopy(input, 0, expected, 4, input.Length);
 
         _ = algorithm.TransformBlock(input, 0, input.Length, output, 4);
@@ -133,9 +133,9 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     {
         using TAlgorithm algorithm = CreateAlgorithm();
 
-        var input = CryptoTestUtilities.ByteSequence256[..32];
+        byte[] input = CryptoTestUtilities.ByteSequence256[..32];
 
-        var bytesWritten = algorithm.TransformBlock(input, 0, input.Length, null, 0);
+        int bytesWritten = algorithm.TransformBlock(input, 0, input.Length, null, 0);
 
         Assert.AreEqual(input.Length, bytesWritten);
     }

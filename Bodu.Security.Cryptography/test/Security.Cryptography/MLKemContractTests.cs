@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MLKemContractTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -80,7 +80,7 @@ public abstract class MLKemContractTests<TTest, TKem>
     [TestMethod]
     public void ImportPrivateSeed_WhenSeedIsReused_ShouldRegenerateSameKeyPairAndRejectWrongLengths()
     {
-        var seed = new byte[MLKem.PrivateSeedSizeInBytes];
+        byte[] seed = new byte[MLKem.PrivateSeedSizeInBytes];
         new Random(203).NextBytes(seed);
 
         using var first = new TKem();
@@ -106,7 +106,7 @@ public abstract class MLKemContractTests<TTest, TKem>
         donor.GenerateKey();
 
         // The H(ek) digest sits immediately after dk_PKE ‖ ek, i.e. 32 bytes before the trailing z seed.
-        var corrupted = donor.ExportDecapsulationKey();
+        byte[] corrupted = donor.ExportDecapsulationKey();
         corrupted[^33] ^= 0x01;
 
         using var kem = new TKem();
@@ -129,7 +129,7 @@ public abstract class MLKemContractTests<TTest, TKem>
         donor.GenerateKey();
 
         // Force the first packed coefficient to 0xFFF = 4095 >= q = 3329.
-        var corrupted = donor.ExportEncapsulationKey();
+        byte[] corrupted = donor.ExportEncapsulationKey();
         corrupted[0] = 0xFF;
         corrupted[1] |= 0x0F;
 
@@ -156,11 +156,11 @@ public abstract class MLKemContractTests<TTest, TKem>
         using var sender = new TKem();
         sender.ImportEncapsulationKey(receiver.ExportEncapsulationKey());
 
-        var ciphertext = new byte[CiphertextSizeBytes];
-        var senderSecret = new byte[MLKem.SharedSecretSizeInBytes];
+        byte[] ciphertext = new byte[CiphertextSizeBytes];
+        byte[] senderSecret = new byte[MLKem.SharedSecretSizeInBytes];
         sender.Encapsulate(ciphertext, senderSecret);
 
-        var receiverSecret = new byte[MLKem.SharedSecretSizeInBytes];
+        byte[] receiverSecret = new byte[MLKem.SharedSecretSizeInBytes];
         receiver.Decapsulate(ciphertext, receiverSecret);
         CollectionAssert.AreEqual(senderSecret, receiverSecret);
 

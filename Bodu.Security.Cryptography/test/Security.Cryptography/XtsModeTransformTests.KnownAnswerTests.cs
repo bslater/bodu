@@ -64,12 +64,12 @@ public sealed partial class XtsModeTransformTests
     {
         using var dataCipher = new AesBlockCipherFixture(Convert.FromHexString(key1Hex));
         using var tweakCipher = new AesBlockCipherFixture(Convert.FromHexString(key2Hex));
-        var tweak = Convert.FromHexString(tweakHex);
-        var plaintext = Convert.FromHexString(ptHex);
-        var expected = Convert.FromHexString(expectedCtHex);
+        byte[] tweak = Convert.FromHexString(tweakHex);
+        byte[] plaintext = Convert.FromHexString(ptHex);
+        byte[] expected = Convert.FromHexString(expectedCtHex);
 
         var transform = new XtsModeTransform(dataCipher, tweakCipher, tweak);
-        var output = new byte[plaintext.Length];
+        byte[] output = new byte[plaintext.Length];
         transform.Transform(plaintext, output, encrypt: true);
 
         CollectionAssert.AreEqual(expected, output,
@@ -87,12 +87,12 @@ public sealed partial class XtsModeTransformTests
     {
         using var dataCipher = new AesBlockCipherFixture(Convert.FromHexString(key1Hex));
         using var tweakCipher = new AesBlockCipherFixture(Convert.FromHexString(key2Hex));
-        var tweak = Convert.FromHexString(tweakHex);
-        var ciphertext = Convert.FromHexString(expectedCtHex);
-        var expected = Convert.FromHexString(ptHex);
+        byte[] tweak = Convert.FromHexString(tweakHex);
+        byte[] ciphertext = Convert.FromHexString(expectedCtHex);
+        byte[] expected = Convert.FromHexString(ptHex);
 
         var transform = new XtsModeTransform(dataCipher, tweakCipher, tweak);
-        var output = new byte[ciphertext.Length];
+        byte[] output = new byte[ciphertext.Length];
         transform.Transform(ciphertext, output, encrypt: false);
 
         CollectionAssert.AreEqual(expected, output,

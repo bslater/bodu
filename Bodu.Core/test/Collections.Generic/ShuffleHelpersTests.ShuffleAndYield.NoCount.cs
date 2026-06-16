@@ -16,8 +16,8 @@ public partial class ShuffleHelpersTests
     [TestMethod]
     public void ShuffleAndYield_Array_NoCount_ShouldReturnAllElements()
     {
-        var source = Enumerable.Range(1, 8).ToArray();
-        var actual = ShuffleHelpers.ShuffleAndYield(source, new XorShiftRandom(7)).ToArray();
+        int[] source = Enumerable.Range(1, 8).ToArray();
+        int[] actual = ShuffleHelpers.ShuffleAndYield(source, new XorShiftRandom(7)).ToArray();
 
         Assert.HasCount(source.Length, actual);
         CollectionAssert.AreEquivalent(source, actual);
@@ -45,7 +45,7 @@ public partial class ShuffleHelpersTests
     public void ShuffleAndYield_IEnumerable_NoCount_ShouldReturnAllElements()
     {
         var source = Enumerable.Range(1, 10).ToList();
-        var actual = ShuffleHelpers.ShuffleAndYield(source.AsEnumerable(), new XorShiftRandom(7)).ToArray();
+        int[] actual = ShuffleHelpers.ShuffleAndYield(source.AsEnumerable(), new XorShiftRandom(7)).ToArray();
 
         Assert.HasCount(source.Count, actual);
         CollectionAssert.AreEquivalent(source, actual);
@@ -75,9 +75,9 @@ public partial class ShuffleHelpersTests
     [TestMethod]
     public void ShuffleAndYield_ReadOnlySpan_NoCount_ShouldReturnAllElements()
     {
-        var underlying = Enumerable.Range(1, 6).ToArray();
+        int[] underlying = Enumerable.Range(1, 6).ToArray();
         ReadOnlySpan<int> span = underlying;
-        var actual = ShuffleHelpers.ShuffleAndYield(span, new XorShiftRandom(7)).ToArray();
+        int[] actual = ShuffleHelpers.ShuffleAndYield(span, new XorShiftRandom(7)).ToArray();
 
         Assert.HasCount(underlying.Length, actual);
         CollectionAssert.AreEquivalent(underlying, actual);
@@ -91,9 +91,9 @@ public partial class ShuffleHelpersTests
     [TestMethod]
     public void ShuffleAndYield_Memory_NoCount_ShouldReturnAllElements()
     {
-        var underlying = Enumerable.Range(1, 6).ToArray();
+        int[] underlying = Enumerable.Range(1, 6).ToArray();
         Memory<int> memory = underlying;
-        var actual = ShuffleHelpers.ShuffleAndYield(memory, new XorShiftRandom(7)).ToArray();
+        int[] actual = ShuffleHelpers.ShuffleAndYield(memory, new XorShiftRandom(7)).ToArray();
 
         Assert.HasCount(underlying.Length, actual);
         CollectionAssert.AreEquivalent(underlying, actual);

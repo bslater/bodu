@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Ed25519ScalarTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -30,11 +30,11 @@ public class Ed25519ScalarTests
     [TestMethod]
     public void Reduce_WhenComparedToBigIntegerReference_ShouldMatchForEdgeAndRandomInputs()
     {
-        foreach (var input in EnumerateReduceInputs())
+        foreach (byte[] input in EnumerateReduceInputs())
         {
-            var expected = ToLittleEndian32(FromLittleEndian(input) % s_order);
+            byte[] expected = ToLittleEndian32(FromLittleEndian(input) % s_order);
 
-            var actual = new byte[32];
+            byte[] actual = new byte[32];
             Ed25519Scalar.Reduce(input, actual);
 
             CollectionAssert.AreEqual(expected, actual, $"Reduce mismatch for input {Convert.ToHexString(input)}.");
@@ -71,11 +71,11 @@ public class Ed25519ScalarTests
     {
         var random = new Random(20260613);
 
-        for (var trial = 0; trial < 500; trial++)
+        for (int trial = 0; trial < 500; trial++)
         {
-            var a = new byte[32];
-            var b = new byte[32];
-            var c = new byte[32];
+            byte[] a = new byte[32];
+            byte[] b = new byte[32];
+            byte[] c = new byte[32];
             random.NextBytes(a);
             random.NextBytes(b);
             random.NextBytes(c);
@@ -91,10 +91,10 @@ public class Ed25519ScalarTests
             if (trial == 0)
                 Array.Fill(a, (byte)0xFF);
 
-            var expected = ToLittleEndian32(
+            byte[] expected = ToLittleEndian32(
                 ((FromLittleEndian(a) * FromLittleEndian(b)) + FromLittleEndian(c)) % s_order);
 
-            var actual = new byte[32];
+            byte[] actual = new byte[32];
             Ed25519Scalar.MulAdd(a, b, c, actual);
 
             CollectionAssert.AreEqual(expected, actual, $"MulAdd mismatch on trial {trial}.");
@@ -115,7 +115,7 @@ public class Ed25519ScalarTests
         Assert.IsFalse(Ed25519Scalar.IsCanonical(ToLittleEndian32(s_order)));
         Assert.IsFalse(Ed25519Scalar.IsCanonical(ToLittleEndian32(s_order + 1)));
 
-        var allOnes = new byte[32];
+        byte[] allOnes = new byte[32];
         Array.Fill(allOnes, (byte)0xFF);
         Assert.IsFalse(Ed25519Scalar.IsCanonical(allOnes));
     }
@@ -129,21 +129,21 @@ public class Ed25519ScalarTests
     {
         yield return new byte[64];
 
-        var allOnes = new byte[64];
+        byte[] allOnes = new byte[64];
         Array.Fill(allOnes, (byte)0xFF);
         yield return allOnes;
 
         foreach (var value in new[] { s_order - 1, s_order, s_order + 1 })
         {
-            var bytes = new byte[64];
+            byte[] bytes = new byte[64];
             ToLittleEndian32(value).CopyTo(bytes, 0);
             yield return bytes;
         }
 
         var random = new Random(8032);
-        for (var i = 0; i < 500; i++)
+        for (int i = 0; i < 500; i++)
         {
-            var bytes = new byte[64];
+            byte[] bytes = new byte[64];
             random.NextBytes(bytes);
             yield return bytes;
         }
@@ -164,7 +164,7 @@ public class Ed25519ScalarTests
     /// <returns>The 32-byte little-endian encoding.</returns>
     private static byte[] ToLittleEndian32(BigInteger value)
     {
-        var bytes = new byte[32];
+        byte[] bytes = new byte[32];
         value.TryWriteBytes(bytes, out _, isUnsigned: true, isBigEndian: false);
 
         return bytes;

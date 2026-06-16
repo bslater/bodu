@@ -29,7 +29,7 @@ public partial class ExchangeRateBookTests
         ExchangeRateSeries series = BuildSeries(s_usdAud, "RBA", 1.5m);
         ExchangeRateBook book = new([series]);
 
-        var found = book.TryGetSeries(s_usdAud, "RBA", out ExchangeRateSeries? resolved);
+        bool found = book.TryGetSeries(s_usdAud, "RBA", out ExchangeRateSeries? resolved);
 
         Assert.IsTrue(found);
         Assert.AreSame(series, resolved);
@@ -44,7 +44,7 @@ public partial class ExchangeRateBookTests
     {
         ExchangeRateBook book = new([BuildSeries(s_usdAud, "RBA", 1.5m)]);
 
-        var found = book.TryGetSeries(s_usdAud, "ECB", out ExchangeRateSeries? resolved);
+        bool found = book.TryGetSeries(s_usdAud, "ECB", out ExchangeRateSeries? resolved);
 
         Assert.IsFalse(found);
         Assert.IsNull(resolved);

@@ -34,7 +34,7 @@ public partial class IndexedPriorityQueueTests
     {
         var queue = new IndexedPriorityQueue<int, int>();
         int[] priorities = [50, 10, 40, 20, 30, 5, 70, 60];
-        for (var i = 0; i < priorities.Length; i++)
+        for (int i = 0; i < priorities.Length; i++)
             queue.Enqueue(i, priorities[i]);
 
         KeyValuePair<int, int>[] drained = DrainAll(queue);
@@ -52,7 +52,7 @@ public partial class IndexedPriorityQueueTests
     {
         var queue = new IndexedPriorityQueue<int, int>();
         int[] priorities = [5, 1, 5, 3, 1, 3, 5, 1, 7];
-        for (var i = 0; i < priorities.Length; i++)
+        for (int i = 0; i < priorities.Length; i++)
             queue.Enqueue(i, priorities[i]);
 
         KeyValuePair<int, int>[] drained = DrainAll(queue);
@@ -124,7 +124,7 @@ public partial class IndexedPriorityQueueTests
         queue.Enqueue("a", 1);
         _ = queue.Dequeue();
 
-        Assert.IsFalse(queue.TryDequeue(out var element, out var priority));
+        Assert.IsFalse(queue.TryDequeue(out string? element, out int priority));
         Assert.IsNull(element);
         Assert.AreEqual(0, priority);
     }
@@ -137,7 +137,7 @@ public partial class IndexedPriorityQueueTests
     {
         var queue = new IndexedPriorityQueue<string, int>();
 
-        Assert.IsFalse(queue.TryDequeue(out var element, out var priority));
+        Assert.IsFalse(queue.TryDequeue(out string? element, out int priority));
         Assert.IsNull(element);
         Assert.AreEqual(0, priority);
     }
@@ -152,7 +152,7 @@ public partial class IndexedPriorityQueueTests
         queue.Enqueue("a", 5);
         queue.Enqueue("b", 1);
 
-        Assert.IsTrue(queue.TryDequeue(out var element, out var priority));
+        Assert.IsTrue(queue.TryDequeue(out string? element, out int priority));
         Assert.AreEqual("b", element);
         Assert.AreEqual(1, priority);
         Assert.AreEqual(1, queue.Count);

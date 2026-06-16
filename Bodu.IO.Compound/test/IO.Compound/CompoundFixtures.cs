@@ -26,7 +26,7 @@ internal static class CompoundFixtures
     /// </exception>
     public static byte[] ReadBytes(string fileName)
     {
-        var resourceName = "Bodu.IO.Compound.Fixtures." + fileName;
+        string resourceName = "Bodu.IO.Compound.Fixtures." + fileName;
         using Stream stream = typeof(CompoundFixtures).Assembly.GetManifestResourceStream(resourceName)
             ?? throw new InvalidOperationException($"Missing embedded fixture '{resourceName}'.");
         using MemoryStream buffer = new();

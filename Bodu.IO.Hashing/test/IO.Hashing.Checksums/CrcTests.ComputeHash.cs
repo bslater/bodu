@@ -22,9 +22,9 @@ public partial class CrcTests
         Crc crc = new(CrcStandard.CRC32_ISOHDLC);
 
         _ = crc.ComputeHash(Encoding.ASCII.GetBytes("first input, different length"));
-        var second = crc.ComputeHash(s_revEngCheckInput);
+        byte[] second = crc.ComputeHash(s_revEngCheckInput);
 
-        var reference = new Crc(CrcStandard.CRC32_ISOHDLC).ComputeHash(s_revEngCheckInput);
+        byte[] reference = new Crc(CrcStandard.CRC32_ISOHDLC).ComputeHash(s_revEngCheckInput);
         CollectionAssert.AreEqual(reference, second);
     }
 
@@ -43,8 +43,8 @@ public partial class CrcTests
         Crc streaming = CreateAlgorithm(variant);
         streaming.Append(s_revEngCheckInput);
 
-        var oneShotHash = oneShot.ComputeHash(s_revEngCheckInput);
-        var streamingHash = streaming.GetCurrentHash();
+        byte[] oneShotHash = oneShot.ComputeHash(s_revEngCheckInput);
+        byte[] streamingHash = streaming.GetCurrentHash();
 
         CollectionAssert.AreEqual(streamingHash, oneShotHash);
     }
@@ -59,10 +59,10 @@ public partial class CrcTests
     public void ComputeHash_WhenInputIsEmpty_ShouldMatchSpecificationEmptyDigest(CrcTestVariant variant)
     {
         NonCryptographicHashAlgorithmSpecification specification = GetSpecification(variant);
-        var expected = System.Convert.FromHexString(specification.KnownAnswers.Empty!);
+        byte[] expected = System.Convert.FromHexString(specification.KnownAnswers.Empty!);
 
         Crc crc = CreateAlgorithm(variant);
-        var actual = crc.ComputeHash([]);
+        byte[] actual = crc.ComputeHash([]);
 
         CollectionAssert.AreEqual(expected, actual);
     }
@@ -75,7 +75,7 @@ public partial class CrcTests
     public void ComputeHash_WhenInputIsReferenceString_ForCRC32_ISOHDLC_ShouldMatchPublishedCheck()
     {
         Crc crc = new(CrcStandard.CRC32_ISOHDLC);
-        var hash = crc.ComputeHash(s_revEngCheckInput);
+        byte[] hash = crc.ComputeHash(s_revEngCheckInput);
 
         CollectionAssert.AreEqual(new byte[] { 0x26, 0x39, 0xF4, 0xCB }, hash);
     }

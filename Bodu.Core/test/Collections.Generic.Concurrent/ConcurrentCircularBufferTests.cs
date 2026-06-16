@@ -22,7 +22,7 @@ public partial class ConcurrentCircularBufferTests
         TestItem[] snapshot = buffer.ToArray();
         Assert.HasCount(expectedValues.Length, snapshot, "Buffer item count mismatch.");
 
-        for (var i = 0; i < expectedValues.Length; i++)
+        for (int i = 0; i < expectedValues.Length; i++)
         {
             Assert.IsNotNull(snapshot[i], $"Item at index {i} was null.");
             Assert.AreEqual(expectedValues[i], snapshot[i].Value, $"Item at index {i} did not match expected value.");

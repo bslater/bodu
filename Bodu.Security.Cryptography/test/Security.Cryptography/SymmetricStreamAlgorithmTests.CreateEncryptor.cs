@@ -17,9 +17,9 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
     [TestMethod]
     public void CreateEncryptor_WhenReusedWithSameKeyAndNonce_ShouldReproduceKeystream()
     {
-        var key = CreateKey();
-        var nonce = CreateNonce();
-        var zeros = new byte[96];
+        byte[] key = CreateKey();
+        byte[] nonce = CreateNonce();
+        byte[] zeros = new byte[96];
 
         byte[] a;
         using (TAlgorithm cipher = CreateAlgorithm())
@@ -46,8 +46,8 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
         if (keySizeBytes < 0) return;
 
         using TAlgorithm cipher = CreateAlgorithm();
-        var invalidKey = new byte[keySizeBytes];
-        var nonce = CreateNonce();
+        byte[] invalidKey = new byte[keySizeBytes];
+        byte[] nonce = CreateNonce();
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
@@ -67,8 +67,8 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
         if (nonceSizeBytes < 0) return;
 
         using TAlgorithm cipher = CreateAlgorithm();
-        var key = CreateKey();
-        var invalidNonce = new byte[nonceSizeBytes];
+        byte[] key = CreateKey();
+        byte[] invalidNonce = new byte[nonceSizeBytes];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
@@ -84,7 +84,7 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
     public void CreateEncryptor_WhenKeyIsNull_ShouldThrowArgumentNullException()
     {
         using TAlgorithm cipher = CreateAlgorithm();
-        var nonce = CreateNonce();
+        byte[] nonce = CreateNonce();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -100,7 +100,7 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
     public void CreateEncryptor_WhenNonceIsNull_ShouldThrowArgumentNullException()
     {
         using TAlgorithm cipher = CreateAlgorithm();
-        var key = CreateKey();
+        byte[] key = CreateKey();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -116,8 +116,8 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
     public void CreateEncryptor_WhenDisposed_ShouldThrowObjectDisposedException()
     {
         TAlgorithm cipher = CreateAlgorithm();
-        var key = CreateKey();
-        var nonce = CreateNonce();
+        byte[] key = CreateKey();
+        byte[] nonce = CreateNonce();
         cipher.Dispose();
 
         Assert.ThrowsExactly<ObjectDisposedException>(() =>
@@ -137,8 +137,8 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
     {
         using TAlgorithm cipher = CreateAlgorithm();
         cipher.KeySize = keySizeBits;
-        var key = CreateKey(keySizeBits);
-        var nonce = CreateNonce();
+        byte[] key = CreateKey(keySizeBits);
+        byte[] nonce = CreateNonce();
 
         using ICryptoTransform transform = cipher.CreateEncryptor(key, nonce);
 

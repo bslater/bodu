@@ -405,7 +405,7 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
     /// </remarks>
     public IEnumerable<KeyValuePair<TKey, TValue>> Flatten()
     {
-        var version = _version;
+        int version = _version;
 
         foreach (KeyValuePair<TKey, ValueBucket> entry in _map)
         {

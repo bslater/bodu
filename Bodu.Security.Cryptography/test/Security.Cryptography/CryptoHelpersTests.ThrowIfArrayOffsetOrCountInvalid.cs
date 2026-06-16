@@ -19,7 +19,7 @@ public partial class CryptoHelpersTests
     [DataRow(8, 0)]
     public void ThrowIfArrayOffsetOrCountInvalid_WhenSegmentIsValid_ShouldNotThrow(int offset, int count)
     {
-        var array = new byte[8];
+        byte[] array = new byte[8];
         CryptographyThrowHelper.ThrowIfArrayOffsetOrCountInvalid(array, offset, count);
     }
 
@@ -45,7 +45,7 @@ public partial class CryptoHelpersTests
     [DataRow(9, 0)]
     public void ThrowIfArrayOffsetOrCountInvalid_WhenOffsetIsOutOfRange_ShouldThrowExactly(int offset, int count)
     {
-        var array = new byte[8];
+        byte[] array = new byte[8];
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -62,7 +62,7 @@ public partial class CryptoHelpersTests
     [DataRow(0, 9)]
     public void ThrowIfArrayOffsetOrCountInvalid_WhenCountIsInvalid_ShouldThrowExactly(int offset, int count)
     {
-        var array = new byte[8];
+        byte[] array = new byte[8];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -77,7 +77,7 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void ThrowIfArrayOffsetOrCountInvalid_WhenSegmentExceedsArrayLength_ShouldThrowExactly()
     {
-        var array = new byte[8];
+        byte[] array = new byte[8];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {

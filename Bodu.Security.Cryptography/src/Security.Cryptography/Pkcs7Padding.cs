@@ -61,14 +61,14 @@ public sealed class Pkcs7Padding
     {
         CryptographyThrowHelper.ThrowIfNotPositiveMultipleOf(blockSize, 8);
 
-        var size = blockSize / 8;
-        var paddingLength = size - (input.Length % size);
+        int size = blockSize / 8;
+        int paddingLength = size - (input.Length % size);
         if (paddingLength == 0)
             paddingLength = size;
 
-        var result = new byte[input.Length + paddingLength];
+        byte[] result = new byte[input.Length + paddingLength];
         input.CopyTo(result);
-        for (var i = input.Length; i < result.Length; i++)
+        for (int i = input.Length; i < result.Length; i++)
             result[i] = (byte)paddingLength;
 
         return result;
@@ -91,39 +91,39 @@ public sealed class Pkcs7Padding
     {
         CryptographyThrowHelper.ThrowIfNotPositiveMultipleOf(blockSize, 8);
 
-        var size = blockSize / 8;
+        int size = blockSize / 8;
 
         // Constant-time padding verification to mitigate CBC padding-oracle attacks (Vaudenay 2002).
         if (input.Length == 0 || input.Length % size != 0)
             CryptographyHelper.ThrowInvalidPaddedSequence("PKCS#7", nameof(input));
 
-        var length = input.Length;
+        int length = input.Length;
         int padLen = input[length - 1];
 
         // valid = (padLen >= 1) & (padLen <= size), as a 0/1 mask, branchlessly.
         // padLen is a byte value in [0, 255]; (-padLen) is in [-255, 0] and its sign bit
         // is set iff padLen > 0, which gives geOne = 1 iff padLen >= 1.
-        var geOne = ((-padLen) >> 31) & 1;                  // 1 iff padLen >= 1
-        var leBlock = ((padLen - size - 1) >> 31) & 1;      // 1 iff padLen <= size
-        var valid = geOne & leBlock;
+        int geOne = ((-padLen) >> 31) & 1;                  // 1 iff padLen >= 1
+        int leBlock = ((padLen - size - 1) >> 31) & 1;      // 1 iff padLen <= size
+        int valid = geOne & leBlock;
 
         // effective = valid == 1 ? padLen : size  (branchless)
-        var effective = (valid * padLen) + ((1 - valid) * size);
+        int effective = (valid * padLen) + ((1 - valid) * size);
 
         // Walk the last block-size bytes unconditionally.
-        var start = length - size;
-        for (var i = start; i < length; i++)
+        int start = length - size;
+        for (int i = start; i < length; i++)
         {
             // shouldBePadByte = (i >= length - effective) ? 1 : 0  (branchless)
-            var diff = i - (length - effective);
-            var shouldBePadByte = ((~diff) >> 31) & 1; // 1 iff diff >= 0
+            int diff = i - (length - effective);
+            int shouldBePadByte = ((~diff) >> 31) & 1; // 1 iff diff >= 0
 
             // matches = (input[i] == padLen) ? 1 : 0  (branchless)
-            var xor = input[i] ^ padLen;
-            var matches = (((xor - 1) & ~xor) >> 31) & 1; // 1 iff xor == 0
+            int xor = input[i] ^ padLen;
+            int matches = (((xor - 1) & ~xor) >> 31) & 1; // 1 iff xor == 0
 
             // Accumulate: valid &= (shouldBePadByte == 0) | (matches == 1)
-            var constraint = (1 - shouldBePadByte) | matches;
+            int constraint = (1 - shouldBePadByte) | matches;
             valid &= constraint;
         }
 

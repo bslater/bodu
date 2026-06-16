@@ -19,16 +19,16 @@ public sealed partial class Base64Tests
     public void DecodeFromUtf8_WhenDestinationTooSmall_ShouldReportLastQuantumBoundary()
     {
         // "Zm9vYmFy" decodes to "foobar" (6 bytes). A 3-byte destination fits only the first quantum.
-        var utf8 = System.Text.Encoding.ASCII.GetBytes("Zm9vYmFy");
-        var destination = new byte[3];
+        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("Zm9vYmFy");
+        byte[] destination = new byte[3];
 
-        OperationStatus status = Base64.DecodeFromUtf8(utf8, destination, out var bytesConsumed, out var bytesWritten);
+        OperationStatus status = Base64.DecodeFromUtf8(utf8, destination, out int bytesConsumed, out int bytesWritten);
 
         Assert.AreEqual(OperationStatus.DestinationTooSmall, status);
         Assert.AreEqual(4, bytesConsumed);
         Assert.AreEqual(3, bytesWritten);
 
-        var expected = Ascii("foo");
+        byte[] expected = Ascii("foo");
         CollectionAssert.AreEqual(expected, destination);
     }
 
@@ -39,10 +39,10 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void DecodeFromUtf8_WhenDestinationTooSmall_ShouldReturnDestinationTooSmall()
     {
-        var utf8 = System.Text.Encoding.ASCII.GetBytes("Zm9vYmFy");
-        var destination = new byte[1];
+        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("Zm9vYmFy");
+        byte[] destination = new byte[1];
 
-        OperationStatus status = Base64.DecodeFromUtf8(utf8, destination, out var _, out var _);
+        OperationStatus status = Base64.DecodeFromUtf8(utf8, destination, out int _, out int _);
 
         Assert.AreEqual(OperationStatus.DestinationTooSmall, status);
     }
@@ -54,9 +54,9 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void DecodeFromUtf8_WhenMidGroupAndNotFinal_ShouldReturnNeedMoreData()
     {
-        var utf8 = System.Text.Encoding.ASCII.GetBytes("Zm9v"); // 4 chars - complete
-        var partial = System.Text.Encoding.ASCII.GetBytes("Zm9vYmE"); // 7 chars - mid-group
-        var destination = new byte[6];
+        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("Zm9v"); // 4 chars - complete
+        byte[] partial = System.Text.Encoding.ASCII.GetBytes("Zm9vYmE"); // 7 chars - mid-group
+        byte[] destination = new byte[6];
 
         OperationStatus statusComplete = Base64.DecodeFromUtf8(utf8, destination, out _, out _, isFinalBlock: false);
         Assert.AreEqual(OperationStatus.Done, statusComplete);
@@ -73,10 +73,10 @@ public sealed partial class Base64Tests
     public void DecodeFromUtf8_WhenNeedMoreData_ShouldReportLastQuantumBoundary()
     {
         // "Zm9vYg" is one full quartet ("Zm9v" = "foo") + 2 partial chars.
-        var utf8 = System.Text.Encoding.ASCII.GetBytes("Zm9vYg");
-        var destination = new byte[6];
+        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("Zm9vYg");
+        byte[] destination = new byte[6];
 
-        OperationStatus status = Base64.DecodeFromUtf8(utf8, destination, out var bytesConsumed, out var bytesWritten, isFinalBlock: false);
+        OperationStatus status = Base64.DecodeFromUtf8(utf8, destination, out int bytesConsumed, out int bytesWritten, isFinalBlock: false);
 
         Assert.AreEqual(OperationStatus.NeedMoreData, status);
         Assert.AreEqual(4, bytesConsumed);
@@ -90,10 +90,10 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void DecodeFromUtf8_WhenStrictValidInput_ShouldReturnDoneWithCounts()
     {
-        var utf8 = System.Text.Encoding.ASCII.GetBytes("Zm9vYmFy");
-        var destination = new byte[6];
+        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("Zm9vYmFy");
+        byte[] destination = new byte[6];
 
-        OperationStatus status = Base64.DecodeFromUtf8(utf8, destination, out var bytesConsumed, out var bytesWritten);
+        OperationStatus status = Base64.DecodeFromUtf8(utf8, destination, out int bytesConsumed, out int bytesWritten);
 
         Assert.AreEqual(OperationStatus.Done, status);
         Assert.AreEqual(8, bytesConsumed);
@@ -107,10 +107,10 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void DecodeFromUtf8_WhenUrlSafeVariant_ShouldDecodeSubstitutedAlphabet()
     {
-        var utf8 = System.Text.Encoding.ASCII.GetBytes("-__-");
-        var destination = new byte[3];
+        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("-__-");
+        byte[] destination = new byte[3];
 
-        OperationStatus status = Base64.DecodeFromUtf8(utf8, destination, out _, out var bytesWritten, Base64Variant.UrlSafe);
+        OperationStatus status = Base64.DecodeFromUtf8(utf8, destination, out _, out int bytesWritten, Base64Variant.UrlSafe);
 
         Assert.AreEqual(OperationStatus.Done, status);
         Assert.AreEqual(3, bytesWritten);
@@ -121,7 +121,7 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void EncodeToUtf8_ShouldReturnAsciiBytesOfStandardOutput()
     {
-        var actual = Base64.EncodeToUtf8(Ascii("foobar"));
+        byte[] actual = Base64.EncodeToUtf8(Ascii("foobar"));
 
         Assert.AreEqual("Zm9vYmFy", System.Text.Encoding.ASCII.GetString(actual));
     }
@@ -132,7 +132,7 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void EncodeToUtf8_WhenEmpty_ShouldReturnEmptyArray()
     {
-        var actual = Base64.EncodeToUtf8([]);
+        byte[] actual = Base64.EncodeToUtf8([]);
 
         Assert.AreEqual(0, actual.Length);
     }
@@ -144,7 +144,7 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void EncodeToUtf8_WhenOmitPadding_ShouldNotEmitPaddingBytes()
     {
-        var actual = Base64.EncodeToUtf8(Ascii("foob"), Base64Variant.Standard, BaseFormattingOptions.OmitPadding);
+        byte[] actual = Base64.EncodeToUtf8(Ascii("foob"), Base64Variant.Standard, BaseFormattingOptions.OmitPadding);
 
         Assert.AreEqual("Zm9vYg", System.Text.Encoding.ASCII.GetString(actual));
     }
@@ -156,11 +156,11 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void EncodeToUtf8_WhenUrlSafeVariant_ShouldSwapAlphabetCharacters()
     {
-        var bytes = new byte[] { 0xFB, 0xFF, 0xFE };
+        byte[] bytes = new byte[] { 0xFB, 0xFF, 0xFE };
 
-        var actual = Base64.EncodeToUtf8(bytes, Base64Variant.UrlSafe);
+        byte[] actual = Base64.EncodeToUtf8(bytes, Base64Variant.UrlSafe);
 
-        var encoded = System.Text.Encoding.ASCII.GetString(actual);
+        string encoded = System.Text.Encoding.ASCII.GetString(actual);
         Assert.IsFalse(encoded.Contains('+'));
         Assert.IsFalse(encoded.Contains('/'));
     }
@@ -171,9 +171,9 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void RoundTrip_EncodeAndDecodeUtf8_ShouldRecoverOriginal()
     {
-        var original = Ascii("foobar");
-        var encoded = Base64.EncodeToUtf8(original);
-        var destination = new byte[6];
+        byte[] original = Ascii("foobar");
+        byte[] encoded = Base64.EncodeToUtf8(original);
+        byte[] destination = new byte[6];
 
         OperationStatus status = Base64.DecodeFromUtf8(encoded, destination, out _, out _);
 
@@ -187,9 +187,9 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void TryEncodeToUtf8_WhenDestinationLargeEnough_ShouldReturnTrueAndExpectedBytes()
     {
-        var destination = new byte[8];
+        byte[] destination = new byte[8];
 
-        var ok = Base64.TryEncodeToUtf8(Ascii("foobar").AsSpan(), destination, out var bytesWritten);
+        bool ok = Base64.TryEncodeToUtf8(Ascii("foobar").AsSpan(), destination, out int bytesWritten);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(8, bytesWritten);
@@ -203,9 +203,9 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void TryEncodeToUtf8_WhenDestinationTooSmall_ShouldReturnFalse()
     {
-        var destination = new byte[1];
+        byte[] destination = new byte[1];
 
-        var ok = Base64.TryEncodeToUtf8(Ascii("foobar").AsSpan(), destination, out var bytesWritten);
+        bool ok = Base64.TryEncodeToUtf8(Ascii("foobar").AsSpan(), destination, out int bytesWritten);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0, bytesWritten);
@@ -217,7 +217,7 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void TryEncodeToUtf8_WhenUnsupportedFlag_ShouldThrowExactly()
     {
-        var destination = new byte[16];
+        byte[] destination = new byte[16];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {

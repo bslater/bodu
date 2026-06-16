@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Bech32Tests.Encode.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -82,7 +82,7 @@ public sealed partial class Bech32Tests
     [TestMethod]
     public void TryEncode_WhenInvalidHrp_ShouldReturnFalse()
     {
-        var success = Bech32.TryEncode(string.Empty, ReadOnlySpan<byte>.Empty, Bech32Encoding.Bech32, out var result);
+        bool success = Bech32.TryEncode(string.Empty, ReadOnlySpan<byte>.Empty, Bech32Encoding.Bech32, out string? result);
 
         Assert.IsFalse(success);
         Assert.IsNull(result);

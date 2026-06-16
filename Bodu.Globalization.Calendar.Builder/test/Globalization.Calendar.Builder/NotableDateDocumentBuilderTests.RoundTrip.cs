@@ -63,9 +63,9 @@ public partial class NotableDateDocumentBuilderTests
     [TestMethod]
     public void RoundTrip_WhenParsedFromXmlAndReserialized_ShouldReproduceXml()
     {
-        var xml = SampleDocument().ToXml();
+        string xml = SampleDocument().ToXml();
 
-        var reserialized = NotableDateDocumentBuilder.FromXml(xml).ToXml();
+        string reserialized = NotableDateDocumentBuilder.FromXml(xml).ToXml();
 
         Assert.AreEqual(xml, reserialized);
     }
@@ -89,9 +89,9 @@ public partial class NotableDateDocumentBuilderTests
     [TestMethod]
     public void RoundTrip_WhenParsedFromJsonAndReserialized_ShouldReproduceJson()
     {
-        var json = SampleDocument().ToJson();
+        string json = SampleDocument().ToJson();
 
-        var reserialized = NotableDateDocumentBuilder.FromJson(json).ToJson();
+        string reserialized = NotableDateDocumentBuilder.FromJson(json).ToJson();
 
         Assert.AreEqual(json, reserialized);
     }

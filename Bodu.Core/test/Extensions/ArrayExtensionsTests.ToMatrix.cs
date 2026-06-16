@@ -47,7 +47,7 @@ public partial class ArrayExtensionsTests
     {
         int[][] source = [[], []];
 
-        var result = source.ToMatrix(transpose: false);
+        int[,] result = source.ToMatrix(transpose: false);
 
         Assert.AreEqual(2, result.GetLength(0));
         Assert.AreEqual(0, result.GetLength(1));
@@ -62,7 +62,7 @@ public partial class ArrayExtensionsTests
     {
         int[][] source = [[], []];
 
-        var result = source.ToMatrix(transpose: true);
+        int[,] result = source.ToMatrix(transpose: true);
 
         Assert.AreEqual(0, result.GetLength(0));
         Assert.AreEqual(2, result.GetLength(1));
@@ -92,7 +92,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void ToMatrix_WhenSourceHasNoRows_ShouldThrowExactly()
     {
-        var source = Array.Empty<int[]>();
+        int[][] source = Array.Empty<int[]>();
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -125,7 +125,7 @@ public partial class ArrayExtensionsTests
             [4, 5, 6],
         ];
 
-        var result = source.ToMatrix(transpose: false);
+        int[,] result = source.ToMatrix(transpose: false);
 
         Assert.AreEqual(2, result.GetLength(0));
         Assert.AreEqual(3, result.GetLength(1));
@@ -143,10 +143,10 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void ToMatrix_WithReferenceTypes_ShouldPreserveElementIdentity()
     {
-        var a = new object();
-        var b = new object();
-        var c = new object();
-        var d = new object();
+        object a = new object();
+        object b = new object();
+        object c = new object();
+        object d = new object();
 
         object[][] source =
         [
@@ -154,7 +154,7 @@ public partial class ArrayExtensionsTests
             [c, d],
         ];
 
-        var result = source.ToMatrix(transpose: false);
+        object[,] result = source.ToMatrix(transpose: false);
 
         Assert.AreSame(a, result[0, 0]);
         Assert.AreSame(b, result[0, 1]);
@@ -175,7 +175,7 @@ public partial class ArrayExtensionsTests
             [3],
         ];
 
-        var result = source.ToMatrix(transpose: false);
+        int[,] result = source.ToMatrix(transpose: false);
 
         Assert.AreEqual(3, result.GetLength(0));
         Assert.AreEqual(1, result.GetLength(1));
@@ -192,7 +192,7 @@ public partial class ArrayExtensionsTests
     {
         int[][] source = [[42]];
 
-        var result = source.ToMatrix(transpose: false);
+        int[,] result = source.ToMatrix(transpose: false);
 
         Assert.AreEqual(1, result.GetLength(0));
         Assert.AreEqual(1, result.GetLength(1));
@@ -207,7 +207,7 @@ public partial class ArrayExtensionsTests
     {
         int[][] source = [[1, 2, 3]];
 
-        var result = source.ToMatrix(transpose: false);
+        int[,] result = source.ToMatrix(transpose: false);
 
         Assert.AreEqual(1, result.GetLength(0));
         Assert.AreEqual(3, result.GetLength(1));
@@ -224,7 +224,7 @@ public partial class ArrayExtensionsTests
     {
         int[][] source = [[1, 2, 3]];
 
-        var result = source.ToMatrix(transpose: true);
+        int[,] result = source.ToMatrix(transpose: true);
 
         Assert.AreEqual(3, result.GetLength(0));
         Assert.AreEqual(1, result.GetLength(1));
@@ -245,7 +245,7 @@ public partial class ArrayExtensionsTests
             [4, 5, 6],
         ];
 
-        var result = source.ToMatrix(transpose: true);
+        int[,] result = source.ToMatrix(transpose: true);
 
         Assert.AreEqual(3, result.GetLength(0));
         Assert.AreEqual(2, result.GetLength(1));

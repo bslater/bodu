@@ -141,7 +141,7 @@ public partial class EvictingDictionaryTests
         dictionary.Add("B", 2);
         dictionary.Add("C", 3);
 
-        var keys = dictionary.Select(kvp => kvp.Key).OrderBy(k => k).ToArray();
+        string[] keys = dictionary.Select(kvp => kvp.Key).OrderBy(k => k).ToArray();
 
         CollectionAssert.AreEqual(new[] { "A", "B", "C" }, keys);
     }
@@ -192,7 +192,7 @@ public partial class EvictingDictionaryTests
         dictionary.Add("alpha", 1);
         dictionary.Add("beta", 2);
 
-        var candidate = dictionary.PeekEvictionCandidate();
+        string? candidate = dictionary.PeekEvictionCandidate();
 
         Assert.IsNotNull(candidate);
         Assert.IsTrue(dictionary.ContainsKey(candidate!));

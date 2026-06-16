@@ -83,7 +83,7 @@ public partial class OrderedSetStorageTests
     {
         var sut = new OrderedSetStorage<int>(16, null);
 
-        var newCapacity = sut.EnsureCapacity(4);
+        int newCapacity = sut.EnsureCapacity(4);
 
         Assert.AreEqual(16, sut.Capacity);
         Assert.AreEqual(16, newCapacity);
@@ -102,7 +102,7 @@ public partial class OrderedSetStorageTests
     {
         var sut = new OrderedSetStorage<int>(0, null);
 
-        var newCapacity = sut.EnsureCapacity(128);
+        int newCapacity = sut.EnsureCapacity(128);
 
         Assert.IsGreaterThanOrEqualTo(128, newCapacity);
         Assert.IsGreaterThanOrEqualTo(128, sut.Capacity);
@@ -137,7 +137,7 @@ public partial class OrderedSetStorageTests
         sut.Add(1);
         sut.Add(2);
         sut.TrimExcess();
-        var capacityBefore = sut.Capacity;
+        int capacityBefore = sut.Capacity;
 
         sut.TrimExcess();
 

@@ -58,7 +58,7 @@ public readonly partial struct Money
         if (trimmed.IsEmpty)
             return false;
 
-        if (TryExtractIso(trimmed, out ReadOnlySpan<char> numericPart, out var iso))
+        if (TryExtractIso(trimmed, out ReadOnlySpan<char> numericPart, out string? iso))
         {
             if (options.Mode == MoneyParseMode.LenientImport)
                 iso = iso.ToUpperInvariant();
@@ -68,7 +68,7 @@ public readonly partial struct Money
 
         // No embedded ISO code: only culture-aware parsing can resolve a currency from a symbol.
         if (options.Mode == MoneyParseMode.CultureAware
-            && TryExtractSymbol(trimmed, out ReadOnlySpan<char> symbolNumeric, out var symbol))
+            && TryExtractSymbol(trimmed, out ReadOnlySpan<char> symbolNumeric, out string? symbol))
         {
             ICurrencyLookup lookup = options.CurrencyLookup ?? new CurrencyLookupService();
             if (lookup.TryBySymbol(symbol, out IReadOnlyList<CurrencyInfo> matches) && matches.Count == 1)
@@ -120,7 +120,7 @@ public readonly partial struct Money
     /// <returns><see langword="true" /> when a symbol was located.</returns>
     private static bool TryExtractSymbol(ReadOnlySpan<char> trimmed, out ReadOnlySpan<char> numericPart, out string symbol)
     {
-        var start = 0;
+        int start = 0;
         while (start < trimmed.Length && IsSymbolChar(trimmed[start]))
             start++;
 
@@ -131,7 +131,7 @@ public readonly partial struct Money
             return true;
         }
 
-        var end = trimmed.Length;
+        int end = trimmed.Length;
         while (end > 0 && IsSymbolChar(trimmed[end - 1]))
             end--;
 
@@ -171,7 +171,7 @@ public readonly partial struct Money
             return false;
         }
 
-        if (!decimal.TryParse(numericPart, NumberStyles.Number | NumberStyles.AllowLeadingSign, provider, out var amount))
+        if (!decimal.TryParse(numericPart, NumberStyles.Number | NumberStyles.AllowLeadingSign, provider, out decimal amount))
             return false;
 
         if (CurrencyResolution.Contains(iso))

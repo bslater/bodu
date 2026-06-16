@@ -26,7 +26,7 @@ public sealed class KatDisplayNameTests
         MethodInfo method = typeof(KatDisplayNameTests).GetMethod(nameof(GetDisplayName_WhenFirstElementIsKat_ShouldReturnNamedRow))!;
         BinaryKat<int, bool> kat = new("sample-row", 1, true);
 
-        var actual = KatDisplayName.GetDisplayName(method, [kat]);
+        string actual = KatDisplayName.GetDisplayName(method, [kat]);
 
         Assert.AreEqual($"sample-row", actual);
     }
@@ -40,7 +40,7 @@ public sealed class KatDisplayNameTests
     {
         MethodInfo method = typeof(KatDisplayNameTests).GetMethod(nameof(GetDisplayName_WhenFirstElementIsNotKat_ShouldReturnMethodName))!;
 
-        var actual = KatDisplayName.GetDisplayName(method, [42, "not-a-kat"]);
+        string actual = KatDisplayName.GetDisplayName(method, [42, "not-a-kat"]);
 
         Assert.AreEqual(method.Name, actual);
     }
@@ -54,7 +54,7 @@ public sealed class KatDisplayNameTests
     {
         MethodInfo method = typeof(KatDisplayNameTests).GetMethod(nameof(GetDisplayName_WhenDataIsEmpty_ShouldReturnMethodName))!;
 
-        var actual = KatDisplayName.GetDisplayName(method, []);
+        string actual = KatDisplayName.GetDisplayName(method, []);
 
         Assert.AreEqual(method.Name, actual);
     }

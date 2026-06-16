@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SqliteExchangeRateCacheTests.RoundTrip.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -19,8 +19,8 @@ public sealed partial class SqliteExchangeRateCacheTests
     public void Store_WhenRateHasHighPrecision_ShouldRoundTripExactly()
     {
         var now = DateTimeOffset.UtcNow;
-        var path = NewDatabasePath();
-        var rate = 1.234567890123456789m;
+        string path = NewDatabasePath();
+        decimal rate = 1.234567890123456789m;
 
         SqliteExchangeRateCache writer = CreateFileCache(path);
         writer.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), rate, now) }, Duration, now);
@@ -41,8 +41,8 @@ public sealed partial class SqliteExchangeRateCacheTests
     public void Store_WhenRateHasTrailingZeros_ShouldPreserveScale()
     {
         var now = DateTimeOffset.UtcNow;
-        var path = NewDatabasePath();
-        var rate = 0.5000m;
+        string path = NewDatabasePath();
+        decimal rate = 0.5000m;
 
         SqliteExchangeRateCache writer = CreateFileCache(path);
         writer.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), rate, now) }, Duration, now);
@@ -62,7 +62,7 @@ public sealed partial class SqliteExchangeRateCacheTests
     public void Store_WhenDateIsFarFromPresent_ShouldRoundTripExactly()
     {
         var now = DateTimeOffset.UtcNow;
-        var path = NewDatabasePath();
+        string path = NewDatabasePath();
         var date = new DateOnly(1971, 2, 28);
 
         SqliteExchangeRateCache writer = CreateFileCache(path);
@@ -82,7 +82,7 @@ public sealed partial class SqliteExchangeRateCacheTests
     [TestMethod]
     public void Store_WhenCachedInstantHasOffsetAndSubSeconds_ShouldRoundTripExactly()
     {
-        var path = NewDatabasePath();
+        string path = NewDatabasePath();
         var cachedAt = new DateTimeOffset(2023, 1, 4, 9, 15, 30, 123, TimeSpan.FromHours(10)).AddTicks(4567);
         var asOf = cachedAt + TimeSpan.FromMinutes(1);
 
@@ -104,7 +104,7 @@ public sealed partial class SqliteExchangeRateCacheTests
     [TestMethod]
     public void Store_WhenObservedAtUtcHasOffsetAndSubSeconds_ShouldRoundTripAcrossReopen()
     {
-        var path = NewDatabasePath();
+        string path = NewDatabasePath();
         var now = DateTimeOffset.UtcNow;
         var observedAt = new DateTimeOffset(2023, 1, 3, 16, 0, 30, 123, TimeSpan.FromHours(10)).AddTicks(4567);
 
@@ -126,7 +126,7 @@ public sealed partial class SqliteExchangeRateCacheTests
     [TestMethod]
     public void Store_WhenObservedAtUtcNull_ShouldReadBackNullAcrossReopen()
     {
-        var path = NewDatabasePath();
+        string path = NewDatabasePath();
         var now = DateTimeOffset.UtcNow;
 
         SqliteExchangeRateCache writer = CreateFileCache(path);
@@ -146,7 +146,7 @@ public sealed partial class SqliteExchangeRateCacheTests
     public void RecordCoverage_WhenReopened_ShouldRoundTripWindowExactly()
     {
         var fetchedAt = new DateTimeOffset(2023, 1, 4, 9, 15, 0, TimeSpan.Zero);
-        var path = NewDatabasePath();
+        string path = NewDatabasePath();
         var start = new DateOnly(2023, 1, 3);
         var end = new DateOnly(2023, 1, 10);
 

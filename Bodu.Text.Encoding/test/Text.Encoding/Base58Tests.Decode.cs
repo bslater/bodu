@@ -18,7 +18,7 @@ public sealed partial class Base58Tests
     [DynamicData(nameof(Base58KnownAnswerVectors.BitcoinFlickrVectors), typeof(Base58KnownAnswerVectors))]
     public void Decode_ForBitcoinFlickrKnownAnswerVector_ShouldRecoverBytes(EncodingKnownAnswerVector vector)
     {
-        var actual = Base58.Decode(vector.Encoded, Base58Variant.BitcoinFlickr);
+        byte[] actual = Base58.Decode(vector.Encoded, Base58Variant.BitcoinFlickr);
 
         CollectionAssert.AreEqual(vector.DecodedBytes, actual);
     }
@@ -60,9 +60,9 @@ public sealed partial class Base58Tests
     [DataRow("9Ajdvzr", "48656c6c6f")]
     public void Decode_WhenBitcoinFlickrVariantKnownVectors_ShouldReturnExpectedBytes(string encoded, string expectedHex)
     {
-        var expected = Convert.FromHexString(expectedHex);
+        byte[] expected = Convert.FromHexString(expectedHex);
 
-        var actual = Base58.Decode(encoded);
+        byte[] actual = Base58.Decode(encoded);
 
         CollectionAssert.AreEqual(expected, actual);
     }
@@ -74,7 +74,7 @@ public sealed partial class Base58Tests
     [TestMethod]
     public void Decode_WhenIgnoreWhitespace_ShouldStripAndDecode()
     {
-        var actual = Base58.Decode(
+        byte[] actual = Base58.Decode(
             "9 Aj\tdv\nzr",
             Base58Variant.BitcoinFlickr,
             BaseFormatStyles.IgnoreWhitespace);
@@ -95,7 +95,7 @@ public sealed partial class Base58Tests
     [DataRow("  9Ajdvzr  ")]
     public void Decode_WhenIgnoreWhitespaceAndVariousWhitespacePatterns_ShouldStripAndDecodeHello(string decoratedInput)
     {
-        var actual = Base58.Decode(decoratedInput, Base58Variant.BitcoinFlickr, BaseFormatStyles.IgnoreWhitespace);
+        byte[] actual = Base58.Decode(decoratedInput, Base58Variant.BitcoinFlickr, BaseFormatStyles.IgnoreWhitespace);
 
         CollectionAssert.AreEqual(Ascii("Hello"), actual);
     }
@@ -115,7 +115,7 @@ public sealed partial class Base58Tests
     [DataRow(' ')]  // strict mode rejects whitespace
     public void Decode_WhenInputContainsExcludedCharacter_ShouldThrowExactly(char excluded)
     {
-        var input = "2" + excluded + "2";
+        string input = "2" + excluded + "2";
 
         Assert.ThrowsExactly<FormatException>(() =>
         {
@@ -143,9 +143,9 @@ public sealed partial class Base58Tests
     [TestMethod]
     public void Decode_WhenSliceForCharArray_ShouldReturnSliceOnly()
     {
-        var chars = "????9Ajdvzr####".ToCharArray();
+        char[] chars = "????9Ajdvzr####".ToCharArray();
 
-        var actual = Base58.Decode(chars, 4, 7);
+        byte[] actual = Base58.Decode(chars, 4, 7);
 
         CollectionAssert.AreEqual(Ascii("Hello"), actual);
     }

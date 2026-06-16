@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RbaExchangeRateOptionsTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -22,7 +22,7 @@ public class RbaExchangeRateOptionsTests
     {
         RbaExchangeRateOptions options = new();
 
-        var valid = options.TryValidate(out var error);
+        bool valid = options.TryValidate(out string? error);
 
         Assert.IsTrue(valid);
         Assert.IsNull(error);
@@ -47,7 +47,7 @@ public class RbaExchangeRateOptionsTests
     {
         RbaExchangeRateOptions options = new() { BaseUrl = null! };
 
-        var valid = options.TryValidate(out var error);
+        bool valid = options.TryValidate(out string? error);
 
         Assert.IsFalse(valid);
         Assert.IsNotNull(error);
@@ -61,7 +61,7 @@ public class RbaExchangeRateOptionsTests
     {
         RbaExchangeRateOptions options = new() { Eras = [] };
 
-        var valid = options.TryValidate(out var error);
+        bool valid = options.TryValidate(out string? error);
 
         Assert.IsFalse(valid);
         Assert.IsNotNull(error);
@@ -75,7 +75,7 @@ public class RbaExchangeRateOptionsTests
     {
         RbaExchangeRateOptions options = new() { HttpTimeout = TimeSpan.Zero };
 
-        var valid = options.TryValidate(out var error);
+        bool valid = options.TryValidate(out string? error);
 
         Assert.IsFalse(valid);
         Assert.IsNotNull(error);
@@ -89,7 +89,7 @@ public class RbaExchangeRateOptionsTests
     {
         RbaExchangeRateOptions options = new() { CurrentEraRefreshInterval = TimeSpan.FromHours(-1) };
 
-        var valid = options.TryValidate(out var error);
+        bool valid = options.TryValidate(out string? error);
 
         Assert.IsFalse(valid);
         Assert.IsNotNull(error);
@@ -103,7 +103,7 @@ public class RbaExchangeRateOptionsTests
     {
         RbaExchangeRateOptions options = new() { CurrencyAliases = null! };
 
-        var valid = options.TryValidate(out var error);
+        bool valid = options.TryValidate(out string? error);
 
         Assert.IsFalse(valid);
         Assert.IsNotNull(error);
@@ -117,7 +117,7 @@ public class RbaExchangeRateOptionsTests
     {
         RbaExchangeRateOptions options = new() { DownloadStartingLogLevel = (LogLevel)999 };
 
-        var valid = options.TryValidate(out var error);
+        bool valid = options.TryValidate(out string? error);
 
         Assert.IsFalse(valid);
         Assert.IsNotNull(error);

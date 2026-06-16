@@ -64,10 +64,10 @@ internal static class DefaultNotableDateAlgorithms
         registry.Register("losar", new DelegateNotableDateAlgorithm(TibetanLosarCalculator.Losar));
         registry.Register("matariki", new DelegateNotableDateAlgorithm(MatarikiCalendar.Resolve));
 
-        foreach (var festivalKey in HinduLunarCalculator.FestivalKeys)
+        foreach (string festivalKey in HinduLunarCalculator.FestivalKeys)
         {
             // Capture the key in a local so the delegate closes over this iteration's value.
-            var key = festivalKey;
+            string key = festivalKey;
             registry.Register(key, new DelegateNotableDateAlgorithm(year => HinduLunarCalculator.Resolve(key, year)));
         }
 

@@ -40,7 +40,7 @@ public class BencodeBinderAlignmentTests
     [TestMethod]
     public void Deserialize_WhenValueImplementsCallbacks_ShouldInvokeDeserializingThenDeserialized()
     {
-        var bytes = Encoding.Latin1.GetBytes("d5:Valuei7ee");
+        byte[] bytes = Encoding.Latin1.GetBytes("d5:Valuei7ee");
 
         var model = BencodeSerializer.Deserialize<CallbackModel>(bytes);
 
@@ -54,7 +54,7 @@ public class BencodeBinderAlignmentTests
     [TestMethod]
     public void Deserialize_WhenCallbackOrdered_ShouldRunDeserializingBeforeMemberAssignment()
     {
-        var bytes = Encoding.Latin1.GetBytes("d5:Valuei7ee");
+        byte[] bytes = Encoding.Latin1.GetBytes("d5:Valuei7ee");
 
         var model = BencodeSerializer.Deserialize<CallbackModel>(bytes);
 
@@ -69,7 +69,7 @@ public class BencodeBinderAlignmentTests
     [TestMethod]
     public void Deserialize_WhenUnmappedKeyAndHandlingIsSkip_ShouldIgnoreUnmappedKey()
     {
-        var bytes = Encoding.Latin1.GetBytes("d5:Extrai9e5:Valuei3ee");
+        byte[] bytes = Encoding.Latin1.GetBytes("d5:Extrai9e5:Valuei3ee");
 
         var model = BencodeSerializer.Deserialize<PlainModel>(bytes);
 
@@ -85,7 +85,7 @@ public class BencodeBinderAlignmentTests
     public void Deserialize_WhenUnmappedKeyAndOptionsDisallow_ShouldThrowBencodeSerializationException()
     {
         var options = new BencodeSerializerOptions { UnmappedMemberHandling = BencodeUnmappedMemberHandling.Disallow };
-        var bytes = Encoding.Latin1.GetBytes("d5:Extrai9e5:Valuei3ee");
+        byte[] bytes = Encoding.Latin1.GetBytes("d5:Extrai9e5:Valuei3ee");
 
         Assert.ThrowsExactly<BencodeSerializationException>(() =>
         {
@@ -101,7 +101,7 @@ public class BencodeBinderAlignmentTests
     [TestMethod]
     public void Deserialize_WhenTypeDisallowsUnmapped_ShouldThrowRegardlessOfOptions()
     {
-        var bytes = Encoding.Latin1.GetBytes("d5:Extrai9e5:Valuei3ee");
+        byte[] bytes = Encoding.Latin1.GetBytes("d5:Extrai9e5:Valuei3ee");
 
         Assert.ThrowsExactly<BencodeSerializationException>(() =>
         {
@@ -116,7 +116,7 @@ public class BencodeBinderAlignmentTests
     [TestMethod]
     public void Deserialize_WhenExtensionDataPresentAndDisallow_ShouldCaptureUnmappedKey()
     {
-        var bytes = Encoding.Latin1.GetBytes("d5:Extrai9e5:Valuei3ee");
+        byte[] bytes = Encoding.Latin1.GetBytes("d5:Extrai9e5:Valuei3ee");
 
         var model = BencodeSerializer.Deserialize<DisallowWithExtensionDataModel>(bytes);
 
@@ -133,7 +133,7 @@ public class BencodeBinderAlignmentTests
     [TestMethod]
     public void Deserialize_WhenMemberPopulates_ShouldAddIntoExistingCollection()
     {
-        var bytes = Encoding.Latin1.GetBytes("d4:Tagsli1ei2eee");
+        byte[] bytes = Encoding.Latin1.GetBytes("d4:Tagsli1ei2eee");
 
         var model = BencodeSerializer.Deserialize<PopulateMemberModel>(bytes);
 
@@ -148,7 +148,7 @@ public class BencodeBinderAlignmentTests
     public void Deserialize_WhenOptionsPreferPopulate_ShouldAddIntoExistingCollection()
     {
         var options = new BencodeSerializerOptions { PreferredObjectCreationHandling = BencodeObjectCreationHandling.Populate };
-        var bytes = Encoding.Latin1.GetBytes("d4:Tagsli1ei2eee");
+        byte[] bytes = Encoding.Latin1.GetBytes("d4:Tagsli1ei2eee");
 
         var model = BencodeSerializer.Deserialize<GetOnlyCollectionModel>(bytes, options);
 
@@ -162,7 +162,7 @@ public class BencodeBinderAlignmentTests
     [TestMethod]
     public void Deserialize_WhenHandlingIsReplaceAndMemberGetOnly_ShouldNotPopulate()
     {
-        var bytes = Encoding.Latin1.GetBytes("d4:Tagsli1ei2eee");
+        byte[] bytes = Encoding.Latin1.GetBytes("d4:Tagsli1ei2eee");
 
         var model = BencodeSerializer.Deserialize<GetOnlyCollectionModel>(bytes);
 
@@ -176,7 +176,7 @@ public class BencodeBinderAlignmentTests
     [TestMethod]
     public void Deserialize_WhenDictionaryMemberPopulates_ShouldMergeIntoExistingDictionary()
     {
-        var bytes = Encoding.Latin1.GetBytes("d3:Mapd1:bi2eee");
+        byte[] bytes = Encoding.Latin1.GetBytes("d3:Mapd1:bi2eee");
 
         var model = BencodeSerializer.Deserialize<PopulateDictionaryModel>(bytes);
 
@@ -195,7 +195,7 @@ public class BencodeBinderAlignmentTests
     {
         var options = new BencodeSerializerOptions { PropertyNamingPolicy = null };
 
-        var bytes = BencodeSerializer.Serialize(new CamelCaseTypeModel { FirstName = "a", LastName = "b" }, options);
+        byte[] bytes = BencodeSerializer.Serialize(new CamelCaseTypeModel { FirstName = "a", LastName = "b" }, options);
 
         Assert.AreEqual("d9:firstName1:a8:lastName1:be", Encoding.Latin1.GetString(bytes));
     }
@@ -207,7 +207,7 @@ public class BencodeBinderAlignmentTests
     [TestMethod]
     public void Serialize_WhenTypePolicyAndExplicitName_ShouldPreferExplicitName()
     {
-        var bytes = BencodeSerializer.Serialize(new CamelCaseWithOverrideModel { FirstName = "a", LastName = "b" });
+        byte[] bytes = BencodeSerializer.Serialize(new CamelCaseWithOverrideModel { FirstName = "a", LastName = "b" });
 
         Assert.AreEqual("d9:firstName1:a7:surname1:be", Encoding.Latin1.GetString(bytes));
     }

@@ -26,7 +26,7 @@ public partial class EvictingDictionaryTests
         const int iterations = 1_000;
         var dictionary = new EvictingDictionary<int, int>(capacity, EvictingDictionaryPolicy.FirstInFirstOut);
 
-        for (var i = 0; i < iterations; i++)
+        for (int i = 0; i < iterations; i++)
         {
             dictionary.Add(i, i);
             Assert.IsLessThanOrEqualTo(capacity, dictionary.Count,
@@ -44,7 +44,7 @@ public partial class EvictingDictionaryTests
         const int iterations = 1_000;
         var dictionary = new EvictingDictionary<int, int>(capacity, EvictingDictionaryPolicy.MostRecentlyUsed);
 
-        for (var i = 0; i < iterations; i++)
+        for (int i = 0; i < iterations; i++)
         {
             dictionary.Add(i, i);
             Assert.IsLessThanOrEqualTo(capacity, dictionary.Count,
@@ -66,7 +66,7 @@ public partial class EvictingDictionaryTests
         const int iterations = 1_000;
         var dictionary = new EvictingDictionary<int, int>(capacity, EvictingDictionaryPolicy.RandomReplacement);
 
-        for (var i = 0; i < iterations; i++)
+        for (int i = 0; i < iterations; i++)
         {
             dictionary.Add(i, i);
             Assert.IsLessThanOrEqualTo(capacity, dictionary.Count,
@@ -86,7 +86,7 @@ public partial class EvictingDictionaryTests
         const int iterations = 500;
         var dictionary = new EvictingDictionary<int, int>(capacity, EvictingDictionaryPolicy.SecondChance);
 
-        for (var i = 0; i < iterations; i++)
+        for (int i = 0; i < iterations; i++)
         {
             dictionary.Add(i, i);
 
@@ -114,11 +114,11 @@ public partial class EvictingDictionaryTests
         const int itemsPerCycle = 20;
         var dictionary = new EvictingDictionary<int, int>(capacity, EvictingDictionaryPolicy.LeastFrequentlyUsed);
 
-        for (var cycle = 0; cycle < cycles; cycle++)
+        for (int cycle = 0; cycle < cycles; cycle++)
         {
             dictionary.Clear();
 
-            for (var i = 0; i < itemsPerCycle; i++)
+            for (int i = 0; i < itemsPerCycle; i++)
             {
                 dictionary.Add(i, i);
 
@@ -148,7 +148,7 @@ public partial class EvictingDictionaryTests
         const int itemsPerCycle = 15;
         var dictionary = new EvictingDictionary<int, int>(capacity, EvictingDictionaryPolicy.LeastRecentlyUsed);
 
-        for (var cycle = 0; cycle < cycles; cycle++)
+        for (int cycle = 0; cycle < cycles; cycle++)
         {
             dictionary.Clear();
 
@@ -156,7 +156,7 @@ public partial class EvictingDictionaryTests
             Assert.AreEqual(0, dictionary.TotalTouches, $"TotalTouches should be 0 after Clear in cycle {cycle}.");
             Assert.AreEqual(0, dictionary.EvictionCount, $"EvictionCount should be 0 after Clear in cycle {cycle}.");
 
-            for (var i = 0; i < itemsPerCycle; i++)
+            for (int i = 0; i < itemsPerCycle; i++)
                 dictionary.Add(i, i);
 
             Assert.AreEqual(capacity, dictionary.Count,
@@ -174,7 +174,7 @@ public partial class EvictingDictionaryTests
         const int itemCount = 500;
         var dictionary = new EvictingDictionary<int, int>(capacity, EvictingDictionaryPolicy.LeastFrequentlyUsed);
 
-        for (var i = 0; i < itemCount; i++)
+        for (int i = 0; i < itemCount; i++)
             dictionary.Add(i, i);
 
         long expectedEvictions = itemCount - capacity;
@@ -192,7 +192,7 @@ public partial class EvictingDictionaryTests
         const int itemCount = 200;
         var dictionary = new EvictingDictionary<int, int>(capacity, EvictingDictionaryPolicy.LeastRecentlyUsed);
 
-        for (var i = 0; i < itemCount; i++)
+        for (int i = 0; i < itemCount; i++)
             dictionary.Add(i, i);
 
         long expectedEvictions = itemCount - capacity;
@@ -214,18 +214,18 @@ public partial class EvictingDictionaryTests
         const int capacity = 10;
         var dictionary = new EvictingDictionary<int, int>(capacity, EvictingDictionaryPolicy.LeastRecentlyUsed);
 
-        for (var i = 0; i < capacity; i++)
+        for (int i = 0; i < capacity; i++)
             dictionary.Add(i, i);
 
         // 50 Touch calls on existing keys, 25 TryGetValue hits.
-        var expectedTouches = 0;
-        for (var t = 0; t < 50; t++)
+        int expectedTouches = 0;
+        for (int t = 0; t < 50; t++)
         {
             if (dictionary.Touch(t % capacity))
                 expectedTouches++;
         }
 
-        for (var g = 0; g < 25; g++)
+        for (int g = 0; g < 25; g++)
         {
             if (dictionary.TryGetValue(g % capacity, out _))
                 expectedTouches++;
@@ -251,10 +251,10 @@ public partial class EvictingDictionaryTests
 
         // Seed pinned item with high frequency.
         dictionary.Add(0, 0);
-        for (var t = 0; t < 50; t++)
+        for (int t = 0; t < 50; t++)
             dictionary.Touch(0);
 
-        for (var i = 1; i < iterations; i++)
+        for (int i = 1; i < iterations; i++)
         {
             dictionary.Add(i, i);
 
@@ -280,7 +280,7 @@ public partial class EvictingDictionaryTests
 
         dictionary.Add(0, 0); // pinned item
 
-        for (var i = 1; i < iterations; i++)
+        for (int i = 1; i < iterations; i++)
         {
             dictionary.Touch(0); // refresh 0 before each new insertion
             dictionary.Add(i, i);

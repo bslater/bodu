@@ -203,8 +203,8 @@ public partial class TomlDocumentTests
     [TestCategory("Regression")]
     public void Parse_WhenNestingAtDefaultMaxDepth_ShouldParseDocument()
     {
-        var depth = TomlLimits.AbsoluteMaxDepth;
-        var atLimit = "a = " + new string('[', depth) + "1" + new string(']', depth) + "\n";
+        int depth = TomlLimits.AbsoluteMaxDepth;
+        string atLimit = "a = " + new string('[', depth) + "1" + new string(']', depth) + "\n";
 
         using var document = TomlDocument.Parse(atLimit);
 
@@ -219,8 +219,8 @@ public partial class TomlDocumentTests
     [TestCategory("Regression")]
     public void Parse_WhenNestingExceedsDefaultMaxDepth_ShouldThrowTomlFormatException()
     {
-        var depth = TomlLimits.AbsoluteMaxDepth + 1;
-        var beyondLimit = "a = " + new string('[', depth) + "1" + new string(']', depth) + "\n";
+        int depth = TomlLimits.AbsoluteMaxDepth + 1;
+        string beyondLimit = "a = " + new string('[', depth) + "1" + new string(']', depth) + "\n";
 
         _ = Assert.ThrowsExactly<TomlFormatException>(() =>
         {
@@ -273,7 +273,7 @@ public partial class TomlDocumentTests
     [TestMethod]
     public void Parse_WhenSourceMutatedAfterParse_ShouldNotAffectDocument()
     {
-        var source = Encoding.UTF8.GetBytes("name = \"spam\"\n");
+        byte[] source = Encoding.UTF8.GetBytes("name = \"spam\"\n");
         using var document = TomlDocument.Parse(source.AsSpan());
 
         source[9] = (byte)'X';

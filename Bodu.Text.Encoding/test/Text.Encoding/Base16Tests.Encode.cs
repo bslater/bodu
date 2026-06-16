@@ -24,14 +24,14 @@ public sealed partial class Base16Tests
     [DataRow(256)]
     public void Encode_ByteArrayAndSpanOverloads_ShouldProduceIdenticalOutput(int size)
     {
-        var bytes = new byte[size];
-        for (var i = 0; i < size; i++)
+        byte[] bytes = new byte[size];
+        for (int i = 0; i < size; i++)
         {
             bytes[i] = (byte)((i * 31) ^ 0xAA);
         }
 
-        var fromArray = Base16.Encode(bytes);
-        var fromSpan = Base16.Encode(bytes.AsSpan());
+        string fromArray = Base16.Encode(bytes);
+        string fromSpan = Base16.Encode(bytes.AsSpan());
 
         Assert.AreEqual(fromArray, fromSpan);
     }
@@ -45,7 +45,7 @@ public sealed partial class Base16Tests
     [DynamicData(nameof(Base16KnownAnswerVectors.Rfc4648Vectors), typeof(Base16KnownAnswerVectors))]
     public void Encode_ForRfc4648KnownAnswerVector_DefaultLowerCase_ShouldMatchLowerCase(EncodingKnownAnswerVector vector)
     {
-        var actual = Base16.Encode(vector.DecodedBytes);
+        string actual = Base16.Encode(vector.DecodedBytes);
 
         Assert.AreEqual(vector.Encoded.ToLowerInvariant(), actual);
     }
@@ -60,7 +60,7 @@ public sealed partial class Base16Tests
     [DynamicData(nameof(Base16KnownAnswerVectors.Rfc4648Vectors), typeof(Base16KnownAnswerVectors))]
     public void Encode_ForRfc4648KnownAnswerVector_WithUpperCaseFlag_ShouldMatch(EncodingKnownAnswerVector vector)
     {
-        var actual = Base16.Encode(vector.DecodedBytes, BaseFormattingOptions.UpperCase);
+        string actual = Base16.Encode(vector.DecodedBytes, BaseFormattingOptions.UpperCase);
 
         Assert.AreEqual(vector.Encoded, actual);
     }
@@ -72,8 +72,8 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void Encode_SpanDestination_WhenOneCharShort_ShouldThrowExactly()
     {
-        var bytes = new byte[4];
-        var destination = new char[7];
+        byte[] bytes = new byte[4];
+        char[] destination = new char[7];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -100,7 +100,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void Encode_WhenDefaultOptionsForByteArray_ShouldReturnLowerCaseHex()
     {
-        var actual = Base16.Encode(CanonicalBytes);
+        string actual = Base16.Encode(CanonicalBytes);
 
         Assert.AreEqual(CanonicalHexLower, actual);
     }
@@ -112,7 +112,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void Encode_WhenDestinationTooSmall_ShouldThrowExactly()
     {
-        var destination = new char[1];
+        char[] destination = new char[1];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -127,7 +127,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void Encode_WhenIncludePrefixFlagForSpan_ShouldPrependZeroXLiteral()
     {
-        var actual = Base16.Encode(CanonicalBytes.AsSpan(), BaseFormattingOptions.IncludePrefix);
+        string actual = Base16.Encode(CanonicalBytes.AsSpan(), BaseFormattingOptions.IncludePrefix);
 
         Assert.AreEqual("0xdeadbeef", actual);
     }
@@ -139,15 +139,15 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void Encode_WhenInsertLineBreaksFlagForSpan_ShouldWrapAtFixedColumn()
     {
-        var bytes = new byte[64];
-        for (var i = 0; i < bytes.Length; i++)
+        byte[] bytes = new byte[64];
+        for (int i = 0; i < bytes.Length; i++)
         {
             bytes[i] = (byte)i;
         }
 
-        var actual = Base16.Encode(bytes.AsSpan(), BaseFormattingOptions.InsertLineBreaks);
+        string actual = Base16.Encode(bytes.AsSpan(), BaseFormattingOptions.InsertLineBreaks);
 
-        var lines = actual.Split("\r\n");
+        string[] lines = actual.Split("\r\n");
         Assert.IsTrue(lines.Length > 1, "Output should contain at least one line break.");
         Assert.AreEqual(64, lines[0].Length);
     }
@@ -160,7 +160,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void Encode_WhenInsertSpacingFlagForSpan_ShouldSeparateBytesWithSingleSpace()
     {
-        var actual = Base16.Encode(CanonicalBytes.AsSpan(), BaseFormattingOptions.InsertSpacing | BaseFormattingOptions.UpperCase);
+        string actual = Base16.Encode(CanonicalBytes.AsSpan(), BaseFormattingOptions.InsertSpacing | BaseFormattingOptions.UpperCase);
 
         Assert.AreEqual("DE AD BE EF", actual);
     }
@@ -198,7 +198,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void Encode_WhenSliceCountIsZero_ShouldReturnEmptyString()
     {
-        var actual = Base16.Encode(CanonicalBytes, 0, 0);
+        string actual = Base16.Encode(CanonicalBytes, 0, 0);
 
         Assert.AreEqual(string.Empty, actual);
     }
@@ -210,7 +210,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void Encode_WhenSliceForByteArray_ShouldReturnSliceOnly()
     {
-        var actual = Base16.Encode(CanonicalBytes, 1, 2);
+        string actual = Base16.Encode(CanonicalBytes, 1, 2);
 
         Assert.AreEqual("adbe", actual);
     }
@@ -222,7 +222,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void Encode_WhenUpperCaseFlagForByteArray_ShouldReturnUpperCaseHex()
     {
-        var actual = Base16.Encode(CanonicalBytes, BaseFormattingOptions.UpperCase);
+        string actual = Base16.Encode(CanonicalBytes, BaseFormattingOptions.UpperCase);
 
         Assert.AreEqual(CanonicalHexUpper, actual);
     }
@@ -234,9 +234,9 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void Encode_WhenWritingToSpan_ShouldReturnExactCharCount()
     {
-        var destination = new char[CanonicalBytes.Length * 2];
+        char[] destination = new char[CanonicalBytes.Length * 2];
 
-        var charsWritten = Base16.Encode(CanonicalBytes.AsSpan(), destination);
+        int charsWritten = Base16.Encode(CanonicalBytes.AsSpan(), destination);
 
         Assert.AreEqual(8, charsWritten);
         Assert.AreEqual(CanonicalHexLower, new string(destination));
@@ -249,7 +249,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void Encode_WhenWritingToSpanWithUnsupportedFlags_ShouldThrowExactly()
     {
-        var destination = new char[CanonicalBytes.Length * 2];
+        char[] destination = new char[CanonicalBytes.Length * 2];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {

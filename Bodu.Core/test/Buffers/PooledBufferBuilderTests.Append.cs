@@ -35,7 +35,7 @@ public partial class PooledBufferBuilderTests
     {
         using var builder = new PooledBufferBuilder<int>(2);
 
-        for (var i = 0; i < 10; i++)
+        for (int i = 0; i < 10; i++)
             builder.Append(i);
 
         Assert.AreEqual(10, builder.WrittenCount);

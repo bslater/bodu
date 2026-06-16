@@ -21,7 +21,7 @@ public sealed class DotEnvEntryTests
     {
         DotEnvDocument doc = DotEnv.Parse("PORT=8080");
 
-        var port = doc.Entries[0].GetValue<int>();
+        int port = doc.Entries[0].GetValue<int>();
 
         Assert.AreEqual(8080, port);
     }
@@ -34,7 +34,7 @@ public sealed class DotEnvEntryTests
     {
         DotEnvDocument doc = DotEnv.Parse("RATIO=3.14");
 
-        var ratio = doc.Entries[0].GetValue<double>();
+        double ratio = doc.Entries[0].GetValue<double>();
 
         Assert.AreEqual(3.14, ratio, 1e-10);
     }
@@ -47,7 +47,7 @@ public sealed class DotEnvEntryTests
     {
         DotEnvDocument doc = DotEnv.Parse("DEBUG=True");
 
-        var debug = doc.Entries[0].GetValue<bool>();
+        bool debug = doc.Entries[0].GetValue<bool>();
 
         Assert.IsTrue(debug);
     }
@@ -75,7 +75,7 @@ public sealed class DotEnvEntryTests
     {
         DotEnvDocument doc = DotEnv.Parse("NAME=hello");
 
-        var name = doc.Entries[0].GetValue<string>();
+        string name = doc.Entries[0].GetValue<string>();
 
         Assert.AreEqual("hello", name);
     }
@@ -104,7 +104,7 @@ public sealed class DotEnvEntryTests
     {
         DotEnvDocument doc = DotEnv.Parse("PORT=9000");
 
-        var result = doc.Entries[0].TryGetValue<int>(out var port);
+        bool result = doc.Entries[0].TryGetValue<int>(out int port);
 
         Assert.IsTrue(result);
         Assert.AreEqual(9000, port);
@@ -119,7 +119,7 @@ public sealed class DotEnvEntryTests
     {
         DotEnvDocument doc = DotEnv.Parse("KEY=notanumber");
 
-        var result = doc.Entries[0].TryGetValue<int>(out var _);
+        bool result = doc.Entries[0].TryGetValue<int>(out int _);
 
         Assert.IsFalse(result);
     }

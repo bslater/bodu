@@ -141,7 +141,7 @@ public sealed partial class CrcStandard
     {
         ThrowHelper.ThrowIfNullOrEmpty(name);
         ThrowHelper.ThrowIfOutOfRange(size, MinSize, MaxSize);
-        var widthMask = size == 64 ? ulong.MaxValue : (1UL << size) - 1UL;
+        ulong widthMask = size == 64 ? ulong.MaxValue : (1UL << size) - 1UL;
         HashingThrowHelper.ThrowIfExceedsBitWidth(polynomial, size, widthMask);
         HashingThrowHelper.ThrowIfExceedsBitWidth(initialValue, size, widthMask);
         HashingThrowHelper.ThrowIfExceedsBitWidth(xOrOut, size, widthMask);
@@ -165,7 +165,7 @@ public sealed partial class CrcStandard
     {
         ThrowHelper.ThrowIfNull(info);
 
-        var serializedName = info.GetString(nameof(Name));
+        string? serializedName = info.GetString(nameof(Name));
         Name = serializedName!;
         Size = info.GetInt32(nameof(Size));
         Polynomial = info.GetUInt64(nameof(Polynomial));

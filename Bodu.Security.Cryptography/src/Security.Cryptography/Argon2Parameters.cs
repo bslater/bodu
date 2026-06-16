@@ -112,7 +112,7 @@ public sealed record Argon2Parameters
                 string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Arg_OutOfRange_Argon2TagLength, MinTagLength));
 
         // m must be at least 8 * p kibibytes (RFC 9106 Section 3.1).
-        var minMemory = 8L * Parallelism;
+        long minMemory = 8L * Parallelism;
         if (MemoryKiB < minMemory)
             throw new ArgumentOutOfRangeException(
                 nameof(MemoryKiB),

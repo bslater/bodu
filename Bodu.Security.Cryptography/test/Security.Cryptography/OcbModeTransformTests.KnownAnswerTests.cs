@@ -220,14 +220,14 @@ public sealed partial class OcbModeTransformTests
         string expectedOutputHex, int tagLength, string displayName)
     {
         using var cipher = new AesBlockCipherFixture(Convert.FromHexString(keyHex));
-        var iv = Convert.FromHexString(ivHex);
-        var aad = Convert.FromHexString(aadHex);
-        var plaintext = Convert.FromHexString(ptHex);
-        var expectedOutput = Convert.FromHexString(expectedOutputHex);
+        byte[] iv = Convert.FromHexString(ivHex);
+        byte[] aad = Convert.FromHexString(aadHex);
+        byte[] plaintext = Convert.FromHexString(ptHex);
+        byte[] expectedOutput = Convert.FromHexString(expectedOutputHex);
 
         var transform = new OcbModeTransform(cipher, iv, tagLength * 8);
         transform.ProcessAssociatedData(aad);
-        var output = new byte[plaintext.Length + (transform.TagSize / 8)];
+        byte[] output = new byte[plaintext.Length + (transform.TagSize / 8)];
         transform.Encrypt(plaintext, output);
 
         CollectionAssert.AreEqual(expectedOutput, output,
@@ -255,16 +255,16 @@ public sealed partial class OcbModeTransformTests
         string expectedOutputHex, int tagLength, string displayName)
     {
         using var cipher = new AesBlockCipherFixture(Convert.FromHexString(keyHex));
-        var iv = Convert.FromHexString(ivHex);
-        var aad = Convert.FromHexString(aadHex);
-        var expectedPlaintext = Convert.FromHexString(ptHex);
-        var ciphertextWithTag = Convert.FromHexString(expectedOutputHex);
+        byte[] iv = Convert.FromHexString(ivHex);
+        byte[] aad = Convert.FromHexString(aadHex);
+        byte[] expectedPlaintext = Convert.FromHexString(ptHex);
+        byte[] ciphertextWithTag = Convert.FromHexString(expectedOutputHex);
 
         var transform = new OcbModeTransform(cipher, iv, tagLength * 8);
         transform.ProcessAssociatedData(aad);
-        var plaintextLength = ciphertextWithTag.Length - (transform.TagSize / 8);
-        var output = new byte[plaintextLength];
-        var written = transform.Decrypt(ciphertextWithTag, output);
+        int plaintextLength = ciphertextWithTag.Length - (transform.TagSize / 8);
+        byte[] output = new byte[plaintextLength];
+        int written = transform.Decrypt(ciphertextWithTag, output);
 
         Assert.AreEqual(plaintextLength, written);
         CollectionAssert.AreEqual(expectedPlaintext, output,

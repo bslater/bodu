@@ -105,7 +105,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
         algorithm.KeySize = keySizeBits;
         algorithm.GenerateKey();
 
-        var badIv = new byte[(algorithm.BlockSize / 8) - 1];
+        byte[] badIv = new byte[(algorithm.BlockSize / 8) - 1];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {

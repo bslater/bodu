@@ -84,7 +84,7 @@ public sealed class CfbModeTransform
     /// <inheritdoc />
     public int Transform(ReadOnlySpan<byte> input, Span<byte> output, bool encrypt)
     {
-        var blockSize = _cipher.BlockSize / 8;
+        int blockSize = _cipher.BlockSize / 8;
 
         // Empty input is a no-op, consistent with CbcModeTransform.
         CryptographyThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize, throwIfZero: false);
@@ -93,7 +93,7 @@ public sealed class CfbModeTransform
 
         Span<byte> feedback = stackalloc byte[blockSize];
 
-        for (var offset = 0; offset < input.Length; offset += blockSize)
+        for (int offset = 0; offset < input.Length; offset += blockSize)
         {
             ReadOnlySpan<byte> inBlock = input.Slice(offset, blockSize);
             Span<byte> outBlock = output.Slice(offset, blockSize);
@@ -104,7 +104,7 @@ public sealed class CfbModeTransform
             if (encrypt)
             {
                 // XOR plaintext with encrypted feedback to produce ciphertext
-                for (var i = 0; i < blockSize; i++)
+                for (int i = 0; i < blockSize; i++)
                     outBlock[i] = (byte)(inBlock[i] ^ feedback[i]);
 
                 // Update IV to current ciphertext block
@@ -113,7 +113,7 @@ public sealed class CfbModeTransform
             else
             {
                 // XOR ciphertext with encrypted feedback to produce plaintext
-                for (var i = 0; i < blockSize; i++)
+                for (int i = 0; i < blockSize; i++)
                     outBlock[i] = (byte)(inBlock[i] ^ feedback[i]);
 
                 // Update IV to current ciphertext block

@@ -90,7 +90,7 @@ public static partial class NonCryptographicHashAlgorithmExtensions
                 bufferSize,
                 HashingResourceStrings.Arg_OutOfRange_BufferSizeNotPositive);
 
-        var buffer = ArrayPool<byte>.Shared.Rent(bufferSize);
+        byte[] buffer = ArrayPool<byte>.Shared.Rent(bufferSize);
         try
         {
             int bytesRead;

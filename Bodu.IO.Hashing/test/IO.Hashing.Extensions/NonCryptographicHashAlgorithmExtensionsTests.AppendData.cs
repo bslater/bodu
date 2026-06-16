@@ -89,7 +89,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     {
         MonitoringNonCryptographicHashAlgorithm reference = CreateAlgorithm();
         reference.AppendData(s_sampleData.AsSpan());
-        var expected = reference.GetCurrentHash();
+        byte[] expected = reference.GetCurrentHash();
 
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
         algorithm.AppendData(new MemoryStream(s_sampleData), bufferSize: 1);
@@ -106,7 +106,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     public void AppendData_WhenCalled_ShouldInvokeAppendOnce()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
-        var before = algorithm.AppendCallCount;
+        int before = algorithm.AppendCallCount;
 
         algorithm.AppendData(new ReadOnlySpan<byte>([1, 2, 3]));
 
@@ -120,7 +120,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     public void AppendData_WhenCalledMultipleTimes_ShouldAccumulateAllBytes()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
-        var expected = BitConverter.GetBytes((uint)(10 + 20 + 30 + 40));
+        byte[] expected = BitConverter.GetBytes((uint)(10 + 20 + 30 + 40));
 
         algorithm.AppendData(new ReadOnlySpan<byte>([10, 20]));
         algorithm.AppendData(new ReadOnlySpan<byte>([30, 40]));
@@ -151,7 +151,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     {
         MonitoringNonCryptographicHashAlgorithm reference = CreateAlgorithm();
         reference.AppendData(s_sampleData.AsSpan());
-        var expected = reference.GetCurrentHash();
+        byte[] expected = reference.GetCurrentHash();
 
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
         algorithm.AppendData(new FixedChunkStream(s_sampleData, chunkSize: 1));
@@ -166,7 +166,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     public void AppendData_WhenSpanContainsData_ShouldContributeToHash()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
-        var expected = BitConverter.GetBytes((uint)(1 + 2 + 3 + 4));
+        byte[] expected = BitConverter.GetBytes((uint)(1 + 2 + 3 + 4));
 
         algorithm.AppendData(new ReadOnlySpan<byte>([1, 2, 3, 4]));
 

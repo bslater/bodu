@@ -41,7 +41,7 @@ internal static partial class MLDsaEngine
     /// <param name="r0">Receives the centered low part.</param>
     private static void Decompose(int gamma2, int r, out int r1, out int r0)
     {
-        var alpha = 2 * gamma2;
+        int alpha = 2 * gamma2;
 
         r0 = r % alpha;
         if (r0 > gamma2)
@@ -66,7 +66,7 @@ internal static partial class MLDsaEngine
     /// <returns>The high part r₁.</returns>
     private static int HighBits(int gamma2, int r)
     {
-        Decompose(gamma2, r, out var r1, out _);
+        Decompose(gamma2, r, out int r1, out _);
 
         return r1;
     }
@@ -91,8 +91,8 @@ internal static partial class MLDsaEngine
     /// <returns>The corrected high part.</returns>
     private static int UseHint(int gamma2, int hint, int r)
     {
-        var m = (Q - 1) / (2 * gamma2);
-        Decompose(gamma2, r, out var r1, out var r0);
+        int m = (Q - 1) / (2 * gamma2);
+        Decompose(gamma2, r, out int r1, out int r0);
 
         if (hint == 0)
             return r1;
@@ -111,10 +111,10 @@ internal static partial class MLDsaEngine
     /// </remarks>
     private static int InfinityNorm(ReadOnlySpan<int> poly)
     {
-        var maximum = 0;
-        for (var i = 0; i < N; i++)
+        int maximum = 0;
+        for (int i = 0; i < N; i++)
         {
-            var centered = poly[i];
+            int centered = poly[i];
             if (centered > (Q - 1) / 2)
                 centered = Q - centered;
 

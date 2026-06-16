@@ -17,7 +17,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     public void GenerateIV_WhenCalled_ShouldInitializeKeyCorrectly()
     {
         using TAlgorithm algorithm = CreateAlgorithm();
-        var size = algorithm.BlockSize;
+        int size = algorithm.BlockSize;
         algorithm.GenerateIV();
 
         Assert.AreEqual(size / 8, algorithm.IV.Length);

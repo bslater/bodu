@@ -62,9 +62,9 @@ public partial class FiscalWeekQuarterProviderTests
             (s_saturday52, Saturday52FiscalYear),
         };
 
-        foreach ((FiscalWeekQuarterProvider? provider, var fiscalYear) in fixtures)
+        foreach ((FiscalWeekQuarterProvider? provider, int fiscalYear) in fixtures)
         {
-            for (var q = 1; q <= 3; q++)
+            for (int q = 1; q <= 3; q++)
             {
                 DateTime end = provider.GetQuarterEnd(q, fiscalYear);
                 DateTime nextStart = provider.GetQuarterStart(q + 1, fiscalYear);

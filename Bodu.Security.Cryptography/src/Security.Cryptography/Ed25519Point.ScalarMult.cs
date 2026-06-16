@@ -30,9 +30,9 @@ internal partial struct Ed25519Point
         Ed25519Point accumulator = Identity;
         Ed25519Point addend = point;
 
-        for (var i = 0; i < 256; i++)
+        for (int i = 0; i < 256; i++)
         {
-            var bit = (ulong)((scalar[i >> 3] >> (i & 7)) & 1);
+            ulong bit = (ulong)((scalar[i >> 3] >> (i & 7)) & 1);
 
             Ed25519Point sum = accumulator.Add(addend);
             ConditionalMove(ref accumulator, sum, bit);

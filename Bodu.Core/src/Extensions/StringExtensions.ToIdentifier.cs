@@ -67,14 +67,14 @@ public static partial class StringExtensions
         {
             case IdentifierCase.Camel:
                 builder.Append(words[0].ToLowerInvariant());
-                for (var i = 1; i < words.Count; i++) AppendCapitalised(builder, words[i]);
+                for (int i = 1; i < words.Count; i++) AppendCapitalised(builder, words[i]);
                 break;
             case IdentifierCase.Pascal:
-                for (var i = 0; i < words.Count; i++) AppendCapitalised(builder, words[i]);
+                for (int i = 0; i < words.Count; i++) AppendCapitalised(builder, words[i]);
                 break;
             case IdentifierCase.Snake:
                 builder.Append(words[0].ToLowerInvariant());
-                for (var i = 1; i < words.Count; i++)
+                for (int i = 1; i < words.Count; i++)
                 {
                     builder.Append('_');
                     builder.Append(words[i].ToLowerInvariant());
@@ -97,7 +97,7 @@ public static partial class StringExtensions
     private static string PreserveAsIdentifier(string value)
     {
         StringBuilder builder = new(value.Length + 1);
-        foreach (var c in value)
+        foreach (char c in value)
         {
             if (char.IsLetterOrDigit(c) || c == '_') builder.Append(c);
         }
@@ -114,9 +114,9 @@ public static partial class StringExtensions
     /// <param name="words">The mutable list of detected words to scrub in place.</param>
     private static void FilterIdentifierWords(List<string> words)
     {
-        for (var i = words.Count - 1; i >= 0; i--)
+        for (int i = words.Count - 1; i >= 0; i--)
         {
-            var filtered = FilterIdentifierWord(words[i]);
+            string filtered = FilterIdentifierWord(words[i]);
             if (filtered.Length == 0) words.RemoveAt(i);
             else words[i] = filtered;
         }
@@ -131,7 +131,7 @@ public static partial class StringExtensions
     private static string FilterIdentifierWord(string word)
     {
         StringBuilder builder = new(word.Length);
-        foreach (var c in word)
+        foreach (char c in word)
         {
             if (char.IsLetterOrDigit(c) || c == '_') builder.Append(c);
         }

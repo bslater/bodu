@@ -17,7 +17,7 @@ public partial class PooledBufferBuilderTests
     public void FreeCapacity_WhenAdvanceCalled_ShouldDecreaseByAdvanceAmount()
     {
         using var builder = new PooledBufferBuilder<int>(16);
-        var freeCapacityBefore = builder.FreeCapacity;
+        int freeCapacityBefore = builder.FreeCapacity;
         _ = builder.GetSpan(4);
 
         builder.Advance(4);
@@ -62,7 +62,7 @@ public partial class PooledBufferBuilderTests
     {
         using var builder = new PooledBufferBuilder<int>(16);
         builder.Append(1);
-        var freeCapacityBefore = builder.FreeCapacity;
+        int freeCapacityBefore = builder.FreeCapacity;
 
         _ = builder.GetSpan(4); // does not commit data
 

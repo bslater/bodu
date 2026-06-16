@@ -112,7 +112,7 @@ public static partial class Ini
         ThrowHelper.ThrowIfNull(document);
 
         StringBuilder sb = new();
-        var needsBlankLine = false;
+        bool needsBlankLine = false;
 
         WriteEntries(sb, document.GlobalSection.Entries);
         if (document.GlobalSection.Entries.Count > 0)

@@ -88,8 +88,8 @@ public sealed class Code39Mod43
     /// </exception>
     public static char Compute(ReadOnlySpan<char> body)
     {
-        var sum = 0;
-        for (var i = 0; i < body.Length; i++)
+        int sum = 0;
+        for (int i = 0; i < body.Length; i++)
             sum += ValueOf(body[i], nameof(body));
 
         return Alphabet[sum % Modulus];
@@ -109,16 +109,16 @@ public sealed class Code39Mod43
     {
         if (valueIncludingCheck.IsEmpty) return false;
 
-        var sum = 0;
-        for (var i = 0; i < valueIncludingCheck.Length - 1; i++)
+        int sum = 0;
+        for (int i = 0; i < valueIncludingCheck.Length - 1; i++)
         {
-            var value = TryValueOf(valueIncludingCheck[i]);
+            int value = TryValueOf(valueIncludingCheck[i]);
             if (value < 0) return false;
 
             sum += value;
         }
 
-        var check = TryValueOf(valueIncludingCheck[^1]);
+        int check = TryValueOf(valueIncludingCheck[^1]);
         if (check < 0) return false;
 
         return check == sum % Modulus;
@@ -127,8 +127,8 @@ public sealed class Code39Mod43
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> body)
     {
-        var sum = _sum;
-        for (var i = 0; i < body.Length; i++)
+        int sum = _sum;
+        for (int i = 0; i < body.Length; i++)
             sum = (sum + ValueOf(body[i], nameof(body))) % Modulus;
 
         _sum = sum;
@@ -178,7 +178,7 @@ public sealed class Code39Mod43
     /// </exception>
     private static int ValueOf(char ch, string paramName)
     {
-        var value = TryValueOf(ch);
+        int value = TryValueOf(ch);
         if (value < 0)
             throw new ArgumentOutOfRangeException(
                 paramName,

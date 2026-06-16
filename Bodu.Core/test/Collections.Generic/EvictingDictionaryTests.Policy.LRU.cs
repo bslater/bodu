@@ -232,7 +232,7 @@ public partial class EvictingDictionaryTests
         dictionary.Add("c", 3);
         dictionary.Touch("a");
 
-        var expected = new[] { "b", "c", "a" };
+        string[] expected = new[] { "b", "c", "a" };
         CollectionAssert.AreEqual(expected, dictionary.Keys.ToList());
     }
 
@@ -260,7 +260,7 @@ public partial class EvictingDictionaryTests
         var dictionary = new EvictingDictionary<string, int>(3, EvictingDictionaryPolicy.LeastRecentlyUsed);
         dictionary.Add("a", 1);
 
-        var actual = dictionary.Touch("a");
+        bool actual = dictionary.Touch("a");
 
         Assert.IsTrue(actual);
     }

@@ -89,7 +89,7 @@ public static partial class DateOnlyExtensions
     {
         ThrowHelper.ThrowIfNull(provider);
 
-        var quarter = provider.GetQuarter(date);
+        int quarter = provider.GetQuarter(date);
 
         return quarter is < 1 or > 4
             ? throw new ArgumentOutOfRangeException(nameof(provider), ResourceStrings.Arg_OutOfRange_InvalidQuarterNumber)
@@ -115,9 +115,9 @@ public static partial class DateOnlyExtensions
         int quarter,
         (uint defMonth, uint defDay) definition)
     {
-        var q = (uint)(quarter - 1);
-        var endMonth = ((((q + 1U) * 3U) + definition.defMonth - 1U) % 12U) + 1U;
-        var endYear = (endMonth <= definition.defMonth) ? year + 1 : year;
+        uint q = (uint)(quarter - 1);
+        uint endMonth = ((((q + 1U) * 3U) + definition.defMonth - 1U) % 12U) + 1U;
+        int endYear = (endMonth <= definition.defMonth) ? year + 1 : year;
         return DateTimeExtensions.GetDayNumberUnchecked(endYear, (int)endMonth, (int)definition.defDay) - 1;
     }
 
@@ -140,9 +140,9 @@ public static partial class DateOnlyExtensions
         int quarter,
         (uint defMonth, uint defDay) definition)
     {
-        var q = (uint)(quarter - 1);
-        var startMonth = (((q * 3U) + definition.defMonth - 1U) % 12U) + 1U;
-        var startYear = (startMonth < definition.defMonth) ? year + 1 : year;
+        uint q = (uint)(quarter - 1);
+        uint startMonth = (((q * 3U) + definition.defMonth - 1U) % 12U) + 1U;
+        int startYear = (startMonth < definition.defMonth) ? year + 1 : year;
         return DateTimeExtensions.GetDayNumberUnchecked(startYear, (int)startMonth, (int)definition.defDay);
     }
 
@@ -163,11 +163,11 @@ public static partial class DateOnlyExtensions
     private static (int Year, int Quarter) GetQuarterAndYearFromDate(CalendarQuarterDefinition definition, DateOnly referenceDate)
     {
         (uint defMonth, uint defDay) defMonthDay = GetQuarterDefinition(definition);
-        var q = GetQuarterForDate(referenceDate, defMonthDay);
-        var y = referenceDate.Year;
+        int q = GetQuarterForDate(referenceDate, defMonthDay);
+        int y = referenceDate.Year;
 
-        var startMonth = ((((uint)(q - 1) * 3U) + defMonthDay.defMonth - 1U) % 12U) + 1U;
-        var startYear = (startMonth < defMonthDay.defMonth) ? y + 1 : y;
+        uint startMonth = ((((uint)(q - 1) * 3U) + defMonthDay.defMonth - 1U) % 12U) + 1U;
+        int startYear = (startMonth < defMonthDay.defMonth) ? y + 1 : y;
         var startDate = new DateOnly(startYear, (int)startMonth, (int)defMonthDay.defDay);
 
         if (startDate.DayNumber > referenceDate.DayNumber)
@@ -193,9 +193,9 @@ public static partial class DateOnlyExtensions
     private static (uint defMonth, uint defDay) GetQuarterDefinition(CalendarQuarterDefinition definition)
     {
         // Unpack MMDD value: e.g., 406 = 4/06
-        var def = (uint)definition;
-        var defMonth = def / 100U;
-        var defDay = def % 100U;
+        uint def = (uint)definition;
+        uint defMonth = def / 100U;
+        uint defDay = def % 100U;
 
         return new(defMonth, defDay);
     }
@@ -215,14 +215,14 @@ public static partial class DateOnlyExtensions
     private static int GetQuarterForDate(this DateOnly date, (uint defMonth, uint defDay) definition)
     {
         // Compute quarter number using modular offset from anchor month
-        var quarter = ((date.Month + 12 - (int)definition.defMonth) % 12 / 3) + 1;
+        int quarter = ((date.Month + 12 - (int)definition.defMonth) % 12 / 3) + 1;
 
         // If anchor day is not the 1st, check if we are in the quarter's start month but still before the anchor day - in that case, we
         // belong to the previous quarter
         if (definition.defDay != 1)
         {
             // Compute the actual start month for the resolved quarter
-            var quarterStartMonth = ((((uint)(quarter - 1) * 3U) + definition.defMonth - 1U) % 12U) + 1U;
+            uint quarterStartMonth = ((((uint)(quarter - 1) * 3U) + definition.defMonth - 1U) % 12U) + 1U;
 
             // If we're in the quarter's start month but before the anchor day, back up a quarter
             if ((uint)date.Month == quarterStartMonth && (uint)date.Day < definition.defDay)

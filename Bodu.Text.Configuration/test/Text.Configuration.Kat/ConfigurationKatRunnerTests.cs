@@ -66,7 +66,7 @@ public partial class ConfigurationKatRunnerTests
         ConfigurationProfile profile = MapProfile(kat.Profile);
         var baseline = ConfigurationParseOptions.For(profile);
 
-        var allowKeyOnly = kat.Options is "AllowKeyOnlyProperties" || baseline.AllowKeyOnlyProperties;
+        bool allowKeyOnly = kat.Options is "AllowKeyOnlyProperties" || baseline.AllowKeyOnlyProperties;
 
         return new ConfigurationParseOptions
         {

@@ -42,9 +42,9 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void NullIfWhiteSpace_WhenInputIsMeaningful_ShouldReturnSameInstance()
     {
-        var value = "  hello  ";
+        string value = "  hello  ";
 
-        var actual = value.NullIfWhiteSpace();
+        string? actual = value.NullIfWhiteSpace();
 
         Assert.AreSame(value, actual);
     }

@@ -129,7 +129,7 @@ public static partial class ArrayExtensions
     public static T[] Reverse<T>(this T[] source, Range range)
     {
         ThrowHelper.ThrowIfNull(source);
-        (var start, var length) = range.GetOffsetAndLength(source.Length);
+        (int start, int length) = range.GetOffsetAndLength(source.Length);
         return ReverseCore<T>(source, start, length);
     }
 
@@ -253,7 +253,7 @@ public static partial class ArrayExtensions
     public static Array Reverse(this Array source, Range range)
     {
         ThrowHelper.ThrowIfArrayMultidimensional(source);
-        (var start, var length) = range.GetOffsetAndLength(source.Length);
+        (int start, int length) = range.GetOffsetAndLength(source.Length);
         return ReverseArrayCore(source, start, length);
     }
 

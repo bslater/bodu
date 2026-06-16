@@ -22,10 +22,10 @@ public abstract partial class CheckDigitAlgorithmTests<TTest, TAlgorithm>
     public void IsValid_WhenCheckDigitIsTampered_ShouldReturnFalse(string name, string body, char expectedCheck)
     {
         _ = name;
-        for (var c = '0'; c <= '9'; c++)
+        for (char c = '0'; c <= '9'; c++)
         {
             if (c == expectedCheck) continue;
-            var bad = body + c;
+            string bad = body + c;
             Assert.IsFalse(IsValidStatic(bad.AsSpan()), $"Expected '{bad}' to be invalid (swap of check digit).");
         }
     }
@@ -56,7 +56,7 @@ public abstract partial class CheckDigitAlgorithmTests<TTest, TAlgorithm>
     public void IsValid_WhenSequenceIncludesComputedCheckDigit_ShouldReturnTrue(string name, string body, char expectedCheck)
     {
         _ = name;
-        var full = body + expectedCheck;
+        string full = body + expectedCheck;
         Assert.IsTrue(IsValidStatic(full.AsSpan()), $"Expected '{full}' to be valid.");
     }
 

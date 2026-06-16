@@ -36,7 +36,7 @@ public static partial class StringExtensions
         if (!value.StartsWith(prefix, comparison)) return value;
         if (!value.EndsWith(suffix, comparison)) return value;
 
-        var inner = value.Length - prefix.Length - suffix.Length;
+        int inner = value.Length - prefix.Length - suffix.Length;
         return value.Substring(prefix.Length, inner);
     }
 }

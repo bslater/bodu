@@ -67,11 +67,11 @@ public sealed class Pjw32
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public override void Append(ReadOnlySpan<byte> source)
     {
-        var v = _workingHash;
-        foreach (var b in source)
+        uint v = _workingHash;
+        foreach (byte b in source)
         {
             v = (v << 4) + b;
-            var high = v & HighBitsMask;
+            uint high = v & HighBitsMask;
             v ^= high >> Shift;
             v &= LowBitsMask;
         }

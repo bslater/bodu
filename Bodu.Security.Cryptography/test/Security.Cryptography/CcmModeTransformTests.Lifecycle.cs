@@ -37,20 +37,20 @@ public sealed partial class CcmModeTransformTests
     [TestMethod]
     public void Encrypt_SamePlaintextSameNonceSameAad_ShouldBeDeterministic()
     {
-        var iv = new byte[16];
-        for (var i = 0; i < iv.Length; i++) iv[i] = (byte)i;
+        byte[] iv = new byte[16];
+        for (int i = 0; i < iv.Length; i++) iv[i] = (byte)i;
 
         byte[] aad = [0xA1, 0xA2, 0xA3];
         byte[] plaintext = [0x10, 0x20, 0x30, 0x40, 0x50, 0x60, 0x70, 0x80];
 
         using CcmModeTransform transformA = CreateTransform(new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA), iv);
         transformA.ProcessAssociatedData(aad);
-        var outA = new byte[plaintext.Length + (transformA.TagSize / 8)];
+        byte[] outA = new byte[plaintext.Length + (transformA.TagSize / 8)];
         transformA.Encrypt(plaintext, outA);
 
         using CcmModeTransform transformB = CreateTransform(new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA), iv);
         transformB.ProcessAssociatedData(aad);
-        var outB = new byte[plaintext.Length + (transformB.TagSize / 8)];
+        byte[] outB = new byte[plaintext.Length + (transformB.TagSize / 8)];
         transformB.Encrypt(plaintext, outB);
 
         CollectionAssert.AreEqual(outA, outB,
@@ -65,17 +65,17 @@ public sealed partial class CcmModeTransformTests
     [TestMethod]
     public void Encrypt_SamePlaintextSameNonceDifferentAad_ShouldProduceDistinctTags()
     {
-        var iv = new byte[16];
+        byte[] iv = new byte[16];
         byte[] plaintext = [0xDE, 0xAD, 0xBE, 0xEF];
 
         using CcmModeTransform transformA = CreateTransform(new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA), iv);
         transformA.ProcessAssociatedData([0x01]);
-        var outA = new byte[plaintext.Length + (transformA.TagSize / 8)];
+        byte[] outA = new byte[plaintext.Length + (transformA.TagSize / 8)];
         transformA.Encrypt(plaintext, outA);
 
         using CcmModeTransform transformB = CreateTransform(new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA), iv);
         transformB.ProcessAssociatedData([0x02]);
-        var outB = new byte[plaintext.Length + (transformB.TagSize / 8)];
+        byte[] outB = new byte[plaintext.Length + (transformB.TagSize / 8)];
         transformB.Encrypt(plaintext, outB);
 
         CollectionAssert.AreNotEqual(outA, outB,

@@ -15,10 +15,10 @@ public sealed partial class StringEncodingExtensionsTests
     [TestMethod]
     public void EncodeTo_WhenDestinationFits_ShouldWriteAndReturnCount()
     {
-        var required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
+        int required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
         Span<byte> destination = new byte[required];
 
-        var written = MultiByteText.EncodeTo(System.Text.Encoding.UTF8, destination);
+        int written = MultiByteText.EncodeTo(System.Text.Encoding.UTF8, destination);
 
         Assert.AreEqual(required, written);
         CollectionAssert.AreEqual(
@@ -33,8 +33,8 @@ public sealed partial class StringEncodingExtensionsTests
     [TestMethod]
     public void EncodeTo_WhenDestinationIsOneByteTooSmall_ShouldThrowExactly()
     {
-        var required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
-        var backing = new byte[required - 1];
+        int required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
+        byte[] backing = new byte[required - 1];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -49,7 +49,7 @@ public sealed partial class StringEncodingExtensionsTests
     [TestMethod]
     public void EncodeTo_WhenTextIsNull_ShouldThrowExactly()
     {
-        var backing = new byte[64];
+        byte[] backing = new byte[64];
 
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -66,7 +66,7 @@ public sealed partial class StringEncodingExtensionsTests
     [TestMethod]
     public void EncodeTo_WhenEncodingIsNull_ShouldThrowExactly()
     {
-        var backing = new byte[64];
+        byte[] backing = new byte[64];
 
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

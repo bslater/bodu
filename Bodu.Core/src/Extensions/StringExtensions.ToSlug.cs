@@ -55,17 +55,17 @@ public static partial class StringExtensions
 
         if (value.Length == 0) return string.Empty;
 
-        var prepared = options.NormalizeDiacritics ? TransliterateForSlug(value) : value;
+        string prepared = options.NormalizeDiacritics ? TransliterateForSlug(value) : value;
 
         List<string> words = EnumerateWords(prepared, WordCasingOptions.Default);
         if (words.Count == 0) return string.Empty;
 
         if (options.Lowercase)
         {
-            for (var i = 0; i < words.Count; i++) words[i] = words[i].ToLowerInvariant();
+            for (int i = 0; i < words.Count; i++) words[i] = words[i].ToLowerInvariant();
         }
 
-        var slug = string.Join(options.Separator, words);
+        string slug = string.Join(options.Separator, words);
         return options.MaxLength > 0 ? TruncateSlug(slug, options.Separator, options.MaxLength) : slug;
     }
 
@@ -82,7 +82,7 @@ public static partial class StringExtensions
     private static string TransliterateForSlug(string value)
     {
         StringBuilder builder = new(value.Length);
-        foreach (var c in value)
+        foreach (char c in value)
         {
             switch (c)
             {
@@ -113,7 +113,7 @@ public static partial class StringExtensions
     {
         if (slug.Length <= maxLength) return slug;
 
-        var cut = maxLength;
+        int cut = maxLength;
         while (cut > 0 && slug[cut - 1] != separator) cut--;
 
         // Drop the trailing separator; when no boundary was found, fall back to a hard cut.

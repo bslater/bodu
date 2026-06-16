@@ -65,7 +65,7 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority> :
         {
             if (array is KeyValuePair<TElement, TPriority>[] typedArray)
             {
-                for (var i = 0; i < _size; i++)
+                for (int i = 0; i < _size; i++)
                 {
                     (TElement Element, TPriority Priority) node = _nodes[i];
                     typedArray[index + i] = new KeyValuePair<TElement, TPriority>(node.Element, node.Priority);
@@ -73,7 +73,7 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority> :
             }
             else
             {
-                for (var i = 0; i < _size; i++)
+                for (int i = 0; i < _size; i++)
                 {
                     (TElement Element, TPriority Priority) node = _nodes[i];
                     array.SetValue(new KeyValuePair<TElement, TPriority>(node.Element, node.Priority), index + i);

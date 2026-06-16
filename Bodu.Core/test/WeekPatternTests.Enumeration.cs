@@ -69,7 +69,7 @@ public partial class WeekPatternTests
 
         IEnumerable nonGeneric = pattern;
         var observed = new List<DayOfWeek>();
-        foreach (var day in nonGeneric)
+        foreach (object? day in nonGeneric)
             observed.Add((DayOfWeek)day);
 
         // 0b1010101 in Sunday-first order: Sun=1, Mon=0, Tue=1, Wed=0, Thu=1, Fri=0, Sat=1.

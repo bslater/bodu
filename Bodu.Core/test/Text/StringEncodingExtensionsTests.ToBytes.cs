@@ -17,9 +17,9 @@ public sealed partial class StringEncodingExtensionsTests
     [DynamicData(nameof(CanonicalEncodings))]
     public void ToBytes_WhenInvoked_ShouldMatchBclEncoding(System.Text.Encoding encoding)
     {
-        var expected = encoding.GetBytes(MultiByteText);
+        byte[] expected = encoding.GetBytes(MultiByteText);
 
-        var actual = MultiByteText.ToBytes(encoding);
+        byte[] actual = MultiByteText.ToBytes(encoding);
 
         CollectionAssert.AreEqual(expected, actual);
     }
@@ -31,7 +31,7 @@ public sealed partial class StringEncodingExtensionsTests
     [TestMethod]
     public void ToBytes_WhenStringIsEmpty_ShouldReturnEmptyArray()
     {
-        var actual = string.Empty.ToBytes(System.Text.Encoding.UTF8);
+        byte[] actual = string.Empty.ToBytes(System.Text.Encoding.UTF8);
 
         Assert.AreEqual(0, actual.Length);
     }

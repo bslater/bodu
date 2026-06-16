@@ -63,7 +63,7 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
         if (keySizeBytes < 0) return;
 
         using TAlgorithm cipher = CreateAlgorithm();
-        var invalidKey = new byte[keySizeBytes];
+        byte[] invalidKey = new byte[keySizeBytes];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
@@ -78,7 +78,7 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
     public void Key_WhenSet_ShouldReturnSameValueOnGet()
     {
         using TAlgorithm cipher = CreateAlgorithm();
-        var key = new byte[KeyLengthBytes];
+        byte[] key = new byte[KeyLengthBytes];
         CryptographyHelper.FillWithRandomNonZeroBytes(key);
 
         cipher.Key = key;
@@ -94,7 +94,7 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
     public void Key_WhenSet_ShouldReturnDefensiveCopy()
     {
         using TAlgorithm cipher = CreateAlgorithm();
-        var key = new byte[KeyLengthBytes];
+        byte[] key = new byte[KeyLengthBytes];
         CryptographyHelper.FillWithRandomNonZeroBytes(key);
 
         cipher.Key = key;
@@ -112,9 +112,9 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
         using TAlgorithm cipher = CreateAlgorithm();
         cipher.GenerateKey();
 
-        var first = cipher.Key;
+        byte[] first = cipher.Key;
         first[0] ^= 0xFF;
-        var second = cipher.Key;
+        byte[] second = cipher.Key;
 
         Assert.AreNotEqual(first[0], second[0]);
     }

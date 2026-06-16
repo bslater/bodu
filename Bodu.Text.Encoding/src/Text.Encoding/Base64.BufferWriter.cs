@@ -37,9 +37,9 @@ public static partial class Base64
         if (source.IsEmpty)
             return 0;
 
-        var required = GetEncodedLength(source.Length, variant, options);
+        int required = GetEncodedLength(source.Length, variant, options);
         Span<char> destination = writer.GetSpan(required);
-        var written = Encode(source, destination, variant, options);
+        int written = Encode(source, destination, variant, options);
         writer.Advance(written);
         return written;
     }
@@ -71,9 +71,9 @@ public static partial class Base64
         if (source.IsEmpty)
             return 0;
 
-        var required = GetEncodedLength(source.Length, variant, options);
+        int required = GetEncodedLength(source.Length, variant, options);
         Span<byte> destination = writer.GetSpan(required);
-        var written = EncodeIntoUtf8Span(source, destination, variant, options);
+        int written = EncodeIntoUtf8Span(source, destination, variant, options);
         writer.Advance(written);
         return written;
     }

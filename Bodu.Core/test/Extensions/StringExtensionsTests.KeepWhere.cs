@@ -15,7 +15,7 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void KeepWhere_WhenPredicateSupplied_ShouldRetainMatchingCharacters()
     {
-        var actual = "a1b2c3".KeepWhere(char.IsDigit);
+        string actual = "a1b2c3".KeepWhere(char.IsDigit);
 
         Assert.AreEqual("123", actual);
     }
@@ -27,9 +27,9 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void KeepWhere_WhenAllCharactersMatch_ShouldReturnSameInstance()
     {
-        var value = "abc";
+        string value = "abc";
 
-        var actual = value.KeepWhere(char.IsLetter);
+        string actual = value.KeepWhere(char.IsLetter);
 
         Assert.AreSame(value, actual);
     }
@@ -41,7 +41,7 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void KeepWhere_WhenNoCharacterMatches_ShouldReturnEmptyString()
     {
-        var actual = "abc".KeepWhere(char.IsDigit);
+        string actual = "abc".KeepWhere(char.IsDigit);
 
         Assert.AreEqual(string.Empty, actual);
     }

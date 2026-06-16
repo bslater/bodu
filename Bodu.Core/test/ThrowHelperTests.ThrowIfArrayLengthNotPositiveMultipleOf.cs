@@ -56,7 +56,7 @@ public partial class ThrowHelperTests
     [DataRow(0, 1)]   // 0 is not a positive multiple
     public void ThrowIfArrayLengthNotPositiveMultipleOf_WhenLengthIsNotPositiveMultiple_ShouldThrowExactly(int arrayLength, int factor)
     {
-        var array = new int[arrayLength];
+        int[] array = new int[arrayLength];
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
             ThrowHelper.ThrowIfArrayLengthNotPositiveMultipleOf(array, factor);
@@ -72,7 +72,7 @@ public partial class ThrowHelperTests
     [DataRow(8, 4)]   // 8 % 4 == 0
     public void ThrowIfArrayLengthNotPositiveMultipleOf_WhenLengthIsPositiveMultiple_ShouldNotThrow(int arrayLength, int factor)
     {
-        var array = new int[arrayLength];
+        int[] array = new int[arrayLength];
         ThrowHelper.ThrowIfArrayLengthNotPositiveMultipleOf(array, factor);
     }
 

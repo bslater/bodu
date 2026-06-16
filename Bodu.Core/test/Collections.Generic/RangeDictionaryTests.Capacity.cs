@@ -17,11 +17,11 @@ public partial class RangeDictionaryTests
     {
         var sut = new RangeDictionary<int, string>();
 
-        for (var i = 0; i < 500; i++)
+        for (int i = 0; i < 500; i++)
             sut.Add(i * 10, (i * 10) + 5, "v" + i);
 
         Assert.AreEqual(500, sut.Count);
-        for (var i = 0; i < 500; i++)
+        for (int i = 0; i < 500; i++)
         {
             ValueRange<int, string> entry = sut.GetEntryAt(i);
             Assert.AreEqual(i * 10, entry.StartInclusive);
@@ -69,7 +69,7 @@ public partial class RangeDictionaryTests
     {
         var sut = new RangeDictionary<int, string>();
 
-        var reported = sut.EnsureCapacity(128);
+        int reported = sut.EnsureCapacity(128);
 
         Assert.IsGreaterThanOrEqualTo(128, reported);
         Assert.IsGreaterThanOrEqualTo(128, sut.Capacity);
@@ -84,9 +84,9 @@ public partial class RangeDictionaryTests
     {
         var sut = new RangeDictionary<int, string>();
         sut.EnsureCapacity(64);
-        var capacityBefore = sut.Capacity;
+        int capacityBefore = sut.Capacity;
 
-        var reported = sut.EnsureCapacity(4);
+        int reported = sut.EnsureCapacity(4);
 
         Assert.AreEqual(capacityBefore, sut.Capacity);
         Assert.AreEqual(capacityBefore, reported);

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlDocumentReaderTests.TokenStream.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -245,7 +245,7 @@ public sealed partial class TomlDocumentReaderTests
         var tokens = new List<string>();
         while (reader.Read())
         {
-            var value = reader.TokenType switch
+            string value = reader.TokenType switch
             {
                 TomlTokenType.PropertyName or TomlTokenType.String => reader.GetString(),
                 TomlTokenType.Integer => reader.GetInt64().ToString(CultureInfo.InvariantCulture),

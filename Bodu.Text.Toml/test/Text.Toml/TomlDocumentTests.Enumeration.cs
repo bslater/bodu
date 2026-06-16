@@ -151,7 +151,7 @@ public partial class TomlDocumentTests
     {
         using var document = TomlDocument.Parse("a = []\n");
 
-        var count = 0;
+        int count = 0;
         foreach (TomlElement element in document.RootElement.GetProperty("a").EnumerateArray())
             count++;
 
@@ -166,7 +166,7 @@ public partial class TomlDocumentTests
     {
         using var document = TomlDocument.Parse("a = {}\n");
 
-        var count = 0;
+        int count = 0;
         foreach (TomlProperty property in document.RootElement.GetProperty("a").EnumerateObject())
             count++;
 

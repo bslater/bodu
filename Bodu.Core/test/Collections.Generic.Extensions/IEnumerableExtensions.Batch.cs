@@ -105,7 +105,7 @@ public sealed partial class IEnumerableExtensionsTests_Batch
     [DataRow(0)]
     public void Batch_WhenSizeIsInvalid_ShouldThrowExactly(int size)
     {
-        var source = new[] { 1, 2, 3 };
+        int[] source = new[] { 1, 2, 3 };
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = source.Batch(size).ToList();
@@ -141,7 +141,7 @@ public sealed partial class IEnumerableExtensionsTests_Batch
     [TestMethod]
     public void Batch_WithIndexSelector_WhenSelectorIsNull_ShouldThrowExactly()
     {
-        var source = new[] { 1, 2, 3 };
+        int[] source = new[] { 1, 2, 3 };
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = source.Batch(2, selector: (Func<int, int, int>)null!).ToList();
@@ -154,7 +154,7 @@ public sealed partial class IEnumerableExtensionsTests_Batch
     [TestMethod]
     public void Batch_WithSelector_WhenSelectorIsNull_ShouldThrowExactly()
     {
-        var source = new[] { 1, 2, 3 };
+        int[] source = new[] { 1, 2, 3 };
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = source.Batch(2, selector: (Func<int, int>)null!).ToList();

@@ -22,7 +22,7 @@ public partial class ExchangeRateSeriesBufferTests
         buffer.Set(1010, 1.75m, RateParam);
 
         Assert.AreEqual(2, buffer.Count);
-        Assert.IsTrue(buffer.TryGetRate(1010, out var rate));
+        Assert.IsTrue(buffer.TryGetRate(1010, out decimal rate));
         Assert.AreEqual(1.75m, rate);
     }
 
@@ -68,10 +68,10 @@ public partial class ExchangeRateSeriesBufferTests
     {
         ExchangeRateSeriesBuffer buffer = NewBufferWith((1000, 1.5m));
 
-        var updated = buffer.TrySet(1000, 1.9m, RateParam);
+        bool updated = buffer.TrySet(1000, 1.9m, RateParam);
 
         Assert.IsTrue(updated);
-        Assert.IsTrue(buffer.TryGetRate(1000, out var rate));
+        Assert.IsTrue(buffer.TryGetRate(1000, out decimal rate));
         Assert.AreEqual(1.9m, rate);
     }
 
@@ -84,7 +84,7 @@ public partial class ExchangeRateSeriesBufferTests
     {
         ExchangeRateSeriesBuffer buffer = NewBufferWith((1000, 1.5m));
 
-        var updated = buffer.TrySet(1010, 1.6m, RateParam);
+        bool updated = buffer.TrySet(1010, 1.6m, RateParam);
 
         Assert.IsFalse(updated);
         Assert.AreEqual(1, buffer.Count);

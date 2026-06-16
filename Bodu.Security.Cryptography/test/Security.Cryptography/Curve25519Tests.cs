@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Curve25519Tests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -37,8 +37,8 @@ public class Curve25519Tests
     {
         _ = testName;
 
-        var destination = new byte[Curve25519.PointSizeInBytes];
-        var allZero = Curve25519.ScalarMult(Convert.FromHexString(scalarHex), Convert.FromHexString(uHex), destination);
+        byte[] destination = new byte[Curve25519.PointSizeInBytes];
+        bool allZero = Curve25519.ScalarMult(Convert.FromHexString(scalarHex), Convert.FromHexString(uHex), destination);
 
         Assert.IsFalse(allZero);
         CollectionAssert.AreEqual(Convert.FromHexString(expectedHex), destination);
@@ -51,10 +51,10 @@ public class Curve25519Tests
     [TestMethod]
     public void ScalarMult_WhenUIsLowOrderZeroPoint_ShouldReturnAllZeroFlag()
     {
-        var scalar = Convert.FromHexString("a546e36bf0527c9d3b16154b82465edd62144c0ac1fc5a18506a2244ba449ac4");
-        var destination = new byte[Curve25519.PointSizeInBytes];
+        byte[] scalar = Convert.FromHexString("a546e36bf0527c9d3b16154b82465edd62144c0ac1fc5a18506a2244ba449ac4");
+        byte[] destination = new byte[Curve25519.PointSizeInBytes];
 
-        var allZero = Curve25519.ScalarMult(scalar, new byte[Curve25519.PointSizeInBytes], destination);
+        bool allZero = Curve25519.ScalarMult(scalar, new byte[Curve25519.PointSizeInBytes], destination);
 
         Assert.IsTrue(allZero);
         CollectionAssert.AreEqual(new byte[Curve25519.PointSizeInBytes], destination);
@@ -67,9 +67,9 @@ public class Curve25519Tests
     [TestMethod]
     public void ScalarMult_WhenScalarRequiresClamping_ShouldNotModifyCallerScalar()
     {
-        var scalar = Convert.FromHexString("a546e36bf0527c9d3b16154b82465edd62144c0ac1fc5a18506a2244ba449ac4");
-        var original = (byte[])scalar.Clone();
-        var u = Convert.FromHexString("e6db6867583030db3594c1a424b15f7c726624ec26b3353b10a903a6d0ab1c4c");
+        byte[] scalar = Convert.FromHexString("a546e36bf0527c9d3b16154b82465edd62144c0ac1fc5a18506a2244ba449ac4");
+        byte[] original = (byte[])scalar.Clone();
+        byte[] u = Convert.FromHexString("e6db6867583030db3594c1a424b15f7c726624ec26b3353b10a903a6d0ab1c4c");
 
         _ = Curve25519.ScalarMult(scalar, u, new byte[Curve25519.PointSizeInBytes]);
 
@@ -96,7 +96,7 @@ public class Curve25519Tests
     {
         _ = testName;
 
-        var destination = new byte[Curve25519.PointSizeInBytes];
+        byte[] destination = new byte[Curve25519.PointSizeInBytes];
         Curve25519.ScalarMultBase(Convert.FromHexString(privateHex), destination);
 
         CollectionAssert.AreEqual(Convert.FromHexString(expectedPublicHex), destination);
@@ -108,14 +108,14 @@ public class Curve25519Tests
     [TestMethod]
     public void ScalarMult_WhenRunAsRfc7748DiffieHellman_ShouldDerivePublishedSharedSecret()
     {
-        var alicePrivate = Convert.FromHexString("77076d0a7318a57d3c16c17251b26645df4c2f87ebc0992ab177fba51db92c2a");
-        var bobPrivate = Convert.FromHexString("5dab087e624a8a4b79e17f8b83800ee66f3bb1292618b6fd1c2f8b27ff88e0eb");
-        var alicePublic = Convert.FromHexString("8520f0098930a754748b7ddcb43ef75a0dbf3a0d26381af4eba4a98eaa9b4e6a");
-        var bobPublic = Convert.FromHexString("de9edb7d7b7dc1b4d35b61c2ece435373f8343c85b78674dadfc7e146f882b4f");
-        var expectedShared = Convert.FromHexString("4a5d9d5ba4ce2de1728e3bf480350f25e07e21c947d19e3376f09b3c1e161742");
+        byte[] alicePrivate = Convert.FromHexString("77076d0a7318a57d3c16c17251b26645df4c2f87ebc0992ab177fba51db92c2a");
+        byte[] bobPrivate = Convert.FromHexString("5dab087e624a8a4b79e17f8b83800ee66f3bb1292618b6fd1c2f8b27ff88e0eb");
+        byte[] alicePublic = Convert.FromHexString("8520f0098930a754748b7ddcb43ef75a0dbf3a0d26381af4eba4a98eaa9b4e6a");
+        byte[] bobPublic = Convert.FromHexString("de9edb7d7b7dc1b4d35b61c2ece435373f8343c85b78674dadfc7e146f882b4f");
+        byte[] expectedShared = Convert.FromHexString("4a5d9d5ba4ce2de1728e3bf480350f25e07e21c947d19e3376f09b3c1e161742");
 
-        var aliceShared = new byte[Curve25519.PointSizeInBytes];
-        var bobShared = new byte[Curve25519.PointSizeInBytes];
+        byte[] aliceShared = new byte[Curve25519.PointSizeInBytes];
+        byte[] bobShared = new byte[Curve25519.PointSizeInBytes];
         _ = Curve25519.ScalarMult(alicePrivate, bobPublic, aliceShared);
         _ = Curve25519.ScalarMult(bobPrivate, alicePublic, bobShared);
 
@@ -151,13 +151,13 @@ public class Curve25519Tests
     /// <param name="expectedHex">The published value of the scalar after the final iteration.</param>
     private static void AssertIteratedLadder(int iterations, string expectedHex)
     {
-        var k = new byte[Curve25519.PointSizeInBytes];
-        var u = new byte[Curve25519.PointSizeInBytes];
+        byte[] k = new byte[Curve25519.PointSizeInBytes];
+        byte[] u = new byte[Curve25519.PointSizeInBytes];
         k[0] = 9;
         u[0] = 9;
 
-        var result = new byte[Curve25519.PointSizeInBytes];
-        for (var i = 0; i < iterations; i++)
+        byte[] result = new byte[Curve25519.PointSizeInBytes];
+        for (int i = 0; i < iterations; i++)
         {
             _ = Curve25519.ScalarMult(k, u, result);
             Array.Copy(k, u, k.Length);

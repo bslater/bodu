@@ -228,8 +228,8 @@ public sealed class Crc
         Reset();
         ProcessBlocks(data);
 
-        var buffer = new byte[HashLengthInBytes];
-        var folded = FoldOutputState(_workingHash);
+        byte[] buffer = new byte[HashLengthInBytes];
+        ulong folded = FoldOutputState(_workingHash);
         WriteHashBytes(folded, HashLengthInBytes, buffer);
         return buffer;
     }
@@ -255,7 +255,7 @@ public sealed class Crc
     /// </remarks>
     public byte[] ComputeHashFrom(ReadOnlySpan<byte> previousHash, ReadOnlySpan<byte> newData)
     {
-        var buffer = new byte[HashLengthInBytes];
+        byte[] buffer = new byte[HashLengthInBytes];
         TryComputeHashFrom(previousHash, newData, buffer, out _);
         return buffer;
     }
@@ -308,7 +308,7 @@ public sealed class Crc
         // never touched, so any pending Append state on this instance survives the call unchanged.
         Span<byte> fullWord = stackalloc byte[sizeof(ulong)];
         previousHash.CopyTo(fullWord);
-        var state = BinaryPrimitives.ReadUInt64LittleEndian(fullWord);
+        ulong state = BinaryPrimitives.ReadUInt64LittleEndian(fullWord);
 
         // Undo finalization: XOR first, then reflect back to the working-state orientation when the algorithm applies
         // XOR-reflected output.
@@ -319,7 +319,7 @@ public sealed class Crc
         // Continue hashing using the static helpers so that the instance's _workingHash is not mutated.
         state = RunProcessBlocks(newData, state, _lookupTable, _hashSizeBits, _standard.ReflectIn);
 
-        var folded = FoldOutputState(state);
+        ulong folded = FoldOutputState(state);
         WriteHashBytes(folded, HashLengthInBytes, destination);
         bytesWritten = HashLengthInBytes;
         return true;
@@ -332,7 +332,7 @@ public sealed class Crc
     /// </remarks>
     protected override void GetCurrentHashCore(Span<byte> destination)
     {
-        var folded = FoldOutputState(_workingHash);
+        ulong folded = FoldOutputState(_workingHash);
         WriteHashBytes(folded, HashLengthInBytes, destination);
     }
 
@@ -367,12 +367,12 @@ public sealed class Crc
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static ulong ProcessBitwiseNormal(ReadOnlySpan<byte> data, ulong crc, ulong[] table, int shift)
     {
-        foreach (var b in data)
+        foreach (byte b in data)
         {
-            for (var i = 0; i < 8; i++)
+            for (int i = 0; i < 8; i++)
             {
-                var inputBit = (ulong)((b >> (7 - i)) & 1);
-                var crcBit = (crc >> shift) & 1;
+                ulong inputBit = (ulong)((b >> (7 - i)) & 1);
+                ulong crcBit = (crc >> shift) & 1;
                 crc = (crc << 1) ^ table[inputBit ^ crcBit];
             }
         }
@@ -390,12 +390,12 @@ public sealed class Crc
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static ulong ProcessBitwiseReflected(ReadOnlySpan<byte> data, ulong crc, ulong[] table)
     {
-        foreach (var b in data)
+        foreach (byte b in data)
         {
-            for (var i = 0; i < 8; i++)
+            for (int i = 0; i < 8; i++)
             {
-                var inputBit = (ulong)((b >> i) & 1);
-                var crcBit = crc & 1;
+                ulong inputBit = (ulong)((b >> i) & 1);
+                ulong crcBit = crc & 1;
                 crc = (crc >> 1) ^ table[inputBit ^ crcBit];
             }
         }
@@ -414,7 +414,7 @@ public sealed class Crc
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static ulong ProcessBytewiseNormal(ReadOnlySpan<byte> data, ulong crc, ulong[] table, int shift)
     {
-        foreach (var b in data)
+        foreach (byte b in data)
         {
             crc = (crc << 8) ^ table[(byte)((crc >> shift) ^ b)];
         }
@@ -432,7 +432,7 @@ public sealed class Crc
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static ulong ProcessBytewiseReflected(ReadOnlySpan<byte> data, ulong crc, ulong[] table)
     {
-        foreach (var b in data)
+        foreach (byte b in data)
         {
             crc = (crc >> 8) ^ table[(byte)(crc ^ b)];
         }

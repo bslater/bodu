@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EcbExchangeRateOptionsTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -22,7 +22,7 @@ public class EcbExchangeRateOptionsTests
     {
         EcbExchangeRateOptions options = new();
 
-        var valid = options.TryValidate(out var error);
+        bool valid = options.TryValidate(out string? error);
 
         Assert.IsTrue(valid);
         Assert.IsNull(error);
@@ -47,7 +47,7 @@ public class EcbExchangeRateOptionsTests
     {
         EcbExchangeRateOptions options = new() { Endpoint = null! };
 
-        var valid = options.TryValidate(out var error);
+        bool valid = options.TryValidate(out string? error);
 
         Assert.IsFalse(valid);
         Assert.IsNotNull(error);
@@ -62,7 +62,7 @@ public class EcbExchangeRateOptionsTests
         EcbExchangeRateOptions options = new();
         options.Endpoint.HttpTimeout = TimeSpan.Zero;
 
-        var valid = options.TryValidate(out var error);
+        bool valid = options.TryValidate(out string? error);
 
         Assert.IsFalse(valid);
         Assert.IsNotNull(error);
@@ -76,7 +76,7 @@ public class EcbExchangeRateOptionsTests
     {
         EcbExchangeRateOptions options = new() { Feeds = [] };
 
-        var valid = options.TryValidate(out var error);
+        bool valid = options.TryValidate(out string? error);
 
         Assert.IsFalse(valid);
         Assert.IsNotNull(error);
@@ -90,7 +90,7 @@ public class EcbExchangeRateOptionsTests
     {
         EcbExchangeRateOptions options = new() { RefreshInterval = TimeSpan.FromHours(-1) };
 
-        var valid = options.TryValidate(out var error);
+        bool valid = options.TryValidate(out string? error);
 
         Assert.IsFalse(valid);
         Assert.IsNotNull(error);
@@ -104,7 +104,7 @@ public class EcbExchangeRateOptionsTests
     {
         EcbExchangeRateOptions options = new() { CurrencyAliases = null! };
 
-        var valid = options.TryValidate(out var error);
+        bool valid = options.TryValidate(out string? error);
 
         Assert.IsFalse(valid);
         Assert.IsNotNull(error);
@@ -118,7 +118,7 @@ public class EcbExchangeRateOptionsTests
     {
         EcbExchangeRateOptions options = new() { DownloadFailedLogLevel = (LogLevel)999 };
 
-        var valid = options.TryValidate(out var error);
+        bool valid = options.TryValidate(out string? error);
 
         Assert.IsFalse(valid);
         Assert.IsNotNull(error);

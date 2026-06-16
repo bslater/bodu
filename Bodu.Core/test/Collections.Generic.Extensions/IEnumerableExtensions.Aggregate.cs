@@ -18,7 +18,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     {
         int[] source = [1, 2, 3];
 
-        var result = source.Aggregate(
+        string result = source.Aggregate(
             "[",
             (acc, x, i) => acc + (i == 0 ? string.Empty : ",") + x);
 
@@ -138,7 +138,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     {
         int[] source = [5, 10, 20];
 
-        var result = source.Aggregate((acc, x, i) => acc + x);
+        int result = source.Aggregate((acc, x, i) => acc + x);
 
         // default(int) + 5 + 10 + 20 == 35
         Assert.AreEqual(35, result);
@@ -150,7 +150,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     [TestMethod]
     public void Aggregate_WhenInvoked_ForMultiAccumulator_ShouldEnumerateSourceOnce()
     {
-        var enumerationCount2 = 0;
+        int enumerationCount2 = 0;
         IEnumerable<int> TwoFuncSource()
         {
             enumerationCount2++;
@@ -162,7 +162,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
         _ = TwoFuncSource().Aggregate(0, 0, (a, x) => a + x, (a, _) => a + 1);
         Assert.AreEqual(1, enumerationCount2);
 
-        var enumerationCount3 = 0;
+        int enumerationCount3 = 0;
         IEnumerable<int> ThreeFuncSource()
         {
             enumerationCount3++;
@@ -188,7 +188,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
         int[] source = [1, 2, 3, 4];
 
         // 0 + (1*0) + (2*1) + (3*2) + (4*3) == 20
-        var result = source.Aggregate(0, (acc, x, i) => acc + (x * i));
+        int result = source.Aggregate(0, (acc, x, i) => acc + (x * i));
 
         Assert.AreEqual(20, result);
     }
@@ -199,7 +199,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     [TestMethod]
     public void Aggregate_WhenInvoked_ForSeededOverload_ShouldEnumerateSourceOnce()
     {
-        var enumerationCount = 0;
+        int enumerationCount = 0;
 
         IEnumerable<int> Source()
         {
@@ -222,7 +222,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     {
         int[] source = [3, 1, 4, 1, 5, 9, 2, 6];
 
-        (var sum, var count, var max) = source.Aggregate(
+        (int sum, int count, int max) = source.Aggregate(
             seed1: 0,
             seed2: 0,
             seed3: int.MinValue,
@@ -269,7 +269,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
         int[] source = [2, 4, 6, 8];
 
         // sum=20, count=4, product=2*4*6*8=384 → "20/4/384"
-        var result = source.Aggregate(
+        string result = source.Aggregate(
             seed1: 0,
             seed2: 0,
             seed3: 1,
@@ -289,7 +289,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     {
         int[] source = [3, 1, 4, 1, 5, 9, 2, 6];
 
-        (var min, var max) = source.Aggregate(
+        (int min, int max) = source.Aggregate(
             seed1: int.MaxValue,
             seed2: int.MinValue,
             func1: (acc, x) => Math.Min(acc, x),
@@ -330,7 +330,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
         int[] source = [2, 4, 6];
 
         // weighted sum: 2*0 + 4*1 + 6*2 = 16; count: 3
-        var result = source.Aggregate(
+        string result = source.Aggregate(
             seed1: 0,
             seed2: 0,
             func1: (acc, x, i) => acc + (x * i),
@@ -348,7 +348,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     {
         int[] source = [1, 2, 3, 4];
 
-        var result = source.Aggregate(
+        string result = source.Aggregate(
             seed1: 0,
             seed2: 0,
             func1: (acc, x) => acc + x,
@@ -444,7 +444,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
         int[] source = [2, 3, 5, 7];
 
         // sum = 17, selector doubles it -> 34
-        var result = source.Aggregate(0, (acc, x, i) => acc + x, acc => acc * 2);
+        int result = source.Aggregate(0, (acc, x, i) => acc + x, acc => acc * 2);
 
         Assert.AreEqual(34, result);
     }
@@ -474,9 +474,9 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     public void Aggregate_WhenSourceIsEmpty_ForSeededOverload_ShouldReturnSeedUnchanged()
     {
         int[] source = [];
-        var invocations = 0;
+        int invocations = 0;
 
-        var result = source.Aggregate(42, (acc, x, i) =>
+        int result = source.Aggregate(42, (acc, x, i) =>
         {
             invocations++;
             return acc + x;
@@ -494,7 +494,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     {
         int[] source = [];
 
-        var result = source.Aggregate(7, (acc, x, i) => acc + x, acc => $"value={acc}");
+        string result = source.Aggregate(7, (acc, x, i) => acc + x, acc => $"value={acc}");
 
         Assert.AreEqual("value=7", result);
     }
@@ -507,7 +507,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     {
         int[] source = [];
 
-        (var v1, var v2, var v3) = source.Aggregate(
+        (int v1, int v2, int v3) = source.Aggregate(
             11, 22, 33,
             (a, x) => a + x,
             (a, x) => a + x,
@@ -526,7 +526,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     {
         int[] source = [];
 
-        (var v1, var v2) = source.Aggregate(11, 22, (a, x) => a + x, (a, x) => a + x);
+        (int v1, int v2) = source.Aggregate(11, 22, (a, x) => a + x, (a, x) => a + x);
 
         Assert.AreEqual(11, v1);
         Assert.AreEqual(22, v2);

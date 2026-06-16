@@ -57,7 +57,7 @@ public sealed class MonitoringStream
     /// <inheritdoc />
     public override int Read(byte[] buffer, int offset, int count)
     {
-        var bytesRead = _inner.Read(buffer, offset, count);
+        int bytesRead = _inner.Read(buffer, offset, count);
         if (bytesRead > 0)
         {
             reads.Add((position, bytesRead));
@@ -69,7 +69,7 @@ public sealed class MonitoringStream
     /// <inheritdoc />
     public override async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
     {
-        var bytesRead = await _inner.ReadAsync(buffer, offset, count, cancellationToken);
+        int bytesRead = await _inner.ReadAsync(buffer, offset, count, cancellationToken);
         if (bytesRead > 0)
         {
             reads.Add((position, bytesRead));
@@ -98,7 +98,7 @@ public sealed class MonitoringStream
         if (!_inner.CanSeek)
             throw new NotSupportedException("The inner _inner must support seeking to use ToArray().");
 
-        var originalPosition = _inner.Position;
+        long originalPosition = _inner.Position;
 
         try
         {

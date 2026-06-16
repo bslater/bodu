@@ -47,7 +47,7 @@ public partial class CompoundBinaryFileTests
     {
         using CompoundBinaryFile file = OpenSample();
 
-        var summaryStreamCount = file.Entries.Count(e => e.Name.Contains("SummaryInformation", StringComparison.Ordinal));
+        int summaryStreamCount = file.Entries.Count(e => e.Name.Contains("SummaryInformation", StringComparison.Ordinal));
 
         Assert.AreEqual(2, summaryStreamCount);
     }

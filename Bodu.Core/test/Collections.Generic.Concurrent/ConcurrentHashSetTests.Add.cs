@@ -43,7 +43,7 @@ public partial class ConcurrentHashSetTests
     {
         var set = new ConcurrentHashSet<int>();
 
-        for (var i = 0; i < 100; i++)
+        for (int i = 0; i < 100; i++)
             Assert.IsTrue(set.Add(i));
 
         Assert.AreEqual(100, set.Count);
@@ -58,11 +58,11 @@ public partial class ConcurrentHashSetTests
     {
         var set = new ConcurrentHashSet<int>(capacity: 4);
 
-        for (var i = 0; i < 5000; i++)
+        for (int i = 0; i < 5000; i++)
             Assert.IsTrue(set.Add(i));
 
         Assert.AreEqual(5000, set.Count);
-        for (var i = 0; i < 5000; i++)
+        for (int i = 0; i < 5000; i++)
             Assert.IsTrue(set.Contains(i), $"Element {i} was lost across a resize.");
     }
 

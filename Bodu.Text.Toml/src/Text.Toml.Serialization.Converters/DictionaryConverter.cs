@@ -87,7 +87,7 @@ internal sealed class DictionaryConverter<TDictionary, TKey, TValue>
         Dictionary<TKey, TValue> entries = [];
         while (reader.Read() && reader.TokenType != TomlTokenType.EndTable)
         {
-            var keyText = reader.GetString();
+            string keyText = reader.GetString();
             TKey key = ParseKey(keyText);
             reader.Read();
             try
@@ -134,7 +134,7 @@ internal sealed class DictionaryConverter<TDictionary, TKey, TValue>
                 if (entry.Value is null)
                     continue;
 
-                var keyText = FormatKey(entry.Key);
+                string keyText = FormatKey(entry.Key);
                 writer.WritePropertyName(keyText);
 
                 state?.PushPath(keyText);

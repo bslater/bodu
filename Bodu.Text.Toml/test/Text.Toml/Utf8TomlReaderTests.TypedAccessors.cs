@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Utf8TomlReaderTests.TypedAccessors.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -44,7 +44,7 @@ public sealed partial class Utf8TomlReaderTests
         Assert.IsFalse(reader.TryGetInt32(out _));
         Assert.IsFalse(reader.TryGetUInt16(out _));
         Assert.IsFalse(reader.TryGetUInt32(out _));
-        Assert.IsTrue(reader.TryGetUInt64(out var u64));
+        Assert.IsTrue(reader.TryGetUInt64(out ulong u64));
         Assert.AreEqual(4294967296ul, u64);
     }
 

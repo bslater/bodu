@@ -30,7 +30,7 @@ internal static class NotableDateRuleOverrideApplier
 
         foreach (NotableDateRuleOverride operation in overrides)
         {
-            var index = working.FindIndex(d => string.Equals(d.Id, operation.NotableDateRef, StringComparison.Ordinal));
+            int index = working.FindIndex(d => string.Equals(d.Id, operation.NotableDateRef, StringComparison.Ordinal));
             if (index < 0)
             {
                 diagnostics.Add(new NotableDateValidationDiagnostic(
@@ -63,7 +63,7 @@ internal static class NotableDateRuleOverrideApplier
             case RemoveRuleOverride remove:
                 {
                     var rules = definition.Rules.ToList();
-                    var removed = rules.RemoveAll(r => string.Equals(r.Id, remove.RuleRef, StringComparison.Ordinal));
+                int removed = rules.RemoveAll(r => string.Equals(r.Id, remove.RuleRef, StringComparison.Ordinal));
                     if (removed == 0)
                     {
                         AddRuleNotFound(diagnostics, remove.RuleRef, definition.Id);
@@ -76,7 +76,7 @@ internal static class NotableDateRuleOverrideApplier
             case PatchRuleOverride patch:
                 {
                     var rules = definition.Rules.ToList();
-                    var ruleIndex = rules.FindIndex(r => string.Equals(r.Id, patch.RuleRef, StringComparison.Ordinal));
+                int ruleIndex = rules.FindIndex(r => string.Equals(r.Id, patch.RuleRef, StringComparison.Ordinal));
                     if (ruleIndex < 0)
                     {
                         AddRuleNotFound(diagnostics, patch.RuleRef, definition.Id);

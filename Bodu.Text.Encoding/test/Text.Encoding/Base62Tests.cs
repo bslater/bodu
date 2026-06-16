@@ -40,7 +40,7 @@ public sealed partial class Base62Tests
     {
         byte[] payload = [0x00, 0x00, 0x00, 0x2A];
 
-        var encoded = Base62.Encode(payload);
+        string encoded = Base62.Encode(payload);
 
         Assert.IsTrue(encoded.StartsWith("000", StringComparison.Ordinal));
         CollectionAssert.AreEqual(payload, Base62.Decode(encoded));
@@ -52,7 +52,7 @@ public sealed partial class Base62Tests
     [TestMethod]
     public void RoundTrip_WhenAsciiPayload_ShouldRecoverBytes()
     {
-        var payload = "Hello, Base62!"u8.ToArray();
+        byte[] payload = "Hello, Base62!"u8.ToArray();
 
         CollectionAssert.AreEqual(payload, Base62.Decode(Base62.Encode(payload)));
     }

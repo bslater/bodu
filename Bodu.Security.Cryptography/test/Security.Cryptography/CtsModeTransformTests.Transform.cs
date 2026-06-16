@@ -17,10 +17,10 @@ public sealed partial class CtsModeTransformTests
     public void Transform_WhenInputShorterThanOneBlock_ShouldThrowExactly()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
-        var iv = new byte[ExpectedBlockSize];
+        byte[] iv = new byte[ExpectedBlockSize];
 
-        var input = new byte[ExpectedBlockSize - 1]; // one byte short of a full block
-        var output = new byte[input.Length];
+        byte[] input = new byte[ExpectedBlockSize - 1]; // one byte short of a full block
+        byte[] output = new byte[input.Length];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
             CreateTransform(cipher, iv).Transform(input, output, encrypt: true),
@@ -35,7 +35,7 @@ public sealed partial class CtsModeTransformTests
     public void Transform_WhenInputIsEmpty_ShouldThrowExactly()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
-        var iv = new byte[ExpectedBlockSize];
+        byte[] iv = new byte[ExpectedBlockSize];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
             CreateTransform(cipher, iv).Transform([], [], encrypt: true),
@@ -50,12 +50,12 @@ public sealed partial class CtsModeTransformTests
     public void Transform_WithPartialFinalBlock_ShouldRoundTripCorrectly()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
-        var iv = Enumerable.Repeat((byte)0x11, ExpectedBlockSize).ToArray();
-        var length = ExpectedBlockSize + ExpectedBlockSize / 2; // 1.5 blocks
+        byte[] iv = Enumerable.Repeat((byte)0x11, ExpectedBlockSize).ToArray();
+        int length = ExpectedBlockSize + ExpectedBlockSize / 2; // 1.5 blocks
 
-        var plaintext = Enumerable.Range(0, length).Select(i => (byte)i).ToArray();
-        var ciphertext = new byte[length];
-        var recovered = new byte[length];
+        byte[] plaintext = Enumerable.Range(0, length).Select(i => (byte)i).ToArray();
+        byte[] ciphertext = new byte[length];
+        byte[] recovered = new byte[length];
 
         CreateTransform(cipher, (byte[])iv.Clone()).Transform(plaintext, ciphertext, encrypt: true);
         CreateTransform(cipher, (byte[])iv.Clone()).Transform(ciphertext, recovered, encrypt: false);
@@ -71,13 +71,13 @@ public sealed partial class CtsModeTransformTests
     public void Transform_WithPartialFinalBlock_OutputLengthShouldEqualInputLength()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
-        var iv = new byte[ExpectedBlockSize];
-        var length = ExpectedBlockSize + 7;
+        byte[] iv = new byte[ExpectedBlockSize];
+        int length = ExpectedBlockSize + 7;
 
-        var input = new byte[length];
-        var output = new byte[length];
+        byte[] input = new byte[length];
+        byte[] output = new byte[length];
 
-        var written = CreateTransform(cipher, iv).Transform(input, output, encrypt: true);
+        int written = CreateTransform(cipher, iv).Transform(input, output, encrypt: true);
 
         Assert.AreEqual(length, written,
             "CTS must write exactly input.Length bytes — no padding.");
@@ -91,13 +91,13 @@ public sealed partial class CtsModeTransformTests
     public void Transform_WithBlockAlignedInput_ShouldMatchCbcOutput()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0x55);
-        var iv = Enumerable.Repeat((byte)0x33, ExpectedBlockSize).ToArray();
-        var input = Enumerable.Range(0, ExpectedBlockSize * 2).Select(i => (byte)i).ToArray();
+        byte[] iv = Enumerable.Repeat((byte)0x33, ExpectedBlockSize).ToArray();
+        byte[] input = Enumerable.Range(0, ExpectedBlockSize * 2).Select(i => (byte)i).ToArray();
 
-        var ctsOutput = new byte[input.Length];
+        byte[] ctsOutput = new byte[input.Length];
         CreateTransform(cipher, (byte[])iv.Clone()).Transform(input, ctsOutput, encrypt: true);
 
-        var cbcOutput = new byte[input.Length];
+        byte[] cbcOutput = new byte[input.Length];
         new CbcModeTransform(cipher, (byte[])iv.Clone()).Transform(input, cbcOutput, encrypt: true);
 
         CollectionAssert.AreEqual(cbcOutput, ctsOutput,
@@ -112,16 +112,16 @@ public sealed partial class CtsModeTransformTests
     public void Transform_WithNonAlignedInput_ShouldProduceDifferentOutputThanCbc()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
-        var iv = new byte[ExpectedBlockSize];
-        var length = ExpectedBlockSize + 5;
+        byte[] iv = new byte[ExpectedBlockSize];
+        int length = ExpectedBlockSize + 5;
 
-        var input = Enumerable.Range(0, length).Select(i => (byte)i).ToArray();
-        var ctsOutput = new byte[length];
+        byte[] input = Enumerable.Range(0, length).Select(i => (byte)i).ToArray();
+        byte[] ctsOutput = new byte[length];
         CreateTransform(cipher, (byte[])iv.Clone()).Transform(input, ctsOutput, encrypt: true);
 
         // The CTS output must differ from simply taking the CBC output of the same bytes.
-        var cbcInput = input.Concat(new byte[ExpectedBlockSize - 5]).ToArray(); // padded
-        var cbcOutput = new byte[cbcInput.Length];
+        byte[] cbcInput = input.Concat(new byte[ExpectedBlockSize - 5]).ToArray(); // padded
+        byte[] cbcOutput = new byte[cbcInput.Length];
         new CbcModeTransform(cipher, (byte[])iv.Clone()).Transform(cbcInput, cbcOutput, encrypt: true);
 
         Assert.IsFalse(ctsOutput.SequenceEqual(cbcOutput[..length]),
@@ -136,12 +136,12 @@ public sealed partial class CtsModeTransformTests
     public void Transform_WithMultipleFullBlocksPlusPartial_ShouldRoundTripCorrectly()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xBB);
-        var iv = Enumerable.Repeat((byte)0x44, ExpectedBlockSize).ToArray();
-        var length = ExpectedBlockSize * 4 + 9; // 4 full blocks + 9 bytes
+        byte[] iv = Enumerable.Repeat((byte)0x44, ExpectedBlockSize).ToArray();
+        int length = ExpectedBlockSize * 4 + 9; // 4 full blocks + 9 bytes
 
-        var plaintext = Enumerable.Range(0, length).Select(i => (byte)(i * 3)).ToArray();
-        var ciphertext = new byte[length];
-        var recovered = new byte[length];
+        byte[] plaintext = Enumerable.Range(0, length).Select(i => (byte)(i * 3)).ToArray();
+        byte[] ciphertext = new byte[length];
+        byte[] recovered = new byte[length];
 
         CreateTransform(cipher, (byte[])iv.Clone()).Transform(plaintext, ciphertext, encrypt: true);
         CreateTransform(cipher, (byte[])iv.Clone()).Transform(ciphertext, recovered, encrypt: false);
@@ -157,8 +157,8 @@ public sealed partial class CtsModeTransformTests
     public void Transform_WhenEncrypting_ShouldNotMutateIv()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0x55);
-        var iv = Enumerable.Repeat((byte)0x7E, ExpectedBlockSize).ToArray();
-        var ivCopy = (byte[])iv.Clone();
+        byte[] iv = Enumerable.Repeat((byte)0x7E, ExpectedBlockSize).ToArray();
+        byte[] ivCopy = (byte[])iv.Clone();
 
         CreateTransform(cipher, iv)
             .Transform(new byte[ExpectedBlockSize + 3], new byte[ExpectedBlockSize + 3], encrypt: true);

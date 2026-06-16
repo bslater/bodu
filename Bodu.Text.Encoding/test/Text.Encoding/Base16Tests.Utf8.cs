@@ -18,14 +18,14 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void DecodeFromUtf8_WhenAllowPrefix_ShouldSkipPrefix()
     {
-        var utf8 = System.Text.Encoding.ASCII.GetBytes("0xDEADBEEF");
-        var destination = new byte[4];
+        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("0xDEADBEEF");
+        byte[] destination = new byte[4];
 
         OperationStatus status = Base16.DecodeFromUtf8(
             utf8,
             destination,
-            out var bytesConsumed,
-            out var bytesWritten,
+            out int bytesConsumed,
+            out int bytesWritten,
             BaseFormatStyles.AllowPrefix);
 
         Assert.AreEqual(OperationStatus.Done, status);
@@ -41,14 +41,14 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void DecodeFromUtf8_WhenAllowPrefixButPrefixMissing_ShouldDecodeWithoutSkip()
     {
-        var utf8 = System.Text.Encoding.ASCII.GetBytes("DEADBEEF");
-        var destination = new byte[4];
+        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("DEADBEEF");
+        byte[] destination = new byte[4];
 
         OperationStatus status = Base16.DecodeFromUtf8(
             utf8,
             destination,
-            out var bytesConsumed,
-            out var bytesWritten,
+            out int bytesConsumed,
+            out int bytesWritten,
             BaseFormatStyles.AllowPrefix);
 
         Assert.AreEqual(OperationStatus.Done, status);
@@ -63,10 +63,10 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void DecodeFromUtf8_WhenDestinationTooSmall_ShouldReturnDestinationTooSmall()
     {
-        var utf8 = System.Text.Encoding.ASCII.GetBytes(CanonicalHexLower);
-        var destination = new byte[1];
+        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes(CanonicalHexLower);
+        byte[] destination = new byte[1];
 
-        OperationStatus status = Base16.DecodeFromUtf8(utf8, destination, out var _, out var _);
+        OperationStatus status = Base16.DecodeFromUtf8(utf8, destination, out int _, out int _);
 
         Assert.AreEqual(OperationStatus.DestinationTooSmall, status);
     }
@@ -79,14 +79,14 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void DecodeFromUtf8_WhenLenientStylesAndDestinationTooSmall_ShouldMapKeptPositionBackToSourceIndex()
     {
-        var utf8 = System.Text.Encoding.ASCII.GetBytes("DE AD BE EF");
-        var destination = new byte[2];
+        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("DE AD BE EF");
+        byte[] destination = new byte[2];
 
         OperationStatus status = Base16.DecodeFromUtf8(
             utf8,
             destination,
-            out var bytesConsumed,
-            out var bytesWritten,
+            out int bytesConsumed,
+            out int bytesWritten,
             BaseFormatStyles.IgnoreWhitespace);
 
         Assert.AreEqual(OperationStatus.DestinationTooSmall, status);
@@ -106,14 +106,14 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void DecodeFromUtf8_WhenLenientStylesAndDone_ShouldConsumeEntireSource()
     {
-        var utf8 = System.Text.Encoding.ASCII.GetBytes("0xDE AD");
-        var destination = new byte[2];
+        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("0xDE AD");
+        byte[] destination = new byte[2];
 
         OperationStatus status = Base16.DecodeFromUtf8(
             utf8,
             destination,
-            out var bytesConsumed,
-            out var bytesWritten,
+            out int bytesConsumed,
+            out int bytesWritten,
             BaseFormatStyles.AllowPrefix | BaseFormatStyles.IgnoreWhitespace);
 
         Assert.AreEqual(OperationStatus.Done, status);
@@ -129,14 +129,14 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void DecodeFromUtf8_WhenLenientStylesAndInvalidCharAfterStripping_ShouldReturnInvalidData()
     {
-        var utf8 = System.Text.Encoding.ASCII.GetBytes("DE AD ZZ");
-        var destination = new byte[4];
+        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("DE AD ZZ");
+        byte[] destination = new byte[4];
 
         OperationStatus status = Base16.DecodeFromUtf8(
             utf8,
             destination,
-            out var bytesConsumed,
-            out var bytesWritten,
+            out int bytesConsumed,
+            out int bytesWritten,
             BaseFormatStyles.IgnoreWhitespace);
 
         Assert.AreEqual(OperationStatus.InvalidData, status);
@@ -152,26 +152,26 @@ public sealed partial class Base16Tests
     public void DecodeFromUtf8_WhenLenientStylesAndLargeInput_ShouldTakeHeapPath()
     {
         // 600 hex digits = 1200 UTF-8 bytes — well above the 256-byte stackalloc threshold for the lenient projection.
-        var payload = new byte[300];
+        byte[] payload = new byte[300];
         new Random(0xC0DE).NextBytes(payload);
-        var encoded = Base16.EncodeToUtf8(payload);
+        byte[] encoded = Base16.EncodeToUtf8(payload);
 
         // Inject whitespace every 10 bytes so the IgnoreWhitespace path is exercised on the heap-allocated map.
-        var withWhitespace = new byte[encoded.Length + (encoded.Length / 10)];
-        var dst = 0;
-        for (var i = 0; i < encoded.Length; i++)
+        byte[] withWhitespace = new byte[encoded.Length + (encoded.Length / 10)];
+        int dst = 0;
+        for (int i = 0; i < encoded.Length; i++)
         {
             withWhitespace[dst++] = encoded[i];
             if (((i + 1) % 10) == 0 && i != encoded.Length - 1)
                 withWhitespace[dst++] = (byte)' ';
         }
 
-        var destination = new byte[payload.Length];
+        byte[] destination = new byte[payload.Length];
         OperationStatus status = Base16.DecodeFromUtf8(
             withWhitespace.AsSpan(0, dst),
             destination,
-            out var bytesConsumed,
-            out var bytesWritten,
+            out int bytesConsumed,
+            out int bytesWritten,
             BaseFormatStyles.IgnoreWhitespace);
 
         Assert.AreEqual(OperationStatus.Done, status);
@@ -188,14 +188,14 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void DecodeFromUtf8_WhenLenientStylesAndOddTrailingNonFinal_ShouldReportSourceProgress()
     {
-        var utf8 = System.Text.Encoding.ASCII.GetBytes("DE AD B");
-        var destination = new byte[4];
+        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("DE AD B");
+        byte[] destination = new byte[4];
 
         OperationStatus status = Base16.DecodeFromUtf8(
             utf8,
             destination,
-            out var bytesConsumed,
-            out var bytesWritten,
+            out int bytesConsumed,
+            out int bytesWritten,
             BaseFormatStyles.IgnoreWhitespace,
             isFinalBlock: false);
 
@@ -225,14 +225,14 @@ public sealed partial class Base16Tests
     [DataRow(9, 8, 4)]
     public void DecodeFromUtf8_WhenNonFinalBlock_ShouldReportPairBoundary(int inputLength, int expectedBytesConsumed, int expectedBytesWritten)
     {
-        var utf8 = new byte[inputLength];
-        for (var i = 0; i < inputLength; i++)
+        byte[] utf8 = new byte[inputLength];
+        for (int i = 0; i < inputLength; i++)
         {
             utf8[i] = (byte)'a'; // 'a' is a valid hex digit
         }
 
-        var destination = new byte[8];
-        OperationStatus status = Base16.DecodeFromUtf8(utf8, destination, out var bytesConsumed, out var bytesWritten, isFinalBlock: false);
+        byte[] destination = new byte[8];
+        OperationStatus status = Base16.DecodeFromUtf8(utf8, destination, out int bytesConsumed, out int bytesWritten, isFinalBlock: false);
 
         Assert.AreEqual(expectedBytesConsumed, bytesConsumed);
         Assert.AreEqual(expectedBytesWritten, bytesWritten);
@@ -250,10 +250,10 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void DecodeFromUtf8_WhenOddTrailingCharAndFinal_ShouldReturnInvalidData()
     {
-        var utf8 = System.Text.Encoding.ASCII.GetBytes("deadb");
-        var destination = new byte[4];
+        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("deadb");
+        byte[] destination = new byte[4];
 
-        OperationStatus status = Base16.DecodeFromUtf8(utf8, destination, out var _, out var _, isFinalBlock: true);
+        OperationStatus status = Base16.DecodeFromUtf8(utf8, destination, out int _, out int _, isFinalBlock: true);
 
         Assert.AreEqual(OperationStatus.InvalidData, status);
     }
@@ -265,10 +265,10 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void DecodeFromUtf8_WhenOddTrailingCharAndNotFinal_ShouldReturnNeedMoreData()
     {
-        var utf8 = System.Text.Encoding.ASCII.GetBytes("deadb"); // odd length
-        var destination = new byte[4];
+        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("deadb"); // odd length
+        byte[] destination = new byte[4];
 
-        OperationStatus status = Base16.DecodeFromUtf8(utf8, destination, out var bytesConsumed, out var bytesWritten, isFinalBlock: false);
+        OperationStatus status = Base16.DecodeFromUtf8(utf8, destination, out int bytesConsumed, out int bytesWritten, isFinalBlock: false);
 
         Assert.AreEqual(OperationStatus.NeedMoreData, status);
         Assert.AreEqual(4, bytesConsumed);
@@ -282,10 +282,10 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void DecodeFromUtf8_WhenStrictValidInput_ShouldReturnDoneWithCounts()
     {
-        var utf8 = System.Text.Encoding.ASCII.GetBytes(CanonicalHexUpper);
-        var destination = new byte[4];
+        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes(CanonicalHexUpper);
+        byte[] destination = new byte[4];
 
-        OperationStatus status = Base16.DecodeFromUtf8(utf8, destination, out var bytesConsumed, out var bytesWritten);
+        OperationStatus status = Base16.DecodeFromUtf8(utf8, destination, out int bytesConsumed, out int bytesWritten);
 
         Assert.AreEqual(OperationStatus.Done, status);
         Assert.AreEqual(8, bytesConsumed);
@@ -299,7 +299,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void EncodeToUtf8_ShouldReturnAsciiBytesOfLowerCaseHex()
     {
-        var actual = Base16.EncodeToUtf8(CanonicalBytes.AsSpan());
+        byte[] actual = Base16.EncodeToUtf8(CanonicalBytes.AsSpan());
 
         Assert.AreEqual(CanonicalHexLower, System.Text.Encoding.ASCII.GetString(actual));
     }
@@ -310,7 +310,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void EncodeToUtf8_WhenEmptyInput_ShouldReturnEmptyArray()
     {
-        var actual = Base16.EncodeToUtf8([]);
+        byte[] actual = Base16.EncodeToUtf8([]);
 
         Assert.AreEqual(0, actual.Length);
     }
@@ -321,10 +321,10 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void RoundTrip_EncodeAndDecodeUtf8_ShouldRecoverOriginal()
     {
-        var encoded = Base16.EncodeToUtf8(CanonicalBytes.AsSpan());
-        var destination = new byte[4];
+        byte[] encoded = Base16.EncodeToUtf8(CanonicalBytes.AsSpan());
+        byte[] destination = new byte[4];
 
-        OperationStatus status = Base16.DecodeFromUtf8(encoded, destination, out var _, out var _);
+        OperationStatus status = Base16.DecodeFromUtf8(encoded, destination, out int _, out int _);
 
         Assert.AreEqual(OperationStatus.Done, status);
         CollectionAssert.AreEqual(CanonicalBytes, destination);
@@ -337,10 +337,10 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void TryEncodeToUtf8_WhenDestinationExactlyRequiredSize_ShouldFillAndReportCount()
     {
-        var bytes = new byte[4];
-        var destination = new byte[8];
+        byte[] bytes = new byte[4];
+        byte[] destination = new byte[8];
 
-        var ok = Base16.TryEncodeToUtf8(bytes.AsSpan(), destination, out var bytesWritten);
+        bool ok = Base16.TryEncodeToUtf8(bytes.AsSpan(), destination, out int bytesWritten);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(8, bytesWritten);
@@ -353,9 +353,9 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void TryEncodeToUtf8_WhenDestinationLargeEnough_ShouldReturnTrueAndExpectedBytes()
     {
-        var destination = new byte[8];
+        byte[] destination = new byte[8];
 
-        var ok = Base16.TryEncodeToUtf8(CanonicalBytes.AsSpan(), destination, out var bytesWritten);
+        bool ok = Base16.TryEncodeToUtf8(CanonicalBytes.AsSpan(), destination, out int bytesWritten);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(8, bytesWritten);
@@ -369,10 +369,10 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void TryEncodeToUtf8_WhenDestinationOneByteShort_ShouldReturnFalse()
     {
-        var bytes = new byte[4];
-        var destination = new byte[7];
+        byte[] bytes = new byte[4];
+        byte[] destination = new byte[7];
 
-        var ok = Base16.TryEncodeToUtf8(bytes.AsSpan(), destination, out var bytesWritten);
+        bool ok = Base16.TryEncodeToUtf8(bytes.AsSpan(), destination, out int bytesWritten);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0, bytesWritten);
@@ -385,9 +385,9 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void TryEncodeToUtf8_WhenDestinationTooSmall_ShouldReturnFalse()
     {
-        var destination = new byte[1];
+        byte[] destination = new byte[1];
 
-        var ok = Base16.TryEncodeToUtf8(CanonicalBytes.AsSpan(), destination, out var bytesWritten);
+        bool ok = Base16.TryEncodeToUtf8(CanonicalBytes.AsSpan(), destination, out int bytesWritten);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0, bytesWritten);
@@ -400,7 +400,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void TryEncodeToUtf8_WhenUnsupportedFlagsRequested_ShouldThrowExactly()
     {
-        var destination = new byte[8];
+        byte[] destination = new byte[8];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -415,9 +415,9 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void TryEncodeToUtf8_WhenUpperCaseFlag_ShouldWriteUpperCaseDigits()
     {
-        var destination = new byte[8];
+        byte[] destination = new byte[8];
 
-        var ok = Base16.TryEncodeToUtf8(CanonicalBytes.AsSpan(), destination, out _, BaseFormattingOptions.UpperCase);
+        bool ok = Base16.TryEncodeToUtf8(CanonicalBytes.AsSpan(), destination, out _, BaseFormattingOptions.UpperCase);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(CanonicalHexUpper, System.Text.Encoding.ASCII.GetString(destination));

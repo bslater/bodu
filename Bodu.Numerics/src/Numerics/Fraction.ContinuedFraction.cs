@@ -59,14 +59,14 @@ public readonly partial struct Fraction<T>
         if (coefficients.Length == 0)
             throw new ArgumentException(NumericsResourceStrings.Arg_Invalid_ContinuedFractionEmpty, nameof(coefficients));
 
-        for (var i = 1; i < coefficients.Length; i++)
+        for (int i = 1; i < coefficients.Length; i++)
         {
             if (T.IsZero(coefficients[i]) || T.IsNegative(coefficients[i]))
                 throw new ArgumentOutOfRangeException(nameof(coefficients), NumericsResourceStrings.Arg_OutOfRange_ContinuedFractionTerm);
         }
 
         var result = new Fraction<T>(coefficients[^1]);
-        for (var i = coefficients.Length - 2; i >= 0; i--)
+        for (int i = coefficients.Length - 2; i >= 0; i--)
         {
             result = new Fraction<T>(coefficients[i]) + result.Reciprocal();
         }

@@ -23,7 +23,7 @@ public static class DelimitedKnownAnswerVectors
     /// <returns>A sequence suitable for <c>[DynamicData]</c>.</returns>
     public static IEnumerable<object[]> AllVectors()
     {
-        foreach (var row in Rfc4180Vectors())
+        foreach (object[] row in Rfc4180Vectors())
             yield return row;
     }
 

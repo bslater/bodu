@@ -69,13 +69,13 @@ public partial class PooledBufferBuilderTests
     {
         WeakReference[] weakRefs = CreateAndDisposeBuilder();
 
-        for (var i = 0; i < 3; i++)
+        for (int i = 0; i < 3; i++)
         {
             GC.Collect();
             GC.WaitForPendingFinalizers();
         }
 
-        for (var i = 0; i < weakRefs.Length; i++)
+        for (int i = 0; i < weakRefs.Length; i++)
             Assert.IsFalse(weakRefs[i].IsAlive, $"Reference {i} was retained after Dispose.");
 
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
@@ -84,9 +84,9 @@ public partial class PooledBufferBuilderTests
             var builder = new PooledBufferBuilder<object>(initialCapacity: 8);
             var refs = new WeakReference[5];
 
-            for (var i = 0; i < refs.Length; i++)
+            for (int i = 0; i < refs.Length; i++)
             {
-                var item = new object();
+                object item = new object();
                 refs[i] = new WeakReference(item);
                 builder.Append(item);
             }
@@ -110,13 +110,13 @@ public partial class PooledBufferBuilderTests
         {
             weakRefs = FillAndReset(builder);
 
-            for (var i = 0; i < 3; i++)
+            for (int i = 0; i < 3; i++)
             {
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
             }
 
-            for (var i = 0; i < weakRefs.Length; i++)
+            for (int i = 0; i < weakRefs.Length; i++)
                 Assert.IsFalse(weakRefs[i].IsAlive, $"Reference {i} was retained after Reset.");
         }
         finally
@@ -129,9 +129,9 @@ public partial class PooledBufferBuilderTests
         {
             var refs = new WeakReference[5];
 
-            for (var i = 0; i < refs.Length; i++)
+            for (int i = 0; i < refs.Length; i++)
             {
-                var item = new object();
+                object item = new object();
                 refs[i] = new WeakReference(item);
                 b.Append(item);
             }

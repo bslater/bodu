@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FileExchangeRateCacheBase.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -79,7 +79,7 @@ public abstract class FileExchangeRateCacheBase<TOptions>
     /// <inheritdoc />
     private protected sealed override CachePairState ReadState(ExchangeRatePair pair)
     {
-        var path = ResolveFilePath(pair);
+        string path = ResolveFilePath(pair);
 
         try
         {
@@ -93,7 +93,7 @@ public abstract class FileExchangeRateCacheBase<TOptions>
             if (_parsed.TryGetValue(pair, out (DateTime StampUtc, CachePairState State) memo) && memo.StampUtc == stamp)
                 return memo.State;
 
-            var text = File.ReadAllText(path);
+            string text = File.ReadAllText(path);
             CachePairState state = Deserialize(text);
 
             // Memoize the parse against the file's last-write instant. A later write (here or in another process) moves
@@ -114,7 +114,7 @@ public abstract class FileExchangeRateCacheBase<TOptions>
     /// <inheritdoc />
     private protected sealed override bool WriteState(ExchangeRatePair pair, CachePairState state)
     {
-        var path = ResolveFilePath(pair);
+        string path = ResolveFilePath(pair);
 
         try
         {
@@ -131,7 +131,7 @@ public abstract class FileExchangeRateCacheBase<TOptions>
 
             Directory.CreateDirectory(Path.GetDirectoryName(path) !);
 
-            var text = Serialize(state);
+            string text = Serialize(state);
             WriteAtomic(path, text);
 
             // Invalidate the parse memo so the next read re-parses from the freshly written file and re-stamps it.
@@ -171,8 +171,8 @@ public abstract class FileExchangeRateCacheBase<TOptions>
         if (provider.AsSpan().IndexOfAny(s_invalidFileNameChars) < 0)
             return provider;
 
-        var chars = provider.ToCharArray();
-        for (var i = 0; i < chars.Length; i++)
+        char[] chars = provider.ToCharArray();
+        for (int i = 0; i < chars.Length; i++)
         {
             if (Array.IndexOf(s_invalidFileNameChars, chars[i]) >= 0)
                 chars[i] = '_';
@@ -217,7 +217,7 @@ public abstract class FileExchangeRateCacheBase<TOptions>
     /// </remarks>
     private static void WriteAtomic(string path, string text)
     {
-        var tempPath = $"{path}.{Guid.NewGuid():N}.tmp";
+        string tempPath = $"{path}.{Guid.NewGuid():N}.tmp";
 
         try
         {

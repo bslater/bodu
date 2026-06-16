@@ -112,15 +112,15 @@ public static partial class DateOnlyExtensions
 
         if (count == 0) return date;
 
-        var fy = provider.GetFiscalYear(date);
+        int fy = provider.GetFiscalYear(date);
         DateOnly fyStart = FirstDateOfFiscalYear(fy, provider);
-        var dayIndex = date.DayNumber - fyStart.DayNumber;
+        int dayIndex = date.DayNumber - fyStart.DayNumber;
 
-        var target = fy + count;
+        int target = fy + count;
         DateOnly targetStart = FirstDateOfFiscalYear(target, provider);
         DateOnly targetEnd = LastDateOfFiscalYear(target, provider);
 
-        var candidate = targetStart.DayNumber + dayIndex;
+        int candidate = targetStart.DayNumber + dayIndex;
         if (candidate > targetEnd.DayNumber) candidate = targetEnd.DayNumber;
         return DateOnly.FromDayNumber(candidate);
     }

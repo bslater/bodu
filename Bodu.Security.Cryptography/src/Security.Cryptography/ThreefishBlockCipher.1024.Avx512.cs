@@ -73,14 +73,14 @@ public sealed partial class Threefish1024Cipher
     private void EncryptAvx512(ReadOnlySpan<byte> input, Span<byte> output)
     {
         // Load both halves of the plaintext block and deinterleave into the (lo, hi) lane layout.
-        ref var wordRef = ref Unsafe.As<byte, ulong>(ref MemoryMarshal.GetReference(input));
+        ref ulong wordRef = ref Unsafe.As<byte, ulong>(ref MemoryMarshal.GetReference(input));
         var vec0 = Vector512.LoadUnsafe(ref wordRef);
         var vec1 = Vector512.LoadUnsafe(ref wordRef, 8);
         Vector512<ulong> loVec = Avx512F.PermuteVar8x64x2(vec0, s_evenWordIndices, vec1);
         Vector512<ulong> hiVec = Avx512F.PermuteVar8x64x2(vec0, s_oddWordIndices, vec1);
 
-        ref var keyRef = ref MemoryMarshal.GetArrayDataReference(_keySchedule);
-        ref var tweakRef = ref MemoryMarshal.GetArrayDataReference(_tweakSchedule);
+        ref ulong keyRef = ref MemoryMarshal.GetArrayDataReference(_keySchedule);
+        ref ulong tweakRef = ref MemoryMarshal.GetArrayDataReference(_tweakSchedule);
 
         // Initial subkey injection. Tweak applies at positions 13 (hiVec lane 6) and 14 (loVec lane 7).
         loVec += Vector512.Create(
@@ -102,7 +102,7 @@ public sealed partial class Threefish1024Cipher
             Unsafe.Add(ref keyRef, 13) + Unsafe.Add(ref tweakRef, 0),
             Unsafe.Add(ref keyRef, 15));
 
-        for (var d = 1; d < 80 / 4; d += 2)
+        for (int d = 1; d < 80 / 4; d += 2)
         {
             int dm17 = d % 17, dm3 = d % 3;
 
@@ -171,16 +171,16 @@ public sealed partial class Threefish1024Cipher
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     private void DecryptAvx512(ReadOnlySpan<byte> input, Span<byte> output)
     {
-        ref var wordRef = ref Unsafe.As<byte, ulong>(ref MemoryMarshal.GetReference(input));
+        ref ulong wordRef = ref Unsafe.As<byte, ulong>(ref MemoryMarshal.GetReference(input));
         var vec0 = Vector512.LoadUnsafe(ref wordRef);
         var vec1 = Vector512.LoadUnsafe(ref wordRef, 8);
         Vector512<ulong> loVec = Avx512F.PermuteVar8x64x2(vec0, s_evenWordIndices, vec1);
         Vector512<ulong> hiVec = Avx512F.PermuteVar8x64x2(vec0, s_oddWordIndices, vec1);
 
-        ref var keyRef = ref MemoryMarshal.GetArrayDataReference(_keySchedule);
-        ref var tweakRef = ref MemoryMarshal.GetArrayDataReference(_tweakSchedule);
+        ref ulong keyRef = ref MemoryMarshal.GetArrayDataReference(_keySchedule);
+        ref ulong tweakRef = ref MemoryMarshal.GetArrayDataReference(_tweakSchedule);
 
-        for (var d = (80 / 4) - 1; d >= 1; d -= 2)
+        for (int d = (80 / 4) - 1; d >= 1; d -= 2)
         {
             int dm17 = d % 17, dm3 = d % 3;
 
@@ -312,7 +312,7 @@ public sealed partial class Threefish1024Cipher
         Vector512<ulong> outFirst = Avx512F.PermuteVar8x64x2(unLow, s_outFirstHalfIndices, unHigh);
         Vector512<ulong> outSecond = Avx512F.PermuteVar8x64x2(unLow, s_outSecondHalfIndices, unHigh);
 
-        ref var outRef = ref Unsafe.As<byte, ulong>(ref destination);
+        ref ulong outRef = ref Unsafe.As<byte, ulong>(ref destination);
         outFirst.StoreUnsafe(ref outRef);
         outSecond.StoreUnsafe(ref outRef, 8);
     }

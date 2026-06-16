@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyOfTCurrencyJsonConverterTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -26,7 +26,7 @@ public class MoneyOfTCurrencyJsonConverterTests
         var options = new JsonSerializerOptions();
         options.Converters.Add(new MoneyOfTCurrencyJsonConverter<USD>());
 
-        var json = JsonSerializer.Serialize(new Money<USD>(19.99m), options);
+        string json = JsonSerializer.Serialize(new Money<USD>(19.99m), options);
 
         Assert.AreEqual(new Money<USD>(19.99m), JsonSerializer.Deserialize<Money<USD>>(json, options));
     }

@@ -17,9 +17,9 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
     [TestMethod]
     public void RoundTrip_WhenDecryptingCiphertext_ShouldRecoverPlaintext()
     {
-        var key = CreateKey();
-        var nonce = CreateNonce();
-        var plaintext = CreatePayload(4097);
+        byte[] key = CreateKey();
+        byte[] nonce = CreateNonce();
+        byte[] plaintext = CreatePayload(4097);
 
         byte[] ciphertext;
         using (TAlgorithm encryptor = CreateAlgorithm())
@@ -48,7 +48,7 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
         Assert.AreEqual(KeyLengthBytes, cipher.Key.Length);
         Assert.AreEqual(NonceLengthBytes, cipher.Nonce.Length);
 
-        var plaintext = CreatePayload(200);
+        byte[] plaintext = CreatePayload(200);
 
         byte[] ciphertext;
         using (ICryptoTransform e = cipher.CreateEncryptor())
@@ -68,8 +68,8 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
     [TestMethod]
     public void RoundTrip_WhenEncryptingEmptyInput_ShouldRecoverEmptyPlaintext()
     {
-        var key = CreateKey();
-        var nonce = CreateNonce();
+        byte[] key = CreateKey();
+        byte[] nonce = CreateNonce();
 
         byte[] ciphertext;
         using (TAlgorithm encryptor = CreateAlgorithm())

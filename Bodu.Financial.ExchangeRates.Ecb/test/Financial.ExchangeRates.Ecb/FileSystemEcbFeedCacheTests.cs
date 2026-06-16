@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FileSystemEcbFeedCacheTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -18,14 +18,14 @@ public class FileSystemEcbFeedCacheTests
     [TestMethod]
     public void TryGet_WhenStoredAndFresh_ShouldReturnBytes()
     {
-        var directory = CreateTempDirectory();
+        string directory = CreateTempDirectory();
         try
         {
             FileSystemEcbFeedCache cache = new(directory);
-            var payload = new byte[] { 1, 2, 3, 4 };
+            byte[] payload = new byte[] { 1, 2, 3, 4 };
             cache.Store(EcbExchangeRateFeed.Full, payload);
 
-            var hit = cache.TryGet(EcbExchangeRateFeed.Full, TimeSpan.FromHours(1), out var bytes);
+            bool hit = cache.TryGet(EcbExchangeRateFeed.Full, TimeSpan.FromHours(1), out byte[]? bytes);
 
             Assert.IsTrue(hit);
             CollectionAssert.AreEqual(payload, bytes);
@@ -42,16 +42,16 @@ public class FileSystemEcbFeedCacheTests
     [TestMethod]
     public void TryGet_WhenStale_ShouldReturnMiss()
     {
-        var directory = CreateTempDirectory();
+        string directory = CreateTempDirectory();
         try
         {
             FileSystemEcbFeedCache cache = new(directory);
             cache.Store(EcbExchangeRateFeed.Full, new byte[] { 1 });
 
-            var path = Path.Combine(directory, EcbExchangeRateFeed.Full.FileName);
+            string path = Path.Combine(directory, EcbExchangeRateFeed.Full.FileName);
             File.SetLastWriteTimeUtc(path, DateTime.UtcNow - TimeSpan.FromHours(2));
 
-            var hit = cache.TryGet(EcbExchangeRateFeed.Full, TimeSpan.FromMinutes(30), out _);
+            bool hit = cache.TryGet(EcbExchangeRateFeed.Full, TimeSpan.FromMinutes(30), out _);
 
             Assert.IsFalse(hit);
         }
@@ -67,12 +67,12 @@ public class FileSystemEcbFeedCacheTests
     [TestMethod]
     public void TryGet_WhenAbsent_ShouldReturnMiss()
     {
-        var directory = CreateTempDirectory();
+        string directory = CreateTempDirectory();
         try
         {
             FileSystemEcbFeedCache cache = new(directory);
 
-            var hit = cache.TryGet(EcbExchangeRateFeed.Full, TimeSpan.FromHours(1), out _);
+            bool hit = cache.TryGet(EcbExchangeRateFeed.Full, TimeSpan.FromHours(1), out _);
 
             Assert.IsFalse(hit);
         }

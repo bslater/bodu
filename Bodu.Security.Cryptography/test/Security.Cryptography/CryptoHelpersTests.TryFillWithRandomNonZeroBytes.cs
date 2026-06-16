@@ -15,9 +15,9 @@ public partial class CryptoHelpersTests
     public void TryFillWithRandomNonZeroBytes_WhenBufferCanBeFilled_ShouldReturnTrue()
     {
         Span<byte> span = stackalloc byte[32];
-        var result = CryptographyHelper.TryFillWithRandomNonZeroBytes(span);
+        bool result = CryptographyHelper.TryFillWithRandomNonZeroBytes(span);
         Assert.IsTrue(result);
-        foreach (var b in span)
+        foreach (byte b in span)
         {
             Assert.AreNotEqual(0, b);
         }
@@ -31,14 +31,14 @@ public partial class CryptoHelpersTests
     {
         // Repeated to knock down flakiness; also guards against the NETSTANDARD2_0
         // branch regressing to never returning true on success.
-        for (var attempt = 0; attempt < 100; attempt++)
+        for (int attempt = 0; attempt < 100; attempt++)
         {
-            var buffer = new byte[32];
-            var result = CryptographyHelper.TryFillWithRandomNonZeroBytes(buffer.AsSpan());
+            byte[] buffer = new byte[32];
+            bool result = CryptographyHelper.TryFillWithRandomNonZeroBytes(buffer.AsSpan());
 
             Assert.IsTrue(result, "TryFillWithRandomNonZeroBytes should return true on success.");
 
-            for (var i = 0; i < buffer.Length; i++)
+            for (int i = 0; i < buffer.Length; i++)
             {
                 Assert.AreNotEqual((byte)0, buffer[i], "No byte in the filled buffer should be zero.");
             }
@@ -55,19 +55,19 @@ public partial class CryptoHelpersTests
         // internal `temp` buffer after copying. If the clear were to corrupt the
         // result on the success path, the first and second draws would produce
         // identical buffers (or one would contain zeros). We assert neither.
-        var first = new byte[64];
-        var second = new byte[64];
+        byte[] first = new byte[64];
+        byte[] second = new byte[64];
 
         Assert.IsTrue(CryptographyHelper.TryFillWithRandomNonZeroBytes(first.AsSpan()));
         Assert.IsTrue(CryptographyHelper.TryFillWithRandomNonZeroBytes(second.AsSpan()));
 
-        for (var i = 0; i < first.Length; i++)
+        for (int i = 0; i < first.Length; i++)
             Assert.AreNotEqual((byte)0, first[i]);
-        for (var i = 0; i < second.Length; i++)
+        for (int i = 0; i < second.Length; i++)
             Assert.AreNotEqual((byte)0, second[i]);
 
-        var identical = true;
-        for (var i = 0; i < first.Length; i++)
+        bool identical = true;
+        for (int i = 0; i < first.Length; i++)
         {
             if (first[i] != second[i])
             {
@@ -84,11 +84,11 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void TryFillWithRandomNonZeroBytes_BufferBytes_ShouldNotContainZero()
     {
-        var buffer = new byte[64];
-        var result = CryptographyHelper.TryFillWithRandomNonZeroBytes(buffer.AsSpan());
+        byte[] buffer = new byte[64];
+        bool result = CryptographyHelper.TryFillWithRandomNonZeroBytes(buffer.AsSpan());
 
         Assert.IsTrue(result);
-        for (var i = 0; i < buffer.Length; i++)
+        for (int i = 0; i < buffer.Length; i++)
         {
             Assert.AreNotEqual((byte)0, buffer[i]);
         }

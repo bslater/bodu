@@ -15,10 +15,10 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void TryGetBytes_WhenDestinationFits_ShouldReturnTrueAndReportCount()
     {
-        var required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
+        int required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
         Span<byte> destination = new byte[required];
 
-        var ok = System.Text.Encoding.UTF8.TryGetBytes(MultiByteText, destination, out var written);
+        bool ok = System.Text.Encoding.UTF8.TryGetBytes(MultiByteText, destination, out int written);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(required, written);
@@ -31,10 +31,10 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void TryGetBytes_WhenDestinationIsOneByteTooSmall_ShouldReturnFalse()
     {
-        var required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
-        var backing = new byte[required - 1];
+        int required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
+        byte[] backing = new byte[required - 1];
 
-        var ok = System.Text.Encoding.UTF8.TryGetBytes(MultiByteText, backing, out var written);
+        bool ok = System.Text.Encoding.UTF8.TryGetBytes(MultiByteText, backing, out int written);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0, written);
@@ -47,7 +47,7 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void TryGetBytes_WhenEncodingIsNull_ShouldThrowExactly()
     {
-        var backing = new byte[64];
+        byte[] backing = new byte[64];
 
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -64,10 +64,10 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void GetBytesExactly_WhenDestinationIsExactlySized_ShouldWriteAndReturnCount()
     {
-        var required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
+        int required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
         Span<byte> destination = new byte[required];
 
-        var written = System.Text.Encoding.UTF8.GetBytesExactly(MultiByteText, destination);
+        int written = System.Text.Encoding.UTF8.GetBytesExactly(MultiByteText, destination);
 
         Assert.AreEqual(required, written);
         CollectionAssert.AreEqual(System.Text.Encoding.UTF8.GetBytes(MultiByteText), destination.ToArray());
@@ -80,8 +80,8 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void GetBytesExactly_WhenDestinationIsLargerThanRequired_ShouldThrowExactly()
     {
-        var required = System.Text.Encoding.UTF8.GetByteCount(SampleText);
-        var backing = new byte[required + 1];
+        int required = System.Text.Encoding.UTF8.GetByteCount(SampleText);
+        byte[] backing = new byte[required + 1];
 
         ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -98,8 +98,8 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void GetBytesExactly_WhenDestinationIsSmallerThanRequired_ShouldThrowExactly()
     {
-        var required = System.Text.Encoding.UTF8.GetByteCount(SampleText);
-        var backing = new byte[required - 1];
+        int required = System.Text.Encoding.UTF8.GetByteCount(SampleText);
+        byte[] backing = new byte[required - 1];
 
         ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -116,7 +116,7 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void GetBytesExactly_WhenEncodingIsNull_ShouldThrowExactly()
     {
-        var backing = new byte[64];
+        byte[] backing = new byte[64];
 
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

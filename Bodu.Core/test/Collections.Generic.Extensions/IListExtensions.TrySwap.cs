@@ -37,7 +37,7 @@ public sealed partial class IListExtensionsTests_TrySwap
     {
         var list = new List<int>(initial);
 
-        var result = list.TrySwap(indexA, indexB);
+        bool result = list.TrySwap(indexA, indexB);
 
         Assert.IsTrue(result);
         CollectionAssert.AreEqual(expected, list);
@@ -57,7 +57,7 @@ public sealed partial class IListExtensionsTests_TrySwap
     {
         var list = new List<int> { 1, 2, 3, 4 };
 
-        var result = list.TrySwap(indexA, indexB);
+        bool result = list.TrySwap(indexA, indexB);
 
         Assert.IsFalse(result);
         CollectionAssert.AreEqual(new[] { 1, 2, 3, 4 }, list);
@@ -71,7 +71,7 @@ public sealed partial class IListExtensionsTests_TrySwap
     {
         var list = new List<string> { "a", "b", "c" };
 
-        var result = list.TrySwap(1, 1);
+        bool result = list.TrySwap(1, 1);
 
         Assert.IsTrue(result);
         CollectionAssert.AreEqual(new[] { "a", "b", "c" }, list);
@@ -99,7 +99,7 @@ public sealed partial class IListExtensionsTests_TrySwap
     {
         IList<string> list = new Collection<string> { "a", "b", "c", "d" };
 
-        var result = list.TrySwap(0, 3);
+        bool result = list.TrySwap(0, 3);
 
         Assert.IsTrue(result);
         CollectionAssert.AreEqual(new[] { "d", "b", "c", "a" }, (Collection<string>)list);

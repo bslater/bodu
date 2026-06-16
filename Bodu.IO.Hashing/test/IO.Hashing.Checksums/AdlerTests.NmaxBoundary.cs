@@ -23,15 +23,15 @@ public abstract partial class AdlerTests<TTest, TAlgorithm, TModulo>
     [DynamicData(nameof(NonCryptographicHashAlgorithmVariants), DynamicDataDisplayName = nameof(NonCryptographicHashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(NonCryptographicHashAlgorithmVariantDisplayName))]
     public void Append_WhenSingleCallEqualsNmaxBoundary_ShouldMatchPerByteRecurrence(SingleTestVariant variant)
     {
-        var data = new byte[Nmax];
-        for (var i = 0; i < data.Length; i++)
+        byte[] data = new byte[Nmax];
+        for (int i = 0; i < data.Length; i++)
             data[i] = (byte)(i & 0xFF);
 
         NonCryptographicHashAlgorithm whole = CreateAlgorithm(variant);
         whole.Append(data);
 
         NonCryptographicHashAlgorithm perByte = CreateAlgorithm(variant);
-        for (var i = 0; i < data.Length; i++)
+        for (int i = 0; i < data.Length; i++)
             perByte.Append(data.AsSpan(i, 1));
 
         CollectionAssert.AreEqual(whole.GetCurrentHash(), perByte.GetCurrentHash());
@@ -59,15 +59,15 @@ public abstract partial class AdlerTests<TTest, TAlgorithm, TModulo>
     {
         // Two NMAX windows plus one trailing byte: forces the scalar NMAX boundary to be crossed twice (at
         // index = NMAX and index = 2 * NMAX) when the test runs on a non-SIMD platform.
-        var data = new byte[(2 * Nmax) + 1];
-        for (var i = 0; i < data.Length; i++)
+        byte[] data = new byte[(2 * Nmax) + 1];
+        for (int i = 0; i < data.Length; i++)
             data[i] = (byte)(i & 0xFF);
 
         NonCryptographicHashAlgorithm whole = CreateAlgorithm(variant);
         whole.Append(data);
 
         NonCryptographicHashAlgorithm perByte = CreateAlgorithm(variant);
-        for (var i = 0; i < data.Length; i++)
+        for (int i = 0; i < data.Length; i++)
             perByte.Append(data.AsSpan(i, 1));
 
         CollectionAssert.AreEqual(whole.GetCurrentHash(), perByte.GetCurrentHash());

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlAllocationTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -52,12 +52,12 @@ public sealed class TomlAllocationTests
     [TestCategory("Regression")]
     public void Utf8TomlReader_WhenTokenizingContiguousDocument_ShouldNotAllocatePerToken()
     {
-        var bytes = Encoding.UTF8.GetBytes(BuildFlatDocument(SampleLineCount));
+        byte[] bytes = Encoding.UTF8.GetBytes(BuildFlatDocument(SampleLineCount));
 
         _ = TokenizeSpan(bytes);
-        var before = GC.GetAllocatedBytesForCurrentThread();
-        var count = TokenizeSpan(bytes);
-        var allocated = GC.GetAllocatedBytesForCurrentThread() - before;
+        long before = GC.GetAllocatedBytesForCurrentThread();
+        int count = TokenizeSpan(bytes);
+        long allocated = GC.GetAllocatedBytesForCurrentThread() - before;
 
         Assert.IsTrue(count > SampleLineCount, "The reader produced too few tokens to be a meaningful measurement.");
         Assert.IsTrue(allocated < 512, $"Tokenizing a {bytes.Length}-byte contiguous document allocated {allocated} bytes; the lexical reader should not allocate per token.");
@@ -71,13 +71,13 @@ public sealed class TomlAllocationTests
     [TestCategory("Regression")]
     public void Utf8TomlReader_WhenTokenizingMultiSegmentSequence_ShouldCopyInputOnce()
     {
-        var bytes = Encoding.UTF8.GetBytes(BuildFlatDocument(SampleLineCount));
+        byte[] bytes = Encoding.UTF8.GetBytes(BuildFlatDocument(SampleLineCount));
         var sequence = BuildSegmented(bytes, chunkSize: 64);
 
         _ = TokenizeSequence(sequence);
-        var before = GC.GetAllocatedBytesForCurrentThread();
+        long before = GC.GetAllocatedBytesForCurrentThread();
         _ = TokenizeSequence(sequence);
-        var allocated = GC.GetAllocatedBytesForCurrentThread() - before;
+        long allocated = GC.GetAllocatedBytesForCurrentThread() - before;
 
         Assert.IsTrue(allocated >= bytes.Length, $"A multi-segment sequence of {bytes.Length} bytes allocated only {allocated} bytes; a contiguous copy of the input was expected.");
         Assert.IsTrue(allocated < bytes.Length * 4L, $"Tokenizing the multi-segment sequence allocated {allocated} bytes, more than the single contiguous copy expected.");
@@ -91,9 +91,9 @@ public sealed class TomlAllocationTests
     [TestCategory("Regression")]
     public void TomlDocument_WhenParsing_ShouldStayWithinAllocationBaseline()
     {
-        var bytes = Encoding.UTF8.GetBytes(BuildFlatDocument(SampleLineCount));
+        byte[] bytes = Encoding.UTF8.GetBytes(BuildFlatDocument(SampleLineCount));
 
-        var allocated = Measure(() =>
+        long allocated = Measure(() =>
         {
             using var document = TomlDocument.Parse(bytes);
             _ = document.RootElement;
@@ -111,9 +111,9 @@ public sealed class TomlAllocationTests
     [TestCategory("Regression")]
     public void TomlDocument_WhenParsingStringValuesWithoutReading_ShouldStayWithinAllocationBaseline()
     {
-        var bytes = Encoding.UTF8.GetBytes(BuildStringDocument(SampleLineCount));
+        byte[] bytes = Encoding.UTF8.GetBytes(BuildStringDocument(SampleLineCount));
 
-        var allocated = Measure(() =>
+        long allocated = Measure(() =>
         {
             using var document = TomlDocument.Parse(bytes);
             _ = document.RootElement;
@@ -130,14 +130,14 @@ public sealed class TomlAllocationTests
     [TestCategory("Regression")]
     public void TomlDocument_WhenLookingUpProperties_ShouldNotAllocate()
     {
-        var bytes = Encoding.UTF8.GetBytes(BuildFlatDocument(SampleLineCount));
-        var keys = BuildKeys(SampleLineCount);
+        byte[] bytes = Encoding.UTF8.GetBytes(BuildFlatDocument(SampleLineCount));
+        string[] keys = BuildKeys(SampleLineCount);
         using var document = TomlDocument.Parse(bytes);
 
         _ = SumByLookup(document, keys);
-        var before = GC.GetAllocatedBytesForCurrentThread();
+        long before = GC.GetAllocatedBytesForCurrentThread();
         _ = SumByLookup(document, keys);
-        var allocated = GC.GetAllocatedBytesForCurrentThread() - before;
+        long allocated = GC.GetAllocatedBytesForCurrentThread() - before;
 
         Assert.IsTrue(allocated < 512, $"Looking up {keys.Length} properties allocated {allocated} bytes; element views should not allocate on read.");
     }
@@ -150,9 +150,9 @@ public sealed class TomlAllocationTests
     [TestCategory("Regression")]
     public void TomlNode_WhenParsing_ShouldStayWithinAllocationBaseline()
     {
-        var bytes = Encoding.UTF8.GetBytes(BuildFlatDocument(SampleLineCount));
+        byte[] bytes = Encoding.UTF8.GetBytes(BuildFlatDocument(SampleLineCount));
 
-        var allocated = Measure(() => { _ = TomlNode.Parse(bytes); });
+        long allocated = Measure(() => { _ = TomlNode.Parse(bytes); });
 
         AssertWithinBaseline(allocated, bytes.Length, multiple: 30);
     }
@@ -165,10 +165,10 @@ public sealed class TomlAllocationTests
     [TestCategory("Regression")]
     public void TomlNode_WhenWriting_ShouldStayWithinAllocationBaseline()
     {
-        var bytes = Encoding.UTF8.GetBytes(BuildFlatDocument(SampleLineCount));
+        byte[] bytes = Encoding.UTF8.GetBytes(BuildFlatDocument(SampleLineCount));
         var node = TomlNode.Parse(bytes)!;
 
-        var allocated = Measure(() => { _ = node.ToUtf8Bytes(); });
+        long allocated = Measure(() => { _ = node.ToUtf8Bytes(); });
 
         AssertWithinBaseline(allocated, bytes.Length, multiple: 32);
     }
@@ -181,9 +181,9 @@ public sealed class TomlAllocationTests
     [TestCategory("Regression")]
     public void TomlSerializer_WhenDeserializing_ShouldStayWithinAllocationBaseline()
     {
-        var bytes = Encoding.UTF8.GetBytes(BuildFlatDocument(SampleLineCount));
+        byte[] bytes = Encoding.UTF8.GetBytes(BuildFlatDocument(SampleLineCount));
 
-        var allocated = Measure(() => { _ = TomlSerializer.Deserialize<Dictionary<string, long>>(bytes); });
+        long allocated = Measure(() => { _ = TomlSerializer.Deserialize<Dictionary<string, long>>(bytes); });
 
         AssertWithinBaseline(allocated, bytes.Length, multiple: 36);
     }
@@ -196,10 +196,10 @@ public sealed class TomlAllocationTests
     [TestCategory("Regression")]
     public void TomlSerializer_WhenSerializing_ShouldStayWithinAllocationBaseline()
     {
-        var bytes = Encoding.UTF8.GetBytes(BuildFlatDocument(SampleLineCount));
+        byte[] bytes = Encoding.UTF8.GetBytes(BuildFlatDocument(SampleLineCount));
         var model = TomlSerializer.Deserialize<Dictionary<string, long>>(bytes);
 
-        var allocated = Measure(() => { _ = TomlSerializer.Serialize(model); });
+        long allocated = Measure(() => { _ = TomlSerializer.Serialize(model); });
 
         AssertWithinBaseline(allocated, bytes.Length, multiple: 40);
     }
@@ -212,7 +212,7 @@ public sealed class TomlAllocationTests
     /// <param name="multiple">The allowed allocation multiple of the input size.</param>
     private static void AssertWithinBaseline(long allocated, int inputLength, int multiple)
     {
-        var limit = (long)inputLength * multiple;
+        long limit = (long)inputLength * multiple;
         Assert.IsTrue(allocated < limit, $"The operation allocated {allocated} bytes for a {inputLength}-byte input, exceeding the recorded baseline of {limit} bytes ({multiple}x).");
     }
 
@@ -225,7 +225,7 @@ public sealed class TomlAllocationTests
     private static long Measure(Action action)
     {
         action();
-        var before = GC.GetAllocatedBytesForCurrentThread();
+        long before = GC.GetAllocatedBytesForCurrentThread();
         action();
         return GC.GetAllocatedBytesForCurrentThread() - before;
     }
@@ -239,7 +239,7 @@ public sealed class TomlAllocationTests
     private static int TokenizeSpan(byte[] bytes)
     {
         var reader = new Utf8TomlReader(bytes, new TomlReaderOptions { SpecVersion = TomlSpecVersion.V1_0 });
-        var count = 0;
+        int count = 0;
         while (reader.Read())
             count++;
 
@@ -255,7 +255,7 @@ public sealed class TomlAllocationTests
     private static int TokenizeSequence(ReadOnlySequence<byte> sequence)
     {
         var reader = new Utf8TomlReader(in sequence, new TomlReaderOptions { SpecVersion = TomlSpecVersion.V1_0 });
-        var count = 0;
+        int count = 0;
         while (reader.Read())
             count++;
 
@@ -271,7 +271,7 @@ public sealed class TomlAllocationTests
     private static long SumByLookup(TomlDocument document, string[] keys)
     {
         long sum = 0;
-        foreach (var key in keys)
+        foreach (string key in keys)
             sum += document.RootElement.GetProperty(key).GetInt64();
 
         return sum;
@@ -284,8 +284,8 @@ public sealed class TomlAllocationTests
     /// <returns>The property names.</returns>
     private static string[] BuildKeys(int count)
     {
-        var keys = new string[count];
-        for (var i = 0; i < count; i++)
+        string[] keys = new string[count];
+        for (int i = 0; i < count; i++)
             keys[i] = "key" + i.ToString(CultureInfo.InvariantCulture);
 
         return keys;
@@ -301,10 +301,10 @@ public sealed class TomlAllocationTests
     {
         var first = new Segment(bytes.AsMemory(0, Math.Min(chunkSize, bytes.Length)));
         var current = first;
-        var offset = chunkSize;
+        int offset = chunkSize;
         while (offset < bytes.Length)
         {
-            var length = Math.Min(chunkSize, bytes.Length - offset);
+            int length = Math.Min(chunkSize, bytes.Length - offset);
             current = current.Append(bytes.AsMemory(offset, length));
             offset += length;
         }
@@ -320,7 +320,7 @@ public sealed class TomlAllocationTests
     private static string BuildFlatDocument(int lines)
     {
         var builder = new StringBuilder(lines * 16);
-        for (var i = 0; i < lines; i++)
+        for (int i = 0; i < lines; i++)
             builder.Append("key").Append(i).Append(" = ").Append(i).Append('\n');
 
         return builder.ToString();
@@ -335,7 +335,7 @@ public sealed class TomlAllocationTests
     private static string BuildStringDocument(int lines)
     {
         var builder = new StringBuilder(lines * 32);
-        for (var i = 0; i < lines; i++)
+        for (int i = 0; i < lines; i++)
             builder.Append("key").Append(i).Append(" = \"value ").Append(i).Append(" payload text\"\n");
 
         return builder.ToString();

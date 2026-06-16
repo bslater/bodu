@@ -15,14 +15,14 @@ public static partial class TestHelpers
         if (expected.SequenceEqual(actual))
             return;
 
-        var prefix = string.IsNullOrWhiteSpace(label) ? string.Empty : $"[{label}] ";
+        string prefix = string.IsNullOrWhiteSpace(label) ? string.Empty : $"[{label}] ";
 
         Trace.WriteLine($"{prefix}Mismatch detected:");
         Trace.WriteLine($"{prefix}Expected: {Convert.ToHexString(expected)}");
         Trace.WriteLine($"{prefix}Actual:   {Convert.ToHexString(actual)}");
 
-        var minLength = Math.Min(expected.Length, actual.Length);
-        for (var i = 0; i < minLength; i++)
+        int minLength = Math.Min(expected.Length, actual.Length);
+        for (int i = 0; i < minLength; i++)
         {
             if (expected[i] != actual[i])
             {

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YahooExchangeRateProviderTests.TryGetRate.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -17,7 +17,7 @@ public partial class YahooExchangeRateProviderTests
     {
         (YahooExchangeRateProvider provider, FixtureYahooExchangeRateChartSource source) = Create(allowSync: false);
 
-        var found = provider.TryGetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact, out _);
+        bool found = provider.TryGetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact, out _);
 
         Assert.IsFalse(found);
         Assert.AreEqual(0, source.GetChartCallCount);
@@ -32,7 +32,7 @@ public partial class YahooExchangeRateProviderTests
     {
         (YahooExchangeRateProvider provider, FixtureYahooExchangeRateChartSource source) = Create(allowSync: true);
 
-        var found = provider.TryGetRate("AUD", "USD", new DateOnly(2023, 1, 6), ExchangeRateLookupOptions.Exact, out ExchangeRateLookupResult result);
+        bool found = provider.TryGetRate("AUD", "USD", new DateOnly(2023, 1, 6), ExchangeRateLookupOptions.Exact, out ExchangeRateLookupResult result);
 
         Assert.IsTrue(found);
         Assert.AreEqual(1, source.GetChartCallCount);
@@ -47,7 +47,7 @@ public partial class YahooExchangeRateProviderTests
     {
         (YahooExchangeRateProvider provider, FixtureYahooExchangeRateChartSource source) = Create(allowSync: true);
 
-        var found = provider.TryGetRate("USD", "USD", new DateOnly(2023, 1, 6), ExchangeRateLookupOptions.Exact, out ExchangeRateLookupResult result);
+        bool found = provider.TryGetRate("USD", "USD", new DateOnly(2023, 1, 6), ExchangeRateLookupOptions.Exact, out ExchangeRateLookupResult result);
 
         Assert.IsTrue(found);
         Assert.AreEqual(1m, result.Rate.Rate);

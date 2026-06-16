@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HashingStreamTests.Read.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -17,12 +17,12 @@ public sealed partial class HashingStreamTests
     [TestMethod]
     public void Read_WhenPayloadFullyRead_ShouldAccumulateSameDigestAsDirectHash()
     {
-        var payload = CreatePayload(1024);
+        byte[] payload = CreatePayload(1024);
         using MemoryStream inner = new(payload);
         using HashingStream stream = new(inner, new Fnv1a32());
 
-        var buffer = new byte[payload.Length];
-        var totalRead = 0;
+        byte[] buffer = new byte[payload.Length];
+        int totalRead = 0;
         int bytesRead;
         while ((bytesRead = stream.Read(buffer, totalRead, buffer.Length - totalRead)) > 0)
             totalRead += bytesRead;
@@ -38,11 +38,11 @@ public sealed partial class HashingStreamTests
     [TestMethod]
     public void Read_WhenInnerStreamReturnsPartialChunks_ShouldHashOnlyBytesActuallyRead()
     {
-        var payload = CreatePayload(257);
+        byte[] payload = CreatePayload(257);
         using FixedChunkStream inner = new(payload, 7);
         using HashingStream stream = new(inner, new Fnv1a32());
 
-        var buffer = new byte[64];
+        byte[] buffer = new byte[64];
         while (stream.Read(buffer, 0, buffer.Length) > 0)
         {
         }
@@ -56,7 +56,7 @@ public sealed partial class HashingStreamTests
     [TestMethod]
     public void Read_WhenInnerStreamIsNonSeekable_ShouldAccumulateSameDigestAsDirectHash()
     {
-        var payload = CreatePayload(512);
+        byte[] payload = CreatePayload(512);
         using NonSeekableStream inner = new(payload);
         using HashingStream stream = new(inner, new Fnv1a32());
 
@@ -72,7 +72,7 @@ public sealed partial class HashingStreamTests
     [TestMethod]
     public void ReadByte_WhenPayloadConsumedByteWise_ShouldHashEveryByteAndSignalEnd()
     {
-        var payload = new byte[] { 0x10, 0x20, 0x30 };
+        byte[] payload = new byte[] { 0x10, 0x20, 0x30 };
         using MemoryStream inner = new(payload);
         using HashingStream stream = new(inner, new Fnv1a32());
 

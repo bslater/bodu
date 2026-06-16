@@ -137,7 +137,7 @@ public sealed class ResolveBoundaryTests
         NotableDate[] annual = results.Where(n => n.NotableDateId == "anchor").OrderBy(n => n.Date).ToArray();
 
         Assert.HasCount(expectedCount, annual);
-        for (var i = 0; i < annual.Length; i++)
+        for (int i = 0; i < annual.Length; i++)
             Assert.AreEqual(new DateOnly(startYear + i, 1, 1), annual[i].Date);
     }
 
@@ -198,7 +198,7 @@ public sealed class ResolveBoundaryTests
     {
         // The anchor and the offset are both pinned to 2026 (the offset resolves the anchor for its own year), so the
         // offset projects 2026-07-01 + offsetDays. Both rules are global.
-        var xml = $"""
+        string xml = $"""
         <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.offset-range">
           <NotableDates>
             <NotableDate id="anchor" displayName="Anchor" category="PublicHoliday" defaultNonWorkingDay="true">
@@ -213,8 +213,8 @@ public sealed class ResolveBoundaryTests
         </NotableDateResource>
         """;
 
-        var windowStartYear = Math.Min(2026, expectedYear);
-        var windowEndYear = Math.Max(2026, expectedYear);
+        int windowStartYear = Math.Min(2026, expectedYear);
+        int windowEndYear = Math.Max(2026, expectedYear);
 
         IReadOnlyList<NotableDate> results = new NotableDateService(NotableDateResourceLoader.Load(xml))
             .Resolve(new DateRange(new DateOnly(windowStartYear, 1, 1), new DateOnly(windowEndYear, 12, 31)), Territory);
@@ -265,8 +265,8 @@ public sealed class ResolveBoundaryTests
     /// <returns>A resolver for the inline document.</returns>
     private static NotableDateService FixedService(int month, int day, int? fromYear, int? toYear)
     {
-        var monthName = System.Globalization.CultureInfo.InvariantCulture.DateTimeFormat.GetMonthName(month);
-        var bounds = (fromYear, toYear) switch
+        string monthName = System.Globalization.CultureInfo.InvariantCulture.DateTimeFormat.GetMonthName(month);
+        string bounds = (fromYear, toYear) switch
         {
             (int f, int t) => $" fromYear=\"{f}\" toYear=\"{t}\"",
             (int f, null) => $" fromYear=\"{f}\"",
@@ -274,7 +274,7 @@ public sealed class ResolveBoundaryTests
             _ => string.Empty,
         };
 
-        var xml = $"""
+        string xml = $"""
         <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.anchor">
           <NotableDates>
             <NotableDate id="anchor" displayName="Anchor" category="PublicHoliday" defaultNonWorkingDay="true">

@@ -64,12 +64,12 @@ public partial class Poly1305Tests
     [TestMethod]
     public void Poly1305_WhenUsingRfcTestVector_ShouldMatch()
     {
-        var key = Convert.FromHexString("85D6BE7857556D337F4452FE42D506A80103808AFB0DB2FD4ABFF6AF4149F51B");
-        var message = Encoding.ASCII.GetBytes("Cryptographic Forum Research Group");
-        var expected = Convert.FromHexString("A8061DC1305136C6C22B8BAF0C0127A9");
+        byte[] key = Convert.FromHexString("85D6BE7857556D337F4452FE42D506A80103808AFB0DB2FD4ABFF6AF4149F51B");
+        byte[] message = Encoding.ASCII.GetBytes("Cryptographic Forum Research Group");
+        byte[] expected = Convert.FromHexString("A8061DC1305136C6C22B8BAF0C0127A9");
 
         using var poly = new Poly1305 { Key = key };
-        var actual = poly.ComputeHash(message);
+        byte[] actual = poly.ComputeHash(message);
 
         Console.WriteLine("Actual   : " + Convert.ToHexString(actual));
         Console.WriteLine("Expected : " + Convert.ToHexString(expected));

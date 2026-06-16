@@ -47,21 +47,21 @@ public static partial class DateOnlyExtensions
     /// </exception>
     public static DateOnly Add(this DateOnly date, int years, int months, int days)
     {
-        date.GetDateParts(out var year, out var month, out var day);
+        date.GetDateParts(out int year, out int month, out int day);
 
         // Convert months to total and update year/month accordingly
-        var totalMonths = (year * 12) + (month - 1) + (years * 12) + months;
+        int totalMonths = (year * 12) + (month - 1) + (years * 12) + months;
         year = totalMonths / 12;
         month = (totalMonths % 12) + 1;
 
         // Clamp day based on new month/year
-        var isLeap = DateTime.IsLeapYear(year);
-        var daysInMonths = isLeap ? DateTimeExtensions.DaysToMonth366 : DateTimeExtensions.DaysToMonth365;
-        var maxDay = daysInMonths[month] - daysInMonths[month - 1];
+        bool isLeap = DateTime.IsLeapYear(year);
+        int[] daysInMonths = isLeap ? DateTimeExtensions.DaysToMonth366 : DateTimeExtensions.DaysToMonth365;
+        int maxDay = daysInMonths[month] - daysInMonths[month - 1];
         if (day > maxDay)
             day = maxDay;
 
-        var dayNumber = DateTimeExtensions.GetDayNumberUnchecked(year, month, day);
+        int dayNumber = DateTimeExtensions.GetDayNumberUnchecked(year, month, day);
 
         // Add days if necessary
         if (days != 0)

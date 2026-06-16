@@ -28,7 +28,7 @@ internal sealed class BencodeElementConverter
     {
         ThrowHelper.ThrowIfNull(options);
 
-        var start = reader.TokenStartIndex;
+        int start = reader.TokenStartIndex;
         reader.Skip();
 
         BencodeReaderOptions readerOptions = new()

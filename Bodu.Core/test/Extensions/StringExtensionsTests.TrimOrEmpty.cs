@@ -41,7 +41,7 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void TrimOrEmpty_WhenInputIsNull_ShouldReturnEmptyString()
     {
-        var actual = ((string?)null).TrimOrEmpty();
+        string actual = ((string?)null).TrimOrEmpty();
 
         Assert.IsNotNull(actual);
         Assert.AreEqual(string.Empty, actual);

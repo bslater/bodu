@@ -39,9 +39,9 @@ public static partial class StringExtensions
 
         if (value.Length == 0) return value;
 
-        var decomposed = value.Normalize(NormalizationForm.FormD);
+        string decomposed = value.Normalize(NormalizationForm.FormD);
         StringBuilder builder = new(decomposed.Length);
-        foreach (var c in decomposed)
+        foreach (char c in decomposed)
         {
             if (CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark)
             {

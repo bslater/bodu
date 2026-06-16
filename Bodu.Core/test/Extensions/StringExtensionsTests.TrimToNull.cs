@@ -42,9 +42,9 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void TrimToNull_WhenInputIsAlreadyTrimmed_ShouldReturnSameInstance()
     {
-        var value = "hello";
+        string value = "hello";
 
-        var actual = value.TrimToNull();
+        string? actual = value.TrimToNull();
 
         Assert.AreSame(value, actual);
     }

@@ -15,10 +15,10 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void Transcode_FromUtf8ToUtf16_ShouldMatchBclConvert()
     {
-        var utf8 = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
-        var expected = System.Text.Encoding.Convert(System.Text.Encoding.UTF8, System.Text.Encoding.Unicode, utf8);
+        byte[] utf8 = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
+        byte[] expected = System.Text.Encoding.Convert(System.Text.Encoding.UTF8, System.Text.Encoding.Unicode, utf8);
 
-        var actual = ((ReadOnlySpan<byte>)utf8).Transcode(System.Text.Encoding.UTF8, System.Text.Encoding.Unicode);
+        byte[] actual = ((ReadOnlySpan<byte>)utf8).Transcode(System.Text.Encoding.UTF8, System.Text.Encoding.Unicode);
 
         CollectionAssert.AreEqual(expected, actual);
     }
@@ -30,9 +30,9 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void Transcode_WhenSourceAndDestinationMatch_ShouldRoundTripExactly()
     {
-        var utf8 = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
+        byte[] utf8 = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
 
-        var actual = ((ReadOnlySpan<byte>)utf8).Transcode(System.Text.Encoding.UTF8, System.Text.Encoding.UTF8);
+        byte[] actual = ((ReadOnlySpan<byte>)utf8).Transcode(System.Text.Encoding.UTF8, System.Text.Encoding.UTF8);
 
         CollectionAssert.AreEqual(utf8, actual);
     }
@@ -44,7 +44,7 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void Transcode_WhenSourceIsEmpty_ShouldReturnEmptyArray()
     {
-        var actual = ReadOnlySpan<byte>.Empty.Transcode(System.Text.Encoding.UTF8, System.Text.Encoding.Unicode);
+        byte[] actual = ReadOnlySpan<byte>.Empty.Transcode(System.Text.Encoding.UTF8, System.Text.Encoding.Unicode);
 
         Assert.AreSame([], actual);
     }
@@ -86,11 +86,11 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void TranscodeTo_WhenDestinationFitsExactly_ShouldWriteAndReturnCount()
     {
-        var utf8 = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
-        var expected = System.Text.Encoding.Convert(System.Text.Encoding.UTF8, System.Text.Encoding.Unicode, utf8);
+        byte[] utf8 = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
+        byte[] expected = System.Text.Encoding.Convert(System.Text.Encoding.UTF8, System.Text.Encoding.Unicode, utf8);
         Span<byte> destination = new byte[expected.Length];
 
-        var written = ((ReadOnlySpan<byte>)utf8).TranscodeTo(
+        int written = ((ReadOnlySpan<byte>)utf8).TranscodeTo(
             System.Text.Encoding.UTF8,
             System.Text.Encoding.Unicode,
             destination);
@@ -106,9 +106,9 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void TranscodeTo_WhenSourceIsEmpty_ShouldReturnZero()
     {
-        var backing = new byte[16];
+        byte[] backing = new byte[16];
 
-        var written = ReadOnlySpan<byte>.Empty.TranscodeTo(
+        int written = ReadOnlySpan<byte>.Empty.TranscodeTo(
             System.Text.Encoding.UTF8,
             System.Text.Encoding.Unicode,
             backing);
@@ -123,9 +123,9 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void TranscodeTo_WhenDestinationIsTooSmall_ShouldThrowExactly()
     {
-        var utf8 = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
-        var required = System.Text.Encoding.Convert(System.Text.Encoding.UTF8, System.Text.Encoding.Unicode, utf8).Length;
-        var backing = new byte[required - 1];
+        byte[] utf8 = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
+        int required = System.Text.Encoding.Convert(System.Text.Encoding.UTF8, System.Text.Encoding.Unicode, utf8).Length;
+        byte[] backing = new byte[required - 1];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -143,7 +143,7 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void TranscodeTo_WhenSourceEncodingIsNull_ShouldThrowExactly()
     {
-        var backing = new byte[16];
+        byte[] backing = new byte[16];
 
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -160,15 +160,15 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void TryTranscodeTo_WhenDestinationFits_ShouldReturnTrueAndReportCount()
     {
-        var utf8 = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
-        var expected = System.Text.Encoding.Convert(System.Text.Encoding.UTF8, System.Text.Encoding.Unicode, utf8);
+        byte[] utf8 = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
+        byte[] expected = System.Text.Encoding.Convert(System.Text.Encoding.UTF8, System.Text.Encoding.Unicode, utf8);
         Span<byte> destination = new byte[expected.Length + 4];
 
-        var ok = ((ReadOnlySpan<byte>)utf8).TryTranscodeTo(
+        bool ok = ((ReadOnlySpan<byte>)utf8).TryTranscodeTo(
             System.Text.Encoding.UTF8,
             System.Text.Encoding.Unicode,
             destination,
-            out var bytesWritten);
+            out int bytesWritten);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(expected.Length, bytesWritten);
@@ -182,14 +182,14 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void TryTranscodeTo_WhenDestinationIsTooSmall_ShouldReturnFalse()
     {
-        var utf8 = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
-        var backing = new byte[1];
+        byte[] utf8 = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
+        byte[] backing = new byte[1];
 
-        var ok = ((ReadOnlySpan<byte>)utf8).TryTranscodeTo(
+        bool ok = ((ReadOnlySpan<byte>)utf8).TryTranscodeTo(
             System.Text.Encoding.UTF8,
             System.Text.Encoding.Unicode,
             backing,
-            out var written);
+            out int written);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0, written);
@@ -202,13 +202,13 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void TryTranscodeTo_WhenSourceIsEmpty_ShouldReturnTrueWithZeroBytesWritten()
     {
-        var backing = new byte[8];
+        byte[] backing = new byte[8];
 
-        var ok = ReadOnlySpan<byte>.Empty.TryTranscodeTo(
+        bool ok = ReadOnlySpan<byte>.Empty.TryTranscodeTo(
             System.Text.Encoding.UTF8,
             System.Text.Encoding.Unicode,
             backing,
-            out var written);
+            out int written);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(0, written);

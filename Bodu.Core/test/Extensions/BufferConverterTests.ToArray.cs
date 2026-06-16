@@ -18,7 +18,7 @@ public partial class BufferConverterTests
     [DataRow(0, 17, DisplayName = "Count exceeds source length")]
     public void ToArray_WhenArgumentsAreInvalid_ForByteArray_ShouldThrowExactly(int sourceIndex, int count)
     {
-        var source = AscendingBytes;
+        byte[] source = AscendingBytes;
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -32,9 +32,9 @@ public partial class BufferConverterTests
     [TestMethod]
     public void ToArray_WhenCalled_ForByteArray_ShouldReturnNewAllocation()
     {
-        var source = AscendingBytes;
+        byte[] source = AscendingBytes;
 
-        var result = source.ToArray<byte>(0, source.Length);
+        byte[] result = source.ToArray<byte>(0, source.Length);
 
         Assert.IsFalse(ReferenceEquals(source, result));
     }
@@ -48,9 +48,9 @@ public partial class BufferConverterTests
     [TestMethod]
     public void ToArray_WhenCalled_ForByteArrayToByteArray_ShouldReturnExpectedElements()
     {
-        var source = AscendingBytes;
+        byte[] source = AscendingBytes;
 
-        var result = source.ToArray<byte>(0, 8);
+        byte[] result = source.ToArray<byte>(0, 8);
 
         CollectionAssert.AreEqual(
             new byte[] { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 },
@@ -63,10 +63,10 @@ public partial class BufferConverterTests
     [TestMethod]
     public void ToArray_WhenCalled_ForReadOnlySpan_ShouldReturnNewAllocation()
     {
-        var data = AscendingBytes;
+        byte[] data = AscendingBytes;
 
         ReadOnlySpan<byte> source = data;
-        var result = source.ToArray<byte>(data.Length);
+        byte[] result = source.ToArray<byte>(data.Length);
 
         Assert.IsFalse(ReferenceEquals(data, result));
     }
@@ -81,10 +81,10 @@ public partial class BufferConverterTests
     [TestMethod]
     public void ToArray_WhenCalled_ForReadOnlySpanToInt32_ShouldReturnExpectedElements()
     {
-        var data = AscendingBytes;
+        byte[] data = AscendingBytes;
 
         ReadOnlySpan<byte> source = data;
-        var result = source.ToArray<int>(4);
+        int[] result = source.ToArray<int>(4);
 
         CollectionAssert.AreEqual(
             new[] { 0x03020100, 0x07060504, 0x0B0A0908, 0x0F0E0D0C },
@@ -97,10 +97,10 @@ public partial class BufferConverterTests
     [TestMethod]
     public void ToArray_WhenCalled_ForReadOnlySpanToInt64_ShouldReturnExpectedElements()
     {
-        var data = AscendingBytes;
+        byte[] data = AscendingBytes;
 
         ReadOnlySpan<byte> source = data;
-        var result = source.ToArray<long>(2);
+        long[] result = source.ToArray<long>(2);
 
         CollectionAssert.AreEqual(
             new[] { 0x0706050403020100L, 0x0F0E0D0C0B0A0908L },
@@ -114,7 +114,7 @@ public partial class BufferConverterTests
     [TestMethod]
     public void ToArray_WhenCountExceedsAvailableBytes_ForReadOnlySpan_ShouldThrowExactly()
     {
-        var data = new byte[8];
+        byte[] data = new byte[8];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -129,9 +129,9 @@ public partial class BufferConverterTests
     [TestMethod]
     public void ToArray_WhenCountIsZero_ForByteArray_ShouldReturnEmptyArray()
     {
-        var source = AscendingBytes;
+        byte[] source = AscendingBytes;
 
-        var result = source.ToArray<byte>(0, 0);
+        byte[] result = source.ToArray<byte>(0, 0);
 
         Assert.IsEmpty(result);
     }
@@ -142,10 +142,10 @@ public partial class BufferConverterTests
     [TestMethod]
     public void ToArray_WhenCountIsZero_ForReadOnlySpan_ShouldReturnEmptyArray()
     {
-        var data = AscendingBytes;
+        byte[] data = AscendingBytes;
 
         ReadOnlySpan<byte> source = data;
-        var result = source.ToArray<int>(0);
+        int[] result = source.ToArray<int>(0);
 
         Assert.IsEmpty(result);
     }
@@ -156,9 +156,9 @@ public partial class BufferConverterTests
     [TestMethod]
     public void ToArray_WhenSourceIndexIsNonZero_ForByteArrayToByteArray_ShouldReturnExpectedElements()
     {
-        var source = AscendingBytes;
+        byte[] source = AscendingBytes;
 
-        var result = source.ToArray<byte>(8, 4);
+        byte[] result = source.ToArray<byte>(8, 4);
 
         CollectionAssert.AreEqual(new byte[] { 0x08, 0x09, 0x0A, 0x0B }, result);
     }
@@ -170,7 +170,7 @@ public partial class BufferConverterTests
     [TestMethod]
     public void ToArray_WhenSourceIndexPlusCountExceedsSourceLength_ForByteArray_ShouldThrowExactly()
     {
-        var source = AscendingBytes;
+        byte[] source = AscendingBytes;
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {

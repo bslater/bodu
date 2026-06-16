@@ -15,7 +15,7 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void ThrowIfIvLengthInvalid_WhenLengthMatches_ShouldNotThrow()
     {
-        var iv = new byte[16];
+        byte[] iv = new byte[16];
         CryptographyThrowHelper.ThrowIfIvLengthInvalid(iv, 128);
     }
 
@@ -43,7 +43,7 @@ public partial class CryptoHelpersTests
     [DataRow(32, 128)]
     public void ThrowIfIvLengthInvalid_WhenLengthMismatches_ShouldThrowExactly(int actualBytes, int expectedBits)
     {
-        var iv = new byte[actualBytes];
+        byte[] iv = new byte[actualBytes];
 
         ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {

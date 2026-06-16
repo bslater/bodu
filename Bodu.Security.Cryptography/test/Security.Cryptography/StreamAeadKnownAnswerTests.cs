@@ -117,12 +117,12 @@ public class StreamAeadKnownAnswerTests
     [DynamicData(nameof(ExternalVectors), DynamicDataDisplayName = nameof(GetVectorDisplayName))]
     public void Encrypt_WhenGivenExternalVector_ShouldMatchExpectedCiphertextAndTag(StreamAeadKnownAnswerVector vector)
     {
-        var plaintext = vector.Plaintext;
-        var output = new byte[plaintext.Length + 16];
+        byte[] plaintext = vector.Plaintext;
+        byte[] output = new byte[plaintext.Length + 16];
 
         using (IStreamAeadTransform enc = CreateTransform(vector))
         {
-            var written = enc.Encrypt(plaintext, output, vector.AssociatedData);
+            int written = enc.Encrypt(plaintext, output, vector.AssociatedData);
             Assert.AreEqual(output.Length, written, $"{vector}: unexpected written length.");
         }
 
@@ -141,12 +141,12 @@ public class StreamAeadKnownAnswerTests
     [DynamicData(nameof(ExternalVectors), DynamicDataDisplayName = nameof(GetVectorDisplayName))]
     public void Decrypt_WhenGivenExternalVector_ShouldRecoverPlaintext(StreamAeadKnownAnswerVector vector)
     {
-        var ciphertextWithTag = vector.CiphertextWithTag;
-        var output = new byte[ciphertextWithTag.Length - 16];
+        byte[] ciphertextWithTag = vector.CiphertextWithTag;
+        byte[] output = new byte[ciphertextWithTag.Length - 16];
 
         using (IStreamAeadTransform dec = CreateTransform(vector))
         {
-            var written = dec.Decrypt(ciphertextWithTag, output, vector.AssociatedData);
+            int written = dec.Decrypt(ciphertextWithTag, output, vector.AssociatedData);
             Assert.AreEqual(output.Length, written, $"{vector}: unexpected written length.");
         }
 
@@ -162,9 +162,9 @@ public class StreamAeadKnownAnswerTests
     [DynamicData(nameof(ExternalVectors), DynamicDataDisplayName = nameof(GetVectorDisplayName))]
     public void Decrypt_WhenExternalVectorTagTampered_ShouldThrowCryptographicException(StreamAeadKnownAnswerVector vector)
     {
-        var ciphertextWithTag = vector.CiphertextWithTag;
+        byte[] ciphertextWithTag = vector.CiphertextWithTag;
         ciphertextWithTag[^1] ^= 0x01;
-        var output = new byte[ciphertextWithTag.Length - 16];
+        byte[] output = new byte[ciphertextWithTag.Length - 16];
 
         using IStreamAeadTransform dec = CreateTransform(vector);
         Assert.ThrowsExactly<CryptographicException>(() =>
@@ -183,15 +183,15 @@ public class StreamAeadKnownAnswerTests
     {
         StreamAeadKnownAnswerVector vector = SecretboxVector();
 
-        var boduCombined = new byte[vector.Plaintext.Length + 16];
+        byte[] boduCombined = new byte[vector.Plaintext.Length + 16];
         using (var enc = new XSalsa20Poly1305(vector.Key, vector.Nonce))
             enc.Encrypt(vector.Plaintext, boduCombined);
 
-        var libsodiumCombined = new byte[boduCombined.Length];
+        byte[] libsodiumCombined = new byte[boduCombined.Length];
         XSalsa20Poly1305.ToLibsodiumCombined(boduCombined, libsodiumCombined);
 
         // libsodium native layout for this vector is tag || ciphertext.
-        var expected = new byte[vector.Tag.Length + vector.Ciphertext.Length];
+        byte[] expected = new byte[vector.Tag.Length + vector.Ciphertext.Length];
         vector.Tag.CopyTo(expected, 0);
         vector.Ciphertext.CopyTo(expected, vector.Tag.Length);
 
@@ -208,14 +208,14 @@ public class StreamAeadKnownAnswerTests
     [TestMethod]
     public void XSalsa20Poly1305Aead_WhenComparedToDerivedOracle_ShouldMatchAndRoundTrip()
     {
-        var key = Convert.FromHexString(SunscreenKeyHex);
-        var nonce = Convert.FromHexString(SunscreenNonce24Hex);
-        var aad = Convert.FromHexString(SunscreenAadHex);
-        var plaintext = Convert.FromHexString(SunscreenPlaintextHex);
+        byte[] key = Convert.FromHexString(SunscreenKeyHex);
+        byte[] nonce = Convert.FromHexString(SunscreenNonce24Hex);
+        byte[] aad = Convert.FromHexString(SunscreenAadHex);
+        byte[] plaintext = Convert.FromHexString(SunscreenPlaintextHex);
 
-        (var expectedCiphertext, var expectedTag) = DeriveAeadOracle(key, nonce, aad, plaintext);
+        (byte[]? expectedCiphertext, byte[]? expectedTag) = DeriveAeadOracle(key, nonce, aad, plaintext);
 
-        var output = new byte[plaintext.Length + 16];
+        byte[] output = new byte[plaintext.Length + 16];
         using (var enc = new XSalsa20Poly1305Aead(key, nonce))
             enc.Encrypt(plaintext, output, aad);
 
@@ -224,7 +224,7 @@ public class StreamAeadKnownAnswerTests
         CollectionAssert.AreEqual(expectedTag, output.AsSpan(plaintext.Length).ToArray(),
             "XSalsa20Poly1305Aead tag must match the derived oracle.");
 
-        var recovered = new byte[plaintext.Length];
+        byte[] recovered = new byte[plaintext.Length];
         using (var dec = new XSalsa20Poly1305Aead(key, nonce))
             dec.Decrypt(output, recovered, aad);
 
@@ -239,12 +239,12 @@ public class StreamAeadKnownAnswerTests
     [TestMethod]
     public void XSalsa20Poly1305Aead_WhenGivenFrozenDerivedVector_ShouldRemainStable()
     {
-        var key = Convert.FromHexString(SunscreenKeyHex);
-        var nonce = Convert.FromHexString(SunscreenNonce24Hex);
-        var aad = Convert.FromHexString(SunscreenAadHex);
-        var plaintext = Convert.FromHexString(SunscreenPlaintextHex);
+        byte[] key = Convert.FromHexString(SunscreenKeyHex);
+        byte[] nonce = Convert.FromHexString(SunscreenNonce24Hex);
+        byte[] aad = Convert.FromHexString(SunscreenAadHex);
+        byte[] plaintext = Convert.FromHexString(SunscreenPlaintextHex);
 
-        var output = new byte[plaintext.Length + 16];
+        byte[] output = new byte[plaintext.Length + 16];
         using (var enc = new XSalsa20Poly1305Aead(key, nonce))
             enc.Encrypt(plaintext, output, aad);
 
@@ -300,12 +300,12 @@ public class StreamAeadKnownAnswerTests
         using (ICryptoTransform encryptor = xsalsa20.CreateEncryptor(key, nonce))
             keystream = encryptor.TransformFinalBlock(new byte[64 + plaintext.Length], 0, 64 + plaintext.Length);
 
-        var ciphertext = new byte[plaintext.Length];
-        for (var i = 0; i < plaintext.Length; i++)
+        byte[] ciphertext = new byte[plaintext.Length];
+        for (int i = 0; i < plaintext.Length; i++)
             ciphertext[i] = (byte)(plaintext[i] ^ keystream[64 + i]);
 
-        var poly1305Key = keystream[..32];
-        var tag = ComputeRfc8439Poly1305(poly1305Key, aad, ciphertext);
+        byte[] poly1305Key = keystream[..32];
+        byte[] tag = ComputeRfc8439Poly1305(poly1305Key, aad, ciphertext);
 
         return (ciphertext, tag);
     }

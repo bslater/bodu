@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HashValueTests.TryParseHex.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -19,7 +19,7 @@ public sealed partial class HashValueTests
     [DynamicData(nameof(ValidHexVectors), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void TryParseHex_WhenTextIsWellFormed_ShouldReturnTrueAndDecode(ValidKat<string, byte[]> kat)
     {
-        var parsed = HashValue.TryParseHex(kat.Input, out var hash);
+        bool parsed = HashValue.TryParseHex(kat.Input, out var hash);
 
         Assert.IsTrue(parsed);
         CollectionAssert.AreEqual(kat.Expected, hash.ToArray());
@@ -34,7 +34,7 @@ public sealed partial class HashValueTests
     [DynamicData(nameof(InvalidHexVectors), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void TryParseHex_WhenTextIsMalformed_ShouldReturnFalseWithEmptyValue(InvalidKat<string> kat)
     {
-        var parsed = HashValue.TryParseHex(kat.Input, out var hash);
+        bool parsed = HashValue.TryParseHex(kat.Input, out var hash);
 
         Assert.IsFalse(parsed);
         Assert.IsTrue(hash.IsEmpty);
@@ -47,7 +47,7 @@ public sealed partial class HashValueTests
     [TestMethod]
     public void TryParseHex_WhenTextIsNull_ShouldReturnFalseWithEmptyValue()
     {
-        var parsed = HashValue.TryParseHex(null, out var hash);
+        bool parsed = HashValue.TryParseHex(null, out var hash);
 
         Assert.IsFalse(parsed);
         Assert.IsTrue(hash.IsEmpty);

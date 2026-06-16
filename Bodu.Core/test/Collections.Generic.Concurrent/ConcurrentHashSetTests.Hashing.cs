@@ -16,11 +16,11 @@ public partial class ConcurrentHashSetTests
     {
         var set = new ConcurrentHashSet<int>(new ConstantHashComparer());
 
-        for (var i = 0; i < 200; i++)
+        for (int i = 0; i < 200; i++)
             Assert.IsTrue(set.Add(i));
 
         Assert.AreEqual(200, set.Count);
-        for (var i = 0; i < 200; i++)
+        for (int i = 0; i < 200; i++)
             Assert.IsTrue(set.Contains(i), $"Element {i} was not found in the colliding chain.");
     }
 
@@ -46,7 +46,7 @@ public partial class ConcurrentHashSetTests
     public void Hashing_WhenRemovingFromCollidingChain_ShouldKeepRemainingElementsReachable()
     {
         var set = new ConcurrentHashSet<int>(new ConstantHashComparer());
-        for (var i = 0; i < 10; i++)
+        for (int i = 0; i < 10; i++)
             set.Add(i);
 
         // 9, 5, and 0 occupy distinct positions in the single colliding chain.
@@ -65,7 +65,7 @@ public partial class ConcurrentHashSetTests
     {
         var set = new ConcurrentHashSet<int>(capacity: 4, comparer: new ConstantHashComparer());
 
-        for (var i = 0; i < 2000; i++)
+        for (int i = 0; i < 2000; i++)
             set.Add(i);
 
         Assert.AreEqual(2000, set.Count);
@@ -82,10 +82,10 @@ public partial class ConcurrentHashSetTests
         var set = new ConcurrentHashSet<int>();
         int[] values = [int.MinValue, int.MaxValue, -1, 0, 1, int.MinValue + 1, int.MaxValue - 1];
 
-        foreach (var value in values)
+        foreach (int value in values)
             Assert.IsTrue(set.Add(value));
 
-        foreach (var value in values)
+        foreach (int value in values)
             Assert.IsTrue(set.Contains(value), $"Element {value} was not found.");
 
         Assert.AreEqual(values.Length, set.Count);
@@ -98,7 +98,7 @@ public partial class ConcurrentHashSetTests
     public void Hashing_WhenElementsAreNegative_ShouldSupportCoreOperations()
     {
         var set = new ConcurrentHashSet<int>();
-        for (var i = -500; i < 0; i++)
+        for (int i = -500; i < 0; i++)
             Assert.IsTrue(set.Add(i));
 
         Assert.AreEqual(500, set.Count);

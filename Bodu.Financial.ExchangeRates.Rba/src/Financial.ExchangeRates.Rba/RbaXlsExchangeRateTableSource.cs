@@ -52,7 +52,7 @@ internal sealed class RbaXlsExchangeRateTableSource
     {
         ThrowHelper.ThrowIfNull(era);
 
-        var bytes = await GetWorkbookBytesAsync(era, cancellationToken).ConfigureAwait(false);
+        byte[] bytes = await GetWorkbookBytesAsync(era, cancellationToken).ConfigureAwait(false);
 
         using MemoryStream stream = new(bytes, writable: false);
         var workbook = Biff8WorkbookReader.Open(stream);
@@ -67,11 +67,11 @@ internal sealed class RbaXlsExchangeRateTableSource
     /// <returns>A task that yields the workbook bytes.</returns>
     private async ValueTask<byte[]> GetWorkbookBytesAsync(RbaEra era, CancellationToken cancellationToken)
     {
-        if (_cache.TryGet(era, _options.CurrentEraRefreshInterval, out var cached))
+        if (_cache.TryGet(era, _options.CurrentEraRefreshInterval, out byte[]? cached))
             return cached;
 
         Uri url = new(_options.BaseUrl, era.FileName);
-        var bytes = await _httpClient.GetByteArrayAsync(url, cancellationToken).ConfigureAwait(false);
+        byte[] bytes = await _httpClient.GetByteArrayAsync(url, cancellationToken).ConfigureAwait(false);
         _cache.Store(era, bytes);
 
         return bytes;

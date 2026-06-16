@@ -77,7 +77,7 @@ public static partial class Delimited
         // First pass: identify duplicate header names so AllowDuplicates can omit them and Throw can fail fast.
         HashSet<string>? duplicates = null;
         HashSet<string> seen = new(StringComparer.Ordinal);
-        for (var i = 0; i < headers.Count; i++)
+        for (int i = 0; i < headers.Count; i++)
         {
             if (!seen.Add(headers[i]))
             {
@@ -94,12 +94,12 @@ public static partial class Delimited
         switch (behavior)
         {
             case DelimitedDuplicateHeaderBehavior.FirstWins:
-                for (var i = 0; i < headers.Count; i++)
+                for (int i = 0; i < headers.Count; i++)
                     _ = map.TryAdd(headers[i], i);
                 break;
 
             case DelimitedDuplicateHeaderBehavior.AllowDuplicates:
-                for (var i = 0; i < headers.Count; i++)
+                for (int i = 0; i < headers.Count; i++)
                 {
                     if (duplicates is null || !duplicates.Contains(headers[i]))
                         map[headers[i]] = i;
@@ -109,7 +109,7 @@ public static partial class Delimited
 
             case DelimitedDuplicateHeaderBehavior.LastWins:
             default:
-                for (var i = 0; i < headers.Count; i++)
+                for (int i = 0; i < headers.Count; i++)
                     map[headers[i]] = i;
                 break;
         }
@@ -155,14 +155,14 @@ public static partial class Delimited
         /// <exception cref="DelimitedFormatException">Thrown when the source is structurally malformed.</exception>
         public DelimitedDocument Parse()
         {
-            var delimiter = _options.Delimiter;
-            var quote = _options.Quote;
+            char delimiter = _options.Delimiter;
+            char quote = _options.Quote;
 
             List<string>? headers = null;
             IReadOnlyDictionary<string, int>? roHeaderIndex = null;
 
             List<DelimitedRow> rows = new();
-            var firstRecord = true;
+            bool firstRecord = true;
 
             while (!IsEmpty)
             {
@@ -182,7 +182,7 @@ public static partial class Delimited
                 }
 
                 // Parse a full record (one or more fields separated by delimiter).
-                var recordLineNumber = _lineNumber;
+                int recordLineNumber = _lineNumber;
                 List<string> fields = ParseRecord(delimiter, quote);
 
                 if (firstRecord && _options.HasHeader)
@@ -209,7 +209,7 @@ public static partial class Delimited
                 ? headers.AsReadOnly()
                 : Array.Empty<string>();
 
-            var fieldCount = headerList.Count > 0
+            int fieldCount = headerList.Count > 0
                 ? headerList.Count
                 : (rows.Count > 0 ? rows[0].Count : 0);
 
@@ -229,7 +229,7 @@ public static partial class Delimited
 
             while (true)
             {
-                var field = Current == quote
+                string field = Current == quote
                     ? ParseQuotedField(quote)
                     : ParseUnquotedField(delimiter);
 
@@ -270,7 +270,7 @@ public static partial class Delimited
         /// <returns>The field content with surrounding quotes removed and doubled-quote escapes resolved.</returns>
         private string ParseQuotedField(char quote)
         {
-            var startLine = _lineNumber;
+            int startLine = _lineNumber;
             Advance(); // consume opening quote
 
             StringBuilder sb = new();
@@ -280,7 +280,7 @@ public static partial class Delimited
                 if (IsEmpty)
                     Delimited.ThrowUnterminatedQuotedField(startLine);
 
-                var c = Current;
+                char c = Current;
 
                 if (c == quote)
                 {
@@ -312,7 +312,7 @@ public static partial class Delimited
         /// <returns>The raw field text.</returns>
         private string ParseUnquotedField(char delimiter)
         {
-            var len = 0;
+            int len = 0;
 
             while (len < _remaining.Length &&
                    _remaining[len] != delimiter &&
@@ -322,7 +322,7 @@ public static partial class Delimited
                 len++;
             }
 
-            var field = new string(_remaining[..len]);
+            string field = new string(_remaining[..len]);
             _remaining = _remaining[len..];
             return field;
         }

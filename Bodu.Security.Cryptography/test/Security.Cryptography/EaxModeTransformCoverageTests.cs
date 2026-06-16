@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EaxModeTransformCoverageTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -24,14 +24,14 @@ public sealed class EaxModeTransformCoverageTests
     [TestMethod]
     public void EncryptThenDecrypt_WithEmptyPlaintext_ShouldRoundTrip()
     {
-        var plaintext = Array.Empty<byte>();
-        var output = new byte[16];
+        byte[] plaintext = Array.Empty<byte>();
+        byte[] output = new byte[16];
 
         int written;
         using (EaxModeTransform encryptor = CreateTransform())
             written = encryptor.Encrypt(plaintext, output);
 
-        var recovered = Array.Empty<byte>();
+        byte[] recovered = Array.Empty<byte>();
         int decrypted;
         using (EaxModeTransform decryptor = CreateTransform())
             decrypted = decryptor.Decrypt(output.AsSpan(0, written), recovered);

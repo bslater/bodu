@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base45Tests.Decode.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -96,7 +96,7 @@ public sealed partial class Base45Tests
     {
         Span<byte> destination = new byte[1];
 
-        var success = Base45.TryDecode("BB8".AsSpan(), destination, out var written);
+        bool success = Base45.TryDecode("BB8".AsSpan(), destination, out int written);
 
         Assert.IsFalse(success);
         Assert.AreEqual(0, written);

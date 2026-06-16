@@ -16,7 +16,7 @@ public partial class ConcurrentHashSetTests
     public void CopyTo_WhenArrayLargeEnough_ShouldCopyEveryElement()
     {
         var set = new ConcurrentHashSet<int>([1, 2, 3]);
-        var array = new int[3];
+        int[] array = new int[3];
 
         set.CopyTo(array, 0);
 
@@ -30,7 +30,7 @@ public partial class ConcurrentHashSetTests
     public void CopyTo_WhenIndexSupplied_ShouldCopyStartingAtThatIndex()
     {
         var set = new ConcurrentHashSet<int>([1, 2]);
-        var array = new int[5];
+        int[] array = new int[5];
 
         set.CopyTo(array, 2);
 
@@ -95,7 +95,7 @@ public partial class ConcurrentHashSetTests
     public void CopyTo_WhenArrayExactlyFitsAtNonZeroIndex_ShouldCopyEveryElement()
     {
         var set = new ConcurrentHashSet<int>([1, 2, 3]);
-        var array = new int[6];
+        int[] array = new int[6];
 
         set.CopyTo(array, 3);
 
@@ -112,7 +112,7 @@ public partial class ConcurrentHashSetTests
     public void CopyTo_WhenSetIsEmptyAndIndexEqualsArrayLength_ShouldSucceed()
     {
         var set = new ConcurrentHashSet<int>();
-        var array = new int[3];
+        int[] array = new int[3];
 
         set.CopyTo(array, 3);
 

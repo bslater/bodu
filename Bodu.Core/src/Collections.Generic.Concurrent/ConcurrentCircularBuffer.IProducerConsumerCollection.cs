@@ -41,7 +41,7 @@ public partial class ConcurrentCircularBuffer<T> :
     /// </remarks>
     bool IProducerConsumerCollection<T>.TryTake([MaybeNullWhen(false)] out T item)
     {
-        var taken = TryDequeue(out T? value);
+        bool taken = TryDequeue(out T? value);
         item = value!;
         return taken;
     }

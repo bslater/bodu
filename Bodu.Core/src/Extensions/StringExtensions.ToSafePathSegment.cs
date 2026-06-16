@@ -34,11 +34,11 @@ public static partial class StringExtensions
 
         if (value.Length == 0) return "_";
 
-        var invalid = Path.GetInvalidFileNameChars();
+        char[] invalid = Path.GetInvalidFileNameChars();
         StringBuilder builder = new(value.Length);
-        foreach (var c in value)
+        foreach (char c in value)
         {
-            var isInvalid = Array.IndexOf(invalid, c) >= 0
+            bool isInvalid = Array.IndexOf(invalid, c) >= 0
                 || c == Path.DirectorySeparatorChar
                 || c == Path.AltDirectorySeparatorChar;
             builder.Append(isInvalid ? '_' : c);

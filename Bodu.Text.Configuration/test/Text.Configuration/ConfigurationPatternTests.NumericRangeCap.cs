@@ -46,7 +46,7 @@ public partial class ConfigurationPatternTests
     {
         var pattern = ConfigurationPattern.Compile("file-{1..50}.txt");
 
-        for (var i = 1; i <= 50; i++)
+        for (int i = 1; i <= 50; i++)
             Assert.IsTrue(pattern.IsMatch($"file-{i}.txt"), $"expected match for {i}");
 
         Assert.IsFalse(pattern.IsMatch("file-0.txt"));
@@ -77,7 +77,7 @@ public partial class ConfigurationPatternTests
     {
         var pattern = ConfigurationPattern.Compile("offset-{-3..3}.log");
 
-        for (var i = -3; i <= 3; i++)
+        for (int i = -3; i <= 3; i++)
             Assert.IsTrue(pattern.IsMatch($"offset-{i}.log"), $"expected match for {i}");
 
         Assert.IsFalse(pattern.IsMatch("offset-4.log"));

@@ -47,7 +47,7 @@ internal sealed class RbaExchangeRateTable
     {
         foreach (RbaExchangeRateRow row in Rows)
         {
-            for (var i = 0; i < Series.Count; i++)
+            for (int i = 0; i < Series.Count; i++)
             {
                 decimal? value = row.Values[i];
                 if (value is > 0m)

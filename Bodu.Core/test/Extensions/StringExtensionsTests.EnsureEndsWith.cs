@@ -42,9 +42,9 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void EnsureEndsWith_WhenSuffixAlreadyPresent_ShouldReturnSameInstance()
     {
-        var value = "path/";
+        string value = "path/";
 
-        var actual = value.EnsureEndsWith("/");
+        string actual = value.EnsureEndsWith("/");
 
         Assert.AreSame(value, actual);
     }

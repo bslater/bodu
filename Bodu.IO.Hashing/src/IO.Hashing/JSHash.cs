@@ -64,8 +64,8 @@ public sealed class JSHash
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<byte> source)
     {
-        var v = _workingHash;
-        foreach (var b in source)
+        uint v = _workingHash;
+        foreach (byte b in source)
         {
             v ^= (v << 5) + (v >> 2) + b;
         }

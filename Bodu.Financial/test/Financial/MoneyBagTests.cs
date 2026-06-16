@@ -277,8 +277,8 @@ public partial class MoneyBagTests
         };
         var table = new FixedExchangeRateTable(rates);
 
-        var usdToEur = table.GetRate("USD", "EUR");
-        var eurToUsd = table.GetRate("EUR", "USD");
+        decimal usdToEur = table.GetRate("USD", "EUR");
+        decimal eurToUsd = table.GetRate("EUR", "USD");
 
         Assert.AreEqual(0.92m, usdToEur);
         Assert.AreEqual(1m / 0.92m, eurToUsd);
@@ -319,7 +319,7 @@ public partial class MoneyBagTests
             .Add(new Money(100m, "USD"))
             .Add(new Money(50m, "EUR"));
 
-        var json = JsonSerializer.Serialize(original);
+        string json = JsonSerializer.Serialize(original);
         MoneyBag? recovered = JsonSerializer.Deserialize<MoneyBag>(json);
 
         Assert.IsNotNull(recovered);
@@ -366,7 +366,7 @@ public partial class MoneyBagTests
         System.Collections.IEnumerable bag = new MoneyBag([new Money(1m, "USD")]);
 
         var items = new List<object>();
-        foreach (var item in bag)
+        foreach (object? item in bag)
             items.Add(item);
 
         Assert.AreEqual(1, items.Count);

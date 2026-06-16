@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AuthenticationTagTests.FixedTimeEquals.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -30,7 +30,7 @@ public sealed partial class AuthenticationTagTests
     [TestMethod]
     public void FixedTimeEquals_WhenSingleBitTampered_ShouldReturnFalse()
     {
-        var original = new byte[] { 0xAA, 0xBB, 0xCC, 0xDD };
+        byte[] original = new byte[] { 0xAA, 0xBB, 0xCC, 0xDD };
         var tag = AuthenticationTag.FromBytes(original);
 
         var tampered = AuthenticationTag.FromBytes(Tamper.FlipBit(original, 9));
@@ -58,7 +58,7 @@ public sealed partial class AuthenticationTagTests
     [TestMethod]
     public void FixedTimeEquals_ForSpanOverload_ShouldCompareAgainstRawBytes()
     {
-        var bytes = new byte[] { 0x10, 0x20, 0x30 };
+        byte[] bytes = new byte[] { 0x10, 0x20, 0x30 };
         var tag = AuthenticationTag.FromBytes(bytes);
 
         Assert.IsTrue(tag.FixedTimeEquals(bytes.AsSpan()));

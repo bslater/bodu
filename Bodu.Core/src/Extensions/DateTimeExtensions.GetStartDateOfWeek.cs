@@ -57,14 +57,14 @@ public static partial class DateTimeExtensions
         DateTimeFormatInfo dfi = (culture ?? CultureInfo.CurrentCulture).DateTimeFormat;
 
         // Compute ticks for the first day of the year
-        var ticks = GetDateTicks(year, 1, 1);
+        long ticks = GetDateTicks(year, 1, 1);
 
         // Compute the ticks from the first week start
         ticks -= GetTicksSincePreviousOrSameDayOfWeek(ticks, dfi.FirstDayOfWeek);
         ticks += (week - 1) * 7L * TimeSpan.TicksPerDay;
 
         // Validate week number
-        var resultWeek = GetWeekOfYear(ticks, dfi.CalendarWeekRule, dfi.FirstDayOfWeek);
+        int resultWeek = GetWeekOfYear(ticks, dfi.CalendarWeekRule, dfi.FirstDayOfWeek);
         return resultWeek != week
             ? throw new ArgumentOutOfRangeException(
                 nameof(week),

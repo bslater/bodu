@@ -91,9 +91,9 @@ public static partial class TestHelpers
         if (count < 0)
             throw new ArgumentOutOfRangeException(nameof(count));
 
-        var result = new byte[count];
+        byte[] result = new byte[count];
 
-        for (var i = 0; i < result.Length; i++)
+        for (int i = 0; i < result.Length; i++)
             result[i] = unchecked((byte)(start + i));
 
         return result;

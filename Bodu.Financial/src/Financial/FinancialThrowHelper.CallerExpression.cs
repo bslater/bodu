@@ -123,8 +123,8 @@ internal static partial class FinancialThrowHelper
                 FinancialResourceStrings.Arg_Invalid_AllocationRatiosEmpty,
                 paramName);
 
-        var totalWeight = 0m;
-        for (var i = 0; i < ratios.Length; i++)
+        decimal totalWeight = 0m;
+        for (int i = 0; i < ratios.Length; i++)
         {
             if (ratios[i] < 0m)
                 throw new ArgumentException(

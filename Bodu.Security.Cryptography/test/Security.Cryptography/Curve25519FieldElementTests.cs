@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Curve25519FieldElementTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -26,10 +26,10 @@ public class Curve25519FieldElementTests
     [TestMethod]
     public void ToBytes_WhenValueIsCanonical_ShouldRoundTripFromBytes()
     {
-        var encoded = Convert.FromHexString("4a5d9d5ba4ce2de1728e3bf480350f25e07e21c947d19e3376f09b3c1e161742");
+        byte[] encoded = Convert.FromHexString("4a5d9d5ba4ce2de1728e3bf480350f25e07e21c947d19e3376f09b3c1e161742");
 
         var element = Curve25519FieldElement.FromBytes(encoded);
-        var roundTrip = new byte[Curve25519FieldElement.EncodedSizeInBytes];
+        byte[] roundTrip = new byte[Curve25519FieldElement.EncodedSizeInBytes];
         element.ToBytes(roundTrip);
 
         CollectionAssert.AreEqual(encoded, roundTrip);
@@ -42,12 +42,12 @@ public class Curve25519FieldElementTests
     [TestMethod]
     public void FromBytes_WhenBit255IsSet_ShouldDecodeSameValueAsWithBitClear()
     {
-        var low = Convert.FromHexString("0200000000000000000000000000000000000000000000000000000000000000");
-        var high = (byte[])low.Clone();
+        byte[] low = Convert.FromHexString("0200000000000000000000000000000000000000000000000000000000000000");
+        byte[] high = (byte[])low.Clone();
         high[31] |= 0x80;
 
-        var fromLow = new byte[Curve25519FieldElement.EncodedSizeInBytes];
-        var fromHigh = new byte[Curve25519FieldElement.EncodedSizeInBytes];
+        byte[] fromLow = new byte[Curve25519FieldElement.EncodedSizeInBytes];
+        byte[] fromHigh = new byte[Curve25519FieldElement.EncodedSizeInBytes];
         Curve25519FieldElement.FromBytes(low).ToBytes(fromLow);
         Curve25519FieldElement.FromBytes(high).ToBytes(fromHigh);
 
@@ -67,7 +67,7 @@ public class Curve25519FieldElementTests
         _ = testName;
 
         var element = Curve25519FieldElement.FromBytes(Convert.FromHexString(inputHex));
-        var actual = new byte[Curve25519FieldElement.EncodedSizeInBytes];
+        byte[] actual = new byte[Curve25519FieldElement.EncodedSizeInBytes];
         element.ToBytes(actual);
 
         CollectionAssert.AreEqual(Convert.FromHexString(expectedHex), actual);
@@ -96,7 +96,7 @@ public class Curve25519FieldElementTests
     [TestMethod]
     public void Multiply_WhenMultipliedByOne_ShouldReturnSameValue()
     {
-        var encoded = Convert.FromHexString("e6db6867583030db3594c1a424b15f7c726624ec26b3353b10a903a6d0ab1c4c");
+        byte[] encoded = Convert.FromHexString("e6db6867583030db3594c1a424b15f7c726624ec26b3353b10a903a6d0ab1c4c");
         var element = Curve25519FieldElement.FromBytes(encoded);
 
         var product = Curve25519FieldElement.Multiply(element, Curve25519FieldElement.One);
@@ -125,8 +125,8 @@ public class Curve25519FieldElementTests
     [TestMethod]
     public void Subtract_WhenSubtractingPriorAddend_ShouldRecoverOriginalValue()
     {
-        var encodedA = Convert.FromHexString("4b66e9d4d1b4673c5ad22691957d6af5c11b6421e0ea01d42ca4169e7918ba0d");
-        var encodedB = Convert.FromHexString("e5210f12786811d3f4b7959d0538ae2c31dbe7106fc03c3efc4cd549c715a413");
+        byte[] encodedA = Convert.FromHexString("4b66e9d4d1b4673c5ad22691957d6af5c11b6421e0ea01d42ca4169e7918ba0d");
+        byte[] encodedB = Convert.FromHexString("e5210f12786811d3f4b7959d0538ae2c31dbe7106fc03c3efc4cd549c715a413");
         var a = Curve25519FieldElement.FromBytes(encodedA);
         var b = Curve25519FieldElement.FromBytes(encodedB);
 
@@ -267,7 +267,7 @@ public class Curve25519FieldElementTests
     /// <returns>The canonical little-endian encoding.</returns>
     private static byte[] ToArray(in Curve25519FieldElement element)
     {
-        var encoded = new byte[Curve25519FieldElement.EncodedSizeInBytes];
+        byte[] encoded = new byte[Curve25519FieldElement.EncodedSizeInBytes];
         element.ToBytes(encoded);
 
         return encoded;

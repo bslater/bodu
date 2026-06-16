@@ -71,7 +71,7 @@ public static partial class EncodingExtensions
     {
         ThrowHelper.ThrowIfNull(encoding);
 
-        var required = encoding.GetByteCount(chars);
+        int required = encoding.GetByteCount(chars);
         return destination.Length == required
             ? encoding.GetBytes(chars, destination)
             : throw new ArgumentException(

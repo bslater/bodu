@@ -200,7 +200,7 @@ public sealed partial class IniTests
     [TestMethod]
     public void Parse_WhenStringInput_ShouldParseCorrectly()
     {
-        var source = "[db]\nhost=localhost";
+        string source = "[db]\nhost=localhost";
 
         IniDocument doc = Ini.Parse(source);
 

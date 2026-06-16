@@ -15,7 +15,7 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void Outdent_WhenAllLinesAreFullyIndented_ShouldStripIndentFromEveryLine()
     {
-        var actual = "    one\n    two".Outdent(2);
+        string actual = "    one\n    two".Outdent(2);
 
         Assert.AreEqual("  one\n  two", actual);
     }
@@ -27,7 +27,7 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void Outdent_WhenLineHasFewerLeadingChars_ShouldStripWhatIsThere()
     {
-        var actual = "  one\nx".Outdent(4);
+        string actual = "  one\nx".Outdent(4);
 
         Assert.AreEqual("one\nx", actual);
     }
@@ -41,7 +41,7 @@ public partial class StringExtensionsTests
     {
         const string input = "one\ntwo\r\nthree";
 
-        var actual = input.Indent(2).Outdent(2);
+        string actual = input.Indent(2).Outdent(2);
 
         Assert.AreEqual(input, actual);
     }
@@ -53,7 +53,7 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void Outdent_WhenCustomIndentCharSupplied_ShouldUseIt()
     {
-        var actual = "\t\tone\n\t\ttwo".Outdent(2, '\t');
+        string actual = "\t\tone\n\t\ttwo".Outdent(2, '\t');
 
         Assert.AreEqual("one\ntwo", actual);
     }

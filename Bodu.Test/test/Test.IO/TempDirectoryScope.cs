@@ -52,7 +52,7 @@ public sealed class TempDirectoryScope
     /// <returns>The absolute path of the written file.</returns>
     public string WriteFile(string name, string content)
     {
-        var path = Combine(name);
+        string path = Combine(name);
         File.WriteAllText(path, content);
         return path;
     }

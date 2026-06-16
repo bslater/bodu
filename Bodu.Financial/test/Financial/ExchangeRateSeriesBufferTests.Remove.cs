@@ -16,7 +16,7 @@ public partial class ExchangeRateSeriesBufferTests
     {
         ExchangeRateSeriesBuffer buffer = NewBufferWith((1000, 1.4m), (1010, 1.5m), (1020, 1.6m));
 
-        var removed = buffer.Remove(1000);
+        bool removed = buffer.Remove(1000);
 
         Assert.IsTrue(removed);
         Assert.AreEqual(2, buffer.Count);
@@ -33,7 +33,7 @@ public partial class ExchangeRateSeriesBufferTests
     {
         ExchangeRateSeriesBuffer buffer = NewBufferWith((1000, 1.4m), (1010, 1.5m), (1020, 1.6m));
 
-        var removed = buffer.Remove(1010);
+        bool removed = buffer.Remove(1010);
 
         Assert.IsTrue(removed);
         Assert.AreEqual(2, buffer.Count);
@@ -51,7 +51,7 @@ public partial class ExchangeRateSeriesBufferTests
     {
         ExchangeRateSeriesBuffer buffer = NewBufferWith((1000, 1.4m), (1010, 1.5m), (1020, 1.6m));
 
-        var removed = buffer.Remove(1020);
+        bool removed = buffer.Remove(1020);
 
         Assert.IsTrue(removed);
         Assert.AreEqual(2, buffer.Count);
@@ -59,7 +59,7 @@ public partial class ExchangeRateSeriesBufferTests
 
         buffer.Add(1030, 1.7m, RateParam, DateParam);
         Assert.IsTrue(buffer.Contains(1030));
-        Assert.IsTrue(buffer.TryGetRate(1030, out var rate));
+        Assert.IsTrue(buffer.TryGetRate(1030, out decimal rate));
         Assert.AreEqual(1.7m, rate);
     }
 
@@ -90,7 +90,7 @@ public partial class ExchangeRateSeriesBufferTests
     {
         ExchangeRateSeriesBuffer buffer = NewBufferWith((1000, 1.4m));
 
-        var removed = buffer.Remove(1010);
+        bool removed = buffer.Remove(1010);
 
         Assert.IsFalse(removed);
         Assert.AreEqual(1, buffer.Count);

@@ -206,8 +206,8 @@ public sealed partial class ConcurrentHashSet<T>
         if (capacity < concurrencyLevel)
             capacity = concurrencyLevel;
 
-        var locks = new object[concurrencyLevel];
-        for (var i = 0; i < locks.Length; i++)
+        object[] locks = new object[concurrencyLevel];
+        for (int i = 0; i < locks.Length; i++)
             locks[i] = new object();
 
         _locks = locks;
@@ -240,10 +240,10 @@ public sealed partial class ConcurrentHashSet<T>
     {
         get
         {
-            var countPerLock = _tables._countPerLock;
-            var count = 0;
+            int[] countPerLock = _tables._countPerLock;
+            int count = 0;
 
-            for (var i = 0; i < countPerLock.Length; i++)
+            for (int i = 0; i < countPerLock.Length; i++)
             {
                 checked
                 {
@@ -274,7 +274,7 @@ public sealed partial class ConcurrentHashSet<T>
     {
         get
         {
-            var locksAcquired = 0;
+            int locksAcquired = 0;
             try
             {
                 AcquireAllLocks(ref locksAcquired);
@@ -310,13 +310,13 @@ public sealed partial class ConcurrentHashSet<T>
     {
         get
         {
-            var locksAcquired = 0;
+            int locksAcquired = 0;
             try
             {
                 AcquireAllLocks(ref locksAcquired);
 
-                var countPerLock = _tables._countPerLock;
-                for (var i = 0; i < countPerLock.Length; i++)
+                int[] countPerLock = _tables._countPerLock;
+                for (int i = 0; i < countPerLock.Length; i++)
                 {
                     if (countPerLock[i] != 0)
                         return false;
@@ -352,9 +352,9 @@ public sealed partial class ConcurrentHashSet<T>
     {
         get
         {
-            var countPerLock = _tables._countPerLock;
+            int[] countPerLock = _tables._countPerLock;
 
-            for (var i = 0; i < countPerLock.Length; i++)
+            for (int i = 0; i < countPerLock.Length; i++)
             {
                 if (Volatile.Read(ref countPerLock[i]) != 0)
                     return false;
@@ -404,14 +404,14 @@ public sealed partial class ConcurrentHashSet<T>
     {
         ThrowHelper.ThrowIfNull(item);
 
-        var hashCode = _comparer.GetHashCode(item);
+        int hashCode = _comparer.GetHashCode(item);
 
         while (true)
         {
             Tables tables = _tables;
-            GetBucketAndLockNo(hashCode, out var bucketNo, out var lockNo, tables._buckets.Length);
+            GetBucketAndLockNo(hashCode, out int bucketNo, out int lockNo, tables._buckets.Length);
 
-            var resizeDesired = false;
+            bool resizeDesired = false;
             lock (_locks[lockNo])
             {
                 // A concurrent resize may have published a new table while this thread waited for the lock.
@@ -453,14 +453,14 @@ public sealed partial class ConcurrentHashSet<T>
     /// </remarks>
     public void Clear()
     {
-        var locksAcquired = 0;
+        int locksAcquired = 0;
         try
         {
             AcquireAllLocks(ref locksAcquired);
 
             // Retain the current bucket count so a previously grown set is not forced to immediately regrow, and
             // never drop below the lock count or a stripe would guard zero buckets.
-            var bucketCount = Math.Max(_tables._buckets.Length, _locks.Length);
+            int bucketCount = Math.Max(_tables._buckets.Length, _locks.Length);
             _tables = new Tables(new Node?[bucketCount], new int[_locks.Length]);
             _budget = Math.Max(1, bucketCount / _locks.Length);
         }
@@ -486,9 +486,9 @@ public sealed partial class ConcurrentHashSet<T>
     {
         ThrowHelper.ThrowIfNull(item);
 
-        var hashCode = _comparer.GetHashCode(item);
+        int hashCode = _comparer.GetHashCode(item);
         Tables tables = _tables;
-        var bucketNo = GetBucket(hashCode, tables._buckets.Length);
+        int bucketNo = GetBucket(hashCode, tables._buckets.Length);
 
         for (Node? node = Volatile.Read(ref tables._buckets[bucketNo]); node is not null; node = node._next)
         {
@@ -514,12 +514,12 @@ public sealed partial class ConcurrentHashSet<T>
     {
         ThrowHelper.ThrowIfNull(item);
 
-        var hashCode = _comparer.GetHashCode(item);
+        int hashCode = _comparer.GetHashCode(item);
 
         while (true)
         {
             Tables tables = _tables;
-            GetBucketAndLockNo(hashCode, out var bucketNo, out var lockNo, tables._buckets.Length);
+            GetBucketAndLockNo(hashCode, out int bucketNo, out int lockNo, tables._buckets.Length);
 
             lock (_locks[lockNo])
             {
@@ -563,19 +563,19 @@ public sealed partial class ConcurrentHashSet<T>
     /// </remarks>
     public T[] ToArray()
     {
-        var locksAcquired = 0;
+        int locksAcquired = 0;
         try
         {
             AcquireAllLocks(ref locksAcquired);
 
-            var count = GetCountNoLocks();
+            int count = GetCountNoLocks();
             if (count == 0)
                 return [];
 
             var array = new T[count];
-            var index = 0;
+            int index = 0;
             Node?[] buckets = _tables._buckets;
-            for (var i = 0; i < buckets.Length; i++)
+            for (int i = 0; i < buckets.Length; i++)
             {
                 for (Node? node = buckets[i]; node is not null; node = node._next)
                     array[index++] = node._item;
@@ -635,9 +635,9 @@ public sealed partial class ConcurrentHashSet<T>
     /// </param>
     private void AcquireAllLocks(ref int locksAcquired)
     {
-        for (var i = 0; i < _locks.Length; i++)
+        for (int i = 0; i < _locks.Length; i++)
         {
-            var lockTaken = false;
+            bool lockTaken = false;
             try
             {
                 Monitor.Enter(_locks[i], ref lockTaken);
@@ -669,9 +669,9 @@ public sealed partial class ConcurrentHashSet<T>
     /// <returns>The number of elements currently stored across all buckets.</returns>
     private int GetCountNoLocks()
     {
-        var count = 0;
-        var countPerLock = _tables._countPerLock;
-        for (var i = 0; i < countPerLock.Length; i++)
+        int count = 0;
+        int[] countPerLock = _tables._countPerLock;
+        for (int i = 0; i < countPerLock.Length; i++)
         {
             checked
             {
@@ -698,7 +698,7 @@ public sealed partial class ConcurrentHashSet<T>
     /// </remarks>
     private void GrowTable(Tables tables)
     {
-        var locksAcquired = 0;
+        int locksAcquired = 0;
         try
         {
             AcquireAllLocks(ref locksAcquired);
@@ -707,8 +707,8 @@ public sealed partial class ConcurrentHashSet<T>
             if (tables != _tables)
                 return;
 
-            var approxCount = 0;
-            for (var i = 0; i < tables._countPerLock.Length; i++)
+            int approxCount = 0;
+            for (int i = 0; i < tables._countPerLock.Length; i++)
                 approxCount += tables._countPerLock[i];
 
             // A sparsely populated table that still tripped the budget indicates a poor hash distribution rather
@@ -744,15 +744,15 @@ public sealed partial class ConcurrentHashSet<T>
             }
 
             var newBuckets = new Node?[newBucketCount];
-            var newCountPerLock = new int[_locks.Length];
+            int[] newCountPerLock = new int[_locks.Length];
 
-            for (var i = 0; i < tables._buckets.Length; i++)
+            for (int i = 0; i < tables._buckets.Length; i++)
             {
                 Node? current = tables._buckets[i];
                 while (current is not null)
                 {
                     Node? next = current._next;
-                    var newBucketNo = GetBucket(current._hashCode, newBucketCount);
+                    int newBucketNo = GetBucket(current._hashCode, newBucketCount);
                     newBuckets[newBucketNo] = new Node(current._item, current._hashCode, newBuckets[newBucketNo]);
 
                     checked
@@ -781,7 +781,7 @@ public sealed partial class ConcurrentHashSet<T>
     /// <param name="locksAcquired">The number of stripe locks, starting at index zero, to release.</param>
     private void ReleaseLocks(int locksAcquired)
     {
-        for (var i = 0; i < locksAcquired; i++)
+        for (int i = 0; i < locksAcquired; i++)
             Monitor.Exit(_locks[i]);
     }
 }

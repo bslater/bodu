@@ -59,7 +59,7 @@ public partial class ConcurrentHashSetTests
     public void ICollectionT_CopyTo_ShouldCopyEveryElementThroughInterface()
     {
         ICollection<int> set = new ConcurrentHashSet<int>([1, 2, 3]);
-        var array = new int[3];
+        int[] array = new int[3];
 
         set.CopyTo(array, 0);
 

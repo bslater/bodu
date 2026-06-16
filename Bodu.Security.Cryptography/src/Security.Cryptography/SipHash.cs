@@ -285,7 +285,7 @@ public abstract class SipHash<T>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected override void ProcessBlock(ReadOnlySpan<byte> block)
     {
-        var b = BinaryPrimitives.ReadUInt64LittleEndian(block);
+        ulong b = BinaryPrimitives.ReadUInt64LittleEndian(block);
         _v3 ^= b;
         PerformSipRounds(_compressionRounds);
         _v0 ^= b;
@@ -303,10 +303,10 @@ public abstract class SipHash<T>
         _v2 ^= (HashSizeValue == 64) ? 0xffUL : 0xeeUL;
         PerformSipRounds(_finalizationRounds);
 
-        var hash = new byte[HashSizeValue / 8];
+        byte[] hash = new byte[HashSizeValue / 8];
 
         // First 64-bit output
-        var h0 = _v0 ^ _v1 ^ _v2 ^ _v3;
+        ulong h0 = _v0 ^ _v1 ^ _v2 ^ _v3;
         MemoryMarshal.Write(hash.AsSpan(0, 8), in h0);
 
         // Optional second block for SipHash-128
@@ -315,7 +315,7 @@ public abstract class SipHash<T>
             _v1 ^= 0xdd;
             PerformSipRounds(_finalizationRounds);
 
-            var h1 = _v0 ^ _v1 ^ _v2 ^ _v3;
+            ulong h1 = _v0 ^ _v1 ^ _v2 ^ _v3;
             MemoryMarshal.Write(hash.AsSpan(8, 8), in h1);
         }
 
@@ -337,8 +337,8 @@ public abstract class SipHash<T>
         // KeyValue is non-null and of the expected length before this point.
         // Use little-endian reads to match the SipHash specification and ProcessBlock; prior code used
         // host-endian BitConverter, which would produce incorrect digests on big-endian hosts.
-        var k0 = BinaryPrimitives.ReadUInt64LittleEndian(KeyValue!.AsSpan(0));
-        var k1 = BinaryPrimitives.ReadUInt64LittleEndian(KeyValue!.AsSpan(8));
+        ulong k0 = BinaryPrimitives.ReadUInt64LittleEndian(KeyValue!.AsSpan(0));
+        ulong k1 = BinaryPrimitives.ReadUInt64LittleEndian(KeyValue!.AsSpan(8));
         _v0 = s_initialStates[0] ^ k0;
         _v1 = s_initialStates[1] ^ k1;
         _v2 = s_initialStates[2] ^ k0;
@@ -363,7 +363,7 @@ public abstract class SipHash<T>
     {
         ulong r0 = _v0, r1 = _v1, r2 = _v2, r3 = _v3;
 
-        for (var i = 0; i < iterations; i++)
+        for (int i = 0; i < iterations; i++)
         {
             r0 += r1;
             r1 = r1.RotateBitsLeftUnchecked(13);

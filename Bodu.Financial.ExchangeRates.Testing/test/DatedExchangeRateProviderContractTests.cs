@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DatedExchangeRateProviderContractTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -88,8 +88,8 @@ public abstract class DatedExchangeRateProviderContractTests<TProvider>
     public async Task GetRate_WhenResolvedSyncAndAsync_ShouldReturnEquivalentResult()
     {
         TProvider provider = CreateWarmedProvider();
-        var from = CanonicalPair.FromIsoCode;
-        var to = CanonicalPair.ToIsoCode;
+        string from = CanonicalPair.FromIsoCode;
+        string to = CanonicalPair.ToIsoCode;
 
         ExchangeRateLookupResult sync = provider.GetRate(from, to, KnownDate, ExchangeRateLookupOptions.Exact);
         ExchangeRateLookupResult async = await provider.GetRateAsync(from, to, KnownDate, ExchangeRateLookupOptions.Exact);
@@ -114,14 +114,14 @@ public abstract class DatedExchangeRateProviderContractTests<TProvider>
     public async Task GetRates_WhenResolvedSyncAndAsync_ShouldReturnEquivalentRange()
     {
         TProvider provider = CreateWarmedProvider();
-        var from = CanonicalPair.FromIsoCode;
-        var to = CanonicalPair.ToIsoCode;
+        string from = CanonicalPair.FromIsoCode;
+        string to = CanonicalPair.ToIsoCode;
 
         ExchangeRateRangeResult sync = provider.GetRates(from, to, RangeStart, RangeEnd);
         ExchangeRateRangeResult async = await provider.GetRatesAsync(from, to, RangeStart, RangeEnd);
 
         Assert.AreEqual(sync.Count, async.Count, "range count");
-        for (var i = 0; i < sync.Count; i++)
+        for (int i = 0; i < sync.Count; i++)
         {
             Assert.AreEqual(sync[i].Date, async[i].Date, $"date at {i}");
             Assert.AreEqual(sync[i].Rate, async[i].Rate, $"rate at {i}");
@@ -137,7 +137,7 @@ public abstract class DatedExchangeRateProviderContractTests<TProvider>
     {
         TProvider provider = CreateProvider();
 
-        var resolved = provider.TryGetRate(
+        bool resolved = provider.TryGetRate(
             CanonicalPair.FromIsoCode,
             CanonicalPair.ToIsoCode,
             UnknownDate,
@@ -188,8 +188,8 @@ public abstract class DatedExchangeRateProviderContractTests<TProvider>
     public void GetRate_WhenOptionsNull_ShouldResolveKnownDate()
     {
         TProvider provider = CreateWarmedProvider();
-        var from = CanonicalPair.FromIsoCode;
-        var to = CanonicalPair.ToIsoCode;
+        string from = CanonicalPair.FromIsoCode;
+        string to = CanonicalPair.ToIsoCode;
 
         ExchangeRateLookupResult withDefault = provider.GetRate(from, to, KnownDate, options: null);
         ExchangeRateLookupResult withExact = provider.GetRate(from, to, KnownDate, ExchangeRateLookupOptions.Exact);
@@ -212,11 +212,11 @@ public abstract class DatedExchangeRateProviderContractTests<TProvider>
         }
 
         TProvider provider = CreateProvider();
-        var from = CanonicalPair.FromIsoCode;
-        var to = CanonicalPair.ToIsoCode;
+        string from = CanonicalPair.FromIsoCode;
+        string to = CanonicalPair.ToIsoCode;
 
-        var direct = provider.GetRate(from, to, KnownDate, ExchangeRateLookupOptions.Exact).Rate.Rate;
-        var inverse = provider.GetRate(to, from, KnownDate, ExchangeRateLookupOptions.Exact).Rate.Rate;
+        decimal direct = provider.GetRate(from, to, KnownDate, ExchangeRateLookupOptions.Exact).Rate.Rate;
+        decimal inverse = provider.GetRate(to, from, KnownDate, ExchangeRateLookupOptions.Exact).Rate.Rate;
 
         Assert.IsTrue(direct > 0m && inverse > 0m, "both directions resolve to a positive rate");
         Assert.IsTrue(Math.Abs((direct * inverse) - 1m) < 0.0001m, $"product {direct * inverse} should be ~1");
@@ -236,7 +236,7 @@ public abstract class DatedExchangeRateProviderContractTests<TProvider>
         }
 
         TProvider provider = CreateProvider();
-        var code = CanonicalPair.FromIsoCode;
+        string code = CanonicalPair.FromIsoCode;
 
         ExchangeRateLookupResult result = provider.GetRate(code, code, KnownDate, ExchangeRateLookupOptions.Exact);
 
@@ -262,8 +262,8 @@ public abstract class DatedExchangeRateProviderContractTests<TProvider>
     private TProvider CreateWarmedProvider()
     {
         TProvider provider = CreateProvider();
-        var from = CanonicalPair.FromIsoCode;
-        var to = CanonicalPair.ToIsoCode;
+        string from = CanonicalPair.FromIsoCode;
+        string to = CanonicalPair.ToIsoCode;
 
         // A single-date miss populates the per-row cache; a range fetch establishes the contiguous coverage a range
         // serve requires. Both are harmless no-ops for a provider without a cache.

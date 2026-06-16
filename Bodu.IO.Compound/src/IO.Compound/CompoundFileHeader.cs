@@ -198,7 +198,7 @@ internal sealed class CompoundFileHeader
         uint difatSectorCount = reader.ReadUInt32();
 
         uint[] difat = new uint[HeaderDifatCount];
-        for (var i = 0; i < HeaderDifatCount; i++)
+        for (int i = 0; i < HeaderDifatCount; i++)
             difat[i] = reader.ReadUInt32();
 
         return new CompoundFileHeader(

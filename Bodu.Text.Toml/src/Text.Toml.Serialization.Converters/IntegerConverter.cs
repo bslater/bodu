@@ -30,7 +30,7 @@ internal sealed class IntegerConverter<T>
                 string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Op_Invalid_ExpectedInteger, reader.TokenType));
         }
 
-        var value = reader.GetInt64();
+        long value = reader.GetInt64();
         try
         {
             return T.CreateChecked(value);

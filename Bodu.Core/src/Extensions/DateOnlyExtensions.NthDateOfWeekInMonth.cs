@@ -58,7 +58,7 @@ public static partial class DateOnlyExtensions
                 return date.LastDateOfWeekInMonth(dayOfWeek);
 
             default:
-                var dayNumber = DateTimeExtensions.GetDayNumberUnchecked(date.Year, date.Month, 1);
+                int dayNumber = DateTimeExtensions.GetDayNumberUnchecked(date.Year, date.Month, 1);
                 var result = DateOnly.FromDayNumber(
                     dayNumber + (((int)dayOfWeek - (int)GetDayOfWeekFromDayNumber(dayNumber) + 7) % 7) + (((int)ordinal - 1) * 7));
 

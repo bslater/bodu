@@ -51,7 +51,7 @@ public partial class EvictingDictionaryTests
     public void EvictionCount_WhenManyEvictionsOccur_ShouldReflectCorrectEvictionTotal()
     {
         var dictionary = new EvictingDictionary<int, int>(1);
-        for (var i = 0; i < 10; i++)
+        for (int i = 0; i < 10; i++)
         {
             dictionary.Add(i, i);
         }

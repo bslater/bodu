@@ -557,7 +557,7 @@ public sealed class PooledBufferBuilder<T> :
         if (minimum <= _internalBuffer.Length)
             return;
 
-        var newCapacity = Math.Max(_internalBuffer.Length * 2, minimum);
+        int newCapacity = Math.Max(_internalBuffer.Length * 2, minimum);
         T[] newBuffer = ArrayPool<T>.Shared.Rent(newCapacity);
         Array.Copy(_internalBuffer, 0, newBuffer, 0, _count);
         ReturnBufferIfNeeded();

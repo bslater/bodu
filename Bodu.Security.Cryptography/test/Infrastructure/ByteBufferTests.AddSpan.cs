@@ -16,10 +16,10 @@ public partial class ByteBufferTests
     [TestMethod]
     public void Add_WhenAddingSpanSlice_ShouldAddCorrectBytes()
     {
-        var data = new byte[] { 1, 2, 3, 4 };
+        byte[] data = new byte[] { 1, 2, 3, 4 };
         var buffer = new ByteBuffer(2);
         buffer.Add(data.AsSpan(1, 2)); // adds 2 and 3
-        var result = buffer.GetBytesZeroPadded();
+        byte[] result = buffer.GetBytesZeroPadded();
         CollectionAssert.AreEqual(new byte[] { 2, 3 }, result);
     }
 
@@ -31,7 +31,7 @@ public partial class ByteBufferTests
     {
         var buffer = new ByteBuffer(2);
         buffer.Add([1], 0, 1);
-        var span = new byte[] { 2, 3 };
+        byte[] span = new byte[] { 2, 3 };
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => buffer.Add(span));
     }
 
@@ -42,8 +42,8 @@ public partial class ByteBufferTests
     public void Add_WhenValidSpanAdded_ShouldReturnCorrectly()
     {
         var buffer = new ByteBuffer(3);
-        var span = new byte[] { 1, 2 };
-        var result = buffer.Add(span);
+        byte[] span = new byte[] { 1, 2 };
+        bool result = buffer.Add(span);
         Assert.IsFalse(result);
         Assert.AreEqual(2, buffer.Count);
     }

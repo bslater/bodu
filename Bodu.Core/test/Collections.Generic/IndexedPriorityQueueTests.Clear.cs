@@ -33,7 +33,7 @@ public partial class IndexedPriorityQueueTests
         var queue = new IndexedPriorityQueue<string, int>(64);
         queue.Enqueue("a", 1);
 
-        var capacityBefore = queue.Capacity;
+        int capacityBefore = queue.Capacity;
         queue.Clear();
 
         Assert.AreEqual(capacityBefore, queue.Capacity);

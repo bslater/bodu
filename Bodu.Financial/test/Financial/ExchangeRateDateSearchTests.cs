@@ -18,12 +18,12 @@ public class ExchangeRateDateSearchTests
     [TestMethod]
     public void TrySelectCandidate_WhenPreviousOnOrBeforeAndPreviousAvailable_ShouldSelectPrevious()
     {
-        var requested = 1005;
-        var previous = 0;
-        var next = 1;
+        int requested = 1005;
+        int previous = 0;
+        int next = 1;
 
-        var found = ExchangeRateDateSearch.TrySelectCandidate(
-            s_dayNumbers, requested, ExchangeRateDateResolution.PreviousOnOrBefore, previous, next, out var candidate);
+        bool found = ExchangeRateDateSearch.TrySelectCandidate(
+            s_dayNumbers, requested, ExchangeRateDateResolution.PreviousOnOrBefore, previous, next, out int candidate);
 
         Assert.IsTrue(found);
         Assert.AreEqual(0, candidate);
@@ -36,12 +36,12 @@ public class ExchangeRateDateSearchTests
     [TestMethod]
     public void TrySelectCandidate_WhenPreviousOnOrBeforeAndNoPrevious_ShouldFail()
     {
-        var requested = 999;
-        var previous = -1;
-        var next = 0;
+        int requested = 999;
+        int previous = -1;
+        int next = 0;
 
-        var found = ExchangeRateDateSearch.TrySelectCandidate(
-            s_dayNumbers, requested, ExchangeRateDateResolution.PreviousOnOrBefore, previous, next, out var candidate);
+        bool found = ExchangeRateDateSearch.TrySelectCandidate(
+            s_dayNumbers, requested, ExchangeRateDateResolution.PreviousOnOrBefore, previous, next, out int candidate);
 
         Assert.IsFalse(found);
         Assert.AreEqual(-1, candidate);
@@ -54,12 +54,12 @@ public class ExchangeRateDateSearchTests
     [TestMethod]
     public void TrySelectCandidate_WhenNextOnOrAfterAndNextAvailable_ShouldSelectNext()
     {
-        var requested = 1005;
-        var previous = 0;
-        var next = 1;
+        int requested = 1005;
+        int previous = 0;
+        int next = 1;
 
-        var found = ExchangeRateDateSearch.TrySelectCandidate(
-            s_dayNumbers, requested, ExchangeRateDateResolution.NextOnOrAfter, previous, next, out var candidate);
+        bool found = ExchangeRateDateSearch.TrySelectCandidate(
+            s_dayNumbers, requested, ExchangeRateDateResolution.NextOnOrAfter, previous, next, out int candidate);
 
         Assert.IsTrue(found);
         Assert.AreEqual(1, candidate);
@@ -72,12 +72,12 @@ public class ExchangeRateDateSearchTests
     [TestMethod]
     public void TrySelectCandidate_WhenNextOnOrAfterAndNoNext_ShouldFail()
     {
-        var requested = 1100;
-        var previous = 2;
-        var next = 3; // == dayNumbers.Length
+        int requested = 1100;
+        int previous = 2;
+        int next = 3; // == dayNumbers.Length
 
-        var found = ExchangeRateDateSearch.TrySelectCandidate(
-            s_dayNumbers, requested, ExchangeRateDateResolution.NextOnOrAfter, previous, next, out var candidate);
+        bool found = ExchangeRateDateSearch.TrySelectCandidate(
+            s_dayNumbers, requested, ExchangeRateDateResolution.NextOnOrAfter, previous, next, out int candidate);
 
         Assert.IsFalse(found);
         Assert.AreEqual(-1, candidate);
@@ -91,8 +91,8 @@ public class ExchangeRateDateSearchTests
     public void TrySelectCandidate_WhenNearestAndPreviousCloser_ShouldSelectPrevious()
     {
         // requested 1003 — previous 1000 distance 3, next 1010 distance 7
-        var found = ExchangeRateDateSearch.TrySelectCandidate(
-            s_dayNumbers, 1003, ExchangeRateDateResolution.Nearest, 0, 1, out var candidate);
+        bool found = ExchangeRateDateSearch.TrySelectCandidate(
+            s_dayNumbers, 1003, ExchangeRateDateResolution.Nearest, 0, 1, out int candidate);
 
         Assert.IsTrue(found);
         Assert.AreEqual(0, candidate);
@@ -106,8 +106,8 @@ public class ExchangeRateDateSearchTests
     public void TrySelectCandidate_WhenNearestAndNextCloser_ShouldSelectNext()
     {
         // requested 1008 — previous 1000 distance 8, next 1010 distance 2
-        var found = ExchangeRateDateSearch.TrySelectCandidate(
-            s_dayNumbers, 1008, ExchangeRateDateResolution.Nearest, 0, 1, out var candidate);
+        bool found = ExchangeRateDateSearch.TrySelectCandidate(
+            s_dayNumbers, 1008, ExchangeRateDateResolution.Nearest, 0, 1, out int candidate);
 
         Assert.IsTrue(found);
         Assert.AreEqual(1, candidate);
@@ -121,8 +121,8 @@ public class ExchangeRateDateSearchTests
     public void TrySelectCandidate_WhenNearestAndTie_ShouldFail()
     {
         // requested 1005 — previous 1000 distance 5, next 1010 distance 5
-        var found = ExchangeRateDateSearch.TrySelectCandidate(
-            s_dayNumbers, 1005, ExchangeRateDateResolution.Nearest, 0, 1, out var candidate);
+        bool found = ExchangeRateDateSearch.TrySelectCandidate(
+            s_dayNumbers, 1005, ExchangeRateDateResolution.Nearest, 0, 1, out int candidate);
 
         Assert.IsFalse(found);
         Assert.AreEqual(-1, candidate);
@@ -135,8 +135,8 @@ public class ExchangeRateDateSearchTests
     [TestMethod]
     public void TrySelectCandidate_WhenNearestPreferPreviousAndTie_ShouldSelectPrevious()
     {
-        var found = ExchangeRateDateSearch.TrySelectCandidate(
-            s_dayNumbers, 1005, ExchangeRateDateResolution.NearestPreferPrevious, 0, 1, out var candidate);
+        bool found = ExchangeRateDateSearch.TrySelectCandidate(
+            s_dayNumbers, 1005, ExchangeRateDateResolution.NearestPreferPrevious, 0, 1, out int candidate);
 
         Assert.IsTrue(found);
         Assert.AreEqual(0, candidate);
@@ -149,8 +149,8 @@ public class ExchangeRateDateSearchTests
     [TestMethod]
     public void TrySelectCandidate_WhenNearestPreferNextAndTie_ShouldSelectNext()
     {
-        var found = ExchangeRateDateSearch.TrySelectCandidate(
-            s_dayNumbers, 1005, ExchangeRateDateResolution.NearestPreferNext, 0, 1, out var candidate);
+        bool found = ExchangeRateDateSearch.TrySelectCandidate(
+            s_dayNumbers, 1005, ExchangeRateDateResolution.NearestPreferNext, 0, 1, out int candidate);
 
         Assert.IsTrue(found);
         Assert.AreEqual(1, candidate);
@@ -163,8 +163,8 @@ public class ExchangeRateDateSearchTests
     [TestMethod]
     public void TrySelectCandidate_WhenNearestAndOnlyNextAvailable_ShouldSelectNext()
     {
-        var found = ExchangeRateDateSearch.TrySelectCandidate(
-            s_dayNumbers, 999, ExchangeRateDateResolution.Nearest, -1, 0, out var candidate);
+        bool found = ExchangeRateDateSearch.TrySelectCandidate(
+            s_dayNumbers, 999, ExchangeRateDateResolution.Nearest, -1, 0, out int candidate);
 
         Assert.IsTrue(found);
         Assert.AreEqual(0, candidate);
@@ -177,8 +177,8 @@ public class ExchangeRateDateSearchTests
     [TestMethod]
     public void TrySelectCandidate_WhenNearestAndOnlyPreviousAvailable_ShouldSelectPrevious()
     {
-        var found = ExchangeRateDateSearch.TrySelectCandidate(
-            s_dayNumbers, 1100, ExchangeRateDateResolution.Nearest, 2, 3, out var candidate);
+        bool found = ExchangeRateDateSearch.TrySelectCandidate(
+            s_dayNumbers, 1100, ExchangeRateDateResolution.Nearest, 2, 3, out int candidate);
 
         Assert.IsTrue(found);
         Assert.AreEqual(2, candidate);
@@ -191,8 +191,8 @@ public class ExchangeRateDateSearchTests
     [TestMethod]
     public void TrySelectCandidate_WhenExact_ShouldAlwaysFail()
     {
-        var found = ExchangeRateDateSearch.TrySelectCandidate(
-            s_dayNumbers, 1005, ExchangeRateDateResolution.Exact, 0, 1, out var candidate);
+        bool found = ExchangeRateDateSearch.TrySelectCandidate(
+            s_dayNumbers, 1005, ExchangeRateDateResolution.Exact, 0, 1, out int candidate);
 
         Assert.IsFalse(found);
         Assert.AreEqual(-1, candidate);
@@ -205,9 +205,9 @@ public class ExchangeRateDateSearchTests
     [TestMethod]
     public void TrySelectCandidate_WhenNoCandidatesAvailable_ShouldFail()
     {
-        var empty = Array.Empty<int>();
-        var found = ExchangeRateDateSearch.TrySelectCandidate(
-            empty, 1000, ExchangeRateDateResolution.Nearest, -1, 0, out var candidate);
+        int[] empty = Array.Empty<int>();
+        bool found = ExchangeRateDateSearch.TrySelectCandidate(
+            empty, 1000, ExchangeRateDateResolution.Nearest, -1, 0, out int candidate);
 
         Assert.IsFalse(found);
         Assert.AreEqual(-1, candidate);

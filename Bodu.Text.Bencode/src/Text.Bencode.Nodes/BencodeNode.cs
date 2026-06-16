@@ -287,7 +287,7 @@ public abstract class BencodeNode
         switch (reader.TokenType)
         {
             case BencodeTokenType.Integer:
-                return reader.TryGetInt64(out var integer)
+                return reader.TryGetInt64(out long integer)
                     ? BencodeValue.Create(integer)
                     : BencodeValue.Create(reader.GetUInt64());
 
@@ -308,7 +308,7 @@ public abstract class BencodeNode
                 var obj = new BencodeObject(options);
                 while (reader.Read() && reader.TokenType != BencodeTokenType.EndDictionary)
                 {
-                    var key = reader.GetString();
+                    string key = reader.GetString();
                     reader.Read();
                     obj[key] = ReadFrom(ref reader, options);
                 }
@@ -427,8 +427,8 @@ public abstract class BencodeNode
     /// <returns>A <c>.name</c> segment for simple keys; otherwise a quoted <c>['name']</c> segment.</returns>
     private static string FormatKeySegment(string key)
     {
-        var simple = key.Length > 0;
-        foreach (var c in key)
+        bool simple = key.Length > 0;
+        foreach (char c in key)
         {
             if (!char.IsAsciiLetterOrDigit(c) && c != '_')
             {
@@ -623,7 +623,7 @@ public abstract class BencodeNode
         if (left.Count != right.Count)
             return false;
 
-        for (var i = 0; i < left.Count; i++)
+        for (int i = 0; i < left.Count; i++)
         {
             if (!DeepEquals(left[i], right[i]))
                 return false;

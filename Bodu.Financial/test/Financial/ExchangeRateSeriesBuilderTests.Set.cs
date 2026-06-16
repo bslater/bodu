@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateSeriesBuilderTests.Set.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -21,7 +21,7 @@ public partial class ExchangeRateSeriesBuilderTests
 
         builder.Set(new DateOnly(2026, 6, 1), 1.75m);
 
-        Assert.IsTrue(builder.TryGetRate(new DateOnly(2026, 6, 1), out var rate));
+        Assert.IsTrue(builder.TryGetRate(new DateOnly(2026, 6, 1), out decimal rate));
         Assert.AreEqual(1.75m, rate);
         Assert.AreEqual(1, builder.Count);
     }
@@ -68,10 +68,10 @@ public partial class ExchangeRateSeriesBuilderTests
         ExchangeRateSeriesBuilder builder = new(s_usdAud, "RBA");
         builder.Add(new DateOnly(2026, 6, 1), 1.50m);
 
-        var updated = builder.TrySet(new DateOnly(2026, 6, 1), 1.75m);
+        bool updated = builder.TrySet(new DateOnly(2026, 6, 1), 1.75m);
 
         Assert.IsTrue(updated);
-        Assert.IsTrue(builder.TryGetRate(new DateOnly(2026, 6, 1), out var rate));
+        Assert.IsTrue(builder.TryGetRate(new DateOnly(2026, 6, 1), out decimal rate));
         Assert.AreEqual(1.75m, rate);
     }
 
@@ -84,7 +84,7 @@ public partial class ExchangeRateSeriesBuilderTests
     {
         ExchangeRateSeriesBuilder builder = new(s_usdAud, "RBA");
 
-        var updated = builder.TrySet(new DateOnly(2026, 6, 1), 1.50m);
+        bool updated = builder.TrySet(new DateOnly(2026, 6, 1), 1.50m);
 
         Assert.IsFalse(updated);
         Assert.IsTrue(builder.IsEmpty);

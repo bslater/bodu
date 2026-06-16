@@ -32,7 +32,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
         algorithm.AppendData(new ReadOnlySpan<byte>([100]));
 
-        var result = algorithm.ComputeHash(s_sampleData);
+        byte[] result = algorithm.ComputeHash(s_sampleData);
 
         CollectionAssert.AreEqual(s_sampleHash, result);
     }
@@ -47,7 +47,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
         algorithm.AppendData(new ReadOnlySpan<byte>([100]));
 
-        var result = algorithm.ComputeHash(s_sampleData, 0, s_sampleData.Length);
+        byte[] result = algorithm.ComputeHash(s_sampleData, 0, s_sampleData.Length);
 
         CollectionAssert.AreEqual(s_sampleHash, result);
     }
@@ -62,7 +62,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
         algorithm.AppendData(new ReadOnlySpan<byte>([100]));
 
-        var result = algorithm.ComputeHash(new ReadOnlySpan<byte>(s_sampleData));
+        byte[] result = algorithm.ComputeHash(new ReadOnlySpan<byte>(s_sampleData));
 
         CollectionAssert.AreEqual(s_sampleHash, result);
     }
@@ -77,7 +77,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
         algorithm.AppendData(new ReadOnlySpan<byte>([50]));
 
-        var result = algorithm.ComputeHash(new MemoryStream(s_sampleData));
+        byte[] result = algorithm.ComputeHash(new MemoryStream(s_sampleData));
 
         CollectionAssert.AreEqual(s_sampleHash, result);
     }
@@ -159,7 +159,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
-        var result = algorithm.ComputeHash(s_sampleData);
+        byte[] result = algorithm.ComputeHash(s_sampleData);
 
         CollectionAssert.AreEqual(s_sampleHash, result);
     }
@@ -174,7 +174,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
-        var result = algorithm.ComputeHash([]);
+        byte[] result = algorithm.ComputeHash([]);
 
         CollectionAssert.AreEqual(s_emptyHash, result);
     }
@@ -248,7 +248,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
-        var result = algorithm.ComputeHash(new MemoryStream(s_sampleData), bufferSize: 1);
+        byte[] result = algorithm.ComputeHash(new MemoryStream(s_sampleData), bufferSize: 1);
 
         CollectionAssert.AreEqual(s_sampleHash, result);
     }
@@ -262,7 +262,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     public void ComputeHash_WhenCalled_ForByteArrayOverload_ShouldResetAlgorithm()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
-        var before = algorithm.ResetCallCount;
+        int before = algorithm.ResetCallCount;
 
         _ = algorithm.ComputeHash(s_sampleData);
 
@@ -278,9 +278,9 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
-        var first = algorithm.ComputeHash(s_sampleData);
-        var second = algorithm.ComputeHash([5, 6]);
-        var expectedSecond = BitConverter.GetBytes((uint)(5 + 6));
+        byte[] first = algorithm.ComputeHash(s_sampleData);
+        byte[] second = algorithm.ComputeHash([5, 6]);
+        byte[] expectedSecond = BitConverter.GetBytes((uint)(5 + 6));
 
         CollectionAssert.AreEqual(s_sampleHash, first);
         CollectionAssert.AreEqual(expectedSecond, second);
@@ -294,9 +294,9 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
-        var first = algorithm.ComputeHash(new ReadOnlySpan<byte>(s_sampleData));
-        var second = algorithm.ComputeHash(new ReadOnlySpan<byte>([7, 8]));
-        var expectedSecond = BitConverter.GetBytes((uint)(7 + 8));
+        byte[] first = algorithm.ComputeHash(new ReadOnlySpan<byte>(s_sampleData));
+        byte[] second = algorithm.ComputeHash(new ReadOnlySpan<byte>([7, 8]));
+        byte[] expectedSecond = BitConverter.GetBytes((uint)(7 + 8));
 
         CollectionAssert.AreEqual(s_sampleHash, first);
         CollectionAssert.AreEqual(expectedSecond, second);
@@ -310,9 +310,9 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
-        var first = algorithm.ComputeHash(new MemoryStream(s_sampleData));
-        var second = algorithm.ComputeHash(new MemoryStream([9, 10]));
-        var expectedSecond = BitConverter.GetBytes((uint)(9 + 10));
+        byte[] first = algorithm.ComputeHash(new MemoryStream(s_sampleData));
+        byte[] second = algorithm.ComputeHash(new MemoryStream([9, 10]));
+        byte[] expectedSecond = BitConverter.GetBytes((uint)(9 + 10));
 
         CollectionAssert.AreEqual(s_sampleHash, first);
         CollectionAssert.AreEqual(expectedSecond, second);
@@ -342,7 +342,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
-        var result = algorithm.ComputeHash(s_sampleData, 0, 0);
+        byte[] result = algorithm.ComputeHash(s_sampleData, 0, 0);
 
         CollectionAssert.AreEqual(s_emptyHash, result);
     }
@@ -400,8 +400,8 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
         MonitoringNonCryptographicHashAlgorithm rangeAlgorithm = CreateAlgorithm();
         MonitoringNonCryptographicHashAlgorithm fullAlgorithm = CreateAlgorithm();
 
-        var viaRange = rangeAlgorithm.ComputeHash(s_sampleData, 0, s_sampleData.Length);
-        var viaFull = fullAlgorithm.ComputeHash(s_sampleData);
+        byte[] viaRange = rangeAlgorithm.ComputeHash(s_sampleData, 0, s_sampleData.Length);
+        byte[] viaFull = fullAlgorithm.ComputeHash(s_sampleData);
 
         CollectionAssert.AreEqual(viaFull, viaRange);
     }
@@ -413,9 +413,9 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     public void ComputeHash_WhenRangeIsSubset_ForByteArrayRangeOverload_ShouldReturnHashOfSubset()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
-        var expected = BitConverter.GetBytes((uint)(2 + 3));
+        byte[] expected = BitConverter.GetBytes((uint)(2 + 3));
 
-        var result = algorithm.ComputeHash(s_sampleData, 1, 2);
+        byte[] result = algorithm.ComputeHash(s_sampleData, 1, 2);
 
         CollectionAssert.AreEqual(expected, result);
     }
@@ -444,7 +444,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
-        var result = algorithm.ComputeHash(new FixedChunkStream(s_sampleData, chunkSize: 1));
+        byte[] result = algorithm.ComputeHash(new FixedChunkStream(s_sampleData, chunkSize: 1));
 
         CollectionAssert.AreEqual(s_sampleHash, result);
     }
@@ -457,7 +457,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
-        var result = algorithm.ComputeHash(new ReadOnlySpan<byte>(s_sampleData));
+        byte[] result = algorithm.ComputeHash(new ReadOnlySpan<byte>(s_sampleData));
 
         CollectionAssert.AreEqual(s_sampleHash, result);
     }
@@ -472,7 +472,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
-        var result = algorithm.ComputeHash([]);
+        byte[] result = algorithm.ComputeHash([]);
 
         CollectionAssert.AreEqual(s_emptyHash, result);
     }
@@ -486,8 +486,8 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
         MonitoringNonCryptographicHashAlgorithm fromStream = CreateAlgorithm();
         MonitoringNonCryptographicHashAlgorithm fromSpan = CreateAlgorithm();
 
-        var viaStream = fromStream.ComputeHash(new MemoryStream(s_sampleData));
-        var viaSpan = fromSpan.ComputeHash(new ReadOnlySpan<byte>(s_sampleData));
+        byte[] viaStream = fromStream.ComputeHash(new MemoryStream(s_sampleData));
+        byte[] viaSpan = fromSpan.ComputeHash(new ReadOnlySpan<byte>(s_sampleData));
 
         CollectionAssert.AreEqual(viaSpan, viaStream);
     }
@@ -502,7 +502,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
-        var result = algorithm.ComputeHash(new MemoryStream([]));
+        byte[] result = algorithm.ComputeHash(new MemoryStream([]));
 
         CollectionAssert.AreEqual(s_emptyHash, result);
     }

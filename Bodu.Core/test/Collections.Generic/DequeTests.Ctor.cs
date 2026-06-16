@@ -54,7 +54,7 @@ public partial class DequeTests
     [TestMethod]
     public void Ctor_WhenCollectionProvided_ShouldAdoptElements()
     {
-        var source = new[] { 1, 2, 3 };
+        int[] source = new[] { 1, 2, 3 };
         var deque = new Deque<int>(source);
         CollectionAssert.AreEqual(source, deque.ToArray());
     }

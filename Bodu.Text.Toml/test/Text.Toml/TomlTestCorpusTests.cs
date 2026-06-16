@@ -121,12 +121,12 @@ public sealed partial class TomlTestCorpusTests
     /// <param name="kat">The corpus case under test.</param>
     private static void AssertValidCase(CorpusKat kat)
     {
-        var toml = File.ReadAllBytes(Path.Combine(CorpusRoot, kat.RelativePath));
-        var expectationPath = Path.Combine(CorpusRoot, Path.ChangeExtension(kat.RelativePath, ".json"));
+        byte[] toml = File.ReadAllBytes(Path.Combine(CorpusRoot, kat.RelativePath));
+        string expectationPath = Path.Combine(CorpusRoot, Path.ChangeExtension(kat.RelativePath, ".json"));
 
         var reader = new TomlDocumentReader(toml, new TomlReaderOptions { SpecVersion = kat.SpecVersion });
         Assert.IsTrue(reader.Read(), $"{kat.RelativePath}: the document produced no tokens.");
-        var actual = BuildValue(ref reader);
+        object actual = BuildValue(ref reader);
 
         using var expected = JsonDocument.Parse(File.ReadAllBytes(expectationPath));
         AssertMatches(expected.RootElement, actual, kat.RelativePath);
@@ -138,7 +138,7 @@ public sealed partial class TomlTestCorpusTests
     /// <param name="kat">The corpus case under test.</param>
     private static void AssertInvalidCase(CorpusKat kat)
     {
-        var toml = File.ReadAllBytes(Path.Combine(CorpusRoot, kat.RelativePath));
+        byte[] toml = File.ReadAllBytes(Path.Combine(CorpusRoot, kat.RelativePath));
 
         var ex = Assert.ThrowsExactly<TomlFormatException>(() =>
         {
@@ -157,7 +157,7 @@ public sealed partial class TomlTestCorpusTests
     /// <returns>One row per selected case.</returns>
     private static IEnumerable<object[]> EnumerateCases(string listFileName, TomlSpecVersion specVersion, bool valid)
     {
-        foreach (var line in File.ReadLines(Path.Combine(CorpusRoot, listFileName)))
+        foreach (string line in File.ReadLines(Path.Combine(CorpusRoot, listFileName)))
         {
             if (!line.EndsWith(".toml", StringComparison.Ordinal))
                 continue;
@@ -186,7 +186,7 @@ public sealed partial class TomlTestCorpusTests
                 var table = new Dictionary<string, object>(StringComparer.Ordinal);
                 while (reader.Read() && reader.TokenType != TomlTokenType.EndTable)
                 {
-                    var key = reader.GetString();
+                    string key = reader.GetString();
                     Assert.IsTrue(reader.Read(), "A property name must be followed by a value.");
                     table[key] = BuildValue(ref reader);
                 }
@@ -229,7 +229,7 @@ public sealed partial class TomlTestCorpusTests
     {
         if (expected.ValueKind == JsonValueKind.Object)
         {
-            if (TryGetLeafMarker(expected, out var type, out var value))
+            if (TryGetLeafMarker(expected, out string? type, out string? value))
             {
                 AssertLeaf(type, value, actual, path);
                 return;
@@ -238,11 +238,11 @@ public sealed partial class TomlTestCorpusTests
             Assert.IsInstanceOfType<Dictionary<string, object>>(actual, $"{path}: expected a table.");
             var table = (Dictionary<string, object>)actual;
 
-            var expectedCount = 0;
+            int expectedCount = 0;
             foreach (JsonProperty property in expected.EnumerateObject())
             {
                 expectedCount++;
-                Assert.IsTrue(table.TryGetValue(property.Name, out var child), $"{path}: missing key '{property.Name}'.");
+                Assert.IsTrue(table.TryGetValue(property.Name, out object? child), $"{path}: missing key '{property.Name}'.");
                 AssertMatches(property.Value, child!, $"{path}.{property.Name}");
             }
 
@@ -256,7 +256,7 @@ public sealed partial class TomlTestCorpusTests
             var list = (List<object>)actual;
 
             Assert.AreEqual(expected.GetArrayLength(), list.Count, $"{path}: array length.");
-            var index = 0;
+            int index = 0;
             foreach (JsonElement element in expected.EnumerateArray())
             {
                 AssertMatches(element, list[index], $"{path}[{index}]");
@@ -282,7 +282,7 @@ public sealed partial class TomlTestCorpusTests
         type = null;
         value = null;
 
-        var count = 0;
+        int count = 0;
         string? typeText = null;
         string? valueText = null;
         foreach (JsonProperty property in element.EnumerateObject())
@@ -387,15 +387,15 @@ public sealed partial class TomlTestCorpusTests
     /// <returns>The text with at most seven fractional-second digits.</returns>
     private static string TruncateFraction(string text)
     {
-        var dot = text.IndexOf('.', StringComparison.Ordinal);
+        int dot = text.IndexOf('.', StringComparison.Ordinal);
         if (dot < 0)
             return text;
 
-        var end = dot + 1;
+        int end = dot + 1;
         while (end < text.Length && char.IsAsciiDigit(text[end]))
             end++;
 
-        var digits = end - dot - 1;
+        int digits = end - dot - 1;
         return digits <= 7 ? text : text.Remove(dot + 8, digits - 7);
     }
 

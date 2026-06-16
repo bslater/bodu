@@ -54,11 +54,11 @@ public static partial class EncodingExtensions
         ThrowHelper.ThrowIfNull(encoding);
         ThrowHelper.ThrowIfNull(writer);
 
-        var required = encoding.GetByteCount(chars);
+        int required = encoding.GetByteCount(chars);
         if (required == 0) return;
 
         Span<byte> destination = writer.GetSpan(required);
-        var written = encoding.GetBytes(chars, destination);
+        int written = encoding.GetBytes(chars, destination);
         writer.Advance(written);
     }
 
@@ -110,11 +110,11 @@ public static partial class EncodingExtensions
         ThrowHelper.ThrowIfNull(encoding);
         ThrowHelper.ThrowIfNull(writer);
 
-        var required = encoding.GetCharCount(bytes);
+        int required = encoding.GetCharCount(bytes);
         if (required == 0) return;
 
         Span<char> destination = writer.GetSpan(required);
-        var written = encoding.GetChars(bytes, destination);
+        int written = encoding.GetChars(bytes, destination);
         writer.Advance(written);
     }
 }

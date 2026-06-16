@@ -56,7 +56,7 @@ public sealed class AdjustmentTriggerHandlerRegistry
     {
         ThrowHelper.ThrowIfNull(key);
 
-        var found = _handlers.TryGetValue(key, out IAdjustmentTriggerHandler? value);
+        bool found = _handlers.TryGetValue(key, out IAdjustmentTriggerHandler? value);
         handler = value;
         return found;
     }

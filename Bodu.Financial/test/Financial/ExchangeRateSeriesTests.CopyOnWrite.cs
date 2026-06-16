@@ -58,7 +58,7 @@ public partial class ExchangeRateSeriesTests
         builder.Add(new DateOnly(2026, 6, 7), 1.60m);
 
         Assert.AreEqual(3, series.Count);
-        Assert.IsTrue(series.TryGetRate(new DateOnly(2026, 6, 1), ExchangeRateLookupOptions.Exact, out _, out var originalRate));
+        Assert.IsTrue(series.TryGetRate(new DateOnly(2026, 6, 1), ExchangeRateLookupOptions.Exact, out _, out decimal originalRate));
         Assert.AreEqual(1.50m, originalRate);
     }
 
@@ -73,7 +73,7 @@ public partial class ExchangeRateSeriesTests
         ExchangeRateSeries updated = series.WithRate(new DateOnly(2026, 6, 4), 1.53m);
 
         Assert.AreEqual(4, updated.Count);
-        Assert.IsTrue(updated.TryGetRate(new DateOnly(2026, 6, 4), ExchangeRateLookupOptions.Exact, out _, out var rate));
+        Assert.IsTrue(updated.TryGetRate(new DateOnly(2026, 6, 4), ExchangeRateLookupOptions.Exact, out _, out decimal rate));
         Assert.AreEqual(1.53m, rate);
     }
 
@@ -88,7 +88,7 @@ public partial class ExchangeRateSeriesTests
         ExchangeRateSeries updated = series.WithRate(new DateOnly(2026, 6, 1), 2.00m);
 
         Assert.AreEqual(3, updated.Count);
-        Assert.IsTrue(updated.TryGetRate(new DateOnly(2026, 6, 1), ExchangeRateLookupOptions.Exact, out _, out var rate));
+        Assert.IsTrue(updated.TryGetRate(new DateOnly(2026, 6, 1), ExchangeRateLookupOptions.Exact, out _, out decimal rate));
         Assert.AreEqual(2.00m, rate);
     }
 
@@ -161,7 +161,7 @@ public partial class ExchangeRateSeriesTests
         ExchangeRateObservation[] observations = series.GetObservations().ToArray();
 
         Assert.AreEqual(3, observations.Length);
-        for (var i = 1; i < observations.Length; i++)
+        for (int i = 1; i < observations.Length; i++)
         {
             Assert.IsTrue(observations[i - 1].Date < observations[i].Date);
         }

@@ -239,11 +239,11 @@ public static partial class DateTimeExtensions
     {
         if (year >= 1 && year <= 9999 && month >= 1 && month <= 12)
         {
-            var days = DateTime.IsLeapYear(year) ? DateTimeExtensions.DaysToMonth366 : DateTimeExtensions.DaysToMonth365;
+            int[] days = DateTime.IsLeapYear(year) ? DateTimeExtensions.DaysToMonth366 : DateTimeExtensions.DaysToMonth365;
             if (day >= 1 && day <= days[month] - days[month - 1])
             {
-                var y = year - 1;
-                var dayNumber = (y * 365) + (y / 4) - (y / 100) + (y / 400) + days[month - 1] + day - 1;
+                int y = year - 1;
+                int dayNumber = (y * 365) + (y / 4) - (y / 100) + (y / 400) + days[month - 1] + day - 1;
                 return dayNumber;
             }
         }
@@ -318,14 +318,14 @@ public static partial class DateTimeExtensions
     internal static void GetDateParts(long ticks, out int year, out int month, out int day)
     {
         // Convert ticks to total days since 0001-01-01
-        var n = (int)(ticks / TicksPerDay);
+        int n = (int)(ticks / TicksPerDay);
 
         // Calculate number of whole 400-year periods
-        var y400 = n / DaysPer400Years;
+        int y400 = n / DaysPer400Years;
         n -= y400 * DaysPer400Years;
 
         // Calculate number of whole 100-year periods within the current 400-year block
-        var y100 = n / DaysPer100Years;
+        int y100 = n / DaysPer100Years;
 
         // Cap at 3 to avoid overflow into next 400-year block (i.e., max is 300 years)
         if (y100 == 4)
@@ -333,11 +333,11 @@ public static partial class DateTimeExtensions
         n -= y100 * DaysPer100Years;
 
         // Calculate number of whole 4-year periods within the current 100-year block
-        var y4 = n / DaysPer4Years;
+        int y4 = n / DaysPer4Years;
         n -= y4 * DaysPer4Years;
 
         // Calculate number of whole years within the current 4-year block
-        var y1 = n / DaysPerYear;
+        int y1 = n / DaysPerYear;
 
         // Cap at 3 to avoid overflow into next 4-year block (max is 3 years)
         if (y1 == 4)
@@ -349,13 +349,13 @@ public static partial class DateTimeExtensions
 
         // Determine leap year using reduced logic (does not rely on IsLeapYear) Only the final year of a 4-year cycle is leap if the
         // 100-year and 400-year rules are satisfied
-        var isLeap = (y1 == 3) && ((y4 != 24) || (y100 == 3));
+        bool isLeap = (y1 == 3) && ((y4 != 24) || (y100 == 3));
 
         // Choose correct month day table
-        var daysToMonth = isLeap ? DaysToMonth366 : DaysToMonth365;
+        int[] daysToMonth = isLeap ? DaysToMonth366 : DaysToMonth365;
 
         // Estimate month (right shift by 5 ~ divide by 32, since all months have < 32 days)
-        var m = (n >> 5) + 1;
+        int m = (n >> 5) + 1;
 
         // Correct for any overshoot in estimate
         while (n >= daysToMonth[m])
@@ -444,8 +444,8 @@ public static partial class DateTimeExtensions
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static int GetDayNumberUnchecked(int year, int month, int day)
     {
-        var isLeap = DateTime.IsLeapYear(year);
-        var days = isLeap ? DateTimeExtensions.DaysToMonth366 : DateTimeExtensions.DaysToMonth365;
+        bool isLeap = DateTime.IsLeapYear(year);
+        int[] days = isLeap ? DateTimeExtensions.DaysToMonth366 : DateTimeExtensions.DaysToMonth365;
 
         return (int)(
             ((long)(year - 1) * 365)
@@ -525,7 +525,7 @@ public static partial class DateTimeExtensions
     /// <returns>The tick count for the date nearest to <paramref name="dayOfWeek" />.</returns>
     internal static long GetTicksForNearestDayOfWeek(long ticks, DayOfWeek dayOfWeek)
     {
-        var delta = ((int)dayOfWeek - (int)GetDayOfWeekFromTicks(ticks) + 7) % 7;
+        int delta = ((int)dayOfWeek - (int)GetDayOfWeekFromTicks(ticks) + 7) % 7;
         return ticks + ((delta > 3 ? delta - 7 : delta) * TicksPerDay);
     }
 
@@ -694,7 +694,7 @@ public static partial class DateTimeExtensions
     internal static DayOfWeek GetDayOfWeekForJanuary1(int year)
     {
         // Zeller’s-like congruence to determine the weekday of Jan 1
-        var weekdayIndex = (year + (year / 4) - (year / 100) + (year / 400)) % 7;
+        int weekdayIndex = (year + (year / 4) - (year / 100) + (year / 400)) % 7;
         return (DayOfWeek)((weekdayIndex + 7) % 7); // Ensure non-negative
     }
 
@@ -722,7 +722,7 @@ public static partial class DateTimeExtensions
     {
         // Convert ticks into a date for computing day-of-year
         var date = new DateTime(ticks, DateTimeKind.Unspecified);
-        var dayOfYear = date.DayOfYear - 1; // Convert to 0-based day index
+        int dayOfYear = date.DayOfYear - 1; // Convert to 0-based day index
 
         return rule switch
         {
@@ -807,7 +807,7 @@ public static partial class DateTimeExtensions
     /// </remarks>
     private static long GetFirstDateOfWeekInMonthTicks(DateTime dateTime, DayOfWeek dayOfWeek)
     {
-        var ticks = DateTimeExtensions.GetFirstDateOfMonthTicks(dateTime);
+        long ticks = DateTimeExtensions.GetFirstDateOfMonthTicks(dateTime);
         ticks += (dayOfWeek - DateTimeExtensions.GetDayOfWeekFromTicks(ticks) + 7) % 7 * DateTimeExtensions.TicksPerDay;
         return ticks;
     }
@@ -838,7 +838,7 @@ public static partial class DateTimeExtensions
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static long GetFirstDateOfWeekInMonthTicks(int year, int month, DayOfWeek dayOfWeek)
     {
-        var ticks = DateTimeExtensions.GetDateTicks(year, month, 1);
+        long ticks = DateTimeExtensions.GetDateTicks(year, month, 1);
         ticks += (dayOfWeek - DateTimeExtensions.GetDayOfWeekFromTicks(ticks) + 7) % 7 * DateTimeExtensions.TicksPerDay;
         return ticks;
     }
@@ -853,10 +853,10 @@ public static partial class DateTimeExtensions
     private static int GetFirstDayWeekOfYear(int dayOfYear, DayOfWeek dayOfWeek, int firstDayOfWeek)
     {
         // Determine the day of the week for Jan 1 by back-calculating from the current date
-        var dayForJan1 = (int)dayOfWeek - (dayOfYear % 7);
+        int dayForJan1 = (int)dayOfWeek - (dayOfYear % 7);
 
         // Calculate offset to align with the first day of the week
-        var offset = (dayForJan1 - firstDayOfWeek + 14) % 7;
+        int offset = (dayForJan1 - firstDayOfWeek + 14) % 7;
 
         // Adjust day-of-year and compute week number
         return ((dayOfYear + offset) / 7) + 1;
@@ -938,7 +938,7 @@ public static partial class DateTimeExtensions
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static long GetLastDateOfWeekInMonthAsTicks(int year, int month, DayOfWeek dayOfWeek)
     {
-        var ticks = DateTimeExtensions.GetDateTicks(year, month, DateTime.DaysInMonth(year, month));
+        long ticks = DateTimeExtensions.GetDateTicks(year, month, DateTime.DaysInMonth(year, month));
         ticks += (dayOfWeek - DateTimeExtensions.GetDayOfWeekFromTicks(ticks) - 7) % 7 * DateTimeExtensions.TicksPerDay;
         return ticks;
     }
@@ -977,35 +977,35 @@ public static partial class DateTimeExtensions
     /// <returns>The 1-based week number for the date specified by <paramref name="ticks" />.</returns>
     private static int GetWeekOfYearFullDays(long ticks, int dayOfYear, int firstDayOfWeek, int fullDays)
     {
-        var dayOfWeek = (int)DateTimeExtensions.GetDayOfWeekFromTicks(ticks);
-        var dayForJan1 = dayOfWeek - (dayOfYear % 7);
-        var offset = (firstDayOfWeek - dayForJan1 + 14) % 7;
+        int dayOfWeek = (int)DateTimeExtensions.GetDayOfWeekFromTicks(ticks);
+        int dayForJan1 = dayOfWeek - (dayOfYear % 7);
+        int offset = (firstDayOfWeek - dayForJan1 + 14) % 7;
 
         if (offset != 0 && offset >= fullDays)
             offset -= 7;
 
-        var adjustedDay = dayOfYear - offset;
+        int adjustedDay = dayOfYear - offset;
 
         if (adjustedDay >= 0)
         {
-            var weekNum = (adjustedDay / 7) + 1;
+            int weekNum = (adjustedDay / 7) + 1;
 
             // Check if this week straddles the year boundary and enough days
             // fall in the next year to make it belong to next year's week 1.
             var date = new DateTime(ticks, DateTimeKind.Unspecified);
-            var daysInYear = DateTime.IsLeapYear(date.Year) ? 366 : 365;
-            var daysInNextYear = offset + (weekNum * 7) - daysInYear;
+            int daysInYear = DateTime.IsLeapYear(date.Year) ? 366 : 365;
+            int daysInNextYear = offset + (weekNum * 7) - daysInYear;
             return daysInNextYear >= fullDays ? 1 : weekNum;
         }
 
         // Date falls in the last week of the previous year — recurse backward.
-        var previousTicks = ticks - ((dayOfYear + 1L) * DateTimeExtensions.TicksPerDay);
+        long previousTicks = ticks - ((dayOfYear + 1L) * DateTimeExtensions.TicksPerDay);
 
         if (previousTicks < DateTimeExtensions.MinTicks)
             return 1;
 
-        DateTimeExtensions.GetDateParts(previousTicks, out var prevYear, out var prevMonth, out var prevDay);
-        var prevDayOfYear = DateTimeExtensions.GetDayNumber(prevYear, prevMonth, prevDay)
+        DateTimeExtensions.GetDateParts(previousTicks, out int prevYear, out int prevMonth, out int prevDay);
+        int prevDayOfYear = DateTimeExtensions.GetDayNumber(prevYear, prevMonth, prevDay)
             - DateTimeExtensions.GetDayNumber(prevYear, 1, 1);
 
         return GetWeekOfYearFullDays(previousTicks, prevDayOfYear, firstDayOfWeek, fullDays);

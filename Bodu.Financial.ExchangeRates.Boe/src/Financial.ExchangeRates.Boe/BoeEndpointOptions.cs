@@ -71,8 +71,8 @@ public sealed class BoeEndpointOptions
         if (BaseUrl is null)
             throw new InvalidOperationException(BoeResourceStrings.Op_Invalid_BoeEndpointBaseUrl);
 
-        var codes = string.Join(",", seriesCodes);
-        var query =
+        string codes = string.Join(",", seriesCodes);
+        string query =
             "?csv.x=yes" +
             "&Datefrom=" + Uri.EscapeDataString(FormatDate(startDate)) +
             "&Dateto=" + Uri.EscapeDataString(FormatDate(endDate)) +
@@ -91,7 +91,7 @@ public sealed class BoeEndpointOptions
     /// </exception>
     public void Validate()
     {
-        if (!TryValidate(out var error))
+        if (!TryValidate(out string? error))
             throw new ArgumentException(error);
     }
 

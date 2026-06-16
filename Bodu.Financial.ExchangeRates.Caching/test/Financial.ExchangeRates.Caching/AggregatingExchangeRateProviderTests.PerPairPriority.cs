@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AggregatingExchangeRateProviderTests.PerPairPriority.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -92,7 +92,7 @@ public sealed partial class AggregatingExchangeRateProviderTests
         options.Routes[new ExchangeRatePair("AUD", "USD")] = new ExchangeRatePairRoute(new[] { "RBA" });
         AggregatingExchangeRateProvider agg = new(new[] { Named("RBA", ("AUD", "USD", D1, 0.50m)) }, options);
 
-        var found = agg.TryGetRate("USD", "AUD", D1, ExchangeRateLookupOptions.Exact, out ExchangeRateLookupResult result);
+        bool found = agg.TryGetRate("USD", "AUD", D1, ExchangeRateLookupOptions.Exact, out ExchangeRateLookupResult result);
 
         Assert.IsTrue(found);
         Assert.AreEqual("RBA", result.Rate.Provider);

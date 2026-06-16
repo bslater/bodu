@@ -108,10 +108,10 @@ public sealed partial class ConfigurationView
     /// <returns>The value, or <see langword="null" /> when absent.</returns>
     internal string? LookupValue(string key)
     {
-        if (Values.TryGetValue(key, out var value))
+        if (Values.TryGetValue(key, out string? value))
             return value;
 
-        return TryCanonicalize(key, out var canonical) && Values.TryGetValue(canonical, out value)
+        return TryCanonicalize(key, out string? canonical) && Values.TryGetValue(canonical, out value)
             ? value
             : null;
     }
@@ -184,7 +184,7 @@ public sealed partial class ConfigurationView
         if (_entries.TryGetValue(key, out ConfigurationResolvedEntry? entry))
             return entry;
 
-        return TryCanonicalize(key, out var canonical) && _entries.TryGetValue(canonical, out entry)
+        return TryCanonicalize(key, out string? canonical) && _entries.TryGetValue(canonical, out entry)
             ? entry
             : null;
     }
@@ -203,7 +203,7 @@ public sealed partial class ConfigurationView
         if (Values.ContainsKey(key))
             return true;
 
-        return TryCanonicalize(key, out var canonical) && Values.ContainsKey(canonical);
+        return TryCanonicalize(key, out string? canonical) && Values.ContainsKey(canonical);
     }
 
     /// <summary>
@@ -228,7 +228,7 @@ public sealed partial class ConfigurationView
         if (Values.TryGetValue(key, out value))
             return true;
 
-        if (TryCanonicalize(key, out var canonical) && Values.TryGetValue(canonical, out value))
+        if (TryCanonicalize(key, out string? canonical) && Values.TryGetValue(canonical, out value))
             return true;
 
         value = null;

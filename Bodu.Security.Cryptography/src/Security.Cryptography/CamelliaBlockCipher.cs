@@ -157,7 +157,7 @@ public sealed class CamelliaBlockCipher
     /// <exception cref="ArgumentException"><paramref name="key" /> is not 16, 24, or 32 bytes in length.</exception>
     public CamelliaBlockCipher(ReadOnlySpan<byte> key)
     {
-        var keyBits = key.Length * 8;
+        int keyBits = key.Length * 8;
         if (keyBits is not (Key128SizeBits or Key192SizeBits or Key256SizeBits))
         {
             throw new ArgumentException(
@@ -203,8 +203,8 @@ public sealed class CamelliaBlockCipher
 
         // Encryption emitted (right ^ kw3) || (left ^ kw4) after the final Feistel swap.
         // Remove output whitening and restore the post-round halves into their logical left/right variables.
-        var right = BinaryPrimitives.ReadUInt64BigEndian(input) ^ _kw[2];
-        var left = BinaryPrimitives.ReadUInt64BigEndian(input[8..]) ^ _kw[3];
+        ulong right = BinaryPrimitives.ReadUInt64BigEndian(input) ^ _kw[2];
+        ulong left = BinaryPrimitives.ReadUInt64BigEndian(input[8..]) ^ _kw[3];
 
         if (!_usesExtendedKeySchedule)
         {
@@ -330,8 +330,8 @@ public sealed class CamelliaBlockCipher
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockSizeBits / 8);
 
         // Load the 128-bit block as two big-endian 64-bit halves and apply input whitening kw1/kw2.
-        var left = BinaryPrimitives.ReadUInt64BigEndian(input) ^ _kw[0];
-        var right = BinaryPrimitives.ReadUInt64BigEndian(input[8..]) ^ _kw[1];
+        ulong left = BinaryPrimitives.ReadUInt64BigEndian(input) ^ _kw[0];
+        ulong right = BinaryPrimitives.ReadUInt64BigEndian(input[8..]) ^ _kw[1];
 
         if (!_usesExtendedKeySchedule)
         {
@@ -436,8 +436,8 @@ public sealed class CamelliaBlockCipher
     private void ExpandKey(ReadOnlySpan<byte> key)
     {
         // KL is always the first 128 bits of the user key.
-        var klHi = BinaryPrimitives.ReadUInt64BigEndian(key);
-        var klLo = BinaryPrimitives.ReadUInt64BigEndian(key[8..]);
+        ulong klHi = BinaryPrimitives.ReadUInt64BigEndian(key);
+        ulong klLo = BinaryPrimitives.ReadUInt64BigEndian(key[8..]);
 
         ulong krHi;
         ulong krLo;
@@ -468,8 +468,8 @@ public sealed class CamelliaBlockCipher
         //   D1 || D2 ^= KL
         //   D2 ^= F(D1, SIGMA3)
         //   D1 ^= F(D2, SIGMA4)
-        var d1 = klHi ^ krHi;
-        var d2 = klLo ^ krLo;
+        ulong d1 = klHi ^ krHi;
+        ulong d2 = klLo ^ krLo;
 
         d2 ^= F(d1, s_sigma[0]);
         d1 ^= F(d2, s_sigma[1]);
@@ -480,8 +480,8 @@ public sealed class CamelliaBlockCipher
         d2 ^= F(d1, s_sigma[2]);
         d1 ^= F(d2, s_sigma[3]);
 
-        var kaHi = d1;
-        var kaLo = d2;
+        ulong kaHi = d1;
+        ulong kaLo = d2;
 
         if (!_usesExtendedKeySchedule)
         {
@@ -537,11 +537,11 @@ public sealed class CamelliaBlockCipher
         (_k[6], _k[7]) = RotL128(klHi, klLo, 45);
 
         // k9 = (KA <<< 45) >> 64 — upper half only.
-        (var hi, _) = RotL128(kaHi, kaLo, 45);
+        (ulong hi, _) = RotL128(kaHi, kaLo, 45);
         _k[8] = hi;
 
         // k10 = (KL <<< 60) & MASK64 — lower half only.
-        (_, var lo) = RotL128(klHi, klLo, 60);
+        (_, ulong lo) = RotL128(klHi, klLo, 60);
         _k[9] = lo;
 
         // k11, k12 = KA <<< 60
@@ -665,23 +665,23 @@ public sealed class CamelliaBlockCipher
         //   Positions 2, 5 → SBOX3
         //   Positions 3, 6 → SBOX4
         int t1 = s_sbox1[(int)(x >> 56)];
-        var t2 = SBox2((int)((x >> 48) & 0xFF));
-        var t3 = SBox3((int)((x >> 40) & 0xFF));
-        var t4 = SBox4((int)((x >> 32) & 0xFF));
-        var t5 = SBox2((int)((x >> 24) & 0xFF));
-        var t6 = SBox3((int)((x >> 16) & 0xFF));
-        var t7 = SBox4((int)((x >> 8) & 0xFF));
+        int t2 = SBox2((int)((x >> 48) & 0xFF));
+        int t3 = SBox3((int)((x >> 40) & 0xFF));
+        int t4 = SBox4((int)((x >> 32) & 0xFF));
+        int t5 = SBox2((int)((x >> 24) & 0xFF));
+        int t6 = SBox3((int)((x >> 16) & 0xFF));
+        int t7 = SBox4((int)((x >> 8) & 0xFF));
         int t8 = s_sbox1[(int)(x & 0xFF)];
 
         // P-function: byte-wise linear diffusion (RFC 3713 §2.1). Each output byte is the XOR of selected S-box outputs.
-        var y1 = t1 ^ t3 ^ t4 ^ t6 ^ t7 ^ t8;
-        var y2 = t1 ^ t2 ^ t4 ^ t5 ^ t7 ^ t8;
-        var y3 = t1 ^ t2 ^ t3 ^ t5 ^ t6 ^ t8;
-        var y4 = t2 ^ t3 ^ t4 ^ t5 ^ t6 ^ t7;
-        var y5 = t1 ^ t2 ^ t6 ^ t7 ^ t8;
-        var y6 = t2 ^ t3 ^ t5 ^ t7 ^ t8;
-        var y7 = t3 ^ t4 ^ t5 ^ t6 ^ t8;
-        var y8 = t1 ^ t4 ^ t5 ^ t6 ^ t7;
+        int y1 = t1 ^ t3 ^ t4 ^ t6 ^ t7 ^ t8;
+        int y2 = t1 ^ t2 ^ t4 ^ t5 ^ t7 ^ t8;
+        int y3 = t1 ^ t2 ^ t3 ^ t5 ^ t6 ^ t8;
+        int y4 = t2 ^ t3 ^ t4 ^ t5 ^ t6 ^ t7;
+        int y5 = t1 ^ t2 ^ t6 ^ t7 ^ t8;
+        int y6 = t2 ^ t3 ^ t5 ^ t7 ^ t8;
+        int y7 = t3 ^ t4 ^ t5 ^ t6 ^ t8;
+        int y8 = t1 ^ t4 ^ t5 ^ t6 ^ t7;
 
         return ((ulong)(byte)y1 << 56)
              | ((ulong)(byte)y2 << 48)
@@ -706,10 +706,10 @@ public sealed class CamelliaBlockCipher
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static ulong Fl(ulong x, ulong key)
     {
-        var x1 = (uint)(x >> 32);
-        var x2 = (uint)x;
-        var k1 = (uint)(key >> 32);
-        var k2 = (uint)key;
+        uint x1 = (uint)(x >> 32);
+        uint x2 = (uint)x;
+        uint k1 = (uint)(key >> 32);
+        uint k2 = (uint)key;
 
         // RFC FL: x2 = x2 ^ ((x1 & k1) <<< 1); x1 = x1 ^ (x2 | k2).
         x2 ^= (x1 & k1).RotateBitsLeftUnchecked(1);
@@ -730,10 +730,10 @@ public sealed class CamelliaBlockCipher
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static ulong FlInv(ulong x, ulong key)
     {
-        var y1 = (uint)(x >> 32);
-        var y2 = (uint)x;
-        var k1 = (uint)(key >> 32);
-        var k2 = (uint)key;
+        uint y1 = (uint)(x >> 32);
+        uint y2 = (uint)x;
+        uint k1 = (uint)(key >> 32);
+        uint k2 = (uint)key;
 
         // RFC FLINV: y1 = y1 ^ (y2 | k2); y2 = y2 ^ ((y1 & k1) <<< 1).
         y1 ^= y2 | k2;

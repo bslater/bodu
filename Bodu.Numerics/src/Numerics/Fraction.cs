@@ -505,7 +505,7 @@ public readonly partial struct Fraction<T>
     private static T InvokeExtreme(string methodName)
     {
         MethodInfo? definition = typeof(Fraction<T>).GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Static);
-        var extreme = definition!.MakeGenericMethod(typeof(T)).Invoke(null, null);
+        object? extreme = definition!.MakeGenericMethod(typeof(T)).Invoke(null, null);
         return (T)extreme!;
     }
 

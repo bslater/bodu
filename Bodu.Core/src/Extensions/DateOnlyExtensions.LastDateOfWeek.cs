@@ -56,7 +56,7 @@ public static partial class DateOnlyExtensions
         culture ??= Thread.CurrentThread.CurrentCulture;
         DayOfWeek lastDayOfWeek = culture.DateTimeFormat.LastDayOfWeek();
 
-        var dayNumber = date.DayNumber + (((int)lastDayOfWeek - (int)date.DayOfWeek + 7) % 7);
+        int dayNumber = date.DayNumber + (((int)lastDayOfWeek - (int)date.DayOfWeek + 7) % 7);
 
         return dayNumber > DateOnly.MaxValue.DayNumber
             ? throw new ArgumentOutOfRangeException(
@@ -94,7 +94,7 @@ public static partial class DateOnlyExtensions
         DayOfWeek startOfWeek = DateTimeExtensions.GetWeekStartDay(workingWeek);
         var endOfWeek = (DayOfWeek)(((int)startOfWeek + 6) % 7);
 
-        var dayNumber = date.DayNumber + (((int)endOfWeek - (int)date.DayOfWeek + 7) % 7);
+        int dayNumber = date.DayNumber + (((int)endOfWeek - (int)date.DayOfWeek + 7) % 7);
 
         return dayNumber > DateOnly.MaxValue.DayNumber
             ? throw new ArgumentOutOfRangeException(

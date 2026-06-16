@@ -113,7 +113,7 @@ internal sealed class TomlDocumentBuilder
                 default:
                 {
                     List<string> path = ReadKeyPath(ref lexer);
-                    var value = ReadValue(ref lexer);
+                    int value = ReadValue(ref lexer);
                     AssignKeyValue(_current, path, value, ref lexer);
                     break;
                 }
@@ -209,7 +209,7 @@ internal sealed class TomlDocumentBuilder
             case TomlTokenType.StartArray:
             {
                 EnterDepth(ref lexer);
-                var array = NewArray(lexer.TokenStartIndex);
+                int array = NewArray(lexer.TokenStartIndex);
                 while (true)
                 {
                     _ = lexer.Read();
@@ -228,7 +228,7 @@ internal sealed class TomlDocumentBuilder
             case TomlTokenType.StartInlineTable:
             {
                 EnterDepth(ref lexer);
-                var table = NewTable(lexer.TokenStartIndex, 0);
+                int table = NewTable(lexer.TokenStartIndex, 0);
                 while (true)
                 {
                     _ = lexer.Read();
@@ -238,7 +238,7 @@ internal sealed class TomlDocumentBuilder
                         break;
 
                     List<string> path = ReadKeyPath(ref lexer);
-                    var value = ReadValue(ref lexer);
+                    int value = ReadValue(ref lexer);
                     AssignKeyValue(table, path, value, ref lexer);
                 }
 
@@ -301,12 +301,12 @@ internal sealed class TomlDocumentBuilder
     /// <param name="lexer">The lexer whose current token supplies error positions.</param>
     private void DefineStandardTable(List<string> path, ref Utf8TomlReader lexer)
     {
-        var table = 0;
-        for (var i = 0; i < path.Count - 1; i++)
+        int table = 0;
+        for (int i = 0; i < path.Count - 1; i++)
             table = WalkHeaderSegment(table, path[i], ref lexer);
 
-        var key = path[^1];
-        var existing = FindChild(table, key);
+        string key = path[^1];
+        int existing = FindChild(table, key);
         if (existing >= 0)
         {
             if (_rows[existing].Kind != TomlReaderNodeKind.Table)
@@ -322,7 +322,7 @@ internal sealed class TomlDocumentBuilder
             return;
         }
 
-        var created = CreateChildTable(table, ref lexer);
+        int created = CreateChildTable(table, ref lexer);
         Link(table, created, key);
         AddFlag(created, TomlReaderRowFlags.HeaderDefined);
         _current = created;
@@ -336,13 +336,13 @@ internal sealed class TomlDocumentBuilder
     /// <param name="lexer">The lexer whose current token supplies error positions.</param>
     private void DefineArrayTable(List<string> path, ref Utf8TomlReader lexer)
     {
-        var table = 0;
-        for (var i = 0; i < path.Count - 1; i++)
+        int table = 0;
+        for (int i = 0; i < path.Count - 1; i++)
             table = WalkHeaderSegment(table, path[i], ref lexer);
 
-        var key = path[^1];
+        string key = path[^1];
         int array;
-        var existing = FindChild(table, key);
+        int existing = FindChild(table, key);
         if (existing >= 0)
         {
             if (_rows[existing].Kind != TomlReaderNodeKind.Array || !HasFlag(existing, TomlReaderRowFlags.TableArray))
@@ -361,7 +361,7 @@ internal sealed class TomlDocumentBuilder
             Link(table, array, key);
         }
 
-        var element = CreateChildTable(table, ref lexer);
+        int element = CreateChildTable(table, ref lexer);
         Link(array, element, null);
         _current = element;
     }
@@ -378,7 +378,7 @@ internal sealed class TomlDocumentBuilder
         if (HasFlag(table, TomlReaderRowFlags.Inline))
             throw lexer.TokenError(TomlResourceStrings.Format_Invalid_TomlExtendInlineTable);
 
-        var existing = FindChild(table, key);
+        int existing = FindChild(table, key);
         if (existing >= 0)
         {
             if (_rows[existing].Kind == TomlReaderNodeKind.Table)
@@ -395,7 +395,7 @@ internal sealed class TomlDocumentBuilder
             throw lexer.TokenError(TomlResourceStrings.Format_Invalid_TomlDuplicateTable);
         }
 
-        var created = CreateChildTable(table, ref lexer);
+        int created = CreateChildTable(table, ref lexer);
         Link(table, created, key);
         AddFlag(created, TomlReaderRowFlags.ImplicitSuper);
         return created;
@@ -427,11 +427,11 @@ internal sealed class TomlDocumentBuilder
     /// <param name="lexer">The lexer whose current token supplies error positions.</param>
     private void AssignKeyValue(int target, List<string> path, int value, ref Utf8TomlReader lexer)
     {
-        var table = target;
-        for (var i = 0; i < path.Count - 1; i++)
+        int table = target;
+        for (int i = 0; i < path.Count - 1; i++)
             table = WalkDottedSegment(table, path[i], ref lexer);
 
-        var key = path[^1];
+        string key = path[^1];
         if (FindChild(table, key) >= 0)
             throw lexer.TokenError(TomlResourceStrings.Format_Invalid_TomlDuplicateKey);
 
@@ -447,7 +447,7 @@ internal sealed class TomlDocumentBuilder
     /// <returns>The row index of the intermediate table.</returns>
     private int WalkDottedSegment(int table, string key, ref Utf8TomlReader lexer)
     {
-        var existing = FindChild(table, key);
+        int existing = FindChild(table, key);
         if (existing >= 0)
         {
             if (_rows[existing].Kind != TomlReaderNodeKind.Table)
@@ -467,7 +467,7 @@ internal sealed class TomlDocumentBuilder
             return existing;
         }
 
-        var created = CreateChildTable(table, ref lexer);
+        int created = CreateChildTable(table, ref lexer);
         AddFlag(created, TomlReaderRowFlags.Dotted);
         Link(table, created, key);
         return created;
@@ -573,7 +573,7 @@ internal sealed class TomlDocumentBuilder
     /// <returns>The row index of the matching child, or <c>-1</c> when none matches.</returns>
     private int FindChild(int table, string key)
     {
-        var child = _rows[table].FirstChild;
+        int child = _rows[table].FirstChild;
         while (child >= 0)
         {
             if (string.Equals(_rows[child].Key, key, StringComparison.Ordinal))

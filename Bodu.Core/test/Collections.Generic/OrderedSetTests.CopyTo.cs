@@ -83,7 +83,7 @@ public partial class OrderedSetTests
     public void CopyTo_WhenIndexIsZero_ShouldCopyInInsertionOrder()
     {
         OrderedSet<int> sut = CreateSet([10, 20, 30]);
-        var target = new int[3];
+        int[] target = new int[3];
 
         sut.CopyTo(target, 0);
 
@@ -126,7 +126,7 @@ public partial class OrderedSetTests
     public void ToArray_WhenCalled_ShouldReturnDisconnectedSnapshot()
     {
         OrderedSet<int> sut = CreateSet([1, 2, 3]);
-        var snapshot = sut.ToArray();
+        int[] snapshot = sut.ToArray();
 
         sut.Add(4);
         sut.Remove(1);
@@ -146,7 +146,7 @@ public partial class OrderedSetTests
     {
         var sut = new OrderedSet<int>();
 
-        var array = sut.ToArray();
+        int[] array = sut.ToArray();
 
         Assert.IsEmpty(array);
     }
@@ -159,7 +159,7 @@ public partial class OrderedSetTests
     {
         OrderedSet<int> sut = CreateSet([10, 20, 30]);
 
-        var array = sut.ToArray();
+        int[] array = sut.ToArray();
 
         CollectionAssert.AreEqual(new[] { 10, 20, 30 }, array);
     }

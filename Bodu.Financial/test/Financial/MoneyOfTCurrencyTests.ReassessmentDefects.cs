@@ -224,7 +224,7 @@ public partial class MoneyOfTCurrencyTests
         // fail (an ICollection wrapper) or the mutation must not propagate (a snapshot copy).
         if (balances is Dictionary<string, decimal> exposed)
         {
-            var originalUsd = bag.Balances["USD"];
+            decimal originalUsd = bag.Balances["USD"];
             try
             {
                 exposed["USD"] = -999_999_999m;
@@ -434,7 +434,7 @@ public partial class MoneyOfTCurrencyTests
     [TestMethod]
     public void MoneyJsonDeserialize_WhenAmountPropertyDuplicated_ShouldThrowJsonException()
     {
-        var json = "{\"amount\":10,\"amount\":20,\"currency\":\"USD\"}";
+        string json = "{\"amount\":10,\"amount\":20,\"currency\":\"USD\"}";
 
         Assert.ThrowsExactly<JsonException>(() =>
         {
@@ -448,7 +448,7 @@ public partial class MoneyOfTCurrencyTests
     [TestMethod]
     public void MoneyJsonDeserialize_WhenCurrencyPropertyDuplicated_ShouldThrowJsonException()
     {
-        var json = "{\"amount\":10,\"currency\":\"USD\",\"currency\":\"EUR\"}";
+        string json = "{\"amount\":10,\"currency\":\"USD\",\"currency\":\"EUR\"}";
 
         Assert.ThrowsExactly<JsonException>(() =>
         {

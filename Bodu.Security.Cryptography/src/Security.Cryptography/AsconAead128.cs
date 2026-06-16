@@ -218,8 +218,8 @@ public sealed class AsconAead128
 
         _key = new KeyMaterial128(key);
 
-        var k0 = _key.K0;
-        var k1 = _key.K1;
+        ulong k0 = _key.K0;
+        ulong k1 = _key.K1;
 
         // Initialization: [IV || K0 || K1 || N0 || N1] → p12 → S3 ^= K0, S4 ^= K1.
         _state = new AsconState
@@ -280,7 +280,7 @@ public sealed class AsconAead128
                 string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_CiphertextTooShort, TagBytes),
                 nameof(ciphertextWithTag));
 
-        var ptLen = ciphertextWithTag.Length - TagBytes;
+        int ptLen = ciphertextWithTag.Length - TagBytes;
         if (output.Length < ptLen)
             throw new ArgumentException(
                 string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, ptLen),
@@ -291,13 +291,13 @@ public sealed class AsconAead128
             ReadOnlySpan<byte> ciphertext = ciphertextWithTag[..ptLen];
             ReadOnlySpan<byte> inTag = ciphertextWithTag[ptLen..];
 
-            var cOff = 0;
-            var pOff = 0;
+            int cOff = 0;
+            int pOff = 0;
 
             while (cOff + Rate <= ciphertext.Length)
             {
-                var c0 = BinaryPrimitives.ReadUInt64LittleEndian(ciphertext[cOff..]);
-                var c1 = BinaryPrimitives.ReadUInt64LittleEndian(ciphertext[(cOff + 8)..]);
+                ulong c0 = BinaryPrimitives.ReadUInt64LittleEndian(ciphertext[cOff..]);
+                ulong c1 = BinaryPrimitives.ReadUInt64LittleEndian(ciphertext[(cOff + 8)..]);
 
                 BinaryPrimitives.WriteUInt64LittleEndian(output[pOff..], _state.S0 ^ c0);
                 BinaryPrimitives.WriteUInt64LittleEndian(output[(pOff + 8)..], _state.S1 ^ c1);
@@ -310,7 +310,7 @@ public sealed class AsconAead128
                 pOff += Rate;
             }
 
-            var lastLen = ciphertext.Length - cOff;
+            int lastLen = ciphertext.Length - cOff;
 
             Span<byte> stateBytes = stackalloc byte[Rate];
             BinaryPrimitives.WriteUInt64LittleEndian(stateBytes, _state.S0);
@@ -322,7 +322,7 @@ public sealed class AsconAead128
             Span<byte> lastCt = stackalloc byte[lastLen == 0 ? 1 : lastLen];
             ciphertext.Slice(cOff, lastLen).CopyTo(lastCt);
 
-            for (var i = 0; i < lastLen; i++)
+            for (int i = 0; i < lastLen; i++)
                 output[pOff + i] = (byte)(lastCt[i] ^ stateBytes[i]);
 
             lastCt[..lastLen].CopyTo(stateBytes);
@@ -377,7 +377,7 @@ public sealed class AsconAead128
         ThrowIfCompleted();
         ThrowIfAadNotProcessed();
 
-        var required = plaintext.Length + TagBytes;
+        int required = plaintext.Length + TagBytes;
         if (output.Length < required)
             throw new ArgumentException(
                 string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, required),
@@ -385,13 +385,13 @@ public sealed class AsconAead128
 
         try
         {
-            var inOff = 0;
-            var outOff = 0;
+            int inOff = 0;
+            int outOff = 0;
 
             while (inOff + Rate <= plaintext.Length)
             {
-                var p0 = BinaryPrimitives.ReadUInt64LittleEndian(plaintext[inOff..]);
-                var p1 = BinaryPrimitives.ReadUInt64LittleEndian(plaintext[(inOff + 8)..]);
+                ulong p0 = BinaryPrimitives.ReadUInt64LittleEndian(plaintext[inOff..]);
+                ulong p1 = BinaryPrimitives.ReadUInt64LittleEndian(plaintext[(inOff + 8)..]);
 
                 BinaryPrimitives.WriteUInt64LittleEndian(output[outOff..], _state.S0 ^ p0);
                 BinaryPrimitives.WriteUInt64LittleEndian(output[(outOff + 8)..], _state.S1 ^ p1);
@@ -404,14 +404,14 @@ public sealed class AsconAead128
                 outOff += Rate;
             }
 
-            var lastLen = plaintext.Length - inOff;
+            int lastLen = plaintext.Length - inOff;
 
             Span<byte> padded = stackalloc byte[Rate];
             plaintext.Slice(inOff, lastLen).CopyTo(padded);
             padded[lastLen] ^= 0x01;
 
-            var fp0 = BinaryPrimitives.ReadUInt64LittleEndian(padded);
-            var fp1 = BinaryPrimitives.ReadUInt64LittleEndian(padded[8..]);
+            ulong fp0 = BinaryPrimitives.ReadUInt64LittleEndian(padded);
+            ulong fp1 = BinaryPrimitives.ReadUInt64LittleEndian(padded[8..]);
 
             Span<byte> cOut = stackalloc byte[Rate];
             BinaryPrimitives.WriteUInt64LittleEndian(cOut, _state.S0 ^ fp0);
@@ -451,7 +451,7 @@ public sealed class AsconAead128
 
         if (!associatedData.IsEmpty)
         {
-            var offset = 0;
+            int offset = 0;
 
             while (offset + Rate <= associatedData.Length)
             {
@@ -462,7 +462,7 @@ public sealed class AsconAead128
 
             // Final partial block: Ascon padding — 0x01 at the first unused byte position.
             Span<byte> pad = stackalloc byte[Rate];
-            var rem = associatedData.Length - offset;
+            int rem = associatedData.Length - offset;
             associatedData.Slice(offset, rem).CopyTo(pad);
             pad[rem] ^= 0x01;
             _state.AbsorbRate128(pad);
@@ -521,8 +521,8 @@ public sealed class AsconAead128
     /// </remarks>
     private void Finalize(Span<byte> tag)
     {
-        var k0 = _key.K0;
-        var k1 = _key.K1;
+        ulong k0 = _key.K0;
+        ulong k1 = _key.K1;
 
         _state.S2 ^= k0;
         _state.S3 ^= k1;

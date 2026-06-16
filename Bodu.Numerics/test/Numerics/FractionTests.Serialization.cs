@@ -19,7 +19,7 @@ public partial class FractionTests
     [TestMethod]
     public void JsonSerialization_WhenSerializing_ShouldEmitCanonicalObjectShape()
     {
-        var json = JsonSerializer.Serialize(new Fraction<int>(3, 4));
+        string json = JsonSerializer.Serialize(new Fraction<int>(3, 4));
 
         Assert.AreEqual("{\"numerator\":3,\"denominator\":4}", json);
     }
@@ -35,7 +35,7 @@ public partial class FractionTests
     {
         var original = new Fraction<int>(numerator, denominator);
 
-        var json = JsonSerializer.Serialize(original);
+        string json = JsonSerializer.Serialize(original);
         Fraction<int> restored = JsonSerializer.Deserialize<Fraction<int>>(json);
 
         Assert.AreEqual(original, restored);
@@ -50,7 +50,7 @@ public partial class FractionTests
     {
         var original = new Fraction<BigInteger>(BigInteger.Pow(10, 30), 3);
 
-        var json = JsonSerializer.Serialize(original);
+        string json = JsonSerializer.Serialize(original);
         Fraction<BigInteger> restored = JsonSerializer.Deserialize<Fraction<BigInteger>>(json);
 
         Assert.AreEqual(original, restored);

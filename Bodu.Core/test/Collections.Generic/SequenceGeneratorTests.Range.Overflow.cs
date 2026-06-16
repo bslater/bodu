@@ -16,7 +16,7 @@ public partial class SequenceGeneratorTests
     [TestMethod]
     public void Range_WhenAscendingOverflowOccursDuringIteration_ShouldTerminateCleanly()
     {
-        var actual = SequenceGenerator.Range(int.MaxValue - 1, int.MaxValue, 5).ToArray();
+        int[] actual = SequenceGenerator.Range(int.MaxValue - 1, int.MaxValue, 5).ToArray();
 
         // Start emits int.MaxValue - 1, then int.MaxValue - 1 + 5 overflows so iteration ends.
         CollectionAssert.AreEqual(new[] { int.MaxValue - 1 }, actual);
@@ -29,7 +29,7 @@ public partial class SequenceGeneratorTests
     [TestMethod]
     public void Range_WhenDescendingOverflowOccursDuringIteration_ShouldTerminateCleanly()
     {
-        var actual = SequenceGenerator.Range(int.MinValue + 1, int.MinValue, -5).ToArray();
+        int[] actual = SequenceGenerator.Range(int.MinValue + 1, int.MinValue, -5).ToArray();
 
         // Start emits int.MinValue + 1, then int.MinValue + 1 - 5 underflows so iteration ends.
         CollectionAssert.AreEqual(new[] { int.MinValue + 1 }, actual);
@@ -41,7 +41,7 @@ public partial class SequenceGeneratorTests
     [TestMethod]
     public void Range_WhenLongStartIsMaxAndCountIsZero_ShouldReturnEmptySequence()
     {
-        var actual = SequenceGenerator.Range(long.MaxValue, 0).ToArray();
+        long[] actual = SequenceGenerator.Range(long.MaxValue, 0).ToArray();
         Assert.IsEmpty(actual);
     }
 
@@ -52,7 +52,7 @@ public partial class SequenceGeneratorTests
     [TestMethod]
     public void Range_WhenPositiveStepButStopBelowStart_ShouldReturnEmptySequence()
     {
-        var actual = SequenceGenerator.Range(10, 5, 1).ToArray();
+        int[] actual = SequenceGenerator.Range(10, 5, 1).ToArray();
         Assert.IsEmpty(actual);
     }
 

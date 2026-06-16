@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlWriteStack.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -114,7 +114,7 @@ internal sealed class TomlWriteStack
             return null;
 
         string? path = null;
-        for (var i = _path.Count - 1; i >= 0; i--)
+        for (int i = _path.Count - 1; i >= 0; i--)
             path = TomlSerializationException.CombinePath(_path[i], path);
 
         return path;

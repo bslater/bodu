@@ -81,11 +81,11 @@ public abstract partial class SkeinTests<TTest, TAlgorithm, TVariant>
     [TestMethod]
     public void ComputeHash_WhenKeyExceedsBlockSize_ShouldProduceStableMac()
     {
-        var input = Enumerable.Range(0, 50).Select(i => (byte)i).ToArray();
+        byte[] input = Enumerable.Range(0, 50).Select(i => (byte)i).ToArray();
 
         using var reference = new TAlgorithm();
-        var blockSize = reference.InputBlockSize;
-        var longKey = Enumerable.Range(0, (blockSize * 2) + 11)
+        int blockSize = reference.InputBlockSize;
+        byte[] longKey = Enumerable.Range(0, (blockSize * 2) + 11)
             .Select(i => (byte)(i ^ 0xA5))
             .ToArray();
 

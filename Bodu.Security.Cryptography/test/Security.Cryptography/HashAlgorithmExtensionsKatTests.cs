@@ -44,7 +44,7 @@ public sealed class HashAlgorithmExtensionsKatTests
         foreach (HashExtensionKat kat in Kats)
         {
             using var algorithm = SHA256.Create();
-            var verified = algorithm.VerifyHash(kat.Input, kat.ExpectedHash);
+            bool verified = algorithm.VerifyHash(kat.Input, kat.ExpectedHash);
 
             Assert.IsTrue(verified, $"Hash-extension KAT '{kat.Name}': sync VerifyHash must succeed for matching digest.");
         }
@@ -63,7 +63,7 @@ public sealed class HashAlgorithmExtensionsKatTests
             using var algorithm = SHA256.Create();
             using MemoryStream stream = new(kat.Input);
 
-            var verified = await algorithm.VerifyHashAsync(stream, kat.ExpectedHash).ConfigureAwait(false);
+            bool verified = await algorithm.VerifyHashAsync(stream, kat.ExpectedHash).ConfigureAwait(false);
 
             Assert.IsTrue(verified, $"Hash-extension KAT '{kat.Name}': async VerifyHash must succeed for matching digest.");
         }
@@ -80,10 +80,10 @@ public sealed class HashAlgorithmExtensionsKatTests
         foreach (HashExtensionKat kat in Kats)
         {
             using var algorithm = SHA256.Create();
-            var corruptedHash = (byte[])kat.ExpectedHash.Clone();
+            byte[] corruptedHash = (byte[])kat.ExpectedHash.Clone();
             corruptedHash[0] ^= 0x01;
 
-            var verified = algorithm.VerifyHash(kat.Input, corruptedHash);
+            bool verified = algorithm.VerifyHash(kat.Input, corruptedHash);
 
             Assert.IsFalse(verified, $"Hash-extension KAT '{kat.Name}': sync VerifyHash must reject corrupted digest.");
         }

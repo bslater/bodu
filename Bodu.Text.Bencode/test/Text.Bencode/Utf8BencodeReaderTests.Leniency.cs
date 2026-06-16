@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Utf8BencodeReaderTests.Leniency.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -25,7 +25,7 @@ public partial class Utf8BencodeReaderTests
     private static int CountProperties(byte[] data, BencodeReaderOptions options)
     {
         var reader = new Utf8BencodeReader(data, options);
-        var names = 0;
+        int names = 0;
         while (reader.Read())
         {
             if (reader.TokenType == BencodeTokenType.PropertyName)
@@ -42,7 +42,7 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void Read_WhenDuplicateKeysWithStrictDefaults_ShouldReportDuplicateKeyError()
     {
-        var data = Bytes("d1:ai1e1:ai2ee");
+        byte[] data = Bytes("d1:ai1e1:ai2ee");
 
         var ex = Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
@@ -58,7 +58,7 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void Read_WhenUnsortedKeysWithStrictDefaults_ShouldReportUnorderedKeyError()
     {
-        var data = Bytes("d1:bi1e1:ai2ee");
+        byte[] data = Bytes("d1:bi1e1:ai2ee");
 
         var ex = Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
@@ -75,9 +75,9 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void Read_WhenUnsortedKeysAllowed_ShouldReadAllEntries()
     {
-        var data = Bytes("d1:bi1e1:ai2e1:ci3ee");
+        byte[] data = Bytes("d1:bi1e1:ai2e1:ci3ee");
 
-        var names = CountProperties(data, new BencodeReaderOptions { AllowUnsortedKeys = true });
+        int names = CountProperties(data, new BencodeReaderOptions { AllowUnsortedKeys = true });
 
         Assert.AreEqual(3, names);
     }
@@ -89,7 +89,7 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void Read_WhenUnsortedKeysAllowedButDuplicatesPresent_ShouldThrowBencodeFormatException()
     {
-        var data = Bytes("d1:bi1e1:ai2e1:bi3ee");
+        byte[] data = Bytes("d1:bi1e1:ai2e1:bi3ee");
 
         var ex = Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
@@ -106,9 +106,9 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void Read_WhenDuplicateKeysAllowed_ShouldReportEveryOccurrence()
     {
-        var data = Bytes("d1:ai1e1:ai2ee");
+        byte[] data = Bytes("d1:ai1e1:ai2ee");
 
-        var names = CountProperties(data, new BencodeReaderOptions { AllowDuplicateKeys = true });
+        int names = CountProperties(data, new BencodeReaderOptions { AllowDuplicateKeys = true });
 
         Assert.AreEqual(2, names);
     }
@@ -119,7 +119,7 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void Read_WhenDuplicateKeysAllowedButKeysUnsorted_ShouldThrowBencodeFormatException()
     {
-        var data = Bytes("d1:bi1e1:ai2ee");
+        byte[] data = Bytes("d1:bi1e1:ai2ee");
 
         var ex = Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
@@ -135,9 +135,9 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void Read_WhenBothLeniencyOptionsEnabled_ShouldReadAllEntries()
     {
-        var data = Bytes("d1:bi1e1:ai2e1:bi3ee");
+        byte[] data = Bytes("d1:bi1e1:ai2e1:bi3ee");
 
-        var names = CountProperties(data, new BencodeReaderOptions { AllowUnsortedKeys = true, AllowDuplicateKeys = true });
+        int names = CountProperties(data, new BencodeReaderOptions { AllowUnsortedKeys = true, AllowDuplicateKeys = true });
 
         Assert.AreEqual(3, names);
     }
@@ -149,9 +149,9 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void Read_WhenNestedDictionaryHasDuplicates_ShouldValidateEachFrameIndependently()
     {
-        var data = Bytes("d1:ad1:xi1e1:xi2ee1:bi3ee");
+        byte[] data = Bytes("d1:ad1:xi1e1:xi2ee1:bi3ee");
 
-        var names = CountProperties(data, new BencodeReaderOptions { AllowDuplicateKeys = true });
+        int names = CountProperties(data, new BencodeReaderOptions { AllowDuplicateKeys = true });
 
         Assert.AreEqual(4, names);
     }

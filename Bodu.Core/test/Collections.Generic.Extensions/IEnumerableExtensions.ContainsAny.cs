@@ -51,7 +51,7 @@ public sealed partial class IEnumerableExtensionsTests_ContainsAny
 
         static IEnumerable<int> LazyRange(int start, int count)
         {
-            for (var i = 0; i < count; i++)
+            for (int i = 0; i < count; i++)
                 yield return start + i;
         }
     }
@@ -94,7 +94,7 @@ public sealed partial class IEnumerableExtensionsTests_ContainsAny
     public void ContainsAny_WhenSourceIsSmallerThanItems_ShouldReturnExpectedResult()
     {
         int[] source = [42, 99];
-        var items = Enumerable.Range(0, 100).ToArray();
+        int[] items = Enumerable.Range(0, 100).ToArray();
 
         Assert.IsTrue(source.ContainsAny(items));
     }

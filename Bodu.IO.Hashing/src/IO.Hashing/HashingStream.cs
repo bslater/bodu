@@ -237,7 +237,7 @@ public sealed class HashingStream
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
 
-        var bytesRead = _innerStream.Read(buffer);
+        int bytesRead = _innerStream.Read(buffer);
         _algorithm.Append(buffer[..bytesRead]);
         return bytesRead;
     }
@@ -276,7 +276,7 @@ public sealed class HashingStream
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
 
-        var bytesRead = await _innerStream.ReadAsync(buffer, cancellationToken).ConfigureAwait(false);
+        int bytesRead = await _innerStream.ReadAsync(buffer, cancellationToken).ConfigureAwait(false);
         _algorithm.Append(buffer.Span[..bytesRead]);
         return bytesRead;
     }

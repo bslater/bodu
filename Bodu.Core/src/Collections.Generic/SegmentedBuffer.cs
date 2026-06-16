@@ -104,8 +104,8 @@ public sealed class SegmentedBuffer<T> :
             ThrowHelper.ThrowIfLessThan(index, 0);
             ThrowHelper.ThrowIfGreaterThanOrEqual(index, Count);
 
-            var segmentIndex = index / _segmentSize;
-            var offset = index % _segmentSize;
+            int segmentIndex = index / _segmentSize;
+            int offset = index % _segmentSize;
             return _segments[segmentIndex][offset];
         }
 
@@ -114,8 +114,8 @@ public sealed class SegmentedBuffer<T> :
             ThrowHelper.ThrowIfLessThan(index, 0);
             ThrowHelper.ThrowIfGreaterThanOrEqual(index, Count);
 
-            var segmentIndex = index / _segmentSize;
-            var offset = index % _segmentSize;
+            int segmentIndex = index / _segmentSize;
+            int offset = index % _segmentSize;
             _segments[segmentIndex][offset] = value;
         }
     }
@@ -133,8 +133,8 @@ public sealed class SegmentedBuffer<T> :
         if (Count % _segmentSize == 0)
             _segments.Add(new T[_segmentSize]);
 
-        var segmentIndex = Count / _segmentSize;
-        var offset = Count % _segmentSize;
+        int segmentIndex = Count / _segmentSize;
+        int offset = Count % _segmentSize;
         _segments[segmentIndex][offset] = item;
 
         Count++;
@@ -150,21 +150,21 @@ public sealed class SegmentedBuffer<T> :
     /// </remarks>
     public IEnumerator<T> GetEnumerator()
     {
-        var count = Count;
-        var fullSegments = count / _segmentSize;
-        var lastSegmentCount = count % _segmentSize;
+        int count = Count;
+        int fullSegments = count / _segmentSize;
+        int lastSegmentCount = count % _segmentSize;
 
-        for (var i = 0; i < fullSegments; i++)
+        for (int i = 0; i < fullSegments; i++)
         {
             T[] segment = _segments[i];
-            for (var j = 0; j < _segmentSize; j++)
+            for (int j = 0; j < _segmentSize; j++)
                 yield return segment[j];
         }
 
         if (lastSegmentCount > 0)
         {
             T[] lastSegment = _segments[fullSegments];
-            for (var j = 0; j < lastSegmentCount; j++)
+            for (int j = 0; j < lastSegmentCount; j++)
                 yield return lastSegment[j];
         }
     }

@@ -348,7 +348,7 @@ public sealed class BoeExchangeRateProvider
             foreach (BoeSeriesInfo info in table.GetSeriesInfo())
                 _series[info.Pair] = info;
 
-            var count = AddObservations(table.EnumerateRates(), fetchedAt);
+            int count = AddObservations(table.EnumerateRates(), fetchedAt);
             _loadedRanges.Add((startDate, endDate));
             RebuildSnapshot();
 

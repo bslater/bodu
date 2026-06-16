@@ -50,7 +50,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     public void TryVerifyHash_WhenByteArrayDoesNotMatch_ShouldReturnFalse()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
-        var wrong = BitConverter.GetBytes((uint)999);
+        byte[] wrong = BitConverter.GetBytes((uint)999);
 
         Assert.IsFalse(algorithm.TryVerifyHash(s_sampleData, wrong));
     }
@@ -63,9 +63,9 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     public void TryVerifyHash_WhenByteArrayDoesNotMatchWithOutBool_ShouldReturnTrueAndSetResultFalse()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
-        var wrong = BitConverter.GetBytes((uint)999);
+        byte[] wrong = BitConverter.GetBytes((uint)999);
 
-        var succeeded = algorithm.TryVerifyHash(s_sampleData, wrong, out var result);
+        bool succeeded = algorithm.TryVerifyHash(s_sampleData, wrong, out bool result);
 
         Assert.IsTrue(succeeded);
         Assert.IsFalse(result);
@@ -130,7 +130,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
-        var succeeded = algorithm.TryVerifyHash(s_sampleData, s_sampleHash, out var result);
+        bool succeeded = algorithm.TryVerifyHash(s_sampleData, s_sampleHash, out bool result);
 
         Assert.IsTrue(succeeded);
         Assert.IsTrue(result);
@@ -185,7 +185,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
-        var succeeded = algorithm.TryVerifyHash((byte[])null!, s_sampleHash, out var result);
+        bool succeeded = algorithm.TryVerifyHash((byte[])null!, s_sampleHash, out bool result);
 
         Assert.IsFalse(succeeded);
         Assert.IsFalse(result);

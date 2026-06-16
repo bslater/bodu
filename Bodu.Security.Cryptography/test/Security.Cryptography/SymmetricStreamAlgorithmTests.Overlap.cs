@@ -17,16 +17,16 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
     [TestMethod]
     public void TransformBlock_WhenInPlaceSameOffset_ShouldSucceed()
     {
-        var key = CreateKey();
-        var nonce = CreateNonce();
-        var plaintext = CreatePayload(128);
+        byte[] key = CreateKey();
+        byte[] nonce = CreateNonce();
+        byte[] plaintext = CreatePayload(128);
 
         byte[] expected;
         using (TAlgorithm cipher = CreateAlgorithm())
         using (ICryptoTransform e = cipher.CreateEncryptor(key, nonce))
             expected = e.TransformFinalBlock(plaintext, 0, plaintext.Length);
 
-        var buffer = (byte[])plaintext.Clone();
+        byte[] buffer = (byte[])plaintext.Clone();
         using (TAlgorithm cipher = CreateAlgorithm())
         using (ICryptoTransform e = cipher.CreateEncryptor(key, nonce))
             _ = e.TransformBlock(buffer, 0, buffer.Length, buffer, 0);
@@ -41,10 +41,10 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
     [TestMethod]
     public void TransformBlock_WhenDisjointRangesInSameArray_ShouldSucceed()
     {
-        var key = CreateKey();
-        var nonce = CreateNonce();
+        byte[] key = CreateKey();
+        byte[] nonce = CreateNonce();
         const int count = 32;
-        var plaintext = CreatePayload(count);
+        byte[] plaintext = CreatePayload(count);
 
         byte[] expected;
         using (TAlgorithm cipher = CreateAlgorithm())
@@ -52,7 +52,7 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
             expected = e.TransformFinalBlock(plaintext, 0, count);
 
         // Input occupies [0, count); output is written to the disjoint range [count, 2*count).
-        var buffer = new byte[count * 2];
+        byte[] buffer = new byte[count * 2];
         plaintext.CopyTo(buffer.AsSpan(0));
         using (TAlgorithm cipher = CreateAlgorithm())
         using (ICryptoTransform e = cipher.CreateEncryptor(key, nonce))
@@ -68,14 +68,14 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
     [TestMethod]
     public void TransformBlock_WhenPartiallyOverlappingInSameArray_ShouldThrowCryptographicException()
     {
-        var key = CreateKey();
-        var nonce = CreateNonce();
+        byte[] key = CreateKey();
+        byte[] nonce = CreateNonce();
 
         using TAlgorithm cipher = CreateAlgorithm();
         using ICryptoTransform e = cipher.CreateEncryptor(key, nonce);
 
         // Input [0, 32) and output [16, 48) share the bytes [16, 32).
-        var buffer = CreatePayload(64);
+        byte[] buffer = CreatePayload(64);
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
@@ -90,16 +90,16 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
     [TestMethod]
     public void TransformBlock_WhenInputAndOutputAreDifferentArrays_ShouldSucceed()
     {
-        var key = CreateKey();
-        var nonce = CreateNonce();
-        var plaintext = CreatePayload(128);
+        byte[] key = CreateKey();
+        byte[] nonce = CreateNonce();
+        byte[] plaintext = CreatePayload(128);
 
         byte[] expected;
         using (TAlgorithm cipher = CreateAlgorithm())
         using (ICryptoTransform e = cipher.CreateEncryptor(key, nonce))
             expected = e.TransformFinalBlock(plaintext, 0, plaintext.Length);
 
-        var output = new byte[plaintext.Length];
+        byte[] output = new byte[plaintext.Length];
         using (TAlgorithm cipher = CreateAlgorithm())
         using (ICryptoTransform e = cipher.CreateEncryptor(key, nonce))
             _ = e.TransformBlock(plaintext, 0, plaintext.Length, output, 0);

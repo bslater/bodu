@@ -20,7 +20,7 @@ public partial class BufferConverterTests
     public void SwapEndian_WhenCopyingWithElementSizeFour_ForByteSpans_ShouldReverseBytesPerElement()
     {
         byte[] source = [0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08];
-        var destination = new byte[source.Length];
+        byte[] destination = new byte[source.Length];
 
         BufferConverter.SwapEndian(source, destination, 4);
 
@@ -36,7 +36,7 @@ public partial class BufferConverterTests
     public void SwapEndian_WhenCopyingWithElementSizeTwo_ForByteSpans_ShouldReverseBytesPerElement()
     {
         byte[] source = [0x01, 0x02, 0x03, 0x04];
-        var destination = new byte[source.Length];
+        byte[] destination = new byte[source.Length];
 
         BufferConverter.SwapEndian(source, destination, 2);
 
@@ -49,8 +49,8 @@ public partial class BufferConverterTests
     [TestMethod]
     public void SwapEndian_WhenDestinationIsShorterThanSource_ForByteSpans_ShouldThrowExactly()
     {
-        var source = new byte[8];
-        var destination = new byte[4];
+        byte[] source = new byte[8];
+        byte[] destination = new byte[4];
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -68,7 +68,7 @@ public partial class BufferConverterTests
     public void SwapEndian_WhenElementSizeIsInvalid_ForByteSpans_ShouldThrowExactly(int elementSize)
     {
         byte[] source = [0x01, 0x02, 0x03, 0x04];
-        var destination = new byte[source.Length];
+        byte[] destination = new byte[source.Length];
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -111,8 +111,8 @@ public partial class BufferConverterTests
     [TestMethod]
     public void SwapEndian_WhenSourceLengthIsNotMultipleOfElementSize_ForByteSpans_ShouldThrowExactly()
     {
-        var source = new byte[5];
-        var destination = new byte[8];
+        byte[] source = new byte[5];
+        byte[] destination = new byte[8];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {

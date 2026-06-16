@@ -18,7 +18,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
         TCollection collection = CreateCollection(3);
         AddToTail(collection, 1);
 
-        var copy = ToArray(collection);
+        int[] copy = ToArray(collection);
         AddToTail(collection, 2);
 
         Assert.HasCount(1, copy);

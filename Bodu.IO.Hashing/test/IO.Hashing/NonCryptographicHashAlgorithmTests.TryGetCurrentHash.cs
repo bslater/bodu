@@ -24,10 +24,10 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
         TAlgorithm algorithm = CreateAlgorithm(variant);
         algorithm.Append(NonCryptographicHashSharedInputs.Abc);
 
-        var expected = algorithm.GetCurrentHash();
-        var destination = new byte[algorithm.HashLengthInBytes];
+        byte[] expected = algorithm.GetCurrentHash();
+        byte[] destination = new byte[algorithm.HashLengthInBytes];
 
-        var succeeded = algorithm.TryGetCurrentHash(destination, out var written);
+        bool succeeded = algorithm.TryGetCurrentHash(destination, out int written);
 
         Assert.IsTrue(succeeded);
         Assert.AreEqual(algorithm.HashLengthInBytes, written);
@@ -46,14 +46,14 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
         TAlgorithm algorithm = CreateAlgorithm(variant);
         algorithm.Append(NonCryptographicHashSharedInputs.Abc);
 
-        var destination = new byte[algorithm.HashLengthInBytes - 1];
+        byte[] destination = new byte[algorithm.HashLengthInBytes - 1];
         if (destination.Length == 0)
         {
             Assert.Inconclusive($"Hash length for variant '{variant}' ({algorithm.HashLengthInBytes})is too small to test undersized destination.");
             return;
         }
 
-        var succeeded = algorithm.TryGetCurrentHash(destination, out var written);
+        bool succeeded = algorithm.TryGetCurrentHash(destination, out int written);
 
         Assert.IsFalse(succeeded);
         Assert.AreEqual(0, written);
@@ -71,10 +71,10 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
         TAlgorithm algorithm = CreateAlgorithm(variant);
         algorithm.Append(NonCryptographicHashSharedInputs.QuickBrownFox);
 
-        var first = new byte[algorithm.HashLengthInBytes];
+        byte[] first = new byte[algorithm.HashLengthInBytes];
         Assert.IsTrue(algorithm.TryGetCurrentHash(first, out _));
 
-        var second = algorithm.GetCurrentHash();
+        byte[] second = algorithm.GetCurrentHash();
         CollectionAssert.AreEqual(first, second);
     }
 

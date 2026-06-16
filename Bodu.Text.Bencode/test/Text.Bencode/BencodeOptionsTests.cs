@@ -29,7 +29,7 @@ public class BencodeOptionsTests
     [TestCategory("Smoke")]
     public void ReaderOptions_WhenDocumentExceedsMaxDepth_ShouldThrowBencodeFormatException()
     {
-        var bytes = Encoding.Latin1.GetBytes("llleee");
+        byte[] bytes = Encoding.Latin1.GetBytes("llleee");
 
         Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
@@ -48,7 +48,7 @@ public class BencodeOptionsTests
     [TestMethod]
     public void ReaderOptions_WhenDocumentWithinMaxDepth_ShouldReadToCompletion()
     {
-        var bytes = Encoding.Latin1.GetBytes("llee");
+        byte[] bytes = Encoding.Latin1.GetBytes("llee");
 
         var reader = new Utf8BencodeReader(bytes, new BencodeReaderOptions { MaxDepth = 2 });
         while (reader.Read())
@@ -101,7 +101,7 @@ public class BencodeOptionsTests
     [TestMethod]
     public void DocumentOptions_WhenDocumentExceedsMaxDepth_ShouldThrowBencodeFormatException()
     {
-        var bytes = Encoding.Latin1.GetBytes("llee");
+        byte[] bytes = Encoding.Latin1.GetBytes("llee");
 
         Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
@@ -116,7 +116,7 @@ public class BencodeOptionsTests
     [TestMethod]
     public void DocumentOptions_WhenDefaultDepth_ShouldParseNestedDocument()
     {
-        var bytes = Encoding.Latin1.GetBytes("llee");
+        byte[] bytes = Encoding.Latin1.GetBytes("llee");
 
         using var document = BencodeDocument.Parse(bytes);
 
@@ -131,7 +131,7 @@ public class BencodeOptionsTests
     [TestMethod]
     public void NodeOptions_WhenCaseInsensitive_ShouldResolvePropertyIgnoringCase()
     {
-        var bytes = Encoding.Latin1.GetBytes("d4:Name4:teste");
+        byte[] bytes = Encoding.Latin1.GetBytes("d4:Name4:teste");
 
         BencodeObject obj = BencodeNode.Parse(bytes, new BencodeNodeOptions { PropertyNameCaseInsensitive = true })!.AsObject();
 
@@ -148,7 +148,7 @@ public class BencodeOptionsTests
     [TestMethod]
     public void NodeOptions_WhenDefault_ShouldResolvePropertyCaseSensitively()
     {
-        var bytes = Encoding.Latin1.GetBytes("d4:Name4:teste");
+        byte[] bytes = Encoding.Latin1.GetBytes("d4:Name4:teste");
 
         BencodeObject obj = BencodeNode.Parse(bytes)!.AsObject();
 

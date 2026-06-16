@@ -17,7 +17,7 @@ public partial class FixedDatedExchangeRateProviderTests
     {
         FixedDatedExchangeRateProvider table = new([]);
 
-        var found = table.TryGetRate(
+        bool found = table.TryGetRate(
             "USD",
             "USD",
             s_d1,
@@ -45,7 +45,7 @@ public partial class FixedDatedExchangeRateProviderTests
             ExchangeRateDateResolution.Exact,
             allowSameCurrencyIdentityRate: false);
 
-        var found = table.TryGetRate("USD", "USD", s_d1, options, out _);
+        bool found = table.TryGetRate("USD", "USD", s_d1, options, out _);
 
         Assert.IsFalse(found);
     }

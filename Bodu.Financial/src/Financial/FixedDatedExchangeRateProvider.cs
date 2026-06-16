@@ -92,7 +92,7 @@ public sealed class FixedDatedExchangeRateProvider
         if (snapshot.Length == 0)
             throw new ArgumentException(FinancialResourceStrings.Arg_Invalid_ProviderPriorityEmpty, nameof(providerPriority));
 
-        for (var i = 0; i < snapshot.Length; i++)
+        for (int i = 0; i < snapshot.Length; i++)
         {
             if (string.IsNullOrWhiteSpace(snapshot[i]))
                 throw new ArgumentException(FinancialResourceStrings.Arg_Invalid_ProviderNullOrWhiteSpace, nameof(providerPriority));
@@ -155,7 +155,7 @@ public sealed class FixedDatedExchangeRateProvider
 
         if (options.AllowSameCurrencyIdentityRate && string.Equals(fromIsoCode, toIsoCode, StringComparison.Ordinal))
         {
-            var identityDate = LatestDateInBook();
+            DateOnly identityDate = LatestDateInBook();
             ExchangeRate identity = new(fromIsoCode, toIsoCode, identityDate, 1m, IdentityProviderName);
             return new ExchangeRateLookupResult(identity, identityDate, options.DateResolution, 0, ExchangeRateProvenance.Live(identity.Provider));
         }
@@ -330,7 +330,7 @@ public sealed class FixedDatedExchangeRateProvider
 
         foreach (ExchangeRateSeriesKey key in book.Keys)
         {
-            if (pairProvider.TryGetValue(key.Pair, out var existing) &&
+            if (pairProvider.TryGetValue(key.Pair, out string? existing) &&
                 !string.Equals(existing, key.Provider, StringComparison.Ordinal))
             {
                 throw new ArgumentException(
@@ -371,24 +371,24 @@ public sealed class FixedDatedExchangeRateProvider
         bool isInverted,
         out ExchangeRateLookupResult result)
     {
-        var priority = _providerPriority;
-        for (var i = 0; i < priority.Length; i++)
+        string[] priority = _providerPriority;
+        for (int i = 0; i < priority.Length; i++)
         {
             if (!_book.TryGetSeries(pair, priority[i], out ExchangeRateSeries? series) || series is null)
                 continue;
 
-            if (!series.TryGetRate(requestedDate, options, out DateOnly resolvedDate, out var rawRate))
+            if (!series.TryGetRate(requestedDate, options, out DateOnly resolvedDate, out decimal rawRate))
                 continue;
 
-            var reportedFrom = isInverted ? pair.ToIsoCode : pair.FromIsoCode;
-            var reportedTo = isInverted ? pair.FromIsoCode : pair.ToIsoCode;
+            string reportedFrom = isInverted ? pair.ToIsoCode : pair.FromIsoCode;
+            string reportedTo = isInverted ? pair.FromIsoCode : pair.ToIsoCode;
 
             // Pass the originally observed rate so an inverted conversion divides by it rather than multiplying by a
             // pre-rounded reciprocal; the reported Rate is still the From->To multiplier. The series' fetch instant is
             // stamped onto the served rate as provenance.
             var rate = ExchangeRate.FromObservedRate(reportedFrom, reportedTo, resolvedDate, rawRate, series.Provider, isInverted, series.FetchedAtUtc);
 
-            var offsetDays = Math.Abs(resolvedDate.DayNumber - requestedDate.DayNumber);
+            int offsetDays = Math.Abs(resolvedDate.DayNumber - requestedDate.DayNumber);
             result = new ExchangeRateLookupResult(rate, requestedDate, options.DateResolution, offsetDays, ExchangeRateProvenance.Live(rate.Provider));
             return true;
         }
@@ -415,8 +415,8 @@ public sealed class FixedDatedExchangeRateProvider
         bool isInverted,
         out ExchangeRateLookupResult result)
     {
-        var priority = _providerPriority;
-        for (var i = 0; i < priority.Length; i++)
+        string[] priority = _providerPriority;
+        for (int i = 0; i < priority.Length; i++)
         {
             if (!_book.TryGetSeries(pair, priority[i], out ExchangeRateSeries? series) || series is null || series.Count == 0)
                 continue;
@@ -424,8 +424,8 @@ public sealed class FixedDatedExchangeRateProvider
             // Observations are stored in ascending date order, so the last is the most recent.
             ExchangeRateObservation latest = series.GetObservations().Last();
 
-            var reportedFrom = isInverted ? pair.ToIsoCode : pair.FromIsoCode;
-            var reportedTo = isInverted ? pair.FromIsoCode : pair.ToIsoCode;
+            string reportedFrom = isInverted ? pair.ToIsoCode : pair.FromIsoCode;
+            string reportedTo = isInverted ? pair.FromIsoCode : pair.ToIsoCode;
 
             // Stamp the series' fetch instant onto the served rate as provenance.
             var rate = ExchangeRate.FromObservedRate(reportedFrom, reportedTo, latest.Date, latest.Rate, series.Provider, isInverted, series.FetchedAtUtc);
@@ -461,14 +461,14 @@ public sealed class FixedDatedExchangeRateProvider
         bool isInverted,
         List<ExchangeRate> result)
     {
-        var priority = _providerPriority;
-        for (var i = 0; i < priority.Length; i++)
+        string[] priority = _providerPriority;
+        for (int i = 0; i < priority.Length; i++)
         {
             if (!_book.TryGetSeries(pair, priority[i], out ExchangeRateSeries? series) || series is null)
                 continue;
 
-            var reportedFrom = isInverted ? pair.ToIsoCode : pair.FromIsoCode;
-            var reportedTo = isInverted ? pair.FromIsoCode : pair.ToIsoCode;
+            string reportedFrom = isInverted ? pair.ToIsoCode : pair.FromIsoCode;
+            string reportedTo = isInverted ? pair.FromIsoCode : pair.ToIsoCode;
 
             foreach (ExchangeRateObservation observation in series.GetObservations())
             {
@@ -493,7 +493,7 @@ public sealed class FixedDatedExchangeRateProvider
     private DateOnly LatestDateInBook()
     {
         DateOnly max = DateOnly.MinValue;
-        var any = false;
+        bool any = false;
 
         foreach (ExchangeRateSeriesKey key in _book.Keys)
         {

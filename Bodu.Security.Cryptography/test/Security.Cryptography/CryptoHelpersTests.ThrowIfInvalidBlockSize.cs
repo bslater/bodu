@@ -19,7 +19,7 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void ThrowIfInvalidBlockSize_WhenBlockSizeMatches_ShouldNotThrow()
     {
-        var block = new byte[16];
+        byte[] block = new byte[16];
         CryptographyThrowHelper.ThrowIfInvalidBlockSize(block, 128, s_legalBlockSizesForBlockSize);
     }
 
@@ -60,7 +60,7 @@ public partial class CryptoHelpersTests
     [DataRow(32, 128)]
     public void ThrowIfInvalidBlockSize_WhenBlockHasWrongLength_ShouldThrowExactly(int actualBytes, int expectedBits)
     {
-        var block = new byte[actualBytes];
+        byte[] block = new byte[actualBytes];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {

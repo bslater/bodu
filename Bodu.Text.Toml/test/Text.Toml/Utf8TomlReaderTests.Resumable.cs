@@ -82,7 +82,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void Read_WhenChunkedV11Document_ShouldMatchSinglePassTokenStream()
     {
-        var toml = "p = {\n  x = \"\\e\\x41\", # esc\n  t = 07:32,\n}\nbom = 1\n";
+        string toml = "p = {\n  x = \"\\e\\x41\", # esc\n  t = 07:32,\n}\nbom = 1\n";
 
         Utf8TomlReader single = Create(toml, TomlSpecVersion.V1_1);
         List<string> expected = Drain(ref single);
@@ -118,7 +118,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void CurrentState_WhenResumedOnLaterLine_ShouldPreserveLinePositions()
     {
-        var doc = Encoding.UTF8.GetBytes("a = 1\nb = 2\nlong");
+        byte[] doc = Encoding.UTF8.GetBytes("a = 1\nb = 2\nlong");
         var reader = new Utf8TomlReader(doc, isFinalBlock: false, new TomlReaderState());
         while (reader.Read())
         {
@@ -213,7 +213,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void Read_WhenMultiByteCharacterSplitAcrossBlocks_ShouldResumeCleanly()
     {
-        var e1 = Encoding.UTF8.GetBytes("s = \"é\"\n");
+        byte[] e1 = Encoding.UTF8.GetBytes("s = \"é\"\n");
 
         var first = new Utf8TomlReader(e1.AsSpan(0, 6), isFinalBlock: false, new TomlReaderState());
         Assert.IsTrue(first.Read());
@@ -246,18 +246,18 @@ public sealed partial class Utf8TomlReaderTests
     /// <returns>The formatted token entries in read order.</returns>
     private static List<string> DrainChunked(string toml, int chunkSize, TomlSpecVersion specVersion = TomlSpecVersion.V1_0)
     {
-        var data = Encoding.UTF8.GetBytes(toml);
+        byte[] data = Encoding.UTF8.GetBytes(toml);
         var tokens = new List<string>();
         var state = new TomlReaderState(new TomlReaderOptions { SpecVersion = specVersion });
 
         byte[] buffer = [];
-        var fed = 0;
+        int fed = 0;
         while (true)
         {
-            var take = Math.Min(chunkSize, data.Length - fed);
+            int take = Math.Min(chunkSize, data.Length - fed);
             buffer = [.. buffer, .. data.AsSpan(fed, take)];
             fed += take;
-            var isFinal = fed == data.Length;
+            bool isFinal = fed == data.Length;
 
             var reader = new Utf8TomlReader(buffer, isFinal, state);
             while (reader.Read())

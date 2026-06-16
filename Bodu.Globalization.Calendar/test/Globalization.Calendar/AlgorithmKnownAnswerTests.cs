@@ -79,7 +79,7 @@ public sealed class AlgorithmKnownAnswerTests
 
         Assert.HasCount(1, matches, $"expected exactly one '{notableDateId}' for {year}");
 
-        var deltaDays = Math.Abs(matches[0].Date.DayNumber - expectedDate.DayNumber);
+        int deltaDays = Math.Abs(matches[0].Date.DayNumber - expectedDate.DayNumber);
         Assert.IsLessThanOrEqualTo(2, deltaDays, $"{notableDateId} {year}: resolved {matches[0].Date}, expected within 2 days of {expectedDate}");
     }
 
@@ -112,7 +112,7 @@ public sealed class AlgorithmKnownAnswerTests
         NotableDateService service = CreateService();
         List<string> failures = new();
 
-        foreach ((var year, var id, var expected) in knownAnswers)
+        foreach ((int year, string? id, string? expected) in knownAnswers)
         {
             var expectedDate = DateOnly.Parse(expected, CultureInfo.InvariantCulture);
             var matches = service
@@ -126,7 +126,7 @@ public sealed class AlgorithmKnownAnswerTests
                 continue;
             }
 
-            var deltaDays = Math.Abs(matches[0].Date.DayNumber - expectedDate.DayNumber);
+            int deltaDays = Math.Abs(matches[0].Date.DayNumber - expectedDate.DayNumber);
             if (deltaDays > 2)
                 failures.Add($"{id} {year}: resolved {matches[0].Date}, expected within 2 days of {expectedDate} (off by {deltaDays})");
         }

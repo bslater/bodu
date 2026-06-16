@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SmokeTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -30,7 +30,7 @@ public sealed class SmokeTests
         const string source = "name,age,city\nAlice,30,Paris\nBob,25,London";
 
         DelimitedDocument original = Delimited.Parse(source);
-        var formatted = Delimited.Format(original);
+        string formatted = Delimited.Format(original);
         DelimitedDocument roundTripped = Delimited.Parse(formatted);
 
         Assert.AreEqual(2, roundTripped.Rows.Count);
@@ -51,7 +51,7 @@ public sealed class SmokeTests
         const string source = "HOST=localhost\nPORT=8080\nDEBUG=True";
 
         DotEnvDocument original = DotEnv.Parse(source);
-        var formatted = DotEnv.Format(original);
+        string formatted = DotEnv.Format(original);
         DotEnvDocument roundTripped = DotEnv.Parse(formatted);
 
         Assert.AreEqual("localhost", roundTripped["HOST"]);
@@ -70,7 +70,7 @@ public sealed class SmokeTests
         const string source = "global=g\n[server]\nhost=localhost\nport=8080";
 
         IniDocument original = Ini.Parse(source);
-        var formatted = Ini.Format(original);
+        string formatted = Ini.Format(original);
         IniDocument roundTripped = Ini.Parse(formatted);
 
         Assert.AreEqual("g", roundTripped.GlobalSection["global"]);

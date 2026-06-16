@@ -53,7 +53,7 @@ public partial class ConcurrentHashSetTests
     public void ICollectionCopyTo_WhenArrayCompatible_ShouldCopyEveryElement()
     {
         ICollection collection = new ConcurrentHashSet<int>([1, 2, 3]);
-        var array = new int[3];
+        int[] array = new int[3];
 
         collection.CopyTo(array, 0);
 
@@ -112,7 +112,7 @@ public partial class ConcurrentHashSetTests
     public void ICollectionCopyTo_WhenIndexSupplied_ShouldCopyStartingAtThatIndex()
     {
         ICollection collection = new ConcurrentHashSet<int>([7, 8]);
-        var array = new int[5];
+        int[] array = new int[5];
 
         collection.CopyTo(array, 2);
 
@@ -175,7 +175,7 @@ public partial class ConcurrentHashSetTests
     public void ICollectionCopyTo_WhenArrayExactlyFits_ShouldCopyEveryElement()
     {
         ICollection collection = new ConcurrentHashSet<int>([1, 2, 3]);
-        var array = new int[3];
+        int[] array = new int[3];
 
         collection.CopyTo(array, 0);
 
@@ -190,7 +190,7 @@ public partial class ConcurrentHashSetTests
     public void ICollectionCopyTo_WhenSetIsEmptyAndIndexEqualsLength_ShouldSucceed()
     {
         ICollection collection = new ConcurrentHashSet<int>();
-        var array = new int[3];
+        int[] array = new int[3];
 
         collection.CopyTo(array, 3);
 

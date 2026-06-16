@@ -23,7 +23,7 @@ public sealed class AdjustmentPolicyYearScopeTests
     /// <returns>A service over the fixture.</returns>
     private static INotableDateService Build(string scope)
     {
-        var xml = """
+        string xml = """
         <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.b1">
           <ResolutionPolicy duplicatePolicy="Error" priorityDirection="HigherWins" />
           <AdjustmentPolicies>

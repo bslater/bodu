@@ -30,7 +30,7 @@ internal static class Tamper
         ArgumentOutOfRangeException.ThrowIfNegative(bitIndex);
         ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(bitIndex, source.Length * 8);
 
-        var copy = (byte[])source.Clone();
+        byte[] copy = (byte[])source.Clone();
         copy[bitIndex / 8] ^= (byte)(1 << (bitIndex % 8));
         return copy;
     }
@@ -47,7 +47,7 @@ internal static class Tamper
         ArgumentOutOfRangeException.ThrowIfNegative(index);
         ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, source.Length);
 
-        var copy = (byte[])source.Clone();
+        byte[] copy = (byte[])source.Clone();
         copy[index] ^= 0xFF;
         return copy;
     }

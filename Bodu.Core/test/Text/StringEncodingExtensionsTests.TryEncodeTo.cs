@@ -32,10 +32,10 @@ public sealed partial class StringEncodingExtensionsTests
     [DynamicData(nameof(GetTryEncodeToCases))]
     public void TryEncodeTo_ShouldRespectDestinationSize(int extra, bool expectedOk)
     {
-        var required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
-        var backing = new byte[required + extra];
+        int required = System.Text.Encoding.UTF8.GetByteCount(MultiByteText);
+        byte[] backing = new byte[required + extra];
 
-        var ok = MultiByteText.TryEncodeTo(System.Text.Encoding.UTF8, backing, out var written);
+        bool ok = MultiByteText.TryEncodeTo(System.Text.Encoding.UTF8, backing, out int written);
 
         Assert.AreEqual(expectedOk, ok);
         Assert.AreEqual(expectedOk ? required : 0, written);
@@ -49,7 +49,7 @@ public sealed partial class StringEncodingExtensionsTests
     [TestMethod]
     public void TryEncodeTo_WhenTextIsNull_ShouldThrowExactly()
     {
-        var backing = new byte[64];
+        byte[] backing = new byte[64];
 
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -67,7 +67,7 @@ public sealed partial class StringEncodingExtensionsTests
     [TestMethod]
     public void TryEncodeTo_WhenEncodingIsNull_ShouldThrowExactly()
     {
-        var backing = new byte[64];
+        byte[] backing = new byte[64];
 
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

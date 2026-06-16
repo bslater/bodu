@@ -42,7 +42,7 @@ public sealed partial class NotableDateDocumentBuilder
 
         ResolutionPolicyBuilder policy = new();
         WeekPattern? workingWeek = null;
-        var workingDays = (string?)element.Attribute("workingDays");
+        string? workingDays = (string?)element.Attribute("workingDays");
         if (!string.IsNullOrEmpty(workingDays) && WeekPattern.TryParse(workingDays, out WeekPattern parsed))
             workingWeek = parsed;
 
@@ -97,7 +97,7 @@ public sealed partial class NotableDateDocumentBuilder
             foreach (XElement weekday in trigger.Elements(BuilderXml.Namespace + "Weekday"))
                 weekdays.Add(ParseEnum<DayOfWeek>((string?)weekday.Attribute("value")));
 
-            var month = (string?)trigger.Attribute("month");
+            string? month = (string?)trigger.Attribute("month");
             policy.SetParsedTrigger(
                 ParseNullableEnum<AdjustmentTrigger>((string?)trigger.Attribute("type")),
                 weekdays,

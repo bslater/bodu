@@ -17,7 +17,7 @@ public partial class EvictingDictionaryTests
     {
         var dictionary = new EvictingDictionary<string, int>(5);
 
-        var result = dictionary.Remove("missing");
+        bool result = dictionary.Remove("missing");
 
         Assert.IsFalse(result);
     }
@@ -30,7 +30,7 @@ public partial class EvictingDictionaryTests
         var dictionary = new EvictingDictionary<string, int>(5);
         dictionary.Add("x", 42);
 
-        var result = dictionary.Remove("x");
+        bool result = dictionary.Remove("x");
 
         Assert.IsTrue(result);
         Assert.IsFalse(dictionary.ContainsKey("x"));
@@ -46,7 +46,7 @@ public partial class EvictingDictionaryTests
         var dictionary = new EvictingDictionary<string, int>(5);
         dictionary.Add("a", 1);
 
-        var result = dictionary.Remove(new KeyValuePair<string, int>("a", 2));
+        bool result = dictionary.Remove(new KeyValuePair<string, int>("a", 2));
 
         Assert.IsFalse(result);
         Assert.IsTrue(dictionary.ContainsKey("a"));
@@ -82,7 +82,7 @@ public partial class EvictingDictionaryTests
         var dictionary = new EvictingDictionary<string, int>(5);
         dictionary.Add("a", 1);
 
-        var result = dictionary.Remove(new KeyValuePair<string, int>("a", 1));
+        bool result = dictionary.Remove(new KeyValuePair<string, int>("a", 1));
 
         Assert.IsTrue(result);
         Assert.IsFalse(dictionary.ContainsKey("a"));
@@ -98,7 +98,7 @@ public partial class EvictingDictionaryTests
         dictionary.Add("a", 10);
         dictionary.Add("b", 10);
 
-        var result = dictionary.Remove(new KeyValuePair<string, int>("a", 10));
+        bool result = dictionary.Remove(new KeyValuePair<string, int>("a", 10));
 
         Assert.IsTrue(result);
         Assert.IsFalse(dictionary.ContainsKey("a"));
@@ -115,7 +115,7 @@ public partial class EvictingDictionaryTests
         dictionary.Add("x", 100);
         dictionary.Touch("x");
 
-        var result = dictionary.Remove("x");
+        bool result = dictionary.Remove("x");
 
         Assert.IsTrue(result);
         Assert.IsFalse(dictionary.ContainsKey("x"));
@@ -132,7 +132,7 @@ public partial class EvictingDictionaryTests
         dictionary.Add("a", 1);
         dictionary.Add("b", 2);
 
-        var result = dictionary.Remove("a");
+        bool result = dictionary.Remove("a");
 
         Assert.IsTrue(result);
         Assert.IsFalse(dictionary.ContainsKey("a"));
@@ -153,7 +153,7 @@ public partial class EvictingDictionaryTests
 
         dictionary.Remove("C"); // before fix, C's orphaned node remained at _order.Last
 
-        var candidate = dictionary.PeekEvictionCandidate();
+        string? candidate = dictionary.PeekEvictionCandidate();
 
         // The candidate must be a key that actually exists in the dictionary.
         Assert.IsNotNull(candidate);
@@ -217,7 +217,7 @@ public partial class EvictingDictionaryTests
         // B was cycled during eviction — its internal node reference must have been updated.
         // Before the fix, Remove("B") could either leave B's node orphaned (old Remove for SC)
         // or throw InvalidOperationException (new Remove using a stale node from old cycling code).
-        var result = dictionary.Remove("B");
+        bool result = dictionary.Remove("B");
 
         Assert.IsTrue(result);
         Assert.AreEqual(1, dictionary.Count);

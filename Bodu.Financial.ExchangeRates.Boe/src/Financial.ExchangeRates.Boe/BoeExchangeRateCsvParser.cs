@@ -105,13 +105,13 @@ internal static class BoeExchangeRateCsvParser
             if (row.Count == 0 || !TryParseDate(row[0], out DateOnly date))
                 continue;
 
-            for (var column = 1; column < columns.Length && column < row.Count; column++)
+            for (int column = 1; column < columns.Length && column < row.Count; column++)
             {
                 BoeSeries? series = columns[column];
                 if (series is null)
                     continue;
 
-                if (TryParseRate(row[column], out var rate))
+                if (TryParseRate(row[column], out decimal rate))
                     observations.Add(new BoeExchangeRateObservation(date, series.QuoteIsoCode, rate));
             }
         }
@@ -147,7 +147,7 @@ internal static class BoeExchangeRateCsvParser
         var columns = new BoeSeries?[headers.Count];
         var found = new Dictionary<string, BoeSeries>(StringComparer.Ordinal);
 
-        for (var column = 1; column < headers.Count; column++)
+        for (int column = 1; column < headers.Count; column++)
         {
             if (byCode.TryGetValue(headers[column], out BoeSeries? series))
             {

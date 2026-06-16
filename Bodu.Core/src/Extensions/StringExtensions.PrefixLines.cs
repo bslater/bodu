@@ -30,10 +30,10 @@ public static partial class StringExtensions
         if (prefix.Length == 0 || value.Length == 0) return value;
 
         StringBuilder builder = new(value.Length + (prefix.Length * 4));
-        var atLineStart = true;
-        for (var i = 0; i < value.Length; i++)
+        bool atLineStart = true;
+        for (int i = 0; i < value.Length; i++)
         {
-            var c = value[i];
+            char c = value[i];
             if (atLineStart)
             {
                 builder.Append(prefix);

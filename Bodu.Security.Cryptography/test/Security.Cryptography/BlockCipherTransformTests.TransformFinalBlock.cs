@@ -49,9 +49,9 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
             return;
         }
 
-        var inputBuffer = new byte[transform.InputBlockSize - 1];
+        byte[] inputBuffer = new byte[transform.InputBlockSize - 1];
 
-        var cipherText = transform.TransformFinalBlock(inputBuffer, 0, inputBuffer.Length);
+        byte[] cipherText = transform.TransformFinalBlock(inputBuffer, 0, inputBuffer.Length);
 
         Assert.AreEqual(transform.InputBlockSize, cipherText.Length,
             "PKCS7-padded partial-block input must produce exactly one block of ciphertext.");
@@ -77,10 +77,10 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
 
         using TCryptoTransform encryptor = CreateEncryptor();
         const int inputOffset = 5;
-        var inputBuffer = new byte[inputOffset + blockSize + 5];
+        byte[] inputBuffer = new byte[inputOffset + blockSize + 5];
         Buffer.BlockCopy(payload, 0, inputBuffer, inputOffset, blockSize);
 
-        var actual = encryptor.TransformFinalBlock(inputBuffer, inputOffset, blockSize);
+        byte[] actual = encryptor.TransformFinalBlock(inputBuffer, inputOffset, blockSize);
 
         CollectionAssert.AreEqual(expected, actual);
     }
@@ -102,7 +102,7 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
             return;
         }
 
-        var plaintext = BuildIncrementingPlaintext(encryptor.InputBlockSize);
+        byte[] plaintext = BuildIncrementingPlaintext(encryptor.InputBlockSize);
         _ = encryptor.TransformFinalBlock(plaintext, 0, plaintext.Length);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>

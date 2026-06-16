@@ -194,9 +194,9 @@ public static partial class NumericExtensions
     {
         ThrowHelper.ThrowIfNull(bytes);
 
-        var result = new byte[bytes.Length];
+        byte[] result = new byte[bytes.Length];
 
-        for (var i = 0; i < bytes.Length; i++)
+        for (int i = 0; i < bytes.Length; i++)
             result[i] = bytes[i].ReverseBits();
 
         return result;

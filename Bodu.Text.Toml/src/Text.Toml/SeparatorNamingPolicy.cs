@@ -51,9 +51,9 @@ internal sealed class SeparatorNamingPolicy
             return name;
 
         StringBuilder builder = new(name.Length + 8);
-        for (var i = 0; i < name.Length; i++)
+        for (int i = 0; i < name.Length; i++)
         {
-            var c = name[i];
+            char c = name[i];
             if (char.IsUpper(c) && i > 0 && IsBoundary(name, i))
                 builder.Append(_separator);
 
@@ -73,7 +73,7 @@ internal sealed class SeparatorNamingPolicy
     /// </returns>
     private static bool IsBoundary(string name, int index)
     {
-        var previous = name[index - 1];
+        char previous = name[index - 1];
 
         // A lowercase or digit immediately before an uppercase letter starts a new word (e.g. "fooBar" -> "foo|Bar").
         if (!char.IsUpper(previous))

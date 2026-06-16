@@ -65,10 +65,10 @@ public static partial class DateTimeExtensions
         culture ??= Thread.CurrentThread.CurrentCulture;
         DayOfWeek firstDayOfWeek = culture.DateTimeFormat.FirstDayOfWeek;
 
-        var baseTicks = TruncateToDateTicks(dateTime);
-        var offsetTicks = (7 + (dateTime.DayOfWeek - firstDayOfWeek)) % 7 * TicksPerDay;
+        long baseTicks = TruncateToDateTicks(dateTime);
+        long offsetTicks = (7 + (dateTime.DayOfWeek - firstDayOfWeek)) % 7 * TicksPerDay;
 
-        var ticks = baseTicks - offsetTicks;
+        long ticks = baseTicks - offsetTicks;
 
         return (ulong)ticks > (ulong)DateTime.MaxValue.Ticks
             ? throw new ArgumentOutOfRangeException(
@@ -111,8 +111,8 @@ public static partial class DateTimeExtensions
         ThrowHelper.ThrowIfEnumValueIsUndefined(workingWeek);
         DayOfWeek startOfWeek = GetWeekStartDay(workingWeek);
 
-        var offsetDays = (7 + (dateTime.DayOfWeek - startOfWeek)) % 7;
-        var dateTicks = dateTime.Ticks - (offsetDays * TicksPerDay);
+        int offsetDays = (7 + (dateTime.DayOfWeek - startOfWeek)) % 7;
+        long dateTicks = dateTime.Ticks - (offsetDays * TicksPerDay);
 
         return (ulong)dateTicks > (ulong)DateTime.MaxValue.Ticks
             ? throw new ArgumentOutOfRangeException(

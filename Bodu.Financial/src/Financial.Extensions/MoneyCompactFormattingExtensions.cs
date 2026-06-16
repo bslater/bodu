@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyCompactFormattingExtensions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -61,8 +61,8 @@ public static partial class MoneyCompactFormattingExtensions
     /// </returns>
     private static (decimal Scaled, string Suffix) Scale(decimal amount)
     {
-        var abs = Math.Abs(amount);
-        foreach ((var scale, var suffix) in s_thresholds)
+        decimal abs = Math.Abs(amount);
+        foreach ((decimal scale, string? suffix) in s_thresholds)
         {
             if (abs >= scale)
                 return (amount / scale, suffix);
@@ -86,7 +86,7 @@ public static partial class MoneyCompactFormattingExtensions
         if (!scaled)
             return format is null ? default : format.AsSpan();
 
-        var prefix = StripPrecisionSuffix(format ?? "G");
+        string prefix = StripPrecisionSuffix(format ?? "G");
         return (prefix + precision.ToString(CultureInfo.InvariantCulture)).AsSpan();
     }
 
@@ -98,7 +98,7 @@ public static partial class MoneyCompactFormattingExtensions
     /// <returns>The format with any trailing digits removed.</returns>
     private static string StripPrecisionSuffix(string format)
     {
-        var end = format.Length;
+        int end = format.Length;
         while (end > 0 && format[end - 1] >= '0' && format[end - 1] <= '9')
             end--;
         return end == format.Length ? format : format[..end];
@@ -116,7 +116,7 @@ public static partial class MoneyCompactFormattingExtensions
             return;
 
         ReadOnlySpan<char> span = format.AsSpan();
-        var cursor = 0;
+        int cursor = 0;
         if (cursor < span.Length && span[cursor] == '~')
             cursor++;
 

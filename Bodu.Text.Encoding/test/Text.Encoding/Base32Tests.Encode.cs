@@ -24,14 +24,14 @@ public sealed partial class Base32Tests
     [DataRow(100)]
     public void Encode_ByteArrayAndSpanOverloads_ShouldProduceIdenticalOutput(int size)
     {
-        var bytes = new byte[size];
-        for (var i = 0; i < size; i++)
+        byte[] bytes = new byte[size];
+        for (int i = 0; i < size; i++)
         {
             bytes[i] = (byte)((i * 17) ^ 0x55);
         }
 
-        var fromArray = Base32.Encode(bytes);
-        var fromSpan = Base32.Encode(bytes.AsSpan());
+        string fromArray = Base32.Encode(bytes);
+        string fromSpan = Base32.Encode(bytes.AsSpan());
 
         Assert.AreEqual(fromArray, fromSpan);
     }
@@ -45,7 +45,7 @@ public sealed partial class Base32Tests
     [DynamicData(nameof(Base32KnownAnswerVectors.HexExtendedRfc4648Vectors), typeof(Base32KnownAnswerVectors))]
     public void Encode_ForHexExtendedRfc4648KnownAnswerVector_ShouldMatch(EncodingKnownAnswerVector vector)
     {
-        var actual = Base32.Encode(vector.DecodedBytes, Base32Variant.HexExtended);
+        string actual = Base32.Encode(vector.DecodedBytes, Base32Variant.HexExtended);
 
         Assert.AreEqual(vector.Encoded, actual);
     }
@@ -59,7 +59,7 @@ public sealed partial class Base32Tests
     [DynamicData(nameof(Base32KnownAnswerVectors.StandardRfc4648Vectors), typeof(Base32KnownAnswerVectors))]
     public void Encode_ForStandardRfc4648KnownAnswerVector_ShouldMatch(EncodingKnownAnswerVector vector)
     {
-        var actual = Base32.Encode(vector.DecodedBytes, Base32Variant.Standard);
+        string actual = Base32.Encode(vector.DecodedBytes, Base32Variant.Standard);
 
         Assert.AreEqual(vector.Encoded, actual);
     }
@@ -71,7 +71,7 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void Encode_WhenCountExceedsArrayLength_ShouldThrowExactly()
     {
-        var bytes = new byte[4];
+        byte[] bytes = new byte[4];
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -86,8 +86,8 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void Encode_WhenDestinationTooSmall_ShouldThrowExactly()
     {
-        var bytes = Ascii("foobar");
-        var destination = new char[2];
+        byte[] bytes = Ascii("foobar");
+        char[] destination = new char[2];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -102,14 +102,14 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void Encode_WhenInsertLineBreaksFlag_ShouldWrapAtFixedColumn()
     {
-        var bytes = new byte[100];
-        for (var i = 0; i < bytes.Length; i++)
+        byte[] bytes = new byte[100];
+        for (int i = 0; i < bytes.Length; i++)
         {
             bytes[i] = (byte)i;
         }
 
-        var actual = Base32.Encode(bytes, Base32Variant.Standard, BaseFormattingOptions.InsertLineBreaks);
-        var lines = actual.Split("\r\n");
+        string actual = Base32.Encode(bytes, Base32Variant.Standard, BaseFormattingOptions.InsertLineBreaks);
+        string[] lines = actual.Split("\r\n");
 
         Assert.IsTrue(lines.Length > 1, "Output should contain at least one line break.");
         Assert.AreEqual(64, lines[0].Length);
@@ -135,7 +135,7 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void Encode_WhenOmitPaddingFlag_ShouldNotEmitPaddingCharacters()
     {
-        var actual = Base32.Encode(Ascii("foo"), Base32Variant.Standard, BaseFormattingOptions.OmitPadding);
+        string actual = Base32.Encode(Ascii("foo"), Base32Variant.Standard, BaseFormattingOptions.OmitPadding);
 
         Assert.AreEqual("MZXW6", actual);
     }
@@ -147,9 +147,9 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void Encode_WhenSliceForByteArray_ShouldReturnSliceOnly()
     {
-        var bytes = Ascii("xxxxfoobaryyyy");
+        byte[] bytes = Ascii("xxxxfoobaryyyy");
 
-        var actual = Base32.Encode(bytes, 4, 6);
+        string actual = Base32.Encode(bytes, 4, 6);
 
         Assert.AreEqual("MZXW6YTBOI======", actual);
     }
@@ -169,7 +169,7 @@ public sealed partial class Base32Tests
     [DataRow("foobar", "MZXW6YTBOI======")]
     public void Encode_WhenStandardVariant_ShouldMatchRfc4648ReferenceVectors(string input, string expected)
     {
-        var actual = Base32.Encode(Ascii(input));
+        string actual = Base32.Encode(Ascii(input));
 
         Assert.AreEqual(expected, actual);
     }
@@ -194,10 +194,10 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void Encode_WhenWritingToSpan_ShouldReturnExactCharCount()
     {
-        var bytes = Ascii("foobar");
-        var destination = new char[Base32.GetEncodedLength(bytes.Length)];
+        byte[] bytes = Ascii("foobar");
+        char[] destination = new char[Base32.GetEncodedLength(bytes.Length)];
 
-        var charsWritten = Base32.Encode(bytes.AsSpan(), destination);
+        int charsWritten = Base32.Encode(bytes.AsSpan(), destination);
 
         Assert.AreEqual("MZXW6YTBOI======", new string(destination, 0, charsWritten));
     }

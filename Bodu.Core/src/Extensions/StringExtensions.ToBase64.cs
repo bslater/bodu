@@ -34,7 +34,7 @@ public static partial class StringExtensions
         ThrowHelper.ThrowIfNull(value);
 
         Encoding effective = encoding ?? Encoding.UTF8;
-        var bytes = effective.GetBytes(value);
+        byte[] bytes = effective.GetBytes(value);
         return Convert.ToBase64String(bytes);
     }
 }

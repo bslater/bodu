@@ -36,7 +36,7 @@ public partial class ConcurrentHashSetTests
     {
         var set = new ConcurrentHashSet<int>();
 
-        for (var i = 0; i < elementCount; i++)
+        for (int i = 0; i < elementCount; i++)
             set.Add(i);
 
         Assert.AreEqual(elementCount, set.ApproximateCount);
@@ -54,7 +54,7 @@ public partial class ConcurrentHashSetTests
 
         Assert.AreEqual(50, set.ApproximateCount);
 
-        for (var i = 0; i < 25; i++)
+        for (int i = 0; i < 25; i++)
             set.Remove(i);
 
         Assert.AreEqual(25, set.ApproximateCount);
@@ -75,7 +75,7 @@ public partial class ConcurrentHashSetTests
         const int perWriter = 5000;
 
         var observed = new List<int>();
-        var done = false;
+        bool done = false;
 
         var reader = Task.Run(() =>
         {
@@ -87,16 +87,16 @@ public partial class ConcurrentHashSetTests
 
         Parallel.For(0, writers, w =>
         {
-            for (var i = 0; i < perWriter; i++)
+            for (int i = 0; i < perWriter; i++)
                 set.Add((w * perWriter) + i);
         });
 
         Volatile.Write(ref done, true);
         reader.Wait();
 
-        var max = writers * perWriter;
+        int max = writers * perWriter;
 
-        foreach (var value in observed)
+        foreach (int value in observed)
         {
             Assert.IsTrue(value >= 0 && value <= max, $"ApproximateCount {value} outside expected range [0, {max}].");
         }

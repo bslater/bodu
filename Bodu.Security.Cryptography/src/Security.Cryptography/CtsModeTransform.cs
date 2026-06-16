@@ -124,7 +124,7 @@ public sealed class CtsModeTransform
     /// <inheritdoc />
     public int Transform(ReadOnlySpan<byte> input, Span<byte> output, bool encrypt)
     {
-        var blockSize = _cipher.BlockSize / 8;
+        int blockSize = _cipher.BlockSize / 8;
 
         if (input.Length < blockSize)
         {
@@ -141,8 +141,8 @@ public sealed class CtsModeTransform
             return encrypt ? EncryptCbc(input, output) : DecryptCbc(input, output);
 
         // Non-aligned input: number of complete blocks before the final partial.
-        var fullBlocks = input.Length / blockSize;   // blocks 0..fullBlocks-1 are complete
-        var tailBytes = input.Length % blockSize;   // 0 < tailBytes < blockSize
+        int fullBlocks = input.Length / blockSize;   // blocks 0..fullBlocks-1 are complete
+        int tailBytes = input.Length % blockSize;   // 0 < tailBytes < blockSize
 
         return encrypt
             ? EncryptCts(input, output, fullBlocks, tailBytes, blockSize)
@@ -157,16 +157,16 @@ public sealed class CtsModeTransform
     /// <returns>The number of bytes written to <paramref name="output" />.</returns>
     private int DecryptCbc(ReadOnlySpan<byte> input, Span<byte> output)
     {
-        var blockSize = _cipher.BlockSize / 8;
+        int blockSize = _cipher.BlockSize / 8;
         Span<byte> block = stackalloc byte[blockSize];
 
-        for (var offset = 0; offset < input.Length; offset += blockSize)
+        for (int offset = 0; offset < input.Length; offset += blockSize)
         {
             ReadOnlySpan<byte> inBlock = input.Slice(offset, blockSize);
             Span<byte> outBlock = output.Slice(offset, blockSize);
 
             _cipher.Decrypt(inBlock, block);
-            for (var i = 0; i < blockSize; i++)
+            for (int i = 0; i < blockSize; i++)
                 outBlock[i] = (byte)(block[i] ^ _currentIv[i]);
 
             inBlock.CopyTo(_currentIv);
@@ -190,8 +190,8 @@ public sealed class CtsModeTransform
     private int DecryptCts(ReadOnlySpan<byte> input, Span<byte> output, int fullBlocks, int tailBytes, int blockSize)
     {
         // Body blocks (all before the CTS pair).
-        var bodyBlocks = fullBlocks - 1;
-        var bodyLength = bodyBlocks * blockSize;
+        int bodyBlocks = fullBlocks - 1;
+        int bodyLength = bodyBlocks * blockSize;
 
         if (bodyBlocks > 0)
             DecryptCbc(input[..bodyLength], output[..bodyLength]);
@@ -217,7 +217,7 @@ public sealed class CtsModeTransform
         Span<byte> block = stackalloc byte[blockSize];
         _cipher.Decrypt(e, block);
         Span<byte> penultimateOut = output.Slice(bodyLength, blockSize);
-        for (var i = 0; i < blockSize; i++)
+        for (int i = 0; i < blockSize; i++)
             penultimateOut[i] = (byte)(block[i] ^ _currentIv[i]);
 
         return input.Length;
@@ -233,15 +233,15 @@ public sealed class CtsModeTransform
     /// <returns>The number of bytes written to <paramref name="output" />.</returns>
     private int EncryptCbc(ReadOnlySpan<byte> input, Span<byte> output)
     {
-        var blockSize = _cipher.BlockSize / 8;
+        int blockSize = _cipher.BlockSize / 8;
         Span<byte> block = stackalloc byte[blockSize];
 
-        for (var offset = 0; offset < input.Length; offset += blockSize)
+        for (int offset = 0; offset < input.Length; offset += blockSize)
         {
             ReadOnlySpan<byte> inBlock = input.Slice(offset, blockSize);
             Span<byte> outBlock = output.Slice(offset, blockSize);
 
-            for (var i = 0; i < blockSize; i++)
+            for (int i = 0; i < blockSize; i++)
                 block[i] = (byte)(inBlock[i] ^ _currentIv[i]);
 
             _cipher.Encrypt(block, outBlock);
@@ -266,8 +266,8 @@ public sealed class CtsModeTransform
     private int EncryptCts(ReadOnlySpan<byte> input, Span<byte> output, int fullBlocks, int tailBytes, int blockSize)
     {
         // Process all full blocks except the penultimate through standard CBC.
-        var bodyBlocks = fullBlocks - 1; // blocks before the CTS pair
-        var bodyLength = bodyBlocks * blockSize;
+        int bodyBlocks = fullBlocks - 1; // blocks before the CTS pair
+        int bodyLength = bodyBlocks * blockSize;
 
         if (bodyBlocks > 0)
             EncryptCbc(input[..bodyLength], output[..bodyLength]);
@@ -278,7 +278,7 @@ public sealed class CtsModeTransform
 
         // CBC-encrypt the penultimate block: E = CBC_E(P_{n-1}).
         Span<byte> xored = stackalloc byte[blockSize];
-        for (var i = 0; i < blockSize; i++)
+        for (int i = 0; i < blockSize; i++)
             xored[i] = (byte)(penultimate[i] ^ _currentIv[i]);
         _cipher.Encrypt(xored, e);
 

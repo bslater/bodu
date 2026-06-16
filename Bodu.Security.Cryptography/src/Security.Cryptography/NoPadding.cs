@@ -58,7 +58,7 @@ public sealed class NoPadding
     {
         CryptographyThrowHelper.ThrowIfNotPositiveMultipleOf(blockSize, 8);
 
-        var size = blockSize / 8;
+        int size = blockSize / 8;
         return input.Length % size == 0
             ? input.ToArray()
             : throw new ArgumentException(

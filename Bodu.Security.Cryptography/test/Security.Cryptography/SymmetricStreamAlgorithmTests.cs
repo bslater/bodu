@@ -83,7 +83,7 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
     /// <returns>The same <paramref name="buffer" />, filled.</returns>
     private static byte[] FillSequential(byte[] buffer, int seed)
     {
-        for (var i = 0; i < buffer.Length; i++)
+        for (int i = 0; i < buffer.Length; i++)
             buffer[i] = (byte)(seed + i);
 
         return buffer;
@@ -118,7 +118,7 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
                     size / 2,
                 }));
 
-        foreach (var candidate in candidates.Distinct().OrderBy(size => size))
+        foreach (int candidate in candidates.Distinct().OrderBy(size => size))
         {
             if (!legal.Contains(candidate))
                 yield return new object[] { candidate };
@@ -145,7 +145,7 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
                     size / 2,
                 }));
 
-        foreach (var candidate in candidates.Distinct().OrderBy(size => size))
+        foreach (int candidate in candidates.Distinct().OrderBy(size => size))
         {
             if (!legal.Contains(candidate))
                 yield return new object[] { candidate };
@@ -159,8 +159,8 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
     /// <returns>A sequence of single-element arrays, each containing an invalid nonce size in bytes.</returns>
     public static IEnumerable<object[]> InvalidNonceSizeBytesData()
     {
-        var nonceSize = new TTest().GetSpecification().NonceSizeBits / 8;
-        foreach (var candidate in new[] { 0, -1, nonceSize - 1, nonceSize + 1, nonceSize * 2, nonceSize / 2 })
+        int nonceSize = new TTest().GetSpecification().NonceSizeBits / 8;
+        foreach (int candidate in new[] { 0, -1, nonceSize - 1, nonceSize + 1, nonceSize * 2, nonceSize / 2 })
         {
             if (candidate != nonceSize)
                 yield return new object[] { candidate };

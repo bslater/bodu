@@ -86,10 +86,10 @@ public partial class MoneyOfTCurrencyTests
     public void TryFormat_WhenDestinationLengthExactlyMatchesRequired_ShouldSucceed()
     {
         var money = new Money<USD>(19.99m);
-        var expected = money.ToString(null, CultureInfo.InvariantCulture);
+        string expected = money.ToString(null, CultureInfo.InvariantCulture);
         Span<char> buffer = stackalloc char[expected.Length];
 
-        var ok = money.TryFormat(buffer, out var written, default, CultureInfo.InvariantCulture);
+        bool ok = money.TryFormat(buffer, out int written, default, CultureInfo.InvariantCulture);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(expected.Length, written);
@@ -104,10 +104,10 @@ public partial class MoneyOfTCurrencyTests
     public void TryFormat_WhenDestinationOneCharShort_ShouldReturnFalse()
     {
         var money = new Money<USD>(19.99m);
-        var expected = money.ToString(null, CultureInfo.InvariantCulture);
+        string expected = money.ToString(null, CultureInfo.InvariantCulture);
         Span<char> buffer = stackalloc char[expected.Length - 1];
 
-        var ok = money.TryFormat(buffer, out var written, default, CultureInfo.InvariantCulture);
+        bool ok = money.TryFormat(buffer, out int written, default, CultureInfo.InvariantCulture);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0, written);
@@ -122,7 +122,7 @@ public partial class MoneyOfTCurrencyTests
         var money = new Money<USD>(19.99m);
         Span<char> buffer = [];
 
-        var ok = money.TryFormat(buffer, out var written, default, CultureInfo.InvariantCulture);
+        bool ok = money.TryFormat(buffer, out int written, default, CultureInfo.InvariantCulture);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0, written);
@@ -136,11 +136,11 @@ public partial class MoneyOfTCurrencyTests
     public void TryFormatUtf8_WhenDestinationExactlyMatchesByteLength_ShouldSucceed()
     {
         var money = new Money<USD>(19.99m);
-        var expected = money.ToString(null, CultureInfo.InvariantCulture);
-        var byteLength = System.Text.Encoding.UTF8.GetByteCount(expected);
+        string expected = money.ToString(null, CultureInfo.InvariantCulture);
+        int byteLength = System.Text.Encoding.UTF8.GetByteCount(expected);
         Span<byte> buffer = stackalloc byte[byteLength];
 
-        var ok = money.TryFormat(buffer, out var written, default, CultureInfo.InvariantCulture);
+        bool ok = money.TryFormat(buffer, out int written, default, CultureInfo.InvariantCulture);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(byteLength, written);
@@ -153,11 +153,11 @@ public partial class MoneyOfTCurrencyTests
     public void TryFormatUtf8_WhenDestinationOneByteShort_ShouldReturnFalse()
     {
         var money = new Money<USD>(19.99m);
-        var expected = money.ToString(null, CultureInfo.InvariantCulture);
-        var byteLength = System.Text.Encoding.UTF8.GetByteCount(expected);
+        string expected = money.ToString(null, CultureInfo.InvariantCulture);
+        int byteLength = System.Text.Encoding.UTF8.GetByteCount(expected);
         Span<byte> buffer = stackalloc byte[byteLength - 1];
 
-        var ok = money.TryFormat(buffer, out var written, default, CultureInfo.InvariantCulture);
+        bool ok = money.TryFormat(buffer, out int written, default, CultureInfo.InvariantCulture);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0, written);
@@ -210,11 +210,11 @@ public partial class MoneyOfTCurrencyTests
     public void Allocate_WhenRandomisedSweep_ShouldAlwaysPreserveSum()
     {
         Random rng = new(20260530);
-        for (var i = 0; i < 500; i++)
+        for (int i = 0; i < 500; i++)
         {
-            var sign = rng.Next(0, 3) - 1;    // -1, 0, 1
-            var cents = rng.Next(0, 1_000_001) * 0.01m * sign;
-            var parts = rng.Next(1, 50);
+            int sign = rng.Next(0, 3) - 1;    // -1, 0, 1
+            decimal cents = rng.Next(0, 1_000_001) * 0.01m * sign;
+            int parts = rng.Next(1, 50);
             var original = new Money<USD>(cents);
 
             Money<USD>[] shares = original.Allocate(parts);
@@ -234,12 +234,12 @@ public partial class MoneyOfTCurrencyTests
     public void Allocate_WhenRatioBasedRandomisedSweep_ShouldAlwaysPreserveSum()
     {
         Random rng = new(20260530);
-        for (var i = 0; i < 200; i++)
+        for (int i = 0; i < 200; i++)
         {
-            var cents = rng.Next(-1_000_000, 1_000_001) * 0.01m;
-            var slotCount = rng.Next(2, 11);
-            var ratios = new decimal[slotCount];
-            for (var j = 0; j < slotCount; j++)
+            decimal cents = rng.Next(-1_000_000, 1_000_001) * 0.01m;
+            int slotCount = rng.Next(2, 11);
+            decimal[] ratios = new decimal[slotCount];
+            for (int j = 0; j < slotCount; j++)
                 ratios[j] = rng.Next(0, 10);
 
             if (ratios.All(r => r == 0m))

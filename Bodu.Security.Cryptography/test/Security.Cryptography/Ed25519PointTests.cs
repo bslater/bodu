@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Ed25519PointTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -28,7 +28,7 @@ public class Ed25519PointTests
     [TestMethod]
     public void Encode_WhenEncodingBasePoint_ShouldProduceCanonicalEncoding()
     {
-        var encoded = new byte[Ed25519Point.EncodedSizeInBytes];
+        byte[] encoded = new byte[Ed25519Point.EncodedSizeInBytes];
         Ed25519Point.BasePoint.Encode(encoded);
 
         CollectionAssert.AreEqual(Convert.FromHexString(BasePointHex), encoded);
@@ -41,7 +41,7 @@ public class Ed25519PointTests
     [TestMethod]
     public void Add_WhenUsingIdentityAndInverse_ShouldSatisfyGroupAxioms()
     {
-        var sum = new byte[Ed25519Point.EncodedSizeInBytes];
+        byte[] sum = new byte[Ed25519Point.EncodedSizeInBytes];
         Ed25519Point.BasePoint.Add(Ed25519Point.Identity).Encode(sum);
         CollectionAssert.AreEqual(Convert.FromHexString(BasePointHex), sum);
 
@@ -55,8 +55,8 @@ public class Ed25519PointTests
     [TestMethod]
     public void Double_WhenComparedToSelfAddition_ShouldProduceSameResult()
     {
-        var doubled = new byte[Ed25519Point.EncodedSizeInBytes];
-        var added = new byte[Ed25519Point.EncodedSizeInBytes];
+        byte[] doubled = new byte[Ed25519Point.EncodedSizeInBytes];
+        byte[] added = new byte[Ed25519Point.EncodedSizeInBytes];
 
         Ed25519Point.BasePoint.Double().Encode(doubled);
         Ed25519Point.BasePoint.Add(Ed25519Point.BasePoint).Encode(added);
@@ -71,14 +71,14 @@ public class Ed25519PointTests
     [TestMethod]
     public void ScalarMult_WhenScalarIsOneOrGroupOrder_ShouldReturnPointOrIdentity()
     {
-        var one = new byte[32];
+        byte[] one = new byte[32];
         one[0] = 1;
-        var encoded = new byte[Ed25519Point.EncodedSizeInBytes];
+        byte[] encoded = new byte[Ed25519Point.EncodedSizeInBytes];
 
         Ed25519Point.ScalarMult(Ed25519Point.BasePoint, one).Encode(encoded);
         CollectionAssert.AreEqual(Convert.FromHexString(BasePointHex), encoded);
 
-        var order = Convert.FromHexString("edd3f55c1a631258d69cf7a2def9de1400000000000000000000000000000010");
+        byte[] order = Convert.FromHexString("edd3f55c1a631258d69cf7a2def9de1400000000000000000000000000000010");
         Ed25519Point.ScalarMult(Ed25519Point.BasePoint, order).Encode(encoded);
         CollectionAssert.AreEqual(Convert.FromHexString(IdentityHex), encoded);
     }
@@ -98,14 +98,14 @@ public class Ed25519PointTests
     {
         _ = testName;
 
-        var encoded = Convert.FromHexString(encodedHex);
-        var valid = Ed25519Point.TryDecode(encoded, out Ed25519Point point);
+        byte[] encoded = Convert.FromHexString(encodedHex);
+        bool valid = Ed25519Point.TryDecode(encoded, out Ed25519Point point);
 
         Assert.AreEqual(expectedValid, valid);
 
         if (expectedValid)
         {
-            var roundTrip = new byte[Ed25519Point.EncodedSizeInBytes];
+            byte[] roundTrip = new byte[Ed25519Point.EncodedSizeInBytes];
             point.Encode(roundTrip);
             CollectionAssert.AreEqual(encoded, roundTrip);
         }

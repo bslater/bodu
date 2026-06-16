@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsymmetricAlgorithmTests.ImportExport.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -36,7 +36,7 @@ public abstract partial class AsymmetricAlgorithmTests<TTest, TAlgorithm>
     public void ImportPublicKey_WhenCalled_ShouldCreatePublicOnlyInstanceAndDiscardPrivateKey()
     {
         using TAlgorithm donor = CreateAlgorithmWithGeneratedKey();
-        var publicKey = ExportPublicKey(donor);
+        byte[] publicKey = ExportPublicKey(donor);
 
         using TAlgorithm publicOnly = CreateAlgorithm();
         ImportPublicKey(publicOnly, publicKey);
@@ -59,14 +59,14 @@ public abstract partial class AsymmetricAlgorithmTests<TTest, TAlgorithm>
         AsymmetricAlgorithmSpecification spec = GetSpecification();
         using TAlgorithm algorithm = CreateAlgorithm();
 
-        foreach (var length in new[] { 0, spec.PrivateKeySizeBytes - 1, spec.PrivateKeySizeBytes + 1 })
+        foreach (int length in new[] { 0, spec.PrivateKeySizeBytes - 1, spec.PrivateKeySizeBytes + 1 })
         {
             Assert.ThrowsExactly<ArgumentException>(
                 () => { ImportPrivateKey(algorithm, new byte[length]); },
                 $"ImportPrivateKey must reject {length} bytes.");
         }
 
-        foreach (var length in new[] { 0, spec.PublicKeySizeBytes - 1, spec.PublicKeySizeBytes + 1 })
+        foreach (int length in new[] { 0, spec.PublicKeySizeBytes - 1, spec.PublicKeySizeBytes + 1 })
         {
             Assert.ThrowsExactly<ArgumentException>(
                 () => { ImportPublicKey(algorithm, new byte[length]); },
@@ -95,13 +95,13 @@ public abstract partial class AsymmetricAlgorithmTests<TTest, TAlgorithm>
     {
         using TAlgorithm algorithm = CreateAlgorithmWithGeneratedKey();
 
-        var privateKey = ExportPrivateKey(algorithm);
-        var privateOriginal = (byte[])privateKey.Clone();
+        byte[] privateKey = ExportPrivateKey(algorithm);
+        byte[] privateOriginal = (byte[])privateKey.Clone();
         privateKey[0] ^= 0xFF;
         CollectionAssert.AreEqual(privateOriginal, ExportPrivateKey(algorithm));
 
-        var publicKey = ExportPublicKey(algorithm);
-        var publicOriginal = (byte[])publicKey.Clone();
+        byte[] publicKey = ExportPublicKey(algorithm);
+        byte[] publicOriginal = (byte[])publicKey.Clone();
         publicKey[0] ^= 0xFF;
         CollectionAssert.AreEqual(publicOriginal, ExportPublicKey(algorithm));
     }

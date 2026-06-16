@@ -196,23 +196,23 @@ public sealed partial class Pearson
             return;
 
         ReadOnlySpan<byte> table = _permutationTable;
-        var v = _workingHash;
-        var offset = 0;
+        byte[] v = _workingHash;
+        int offset = 0;
 
         if (_isFirstByte)
         {
-            var b = source[0];
-            for (var j = 0; j < v.Length; j++)
+            byte b = source[0];
+            for (int j = 0; j < v.Length; j++)
                 v[j] = table[(b + j) & 0xFF];
 
             _isFirstByte = false;
             offset = 1;
         }
 
-        for (var i = offset; i < source.Length; i++)
+        for (int i = offset; i < source.Length; i++)
         {
-            var b = source[i];
-            for (var j = 0; j < v.Length; j++)
+            byte b = source[i];
+            for (int j = 0; j < v.Length; j++)
                 v[j] = table[v[j] ^ b];
         }
     }

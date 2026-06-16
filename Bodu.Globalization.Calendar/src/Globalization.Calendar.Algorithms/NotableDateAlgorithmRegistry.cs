@@ -75,7 +75,7 @@ public sealed class NotableDateAlgorithmRegistry
     {
         ThrowHelper.ThrowIfNull(key);
 
-        var found = _algorithms.TryGetValue(key, out INotableDateAlgorithm? value);
+        bool found = _algorithms.TryGetValue(key, out INotableDateAlgorithm? value);
         algorithm = value;
         return found;
     }

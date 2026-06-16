@@ -66,10 +66,10 @@ internal static class Curve25519
         Curve25519FieldElement z3 = Curve25519FieldElement.One;
 
         // RFC 7748 §5 ladder: one conditional swap pair per bit keeps the operation sequence scalar-independent.
-        var swap = 0UL;
-        for (var t = 254; t >= 0; t--)
+        ulong swap = 0UL;
+        for (int t = 254; t >= 0; t--)
         {
-            var bit = (ulong)((e[t >> 3] >> (t & 7)) & 1);
+            ulong bit = (ulong)((e[t >> 3] >> (t & 7)) & 1);
             swap ^= bit;
             Curve25519FieldElement.ConditionalSwap(ref x2, ref x3, swap);
             Curve25519FieldElement.ConditionalSwap(ref z2, ref z3, swap);
@@ -103,8 +103,8 @@ internal static class Curve25519
 
         // Accumulate over all output bytes; a single data-dependent branch on the aggregate is unavoidable and
         // reveals only what the caller's subsequent rejection of the all-zero result reveals anyway.
-        var accumulator = 0;
-        for (var i = 0; i < destination.Length; i++)
+        int accumulator = 0;
+        for (int i = 0; i < destination.Length; i++)
             accumulator |= destination[i];
 
         return accumulator == 0;

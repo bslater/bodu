@@ -61,7 +61,7 @@ public partial class DequeDebugViewTests
     public void Items_WhenStorageGrew_ShouldReturnItemsInLogicalOrder()
     {
         var deque = new Deque<int>(2);
-        for (var i = 0; i < 5; i++)
+        for (int i = 0; i < 5; i++)
             deque.AddLast(i);
 
         var view = new DequeDebugView<int>(deque);

@@ -38,16 +38,16 @@ internal sealed partial class RabbitStreamCipher
         cipher.NextState();
         checkpoints.Add(cipher.Snapshot("Inner state after first key setup iteration"));
 
-        for (var i = 1; i < 4; i++)
+        for (int i = 1; i < 4; i++)
             cipher.NextState();
         checkpoints.Add(cipher.Snapshot("Inner state after fourth key setup iteration"));
 
-        for (var i = 0; i < 8; i++)
+        for (int i = 0; i < 8; i++)
             cipher._c[i] ^= cipher._x[(i + 4) & 7];
         checkpoints.Add(cipher.Snapshot("Inner state after final key setup xor"));
 
         Span<byte> scratch = stackalloc byte[BlockSizeBytes];
-        for (var i = 0; i < 3; i++)
+        for (int i = 0; i < 3; i++)
             cipher.NextKeystreamBlock(scratch);
         checkpoints.Add(cipher.Snapshot("Inner state after generation of 48 bytes of output"));
 
@@ -74,7 +74,7 @@ internal sealed partial class RabbitStreamCipher
         cipher.NextState();
         checkpoints.Add(cipher.Snapshot("Inner state after first IV setup iteration"));
 
-        for (var i = 1; i < 4; i++)
+        for (int i = 1; i < 4; i++)
             cipher.NextState();
         checkpoints.Add(cipher.Snapshot("Inner state after fourth IV setup iteration"));
 

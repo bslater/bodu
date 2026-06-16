@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlFileExchangeRateCacheTests.Memoization.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -27,7 +27,7 @@ public sealed partial class TomlFileExchangeRateCacheTests
         IReadOnlyList<CachedExchangeRate> first = cache.GetRates(Pair, Duration, now);
         Assert.AreEqual(0.50m, first.Single().Rate);
 
-        var path = cache.ResolveFilePath(Pair);
+        string path = cache.ResolveFilePath(Pair);
         var stamp = File.GetLastWriteTimeUtc(path);
 
         // Rewrite the file's content through a second instance, then restore the original timestamp so the first
@@ -55,7 +55,7 @@ public sealed partial class TomlFileExchangeRateCacheTests
         IReadOnlyList<CachedExchangeRate> first = cache.GetRates(Pair, Duration, now);
         Assert.AreEqual(0.50m, first.Single().Rate);
 
-        var path = cache.ResolveFilePath(Pair);
+        string path = cache.ResolveFilePath(Pair);
 
         // Rewrite the content through a second instance and move the timestamp forward so the memo is invalidated.
         TomlFileExchangeRateCache other = CreateCache();

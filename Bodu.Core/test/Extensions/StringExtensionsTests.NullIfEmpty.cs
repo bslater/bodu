@@ -40,9 +40,9 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void NullIfEmpty_WhenInputIsNonEmpty_ShouldReturnSameInstance()
     {
-        var value = "hello";
+        string value = "hello";
 
-        var actual = value.NullIfEmpty();
+        string? actual = value.NullIfEmpty();
 
         Assert.AreSame(value, actual);
     }

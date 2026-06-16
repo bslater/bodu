@@ -33,15 +33,15 @@ internal static partial class MLDsaEngine
     /// <param name="w">The 256 coefficients in [0, q), replaced by their NTT representation in [0, q).</param>
     private static void Ntt(Span<int> w)
     {
-        var m = 0;
-        for (var len = 128; len >= 1; len >>= 1)
+        int m = 0;
+        for (int len = 128; len >= 1; len >>= 1)
         {
-            for (var start = 0; start < N; start += 2 * len)
+            for (int start = 0; start < N; start += 2 * len)
             {
-                var zeta = s_zetas[++m];
-                for (var j = start; j < start + len; j++)
+                int zeta = s_zetas[++m];
+                for (int j = start; j < start + len; j++)
                 {
-                    var t = (int)((long)zeta * w[j + len] % Q);
+                    int t = (int)((long)zeta * w[j + len] % Q);
                     w[j + len] = (w[j] - t + Q) % Q;
                     w[j] = (w[j] + t) % Q;
                 }
@@ -56,24 +56,24 @@ internal static partial class MLDsaEngine
     /// <param name="w">The 256 NTT coefficients in [0, q), replaced by the standard representation in [0, q).</param>
     private static void InvNtt(Span<int> w)
     {
-        var m = 256;
-        for (var len = 1; len < N; len <<= 1)
+        int m = 256;
+        for (int len = 1; len < N; len <<= 1)
         {
-            for (var start = 0; start < N; start += 2 * len)
+            for (int start = 0; start < N; start += 2 * len)
             {
                 // FIPS 204 negates the twiddle and computes ζ·(t − w); using the positive twiddle with the
                 // (w − t) ordering below is the algebraically identical form.
-                var zeta = s_zetas[--m];
-                for (var j = start; j < start + len; j++)
+                int zeta = s_zetas[--m];
+                for (int j = start; j < start + len; j++)
                 {
-                    var t = w[j];
+                    int t = w[j];
                     w[j] = (t + w[j + len]) % Q;
                     w[j + len] = (int)((long)zeta * ((w[j + len] - t + Q) % Q) % Q);
                 }
             }
         }
 
-        for (var j = 0; j < N; j++)
+        for (int j = 0; j < N; j++)
             w[j] = (int)(w[j] * InverseOf256 % Q);
     }
 
@@ -85,7 +85,7 @@ internal static partial class MLDsaEngine
     /// <param name="destination">The span receiving the product. May alias <paramref name="left" />.</param>
     private static void MultiplyNtt(ReadOnlySpan<int> left, ReadOnlySpan<int> right, Span<int> destination)
     {
-        for (var i = 0; i < N; i++)
+        for (int i = 0; i < N; i++)
             destination[i] = (int)((long)left[i] * right[i] % Q);
     }
 
@@ -96,7 +96,7 @@ internal static partial class MLDsaEngine
     /// <param name="source">The polynomial to add. Coefficients in [0, q).</param>
     private static void AddInto(Span<int> accumulator, ReadOnlySpan<int> source)
     {
-        for (var i = 0; i < N; i++)
+        for (int i = 0; i < N; i++)
             accumulator[i] = (accumulator[i] + source[i]) % Q;
     }
 
@@ -107,7 +107,7 @@ internal static partial class MLDsaEngine
     /// <param name="source">The polynomial to subtract. Coefficients in [0, q).</param>
     private static void SubtractFrom(Span<int> accumulator, ReadOnlySpan<int> source)
     {
-        for (var i = 0; i < N; i++)
+        for (int i = 0; i < N; i++)
             accumulator[i] = (accumulator[i] - source[i] + Q) % Q;
     }
 
@@ -117,8 +117,8 @@ internal static partial class MLDsaEngine
     /// <returns>The 256-entry table.</returns>
     private static int[] BuildZetaTable()
     {
-        var table = new int[256];
-        for (var m = 0; m < 256; m++)
+        int[] table = new int[256];
+        for (int m = 0; m < 256; m++)
             table[m] = PowMod(Zeta, BitReverse8(m));
 
         return table;
@@ -154,8 +154,8 @@ internal static partial class MLDsaEngine
     /// <returns>The bit-reversed index.</returns>
     private static int BitReverse8(int value)
     {
-        var result = 0;
-        for (var bit = 0; bit < 8; bit++)
+        int result = 0;
+        for (int bit = 0; bit < 8; bit++)
             result |= ((value >> bit) & 1) << (7 - bit);
 
         return result;

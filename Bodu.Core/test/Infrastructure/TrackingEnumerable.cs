@@ -66,7 +66,7 @@ public sealed class TrackingEnumerable<T>
         _enumeratorCreated = true;
         _onEnumerate();
 
-        var index = 0;
+        int index = 0;
         foreach (T? item in _source)
         {
             _onItemAccess?.Invoke(index);

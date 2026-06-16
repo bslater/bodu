@@ -18,9 +18,9 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     public void Randomize_StreamWindowed_WhenSourceEqualsWindowSize_ShouldReturnPermutationOfSource()
     {
         const int windowSize = 64;
-        var source = Enumerable.Range(1, windowSize).ToArray();
+        int[] source = Enumerable.Range(1, windowSize).ToArray();
 
-        var result = source
+        int[] result = source
             .Randomize(RandomizationMode.StreamWindowed, CreateSeededRng())
             .ToArray();
 
@@ -36,9 +36,9 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     [TestMethod]
     public void Randomize_StreamWindowed_WhenSourceExceedsWindowSize_ShouldNotYieldSourceInExactlyOriginalOrder()
     {
-        var source = Enumerable.Range(1, 200).ToArray();
+        int[] source = Enumerable.Range(1, 200).ToArray();
 
-        var result = source
+        int[] result = source
             .Randomize(RandomizationMode.StreamWindowed, CreateSeededRng())
             .ToArray();
 
@@ -56,9 +56,9 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     {
         // The window size baked into StreamWindowedShuffle is 64; produce a source that comfortably
         // overflows the initial fill so the streaming-replacement loop runs many times.
-        var source = Enumerable.Range(1, 200).ToArray();
+        int[] source = Enumerable.Range(1, 200).ToArray();
 
-        var result = source
+        int[] result = source
             .Randomize(RandomizationMode.StreamWindowed, CreateSeededRng())
             .ToArray();
 
@@ -74,9 +74,9 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     [TestMethod]
     public void Randomize_StreamWindowed_WhenSourceIsEmpty_ShouldYieldNoItems()
     {
-        var source = Array.Empty<int>();
+        int[] source = Array.Empty<int>();
 
-        var result = source
+        int[] result = source
             .Randomize(RandomizationMode.StreamWindowed, CreateSeededRng())
             .ToArray();
 

@@ -31,13 +31,13 @@ public static partial class StringExtensions
         if (prefix.Length == 0 || value.Length == 0) return value;
 
         StringBuilder builder = new(value.Length);
-        var lineStart = 0;
-        for (var i = 0; i <= value.Length; i++)
+        int lineStart = 0;
+        for (int i = 0; i <= value.Length; i++)
         {
             if (i == value.Length || value[i] == '\n' || value[i] == '\r')
             {
-                var start = lineStart;
-                var end = i;
+                int start = lineStart;
+                int end = i;
                 if (end - start >= prefix.Length
                     && string.CompareOrdinal(value, start, prefix, 0, prefix.Length) == 0)
                 {

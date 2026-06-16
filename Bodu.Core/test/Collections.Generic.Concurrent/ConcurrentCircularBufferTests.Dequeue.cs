@@ -52,14 +52,14 @@ public partial class ConcurrentCircularBufferTests
     public void Dequeue_WhenClearInterleaves_ShouldOnlyThrowWhenEmptyAndNeverCorruptState()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(8);
-        for (var i = 0; i < 8; i++) buffer.Enqueue(new TestItem(i));
+        for (int i = 0; i < 8; i++) buffer.Enqueue(new TestItem(i));
 
         var exceptions = new ConcurrentBag<Exception>();
         var cts = new CancellationTokenSource();
 
         var clearer = Task.Run(() =>
         {
-            for (var i = 0; i < 200; i++)
+            for (int i = 0; i < 200; i++)
             {
                 buffer.Clear();
                 Thread.SpinWait(20);
@@ -106,7 +106,7 @@ public partial class ConcurrentCircularBufferTests
 
         var enqueuer = Task.Run(() =>
         {
-            for (var i = 0; i < 100; i++)
+            for (int i = 0; i < 100; i++)
             {
                 buffer.Enqueue(new TestItem(i));
                 Thread.SpinWait(10);
@@ -115,7 +115,7 @@ public partial class ConcurrentCircularBufferTests
 
         var dequeuer = Task.Run(() =>
         {
-            var count = 0;
+            int count = 0;
             while (count < 100)
             {
                 if (buffer.TryDequeue(out TestItem? item))
@@ -144,7 +144,7 @@ public partial class ConcurrentCircularBufferTests
         const int toProduce = 10_000;
         var buffer = new ConcurrentCircularBuffer<TestItem>(toProduce, allowOverwrite: false);
 
-        for (var i = 0; i < toProduce; i++)
+        for (int i = 0; i < toProduce; i++)
             buffer.Enqueue(new TestItem(i));
 
         var bag = new ConcurrentBag<int>();
@@ -232,11 +232,11 @@ public partial class ConcurrentCircularBufferTests
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(100);
 
-        for (var i = 0; i < 100; i++)
+        for (int i = 0; i < 100; i++)
             buffer.Enqueue(new TestItem(i));
 
-        var result = new int[100];
-        for (var i = 0; i < 100; i++)
+        int[] result = new int[100];
+        for (int i = 0; i < 100; i++)
             result[i] = buffer.Dequeue().Value;
 
         CollectionAssert.AreEqual(Enumerable.Range(0, 100).ToArray(), result,
@@ -286,7 +286,7 @@ public partial class ConcurrentCircularBufferTests
     public void TryDequeue_WhenBufferIsEmpty_ShouldReturnFalseAndOutDefault()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(4);
-        var ok = buffer.TryDequeue(out TestItem? item);
+        bool ok = buffer.TryDequeue(out TestItem? item);
         Assert.IsFalse(ok);
         Assert.IsNull(item);
         Assert.AreEqual(0, buffer.Count);

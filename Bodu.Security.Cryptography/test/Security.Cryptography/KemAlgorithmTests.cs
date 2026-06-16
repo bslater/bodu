@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="KemAlgorithmTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -57,8 +57,8 @@ public abstract class KemAlgorithmTests<TTest, TAlgorithm>
         using TAlgorithm receiver = CreateAlgorithmWithGeneratedKey();
         using TAlgorithm sender = CreatePublicOnlyAlgorithm(receiver);
 
-        (var ciphertext, var senderSecret) = Encapsulate(sender);
-        var receiverSecret = Decapsulate(receiver, ciphertext);
+        (byte[]? ciphertext, byte[]? senderSecret) = Encapsulate(sender);
+        byte[] receiverSecret = Decapsulate(receiver, ciphertext);
 
         Assert.AreEqual(CiphertextSizeBytes, ciphertext.Length);
         Assert.AreEqual(SharedSecretSizeBytes, senderSecret.Length);
@@ -75,10 +75,10 @@ public abstract class KemAlgorithmTests<TTest, TAlgorithm>
     {
         using TAlgorithm receiver = CreateAlgorithmWithGeneratedKey();
         using TAlgorithm sender = CreatePublicOnlyAlgorithm(receiver);
-        (var ciphertext, var senderSecret) = Encapsulate(sender);
+        (byte[]? ciphertext, byte[]? senderSecret) = Encapsulate(sender);
 
         ciphertext[0] ^= 0x01;
-        var rejected = Decapsulate(receiver, ciphertext);
+        byte[] rejected = Decapsulate(receiver, ciphertext);
 
         Assert.AreEqual(SharedSecretSizeBytes, rejected.Length);
         CollectionAssert.AreNotEqual(senderSecret, rejected);
@@ -93,7 +93,7 @@ public abstract class KemAlgorithmTests<TTest, TAlgorithm>
     {
         using TAlgorithm algorithm = CreateAlgorithmWithGeneratedKey();
 
-        foreach (var length in new[] { 0, CiphertextSizeBytes - 1, CiphertextSizeBytes + 1 })
+        foreach (int length in new[] { 0, CiphertextSizeBytes - 1, CiphertextSizeBytes + 1 })
         {
             Assert.ThrowsExactly<ArgumentException>(
                 () => { _ = Decapsulate(algorithm, new byte[length]); },
@@ -128,7 +128,7 @@ public abstract class KemAlgorithmTests<TTest, TAlgorithm>
     public void Dispose_WhenCalled_ShouldMakeEncapsulateAndDecapsulateThrowObjectDisposedException()
     {
         TAlgorithm algorithm = CreateAlgorithmWithGeneratedKey();
-        var ciphertext = new byte[CiphertextSizeBytes];
+        byte[] ciphertext = new byte[CiphertextSizeBytes];
 
         algorithm.Dispose();
 

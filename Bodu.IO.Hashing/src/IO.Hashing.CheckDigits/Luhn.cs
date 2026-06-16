@@ -76,14 +76,14 @@ public sealed class Luhn
     /// </exception>
     public static char Compute(ReadOnlySpan<char> digits)
     {
-        var sum = 0;
+        int sum = 0;
         for (int i = digits.Length - 1, j = 2; i >= 0; i--, j++)
         {
-            var ch = digits[i];
+            char ch = digits[i];
             if ((uint)(ch - '0') > 9u)
                 ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(digits));
 
-            var v = ch - '0';
+            int v = ch - '0';
             if ((j & 1) == 0)
             {
                 v *= 2;
@@ -110,13 +110,13 @@ public sealed class Luhn
     {
         if (digitsIncludingCheck.IsEmpty) return false;
 
-        var sum = 0;
+        int sum = 0;
         for (int i = digitsIncludingCheck.Length - 1, j = 1; i >= 0; i--, j++)
         {
-            var ch = digitsIncludingCheck[i];
+            char ch = digitsIncludingCheck[i];
             if ((uint)(ch - '0') > 9u) return false;
 
-            var v = ch - '0';
+            int v = ch - '0';
             if ((j & 1) == 0)
             {
                 v *= 2;
@@ -132,18 +132,18 @@ public sealed class Luhn
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> digits)
     {
-        var sumEven = _sumEvenHypothesis;
-        var sumOdd = _sumOddHypothesis;
-        var count = _count;
+        int sumEven = _sumEvenHypothesis;
+        int sumOdd = _sumOddHypothesis;
+        int count = _count;
 
-        for (var i = 0; i < digits.Length; i++)
+        for (int i = 0; i < digits.Length; i++)
         {
-            var ch = digits[i];
+            char ch = digits[i];
             if ((uint)(ch - '0') > 9u)
                 ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(digits));
 
-            var v = ch - '0';
-            var doubled = v * 2;
+            int v = ch - '0';
+            int doubled = v * 2;
             if (doubled > 9) doubled -= 9;
 
             // _sumEvenHypothesis (body length N will be even): body[i] is doubled iff i is odd.
@@ -171,7 +171,7 @@ public sealed class Luhn
     /// <inheritdoc />
     public override char GetCurrentCheckDigit()
     {
-        var sum = (_count & 1) == 0 ? _sumEvenHypothesis : _sumOddHypothesis;
+        int sum = (_count & 1) == 0 ? _sumEvenHypothesis : _sumOddHypothesis;
         return (char)('0' + ((10 - (sum % 10)) % 10));
     }
 

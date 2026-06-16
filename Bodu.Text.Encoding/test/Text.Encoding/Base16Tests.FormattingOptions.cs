@@ -16,7 +16,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void Encode_WhenIncludePrefixAndInsertSpacing_ShouldEmitPrefixOnceFollowedBySpacedBytes()
     {
-        var actual = Base16.Encode(
+        string actual = Base16.Encode(
             CanonicalBytes,
             BaseFormattingOptions.IncludePrefix | BaseFormattingOptions.InsertSpacing);
 
@@ -31,13 +31,13 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void Encode_WhenInsertLineBreaksAndInsertSpacing_ShouldWrapAtIntervalAndKeepSpacing()
     {
-        var bytes = new byte[40];
-        for (var i = 0; i < bytes.Length; i++)
+        byte[] bytes = new byte[40];
+        for (int i = 0; i < bytes.Length; i++)
         {
             bytes[i] = (byte)i;
         }
 
-        var actual = Base16.Encode(
+        string actual = Base16.Encode(
             bytes,
             BaseFormattingOptions.InsertLineBreaks | BaseFormattingOptions.InsertSpacing);
 
@@ -52,7 +52,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void Encode_WhenInsertSpacingAndUpperCase_ShouldInterleaveSingleSpaceBetweenBytes()
     {
-        var actual = Base16.Encode(
+        string actual = Base16.Encode(
             CanonicalBytes,
             BaseFormattingOptions.InsertSpacing | BaseFormattingOptions.UpperCase);
 
@@ -66,7 +66,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void Encode_WhenUpperCaseAndIncludePrefix_ShouldEmitUpperCaseWithPrefix()
     {
-        var actual = Base16.Encode(
+        string actual = Base16.Encode(
             CanonicalBytes,
             BaseFormattingOptions.UpperCase | BaseFormattingOptions.IncludePrefix);
 
@@ -92,16 +92,16 @@ public sealed partial class Base16Tests
     {
         var options = (BaseFormattingOptions)flags;
 
-        for (var byteCount = 0; byteCount <= 80; byteCount++)
+        for (int byteCount = 0; byteCount <= 80; byteCount++)
         {
-            var bytes = new byte[byteCount];
-            for (var i = 0; i < byteCount; i++)
+            byte[] bytes = new byte[byteCount];
+            for (int i = 0; i < byteCount; i++)
             {
                 bytes[i] = (byte)i;
             }
 
-            var predicted = Base16.GetEncodedLength(byteCount, options);
-            var actual = Base16.Encode(bytes, options).Length;
+            int predicted = Base16.GetEncodedLength(byteCount, options);
+            int actual = Base16.Encode(bytes, options).Length;
 
             Assert.AreEqual(predicted, actual,
                 $"Prediction mismatch for byteCount={byteCount}, options={options}.");

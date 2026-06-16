@@ -44,9 +44,9 @@ public static partial class IListExtensions
         ThrowHelper.ThrowIfNull(list);
         comparer ??= EqualityComparer<TSource>.Default;
 
-        var count = 0;
-        var length = list.Count;
-        for (var i = 0; i < length; i++)
+        int count = 0;
+        int length = list.Count;
+        for (int i = 0; i < length; i++)
         {
             if (comparer.Equals(list[i], oldItem))
             {
@@ -79,9 +79,9 @@ public static partial class IListExtensions
         ThrowHelper.ThrowIfNull(list);
         ThrowHelper.ThrowIfNull(predicate);
 
-        var count = 0;
-        var length = list.Count;
-        for (var i = 0; i < length; i++)
+        int count = 0;
+        int length = list.Count;
+        for (int i = 0; i < length; i++)
         {
             if (predicate(list[i]))
             {

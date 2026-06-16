@@ -15,7 +15,7 @@ public partial class CircularBufferTests
     [TestMethod]
     public void ItemEvicted_WhenBufferHasCapacity_ShouldNotFire()
     {
-        var anyEventFired = false;
+        bool anyEventFired = false;
         var buffer = new CircularBuffer<int>(3, allowOverwrite: true);
         buffer.ItemEvicted += _ => anyEventFired = true;
 
@@ -49,7 +49,7 @@ public partial class CircularBufferTests
     [TestMethod]
     public void ItemEvicted_WhenHandlerUnsubscribed_ShouldNotReceiveFurtherEvents()
     {
-        var callCount = 0;
+        int callCount = 0;
         var buffer = new CircularBuffer<int>(1, allowOverwrite: true);
 
         Action<int> handler = _ => callCount++;
@@ -92,8 +92,8 @@ public partial class CircularBufferTests
     [TestMethod]
     public void ItemEvicted_WhenNullItemIsEvicted_ShouldReceiveNullArgument()
     {
-        var received = "sentinel";
-        var handlerCalled = false;
+        string? received = "sentinel";
+        bool handlerCalled = false;
 
         var buffer = new CircularBuffer<string?>(1, allowOverwrite: true);
         buffer.ItemEvicted += item =>
@@ -115,13 +115,13 @@ public partial class CircularBufferTests
     [TestMethod]
     public void ItemEvicted_WhenOverwriteIsDisabled_ShouldNotFire()
     {
-        var anyEventFired = false;
+        bool anyEventFired = false;
         var buffer = new CircularBuffer<int>(2, allowOverwrite: false);
         buffer.ItemEvicted += _ => anyEventFired = true;
 
         buffer.Enqueue(1);
         buffer.Enqueue(2);
-        var success = buffer.TryEnqueue(3); // Should not overwrite or fire event
+        bool success = buffer.TryEnqueue(3); // Should not overwrite or fire event
 
         Assert.IsFalse(success);
         Assert.IsFalse(anyEventFired);

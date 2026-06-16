@@ -195,8 +195,8 @@ public abstract class MurmurHash3<T>
     protected override void GetCurrentHashCore(Span<byte> destination)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
-        var data = _inputBuffer.ToArray();
-        var digest = ComputeHashCore(data);
+        byte[] data = _inputBuffer.ToArray();
+        byte[] digest = ComputeHashCore(data);
         digest.AsSpan(0, HashLengthInBytes).CopyTo(destination);
     }
 

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CurrencyCatalogueTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -53,10 +53,10 @@ public class CurrencyCatalogueTests
             foreach (PropertyInfo property in type.GetProperties(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly))
                 _ = property.GetValue(null);
 
-            var isoCode = (string)ReadStatic(type, nameof(ICurrency.IsoCode))!;
-            var minorUnits = (int)ReadStatic(type, nameof(ICurrency.MinorUnits))!;
-            var numericCode = (int)ReadStatic(type, nameof(ICurrency.NumericCode))!;
-            var englishName = (string)ReadStatic(type, nameof(ICurrency.EnglishName))!;
+            string isoCode = (string)ReadStatic(type, nameof(ICurrency.IsoCode))!;
+            int minorUnits = (int)ReadStatic(type, nameof(ICurrency.MinorUnits))!;
+            int numericCode = (int)ReadStatic(type, nameof(ICurrency.NumericCode))!;
+            string englishName = (string)ReadStatic(type, nameof(ICurrency.EnglishName))!;
 
             Assert.AreEqual(type.Name, isoCode, $"{type.Name}: IsoCode must equal the tag type name.");
             Assert.IsTrue(numericCode is > 0 and <= 999, $"{isoCode}: numeric code {numericCode} is out of range.");
@@ -79,10 +79,10 @@ public class CurrencyCatalogueTests
     {
         foreach (Type type in CurrencyTagTypes())
         {
-            var isoCode = (string)ReadStatic(type, nameof(ICurrency.IsoCode))!;
-            var isHistoric = ReadStatic(type, nameof(ICurrency.IsHistoric)) as bool? ?? false;
+            string isoCode = (string)ReadStatic(type, nameof(ICurrency.IsoCode))!;
+            bool isHistoric = ReadStatic(type, nameof(ICurrency.IsHistoric)) as bool? ?? false;
             var demonetizedOn = ReadStatic(type, nameof(ICurrency.DemonetizedOn)) as DateOnly?;
-            var successorIsoCode = ReadStatic(type, nameof(ICurrency.SuccessorIsoCode)) as string;
+            string? successorIsoCode = ReadStatic(type, nameof(ICurrency.SuccessorIsoCode)) as string;
 
             if (isHistoric)
                 Assert.IsTrue(demonetizedOn is not null || successorIsoCode is not null, $"{isoCode}: a historic currency must record a demonetization date or a successor.");

@@ -34,7 +34,7 @@ internal static partial class CryptographyHelper
             ? stackalloc char[bytes.Length * 2]
             : new char[bytes.Length * 2];
 
-        for (var i = 0; i < bytes.Length; i++)
+        for (int i = 0; i < bytes.Length; i++)
         {
             buffer[i * 2] = LowercaseHexAlphabet[bytes[i] >> 4];
             buffer[(i * 2) + 1] = LowercaseHexAlphabet[bytes[i] & 0x0F];
@@ -65,7 +65,7 @@ internal static partial class CryptographyHelper
         if ((text.Length & 1) != 0)
             return false;
 
-        foreach (var c in text)
+        foreach (char c in text)
         {
             if (!char.IsAsciiHexDigit(c))
                 return false;

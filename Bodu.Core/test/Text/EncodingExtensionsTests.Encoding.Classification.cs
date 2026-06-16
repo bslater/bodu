@@ -120,7 +120,7 @@ public sealed partial class EncodingExtensionsTests
     {
         System.Text.Encoding encoding = new NonUtfNonAsciiTestEncoding();
 
-        var actual = encoding.GetDisplayName();
+        string actual = encoding.GetDisplayName();
 
         Assert.AreEqual(encoding.WebName, actual);
     }
@@ -145,7 +145,7 @@ public sealed partial class EncodingExtensionsTests
         /// <inheritdoc />
         public override int GetBytes(char[] chars, int charIndex, int charCount, byte[] bytes, int byteIndex)
         {
-            for (var i = 0; i < charCount; i++)
+            for (int i = 0; i < charCount; i++)
                 bytes[byteIndex + i] = (byte)chars[charIndex + i];
             return charCount;
         }
@@ -156,7 +156,7 @@ public sealed partial class EncodingExtensionsTests
         /// <inheritdoc />
         public override int GetChars(byte[] bytes, int byteIndex, int byteCount, char[] chars, int charIndex)
         {
-            for (var i = 0; i < byteCount; i++)
+            for (int i = 0; i < byteCount; i++)
                 chars[charIndex + i] = (char)bytes[byteIndex + i];
             return byteCount;
         }

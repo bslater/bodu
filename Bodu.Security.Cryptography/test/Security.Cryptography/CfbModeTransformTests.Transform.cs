@@ -18,17 +18,17 @@ public sealed partial class CfbModeTransformTests
     public void Transform_WhenEncrypting_ShouldApplyCfbChaining()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0x00);
-        var iv = Enumerable.Repeat((byte)0x10, ExpectedBlockSize).ToArray();
+        byte[] iv = Enumerable.Repeat((byte)0x10, ExpectedBlockSize).ToArray();
         CfbModeTransform transform = CreateTransform(cipher, (byte[])iv.Clone());
 
-        var plaintext = Enumerable.Range(0, ExpectedBlockSize * 2).Select(i => (byte)i).ToArray();
-        var output = new byte[plaintext.Length];
+        byte[] plaintext = Enumerable.Range(0, ExpectedBlockSize * 2).Select(i => (byte)i).ToArray();
+        byte[] output = new byte[plaintext.Length];
 
         transform.Transform(plaintext, output, encrypt: true);
 
         // With an identity cipher: C_0 = P_0 ⊕ E(IV) = P_0 ⊕ IV; then C_1 = P_1 ⊕ E(C_0) = P_1 ⊕ C_0.
-        var expectedBlock1 = plaintext[..ExpectedBlockSize].Zip(iv, (a, b) => (byte)(a ^ b)).ToArray();
-        var expectedBlock2 = plaintext[ExpectedBlockSize..].Zip(expectedBlock1, (a, b) => (byte)(a ^ b)).ToArray();
+        byte[] expectedBlock1 = plaintext[..ExpectedBlockSize].Zip(iv, (a, b) => (byte)(a ^ b)).ToArray();
+        byte[] expectedBlock2 = plaintext[ExpectedBlockSize..].Zip(expectedBlock1, (a, b) => (byte)(a ^ b)).ToArray();
 
         CollectionAssert.AreEqual(expectedBlock1, output[..ExpectedBlockSize].ToArray(), "First CFB block did not match expected chaining output.");
         CollectionAssert.AreEqual(expectedBlock2, output[ExpectedBlockSize..].ToArray(), "Second CFB block did not match expected chaining output.");
@@ -42,14 +42,14 @@ public sealed partial class CfbModeTransformTests
     public void Transform_WhenDecrypting_ShouldApplyCfbUnchaining()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0x00);
-        var iv = Enumerable.Repeat((byte)0x10, ExpectedBlockSize).ToArray();
+        byte[] iv = Enumerable.Repeat((byte)0x10, ExpectedBlockSize).ToArray();
 
         CfbModeTransform encrypt = CreateTransform(cipher, (byte[])iv.Clone());
         CfbModeTransform decrypt = CreateTransform(cipher, (byte[])iv.Clone());
 
-        var plaintext = Enumerable.Range(0, ExpectedBlockSize * 2).Select(i => (byte)i).ToArray();
-        var ciphertext = new byte[plaintext.Length];
-        var recovered = new byte[plaintext.Length];
+        byte[] plaintext = Enumerable.Range(0, ExpectedBlockSize * 2).Select(i => (byte)i).ToArray();
+        byte[] ciphertext = new byte[plaintext.Length];
+        byte[] recovered = new byte[plaintext.Length];
 
         encrypt.Transform(plaintext, ciphertext, encrypt: true);
         decrypt.Transform(ciphertext, recovered, encrypt: false);
@@ -64,12 +64,12 @@ public sealed partial class CfbModeTransformTests
     public void Transform_WhenEncrypting_ShouldNotMutateIv()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
-        var iv = Enumerable.Repeat((byte)0x7E, ExpectedBlockSize).ToArray();
-        var ivCopy = (byte[])iv.Clone();
+        byte[] iv = Enumerable.Repeat((byte)0x7E, ExpectedBlockSize).ToArray();
+        byte[] ivCopy = (byte[])iv.Clone();
         CfbModeTransform transform = CreateTransform(cipher, iv);
 
-        var plaintext = new byte[ExpectedBlockSize];
-        var output = new byte[ExpectedBlockSize];
+        byte[] plaintext = new byte[ExpectedBlockSize];
+        byte[] output = new byte[ExpectedBlockSize];
 
         transform.Transform(plaintext, output, encrypt: true);
 
@@ -84,11 +84,11 @@ public sealed partial class CfbModeTransformTests
     public void Transform_WhenDecrypting_ShouldUseCipherEncryptPrimitive()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
-        var iv = Enumerable.Repeat((byte)0x01, ExpectedBlockSize).ToArray();
+        byte[] iv = Enumerable.Repeat((byte)0x01, ExpectedBlockSize).ToArray();
         CfbModeTransform transform = CreateTransform(cipher, iv);
 
-        var input = new byte[ExpectedBlockSize * 2];
-        var output = new byte[input.Length];
+        byte[] input = new byte[ExpectedBlockSize * 2];
+        byte[] output = new byte[input.Length];
 
         transform.Transform(input, output, encrypt: false);
 
@@ -103,15 +103,15 @@ public sealed partial class CfbModeTransformTests
     public void Transform_WithSingleBlock_ShouldEncryptCorrectly()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0x00);
-        var iv = Enumerable.Repeat((byte)0x55, ExpectedBlockSize).ToArray();
+        byte[] iv = Enumerable.Repeat((byte)0x55, ExpectedBlockSize).ToArray();
         CfbModeTransform transform = CreateTransform(cipher, (byte[])iv.Clone());
 
-        var plaintext = Enumerable.Repeat((byte)0x22, ExpectedBlockSize).ToArray();
-        var output = new byte[ExpectedBlockSize];
+        byte[] plaintext = Enumerable.Repeat((byte)0x22, ExpectedBlockSize).ToArray();
+        byte[] output = new byte[ExpectedBlockSize];
 
         transform.Transform(plaintext, output, encrypt: true);
 
-        var expected = plaintext.Zip(iv, (a, b) => (byte)(a ^ b)).ToArray();
+        byte[] expected = plaintext.Zip(iv, (a, b) => (byte)(a ^ b)).ToArray();
         CollectionAssert.AreEqual(expected, output);
     }
 }

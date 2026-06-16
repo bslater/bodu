@@ -64,9 +64,9 @@ internal static partial class CryptographyHelper
 
         // Per-byte rejection: only redraw the positions that came up zero.
         Span<byte> single = stackalloc byte[1];
-        for (var i = 0; i < buffer.Length; i++)
+        for (int i = 0; i < buffer.Length; i++)
         {
-            var redraws = 0;
+            int redraws = 0;
             while (buffer[i] == 0)
             {
                 if (redraws == maxRedrawsPerByte)
@@ -93,7 +93,7 @@ internal static partial class CryptographyHelper
     internal static byte[] GetRandomNonZeroBytes(int length)
     {
         ThrowHelper.ThrowIfLessThanOrEqual(length, 0);
-        var buffer = GC.AllocateUninitializedArray<byte>(length);
+        byte[] buffer = GC.AllocateUninitializedArray<byte>(length);
         FillWithRandomNonZeroBytes(buffer.AsSpan());
         return buffer;
     }
@@ -125,7 +125,7 @@ internal static partial class CryptographyHelper
     internal static byte[] GetRandomBytes(int length)
     {
         ThrowHelper.ThrowIfLessThanOrEqual(length, 0);
-        var buffer = GC.AllocateUninitializedArray<byte>(length);
+        byte[] buffer = GC.AllocateUninitializedArray<byte>(length);
         FillWithRandomBytes(buffer.AsSpan());
         return buffer;
     }
@@ -146,7 +146,7 @@ internal static partial class CryptographyHelper
         // Targeted per-byte replacement: only re-draw for the bytes that
         // matched the forbidden value, rather than re-filling the whole buffer.
         Span<byte> single = stackalloc byte[1];
-        for (var i = 0; i < buffer.Length; i++)
+        for (int i = 0; i < buffer.Length; i++)
         {
             while (buffer[i] == forbidden)
             {
@@ -172,7 +172,7 @@ internal static partial class CryptographyHelper
     internal static byte[] GetRandomBytesExcluding(byte forbidden, int length)
     {
         ThrowHelper.ThrowIfLessThanOrEqual(length, 0);
-        var buffer = GC.AllocateUninitializedArray<byte>(length);
+        byte[] buffer = GC.AllocateUninitializedArray<byte>(length);
         FillWithRandomBytesExcluding(forbidden, buffer.AsSpan());
         return buffer;
     }

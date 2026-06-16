@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XSalsa20Poly1305Tests.Secretbox.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -15,15 +15,15 @@ public partial class XSalsa20Poly1305Tests
     [TestMethod]
     public void ToLibsodiumCombined_WhenGivenBoduLayout_ShouldEmitTagThenCiphertext()
     {
-        var ciphertext = new byte[] { 1, 2, 3, 4, 5 };
-        var tag = new byte[16];
-        for (var i = 0; i < tag.Length; i++) tag[i] = (byte)(0xa0 + i);
+        byte[] ciphertext = new byte[] { 1, 2, 3, 4, 5 };
+        byte[] tag = new byte[16];
+        for (int i = 0; i < tag.Length; i++) tag[i] = (byte)(0xa0 + i);
 
-        var boduLayout = new byte[ciphertext.Length + tag.Length];
+        byte[] boduLayout = new byte[ciphertext.Length + tag.Length];
         ciphertext.CopyTo(boduLayout, 0);
         tag.CopyTo(boduLayout, ciphertext.Length);
 
-        var libsodiumLayout = new byte[boduLayout.Length];
+        byte[] libsodiumLayout = new byte[boduLayout.Length];
         XSalsa20Poly1305.ToLibsodiumCombined(boduLayout, libsodiumLayout);
 
         CollectionAssert.AreEqual(tag, libsodiumLayout.AsSpan(0, tag.Length).ToArray());
@@ -37,9 +37,9 @@ public partial class XSalsa20Poly1305Tests
     [TestMethod]
     public void ToFromLibsodiumCombined_WhenRoundTripped_ShouldBeIdentity()
     {
-        var boduLayout = new byte[40 + 16];
-        for (var i = 0; i < boduLayout.Length; i++) boduLayout[i] = (byte)(i * 3);
-        var original = (byte[])boduLayout.Clone();
+        byte[] boduLayout = new byte[40 + 16];
+        for (int i = 0; i < boduLayout.Length; i++) boduLayout[i] = (byte)(i * 3);
+        byte[] original = (byte[])boduLayout.Clone();
 
         // In-place: Bodu -> libsodium -> Bodu.
         XSalsa20Poly1305.ToLibsodiumCombined(boduLayout, boduLayout);

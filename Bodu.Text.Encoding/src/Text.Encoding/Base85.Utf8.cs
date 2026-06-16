@@ -34,11 +34,11 @@ public static partial class Base85
         if (source.IsEmpty)
             return OperationStatus.Done;
 
-        var scratch = new char[source.Length];
-        for (var i = 0; i < source.Length; i++)
+        char[] scratch = new char[source.Length];
+        for (int i = 0; i < source.Length; i++)
             scratch[i] = (char)source[i];
 
-        OperationStatus status = DecodeWithStatus(scratch.AsSpan(), destination, out var _, out bytesWritten, variant, styles);
+        OperationStatus status = DecodeWithStatus(scratch.AsSpan(), destination, out int _, out bytesWritten, variant, styles);
         if (status == OperationStatus.Done)
             bytesConsumed = source.Length;
 
@@ -66,12 +66,12 @@ public static partial class Base85
         if (variant == Base85Variant.Z85 && (source.Length & 3) != 0)
             throw new ArgumentException(EncodingResourceStrings.Arg_Invalid_Z85InputMultipleOfFour, nameof(source));
 
-        var upperBound = GetMaxEncodedLength(source.Length, variant);
-        var scratch = new char[upperBound];
-        var written = EncodeIntoBuffer(source, variant, scratch);
+        int upperBound = GetMaxEncodedLength(source.Length, variant);
+        char[] scratch = new char[upperBound];
+        int written = EncodeIntoBuffer(source, variant, scratch);
 
-        var result = new byte[written];
-        for (var i = 0; i < written; i++)
+        byte[] result = new byte[written];
+        for (int i = 0; i < written; i++)
             result[i] = (byte)scratch[i];
 
         return result;
@@ -105,9 +105,9 @@ public static partial class Base85
         if (variant == Base85Variant.Z85 && (source.Length & 3) != 0)
             throw new ArgumentException(EncodingResourceStrings.Arg_Invalid_Z85InputMultipleOfFour, nameof(source));
 
-        var upperBound = GetMaxEncodedLength(source.Length, variant);
-        var scratch = new char[upperBound];
-        var written = EncodeIntoBuffer(source, variant, scratch);
+        int upperBound = GetMaxEncodedLength(source.Length, variant);
+        char[] scratch = new char[upperBound];
+        int written = EncodeIntoBuffer(source, variant, scratch);
 
         if (destination.Length < written)
         {
@@ -115,7 +115,7 @@ public static partial class Base85
             return false;
         }
 
-        for (var i = 0; i < written; i++)
+        for (int i = 0; i < written; i++)
             destination[i] = (byte)scratch[i];
 
         bytesWritten = written;
@@ -140,8 +140,8 @@ public static partial class Base85
         if (source.IsEmpty)
             return OperationStatus.Done;
 
-        var buffer = new byte[GetMaxDecodedLength(source.Length)];
-        if (!TryDecodeCore(source, variant, styles, buffer, out var written, out _))
+        byte[] buffer = new byte[GetMaxDecodedLength(source.Length)];
+        if (!TryDecodeCore(source, variant, styles, buffer, out int written, out _))
             return OperationStatus.InvalidData;
 
         if (destination.Length < written)

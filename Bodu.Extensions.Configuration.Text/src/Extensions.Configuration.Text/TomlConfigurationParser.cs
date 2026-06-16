@@ -46,7 +46,7 @@ internal static class TomlConfigurationParser
     {
         ThrowHelper.ThrowIfNull(stream);
 
-        var bytes = ReadToEnd(stream);
+        byte[] bytes = ReadToEnd(stream);
 
         using var document = TomlDocument.Parse(bytes);
         return Flatten(document.RootElement);
@@ -100,8 +100,8 @@ internal static class TomlConfigurationParser
     /// <param name="prefix">The key prefix accumulated so far.</param>
     private static void VisitArray(TomlElement array, IDictionary<string, string?> data, string prefix)
     {
-        var length = array.GetArrayLength();
-        for (var i = 0; i < length; i++)
+        int length = array.GetArrayLength();
+        for (int i = 0; i < length; i++)
             VisitValue(array[i], data, Combine(prefix, i.ToString(CultureInfo.InvariantCulture)));
     }
 

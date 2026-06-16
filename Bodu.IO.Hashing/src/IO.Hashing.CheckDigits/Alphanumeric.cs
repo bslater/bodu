@@ -83,9 +83,9 @@ internal static class Alphanumeric
     /// </exception>
     public static void ValidateAlphanumeric(ReadOnlySpan<char> value, string paramName)
     {
-        for (var i = 0; i < value.Length; i++)
+        for (int i = 0; i < value.Length; i++)
         {
-            var ch = value[i];
+            char ch = value[i];
             if ((uint)(ch - '0') > 9u && (uint)(ch - 'A') > 25u) throw new ArgumentOutOfRangeException(paramName, ch, FormatInvalidCharacterMessage(ch, HashingResourceStrings.CharacterSet_AsciiAlphanumeric, HashingResourceStrings.CharacterSet_AsciiAlphanumericValidChars));
         }
     }
@@ -100,9 +100,9 @@ internal static class Alphanumeric
     /// </exception>
     public static void ValidateCusip(ReadOnlySpan<char> value, string paramName)
     {
-        for (var i = 0; i < value.Length; i++)
+        for (int i = 0; i < value.Length; i++)
         {
-            var ch = value[i];
+            char ch = value[i];
             if ((uint)(ch - '0') <= 9u) continue;
             if ((uint)(ch - 'A') <= 25u) continue;
             if (ch is '*' or '@' or '#') continue;
@@ -129,9 +129,9 @@ internal static class Alphanumeric
     /// </exception>
     public static void ValidateSedol(ReadOnlySpan<char> value, string paramName)
     {
-        for (var i = 0; i < value.Length; i++)
+        for (int i = 0; i < value.Length; i++)
         {
-            var ch = value[i];
+            char ch = value[i];
             if ((uint)(ch - '0') <= 9u) continue;
             if ((uint)(ch - 'A') <= 25u && !IsVowel(ch)) continue;
 

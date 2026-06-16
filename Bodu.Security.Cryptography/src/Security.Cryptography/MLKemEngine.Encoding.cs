@@ -20,10 +20,10 @@ internal static partial class MLKemEngine
     private static void ByteEncode(int bits, ReadOnlySpan<int> coefficients, Span<byte> destination)
     {
         ulong accumulator = 0;
-        var bitCount = 0;
-        var index = 0;
+        int bitCount = 0;
+        int index = 0;
 
-        for (var i = 0; i < N; i++)
+        for (int i = 0; i < N; i++)
         {
             accumulator |= (ulong)(uint)coefficients[i] << bitCount;
             bitCount += bits;
@@ -45,12 +45,12 @@ internal static partial class MLKemEngine
     /// <param name="destination">The span receiving the 256 coefficients.</param>
     private static void ByteDecode(int bits, ReadOnlySpan<byte> source, Span<int> destination)
     {
-        var mask = (1 << bits) - 1;
+        int mask = (1 << bits) - 1;
         ulong accumulator = 0;
-        var bitCount = 0;
-        var index = 0;
+        int bitCount = 0;
+        int index = 0;
 
-        for (var i = 0; i < N; i++)
+        for (int i = 0; i < N; i++)
         {
             while (bitCount < bits)
             {
@@ -95,7 +95,7 @@ internal static partial class MLKemEngine
     private static void CompressEncode(int bits, ReadOnlySpan<int> coefficients, Span<byte> destination)
     {
         Span<int> compressed = stackalloc int[N];
-        for (var i = 0; i < N; i++)
+        for (int i = 0; i < N; i++)
             compressed[i] = Compress(bits, coefficients[i]);
 
         ByteEncode(bits, compressed, destination);
@@ -111,7 +111,7 @@ internal static partial class MLKemEngine
     private static void DecodeDecompress(int bits, ReadOnlySpan<byte> source, Span<int> destination)
     {
         ByteDecode(bits, source, destination);
-        for (var i = 0; i < N; i++)
+        for (int i = 0; i < N; i++)
             destination[i] = Decompress(bits, destination[i]);
     }
 }

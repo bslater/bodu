@@ -23,7 +23,7 @@ public sealed partial class IEnumerableExtensionsTests_ContainsAll
 
         static IEnumerable<int> LazyYield(int start, int count)
         {
-            for (var i = 0; i < count; i++)
+            for (int i = 0; i < count; i++)
                 yield return start + i;
         }
     }

@@ -95,7 +95,7 @@ public sealed class DotEnvContractTests
             if (x.Entries.Count != y.Entries.Count)
                 return false;
 
-            for (var i = 0; i < x.Entries.Count; i++)
+            for (int i = 0; i < x.Entries.Count; i++)
             {
                 if (x.Entries[i].Key != y.Entries[i].Key) return false;
                 if (x.Entries[i].Value != y.Entries[i].Value) return false;

@@ -36,7 +36,7 @@ public partial class OrderedSetStorageTests
     public void Clear_WhenStorageHasItems_ShouldEmptyStorage()
     {
         OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
-        var versionBefore = sut._version;
+        int versionBefore = sut._version;
 
         sut.Clear();
 
@@ -52,7 +52,7 @@ public partial class OrderedSetStorageTests
     public void Clear_WhenStorageIsEmpty_ShouldBeNoOp()
     {
         var sut = new OrderedSetStorage<int>(0, null);
-        var versionBefore = sut._version;
+        int versionBefore = sut._version;
 
         sut.Clear();
 
@@ -85,9 +85,9 @@ public partial class OrderedSetStorageTests
     public void Remove_WhenItemIsAbsent_ShouldReturnFalseAndNotBumpVersion()
     {
         OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
-        var versionBefore = sut._version;
+        int versionBefore = sut._version;
 
-        var removed = sut.Remove(99);
+        bool removed = sut.Remove(99);
 
         Assert.IsFalse(removed);
         Assert.AreEqual(versionBefore, sut._version);
@@ -239,7 +239,7 @@ public partial class OrderedSetStorageTests
     {
         OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
 
-        var removed = sut.RemoveWhere(_ => true);
+        int removed = sut.RemoveWhere(_ => true);
 
         Assert.AreEqual(3, removed);
         Assert.AreEqual(0, sut.Count);
@@ -271,9 +271,9 @@ public partial class OrderedSetStorageTests
     public void RemoveWhere_WhenNothingMatches_ShouldReturnZeroAndNotBumpVersion()
     {
         OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
-        var versionBefore = sut._version;
+        int versionBefore = sut._version;
 
-        var removed = sut.RemoveWhere(_ => false);
+        int removed = sut.RemoveWhere(_ => false);
 
         Assert.AreEqual(0, removed);
         Assert.AreEqual(versionBefore, sut._version);
@@ -313,7 +313,7 @@ public partial class OrderedSetStorageTests
     {
         OrderedSetStorage<int> sut = CreateStorage([1, 2, 3, 4, 5, 6]);
 
-        var removed = sut.RemoveWhere(x => x % 2 == 0);
+        int removed = sut.RemoveWhere(x => x % 2 == 0);
 
         Assert.AreEqual(3, removed);
         CollectionAssert.AreEqual(new[] { 1, 3, 5 }, Snapshot(sut));

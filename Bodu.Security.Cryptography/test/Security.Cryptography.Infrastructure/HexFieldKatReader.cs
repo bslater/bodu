@@ -35,7 +35,7 @@ public static class HexFieldKatReader
         string? line;
         while ((line = reader.ReadLine()) is not null)
         {
-            var trimmed = line.Trim();
+            string trimmed = line.Trim();
 
             if (trimmed.Length == 0)
             {
@@ -50,12 +50,12 @@ public static class HexFieldKatReader
 
             if (trimmed[0] == '#') continue;
 
-            var eqIndex = trimmed.IndexOf('=');
+            int eqIndex = trimmed.IndexOf('=');
             if (eqIndex < 0)
                 throw new FormatException($"Unrecognised KAT line (no '=' separator): '{trimmed}'.");
 
-            var label = trimmed[..eqIndex].TrimEnd();
-            var value = trimmed[(eqIndex + 1)..].TrimStart();
+            string label = trimmed[..eqIndex].TrimEnd();
+            string value = trimmed[(eqIndex + 1)..].TrimStart();
 
             record ??= new Dictionary<string, string>(StringComparer.Ordinal);
             if (!record.TryAdd(label, value))
@@ -74,7 +74,7 @@ public static class HexFieldKatReader
     /// <returns>The raw string value of the field.</returns>
     /// <exception cref="FormatException">The record does not contain <paramref name="field" />.</exception>
     public static string GetRequired(IReadOnlyDictionary<string, string> record, string field) =>
-        record.TryGetValue(field, out var value)
+        record.TryGetValue(field, out string? value)
             ? value
             : throw new FormatException($"KAT record is missing the required field '{field}'.");
 }

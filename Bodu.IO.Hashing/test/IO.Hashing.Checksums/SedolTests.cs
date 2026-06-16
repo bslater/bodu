@@ -41,7 +41,7 @@ public sealed partial class SedolTests
     [TestMethod]
     public void Compute_WhenBodyContainsVowel_ShouldThrowExactly(char vowel)
     {
-        var body = new string(['1', vowel, '2', '3', '4', '5']);
+        string body = new string(['1', vowel, '2', '3', '4', '5']);
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = Sedol.Compute(body.AsSpan());
@@ -73,7 +73,7 @@ public sealed partial class SedolTests
     public void IsValid_WhenBodyContainsVowel_ShouldReturnFalse(char vowel)
     {
         // Position 1 of an otherwise plausible SEDOL is replaced by a vowel.
-        var sequence = new string(['B', vowel, 'W', 'N', 'L', 'Y', '7']);
+        string sequence = new string(['B', vowel, 'W', 'N', 'L', 'Y', '7']);
         Assert.IsFalse(Sedol.IsValid(sequence.AsSpan()));
     }
 

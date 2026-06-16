@@ -69,10 +69,10 @@ public static partial class DateTimeExtensions
     public static DateTime Add(this DateTime dateTime, int years, int months, double days)
     {
         // Extract parts from original date
-        dateTime.GetDateParts(out var y, out var m, out var d);
+        dateTime.GetDateParts(out int y, out int m, out int d);
 
         // Adjust year/month
-        var i = m + months - 1 + (years * 12);
+        int i = m + months - 1 + (years * 12);
         if (i >= 0)
         {
             m = (i % 12) + 1;
@@ -85,8 +85,8 @@ public static partial class DateTimeExtensions
         }
 
         // Clamp day
-        var day = Math.Min(d, DateTime.DaysInMonth(y, m));
-        var totalTicks = GetDateTicks(y, m, day) + GetTimeTicks(dateTime);
+        int day = Math.Min(d, DateTime.DaysInMonth(y, m));
+        long totalTicks = GetDateTicks(y, m, day) + GetTimeTicks(dateTime);
 
         // Add fractional days (if any)
         if (Math.Abs(days) > Epsilon)

@@ -20,7 +20,7 @@ public sealed class SegmentedBufferTests
     {
         var buffer = new SegmentedBuffer<int>(4);
 
-        for (var i = 0; i < 10; i++)
+        for (int i = 0; i < 10; i++)
             buffer.Add(i);
 
         Assert.AreEqual(10, buffer.Count);
@@ -33,9 +33,9 @@ public sealed class SegmentedBufferTests
     public void Add_WhenStoringReferenceTypes_ShouldPreserveReferenceIdentity()
     {
         var buffer = new SegmentedBuffer<string>(2);
-        var a = new string('a', 3);
-        var b = new string('b', 3);
-        var c = new string('c', 3);
+        string a = new string('a', 3);
+        string b = new string('b', 3);
+        string c = new string('c', 3);
 
         buffer.Add(a);
         buffer.Add(b);
@@ -88,10 +88,10 @@ public sealed class SegmentedBufferTests
     {
         var buffer = new SegmentedBuffer<int>(3);
 
-        for (var i = 0; i < 6; i++)
+        for (int i = 0; i < 6; i++)
             buffer.Add(i);
 
-        var actual = buffer.ToArray();
+        int[] actual = buffer.ToArray();
         CollectionAssert.AreEqual(new[] { 0, 1, 2, 3, 4, 5 }, actual);
     }
 
@@ -114,11 +114,11 @@ public sealed class SegmentedBufferTests
     {
         var buffer = new SegmentedBuffer<int>(4);
 
-        for (var i = 0; i < 11; i++)
+        for (int i = 0; i < 11; i++)
             buffer.Add(i);
 
         var actual = new List<int>();
-        foreach (var value in buffer)
+        foreach (int value in buffer)
             actual.Add(value);
 
         CollectionAssert.AreEqual(Enumerable.Range(0, 11).ToArray(), actual);
@@ -216,10 +216,10 @@ public sealed class SegmentedBufferTests
     {
         var buffer = new SegmentedBuffer<int>(3);
 
-        for (var i = 0; i < 10; i++)
+        for (int i = 0; i < 10; i++)
             buffer.Add(i * 11);
 
-        for (var i = 0; i < 10; i++)
+        for (int i = 0; i < 10; i++)
             Assert.AreEqual(i * 11, buffer[i], $"Element at index {i} did not match insertion-order expected value.");
     }
 
@@ -231,7 +231,7 @@ public sealed class SegmentedBufferTests
     {
         var buffer = new SegmentedBuffer<int>(4);
 
-        for (var i = 0; i < 7; i++)
+        for (int i = 0; i < 7; i++)
             buffer.Add(i);
 
         buffer[3] = 42;
@@ -247,12 +247,12 @@ public sealed class SegmentedBufferTests
     {
         var buffer = new SegmentedBuffer<int>(2);
 
-        for (var i = 0; i < 5; i++)
+        for (int i = 0; i < 5; i++)
             buffer.Add(i);
 
         IEnumerable nonGeneric = buffer;
         var actual = new List<int>();
-        foreach (var item in nonGeneric)
+        foreach (object? item in nonGeneric)
             actual.Add((int)item);
 
         CollectionAssert.AreEqual(new[] { 0, 1, 2, 3, 4 }, actual);

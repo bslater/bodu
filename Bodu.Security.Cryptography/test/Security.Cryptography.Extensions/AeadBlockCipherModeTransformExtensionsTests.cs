@@ -103,9 +103,9 @@ public sealed class AeadBlockCipherModeTransformExtensionsTests
     public void Encrypt_ShouldReturnArrayOfPlaintextLengthPlusTagSize()
     {
         using IAeadBlockCipherModeTransform transform = NewTransform();
-        var expectedLength = Plaintext.Length + (transform.TagSize / 8);
+        int expectedLength = Plaintext.Length + (transform.TagSize / 8);
 
-        var result = transform.Encrypt(Plaintext, (ReadOnlySpan<byte>)AssociatedData);
+        byte[] result = transform.Encrypt(Plaintext, (ReadOnlySpan<byte>)AssociatedData);
 
         Assert.AreEqual(expectedLength, result.Length,
             "Encrypt wrapper must return a buffer of length plaintext.Length + TagSize.");
@@ -119,10 +119,10 @@ public sealed class AeadBlockCipherModeTransformExtensionsTests
     public void Decrypt_ShouldReturnArrayOfCiphertextLengthMinusTagSize()
     {
         using IAeadBlockCipherModeTransform encTransform = NewTransform();
-        var ciphertextWithTag = encTransform.Encrypt(Plaintext, (ReadOnlySpan<byte>)AssociatedData);
+        byte[] ciphertextWithTag = encTransform.Encrypt(Plaintext, (ReadOnlySpan<byte>)AssociatedData);
 
         using IAeadBlockCipherModeTransform decTransform = NewTransform();
-        var recovered = decTransform.Decrypt(ciphertextWithTag, (ReadOnlySpan<byte>)AssociatedData);
+        byte[] recovered = decTransform.Decrypt(ciphertextWithTag, (ReadOnlySpan<byte>)AssociatedData);
 
         Assert.AreEqual(Plaintext.Length, recovered.Length,
             "Decrypt wrapper must return a buffer of length ciphertextWithTag.Length - TagSize.");
@@ -138,7 +138,7 @@ public sealed class AeadBlockCipherModeTransformExtensionsTests
     public void Decrypt_WhenInputShorterThanTag_ShouldThrowExactly()
     {
         using IAeadBlockCipherModeTransform transform = NewTransform();
-        var tooShort = new byte[(transform.TagSize / 8) - 1];
+        byte[] tooShort = new byte[(transform.TagSize / 8) - 1];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -156,10 +156,10 @@ public sealed class AeadBlockCipherModeTransformExtensionsTests
     public void Encrypt_NoAadOverload_ShouldEqualExplicitEmptyAad()
     {
         using IAeadBlockCipherModeTransform t1 = NewTransform();
-        var withoutAad = t1.Encrypt(Plaintext);
+        byte[] withoutAad = t1.Encrypt(Plaintext);
 
         using IAeadBlockCipherModeTransform t2 = NewTransform();
-        var withEmptyAad = t2.Encrypt(Plaintext, ReadOnlySpan<byte>.Empty);
+        byte[] withEmptyAad = t2.Encrypt(Plaintext, ReadOnlySpan<byte>.Empty);
 
         CollectionAssert.AreEqual(withoutAad, withEmptyAad,
             "Encrypt without AAD must equal Encrypt with an explicit empty AAD span.");
@@ -173,10 +173,10 @@ public sealed class AeadBlockCipherModeTransformExtensionsTests
     public void Decrypt_NoAadOverload_ShouldRecoverPlaintextEncryptedWithNoAad()
     {
         using IAeadBlockCipherModeTransform encTransform = NewTransform();
-        var ciphertextWithTag = encTransform.Encrypt(Plaintext);
+        byte[] ciphertextWithTag = encTransform.Encrypt(Plaintext);
 
         using IAeadBlockCipherModeTransform decTransform = NewTransform();
-        var recovered = decTransform.Decrypt(ciphertextWithTag);
+        byte[] recovered = decTransform.Decrypt(ciphertextWithTag);
 
         CollectionAssert.AreEqual(Plaintext, recovered,
             "Decrypt without AAD must recover plaintext encrypted with the matching no-AAD overload.");

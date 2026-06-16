@@ -150,22 +150,22 @@ public sealed partial class Threefish512Cipher
         // Load the ciphertext block as eight 64-bit little-endian words into registers, skipping the
         // intermediate stackalloc + MemoryMarshal.Cast + CopyTo trip through the stack the prior
         // implementation used.
-        ref var inputRef = ref MemoryMarshal.GetReference(input);
-        var b0 = LoadWordLittleEndian(ref inputRef, 0);
-        var b1 = LoadWordLittleEndian(ref inputRef, 8);
-        var b2 = LoadWordLittleEndian(ref inputRef, 16);
-        var b3 = LoadWordLittleEndian(ref inputRef, 24);
-        var b4 = LoadWordLittleEndian(ref inputRef, 32);
-        var b5 = LoadWordLittleEndian(ref inputRef, 40);
-        var b6 = LoadWordLittleEndian(ref inputRef, 48);
-        var b7 = LoadWordLittleEndian(ref inputRef, 56);
+        ref byte inputRef = ref MemoryMarshal.GetReference(input);
+        ulong b0 = LoadWordLittleEndian(ref inputRef, 0);
+        ulong b1 = LoadWordLittleEndian(ref inputRef, 8);
+        ulong b2 = LoadWordLittleEndian(ref inputRef, 16);
+        ulong b3 = LoadWordLittleEndian(ref inputRef, 24);
+        ulong b4 = LoadWordLittleEndian(ref inputRef, 32);
+        ulong b5 = LoadWordLittleEndian(ref inputRef, 40);
+        ulong b6 = LoadWordLittleEndian(ref inputRef, 48);
+        ulong b7 = LoadWordLittleEndian(ref inputRef, 56);
 
         // Capture interior refs to the key and tweak schedule arrays so each subkey-injection access
         // skips the per-element bounds check that ulong[] indexing would otherwise emit.
-        ref var keyRef = ref MemoryMarshal.GetArrayDataReference(_keySchedule);
-        ref var tweakRef = ref MemoryMarshal.GetArrayDataReference(_tweakSchedule);
+        ref ulong keyRef = ref MemoryMarshal.GetArrayDataReference(_keySchedule);
+        ref ulong tweakRef = ref MemoryMarshal.GetArrayDataReference(_tweakSchedule);
 
-        for (var d = (72 / 4) - 1; d >= 1; d -= 2)
+        for (int d = (72 / 4) - 1; d >= 1; d -= 2)
         {
             int dm9 = d % 9, dm3 = d % 3;
 
@@ -233,7 +233,7 @@ public sealed partial class Threefish512Cipher
 
         // Commit the eight plaintext words to the output buffer in little-endian byte order. On LE
         // hosts each call lowers to a single unaligned store.
-        ref var outputRef = ref MemoryMarshal.GetReference(output);
+        ref byte outputRef = ref MemoryMarshal.GetReference(output);
         StoreWordLittleEndian(ref outputRef, 0, b0);
         StoreWordLittleEndian(ref outputRef, 8, b1);
         StoreWordLittleEndian(ref outputRef, 16, b2);
@@ -291,18 +291,18 @@ public sealed partial class Threefish512Cipher
     private void EncryptScalar(ReadOnlySpan<byte> input, Span<byte> output)
     {
         // Load the plaintext block as eight 64-bit little-endian words into registers.
-        ref var inputRef = ref MemoryMarshal.GetReference(input);
-        var b0 = LoadWordLittleEndian(ref inputRef, 0);
-        var b1 = LoadWordLittleEndian(ref inputRef, 8);
-        var b2 = LoadWordLittleEndian(ref inputRef, 16);
-        var b3 = LoadWordLittleEndian(ref inputRef, 24);
-        var b4 = LoadWordLittleEndian(ref inputRef, 32);
-        var b5 = LoadWordLittleEndian(ref inputRef, 40);
-        var b6 = LoadWordLittleEndian(ref inputRef, 48);
-        var b7 = LoadWordLittleEndian(ref inputRef, 56);
+        ref byte inputRef = ref MemoryMarshal.GetReference(input);
+        ulong b0 = LoadWordLittleEndian(ref inputRef, 0);
+        ulong b1 = LoadWordLittleEndian(ref inputRef, 8);
+        ulong b2 = LoadWordLittleEndian(ref inputRef, 16);
+        ulong b3 = LoadWordLittleEndian(ref inputRef, 24);
+        ulong b4 = LoadWordLittleEndian(ref inputRef, 32);
+        ulong b5 = LoadWordLittleEndian(ref inputRef, 40);
+        ulong b6 = LoadWordLittleEndian(ref inputRef, 48);
+        ulong b7 = LoadWordLittleEndian(ref inputRef, 56);
 
-        ref var keyRef = ref MemoryMarshal.GetArrayDataReference(_keySchedule);
-        ref var tweakRef = ref MemoryMarshal.GetArrayDataReference(_tweakSchedule);
+        ref ulong keyRef = ref MemoryMarshal.GetArrayDataReference(_keySchedule);
+        ref ulong tweakRef = ref MemoryMarshal.GetArrayDataReference(_tweakSchedule);
 
         // Initial key injection (round 0)
         b0 += Unsafe.Add(ref keyRef, 0);
@@ -314,7 +314,7 @@ public sealed partial class Threefish512Cipher
         b6 += Unsafe.Add(ref keyRef, 6) + Unsafe.Add(ref tweakRef, 1);
         b7 += Unsafe.Add(ref keyRef, 7);
 
-        for (var d = 1; d < 72 / 4; d += 2)
+        for (int d = 1; d < 72 / 4; d += 2)
         {
             int dm9 = d % 9, dm3 = d % 3;
 
@@ -371,7 +371,7 @@ public sealed partial class Threefish512Cipher
             b7 += Unsafe.Add(ref keyRef, dm9 + 8) + (ulong)(d + 1);
         }
 
-        ref var outputRef = ref MemoryMarshal.GetReference(output);
+        ref byte outputRef = ref MemoryMarshal.GetReference(output);
         StoreWordLittleEndian(ref outputRef, 0, b0);
         StoreWordLittleEndian(ref outputRef, 8, b1);
         StoreWordLittleEndian(ref outputRef, 16, b2);

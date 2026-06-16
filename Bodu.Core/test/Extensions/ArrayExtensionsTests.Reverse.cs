@@ -15,7 +15,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void Reverse_WhenCalled_ForNonGenericArray_ShouldNotModifySource()
     {
-        var original = Ints;
+        int[] original = Ints;
         _ = ((Array)original).Reverse();
         AssertIntsSourceIsUnmodified(original);
     }
@@ -38,7 +38,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void Reverse_WhenCalled_ForNonGenericArrayRange_ShouldNotModifySource()
     {
-        var original = Ints;
+        int[] original = Ints;
         _ = ((Array)original).Reverse(1..4);
         AssertIntsSourceIsUnmodified(original);
     }
@@ -49,7 +49,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void Reverse_WhenCalled_ForTypedArray_ShouldNotModifySource()
     {
-        var original = Ints;
+        int[] original = Ints;
         _ = original.Reverse();
         AssertIntsSourceIsUnmodified(original);
     }
@@ -61,7 +61,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void Reverse_WhenCalled_ForTypedArray_ShouldReturnNewAllocation()
     {
-        var original = Ints;
+        int[] original = Ints;
         AssertIsNewAllocation(original, original.Reverse());
     }
 
@@ -71,7 +71,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void Reverse_WhenCalled_ForTypedArrayIndexCount_ShouldNotModifySource()
     {
-        var original = Ints;
+        int[] original = Ints;
         _ = original.Reverse(1, 3);
         AssertIntsSourceIsUnmodified(original);
     }
@@ -104,7 +104,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void Reverse_WhenCalled_ForTypedArrayRange_ShouldNotModifySource()
     {
-        var original = Ints;
+        int[] original = Ints;
         _ = original.Reverse(1..4);
         AssertIntsSourceIsUnmodified(original);
     }
@@ -322,7 +322,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void Reverse_WhenRangeIsMiddleSection_ForTypedArrayIndexCount_ShouldLeaveOuterElementsUnchanged()
     {
-        var result = Ints.Reverse(index: 1, count: 3);
+        int[] result = Ints.Reverse(index: 1, count: 3);
         Assert.AreEqual(Ints[0], result[0]);
         Assert.AreEqual(Ints[4], result[4]);
     }

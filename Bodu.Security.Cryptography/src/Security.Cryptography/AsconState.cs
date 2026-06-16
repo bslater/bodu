@@ -87,8 +87,8 @@ internal struct AsconState
     {
         ulong s0 = S0, s1 = S1, s2 = S2, s3 = S3, s4 = S4;
 
-        var start = 12 - rounds;
-        for (var i = start; i < 12; i++)
+        int start = 12 - rounds;
+        for (int i = start; i < 12; i++)
         {
             // Constant addition: XOR round constant into s2. The constant for round i is (15-i)<<4 | i,
             // giving 0xf0 for round 0 down to 0x4b for round 11.
@@ -97,11 +97,11 @@ internal struct AsconState
             // Substitution layer: bit-sliced 5-bit Ascon S-box applied to all 64 bit-columns.
             s0 ^= s4; s4 ^= s3; s2 ^= s1;
 
-            var t0 = ~s0 & s1;
-            var t1 = ~s1 & s2;
-            var t2 = ~s2 & s3;
-            var t3 = ~s3 & s4;
-            var t4 = ~s4 & s0;
+            ulong t0 = ~s0 & s1;
+            ulong t1 = ~s1 & s2;
+            ulong t2 = ~s2 & s3;
+            ulong t3 = ~s3 & s4;
+            ulong t4 = ~s4 & s0;
 
             s0 ^= t1; s1 ^= t2; s2 ^= t3; s3 ^= t4; s4 ^= t0;
             s1 ^= s0; s0 ^= s4; s3 ^= s2; s2 = ~s2;

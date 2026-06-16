@@ -23,11 +23,11 @@ public partial class BencodeNodeTests
     {
         var random = new Random(20260611);
 
-        for (var iteration = 0; iteration < 1000; iteration++)
+        for (int iteration = 0; iteration < 1000; iteration++)
         {
             BencodeNode original = CreateRandomNode(random, depth: 0);
 
-            var encoded = original.ToByteArray();
+            byte[] encoded = original.ToByteArray();
             var reparsed = BencodeNode.Parse(encoded);
 
             Assert.IsTrue(BencodeNode.DeepEquals(original, reparsed), $"Iteration {iteration} did not round-trip.");
@@ -44,14 +44,14 @@ public partial class BencodeNodeTests
     private static BencodeNode CreateRandomNode(Random random, int depth)
     {
         // Above depth 5 only scalars are produced, bounding both tree size and nesting.
-        var kind = depth >= 5 ? random.Next(2) : random.Next(6);
+        int kind = depth >= 5 ? random.Next(2) : random.Next(6);
         switch (kind)
         {
             case 0:
                 return BencodeValue.Create(random.NextInt64(long.MinValue, long.MaxValue));
 
             case 1:
-                var content = new byte[random.Next(0, 24)];
+                byte[] content = new byte[random.Next(0, 24)];
                 random.NextBytes(content);
                 return BencodeValue.Create(content);
 
@@ -59,8 +59,8 @@ public partial class BencodeNodeTests
             case 3:
             {
                 var array = new BencodeArray();
-                var count = random.Next(0, 5);
-                for (var i = 0; i < count; i++)
+                int count = random.Next(0, 5);
+                for (int i = 0; i < count; i++)
                     array.Add(CreateRandomNode(random, depth + 1));
 
                 return array;
@@ -69,8 +69,8 @@ public partial class BencodeNodeTests
             default:
             {
                 var obj = new BencodeObject();
-                var count = random.Next(0, 5);
-                for (var i = 0; i < count; i++)
+                int count = random.Next(0, 5);
+                for (int i = 0; i < count; i++)
                     obj[RandomKey(random)] = CreateRandomNode(random, depth + 1);
 
                 return obj;
@@ -85,9 +85,9 @@ public partial class BencodeNodeTests
     /// <returns>The key text.</returns>
     private static string RandomKey(Random random)
     {
-        var length = random.Next(0, 8);
-        var chars = new char[length];
-        for (var i = 0; i < length; i++)
+        int length = random.Next(0, 8);
+        char[] chars = new char[length];
+        for (int i = 0; i < length; i++)
             chars[i] = (char)random.Next(0x20, 0x7F);
 
         return new string(chars);

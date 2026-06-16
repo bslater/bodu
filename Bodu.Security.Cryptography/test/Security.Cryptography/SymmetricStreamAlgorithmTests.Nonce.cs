@@ -63,7 +63,7 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
         if (nonceSizeBytes < 0) return;
 
         using TAlgorithm cipher = CreateAlgorithm();
-        var invalidNonce = new byte[nonceSizeBytes];
+        byte[] invalidNonce = new byte[nonceSizeBytes];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
@@ -79,7 +79,7 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
     public void Nonce_WhenSet_ShouldReturnSameValueOnGet()
     {
         using TAlgorithm cipher = CreateAlgorithm();
-        var nonce = new byte[NonceLengthBytes];
+        byte[] nonce = new byte[NonceLengthBytes];
         CryptographyHelper.FillWithRandomNonZeroBytes(nonce);
 
         cipher.Nonce = nonce;
@@ -95,7 +95,7 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
     public void Nonce_WhenSet_ShouldReturnDefensiveCopy()
     {
         using TAlgorithm cipher = CreateAlgorithm();
-        var nonce = new byte[NonceLengthBytes];
+        byte[] nonce = new byte[NonceLengthBytes];
         CryptographyHelper.FillWithRandomNonZeroBytes(nonce);
 
         cipher.Nonce = nonce;
@@ -113,9 +113,9 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
         using TAlgorithm cipher = CreateAlgorithm();
         cipher.GenerateNonce();
 
-        var first = cipher.Nonce;
+        byte[] first = cipher.Nonce;
         first[0] ^= 0xFF;
-        var second = cipher.Nonce;
+        byte[] second = cipher.Nonce;
 
         Assert.AreNotEqual(first[0], second[0]);
     }

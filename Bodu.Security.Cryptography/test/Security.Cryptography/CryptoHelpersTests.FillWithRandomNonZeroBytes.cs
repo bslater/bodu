@@ -16,12 +16,12 @@ public partial class CryptoHelpersTests
     {
         const byte forbidden = 0xAA;
 
-        for (var attempt = 0; attempt < 100; attempt++)
+        for (int attempt = 0; attempt < 100; attempt++)
         {
-            var buffer = new byte[1024];
+            byte[] buffer = new byte[1024];
             CryptographyHelper.FillWithRandomBytesExcluding(forbidden, buffer.AsSpan());
 
-            for (var i = 0; i < buffer.Length; i++)
+            for (int i = 0; i < buffer.Length; i++)
             {
                 Assert.AreNotEqual(forbidden, buffer[i], "Buffer must not contain the forbidden value.");
             }
@@ -39,14 +39,14 @@ public partial class CryptoHelpersTests
         // calls produce fresh randomness rather than any cached content. If
         // two consecutive fills are byte-identical for a reasonable length,
         // something is wrong (probability of accidental collision is ~2^-256).
-        var first = new byte[32];
-        var second = new byte[32];
+        byte[] first = new byte[32];
+        byte[] second = new byte[32];
 
         CryptographyHelper.FillWithRandomBytesExcluding(0x00, first.AsSpan());
         CryptographyHelper.FillWithRandomBytesExcluding(0x00, second.AsSpan());
 
-        var identical = true;
-        for (var i = 0; i < first.Length; i++)
+        bool identical = true;
+        for (int i = 0; i < first.Length; i++)
         {
             if (first[i] != second[i])
             {
@@ -69,9 +69,9 @@ public partial class CryptoHelpersTests
         // targeted per-byte replacement must terminate quickly.
         var task = Task.Run(() =>
         {
-            for (var i = 0; i < 1000; i++)
+            for (int i = 0; i < 1000; i++)
             {
-                var buffer = new byte[2];
+                byte[] buffer = new byte[2];
                 CryptographyHelper.FillWithRandomBytesExcluding(0x00, buffer.AsSpan());
 
                 Assert.AreNotEqual((byte)0, buffer[0]);
@@ -79,7 +79,7 @@ public partial class CryptoHelpersTests
             }
         });
 
-        var completed = task.Wait(TimeSpan.FromSeconds(1));
+        bool completed = task.Wait(TimeSpan.FromSeconds(1));
         Assert.IsTrue(completed, "FillWithRandomBytesExcluding should terminate in bounded time.");
     }
     /// <summary>
@@ -100,7 +100,7 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void FillWithRandomNonZeroBytes_WhenBufferHasLength_ShouldContainNoZeroBytes()
     {
-        var buffer = new byte[32];
+        byte[] buffer = new byte[32];
         CryptographyHelper.FillWithRandomNonZeroBytes(buffer);
         CollectionAssert.DoesNotContain(buffer, (byte)0);
     }
@@ -113,7 +113,7 @@ public partial class CryptoHelpersTests
     {
         Span<byte> span = stackalloc byte[32];
         CryptographyHelper.FillWithRandomNonZeroBytes(span);
-        foreach (var b in span)
+        foreach (byte b in span)
         {
             Assert.AreNotEqual(0, b);
         }

@@ -64,7 +64,7 @@ public partial class BencodeDocumentTests
     public void Parse_WhenInputMalformed_ShouldThrowBencodeFormatException(string testName, string input)
     {
         _ = testName;
-        var bytes = Bytes(input);
+        byte[] bytes = Bytes(input);
 
         _ = Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
@@ -158,9 +158,9 @@ public partial class BencodeDocumentTests
     [TestCategory("Regression")]
     public void Parse_WhenNestingExceedsDefaultMaxDepth_ShouldThrowBencodeFormatException()
     {
-        var atDepth = BencodeLimits.AbsoluteMaxDepth;
-        var atLimit = Bytes(new string('l', atDepth) + new string('e', atDepth));
-        var beyondLimit = Bytes(new string('l', atDepth + 1) + new string('e', atDepth + 1));
+        int atDepth = BencodeLimits.AbsoluteMaxDepth;
+        byte[] atLimit = Bytes(new string('l', atDepth) + new string('e', atDepth));
+        byte[] beyondLimit = Bytes(new string('l', atDepth + 1) + new string('e', atDepth + 1));
 
         using var document = BencodeDocument.Parse(atLimit);
         Assert.AreEqual(BencodeValueKind.Array, document.RootElement.ValueKind);
@@ -192,7 +192,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void Parse_WhenSourceMutatedAfterParse_ShouldNotAffectDocument()
     {
-        var source = Bytes("4:spam");
+        byte[] source = Bytes("4:spam");
         using var document = BencodeDocument.Parse(source);
 
         source[2] = (byte)'X';

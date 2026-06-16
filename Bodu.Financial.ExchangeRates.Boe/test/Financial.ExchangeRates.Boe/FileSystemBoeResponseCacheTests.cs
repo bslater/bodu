@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FileSystemBoeResponseCacheTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -28,14 +28,14 @@ public class FileSystemBoeResponseCacheTests
     [TestMethod]
     public void TryGet_WhenStoredAndFresh_ShouldReturnBytes()
     {
-        var directory = CreateTempDirectory();
+        string directory = CreateTempDirectory();
         try
         {
             FileSystemBoeResponseCache cache = new(directory);
-            var payload = new byte[] { 1, 2, 3, 4 };
+            byte[] payload = new byte[] { 1, 2, 3, 4 };
             cache.Store(s_from, s_to, payload);
 
-            var hit = cache.TryGet(s_from, s_to, TimeSpan.FromHours(1), out var bytes);
+            bool hit = cache.TryGet(s_from, s_to, TimeSpan.FromHours(1), out byte[]? bytes);
 
             Assert.IsTrue(hit);
             CollectionAssert.AreEqual(payload, bytes);
@@ -52,13 +52,13 @@ public class FileSystemBoeResponseCacheTests
     [TestMethod]
     public void TryGet_WhenDifferentRange_ShouldReturnMiss()
     {
-        var directory = CreateTempDirectory();
+        string directory = CreateTempDirectory();
         try
         {
             FileSystemBoeResponseCache cache = new(directory);
             cache.Store(s_from, s_to, new byte[] { 1 });
 
-            var hit = cache.TryGet(s_from, new DateOnly(2023, 2, 28), TimeSpan.FromHours(1), out _);
+            bool hit = cache.TryGet(s_from, new DateOnly(2023, 2, 28), TimeSpan.FromHours(1), out _);
 
             Assert.IsFalse(hit);
         }
@@ -74,16 +74,16 @@ public class FileSystemBoeResponseCacheTests
     [TestMethod]
     public void TryGet_WhenStale_ShouldReturnMiss()
     {
-        var directory = CreateTempDirectory();
+        string directory = CreateTempDirectory();
         try
         {
             FileSystemBoeResponseCache cache = new(directory);
             cache.Store(s_from, s_to, new byte[] { 1 });
 
-            var path = Path.Combine(directory, "boe_20230101_20230131.csv");
+            string path = Path.Combine(directory, "boe_20230101_20230131.csv");
             File.SetLastWriteTimeUtc(path, DateTime.UtcNow - TimeSpan.FromHours(2));
 
-            var hit = cache.TryGet(s_from, s_to, TimeSpan.FromMinutes(30), out _);
+            bool hit = cache.TryGet(s_from, s_to, TimeSpan.FromMinutes(30), out _);
 
             Assert.IsFalse(hit);
         }

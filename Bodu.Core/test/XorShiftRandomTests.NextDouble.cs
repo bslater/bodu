@@ -16,9 +16,9 @@ public partial class XorShiftRandomTests
     public void NextDouble_ShouldBeWithinRange()
     {
         var rng = new XorShiftRandom();
-        for (var i = 0; i < 1000; i++)
+        for (int i = 0; i < 1000; i++)
         {
-            var value = rng.NextDouble();
+            double value = rng.NextDouble();
             Assert.IsTrue(value is >= 0.0 and < 1.0, $"Value {value} was not in range [0.0, 1.0).");
         }
     }
@@ -31,9 +31,9 @@ public partial class XorShiftRandomTests
     public void NextDouble_WhenCalled_ShouldReturnValueInHalfOpenUnitInterval()
     {
         var rng = new XorShiftRandom();
-        for (var i = 0; i < 100; i++)
+        for (int i = 0; i < 100; i++)
         {
-            var value = rng.NextDouble();
+            double value = rng.NextDouble();
             Assert.IsTrue(value is >= 0.0 and < 1.0, $"Value {value} was not in range [0.0, 1.0).");
         }
     }
@@ -46,7 +46,7 @@ public partial class XorShiftRandomTests
     [TestMethod]
     public void ScaleToUnitInterval_WhenValueIsUIntMaxValue_ShouldReturnLessThanOne()
     {
-        var actual = XorShiftRandom.ScaleToUnitInterval(uint.MaxValue);
+        double actual = XorShiftRandom.ScaleToUnitInterval(uint.MaxValue);
         Assert.IsLessThan(1.0, actual, $"Expected value strictly less than 1.0 but got {actual}.");
         Assert.IsGreaterThanOrEqualTo(0.0, actual, $"Expected non-negative value but got {actual}.");
     }

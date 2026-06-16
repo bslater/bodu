@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EnumConverter.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -69,7 +69,7 @@ internal sealed class EnumConverter<T>
 
         foreach (FieldInfo field in typeof(T).GetFields(BindingFlags.Public | BindingFlags.Static))
         {
-            var name = field.GetCustomAttribute<BencodeStringEnumMemberNameAttribute>()?.Name
+            string name = field.GetCustomAttribute<BencodeStringEnumMemberNameAttribute>()?.Name
                 ?? namingPolicy?.ConvertName(field.Name)
                 ?? field.Name;
             var value = (T)field.GetValue(null) !;
@@ -85,7 +85,7 @@ internal sealed class EnumConverter<T>
     {
         if (reader.TokenType == BencodeTokenType.ByteString)
         {
-            var text = reader.GetString();
+            string text = reader.GetString();
             if (_nameToValue.TryGetValue(text, out T mapped))
                 return mapped;
 
@@ -106,5 +106,5 @@ internal sealed class EnumConverter<T>
 
     /// <inheritdoc />
     public override void Write(Utf8BencodeWriter writer, T value, BencodeSerializerOptions options) =>
-        writer.WriteString(_valueToName.TryGetValue(value, out var name) ? name : value.ToString());
+        writer.WriteString(_valueToName.TryGetValue(value, out string? name) ? name : value.ToString());
 }

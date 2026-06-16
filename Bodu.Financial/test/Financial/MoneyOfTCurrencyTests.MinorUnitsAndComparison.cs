@@ -53,7 +53,7 @@ public partial class MoneyOfTCurrencyTests
     [DataRow(1_000_000_000_000L)]
     public void MinorUnits_WhenRoundTripped_ShouldRecoverOriginal(long minorUnits)
     {
-        var recovered = Money<USD>.FromMinorUnits(minorUnits).ToMinorUnits();
+        long recovered = Money<USD>.FromMinorUnits(minorUnits).ToMinorUnits();
 
         Assert.AreEqual(minorUnits, recovered);
     }
@@ -64,7 +64,7 @@ public partial class MoneyOfTCurrencyTests
     [TestMethod]
     public void TryToMinorUnits_WhenInRange_ShouldReturnTrueAndExpectedValue()
     {
-        var ok = new Money<USD>(19.99m).TryToMinorUnits(out var result);
+        bool ok = new Money<USD>(19.99m).TryToMinorUnits(out long result);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(1999L, result);
@@ -79,7 +79,7 @@ public partial class MoneyOfTCurrencyTests
     {
         var huge = new Money<USD>(decimal.MaxValue / 2m);
 
-        var ok = huge.TryToMinorUnits(out var result);
+        bool ok = huge.TryToMinorUnits(out long result);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0L, result);
@@ -189,7 +189,7 @@ public partial class MoneyOfTCurrencyTests
     [DataRow("Infinity")]
     public void TryParse_WhenInputMalformed_ShouldReturnFalse(string input)
     {
-        var ok = Money<USD>.TryParse(input, System.Globalization.CultureInfo.InvariantCulture, out _);
+        bool ok = Money<USD>.TryParse(input, System.Globalization.CultureInfo.InvariantCulture, out _);
 
         Assert.IsFalse(ok, $"Expected '{input}' to fail parsing.");
     }

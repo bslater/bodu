@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SecretBytesTests.ToString.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -16,7 +16,7 @@ public sealed partial class SecretBytesTests
     {
         using var secret = SecretBytes.CopyFrom([0xDE, 0xAD, 0xBE, 0xEF]);
 
-        var text = secret.ToString();
+        string text = secret.ToString();
 
         Assert.AreEqual("SecretBytes (Length = 4)", text);
         Assert.IsFalse(text.Contains("deadbeef", StringComparison.OrdinalIgnoreCase));

@@ -58,7 +58,7 @@ internal static partial class ConfigurationThrowHelper
         string rawKey,
         [CallerArgumentExpression(nameof(rawKey))] string? paramName = null)
     {
-        for (var i = 0; i < rawKey.Length; i++)
+        for (int i = 0; i < rawKey.Length; i++)
         {
             if (char.IsControl(rawKey[i]))
                 throw new ArgumentException(

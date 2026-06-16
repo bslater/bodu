@@ -137,10 +137,10 @@ public static partial class NumericExtensions
         ThrowHelper.ThrowIfArrayLengthIsZero(values);
 
         ThrowHelper.ThrowIfNegative(values[0], nameof(values));
-        var acc = (ulong)values[0];
-        for (var i = 1; i < values.Length; i++)
+        ulong acc = (ulong)values[0];
+        for (int i = 1; i < values.Length; i++)
         {
-            var v = values[i];
+            short v = values[i];
             ThrowHelper.ThrowIfNegative(v, nameof(values));
             acc = Lcm(acc, (ulong)v);
         }
@@ -168,10 +168,10 @@ public static partial class NumericExtensions
         ThrowHelper.ThrowIfArrayLengthIsZero(values);
 
         ThrowHelper.ThrowIfNegative(values[0], nameof(values));
-        var acc = (ulong)values[0];
-        for (var i = 1; i < values.Length; i++)
+        ulong acc = (ulong)values[0];
+        for (int i = 1; i < values.Length; i++)
         {
-            var v = values[i];
+            int v = values[i];
             ThrowHelper.ThrowIfNegative(v, nameof(values));
             acc = Lcm(acc, (ulong)v);
         }
@@ -199,10 +199,10 @@ public static partial class NumericExtensions
         ThrowHelper.ThrowIfArrayLengthIsZero(values);
 
         ThrowHelper.ThrowIfNegative(values[0], nameof(values));
-        var acc = (ulong)values[0];
-        for (var i = 1; i < values.Length; i++)
+        ulong acc = (ulong)values[0];
+        for (int i = 1; i < values.Length; i++)
         {
-            var v = values[i];
+            long v = values[i];
             ThrowHelper.ThrowIfNegative(v, nameof(values));
             acc = Lcm(acc, (ulong)v);
         }
@@ -226,7 +226,7 @@ public static partial class NumericExtensions
         ThrowHelper.ThrowIfArrayLengthIsZero(values);
 
         ulong acc = values[0];
-        for (var i = 1; i < values.Length; i++)
+        for (int i = 1; i < values.Length; i++)
             acc = Lcm(acc, values[i]);
 
         return checked((ushort)acc);
@@ -248,7 +248,7 @@ public static partial class NumericExtensions
         ThrowHelper.ThrowIfArrayLengthIsZero(values);
 
         ulong acc = values[0];
-        for (var i = 1; i < values.Length; i++)
+        for (int i = 1; i < values.Length; i++)
             acc = Lcm(acc, values[i]);
 
         return checked((uint)acc);
@@ -269,8 +269,8 @@ public static partial class NumericExtensions
         ThrowHelper.ThrowIfNull(values);
         ThrowHelper.ThrowIfArrayLengthIsZero(values);
 
-        var acc = values[0];
-        for (var i = 1; i < values.Length; i++)
+        ulong acc = values[0];
+        for (int i = 1; i < values.Length; i++)
             acc = Lcm(acc, values[i]);
 
         return acc;

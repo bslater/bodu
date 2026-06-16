@@ -63,8 +63,8 @@ public partial class MoneyOfTCurrencyTests
     [TestMethod]
     public void GetHashCode_WhenSameAmountDifferentCurrency_ShouldDifferInMostCases()
     {
-        var hashUsd = new Money<USD>(5m).GetHashCode();
-        var hashJpy = new Money<JPY>(5m).GetHashCode();
+        int hashUsd = new Money<USD>(5m).GetHashCode();
+        int hashJpy = new Money<JPY>(5m).GetHashCode();
 
         Assert.AreNotEqual(hashUsd, hashJpy);
     }

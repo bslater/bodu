@@ -547,12 +547,12 @@ public sealed class CubeHash
         ThrowIfDisposed();
         EnsureInitialized();
 
-        var blockSize = _inputBlockSizeBytes;
+        int blockSize = _inputBlockSizeBytes;
 
         // Complete any in-flight partial block first
         if (_pendingBytes > 0)
         {
-            var needed = blockSize - _pendingBytes;
+            int needed = blockSize - _pendingBytes;
 
             if (source.Length < needed)
             {
@@ -607,9 +607,9 @@ public sealed class CubeHash
         _state[31] ^= 1U;
         PerformRounds(_finalizationRounds);
 
-        var byteLength = HashSize / 8;
-        var result = GC.AllocateUninitializedArray<byte>(byteLength);
-        for (var i = 0; i < byteLength; i++)
+        int byteLength = HashSize / 8;
+        byte[] result = GC.AllocateUninitializedArray<byte>(byteLength);
+        for (int i = 0; i < byteLength; i++)
             result[i] = (byte)(_state[i / 4] >> (8 * (i % 4)));
 
         return result;
@@ -666,12 +666,12 @@ public sealed class CubeHash
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     private void PerformRoundsAvx512(int roundCount)
     {
-        ref var stateRef = ref MemoryMarshal.GetArrayDataReference(_state);
+        ref uint stateRef = ref MemoryMarshal.GetArrayDataReference(_state);
 
         var lower = Vector512.LoadUnsafe(ref stateRef);
         var upper = Vector512.LoadUnsafe(ref Unsafe.Add(ref stateRef, 16));
 
-        for (var r = 0; r < roundCount; r++)
+        for (int r = 0; r < roundCount; r++)
         {
             // Steps 1+2: upper += lower; scatter lower into temp via XOR-8 permutation (VPADDD + VPERMD)
             upper += lower;
@@ -715,41 +715,41 @@ public sealed class CubeHash
         // sees a constant base per half rather than recomputing (16 + i) on every upper access.
         // tempRef bypasses the per-element bounds checks for the non-monotonic XOR scatter indices
         // (i^8, i^2, i^4, i^1) that the JIT cannot prove stay in-range from a loop-bound alone.
-        ref var lowerRef = ref MemoryMarshal.GetReference(s);
-        ref var upperRef = ref Unsafe.Add(ref lowerRef, 16);
-        ref var tempRef = ref MemoryMarshal.GetReference(temp);
+        ref uint lowerRef = ref MemoryMarshal.GetReference(s);
+        ref uint upperRef = ref Unsafe.Add(ref lowerRef, 16);
+        ref uint tempRef = ref MemoryMarshal.GetReference(temp);
 
-        for (var r = 0; r < roundCount; r++)
+        for (int r = 0; r < roundCount; r++)
         {
             // Steps 1+2: add lower into upper; scatter lower into temp via XOR-8 permutation
-            for (var i = 0; i < 16; i++)
+            for (int i = 0; i < 16; i++)
             {
                 Unsafe.Add(ref upperRef, i) += Unsafe.Add(ref lowerRef, i);
                 Unsafe.Add(ref tempRef, i ^ 8) = Unsafe.Add(ref lowerRef, i);
             }
 
             // Steps 3+4: rotate temp left by 7 into lower; XOR lower with upper
-            for (var i = 0; i < 16; i++)
+            for (int i = 0; i < 16; i++)
                 Unsafe.Add(ref lowerRef, i) = Unsafe.Add(ref tempRef, i).RotateBitsLeftUnchecked(7) ^ Unsafe.Add(ref upperRef, i);
 
             // Step 5: scatter upper into temp via XOR-2 permutation; copy back to upper
-            for (var i = 0; i < 16; i++)
+            for (int i = 0; i < 16; i++)
                 Unsafe.Add(ref tempRef, i ^ 2) = Unsafe.Add(ref upperRef, i);
             temp.CopyTo(s.Slice(16, 16));
 
             // Steps 6+7: add lower into upper; scatter lower into temp via XOR-4 permutation
-            for (var i = 0; i < 16; i++)
+            for (int i = 0; i < 16; i++)
             {
                 Unsafe.Add(ref upperRef, i) += Unsafe.Add(ref lowerRef, i);
                 Unsafe.Add(ref tempRef, i ^ 4) = Unsafe.Add(ref lowerRef, i);
             }
 
             // Steps 8+9: rotate temp left by 11 into lower; XOR lower with upper
-            for (var i = 0; i < 16; i++)
+            for (int i = 0; i < 16; i++)
                 Unsafe.Add(ref lowerRef, i) = Unsafe.Add(ref tempRef, i).RotateBitsLeftUnchecked(11) ^ Unsafe.Add(ref upperRef, i);
 
             // Step 10: scatter upper into temp via XOR-1 permutation; copy back to upper
-            for (var i = 0; i < 16; i++)
+            for (int i = 0; i < 16; i++)
                 Unsafe.Add(ref tempRef, i ^ 1) = Unsafe.Add(ref upperRef, i);
             temp.CopyTo(s.Slice(16, 16));
         }
@@ -770,7 +770,7 @@ public sealed class CubeHash
         {
             ReadOnlySpan<uint> words = MemoryMarshal.Cast<byte, uint>(block);
             Span<uint> stateSpan = _state;
-            for (var i = 0; i < words.Length; i++)
+            for (int i = 0; i < words.Length; i++)
                 stateSpan[i] ^= words[i];
 
             return;
@@ -789,9 +789,9 @@ public sealed class CubeHash
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void XorBytesIntoState(ReadOnlySpan<byte> source, int stateByteOffset)
     {
-        for (var i = 0; i < source.Length; i++)
+        for (int i = 0; i < source.Length; i++)
         {
-            var pos = stateByteOffset + i;
+            int pos = stateByteOffset + i;
             _state[pos >> 2] ^= (uint)source[i] << (8 * (pos & 3));
         }
     }

@@ -69,12 +69,12 @@ public class IncrementingByteStream
             return 0;
 
         // Read no more than half of remaining, or requested count, whichever is smaller
-        var localLimit = _remaining / 2;
+        int localLimit = _remaining / 2;
         if (localLimit == 0 || localLimit > count)
             localLimit = Math.Min(_remaining, count);
 
         // Fill the buffer with incrementing byte values
-        for (var i = 0; i < localLimit; i++)
+        for (int i = 0; i < localLimit; i++)
         {
             buffer[offset + i] = _written++;
         }
@@ -94,9 +94,9 @@ public class IncrementingByteStream
     /// </summary>
     public byte[] ToArray()
     {
-        var result = new byte[_size];
+        byte[] result = new byte[_size];
         byte val = 0;
-        for (var i = 0; i < _size; i++)
+        for (int i = 0; i < _size; i++)
         {
             result[i] = val++;
         }

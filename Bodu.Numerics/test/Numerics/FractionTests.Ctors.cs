@@ -113,7 +113,7 @@ public partial class FractionTests
     [TestMethod]
     public void Deconstruct_WhenCalled_ShouldYieldCanonicalComponents()
     {
-        (var numerator, var denominator) = new Fraction<int>(6, 8);
+        (int numerator, int denominator) = new Fraction<int>(6, 8);
 
         Assert.AreEqual(3, numerator);
         Assert.AreEqual(4, denominator);

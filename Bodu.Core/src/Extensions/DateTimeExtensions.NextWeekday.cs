@@ -35,7 +35,7 @@ public static partial class DateTimeExtensions
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(workingWeek);
 
-        var ticks = dateTime.Ticks;
+        long ticks = dateTime.Ticks;
         do
         {
             ticks += TicksPerDay;
@@ -79,7 +79,7 @@ public static partial class DateTimeExtensions
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(workingWeek);
 
-        var ticks = dateTime.Ticks;
+        long ticks = dateTime.Ticks;
         do
         {
             ticks += TicksPerDay;
@@ -115,7 +115,7 @@ public static partial class DateTimeExtensions
     {
         if (workingWeek.Count == 0) throw new ArgumentOutOfRangeException(nameof(workingWeek), ResourceStrings.Arg_OutOfRange_WorkingWeekEmpty);
 
-        var ticks = dateTime.Ticks;
+        long ticks = dateTime.Ticks;
         do
         {
             ticks += TicksPerDay;

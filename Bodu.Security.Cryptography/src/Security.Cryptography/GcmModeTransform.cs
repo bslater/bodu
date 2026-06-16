@@ -286,7 +286,7 @@ public sealed class GcmModeTransform
                 nameof(ciphertextWithTag));
         }
 
-        var plaintextLength = ciphertextWithTag.Length - (DefaultTagSize / 8);
+        int plaintextLength = ciphertextWithTag.Length - (DefaultTagSize / 8);
         if (output.Length < plaintextLength)
         {
             throw new ArgumentException(
@@ -367,7 +367,7 @@ public sealed class GcmModeTransform
         ThrowIfDisposed();
         ThrowIfCompleted();
 
-        var required = checked(plaintext.Length + (DefaultTagSize / 8));
+        int required = checked(plaintext.Length + (DefaultTagSize / 8));
         if (output.Length < required)
         {
             throw new ArgumentException(
@@ -488,7 +488,7 @@ public sealed class GcmModeTransform
     /// <param name="block">A single 16-byte block to fold into <paramref name="y" />.</param>
     private static void GhashBlock(Span<byte> y, ReadOnlySpan<byte> h, ReadOnlySpan<byte> block)
     {
-        for (var i = 0; i < BlockSize / 8; i++)
+        for (int i = 0; i < BlockSize / 8; i++)
             y[i] ^= block[i];
 
         GhashMultiply(y, h, y);
@@ -515,17 +515,17 @@ public sealed class GcmModeTransform
             // The two secret-dependent decisions — whether bit i of x is set, and whether the bit
             // shifted out of v is set — are folded in through 0x00/0xFF masks instead of branches,
             // so neither control flow nor memory-access pattern depends on x, h, or the GHASH state.
-            for (var i = 0; i < 128; i++)
+            for (int i = 0; i < 128; i++)
             {
                 // bit i of x in big-endian bit order; bitMask is 0xFF when set, 0x00 otherwise.
-                var bitMask = (byte)(-((x[i >> 3] >> (7 - (i & 7))) & 1));
-                for (var j = 0; j < BlockSize / 8; j++)
+                byte bitMask = (byte)(-((x[i >> 3] >> (7 - (i & 7))) & 1));
+                for (int j = 0; j < BlockSize / 8; j++)
                     z[j] ^= (byte)(v[j] & bitMask);
 
                 // lsbMask is 0xFF when the bit about to be shifted out of v is set, 0x00 otherwise.
-                var lsbMask = (byte)(-(v[15] & 0x01));
+                byte lsbMask = (byte)(-(v[15] & 0x01));
 
-                for (var j = 15; j > 0; j--)
+                for (int j = 15; j > 0; j--)
                     v[j] = (byte)((v[j] >> 1) | ((v[j - 1] & 0x01) << 7));
                 v[0] >>= 1;
 
@@ -553,11 +553,11 @@ public sealed class GcmModeTransform
         Span<byte> block = stackalloc byte[BlockSize / 8];
         try
         {
-            for (var offset = 0; offset < data.Length; offset += BlockSize / 8)
+            for (int offset = 0; offset < data.Length; offset += BlockSize / 8)
             {
                 block.Clear();
 
-                var remaining = Math.Min(BlockSize / 8, data.Length - offset);
+                int remaining = Math.Min(BlockSize / 8, data.Length - offset);
                 data.Slice(offset, remaining).CopyTo(block);
 
                 GhashBlock(y, h, block);
@@ -581,7 +581,7 @@ public sealed class GcmModeTransform
     /// </returns>
     private static bool IncrementCounter32(Span<byte> counter)
     {
-        for (var i = counter.Length - 1; i >= counter.Length - 4; i--)
+        for (int i = counter.Length - 1; i >= counter.Length - 4; i--)
             if (++counter[i] != 0) return false;
         return true;
     }
@@ -602,19 +602,19 @@ public sealed class GcmModeTransform
         Span<byte> keystream = stackalloc byte[BlockSize / 8];
         try
         {
-            var counter = _counter!;
+            byte[] counter = _counter!;
 
-            for (var offset = 0; offset < input.Length; offset += BlockSize / 8)
+            for (int offset = 0; offset < input.Length; offset += BlockSize / 8)
             {
                 _cipher.Encrypt(counter, keystream);
 
-                var remaining = Math.Min(BlockSize / 8, input.Length - offset);
-                for (var i = 0; i < remaining; i++)
+                int remaining = Math.Min(BlockSize / 8, input.Length - offset);
+                for (int i = 0; i < remaining; i++)
                     output[offset + i] = (byte)(input[offset + i] ^ keystream[i]);
 
                 // Reject wrap only when the wrapped counter would actually be consumed by another block;
                 // a message that ends exactly at counter 0xFFFFFFFF stays within the GCM contract.
-                var wrapped = IncrementCounter32(counter);
+                bool wrapped = IncrementCounter32(counter);
                 if (wrapped && offset + (BlockSize / 8) < input.Length)
                 {
                     throw new CryptographicException(
@@ -655,7 +655,7 @@ public sealed class GcmModeTransform
 
             // T = y ⊕ E_K(J0).
             _cipher.Encrypt(_j0!, encryptedJ0);
-            for (var i = 0; i < BlockSize / 8; i++)
+            for (int i = 0; i < BlockSize / 8; i++)
                 destination[i] = (byte)(y[i] ^ encryptedJ0[i]);
         }
         finally

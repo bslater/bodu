@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SqliteExchangeRateCacheTests.Persistence.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -23,7 +23,7 @@ public sealed partial class SqliteExchangeRateCacheTests
     public void Store_WhenSecondInstanceOpensSameFile_ShouldReadPersistedRates()
     {
         var now = DateTimeOffset.UtcNow;
-        var path = NewDatabasePath();
+        string path = NewDatabasePath();
 
         SqliteExchangeRateCache writer = CreateFileCache(path);
         writer.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, now) }, Duration, now);
@@ -45,7 +45,7 @@ public sealed partial class SqliteExchangeRateCacheTests
     public void RecordCoverage_WhenSecondInstanceOpensSameFile_ShouldReadPersistedCoverage()
     {
         var now = DateTimeOffset.UtcNow;
-        var path = NewDatabasePath();
+        string path = NewDatabasePath();
 
         SqliteExchangeRateCache writer = CreateFileCache(path);
         writer.RecordCoverage(Pair, new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 10), Duration, now);
@@ -64,7 +64,7 @@ public sealed partial class SqliteExchangeRateCacheTests
     public void StoreAndRecordCoverage_WhenSecondInstanceOpensSameFile_ShouldReadBothHalves()
     {
         var now = DateTimeOffset.UtcNow;
-        var path = NewDatabasePath();
+        string path = NewDatabasePath();
 
         SqliteExchangeRateCache writer = CreateFileCache(path);
         writer.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, now) }, Duration, now);
@@ -85,7 +85,7 @@ public sealed partial class SqliteExchangeRateCacheTests
     public void Store_WhenSharedInMemoryConnectionString_ShouldServeRate()
     {
         var now = DateTimeOffset.UtcNow;
-        var connectionString = $"Data Source=bodu-test-{Guid.NewGuid():N};Mode=Memory;Cache=Shared";
+        string connectionString = $"Data Source=bodu-test-{Guid.NewGuid():N};Mode=Memory;Cache=Shared";
 
         var cache = new SqliteExchangeRateCache(new SqliteExchangeRateCacheOptions { Provider = Provider, ConnectionString = connectionString });
         _caches.Add(cache);
@@ -105,7 +105,7 @@ public sealed partial class SqliteExchangeRateCacheTests
     [TestMethod]
     public void GetRates_WhenDatabaseHasLegacyRatesSchema_ShouldMigrateAndReadRowWithNullObservedAtUtc()
     {
-        var path = NewDatabasePath();
+        string path = NewDatabasePath();
         var now = DateTimeOffset.UtcNow;
 
         // Build a database with the OLD rates schema (no observed_at column) and seed one row directly, modelling a
@@ -129,7 +129,7 @@ public sealed partial class SqliteExchangeRateCacheTests
     [TestMethod]
     public void Store_WhenDatabaseMigratedFromLegacySchema_ShouldPersistObservedAtUtc()
     {
-        var path = NewDatabasePath();
+        string path = NewDatabasePath();
         var now = DateTimeOffset.UtcNow;
         var observedAt = new DateTimeOffset(2023, 1, 6, 16, 0, 0, TimeSpan.Zero);
         SeedLegacyDatabase(path, new DateOnly(2023, 1, 3), 0.5000m, now);

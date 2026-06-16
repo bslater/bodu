@@ -48,7 +48,7 @@ public sealed class StrongNamePluginTrustPolicy
         ThrowHelper.ThrowIfNull(allowedPublicKeyTokens);
 
         _allowedTokens = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        foreach (var token in allowedPublicKeyTokens)
+        foreach (string token in allowedPublicKeyTokens)
         {
             if (!string.IsNullOrWhiteSpace(token))
                 _allowedTokens.Add(token.Trim().ToLowerInvariant());

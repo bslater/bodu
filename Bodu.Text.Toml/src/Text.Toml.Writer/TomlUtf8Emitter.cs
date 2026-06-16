@@ -104,7 +104,7 @@ internal ref struct TomlUtf8Emitter
             return;
 
         Span<byte> span = Reserve(chars.Length);
-        for (var i = 0; i < chars.Length; i++)
+        for (int i = 0; i < chars.Length; i++)
             span[i] = (byte)chars[i];
 
         _pos += chars.Length;
@@ -118,7 +118,7 @@ internal ref struct TomlUtf8Emitter
     /// <param name="rune">The scalar value to append.</param>
     internal void Append(Rune rune)
     {
-        var written = rune.EncodeToUtf8(Reserve(4));
+        int written = rune.EncodeToUtf8(Reserve(4));
         _pos += written;
         _bytesWritten += written;
         _hasContent = true;

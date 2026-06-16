@@ -56,7 +56,7 @@ public partial class IndexedSetTests
         where T : notnull
     {
         var result = new T[set.Count];
-        for (var i = 0; i < set.Count; i++)
+        for (int i = 0; i < set.Count; i++)
             result[i] = set[i];
 
         return result;

@@ -141,9 +141,9 @@ public readonly partial struct Money
                 nameof(isoCode));
         }
 
-        for (var i = 0; i < 3; i++)
+        for (int i = 0; i < 3; i++)
         {
-            var c = isoCode[i];
+            char c = isoCode[i];
             if (c is < 'A' or > 'Z')
             {
                 throw new ArgumentException(

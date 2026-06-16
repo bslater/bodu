@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Bech32Tests.Decode.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -36,7 +36,7 @@ public sealed partial class Bech32Tests
     [DataRow("a12uel5m")]      // single-symbol checksum corruption
     public void TryDecode_WhenInvalidVector_ShouldReturnFalse(string source)
     {
-        var success = Bech32.TryDecode(source.AsSpan(), out var hrp, out var data, out _);
+        bool success = Bech32.TryDecode(source.AsSpan(), out string? hrp, out byte[]? data, out _);
 
         Assert.IsFalse(success);
         Assert.IsNull(hrp);
@@ -63,7 +63,7 @@ public sealed partial class Bech32Tests
     [TestMethod]
     public void Decode_WhenLongerThanMaximum_ShouldThrowFormatException()
     {
-        var tooLong = "an84characterslonghumanreadablepartthatcontainsthenumber1andtheexcludedcharactersbio1569pvx";
+        string tooLong = "an84characterslonghumanreadablepartthatcontainsthenumber1andtheexcludedcharactersbio1569pvx";
         Assert.IsTrue(tooLong.Length > 90);
 
         Assert.ThrowsExactly<FormatException>(() =>

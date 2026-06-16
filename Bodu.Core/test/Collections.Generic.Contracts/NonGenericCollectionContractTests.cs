@@ -81,8 +81,8 @@ public abstract class NonGenericCollectionContractTests<TCollection>
             return;
         }
 
-        var syncRoot1 = collection.SyncRoot;
-        var syncRoot2 = collection.SyncRoot;
+        object syncRoot1 = collection.SyncRoot;
+        object syncRoot2 = collection.SyncRoot;
 
         Assert.AreSame(syncRoot1, syncRoot2);
     }

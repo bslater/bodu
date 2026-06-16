@@ -39,7 +39,7 @@ public sealed partial class IListExtensionsTests_TryMove
     {
         var list = new List<string>(initial);
 
-        var result = list.TryMove(oldIndex, newIndex);
+        bool result = list.TryMove(oldIndex, newIndex);
 
         Assert.IsTrue(result);
         CollectionAssert.AreEqual(expected, list);
@@ -59,7 +59,7 @@ public sealed partial class IListExtensionsTests_TryMove
     {
         var list = new List<int> { 1, 2, 3, 4, 5 };
 
-        var result = list.TryMove(oldIndex, newIndex);
+        bool result = list.TryMove(oldIndex, newIndex);
 
         Assert.IsFalse(result);
         CollectionAssert.AreEqual(new[] { 1, 2, 3, 4, 5 }, list);
@@ -90,7 +90,7 @@ public sealed partial class IListExtensionsTests_TryMove
     {
         IList<string> list = new Collection<string> { "a", "b", "c", "d" };
 
-        var result = list.TryMove(0, 3);
+        bool result = list.TryMove(0, 3);
 
         Assert.IsTrue(result);
         CollectionAssert.AreEqual(new[] { "b", "c", "a", "d" }, (Collection<string>)list);
@@ -120,7 +120,7 @@ public sealed partial class IListExtensionsTests_TryMove
     {
         var list = new List<int> { 10, 20, 30, 40 };
 
-        var result = list.TryMove(1, 2);
+        bool result = list.TryMove(1, 2);
 
         Assert.IsTrue(result);
         CollectionAssert.AreEqual(new[] { 10, 20, 30, 40 }, list);
@@ -135,7 +135,7 @@ public sealed partial class IListExtensionsTests_TryMove
     {
         var list = new List<int> { 10, 20, 30, 40 };
 
-        var result = list.TryMove(2, 2);
+        bool result = list.TryMove(2, 2);
 
         Assert.IsTrue(result);
         CollectionAssert.AreEqual(new[] { 10, 20, 30, 40 }, list);

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateSeriesBufferTests.TryGetRate.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -16,9 +16,9 @@ public partial class ExchangeRateSeriesBufferTests
     {
         ExchangeRateSeriesBuffer buffer = NewBufferWith((1000, 1.4m), (1010, 1.5m));
 
-        Assert.IsTrue(buffer.TryGetRate(1000, out var rate0));
+        Assert.IsTrue(buffer.TryGetRate(1000, out decimal rate0));
         Assert.AreEqual(1.4m, rate0);
-        Assert.IsTrue(buffer.TryGetRate(1010, out var rate1));
+        Assert.IsTrue(buffer.TryGetRate(1010, out decimal rate1));
         Assert.AreEqual(1.5m, rate1);
     }
 
@@ -31,7 +31,7 @@ public partial class ExchangeRateSeriesBufferTests
     {
         ExchangeRateSeriesBuffer buffer = NewBufferWith((1000, 1.4m), (1010, 1.5m));
 
-        Assert.IsFalse(buffer.TryGetRate(1005, out var rate));
+        Assert.IsFalse(buffer.TryGetRate(1005, out decimal rate));
         Assert.AreEqual(0m, rate);
     }
 

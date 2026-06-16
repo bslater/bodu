@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Argon2CoverageTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -40,7 +40,7 @@ public sealed class Argon2CoverageTests
     [TestMethod]
     public void Hash_WithRandomSalt_ShouldProduceEncodedString()
     {
-        var encoded = new Argon2id(FastParameters()).Hash(Password);
+        string encoded = new Argon2id(FastParameters()).Hash(Password);
 
         Assert.IsTrue(encoded.StartsWith("$argon2id$", StringComparison.Ordinal));
     }
@@ -57,7 +57,7 @@ public sealed class Argon2CoverageTests
     {
         Argon2 argon = argon2d ? new Argon2d(FastParameters()) : new Argon2i(FastParameters());
 
-        var encoded = argon.Hash(Password, Salt);
+        string encoded = argon.Hash(Password, Salt);
 
         Assert.IsTrue(encoded.StartsWith(expectedTag, StringComparison.Ordinal));
         Assert.IsTrue(Argon2.Verify(encoded, Password));

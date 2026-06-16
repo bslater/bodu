@@ -144,7 +144,7 @@ public sealed class RuleApplicability
 
         if (EveryYears is int interval && interval > 1)
         {
-            var anchor = AnchorYear ?? FromYear ?? 0;
+            int anchor = AnchorYear ?? FromYear ?? 0;
             if ((((year - anchor) % interval) + interval) % interval != 0)
                 return false;
         }
@@ -164,7 +164,7 @@ public sealed class RuleApplicability
         if (Territories.Count == 0)
             return true;
 
-        foreach (var scoped in Territories)
+        foreach (string scoped in Territories)
         {
             if (string.Equals(scoped, territory, StringComparison.OrdinalIgnoreCase))
                 return true;
@@ -192,8 +192,8 @@ public sealed class RuleApplicability
         if (Territories.Count == 0)
             return 0;
 
-        var best = -1;
-        foreach (var scoped in Territories)
+        int best = -1;
+        foreach (string scoped in Territories)
         {
             if (string.Equals(scoped, territory, StringComparison.OrdinalIgnoreCase)
                 || territory.StartsWith(scoped + "-", StringComparison.OrdinalIgnoreCase))

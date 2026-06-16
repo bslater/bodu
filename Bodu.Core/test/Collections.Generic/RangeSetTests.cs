@@ -58,7 +58,7 @@ public partial class RangeSetTests
     private static (int Start, int End)[] Snapshot(RangeSet<int> set)
     {
         (int Start, int End)[] result = new (int, int)[set.Count];
-        for (var i = 0; i < set.Count; i++)
+        for (int i = 0; i < set.Count; i++)
             result[i] = (set[i].StartInclusive, set[i].EndExclusive);
 
         return result;

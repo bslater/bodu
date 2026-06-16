@@ -205,7 +205,7 @@ public sealed class NotableDateFilter
     {
         ThrowHelper.ThrowIfNull(tags);
 
-        var required = tags.ToArray();
+        string[] required = tags.ToArray();
         return new NotableDateFilter(n => required.All(t => n.Tags.Contains(t, StringComparer.Ordinal)));
     }
 

@@ -17,7 +17,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     public void TryPeekHead_WhenEmpty_ShouldReturnFalseAndDefault()
     {
         TCollection collection = CreateCollection(3);
-        Assert.IsFalse(TryPeekHead(collection, out var item));
+        Assert.IsFalse(TryPeekHead(collection, out int item));
         Assert.AreEqual(default, item);
     }
     /// <summary>
@@ -29,7 +29,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
         TCollection collection = CreateCollection(3);
         AddToTail(collection, 7);
 
-        Assert.IsTrue(TryPeekHead(collection, out var item));
+        Assert.IsTrue(TryPeekHead(collection, out int item));
         Assert.AreEqual(7, item);
         Assert.AreEqual(1, GetCount(collection));
     }

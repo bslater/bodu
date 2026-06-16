@@ -47,8 +47,8 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
         HashSet<int> actual = [];
         foreach (KeySizes keySize in algorithm.LegalKeySizes)
         {
-            var step = keySize.SkipSize == 0 ? int.MaxValue : keySize.SkipSize;
-            for (var size = keySize.MinSize; size <= keySize.MaxSize; size += step)
+            int step = keySize.SkipSize == 0 ? int.MaxValue : keySize.SkipSize;
+            for (int size = keySize.MinSize; size <= keySize.MaxSize; size += step)
             {
                 actual.Add(size);
                 if (step == int.MaxValue)

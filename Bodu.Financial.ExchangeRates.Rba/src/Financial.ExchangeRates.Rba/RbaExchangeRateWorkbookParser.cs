@@ -80,10 +80,10 @@ internal static class RbaExchangeRateWorkbookParser
 
         Dictionary<(int Row, int Column), ExcelCell> grid = BuildGrid(workbook);
 
-        var unitsRow = FindLabelRow(grid, UnitsLabel);
-        var seriesIdRow = FindLabelRow(grid, SeriesIdLabel);
-        var titleRow = FindLabelRow(grid, TitleLabel);
-        var descriptionRow = FindLabelRow(grid, DescriptionLabel);
+        int unitsRow = FindLabelRow(grid, UnitsLabel);
+        int seriesIdRow = FindLabelRow(grid, SeriesIdLabel);
+        int titleRow = FindLabelRow(grid, TitleLabel);
+        int descriptionRow = FindLabelRow(grid, DescriptionLabel);
 
         if (unitsRow < 0 && titleRow < 0)
             throw new RbaExchangeRateFormatException(RbaResourceStrings.Format_Invalid_RbaHeaderRows);
@@ -185,7 +185,7 @@ internal static class RbaExchangeRateWorkbookParser
         int descriptionRow,
         RbaExchangeRateOptions options)
     {
-        var headerRow = unitsRow >= 0 ? unitsRow : titleRow;
+        int headerRow = unitsRow >= 0 ? unitsRow : titleRow;
         SortedSet<int> columns = new();
         foreach (KeyValuePair<(int Row, int Column), ExcelCell> entry in grid)
         {
@@ -194,12 +194,12 @@ internal static class RbaExchangeRateWorkbookParser
         }
 
         List<RbaExchangeRateSeries> series = new();
-        foreach (var column in columns)
+        foreach (int column in columns)
         {
-            var units = GetText(grid, unitsRow, column);
-            var title = GetText(grid, titleRow, column);
+            string units = GetText(grid, unitsRow, column);
+            string title = GetText(grid, titleRow, column);
 
-            var currencyCode = ResolveCurrencyCode(units, title, options);
+            string? currencyCode = ResolveCurrencyCode(units, title, options);
             if (currencyCode is null)
                 continue;
 
@@ -228,15 +228,15 @@ internal static class RbaExchangeRateWorkbookParser
         List<RbaExchangeRateSeries> series)
     {
         List<RbaExchangeRateRow> rows = new(dataRows.Count);
-        foreach (var row in dataRows)
+        foreach (int row in dataRows)
         {
-            var serial = grid[(row, 0)].NumberValue!.Value;
+            double serial = grid[(row, 0)].NumberValue!.Value;
             if (!double.IsFinite(serial))
                 continue;
 
             DateOnly date = ExcelSerialDate.FromSerialDate(serial);
-            var values = new decimal?[series.Count];
-            for (var i = 0; i < series.Count; i++)
+            decimal?[] values = new decimal?[series.Count];
+            for (int i = 0; i < series.Count; i++)
             {
                 if (grid.TryGetValue((row, series[i].ColumnIndex), out ExcelCell cell) &&
                     cell.Kind == ExcelCellKind.Number &&
@@ -265,15 +265,15 @@ internal static class RbaExchangeRateWorkbookParser
     /// </returns>
     private static string? ResolveCurrencyCode(string units, string title, RbaExchangeRateOptions options)
     {
-        var raw = !string.IsNullOrWhiteSpace(units)
+        string raw = !string.IsNullOrWhiteSpace(units)
             ? units
             : title.StartsWith(TitlePrefix, StringComparison.OrdinalIgnoreCase) ? title[TitlePrefix.Length..] : string.Empty;
 
         raw = raw.Trim().ToUpperInvariant();
-        if (options.CurrencyAliases.TryGetValue(raw, out var aliased))
+        if (options.CurrencyAliases.TryGetValue(raw, out string? aliased))
             raw = aliased.Trim().ToUpperInvariant();
 
-        var isCurrency = raw.Length == 3
+        bool isCurrency = raw.Length == 3
             && char.IsAsciiLetterUpper(raw[0])
             && char.IsAsciiLetterUpper(raw[1])
             && char.IsAsciiLetterUpper(raw[2])

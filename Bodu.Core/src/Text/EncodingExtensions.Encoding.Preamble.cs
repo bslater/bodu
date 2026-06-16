@@ -170,11 +170,11 @@ public static partial class EncodingExtensions
         ThrowHelper.ThrowIfNull(encoding);
 
         ReadOnlySpan<byte> preamble = encoding.Preamble;
-        var encodedCount = encoding.GetByteCount(chars);
-        var total = preamble.Length + encodedCount;
+        int encodedCount = encoding.GetByteCount(chars);
+        int total = preamble.Length + encodedCount;
         if (total == 0) return [];
 
-        var buffer = new byte[total];
+        byte[] buffer = new byte[total];
         if (!preamble.IsEmpty) preamble.CopyTo(buffer);
         if (encodedCount > 0) encoding.GetBytes(chars, buffer.AsSpan(preamble.Length));
 
@@ -209,8 +209,8 @@ public static partial class EncodingExtensions
         ThrowHelper.ThrowIfNull(encoding);
 
         ReadOnlySpan<byte> preamble = encoding.Preamble;
-        var encodedCount = encoding.GetByteCount(chars);
-        var total = preamble.Length + encodedCount;
+        int encodedCount = encoding.GetByteCount(chars);
+        int total = preamble.Length + encodedCount;
 
         if (destination.Length < total)
             throw new ArgumentException(
@@ -254,8 +254,8 @@ public static partial class EncodingExtensions
         ThrowHelper.ThrowIfNull(encoding);
 
         ReadOnlySpan<byte> preamble = encoding.Preamble;
-        var encodedCount = encoding.GetByteCount(chars);
-        var total = preamble.Length + encodedCount;
+        int encodedCount = encoding.GetByteCount(chars);
+        int total = preamble.Length + encodedCount;
         if (destination.Length < total)
         {
             bytesWritten = 0;

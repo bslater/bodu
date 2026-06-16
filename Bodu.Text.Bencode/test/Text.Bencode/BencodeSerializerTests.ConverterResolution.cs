@@ -29,7 +29,7 @@ public partial class BencodeSerializerTests
     {
         var model = new MemberConverterModel { Code = new Code(5) };
 
-        var bytes = BencodeSerializer.Serialize(model);
+        byte[] bytes = BencodeSerializer.Serialize(model);
 
         // The member-level integer converter writes i5e; the type-level converter would have written 5:code:5.
         Assert.AreEqual("d4:Codei5ee", Encoding.Latin1.GetString(bytes));
@@ -44,7 +44,7 @@ public partial class BencodeSerializerTests
     {
         var model = new TypeConverterHostModel { Code = new Code(5) };
 
-        var bytes = BencodeSerializer.Serialize(model);
+        byte[] bytes = BencodeSerializer.Serialize(model);
 
         // The type-level converter writes the byte string code:5.
         Assert.AreEqual("d4:Code6:code:5e", Encoding.Latin1.GetString(bytes));
@@ -61,7 +61,7 @@ public partial class BencodeSerializerTests
         options.Converters.Add(new RegisteredCodeConverter());
 
         var model = new TypeConverterHostModel { Code = new Code(5) };
-        var bytes = BencodeSerializer.Serialize(model, options);
+        byte[] bytes = BencodeSerializer.Serialize(model, options);
 
         // The type-level attribute writes code:5; the registered converter would have written i5e.
         Assert.AreEqual("d4:Code6:code:5e", Encoding.Latin1.GetString(bytes));
@@ -78,7 +78,7 @@ public partial class BencodeSerializerTests
         options.Converters.Add(new RegisteredPlainCodeConverter());
 
         var model = new PlainCodeHostModel { Code = new PlainCode(5) };
-        var bytes = BencodeSerializer.Serialize(model, options);
+        byte[] bytes = BencodeSerializer.Serialize(model, options);
 
         // The registered converter writes i5e for a type that has no attribute and no built-in support otherwise.
         Assert.AreEqual("d4:Codei5ee", Encoding.Latin1.GetString(bytes));
@@ -93,7 +93,7 @@ public partial class BencodeSerializerTests
     {
         var model = new BuiltInHostModel { Number = 7 };
 
-        var bytes = BencodeSerializer.Serialize(model);
+        byte[] bytes = BencodeSerializer.Serialize(model);
 
         Assert.AreEqual("d6:Numberi7ee", Encoding.Latin1.GetString(bytes));
     }
@@ -110,7 +110,7 @@ public partial class BencodeSerializerTests
         options.Converters.Add(new AlternatePlainCodeConverter());
 
         var model = new PlainCodeHostModel { Code = new PlainCode(5) };
-        var bytes = BencodeSerializer.Serialize(model, options);
+        byte[] bytes = BencodeSerializer.Serialize(model, options);
 
         // The first registered converter writes i5e; the second would have written 6:code:5.
         Assert.AreEqual("d4:Codei5ee", Encoding.Latin1.GetString(bytes));
@@ -230,7 +230,7 @@ public partial class BencodeSerializerTests
         /// <inheritdoc />
         public override Code Read(ref Utf8BencodeReader reader, Type typeToConvert, BencodeSerializerOptions options)
         {
-            var text = reader.GetString();
+            string text = reader.GetString();
             return new Code(int.Parse(text.AsSpan("code:".Length), System.Globalization.CultureInfo.InvariantCulture));
         }
 

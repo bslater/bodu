@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRatePairJsonConverterTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -29,7 +29,7 @@ public class ExchangeRatePairJsonConverterTests
     {
         JsonSerializerOptions options = OptionsFor(policy);
 
-        var json = JsonSerializer.Serialize(new ExchangeRatePair("USD", "JPY"), options);
+        string json = JsonSerializer.Serialize(new ExchangeRatePair("USD", "JPY"), options);
         ExchangeRatePair restored = JsonSerializer.Deserialize<ExchangeRatePair>(json, options);
 
         Assert.AreEqual("USD", restored.FromIsoCode);

@@ -137,7 +137,7 @@ public sealed class Biff8WorkbookReader
     {
         ThrowHelper.ThrowIfNull(sheetName);
 
-        for (var i = 0; i < _sheets.Count; i++)
+        for (int i = 0; i < _sheets.Count; i++)
         {
             if (string.Equals(_sheets[i].Name, sheetName, StringComparison.Ordinal))
                 return ReadSheetCells(i);
@@ -155,9 +155,9 @@ public sealed class Biff8WorkbookReader
     private static List<(int Start, int EndExclusive)> SplitSubstreams(List<Biff8Record> records)
     {
         List<(int Start, int EndExclusive)> ranges = new();
-        var start = -1;
+        int start = -1;
 
-        for (var i = 0; i < records.Count; i++)
+        for (int i = 0; i < records.Count; i++)
         {
             switch (records[i].Type)
             {
@@ -213,8 +213,8 @@ public sealed class Biff8WorkbookReader
             return [];
 
         (int start, int endExclusive) = substreams[0];
-        var sstIndex = -1;
-        for (var i = start; i < endExclusive; i++)
+        int sstIndex = -1;
+        for (int i = start; i < endExclusive; i++)
         {
             if (records[i].Type == Biff8RecordType.Sst)
             {
@@ -227,7 +227,7 @@ public sealed class Biff8WorkbookReader
             return [];
 
         List<ReadOnlyMemory<byte>> blocks = [records[sstIndex].Payload];
-        for (var i = sstIndex + 1; i < endExclusive && records[i].Type == Biff8RecordType.Continue; i++)
+        for (int i = sstIndex + 1; i < endExclusive && records[i].Type == Biff8RecordType.Continue; i++)
             blocks.Add(records[i].Payload);
 
         return Biff8SharedStringTable.Parse(blocks);
@@ -251,22 +251,22 @@ public sealed class Biff8WorkbookReader
         (int globalsStart, int globalsEnd) = substreams[0];
         List<(string Name, bool Visible)> boundSheets = new();
 
-        for (var i = globalsStart; i < globalsEnd; i++)
+        for (int i = globalsStart; i < globalsEnd; i++)
         {
             if (records[i].Type != Biff8RecordType.BoundSheet)
                 continue;
 
             ReadOnlySpan<byte> payload = records[i].Payload.Span;
             ushort grbit = BinaryPrimitives.ReadUInt16LittleEndian(payload.Slice(4));
-            var visible = (grbit & 0x0003) == 0;
+            bool visible = (grbit & 0x0003) == 0;
             int charCount = payload[6];
-            var highByte = (payload[7] & 0x01) != 0;
+            bool highByte = (payload[7] & 0x01) != 0;
 
             boundSheets.Add((ReadShortString(payload, 8, charCount, highByte), visible));
         }
 
-        var sheetCount = Math.Min(boundSheets.Count, substreams.Count - 1);
-        for (var i = 0; i < sheetCount; i++)
+        int sheetCount = Math.Min(boundSheets.Count, substreams.Count - 1);
+        for (int i = 0; i < sheetCount; i++)
         {
             sheets.Add(new Biff8SheetInfo(boundSheets[i].Name, i, boundSheets[i].Visible));
             ranges.Add(substreams[i + 1]);
@@ -288,8 +288,8 @@ public sealed class Biff8WorkbookReader
         if (highByte)
             return Encoding.Unicode.GetString(payload.Slice(offset, charCount * 2));
 
-        var characters = new char[charCount];
-        for (var i = 0; i < charCount; i++)
+        char[] characters = new char[charCount];
+        for (int i = 0; i < charCount; i++)
             characters[i] = (char)payload[offset + i];
 
         return new string(characters);

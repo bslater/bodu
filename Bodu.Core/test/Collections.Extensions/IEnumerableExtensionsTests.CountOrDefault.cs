@@ -116,7 +116,7 @@ public sealed partial class IEnumerableExtensionsTests_CountOrDefault
 
         public IEnumerator<object> GetEnumerator()
         {
-            for (var i = 0; i < _count; i++)
+            for (int i = 0; i < _count; i++)
                 yield return i;
         }
 

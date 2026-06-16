@@ -43,10 +43,10 @@ public class FileSystemRbaWorkbookCacheTests
     public void Store_ThenTryGet_ShouldReturnStoredBytes()
     {
         FileSystemRbaWorkbookCache cache = new(_directory);
-        var payload = new byte[] { 1, 2, 3, 4 };
+        byte[] payload = new byte[] { 1, 2, 3, 4 };
 
         cache.Store(s_immutableEra, payload);
-        var found = cache.TryGet(s_immutableEra, TimeSpan.FromHours(12), out var bytes);
+        bool found = cache.TryGet(s_immutableEra, TimeSpan.FromHours(12), out byte[]? bytes);
 
         Assert.IsTrue(found);
         CollectionAssert.AreEqual(payload, bytes);
@@ -60,7 +60,7 @@ public class FileSystemRbaWorkbookCacheTests
     {
         FileSystemRbaWorkbookCache cache = new(_directory);
 
-        var found = cache.TryGet(s_currentEra, TimeSpan.FromHours(12), out var bytes);
+        bool found = cache.TryGet(s_currentEra, TimeSpan.FromHours(12), out byte[]? bytes);
 
         Assert.IsFalse(found);
         Assert.IsNull(bytes);
@@ -78,7 +78,7 @@ public class FileSystemRbaWorkbookCacheTests
         // Age the cached file beyond the refresh window.
         File.SetLastWriteTimeUtc(Path.Combine(_directory, s_currentEra.FileName), DateTime.UtcNow.AddHours(-48));
 
-        var found = cache.TryGet(s_currentEra, TimeSpan.FromHours(12), out _);
+        bool found = cache.TryGet(s_currentEra, TimeSpan.FromHours(12), out _);
 
         Assert.IsFalse(found);
     }
@@ -94,7 +94,7 @@ public class FileSystemRbaWorkbookCacheTests
 
         File.SetLastWriteTimeUtc(Path.Combine(_directory, s_immutableEra.FileName), DateTime.UtcNow.AddYears(-5));
 
-        var found = cache.TryGet(s_immutableEra, TimeSpan.FromHours(12), out var bytes);
+        bool found = cache.TryGet(s_immutableEra, TimeSpan.FromHours(12), out byte[]? bytes);
 
         Assert.IsTrue(found);
         Assert.IsNotNull(bytes);

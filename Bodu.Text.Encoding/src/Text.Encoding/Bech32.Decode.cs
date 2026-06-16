@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Bech32.Decode.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -42,7 +42,7 @@ public static partial class Bech32
     /// <exception cref="FormatException">Thrown when the input is not a valid Bech32 or Bech32m string.</exception>
     public static void Decode(ReadOnlySpan<char> source, out string hrp, out byte[] data, out Bech32Encoding encoding)
     {
-        if (!TryDecodeCore(source, out hrp!, out data!, out encoding, out var error))
+        if (!TryDecodeCore(source, out hrp!, out data!, out encoding, out string? error))
             throw new FormatException(error);
     }
 
@@ -82,8 +82,8 @@ public static partial class Bech32
     {
         ThrowHelper.ThrowIfNull(source);
 
-        Decode(source.AsSpan(), out hrp, out var groups, out encoding);
-        var bytes = ConvertBits(groups, 5, 8, pad: false);
+        Decode(source.AsSpan(), out hrp, out byte[]? groups, out encoding);
+        byte[]? bytes = ConvertBits(groups, 5, 8, pad: false);
         data = bytes ?? throw new FormatException(EncodingResourceStrings.Format_Invalid_Bech32DataCharacter);
     }
 
@@ -105,10 +105,10 @@ public static partial class Bech32
     {
         data = null;
 
-        if (!TryDecodeCore(source, out hrp, out var groups, out encoding, out _))
+        if (!TryDecodeCore(source, out hrp, out byte[]? groups, out encoding, out _))
             return false;
 
-        var bytes = ConvertBits(groups, 5, 8, pad: false);
+        byte[]? bytes = ConvertBits(groups, 5, 8, pad: false);
         if (bytes is null)
         {
             hrp = null;
@@ -143,9 +143,9 @@ public static partial class Bech32
             return false;
         }
 
-        var hasLower = false;
-        var hasUpper = false;
-        foreach (var c in source)
+        bool hasLower = false;
+        bool hasUpper = false;
+        foreach (char c in source)
         {
             if (c is >= 'a' and <= 'z')
                 hasLower = true;
@@ -162,7 +162,7 @@ public static partial class Bech32
         Span<char> lower = source.Length <= 128 ? stackalloc char[source.Length] : new char[source.Length];
         source.ToLowerInvariant(lower);
 
-        var separator = lower.LastIndexOf(Separator);
+        int separator = lower.LastIndexOf(Separator);
         if (separator < 0)
         {
             error = EncodingResourceStrings.Format_Invalid_Bech32NoSeparator;
@@ -183,7 +183,7 @@ public static partial class Bech32
         }
 
         var hrpPart = lower.Slice(0, separator);
-        foreach (var c in hrpPart)
+        foreach (char c in hrpPart)
         {
             if (c < MinHrpChar || c > MaxHrpChar)
             {
@@ -192,11 +192,11 @@ public static partial class Bech32
             }
         }
 
-        var values = new byte[dataPart.Length];
-        for (var i = 0; i < dataPart.Length; i++)
+        byte[] values = new byte[dataPart.Length];
+        for (int i = 0; i < dataPart.Length; i++)
         {
-            var c = dataPart[i];
-            var value = c < s_charsetReverse.Length ? s_charsetReverse[c] : (sbyte)-1;
+            char c = dataPart[i];
+            sbyte value = c < s_charsetReverse.Length ? s_charsetReverse[c] : (sbyte)-1;
             if (value < 0)
             {
                 error = string.Format(System.Globalization.CultureInfo.CurrentCulture, EncodingResourceStrings.Format_Invalid_Bech32DataCharacter, c);
@@ -206,7 +206,7 @@ public static partial class Bech32
             values[i] = (byte)value;
         }
 
-        var hrpString = new string(hrpPart);
+        string hrpString = new string(hrpPart);
         if (!VerifyChecksum(hrpString, values, out encoding))
         {
             error = EncodingResourceStrings.Format_Invalid_Bech32Checksum;

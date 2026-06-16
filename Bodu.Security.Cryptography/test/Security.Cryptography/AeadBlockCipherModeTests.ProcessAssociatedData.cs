@@ -36,7 +36,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     public void ProcessAssociatedData_AfterEncrypt_ShouldThrowExactly()
     {
         TTransform transform = MakeTransform();
-        var plaintext = new byte[ExpectedBlockSize];
+        byte[] plaintext = new byte[ExpectedBlockSize];
         transform.Encrypt(plaintext, new byte[plaintext.Length + (transform.TagSize / 8)]);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
@@ -53,11 +53,11 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     public void ProcessAssociatedData_AfterDecrypt_ShouldThrowExactly()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
-        var iv = CreateInitializationVector();
-        var plaintext = new byte[ExpectedBlockSize];
+        byte[] iv = CreateInitializationVector();
+        byte[] plaintext = new byte[ExpectedBlockSize];
 
         TTransform enc = CreateTransform(cipher, (byte[])iv.Clone());
-        var ct = new byte[plaintext.Length + (enc.TagSize / 8)];
+        byte[] ct = new byte[plaintext.Length + (enc.TagSize / 8)];
         enc.Encrypt(plaintext, ct);
 
         TTransform dec = CreateTransform(cipher, (byte[])iv.Clone());

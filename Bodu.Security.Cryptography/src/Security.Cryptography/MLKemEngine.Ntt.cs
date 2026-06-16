@@ -33,15 +33,15 @@ internal static partial class MLKemEngine
     /// <param name="f">The 256 coefficients in [0, q), replaced by their NTT representation in [0, q).</param>
     private static void Ntt(Span<int> f)
     {
-        var i = 1;
-        for (var len = 128; len >= 2; len >>= 1)
+        int i = 1;
+        for (int len = 128; len >= 2; len >>= 1)
         {
-            for (var start = 0; start < N; start += 2 * len)
+            for (int start = 0; start < N; start += 2 * len)
             {
-                var zeta = s_zetas[i++];
-                for (var j = start; j < start + len; j++)
+                int zeta = s_zetas[i++];
+                for (int j = start; j < start + len; j++)
                 {
-                    var t = (zeta * f[j + len]) % Q;
+                    int t = (zeta * f[j + len]) % Q;
                     f[j + len] = (f[j] - t + Q) % Q;
                     f[j] = (f[j] + t) % Q;
                 }
@@ -59,22 +59,22 @@ internal static partial class MLKemEngine
         // 3303 = 128⁻¹ mod q.
         const int InverseOf128 = 3303;
 
-        var i = 127;
-        for (var len = 2; len <= 128; len <<= 1)
+        int i = 127;
+        for (int len = 2; len <= 128; len <<= 1)
         {
-            for (var start = 0; start < N; start += 2 * len)
+            for (int start = 0; start < N; start += 2 * len)
             {
-                var zeta = s_zetas[i--];
-                for (var j = start; j < start + len; j++)
+                int zeta = s_zetas[i--];
+                for (int j = start; j < start + len; j++)
                 {
-                    var t = f[j];
+                    int t = f[j];
                     f[j] = (t + f[j + len]) % Q;
                     f[j + len] = (zeta * ((f[j + len] - t + Q) % Q)) % Q;
                 }
             }
         }
 
-        for (var j = 0; j < N; j++)
+        for (int j = 0; j < N; j++)
             f[j] = (f[j] * InverseOf128) % Q;
     }
 
@@ -87,12 +87,12 @@ internal static partial class MLKemEngine
     /// <param name="destination">The span receiving the NTT-domain product. May not alias the inputs.</param>
     private static void MultiplyNtt(ReadOnlySpan<int> left, ReadOnlySpan<int> right, Span<int> destination)
     {
-        for (var i = 0; i < 128; i++)
+        for (int i = 0; i < 128; i++)
         {
-            var a0 = left[2 * i];
-            var a1 = left[(2 * i) + 1];
-            var b0 = right[2 * i];
-            var b1 = right[(2 * i) + 1];
+            int a0 = left[2 * i];
+            int a1 = left[(2 * i) + 1];
+            int b0 = right[2 * i];
+            int b1 = right[(2 * i) + 1];
 
             destination[2 * i] = (int)((((long)a0 * b0) + (((long)a1 * b1 % Q) * s_gammas[i])) % Q);
             destination[(2 * i) + 1] = (int)((((long)a0 * b1) + ((long)a1 * b0)) % Q);
@@ -105,8 +105,8 @@ internal static partial class MLKemEngine
     /// <returns>The 128-entry table.</returns>
     private static int[] BuildZetaTable()
     {
-        var table = new int[128];
-        for (var i = 0; i < 128; i++)
+        int[] table = new int[128];
+        for (int i = 0; i < 128; i++)
             table[i] = PowMod(Zeta, BitReverse7(i));
 
         return table;
@@ -118,8 +118,8 @@ internal static partial class MLKemEngine
     /// <returns>The 128-entry table.</returns>
     private static int[] BuildGammaTable()
     {
-        var table = new int[128];
-        for (var i = 0; i < 128; i++)
+        int[] table = new int[128];
+        for (int i = 0; i < 128; i++)
             table[i] = PowMod(Zeta, (2 * BitReverse7(i)) + 1);
 
         return table;
@@ -155,8 +155,8 @@ internal static partial class MLKemEngine
     /// <returns>The bit-reversed index.</returns>
     private static int BitReverse7(int value)
     {
-        var result = 0;
-        for (var bit = 0; bit < 7; bit++)
+        int result = 0;
+        for (int bit = 0; bit < 7; bit++)
             result |= ((value >> bit) & 1) << (6 - bit);
 
         return result;

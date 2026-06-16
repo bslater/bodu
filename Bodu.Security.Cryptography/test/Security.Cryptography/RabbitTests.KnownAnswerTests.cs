@@ -155,8 +155,8 @@ public sealed partial class RabbitTests
     public void Keystream_WhenGivenRfc4503AppendixAVector_ShouldMatchExpected(
         string keyHex, string? ivHex, string keystreamHex, string displayName)
     {
-        var key = Convert.FromHexString(keyHex);
-        var expected = Convert.FromHexString(keystreamHex);
+        byte[] key = Convert.FromHexString(keyHex);
+        byte[] expected = Convert.FromHexString(keystreamHex);
 
         byte[] keystream;
         if (ivHex is null)
@@ -164,12 +164,12 @@ public sealed partial class RabbitTests
             // Without-IV setup (RFC 4503 A.1): drive the engine directly, since the public surface always applies an IV.
             using var engine = new RabbitStreamCipher(key);
             keystream = new byte[expected.Length];
-            for (var offset = 0; offset < keystream.Length; offset += RabbitStreamCipher.BlockSizeBytes)
+            for (int offset = 0; offset < keystream.Length; offset += RabbitStreamCipher.BlockSizeBytes)
                 engine.NextKeystreamBlock(keystream.AsSpan(offset, RabbitStreamCipher.BlockSizeBytes));
         }
         else
         {
-            var iv = Convert.FromHexString(ivHex);
+            byte[] iv = Convert.FromHexString(ivHex);
             using var cipher = new Rabbit();
             using ICryptoTransform encryptor = cipher.CreateEncryptor(key, iv);
             keystream = encryptor.TransformFinalBlock(new byte[expected.Length], 0, expected.Length);

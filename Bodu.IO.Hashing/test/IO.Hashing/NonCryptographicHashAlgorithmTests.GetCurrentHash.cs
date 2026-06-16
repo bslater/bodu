@@ -23,16 +23,16 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
         NonCryptographicHashAlgorithmSpecification specification = GetSpecification(variant);
         TAlgorithm algorithm = CreateAlgorithm(variant);
 
-        var bufferSize = (specification.IncrementalCoverageBytes ?? specification.HashLengthInBytes) * 4;
-        var inputA = TestHelpers.GenerateRandomNonZeroBytes(bufferSize);
-        var inputB = inputA.Copy()!;
+        int bufferSize = (specification.IncrementalCoverageBytes ?? specification.HashLengthInBytes) * 4;
+        byte[] inputA = TestHelpers.GenerateRandomNonZeroBytes(bufferSize);
+        byte[] inputB = inputA.Copy()!;
         inputB[bufferSize - 2] = 0x00;
 
         algorithm.Append(inputA);
-        var hashA = algorithm.GetHashAndReset();
+        byte[] hashA = algorithm.GetHashAndReset();
 
         algorithm.Append(inputB);
-        var hashB = algorithm.GetHashAndReset();
+        byte[] hashB = algorithm.GetHashAndReset();
 
         CollectionAssert.AreNotEqual(hashA, hashB,
             "Distinct multi-chunk inputs must produce different hashes.");
@@ -50,9 +50,9 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
         TAlgorithm algorithm = CreateAlgorithm(variant);
         algorithm.Append(NonCryptographicHashSharedInputs.Abc);
 
-        var first = algorithm.GetCurrentHash();
-        var second = algorithm.GetCurrentHash();
-        var third = algorithm.GetCurrentHash();
+        byte[] first = algorithm.GetCurrentHash();
+        byte[] second = algorithm.GetCurrentHash();
+        byte[] third = algorithm.GetCurrentHash();
 
         CollectionAssert.AreEqual(first, second);
         CollectionAssert.AreEqual(second, third);
@@ -86,10 +86,10 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
         TAlgorithm algorithm = CreateAlgorithm(variant);
         algorithm.Append(NonCryptographicHashSharedInputs.QuickBrownFox);
 
-        var expected = algorithm.GetCurrentHash();
+        byte[] expected = algorithm.GetCurrentHash();
 
-        var destination = new byte[algorithm.HashLengthInBytes];
-        var written = algorithm.GetCurrentHash(destination);
+        byte[] destination = new byte[algorithm.HashLengthInBytes];
+        int written = algorithm.GetCurrentHash(destination);
 
         Assert.AreEqual(algorithm.HashLengthInBytes, written);
         CollectionAssert.AreEqual(expected, destination);

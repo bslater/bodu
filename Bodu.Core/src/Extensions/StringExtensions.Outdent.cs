@@ -38,8 +38,8 @@ public static partial class StringExtensions
         if (count == 0 || value.Length == 0) return value;
 
         StringBuilder builder = new(value.Length);
-        var lineStart = 0;
-        for (var i = 0; i <= value.Length; i++)
+        int lineStart = 0;
+        for (int i = 0; i <= value.Length; i++)
         {
             if (i == value.Length || value[i] == '\n' || value[i] == '\r')
             {
@@ -77,8 +77,8 @@ public static partial class StringExtensions
         char indentChar,
         int count)
     {
-        var skipped = 0;
-        var cursor = start;
+        int skipped = 0;
+        int cursor = start;
         while (cursor < end && skipped < count && value[cursor] == indentChar)
         {
             cursor++;

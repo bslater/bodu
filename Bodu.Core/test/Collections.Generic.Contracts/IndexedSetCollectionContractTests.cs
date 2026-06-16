@@ -27,7 +27,7 @@ public sealed class IndexedSetCollectionContractTests
     protected override IndexedSet<int> Create(params int[] items)
     {
         IndexedSet<int> set = new();
-        foreach (var item in items)
+        foreach (int item in items)
             set.Add(item);
         return set;
     }

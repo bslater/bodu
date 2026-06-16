@@ -64,14 +64,14 @@ public sealed partial class Threefish512Cipher
     {
         // Load the plaintext block as eight 64-bit words held across two Vector256 registers, then
         // deinterleave into lo = (x0, x2, x4, x6) and hi = (x1, x3, x5, x7).
-        ref var wordRef = ref Unsafe.As<byte, ulong>(ref MemoryMarshal.GetReference(input));
+        ref ulong wordRef = ref Unsafe.As<byte, ulong>(ref MemoryMarshal.GetReference(input));
         var low4 = Vector256.LoadUnsafe(ref wordRef);
         var high4 = Vector256.LoadUnsafe(ref wordRef, 4);
         Vector256<ulong> lo = Avx2.Permute4x64(Avx2.UnpackLow(low4, high4), 0xD8);
         Vector256<ulong> hi = Avx2.Permute4x64(Avx2.UnpackHigh(low4, high4), 0xD8);
 
-        ref var keyRef = ref MemoryMarshal.GetArrayDataReference(_keySchedule);
-        ref var tweakRef = ref MemoryMarshal.GetArrayDataReference(_tweakSchedule);
+        ref ulong keyRef = ref MemoryMarshal.GetArrayDataReference(_keySchedule);
+        ref ulong tweakRef = ref MemoryMarshal.GetArrayDataReference(_tweakSchedule);
 
         // Initial subkey injection. In canonical layout, lo lanes correspond to state positions
         // (0, 2, 4, 6) and hi lanes to (1, 3, 5, 7); the tweak applies at positions 5 and 6.
@@ -86,7 +86,7 @@ public sealed partial class Threefish512Cipher
             Unsafe.Add(ref keyRef, 5) + Unsafe.Add(ref tweakRef, 0),
             Unsafe.Add(ref keyRef, 7));
 
-        for (var d = 1; d < 72 / 4; d += 2)
+        for (int d = 1; d < 72 / 4; d += 2)
         {
             int dm9 = d % 9, dm3 = d % 3;
 
@@ -141,19 +141,19 @@ public sealed partial class Threefish512Cipher
     private void DecryptAvx512(ReadOnlySpan<byte> input, Span<byte> output)
     {
         // Load the ciphertext block in the same canonical layout the Encrypt path produces.
-        ref var wordRef = ref Unsafe.As<byte, ulong>(ref MemoryMarshal.GetReference(input));
+        ref ulong wordRef = ref Unsafe.As<byte, ulong>(ref MemoryMarshal.GetReference(input));
         var low4 = Vector256.LoadUnsafe(ref wordRef);
         var high4 = Vector256.LoadUnsafe(ref wordRef, 4);
         Vector256<ulong> lo = Avx2.Permute4x64(Avx2.UnpackLow(low4, high4), 0xD8);
         Vector256<ulong> hi = Avx2.Permute4x64(Avx2.UnpackHigh(low4, high4), 0xD8);
 
-        ref var keyRef = ref MemoryMarshal.GetArrayDataReference(_keySchedule);
-        ref var tweakRef = ref MemoryMarshal.GetArrayDataReference(_tweakSchedule);
+        ref ulong keyRef = ref MemoryMarshal.GetArrayDataReference(_keySchedule);
+        ref ulong tweakRef = ref MemoryMarshal.GetArrayDataReference(_tweakSchedule);
 
         // Walk the subkey-injection / round groups in reverse. Each inverse-round applies the inverse
         // shuffle first to undo the previous forward shuffle, then UNMIX with the rotation that round
         // used originally — so the loop body mirrors EncryptAvx512 in reverse order.
-        for (var d = (72 / 4) - 1; d >= 1; d -= 2)
+        for (int d = (72 / 4) - 1; d >= 1; d -= 2)
         {
             int dm9 = d % 9, dm3 = d % 3;
 
@@ -260,7 +260,7 @@ public sealed partial class Threefish512Cipher
         Vector256<ulong> outLow4 = Avx2.Permute2x128(unLow, unHigh, 0x20);   // (x0, x1, x2, x3)
         Vector256<ulong> outHigh4 = Avx2.Permute2x128(unLow, unHigh, 0x31);  // (x4, x5, x6, x7)
 
-        ref var outRef = ref Unsafe.As<byte, ulong>(ref destination);
+        ref ulong outRef = ref Unsafe.As<byte, ulong>(ref destination);
         outLow4.StoreUnsafe(ref outRef);
         outHigh4.StoreUnsafe(ref outRef, 4);
     }

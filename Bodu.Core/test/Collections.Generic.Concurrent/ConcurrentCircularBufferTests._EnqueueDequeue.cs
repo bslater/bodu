@@ -23,7 +23,7 @@ public partial class ConcurrentCircularBufferTests
         Parallel.Invoke(
             () =>
             {
-                for (var i = 0; i < 50_000; i++)
+                for (int i = 0; i < 50_000; i++)
                 {
                     if (buffer.TryEnqueue(new TestItem(i)))
                         Interlocked.Increment(ref enq);
@@ -31,7 +31,7 @@ public partial class ConcurrentCircularBufferTests
             },
             () =>
             {
-                for (var i = 0; i < 50_000; i++)
+                for (int i = 0; i < 50_000; i++)
                 {
                     if (buffer.TryDequeue(out _))
                         Interlocked.Increment(ref deq);
@@ -56,7 +56,7 @@ public partial class ConcurrentCircularBufferTests
         Parallel.Invoke(
             () =>
             {
-                for (var i = 0; i < 10_000; i++)
+                for (int i = 0; i < 10_000; i++)
                 {
                     try { buffer.Enqueue(new TestItem(i)); }
                     catch (Exception ex) { exceptions.Add(ex); }
@@ -64,7 +64,7 @@ public partial class ConcurrentCircularBufferTests
             },
             () =>
             {
-                for (var i = 0; i < 10_000; i++)
+                for (int i = 0; i < 10_000; i++)
                     buffer.TryDequeue(out _);
             }
         );
@@ -130,7 +130,7 @@ public partial class ConcurrentCircularBufferTests
 
         var churn = Task.Run(() =>
         {
-            var i = 0;
+            int i = 0;
             while (!cts.IsCancellationRequested)
             {
                 buffer.TryEnqueue(new TestItem(i++));
@@ -140,7 +140,7 @@ public partial class ConcurrentCircularBufferTests
 
         var clearer = Task.Run(() =>
         {
-            for (var i = 0; i < 200; i++)
+            for (int i = 0; i < 200; i++)
             {
                 buffer.Clear();
                 Thread.SpinWait(50);
@@ -159,17 +159,17 @@ public partial class ConcurrentCircularBufferTests
     public void EnqueueAndDequeue_WhenConcurrent_ShouldRetainNulls()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem?>(10);
-        var nullCount = 0;
+        int nullCount = 0;
 
         var writer = Task.Run(() =>
         {
-            for (var i = 0; i < 100; i++)
+            for (int i = 0; i < 100; i++)
                 buffer.Enqueue(i % 2 == 0 ? null : new TestItem(i)); // ~50% nulls
         });
 
         var reader = Task.Run(() =>
         {
-            var attempts = 0;
+            int attempts = 0;
             while (attempts < 150)
             {
                 if (buffer.TryDequeue(out TestItem? item) && item is null)
@@ -198,7 +198,7 @@ public partial class ConcurrentCircularBufferTests
 
         var task = Task.Run(() =>
         {
-            for (var i = 0; i < 1000; i++)
+            for (int i = 0; i < 1000; i++)
             {
                 buffer.TryEnqueue(new TestItem(i));
                 if (buffer.TryDequeue(out TestItem? item) && item != null)
@@ -222,7 +222,7 @@ public partial class ConcurrentCircularBufferTests
         var cts = new CancellationTokenSource();
         Task[] producers = Enumerable.Range(0, 4).Select(_ => Task.Run(() =>
         {
-            var i = 0;
+            int i = 0;
             while (!cts.IsCancellationRequested)
                 buffer.Enqueue(new TestItem(Interlocked.Increment(ref i)));
         })).ToArray();
@@ -248,7 +248,7 @@ public partial class ConcurrentCircularBufferTests
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(4);
 
-        for (var i = 0; i < 100; i++)
+        for (int i = 0; i < 100; i++)
         {
             buffer.Enqueue(new TestItem(i));
             buffer.Dequeue();

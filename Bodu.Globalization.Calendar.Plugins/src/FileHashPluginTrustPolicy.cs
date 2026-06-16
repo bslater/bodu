@@ -67,7 +67,7 @@ public sealed class FileHashPluginTrustPolicy
         if (context.FileHash is null)
             return PluginTrustResult.Rejected(string.Format(CultureInfo.CurrentCulture, PluginsResourceStrings.Op_NotTrusted_PluginHashUnavailable, context.AssemblyName));
 
-        if (!_allowedHashesByAssemblyName.TryGetValue(context.AssemblyName, out var expected))
+        if (!_allowedHashesByAssemblyName.TryGetValue(context.AssemblyName, out byte[]? expected))
             return PluginTrustResult.Rejected(string.Format(CultureInfo.CurrentCulture, PluginsResourceStrings.Op_NotTrusted_PluginAssemblyNotAllowed, context.AssemblyName));
 
         return CryptographicOperations.FixedTimeEquals(expected, context.FileHash)

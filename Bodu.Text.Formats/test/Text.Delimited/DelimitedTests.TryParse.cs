@@ -16,7 +16,7 @@ public sealed partial class DelimitedTests
     [TestMethod]
     public void TryParse_WhenInputIsValid_ShouldReturnTrueAndDocument()
     {
-        var result = Delimited.TryParse("a,b\n1,2", out DelimitedDocument? document);
+        bool result = Delimited.TryParse("a,b\n1,2", out DelimitedDocument? document);
 
         Assert.IsTrue(result);
         Assert.IsNotNull(document);
@@ -30,7 +30,7 @@ public sealed partial class DelimitedTests
     [TestMethod]
     public void TryParse_WhenInputIsEmpty_ShouldReturnTrueWithEmptyDocument()
     {
-        var result = Delimited.TryParse(string.Empty, out DelimitedDocument? document);
+        bool result = Delimited.TryParse(string.Empty, out DelimitedDocument? document);
 
         Assert.IsTrue(result);
         Assert.IsNotNull(document);
@@ -44,7 +44,7 @@ public sealed partial class DelimitedTests
     [TestMethod]
     public void TryParse_WhenQuotedFieldIsUnterminated_ShouldReturnFalseWithNull()
     {
-        var result = Delimited.TryParse("a\n\"unclosed", out DelimitedDocument? document);
+        bool result = Delimited.TryParse("a\n\"unclosed", out DelimitedDocument? document);
 
         Assert.IsFalse(result);
         Assert.IsNull(document);
@@ -59,7 +59,7 @@ public sealed partial class DelimitedTests
     {
         DelimitedParseOptions options = new() { Delimiter = '\t' };
 
-        var result = Delimited.TryParse("a\tb\n1\t2", options, out DelimitedDocument? document);
+        bool result = Delimited.TryParse("a\tb\n1\t2", options, out DelimitedDocument? document);
 
         Assert.IsTrue(result);
         Assert.IsNotNull(document);
@@ -73,7 +73,7 @@ public sealed partial class DelimitedTests
     [TestMethod]
     public void TryParse_WhenInputIsMalformed_ShouldNotThrow()
     {
-        var result = false;
+        bool result = false;
         DelimitedDocument? document = null;
 
         Exception? caughtException = null;

@@ -122,9 +122,9 @@ public sealed class BKDR
         if (source.Length == 0)
             return;
 
-        var v = _workingHash;
-        var seed = _seed;
-        foreach (var b in source)
+        uint v = _workingHash;
+        uint seed = _seed;
+        foreach (byte b in source)
         {
             v = (v * seed) + b;
         }
