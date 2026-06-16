@@ -1,28 +1,33 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <!-- Build configuration and NuGet package metadata. -->
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
-    <Version>1.0.0</Version>
+    <Title>Bodu — Yahoo Finance Exchange Rates</Title>
     <Description>Yahoo Finance exchange-rate provider for Bodu.Financial. Fetches and parses the Yahoo Finance v8 chart JSON service and serves the results as Bodu.Financial.ExchangeRate values through IDatedExchangeRateProvider and IExchangeRateProvider, with an async range API over arbitrary currency pairs.</Description>
-    <PackageTags>bodu;financial;yahoo;exchange-rate;forex;fx;rest;json</PackageTags>
+    <PackageTags>$(PackageTags);financial;yahoo;exchange-rate;forex;fx;rest;json</PackageTags>
   </PropertyGroup>
 
+  <!-- Grant the companion test project access to internal members. -->
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
       <_Parameter1>Bodu.Financial.ExchangeRates.Yahoo.Test</_Parameter1>
     </AssemblyAttribute>
   </ItemGroup>
 
+  <!-- External package dependencies. -->
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2" />
   </ItemGroup>
 
+  <!-- Bodu project dependencies. -->
   <ItemGroup>
     <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
     <ProjectReference Include="..\..\Bodu.Financial\src\Bodu.Financial.csproj" />
   </ItemGroup>
 
+  <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
   <ItemGroup>
     <EmbeddedResource Update="Financial.ExchangeRates.Yahoo\YahooResourceStrings.resx">
       <LastGenOutput>YahooResourceStrings.Designer.cs</LastGenOutput>

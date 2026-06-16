@@ -1,23 +1,29 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
+  <!-- Build configuration and NuGet package metadata. -->
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
     <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
     <IsAotCompatible Condition="'$(BoduTfmIsNetCore)' == 'true'">true</IsAotCompatible>
+    <Title>Bodu — Cryptography</Title>
     <Description>Managed implementations of modern and legacy cryptographic primitives for .NET (block ciphers, AEAD modes, hashes/MACs, padding, transforms, and asymmetric algorithms: X25519, Ed25519, and the post-quantum ML-KEM / ML-DSA). NOT independently audited, NOT FIPS-validated, and side-channel resistance is best-effort only — see the package README. Use the platform System.Security.Cryptography types where they cover your needs.</Description>
+    <PackageTags>$(PackageTags);cryptography;crypto;cipher;aead;hash;mac;ed25519;ml-kem;ml-dsa</PackageTags>
   </PropertyGroup>
 
+  <!-- Grant the companion test project access to internal members. -->
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
       <_Parameter1>Bodu.Security.Cryptography.Test</_Parameter1>
     </AssemblyAttribute>
   </ItemGroup>
 
+  <!-- Bodu project dependencies. -->
   <ItemGroup>
-    <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj"/>
+    <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
   </ItemGroup>
 
+  <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
   <ItemGroup>
     <EmbeddedResource Include="CryptoResourceStrings.resx">
       <LastGenOutput>CryptoResourceStrings.Designer.cs</LastGenOutput>
@@ -29,4 +35,5 @@
       <DependentUpon>CryptoResourceStrings.resx</DependentUpon>
     </Compile>
   </ItemGroup>
+
 </Project>

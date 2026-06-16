@@ -1,22 +1,21 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <!-- Build configuration and NuGet package metadata. -->
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>Bodu.Globalization.Calendar.DependencyInjection</RootNamespace>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <Version>1.0.0</Version>
-    <Title>Bodu Calendar — Dependency Injection</Title>
+    <Title>Bodu — Calendar DI</Title>
     <Description>Microsoft.Extensions.DependencyInjection registration helpers for Bodu.Globalization.Calendar, registering INotableDateService over a loaded NotableDateResource.</Description>
     <PackageTags>$(PackageTags);calendar;notable-dates;dependency-injection;di</PackageTags>
   </PropertyGroup>
 
+  <!-- External package dependencies. -->
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2" />
   </ItemGroup>
 
+  <!-- Bodu project dependencies. -->
   <ItemGroup>
     <ProjectReference Include="..\..\Bodu.Globalization.Calendar\src\Bodu.Globalization.Calendar.csproj" />
   </ItemGroup>

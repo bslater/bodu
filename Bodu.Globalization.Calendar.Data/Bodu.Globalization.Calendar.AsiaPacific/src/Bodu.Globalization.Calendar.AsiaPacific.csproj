@@ -1,23 +1,29 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
+  <!-- Build configuration and NuGet package metadata. -->
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>Bodu.Globalization.Calendar</RootNamespace>
     <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <Version>1.0.0</Version>
-    <Title>Bodu Calendar Data — Asia-Pacific</Title>
+    <Title>Bodu — Calendar Data (Asia-Pacific)</Title>
     <Description>Notable-date resource pack for Bodu.Globalization.Calendar covering the Asia-Pacific region (Australia, China, Japan, New Zealand), built on the notable-date schema. Exercises the Gregorian, Chinese lunisolar, equinox, lunar-phase, and gazetted-table strategies through the AsiaPacificCalendarData factory.</Description>
     <PackageTags>$(PackageTags);calendar;holidays;notable-dates;data-pack;asia-pacific;au;cn;jp;nz</PackageTags>
   </PropertyGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\..\..\Bodu.Globalization.Calendar\src\Bodu.Globalization.Calendar.csproj" />
-    </ItemGroup>
+  <!-- Grant the companion test project access to internal members. -->
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>Bodu.Globalization.Calendar.AsiaPacific.Test</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
 
-    <ItemGroup>
+  <!-- Bodu project dependencies. -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Bodu.Globalization.Calendar\src\Bodu.Globalization.Calendar.csproj" />
+  </ItemGroup>
+
+  <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
+  <ItemGroup>
     <EmbeddedResource Include="AsiaPacificCalendarDataResourceStrings.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>AsiaPacificCalendarDataResourceStrings.Designer.cs</LastGenOutput>
@@ -29,18 +35,12 @@
     </Compile>
   </ItemGroup>
 
+  <!-- Embedded country packs; the shared catalogues they import are resolved from the engine assembly. -->
   <ItemGroup>
     <None Remove="Resources\*.xml" />
-    <!-- Region packs; the shared catalogues they import are resolved from the engine assembly. -->
     <EmbeddedResource Include="Resources\*.xml">
       <LogicalName>Bodu.Globalization.Calendar.Resources.%(Filename)%(Extension)</LogicalName>
     </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>Bodu.Globalization.Calendar.AsiaPacific.Test</_Parameter1>
-    </AssemblyAttribute>
   </ItemGroup>
 
 </Project>

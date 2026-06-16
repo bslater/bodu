@@ -1,22 +1,28 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
+  <!-- Build configuration and NuGet package metadata. -->
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>Bodu.Globalization.Calendar</RootNamespace>
     <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <Version>1.0.0</Version>
-    <Title>Bodu Calendar Data — Europe</Title>
+    <Title>Bodu — Calendar Data (Europe)</Title>
     <Description>Notable-date resource pack for Bodu.Globalization.Calendar covering Europe (United Kingdom, France, Germany), built on the notable-date schema. Additional European territories follow the same Gregorian/Easter pattern. Exposed through the EuropeCalendarData factory.</Description>
     <PackageTags>$(PackageTags);calendar;holidays;notable-dates;data-pack;europe;gb;fr;de</PackageTags>
   </PropertyGroup>
 
+  <!-- Grant the companion test project access to internal members. -->
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>Bodu.Globalization.Calendar.Europe.Test</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <!-- Bodu project dependencies. -->
   <ItemGroup>
     <ProjectReference Include="..\..\..\Bodu.Globalization.Calendar\src\Bodu.Globalization.Calendar.csproj" />
   </ItemGroup>
 
+  <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
   <ItemGroup>
     <EmbeddedResource Include="EuropeCalendarDataResourceStrings.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -29,18 +35,12 @@
     </Compile>
   </ItemGroup>
 
+  <!-- Embedded country packs and the shared europe-common hub they import from. -->
   <ItemGroup>
     <None Remove="Resources\*.xml" />
-    <!-- Region packs and the shared europe-common hub they import from. -->
     <EmbeddedResource Include="Resources\*.xml">
       <LogicalName>Bodu.Globalization.Calendar.Resources.%(Filename)%(Extension)</LogicalName>
     </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>Bodu.Globalization.Calendar.Europe.Test</_Parameter1>
-    </AssemblyAttribute>
   </ItemGroup>
 
 </Project>

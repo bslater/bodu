@@ -1,29 +1,34 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <!-- Build configuration and NuGet package metadata. -->
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
-    <Version>1.0.0</Version>
+    <Title>Bodu — RBA Exchange Rates</Title>
     <Description>Reserve Bank of Australia (RBA) historical exchange-rate provider for Bodu.Financial. Downloads and parses the RBA's published daily .xls files and serves them as Bodu.Financial.ExchangeRate values through IDatedExchangeRateProvider and IExchangeRateProvider, with an async range API and in-memory plus on-disk caching.</Description>
-    <PackageTags>bodu;financial;rba;exchange-rate;forex;fx;australia;aud</PackageTags>
+    <PackageTags>$(PackageTags);financial;rba;exchange-rate;forex;fx;australia;aud</PackageTags>
   </PropertyGroup>
 
+  <!-- Grant the companion test project access to internal members. -->
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
       <_Parameter1>Bodu.Financial.ExchangeRates.Rba.Test</_Parameter1>
     </AssemblyAttribute>
   </ItemGroup>
 
+  <!-- External package dependencies. -->
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2" />
   </ItemGroup>
 
+  <!-- Bodu project dependencies. -->
   <ItemGroup>
     <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
     <ProjectReference Include="..\..\Bodu.Financial\src\Bodu.Financial.csproj" />
     <ProjectReference Include="..\..\Bodu.Formats.Excel.Binary\src\Bodu.Formats.Excel.Binary.csproj" />
   </ItemGroup>
 
+  <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
   <ItemGroup>
     <EmbeddedResource Update="Financial.ExchangeRates.Rba\RbaResourceStrings.resx">
       <LastGenOutput>RbaResourceStrings.Designer.cs</LastGenOutput>
