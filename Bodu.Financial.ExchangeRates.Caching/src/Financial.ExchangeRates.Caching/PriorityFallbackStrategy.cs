@@ -74,4 +74,26 @@ public sealed class PriorityFallbackStrategy
 
         return Array.Empty<ExchangeRate>();
     }
+
+    /// <inheritdoc />
+    public IReadOnlyList<ExchangeRate> AggregateRange(
+        string fromIsoCode,
+        string toIsoCode,
+        DateOnly startDate,
+        DateOnly endDate,
+        IReadOnlyList<NamedDatedExchangeRateProvider> candidates)
+    {
+        ThrowHelper.ThrowIfNull(candidates);
+
+        for (var i = 0; i < candidates.Count; i++)
+        {
+            IReadOnlyList<ExchangeRate> rates =
+                [.. candidates[i].Provider.GetRates(fromIsoCode, toIsoCode, startDate, endDate)];
+
+            if (rates.Count > 0)
+                return rates;
+        }
+
+        return Array.Empty<ExchangeRate>();
+    }
 }

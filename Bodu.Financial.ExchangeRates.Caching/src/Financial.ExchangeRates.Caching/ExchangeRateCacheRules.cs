@@ -191,11 +191,20 @@ public static class ExchangeRateCacheRules
         ThrowHelper.ThrowIfGreaterThan(start, end);
 
         // Keep the still-fresh windows, drop the rest, then append the newly fetched window so the store self-cleans.
+        // A still-fresh window fully covered by the newly fetched (and therefore fresher) window is also dropped: those
+        // days were just re-observed at asOf, so the new window supersedes it. This bounds growth under the common
+        // pattern of repeatedly refetching the same or a widening range, without coalescing windows whose distinct fetch
+        // instants must each drive their own expiry.
         List<(DateOnly Start, DateOnly End, DateTimeOffset FetchedAtUtc)> windows = new();
         foreach ((DateOnly windowStart, DateOnly windowEnd, DateTimeOffset fetchedAt) in existing)
         {
-            if (asOf - fetchedAt < duration)
-                windows.Add((windowStart, windowEnd, fetchedAt));
+            if (asOf - fetchedAt >= duration)
+                continue;
+
+            if (windowStart >= start && windowEnd <= end)
+                continue;
+
+            windows.Add((windowStart, windowEnd, fetchedAt));
         }
 
         windows.Add((start, end, asOf));

@@ -95,4 +95,37 @@ public interface IExchangeRateAggregationStrategy
         DateOnly endDate,
         IReadOnlyList<NamedDatedExchangeRateProvider> candidates,
         CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Combines the candidates' rates over the inclusive date range <paramref name="startDate" /> to
+    /// <paramref name="endDate" /> synchronously.
+    /// </summary>
+    /// <param name="fromIsoCode">The source-currency ISO code.</param>
+    /// <param name="toIsoCode">The destination-currency ISO code.</param>
+    /// <param name="startDate">The inclusive start of the range.</param>
+    /// <param name="endDate">The inclusive end of the range.</param>
+    /// <param name="candidates">The ordered candidate providers to combine.</param>
+    /// <returns>The combined rates ordered by date, or an empty list when none are available.</returns>
+    /// <remarks>
+    /// This member lets the aggregator's synchronous range surface stay synchronous rather than block on
+    /// <see cref="AggregateRangeAsync" />. The default implementation blocks on the asynchronous overload as a
+    /// compatibility fallback for strategies that supply only the asynchronous combination; the built-in strategies
+    /// override it with a genuinely synchronous implementation. Override it whenever the candidates expose a synchronous
+    /// range surface.
+    /// </remarks>
+    IReadOnlyList<ExchangeRate> AggregateRange(
+        string fromIsoCode,
+        string toIsoCode,
+        DateOnly startDate,
+        DateOnly endDate,
+        IReadOnlyList<NamedDatedExchangeRateProvider> candidates)
+    {
+        // Compatibility fallback: a strategy that implements only the asynchronous combination still works on the
+        // synchronous surface by blocking here. The shipped strategies override this so no block occurs in the common
+        // case.
+#pragma warning disable VSTHRD002 // Intentional compatibility fallback for async-only strategy implementations.
+        return AggregateRangeAsync(fromIsoCode, toIsoCode, startDate, endDate, candidates, CancellationToken.None)
+            .AsTask().GetAwaiter().GetResult();
+#pragma warning restore VSTHRD002
+    }
 }

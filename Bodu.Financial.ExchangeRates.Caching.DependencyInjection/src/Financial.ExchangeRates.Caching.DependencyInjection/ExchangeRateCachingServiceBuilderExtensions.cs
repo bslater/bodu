@@ -46,10 +46,17 @@ public static class ExchangeRateCachingServiceBuilderExtensions
     /// <exception cref="ArgumentException">
     /// Thrown when <paramref name="providerName" /> or <paramref name="sectionName" /> is empty or white space.
     /// </exception>
+    /// <remarks>
+    /// The source <typeparamref name="TProvider" /> must already be registered — for example through its provider
+    /// package's registration such as <c>AddRbaHistoricalRates</c>. This method resolves the registered instance and
+    /// wraps it in a caching decorator; it does not construct the source or its own dependencies (such as its
+    /// <see cref="HttpClient" />), so registering only the cache without the source fails when the provider is resolved.
+    /// </remarks>
     /// <example>
     /// <code language="csharp">
     ///<![CDATA[
     /// services.AddBoduFinancial()
+    ///         .AddRbaHistoricalRates(configuration)
     ///         .AddCachedExchangeRateProvider<RbaExchangeRateProvider>("RBA", configuration,
     ///             configure: o => o.DefaultExpiry = TimeSpan.FromHours(12));
     ///
