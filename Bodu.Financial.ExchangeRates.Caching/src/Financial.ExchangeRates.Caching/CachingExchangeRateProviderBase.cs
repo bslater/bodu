@@ -133,7 +133,7 @@ public abstract class CachingExchangeRateProviderBase
         {
             // The snapshot built from cached rows yields Live provenance; overwrite it with the cache lineage so the
             // returned result and the logged provenance describe the same serve and cannot diverge.
-            result = result with { Provenance = ExchangeRateProvenance.FromCache(_cache.Provider, _backend, servedCachedAtUtc, now) };
+            result = result with { Provenance = CacheServeProvenance(servedCachedAtUtc, now) };
 
             Log.CacheHit(_logger, _options.CacheHitLogLevel, _cache.Provider, fromIsoCode, toIsoCode, date);
             EmitProvenance(result.Provenance, fromIsoCode, toIsoCode);
@@ -178,15 +178,21 @@ public abstract class CachingExchangeRateProviderBase
 
         if (TryServeFromCache(duration, fromIsoCode, toIsoCode, date, options, now, out ExchangeRateLookupResult result, out DateTimeOffset? servedCachedAtUtc))
         {
+            // Overwrite the snapshot's Live provenance with the cache lineage exactly as the synchronous path does, so a
+            // cache hit returns Origin.Cache (with the backend and age) on both surfaces rather than diverging.
+            result = result with { Provenance = CacheServeProvenance(servedCachedAtUtc, now) };
+
             Log.CacheHit(_logger, _options.CacheHitLogLevel, _cache.Provider, fromIsoCode, toIsoCode, date);
-            EmitProvenance(ExchangeRateProvenance.FromCache(_cache.Provider, _backend, servedCachedAtUtc, now), fromIsoCode, toIsoCode);
+            EmitProvenance(result.Provenance, fromIsoCode, toIsoCode);
             return result;
         }
 
         result = await Inner.GetRateAsync(fromIsoCode, toIsoCode, date, options, cancellationToken).ConfigureAwait(false);
         StoreResult(duration, fromIsoCode, toIsoCode, result, now);
         Log.CacheMissStored(_logger, _options.CacheMissLogLevel, _cache.Provider, fromIsoCode, toIsoCode, date);
-        EmitProvenance(ExchangeRateProvenance.Live(_cache.Provider, _backend), fromIsoCode, toIsoCode);
+
+        // A miss carries the inner provider's Live provenance through unchanged, identically to the synchronous path.
+        EmitProvenance(result.Provenance, fromIsoCode, toIsoCode);
         return result;
     }
 
@@ -203,7 +209,7 @@ public abstract class CachingExchangeRateProviderBase
         if (TryServeRangeFromCache(duration, pair, startDate, endDate, now, out IReadOnlyList<ExchangeRate> cached, out DateTimeOffset? oldestCachedAtUtc))
         {
             Log.RangeCacheHit(_logger, _options.CacheRangeHitLogLevel, _cache.Provider, fromIsoCode, toIsoCode);
-            EmitProvenance(ExchangeRateProvenance.FromCache(_cache.Provider, _backend, oldestCachedAtUtc, now), fromIsoCode, toIsoCode);
+            EmitProvenance(CacheServeProvenance(oldestCachedAtUtc, now), fromIsoCode, toIsoCode);
             return new ExchangeRateRangeResult(fromIsoCode, toIsoCode, startDate, endDate, cached);
         }
 
@@ -237,7 +243,7 @@ public abstract class CachingExchangeRateProviderBase
         if (TryServeRangeFromCache(duration, pair, startDate, endDate, now, out IReadOnlyList<ExchangeRate> cached, out DateTimeOffset? oldestCachedAtUtc))
         {
             Log.RangeCacheHit(_logger, _options.CacheRangeHitLogLevel, _cache.Provider, fromIsoCode, toIsoCode);
-            EmitProvenance(ExchangeRateProvenance.FromCache(_cache.Provider, _backend, oldestCachedAtUtc, now), fromIsoCode, toIsoCode);
+            EmitProvenance(CacheServeProvenance(oldestCachedAtUtc, now), fromIsoCode, toIsoCode);
             return new ExchangeRateRangeResult(fromIsoCode, toIsoCode, startDate, endDate, cached);
         }
 
@@ -261,6 +267,22 @@ public abstract class CachingExchangeRateProviderBase
 
         return new DatedExchangeRateProviderAdapter(this, today, _options.DefaultLookupOptions).GetRate(fromIsoCode, toIsoCode);
     }
+
+    /// <summary>
+    /// Builds the provenance for a rate served from this provider's cache, attributing it to the bound provider and the
+    /// cache backend captured at construction.
+    /// </summary>
+    /// <param name="servedCachedAtUtc">
+    /// The cache-write instant representing the served data, or <see langword="null" /> when no cached row backs it.
+    /// </param>
+    /// <param name="asOf">The lookup instant the served data's age is derived from.</param>
+    /// <returns>An <see cref="ExchangeRateProvenance" /> carrying <see cref="ExchangeRateOrigin.Cache" /> lineage.</returns>
+    /// <remarks>
+    /// Used by every serve path — single-date and range, synchronous and asynchronous — so a cache hit reports an
+    /// identical provenance regardless of the surface it was served through.
+    /// </remarks>
+    private ExchangeRateProvenance CacheServeProvenance(DateTimeOffset? servedCachedAtUtc, DateTimeOffset asOf) =>
+        ExchangeRateProvenance.FromCache(_cache.Provider, _backend, servedCachedAtUtc, asOf);
 
     /// <summary>
     /// Attempts to resolve a single-date request from the fresh cached rows (and their inverse, when inversion is
