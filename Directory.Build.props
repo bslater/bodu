@@ -1,31 +1,12 @@
 <Project>
 
   <!--
-    Single import point for shared build metadata, XML-documentation warning policy,
-    SDK analyser settings, and other solution-wide properties defined in bld/Bodu.props.
-    Projects no longer carry their own <Import> for this file.
+    Single import point for shared build configuration: company/copyright metadata, versioning,
+    target frameworks, compiler policy, packaging, Source Link, signing, and analyzer settings.
+    The concrete properties live in concern-scoped files under bld/, aggregated by bld/Bodu.props.
+    Projects no longer carry their own <Import> for these files.
   -->
   <Import Project="$(MSBuildThisFileDirectory)bld/Bodu.props" />
-
-  <PropertyGroup>
-    <!--
-      Use the SDK-owned .NET/Roslyn analyser set as the primary baseline. This keeps the
-      repository aligned with current .NET SDK behaviour rather than legacy FxCop packages.
-    -->
-    <EnableNETAnalyzers>true</EnableNETAnalyzers>
-
-    <!--
-      Keep analyser rule selection stable on the .NET 10 recommended wave. Change this to
-      latest-recommended if you intentionally want new SDK analyser waves as they appear.
-    -->
-    <AnalysisLevel>10-recommended</AnalysisLevel>
-
-    <!--
-      Enforce IDE-style code rules (IDExxxx diagnostics) at build time so that formatting
-      and code-style regressions surface in CI rather than only in the IDE.
-    -->
-    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-  </PropertyGroup>
 
   <!--
     Optional API/package validation. Leave disabled by default so normal inner-loop builds do

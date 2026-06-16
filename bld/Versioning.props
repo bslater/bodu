@@ -1,0 +1,11 @@
+<Project>
+
+  <!--
+    Shared package-version baseline. Individual projects may still override <Version> or
+    <VersionPrefix> where they ship on an independent cadence.
+  -->
+  <PropertyGroup>
+    <VersionPrefix>1.0.0</VersionPrefix>
+  </PropertyGroup>
+
+</Project>

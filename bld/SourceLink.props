@@ -1,0 +1,8 @@
+<Project>
+
+  <!--
+    Source Link, deterministic CI builds, and symbol-package settings.
+    Populated by the packaging / reproducible-builds change.
+  -->
+
+</Project>

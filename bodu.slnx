@@ -16,6 +16,15 @@
   </Folder>
   <Folder Name="/Solution Items/">
     <File Path="bld\Bodu.props" />
+    <File Path="bld\CompanyDetails.props" />
+    <File Path="bld\Copyright.props" />
+    <File Path="bld\Versioning.props" />
+    <File Path="bld\TargetFrameworks.props" />
+    <File Path="bld\Compiler.props" />
+    <File Path="bld\Packaging.props" />
+    <File Path="bld\SourceLink.props" />
+    <File Path="bld\Signing.props" />
+    <File Path="bld\Analyzers.props" />
   </Folder>
   <Folder Name="/Bodu.Core/">
     <Project Path="Bodu.Core\src\Bodu.Core.csproj" />

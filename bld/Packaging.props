@@ -1,0 +1,15 @@
+<Project>
+
+  <!--
+    Repository and NuGet package metadata shared by every packable project. Symbol-package
+    and README packing settings are added by the packaging/reproducible-builds change.
+  -->
+  <PropertyGroup>
+    <RepositoryUrl>https://github.com/bodu/bodu</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <!--<PackageProjectUrl>https://www.bodu.com.au/</PackageProjectUrl>-->
+
+    <PackageTags>bodu;utilities;library</PackageTags>
+  </PropertyGroup>
+
+</Project>

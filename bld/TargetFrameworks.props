@@ -1,0 +1,13 @@
+<Project>
+
+  <!--
+    Centralized target-framework selection. Projects today set their own <TargetFrameworks>;
+    the multi-targeting change layers per-tier selection here so a framework bump is a single
+    edit. The feasible libraries additionally target netstandard2.0 for downlevel reach.
+  -->
+  <PropertyGroup>
+    <BoduNetTarget>net8.0</BoduNetTarget>
+    <BoduDownlevelTarget>netstandard2.0</BoduDownlevelTarget>
+  </PropertyGroup>
+
+</Project>
