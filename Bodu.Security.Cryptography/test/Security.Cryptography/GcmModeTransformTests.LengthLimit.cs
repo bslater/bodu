@@ -124,16 +124,16 @@ public sealed partial class GcmModeTransformTests
     [TestMethod]
     public void Encrypt_WhenPlaintextWithinLimits_ShouldNotThrowFromLengthGuard()
     {
-        var nonce = new byte[NonceSizeBytes];
+        byte[] nonce = new byte[NonceSizeBytes];
         using var cipher = new AesBlockCipherFixture(new byte[16]);
         using var transform = new GcmModeTransform(cipher, nonce);
 
         transform.ProcessAssociatedData([]);
 
-        var plaintext = new byte[64];
-        var output = new byte[plaintext.Length + (transform.TagSize / 8)];
+        byte[] plaintext = new byte[64];
+        byte[] output = new byte[plaintext.Length + (transform.TagSize / 8)];
 
-        var written = transform.Encrypt(plaintext, output);
+        int written = transform.Encrypt(plaintext, output);
 
         Assert.AreEqual(plaintext.Length + (transform.TagSize / 8), written);
     }

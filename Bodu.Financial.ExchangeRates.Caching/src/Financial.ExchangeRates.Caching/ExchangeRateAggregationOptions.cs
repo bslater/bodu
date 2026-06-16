@@ -102,7 +102,7 @@ public sealed class ExchangeRateAggregationOptions
 
         if (DefaultProviderOrder is not null)
         {
-            foreach (var name in DefaultProviderOrder)
+            foreach (string name in DefaultProviderOrder)
             {
                 if (string.IsNullOrWhiteSpace(name))
                     throw new ArgumentException(CachingResourceStrings.Arg_Invalid_ProviderNameBlank, nameof(DefaultProviderOrder));

@@ -37,7 +37,7 @@ public partial class CubeHashTests
     public void FinalizationRounds_WhenSetAfterHashing_ShouldNotThrow()
     {
         var algorithm = new CubeHash();
-        var input = new byte[] { 1, 2, 3 };
+        byte[] input = new byte[] { 1, 2, 3 };
 
         algorithm.ComputeHash(input);
 
@@ -54,13 +54,13 @@ public partial class CubeHashTests
     [TestMethod]
     public void FinalizationRounds_WhenDifferentValuesUsed_ShouldProduceDifferentHashes()
     {
-        var input = new byte[] { 0x10, 0x20, 0x30 };
+        byte[] input = new byte[] { 0x10, 0x20, 0x30 };
 
         var algorithmA = new CubeHash { FinalizationRounds = 32 };
         var algorithmB = new CubeHash { FinalizationRounds = 64 };
 
-        var resultA = algorithmA.ComputeHash(input);
-        var resultB = algorithmB.ComputeHash(input);
+        byte[] resultA = algorithmA.ComputeHash(input);
+        byte[] resultB = algorithmB.ComputeHash(input);
 
         CollectionAssert.AreNotEqual(resultA, resultB);
     }
@@ -94,7 +94,7 @@ public partial class CubeHashTests
     public void FinalizationRounds_WhenSetToValidValue_ShouldBeAssigned(int size)
     {
         using CubeHash algorithm = CreateAlgorithm();
-        var original = algorithm.FinalizationRounds;
+        int original = algorithm.FinalizationRounds;
         algorithm.FinalizationRounds = size;
 
         Assert.AreEqual(size, algorithm.FinalizationRounds);
@@ -107,8 +107,8 @@ public partial class CubeHashTests
     public void FinalizationRounds_WhenSetToValidValue_ShouldUpdateCorrectly()
     {
         using CubeHash algorithm = CreateAlgorithm();
-        var round = 100;
-        var original = algorithm.FinalizationRounds;
+        int round = 100;
+        int original = algorithm.FinalizationRounds;
         algorithm.FinalizationRounds = round;
 
         Assert.AreEqual(round, algorithm.FinalizationRounds);
@@ -149,7 +149,7 @@ public partial class CubeHashTests
     public void FinalizationRounds_WhenSetAfterTransformBlock_ShouldThrowExactly()
     {
         using CubeHash algorithm = CreateAlgorithm();
-        var input = new byte[] { 0x01, 0x02, 0x03 };
+        byte[] input = new byte[] { 0x01, 0x02, 0x03 };
         algorithm.TransformBlock(input, 0, input.Length, null, 0);
 
         Assert.ThrowsExactly<CryptographicUnexpectedOperationException>(() =>

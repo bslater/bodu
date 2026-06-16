@@ -122,7 +122,7 @@ public sealed class XtsModeTransform
     /// <inheritdoc />
     public int Transform(ReadOnlySpan<byte> input, Span<byte> output, bool encrypt)
     {
-        var blockSize = _cipher.BlockSize / 8;
+        int blockSize = _cipher.BlockSize / 8;
 
         // Empty input is a no-op, consistent with CbcModeTransform.
         CryptographyThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize, throwIfZero: false);
@@ -135,18 +135,18 @@ public sealed class XtsModeTransform
 
         Span<byte> buf = stackalloc byte[blockSize];
 
-        for (var offset = 0; offset < input.Length; offset += blockSize)
+        for (int offset = 0; offset < input.Length; offset += blockSize)
         {
             ReadOnlySpan<byte> inBlock = input.Slice(offset, blockSize);
             Span<byte> outBlock = output.Slice(offset, blockSize);
 
             // XEX: out = cipher(in XOR T) XOR T
-            for (var i = 0; i < blockSize; i++) buf[i] = (byte)(inBlock[i] ^ T[i]);
+            for (int i = 0; i < blockSize; i++) buf[i] = (byte)(inBlock[i] ^ T[i]);
             if (encrypt)
                 _cipher.Encrypt(buf, outBlock);
             else
                 _cipher.Decrypt(buf, outBlock);
-            for (var i = 0; i < blockSize; i++) outBlock[i] ^= T[i];
+            for (int i = 0; i < blockSize; i++) outBlock[i] ^= T[i];
 
             // Advance tweak: T = α ⊗ T in GF(2^128), little-endian, poly 0x87 reduction.
             GfDouble(T);
@@ -183,8 +183,8 @@ public sealed class XtsModeTransform
     private static void GfDouble(Span<byte> t1)
     {
         // Left-shift the 128-bit little-endian value. Carry propagates from byte[0] upward.
-        var carry = 0;
-        for (var i = 0; i < t1.Length; i++)
+        int carry = 0;
+        for (int i = 0; i < t1.Length; i++)
         {
             int t = t1[i];
             t1[i] = (byte)((t << 1) | carry);

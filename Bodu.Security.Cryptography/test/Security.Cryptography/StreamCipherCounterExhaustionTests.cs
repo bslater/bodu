@@ -34,15 +34,15 @@ public sealed class StreamCipherCounterExhaustionTests
     [TestMethod]
     public void ChaCha20StreamCipher_NextKeystreamBlock_WhenCounterWouldWrap_ShouldThrowCryptographicException()
     {
-        var key = new byte[32];
-        var nonce = new byte[12];
+        byte[] key = new byte[32];
+        byte[] nonce = new byte[12];
         var cipher = new ChaCha20StreamCipher(key, nonce, initialCounter: 1u);
 
         // Position _counter one step short of wrap. The next NextKeystreamBlock emits block #0 and advances
         // _counter to 1, which equals _initialCounter and latches exhaustion.
         SetField(cipher, "_counter", 0u);
 
-        var block = new byte[64];
+        byte[] block = new byte[64];
         cipher.NextKeystreamBlock(block);
 
         // Latch must reject the subsequent call before any keystream byte is emitted again.
@@ -60,13 +60,13 @@ public sealed class StreamCipherCounterExhaustionTests
     [TestMethod]
     public void Salsa20StreamCipher_NextKeystreamBlock_WhenCounterWouldWrap_ShouldThrowCryptographicException()
     {
-        var key = new byte[32];
-        var nonce = new byte[8];
+        byte[] key = new byte[32];
+        byte[] nonce = new byte[8];
         var cipher = new Salsa20StreamCipher(key, nonce, initialCounter: 1uL);
 
         SetField(cipher, "_counter", 0uL);
 
-        var block = new byte[64];
+        byte[] block = new byte[64];
         cipher.NextKeystreamBlock(block);
 
         Assert.ThrowsExactly<CryptographicException>(() =>
@@ -82,14 +82,14 @@ public sealed class StreamCipherCounterExhaustionTests
     [TestMethod]
     public void ChaCha20StreamCipher_NextKeystreamBlock_WhenExhaustionLatched_ShouldThrowOnEverySubsequentCall()
     {
-        var key = new byte[32];
-        var nonce = new byte[12];
+        byte[] key = new byte[32];
+        byte[] nonce = new byte[12];
         var cipher = new ChaCha20StreamCipher(key, nonce, initialCounter: 0u);
 
         SetField(cipher, "_counterExhausted", true);
 
-        var block = new byte[64];
-        for (var i = 0; i < 3; i++)
+        byte[] block = new byte[64];
+        for (int i = 0; i < 3; i++)
         {
             Assert.ThrowsExactly<CryptographicException>(() =>
             {
@@ -105,14 +105,14 @@ public sealed class StreamCipherCounterExhaustionTests
     [TestMethod]
     public void Salsa20StreamCipher_NextKeystreamBlock_WhenExhaustionLatched_ShouldThrowOnEverySubsequentCall()
     {
-        var key = new byte[32];
-        var nonce = new byte[8];
+        byte[] key = new byte[32];
+        byte[] nonce = new byte[8];
         var cipher = new Salsa20StreamCipher(key, nonce, initialCounter: 0uL);
 
         SetField(cipher, "_counterExhausted", true);
 
-        var block = new byte[64];
-        for (var i = 0; i < 3; i++)
+        byte[] block = new byte[64];
+        for (int i = 0; i < 3; i++)
         {
             Assert.ThrowsExactly<CryptographicException>(() =>
             {

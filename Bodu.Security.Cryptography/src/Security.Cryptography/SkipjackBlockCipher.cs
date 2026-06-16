@@ -379,7 +379,7 @@ public sealed class SkipjackBlockCipher
         // Expand the 80-bit Skipjack key into the 32 round-key byte groups consumed by G/H.
         // The specification advances the key byte pointer by four bytes inside G for each round and wraps mod 10.
         // Precomputing these positions gives round k direct access to cv0..cv3 without changing the algorithm.
-        for (var i = 0; i < 32; i++)
+        for (int i = 0; i < 32; i++)
         {
             _key0[i] = keyBytes[((i * 4) + 0) % 10];
             _key1[i] = keyBytes[((i * 4) + 1) % 10];
@@ -416,23 +416,23 @@ public sealed class SkipjackBlockCipher
 
         // Ciphertext is emitted by encryption as w1,w2,w3,w4. The inverse formulation loads it as
         // w2,w1,w4,w3 so that the following reverse Rule B/Rule A operations mirror the reference implementation.
-        var w2 = (int)BinaryPrimitives.ReadUInt16BigEndian(input);
-        var w1 = (int)BinaryPrimitives.ReadUInt16BigEndian(input[2..]);
-        var w4 = (int)BinaryPrimitives.ReadUInt16BigEndian(input[4..]);
-        var w3 = (int)BinaryPrimitives.ReadUInt16BigEndian(input[6..]);
+        int w2 = (int)BinaryPrimitives.ReadUInt16BigEndian(input);
+        int w1 = (int)BinaryPrimitives.ReadUInt16BigEndian(input[2..]);
+        int w4 = (int)BinaryPrimitives.ReadUInt16BigEndian(input[4..]);
+        int w3 = (int)BinaryPrimitives.ReadUInt16BigEndian(input[6..]);
 
         // Start from round 32. The round counter k is zero-based internally, while the Skipjack counter value
         // inserted into Rule A/Rule B is k + 1.
-        var k = 31;
+        int k = 31;
 
         // Undo the same 32 rounds in reverse: two cycles of eight inverse Rule B rounds followed by eight inverse
         // Rule A rounds. This is the reverse of encryption's A^8, B^8, A^8, B^8 schedule.
-        for (var t = 0; t < 2; t++)
+        for (int t = 0; t < 2; t++)
         {
             // Inverse Rule B for eight rounds. H(k, w1) reverses the G permutation used during encryption.
-            for (var i = 0; i < 8; i++)
+            for (int i = 0; i < 8; i++)
             {
-                var tmp = w4;
+                int tmp = w4;
                 w4 = w3;
                 w3 = w2;
                 w2 = H(k, w1);
@@ -441,9 +441,9 @@ public sealed class SkipjackBlockCipher
             }
 
             // Inverse Rule A for eight rounds.
-            for (var i = 0; i < 8; i++)
+            for (int i = 0; i < 8; i++)
             {
-                var tmp = w4;
+                int tmp = w4;
                 w4 = w3;
                 w3 = w1 ^ w2 ^ (k + 1);
                 w2 = H(k, w1);
@@ -496,25 +496,25 @@ public sealed class SkipjackBlockCipher
 
         // Split the 64-bit plaintext block into four big-endian 16-bit words W1..W4, matching the Skipjack
         // reference algorithm's word-oriented round descriptions.
-        var w1 = (int)BinaryPrimitives.ReadUInt16BigEndian(input);
-        var w2 = (int)BinaryPrimitives.ReadUInt16BigEndian(input[2..]);
-        var w3 = (int)BinaryPrimitives.ReadUInt16BigEndian(input[4..]);
-        var w4 = (int)BinaryPrimitives.ReadUInt16BigEndian(input[6..]);
+        int w1 = (int)BinaryPrimitives.ReadUInt16BigEndian(input);
+        int w2 = (int)BinaryPrimitives.ReadUInt16BigEndian(input[2..]);
+        int w3 = (int)BinaryPrimitives.ReadUInt16BigEndian(input[4..]);
+        int w4 = (int)BinaryPrimitives.ReadUInt16BigEndian(input[6..]);
 
         // k is the zero-based round-key index. The Skipjack rule counter value used by the round equations is k + 1.
-        var k = 0;
+        int k = 0;
 
         // Skipjack encryption applies 32 rounds in four groups:
         //   rounds  1.. 8: Rule A
         //   rounds  9..16: Rule B
         //   rounds 17..24: Rule A
         //   rounds 25..32: Rule B
-        for (var t = 0; t < 2; t++)
+        for (int t = 0; t < 2; t++)
         {
             // Rule A: shift the four 16-bit words and combine G(k, W1), the outgoing W4, and the round counter.
-            for (var i = 0; i < 8; i++)
+            for (int i = 0; i < 8; i++)
             {
-                var tmp = w4;
+                int tmp = w4;
                 w4 = w3;
                 w3 = w2;
                 w2 = G(k, w1);
@@ -523,9 +523,9 @@ public sealed class SkipjackBlockCipher
             }
 
             // Rule B: use the same G(k, W1) primitive, but feed the nonlinear/counter mix into W3 and rotate W4 into W1.
-            for (var i = 0; i < 8; i++)
+            for (int i = 0; i < 8; i++)
             {
-                var tmp = w4;
+                int tmp = w4;
                 w4 = w3;
                 w3 = w1 ^ w2 ^ (k + 1);
                 w2 = G(k, w1);
@@ -596,13 +596,13 @@ public sealed class SkipjackBlockCipher
     private int H(int k, int w)
     {
         // Split the 16-bit input into the terminal bytes of G, then unwind the four F-table/XOR steps.
-        var h1 = w & 0xff;
-        var h2 = (w >> 8) & 0xff;
+        int h1 = w & 0xff;
+        int h2 = (w >> 8) & 0xff;
 
-        var h3 = s_ftable[h2 ^ _key3[k]] ^ h1;
-        var h4 = s_ftable[h3 ^ _key2[k]] ^ h2;
-        var h5 = s_ftable[h4 ^ _key1[k]] ^ h3;
-        var h6 = s_ftable[h5 ^ _key0[k]] ^ h4;
+        int h3 = s_ftable[h2 ^ _key3[k]] ^ h1;
+        int h4 = s_ftable[h3 ^ _key2[k]] ^ h2;
+        int h5 = s_ftable[h4 ^ _key1[k]] ^ h3;
+        int h6 = s_ftable[h5 ^ _key0[k]] ^ h4;
 
         return (h6 << 8) + h5;
     }

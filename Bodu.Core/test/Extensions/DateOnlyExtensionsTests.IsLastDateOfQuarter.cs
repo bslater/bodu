@@ -18,7 +18,7 @@ public partial class DateOnlyExtensionsTests
     public void IsLastDateOfQuarter_WhenComparedToExpectedStart_ShouldReturnExpectedResult(DateTime inputDateTime, CalendarQuarterDefinition definition)
     {
         var input = DateOnly.FromDateTime(inputDateTime);
-        var actual = input.IsLastDateOfQuarter(definition);
+        bool actual = input.IsLastDateOfQuarter(definition);
 
         Assert.IsTrue(actual);
     }
@@ -32,7 +32,7 @@ public partial class DateOnlyExtensionsTests
     public void IsLastDateOfQuarter_WhenDateIsNotStartOfQuarter_ShouldReturnFalse(DateTime inputDateTime, CalendarQuarterDefinition definition)
     {
         var input = DateOnly.FromDateTime(inputDateTime);
-        var actual = input.IsLastDateOfQuarter(definition);
+        bool actual = input.IsLastDateOfQuarter(definition);
         Assert.IsFalse(actual);
     }
     /// <summary>
@@ -44,7 +44,7 @@ public partial class DateOnlyExtensionsTests
     public void IsLastDateOfQuarter_WhenDateIsQuarterStartAndDefaultDefinition_ShouldReturnTrue(DateTime inputDateTime, bool expected)
     {
         var input = DateOnly.FromDateTime(inputDateTime);
-        var actual = input.IsLastDateOfQuarter();
+        bool actual = input.IsLastDateOfQuarter();
 
         Assert.AreEqual(expected, actual);
     }
@@ -88,7 +88,7 @@ public partial class DateOnlyExtensionsTests
         var input = DateOnly.FromDateTime(inputDateTime);
         var provider = new DateTimeExtensionsTests.ValidQuarterProvider();
 
-        var actual = input.IsLastDateOfQuarter(provider);
+        bool actual = input.IsLastDateOfQuarter(provider);
 
         Assert.AreEqual(expected, actual);
     }

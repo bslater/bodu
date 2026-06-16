@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="KeccakSpongeTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -34,7 +34,7 @@ public class KeccakSpongeTests
     {
         _ = testName;
 
-        var digest = new byte[32];
+        byte[] digest = new byte[32];
         KeccakSponge.Sha3_256(Convert.FromHexString(messageHex), digest);
 
         CollectionAssert.AreEqual(Convert.FromHexString(expectedHex), digest);
@@ -57,7 +57,7 @@ public class KeccakSpongeTests
     {
         _ = testName;
 
-        var digest = new byte[64];
+        byte[] digest = new byte[64];
         KeccakSponge.Sha3_512(Convert.FromHexString(messageHex), digest);
 
         CollectionAssert.AreEqual(Convert.FromHexString(expectedHex), digest);
@@ -71,13 +71,13 @@ public class KeccakSpongeTests
     [TestMethod]
     public void Shake_WhenGivenEmptyMessage_ShouldProducePublishedPrefixes()
     {
-        var shake128 = new byte[32];
+        byte[] shake128 = new byte[32];
         KeccakSponge.Shake128(ReadOnlySpan<byte>.Empty, shake128);
         CollectionAssert.AreEqual(
             Convert.FromHexString("7f9c2ba4e88f827d616045507605853ed73b8093f6efbc88eb1a6eacfa66ef26"),
             shake128);
 
-        var shake256 = new byte[32];
+        byte[] shake256 = new byte[32];
         KeccakSponge.Shake256(ReadOnlySpan<byte>.Empty, shake256);
         CollectionAssert.AreEqual(
             Convert.FromHexString("46b9dd2b0ba88d13233b3feb743eeb243fcd52ea62b81b82b50c27646ed5762f"),
@@ -91,16 +91,16 @@ public class KeccakSpongeTests
     [TestMethod]
     public void Shake_WhenComparedToExistingShakeType_ShouldProduceIdenticalOutput()
     {
-        var message = Encoding.UTF8.GetBytes(new string('q', 600));
+        byte[] message = Encoding.UTF8.GetBytes(new string('q', 600));
 
-        foreach (var securityLevel in new[] { 128, 256 })
+        foreach (int securityLevel in new[] { 128, 256 })
         {
-            foreach (var outputBytes in new[] { 16, 32, 137, 200, 400 })
+            foreach (int outputBytes in new[] { 16, 32, 137, 200, 400 })
             {
                 using var reference = new Shake(outputBytes * 8, securityLevel);
-                var expected = reference.ComputeHash(message);
+                byte[] expected = reference.ComputeHash(message);
 
-                var actual = new byte[outputBytes];
+                byte[] actual = new byte[outputBytes];
                 if (securityLevel == 128)
                     KeccakSponge.Shake128(message, actual);
                 else
@@ -120,18 +120,18 @@ public class KeccakSpongeTests
     [TestMethod]
     public void Squeeze_WhenAbsorbedAndSqueezedIncrementally_ShouldMatchOneShotStream()
     {
-        var message = Encoding.UTF8.GetBytes("incremental sponge equivalence");
+        byte[] message = Encoding.UTF8.GetBytes("incremental sponge equivalence");
 
-        var oneShot = new byte[500];
+        byte[] oneShot = new byte[500];
         KeccakSponge.Shake256(message, oneShot);
 
         var sponge = KeccakSponge.CreateShake256();
-        foreach (var b in message)
+        foreach (byte b in message)
             sponge.Absorb(new[] { b });
 
-        var streamed = new byte[500];
-        var offset = 0;
-        foreach (var chunk in new[] { 1, 7, 135, 136, 137, 84 })
+        byte[] streamed = new byte[500];
+        int offset = 0;
+        foreach (int chunk in new[] { 1, 7, 135, 136, 137, 84 })
         {
             sponge.Squeeze(streamed.AsSpan(offset, chunk));
             offset += chunk;
@@ -162,10 +162,10 @@ public class KeccakSpongeTests
         sponge.Reset();
         sponge.Absorb(ReadOnlySpan<byte>.Empty);
 
-        var fresh = new byte[32];
+        byte[] fresh = new byte[32];
         sponge.Squeeze(fresh);
 
-        var expected = new byte[32];
+        byte[] expected = new byte[32];
         KeccakSponge.Shake128(ReadOnlySpan<byte>.Empty, expected);
         CollectionAssert.AreEqual(expected, fresh);
     }
@@ -176,24 +176,24 @@ public class KeccakSpongeTests
     [TestMethod]
     public void Shake256_WhenUsingTwoSegmentOverload_ShouldMatchConcatenatedInput()
     {
-        var first = Encoding.UTF8.GetBytes("first-segment");
-        var second = Encoding.UTF8.GetBytes("second-segment");
-        var combined = first.Concat(second).ToArray();
+        byte[] first = Encoding.UTF8.GetBytes("first-segment");
+        byte[] second = Encoding.UTF8.GetBytes("second-segment");
+        byte[] combined = first.Concat(second).ToArray();
 
-        var viaSegments = new byte[64];
-        var viaCombined = new byte[64];
+        byte[] viaSegments = new byte[64];
+        byte[] viaCombined = new byte[64];
         KeccakSponge.Shake256(first, second, viaSegments);
         KeccakSponge.Shake256(combined, viaCombined);
         CollectionAssert.AreEqual(viaCombined, viaSegments);
 
-        var sha3Segments = new byte[32];
-        var sha3Combined = new byte[32];
+        byte[] sha3Segments = new byte[32];
+        byte[] sha3Combined = new byte[32];
         KeccakSponge.Sha3_256(first, second, sha3Segments);
         KeccakSponge.Sha3_256(combined, sha3Combined);
         CollectionAssert.AreEqual(sha3Combined, sha3Segments);
 
-        var sha512Segments = new byte[64];
-        var sha512Combined = new byte[64];
+        byte[] sha512Segments = new byte[64];
+        byte[] sha512Combined = new byte[64];
         KeccakSponge.Sha3_512(first, second, sha512Segments);
         KeccakSponge.Sha3_512(combined, sha512Combined);
         CollectionAssert.AreEqual(sha512Combined, sha512Segments);

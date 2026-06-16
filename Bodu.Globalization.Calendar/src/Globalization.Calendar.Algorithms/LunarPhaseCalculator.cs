@@ -59,9 +59,9 @@ internal static class LunarPhaseCalculator
     /// <returns>The phase date, or <see langword="null" /> when none is found within the search window.</returns>
     private static DateOnly? PhaseOnOrAfter(DateOnly notBefore, bool fullMoon)
     {
-        var k = EstimateK(notBefore.Year, notBefore.Month, fullMoon);
+        double k = EstimateK(notBefore.Year, notBefore.Month, fullMoon);
 
-        for (var attempts = 0; attempts < 3; attempts++, k += 1.0)
+        for (int attempts = 0; attempts < 3; attempts++, k += 1.0)
         {
             DateOnly candidate = JulianDayToDate(ComputeLunarPhaseJulianDay(k, fullMoon));
             if (candidate >= notBefore)
@@ -80,8 +80,8 @@ internal static class LunarPhaseCalculator
     /// <returns>The estimated lunation index.</returns>
     private static double EstimateK(int year, int month, bool fullMoon)
     {
-        var approxYear = year + ((month - 1) / 12.0);
-        var k = (approxYear - 2000.0) * 12.3685;
+        double approxYear = year + ((month - 1) / 12.0);
+        double k = (approxYear - 2000.0) * 12.3685;
 
         return fullMoon ? Math.Floor(k) + 0.5 : Math.Round(k);
     }
@@ -97,26 +97,26 @@ internal static class LunarPhaseCalculator
     /// <returns>The Julian Ephemeris Day of the phase.</returns>
     private static double ComputeLunarPhaseJulianDay(double k, bool fullMoon)
     {
-        var t = k / 1236.85;
-        var t2 = t * t;
-        var t3 = t2 * t;
-        var t4 = t2 * t2;
+        double t = k / 1236.85;
+        double t2 = t * t;
+        double t3 = t2 * t;
+        double t4 = t2 * t2;
 
-        var jde = 2451550.09766
+        double jde = 2451550.09766
             + (SynodicMonth * k)
             + (0.00015437 * t2)
             - (0.000000150 * t3)
             + (0.00000000073 * t4);
 
-        var e = 1.0 - (0.002516 * t) - (0.0000074 * t2);
-        var e2 = e * e;
+        double e = 1.0 - (0.002516 * t) - (0.0000074 * t2);
+        double e2 = e * e;
 
-        var m = DegreesToRadians(2.5534 + (29.10535670 * k) - (0.0000014 * t2) - (0.00000011 * t3));
-        var mp = DegreesToRadians(201.5643 + (385.81693528 * k) + (0.0107582 * t2) + (0.00001238 * t3) - (0.000000058 * t4));
-        var f = DegreesToRadians(160.7108 + (390.67050284 * k) - (0.0016118 * t2) - (0.00000227 * t3) + (0.000000011 * t4));
-        var omega = DegreesToRadians(124.7746 - (1.56375588 * k) + (0.0020672 * t2) + (0.00000215 * t3));
+        double m = DegreesToRadians(2.5534 + (29.10535670 * k) - (0.0000014 * t2) - (0.00000011 * t3));
+        double mp = DegreesToRadians(201.5643 + (385.81693528 * k) + (0.0107582 * t2) + (0.00001238 * t3) - (0.000000058 * t4));
+        double f = DegreesToRadians(160.7108 + (390.67050284 * k) - (0.0016118 * t2) - (0.00000227 * t3) + (0.000000011 * t4));
+        double omega = DegreesToRadians(124.7746 - (1.56375588 * k) + (0.0020672 * t2) + (0.00000215 * t3));
 
-        var correction = fullMoon
+        double correction = fullMoon
             ? (-0.40614 * Math.Sin(mp))
                 + (0.17302 * e * Math.Sin(m))
                 + (0.01614 * Math.Sin(2 * mp))
@@ -168,7 +168,7 @@ internal static class LunarPhaseCalculator
                 - (0.00002 * Math.Sin((3 * mp) + m))
                 + (0.00002 * Math.Sin(4 * mp));
 
-        var w = (0.000325 * Math.Sin(DegreesToRadians(299.77 + (0.107408 * k) - (0.009173 * t2))))
+        double w = (0.000325 * Math.Sin(DegreesToRadians(299.77 + (0.107408 * k) - (0.009173 * t2))))
             + (0.000165 * Math.Sin(DegreesToRadians(251.88 + (0.016321 * k))))
             + (0.000164 * Math.Sin(DegreesToRadians(251.83 + (26.651886 * k))))
             + (0.000126 * Math.Sin(DegreesToRadians(349.42 + (36.412478 * k))))

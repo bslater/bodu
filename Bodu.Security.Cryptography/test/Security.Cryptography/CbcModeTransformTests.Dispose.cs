@@ -18,21 +18,21 @@ public sealed partial class CbcModeTransformTests
     public void Dispose_WhenCalled_ShouldZeroCurrentIv()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
-        var iv = new byte[ExpectedBlockSize];
-        for (var i = 0; i < iv.Length; i++) iv[i] = (byte)(i + 1); // non-zero so zeroing is observable
+        byte[] iv = new byte[ExpectedBlockSize];
+        for (int i = 0; i < iv.Length; i++) iv[i] = (byte)(i + 1); // non-zero so zeroing is observable
 
         var transform = new CbcModeTransform(cipher, iv);
 
         // Run a block so the IV has evolved past the constructor copy.
-        var input = new byte[ExpectedBlockSize];
-        var output = new byte[ExpectedBlockSize];
+        byte[] input = new byte[ExpectedBlockSize];
+        byte[] output = new byte[ExpectedBlockSize];
         transform.Transform(input, output, encrypt: true);
 
         transform.Dispose();
 
         FieldInfo field = typeof(CbcModeTransform).GetField(
             "_currentIv", BindingFlags.Instance | BindingFlags.NonPublic)!;
-        var currentIv = (byte[])field.GetValue(transform)!;
+        byte[] currentIv = (byte[])field.GetValue(transform)!;
 
         CollectionAssert.AreEqual(
             new byte[ExpectedBlockSize], currentIv,

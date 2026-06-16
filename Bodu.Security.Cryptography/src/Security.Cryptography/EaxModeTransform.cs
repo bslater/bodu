@@ -145,7 +145,7 @@ public sealed class EaxModeTransform
         ThrowIfDisposed();
         ThrowIfCompleted();
 
-        var required = plaintext.Length + DefaultTagSize;
+        int required = plaintext.Length + DefaultTagSize;
         CryptographyThrowHelper.ThrowIfOutputBufferTooSmall(output, required);
 
         EnsureAadProcessed();
@@ -167,7 +167,7 @@ public sealed class EaxModeTransform
 
             // Tag = N' XOR H' XOR C'.
             Span<byte> tag = output.Slice(plaintext.Length, DefaultTagSize);
-            for (var i = 0; i < DefaultTagSize; i++)
+            for (int i = 0; i < DefaultTagSize; i++)
                 tag[i] = (byte)(nPrime[i] ^ hPrime[i] ^ cPrime[i]);
 
             return required;
@@ -195,7 +195,7 @@ public sealed class EaxModeTransform
 
         CryptographyThrowHelper.ThrowIfCiphertextTooShort(ciphertextWithTag, DefaultTagSize);
 
-        var plaintextLength = ciphertextWithTag.Length - DefaultTagSize;
+        int plaintextLength = ciphertextWithTag.Length - DefaultTagSize;
         CryptographyThrowHelper.ThrowIfOutputBufferTooSmall(output, plaintextLength);
 
         EnsureAadProcessed();
@@ -215,7 +215,7 @@ public sealed class EaxModeTransform
             cPrime = Omac(2, ciphertext);
 
             expectedTag = new byte[DefaultTagSize];
-            for (var i = 0; i < DefaultTagSize; i++)
+            for (int i = 0; i < DefaultTagSize; i++)
                 expectedTag[i] = (byte)(nPrime[i] ^ hPrime[i] ^ cPrime[i]);
 
             // Constant-time tag comparison; throw before emitting any plaintext. On failure, also
@@ -308,8 +308,8 @@ public sealed class EaxModeTransform
     /// <returns>The OMAC tag for <paramref name="m" /> under tweak <paramref name="t" />.</returns>
     private byte[] Omac(byte t, ReadOnlySpan<byte> m)
     {
-        var blockSize = _cipher.BlockSize / 8;
-        var prefixed = new byte[blockSize + m.Length];
+        int blockSize = _cipher.BlockSize / 8;
+        byte[] prefixed = new byte[blockSize + m.Length];
 
         try
         {
@@ -331,14 +331,14 @@ public sealed class EaxModeTransform
     /// <returns>The CMAC tag, one cipher block in length.</returns>
     private byte[] ComputeCmac(ReadOnlySpan<byte> message)
     {
-        var blockSize = _cipher.BlockSize / 8;
+        int blockSize = _cipher.BlockSize / 8;
 
-        var zeroBlock = new byte[blockSize];
-        var l = new byte[blockSize];
-        var k1 = new byte[blockSize];
-        var k2 = new byte[blockSize];
-        var mac = new byte[blockSize];
-        var lastBlock = new byte[blockSize];
+        byte[] zeroBlock = new byte[blockSize];
+        byte[] l = new byte[blockSize];
+        byte[] k1 = new byte[blockSize];
+        byte[] k2 = new byte[blockSize];
+        byte[] mac = new byte[blockSize];
+        byte[] lastBlock = new byte[blockSize];
 
         try
         {
@@ -351,8 +351,8 @@ public sealed class EaxModeTransform
             k1.CopyTo(k2, 0);
             Dbl(k2);
 
-            var totalBlocks = (message.Length + blockSize - 1) / blockSize;
-            var lastIsFull = message.Length > 0 && message.Length % blockSize == 0;
+            int totalBlocks = (message.Length + blockSize - 1) / blockSize;
+            bool lastIsFull = message.Length > 0 && message.Length % blockSize == 0;
 
             if (message.Length == 0)
             {
@@ -360,9 +360,9 @@ public sealed class EaxModeTransform
                 lastIsFull = false;
             }
 
-            for (var blockIdx = 0; blockIdx < totalBlocks - 1; blockIdx++)
+            for (int blockIdx = 0; blockIdx < totalBlocks - 1; blockIdx++)
             {
-                var block = new byte[blockSize];
+                byte[] block = new byte[blockSize];
 
                 try
                 {
@@ -379,8 +379,8 @@ public sealed class EaxModeTransform
             // Last block: pad with 0x80 || 0…0 if partial, then XOR K1 (full) or K2 (partial).
             if (message.Length > 0)
             {
-                var lastOffset = (totalBlocks - 1) * blockSize;
-                var lastLen = message.Length - lastOffset;
+                int lastOffset = (totalBlocks - 1) * blockSize;
+                int lastLen = message.Length - lastOffset;
 
                 message.Slice(lastOffset, lastLen).CopyTo(lastBlock);
 
@@ -392,7 +392,7 @@ public sealed class EaxModeTransform
                 lastBlock[0] = 0x80; // empty message: pad = 0x80 || 0...0
             }
 
-            var subkey = lastIsFull ? k1 : k2;
+            byte[] subkey = lastIsFull ? k1 : k2;
             Xor(lastBlock, subkey, lastBlock);
             Xor(mac, lastBlock, mac);
             _cipher.Encrypt(mac, mac);
@@ -419,21 +419,21 @@ public sealed class EaxModeTransform
     /// <param name="counter">The initial counter block; copied defensively and left unmodified.</param>
     private void CtrEncrypt(ReadOnlySpan<byte> input, Span<byte> output, byte[] counter)
     {
-        var blockSize = _cipher.BlockSize / 8;
-        var ctr = (byte[])counter.Clone();
+        int blockSize = _cipher.BlockSize / 8;
+        byte[] ctr = (byte[])counter.Clone();
         Span<byte> ks = stackalloc byte[blockSize];
 
         try
         {
-            for (var offset = 0; offset < input.Length; offset += blockSize)
+            for (int offset = 0; offset < input.Length; offset += blockSize)
             {
                 _cipher.Encrypt(ctr, ks);
 
-                for (var i = ctr.Length - 1; i >= 0; i--)
+                for (int i = ctr.Length - 1; i >= 0; i--)
                     if (++ctr[i] != 0) break;
 
-                var len = Math.Min(blockSize, input.Length - offset);
-                for (var i = 0; i < len; i++)
+                int len = Math.Min(blockSize, input.Length - offset);
+                for (int i = 0; i < len; i++)
                     output[offset + i] = (byte)(input[offset + i] ^ ks[i]);
             }
         }
@@ -451,9 +451,9 @@ public sealed class EaxModeTransform
     /// <param name="x">The block doubled in place.</param>
     private static void Dbl(byte[] x)
     {
-        var msb = (x[0] & 0x80) != 0;
+        bool msb = (x[0] & 0x80) != 0;
 
-        for (var i = 0; i < x.Length - 1; i++)
+        for (int i = 0; i < x.Length - 1; i++)
             x[i] = (byte)((x[i] << 1) | (x[i + 1] >> 7));
 
         x[^1] <<= 1;
@@ -470,7 +470,7 @@ public sealed class EaxModeTransform
     /// <param name="result">The span that receives the XOR of <paramref name="a" /> and <paramref name="b" />.</param>
     private static void Xor(ReadOnlySpan<byte> a, ReadOnlySpan<byte> b, Span<byte> result)
     {
-        for (var i = 0; i < result.Length; i++)
+        for (int i = 0; i < result.Length; i++)
             result[i] = (byte)(a[i] ^ b[i]);
     }
 

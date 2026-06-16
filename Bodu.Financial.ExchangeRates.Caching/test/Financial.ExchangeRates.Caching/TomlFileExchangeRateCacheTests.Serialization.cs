@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlFileExchangeRateCacheTests.Serialization.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -45,7 +45,7 @@ public sealed partial class TomlFileExchangeRateCacheTests
         var cachedAt = new DateTimeOffset(2023, 1, 4, 9, 15, 0, TimeSpan.Zero);
         cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, cachedAt) }, Duration, cachedAt);
 
-        var text = File.ReadAllText(PairFilePath);
+        string text = File.ReadAllText(PairFilePath);
 
         StringAssert.Contains(text, "[[Entries]]", StringComparison.Ordinal);
         StringAssert.Contains(text, "Rate = \"0.5000\"", StringComparison.Ordinal);
@@ -109,7 +109,7 @@ public sealed partial class TomlFileExchangeRateCacheTests
         var fetchedAt = new DateTimeOffset(2023, 1, 4, 9, 15, 0, TimeSpan.Zero);
         cache.RecordCoverage(Pair, new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 6), Duration, fetchedAt);
 
-        var text = File.ReadAllText(PairFilePath);
+        string text = File.ReadAllText(PairFilePath);
 
         StringAssert.Contains(text, "[[Coverage]]", StringComparison.Ordinal);
         StringAssert.Contains(text, "Start = 2023-01-03", StringComparison.Ordinal);
@@ -222,7 +222,7 @@ public sealed partial class TomlFileExchangeRateCacheTests
             Duration,
             cachedAt);
 
-        var text = File.ReadAllText(PairFilePath);
+        string text = File.ReadAllText(PairFilePath);
 
         // A zero offset serializes to TOML's RFC 3339 'Z' form, matching the CachedAtUtc rendering.
         StringAssert.Contains(text, "ObservedAtUtc = 2023-01-03T16:00:00Z", StringComparison.Ordinal);
@@ -239,8 +239,8 @@ public sealed partial class TomlFileExchangeRateCacheTests
     /// <returns>The number of non-overlapping occurrences.</returns>
     private static int CountOccurrences(string text, string value)
     {
-        var count = 0;
-        var index = text.IndexOf(value, StringComparison.Ordinal);
+        int count = 0;
+        int index = text.IndexOf(value, StringComparison.Ordinal);
         while (index >= 0)
         {
             count++;

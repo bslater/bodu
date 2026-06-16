@@ -28,7 +28,7 @@ public sealed class BufferWriterTests
     {
         ArrayBufferWriter<char> writer = new();
 
-        var written = Base16.Encode(Payload, writer);
+        int written = Base16.Encode(Payload, writer);
 
         Assert.AreEqual(Payload.Length * 2, written);
         Assert.AreEqual(Base16.Encode(Payload), new string(writer.WrittenSpan));
@@ -42,7 +42,7 @@ public sealed class BufferWriterTests
     {
         ArrayBufferWriter<char> writer = new();
 
-        var written = Base16.Encode([], writer);
+        int written = Base16.Encode([], writer);
 
         Assert.AreEqual(0, written);
         Assert.AreEqual(0, writer.WrittenCount);
@@ -69,8 +69,8 @@ public sealed class BufferWriterTests
     {
         ArrayBufferWriter<byte> writer = new();
 
-        var written = Base16.EncodeToUtf8(Payload, writer);
-        var expected = Base16.EncodeToUtf8(Payload);
+        int written = Base16.EncodeToUtf8(Payload, writer);
+        byte[] expected = Base16.EncodeToUtf8(Payload);
 
         Assert.AreEqual(expected.Length, written);
         CollectionAssert.AreEqual(expected, writer.WrittenSpan.ToArray());
@@ -85,7 +85,7 @@ public sealed class BufferWriterTests
     {
         ArrayBufferWriter<char> writer = new();
 
-        var written = Base32.Encode(Payload, writer);
+        int written = Base32.Encode(Payload, writer);
 
         Assert.AreEqual(Base32.GetEncodedLength(Payload.Length), written);
         Assert.AreEqual(Base32.Encode(Payload), new string(writer.WrittenSpan));
@@ -100,8 +100,8 @@ public sealed class BufferWriterTests
     {
         ArrayBufferWriter<byte> writer = new();
 
-        var written = Base32.EncodeToUtf8(Payload, writer);
-        var expected = Base32.EncodeToUtf8(Payload);
+        int written = Base32.EncodeToUtf8(Payload, writer);
+        byte[] expected = Base32.EncodeToUtf8(Payload);
 
         Assert.AreEqual(expected.Length, written);
         CollectionAssert.AreEqual(expected, writer.WrittenSpan.ToArray());
@@ -116,7 +116,7 @@ public sealed class BufferWriterTests
     {
         ArrayBufferWriter<char> writer = new();
 
-        var written = Base58.Encode(Payload, writer);
+        int written = Base58.Encode(Payload, writer);
 
         Assert.AreEqual(Base58.Encode(Payload).Length, written);
         Assert.AreEqual(Base58.Encode(Payload), new string(writer.WrittenSpan));
@@ -131,8 +131,8 @@ public sealed class BufferWriterTests
     {
         ArrayBufferWriter<byte> writer = new();
 
-        var written = Base58.EncodeToUtf8(Payload, writer);
-        var expected = Base58.EncodeToUtf8(Payload);
+        int written = Base58.EncodeToUtf8(Payload, writer);
+        byte[] expected = Base58.EncodeToUtf8(Payload);
 
         Assert.AreEqual(expected.Length, written);
         CollectionAssert.AreEqual(expected, writer.WrittenSpan.ToArray());
@@ -147,7 +147,7 @@ public sealed class BufferWriterTests
     {
         ArrayBufferWriter<byte> writer = new();
 
-        var written = Base58.EncodeToUtf8([], writer);
+        int written = Base58.EncodeToUtf8([], writer);
 
         Assert.AreEqual(0, written);
         Assert.AreEqual(0, writer.WrittenCount);
@@ -175,7 +175,7 @@ public sealed class BufferWriterTests
     {
         ArrayBufferWriter<char> writer = new();
 
-        var written = Base64.Encode(Payload, writer);
+        int written = Base64.Encode(Payload, writer);
 
         Assert.AreEqual(Base64.Encode(Payload).Length, written);
         Assert.AreEqual(Base64.Encode(Payload), new string(writer.WrittenSpan));
@@ -190,8 +190,8 @@ public sealed class BufferWriterTests
     {
         ArrayBufferWriter<byte> writer = new();
 
-        var written = Base64.EncodeToUtf8(Payload, writer);
-        var expected = Base64.EncodeToUtf8(Payload);
+        int written = Base64.EncodeToUtf8(Payload, writer);
+        byte[] expected = Base64.EncodeToUtf8(Payload);
 
         Assert.AreEqual(expected.Length, written);
         CollectionAssert.AreEqual(expected, writer.WrittenSpan.ToArray());
@@ -206,7 +206,7 @@ public sealed class BufferWriterTests
     {
         ArrayBufferWriter<char> writer = new();
 
-        var written = Base85.Encode(Payload, writer);
+        int written = Base85.Encode(Payload, writer);
 
         Assert.AreEqual(Base85.Encode(Payload).Length, written);
         Assert.AreEqual(Base85.Encode(Payload), new string(writer.WrittenSpan));
@@ -222,8 +222,8 @@ public sealed class BufferWriterTests
     {
         ArrayBufferWriter<char> writer = new();
 
-        var written = Base85.Encode(Payload, writer, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
-        var expected = Base85.Encode(Payload, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
+        int written = Base85.Encode(Payload, writer, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
+        string expected = Base85.Encode(Payload, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
 
         Assert.AreEqual(expected.Length, written);
         Assert.AreEqual(expected, new string(writer.WrittenSpan));
@@ -239,8 +239,8 @@ public sealed class BufferWriterTests
     {
         ArrayBufferWriter<byte> writer = new();
 
-        var written = Base85.EncodeToUtf8(Payload, writer);
-        var expected = Base85.EncodeToUtf8(Payload);
+        int written = Base85.EncodeToUtf8(Payload, writer);
+        byte[] expected = Base85.EncodeToUtf8(Payload);
 
         Assert.AreEqual(expected.Length, written);
         CollectionAssert.AreEqual(expected, writer.WrittenSpan.ToArray());
@@ -255,7 +255,7 @@ public sealed class BufferWriterTests
     {
         ArrayBufferWriter<byte> writer = new();
 
-        var written = Base85.EncodeToUtf8([], writer);
+        int written = Base85.EncodeToUtf8([], writer);
 
         Assert.AreEqual(0, written);
         Assert.AreEqual(0, writer.WrittenCount);
@@ -282,11 +282,11 @@ public sealed class BufferWriterTests
     public void Base85_EncodeToUtf8_WithZ85Variant_ShouldMatchArrayOutput()
     {
         // Z85 requires 4-byte aligned input.
-        var aligned = new byte[] { 0x86, 0x4F, 0xD2, 0x6F, 0xB5, 0x59, 0xF7, 0x5B };
+        byte[] aligned = new byte[] { 0x86, 0x4F, 0xD2, 0x6F, 0xB5, 0x59, 0xF7, 0x5B };
         ArrayBufferWriter<byte> writer = new();
 
-        var written = Base85.EncodeToUtf8(aligned, writer, Base85Variant.Z85);
-        var expected = Base85.EncodeToUtf8(aligned, Base85Variant.Z85);
+        int written = Base85.EncodeToUtf8(aligned, writer, Base85Variant.Z85);
+        byte[] expected = Base85.EncodeToUtf8(aligned, Base85Variant.Z85);
 
         Assert.AreEqual(expected.Length, written);
         CollectionAssert.AreEqual(expected, writer.WrittenSpan.ToArray());

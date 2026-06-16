@@ -16,8 +16,8 @@ public partial class BufferConverterTests
     [TestMethod]
     public void SwapEndian_ByteSpans_WhenDestinationIsShorterThanSource_ShouldThrowExactly()
     {
-        var source = new byte[8];   // 8 bytes
-        var destination = new byte[4]; // half the size, still a positive multiple of elementSize=2
+        byte[] source = new byte[8];   // 8 bytes
+        byte[] destination = new byte[4]; // half the size, still a positive multiple of elementSize=2
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

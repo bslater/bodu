@@ -45,7 +45,7 @@ public sealed partial class Bech32Tests
     [DataRow("?1v759aa", "?", Bech32Encoding.Bech32m)]
     public void Decode_WhenKnownVector_ShouldRecoverPartsAndScheme(string source, string expectedHrp, Bech32Encoding expectedEncoding)
     {
-        Bech32.Decode(source, out var hrp, out var data, out var encoding);
+        Bech32.Decode(source, out string? hrp, out byte[]? data, out var encoding);
 
         Assert.AreEqual(expectedHrp, hrp);
         Assert.AreEqual(0, data.Length);
@@ -61,7 +61,7 @@ public sealed partial class Bech32Tests
     {
         const string Vector = "an83characterlonghumanreadablepartthatcontainsthenumber1andtheexcludedcharactersbio1tt5tgs";
 
-        Bech32.Decode(Vector, out var hrp, out var data, out var encoding);
+        Bech32.Decode(Vector, out string? hrp, out byte[]? data, out var encoding);
 
         Assert.AreEqual("an83characterlonghumanreadablepartthatcontainsthenumber1andtheexcludedcharactersbio", hrp);
         Assert.AreEqual(0, data.Length);
@@ -76,17 +76,17 @@ public sealed partial class Bech32Tests
     public void EncodeDecode_WhenBip173SegWitV0Example_ShouldMatchPublishedAddress()
     {
         const string Address = "bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4";
-        var program = Convert.FromHexString("751e76e8199196d454941c45d1b3a323f1433bd6");
+        byte[] program = Convert.FromHexString("751e76e8199196d454941c45d1b3a323f1433bd6");
 
         // Data part = witness version (0) followed by the program repacked from 8-bit to 5-bit groups.
-        var programGroups = Bech32.ConvertBits(program, 8, 5, pad: true)!;
-        var data = new byte[1 + programGroups.Length];
+        byte[] programGroups = Bech32.ConvertBits(program, 8, 5, pad: true)!;
+        byte[] data = new byte[1 + programGroups.Length];
         programGroups.CopyTo(data, 1);
 
-        var encoded = Bech32.Encode("bc", data, Bech32Encoding.Bech32);
+        string encoded = Bech32.Encode("bc", data, Bech32Encoding.Bech32);
         Assert.AreEqual(Address, encoded);
 
-        Bech32.Decode(Address, out var hrp, out var decoded, out var encoding);
+        Bech32.Decode(Address, out string? hrp, out byte[]? decoded, out var encoding);
         Assert.AreEqual("bc", hrp);
         Assert.AreEqual(Bech32Encoding.Bech32, encoding);
         Assert.AreEqual(0, decoded[0]);
@@ -106,8 +106,8 @@ public sealed partial class Bech32Tests
     {
         byte[] payload = [0x00, 0x01, 0x02, 0xDE, 0xAD, 0xBE, 0xEF, 0xFF];
 
-        var encoded = Bech32.EncodeFromBytes("bodu", payload, encoding);
-        Bech32.DecodeToBytes(encoded, out var hrp, out var decoded, out var decodedEncoding);
+        string encoded = Bech32.EncodeFromBytes("bodu", payload, encoding);
+        Bech32.DecodeToBytes(encoded, out string? hrp, out byte[]? decoded, out var decodedEncoding);
 
         Assert.AreEqual("bodu", hrp);
         Assert.AreEqual(encoding, decodedEncoding);

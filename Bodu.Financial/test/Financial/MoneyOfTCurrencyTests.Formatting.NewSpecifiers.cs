@@ -24,7 +24,7 @@ public partial class MoneyOfTCurrencyTests
     {
         var money = new Money<USD>(1234.56m);
 
-        var actual = money.ToString("L", CultureInfo.InvariantCulture);
+        string actual = money.ToString("L", CultureInfo.InvariantCulture);
 
         Assert.AreEqual("1,234.56 US Dollar", actual);
     }
@@ -38,7 +38,7 @@ public partial class MoneyOfTCurrencyTests
     {
         var money = new Money<EUR>(1234.56m);
 
-        var actual = money.ToString("L", new CultureInfo("de-DE"));
+        string actual = money.ToString("L", new CultureInfo("de-DE"));
 
         Assert.AreEqual("1.234,56 Euro", actual);
     }
@@ -51,7 +51,7 @@ public partial class MoneyOfTCurrencyTests
     {
         var money = new Money<JPY>(1234m);
 
-        var actual = money.ToString("L", CultureInfo.InvariantCulture);
+        string actual = money.ToString("L", CultureInfo.InvariantCulture);
 
         Assert.AreEqual("1,234 Yen", actual);
     }
@@ -65,7 +65,7 @@ public partial class MoneyOfTCurrencyTests
     {
         var money = new Money<USD>(19.99m);
 
-        var actual = money.ToString("L0", CultureInfo.InvariantCulture);
+        string actual = money.ToString("L0", CultureInfo.InvariantCulture);
 
         Assert.AreEqual("20 US Dollar", actual);
     }
@@ -79,7 +79,7 @@ public partial class MoneyOfTCurrencyTests
     {
         var money = new Money<USD>(19.99m);
 
-        var actual = money.ToString("~L", new CultureInfo("en-US"));
+        string actual = money.ToString("~L", new CultureInfo("en-US"));
 
         Assert.AreEqual("19.99", actual);
     }
@@ -93,7 +93,7 @@ public partial class MoneyOfTCurrencyTests
     {
         var money = new Money<JPY>(1234m);
 
-        var actual = money.ToString("~L", new CultureInfo("en-US"));
+        string actual = money.ToString("~L", new CultureInfo("en-US"));
 
         Assert.AreEqual("1,234 Yen", actual);
     }
@@ -107,7 +107,7 @@ public partial class MoneyOfTCurrencyTests
     {
         var money = new Money<NoEnglishNameCurrency>(1234.56m);
 
-        var actual = money.ToString("L", CultureInfo.InvariantCulture);
+        string actual = money.ToString("L", CultureInfo.InvariantCulture);
 
         Assert.AreEqual("XYZ 1,234.56", actual);
     }
@@ -125,7 +125,7 @@ public partial class MoneyOfTCurrencyTests
     {
         var money = new Money<USD>(1234.56m);
 
-        var actual = money.ToString("R", CultureInfo.InvariantCulture);
+        string actual = money.ToString("R", CultureInfo.InvariantCulture);
 
         Assert.AreEqual("USD 1234.56", actual);
     }
@@ -139,7 +139,7 @@ public partial class MoneyOfTCurrencyTests
     {
         var money = new Money<EUR>(1234.56m);
 
-        var actual = money.ToString("R", new CultureInfo("de-DE"));
+        string actual = money.ToString("R", new CultureInfo("de-DE"));
 
         Assert.AreEqual("EUR 1234.56", actual);
     }
@@ -153,7 +153,7 @@ public partial class MoneyOfTCurrencyTests
     {
         var money = new Money<USD>(-1234.56m);
 
-        var actual = money.ToString("R", new CultureInfo("en-US"));
+        string actual = money.ToString("R", new CultureInfo("en-US"));
 
         Assert.AreEqual("USD -1234.56", actual);
     }
@@ -171,16 +171,16 @@ public partial class MoneyOfTCurrencyTests
     [DataRow("BHD", -1234.567)]
     public void ToString_WhenRSpecifier_ShouldRoundTripThroughParse(string iso, double amount)
     {
-        var value = (decimal)amount;
+        decimal value = (decimal)amount;
         Type currencyType = typeof(USD).Assembly.GetType($"Bodu.Financial.Currencies.{iso}")!;
         Type moneyType = typeof(Money<>).MakeGenericType(currencyType);
-        var original = Activator.CreateInstance(moneyType, value)!;
+        object original = Activator.CreateInstance(moneyType, value)!;
 
-        var text = (string)moneyType
+        string text = (string)moneyType
             .GetMethod("ToString", [typeof(string), typeof(IFormatProvider)])!
             .Invoke(original, ["R", CultureInfo.InvariantCulture])!;
 
-        var recovered = moneyType
+        object recovered = moneyType
             .GetMethod("Parse", [typeof(string), typeof(IFormatProvider)])!
             .Invoke(null, [text, CultureInfo.InvariantCulture])!;
 

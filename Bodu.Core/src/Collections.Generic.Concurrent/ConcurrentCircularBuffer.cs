@@ -153,7 +153,7 @@ public sealed partial class ConcurrentCircularBuffer<T>
         _allowOverwrite = allowOverwrite;
 
         // Initialize slot sequences so that slot i is initially "free" for tail == i.
-        for (var i = 0; i < capacity; i++)
+        for (int i = 0; i < capacity; i++)
             _buffer[i].Sequence = i;
 
         _head = 0;
@@ -266,11 +266,11 @@ public sealed partial class ConcurrentCircularBuffer<T>
             ThrowHelper.ThrowIfLessThan(index, 0);
 
             SpinWait spinner = default;
-            for (var outerAttempt = 0; outerAttempt < SnapshotOuterRetryBudget; outerAttempt++)
+            for (int outerAttempt = 0; outerAttempt < SnapshotOuterRetryBudget; outerAttempt++)
             {
-                var head = Volatile.Read(ref _head);
-                var tail = Volatile.Read(ref _tail);
-                var count = tail - head;
+                int head = Volatile.Read(ref _head);
+                int tail = Volatile.Read(ref _tail);
+                int count = tail - head;
                 if (count < 0)
                     count = 0;
                 if (count > _capacity)
@@ -278,7 +278,7 @@ public sealed partial class ConcurrentCircularBuffer<T>
 
                 ThrowHelper.ThrowIfGreaterThanOrEqual(index, count);
 
-                var position = head + index;
+                int position = head + index;
                 if (TryReadStableSlot(SlotIndex(position), position + 1, out T? value)
                     && Volatile.Read(ref _head) == head)
                 {
@@ -310,12 +310,12 @@ public sealed partial class ConcurrentCircularBuffer<T>
     {
         // Bound the drain to the element count observed at call time. This prevents
         // unbounded spinning when producers are continuously enqueueing into the buffer.
-        var head = Volatile.Read(ref _head);
-        var tail = Volatile.Read(ref _tail);
-        var count = Math.Clamp(tail - head, 0, _capacity);
+        int head = Volatile.Read(ref _head);
+        int tail = Volatile.Read(ref _tail);
+        int count = Math.Clamp(tail - head, 0, _capacity);
 
         T? _;
-        for (var i = 0; i < count && TryDequeue(out _); i++)
+        for (int i = 0; i < count && TryDequeue(out _); i++)
         { }
     }
 
@@ -339,20 +339,20 @@ public sealed partial class ConcurrentCircularBuffer<T>
         EqualityComparer<T?> comparer = EqualityComparer<T?>.Default;
         SpinWait spinner = default;
 
-        for (var outerAttempt = 0; outerAttempt < SnapshotOuterRetryBudget; outerAttempt++)
+        for (int outerAttempt = 0; outerAttempt < SnapshotOuterRetryBudget; outerAttempt++)
         {
-            var head = Volatile.Read(ref _head);
-            var tail = Volatile.Read(ref _tail);
-            var count = tail - head;
+            int head = Volatile.Read(ref _head);
+            int tail = Volatile.Read(ref _tail);
+            int count = tail - head;
             if (count <= 0)
                 return false;
             if (count > _capacity)
                 count = _capacity;
 
-            var slotFailure = false;
-            for (var i = 0; i < count; i++)
+            bool slotFailure = false;
+            for (int i = 0; i < count; i++)
             {
-                var position = head + i;
+                int position = head + i;
                 if (!TryReadStableSlot(SlotIndex(position), position + 1, out T? value))
                 {
                     slotFailure = true;
@@ -456,23 +456,23 @@ public sealed partial class ConcurrentCircularBuffer<T>
     {
         SpinWait spinner = default;
 
-        for (var outerAttempt = 0; outerAttempt < SnapshotOuterRetryBudget; outerAttempt++)
+        for (int outerAttempt = 0; outerAttempt < SnapshotOuterRetryBudget; outerAttempt++)
         {
-            var head = Volatile.Read(ref _head);
-            var tail = Volatile.Read(ref _tail);
+            int head = Volatile.Read(ref _head);
+            int tail = Volatile.Read(ref _tail);
 
-            var count = tail - head;
+            int count = tail - head;
             if (count <= 0)
                 return [];
             if (count > _capacity)
                 count = _capacity;
 
             var result = new T[count];
-            var slotFailure = false;
+            bool slotFailure = false;
 
-            for (var i = 0; i < count; i++)
+            for (int i = 0; i < count; i++)
             {
-                var position = head + i;
+                int position = head + i;
                 if (!TryReadStableSlot(SlotIndex(position), position + 1, out T? value))
                 {
                     slotFailure = true;
@@ -540,11 +540,11 @@ public sealed partial class ConcurrentCircularBuffer<T>
 
         while (true)
         {
-            var head = Volatile.Read(ref _head);
+            int head = Volatile.Read(ref _head);
             ref Slot slot = ref _buffer[SlotIndex(head)];
 
-            var seq = Volatile.Read(ref slot.Sequence);
-            var diff = seq - (head + 1);
+            int seq = Volatile.Read(ref slot.Sequence);
+            int diff = seq - (head + 1);
 
             if (diff == 0)
             {
@@ -586,16 +586,16 @@ public sealed partial class ConcurrentCircularBuffer<T>
     /// <returns>The best-effort snapshot array.</returns>
     private T[] BestEffortSnapshot()
     {
-        var head = Volatile.Read(ref _head);
-        var tail = Volatile.Read(ref _tail);
-        var count = Math.Clamp(tail - head, 0, _capacity);
+        int head = Volatile.Read(ref _head);
+        int tail = Volatile.Read(ref _tail);
+        int count = Math.Clamp(tail - head, 0, _capacity);
         if (count == 0)
             return [];
 
         var result = new T[count];
-        for (var i = 0; i < count; i++)
+        for (int i = 0; i < count; i++)
         {
-            var position = head + i;
+            int position = head + i;
             if (TryReadStableSlot(SlotIndex(position), position + 1, out T? value))
                 result[i] = value!;
 
@@ -619,11 +619,11 @@ public sealed partial class ConcurrentCircularBuffer<T>
 
         while (true)
         {
-            var head = Volatile.Read(ref _head);
+            int head = Volatile.Read(ref _head);
             ref Slot slot = ref _buffer[SlotIndex(head)];
 
-            var seq = Volatile.Read(ref slot.Sequence);
-            var diff = seq - (head + 1);
+            int seq = Volatile.Read(ref slot.Sequence);
+            int diff = seq - (head + 1);
 
             if (diff == 0)
             {
@@ -685,12 +685,12 @@ public sealed partial class ConcurrentCircularBuffer<T>
     /// </remarks>
     private void InitialFill(T[] items)
     {
-        var capacity = _capacity;
-        var sourceLength = items.Length;
-        var copyLength = sourceLength <= capacity ? sourceLength : capacity;
-        var sourceOffset = sourceLength - copyLength;
+        int capacity = _capacity;
+        int sourceLength = items.Length;
+        int copyLength = sourceLength <= capacity ? sourceLength : capacity;
+        int sourceOffset = sourceLength - copyLength;
 
-        for (var i = 0; i < copyLength; i++)
+        for (int i = 0; i < copyLength; i++)
         {
             _buffer[i].Value = items[sourceOffset + i];
             _buffer[i].Sequence = i + 1;
@@ -720,11 +720,11 @@ public sealed partial class ConcurrentCircularBuffer<T>
 
         while (true)
         {
-            var head = Volatile.Read(ref _head);
+            int head = Volatile.Read(ref _head);
             ref Slot slot = ref _buffer[SlotIndex(head)];
 
-            var seq = Volatile.Read(ref slot.Sequence);
-            var diff = seq - (head + 1);
+            int seq = Volatile.Read(ref slot.Sequence);
+            int diff = seq - (head + 1);
 
             if (diff == 0)
             {
@@ -775,11 +775,11 @@ public sealed partial class ConcurrentCircularBuffer<T>
 
         while (true)
         {
-            var tail = Volatile.Read(ref _tail);
+            int tail = Volatile.Read(ref _tail);
             ref Slot slot = ref _buffer[SlotIndex(tail)];
 
-            var seq = Volatile.Read(ref slot.Sequence);
-            var diff = seq - tail;
+            int seq = Volatile.Read(ref slot.Sequence);
+            int diff = seq - tail;
 
             if (diff == 0)
             {
@@ -862,9 +862,9 @@ public sealed partial class ConcurrentCircularBuffer<T>
     private bool TryReadStableSlot(int slotIndex, int expectedSequence, out T? value)
     {
         SpinWait spinner = default;
-        for (var attempt = 0; attempt < SlotReadRetryBudget; attempt++)
+        for (int attempt = 0; attempt < SlotReadRetryBudget; attempt++)
         {
-            var seqPre = Volatile.Read(ref _buffer[slotIndex].Sequence);
+            int seqPre = Volatile.Read(ref _buffer[slotIndex].Sequence);
             if (seqPre - expectedSequence != 0)
             {
                 value = default;
@@ -872,7 +872,7 @@ public sealed partial class ConcurrentCircularBuffer<T>
             }
 
             T? candidate = Volatile.Read(ref _buffer[slotIndex].Value);
-            var seqPost = Volatile.Read(ref _buffer[slotIndex].Sequence);
+            int seqPost = Volatile.Read(ref _buffer[slotIndex].Sequence);
             if (seqPost == seqPre)
             {
                 value = candidate;

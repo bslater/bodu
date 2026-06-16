@@ -16,7 +16,7 @@ public partial class ConfigurationPatternTests
     [TestMethod]
     public void Compile_WhenPatternLengthAtCap_ShouldCompile()
     {
-        var pattern = new string('a', ConfigurationPattern.MaxPatternLength);
+        string pattern = new string('a', ConfigurationPattern.MaxPatternLength);
 
         var compiled = ConfigurationPattern.Compile(pattern);
 
@@ -33,7 +33,7 @@ public partial class ConfigurationPatternTests
     [TestMethod]
     public void Compile_WhenPatternLengthExceedsCap_ShouldThrowWithPatternTooLongCode()
     {
-        var pattern = new string('a', ConfigurationPattern.MaxPatternLength + 1);
+        string pattern = new string('a', ConfigurationPattern.MaxPatternLength + 1);
 
         ConfigurationParseException ex = Assert.ThrowsExactly<ConfigurationParseException>(() =>
         {
@@ -52,7 +52,7 @@ public partial class ConfigurationPatternTests
     [TestMethod]
     public void Compile_WhenPatternExceedsCapAndCompiledTwice_ShouldThrowEachTime()
     {
-        var pattern = new string('a', ConfigurationPattern.MaxPatternLength + 1);
+        string pattern = new string('a', ConfigurationPattern.MaxPatternLength + 1);
 
         Assert.ThrowsExactly<ConfigurationParseException>(() =>
         {

@@ -148,10 +148,10 @@ public sealed class TwofishBlockCipher
 
         // Split the 128-bit plaintext block into four little-endian 32-bit words, matching the Twofish
         // reference word layout P0..P3.
-        var r0 = BinaryPrimitives.ReadUInt32LittleEndian(input);
-        var r1 = BinaryPrimitives.ReadUInt32LittleEndian(input[4..]);
-        var r2 = BinaryPrimitives.ReadUInt32LittleEndian(input[8..]);
-        var r3 = BinaryPrimitives.ReadUInt32LittleEndian(input[12..]);
+        uint r0 = BinaryPrimitives.ReadUInt32LittleEndian(input);
+        uint r1 = BinaryPrimitives.ReadUInt32LittleEndian(input[4..]);
+        uint r2 = BinaryPrimitives.ReadUInt32LittleEndian(input[8..]);
+        uint r3 = BinaryPrimitives.ReadUInt32LittleEndian(input[12..]);
 
         // Input whitening: R0..R3 = P0..P3 xor K0..K3.
         r0 ^= _k[0];
@@ -162,12 +162,12 @@ public sealed class TwofishBlockCipher
         // Each loop body performs two Twofish rounds. The first half-round pair applies F(R0, R1)
         // to R2/R3; the second applies F(R2, R3) to R0/R1. This preserves the specified Feistel swap
         // without physically rotating the register variables after every round.
-        for (var i = 0; i < 2 * Rounds; i += 4)
+        for (int i = 0; i < 2 * Rounds; i += 4)
         {
             // Round i/2: compute T0 = g(R0) and T1 = g(ROL(R1, 8)), then combine them through
             // the pseudo-Hadamard transform with round subkeys K8+i and K9+i.
-            var t0 = G0(r0);
-            var t1 = G1(r1);
+            uint t0 = G0(r0);
+            uint t1 = G1(r1);
 
             // R2 is xor-mixed with F0, then rotated right as defined by the Twofish round function.
             r2 ^= t0 + t1 + _k[8 + i];
@@ -210,10 +210,10 @@ public sealed class TwofishBlockCipher
 
         // Ciphertext is stored in the post-swap order C0..C3 = R2, R3, R0, R1.
         // Load directly into the corresponding working registers so the inverse whitening is explicit.
-        var r2 = BinaryPrimitives.ReadUInt32LittleEndian(input);
-        var r3 = BinaryPrimitives.ReadUInt32LittleEndian(input[4..]);
-        var r0 = BinaryPrimitives.ReadUInt32LittleEndian(input[8..]);
-        var r1 = BinaryPrimitives.ReadUInt32LittleEndian(input[12..]);
+        uint r2 = BinaryPrimitives.ReadUInt32LittleEndian(input);
+        uint r3 = BinaryPrimitives.ReadUInt32LittleEndian(input[4..]);
+        uint r0 = BinaryPrimitives.ReadUInt32LittleEndian(input[8..]);
+        uint r1 = BinaryPrimitives.ReadUInt32LittleEndian(input[12..]);
 
         // Remove output whitening before walking the round function backwards.
         r2 ^= _k[4];
@@ -222,11 +222,11 @@ public sealed class TwofishBlockCipher
         r1 ^= _k[7];
 
         // Invert two encryption rounds at a time, consuming the round subkeys in reverse order.
-        for (var i = 0; i < 2 * Rounds; i += 4)
+        for (int i = 0; i < 2 * Rounds; i += 4)
         {
             // Invert the second encryption round of the corresponding pair.
-            var t0 = G0(r2);
-            var t1 = G1(r3);
+            uint t0 = G0(r2);
+            uint t1 = G1(r3);
 
             // Undo the encryption order for R0: rotate left first, then remove the xor-mixed F0 value.
             r0 = RotateLeft(r0, 1);
@@ -276,14 +276,14 @@ public sealed class TwofishBlockCipher
     private void InitializeKeySchedule(ReadOnlySpan<byte> key)
     {
         // k is the number of 64-bit key words in the specification: 2, 3, or 4 for 128-, 192-, or 256-bit keys.
-        var keyWords = key.Length / 8;
+        int keyWords = key.Length / 8;
 
         Span<uint> me = stackalloc uint[4];
         Span<uint> mo = stackalloc uint[4];
         Span<uint> s = stackalloc uint[4];
 
         // Split each 64-bit key word Mi into even and odd 32-bit words Me[i] and Mo[i].
-        for (var i = 0; i < keyWords; i++)
+        for (int i = 0; i < keyWords; i++)
         {
             me[i] = BinaryPrimitives.ReadUInt32LittleEndian(key[(8 * i)..]);
             mo[i] = BinaryPrimitives.ReadUInt32LittleEndian(key[((8 * i) + 4)..]);
@@ -291,15 +291,15 @@ public sealed class TwofishBlockCipher
 
         // Apply the RS matrix to each 64-bit key word to produce the S-box key words.
         // The resulting S vector is stored in reverse order, as required by h(x, L) in the Twofish key schedule.
-        for (var i = 0; i < keyWords; i++)
+        for (int i = 0; i < keyWords; i++)
         {
             uint word = 0;
 
-            for (var row = 0; row < 4; row++)
+            for (int row = 0; row < 4; row++)
             {
                 uint value = 0;
 
-                for (var column = 0; column < 8; column++)
+                for (int column = 0; column < 8; column++)
                 {
                     value ^= GfMul(s_rs[row, column], key[(8 * i) + column], 0x4D);
                 }
@@ -312,7 +312,7 @@ public sealed class TwofishBlockCipher
 
         // Precompute each byte-lane's q/S/MDS contribution. These tables encode the key-dependent S-boxes
         // and the fixed MDS multiplication used by g().
-        for (var i = 0; i < SBoxLength; i++)
+        for (int i = 0; i < SBoxLength; i++)
         {
             _s1[i] = HSub((byte)i, s, keyWords, 0);
             _s2[i] = HSub((byte)i, s, keyWords, 1);
@@ -322,10 +322,10 @@ public sealed class TwofishBlockCipher
 
         // Generate two expanded key words per iteration. A = h(2i, Me), B = ROL(h(2i+1, Mo), 8),
         // K[2i] = A+B, and K[2i+1] = ROL(A+2B, 9).
-        for (var i = 0; i < ExpandedKeyWords / 2; i++)
+        for (int i = 0; i < ExpandedKeyWords / 2; i++)
         {
-            var a = H((byte)(2 * i), me, keyWords);
-            var b = RotateLeft(H((byte)((2 * i) + 1), mo, keyWords), 8);
+            uint a = H((byte)(2 * i), me, keyWords);
+            uint b = RotateLeft(H((byte)((2 * i) + 1), mo, keyWords), 8);
 
             a += b;
             _k[2 * i] = a;
@@ -386,7 +386,7 @@ public sealed class TwofishBlockCipher
 
         // h() consists of four parallel byte lanes, each with its own q permutation sequence.
         // Each lane is then multiplied by the corresponding MDS column and XOR-combined into one word.
-        for (var i = 0; i < 4; i++)
+        for (int i = 0; i < 4; i++)
         {
             result ^= HSub(x, l, k, i);
         }
@@ -448,10 +448,10 @@ public sealed class TwofishBlockCipher
     /// <returns>A 32-bit little-endian word containing the four row products for the selected MDS column.</returns>
     private static uint MdsMultiplyColumn(int column, byte value)
     {
-        var z0 = GfMul(s_mds[0, column], value, 0x69);
-        var z1 = GfMul(s_mds[1, column], value, 0x69);
-        var z2 = GfMul(s_mds[2, column], value, 0x69);
-        var z3 = GfMul(s_mds[3, column], value, 0x69);
+        uint z0 = GfMul(s_mds[0, column], value, 0x69);
+        uint z1 = GfMul(s_mds[1, column], value, 0x69);
+        uint z2 = GfMul(s_mds[2, column], value, 0x69);
+        uint z3 = GfMul(s_mds[3, column], value, 0x69);
 
         return z0 | (z1 << 8) | (z2 << 16) | (z3 << 24);
     }
@@ -473,7 +473,7 @@ public sealed class TwofishBlockCipher
     {
         byte result = 0;
 
-        for (var i = 0; i < 8; i++)
+        for (int i = 0; i < 8; i++)
         {
             if ((b & 0x01) != 0)
                 result ^= a;
@@ -502,21 +502,21 @@ public sealed class TwofishBlockCipher
     /// </remarks>
     private static byte[] CreateQ(byte[] t0, byte[] t1, byte[] t2, byte[] t3)
     {
-        var q = new byte[256];
+        byte[] q = new byte[256];
 
-        for (var x = 0; x < q.Length; x++)
+        for (int x = 0; x < q.Length; x++)
         {
-            var a0 = x >> 4;
-            var b0 = x & 0x0F;
+            int a0 = x >> 4;
+            int b0 = x & 0x0F;
 
-            var a1 = a0 ^ b0;
-            var b1 = a0 ^ RotateRight4(b0) ^ ((a0 << 3) & 0x0F);
+            int a1 = a0 ^ b0;
+            int b1 = a0 ^ RotateRight4(b0) ^ ((a0 << 3) & 0x0F);
 
             int a2 = t0[a1];
             int b2 = t1[b1];
 
-            var a3 = a2 ^ b2;
-            var b3 = a2 ^ RotateRight4(b2) ^ ((a2 << 3) & 0x0F);
+            int a3 = a2 ^ b2;
+            int b3 = a2 ^ RotateRight4(b2) ^ ((a2 << 3) & 0x0F);
 
             int a4 = t2[a3];
             int b4 = t3[b3];

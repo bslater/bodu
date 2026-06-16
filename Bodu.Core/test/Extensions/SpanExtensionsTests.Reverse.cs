@@ -16,7 +16,7 @@ public partial class SpanExtensionsTests
     [TestMethod]
     public void Reverse_WhenCalled_ForMutableSpan_ShouldNotModifySource()
     {
-        var original = Ints;
+        int[] original = Ints;
         _ = ((Span<int>)original).Reverse();
         AssertIntsSourceIsUnmodified(original);
     }
@@ -44,7 +44,7 @@ public partial class SpanExtensionsTests
     [TestMethod]
     public void Reverse_WhenCalled_ForReadOnlySpan_ShouldNotModifySource()
     {
-        var original = Ints;
+        int[] original = Ints;
         _ = ((ReadOnlySpan<int>)original).Reverse();
         AssertIntsSourceIsUnmodified(original);
     }
@@ -56,7 +56,7 @@ public partial class SpanExtensionsTests
     [TestMethod]
     public void Reverse_WhenCalled_ForReadOnlySpan_ShouldReturnIndependentAllocation()
     {
-        var original = Ints;
+        int[] original = Ints;
         Span<int> result = ((ReadOnlySpan<int>)original).Reverse();
         result[0] = 99;
         AssertIntsSourceIsUnmodified(original);
@@ -78,7 +78,7 @@ public partial class SpanExtensionsTests
     [TestMethod]
     public void Reverse_WhenCalled_ForReadOnlySpanIndexCount_ShouldNotModifySource()
     {
-        var original = Ints;
+        int[] original = Ints;
         _ = ((ReadOnlySpan<int>)original).Reverse(1, 3);
         AssertIntsSourceIsUnmodified(original);
     }
@@ -129,7 +129,7 @@ public partial class SpanExtensionsTests
     [TestMethod]
     public void Reverse_WhenCalled_ForReadOnlySpanRange_ShouldNotModifySource()
     {
-        var original = Ints;
+        int[] original = Ints;
         _ = ((ReadOnlySpan<int>)original).Reverse(1..4);
         AssertIntsSourceIsUnmodified(original);
     }

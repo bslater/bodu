@@ -59,7 +59,7 @@ public partial class ConfigurationKatRunnerTests
             return ConfigurationKeyOptions.Default;
 
         // Encoded as "Mapping;CaseSensitive=bool" or just "Mapping".
-        var parts = raw.Split(';');
+        string[] parts = raw.Split(';');
         ConfigurationKeyMapping mapping = parts[0] switch
         {
             "DotToColon" => ConfigurationKeyMapping.DotToColon,
@@ -68,8 +68,8 @@ public partial class ConfigurationKatRunnerTests
             _ => ConfigurationKeyMapping.DotToColon,
         };
 
-        var caseSensitive = false;
-        foreach (var part in parts.Skip(1))
+        bool caseSensitive = false;
+        foreach (string? part in parts.Skip(1))
         {
             if (part.StartsWith("CaseSensitive=", StringComparison.Ordinal))
                 caseSensitive = bool.Parse(part["CaseSensitive=".Length..]);

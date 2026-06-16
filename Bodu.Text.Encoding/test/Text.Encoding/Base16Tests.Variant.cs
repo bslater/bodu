@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base16Tests.Variant.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -17,7 +17,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void Encode_WhenVariantIsLower_ShouldMatchDefaultLowerCase()
     {
-        var actual = Base16.Encode(CanonicalBytes.AsSpan(), Base16Variant.Lower);
+        string actual = Base16.Encode(CanonicalBytes.AsSpan(), Base16Variant.Lower);
 
         Assert.AreEqual(CanonicalHexLower, actual);
     }
@@ -30,7 +30,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void Encode_WhenVariantIsUpper_ShouldMatchUpperCaseOption()
     {
-        var actual = Base16.Encode(CanonicalBytes.AsSpan(), Base16Variant.Upper);
+        string actual = Base16.Encode(CanonicalBytes.AsSpan(), Base16Variant.Upper);
 
         Assert.AreEqual(CanonicalHexUpper, actual);
         Assert.AreEqual(Base16.Encode(CanonicalBytes.AsSpan(), BaseFormattingOptions.UpperCase), actual);
@@ -43,7 +43,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void Encode_WhenVariantLowerAndUpperCaseFlagSet_ShouldForceLowerCase()
     {
-        var actual = Base16.Encode(CanonicalBytes.AsSpan(), Base16Variant.Lower, BaseFormattingOptions.UpperCase);
+        string actual = Base16.Encode(CanonicalBytes.AsSpan(), Base16Variant.Lower, BaseFormattingOptions.UpperCase);
 
         Assert.AreEqual(CanonicalHexLower, actual);
     }
@@ -55,7 +55,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void Encode_WhenVariantUpperAndNoCaseFlag_ShouldForceUpperCase()
     {
-        var actual = Base16.Encode(CanonicalBytes.AsSpan(), Base16Variant.Upper, BaseFormattingOptions.None);
+        string actual = Base16.Encode(CanonicalBytes.AsSpan(), Base16Variant.Upper, BaseFormattingOptions.None);
 
         Assert.AreEqual(CanonicalHexUpper, actual);
     }
@@ -67,7 +67,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void Encode_WhenVariantUpperWithPrefixFlag_ShouldApplyBothPrefixAndUpperCase()
     {
-        var actual = Base16.Encode(CanonicalBytes.AsSpan(), Base16Variant.Upper, BaseFormattingOptions.IncludePrefix);
+        string actual = Base16.Encode(CanonicalBytes.AsSpan(), Base16Variant.Upper, BaseFormattingOptions.IncludePrefix);
 
         Assert.AreEqual("0x" + CanonicalHexUpper, actual);
     }
@@ -79,8 +79,8 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void Encode_ByteArrayVariantOverload_ShouldMatchSpanVariantOverload()
     {
-        var fromArray = Base16.Encode(CanonicalBytes, Base16Variant.Upper);
-        var fromSpan = Base16.Encode(CanonicalBytes.AsSpan(), Base16Variant.Upper);
+        string fromArray = Base16.Encode(CanonicalBytes, Base16Variant.Upper);
+        string fromSpan = Base16.Encode(CanonicalBytes.AsSpan(), Base16Variant.Upper);
 
         Assert.AreEqual(fromSpan, fromArray);
         Assert.AreEqual(CanonicalHexUpper, fromArray);
@@ -92,7 +92,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void Encode_OffsetCountVariantOverload_ShouldEncodeSliceWithVariant()
     {
-        var actual = Base16.Encode(CanonicalBytes, 1, 2, Base16Variant.Upper);
+        string actual = Base16.Encode(CanonicalBytes, 1, 2, Base16Variant.Upper);
 
         Assert.AreEqual("ADBE", actual);
     }
@@ -106,7 +106,7 @@ public sealed partial class Base16Tests
     {
         Span<char> destination = new char[CanonicalBytes.Length * 2];
 
-        var written = Base16.Encode(CanonicalBytes.AsSpan(), destination, Base16Variant.Upper);
+        int written = Base16.Encode(CanonicalBytes.AsSpan(), destination, Base16Variant.Upper);
 
         Assert.AreEqual(CanonicalHexUpper.Length, written);
         Assert.AreEqual(CanonicalHexUpper, new string(destination));
@@ -121,7 +121,7 @@ public sealed partial class Base16Tests
     {
         Span<char> destination = new char[CanonicalBytes.Length * 2];
 
-        var result = Base16.TryEncode(CanonicalBytes.AsSpan(), destination, out var charsWritten, Base16Variant.Upper);
+        bool result = Base16.TryEncode(CanonicalBytes.AsSpan(), destination, out int charsWritten, Base16Variant.Upper);
 
         Assert.IsTrue(result);
         Assert.AreEqual(CanonicalHexUpper.Length, charsWritten);
@@ -137,7 +137,7 @@ public sealed partial class Base16Tests
     {
         Span<char> destination = new char[(CanonicalBytes.Length * 2) - 1];
 
-        var result = Base16.TryEncode(CanonicalBytes.AsSpan(), destination, out var charsWritten, Base16Variant.Upper);
+        bool result = Base16.TryEncode(CanonicalBytes.AsSpan(), destination, out int charsWritten, Base16Variant.Upper);
 
         Assert.IsFalse(result);
         Assert.AreEqual(0, charsWritten);
@@ -150,7 +150,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void EncodeToUtf8_VariantOverload_ShouldMatchStringVariantOutput()
     {
-        var utf8 = Base16.EncodeToUtf8(CanonicalBytes.AsSpan(), Base16Variant.Upper);
+        byte[] utf8 = Base16.EncodeToUtf8(CanonicalBytes.AsSpan(), Base16Variant.Upper);
 
         Assert.AreEqual(CanonicalHexUpper, System.Text.Encoding.ASCII.GetString(utf8));
     }
@@ -164,7 +164,7 @@ public sealed partial class Base16Tests
     {
         Span<byte> destination = new byte[CanonicalBytes.Length * 2];
 
-        var result = Base16.TryEncodeToUtf8(CanonicalBytes.AsSpan(), destination, out var bytesWritten, Base16Variant.Upper);
+        bool result = Base16.TryEncodeToUtf8(CanonicalBytes.AsSpan(), destination, out int bytesWritten, Base16Variant.Upper);
 
         Assert.IsTrue(result);
         Assert.AreEqual(CanonicalHexUpper.Length, bytesWritten);
@@ -179,7 +179,7 @@ public sealed partial class Base16Tests
     {
         ArrayBufferWriter<char> writer = new();
 
-        var written = Base16.Encode(CanonicalBytes.AsSpan(), writer, Base16Variant.Upper);
+        int written = Base16.Encode(CanonicalBytes.AsSpan(), writer, Base16Variant.Upper);
 
         Assert.AreEqual(CanonicalHexUpper.Length, written);
         Assert.AreEqual(CanonicalHexUpper, new string(writer.WrittenSpan));
@@ -193,7 +193,7 @@ public sealed partial class Base16Tests
     {
         ArrayBufferWriter<byte> writer = new();
 
-        var written = Base16.EncodeToUtf8(CanonicalBytes.AsSpan(), writer, Base16Variant.Upper);
+        int written = Base16.EncodeToUtf8(CanonicalBytes.AsSpan(), writer, Base16Variant.Upper);
 
         Assert.AreEqual(CanonicalHexUpper.Length, written);
         Assert.AreEqual(CanonicalHexUpper, System.Text.Encoding.ASCII.GetString(writer.WrittenSpan));

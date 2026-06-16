@@ -77,7 +77,7 @@ internal sealed class ByteArrayConverter
                     string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Op_Invalid_ExpectedInteger, reader.TokenType));
             }
 
-            var value = reader.GetInt64();
+            long value = reader.GetInt64();
             if (value is < byte.MinValue or > byte.MaxValue)
             {
                 throw new TomlSerializationException(
@@ -106,7 +106,7 @@ internal sealed class ByteArrayConverter
         }
 
         writer.WriteStartArray();
-        foreach (var b in value)
+        foreach (byte b in value)
             writer.WriteInteger(b);
 
         writer.WriteEndArray();

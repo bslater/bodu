@@ -51,7 +51,7 @@ public partial class ConcurrentCircularBufferTests
         TestItem[] viaConcrete = concrete.ToArray();
 
         Assert.HasCount(viaConcrete.Length, viaInterface);
-        for (var i = 0; i < viaConcrete.Length; i++)
+        for (int i = 0; i < viaConcrete.Length; i++)
             Assert.AreEqual(viaConcrete[i].Value, viaInterface[i].Value);
 
         var copyTarget = new TestItem[5];
@@ -123,7 +123,7 @@ public partial class ConcurrentCircularBufferTests
         IProducerConsumerCollection<TestItem> mvd =
             new ConcurrentCircularBuffer<TestItem>(capacity: 4);
 
-        var taken = mvd.TryTake(out TestItem? item);
+        bool taken = mvd.TryTake(out TestItem? item);
 
         Assert.IsFalse(taken);
         Assert.IsNull(item);

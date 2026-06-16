@@ -40,7 +40,7 @@ public partial class IntervalTests
     public void ToString_WithFormatAndProvider_ShouldFormatEndpoints()
     {
         var interval = Interval<double>.Closed(1.5, 2.75);
-        var result = interval.ToString("F2", CultureInfo.InvariantCulture);
+        string result = interval.ToString("F2", CultureInfo.InvariantCulture);
 
         Assert.AreEqual("[1.50, 2.75]", result);
     }
@@ -55,7 +55,7 @@ public partial class IntervalTests
         var interval = Interval<int>.Closed(1, 5);
         Span<char> buffer = stackalloc char[16];
 
-        var ok = interval.TryFormat(buffer, out var written, [], CultureInfo.InvariantCulture);
+        bool ok = interval.TryFormat(buffer, out int written, [], CultureInfo.InvariantCulture);
 
         Assert.IsTrue(ok);
         Assert.AreEqual("[1, 5]", buffer.Slice(0, written).ToString());
@@ -70,7 +70,7 @@ public partial class IntervalTests
         var interval = Interval<int>.Closed(1, 5);
         Span<char> buffer = stackalloc char[2];
 
-        var ok = interval.TryFormat(buffer, out var written, [], CultureInfo.InvariantCulture);
+        bool ok = interval.TryFormat(buffer, out int written, [], CultureInfo.InvariantCulture);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0, written);
@@ -85,10 +85,10 @@ public partial class IntervalTests
         var interval = Interval<int>.ClosedOpen(1, 5);
         Span<byte> buffer = stackalloc byte[16];
 
-        var ok = interval.TryFormat(buffer, out var written, [], CultureInfo.InvariantCulture);
+        bool ok = interval.TryFormat(buffer, out int written, [], CultureInfo.InvariantCulture);
 
         Assert.IsTrue(ok);
-        var roundTripped = System.Text.Encoding.UTF8.GetString(buffer.Slice(0, written));
+        string roundTripped = System.Text.Encoding.UTF8.GetString(buffer.Slice(0, written));
         Assert.AreEqual("[1, 5)", roundTripped);
     }
 

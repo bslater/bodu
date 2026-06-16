@@ -118,13 +118,13 @@ public sealed class Iban
         if ((uint)(iban[2] - '0') > 9u || (uint)(iban[3] - '0') > 9u) return false;
 
         // Rearrangement: BBAN + CC + DD — stream through MOD 97-10.
-        var r = 0;
-        for (var i = 4; i < iban.Length; i++)
+        int r = 0;
+        for (int i = 4; i < iban.Length; i++)
         {
             if (!TryFold(ref r, iban[i])) return false;
         }
 
-        for (var i = 0; i < 4; i++)
+        for (int i = 0; i < 4; i++)
         {
             if (!TryFold(ref r, iban[i])) return false;
         }
@@ -135,12 +135,12 @@ public sealed class Iban
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> body)
     {
-        var consumed = this._consumed;
-        var r = _rBban;
+        int consumed = this._consumed;
+        int r = _rBban;
 
-        for (var i = 0; i < body.Length; i++)
+        for (int i = 0; i < body.Length; i++)
         {
-            var ch = body[i];
+            char ch = body[i];
             if ((uint)(ch - '0') > 9u && (uint)(ch - 'A') > 25u) ThrowHelper.ThrowIfNotAsciiAlphanumericUppercase(ch, nameof(body));
 
             if (consumed == 0)
@@ -168,13 +168,13 @@ public sealed class Iban
     {
         HashingThrowHelper.ThrowIfDestinationSpanTooShort(destination.Length, CheckLength, nameof(destination));
 
-        var r = _rBban;
+        int r = _rBban;
         if (_consumed >= 1) r = FoldChar(r, _cc0);
         if (_consumed >= 2) r = FoldChar(r, _cc1);
 
         // Fold in the two trailing placeholder zero digits.
         r = (r * 100) % 97;
-        var check = (98 - r) % 97;
+        int check = (98 - r) % 97;
         destination[0] = (char)('0' + (check / 10));
         destination[1] = (char)('0' + (check % 10));
         return CheckLength;

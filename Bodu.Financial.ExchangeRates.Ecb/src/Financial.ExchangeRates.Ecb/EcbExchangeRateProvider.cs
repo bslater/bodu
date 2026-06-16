@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EcbExchangeRateProvider.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -18,9 +18,10 @@ namespace Bodu.Financial.ExchangeRates.Ecb;
 /// <para>
 /// The provider derives from <see cref="WebExchangeRateProvider" />, which supplies the in-memory accumulator, the
 /// immutable snapshot, the full synchronous and asynchronous lookup matrix, and ownership of the
-/// <see cref="HttpClient" /> when this provider creates one. Loading is feed-based: each ECB feed runs from its earliest
-/// date to the most recent business day, so the feed covering a requested date also covers the remainder of the range.
-/// Use <see cref="PreloadAsync" />, <see cref="LoadFeedAsync" />, or <see cref="LoadRangeAsync" /> to warm the store.
+/// <see cref="HttpClient" /> when this provider creates one. Loading is feed-based: each ECB feed runs from its
+/// earliest date to the most recent business day, so the feed covering a requested date also covers the remainder of
+/// the range. Use <see cref="PreloadAsync" />, <see cref="LoadFeedAsync" />, or <see cref="LoadRangeAsync" /> to warm
+/// the store.
 /// </para>
 /// <para>
 /// <strong>HttpClient ownership.</strong> The constructor that takes only options builds and owns an
@@ -94,8 +95,12 @@ public sealed class EcbExchangeRateProvider
     /// </summary>
     /// <param name="options">The provider options.</param>
     /// <param name="logger">The logger. <see langword="null" /> selects <see cref="NullLogger.Instance" />.</param>
-    /// <param name="timeProvider">The time source. <see langword="null" /> selects <see cref="TimeProvider.System" />.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="options" /> is <see langword="null" />.</exception>
+    /// <param name="timeProvider">
+    /// The time source. <see langword="null" /> selects <see cref="TimeProvider.System" />.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="options" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> fails validation.</exception>
     public EcbExchangeRateProvider(EcbExchangeRateOptions options, ILogger? logger = null, TimeProvider? timeProvider = null)
         : this(options, CreateOwnedClient(options), logger, timeProvider)
@@ -110,7 +115,9 @@ public sealed class EcbExchangeRateProvider
     /// <param name="httpClient">The HTTP client used to download feed files.</param>
     /// <param name="options">The provider options.</param>
     /// <param name="logger">The logger. <see langword="null" /> selects <see cref="NullLogger.Instance" />.</param>
-    /// <param name="timeProvider">The time source. <see langword="null" /> selects <see cref="TimeProvider.System" />.</param>
+    /// <param name="timeProvider">
+    /// The time source. <see langword="null" /> selects <see cref="TimeProvider.System" />.
+    /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="httpClient" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
@@ -127,7 +134,9 @@ public sealed class EcbExchangeRateProvider
     /// <param name="source">The table source.</param>
     /// <param name="options">The provider options.</param>
     /// <param name="logger">The logger. <see langword="null" /> selects <see cref="NullLogger.Instance" />.</param>
-    /// <param name="timeProvider">The time source. <see langword="null" /> selects <see cref="TimeProvider.System" />.</param>
+    /// <param name="timeProvider">
+    /// The time source. <see langword="null" /> selects <see cref="TimeProvider.System" />.
+    /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="source" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
@@ -138,8 +147,8 @@ public sealed class EcbExchangeRateProvider
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="EcbExchangeRateProvider" /> class from an owned client, building the
-    /// table source over it before forwarding to the core constructor.
+    /// Initializes a new instance of the <see cref="EcbExchangeRateProvider" /> class from an owned client, building
+    /// the table source over it before forwarding to the core constructor.
     /// </summary>
     /// <param name="options">The provider options.</param>
     /// <param name="ownedHttpClient">The HTTP client this provider creates and owns.</param>
@@ -204,7 +213,9 @@ public sealed class EcbExchangeRateProvider
     /// <param name="feed">The feed to load.</param>
     /// <param name="cancellationToken">A token to observe while awaiting the load.</param>
     /// <returns>A task that completes when the feed has been loaded.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="feed" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="feed" /> is <see langword="null" />.
+    /// </exception>
     public Task LoadFeedAsync(EcbExchangeRateFeed feed, CancellationToken cancellationToken = default)
     {
         ThrowHelper.ThrowIfNull(feed);
@@ -355,7 +366,7 @@ public sealed class EcbExchangeRateProvider
         }
 
         // Capture the load instant immediately after the download completes so it stamps every rate this feed produces.
-        var fetchedAt = TimeProvider.GetUtcNow();
+        DateTimeOffset fetchedAt = TimeProvider.GetUtcNow();
 
         lock (SyncRoot)
         {
@@ -365,7 +376,7 @@ public sealed class EcbExchangeRateProvider
             foreach (EcbSeriesInfo info in table.GetSeriesInfo())
                 _series[info.Pair] = info;
 
-            var count = AddObservations(table.EnumerateRates(), fetchedAt);
+            int count = AddObservations(table.EnumerateRates(), fetchedAt);
             RebuildSnapshot();
 
             Log.FeedLoaded(_logger, _options.DownloadCompletedLogLevel, feed.Name, count);
@@ -392,7 +403,7 @@ public sealed class EcbExchangeRateProvider
     private EcbExchangeRateFeed SelectWidestFeed()
     {
         IReadOnlyList<EcbExchangeRateFeed> feeds = _options.Feeds;
-        for (var i = 0; i < feeds.Count; i++)
+        for (int i = 0; i < feeds.Count; i++)
         {
             if (feeds[i].IsFullHistory)
                 return feeds[i];

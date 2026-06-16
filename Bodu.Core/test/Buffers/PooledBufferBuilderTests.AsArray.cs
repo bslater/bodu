@@ -17,12 +17,12 @@ public partial class PooledBufferBuilderTests
     [TestMethod]
     public void AsArray_WhenAccessedAfterAppend_ShouldMatchWrittenSpanContents()
     {
-        var source = new[] { 10, 20, 30 };
+        int[] source = new[] { 10, 20, 30 };
         using var builder = new PooledBufferBuilder<int>();
 
         builder.AppendRange(source.AsSpan());
         System.ReadOnlySpan<int> span = builder.WrittenSpan;
-        var array = builder.AsArray();
+        int[] array = builder.AsArray();
 
         CollectionAssert.AreEqual(span.ToArray(), array.Take(span.Length).ToArray());
     }
@@ -51,7 +51,7 @@ public partial class PooledBufferBuilderTests
     {
         using var builder = new PooledBufferBuilder<int>();
 
-        var array = builder.AsArray();
+        int[] array = builder.AsArray();
 
         Assert.IsNotNull(array);
     }
@@ -66,7 +66,7 @@ public partial class PooledBufferBuilderTests
         using var builder = new PooledBufferBuilder<int>();
         builder.Append(1);
 
-        var array = builder.AsArray();
+        int[] array = builder.AsArray();
         array[0] = 99;
 
         Assert.AreEqual(99, builder.WrittenSpan[0]);

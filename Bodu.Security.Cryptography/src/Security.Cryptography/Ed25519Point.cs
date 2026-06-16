@@ -123,15 +123,15 @@ internal partial struct Ed25519Point
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(encoded, EncodedSizeInBytes);
 
         point = Identity;
-        var sign = (encoded[31] & 0x80) != 0;
+        bool sign = (encoded[31] & 0x80) != 0;
 
         // FromBytes ignores bit 255; a canonical y must round-trip to the encoding with the sign bit cleared.
         var y = Curve25519FieldElement.FromBytes(encoded);
         Span<byte> canonical = stackalloc byte[EncodedSizeInBytes];
         y.ToBytes(canonical);
 
-        var mismatch = 0;
-        for (var i = 0; i < EncodedSizeInBytes - 1; i++)
+        int mismatch = 0;
+        for (int i = 0; i < EncodedSizeInBytes - 1; i++)
             mismatch |= canonical[i] ^ encoded[i];
         mismatch |= canonical[31] ^ (encoded[31] & 0x7F);
 
@@ -259,8 +259,8 @@ internal partial struct Ed25519Point
         left.ToBytes(leftBytes);
         right.ToBytes(rightBytes);
 
-        var difference = 0;
-        for (var i = 0; i < EncodedSizeInBytes; i++)
+        int difference = 0;
+        for (int i = 0; i < EncodedSizeInBytes; i++)
             difference |= leftBytes[i] ^ rightBytes[i];
 
         return difference == 0;

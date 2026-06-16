@@ -15,7 +15,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void Decode_WhenEmptySpan_ShouldReturnEmptyByteArray()
     {
-        var actual = Base16.Decode([]);
+        byte[] actual = Base16.Decode([]);
 
         Assert.AreEqual(0, actual.Length);
     }
@@ -26,7 +26,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void Decode_WhenEmptyString_ShouldReturnEmptyByteArray()
     {
-        var actual = Base16.Decode(string.Empty);
+        byte[] actual = Base16.Decode(string.Empty);
 
         Assert.AreEqual(0, actual.Length);
     }
@@ -38,7 +38,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void Encode_WhenEmptyAndIncludePrefix_ShouldReturnPrefixOnly()
     {
-        var actual = Base16.Encode([], BaseFormattingOptions.IncludePrefix);
+        string actual = Base16.Encode([], BaseFormattingOptions.IncludePrefix);
 
         Assert.AreEqual("0x", actual);
     }
@@ -48,7 +48,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void Encode_WhenEmptyByteArray_ShouldReturnEmptyString()
     {
-        var actual = Base16.Encode([]);
+        string actual = Base16.Encode([]);
 
         Assert.AreEqual(string.Empty, actual);
     }
@@ -60,17 +60,17 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void TryDecode_WhenSourceIsEmpty_ShouldReturnTrueAndZeroBytesRegardlessOfDestination()
     {
-        var tiny = new byte[1];
-        var zero = Array.Empty<byte>();
-        var huge = new byte[1000];
+        byte[] tiny = new byte[1];
+        byte[] zero = Array.Empty<byte>();
+        byte[] huge = new byte[1000];
 
-        Assert.IsTrue(Base16.TryDecode([], tiny, out var bytesTiny));
+        Assert.IsTrue(Base16.TryDecode([], tiny, out int bytesTiny));
         Assert.AreEqual(0, bytesTiny);
 
-        Assert.IsTrue(Base16.TryDecode([], zero, out var bytesZero));
+        Assert.IsTrue(Base16.TryDecode([], zero, out int bytesZero));
         Assert.AreEqual(0, bytesZero);
 
-        Assert.IsTrue(Base16.TryDecode([], huge, out var bytesHuge));
+        Assert.IsTrue(Base16.TryDecode([], huge, out int bytesHuge));
         Assert.AreEqual(0, bytesHuge);
     }
 
@@ -81,17 +81,17 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void TryEncode_WhenSourceIsEmpty_ShouldReturnTrueAndZeroCharsRegardlessOfDestination()
     {
-        var tiny = new char[1];
-        var zero = Array.Empty<char>();
-        var huge = new char[1000];
+        char[] tiny = new char[1];
+        char[] zero = Array.Empty<char>();
+        char[] huge = new char[1000];
 
-        Assert.IsTrue(Base16.TryEncode([], tiny, out var charsTiny));
+        Assert.IsTrue(Base16.TryEncode([], tiny, out int charsTiny));
         Assert.AreEqual(0, charsTiny);
 
-        Assert.IsTrue(Base16.TryEncode([], zero, out var charsZero));
+        Assert.IsTrue(Base16.TryEncode([], zero, out int charsZero));
         Assert.AreEqual(0, charsZero);
 
-        Assert.IsTrue(Base16.TryEncode([], huge, out var charsHuge));
+        Assert.IsTrue(Base16.TryEncode([], huge, out int charsHuge));
         Assert.AreEqual(0, charsHuge);
     }
 

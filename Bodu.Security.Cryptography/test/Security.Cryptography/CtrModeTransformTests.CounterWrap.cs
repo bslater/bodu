@@ -27,21 +27,21 @@ public sealed partial class CtrModeTransformTests
     public void Transform_WhenCounterWouldWrapToInitial_ShouldThrowCryptographicException()
     {
         using var cipher = new SkipjackBlockCipher(new byte[10]);
-        var blockSize = cipher.BlockSize / 8;
+        int blockSize = cipher.BlockSize / 8;
 
-        var initialCounter = new byte[blockSize];
+        byte[] initialCounter = new byte[blockSize];
         using var transform = new CtrModeTransform(cipher, initialCounter);
 
         // Drive the internal counter to all-0xFF. The next increment carries through every byte and lands back
         // on the initial all-zero state, latching _counterWrapped.
         FieldInfo counterField = typeof(CtrModeTransform)
             .GetField("_counter", BindingFlags.NonPublic | BindingFlags.Instance)!;
-        var atMax = new byte[blockSize];
+        byte[] atMax = new byte[blockSize];
         Array.Fill(atMax, (byte)0xFF);
         counterField.SetValue(transform, atMax);
 
-        var input = new byte[blockSize];
-        var output = new byte[blockSize];
+        byte[] input = new byte[blockSize];
+        byte[] output = new byte[blockSize];
 
         // First call succeeds: it emits one keystream block under the 0xFF... counter, then increment wraps to
         // all-zero (== initialCounter) and latches.
@@ -62,7 +62,7 @@ public sealed partial class CtrModeTransformTests
     public void Transform_WhenCounterWrapLatched_ShouldThrowOnEverySubsequentCall()
     {
         using var cipher = new SkipjackBlockCipher(new byte[10]);
-        var blockSize = cipher.BlockSize / 8;
+        int blockSize = cipher.BlockSize / 8;
 
         using var transform = new CtrModeTransform(cipher, new byte[blockSize]);
 
@@ -70,10 +70,10 @@ public sealed partial class CtrModeTransformTests
             .GetField("_counterWrapped", BindingFlags.NonPublic | BindingFlags.Instance)!;
         latchField.SetValue(transform, true);
 
-        var input = new byte[blockSize];
-        var output = new byte[blockSize];
+        byte[] input = new byte[blockSize];
+        byte[] output = new byte[blockSize];
 
-        for (var i = 0; i < 3; i++)
+        for (int i = 0; i < 3; i++)
         {
             Assert.ThrowsExactly<CryptographicException>(() =>
             {

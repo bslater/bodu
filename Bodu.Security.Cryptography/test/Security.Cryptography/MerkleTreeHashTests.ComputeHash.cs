@@ -39,7 +39,7 @@ public partial class MerkleTreeHashTests
         using MerkleTreeHash hasher = Construct(Factory, DefaultBlockSize, DefaultFanOut);
         using var stream = new IncrementingByteStream(8);
 
-        var result = hasher.ComputeHash(stream);
+        byte[] result = hasher.ComputeHash(stream);
 
         Assert.IsNotNull(result);
         Assert.AreEqual(4, result.Length); // MonitoringHashAlgorithm: sizeof(uint)
@@ -54,14 +54,14 @@ public partial class MerkleTreeHashTests
     [TestMethod]
     public void ComputeHash_WhenStreamMatchesSpan_ShouldProduceIdenticalResult()
     {
-        var data = MakeData(13);
+        byte[] data = MakeData(13);
 
         using MerkleTreeHash h1 = Construct(Factory, DefaultBlockSize, DefaultFanOut);
         using MerkleTreeHash h2 = Construct(Factory, DefaultBlockSize, DefaultFanOut);
 
         using var ms = new MemoryStream(data);
-        var fromStream = h1.ComputeHash(ms);
-        var fromSpan = h2.ComputeHash(data.AsSpan());
+        byte[] fromStream = h1.ComputeHash(ms);
+        byte[] fromSpan = h2.ComputeHash(data.AsSpan());
 
         CollectionAssert.AreEqual(fromSpan, fromStream);
     }
@@ -82,8 +82,8 @@ public partial class MerkleTreeHashTests
         using MerkleTreeHash h2 = Construct(Factory, DefaultBlockSize, DefaultFanOut);
 
         using var stream = new IncrementingByteStream(length);
-        var fromStream = h1.ComputeHash(stream);
-        var fromSpan = h2.ComputeHash(new IncrementingByteStream(length).ToArray().AsSpan());
+        byte[] fromStream = h1.ComputeHash(stream);
+        byte[] fromSpan = h2.ComputeHash(new IncrementingByteStream(length).ToArray().AsSpan());
 
         CollectionAssert.AreEqual(fromStream, fromSpan);
     }

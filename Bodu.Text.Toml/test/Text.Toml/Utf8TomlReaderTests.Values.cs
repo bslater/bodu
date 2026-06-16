@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Utf8TomlReaderTests.Values.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -188,7 +188,7 @@ public sealed partial class Utf8TomlReaderTests
     /// <param name="count">The number of tokens to read.</param>
     private static void Advance(ref Utf8TomlReader lexer, int count)
     {
-        for (var i = 0; i < count; i++)
+        for (int i = 0; i < count; i++)
             Assert.IsTrue(lexer.Read(), $"Expected a token at position {i + 1} but the lexer reported end of document.");
     }
 }

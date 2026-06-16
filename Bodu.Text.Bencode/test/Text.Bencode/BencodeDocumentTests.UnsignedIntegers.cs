@@ -50,7 +50,7 @@ public partial class BencodeDocumentTests
             _ = root.GetInt64();
         });
 
-        Assert.IsFalse(root.TryGetInt64(out var value));
+        Assert.IsFalse(root.TryGetInt64(out long value));
         Assert.AreEqual(0L, value);
     }
 
@@ -70,7 +70,7 @@ public partial class BencodeDocumentTests
             _ = root.GetUInt64();
         });
 
-        Assert.IsFalse(root.TryGetUInt64(out var value));
+        Assert.IsFalse(root.TryGetUInt64(out ulong value));
         Assert.AreEqual(0UL, value);
     }
 
@@ -84,9 +84,9 @@ public partial class BencodeDocumentTests
         using var document = BencodeDocument.Parse(Bytes("d3:leni42ee"));
         BencodeElement length = document.RootElement.GetProperty("len");
 
-        Assert.IsTrue(length.TryGetInt64(out var signed));
+        Assert.IsTrue(length.TryGetInt64(out long signed));
         Assert.AreEqual(42L, signed);
-        Assert.IsTrue(length.TryGetUInt64(out var unsigned));
+        Assert.IsTrue(length.TryGetUInt64(out ulong unsigned));
         Assert.AreEqual(42UL, unsigned);
         Assert.AreEqual(42UL, length.GetUInt64());
     }
@@ -99,7 +99,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void WriteTo_WhenValueExceedsInt64_ShouldRoundTripExactBytes()
     {
-        var source = Bytes("li18446744073709551615ee");
+        byte[] source = Bytes("li18446744073709551615ee");
         using var document = BencodeDocument.Parse(source);
         var buffer = new ArrayBufferWriter<byte>();
         var writer = new Utf8BencodeWriter(buffer);

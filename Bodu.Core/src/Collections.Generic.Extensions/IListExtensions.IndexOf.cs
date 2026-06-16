@@ -111,8 +111,8 @@ public static partial class IListExtensions
     /// <returns>The zero-based index of the first matching element; otherwise, <c>-1</c>.</returns>
     private static int IndexOfCore<TSource>(IList<TSource> list, Func<TSource, bool> predicate, int index, int count)
     {
-        var end = index + count;
-        for (var i = index; i < end; i++)
+        int end = index + count;
+        for (int i = index; i < end; i++)
         {
             if (predicate(list[i]))
                 return i;

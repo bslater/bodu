@@ -55,7 +55,7 @@ public partial class FiscalWeekQuarterProviderTests
     [TestMethod]
     public void GetQuarterStart_WhenConsecutiveQuarters_ShouldBeSeparatedBy91Days()
     {
-        for (var q = 1; q <= 3; q++)
+        for (int q = 1; q <= 3; q++)
         {
             DateTime current = s_sunday52.GetQuarterStart(q, Sunday52FiscalYear);
             DateTime next = s_sunday52.GetQuarterStart(q + 1, Sunday52FiscalYear);

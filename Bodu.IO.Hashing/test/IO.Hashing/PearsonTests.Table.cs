@@ -16,7 +16,7 @@ public partial class PearsonTests
     public void Table_WhenAccessed_ShouldReturnIndependentCopy()
     {
         Pearson algorithm = new();
-        var copy = algorithm.Table;
+        byte[] copy = algorithm.Table;
 
         copy[0] ^= 0xFF;
 
@@ -32,7 +32,7 @@ public partial class PearsonTests
     public void Table_WhenBuiltIn_ShouldBeA256ByteUniquePermutation(Pearson.PearsonTableType variant)
     {
         Pearson algorithm = new(8, variant);
-        var table = algorithm.Table;
+        byte[] table = algorithm.Table;
 
         Assert.AreEqual(256, table.Length);
         Assert.AreEqual(256, table.Distinct().Count());

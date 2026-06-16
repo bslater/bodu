@@ -101,7 +101,7 @@ public sealed class RbaEra
     {
         ThrowHelper.ThrowIfNull(eras);
 
-        for (var i = 0; i < eras.Count; i++)
+        for (int i = 0; i < eras.Count; i++)
         {
             if (eras[i].Covers(date))
                 return eras[i];

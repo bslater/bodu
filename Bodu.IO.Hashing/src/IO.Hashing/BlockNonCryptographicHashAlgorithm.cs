@@ -242,7 +242,7 @@ public abstract class BlockNonCryptographicHashAlgorithm<T>
 
         if (snapshot.ShouldPadFinalBlock())
         {
-            var finalBlock = snapshot.PadBlock(
+            byte[] finalBlock = snapshot.PadBlock(
                 new ReadOnlySpan<byte>(snapshot._residualByteBuffer, 0, snapshot._residualBytes),
                 snapshot.TotalLength);
 
@@ -256,7 +256,7 @@ public abstract class BlockNonCryptographicHashAlgorithm<T>
                     throw new InvalidOperationException(
                         string.Format(CultureInfo.CurrentCulture, HashingResourceStrings.Op_Invalid_PadBlockMisaligned, nameof(PadBlock), finalBlock.Length, nameof(BlockSizeBytes), snapshot.BlockSizeBytes, nameof(AllowUnalignedFinalBlock)));
 
-                for (var i = 0; i < finalBlock.Length; i += snapshot.BlockSizeBytes)
+                for (int i = 0; i < finalBlock.Length; i += snapshot.BlockSizeBytes)
                     snapshot.ProcessBlock(finalBlock.AsSpan(i, snapshot.BlockSizeBytes));
             }
         }
@@ -265,7 +265,7 @@ public abstract class BlockNonCryptographicHashAlgorithm<T>
             snapshot.ProcessBlock(new ReadOnlySpan<byte>(snapshot._residualByteBuffer, 0, snapshot._residualBytes));
         }
 
-        var digest = snapshot.ProcessFinalBlock();
+        byte[] digest = snapshot.ProcessFinalBlock();
         digest.AsSpan(0, HashLengthInBytes).CopyTo(destination);
     }
 
@@ -337,8 +337,8 @@ public abstract class BlockNonCryptographicHashAlgorithm<T>
     /// </exception>
     private void ProcessBlocks(ReadOnlySpan<byte> buffer)
     {
-        var pos = 0;
-        var bufferLength = (ulong)buffer.Length;
+        int pos = 0;
+        ulong bufferLength = (ulong)buffer.Length;
         if (bufferLength > ulong.MaxValue - TotalLength)
             throw new InvalidOperationException(
                 string.Format(CultureInfo.CurrentCulture, HashingResourceStrings.Op_Invalid_TotalLengthOverflow, ulong.MaxValue, nameof(TotalLength)));
@@ -349,7 +349,7 @@ public abstract class BlockNonCryptographicHashAlgorithm<T>
 
         if (_residualBytes > 0)
         {
-            var remaining = BlockSizeBytes - _residualBytes;
+            int remaining = BlockSizeBytes - _residualBytes;
 
             if (buffer.Length >= remaining)
             {

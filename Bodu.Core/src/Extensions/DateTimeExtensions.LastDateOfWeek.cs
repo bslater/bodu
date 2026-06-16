@@ -66,12 +66,12 @@ public static partial class DateTimeExtensions
         culture ??= Thread.CurrentThread.CurrentCulture;
         DayOfWeek lastDayOfWeek = culture.DateTimeFormat.LastDayOfWeek();
 
-        var baseTicks = TruncateToDateTicks(dateTime);
-        var offsetTicks = dateTime.DayOfWeek == lastDayOfWeek
+        long baseTicks = TruncateToDateTicks(dateTime);
+        long offsetTicks = dateTime.DayOfWeek == lastDayOfWeek
             ? 0
             : GetTicksUntilNextOrSameDayOfWeek(dateTime, lastDayOfWeek);
 
-        var dateTicks = baseTicks + offsetTicks;
+        long dateTicks = baseTicks + offsetTicks;
 
         return (ulong)dateTicks > (ulong)DateTime.MaxValue.Ticks
             ? throw new ArgumentOutOfRangeException(
@@ -115,8 +115,8 @@ public static partial class DateTimeExtensions
         DayOfWeek startOfWeek = GetWeekStartDay(workingWeek);
         var endOfWeek = (DayOfWeek)(((int)startOfWeek + 6) % 7);
 
-        var offsetDays = ((int)endOfWeek - (int)dateTime.DayOfWeek + 7) % 7;
-        var dateTicks = dateTime.Ticks + (offsetDays * TicksPerDay);
+        int offsetDays = ((int)endOfWeek - (int)dateTime.DayOfWeek + 7) % 7;
+        long dateTicks = dateTime.Ticks + (offsetDays * TicksPerDay);
 
         return (ulong)dateTicks > (ulong)DateTime.MaxValue.Ticks
             ? throw new ArgumentOutOfRangeException(

@@ -55,13 +55,13 @@ public sealed partial class SivModeTransformTests
     {
         using var s2vCipher = new AesBlockCipherFixture(Convert.FromHexString(k1Hex));
         using var ctrCipher = new AesBlockCipherFixture(Convert.FromHexString(k2Hex));
-        var ad = Convert.FromHexString(adHex);
-        var plaintext = Convert.FromHexString(ptHex);
-        var expected = Convert.FromHexString(expectedOutputHex);
+        byte[] ad = Convert.FromHexString(adHex);
+        byte[] plaintext = Convert.FromHexString(ptHex);
+        byte[] expected = Convert.FromHexString(expectedOutputHex);
 
         var transform = new SivModeTransform(s2vCipher, ctrCipher, new byte[16]);
         transform.ProcessAssociatedData(ad);
-        var output = new byte[plaintext.Length + (transform.TagSize / 8)];
+        byte[] output = new byte[plaintext.Length + (transform.TagSize / 8)];
         transform.Encrypt(plaintext, output);
 
         CollectionAssert.AreEqual(expected, output,
@@ -79,14 +79,14 @@ public sealed partial class SivModeTransformTests
     {
         using var s2vCipher = new AesBlockCipherFixture(Convert.FromHexString(k1Hex));
         using var ctrCipher = new AesBlockCipherFixture(Convert.FromHexString(k2Hex));
-        var ad = Convert.FromHexString(adHex);
-        var expectedPlaintext = Convert.FromHexString(ptHex);
-        var ciphertextWithTag = Convert.FromHexString(expectedOutputHex);
+        byte[] ad = Convert.FromHexString(adHex);
+        byte[] expectedPlaintext = Convert.FromHexString(ptHex);
+        byte[] ciphertextWithTag = Convert.FromHexString(expectedOutputHex);
 
         var transform = new SivModeTransform(s2vCipher, ctrCipher, new byte[16]);
         transform.ProcessAssociatedData(ad);
-        var output = new byte[expectedPlaintext.Length];
-        var written = transform.Decrypt(ciphertextWithTag, output);
+        byte[] output = new byte[expectedPlaintext.Length];
+        int written = transform.Decrypt(ciphertextWithTag, output);
 
         Assert.AreEqual(expectedPlaintext.Length, written);
         CollectionAssert.AreEqual(expectedPlaintext, output,

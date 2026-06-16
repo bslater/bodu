@@ -16,7 +16,7 @@ public partial class ThrowHelperTests
     [TestMethod]
     public void ThrowIfDestinationTooSmall_Array_WhenDestinationIsNull_ShouldThrowExactly()
     {
-        var source = new int[5];
+        int[] source = new int[5];
         byte[]? destination = null;
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
@@ -34,8 +34,8 @@ public partial class ThrowHelperTests
     [DataRow(0, 0)]
     public void ThrowIfDestinationTooSmall_Array_WhenDestinationSufficient_ShouldNotThrow(int sourceLength, int destinationLength)
     {
-        var source = new int[sourceLength];
-        var destination = new byte[destinationLength];
+        int[] source = new int[sourceLength];
+        byte[] destination = new byte[destinationLength];
 
         ThrowHelper.ThrowIfDestinationTooSmall(source, destination);
     }
@@ -48,8 +48,8 @@ public partial class ThrowHelperTests
     [DataRow(4, 2)]
     public void ThrowIfDestinationTooSmall_Array_WhenDestinationTooSmall_ShouldThrowExactly(int sourceLength, int destinationLength)
     {
-        var source = new int[sourceLength];
-        var destination = new byte[destinationLength];
+        int[] source = new int[sourceLength];
+        byte[] destination = new byte[destinationLength];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -71,8 +71,8 @@ public partial class ThrowHelperTests
     public void ThrowIfDestinationTooSmall_Array_WhenDestinationFits_ShouldNotThrowAndReportNothing(
         string testName, int sourceLength, int destinationLength)
     {
-        var source = new int[sourceLength];
-        var destination = new byte[destinationLength];
+        int[] source = new int[sourceLength];
+        byte[] destination = new byte[destinationLength];
 
         AssertGuard(
             testName,
@@ -98,8 +98,8 @@ public partial class ThrowHelperTests
     public void ThrowIfDestinationTooSmall_Array_WhenInputIsRejected_ShouldThrowOnExpectedParam(
         string testName, int sourceLength, int destinationLength, string expectedExceptionTypeName, string expectedParamName)
     {
-        var source = sourceLength < 0 ? null : new int[sourceLength];
-        var destination = destinationLength < 0 ? null : new byte[destinationLength];
+        int[]? source = sourceLength < 0 ? null : new int[sourceLength];
+        byte[]? destination = destinationLength < 0 ? null : new byte[destinationLength];
         Type expected = Type.GetType($"System.{expectedExceptionTypeName}, System.Private.CoreLib")
             ?? throw new InvalidOperationException($"Unknown exception type '{expectedExceptionTypeName}'.");
 
@@ -118,7 +118,7 @@ public partial class ThrowHelperTests
     public void ThrowIfDestinationTooSmall_Array_WhenSourceIsNull_ShouldThrowExactly()
     {
         int[]? source = null;
-        var destination = new byte[5];
+        byte[] destination = new byte[5];
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

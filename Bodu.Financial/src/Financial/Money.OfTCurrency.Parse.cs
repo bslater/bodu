@@ -93,7 +93,7 @@ public readonly partial struct Money<TCurrency> :
         if (trimmed.IsEmpty)
             return false;
 
-        var isoCode = CurrencyMetadata<TCurrency>.Value.IsoCode;
+        string isoCode = CurrencyMetadata<TCurrency>.Value.IsoCode;
         ReadOnlySpan<char> numericPart;
 
         // Grammar:
@@ -126,7 +126,7 @@ public readonly partial struct Money<TCurrency> :
                 numericPart,
                 NumberStyles.Number | NumberStyles.AllowLeadingSign,
                 effectiveProvider,
-                out var amount))
+                out decimal amount))
         {
             return false;
         }
@@ -188,7 +188,7 @@ public readonly partial struct Money<TCurrency> :
     /// <returns><see langword="true" /> if any letter or symbol is present.</returns>
     private static bool HasIsoShapedToken(ReadOnlySpan<char> s)
     {
-        foreach (var c in s)
+        foreach (char c in s)
         {
             if (char.IsLetter(c))
                 return true;

@@ -16,7 +16,7 @@ public partial class CrcLookupTableCacheTests
     [TestMethod]
     public void GetLookupTable_WhenAnyParameterChanges_ShouldReturnDistinctTable()
     {
-        var baseline = _cache.GetLookupTable(32, 0x04C11DB7UL, reflectIn: true).ToArray();
+        ulong[] baseline = _cache.GetLookupTable(32, 0x04C11DB7UL, reflectIn: true).ToArray();
 
         CollectionAssert.AreNotEqual(baseline, _cache.GetLookupTable(16, 0x04C11DB7UL, reflectIn: true).ToArray());
         CollectionAssert.AreNotEqual(baseline, _cache.GetLookupTable(32, 0x1EDC6F41UL, reflectIn: true).ToArray());
@@ -31,11 +31,11 @@ public partial class CrcLookupTableCacheTests
     public void GetLookupTable_WhenCalledConcurrently_ShouldHandleConcurrentAccess()
     {
         var threads = new Task[100];
-        var lengths = new int[100];
+        int[] lengths = new int[100];
 
-        for (var i = 0; i < 100; i++)
+        for (int i = 0; i < 100; i++)
         {
-            var threadIndex = i;
+            int threadIndex = i;
             threads[i] = Task.Run(() =>
             {
                 ReadOnlyMemory<ulong> result = _cache.GetLookupTable(32, 0x04C11DB7UL, reflectIn: true);
@@ -45,7 +45,7 @@ public partial class CrcLookupTableCacheTests
 
         Task.WhenAll(threads).Wait();
 
-        foreach (var length in lengths)
+        foreach (int length in lengths)
             Assert.AreEqual(256, length);
     }
 
@@ -72,7 +72,7 @@ public partial class CrcLookupTableCacheTests
     [TestMethod]
     public void GetLookupTable_WhenModified_ShouldNotModifyCachedArrays()
     {
-        var copy = _cache.GetLookupTable(32, 0x04C11DB7UL, reflectIn: true).ToArray();
+        ulong[] copy = _cache.GetLookupTable(32, 0x04C11DB7UL, reflectIn: true).ToArray();
         copy[0] = 123456;
 
         ReadOnlyMemory<ulong> cached = _cache.GetLookupTable(32, 0x04C11DB7UL, reflectIn: true);

@@ -35,7 +35,7 @@ internal static class Biff8WorksheetReader
         int endExclusive,
         string[] sharedStrings)
     {
-        for (var i = start; i < endExclusive; i++)
+        for (int i = start; i < endExclusive; i++)
         {
             Biff8Record record = records[i];
             switch (record.Type)
@@ -147,9 +147,9 @@ internal static class Biff8WorksheetReader
         int firstColumn = BinaryPrimitives.ReadUInt16LittleEndian(span.Slice(2));
 
         // Payload: row(2) + colFirst(2) + N * (ixfe(2) + rk(4)) + colLast(2).
-        var count = (span.Length - 6) / 6;
+        int count = (span.Length - 6) / 6;
         var cells = new ExcelCell[count];
-        for (var k = 0; k < count; k++)
+        for (int k = 0; k < count; k++)
         {
             uint rk = BinaryPrimitives.ReadUInt32LittleEndian(span.Slice(4 + (k * 6) + 2));
             cells[k] = ExcelCell.Number(row, firstColumn + k, DecodeRk(rk));
@@ -169,8 +169,8 @@ internal static class Biff8WorksheetReader
     /// </remarks>
     private static double DecodeRk(uint rk)
     {
-        var dividedByHundred = (rk & 0x01) != 0;
-        var isInteger = (rk & 0x02) != 0;
+        bool dividedByHundred = (rk & 0x01) != 0;
+        bool isInteger = (rk & 0x02) != 0;
 
         double value;
         if (isInteger)

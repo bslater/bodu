@@ -53,7 +53,7 @@ public sealed partial class Base62Tests
     [TestMethod]
     public void Decode_WhenIgnoreWhitespace_ShouldSkipWhitespace()
     {
-        var expected = Base62.Decode("48");
+        byte[] expected = Base62.Decode("48");
 
         CollectionAssert.AreEqual(expected, Base62.Decode("4 8", BaseFormatStyles.IgnoreWhitespace));
     }
@@ -78,7 +78,7 @@ public sealed partial class Base62Tests
     {
         Span<byte> destination = new byte[1];
 
-        var success = Base62.TryDecode("48".AsSpan(), destination, out var written);
+        bool success = Base62.TryDecode("48".AsSpan(), destination, out int written);
 
         Assert.IsFalse(success);
         Assert.AreEqual(0, written);

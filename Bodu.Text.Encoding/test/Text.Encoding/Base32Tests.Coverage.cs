@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base32Tests.Coverage.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -16,7 +16,7 @@ public partial class Base32Tests
     [TestMethod]
     public void DecodeFromUtf8_WhenSourceEmpty_ShouldReturnDone()
     {
-        OperationStatus status = Base32.DecodeFromUtf8(ReadOnlySpan<byte>.Empty, Span<byte>.Empty, out var consumed, out var written);
+        OperationStatus status = Base32.DecodeFromUtf8(ReadOnlySpan<byte>.Empty, Span<byte>.Empty, out int consumed, out int written);
 
         Assert.AreEqual((OperationStatus.Done, 0, 0), (status, consumed, written));
     }
@@ -45,7 +45,7 @@ public partial class Base32Tests
     [TestMethod]
     public void TryEncodeToUtf8_WhenSourceEmpty_ShouldReturnTrueAndWriteNothing()
     {
-        var encoded = Base32.TryEncodeToUtf8(ReadOnlySpan<byte>.Empty, Span<byte>.Empty, out var written);
+        bool encoded = Base32.TryEncodeToUtf8(ReadOnlySpan<byte>.Empty, Span<byte>.Empty, out int written);
 
         Assert.IsTrue(encoded);
         Assert.AreEqual(0, written);
@@ -82,7 +82,7 @@ public partial class Base32Tests
     {
         ArrayBufferWriter<byte> writer = new();
 
-        var written = Base32.EncodeToUtf8("foob"u8, writer);
+        int written = Base32.EncodeToUtf8("foob"u8, writer);
 
         Assert.IsTrue(written > 0);
         Assert.AreEqual(written, writer.WrittenCount);
@@ -95,11 +95,11 @@ public partial class Base32Tests
     public void DecodeFromUtf8_WhenWhitespaceWithIgnoreStyle_ShouldDecodeAroundIt()
     {
         byte[] original = { 1, 2, 3 };
-        var spaced = Base32.Encode(original).Insert(2, " ");
+        string spaced = Base32.Encode(original).Insert(2, " ");
         Span<byte> destination = stackalloc byte[3];
 
         OperationStatus status = Base32.DecodeFromUtf8(
-            System.Text.Encoding.ASCII.GetBytes(spaced), destination, out _, out var written, Base32Variant.Standard, BaseFormatStyles.IgnoreWhitespace);
+            System.Text.Encoding.ASCII.GetBytes(spaced), destination, out _, out int written, Base32Variant.Standard, BaseFormatStyles.IgnoreWhitespace);
 
         Assert.AreEqual((OperationStatus.Done, 3), (status, written));
     }
@@ -137,9 +137,9 @@ public partial class Base32Tests
     [TestMethod]
     public void FromBase32String_WhenDecodedFillsDestination_ShouldReturnIt()
     {
-        var encoded = Base32.EncodeToUtf8(new byte[5]);
+        byte[] encoded = Base32.EncodeToUtf8(new byte[5]);
 
-        var decoded = Base32.FromBase32String(encoded);
+        byte[] decoded = Base32.FromBase32String(encoded);
 
         Assert.AreEqual(5, decoded.Length);
     }
@@ -150,11 +150,11 @@ public partial class Base32Tests
     [TestMethod]
     public void DecodeFromUtf8_WhenCompleteQuantumNonFinalBlock_ShouldReturnDone()
     {
-        var encoded = Base32.EncodeToUtf8(new byte[5]);
+        byte[] encoded = Base32.EncodeToUtf8(new byte[5]);
         Span<byte> destination = stackalloc byte[5];
 
         OperationStatus status = Base32.DecodeFromUtf8(
-            encoded, destination, out _, out var written, Base32Variant.Standard, BaseFormatStyles.None, isFinalBlock: false);
+            encoded, destination, out _, out int written, Base32Variant.Standard, BaseFormatStyles.None, isFinalBlock: false);
 
         Assert.AreEqual((OperationStatus.Done, 5), (status, written));
     }

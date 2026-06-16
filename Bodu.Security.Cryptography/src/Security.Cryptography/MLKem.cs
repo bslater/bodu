@@ -325,8 +325,8 @@ public abstract class MLKem
     {
         ThrowIfDisposed();
 
-        var ciphertext = new byte[_parameters.CiphertextSize];
-        var sharedSecret = new byte[SharedSecretSizeInBytes];
+        byte[] ciphertext = new byte[_parameters.CiphertextSize];
+        byte[] sharedSecret = new byte[SharedSecretSizeInBytes];
         Encapsulate(ciphertext, sharedSecret);
 
         return (ciphertext, sharedSecret);
@@ -373,7 +373,7 @@ public abstract class MLKem
     /// </remarks>
     public byte[] Decapsulate(ReadOnlySpan<byte> ciphertext)
     {
-        var sharedSecret = new byte[SharedSecretSizeInBytes];
+        byte[] sharedSecret = new byte[SharedSecretSizeInBytes];
         Decapsulate(ciphertext, sharedSecret);
 
         return sharedSecret;
@@ -442,8 +442,8 @@ public abstract class MLKem
     /// <param name="seed">The 64-byte private seed.</param>
     private void SetKeysFromSeed(ReadOnlySpan<byte> seed)
     {
-        var encapsulationKey = new byte[_parameters.EncapsulationKeySize];
-        var decapsulationKey = new byte[_parameters.DecapsulationKeySize];
+        byte[] encapsulationKey = new byte[_parameters.EncapsulationKeySize];
+        byte[] decapsulationKey = new byte[_parameters.DecapsulationKeySize];
         MLKemEngine.KeyGen(_parameters, seed[..32], seed[32..], encapsulationKey, decapsulationKey);
 
         CryptographyHelper.ClearAndNullify(ref _decapsulationKey);

@@ -39,7 +39,7 @@ public sealed class ExchangeRatePairRoute
         if (order.Length == 0)
             throw new ArgumentException(CachingResourceStrings.Arg_Invalid_AggregationRouteEmpty, nameof(providerOrder));
 
-        for (var i = 0; i < order.Length; i++)
+        for (int i = 0; i < order.Length; i++)
         {
             if (string.IsNullOrWhiteSpace(order[i]))
                 throw new ArgumentException(CachingResourceStrings.Arg_Invalid_ProviderNameBlank, nameof(providerOrder));

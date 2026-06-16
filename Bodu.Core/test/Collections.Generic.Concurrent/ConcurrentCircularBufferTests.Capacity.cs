@@ -16,7 +16,7 @@ public partial class ConcurrentCircularBufferTests
     public void Capacity_Get_WhenAccessedConcurrently_ShouldReturnConsistentValue()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(32);
-        var results = new int[1000];
+        int[] results = new int[1000];
 
         Parallel.For(0, 1000, i => results[i] = buffer.Capacity);
 
@@ -76,7 +76,7 @@ public partial class ConcurrentCircularBufferTests
         Parallel.Invoke(
             () =>
             {
-                for (var i = 0; i < 100; i++)
+                for (int i = 0; i < 100; i++)
                 {
                     buffer.TryEnqueue(new TestItem(i));
                     Thread.SpinWait(100);
@@ -84,7 +84,7 @@ public partial class ConcurrentCircularBufferTests
             },
             () =>
             {
-                for (var i = 0; i < 100; i++)
+                for (int i = 0; i < 100; i++)
                 {
                     buffer.TryDequeue(out _);
                     Thread.SpinWait(100);
@@ -102,7 +102,7 @@ public partial class ConcurrentCircularBufferTests
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(5);
 
-        for (var i = 0; i < 5; i++)
+        for (int i = 0; i < 5; i++)
             buffer.Enqueue(new TestItem(i));
 
         buffer.Clear();
@@ -137,7 +137,7 @@ public partial class ConcurrentCircularBufferTests
         var buffer = new ConcurrentCircularBuffer<TestItem>(7, allowOverwrite: true);
 
         // Overfill intentionally
-        for (var i = 0; i < 100; i++)
+        for (int i = 0; i < 100; i++)
             buffer.Enqueue(new TestItem(i));
 
         TestItem[] snap = buffer.ToArray();

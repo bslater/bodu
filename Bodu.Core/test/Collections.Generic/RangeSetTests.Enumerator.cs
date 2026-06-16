@@ -147,7 +147,7 @@ public partial class RangeSetTests
         IEnumerable untyped = sut;
         var seen = new List<Range<int>>();
 
-        foreach (var item in untyped)
+        foreach (object? item in untyped)
             seen.Add((Range<int>)item);
 
         Assert.HasCount(2, seen);

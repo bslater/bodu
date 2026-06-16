@@ -108,7 +108,7 @@ public sealed partial class IEnumerableExtensionsTests_Cache
         IEnumerable cached = Yielding().Cache();
 
         var values = new List<int>();
-        foreach (var item in cached)
+        foreach (object? item in cached)
             values.Add((int)item);
 
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, values);

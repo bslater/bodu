@@ -297,8 +297,8 @@ public partial class MoneyTests
     [TestMethod]
     public void GetHashCode_WhenDifferentCurrencies_ShouldDiffer()
     {
-        var usd = new Money(10m, "USD").GetHashCode();
-        var eur = new Money(10m, "EUR").GetHashCode();
+        int usd = new Money(10m, "USD").GetHashCode();
+        int eur = new Money(10m, "EUR").GetHashCode();
 
         Assert.AreNotEqual(usd, eur);
     }
@@ -371,7 +371,7 @@ public partial class MoneyTests
     {
         var runtime = new Money(19.99m, "EUR");
 
-        var ok = runtime.TryAs(out Money<USD> result);
+        bool ok = runtime.TryAs(out Money<USD> result);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(default, result);
@@ -491,7 +491,7 @@ public partial class MoneyTests
     {
         var money = new Money(1234.56m, "USD");
 
-        var text = money.ToString(null, System.Globalization.CultureInfo.InvariantCulture);
+        string text = money.ToString(null, System.Globalization.CultureInfo.InvariantCulture);
 
         Assert.AreEqual("USD 1,234.56", text);
     }
@@ -504,7 +504,7 @@ public partial class MoneyTests
     {
         var money = new Money(1234.56m, "USD");
 
-        var text = money.ToString("N", System.Globalization.CultureInfo.InvariantCulture);
+        string text = money.ToString("N", System.Globalization.CultureInfo.InvariantCulture);
 
         Assert.AreEqual("1,234.56", text);
     }
@@ -541,7 +541,7 @@ public partial class MoneyTests
     [TestMethod]
     public void Parse_WhenBareDecimal_ShouldFail()
     {
-        var ok = Money.TryParse("19.99", System.Globalization.CultureInfo.InvariantCulture, out _);
+        bool ok = Money.TryParse("19.99", System.Globalization.CultureInfo.InvariantCulture, out _);
 
         Assert.IsFalse(ok);
     }
@@ -557,7 +557,7 @@ public partial class MoneyTests
     {
         var original = new Money((decimal)amount, iso);
 
-        var text = original.ToString(null, System.Globalization.CultureInfo.InvariantCulture);
+        string text = original.ToString(null, System.Globalization.CultureInfo.InvariantCulture);
         var recovered = Money.Parse(text, System.Globalization.CultureInfo.InvariantCulture);
 
         Assert.AreEqual(original, recovered);
@@ -575,7 +575,7 @@ public partial class MoneyTests
     {
         var money = new Money(19.99m, "USD");
 
-        var json = JsonSerializer.Serialize(money);
+        string json = JsonSerializer.Serialize(money);
 
         Assert.AreEqual("{\"amount\":19.99,\"currency\":\"USD\"}", json);
     }
@@ -588,7 +588,7 @@ public partial class MoneyTests
     {
         var original = new Money(123.45m, "EUR");
 
-        var json = JsonSerializer.Serialize(original);
+        string json = JsonSerializer.Serialize(original);
         Money recovered = JsonSerializer.Deserialize<Money>(json);
 
         Assert.AreEqual(original, recovered);
@@ -600,7 +600,7 @@ public partial class MoneyTests
     [TestMethod]
     public void Json_WhenCurrencyMissing_ShouldThrowJsonException()
     {
-        var json = "{\"amount\":19.99}";
+        string json = "{\"amount\":19.99}";
 
         Assert.ThrowsExactly<JsonException>(() =>
         {

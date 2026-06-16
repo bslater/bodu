@@ -76,7 +76,7 @@ public sealed class IListExtensionsTests_IndexOf
     {
         IList<int> list = new List<int> { 1, 2, 3 };
 
-        var index = list.IndexOf(x => x == 1, list.Count);
+        int index = list.IndexOf(x => x == 1, list.Count);
 
         Assert.AreEqual(-1, index);
     }
@@ -133,7 +133,7 @@ public sealed class IListExtensionsTests_IndexOf
     {
         IList<int> list = new List<int>();
 
-        var index = list.IndexOf(_ => true);
+        int index = list.IndexOf(_ => true);
 
         Assert.AreEqual(-1, index);
     }
@@ -147,7 +147,7 @@ public sealed class IListExtensionsTests_IndexOf
     {
         IList<string> list = new Collection<string> { "a", "b", "c" };
 
-        var index = list.IndexOf(x => x == "b");
+        int index = list.IndexOf(x => x == "b");
 
         Assert.AreEqual(1, index);
     }
@@ -175,7 +175,7 @@ public sealed class IListExtensionsTests_IndexOf
     {
         IList<int> list = new List<int> { 1, 2, 3, 2, 1 };
 
-        var index = list.IndexOf(x => x == 2);
+        int index = list.IndexOf(x => x == 2);
 
         Assert.AreEqual(1, index);
     }
@@ -189,7 +189,7 @@ public sealed class IListExtensionsTests_IndexOf
     {
         IList<int> list = new List<int>(data);
 
-        var index = list.IndexOf(x => x == 5);
+        int index = list.IndexOf(x => x == 5);
 
         Assert.AreEqual(expected, index);
     }
@@ -202,7 +202,7 @@ public sealed class IListExtensionsTests_IndexOf
     {
         IList<int> list = new List<int> { 1, 2, 3 };
 
-        var index = list.IndexOf(x => x > 100);
+        int index = list.IndexOf(x => x > 100);
 
         Assert.AreEqual(-1, index);
     }
@@ -231,9 +231,9 @@ public sealed class IListExtensionsTests_IndexOf
     public void IndexOf_WithRange_WhenCountIsZeroOnNonEmptyList_ShouldReturnMinusOne()
     {
         IList<int> list = new List<int> { 1, 2, 3 };
-        var predicateCalls = 0;
+        int predicateCalls = 0;
 
-        var index = list.IndexOf(_ => { predicateCalls++; return true; }, 1, 0);
+        int index = list.IndexOf(_ => { predicateCalls++; return true; }, 1, 0);
 
         Assert.AreEqual(-1, index);
         Assert.AreEqual(0, predicateCalls);
@@ -247,7 +247,7 @@ public sealed class IListExtensionsTests_IndexOf
     {
         IList<int> list = new List<int> { 0, 5, 5, 0 };
 
-        var index = list.IndexOf(x => x == 5, 1, 2);
+        int index = list.IndexOf(x => x == 5, 1, 2);
 
         Assert.AreEqual(1, index);
     }
@@ -260,7 +260,7 @@ public sealed class IListExtensionsTests_IndexOf
     {
         IList<int> list = new List<int> { 0, 0, 5, 0 };
 
-        var index = list.IndexOf(x => x == 5, 0, 3);
+        int index = list.IndexOf(x => x == 5, 0, 3);
 
         Assert.AreEqual(2, index);
     }
@@ -273,7 +273,7 @@ public sealed class IListExtensionsTests_IndexOf
     {
         IList<int> list = new List<int> { 0, 0, 1, 0, 0 };
 
-        var index = list.IndexOf(x => x == 1, 1, 3);
+        int index = list.IndexOf(x => x == 1, 1, 3);
 
         Assert.AreEqual(2, index);
     }
@@ -287,7 +287,7 @@ public sealed class IListExtensionsTests_IndexOf
     {
         IList<int> list = new List<int> { 0, 0, 1, 0, 0 };
 
-        var index = list.IndexOf(x => x == 1, 0, 2);
+        int index = list.IndexOf(x => x == 1, 0, 2);
 
         Assert.AreEqual(-1, index);
     }
@@ -301,7 +301,7 @@ public sealed class IListExtensionsTests_IndexOf
     {
         IList<int> list = new List<int> { 5, 5, 5, 5, 5 };
 
-        var index = list.IndexOf(x => x == 5, 2, 2);
+        int index = list.IndexOf(x => x == 5, 2, 2);
 
         Assert.AreEqual(2, index);
     }
@@ -325,7 +325,7 @@ public sealed class IListExtensionsTests_IndexOf
     {
         IList<int> list = new List<int> { 2, 0, 0, 2, 0, 2 };
 
-        var index = list.IndexOf(x => x == 2, 1);
+        int index = list.IndexOf(x => x == 2, 1);
 
         Assert.AreEqual(3, index);
     }

@@ -81,7 +81,7 @@ public static partial class DateTimeExtensions
         ThrowHelper.ThrowIfOutOfRange(month, 1, 12);
         ThrowHelper.ThrowIfEnumValueIsUndefined(dayOfWeek);
 
-        var ticks = DateTimeExtensions.GetDateTicks(year, month, 1);
+        long ticks = DateTimeExtensions.GetDateTicks(year, month, 1);
         ticks += DateTimeExtensions.GetTicksUntilNextOrSameDayOfWeek(ticks, dayOfWeek);
         return new DateTime(ticks, DateTimeKind.Unspecified);
     }

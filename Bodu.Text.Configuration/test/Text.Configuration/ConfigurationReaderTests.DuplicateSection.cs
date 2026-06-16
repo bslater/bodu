@@ -63,7 +63,7 @@ format.indent.style = space
 
         ConfigurationParseResult result = ConfigurationDocument.ParseWithDiagnostics(DuplicateSectionFixture, options);
 
-        var hasDuplicateSection = false;
+        bool hasDuplicateSection = false;
         foreach (ConfigurationDiagnostic d in result.Diagnostics)
         {
             if (d.Code == ConfigurationDiagnosticCode.DuplicateSection)

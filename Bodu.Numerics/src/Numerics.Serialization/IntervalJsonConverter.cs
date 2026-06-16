@@ -139,7 +139,7 @@ public sealed class IntervalJsonConverter<T>
                     typeof(T).Name));
         }
 
-        var text = reader.GetString()!;
+        string text = reader.GetString()!;
         return !Interval<T>.TryParse(text, CultureInfo.InvariantCulture, out Interval<T> result)
             ? throw new JsonException(
                 string.Format(
@@ -168,14 +168,14 @@ public sealed class IntervalJsonConverter<T>
 
         T? lower = default;
         T? upper = default;
-        var lowerInclusive = false;
-        var upperInclusive = false;
-        var empty = false;
-        var lowerSeen = false;
-        var upperSeen = false;
-        var lowerInclusiveSeen = false;
-        var upperInclusiveSeen = false;
-        var emptySeen = false;
+        bool lowerInclusive = false;
+        bool upperInclusive = false;
+        bool empty = false;
+        bool lowerSeen = false;
+        bool upperSeen = false;
+        bool lowerInclusiveSeen = false;
+        bool upperInclusiveSeen = false;
+        bool emptySeen = false;
 
         while (reader.Read())
         {
@@ -185,7 +185,7 @@ public sealed class IntervalJsonConverter<T>
             if (reader.TokenType != JsonTokenType.PropertyName)
                 throw new JsonException(NumericsResourceStrings.Json_Invalid_ExpectedPropertyName);
 
-            var propertyName = reader.GetString()!;
+            string propertyName = reader.GetString()!;
             if (!reader.Read())
                 throw new JsonException(NumericsResourceStrings.Json_Invalid_UnexpectedEnd);
 
@@ -301,7 +301,7 @@ public sealed class IntervalJsonConverter<T>
         {
             // JSON number tokens are ASCII (digits, sign, fractional and exponent parts), so a 1:1 byte-to-char
             // decode is safe and allows arbitrary-precision numeric backings to flow through without precision loss.
-            var text = reader.HasValueSequence
+            string text = reader.HasValueSequence
                 ? Encoding.UTF8.GetString(reader.ValueSequence.ToArray())
                 : Encoding.UTF8.GetString(reader.ValueSpan);
 
@@ -312,7 +312,7 @@ public sealed class IntervalJsonConverter<T>
 
         if (reader.TokenType == JsonTokenType.String)
         {
-            var stringValue = reader.GetString();
+            string? stringValue = reader.GetString();
             return stringValue is not null
                 && T.TryParse(stringValue.AsSpan(), NumberStyles.Any, CultureInfo.InvariantCulture, out T? parsed)
                 ? parsed
@@ -351,7 +351,7 @@ public sealed class IntervalJsonConverter<T>
     /// <param name="value">The endpoint value to write.</param>
     private static void WriteEndpointValue(Utf8JsonWriter writer, T value)
     {
-        var text = ((IFormattable)value).ToString(null, CultureInfo.InvariantCulture);
+        string text = ((IFormattable)value).ToString(null, CultureInfo.InvariantCulture);
         writer.WriteRawValue(text);
     }
 }

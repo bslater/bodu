@@ -116,7 +116,7 @@ public partial class FiscalWeekQuarterProviderTests
             isFiscalYearEnd: true,
             useNearestDayOfWeek: true);
 
-        var expectedQuarter = provider.GetQuarter(new DateTime(2024, 1, 15));
+        int expectedQuarter = provider.GetQuarter(new DateTime(2024, 1, 15));
         Assert.AreEqual(4, expectedQuarter);
     }
     // -----------------------------------------------------------------------

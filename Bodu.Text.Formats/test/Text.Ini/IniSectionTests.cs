@@ -73,7 +73,7 @@ public sealed class IniSectionTests
     {
         IniSection section = ParseSection("s", "[s]\nkey=val");
 
-        var result = section.TryGetValue("key", out var value);
+        bool result = section.TryGetValue("key", out string? value);
 
         Assert.IsTrue(result);
         Assert.AreEqual("val", value);
@@ -88,7 +88,7 @@ public sealed class IniSectionTests
     {
         IniSection section = ParseSection("s", "[s]\nkey=val");
 
-        var result = section.TryGetValue("missing", out var value);
+        bool result = section.TryGetValue("missing", out string? value);
 
         Assert.IsFalse(result);
         Assert.IsNull(value);
@@ -102,7 +102,7 @@ public sealed class IniSectionTests
     {
         IniSection section = ParseSection("s", "[s]\nPort=443");
 
-        var result = section.TryGetValue("port", out var value);
+        bool result = section.TryGetValue("port", out string? value);
 
         Assert.IsTrue(result);
         Assert.AreEqual("443", value);
@@ -118,7 +118,7 @@ public sealed class IniSectionTests
         IniParseOptions options = new() { CaseSensitiveKeys = true };
         IniSection section = ParseSection("s", "[s]\nPort=443", options);
 
-        var result = section.TryGetValue("port", out var value);
+        bool result = section.TryGetValue("port", out string? value);
 
         Assert.IsFalse(result);
         Assert.IsNull(value);
@@ -134,7 +134,7 @@ public sealed class IniSectionTests
     {
         IniSection section = ParseSection("s", "[s]\ncount=42");
 
-        var result = section.GetValue<int>("count");
+        int result = section.GetValue<int>("count");
 
         Assert.AreEqual(42, result);
     }
@@ -195,7 +195,7 @@ public sealed class IniSectionTests
     {
         IniSection section = ParseSection("s", "[s]\nport=8080");
 
-        var result = section.TryGetValue<int>("port", out var value);
+        bool result = section.TryGetValue<int>("port", out int value);
 
         Assert.IsTrue(result);
         Assert.AreEqual(8080, value);
@@ -210,7 +210,7 @@ public sealed class IniSectionTests
     {
         IniSection section = ParseSection("s", "[s]\nport=8080");
 
-        var result = section.TryGetValue<int>("missing", out var value);
+        bool result = section.TryGetValue<int>("missing", out int value);
 
         Assert.IsFalse(result);
         Assert.AreEqual(default, value);
@@ -225,7 +225,7 @@ public sealed class IniSectionTests
     {
         IniSection section = ParseSection("s", "[s]\nport=8080");
 
-        var result = section.TryGetValue<int>(null!, out var value);
+        bool result = section.TryGetValue<int>(null!, out int value);
 
         Assert.IsFalse(result);
         Assert.AreEqual(default, value);
@@ -240,7 +240,7 @@ public sealed class IniSectionTests
     {
         IniSection section = ParseSection("s", "[s]\nport=notanumber");
 
-        var result = section.TryGetValue<int>("port", out var value);
+        bool result = section.TryGetValue<int>("port", out int value);
 
         Assert.IsFalse(result);
         Assert.AreEqual(default, value);
@@ -256,7 +256,7 @@ public sealed class IniSectionTests
     {
         IniSection section = ParseSection("s", "[s]\na=1\nb=2\nc=3");
 
-        var keys = section.Entries.Select(e => e.Key).ToArray();
+        string[] keys = section.Entries.Select(e => e.Key).ToArray();
 
         CollectionAssert.AreEqual(new[] { "a", "b", "c" }, keys);
     }

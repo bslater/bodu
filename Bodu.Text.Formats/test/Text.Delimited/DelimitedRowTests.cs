@@ -141,7 +141,7 @@ public sealed class DelimitedRowTests
     {
         DelimitedDocument doc = Delimited.Parse("name,score\nAlice,42");
 
-        var score = doc.Rows[0].GetValue<int>(1);
+        int score = doc.Rows[0].GetValue<int>(1);
 
         Assert.AreEqual(42, score);
     }
@@ -172,7 +172,7 @@ public sealed class DelimitedRowTests
     {
         DelimitedDocument doc = Delimited.Parse("x,y\n10,20");
 
-        var result = doc.Rows[0].TryGetValue<int>(0, out var x);
+        bool result = doc.Rows[0].TryGetValue<int>(0, out int x);
 
         Assert.IsTrue(result);
         Assert.AreEqual(10, x);
@@ -187,7 +187,7 @@ public sealed class DelimitedRowTests
     {
         DelimitedDocument doc = Delimited.Parse("a\n1");
 
-        var result = doc.Rows[0].TryGetValue<int>(99, out var _);
+        bool result = doc.Rows[0].TryGetValue<int>(99, out int _);
 
         Assert.IsFalse(result);
     }
@@ -203,7 +203,7 @@ public sealed class DelimitedRowTests
     {
         DelimitedDocument doc = Delimited.Parse("name,score\nAlice,99");
 
-        var score = doc.Rows[0].GetValue<int>("score");
+        int score = doc.Rows[0].GetValue<int>("score");
 
         Assert.AreEqual(99, score);
     }
@@ -220,7 +220,7 @@ public sealed class DelimitedRowTests
         DelimitedParseOptions options = new() { HasHeader = false };
         DelimitedDocument doc = Delimited.Parse("1,2", options);
 
-        var result = doc.Rows[0].TryGetValue<int>("missing", out var _);
+        bool result = doc.Rows[0].TryGetValue<int>("missing", out int _);
 
         Assert.IsFalse(result);
     }
@@ -234,7 +234,7 @@ public sealed class DelimitedRowTests
     {
         DelimitedDocument doc = Delimited.Parse("qty\n7");
 
-        var result = doc.Rows[0].TryGetValue<int>("qty", out var qty);
+        bool result = doc.Rows[0].TryGetValue<int>("qty", out int qty);
 
         Assert.IsTrue(result);
         Assert.AreEqual(7, qty);

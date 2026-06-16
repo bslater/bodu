@@ -281,10 +281,10 @@ public readonly partial struct Fraction<T>
         if (!double.IsFinite(value))
             throw new ArgumentException(NumericsResourceStrings.Arg_Invalid_NonFiniteToFraction, nameof(value));
 
-        var bits = BitConverter.DoubleToInt64Bits(value);
-        var negative = bits < 0;
-        var exponent = (int)((bits >> 52) & 0x7FF);
-        var mantissa = bits & 0xFFFFFFFFFFFFF;
+        long bits = BitConverter.DoubleToInt64Bits(value);
+        bool negative = bits < 0;
+        int exponent = (int)((bits >> 52) & 0x7FF);
+        long mantissa = bits & 0xFFFFFFFFFFFFF;
 
         if (exponent == 0)
             exponent++;
@@ -309,13 +309,13 @@ public readonly partial struct Fraction<T>
     /// <returns>The exact numerator and denominator of <paramref name="value" />.</returns>
     private static (BigInteger Numerator, BigInteger Denominator) DecimalToRational(decimal value)
     {
-        var bits = decimal.GetBits(value);
+        int[] bits = decimal.GetBits(value);
         BigInteger mantissa = (new BigInteger((uint)bits[2]) << 64)
             | (new BigInteger((uint)bits[1]) << 32)
             | new BigInteger((uint)bits[0]);
 
-        var negative = (bits[3] & unchecked((int)0x80000000)) != 0;
-        var scale = (bits[3] >> 16) & 0xFF;
+        bool negative = (bits[3] & unchecked((int)0x80000000)) != 0;
+        int scale = (bits[3] >> 16) & 0xFF;
 
         if (negative)
             mantissa = -mantissa;

@@ -45,14 +45,14 @@ public static partial class EncodingExtensions
 
         if (source.IsEmpty) return [];
 
-        var charCount = sourceEncoding.GetCharCount(source);
-        var charBuffer = ArrayPool<char>.Shared.Rent(charCount);
+        int charCount = sourceEncoding.GetCharCount(source);
+        char[] charBuffer = ArrayPool<char>.Shared.Rent(charCount);
         try
         {
-            var charsWritten = sourceEncoding.GetChars(source, charBuffer);
+            int charsWritten = sourceEncoding.GetChars(source, charBuffer);
             ReadOnlySpan<char> chars = charBuffer.AsSpan(0, charsWritten);
-            var byteCount = destinationEncoding.GetByteCount(chars);
-            var result = new byte[byteCount];
+            int byteCount = destinationEncoding.GetByteCount(chars);
+            byte[] result = new byte[byteCount];
             destinationEncoding.GetBytes(chars, result);
             return result;
         }
@@ -97,11 +97,11 @@ public static partial class EncodingExtensions
 
         if (source.IsEmpty) return 0;
 
-        var charCount = sourceEncoding.GetCharCount(source);
-        var charBuffer = ArrayPool<char>.Shared.Rent(charCount);
+        int charCount = sourceEncoding.GetCharCount(source);
+        char[] charBuffer = ArrayPool<char>.Shared.Rent(charCount);
         try
         {
-            var charsWritten = sourceEncoding.GetChars(source, charBuffer);
+            int charsWritten = sourceEncoding.GetChars(source, charBuffer);
             return destinationEncoding.GetBytes(charBuffer.AsSpan(0, charsWritten), destination);
         }
         finally
@@ -155,11 +155,11 @@ public static partial class EncodingExtensions
             return true;
         }
 
-        var charCount = sourceEncoding.GetCharCount(source);
-        var charBuffer = ArrayPool<char>.Shared.Rent(charCount);
+        int charCount = sourceEncoding.GetCharCount(source);
+        char[] charBuffer = ArrayPool<char>.Shared.Rent(charCount);
         try
         {
-            var charsWritten = sourceEncoding.GetChars(source, charBuffer);
+            int charsWritten = sourceEncoding.GetChars(source, charBuffer);
             return destinationEncoding.TryGetBytes(charBuffer.AsSpan(0, charsWritten), destination, out bytesWritten);
         }
         finally

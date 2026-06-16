@@ -80,7 +80,7 @@ public readonly partial struct Money :
         if (trimmed.Length >= 5 && trimmed[3] == ' '
             && IsUppercaseAscii(trimmed[0]) && IsUppercaseAscii(trimmed[1]) && IsUppercaseAscii(trimmed[2]))
         {
-            var iso = trimmed[..3].ToString();
+            string iso = trimmed[..3].ToString();
             ReadOnlySpan<char> numericPart = trimmed[4..].TrimStart();
             return TryComposeWithCulture(numericPart, iso, provider, out result);
         }
@@ -89,7 +89,7 @@ public readonly partial struct Money :
         if (trimmed.Length >= 5 && trimmed[^4] == ' '
             && IsUppercaseAscii(trimmed[^3]) && IsUppercaseAscii(trimmed[^2]) && IsUppercaseAscii(trimmed[^1]))
         {
-            var iso = trimmed[^3..].ToString();
+            string iso = trimmed[^3..].ToString();
             ReadOnlySpan<char> numericPart = trimmed[..^4].TrimEnd();
             return TryComposeWithCulture(numericPart, iso, provider, out result);
         }
@@ -117,7 +117,7 @@ public readonly partial struct Money :
             return false;
 
         IFormatProvider effective = provider ?? CultureInfo.CurrentCulture;
-        if (!decimal.TryParse(numericPart, NumberStyles.Number | NumberStyles.AllowLeadingSign, effective, out var amount))
+        if (!decimal.TryParse(numericPart, NumberStyles.Number | NumberStyles.AllowLeadingSign, effective, out decimal amount))
             return false;
 
         result = new Money(amount, iso);

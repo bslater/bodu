@@ -159,7 +159,7 @@ public abstract partial class Snefru<T>
     {
         // paddedLength is always ≤ 96 for Snefru128 (2 × 48) and ≤ 64 for Snefru256 (2 × 32),
         // so stackalloc is always safe and appropriately sized here.
-        var paddedLength = 2 * (BlockSize / 8);
+        int paddedLength = 2 * (BlockSize / 8);
         Span<byte> padded = stackalloc byte[paddedLength];
         block.CopyTo(padded);
         BinaryPrimitives.WriteUInt64BigEndian(padded[(paddedLength - 8)..], messageLength << 3);
@@ -180,16 +180,16 @@ public abstract partial class Snefru<T>
         _state.AsSpan().CopyTo(_buffer);
         LoadBlockToBuffer(block, _buffer.AsSpan(_state.Length));
 
-        for (var round = 0; round < 8; round++)
+        for (int round = 0; round < 8; round++)
         {
-            foreach (var shift in s_shifts)
+            foreach (int shift in s_shifts)
             {
                 ApplySBoxRounds(round);
                 RotateWords(shift);
             }
         }
 
-        for (var i = 0; i < _state.Length; i++)
+        for (int i = 0; i < _state.Length; i++)
             _state[i] ^= _buffer[Mask - i];
     }
 
@@ -199,7 +199,7 @@ public abstract partial class Snefru<T>
     /// <returns>The computed hash as a byte array.</returns>
     protected override byte[] ProcessFinalBlock()
     {
-        var output = new byte[_state.Length * sizeof(uint)];
+        byte[] output = new byte[_state.Length * sizeof(uint)];
         WriteStateBigEndian(_state, output);
 
         return output;
@@ -214,7 +214,7 @@ public abstract partial class Snefru<T>
     private static void LoadBlockToBuffer(ReadOnlySpan<byte> block, Span<uint> destination)
     {
         ReadOnlySpan<uint> inputWords = MemoryMarshal.Cast<byte, uint>(block);
-        for (var i = 0; i < destination.Length; i++)
+        for (int i = 0; i < destination.Length; i++)
             destination[i] = inputWords[i].ReverseBytesUnchecked();
     }
 
@@ -228,7 +228,7 @@ public abstract partial class Snefru<T>
     {
         // Cast the destination to uint words to avoid per-element Slice calls and their associated bounds checks.
         Span<uint> dest = MemoryMarshal.Cast<byte, uint>(destination);
-        for (var i = 0; i < source.Length; i++)
+        for (int i = 0; i < source.Length; i++)
             dest[i] = source[i].ReverseBytesUnchecked();
     }
 
@@ -242,23 +242,23 @@ public abstract partial class Snefru<T>
         // Hoist the round-invariant portion of the S-box index out of the inner loop.
         // sBoxNumber alternates between baseBox and baseBox+1 every two iterations of kk,
         // so only the low bit of (kk >> 1) varies; baseBox accounts for the round offset.
-        var baseBox = round << 1;
+        int baseBox = round << 1;
 
         // Interior refs bypass bounds checks: next/last are non-monotonic ((kk+1)&15, (kk+15)&15)
         // so the JIT cannot hoist the check out of the loop; sBoxIndex involves a dynamic byte value
         // so the s_constants check is also never elided without this pattern.
-        ref var bufRef = ref MemoryMarshal.GetArrayDataReference(_buffer);
-        ref var sBoxRef = ref MemoryMarshal.GetArrayDataReference(s_constants);
+        ref uint bufRef = ref MemoryMarshal.GetArrayDataReference(_buffer);
+        ref uint sBoxRef = ref MemoryMarshal.GetArrayDataReference(s_constants);
 
-        for (var kk = 0; kk < TotalWords; kk++)
+        for (int kk = 0; kk < TotalWords; kk++)
         {
-            var next = (kk + 1) & Mask;
-            var last = (kk + Mask) & Mask;
+            int next = (kk + 1) & Mask;
+            int last = (kk + Mask) & Mask;
 
             // Flat array layout: each table occupies 256 consecutive entries.
             // Index = (tableIndex << 8) | byteValue, avoiding the double indirection of a jagged array.
-            var sBoxIndex = ((baseBox + ((kk >> 1) & 0x01)) << 8) | (int)(Unsafe.Add(ref bufRef, kk) & 0xff);
-            var sboxEntry = Unsafe.Add(ref sBoxRef, sBoxIndex);
+            int sBoxIndex = ((baseBox + ((kk >> 1) & 0x01)) << 8) | (int)(Unsafe.Add(ref bufRef, kk) & 0xff);
+            uint sboxEntry = Unsafe.Add(ref sBoxRef, sBoxIndex);
 
             Unsafe.Add(ref bufRef, next) ^= sboxEntry;
             Unsafe.Add(ref bufRef, last) ^= sboxEntry;
@@ -272,8 +272,8 @@ public abstract partial class Snefru<T>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void RotateWords(int shiftAmount)
     {
-        ref var bufRef = ref MemoryMarshal.GetArrayDataReference(_buffer);
-        for (var i = 0; i < TotalWords; i++)
+        ref uint bufRef = ref MemoryMarshal.GetArrayDataReference(_buffer);
+        for (int i = 0; i < TotalWords; i++)
             Unsafe.Add(ref bufRef, i) = Unsafe.Add(ref bufRef, i).RotateBitsRightUnchecked(shiftAmount);
     }
 }

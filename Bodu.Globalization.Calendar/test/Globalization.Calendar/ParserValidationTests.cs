@@ -25,7 +25,7 @@ public sealed class ParserValidationTests
     /// <param name="expectedCode">The diagnostic code expected among the failure diagnostics.</param>
     private static void AssertFixtureFailsWith(string fileName, string expectedCode)
     {
-        var xml = NotableDateFixtures.ReadText(fileName);
+        string xml = NotableDateFixtures.ReadText(fileName);
 
         NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
         {

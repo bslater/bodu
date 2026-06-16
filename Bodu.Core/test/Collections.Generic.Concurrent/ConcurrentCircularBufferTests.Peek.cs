@@ -104,16 +104,16 @@ public partial class ConcurrentCircularBufferTests
     public void Peek_WhenCalledDuringDraining_ShouldSometimesSucceedBeforeEmpty()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(10);
-        for (var i = 0; i < 10; i++) buffer.Enqueue(new TestItem(i));
+        for (int i = 0; i < 10; i++) buffer.Enqueue(new TestItem(i));
 
         var start = new ManualResetEventSlim(false);
-        var success = 0;
-        var attempts = 0;
+        int success = 0;
+        int attempts = 0;
 
         var peeker = Task.Run(() =>
         {
             start.Set(); // signal: peeker is alive
-            for (var i = 0; i < 1000 && Volatile.Read(ref success) == 0; i++)
+            for (int i = 0; i < 1000 && Volatile.Read(ref success) == 0; i++)
             {
                 try
                 {
@@ -154,9 +154,9 @@ public partial class ConcurrentCircularBufferTests
         var buffer = new ConcurrentCircularBuffer<TestItem>(5);
         buffer.Enqueue(new TestItem(1));
         buffer.Enqueue(new TestItem(2));
-        var before = buffer.Count;
+        int before = buffer.Count;
 
-        for (var i = 0; i < 100; i++)
+        for (int i = 0; i < 100; i++)
             _ = buffer.Peek();
 
         Assert.AreEqual(before, buffer.Count, "Peek must be non-destructive.");
@@ -169,14 +169,14 @@ public partial class ConcurrentCircularBufferTests
     public void Peek_WhenInterleavedWithClear_ShouldNotThrowAndMayReturnNewHead()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(8, allowOverwrite: true);
-        for (var i = 0; i < 4; i++) buffer.Enqueue(new TestItem(i));
+        for (int i = 0; i < 4; i++) buffer.Enqueue(new TestItem(i));
 
         var exceptions = new ConcurrentBag<Exception>();
         var observedValues = new ConcurrentBag<int?>();
 
         var clearer = Task.Run(() =>
         {
-            for (var i = 0; i < 50; i++)
+            for (int i = 0; i < 50; i++)
             {
                 buffer.Clear();
                 Thread.SpinWait(20);
@@ -186,7 +186,7 @@ public partial class ConcurrentCircularBufferTests
 
         var peeker = Task.Run(() =>
         {
-            for (var i = 0; i < 200; i++)
+            for (int i = 0; i < 200; i++)
             {
                 try
                 {
@@ -216,7 +216,7 @@ public partial class ConcurrentCircularBufferTests
     public void Peek_WhenManyThreadsPeekConcurrently_ShouldNeverThrowUnlessEmpty()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(16, allowOverwrite: true);
-        for (var i = 0; i < 8; i++) buffer.Enqueue(new TestItem(i));
+        for (int i = 0; i < 8; i++) buffer.Enqueue(new TestItem(i));
 
         var errors = new ConcurrentBag<Exception>();
 
@@ -288,14 +288,14 @@ public partial class ConcurrentCircularBufferTests
         const int writerCount = 100;
         var buffer = new ConcurrentCircularBuffer<TestItem>(prefilledCount + writerCount + 10);
 
-        for (var i = 0; i < prefilledCount; i++) buffer.Enqueue(new TestItem(i));
+        for (int i = 0; i < prefilledCount; i++) buffer.Enqueue(new TestItem(i));
 
         var exceptions = new ConcurrentBag<Exception>();
         var peekedItems = new ConcurrentBag<TestItem?>();
 
         var reader = Task.Run(() =>
         {
-            for (var i = 0; i < 100; i++)
+            for (int i = 0; i < 100; i++)
             {
                 try
                 {
@@ -310,7 +310,7 @@ public partial class ConcurrentCircularBufferTests
 
         var writer = Task.Run(() =>
         {
-            for (var i = prefilledCount; i < prefilledCount + writerCount; i++)
+            for (int i = prefilledCount; i < prefilledCount + writerCount; i++)
                 buffer.Enqueue(new TestItem(i));
         });
 

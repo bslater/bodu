@@ -70,7 +70,7 @@ public partial class SequenceGeneratorTests
     [TestMethod]
     public void NextWhile_WhenInitialConditionIsFalse_ForStateOverload_ShouldReturnEmptySequence()
     {
-        var actual = SequenceGenerator.NextWhile(
+        int[] actual = SequenceGenerator.NextWhile(
             initialState: (Curr: 0, Step: 1),
             conditionHandler: s => false,
             iterateFunction: s => (s.Curr + s.Step, s.Step),
@@ -85,7 +85,7 @@ public partial class SequenceGeneratorTests
     [TestMethod]
     public void NextWhile_WhenInitialConditionIsTrue_ForSimpleOverload_ShouldYieldSeedAsFirstElement()
     {
-        var actual = SequenceGenerator.NextWhile(
+        int[] actual = SequenceGenerator.NextWhile(
             initialValue: 10,
             conditionHandler: x => x > 0,
             resultSelector: x => x - 5).ToArray();

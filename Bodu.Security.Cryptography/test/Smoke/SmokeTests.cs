@@ -31,7 +31,7 @@ public sealed class SmokeTests
         algorithm.GenerateIV();
         algorithm.GenerateTweak();
 
-        var plaintext = Encoding.UTF8.GetBytes("Smoke test for Threefish-256 in CBC + PKCS7.");
+        byte[] plaintext = Encoding.UTF8.GetBytes("Smoke test for Threefish-256 in CBC + PKCS7.");
 
         byte[] ciphertext;
         using (ICryptoTransform encryptor = algorithm.CreateEncryptor())
@@ -57,7 +57,7 @@ public sealed class SmokeTests
         algorithm.GenerateKey();
         algorithm.GenerateIV();
 
-        var plaintext = Encoding.UTF8.GetBytes("Skipjack smoke.");
+        byte[] plaintext = Encoding.UTF8.GetBytes("Skipjack smoke.");
 
         byte[] ciphertext;
         using (ICryptoTransform encryptor = algorithm.CreateEncryptor())
@@ -78,7 +78,7 @@ public sealed class SmokeTests
     public void Tiger_ComputeHash_ShouldProduce192BitDigest()
     {
         using Bodu.Security.Cryptography.Tiger tiger = new();
-        var digest = tiger.ComputeHash(Encoding.ASCII.GetBytes("smoke"));
+        byte[] digest = tiger.ComputeHash(Encoding.ASCII.GetBytes("smoke"));
 
         Assert.AreEqual(24, digest.Length);
     }
@@ -90,11 +90,11 @@ public sealed class SmokeTests
     [TestMethod]
     public void SipHash64_ComputeHash_ShouldProduceEightByteDigest()
     {
-        var key = new byte[16];
-        for (var i = 0; i < key.Length; i++) key[i] = (byte)i;
+        byte[] key = new byte[16];
+        for (int i = 0; i < key.Length; i++) key[i] = (byte)i;
 
         using Bodu.Security.Cryptography.SipHash64 hash = new() { Key = key };
-        var digest = hash.ComputeHash(Encoding.ASCII.GetBytes("smoke"));
+        byte[] digest = hash.ComputeHash(Encoding.ASCII.GetBytes("smoke"));
 
         Assert.AreEqual(8, digest.Length);
     }
@@ -110,7 +110,7 @@ public sealed class SmokeTests
         algorithm.GenerateKey();
         algorithm.GenerateNonce();
 
-        var plaintext = Encoding.UTF8.GetBytes("Smoke test for ChaCha20.");
+        byte[] plaintext = Encoding.UTF8.GetBytes("Smoke test for ChaCha20.");
 
         byte[] ciphertext;
         using (ICryptoTransform encryptor = algorithm.CreateEncryptor())
@@ -134,7 +134,7 @@ public sealed class SmokeTests
         algorithm.GenerateKey();
         algorithm.GenerateNonce();
 
-        var plaintext = Encoding.UTF8.GetBytes("Smoke test for XChaCha20.");
+        byte[] plaintext = Encoding.UTF8.GetBytes("Smoke test for XChaCha20.");
 
         byte[] ciphertext;
         using (ICryptoTransform encryptor = algorithm.CreateEncryptor())
@@ -158,7 +158,7 @@ public sealed class SmokeTests
         algorithm.GenerateKey();
         algorithm.GenerateNonce();
 
-        var plaintext = Encoding.UTF8.GetBytes("Smoke test for Salsa20.");
+        byte[] plaintext = Encoding.UTF8.GetBytes("Smoke test for Salsa20.");
 
         byte[] ciphertext;
         using (ICryptoTransform encryptor = algorithm.CreateEncryptor())
@@ -182,7 +182,7 @@ public sealed class SmokeTests
         algorithm.GenerateKey();
         algorithm.GenerateNonce();
 
-        var plaintext = Encoding.UTF8.GetBytes("Smoke test for XSalsa20.");
+        byte[] plaintext = Encoding.UTF8.GetBytes("Smoke test for XSalsa20.");
 
         byte[] ciphertext;
         using (ICryptoTransform encryptor = algorithm.CreateEncryptor())
@@ -206,7 +206,7 @@ public sealed class SmokeTests
         algorithm.GenerateKey();
         algorithm.GenerateNonce();
 
-        var plaintext = Encoding.UTF8.GetBytes("Smoke test for Rabbit.");
+        byte[] plaintext = Encoding.UTF8.GetBytes("Smoke test for Rabbit.");
 
         byte[] ciphertext;
         using (ICryptoTransform encryptor = algorithm.CreateEncryptor())
@@ -230,7 +230,7 @@ public sealed class SmokeTests
         algorithm.GenerateKey();
         algorithm.GenerateNonce();
 
-        var plaintext = Encoding.UTF8.GetBytes("Smoke test for HC-128.");
+        byte[] plaintext = Encoding.UTF8.GetBytes("Smoke test for HC-128.");
 
         byte[] ciphertext;
         using (ICryptoTransform encryptor = algorithm.CreateEncryptor())
@@ -256,8 +256,8 @@ public sealed class SmokeTests
         alice.GenerateKey();
         bob.GenerateKey();
 
-        var aliceShared = alice.DeriveSharedSecret(bob.ExportPublicKey());
-        var bobShared = bob.DeriveSharedSecret(alice.ExportPublicKey());
+        byte[] aliceShared = alice.DeriveSharedSecret(bob.ExportPublicKey());
+        byte[] bobShared = bob.DeriveSharedSecret(alice.ExportPublicKey());
 
         CollectionAssert.AreEqual(aliceShared, bobShared);
     }
@@ -273,8 +273,8 @@ public sealed class SmokeTests
         using var algorithm = Bodu.Security.Cryptography.Ed25519.Create();
         algorithm.GenerateKey();
 
-        var message = Encoding.UTF8.GetBytes("Smoke test for Ed25519.");
-        var signature = algorithm.SignData(message);
+        byte[] message = Encoding.UTF8.GetBytes("Smoke test for Ed25519.");
+        byte[] signature = algorithm.SignData(message);
 
         Assert.IsTrue(algorithm.VerifyData(message, signature));
     }
@@ -293,8 +293,8 @@ public sealed class SmokeTests
         using var sender = Bodu.Security.Cryptography.MLKem768.Create();
         sender.ImportEncapsulationKey(receiver.ExportEncapsulationKey());
 
-        (var ciphertext, var senderSecret) = sender.Encapsulate();
-        var receiverSecret = receiver.Decapsulate(ciphertext);
+        (byte[]? ciphertext, byte[]? senderSecret) = sender.Encapsulate();
+        byte[] receiverSecret = receiver.Decapsulate(ciphertext);
 
         CollectionAssert.AreEqual(senderSecret, receiverSecret);
     }
@@ -310,8 +310,8 @@ public sealed class SmokeTests
         using var dsa = Bodu.Security.Cryptography.MLDsa65.Create();
         dsa.GenerateKey();
 
-        var message = Encoding.UTF8.GetBytes("Smoke test for ML-DSA-65.");
-        var signature = dsa.SignData(message);
+        byte[] message = Encoding.UTF8.GetBytes("Smoke test for ML-DSA-65.");
+        byte[] signature = dsa.SignData(message);
 
         Assert.IsTrue(dsa.VerifyData(message, signature));
     }

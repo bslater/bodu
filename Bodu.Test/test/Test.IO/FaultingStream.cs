@@ -63,7 +63,7 @@ public sealed class FaultingStream
     public override int Read(byte[] buffer, int offset, int count)
     {
         ThrowIfFaulted();
-        var n = base.Read(buffer, offset, count);
+        int n = base.Read(buffer, offset, count);
         _bytesRead += n;
         return n;
     }
@@ -72,7 +72,7 @@ public sealed class FaultingStream
     public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
     {
         ThrowIfFaulted();
-        var n = await base.ReadAsync(buffer, cancellationToken);
+        int n = await base.ReadAsync(buffer, cancellationToken);
         _bytesRead += n;
         return n;
     }

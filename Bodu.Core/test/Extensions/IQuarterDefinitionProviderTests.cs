@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IQuarterDefinitionProviderTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -28,7 +28,7 @@ public sealed class IQuarterDefinitionProviderTests
     [TestMethod]
     public void GetFiscalYear_WhenDateInRange_ShouldReturnBracketingYear()
     {
-        var fiscalYear = Provider.GetFiscalYear(new DateTime(2024, 6, 1));
+        int fiscalYear = Provider.GetFiscalYear(new DateTime(2024, 6, 1));
 
         Assert.AreEqual(2023, fiscalYear);
     }
@@ -50,7 +50,7 @@ public sealed class IQuarterDefinitionProviderTests
     [TestMethod]
     public void GetFiscalYear_OnDateOnly_ShouldDelegateToDateTimeOverload()
     {
-        var fiscalYear = Provider.GetFiscalYear(new DateOnly(2024, 6, 1));
+        int fiscalYear = Provider.GetFiscalYear(new DateOnly(2024, 6, 1));
 
         Assert.AreEqual(2023, fiscalYear);
     }

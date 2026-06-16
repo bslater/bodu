@@ -41,22 +41,22 @@ public partial class ConfigurationKatRunnerTests
             ?? throw new InvalidOperationException($"{kat.Id} is missing ExpectedDocument.");
 
         Assert.HasCount(expected.Preamble.Count, doc.GlobalSection.Entries, $"{kat.Id}: preamble entry count");
-        for (var i = 0; i < expected.Preamble.Count; i++)
+        for (int i = 0; i < expected.Preamble.Count; i++)
             AssertEntry(kat, expected.Preamble[i], doc.GlobalSection.Entries[i]);
 
         Assert.HasCount(expected.Sections.Count, doc.Sections, $"{kat.Id}: section count");
-        for (var s = 0; s < expected.Sections.Count; s++)
+        for (int s = 0; s < expected.Sections.Count; s++)
         {
             ExpectedSection es = expected.Sections[s];
             IniSection actual = doc.Sections[s];
 
             Assert.AreEqual(es.Pattern, actual.Name, $"{kat.Id}: section[{s}].Name");
             Assert.HasCount(es.LeadingComments.Count, actual.LeadingComments, $"{kat.Id}: section[{s}].LeadingComments.Count");
-            for (var c = 0; c < es.LeadingComments.Count; c++)
+            for (int c = 0; c < es.LeadingComments.Count; c++)
                 Assert.AreEqual(es.LeadingComments[c], actual.LeadingComments[c].Text, $"{kat.Id}: section[{s}].LeadingComments[{c}]");
 
             Assert.HasCount(es.Properties.Count, actual.Entries, $"{kat.Id}: section[{s}].Entries.Count");
-            for (var p = 0; p < es.Properties.Count; p++)
+            for (int p = 0; p < es.Properties.Count; p++)
                 AssertEntry(kat, es.Properties[p], actual.Entries[p]);
         }
 
@@ -97,7 +97,7 @@ public partial class ConfigurationKatRunnerTests
         Assert.AreEqual(expected.Path, actual.ConfigurationPath(), $"{kat.Id}: entry configuration path");
 
         Assert.HasCount(expected.LeadingComments.Count, actual.LeadingComments, $"{kat.Id}: leading comment count");
-        for (var i = 0; i < expected.LeadingComments.Count; i++)
+        for (int i = 0; i < expected.LeadingComments.Count; i++)
             Assert.AreEqual(expected.LeadingComments[i], actual.LeadingComments[i].Text, $"{kat.Id}: leading comment[{i}]");
 
         if (expected.InlineComment is null)

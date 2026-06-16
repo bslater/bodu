@@ -161,7 +161,7 @@ public readonly partial struct ConfigurationKey
             ? StringComparer.Ordinal
             : StringComparer.OrdinalIgnoreCase;
 
-        for (var i = 0; i < a.Length; i++)
+        for (int i = 0; i < a.Length; i++)
         {
             if (!comparer.Equals(a[i], b[i])) return false;
         }
@@ -182,7 +182,7 @@ public readonly partial struct ConfigurationKey
             : StringComparer.OrdinalIgnoreCase;
 
         HashCode hash = default;
-        for (var i = 0; i < segments.Length; i++)
+        for (int i = 0; i < segments.Length; i++)
             hash.Add(segments[i], comparer);
 
         return hash.ToHashCode();
@@ -245,7 +245,7 @@ public readonly partial struct ConfigurationKey
     /// <returns><see langword="true" /> when <paramref name="c" /> matches a separator.</returns>
     private static bool IsSeparator(char c, IReadOnlyList<char> separators)
     {
-        for (var i = 0; i < separators.Count; i++)
+        for (int i = 0; i < separators.Count; i++)
         {
             if (separators[i] == c)
                 return true;
@@ -275,10 +275,10 @@ public readonly partial struct ConfigurationKey
         IReadOnlyList<char> separators = options.SegmentSeparators;
         ImmutableArray<string>.Builder builder = ImmutableArray.CreateBuilder<string>();
 
-        var start = 0;
-        for (var i = 0; i < rawKey.Length; i++)
+        int start = 0;
+        for (int i = 0; i < rawKey.Length; i++)
         {
-            var c = rawKey[i];
+            char c = rawKey[i];
             if (IsSeparator(c, separators))
             {
                 AddSegment(builder, rawKey.AsSpan(start, i - start), options);

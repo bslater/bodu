@@ -19,7 +19,7 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
     public void Append_WhenCharacterIsOutsideInputAlphabet_ShouldThrowExactly()
     {
         MultiCharCheckDigitAlgorithmSpecification spec = GetSpecification();
-        var invalid = spec.InputAlphabet == CheckDigitInputAlphabet.DecimalDigits ? 'A' : '!';
+        char invalid = spec.InputAlphabet == CheckDigitInputAlphabet.DecimalDigits ? 'A' : '!';
 
         TAlgorithm algorithm = CreateAlgorithm();
 
@@ -37,7 +37,7 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
     public void Append_WhenSingleCharacterIsOutsideInputAlphabet_ShouldThrowExactly()
     {
         MultiCharCheckDigitAlgorithmSpecification spec = GetSpecification();
-        var invalid = spec.InputAlphabet == CheckDigitInputAlphabet.DecimalDigits ? 'A' : '!';
+        char invalid = spec.InputAlphabet == CheckDigitInputAlphabet.DecimalDigits ? 'A' : '!';
 
         TAlgorithm algorithm = CreateAlgorithm();
 
@@ -55,7 +55,7 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
     public void GetCurrentCheckDigits_WhenDestinationTooSmall_ShouldThrowExactly()
     {
         TAlgorithm algorithm = CreateAlgorithm();
-        var tooSmall = new char[algorithm.CheckLength - 1];
+        char[] tooSmall = new char[algorithm.CheckLength - 1];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {

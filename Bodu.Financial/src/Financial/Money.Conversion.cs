@@ -128,7 +128,7 @@ public readonly partial struct Money
         }
 
         MonetaryContext effective = context ?? MonetaryContext.Default;
-        var raw = rate.Convert(_amount);
+        decimal raw = rate.Convert(_amount);
         Money target = new CalculatedMoney(raw, rate.ToIsoCode).RoundToMoney(effective);
 
         return new MoneyConversionResult(this, target, rate, effective, target.Amount - raw);

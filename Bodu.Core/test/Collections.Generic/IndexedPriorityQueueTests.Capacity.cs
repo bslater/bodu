@@ -18,7 +18,7 @@ public partial class IndexedPriorityQueueTests
     {
         var queue = new IndexedPriorityQueue<string, int>(16);
 
-        var newCapacity = queue.EnsureCapacity(16);
+        int newCapacity = queue.EnsureCapacity(16);
 
         Assert.AreEqual(16, newCapacity);
         Assert.AreEqual(16, queue.Capacity);
@@ -32,13 +32,13 @@ public partial class IndexedPriorityQueueTests
     public void EnsureCapacity_WhenGrowing_ShouldPreserveElements()
     {
         var queue = new IndexedPriorityQueue<int, int>(2);
-        for (var i = 0; i < 5; i++)
+        for (int i = 0; i < 5; i++)
             queue.Enqueue(i, 100 - i);
 
         _ = queue.EnsureCapacity(64);
 
         Assert.AreEqual(5, queue.Count);
-        for (var i = 0; i < 5; i++)
+        for (int i = 0; i < 5; i++)
             Assert.IsTrue(queue.Contains(i));
 
         KeyValuePair<int, int>[] drained = DrainAll(queue);
@@ -52,7 +52,7 @@ public partial class IndexedPriorityQueueTests
     {
         var queue = new IndexedPriorityQueue<string, int>(2);
 
-        var newCapacity = queue.EnsureCapacity(64);
+        int newCapacity = queue.EnsureCapacity(64);
 
         Assert.IsGreaterThanOrEqualTo(64, newCapacity);
         Assert.IsGreaterThanOrEqualTo(64, queue.Capacity);
@@ -80,7 +80,7 @@ public partial class IndexedPriorityQueueTests
     {
         var queue = new IndexedPriorityQueue<string, int>(64);
 
-        var newCapacity = queue.EnsureCapacity(8);
+        int newCapacity = queue.EnsureCapacity(8);
 
         Assert.AreEqual(64, newCapacity);
         Assert.AreEqual(64, queue.Capacity);
@@ -95,7 +95,7 @@ public partial class IndexedPriorityQueueTests
     {
         var queue = new IndexedPriorityQueue<string, int>(8);
 
-        var newCapacity = queue.EnsureCapacity(0);
+        int newCapacity = queue.EnsureCapacity(0);
 
         Assert.AreEqual(8, newCapacity);
         Assert.AreEqual(8, queue.Capacity);
@@ -144,7 +144,7 @@ public partial class IndexedPriorityQueueTests
     public void TrimExcess_WhenInvoked_ShouldPreserveDequeueOrder()
     {
         var queue = new IndexedPriorityQueue<int, int>(64);
-        for (var i = 0; i < 10; i++)
+        for (int i = 0; i < 10; i++)
             queue.Enqueue(i, 100 - i);
 
         queue.TrimExcess();

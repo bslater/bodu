@@ -2,23 +2,11 @@
 
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
-    <LangVersion>latest</LangVersion>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
     <RootNamespace>Bodu</RootNamespace>
-    <AssemblyName>$(MSBuildProjectName)</AssemblyName>
-    <OutputType>Library</OutputType>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
     <Version>1.0.0</Version>
     <Description>Distributed (Redis-capable) exchange-rate cache for Bodu.Financial. Provides DistributedExchangeRateCache, an IExchangeRateCache implementation over Microsoft.Extensions.Caching.Distributed.IDistributedCache that persists a single provider's rates and fetch-coverage windows as a per-pair JSON blob, with the same freshness, merge, coverage, and validation semantics as the in-memory, TOML, and SQLite caches.</Description>
     <PackageTags>bodu;financial;exchange-rate;forex;fx;cache;distributed;redis;decorator</PackageTags>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Include="..\README.md" Pack="true" PackagePath="\" />
-  </ItemGroup>
 
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">

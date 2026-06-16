@@ -75,7 +75,7 @@ public readonly partial struct BencodeElement
         {
             get
             {
-                (var name, var valueRow, _) = _document.GetPair(_currentKeyRow);
+                (string? name, int valueRow, _) = _document.GetPair(_currentKeyRow);
                 return new BencodeProperty(name, new BencodeElement(_document, valueRow));
             }
         }

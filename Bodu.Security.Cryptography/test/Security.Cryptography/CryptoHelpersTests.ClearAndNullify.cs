@@ -15,7 +15,7 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void ClearAndNullify_Array_WhenInvoked_ShouldZeroAndNullifyReference()
     {
-        var array = new byte[] { 1, 2, 3, 4 };
+        byte[]? array = new byte[] { 1, 2, 3, 4 };
 
         CryptographyHelper.ClearAndNullify(ref array);
 
@@ -62,7 +62,7 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void ClearAndNullify_MemoryStream_WhenBufferInaccessible_ShouldThrowExactly()
     {
-        var bytes = new byte[] { 0x01, 0x02, 0x03 };
+        byte[] bytes = new byte[] { 0x01, 0x02, 0x03 };
         var stream = new MemoryStream(bytes, index: 0, count: bytes.Length, writable: false, publiclyVisible: false);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>

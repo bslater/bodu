@@ -25,7 +25,7 @@ internal sealed class UriConverter
                 string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Op_Invalid_ExpectedString, reader.TokenType));
         }
 
-        var text = reader.GetString();
+        string text = reader.GetString();
         return Uri.TryCreate(text, UriKind.RelativeOrAbsolute, out Uri? value)
             ? value
             : throw new TomlSerializationException(

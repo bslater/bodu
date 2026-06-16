@@ -49,7 +49,7 @@ public abstract class MultiCharCheckDigitContractTests<TAlgorithm>
     {
         foreach (CheckDigitKat kat in KnownAnswers)
         {
-            var actual = Compute(kat.Payload);
+            string actual = Compute(kat.Payload);
 
             Assert.AreEqual(
                 kat.CheckDigit,
@@ -66,7 +66,7 @@ public abstract class MultiCharCheckDigitContractTests<TAlgorithm>
     {
         foreach (CheckDigitKat kat in KnownAnswers)
         {
-            var actual = IsValid(kat.FullValue);
+            bool actual = IsValid(kat.FullValue);
 
             Assert.IsTrue(actual, $"KAT '{kat.Name}': validation rejected the canonical full value.");
         }
@@ -84,15 +84,15 @@ public abstract class MultiCharCheckDigitContractTests<TAlgorithm>
             if (kat.FullValue.Length == 0)
                 continue;
 
-            var original = kat.FullValue[^1];
-            var swapped = original switch
+            char original = kat.FullValue[^1];
+            char swapped = original switch
             {
                 '0' => '1',
                 _ => '0',
             };
 
-            var corrupted = kat.FullValue[..^1] + swapped;
-            var actual = IsValid(corrupted);
+            string corrupted = kat.FullValue[..^1] + swapped;
+            bool actual = IsValid(corrupted);
 
             Assert.IsFalse(actual, $"KAT '{kat.Name}': validation accepted a corrupted value.");
         }

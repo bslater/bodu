@@ -144,7 +144,7 @@ public partial class IndexedSetTests
         IndexedSet<int> sut = CreateSet([10, 20, 30]);
         var seen = new List<int>();
 
-        foreach (var item in sut)
+        foreach (int item in sut)
             seen.Add(item);
 
         CollectionAssert.AreEqual(new[] { 10, 20, 30 }, seen);
@@ -161,7 +161,7 @@ public partial class IndexedSetTests
         IEnumerable untyped = sut;
         var seen = new List<int>();
 
-        foreach (var item in untyped)
+        foreach (object? item in untyped)
             seen.Add((int)item);
 
         CollectionAssert.AreEqual(new[] { 10, 20, 30 }, seen);
@@ -182,7 +182,7 @@ public partial class IndexedSetTests
         IEnumerable<int> typed = sut;
         var seen = new List<int>();
 
-        foreach (var item in typed)
+        foreach (int item in typed)
             seen.Add(item);
 
         CollectionAssert.AreEqual(new[] { 10, 20, 30 }, seen);

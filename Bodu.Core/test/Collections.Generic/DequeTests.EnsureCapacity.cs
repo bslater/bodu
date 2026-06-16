@@ -28,7 +28,7 @@ public partial class DequeTests
     public void EnsureCapacity_WhenRequestedCapacityIsLarger_ShouldGrow()
     {
         var deque = new Deque<int>(4);
-        var newCap = deque.EnsureCapacity(50);
+        int newCap = deque.EnsureCapacity(50);
         Assert.IsGreaterThanOrEqualTo(50, newCap);
         Assert.IsGreaterThanOrEqualTo(50, deque.Capacity);
     }
@@ -40,8 +40,8 @@ public partial class DequeTests
     public void EnsureCapacity_WhenRequestedCapacityIsSmaller_ShouldNotShrink()
     {
         var deque = new Deque<int>(50);
-        var original = deque.Capacity;
-        var newCap = deque.EnsureCapacity(10);
+        int original = deque.Capacity;
+        int newCap = deque.EnsureCapacity(10);
         Assert.AreEqual(original, newCap);
         Assert.AreEqual(original, deque.Capacity);
     }

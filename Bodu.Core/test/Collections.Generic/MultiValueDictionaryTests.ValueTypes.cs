@@ -99,7 +99,7 @@ public partial class MultiValueDictionaryTests
         mvd.Add("k", new Coord(1, 2));
         mvd.Add("k", new Coord(3, 4));
 
-        var removed = mvd.Remove("k", new Coord(1, 2));
+        bool removed = mvd.Remove("k", new Coord(1, 2));
 
         Assert.IsTrue(removed);
         Assert.AreEqual(1, mvd.Count);
@@ -118,7 +118,7 @@ public partial class MultiValueDictionaryTests
         mvd.Add(new Coord(1, 2), "a");
         mvd.Add(new Coord(3, 4), "b");
 
-        var removed = mvd.RemoveAll(new Coord(1, 2));
+        bool removed = mvd.RemoveAll(new Coord(1, 2));
 
         Assert.IsTrue(removed);
         Assert.AreEqual(1, mvd.KeyCount);

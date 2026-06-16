@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base62.Encode.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -34,11 +34,11 @@ public static partial class Base62
         if (bytes.IsEmpty)
             return string.Empty;
 
-        var upperBound = GetMaxEncodedLength(bytes.Length);
-        var buffer = System.Buffers.ArrayPool<char>.Shared.Rent(upperBound);
+        int upperBound = GetMaxEncodedLength(bytes.Length);
+        char[] buffer = System.Buffers.ArrayPool<char>.Shared.Rent(upperBound);
         try
         {
-            var written = EncodeIntoBuffer(bytes, buffer, upperBound);
+            int written = EncodeIntoBuffer(bytes, buffer, upperBound);
             return new string(buffer, upperBound - written, written);
         }
         finally
@@ -82,11 +82,11 @@ public static partial class Base62
         if (bytes.IsEmpty)
             return 0;
 
-        var upperBound = GetMaxEncodedLength(bytes.Length);
-        var scratch = System.Buffers.ArrayPool<char>.Shared.Rent(upperBound);
+        int upperBound = GetMaxEncodedLength(bytes.Length);
+        char[] scratch = System.Buffers.ArrayPool<char>.Shared.Rent(upperBound);
         try
         {
-            var written = EncodeIntoBuffer(bytes, scratch, upperBound);
+            int written = EncodeIntoBuffer(bytes, scratch, upperBound);
 
             // Compare against the ACTUAL encoded length, not the worst-case upper bound, so callers that pre-size
             // destination for the actual output still succeed.
@@ -123,11 +123,11 @@ public static partial class Base62
             return true;
         }
 
-        var upperBound = GetMaxEncodedLength(bytes.Length);
-        var scratch = System.Buffers.ArrayPool<char>.Shared.Rent(upperBound);
+        int upperBound = GetMaxEncodedLength(bytes.Length);
+        char[] scratch = System.Buffers.ArrayPool<char>.Shared.Rent(upperBound);
         try
         {
-            var written = EncodeIntoBuffer(bytes, scratch, upperBound);
+            int written = EncodeIntoBuffer(bytes, scratch, upperBound);
 
             if (destination.Length < written)
             {
@@ -155,7 +155,7 @@ public static partial class Base62
     /// <returns>The number of characters written into the buffer.</returns>
     private static int EncodeIntoBuffer(ReadOnlySpan<byte> bytes, char[] buffer, int usableLength)
     {
-        var leadingZeros = 0;
+        int leadingZeros = 0;
         while (leadingZeros < bytes.Length && bytes[leadingZeros] == 0)
             leadingZeros++;
 
@@ -163,14 +163,14 @@ public static partial class Base62
             ? BigInteger.Zero
             : new BigInteger(bytes[leadingZeros..], isUnsigned: true, isBigEndian: true);
 
-        var position = usableLength;
+        int position = usableLength;
         while (value > 0)
         {
             value = BigInteger.DivRem(value, Radix, out BigInteger remainder);
             buffer[--position] = Alphabet[(int)remainder];
         }
 
-        for (var i = 0; i < leadingZeros; i++)
+        for (int i = 0; i < leadingZeros; i++)
             buffer[--position] = Alphabet[0];
 
         return usableLength - position;

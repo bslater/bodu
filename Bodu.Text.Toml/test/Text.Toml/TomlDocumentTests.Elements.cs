@@ -83,7 +83,7 @@ public partial class TomlDocumentTests
 
         foreach (KeyValuePair<string, string> entry in requiredKind)
         {
-            foreach (var kind in kinds)
+            foreach (string kind in kinds)
             {
                 if (!string.Equals(kind, entry.Value, StringComparison.Ordinal))
                     yield return [entry.Key, kind];

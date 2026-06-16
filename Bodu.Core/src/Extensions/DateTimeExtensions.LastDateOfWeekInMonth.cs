@@ -38,7 +38,7 @@ public static partial class DateTimeExtensions
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(dayOfWeek);
 
-        var ticks = GetLastDateOfWeekInMonthAsTicks(dateTime, dayOfWeek);
+        long ticks = GetLastDateOfWeekInMonthAsTicks(dateTime, dayOfWeek);
         return new DateTime(ticks, dateTime.Kind);
     }
 
@@ -82,7 +82,7 @@ public static partial class DateTimeExtensions
         ThrowHelper.ThrowIfOutOfRange(month, 1, 12);
         ThrowHelper.ThrowIfEnumValueIsUndefined(dayOfWeek);
 
-        var ticks = GetLastDateOfWeekInMonth(GetDateTicks(year, month, DateTime.DaysInMonth(year, month)), dayOfWeek);
+        long ticks = GetLastDateOfWeekInMonth(GetDateTicks(year, month, DateTime.DaysInMonth(year, month)), dayOfWeek);
         return new DateTime(ticks, DateTimeKind.Unspecified);
     }
 }

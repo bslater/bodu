@@ -18,9 +18,9 @@ public sealed class SystemRandomAdapterTests
     {
         var adapter = new SystemRandomAdapter();
 
-        for (var i = 0; i < 100; i++)
+        for (int i = 0; i < 100; i++)
         {
-            var value = adapter.Next(10);
+            int value = adapter.Next(10);
             Assert.IsTrue(value is >= 0 and < 10, $"Value {value} is outside [0, 10).");
         }
     }
@@ -47,7 +47,7 @@ public sealed class SystemRandomAdapterTests
         var adapter1 = new SystemRandomAdapter(new Random(42));
         var adapter2 = new SystemRandomAdapter(new Random(42));
 
-        for (var i = 0; i < 5; i++)
+        for (int i = 0; i < 5; i++)
             Assert.AreEqual(adapter1.Next(100), adapter2.Next(100));
     }
 

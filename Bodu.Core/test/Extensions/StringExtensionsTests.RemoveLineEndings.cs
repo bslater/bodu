@@ -44,9 +44,9 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void RemoveLineEndings_WhenInputHasNoLineEndings_ShouldReturnSameInstance()
     {
-        var value = "hello world";
+        string value = "hello world";
 
-        var actual = value.RemoveLineEndings();
+        string actual = value.RemoveLineEndings();
 
         Assert.AreSame(value, actual);
     }
@@ -58,9 +58,9 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void RemoveLineEndings_WhenInputContainsUnicodeLineSeparators_ShouldPreserveThem()
     {
-        var value = "a\u2028b\u2029c";
+        string value = "a\u2028b\u2029c";
 
-        var actual = value.RemoveLineEndings();
+        string actual = value.RemoveLineEndings();
 
         Assert.AreEqual(value, actual);
     }

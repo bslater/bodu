@@ -30,7 +30,7 @@ public sealed partial class IniTests
     {
         IniDocument doc = Ini.Parse(string.Empty);
 
-        var formatted = Ini.Format(doc);
+        string formatted = Ini.Format(doc);
 
         Assert.AreEqual(string.Empty, formatted);
     }
@@ -43,7 +43,7 @@ public sealed partial class IniTests
     {
         IniDocument doc = Ini.Parse("key=value");
 
-        var formatted = Ini.Format(doc);
+        string formatted = Ini.Format(doc);
 
         StringAssert.Contains(formatted, "key = value");
         Assert.IsFalse(formatted.Contains('['), "Formatted output should not contain a section header.");
@@ -57,7 +57,7 @@ public sealed partial class IniTests
     {
         IniDocument doc = Ini.Parse("[server]\nhost=localhost");
 
-        var formatted = Ini.Format(doc);
+        string formatted = Ini.Format(doc);
 
         StringAssert.Contains(formatted, "[server]");
         StringAssert.Contains(formatted, "host = localhost");
@@ -71,7 +71,7 @@ public sealed partial class IniTests
     {
         IniDocument doc = Ini.Parse("[a]\nk=1\n[b]\nk=2");
 
-        var formatted = Ini.Format(doc);
+        string formatted = Ini.Format(doc);
 
         // Both section headers must be present and a blank line must appear between them.
         StringAssert.Contains(formatted, "[a]");
@@ -90,7 +90,7 @@ public sealed partial class IniTests
         const string source = "global=g\n[s1]\na=1\nb=2\n[s2]\nc=3";
 
         IniDocument original = Ini.Parse(source);
-        var formatted = Ini.Format(original);
+        string formatted = Ini.Format(original);
         IniDocument roundTripped = Ini.Parse(formatted);
 
         Assert.AreEqual("g", roundTripped.GlobalSection["global"]);
@@ -110,7 +110,7 @@ public sealed partial class IniTests
     {
         IniDocument doc = Ini.Parse("[s]\nkey=value");
 
-        var formatted = Ini.Format(doc);
+        string formatted = Ini.Format(doc);
 
         StringAssert.Contains(formatted, "key = value");
     }

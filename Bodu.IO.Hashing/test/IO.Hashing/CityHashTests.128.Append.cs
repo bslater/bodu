@@ -20,11 +20,11 @@ public partial class CityHash128Tests
     [DataRow(200)]
     public void Append_WhenInputDiffersByOneBit_ShouldProduceDifferentDigest(int length)
     {
-        var a = new byte[length];
-        for (var i = 0; i < length; i++)
+        byte[] a = new byte[length];
+        for (int i = 0; i < length; i++)
             a[i] = (byte)(i * 17);
 
-        var b = (byte[])a.Clone();
+        byte[] b = (byte[])a.Clone();
         b[length - 1] ^= 0x01;
 
         CityHash128 ha = CreateAlgorithm();
@@ -43,13 +43,13 @@ public partial class CityHash128Tests
     [TestMethod]
     public void Append_WhenLongInput_ShouldProduceNonZeroDigest()
     {
-        var input = new byte[512];
-        for (var i = 0; i < input.Length; i++)
+        byte[] input = new byte[512];
+        for (int i = 0; i < input.Length; i++)
             input[i] = (byte)((i * 31) ^ 0xA5);
 
         CityHash128 algorithm = CreateAlgorithm();
         algorithm.Append(input);
-        var digest = algorithm.GetCurrentHash();
+        byte[] digest = algorithm.GetCurrentHash();
 
         Assert.AreEqual(16, digest.Length);
         Assert.IsTrue(digest.Any(b => b != 0));
@@ -73,8 +73,8 @@ public partial class CityHash128Tests
     [DataRow(256)]
     public void Append_WhenSameInput_ShouldProduceSameDigest(int length)
     {
-        var input = new byte[length];
-        for (var i = 0; i < length; i++)
+        byte[] input = new byte[length];
+        for (int i = 0; i < length; i++)
             input[i] = (byte)(i * 13);
 
         CityHash128 a = CreateAlgorithm();
@@ -91,10 +91,10 @@ public partial class CityHash128Tests
     [TestMethod]
     public void Append_WhenShortInput_ShouldProduceNonZeroDigest()
     {
-        var input = Enumerable.Range(1, 24).Select(i => (byte)(i * 7)).ToArray();
+        byte[] input = Enumerable.Range(1, 24).Select(i => (byte)(i * 7)).ToArray();
         CityHash128 algorithm = CreateAlgorithm();
         algorithm.Append(input);
-        var digest = algorithm.GetCurrentHash();
+        byte[] digest = algorithm.GetCurrentHash();
 
         Assert.AreEqual(16, digest.Length);
         Assert.IsTrue(digest.Any(b => b != 0), "Short varied input should not produce an all-zero digest.");

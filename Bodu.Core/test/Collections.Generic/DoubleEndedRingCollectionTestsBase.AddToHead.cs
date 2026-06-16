@@ -30,7 +30,7 @@ public abstract partial class DoubleEndedRingCollectionTestsBase<TTest, TCollect
     public void AddToHead_WhenItemsAdded_ShouldIncrementCount()
     {
         TCollection collection = CreateCollection(5);
-        for (var i = 0; i < 5; i++)
+        for (int i = 0; i < 5; i++)
         {
             AddToHead(collection, i);
             Assert.AreEqual(i + 1, GetCount(collection));

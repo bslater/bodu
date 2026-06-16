@@ -1,0 +1,46 @@
+<Project>
+
+  <!--
+    Language version, determinism, and compiler-warning policy shared by every project.
+  -->
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+
+    <!-- Ensures deterministic builds. -->
+    <Deterministic>true</Deterministic>
+
+    <!-- Treat missing or malformed XML documentation comments as build errors. -->
+    <WarningsAsErrors>$(WarningsAsErrors);CS1591;CS1570;CS1571;CS1572;CS1573;CS1574;CS1580;CS1581;CS1584;CS1587;CS1589;CS1590;CS1710;CS1711;CS1712;CS1713;CS1714</WarningsAsErrors>
+
+    <!-- Avoid duplicate assembly-metadata attributes; values flow from the package metadata. -->
+    <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+  </PropertyGroup>
+
+  <!-- Implicit usings and nullable reference types are enabled across the repository. -->
+  <PropertyGroup>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <!-- Emit nullable annotation attributes only for the public surface, keeping assemblies smaller. -->
+    <Features>$(Features);nullablePublicOnly</Features>
+  </PropertyGroup>
+
+  <!--
+    Source projects emit an XML documentation file; the doc-comment warnings promoted to errors
+    above then make undocumented public APIs a build failure. Test and benchmark projects do not.
+  -->
+  <PropertyGroup Condition="'$(BoduIsSourceProject)' == 'true'">
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <!--
+    Unsafe code is off by default (the SDK default). A project opts in with AllowUnsafeBlocks=true,
+    which additionally defines the ALLOW_UNSAFE compilation symbol used to guard unsafe code paths.
+  -->
+  <PropertyGroup Condition="'$(AllowUnsafeBlocks)' == 'true'">
+    <DefineConstants>$(DefineConstants);ALLOW_UNSAFE</DefineConstants>
+  </PropertyGroup>
+
+</Project>

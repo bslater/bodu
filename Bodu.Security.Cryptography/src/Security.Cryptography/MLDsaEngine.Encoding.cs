@@ -20,10 +20,10 @@ internal static partial class MLDsaEngine
     private static void SimpleBitPack(int bits, ReadOnlySpan<int> coefficients, Span<byte> destination)
     {
         ulong accumulator = 0;
-        var bitCount = 0;
-        var index = 0;
+        int bitCount = 0;
+        int index = 0;
 
-        for (var i = 0; i < N; i++)
+        for (int i = 0; i < N; i++)
         {
             accumulator |= (ulong)(uint)coefficients[i] << bitCount;
             bitCount += bits;
@@ -45,12 +45,12 @@ internal static partial class MLDsaEngine
     /// <param name="destination">The span receiving the 256 coefficients.</param>
     private static void SimpleBitUnpack(int bits, ReadOnlySpan<byte> source, Span<int> destination)
     {
-        var mask = (1u << bits) - 1;
+        uint mask = (1u << bits) - 1;
         ulong accumulator = 0;
-        var bitCount = 0;
-        var index = 0;
+        int bitCount = 0;
+        int index = 0;
 
-        for (var i = 0; i < N; i++)
+        for (int i = 0; i < N; i++)
         {
             while (bitCount < bits)
             {
@@ -75,9 +75,9 @@ internal static partial class MLDsaEngine
     private static void BitPackSigned(int bits, int bound, ReadOnlySpan<int> coefficients, Span<byte> destination)
     {
         Span<int> packed = stackalloc int[N];
-        for (var i = 0; i < N; i++)
+        for (int i = 0; i < N; i++)
         {
-            var centered = coefficients[i];
+            int centered = coefficients[i];
             if (centered > (Q - 1) / 2)
                 centered -= Q;
 
@@ -99,9 +99,9 @@ internal static partial class MLDsaEngine
     private static void BitUnpackSigned(int bits, int bound, ReadOnlySpan<byte> source, Span<int> destination)
     {
         SimpleBitUnpack(bits, source, destination);
-        for (var i = 0; i < N; i++)
+        for (int i = 0; i < N; i++)
         {
-            var centered = bound - destination[i];
+            int centered = bound - destination[i];
             destination[i] = ((centered % Q) + Q) % Q;
         }
     }
@@ -117,10 +117,10 @@ internal static partial class MLDsaEngine
     {
         destination.Clear();
 
-        var index = 0;
-        for (var i = 0; i < parameters.K; i++)
+        int index = 0;
+        for (int i = 0; i < parameters.K; i++)
         {
-            for (var j = 0; j < N; j++)
+            for (int j = 0; j < N; j++)
             {
                 if (hints[i][j] != 0)
                     destination[index++] = (byte)j;
@@ -141,8 +141,8 @@ internal static partial class MLDsaEngine
     /// <returns><see langword="true" /> when the encoding is canonical; otherwise, <see langword="false" />.</returns>
     private static bool TryHintBitUnpack(MLDsaParameters parameters, ReadOnlySpan<byte> source, int[][] hints)
     {
-        var index = 0;
-        for (var i = 0; i < parameters.K; i++)
+        int index = 0;
+        for (int i = 0; i < parameters.K; i++)
         {
             Array.Clear(hints[i]);
 
@@ -150,7 +150,7 @@ internal static partial class MLDsaEngine
             if (limit < index || limit > parameters.Omega)
                 return false;
 
-            var first = index;
+            int first = index;
             while (index < limit)
             {
                 if (index > first && source[index] <= source[index - 1])
@@ -162,7 +162,7 @@ internal static partial class MLDsaEngine
         }
 
         // Any trailing position bytes beyond the final count must be zero for the encoding to be canonical.
-        for (var j = index; j < parameters.Omega; j++)
+        for (int j = index; j < parameters.Omega; j++)
         {
             if (source[j] != 0)
                 return false;
@@ -180,8 +180,8 @@ internal static partial class MLDsaEngine
     /// <param name="destination">The span receiving 32·bits·k bytes.</param>
     private static void W1Encode(MLDsaParameters parameters, int[][] w1, Span<byte> destination)
     {
-        var bytesPerPoly = 32 * parameters.W1Bits;
-        for (var i = 0; i < parameters.K; i++)
+        int bytesPerPoly = 32 * parameters.W1Bits;
+        for (int i = 0; i < parameters.K; i++)
             SimpleBitPack(parameters.W1Bits, w1[i], destination.Slice(i * bytesPerPoly, bytesPerPoly));
     }
 }

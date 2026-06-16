@@ -51,10 +51,10 @@ public static partial class EncodingExtensions
     {
         ThrowHelper.ThrowIfNull(encoding);
 
-        var count = encoding.GetCharCount(bytes);
+        int count = encoding.GetCharCount(bytes);
         if (count == 0) return [];
 
-        var buffer = new char[count];
+        char[] buffer = new char[count];
         encoding.GetChars(bytes, buffer);
         return buffer;
     }
@@ -139,7 +139,7 @@ public static partial class EncodingExtensions
     {
         ThrowHelper.ThrowIfNull(encoding);
 
-        var required = encoding.GetCharCount(bytes);
+        int required = encoding.GetCharCount(bytes);
         return destination.Length == required
             ? encoding.GetChars(bytes, destination)
             : throw new ArgumentException(

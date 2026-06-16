@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EcbEndpointOptionsTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -83,7 +83,7 @@ public class EcbEndpointOptionsTests
     {
         EcbEndpointOptions endpoint = new();
 
-        var valid = endpoint.TryValidate(out var error);
+        bool valid = endpoint.TryValidate(out string? error);
 
         Assert.IsTrue(valid);
         Assert.IsNull(error);
@@ -97,7 +97,7 @@ public class EcbEndpointOptionsTests
     {
         EcbEndpointOptions endpoint = new() { HttpTimeout = TimeSpan.Zero };
 
-        var valid = endpoint.TryValidate(out var error);
+        bool valid = endpoint.TryValidate(out string? error);
 
         Assert.IsFalse(valid);
         Assert.IsNotNull(error);

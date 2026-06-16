@@ -21,7 +21,7 @@ public partial class ExchangeRateSeriesBufferTests
         buffer.Add(1000, 1.5m, RateParam, DateParam);
 
         Assert.AreEqual(1, buffer.Count);
-        Assert.IsTrue(buffer.TryGetRate(1000, out var rate));
+        Assert.IsTrue(buffer.TryGetRate(1000, out decimal rate));
         Assert.AreEqual(1.5m, rate);
     }
 
@@ -132,7 +132,7 @@ public partial class ExchangeRateSeriesBufferTests
     {
         ExchangeRateSeriesBuffer buffer = NewBuffer();
 
-        var inserted = buffer.TryAdd(1000, 1.5m, RateParam);
+        bool inserted = buffer.TryAdd(1000, 1.5m, RateParam);
 
         Assert.IsTrue(inserted);
         Assert.AreEqual(1, buffer.Count);
@@ -147,10 +147,10 @@ public partial class ExchangeRateSeriesBufferTests
     {
         ExchangeRateSeriesBuffer buffer = NewBufferWith((1000, 1.5m));
 
-        var inserted = buffer.TryAdd(1000, 1.9m, RateParam);
+        bool inserted = buffer.TryAdd(1000, 1.9m, RateParam);
 
         Assert.IsFalse(inserted);
-        Assert.IsTrue(buffer.TryGetRate(1000, out var rate));
+        Assert.IsTrue(buffer.TryGetRate(1000, out decimal rate));
         Assert.AreEqual(1.5m, rate);
     }
 
@@ -176,7 +176,7 @@ public partial class ExchangeRateSeriesBufferTests
         Assert.AreEqual(expected.Length, buffer.Count);
 
         ExchangeRateObservation[] observations = buffer.Enumerate().ToArray();
-        for (var i = 0; i < expected.Length; i++)
+        for (int i = 0; i < expected.Length; i++)
         {
             Assert.AreEqual(DateOnly.FromDayNumber(expected[i].Day), observations[i].Date);
             Assert.AreEqual(expected[i].Rate, observations[i].Rate);

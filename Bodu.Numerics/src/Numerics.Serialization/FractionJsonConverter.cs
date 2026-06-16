@@ -125,7 +125,7 @@ public sealed class FractionJsonConverter<T>
                     typeof(T).Name));
         }
 
-        var text = reader.GetString()!;
+        string text = reader.GetString()!;
         return !Fraction<T>.TryParse(text.AsSpan(), CultureInfo.InvariantCulture, out Fraction<T> result)
             ? throw new JsonException(
                 string.Format(
@@ -152,8 +152,8 @@ public sealed class FractionJsonConverter<T>
 
         T? numerator = default;
         T? denominator = default;
-        var numeratorSeen = false;
-        var denominatorSeen = false;
+        bool numeratorSeen = false;
+        bool denominatorSeen = false;
 
         while (reader.Read())
         {
@@ -163,7 +163,7 @@ public sealed class FractionJsonConverter<T>
             if (reader.TokenType != JsonTokenType.PropertyName)
                 throw new JsonException(NumericsResourceStrings.Json_Invalid_ExpectedPropertyName);
 
-            var propertyName = reader.GetString()!;
+            string propertyName = reader.GetString()!;
             if (!reader.Read())
                 throw new JsonException(NumericsResourceStrings.Json_Invalid_UnexpectedEnd);
 
@@ -217,7 +217,7 @@ public sealed class FractionJsonConverter<T>
             // The raw value span is ASCII (JSON number tokens are digits, optional sign, optional fractional and
             // exponent parts), so a 1:1 byte-to-char decode is safe and allows BigInteger-sized values to flow
             // through without losing precision via reader.GetInt64() / GetDecimal().
-            var text = reader.HasValueSequence
+            string text = reader.HasValueSequence
                 ? Encoding.UTF8.GetString(reader.ValueSequence.ToArray())
                 : Encoding.UTF8.GetString(reader.ValueSpan);
 
@@ -228,7 +228,7 @@ public sealed class FractionJsonConverter<T>
 
         if (reader.TokenType == JsonTokenType.String)
         {
-            var stringValue = reader.GetString();
+            string? stringValue = reader.GetString();
             return stringValue is not null
                 && T.TryParse(stringValue.AsSpan(), NumberStyles.Integer, CultureInfo.InvariantCulture, out T? parsed)
                 ? parsed
@@ -246,7 +246,7 @@ public sealed class FractionJsonConverter<T>
     /// <param name="value">The integer value to write.</param>
     private static void WriteIntegerValue(Utf8JsonWriter writer, T value)
     {
-        var text = ((IFormattable)value).ToString(null, CultureInfo.InvariantCulture);
+        string text = ((IFormattable)value).ToString(null, CultureInfo.InvariantCulture);
         writer.WriteRawValue(text);
     }
 }

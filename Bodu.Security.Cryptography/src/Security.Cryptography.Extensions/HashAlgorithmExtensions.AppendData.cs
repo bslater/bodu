@@ -46,7 +46,7 @@ public static partial class HashAlgorithmExtensions
         if (data.IsEmpty)
             return;
 
-        var buffer = ArrayPool<byte>.Shared.Rent(data.Length);
+        byte[] buffer = ArrayPool<byte>.Shared.Rent(data.Length);
         try
         {
             data.CopyTo(buffer);

@@ -73,13 +73,14 @@ public sealed class IntervalJsonConverterFactory
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="typeToConvert" /> is <see langword="null" />.
     /// </exception>
+    [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Aot", "IL3050", Justification = "Reached only through reflection-based JSON serialization, whose public entry points carry the RequiresDynamicCode annotation.")]
     public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options)
     {
         ThrowHelper.ThrowIfNull(typeToConvert);
 
         Type componentType = typeToConvert.GetGenericArguments()[0];
         Type converterType = typeof(IntervalJsonConverter<>).MakeGenericType(componentType);
-        var converter = Activator.CreateInstance(converterType, _policy)
+        object converter = Activator.CreateInstance(converterType, _policy)
             ?? throw new InvalidOperationException(
                 string.Format(CultureInfo.CurrentCulture, NumericsResourceStrings.Op_Invalid_UnableToCreateConverter, typeToConvert));
 

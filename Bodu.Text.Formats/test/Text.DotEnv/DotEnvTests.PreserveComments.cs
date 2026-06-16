@@ -39,7 +39,7 @@ public sealed partial class DotEnvTests
             "API_KEY=secret\n";
 
         DotEnvDocument doc = DotEnv.Parse(source);
-        var formatted = DotEnv.Format(doc);
+        string formatted = DotEnv.Format(doc);
 
         Assert.AreEqual(source.Replace("\n", Environment.NewLine, StringComparison.Ordinal), formatted);
     }

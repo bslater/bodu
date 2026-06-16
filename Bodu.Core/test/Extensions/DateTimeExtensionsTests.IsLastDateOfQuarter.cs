@@ -17,7 +17,7 @@ public partial class DateTimeExtensionsTests
     [DynamicData(nameof(IsNotLastDateOfQuarterTestData))]
     public void IsLastDateOfQuarter_WhenDateIsNotStartOfQuarterDefinition_ShouldReturnFalse(DateTime input, CalendarQuarterDefinition definition)
     {
-        var actual = input.IsLastDateOfQuarter(definition);
+        bool actual = input.IsLastDateOfQuarter(definition);
         Assert.IsFalse(actual);
     }
 
@@ -29,7 +29,7 @@ public partial class DateTimeExtensionsTests
     [DynamicData(nameof(IsLastDateOfQuarterJanuaryDecemberTestData))]
     public void IsLastDateOfQuarter_WhenDateIsQuarterStartAndDefaultDefinition_ShouldReturnTrue(DateTime input, bool expected)
     {
-        var actual = input.IsLastDateOfQuarter();
+        bool actual = input.IsLastDateOfQuarter();
 
         Assert.AreEqual(expected, actual);
     }
@@ -42,7 +42,7 @@ public partial class DateTimeExtensionsTests
     [DynamicData(nameof(IsLastDateOfQuarterTestData))]
     public void IsLastDateOfQuarter_WhenDateMatchesStartOfQuarterDefinition_ShouldReturnTrue(DateTime input, CalendarQuarterDefinition definition)
     {
-        var actual = input.IsLastDateOfQuarter(definition);
+        bool actual = input.IsLastDateOfQuarter(definition);
 
         Assert.IsTrue(actual);
     }
@@ -84,7 +84,7 @@ public partial class DateTimeExtensionsTests
     public void IsLastDateOfQuarter_WhenUsingValidQuarterProvider_ShouldReturnExpectedDate(DateTime input, bool expected)
     {
         var provider = new ValidQuarterProvider();
-        var actual = input.IsLastDateOfQuarter(provider);
+        bool actual = input.IsLastDateOfQuarter(provider);
 
         Assert.AreEqual(expected, actual);
     }

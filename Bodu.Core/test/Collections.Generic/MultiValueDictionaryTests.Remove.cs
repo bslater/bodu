@@ -19,7 +19,7 @@ public partial class MultiValueDictionaryTests
         mvd.Add("Alpha", 1);
         mvd.Add("Alpha", 2);
 
-        var removed = mvd.Remove("alpha", 1);
+        bool removed = mvd.Remove("alpha", 1);
 
         Assert.IsTrue(removed);
         Assert.AreEqual(1, mvd.Count);
@@ -52,7 +52,7 @@ public partial class MultiValueDictionaryTests
     {
         var mvd = new MultiValueDictionary<string, int>();
 
-        var result = mvd.Remove("missing", 1);
+        bool result = mvd.Remove("missing", 1);
 
         Assert.IsFalse(result);
     }
@@ -113,7 +113,7 @@ public partial class MultiValueDictionaryTests
         var mvd = new MultiValueDictionary<string, int>();
         mvd.Add("k", 1);
 
-        var result = mvd.Remove("k", 99);
+        bool result = mvd.Remove("k", 99);
 
         Assert.IsFalse(result);
         Assert.AreEqual(1, mvd.Count);
@@ -130,7 +130,7 @@ public partial class MultiValueDictionaryTests
         mvd.Add("k", 5);
         mvd.Add("k", 5);
 
-        var result = mvd.Remove("k", 5);
+        bool result = mvd.Remove("k", 5);
 
         Assert.IsTrue(result);
         Assert.AreEqual(2, mvd.Count);
@@ -150,11 +150,11 @@ public partial class MultiValueDictionaryTests
     public void Remove_WhenValueIsAtVariousPositions_ShouldRemoveExactlyOne(int listSize, int positionToRemove)
     {
         var mvd = new MultiValueDictionary<string, int>();
-        for (var i = 0; i < listSize; i++)
+        for (int i = 0; i < listSize; i++)
             mvd.Add("k", i * 10);
 
-        var valueToRemove = positionToRemove * 10;
-        var result = mvd.Remove("k", valueToRemove);
+        int valueToRemove = positionToRemove * 10;
+        bool result = mvd.Remove("k", valueToRemove);
 
         Assert.IsTrue(result);
         Assert.AreEqual(listSize - 1, mvd.Count);
@@ -172,7 +172,7 @@ public partial class MultiValueDictionaryTests
         mvd.Add("k", 20);
         mvd.Add("k", 30);
 
-        var result = mvd.Remove("k", 10);
+        bool result = mvd.Remove("k", 10);
 
         Assert.IsTrue(result);
         Assert.AreEqual(2, mvd.Count);
@@ -190,7 +190,7 @@ public partial class MultiValueDictionaryTests
         mvd.Add("k", 20);
         mvd.Add("k", 30);
 
-        var result = mvd.Remove("k", 30);
+        bool result = mvd.Remove("k", 30);
 
         Assert.IsTrue(result);
         Assert.AreEqual(2, mvd.Count);
@@ -208,7 +208,7 @@ public partial class MultiValueDictionaryTests
         mvd.Add("k", 2);
         mvd.Add("k", 3);
 
-        var result = mvd.Remove("k", 2);
+        bool result = mvd.Remove("k", 2);
 
         Assert.IsTrue(result);
         Assert.AreEqual(2, mvd.Count);

@@ -59,7 +59,7 @@ public partial class ConfigurationViewTests
         IniDocument doc = new();
         ConfigurationView view = doc.Resolve();
 
-        Assert.IsFalse(view.TryGetString("missing", out var value));
+        Assert.IsFalse(view.TryGetString("missing", out string? value));
         Assert.IsNull(value);
     }
 }

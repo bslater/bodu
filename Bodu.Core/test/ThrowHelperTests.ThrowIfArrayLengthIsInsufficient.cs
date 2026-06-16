@@ -68,7 +68,7 @@ public partial class ThrowHelperTests
     [DataRow(8, 3, 5)]    // 3 + 5 = 8 <= 8 => sufficient
     public void ThrowIfArrayOffsetOrCountInvalid_WhenArrayIsSufficient_ShouldNotThrow(int arrayLength, int offset, int count)
     {
-        var array = new int[arrayLength];
+        int[] array = new int[arrayLength];
         ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(array, offset, count);
     }
 
@@ -83,7 +83,7 @@ public partial class ThrowHelperTests
     [DataRow(3, 1, 3)]    // 1 + 3 = 4 > 3 => insufficient
     public void ThrowIfArrayOffsetOrCountInvalid_WhenArrayTooShort_ShouldThrowExactly(int arrayLength, int offset, int count)
     {
-        var array = new int[arrayLength];
+        int[] array = new int[arrayLength];
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
             ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(array, offset, count);
@@ -100,7 +100,7 @@ public partial class ThrowHelperTests
     [DataRow(5, 0, 6)]    // count > array.Length
     public void ThrowIfArrayOffsetOrCountInvalid_WhenCountInvalid_ShouldThrowExactly(int arrayLength, int offset, int count)
     {
-        var array = new int[arrayLength];
+        int[] array = new int[arrayLength];
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(array, offset, count);
@@ -116,7 +116,7 @@ public partial class ThrowHelperTests
     [DataRow(5, 0, 3)]    // count somewhere in the middle
     public void ThrowIfArrayOffsetOrCountInvalid_WhenCountValid_ShouldNotThrow(int arrayLength, int offset, int count)
     {
-        var array = new int[arrayLength];
+        int[] array = new int[arrayLength];
         ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(array, offset, count);
     }
 
@@ -130,7 +130,7 @@ public partial class ThrowHelperTests
     [DataRow(5, 6, 0)]    // offset > array.Length
     public void ThrowIfArrayOffsetOrCountInvalid_WhenOffsetInvalid_ShouldThrowExactly(int arrayLength, int offset, int count)
     {
-        var array = new int[arrayLength];
+        int[] array = new int[arrayLength];
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(array, offset, count);
@@ -146,7 +146,7 @@ public partial class ThrowHelperTests
     [DataRow(5, 3, 0)]    // offset somewhere in the middle
     public void ThrowIfArrayOffsetOrCountInvalid_WhenOffsetValid_ShouldNotThrow(int arrayLength, int offset, int count)
     {
-        var array = new int[arrayLength];
+        int[] array = new int[arrayLength];
         ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(array, offset, count);
     }
 

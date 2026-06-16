@@ -50,7 +50,7 @@ public partial class ExchangeRateTests
     {
         ExchangeRate rate = new("USD", "AUD", s_sampleDate, 1.5m, "RBA");
 
-        var converted = rate.Convert(100m);
+        decimal converted = rate.Convert(100m);
 
         Assert.AreEqual(150m, converted);
     }
@@ -118,7 +118,7 @@ public partial class ExchangeRateTests
     [DataRow("-100")]
     public void Constructor_WhenRateIsNotPositive_ShouldThrowArgumentOutOfRangeException(string value)
     {
-        var rate = decimal.Parse(value, System.Globalization.CultureInfo.InvariantCulture);
+        decimal rate = decimal.Parse(value, System.Globalization.CultureInfo.InvariantCulture);
 
         ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(
             () =>

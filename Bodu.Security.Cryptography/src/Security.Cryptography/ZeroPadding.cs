@@ -53,12 +53,12 @@ public sealed class ZeroPadding
     {
         CryptographyThrowHelper.ThrowIfNotPositiveMultipleOf(blockSize, 8);
 
-        var size = blockSize / 8;
-        var paddingLength = size - (input.Length % size);
+        int size = blockSize / 8;
+        int paddingLength = size - (input.Length % size);
         if (paddingLength == size)
             paddingLength = 0; // No padding if already aligned
 
-        var result = new byte[input.Length + paddingLength];
+        byte[] result = new byte[input.Length + paddingLength];
         input.CopyTo(result);
         return result;
     }

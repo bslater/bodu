@@ -30,14 +30,14 @@ public sealed class SivModeTransformCoverageTests
     public void EncryptThenDecrypt_ViaAssociatedDataBridge_WithEmptyPlaintext_ShouldRoundTrip()
     {
         byte[] associatedData = { 1, 2, 3 };
-        var plaintext = Array.Empty<byte>();
-        var output = new byte[16];
+        byte[] plaintext = Array.Empty<byte>();
+        byte[] output = new byte[16];
 
         int written;
         using (SivModeTransform encryptor = CreateTransform())
             written = ((IAeadTransform)encryptor).Encrypt(plaintext, output, associatedData);
 
-        var recovered = Array.Empty<byte>();
+        byte[] recovered = Array.Empty<byte>();
         int decrypted;
         using (SivModeTransform decryptor = CreateTransform())
             decrypted = ((IAeadTransform)decryptor).Decrypt(output.AsSpan(0, written), recovered, associatedData);

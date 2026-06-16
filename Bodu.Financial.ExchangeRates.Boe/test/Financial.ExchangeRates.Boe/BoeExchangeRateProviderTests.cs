@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoeExchangeRateProviderTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -89,7 +89,7 @@ public partial class BoeExchangeRateProviderTests
     {
         (BoeExchangeRateProvider provider, FixtureBoeExchangeRateTableSource source) = Create(allowSync: true);
 
-        var found = provider.TryGetRate("GBP", "USD", new DateOnly(2023, 1, 3), null, out ExchangeRateLookupResult result);
+        bool found = provider.TryGetRate("GBP", "USD", new DateOnly(2023, 1, 3), null, out ExchangeRateLookupResult result);
 
         Assert.IsTrue(found);
         Assert.AreEqual(1.2065m, result.Rate.Rate);
@@ -104,7 +104,7 @@ public partial class BoeExchangeRateProviderTests
     {
         (BoeExchangeRateProvider provider, FixtureBoeExchangeRateTableSource source) = Create(allowSync: false);
 
-        var found = provider.TryGetRate("GBP", "USD", new DateOnly(2023, 1, 3), null, out _);
+        bool found = provider.TryGetRate("GBP", "USD", new DateOnly(2023, 1, 3), null, out _);
 
         Assert.IsFalse(found);
         Assert.AreEqual(0, source.GetTableCallCount);
@@ -118,7 +118,7 @@ public partial class BoeExchangeRateProviderTests
     {
         BoeExchangeRateProvider provider = await CreatePreloadedAsync();
 
-        var latest = provider.GetRate("GBP", "USD").Rate.Rate;
+        decimal latest = provider.GetRate("GBP", "USD").Rate.Rate;
 
         Assert.AreEqual(1.2050m, latest);
     }

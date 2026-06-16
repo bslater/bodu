@@ -44,7 +44,7 @@ public static partial class NotableDateFiscalExtensions
     /// <returns>The fiscal year's first day.</returns>
     private static DateOnly FiscalYearStart(DateOnly date, int startMonth)
     {
-        var year = date.Month >= startMonth ? date.Year : date.Year - 1;
+        int year = date.Month >= startMonth ? date.Year : date.Year - 1;
         return new DateOnly(year, startMonth, 1);
     }
 
@@ -57,7 +57,7 @@ public static partial class NotableDateFiscalExtensions
     private static DateOnly FiscalQuarterStart(DateOnly date, int startMonth)
     {
         DateOnly yearStart = FiscalYearStart(date, startMonth);
-        var monthsSinceStart = ((date.Year - yearStart.Year) * 12) + date.Month - startMonth;
+        int monthsSinceStart = ((date.Year - yearStart.Year) * 12) + date.Month - startMonth;
         return yearStart.AddMonths((monthsSinceStart / 3) * 3);
     }
 }

@@ -24,9 +24,9 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
         algorithm.AppendData(new ReadOnlySpan<byte>([25]));
-        var expected = BitConverter.GetBytes((uint)(25 + 1 + 2 + 3 + 4));
+        byte[] expected = BitConverter.GetBytes((uint)(25 + 1 + 2 + 3 + 4));
 
-        var result = await algorithm.ComputeHashAsync(new MemoryStream(s_sampleData));
+        byte[] result = await algorithm.ComputeHashAsync(new MemoryStream(s_sampleData));
 
         CollectionAssert.AreEqual(expected, result);
     }
@@ -81,7 +81,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
-        var result = await algorithm.ComputeHashAsync(new MemoryStream(s_sampleData), bufferSize: 1);
+        byte[] result = await algorithm.ComputeHashAsync(new MemoryStream(s_sampleData), bufferSize: 1);
 
         CollectionAssert.AreEqual(s_sampleHash, result);
     }
@@ -94,10 +94,10 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     public async Task ComputeHashAsync_WhenCalled_ShouldMatchSynchronousComputeHash()
     {
         MonitoringNonCryptographicHashAlgorithm syncAlgorithm = CreateAlgorithm();
-        var expected = syncAlgorithm.ComputeHash(new MemoryStream(s_sampleData));
+        byte[] expected = syncAlgorithm.ComputeHash(new MemoryStream(s_sampleData));
 
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
-        var result = await algorithm.ComputeHashAsync(new MemoryStream(s_sampleData));
+        byte[] result = await algorithm.ComputeHashAsync(new MemoryStream(s_sampleData));
 
         CollectionAssert.AreEqual(expected, result);
     }
@@ -111,7 +111,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     public async Task ComputeHashAsync_WhenCalled_ShouldResetAlgorithm()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
-        var before = algorithm.ResetCallCount;
+        int before = algorithm.ResetCallCount;
 
         _ = await algorithm.ComputeHashAsync(new MemoryStream(s_sampleData));
 
@@ -126,9 +126,9 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
-        var first = await algorithm.ComputeHashAsync(new MemoryStream(s_sampleData));
-        var second = await algorithm.ComputeHashAsync(new MemoryStream([11, 12]));
-        var expectedSecond = BitConverter.GetBytes((uint)(11 + 12));
+        byte[] first = await algorithm.ComputeHashAsync(new MemoryStream(s_sampleData));
+        byte[] second = await algorithm.ComputeHashAsync(new MemoryStream([11, 12]));
+        byte[] expectedSecond = BitConverter.GetBytes((uint)(11 + 12));
 
         CollectionAssert.AreEqual(s_sampleHash, first);
         CollectionAssert.AreEqual(expectedSecond, second);
@@ -180,7 +180,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
-        var result = await algorithm.ComputeHashAsync(new FixedChunkStream(s_sampleData, chunkSize: 1));
+        byte[] result = await algorithm.ComputeHashAsync(new FixedChunkStream(s_sampleData, chunkSize: 1));
 
         CollectionAssert.AreEqual(s_sampleHash, result);
     }
@@ -193,7 +193,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
-        var result = await algorithm.ComputeHashAsync(new NonSeekableStream(s_sampleData));
+        byte[] result = await algorithm.ComputeHashAsync(new NonSeekableStream(s_sampleData));
 
         CollectionAssert.AreEqual(s_sampleHash, result);
     }
@@ -207,9 +207,9 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     public async Task ComputeHashAsync_WhenStreamIsEmpty_ShouldReturnEmptyHash()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
-        var expected = BitConverter.GetBytes((uint)0);
+        byte[] expected = BitConverter.GetBytes((uint)0);
 
-        var result = await algorithm.ComputeHashAsync(new MemoryStream([]));
+        byte[] result = await algorithm.ComputeHashAsync(new MemoryStream([]));
 
         CollectionAssert.AreEqual(expected, result);
     }

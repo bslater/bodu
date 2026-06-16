@@ -15,7 +15,7 @@ public sealed partial class IniTests
     [TestMethod]
     public void Parse_WhenDuplicateSectionBehaviorIsMerge_ShouldMergeAllOccurrencesIntoFirst()
     {
-        var source = "[s]\na = 1\n[s]\nb = 2\n[s]\nc = 3\n";
+        string source = "[s]\na = 1\n[s]\nb = 2\n[s]\nc = 3\n";
 
         IniDocument doc = Ini.Parse(source);
 
@@ -30,7 +30,7 @@ public sealed partial class IniTests
     [TestMethod]
     public void Parse_WhenDuplicateSectionBehaviorIsMergeAll_ShouldBehaveAsMerge()
     {
-        var source = "[s]\na = 1\n[s]\nb = 2\n";
+        string source = "[s]\na = 1\n[s]\nb = 2\n";
 
         IniDocument merged = Ini.Parse(source, new IniParseOptions { DuplicateSectionBehavior = IniDuplicateSectionBehavior.Merge });
         IniDocument mergedAll = Ini.Parse(source, new IniParseOptions { DuplicateSectionBehavior = IniDuplicateSectionBehavior.MergeAll });
@@ -46,7 +46,7 @@ public sealed partial class IniTests
     [TestMethod]
     public void Parse_WhenDuplicateSectionBehaviorIsPreserve_ShouldRetainSeparateOccurrences()
     {
-        var source = "[s]\na = 1\n[s]\nb = 2\n";
+        string source = "[s]\na = 1\n[s]\nb = 2\n";
 
         IniDocument doc = Ini.Parse(source, new IniParseOptions { DuplicateSectionBehavior = IniDuplicateSectionBehavior.Preserve });
 
@@ -62,7 +62,7 @@ public sealed partial class IniTests
     [TestMethod]
     public void Parse_WhenDuplicateSectionBehaviorIsMergeAdjacent_ShouldOnlyMergeAdjacentDuplicates()
     {
-        var source = "[s]\na = 1\n[s]\nb = 2\n[other]\nc = 3\n[s]\nd = 4\n";
+        string source = "[s]\na = 1\n[s]\nb = 2\n[other]\nc = 3\n[s]\nd = 4\n";
 
         IniDocument doc = Ini.Parse(source, new IniParseOptions { DuplicateSectionBehavior = IniDuplicateSectionBehavior.MergeAdjacent });
 

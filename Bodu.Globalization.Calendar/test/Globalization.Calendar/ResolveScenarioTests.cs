@@ -387,7 +387,7 @@ public sealed class ResolveScenarioTests
             .ToArray();
 
         Assert.HasCount(7, festivals);
-        for (var i = 0; i < 7; i++)
+        for (int i = 0; i < 7; i++)
         {
             Assert.AreEqual($"festival-day-{i + 1}", festivals[i].NotableDateId);
             Assert.AreEqual(new DateOnly(2026, 12, 25 + i), festivals[i].Date);

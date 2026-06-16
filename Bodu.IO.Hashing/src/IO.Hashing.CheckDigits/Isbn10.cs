@@ -93,17 +93,17 @@ public sealed class Isbn10
     /// </remarks>
     public static char Compute(ReadOnlySpan<char> digits)
     {
-        var sum = 0;
-        for (var i = 0; i < digits.Length; i++)
+        int sum = 0;
+        for (int i = 0; i < digits.Length; i++)
         {
-            var ch = digits[i];
+            char ch = digits[i];
             if ((uint)(ch - '0') > 9u)
                 ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(digits));
 
             sum += (10 - i) * (ch - '0');
         }
 
-        var check = (11 - (((sum % 11) + 11) % 11)) % 11;
+        int check = (11 - (((sum % 11) + 11) % 11)) % 11;
         return check == 10 ? 'X' : (char)('0' + check);
     }
 
@@ -121,10 +121,10 @@ public sealed class Isbn10
     {
         if (valueIncludingCheck.Length != SequenceLength) return false;
 
-        var sum = 0;
-        for (var i = 0; i < SequenceLength; i++)
+        int sum = 0;
+        for (int i = 0; i < SequenceLength; i++)
         {
-            var ch = valueIncludingCheck[i];
+            char ch = valueIncludingCheck[i];
             int value;
             if ((uint)(ch - '0') <= 9u)
             {
@@ -148,11 +148,11 @@ public sealed class Isbn10
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> body)
     {
-        var sum = _sum;
-        var count = _count;
-        for (var i = 0; i < body.Length; i++)
+        int sum = _sum;
+        int count = _count;
+        for (int i = 0; i < body.Length; i++)
         {
-            var ch = body[i];
+            char ch = body[i];
             if ((uint)(ch - '0') > 9u)
                 ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(body));
 
@@ -171,7 +171,7 @@ public sealed class Isbn10
     /// <inheritdoc />
     public override char GetCurrentCheckDigit()
     {
-        var check = (11 - (((_sum % 11) + 11) % 11)) % 11;
+        int check = (11 - (((_sum % 11) + 11) % 11)) % 11;
         return check == 10 ? 'X' : (char)('0' + check);
     }
 

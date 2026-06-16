@@ -17,7 +17,7 @@ public partial class DateTimeExtensionsTests
     public void ToIsoString_NoArgs_WhenKindIsLocal_ShouldUseRoundTripFormat()
     {
         var input = DateTime.SpecifyKind(new DateTime(2024, 4, 20, 15, 30, 45), DateTimeKind.Local);
-        var actual = input.ToIsoString();
+        string actual = input.ToIsoString();
 
         // Round-trip and confirm Kind is preserved as Local.
         var parsed = DateTime.Parse(actual, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.RoundtripKind);
@@ -33,7 +33,7 @@ public partial class DateTimeExtensionsTests
     public void ToIsoString_NoArgs_WhenKindIsUnspecified_ShouldOmitOffset()
     {
         var input = DateTime.SpecifyKind(new DateTime(2024, 4, 20, 15, 30, 45), DateTimeKind.Unspecified);
-        var actual = input.ToIsoString();
+        string actual = input.ToIsoString();
 
         Assert.AreEqual("2024-04-20T15:30:45.0000000", actual);
     }

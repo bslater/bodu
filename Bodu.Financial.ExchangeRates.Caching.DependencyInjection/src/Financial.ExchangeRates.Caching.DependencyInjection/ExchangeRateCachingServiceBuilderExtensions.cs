@@ -50,7 +50,8 @@ public static class ExchangeRateCachingServiceBuilderExtensions
     /// The source <typeparamref name="TProvider" /> must already be registered — for example through its provider
     /// package's registration such as <c>AddRbaHistoricalRates</c>. This method resolves the registered instance and
     /// wraps it in a caching decorator; it does not construct the source or its own dependencies (such as its
-    /// <see cref="HttpClient" />), so registering only the cache without the source fails when the provider is resolved.
+    /// <see cref="HttpClient" />), so registering only the cache without the source fails when the provider is
+    /// resolved.
     /// </remarks>
     /// <example>
     /// <code language="csharp">
@@ -154,8 +155,8 @@ public static class ExchangeRateCachingServiceBuilderExtensions
                 (serviceProvider, key) => CreateCachingProvider(serviceProvider, (string)key!, factory(serviceProvider)));
         }
 
-        var childNames = new string[aggregateBuilder.Children.Count];
-        for (var i = 0; i < childNames.Length; i++)
+        string[] childNames = new string[aggregateBuilder.Children.Count];
+        for (int i = 0; i < childNames.Length; i++)
             childNames[i] = aggregateBuilder.Children[i].Key;
 
         IReadOnlyList<(ExchangeRatePair Pair, string[] ProviderOrder, IExchangeRateAggregationStrategy? Strategy)> routes = aggregateBuilder.Routes;
@@ -164,14 +165,14 @@ public static class ExchangeRateCachingServiceBuilderExtensions
         services.AddSingleton(serviceProvider =>
         {
             var children = new NamedDatedExchangeRateProvider[childNames.Length];
-            for (var i = 0; i < childNames.Length; i++)
+            for (int i = 0; i < childNames.Length; i++)
                 children[i] = new NamedDatedExchangeRateProvider(childNames[i], serviceProvider.GetRequiredKeyedService<IDatedExchangeRateProvider>(childNames[i]));
 
             ExchangeRateAggregationOptions options = new();
             if (defaultStrategy is not null)
                 options.DefaultStrategy = defaultStrategy;
 
-            foreach ((ExchangeRatePair pair, var order, IExchangeRateAggregationStrategy? strategy) in routes)
+            foreach ((ExchangeRatePair pair, string[]? order, IExchangeRateAggregationStrategy? strategy) in routes)
                 options.Routes[pair] = new ExchangeRatePairRoute(order, strategy);
 
             return new AggregatingExchangeRateProvider(

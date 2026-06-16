@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SignatureAlgorithmTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -52,13 +52,13 @@ public abstract class SignatureAlgorithmTests<TTest, TAlgorithm>
     public void SignData_WhenVerifiedWithMatchingKey_ShouldReturnTrue()
     {
         using TAlgorithm signer = CreateAlgorithmWithGeneratedKey();
-        var message = new byte[] { 1, 2, 3, 4, 5 };
+        byte[] message = new byte[] { 1, 2, 3, 4, 5 };
 
-        var signature = SignData(signer, message);
+        byte[] signature = SignData(signer, message);
         Assert.AreEqual(SignatureSizeBytes, signature.Length);
         Assert.IsTrue(VerifyData(signer, message, signature));
 
-        var emptySignature = SignData(signer, Array.Empty<byte>());
+        byte[] emptySignature = SignData(signer, Array.Empty<byte>());
         Assert.IsTrue(VerifyData(signer, Array.Empty<byte>(), emptySignature));
 
         using TAlgorithm verifier = CreatePublicOnlyAlgorithm(signer);
@@ -73,18 +73,18 @@ public abstract class SignatureAlgorithmTests<TTest, TAlgorithm>
     public void VerifyData_WhenSignatureOrMessageIsTampered_ShouldReturnFalse()
     {
         using TAlgorithm algorithm = CreateAlgorithmWithGeneratedKey();
-        var message = new byte[] { 9, 8, 7, 6 };
-        var signature = SignData(algorithm, message);
+        byte[] message = new byte[] { 9, 8, 7, 6 };
+        byte[] signature = SignData(algorithm, message);
 
-        foreach (var index in new[] { 0, SignatureSizeBytes / 2, SignatureSizeBytes - 1 })
+        foreach (int index in new[] { 0, SignatureSizeBytes / 2, SignatureSizeBytes - 1 })
         {
-            var tampered = (byte[])signature.Clone();
+            byte[] tampered = (byte[])signature.Clone();
             tampered[index] ^= 0x01;
 
             Assert.IsFalse(VerifyData(algorithm, message, tampered), $"A signature tampered at byte {index} must not verify.");
         }
 
-        var tamperedMessage = (byte[])message.Clone();
+        byte[] tamperedMessage = (byte[])message.Clone();
         tamperedMessage[1] ^= 0x01;
         Assert.IsFalse(VerifyData(algorithm, tamperedMessage, signature));
     }
@@ -96,9 +96,9 @@ public abstract class SignatureAlgorithmTests<TTest, TAlgorithm>
     public void VerifyData_WhenSignatureLengthIsInvalid_ShouldReturnFalse()
     {
         using TAlgorithm algorithm = CreateAlgorithmWithGeneratedKey();
-        var message = new byte[] { 1 };
+        byte[] message = new byte[] { 1 };
 
-        foreach (var length in new[] { 0, SignatureSizeBytes - 1, SignatureSizeBytes + 1 })
+        foreach (int length in new[] { 0, SignatureSizeBytes - 1, SignatureSizeBytes + 1 })
             Assert.IsFalse(VerifyData(algorithm, message, new byte[length]), $"A {length}-byte signature must not verify.");
     }
 
@@ -109,7 +109,7 @@ public abstract class SignatureAlgorithmTests<TTest, TAlgorithm>
     [TestMethod]
     public void SignAndVerify_WhenRequiredKeyMaterialIsMissing_ShouldThrowCryptographicException()
     {
-        var message = new byte[] { 1 };
+        byte[] message = new byte[] { 1 };
 
         using TAlgorithm empty = CreateAlgorithm();
         Assert.ThrowsExactly<CryptographicException>(() => { _ = SignData(empty, message); });
@@ -128,8 +128,8 @@ public abstract class SignatureAlgorithmTests<TTest, TAlgorithm>
     public void Dispose_WhenCalled_ShouldMakeSignAndVerifyThrowObjectDisposedException()
     {
         TAlgorithm algorithm = CreateAlgorithmWithGeneratedKey();
-        var message = new byte[] { 1 };
-        var signature = SignData(algorithm, message);
+        byte[] message = new byte[] { 1 };
+        byte[] signature = SignData(algorithm, message);
 
         algorithm.Dispose();
 

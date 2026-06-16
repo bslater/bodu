@@ -42,15 +42,15 @@ public static partial class Base85
         if (chars.IsEmpty)
             return [];
 
-        var buffer = new byte[GetMaxDecodedLength(chars.Length)];
+        byte[] buffer = new byte[GetMaxDecodedLength(chars.Length)];
 
-        if (!TryDecodeCore(chars, variant, style, buffer, out var written, out var error))
+        if (!TryDecodeCore(chars, variant, style, buffer, out int written, out string? error))
             throw new FormatException(error);
 
         if (written == buffer.Length)
             return buffer;
 
-        var trimmed = new byte[written];
+        byte[] trimmed = new byte[written];
         Buffer.BlockCopy(buffer, 0, trimmed, 0, written);
         return trimmed;
     }
@@ -103,8 +103,8 @@ public static partial class Base85
         if (chars.IsEmpty)
             return true;
 
-        var buffer = new byte[GetMaxDecodedLength(chars.Length)];
-        if (!TryDecodeCore(chars, variant, style, buffer, out var written, out _))
+        byte[] buffer = new byte[GetMaxDecodedLength(chars.Length)];
+        if (!TryDecodeCore(chars, variant, style, buffer, out int written, out _))
             return false;
 
         if (destination.Length < written)
@@ -128,10 +128,10 @@ public static partial class Base85
     /// <returns><see langword="true" /> on success; <see langword="false" /> on failure.</returns>
     private static bool TryDecodeCore(ReadOnlySpan<char> chars, Base85Variant variant, BaseFormatStyles style, byte[] buffer, out int written, out string? error)
     {
-        var lookup = GetLookup(variant);
-        var ignoreWhitespace = style.HasFlag(BaseFormatStyles.IgnoreWhitespace);
-        var allowShortcut = variant == Base85Variant.Ascii85;
-        var requireFullGroups = variant == Base85Variant.Z85;
+        sbyte[] lookup = GetLookup(variant);
+        bool ignoreWhitespace = style.HasFlag(BaseFormatStyles.IgnoreWhitespace);
+        bool allowShortcut = variant == Base85Variant.Ascii85;
+        bool requireFullGroups = variant == Base85Variant.Z85;
 
         if (allowShortcut && style.HasFlag(BaseFormatStyles.AllowPrefix))
             chars = StripAscii85Delimiters(chars, ignoreWhitespace);
@@ -140,11 +140,11 @@ public static partial class Base85
         error = null;
 
         uint accumulator = 0;
-        var charsAccumulated = 0;
+        int charsAccumulated = 0;
 
-        for (var i = 0; i < chars.Length; i++)
+        for (int i = 0; i < chars.Length; i++)
         {
-            var c = chars[i];
+            char c = chars[i];
             if (ignoreWhitespace && c is ' ' or '\t' or '\r' or '\n')
                 continue;
 
@@ -175,7 +175,7 @@ public static partial class Base85
 
             // Detect overflow before it occurs: max accumulator after four digits is 85^4 = 52200625; after the fifth
             // (when symbolValue is added) we need (accumulator * 85 + symbolValue) <= uint.MaxValue.
-            var next = ((ulong)accumulator * 85) + (uint)symbolValue;
+            ulong next = ((ulong)accumulator * 85) + (uint)symbolValue;
             if (next > uint.MaxValue)
             {
                 error = EncodingResourceStrings.Format_Invalid_Base85GroupOverflow;
@@ -215,9 +215,9 @@ public static partial class Base85
         }
 
         // Adobe Ascii85 tail handling: pad with 'u' (digit 84) to fill the group, then emit charsAccumulated - 1 bytes.
-        for (var i = charsAccumulated; i < 5; i++)
+        for (int i = charsAccumulated; i < 5; i++)
         {
-            var next = ((ulong)accumulator * 85) + 84;
+            ulong next = ((ulong)accumulator * 85) + 84;
             if (next > uint.MaxValue)
             {
                 error = EncodingResourceStrings.Format_Invalid_Base85TrailingGroupOverflow;
@@ -228,8 +228,8 @@ public static partial class Base85
             accumulator = (uint)next;
         }
 
-        var bytesFromTail = charsAccumulated - 1;
-        for (var i = 0; i < bytesFromTail; i++)
+        int bytesFromTail = charsAccumulated - 1;
+        for (int i = 0; i < bytesFromTail; i++)
         {
             buffer[written++] = (byte)((accumulator >> ((3 - i) * 8)) & 0xFF);
         }

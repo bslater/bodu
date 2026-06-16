@@ -25,7 +25,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenUnmatchedKeysAndBencodeObjectExtensionData_ShouldCaptureOverflow()
     {
-        var bytes = Encoding.Latin1.GetBytes("d4:Name1:n5:alphai1e4:betai2ee");
+        byte[] bytes = Encoding.Latin1.GetBytes("d4:Name1:n5:alphai1e4:betai2ee");
 
         var model = BencodeSerializer.Deserialize<ObjectExtensionDataModel>(bytes);
 
@@ -43,10 +43,10 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void SerializeDeserialize_WhenBencodeObjectExtensionData_ShouldWriteBackInCanonicalOrder()
     {
-        var bytes = Encoding.Latin1.GetBytes("d4:Name1:n5:alphai1e3:zzzi9ee");
+        byte[] bytes = Encoding.Latin1.GetBytes("d4:Name1:n5:alphai1e3:zzzi9ee");
 
         var model = BencodeSerializer.Deserialize<ObjectExtensionDataModel>(bytes);
-        var rewritten = BencodeSerializer.Serialize(model);
+        byte[] rewritten = BencodeSerializer.Serialize(model);
 
         // Declared member Name and the two extension entries alpha and zzz merge into one sorted dictionary.
         Assert.AreEqual("d4:Name1:n5:alphai1e3:zzzi9ee", Encoding.Latin1.GetString(rewritten));
@@ -59,7 +59,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenDictionaryExtensionData_ShouldCaptureOverflow()
     {
-        var bytes = Encoding.Latin1.GetBytes("d4:Name1:n5:extrai7ee");
+        byte[] bytes = Encoding.Latin1.GetBytes("d4:Name1:n5:extrai7ee");
 
         var model = BencodeSerializer.Deserialize<DictionaryExtensionDataModel>(bytes);
 
@@ -76,7 +76,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenGetOnlyDictionaryExtensionData_ShouldPopulateExistingInstance()
     {
-        var bytes = Encoding.Latin1.GetBytes("d4:Name1:n5:extrai7ee");
+        byte[] bytes = Encoding.Latin1.GetBytes("d4:Name1:n5:extrai7ee");
 
         var model = BencodeSerializer.Deserialize<GetOnlyDictionaryExtensionDataModel>(bytes);
 
@@ -92,7 +92,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenKeyMatchesDeclaredMember_ShouldNotCaptureIntoExtensionData()
     {
-        var bytes = Encoding.Latin1.GetBytes("d4:Name1:n5:extrai7ee");
+        byte[] bytes = Encoding.Latin1.GetBytes("d4:Name1:n5:extrai7ee");
 
         var model = BencodeSerializer.Deserialize<ObjectExtensionDataModel>(bytes);
 
@@ -109,7 +109,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenNoUnmatchedKeys_ShouldLeaveExtensionDataUnset()
     {
-        var bytes = Encoding.Latin1.GetBytes("d4:Name1:ne");
+        byte[] bytes = Encoding.Latin1.GetBytes("d4:Name1:ne");
 
         var model = BencodeSerializer.Deserialize<ObjectExtensionDataModel>(bytes);
 
@@ -125,7 +125,7 @@ public partial class BencodeSerializerTests
     public void Deserialize_WhenDisallowAndExtensionDataPresent_ShouldCaptureAndNotThrow()
     {
         var options = new BencodeSerializerOptions { UnmappedMemberHandling = BencodeUnmappedMemberHandling.Disallow };
-        var bytes = Encoding.Latin1.GetBytes("d4:Name1:n7:unknowni1ee");
+        byte[] bytes = Encoding.Latin1.GetBytes("d4:Name1:n7:unknowni1ee");
 
         var model = BencodeSerializer.Deserialize<ObjectExtensionDataModel>(bytes, options);
 
@@ -144,7 +144,7 @@ public partial class BencodeSerializerTests
         var extra = new BencodeObject { ["zeta"] = BencodeValue.Create(1), ["alpha"] = BencodeValue.Create(2) };
         var model = new ObjectExtensionDataModel { Name = "n", Extra = extra };
 
-        var bytes = BencodeSerializer.Serialize(model);
+        byte[] bytes = BencodeSerializer.Serialize(model);
 
         Assert.AreEqual("d4:Name1:n5:alphai2e4:zetai1ee", Encoding.Latin1.GetString(bytes));
     }
@@ -156,7 +156,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenMultipleExtensionDataMembers_ShouldThrowInvalidOperationException()
     {
-        var bytes = Encoding.Latin1.GetBytes("de");
+        byte[] bytes = Encoding.Latin1.GetBytes("de");
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
@@ -171,7 +171,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenExtensionDataMemberTypeUnsupported_ShouldThrowInvalidOperationException()
     {
-        var bytes = Encoding.Latin1.GetBytes("de");
+        byte[] bytes = Encoding.Latin1.GetBytes("de");
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {

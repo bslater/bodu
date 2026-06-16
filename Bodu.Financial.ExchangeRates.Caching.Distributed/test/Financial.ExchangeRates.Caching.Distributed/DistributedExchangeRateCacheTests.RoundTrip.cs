@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DistributedExchangeRateCacheTests.RoundTrip.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -21,7 +21,7 @@ public sealed partial class DistributedExchangeRateCacheTests
     public void Store_WhenRateHasHighPrecision_ShouldRoundTripExactly()
     {
         var now = DateTimeOffset.UtcNow;
-        var rate = 1.234567890123456789m;
+        decimal rate = 1.234567890123456789m;
         var backingStore = CreateBackingStore();
 
         DistributedExchangeRateCache writer = CreateCache(backingStore);
@@ -42,7 +42,7 @@ public sealed partial class DistributedExchangeRateCacheTests
     public void Store_WhenRateHasTrailingZeros_ShouldPreserveScale()
     {
         var now = DateTimeOffset.UtcNow;
-        var rate = 0.5000m;
+        decimal rate = 0.5000m;
         var backingStore = CreateBackingStore();
 
         DistributedExchangeRateCache writer = CreateCache(backingStore);
@@ -149,7 +149,7 @@ public sealed partial class DistributedExchangeRateCacheTests
 
         cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5m, now) }, Duration, now);
 
-        var json = System.Text.Encoding.UTF8.GetString(backingStore.Get("Test:AUDUSD")!);
+        string json = System.Text.Encoding.UTF8.GetString(backingStore.Get("Test:AUDUSD")!);
         Assert.IsFalse(json.Contains("observedAtUtc", StringComparison.OrdinalIgnoreCase), json);
     }
 

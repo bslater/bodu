@@ -22,7 +22,7 @@ public static class StructuralAssertions
         var missingFields = new List<string>();
         var mutableFields = new List<string>();
 
-        foreach (var name in fieldNames)
+        foreach (string name in fieldNames)
         {
             FieldInfo? field = allFields.FirstOrDefault(f => f.Name == name);
             if (field == null)

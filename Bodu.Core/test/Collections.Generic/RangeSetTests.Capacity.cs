@@ -17,11 +17,11 @@ public partial class RangeSetTests
     {
         var sut = new RangeSet<int>();
 
-        for (var i = 0; i < 500; i++)
+        for (int i = 0; i < 500; i++)
             sut.Add(i * 10, (i * 10) + 5);
 
         Assert.AreEqual(500, sut.Count);
-        for (var i = 0; i < 500; i++)
+        for (int i = 0; i < 500; i++)
             Assert.AreEqual(new Range<int>(i * 10, (i * 10) + 5), sut[i]);
     }
     /// <summary>
@@ -61,7 +61,7 @@ public partial class RangeSetTests
     {
         var sut = new RangeSet<int>();
 
-        var reported = sut.EnsureCapacity(128);
+        int reported = sut.EnsureCapacity(128);
 
         Assert.IsGreaterThanOrEqualTo(128, reported);
         Assert.IsGreaterThanOrEqualTo(128, sut.Capacity);
@@ -76,9 +76,9 @@ public partial class RangeSetTests
     {
         var sut = new RangeSet<int>();
         sut.EnsureCapacity(64);
-        var capacityBefore = sut.Capacity;
+        int capacityBefore = sut.Capacity;
 
-        var reported = sut.EnsureCapacity(4);
+        int reported = sut.EnsureCapacity(4);
 
         Assert.AreEqual(capacityBefore, sut.Capacity);
         Assert.AreEqual(capacityBefore, reported);

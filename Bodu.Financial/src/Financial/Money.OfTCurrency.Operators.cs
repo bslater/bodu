@@ -192,7 +192,7 @@ public readonly partial struct Money<TCurrency>
     {
         ThrowHelper.ThrowIfNull(context);
 
-        var minorUnits = CurrencyMetadata<TCurrency>.Value.MinorUnits;
+        int minorUnits = CurrencyMetadata<TCurrency>.Value.MinorUnits;
         return FromNormalizedAmount(context.Rounding.Round(_amount * multiplier, minorUnits));
     }
 

@@ -75,11 +75,11 @@ public sealed class FixedExchangeRateTable
             return 1m;
 
         ExchangeRatePair direct = new(fromIsoCode, toIsoCode);
-        if (_rates.TryGetValue(direct, out var directRate))
+        if (_rates.TryGetValue(direct, out decimal directRate))
             return directRate;
 
         ExchangeRatePair inverse = direct.Inverse();
-        if (_rates.TryGetValue(inverse, out var inverseRate) && inverseRate != 0m)
+        if (_rates.TryGetValue(inverse, out decimal inverseRate) && inverseRate != 0m)
             return 1m / inverseRate;
 
         throw new KeyNotFoundException(

@@ -128,7 +128,7 @@ public partial class HashAlgorithmExtensionsTests
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
 
-        var mismatched = BitConverter.GetBytes((uint)123);
+        byte[] mismatched = BitConverter.GetBytes((uint)123);
 
         Assert.IsFalse(algorithm.TryVerifyHash(SampleData, mismatched));
     }
@@ -143,7 +143,7 @@ public partial class HashAlgorithmExtensionsTests
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
 
         ReadOnlyMemory<byte> memory = SampleData;
-        var mismatched = BitConverter.GetBytes((uint)321);
+        byte[] mismatched = BitConverter.GetBytes((uint)321);
 
         Assert.IsFalse(algorithm.TryVerifyHash(memory, mismatched));
     }
@@ -157,7 +157,7 @@ public partial class HashAlgorithmExtensionsTests
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         using var stream = new MemoryStream(SampleData);
-        var mismatched = BitConverter.GetBytes((uint)999);
+        byte[] mismatched = BitConverter.GetBytes((uint)999);
 
         Assert.IsFalse(algorithm.TryVerifyHash(stream, mismatched));
     }
@@ -183,7 +183,7 @@ public partial class HashAlgorithmExtensionsTests
     public void TryVerifyHash_StringEncoded_WhenHashMismatches_ShouldReturnFalse()
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
-        var mismatched = BitConverter.GetBytes((uint)9999);
+        byte[] mismatched = BitConverter.GetBytes((uint)9999);
 
         Assert.IsFalse(algorithm.TryVerifyHash(SampleString, SampleEncoding, mismatched));
     }

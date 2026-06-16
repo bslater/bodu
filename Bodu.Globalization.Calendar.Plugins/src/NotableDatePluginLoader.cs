@@ -33,9 +33,9 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// <para>
 /// <strong>Logging.</strong> Each <c>LoadFrom</c> / <see cref="RegisterAlgorithms" /> overload accepts an optional
 /// <see cref="ILogger" /> (defaulting to <see cref="NullLogger.Instance" />, so logging is opt-in). When supplied it
-/// records a trust-policy rejection (<see cref="LogLevel.Warning" />), a passed trust check
-/// (<see cref="LogLevel.Debug" />), an activated plugin (<see cref="LogLevel.Information" />), and the number of
-/// algorithms a plugin contributed (<see cref="LogLevel.Information" />). These levels are fixed.
+/// records a trust-policy rejection (<see cref="LogLevel.Warning" />), a passed trust check (<see cref="LogLevel.Debug" />),
+/// an activated plugin (<see cref="LogLevel.Information" />), and the number of algorithms a plugin contributed (<see cref="LogLevel.Information" />).
+/// These levels are fixed.
 /// </para>
 /// </remarks>
 /// <example>
@@ -85,10 +85,10 @@ public static class NotableDatePluginLoader
         ILogger log = logger ?? NullLogger.Instance;
 
         AssemblyName assemblyName = assembly.GetName();
-        var name = assemblyName.Name ?? assembly.FullName ?? "<unknown>";
-        var path = string.IsNullOrEmpty(assembly.Location) ? null : assembly.Location;
-        var hash = path is not null && File.Exists(path) ? ComputeHash(path) : null;
-        var token = FormatPublicKeyToken(assemblyName.GetPublicKeyToken());
+        string name = assemblyName.Name ?? assembly.FullName ?? "<unknown>";
+        string? path = string.IsNullOrEmpty(assembly.Location) ? null : assembly.Location;
+        byte[]? hash = path is not null && File.Exists(path) ? ComputeHash(path) : null;
+        string? token = FormatPublicKeyToken(assemblyName.GetPublicKeyToken());
 
         PluginTrustResult trust = trustPolicy.Evaluate(new PluginTrustContext(name, path, hash, token));
         if (!trust.IsTrusted)
@@ -135,7 +135,7 @@ public static class NotableDatePluginLoader
         ThrowHelper.ThrowIfNull(assemblyPath);
         ThrowHelper.ThrowIfNull(trustPolicy);
 
-        var fullPath = Path.GetFullPath(assemblyPath);
+        string fullPath = Path.GetFullPath(assemblyPath);
         AssemblyLoadContext context = new($"NotableDatePlugin:{Path.GetFileNameWithoutExtension(fullPath)}", isCollectible: false);
         Assembly assembly = context.LoadFromAssemblyPath(fullPath);
 
@@ -163,7 +163,7 @@ public static class NotableDatePluginLoader
         if (plugin is not INotableDateAlgorithmPlugin algorithmPlugin)
             return 0;
 
-        var count = 0;
+        int count = 0;
         foreach (KeyValuePair<string, INotableDateAlgorithm> pair in algorithmPlugin.GetAlgorithms())
         {
             registry.Register(pair.Key, pair.Value);

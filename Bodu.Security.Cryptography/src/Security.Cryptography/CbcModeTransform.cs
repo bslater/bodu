@@ -85,7 +85,7 @@ public sealed class CbcModeTransform
     /// <inheritdoc />
     public int Transform(ReadOnlySpan<byte> input, Span<byte> output, bool encrypt)
     {
-        var blockSize = _cipher.BlockSize / 8;
+        int blockSize = _cipher.BlockSize / 8;
 
         CryptographyThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize, throwIfZero: false);
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, 0, input.Length);
@@ -93,7 +93,7 @@ public sealed class CbcModeTransform
 
         Span<byte> tempBlock = stackalloc byte[blockSize];
 
-        for (var offset = 0; offset < input.Length; offset += blockSize)
+        for (int offset = 0; offset < input.Length; offset += blockSize)
         {
             ReadOnlySpan<byte> inBlock = input.Slice(offset, blockSize);
             Span<byte> outBlock = output.Slice(offset, blockSize);
@@ -101,7 +101,7 @@ public sealed class CbcModeTransform
             if (encrypt)
             {
                 // Encrypt: XOR input with IV, then encrypt
-                for (var i = 0; i < blockSize; i++)
+                for (int i = 0; i < blockSize; i++)
                     tempBlock[i] = (byte)(inBlock[i] ^ _currentIv[i]);
 
                 _cipher.Encrypt(tempBlock, outBlock);
@@ -116,7 +116,7 @@ public sealed class CbcModeTransform
 
                 _cipher.Decrypt(inBlock, outBlock);
 
-                for (var i = 0; i < blockSize; i++)
+                for (int i = 0; i < blockSize; i++)
                     outBlock[i] ^= _currentIv[i];
 
                 // Update IV to original ciphertext block

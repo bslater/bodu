@@ -25,7 +25,7 @@ public partial class CircularBufferTests
     [TestMethod]
     public void Ctor_WhenAllParametersProvided_ShouldAdoptCollection()
     {
-        var source = new[] { 1, 2, 3 };
+        int[] source = new[] { 1, 2, 3 };
         var buffer = new CircularBuffer<int>(source, 3, false);
         CollectionAssert.AreEqual(source, buffer.ToArray());
     }
@@ -36,7 +36,7 @@ public partial class CircularBufferTests
     [TestMethod]
     public void Ctor_WhenAllParametersProvided_ShouldRespectOverwriteFlag()
     {
-        var source = new[] { 1, 2, 3 };
+        int[] source = new[] { 1, 2, 3 };
         var buffer = new CircularBuffer<int>(source, 3, false);
         Assert.IsFalse(buffer.AllowOverwrite);
     }
@@ -47,7 +47,7 @@ public partial class CircularBufferTests
     [TestMethod]
     public void Ctor_WhenAllParametersProvided_ShouldSetCapacity()
     {
-        var source = new[] { 1, 2, 3 };
+        int[] source = new[] { 1, 2, 3 };
         var buffer = new CircularBuffer<int>(source, 3, false);
         Assert.AreEqual(3, buffer.Capacity);
     }
@@ -130,7 +130,7 @@ public partial class CircularBufferTests
     [DataRow(int.MaxValue)]
     public void Ctor_WhenCollectionAndOverwriteCapacityIsInvalid_ShouldThrowExactly(int capacity)
     {
-        var collection = new[] { 1 };
+        int[] collection = new[] { 1 };
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = new CircularBuffer<int>(collection, capacity, true);
@@ -146,7 +146,7 @@ public partial class CircularBufferTests
     [DataRow(int.MaxValue)]
     public void Ctor_WhenCollectionCapacityIsInvalid_ShouldThrowExactly(int capacity)
     {
-        var collection = new[] { 1 };
+        int[] collection = new[] { 1 };
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = new CircularBuffer<int>(collection, capacity);
@@ -159,12 +159,12 @@ public partial class CircularBufferTests
     [TestMethod]
     public void Ctor_WhenCollectionContainsNulls_ShouldRetainNulls()
     {
-        var source = new string?[] { "A", null, "B" };
+        string?[] source = new string?[] { "A", null, "B" };
         var buffer = new CircularBuffer<string?>(source, 5);
 
         Assert.AreEqual(3, buffer.Count);
 
-        var result = buffer.ToArray();
+        string?[] result = buffer.ToArray();
         Assert.AreEqual("A", result[0]);
         Assert.IsNull(result[1]);
         Assert.AreEqual("B", result[2]);
@@ -186,7 +186,7 @@ public partial class CircularBufferTests
     [TestMethod]
     public void Ctor_WhenCollectionExceedsCapacityAndOverwriteDisabled_ShouldThrowExactly()
     {
-        var source = new[] { 1, 2, 3 };
+        int[] source = new[] { 1, 2, 3 };
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
             _ = new CircularBuffer<int>(source, 2, false);
@@ -211,7 +211,7 @@ public partial class CircularBufferTests
     [TestMethod]
     public void Ctor_WhenCollectionProvided_ShouldAdoptElements()
     {
-        var source = new[] { "a", "b", "c" };
+        string[] source = new[] { "a", "b", "c" };
         var buffer = new CircularBuffer<string>(source);
         CollectionAssert.AreEqual(source, buffer.ToArray());
     }
@@ -222,7 +222,7 @@ public partial class CircularBufferTests
     [TestMethod]
     public void Ctor_WhenCollectionProvided_ShouldSetCorrectCount()
     {
-        var source = new[] { "a", "b", "c" };
+        string[] source = new[] { "a", "b", "c" };
         var buffer = new CircularBuffer<string>(source);
         Assert.AreEqual(source.Length, buffer.Count);
     }
@@ -233,7 +233,7 @@ public partial class CircularBufferTests
     [TestMethod]
     public void Ctor_WhenCollectionProvided_ShouldUseDefaultCapacity()
     {
-        var source = new[] { "a", "b", "c" };
+        string[] source = new[] { "a", "b", "c" };
         var buffer = new CircularBuffer<string>(source);
         Assert.AreEqual(DefaultCapacity, buffer.Capacity);
     }
@@ -274,7 +274,7 @@ public partial class CircularBufferTests
     [TestMethod]
     public void Ctor_WhenEmptyCollectionAndNegativeCapacity_ShouldThrowExactly()
     {
-        var empty = Array.Empty<string>();
+        string[] empty = Array.Empty<string>();
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = new CircularBuffer<string>(empty, -1);
@@ -300,7 +300,7 @@ public partial class CircularBufferTests
     [TestMethod]
     public void Ctor_WhenEmptyCollectionNegativeCapacityAndOverwriteProvided_ShouldThrowExactly()
     {
-        var empty = Array.Empty<string>();
+        string[] empty = Array.Empty<string>();
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = new CircularBuffer<string>(empty, -10, allowOverwrite: true);

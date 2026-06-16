@@ -59,7 +59,7 @@ public sealed class StrategyResolutionFixedOffsetKnownAnswerTests
     [DataRow("fixed-window-2020-2030", 2031, false)]   // above toYear
     public void Resolve_ApplicabilityWindow_AppliesOnlyWithinBounds(string notableDateId, int year, bool expectedApplies)
     {
-        var count = s_service
+        int count = s_service
             .Resolve(new DateRange(new DateOnly(year, 1, 1), new DateOnly(year, 12, 31)), "XX")
             .Count(r => r.NotableDateId == notableDateId);
 
@@ -110,7 +110,7 @@ public sealed class StrategyResolutionFixedOffsetKnownAnswerTests
     [TestMethod]
     public void Load_OffsetFromRuleReferenceMissing_ThrowsValidationException()
     {
-        var xml = NotableDateFixtures.ReadText("invalid-offset-missing.xml");
+        string xml = NotableDateFixtures.ReadText("invalid-offset-missing.xml");
 
         NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
         {
@@ -145,7 +145,7 @@ public sealed class StrategyResolutionFixedOffsetKnownAnswerTests
     /// <param name="year">The Gregorian year to scan.</param>
     private static void AssertNoOccurrenceInYear(string notableDateId, int year)
     {
-        var count = s_service
+        int count = s_service
             .Resolve(new DateRange(new DateOnly(year, 1, 1), new DateOnly(year, 12, 31)), "XX")
             .Count(r => r.NotableDateId == notableDateId);
 

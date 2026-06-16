@@ -21,7 +21,7 @@ public partial class ThrowHelperTests
     [DataRow(2, 10)]
     public void ThrowIfSpanOffsetOrCountInvalid_ReadOnlySpan_WhenOffsetOrCountOutOfRange_ShouldThrowExactly(int offset, int count)
     {
-        var buffer = new int[5];
+        int[] buffer = new int[5];
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             ThrowHelper.ThrowIfSpanOffsetOrCountInvalid((ReadOnlySpan<int>)buffer, offset, count);
@@ -39,7 +39,7 @@ public partial class ThrowHelperTests
     [DataRow(5, 0)]
     public void ThrowIfSpanOffsetOrCountInvalid_ReadOnlySpan_WhenParametersAreValid_ShouldNotThrow(int offset, int count)
     {
-        var buffer = new int[5];
+        int[] buffer = new int[5];
         ThrowHelper.ThrowIfSpanOffsetOrCountInvalid((ReadOnlySpan<int>)buffer, offset, count);
     }
 
@@ -51,7 +51,7 @@ public partial class ThrowHelperTests
     [DataRow(4, 2)]
     public void ThrowIfSpanOffsetOrCountInvalid_ReadOnlySpan_WhenSumExceedsLength_ShouldThrowExactly(int offset, int count)
     {
-        var buffer = new int[5];
+        int[] buffer = new int[5];
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
             ThrowHelper.ThrowIfSpanOffsetOrCountInvalid((ReadOnlySpan<int>)buffer, offset, count);
@@ -74,7 +74,7 @@ public partial class ThrowHelperTests
     public void ThrowIfSpanOffsetOrCountInvalid_Span_WhenInputIsAccepted_ShouldNotThrowAndReportNothing(
         string testName, int bufferLength, int offset, int count)
     {
-        var buffer = new int[bufferLength];
+        int[] buffer = new int[bufferLength];
 
         AssertGuard(
             $"Span<T>: {testName}",
@@ -113,8 +113,8 @@ public partial class ThrowHelperTests
     {
         Type expected = Type.GetType($"System.{expectedExceptionTypeName}, System.Private.CoreLib")
             ?? throw new InvalidOperationException($"Unknown exception type '{expectedExceptionTypeName}'.");
-        var param = expectedParamName.Length == 0 ? null : expectedParamName;
-        var buffer = new int[bufferLength];
+        string? param = expectedParamName.Length == 0 ? null : expectedParamName;
+        int[] buffer = new int[bufferLength];
 
         AssertGuard(
             $"Span<T>: {testName}",
@@ -141,7 +141,7 @@ public partial class ThrowHelperTests
     [DataRow(2, 10)]   // count > length
     public void ThrowIfSpanOffsetOrCountInvalid_Span_WhenOffsetOrCountOutOfRange_ShouldThrowExactly(int offset, int count)
     {
-        var buffer = new int[5];
+        int[] buffer = new int[5];
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             ThrowHelper.ThrowIfSpanOffsetOrCountInvalid(buffer.AsSpan(), offset, count);
@@ -159,7 +159,7 @@ public partial class ThrowHelperTests
     [DataRow(5, 0)]   // offset at length with zero count is valid
     public void ThrowIfSpanOffsetOrCountInvalid_Span_WhenParametersAreValid_ShouldNotThrow(int offset, int count)
     {
-        var buffer = new int[5];
+        int[] buffer = new int[5];
         ThrowHelper.ThrowIfSpanOffsetOrCountInvalid(buffer.AsSpan(), offset, count);
     }
 
@@ -171,7 +171,7 @@ public partial class ThrowHelperTests
     [DataRow(4, 2)]    // offset + count > length
     public void ThrowIfSpanOffsetOrCountInvalid_Span_WhenSumExceedsLength_ShouldThrowExactly(int offset, int count)
     {
-        var buffer = new int[5];
+        int[] buffer = new int[5];
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
             ThrowHelper.ThrowIfSpanOffsetOrCountInvalid(buffer.AsSpan(), offset, count);

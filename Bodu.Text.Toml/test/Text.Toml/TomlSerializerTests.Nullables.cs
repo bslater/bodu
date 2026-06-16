@@ -21,7 +21,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Serialize_WhenNullableValueTypePresent_ShouldDelegateToUnderlying()
     {
-        var text = TomlSerializer.Serialize(new NullableValueModel { Number = 5, Flag = true, When = new DateOnly(2026, 6, 10) });
+        string text = TomlSerializer.Serialize(new NullableValueModel { Number = 5, Flag = true, When = new DateOnly(2026, 6, 10) });
 
         Assert.AreEqual("Number = 5\nFlag = true\nWhen = 2026-06-10\n", text);
     }
@@ -48,7 +48,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Serialize_WhenNullableValueTypeNull_ShouldOmitMember()
     {
-        var text = TomlSerializer.Serialize(new NullableValueModel { Number = 7, Flag = null, When = null });
+        string text = TomlSerializer.Serialize(new NullableValueModel { Number = 7, Flag = null, When = null });
 
         Assert.AreEqual("Number = 7\n", text);
     }
@@ -59,7 +59,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Serialize_WhenAllNullableValueTypesNull_ShouldEmitEmptyDocument()
     {
-        var text = TomlSerializer.Serialize(new NullableValueModel { Number = null, Flag = null, When = null });
+        string text = TomlSerializer.Serialize(new NullableValueModel { Number = null, Flag = null, When = null });
 
         Assert.AreEqual(string.Empty, text);
     }
@@ -97,7 +97,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void SerializeDeserialize_WhenNullableReferenceType_ShouldOmitNullAndRoundTripPresent()
     {
-        var text = TomlSerializer.Serialize(new NullableReferenceModel { Present = "here", Absent = null });
+        string text = TomlSerializer.Serialize(new NullableReferenceModel { Present = "here", Absent = null });
 
         Assert.AreEqual("Present = \"here\"\n", text);
 

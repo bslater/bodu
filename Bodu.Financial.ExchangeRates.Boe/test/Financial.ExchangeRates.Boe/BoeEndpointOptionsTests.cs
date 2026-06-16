@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoeEndpointOptionsTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -36,7 +36,7 @@ public class BoeEndpointOptionsTests
 
         Uri url = endpoint.BuildRequestUrl(["XUDLUSS", "XUDLERS"], new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31));
 
-        var text = url.ToString();
+        string text = url.ToString();
         Assert.IsTrue(text.Contains("_iadb-fromshowcolumns.asp", StringComparison.Ordinal));
         Assert.IsTrue(text.Contains("XUDLUSS", StringComparison.Ordinal));
         Assert.IsTrue(text.Contains("XUDLERS", StringComparison.Ordinal));
@@ -101,7 +101,7 @@ public class BoeEndpointOptionsTests
     {
         BoeEndpointOptions endpoint = new();
 
-        var valid = endpoint.TryValidate(out var error);
+        bool valid = endpoint.TryValidate(out string? error);
 
         Assert.IsTrue(valid);
         Assert.IsNull(error);
@@ -115,7 +115,7 @@ public class BoeEndpointOptionsTests
     {
         BoeEndpointOptions endpoint = new() { HttpTimeout = TimeSpan.Zero };
 
-        var valid = endpoint.TryValidate(out var error);
+        bool valid = endpoint.TryValidate(out string? error);
 
         Assert.IsFalse(valid);
         Assert.IsNotNull(error);

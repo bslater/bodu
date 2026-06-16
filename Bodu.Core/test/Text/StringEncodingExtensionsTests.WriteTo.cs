@@ -19,7 +19,7 @@ public sealed partial class StringEncodingExtensionsTests
     [TestMethod]
     public void WriteTo_WhenInvoked_ShouldWriteEncodedBytesIntoWriter()
     {
-        var expected = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
+        byte[] expected = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
         using var writer = new PooledBufferBuilder<byte>(16);
 
         MultiByteText.WriteTo(System.Text.Encoding.UTF8, writer);

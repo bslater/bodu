@@ -30,9 +30,9 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     [TestMethod]
     public void Randomize_WhenCalled_ForDefaultOverload_ShouldReturnPermutationOfSource()
     {
-        var source = Enumerable.Range(1, 20).ToArray();
+        int[] source = Enumerable.Range(1, 20).ToArray();
 
-        var result = source.Randomize().ToArray();
+        int[] result = source.Randomize().ToArray();
 
         CollectionAssert.AreEquivalent(source, result);
     }
@@ -111,9 +111,9 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     [TestMethod]
     public void Randomize_WhenModeIsBufferAllAndCountIsNull_ShouldReturnPermutationOfSource()
     {
-        var source = Enumerable.Range(1, 10).ToArray();
+        int[] source = Enumerable.Range(1, 10).ToArray();
 
-        var result = source.Randomize(RandomizationMode.BufferAll, CreateSeededRng()).ToArray();
+        int[] result = source.Randomize(RandomizationMode.BufferAll, CreateSeededRng()).ToArray();
 
         CollectionAssert.AreEquivalent(source, result);
     }
@@ -125,12 +125,12 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     [TestMethod]
     public void Randomize_WhenModeIsBufferAllAndCountIsPositive_ShouldReturnRequestedNumberOfElements()
     {
-        var source = Enumerable.Range(1, 10).ToArray();
+        int[] source = Enumerable.Range(1, 10).ToArray();
 
-        var result = source.Randomize(RandomizationMode.BufferAll, CreateSeededRng(), count: 4).ToArray();
+        int[] result = source.Randomize(RandomizationMode.BufferAll, CreateSeededRng(), count: 4).ToArray();
 
         Assert.HasCount(4, result);
-        foreach (var value in result)
+        foreach (int value in result)
             CollectionAssert.Contains(source, value);
     }
 
@@ -141,7 +141,7 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     [TestMethod]
     public void Randomize_WhenModeIsStreamWindowed_ShouldDeferExecution()
     {
-        var wasEnumerated = false;
+        bool wasEnumerated = false;
 
         IEnumerable<int> source = Tracked();
 
@@ -169,9 +169,9 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     [TestMethod]
     public void Randomize_WhenModeIsStreamWindowed_ShouldReturnPermutationOfSource()
     {
-        var source = Enumerable.Range(1, 30).ToArray();
+        int[] source = Enumerable.Range(1, 30).ToArray();
 
-        var result = source.Randomize(RandomizationMode.StreamWindowed, CreateSeededRng()).ToArray();
+        int[] result = source.Randomize(RandomizationMode.StreamWindowed, CreateSeededRng()).ToArray();
 
         CollectionAssert.AreEquivalent(source, result);
     }
@@ -199,12 +199,12 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     [DynamicData(nameof(GetModesRequiringCount))]
     public void Randomize_WhenModeRequiresCount_ShouldReturnRequestedNumberOfElements(RandomizationMode mode)
     {
-        var source = Enumerable.Range(1, 20).ToArray();
+        int[] source = Enumerable.Range(1, 20).ToArray();
 
-        var result = source.Randomize(mode, CreateSeededRng(), count: 5).ToArray();
+        int[] result = source.Randomize(mode, CreateSeededRng(), count: 5).ToArray();
 
         Assert.HasCount(5, result);
-        foreach (var value in result)
+        foreach (int value in result)
             CollectionAssert.Contains(source, value);
     }
 
@@ -230,7 +230,7 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     [TestMethod]
     public void Randomize_WhenRngIsNull_ShouldThrowExactlyBeforeEnumeration()
     {
-        var wasEnumerated = false;
+        bool wasEnumerated = false;
 
         IEnumerable<int> source = Tracked();
 

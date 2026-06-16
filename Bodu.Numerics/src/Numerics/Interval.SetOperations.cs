@@ -36,8 +36,8 @@ public readonly partial struct Interval<T>
         if (IsEmpty)
             return false;
 
-        var lowerOk = LowerInclusive ? value >= _lower : value > _lower;
-        var upperOk = UpperInclusive ? value <= _upper : value < _upper;
+        bool lowerOk = LowerInclusive ? value >= _lower : value > _lower;
+        bool upperOk = UpperInclusive ? value <= _upper : value < _upper;
         return lowerOk && upperOk;
     }
 
@@ -77,8 +77,8 @@ public readonly partial struct Interval<T>
         if (IsEmpty)
             return false;
 
-        var lowerOk = CompareLowerEndpoint(_lower, LowerInclusive, other._lower, other.LowerInclusive) <= 0;
-        var upperOk = CompareUpperEndpoint(_upper, UpperInclusive, other._upper, other.UpperInclusive) >= 0;
+        bool lowerOk = CompareLowerEndpoint(_lower, LowerInclusive, other._lower, other.LowerInclusive) <= 0;
+        bool upperOk = CompareUpperEndpoint(_upper, UpperInclusive, other._upper, other.UpperInclusive) >= 0;
         return lowerOk && upperOk;
     }
 
@@ -117,8 +117,8 @@ public readonly partial struct Interval<T>
 
         // Two non-empty intervals overlap iff this.Lower < other.Upper (respecting inclusivity) and
         // other.Lower < this.Upper. We collapse the four cases into endpoint comparisons.
-        var aBelowB = _lower < other._upper || (_lower == other._upper && LowerInclusive && other.UpperInclusive);
-        var bBelowA = other._lower < _upper || (other._lower == _upper && other.LowerInclusive && UpperInclusive);
+        bool aBelowB = _lower < other._upper || (_lower == other._upper && LowerInclusive && other.UpperInclusive);
+        bool bBelowA = other._lower < _upper || (other._lower == _upper && other.LowerInclusive && UpperInclusive);
         return aBelowB && bBelowA;
     }
 
@@ -155,7 +155,7 @@ public readonly partial struct Interval<T>
         // Pick the larger of the two lower endpoints (and the stricter inclusivity when the values tie).
         T newLower;
         bool newLowerInclusive;
-        var lowerCmp = _lower.CompareTo(other._lower);
+        int lowerCmp = _lower.CompareTo(other._lower);
         if (lowerCmp > 0)
         {
             newLower = _lower;
@@ -175,7 +175,7 @@ public readonly partial struct Interval<T>
         // Pick the smaller of the two upper endpoints (and the stricter inclusivity when the values tie).
         T newUpper;
         bool newUpperInclusive;
-        var upperCmp = _upper.CompareTo(other._upper);
+        int upperCmp = _upper.CompareTo(other._upper);
         if (upperCmp < 0)
         {
             newUpper = _upper;
@@ -270,7 +270,7 @@ public readonly partial struct Interval<T>
 
         T newLower;
         bool newLowerInclusive;
-        var lowerCmp = _lower.CompareTo(other._lower);
+        int lowerCmp = _lower.CompareTo(other._lower);
         if (lowerCmp < 0)
         {
             newLower = _lower;
@@ -289,7 +289,7 @@ public readonly partial struct Interval<T>
 
         T newUpper;
         bool newUpperInclusive;
-        var upperCmp = _upper.CompareTo(other._upper);
+        int upperCmp = _upper.CompareTo(other._upper);
         if (upperCmp > 0)
         {
             newUpper = _upper;
@@ -334,7 +334,7 @@ public readonly partial struct Interval<T>
     /// </returns>
     private static int CompareLowerEndpoint(T aLower, bool aInclusive, T bLower, bool bInclusive)
     {
-        var cmp = aLower.CompareTo(bLower);
+        int cmp = aLower.CompareTo(bLower);
         return cmp != 0 ? cmp : aInclusive == bInclusive ? 0 : aInclusive ? -1 : 1;
     }
 
@@ -351,7 +351,7 @@ public readonly partial struct Interval<T>
     /// </returns>
     private static int CompareUpperEndpoint(T aUpper, bool aInclusive, T bUpper, bool bInclusive)
     {
-        var cmp = aUpper.CompareTo(bUpper);
+        int cmp = aUpper.CompareTo(bUpper);
         return cmp != 0 ? cmp : aInclusive == bInclusive ? 0 : aInclusive ? 1 : -1;
     }
 }

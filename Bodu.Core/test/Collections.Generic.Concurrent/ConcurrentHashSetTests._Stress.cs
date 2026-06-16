@@ -30,28 +30,28 @@ public partial class ConcurrentHashSetTests
         var set = new ConcurrentHashSet<int>();
         using var startGate = new ManualResetEventSlim(false);
 
-        var addFailures = 0;
-        var removeFailures = 0;
-        var faults = 0;
+        int addFailures = 0;
+        int removeFailures = 0;
+        int faults = 0;
         Exception? firstException = null;
 
         Task[] tasks = Enumerable.Range(0, workerCount).Select(workerId =>
             StartWorker(() =>
             {
                 startGate.Wait();
-                var baseKey = workerId * keysPerWorker;
+                int baseKey = workerId * keysPerWorker;
 
                 try
                 {
-                    for (var iteration = 0; iteration < iterations; iteration++)
+                    for (int iteration = 0; iteration < iterations; iteration++)
                     {
-                        for (var k = 0; k < keysPerWorker; k++)
+                        for (int k = 0; k < keysPerWorker; k++)
                         {
                             if (!set.Add(baseKey + k))
                                 Interlocked.Increment(ref addFailures);
                         }
 
-                        for (var k = 0; k < keysPerWorker; k++)
+                        for (int k = 0; k < keysPerWorker; k++)
                         {
                             if (!set.Remove(baseKey + k))
                                 Interlocked.Increment(ref removeFailures);
@@ -66,7 +66,7 @@ public partial class ConcurrentHashSetTests
             })).ToArray();
 
         startGate.Set();
-        var completed = Task.WaitAll(tasks, 60_000);
+        bool completed = Task.WaitAll(tasks, 60_000);
 
         TestContext.WriteLine(
             $"AddFailures={addFailures}, RemoveFailures={removeFailures}, Faults={faults}, " +
@@ -92,8 +92,8 @@ public partial class ConcurrentHashSetTests
         var set = new ConcurrentHashSet<int>();
         using var startGate = new ManualResetEventSlim(false);
 
-        var winners = 0;
-        var faults = 0;
+        int winners = 0;
+        int faults = 0;
         Exception? firstException = null;
 
         Task[] tasks = Enumerable.Range(0, workerCount).Select(_ =>
@@ -103,7 +103,7 @@ public partial class ConcurrentHashSetTests
 
                 try
                 {
-                    for (var k = 0; k < keyCount; k++)
+                    for (int k = 0; k < keyCount; k++)
                     {
                         if (set.Add(k))
                             Interlocked.Increment(ref winners);
@@ -117,7 +117,7 @@ public partial class ConcurrentHashSetTests
             })).ToArray();
 
         startGate.Set();
-        var completed = Task.WaitAll(tasks, 60_000);
+        bool completed = Task.WaitAll(tasks, 60_000);
 
         TestContext.WriteLine(
             $"Winners={winners}, Faults={faults}, Count={set.Count}, Completed={completed}, " +
@@ -145,9 +145,9 @@ public partial class ConcurrentHashSetTests
         using var cts = new CancellationTokenSource();
         using var startGate = new ManualResetEventSlim(false);
 
-        var faults = 0;
-        var operations = 0;
-        var seed = 0;
+        int faults = 0;
+        int operations = 0;
+        int seed = 0;
         Exception? firstException = null;
 
         Task[] tasks = Enumerable.Range(0, workerCount).Select(_ =>
@@ -160,7 +160,7 @@ public partial class ConcurrentHashSetTests
                 {
                     while (!cts.Token.IsCancellationRequested)
                     {
-                        var key = random.Next(keySpace);
+                        int key = random.Next(keySpace);
                         switch (random.Next(3))
                         {
                             case 0:
@@ -188,10 +188,10 @@ public partial class ConcurrentHashSetTests
         startGate.Set();
         Thread.Sleep(durationMs);
         cts.Cancel();
-        var completed = Task.WaitAll(tasks, 60_000);
+        bool completed = Task.WaitAll(tasks, 60_000);
 
-        var finalCount = set.Count;
-        var snapshot = set.ToArray();
+        int finalCount = set.Count;
+        int[] snapshot = set.ToArray();
 
         TestContext.WriteLine(
             $"Operations={operations}, Faults={faults}, FinalCount={finalCount}, " +
@@ -219,10 +219,10 @@ public partial class ConcurrentHashSetTests
         using var cts = new CancellationTokenSource();
         using var startGate = new ManualResetEventSlim(false);
 
-        var faults = 0;
-        var coherenceViolations = 0;
-        var snapshots = 0;
-        var seed = 1_000;
+        int faults = 0;
+        int coherenceViolations = 0;
+        int snapshots = 0;
+        int seed = 1_000;
         Exception? firstException = null;
 
         IEnumerable<Task> writers = Enumerable.Range(0, 4).Select(_ =>
@@ -235,7 +235,7 @@ public partial class ConcurrentHashSetTests
                 {
                     while (!cts.Token.IsCancellationRequested)
                     {
-                        var key = random.Next(keySpace);
+                        int key = random.Next(keySpace);
                         if (random.Next(2) == 0)
                             set.Add(key);
                         else
@@ -259,9 +259,9 @@ public partial class ConcurrentHashSetTests
                 {
                     while (!cts.Token.IsCancellationRequested)
                     {
-                        var snapshot = set.ToArray();
+                        int[] snapshot = set.ToArray();
                         var seen = new HashSet<int>();
-                        foreach (var value in snapshot)
+                        foreach (int value in snapshot)
                         {
                             if (value < 0 || value >= keySpace || !seen.Add(value))
                                 Interlocked.Increment(ref coherenceViolations);
@@ -283,7 +283,7 @@ public partial class ConcurrentHashSetTests
         startGate.Set();
         Thread.Sleep(durationMs);
         cts.Cancel();
-        var completed = Task.WaitAll(tasks, 60_000);
+        bool completed = Task.WaitAll(tasks, 60_000);
 
         TestContext.WriteLine(
             $"Snapshots={snapshots}, CoherenceViolations={coherenceViolations}, Faults={faults}, " +
@@ -309,10 +309,10 @@ public partial class ConcurrentHashSetTests
         using var cts = new CancellationTokenSource();
         using var startGate = new ManualResetEventSlim(false);
 
-        var faults = 0;
-        var addOperations = 0;
-        var clearOperations = 0;
-        var seed = 5_000;
+        int faults = 0;
+        int addOperations = 0;
+        int clearOperations = 0;
+        int seed = 5_000;
         Exception? firstException = null;
 
         IEnumerable<Task> adders = Enumerable.Range(0, 6).Select(_ =>
@@ -363,10 +363,10 @@ public partial class ConcurrentHashSetTests
         startGate.Set();
         Thread.Sleep(durationMs);
         cts.Cancel();
-        var completed = Task.WaitAll(tasks, 60_000);
+        bool completed = Task.WaitAll(tasks, 60_000);
 
-        var finalCount = set.Count;
-        var snapshot = set.ToArray();
+        int finalCount = set.Count;
+        int[] snapshot = set.ToArray();
 
         TestContext.WriteLine(
             $"AddOperations={addOperations}, ClearOperations={clearOperations}, Faults={faults}, " +
@@ -396,19 +396,19 @@ public partial class ConcurrentHashSetTests
         using var cts = new CancellationTokenSource();
         using var startGate = new ManualResetEventSlim(false);
 
-        var faults = 0;
-        var readerOperations = 0;
+        int faults = 0;
+        int readerOperations = 0;
         Exception? firstException = null;
 
         Task[] adders = Enumerable.Range(0, adderCount).Select(adderId =>
             StartWorker(() =>
             {
                 startGate.Wait();
-                var baseKey = adderId * keysPerAdder;
+                int baseKey = adderId * keysPerAdder;
 
                 try
                 {
-                    for (var k = 0; k < keysPerAdder; k++)
+                    for (int k = 0; k < keysPerAdder; k++)
                         set.Add(baseKey + k);
                 }
                 catch (Exception ex)
@@ -431,8 +431,8 @@ public partial class ConcurrentHashSetTests
                     {
                         set.Contains(random.Next(totalKeys));
 
-                        var enumerated = 0;
-                        foreach (var _ in set)
+                        int enumerated = 0;
+                        foreach (int _ in set)
                             enumerated++;
 
                         Interlocked.Increment(ref readerOperations);
@@ -447,9 +447,9 @@ public partial class ConcurrentHashSetTests
             })).ToArray();
 
         startGate.Set();
-        var addersCompleted = Task.WaitAll(adders, 60_000);
+        bool addersCompleted = Task.WaitAll(adders, 60_000);
         cts.Cancel();
-        var readersCompleted = Task.WaitAll(readers, 60_000);
+        bool readersCompleted = Task.WaitAll(readers, 60_000);
 
         TestContext.WriteLine(
             $"ReaderOperations={readerOperations}, Faults={faults}, Count={set.Count}, " +
@@ -460,7 +460,7 @@ public partial class ConcurrentHashSetTests
         Assert.AreEqual(totalKeys, set.Count, "Every distinct key must survive the table resizes.");
         Assert.IsGreaterThan(0, readerOperations, "Readers must have iterated the set during the resizes.");
 
-        for (var k = 0; k < totalKeys; k++)
+        for (int k = 0; k < totalKeys; k++)
             Assert.IsTrue(set.Contains(k), $"Key {k} was lost across a table resize.");
     }
 
@@ -478,19 +478,19 @@ public partial class ConcurrentHashSetTests
         var set = new ConcurrentHashSet<long>(capacity: 4);
         using var startGate = new ManualResetEventSlim(false);
 
-        var faults = 0;
-        var addFailures = 0;
+        int faults = 0;
+        int addFailures = 0;
         Exception? firstException = null;
 
         Task[] workers = Enumerable.Range(0, threadCount).Select(threadId =>
             StartWorker(() =>
             {
                 startGate.Wait();
-                var baseKey = (long)threadId * keysPerThread;
+                long baseKey = (long)threadId * keysPerThread;
 
                 try
                 {
-                    for (var k = 0; k < keysPerThread; k++)
+                    for (int k = 0; k < keysPerThread; k++)
                     {
                         if (!set.Add(baseKey + k))
                             Interlocked.Increment(ref addFailures);
@@ -504,9 +504,9 @@ public partial class ConcurrentHashSetTests
             })).ToArray();
 
         startGate.Set();
-        var completed = Task.WaitAll(workers, 60_000);
+        bool completed = Task.WaitAll(workers, 60_000);
 
-        var expectedCount = threadCount * keysPerThread;
+        int expectedCount = threadCount * keysPerThread;
 
         TestContext.WriteLine(
             $"ThreadCount={threadCount}, KeysPerThread={keysPerThread}, AddFailures={addFailures}, " +
@@ -534,19 +534,19 @@ public partial class ConcurrentHashSetTests
         var set = new ConcurrentHashSet<int>(new ConstantHashComparer());
         using var startGate = new ManualResetEventSlim(false);
 
-        var faults = 0;
-        var addFailures = 0;
+        int faults = 0;
+        int addFailures = 0;
         Exception? firstException = null;
 
         Task[] workers = Enumerable.Range(0, workerCount).Select(workerId =>
             StartWorker(() =>
             {
                 startGate.Wait();
-                var baseKey = workerId * keysPerWorker;
+                int baseKey = workerId * keysPerWorker;
 
                 try
                 {
-                    for (var k = 0; k < keysPerWorker; k++)
+                    for (int k = 0; k < keysPerWorker; k++)
                     {
                         if (!set.Add(baseKey + k))
                             Interlocked.Increment(ref addFailures);
@@ -560,9 +560,9 @@ public partial class ConcurrentHashSetTests
             })).ToArray();
 
         startGate.Set();
-        var completed = Task.WaitAll(workers, 60_000);
+        bool completed = Task.WaitAll(workers, 60_000);
 
-        var expectedCount = workerCount * keysPerWorker;
+        int expectedCount = workerCount * keysPerWorker;
 
         TestContext.WriteLine(
             $"AddFailures={addFailures}, Faults={faults}, Count={set.Count}, Expected={expectedCount}, " +
@@ -573,7 +573,7 @@ public partial class ConcurrentHashSetTests
         Assert.AreEqual(0, addFailures, "Every privately-owned colliding key must be added exactly once.");
         Assert.AreEqual(expectedCount, set.Count, "Every colliding key must be retained.");
 
-        for (var k = 0; k < expectedCount; k++)
+        for (int k = 0; k < expectedCount; k++)
             Assert.IsTrue(set.Contains(k), $"Colliding key {k} was lost.");
     }
 
@@ -591,26 +591,26 @@ public partial class ConcurrentHashSetTests
 
         // A tiny initial capacity forces many GrowTable cycles while readers probe the stable keys.
         var set = new ConcurrentHashSet<int>(capacity: 4);
-        for (var k = 0; k < stableKeyCount; k++)
+        for (int k = 0; k < stableKeyCount; k++)
             set.Add(-(k + 1));
 
         using var cts = new CancellationTokenSource();
         using var startGate = new ManualResetEventSlim(false);
 
-        var faults = 0;
-        var falseNegatives = 0;
-        var readerOperations = 0;
+        int faults = 0;
+        int falseNegatives = 0;
+        int readerOperations = 0;
         Exception? firstException = null;
 
         Task[] adders = Enumerable.Range(0, adderCount).Select(adderId =>
             StartWorker(() =>
             {
                 startGate.Wait();
-                var baseKey = adderId * keysPerAdder;
+                int baseKey = adderId * keysPerAdder;
 
                 try
                 {
-                    for (var k = 0; k < keysPerAdder; k++)
+                    for (int k = 0; k < keysPerAdder; k++)
                         set.Add(baseKey + k);
                 }
                 catch (Exception ex)
@@ -631,7 +631,7 @@ public partial class ConcurrentHashSetTests
                 {
                     while (!cts.Token.IsCancellationRequested)
                     {
-                        var stableKey = -(random.Next(stableKeyCount) + 1);
+                        int stableKey = -(random.Next(stableKeyCount) + 1);
                         if (!set.Contains(stableKey))
                             Interlocked.Increment(ref falseNegatives);
 
@@ -647,9 +647,9 @@ public partial class ConcurrentHashSetTests
             })).ToArray();
 
         startGate.Set();
-        var addersCompleted = Task.WaitAll(adders, 60_000);
+        bool addersCompleted = Task.WaitAll(adders, 60_000);
         cts.Cancel();
-        var readersCompleted = Task.WaitAll(readers, 60_000);
+        bool readersCompleted = Task.WaitAll(readers, 60_000);
 
         TestContext.WriteLine(
             $"ReaderOperations={readerOperations}, FalseNegatives={falseNegatives}, Faults={faults}, " +
@@ -676,9 +676,9 @@ public partial class ConcurrentHashSetTests
         using var cts = new CancellationTokenSource();
         using var startGate = new ManualResetEventSlim(false);
 
-        var faults = 0;
-        var bulkOperations = 0;
-        var seed = 9_000;
+        int faults = 0;
+        int bulkOperations = 0;
+        int seed = 9_000;
         Exception? firstException = null;
 
         IEnumerable<Task> mutators = Enumerable.Range(0, 4).Select(_ =>
@@ -691,7 +691,7 @@ public partial class ConcurrentHashSetTests
                 {
                     while (!cts.Token.IsCancellationRequested)
                     {
-                        var key = random.Next(keySpace);
+                        int key = random.Next(keySpace);
                         if (random.Next(2) == 0)
                             set.Add(key);
                         else
@@ -716,7 +716,7 @@ public partial class ConcurrentHashSetTests
                 {
                     while (!cts.Token.IsCancellationRequested)
                     {
-                        var other = Enumerable.Range(0, 20).Select(n => random.Next(keySpace)).ToArray();
+                        int[] other = Enumerable.Range(0, 20).Select(n => random.Next(keySpace)).ToArray();
                         switch (random.Next(4))
                         {
                             case 0:
@@ -749,10 +749,10 @@ public partial class ConcurrentHashSetTests
         startGate.Set();
         Thread.Sleep(durationMs);
         cts.Cancel();
-        var completed = Task.WaitAll(tasks, 60_000);
+        bool completed = Task.WaitAll(tasks, 60_000);
 
-        var finalCount = set.Count;
-        var snapshot = set.ToArray();
+        int finalCount = set.Count;
+        int[] snapshot = set.ToArray();
 
         TestContext.WriteLine(
             $"BulkOperations={bulkOperations}, Faults={faults}, FinalCount={finalCount}, " +
@@ -779,9 +779,9 @@ public partial class ConcurrentHashSetTests
         using var cts = new CancellationTokenSource();
         using var startGate = new ManualResetEventSlim(false);
 
-        var faults = 0;
-        var predicateOperations = 0;
-        var seed = 11_000;
+        int faults = 0;
+        int predicateOperations = 0;
+        int seed = 11_000;
         Exception? firstException = null;
 
         IEnumerable<Task> mutators = Enumerable.Range(0, 4).Select(_ =>
@@ -794,7 +794,7 @@ public partial class ConcurrentHashSetTests
                 {
                     while (!cts.Token.IsCancellationRequested)
                     {
-                        var key = random.Next(keySpace);
+                        int key = random.Next(keySpace);
                         if (random.Next(2) == 0)
                             set.Add(key);
                         else
@@ -819,7 +819,7 @@ public partial class ConcurrentHashSetTests
                 {
                     while (!cts.Token.IsCancellationRequested)
                     {
-                        var other = Enumerable.Range(0, 20).Select(n => random.Next(keySpace)).ToArray();
+                        int[] other = Enumerable.Range(0, 20).Select(n => random.Next(keySpace)).ToArray();
                         switch (random.Next(6))
                         {
                             case 0:
@@ -858,7 +858,7 @@ public partial class ConcurrentHashSetTests
         startGate.Set();
         Thread.Sleep(durationMs);
         cts.Cancel();
-        var completed = Task.WaitAll(tasks, 60_000);
+        bool completed = Task.WaitAll(tasks, 60_000);
 
         TestContext.WriteLine(
             $"PredicateOperations={predicateOperations}, Faults={faults}, Completed={completed}, " +
@@ -884,10 +884,10 @@ public partial class ConcurrentHashSetTests
         using var cts = new CancellationTokenSource();
         using var startGate = new ManualResetEventSlim(false);
 
-        var faults = 0;
-        var bulkOperations = 0;
-        var clearOperations = 0;
-        var seed = 13_000;
+        int faults = 0;
+        int bulkOperations = 0;
+        int clearOperations = 0;
+        int seed = 13_000;
         Exception? firstException = null;
 
         IEnumerable<Task> bulkWorkers = Enumerable.Range(0, 6).Select(_ =>
@@ -900,7 +900,7 @@ public partial class ConcurrentHashSetTests
                 {
                     while (!cts.Token.IsCancellationRequested)
                     {
-                        var other = Enumerable.Range(0, 20).Select(n => random.Next(keySpace)).ToArray();
+                        int[] other = Enumerable.Range(0, 20).Select(n => random.Next(keySpace)).ToArray();
                         if (random.Next(2) == 0)
                             set.UnionWith(other);
                         else
@@ -943,10 +943,10 @@ public partial class ConcurrentHashSetTests
         startGate.Set();
         Thread.Sleep(durationMs);
         cts.Cancel();
-        var completed = Task.WaitAll(tasks, 60_000);
+        bool completed = Task.WaitAll(tasks, 60_000);
 
-        var finalCount = set.Count;
-        var snapshot = set.ToArray();
+        int finalCount = set.Count;
+        int[] snapshot = set.ToArray();
 
         TestContext.WriteLine(
             $"BulkOperations={bulkOperations}, ClearOperations={clearOperations}, Faults={faults}, " +
@@ -974,10 +974,10 @@ public partial class ConcurrentHashSetTests
         using var cts = new CancellationTokenSource();
         using var startGate = new ManualResetEventSlim(false);
 
-        var faults = 0;
-        var coherenceViolations = 0;
-        var snapshots = 0;
-        var seed = 15_000;
+        int faults = 0;
+        int coherenceViolations = 0;
+        int snapshots = 0;
+        int seed = 15_000;
         Exception? firstException = null;
 
         IEnumerable<Task> writers = Enumerable.Range(0, 4).Select(_ =>
@@ -1013,9 +1013,9 @@ public partial class ConcurrentHashSetTests
                 {
                     while (!cts.Token.IsCancellationRequested)
                     {
-                        var snapshot = set.ToArray();
+                        int[] snapshot = set.ToArray();
                         var seen = new HashSet<int>();
-                        foreach (var value in snapshot)
+                        foreach (int value in snapshot)
                         {
                             if (value < 0 || value >= keySpace || !seen.Add(value))
                                 Interlocked.Increment(ref coherenceViolations);
@@ -1037,7 +1037,7 @@ public partial class ConcurrentHashSetTests
         startGate.Set();
         Thread.Sleep(durationMs);
         cts.Cancel();
-        var completed = Task.WaitAll(tasks, 60_000);
+        bool completed = Task.WaitAll(tasks, 60_000);
 
         TestContext.WriteLine(
             $"Snapshots={snapshots}, CoherenceViolations={coherenceViolations}, Faults={faults}, " +

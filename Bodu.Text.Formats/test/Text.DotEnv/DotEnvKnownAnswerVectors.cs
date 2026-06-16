@@ -23,7 +23,7 @@ public static class DotEnvKnownAnswerVectors
     /// <returns>A sequence suitable for <c>[DynamicData]</c>.</returns>
     public static IEnumerable<object[]> AllVectors()
     {
-        foreach (var row in SpecVectors())
+        foreach (object[] row in SpecVectors())
             yield return row;
     }
 

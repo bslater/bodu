@@ -23,7 +23,7 @@ public partial class OrderedSetStorageTests
     {
         var sut = new OrderedSetStorage<int>(0, null);
 
-        var added = sut.Add(42);
+        bool added = sut.Add(42);
 
         Assert.IsTrue(added);
         Assert.AreEqual(1, sut.Count);
@@ -55,7 +55,7 @@ public partial class OrderedSetStorageTests
         where T : notnull
     {
         var result = new T[storage.Count];
-        for (var i = 0; i < storage.Count; i++)
+        for (int i = 0; i < storage.Count; i++)
             result[i] = storage.GetAt(i);
 
         return result;

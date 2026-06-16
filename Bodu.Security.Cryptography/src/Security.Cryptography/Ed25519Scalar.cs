@@ -50,7 +50,7 @@ internal static class Ed25519Scalar
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(destination, SizeInBytes);
 
         Span<long> s = stackalloc long[26];
-        for (var i = 0; i < 23; i++)
+        for (int i = 0; i < 23; i++)
             s[i] = ReadBits(source, 21 * i, 21);
 
         // Limb 23 absorbs the top 29 bits (483-511) so the full 512-bit value is represented in 24 limbs.
@@ -86,25 +86,25 @@ internal static class Ed25519Scalar
         Span<long> bl = stackalloc long[13];
         Span<long> s = stackalloc long[26];
 
-        for (var i = 0; i < 13; i++)
+        for (int i = 0; i < 13; i++)
         {
             al[i] = ReadBits(a, 21 * i, Math.Min(21, 256 - (21 * i)));
             bl[i] = ReadBits(b, 21 * i, Math.Min(21, 256 - (21 * i)));
         }
 
         // Schoolbook product into 25 partial limbs; magnitudes stay below 2^46 (13 products of at most 2^42).
-        for (var i = 0; i < 13; i++)
+        for (int i = 0; i < 13; i++)
         {
-            for (var j = 0; j < 13; j++)
+            for (int j = 0; j < 13; j++)
                 s[i + j] += al[i] * bl[j];
         }
 
-        for (var i = 0; i < 13; i++)
+        for (int i = 0; i < 13; i++)
             s[i] += ReadBits(c, 21 * i, Math.Min(21, 256 - (21 * i)));
 
         // Normalize so every limb fits the fold-schedule entry bound, then fold the two extra limbs down before
         // running the shared 24-limb reduction.
-        for (var i = 0; i < 25; i++)
+        for (int i = 0; i < 25; i++)
             CarryRound(s, i);
 
         Fold(s, 25);
@@ -131,7 +131,7 @@ internal static class Ed25519Scalar
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(scalar, SizeInBytes);
 
         // Verification inputs are public, so a short-circuiting big-endian comparison is acceptable here.
-        for (var i = SizeInBytes - 1; i >= 0; i--)
+        for (int i = SizeInBytes - 1; i >= 0; i--)
         {
             if (scalar[i] < s_orderBytes[i]) return true;
             if (scalar[i] > s_orderBytes[i]) return false;
@@ -151,26 +151,26 @@ internal static class Ed25519Scalar
     /// </remarks>
     private static void ReduceLimbs(Span<long> s)
     {
-        for (var i = 23; i >= 18; i--)
+        for (int i = 23; i >= 18; i--)
             Fold(s, i);
 
-        for (var i = 6; i < 18; i++)
+        for (int i = 6; i < 18; i++)
             CarryRound(s, i);
 
-        for (var i = 18; i >= 12; i--)
+        for (int i = 18; i >= 12; i--)
             Fold(s, i);
 
-        for (var i = 0; i < 12; i++)
+        for (int i = 0; i < 12; i++)
             CarryRound(s, i);
 
         Fold(s, 12);
 
-        for (var i = 0; i < 12; i++)
+        for (int i = 0; i < 12; i++)
             CarryFloor(s, i);
 
         Fold(s, 12);
 
-        for (var i = 0; i < 11; i++)
+        for (int i = 0; i < 11; i++)
             CarryFloor(s, i);
     }
 
@@ -182,7 +182,7 @@ internal static class Ed25519Scalar
     /// <param name="i">The index of the limb to fold. Must be at least 12.</param>
     private static void Fold(Span<long> s, int i)
     {
-        var v = s[i];
+        long v = s[i];
 
         s[i - 12] += v * 666643;
         s[i - 11] += v * 470296;
@@ -201,7 +201,7 @@ internal static class Ed25519Scalar
     /// <param name="i">The index of the limb to normalize.</param>
     private static void CarryRound(Span<long> s, int i)
     {
-        var carry = (s[i] + (1L << 20)) >> 21;
+        long carry = (s[i] + (1L << 20)) >> 21;
 
         s[i + 1] += carry;
         s[i] -= carry << 21;
@@ -215,7 +215,7 @@ internal static class Ed25519Scalar
     /// <param name="i">The index of the limb to normalize.</param>
     private static void CarryFloor(Span<long> s, int i)
     {
-        var carry = s[i] >> 21;
+        long carry = s[i] >> 21;
 
         s[i + 1] += carry;
         s[i] -= carry << 21;
@@ -230,13 +230,13 @@ internal static class Ed25519Scalar
     /// <returns>The extracted bits as a non-negative value.</returns>
     private static long ReadBits(ReadOnlySpan<byte> source, int bitOffset, int bitCount)
     {
-        var byteIndex = bitOffset >> 3;
-        var shift = bitOffset & 7;
+        int byteIndex = bitOffset >> 3;
+        int shift = bitOffset & 7;
 
         // Gather up to five bytes so that shift + bitCount (at most 7 + 29 = 36 bits) is always covered.
         ulong window = 0;
-        var available = Math.Min(5, source.Length - byteIndex);
-        for (var i = 0; i < available; i++)
+        int available = Math.Min(5, source.Length - byteIndex);
+        for (int i = 0; i < available; i++)
             window |= (ulong)source[byteIndex + i] << (8 * i);
 
         return (long)((window >> shift) & ((1UL << bitCount) - 1));
@@ -250,10 +250,10 @@ internal static class Ed25519Scalar
     private static void WriteLimbs(ReadOnlySpan<long> s, Span<byte> destination)
     {
         ulong accumulator = 0;
-        var bits = 0;
-        var index = 0;
+        int bits = 0;
+        int index = 0;
 
-        for (var i = 0; i < 12; i++)
+        for (int i = 0; i < 12; i++)
         {
             accumulator |= (ulong)s[i] << bits;
             bits += 21;

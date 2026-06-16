@@ -110,8 +110,8 @@ public interface IExchangeRateAggregationStrategy
     /// This member lets the aggregator's synchronous range surface stay synchronous rather than block on
     /// <see cref="AggregateRangeAsync" />. The default implementation blocks on the asynchronous overload as a
     /// compatibility fallback for strategies that supply only the asynchronous combination; the built-in strategies
-    /// override it with a genuinely synchronous implementation. Override it whenever the candidates expose a synchronous
-    /// range surface.
+    /// override it with a genuinely synchronous implementation. Override it whenever the candidates expose a
+    /// synchronous range surface.
     /// </remarks>
     IReadOnlyList<ExchangeRate> AggregateRange(
         string fromIsoCode,

@@ -35,7 +35,7 @@ public partial class ArrayExtensionsTests
     {
         int[] source = [1, 2, 3, 4, 5];
 
-        var result = source.Copy()!;
+        int[] result = source.Copy()!;
 
         CollectionAssert.AreEqual(source, result);
     }
@@ -48,7 +48,7 @@ public partial class ArrayExtensionsTests
     {
         int[] source = [1, 2, 3];
 
-        var result = source.Copy()!;
+        int[] result = source.Copy()!;
 
         Assert.IsFalse(ReferenceEquals(source, result));
     }
@@ -61,7 +61,7 @@ public partial class ArrayExtensionsTests
     {
         int[] source = [10, 20, 30];
 
-        var result = source.Copy()!;
+        int[] result = source.Copy()!;
         result[0] = 99;
 
         Assert.AreEqual(10, source[0]);
@@ -75,7 +75,7 @@ public partial class ArrayExtensionsTests
     {
         int[] source = [];
 
-        var result = source.Copy()!;
+        int[] result = source.Copy()!;
 
         Assert.IsEmpty(result);
         Assert.IsFalse(ReferenceEquals(source, result));
@@ -89,7 +89,7 @@ public partial class ArrayExtensionsTests
     {
         int[]? source = null;
 
-        var result = source!.Copy();
+        int[]? result = source!.Copy();
 
         Assert.IsNull(result);
     }

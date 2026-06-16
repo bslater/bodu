@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DistributedExchangeRateCacheTests.Resilience.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -113,11 +113,11 @@ public sealed partial class DistributedExchangeRateCacheTests
     public void GetRates_WhenBlobHasOneMalformedRow_ShouldSkipOnlyThatRow()
     {
         var now = DateTimeOffset.UtcNow;
-        var cachedAt = now.ToString("O", System.Globalization.CultureInfo.InvariantCulture);
+        string cachedAt = now.ToString("O", System.Globalization.CultureInfo.InvariantCulture);
         var backingStore = CreateBackingStore();
 
         // A blob whose first row carries an unparseable date and whose second row is well-formed.
-        var json =
+        string json =
             $$"""
             {"rates":[{"date":"not-a-date","rate":"0.5","cachedAtUtc":"{{cachedAt}}"},{"date":"2023-01-03","rate":"0.6000","cachedAtUtc":"{{cachedAt}}"}],"coverage":[]}
             """;

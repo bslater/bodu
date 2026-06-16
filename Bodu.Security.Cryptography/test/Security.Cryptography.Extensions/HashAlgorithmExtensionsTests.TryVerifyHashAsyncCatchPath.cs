@@ -26,7 +26,7 @@ public partial class HashAlgorithmExtensionsTests
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         using var stream = new ThrowOnReadStream(static () => new IOException("Forced read failure."));
 
-        var result = await algorithm.TryVerifyHashAsync(stream, SampleHash);
+        bool result = await algorithm.TryVerifyHashAsync(stream, SampleHash);
 
         Assert.IsFalse(result);
     }
@@ -41,7 +41,7 @@ public partial class HashAlgorithmExtensionsTests
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         using var stream = new ThrowOnReadStream(static () => new IOException("Forced read failure."));
 
-        var result = await algorithm.TryVerifyHashAsync(stream, SampleHex);
+        bool result = await algorithm.TryVerifyHashAsync(stream, SampleHex);
 
         Assert.IsFalse(result);
     }
@@ -58,7 +58,7 @@ public partial class HashAlgorithmExtensionsTests
         using var cts = new CancellationTokenSource();
         cts.Cancel();
 
-        var result = await algorithm.TryVerifyHashAsync(SampleData, SampleHash, cts.Token);
+        bool result = await algorithm.TryVerifyHashAsync(SampleData, SampleHash, cts.Token);
 
         Assert.IsFalse(result);
     }
@@ -75,7 +75,7 @@ public partial class HashAlgorithmExtensionsTests
         using var cts = new CancellationTokenSource();
         cts.Cancel();
 
-        var result = await algorithm.TryVerifyHashAsync(SampleData, SampleHex, cts.Token);
+        bool result = await algorithm.TryVerifyHashAsync(SampleData, SampleHex, cts.Token);
 
         Assert.IsFalse(result);
     }
@@ -91,7 +91,7 @@ public partial class HashAlgorithmExtensionsTests
         using var cts = new CancellationTokenSource();
         cts.Cancel();
 
-        var result = await algorithm.TryVerifyHashAsync(SampleString, SampleEncoding, SampleStringHash, cts.Token);
+        bool result = await algorithm.TryVerifyHashAsync(SampleString, SampleEncoding, SampleStringHash, cts.Token);
 
         Assert.IsFalse(result);
     }

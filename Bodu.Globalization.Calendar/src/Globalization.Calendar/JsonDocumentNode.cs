@@ -39,7 +39,7 @@ internal sealed class JsonDocumentNode
         return value.ValueKind switch
         {
             JsonValueKind.String => value.GetString(),
-            JsonValueKind.Number => value.TryGetInt32(out var number) ? number.ToString(CultureInfo.InvariantCulture) : value.GetRawText(),
+            JsonValueKind.Number => value.TryGetInt32(out int number) ? number.ToString(CultureInfo.InvariantCulture) : value.GetRawText(),
             JsonValueKind.True => "true",
             JsonValueKind.False => "false",
             _ => null,
@@ -83,7 +83,7 @@ internal sealed class JsonDocumentNode
         List<int> values = new();
         foreach (JsonElement item in array.EnumerateArray())
         {
-            if (item.ValueKind == JsonValueKind.Number && item.TryGetInt32(out var result))
+            if (item.ValueKind == JsonValueKind.Number && item.TryGetInt32(out int result))
                 values.Add(result);
         }
 
@@ -99,7 +99,7 @@ internal sealed class JsonDocumentNode
         List<(string Key, string Value)> pairs = new();
         foreach (JsonProperty property in map.EnumerateObject())
         {
-            var value = property.Value.ValueKind == JsonValueKind.String ? property.Value.GetString() ?? string.Empty : property.Value.ToString();
+            string value = property.Value.ValueKind == JsonValueKind.String ? property.Value.GetString() ?? string.Empty : property.Value.ToString();
             pairs.Add((property.Name, value));
         }
 

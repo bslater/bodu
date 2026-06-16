@@ -64,7 +64,7 @@ public partial class FractionTests
     [TestMethod]
     public void TryParse_WhenGivenValidInput_ShouldReturnTrueAndValue()
     {
-        var parsed = Fraction<int>.TryParse("5/8", out Fraction<int> value);
+        bool parsed = Fraction<int>.TryParse("5/8", out Fraction<int> value);
 
         Assert.IsTrue(parsed);
         Assert.AreEqual(new Fraction<int>(5, 8), value);
@@ -79,7 +79,7 @@ public partial class FractionTests
     [DataRow(null)]
     public void TryParse_WhenGivenInvalidInput_ShouldReturnFalse(string? text)
     {
-        var parsed = Fraction<int>.TryParse(text, out Fraction<int> value);
+        bool parsed = Fraction<int>.TryParse(text, out Fraction<int> value);
 
         Assert.IsFalse(parsed);
         Assert.AreEqual(Fraction<int>.Zero, value);
@@ -91,7 +91,7 @@ public partial class FractionTests
     [TestMethod]
     public void TryParse_WhenValueExceedsFixedWidthRange_ShouldReturnFalse()
     {
-        var parsed = Fraction<int>.TryParse("9999999999/1", out _);
+        bool parsed = Fraction<int>.TryParse("9999999999/1", out _);
 
         Assert.IsFalse(parsed);
     }
@@ -180,9 +180,9 @@ public partial class FractionTests
     {
         var value = new Fraction<int>(numerator, denominator);
 
-        foreach (var format in new[] { "G", "M", "U", "P" })
+        foreach (string? format in new[] { "G", "M", "U", "P" })
         {
-            var text = value.ToString(format, System.Globalization.CultureInfo.InvariantCulture);
+            string text = value.ToString(format, System.Globalization.CultureInfo.InvariantCulture);
             Assert.AreEqual(value, Fraction<int>.Parse(text, System.Globalization.CultureInfo.InvariantCulture), format);
         }
     }
@@ -197,7 +197,7 @@ public partial class FractionTests
     [DataRow("-1 -1/2")]
     public void TryParse_WhenMagnitudeComponentIsSigned_ShouldReturnFalse(string text)
     {
-        var parsed = Fraction<int>.TryParse(text, out Fraction<int> result);
+        bool parsed = Fraction<int>.TryParse(text, out Fraction<int> result);
 
         Assert.IsFalse(parsed);
         Assert.AreEqual(Fraction<int>.Zero, result);

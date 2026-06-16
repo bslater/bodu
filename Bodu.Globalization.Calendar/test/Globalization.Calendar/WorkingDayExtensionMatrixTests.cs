@@ -393,7 +393,7 @@ public sealed class WorkingDayExtensionMatrixTests
     [DynamicData(nameof(WorkingDaysBetweenRows))]
     public void WorkingDaysBetween_WhenScannedAcrossRanges_ShouldReturnExpectedCount(int startYear, int startMonth, int startDay, int endYear, int endMonth, int endDay, int expected)
     {
-        var actual = new DateOnly(startYear, startMonth, startDay)
+        int actual = new DateOnly(startYear, startMonth, startDay)
             .WorkingDaysBetween(new DateOnly(endYear, endMonth, endDay), Service, "XX");
 
         Assert.AreEqual(expected, actual);
@@ -407,8 +407,8 @@ public sealed class WorkingDayExtensionMatrixTests
     {
         INotableDateService service = Service;
 
-        var forward = new DateOnly(2026, 1, 5).WorkingDaysBetween(new DateOnly(2026, 1, 11), service, "XX");
-        var reversed = new DateOnly(2026, 1, 11).WorkingDaysBetween(new DateOnly(2026, 1, 5), service, "XX");
+        int forward = new DateOnly(2026, 1, 5).WorkingDaysBetween(new DateOnly(2026, 1, 11), service, "XX");
+        int reversed = new DateOnly(2026, 1, 11).WorkingDaysBetween(new DateOnly(2026, 1, 5), service, "XX");
 
         Assert.AreEqual(forward, reversed);
     }
@@ -422,7 +422,7 @@ public sealed class WorkingDayExtensionMatrixTests
     {
         // 2025-12-31 Wed, 2026-01-01 Thu (holiday), 01-02 Fri, 01-03 Sat, 01-04 Sun, 01-05 Mon, 01-06 Tue, 01-07 Wed.
         // Working days: Wed 31, Fri 2, Mon 5, Tue 6, Wed 7 = 5; the holiday on Thursday is excluded.
-        var count = new DateOnly(2025, 12, 31).WorkingDaysBetween(new DateOnly(2026, 1, 7), Service, "XX");
+        int count = new DateOnly(2025, 12, 31).WorkingDaysBetween(new DateOnly(2026, 1, 7), Service, "XX");
 
         Assert.AreEqual(5, count);
     }

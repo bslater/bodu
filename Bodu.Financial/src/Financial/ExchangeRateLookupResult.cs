@@ -16,7 +16,9 @@ namespace Bodu.Financial;
 /// <param name="OffsetDays">
 /// The absolute distance, in days, between <see cref="RequestedDate" /> and the date carried by <see cref="Rate" />.
 /// </param>
-/// <param name="Provenance">The lineage of the resolved rate: where it came from and, for a cache serve, how old it is.</param>
+/// <param name="Provenance">
+/// The lineage of the resolved rate: where it came from and, for a cache serve, how old it is.
+/// </param>
 /// <remarks>
 /// <para>
 /// Returning this metadata alongside the rate gives the caller everything required to explain which observed value was

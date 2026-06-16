@@ -17,9 +17,9 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void ThrowIfHashAlgorithmProducedNoValue_WhenHashIsNotNull_ShouldReturnSameReference()
     {
-        var hash = new byte[] { 0x01, 0x02, 0x03 };
+        byte[] hash = new byte[] { 0x01, 0x02, 0x03 };
 
-        var result = CryptographyThrowHelper.ThrowIfHashAlgorithmProducedNoValue(hash);
+        byte[] result = CryptographyThrowHelper.ThrowIfHashAlgorithmProducedNoValue(hash);
 
         Assert.AreSame(hash, result);
     }
@@ -31,9 +31,9 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void ThrowIfHashAlgorithmProducedNoValue_WhenHashIsEmpty_ShouldReturnSameReference()
     {
-        var hash = Array.Empty<byte>();
+        byte[] hash = Array.Empty<byte>();
 
-        var result = CryptographyThrowHelper.ThrowIfHashAlgorithmProducedNoValue(hash);
+        byte[] result = CryptographyThrowHelper.ThrowIfHashAlgorithmProducedNoValue(hash);
 
         Assert.AreSame(hash, result);
     }

@@ -139,7 +139,7 @@ public partial class MultisetTests
         var multiset = new Multiset<int>();
         multiset.Add(7, 2);
         ICollection mvd = multiset;
-        var dest = new object[4];
+        object[] dest = new object[4];
 
         mvd.CopyTo(dest, 2);
 
@@ -201,8 +201,8 @@ public partial class MultisetTests
     {
         ICollection mvd = new Multiset<int>();
 
-        var first = mvd.SyncRoot;
-        var second = mvd.SyncRoot;
+        object first = mvd.SyncRoot;
+        object second = mvd.SyncRoot;
 
         Assert.AreSame(first, second);
     }

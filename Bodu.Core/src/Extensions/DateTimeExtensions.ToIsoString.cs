@@ -69,7 +69,7 @@ public static partial class DateTimeExtensions
     /// </remarks>
     public static string ToIsoString(this DateTime dateTime, bool includeFractionalSeconds)
     {
-        var format = includeFractionalSeconds ? "o" : "yyyy-MM-ddTHH:mm:ss";
+        string format = includeFractionalSeconds ? "o" : "yyyy-MM-ddTHH:mm:ss";
         return dateTime.ToString(format, CultureInfo.InvariantCulture);
     }
 

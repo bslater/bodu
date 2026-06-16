@@ -53,9 +53,9 @@ public static partial class SequenceGenerator
 
         while (c <= order)
         {
-            var k = (order + b) / d;
-            var tempA = c;
-            var tempB = d;
+            int k = (order + b) / d;
+            int tempA = c;
+            int tempB = d;
 
             c = (k * c) - a;
             d = (k * d) - b;

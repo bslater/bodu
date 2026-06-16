@@ -102,7 +102,7 @@ public sealed partial class Utf8TomlWriterTests
     [TestMethod]
     public void WriteThenRead_WhenStringHasAstralCharacter_ShouldRoundTripValue()
     {
-        var value = "emoji " + char.ConvertFromUtf32(0x1F600);
+        string value = "emoji " + char.ConvertFromUtf32(0x1F600);
 
         ArrayBufferWriter<byte> buffer = new();
         Utf8TomlWriter writer = new(buffer);

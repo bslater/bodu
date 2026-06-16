@@ -25,7 +25,7 @@ public partial class Utf8BencodeReaderTests
         Assert.IsTrue(reader.Read());
         Span<byte> destination = stackalloc byte[8];
 
-        var written = reader.CopyString(destination);
+        int written = reader.CopyString(destination);
 
         Assert.AreEqual(4, written);
         Assert.IsTrue(destination[..written].SequenceEqual("spam"u8));
@@ -43,7 +43,7 @@ public partial class Utf8BencodeReaderTests
         Assert.IsTrue(reader.Read());
         Span<byte> destination = stackalloc byte[4];
 
-        var written = reader.CopyString(destination);
+        int written = reader.CopyString(destination);
 
         ReadOnlySpan<byte> expected = [0xFF, 0x00, 0xFE, 0x80];
         Assert.AreEqual(4, written);
@@ -57,12 +57,12 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void CopyString_WhenDestinationIsChars_ShouldDecodeUtf8Content()
     {
-        var data = "5:café"u8.ToArray();
+        byte[] data = "5:café"u8.ToArray();
         var reader = new Utf8BencodeReader(data);
         Assert.IsTrue(reader.Read());
         Span<char> destination = stackalloc char[8];
 
-        var written = reader.CopyString(destination);
+        int written = reader.CopyString(destination);
 
         Assert.AreEqual(4, written);
         Assert.AreEqual("café", new string(destination[..written]));
@@ -80,7 +80,7 @@ public partial class Utf8BencodeReaderTests
         Assert.IsTrue(reader.Read());
         Span<char> destination = stackalloc char[4];
 
-        var written = reader.CopyString(destination);
+        int written = reader.CopyString(destination);
 
         Assert.AreEqual("��", new string(destination[..written]));
     }
@@ -92,7 +92,7 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void CopyString_WhenByteDestinationTooSmall_ShouldThrowArgumentException()
     {
-        var data = Bytes("4:spam");
+        byte[] data = Bytes("4:spam");
 
         _ = Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -110,7 +110,7 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void CopyString_WhenCharDestinationTooSmall_ShouldThrowArgumentException()
     {
-        var data = Bytes("4:spam");
+        byte[] data = Bytes("4:spam");
 
         _ = Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -128,7 +128,7 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void CopyString_WhenOnIntegerToken_ShouldThrowInvalidOperationException()
     {
-        var data = Bytes("i42e");
+        byte[] data = Bytes("i42e");
 
         _ = Assert.ThrowsExactly<InvalidOperationException>(() =>
         {

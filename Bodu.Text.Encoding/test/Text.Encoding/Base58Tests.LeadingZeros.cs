@@ -20,11 +20,11 @@ public sealed partial class Base58Tests
     [DataRow(8)]
     public void Decode_WhenLeadingOneCharacters_ShouldRecoverLeadingZeroBytes(int leadingOneCount)
     {
-        var input = new string('1', leadingOneCount) + "2"; // '2' decodes to 0x01
-        var expected = new byte[leadingOneCount + 1];
+        string input = new string('1', leadingOneCount) + "2"; // '2' decodes to 0x01
+        byte[] expected = new byte[leadingOneCount + 1];
         expected[leadingOneCount] = 0x01;
 
-        var actual = Base58.Decode(input);
+        byte[] actual = Base58.Decode(input);
 
         CollectionAssert.AreEqual(expected, actual);
     }
@@ -39,10 +39,10 @@ public sealed partial class Base58Tests
     [DataRow(8)]
     public void Encode_WhenLeadingZeros_ShouldEmitLeadingOneCharacters(int leadingZeroCount)
     {
-        var bytes = new byte[leadingZeroCount + 1];
+        byte[] bytes = new byte[leadingZeroCount + 1];
         bytes[leadingZeroCount] = 0x01;
 
-        var actual = Base58.Encode(bytes);
+        string actual = Base58.Encode(bytes);
 
         Assert.AreEqual(leadingZeroCount, actual.TakeWhile(c => c == '1').Count(),
             $"Encoded form should start with {leadingZeroCount} '1' characters.");
@@ -55,10 +55,10 @@ public sealed partial class Base58Tests
     [TestMethod]
     public void RoundTrip_WhenAllZeroBytes_ShouldPreserveByteLength()
     {
-        var original = new byte[5];
+        byte[] original = new byte[5];
 
-        var encoded = Base58.Encode(original);
-        var decoded = Base58.Decode(encoded);
+        string encoded = Base58.Encode(original);
+        byte[] decoded = Base58.Decode(encoded);
 
         Assert.AreEqual("11111", encoded);
         Assert.AreEqual(5, decoded.Length);

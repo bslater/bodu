@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FixtureYahooExchangeRateChartSource.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -52,9 +52,9 @@ internal sealed class FixtureYahooExchangeRateChartSource
     {
         GetChartCallCount++;
 
-        if (_fixtureBySymbol.TryGetValue(request.Symbol, out var fixture))
+        if (_fixtureBySymbol.TryGetValue(request.Symbol, out string? fixture))
         {
-            var json = YahooFixtures.ReadBytes(fixture);
+            byte[] json = YahooFixtures.ReadBytes(fixture);
             return ValueTask.FromResult(YahooChartResponseParser.Parse(json, request, _options));
         }
 

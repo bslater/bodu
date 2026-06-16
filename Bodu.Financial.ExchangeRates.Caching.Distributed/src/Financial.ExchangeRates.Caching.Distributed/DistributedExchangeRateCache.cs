@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DistributedExchangeRateCache.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -32,19 +32,19 @@ namespace Bodu.Financial.ExchangeRates.Caching.Distributed;
 /// SQLite caches; this class contributes only its blob storage and locking. The two halves of a pair's state are
 /// written independently through <see cref="Store" /> and <see cref="RecordCoverage" /> — storing rates never drops
 /// recorded coverage, and recording coverage never drops cached rows — by reading the existing blob, replacing only the
-/// affected half, and writing the merged blob back. <see cref="StoreFetchedRange" /> instead replaces both halves in one
-/// blob write.
+/// affected half, and writing the merged blob back. <see cref="StoreFetchedRange" /> instead replaces both halves in
+/// one blob write.
 /// </para>
 /// <para>
 /// The cache is best-effort. An <see cref="IDistributedCache" /> offers no atomic read-modify-write, so the per-pair
 /// blob is read, modified, and written back: same-process races are prevented by a per-pair in-process lock guarding
-/// <see cref="Store" />, <see cref="RecordCoverage" />, and <see cref="StoreFetchedRange" />, but
-/// <em>cross-process</em> concurrent writes to the same pair are last-write-wins, consistent with the documented
-/// best-effort nature of the contract. Because both halves of a fetched range travel in one blob, a single
-/// <see cref="StoreFetchedRange" /> set is all-or-nothing: the reader never observes coverage without its rows even
-/// across processes. As required by <see cref="IExchangeRateCache" />, a backing-store failure surfaces as an empty
-/// read or a skipped write rather than an exception: <see cref="IDistributedCache" /> faults and JSON
-/// (de)serialization faults degrade gracefully, while argument validation still throws.
+/// <see cref="Store" />, <see cref="RecordCoverage" />, and <see cref="StoreFetchedRange" />, but <em>cross-process</em>
+/// concurrent writes to the same pair are last-write-wins, consistent with the documented best-effort nature of the
+/// contract. Because both halves of a fetched range travel in one blob, a single <see cref="StoreFetchedRange" /> set
+/// is all-or-nothing: the reader never observes coverage without its rows even across processes. As required by
+/// <see cref="IExchangeRateCache" />, a backing-store failure surfaces as an empty read or a skipped write rather than
+/// an exception: <see cref="IDistributedCache" /> faults and JSON (de)serialization faults degrade gracefully, while
+/// argument validation still throws.
 /// </para>
 /// </remarks>
 /// <example>
@@ -77,8 +77,8 @@ public sealed class DistributedExchangeRateCache
 
     /// <summary>
     /// The striped per-pair locks guarding the read-modify-write sequences in <see cref="Store" />,
-    /// <see cref="RecordCoverage" />, and <see cref="StoreFetchedRange" />. One lock object is created per pair on first
-    /// use and reused thereafter.
+    /// <see cref="RecordCoverage" />, and <see cref="StoreFetchedRange" />. One lock object is created per pair on
+    /// first use and reused thereafter.
     /// </summary>
     private readonly ConcurrentDictionary<ExchangeRatePair, object> _pairLocks = new();
 
@@ -349,7 +349,7 @@ public sealed class DistributedExchangeRateCache
     /// </remarks>
     private bool WriteEntry(ExchangeRatePair pair, PairState state)
     {
-        var key = _options.BuildKey(pair);
+        string key = _options.BuildKey(pair);
 
         try
         {
@@ -381,7 +381,7 @@ public sealed class DistributedExchangeRateCache
                 });
             }
 
-            var payload = JsonSerializer.SerializeToUtf8Bytes(entry, s_serializerOptions);
+            byte[] payload = JsonSerializer.SerializeToUtf8Bytes(entry, s_serializerOptions);
             _cache.Set(key, payload);
             return true;
         }

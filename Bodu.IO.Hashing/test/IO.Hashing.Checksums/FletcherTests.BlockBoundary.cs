@@ -34,24 +34,24 @@ public abstract partial class FletcherTests<TTest, TAlgorithm>
     [DataRow(65)]
     public void Append_WhenInputStraddlesBlockBoundary_ShouldMatchAcrossSubmissionStyles(int length)
     {
-        var input = new byte[length];
-        for (var i = 0; i < length; i++)
+        byte[] input = new byte[length];
+        for (int i = 0; i < length; i++)
             input[i] = (byte)i;
 
         TAlgorithm whole = CreateAlgorithm();
         whole.Append(input);
 
         TAlgorithm chunked = CreateAlgorithm();
-        var third = length / 3;
+        int third = length / 3;
         chunked.Append(input.AsSpan(0, third));
         chunked.Append(input.AsSpan(third, third));
         chunked.Append(input.AsSpan(third * 2, length - (third * 2)));
 
         TAlgorithm perByte = CreateAlgorithm();
-        foreach (var b in input)
+        foreach (byte b in input)
             perByte.Append(new[] { b });
 
-        var wholeHash = whole.GetCurrentHash();
+        byte[] wholeHash = whole.GetCurrentHash();
         CollectionAssert.AreEqual(wholeHash, chunked.GetCurrentHash(),
             $"Chunked append produced a different digest than single-shot for length {length}.");
         CollectionAssert.AreEqual(wholeHash, perByte.GetCurrentHash(),
@@ -66,8 +66,8 @@ public abstract partial class FletcherTests<TTest, TAlgorithm>
     [TestMethod]
     public void GetCurrentHash_WhenCalledMidStream_ShouldNotDisturbSubsequentHashing()
     {
-        var input = new byte[32];
-        for (var i = 0; i < input.Length; i++)
+        byte[] input = new byte[32];
+        for (int i = 0; i < input.Length; i++)
             input[i] = (byte)(i ^ 0xAA);
 
         TAlgorithm observed = CreateAlgorithm();

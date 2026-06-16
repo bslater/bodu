@@ -22,7 +22,7 @@ public partial class Utf8BencodeReaderTests
     public void TokenStartIndex_WhenWalkingDocument_ShouldReportEachTokenStart()
     {
         // Layout: d(0) 3:abc(1..5) l(6) i42e(7..10) e(11) e(12)
-        var bytes = Bytes("d" + "3:abc" + "li42e" + "e" + "e");
+        byte[] bytes = Bytes("d" + "3:abc" + "li42e" + "e" + "e");
         var reader = new Utf8BencodeReader(bytes);
 
         Assert.AreEqual(0, reader.TokenStartIndex);
@@ -56,7 +56,7 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void TokenStartIndex_WhenOnScalarToken_ShouldBracketRawTokenWithBytesConsumed()
     {
-        var bytes = Bytes("li42e4:spame");
+        byte[] bytes = Bytes("li42e4:spame");
         var reader = new Utf8BencodeReader(bytes);
         Assert.IsTrue(reader.Read()); // StartList
 

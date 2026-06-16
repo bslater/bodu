@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateDocumentBuilderTests.Comprehensive.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -125,9 +125,9 @@ public partial class NotableDateDocumentBuilderTests
     [TestMethod]
     public void Comprehensive_ShouldRoundTripThroughXml()
     {
-        var xml = ComprehensiveDocument().ToXml();
+        string xml = ComprehensiveDocument().ToXml();
 
-        var reserialized = NotableDateDocumentBuilder.FromXml(xml).ToXml();
+        string reserialized = NotableDateDocumentBuilder.FromXml(xml).ToXml();
 
         Assert.AreEqual(xml, reserialized);
     }
@@ -221,9 +221,9 @@ public partial class NotableDateDocumentBuilderTests
     [TestMethod]
     public void Comprehensive_ShouldRoundTripThroughJson()
     {
-        var json = JsonSafeDocument().ToJson();
+        string json = JsonSafeDocument().ToJson();
 
-        var reserialized = NotableDateDocumentBuilder.FromJson(json).ToJson();
+        string reserialized = NotableDateDocumentBuilder.FromJson(json).ToJson();
 
         Assert.AreEqual(json, reserialized);
     }
@@ -265,7 +265,7 @@ public partial class NotableDateDocumentBuilderTests
     [TestMethod]
     public void Imports_ShouldRoundTripThroughXml()
     {
-        var xml = ImportingDocument().ToXml();
+        string xml = ImportingDocument().ToXml();
 
         Assert.AreEqual(xml, NotableDateDocumentBuilder.FromXml(xml).ToXml());
     }
@@ -277,7 +277,7 @@ public partial class NotableDateDocumentBuilderTests
     [TestMethod]
     public void OverridePatchWithApplicabilityAndStrategy_ShouldRoundTripThroughXml()
     {
-        var xml = NotableDateDocumentBuilder.Create("demo.patch")
+        string xml = NotableDateDocumentBuilder.Create("demo.patch")
             .AddNotableDate("nd", "ND", NotableDateCategory.Observance, d => d
                 .AddRule("r", x => x.Fixed(1, 1)))
             .AddOverride(o => o

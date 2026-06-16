@@ -57,16 +57,16 @@ public sealed partial class Threefish256Cipher
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     private void EncryptAvx512(ReadOnlySpan<byte> input, Span<byte> output)
     {
-        ref var wordRef = ref Unsafe.As<byte, ulong>(ref MemoryMarshal.GetReference(input));
-        var b0 = Unsafe.Add(ref wordRef, 0);
-        var b1 = Unsafe.Add(ref wordRef, 1);
-        var b2 = Unsafe.Add(ref wordRef, 2);
-        var b3 = Unsafe.Add(ref wordRef, 3);
+        ref ulong wordRef = ref Unsafe.As<byte, ulong>(ref MemoryMarshal.GetReference(input));
+        ulong b0 = Unsafe.Add(ref wordRef, 0);
+        ulong b1 = Unsafe.Add(ref wordRef, 1);
+        ulong b2 = Unsafe.Add(ref wordRef, 2);
+        ulong b3 = Unsafe.Add(ref wordRef, 3);
         var lo = Vector128.Create(b0, b2);
         var hi = Vector128.Create(b1, b3);
 
-        ref var keyRef = ref MemoryMarshal.GetArrayDataReference(_keySchedule);
-        ref var tweakRef = ref MemoryMarshal.GetArrayDataReference(_tweakSchedule);
+        ref ulong keyRef = ref MemoryMarshal.GetArrayDataReference(_keySchedule);
+        ref ulong tweakRef = ref MemoryMarshal.GetArrayDataReference(_tweakSchedule);
 
         // Initial subkey injection. Tweak applies at positions 1 (hi lane 0) and 2 (lo lane 1).
         lo += Vector128.Create(
@@ -76,10 +76,10 @@ public sealed partial class Threefish256Cipher
             Unsafe.Add(ref keyRef, 1) + Unsafe.Add(ref tweakRef, 0),
             Unsafe.Add(ref keyRef, 3));
 
-        for (var d = 1; d < 72 / 4; d += 2)
+        for (int d = 1; d < 72 / 4; d += 2)
         {
-            var dm5 = d % 5;
-            var dm3 = d % 3;
+            int dm5 = d % 5;
+            int dm3 = d % 3;
 
             // First 4 rounds (R0..R7). Four hi-swaps cycle the layout back to canonical.
             SimdRoundForward(ref lo, ref hi, s_rotVec0);
@@ -110,7 +110,7 @@ public sealed partial class Threefish256Cipher
                 Unsafe.Add(ref keyRef, dm5 + 4) + (ulong)d + 1);
         }
 
-        ref var outWordRef = ref Unsafe.As<byte, ulong>(ref MemoryMarshal.GetReference(output));
+        ref ulong outWordRef = ref Unsafe.As<byte, ulong>(ref MemoryMarshal.GetReference(output));
         Unsafe.Add(ref outWordRef, 0) = lo.GetElement(0);
         Unsafe.Add(ref outWordRef, 1) = hi.GetElement(0);
         Unsafe.Add(ref outWordRef, 2) = lo.GetElement(1);
@@ -125,21 +125,21 @@ public sealed partial class Threefish256Cipher
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     private void DecryptAvx512(ReadOnlySpan<byte> input, Span<byte> output)
     {
-        ref var wordRef = ref Unsafe.As<byte, ulong>(ref MemoryMarshal.GetReference(input));
-        var b0 = Unsafe.Add(ref wordRef, 0);
-        var b1 = Unsafe.Add(ref wordRef, 1);
-        var b2 = Unsafe.Add(ref wordRef, 2);
-        var b3 = Unsafe.Add(ref wordRef, 3);
+        ref ulong wordRef = ref Unsafe.As<byte, ulong>(ref MemoryMarshal.GetReference(input));
+        ulong b0 = Unsafe.Add(ref wordRef, 0);
+        ulong b1 = Unsafe.Add(ref wordRef, 1);
+        ulong b2 = Unsafe.Add(ref wordRef, 2);
+        ulong b3 = Unsafe.Add(ref wordRef, 3);
         var lo = Vector128.Create(b0, b2);
         var hi = Vector128.Create(b1, b3);
 
-        ref var keyRef = ref MemoryMarshal.GetArrayDataReference(_keySchedule);
-        ref var tweakRef = ref MemoryMarshal.GetArrayDataReference(_tweakSchedule);
+        ref ulong keyRef = ref MemoryMarshal.GetArrayDataReference(_keySchedule);
+        ref ulong tweakRef = ref MemoryMarshal.GetArrayDataReference(_tweakSchedule);
 
-        for (var d = (72 / 4) - 1; d >= 1; d -= 2)
+        for (int d = (72 / 4) - 1; d >= 1; d -= 2)
         {
-            var dm5 = d % 5;
-            var dm3 = d % 3;
+            int dm5 = d % 5;
+            int dm3 = d % 3;
 
             // Reverse the post subkey injection.
             lo -= Vector128.Create(
@@ -178,7 +178,7 @@ public sealed partial class Threefish256Cipher
             Unsafe.Add(ref keyRef, 1) + Unsafe.Add(ref tweakRef, 0),
             Unsafe.Add(ref keyRef, 3));
 
-        ref var outWordRef = ref Unsafe.As<byte, ulong>(ref MemoryMarshal.GetReference(output));
+        ref ulong outWordRef = ref Unsafe.As<byte, ulong>(ref MemoryMarshal.GetReference(output));
         Unsafe.Add(ref outWordRef, 0) = lo.GetElement(0);
         Unsafe.Add(ref outWordRef, 1) = hi.GetElement(0);
         Unsafe.Add(ref outWordRef, 2) = lo.GetElement(1);

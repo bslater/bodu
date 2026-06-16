@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlDocumentReader.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -134,7 +134,7 @@ public ref struct TomlDocumentReader
     /// </remarks>
     public TomlDocumentReader(ReadOnlySpan<byte> utf8Toml, TomlReaderOptions options)
     {
-        var maxDepth = options.MaxDepth <= 0 ? TomlLimits.AbsoluteMaxDepth : Math.Min(options.MaxDepth, TomlLimits.AbsoluteMaxDepth);
+        int maxDepth = options.MaxDepth <= 0 ? TomlLimits.AbsoluteMaxDepth : Math.Min(options.MaxDepth, TomlLimits.AbsoluteMaxDepth);
 
         _rows = new TomlDocumentBuilder(options.SpecVersion, maxDepth).Parse(utf8Toml);
         _source = utf8Toml;
@@ -237,12 +237,12 @@ public ref struct TomlDocumentReader
         if (exception.Offset is not null || _tokenType == TomlTokenType.None)
             return;
 
-        var offset = _offset;
+        int offset = _offset;
 
-        var line = 1;
-        var lineStart = 0;
-        var limit = Math.Min(offset, _source.Length);
-        for (var i = 0; i < limit; i++)
+        int line = 1;
+        int lineStart = 0;
+        int limit = Math.Min(offset, _source.Length);
+        for (int i = 0; i < limit; i++)
         {
             if (_source[i] == (byte)'\n')
             {
@@ -277,8 +277,8 @@ public ref struct TomlDocumentReader
             return false;
         }
 
-        var top = _depth - 1;
-        var container = _stack[top].Container;
+        int top = _depth - 1;
+        int container = _stack[top].Container;
 
         if (_rows[container].Kind == TomlReaderNodeKind.Table)
         {
@@ -289,7 +289,7 @@ public ref struct TomlDocumentReader
                 return true;
             }
 
-            var next = _stack[top].CurrentChild < 0 ? _rows[container].FirstChild : _rows[_stack[top].CurrentChild].NextSibling;
+            int next = _stack[top].CurrentChild < 0 ? _rows[container].FirstChild : _rows[_stack[top].CurrentChild].NextSibling;
             if (next >= 0)
             {
                 _stack[top].CurrentChild = next;
@@ -303,7 +303,7 @@ public ref struct TomlDocumentReader
             return true;
         }
 
-        var nextElement = _stack[top].CurrentChild < 0 ? _rows[container].FirstChild : _rows[_stack[top].CurrentChild].NextSibling;
+        int nextElement = _stack[top].CurrentChild < 0 ? _rows[container].FirstChild : _rows[_stack[top].CurrentChild].NextSibling;
         if (nextElement >= 0)
         {
             _stack[top].CurrentChild = nextElement;
@@ -442,7 +442,7 @@ public ref struct TomlDocumentReader
         if (_tokenType is not(TomlTokenType.StartTable or TomlTokenType.StartArray))
             return;
 
-        var depth = _depth;
+        int depth = _depth;
         while (_depth >= depth && Read())
         {
             // Read until the matching container end returns control to the original depth.
@@ -488,7 +488,9 @@ public ref struct TomlDocumentReader
     /// Sets the current token's kind, value, source offset, and owning row.
     /// </summary>
     /// <param name="tokenType">The kind of the token.</param>
-    /// <param name="value">The string carried by the token (a key or string scalar), or <see langword="null" />.</param>
+    /// <param name="value">
+    /// The string carried by the token (a key or string scalar), or <see langword="null" />.
+    /// </param>
     /// <param name="offset">The zero-based source byte offset at which the token begins.</param>
     /// <param name="row">The row index the token belongs to.</param>
     private void SetToken(TomlTokenType tokenType, string? value, int offset, int row)

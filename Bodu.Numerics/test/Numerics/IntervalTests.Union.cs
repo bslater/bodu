@@ -14,7 +14,7 @@ public partial class IntervalTests
     [TestMethod]
     public void TryUnion_WhenOverlapping_ShouldReturnSpanningInterval()
     {
-        var ok = Interval<int>.Closed(1, 5).TryUnion(Interval<int>.Closed(3, 7), out Interval<int> result);
+        bool ok = Interval<int>.Closed(1, 5).TryUnion(Interval<int>.Closed(3, 7), out Interval<int> result);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(Interval<int>.Closed(1, 7), result);
@@ -28,7 +28,7 @@ public partial class IntervalTests
     public void TryUnion_WhenAdjacent_ShouldReturnContiguousInterval()
     {
         // [1, 5) ∪ [5, 10] -> [1, 10]
-        var ok = Interval<int>.ClosedOpen(1, 5).TryUnion(Interval<int>.Closed(5, 10), out Interval<int> result);
+        bool ok = Interval<int>.ClosedOpen(1, 5).TryUnion(Interval<int>.Closed(5, 10), out Interval<int> result);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(Interval<int>.Closed(1, 10), result);
@@ -42,7 +42,7 @@ public partial class IntervalTests
     public void TryUnion_WhenBothOpenAtSharedEndpoint_ShouldReturnFalse()
     {
         // [1, 5) ∪ (5, 10] — neither contains 5, so the result is not contiguous.
-        var ok = Interval<int>.ClosedOpen(1, 5).TryUnion(Interval<int>.OpenClosed(5, 10), out Interval<int> result);
+        bool ok = Interval<int>.ClosedOpen(1, 5).TryUnion(Interval<int>.OpenClosed(5, 10), out Interval<int> result);
 
         Assert.IsFalse(ok);
         Assert.IsTrue(result.IsEmpty);
@@ -54,7 +54,7 @@ public partial class IntervalTests
     [TestMethod]
     public void TryUnion_WhenDisjoint_ShouldReturnFalse()
     {
-        var ok = Interval<int>.Closed(1, 3).TryUnion(Interval<int>.Closed(5, 7), out Interval<int> result);
+        bool ok = Interval<int>.Closed(1, 3).TryUnion(Interval<int>.Closed(5, 7), out Interval<int> result);
 
         Assert.IsFalse(ok);
         Assert.IsTrue(result.IsEmpty);

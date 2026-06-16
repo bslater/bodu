@@ -21,13 +21,13 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     [DynamicData(nameof(NonCryptographicHashAlgorithmVariants), DynamicDataDisplayName = nameof(NonCryptographicHashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(NonCryptographicHashAlgorithmVariantDisplayName))]
     public void Append_WhenCalledInChunks_ShouldMatchSingleAppend(TVariant variant)
     {
-        var data = NonCryptographicHashSharedInputs.Sequential0To255;
+        byte[] data = NonCryptographicHashSharedInputs.Sequential0To255;
 
         NonCryptographicHashAlgorithm whole = CreateAlgorithm(variant);
         whole.Append(data);
 
         NonCryptographicHashAlgorithm chunked = CreateAlgorithm(variant);
-        var third = data.Length / 3;
+        int third = data.Length / 3;
         chunked.Append(data.AsSpan(0, third));
         chunked.Append(data.AsSpan(third, third));
         chunked.Append(data.AsSpan(third * 2, data.Length - (third * 2)));
@@ -44,13 +44,13 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     [DynamicData(nameof(NonCryptographicHashAlgorithmVariants), DynamicDataDisplayName = nameof(NonCryptographicHashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(NonCryptographicHashAlgorithmVariantDisplayName))]
     public void Append_WhenCalledOneByteAtATime_ShouldMatchSingleAppend(TVariant variant)
     {
-        var data = NonCryptographicHashSharedInputs.QuickBrownFox;
+        byte[] data = NonCryptographicHashSharedInputs.QuickBrownFox;
 
         NonCryptographicHashAlgorithm whole = CreateAlgorithm(variant);
         whole.Append(data);
 
         NonCryptographicHashAlgorithm perByte = CreateAlgorithm(variant);
-        foreach (var b in data)
+        foreach (byte b in data)
             perByte.Append([b]);
 
         CollectionAssert.AreEqual(whole.GetCurrentHash(), perByte.GetCurrentHash());
@@ -88,7 +88,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
         TAlgorithm algorithm = CreateAlgorithm(variant);
         algorithm.Append(input);
 
-        var actual = algorithm.GetCurrentHash();
+        byte[] actual = algorithm.GetCurrentHash();
         Bodu.Test.TestHelpers.TraceWriteIfNotEqual(expected, actual, $"Hash mismatch for '{testName}' using variant '{variant}'.");
 
         CollectionAssert.AreEqual(expected, actual, $"Hash mismatch for '{testName}' using variant '{variant}'.");

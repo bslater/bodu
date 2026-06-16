@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EcbExchangeRateProviderTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -89,7 +89,7 @@ public partial class EcbExchangeRateProviderTests
     {
         (EcbExchangeRateProvider provider, FixtureEcbExchangeRateTableSource source) = Create(allowSync: true);
 
-        var found = provider.TryGetRate("EUR", "USD", new DateOnly(2023, 1, 3), null, out ExchangeRateLookupResult result);
+        bool found = provider.TryGetRate("EUR", "USD", new DateOnly(2023, 1, 3), null, out ExchangeRateLookupResult result);
 
         Assert.IsTrue(found);
         Assert.AreEqual(1.0545m, result.Rate.Rate);
@@ -104,7 +104,7 @@ public partial class EcbExchangeRateProviderTests
     {
         (EcbExchangeRateProvider provider, FixtureEcbExchangeRateTableSource source) = Create(allowSync: false);
 
-        var found = provider.TryGetRate("EUR", "USD", new DateOnly(2023, 1, 3), null, out _);
+        bool found = provider.TryGetRate("EUR", "USD", new DateOnly(2023, 1, 3), null, out _);
 
         Assert.IsFalse(found);
         Assert.AreEqual(0, source.GetTableCallCount);
@@ -118,7 +118,7 @@ public partial class EcbExchangeRateProviderTests
     {
         EcbExchangeRateProvider provider = await CreatePreloadedAsync();
 
-        var latest = provider.GetRate("EUR", "USD").Rate.Rate;
+        decimal latest = provider.GetRate("EUR", "USD").Rate.Rate;
 
         Assert.AreEqual(1.0600m, latest);
     }

@@ -94,7 +94,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     {
         ThrowingNonCryptographicHashAlgorithm algorithm = new();
 
-        var succeeded = algorithm.TryVerifyHash(s_sampleData, s_sampleHash, out var result);
+        bool succeeded = algorithm.TryVerifyHash(s_sampleData, s_sampleHash, out bool result);
 
         Assert.IsFalse(succeeded);
         Assert.IsFalse(result);
@@ -108,7 +108,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     public void TryVerifyHash_WhenByteArrayExpectedHashLengthMismatch_ShouldReturnFalse()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
-        var wrongLength = new byte[] { 0x00, 0x00 };
+        byte[] wrongLength = new byte[] { 0x00, 0x00 };
 
         Assert.IsFalse(algorithm.TryVerifyHash(s_sampleData, wrongLength));
     }
@@ -134,7 +134,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
         ReadOnlyMemory<byte> memory = s_sampleData;
-        var wrong = BitConverter.GetBytes((uint)999);
+        byte[] wrong = BitConverter.GetBytes((uint)999);
 
         Assert.IsFalse(algorithm.TryVerifyHash(memory, wrong));
     }
@@ -175,7 +175,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
         using MemoryStream stream = new(s_sampleData);
-        var wrong = BitConverter.GetBytes((uint)999);
+        byte[] wrong = BitConverter.GetBytes((uint)999);
 
         Assert.IsFalse(algorithm.TryVerifyHash(stream, wrong));
     }
@@ -240,7 +240,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     public void TryVerifyHash_WhenStringEncodedDoesNotMatch_ShouldReturnFalse()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
-        var wrong = BitConverter.GetBytes((uint)999);
+        byte[] wrong = BitConverter.GetBytes((uint)999);
 
         Assert.IsFalse(algorithm.TryVerifyHash(s_sampleString, s_sampleEncoding, wrong));
     }

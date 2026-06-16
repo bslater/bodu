@@ -59,7 +59,7 @@ public partial class BencodeNodeTests
     public void Parse_WhenInputMalformed_ShouldThrowBencodeFormatException(string testName, string input)
     {
         _ = testName;
-        var bytes = Bytes(input);
+        byte[] bytes = Bytes(input);
 
         _ = Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
@@ -86,7 +86,7 @@ public partial class BencodeNodeTests
     [TestMethod]
     public void Parse_WhenTrailingBytesAfterRoot_ShouldThrowBencodeFormatException()
     {
-        var bytes = Bytes("i1e2:xx");
+        byte[] bytes = Bytes("i1e2:xx");
 
         _ = Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
@@ -153,9 +153,9 @@ public partial class BencodeNodeTests
     public void Parse_WhenInputCanonical_ShouldRoundTripThroughToByteArray(string testName, string input)
     {
         _ = testName;
-        var bytes = Bytes(input);
+        byte[] bytes = Bytes(input);
 
-        var roundTripped = BencodeNode.Parse(bytes)!.ToByteArray();
+        byte[] roundTripped = BencodeNode.Parse(bytes)!.ToByteArray();
 
         CollectionAssert.AreEqual(bytes, roundTripped);
     }

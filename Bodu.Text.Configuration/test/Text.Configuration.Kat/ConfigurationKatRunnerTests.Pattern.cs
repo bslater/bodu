@@ -34,7 +34,7 @@ public partial class ConfigurationKatRunnerTests
         }
 
         var pattern = ConfigurationPattern.Compile(kat.Pattern!);
-        var match = pattern.IsMatch(kat.TargetPath!);
+        bool match = pattern.IsMatch(kat.TargetPath!);
 
         Assert.AreEqual(
             kat.ExpectedMatch ?? false,

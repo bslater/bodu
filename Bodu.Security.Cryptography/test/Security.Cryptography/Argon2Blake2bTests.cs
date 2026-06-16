@@ -52,13 +52,13 @@ public class Argon2Blake2bTests
     [TestMethod]
     public void Hash_WhenOutputIs256Bits_ShouldMatchPublicBlake2b()
     {
-        var message = Encoding.ASCII.GetBytes("The quick brown fox jumps over the lazy dog");
+        byte[] message = Encoding.ASCII.GetBytes("The quick brown fox jumps over the lazy dog");
 
         Span<byte> bundled = stackalloc byte[32];
         Argon2Blake2b.Hash(message, bundled);
 
         using var blake = new Blake2b(256);
-        var reference = blake.ComputeHash(message);
+        byte[] reference = blake.ComputeHash(message);
 
         CollectionAssert.AreEqual(reference, bundled.ToArray());
     }
@@ -70,7 +70,7 @@ public class Argon2Blake2bTests
     [TestMethod]
     public void Hash_WhenOutputLengthDiffers_ShouldNotBeATruncation()
     {
-        var message = Encoding.ASCII.GetBytes("length parameterization");
+        byte[] message = Encoding.ASCII.GetBytes("length parameterization");
 
         Span<byte> fifty = stackalloc byte[50];
         Span<byte> sixtyFour = stackalloc byte[64];
@@ -88,7 +88,7 @@ public class Argon2Blake2bTests
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            var tooLong = new byte[65];
+            byte[] tooLong = new byte[65];
             Argon2Blake2b.Hash(ReadOnlySpan<byte>.Empty, tooLong);
         });
     }

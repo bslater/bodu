@@ -39,13 +39,13 @@ public partial class CrcTests
         var standard = CrcStandard.Get(standardId);
 
         ReadOnlySpan<byte> input = s_revEngCheckInput;
-        var first = input.Slice(0, 4).ToArray();
-        var rest = input.Slice(4).ToArray();
+        byte[] first = input.Slice(0, 4).ToArray();
+        byte[] rest = input.Slice(4).ToArray();
 
-        var firstHash = new Crc(standard).ComputeHash(first);
-        var resumed = new Crc(standard).ComputeHashFrom(firstHash, rest);
+        byte[] firstHash = new Crc(standard).ComputeHash(first);
+        byte[] resumed = new Crc(standard).ComputeHashFrom(firstHash, rest);
 
-        var oneShot = new Crc(standard).ComputeHash(input);
+        byte[] oneShot = new Crc(standard).ComputeHash(input);
         CollectionAssert.AreEqual(oneShot, resumed);
     }
 
@@ -70,18 +70,18 @@ public partial class CrcTests
 
         Crc subject = new(standard);
         subject.Append(input.Slice(0, 4));
-        var snapshotAfterFirstHalf = subject.GetCurrentHash();
+        byte[] snapshotAfterFirstHalf = subject.GetCurrentHash();
 
         Crc baselineFirstHalf = new(standard);
-        var expectedFirstHalf = baselineFirstHalf.ComputeHash(input.Slice(0, 4));
+        byte[] expectedFirstHalf = baselineFirstHalf.ComputeHash(input.Slice(0, 4));
         CollectionAssert.AreEqual(expectedFirstHalf, snapshotAfterFirstHalf);
 
         // Snapshot must not have mutated the accumulator — continuing to append the rest still produces the full
         // catalogue digest.
         subject.Append(input.Slice(4));
-        var finalDigest = subject.GetCurrentHash();
+        byte[] finalDigest = subject.GetCurrentHash();
 
-        var expectedFull = new Crc(standard).ComputeHash(input);
+        byte[] expectedFull = new Crc(standard).ComputeHash(input);
         CollectionAssert.AreEqual(expectedFull, finalDigest);
     }
 

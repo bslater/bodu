@@ -27,7 +27,7 @@ public partial class BernsteinTests
     [TestMethod]
     public void InitialValue_WhenSameValue_ShouldProduceSameHash()
     {
-        var input = NonCryptographicHashSharedInputs.Abc;
+        byte[] input = NonCryptographicHashSharedInputs.Abc;
 
         Bernstein a = new() { InitialValue = 0xABCDEFU };
         Bernstein b = new() { InitialValue = 0xABCDEFU };
@@ -71,7 +71,7 @@ public partial class BernsteinTests
     [TestMethod]
     public void InitialValue_WhenSetBeforeHashing_ShouldAffectResult()
     {
-        var input = NonCryptographicHashSharedInputs.Abc;
+        byte[] input = NonCryptographicHashSharedInputs.Abc;
 
         Bernstein a = new() { InitialValue = 1U };
         Bernstein b = new() { InitialValue = 2U };
@@ -90,7 +90,7 @@ public partial class BernsteinTests
         Bernstein algorithm = new() { InitialValue = uint.MaxValue };
         algorithm.Append(NonCryptographicHashSharedInputs.Abc);
 
-        var digest = algorithm.GetCurrentHash();
+        byte[] digest = algorithm.GetCurrentHash();
         Assert.IsNotNull(digest);
     }
 
@@ -103,7 +103,7 @@ public partial class BernsteinTests
         Bernstein algorithm = new() { InitialValue = 0U };
         algorithm.Append(NonCryptographicHashSharedInputs.Abc);
 
-        var digest = algorithm.GetCurrentHash();
+        byte[] digest = algorithm.GetCurrentHash();
         Assert.AreEqual(4, digest.Length);
     }
 

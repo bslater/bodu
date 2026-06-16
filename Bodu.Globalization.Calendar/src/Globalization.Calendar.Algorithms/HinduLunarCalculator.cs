@@ -100,11 +100,11 @@ internal static class HinduLunarCalculator
     private static DateOnly? Compute(int amantaMonth, int offsetTithis, bool purnima, int year)
     {
         // The sun is in this sidereal sign at the new moon that begins the month (Chaitra new moon sun in Pisces).
-        var targetSign = (((amantaMonth - 2) % 12) + 12) % 12;
+        int targetSign = (((amantaMonth - 2) % 12) + 12) % 12;
 
         List<(DateOnly NewMoon, int Sign)> newMoons = GatherNewMoons(year);
 
-        for (var i = 0; i < newMoons.Count; i++)
+        for (int i = 0; i < newMoons.Count; i++)
         {
             if (newMoons[i].Sign != targetSign)
                 continue;
@@ -160,8 +160,8 @@ internal static class HinduLunarCalculator
     /// <returns>The zero-based sidereal sign, 0 (Aries) to 11 (Pisces).</returns>
     private static int SiderealSunSign(DateOnly date)
     {
-        var ayanamsa = 23.85 + (0.0139666 * (date.Year - 2000));
-        var sidereal = (((SolarTermCalculator.SunTropicalLongitude(date) - ayanamsa) % 360.0) + 360.0) % 360.0;
+        double ayanamsa = 23.85 + (0.0139666 * (date.Year - 2000));
+        double sidereal = (((SolarTermCalculator.SunTropicalLongitude(date) - ayanamsa) % 360.0) + 360.0) % 360.0;
 
         return (int)(sidereal / 30.0) % 12;
     }

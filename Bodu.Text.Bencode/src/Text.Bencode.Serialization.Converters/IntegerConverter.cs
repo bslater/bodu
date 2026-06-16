@@ -32,7 +32,7 @@ internal sealed class IntegerConverter<T>
                 reader.BytesConsumed);
         }
 
-        var value = reader.GetInt64();
+        long value = reader.GetInt64();
         try
         {
             return T.CreateChecked(value);

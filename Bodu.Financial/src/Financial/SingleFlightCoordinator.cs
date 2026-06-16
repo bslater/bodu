@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SingleFlightCoordinator.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -67,8 +67,8 @@ public sealed class SingleFlightCoordinator<TKey>
 
     /// <summary>
     /// Runs <paramref name="operation" /> for <paramref name="key" />, or joins the operation already in flight for
-    /// that key, then awaits its completion, abandoning this caller's wait when <paramref name="cancellationToken" /> is
-    /// signalled.
+    /// that key, then awaits its completion, abandoning this caller's wait when <paramref name="cancellationToken" />
+    /// is signalled.
     /// </summary>
     /// <param name="key">The key that identifies the operation.</param>
     /// <param name="operation">
@@ -145,13 +145,15 @@ public sealed class SingleFlightCoordinator<TKey>
     /// <param name="key">The key that identifies the operation.</param>
     /// <param name="operation">The asynchronous operation to run when this caller wins registration.</param>
     /// <param name="cancellationToken">A token that abandons this caller's wait on the shared result.</param>
-    /// <returns>A task that completes when the operation for <paramref name="key" /> completes for this caller.</returns>
+    /// <returns>
+    /// A task that completes when the operation for <paramref name="key" /> completes for this caller.
+    /// </returns>
     /// <remarks>
     /// The winner starts a detached fulfillment task that runs <paramref name="operation" /> with
     /// <see cref="CancellationToken.None" />, completes the shared promise, and removes the in-flight entry, so the
-    /// operation reaches completion for every joiner even when the winner abandons its own wait. Every caller awaits the
-    /// shared promise through <see cref="Task.WaitAsync(CancellationToken)" /> so cancellation is observed per caller and
-    /// never propagates to the shared operation.
+    /// operation reaches completion for every joiner even when the winner abandons its own wait. Every caller awaits
+    /// the shared promise through <see cref="Task.WaitAsync(CancellationToken)" /> so cancellation is observed per
+    /// caller and never propagates to the shared operation.
     /// </remarks>
     private Task RunCoreAsync(TKey key, Func<CancellationToken, Task> operation, CancellationToken cancellationToken)
     {
@@ -181,9 +183,9 @@ public sealed class SingleFlightCoordinator<TKey>
     /// <remarks>
     /// The winner starts a detached fulfillment task that runs <paramref name="operation" /> with
     /// <see cref="CancellationToken.None" />, completes the shared promise, and removes the in-flight entry, so the
-    /// operation reaches completion for every joiner even when the winner abandons its own wait. Every caller awaits the
-    /// shared promise through <see cref="Task{TResult}.WaitAsync(CancellationToken)" /> so cancellation is observed per
-    /// caller and never propagates to the shared operation. The key is bound to a single result type by contract.
+    /// operation reaches completion for every joiner even when the winner abandons its own wait. Every caller awaits
+    /// the shared promise through <see cref="Task{TResult}.WaitAsync(CancellationToken)" /> so cancellation is observed
+    /// per caller and never propagates to the shared operation. The key is bound to a single result type by contract.
     /// </remarks>
     private Task<TResult> RunCoreAsync<TResult>(TKey key, Func<CancellationToken, Task<TResult>> operation, CancellationToken cancellationToken)
     {
@@ -205,7 +207,9 @@ public sealed class SingleFlightCoordinator<TKey>
     /// Runs the operation to completion, fulfills the shared promise with its outcome, and releases the key.
     /// </summary>
     /// <param name="key">The key whose in-flight entry is released once the operation completes.</param>
-    /// <param name="operation">The asynchronous operation to run, invoked with <see cref="CancellationToken.None" />.</param>
+    /// <param name="operation">
+    /// The asynchronous operation to run, invoked with <see cref="CancellationToken.None" />.
+    /// </param>
     /// <param name="promise">The shared promise every current and future joiner for the key awaits.</param>
     /// <returns>A task that completes when the operation has completed and the promise has been fulfilled.</returns>
     /// <remarks>
@@ -236,7 +240,9 @@ public sealed class SingleFlightCoordinator<TKey>
     /// </summary>
     /// <typeparam name="TResult">The result produced by the operation.</typeparam>
     /// <param name="key">The key whose in-flight entry is released once the operation completes.</param>
-    /// <param name="operation">The asynchronous operation to run, invoked with <see cref="CancellationToken.None" />.</param>
+    /// <param name="operation">
+    /// The asynchronous operation to run, invoked with <see cref="CancellationToken.None" />.
+    /// </param>
     /// <param name="promise">The shared promise every current and future joiner for the key awaits.</param>
     /// <returns>A task that completes when the operation has completed and the promise has been fulfilled.</returns>
     /// <remarks>

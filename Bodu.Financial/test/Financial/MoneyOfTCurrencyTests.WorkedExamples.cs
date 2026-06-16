@@ -147,7 +147,7 @@ public partial class MoneyOfTCurrencyTests
     public void Payroll_WhenOvertimeAccrual_ShouldSumBaseAndOnePointFiveTimeAboveForty()
     {
         var hourly = new Money<USD>(20.00m);
-        var hoursWorked = 47m;
+        decimal hoursWorked = 47m;
 
         Money<USD> basePay = hourly * 40m;
         Money<USD> overtimePay = hourly * 1.5m * (hoursWorked - 40m);
@@ -233,7 +233,7 @@ public partial class MoneyOfTCurrencyTests
     public void Mortgage_WhenFirstPaymentBreakdown_ShouldSplitInterestAndPrincipalCorrectly()
     {
         var openingBalance = new Money<USD>(300_000m);
-        var monthlyRate = 0.00375m;                     // 4.5% APR / 12
+        decimal monthlyRate = 0.00375m;                     // 4.5% APR / 12
         var monthlyPayment = new Money<USD>(1520.06m);
 
         Money<USD> interestPortion = openingBalance * monthlyRate;       // 1,125.00 exactly
@@ -275,8 +275,8 @@ public partial class MoneyOfTCurrencyTests
     public void Fx_WhenRoundTrippingUsdToEurAndBack_ShouldRecoverOriginalAmount()
     {
         var original = new Money<USD>(100.00m);
-        var usdToEur = 0.92m;
-        var eurToUsd = 1.0869565m;                  // 1/0.92 truncated; multiplied back, rounds to 100.00
+        decimal usdToEur = 0.92m;
+        decimal eurToUsd = 1.0869565m;                  // 1/0.92 truncated; multiplied back, rounds to 100.00
 
         Money<EUR> intermediate = original.Convert<EUR>(usdToEur);
         Money<USD> recovered = intermediate.Convert<USD>(eurToUsd);
@@ -293,7 +293,7 @@ public partial class MoneyOfTCurrencyTests
     public void Fx_WhenRateProducesSubMinorUnitResult_ShouldRoundToZeroAtDestination()
     {
         var dust = new Money<USD>(0.01m);
-        var rate = 0.001m;                          // 0.01 × 0.001 = 0.00001
+        decimal rate = 0.001m;                          // 0.01 × 0.001 = 0.00001
 
         Money<JPY> result = dust.Convert<JPY>(rate);
 
@@ -313,7 +313,7 @@ public partial class MoneyOfTCurrencyTests
     public void Investing_WhenComputingDividendPayoutAtSubCentDps_ShouldUseMultiplyExactForCorrectTotal()
     {
         // Shares: 250. Declared dividend per share: $0.4275 (sub-cent precision).
-        var shares = 250;
+        int shares = 250;
         var dpsExact = Fraction<BigInteger>.Create(4275, 10000);    // 0.4275 exactly
 
         // The naive path constructs Money<USD> with the DPS first — losing the 4th decimal to rounding.
@@ -522,7 +522,7 @@ public partial class MoneyOfTCurrencyTests
 
         var oneOverGrowth = Fraction<BigInteger>.Create(100, 103);
         var rational = nominal.ToFraction();
-        for (var i = 0; i < 10; i++)
+        for (int i = 0; i < 10; i++)
             rational *= oneOverGrowth;
 
         var real = Money<USD>.FromFraction(rational);
@@ -545,7 +545,7 @@ public partial class MoneyOfTCurrencyTests
         var milli = new Money<BHD>(0.001m);
 
         Money<BHD> sum = Money<BHD>.Zero;
-        for (var i = 0; i < 1000; i++)
+        for (int i = 0; i < 1000; i++)
             sum += milli;
 
         Assert.AreEqual(new Money<BHD>(1.000m), sum);

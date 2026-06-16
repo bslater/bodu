@@ -51,9 +51,9 @@ public partial class MoneyOfTCurrencyTests
     {
         Type currencyType = typeof(USD).Assembly.GetType($"Bodu.Financial.Currencies.{iso}")!;
 
-        var isHistoric = (bool)currencyType.GetProperty("IsHistoric", BindingFlags.Public | BindingFlags.Static)!.GetValue(null)!;
+        bool isHistoric = (bool)currencyType.GetProperty("IsHistoric", BindingFlags.Public | BindingFlags.Static)!.GetValue(null)!;
         var demonetizedOn = (DateOnly?)currencyType.GetProperty("DemonetizedOn", BindingFlags.Public | BindingFlags.Static)!.GetValue(null);
-        var successor = (string?)currencyType.GetProperty("SuccessorIsoCode", BindingFlags.Public | BindingFlags.Static)!.GetValue(null);
+        string? successor = (string?)currencyType.GetProperty("SuccessorIsoCode", BindingFlags.Public | BindingFlags.Static)!.GetValue(null);
 
         Assert.IsTrue(isHistoric, $"{iso} should report IsHistoric=true.");
         Assert.AreEqual(DateOnly.Parse(expectedDemonetized, System.Globalization.CultureInfo.InvariantCulture), demonetizedOn);

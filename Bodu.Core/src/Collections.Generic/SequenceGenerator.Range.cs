@@ -104,7 +104,7 @@ public static partial class SequenceGenerator
                 yield return start;
         }
 
-        for (var i = start; step > 0 ? i <= stop : i >= stop;)
+        for (int i = start; step > 0 ? i <= stop : i >= stop;)
         {
             yield return i;
 
@@ -163,7 +163,7 @@ public static partial class SequenceGenerator
         ThrowHelper.ThrowIfLessThan(count, 0);
         ThrowHelper.ThrowIfSequenceRangeOverflows(start, count);
 
-        for (var i = 0; i < count; i++)
+        for (int i = 0; i < count; i++)
             yield return start + i;
     }
 }

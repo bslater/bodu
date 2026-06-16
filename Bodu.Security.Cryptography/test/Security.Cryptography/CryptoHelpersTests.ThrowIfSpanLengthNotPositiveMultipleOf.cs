@@ -35,7 +35,7 @@ public partial class CryptoHelpersTests
     public void ThrowIfSpanLengthNotPositiveMultipleOf_WhenSpanIsNotMultiple_ShouldThrowExactly(int length, int divisor)
     {
         ReadOnlySpan<byte> span = new byte[length];
-        var bytes = span.ToArray();
+        byte[] bytes = span.ToArray();
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {

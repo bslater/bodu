@@ -1,0 +1,28 @@
+<Project>
+
+  <!--
+    Drop InternalsVisibleTo grants that target test assemblies (names ending in ".Test") from
+    shipping builds, so published assemblies do not advertise their internals to test projects.
+    Grants to non-test assemblies (cross-library internal access, e.g.
+    Bodu.Core -> Bodu.Globalization.Calendar) are always retained.
+
+    Gated on the opt-in BoduShipping flag (default off, declared in bld/Packaging.props) rather than
+    on Release, so ordinary Debug AND Release builds keep every grant and the test projects continue
+    to compile and run in any configuration. The pack / CI shipping build passes -p:BoduShipping=true
+    to produce packages whose assemblies omit the test grants.
+
+    The filter runs inside a target (not a top-level ItemGroup) so per-item metadata batching on
+    %(_Parameter1) is honoured, and BeforeTargets the SDK's assembly-info generation so the removed
+    grants never reach the generated AssemblyInfo. It keys off the repository's uniform
+    "<Project>.Test" naming.
+  -->
+  <Target Name="BoduDropTestInternalsVisibleToOnShipping"
+          BeforeTargets="CreateGeneratedAssemblyInfoInputsCacheFile;CoreGenerateAssemblyInfo"
+          Condition="'$(BoduShipping)' == 'true'">
+    <ItemGroup>
+      <AssemblyAttribute Remove="@(AssemblyAttribute)"
+                         Condition="'%(Identity)' == 'System.Runtime.CompilerServices.InternalsVisibleTo' And $([System.String]::Copy('%(_Parameter1)').EndsWith('.Test'))" />
+    </ItemGroup>
+  </Target>
+
+</Project>

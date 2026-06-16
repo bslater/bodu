@@ -49,7 +49,7 @@ public class ExchangeRateJsonConverterPolicyTests
     [TestMethod]
     public void DefaultAttribute_WhenSerializing_ShouldEmitCanonicalObjectShape()
     {
-        var json = JsonSerializer.Serialize(SampleRate());
+        string json = JsonSerializer.Serialize(SampleRate());
 
         Assert.AreEqual(
             "{\"from\":\"USD\",\"to\":\"JPY\",\"date\":\"2024-05-30\",\"rate\":156.42,\"provider\":\"ECB\",\"isInverted\":false}",
@@ -71,7 +71,7 @@ public class ExchangeRateJsonConverterPolicyTests
         ExchangeRate original = SampleRate(isInverted: true);
         JsonSerializerOptions options = Options(FinancialJsonPolicy.Strict);
 
-        var json = JsonSerializer.Serialize(original, options);
+        string json = JsonSerializer.Serialize(original, options);
         ExchangeRate recovered = JsonSerializer.Deserialize<ExchangeRate>(json, options);
 
         Assert.AreEqual(original, recovered);
@@ -84,7 +84,7 @@ public class ExchangeRateJsonConverterPolicyTests
     [TestMethod]
     public void CompactPolicy_WhenSerializingNonInverted_ShouldEmitPairAndOmitIsInverted()
     {
-        var json = JsonSerializer.Serialize(SampleRate(), Options(FinancialJsonPolicy.Compact));
+        string json = JsonSerializer.Serialize(SampleRate(), Options(FinancialJsonPolicy.Compact));
 
         Assert.AreEqual(
             "{\"pair\":\"USD/JPY\",\"date\":\"2024-05-30\",\"rate\":156.42,\"provider\":\"ECB\"}",
@@ -98,11 +98,11 @@ public class ExchangeRateJsonConverterPolicyTests
     [TestMethod]
     public void CompactPolicy_WhenSerializingInverted_ShouldEmitIsInverted()
     {
-        var json = JsonSerializer.Serialize(SampleRate(isInverted: true), Options(FinancialJsonPolicy.Compact));
+        string json = JsonSerializer.Serialize(SampleRate(isInverted: true), Options(FinancialJsonPolicy.Compact));
 
         // An inverted rate also carries the originally observed rate so the precise divisor survives a round-trip;
         // its serialized form matches how the writer renders the decimal.
-        var observedRate = JsonSerializer.Serialize(1m / 156.42m);
+        string observedRate = JsonSerializer.Serialize(1m / 156.42m);
         Assert.AreEqual(
             "{\"pair\":\"USD/JPY\",\"date\":\"2024-05-30\",\"rate\":156.42,\"provider\":\"ECB\",\"isInverted\":true,\"observedRate\":" + observedRate + "}",
             json);
@@ -117,7 +117,7 @@ public class ExchangeRateJsonConverterPolicyTests
         ExchangeRate original = SampleRate(isInverted: true);
         JsonSerializerOptions options = Options(FinancialJsonPolicy.Compact);
 
-        var json = JsonSerializer.Serialize(original, options);
+        string json = JsonSerializer.Serialize(original, options);
         ExchangeRate recovered = JsonSerializer.Deserialize<ExchangeRate>(json, options);
 
         Assert.AreEqual(original, recovered);
@@ -130,7 +130,7 @@ public class ExchangeRateJsonConverterPolicyTests
     [TestMethod]
     public void ReadingFromToShape_ShouldSucceedRegardlessOfWritePolicy()
     {
-        var json = "{\"pair\":\"USD/JPY\",\"date\":\"2024-05-30\",\"rate\":156.42,\"provider\":\"ECB\"}";
+        string json = "{\"pair\":\"USD/JPY\",\"date\":\"2024-05-30\",\"rate\":156.42,\"provider\":\"ECB\"}";
 
         ExchangeRate result = JsonSerializer.Deserialize<ExchangeRate>(json, Options(FinancialJsonPolicy.Strict));
 
@@ -143,7 +143,7 @@ public class ExchangeRateJsonConverterPolicyTests
     [TestMethod]
     public void ReadingMixedPairAndFrom_ShouldThrowJsonException()
     {
-        var json = "{\"pair\":\"USD/JPY\",\"from\":\"USD\",\"to\":\"JPY\",\"date\":\"2024-05-30\",\"rate\":156.42,\"provider\":\"ECB\"}";
+        string json = "{\"pair\":\"USD/JPY\",\"from\":\"USD\",\"to\":\"JPY\",\"date\":\"2024-05-30\",\"rate\":156.42,\"provider\":\"ECB\"}";
 
         Assert.ThrowsExactly<JsonException>(() =>
         {
@@ -157,7 +157,7 @@ public class ExchangeRateJsonConverterPolicyTests
     [TestMethod]
     public void LenientPolicy_WhenReadingLowercaseCurrency_ShouldSucceed()
     {
-        var json = "{\"from\":\"usd\",\"to\":\"jpy\",\"date\":\"2024-05-30\",\"rate\":156.42,\"provider\":\"ECB\",\"isInverted\":false}";
+        string json = "{\"from\":\"usd\",\"to\":\"jpy\",\"date\":\"2024-05-30\",\"rate\":156.42,\"provider\":\"ECB\",\"isInverted\":false}";
 
         ExchangeRate result = JsonSerializer.Deserialize<ExchangeRate>(json, Options(FinancialJsonPolicy.Lenient));
 
@@ -170,7 +170,7 @@ public class ExchangeRateJsonConverterPolicyTests
     [TestMethod]
     public void StrictPolicy_WhenReadingLowercaseCurrency_ShouldThrowJsonException()
     {
-        var json = "{\"from\":\"usd\",\"to\":\"jpy\",\"date\":\"2024-05-30\",\"rate\":156.42,\"provider\":\"ECB\",\"isInverted\":false}";
+        string json = "{\"from\":\"usd\",\"to\":\"jpy\",\"date\":\"2024-05-30\",\"rate\":156.42,\"provider\":\"ECB\",\"isInverted\":false}";
 
         Assert.ThrowsExactly<JsonException>(() =>
         {
@@ -184,7 +184,7 @@ public class ExchangeRateJsonConverterPolicyTests
     [TestMethod]
     public void StrictPolicy_WhenDuplicateRateProperty_ShouldThrowJsonException()
     {
-        var json = "{\"from\":\"USD\",\"to\":\"JPY\",\"date\":\"2024-05-30\",\"rate\":1.0,\"rate\":2.0,\"provider\":\"ECB\",\"isInverted\":false}";
+        string json = "{\"from\":\"USD\",\"to\":\"JPY\",\"date\":\"2024-05-30\",\"rate\":1.0,\"rate\":2.0,\"provider\":\"ECB\",\"isInverted\":false}";
 
         Assert.ThrowsExactly<JsonException>(() =>
         {
@@ -199,7 +199,7 @@ public class ExchangeRateJsonConverterPolicyTests
     [TestMethod]
     public void StrictPolicy_WhenRateIsZero_ShouldThrowJsonException()
     {
-        var json = "{\"from\":\"USD\",\"to\":\"JPY\",\"date\":\"2024-05-30\",\"rate\":0,\"provider\":\"ECB\",\"isInverted\":false}";
+        string json = "{\"from\":\"USD\",\"to\":\"JPY\",\"date\":\"2024-05-30\",\"rate\":0,\"provider\":\"ECB\",\"isInverted\":false}";
 
         Assert.ThrowsExactly<JsonException>(() =>
         {
@@ -213,7 +213,7 @@ public class ExchangeRateJsonConverterPolicyTests
     [TestMethod]
     public void StrictPolicy_WhenMissingDate_ShouldThrowJsonException()
     {
-        var json = "{\"from\":\"USD\",\"to\":\"JPY\",\"rate\":156.42,\"provider\":\"ECB\",\"isInverted\":false}";
+        string json = "{\"from\":\"USD\",\"to\":\"JPY\",\"rate\":156.42,\"provider\":\"ECB\",\"isInverted\":false}";
 
         Assert.ThrowsExactly<JsonException>(() =>
         {
@@ -230,7 +230,7 @@ public class ExchangeRateJsonConverterPolicyTests
         ExchangeRate original = SampleRateWithFetch();
         JsonSerializerOptions options = Options(FinancialJsonPolicy.Strict);
 
-        var json = JsonSerializer.Serialize(original, options);
+        string json = JsonSerializer.Serialize(original, options);
         ExchangeRate recovered = JsonSerializer.Deserialize<ExchangeRate>(json, options);
 
         Assert.AreEqual(s_fetchedAt, recovered.FetchedAtUtc);
@@ -245,7 +245,7 @@ public class ExchangeRateJsonConverterPolicyTests
         ExchangeRate original = SampleRateWithFetch();
         JsonSerializerOptions options = Options(FinancialJsonPolicy.Compact);
 
-        var json = JsonSerializer.Serialize(original, options);
+        string json = JsonSerializer.Serialize(original, options);
         ExchangeRate recovered = JsonSerializer.Deserialize<ExchangeRate>(json, options);
 
         Assert.AreEqual(s_fetchedAt, recovered.FetchedAtUtc);
@@ -258,7 +258,7 @@ public class ExchangeRateJsonConverterPolicyTests
     [TestMethod]
     public void StrictPolicy_WhenReadingBlobWithoutFetchedAtUtc_ShouldYieldNullInstant()
     {
-        var json = "{\"from\":\"USD\",\"to\":\"JPY\",\"date\":\"2024-05-30\",\"rate\":156.42,\"provider\":\"ECB\",\"isInverted\":false}";
+        string json = "{\"from\":\"USD\",\"to\":\"JPY\",\"date\":\"2024-05-30\",\"rate\":156.42,\"provider\":\"ECB\",\"isInverted\":false}";
 
         ExchangeRate result = JsonSerializer.Deserialize<ExchangeRate>(json, Options(FinancialJsonPolicy.Strict));
 
@@ -272,7 +272,7 @@ public class ExchangeRateJsonConverterPolicyTests
     [TestMethod]
     public void StrictPolicy_WhenWritingNullFetchedAtUtc_ShouldOmitProperty()
     {
-        var json = JsonSerializer.Serialize(SampleRate(), Options(FinancialJsonPolicy.Strict));
+        string json = JsonSerializer.Serialize(SampleRate(), Options(FinancialJsonPolicy.Strict));
 
         Assert.AreEqual(
             "{\"from\":\"USD\",\"to\":\"JPY\",\"date\":\"2024-05-30\",\"rate\":156.42,\"provider\":\"ECB\",\"isInverted\":false}",
@@ -286,7 +286,7 @@ public class ExchangeRateJsonConverterPolicyTests
     [TestMethod]
     public void CompactPolicy_WhenWritingNullFetchedAtUtc_ShouldOmitProperty()
     {
-        var json = JsonSerializer.Serialize(SampleRate(), Options(FinancialJsonPolicy.Compact));
+        string json = JsonSerializer.Serialize(SampleRate(), Options(FinancialJsonPolicy.Compact));
 
         Assert.AreEqual(
             "{\"pair\":\"USD/JPY\",\"date\":\"2024-05-30\",\"rate\":156.42,\"provider\":\"ECB\"}",
@@ -300,11 +300,11 @@ public class ExchangeRateJsonConverterPolicyTests
     [TestMethod]
     public void StrictPolicy_WhenWritingFetchedAtUtc_ShouldEmitInstantAsFinalProperty()
     {
-        var json = JsonSerializer.Serialize(SampleRateWithFetch(), Options(FinancialJsonPolicy.Strict));
+        string json = JsonSerializer.Serialize(SampleRateWithFetch(), Options(FinancialJsonPolicy.Strict));
 
         // The instant is written via the round-trippable "O" format; serialize the same string so the comparison
         // accounts for how the JSON encoder escapes the offset's '+' sign.
-        var fetched = JsonSerializer.Serialize(s_fetchedAt.ToString("O", System.Globalization.CultureInfo.InvariantCulture));
+        string fetched = JsonSerializer.Serialize(s_fetchedAt.ToString("O", System.Globalization.CultureInfo.InvariantCulture));
         Assert.AreEqual(
             "{\"from\":\"USD\",\"to\":\"JPY\",\"date\":\"2024-05-30\",\"rate\":156.42,\"provider\":\"ECB\",\"isInverted\":false,\"fetchedAtUtc\":" + fetched + "}",
             json);

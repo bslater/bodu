@@ -16,7 +16,7 @@ public static partial class TestHelpers
     {
         if (length < 0) throw new ArgumentOutOfRangeException(nameof(length));
 
-        var buffer = new byte[length];
+        byte[] buffer = new byte[length];
 
         if (length == 0)
             return buffer;
@@ -24,7 +24,7 @@ public static partial class TestHelpers
         System.Security.Cryptography.RandomNumberGenerator.Fill(buffer);
 
         Span<byte> value = stackalloc byte[1];
-        for (var i = 0; i < buffer.Length; i++)
+        for (int i = 0; i < buffer.Length; i++)
         {
             while (buffer[i] == 0)
             {

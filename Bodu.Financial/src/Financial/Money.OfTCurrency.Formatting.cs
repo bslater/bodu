@@ -64,7 +64,7 @@ public readonly partial struct Money<TCurrency> :
     /// </exception>
     public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format, IFormatProvider? provider)
     {
-        var text = Format(format, provider);
+        string text = Format(format, provider);
         if (text.Length <= destination.Length)
         {
             text.AsSpan().CopyTo(destination);
@@ -92,7 +92,7 @@ public readonly partial struct Money<TCurrency> :
     /// </exception>
     public bool TryFormat(Span<byte> utf8Destination, out int bytesWritten, ReadOnlySpan<char> format, IFormatProvider? provider)
     {
-        var text = Format(format, provider);
+        string text = Format(format, provider);
         return Encoding.UTF8.TryGetBytes(text, utf8Destination, out bytesWritten);
     }
 
@@ -191,7 +191,7 @@ public readonly partial struct Money<TCurrency> :
         IFormatProvider? provider)
     {
         CurrencyMetadataDescriptor metadata = CurrencyMetadata<TCurrency>.Value;
-        ParseSpecifier(format, metadata.MinorUnits, out var specifier, out var decimals, out var elideIfMatched, out var hasPrecisionSuffix);
+        ParseSpecifier(format, metadata.MinorUnits, out char specifier, out int decimals, out bool elideIfMatched, out bool hasPrecisionSuffix);
 
         if (specifier == 'R')
         {
@@ -207,7 +207,7 @@ public readonly partial struct Money<TCurrency> :
         }
 
         IFormatProvider effectiveProvider = provider ?? CultureInfo.CurrentCulture;
-        var decimalsSuffix = decimals.ToString(CultureInfo.InvariantCulture);
+        string decimalsSuffix = decimals.ToString(CultureInfo.InvariantCulture);
 
         switch (specifier)
         {
@@ -217,7 +217,7 @@ public readonly partial struct Money<TCurrency> :
                 return $"{metadata.IsoCode} {amount.ToString("N" + decimalsSuffix, effectiveProvider)}{magnitudeSuffix}";
 
             case 'C':
-                var matchesC = MoneyFormattingHelpers.CultureMatchesIsoCode(effectiveProvider, metadata.IsoCode);
+                bool matchesC = MoneyFormattingHelpers.CultureMatchesIsoCode(effectiveProvider, metadata.IsoCode);
                 if (elideIfMatched && matchesC)
                     return amount.ToString("N" + decimalsSuffix, effectiveProvider) + magnitudeSuffix;
                 return matchesC
@@ -225,7 +225,7 @@ public readonly partial struct Money<TCurrency> :
                     : MoneyFormattingHelpers.FormatLocaleMismatch(amount, metadata.IsoCode, decimals, magnitudeSuffix, effectiveProvider);
 
             case 'L':
-                var matchesL = MoneyFormattingHelpers.CultureMatchesIsoCode(effectiveProvider, metadata.IsoCode);
+                bool matchesL = MoneyFormattingHelpers.CultureMatchesIsoCode(effectiveProvider, metadata.IsoCode);
                 if (elideIfMatched && matchesL)
                     return amount.ToString("N" + decimalsSuffix, effectiveProvider) + magnitudeSuffix;
                 if (string.IsNullOrEmpty(metadata.EnglishName))
@@ -276,7 +276,7 @@ public readonly partial struct Money<TCurrency> :
     {
         elideIfMatched = false;
         hasPrecisionSuffix = false;
-        var cursor = 0;
+        int cursor = 0;
         if (!format.IsEmpty && format[0] == '~')
         {
             elideIfMatched = true;

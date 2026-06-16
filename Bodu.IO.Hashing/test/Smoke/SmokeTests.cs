@@ -26,7 +26,7 @@ public sealed class SmokeTests
     {
         Adler32 adler = new();
         adler.Append(Encoding.ASCII.GetBytes("Wikipedia"));
-        var digest = adler.GetCurrentHash();
+        byte[] digest = adler.GetCurrentHash();
 
         Assert.AreEqual(4, digest.Length);
     }
@@ -38,10 +38,10 @@ public sealed class SmokeTests
     public void Crc_ComputeHash_ForCrc32IsoHdlcReferenceInput_ShouldMatchPublishedCheck()
     {
         Crc crc = new(CrcStandard.Get(CrcStandards.CRC32_ISOHDLC));
-        var digest = crc.ComputeHash(Encoding.ASCII.GetBytes("123456789"));
+        byte[] digest = crc.ComputeHash(Encoding.ASCII.GetBytes("123456789"));
 
         Assert.AreEqual(4, digest.Length);
-        var actual = (uint)digest[0] | ((uint)digest[1] << 8) | ((uint)digest[2] << 16) | ((uint)digest[3] << 24);
+        uint actual = (uint)digest[0] | ((uint)digest[1] << 8) | ((uint)digest[2] << 16) | ((uint)digest[3] << 24);
         Assert.AreEqual(0xCBF43926u, actual);
     }
 
@@ -53,7 +53,7 @@ public sealed class SmokeTests
     {
         Fletcher16 fletcher = new();
         fletcher.Append(Encoding.ASCII.GetBytes("abcde"));
-        var digest = fletcher.GetCurrentHash();
+        byte[] digest = fletcher.GetCurrentHash();
 
         Assert.AreEqual(2, digest.Length);
         Assert.IsTrue(digest[0] != 0 || digest[1] != 0, "Non-empty input should produce a non-zero Fletcher-16 digest.");
@@ -67,7 +67,7 @@ public sealed class SmokeTests
     {
         Fletcher32 fletcher = new();
         fletcher.Append(Encoding.ASCII.GetBytes("abcdefgh"));
-        var digest = fletcher.GetCurrentHash();
+        byte[] digest = fletcher.GetCurrentHash();
 
         Assert.AreEqual(4, digest.Length);
     }

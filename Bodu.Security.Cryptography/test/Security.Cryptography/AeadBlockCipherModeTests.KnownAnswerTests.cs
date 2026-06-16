@@ -21,26 +21,26 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     [TestMethod]
     public void EncryptThenDecrypt_WithRealAesCipher_RandomKey_ShouldRoundTrip()
     {
-        var key = new byte[16];
+        byte[] key = new byte[16];
         RandomNumberGenerator.Fill(key);
 
         using var cipher = new AesBlockCipherFixture(key);
 
-        var iv = CreateInitializationVector();
-        var aad = new byte[20];
-        var plaintext = new byte[cipher.BlockSize * 4];
+        byte[] iv = CreateInitializationVector();
+        byte[] aad = new byte[20];
+        byte[] plaintext = new byte[cipher.BlockSize * 4];
         RandomNumberGenerator.Fill(iv);
         RandomNumberGenerator.Fill(aad);
         RandomNumberGenerator.Fill(plaintext);
 
         TTransform encTransform = CreateTransform(cipher, (byte[])iv.Clone());
         encTransform.ProcessAssociatedData(aad);
-        var buf = new byte[plaintext.Length + (encTransform.TagSize / 8)];
+        byte[] buf = new byte[plaintext.Length + (encTransform.TagSize / 8)];
         encTransform.Encrypt(plaintext, buf);
 
         TTransform decTransform = CreateTransform(cipher, (byte[])iv.Clone());
         decTransform.ProcessAssociatedData(aad);
-        var recovered = new byte[plaintext.Length];
+        byte[] recovered = new byte[plaintext.Length];
         decTransform.Decrypt(buf, recovered);
 
         CollectionAssert.AreEqual(plaintext, recovered,
@@ -67,7 +67,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
         TTransform transform = CreateTransform(cipher, iv);
         if (aad.Length > 0) transform.ProcessAssociatedData(aad);
 
-        var output = new byte[plaintext.Length + (transform.TagSize / 8)];
+        byte[] output = new byte[plaintext.Length + (transform.TagSize / 8)];
         transform.Encrypt(plaintext, output);
 
         CollectionAssert.AreEqual(expectedCiphertext, output[..plaintext.Length],
@@ -95,11 +95,11 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
         TTransform transform = CreateTransform(cipher, (byte[])iv.Clone());
         if (aad.Length > 0) transform.ProcessAssociatedData(aad);
 
-        var input = new byte[ciphertext.Length + tag.Length];
+        byte[] input = new byte[ciphertext.Length + tag.Length];
         ciphertext.CopyTo(input, 0);
         tag.CopyTo(input, ciphertext.Length);
 
-        var recovered = new byte[expectedPlaintext.Length];
+        byte[] recovered = new byte[expectedPlaintext.Length];
         transform.Decrypt(input, recovered);
 
         CollectionAssert.AreEqual(expectedPlaintext, recovered,

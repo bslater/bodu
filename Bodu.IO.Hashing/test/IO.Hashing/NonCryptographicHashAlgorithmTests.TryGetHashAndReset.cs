@@ -22,13 +22,13 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     {
         NonCryptographicHashAlgorithm snapshot = CreateAlgorithm(variant);
         snapshot.Append(NonCryptographicHashSharedInputs.Abc);
-        var expected = snapshot.GetCurrentHash();
+        byte[] expected = snapshot.GetCurrentHash();
 
         TAlgorithm algorithm = CreateAlgorithm(variant);
         algorithm.Append(NonCryptographicHashSharedInputs.Abc);
 
-        var destination = new byte[algorithm.HashLengthInBytes];
-        var succeeded = algorithm.TryGetHashAndReset(destination, out var written);
+        byte[] destination = new byte[algorithm.HashLengthInBytes];
+        bool succeeded = algorithm.TryGetHashAndReset(destination, out int written);
 
         Assert.IsTrue(succeeded);
         Assert.AreEqual(algorithm.HashLengthInBytes, written);
@@ -46,16 +46,16 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     {
         TAlgorithm algorithm = CreateAlgorithm(variant);
         algorithm.Append(NonCryptographicHashSharedInputs.Abc);
-        var before = algorithm.GetCurrentHash();
+        byte[] before = algorithm.GetCurrentHash();
 
-        var destination = new byte[algorithm.HashLengthInBytes - 1];
+        byte[] destination = new byte[algorithm.HashLengthInBytes - 1];
         if (destination.Length == 0)
         {
             Assert.Inconclusive($"Hash length for variant '{variant}' ({algorithm.HashLengthInBytes})is too small to test undersized destination.");
             return;
         }
 
-        var succeeded = algorithm.TryGetHashAndReset(destination, out var written);
+        bool succeeded = algorithm.TryGetHashAndReset(destination, out int written);
 
         Assert.IsFalse(succeeded);
         Assert.AreEqual(0, written);
@@ -75,7 +75,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
         TAlgorithm algorithm = CreateAlgorithm(variant);
         algorithm.Append(NonCryptographicHashSharedInputs.Sequential0To255);
 
-        var destination = new byte[algorithm.HashLengthInBytes];
+        byte[] destination = new byte[algorithm.HashLengthInBytes];
         Assert.IsTrue(algorithm.TryGetHashAndReset(destination, out _));
 
         NonCryptographicHashAlgorithm baseline = CreateAlgorithm(variant);

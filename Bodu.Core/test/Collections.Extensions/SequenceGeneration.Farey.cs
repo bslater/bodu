@@ -17,10 +17,10 @@ public class FareyTests
     public void Farey_WhenEnumerated_ShouldBeStrictlyAscending()
     {
         (int Numerator, int Denominator)[] actual = SequenceGenerator.Farey(8).ToArray();
-        for (var i = 1; i < actual.Length; i++)
+        for (int i = 1; i < actual.Length; i++)
         {
-            var previous = (double)actual[i - 1].Numerator / actual[i - 1].Denominator;
-            var current = (double)actual[i].Numerator / actual[i].Denominator;
+            double previous = (double)actual[i - 1].Numerator / actual[i - 1].Denominator;
+            double current = (double)actual[i].Numerator / actual[i].Denominator;
             Assert.IsGreaterThan(previous, current, $"Sequence is not strictly ascending at index {i}: {previous} >= {current}.");
         }
     }
@@ -48,7 +48,7 @@ public class FareyTests
     {
         const int order = 7;
 
-        foreach ((var num, var den) in SequenceGenerator.Farey(order))
+        foreach ((int num, int den) in SequenceGenerator.Farey(order))
         {
             Assert.AreEqual(1, Gcd(num, den), $"Fraction {num}/{den} is not in lowest terms.");
         }

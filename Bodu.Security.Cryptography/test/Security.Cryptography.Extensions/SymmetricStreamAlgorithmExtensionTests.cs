@@ -33,8 +33,8 @@ public sealed class SymmetricStreamAlgorithmExtensionTests
     /// <returns>A payload byte array.</returns>
     private static byte[] CreatePayload(int length)
     {
-        var buffer = new byte[length];
-        for (var i = 0; i < length; i++)
+        byte[] buffer = new byte[length];
+        for (int i = 0; i < length; i++)
             buffer[i] = (byte)(i * 7 + 1);
 
         return buffer;
@@ -47,7 +47,7 @@ public sealed class SymmetricStreamAlgorithmExtensionTests
     [TestMethod]
     public void EncryptThenDecrypt_WhenGivenByteArray_ShouldRecoverPlaintext()
     {
-        var plaintext = CreatePayload(200);
+        byte[] plaintext = CreatePayload(200);
 
         byte[] ciphertext;
         using (ChaCha20 cipher = CreateCipher())
@@ -69,7 +69,7 @@ public sealed class SymmetricStreamAlgorithmExtensionTests
     [TestMethod]
     public void EncryptAndDecrypt_WhenGivenSameInput_ShouldProduceSameOutput()
     {
-        var payload = CreatePayload(128);
+        byte[] payload = CreatePayload(128);
 
         byte[] viaEncrypt;
         using (ChaCha20 cipher = CreateCipher())
@@ -88,7 +88,7 @@ public sealed class SymmetricStreamAlgorithmExtensionTests
     [TestMethod]
     public void Encrypt_WhenGivenSpan_ShouldMatchArrayOverload()
     {
-        var plaintext = CreatePayload(96);
+        byte[] plaintext = CreatePayload(96);
 
         byte[] viaArray;
         using (ChaCha20 cipher = CreateCipher())
@@ -108,7 +108,7 @@ public sealed class SymmetricStreamAlgorithmExtensionTests
     [TestMethod]
     public void Encrypt_WhenGivenOffsetAndCount_ShouldEncryptOnlyThatSlice()
     {
-        var plaintext = CreatePayload(64);
+        byte[] plaintext = CreatePayload(64);
         const int offset = 8;
         const int count = 40;
 
@@ -130,13 +130,13 @@ public sealed class SymmetricStreamAlgorithmExtensionTests
     [TestMethod]
     public void EncryptThenDecrypt_WhenGivenStreams_ShouldRecoverPlaintext()
     {
-        var plaintext = CreatePayload(5000);
+        byte[] plaintext = CreatePayload(5000);
 
         using var ciphertext = new MemoryStream();
         using (var source = new MemoryStream(plaintext))
         using (ChaCha20 cipher = CreateCipher())
         {
-            var read = cipher.Encrypt(source, ciphertext);
+            int read = cipher.Encrypt(source, ciphertext);
             Assert.AreEqual(plaintext.Length, read);
         }
 
@@ -184,7 +184,7 @@ public sealed class SymmetricStreamAlgorithmExtensionTests
     public void Encrypt_WhenCountExceedsArray_ShouldThrowArgumentOutOfRangeException()
     {
         using ChaCha20 cipher = CreateCipher();
-        var payload = CreatePayload(16);
+        byte[] payload = CreatePayload(16);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -215,7 +215,7 @@ public sealed class SymmetricStreamAlgorithmExtensionTests
     [TestMethod]
     public void Decrypt_WhenGivenArrayAndOffset_ShouldRecoverPlaintext()
     {
-        var plaintext = CreatePayload(64);
+        byte[] plaintext = CreatePayload(64);
 
         byte[] ciphertext;
         using (ChaCha20 cipher = CreateCipher())
@@ -234,7 +234,7 @@ public sealed class SymmetricStreamAlgorithmExtensionTests
     [TestMethod]
     public void Encrypt_WhenGivenArrayAndOffset_ShouldMatchFullArrayOverload()
     {
-        var plaintext = CreatePayload(64);
+        byte[] plaintext = CreatePayload(64);
 
         byte[] viaFull;
         using (ChaCha20 cipher = CreateCipher())
@@ -253,7 +253,7 @@ public sealed class SymmetricStreamAlgorithmExtensionTests
     [TestMethod]
     public void Decrypt_WhenGivenReadOnlyMemory_ShouldRecoverPlaintext()
     {
-        var plaintext = CreatePayload(48);
+        byte[] plaintext = CreatePayload(48);
 
         byte[] ciphertext;
         using (ChaCha20 cipher = CreateCipher())
@@ -272,7 +272,7 @@ public sealed class SymmetricStreamAlgorithmExtensionTests
     [TestMethod]
     public void Encrypt_WhenGivenReadOnlyMemory_ShouldMatchFullArrayOverload()
     {
-        var plaintext = CreatePayload(48);
+        byte[] plaintext = CreatePayload(48);
 
         byte[] viaArray;
         using (ChaCha20 cipher = CreateCipher())

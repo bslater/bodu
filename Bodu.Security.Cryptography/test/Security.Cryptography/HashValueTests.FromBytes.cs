@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HashValueTests.FromBytes.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -15,7 +15,7 @@ public sealed partial class HashValueTests
     [TestMethod]
     public void FromBytes_WhenSourceMutatedAfterwards_ShouldNotAffectValue()
     {
-        var source = new byte[] { 0x01, 0x02, 0x03 };
+        byte[] source = new byte[] { 0x01, 0x02, 0x03 };
         var hash = HashValue.FromBytes(source);
 
         source[0] = 0xFF;
@@ -42,7 +42,7 @@ public sealed partial class HashValueTests
     [TestMethod]
     public void FromBytes_WhenInputIsNonEmpty_ShouldExposeSameBytes()
     {
-        var source = new byte[] { 0x0A, 0x0B, 0x0C, 0x0D };
+        byte[] source = new byte[] { 0x0A, 0x0B, 0x0C, 0x0D };
 
         var hash = HashValue.FromBytes(source);
 
@@ -60,7 +60,7 @@ public sealed partial class HashValueTests
     {
         var hash = HashValue.FromBytes([0x10, 0x20]);
 
-        var copy = hash.ToArray();
+        byte[] copy = hash.ToArray();
         copy[0] = 0xFF;
 
         Assert.AreEqual("1020", hash.ToHexString());

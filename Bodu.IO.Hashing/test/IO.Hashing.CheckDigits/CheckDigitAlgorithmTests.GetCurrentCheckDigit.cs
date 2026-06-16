@@ -19,9 +19,9 @@ public abstract partial class CheckDigitAlgorithmTests<TTest, TAlgorithm>
         TAlgorithm algorithm = CreateAlgorithm();
         algorithm.Append("12345".AsSpan());
 
-        var first = algorithm.GetCurrentCheckDigit();
-        var second = algorithm.GetCurrentCheckDigit();
-        var third = algorithm.GetCurrentCheckDigit();
+        char first = algorithm.GetCurrentCheckDigit();
+        char second = algorithm.GetCurrentCheckDigit();
+        char third = algorithm.GetCurrentCheckDigit();
 
         Assert.AreEqual(first, second);
         Assert.AreEqual(second, third);

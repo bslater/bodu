@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HashValueTests.ToBase64String.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -15,7 +15,7 @@ public sealed partial class HashValueTests
     [TestMethod]
     public void ToBase64String_WhenValueIsNonEmpty_ShouldMatchConvertToBase64String()
     {
-        var bytes = new byte[] { 0x01, 0x02, 0x03, 0xFD, 0xFE, 0xFF };
+        byte[] bytes = new byte[] { 0x01, 0x02, 0x03, 0xFD, 0xFE, 0xFF };
         var hash = HashValue.FromBytes(bytes);
 
         Assert.AreEqual(Convert.ToBase64String(bytes), hash.ToBase64String());

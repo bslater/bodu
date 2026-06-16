@@ -23,7 +23,7 @@ public sealed class CanonicalEncodingTests
     [TestMethod]
     public void Base32_Decode_WhenCanonicalInput_ShouldAccept()
     {
-        var decoded = Base32.Decode("MY======".AsSpan(), Base32Variant.Standard, BaseFormatStyles.RequireCanonicalEncoding);
+        byte[] decoded = Base32.Decode("MY======".AsSpan(), Base32Variant.Standard, BaseFormatStyles.RequireCanonicalEncoding);
 
         CollectionAssert.AreEqual(new byte[] { 0x66 }, decoded);
     }
@@ -44,11 +44,11 @@ public sealed class CanonicalEncodingTests
     [DataRow(64)]
     public void Base32_Decode_WhenCanonicalRoundTrip_ShouldAccept(int inputLength)
     {
-        var payload = new byte[inputLength];
+        byte[] payload = new byte[inputLength];
         new Random(unchecked((int)0xBEEFCAFE)).NextBytes(payload);
 
-        var encoded = Base32.Encode(payload);
-        var decoded = Base32.Decode(encoded.AsSpan(), Base32Variant.Standard, BaseFormatStyles.RequireCanonicalEncoding);
+        string encoded = Base32.Encode(payload);
+        byte[] decoded = Base32.Decode(encoded.AsSpan(), Base32Variant.Standard, BaseFormatStyles.RequireCanonicalEncoding);
 
         CollectionAssert.AreEqual(payload, decoded);
     }
@@ -60,8 +60,8 @@ public sealed class CanonicalEncodingTests
     [TestMethod]
     public void Base32_Decode_WhenNonCanonicalInputAndCanonicalFlagAbsent_ShouldDecodeWithDiscardedBits()
     {
-        var canonical = Base32.Decode("MY======".AsSpan());
-        var nonCanonical = Base32.Decode("MZ======".AsSpan());
+        byte[] canonical = Base32.Decode("MY======".AsSpan());
+        byte[] nonCanonical = Base32.Decode("MZ======".AsSpan());
 
         CollectionAssert.AreEqual(canonical, nonCanonical);
     }
@@ -88,14 +88,14 @@ public sealed class CanonicalEncodingTests
     [TestMethod]
     public void Base32_DecodeFromUtf8_WhenNonCanonicalInputAndRequireCanonical_ShouldReturnInvalidData()
     {
-        var utf8 = System.Text.Encoding.ASCII.GetBytes("MZ======");
-        var destination = new byte[1];
+        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("MZ======");
+        byte[] destination = new byte[1];
 
         OperationStatus status = Base32.DecodeFromUtf8(
             utf8,
             destination,
-            out var _,
-            out var _,
+            out int _,
+            out int _,
             Base32Variant.Standard,
             BaseFormatStyles.RequireCanonicalEncoding);
 
@@ -109,9 +109,9 @@ public sealed class CanonicalEncodingTests
     [TestMethod]
     public void Base32_TryDecode_WhenNonCanonicalInputAndRequireCanonical_ShouldReturnFalse()
     {
-        var destination = new byte[1];
+        byte[] destination = new byte[1];
 
-        var ok = Base32.TryDecode("MZ======".AsSpan(), destination, out var _, Base32Variant.Standard, BaseFormatStyles.RequireCanonicalEncoding);
+        bool ok = Base32.TryDecode("MZ======".AsSpan(), destination, out int _, Base32Variant.Standard, BaseFormatStyles.RequireCanonicalEncoding);
 
         Assert.IsFalse(ok);
     }
@@ -122,7 +122,7 @@ public sealed class CanonicalEncodingTests
     [TestMethod]
     public void Base64_Decode_WhenCanonicalInput_ShouldAccept()
     {
-        var decoded = Base64.Decode("Zg==".AsSpan(), Base64Variant.Standard, BaseFormatStyles.RequireCanonicalEncoding);
+        byte[] decoded = Base64.Decode("Zg==".AsSpan(), Base64Variant.Standard, BaseFormatStyles.RequireCanonicalEncoding);
 
         CollectionAssert.AreEqual(new byte[] { 0x66 }, decoded);
     }
@@ -141,11 +141,11 @@ public sealed class CanonicalEncodingTests
     [DataRow(64)]
     public void Base64_Decode_WhenCanonicalRoundTrip_ShouldAccept(int inputLength)
     {
-        var payload = new byte[inputLength];
+        byte[] payload = new byte[inputLength];
         new Random(unchecked((int)0xBEEFCAFE)).NextBytes(payload);
 
-        var encoded = Base64.Encode(payload);
-        var decoded = Base64.Decode(encoded.AsSpan(), Base64Variant.Standard, BaseFormatStyles.RequireCanonicalEncoding);
+        string encoded = Base64.Encode(payload);
+        byte[] decoded = Base64.Decode(encoded.AsSpan(), Base64Variant.Standard, BaseFormatStyles.RequireCanonicalEncoding);
 
         CollectionAssert.AreEqual(payload, decoded);
     }
@@ -156,8 +156,8 @@ public sealed class CanonicalEncodingTests
     [TestMethod]
     public void Base64_Decode_WhenNonCanonicalInputAndCanonicalFlagAbsent_ShouldDecodeWithDiscardedBits()
     {
-        var canonical = Base64.Decode("Zg==".AsSpan());
-        var nonCanonical = Base64.Decode("Zh==".AsSpan());
+        byte[] canonical = Base64.Decode("Zg==".AsSpan());
+        byte[] nonCanonical = Base64.Decode("Zh==".AsSpan());
 
         CollectionAssert.AreEqual(canonical, nonCanonical);
     }
@@ -184,9 +184,9 @@ public sealed class CanonicalEncodingTests
     [TestMethod]
     public void Base64_TryDecode_WhenNonCanonicalInputAndRequireCanonical_ShouldReturnFalse()
     {
-        var destination = new byte[1];
+        byte[] destination = new byte[1];
 
-        var ok = Base64.TryDecode("Zh==".AsSpan(), destination, out var _, Base64Variant.Standard, BaseFormatStyles.RequireCanonicalEncoding);
+        bool ok = Base64.TryDecode("Zh==".AsSpan(), destination, out int _, Base64Variant.Standard, BaseFormatStyles.RequireCanonicalEncoding);
 
         Assert.IsFalse(ok);
     }

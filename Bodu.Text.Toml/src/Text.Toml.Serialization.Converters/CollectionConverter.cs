@@ -69,7 +69,7 @@ internal sealed class CollectionConverter<TCollection, TElement>
         }
 
         List<TElement> items = [];
-        var index = 0;
+        int index = 0;
         while (reader.Read() && reader.TokenType != TomlTokenType.EndArray)
         {
             try
@@ -113,7 +113,7 @@ internal sealed class CollectionConverter<TCollection, TElement>
             }
 
             writer.WriteStartArray();
-            var index = 0;
+            int index = 0;
             foreach (TElement element in (IEnumerable<TElement>)value)
             {
                 if (element is null)

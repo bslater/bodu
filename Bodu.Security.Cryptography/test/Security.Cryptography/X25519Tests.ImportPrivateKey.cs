@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="X25519Tests.ImportPrivateKey.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -21,7 +21,7 @@ public sealed partial class X25519Tests
     {
         // Bits 0-2 set and bit 254 clear: clamping would alter this value, so an exact round-trip proves the
         // stored form is the caller's original scalar.
-        var privateKey = new byte[X25519.KeySizeInBytes];
+        byte[] privateKey = new byte[X25519.KeySizeInBytes];
         privateKey[0] = 0x07;
         privateKey[31] = 0x00;
         privateKey[15] = 0xAB;

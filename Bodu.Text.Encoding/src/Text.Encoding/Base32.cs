@@ -78,7 +78,7 @@ public static partial class Base32
     /// </exception>
     public static int GetDecodedLength(ReadOnlySpan<char> source, Base32Variant variant = Base32Variant.Standard, BaseFormatStyles styles = BaseFormatStyles.None)
     {
-        return !TryCountSymbols(source, variant, styles, out var symbolCount)
+        return !TryCountSymbols(source, variant, styles, out int symbolCount)
             ? throw new FormatException(EncodingResourceStrings.Format_Invalid_Base32VariantAlphabet)
             : (symbolCount * 5) / 8;
     }
@@ -128,17 +128,17 @@ public static partial class Base32
         if (byteCount == 0)
             return 0;
 
-        var padding = ShouldEmitPadding(variant, options);
+        bool padding = ShouldEmitPadding(variant, options);
         checked
         {
-            var charsBeforeLineBreaks = padding
+            int charsBeforeLineBreaks = padding
                 ? ((byteCount + 4) / 5) * 8
                 : ((byteCount * 8) + 4) / 5;
 
             if (!options.HasFlag(BaseFormattingOptions.InsertLineBreaks) || charsBeforeLineBreaks <= LineBreakInterval)
                 return charsBeforeLineBreaks;
 
-            var breaks = (charsBeforeLineBreaks - 1) / LineBreakInterval;
+            int breaks = (charsBeforeLineBreaks - 1) / LineBreakInterval;
             return charsBeforeLineBreaks + (breaks * 2);
         }
     }
@@ -168,7 +168,7 @@ public static partial class Base32
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     public static bool IsBase32Digit(char value, Base32Variant variant = Base32Variant.Standard)
     {
-        (_, var lookup) = GetVariantConfig(variant);
+        (_, sbyte[]? lookup) = GetVariantConfig(variant);
         return value < lookup.Length && lookup[value] >= 0;
     }
 
@@ -199,7 +199,7 @@ public static partial class Base32
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     public static bool TryGetDecodedLength(ReadOnlySpan<char> source, out int byteCount, Base32Variant variant = Base32Variant.Standard, BaseFormatStyles styles = BaseFormatStyles.None)
     {
-        if (!TryCountSymbols(source, variant, styles, out var symbolCount))
+        if (!TryCountSymbols(source, variant, styles, out int symbolCount))
         {
             byteCount = 0;
             return false;
@@ -216,10 +216,10 @@ public static partial class Base32
     /// <returns>The Crockford lookup table.</returns>
     private static sbyte[] BuildCrockfordLookup()
     {
-        var table = BuildLookup(CrockfordAlphabet);
+        sbyte[] table = BuildLookup(CrockfordAlphabet);
 
-        var one = (sbyte)CrockfordAlphabet.IndexOf('1');
-        var zero = (sbyte)CrockfordAlphabet.IndexOf('0');
+        sbyte one = (sbyte)CrockfordAlphabet.IndexOf('1');
+        sbyte zero = (sbyte)CrockfordAlphabet.IndexOf('0');
 
         table['I'] = one;
         table['i'] = one;
@@ -239,18 +239,18 @@ public static partial class Base32
     /// <returns>A lookup table where valid characters map to their symbol value and others map to <c>-1</c>.</returns>
     private static sbyte[] BuildLookup(string alphabet)
     {
-        var table = new sbyte[128];
+        sbyte[] table = new sbyte[128];
         Array.Fill(table, (sbyte)-1);
 
-        for (var i = 0; i < alphabet.Length; i++)
+        for (int i = 0; i < alphabet.Length; i++)
         {
-            var c = alphabet[i];
+            char c = alphabet[i];
             table[c] = (sbyte)i;
 
             if (char.IsLetter(c))
             {
-                var lower = char.ToLowerInvariant(c);
-                var upper = char.ToUpperInvariant(c);
+                char lower = char.ToLowerInvariant(c);
+                char upper = char.ToUpperInvariant(c);
                 table[lower] = (sbyte)i;
                 table[upper] = (sbyte)i;
             }
@@ -304,13 +304,13 @@ public static partial class Base32
     /// <returns><see langword="true" /> when every character is valid; otherwise <see langword="false" />.</returns>
     private static bool TryCountSymbols(ReadOnlySpan<char> source, Base32Variant variant, BaseFormatStyles styles, out int symbolCount)
     {
-        (_, var lookup) = GetVariantConfig(variant);
-        var ignoreWhitespace = styles.HasFlag(BaseFormatStyles.IgnoreWhitespace);
+        (_, sbyte[]? lookup) = GetVariantConfig(variant);
+        bool ignoreWhitespace = styles.HasFlag(BaseFormatStyles.IgnoreWhitespace);
 
         symbolCount = 0;
-        var paddingSeen = 0;
+        int paddingSeen = 0;
 
-        foreach (var c in source)
+        foreach (char c in source)
         {
             if (ignoreWhitespace && c is ' ' or '\t' or '\r' or '\n')
                 continue;
@@ -339,8 +339,8 @@ public static partial class Base32
         // Terminal-quantum data character count must be one of {0, 2, 4, 5, 7, 8} per RFC 4648 §6. Crockford and
         // Z-Base32 do not impose a fixed terminal-quantum rule (the spec defines five bits per character with no
         // alignment restriction) so the check is gated by variant.
-        var strictQuantum = variant is Base32Variant.Standard or Base32Variant.HexExtended;
-        var dataMod = symbolCount % 8;
+        bool strictQuantum = variant is Base32Variant.Standard or Base32Variant.HexExtended;
+        int dataMod = symbolCount % 8;
         if (strictQuantum && dataMod is 1 or 3 or 6)
         {
             symbolCount = 0;
@@ -353,12 +353,12 @@ public static partial class Base32
         // padding ("MZXW6Y========" or "M=") is always rejected.
         if (variant is Base32Variant.Standard or Base32Variant.HexExtended)
         {
-            var expectedPadding = (8 - dataMod) % 8;
-            var padIsRequired = !styles.HasFlag(BaseFormatStyles.AllowMissingPadding);
+            int expectedPadding = (8 - dataMod) % 8;
+            bool padIsRequired = !styles.HasFlag(BaseFormatStyles.AllowMissingPadding);
 
             if (padIsRequired)
             {
-                var totalSymbols = symbolCount + paddingSeen;
+                int totalSymbols = symbolCount + paddingSeen;
                 if ((totalSymbols % 8) != 0)
                 {
                     symbolCount = 0;

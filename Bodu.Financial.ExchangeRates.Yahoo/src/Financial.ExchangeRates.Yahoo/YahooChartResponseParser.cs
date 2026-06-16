@@ -58,18 +58,18 @@ internal static class YahooChartResponseParser
         if (!TryGetCloseArray(first, out JsonElement closes))
             throw NoData(request);
 
-        var quoteIsoCode = ReadQuoteIsoCode(first, request.Pair.ToIsoCode);
+        string quoteIsoCode = ReadQuoteIsoCode(first, request.Pair.ToIsoCode);
 
-        var count = Math.Min(timestamps.GetArrayLength(), closes.GetArrayLength());
+        int count = Math.Min(timestamps.GetArrayLength(), closes.GetArrayLength());
         var observations = new List<ExchangeRateObservation>(count);
 
-        for (var i = 0; i < count; i++)
+        for (int i = 0; i < count; i++)
         {
             JsonElement close = closes[i];
             if (close.ValueKind is JsonValueKind.Null)
                 continue;
 
-            if (!close.TryGetDecimal(out var rate) || rate <= 0m)
+            if (!close.TryGetDecimal(out decimal rate) || rate <= 0m)
                 continue;
 
             var date = DateOnly.FromDateTime(DateTimeOffset.FromUnixTimeSeconds(timestamps[i].GetInt64()).UtcDateTime);
@@ -115,7 +115,7 @@ internal static class YahooChartResponseParser
         if (!chart.TryGetProperty("error", out JsonElement error) || error.ValueKind is JsonValueKind.Null)
             return;
 
-        var description = error.TryGetProperty("description", out JsonElement element) && element.ValueKind == JsonValueKind.String
+        string description = error.TryGetProperty("description", out JsonElement element) && element.ValueKind == JsonValueKind.String
             ? element.GetString() ?? string.Empty
             : string.Empty;
 

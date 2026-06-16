@@ -160,28 +160,28 @@ public sealed partial class Threefish1024Cipher
     private void DecryptScalar(ReadOnlySpan<byte> input, Span<byte> output)
     {
         // Load the ciphertext block as sixteen 64-bit little-endian words into locals.
-        ref var inputRef = ref MemoryMarshal.GetReference(input);
-        var b0 = LoadWordLittleEndian(ref inputRef, 0);
-        var b1 = LoadWordLittleEndian(ref inputRef, 8);
-        var b2 = LoadWordLittleEndian(ref inputRef, 16);
-        var b3 = LoadWordLittleEndian(ref inputRef, 24);
-        var b4 = LoadWordLittleEndian(ref inputRef, 32);
-        var b5 = LoadWordLittleEndian(ref inputRef, 40);
-        var b6 = LoadWordLittleEndian(ref inputRef, 48);
-        var b7 = LoadWordLittleEndian(ref inputRef, 56);
-        var b8 = LoadWordLittleEndian(ref inputRef, 64);
-        var b9 = LoadWordLittleEndian(ref inputRef, 72);
-        var b10 = LoadWordLittleEndian(ref inputRef, 80);
-        var b11 = LoadWordLittleEndian(ref inputRef, 88);
-        var b12 = LoadWordLittleEndian(ref inputRef, 96);
-        var b13 = LoadWordLittleEndian(ref inputRef, 104);
-        var b14 = LoadWordLittleEndian(ref inputRef, 112);
-        var b15 = LoadWordLittleEndian(ref inputRef, 120);
+        ref byte inputRef = ref MemoryMarshal.GetReference(input);
+        ulong b0 = LoadWordLittleEndian(ref inputRef, 0);
+        ulong b1 = LoadWordLittleEndian(ref inputRef, 8);
+        ulong b2 = LoadWordLittleEndian(ref inputRef, 16);
+        ulong b3 = LoadWordLittleEndian(ref inputRef, 24);
+        ulong b4 = LoadWordLittleEndian(ref inputRef, 32);
+        ulong b5 = LoadWordLittleEndian(ref inputRef, 40);
+        ulong b6 = LoadWordLittleEndian(ref inputRef, 48);
+        ulong b7 = LoadWordLittleEndian(ref inputRef, 56);
+        ulong b8 = LoadWordLittleEndian(ref inputRef, 64);
+        ulong b9 = LoadWordLittleEndian(ref inputRef, 72);
+        ulong b10 = LoadWordLittleEndian(ref inputRef, 80);
+        ulong b11 = LoadWordLittleEndian(ref inputRef, 88);
+        ulong b12 = LoadWordLittleEndian(ref inputRef, 96);
+        ulong b13 = LoadWordLittleEndian(ref inputRef, 104);
+        ulong b14 = LoadWordLittleEndian(ref inputRef, 112);
+        ulong b15 = LoadWordLittleEndian(ref inputRef, 120);
 
-        ref var keyRef = ref MemoryMarshal.GetArrayDataReference(_keySchedule);
-        ref var tweakRef = ref MemoryMarshal.GetArrayDataReference(_tweakSchedule);
+        ref ulong keyRef = ref MemoryMarshal.GetArrayDataReference(_keySchedule);
+        ref ulong tweakRef = ref MemoryMarshal.GetArrayDataReference(_tweakSchedule);
 
-        for (var d = (80 / 4) - 1; d >= 1; d -= 2)
+        for (int d = (80 / 4) - 1; d >= 1; d -= 2)
         {
             int dm17 = d % 17, dm3 = d % 3;
 
@@ -309,7 +309,7 @@ public sealed partial class Threefish1024Cipher
         b14 -= Unsafe.Add(ref keyRef, 14) + Unsafe.Add(ref tweakRef, 1);
         b15 -= Unsafe.Add(ref keyRef, 15);
 
-        ref var outputRef = ref MemoryMarshal.GetReference(output);
+        ref byte outputRef = ref MemoryMarshal.GetReference(output);
         StoreWordLittleEndian(ref outputRef, 0, b0);
         StoreWordLittleEndian(ref outputRef, 8, b1);
         StoreWordLittleEndian(ref outputRef, 16, b2);
@@ -375,26 +375,26 @@ public sealed partial class Threefish1024Cipher
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     private void EncryptScalar(ReadOnlySpan<byte> input, Span<byte> output)
     {
-        ref var inputRef = ref MemoryMarshal.GetReference(input);
-        var b0 = LoadWordLittleEndian(ref inputRef, 0);
-        var b1 = LoadWordLittleEndian(ref inputRef, 8);
-        var b2 = LoadWordLittleEndian(ref inputRef, 16);
-        var b3 = LoadWordLittleEndian(ref inputRef, 24);
-        var b4 = LoadWordLittleEndian(ref inputRef, 32);
-        var b5 = LoadWordLittleEndian(ref inputRef, 40);
-        var b6 = LoadWordLittleEndian(ref inputRef, 48);
-        var b7 = LoadWordLittleEndian(ref inputRef, 56);
-        var b8 = LoadWordLittleEndian(ref inputRef, 64);
-        var b9 = LoadWordLittleEndian(ref inputRef, 72);
-        var b10 = LoadWordLittleEndian(ref inputRef, 80);
-        var b11 = LoadWordLittleEndian(ref inputRef, 88);
-        var b12 = LoadWordLittleEndian(ref inputRef, 96);
-        var b13 = LoadWordLittleEndian(ref inputRef, 104);
-        var b14 = LoadWordLittleEndian(ref inputRef, 112);
-        var b15 = LoadWordLittleEndian(ref inputRef, 120);
+        ref byte inputRef = ref MemoryMarshal.GetReference(input);
+        ulong b0 = LoadWordLittleEndian(ref inputRef, 0);
+        ulong b1 = LoadWordLittleEndian(ref inputRef, 8);
+        ulong b2 = LoadWordLittleEndian(ref inputRef, 16);
+        ulong b3 = LoadWordLittleEndian(ref inputRef, 24);
+        ulong b4 = LoadWordLittleEndian(ref inputRef, 32);
+        ulong b5 = LoadWordLittleEndian(ref inputRef, 40);
+        ulong b6 = LoadWordLittleEndian(ref inputRef, 48);
+        ulong b7 = LoadWordLittleEndian(ref inputRef, 56);
+        ulong b8 = LoadWordLittleEndian(ref inputRef, 64);
+        ulong b9 = LoadWordLittleEndian(ref inputRef, 72);
+        ulong b10 = LoadWordLittleEndian(ref inputRef, 80);
+        ulong b11 = LoadWordLittleEndian(ref inputRef, 88);
+        ulong b12 = LoadWordLittleEndian(ref inputRef, 96);
+        ulong b13 = LoadWordLittleEndian(ref inputRef, 104);
+        ulong b14 = LoadWordLittleEndian(ref inputRef, 112);
+        ulong b15 = LoadWordLittleEndian(ref inputRef, 120);
 
-        ref var keyRef = ref MemoryMarshal.GetArrayDataReference(_keySchedule);
-        ref var tweakRef = ref MemoryMarshal.GetArrayDataReference(_tweakSchedule);
+        ref ulong keyRef = ref MemoryMarshal.GetArrayDataReference(_keySchedule);
+        ref ulong tweakRef = ref MemoryMarshal.GetArrayDataReference(_tweakSchedule);
 
         b0 += Unsafe.Add(ref keyRef, 0);
         b1 += Unsafe.Add(ref keyRef, 1);
@@ -413,7 +413,7 @@ public sealed partial class Threefish1024Cipher
         b14 += Unsafe.Add(ref keyRef, 14) + Unsafe.Add(ref tweakRef, 1);
         b15 += Unsafe.Add(ref keyRef, 15);
 
-        for (var d = 1; d < 80 / 4; d += 2)
+        for (int d = 1; d < 80 / 4; d += 2)
         {
             int dm17 = d % 17, dm3 = d % 3;
 
@@ -518,7 +518,7 @@ public sealed partial class Threefish1024Cipher
             b15 += Unsafe.Add(ref keyRef, dm17 + 16) + (uint)d + 1;
         }
 
-        ref var outputRef = ref MemoryMarshal.GetReference(output);
+        ref byte outputRef = ref MemoryMarshal.GetReference(output);
         StoreWordLittleEndian(ref outputRef, 0, b0);
         StoreWordLittleEndian(ref outputRef, 8, b1);
         StoreWordLittleEndian(ref outputRef, 16, b2);

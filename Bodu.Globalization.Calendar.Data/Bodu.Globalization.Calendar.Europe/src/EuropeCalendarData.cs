@@ -65,8 +65,8 @@ public static class EuropeCalendarData
     {
         ThrowHelper.ThrowIfNull(territory);
 
-        var country = CountryOf(territory);
-        var resourceName = ResourcePrefix + country.ToLowerInvariant() + ".xml";
+        string country = CountryOf(territory);
+        string resourceName = ResourcePrefix + country.ToLowerInvariant() + ".xml";
 
         using Stream stream = typeof(EuropeCalendarData).Assembly.GetManifestResourceStream(resourceName)
             ?? throw new ArgumentException(
@@ -120,8 +120,8 @@ public static class EuropeCalendarData
     /// <returns>The uppercase country code.</returns>
     private static string CountryOf(string territory)
     {
-        var separator = territory.IndexOf('-', StringComparison.Ordinal);
-        var country = separator < 0 ? territory : territory[..separator];
+        int separator = territory.IndexOf('-', StringComparison.Ordinal);
+        string country = separator < 0 ? territory : territory[..separator];
 
         return country.ToUpperInvariant();
     }

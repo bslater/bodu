@@ -53,10 +53,10 @@ public partial class ICryptoTransformExtensionsTests
     public void TransformBlock_WhenArrayIsValid_ShouldTransformInPlaceAndReturnByteCount(KnownAnswerTest kat)
     {
         // Take a fresh copy since TransformBlock modifies the array in-place.
-        var block = (byte[])kat.Input.Clone();
+        byte[] block = (byte[])kat.Input.Clone();
 
         using SimpleReversingCryptoTransform transform = CreateTransform(kat);
-        var written = transform.TransformBlock(block);
+        int written = transform.TransformBlock(block);
 
         Assert.AreEqual(kat.Input.Length, written,
             $"[{kat.Name}] Written byte count must equal input length.");
@@ -83,7 +83,7 @@ public partial class ICryptoTransformExtensionsTests
     {
         using SimpleReversingCryptoTransform transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
 
-        var written = transform.TransformBlock([]);
+        int written = transform.TransformBlock([]);
 
         Assert.AreEqual(0, written,
             "TransformBlock with an empty input must report zero bytes written, not throw.");
@@ -101,8 +101,8 @@ public partial class ICryptoTransformExtensionsTests
     {
         // Two independent copies of the same input — the transform must produce identical
         // output for each, confirming there is no state leakage between consecutive calls.
-        var blockA = (byte[])kat.Input.Clone();
-        var blockB = (byte[])kat.Input.Clone();
+        byte[] blockA = (byte[])kat.Input.Clone();
+        byte[] blockB = (byte[])kat.Input.Clone();
 
         using SimpleReversingCryptoTransform transform = CreateTransform(kat);
         transform.TransformBlock(blockA);

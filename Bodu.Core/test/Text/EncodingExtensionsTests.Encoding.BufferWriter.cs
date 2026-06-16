@@ -80,7 +80,7 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void WriteBytes_WhenInvoked_ShouldWriteEncodedBytesIntoWriter()
     {
-        var expected = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
+        byte[] expected = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
         using var writer = new PooledBufferBuilder<byte>(16);
 
         System.Text.Encoding.UTF8.WriteBytes(MultiByteText, writer);
@@ -142,12 +142,12 @@ public sealed partial class EncodingExtensionsTests
     public void WriteBytesWithPreamble_WhenEncodingHasPreamble_ShouldWriteBomThenEncodedBytes()
     {
         System.Text.Encoding utf8WithBom = new System.Text.UTF8Encoding(true);
-        var expectedTail = utf8WithBom.GetBytes(SampleText);
+        byte[] expectedTail = utf8WithBom.GetBytes(SampleText);
         using var writer = new PooledBufferBuilder<byte>(64);
 
         utf8WithBom.WriteBytesWithPreamble(SampleText, writer);
 
-        var writtenArray = writer.WrittenSpan.ToArray();
+        byte[] writtenArray = writer.WrittenSpan.ToArray();
         CollectionAssert.AreEqual(
             utf8WithBom.Preamble.ToArray(),
             writtenArray[..utf8WithBom.Preamble.Length]);
@@ -180,7 +180,7 @@ public sealed partial class EncodingExtensionsTests
     [TestMethod]
     public void WriteChars_WhenInvoked_ShouldWriteDecodedCharsIntoWriter()
     {
-        var bytes = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
+        byte[] bytes = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
         using var writer = new PooledBufferBuilder<char>(16);
 
         System.Text.Encoding.UTF8.WriteChars(bytes, writer);

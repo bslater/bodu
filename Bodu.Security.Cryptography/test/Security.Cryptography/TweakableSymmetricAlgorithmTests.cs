@@ -45,7 +45,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
                     size / 2
                 }));
 
-        foreach (var candidate in candidates.Distinct().OrderBy(size => size))
+        foreach (int candidate in candidates.Distinct().OrderBy(size => size))
         {
             if (!legal.Contains(candidate))
                 yield return new object[] { candidate };
@@ -74,7 +74,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
                     size / 2
                 }));
 
-        foreach (var candidate in candidates.Distinct().OrderBy(size => size))
+        foreach (int candidate in candidates.Distinct().OrderBy(size => size))
         {
             if (!legal.Contains(candidate))
                 yield return new object[] { candidate };

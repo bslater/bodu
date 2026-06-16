@@ -68,10 +68,10 @@ internal static class BuilderXml
     /// </exception>
     internal static int ParseMonth(string value)
     {
-        if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var numeric) && numeric is >= 1 and <= 12)
+        if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int numeric) && numeric is >= 1 and <= 12)
             return numeric;
 
-        for (var i = 1; i <= 12; i++)
+        for (int i = 1; i <= 12; i++)
         {
             if (string.Equals(s_monthNames[i], value, StringComparison.OrdinalIgnoreCase))
                 return i;
@@ -120,5 +120,5 @@ internal static class BuilderXml
     internal static int? ParseInt(string? value) =>
         string.IsNullOrEmpty(value)
             ? null
-            : int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var result) ? result : null;
+            : int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int result) ? result : null;
 }

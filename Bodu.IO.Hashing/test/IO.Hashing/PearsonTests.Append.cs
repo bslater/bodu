@@ -26,7 +26,7 @@ public partial class PearsonTests
         Pearson algorithm = new(bits, Pearson.PearsonTableType.Pearson);
         algorithm.Append(Encoding.ASCII.GetBytes("abc"));
 
-        var result = algorithm.GetCurrentHash();
+        byte[] result = algorithm.GetCurrentHash();
         Assert.AreEqual(bits / 8, result.Length);
     }
 

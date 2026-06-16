@@ -35,10 +35,10 @@ public static partial class StringExtensions
         if (value.Length == 0) return value;
 
         var builder = new StringBuilder(value.Length);
-        var prevWasWhite = false;
-        for (var i = 0; i < value.Length; i++)
+        bool prevWasWhite = false;
+        for (int i = 0; i < value.Length; i++)
         {
-            var c = value[i];
+            char c = value[i];
             if (char.IsWhiteSpace(c))
             {
                 if (!prevWasWhite) builder.Append(' ');
@@ -51,7 +51,7 @@ public static partial class StringExtensions
             }
         }
 
-        var result = builder.ToString();
+        string result = builder.ToString();
         return string.Equals(result, value, StringComparison.Ordinal) ? value : result;
     }
 }

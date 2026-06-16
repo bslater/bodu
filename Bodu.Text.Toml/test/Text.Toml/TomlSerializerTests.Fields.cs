@@ -27,7 +27,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Serialize_WhenIncludeFieldsDefault_ShouldNotWriteFields()
     {
-        var text = TomlSerializer.Serialize(new FieldAndPropertyModel { Field = 5, Property = 6 });
+        string text = TomlSerializer.Serialize(new FieldAndPropertyModel { Field = 5, Property = 6 });
 
         Assert.AreEqual("Property = 6\n", text);
     }
@@ -42,7 +42,7 @@ public partial class TomlSerializerTests
         var options = new TomlSerializerOptions { IncludeFields = true };
         var original = new FieldAndPropertyModel { Field = 5, Property = 6 };
 
-        var text = TomlSerializer.Serialize(original, options);
+        string text = TomlSerializer.Serialize(original, options);
         Assert.AreEqual("Property = 6\nField = 5\n", text);
 
         var roundTripped = TomlSerializer.Deserialize<FieldAndPropertyModel>(text, options);
@@ -60,7 +60,7 @@ public partial class TomlSerializerTests
     {
         var original = new IncludedFieldModel { Field = 5 };
 
-        var text = TomlSerializer.Serialize(original);
+        string text = TomlSerializer.Serialize(original);
         Assert.AreEqual("Field = 5\n", text);
 
         var roundTripped = TomlSerializer.Deserialize<IncludedFieldModel>(text);
@@ -79,7 +79,7 @@ public partial class TomlSerializerTests
             PropertyNamingPolicy = TomlNamingPolicy.CamelCase,
         };
 
-        var text = TomlSerializer.Serialize(new FieldAndPropertyModel { Field = 5, Property = 6 }, options);
+        string text = TomlSerializer.Serialize(new FieldAndPropertyModel { Field = 5, Property = 6 }, options);
 
         Assert.AreEqual("property = 6\nfield = 5\n", text);
     }
@@ -94,7 +94,7 @@ public partial class TomlSerializerTests
         var options = new TomlSerializerOptions { IncludeFields = true };
         var original = new RenamedFieldModel { Count = 7 };
 
-        var text = TomlSerializer.Serialize(original, options);
+        string text = TomlSerializer.Serialize(original, options);
         Assert.AreEqual("n = 7\n", text);
 
         var roundTripped = TomlSerializer.Deserialize<RenamedFieldModel>(text, options);
@@ -110,7 +110,7 @@ public partial class TomlSerializerTests
     {
         var options = new TomlSerializerOptions { IncludeFields = true };
 
-        var text = TomlSerializer.Serialize(new OrderedFieldModel { First = 1, Second = 2 }, options);
+        string text = TomlSerializer.Serialize(new OrderedFieldModel { First = 1, Second = 2 }, options);
 
         Assert.AreEqual("First = 1\nSecond = 2\n", text);
     }
@@ -124,7 +124,7 @@ public partial class TomlSerializerTests
     {
         var options = new TomlSerializerOptions { IncludeFields = true };
 
-        var text = TomlSerializer.Serialize(new IgnoredFieldModel { Kept = 1, Skipped = 2 }, options);
+        string text = TomlSerializer.Serialize(new IgnoredFieldModel { Kept = 1, Skipped = 2 }, options);
 
         Assert.AreEqual("Kept = 1\n", text);
     }
@@ -138,7 +138,7 @@ public partial class TomlSerializerTests
     {
         var options = new TomlSerializerOptions { IncludeFields = true };
 
-        var text = TomlSerializer.Serialize(new ReadOnlyFieldModel(5), options);
+        string text = TomlSerializer.Serialize(new ReadOnlyFieldModel(5), options);
         Assert.AreEqual("Field = 5\n", text);
 
         var roundTripped = TomlSerializer.Deserialize<ReadOnlyFieldModel>("Field = 99\n", options);
@@ -172,7 +172,7 @@ public partial class TomlSerializerTests
         var options = new TomlSerializerOptions { IncludeFields = true };
         var original = new RequiredFieldModel { Field = 3 };
 
-        var text = TomlSerializer.Serialize(original, options);
+        string text = TomlSerializer.Serialize(original, options);
         Assert.AreEqual("Field = 3\n", text);
 
         var roundTripped = TomlSerializer.Deserialize<RequiredFieldModel>(text, options);
@@ -188,7 +188,7 @@ public partial class TomlSerializerTests
     {
         var options = new TomlSerializerOptions { IncludeFields = true };
 
-        var text = TomlSerializer.Serialize(new PrivateFieldModel(5) { Property = 6 }, options);
+        string text = TomlSerializer.Serialize(new PrivateFieldModel(5) { Property = 6 }, options);
 
         Assert.AreEqual("Property = 6\n", text);
     }

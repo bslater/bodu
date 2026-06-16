@@ -17,7 +17,7 @@ public abstract partial class DoubleEndedRingCollectionTestsBase<TTest, TCollect
     public void TryPeekTail_WhenEmpty_ShouldReturnFalseAndDefault()
     {
         TCollection collection = CreateCollection(3);
-        Assert.IsFalse(TryPeekTail(collection, out var item));
+        Assert.IsFalse(TryPeekTail(collection, out int item));
         Assert.AreEqual(default, item);
     }
     /// <summary>
@@ -30,7 +30,7 @@ public abstract partial class DoubleEndedRingCollectionTestsBase<TTest, TCollect
         AddToTail(collection, 7);
         AddToTail(collection, 8);
 
-        Assert.IsTrue(TryPeekTail(collection, out var item));
+        Assert.IsTrue(TryPeekTail(collection, out int item));
         Assert.AreEqual(8, item);
         Assert.AreEqual(2, GetCount(collection));
     }

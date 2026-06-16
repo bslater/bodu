@@ -47,7 +47,7 @@ public partial class PooledBufferBuilderTests
         using var builder = new PooledBufferBuilder<int>();
         builder.AppendRange(expected.AsSpan());
 
-        var destination = new int[expected.Length];
+        int[] destination = new int[expected.Length];
         builder.CopyTo(destination);
 
         CollectionAssert.AreEqual(expected, destination);
@@ -65,7 +65,7 @@ public partial class PooledBufferBuilderTests
         using var builder = new PooledBufferBuilder<int>();
         builder.AppendRange(expected.AsSpan());
 
-        var destination = new int[10]; // larger than WrittenCount
+        int[] destination = new int[10]; // larger than WrittenCount
         builder.CopyTo(destination);
 
         CollectionAssert.AreEqual(expected, destination.Take(builder.WrittenCount).ToArray());

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateDocumentBuilderTests.Configuration.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -15,7 +15,7 @@ public partial class NotableDateDocumentBuilderTests
     [TestMethod]
     public void WithResourceId_ShouldOverrideResourceIdInSerialization()
     {
-        var xml = NotableDateDocumentBuilder.Create("initial")
+        string xml = NotableDateDocumentBuilder.Create("initial")
             .WithResourceId("overridden")
             .AddNotableDate("nd", "ND", NotableDateCategory.Observance, d => d
                 .AddRule("r", x => x.Fixed(1, 1)))
@@ -31,7 +31,7 @@ public partial class NotableDateDocumentBuilderTests
     [TestMethod]
     public void WithSchemaVersion_ShouldOverrideSchemaVersionInSerialization()
     {
-        var xml = NotableDateDocumentBuilder.Create("demo.schema")
+        string xml = NotableDateDocumentBuilder.Create("demo.schema")
             .WithSchemaVersion("9.9")
             .AddNotableDate("nd", "ND", NotableDateCategory.Observance, d => d
                 .AddRule("r", x => x.Fixed(1, 1)))

@@ -249,8 +249,8 @@ public sealed class RuleApplicabilityTests
     [TestMethod]
     public void MatchSpecificity_WhenNarrowerScope_ShouldExceedBroaderScope()
     {
-        var national = Territories("AU").MatchSpecificity("AU-NSW");
-        var subnational = Territories("AU-NSW").MatchSpecificity("AU-NSW");
+        int national = Territories("AU").MatchSpecificity("AU-NSW");
+        int subnational = Territories("AU-NSW").MatchSpecificity("AU-NSW");
 
         Assert.IsGreaterThan(national, subnational);
     }

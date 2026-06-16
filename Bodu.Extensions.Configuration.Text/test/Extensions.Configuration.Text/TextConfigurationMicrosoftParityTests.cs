@@ -183,8 +183,8 @@ items.2 = third
         IConfiguration bodu = new ConfigurationBuilder().AddBoduConfigurationStream(b).Build();
         IConfiguration json = new ConfigurationBuilder().AddJsonStream(j).Build();
 
-        var boduItems = bodu.GetSection("items").Get<string[]>();
-        var jsonItems = json.GetSection("items").Get<string[]>();
+        string[]? boduItems = bodu.GetSection("items").Get<string[]>();
+        string[]? jsonItems = json.GetSection("items").Get<string[]>();
 
         CollectionAssert.AreEqual(jsonItems, boduItems);
     }

@@ -15,7 +15,7 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void PrefixLines_WhenInputUsesLf_ShouldPrependPrefixToEveryLine()
     {
-        var actual = "one\ntwo".PrefixLines("// ");
+        string actual = "one\ntwo".PrefixLines("// ");
 
         Assert.AreEqual("// one\n// two", actual);
     }
@@ -27,7 +27,7 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void PrefixLines_WhenInputUsesCrLf_ShouldPreserveLineBoundaries()
     {
-        var actual = "one\r\ntwo".PrefixLines("> ");
+        string actual = "one\r\ntwo".PrefixLines("> ");
 
         Assert.AreEqual("> one\r\n> two", actual);
     }

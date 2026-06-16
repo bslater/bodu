@@ -338,7 +338,7 @@ public sealed class ParserMonthTokenTests
     [DataRow("32")]
     public void Load_WhenFixedDayIsOutOfSchemaRange_ShouldThrowSchemaDiagnostic(string day)
     {
-        var xml =
+        string xml =
             $"""
             <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.month">
               <NotableDates>

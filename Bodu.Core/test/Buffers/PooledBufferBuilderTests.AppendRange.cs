@@ -47,7 +47,7 @@ public partial class PooledBufferBuilderTests
     [TestMethod]
     public void AppendRange_WhenEnumerableUsed_ShouldAppendAllItems_UsingIEnumerable()
     {
-        var source = Enumerable.Range(1, 50).ToArray();
+        int[] source = Enumerable.Range(1, 50).ToArray();
         using var builder = new PooledBufferBuilder<int>();
 
         builder.AppendRange((System.Collections.Generic.IEnumerable<int>)source);
@@ -62,7 +62,7 @@ public partial class PooledBufferBuilderTests
     [TestMethod]
     public void AppendRange_WhenExceedsInitialSize_ShouldExpandBuffer_UsingIEnumerable()
     {
-        var source = Enumerable.Range(1, 1000).ToArray();
+        int[] source = Enumerable.Range(1, 1000).ToArray();
         using var builder = new PooledBufferBuilder<int>();
 
         builder.AppendRange((System.Collections.Generic.IEnumerable<int>)source);
@@ -170,7 +170,7 @@ public partial class PooledBufferBuilderTests
     [TestMethod]
     public void AppendRange_WhenSpanExceedsCapacity_ShouldGrowBufferAndRetainAllItems_UsingReadOnlySpan()
     {
-        var expected = Enumerable.Range(0, 200).ToArray();
+        int[] expected = Enumerable.Range(0, 200).ToArray();
         using var builder = new PooledBufferBuilder<int>(4);
 
         builder.AppendRange(expected.AsSpan());

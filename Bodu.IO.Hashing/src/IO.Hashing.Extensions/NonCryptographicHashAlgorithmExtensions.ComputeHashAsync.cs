@@ -36,7 +36,7 @@ public static partial class NonCryptographicHashAlgorithmExtensions
         ArgumentNullException.ThrowIfNull(source);
         ThrowHelper.ThrowIfZeroOrNegative(bufferSize);
 
-        var buffer = ArrayPool<byte>.Shared.Rent(bufferSize);
+        byte[] buffer = ArrayPool<byte>.Shared.Rent(bufferSize);
         try
         {
             int bytesRead;

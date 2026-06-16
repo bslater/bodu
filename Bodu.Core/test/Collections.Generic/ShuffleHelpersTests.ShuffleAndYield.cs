@@ -18,8 +18,8 @@ public partial class ShuffleHelpersTests
     [TestMethod]
     public void ShuffleAndYield_Array_ShouldReturnExpectedSubset()
     {
-        var buffer = Enumerable.Range(1, 10).ToArray();
-        var actual = ShuffleHelpers.ShuffleAndYield(buffer, new XorShiftRandom(), 5).ToArray();
+        int[] buffer = Enumerable.Range(1, 10).ToArray();
+        int[] actual = ShuffleHelpers.ShuffleAndYield(buffer, new XorShiftRandom(), 5).ToArray();
 
         Assert.HasCount(5, actual);
         CollectionAssert.IsSubsetOf(actual, buffer);
@@ -31,8 +31,8 @@ public partial class ShuffleHelpersTests
     [TestMethod]
     public void ShuffleAndYield_Array_WhenCountEqualsLength_ShouldReturnAllUniqueItems()
     {
-        var buffer = Enumerable.Range(1, 10).ToArray();
-        var actual = ShuffleHelpers.ShuffleAndYield(buffer, new XorShiftRandom(), buffer.Length).ToArray();
+        int[] buffer = Enumerable.Range(1, 10).ToArray();
+        int[] actual = ShuffleHelpers.ShuffleAndYield(buffer, new XorShiftRandom(), buffer.Length).ToArray();
 
         CollectionAssert.AreEquivalent(buffer, actual);
         CollectionAssert.AllItemsAreUnique(actual);
@@ -56,7 +56,7 @@ public partial class ShuffleHelpersTests
     [TestMethod]
     public void ShuffleAndYield_IEnumerable_ShouldEnumerateOnIteration()
     {
-        var enumerated = false;
+        bool enumerated = false;
 
         var tracking = new TrackingEnumerable<int>(
             source: [1, 2, 3],
@@ -78,7 +78,7 @@ public partial class ShuffleHelpersTests
     public void ShuffleAndYield_IEnumerable_ShouldReturnExpectedCount(int count)
     {
         IEnumerable<int> source = Enumerable.Range(1, 10);
-        var actual = ShuffleHelpers.ShuffleAndYield(source, new XorShiftRandom(), count).ToArray();
+        int[] actual = ShuffleHelpers.ShuffleAndYield(source, new XorShiftRandom(), count).ToArray();
 
         Assert.HasCount(count, actual);
         CollectionAssert.IsSubsetOf(actual, source.ToArray());
@@ -91,7 +91,7 @@ public partial class ShuffleHelpersTests
     public void ShuffleAndYield_IEnumerable_ShouldReturnExpectedSubset()
     {
         IEnumerable<int> source = Enumerable.Range(1, 10);
-        var actual = ShuffleHelpers.ShuffleAndYield(source, new XorShiftRandom(), 3).ToArray();
+        int[] actual = ShuffleHelpers.ShuffleAndYield(source, new XorShiftRandom(), 3).ToArray();
 
         Assert.HasCount(3, actual);
         CollectionAssert.IsSubsetOf(actual, source.ToArray());
@@ -103,8 +103,8 @@ public partial class ShuffleHelpersTests
     [TestMethod]
     public void ShuffleAndYield_ShouldNotMutateOriginalArray()
     {
-        var original = Enumerable.Range(1, 10).ToArray();
-        var copy = original.ToArray();
+        int[] original = Enumerable.Range(1, 10).ToArray();
+        int[] copy = original.ToArray();
         Assert.AreNotSame(original, copy);
 
         _ = ShuffleHelpers.ShuffleAndYield(original, new XorShiftRandom(), 5).ToArray();
@@ -117,8 +117,8 @@ public partial class ShuffleHelpersTests
     [TestMethod]
     public void ShuffleAndYield_ShouldWorkWithDuplicates()
     {
-        var buffer = new[] { 5, 5, 5, 5, 5 };
-        var actual = ShuffleHelpers.ShuffleAndYield(buffer, new XorShiftRandom(), 3).ToArray();
+        int[] buffer = new[] { 5, 5, 5, 5, 5 };
+        int[] actual = ShuffleHelpers.ShuffleAndYield(buffer, new XorShiftRandom(), 3).ToArray();
 
         CollectionAssert.AreEqual(new[] { 5, 5, 5 }, actual);
     }
@@ -129,7 +129,7 @@ public partial class ShuffleHelpersTests
     [TestMethod]
     public void ShuffleAndYield_WhenCountExceedsLength_ShouldThrowExactly()
     {
-        var buffer = new[] { 1, 2, 3 };
+        int[] buffer = new[] { 1, 2, 3 };
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
             ShuffleHelpers.ShuffleAndYield(buffer, new XorShiftRandom(), 4).ToArray());
     }
@@ -140,7 +140,7 @@ public partial class ShuffleHelpersTests
     [TestMethod]
     public void ShuffleAndYield_WhenCountNegative_ShouldThrowExactly()
     {
-        var buffer = new[] { 1, 2, 3 };
+        int[] buffer = new[] { 1, 2, 3 };
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
             ShuffleHelpers.ShuffleAndYield(buffer, new XorShiftRandom(), -1).ToArray());
     }
@@ -153,8 +153,8 @@ public partial class ShuffleHelpersTests
     [DataRow(3, 0)]
     public void ShuffleAndYield_WhenEmptyOrZeroCount_ShouldReturnEmpty(int bufferSize, int count)
     {
-        var buffer = Enumerable.Range(1, bufferSize).ToArray();
-        var actual = ShuffleHelpers.ShuffleAndYield(buffer, new XorShiftRandom(), count).ToArray();
+        int[] buffer = Enumerable.Range(1, bufferSize).ToArray();
+        int[] actual = ShuffleHelpers.ShuffleAndYield(buffer, new XorShiftRandom(), count).ToArray();
 
         if (count == 0 || bufferSize == 0)
             Assert.IsEmpty(actual);
@@ -170,14 +170,14 @@ public partial class ShuffleHelpersTests
     {
         const int runs = 20000;
         const int size = 10;
-        var tracker = new int[size, size];
-        var original = Enumerable.Range(0, size).ToArray();
+        int[,] tracker = new int[size, size];
+        int[] original = Enumerable.Range(0, size).ToArray();
         var rng = new XorShiftRandom(12345);
 
-        for (var r = 0; r < runs; r++)
+        for (int r = 0; r < runs; r++)
         {
-            var shuffled = ShuffleHelpers.ShuffleAndYield(original, rng, size).ToArray();
-            for (var i = 0; i < size; i++)
+            int[] shuffled = ShuffleHelpers.ShuffleAndYield(original, rng, size).ToArray();
+            for (int i = 0; i < size; i++)
                 tracker[i, shuffled[i]]++;
         }
 
@@ -191,9 +191,9 @@ public partial class ShuffleHelpersTests
     [TestMethod]
     public void ShuffleAndYield_WithFixedSeed_ShouldProduceDeterministicOutput()
     {
-        var buffer = Enumerable.Range(1, 10).ToArray();
-        var result1 = ShuffleHelpers.ShuffleAndYield(buffer, new XorShiftRandom(42), buffer.Length).ToArray();
-        var result2 = ShuffleHelpers.ShuffleAndYield(buffer, new XorShiftRandom(42), buffer.Length).ToArray();
+        int[] buffer = Enumerable.Range(1, 10).ToArray();
+        int[] result1 = ShuffleHelpers.ShuffleAndYield(buffer, new XorShiftRandom(42), buffer.Length).ToArray();
+        int[] result2 = ShuffleHelpers.ShuffleAndYield(buffer, new XorShiftRandom(42), buffer.Length).ToArray();
 
         CollectionAssert.AreEqual(result1, result2);
     }
@@ -246,7 +246,7 @@ public partial class ShuffleHelpersTests
     public void ShuffleAndYield_Span_ShouldReturnExpectedSubset()
     {
         Span<int> span = Enumerable.Range(1, 10).ToArray().AsSpan();
-        var actual = ShuffleHelpers.ShuffleAndYield<int>(span, new XorShiftRandom(), 4).ToArray();
+        int[] actual = ShuffleHelpers.ShuffleAndYield<int>(span, new XorShiftRandom(), 4).ToArray();
 
         Assert.HasCount(4, actual);
         CollectionAssert.IsSubsetOf(actual, span.ToArray());
@@ -260,7 +260,7 @@ public partial class ShuffleHelpersTests
     public void ShuffleAndYield_Memory_ShouldReturnExpectedSubset()
     {
         Memory<int> memory = Enumerable.Range(1, 8).ToArray().AsMemory();
-        var actual = ShuffleHelpers.ShuffleAndYield(memory, new XorShiftRandom(), 3).ToArray();
+        int[] actual = ShuffleHelpers.ShuffleAndYield(memory, new XorShiftRandom(), 3).ToArray();
 
         Assert.HasCount(3, actual);
         CollectionAssert.IsSubsetOf(actual, memory.ToArray());
@@ -272,8 +272,8 @@ public partial class ShuffleHelpersTests
     [TestMethod]
     public void ShuffleAndYield_Span_ShouldNotModifyOriginalSpan()
     {
-        var original = Enumerable.Range(1, 10).ToArray();
-        var copy = original.ToArray();
+        int[] original = Enumerable.Range(1, 10).ToArray();
+        int[] copy = original.ToArray();
 
         _ = ShuffleHelpers.ShuffleAndYield<int>(original.AsSpan(), new XorShiftRandom(), 5).ToArray();
 

@@ -66,7 +66,7 @@ public sealed partial class EncodingExtensionsTests
     {
         System.Text.Encoding replacing = System.Text.Encoding.ASCII.WithReplacementFallbacks("?", "?");
 
-        var encoded = replacing.GetBytes("aéb");
+        byte[] encoded = replacing.GetBytes("aéb");
 
         Assert.AreEqual("a?b", System.Text.Encoding.ASCII.GetString(encoded));
     }

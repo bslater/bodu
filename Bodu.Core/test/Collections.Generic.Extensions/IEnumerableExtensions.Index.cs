@@ -36,7 +36,7 @@ public sealed partial class IEnumerableExtensionsTests_Index
     [TestMethod]
     public void Index_WhenResultNotEnumerated_ShouldNotEnumerateSource()
     {
-        var enumerated = false;
+        bool enumerated = false;
 
         IEnumerable<int> Source()
         {

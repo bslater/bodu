@@ -32,7 +32,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
 
         foreach (KeySizes blockSize in blockSizes)
         {
-            for (var size = blockSize.MinSize; size <= blockSize.MaxSize; size += blockSize.SkipSize == 0 ? int.MaxValue : blockSize.SkipSize)
+            for (int size = blockSize.MinSize; size <= blockSize.MaxSize; size += blockSize.SkipSize == 0 ? int.MaxValue : blockSize.SkipSize)
             {
                 Assert.IsTrue(uniqueSizes.Add(size), $"Duplicate or overlapping block size detected: {size}.");
             }

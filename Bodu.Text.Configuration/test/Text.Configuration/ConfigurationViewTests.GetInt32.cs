@@ -85,7 +85,7 @@ public partial class ConfigurationViewTests
         var doc = ConfigurationDocument.Parse("[*]\nbad = abc\n");
         ConfigurationView view = doc.Resolve("any.cs");
 
-        Assert.IsFalse(view.TryGetInt32("missing", out var _));
-        Assert.IsFalse(view.TryGetInt32("bad", out var _));
+        Assert.IsFalse(view.TryGetInt32("missing", out int _));
+        Assert.IsFalse(view.TryGetInt32("bad", out int _));
     }
 }

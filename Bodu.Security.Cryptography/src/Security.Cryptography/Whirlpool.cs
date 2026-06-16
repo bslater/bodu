@@ -213,23 +213,23 @@ public sealed partial class Whirlpool
     /// <inheritdoc />
     protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength)
     {
-        var inputLength = block.Length;
+        int inputLength = block.Length;
         const int blockBytes = BlockSizeBits / 8;
         const int lengthFieldBytes = LengthFieldBits / 8;
 
         // Whirlpool appends 0x80, a sequence of zero bytes, and a 256-bit big-endian length trailer.
         // A second padded block is required whenever the residual (including the 0x80 byte) does not
         // leave room for the 32-byte length field in the same block.
-        var needsSecondBlock = inputLength + 1 + lengthFieldBytes > blockBytes;
-        var totalLength = needsSecondBlock ? blockBytes * 2 : blockBytes;
+        bool needsSecondBlock = inputLength + 1 + lengthFieldBytes > blockBytes;
+        int totalLength = needsSecondBlock ? blockBytes * 2 : blockBytes;
 
-        var padded = new byte[totalLength];
+        byte[] padded = new byte[totalLength];
         block.CopyTo(padded);
         padded[inputLength] = 0x80;
 
         // Only the low 64 bits of the bit count are populated; the upper 192 bits remain zero. This
         // matches the behavior of every widely deployed Whirlpool implementation.
-        var bitLength = messageLength * 8;
+        ulong bitLength = messageLength * 8;
         BinaryPrimitives.WriteUInt64BigEndian(padded.AsSpan(totalLength - 8), bitLength);
 
         return padded;
@@ -239,8 +239,8 @@ public sealed partial class Whirlpool
     protected override void ProcessBlock(ReadOnlySpan<byte> block)
     {
         VariantTables tables = GetTables(_version);
-        var mul = tables.Multiplication;
-        var rcon = tables.RoundKeys;
+        ulong[] mul = tables.Multiplication;
+        ulong[][] rcon = tables.RoundKeys;
 
         Span<ulong> message = stackalloc ulong[8];
         Span<ulong> key = stackalloc ulong[8];
@@ -250,14 +250,14 @@ public sealed partial class Whirlpool
 
         // Read the message block (big-endian) and initialize the round key from the hash state.
         // The first sigma step XORs the message against the initial key to seed the cipher state.
-        for (var i = 0; i < 8; i++)
+        for (int i = 0; i < 8; i++)
         {
             message[i] = BinaryPrimitives.ReadUInt64BigEndian(block.Slice(i * 8, 8));
             key[i] = _state[i];
             state[i] = message[i] ^ key[i];
         }
 
-        for (var r = 0; r < RoundCount; r++)
+        for (int r = 0; r < RoundCount; r++)
         {
             // Evolve the round key by one application of the non-linear round function with the
             // variant-specific constant in column 0 and zeros elsewhere.
@@ -270,15 +270,15 @@ public sealed partial class Whirlpool
         }
 
         // Miyaguchi–Preneel finalization: H_{i+1} = W_{H_i}(M) ⊕ M ⊕ H_i.
-        for (var i = 0; i < 8; i++)
+        for (int i = 0; i < 8; i++)
             _state[i] ^= state[i] ^ message[i];
     }
 
     /// <inheritdoc />
     protected override byte[] ProcessFinalBlock()
     {
-        var output = new byte[HashSizeBits / 8];
-        for (var i = 0; i < 8; i++)
+        byte[] output = new byte[HashSizeBits / 8];
+        for (int i = 0; i < 8; i++)
             BinaryPrimitives.WriteUInt64BigEndian(output.AsSpan(i * 8, 8), _state[i]);
 
         return output;

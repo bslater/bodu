@@ -29,7 +29,7 @@ public partial class CurrencyRegistryTests
     [DataRow("ITL", 0, true)]
     public void TryGet_WhenIsoCodeIsInShippedCatalogue_ShouldReturnExpectedMetadata(string iso, int expectedMinorUnits, bool expectedHistoric)
     {
-        var found = CurrencyRegistry.TryGet(iso, out CurrencyInfo? info);
+        bool found = CurrencyRegistry.TryGet(iso, out CurrencyInfo? info);
 
         Assert.IsTrue(found);
         Assert.IsNotNull(info);
@@ -74,7 +74,7 @@ public partial class CurrencyRegistryTests
     [TestMethod]
     public void TryGet_WhenIsoCodeIsUnknown_ShouldReturnFalse()
     {
-        var found = CurrencyRegistry.TryGet("ZZZ", out CurrencyInfo? info);
+        bool found = CurrencyRegistry.TryGet("ZZZ", out CurrencyInfo? info);
 
         Assert.IsFalse(found);
         Assert.IsNull(info);
@@ -87,7 +87,7 @@ public partial class CurrencyRegistryTests
     [TestMethod]
     public void TryGet_WhenIsoCodeIsNull_ShouldReturnFalseWithoutThrowing()
     {
-        var found = CurrencyRegistry.TryGet(null!, out CurrencyInfo? info);
+        bool found = CurrencyRegistry.TryGet(null!, out CurrencyInfo? info);
 
         Assert.IsFalse(found);
         Assert.IsNull(info);

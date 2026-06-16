@@ -145,7 +145,7 @@ public partial class ConcurrentHashSetTests
         });
 
         comparer.FaultArmed = false;
-        var completed = Task.Run(() => set.Add(3)).Wait(TimeSpan.FromSeconds(5));
+        bool completed = Task.Run(() => set.Add(3)).Wait(TimeSpan.FromSeconds(5));
 
         Assert.IsTrue(completed, "A faulted Add must release its stripe lock so later operations do not deadlock.");
         Assert.IsTrue(set.Contains(3));

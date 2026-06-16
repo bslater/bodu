@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IDatedExchangeRateProvider.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -25,11 +25,11 @@ namespace Bodu.Financial;
 /// most-recent policy) so callers can opt into the documented safe default by omission.
 /// </para>
 /// <para>
-/// Every getter returns the same element type — a single <see cref="ExchangeRateLookupResult" /> for the point
-/// lookups, and an <see cref="IEnumerable{T}" /> of them for the range lookups. The synchronous getters and the
-/// asynchronous getters resolve identical results; the asynchronous surface exists because an implementation backed by a
-/// remote feed may fetch on demand, and the synchronous surface may block to do so (or serve only already-loaded data,
-/// at the implementation's discretion).
+/// Every getter returns the same element type — a single <see cref="ExchangeRateLookupResult" /> for the point lookups,
+/// and an <see cref="IEnumerable{T}" /> of them for the range lookups. The synchronous getters and the asynchronous
+/// getters resolve identical results; the asynchronous surface exists because an implementation backed by a remote feed
+/// may fetch on demand, and the synchronous surface may block to do so (or serve only already-loaded data, at the
+/// implementation's discretion).
 /// </para>
 /// </remarks>
 public interface IDatedExchangeRateProvider
@@ -211,9 +211,9 @@ public interface IDatedExchangeRateProvider
         CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Asynchronously returns every available rate from <paramref name="fromIsoCode" /> to <paramref name="toIsoCode" />
-    /// whose observation date falls within the inclusive range <paramref name="startDate" /> to
-    /// <paramref name="endDate" />.
+    /// Asynchronously returns every available rate from <paramref name="fromIsoCode" /> to
+    /// <paramref name="toIsoCode" /> whose observation date falls within the inclusive range
+    /// <paramref name="startDate" /> to <paramref name="endDate" />.
     /// </summary>
     /// <param name="fromIsoCode">The source-currency ISO-style code.</param>
     /// <param name="toIsoCode">The destination-currency ISO-style code.</param>

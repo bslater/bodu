@@ -227,7 +227,7 @@ public static partial class NumericExtensions
     {
         if (value == 0) return 1;
 
-        var length = 0;
+        int length = 0;
         while (value != 0)
         {
             length++;
@@ -249,7 +249,7 @@ public static partial class NumericExtensions
     internal static ulong Pow10(int exponent)
     {
         ulong result = 1;
-        for (var i = 0; i < exponent; i++)
+        for (int i = 0; i < exponent; i++)
             result *= 10;
         return result;
     }
@@ -289,15 +289,15 @@ public static partial class NumericExtensions
     {
         if (value == 0) return 0;
 
-        var length = DigitLength(value);
+        int length = DigitLength(value);
         if (length < 2) return value;
 
         count %= length;
         if (count == 0) return value;
         if (count < 0) count += length;
 
-        var divisor = Pow10(count);
-        var multiplier = Pow10(length - count);
+        ulong divisor = Pow10(count);
+        ulong multiplier = Pow10(length - count);
         return (value % divisor * multiplier) + (value / divisor);
     }
 
@@ -309,9 +309,9 @@ public static partial class NumericExtensions
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static byte[] ToDigitArrayCore(ulong value)
     {
-        var length = DigitLength(value);
-        var digits = new byte[length];
-        for (var i = length - 1; i >= 0; i--)
+        int length = DigitLength(value);
+        byte[] digits = new byte[length];
+        for (int i = length - 1; i >= 0; i--)
         {
             digits[i] = (byte)(value % 10);
             value /= 10;

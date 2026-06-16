@@ -17,7 +17,7 @@ public sealed partial class StringEncodingExtensionsTests
     [TestMethod]
     public void GetBytesPooled_WhenInvoked_ShouldReturnBuilderWhoseWrittenSpanMatchesEncoded()
     {
-        var expected = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
+        byte[] expected = System.Text.Encoding.UTF8.GetBytes(MultiByteText);
 
         using PooledBufferBuilder<byte> builder = MultiByteText.GetBytesPooled(System.Text.Encoding.UTF8);
 

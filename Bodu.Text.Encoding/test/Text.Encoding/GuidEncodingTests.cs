@@ -26,7 +26,7 @@ public sealed class GuidEncodingTests
     [TestMethod]
     public void Base16_EncodeGuid_RoundTrip_ShouldRecoverOriginalGuid()
     {
-        var encoded = Base16.Encode(TestGuid);
+        string encoded = Base16.Encode(TestGuid);
         Guid decoded = Base16.DecodeGuid(encoded.AsSpan());
 
         Assert.AreEqual(TestGuid, decoded);
@@ -44,7 +44,7 @@ public sealed class GuidEncodingTests
     [TestMethod]
     public void Base32_EncodeGuid_RoundTrip_ShouldRecoverOriginalGuid()
     {
-        var encoded = Base32.Encode(TestGuid);
+        string encoded = Base32.Encode(TestGuid);
         Guid decoded = Base32.DecodeGuid(encoded.AsSpan());
 
         Assert.AreEqual(TestGuid, decoded);
@@ -56,7 +56,7 @@ public sealed class GuidEncodingTests
     [TestMethod]
     public void Base32_EncodeGuidWithOmitPadding_ShouldProduceTwentySixCharacters()
     {
-        var encoded = Base32.Encode(TestGuid, Base32Variant.Standard, BaseFormattingOptions.OmitPadding);
+        string encoded = Base32.Encode(TestGuid, Base32Variant.Standard, BaseFormattingOptions.OmitPadding);
 
         Assert.AreEqual(26, encoded.Length);
     }
@@ -69,9 +69,9 @@ public sealed class GuidEncodingTests
     public void Base32_TryDecodeGuid_WhenInputNotSixteenBytes_ShouldReturnFalseAndEmptyGuid()
     {
         // 5-byte payload encodes to "MFRGGZDF" (no padding), well short of 16 bytes.
-        var encoded = Base32.Encode([0x61, 0x62, 0x63, 0x64, 0x65]);
+        string encoded = Base32.Encode([0x61, 0x62, 0x63, 0x64, 0x65]);
 
-        var ok = Base32.TryDecodeGuid(encoded.AsSpan(), out Guid value);
+        bool ok = Base32.TryDecodeGuid(encoded.AsSpan(), out Guid value);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(Guid.Empty, value);
@@ -85,7 +85,7 @@ public sealed class GuidEncodingTests
     public void Base32_TryDecodeGuid_WhenInvalidAlphabet_ShouldReturnFalse()
     {
         // '!' is not in the Base32 alphabet.
-        var ok = Base32.TryDecodeGuid("AAAAAAAAAAAAAAAAAAAAAAAAAAA!".AsSpan(), out Guid value);
+        bool ok = Base32.TryDecodeGuid("AAAAAAAAAAAAAAAAAAAAAAAAAAA!".AsSpan(), out Guid value);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(Guid.Empty, value);
@@ -98,9 +98,9 @@ public sealed class GuidEncodingTests
     [TestMethod]
     public void Base32_TryDecodeGuid_WhenValidEncodedGuid_ShouldReturnTrueAndRecoverValue()
     {
-        var encoded = Base32.Encode(TestGuid);
+        string encoded = Base32.Encode(TestGuid);
 
-        var ok = Base32.TryDecodeGuid(encoded.AsSpan(), out Guid value);
+        bool ok = Base32.TryDecodeGuid(encoded.AsSpan(), out Guid value);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(TestGuid, value);
@@ -112,7 +112,7 @@ public sealed class GuidEncodingTests
     [TestMethod]
     public void Base58_EncodeGuid_RoundTrip_ShouldRecoverOriginalGuid()
     {
-        var encoded = Base58.Encode(TestGuid);
+        string encoded = Base58.Encode(TestGuid);
         Guid decoded = Base58.DecodeGuid(encoded.AsSpan());
 
         Assert.AreEqual(TestGuid, decoded);
@@ -126,9 +126,9 @@ public sealed class GuidEncodingTests
     public void Base58_TryDecodeGuid_WhenInputNotSixteenBytes_ShouldReturnFalseAndEmptyGuid()
     {
         // 4-byte payload encodes to a short Base58 string.
-        var encoded = Base58.Encode([0xDE, 0xAD, 0xBE, 0xEF]);
+        string encoded = Base58.Encode([0xDE, 0xAD, 0xBE, 0xEF]);
 
-        var ok = Base58.TryDecodeGuid(encoded.AsSpan(), out Guid value);
+        bool ok = Base58.TryDecodeGuid(encoded.AsSpan(), out Guid value);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(Guid.Empty, value);
@@ -142,7 +142,7 @@ public sealed class GuidEncodingTests
     public void Base58_TryDecodeGuid_WhenInvalidAlphabet_ShouldReturnFalse()
     {
         // '0' and 'O' are intentionally excluded from the Bitcoin/Flickr alphabet.
-        var ok = Base58.TryDecodeGuid("0000O".AsSpan(), out Guid value);
+        bool ok = Base58.TryDecodeGuid("0000O".AsSpan(), out Guid value);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(Guid.Empty, value);
@@ -155,9 +155,9 @@ public sealed class GuidEncodingTests
     [TestMethod]
     public void Base58_TryDecodeGuid_WhenValidEncodedGuid_ShouldReturnTrueAndRecoverValue()
     {
-        var encoded = Base58.Encode(TestGuid);
+        string encoded = Base58.Encode(TestGuid);
 
-        var ok = Base58.TryDecodeGuid(encoded.AsSpan(), out Guid value);
+        bool ok = Base58.TryDecodeGuid(encoded.AsSpan(), out Guid value);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(TestGuid, value);
@@ -169,7 +169,7 @@ public sealed class GuidEncodingTests
     [TestMethod]
     public void Base64_EncodeGuid_RoundTrip_ShouldRecoverOriginalGuid()
     {
-        var encoded = Base64.Encode(TestGuid);
+        string encoded = Base64.Encode(TestGuid);
         Guid decoded = Base64.DecodeGuid(encoded.AsSpan());
 
         Assert.AreEqual(TestGuid, decoded);
@@ -183,9 +183,9 @@ public sealed class GuidEncodingTests
     public void Base64_TryDecodeGuid_WhenInputNotSixteenBytes_ShouldReturnFalseAndEmptyGuid()
     {
         // 4-byte payload encodes to "3q2+7w==" — 4 bytes, not 16.
-        var encoded = Base64.Encode([0xDE, 0xAD, 0xBE, 0xEF]);
+        string encoded = Base64.Encode([0xDE, 0xAD, 0xBE, 0xEF]);
 
-        var ok = Base64.TryDecodeGuid(encoded.AsSpan(), out Guid value);
+        bool ok = Base64.TryDecodeGuid(encoded.AsSpan(), out Guid value);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(Guid.Empty, value);
@@ -199,7 +199,7 @@ public sealed class GuidEncodingTests
     public void Base64_TryDecodeGuid_WhenInvalidAlphabet_ShouldReturnFalse()
     {
         // '@' is not in the Base64 alphabet.
-        var ok = Base64.TryDecodeGuid("@AAAAAAAAAAAAAAAAAAAAA==".AsSpan(), out Guid value);
+        bool ok = Base64.TryDecodeGuid("@AAAAAAAAAAAAAAAAAAAAA==".AsSpan(), out Guid value);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(Guid.Empty, value);
@@ -212,9 +212,9 @@ public sealed class GuidEncodingTests
     [TestMethod]
     public void Base64_TryDecodeGuid_WhenValidEncodedGuid_ShouldReturnTrueAndRecoverValue()
     {
-        var encoded = Base64.Encode(TestGuid);
+        string encoded = Base64.Encode(TestGuid);
 
-        var ok = Base64.TryDecodeGuid(encoded.AsSpan(), out Guid value);
+        bool ok = Base64.TryDecodeGuid(encoded.AsSpan(), out Guid value);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(TestGuid, value);
@@ -227,9 +227,9 @@ public sealed class GuidEncodingTests
     [TestMethod]
     public void Base64_TryDecodeGuid_WhenValidUrlSafeEncodedGuid_ShouldReturnTrueAndRecoverValue()
     {
-        var encoded = Base64.Encode(TestGuid, Base64Variant.UrlSafe);
+        string encoded = Base64.Encode(TestGuid, Base64Variant.UrlSafe);
 
-        var ok = Base64.TryDecodeGuid(encoded.AsSpan(), out Guid value, Base64Variant.UrlSafe);
+        bool ok = Base64.TryDecodeGuid(encoded.AsSpan(), out Guid value, Base64Variant.UrlSafe);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(TestGuid, value);
@@ -241,7 +241,7 @@ public sealed class GuidEncodingTests
     [TestMethod]
     public void Base64Url_EncodeGuid_ShouldProduceTwentyTwoUrlSafeCharacters()
     {
-        var encoded = Base64.Encode(TestGuid, Base64Variant.UrlSafe);
+        string encoded = Base64.Encode(TestGuid, Base64Variant.UrlSafe);
 
         Assert.AreEqual(22, encoded.Length);
         Assert.IsFalse(encoded.Contains('+', StringComparison.Ordinal));
@@ -258,7 +258,7 @@ public sealed class GuidEncodingTests
     [TestMethod]
     public void Base85_EncodeGuid_ShouldProduceTwentyCharactersAndRoundTrip()
     {
-        var encoded = Base85.Encode(TestGuid);
+        string encoded = Base85.Encode(TestGuid);
         Guid decoded = Base85.DecodeGuid(encoded.AsSpan());
 
         Assert.AreEqual(20, encoded.Length);
@@ -273,9 +273,9 @@ public sealed class GuidEncodingTests
     public void Base85_TryDecodeGuid_WhenInputNotSixteenBytes_ShouldReturnFalseAndEmptyGuid()
     {
         // 4-byte payload encodes to a 5-character Ascii85 group, not the 20 chars a GUID would produce.
-        var encoded = Base85.Encode([0x86, 0x4F, 0xD2, 0x6F]);
+        string encoded = Base85.Encode([0x86, 0x4F, 0xD2, 0x6F]);
 
-        var ok = Base85.TryDecodeGuid(encoded.AsSpan(), out Guid value);
+        bool ok = Base85.TryDecodeGuid(encoded.AsSpan(), out Guid value);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(Guid.Empty, value);
@@ -289,7 +289,7 @@ public sealed class GuidEncodingTests
     public void Base85_TryDecodeGuid_WhenInvalidAlphabet_ShouldReturnFalse()
     {
         // Tilde '~' is outside the Ascii85 alphabet ('!' through 'u').
-        var ok = Base85.TryDecodeGuid("~~~~~~~~~~~~~~~~~~~~".AsSpan(), out Guid value);
+        bool ok = Base85.TryDecodeGuid("~~~~~~~~~~~~~~~~~~~~".AsSpan(), out Guid value);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(Guid.Empty, value);
@@ -302,9 +302,9 @@ public sealed class GuidEncodingTests
     [TestMethod]
     public void Base85_TryDecodeGuid_WhenValidEncodedGuid_ShouldReturnTrueAndRecoverValue()
     {
-        var encoded = Base85.Encode(TestGuid);
+        string encoded = Base85.Encode(TestGuid);
 
-        var ok = Base85.TryDecodeGuid(encoded.AsSpan(), out Guid value);
+        bool ok = Base85.TryDecodeGuid(encoded.AsSpan(), out Guid value);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(TestGuid, value);
@@ -317,9 +317,9 @@ public sealed class GuidEncodingTests
     [TestMethod]
     public void Base85_TryDecodeGuid_WhenZ85Variant_ShouldRoundTripGuid()
     {
-        var encoded = Base85.Encode(TestGuid, Base85Variant.Z85);
+        string encoded = Base85.Encode(TestGuid, Base85Variant.Z85);
 
-        var ok = Base85.TryDecodeGuid(encoded.AsSpan(), out Guid value, Base85Variant.Z85);
+        bool ok = Base85.TryDecodeGuid(encoded.AsSpan(), out Guid value, Base85Variant.Z85);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(TestGuid, value);
@@ -361,7 +361,7 @@ public sealed class GuidEncodingTests
     {
         Random rng = new(0x12345);
         Span<byte> buffer = stackalloc byte[16];
-        for (var i = 0; i < 100; i++)
+        for (int i = 0; i < 100; i++)
         {
             rng.NextBytes(buffer);
             Guid g = new(buffer);
@@ -381,7 +381,7 @@ public sealed class GuidEncodingTests
     public void TryDecodeGuid_WhenInputNotSixteenBytes_ShouldReturnFalse()
     {
         // "DEADBEEF" decodes to 4 bytes — not a GUID.
-        var ok = Base16.TryDecodeGuid("DEADBEEF".AsSpan(), out Guid value);
+        bool ok = Base16.TryDecodeGuid("DEADBEEF".AsSpan(), out Guid value);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(Guid.Empty, value);

@@ -122,7 +122,7 @@ public partial class FractionTests
     {
         var a = new Fraction<int>(an, ad);
         var b = new Fraction<int>(bn, bd);
-        var order = a.CompareTo(b);
+        int order = a.CompareTo(b);
 
         Assert.AreEqual(order < 0, a < b);
         Assert.AreEqual(order <= 0, a <= b);

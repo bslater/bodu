@@ -13,8 +13,8 @@ namespace Bodu.Test.IO;
 /// <remarks>
 /// <para>
 /// Only <see cref="CanWrite" /> is overridden, so a consumer's "is this stream writable?" precondition fails
-/// deterministically without changing any other observable stream behavior. Use it to verify that write-accepting
-/// entry points reject a non-writable destination.
+/// deterministically without changing any other observable stream behavior. Use it to verify that write-accepting entry
+/// points reject a non-writable destination.
 /// </para>
 /// <para>
 /// This class is intended exclusively for test harness use and must not appear in production code.

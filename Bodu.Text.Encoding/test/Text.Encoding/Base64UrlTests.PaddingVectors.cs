@@ -21,7 +21,7 @@ public sealed class Base64UrlTests_PaddingVectors
     [TestMethod]
     public void Decode_WhenInputIsUnpaddedAQ_ShouldReturnSingleByte()
     {
-        var decoded = Base64Url.Decode("AQ");
+        byte[] decoded = Base64Url.Decode("AQ");
 
         CollectionAssert.AreEqual(new byte[] { 0x01 }, decoded);
     }
@@ -33,7 +33,7 @@ public sealed class Base64UrlTests_PaddingVectors
     [TestMethod]
     public void Decode_WhenInputIsFullyPaddedAQ_ShouldReturnSingleByte()
     {
-        var decoded = Base64Url.Decode("AQ==");
+        byte[] decoded = Base64Url.Decode("AQ==");
 
         CollectionAssert.AreEqual(new byte[] { 0x01 }, decoded);
     }
@@ -46,7 +46,7 @@ public sealed class Base64UrlTests_PaddingVectors
     [TestMethod]
     public void Decode_WhenInputHasSinglePadding_ShouldNormaliseAndReturnSingleByte()
     {
-        var decoded = Base64Url.Decode("AQ=");
+        byte[] decoded = Base64Url.Decode("AQ=");
 
         CollectionAssert.AreEqual(new byte[] { 0x01 }, decoded);
     }
@@ -58,7 +58,7 @@ public sealed class Base64UrlTests_PaddingVectors
     [TestMethod]
     public void Decode_WhenInputUsesUrlSafeAlphabet_ShouldReturnHighBytes()
     {
-        var decoded = Base64Url.Decode("A-B_");
+        byte[] decoded = Base64Url.Decode("A-B_");
 
         Assert.AreEqual(3, decoded.Length);
     }
@@ -85,7 +85,7 @@ public sealed class Base64UrlTests_PaddingVectors
     [TestMethod]
     public void Base64Decode_WhenUrlSafeAndNoStyle_ShouldStillAcceptUnpaddedInput()
     {
-        var decoded = Base64.Decode("AQ", Base64Variant.UrlSafe, BaseFormatStyles.None);
+        byte[] decoded = Base64.Decode("AQ", Base64Variant.UrlSafe, BaseFormatStyles.None);
 
         CollectionAssert.AreEqual(new byte[] { 0x01 }, decoded);
     }
@@ -113,8 +113,8 @@ public sealed class Base64UrlTests_PaddingVectors
     {
         byte[] source = [0x01];
 
-        var actual = Base64Url.Encode(source);
-        var viaVariant = Base64.Encode(source, Base64Variant.UrlSafe);
+        string actual = Base64Url.Encode(source);
+        string viaVariant = Base64.Encode(source, Base64Variant.UrlSafe);
 
         Assert.AreEqual("AQ", actual);
         Assert.AreEqual(viaVariant, actual);
@@ -146,7 +146,7 @@ public sealed class Base64UrlTests_PaddingVectors
         Assert.IsFalse(Base64Url.IsValid("AQ=".AsSpan()));
 
         // Decode still accepts the same input — the asymmetry is what the test pins.
-        var decoded = Base64Url.Decode("AQ=");
+        byte[] decoded = Base64Url.Decode("AQ=");
         CollectionAssert.AreEqual(new byte[] { 0x01 }, decoded);
     }
 }

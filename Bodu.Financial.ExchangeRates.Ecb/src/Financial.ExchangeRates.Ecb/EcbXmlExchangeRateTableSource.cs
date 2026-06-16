@@ -49,7 +49,7 @@ internal sealed class EcbXmlExchangeRateTableSource
     {
         ThrowHelper.ThrowIfNull(feed);
 
-        var bytes = await GetFeedBytesAsync(feed, cancellationToken).ConfigureAwait(false);
+        byte[] bytes = await GetFeedBytesAsync(feed, cancellationToken).ConfigureAwait(false);
 
         using MemoryStream stream = new(bytes, writable: false);
         return EcbExchangeRateXmlParser.Parse(stream, _options);
@@ -63,11 +63,11 @@ internal sealed class EcbXmlExchangeRateTableSource
     /// <returns>A task that yields the feed bytes.</returns>
     private async ValueTask<byte[]> GetFeedBytesAsync(EcbExchangeRateFeed feed, CancellationToken cancellationToken)
     {
-        if (_cache.TryGet(feed, _options.RefreshInterval, out var cached))
+        if (_cache.TryGet(feed, _options.RefreshInterval, out byte[]? cached))
             return cached;
 
         Uri url = _options.Endpoint.ResolveFeedUrl(feed);
-        var bytes = await _httpClient.GetByteArrayAsync(url, cancellationToken).ConfigureAwait(false);
+        byte[] bytes = await _httpClient.GetByteArrayAsync(url, cancellationToken).ConfigureAwait(false);
         _cache.Store(feed, bytes);
 
         return bytes;

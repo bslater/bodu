@@ -20,7 +20,7 @@ public partial class ThrowHelperTests
     [DataRow(5, 4)]
     public void ThrowIfSpanLengthIsNotEqualTo_ReadOnlySpan_WhenLengthDiffers_ShouldThrowExactly(int spanLength, int expectedLength)
     {
-        var buffer = new int[spanLength];
+        int[] buffer = new int[spanLength];
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
             ThrowHelper.ThrowIfSpanLengthIsNotEqualTo((ReadOnlySpan<int>)buffer, expectedLength);
@@ -37,7 +37,7 @@ public partial class ThrowHelperTests
     [DataRow(16, 16)]
     public void ThrowIfSpanLengthIsNotEqualTo_ReadOnlySpan_WhenLengthMatches_ShouldNotThrow(int spanLength, int expectedLength)
     {
-        var buffer = new int[spanLength];
+        int[] buffer = new int[spanLength];
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo((ReadOnlySpan<int>)buffer, expectedLength);
     }
 
@@ -52,7 +52,7 @@ public partial class ThrowHelperTests
     [DataRow(5, 4)]
     public void ThrowIfSpanLengthIsNotEqualTo_Span_WhenLengthDiffers_ShouldThrowExactly(int spanLength, int expectedLength)
     {
-        var buffer = new int[spanLength];
+        int[] buffer = new int[spanLength];
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
             ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(buffer.AsSpan(), expectedLength);
@@ -69,7 +69,7 @@ public partial class ThrowHelperTests
     [DataRow(16, 16)]
     public void ThrowIfSpanLengthIsNotEqualTo_Span_WhenLengthMatches_ShouldNotThrow(int spanLength, int expectedLength)
     {
-        var buffer = new int[spanLength];
+        int[] buffer = new int[spanLength];
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(buffer.AsSpan(), expectedLength);
     }
     /// <summary>
@@ -87,7 +87,7 @@ public partial class ThrowHelperTests
     public void ThrowIfSpanLengthIsNotEqualTo_WhenLengthMatches_ShouldNotThrowAndReportNothing(
         string testName, int spanLength, int expectedLength)
     {
-        var buffer = new int[spanLength];
+        int[] buffer = new int[spanLength];
 
         AssertGuard(
             $"Span<T>: {testName}",
@@ -118,7 +118,7 @@ public partial class ThrowHelperTests
     public void ThrowIfSpanLengthIsNotEqualTo_WhenLengthDiffers_ShouldThrowOnSpan(
         string testName, int spanLength, int expectedLength)
     {
-        var buffer = new int[spanLength];
+        int[] buffer = new int[spanLength];
 
         AssertGuard(
             $"Span<T>: {testName}",

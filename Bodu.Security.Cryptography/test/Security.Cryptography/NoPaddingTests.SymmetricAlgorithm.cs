@@ -29,12 +29,12 @@ public sealed partial class NoPaddingTests
     {
         using SymmetricAlgorithm algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.None);
 
-        var cipherText = EncryptThroughCryptoStream(algorithm, []);
+        byte[] cipherText = EncryptThroughCryptoStream(algorithm, []);
 
         Assert.AreEqual(0, cipherText.Length,
             $"Empty plaintext under None on {algorithmType.Name} should produce an empty ciphertext (no padding added).");
 
-        var recovered = DecryptThroughCryptoStream(algorithm, cipherText);
+        byte[] recovered = DecryptThroughCryptoStream(algorithm, cipherText);
 
         Assert.AreEqual(0, recovered.Length,
             $"Decrypting empty ciphertext under None on {algorithmType.Name} should recover an empty array.");
@@ -51,15 +51,15 @@ public sealed partial class NoPaddingTests
     public void CryptoStream_WhenBlockAlignedPlaintext_ShouldRoundTrip(System.Type algorithmType)
     {
         using SymmetricAlgorithm algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.None);
-        var blockBytes = algorithm.BlockSize / 8;
-        var plaintext = Enumerable.Range(0, blockBytes * 2).Select(i => (byte)(i + 1)).ToArray();
+        int blockBytes = algorithm.BlockSize / 8;
+        byte[] plaintext = Enumerable.Range(0, blockBytes * 2).Select(i => (byte)(i + 1)).ToArray();
 
-        var cipherText = EncryptThroughCryptoStream(algorithm, plaintext);
+        byte[] cipherText = EncryptThroughCryptoStream(algorithm, plaintext);
 
         Assert.AreEqual(plaintext.Length, cipherText.Length,
             $"Block-aligned plaintext under None on {algorithmType.Name} should produce ciphertext of the same length.");
 
-        var recovered = DecryptThroughCryptoStream(algorithm, cipherText);
+        byte[] recovered = DecryptThroughCryptoStream(algorithm, cipherText);
 
         CollectionAssert.AreEqual(plaintext, recovered,
             $"Block-aligned plaintext under None on {algorithmType.Name} did not round-trip through CryptoStream.");

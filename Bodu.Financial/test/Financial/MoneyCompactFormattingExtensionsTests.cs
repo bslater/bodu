@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyCompactFormattingExtensionsTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -24,7 +24,7 @@ public class MoneyCompactFormattingExtensionsTests
     {
         var money = new Money<USD>(500m);
 
-        var actual = money.ToCompactString("C", new CultureInfo("en-US"));
+        string actual = money.ToCompactString("C", new CultureInfo("en-US"));
 
         Assert.AreEqual("$500.00", actual);
     }
@@ -37,7 +37,7 @@ public class MoneyCompactFormattingExtensionsTests
     {
         var money = new Money<USD>(1234.56m);
 
-        var actual = money.ToCompactString("C", new CultureInfo("en-US"));
+        string actual = money.ToCompactString("C", new CultureInfo("en-US"));
 
         Assert.AreEqual("$1.2K", actual);
     }
@@ -50,7 +50,7 @@ public class MoneyCompactFormattingExtensionsTests
     {
         var money = new Money<USD>(2_500_000m);
 
-        var actual = money.ToCompactString("C", new CultureInfo("en-US"));
+        string actual = money.ToCompactString("C", new CultureInfo("en-US"));
 
         Assert.AreEqual("$2.5M", actual);
     }
@@ -63,7 +63,7 @@ public class MoneyCompactFormattingExtensionsTests
     {
         var money = new Money<USD>(2_500_000_000m);
 
-        var actual = money.ToCompactString("C", new CultureInfo("en-US"));
+        string actual = money.ToCompactString("C", new CultureInfo("en-US"));
 
         Assert.AreEqual("$2.5B", actual);
     }
@@ -76,7 +76,7 @@ public class MoneyCompactFormattingExtensionsTests
     {
         var money = new Money<USD>(2_500_000_000_000m);
 
-        var actual = money.ToCompactString("C", new CultureInfo("en-US"));
+        string actual = money.ToCompactString("C", new CultureInfo("en-US"));
 
         Assert.AreEqual("$2.5T", actual);
     }
@@ -90,7 +90,7 @@ public class MoneyCompactFormattingExtensionsTests
     {
         var money = new Money<EUR>(1234.56m);
 
-        var actual = money.ToCompactString("C", new CultureInfo("de-DE"));
+        string actual = money.ToCompactString("C", new CultureInfo("de-DE"));
 
         Assert.AreEqual("1,2K €", actual);
     }
@@ -105,7 +105,7 @@ public class MoneyCompactFormattingExtensionsTests
     {
         var money = new Money<USD>(-1234.56m);
 
-        var actual = money.ToCompactString("C", CultureInfo.InvariantCulture);
+        string actual = money.ToCompactString("C", CultureInfo.InvariantCulture);
 
         Assert.AreEqual("(USD 1.2K)", actual);
     }
@@ -119,7 +119,7 @@ public class MoneyCompactFormattingExtensionsTests
     {
         var money = new Money<USD>(-1234.56m);
 
-        var actual = money.ToCompactString("G", CultureInfo.InvariantCulture);
+        string actual = money.ToCompactString("G", CultureInfo.InvariantCulture);
 
         Assert.AreEqual("USD -1.2K", actual);
     }
@@ -132,7 +132,7 @@ public class MoneyCompactFormattingExtensionsTests
     {
         var money = new Money<USD>(1_500_000m);
 
-        var actual = money.ToCompactString("G", CultureInfo.InvariantCulture);
+        string actual = money.ToCompactString("G", CultureInfo.InvariantCulture);
 
         Assert.AreEqual("USD 1.5M", actual);
     }
@@ -145,7 +145,7 @@ public class MoneyCompactFormattingExtensionsTests
     {
         var money = new Money<USD>(1_500_000m);
 
-        var actual = money.ToCompactString("L", CultureInfo.InvariantCulture);
+        string actual = money.ToCompactString("L", CultureInfo.InvariantCulture);
 
         Assert.AreEqual("1.5M US Dollar", actual);
     }
@@ -158,7 +158,7 @@ public class MoneyCompactFormattingExtensionsTests
     {
         var money = new Money<USD>(1_500_000m);
 
-        var actual = money.ToCompactString("N", CultureInfo.InvariantCulture);
+        string actual = money.ToCompactString("N", CultureInfo.InvariantCulture);
 
         Assert.AreEqual("1.5M", actual);
     }
@@ -172,7 +172,7 @@ public class MoneyCompactFormattingExtensionsTests
     {
         var money = new Money<USD>(1_234_567m);
 
-        var actual = money.ToCompactString("~C", new CultureInfo("en-US"));
+        string actual = money.ToCompactString("~C", new CultureInfo("en-US"));
 
         Assert.AreEqual("1.2M", actual);
     }
@@ -185,7 +185,7 @@ public class MoneyCompactFormattingExtensionsTests
     {
         var money = new Money<USD>(1_234_567m);
 
-        var actual = money.ToCompactString("C", new CultureInfo("en-US"), precision: 2);
+        string actual = money.ToCompactString("C", new CultureInfo("en-US"), precision: 2);
 
         Assert.AreEqual("$1.23M", actual);
     }
@@ -198,7 +198,7 @@ public class MoneyCompactFormattingExtensionsTests
     {
         var money = new Money<USD>(1_500_000m);
 
-        var actual = money.ToCompactString("C", new CultureInfo("en-US"), precision: 0);
+        string actual = money.ToCompactString("C", new CultureInfo("en-US"), precision: 0);
 
         Assert.AreEqual("$2M", actual);
     }
@@ -243,7 +243,7 @@ public class MoneyCompactFormattingExtensionsTests
     {
         var money = new Money(1234.56m, "USD");
 
-        var actual = money.ToCompactString("C", new CultureInfo("en-US"));
+        string actual = money.ToCompactString("C", new CultureInfo("en-US"));
 
         Assert.AreEqual("$1.2K", actual);
     }
@@ -257,7 +257,7 @@ public class MoneyCompactFormattingExtensionsTests
     {
         var money = new Money(1_500_000m, "USD");
 
-        var actual = money.ToCompactString("L", CultureInfo.InvariantCulture);
+        string actual = money.ToCompactString("L", CultureInfo.InvariantCulture);
 
         Assert.AreEqual("1.5M US Dollar", actual);
     }
@@ -271,7 +271,7 @@ public class MoneyCompactFormattingExtensionsTests
     {
         var money = new Money<JPY>(25_500m);
 
-        var actual = money.ToCompactString("C", CultureInfo.InvariantCulture);
+        string actual = money.ToCompactString("C", CultureInfo.InvariantCulture);
 
         Assert.AreEqual("JPY 25.5K", actual);
     }

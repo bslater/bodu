@@ -19,7 +19,7 @@ internal sealed partial class CamelliaBlockCipherTests
     /// <inheritdoc />
     protected override BlockCipherSpecification GetSpecification(BlockCipherKeyVariant variant)
     {
-        var keySize = variant switch
+        int keySize = variant switch
         {
             BlockCipherKeyVariant.Key128 => 16,
             BlockCipherKeyVariant.Key192 => 24,

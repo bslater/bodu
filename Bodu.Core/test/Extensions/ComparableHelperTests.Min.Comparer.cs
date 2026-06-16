@@ -31,7 +31,7 @@ public partial class ComparableHelperTests
     [DataRow(10, 3, 3)]
     public void Min_WhenComparerIsDefault_ShouldReturnSmaller(int first, int second, int expected)
     {
-        var actual = ComparableHelper.Min(first, second, Comparer<int>.Default);
+        int actual = ComparableHelper.Min(first, second, Comparer<int>.Default);
         Assert.AreEqual(expected, actual);
     }
 
@@ -71,7 +71,7 @@ public partial class ComparableHelperTests
     public void Min_WhenOneArgumentIsNullWithComparer_ShouldReturnNonNullValue()
     {
         string? first = null;
-        var second = "abc";
+        string second = "abc";
 
         Assert.AreEqual("abc", ComparableHelper.Min(first, second, StringComparer.Ordinal));
         Assert.AreEqual("abc", ComparableHelper.Min(second, first, StringComparer.Ordinal));

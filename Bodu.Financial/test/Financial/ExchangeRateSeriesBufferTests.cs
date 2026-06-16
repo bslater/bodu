@@ -18,7 +18,7 @@ public partial class ExchangeRateSeriesBufferTests
     private static ExchangeRateSeriesBuffer NewBufferWith(params (int Day, decimal Rate)[] entries)
     {
         var buffer = new ExchangeRateSeriesBuffer();
-        foreach ((var day, var rate) in entries)
+        foreach ((int day, decimal rate) in entries)
         {
             buffer.Add(day, rate, RateParam, DateParam);
         }

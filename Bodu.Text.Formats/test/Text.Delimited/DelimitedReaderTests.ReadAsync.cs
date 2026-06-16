@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DelimitedReaderTests.ReadAsync.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -32,7 +32,7 @@ public sealed partial class DelimitedReaderTests
         }
 
         Assert.AreEqual(sync.Count, async.Count);
-        for (var i = 0; i < sync.Count; i++)
+        for (int i = 0; i < sync.Count; i++)
             CollectionAssert.AreEqual(sync[i], async[i]);
     }
 

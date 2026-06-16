@@ -120,10 +120,10 @@ public abstract class Argon2
         };
         parameters.Validate();
 
-        var computed = new byte[parsed.Hash.Length];
+        byte[] computed = new byte[parsed.Hash.Length];
         Argon2Core.DeriveTag(parsed.Type, parameters, password, parsed.Salt, computed);
 
-        var match = CryptographicOperations.FixedTimeEquals(computed, parsed.Hash);
+        bool match = CryptographicOperations.FixedTimeEquals(computed, parsed.Hash);
         CryptographyHelper.Clear(computed);
         return match;
     }
@@ -162,7 +162,7 @@ public abstract class Argon2
     {
         ThrowIfSaltTooShort(salt);
 
-        var tag = new byte[Parameters.TagLength];
+        byte[] tag = new byte[Parameters.TagLength];
         Argon2Core.DeriveTag(Type, Parameters, password, salt, tag);
         return tag;
     }
@@ -191,10 +191,10 @@ public abstract class Argon2
     {
         ThrowIfSaltTooShort(salt);
 
-        var tag = new byte[Parameters.TagLength];
+        byte[] tag = new byte[Parameters.TagLength];
         Argon2Core.DeriveTag(Type, Parameters, password, salt, tag);
 
-        var encoded = Encode(Type, Parameters, salt, tag);
+        string encoded = Encode(Type, Parameters, salt, tag);
         CryptographyHelper.Clear(tag);
         return encoded;
     }
@@ -228,16 +228,16 @@ public abstract class Argon2
     /// <exception cref="FormatException"><paramref name="encoded" /> is not a valid Argon2 PHC string.</exception>
     private static Argon2EncodedHash Decode(string encoded)
     {
-        var fields = PhcString.SplitFields(encoded);
+        string[] fields = PhcString.SplitFields(encoded);
 
         // Expect: "", name, [v=..], m..t..p.., salt, hash
         if (fields.Length is < 5 or > 6)
             throw PhcString.Invalid();
 
-        var index = 1;
+        int index = 1;
         Argon2Type type = ParseTypeName(fields[index++]);
 
-        var version = Argon2Parameters.Version10;
+        int version = Argon2Parameters.Version10;
         if (fields[index].StartsWith("v=", StringComparison.Ordinal))
         {
             version = ParseInt(fields[index][2..]);
@@ -247,9 +247,9 @@ public abstract class Argon2
         if (index + 3 != fields.Length)
             throw PhcString.Invalid();
 
-        (var memory, var iterations, var parallelism, var data) = ParseCostFields(fields[index++]);
-        var salt = PhcString.DecodeBase64(fields[index++]);
-        var hash = PhcString.DecodeBase64(fields[index]);
+        (int memory, int iterations, int parallelism, byte[]? data) = ParseCostFields(fields[index++]);
+        byte[] salt = PhcString.DecodeBase64(fields[index++]);
+        byte[] hash = PhcString.DecodeBase64(fields[index]);
 
         return new Argon2EncodedHash(type, version, memory, iterations, parallelism, salt, hash, data);
     }
@@ -292,14 +292,14 @@ public abstract class Argon2
         int? memory = null, iterations = null, parallelism = null;
         byte[] data = [];
 
-        foreach (var part in field.Split(','))
+        foreach (string part in field.Split(','))
         {
-            var eq = part.IndexOf('=', StringComparison.Ordinal);
+            int eq = part.IndexOf('=', StringComparison.Ordinal);
             if (eq <= 0)
                 throw PhcString.Invalid();
 
-            var key = part[..eq];
-            var value = part[(eq + 1)..];
+            string key = part[..eq];
+            string value = part[(eq + 1)..];
 
             switch (key)
             {
@@ -323,7 +323,7 @@ public abstract class Argon2
     /// <param name="value">The text to parse.</param>
     /// <returns>The parsed non-negative integer.</returns>
     private static int ParseInt(string value) =>
-        int.TryParse(value, NumberStyles.None, CultureInfo.InvariantCulture, out var result)
+        int.TryParse(value, NumberStyles.None, CultureInfo.InvariantCulture, out int result)
             ? result
             : throw PhcString.Invalid();
 

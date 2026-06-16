@@ -23,7 +23,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenKeysUnsorted_ShouldRequireAllowUnsortedKeys()
     {
-        var data = Encoding.Latin1.GetBytes("d5:Label1:x2:Idi7ee");
+        byte[] data = Encoding.Latin1.GetBytes("d5:Label1:x2:Idi7ee");
 
         _ = Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
@@ -45,7 +45,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenDuplicateKeysAllowed_ShouldBindLastOccurrence()
     {
-        var data = Encoding.Latin1.GetBytes("d2:Idi1e2:Idi2ee");
+        byte[] data = Encoding.Latin1.GetBytes("d2:Idi1e2:Idi2ee");
 
         LenientModel model = BencodeSerializer.Deserialize<LenientModel>(
             data,
@@ -61,7 +61,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenDuplicateKeysAllowedForDictionary_ShouldBindLastOccurrence()
     {
-        var data = Encoding.Latin1.GetBytes("d1:ai1e1:ai2ee");
+        byte[] data = Encoding.Latin1.GetBytes("d1:ai1e1:ai2ee");
 
         Dictionary<string, long> map = BencodeSerializer.Deserialize<Dictionary<string, long>>(
             data,
@@ -80,7 +80,7 @@ public partial class BencodeSerializerTests
     {
         var options = new BencodeSerializerOptions { AllowUnsortedKeys = true, AllowDuplicateKeys = true };
 
-        var bytes = BencodeSerializer.Serialize(new LenientModel { Id = 7, Label = "x" }, options);
+        byte[] bytes = BencodeSerializer.Serialize(new LenientModel { Id = 7, Label = "x" }, options);
 
         Assert.AreEqual("d2:Idi7e5:Label1:xe", Encoding.Latin1.GetString(bytes));
     }

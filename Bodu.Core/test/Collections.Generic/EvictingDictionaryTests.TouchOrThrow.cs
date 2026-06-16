@@ -17,7 +17,7 @@ public partial class EvictingDictionaryTests
     {
         var dictionary = new EvictingDictionary<string, int>(3);
         dictionary.Add("a", 1);
-        var before = dictionary.TotalTouches;
+        long before = dictionary.TotalTouches;
 
         dictionary.TouchOrThrow("a");
 
@@ -31,7 +31,7 @@ public partial class EvictingDictionaryTests
     public void TouchOrThrow_WhenKeyIsMissing_ShouldNotIncrementTotalTouches()
     {
         var dictionary = new EvictingDictionary<string, int>(3);
-        var before = dictionary.TotalTouches;
+        long before = dictionary.TotalTouches;
 
         Assert.ThrowsExactly<KeyNotFoundException>(() => dictionary.TouchOrThrow("ghost"));
 

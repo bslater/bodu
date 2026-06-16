@@ -47,11 +47,11 @@ internal sealed partial class ConfigurationReader
     {
         ThrowHelper.ThrowIfNull(reader);
 
-        var caseSensitiveSections = _options.KeyOptions.CaseSensitive;
+        bool caseSensitiveSections = _options.KeyOptions.CaseSensitive;
         ConfigurationDocument document = new(caseSensitiveSections);
         IniSection currentSection = document.GlobalSection;
 
-        var lineNumber = 0;
+        int lineNumber = 0;
         string? line;
         while ((line = reader.ReadLine()) is not null)
         {
@@ -94,18 +94,18 @@ internal sealed partial class ConfigurationReader
             return currentSection;
         }
 
-        var firstNonWs = FindFirstNonWhitespace(line);
+        int firstNonWs = FindFirstNonWhitespace(line);
 
         // Blank line: any pending leading comments still attach to the next significant line.
         if (firstNonWs < 0)
             return currentSection;
 
-        var first = line[firstNonWs];
+        char first = line[firstNonWs];
 
         // Full-line comment: capture and defer until we see the next section or property.
         if (first is '#' or ';')
         {
-            var commentText = line[(firstNonWs + 1)..];
+            string commentText = line[(firstNonWs + 1)..];
             _pendingLeadingComments.Add(new IniComment(first, commentText, lineNumber));
             return currentSection;
         }
@@ -133,7 +133,7 @@ internal sealed partial class ConfigurationReader
     {
         // The section name is everything between the first `[` and the final `]` on the line.
         // We allow `]` inside the section name to mirror EditorConfig section conventions.
-        var lastClose = FindLastClosingBracket(line, firstNonWs);
+        int lastClose = FindLastClosingBracket(line, firstNonWs);
         if (lastClose < 0)
         {
             EmitDiagnostic(
@@ -145,7 +145,7 @@ internal sealed partial class ConfigurationReader
             return GetCurrentSection(document);
         }
 
-        var name = line.Substring(firstNonWs + 1, lastClose - firstNonWs - 1);
+        string name = line.Substring(firstNonWs + 1, lastClose - firstNonWs - 1);
         if (name.Length == 0)
         {
             EmitDiagnostic(
@@ -190,8 +190,8 @@ internal sealed partial class ConfigurationReader
     /// <returns><see langword="true" /> when the trailing content is acceptable.</returns>
     private static bool IsTrailingContentAllowed(string line, int from, ConfigurationSectionHeaderMode mode)
     {
-        var firstNonWs = -1;
-        for (var i = from; i < line.Length; i++)
+        int firstNonWs = -1;
+        for (int i = from; i < line.Length; i++)
         {
             if (!char.IsWhiteSpace(line[i]))
             {
@@ -282,13 +282,13 @@ internal sealed partial class ConfigurationReader
         int lineNumber,
         string? path)
     {
-        var equalsIndex = FindFirstUnescaped(line, '=', firstNonWs);
+        int equalsIndex = FindFirstUnescaped(line, '=', firstNonWs);
 
         if (equalsIndex < 0)
         {
             if (_options.AllowKeyOnlyProperties)
             {
-                var keyOnly = TrimTrailing(line, firstNonWs);
+                string keyOnly = TrimTrailing(line, firstNonWs);
                 AppendEntry(currentSection, keyOnly, value: string.Empty, lineNumber, firstNonWs, path);
 
                 return currentSection;
@@ -303,8 +303,8 @@ internal sealed partial class ConfigurationReader
             return currentSection;
         }
 
-        var keyText = line[firstNonWs..equalsIndex];
-        var valueText = line[(equalsIndex + 1)..];
+        string keyText = line[firstNonWs..equalsIndex];
+        string valueText = line[(equalsIndex + 1)..];
 
         if (_options.TrimKeysAndValues)
         {

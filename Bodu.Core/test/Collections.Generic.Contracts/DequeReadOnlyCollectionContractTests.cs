@@ -24,7 +24,7 @@ public sealed class DequeReadOnlyCollectionContractTests
     protected override Deque<int> Create(params int[] items)
     {
         Deque<int> deque = new();
-        foreach (var item in items)
+        foreach (int item in items)
             deque.AddLast(item);
         return deque;
     }

@@ -32,7 +32,7 @@ public partial class IndexedSetTests
     {
         IndexedSet<int> sut = CreateSet([1, 2, 3]);
 
-        var added = sut.Add(2);
+        bool added = sut.Add(2);
 
         Assert.IsFalse(added);
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, SnapshotByIndexer(sut));
@@ -67,7 +67,7 @@ public partial class IndexedSetTests
     {
         var sut = new IndexedSet<int>();
 
-        var added = sut.Add(99);
+        bool added = sut.Add(99);
 
         Assert.IsTrue(added);
         Assert.AreEqual(1, sut.Count);
@@ -82,11 +82,11 @@ public partial class IndexedSetTests
     {
         var sut = new IndexedSet<int>();
 
-        for (var i = 0; i < 1000; i++)
+        for (int i = 0; i < 1000; i++)
             Assert.IsTrue(sut.Add(i));
 
         Assert.AreEqual(1000, sut.Count);
-        for (var i = 0; i < 1000; i++)
+        for (int i = 0; i < 1000; i++)
             Assert.AreEqual(i, sut[i]);
     }
 
@@ -103,7 +103,7 @@ public partial class IndexedSetTests
     {
         IndexedSet<int> sut = CreateSet([1, 2]);
 
-        var added = sut.AddRange([2, 3, 4, 4, 5]);
+        int added = sut.AddRange([2, 3, 4, 4, 5]);
 
         Assert.AreEqual(3, added);
         CollectionAssert.AreEqual(new[] { 1, 2, 3, 4, 5 }, SnapshotByIndexer(sut));
@@ -132,7 +132,7 @@ public partial class IndexedSetTests
     {
         IndexedSet<int> sut = CreateSet([1, 2]);
 
-        var added = sut.AddRange([]);
+        int added = sut.AddRange([]);
 
         Assert.AreEqual(0, added);
         CollectionAssert.AreEqual(new[] { 1, 2 }, SnapshotByIndexer(sut));

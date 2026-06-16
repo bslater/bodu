@@ -48,7 +48,7 @@ public partial class ThrowHelperTests
     [DataRow(4, 0, 5)]   // span.Length = 4; offset = 0; count = 5 => insufficient
     public void ThrowIfSpanLengthIsInsufficient_ReadOnlySpan_WhenInsufficient_ShouldThrowExactly(int spanLength, int offset, int count)
     {
-        var span = new int[spanLength];
+        int[] span = new int[spanLength];
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
             ThrowHelper.ThrowIfSpanLengthIsInsufficient(new ReadOnlySpan<int>(span), offset, count);
@@ -107,7 +107,7 @@ public partial class ThrowHelperTests
     [DataRow(4, 1, 4)]
     public void ThrowIfSpanLengthIsInsufficient_Span_WhenInsufficient_ShouldThrowExactly(int spanLength, int offset, int count)
     {
-        var span = new int[spanLength];
+        int[] span = new int[spanLength];
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
             ThrowHelper.ThrowIfSpanLengthIsInsufficient(span.AsSpan(), offset, count);
@@ -142,7 +142,7 @@ public partial class ThrowHelperTests
     public void ThrowIfSpanLengthIsInsufficient_TwoArg_WhenLengthFits_ShouldNotThrowAndReportNothing(
         string testName, int spanLength, int minimum)
     {
-        var buffer = new int[spanLength];
+        int[] buffer = new int[spanLength];
 
         AssertGuard(
             $"Span<T>: {testName}",
@@ -172,7 +172,7 @@ public partial class ThrowHelperTests
     public void ThrowIfSpanLengthIsInsufficient_TwoArg_WhenLengthIsInsufficient_ShouldThrowOnSpan(
         string testName, int spanLength, int minimum)
     {
-        var buffer = new int[spanLength];
+        int[] buffer = new int[spanLength];
 
         AssertGuard(
             $"Span<T>: {testName}",

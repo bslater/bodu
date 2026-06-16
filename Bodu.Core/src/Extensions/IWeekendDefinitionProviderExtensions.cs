@@ -44,7 +44,7 @@ public static class IWeekendDefinitionProviderExtensions
         ThrowHelper.ThrowIfNull(provider);
 
         WeekPattern pattern = WeekPattern.Empty;
-        for (var i = 0; i < 7; i++)
+        for (int i = 0; i < 7; i++)
         {
             var day = (DayOfWeek)i;
             if (!provider.IsWeekend(day))

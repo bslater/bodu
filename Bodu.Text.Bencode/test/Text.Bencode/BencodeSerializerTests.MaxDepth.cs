@@ -44,7 +44,7 @@ public partial class BencodeSerializerTests
         var options = new BencodeSerializerOptions { MaxDepth = int.MaxValue };
 
         var deep = new RecursiveModel();
-        for (var i = 0; i < BencodeLimits.AbsoluteMaxDepth + 1; i++)
+        for (int i = 0; i < BencodeLimits.AbsoluteMaxDepth + 1; i++)
             deep = new RecursiveModel { Child = deep };
 
         Assert.ThrowsExactly<BencodeSerializationException>(() =>
@@ -65,7 +65,7 @@ public partial class BencodeSerializerTests
         var options = new BencodeSerializerOptions { MaxDepth = int.MaxValue };
 
         var deep = new RecursiveModel();
-        for (var i = 0; i < (BencodeLimits.AbsoluteMaxDepth * 32) + 1; i++)
+        for (int i = 0; i < (BencodeLimits.AbsoluteMaxDepth * 32) + 1; i++)
             deep = new RecursiveModel { Child = deep };
 
         Exception? captured = null;
@@ -102,7 +102,7 @@ public partial class BencodeSerializerTests
 
         var inner = new List<object>();
         var current = inner;
-        for (var i = 0; i < (BencodeLimits.AbsoluteMaxDepth * 32) + 1; i++)
+        for (int i = 0; i < (BencodeLimits.AbsoluteMaxDepth * 32) + 1; i++)
         {
             var next = new List<object>();
             current.Add(next);
@@ -130,7 +130,7 @@ public partial class BencodeSerializerTests
 
         var root = new Dictionary<string, object>();
         var current = root;
-        for (var i = 0; i < (BencodeLimits.AbsoluteMaxDepth * 32) + 1; i++)
+        for (int i = 0; i < (BencodeLimits.AbsoluteMaxDepth * 32) + 1; i++)
         {
             var next = new Dictionary<string, object>();
             current["child"] = next;
@@ -156,7 +156,7 @@ public partial class BencodeSerializerTests
         var options = new BencodeSerializerOptions { MaxDepth = 2 };
         var shallow = new RecursiveModel { Child = new RecursiveModel() };
 
-        var bytes = BencodeSerializer.Serialize(shallow, options);
+        byte[] bytes = BencodeSerializer.Serialize(shallow, options);
 
         Assert.AreEqual("d5:Childdee", Encoding.Latin1.GetString(bytes));
     }
@@ -169,7 +169,7 @@ public partial class BencodeSerializerTests
     public void Deserialize_WhenInputExceedsMaxDepth_ShouldThrowBencodeFormatException()
     {
         var options = new BencodeSerializerOptions { MaxDepth = 2 };
-        var bytes = Encoding.Latin1.GetBytes("d5:Childd5:Childdeeee");
+        byte[] bytes = Encoding.Latin1.GetBytes("d5:Childd5:Childdeeee");
 
         Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
@@ -185,7 +185,7 @@ public partial class BencodeSerializerTests
     public void Deserialize_WhenInputWithinMaxDepth_ShouldSucceed()
     {
         var options = new BencodeSerializerOptions { MaxDepth = 2 };
-        var bytes = Encoding.Latin1.GetBytes("d5:Childdee");
+        byte[] bytes = Encoding.Latin1.GetBytes("d5:Childdee");
 
         var model = BencodeSerializer.Deserialize<RecursiveModel>(bytes, options);
 
@@ -245,7 +245,7 @@ public partial class BencodeSerializerTests
     public void Deserialize_WhenDocumentExceedsAbsoluteCapDespiteLargeMaxDepth_ShouldThrowBencodeFormatException()
     {
         var options = new BencodeSerializerOptions { MaxDepth = int.MaxValue };
-        var bytes = BuildNestedDictionaryDocument(BencodeLimits.AbsoluteMaxDepth + 1);
+        byte[] bytes = BuildNestedDictionaryDocument(BencodeLimits.AbsoluteMaxDepth + 1);
 
         Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
@@ -275,7 +275,7 @@ public partial class BencodeSerializerTests
     public void Deserialize_WhenDocumentFarExceedsCapOnConstrainedStack_ShouldThrowBencodeFormatExceptionNotOverflow()
     {
         var options = new BencodeSerializerOptions { MaxDepth = int.MaxValue };
-        var bytes = BuildNestedDictionaryDocument((BencodeLimits.AbsoluteMaxDepth * 32) + 1);
+        byte[] bytes = BuildNestedDictionaryDocument((BencodeLimits.AbsoluteMaxDepth * 32) + 1);
 
         var captured = RunOnConstrainedStack(() =>
         {
@@ -325,10 +325,10 @@ public partial class BencodeSerializerTests
     private static byte[] BuildNestedDictionaryDocument(int depth)
     {
         var builder = new StringBuilder();
-        for (var i = 0; i < depth - 1; i++)
+        for (int i = 0; i < depth - 1; i++)
             builder.Append("d5:Child");
         builder.Append("de");
-        for (var i = 0; i < depth - 1; i++)
+        for (int i = 0; i < depth - 1; i++)
             builder.Append('e');
 
         return Encoding.Latin1.GetBytes(builder.ToString());

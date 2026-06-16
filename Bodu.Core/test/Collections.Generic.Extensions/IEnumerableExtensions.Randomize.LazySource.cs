@@ -19,16 +19,16 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     [TestMethod]
     public void Randomize_BufferAll_WhenSourceIsLazyIterator_ShouldReturnPermutationOfElements()
     {
-        var expected = Enumerable.Range(1, 8).ToArray();
+        int[] expected = Enumerable.Range(1, 8).ToArray();
 
-        var result = LazyYield(8).Randomize(RandomizationMode.BufferAll, CreateSeededRng()).ToArray();
+        int[] result = LazyYield(8).Randomize(RandomizationMode.BufferAll, CreateSeededRng()).ToArray();
 
         CollectionAssert.AreEquivalent(expected, result);
     }
 
     private static IEnumerable<int> LazyYield(int count)
     {
-        for (var i = 1; i <= count; i++)
+        for (int i = 1; i <= count; i++)
             yield return i;
     }
 

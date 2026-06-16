@@ -31,7 +31,7 @@ public partial class ByteBufferTests
         var buffer = new ByteBuffer(2);
         buffer.Add([9], 0, 1);
         buffer.Initialize(clear: false);
-        var contents = buffer.GetBytesZeroPadded();
+        byte[] contents = buffer.GetBytesZeroPadded();
         Assert.AreEqual(0, contents[0]); // buffer was cleared during GetBytesZeroPadded
     }
 
@@ -44,7 +44,7 @@ public partial class ByteBufferTests
         var buffer = new ByteBuffer(2);
         buffer.Add([7], 0, 1);
         buffer.Initialize(clear: true);
-        var contents = buffer.GetBytesZeroPadded();
+        byte[] contents = buffer.GetBytesZeroPadded();
         CollectionAssert.AreEqual(new byte[] { 0, 0 }, contents);
     }
 }

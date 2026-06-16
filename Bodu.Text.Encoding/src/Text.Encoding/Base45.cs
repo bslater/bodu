@@ -133,8 +133,8 @@ public static partial class Base45
     /// </returns>
     public static bool IsValid(ReadOnlySpan<char> source, BaseFormatStyles styles = BaseFormatStyles.None)
     {
-        var upper = GetMaxDecodedLength(source.Length);
-        var rented = System.Buffers.ArrayPool<byte>.Shared.Rent(upper == 0 ? 1 : upper);
+        int upper = GetMaxDecodedLength(source.Length);
+        byte[] rented = System.Buffers.ArrayPool<byte>.Shared.Rent(upper == 0 ? 1 : upper);
         try
         {
             return TryDecode(source, rented, out _, styles);
@@ -152,10 +152,10 @@ public static partial class Base45
     /// <returns>The lookup table, with <c>-1</c> for every non-alphabet code point.</returns>
     private static sbyte[] BuildLookup(string alphabet)
     {
-        var table = new sbyte[128];
+        sbyte[] table = new sbyte[128];
         Array.Fill(table, (sbyte)-1);
 
-        for (var i = 0; i < alphabet.Length; i++)
+        for (int i = 0; i < alphabet.Length; i++)
             table[alphabet[i]] = (sbyte)i;
 
         return table;

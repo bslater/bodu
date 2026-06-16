@@ -45,13 +45,13 @@ public static partial class StringExtensions
     {
         if (value.Length == 0) yield break;
 
-        var lineStart = 0;
-        for (var i = 0; i < value.Length; i++)
+        int lineStart = 0;
+        for (int i = 0; i < value.Length; i++)
         {
-            var c = value[i];
+            char c = value[i];
             if (c is '\r' or '\n')
             {
-                var line = value[lineStart..i];
+                string line = value[lineStart..i];
                 if (!removeEmptyLines || line.Length > 0) yield return line;
 
                 if (c == '\r' && i + 1 < value.Length && value[i + 1] == '\n') i++;
@@ -61,7 +61,7 @@ public static partial class StringExtensions
 
         if (lineStart < value.Length)
         {
-            var tail = value[lineStart..];
+            string tail = value[lineStart..];
             if (!removeEmptyLines || tail.Length > 0) yield return tail;
         }
     }

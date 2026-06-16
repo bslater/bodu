@@ -283,7 +283,7 @@ public static partial class IEnumerableExtensions
         RecursionState? state = null)
     {
         state ??= new RecursionState();
-        var index = 0;
+        int index = 0;
 
         foreach (TSource? element in source)
         {
@@ -293,9 +293,9 @@ public static partial class IEnumerableExtensions
             RecursiveSelectControl control = recursionControl(element);
 
             // Decode the composite control value into its constituent bit flags.
-            var flags = (int)control;
+            int flags = (int)control;
 
-            var shouldYield = (flags & IEnumerableExtensions.Yield) != 0 &&
+            bool shouldYield = (flags & IEnumerableExtensions.Yield) != 0 &&
                                (flags & IEnumerableExtensions.Skip) == 0;
 
             if (shouldYield)

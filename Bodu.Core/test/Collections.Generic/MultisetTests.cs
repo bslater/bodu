@@ -173,10 +173,10 @@ public partial class MultisetTests
         mvd.Add(10, 3);
         mvd.Add(20, 2);
 
-        var dest = new int[5];
+        int[] dest = new int[5];
         mvd.CopyTo(dest, 0);
 
-        var sorted = (int[])dest.Clone();
+        int[] sorted = (int[])dest.Clone();
         System.Array.Sort(sorted);
         CollectionAssert.AreEqual(new[] { 10, 10, 10, 20, 20 }, sorted);
     }
@@ -218,7 +218,7 @@ public partial class MultisetTests
     {
         var mvd = new Multiset<int>();
         mvd.Add(42, 2);
-        var dest = new int[5];
+        int[] dest = new int[5];
 
         mvd.CopyTo(dest, 2);
 

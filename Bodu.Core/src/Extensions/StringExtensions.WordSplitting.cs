@@ -38,9 +38,9 @@ public static partial class StringExtensions
         if (value.Length == 0) return words;
 
         StringBuilder current = new();
-        for (var i = 0; i < value.Length; i++)
+        for (int i = 0; i < value.Length; i++)
         {
-            var c = value[i];
+            char c = value[i];
             if (IsSeparator(c))
             {
                 FlushWord(words, current);
@@ -53,13 +53,13 @@ public static partial class StringExtensions
                 continue;
             }
 
-            var prev = current[^1];
-            var isUpper = char.IsUpper(c);
-            var prevWasLower = char.IsLower(prev);
-            var prevWasDigit = char.IsDigit(prev);
-            var isLetter = char.IsLetter(c);
+            char prev = current[^1];
+            bool isUpper = char.IsUpper(c);
+            bool prevWasLower = char.IsLower(prev);
+            bool prevWasDigit = char.IsDigit(prev);
+            bool isLetter = char.IsLetter(c);
 
-            var boundary = false;
+            bool boundary = false;
             if (isUpper && prevWasLower)
             {
                 boundary = true;
@@ -133,10 +133,10 @@ public static partial class StringExtensions
         Dictionary<string, string> canonical = BuildAcronymLookup(options.Acronyms);
 
         StringBuilder chunk = new();
-        for (var i = 0; i <= value.Length; i++)
+        for (int i = 0; i <= value.Length; i++)
         {
-            var c = i < value.Length ? value[i] : '\0';
-            var isChunkChar = i < value.Length && (char.IsLetterOrDigit(c) || c == '\'');
+            char c = i < value.Length ? value[i] : '\0';
+            bool isChunkChar = i < value.Length && (char.IsLetterOrDigit(c) || c == '\'');
             if (isChunkChar)
             {
                 chunk.Append(c);
@@ -161,10 +161,10 @@ public static partial class StringExtensions
     private static Dictionary<string, string> BuildAcronymLookup(IReadOnlyCollection<string> acronyms)
     {
         Dictionary<string, string> map = new(StringComparer.Ordinal);
-        foreach (var acronym in acronyms)
+        foreach (string acronym in acronyms)
         {
             if (string.IsNullOrEmpty(acronym)) continue;
-            var key = acronym.ToUpperInvariant();
+            string key = acronym.ToUpperInvariant();
             map[key] = acronym;
         }
 
@@ -188,7 +188,7 @@ public static partial class StringExtensions
         if (chunk.Length == 0) return;
 
         // Whole-chunk acronym match (handles ipv6 -> IPv6, sha256 -> SHA256, oauth -> OAuth).
-        if (canonical.TryGetValue(chunk.ToUpperInvariant(), out var wholeAcronym))
+        if (canonical.TryGetValue(chunk.ToUpperInvariant(), out string? wholeAcronym))
         {
             sink.Add(wholeAcronym);
             return;
@@ -201,7 +201,7 @@ public static partial class StringExtensions
             return;
         }
 
-        foreach (var subWord in CaseSplit(chunk))
+        foreach (string subWord in CaseSplit(chunk))
         {
             AppendSubWord(subWord, canonical, sink);
         }
@@ -233,20 +233,20 @@ public static partial class StringExtensions
     {
         List<string> result = new();
         StringBuilder current = new();
-        for (var i = 0; i < chunk.Length; i++)
+        for (int i = 0; i < chunk.Length; i++)
         {
-            var c = chunk[i];
+            char c = chunk[i];
             if (current.Length == 0)
             {
                 current.Append(c);
                 continue;
             }
 
-            var prev = current[^1];
-            var isUpper = char.IsUpper(c);
-            var prevWasLower = char.IsLower(prev);
-            var prevWasDigit = char.IsDigit(prev);
-            var isLetter = char.IsLetter(c);
+            char prev = current[^1];
+            bool isUpper = char.IsUpper(c);
+            bool prevWasLower = char.IsLower(prev);
+            bool prevWasDigit = char.IsDigit(prev);
+            bool isLetter = char.IsLetter(c);
 
             if (isUpper && prevWasLower)
             {
@@ -315,17 +315,17 @@ public static partial class StringExtensions
     /// </returns>
     private static List<string>? DecomposeAcronymRun(string subWord, Dictionary<string, string> canonical)
     {
-        var upper = subWord.ToUpperInvariant();
+        string upper = subWord.ToUpperInvariant();
         List<string> parts = new();
-        var index = 0;
+        int index = 0;
         while (index < upper.Length)
         {
             string? best = null;
-            var bestLength = 0;
-            for (var length = upper.Length - index; length >= 1; length--)
+            int bestLength = 0;
+            for (int length = upper.Length - index; length >= 1; length--)
             {
-                var candidate = upper.Substring(index, length);
-                if (canonical.TryGetValue(candidate, out var spelling))
+                string candidate = upper.Substring(index, length);
+                if (canonical.TryGetValue(candidate, out string? spelling))
                 {
                     best = spelling;
                     bestLength = length;
@@ -353,9 +353,9 @@ public static partial class StringExtensions
     private static bool IsAllUpperLettersOrDigits(string value)
     {
         if (value.Length == 0) return false;
-        for (var i = 0; i < value.Length; i++)
+        for (int i = 0; i < value.Length; i++)
         {
-            var c = value[i];
+            char c = value[i];
             if (char.IsLetter(c))
             {
                 if (!char.IsUpper(c)) return false;

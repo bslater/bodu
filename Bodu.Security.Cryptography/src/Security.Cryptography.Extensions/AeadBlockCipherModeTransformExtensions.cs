@@ -123,8 +123,8 @@ public static class AeadBlockCipherModeTransformExtensions
 
         transform.ProcessAssociatedData(associatedData);
 
-        var output = new byte[plaintext.Length + (transform.TagSize / 8)];
-        var written = transform.Encrypt(plaintext, output);
+        byte[] output = new byte[plaintext.Length + (transform.TagSize / 8)];
+        int written = transform.Encrypt(plaintext, output);
 
         if (written != output.Length)
             Array.Resize(ref output, written);
@@ -183,7 +183,7 @@ public static class AeadBlockCipherModeTransformExtensions
     {
         if (transform is null) throw new ArgumentNullException(nameof(transform));
 
-        var tagBytes = transform.TagSize / 8;
+        int tagBytes = transform.TagSize / 8;
         if (ciphertextWithTag.Length < tagBytes)
         {
             throw new ArgumentException(
@@ -193,8 +193,8 @@ public static class AeadBlockCipherModeTransformExtensions
 
         transform.ProcessAssociatedData(associatedData);
 
-        var plaintext = new byte[ciphertextWithTag.Length - tagBytes];
-        var written = transform.Decrypt(ciphertextWithTag, plaintext);
+        byte[] plaintext = new byte[ciphertextWithTag.Length - tagBytes];
+        int written = transform.Decrypt(ciphertextWithTag, plaintext);
 
         if (written != plaintext.Length)
             Array.Resize(ref plaintext, written);

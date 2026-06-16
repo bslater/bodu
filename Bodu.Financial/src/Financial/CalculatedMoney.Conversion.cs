@@ -36,14 +36,14 @@ public readonly partial struct CalculatedMoney
         MonetaryContext effective = context ?? MonetaryContext.Default;
         effective.Validate();
 
-        var registered = CurrencyResolution.TryGet(IsoCode, out CurrencyInfo? info) && info is not null;
-        var currencyMinorUnits = registered ? info!.MinorUnits : 0;
+        bool registered = CurrencyResolution.TryGet(IsoCode, out CurrencyInfo? info) && info is not null;
+        int currencyMinorUnits = registered ? info!.MinorUnits : 0;
 
-        var scale = effective.ResolveScale(currencyMinorUnits);
+        int scale = effective.ResolveScale(currencyMinorUnits);
         if (scale < 0)
             scale = currencyMinorUnits;
 
-        var rounded = effective.Rounding.Round(_amount, scale);
+        decimal rounded = effective.Rounding.Round(_amount, scale);
 
         return registered && scale == currencyMinorUnits
             ? new Money(rounded, IsoCode)

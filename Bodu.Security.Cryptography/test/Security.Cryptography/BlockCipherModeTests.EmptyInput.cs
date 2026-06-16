@@ -63,12 +63,12 @@ public abstract partial class BlockCipherModeTests<TMode>
         }
 
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0x00);
-        var iv = UsesInitializationVector
+        byte[] iv = UsesInitializationVector
             ? CryptographyHelper.GetRandomNonZeroBytes(ExpectedBlockSize)
             : new byte[ExpectedBlockSize];
         TMode transform = CreateTransform(cipher, iv);
 
-        var written = 0;
+        int written = 0;
         try
         {
             written = transform.Transform([], [], encrypt: true);

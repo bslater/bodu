@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="X25519Tests.GenerateKey.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -22,7 +22,7 @@ public sealed partial class X25519Tests
         using var algorithm = new X25519();
         algorithm.GenerateKey();
 
-        var expectedPublic = new byte[X25519.KeySizeInBytes];
+        byte[] expectedPublic = new byte[X25519.KeySizeInBytes];
         Curve25519.ScalarMultBase(algorithm.ExportPrivateKey(), expectedPublic);
 
         CollectionAssert.AreEqual(expectedPublic, algorithm.ExportPublicKey());

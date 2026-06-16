@@ -39,7 +39,7 @@ public partial class MoneyOfTCurrencyTests
     [DataRow("OMR", 12.345, "OMR 12.345")]
     public void ToString_WhenDefaultFormatAndInvariantCulture_ShouldMatchExpected(string iso, double amount, string expected)
     {
-        var actual = FormatViaReflection(iso, (decimal)amount, format: null, CultureInfo.InvariantCulture);
+        string actual = FormatViaReflection(iso, (decimal)amount, format: null, CultureInfo.InvariantCulture);
 
         Assert.AreEqual(expected, actual);
     }
@@ -55,7 +55,7 @@ public partial class MoneyOfTCurrencyTests
     [DataRow("JPY", "ja-JP", 1234567.0, "JPY 1,234,567")]
     public void ToString_WhenDefaultFormatAndExplicitCulture_ShouldRespectCultureGroupingAndDecimal(string iso, string cultureName, double amount, string expected)
     {
-        var actual = FormatViaReflection(iso, (decimal)amount, format: null, new CultureInfo(cultureName));
+        string actual = FormatViaReflection(iso, (decimal)amount, format: null, new CultureInfo(cultureName));
 
         Assert.AreEqual(expected, actual);
     }
@@ -74,11 +74,11 @@ public partial class MoneyOfTCurrencyTests
     public void ToString_WhenDefaultFormatAndCultureHasNonAsciiDigitsOrSeparators_ShouldComposeIsoPlusBclNumberOutput(string iso, string cultureName, double amount)
     {
         var culture = new CultureInfo(cultureName);
-        var minorUnits = GetMinorUnits(iso);
-        var rounded = decimal.Round((decimal)amount, minorUnits, MidpointRounding.ToEven);
-        var expected = string.Concat(iso, " ", rounded.ToString("N" + minorUnits.ToString(CultureInfo.InvariantCulture), culture));
+        int minorUnits = GetMinorUnits(iso);
+        decimal rounded = decimal.Round((decimal)amount, minorUnits, MidpointRounding.ToEven);
+        string expected = string.Concat(iso, " ", rounded.ToString("N" + minorUnits.ToString(CultureInfo.InvariantCulture), culture));
 
-        var actual = FormatViaReflection(iso, (decimal)amount, format: null, culture);
+        string actual = FormatViaReflection(iso, (decimal)amount, format: null, culture);
 
         Assert.AreEqual(expected, actual);
     }
@@ -116,13 +116,13 @@ public partial class MoneyOfTCurrencyTests
     public void ToString_WhenCSpecifierAndCultureMatches_ShouldEqualBclNativeCurrencyFormat(string iso, string cultureName, double amount)
     {
         var culture = new CultureInfo(cultureName);
-        var minorUnits = GetMinorUnits(iso);
-        var rounded = decimal.Round((decimal)amount, minorUnits, MidpointRounding.ToEven);
+        int minorUnits = GetMinorUnits(iso);
+        decimal rounded = decimal.Round((decimal)amount, minorUnits, MidpointRounding.ToEven);
         var nfi = (NumberFormatInfo)culture.NumberFormat.Clone();
         nfi.CurrencyDecimalDigits = minorUnits;
-        var expected = rounded.ToString("C", nfi);
+        string expected = rounded.ToString("C", nfi);
 
-        var actual = FormatViaReflection(iso, (decimal)amount, "C", culture);
+        string actual = FormatViaReflection(iso, (decimal)amount, "C", culture);
 
         Assert.AreEqual(expected, actual);
     }
@@ -137,7 +137,7 @@ public partial class MoneyOfTCurrencyTests
     [DataRow("GBP", "en-GB", 1234.56, "£1,234.56")]
     public void ToString_WhenCSpecifierAndCultureMatches_ShouldMatchHardcodedExpected(string iso, string cultureName, double amount, string expected)
     {
-        var actual = FormatViaReflection(iso, (decimal)amount, "C", new CultureInfo(cultureName));
+        string actual = FormatViaReflection(iso, (decimal)amount, "C", new CultureInfo(cultureName));
 
         Assert.AreEqual(expected, actual);
     }
@@ -164,15 +164,15 @@ public partial class MoneyOfTCurrencyTests
     public void ToString_WhenCSpecifierAndCultureMismatched_ShouldEmbedIsoInLocalePositionSlot(string iso, string cultureName, double amount)
     {
         var culture = new CultureInfo(cultureName);
-        var minorUnits = GetMinorUnits(iso);
-        var rounded = decimal.Round((decimal)amount, minorUnits, MidpointRounding.ToEven);
-        var numberPart = rounded.ToString("N" + minorUnits.ToString(CultureInfo.InvariantCulture), culture);
-        var isoBeforeAmount = culture.NumberFormat.CurrencyPositivePattern is 0 or 2;
-        var expected = isoBeforeAmount
+        int minorUnits = GetMinorUnits(iso);
+        decimal rounded = decimal.Round((decimal)amount, minorUnits, MidpointRounding.ToEven);
+        string numberPart = rounded.ToString("N" + minorUnits.ToString(CultureInfo.InvariantCulture), culture);
+        bool isoBeforeAmount = culture.NumberFormat.CurrencyPositivePattern is 0 or 2;
+        string expected = isoBeforeAmount
             ? string.Concat(iso, " ", numberPart)
             : string.Concat(numberPart, " ", iso);
 
-        var actual = FormatViaReflection(iso, (decimal)amount, "C", culture);
+        string actual = FormatViaReflection(iso, (decimal)amount, "C", culture);
 
         Assert.AreEqual(expected, actual);
     }
@@ -195,7 +195,7 @@ public partial class MoneyOfTCurrencyTests
     [DataRow("JPY", "ja-JP", "~C", 1234.0, "1,234")]
     public void ToString_WhenTildePrefixAndCultureMatches_ShouldEmitBareNumber(string iso, string cultureName, string format, double amount, string expected)
     {
-        var actual = FormatViaReflection(iso, (decimal)amount, format, new CultureInfo(cultureName));
+        string actual = FormatViaReflection(iso, (decimal)amount, format, new CultureInfo(cultureName));
 
         Assert.AreEqual(expected, actual);
     }
@@ -211,11 +211,11 @@ public partial class MoneyOfTCurrencyTests
     public void ToString_WhenTildePrefixAndMatchedNonAsciiCulture_ShouldEqualBclNNumberOutput(string iso, string cultureName, string format, double amount)
     {
         var culture = new CultureInfo(cultureName);
-        var minorUnits = GetMinorUnits(iso);
-        var rounded = decimal.Round((decimal)amount, minorUnits, MidpointRounding.ToEven);
-        var expected = rounded.ToString("N" + minorUnits.ToString(CultureInfo.InvariantCulture), culture);
+        int minorUnits = GetMinorUnits(iso);
+        decimal rounded = decimal.Round((decimal)amount, minorUnits, MidpointRounding.ToEven);
+        string expected = rounded.ToString("N" + minorUnits.ToString(CultureInfo.InvariantCulture), culture);
 
-        var actual = FormatViaReflection(iso, (decimal)amount, format, culture);
+        string actual = FormatViaReflection(iso, (decimal)amount, format, culture);
 
         Assert.AreEqual(expected, actual);
     }
@@ -233,7 +233,7 @@ public partial class MoneyOfTCurrencyTests
     [DataRow("USD", "de-DE", "~C", 1234.56, "1.234,56 USD")]
     public void ToString_WhenTildePrefixAndCultureMismatched_ShouldKeepIsoDesignator(string iso, string cultureName, string format, double amount, string expected)
     {
-        var actual = FormatViaReflection(iso, (decimal)amount, format, new CultureInfo(cultureName));
+        string actual = FormatViaReflection(iso, (decimal)amount, format, new CultureInfo(cultureName));
 
         Assert.AreEqual(expected, actual);
     }
@@ -252,8 +252,8 @@ public partial class MoneyOfTCurrencyTests
     {
         var culture = new CultureInfo(cultureName);
 
-        var a = FormatViaReflection(iso, (decimal)amount, unprefixed, culture);
-        var b = FormatViaReflection(iso, (decimal)amount, prefixed, culture);
+        string a = FormatViaReflection(iso, (decimal)amount, unprefixed, culture);
+        string b = FormatViaReflection(iso, (decimal)amount, prefixed, culture);
 
         Assert.AreEqual(a, b);
     }
@@ -280,7 +280,7 @@ public partial class MoneyOfTCurrencyTests
     [DataRow("USD", "F4", 19.99, "19.9900")]
     public void ToString_WhenExplicitPrecisionAndInvariantCulture_ShouldOverrideNaturalPrecision(string iso, string format, double amount, string expected)
     {
-        var actual = FormatViaReflection(iso, (decimal)amount, format, CultureInfo.InvariantCulture);
+        string actual = FormatViaReflection(iso, (decimal)amount, format, CultureInfo.InvariantCulture);
 
         Assert.AreEqual(expected, actual);
     }
@@ -297,7 +297,7 @@ public partial class MoneyOfTCurrencyTests
     [DataRow("GBP", "en-GB", "C0", 1234.0, "£1,234")]
     public void ToString_WhenCSpecifierWithExplicitPrecisionAndMatched_ShouldRespectPrecision(string iso, string cultureName, string format, double amount, string expected)
     {
-        var actual = FormatViaReflection(iso, (decimal)amount, format, new CultureInfo(cultureName));
+        string actual = FormatViaReflection(iso, (decimal)amount, format, new CultureInfo(cultureName));
 
         Assert.AreEqual(expected, actual);
     }
@@ -309,8 +309,8 @@ public partial class MoneyOfTCurrencyTests
     [TestMethod]
     public void ToString_WhenPrecisionHasLeadingZero_ShouldAcceptIt()
     {
-        var a = FormatViaReflection("USD", 19.99m, "C2", CultureInfo.InvariantCulture);
-        var b = FormatViaReflection("USD", 19.99m, "C02", CultureInfo.InvariantCulture);
+        string a = FormatViaReflection("USD", 19.99m, "C2", CultureInfo.InvariantCulture);
+        string b = FormatViaReflection("USD", 19.99m, "C02", CultureInfo.InvariantCulture);
 
         Assert.AreEqual(a, b);
     }
@@ -329,7 +329,7 @@ public partial class MoneyOfTCurrencyTests
     [DataRow("EUR", "en-US", 1234.56, "EUR 1,234.56")]
     public void ToString_WhenFormatIsBareTilde_ShouldBehaveAsTildeG(string iso, string cultureName, double amount, string expected)
     {
-        var actual = FormatViaReflection(iso, (decimal)amount, "~", new CultureInfo(cultureName));
+        string actual = FormatViaReflection(iso, (decimal)amount, "~", new CultureInfo(cultureName));
 
         Assert.AreEqual(expected, actual);
     }
@@ -342,7 +342,7 @@ public partial class MoneyOfTCurrencyTests
     [DataRow("JPY", "ja-JP", 1234.0, "JPY 1,234")]
     public void ToString_WhenFormatIsEmptyString_ShouldBehaveAsDefault(string iso, string cultureName, double amount, string expected)
     {
-        var actual = FormatViaReflection(iso, (decimal)amount, string.Empty, new CultureInfo(cultureName));
+        string actual = FormatViaReflection(iso, (decimal)amount, string.Empty, new CultureInfo(cultureName));
 
         Assert.AreEqual(expected, actual);
     }
@@ -363,7 +363,7 @@ public partial class MoneyOfTCurrencyTests
     [DataRow("BHD", "C", 12.345, "BHD 12.345")]
     public void ToString_WhenInvariantCulture_ShouldNeverMatchCurrency(string iso, string format, double amount, string expected)
     {
-        var actual = FormatViaReflection(iso, (decimal)amount, format, CultureInfo.InvariantCulture);
+        string actual = FormatViaReflection(iso, (decimal)amount, format, CultureInfo.InvariantCulture);
 
         Assert.AreEqual(expected, actual);
     }
@@ -377,7 +377,7 @@ public partial class MoneyOfTCurrencyTests
     {
         var nfi = (NumberFormatInfo)new CultureInfo("en-US").NumberFormat.Clone();
 
-        var actual = FormatViaReflection("USD", 1234.56m, "C", nfi);
+        string actual = FormatViaReflection("USD", 1234.56m, "C", nfi);
 
         Assert.AreEqual("USD 1,234.56", actual);
     }
@@ -399,7 +399,7 @@ public partial class MoneyOfTCurrencyTests
     [DataRow("BHD", "G", "BHD 0.000")]
     public void ToString_WhenAmountIsZero_ShouldRenderAsZeroWithCurrencyPrecision(string iso, string format, string expected)
     {
-        var actual = FormatViaReflection(iso, 0m, format, CultureInfo.InvariantCulture);
+        string actual = FormatViaReflection(iso, 0m, format, CultureInfo.InvariantCulture);
 
         Assert.AreEqual(expected, actual);
     }
@@ -412,7 +412,7 @@ public partial class MoneyOfTCurrencyTests
     [DataRow("JPY", 9876543210.0, "JPY 9,876,543,210")]
     public void ToString_WhenAmountIsVeryLarge_ShouldFormatWithoutTruncation(string iso, double amount, string expected)
     {
-        var actual = FormatViaReflection(iso, (decimal)amount, format: null, CultureInfo.InvariantCulture);
+        string actual = FormatViaReflection(iso, (decimal)amount, format: null, CultureInfo.InvariantCulture);
 
         Assert.AreEqual(expected, actual);
     }
@@ -426,7 +426,7 @@ public partial class MoneyOfTCurrencyTests
     [DataRow("USD", "G", "USD -1,234.56")]
     public void ToString_WhenAmountIsNegativeAndInvariantCulture_ShouldRespectFormatNegativeStyle(string iso, string format, string expected)
     {
-        var actual = FormatViaReflection(iso, -1234.56m, format, CultureInfo.InvariantCulture);
+        string actual = FormatViaReflection(iso, -1234.56m, format, CultureInfo.InvariantCulture);
 
         Assert.AreEqual(expected, actual);
     }
@@ -485,7 +485,7 @@ public partial class MoneyOfTCurrencyTests
     {
         var money = new Money<USD>(1.5m);
 
-        var actual = money.ToString("F12", CultureInfo.InvariantCulture);
+        string actual = money.ToString("F12", CultureInfo.InvariantCulture);
 
         Assert.AreEqual("1.500000000000", actual);
     }
@@ -506,16 +506,16 @@ public partial class MoneyOfTCurrencyTests
     [DataRow("BHD", 12.345)]
     public void RoundTrip_WhenDefaultFormatAndInvariantCulture_ShouldRecoverOriginal(string iso, double amount)
     {
-        var value = (decimal)amount;
+        decimal value = (decimal)amount;
         Type currencyType = ResolveCurrencyType(iso);
         Type moneyType = typeof(Money<>).MakeGenericType(currencyType);
-        var original = Activator.CreateInstance(moneyType, value)!;
+        object original = Activator.CreateInstance(moneyType, value)!;
 
-        var text = (string)moneyType
+        string text = (string)moneyType
             .GetMethod("ToString", [typeof(string), typeof(IFormatProvider)])!
             .Invoke(original, [null, CultureInfo.InvariantCulture])!;
 
-        var recovered = moneyType
+        object recovered = moneyType
             .GetMethod("Parse", [typeof(string), typeof(IFormatProvider)])!
             .Invoke(null, [text, CultureInfo.InvariantCulture])!;
 
@@ -558,7 +558,7 @@ public partial class MoneyOfTCurrencyTests
     {
         Type currencyType = ResolveCurrencyType(iso);
         Type moneyType = typeof(Money<>).MakeGenericType(currencyType);
-        var money = Activator.CreateInstance(moneyType, amount)!;
+        object money = Activator.CreateInstance(moneyType, amount)!;
         return (string)moneyType
             .GetMethod("ToString", [typeof(string), typeof(IFormatProvider)])!
             .Invoke(money, [format, provider])!;

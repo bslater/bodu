@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsymmetricAlgorithmTests.GenerateKey.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -31,7 +31,7 @@ public abstract partial class AsymmetricAlgorithmTests<TTest, TAlgorithm>
     public void GenerateKey_WhenCalledTwice_ShouldProduceDifferentPrivateKeys()
     {
         using TAlgorithm algorithm = CreateAlgorithmWithGeneratedKey();
-        var first = ExportPrivateKey(algorithm);
+        byte[] first = ExportPrivateKey(algorithm);
 
         GenerateKey(algorithm);
 

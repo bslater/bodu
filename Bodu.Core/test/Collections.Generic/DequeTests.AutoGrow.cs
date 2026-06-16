@@ -16,11 +16,11 @@ public partial class DequeTests
     public void AutoGrow_WhenAddFirstBeyondCapacity_ShouldPreserveOrder()
     {
         var deque = new Deque<int>(2);
-        for (var i = 0; i < 50; i++)
+        for (int i = 0; i < 50; i++)
             deque.AddFirst(i);
 
         Assert.AreEqual(50, deque.Count);
-        for (var i = 0; i < 50; i++)
+        for (int i = 0; i < 50; i++)
             Assert.AreEqual(49 - i, deque[i]);
     }
     /// <summary>
@@ -30,11 +30,11 @@ public partial class DequeTests
     public void AutoGrow_WhenAddLastBeyondCapacity_ShouldPreserveOrder()
     {
         var deque = new Deque<int>(2);
-        for (var i = 0; i < 50; i++)
+        for (int i = 0; i < 50; i++)
             deque.AddLast(i);
 
         Assert.AreEqual(50, deque.Count);
-        for (var i = 0; i < 50; i++)
+        for (int i = 0; i < 50; i++)
             Assert.AreEqual(i, deque[i]);
     }
 

@@ -22,9 +22,9 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
         BlockCipherSpecification spec = GetSpecification(variant);
         using TCipher cipher = CreateBlockCipher(variant);
 
-        var plaintext = BuildArbitraryBlock(spec.BlockSize, offset: 0x80);
-        var ciphertext = new byte[spec.BlockSize];
-        var recovered = new byte[spec.BlockSize];
+        byte[] plaintext = BuildArbitraryBlock(spec.BlockSize, offset: 0x80);
+        byte[] ciphertext = new byte[spec.BlockSize];
+        byte[] recovered = new byte[spec.BlockSize];
 
         cipher.Encrypt(plaintext, ciphertext);
         cipher.Decrypt(ciphertext, recovered);
@@ -43,9 +43,9 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
         BlockCipherSpecification spec = GetSpecification(variant);
         using TCipher cipher = CreateBlockCipher(variant);
 
-        var plaintext = BuildArbitraryBlock(spec.BlockSize, offset: 0x10);
-        var first = new byte[spec.BlockSize];
-        var second = new byte[spec.BlockSize];
+        byte[] plaintext = BuildArbitraryBlock(spec.BlockSize, offset: 0x10);
+        byte[] first = new byte[spec.BlockSize];
+        byte[] second = new byte[spec.BlockSize];
 
         cipher.Encrypt(plaintext, first);
         cipher.Encrypt(plaintext, second);
@@ -64,8 +64,8 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
         BlockCipherSpecification spec = GetSpecification(variant);
         using TCipher cipher = CreateBlockCipher(variant);
 
-        var plaintext = BuildArbitraryBlock(spec.BlockSize, offset: 0xA0);
-        var ciphertext = new byte[spec.BlockSize];
+        byte[] plaintext = BuildArbitraryBlock(spec.BlockSize, offset: 0xA0);
+        byte[] ciphertext = new byte[spec.BlockSize];
 
         cipher.Encrypt(plaintext, ciphertext);
 
@@ -80,8 +80,8 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     /// </summary>
     private static byte[] BuildArbitraryBlock(int length, int offset)
     {
-        var buffer = new byte[length];
-        for (var i = 0; i < length; i++)
+        byte[] buffer = new byte[length];
+        for (int i = 0; i < length; i++)
             buffer[i] = (byte)(offset + i);
         return buffer;
     }

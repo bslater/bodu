@@ -189,7 +189,7 @@ internal sealed class StreamCipherTransform
         CryptographyThrowHelper.ThrowIfArrayOffsetOrCountInvalid(inputBuffer, inputOffset, inputCount);
 
         // No overlap check is needed: a fresh output array is allocated here, so it can never alias the input buffer.
-        var output = new byte[inputCount];
+        byte[] output = new byte[inputCount];
 
         try
         {
@@ -217,9 +217,9 @@ internal sealed class StreamCipherTransform
     /// </remarks>
     private void Apply(ReadOnlySpan<byte> input, Span<byte> output)
     {
-        var blockSize = _cipher.BlockSize;
+        int blockSize = _cipher.BlockSize;
 
-        for (var i = 0; i < input.Length; i++)
+        for (int i = 0; i < input.Length; i++)
         {
             if (_keystreamOffset == blockSize)
             {

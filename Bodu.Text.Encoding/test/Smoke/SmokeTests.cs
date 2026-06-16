@@ -24,10 +24,10 @@ public sealed class SmokeTests
     [TestCategory("Smoke")]
     public void Base16_EncodeDecode_ShouldRoundTripCanonicalReference()
     {
-        var original = new byte[] { 0xDE, 0xAD, 0xBE, 0xEF };
+        byte[] original = new byte[] { 0xDE, 0xAD, 0xBE, 0xEF };
 
-        var encoded = Base16.Encode(original);
-        var decoded = Base16.Decode(encoded);
+        string encoded = Base16.Encode(original);
+        byte[] decoded = Base16.Decode(encoded);
 
         Assert.AreEqual("deadbeef", encoded);
         CollectionAssert.AreEqual(original, decoded);
@@ -42,10 +42,10 @@ public sealed class SmokeTests
     [TestCategory("Smoke")]
     public void Base32_EncodeDecode_ShouldMatchRfc4648ReferenceVector()
     {
-        var original = System.Text.Encoding.ASCII.GetBytes("foobar");
+        byte[] original = System.Text.Encoding.ASCII.GetBytes("foobar");
 
-        var encoded = Base32.Encode(original);
-        var decoded = Base32.Decode(encoded);
+        string encoded = Base32.Encode(original);
+        byte[] decoded = Base32.Decode(encoded);
 
         Assert.AreEqual("MZXW6YTBOI======", encoded);
         CollectionAssert.AreEqual(original, decoded);
@@ -60,10 +60,10 @@ public sealed class SmokeTests
     [TestCategory("Smoke")]
     public void Base58_EncodeDecode_ShouldRoundTripBitcoinFlickrReferenceVector()
     {
-        var original = System.Text.Encoding.ASCII.GetBytes("Hello");
+        byte[] original = System.Text.Encoding.ASCII.GetBytes("Hello");
 
-        var encoded = Base58.Encode(original);
-        var decoded = Base58.Decode(encoded);
+        string encoded = Base58.Encode(original);
+        byte[] decoded = Base58.Decode(encoded);
 
         Assert.AreEqual("9Ajdvzr", encoded);
         CollectionAssert.AreEqual(original, decoded);
@@ -78,10 +78,10 @@ public sealed class SmokeTests
     [TestCategory("Smoke")]
     public void Base64_EncodeDecode_ShouldMatchRfc4648ReferenceVector()
     {
-        var original = System.Text.Encoding.ASCII.GetBytes("foobar");
+        byte[] original = System.Text.Encoding.ASCII.GetBytes("foobar");
 
-        var encoded = Base64.Encode(original);
-        var decoded = Base64.Decode(encoded);
+        string encoded = Base64.Encode(original);
+        byte[] decoded = Base64.Decode(encoded);
 
         Assert.AreEqual("Zm9vYmFy", encoded);
         CollectionAssert.AreEqual(original, decoded);
@@ -96,10 +96,10 @@ public sealed class SmokeTests
     [TestCategory("Smoke")]
     public void Base85_EncodeDecode_ShouldHandleZShortcut()
     {
-        var original = new byte[] { 0, 0, 0, 0 };
+        byte[] original = new byte[] { 0, 0, 0, 0 };
 
-        var encoded = Base85.Encode(original);
-        var decoded = Base85.Decode(encoded);
+        string encoded = Base85.Encode(original);
+        byte[] decoded = Base85.Decode(encoded);
 
         Assert.AreEqual("z", encoded);
         CollectionAssert.AreEqual(original, decoded);

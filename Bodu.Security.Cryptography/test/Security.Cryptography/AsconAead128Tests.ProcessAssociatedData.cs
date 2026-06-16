@@ -51,8 +51,8 @@ public partial class AsconAead128Tests
     public void ProcessAssociatedData_WhenCalledAfterEncrypt_ShouldThrowExactly()
     {
         using AsconAead128 sut = MakeInstance();
-        var plaintext = new byte[8];
-        var output = new byte[plaintext.Length + AsconAead128.TagBytes];
+        byte[] plaintext = new byte[8];
+        byte[] output = new byte[plaintext.Length + AsconAead128.TagBytes];
         sut.Encrypt(plaintext, output);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
@@ -68,14 +68,14 @@ public partial class AsconAead128Tests
     [TestMethod]
     public void ProcessAssociatedData_WhenCalledAfterDecrypt_ShouldThrowExactly()
     {
-        var plaintext = new byte[8];
+        byte[] plaintext = new byte[8];
 
         using AsconAead128 enc = MakeInstance();
-        var sealed_ = new byte[plaintext.Length + AsconAead128.TagBytes];
+        byte[] sealed_ = new byte[plaintext.Length + AsconAead128.TagBytes];
         enc.Encrypt(plaintext, sealed_);
 
         using AsconAead128 dec = MakeInstance();
-        var recovered = new byte[plaintext.Length];
+        byte[] recovered = new byte[plaintext.Length];
         dec.Decrypt(sealed_, recovered);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>

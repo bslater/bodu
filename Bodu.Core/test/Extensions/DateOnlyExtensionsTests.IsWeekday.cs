@@ -31,7 +31,7 @@ public partial class DateOnlyExtensionsTests
     {
         IWeekendDefinitionProvider? provider = providerType is null ? null : (IWeekendDefinitionProvider)Activator.CreateInstance(providerType)!;
 
-        var actual = input.IsWeekday(weekend, provider);
+        bool actual = input.IsWeekday(weekend, provider);
         Assert.AreEqual(!expected, actual, $"Failed for {input} with weekend {weekend}");
     }
 

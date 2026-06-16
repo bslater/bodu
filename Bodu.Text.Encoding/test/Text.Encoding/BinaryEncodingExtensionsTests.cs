@@ -23,9 +23,9 @@ public sealed partial class BinaryEncodingExtensionsTests
     public void Decode_OnStringWithIBinaryEncoding_ShouldDispatchThroughInterface()
     {
         IBinaryEncoding encoding = BinaryEncodings.Base64;
-        var encoded = encoding.Encode(CanonicalBytes);
+        string encoded = encoding.Encode(CanonicalBytes);
 
-        var actual = encoded.Decode(encoding);
+        byte[] actual = encoded.Decode(encoding);
 
         CollectionAssert.AreEqual(CanonicalBytes, actual);
     }
@@ -39,7 +39,7 @@ public sealed partial class BinaryEncodingExtensionsTests
     {
         IBinaryEncoding encoding = BinaryEncodings.Base64;
 
-        var actual = CanonicalBytes.Encode(encoding);
+        string actual = CanonicalBytes.Encode(encoding);
 
         Assert.AreEqual(encoding.Encode(CanonicalBytes), actual);
     }

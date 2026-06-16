@@ -78,10 +78,10 @@ public abstract partial class ThreefishBlockCipher
         // Key schedule initialization: 4 words + parity + duplicated key
         _keySchedule = new ulong[(BlockWords * 2) + 1];
         MemoryMarshal.Cast<byte, ulong>(key).CopyTo(_keySchedule);
-        var parity = KeyParityValue;
-        for (var i = 0; i < BlockWords; i++)
+        ulong parity = KeyParityValue;
+        for (int i = 0; i < BlockWords; i++)
         {
-            var word = _keySchedule[i];
+            ulong word = _keySchedule[i];
             parity ^= word;
             _keySchedule[BlockWords + 1 + i] = word; // repeat key word
         }
@@ -173,10 +173,10 @@ public abstract partial class ThreefishBlockCipher
 
         // Repopulate the key schedule: [K0..K(n-1), parity, K0..K(n-1)].
         MemoryMarshal.Cast<byte, ulong>(key).CopyTo(_keySchedule);
-        var parity = KeyParityValue;
-        for (var i = 0; i < BlockWords; i++)
+        ulong parity = KeyParityValue;
+        for (int i = 0; i < BlockWords; i++)
         {
-            var word = _keySchedule[i];
+            ulong word = _keySchedule[i];
             parity ^= word;
             _keySchedule[BlockWords + 1 + i] = word;
         }
@@ -233,7 +233,7 @@ public abstract partial class ThreefishBlockCipher
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private protected static ulong LoadWordLittleEndian(ref byte source, nint byteOffset)
     {
-        var value = Unsafe.ReadUnaligned<ulong>(ref Unsafe.AddByteOffset(ref source, byteOffset));
+        ulong value = Unsafe.ReadUnaligned<ulong>(ref Unsafe.AddByteOffset(ref source, byteOffset));
         return BitConverter.IsLittleEndian ? value : BinaryPrimitives.ReverseEndianness(value);
     }
 

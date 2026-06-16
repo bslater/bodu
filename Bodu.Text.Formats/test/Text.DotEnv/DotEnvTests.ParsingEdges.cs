@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DotEnvTests.ParsingEdges.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -75,7 +75,7 @@ public partial class DotEnvTests
     {
         DotEnvDocument doc = DotEnv.Parse("A=\"x\\ry\"");
 
-        var text = DotEnv.Format(doc);
+        string text = DotEnv.Format(doc);
 
         Assert.Contains("\\r", text);
     }

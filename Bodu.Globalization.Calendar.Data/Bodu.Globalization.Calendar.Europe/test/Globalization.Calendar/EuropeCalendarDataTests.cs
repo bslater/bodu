@@ -119,7 +119,7 @@ public sealed class EuropeCalendarDataTests
     [TestMethod]
     public void Resolve_WhenScottishHolidayQueriedForEngland_ReturnsNoResult()
     {
-        var count = EuropeCalendarData.CreateService("GB-ENG")
+        int count = EuropeCalendarData.CreateService("GB-ENG")
             .Resolve(new DateRange(new DateOnly(2024, 1, 1), new DateOnly(2024, 12, 31)), "GB-ENG")
             .Count(r => r.NotableDateId == "saint-andrews-day");
 

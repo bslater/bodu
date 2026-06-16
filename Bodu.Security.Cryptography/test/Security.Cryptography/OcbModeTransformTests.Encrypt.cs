@@ -22,12 +22,12 @@ public sealed partial class OcbModeTransformTests
     public void Encrypt_WithGivenTagSize_OutputShouldBePlaintextLengthPlusTagBytes(int tagSize)
     {
         using var cipher = new AesBlockCipherFixture(new byte[16]);
-        var plaintext = new byte[ExpectedBlockSize];
+        byte[] plaintext = new byte[ExpectedBlockSize];
         OcbModeTransform transform = CreateTransform(cipher, new byte[ExpectedBlockSize], tagSize);
-        var tagBytes = tagSize / 8;
-        var output = new byte[plaintext.Length + tagBytes];
+        int tagBytes = tagSize / 8;
+        byte[] output = new byte[plaintext.Length + tagBytes];
 
-        var written = transform.Encrypt(plaintext, output);
+        int written = transform.Encrypt(plaintext, output);
 
         Assert.AreEqual(plaintext.Length + tagBytes, written,
             $"Encrypt must return |PT| + (tagSize / 8) bytes (tagSize = {tagSize} bits).");
@@ -52,13 +52,13 @@ public sealed partial class OcbModeTransformTests
     {
         using var cipher16 = new AesBlockCipherFixture(new byte[16]);
         using var cipher12 = new AesBlockCipherFixture(new byte[16]);
-        var iv = new byte[ExpectedBlockSize];
-        var plaintext = new byte[ExpectedBlockSize];
+        byte[] iv = new byte[ExpectedBlockSize];
+        byte[] plaintext = new byte[ExpectedBlockSize];
 
         OcbModeTransform enc16 = CreateTransform(cipher16, (byte[])iv.Clone(), 128);
         OcbModeTransform enc12 = CreateTransform(cipher12, (byte[])iv.Clone(), 96);
-        var ct16 = new byte[plaintext.Length + 16];
-        var ct12 = new byte[plaintext.Length + 12];
+        byte[] ct16 = new byte[plaintext.Length + 16];
+        byte[] ct12 = new byte[plaintext.Length + 12];
         enc16.Encrypt(plaintext, ct16);
         enc12.Encrypt(plaintext, ct12);
 
@@ -90,15 +90,15 @@ public sealed partial class OcbModeTransformTests
     {
         using var cipher1 = new AesBlockCipherFixture(new byte[16]);
         using var cipher2 = new AesBlockCipherFixture(Enumerable.Repeat((byte)0xFF, 16).ToArray());
-        var iv = new byte[ExpectedBlockSize];
-        var plaintext = new byte[ExpectedBlockSize];
+        byte[] iv = new byte[ExpectedBlockSize];
+        byte[] plaintext = new byte[ExpectedBlockSize];
 
         var enc1 = new OcbModeTransform(cipher1, iv);
-        var ct1 = new byte[plaintext.Length + (enc1.TagSize / 8)];
+        byte[] ct1 = new byte[plaintext.Length + (enc1.TagSize / 8)];
         enc1.Encrypt(plaintext, ct1);
 
         var enc2 = new OcbModeTransform(cipher2, iv);
-        var ct2 = new byte[plaintext.Length + (enc2.TagSize / 8)];
+        byte[] ct2 = new byte[plaintext.Length + (enc2.TagSize / 8)];
         enc2.Encrypt(plaintext, ct2);
 
         CollectionAssert.AreNotEqual(ct1, ct2,

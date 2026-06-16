@@ -33,7 +33,7 @@ public sealed class IListExtensionsTests_ReplaceAll
     {
         var list = new List<int>();
 
-        var replaced = list.ReplaceAll(1, 2);
+        int replaced = list.ReplaceAll(1, 2);
 
         Assert.AreEqual(0, replaced);
     }
@@ -61,7 +61,7 @@ public sealed class IListExtensionsTests_ReplaceAll
     {
         var list = new List<string> { "abc", "ABC", "xyz" };
 
-        var replaced = list.ReplaceAll("abc", "ZZZ", StringComparer.OrdinalIgnoreCase);
+        int replaced = list.ReplaceAll("abc", "ZZZ", StringComparer.OrdinalIgnoreCase);
 
         Assert.AreEqual(2, replaced);
         CollectionAssert.AreEqual(new[] { "ZZZ", "ZZZ", "xyz" }, list);
@@ -89,7 +89,7 @@ public sealed class IListExtensionsTests_ReplaceAll
     {
         var list = new List<int> { 1, 2, 1, 3, 1 };
 
-        var replaced = list.ReplaceAll(1, 9);
+        int replaced = list.ReplaceAll(1, 9);
 
         Assert.AreEqual(3, replaced);
         CollectionAssert.AreEqual(new[] { 9, 2, 9, 3, 9 }, list);
@@ -104,7 +104,7 @@ public sealed class IListExtensionsTests_ReplaceAll
     {
         var list = new List<int> { 1, 2, 3 };
 
-        var replaced = list.ReplaceAll(99, 9);
+        int replaced = list.ReplaceAll(99, 9);
 
         Assert.AreEqual(0, replaced);
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, list);
@@ -119,7 +119,7 @@ public sealed class IListExtensionsTests_ReplaceAll
     {
         var list = new List<string?> { "a", null, "b", null };
 
-        var replaced = list.ReplaceAll(null, "z");
+        int replaced = list.ReplaceAll(null, "z");
 
         Assert.AreEqual(2, replaced);
         CollectionAssert.AreEqual(new[] { "a", "z", "b", "z" }, list);
@@ -134,7 +134,7 @@ public sealed class IListExtensionsTests_ReplaceAll
     {
         var list = new List<int> { 1, 2, 1 };
 
-        var replaced = list.ReplaceAll(1, 9, comparer: null);
+        int replaced = list.ReplaceAll(1, 9, comparer: null);
 
         Assert.AreEqual(2, replaced);
         CollectionAssert.AreEqual(new[] { 9, 2, 9 }, list);
@@ -163,7 +163,7 @@ public sealed class IListExtensionsTests_ReplaceAll
     {
         var list = new List<int> { 1, 4, 5, 8, 9 };
 
-        var replaced = list.ReplaceAll(0, x => x % 2 == 0);
+        int replaced = list.ReplaceAll(0, x => x % 2 == 0);
 
         Assert.AreEqual(2, replaced);
         CollectionAssert.AreEqual(new[] { 1, 0, 5, 0, 9 }, list);
@@ -194,7 +194,7 @@ public sealed class IListExtensionsTests_ReplaceAll
     {
         var list = new List<int> { 1, 2, 3 };
 
-        var replaced = list.ReplaceAll(99, _ => true);
+        int replaced = list.ReplaceAll(99, _ => true);
 
         Assert.AreEqual(3, replaced);
         CollectionAssert.AreEqual(new[] { 99, 99, 99 }, list);
@@ -208,7 +208,7 @@ public sealed class IListExtensionsTests_ReplaceAll
     {
         var list = new List<string> { "a", "b", "a", "c", "a" };
 
-        var replaced = list.ReplaceAll("a", "z");
+        int replaced = list.ReplaceAll("a", "z");
 
         Assert.AreEqual(3, replaced);
         CollectionAssert.AreEqual(new[] { "z", "b", "z", "c", "z" }, list);

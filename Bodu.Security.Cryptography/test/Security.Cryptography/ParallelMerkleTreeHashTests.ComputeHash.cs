@@ -32,7 +32,7 @@ public partial class ParallelMerkleTreeHashTests
     [TestMethod]
     public void ComputeHash_WhenDiagnosticsPassedPerCall_ShouldRecordOnlyThatCallsNodes()
     {
-        var data = MakeData(8); // 2 full blocks → 2 leaves + 1 internal = 3 nodes
+        byte[] data = MakeData(8); // 2 full blocks → 2 leaves + 1 internal = 3 nodes
 
         using var hasher = new ParallelMerkleTreeHash(Factory, blockSize: 4, fanOut: 2);
 
@@ -55,7 +55,7 @@ public partial class ParallelMerkleTreeHashTests
     [TestMethod]
     public void ComputeHash_WhenDiagnosticsOmittedThenSupplied_ShouldOnlyRecordSecondCall()
     {
-        var data = MakeData(8);
+        byte[] data = MakeData(8);
 
         using var hasher = new ParallelMerkleTreeHash(Factory, blockSize: 4, fanOut: 2);
 

@@ -31,11 +31,11 @@ public abstract partial class BlockCipherModeTests<TMode>
         }
 
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize);
-        var iv = CryptographyHelper.GetRandomNonZeroBytes(ExpectedBlockSize);
+        byte[] iv = CryptographyHelper.GetRandomNonZeroBytes(ExpectedBlockSize);
         TMode transform = CreateTransform(cipher, iv);
 
-        var input = new byte[ExpectedBlockSize + 1];
-        var output = new byte[input.Length];
+        byte[] input = new byte[ExpectedBlockSize + 1];
+        byte[] output = new byte[input.Length];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
@@ -51,11 +51,11 @@ public abstract partial class BlockCipherModeTests<TMode>
     public void Transform_WhenOutputTooSmall_ShouldThrowExactly()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize);
-        var iv = CryptographyHelper.GetRandomNonZeroBytes(ExpectedBlockSize);
+        byte[] iv = CryptographyHelper.GetRandomNonZeroBytes(ExpectedBlockSize);
         TMode transform = CreateTransform(cipher, iv);
 
-        var input = new byte[ExpectedBlockSize];
-        var output = new byte[ExpectedBlockSize - 1];
+        byte[] input = new byte[ExpectedBlockSize];
+        byte[] output = new byte[ExpectedBlockSize - 1];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -70,14 +70,14 @@ public abstract partial class BlockCipherModeTests<TMode>
     public void Transform_WhenRoundTripped_ShouldReturnOriginal()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize);
-        var iv = CryptographyHelper.GetRandomNonZeroBytes(ExpectedBlockSize);
+        byte[] iv = CryptographyHelper.GetRandomNonZeroBytes(ExpectedBlockSize);
 
         TMode transformEncrypt = CreateTransform(cipher, (byte[])iv.Clone());
         TMode transformDecrypt = CreateTransform(cipher, (byte[])iv.Clone());
 
-        var plaintext = CryptographyHelper.GetRandomNonZeroBytes(ExpectedBlockSize * 2);
-        var ciphertext = new byte[plaintext.Length];
-        var decrypted = new byte[plaintext.Length];
+        byte[] plaintext = CryptographyHelper.GetRandomNonZeroBytes(ExpectedBlockSize * 2);
+        byte[] ciphertext = new byte[plaintext.Length];
+        byte[] decrypted = new byte[plaintext.Length];
 
         transformEncrypt.Transform(plaintext, ciphertext, encrypt: true);
         transformDecrypt.Transform(ciphertext, decrypted, encrypt: false);
@@ -92,11 +92,11 @@ public abstract partial class BlockCipherModeTests<TMode>
     public void Transform_WithAllZeroInput_ShouldProcessCorrectly()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0x00);
-        var iv = Enumerable.Repeat((byte)0x00, ExpectedBlockSize).ToArray();
+        byte[] iv = Enumerable.Repeat((byte)0x00, ExpectedBlockSize).ToArray();
         TMode transform = CreateTransform(cipher, iv);
 
-        var input = new byte[ExpectedBlockSize * 2];
-        var output = new byte[input.Length];
+        byte[] input = new byte[ExpectedBlockSize * 2];
+        byte[] output = new byte[input.Length];
 
         transform.Transform(input, output, encrypt: true);
 
@@ -114,11 +114,11 @@ public abstract partial class BlockCipherModeTests<TMode>
     public void Transform_WithAlternatingBitsAA55_ShouldSucceed()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize);
-        var iv = CryptographyHelper.GetRandomNonZeroBytes(ExpectedBlockSize);
+        byte[] iv = CryptographyHelper.GetRandomNonZeroBytes(ExpectedBlockSize);
         TMode transform = CreateTransform(cipher, iv);
 
-        var input = Enumerable.Range(0, ExpectedBlockSize * 2).Select(i => (byte)(i % 2 == 0 ? 0xAA : 0x55)).ToArray();
-        var output = new byte[input.Length];
+        byte[] input = Enumerable.Range(0, ExpectedBlockSize * 2).Select(i => (byte)(i % 2 == 0 ? 0xAA : 0x55)).ToArray();
+        byte[] output = new byte[input.Length];
 
         transform.Transform(input, output, encrypt: true);
 
@@ -137,11 +137,11 @@ public abstract partial class BlockCipherModeTests<TMode>
         // very first increment (which would cause IncrementCounter to set counterWrapped=true and
         // throw on the second block). The purpose of this test is to saturate the *input* bytes,
         // not the IV.
-        var iv = new byte[ExpectedBlockSize];
+        byte[] iv = new byte[ExpectedBlockSize];
         TMode transform = CreateTransform(cipher, iv);
 
-        var input = Enumerable.Repeat((byte)0xFF, ExpectedBlockSize * 2).ToArray();
-        var output = new byte[input.Length];
+        byte[] input = Enumerable.Repeat((byte)0xFF, ExpectedBlockSize * 2).ToArray();
+        byte[] output = new byte[input.Length];
 
         transform.Transform(input, output, encrypt: true);
 
@@ -159,13 +159,13 @@ public abstract partial class BlockCipherModeTests<TMode>
     public void Transform_WithMirroredPattern_ShouldSucceed()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize);
-        var iv = CryptographyHelper.GetRandomNonZeroBytes(ExpectedBlockSize);
+        byte[] iv = CryptographyHelper.GetRandomNonZeroBytes(ExpectedBlockSize);
         TMode transform = CreateTransform(cipher, iv);
 
-        var input = Enumerable.Range(0, ExpectedBlockSize * 2)
+        byte[] input = Enumerable.Range(0, ExpectedBlockSize * 2)
             .Select(i => (byte)(i < ExpectedBlockSize ? i : ExpectedBlockSize * 2 - i - 1))
             .ToArray();
-        var output = new byte[input.Length];
+        byte[] output = new byte[input.Length];
 
         transform.Transform(input, output, encrypt: true);
 
@@ -179,11 +179,11 @@ public abstract partial class BlockCipherModeTests<TMode>
     public void Transform_WithNibblePatternF00F_ShouldSucceed()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize);
-        var iv = CryptographyHelper.GetRandomNonZeroBytes(ExpectedBlockSize);
+        byte[] iv = CryptographyHelper.GetRandomNonZeroBytes(ExpectedBlockSize);
         TMode transform = CreateTransform(cipher, iv);
 
-        var input = Enumerable.Range(0, ExpectedBlockSize * 2).Select(i => (byte)(i % 2 == 0 ? 0xF0 : 0x0F)).ToArray();
-        var output = new byte[input.Length];
+        byte[] input = Enumerable.Range(0, ExpectedBlockSize * 2).Select(i => (byte)(i % 2 == 0 ? 0xF0 : 0x0F)).ToArray();
+        byte[] output = new byte[input.Length];
 
         transform.Transform(input, output, encrypt: true);
 
@@ -208,12 +208,12 @@ public abstract partial class BlockCipherModeTests<TMode>
         }
 
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xFF);
-        var iv = Enumerable.Range(0, ExpectedBlockSize).Select(i => (byte)i).ToArray();
+        byte[] iv = Enumerable.Range(0, ExpectedBlockSize).Select(i => (byte)i).ToArray();
         TMode transform = CreateTransform(cipher, (byte[])iv.Clone());
 
-        var block = Enumerable.Repeat((byte)0xAA, ExpectedBlockSize).ToArray();
-        var input = block.Concat(block).ToArray();
-        var output = new byte[input.Length];
+        byte[] block = Enumerable.Repeat((byte)0xAA, ExpectedBlockSize).ToArray();
+        byte[] input = block.Concat(block).ToArray();
+        byte[] output = new byte[input.Length];
 
         transform.Transform(input, output, encrypt: true);
 
@@ -235,11 +235,11 @@ public abstract partial class BlockCipherModeTests<TMode>
     public void Transform_WithSawtoothPattern_ShouldSucceed()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize);
-        var iv = CryptographyHelper.GetRandomNonZeroBytes(ExpectedBlockSize);
+        byte[] iv = CryptographyHelper.GetRandomNonZeroBytes(ExpectedBlockSize);
         TMode transform = CreateTransform(cipher, iv);
 
-        var input = Enumerable.Range(0, ExpectedBlockSize * 2).Select(i => (byte)(i % 16)).ToArray();
-        var output = new byte[input.Length];
+        byte[] input = Enumerable.Range(0, ExpectedBlockSize * 2).Select(i => (byte)(i % 16)).ToArray();
+        byte[] output = new byte[input.Length];
 
         transform.Transform(input, output, encrypt: true);
 
@@ -263,10 +263,10 @@ public abstract partial class BlockCipherModeTests<TMode>
         var cipher = new MonitoringBlockCipher(1);
         TMode transform = CreateTransform(cipher, [0]);
 
-        var inputBlock = new byte[1];
-        var outputBlock = new byte[1];
+        byte[] inputBlock = new byte[1];
+        byte[] outputBlock = new byte[1];
 
-        for (var i = 0; i < 256; i++)
+        for (int i = 0; i < 256; i++)
         {
             transform.Transform(inputBlock, outputBlock, encrypt: true);
         }

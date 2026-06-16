@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BuddhistObservanceKnownAnswerTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -99,7 +99,7 @@ public sealed class BuddhistObservanceKnownAnswerTests
     {
         NotableDate observance = CommonCatalogues.ResolveSingle(CreateService(), notableDateId, year);
         var reference = new DateOnly(year, month, day);
-        var deltaDays = Math.Abs(observance.Date.DayNumber - reference.DayNumber);
+        int deltaDays = Math.Abs(observance.Date.DayNumber - reference.DayNumber);
 
         Assert.IsLessThanOrEqualTo(
             ToleranceDays,
@@ -140,10 +140,10 @@ public sealed class BuddhistObservanceKnownAnswerTests
     {
         NotableDateService service = CreateService();
 
-        for (var year = 2000; year <= 2050; year++)
+        for (int year = 2000; year <= 2050; year++)
         {
             NotableDate losar = CommonCatalogues.ResolveSingle(service, "losar", year);
-            var inWindow = losar.Date.Month == 2 || (losar.Date.Month == 3 && losar.Date.Day <= 12);
+            bool inWindow = losar.Date.Month == 2 || (losar.Date.Month == 3 && losar.Date.Day <= 12);
             Assert.IsTrue(inWindow, $"losar {year} fell outside the February / early-March window: {losar.Date:yyyy-MM-dd}");
         }
     }

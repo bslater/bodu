@@ -18,10 +18,10 @@ public partial class WeekPatternTests
     {
         var pattern = new WeekPattern(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
 
-        var s0 = pattern.ToString("0");
-        var s1 = pattern.ToString("1");
-        var sB = pattern.ToString("B");
-        var s01 = pattern.ToString("01");
+        string s0 = pattern.ToString("0");
+        string s1 = pattern.ToString("1");
+        string sB = pattern.ToString("B");
+        string s01 = pattern.ToString("01");
 
         Assert.AreEqual(s0, s1, "Formats '0' and '1' should produce identical output.");
         Assert.AreEqual(s0, sB, "Formats '0' and 'B' should produce identical output.");
@@ -238,7 +238,7 @@ public partial class WeekPatternTests
     {
         var pattern = new WeekPattern(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
 
-        var result = string.Format("{0:M}", pattern);
+        string result = string.Format("{0:M}", pattern);
 
         Assert.AreEqual("M_W_F__", result,
             "string.Format should apply the format specifier via IFormattable.");

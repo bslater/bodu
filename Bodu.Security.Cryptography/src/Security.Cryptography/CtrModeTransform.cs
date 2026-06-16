@@ -101,10 +101,10 @@ public sealed class CtrModeTransform
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, 0, input.Length);
         CryptographyThrowHelper.ThrowIfInvalidOverlap(input, output);
 
-        var blockSize = _cipher.BlockSize / 8;
+        int blockSize = _cipher.BlockSize / 8;
         Span<byte> keystream = stackalloc byte[blockSize];
 
-        for (var offset = 0; offset < input.Length; offset += blockSize)
+        for (int offset = 0; offset < input.Length; offset += blockSize)
         {
             if (_counterWrapped)
                 throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_CtrCounterWrapped);
@@ -112,8 +112,8 @@ public sealed class CtrModeTransform
             _cipher.Encrypt(_counter, keystream);
             IncrementCounter();
 
-            var len = Math.Min(blockSize, input.Length - offset);
-            for (var i = 0; i < len; i++)
+            int len = Math.Min(blockSize, input.Length - offset);
+            for (int i = 0; i < len; i++)
                 output[offset + i] = (byte)(input[offset + i] ^ keystream[i]);
         }
 
@@ -147,7 +147,7 @@ public sealed class CtrModeTransform
     /// </summary>
     private void IncrementCounter()
     {
-        for (var i = _counter.Length - 1; i >= 0; i--)
+        for (int i = _counter.Length - 1; i >= 0; i--)
             if (++_counter[i] != 0) break;
 
         // Wrap detected: counter has returned to its initial value.

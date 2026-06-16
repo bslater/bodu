@@ -85,9 +85,7 @@ public sealed class ExchangeRateSeriesBuilder
     /// Gets or sets the UTC instant at which the load that produced this series downloaded its source data, or
     /// <see langword="null" /> when not tracked.
     /// </summary>
-    /// <returns>
-    /// The fetch instant when known; otherwise <see langword="null" />.
-    /// </returns>
+    /// <returns>The fetch instant when known; otherwise <see langword="null" />.</returns>
     /// <remarks>
     /// The value is carried verbatim onto the <see cref="ExchangeRateSeries" /> produced by <see cref="ToSeries" /> and
     /// from there onto every <see cref="ExchangeRate" /> the series materializes. Editing the observation buffer does

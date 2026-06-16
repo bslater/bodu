@@ -369,7 +369,7 @@ public sealed partial class NotableDateDocumentBuilder
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(path);
 
-        var content = format == NotableDateDocumentFormat.Json ? ToJson() : ToXml();
+        string content = format == NotableDateDocumentFormat.Json ? ToJson() : ToXml();
         File.WriteAllText(path, content);
     }
 
@@ -417,7 +417,7 @@ public sealed partial class NotableDateDocumentBuilder
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(path);
 
-        var content = File.ReadAllText(path);
+        string content = File.ReadAllText(path);
         return InferFormat(path) == NotableDateDocumentFormat.Json ? FromJson(content) : FromXml(content);
     }
 
@@ -439,7 +439,7 @@ public sealed partial class NotableDateDocumentBuilder
     /// <exception cref="ArgumentException">The extension is neither <c>.xml</c> nor <c>.json</c>.</exception>
     private static NotableDateDocumentFormat InferFormat(string path)
     {
-        var extension = Path.GetExtension(path);
+        string extension = Path.GetExtension(path);
 
         if (string.Equals(extension, ".xml", StringComparison.OrdinalIgnoreCase))
             return NotableDateDocumentFormat.Xml;

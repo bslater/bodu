@@ -29,7 +29,7 @@ public readonly partial struct Money
         MoneyMath.AllocateEvenly(_amount, MinorUnits, shares);
 
         var result = new Money[parts];
-        for (var i = 0; i < parts; i++)
+        for (int i = 0; i < parts; i++)
             result[i] = WithAmount(shares[i]);
 
         return result;
@@ -53,10 +53,10 @@ public readonly partial struct Money
         EnsureHasCurrency();
         FinancialThrowHelper.ThrowIfAllocationRatiosInvalid(ratios);
 
-        var shares = MoneyMath.AllocateByRatios(_amount, MinorUnits, ratios);
+        decimal[] shares = MoneyMath.AllocateByRatios(_amount, MinorUnits, ratios);
 
         var result = new Money[shares.Length];
-        for (var i = 0; i < shares.Length; i++)
+        for (int i = 0; i < shares.Length; i++)
             result[i] = WithAmount(shares[i]);
 
         return result;

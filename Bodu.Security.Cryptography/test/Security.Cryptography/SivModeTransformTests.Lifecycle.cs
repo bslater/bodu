@@ -28,17 +28,17 @@ public sealed partial class SivModeTransformTests
         byte[] plaintext = [0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08];
         byte[] aad = [0xAA, 0xBB, 0xCC];
 
-        var ivAlpha = Convert.FromHexString("00000000000000000000000000000000");
-        var ivBeta = Convert.FromHexString("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
+        byte[] ivAlpha = Convert.FromHexString("00000000000000000000000000000000");
+        byte[] ivBeta = Convert.FromHexString("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
 
         using SivModeTransform transformAlpha = CreateTransform(cipher: null!, ivAlpha);
         transformAlpha.ProcessAssociatedData(aad);
-        var alphaOut = new byte[plaintext.Length + (transformAlpha.TagSize / 8)];
+        byte[] alphaOut = new byte[plaintext.Length + (transformAlpha.TagSize / 8)];
         transformAlpha.Encrypt(plaintext, alphaOut);
 
         using SivModeTransform transformBeta = CreateTransform(cipher: null!, ivBeta);
         transformBeta.ProcessAssociatedData(aad);
-        var betaOut = new byte[plaintext.Length + (transformBeta.TagSize / 8)];
+        byte[] betaOut = new byte[plaintext.Length + (transformBeta.TagSize / 8)];
         transformBeta.Encrypt(plaintext, betaOut);
 
         CollectionAssert.AreEqual(alphaOut, betaOut,
@@ -53,7 +53,7 @@ public sealed partial class SivModeTransformTests
     [TestMethod]
     public void Encrypt_DifferentPlaintexts_SameSuppliedIV_ShouldProduceDifferentOutputs()
     {
-        var iv = new byte[16];
+        byte[] iv = new byte[16];
         byte[] aad = [0xAA, 0xBB];
 
         byte[] plaintextA = [0x10, 0x20, 0x30, 0x40];
@@ -61,12 +61,12 @@ public sealed partial class SivModeTransformTests
 
         using SivModeTransform transformA = CreateTransform(cipher: null!, iv);
         transformA.ProcessAssociatedData(aad);
-        var outA = new byte[plaintextA.Length + (transformA.TagSize / 8)];
+        byte[] outA = new byte[plaintextA.Length + (transformA.TagSize / 8)];
         transformA.Encrypt(plaintextA, outA);
 
         using SivModeTransform transformB = CreateTransform(cipher: null!, iv);
         transformB.ProcessAssociatedData(aad);
-        var outB = new byte[plaintextB.Length + (transformB.TagSize / 8)];
+        byte[] outB = new byte[plaintextB.Length + (transformB.TagSize / 8)];
         transformB.Encrypt(plaintextB, outB);
 
         CollectionAssert.AreNotEqual(outA, outB,
@@ -81,16 +81,16 @@ public sealed partial class SivModeTransformTests
     public void Encrypt_DifferentAad_SamePlaintextAndIV_ShouldProduceDifferentOutputs()
     {
         byte[] plaintext = [0xDE, 0xAD, 0xBE, 0xEF];
-        var iv = new byte[16];
+        byte[] iv = new byte[16];
 
         using SivModeTransform transformA = CreateTransform(cipher: null!, iv);
         transformA.ProcessAssociatedData([0x01]);
-        var outA = new byte[plaintext.Length + (transformA.TagSize / 8)];
+        byte[] outA = new byte[plaintext.Length + (transformA.TagSize / 8)];
         transformA.Encrypt(plaintext, outA);
 
         using SivModeTransform transformB = CreateTransform(cipher: null!, iv);
         transformB.ProcessAssociatedData([0x02]);
-        var outB = new byte[plaintext.Length + (transformB.TagSize / 8)];
+        byte[] outB = new byte[plaintext.Length + (transformB.TagSize / 8)];
         transformB.Encrypt(plaintext, outB);
 
         CollectionAssert.AreNotEqual(outA, outB,

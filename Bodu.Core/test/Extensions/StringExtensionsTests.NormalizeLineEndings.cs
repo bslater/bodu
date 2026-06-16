@@ -45,9 +45,9 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void NormalizeLineEndings_WhenInputContainsCrlf_ShouldReplaceWithSingleNewline()
     {
-        var value = "alpha\r\nbeta\r\ngamma";
+        string value = "alpha\r\nbeta\r\ngamma";
 
-        var actual = value.NormalizeLineEndings("|");
+        string actual = value.NormalizeLineEndings("|");
 
         Assert.AreEqual("alpha|beta|gamma", actual);
     }

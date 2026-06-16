@@ -52,7 +52,7 @@ public partial class PooledBufferBuilderTests
         using var builder = new PooledBufferBuilder<int>();
         builder.AppendRange([1, 2, 3]);
 
-        var success = builder.TryCopyFrom(new System.Collections.Generic.List<int>());
+        bool success = builder.TryCopyFrom(new System.Collections.Generic.List<int>());
 
         Assert.IsTrue(success);
         Assert.AreEqual(0, builder.WrittenCount);
@@ -68,7 +68,7 @@ public partial class PooledBufferBuilderTests
         var source = new System.Collections.Generic.List<int> { 1, 2, 3 };
         using var builder = new PooledBufferBuilder<int>();
 
-        var success = builder.TryCopyFrom(source);
+        bool success = builder.TryCopyFrom(source);
 
         Assert.IsTrue(success);
         CollectionAssert.AreEqual(source, builder.WrittenSpan.ToArray());
@@ -86,7 +86,7 @@ public partial class PooledBufferBuilderTests
         builder.AppendRange([10, 20]);
 
         // Use a custom IReadOnlyCollection that is not ICollection<T>.
-        var success = builder.TryCopyFrom(new NonCollectionReadOnlyCollection([1, 2, 3]));
+        bool success = builder.TryCopyFrom(new NonCollectionReadOnlyCollection([1, 2, 3]));
 
         Assert.IsFalse(success);
         // Builder should be unchanged.

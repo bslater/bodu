@@ -26,7 +26,7 @@ public sealed class BclAliasCoverageTests
     [TestMethod]
     public void Base16_FromHexString_CharSpan_ShouldDecode()
     {
-        var decoded = Base16.FromHexString("DEADBEEF".AsSpan());
+        byte[] decoded = Base16.FromHexString("DEADBEEF".AsSpan());
 
         CollectionAssert.AreEqual(new byte[] { 0xDE, 0xAD, 0xBE, 0xEF }, decoded);
     }
@@ -37,7 +37,7 @@ public sealed class BclAliasCoverageTests
     [TestMethod]
     public void Base16_FromHexString_Utf8WithEmpty_ShouldReturnEmptyArray()
     {
-        var decoded = Base16.FromHexString(ReadOnlySpan<byte>.Empty);
+        byte[] decoded = Base16.FromHexString(ReadOnlySpan<byte>.Empty);
 
         Assert.AreEqual(0, decoded.Length);
     }
@@ -78,9 +78,9 @@ public sealed class BclAliasCoverageTests
     [TestMethod]
     public void Base16_ToHexStringLower_ArrayOffsetCount_ShouldEncodeSlice()
     {
-        var bytes = new byte[] { 0xAA, 0xDE, 0xAD, 0xBE, 0xEF, 0xBB };
+        byte[] bytes = new byte[] { 0xAA, 0xDE, 0xAD, 0xBE, 0xEF, 0xBB };
 
-        var encoded = Base16.ToHexStringLower(bytes, 1, 4);
+        string encoded = Base16.ToHexStringLower(bytes, 1, 4);
 
         Assert.AreEqual("deadbeef", encoded);
     }
@@ -98,9 +98,9 @@ public sealed class BclAliasCoverageTests
     [TestMethod]
     public void Base16_TryToHexStringLower_Utf8_ShouldWriteAsciiHex()
     {
-        var destination = new byte[8];
+        byte[] destination = new byte[8];
 
-        var ok = Base16.TryToHexStringLower([0xDE, 0xAD, 0xBE, 0xEF], destination, out var bytesWritten);
+        bool ok = Base16.TryToHexStringLower([0xDE, 0xAD, 0xBE, 0xEF], destination, out int bytesWritten);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(8, bytesWritten);
@@ -113,7 +113,7 @@ public sealed class BclAliasCoverageTests
     [TestMethod]
     public void Base32_FromBase32String_CharSpan_ShouldDecode()
     {
-        var decoded = Base32.FromBase32String("MZXW6YTBOI======".AsSpan());
+        byte[] decoded = Base32.FromBase32String("MZXW6YTBOI======".AsSpan());
 
         CollectionAssert.AreEqual(System.Text.Encoding.ASCII.GetBytes("foobar"), decoded);
     }
@@ -124,7 +124,7 @@ public sealed class BclAliasCoverageTests
     [TestMethod]
     public void Base32_FromBase32String_Utf8_ShouldDecode()
     {
-        var decoded = Base32.FromBase32String(System.Text.Encoding.ASCII.GetBytes("MZXW6YTBOI======"));
+        byte[] decoded = Base32.FromBase32String(System.Text.Encoding.ASCII.GetBytes("MZXW6YTBOI======"));
 
         CollectionAssert.AreEqual(System.Text.Encoding.ASCII.GetBytes("foobar"), decoded);
     }
@@ -135,7 +135,7 @@ public sealed class BclAliasCoverageTests
     [TestMethod]
     public void Base32_FromBase32String_Utf8WithEmpty_ShouldReturnEmptyArray()
     {
-        var decoded = Base32.FromBase32String(ReadOnlySpan<byte>.Empty);
+        byte[] decoded = Base32.FromBase32String(ReadOnlySpan<byte>.Empty);
 
         Assert.AreEqual(0, decoded.Length);
     }
@@ -158,10 +158,10 @@ public sealed class BclAliasCoverageTests
     [TestMethod]
     public void Base58_FromBase58String_CharSpan_ShouldDecode()
     {
-        var payload = System.Text.Encoding.ASCII.GetBytes("Hello");
-        var encoded = Base58.Encode(payload);
+        byte[] payload = System.Text.Encoding.ASCII.GetBytes("Hello");
+        string encoded = Base58.Encode(payload);
 
-        var decoded = Base58.FromBase58String(encoded.AsSpan());
+        byte[] decoded = Base58.FromBase58String(encoded.AsSpan());
 
         CollectionAssert.AreEqual(payload, decoded);
     }
@@ -172,10 +172,10 @@ public sealed class BclAliasCoverageTests
     [TestMethod]
     public void Base58_FromBase58String_Utf8_ShouldDecode()
     {
-        var payload = System.Text.Encoding.ASCII.GetBytes("Hello");
-        var encoded = Base58.EncodeToUtf8(payload);
+        byte[] payload = System.Text.Encoding.ASCII.GetBytes("Hello");
+        byte[] encoded = Base58.EncodeToUtf8(payload);
 
-        var decoded = Base58.FromBase58String(encoded);
+        byte[] decoded = Base58.FromBase58String(encoded);
 
         CollectionAssert.AreEqual(payload, decoded);
     }
@@ -186,7 +186,7 @@ public sealed class BclAliasCoverageTests
     [TestMethod]
     public void Base58_FromBase58String_Utf8WithEmpty_ShouldReturnEmptyArray()
     {
-        var decoded = Base58.FromBase58String(ReadOnlySpan<byte>.Empty);
+        byte[] decoded = Base58.FromBase58String(ReadOnlySpan<byte>.Empty);
 
         Assert.AreEqual(0, decoded.Length);
     }
@@ -209,9 +209,9 @@ public sealed class BclAliasCoverageTests
     [TestMethod]
     public void Base58_ToBase58String_ArrayOffsetCount_ShouldEncodeSlice()
     {
-        var bytes = new byte[] { 0xAA, 0x01, 0x02, 0x03, 0xBB };
+        byte[] bytes = new byte[] { 0xAA, 0x01, 0x02, 0x03, 0xBB };
 
-        var encoded = Base58.ToBase58String(bytes, 1, 3);
+        string encoded = Base58.ToBase58String(bytes, 1, 3);
 
         Assert.AreEqual(Base58.Encode([0x01, 0x02, 0x03]), encoded);
     }
@@ -222,7 +222,7 @@ public sealed class BclAliasCoverageTests
     [TestMethod]
     public void Base58_ToBase58String_Span_ShouldMatchCanonicalEncoder()
     {
-        var payload = SamplePayload;
+        byte[] payload = SamplePayload;
 
         Assert.AreEqual(Base58.Encode(payload), Base58.ToBase58String(payload.AsSpan()));
     }
@@ -233,7 +233,7 @@ public sealed class BclAliasCoverageTests
     [TestMethod]
     public void Base64_FromBase64String_CharSpan_ShouldDecode()
     {
-        var decoded = Base64.FromBase64String("Zm9vYmFy".AsSpan());
+        byte[] decoded = Base64.FromBase64String("Zm9vYmFy".AsSpan());
 
         CollectionAssert.AreEqual(System.Text.Encoding.ASCII.GetBytes("foobar"), decoded);
     }
@@ -244,7 +244,7 @@ public sealed class BclAliasCoverageTests
     [TestMethod]
     public void Base64_FromBase64String_Utf8_ShouldDecode()
     {
-        var decoded = Base64.FromBase64String(System.Text.Encoding.ASCII.GetBytes("Zm9vYmFy"));
+        byte[] decoded = Base64.FromBase64String(System.Text.Encoding.ASCII.GetBytes("Zm9vYmFy"));
 
         CollectionAssert.AreEqual(System.Text.Encoding.ASCII.GetBytes("foobar"), decoded);
     }
@@ -255,7 +255,7 @@ public sealed class BclAliasCoverageTests
     [TestMethod]
     public void Base64_FromBase64String_Utf8WithEmpty_ShouldReturnEmptyArray()
     {
-        var decoded = Base64.FromBase64String(ReadOnlySpan<byte>.Empty);
+        byte[] decoded = Base64.FromBase64String(ReadOnlySpan<byte>.Empty);
 
         Assert.AreEqual(0, decoded.Length);
     }
@@ -278,7 +278,7 @@ public sealed class BclAliasCoverageTests
     [TestMethod]
     public void Base85_FromBase85String_CharSpan_ShouldDecode()
     {
-        var decoded = Base85.FromBase85String("9jqo^".AsSpan());
+        byte[] decoded = Base85.FromBase85String("9jqo^".AsSpan());
 
         CollectionAssert.AreEqual(System.Text.Encoding.ASCII.GetBytes("Man "), decoded);
     }
@@ -289,7 +289,7 @@ public sealed class BclAliasCoverageTests
     [TestMethod]
     public void Base85_FromBase85String_Utf8_ShouldDecode()
     {
-        var decoded = Base85.FromBase85String(System.Text.Encoding.ASCII.GetBytes("9jqo^"));
+        byte[] decoded = Base85.FromBase85String(System.Text.Encoding.ASCII.GetBytes("9jqo^"));
 
         CollectionAssert.AreEqual(System.Text.Encoding.ASCII.GetBytes("Man "), decoded);
     }
@@ -301,10 +301,10 @@ public sealed class BclAliasCoverageTests
     [TestMethod]
     public void Base85_FromBase85String_Utf8Streaming_ShouldReportProgress()
     {
-        var utf8 = System.Text.Encoding.ASCII.GetBytes("9jqo^");
-        var destination = new byte[4];
+        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("9jqo^");
+        byte[] destination = new byte[4];
 
-        OperationStatus status = Base85.FromBase85String(utf8, destination, out var bytesConsumed, out var bytesWritten);
+        OperationStatus status = Base85.FromBase85String(utf8, destination, out int bytesConsumed, out int bytesWritten);
 
         Assert.AreEqual(OperationStatus.Done, status);
         Assert.AreEqual(utf8.Length, bytesConsumed);
@@ -318,7 +318,7 @@ public sealed class BclAliasCoverageTests
     [TestMethod]
     public void Base85_FromBase85String_Utf8WithEmpty_ShouldReturnEmptyArray()
     {
-        var decoded = Base85.FromBase85String(ReadOnlySpan<byte>.Empty);
+        byte[] decoded = Base85.FromBase85String(ReadOnlySpan<byte>.Empty);
 
         Assert.AreEqual(0, decoded.Length);
     }
@@ -341,9 +341,9 @@ public sealed class BclAliasCoverageTests
     [TestMethod]
     public void Base85_ToBase85String_ArrayOffsetCount_ShouldEncodeSlice()
     {
-        var bytes = new byte[] { 0xAA, 0x01, 0x02, 0x03, 0x04, 0xBB };
+        byte[] bytes = new byte[] { 0xAA, 0x01, 0x02, 0x03, 0x04, 0xBB };
 
-        var encoded = Base85.ToBase85String(bytes, 1, 4);
+        string encoded = Base85.ToBase85String(bytes, 1, 4);
 
         Assert.AreEqual(Base85.Encode([0x01, 0x02, 0x03, 0x04]), encoded);
     }
@@ -361,10 +361,10 @@ public sealed class BclAliasCoverageTests
     [TestMethod]
     public void Base85_TryToBase85String_Utf8_ShouldWriteAsciiBytes()
     {
-        var payload = System.Text.Encoding.ASCII.GetBytes("Man ");
-        var destination = new byte[16];
+        byte[] payload = System.Text.Encoding.ASCII.GetBytes("Man ");
+        byte[] destination = new byte[16];
 
-        var ok = Base85.TryToBase85String(payload, destination, out var bytesWritten);
+        bool ok = Base85.TryToBase85String(payload, destination, out int bytesWritten);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(5, bytesWritten);

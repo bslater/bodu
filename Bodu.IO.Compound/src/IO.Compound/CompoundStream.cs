@@ -81,11 +81,11 @@ public sealed class CompoundStream
         ThrowHelper.ThrowIfNull(buffer);
         ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(buffer, offset, count);
 
-        var available = _buffer.Length - _position;
+        int available = _buffer.Length - _position;
         if (available <= 0)
             return 0;
 
-        var toCopy = Math.Min(available, count);
+        int toCopy = Math.Min(available, count);
         Array.Copy(_buffer, _position, buffer, offset, toCopy);
         _position += toCopy;
         return toCopy;
@@ -94,7 +94,7 @@ public sealed class CompoundStream
     /// <inheritdoc />
     public override long Seek(long offset, SeekOrigin origin)
     {
-        var target = origin switch
+        long target = origin switch
         {
             SeekOrigin.Begin => offset,
             SeekOrigin.Current => _position + offset,

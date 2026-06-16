@@ -2,23 +2,11 @@
 
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
-    <LangVersion>latest</LangVersion>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
     <RootNamespace>Bodu</RootNamespace>
-    <AssemblyName>$(MSBuildProjectName)</AssemblyName>
-    <OutputType>Library</OutputType>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
     <Version>1.0.0</Version>
     <Description>Reader for the OLE2 / Compound File Binary (CFB) container format — the structured-storage envelope used by legacy Microsoft Office files such as .xls, .doc, and .msg. Exposes the embedded named streams of a compound file without any application-format knowledge.</Description>
     <PackageTags>bodu;cfb;ole2;compound-file;structured-storage;binary</PackageTags>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Include="..\README.md" Pack="true" PackagePath="\" />
-  </ItemGroup>
 
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">

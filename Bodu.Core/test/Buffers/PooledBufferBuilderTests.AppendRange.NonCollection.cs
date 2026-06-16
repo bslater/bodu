@@ -54,7 +54,7 @@ public partial class PooledBufferBuilderTests
 
     private static IEnumerable<int> YieldRange(int count)
     {
-        for (var i = 1; i <= count; i++)
+        for (int i = 1; i <= count; i++)
             yield return i;
     }
 

@@ -245,7 +245,7 @@ public sealed class AmericasCalendarDataTests
     [DataRow("PE", 2023, "battle-of-junin")]
     public void Resolve_WhenBeforeFirstYear_ReturnsNoResult(string territory, int year, string notableDateId)
     {
-        var count = AmericasCalendarData.CreateService(territory)
+        int count = AmericasCalendarData.CreateService(territory)
             .Resolve(new DateRange(new DateOnly(year, 1, 1), new DateOnly(year, 12, 31)), territory)
             .Count(r => r.NotableDateId == notableDateId);
 

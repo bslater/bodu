@@ -46,7 +46,7 @@ logging.level.default = Debug
     public void Reload_WhenMalformedAndOnLoadExceptionAttached_ShouldReceiveParseException()
     {
         using TempDirectoryScope scope = new();
-        var path = scope.Combine("reload.boduconfig");
+        string path = scope.Combine("reload.boduconfig");
 
         FileLoadExceptionContext? captured = null;
         using ManualResetEventSlim handlerInvoked = new(initialState: false);
@@ -82,7 +82,7 @@ logging.level.default = Debug
         File.WriteAllText(path, Malformed);
         File.SetLastWriteTimeUtc(path, DateTime.UtcNow);
 
-        var fired = handlerInvoked.Wait(TimeSpan.FromSeconds(15));
+        bool fired = handlerInvoked.Wait(TimeSpan.FromSeconds(15));
 
         Assert.IsTrue(fired, "Expected the OnLoadException handler to fire when the reload encountered a malformed file.");
         Assert.IsNotNull(captured);

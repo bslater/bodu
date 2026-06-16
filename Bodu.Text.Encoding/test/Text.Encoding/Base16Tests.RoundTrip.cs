@@ -17,12 +17,12 @@ public sealed partial class Base16Tests
     [TestCategory("Regression")]
     public void EncodeDecode_ForEverySingleByteValue_ShouldRoundTrip()
     {
-        for (var value = 0; value <= 255; value++)
+        for (int value = 0; value <= 255; value++)
         {
-            var original = new byte[] { (byte)value };
+            byte[] original = new byte[] { (byte)value };
 
-            var encoded = Base16.Encode(original);
-            var decoded = Base16.Decode(encoded);
+            string encoded = Base16.Encode(original);
+            byte[] decoded = Base16.Decode(encoded);
 
             Assert.AreEqual(2, encoded.Length, $"Encoded length should be 2 for byte 0x{value:X2}.");
             CollectionAssert.AreEqual(original, decoded, $"Round trip failed for byte 0x{value:X2}.");
@@ -46,15 +46,15 @@ public sealed partial class Base16Tests
     [DataRow("high-bytes")]
     public void RoundTrip_ForCommonBytePatterns_ShouldRecoverOriginal(string patternKey)
     {
-        var original = GetPatternBytes(patternKey);
+        byte[] original = GetPatternBytes(patternKey);
         BaseFormatStyles decodeStyle = BaseFormatStyles.AllowPrefix | BaseFormatStyles.IgnoreWhitespace;
 
-        for (var flags = 0; flags <= 0x0F; flags++)
+        for (int flags = 0; flags <= 0x0F; flags++)
         {
             var options = (BaseFormattingOptions)flags;
 
-            var encoded = Base16.Encode(original, options);
-            var decoded = Base16.Decode(encoded, decodeStyle);
+            string encoded = Base16.Encode(original, options);
+            byte[] decoded = Base16.Decode(encoded, decodeStyle);
 
             CollectionAssert.AreEqual(original, decoded,
                 $"Pattern={patternKey}, options={options}: round trip failed.");
@@ -84,10 +84,10 @@ public sealed partial class Base16Tests
         var encodeOptions = (BaseFormattingOptions)encodeFlags;
         BaseFormatStyles decodeStyle = BaseFormatStyles.AllowPrefix | BaseFormatStyles.IgnoreWhitespace;
 
-        foreach (var sample in EnumerateSamples())
+        foreach (byte[] sample in EnumerateSamples())
         {
-            var encoded = Base16.Encode(sample, encodeOptions);
-            var decoded = Base16.Decode(encoded, decodeStyle);
+            string encoded = Base16.Encode(sample, encodeOptions);
+            byte[] decoded = Base16.Decode(encoded, decodeStyle);
 
             CollectionAssert.AreEqual(sample, decoded,
                 $"Round trip failed for encodeOptions={encodeOptions}, sample length={sample.Length}.");
@@ -106,18 +106,18 @@ public sealed partial class Base16Tests
     [DataRow(65_536)]
     public void RoundTrip_ForLargeInputs_ShouldRecoverOriginal(int size)
     {
-        var original = new byte[size];
+        byte[] original = new byte[size];
         Random rng = new(0x12345678);
         rng.NextBytes(original);
 
-        var stringEncoded = Base16.Encode(original);
-        var stringDecoded = Base16.Decode(stringEncoded);
+        string stringEncoded = Base16.Encode(original);
+        byte[] stringDecoded = Base16.Decode(stringEncoded);
         CollectionAssert.AreEqual(original, stringDecoded);
 
-        var spanCharBuffer = new char[size * 2];
-        var spanByteBuffer = new byte[size];
-        Assert.IsTrue(Base16.TryEncode(original.AsSpan(), spanCharBuffer, out var charsWritten));
-        Assert.IsTrue(Base16.TryDecode(spanCharBuffer.AsSpan(0, charsWritten), spanByteBuffer, out var bytesWritten));
+        char[] spanCharBuffer = new char[size * 2];
+        byte[] spanByteBuffer = new byte[size];
+        Assert.IsTrue(Base16.TryEncode(original.AsSpan(), spanCharBuffer, out int charsWritten));
+        Assert.IsTrue(Base16.TryDecode(spanCharBuffer.AsSpan(0, charsWritten), spanByteBuffer, out int bytesWritten));
         Assert.AreEqual(size, bytesWritten);
         CollectionAssert.AreEqual(original, spanByteBuffer);
     }
@@ -129,11 +129,11 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void RoundTrip_WhenSpanTryPath_ShouldRecoverOriginal()
     {
-        var charBuffer = new char[CanonicalBytes.Length * 2];
-        var byteBuffer = new byte[CanonicalBytes.Length];
+        char[] charBuffer = new char[CanonicalBytes.Length * 2];
+        byte[] byteBuffer = new byte[CanonicalBytes.Length];
 
-        var encOk = Base16.TryEncode(CanonicalBytes.AsSpan(), charBuffer, out var charsWritten);
-        var decOk = Base16.TryDecode(charBuffer.AsSpan(0, charsWritten), byteBuffer, out var bytesWritten);
+        bool encOk = Base16.TryEncode(CanonicalBytes.AsSpan(), charBuffer, out int charsWritten);
+        bool decOk = Base16.TryDecode(charBuffer.AsSpan(0, charsWritten), byteBuffer, out int bytesWritten);
 
         Assert.IsTrue(encOk);
         Assert.IsTrue(decOk);
@@ -147,8 +147,8 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void RoundTrip_WhenStrictEncodeAndDecode_ShouldRecoverOriginal()
     {
-        var encoded = Base16.Encode(CanonicalBytes);
-        var decoded = Base16.Decode(encoded);
+        string encoded = Base16.Encode(CanonicalBytes);
+        byte[] decoded = Base16.Decode(encoded);
 
         CollectionAssert.AreEqual(CanonicalBytes, decoded);
     }
@@ -162,17 +162,17 @@ public sealed partial class Base16Tests
     [TestCategory("Regression")]
     public void RoundTrip_WhenUpperCaseEncodedAndDecodedAsLowerCase_ShouldRecoverOriginal()
     {
-        var original = new byte[256];
-        for (var i = 0; i < 256; i++)
+        byte[] original = new byte[256];
+        for (int i = 0; i < 256; i++)
         {
             original[i] = (byte)i;
         }
 
-        var upper = Base16.Encode(original, BaseFormattingOptions.UpperCase);
-        var lower = upper.ToLowerInvariant();
+        string upper = Base16.Encode(original, BaseFormattingOptions.UpperCase);
+        string lower = upper.ToLowerInvariant();
 
-        var decodedUpper = Base16.Decode(upper);
-        var decodedLower = Base16.Decode(lower);
+        byte[] decodedUpper = Base16.Decode(upper);
+        byte[] decodedLower = Base16.Decode(lower);
 
         CollectionAssert.AreEqual(original, decodedUpper);
         CollectionAssert.AreEqual(original, decodedLower);
@@ -185,16 +185,16 @@ public sealed partial class Base16Tests
         yield return new byte[] { 0xDE, 0xAD, 0xBE, 0xEF };
         yield return new byte[] { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
 
-        var sequential = new byte[64];
-        for (var i = 0; i < sequential.Length; i++)
+        byte[] sequential = new byte[64];
+        for (int i = 0; i < sequential.Length; i++)
         {
             sequential[i] = (byte)i;
         }
 
         yield return sequential;
 
-        var all = new byte[256];
-        for (var i = 0; i < 256; i++)
+        byte[] all = new byte[256];
+        for (int i = 0; i < 256; i++)
         {
             all[i] = (byte)i;
         }

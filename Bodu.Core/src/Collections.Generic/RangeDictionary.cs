@@ -144,7 +144,7 @@ public sealed partial class RangeDictionary<TKey, TValue>
     {
         Range<TKey>.ValidateRange(startInclusive, endExclusive, _comparer);
 
-        var index = LowerBound(startInclusive);
+        int index = LowerBound(startInclusive);
 
         if (index > 0 && _comparer.Compare(_ends[index - 1], startInclusive) > 0) throw new ArgumentException(ResourceStrings.Arg_Invalid_RangeOverlap, nameof(startInclusive));
 
@@ -177,7 +177,7 @@ public sealed partial class RangeDictionary<TKey, TValue>
     {
         Range<TKey>.ValidateRange(startInclusive, endExclusive, _comparer);
 
-        var index = LowerBound(startInclusive);
+        int index = LowerBound(startInclusive);
 
         if (index >= _count)
             return false;
@@ -222,7 +222,7 @@ public sealed partial class RangeDictionary<TKey, TValue>
     /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
     public bool TryGetValue(TKey key, out TValue value)
     {
-        var index = FindContainingIndex(key);
+        int index = FindContainingIndex(key);
 
         if (index >= 0)
         {
@@ -243,7 +243,7 @@ public sealed partial class RangeDictionary<TKey, TValue>
     /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
     public bool TryGetEntry(TKey key, out ValueRange<TKey, TValue> entry)
     {
-        var index = FindContainingIndex(key);
+        int index = FindContainingIndex(key);
 
         if (index >= 0)
         {
@@ -273,7 +273,7 @@ public sealed partial class RangeDictionary<TKey, TValue>
     {
         Range<TKey>.ValidateRange(startInclusive, endExclusive, _comparer);
 
-        var index = LowerBound(startInclusive);
+        int index = LowerBound(startInclusive);
 
         return (index > 0 && _comparer.Compare(_ends[index - 1], startInclusive) > 0) || (index < _count && _comparer.Compare(_starts[index], endExclusive) < 0);
     }
@@ -302,7 +302,7 @@ public sealed partial class RangeDictionary<TKey, TValue>
     {
         var result = new ValueRange<TKey, TValue>[_count];
 
-        for (var i = 0; i < _count; i++)
+        for (int i = 0; i < _count; i++)
             result[i] = new ValueRange<TKey, TValue>(_starts[i], _ends[i], _values[i], skipValidation: true);
 
         return result;
@@ -325,7 +325,7 @@ public sealed partial class RangeDictionary<TKey, TValue>
     {
         ThrowHelper.ThrowIfNull(key);
 
-        var index = UpperBound(key) - 1;
+        int index = UpperBound(key) - 1;
 
         return index < 0 ? -1 : _comparer.Compare(key, _ends[index]) < 0 ? index : -1;
     }
@@ -361,7 +361,7 @@ public sealed partial class RangeDictionary<TKey, TValue>
     /// <param name="index">The index of the entry to remove.</param>
     private void RemoveAt(int index)
     {
-        var moveCount = _count - index - 1;
+        int moveCount = _count - index - 1;
 
         if (moveCount > 0)
         {
@@ -384,12 +384,12 @@ public sealed partial class RangeDictionary<TKey, TValue>
     /// <returns>The lower-bound index for <paramref name="value" />.</returns>
     private int LowerBound(TKey value)
     {
-        var low = 0;
-        var high = _count;
+        int low = 0;
+        int high = _count;
 
         while (low < high)
         {
-            var middle = low + ((high - low) >> 1);
+            int middle = low + ((high - low) >> 1);
 
             if (_comparer.Compare(_starts[middle], value) < 0)
                 low = middle + 1;
@@ -407,12 +407,12 @@ public sealed partial class RangeDictionary<TKey, TValue>
     /// <returns>The upper-bound index for <paramref name="value" />.</returns>
     private int UpperBound(TKey value)
     {
-        var low = 0;
-        var high = _count;
+        int low = 0;
+        int high = _count;
 
         while (low < high)
         {
-            var middle = low + ((high - low) >> 1);
+            int middle = low + ((high - low) >> 1);
 
             if (_comparer.Compare(_starts[middle], value) <= 0)
                 low = middle + 1;
@@ -452,7 +452,7 @@ public sealed partial class RangeDictionary<TKey, TValue>
     /// <returns>The chosen capacity.</returns>
     private int GrowCapacity(int minimum)
     {
-        var capacity = _starts.Length == 0 ? DefaultCapacity : _starts.Length * 2;
+        int capacity = _starts.Length == 0 ? DefaultCapacity : _starts.Length * 2;
 
         if ((uint)capacity > Array.MaxLength)
             capacity = Array.MaxLength;

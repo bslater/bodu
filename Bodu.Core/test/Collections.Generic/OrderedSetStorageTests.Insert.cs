@@ -126,7 +126,7 @@ public partial class OrderedSetStorageTests
     public void Move_WhenSourceAndDestinationAreEqual_ShouldBeNoOp()
     {
         OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
-        var versionBefore = sut._version;
+        int versionBefore = sut._version;
 
         sut.Move(1, 1);
 
@@ -173,7 +173,7 @@ public partial class OrderedSetStorageTests
     public void ReplaceAt_WhenValueIsAlreadyAtIndex_ShouldBeNoOp()
     {
         OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
-        var versionBefore = sut._version;
+        int versionBefore = sut._version;
 
         sut.ReplaceAt(1, 2);
 
@@ -320,9 +320,9 @@ public partial class OrderedSetStorageTests
     public void TryInsert_WhenItemIsDuplicate_ShouldReturnFalseAndPreserveState()
     {
         OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
-        var versionBefore = sut._version;
+        int versionBefore = sut._version;
 
-        var inserted = sut.TryInsert(0, 2);
+        bool inserted = sut.TryInsert(0, 2);
 
         Assert.IsFalse(inserted);
         Assert.AreEqual(3, sut.Count);

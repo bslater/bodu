@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HashingStreamTests.Write.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -15,7 +15,7 @@ public sealed partial class HashingStreamTests
     [TestMethod]
     public void Write_WhenPayloadWritten_ShouldForwardBytesAndAccumulateSameDigest()
     {
-        var payload = CreatePayload(1024);
+        byte[] payload = CreatePayload(1024);
         using MemoryStream inner = new();
         using HashingStream stream = new(inner, new Fnv1a32());
 
@@ -32,7 +32,7 @@ public sealed partial class HashingStreamTests
     [TestMethod]
     public void Write_WhenPayloadWrittenInSegments_ShouldMatchSingleShotDigest()
     {
-        var payload = CreatePayload(300);
+        byte[] payload = CreatePayload(300);
         using MemoryStream inner = new();
         using HashingStream stream = new(inner, new Fnv1a32());
 
@@ -50,11 +50,11 @@ public sealed partial class HashingStreamTests
     [TestMethod]
     public void WriteByte_WhenBytesWrittenIndividually_ShouldForwardAndHashEveryByte()
     {
-        var payload = new byte[] { 0xAA, 0xBB, 0xCC };
+        byte[] payload = new byte[] { 0xAA, 0xBB, 0xCC };
         using MemoryStream inner = new();
         using HashingStream stream = new(inner, new Fnv1a32());
 
-        foreach (var value in payload)
+        foreach (byte value in payload)
             stream.WriteByte(value);
 
         CollectionAssert.AreEqual(payload, inner.ToArray());

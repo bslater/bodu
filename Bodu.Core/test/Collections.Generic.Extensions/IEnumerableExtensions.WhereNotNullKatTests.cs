@@ -67,7 +67,7 @@ public sealed class IEnumerableExtensionsWhereNotNullKatTests
     {
         foreach (EnumerableKat<string?, string[]> kat in ReferenceKats)
         {
-            var actual = kat.Source.WhereNotNull().ToArray();
+            string[] actual = kat.Source.WhereNotNull().ToArray();
 
             CollectionAssert.AreEqual(
                 kat.Expected,
@@ -86,7 +86,7 @@ public sealed class IEnumerableExtensionsWhereNotNullKatTests
     {
         foreach (EnumerableKat<int?, int[]> kat in NullableValueKats)
         {
-            var actual = kat.Source.WhereNotNull().ToArray();
+            int[] actual = kat.Source.WhereNotNull().ToArray();
 
             CollectionAssert.AreEqual(
                 kat.Expected,

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Utf8BencodeWriter.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -323,7 +323,7 @@ public ref struct Utf8BencodeWriter
     /// </exception>
     public readonly void WritePropertyName(ReadOnlySpan<char> name)
     {
-        var utf8 = new byte[Encoding.UTF8.GetByteCount(name)];
+        byte[] utf8 = new byte[Encoding.UTF8.GetByteCount(name)];
         _ = Encoding.UTF8.GetBytes(name, utf8);
         WritePropertyName((ReadOnlySpan<byte>)utf8);
     }
@@ -698,7 +698,7 @@ public ref struct Utf8BencodeWriter
     private static void WriteAsciiInt64(IBufferWriter<byte> buffer, long value)
     {
         Span<byte> digits = stackalloc byte[20];
-        _ = Utf8Formatter.TryFormat(value, digits, out var written);
+        _ = Utf8Formatter.TryFormat(value, digits, out int written);
         buffer.Write(digits[..written]);
     }
 
@@ -710,7 +710,7 @@ public ref struct Utf8BencodeWriter
     private static void WriteAsciiUInt64(IBufferWriter<byte> buffer, ulong value)
     {
         Span<byte> digits = stackalloc byte[20];
-        _ = Utf8Formatter.TryFormat(value, digits, out var written);
+        _ = Utf8Formatter.TryFormat(value, digits, out int written);
         buffer.Write(digits[..written]);
     }
 

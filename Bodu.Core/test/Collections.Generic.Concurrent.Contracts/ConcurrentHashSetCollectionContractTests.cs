@@ -25,7 +25,7 @@ public sealed class ConcurrentHashSetCollectionContractTests
     protected override ConcurrentHashSet<int> Create(params int[] items)
     {
         ConcurrentHashSet<int> set = new();
-        foreach (var item in items)
+        foreach (int item in items)
             set.Add(item);
         return set;
     }

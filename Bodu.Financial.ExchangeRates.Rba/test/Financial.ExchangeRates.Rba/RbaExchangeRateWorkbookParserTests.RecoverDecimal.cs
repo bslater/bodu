@@ -47,7 +47,7 @@ public partial class RbaExchangeRateWorkbookParserTests
     {
         ArgumentNullException.ThrowIfNull(kat);
 
-        var actual = RbaExchangeRateWorkbookParser.RecoverDecimal(kat.Input);
+        decimal actual = RbaExchangeRateWorkbookParser.RecoverDecimal(kat.Input);
 
         Assert.AreEqual(kat.Expected, actual);
     }

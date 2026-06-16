@@ -55,7 +55,7 @@ public sealed class FileSystemEcbFeedCache
     {
         ThrowHelper.ThrowIfNull(feed);
 
-        var path = Path.Combine(_directory, feed.FileName);
+        string path = Path.Combine(_directory, feed.FileName);
 
         try
         {

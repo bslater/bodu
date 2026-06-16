@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XSalsa20Poly1305AeadTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -26,8 +26,8 @@ public sealed class XSalsa20Poly1305AeadTests
     [TestCategory("Smoke")]
     public void Encrypt_WhenRoundTripped_ShouldRecoverPlaintext()
     {
-        var plaintext = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-        var aad = new byte[] { 0xaa, 0xbb };
+        byte[] plaintext = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+        byte[] aad = new byte[] { 0xaa, 0xbb };
 
         byte[] sealed_;
         using (var enc = new XSalsa20Poly1305Aead(Key(), Nonce()))

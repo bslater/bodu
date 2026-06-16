@@ -26,7 +26,7 @@ public partial class SequenceGeneratorTests
     [TestMethod]
     public void Repeat_WhenCalled_ShouldReturnInfiniteSequence()
     {
-        var actual = SequenceGenerator.Repeat("A").Take(3).ToArray();
+        string[] actual = SequenceGenerator.Repeat("A").Take(3).ToArray();
         CollectionAssert.AreEqual(new[] { "A", "A", "A" }, actual);
     }
 
@@ -60,7 +60,7 @@ public partial class SequenceGeneratorTests
     [TestMethod]
     public void Repeat_WhenCountIsPositive_ShouldReturnFixedSequence()
     {
-        var actual = SequenceGenerator.Repeat("Z", 4).ToArray();
+        string[] actual = SequenceGenerator.Repeat("Z", 4).ToArray();
         CollectionAssert.AreEqual(new[] { "Z", "Z", "Z", "Z" }, actual);
     }
 
@@ -70,7 +70,7 @@ public partial class SequenceGeneratorTests
     [TestMethod]
     public void Repeat_WhenCountIsZero_ShouldReturnEmptySequence()
     {
-        var actual = SequenceGenerator.Repeat("A", 0).ToArray();
+        string[] actual = SequenceGenerator.Repeat("A", 0).ToArray();
         Assert.IsEmpty(actual);
     }
 

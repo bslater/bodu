@@ -31,12 +31,12 @@ public readonly partial struct Money<TCurrency>
     {
         ThrowHelper.ThrowIfLessThanOrEqual(parts, 0);
 
-        var minorUnits = CurrencyMetadata<TCurrency>.Value.MinorUnits;
+        int minorUnits = CurrencyMetadata<TCurrency>.Value.MinorUnits;
         Span<decimal> shares = parts <= MoneyMath.StackAllocShareThreshold ? stackalloc decimal[parts] : new decimal[parts];
         MoneyMath.AllocateEvenly(_amount, minorUnits, shares);
 
         var result = new Money<TCurrency>[parts];
-        for (var i = 0; i < parts; i++)
+        for (int i = 0; i < parts; i++)
             result[i] = Money<TCurrency>.FromNormalizedAmount(shares[i]);
 
         return result;
@@ -63,11 +63,11 @@ public readonly partial struct Money<TCurrency>
     {
         FinancialThrowHelper.ThrowIfAllocationRatiosInvalid(ratios);
 
-        var minorUnits = CurrencyMetadata<TCurrency>.Value.MinorUnits;
-        var shares = MoneyMath.AllocateByRatios(_amount, minorUnits, ratios);
+        int minorUnits = CurrencyMetadata<TCurrency>.Value.MinorUnits;
+        decimal[] shares = MoneyMath.AllocateByRatios(_amount, minorUnits, ratios);
 
         var result = new Money<TCurrency>[shares.Length];
-        for (var i = 0; i < shares.Length; i++)
+        for (int i = 0; i < shares.Length; i++)
             result[i] = Money<TCurrency>.FromNormalizedAmount(shares[i]);
 
         return result;

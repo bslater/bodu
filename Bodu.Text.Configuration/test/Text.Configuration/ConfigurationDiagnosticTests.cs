@@ -60,7 +60,7 @@ public class ConfigurationDiagnosticTests
             "blank",
             default);
 
-        var text = diagnostic.ToString();
+        string text = diagnostic.ToString();
 
         StringAssert.Contains(text, "Warning");
         StringAssert.Contains(text, "EmptyKey");

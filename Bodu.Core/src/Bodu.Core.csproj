@@ -1,20 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFrameworks>net8.0</TargetFrameworks>
-        <LangVersion>latest</LangVersion>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
         <RootNamespace>Bodu</RootNamespace>
-        <AssemblyName>$(MSBuildProjectName)</AssemblyName>
-        <OutputType>Library</OutputType>
         <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
-        <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+        <IsAotCompatible Condition="'$(BoduTfmIsNetCore)' == 'true'">true</IsAotCompatible>
     </PropertyGroup>
     
-    <PropertyGroup Condition="'$(AllowUnsafeBlocks)' == 'true'">
-        <DefineConstants>$(DefineConstants);ALLOW_UNSAFE</DefineConstants>
-    </PropertyGroup>
 
     <!--
       InternalsVisibleTo grants — every entry below was audited and is currently in use:
@@ -69,13 +60,5 @@
                           ReferenceOutputAssembly="false"
                           OutputItemType="Analyzer" />
     </ItemGroup>
-
-  <PropertyGroup>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <None Include="..\README.md" Pack="true" PackagePath="\" />
-  </ItemGroup>
 
 </Project>

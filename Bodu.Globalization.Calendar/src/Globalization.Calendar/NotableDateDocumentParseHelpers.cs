@@ -43,10 +43,10 @@ internal static class NotableDateDocumentParseHelpers
         if (value is null)
             return null;
 
-        if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var numeric) && numeric is >= 1 and <= 12)
+        if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int numeric) && numeric is >= 1 and <= 12)
             return numeric;
 
-        var index = Array.FindIndex(s_monthNames, n => string.Equals(n, value, StringComparison.OrdinalIgnoreCase));
+        int index = Array.FindIndex(s_monthNames, n => string.Equals(n, value, StringComparison.OrdinalIgnoreCase));
         return index >= 0 ? index + 1 : null;
     }
 
@@ -62,10 +62,10 @@ internal static class NotableDateDocumentParseHelpers
     {
         if (value is not null)
         {
-            if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var numeric) && numeric is >= 1 and <= 12)
+            if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int numeric) && numeric is >= 1 and <= 12)
                 return numeric;
 
-            var index = Array.FindIndex(s_monthNames, n => string.Equals(n, value, StringComparison.OrdinalIgnoreCase));
+            int index = Array.FindIndex(s_monthNames, n => string.Equals(n, value, StringComparison.OrdinalIgnoreCase));
             if (index >= 0)
                 return index + 1;
         }
@@ -102,7 +102,7 @@ internal static class NotableDateDocumentParseHelpers
 
         if (value is not null)
         {
-            if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var numeric) && numeric is >= 1 and <= 13)
+            if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int numeric) && numeric is >= 1 and <= 13)
                 return (numeric, null);
 
             switch (value)
@@ -168,7 +168,7 @@ internal static class NotableDateDocumentParseHelpers
     /// <param name="fallback">The value returned when parsing fails.</param>
     /// <returns>The parsed integer, or <paramref name="fallback" />.</returns>
     public static int ParseInt(string? value, int fallback) =>
-        int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var result) ? result : fallback;
+        int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int result) ? result : fallback;
 
     /// <summary>
     /// Parses an optional integer value.
@@ -176,7 +176,7 @@ internal static class NotableDateDocumentParseHelpers
     /// <param name="value">The raw value, or <see langword="null" />.</param>
     /// <returns>The parsed integer, or <see langword="null" /> when absent or invalid.</returns>
     public static int? ParseNullableInt(string? value) =>
-        int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var result) ? result : null;
+        int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int result) ? result : null;
 
     /// <summary>
     /// Parses a boolean value expressed in XML-schema form (<c>true</c>/<c>false</c>/<c>1</c>/<c>0</c>), falling back

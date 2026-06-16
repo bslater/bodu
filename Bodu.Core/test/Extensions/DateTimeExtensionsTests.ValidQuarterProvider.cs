@@ -108,7 +108,7 @@ public partial class DateTimeExtensionsTests
 
         public DateTime GetQuarterEnd(DateTime dateTime)
         {
-            var quarter = GetQuarter(dateTime);
+            int quarter = GetQuarter(dateTime);
             DateTime start = GetQuarterStart(dateTime);
 
             return quarter switch

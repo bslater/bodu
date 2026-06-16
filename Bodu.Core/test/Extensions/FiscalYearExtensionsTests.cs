@@ -49,8 +49,8 @@ public class FiscalYearExtensionsTests
         FiscalWeekQuarterProvider provider = BuildProvider();
         DateOnly fy2026Start = DateOnlyExtensions.FirstDateOfFiscalYear(2026, provider);
 
-        var fromDateOnly = fy2026Start.FiscalYear(provider);
-        var fromDateTime = fy2026Start.ToDateTime(TimeOnly.MinValue).FiscalYear(provider);
+        int fromDateOnly = fy2026Start.FiscalYear(provider);
+        int fromDateTime = fy2026Start.ToDateTime(TimeOnly.MinValue).FiscalYear(provider);
 
         Assert.AreEqual(fromDateOnly, fromDateTime);
     }
@@ -81,7 +81,7 @@ public class FiscalYearExtensionsTests
         // Probe with the Q1 start of fiscal year 2026 — by definition, that date's fiscal year is 2026.
         DateOnly q1Start = DateOnlyExtensions.FirstDateOfFiscalYear(2026, provider);
 
-        var fy = q1Start.FiscalYear(provider);
+        int fy = q1Start.FiscalYear(provider);
 
         Assert.AreEqual(2026, fy);
     }

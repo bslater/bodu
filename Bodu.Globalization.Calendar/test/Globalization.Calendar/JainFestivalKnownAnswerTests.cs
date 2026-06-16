@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="JainFestivalKnownAnswerTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -64,7 +64,7 @@ public sealed class JainFestivalKnownAnswerTests
     {
         NotableDate festival = CommonCatalogues.ResolveSingle(CreateService(), notableDateId, year);
         var reference = new DateOnly(year, month, day);
-        var deltaDays = Math.Abs(festival.Date.DayNumber - reference.DayNumber);
+        int deltaDays = Math.Abs(festival.Date.DayNumber - reference.DayNumber);
 
         Assert.IsLessThanOrEqualTo(
             ToleranceDays,

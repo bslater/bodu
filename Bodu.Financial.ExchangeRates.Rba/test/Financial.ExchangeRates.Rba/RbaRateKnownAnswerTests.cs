@@ -155,7 +155,7 @@ public class RbaRateKnownAnswerTests
     /// <returns>The known-answer rows.</returns>
     private static RbaRateKnownAnswer[] LoadRows()
     {
-        var json = RbaFixtures.ReadText(RbaFixtures.KnownAnswerData);
+        string json = RbaFixtures.ReadText(RbaFixtures.KnownAnswerData);
         return JsonSerializer.Deserialize<RbaRateKnownAnswer[]>(json, s_jsonOptions) ?? [];
     }
 
@@ -165,7 +165,7 @@ public class RbaRateKnownAnswerTests
     /// <param name="currency">The RBA currency label.</param>
     /// <returns>The ISO code to look up.</returns>
     private static string ResolveCurrency(string currency) =>
-        s_options.CurrencyAliases.TryGetValue(currency, out var iso) ? iso : currency;
+        s_options.CurrencyAliases.TryGetValue(currency, out string? iso) ? iso : currency;
 
     /// <summary>
     /// Returns the provider for a source workbook, building and caching it on first use.

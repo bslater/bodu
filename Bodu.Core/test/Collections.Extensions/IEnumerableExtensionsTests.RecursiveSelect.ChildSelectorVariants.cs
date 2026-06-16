@@ -38,7 +38,7 @@ public partial class IEnumerableExtensionsTests_RecursiveSelect
     {
         IEnumerable source = NodeSampleTree.BuildSampleTree();
 
-        var actual = source
+        string[] actual = source
             .RecursiveSelect(
                 childSelector: e => ((Node)e).Children.Cast<object>(),
                 selector: (e, i) => $"{i}:{((Node)e).Name}")
@@ -59,7 +59,7 @@ public partial class IEnumerableExtensionsTests_RecursiveSelect
     {
         IEnumerable source = NodeSampleTree.BuildSampleTree();
 
-        var actual = source
+        string[] actual = source
             .RecursiveSelect(
                 childSelector: e => ((Node)e).Children.Cast<object>(),
                 selector: e => ((Node)e).Name)

@@ -131,8 +131,8 @@ public static partial class Delimited
     {
         ThrowHelper.ThrowIfNull(document);
 
-        var delimiter = options.Delimiter;
-        var quote = options.Quote;
+        char delimiter = options.Delimiter;
+        char quote = options.Quote;
 
         StringBuilder sb = new();
 
@@ -263,7 +263,7 @@ public static partial class Delimited
     /// <param name="quote">The quoting character.</param>
     private static void WriteRow(StringBuilder sb, IReadOnlyList<string> fields, char delimiter, char quote)
     {
-        for (var i = 0; i < fields.Count; i++)
+        for (int i = 0; i < fields.Count; i++)
         {
             if (i > 0)
                 sb.Append(delimiter);
@@ -281,7 +281,7 @@ public static partial class Delimited
     /// <param name="quote">The quoting character.</param>
     private static void AppendField(StringBuilder sb, string field, char delimiter, char quote)
     {
-        var needsQuoting = field.Length == 0 ||
+        bool needsQuoting = field.Length == 0 ||
                             field.Contains(delimiter) ||
                             field.Contains(quote) ||
                             field.Contains('\n') ||
@@ -295,7 +295,7 @@ public static partial class Delimited
 
         sb.Append(quote);
 
-        foreach (var c in field)
+        foreach (char c in field)
         {
             if (c == quote)
                 sb.Append(quote); // RFC 4180 doubled-quote escape

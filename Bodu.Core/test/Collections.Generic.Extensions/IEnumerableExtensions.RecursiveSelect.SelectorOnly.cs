@@ -19,7 +19,7 @@ public partial class IEnumerableExtensionsTests_RecursiveSelect
     {
         Node[] root = NodeSampleTree.BuildSampleTree();
 
-        var actual = root.RecursiveSelect(
+        string[] actual = root.RecursiveSelect(
             childSelector: n => n.Children,
             selector: n => n.Name).ToArray();
 

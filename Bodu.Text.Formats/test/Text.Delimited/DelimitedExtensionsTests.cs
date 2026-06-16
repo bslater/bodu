@@ -64,7 +64,7 @@ public sealed class DelimitedExtensionsTests
     [TestMethod]
     public void TryParseDelimited_OnString_WhenInputIsValid_ShouldReturnTrue()
     {
-        var success = CanonicalSource.TryParseDelimited(out DelimitedDocument? document);
+        bool success = CanonicalSource.TryParseDelimited(out DelimitedDocument? document);
 
         Assert.IsTrue(success);
         Assert.IsNotNull(document);
@@ -79,8 +79,8 @@ public sealed class DelimitedExtensionsTests
     [TestMethod]
     public void TryParseDelimited_OnReadOnlySpan_ShouldMatchStaticCanonical()
     {
-        var extSuccess = CanonicalSource.AsSpan().TryParseDelimited(out DelimitedDocument? extDocument);
-        var staticSuccess = Delimited.TryParse(CanonicalSource, out DelimitedDocument? staticDocument);
+        bool extSuccess = CanonicalSource.AsSpan().TryParseDelimited(out DelimitedDocument? extDocument);
+        bool staticSuccess = Delimited.TryParse(CanonicalSource, out DelimitedDocument? staticDocument);
 
         Assert.AreEqual(staticSuccess, extSuccess);
         Assert.AreEqual(staticDocument!.Rows.Count, extDocument!.Rows.Count);
@@ -95,8 +95,8 @@ public sealed class DelimitedExtensionsTests
     {
         DelimitedDocument document = Delimited.Parse(CanonicalSource);
 
-        var fromExtension = document.FormatDelimited();
-        var fromStatic = Delimited.Format(document);
+        string fromExtension = document.FormatDelimited();
+        string fromStatic = Delimited.Format(document);
 
         Assert.AreEqual(fromStatic, fromExtension);
     }
@@ -111,8 +111,8 @@ public sealed class DelimitedExtensionsTests
         DelimitedDocument document = Delimited.Parse(CanonicalSource);
         DelimitedParseOptions options = new() { Delimiter = '\t' };
 
-        var fromExtension = document.FormatDelimited(options);
-        var fromStatic = Delimited.Format(document, options);
+        string fromExtension = document.FormatDelimited(options);
+        string fromStatic = Delimited.Format(document, options);
 
         Assert.AreEqual(fromStatic, fromExtension);
     }
@@ -125,7 +125,7 @@ public sealed class DelimitedExtensionsTests
     public void ParseDelimitedThenFormatDelimited_ShouldRoundTrip()
     {
         DelimitedDocument first = CanonicalSource.ParseDelimited();
-        var emitted = first.FormatDelimited();
+        string emitted = first.FormatDelimited();
         DelimitedDocument second = emitted.ParseDelimited();
 
         Assert.AreEqual(first.Rows.Count, second.Rows.Count);
@@ -164,7 +164,7 @@ public sealed class DelimitedExtensionsTests
     [TestMethod]
     public void TryParseDelimited_OnReadOnlySpanWithOptions_ShouldReturnTrueAndDocument()
     {
-        var parsed = CanonicalSource.AsSpan().TryParseDelimited(DelimitedParseOptions.Default, out DelimitedDocument? doc);
+        bool parsed = CanonicalSource.AsSpan().TryParseDelimited(DelimitedParseOptions.Default, out DelimitedDocument? doc);
 
         Assert.IsTrue(parsed);
         Assert.IsNotNull(doc);
@@ -177,7 +177,7 @@ public sealed class DelimitedExtensionsTests
     [TestMethod]
     public void TryParseDelimited_OnStringWithOptions_ShouldReturnTrueAndDocument()
     {
-        var parsed = CanonicalSource.TryParseDelimited(DelimitedParseOptions.Default, out DelimitedDocument? doc);
+        bool parsed = CanonicalSource.TryParseDelimited(DelimitedParseOptions.Default, out DelimitedDocument? doc);
 
         Assert.IsTrue(parsed);
         Assert.IsNotNull(doc);

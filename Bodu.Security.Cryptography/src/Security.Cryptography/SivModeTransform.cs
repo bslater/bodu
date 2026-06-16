@@ -160,7 +160,7 @@ public sealed class SivModeTransform
         ThrowIfDisposed();
         ThrowIfCompleted();
 
-        var required = plaintext.Length + (TagSizeBits / 8);
+        int required = plaintext.Length + (TagSizeBits / 8);
         CryptographyThrowHelper.ThrowIfOutputBufferTooSmall(output, required);
 
         EnsureAadProcessed();
@@ -201,7 +201,7 @@ public sealed class SivModeTransform
 
         CryptographyThrowHelper.ThrowIfCiphertextTooShort(ciphertextWithTag, TagSizeBits / 8);
 
-        var plaintextLength = ciphertextWithTag.Length - (TagSizeBits / 8);
+        int plaintextLength = ciphertextWithTag.Length - (TagSizeBits / 8);
         CryptographyThrowHelper.ThrowIfOutputBufferTooSmall(output, plaintextLength);
 
         EnsureAadProcessed();
@@ -303,9 +303,9 @@ public sealed class SivModeTransform
     /// <returns>The S2V synthetic initialization vector.</returns>
     private byte[] S2V(ReadOnlySpan<byte> aad, ReadOnlySpan<byte> plaintext)
     {
-        var blockSize = _s2vCipher.BlockSize / 8;
+        int blockSize = _s2vCipher.BlockSize / 8;
 
-        var zeroBlock = new byte[blockSize];
+        byte[] zeroBlock = new byte[blockSize];
         byte[]? d = null;
         byte[]? mac = null;
         byte[]? t = null;
@@ -338,8 +338,8 @@ public sealed class SivModeTransform
             {
                 t = plaintext.ToArray();
 
-                var offset = t.Length - blockSize;
-                for (var i = 0; i < blockSize; i++)
+                int offset = t.Length - blockSize;
+                for (int i = 0; i < blockSize; i++)
                     t[offset + i] ^= d[i];
 
                 return ComputeCmac(t);
@@ -372,14 +372,14 @@ public sealed class SivModeTransform
     /// <returns>The 16-byte CMAC tag.</returns>
     private byte[] ComputeCmac(ReadOnlySpan<byte> message)
     {
-        var blockSize = _s2vCipher.BlockSize / 8;
+        int blockSize = _s2vCipher.BlockSize / 8;
 
-        var zeroBlock = new byte[blockSize];
-        var l = new byte[blockSize];
-        var k1 = new byte[blockSize];
-        var k2 = new byte[blockSize];
-        var mac = new byte[blockSize];
-        var lastBlock = new byte[blockSize];
+        byte[] zeroBlock = new byte[blockSize];
+        byte[] l = new byte[blockSize];
+        byte[] k1 = new byte[blockSize];
+        byte[] k2 = new byte[blockSize];
+        byte[] mac = new byte[blockSize];
+        byte[] lastBlock = new byte[blockSize];
 
         try
         {
@@ -391,8 +391,8 @@ public sealed class SivModeTransform
             k1.CopyTo(k2, 0);
             Dbl(k2);
 
-            var totalBlocks = (message.Length + blockSize - 1) / blockSize;
-            var lastIsFull = message.Length > 0 && message.Length % blockSize == 0;
+            int totalBlocks = (message.Length + blockSize - 1) / blockSize;
+            bool lastIsFull = message.Length > 0 && message.Length % blockSize == 0;
 
             if (message.Length == 0)
             {
@@ -400,9 +400,9 @@ public sealed class SivModeTransform
                 lastIsFull = false;
             }
 
-            for (var blockIdx = 0; blockIdx < totalBlocks - 1; blockIdx++)
+            for (int blockIdx = 0; blockIdx < totalBlocks - 1; blockIdx++)
             {
-                var block = new byte[blockSize];
+                byte[] block = new byte[blockSize];
 
                 try
                 {
@@ -419,8 +419,8 @@ public sealed class SivModeTransform
 
             if (message.Length > 0)
             {
-                var lastOffset = (totalBlocks - 1) * blockSize;
-                var lastLen = message.Length - lastOffset;
+                int lastOffset = (totalBlocks - 1) * blockSize;
+                int lastLen = message.Length - lastOffset;
 
                 message.Slice(lastOffset, lastLen).CopyTo(lastBlock);
 
@@ -432,7 +432,7 @@ public sealed class SivModeTransform
                 lastBlock[0] = 0x80;
             }
 
-            var subkey = lastIsFull ? k1 : k2;
+            byte[] subkey = lastIsFull ? k1 : k2;
 
             Xor(lastBlock, subkey, lastBlock);
             Xor(mac, lastBlock, mac);
@@ -464,21 +464,21 @@ public sealed class SivModeTransform
     /// <param name="counter">The starting counter block.</param>
     private void CtrEncrypt(ReadOnlySpan<byte> input, Span<byte> output, byte[] counter)
     {
-        var blockSize = _ctrCipher.BlockSize / 8;
-        var ctr = (byte[])counter.Clone();
+        int blockSize = _ctrCipher.BlockSize / 8;
+        byte[] ctr = (byte[])counter.Clone();
         Span<byte> ks = stackalloc byte[blockSize];
 
         try
         {
-            for (var offset = 0; offset < input.Length; offset += blockSize)
+            for (int offset = 0; offset < input.Length; offset += blockSize)
             {
                 _ctrCipher.Encrypt(ctr, ks);
 
-                for (var i = ctr.Length - 1; i >= 0; i--)
+                for (int i = ctr.Length - 1; i >= 0; i--)
                     if (++ctr[i] != 0) break;
 
-                var len = Math.Min(blockSize, input.Length - offset);
-                for (var i = 0; i < len; i++)
+                int len = Math.Min(blockSize, input.Length - offset);
+                for (int i = 0; i < len; i++)
                     output[offset + i] = (byte)(input[offset + i] ^ ks[i]);
             }
         }
@@ -496,9 +496,9 @@ public sealed class SivModeTransform
     /// <param name="x">The 16-byte block to double in GF(2<sup>128</sup>); updated in place.</param>
     private static void Dbl(byte[] x)
     {
-        var msb = (x[0] & 0x80) != 0;
+        bool msb = (x[0] & 0x80) != 0;
 
-        for (var i = 0; i < x.Length - 1; i++)
+        for (int i = 0; i < x.Length - 1; i++)
             x[i] = (byte)((x[i] << 1) | (x[i + 1] >> 7));
 
         x[^1] <<= 1;
@@ -515,7 +515,7 @@ public sealed class SivModeTransform
     /// <param name="result">The destination span.</param>
     private static void Xor(ReadOnlySpan<byte> a, ReadOnlySpan<byte> b, Span<byte> result)
     {
-        for (var i = 0; i < result.Length; i++)
+        for (int i = 0; i < result.Length; i++)
             result[i] = (byte)(a[i] ^ b[i]);
     }
 

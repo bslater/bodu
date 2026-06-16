@@ -58,7 +58,7 @@ public partial class FractionTests
     {
         var value = new Fraction<int>(numerator, denominator);
 
-        var trueCount = (value.IsZero ? 1 : 0) + (value.IsNegative ? 1 : 0) + (value.IsPositive ? 1 : 0);
+        int trueCount = (value.IsZero ? 1 : 0) + (value.IsNegative ? 1 : 0) + (value.IsPositive ? 1 : 0);
 
         Assert.AreEqual(1, trueCount);
     }

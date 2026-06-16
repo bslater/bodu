@@ -17,9 +17,9 @@ public sealed partial class IEnumerableExtensionsTests_BatchPooled
     [TestMethod]
     public void BatchPooled_WhenBatchSizeExceedsSourceLength_ShouldYieldSingleTrimmedBatch()
     {
-        var source = new[] { 1, 2, 3 };
+        int[] source = new[] { 1, 2, 3 };
 
-        var batches = source.BatchPooled(10).Select(b => b.ToArray()).ToArray();
+        int[][] batches = source.BatchPooled(10).Select(b => b.ToArray()).ToArray();
 
         Assert.HasCount(1, batches);
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, batches[0]);
@@ -33,7 +33,7 @@ public sealed partial class IEnumerableExtensionsTests_BatchPooled
     [TestMethod]
     public void BatchPooled_WhenCalled_ForProjectionOverload_ShouldDeferExecution()
     {
-        var wasEnumerated = false;
+        bool wasEnumerated = false;
         IEnumerable<int> Source()
         {
             wasEnumerated = true;
@@ -52,7 +52,7 @@ public sealed partial class IEnumerableExtensionsTests_BatchPooled
     [TestMethod]
     public void BatchPooled_WhenCalled_ShouldDeferExecution()
     {
-        var wasEnumerated = false;
+        bool wasEnumerated = false;
         IEnumerable<int> Source()
         {
             wasEnumerated = true;
@@ -73,7 +73,7 @@ public sealed partial class IEnumerableExtensionsTests_BatchPooled
     {
         IEnumerable<int> source = Enumerable.Range(1, 9);
 
-        var batches = source.BatchPooled(3).Select(b => b.ToArray()).ToArray();
+        int[][] batches = source.BatchPooled(3).Select(b => b.ToArray()).ToArray();
 
         Assert.HasCount(3, batches);
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, batches[0]);
@@ -90,7 +90,7 @@ public sealed partial class IEnumerableExtensionsTests_BatchPooled
     {
         IEnumerable<int> source = Enumerable.Range(1, 5);
 
-        var batches = source.BatchPooled(2, (x, i) => $"{i}:{x}").Select(b => b.ToArray()).ToArray();
+        string[][] batches = source.BatchPooled(2, (x, i) => $"{i}:{x}").Select(b => b.ToArray()).ToArray();
 
         Assert.HasCount(3, batches);
         CollectionAssert.AreEqual(new[] { "0:1", "1:2" }, batches[0]);
@@ -121,7 +121,7 @@ public sealed partial class IEnumerableExtensionsTests_BatchPooled
     [TestMethod]
     public void BatchPooled_WhenSelectorIsNull_ShouldThrowExactly()
     {
-        var source = new[] { 1, 2, 3 };
+        int[] source = new[] { 1, 2, 3 };
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = source.BatchPooled(2, (Func<int, int, int>)null!).ToList();
@@ -137,7 +137,7 @@ public sealed partial class IEnumerableExtensionsTests_BatchPooled
     [DataRow(0)]
     public void BatchPooled_WhenSizeIsInvalid_ForProjectionOverload_ShouldThrowExactly(int size)
     {
-        var source = new[] { 1, 2, 3 };
+        int[] source = new[] { 1, 2, 3 };
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = source.BatchPooled(size, (x, _) => x).ToList();
@@ -152,7 +152,7 @@ public sealed partial class IEnumerableExtensionsTests_BatchPooled
     [DataRow(0)]
     public void BatchPooled_WhenSizeIsInvalid_ShouldThrowExactly(int size)
     {
-        var source = new[] { 1, 2, 3 };
+        int[] source = new[] { 1, 2, 3 };
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = source.BatchPooled(size).ToList();
@@ -206,7 +206,7 @@ public sealed partial class IEnumerableExtensionsTests_BatchPooled
     {
         IEnumerable<int> source = Enumerable.Range(1, 10);
 
-        var batches = source.BatchPooled(3).Select(b => b.ToArray()).ToArray();
+        int[][] batches = source.BatchPooled(3).Select(b => b.ToArray()).ToArray();
 
         Assert.HasCount(4, batches);
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, batches[0]);

@@ -77,17 +77,17 @@ public sealed class Iso7064Mod11_2
     /// </exception>
     public static char Compute(ReadOnlySpan<char> digits)
     {
-        var p = 0;
-        for (var i = 0; i < digits.Length; i++)
+        int p = 0;
+        for (int i = 0; i < digits.Length; i++)
         {
-            var ch = digits[i];
+            char ch = digits[i];
             if ((uint)(ch - '0') > 9u)
                 ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(digits));
 
             p = ((p + (ch - '0')) * 2) % 11;
         }
 
-        var c = (12 - p) % 11;
+        int c = (12 - p) % 11;
         return c == 10 ? 'X' : (char)('0' + c);
     }
 
@@ -105,17 +105,17 @@ public sealed class Iso7064Mod11_2
     {
         if (valueIncludingCheck.IsEmpty) return false;
 
-        var last = valueIncludingCheck.Length - 1;
-        var p = 0;
-        for (var i = 0; i < last; i++)
+        int last = valueIncludingCheck.Length - 1;
+        int p = 0;
+        for (int i = 0; i < last; i++)
         {
-            var ch = valueIncludingCheck[i];
+            char ch = valueIncludingCheck[i];
             if ((uint)(ch - '0') > 9u) return false;
 
             p = ((p + (ch - '0')) * 2) % 11;
         }
 
-        var checkChar = valueIncludingCheck[last];
+        char checkChar = valueIncludingCheck[last];
         int checkValue;
         if ((uint)(checkChar - '0') <= 9u) checkValue = checkChar - '0';
         else if (checkChar == 'X') checkValue = 10;
@@ -127,10 +127,10 @@ public sealed class Iso7064Mod11_2
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> body)
     {
-        var p = _p;
-        for (var i = 0; i < body.Length; i++)
+        int p = _p;
+        for (int i = 0; i < body.Length; i++)
         {
-            var ch = body[i];
+            char ch = body[i];
             if ((uint)(ch - '0') > 9u)
                 ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(body));
 
@@ -143,7 +143,7 @@ public sealed class Iso7064Mod11_2
     /// <inheritdoc />
     public override char GetCurrentCheckDigit()
     {
-        var c = (12 - _p) % 11;
+        int c = (12 - _p) % 11;
         return c == 10 ? 'X' : (char)('0' + c);
     }
 

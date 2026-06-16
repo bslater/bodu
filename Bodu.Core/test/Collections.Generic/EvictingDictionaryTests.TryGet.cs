@@ -18,7 +18,7 @@ public partial class EvictingDictionaryTests
         var dictionary = new EvictingDictionary<string, string>(3);
         dictionary.Add("present", "here");
 
-        var result = dictionary.TryGetValue("absent", out var value);
+        bool result = dictionary.TryGetValue("absent", out string? value);
 
         Assert.IsFalse(result);
         Assert.IsNull(value);
@@ -31,7 +31,7 @@ public partial class EvictingDictionaryTests
     public void TryGetValue_WhenKeyDoesNotExist_ShouldNotIncrementTotalTouches()
     {
         var dictionary = new EvictingDictionary<string, int>(3);
-        var before = dictionary.TotalTouches;
+        long before = dictionary.TotalTouches;
 
         dictionary.TryGetValue("missing", out _);
 
@@ -48,7 +48,7 @@ public partial class EvictingDictionaryTests
         var dictionary = new EvictingDictionary<string, int>(2);
         dictionary.Add("A", 1);
 
-        var result = dictionary.TryGetValue("B", out var value);
+        bool result = dictionary.TryGetValue("B", out int value);
 
         Assert.IsFalse(result);
         Assert.AreEqual(default, value);
@@ -62,7 +62,7 @@ public partial class EvictingDictionaryTests
     {
         var dictionary = new EvictingDictionary<string, int>(3);
         dictionary.Add("x", 99);
-        var before = dictionary.TotalTouches;
+        long before = dictionary.TotalTouches;
 
         dictionary.TryGetValue("x", out _);
 
@@ -77,7 +77,7 @@ public partial class EvictingDictionaryTests
         var dictionary = new EvictingDictionary<string, int>(3);
         dictionary.Add("A", 42);
 
-        var result = dictionary.TryGetValue("A", out var value);
+        bool result = dictionary.TryGetValue("A", out int value);
 
         Assert.IsTrue(result);
         Assert.AreEqual(42, value);

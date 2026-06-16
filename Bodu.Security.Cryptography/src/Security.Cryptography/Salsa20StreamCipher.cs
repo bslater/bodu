@@ -142,24 +142,24 @@ internal sealed class Salsa20StreamCipher
     /// </remarks>
     internal static void HSalsa20(ReadOnlySpan<byte> key, ReadOnlySpan<byte> nonce, Span<byte> subkey)
     {
-        var x0 = Sigma0;
-        var x1 = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(0, 4));
-        var x2 = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(4, 4));
-        var x3 = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(8, 4));
-        var x4 = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(12, 4));
-        var x5 = Sigma1;
-        var x6 = BinaryPrimitives.ReadUInt32LittleEndian(nonce.Slice(0, 4));
-        var x7 = BinaryPrimitives.ReadUInt32LittleEndian(nonce.Slice(4, 4));
-        var x8 = BinaryPrimitives.ReadUInt32LittleEndian(nonce.Slice(8, 4));
-        var x9 = BinaryPrimitives.ReadUInt32LittleEndian(nonce.Slice(12, 4));
-        var x10 = Sigma2;
-        var x11 = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(16, 4));
-        var x12 = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(20, 4));
-        var x13 = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(24, 4));
-        var x14 = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(28, 4));
-        var x15 = Sigma3;
+        uint x0 = Sigma0;
+        uint x1 = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(0, 4));
+        uint x2 = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(4, 4));
+        uint x3 = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(8, 4));
+        uint x4 = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(12, 4));
+        uint x5 = Sigma1;
+        uint x6 = BinaryPrimitives.ReadUInt32LittleEndian(nonce.Slice(0, 4));
+        uint x7 = BinaryPrimitives.ReadUInt32LittleEndian(nonce.Slice(4, 4));
+        uint x8 = BinaryPrimitives.ReadUInt32LittleEndian(nonce.Slice(8, 4));
+        uint x9 = BinaryPrimitives.ReadUInt32LittleEndian(nonce.Slice(12, 4));
+        uint x10 = Sigma2;
+        uint x11 = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(16, 4));
+        uint x12 = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(20, 4));
+        uint x13 = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(24, 4));
+        uint x14 = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(28, 4));
+        uint x15 = Sigma3;
 
-        for (var i = 0; i < Rounds; i += 2)
+        for (int i = 0; i < Rounds; i += 2)
         {
             // Column round.
             QuarterRound(ref x0, ref x4, ref x8, ref x12);
@@ -207,7 +207,7 @@ internal sealed class Salsa20StreamCipher
     /// </remarks>
     private static void ExpandKey(uint[] state, ReadOnlySpan<byte> key, ReadOnlySpan<byte> nonce)
     {
-        var is256 = key.Length == KeySize256Bytes;
+        bool is256 = key.Length == KeySize256Bytes;
 
         state[0] = is256 ? Sigma0 : Tau0;
         state[5] = is256 ? Sigma1 : Tau1;
@@ -248,7 +248,7 @@ internal sealed class Salsa20StreamCipher
         uint x8 = state[8], x9 = state[9], x10 = state[10], x11 = state[11];
         uint x12 = state[12], x13 = state[13], x14 = state[14], x15 = state[15];
 
-        for (var i = 0; i < Rounds; i += 2)
+        for (int i = 0; i < Rounds; i += 2)
         {
             // Column round.
             QuarterRound(ref x0, ref x4, ref x8, ref x12);

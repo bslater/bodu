@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlDocumentBuilderTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -38,7 +38,7 @@ public sealed class TomlDocumentBuilderTests
     [DataRow("a.b = 1\na.b.c = 2\n", DisplayName = "dotted key through scalar")]
     public void Parse_WhenStructurallyInvalid_ShouldLexCleanlyAndFailInBuilder(string toml)
     {
-        var source = Encoding.UTF8.GetBytes(toml);
+        byte[] source = Encoding.UTF8.GetBytes(toml);
 
         // The lexer accepts the document: the rule under test is structural, not lexical.
         var lexer = new Utf8TomlReader(source, new TomlReaderOptions { SpecVersion = TomlSpecVersion.V1_0 });
@@ -122,8 +122,8 @@ public sealed class TomlDocumentBuilderTests
     [TestMethod]
     public void Parse_WhenNestingExceedsAbsoluteCapDespiteLargeMaxDepth_ShouldThrowTomlFormatException()
     {
-        var depth = TomlLimits.AbsoluteMaxDepth + 1;
-        var toml = "a = " + new string('[', depth) + "1" + new string(']', depth) + "\n";
+        int depth = TomlLimits.AbsoluteMaxDepth + 1;
+        string toml = "a = " + new string('[', depth) + "1" + new string(']', depth) + "\n";
 
         _ = Assert.ThrowsExactly<TomlFormatException>(() =>
         {
@@ -138,8 +138,8 @@ public sealed class TomlDocumentBuilderTests
     [TestMethod]
     public void Parse_WhenNestingAtAbsoluteCap_ShouldSucceed()
     {
-        var depth = TomlLimits.AbsoluteMaxDepth;
-        var toml = "a = " + new string('[', depth) + "1" + new string(']', depth) + "\n";
+        int depth = TomlLimits.AbsoluteMaxDepth;
+        string toml = "a = " + new string('[', depth) + "1" + new string(']', depth) + "\n";
 
         using var document = TomlDocument.Parse(toml, new TomlDocumentOptions { MaxDepth = int.MaxValue });
 

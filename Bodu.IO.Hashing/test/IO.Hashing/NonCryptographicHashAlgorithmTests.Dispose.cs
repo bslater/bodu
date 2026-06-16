@@ -143,7 +143,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
 
         ((IDisposable)algorithm).Dispose();
 
-        var result = TestHelpers.AssertFieldValueIsNullOrDefault(field, algorithm);
+        bool result = TestHelpers.AssertFieldValueIsNullOrDefault(field, algorithm);
 
         Assert.IsTrue(
             result,

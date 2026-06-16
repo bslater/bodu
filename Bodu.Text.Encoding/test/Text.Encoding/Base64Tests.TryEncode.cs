@@ -25,10 +25,10 @@ public sealed partial class Base64Tests
     [DataRow(9, 12)]
     public void TryEncode_WhenDestinationExactlyRequiredSize_ShouldReturnTrueAndFillBuffer(int byteCount, int expectedCharCount)
     {
-        var bytes = new byte[byteCount];
-        var destination = new char[expectedCharCount];
+        byte[] bytes = new byte[byteCount];
+        char[] destination = new char[expectedCharCount];
 
-        var ok = Base64.TryEncode(bytes.AsSpan(), destination, out var charsWritten);
+        bool ok = Base64.TryEncode(bytes.AsSpan(), destination, out int charsWritten);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(expectedCharCount, charsWritten);
@@ -39,10 +39,10 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void TryEncode_WhenDestinationLargeEnough_ShouldReturnTrueAndExactCharCount()
     {
-        var bytes = Ascii("foobar");
-        var destination = new char[8];
+        byte[] bytes = Ascii("foobar");
+        char[] destination = new char[8];
 
-        var ok = Base64.TryEncode(bytes.AsSpan(), destination, out var charsWritten);
+        bool ok = Base64.TryEncode(bytes.AsSpan(), destination, out int charsWritten);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(8, charsWritten);
@@ -61,10 +61,10 @@ public sealed partial class Base64Tests
     [DataRow(6, 8)]
     public void TryEncode_WhenDestinationOneCharShort_ShouldReturnFalseAndZeroCharsWritten(int byteCount, int exactRequired)
     {
-        var bytes = new byte[byteCount];
-        var destination = new char[exactRequired - 1];
+        byte[] bytes = new byte[byteCount];
+        char[] destination = new char[exactRequired - 1];
 
-        var ok = Base64.TryEncode(bytes.AsSpan(), destination, out var charsWritten);
+        bool ok = Base64.TryEncode(bytes.AsSpan(), destination, out int charsWritten);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0, charsWritten);
@@ -77,10 +77,10 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void TryEncode_WhenDestinationTooSmall_ShouldReturnFalseAndZeroCharsWritten()
     {
-        var bytes = Ascii("foobar");
-        var destination = new char[1];
+        byte[] bytes = Ascii("foobar");
+        char[] destination = new char[1];
 
-        var ok = Base64.TryEncode(bytes.AsSpan(), destination, out var charsWritten);
+        bool ok = Base64.TryEncode(bytes.AsSpan(), destination, out int charsWritten);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0, charsWritten);
@@ -93,9 +93,9 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void TryEncode_WhenInputIsEmpty_ShouldReturnTrueAndZeroCharsWritten()
     {
-        var destination = new char[4];
+        char[] destination = new char[4];
 
-        var ok = Base64.TryEncode([], destination, out var charsWritten);
+        bool ok = Base64.TryEncode([], destination, out int charsWritten);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(0, charsWritten);
@@ -107,10 +107,10 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void TryEncode_WhenOmitPadding_ShouldWriteFewerCharacters()
     {
-        var bytes = Ascii("foo");
-        var destination = new char[4];
+        byte[] bytes = Ascii("foo");
+        char[] destination = new char[4];
 
-        var ok = Base64.TryEncode(bytes.AsSpan(), destination, out var charsWritten, Base64Variant.Standard, BaseFormattingOptions.OmitPadding);
+        bool ok = Base64.TryEncode(bytes.AsSpan(), destination, out int charsWritten, Base64Variant.Standard, BaseFormattingOptions.OmitPadding);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(4, charsWritten);
@@ -123,7 +123,7 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void TryEncode_WhenUndefinedVariant_ShouldThrowExactly()
     {
-        var destination = new char[16];
+        char[] destination = new char[16];
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

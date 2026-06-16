@@ -29,7 +29,7 @@ public static partial class EnumExtensions
     public static bool HasAllFlags<TEnum>(this TEnum value, TEnum flags)
         where TEnum : struct, Enum
     {
-        var mask = ToUInt64(flags);
+        ulong mask = ToUInt64(flags);
         return (ToUInt64(value) & mask) == mask;
     }
 }

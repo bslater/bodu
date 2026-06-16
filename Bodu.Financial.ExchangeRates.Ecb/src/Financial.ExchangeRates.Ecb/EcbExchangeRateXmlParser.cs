@@ -137,18 +137,18 @@ internal static class EcbExchangeRateXmlParser
     {
         observation = default;
 
-        var currency = rateCube.Attribute("currency")?.Value;
-        var rateText = rateCube.Attribute("rate")?.Value;
+        string? currency = rateCube.Attribute("currency")?.Value;
+        string? rateText = rateCube.Attribute("rate")?.Value;
         if (string.IsNullOrWhiteSpace(currency) || string.IsNullOrWhiteSpace(rateText))
             return false;
 
-        if (options.CurrencyAliases.TryGetValue(currency, out var alias))
+        if (options.CurrencyAliases.TryGetValue(currency, out string? alias))
             currency = alias;
 
         if (!IsValidIsoCode(currency))
             return false;
 
-        if (!decimal.TryParse(rateText, NumberStyles.Float, CultureInfo.InvariantCulture, out var rate) || rate <= 0m)
+        if (!decimal.TryParse(rateText, NumberStyles.Float, CultureInfo.InvariantCulture, out decimal rate) || rate <= 0m)
             return false;
 
         observation = new EcbExchangeRateObservation(date, currency, rate);

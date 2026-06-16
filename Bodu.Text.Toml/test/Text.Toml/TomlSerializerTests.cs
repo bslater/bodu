@@ -49,7 +49,7 @@ public partial class TomlSerializerTests
             Counts = new Dictionary<string, int> { ["a"] = 1, ["b"] = 2 },
         };
 
-        var text = TomlSerializer.Serialize(original);
+        string text = TomlSerializer.Serialize(original);
         var roundTripped = TomlSerializer.Deserialize<RichModel>(text);
 
         Assert.AreEqual(original.Name, roundTripped.Name);
@@ -80,9 +80,9 @@ public partial class TomlSerializerTests
             Nested = new NestedModel { Title = "inner" },
         };
 
-        var text = TomlSerializer.Serialize(model);
+        string text = TomlSerializer.Serialize(model);
 
-        var expected =
+        string expected =
             "Name = \"x\"\n" +
             "Port = 8080\n" +
             "\n" +
@@ -101,7 +101,7 @@ public partial class TomlSerializerTests
         var options = new TomlSerializerOptions { PropertyNamingPolicy = TomlNamingPolicy.CamelCase };
         var model = new PascalModel { FirstName = "a", LastName = "b" };
 
-        var text = TomlSerializer.Serialize(model, options);
+        string text = TomlSerializer.Serialize(model, options);
 
         Assert.AreEqual("firstName = \"a\"\nlastName = \"b\"\n", text);
 
@@ -118,7 +118,7 @@ public partial class TomlSerializerTests
     {
         var model = new RenamedModel { Identifier = 5 };
 
-        var text = TomlSerializer.Serialize(model);
+        string text = TomlSerializer.Serialize(model);
 
         Assert.AreEqual("id = 5\n", text);
 
@@ -135,7 +135,7 @@ public partial class TomlSerializerTests
     {
         var model = new IgnoredModel { Kept = "k", Skipped = "s" };
 
-        var text = TomlSerializer.Serialize(model);
+        string text = TomlSerializer.Serialize(model);
 
         Assert.AreEqual("Kept = \"k\"\n", text);
     }
@@ -151,7 +151,7 @@ public partial class TomlSerializerTests
         options.Converters.Add(new DecimalAsStringConverter());
 
         var model = new PriceModel { Amount = 19.95m };
-        var text = TomlSerializer.Serialize(model, options);
+        string text = TomlSerializer.Serialize(model, options);
 
         Assert.AreEqual("Amount = \"19.95\"\n", text);
 
@@ -193,7 +193,7 @@ public partial class TomlSerializerTests
     {
         var model = new Dictionary<string, int> { ["a"] = 1, ["b"] = 2 };
 
-        var text = TomlSerializer.Serialize(model);
+        string text = TomlSerializer.Serialize(model);
         var roundTripped = TomlSerializer.Deserialize<Dictionary<string, int>>(text);
 
         CollectionAssert.AreEquivalent(model, roundTripped);
@@ -207,7 +207,7 @@ public partial class TomlSerializerTests
     {
         var model = new PayloadModel { Payload = [1, 2, 255] };
 
-        var text = TomlSerializer.Serialize(model);
+        string text = TomlSerializer.Serialize(model);
 
         Assert.AreEqual("Payload = [1, 2, 255]\n", text);
 
@@ -226,7 +226,7 @@ public partial class TomlSerializerTests
         var options = new TomlSerializerOptions { ByteArrayHandling = TomlByteArrayHandling.Base64String };
         var model = new PayloadModel { Payload = Encoding.ASCII.GetBytes("abc") };
 
-        var text = TomlSerializer.Serialize(model, options);
+        string text = TomlSerializer.Serialize(model, options);
 
         Assert.AreEqual("Payload = \"YWJj\"\n", text);
 
@@ -243,7 +243,7 @@ public partial class TomlSerializerTests
     {
         var model = new TimestampModel { When = new DateTime(2026, 6, 10, 9, 30, 0, DateTimeKind.Utc) };
 
-        var text = TomlSerializer.Serialize(model);
+        string text = TomlSerializer.Serialize(model);
 
         Assert.AreEqual("When = 2026-06-10T09:30:00Z\n", text);
     }
@@ -275,7 +275,7 @@ public partial class TomlSerializerTests
     {
         var model = new NullableMemberModel { Present = "here", Absent = null };
 
-        var text = TomlSerializer.Serialize(model);
+        string text = TomlSerializer.Serialize(model);
 
         Assert.AreEqual("Present = \"here\"\n", text);
 

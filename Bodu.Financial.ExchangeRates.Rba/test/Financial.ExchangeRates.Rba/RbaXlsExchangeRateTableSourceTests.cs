@@ -39,7 +39,7 @@ public class RbaXlsExchangeRateTableSourceTests
     [TestMethod]
     public async Task GetTableAsync_Whens_immutableEraCached_ShouldNotRefetch()
     {
-        var directory = Path.Combine(Path.GetTempPath(), "bodu-rba-src-" + Guid.NewGuid().ToString("N"));
+        string directory = Path.Combine(Path.GetTempPath(), "bodu-rba-src-" + Guid.NewGuid().ToString("N"));
         try
         {
             RbaExchangeRateOptions options = new();

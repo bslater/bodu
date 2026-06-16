@@ -86,7 +86,7 @@ public sealed class CityHash64
     /// <returns>An 8-byte array containing the little-endian encoded 64-bit hash value.</returns>
     protected override byte[] ComputeHashCore(ReadOnlySpan<byte> source)
     {
-        var result = source.Length switch
+        ulong result = source.Length switch
         {
             <= 16 => Hash64Len0to16(source),
             <= 32 => Hash64Len17to32(source),
@@ -94,7 +94,7 @@ public sealed class CityHash64
             _ => Hash64Long(source)
         };
 
-        var buffer = new byte[8];
+        byte[] buffer = new byte[8];
         BinaryPrimitives.WriteUInt64LittleEndian(buffer, result);
         return buffer;
     }
@@ -106,13 +106,13 @@ public sealed class CityHash64
     /// <returns>The 64-bit hash value.</returns>
     private static ulong Hash64Len17to32(ReadOnlySpan<byte> s)
     {
-        var len = s.Length;
-        var mul = K2 + (ulong)(len * 2);
+        int len = s.Length;
+        ulong mul = K2 + (ulong)(len * 2);
 
-        var a = BinaryPrimitives.ReadUInt64LittleEndian(s) * K1;
-        var b = BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(8));
-        var c = BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(len - 8)) * mul;
-        var d = BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(len - 16)) * K2;
+        ulong a = BinaryPrimitives.ReadUInt64LittleEndian(s) * K1;
+        ulong b = BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(8));
+        ulong c = BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(len - 8)) * mul;
+        ulong d = BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(len - 16)) * K2;
 
         return HashLen16(
             u: (a + b).RotateBitsRightUnchecked(43) + c.RotateBitsRightUnchecked(30) + d,
@@ -128,24 +128,24 @@ public sealed class CityHash64
     /// <returns>The 64-bit hash value.</returns>
     private static ulong Hash64Len33to64(ReadOnlySpan<byte> s)
     {
-        var len = s.Length;
-        var mul = K2 + (ulong)(len * 2);
+        int len = s.Length;
+        ulong mul = K2 + (ulong)(len * 2);
 
-        var a = BinaryPrimitives.ReadUInt64LittleEndian(s) * K2;
-        var b = BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(8));
-        var c = BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(len - 24));
-        var d = BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(len - 32));
-        var e = BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(16)) * K2;
-        var f = BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(24)) * 9;
-        var g = BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(len - 8));
-        var h = BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(len - 16)) * mul;
+        ulong a = BinaryPrimitives.ReadUInt64LittleEndian(s) * K2;
+        ulong b = BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(8));
+        ulong c = BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(len - 24));
+        ulong d = BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(len - 32));
+        ulong e = BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(16)) * K2;
+        ulong f = BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(24)) * 9;
+        ulong g = BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(len - 8));
+        ulong h = BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(len - 16)) * mul;
 
-        var u = (a + g).RotateBitsRightUnchecked(43) + ((b.RotateBitsRightUnchecked(30) + c) * 9);
-        var v = ((a + g) ^ d) + f + 1;
-        var w = ((u + v) * mul).ReverseBytesUnchecked() + h;
-        var x = (e + f).RotateBitsRightUnchecked(42) + c;
-        var y = (((v + w) * mul).ReverseBytesUnchecked() + g) * mul;
-        var z = e + f + c;
+        ulong u = (a + g).RotateBitsRightUnchecked(43) + ((b.RotateBitsRightUnchecked(30) + c) * 9);
+        ulong v = ((a + g) ^ d) + f + 1;
+        ulong w = ((u + v) * mul).ReverseBytesUnchecked() + h;
+        ulong x = (e + f).RotateBitsRightUnchecked(42) + c;
+        ulong y = (((v + w) * mul).ReverseBytesUnchecked() + g) * mul;
+        ulong z = e + f + c;
 
         a = (((x + z) * mul) + y).ReverseBytesUnchecked() + b;
         b = ShiftMix(((z + a) * mul) + d + h) * mul;
@@ -172,26 +172,26 @@ public sealed class CityHash64
     /// </remarks>
     private static ulong Hash64Long(ReadOnlySpan<byte> s)
     {
-        var len = s.Length;
+        int len = s.Length;
 
         // Seed the mixing variables and accumulators from the tail of the input so that length
         // differences always produce distinct starting states, regardless of head content.
-        var x = BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(len - 40));
-        var y = BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(len - 16))
+        ulong x = BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(len - 40));
+        ulong y = BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(len - 16))
                 + BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(len - 56));
-        var z = HashLen16(
+        ulong z = HashLen16(
             BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(len - 48)) + (ulong)len,
             BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(len - 24)));
 
-        (var v0, var v1) = WeakHashLen32WithSeeds(s.Slice(len - 64), (ulong)len, z);
-        (var w0, var w1) = WeakHashLen32WithSeeds(s.Slice(len - 32), y + K1, x);
+        (ulong v0, ulong v1) = WeakHashLen32WithSeeds(s.Slice(len - 64), (ulong)len, z);
+        (ulong w0, ulong w1) = WeakHashLen32WithSeeds(s.Slice(len - 32), y + K1, x);
 
         // Fold the first 8 bytes of the head into x to anchor the start of the input.
         x = (x * K1) + BinaryPrimitives.ReadUInt64LittleEndian(s);
 
         // Align remaining length down to a 64-byte boundary for the main loop.
-        var remaining = (len - 1) & ~63;
-        var offset = 0;
+        int remaining = (len - 1) & ~63;
+        int offset = 0;
 
         do
         {

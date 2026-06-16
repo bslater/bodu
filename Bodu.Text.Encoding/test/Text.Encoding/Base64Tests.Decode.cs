@@ -42,7 +42,7 @@ public sealed partial class Base64Tests
     [DynamicData(nameof(Base64KnownAnswerVectors.StandardRfc4648Vectors), typeof(Base64KnownAnswerVectors))]
     public void Decode_ForStandardRfc4648KnownAnswerVector_ShouldRecoverBytes(EncodingKnownAnswerVector vector)
     {
-        var actual = Base64.Decode(vector.Encoded, Base64Variant.Standard);
+        byte[] actual = Base64.Decode(vector.Encoded, Base64Variant.Standard);
 
         CollectionAssert.AreEqual(vector.DecodedBytes, actual);
     }
@@ -56,7 +56,7 @@ public sealed partial class Base64Tests
     [DynamicData(nameof(Base64KnownAnswerVectors.UrlSafeVectors), typeof(Base64KnownAnswerVectors))]
     public void Decode_ForUrlSafeKnownAnswerVector_ShouldRecoverBytes(EncodingKnownAnswerVector vector)
     {
-        var actual = Base64.Decode(vector.Encoded, Base64Variant.UrlSafe);
+        byte[] actual = Base64.Decode(vector.Encoded, Base64Variant.UrlSafe);
 
         CollectionAssert.AreEqual(vector.DecodedBytes, actual);
     }
@@ -92,7 +92,7 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void Decode_WhenAllowMissingPaddingAndPaddingOmitted_ShouldDecodeSuccessfully()
     {
-        var actual = Base64.Decode("Zm9vYmE", Base64Variant.Standard, BaseFormatStyles.AllowMissingPadding);
+        byte[] actual = Base64.Decode("Zm9vYmE", Base64Variant.Standard, BaseFormatStyles.AllowMissingPadding);
 
         CollectionAssert.AreEqual(Ascii("fooba"), actual);
     }
@@ -104,7 +104,7 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void Decode_WhenIgnoreWhitespace_ShouldStripWhitespaceAndDecode()
     {
-        var actual = Base64.Decode(
+        byte[] actual = Base64.Decode(
             "Zm 9v\tYm\nFy",
             Base64Variant.Standard,
             BaseFormatStyles.IgnoreWhitespace);
@@ -127,7 +127,7 @@ public sealed partial class Base64Tests
     [DataRow("\nZm9vYmFy")]
     public void Decode_WhenIgnoreWhitespaceAndVariousWhitespacePatterns_ShouldDecodeFoobar(string decoratedInput)
     {
-        var actual = Base64.Decode(decoratedInput, Base64Variant.Standard, BaseFormatStyles.IgnoreWhitespace);
+        byte[] actual = Base64.Decode(decoratedInput, Base64Variant.Standard, BaseFormatStyles.IgnoreWhitespace);
 
         CollectionAssert.AreEqual(Ascii("foobar"), actual);
     }
@@ -152,14 +152,14 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void Decode_WhenMimeVariantWithLineBreaks_ShouldStripImplicitWhitespace()
     {
-        var bytes = new byte[120];
-        for (var i = 0; i < bytes.Length; i++)
+        byte[] bytes = new byte[120];
+        for (int i = 0; i < bytes.Length; i++)
         {
             bytes[i] = (byte)i;
         }
 
-        var encoded = Base64.Encode(bytes, Base64Variant.Mime);
-        var decoded = Base64.Decode(encoded, Base64Variant.Mime);
+        string encoded = Base64.Encode(bytes, Base64Variant.Mime);
+        byte[] decoded = Base64.Decode(encoded, Base64Variant.Mime);
 
         CollectionAssert.AreEqual(bytes, decoded);
     }
@@ -183,9 +183,9 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void Decode_WhenSliceForCharArray_ShouldReturnSliceOnly()
     {
-        var chars = "????Zm9vYmFy####".ToCharArray();
+        char[] chars = "????Zm9vYmFy####".ToCharArray();
 
-        var actual = Base64.Decode(chars, 4, 8);
+        byte[] actual = Base64.Decode(chars, 4, 8);
 
         CollectionAssert.AreEqual(Ascii("foobar"), actual);
     }
@@ -205,7 +205,7 @@ public sealed partial class Base64Tests
     [DataRow("Zm9vYmFy", "foobar")]
     public void Decode_WhenStandardVariantReferenceVectors_ShouldRecoverInputBytes(string encoded, string expected)
     {
-        var actual = Base64.Decode(encoded);
+        byte[] actual = Base64.Decode(encoded);
 
         CollectionAssert.AreEqual(Ascii(expected), actual);
     }

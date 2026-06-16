@@ -56,7 +56,7 @@ public partial class BernsteinTests
     [TestMethod]
     public void UseModifiedAlgorithm_WhenSetBeforeHashing_ShouldAffectResult()
     {
-        var input = NonCryptographicHashSharedInputs.Abc;
+        byte[] input = NonCryptographicHashSharedInputs.Abc;
 
         Bernstein original = new();
         Bernstein modified = new() { UseModifiedAlgorithm = true };

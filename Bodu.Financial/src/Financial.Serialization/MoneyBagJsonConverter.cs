@@ -103,7 +103,7 @@ public sealed class MoneyBagJsonConverter
             if (reader.TokenType != JsonTokenType.PropertyName)
                 throw new JsonException(FinancialResourceStrings.Json_Invalid_ExpectedPropertyName);
 
-            var propertyName = reader.GetString()!;
+            string propertyName = reader.GetString()!;
             if (!reader.Read())
                 throw new JsonException(FinancialResourceStrings.Json_Invalid_UnexpectedEnd);
 
@@ -151,7 +151,7 @@ public sealed class MoneyBagJsonConverter
             if (reader.TokenType != JsonTokenType.PropertyName)
                 throw new JsonException(FinancialResourceStrings.Json_Invalid_ExpectedPropertyNameInBalances);
 
-            var iso = reader.GetString()!;
+            string iso = reader.GetString()!;
             if (!reader.Read())
                 throw new JsonException(FinancialResourceStrings.Json_Invalid_UnexpectedEndInBalances);
 
@@ -162,7 +162,7 @@ public sealed class MoneyBagJsonConverter
             }
             else if (reader.TokenType == JsonTokenType.String)
             {
-                var text = reader.GetString();
+                string? text = reader.GetString();
                 if (text is null || !decimal.TryParse(text, NumberStyles.Number, CultureInfo.InvariantCulture, out amount))
                     throw new JsonException(
                         string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Json_Invalid_BalanceMustBeNumber, iso));

@@ -52,7 +52,7 @@ public partial class ConcurrentCircularBufferTests
         {
             togglerPrimed.Wait();
 
-            for (var i = 0; i < 200; i++)
+            for (int i = 0; i < 200; i++)
             {
                 try { buffer.Enqueue(new TestItem(100 + i)); }
                 catch (Exception ex) { exceptions.Add(ex); }
@@ -67,7 +67,7 @@ public partial class ConcurrentCircularBufferTests
 
             // Continue flipping starting from i = 1 so the next write remains false,
             // preserving the original "true on i % 3 == 0" cadence after the primed state.
-            for (var i = 1; i < 200; i++)
+            for (int i = 1; i < 200; i++)
             {
                 buffer.AllowOverwrite = (i % 3 == 0);
                 Thread.SpinWait(50);
@@ -173,7 +173,7 @@ public partial class ConcurrentCircularBufferTests
         buffer.Enqueue(new TestItem(2));
         buffer.Enqueue(new TestItem(3));
 
-        var values = buffer.ToArray().Select(x => x.Value).ToArray();
+        int[] values = buffer.ToArray().Select(x => x.Value).ToArray();
         CollectionAssert.AreEqual(new[] { 2, 3 }, values);
     }
 
@@ -184,15 +184,15 @@ public partial class ConcurrentCircularBufferTests
     public void Enqueue_WhenConcurrentDequeueFreesSlots_ShouldReuseSlotsSafely()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(5);
-        for (var i = 0; i < 5; i++) buffer.Enqueue(new TestItem(i));
+        for (int i = 0; i < 5; i++) buffer.Enqueue(new TestItem(i));
 
         var enqueueSuccess = new ConcurrentBag<bool>();
 
         var writer = Task.Run(() =>
         {
-            for (var i = 100; i < 200; i++)
+            for (int i = 100; i < 200; i++)
             {
-                var success = buffer.TryEnqueue(new TestItem(i));
+                bool success = buffer.TryEnqueue(new TestItem(i));
                 enqueueSuccess.Add(success);
                 Thread.SpinWait(5);
             }
@@ -200,7 +200,7 @@ public partial class ConcurrentCircularBufferTests
 
         var reader = Task.Run(() =>
         {
-            for (var i = 0; i < 100; i++)
+            for (int i = 0; i < 100; i++)
             {
                 buffer.TryDequeue(out _);
                 Thread.SpinWait(10);
@@ -238,7 +238,7 @@ public partial class ConcurrentCircularBufferTests
         buffer.Enqueue(new TestItem(2));
 
         // Track calls to ensure the handler ran.
-        var evictedCalls = 0;
+        int evictedCalls = 0;
         buffer.ItemEvicted += _ =>
         {
             Interlocked.Increment(ref evictedCalls);
@@ -259,7 +259,7 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(1, evictedCalls, "ItemEvicted should be invoked exactly once for the eviction.");
 
         // Buffer should contain the newest two items in FIFO order: [2, 3].
-        var snapshot = buffer.ToArray().Select(x => x?.Value).ToArray();
+        int?[] snapshot = buffer.ToArray().Select(x => x?.Value).ToArray();
         CollectionAssert.AreEqual(new[] { 2, 3 }, snapshot, "Enqueue should complete successfully when ItemEvicted throws.");
     }
 
@@ -274,7 +274,7 @@ public partial class ConcurrentCircularBufferTests
         buffer.Enqueue("X");
         buffer.Enqueue(null);
 
-        var snapshot = buffer.ToArray();
+        string[] snapshot = buffer.ToArray();
         CollectionAssert.AreEqual(new[] { null, "X", null }, snapshot);
     }
 
@@ -305,7 +305,7 @@ public partial class ConcurrentCircularBufferTests
             buffer.Enqueue(i % 2 == 0 ? null : $"Value-{i}");
         });
 
-        var items = buffer.ToArray();
+        string[] items = buffer.ToArray();
         Assert.HasCount(10, items);
         Assert.Contains(x => x == null, items);
     }
@@ -341,7 +341,7 @@ public partial class ConcurrentCircularBufferTests
         buffer.Enqueue(new TestItem(1));
         buffer.Enqueue(new TestItem(2));
 
-        var ok = buffer.TryEnqueue(new TestItem(3));
+        bool ok = buffer.TryEnqueue(new TestItem(3));
         Assert.IsFalse(ok, "TryEnqueue should return false when full and overwriting is disabled.");
         AssertBufferContainsExactlyValues(buffer, 1, 2);
     }

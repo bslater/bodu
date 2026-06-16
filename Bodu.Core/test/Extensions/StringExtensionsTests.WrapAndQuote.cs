@@ -108,7 +108,7 @@ public partial class StringExtensionsTests
     {
         const string original = "hello";
 
-        var actual = original.Wrap("<b>", "</b>").Unwrap("<b>", "</b>");
+        string actual = original.Wrap("<b>", "</b>").Unwrap("<b>", "</b>");
 
         Assert.AreEqual(original, actual);
     }

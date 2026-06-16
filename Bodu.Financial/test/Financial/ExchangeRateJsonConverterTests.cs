@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateJsonConverterTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -32,7 +32,7 @@ public class ExchangeRateJsonConverterTests
     {
         JsonSerializerOptions options = OptionsFor(policy);
 
-        var json = JsonSerializer.Serialize(Sample(), options);
+        string json = JsonSerializer.Serialize(Sample(), options);
         ExchangeRate restored = JsonSerializer.Deserialize<ExchangeRate>(json, options);
 
         Assert.AreEqual("USD", restored.FromIsoCode);
@@ -48,7 +48,7 @@ public class ExchangeRateJsonConverterTests
     [TestMethod]
     public void Strict_WhenUsingPairShorthandAndStringRate_ShouldResolve()
     {
-        var json = "{\"pair\":\"USD/JPY\",\"date\":\"2024-01-15\",\"rate\":\"150.25\",\"provider\":\"ecb\"}";
+        string json = "{\"pair\":\"USD/JPY\",\"date\":\"2024-01-15\",\"rate\":\"150.25\",\"provider\":\"ecb\"}";
 
         ExchangeRate restored = JsonSerializer.Deserialize<ExchangeRate>(json);
 
@@ -63,7 +63,7 @@ public class ExchangeRateJsonConverterTests
     [TestMethod]
     public void Lenient_WhenIsoCodesLowercase_ShouldNormalize()
     {
-        var json = "{\"from\":\"usd\",\"to\":\"jpy\",\"date\":\"2024-01-15\",\"rate\":150.25,\"provider\":\"ecb\"}";
+        string json = "{\"from\":\"usd\",\"to\":\"jpy\",\"date\":\"2024-01-15\",\"rate\":150.25,\"provider\":\"ecb\"}";
 
         ExchangeRate restored = JsonSerializer.Deserialize<ExchangeRate>(json, OptionsFor(FinancialJsonPolicy.Lenient));
 

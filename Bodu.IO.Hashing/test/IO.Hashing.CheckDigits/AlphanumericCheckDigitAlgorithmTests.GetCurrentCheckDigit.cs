@@ -24,11 +24,11 @@ public abstract partial class AlphanumericCheckDigitAlgorithmTests<TTest, TAlgor
         _ = expectedCheck;
 
         TAlgorithm algorithm = CreateAlgorithm();
-        for (var i = 0; i < body.Length; i++)
+        for (int i = 0; i < body.Length; i++)
         {
             algorithm.Append(body[i]);
-            var streaming = algorithm.GetCurrentCheckDigit();
-            var fromCompute = ComputeStatic(body.AsSpan(0, i + 1));
+            char streaming = algorithm.GetCurrentCheckDigit();
+            char fromCompute = ComputeStatic(body.AsSpan(0, i + 1));
             Assert.AreEqual(fromCompute, streaming, $"Prefix length {i + 1} (\"{body[..(i + 1)]}\").");
         }
     }
@@ -56,9 +56,9 @@ public abstract partial class AlphanumericCheckDigitAlgorithmTests<TTest, TAlgor
         TAlgorithm algorithm = CreateAlgorithm();
         algorithm.Append("123".AsSpan());
 
-        var first = algorithm.GetCurrentCheckDigit();
-        var second = algorithm.GetCurrentCheckDigit();
-        var third = algorithm.GetCurrentCheckDigit();
+        char first = algorithm.GetCurrentCheckDigit();
+        char second = algorithm.GetCurrentCheckDigit();
+        char third = algorithm.GetCurrentCheckDigit();
 
         Assert.AreEqual(first, second);
         Assert.AreEqual(second, third);

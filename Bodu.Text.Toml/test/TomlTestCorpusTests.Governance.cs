@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlTestCorpusTests.Governance.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -26,11 +26,11 @@ public sealed partial class TomlTestCorpusTests
     [TestMethod]
     public void Corpus_EveryManifestEntryRefersToAnExistingFile()
     {
-        foreach (var manifest in ManifestFileNames)
+        foreach (string manifest in ManifestFileNames)
         {
-            foreach (var entry in ReadManifestPaths(manifest))
+            foreach (string entry in ReadManifestPaths(manifest))
             {
-                var path = Path.Combine(CorpusRoot, entry);
+                string path = Path.Combine(CorpusRoot, entry);
                 Assert.IsTrue(File.Exists(path), $"{manifest}: lists '{entry}', which is not present in the vendored corpus.");
             }
         }
@@ -45,14 +45,14 @@ public sealed partial class TomlTestCorpusTests
     {
         var listed = AllManifestPaths();
 
-        foreach (var directory in CaseDirectoryNames)
+        foreach (string directory in CaseDirectoryNames)
         {
-            foreach (var file in Directory.EnumerateFiles(Path.Combine(CorpusRoot, directory), "*.*", SearchOption.AllDirectories))
+            foreach (string file in Directory.EnumerateFiles(Path.Combine(CorpusRoot, directory), "*.*", SearchOption.AllDirectories))
             {
                 if (!file.EndsWith(".toml", StringComparison.Ordinal) && !file.EndsWith(".json", StringComparison.Ordinal))
                     continue;
 
-                var relative = Path.GetRelativePath(CorpusRoot, file).Replace('\\', '/');
+                string relative = Path.GetRelativePath(CorpusRoot, file).Replace('\\', '/');
                 Assert.IsTrue(listed.Contains(relative), $"The corpus file '{relative}' is not listed in any version manifest.");
             }
         }
@@ -70,9 +70,9 @@ public sealed partial class TomlTestCorpusTests
             .ToList();
 
         Assert.AreNotEqual(0, validCases.Count, "No valid cases were found in the version manifests.");
-        foreach (var entry in validCases)
+        foreach (string? entry in validCases)
         {
-            var expectation = Path.Combine(CorpusRoot, Path.ChangeExtension(entry, ".json"));
+            string expectation = Path.Combine(CorpusRoot, Path.ChangeExtension(entry, ".json"));
             Assert.IsTrue(File.Exists(expectation), $"The valid case '{entry}' has no .json expectation file.");
         }
     }
@@ -86,7 +86,7 @@ public sealed partial class TomlTestCorpusTests
     {
         var listed = AllManifestPaths();
 
-        foreach (var skipped in SkippedCases.Keys)
+        foreach (string skipped in SkippedCases.Keys)
         {
             Assert.IsTrue(File.Exists(Path.Combine(CorpusRoot, skipped)), $"Skipped case '{skipped}' does not exist in the vendored corpus.");
             Assert.IsTrue(listed.Contains(skipped), $"Skipped case '{skipped}' is not listed in any version manifest.");
@@ -103,8 +103,8 @@ public sealed partial class TomlTestCorpusTests
         using var provenance = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(CorpusRoot, "provenance.json")));
         var root = provenance.RootElement;
 
-        var actualValid = Directory.EnumerateFiles(Path.Combine(CorpusRoot, "valid"), "*.toml", SearchOption.AllDirectories).Count();
-        var actualInvalid = Directory.EnumerateFiles(Path.Combine(CorpusRoot, "invalid"), "*.toml", SearchOption.AllDirectories).Count();
+        int actualValid = Directory.EnumerateFiles(Path.Combine(CorpusRoot, "valid"), "*.toml", SearchOption.AllDirectories).Count();
+        int actualInvalid = Directory.EnumerateFiles(Path.Combine(CorpusRoot, "invalid"), "*.toml", SearchOption.AllDirectories).Count();
 
         Assert.AreEqual(root.GetProperty("validCaseCount").GetInt32(), actualValid, "The vendored valid-case count drifted from the pinned provenance.");
         Assert.AreEqual(root.GetProperty("invalidCaseCount").GetInt32(), actualInvalid, "The vendored invalid-case count drifted from the pinned provenance.");
@@ -139,8 +139,8 @@ public sealed partial class TomlTestCorpusTests
     /// <param name="kat">The corpus case under test.</param>
     private static void AssertValidCaseRoundTrips(CorpusKat kat)
     {
-        var toml = File.ReadAllBytes(Path.Combine(CorpusRoot, kat.RelativePath));
-        var expectationPath = Path.Combine(CorpusRoot, Path.ChangeExtension(kat.RelativePath, ".json"));
+        byte[] toml = File.ReadAllBytes(Path.Combine(CorpusRoot, kat.RelativePath));
+        string expectationPath = Path.Combine(CorpusRoot, Path.ChangeExtension(kat.RelativePath, ".json"));
 
         byte[] rewritten;
         var reader = new TomlDocumentReader(toml, new TomlReaderOptions { SpecVersion = kat.SpecVersion });
@@ -149,7 +149,7 @@ public sealed partial class TomlTestCorpusTests
 
         var roundTripReader = new TomlDocumentReader(rewritten, new TomlReaderOptions { SpecVersion = kat.SpecVersion });
         Assert.IsTrue(roundTripReader.Read(), $"{kat.RelativePath}: the rewritten document produced no tokens.");
-        var actual = BuildValue(ref roundTripReader);
+        object actual = BuildValue(ref roundTripReader);
 
         using var expected = JsonDocument.Parse(File.ReadAllBytes(expectationPath));
         AssertMatches(expected.RootElement, actual, kat.RelativePath);
@@ -186,9 +186,9 @@ public sealed partial class TomlTestCorpusTests
     private static HashSet<string> AllManifestPaths()
     {
         var listed = new HashSet<string>(StringComparer.Ordinal);
-        foreach (var manifest in ManifestFileNames)
+        foreach (string manifest in ManifestFileNames)
         {
-            foreach (var entry in ReadManifestPaths(manifest))
+            foreach (string entry in ReadManifestPaths(manifest))
                 listed.Add(entry.Replace('\\', '/'));
         }
 

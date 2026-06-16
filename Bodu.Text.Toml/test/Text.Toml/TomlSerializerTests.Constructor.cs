@@ -75,7 +75,7 @@ public partial class TomlSerializerTests
     {
         var original = new PointRecord(4, 5);
 
-        var text = TomlSerializer.Serialize(original);
+        string text = TomlSerializer.Serialize(original);
         Assert.AreEqual("X = 4\nY = 5\n", text);
 
         var roundTripped = TomlSerializer.Deserialize<PointRecord>(text);
@@ -160,7 +160,7 @@ public partial class TomlSerializerTests
     {
         var original = new RenamedConstructorMember(11);
 
-        var text = TomlSerializer.Serialize(original);
+        string text = TomlSerializer.Serialize(original);
         Assert.AreEqual("id = 11\n", text);
 
         var roundTripped = TomlSerializer.Deserialize<RenamedConstructorMember>(text);

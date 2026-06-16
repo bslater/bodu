@@ -19,14 +19,14 @@ public sealed partial class GummTests
     [TestCategory("Regression")]
     public void IsValid_WhenAnySingleDigitIsSubstituted_ShouldReturnFalse()
     {
-        foreach (var body in EnumerateBodies(1, 4))
+        foreach (string body in EnumerateBodies(1, 4))
         {
-            var full = (body + Gumm.Compute(body.AsSpan())).ToCharArray();
+            char[] full = (body + Gumm.Compute(body.AsSpan())).ToCharArray();
 
-            for (var i = 0; i < full.Length; i++)
+            for (int i = 0; i < full.Length; i++)
             {
-                var original = full[i];
-                for (var d = '0'; d <= '9'; d++)
+                char original = full[i];
+                for (char d = '0'; d <= '9'; d++)
                 {
                     if (d == original) continue;
 
@@ -50,11 +50,11 @@ public sealed partial class GummTests
     [TestCategory("Regression")]
     public void IsValid_WhenAnyAdjacentPairIsTransposed_ShouldReturnFalse()
     {
-        foreach (var body in EnumerateBodies(1, 4))
+        foreach (string body in EnumerateBodies(1, 4))
         {
-            var full = (body + Gumm.Compute(body.AsSpan())).ToCharArray();
+            char[] full = (body + Gumm.Compute(body.AsSpan())).ToCharArray();
 
-            for (var i = 0; i < full.Length - 1; i++)
+            for (int i = 0; i < full.Length - 1; i++)
             {
                 if (full[i] == full[i + 1]) continue;
 
@@ -77,10 +77,10 @@ public sealed partial class GummTests
     /// <returns>A sequence of decimal-digit strings.</returns>
     private static IEnumerable<string> EnumerateBodies(int minLength, int maxLength)
     {
-        for (var length = minLength; length <= maxLength; length++)
+        for (int length = minLength; length <= maxLength; length++)
         {
-            var count = (int)Math.Pow(10, length);
-            for (var n = 0; n < count; n++)
+            int count = (int)Math.Pow(10, length);
+            for (int n = 0; n < count; n++)
                 yield return n.ToString(CultureInfo.InvariantCulture).PadLeft(length, '0');
         }
     }

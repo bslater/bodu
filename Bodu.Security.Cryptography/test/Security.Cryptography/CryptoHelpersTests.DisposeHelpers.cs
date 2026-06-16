@@ -21,11 +21,11 @@ public partial class CryptoHelpersTests
         stream.WriteByte(0xCC);
 
         Assert.IsTrue(stream.TryGetBuffer(out ArraySegment<byte> originalSegment));
-        var bufferReference = originalSegment.Array!;
+        byte[] bufferReference = originalSegment.Array!;
 
         CryptographyHelper.ClearAndNullify(stream);
 
-        for (var i = 0; i < bufferReference.Length; i++)
+        for (int i = 0; i < bufferReference.Length; i++)
             Assert.AreEqual((byte)0, bufferReference[i], $"Buffer index {i} was not cleared.");
 
         Assert.ThrowsExactly<ObjectDisposedException>(() =>

@@ -115,7 +115,7 @@ public readonly partial struct BencodeElement
     /// </exception>
     public bool TryGetUInt64(out ulong value)
     {
-        if (_document.TryGetInteger(_index, out var signed))
+        if (_document.TryGetInteger(_index, out long signed))
         {
             if (signed < 0)
             {
@@ -244,7 +244,7 @@ public readonly partial struct BencodeElement
     {
         ThrowHelper.ThrowIfNull(propertyName);
 
-        if (_document.TryGetProperty(_index, propertyName, out var valueRow))
+        if (_document.TryGetProperty(_index, propertyName, out int valueRow))
             return new BencodeElement(_document, valueRow);
 
         throw new KeyNotFoundException(string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.IO_KeyNotFound_Property, propertyName));
@@ -271,7 +271,7 @@ public readonly partial struct BencodeElement
     {
         ThrowHelper.ThrowIfNull(propertyName);
 
-        if (_document.TryGetProperty(_index, propertyName, out var valueRow))
+        if (_document.TryGetProperty(_index, propertyName, out int valueRow))
         {
             value = new BencodeElement(_document, valueRow);
             return true;
@@ -291,7 +291,7 @@ public readonly partial struct BencodeElement
     /// </exception>
     public ArrayEnumerator EnumerateArray()
     {
-        var length = _document.GetArrayLength(_index);
+        int length = _document.GetArrayLength(_index);
         return new ArrayEnumerator(_document, _index, length);
     }
 
@@ -305,7 +305,7 @@ public readonly partial struct BencodeElement
     /// </exception>
     public ObjectEnumerator EnumerateObject()
     {
-        var pairs = _document.GetObjectPairCount(_index);
+        int pairs = _document.GetObjectPairCount(_index);
         return new ObjectEnumerator(_document, _index, pairs);
     }
 
@@ -324,7 +324,7 @@ public readonly partial struct BencodeElement
     public override string ToString() =>
         _document.GetKind(_index) switch
         {
-            BencodeValueKind.Integer => _document.TryGetInteger(_index, out var integer)
+            BencodeValueKind.Integer => _document.TryGetInteger(_index, out long integer)
                 ? integer.ToString(CultureInfo.InvariantCulture)
                 : _document.GetUnsignedInteger(_index).ToString(CultureInfo.InvariantCulture),
             BencodeValueKind.ByteString => _document.GetString(_index),

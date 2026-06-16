@@ -120,7 +120,7 @@ public sealed class PersianCalendarKnownAnswerTests
     {
         NotableDateService service = CreateService();
 
-        for (var year = 1990; year <= 2050; year++)
+        for (int year = 1990; year <= 2050; year++)
         {
             List<NotableDate> matches = ResolveForYear(service, "nowruz", year);
 

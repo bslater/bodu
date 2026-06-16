@@ -26,7 +26,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void Clear_Generic_WhenArrayIsEmpty_ShouldBeNoOp()
     {
-        var array = Array.Empty<int>();
+        int[] array = Array.Empty<int>();
         array.Clear();
         Assert.IsEmpty(array);
     }

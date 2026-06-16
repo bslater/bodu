@@ -80,7 +80,7 @@ public sealed class Scrypt
     {
         ThrowIfInvalidLength(length);
 
-        var output = new byte[length];
+        byte[] output = new byte[length];
         ScryptCore.DeriveKey(password, salt, Parameters.CostN, Parameters.BlockSizeR, Parameters.Parallelization, output);
         return output;
     }
@@ -125,10 +125,10 @@ public sealed class Scrypt
     {
         ThrowIfInvalidLength(length);
 
-        var hash = new byte[length];
+        byte[] hash = new byte[length];
         ScryptCore.DeriveKey(password, salt, Parameters.CostN, Parameters.BlockSizeR, Parameters.Parallelization, hash);
 
-        var encoded = Encode(Parameters, salt, hash);
+        string encoded = Encode(Parameters, salt, hash);
         CryptographyHelper.Clear(hash);
         return encoded;
     }
@@ -192,12 +192,12 @@ public sealed class Scrypt
     {
         ThrowHelper.ThrowIfNull(encoded);
 
-        (var costN, var blockSizeR, var parallelization, var salt, var hash) = Decode(encoded);
+        (int costN, int blockSizeR, int parallelization, byte[]? salt, byte[]? hash) = Decode(encoded);
 
-        var computed = new byte[hash.Length];
+        byte[] computed = new byte[hash.Length];
         ScryptCore.DeriveKey(password, salt, costN, blockSizeR, parallelization, computed);
 
-        var match = CryptographicOperations.FixedTimeEquals(computed, hash);
+        bool match = CryptographicOperations.FixedTimeEquals(computed, hash);
         CryptographyHelper.Clear(computed);
         return match;
     }
@@ -227,7 +227,7 @@ public sealed class Scrypt
     /// <returns>The scrypt PHC encoded-hash string.</returns>
     private static string Encode(ScryptParameters p, ReadOnlySpan<byte> salt, ReadOnlySpan<byte> hash)
     {
-        var logN = BitOperations.Log2((uint)p.CostN);
+        int logN = BitOperations.Log2((uint)p.CostN);
 
         var sb = new StringBuilder();
         sb.Append("$scrypt$ln=").Append(logN.ToString(CultureInfo.InvariantCulture))
@@ -246,21 +246,21 @@ public sealed class Scrypt
     /// <exception cref="FormatException"><paramref name="encoded" /> is not a valid scrypt PHC string.</exception>
     private static (int CostN, int BlockSizeR, int Parallelization, byte[] Salt, byte[] Hash) Decode(string encoded)
     {
-        var fields = PhcString.SplitFields(encoded);
+        string[] fields = PhcString.SplitFields(encoded);
 
         // Expect: "", scrypt, ln=..,r=..,p=.., salt, hash
         if (fields.Length != 5 || fields[1] != "scrypt")
             throw PhcString.Invalid();
 
         int? logN = null, blockSizeR = null, parallelization = null;
-        foreach (var part in fields[2].Split(','))
+        foreach (string part in fields[2].Split(','))
         {
-            var eq = part.IndexOf('=', StringComparison.Ordinal);
+            int eq = part.IndexOf('=', StringComparison.Ordinal);
             if (eq <= 0)
                 throw PhcString.Invalid();
 
-            var key = part[..eq];
-            var value = part[(eq + 1)..];
+            string key = part[..eq];
+            string value = part[(eq + 1)..];
 
             switch (key)
             {
@@ -274,8 +274,8 @@ public sealed class Scrypt
         if (logN is null or < 1 or > 30 || blockSizeR is null || parallelization is null)
             throw PhcString.Invalid();
 
-        var salt = PhcString.DecodeBase64(fields[3]);
-        var hash = PhcString.DecodeBase64(fields[4]);
+        byte[] salt = PhcString.DecodeBase64(fields[3]);
+        byte[] hash = PhcString.DecodeBase64(fields[4]);
 
         return (1 << logN.Value, blockSizeR.Value, parallelization.Value, salt, hash);
     }
@@ -286,7 +286,7 @@ public sealed class Scrypt
     /// <param name="value">The text to parse.</param>
     /// <returns>The parsed non-negative integer.</returns>
     private static int ParseInt(string value) =>
-        int.TryParse(value, NumberStyles.None, CultureInfo.InvariantCulture, out var result)
+        int.TryParse(value, NumberStyles.None, CultureInfo.InvariantCulture, out int result)
             ? result
             : throw PhcString.Invalid();
 }

@@ -345,7 +345,7 @@ public ref partial struct Utf8TomlReader
     {
         get
         {
-            var depth = _containerCount;
+            int depth = _containerCount;
             if (_tokenType is TomlTokenType.StartArray or TomlTokenType.StartInlineTable)
                 depth--;
             return depth;
@@ -610,7 +610,7 @@ public ref partial struct Utf8TomlReader
         if (TokenType is not (TomlTokenType.StartArray or TomlTokenType.StartInlineTable))
             return;
 
-        var depth = _containerCount;
+        int depth = _containerCount;
         while (_containerCount >= depth && Read())
         {
             // Read until the matching container end returns control to the original depth.
@@ -660,7 +660,7 @@ public ref partial struct Utf8TomlReader
         if (TokenType is not (TomlTokenType.StartArray or TomlTokenType.StartInlineTable))
             return true;
 
-        var depth = _containerCount;
+        int depth = _containerCount;
         while (_containerCount >= depth)
         {
             if (!Read())
@@ -732,7 +732,7 @@ public ref partial struct Utf8TomlReader
         Span<byte> buffer = text.Length <= 85 ? stackalloc byte[256] : rented = System.Buffers.ArrayPool<byte>.Shared.Rent(text.Length * 3);
         try
         {
-            var written = Encoding.UTF8.GetBytes(text, buffer);
+            int written = Encoding.UTF8.GetBytes(text, buffer);
             return ValueSpan.SequenceEqual(buffer[..written]);
         }
         finally
@@ -860,7 +860,7 @@ public ref partial struct Utf8TomlReader
     /// <returns>The run length.</returns>
     private readonly int CountRun(byte b)
     {
-        var n = 0;
+        int n = 0;
         while (_pos + n < _source.Length && _source[_pos + n] == b)
             n++;
         return n;
@@ -1256,7 +1256,7 @@ public ref partial struct Utf8TomlReader
     /// <exception cref="TomlFormatException">Thrown when the bytes are not a valid UTF-8 sequence.</exception>
     private bool TryConsumeUtf8Sequence()
     {
-        OperationStatus status = Rune.DecodeFromUtf8(_source[_pos..], out _, out var consumed);
+        OperationStatus status = Rune.DecodeFromUtf8(_source[_pos..], out _, out int consumed);
         if (status == OperationStatus.Done)
         {
             _pos += consumed;
@@ -1285,7 +1285,7 @@ public ref partial struct Utf8TomlReader
         BeginToken();
         Advance();
 
-        var start = _pos;
+        int start = _pos;
         while (true)
         {
             if (Eof)
@@ -1301,7 +1301,7 @@ public ref partial struct Utf8TomlReader
             if (AtNewline())
                 break;
 
-            var b = Current;
+            byte b = Current;
             if (b == (byte)'\r')
                 throw Error(TomlResourceStrings.Format_Invalid_TomlControlCharacter);
             if (b == 0x7F || (b < 0x20 && b != 0x09))
@@ -1340,7 +1340,7 @@ public ref partial struct Utf8TomlReader
         }
 
         BeginToken();
-        var b = Current;
+        byte b = Current;
         if (b == (byte)'"')
         {
             if (!_isFinalBlock && Peek(1) == (byte)'"' && _pos + 2 >= _source.Length)
@@ -1365,7 +1365,7 @@ public ref partial struct Utf8TomlReader
             return true;
         }
 
-        var start = _pos;
+        int start = _pos;
         while (!Eof && IsBareKeyByte(Current))
             Advance();
 

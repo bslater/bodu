@@ -19,12 +19,12 @@ public partial class CityHash32Tests
         int[] boundaryLengths = [4, 12, 24, 25];
         var hashes = new List<byte[]>(boundaryLengths.Length);
 
-        foreach (var len in boundaryLengths)
+        foreach (int len in boundaryLengths)
         {
-            var input = Enumerable.Range(1, len).Select(i => (byte)(i * 7)).ToArray();
+            byte[] input = Enumerable.Range(1, len).Select(i => (byte)(i * 7)).ToArray();
             CityHash32 algorithm = CreateAlgorithm();
             algorithm.Append(input);
-            var hash = algorithm.GetCurrentHash();
+            byte[] hash = algorithm.GetCurrentHash();
 
             Assert.IsTrue(hash.Any(b => b != 0),
                 $"Path for length {len} must not produce an all-zero hash for varied input.");
@@ -32,9 +32,9 @@ public partial class CityHash32Tests
             hashes.Add(hash);
         }
 
-        for (var i = 0; i < hashes.Count; i++)
+        for (int i = 0; i < hashes.Count; i++)
         {
-            for (var j = i + 1; j < hashes.Count; j++)
+            for (int j = i + 1; j < hashes.Count; j++)
             {
                 CollectionAssert.AreNotEqual(hashes[i], hashes[j],
                     $"Paths at lengths {boundaryLengths[i]} and {boundaryLengths[j]} produced identical hashes.");

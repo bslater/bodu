@@ -69,7 +69,7 @@ public sealed class OffsetFromRuleStrategy
 
         // Guard the projection against rolling past the representable date range at the year extremes; the engine
         // treats an out-of-range offset as "no occurrence" rather than failing the query.
-        var target = (long)reference.DayNumber + OffsetDays;
+        long target = (long)reference.DayNumber + OffsetDays;
         if (target < DateOnly.MinValue.DayNumber || target > DateOnly.MaxValue.DayNumber)
             return null;
 

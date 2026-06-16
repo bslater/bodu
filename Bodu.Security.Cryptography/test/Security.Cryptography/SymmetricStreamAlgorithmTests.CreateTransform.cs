@@ -33,7 +33,7 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
     public void CreateTransform_WhenKeyIsNull_ShouldThrowArgumentNullException()
     {
         using TAlgorithm cipher = CreateAlgorithm();
-        var nonce = CreateNonce();
+        byte[] nonce = CreateNonce();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -49,7 +49,7 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
     public void CreateTransform_WhenNonceIsNull_ShouldThrowArgumentNullException()
     {
         using TAlgorithm cipher = CreateAlgorithm();
-        var key = CreateKey();
+        byte[] key = CreateKey();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -65,8 +65,8 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
     public void CreateTransform_WhenDisposed_ShouldThrowObjectDisposedException()
     {
         TAlgorithm cipher = CreateAlgorithm();
-        var key = CreateKey();
-        var nonce = CreateNonce();
+        byte[] key = CreateKey();
+        byte[] nonce = CreateNonce();
         cipher.Dispose();
 
         Assert.ThrowsExactly<ObjectDisposedException>(() =>

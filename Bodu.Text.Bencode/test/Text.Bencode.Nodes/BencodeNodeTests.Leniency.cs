@@ -21,7 +21,7 @@ public partial class BencodeNodeTests
     [TestMethod]
     public void Parse_WhenKeysUnsorted_ShouldRequireAllowUnsortedKeys()
     {
-        var data = "d1:bi1e1:ai2ee"u8.ToArray();
+        byte[] data = "d1:bi1e1:ai2ee"u8.ToArray();
 
         _ = Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
@@ -42,7 +42,7 @@ public partial class BencodeNodeTests
     [TestMethod]
     public void Parse_WhenDuplicateKeysAllowed_ShouldCollapseLastWins()
     {
-        var data = "d1:ai1e1:ai2ee"u8.ToArray();
+        byte[] data = "d1:ai1e1:ai2ee"u8.ToArray();
 
         var node = BencodeNode.Parse(data, default, new BencodeDocumentOptions { AllowDuplicateKeys = true });
 

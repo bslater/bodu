@@ -19,7 +19,7 @@ public static partial class Base58
     public static Guid DecodeGuid(ReadOnlySpan<char> source, Base58Variant variant = Base58Variant.BitcoinFlickr, BaseFormatStyles styles = BaseFormatStyles.None)
     {
         Span<byte> bytes = stackalloc byte[16];
-        return !TryDecode(source, bytes, out var written, variant, styles) || written != 16
+        return !TryDecode(source, bytes, out int written, variant, styles) || written != 16
             ? throw new FormatException(EncodingResourceStrings.Format_Invalid_GuidNotSixteenBytes)
             : new Guid(bytes);
     }
@@ -53,7 +53,7 @@ public static partial class Base58
     public static bool TryDecodeGuid(ReadOnlySpan<char> source, out Guid value, Base58Variant variant = Base58Variant.BitcoinFlickr, BaseFormatStyles styles = BaseFormatStyles.None)
     {
         Span<byte> bytes = stackalloc byte[16];
-        if (!TryDecode(source, bytes, out var written, variant, styles) || written != 16)
+        if (!TryDecode(source, bytes, out int written, variant, styles) || written != 16)
         {
             value = Guid.Empty;
             return false;

@@ -52,7 +52,7 @@ public partial class DateTimeExtensionsTests
     [DataRow(DayOfWeek.Saturday)]
     public void IsWeekend_WhenNoneAndAnyDay_ShouldReturnFalse(DayOfWeek day)
     {
-        var actual = DateTimeExtensions.IsWeekend(day, WorkingDaysOfWeek.AllDays);
+        bool actual = DateTimeExtensions.IsWeekend(day, WorkingDaysOfWeek.AllDays);
 
         Assert.IsFalse(actual, $"WorkingDaysOfWeek.AllDays must classify every day as a weekday, but {day} was classified as weekend.");
     }
@@ -66,7 +66,7 @@ public partial class DateTimeExtensionsTests
     {
         IWeekendDefinitionProvider? provider = providerType is null ? null : (IWeekendDefinitionProvider)Activator.CreateInstance(providerType)!;
 
-        var actual = input.IsWeekend(weekend, provider);
+        bool actual = input.IsWeekend(weekend, provider);
         Assert.AreEqual(expected, actual, $"Failed for {input} with weekend {weekend}");
     }
 

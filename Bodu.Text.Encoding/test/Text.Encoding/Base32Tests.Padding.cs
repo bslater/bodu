@@ -25,11 +25,11 @@ public sealed partial class Base32Tests
     [DataRow(10, 0)]
     public void Encode_WhenStandardVariant_ShouldEmitExpectedPaddingCount(int byteCount, int expectedPaddingCount)
     {
-        var bytes = new byte[byteCount];
-        var actual = Base32.Encode(bytes);
+        byte[] bytes = new byte[byteCount];
+        string actual = Base32.Encode(bytes);
 
-        var actualPadding = 0;
-        for (var i = actual.Length - 1; i >= 0 && actual[i] == '='; i--)
+        int actualPadding = 0;
+        for (int i = actual.Length - 1; i >= 0 && actual[i] == '='; i--)
         {
             actualPadding++;
         }
@@ -50,11 +50,11 @@ public sealed partial class Base32Tests
     {
         BaseFormattingOptions options = omitPadding ? BaseFormattingOptions.OmitPadding : BaseFormattingOptions.None;
 
-        for (var n = 0; n <= 25; n++)
+        for (int n = 0; n <= 25; n++)
         {
-            var bytes = new byte[n];
-            var predicted = Base32.GetEncodedLength(n, Base32Variant.Standard, options);
-            var actual = Base32.Encode(bytes, Base32Variant.Standard, options).Length;
+            byte[] bytes = new byte[n];
+            int predicted = Base32.GetEncodedLength(n, Base32Variant.Standard, options);
+            int actual = Base32.Encode(bytes, Base32Variant.Standard, options).Length;
 
             Assert.AreEqual(predicted, actual, $"Mismatch for length={n}, omitPadding={omitPadding}.");
         }

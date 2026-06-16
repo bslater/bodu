@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoeResilienceRegistrationTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -94,8 +94,8 @@ public class BoeResilienceRegistrationTests
             .GetRequiredService<IHttpClientFactory>()
             .CreateClient(BoeFinancialServiceBuilderExtensions.HttpClientName);
 
-        var circuitOpened = false;
-        for (var i = 0; i < 50 && !circuitOpened; i++)
+        bool circuitOpened = false;
+        for (int i = 0; i < 50 && !circuitOpened; i++)
         {
             try
             {

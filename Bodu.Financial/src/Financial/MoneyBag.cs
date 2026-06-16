@@ -71,15 +71,15 @@ public sealed partial class MoneyBag :
             ImmutableSortedDictionary.CreateBuilder<string, decimal>(StringComparer.Ordinal);
         foreach (Money balance in balances)
         {
-            var iso = balance.IsoCode;
+            string iso = balance.IsoCode;
             if (string.IsNullOrEmpty(iso))
                 throw new ArgumentException(FinancialResourceStrings.Arg_Invalid_BalanceMissingIsoCode, nameof(balances));
 
-            builder[iso] = builder.TryGetValue(iso, out var existing) ? existing + balance.Amount : balance.Amount;
+            builder[iso] = builder.TryGetValue(iso, out decimal existing) ? existing + balance.Amount : balance.Amount;
         }
 
         // Prune zero balances introduced by mutual cancellation during the sum.
-        foreach (var iso in builder.Where(entry => entry.Value == 0m).Select(entry => entry.Key).ToList())
+        foreach (string? iso in builder.Where(entry => entry.Value == 0m).Select(entry => entry.Key).ToList())
             builder.Remove(iso);
 
         _balances = builder.ToImmutable();
@@ -144,16 +144,16 @@ public sealed partial class MoneyBag :
     /// </exception>
     public MoneyBag Add(Money amount)
     {
-        var iso = amount.IsoCode;
+        string iso = amount.IsoCode;
         if (string.IsNullOrEmpty(iso))
             throw new ArgumentException(FinancialResourceStrings.Arg_Invalid_MoneyMissingIsoCode, nameof(amount));
 
         if (amount.Amount == 0m)
             return this;
 
-        if (_balances.TryGetValue(iso, out var existing))
+        if (_balances.TryGetValue(iso, out decimal existing))
         {
-            var sum = existing + amount.Amount;
+            decimal sum = existing + amount.Amount;
             return new MoneyBag(sum == 0m ? _balances.Remove(iso) : _balances.SetItem(iso, sum));
         }
 
@@ -206,9 +206,9 @@ public sealed partial class MoneyBag :
         var builder = _balances.ToBuilder();
         foreach (KeyValuePair<string, decimal> entry in other._balances)
         {
-            if (builder.TryGetValue(entry.Key, out var existing))
+            if (builder.TryGetValue(entry.Key, out decimal existing))
             {
-                var sum = existing + entry.Value;
+                decimal sum = existing + entry.Value;
                 if (sum == 0m)
                     builder.Remove(entry.Key);
                 else
@@ -233,7 +233,7 @@ public sealed partial class MoneyBag :
     public Money? GetBalance(string isoCode)
     {
         ThrowHelper.ThrowIfNull(isoCode);
-        return _balances.TryGetValue(isoCode, out var amount)
+        return _balances.TryGetValue(isoCode, out decimal amount)
             ? Money.FromNormalized(amount, isoCode)
             : null;
     }
@@ -245,7 +245,7 @@ public sealed partial class MoneyBag :
     /// <returns>The typed balance, or <see langword="null" /> when the bag has no entry for that currency.</returns>
     public Money<TCurrency>? GetBalance<TCurrency>()
         where TCurrency : ICurrency =>
-        _balances.TryGetValue(CurrencyMetadata<TCurrency>.Value.IsoCode, out var amount)
+        _balances.TryGetValue(CurrencyMetadata<TCurrency>.Value.IsoCode, out decimal amount)
             ? new Money<TCurrency>(amount)
             : null;
 
@@ -262,7 +262,7 @@ public sealed partial class MoneyBag :
 
         foreach (KeyValuePair<string, decimal> entry in _balances)
         {
-            if (!other._balances.TryGetValue(entry.Key, out var otherAmount))
+            if (!other._balances.TryGetValue(entry.Key, out decimal otherAmount))
                 return false;
             if (entry.Value != otherAmount)
                 return false;

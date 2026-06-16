@@ -18,10 +18,10 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
     public void TransformBlock_WhenEncryptingSingleBlock_ShouldReturnOutputBlockSize()
     {
         using TCryptoTransform encryptor = CreateEncryptor();
-        var plaintext = BuildIncrementingPlaintext(encryptor.InputBlockSize);
-        var outputBuffer = new byte[encryptor.OutputBlockSize];
+        byte[] plaintext = BuildIncrementingPlaintext(encryptor.InputBlockSize);
+        byte[] outputBuffer = new byte[encryptor.OutputBlockSize];
 
-        var written = encryptor.TransformBlock(plaintext, 0, plaintext.Length, outputBuffer, 0);
+        int written = encryptor.TransformBlock(plaintext, 0, plaintext.Length, outputBuffer, 0);
 
         Assert.AreEqual(encryptor.OutputBlockSize, written);
     }
@@ -34,12 +34,12 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
     public void TransformBlock_WhenOutputOffsetIsNonZero_ShouldReturnOutputBlockSize()
     {
         using TCryptoTransform encryptor = CreateEncryptor();
-        var plaintext = BuildIncrementingPlaintext(encryptor.InputBlockSize);
+        byte[] plaintext = BuildIncrementingPlaintext(encryptor.InputBlockSize);
 
         const int outputOffset = 3;
-        var outputBuffer = new byte[outputOffset + encryptor.OutputBlockSize + 3];
+        byte[] outputBuffer = new byte[outputOffset + encryptor.OutputBlockSize + 3];
 
-        var written = encryptor.TransformBlock(plaintext, 0, plaintext.Length, outputBuffer, outputOffset);
+        int written = encryptor.TransformBlock(plaintext, 0, plaintext.Length, outputBuffer, outputOffset);
 
         Assert.AreEqual(encryptor.OutputBlockSize, written);
     }
@@ -56,19 +56,19 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
         byte[] expected;
         using (TCryptoTransform reference = CreateEncryptor())
         {
-            var plaintext = BuildIncrementingPlaintext(reference.InputBlockSize);
+            byte[] plaintext = BuildIncrementingPlaintext(reference.InputBlockSize);
             expected = new byte[reference.OutputBlockSize];
             reference.TransformBlock(plaintext, 0, plaintext.Length, expected, 0);
         }
 
         using TCryptoTransform encryptor = CreateEncryptor();
         const int outputOffset = 3;
-        var plaintextOffset = BuildIncrementingPlaintext(encryptor.InputBlockSize);
-        var outputBuffer = new byte[outputOffset + encryptor.OutputBlockSize + 3];
+        byte[] plaintextOffset = BuildIncrementingPlaintext(encryptor.InputBlockSize);
+        byte[] outputBuffer = new byte[outputOffset + encryptor.OutputBlockSize + 3];
 
         encryptor.TransformBlock(plaintextOffset, 0, plaintextOffset.Length, outputBuffer, outputOffset);
 
-        var actual = new byte[expected.Length];
+        byte[] actual = new byte[expected.Length];
         Buffer.BlockCopy(outputBuffer, outputOffset, actual, 0, expected.Length);
 
         CollectionAssert.AreEqual(expected, actual);
@@ -82,16 +82,16 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
     public void TransformBlock_WhenOutputOffsetIsNonZero_ShouldNotModifyBytesBeforeOutputOffset()
     {
         using TCryptoTransform encryptor = CreateEncryptor();
-        var plaintext = BuildIncrementingPlaintext(encryptor.InputBlockSize);
+        byte[] plaintext = BuildIncrementingPlaintext(encryptor.InputBlockSize);
 
         const int outputOffset = 3;
         const byte sentinel = 0xA5;
-        var outputBuffer = new byte[outputOffset + encryptor.OutputBlockSize + 3];
+        byte[] outputBuffer = new byte[outputOffset + encryptor.OutputBlockSize + 3];
         Array.Fill(outputBuffer, sentinel);
 
         encryptor.TransformBlock(plaintext, 0, plaintext.Length, outputBuffer, outputOffset);
 
-        for (var i = 0; i < outputOffset; i++)
+        for (int i = 0; i < outputOffset; i++)
             Assert.AreEqual(sentinel, outputBuffer[i], $"Byte at index {i} was modified.");
     }
 
@@ -103,17 +103,17 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
     public void TransformBlock_WhenOutputOffsetIsNonZero_ShouldNotModifyBytesAfterWrittenBlock()
     {
         using TCryptoTransform encryptor = CreateEncryptor();
-        var plaintext = BuildIncrementingPlaintext(encryptor.InputBlockSize);
+        byte[] plaintext = BuildIncrementingPlaintext(encryptor.InputBlockSize);
 
         const int outputOffset = 3;
         const int suffixLength = 3;
         const byte sentinel = 0xA5;
-        var outputBuffer = new byte[outputOffset + encryptor.OutputBlockSize + suffixLength];
+        byte[] outputBuffer = new byte[outputOffset + encryptor.OutputBlockSize + suffixLength];
         Array.Fill(outputBuffer, sentinel);
 
         encryptor.TransformBlock(plaintext, 0, plaintext.Length, outputBuffer, outputOffset);
 
-        for (var i = outputOffset + encryptor.OutputBlockSize; i < outputBuffer.Length; i++)
+        for (int i = outputOffset + encryptor.OutputBlockSize; i < outputBuffer.Length; i++)
             Assert.AreEqual(sentinel, outputBuffer[i], $"Byte at index {i} was modified.");
     }
 
@@ -133,10 +133,10 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
             return;
         }
 
-        var plaintext = BuildIncrementingPlaintext(encryptor.InputBlockSize * 2);
-        var outputBuffer = new byte[encryptor.OutputBlockSize * 2];
+        byte[] plaintext = BuildIncrementingPlaintext(encryptor.InputBlockSize * 2);
+        byte[] outputBuffer = new byte[encryptor.OutputBlockSize * 2];
 
-        var written = encryptor.TransformBlock(plaintext, 0, plaintext.Length, outputBuffer, 0);
+        int written = encryptor.TransformBlock(plaintext, 0, plaintext.Length, outputBuffer, 0);
 
         Assert.AreEqual(encryptor.OutputBlockSize * 2, written);
     }
@@ -163,13 +163,13 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
             plaintext = BuildIncrementingPlaintext(blockSize * 2);
         }
 
-        var batchedOutput = new byte[blockSize * 2];
+        byte[] batchedOutput = new byte[blockSize * 2];
         using (TCryptoTransform batched = CreateEncryptor())
         {
             batched.TransformBlock(plaintext, 0, plaintext.Length, batchedOutput, 0);
         }
 
-        var sequentialOutput = new byte[blockSize * 2];
+        byte[] sequentialOutput = new byte[blockSize * 2];
         using (TCryptoTransform sequential = CreateEncryptor())
         {
             sequential.TransformBlock(plaintext, 0, blockSize, sequentialOutput, 0);
@@ -194,8 +194,8 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
             return;
         }
 
-        var inputBuffer = new byte[transform.InputBlockSize - 1];
-        var outputBuffer = new byte[transform.OutputBlockSize];
+        byte[] inputBuffer = new byte[transform.InputBlockSize - 1];
+        byte[] outputBuffer = new byte[transform.OutputBlockSize];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
@@ -224,10 +224,10 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
 
         using TCryptoTransform encryptor = CreateEncryptor();
         const int inputOffset = 5;
-        var inputBuffer = new byte[inputOffset + blockSize + 5];
+        byte[] inputBuffer = new byte[inputOffset + blockSize + 5];
         Buffer.BlockCopy(payload, 0, inputBuffer, inputOffset, blockSize);
 
-        var outputBuffer = new byte[encryptor.OutputBlockSize];
+        byte[] outputBuffer = new byte[encryptor.OutputBlockSize];
         encryptor.TransformBlock(inputBuffer, inputOffset, blockSize, outputBuffer, 0);
 
         CollectionAssert.AreEqual(expected, outputBuffer);
@@ -241,12 +241,12 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
     public void TransformBlock_WhenOutputOffsetLeavesExactlyEnoughSpace_ShouldSucceed()
     {
         using TCryptoTransform encryptor = CreateEncryptor();
-        var plaintext = BuildIncrementingPlaintext(encryptor.InputBlockSize);
+        byte[] plaintext = BuildIncrementingPlaintext(encryptor.InputBlockSize);
 
         const int outputOffset = 3;
-        var outputBuffer = new byte[outputOffset + encryptor.OutputBlockSize];
+        byte[] outputBuffer = new byte[outputOffset + encryptor.OutputBlockSize];
 
-        var written = encryptor.TransformBlock(plaintext, 0, plaintext.Length, outputBuffer, outputOffset);
+        int written = encryptor.TransformBlock(plaintext, 0, plaintext.Length, outputBuffer, outputOffset);
 
         Assert.AreEqual(encryptor.OutputBlockSize, written);
     }
@@ -268,8 +268,8 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
             return;
         }
 
-        var plaintext = BuildIncrementingPlaintext(encryptor.InputBlockSize);
-        var outputBuffer = new byte[encryptor.OutputBlockSize];
+        byte[] plaintext = BuildIncrementingPlaintext(encryptor.InputBlockSize);
+        byte[] outputBuffer = new byte[encryptor.OutputBlockSize];
 
         _ = encryptor.TransformFinalBlock(plaintext, 0, plaintext.Length);
 

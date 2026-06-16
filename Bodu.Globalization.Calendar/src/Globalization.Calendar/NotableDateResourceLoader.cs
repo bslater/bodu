@@ -27,10 +27,11 @@ namespace Bodu.Globalization.Calendar;
 /// resolver overload, whose delegate maps a resource name to that resource's XML or JSON content.
 /// </para>
 /// <para>
-/// <strong>When to use.</strong> Call <see cref="Load(string, ILogger)" /> / <see cref="LoadJson(string, ILogger)" /> (or the
-/// <see cref="Stream" /> overloads) for a self-contained document, and the resolver overloads when the document imports
-/// shared concepts or adjustment policies from other resources. For the bundled territory packs prefer the data-pack
-/// factories (for example the <c>AmericasCalendarData</c> bundle), which load and wire the embedded resources for you.
+/// <strong>When to use.</strong> Call <see cref="Load(string, ILogger)" /> / <see cref="LoadJson(string, ILogger)" />
+/// (or the <see cref="Stream" /> overloads) for a self-contained document, and the resolver overloads when the document
+/// imports shared concepts or adjustment policies from other resources. For the bundled territory packs prefer the
+/// data-pack factories (for example the <c>AmericasCalendarData</c> bundle), which load and wire the embedded resources
+/// for you.
 /// </para>
 /// <para>
 /// <strong>Logging.</strong> Each <c>Load</c> / <c>LoadJson</c> overload accepts an optional <see cref="ILogger" />
@@ -284,7 +285,7 @@ public static class NotableDateResourceLoader
 
         NotableDateRuleValidator.Validate(resource, diagnostics, algorithms);
 
-        var errorCount = diagnostics.Count(d => d.Severity == NotableDateValidationSeverity.Error);
+        int errorCount = diagnostics.Count(d => d.Severity == NotableDateValidationSeverity.Error);
         if (errorCount > 0)
         {
             Log.ResourceValidationFailed(log, errorCount);
@@ -329,7 +330,7 @@ public static class NotableDateResourceLoader
 
             try
             {
-                var content = resourceResolver(import.Resource);
+                string? content = resourceResolver(import.Resource);
                 if (content is null)
                 {
                     AddError(diagnostics, "BODU-CAL-IMPORT-MISSING", CalendarResourceStrings.Validation_ImportResourceNotFound, import.Resource);
@@ -409,12 +410,12 @@ public static class NotableDateResourceLoader
     /// <returns>The renamed and overridden concept.</returns>
     private static NotableDateDefinition ApplyUse(NotableDateDefinition concept, NotableDateImportUse use)
     {
-        var id = string.IsNullOrEmpty(use.As) ? concept.Id : use.As!;
+        string id = string.IsNullOrEmpty(use.As) ? concept.Id : use.As!;
         NotableDateCategory category = use.Category ?? concept.Category;
-        var nonWorking = use.NonWorking ?? concept.DefaultNonWorkingDay;
+        bool nonWorking = use.NonWorking ?? concept.DefaultNonWorkingDay;
 
-        var overrideTerritory = !string.IsNullOrEmpty(use.Territory);
-        var overrideAdjustments = use.AdjustmentPolicyRefs is not null;
+        bool overrideTerritory = !string.IsNullOrEmpty(use.Territory);
+        bool overrideAdjustments = use.AdjustmentPolicyRefs is not null;
 
         IReadOnlyList<NotableDateRule> rules = concept.Rules;
         if (overrideTerritory || overrideAdjustments)
@@ -467,7 +468,7 @@ public static class NotableDateResourceLoader
     /// </returns>
     private static bool LooksLikeJson(string content)
     {
-        foreach (var character in content)
+        foreach (char character in content)
         {
             if (character == '\uFEFF' || char.IsWhiteSpace(character))
                 continue;

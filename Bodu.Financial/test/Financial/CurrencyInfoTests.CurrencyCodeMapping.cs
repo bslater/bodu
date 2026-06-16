@@ -46,7 +46,7 @@ public partial class CurrencyInfoTests
     [TestMethod]
     public void TryGetCurrencyCode_WhenIsoIsActive_ShouldReturnTrueAndCode()
     {
-        var ok = CurrencyInfo.TryGetCurrencyCode("USD", out CurrencyCode code);
+        bool ok = CurrencyInfo.TryGetCurrencyCode("USD", out CurrencyCode code);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(CurrencyCode.USD, code);
@@ -59,7 +59,7 @@ public partial class CurrencyInfoTests
     [TestMethod]
     public void TryGetCurrencyCode_WhenIsoIsHistoric_ShouldReturnFalse()
     {
-        var ok = CurrencyInfo.TryGetCurrencyCode("DEM", out CurrencyCode code);
+        bool ok = CurrencyInfo.TryGetCurrencyCode("DEM", out CurrencyCode code);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(default, code);
@@ -72,7 +72,7 @@ public partial class CurrencyInfoTests
     [TestMethod]
     public void TryGetCurrencyCode_WhenIsoIsLowerCase_ShouldReturnFalse()
     {
-        var ok = CurrencyInfo.TryGetCurrencyCode("usd", out CurrencyCode code);
+        bool ok = CurrencyInfo.TryGetCurrencyCode("usd", out CurrencyCode code);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(default, code);

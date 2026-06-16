@@ -55,7 +55,7 @@ public partial class TomlNodeTests
     public void Parse_WhenInputMalformed_ShouldThrowTomlFormatException(InvalidKat<string> kat)
     {
         ArgumentNullException.ThrowIfNull(kat);
-        var bytes = Encoding.UTF8.GetBytes(kat.Input);
+        byte[] bytes = Encoding.UTF8.GetBytes(kat.Input);
 
         _ = Assert.ThrowsExactly<TomlFormatException>(() =>
         {
@@ -117,9 +117,9 @@ public partial class TomlNodeTests
     public void Parse_WhenInputCanonical_ShouldRoundTripThroughToUtf8Bytes(string testName, string input)
     {
         _ = testName;
-        var bytes = Encoding.UTF8.GetBytes(input);
+        byte[] bytes = Encoding.UTF8.GetBytes(input);
 
-        var roundTripped = TomlNode.Parse(bytes)!.ToUtf8Bytes();
+        byte[] roundTripped = TomlNode.Parse(bytes)!.ToUtf8Bytes();
 
         CollectionAssert.AreEqual(bytes, roundTripped);
     }

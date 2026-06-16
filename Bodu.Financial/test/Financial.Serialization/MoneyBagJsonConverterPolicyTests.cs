@@ -33,7 +33,7 @@ public class MoneyBagJsonConverterPolicyTests
             .Add(new Money(12.34m, "AUD"))
             .Add(new Money(56.78m, "USD"));
 
-        var json = JsonSerializer.Serialize(bag, Options(FinancialJsonPolicy.Compact));
+        string json = JsonSerializer.Serialize(bag, Options(FinancialJsonPolicy.Compact));
 
         Assert.AreEqual("{\"AUD\":12.34,\"USD\":56.78}", json);
     }
@@ -44,7 +44,7 @@ public class MoneyBagJsonConverterPolicyTests
     [TestMethod]
     public void CompactPolicy_WhenReading_ShouldSucceed()
     {
-        var json = "{\"AUD\":12.34,\"USD\":56.78}";
+        string json = "{\"AUD\":12.34,\"USD\":56.78}";
 
         MoneyBag bag = JsonSerializer.Deserialize<MoneyBag>(json, Options(FinancialJsonPolicy.Compact))!;
 
@@ -64,7 +64,7 @@ public class MoneyBagJsonConverterPolicyTests
             .Add(new Money(50m, "GBP"));
         JsonSerializerOptions options = Options(FinancialJsonPolicy.Compact);
 
-        var json = JsonSerializer.Serialize(original, options);
+        string json = JsonSerializer.Serialize(original, options);
         MoneyBag recovered = JsonSerializer.Deserialize<MoneyBag>(json, options)!;
 
         Assert.AreEqual(original, recovered);
@@ -78,7 +78,7 @@ public class MoneyBagJsonConverterPolicyTests
     {
         MoneyBag bag = MoneyBag.Empty.Add(new Money(12.34m, "AUD"));
 
-        var json = JsonSerializer.Serialize(bag, Options(FinancialJsonPolicy.Strict));
+        string json = JsonSerializer.Serialize(bag, Options(FinancialJsonPolicy.Strict));
 
         Assert.AreEqual("{\"balances\":{\"AUD\":12.34}}", json);
     }

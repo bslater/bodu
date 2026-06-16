@@ -131,7 +131,7 @@ public sealed class GcmSivModeTransform
 
         // Derive K_auth and K_enc per RFC 8452 Section 4.
         // Each call: E_K(LE32(i) || nonce), take first 8 bytes.
-        (var authKey, var encKeyMaterial) = DeriveKeys(masterCipher, _nonce);
+        (byte[]? authKey, byte[]? encKeyMaterial) = DeriveKeys(masterCipher, _nonce);
 
         try
         {
@@ -170,7 +170,7 @@ public sealed class GcmSivModeTransform
         ThrowIfCompleted();
 
         CryptographyThrowHelper.ThrowIfCiphertextTooShort(ciphertextWithTag, TagSizeBits / 8);
-        var plaintextLength = ciphertextWithTag.Length - (TagSizeBits / 8);
+        int plaintextLength = ciphertextWithTag.Length - (TagSizeBits / 8);
         CryptographyThrowHelper.ThrowIfOutputBufferTooSmall(output, plaintextLength);
         EnsureAadProcessed();
 
@@ -180,11 +180,11 @@ public sealed class GcmSivModeTransform
             ReadOnlySpan<byte> receivedTag = ciphertextWithTag[plaintextLength..];
 
             // Decrypt CTR.
-            var ctrIv = BuildCtrIv(receivedTag.ToArray());
+            byte[] ctrIv = BuildCtrIv(receivedTag.ToArray());
             CtrEncrypt(ciphertext, output[..plaintextLength], ctrIv);
 
             // Recompute and verify tag.
-            var expectedTag = ComputeTag(_aad.AsSpan(), output[..plaintextLength]);
+            byte[] expectedTag = ComputeTag(_aad.AsSpan(), output[..plaintextLength]);
             if (!CryptographicOperations.FixedTimeEquals(expectedTag, receivedTag))
             {
                 CryptographyHelper.Clear(output[..plaintextLength]);
@@ -220,17 +220,17 @@ public sealed class GcmSivModeTransform
         ThrowIfDisposed();
         ThrowIfCompleted();
 
-        var required = plaintext.Length + (TagSizeBits / 8);
+        int required = plaintext.Length + (TagSizeBits / 8);
         CryptographyThrowHelper.ThrowIfOutputBufferTooSmall(output, required);
         EnsureAadProcessed();
 
         try
         {
             // Tag = E(K_enc, POLYVAL(K_auth, AAD, PT) XOR nonce) with bits [31] and [63] cleared.
-            var tag = ComputeTag(_aad.AsSpan(), plaintext);
+            byte[] tag = ComputeTag(_aad.AsSpan(), plaintext);
 
             // Encrypt plaintext with CTR(K_enc) seeded from tag.
-            var ctrIv = BuildCtrIv(tag);
+            byte[] ctrIv = BuildCtrIv(tag);
             CtrEncrypt(plaintext, output[..plaintext.Length], ctrIv);
             tag.CopyTo(output[plaintext.Length..]);
             return required;
@@ -259,7 +259,7 @@ public sealed class GcmSivModeTransform
     /// <returns>The CTR initialization vector derived from <paramref name="tag" /> per RFC 8452.</returns>
     private static byte[] BuildCtrIv(byte[] tag)
     {
-        var ctrIv = (byte[])tag.Clone();
+        byte[] ctrIv = (byte[])tag.Clone();
         ctrIv[15] |= 0x80; // set bit 127
         return ctrIv;
     }
@@ -273,9 +273,9 @@ public sealed class GcmSivModeTransform
     /// <returns>The derived message-authentication key and message-encryption key.</returns>
     private static (byte[] authKey, byte[] encKey) DeriveKeys(IBlockCipher cipher, byte[] nonce)
     {
-        var blockSize = cipher.BlockSize / 8;
-        var authKey = new byte[blockSize];
-        var encKey = new byte[blockSize];
+        int blockSize = cipher.BlockSize / 8;
+        byte[] authKey = new byte[blockSize];
+        byte[] encKey = new byte[blockSize];
 
         byte[]? b0 = null;
         byte[]? b1 = null;
@@ -314,8 +314,8 @@ public sealed class GcmSivModeTransform
 
         byte[] Derive(int counter)
         {
-            var block = new byte[blockSize];
-            var output = new byte[blockSize];
+            byte[] block = new byte[blockSize];
+            byte[] output = new byte[blockSize];
 
             try
             {
@@ -353,18 +353,18 @@ public sealed class GcmSivModeTransform
         Span<byte> v = stackalloc byte[16];
         h.CopyTo(v);
 
-        for (var i = 0; i < 16; i++)
+        for (int i = 0; i < 16; i++)
         {
-            var xi = x[i];
-            for (var bit = 7; bit >= 0; bit--)
+            byte xi = x[i];
+            for (int bit = 7; bit >= 0; bit--)
             {
                 if (((xi >> bit) & 1) == 1)
                     Xor(z, v, z);
 
-                var lsb = (v[15] & 1) == 1;
+                bool lsb = (v[15] & 1) == 1;
 
                 // Right-shift v by 1.
-                for (var j = 15; j > 0; j--)
+                for (int j = 15; j > 0; j--)
                     v[j] = (byte)((v[j] >> 1) | (v[j - 1] << 7));
 
                 v[0] >>= 1;
@@ -407,9 +407,9 @@ public sealed class GcmSivModeTransform
     /// </param>
     private static void ReflectBytesAndBits(ReadOnlySpan<byte> input, Span<byte> output)
     {
-        for (var i = 0; i < 16; i++)
+        for (int i = 0; i < 16; i++)
         {
-            var b = input[15 - i];
+            byte b = input[15 - i];
 
             // Reverse bits within byte.
             b = (byte)(((b & 0x01) << 7) | ((b & 0x02) << 5) | ((b & 0x04) << 3) | ((b & 0x08) << 1) |
@@ -426,7 +426,7 @@ public sealed class GcmSivModeTransform
     /// <param name="result">The destination span; must be at least <paramref name="a" />.Length bytes.</param>
     private static void Xor(ReadOnlySpan<byte> a, ReadOnlySpan<byte> b, Span<byte> result)
     {
-        for (var i = 0; i < result.Length; i++) result[i] = (byte)(a[i] ^ b[i]);
+        for (int i = 0; i < result.Length; i++) result[i] = (byte)(a[i] ^ b[i]);
     }
 
     /// <summary>
@@ -438,11 +438,11 @@ public sealed class GcmSivModeTransform
     /// <returns>The computed AES-GCM-SIV authentication tag.</returns>
     private byte[] ComputeTag(ReadOnlySpan<byte> aad, ReadOnlySpan<byte> plaintext)
     {
-        var blockSize = _encCipher.BlockSize / 8;
+        int blockSize = _encCipher.BlockSize / 8;
 
         // POLYVAL accumulation: process AAD blocks, then plaintext blocks, then length block.
         // polyvalResult holds intermediate MAC state XOR'd with the nonce — cleared in finally.
-        var polyvalResult = new byte[blockSize];
+        byte[] polyvalResult = new byte[blockSize];
         try
         {
             PolyvalUpdate(polyvalResult, aad);
@@ -450,19 +450,19 @@ public sealed class GcmSivModeTransform
 
             // Length block: LE64(|A| * 8) || LE64(|P| * 8). Stack-allocated; never reaches the heap.
             Span<byte> lenBlock = stackalloc byte[blockSize];
-            var aadBits = (ulong)aad.Length * 8;
-            var ptBits = (ulong)plaintext.Length * 8;
-            for (var i = 0; i < 8; i++) lenBlock[i] = (byte)(aadBits >> (8 * i));
-            for (var i = 0; i < 8; i++) lenBlock[8 + i] = (byte)(ptBits >> (8 * i));
+            ulong aadBits = (ulong)aad.Length * 8;
+            ulong ptBits = (ulong)plaintext.Length * 8;
+            for (int i = 0; i < 8; i++) lenBlock[i] = (byte)(aadBits >> (8 * i));
+            for (int i = 0; i < 8; i++) lenBlock[8 + i] = (byte)(ptBits >> (8 * i));
             PolyvalUpdate(polyvalResult, lenBlock);
 
             // XOR with nonce, clear bit 31 (byte 3 MSB) and bit 63 (byte 7 MSB).
-            for (var i = 0; i < (NonceSizeBits / 8); i++)
+            for (int i = 0; i < (NonceSizeBits / 8); i++)
                 polyvalResult[i] ^= _nonce[i];
             polyvalResult[15] &= 0x7F; // clear bit 127 (RFC calls this bit 31 of the last 32-bit word)
 
             // Encrypt with K_enc to produce the tag.
-            var tag = new byte[blockSize];
+            byte[] tag = new byte[blockSize];
             _encCipher.Encrypt(polyvalResult, tag);
             return tag;
         }
@@ -481,26 +481,26 @@ public sealed class GcmSivModeTransform
     /// <param name="counter">The initial counter block; the low 32 bits are incremented per block per RFC 8452.</param>
     private void CtrEncrypt(ReadOnlySpan<byte> input, Span<byte> output, byte[] counter)
     {
-        var blockSize = _encCipher.BlockSize / 8;
+        int blockSize = _encCipher.BlockSize / 8;
 
         // Stack-allocate the mutable counter copy so the ephemeral CTR state never reaches the heap.
         Span<byte> ctr = stackalloc byte[blockSize];
         counter.CopyTo(ctr);
         Span<byte> ks = stackalloc byte[blockSize];
 
-        for (var offset = 0; offset < input.Length; offset += blockSize)
+        for (int offset = 0; offset < input.Length; offset += blockSize)
         {
             _encCipher.Encrypt(ctr, ks);
 
             // GCM-SIV CTR increments only the last 32 bits (little-endian), per RFC 8452.
-            var lo = (uint)(ctr[12] | (ctr[13] << 8) | (ctr[14] << 16) | (ctr[15] << 24));
+            uint lo = (uint)(ctr[12] | (ctr[13] << 8) | (ctr[14] << 16) | (ctr[15] << 24));
             lo++;
             ctr[12] = (byte)lo;
             ctr[13] = (byte)(lo >> 8);
             ctr[14] = (byte)(lo >> 16);
             ctr[15] = (byte)(lo >> 24);
-            var len = Math.Min(blockSize, input.Length - offset);
-            for (var i = 0; i < len; i++)
+            int len = Math.Min(blockSize, input.Length - offset);
+            for (int i = 0; i < len; i++)
                 output[offset + i] = (byte)(input[offset + i] ^ ks[i]);
         }
     }
@@ -559,9 +559,9 @@ public sealed class GcmSivModeTransform
 
         // Stack-allocate the per-block scratch buffer so plaintext/AAD fragments never reach the heap.
         Span<byte> block = stackalloc byte[blockSize];
-        for (var offset = 0; offset < data.Length; offset += blockSize)
+        for (int offset = 0; offset < data.Length; offset += blockSize)
         {
-            var len = Math.Min(blockSize, data.Length - offset);
+            int len = Math.Min(blockSize, data.Length - offset);
             data.Slice(offset, len).CopyTo(block);
 
             // state ^= block, then multiply by H (authKey) via POLYVAL.

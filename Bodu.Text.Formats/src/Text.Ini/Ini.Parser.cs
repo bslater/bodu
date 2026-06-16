@@ -101,13 +101,13 @@ public static partial class Ini
 
             List<IniEntry> currentEntries = globalEntries;
             Dictionary<string, IniEntry> currentLookup = globalLookup;
-            var inGlobal = true;
+            bool inGlobal = true;
 
             // Named section builders — kept as mutable lists/dicts until IniSection is constructed at the end
             // so that the Merge section behavior can redirect back to a previously opened section's state.
             List<SectionBuilder> namedData = new();
             Dictionary<string, int> namedIndexByName = new(sectionComparer);
-            var lastBuilderIndex = -1;
+            int lastBuilderIndex = -1;
 
             // Pending comments collected from full-line `#` / `;` trivia. Attached to the next section or
             // entry encountered, then cleared. When PreserveComments is false the list is never populated.
@@ -124,8 +124,8 @@ public static partial class Ini
                 {
                     if (_options.PreserveComments)
                     {
-                        var prefix = line[0];
-                        var text = line[1..].ToString();
+                        char prefix = line[0];
+                        string text = line[1..].ToString();
                         pendingComments.Add(new IniComment(prefix, text, _lineNumber));
                     }
 
@@ -134,7 +134,7 @@ public static partial class Ini
 
                 if (line[0] == '[')
                 {
-                    var closeBracket = line.IndexOf(']');
+                    int closeBracket = line.IndexOf(']');
 
                     if (closeBracket < 0)
                         Ini.ThrowMalformedSectionHeader(_lineNumber);
@@ -144,9 +144,9 @@ public static partial class Ini
                     if (nameSpan.IsEmpty)
                         Ini.ThrowMalformedSectionHeader(_lineNumber);
 
-                    var sectionName = nameSpan.ToString();
+                    string sectionName = nameSpan.ToString();
 
-                    var targetIdx = SelectSectionTarget(sectionName, namedData, namedIndexByName, lastBuilderIndex);
+                    int targetIdx = SelectSectionTarget(sectionName, namedData, namedIndexByName, lastBuilderIndex);
 
                     if (targetIdx < 0)
                     {
@@ -181,7 +181,7 @@ public static partial class Ini
                         {
                             var combined = new IniComment[existing.LeadingComments.Length + pendingComments.Count];
                             existing.LeadingComments.CopyTo(combined, 0);
-                            for (var i = 0; i < pendingComments.Count; i++)
+                            for (int i = 0; i < pendingComments.Count; i++)
                                 combined[existing.LeadingComments.Length + i] = pendingComments[i];
                             existing.LeadingComments = combined;
                             pendingComments.Clear();
@@ -252,7 +252,7 @@ public static partial class Ini
             Dictionary<string, int> namedIndexByName,
             int lastBuilderIndex)
         {
-            var isDuplicate = namedIndexByName.TryGetValue(sectionName, out var firstIdx);
+            bool isDuplicate = namedIndexByName.TryGetValue(sectionName, out int firstIdx);
 
             switch (_options.DuplicateSectionBehavior)
             {
@@ -325,8 +325,8 @@ public static partial class Ini
             IReadOnlyList<IniComment>? leadingComments)
         {
             // Find the first = or : separator.
-            var sepIdx = -1;
-            for (var i = 0; i < line.Length; i++)
+            int sepIdx = -1;
+            for (int i = 0; i < line.Length; i++)
             {
                 if (line[i] is '=' or ':')
                 {
@@ -366,7 +366,7 @@ public static partial class Ini
 
                     case DuplicateKeyPolicy.LastWins:
                         // Replace the existing entry in-place so its original position is preserved.
-                        var idx = entries.IndexOf(existing);
+                        int idx = entries.IndexOf(existing);
                         IniEntry replacement = new(key, value, _lineNumber, leadingComments);
                         entries[idx] = replacement;
                         lookup[key] = replacement;
@@ -399,9 +399,9 @@ public static partial class Ini
 
             ReadOnlySpan<char> source = _remaining;
 
-            for (var i = 0; i < source.Length; i++)
+            for (int i = 0; i < source.Length; i++)
             {
-                var c = source[i];
+                char c = source[i];
 
                 if (c == '\n')
                 {
@@ -413,7 +413,7 @@ public static partial class Ini
                 if (c == '\r')
                 {
                     line = source[..i];
-                    var next = i + 1;
+                    int next = i + 1;
 
                     // Consume LF following CR to handle \r\n as a single line ending.
                     _remaining = next < source.Length && source[next] == '\n'

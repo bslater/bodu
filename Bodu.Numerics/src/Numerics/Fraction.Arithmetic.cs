@@ -118,7 +118,7 @@ public readonly partial struct Fraction<T>
             if (IsZero)
                 throw new DivideByZeroException(NumericsResourceStrings.DivideByZero_ZeroToNegativePower);
 
-            var magnitude = -(long)exponent;
+            long magnitude = -(long)exponent;
             return magnitude <= int.MaxValue
                 ? FromBigInteger(
                     BigInteger.Pow(BigDenominator, (int)magnitude),

@@ -75,7 +75,7 @@ public static class BlockCipherModeFactory
     {
         ThrowHelper.ThrowIfNull(cipher);
 
-        var blockSize = cipher.BlockSize;
+        int blockSize = cipher.BlockSize;
 
         switch (mode)
         {

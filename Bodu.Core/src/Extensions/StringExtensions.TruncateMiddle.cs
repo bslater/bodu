@@ -47,9 +47,9 @@ public static partial class StringExtensions
 
         if (value.Length <= maxLength) return value;
 
-        var budget = maxLength - separator.Length;
-        var prefixLength = (budget + 1) / 2;
-        var suffixLength = budget - prefixLength;
+        int budget = maxLength - separator.Length;
+        int prefixLength = (budget + 1) / 2;
+        int suffixLength = budget - prefixLength;
         return string.Concat(
             value.AsSpan(0, prefixLength),
             separator,

@@ -2,22 +2,11 @@
 
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
-    <LangVersion>latest</LangVersion>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
     <RootNamespace>Bodu</RootNamespace>
-    <AssemblyName>$(MSBuildProjectName)</AssemblyName>
-    <OutputType>Library</OutputType>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Version>1.0.0</Version>
     <Description>Dependency-injection extensions for the SQLite-backed Bodu.Financial exchange-rate cache. Registers a per-provider SqliteExchangeRateCache as an IExchangeRateCache so consumers transparently get a persistent, SQLite-backed cache for cached exchange-rate lookups.</Description>
     <PackageTags>bodu;financial;exchange-rate;cache;sqlite;dependency-injection;options</PackageTags>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Include="..\README.md" Pack="true" PackagePath="\" />
-  </ItemGroup>
 
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">

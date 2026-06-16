@@ -42,7 +42,7 @@ public partial class TomlSerializerTests
         var options = new TomlSerializerOptions { MaxDepth = 2 };
         var shallow = new RecursiveModel { Child = new RecursiveModel() };
 
-        var text = TomlSerializer.Serialize(shallow, options);
+        string text = TomlSerializer.Serialize(shallow, options);
 
         Assert.AreEqual("[Child]\n", text);
     }

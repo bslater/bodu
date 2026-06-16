@@ -17,9 +17,9 @@ public partial class Base85Tests
     public void Decode_WithOffsetAndCount_ShouldRoundTrip()
     {
         byte[] data = { 1, 2, 3, 4 };
-        var encoded = Base85.Encode(data).ToCharArray();
+        char[] encoded = Base85.Encode(data).ToCharArray();
 
-        var decoded = Base85.Decode(encoded, 0, encoded.Length);
+        byte[] decoded = Base85.Decode(encoded, 0, encoded.Length);
 
         CollectionAssert.AreEqual(data, decoded);
     }
@@ -32,7 +32,7 @@ public partial class Base85Tests
     public void TryDecode_WhenDestinationTooSmall_ShouldReturnFalse()
     {
         byte[] data = { 1, 2, 3, 4 };
-        var encoded = Base85.Encode(data).ToCharArray();
+        char[] encoded = Base85.Encode(data).ToCharArray();
 
         Assert.IsFalse(Base85.TryDecode(encoded, Span<byte>.Empty, out _));
     }

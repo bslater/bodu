@@ -30,7 +30,7 @@ internal sealed class TimeSpanConverter
                 string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Op_Invalid_ExpectedString, reader.TokenType));
         }
 
-        var text = reader.GetString();
+        string text = reader.GetString();
         return TimeSpan.TryParseExact(text, "c", CultureInfo.InvariantCulture, TimeSpanStyles.None, out TimeSpan value)
             ? value
             : throw new TomlSerializationException(

@@ -27,7 +27,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
         foreach (TVariant variant in instance.GetBlockCipherVariants())
         {
             BlockCipherSpecification spec = instance.GetSpecification(variant);
-            var validTweak = spec.TestTweak ?? (spec.TweakSize > 0 ? new byte[spec.TweakSize] : []);
+            byte[] validTweak = spec.TestTweak ?? (spec.TweakSize > 0 ? new byte[spec.TweakSize] : []);
 
             yield return new object[] { variant, Array.Empty<byte>(), validTweak };
 
@@ -54,7 +54,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
         foreach (TVariant variant in instance.GetBlockCipherVariants())
         {
             BlockCipherSpecification spec = instance.GetSpecification(variant);
-            var validKey = spec.TestKey ?? new byte[spec.KeySize];
+            byte[] validKey = spec.TestKey ?? new byte[spec.KeySize];
 
             if (!spec.IsTweakable)
             {
@@ -79,7 +79,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
         ArgumentNullException.ThrowIfNull(data);
 
         var variant = (TVariant)data[0];
-        var key = (byte[])data[1];
+        byte[] key = (byte[])data[1];
         return $"Key: {key.Length} bytes (Variant: {variant})";
     }
 
@@ -90,7 +90,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
         ArgumentNullException.ThrowIfNull(data);
 
         var variant = (TVariant)data[0];
-        var tweak = (byte[])data[2];
+        byte[] tweak = (byte[])data[2];
         return $"Tweak: {tweak.Length} bytes (Variant: {variant})";
     }
 

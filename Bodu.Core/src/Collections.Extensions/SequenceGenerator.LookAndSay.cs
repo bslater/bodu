@@ -56,17 +56,17 @@ public static partial class SequenceGenerator
     {
         ThrowHelper.ThrowIfLessThan(count, 1);
 
-        var current = "1";
-        for (var i = 0; i < count; i++)
+        string current = "1";
+        for (int i = 0; i < count; i++)
         {
             yield return current;
 
             var next = new StringBuilder();
-            var j = 0;
+            int j = 0;
             while (j < current.Length)
             {
-                var digit = current[j];
-                var runLength = 1;
+                char digit = current[j];
+                int runLength = 1;
                 while (j + runLength < current.Length && current[j + runLength] == digit)
                     runLength++;
                 next.Append(runLength).Append(digit);

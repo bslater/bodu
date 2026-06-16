@@ -19,7 +19,7 @@ public sealed partial class Base64Tests
     [DataRow(Base64Variant.Mime)]
     public void Decode_WhenEmptyString_ShouldReturnEmptyByteArray(Base64Variant variant)
     {
-        var actual = Base64.Decode(string.Empty, variant);
+        byte[] actual = Base64.Decode(string.Empty, variant);
 
         Assert.AreEqual(0, actual.Length);
     }
@@ -33,7 +33,7 @@ public sealed partial class Base64Tests
     [DataRow(Base64Variant.Mime)]
     public void Encode_WhenEmptyByteArray_ShouldReturnEmptyString(Base64Variant variant)
     {
-        var actual = Base64.Encode([], variant);
+        string actual = Base64.Encode([], variant);
 
         Assert.AreEqual(string.Empty, actual);
     }
@@ -45,13 +45,13 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void TryDecode_WhenSourceIsEmpty_ShouldReturnTrueAndZeroBytesRegardlessOfDestination()
     {
-        Assert.IsTrue(Base64.TryDecode([], new byte[1], out var t1));
+        Assert.IsTrue(Base64.TryDecode([], new byte[1], out int t1));
         Assert.AreEqual(0, t1);
 
-        Assert.IsTrue(Base64.TryDecode([], [], out var t2));
+        Assert.IsTrue(Base64.TryDecode([], [], out int t2));
         Assert.AreEqual(0, t2);
 
-        Assert.IsTrue(Base64.TryDecode([], new byte[100], out var t3));
+        Assert.IsTrue(Base64.TryDecode([], new byte[100], out int t3));
         Assert.AreEqual(0, t3);
     }
 
@@ -62,13 +62,13 @@ public sealed partial class Base64Tests
     [TestMethod]
     public void TryEncode_WhenSourceIsEmpty_ShouldReturnTrueAndZeroCharsRegardlessOfDestination()
     {
-        Assert.IsTrue(Base64.TryEncode([], new char[1], out var t1));
+        Assert.IsTrue(Base64.TryEncode([], new char[1], out int t1));
         Assert.AreEqual(0, t1);
 
-        Assert.IsTrue(Base64.TryEncode([], [], out var t2));
+        Assert.IsTrue(Base64.TryEncode([], [], out int t2));
         Assert.AreEqual(0, t2);
 
-        Assert.IsTrue(Base64.TryEncode([], new char[100], out var t3));
+        Assert.IsTrue(Base64.TryEncode([], new char[100], out int t3));
         Assert.AreEqual(0, t3);
     }
 

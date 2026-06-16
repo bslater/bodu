@@ -17,11 +17,11 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     public void Tweak_WhenGetMultipleTimes_ShouldReturnDistinctCopies()
     {
         using TAlgorithm algorithm = CreateAlgorithm();
-        var size = algorithm.LegalTweakSizes[0].MinSize;
+        int size = algorithm.LegalTweakSizes[0].MinSize;
         algorithm.TweakSize = size;
         algorithm.GenerateTweak();
-        var first = algorithm.Tweak;
-        var second = algorithm.Tweak;
+        byte[] first = algorithm.Tweak;
+        byte[] second = algorithm.Tweak;
         Assert.AreNotSame(first, second);
         CollectionAssert.AreEqual(first, second);
         first[0]++;
@@ -35,9 +35,9 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     public void Tweak_WhenSet_ShouldBeIsolatedFromInput()
     {
         using TAlgorithm algorithm = CreateAlgorithm();
-        var size = algorithm.LegalTweakSizes[0].MinSize;
-        var original = Enumerable.Range(0, size / 8).Select(i => (byte)i).ToArray();
-        var input = (byte[])original.Clone();
+        int size = algorithm.LegalTweakSizes[0].MinSize;
+        byte[] original = Enumerable.Range(0, size / 8).Select(i => (byte)i).ToArray();
+        byte[] input = (byte[])original.Clone();
         algorithm.TweakSize = size;
         algorithm.Tweak = input;
         input[0]++;
@@ -52,11 +52,11 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     public void TweakSize_WhenChanged_ShouldResetTweak()
     {
         using TAlgorithm algorithm = CreateAlgorithm();
-        var size = algorithm.LegalTweakSizes[0].MinSize;
+        int size = algorithm.LegalTweakSizes[0].MinSize;
 
         algorithm.TweakSize = size;
         algorithm.GenerateTweak();
-        var previousTweak = algorithm.Tweak;
+        byte[] previousTweak = algorithm.Tweak;
 
         algorithm.TweakSize = size; // Reassign same size to trigger reset
         CollectionAssert.AreNotEqual(previousTweak, algorithm.Tweak);
@@ -69,7 +69,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     public void TweakSize_WhenSetToValidValue_ShouldUpdateInternalValue()
     {
         using TAlgorithm algorithm = CreateAlgorithm();
-        var validSize = algorithm.LegalTweakSizes[0].MinSize;
+        int validSize = algorithm.LegalTweakSizes[0].MinSize;
         algorithm.TweakSize = validSize;
         Assert.AreEqual(validSize, algorithm.TweakSize);
     }

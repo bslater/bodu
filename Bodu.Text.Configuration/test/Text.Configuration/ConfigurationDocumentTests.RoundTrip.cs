@@ -32,13 +32,13 @@ public partial class ConfigurationDocumentTests
     public void RoundTrip_WhenRepresentativeFixture_ShouldPreserveCountsAndOrder()
     {
         var first = ConfigurationDocument.Parse(ConfigurationFixtures.Representative);
-        var emitted = Emit(first);
+        string emitted = Emit(first);
         var second = ConfigurationDocument.Parse(emitted);
 
         Assert.HasCount(first.Sections.Count, second.Sections);
         Assert.HasCount(first.GlobalSection.Entries.Count, second.GlobalSection.Entries);
 
-        for (var i = 0; i < first.Sections.Count; i++)
+        for (int i = 0; i < first.Sections.Count; i++)
         {
             Assert.AreEqual(first.Sections[i].Name, second.Sections[i].Name);
             Assert.HasCount(first.Sections[i].Entries.Count, second.Sections[i].Entries);

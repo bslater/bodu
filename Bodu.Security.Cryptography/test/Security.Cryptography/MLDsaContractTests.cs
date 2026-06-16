@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MLDsaContractTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -80,10 +80,10 @@ public abstract class MLDsaContractTests<TTest, TDsa>
     {
         using var dsa = new TDsa();
         dsa.GenerateKey();
-        var message = new byte[] { 42 };
+        byte[] message = new byte[] { 42 };
 
-        var hedgedFirst = dsa.SignData(message);
-        var hedgedSecond = dsa.SignData(message);
+        byte[] hedgedFirst = dsa.SignData(message);
+        byte[] hedgedSecond = dsa.SignData(message);
         CollectionAssert.AreNotEqual(hedgedFirst, hedgedSecond);
         Assert.IsTrue(dsa.VerifyData(message, hedgedFirst));
         Assert.IsTrue(dsa.VerifyData(message, hedgedSecond));
@@ -100,10 +100,10 @@ public abstract class MLDsaContractTests<TTest, TDsa>
     {
         using var dsa = new TDsa();
         dsa.GenerateKey();
-        var message = new byte[] { 7, 7, 7 };
-        var context = new byte[] { 0xC0, 0xFF, 0xEE };
+        byte[] message = new byte[] { 7, 7, 7 };
+        byte[] context = new byte[] { 0xC0, 0xFF, 0xEE };
 
-        var signature = dsa.SignData(message, context);
+        byte[] signature = dsa.SignData(message, context);
 
         Assert.IsTrue(dsa.VerifyData(message, signature, context));
         Assert.IsFalse(dsa.VerifyData(message, signature));
@@ -119,7 +119,7 @@ public abstract class MLDsaContractTests<TTest, TDsa>
     {
         using var dsa = new TDsa();
         dsa.GenerateKey();
-        var oversized = new byte[MLDsa.MaxContextSizeInBytes + 1];
+        byte[] oversized = new byte[MLDsa.MaxContextSizeInBytes + 1];
 
         Assert.ThrowsExactly<ArgumentException>(() => { _ = dsa.SignData(new byte[1], oversized); });
         Assert.ThrowsExactly<ArgumentException>(() => { _ = dsa.VerifyData(new byte[1], new byte[SignatureSizeBytes], oversized); });
@@ -132,7 +132,7 @@ public abstract class MLDsaContractTests<TTest, TDsa>
     [TestMethod]
     public void ImportPrivateSeed_WhenSeedIsReused_ShouldRegenerateSameKeyPairAndRejectWrongLengths()
     {
-        var seed = new byte[MLDsa.PrivateSeedSizeInBytes];
+        byte[] seed = new byte[MLDsa.PrivateSeedSizeInBytes];
         new Random(204).NextBytes(seed);
 
         using var first = new TDsa();
@@ -158,7 +158,7 @@ public abstract class MLDsaContractTests<TTest, TDsa>
         donor.GenerateKey();
 
         // tr = H(pk, 64) occupies bytes 64-127 of the encoded private key.
-        var corrupted = donor.ExportPrivateKey();
+        byte[] corrupted = donor.ExportPrivateKey();
         corrupted[70] ^= 0x01;
 
         using var dsa = new TDsa();
@@ -180,10 +180,10 @@ public abstract class MLDsaContractTests<TTest, TDsa>
         using var dsa = new TDsa();
         dsa.GenerateKey();
         dsa.DeterministicSigning = true;
-        var message = new byte[] { 1, 2, 3 };
+        byte[] message = new byte[] { 1, 2, 3 };
 
-        var allocating = dsa.SignData(message);
-        var spanResult = new byte[SignatureSizeBytes];
+        byte[] allocating = dsa.SignData(message);
+        byte[] spanResult = new byte[SignatureSizeBytes];
         dsa.SignData(message, ReadOnlySpan<byte>.Empty, spanResult);
         CollectionAssert.AreEqual(allocating, spanResult);
 

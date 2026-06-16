@@ -63,7 +63,7 @@ public partial class MultiValueDictionaryTests
         mvd.Add("k", null);
         mvd.Add("k", "other");
 
-        var removed = mvd.Remove("k", null);
+        bool removed = mvd.Remove("k", null);
 
         Assert.IsTrue(removed);
         Assert.AreEqual(1, mvd.Count);

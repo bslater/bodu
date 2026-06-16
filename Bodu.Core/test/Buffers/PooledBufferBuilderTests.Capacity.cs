@@ -18,9 +18,9 @@ public partial class PooledBufferBuilderTests
     public void Capacity_WhenCapacityExceeded_ShouldIncreaseAfterGrowth()
     {
         using var builder = new PooledBufferBuilder<int>(2);
-        var initialCapacity = builder.Capacity;
+        int initialCapacity = builder.Capacity;
 
-        for (var i = 0; i <= initialCapacity; i++)
+        for (int i = 0; i <= initialCapacity; i++)
             builder.Append(i);
 
         Assert.IsGreaterThan(
@@ -67,7 +67,7 @@ public partial class PooledBufferBuilderTests
     {
         using var builder = new PooledBufferBuilder<int>(16);
         builder.AppendRange(Enumerable.Range(1, 10));
-        var capacityBeforeReset = builder.Capacity;
+        int capacityBeforeReset = builder.Capacity;
 
         builder.Reset();
 

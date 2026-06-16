@@ -103,7 +103,7 @@ public partial class ConcurrentCircularBufferTests
     public void Indexer_WhenReadConcurrentlyWithoutMutation_ShouldBeStableForInitialSnapshot()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(10);
-        for (var i = 0; i < 10; i++) buffer.Enqueue(new TestItem(i));
+        for (int i = 0; i < 10; i++) buffer.Enqueue(new TestItem(i));
 
         var errors = new ConcurrentBag<Exception>();
 
@@ -131,7 +131,7 @@ public partial class ConcurrentCircularBufferTests
     public void Indexer_WhenReadDuringConcurrentEnqueue_ShouldNotThrow()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(10);
-        for (var i = 0; i < 10; i++) buffer.Enqueue(new TestItem(i));
+        for (int i = 0; i < 10; i++) buffer.Enqueue(new TestItem(i));
 
         var errors = new ConcurrentBag<Exception>();
         var start = new ManualResetEventSlim(false);
@@ -141,7 +141,7 @@ public partial class ConcurrentCircularBufferTests
             try
             {
                 start.Wait();
-                for (var i = 0; i < 100; i++)
+                for (int i = 0; i < 100; i++)
                 {
                     _ = buffer[0]; // may be default if snapshot shrinks
                     Thread.SpinWait(5);
@@ -153,7 +153,7 @@ public partial class ConcurrentCircularBufferTests
         var writer = Task.Run(() =>
         {
             start.Wait();
-            for (var i = 10; i < 110; i++)
+            for (int i = 10; i < 110; i++)
             {
                 buffer.TryEnqueue(new TestItem(i));
                 Thread.SpinWait(5);

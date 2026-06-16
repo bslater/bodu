@@ -46,7 +46,7 @@ public partial class BlockNonCryptographicHashAlgorithmTests
 
         // The padded buffer returned by PadBlock is 7 bytes, which is not a multiple of the 4-byte block size.
         // With AllowUnalignedFinalBlock = true this must still succeed without throwing.
-        var digest = hasher.GetCurrentHash();
+        byte[] digest = hasher.GetCurrentHash();
 
         Assert.IsNotNull(digest);
         Assert.AreEqual(4, digest.Length);

@@ -368,7 +368,7 @@ public partial class MoneyOfTCurrencyTests
         var money = new Money<JPY>(-1234m);
         var culture = new CultureInfo("en-US");
 
-        var actual = money.ToString("C", culture);
+        string actual = money.ToString("C", culture);
 
         // The pre-fix buggy form was a plain "N"-formatted number with the ISO code prepended in the
         // positive-pattern slot, ignoring the negative pattern entirely.
@@ -378,10 +378,10 @@ public partial class MoneyOfTCurrencyTests
         // pattern-normalisation strategy the production code uses.
         var nfi = (NumberFormatInfo)culture.NumberFormat.Clone();
         nfi.CurrencyDecimalDigits = 0;
-        var isoBeforeAmount = culture.NumberFormat.CurrencyPositivePattern is 0 or 2;
+        bool isoBeforeAmount = culture.NumberFormat.CurrencyPositivePattern is 0 or 2;
         nfi.CurrencySymbol = isoBeforeAmount ? "JPY " : " JPY";
         nfi.CurrencyPositivePattern = isoBeforeAmount ? 0 : 1;
-        var expected = (-1234m).ToString("C", nfi);
+        string expected = (-1234m).ToString("C", nfi);
         Assert.IsTrue(
             actual == expected
                 || actual.Contains("JPY", StringComparison.Ordinal),
@@ -396,7 +396,7 @@ public partial class MoneyOfTCurrencyTests
     {
         var money = new Money<JPY>(1234m);
 
-        var actual = money.ToString("C", new CultureInfo("en-US"));
+        string actual = money.ToString("C", new CultureInfo("en-US"));
 
         Assert.AreEqual("JPY 1,234", actual);
     }
@@ -412,7 +412,7 @@ public partial class MoneyOfTCurrencyTests
     [TestMethod]
     public void JsonDeserialize_WhenAmountPropertyDuplicated_ShouldThrowJsonException()
     {
-        var json = "{\"amount\":10,\"amount\":20,\"currency\":\"USD\"}";
+        string json = "{\"amount\":10,\"amount\":20,\"currency\":\"USD\"}";
 
         Assert.ThrowsExactly<JsonException>(() =>
         {
@@ -426,7 +426,7 @@ public partial class MoneyOfTCurrencyTests
     [TestMethod]
     public void JsonDeserialize_WhenCurrencyPropertyDuplicated_ShouldThrowJsonException()
     {
-        var json = "{\"amount\":10,\"currency\":\"USD\",\"currency\":\"JPY\"}";
+        string json = "{\"amount\":10,\"currency\":\"USD\",\"currency\":\"JPY\"}";
 
         Assert.ThrowsExactly<JsonException>(() =>
         {

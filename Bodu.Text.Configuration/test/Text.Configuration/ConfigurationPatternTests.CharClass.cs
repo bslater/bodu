@@ -20,10 +20,10 @@ public partial class ConfigurationPatternTests
     {
         var pattern = ConfigurationPattern.Compile("file-[a-e].txt");
 
-        for (var c = 'a'; c <= 'e'; c++)
+        for (char c = 'a'; c <= 'e'; c++)
             Assert.IsTrue(pattern.IsMatch($"file-{c}.txt"), $"expected match for {c}");
 
-        for (var c = 'f'; c <= 'z'; c++)
+        for (char c = 'f'; c <= 'z'; c++)
             Assert.IsFalse(pattern.IsMatch($"file-{c}.txt"), $"unexpected match for {c}");
     }
 

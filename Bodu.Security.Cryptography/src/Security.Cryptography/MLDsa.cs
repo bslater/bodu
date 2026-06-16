@@ -259,7 +259,7 @@ public abstract class MLDsa
         CryptographyThrowHelper.ThrowIfInvalidRawKeyLength(
             privateKey, _parameters.PrivateKeySize, $"{_parameters.Name} private");
 
-        var publicKey = new byte[_parameters.PublicKeySize];
+        byte[] publicKey = new byte[_parameters.PublicKeySize];
         if (!MLDsaEngine.TryDerivePublicKey(_parameters, privateKey, publicKey))
         {
             throw new ArgumentException(
@@ -335,7 +335,7 @@ public abstract class MLDsa
     {
         ThrowIfDisposed();
 
-        var signature = new byte[_parameters.SignatureSize];
+        byte[] signature = new byte[_parameters.SignatureSize];
         SignData(data, context, signature);
 
         return signature;
@@ -424,7 +424,7 @@ public abstract class MLDsa
         ThrowIfContextTooLong(context);
         CryptographyThrowHelper.ThrowIfNoPrivateKey(_privateKey is not null);
 
-        var signature = new byte[_parameters.SignatureSize];
+        byte[] signature = new byte[_parameters.SignatureSize];
         MLDsaEngine.Sign(_parameters, _privateKey, context, data, rnd, signature);
 
         return signature;
@@ -479,8 +479,8 @@ public abstract class MLDsa
     /// <param name="seed">The 32-byte seed.</param>
     private void SetKeysFromSeed(ReadOnlySpan<byte> seed)
     {
-        var publicKey = new byte[_parameters.PublicKeySize];
-        var privateKey = new byte[_parameters.PrivateKeySize];
+        byte[] publicKey = new byte[_parameters.PublicKeySize];
+        byte[] privateKey = new byte[_parameters.PrivateKeySize];
         MLDsaEngine.KeyGen(_parameters, seed, publicKey, privateKey);
 
         CryptographyHelper.ClearAndNullify(ref _privateKey);

@@ -122,7 +122,7 @@ public partial class IndexedPriorityQueueTests
     {
         var queue = new IndexedPriorityQueue<string, int>();
 
-        Assert.IsFalse(queue.TryGetPriority("missing", out var priority));
+        Assert.IsFalse(queue.TryGetPriority("missing", out int priority));
         Assert.AreEqual(0, priority);
     }
 
@@ -135,7 +135,7 @@ public partial class IndexedPriorityQueueTests
         var queue = new IndexedPriorityQueue<string, int>();
         queue.Enqueue("a", 42);
 
-        Assert.IsTrue(queue.TryGetPriority("a", out var priority));
+        Assert.IsTrue(queue.TryGetPriority("a", out int priority));
         Assert.AreEqual(42, priority);
     }
 

@@ -268,7 +268,7 @@ public class TomlValueTests
         root["ld"] = TomlValue.Create(new DateOnly(1979, 5, 27));
         root["lt"] = TomlValue.Create(new TimeOnly(7, 32, 0));
 
-        var expected =
+        string expected =
             "s = \"x\"\n" +
             "i = -7\n" +
             "f = 1.5\n" +

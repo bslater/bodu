@@ -36,8 +36,8 @@ public partial class BufferConverterTests
         int targetIndex,
         int count)
     {
-        var source = AscendingBytes;
-        var target = new byte[16];
+        byte[] source = AscendingBytes;
+        byte[] target = new byte[16];
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -52,8 +52,8 @@ public partial class BufferConverterTests
     [TestMethod]
     public void CopyTo_WhenCountExceedsSourceSpan_ForByteSpanToTypedSpan_ShouldThrowExactly()
     {
-        var sourceData = AscendingBytes;
-        var targetData = new int[8];
+        byte[] sourceData = AscendingBytes;
+        int[] targetData = new int[8];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -69,8 +69,8 @@ public partial class BufferConverterTests
     [TestMethod]
     public void CopyTo_WhenCountExceedsTargetSpan_ForByteSpanToTypedSpan_ShouldThrowExactly()
     {
-        var sourceData = AscendingBytes;
-        var targetData = new int[2];
+        byte[] sourceData = AscendingBytes;
+        int[] targetData = new int[2];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -86,9 +86,9 @@ public partial class BufferConverterTests
     [TestMethod]
     public void CopyTo_WhenCountIsZero_ForByteArrayToByteArray_ShouldLeaveTargetUnchanged()
     {
-        var source = AscendingBytes;
+        byte[] source = AscendingBytes;
         byte[] target = [99, 98, 97, 96];
-        var snapshot = (byte[])target.Clone();
+        byte[] snapshot = (byte[])target.Clone();
 
         source.CopyTo(0, target, 0, 0);
 
@@ -118,8 +118,8 @@ public partial class BufferConverterTests
     [TestMethod]
     public void CopyTo_WhenFollowedByRead_ForUnmanagedValueToByteArray_ShouldRoundTripValue()
     {
-        var buffer = new byte[sizeof(long)];
-        var value = unchecked((long)0xDEADBEEFCAFEBABEUL);
+        byte[] buffer = new byte[sizeof(long)];
+        long value = unchecked((long)0xDEADBEEFCAFEBABEUL);
 
         value.CopyTo(buffer, 0);
 
@@ -132,7 +132,7 @@ public partial class BufferConverterTests
     [TestMethod]
     public void CopyTo_WhenIndexIsNegative_ForUnmanagedValueToByteArray_ShouldThrowExactly()
     {
-        var target = new byte[8];
+        byte[] target = new byte[8];
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -146,7 +146,7 @@ public partial class BufferConverterTests
     [TestMethod]
     public void CopyTo_WhenIndexLeavesInsufficientSpace_ForUnmanagedValueToByteArray_ShouldThrowExactly()
     {
-        var target = new byte[8];
+        byte[] target = new byte[8];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -223,7 +223,7 @@ public partial class BufferConverterTests
     [TestMethod]
     public void CopyTo_WhenSingleValueIsWritten_ForUnmanagedValueToByteArray_ShouldWriteExpectedBytes()
     {
-        var target = new byte[8];
+        byte[] target = new byte[8];
 
         0x04030201.CopyTo(target, 2);
 
@@ -239,8 +239,8 @@ public partial class BufferConverterTests
     [TestMethod]
     public void CopyTo_WhenSourceIndexPlusCountExceedsSourceLength_ForByteArrayToByteArray_ShouldThrowExactly()
     {
-        var source = AscendingBytes;
-        var target = new byte[16];
+        byte[] source = AscendingBytes;
+        byte[] target = new byte[16];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -255,7 +255,7 @@ public partial class BufferConverterTests
     public void CopyTo_WhenSourceIsNull_ForByteArrayToTypedArray_ShouldThrowExactly()
     {
         byte[]? source = null;
-        var target = new byte[8];
+        byte[] target = new byte[8];
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -270,7 +270,7 @@ public partial class BufferConverterTests
     public void CopyTo_WhenSourceIsNull_ForByteArrayToTypedArrayImplicitTargetIndex_ShouldThrowExactly()
     {
         byte[]? source = null;
-        var target = new byte[4];
+        byte[] target = new byte[4];
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -288,8 +288,8 @@ public partial class BufferConverterTests
     [TestMethod]
     public void CopyTo_WhenTargetIndexIsImplicit_ForByteArrayToByteArray_ShouldCopyFromIndexZero()
     {
-        var source = AscendingBytes;
-        var target = new byte[8];
+        byte[] source = AscendingBytes;
+        byte[] target = new byte[8];
 
         source.CopyTo(0, target, 8);
 
@@ -304,7 +304,7 @@ public partial class BufferConverterTests
     [TestMethod]
     public void CopyTo_WhenTargetIsNull_ForByteArrayToTypedArray_ShouldThrowExactly()
     {
-        var source = AscendingBytes;
+        byte[] source = AscendingBytes;
         byte[]? target = null;
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>

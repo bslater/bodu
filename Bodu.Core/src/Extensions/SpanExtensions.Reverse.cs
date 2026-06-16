@@ -124,7 +124,7 @@ public static partial class SpanExtensions
     /// </example>
     public static Span<T> Reverse<T>(this ReadOnlySpan<T> source, Range range)
     {
-        (var start, var length) = range.GetOffsetAndLength(source.Length);
+        (int start, int length) = range.GetOffsetAndLength(source.Length);
         return ReverseCore(source, start, length);
     }
 

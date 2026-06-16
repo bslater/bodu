@@ -83,15 +83,15 @@ public partial struct WeekPattern
     /// <exception cref="ArgumentException">Thrown if <paramref name="format" /> is not recognized.</exception>
     public string ToString(string? format, IFormatProvider? formatProvider)
     {
-        (var startDay, var unselectedChar, var isBinary) = ParseFormatForToString(format);
+        (char? startDay, char? unselectedChar, bool isBinary) = ParseFormatForToString(format);
         unselectedChar ??= '_';
-        var isMondayStart = startDay == 'M';
-        var buffer = new char[7];
+        bool isMondayStart = startDay == 'M';
+        char[] buffer = new char[7];
 
-        for (var i = 0; i < 7; i++)
+        for (int i = 0; i < 7; i++)
         {
-            var dayIndex = isMondayStart ? (i + 1) % 7 : i;
-            var selected = this[(DayOfWeek)dayIndex];
+            int dayIndex = isMondayStart ? (i + 1) % 7 : i;
+            bool selected = this[(DayOfWeek)dayIndex];
 
             buffer[i] = selected
                 ? (isBinary ? '1' : WeekdaySymbols[dayIndex])

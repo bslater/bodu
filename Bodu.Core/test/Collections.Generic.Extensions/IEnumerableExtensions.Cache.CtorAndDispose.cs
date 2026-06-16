@@ -46,7 +46,7 @@ public sealed partial class IEnumerableExtensionsTests_Cache
     [TestMethod]
     public void Dispose_AfterFullEnumeration_ShouldReinitialiseFromSourceOnNextEnumeration()
     {
-        var sourceEnumerations = 0;
+        int sourceEnumerations = 0;
         var tracker = new TrackingEnumerable<int>(YieldingSequence(), onEnumerate: () => sourceEnumerations++);
         IEnumerable<int> cached = tracker.Cache();
         Assert.IsInstanceOfType<IDisposable>(cached);

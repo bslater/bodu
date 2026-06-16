@@ -25,7 +25,7 @@ public sealed partial class ConfigurationView
         where T : ISpanParsable<T>
     {
         ThrowHelper.ThrowIfNull(key);
-        var raw = LookupValue(key);
+        string? raw = LookupValue(key);
         if (raw is null)
             ConfigurationHelpers.ThrowConfigKeyNotPresent(key);
 
@@ -47,7 +47,7 @@ public sealed partial class ConfigurationView
         where T : ISpanParsable<T>
     {
         ThrowHelper.ThrowIfNull(key);
-        var raw = LookupValue(key);
+        string? raw = LookupValue(key);
         if (raw is not null && T.TryParse(raw.AsSpan(), CultureInfo.InvariantCulture, out value))
             return true;
 
@@ -71,7 +71,7 @@ public sealed partial class ConfigurationView
         where T : ISpanParsable<T>
     {
         ThrowHelper.ThrowIfNull(key);
-        var raw = LookupValue(key);
+        string? raw = LookupValue(key);
         if (raw is null)
             return fallback;
 
@@ -88,7 +88,7 @@ public sealed partial class ConfigurationView
     public string GetString(string key)
     {
         ThrowHelper.ThrowIfNull(key);
-        var value = LookupValue(key);
+        string? value = LookupValue(key);
         if (value is not null)
             return value;
 
@@ -106,7 +106,7 @@ public sealed partial class ConfigurationView
     public string? GetString(string key, string? fallback)
     {
         ThrowHelper.ThrowIfNull(key);
-        var value = LookupValue(key);
+        string? value = LookupValue(key);
         return value ?? fallback;
     }
 
@@ -134,8 +134,8 @@ public sealed partial class ConfigurationView
     /// <exception cref="FormatException">The value cannot be parsed as an integer.</exception>
     public int GetInt32(string key)
     {
-        var raw = GetString(key);
-        if (int.TryParse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture, out var value))
+        string raw = GetString(key);
+        if (int.TryParse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture, out int value))
             return value;
 
         ConfigurationHelpers.ThrowValueNotConvertible(key, raw, nameof(Int32));
@@ -152,11 +152,11 @@ public sealed partial class ConfigurationView
     public int GetInt32(string key, int fallback)
     {
         ThrowHelper.ThrowIfNull(key);
-        var raw = LookupValue(key);
+        string? raw = LookupValue(key);
         if (raw is null)
             return fallback;
 
-        if (int.TryParse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture, out var value))
+        if (int.TryParse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture, out int value))
             return value;
 
         ConfigurationHelpers.ThrowValueNotConvertible(key, raw, nameof(Int32));
@@ -174,7 +174,7 @@ public sealed partial class ConfigurationView
     public bool TryGetInt32(string key, out int value)
     {
         ThrowHelper.ThrowIfNull(key);
-        var raw = LookupValue(key);
+        string? raw = LookupValue(key);
         if (raw is not null && int.TryParse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture, out value))
             return true;
 
@@ -191,8 +191,8 @@ public sealed partial class ConfigurationView
     /// <exception cref="FormatException">The value cannot be parsed.</exception>
     public long GetInt64(string key)
     {
-        var raw = GetString(key);
-        if (long.TryParse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture, out var value))
+        string raw = GetString(key);
+        if (long.TryParse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture, out long value))
             return value;
 
         ConfigurationHelpers.ThrowValueNotConvertible(key, raw, nameof(Int64));
@@ -210,11 +210,11 @@ public sealed partial class ConfigurationView
     public long GetInt64(string key, long fallback)
     {
         ThrowHelper.ThrowIfNull(key);
-        var raw = LookupValue(key);
+        string? raw = LookupValue(key);
         if (raw is null)
             return fallback;
 
-        if (long.TryParse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture, out var value))
+        if (long.TryParse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture, out long value))
             return value;
 
         ConfigurationHelpers.ThrowValueNotConvertible(key, raw, nameof(Int64));
@@ -233,7 +233,7 @@ public sealed partial class ConfigurationView
     public bool TryGetInt64(string key, out long value)
     {
         ThrowHelper.ThrowIfNull(key);
-        var raw = LookupValue(key);
+        string? raw = LookupValue(key);
         if (raw is not null && long.TryParse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture, out value))
             return true;
 
@@ -260,8 +260,8 @@ public sealed partial class ConfigurationView
     /// </remarks>
     public bool GetBoolean(string key)
     {
-        var raw = GetString(key);
-        if (bool.TryParse(raw, out var value))
+        string raw = GetString(key);
+        if (bool.TryParse(raw, out bool value))
             return value;
 
         ConfigurationHelpers.ThrowValueNotConvertible(key, raw, nameof(Boolean));
@@ -277,11 +277,11 @@ public sealed partial class ConfigurationView
     public bool GetBoolean(string key, bool fallback)
     {
         ThrowHelper.ThrowIfNull(key);
-        var raw = LookupValue(key);
+        string? raw = LookupValue(key);
         if (raw is null)
             return fallback;
 
-        if (bool.TryParse(raw, out var value))
+        if (bool.TryParse(raw, out bool value))
             return value;
 
         ConfigurationHelpers.ThrowValueNotConvertible(key, raw, nameof(Boolean));
@@ -299,7 +299,7 @@ public sealed partial class ConfigurationView
     public bool TryGetBoolean(string key, out bool value)
     {
         ThrowHelper.ThrowIfNull(key);
-        var raw = LookupValue(key);
+        string? raw = LookupValue(key);
         if (raw is not null && bool.TryParse(raw, out value))
             return true;
 
@@ -330,7 +330,7 @@ public sealed partial class ConfigurationView
     public TEnum GetEnum<TEnum>(string key)
         where TEnum : struct, Enum
     {
-        var raw = GetString(key);
+        string raw = GetString(key);
         if (Enum.TryParse(raw, ignoreCase: true, out TEnum value) && Enum.IsDefined(value))
             return value;
 
@@ -355,7 +355,7 @@ public sealed partial class ConfigurationView
         where TEnum : struct, Enum
     {
         ThrowHelper.ThrowIfNull(key);
-        var raw = LookupValue(key);
+        string? raw = LookupValue(key);
         if (raw is null)
             return fallback;
 
@@ -381,7 +381,7 @@ public sealed partial class ConfigurationView
         where TEnum : struct, Enum
     {
         ThrowHelper.ThrowIfNull(key);
-        var raw = LookupValue(key);
+        string? raw = LookupValue(key);
         if (raw is not null && Enum.TryParse(raw, ignoreCase: true, out value) && Enum.IsDefined(value))
             return true;
 

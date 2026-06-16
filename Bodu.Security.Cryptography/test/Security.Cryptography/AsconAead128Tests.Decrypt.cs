@@ -20,7 +20,7 @@ public partial class AsconAead128Tests
     public void Decrypt_WhenAadNotProcessed_ShouldThrowExactly()
     {
         using var sut = new AsconAead128(s_validKey, s_validNonce);
-        var fakeCtWithTag = new byte[AsconAead128.TagBytes];
+        byte[] fakeCtWithTag = new byte[AsconAead128.TagBytes];
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
@@ -50,8 +50,8 @@ public partial class AsconAead128Tests
     [TestMethod]
     public void Decrypt_WhenOutputBufferTooSmall_ShouldThrowExactly()
     {
-        var plaintext = new byte[16];
-        var ciphertext = new byte[plaintext.Length + AsconAead128.TagBytes];
+        byte[] plaintext = new byte[16];
+        byte[] ciphertext = new byte[plaintext.Length + AsconAead128.TagBytes];
         using AsconAead128 enc = MakeInstance();
         enc.Encrypt(plaintext, ciphertext);
 
@@ -90,7 +90,7 @@ public partial class AsconAead128Tests
     {
         byte[] plaintext = [0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
                              0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10];
-        var ciphertext = new byte[plaintext.Length + AsconAead128.TagBytes];
+        byte[] ciphertext = new byte[plaintext.Length + AsconAead128.TagBytes];
         using AsconAead128 enc = MakeInstance();
         enc.Encrypt(plaintext, ciphertext);
 
@@ -112,7 +112,7 @@ public partial class AsconAead128Tests
     public void Decrypt_WhenTagTampered_ShouldThrowExactly()
     {
         byte[] plaintext = [0xAA, 0xBB, 0xCC, 0xDD];
-        var ciphertext = new byte[plaintext.Length + AsconAead128.TagBytes];
+        byte[] ciphertext = new byte[plaintext.Length + AsconAead128.TagBytes];
         using AsconAead128 enc = MakeInstance();
         enc.Encrypt(plaintext, ciphertext);
 
@@ -136,7 +136,7 @@ public partial class AsconAead128Tests
         byte[] aad1 = [0x01, 0x02];
         byte[] aad2 = [0xFF, 0xFF];
         byte[] plaintext = [0x10, 0x20, 0x30, 0x40];
-        var ciphertext = new byte[plaintext.Length + AsconAead128.TagBytes];
+        byte[] ciphertext = new byte[plaintext.Length + AsconAead128.TagBytes];
 
         using var enc = new AsconAead128(s_validKey, s_validNonce);
         enc.ProcessAssociatedData(aad1);
@@ -158,14 +158,14 @@ public partial class AsconAead128Tests
     [TestMethod]
     public void Decrypt_ShouldReturnCorrectByteCount()
     {
-        var plaintext = new byte[20];
-        var ciphertext = new byte[plaintext.Length + AsconAead128.TagBytes];
+        byte[] plaintext = new byte[20];
+        byte[] ciphertext = new byte[plaintext.Length + AsconAead128.TagBytes];
         using AsconAead128 enc = MakeInstance();
         enc.Encrypt(plaintext, ciphertext);
 
-        var recovered = new byte[plaintext.Length];
+        byte[] recovered = new byte[plaintext.Length];
         using AsconAead128 dec = MakeInstance();
-        var written = dec.Decrypt(ciphertext, recovered);
+        int written = dec.Decrypt(ciphertext, recovered);
 
         Assert.AreEqual(plaintext.Length, written,
             "Decrypt must return plaintext.Length bytes written.");
@@ -180,15 +180,15 @@ public partial class AsconAead128Tests
     public void Decrypt_WhenCalledTwiceAfterAssociatedDataProcessed_ShouldThrowExactly()
     {
         byte[] plaintext = [0x10, 0x20, 0x30, 0x40];
-        var ciphertext = new byte[plaintext.Length + AsconAead128.TagBytes];
+        byte[] ciphertext = new byte[plaintext.Length + AsconAead128.TagBytes];
 
         using (AsconAead128 enc = MakeInstance())
         {
             _ = enc.Encrypt(plaintext, ciphertext);
         }
 
-        var recovered1 = new byte[plaintext.Length];
-        var recovered2 = new byte[plaintext.Length];
+        byte[] recovered1 = new byte[plaintext.Length];
+        byte[] recovered2 = new byte[plaintext.Length];
 
         using AsconAead128 sut = MakeInstance();
 
@@ -207,7 +207,7 @@ public partial class AsconAead128Tests
     public void Decrypt_WhenAuthenticationTagInvalid_ShouldMarkInstanceCompleted()
     {
         byte[] plaintext = [0xAA, 0xBB, 0xCC, 0xDD];
-        var ciphertext = new byte[plaintext.Length + AsconAead128.TagBytes];
+        byte[] ciphertext = new byte[plaintext.Length + AsconAead128.TagBytes];
 
         using (AsconAead128 enc = MakeInstance())
         {
@@ -216,7 +216,7 @@ public partial class AsconAead128Tests
 
         ciphertext[^1] ^= 0x01;
 
-        var recovered = new byte[plaintext.Length];
+        byte[] recovered = new byte[plaintext.Length];
 
         using AsconAead128 sut = MakeInstance();
 
@@ -239,15 +239,15 @@ public partial class AsconAead128Tests
     [TestMethod]
     public void Decrypt_WhenInputAndOutputAlias_ShouldRecoverPlaintext()
     {
-        var plaintext = Enumerable.Range(0, 21).Select(i => (byte)(i * 3 + 1)).ToArray();
+        byte[] plaintext = Enumerable.Range(0, 21).Select(i => (byte)(i * 3 + 1)).ToArray();
 
-        var sealed_ = new byte[plaintext.Length + AsconAead128.TagBytes];
+        byte[] sealed_ = new byte[plaintext.Length + AsconAead128.TagBytes];
         using (AsconAead128 enc = MakeInstance())
             enc.Encrypt(plaintext, sealed_);
 
         // Decrypt in-place over the same buffer — output starts at the head of `sealed_`.
         using AsconAead128 dec = MakeInstance();
-        var written = dec.Decrypt(sealed_, sealed_);
+        int written = dec.Decrypt(sealed_, sealed_);
 
         Assert.AreEqual(plaintext.Length, written);
         CollectionAssert.AreEqual(plaintext, sealed_.AsSpan(0, plaintext.Length).ToArray());
@@ -261,23 +261,23 @@ public partial class AsconAead128Tests
     [TestMethod]
     public void Decrypt_WhenTagMismatch_ShouldZeroDestinationBuffer()
     {
-        var plaintext = Enumerable.Range(0, 16).Select(i => (byte)(i + 1)).ToArray();
+        byte[] plaintext = Enumerable.Range(0, 16).Select(i => (byte)(i + 1)).ToArray();
 
         using AsconAead128 enc = MakeInstance();
-        var sealed_ = new byte[plaintext.Length + AsconAead128.TagBytes];
+        byte[] sealed_ = new byte[plaintext.Length + AsconAead128.TagBytes];
         enc.Encrypt(plaintext, sealed_);
 
         sealed_[sealed_.Length - 1] ^= 0x01;
 
         using AsconAead128 dec = MakeInstance();
-        var recovered = new byte[plaintext.Length];
+        byte[] recovered = new byte[plaintext.Length];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
             dec.Decrypt(sealed_, recovered);
         });
 
-        foreach (var b in recovered)
+        foreach (byte b in recovered)
             Assert.AreEqual(0, b, "Decrypt must zero the destination buffer on tag mismatch.");
     }
 }

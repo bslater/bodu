@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="KeccakPermutation.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -72,27 +72,27 @@ internal static class KeccakPermutation
         Span<ulong> c = stackalloc ulong[5];
         Span<ulong> b = stackalloc ulong[StateWords];
 
-        for (var round = 0; round < 24; round++)
+        for (int round = 0; round < 24; round++)
         {
             // θ (theta): column parity and mixing.
-            for (var x = 0; x < 5; x++)
+            for (int x = 0; x < 5; x++)
                 c[x] = state[x] ^ state[x + 5] ^ state[x + 10] ^ state[x + 15] ^ state[x + 20];
 
-            for (var x = 0; x < 5; x++)
+            for (int x = 0; x < 5; x++)
             {
-                var d = c[(x + 4) % 5] ^ c[(x + 1) % 5].RotateBitsLeftUnchecked(1);
-                for (var y = 0; y < 5; y++)
+                ulong d = c[(x + 4) % 5] ^ c[(x + 1) % 5].RotateBitsLeftUnchecked(1);
+                for (int y = 0; y < 5; y++)
                     state[x + (y * 5)] ^= d;
             }
 
             // ρ and π combined: rotate each lane and scatter to the π-permuted position.
-            for (var i = 0; i < StateWords; i++)
+            for (int i = 0; i < StateWords; i++)
                 b[s_pi[i]] = state[i].RotateBitsLeftUnchecked(s_rho[i]);
 
             // χ (chi): non-linear mixing within each row.
-            for (var y = 0; y < 5; y++)
+            for (int y = 0; y < 5; y++)
             {
-                for (var x = 0; x < 5; x++)
+                for (int x = 0; x < 5; x++)
                     state[x + (y * 5)] = b[x + (y * 5)] ^ ((~b[((x + 1) % 5) + (y * 5)]) & b[((x + 2) % 5) + (y * 5)]);
             }
 

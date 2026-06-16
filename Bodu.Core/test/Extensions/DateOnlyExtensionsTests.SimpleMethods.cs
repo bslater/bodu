@@ -18,7 +18,7 @@ public partial class DateOnlyExtensionsTests
     public void Age_NoAsAtDate_WhenInvoked_ShouldReturnNonNegativeYears()
     {
         var birth = new DateOnly(2000, 1, 1);
-        var age = birth.Age();
+        int age = birth.Age();
         Assert.IsGreaterThanOrEqualTo(0, age);
     }
 

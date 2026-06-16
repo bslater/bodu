@@ -59,7 +59,7 @@ public abstract partial class CipherModeTestsBase<TTransform>
         }
 
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize);
-        var iv = new byte[Math.Max(0, ExpectedInitializationVectorSize - 1)];
+        byte[] iv = new byte[Math.Max(0, ExpectedInitializationVectorSize - 1)];
 
         ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -83,7 +83,7 @@ public abstract partial class CipherModeTestsBase<TTransform>
             return;
         }
 
-        var iv = UsesInitializationVector
+        byte[] iv = UsesInitializationVector
             ? new byte[ExpectedInitializationVectorSize]
             : [];
 
@@ -101,7 +101,7 @@ public abstract partial class CipherModeTestsBase<TTransform>
     public void Ctor_WhenArgumentsAreValid_ShouldSucceed()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize);
-        var iv = UsesInitializationVector
+        byte[] iv = UsesInitializationVector
             ? new byte[ExpectedInitializationVectorSize]
             : [];
 

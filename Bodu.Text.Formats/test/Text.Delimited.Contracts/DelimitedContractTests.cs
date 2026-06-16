@@ -75,15 +75,15 @@ public sealed class DelimitedContractTests
             if (x.Headers.Count != y.Headers.Count) return false;
             if (x.Rows.Count != y.Rows.Count) return false;
 
-            for (var i = 0; i < x.Headers.Count; i++)
+            for (int i = 0; i < x.Headers.Count; i++)
             {
                 if (x.Headers[i] != y.Headers[i]) return false;
             }
 
-            for (var r = 0; r < x.Rows.Count; r++)
+            for (int r = 0; r < x.Rows.Count; r++)
             {
                 if (x.Rows[r].Fields.Count != y.Rows[r].Fields.Count) return false;
-                for (var f = 0; f < x.Rows[r].Fields.Count; f++)
+                for (int f = 0; f < x.Rows[r].Fields.Count; f++)
                 {
                     if (x.Rows[r].Fields[f] != y.Rows[r].Fields[f]) return false;
                 }

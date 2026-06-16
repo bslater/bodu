@@ -23,7 +23,7 @@ public abstract partial class EnumerableTests
         Func<IEnumerable<TSource>, IEnumerable> invokeExtensionMethod,
         IEnumerable<TSource> values)
     {
-        var wasEnumerated = false;
+        bool wasEnumerated = false;
 
         var source = new TrackingEnumerable<TSource>(
             values,
@@ -46,7 +46,7 @@ public abstract partial class EnumerableTests
         Func<IEnumerable<TSource>, IEnumerable> invokeExtensionMethod,
         IEnumerable<TSource> values)
     {
-        var wasEnumerated = false;
+        bool wasEnumerated = false;
 
         var source = new TrackingEnumerable<TSource>(
             values,

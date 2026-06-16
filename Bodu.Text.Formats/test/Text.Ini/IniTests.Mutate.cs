@@ -19,7 +19,7 @@ public sealed partial class IniTests
         IniDocument doc = Ini.Parse("[s]\n# note\nkey = old\n");
 
         doc.Sections[0].SetEntry("key", "new");
-        var text = Ini.Format(doc);
+        string text = Ini.Format(doc);
 
         StringAssert.Contains(text, "key = new");
         Assert.IsFalse(text.Contains("key = old"));
@@ -53,7 +53,7 @@ public sealed partial class IniTests
     {
         IniDocument doc = Ini.Parse("[s]\na = 1\nb = 2\n");
 
-        var removed = doc.Sections[0].RemoveEntry("a");
+        bool removed = doc.Sections[0].RemoveEntry("a");
 
         Assert.IsTrue(removed);
         Assert.AreEqual(1, doc.Sections[0].Entries.Count);
@@ -90,7 +90,7 @@ public sealed partial class IniTests
         const string source = "# top of file\n[server]\n# before host\nhost = localhost\n";
 
         IniDocument doc = Ini.Parse(source);
-        var text = Ini.Format(doc);
+        string text = Ini.Format(doc);
 
         StringAssert.Contains(text, "# top of file");
         StringAssert.Contains(text, "# before host");
@@ -112,7 +112,7 @@ public sealed partial class IniTests
         IniEntry entry = section.SetEntry("indent", "4");
         entry.InlineComment = new IniComment('#', " standard");
 
-        var text = Ini.Format(doc);
+        string text = Ini.Format(doc);
 
         StringAssert.Contains(text, "indent = 4 # standard");
     }
@@ -130,7 +130,7 @@ public sealed partial class IniTests
         section.SetEntry("port", "8080");
         section.AddLeadingComment(new IniComment('#', " server config"));
 
-        var text = Ini.Format(doc);
+        string text = Ini.Format(doc);
         IniDocument reparsed = Ini.Parse(text);
 
         Assert.AreEqual("localhost", reparsed.Sections[0]["host"]);

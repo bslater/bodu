@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Poly1305AeadCoreCoverageTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -47,7 +47,7 @@ public sealed class Poly1305AeadCoreCoverageTests
     [TestMethod]
     public void Decrypt_WhenOutputTooSmall_ShouldThrowArgumentException()
     {
-        var ciphertext = new byte[24];
+        byte[] ciphertext = new byte[24];
         using (XChaCha20Poly1305 encryptor = CreateAead())
             _ = encryptor.Encrypt(new byte[8], ciphertext, ReadOnlySpan<byte>.Empty);
 

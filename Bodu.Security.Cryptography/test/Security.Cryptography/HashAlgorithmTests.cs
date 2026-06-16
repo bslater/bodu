@@ -104,7 +104,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
 
         var test = new TTest();
 
-        foreach (var hashSize in test.GetHashAlgorithmVariants()
+        foreach (int hashSize in test.GetHashAlgorithmVariants()
             .Select(variant => test.GetSpecification(variant).HashSize)
             .Concat(test.GetHashAlgorithmSizes())
             .Distinct()
@@ -188,7 +188,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(VariantDisplayNameHelper.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(VariantDisplayNameHelper))]
     public void HashAlgorithm_TestData_EmptyKnownAnswer_ShouldBeDefined(TVariant variant)
     {
-        var emptyHash = GetSpecification(variant).KnownAnswers.Empty;
+        string? emptyHash = GetSpecification(variant).KnownAnswers.Empty;
 
         if (emptyHash is null)
         {
@@ -210,7 +210,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     public void HashAlgorithm_TestData_EmptyKnownAnswer_ShouldMatchFirstIncrementalHash(TVariant variant)
     {
         IReadOnlyList<string> incrementalHashes = GetExpectedHashesForIncrementalInput(variant);
-        var emptyHash = GetSpecification(variant).KnownAnswers.Empty;
+        string? emptyHash = GetSpecification(variant).KnownAnswers.Empty;
 
         if (incrementalHashes.Count == 0)
         {
@@ -439,7 +439,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     private async Task AssertIncrementalInputAsync(TVariant variant, IncrementalHashInvoker invoke)
     {
         HashAlgorithmSpecification specification = GetSpecification(variant);
-        var expectedHashes = GetExpectedHashesForIncrementalInput(variant).ToArray();
+        string[] expectedHashes = GetExpectedHashesForIncrementalInput(variant).ToArray();
 
         if (expectedHashes.Length == 0)
         {
@@ -447,9 +447,9 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
             return;
         }
 
-        var coverage = specification.HashBlockSize > 1 ? specification.HashBlockSize : 16;
-        var maxLength = coverage + 1;
-        var expectedEntryCount = maxLength + 1;
+        int coverage = specification.HashBlockSize > 1 ? specification.HashBlockSize : 16;
+        int maxLength = coverage + 1;
+        int expectedEntryCount = maxLength + 1;
 
         Assert.AreEqual(expectedEntryCount, expectedHashes.Length,
             $"Expected {expectedEntryCount} algorithm entries for variant '{variant}' " +
@@ -458,17 +458,17 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
             $"but got {expectedHashes.Length}.");
 
         TAlgorithm algorithm = CreateAlgorithm(variant);
-        var input = new byte[maxLength];
+        byte[] input = new byte[maxLength];
 
         try
         {
-            for (var byteCount = 0; byteCount <= maxLength; byteCount++)
+            for (int byteCount = 0; byteCount <= maxLength; byteCount++)
             {
                 if (byteCount > 0)
                     input[byteCount - 1] = unchecked((byte)(byteCount - 1));
 
-                var expected = Convert.FromHexString(expectedHashes[byteCount]);
-                var actual = await invoke(algorithm, input, byteCount).ConfigureAwait(false);
+                byte[] expected = Convert.FromHexString(expectedHashes[byteCount]);
+                byte[] actual = await invoke(algorithm, input, byteCount).ConfigureAwait(false);
 
                 TestHelpers.TraceWriteIfNotEqual(expected, actual);
 

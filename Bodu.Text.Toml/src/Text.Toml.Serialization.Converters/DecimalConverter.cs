@@ -37,7 +37,7 @@ internal sealed class DecimalConverter
         switch (reader.TokenType)
         {
             case TomlTokenType.Float:
-                var floatValue = reader.GetDouble();
+                double floatValue = reader.GetDouble();
                 try
                 {
                     return (decimal)floatValue;
@@ -53,8 +53,8 @@ internal sealed class DecimalConverter
                 return reader.GetInt64();
 
             case TomlTokenType.String:
-                var text = reader.GetString();
-                return decimal.TryParse(text, NumberStyles.Number, CultureInfo.InvariantCulture, out var value)
+                string text = reader.GetString();
+                return decimal.TryParse(text, NumberStyles.Number, CultureInfo.InvariantCulture, out decimal value)
                     ? value
                     : throw new TomlSerializationException(
                         string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Op_Invalid_TypeConversion, text, typeof(decimal)));

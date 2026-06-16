@@ -69,12 +69,12 @@ public sealed class BinaryEncodingsTests
     [TestMethod]
     public void IsValid_ShouldAcceptOwnOutputAndRejectBlatantlyInvalid()
     {
-        var bytes = new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05 };
+        byte[] bytes = new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05 };
 
-        foreach (var name in new[] { "base16-lower", "base32", "base64", "base58", "ascii85" })
+        foreach (string? name in new[] { "base16-lower", "base32", "base64", "base58", "ascii85" })
         {
             IBinaryEncoding encoding = BinaryEncodings.Get(name);
-            var encoded = encoding.Encode(bytes);
+            string encoded = encoding.Encode(bytes);
 
             Assert.IsTrue(encoding.IsValid(encoded.AsSpan()), $"{name} should validate its own output.");
             Assert.IsFalse(encoding.IsValid("\x00\x01\x02".AsSpan()), $"{name} should reject control characters.");
@@ -130,11 +130,11 @@ public sealed class BinaryEncodingsTests
     [DataRow("ascii85")]
     public void RoundTrip_ForEveryRegisteredEncoding_ShouldRecoverOriginal(string encodingName)
     {
-        var original = new byte[] { 0xDE, 0xAD, 0xBE, 0xEF };
+        byte[] original = new byte[] { 0xDE, 0xAD, 0xBE, 0xEF };
         IBinaryEncoding encoding = BinaryEncodings.Get(encodingName);
 
-        var encoded = encoding.Encode(original);
-        var decoded = encoding.Decode(encoded);
+        string encoded = encoding.Encode(original);
+        byte[] decoded = encoding.Decode(encoded);
 
         CollectionAssert.AreEqual(original, decoded, $"Round trip failed for {encodingName}.");
     }
@@ -146,10 +146,10 @@ public sealed class BinaryEncodingsTests
     [TestMethod]
     public void RoundTrip_ForZ85_ShouldRecoverAlignedInput()
     {
-        var original = new byte[] { 0xDE, 0xAD, 0xBE, 0xEF, 0xCA, 0xFE, 0xBA, 0xBE };
+        byte[] original = new byte[] { 0xDE, 0xAD, 0xBE, 0xEF, 0xCA, 0xFE, 0xBA, 0xBE };
 
-        var encoded = BinaryEncodings.Z85.Encode(original);
-        var decoded = BinaryEncodings.Z85.Decode(encoded);
+        string encoded = BinaryEncodings.Z85.Encode(original);
+        byte[] decoded = BinaryEncodings.Z85.Decode(encoded);
 
         CollectionAssert.AreEqual(original, decoded);
     }
@@ -161,15 +161,15 @@ public sealed class BinaryEncodingsTests
     [TestMethod]
     public void TryEncode_AndEncode_ShouldAgreeOnLength()
     {
-        var bytes = new byte[] { 0xDE, 0xAD, 0xBE, 0xEF };
+        byte[] bytes = new byte[] { 0xDE, 0xAD, 0xBE, 0xEF };
 
-        foreach (var name in new[] { "base16-lower", "base32", "base64", "base58", "ascii85" })
+        foreach (string? name in new[] { "base16-lower", "base32", "base64", "base58", "ascii85" })
         {
             IBinaryEncoding encoding = BinaryEncodings.Get(name);
-            var buffer = new char[encoding.GetMaxEncodedLength(bytes.Length)];
+            char[] buffer = new char[encoding.GetMaxEncodedLength(bytes.Length)];
 
-            var ok = encoding.TryEncode(bytes.AsSpan(), buffer, out var charsWritten);
-            var encoded = encoding.Encode(bytes.AsSpan());
+            bool ok = encoding.TryEncode(bytes.AsSpan(), buffer, out int charsWritten);
+            string encoded = encoding.Encode(bytes.AsSpan());
 
             Assert.IsTrue(ok, $"TryEncode returned false for {name}.");
             Assert.AreEqual(encoded.Length, charsWritten, $"Length mismatch for {name}.");

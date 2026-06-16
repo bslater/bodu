@@ -50,16 +50,16 @@ public class CurrencyCatalogueStrictTests
         // on the implementing class.
         Type moneyType = typeof(Money<>).MakeGenericType(type);
 
-        var actualIso = (string)moneyType.GetProperty("IsoCode", BindingFlags.Public | BindingFlags.Static)!.GetValue(null)!;
+        string actualIso = (string)moneyType.GetProperty("IsoCode", BindingFlags.Public | BindingFlags.Static)!.GetValue(null)!;
         Assert.AreEqual(entry.Iso, actualIso, $"{entry.Iso}.IsoCode mismatch.");
 
-        var actualMinorUnits = (int)moneyType.GetProperty("MinorUnits", BindingFlags.Public | BindingFlags.Static)!.GetValue(null)!;
+        int actualMinorUnits = (int)moneyType.GetProperty("MinorUnits", BindingFlags.Public | BindingFlags.Static)!.GetValue(null)!;
         Assert.AreEqual(entry.MinorUnits, actualMinorUnits, $"{entry.Iso}.MinorUnits mismatch.");
 
-        var actualCashIncrement = (decimal)moneyType.GetProperty("CashRoundingIncrement", BindingFlags.Public | BindingFlags.Static)!.GetValue(null)!;
+        decimal actualCashIncrement = (decimal)moneyType.GetProperty("CashRoundingIncrement", BindingFlags.Public | BindingFlags.Static)!.GetValue(null)!;
         Assert.AreEqual(entry.CashRoundingIncrement ?? 0m, actualCashIncrement, $"{entry.Iso}.CashRoundingIncrement mismatch.");
 
-        var actualIsHistoric = (bool)moneyType.GetProperty("IsHistoric", BindingFlags.Public | BindingFlags.Static)!.GetValue(null)!;
+        bool actualIsHistoric = (bool)moneyType.GetProperty("IsHistoric", BindingFlags.Public | BindingFlags.Static)!.GetValue(null)!;
         Assert.AreEqual(entry.IsHistoric, actualIsHistoric, $"{entry.Iso}.IsHistoric mismatch.");
 
         var actualDemonetizedOn = (DateOnly?)moneyType.GetProperty("DemonetizedOn", BindingFlags.Public | BindingFlags.Static)!.GetValue(null);
@@ -68,7 +68,7 @@ public class CurrencyCatalogueStrictTests
             : DateOnly.ParseExact(entry.DemonetizedOn, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
         Assert.AreEqual(expectedDemonetizedOn, actualDemonetizedOn, $"{entry.Iso}.DemonetizedOn mismatch.");
 
-        var actualSuccessor = (string?)moneyType.GetProperty("SuccessorIsoCode", BindingFlags.Public | BindingFlags.Static)!.GetValue(null);
+        string? actualSuccessor = (string?)moneyType.GetProperty("SuccessorIsoCode", BindingFlags.Public | BindingFlags.Static)!.GetValue(null);
         Assert.AreEqual(entry.SuccessorIsoCode, actualSuccessor, $"{entry.Iso}.SuccessorIsoCode mismatch.");
     }
 
@@ -88,7 +88,7 @@ public class CurrencyCatalogueStrictTests
             .Select(t => t.Name);
 
         List<string> unexpected = new();
-        foreach (var code in actual)
+        foreach (string code in actual)
         {
             if (!expected.Contains(code))
                 unexpected.Add(code);
@@ -121,7 +121,7 @@ public class CurrencyCatalogueStrictTests
         Dictionary<string, int> counts = new(StringComparer.Ordinal);
         foreach (CatalogueEntry entry in LoadCatalogue())
         {
-            counts.TryGetValue(entry.Iso, out var count);
+            counts.TryGetValue(entry.Iso, out int count);
             counts[entry.Iso] = count + 1;
         }
 
@@ -135,8 +135,8 @@ public class CurrencyCatalogueStrictTests
     /// <returns>The parsed catalogue entries.</returns>
     private static List<CatalogueEntry> LoadCatalogue()
     {
-        var path = ResolveCataloguePath();
-        var json = File.ReadAllText(path);
+        string path = ResolveCataloguePath();
+        string json = File.ReadAllText(path);
         JsonSerializerOptions options = new()
         {
             ReadCommentHandling = JsonCommentHandling.Skip,

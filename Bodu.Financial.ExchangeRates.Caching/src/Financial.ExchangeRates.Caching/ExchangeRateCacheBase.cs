@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateCacheBase.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -190,8 +190,8 @@ public abstract class ExchangeRateCacheBase<TOptions>
     private protected abstract bool WriteState(ExchangeRatePair pair, CachePairState state);
 
     /// <summary>
-    /// Projects the internal coverage windows into the plain tuples the shared
-    /// <see cref="ExchangeRateCacheRules" /> operate on.
+    /// Projects the internal coverage windows into the plain tuples the shared <see cref="ExchangeRateCacheRules" />
+    /// operate on.
     /// </summary>
     /// <param name="coverage">The coverage windows to project.</param>
     /// <returns>The windows as <c>(Start, End, FetchedAtUtc)</c> tuples.</returns>

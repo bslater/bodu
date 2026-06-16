@@ -20,7 +20,7 @@ public partial class WeekPatternTests
     [TestMethod]
     public void TryParseExact_WhenBinaryFormatSpecifierIs0_ShouldReturnTrueAndSetCorrectDays()
     {
-        var success = WeekPattern.TryParseExact("0111110", "0", out WeekPattern result);
+        bool success = WeekPattern.TryParseExact("0111110", "0", out WeekPattern result);
 
         Assert.IsTrue(success, "Format specifier '0' should be recognised as binary.");
         Assert.IsFalse(result.Contains(DayOfWeek.Sunday));
@@ -36,7 +36,7 @@ public partial class WeekPatternTests
     [TestMethod]
     public void TryParseExact_WhenBinaryFormatSpecifierIs01_ShouldReturnTrueAndSetCorrectDays()
     {
-        var success = WeekPattern.TryParseExact("0111110", "01", out WeekPattern result);
+        bool success = WeekPattern.TryParseExact("0111110", "01", out WeekPattern result);
 
         Assert.IsTrue(success, "Format specifier \"01\" should be recognised as binary.");
         Assert.IsFalse(result.Contains(DayOfWeek.Sunday));
@@ -52,7 +52,7 @@ public partial class WeekPatternTests
     [TestMethod]
     public void TryParseExact_WhenBinaryFormatSpecifierIs1_ShouldReturnTrueAndSetCorrectDays()
     {
-        var success = WeekPattern.TryParseExact("0111110", "1", out WeekPattern result);
+        bool success = WeekPattern.TryParseExact("0111110", "1", out WeekPattern result);
 
         Assert.IsTrue(success, "Format specifier '1' should be recognised as binary.");
         Assert.IsFalse(result.Contains(DayOfWeek.Sunday));
@@ -68,7 +68,7 @@ public partial class WeekPatternTests
     [TestMethod]
     public void TryParseExact_WhenBinaryInputContainsInvalidCharacter_ShouldReturnFalseAndSetEmpty()
     {
-        var success = WeekPattern.TryParseExact("0111X10", "0", out WeekPattern result);
+        bool success = WeekPattern.TryParseExact("0111X10", "0", out WeekPattern result);
 
         Assert.IsFalse(success);
         Assert.AreEqual(WeekPattern.Empty, result);
@@ -81,7 +81,7 @@ public partial class WeekPatternTests
     [TestMethod]
     public void TryParseExact_WhenFormatIsNull_ShouldReturnFalseAndSetEmpty()
     {
-        var success = WeekPattern.TryParseExact("_M_W_F_", null, out WeekPattern result);
+        bool success = WeekPattern.TryParseExact("_M_W_F_", null, out WeekPattern result);
 
         Assert.IsFalse(success);
         Assert.AreEqual(WeekPattern.Empty, result);
@@ -94,7 +94,7 @@ public partial class WeekPatternTests
     [TestMethod]
     public void TryParseExact_WhenFormatIsSundayFirstAndInputIsValid_ShouldReturnTrueAndSetCorrectDays()
     {
-        var success = WeekPattern.TryParseExact("_M_W_F_", "S", out WeekPattern result);
+        bool success = WeekPattern.TryParseExact("_M_W_F_", "S", out WeekPattern result);
 
         Assert.IsTrue(success);
         Assert.IsTrue(result.Contains(DayOfWeek.Monday));
@@ -110,7 +110,7 @@ public partial class WeekPatternTests
     [TestMethod]
     public void TryParseExact_WhenFormatIsUnrecognised_ShouldReturnFalseAndSetEmpty()
     {
-        var success = WeekPattern.TryParseExact("_M_W_F_", "Z", out WeekPattern result);
+        bool success = WeekPattern.TryParseExact("_M_W_F_", "Z", out WeekPattern result);
 
         Assert.IsFalse(success);
         Assert.AreEqual(WeekPattern.Empty, result);
@@ -129,7 +129,7 @@ public partial class WeekPatternTests
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void TryParseExact_WhenInputIsValid_ShouldReturnTrueAndSetExpectedValue(WeekPatternParseKat kat)
     {
-        var success = WeekPattern.TryParseExact(kat.Input, kat.Format, out WeekPattern actual);
+        bool success = WeekPattern.TryParseExact(kat.Input, kat.Format, out WeekPattern actual);
 
         Assert.IsTrue(success);
         Assert.AreEqual(kat.Expected, (byte)actual);
@@ -149,7 +149,7 @@ public partial class WeekPatternTests
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void TryParseExact_WhenInputIsInvalid_ShouldReturnFalseAndSetEmpty(InvalidWeekPatternParseKat kat)
     {
-        var success = WeekPattern.TryParseExact(kat.Input, kat.Format, out WeekPattern actual);
+        bool success = WeekPattern.TryParseExact(kat.Input, kat.Format, out WeekPattern actual);
 
         Assert.IsFalse(success);
         Assert.AreEqual(WeekPattern.Empty, actual);
@@ -162,7 +162,7 @@ public partial class WeekPatternTests
     [TestMethod]
     public void TryParseExact_WhenInputIsNull_ShouldReturnFalseAndSetEmpty()
     {
-        var success = WeekPattern.TryParseExact(null, "S", out WeekPattern result);
+        bool success = WeekPattern.TryParseExact(null, "S", out WeekPattern result);
 
         Assert.IsFalse(success);
         Assert.AreEqual(WeekPattern.Empty, result);

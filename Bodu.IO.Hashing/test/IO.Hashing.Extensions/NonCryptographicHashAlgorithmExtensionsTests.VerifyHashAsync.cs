@@ -44,7 +44,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
 
         using MemoryStream stream = new(s_sampleData);
 
-        var result = await algorithm.VerifyHashAsync(stream, s_sampleHash);
+        bool result = await algorithm.VerifyHashAsync(stream, s_sampleHash);
 
         Assert.IsTrue(result);
     }
@@ -84,7 +84,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
         using MemoryStream stream = new(s_sampleData);
 
-        var result = await algorithm.VerifyHashAsync(stream, "ZZZZZZZZ");
+        bool result = await algorithm.VerifyHashAsync(stream, "ZZZZZZZZ");
 
         Assert.IsFalse(result);
     }
@@ -99,7 +99,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
-        var result = await algorithm.VerifyHashAsync(new FixedChunkStream(s_sampleData, chunkSize: 1), s_sampleHash);
+        bool result = await algorithm.VerifyHashAsync(new FixedChunkStream(s_sampleData, chunkSize: 1), s_sampleHash);
 
         Assert.IsTrue(result);
     }
@@ -112,9 +112,9 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
         using MemoryStream stream = new(s_sampleData);
-        var wrong = BitConverter.GetBytes((uint)999);
+        byte[] wrong = BitConverter.GetBytes((uint)999);
 
-        var result = await algorithm.VerifyHashAsync(stream, wrong);
+        bool result = await algorithm.VerifyHashAsync(stream, wrong);
 
         Assert.IsFalse(result);
     }
@@ -129,7 +129,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
         using MemoryStream stream = new(s_sampleData);
         ReadOnlyMemory<byte> wrong = BitConverter.GetBytes((uint)999);
 
-        var result = await algorithm.VerifyHashAsync(stream, wrong);
+        bool result = await algorithm.VerifyHashAsync(stream, wrong);
 
         Assert.IsFalse(result);
     }
@@ -156,7 +156,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
         using MemoryStream stream = new(s_sampleData);
 
-        var result = await algorithm.VerifyHashAsync(stream, s_sampleHash);
+        bool result = await algorithm.VerifyHashAsync(stream, s_sampleHash);
 
         Assert.IsTrue(result);
     }
@@ -172,7 +172,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
         using MemoryStream stream = new(s_sampleData);
 
-        var result = await algorithm.VerifyHashAsync(stream, s_sampleHex);
+        bool result = await algorithm.VerifyHashAsync(stream, s_sampleHex);
 
         Assert.IsTrue(result);
     }
@@ -189,7 +189,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
         using MemoryStream stream = new(s_sampleData);
         ReadOnlyMemory<byte> expected = s_sampleHash;
 
-        var result = await algorithm.VerifyHashAsync(stream, expected);
+        bool result = await algorithm.VerifyHashAsync(stream, expected);
 
         Assert.IsTrue(result);
     }

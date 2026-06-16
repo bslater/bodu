@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YahooChartResponseParserTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -27,7 +27,7 @@ public class YahooChartResponseParserTests
     [TestMethod]
     public void Parse_WhenValidChart_ShouldReturnPresentObservations()
     {
-        var json = YahooFixtures.ReadBytes(YahooFixtures.AudUsd);
+        byte[] json = YahooFixtures.ReadBytes(YahooFixtures.AudUsd);
 
         YahooExchangeRateChart chart = YahooChartResponseParser.Parse(json, CreateRequest(), new YahooExchangeRateOptions());
 
@@ -43,7 +43,7 @@ public class YahooChartResponseParserTests
     [TestMethod]
     public void Parse_WhenChartError_ShouldThrowFormatException()
     {
-        var json = YahooFixtures.ReadBytes(YahooFixtures.ErrorNotFound);
+        byte[] json = YahooFixtures.ReadBytes(YahooFixtures.ErrorNotFound);
 
         _ = Assert.ThrowsExactly<YahooExchangeRateFormatException>(() =>
         {
@@ -57,7 +57,7 @@ public class YahooChartResponseParserTests
     [TestMethod]
     public void Parse_WhenMalformedJson_ShouldThrowFormatException()
     {
-        var json = Encoding.UTF8.GetBytes("{ not json");
+        byte[] json = Encoding.UTF8.GetBytes("{ not json");
 
         _ = Assert.ThrowsExactly<YahooExchangeRateFormatException>(() =>
         {

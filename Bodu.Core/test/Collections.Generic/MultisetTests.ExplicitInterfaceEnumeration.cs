@@ -40,7 +40,7 @@ public partial class MultisetTests
 
         IEnumerable<int> generic = multiset;
         var observed = new List<int>();
-        foreach (var value in generic)
+        foreach (int value in generic)
             observed.Add(value);
 
         observed.Sort();
@@ -60,7 +60,7 @@ public partial class MultisetTests
 
         IEnumerable nonGeneric = multiset;
         var observed = new List<int>();
-        foreach (var item in nonGeneric)
+        foreach (object? item in nonGeneric)
             observed.Add((int)item);
 
         observed.Sort();

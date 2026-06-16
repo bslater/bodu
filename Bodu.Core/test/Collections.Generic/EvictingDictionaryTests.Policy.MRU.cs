@@ -136,7 +136,7 @@ public partial class EvictingDictionaryTests
 
         dictionary.Remove("C"); // before fix: C's node remained at _order.Last
 
-        var candidate = dictionary.PeekEvictionCandidate();
+        string? candidate = dictionary.PeekEvictionCandidate();
 
         Assert.IsNotNull(candidate);
         Assert.IsTrue(dictionary.ContainsKey(candidate!),

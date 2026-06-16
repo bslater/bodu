@@ -116,7 +116,7 @@ public static partial class IEnumerableExtensions
     private static T[] FillReservoir<T>(IEnumerator<T> enumerator, IRandomGenerator rng, int count)
     {
         var reservoir = new T[count];
-        var index = 0;
+        int index = 0;
 
         // Fill the reservoir with the first 'count' elements from the source
         while (index < count && enumerator.MoveNext())
@@ -127,10 +127,10 @@ public static partial class IEnumerableExtensions
 
         // Apply Knuth/Fisher-Yates reservoir sampling over the remaining elements.
         // Each element at position 'seen' has an equal probability of being selected.
-        var seen = count;
+        int seen = count;
         while (enumerator.MoveNext())
         {
-            var j = rng.Next(++seen);
+            int j = rng.Next(++seen);
             if (j < count)
                 reservoir[j] = enumerator.Current;
         }
@@ -199,7 +199,7 @@ public static partial class IEnumerableExtensions
         // and ShuffleAndYield uses buffer.Length to bound the shuffle
         buffer = builder.AsArray()[..availableCount];
 #endif
-        var takeCount = count ?? availableCount;
+        int takeCount = count ?? availableCount;
         ThrowHelper.ThrowIfGreaterThanOther(takeCount, availableCount);
         return ShuffleHelpers.ShuffleAndYield(buffer, rng, takeCount);
     }
@@ -252,7 +252,7 @@ public static partial class IEnumerableExtensions
     {
         ThrowHelper.ThrowIfZeroOrNegative(windowSize);
         var window = new T[windowSize];
-        var count = 0;
+        int count = 0;
         using IEnumerator<T> enumerator = source.GetEnumerator();
 
         // Fill the initial window up to windowSize elements before streaming begins.
@@ -263,7 +263,7 @@ public static partial class IEnumerableExtensions
         // occupant, then place the new element in that slot. No heap allocation occurs here.
         while (enumerator.MoveNext())
         {
-            var i = rng.Next(count);
+            int i = rng.Next(count);
             yield return window[i];
             window[i] = enumerator.Current;
         }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyCompactFormattingExtensions.ToCompactString.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -41,7 +41,7 @@ public static partial class MoneyCompactFormattingExtensions
         ThrowHelper.ThrowIfNegative(precision);
         RejectRoundTripSpecifier(format);
 
-        (var scaled, var suffix) = Scale(money.Amount);
+        (decimal scaled, string? suffix) = Scale(money.Amount);
         ReadOnlySpan<char> formatWithPrecision = BuildFormatWithPrecision(format, precision, suffix.Length > 0);
 
         return Money<TCurrency>.FormatScaled(scaled, suffix, formatWithPrecision, provider);
@@ -77,8 +77,8 @@ public static partial class MoneyCompactFormattingExtensions
         ThrowHelper.ThrowIfNegative(precision);
         RejectRoundTripSpecifier(format);
 
-        (var scaled, var suffix) = Scale(money.Amount);
-        var formatWithPrecision = BuildFormatWithPrecision(format, precision, suffix.Length > 0).ToString();
+        (decimal scaled, string? suffix) = Scale(money.Amount);
+        string formatWithPrecision = BuildFormatWithPrecision(format, precision, suffix.Length > 0).ToString();
 
         // Use Money's instance Format directly with the scaled amount via a temporary normalised wrapper.
         // The wrapped value bypasses normalisation so the scaled fractional portion is preserved.

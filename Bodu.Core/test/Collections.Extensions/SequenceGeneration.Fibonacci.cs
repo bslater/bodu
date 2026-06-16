@@ -90,8 +90,8 @@ public class FibonacciTests
     [TestMethod]
     public void Fibonacci_WhenMinimumIsTwentyOne_ShouldExcludeLowerValues()
     {
-        var expected = Values.Where(n => n is >= 21 and < 35).ToArray();
-        var actual = SequenceGenerator.Fibonacci(21, 35).ToArray();
+        long[] expected = Values.Where(n => n is >= 21 and < 35).ToArray();
+        long[] actual = SequenceGenerator.Fibonacci(21, 35).ToArray();
         CollectionAssert.AreEqual(expected, actual);
     }
 
@@ -102,8 +102,8 @@ public class FibonacciTests
     [TestMethod]
     public void Fibonacci_WhenRangeBoundsSingleValue_ShouldReturnThatValue()
     {
-        var expected = Values.Where(n => n is >= 21 and < 22).ToArray();
-        var actual = SequenceGenerator.Fibonacci(21, 22).ToArray();
+        long[] expected = Values.Where(n => n is >= 21 and < 22).ToArray();
+        long[] actual = SequenceGenerator.Fibonacci(21, 22).ToArray();
         CollectionAssert.AreEqual(expected, actual);
     }
 
@@ -113,8 +113,8 @@ public class FibonacciTests
     [TestMethod]
     public void Fibonacci_WhenRangeIsFiveToFifteen_ShouldReturnSubset()
     {
-        var expected = Values.Where(n => n is >= 5 and < 15).ToArray();
-        var actual = SequenceGenerator.Fibonacci(5, 15).ToArray();
+        long[] expected = Values.Where(n => n is >= 5 and < 15).ToArray();
+        long[] actual = SequenceGenerator.Fibonacci(5, 15).ToArray();
         CollectionAssert.AreEqual(expected, actual);
     }
 
@@ -124,7 +124,7 @@ public class FibonacciTests
     [TestMethod]
     public void Fibonacci_WhenRangeIsOneToOne_ShouldReturnEmpty()
     {
-        var actual = SequenceGenerator.Fibonacci(1, 1).ToArray();
+        long[] actual = SequenceGenerator.Fibonacci(1, 1).ToArray();
         Assert.IsEmpty(actual);
     }
 
@@ -134,8 +134,8 @@ public class FibonacciTests
     [TestMethod]
     public void Fibonacci_WhenRangeIsZeroToHundred_ShouldReturnExpectedValues()
     {
-        var expected = Values.Where(n => n is >= 0 and < 100).ToArray();
-        var actual = SequenceGenerator.Fibonacci(0, 100).ToArray();
+        long[] expected = Values.Where(n => n is >= 0 and < 100).ToArray();
+        long[] actual = SequenceGenerator.Fibonacci(0, 100).ToArray();
         CollectionAssert.AreEqual(expected, actual);
     }
 

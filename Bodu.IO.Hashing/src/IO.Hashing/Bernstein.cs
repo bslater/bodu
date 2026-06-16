@@ -172,8 +172,8 @@ public sealed class Bernstein
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void AppendModified(ReadOnlySpan<byte> source)
     {
-        var v = _workingHash;
-        foreach (var b in source)
+        uint v = _workingHash;
+        foreach (byte b in source)
         {
             v = ((v << 5) + v) ^ b;
         }
@@ -189,8 +189,8 @@ public sealed class Bernstein
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void AppendOriginal(ReadOnlySpan<byte> source)
     {
-        var v = _workingHash;
-        foreach (var b in source)
+        uint v = _workingHash;
+        foreach (byte b in source)
         {
             v = ((v << 5) + v) + b;
         }

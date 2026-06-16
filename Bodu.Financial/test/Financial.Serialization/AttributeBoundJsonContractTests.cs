@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AttributeBoundJsonContractTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -27,7 +27,7 @@ public class AttributeBoundJsonContractTests
     {
         var value = new Money(19.99m, "USD");
 
-        var json = JsonSerializer.Serialize(value);
+        string json = JsonSerializer.Serialize(value);
 
         Assert.AreEqual("{\"amount\":19.99,\"currency\":\"USD\"}", json);
         Assert.AreEqual(value, JsonSerializer.Deserialize<Money>(json));
@@ -42,7 +42,7 @@ public class AttributeBoundJsonContractTests
     {
         var value = new Money<USD>(19.99m);
 
-        var json = JsonSerializer.Serialize(value);
+        string json = JsonSerializer.Serialize(value);
 
         Assert.AreEqual("{\"amount\":19.99,\"currency\":\"USD\"}", json);
         Assert.AreEqual(value, JsonSerializer.Deserialize<Money<USD>>(json));
@@ -59,7 +59,7 @@ public class AttributeBoundJsonContractTests
             .Add(new Money(10m, "USD"))
             .Add(new Money(5m, "EUR"));
 
-        var json = JsonSerializer.Serialize(bag);
+        string json = JsonSerializer.Serialize(bag);
 
         Assert.AreEqual("{\"balances\":{\"EUR\":5,\"USD\":10}}", json);
         Assert.AreEqual(bag, JsonSerializer.Deserialize<MoneyBag>(json));
@@ -72,7 +72,7 @@ public class AttributeBoundJsonContractTests
     [TestMethod]
     public void Money_WhenSerializedViaAttribute_ShouldNotEmitCompactString()
     {
-        var json = JsonSerializer.Serialize(new Money(19.99m, "USD"));
+        string json = JsonSerializer.Serialize(new Money(19.99m, "USD"));
 
         Assert.IsTrue(json.StartsWith("{", StringComparison.Ordinal), $"Expected Strict object shape, got '{json}'.");
     }

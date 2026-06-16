@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base16Tests.Coverage.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -17,7 +17,7 @@ public partial class Base16Tests
     [TestMethod]
     public void TryDecodeGuid_WhenDecodedLengthIsNotSixteen_ShouldReturnFalse()
     {
-        var decoded = Base16.TryDecodeGuid("00", out Guid value);
+        bool decoded = Base16.TryDecodeGuid("00", out Guid value);
 
         Assert.IsFalse(decoded);
         Assert.AreEqual(Guid.Empty, value);
@@ -31,9 +31,9 @@ public partial class Base16Tests
     public void TryDecodeGuid_WhenValidGuidEncoding_ShouldReturnTrueAndValue()
     {
         var guid = Guid.NewGuid();
-        var encoded = Base16.Encode(guid);
+        string encoded = Base16.Encode(guid);
 
-        var decoded = Base16.TryDecodeGuid(encoded, out Guid value);
+        bool decoded = Base16.TryDecodeGuid(encoded, out Guid value);
 
         Assert.IsTrue(decoded);
         Assert.AreEqual(guid, value);
@@ -74,7 +74,7 @@ public partial class Base16Tests
     [TestMethod]
     public void TryEncodeToUtf8_WhenSourceEmpty_ShouldReturnTrueAndWriteNothing()
     {
-        var encoded = Base16.TryEncodeToUtf8(ReadOnlySpan<byte>.Empty, Span<byte>.Empty, out var written);
+        bool encoded = Base16.TryEncodeToUtf8(ReadOnlySpan<byte>.Empty, Span<byte>.Empty, out int written);
 
         Assert.IsTrue(encoded);
         Assert.AreEqual(0, written);
@@ -88,7 +88,7 @@ public partial class Base16Tests
     {
         Span<byte> destination = stackalloc byte[2];
 
-        OperationStatus status = Base16.DecodeFromUtf8("3132"u8, destination, out _, out var written);
+        OperationStatus status = Base16.DecodeFromUtf8("3132"u8, destination, out _, out int written);
 
         Assert.AreEqual((OperationStatus.Done, 2), (status, written));
     }

@@ -69,7 +69,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     public void VerifyHash_WhenByteArrayDoesNotMatch_ShouldReturnFalse()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
-        var wrong = BitConverter.GetBytes((uint)999);
+        byte[] wrong = BitConverter.GetBytes((uint)999);
 
         Assert.IsFalse(algorithm.VerifyHash(s_sampleData, wrong));
     }
@@ -83,7 +83,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
         byte[] input = [1, 2, 3, 4];
-        var expected = BitConverter.GetBytes((uint)(1 + 2 + 3 + 4));
+        byte[] expected = BitConverter.GetBytes((uint)(1 + 2 + 3 + 4));
 
         Assert.IsTrue(algorithm.VerifyHash(input, expected));
     }
@@ -97,7 +97,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
         byte[] input = [10, 10];
-        var expectedHex = Convert.ToHexString(BitConverter.GetBytes((uint)20));
+        string expectedHex = Convert.ToHexString(BitConverter.GetBytes((uint)20));
 
         Assert.IsTrue(algorithm.VerifyHash(input, expectedHex));
     }
@@ -122,7 +122,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     public void VerifyHash_WhenEncodedStringDoesNotMatch_ShouldReturnFalse()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
-        var wrong = BitConverter.GetBytes((uint)999);
+        byte[] wrong = BitConverter.GetBytes((uint)999);
 
         Assert.IsFalse(algorithm.VerifyHash(s_sampleString, s_sampleEncoding, wrong));
     }
@@ -137,8 +137,8 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     public void VerifyHash_WhenEncodedStringMatches_ShouldReturnTrue()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
-        var input = "ABC"; // ASCII: 65 + 66 + 67 = 198
-        var expected = BitConverter.GetBytes((uint)198);
+        string input = "ABC"; // ASCII: 65 + 66 + 67 = 198
+        byte[] expected = BitConverter.GetBytes((uint)198);
 
         Assert.IsTrue(algorithm.VerifyHash(input, Encoding.ASCII, expected));
     }
@@ -262,7 +262,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
         byte[] input = [6, 6];
         ReadOnlyMemory<byte> memory = input;
-        var expected = BitConverter.GetBytes((uint)12);
+        byte[] expected = BitConverter.GetBytes((uint)12);
 
         Assert.IsTrue(algorithm.VerifyHash(new ReadOnlySpan<byte>(input), new ReadOnlySpan<byte>(expected)));
         Assert.IsTrue(algorithm.VerifyHash(memory, expected));
@@ -349,7 +349,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
         using MemoryStream stream = new([5, 5, 5]);
-        var expected = BitConverter.GetBytes((uint)15);
+        byte[] expected = BitConverter.GetBytes((uint)15);
 
         Assert.IsTrue(algorithm.VerifyHash(stream, expected));
     }

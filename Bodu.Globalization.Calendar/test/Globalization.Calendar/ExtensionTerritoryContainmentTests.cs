@@ -35,7 +35,7 @@ public sealed class ExtensionTerritoryContainmentTests
     /// <returns>A service over the scoped-holiday fixture.</returns>
     private static INotableDateService BuildHolidayService(string ruleTerritory)
     {
-        var xml = $"""
+        string xml = $"""
         <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.territory-fwd">
           <ResolutionPolicy duplicatePolicy="Error" priorityDirection="HigherWins" />
           <NotableDates>
@@ -80,7 +80,7 @@ public sealed class ExtensionTerritoryContainmentTests
     {
         INotableDateService service = BuildHolidayService(ruleTerritory);
 
-        var actual = new DateOnly(2026, 4, 7).IsNonWorkingDay(service, queryTerritory);
+        bool actual = new DateOnly(2026, 4, 7).IsNonWorkingDay(service, queryTerritory);
 
         Assert.AreEqual(expectedNonWorking, actual);
     }
@@ -121,9 +121,9 @@ public sealed class ExtensionTerritoryContainmentTests
     {
         INotableDateService service = BuildHolidayService(ruleTerritory);
 
-        var actual = new DateOnly(2026, 4, 6).WorkingDaysBetween(new DateOnly(2026, 4, 10), service, queryTerritory);
+        int actual = new DateOnly(2026, 4, 6).WorkingDaysBetween(new DateOnly(2026, 4, 10), service, queryTerritory);
 
-        var expected = expectedExcludesHoliday ? 4 : 5;
+        int expected = expectedExcludesHoliday ? 4 : 5;
         Assert.AreEqual(expected, actual);
     }
 }

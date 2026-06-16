@@ -158,7 +158,7 @@ public abstract class BlockHashAlgorithm<T>
 
         if (ShouldPadFinalBlock())
         {
-            var finalBlock = PadBlock(_residualBlock.Span[.._residualBytes], _totalBytes);
+            byte[] finalBlock = PadBlock(_residualBlock.Span[.._residualBytes], _totalBytes);
 
             if (AllowUnalignedFinalBlock)
             {
@@ -166,8 +166,8 @@ public abstract class BlockHashAlgorithm<T>
             }
             else
             {
-                var blockBytes = BlockSize / 8;
-                for (var i = 0; i < finalBlock.Length; i += blockBytes)
+                int blockBytes = BlockSize / 8;
+                for (int i = 0; i < finalBlock.Length; i += blockBytes)
                     ProcessBlock(finalBlock.AsSpan(i, blockBytes));
             }
         }
@@ -247,8 +247,8 @@ public abstract class BlockHashAlgorithm<T>
     /// </remarks>
     private void ProcessBlocks(ReadOnlySpan<byte> buffer)
     {
-        var pos = 0;
-        var blockBytes = BlockSize / 8;
+        int pos = 0;
+        int blockBytes = BlockSize / 8;
         _totalBytes += (ulong)buffer.Length;
 
         Span<byte> residualSpan = _residualBlock.Span;
@@ -256,7 +256,7 @@ public abstract class BlockHashAlgorithm<T>
         // Attempt to fill a partial residual block if it exists
         if (_residualBytes > 0)
         {
-            var remaining = blockBytes - _residualBytes;
+            int remaining = blockBytes - _residualBytes;
 
             if (buffer.Length >= remaining)
             {

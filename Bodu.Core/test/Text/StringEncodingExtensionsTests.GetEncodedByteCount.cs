@@ -17,9 +17,9 @@ public sealed partial class StringEncodingExtensionsTests
     [DynamicData(nameof(CanonicalEncodings))]
     public void GetEncodedByteCount_WhenInvoked_ShouldMatchBclEncoding(System.Text.Encoding encoding)
     {
-        var expected = encoding.GetByteCount(MultiByteText);
+        int expected = encoding.GetByteCount(MultiByteText);
 
-        var actual = MultiByteText.GetEncodedByteCount(encoding);
+        int actual = MultiByteText.GetEncodedByteCount(encoding);
 
         Assert.AreEqual(expected, actual);
     }

@@ -42,7 +42,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     [DynamicData(nameof(NonCryptographicHashAlgorithmVariants), DynamicDataDisplayName = nameof(NonCryptographicHashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(NonCryptographicHashAlgorithmVariantDisplayName))]
     public async Task AppendAsync_WhenHashingStream_ShouldMatchSynchronousAppend(TVariant variant)
     {
-        var data = NonCryptographicHashSharedInputs.Sequential0To255;
+        byte[] data = NonCryptographicHashSharedInputs.Sequential0To255;
 
         NonCryptographicHashAlgorithm streaming = CreateAlgorithm(variant);
         using (MemoryStream source = new(data))

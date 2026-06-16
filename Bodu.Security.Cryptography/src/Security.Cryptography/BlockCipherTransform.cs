@@ -266,12 +266,12 @@ public abstract class BlockCipherTransform
         if (_encrypt)
             return _mode.Transform(input, output, true);
 
-        var stripPadding = _padding.StripsPaddingOnUnpad;
+        bool stripPadding = _padding.StripsPaddingOnUnpad;
 
         if (!stripPadding)
             return _mode.Transform(input, output, false);
 
-        var combined = Combine(_deferredInput, input);
+        byte[] combined = Combine(_deferredInput, input);
         ClearDeferredInput();
 
         if (combined.Length <= _cipher.BlockSize / 8)
@@ -280,11 +280,11 @@ public abstract class BlockCipherTransform
             return 0;
         }
 
-        var bytesToProcess = combined.Length - (_cipher.BlockSize / 8);
+        int bytesToProcess = combined.Length - (_cipher.BlockSize / 8);
 
         try
         {
-            var bytesWritten = _mode.Transform(
+            int bytesWritten = _mode.Transform(
                 combined.AsSpan(0, bytesToProcess),
                 output[..bytesToProcess],
                 false);
@@ -337,8 +337,8 @@ public abstract class BlockCipherTransform
                 // after the last aligned chunk has been forwarded to TransformBlock), and
                 // PKCS7 / ANSIX923 / ISO10126 / ISO7816-4 always emit a padding block for
                 // empty plaintext too.
-                var padded = _padding.Pad(input, _cipher.BlockSize);
-                var output = new byte[padded.Length];
+                byte[] padded = _padding.Pad(input, _cipher.BlockSize);
+                byte[] output = new byte[padded.Length];
 
                 try
                 {
@@ -356,13 +356,13 @@ public abstract class BlockCipherTransform
                 // re-attached. Validate the combined length so a malformed final call surfaces
                 // as a CryptographicException with a recognizable message rather than crashing
                 // deeper in the mode transform.
-                var combined = Combine(_deferredInput, input);
+                byte[] combined = Combine(_deferredInput, input);
                 CryptographyThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf<byte>(
                     combined,
                     _cipher.BlockSize / 8,
                     throwIfZero: false);
 
-                var decrypted = new byte[combined.Length];
+                byte[] decrypted = new byte[combined.Length];
 
                 try
                 {
@@ -422,7 +422,7 @@ public abstract class BlockCipherTransform
         if (first == null || first.Length == 0)
             return second.ToArray();
 
-        var result = new byte[first.Length + second.Length];
+        byte[] result = new byte[first.Length + second.Length];
         Buffer.BlockCopy(first, 0, result, 0, first.Length);
         second.CopyTo(result.AsSpan(first.Length));
         return result;

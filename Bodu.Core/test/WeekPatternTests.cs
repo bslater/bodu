@@ -316,14 +316,14 @@ public partial class WeekPatternTests
     {
         char[] symbols = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 
-        for (var mask = 0b0000000; mask <= 0b1111111; mask++)
+        for (int mask = 0b0000000; mask <= 0b1111111; mask++)
         {
-            var symbolBuilder = new char[7];
-            var binaryBuilder = new char[7];
+            char[] symbolBuilder = new char[7];
+            char[] binaryBuilder = new char[7];
 
-            for (var i = 0; i < 7; i++)
+            for (int i = 0; i < 7; i++)
             {
-                var bitSet = ((mask >> (6 - i)) & 1) == 1;
+                bool bitSet = ((mask >> (6 - i)) & 1) == 1;
                 symbolBuilder[i] = bitSet ? symbols[i] : '_';
                 binaryBuilder[i] = bitSet ? '1' : '0';
             }

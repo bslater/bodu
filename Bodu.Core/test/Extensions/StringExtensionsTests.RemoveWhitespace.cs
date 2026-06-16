@@ -42,9 +42,9 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void RemoveWhitespace_WhenInputHasNoWhitespace_ShouldReturnSameInstance()
     {
-        var value = "hello";
+        string value = "hello";
 
-        var actual = value.RemoveWhitespace();
+        string actual = value.RemoveWhitespace();
 
         Assert.AreSame(value, actual);
     }

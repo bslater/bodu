@@ -55,7 +55,7 @@ public partial class Utf8BencodeWriterTests
     [DataRow(long.MinValue, "i-9223372036854775808e")]
     public void WriteInteger_WhenValueGiven_ShouldEmitCanonicalEncoding(long value, string expected)
     {
-        var actual = Write(w => w.WriteInteger(value));
+        string actual = Write(w => w.WriteInteger(value));
 
         Assert.AreEqual(expected, actual);
     }
@@ -74,7 +74,7 @@ public partial class Utf8BencodeWriterTests
     [DataRow(ulong.MaxValue, "i18446744073709551615e")]
     public void WriteInteger_WhenUnsignedValueGiven_ShouldEmitCanonicalEncoding(ulong value, string expected)
     {
-        var actual = Write(w => w.WriteInteger(value));
+        string actual = Write(w => w.WriteInteger(value));
 
         Assert.AreEqual(expected, actual);
     }
@@ -85,7 +85,7 @@ public partial class Utf8BencodeWriterTests
     [TestMethod]
     public void WriteByteString_WhenEmpty_ShouldEmitZeroLengthPrefix()
     {
-        var actual = Write(w => w.WriteByteString(ReadOnlySpan<byte>.Empty));
+        string actual = Write(w => w.WriteByteString(ReadOnlySpan<byte>.Empty));
 
         Assert.AreEqual("0:", actual);
     }
@@ -96,7 +96,7 @@ public partial class Utf8BencodeWriterTests
     [TestMethod]
     public void WriteByteString_WhenAscii_ShouldEmitLengthPrefixedContent()
     {
-        var actual = Write(w => w.WriteByteString("spam"u8));
+        string actual = Write(w => w.WriteByteString("spam"u8));
 
         Assert.AreEqual("4:spam", actual);
     }
@@ -126,7 +126,7 @@ public partial class Utf8BencodeWriterTests
     public void WriteString_WhenMultibyteText_ShouldEmitUtf8WithByteLength()
     {
         const string Text = "héllo";
-        var content = Encoding.UTF8.GetBytes(Text);
+        byte[] content = Encoding.UTF8.GetBytes(Text);
         var buffer = new ArrayBufferWriter<byte>();
         var writer = new Utf8BencodeWriter(buffer);
 
@@ -202,7 +202,7 @@ public partial class Utf8BencodeWriterTests
     [TestMethod]
     public void WriteStartList_WhenEmpty_ShouldEmitEmptyList()
     {
-        var actual = Write(w =>
+        string actual = Write(w =>
         {
             w.WriteStartList();
             w.WriteEndList();
@@ -217,7 +217,7 @@ public partial class Utf8BencodeWriterTests
     [TestMethod]
     public void WriteStartDictionary_WhenEmpty_ShouldEmitEmptyDictionary()
     {
-        var actual = Write(w =>
+        string actual = Write(w =>
         {
             w.WriteStartDictionary();
             w.WriteEndDictionary();
@@ -232,7 +232,7 @@ public partial class Utf8BencodeWriterTests
     [TestMethod]
     public void WriteStartList_WhenMixedValues_ShouldPreserveOrder()
     {
-        var actual = Write(w =>
+        string actual = Write(w =>
         {
             w.WriteStartList();
             w.WriteInteger(1);
@@ -250,7 +250,7 @@ public partial class Utf8BencodeWriterTests
     [TestMethod]
     public void WriteStartList_WhenNested_ShouldEmitBalancedDelimiters()
     {
-        var actual = Write(w =>
+        string actual = Write(w =>
         {
             w.WriteStartList();
             w.WriteStartList();
@@ -271,7 +271,7 @@ public partial class Utf8BencodeWriterTests
     [TestMethod]
     public void WriteEndDictionary_WhenKeysOutOfOrder_ShouldSortAscending()
     {
-        var actual = Write(w =>
+        string actual = Write(w =>
         {
             w.WriteStartDictionary();
             w.WritePropertyName("name");
@@ -291,7 +291,7 @@ public partial class Utf8BencodeWriterTests
     [TestMethod]
     public void WriteEndDictionary_WhenKeysSharePrefix_ShouldOrderShorterFirst()
     {
-        var actual = Write(w =>
+        string actual = Write(w =>
         {
             w.WriteStartDictionary();
             w.WritePropertyName("ab");
@@ -335,7 +335,7 @@ public partial class Utf8BencodeWriterTests
     [TestMethod]
     public void WriteEndDictionary_WhenNested_ShouldSortEachLevel()
     {
-        var actual = Write(w =>
+        string actual = Write(w =>
         {
             w.WriteStartDictionary();
             w.WritePropertyName("b");
@@ -360,7 +360,7 @@ public partial class Utf8BencodeWriterTests
     [TestMethod]
     public void WriteEndDictionary_WhenTorrentLike_ShouldEmitCanonicalDocument()
     {
-        var actual = Write(w =>
+        string actual = Write(w =>
         {
             w.WriteStartDictionary();
             w.WritePropertyName("announce");
@@ -488,7 +488,7 @@ public partial class Utf8BencodeWriterTests
     [TestMethod]
     public void WriteStartList_WhenAtMaxDepth_ShouldNotThrow()
     {
-        var actual = Write(() => new BencodeWriterOptions { MaxDepth = 2 }, w =>
+        string actual = Write(() => new BencodeWriterOptions { MaxDepth = 2 }, w =>
         {
             w.WriteStartList();
             w.WriteStartList();

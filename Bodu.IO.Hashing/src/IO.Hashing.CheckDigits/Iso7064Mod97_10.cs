@@ -102,10 +102,10 @@ public sealed class Iso7064Mod97_10
     {
         if (valueIncludingCheck.IsEmpty) return false;
 
-        var r = 0;
-        for (var i = 0; i < valueIncludingCheck.Length; i++)
+        int r = 0;
+        for (int i = 0; i < valueIncludingCheck.Length; i++)
         {
-            var ch = valueIncludingCheck[i];
+            char ch = valueIncludingCheck[i];
             if ((uint)(ch - '0') <= 9u)
             {
                 r = ((r * 10) + (ch - '0')) % 97;
@@ -126,10 +126,10 @@ public sealed class Iso7064Mod97_10
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> body)
     {
-        var r = this._r;
-        for (var i = 0; i < body.Length; i++)
+        int r = this._r;
+        for (int i = 0; i < body.Length; i++)
         {
-            var ch = body[i];
+            char ch = body[i];
             if ((uint)(ch - '0') <= 9u)
             {
                 r = ((r * 10) + (ch - '0')) % 97;
@@ -152,8 +152,8 @@ public sealed class Iso7064Mod97_10
     {
         HashingThrowHelper.ThrowIfDestinationSpanTooShort(destination.Length, CheckLength, nameof(destination));
 
-        var full = (_r * 100) % 97;
-        var check = (98 - full) % 97;
+        int full = (_r * 100) % 97;
+        int check = (98 - full) % 97;
         destination[0] = (char)('0' + (check / 10));
         destination[1] = (char)('0' + (check % 10));
         return CheckLength;

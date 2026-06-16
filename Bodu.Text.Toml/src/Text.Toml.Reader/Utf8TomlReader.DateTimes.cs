@@ -17,9 +17,9 @@ public ref partial struct Utf8TomlReader
     /// </returns>
     private bool TryScanDateTime()
     {
-        if (!TryReadDateDigits(4, out var year) || !TryExpectDateByte((byte)'-')
-            || !TryReadDateDigits(2, out var month) || !TryExpectDateByte((byte)'-')
-            || !TryReadDateDigits(2, out var day))
+        if (!TryReadDateDigits(4, out int year) || !TryExpectDateByte((byte)'-')
+            || !TryReadDateDigits(2, out int month) || !TryExpectDateByte((byte)'-')
+            || !TryReadDateDigits(2, out int day))
         {
             return false;
         }
@@ -28,7 +28,7 @@ public ref partial struct Utf8TomlReader
         if (Eof && !_isFinalBlock)
             return NeedMoreData();
 
-        var hasTime = false;
+        bool hasTime = false;
         if (!Eof && (Current == (byte)'T' || Current == (byte)'t'))
         {
             hasTime = true;
@@ -96,9 +96,9 @@ public ref partial struct Utf8TomlReader
     /// <returns><see langword="true" /> when every available byte matches the pattern.</returns>
     private readonly bool MatchesSpaceTimePrefix()
     {
-        for (var i = 1; i <= 3 && _pos + i < _source.Length; i++)
+        for (int i = 1; i <= 3 && _pos + i < _source.Length; i++)
         {
-            var b = _source[_pos + i];
+            byte b = _source[_pos + i];
             if (i < 3 ? !IsDigit(b) : b != (byte)':')
                 return false;
         }
@@ -133,14 +133,14 @@ public ref partial struct Utf8TomlReader
     private bool TryReadPartialTime(out (int Hour, int Minute, int Second, long FractionTicks) time)
     {
         time = default;
-        if (!TryReadDateDigits(2, out var hour) || !TryExpectDateByte((byte)':') || !TryReadDateDigits(2, out var minute))
+        if (!TryReadDateDigits(2, out int hour) || !TryExpectDateByte((byte)':') || !TryReadDateDigits(2, out int minute))
             return false;
 
         // At the end of a non-final buffer the seconds component may follow in the next block.
         if (Eof && !_isFinalBlock)
             return NeedMoreData();
 
-        var second = 0;
+        int second = 0;
         long fractionTicks = 0;
         if (!Eof && Current == (byte)':')
         {
@@ -179,7 +179,7 @@ public ref partial struct Utf8TomlReader
     private bool TryReadFractionTicks(out long ticks)
     {
         ticks = 0;
-        var start = _pos;
+        int start = _pos;
         while (!Eof && IsDigit(Current))
             Advance();
 
@@ -191,7 +191,7 @@ public ref partial struct Utf8TomlReader
             throw Error(TomlResourceStrings.Format_Invalid_TomlInvalidDateTime);
 
         ReadOnlySpan<byte> digits = _source[start.._pos];
-        for (var i = 0; i < 7; i++)
+        for (int i = 0; i < 7; i++)
             ticks = (ticks * 10) + (i < digits.Length ? digits[i] - (byte)'0' : 0);
         return true;
     }
@@ -212,9 +212,9 @@ public ref partial struct Utf8TomlReader
             return true;
         }
 
-        var negative = Current == (byte)'-';
+        bool negative = Current == (byte)'-';
         Advance();
-        if (!TryReadDateDigits(2, out var hours) || !TryExpectDateByte((byte)':') || !TryReadDateDigits(2, out var minutes))
+        if (!TryReadDateDigits(2, out int hours) || !TryExpectDateByte((byte)':') || !TryReadDateDigits(2, out int minutes))
             return false;
 
         if (hours > 23 || minutes > 59)
@@ -244,9 +244,9 @@ public ref partial struct Utf8TomlReader
             throw Error(TomlResourceStrings.Format_Invalid_TomlInvalidDateTime);
         }
 
-        for (var i = 0; i < count; i++)
+        for (int i = 0; i < count; i++)
         {
-            var b = _source[_pos + i];
+            byte b = _source[_pos + i];
             if (!IsDigit(b))
                 throw Error(TomlResourceStrings.Format_Invalid_TomlInvalidDateTime);
             value = (value * 10) + (b - (byte)'0');
@@ -313,7 +313,7 @@ public ref partial struct Utf8TomlReader
         if (hour > 23 || minute > 59 || second > 59)
             throw Error(TomlResourceStrings.Format_Invalid_TomlInvalidDateTime);
 
-        var ticks = (((hour * 3600L) + (minute * 60L) + second) * TicksPerSecond) + fractionTicks;
+        long ticks = (((hour * 3600L) + (minute * 60L) + second) * TicksPerSecond) + fractionTicks;
         return new TimeOnly(ticks);
     }
 

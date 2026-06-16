@@ -107,7 +107,7 @@ internal sealed class ExchangeRateSeriesBuffer
     {
         FinancialThrowHelper.ThrowIfExchangeRateNotPositive(rate, rateParamName);
 
-        var index = IndexOf(dayNumber);
+        int index = IndexOf(dayNumber);
         if (index >= 0)
         {
             throw new ArgumentException(
@@ -141,7 +141,7 @@ internal sealed class ExchangeRateSeriesBuffer
     {
         FinancialThrowHelper.ThrowIfExchangeRateNotPositive(rate, rateParamName);
 
-        var index = IndexOf(dayNumber);
+        int index = IndexOf(dayNumber);
         if (index >= 0)
             return false;
 
@@ -167,7 +167,7 @@ internal sealed class ExchangeRateSeriesBuffer
     {
         FinancialThrowHelper.ThrowIfExchangeRateNotPositive(rate, rateParamName);
 
-        var index = IndexOf(dayNumber);
+        int index = IndexOf(dayNumber);
         if (index < 0)
         {
             throw new KeyNotFoundException(
@@ -198,7 +198,7 @@ internal sealed class ExchangeRateSeriesBuffer
     {
         FinancialThrowHelper.ThrowIfExchangeRateNotPositive(rate, rateParamName);
 
-        var index = IndexOf(dayNumber);
+        int index = IndexOf(dayNumber);
         if (index < 0)
             return false;
 
@@ -221,7 +221,7 @@ internal sealed class ExchangeRateSeriesBuffer
     {
         FinancialThrowHelper.ThrowIfExchangeRateNotPositive(rate, rateParamName);
 
-        var index = IndexOf(dayNumber);
+        int index = IndexOf(dayNumber);
         if (index >= 0)
             _rates[index] = rate;
         else
@@ -237,7 +237,7 @@ internal sealed class ExchangeRateSeriesBuffer
     /// </returns>
     public bool Remove(int dayNumber)
     {
-        var index = IndexOf(dayNumber);
+        int index = IndexOf(dayNumber);
         if (index < 0)
             return false;
 
@@ -265,7 +265,7 @@ internal sealed class ExchangeRateSeriesBuffer
     /// </returns>
     public bool TryGetRate(int dayNumber, out decimal rate)
     {
-        var index = IndexOf(dayNumber);
+        int index = IndexOf(dayNumber);
         if (index < 0)
         {
             rate = default;
@@ -318,7 +318,7 @@ internal sealed class ExchangeRateSeriesBuffer
     /// <returns>A lazy sequence of <see cref="ExchangeRateObservation" /> values.</returns>
     public IEnumerable<ExchangeRateObservation> Enumerate()
     {
-        for (var i = 0; i < Count; i++)
+        for (int i = 0; i < Count; i++)
         {
             yield return new ExchangeRateObservation(DateOnly.FromDayNumber(_dayNumbers[i]), _rates[i]);
         }
@@ -334,8 +334,8 @@ internal sealed class ExchangeRateSeriesBuffer
         if (Count == 0)
             throw new InvalidOperationException(FinancialResourceStrings.Op_Invalid_RateSeriesBuilderEmpty);
 
-        var dayNumbers = new int[Count];
-        var rates = new decimal[Count];
+        int[] dayNumbers = new int[Count];
+        decimal[] rates = new decimal[Count];
 
         Array.Copy(_dayNumbers, dayNumbers, Count);
         Array.Copy(_rates, rates, Count);
@@ -351,7 +351,7 @@ internal sealed class ExchangeRateSeriesBuffer
     /// <returns>A new <see cref="ExchangeRateSeriesBuffer" /> with the same observations.</returns>
     public static ExchangeRateSeriesBuffer FromStorage(ExchangeRateSeriesStorage storage)
     {
-        var count = storage.Count;
+        int count = storage.Count;
         var buffer = new ExchangeRateSeriesBuffer(count);
 
         storage.CopyTo(buffer._dayNumbers, buffer._rates);
@@ -385,18 +385,18 @@ internal sealed class ExchangeRateSeriesBuffer
         string observationsParamName,
         bool throwOnConflict)
     {
-        var maxLength = Count + incoming.Count;
-        var mergedDays = new int[maxLength];
-        var mergedRates = new decimal[maxLength];
+        int maxLength = Count + incoming.Count;
+        int[] mergedDays = new int[maxLength];
+        decimal[] mergedRates = new decimal[maxLength];
 
-        var i = 0;
-        var j = 0;
-        var k = 0;
+        int i = 0;
+        int j = 0;
+        int k = 0;
 
         while (i < Count && j < incoming.Count)
         {
-            var existingDay = _dayNumbers[i];
-            var incomingDay = incoming[j].DayNumber;
+            int existingDay = _dayNumbers[i];
+            int incomingDay = incoming[j].DayNumber;
 
             if (existingDay < incomingDay)
             {
@@ -478,7 +478,7 @@ internal sealed class ExchangeRateSeriesBuffer
     {
         EnsureCapacity(Count + 1);
 
-        var moveCount = Count - index;
+        int moveCount = Count - index;
         if (moveCount > 0)
         {
             Array.Copy(_dayNumbers, index, _dayNumbers, index + 1, moveCount);
@@ -496,7 +496,7 @@ internal sealed class ExchangeRateSeriesBuffer
     /// <param name="index">The index to remove from the live segment.</param>
     private void RemoveAt(int index)
     {
-        var moveCount = Count - index - 1;
+        int moveCount = Count - index - 1;
         if (moveCount > 0)
         {
             Array.Copy(_dayNumbers, index + 1, _dayNumbers, index, moveCount);
@@ -518,7 +518,7 @@ internal sealed class ExchangeRateSeriesBuffer
         if (_dayNumbers.Length >= minimumCapacity)
             return;
 
-        var newCapacity = _dayNumbers.Length == 0 ? DefaultCapacity : _dayNumbers.Length * 2;
+        int newCapacity = _dayNumbers.Length == 0 ? DefaultCapacity : _dayNumbers.Length * 2;
         if (newCapacity < minimumCapacity)
             newCapacity = minimumCapacity;
 

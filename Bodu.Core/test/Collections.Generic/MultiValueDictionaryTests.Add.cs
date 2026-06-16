@@ -80,23 +80,23 @@ public partial class MultiValueDictionaryTests
     public void Add_WhenManyKeysAndValuesAdded_ShouldRetrieveAllCorrectly()
     {
         var mvd = new MultiValueDictionary<int, int>();
-        var keyCount = 200;
-        var valuesPerKey = 10;
+        int keyCount = 200;
+        int valuesPerKey = 10;
 
-        for (var k = 0; k < keyCount; k++)
+        for (int k = 0; k < keyCount; k++)
         {
-            for (var v = 0; v < valuesPerKey; v++)
+            for (int v = 0; v < valuesPerKey; v++)
                 mvd.Add(k, v);
         }
 
         Assert.AreEqual(keyCount * valuesPerKey, mvd.Count);
         Assert.AreEqual(keyCount, mvd.KeyCount);
 
-        for (var k = 0; k < keyCount; k++)
+        for (int k = 0; k < keyCount; k++)
         {
             IReadOnlyList<int> values = mvd[k];
             Assert.HasCount(valuesPerKey, values);
-            for (var v = 0; v < valuesPerKey; v++)
+            for (int v = 0; v < valuesPerKey; v++)
                 Assert.AreEqual(v, values[v]);
         }
     }
@@ -132,7 +132,7 @@ public partial class MultiValueDictionaryTests
     {
         var mvd = new MultiValueDictionary<string, int>();
 
-        for (var i = 0; i < valueCount; i++)
+        for (int i = 0; i < valueCount; i++)
             mvd.Add("k", i);
 
         Assert.AreEqual(valueCount, mvd.Count);

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YahooExchangeRateOptionsTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -22,7 +22,7 @@ public class YahooExchangeRateOptionsTests
     {
         YahooExchangeRateOptions options = new();
 
-        var valid = options.TryValidate(out var error);
+        bool valid = options.TryValidate(out string? error);
 
         Assert.IsTrue(valid);
         Assert.IsNull(error);
@@ -47,7 +47,7 @@ public class YahooExchangeRateOptionsTests
     {
         YahooExchangeRateOptions options = new() { BaseAddress = null! };
 
-        var valid = options.TryValidate(out var error);
+        bool valid = options.TryValidate(out string? error);
 
         Assert.IsFalse(valid);
         Assert.IsNotNull(error);
@@ -61,7 +61,7 @@ public class YahooExchangeRateOptionsTests
     {
         YahooExchangeRateOptions options = new() { ChartPath = "v8/finance/chart" };
 
-        var valid = options.TryValidate(out var error);
+        bool valid = options.TryValidate(out string? error);
 
         Assert.IsFalse(valid);
         Assert.IsNotNull(error);
@@ -75,7 +75,7 @@ public class YahooExchangeRateOptionsTests
     {
         YahooExchangeRateOptions options = new() { SymbolFormat = "{from}=X" };
 
-        var valid = options.TryValidate(out var error);
+        bool valid = options.TryValidate(out string? error);
 
         Assert.IsFalse(valid);
         Assert.IsNotNull(error);
@@ -89,7 +89,7 @@ public class YahooExchangeRateOptionsTests
     {
         YahooExchangeRateOptions options = new() { HttpTimeout = TimeSpan.Zero };
 
-        var valid = options.TryValidate(out var error);
+        bool valid = options.TryValidate(out string? error);
 
         Assert.IsFalse(valid);
         Assert.IsNotNull(error);
@@ -103,7 +103,7 @@ public class YahooExchangeRateOptionsTests
     {
         YahooExchangeRateOptions options = new() { DefaultLookback = TimeSpan.Zero };
 
-        var valid = options.TryValidate(out var error);
+        bool valid = options.TryValidate(out string? error);
 
         Assert.IsFalse(valid);
         Assert.IsNotNull(error);
@@ -117,7 +117,7 @@ public class YahooExchangeRateOptionsTests
     {
         YahooExchangeRateOptions options = new() { CurrencyAliases = null! };
 
-        var valid = options.TryValidate(out var error);
+        bool valid = options.TryValidate(out string? error);
 
         Assert.IsFalse(valid);
         Assert.IsNotNull(error);
@@ -131,7 +131,7 @@ public class YahooExchangeRateOptionsTests
     {
         YahooExchangeRateOptions options = new() { SynchronousNetworkFetchLogLevel = (LogLevel)999 };
 
-        var valid = options.TryValidate(out var error);
+        bool valid = options.TryValidate(out string? error);
 
         Assert.IsFalse(valid);
         Assert.IsNotNull(error);

@@ -525,7 +525,7 @@ public partial class EvictingDictionary<TKey, TValue>
     {
         // Track success explicitly: relying on `keyToRemove is not null` is unreliable when TKey is a value type
         // because default(TKey) (e.g. 0) may itself be a valid key.
-        var found = false;
+        bool found = false;
         TKey keyToRemove = default!;
 
         switch (Policy)
@@ -639,7 +639,7 @@ public partial class EvictingDictionary<TKey, TValue>
     /// </remarks>
     private IEnumerable<KeyValuePair<TKey, TValue>> GetOrderedItems()
     {
-        var version = _version;
+        int version = _version;
 
         switch (Policy)
         {

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AverageStrategyTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -44,7 +44,7 @@ public sealed class AverageStrategyTests
             Named("B", ("AUD", "USD", D1, 0.5100m)),
         };
 
-        var ok = new AverageStrategy().TryAggregate("AUD", "USD", D1, ExchangeRateLookupOptions.Exact, candidates, out ExchangeRateLookupResult result);
+        bool ok = new AverageStrategy().TryAggregate("AUD", "USD", D1, ExchangeRateLookupOptions.Exact, candidates, out ExchangeRateLookupResult result);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(0.5050m, result.Rate.Rate);

@@ -17,7 +17,7 @@ public partial class DateOnlyExtensionsTests
     [DynamicData(nameof(DateTimeExtensionsTests.IsLastDateOfMonthDataTestData), typeof(DateTimeExtensionsTests))]
     public void IsLastDateOfMonth_WhenDateIsLastDay_ShouldReturnTrue(DateTime input)
     {
-        var actual = input.IsLastDateOfMonth;
+        bool actual = input.IsLastDateOfMonth;
 
         Assert.IsTrue(actual);
     }
@@ -30,7 +30,7 @@ public partial class DateOnlyExtensionsTests
     [DynamicData(nameof(DateTimeExtensionsTests.IsNotLastDateOfMonthTestData), typeof(DateTimeExtensionsTests))]
     public void IsLastDateOfMonth_WhenDateIsNotLastDay_ShouldReturnFalse(DateTime input)
     {
-        var actual = input.IsLastDateOfMonth;
+        bool actual = input.IsLastDateOfMonth;
 
         Assert.IsFalse(actual);
     }

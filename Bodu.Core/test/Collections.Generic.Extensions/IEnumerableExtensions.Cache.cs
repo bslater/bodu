@@ -144,7 +144,7 @@ public sealed partial class IEnumerableExtensionsTests_Cache
 
         try
         {
-            foreach (var _ in cached)
+            foreach (int _ in cached)
             {
                 // Force enumeration to trigger exception Only first value is valid
             }
@@ -158,7 +158,7 @@ public sealed partial class IEnumerableExtensionsTests_Cache
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
             {
-                foreach (var _ in cached)
+                foreach (int _ in cached)
                 {
                 }
             }

@@ -72,7 +72,7 @@ public partial class CircularBufferTests
 
     private static IEnumerable<int> YieldMaterializeSequence(int start, int count)
     {
-        for (var i = 0; i < count; i++)
+        for (int i = 0; i < count; i++)
             yield return start + i;
     }
 

@@ -51,9 +51,9 @@ public class Poly1305AeadCoreTests
     public void SealRfc8439_WhenGivenRfc8439Vector_ShouldProduceExpectedCiphertextAndTag()
     {
         var engine = new ChaCha20StreamCipher(s_key, s_nonce, initialCounter: 0);
-        var output = new byte[s_plaintext.Length + Poly1305AeadCore.TagBytes];
+        byte[] output = new byte[s_plaintext.Length + Poly1305AeadCore.TagBytes];
 
-        var written = Poly1305AeadCore.SealRfc8439(engine, s_associatedData, s_plaintext, output);
+        int written = Poly1305AeadCore.SealRfc8439(engine, s_associatedData, s_plaintext, output);
 
         Assert.AreEqual(output.Length, written);
         CollectionAssert.AreEqual(s_ciphertext, output.AsSpan(0, s_plaintext.Length).ToArray());
@@ -69,12 +69,12 @@ public class Poly1305AeadCoreTests
     {
         var engine = new ChaCha20StreamCipher(s_key, s_nonce, initialCounter: 0);
 
-        var ciphertextWithTag = new byte[s_ciphertext.Length + s_tag.Length];
+        byte[] ciphertextWithTag = new byte[s_ciphertext.Length + s_tag.Length];
         s_ciphertext.CopyTo(ciphertextWithTag, 0);
         s_tag.CopyTo(ciphertextWithTag, s_ciphertext.Length);
 
-        var output = new byte[s_ciphertext.Length];
-        var written = Poly1305AeadCore.OpenRfc8439(engine, s_associatedData, ciphertextWithTag, output);
+        byte[] output = new byte[s_ciphertext.Length];
+        int written = Poly1305AeadCore.OpenRfc8439(engine, s_associatedData, ciphertextWithTag, output);
 
         Assert.AreEqual(s_plaintext.Length, written);
         CollectionAssert.AreEqual(s_plaintext, output);
@@ -89,12 +89,12 @@ public class Poly1305AeadCoreTests
     {
         var engine = new ChaCha20StreamCipher(s_key, s_nonce, initialCounter: 0);
 
-        var ciphertextWithTag = new byte[s_ciphertext.Length + s_tag.Length];
+        byte[] ciphertextWithTag = new byte[s_ciphertext.Length + s_tag.Length];
         s_ciphertext.CopyTo(ciphertextWithTag, 0);
         s_tag.CopyTo(ciphertextWithTag, s_ciphertext.Length);
         ciphertextWithTag[^1] ^= 0xff;
 
-        var output = new byte[s_ciphertext.Length];
+        byte[] output = new byte[s_ciphertext.Length];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {

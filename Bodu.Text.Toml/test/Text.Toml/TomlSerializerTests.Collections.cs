@@ -24,7 +24,7 @@ public partial class TomlSerializerTests
     {
         var model = new ListModel { Numbers = [5, 3, 9, 1] };
 
-        var text = TomlSerializer.Serialize(model);
+        string text = TomlSerializer.Serialize(model);
         Assert.AreEqual("Numbers = [5, 3, 9, 1]\n", text);
 
         var roundTripped = TomlSerializer.Deserialize<ListModel>(text);
@@ -40,7 +40,7 @@ public partial class TomlSerializerTests
     {
         var model = new ArrayModel { Numbers = [3, 1, 2] };
 
-        var text = TomlSerializer.Serialize(model);
+        string text = TomlSerializer.Serialize(model);
         Assert.AreEqual("Numbers = [3, 1, 2]\n", text);
 
         var roundTripped = TomlSerializer.Deserialize<ArrayModel>(text);
@@ -57,7 +57,7 @@ public partial class TomlSerializerTests
     {
         var model = new ListModel { Numbers = [] };
 
-        var text = TomlSerializer.Serialize(model);
+        string text = TomlSerializer.Serialize(model);
         Assert.AreEqual("Numbers = []\n", text);
 
         var roundTripped = TomlSerializer.Deserialize<ListModel>(text);
@@ -73,7 +73,7 @@ public partial class TomlSerializerTests
     {
         var model = new NestedListModel { Matrix = [[1, 2], [3]] };
 
-        var text = TomlSerializer.Serialize(model);
+        string text = TomlSerializer.Serialize(model);
         Assert.AreEqual("Matrix = [[1, 2], [3]]\n", text);
 
         var roundTripped = TomlSerializer.Deserialize<NestedListModel>(text);
@@ -91,7 +91,7 @@ public partial class TomlSerializerTests
     {
         var model = new StringListModel { Words = ["a b", "c\td"] };
 
-        var text = TomlSerializer.Serialize(model);
+        string text = TomlSerializer.Serialize(model);
         Assert.AreEqual("Words = [\"a b\", \"c\\td\"]\n", text);
 
         var roundTripped = TomlSerializer.Deserialize<StringListModel>(text);
@@ -107,7 +107,7 @@ public partial class TomlSerializerTests
     {
         var model = new BoolListModel { Flags = [true, false, true] };
 
-        var text = TomlSerializer.Serialize(model);
+        string text = TomlSerializer.Serialize(model);
         Assert.AreEqual("Flags = [true, false, true]\n", text);
 
         var roundTripped = TomlSerializer.Deserialize<BoolListModel>(text);
@@ -138,7 +138,7 @@ public partial class TomlSerializerTests
     {
         var model = new HashSetModel { Numbers = [5] };
 
-        var text = TomlSerializer.Serialize(model);
+        string text = TomlSerializer.Serialize(model);
         Assert.AreEqual("Numbers = [5]\n", text);
 
         var roundTripped = TomlSerializer.Deserialize<HashSetModel>(text);
@@ -194,7 +194,7 @@ public partial class TomlSerializerTests
     {
         var model = new IListModel { Numbers = new List<int> { 4, 5, 6 } };
 
-        var text = TomlSerializer.Serialize(model);
+        string text = TomlSerializer.Serialize(model);
         Assert.AreEqual("Numbers = [4, 5, 6]\n", text);
 
         var roundTripped = TomlSerializer.Deserialize<IListModel>(text);
@@ -254,7 +254,7 @@ public partial class TomlSerializerTests
         model.Items.Enqueue(2);
         model.Items.Enqueue(3);
 
-        var text = TomlSerializer.Serialize(model);
+        string text = TomlSerializer.Serialize(model);
         Assert.AreEqual("Items = [1, 2, 3]\n", text);
 
         var roundTripped = TomlSerializer.Deserialize<QueueModel>(text);
@@ -274,7 +274,7 @@ public partial class TomlSerializerTests
         model.Items.Push(2);
         model.Items.Push(3);
 
-        var text = TomlSerializer.Serialize(model);
+        string text = TomlSerializer.Serialize(model);
 
         Assert.AreEqual("Items = [3, 2, 1]\n", text);
     }
@@ -304,7 +304,7 @@ public partial class TomlSerializerTests
     {
         var model = new StackModel { Items = new Stack<int>(new[] { 1, 2 }) };
 
-        var text = TomlSerializer.Serialize(model);
+        string text = TomlSerializer.Serialize(model);
         var roundTripped = TomlSerializer.Deserialize<StackModel>(text);
 
         CollectionAssert.AreEqual(model.Items.Reverse().ToArray(), roundTripped.Items.ToArray());
@@ -322,12 +322,12 @@ public partial class TomlSerializerTests
         model.Items.Enqueue(2);
         model.Items.Enqueue(3);
 
-        var text = TomlSerializer.Serialize(model);
+        string text = TomlSerializer.Serialize(model);
         Assert.AreEqual("Items = [1, 2, 3]\n", text);
 
         var roundTripped = TomlSerializer.Deserialize<ConcurrentQueueModel>(text);
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, roundTripped.Items.ToArray());
-        Assert.IsTrue(roundTripped.Items.TryPeek(out var head));
+        Assert.IsTrue(roundTripped.Items.TryPeek(out int head));
         Assert.AreEqual(1, head);
     }
 
@@ -344,11 +344,11 @@ public partial class TomlSerializerTests
         model.Items.Push(1);
         model.Items.Push(2);
 
-        var text = TomlSerializer.Serialize(model);
+        string text = TomlSerializer.Serialize(model);
         Assert.AreEqual("Items = [2, 1]\n", text);
 
         var roundTripped = TomlSerializer.Deserialize<ConcurrentStackModel>(text);
-        Assert.IsTrue(roundTripped.Items.TryPeek(out var top));
+        Assert.IsTrue(roundTripped.Items.TryPeek(out int top));
         Assert.AreEqual(1, top);
     }
 
@@ -361,7 +361,7 @@ public partial class TomlSerializerTests
     {
         var model = new ConcurrentBagModel { Items = { 1, 2, 3 } };
 
-        var text = TomlSerializer.Serialize(model);
+        string text = TomlSerializer.Serialize(model);
 
         var roundTripped = TomlSerializer.Deserialize<ConcurrentBagModel>(text);
         CollectionAssert.AreEquivalent(model.Items.ToList(), roundTripped.Items.ToList());

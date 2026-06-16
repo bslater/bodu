@@ -197,7 +197,7 @@ public sealed partial class TomlDocumentReaderTests
     [TestMethod]
     public void Constructor_WhenHeaderNestingExceedsMaxDepth_ShouldThrowTomlFormatException()
     {
-        var header = "[" + string.Join('.', Enumerable.Repeat("a", 300)) + "]\n";
+        string header = "[" + string.Join('.', Enumerable.Repeat("a", 300)) + "]\n";
 
         _ = Assert.ThrowsExactly<TomlFormatException>(() =>
         {
@@ -212,7 +212,7 @@ public sealed partial class TomlDocumentReaderTests
     [TestMethod]
     public void Constructor_WhenDottedKeyNestingExceedsMaxDepth_ShouldThrowTomlFormatException()
     {
-        var pair = string.Join('.', Enumerable.Repeat("a", 300)) + " = 1\n";
+        string pair = string.Join('.', Enumerable.Repeat("a", 300)) + " = 1\n";
 
         _ = Assert.ThrowsExactly<TomlFormatException>(() =>
         {

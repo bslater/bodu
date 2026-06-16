@@ -48,7 +48,7 @@ internal sealed class BoeCsvExchangeRateTableSource
     /// <inheritdoc />
     public async ValueTask<BoeExchangeRateTable> GetTableAsync(DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default)
     {
-        var bytes = await GetResponseBytesAsync(startDate, endDate, cancellationToken).ConfigureAwait(false);
+        byte[] bytes = await GetResponseBytesAsync(startDate, endDate, cancellationToken).ConfigureAwait(false);
 
         using MemoryStream stream = new(bytes, writable: false);
         return BoeExchangeRateCsvParser.Parse(stream, _options);
@@ -63,12 +63,12 @@ internal sealed class BoeCsvExchangeRateTableSource
     /// <returns>A task that yields the response bytes.</returns>
     private async ValueTask<byte[]> GetResponseBytesAsync(DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken)
     {
-        if (_cache.TryGet(startDate, endDate, _options.RefreshInterval, out var cached))
+        if (_cache.TryGet(startDate, endDate, _options.RefreshInterval, out byte[]? cached))
             return cached;
 
-        var codes = _options.Series.Select(static series => series.SeriesCode).ToArray();
+        string[] codes = _options.Series.Select(static series => series.SeriesCode).ToArray();
         Uri url = _options.Endpoint.BuildRequestUrl(codes, startDate, endDate);
-        var bytes = await _httpClient.GetByteArrayAsync(url, cancellationToken).ConfigureAwait(false);
+        byte[] bytes = await _httpClient.GetByteArrayAsync(url, cancellationToken).ConfigureAwait(false);
         _cache.Store(startDate, endDate, bytes);
 
         return bytes;

@@ -18,11 +18,11 @@ public sealed partial class VerhoeffTests
     [TestMethod]
     public void IsValid_WhenAdjacentDigitsAreTransposed_ShouldReturnFalse()
     {
-        var check = Verhoeff.Compute(SingleDigitSeedBody.AsSpan());
-        var valid = SingleDigitSeedBody + check;
-        var buffer = valid.ToCharArray();
+        char check = Verhoeff.Compute(SingleDigitSeedBody.AsSpan());
+        string valid = SingleDigitSeedBody + check;
+        char[] buffer = valid.ToCharArray();
 
-        for (var i = 0; i < buffer.Length - 1; i++)
+        for (int i = 0; i < buffer.Length - 1; i++)
         {
             if (buffer[i] == buffer[i + 1]) continue;
 
@@ -42,15 +42,15 @@ public sealed partial class VerhoeffTests
     public void IsValid_WhenAdjacentTwinDigitsAreSubstituted_ShouldReturnFalse()
     {
         const string twinSeedBody = "33";
-        var check = Verhoeff.Compute(twinSeedBody.AsSpan());
-        var valid = twinSeedBody + check;
+        char check = Verhoeff.Compute(twinSeedBody.AsSpan());
+        string valid = twinSeedBody + check;
 
         Assert.IsTrue(Verhoeff.IsValid(valid.AsSpan()), "Precondition: twin-seed baseline must be valid.");
 
-        for (var c = '0'; c <= '9'; c++)
+        for (char c = '0'; c <= '9'; c++)
         {
             if (c == '3') continue;
-            var twin = new string(c, 2) + valid[2];
+            string twin = new string(c, 2) + valid[2];
             Assert.IsFalse(
                 Verhoeff.IsValid(twin.AsSpan()),
                 $"Twin substitution '33' -> '{c}{c}' ({twin}) must be rejected by Verhoeff.");
@@ -63,16 +63,16 @@ public sealed partial class VerhoeffTests
     [TestMethod]
     public void IsValid_WhenAnySingleDigitIsSubstituted_ShouldReturnFalse()
     {
-        var check = Verhoeff.Compute(SingleDigitSeedBody.AsSpan());
-        var valid = SingleDigitSeedBody + check;
+        char check = Verhoeff.Compute(SingleDigitSeedBody.AsSpan());
+        string valid = SingleDigitSeedBody + check;
 
         Assert.IsTrue(Verhoeff.IsValid(valid.AsSpan()), "Precondition: baseline must be valid.");
 
-        var buffer = valid.ToCharArray();
-        for (var i = 0; i < buffer.Length; i++)
+        char[] buffer = valid.ToCharArray();
+        for (int i = 0; i < buffer.Length; i++)
         {
-            var original = buffer[i];
-            for (var c = '0'; c <= '9'; c++)
+            char original = buffer[i];
+            for (char c = '0'; c <= '9'; c++)
             {
                 if (c == original) continue;
                 buffer[i] = c;

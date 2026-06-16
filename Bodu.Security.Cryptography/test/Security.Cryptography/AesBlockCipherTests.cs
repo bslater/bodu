@@ -22,7 +22,7 @@ public sealed partial class AesBlockCipherTests
     /// <inheritdoc />
     protected override BlockCipherSpecification GetSpecification(BlockCipherKeyVariant variant)
     {
-        var keySize = variant switch
+        int keySize = variant switch
         {
             BlockCipherKeyVariant.Key128 => 16,
             BlockCipherKeyVariant.Key192 => 24,
@@ -76,7 +76,7 @@ public sealed partial class AesBlockCipherTests
     [DataRow(33)]
     public void Ctor_WhenKeyLengthIsInvalid_ShouldThrowExactly(int keyLength)
     {
-        var key = new byte[keyLength];
+        byte[] key = new byte[keyLength];
         Assert.ThrowsExactly<CryptographicException>(() => new AesBlockCipher(key));
     }
 
@@ -88,14 +88,14 @@ public sealed partial class AesBlockCipherTests
     [TestMethod]
     public void Encrypt_ForSingleBlock_ShouldMatchBclEncryptEcb()
     {
-        var key = RandomNumberGenerator.GetBytes(16);
-        var plaintext = RandomNumberGenerator.GetBytes(16);
+        byte[] key = RandomNumberGenerator.GetBytes(16);
+        byte[] plaintext = RandomNumberGenerator.GetBytes(16);
 
-        var ourCiphertext = new byte[16];
+        byte[] ourCiphertext = new byte[16];
         using (var cipher = new AesBlockCipher(key))
             cipher.Encrypt(plaintext, ourCiphertext);
 
-        var bclCiphertext = new byte[16];
+        byte[] bclCiphertext = new byte[16];
         using (var aes = Aes.Create())
         {
             aes.Key = key;

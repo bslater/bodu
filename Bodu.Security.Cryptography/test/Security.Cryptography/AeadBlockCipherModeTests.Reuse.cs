@@ -30,8 +30,8 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     public void Decrypt_AfterEncryptCompleted_ShouldThrowExactly()
     {
         TTransform transform = MakeTransform();
-        var plaintext = new byte[ExpectedBlockSize];
-        var sealed_ = new byte[plaintext.Length + (transform.TagSize / 8)];
+        byte[] plaintext = new byte[ExpectedBlockSize];
+        byte[] sealed_ = new byte[plaintext.Length + (transform.TagSize / 8)];
         transform.Encrypt(plaintext, sealed_);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
@@ -48,13 +48,13 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     [TestMethod]
     public void Encrypt_AfterDecryptCompleted_ShouldThrowExactly()
     {
-        var iv = CreateInitializationVector();
-        var plaintext = new byte[ExpectedBlockSize];
+        byte[] iv = CreateInitializationVector();
+        byte[] plaintext = new byte[ExpectedBlockSize];
 
         TTransform encTransform = CreateTransform(
             new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA),
             (byte[])iv.Clone());
-        var sealed_ = new byte[plaintext.Length + (encTransform.TagSize / 8)];
+        byte[] sealed_ = new byte[plaintext.Length + (encTransform.TagSize / 8)];
         encTransform.Encrypt(plaintext, sealed_);
 
         TTransform decTransform = CreateTransform(
@@ -84,12 +84,12 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     public void Encrypt_AfterDecryptTagMismatch_ShouldThrowExactly()
     {
         using var cipher = new AesBlockCipherFixture(new byte[16]);
-        var iv = CreateInitializationVector();
-        var plaintext = new byte[ExpectedBlockSize];
-        for (var i = 0; i < plaintext.Length; i++) plaintext[i] = (byte)(i + 1);
+        byte[] iv = CreateInitializationVector();
+        byte[] plaintext = new byte[ExpectedBlockSize];
+        for (int i = 0; i < plaintext.Length; i++) plaintext[i] = (byte)(i + 1);
 
         TTransform encTransform = CreateTransform(cipher, (byte[])iv.Clone());
-        var sealed_ = new byte[plaintext.Length + (encTransform.TagSize / 8)];
+        byte[] sealed_ = new byte[plaintext.Length + (encTransform.TagSize / 8)];
         encTransform.Encrypt(plaintext, sealed_);
 
         // Flip a bit in the tag to force authentication failure on Decrypt.
@@ -115,16 +115,16 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     public void Decrypt_AfterDecryptTagMismatch_ShouldThrowExactly()
     {
         using var cipher = new AesBlockCipherFixture(new byte[16]);
-        var iv = CreateInitializationVector();
-        var plaintext = new byte[ExpectedBlockSize];
-        for (var i = 0; i < plaintext.Length; i++) plaintext[i] = (byte)(i + 1);
+        byte[] iv = CreateInitializationVector();
+        byte[] plaintext = new byte[ExpectedBlockSize];
+        for (int i = 0; i < plaintext.Length; i++) plaintext[i] = (byte)(i + 1);
 
         TTransform encTransform = CreateTransform(cipher, (byte[])iv.Clone());
-        var sealed_ = new byte[plaintext.Length + (encTransform.TagSize / 8)];
+        byte[] sealed_ = new byte[plaintext.Length + (encTransform.TagSize / 8)];
         encTransform.Encrypt(plaintext, sealed_);
 
         // Capture an untouched copy of the legitimate ciphertext+tag for the second call below.
-        var sealedCopy = (byte[])sealed_.Clone();
+        byte[] sealedCopy = (byte[])sealed_.Clone();
 
         // Flip a bit in the tag to force authentication failure on the first Decrypt.
         sealed_[sealed_.Length - 1] ^= 0xFF;

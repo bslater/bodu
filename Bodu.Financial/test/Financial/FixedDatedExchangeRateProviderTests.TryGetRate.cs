@@ -24,7 +24,7 @@ public partial class FixedDatedExchangeRateProviderTests
     {
         FixedDatedExchangeRateProvider table = new(kat.Rates);
 
-        var actual = table.TryGetRate(
+        bool actual = table.TryGetRate(
             kat.FromIsoCode,
             kat.ToIsoCode,
             kat.RequestedDate,

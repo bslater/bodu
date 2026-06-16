@@ -34,7 +34,7 @@ public sealed class IniEntryTests
     {
         IniEntry entry = new("port", "8080");
 
-        var result = entry.GetValue<int>();
+        int result = entry.GetValue<int>();
 
         Assert.AreEqual(8080, result);
     }
@@ -48,7 +48,7 @@ public sealed class IniEntryTests
     {
         IniEntry entry = new("ratio", "3.14");
 
-        var result = entry.GetValue<double>();
+        double result = entry.GetValue<double>();
 
         Assert.AreEqual(3.14, result, delta: 1e-10);
     }
@@ -61,7 +61,7 @@ public sealed class IniEntryTests
     {
         IniEntry entry = new("enabled", "true");
 
-        var result = entry.GetValue<bool>();
+        bool result = entry.GetValue<bool>();
 
         Assert.IsTrue(result);
     }
@@ -75,7 +75,7 @@ public sealed class IniEntryTests
     {
         IniEntry entry = new("name", "Alice");
 
-        var result = entry.GetValue<string>();
+        string result = entry.GetValue<string>();
 
         Assert.AreEqual("Alice", result);
     }
@@ -118,7 +118,7 @@ public sealed class IniEntryTests
     {
         IniEntry entry = new("count", "7");
 
-        var result = entry.TryGetValue<int>(out var value);
+        bool result = entry.TryGetValue<int>(out int value);
 
         Assert.IsTrue(result);
         Assert.AreEqual(7, value);
@@ -133,7 +133,7 @@ public sealed class IniEntryTests
     {
         IniEntry entry = new("count", "abc");
 
-        var result = entry.TryGetValue<int>(out var value);
+        bool result = entry.TryGetValue<int>(out int value);
 
         Assert.IsFalse(result);
         Assert.AreEqual(default, value);

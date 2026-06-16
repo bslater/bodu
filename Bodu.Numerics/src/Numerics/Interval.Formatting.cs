@@ -66,7 +66,7 @@ public readonly partial struct Interval<T> :
     /// </returns>
     public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format, IFormatProvider? provider)
     {
-        var text = Format(format.IsEmpty ? null : format.ToString(), provider);
+        string text = Format(format.IsEmpty ? null : format.ToString(), provider);
         if (text.Length <= destination.Length)
         {
             text.AsSpan().CopyTo(destination);
@@ -91,7 +91,7 @@ public readonly partial struct Interval<T> :
     /// </returns>
     public bool TryFormat(Span<byte> utf8Destination, out int bytesWritten, ReadOnlySpan<char> format, IFormatProvider? provider)
     {
-        var text = Format(format.IsEmpty ? null : format.ToString(), provider);
+        string text = Format(format.IsEmpty ? null : format.ToString(), provider);
         return Encoding.UTF8.TryGetBytes(text, utf8Destination, out bytesWritten);
     }
 
@@ -108,10 +108,10 @@ public readonly partial struct Interval<T> :
         if (IsEmpty)
             return EmptyText;
 
-        var lowerBracket = LowerInclusive ? '[' : '(';
-        var upperBracket = UpperInclusive ? ']' : ')';
-        var lowerText = ((IFormattable)_lower).ToString(format, provider);
-        var upperText = ((IFormattable)_upper).ToString(format, provider);
+        char lowerBracket = LowerInclusive ? '[' : '(';
+        char upperBracket = UpperInclusive ? ']' : ')';
+        string lowerText = ((IFormattable)_lower).ToString(format, provider);
+        string upperText = ((IFormattable)_upper).ToString(format, provider);
         return $"{lowerBracket}{lowerText}, {upperText}{upperBracket}";
     }
 }

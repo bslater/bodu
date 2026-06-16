@@ -123,18 +123,18 @@ public sealed class Serpent128Cipher
 
         // Load the 128-bit plaintext block as four little-endian 32-bit words. This is the canonical Serpent bitslice
         // representation used by the shared S-box and linear-transform helpers.
-        var x0 = BinaryReadUInt32LE(input, 0);
-        var x1 = BinaryReadUInt32LE(input, 4);
-        var x2 = BinaryReadUInt32LE(input, 8);
-        var x3 = BinaryReadUInt32LE(input, 12);
+        uint x0 = BinaryReadUInt32LE(input, 0);
+        uint x1 = BinaryReadUInt32LE(input, 4);
+        uint x2 = BinaryReadUInt32LE(input, 8);
+        uint x3 = BinaryReadUInt32LE(input, 12);
 
-        var rk = _roundKeys;
+        uint[] rk = _roundKeys;
 
         // Rounds 0..30: XOR the round key, apply S_r where r cycles modulo 8, then apply the Serpent linear transform.
         // The linear transform is omitted only from the final round.
-        for (var r = 0; r < RoundCount - 1; r++)
+        for (int r = 0; r < RoundCount - 1; r++)
         {
-            var k = r * 4;
+            int k = r * 4;
             x0 ^= rk[k];
             x1 ^= rk[k + 1];
             x2 ^= rk[k + 2];
@@ -146,7 +146,7 @@ public sealed class Serpent128Cipher
 
         // Final round: Serpent performs the final key XOR and S-box layer without the linear transform, then applies
         // the extra post-round key K_32 as output whitening.
-        var kFinal = (RoundCount - 1) * 4;
+        int kFinal = (RoundCount - 1) * 4;
         x0 ^= rk[kFinal];
         x1 ^= rk[kFinal + 1];
         x2 ^= rk[kFinal + 2];
@@ -154,7 +154,7 @@ public sealed class Serpent128Cipher
 
         ApplySBox((RoundCount - 1) & 7, ref x0, ref x1, ref x2, ref x3);
 
-        var kPost = RoundCount * 4;
+        int kPost = RoundCount * 4;
         x0 ^= rk[kPost];
         x1 ^= rk[kPost + 1];
         x2 ^= rk[kPost + 2];
@@ -178,15 +178,15 @@ public sealed class Serpent128Cipher
         }
 
         // Load the 128-bit ciphertext block as four little-endian 32-bit words.
-        var x0 = BinaryReadUInt32LE(input, 0);
-        var x1 = BinaryReadUInt32LE(input, 4);
-        var x2 = BinaryReadUInt32LE(input, 8);
-        var x3 = BinaryReadUInt32LE(input, 12);
+        uint x0 = BinaryReadUInt32LE(input, 0);
+        uint x1 = BinaryReadUInt32LE(input, 4);
+        uint x2 = BinaryReadUInt32LE(input, 8);
+        uint x3 = BinaryReadUInt32LE(input, 12);
 
-        var rk = _roundKeys;
+        uint[] rk = _roundKeys;
 
         // Reverse the final encryption round: remove post-round key K_32, apply inverse S_31, then remove K_31.
-        var kPost = RoundCount * 4;
+        int kPost = RoundCount * 4;
         x0 ^= rk[kPost];
         x1 ^= rk[kPost + 1];
         x2 ^= rk[kPost + 2];
@@ -194,7 +194,7 @@ public sealed class Serpent128Cipher
 
         ApplyInverseSBox((RoundCount - 1) & 7, ref x0, ref x1, ref x2, ref x3);
 
-        var kFinal = (RoundCount - 1) * 4;
+        int kFinal = (RoundCount - 1) * 4;
         x0 ^= rk[kFinal];
         x1 ^= rk[kFinal + 1];
         x2 ^= rk[kFinal + 2];
@@ -202,12 +202,12 @@ public sealed class Serpent128Cipher
 
         // Reverse rounds 30..0. The inverse order is linear transform, inverse S-box, then round-key XOR because
         // encryption applied key XOR, S-box, then linear transform.
-        for (var r = RoundCount - 2; r >= 0; r--)
+        for (int r = RoundCount - 2; r >= 0; r--)
         {
             InverseLinearTransform(ref x0, ref x1, ref x2, ref x3);
             ApplyInverseSBox(r & 7, ref x0, ref x1, ref x2, ref x3);
 
-            var k = r * 4;
+            int k = r * 4;
             x0 ^= rk[k];
             x1 ^= rk[k + 1];
             x2 ^= rk[k + 2];
@@ -295,7 +295,7 @@ public sealed class Serpent128Cipher
 
         // Interpret the padded key as eight little-endian 32-bit seed words w[-8]..w[-1].
         Span<uint> seed = stackalloc uint[8];
-        for (var i = 0; i < 8; i++)
+        for (int i = 0; i < 8; i++)
             seed[i] = BinaryReadUInt32LE(paddedKey, i * 4);
 
         // Prekey layout: w[-8..-1] followed by w[0..131], laid out contiguously as 140 words.
@@ -304,17 +304,17 @@ public sealed class Serpent128Cipher
         ExpandPrekeys(seed, prekeys, 8);
 
         // Apply the rotating S-box schedule to successive 4-word groups of the generated prekey tail, producing K_0..K_32.
-        for (var r = 0; r <= RoundCount; r++)
+        for (int r = 0; r <= RoundCount; r++)
         {
-            var src = 8 + (r * 4);
-            var x0 = prekeys[src];
-            var x1 = prekeys[src + 1];
-            var x2 = prekeys[src + 2];
-            var x3 = prekeys[src + 3];
+            int src = 8 + (r * 4);
+            uint x0 = prekeys[src];
+            uint x1 = prekeys[src + 1];
+            uint x2 = prekeys[src + 2];
+            uint x3 = prekeys[src + 3];
 
             ApplySBox(KeyScheduleSBoxIndex(r), ref x0, ref x1, ref x2, ref x3);
 
-            var dst = r * 4;
+            int dst = r * 4;
             roundKeys[dst] = x0;
             roundKeys[dst + 1] = x1;
             roundKeys[dst + 2] = x2;

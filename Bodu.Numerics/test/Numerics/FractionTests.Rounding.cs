@@ -97,7 +97,7 @@ public partial class FractionTests
     [TestMethod]
     public void Deconstruct_WhenSplitIntoMixedParts_ShouldYieldSignedComponents()
     {
-        (var whole, var numerator, var denominator) = new Fraction<int>(-7, 4);
+        (int whole, int numerator, int denominator) = new Fraction<int>(-7, 4);
 
         Assert.AreEqual(-1, whole);
         Assert.AreEqual(-3, numerator);

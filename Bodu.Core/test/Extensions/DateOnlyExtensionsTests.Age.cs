@@ -31,7 +31,7 @@ public partial class DateOnlyExtensionsTests
         var birth = DateOnly.FromDateTime(inputDateTime);
         var atDate = DateOnly.FromDateTime(atDateTime);
 
-        var actual = birth.Age(atDate);
+        int actual = birth.Age(atDate);
 
         Assert.AreEqual(expected, actual);
     }
@@ -42,7 +42,7 @@ public partial class DateOnlyExtensionsTests
     [TestMethod]
     public void Age_WhenMaxEvaluatedBeforeMin_ShouldReturnZero()
     {
-        var age = DateOnly.MaxValue.Age(DateOnly.MinValue);
+        int age = DateOnly.MaxValue.Age(DateOnly.MinValue);
 
         Assert.AreEqual(0, age);
     }
@@ -67,9 +67,9 @@ public partial class DateOnlyExtensionsTests
     public void Age_WhenUsingDefaultToday_ShouldMatchExplicitCall()
     {
         var birth = DateOnly.FromDateTime(DateTime.Today.AddYears(-1));
-        var expected = birth.Age(DateOnly.FromDateTime(DateTime.Today));
+        int expected = birth.Age(DateOnly.FromDateTime(DateTime.Today));
 
-        var actual = birth.Age();
+        int actual = birth.Age();
 
         Assert.AreEqual(expected, actual);
     }
@@ -80,7 +80,7 @@ public partial class DateOnlyExtensionsTests
     [TestMethod]
     public void Age_WhenUsingMinAndMaxDateOnly_ShouldNotThrow()
     {
-        var age = DateOnly.MinValue.Age(DateOnly.MaxValue);
+        int age = DateOnly.MinValue.Age(DateOnly.MaxValue);
 
         Assert.IsGreaterThan(0, age);
     }

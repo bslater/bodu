@@ -151,7 +151,7 @@ public partial class BencodeDocumentTests
     {
         using var document = BencodeDocument.Parse(Bytes("le"));
 
-        var count = 0;
+        int count = 0;
         foreach (BencodeElement element in document.RootElement.EnumerateArray())
             count++;
 
@@ -166,7 +166,7 @@ public partial class BencodeDocumentTests
     {
         using var document = BencodeDocument.Parse(Bytes("de"));
 
-        var count = 0;
+        int count = 0;
         foreach (BencodeProperty property in document.RootElement.EnumerateObject())
             count++;
 

@@ -30,9 +30,9 @@ public partial class ConfigurationKatRunnerTests
 
         using StringWriter sw = new();
         ConfigurationDocument.Save(doc, sw, writeOptions);
-        var written = sw.ToString().TrimEnd('\n', '\r');
+        string written = sw.ToString().TrimEnd('\n', '\r');
 
-        var expected = (kat.ExpectedText ?? string.Empty).TrimEnd('\n', '\r');
+        string expected = (kat.ExpectedText ?? string.Empty).TrimEnd('\n', '\r');
 
         // On Windows, the KAT data file is checked out with CRLF (`* text=auto` in .gitattributes)
         // and C# raw-string literals adopt those endings; the writer emits its configured NewLine
@@ -56,7 +56,7 @@ public partial class ConfigurationKatRunnerTests
     {
         var baseline = ConfigurationWriteOptions.For(profile);
 
-        var writeInline = kat.Options switch
+        bool writeInline = kat.Options switch
         {
             "WriteInlineCommentsFalse" => false,
             "WriteInlineCommentsTrue" => true,
@@ -81,12 +81,12 @@ public partial class ConfigurationKatRunnerTests
         Assert.HasCount(expected.Sections.Count, actual.Sections, $"{kat.Id}: section count");
         Assert.HasCount(expected.GlobalSection.Entries.Count, actual.GlobalSection.Entries, $"{kat.Id}: preamble count");
 
-        for (var s = 0; s < expected.Sections.Count; s++)
+        for (int s = 0; s < expected.Sections.Count; s++)
         {
             Assert.AreEqual(expected.Sections[s].Name, actual.Sections[s].Name, $"{kat.Id}: section[{s}].Name");
             Assert.HasCount(expected.Sections[s].Entries.Count, actual.Sections[s].Entries, $"{kat.Id}: section[{s}].Entries.Count");
 
-            for (var p = 0; p < expected.Sections[s].Entries.Count; p++)
+            for (int p = 0; p < expected.Sections[s].Entries.Count; p++)
             {
                 Assert.AreEqual(expected.Sections[s].Entries[p].Key, actual.Sections[s].Entries[p].Key, $"{kat.Id}: section[{s}].Entries[{p}].Key");
                 Assert.AreEqual(expected.Sections[s].Entries[p].Value, actual.Sections[s].Entries[p].Value, $"{kat.Id}: section[{s}].Entries[{p}].Value");

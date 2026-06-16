@@ -25,16 +25,16 @@ public abstract partial class AlphanumericCheckDigitAlgorithmTests<TTest, TAlgor
         _ = name;
         AlphanumericCheckDigitAlgorithmSpecification spec = GetSpecification();
 
-        for (var c = '0'; c <= '9'; c++)
+        for (char c = '0'; c <= '9'; c++)
         {
             if (c == expectedCheck) continue;
-            var bad = body + c;
+            string bad = body + c;
             Assert.IsFalse(IsValidStatic(bad.AsSpan()), $"Expected '{bad}' to be invalid (swap of check digit).");
         }
 
         if (spec.OutputAlphabet == CheckDigitOutputAlphabet.DecimalDigitsOrX && expectedCheck != 'X')
         {
-            var bad = body + 'X';
+            string bad = body + 'X';
             Assert.IsFalse(IsValidStatic(bad.AsSpan()), $"Expected '{bad}' to be invalid (swap of check digit to X).");
         }
     }
@@ -50,7 +50,7 @@ public abstract partial class AlphanumericCheckDigitAlgorithmTests<TTest, TAlgor
     public void IsValid_WhenSequenceIncludesComputedCheckDigit_ShouldReturnTrue(string name, string body, char expectedCheck)
     {
         _ = name;
-        var full = body + expectedCheck;
+        string full = body + expectedCheck;
         Assert.IsTrue(IsValidStatic(full.AsSpan()), $"Expected '{full}' to be valid.");
     }
 

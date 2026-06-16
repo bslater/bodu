@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateRangeCoverage.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -55,7 +55,7 @@ public sealed class DateRangeCoverage
         ThrowHelper.ThrowIfGreaterThan(start, end);
 
         // Skip every interval that ends before the day preceding start: those are too early to overlap or touch.
-        var index = 0;
+        int index = 0;
         while (index < _intervals.Count && _intervals[index].End < SubtractOneDay(start))
             index++;
 

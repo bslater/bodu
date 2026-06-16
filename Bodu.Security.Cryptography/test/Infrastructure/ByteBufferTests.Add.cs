@@ -40,7 +40,7 @@ public partial class ByteBufferTests
     public void Add_WhenBufferIsFilled_ShouldReturnTrue()
     {
         var buffer = new ByteBuffer(2);
-        var result = buffer.Add([1, 2], 0, 2);
+        bool result = buffer.Add([1, 2], 0, 2);
         Assert.IsTrue(result);
     }
 
@@ -104,7 +104,7 @@ public partial class ByteBufferTests
     public void Add_WhenValidBytesAdded_ShouldReturnFalseUntilFull()
     {
         var buffer = new ByteBuffer(4);
-        var result = buffer.Add([1, 2], 0, 2);
+        bool result = buffer.Add([1, 2], 0, 2);
         Assert.IsFalse(result);
     }
 }

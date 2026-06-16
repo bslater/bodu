@@ -18,7 +18,7 @@ public partial class EvictingDictionaryTests
     public void GetEnumerator_WhenDictionaryIsClearedDuringEnumeration_ShouldThrowExactly()
     {
         var dictionary = new EvictingDictionary<int, int>(10);
-        for (var i = 0; i < 3; i++)
+        for (int i = 0; i < 3; i++)
             dictionary.Add(i, i);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
@@ -36,7 +36,7 @@ public partial class EvictingDictionaryTests
     public void GetEnumerator_WhenDictionaryIsMutatedByAddDuringEnumeration_ShouldThrowExactly()
     {
         var dictionary = new EvictingDictionary<int, int>(10);
-        for (var i = 0; i < 5; i++)
+        for (int i = 0; i < 5; i++)
             dictionary.Add(i, i);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
@@ -53,7 +53,7 @@ public partial class EvictingDictionaryTests
     public void GetEnumerator_WhenDictionaryIsMutatedByRemoveDuringEnumeration_ShouldThrowExactly()
     {
         var dictionary = new EvictingDictionary<int, int>(10);
-        for (var i = 0; i < 5; i++)
+        for (int i = 0; i < 5; i++)
             dictionary.Add(i, i);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>

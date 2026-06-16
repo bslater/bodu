@@ -29,7 +29,7 @@ public static partial class StringExtensions
         ThrowHelper.ThrowIfNull(value);
         ThrowHelper.ThrowIfNull(values);
 
-        for (var i = 0; i < values.Length; i++)
+        for (int i = 0; i < values.Length; i++)
         {
             if (string.Equals(value, values[i], StringComparison.Ordinal)) return true;
         }
@@ -61,7 +61,7 @@ public static partial class StringExtensions
         ThrowHelper.ThrowIfNull(comparer);
         ThrowHelper.ThrowIfNull(values);
 
-        for (var i = 0; i < values.Length; i++)
+        for (int i = 0; i < values.Length; i++)
         {
             if (comparer.Equals(value, values[i])) return true;
         }

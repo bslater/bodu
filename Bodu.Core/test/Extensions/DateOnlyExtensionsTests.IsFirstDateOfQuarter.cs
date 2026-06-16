@@ -19,7 +19,7 @@ public partial class DateOnlyExtensionsTests
     public void IsFirstDateOfQuarter_WhenDateIsNotStartOfQuarterDefinition_ShouldReturnFalse(DateTime inputDateTime, CalendarQuarterDefinition definition)
     {
         var input = DateOnly.FromDateTime(inputDateTime);
-        var actual = input.IsFirstDateOfQuarter(definition);
+        bool actual = input.IsFirstDateOfQuarter(definition);
 
         Assert.IsFalse(actual);
     }
@@ -32,7 +32,7 @@ public partial class DateOnlyExtensionsTests
     {
         var input = DateOnly.FromDateTime(inputDateTime);
 
-        var actual = input.IsFirstDateOfQuarter();
+        bool actual = input.IsFirstDateOfQuarter();
 
         Assert.IsTrue(actual);
     }
@@ -45,7 +45,7 @@ public partial class DateOnlyExtensionsTests
     public void IsFirstDateOfQuarter_WhenDateMatchesStartOfQuarterDefinition_ShouldReturnTrue(DateTime inputDateTime, CalendarQuarterDefinition definition)
     {
         var input = DateOnly.FromDateTime(inputDateTime);
-        var actual = input.IsFirstDateOfQuarter(definition);
+        bool actual = input.IsFirstDateOfQuarter(definition);
 
         Assert.IsTrue(actual);
     }
@@ -89,7 +89,7 @@ public partial class DateOnlyExtensionsTests
         var input = DateOnly.FromDateTime(inputDateTime);
         var provider = new ValidQuarterProvider();
 
-        var actual = input.IsFirstDateOfQuarter(provider);
+        bool actual = input.IsFirstDateOfQuarter(provider);
 
         Assert.AreEqual(expected, actual);
     }

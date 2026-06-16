@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HashingStreamTests.GetCurrentHash.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -15,7 +15,7 @@ public sealed partial class HashingStreamTests
     [TestMethod]
     public void GetCurrentHash_WhenCalledMidTransfer_ShouldNotFinalizeComputation()
     {
-        var payload = CreatePayload(200);
+        byte[] payload = CreatePayload(200);
         using MemoryStream inner = new();
         using HashingStream stream = new(inner, new Fnv1a32());
 
@@ -33,8 +33,8 @@ public sealed partial class HashingStreamTests
     [TestMethod]
     public void GetHashAndReset_WhenCalledBetweenTransfers_ShouldResetAccumulation()
     {
-        var first = CreatePayload(64);
-        var second = new byte[] { 0xFE, 0xDC, 0xBA };
+        byte[] first = CreatePayload(64);
+        byte[] second = new byte[] { 0xFE, 0xDC, 0xBA };
         using MemoryStream inner = new();
         using HashingStream stream = new(inner, new Fnv1a32());
 

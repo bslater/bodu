@@ -63,7 +63,7 @@ public partial class NumericExtensionsTests
     [DataRow(0x01000000U, 0x00000001U, "single MSB → single LSB")]
     public void ReverseBytes_WhenValueIsUInt_ShouldReverseByteOrder(uint value, uint expected, string description)
     {
-        var actual = value.ReverseBytes();
+        uint actual = value.ReverseBytes();
 
         Trace.WriteLineIf(actual != expected, $"[{description}]");
         Trace.WriteLineIf(actual != expected, $"value   : {value:X8}");
@@ -92,7 +92,7 @@ public partial class NumericExtensionsTests
     [DataRow(0x0100000000000000UL, 0x0000000000000001UL, "byte 7 → single LSB")]
     public void ReverseBytes_WhenValueIsULong_ShouldReverseByteOrder(ulong value, ulong expected, string description)
     {
-        var actual = value.ReverseBytes();
+        ulong actual = value.ReverseBytes();
 
         Trace.WriteLineIf(actual != expected, $"[{description}]");
         Trace.WriteLineIf(actual != expected, $"value   : {value:X16}");
@@ -120,7 +120,7 @@ public partial class NumericExtensionsTests
     [DataRow((ushort)0x0001, (ushort)0x0100, "single bit in low byte → high byte")]
     public void ReverseBytes_WhenValueIsUShort_ShouldSwapBytes(ushort value, ushort expected, string description)
     {
-        var actual = value.ReverseBytes();
+        ushort actual = value.ReverseBytes();
 
         Trace.WriteLineIf(actual != expected, $"[{description}]");
         Trace.WriteLineIf(actual != expected, $"value   : {value:X4}");

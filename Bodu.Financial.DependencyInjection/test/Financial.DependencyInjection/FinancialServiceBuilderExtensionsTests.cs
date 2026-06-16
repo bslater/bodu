@@ -130,7 +130,7 @@ public sealed class FinancialServiceBuilderExtensionsTests
             .Services.BuildServiceProvider();
 
         JsonSerializerOptions options = provider.GetRequiredKeyedService<JsonSerializerOptions>(FinancialServiceBuilderExtensions.JsonOptionsKey);
-        var json = JsonSerializer.Serialize(new Money(19.99m, "USD"), options);
+        string json = JsonSerializer.Serialize(new Money(19.99m, "USD"), options);
 
         Assert.AreEqual("\"19.99 USD\"", json);
     }

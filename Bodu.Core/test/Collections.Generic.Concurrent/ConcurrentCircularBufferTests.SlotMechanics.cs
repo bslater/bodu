@@ -22,7 +22,7 @@ public partial class ConcurrentCircularBufferTests
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(4);
 
-        for (var i = 0; i < 4; i++)
+        for (int i = 0; i < 4; i++)
             buffer.Enqueue(new TestItem(i));
 
         // Drain three, refill three — head and tail each wrap past slot 0.
@@ -47,7 +47,7 @@ public partial class ConcurrentCircularBufferTests
     public void Indexer_WhenSlotGenerationChangesDuringRead_ShouldRetryAndReturnStableValue()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(8, allowOverwrite: true);
-        for (var i = 0; i < 8; i++) buffer.Enqueue(new TestItem(i));
+        for (int i = 0; i < 8; i++) buffer.Enqueue(new TestItem(i));
 
         var errors = new ConcurrentBag<Exception>();
         var start = new ManualResetEventSlim(false);
@@ -56,7 +56,7 @@ public partial class ConcurrentCircularBufferTests
         var rotator = Task.Run(() =>
         {
             start.Wait();
-            var i = 100;
+            int i = 100;
             while (!stop.IsCancellationRequested)
             {
                 buffer.TryDequeue(out _);
@@ -69,7 +69,7 @@ public partial class ConcurrentCircularBufferTests
             try
             {
                 start.Wait();
-                for (var iter = 0; iter < 2000; iter++)
+                for (int iter = 0; iter < 2000; iter++)
                 {
                     try
                     {
@@ -134,7 +134,7 @@ public partial class ConcurrentCircularBufferTests
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(4);
 
-        var success = buffer.TryDequeue(out TestItem? item);
+        bool success = buffer.TryDequeue(out TestItem? item);
 
         Assert.IsFalse(success);
         Assert.IsNull(item);

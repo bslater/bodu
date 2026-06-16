@@ -43,7 +43,7 @@ public static partial class NumericExtensions
         if (value == 0d || double.IsNaN(value) || double.IsInfinity(value))
             return value;
 
-        var magnitude = Math.Pow(10, digits - (int)Math.Ceiling(Math.Log10(Math.Abs(value))));
+        double magnitude = Math.Pow(10, digits - (int)Math.Ceiling(Math.Log10(Math.Abs(value))));
         return Math.Round(value * magnitude, MidpointRounding.AwayFromZero) / magnitude;
     }
 
@@ -68,8 +68,8 @@ public static partial class NumericExtensions
 
         if (value == 0m) return value;
 
-        var magnitudeExponent = digits - Math.Ceiling(Math.Log10((double)Math.Abs(value)));
-        var magnitude = (decimal)Math.Pow(10, magnitudeExponent);
+        double magnitudeExponent = digits - Math.Ceiling(Math.Log10((double)Math.Abs(value)));
+        decimal magnitude = (decimal)Math.Pow(10, magnitudeExponent);
         return Math.Round(value * magnitude, MidpointRounding.AwayFromZero) / magnitude;
     }
 }

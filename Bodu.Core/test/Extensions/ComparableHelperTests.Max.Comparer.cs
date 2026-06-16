@@ -31,7 +31,7 @@ public partial class ComparableHelperTests
     [DataRow(10, 3, 10)]
     public void Max_WhenComparerIsDefault_ShouldReturnLarger(int first, int second, int expected)
     {
-        var actual = ComparableHelper.Max(first, second, Comparer<int>.Default);
+        int actual = ComparableHelper.Max(first, second, Comparer<int>.Default);
         Assert.AreEqual(expected, actual);
     }
 
@@ -71,7 +71,7 @@ public partial class ComparableHelperTests
     public void Max_WhenOneArgumentIsNullWithComparer_ShouldReturnNonNullValue()
     {
         string? first = null;
-        var second = "abc";
+        string second = "abc";
 
         Assert.AreEqual("abc", ComparableHelper.Max(first, second, StringComparer.Ordinal));
         Assert.AreEqual("abc", ComparableHelper.Max(second, first, StringComparer.Ordinal));

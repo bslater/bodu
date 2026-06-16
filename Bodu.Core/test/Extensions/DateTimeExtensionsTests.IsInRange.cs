@@ -16,7 +16,7 @@ public partial class DateTimeExtensionsTests
     /// </summary>
     public static IEnumerable<object[]> GetIsInRangeNullableTestCases()
     {
-        foreach (var testCase in GetIsInRangeTestCases())
+        foreach (object[] testCase in GetIsInRangeTestCases())
             yield return new object[] { (DateTime?)testCase[0], testCase[1], testCase[2], testCase[3] };
 
         // additional nullable-specific test case
@@ -46,7 +46,7 @@ public partial class DateTimeExtensionsTests
     [DynamicData(nameof(GetIsInRangeTestCases))]
     public void IsInRange_ForDateTime_ShouldReturnExpectedResult(DateTime value, DateTime start, DateTime end, bool expected)
     {
-        var actual = value.IsInRange(start, end);
+        bool actual = value.IsInRange(start, end);
 
         Assert.AreEqual(expected, actual, $"Failed for value={value:yyyy-MM-dd}, start={start:yyyy-MM-dd}, end={end:yyyy-MM-dd}");
     }
@@ -62,7 +62,7 @@ public partial class DateTimeExtensionsTests
     [DynamicData(nameof(GetIsInRangeNullableTestCases))]
     public void IsInRange_ForNullableDateTime_ShouldReturnExpectedResult(DateTime? value, DateTime start, DateTime end, bool expected)
     {
-        var actual = value.IsInRange(start, end);
+        bool actual = value.IsInRange(start, end);
 
         Assert.AreEqual(expected, actual, $"Failed for value={(value.HasValue ? value.Value.ToString("yyyy-MM-dd") : "null")}, start={start:yyyy-MM-dd}, end={end:yyyy-MM-dd}");
     }

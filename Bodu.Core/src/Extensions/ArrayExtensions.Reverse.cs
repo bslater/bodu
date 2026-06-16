@@ -129,7 +129,7 @@ public static partial class ArrayExtensions
     public static T[] Reverse<T>(this T[] source, Range range)
     {
         ThrowHelper.ThrowIfNull(source);
-        (var start, var length) = range.GetOffsetAndLength(source.Length);
+        (int start, int length) = range.GetOffsetAndLength(source.Length);
         return ReverseCore<T>(source, start, length);
     }
 
@@ -253,7 +253,7 @@ public static partial class ArrayExtensions
     public static Array Reverse(this Array source, Range range)
     {
         ThrowHelper.ThrowIfArrayMultidimensional(source);
-        (var start, var length) = range.GetOffsetAndLength(source.Length);
+        (int start, int length) = range.GetOffsetAndLength(source.Length);
         return ReverseArrayCore(source, start, length);
     }
 
@@ -289,6 +289,10 @@ public static partial class ArrayExtensions
     /// validate arguments before calling this method; no bounds checking or null checking is performed here.
     /// </para>
     /// </remarks>
+#if NET5_0_OR_GREATER
+    [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Aot", "IL3050",
+        Justification = "The element type is obtained from an existing array instance, so its array type is already present at runtime.")]
+#endif
     internal static Array ReverseArrayCore(Array source, int index, int count)
     {
         Type? elementType = source.GetType().GetElementType() ?? throw new InvalidOperationException(ResourceStrings.Op_Invalid_ArrayElementTypeUnresolved);

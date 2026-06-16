@@ -150,9 +150,7 @@ public sealed class ExchangeRateSeries
     /// Gets the UTC instant at which the load that produced this series downloaded its source data, or
     /// <see langword="null" /> when not tracked.
     /// </summary>
-    /// <returns>
-    /// The fetch instant when known; otherwise <see langword="null" />.
-    /// </returns>
+    /// <returns>The fetch instant when known; otherwise <see langword="null" />.</returns>
     /// <remarks>
     /// The fetch instant is recorded at the series grain and stamped onto every <see cref="ExchangeRate" /> the series
     /// materializes, so downstream audit consumers can attribute a served rate to the moment its backing data was
@@ -230,7 +228,7 @@ public sealed class ExchangeRateSeries
     {
         FinancialThrowHelper.ThrowIfExchangeRateNotPositive(rate);
 
-        if (_storage.TryGetExactRate(date, out var existing) && existing == rate)
+        if (_storage.TryGetExactRate(date, out decimal existing) && existing == rate)
             return this;
 
         ExchangeRateSeriesBuilder builder = ToBuilder();

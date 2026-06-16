@@ -1,31 +1,24 @@
 <Project>
 
   <!--
-    Single import point for shared build metadata, XML-documentation warning policy,
-    SDK analyser settings, and other solution-wide properties defined in bld/Bodu.props.
-    Projects no longer carry their own <Import> for this file.
+    Project-tier detection from the project's containing folder (src / test / bench). This runs
+    before the csproj body, so concern files imported below can key conventions off the tier
+    without each project repeating them. (Test projects also set IsTestProject explicitly, which
+    Directory.Build.targets relies on after the body is evaluated.)
+  -->
+  <PropertyGroup>
+    <_BoduProjectFolder>$([System.IO.Path]::GetFileName('$(MSBuildProjectDirectory)'))</_BoduProjectFolder>
+    <BoduIsSourceProject Condition="'$(BoduIsSourceProject)' == '' and '$(_BoduProjectFolder)' == 'src'">true</BoduIsSourceProject>
+    <BoduIsBenchmarkProject Condition="'$(BoduIsBenchmarkProject)' == '' and '$(_BoduProjectFolder)' == 'bench'">true</BoduIsBenchmarkProject>
+  </PropertyGroup>
+
+  <!--
+    Single import point for shared build configuration: company/copyright metadata, versioning,
+    target frameworks, compiler policy, packaging, Source Link, signing, and analyzer settings.
+    The concrete properties live in concern-scoped files under bld/, aggregated by bld/Bodu.props.
+    Projects no longer carry their own <Import> for these files.
   -->
   <Import Project="$(MSBuildThisFileDirectory)bld/Bodu.props" />
-
-  <PropertyGroup>
-    <!--
-      Use the SDK-owned .NET/Roslyn analyser set as the primary baseline. This keeps the
-      repository aligned with current .NET SDK behaviour rather than legacy FxCop packages.
-    -->
-    <EnableNETAnalyzers>true</EnableNETAnalyzers>
-
-    <!--
-      Keep analyser rule selection stable on the .NET 10 recommended wave. Change this to
-      latest-recommended if you intentionally want new SDK analyser waves as they appear.
-    -->
-    <AnalysisLevel>10-recommended</AnalysisLevel>
-
-    <!--
-      Enforce IDE-style code rules (IDExxxx diagnostics) at build time so that formatting
-      and code-style regressions surface in CI rather than only in the IDE.
-    -->
-    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-  </PropertyGroup>
 
   <!--
     Optional API/package validation. Leave disabled by default so normal inner-loop builds do

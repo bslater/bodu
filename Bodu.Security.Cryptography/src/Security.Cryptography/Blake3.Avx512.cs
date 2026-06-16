@@ -48,8 +48,8 @@ public sealed partial class Blake3
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     private static uint[] CompressAvx512(uint[] cv, uint[] blockWords, ulong counter, uint blockLen, uint flags)
     {
-        ref var cvRef = ref MemoryMarshal.GetArrayDataReference(cv);
-        ref var mRef = ref MemoryMarshal.GetArrayDataReference(blockWords);
+        ref uint cvRef = ref MemoryMarshal.GetArrayDataReference(cv);
+        ref uint mRef = ref MemoryMarshal.GetArrayDataReference(blockWords);
 
         // Build the four rows of the working state.
         //   a = cv[0..3], b = cv[4..7] (upper half: chaining value)
@@ -70,7 +70,7 @@ public sealed partial class Blake3
 
         // Seven rounds, each consisting of a column step followed by a diagonal step. Each step applies
         // the SIMD G kernel once across all four columns / diagonals in parallel.
-        for (var round = 0; round < 7; round++)
+        for (int round = 0; round < 7; round++)
         {
             // Column step.
             var mx = Vector128.Create(
@@ -129,8 +129,8 @@ public sealed partial class Blake3
         d ^= cvHi;
 
         // Materialise the 16-word output state in canonical row order.
-        var state = new uint[16];
-        ref var outRef = ref MemoryMarshal.GetArrayDataReference(state);
+        uint[] state = new uint[16];
+        ref uint outRef = ref MemoryMarshal.GetArrayDataReference(state);
         Unsafe.Add(ref outRef, 0) = a.GetElement(0);
         Unsafe.Add(ref outRef, 1) = a.GetElement(1);
         Unsafe.Add(ref outRef, 2) = a.GetElement(2);

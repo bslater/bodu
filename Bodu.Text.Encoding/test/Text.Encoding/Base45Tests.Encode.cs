@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base45Tests.Encode.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -59,7 +59,7 @@ public sealed partial class Base45Tests
     {
         Span<char> destination = new char[Base45.GetEncodedLength(2)];
 
-        var written = Base45.Encode("AB"u8.ToArray(), destination);
+        int written = Base45.Encode("AB"u8.ToArray(), destination);
 
         Assert.AreEqual(3, written);
         Assert.AreEqual("BB8", new string(destination.Slice(0, written)));

@@ -51,7 +51,7 @@ public abstract partial class CryptoTransformTests<TCryptoTransform>
     public void TransformFinalBlock_WhenInputOffsetIsNegative_ShouldThrowExactly()
     {
         using TCryptoTransform transform = CreateAlgorithm();
-        var inputBuffer = new byte[transform.InputBlockSize];
+        byte[] inputBuffer = new byte[transform.InputBlockSize];
 
         ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -69,7 +69,7 @@ public abstract partial class CryptoTransformTests<TCryptoTransform>
     public void TransformFinalBlock_WhenInputCountIsNegative_ShouldThrowExactly()
     {
         using TCryptoTransform transform = CreateAlgorithm();
-        var inputBuffer = new byte[transform.InputBlockSize];
+        byte[] inputBuffer = new byte[transform.InputBlockSize];
 
         ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -89,7 +89,7 @@ public abstract partial class CryptoTransformTests<TCryptoTransform>
     public void TransformFinalBlock_WhenInputRangeExceedsInputBuffer_ShouldThrowExactly()
     {
         using TCryptoTransform transform = CreateAlgorithm();
-        var inputBuffer = new byte[transform.InputBlockSize];
+        byte[] inputBuffer = new byte[transform.InputBlockSize];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {

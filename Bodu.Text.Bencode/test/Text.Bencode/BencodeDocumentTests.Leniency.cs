@@ -24,7 +24,7 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void Parse_WhenKeysUnsorted_ShouldRequireAllowUnsortedKeys()
     {
-        var data = Bytes("d1:bi1e1:ai2ee");
+        byte[] data = Bytes("d1:bi1e1:ai2ee");
 
         _ = Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
@@ -44,12 +44,12 @@ public partial class BencodeDocumentTests
     [TestMethod]
     public void Parse_WhenDuplicateKeysAllowed_ShouldLookUpFirstMatchAndEnumerateAll()
     {
-        var data = Bytes("d1:ai1e1:ai2ee");
+        byte[] data = Bytes("d1:ai1e1:ai2ee");
         using var document = BencodeDocument.Parse(data, new BencodeDocumentOptions { AllowDuplicateKeys = true });
 
         Assert.AreEqual(1L, document.RootElement.GetProperty("a").GetInt64());
 
-        var pairCount = 0;
+        int pairCount = 0;
         foreach (BencodeProperty property in document.RootElement.EnumerateObject())
         {
             Assert.AreEqual("a", property.Name);

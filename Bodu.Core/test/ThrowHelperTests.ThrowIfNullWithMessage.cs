@@ -61,7 +61,7 @@ public partial class ThrowHelperTests
     public void ThrowIfNullWithMessage_WhenValueIsNull_ShouldThrowExactly()
     {
         object value = null!;
-        var paramName = "myParam";
+        string paramName = "myParam";
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             ThrowHelper.ThrowIfNull(value, paramName);

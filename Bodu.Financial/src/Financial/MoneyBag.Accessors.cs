@@ -46,7 +46,7 @@ public sealed partial class MoneyBag
     {
         ThrowHelper.ThrowIfNull(isoCode);
 
-        if (_balances.TryGetValue(isoCode, out var amount))
+        if (_balances.TryGetValue(isoCode, out decimal amount))
         {
             balance = Money.FromNormalized(amount, isoCode);
             return true;

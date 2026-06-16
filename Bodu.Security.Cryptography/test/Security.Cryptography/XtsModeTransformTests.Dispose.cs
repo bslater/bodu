@@ -16,7 +16,7 @@ public sealed partial class XtsModeTransformTests
     {
         var dataCipher = new MonitoringBlockCipher(blockSize: ExpectedBlockSize);
         var tweakCipher = new MonitoringBlockCipher(blockSize: ExpectedBlockSize, xorMask: 0x55);
-        var tweak = new byte[ExpectedBlockSize];
+        byte[] tweak = new byte[ExpectedBlockSize];
         var transform = new XtsModeTransform(dataCipher, tweakCipher, tweak);
 
         transform.Dispose();
@@ -30,7 +30,7 @@ public sealed partial class XtsModeTransformTests
     {
         var dataCipher = new MonitoringBlockCipher(blockSize: ExpectedBlockSize);
         var tweakCipher = new MonitoringBlockCipher(blockSize: ExpectedBlockSize, xorMask: 0x55);
-        var tweak = new byte[ExpectedBlockSize];
+        byte[] tweak = new byte[ExpectedBlockSize];
         var transform = new XtsModeTransform(dataCipher, tweakCipher, tweak);
 
         transform.Dispose();
@@ -46,7 +46,7 @@ public sealed partial class XtsModeTransformTests
     {
         var dataCipher = new MonitoringBlockCipher(blockSize: ExpectedBlockSize);
         var tweakCipher = new MonitoringBlockCipher(blockSize: ExpectedBlockSize + 8, xorMask: 0x55);
-        var tweak = new byte[ExpectedBlockSize];
+        byte[] tweak = new byte[ExpectedBlockSize];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -63,7 +63,7 @@ public sealed partial class XtsModeTransformTests
     {
         var dataCipher = new MonitoringBlockCipher(blockSize: ExpectedBlockSize);
         var tweakCipher = new MonitoringBlockCipher(blockSize: ExpectedBlockSize, xorMask: 0x55);
-        var tweak = new byte[ExpectedBlockSize - 1];
+        byte[] tweak = new byte[ExpectedBlockSize - 1];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {

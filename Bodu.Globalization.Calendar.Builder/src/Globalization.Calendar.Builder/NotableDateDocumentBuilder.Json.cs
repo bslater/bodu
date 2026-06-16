@@ -61,7 +61,7 @@ public sealed partial class NotableDateDocumentBuilder
     /// </exception>
     public JsonObject ToJsonObject()
     {
-        var resourceId = RequireResourceId();
+        string resourceId = RequireResourceId();
 
         if (_imports.Count > 0)
             throw UnsupportedJsonFeature("imports");
@@ -202,7 +202,7 @@ public sealed partial class NotableDateDocumentBuilder
         if (_sources.Count > 0)
         {
             JsonArray sources = new();
-            foreach (var source in _sources)
+            foreach (string source in _sources)
                 sources.Add(source);
 
             metadata["sources"] = sources;
@@ -320,7 +320,7 @@ public sealed partial class NotableDateDocumentBuilder
         if (scope.Territories.Count > 0)
         {
             JsonArray territories = new();
-            foreach (var territory in scope.Territories)
+            foreach (string territory in scope.Territories)
                 territories.Add(territory);
 
             result["territories"] = territories;
@@ -453,7 +453,7 @@ public sealed partial class NotableDateDocumentBuilder
             };
         }
 
-        var key = strategy.Name.LocalName switch
+        string key = strategy.Name.LocalName switch
         {
             "Fixed" => "fixed",
             "DayOfWeekInMonth" => "dayOfWeekInMonth",
@@ -532,7 +532,7 @@ public sealed partial class NotableDateDocumentBuilder
     private static JsonArray BuildStringArray(IReadOnlyList<string> values)
     {
         JsonArray array = new();
-        foreach (var value in values)
+        foreach (string value in values)
             array.Add(value);
 
         return array;
@@ -546,7 +546,7 @@ public sealed partial class NotableDateDocumentBuilder
     private static JsonArray BuildIntArray(IReadOnlyList<int> values)
     {
         JsonArray array = new();
-        foreach (var value in values)
+        foreach (int value in values)
             array.Add(value);
 
         return array;

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AggregatingExchangeRateProviderTests.PriorityFallback.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -21,7 +21,7 @@ public sealed partial class AggregatingExchangeRateProviderTests
             Named("Second", ("USD", "AUD", D1, 1.60m)),
         });
 
-        var found = agg.TryGetRate("USD", "AUD", D1, ExchangeRateLookupOptions.Exact, out ExchangeRateLookupResult result);
+        bool found = agg.TryGetRate("USD", "AUD", D1, ExchangeRateLookupOptions.Exact, out ExchangeRateLookupResult result);
 
         Assert.IsTrue(found);
         Assert.AreEqual(1.50m, result.Rate.Rate);
@@ -40,7 +40,7 @@ public sealed partial class AggregatingExchangeRateProviderTests
             Named("Second", ("USD", "AUD", D1, 1.60m)),
         });
 
-        var found = agg.TryGetRate("USD", "AUD", D1, ExchangeRateLookupOptions.Exact, out ExchangeRateLookupResult result);
+        bool found = agg.TryGetRate("USD", "AUD", D1, ExchangeRateLookupOptions.Exact, out ExchangeRateLookupResult result);
 
         Assert.IsTrue(found);
         Assert.AreEqual("Second", result.Rate.Provider);

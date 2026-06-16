@@ -10,7 +10,9 @@ namespace Bodu.Test.IO;
 /// A disposable wrapper around a uniquely named temporary directory. Creates the directory on construction and
 /// recursively deletes it on disposal so tests that need an on-disk layout do not leak files.
 /// </summary>
-/// <remarks>This class is intended exclusively for test harness use and must not appear in production code.</remarks>
+/// <remarks>
+/// This class is intended exclusively for test harness use and must not appear in production code.
+/// </remarks>
 public sealed class TempDirectoryScope
     : IDisposable
 {
@@ -50,7 +52,7 @@ public sealed class TempDirectoryScope
     /// <returns>The absolute path of the written file.</returns>
     public string WriteFile(string name, string content)
     {
-        var path = Combine(name);
+        string path = Combine(name);
         File.WriteAllText(path, content);
         return path;
     }

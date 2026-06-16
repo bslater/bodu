@@ -67,14 +67,14 @@ public static class HashAlgorithmHelper
         ThrowHelper.ThrowIfNull(factory);
 
         using T algorithm = factory.Create();
-        var hashSizeBytes = algorithm.HashSize >> 3;
-        var result = new byte[hashSizeBytes];
+        int hashSizeBytes = algorithm.HashSize >> 3;
+        byte[] result = new byte[hashSizeBytes];
         CryptographyThrowHelper.ThrowIfHashAlgorithmDestinationTooSmall(
-            algorithm.TryComputeHash(input, result, out var bytesWritten));
+            algorithm.TryComputeHash(input, result, out int bytesWritten));
         if (bytesWritten == result.Length)
             return result;
 
-        var trimmed = new byte[bytesWritten];
+        byte[] trimmed = new byte[bytesWritten];
         Buffer.BlockCopy(result, 0, trimmed, 0, bytesWritten);
         return trimmed;
     }
@@ -163,7 +163,7 @@ public static class HashAlgorithmHelper
     /// <param name="stream">The input stream to read from.</param>
     private static void AppendDataFromStreamInternal(HashAlgorithm algorithm, Stream stream)
     {
-        var buffer = ArrayPool<byte>.Shared.Rent(8192);
+        byte[] buffer = ArrayPool<byte>.Shared.Rent(8192);
         try
         {
             int bytesRead;
@@ -187,7 +187,7 @@ public static class HashAlgorithmHelper
     /// <returns>A task that completes when the stream has been fully consumed and the hash finalized.</returns>
     private static async ValueTask AppendDataFromStreamInternalAsync(HashAlgorithm algorithm, Stream stream, CancellationToken cancellationToken)
     {
-        var buffer = ArrayPool<byte>.Shared.Rent(8192);
+        byte[] buffer = ArrayPool<byte>.Shared.Rent(8192);
         try
         {
             int bytesRead;

@@ -33,12 +33,12 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void Slice_WhenCalled_ForReferenceTypeArray_ShouldReturnSegmentWithSharedElementReferences()
     {
-        var a = new object();
-        var b = new object();
-        var c = new object();
+        object a = new object();
+        object b = new object();
+        object c = new object();
         object[] source = [a, b, c];
 
-        var result = source.Slice(1, 2);
+        object[] result = source.Slice(1, 2);
 
         Assert.AreSame(b, result[0]);
         Assert.AreSame(c, result[1]);
@@ -52,7 +52,7 @@ public partial class ArrayExtensionsTests
     {
         int[] source = [1, 2, 3, 4, 5];
 
-        var result = source.Slice(0);
+        int[] result = source.Slice(0);
 
         Assert.IsFalse(ReferenceEquals(source, result));
     }
@@ -107,7 +107,7 @@ public partial class ArrayExtensionsTests
     {
         int[] source = [1, 2, 3, 4, 5];
 
-        var result = source.Slice(1, 3);
+        int[] result = source.Slice(1, 3);
         result[0] = 99;
 
         Assert.AreEqual(2, source[1]);
@@ -121,7 +121,7 @@ public partial class ArrayExtensionsTests
     {
         int[] source = [1, 2, 3, 4, 5];
 
-        var result = source.Slice(1, 3);
+        int[] result = source.Slice(1, 3);
 
         Assert.HasCount(3, result);
     }
@@ -144,7 +144,7 @@ public partial class ArrayExtensionsTests
     {
         int[] source = [1, 2, 3, 4, 5];
 
-        var result = source.Slice(index, count);
+        int[] result = source.Slice(index, count);
 
         CollectionAssert.AreEqual(expected, result);
     }
@@ -192,7 +192,7 @@ public partial class ArrayExtensionsTests
     {
         int[] source = [1, 2, 3, 4, 5];
 
-        var result = source.Slice(index);
+        int[] result = source.Slice(index);
 
         CollectionAssert.AreEqual(expected, result);
     }

@@ -46,7 +46,7 @@ public partial class TomlSerializerTests
         ArgumentNullException.ThrowIfNull(kat);
 
         var options = new TomlSerializerOptions { DecimalHandling = kat.Handling };
-        var text = TomlSerializer.Serialize(new ValueModel<decimal> { Value = kat.Input }, options);
+        string text = TomlSerializer.Serialize(new ValueModel<decimal> { Value = kat.Input }, options);
 
         Assert.AreEqual($"Value = {kat.Expected}\n", text);
     }
@@ -63,8 +63,8 @@ public partial class TomlSerializerTests
         ArgumentNullException.ThrowIfNull(kat);
 
         var options = new TomlSerializerOptions { DecimalHandling = TomlDecimalHandling.String };
-        var text = TomlSerializer.Serialize(new ValueModel<decimal> { Value = kat.Input }, options);
-        var actual = TomlSerializer.Deserialize<ValueModel<decimal>>(text, options).Value;
+        string text = TomlSerializer.Serialize(new ValueModel<decimal> { Value = kat.Input }, options);
+        decimal actual = TomlSerializer.Deserialize<ValueModel<decimal>>(text, options).Value;
 
         Assert.AreEqual(kat.Input, actual);
     }
@@ -76,8 +76,8 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void SerializeDeserialize_WhenDecimalFloatHandlingWithinDoublePrecision_ShouldRoundTrip()
     {
-        var text = TomlSerializer.Serialize(new ValueModel<decimal> { Value = 19.95m });
-        var actual = TomlSerializer.Deserialize<ValueModel<decimal>>(text).Value;
+        string text = TomlSerializer.Serialize(new ValueModel<decimal> { Value = 19.95m });
+        decimal actual = TomlSerializer.Deserialize<ValueModel<decimal>>(text).Value;
 
         Assert.AreEqual(19.95m, actual);
     }
@@ -91,8 +91,8 @@ public partial class TomlSerializerTests
     {
         const decimal value = 0.1234567890123456789012345678m;
 
-        var text = TomlSerializer.Serialize(new ValueModel<decimal> { Value = value });
-        var actual = TomlSerializer.Deserialize<ValueModel<decimal>>(text).Value;
+        string text = TomlSerializer.Serialize(new ValueModel<decimal> { Value = value });
+        decimal actual = TomlSerializer.Deserialize<ValueModel<decimal>>(text).Value;
 
         Assert.AreNotEqual(value, actual);
         Assert.AreEqual((decimal)(double)value, actual);
@@ -110,7 +110,7 @@ public partial class TomlSerializerTests
     [DataRow("Value = \"19.95\"\n", "19.95", DisplayName = "from string")]
     public void Deserialize_WhenDecimalFromAnyAcceptedToken_ShouldRead(string toml, string expected)
     {
-        var actual = TomlSerializer.Deserialize<ValueModel<decimal>>(toml).Value;
+        decimal actual = TomlSerializer.Deserialize<ValueModel<decimal>>(toml).Value;
 
         Assert.AreEqual(decimal.Parse(expected, System.Globalization.CultureInfo.InvariantCulture), actual);
     }
@@ -173,9 +173,9 @@ public partial class TomlSerializerTests
 
         for (byte scale = 0; scale <= 28; scale++)
         {
-            var value = new decimal(987654321, 123456789, 0, isNegative: false, scale);
-            var text = TomlSerializer.Serialize(new ValueModel<decimal> { Value = value }, options);
-            var actual = TomlSerializer.Deserialize<ValueModel<decimal>>(text, options).Value;
+            decimal value = new decimal(987654321, 123456789, 0, isNegative: false, scale);
+            string text = TomlSerializer.Serialize(new ValueModel<decimal> { Value = value }, options);
+            decimal actual = TomlSerializer.Deserialize<ValueModel<decimal>>(text, options).Value;
 
             Assert.AreEqual(value, actual, $"scale {scale}");
         }

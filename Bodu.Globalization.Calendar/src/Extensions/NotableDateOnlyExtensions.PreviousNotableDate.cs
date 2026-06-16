@@ -26,10 +26,10 @@ public static partial class NotableDateOnlyExtensions
         ThrowHelper.ThrowIfNull(service);
         ThrowHelper.ThrowIfNull(territory);
 
-        for (var year = date.Year; year >= DateOnly.MinValue.Year; year--)
+        for (int year = date.Year; year >= DateOnly.MinValue.Year; year--)
         {
             IReadOnlyList<NotableDate> resolved = ResolveYear(year, service, territory, filter);
-            for (var i = resolved.Count - 1; i >= 0; i--)
+            for (int i = resolved.Count - 1; i >= 0; i--)
             {
                 if (resolved[i].Date < date)
                     return resolved[i];

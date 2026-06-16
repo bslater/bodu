@@ -20,10 +20,10 @@ public sealed partial class Base58Tests
     [TestMethod]
     public void DecodeFromUtf8_WhenDestinationTooSmall_ShouldReportNoCommittedProgress()
     {
-        var utf8 = System.Text.Encoding.ASCII.GetBytes("9Ajdvzr");
-        var destination = new byte[1];
+        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("9Ajdvzr");
+        byte[] destination = new byte[1];
 
-        OperationStatus status = Base58.DecodeFromUtf8(utf8, destination, out var bytesConsumed, out var bytesWritten);
+        OperationStatus status = Base58.DecodeFromUtf8(utf8, destination, out int bytesConsumed, out int bytesWritten);
 
         Assert.AreEqual(OperationStatus.DestinationTooSmall, status);
         Assert.AreEqual(0, bytesConsumed);
@@ -37,10 +37,10 @@ public sealed partial class Base58Tests
     [TestMethod]
     public void DecodeFromUtf8_WhenDestinationTooSmall_ShouldReturnDestinationTooSmall()
     {
-        var utf8 = System.Text.Encoding.ASCII.GetBytes("9Ajdvzr");
-        var destination = new byte[1];
+        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("9Ajdvzr");
+        byte[] destination = new byte[1];
 
-        OperationStatus status = Base58.DecodeFromUtf8(utf8, destination, out var _, out var _);
+        OperationStatus status = Base58.DecodeFromUtf8(utf8, destination, out int _, out int _);
 
         Assert.AreEqual(OperationStatus.DestinationTooSmall, status);
     }
@@ -52,10 +52,10 @@ public sealed partial class Base58Tests
     [TestMethod]
     public void DecodeFromUtf8_WhenInvalidInput_ShouldReturnInvalidData()
     {
-        var utf8 = System.Text.Encoding.ASCII.GetBytes("9A0dvzr");
-        var destination = new byte[10];
+        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("9A0dvzr");
+        byte[] destination = new byte[10];
 
-        OperationStatus status = Base58.DecodeFromUtf8(utf8, destination, out var _, out var _);
+        OperationStatus status = Base58.DecodeFromUtf8(utf8, destination, out int _, out int _);
 
         Assert.AreEqual(OperationStatus.InvalidData, status);
     }
@@ -66,10 +66,10 @@ public sealed partial class Base58Tests
     [TestMethod]
     public void DecodeFromUtf8_WhenValidInput_ShouldReturnDoneWithCounts()
     {
-        var utf8 = System.Text.Encoding.ASCII.GetBytes("9Ajdvzr");
-        var destination = new byte[5];
+        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("9Ajdvzr");
+        byte[] destination = new byte[5];
 
-        OperationStatus status = Base58.DecodeFromUtf8(utf8, destination, out var bytesConsumed, out var bytesWritten);
+        OperationStatus status = Base58.DecodeFromUtf8(utf8, destination, out int bytesConsumed, out int bytesWritten);
 
         Assert.AreEqual(OperationStatus.Done, status);
         Assert.AreEqual(7, bytesConsumed);
@@ -82,7 +82,7 @@ public sealed partial class Base58Tests
     [TestMethod]
     public void EncodeToUtf8_ShouldReturnAsciiBytesOfBitcoinFlickrOutput()
     {
-        var actual = Base58.EncodeToUtf8(Ascii("Hello"));
+        byte[] actual = Base58.EncodeToUtf8(Ascii("Hello"));
 
         Assert.AreEqual("9Ajdvzr", System.Text.Encoding.ASCII.GetString(actual));
     }
@@ -93,12 +93,12 @@ public sealed partial class Base58Tests
     [TestMethod]
     public void RoundTrip_EncodeAndDecodeUtf8_ShouldRecoverOriginal()
     {
-        var original = Ascii("Hello");
+        byte[] original = Ascii("Hello");
 
-        var encoded = Base58.EncodeToUtf8(original);
-        var destination = new byte[Base58.GetMaxDecodedLength(encoded.Length)];
+        byte[] encoded = Base58.EncodeToUtf8(original);
+        byte[] destination = new byte[Base58.GetMaxDecodedLength(encoded.Length)];
 
-        OperationStatus status = Base58.DecodeFromUtf8(encoded, destination, out _, out var bytesWritten);
+        OperationStatus status = Base58.DecodeFromUtf8(encoded, destination, out _, out int bytesWritten);
 
         Assert.AreEqual(OperationStatus.Done, status);
         CollectionAssert.AreEqual(original, destination.AsSpan(0, bytesWritten).ToArray());
@@ -110,9 +110,9 @@ public sealed partial class Base58Tests
     [TestMethod]
     public void TryEncodeToUtf8_WhenDestinationLargeEnough_ShouldReturnTrueAndExpectedBytes()
     {
-        var destination = new byte[Base58.GetMaxEncodedLength(5)];
+        byte[] destination = new byte[Base58.GetMaxEncodedLength(5)];
 
-        var ok = Base58.TryEncodeToUtf8(Ascii("Hello").AsSpan(), destination, out var bytesWritten);
+        bool ok = Base58.TryEncodeToUtf8(Ascii("Hello").AsSpan(), destination, out int bytesWritten);
 
         Assert.IsTrue(ok);
         Assert.AreEqual("9Ajdvzr", System.Text.Encoding.ASCII.GetString(destination, 0, bytesWritten));

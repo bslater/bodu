@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConfigurationViewTests.Getters.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -24,7 +24,7 @@ public partial class ConfigurationViewTests
     [TestMethod]
     public void TryGetValue_WhenPresentAndParseable_ShouldReturnTrueAndValue()
     {
-        Assert.IsTrue(TypedView().TryGetValue<int>("generic", out var value));
+        Assert.IsTrue(TypedView().TryGetValue<int>("generic", out int value));
         Assert.AreEqual(7, value);
     }
 
@@ -44,7 +44,7 @@ public partial class ConfigurationViewTests
     [TestMethod]
     public void TryGetInt32_WhenPresent_ShouldReturnTrueAndValue()
     {
-        Assert.IsTrue(TypedView().TryGetInt32("int", out var value));
+        Assert.IsTrue(TypedView().TryGetInt32("int", out int value));
         Assert.AreEqual(42, value);
     }
 
@@ -74,7 +74,7 @@ public partial class ConfigurationViewTests
     [TestMethod]
     public void TryGetBoolean_WhenPresent_ShouldReturnTrueAndValue()
     {
-        Assert.IsTrue(TypedView().TryGetBoolean("flag", out var value));
+        Assert.IsTrue(TypedView().TryGetBoolean("flag", out bool value));
         Assert.IsTrue(value);
     }
 

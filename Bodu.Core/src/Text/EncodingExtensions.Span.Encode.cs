@@ -53,10 +53,10 @@ public static partial class EncodingExtensions
     {
         ThrowHelper.ThrowIfNull(encoding);
 
-        var count = encoding.GetByteCount(chars);
+        int count = encoding.GetByteCount(chars);
         if (count == 0) return [];
 
-        var buffer = new byte[count];
+        byte[] buffer = new byte[count];
         encoding.GetBytes(chars, buffer);
         return buffer;
     }
@@ -119,7 +119,7 @@ public static partial class EncodingExtensions
     {
         ThrowHelper.ThrowIfNull(encoding);
 
-        var required = encoding.GetByteCount(chars);
+        int required = encoding.GetByteCount(chars);
         return destination.Length == required
             ? encoding.GetBytes(chars, destination)
             : throw new ArgumentException(
@@ -192,7 +192,7 @@ public static partial class EncodingExtensions
     {
         ThrowHelper.ThrowIfNull(encoding);
 
-        var count = encoding.GetByteCount(chars);
+        int count = encoding.GetByteCount(chars);
         MemoryPool<byte> pool = memoryPool ?? MemoryPool<byte>.Shared;
         IMemoryOwner<byte> owner = pool.Rent(count);
         try

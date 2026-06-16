@@ -104,7 +104,7 @@ internal static class TomlCanonicalWriter
             emitter.Append((byte)'\n');
 
         emitter.Append(arrayOfTables ? "[["u8 : "["u8);
-        for (var i = 0; i < path.Count; i++)
+        for (int i = 0; i < path.Count; i++)
         {
             if (i > 0)
                 emitter.Append((byte)'.');
@@ -223,7 +223,7 @@ internal static class TomlCanonicalWriter
     private static void WriteInlineArray(ref TomlUtf8Emitter emitter, TomlArrayWriterNode array)
     {
         emitter.Append((byte)'[');
-        for (var i = 0; i < array.Items.Count; i++)
+        for (int i = 0; i < array.Items.Count; i++)
         {
             if (i > 0)
                 emitter.Append(", "u8);
@@ -248,7 +248,7 @@ internal static class TomlCanonicalWriter
         }
 
         emitter.Append("{ "u8);
-        var first = true;
+        bool first = true;
         foreach (KeyValuePair<string, TomlWriterNode> pair in table.Items)
         {
             if (!first)
@@ -289,7 +289,7 @@ internal static class TomlCanonicalWriter
         if (key.Length == 0)
             return false;
 
-        foreach (var c in key)
+        foreach (char c in key)
         {
             if (!((c is >= 'A' and <= 'Z') || (c is >= 'a' and <= 'z') || (c is >= '0' and <= '9') || c == '_' || c == '-'))
                 return false;
@@ -310,9 +310,9 @@ internal static class TomlCanonicalWriter
     private static void WriteBasicString(ref TomlUtf8Emitter emitter, string value)
     {
         emitter.Append((byte)'"');
-        for (var i = 0; i < value.Length; i++)
+        for (int i = 0; i < value.Length; i++)
         {
-            var c = value[i];
+            char c = value[i];
             if (char.IsHighSurrogate(c))
             {
                 if (i + 1 >= value.Length || !char.IsLowSurrogate(value[i + 1]))
@@ -395,7 +395,7 @@ internal static class TomlCanonicalWriter
         }
 
         Span<char> buffer = stackalloc char[40];
-        _ = value.TryFormat(buffer, out var written, "R", CultureInfo.InvariantCulture);
+        _ = value.TryFormat(buffer, out int written, "R", CultureInfo.InvariantCulture);
 
         ReadOnlySpan<char> text = buffer[..written];
         emitter.AppendAscii(text);
@@ -411,7 +411,7 @@ internal static class TomlCanonicalWriter
     private static void WriteOffsetDateTime(ref TomlUtf8Emitter emitter, DateTimeOffset value)
     {
         Span<char> buffer = stackalloc char[40];
-        _ = value.TryFormat(buffer, out var written, "yyyy-MM-dd'T'HH:mm:ss", CultureInfo.InvariantCulture);
+        _ = value.TryFormat(buffer, out int written, "yyyy-MM-dd'T'HH:mm:ss", CultureInfo.InvariantCulture);
         emitter.AppendAscii(buffer[..written]);
         WriteFraction(ref emitter, value.Ticks);
 
@@ -434,14 +434,14 @@ internal static class TomlCanonicalWriter
     /// <param name="ticks">The tick count.</param>
     private static void WriteFraction(ref TomlUtf8Emitter emitter, long ticks)
     {
-        var fraction = ticks % TicksPerSecond;
+        long fraction = ticks % TicksPerSecond;
         if (fraction == 0)
             return;
 
         Span<char> digits = stackalloc char[7];
         _ = fraction.TryFormat(digits, out _, "D7", CultureInfo.InvariantCulture);
 
-        var length = 7;
+        int length = 7;
         while (length > 1 && digits[length - 1] == '0')
             length--;
 

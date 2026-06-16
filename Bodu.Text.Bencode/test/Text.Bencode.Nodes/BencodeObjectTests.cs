@@ -392,7 +392,7 @@ public class BencodeObjectTests
         obj["Z"] = 3L;
         obj["a"] = 4L;
 
-        var bytes = obj.ToByteArray();
+        byte[] bytes = obj.ToByteArray();
 
         Assert.AreEqual("d1:Zi3e1:ai4e2:aai2e1:bi1ee", Encoding.Latin1.GetString(bytes));
     }

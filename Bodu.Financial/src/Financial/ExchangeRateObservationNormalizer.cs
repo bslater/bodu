@@ -119,7 +119,7 @@ internal static class ExchangeRateObservationNormalizer
 
         buffer.Sort(static (a, b) => a.DayNumber.CompareTo(b.DayNumber));
 
-        for (var i = 1; i < buffer.Count; i++)
+        for (int i = 1; i < buffer.Count; i++)
         {
             if (buffer[i].DayNumber == buffer[i - 1].DayNumber)
             {

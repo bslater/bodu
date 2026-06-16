@@ -150,7 +150,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     public static string GetKnownAnswerTestName(MethodInfo methodInfo, object[] data)
     {
         var variant = (TVariant)data[0];
-        var testName = (string)data[1];
+        string testName = (string)data[1];
         return $"{testName} (Variant: {variant})";
     }
 
@@ -214,14 +214,14 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
             return;
         }
 
-        var emptyA = GetSpecification(variant).KnownAnswers.Empty;
+        string? emptyA = GetSpecification(variant).KnownAnswers.Empty;
         if (emptyA is null)
         {
             Assert.Inconclusive($"No empty-input known answer defined for variant '{variant}'; skipping consistency check.");
             return;
         }
 
-        var emptyB = incrementalHashes[0];
+        string emptyB = incrementalHashes[0];
         Assert.AreEqual(emptyA, emptyB, "Expected hash value for 'Empty' named input should equal the first item of incremental input.");
     }
 
@@ -320,7 +320,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     private async Task AssertIncrementalCurrentHashAsync(TVariant variant, IncrementalCurrentHashInvoker invoke)
     {
         NonCryptographicHashAlgorithmSpecification specification = GetSpecification(variant);
-        var expectedHashes = GetExpectedHashesForIncrementalInput(variant).ToArray();
+        string[] expectedHashes = GetExpectedHashesForIncrementalInput(variant).ToArray();
 
         if (expectedHashes.Length == 0)
         {
@@ -328,10 +328,10 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
             return;
         }
 
-        var coverage = specification.IncrementalCoverageBytes
+        int coverage = specification.IncrementalCoverageBytes
             ?? (specification.HashLengthInBytes > 1 ? specification.HashLengthInBytes * 8 : 16);
-        var maxLength = coverage + 1;
-        var expectedEntryCount = maxLength + 1;
+        int maxLength = coverage + 1;
+        int expectedEntryCount = maxLength + 1;
 
         Assert.AreEqual(expectedEntryCount, expectedHashes.Length,
             $"Expected {expectedEntryCount} algorithm entries for variant '{variant}' " +
@@ -341,14 +341,14 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
 
         TAlgorithm algorithm = CreateAlgorithm(variant);
 
-        for (var byteCount = 0; byteCount <= maxLength; byteCount++)
+        for (int byteCount = 0; byteCount <= maxLength; byteCount++)
         {
             byte[] source = byteCount == 0
                 ? []
                 : [unchecked((byte)(byteCount - 1))];
 
-            var expected = Convert.FromHexString(expectedHashes[byteCount]);
-            var actual = await invoke(algorithm, source).ConfigureAwait(false);
+            byte[] expected = Convert.FromHexString(expectedHashes[byteCount]);
+            byte[] actual = await invoke(algorithm, source).ConfigureAwait(false);
 
             TestHelpers.TraceWriteIfNotEqual(expected, actual);
 
@@ -367,7 +367,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     private async Task AssertIncrementalInputAsync(TVariant variant, IncrementalHashInvoker invoke)
     {
         NonCryptographicHashAlgorithmSpecification specification = GetSpecification(variant);
-        var expectedHashes = GetExpectedHashesForIncrementalInput(variant).ToArray();
+        string[] expectedHashes = GetExpectedHashesForIncrementalInput(variant).ToArray();
 
         if (expectedHashes.Length == 0)
         {
@@ -375,10 +375,10 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
             return;
         }
 
-        var coverage = specification.IncrementalCoverageBytes
+        int coverage = specification.IncrementalCoverageBytes
             ?? (specification.HashLengthInBytes > 1 ? specification.HashLengthInBytes * 8 : 16);
-        var maxLength = coverage + 1;
-        var expectedEntryCount = maxLength + 1;
+        int maxLength = coverage + 1;
+        int expectedEntryCount = maxLength + 1;
 
         Assert.AreEqual(expectedEntryCount, expectedHashes.Length,
             $"Expected {expectedEntryCount} algorithm entries for variant '{variant}' " +
@@ -387,15 +387,15 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
             $"but got {expectedHashes.Length}.");
 
         TAlgorithm algorithm = CreateAlgorithm(variant);
-        var input = new byte[maxLength];
+        byte[] input = new byte[maxLength];
 
-        for (var byteCount = 0; byteCount <= maxLength; byteCount++)
+        for (int byteCount = 0; byteCount <= maxLength; byteCount++)
         {
             if (byteCount > 0)
                 input[byteCount - 1] = unchecked((byte)(byteCount - 1));
 
-            var expected = Convert.FromHexString(expectedHashes[byteCount]);
-            var actual = await invoke(algorithm, input, byteCount).ConfigureAwait(false);
+            byte[] expected = Convert.FromHexString(expectedHashes[byteCount]);
+            byte[] actual = await invoke(algorithm, input, byteCount).ConfigureAwait(false);
 
             TestHelpers.TraceWriteIfNotEqual(expected, actual);
 

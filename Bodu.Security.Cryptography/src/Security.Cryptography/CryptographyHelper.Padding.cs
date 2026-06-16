@@ -30,9 +30,9 @@ internal static partial class CryptographyHelper
     /// </exception>
     public static byte[] DepadBlock(PaddingMode padding, int blockSize, byte[] block, int offset, int count)
     {
-        var temp = new byte[count];
-        var written = DepadBlock(padding, blockSize, new ReadOnlySpan<byte>(block, offset, count), temp);
-        var result = new byte[written];
+        byte[] temp = new byte[count];
+        int written = DepadBlock(padding, blockSize, new ReadOnlySpan<byte>(block, offset, count), temp);
+        byte[] result = new byte[written];
         Buffer.BlockCopy(temp, 0, result, 0, written);
         return result;
     }
@@ -63,10 +63,10 @@ internal static partial class CryptographyHelper
     {
         ThrowHelper.ThrowIfLessThanOrEqual(blockSize, 0);
 
-        var size = blockSize / 8;
+        int size = blockSize / 8;
         CryptographyThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf(source, size);
 
-        var count = source.Length;
+        int count = source.Length;
 
         switch (padding)
         {
@@ -97,7 +97,7 @@ internal static partial class CryptographyHelper
         if (padding == PaddingMode.ANSIX923 && !IsUniformPadding(padRegion[..^1], 0x00))
             throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_Padding);
 
-        var unpadded = count - padCount;
+        int unpadded = count - padCount;
         source[..unpadded].CopyTo(destination);
         return unpadded;
     }
@@ -120,9 +120,9 @@ internal static partial class CryptographyHelper
     public static byte[] PadBlock(PaddingMode padding, int blockSize, byte[] block, int offset, int count)
     {
         ThrowHelper.ThrowIfLessThan(blockSize, 1);
-        var size = blockSize / 8;
-        var result = new byte[count + size];
-        var written = PadBlock(padding, blockSize, new ReadOnlySpan<byte>(block, offset, count), result);
+        int size = blockSize / 8;
+        byte[] result = new byte[count + size];
+        int written = PadBlock(padding, blockSize, new ReadOnlySpan<byte>(block, offset, count), result);
         Array.Resize(ref result, written);
         return result;
     }
@@ -164,15 +164,15 @@ internal static partial class CryptographyHelper
 
         ThrowHelper.ThrowIfLessThan(blockSize, 1);
 
-        var size = blockSize / 8;
+        int size = blockSize / 8;
         if (padding == PaddingMode.None && source.Length % size != 0)
             throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_PaddingModeNoneInputNotAligned);
 
-        var padCount = size - (source.Length % size);
+        int padCount = size - (source.Length % size);
         if (padCount == size && (padding == PaddingMode.None || padding == PaddingMode.Zeros))
             padCount = 0;
 
-        var totalLen = source.Length + padCount;
+        int totalLen = source.Length + padCount;
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(destination, source.Length, padCount);
 
         source.CopyTo(destination);
@@ -329,7 +329,7 @@ internal static partial class CryptographyHelper
             CryptographyThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf(source, blockSize / 8);
 
             var strategy = new Iso7816_4Padding();
-            var unpadded = strategy.Unpad(source, blockSize);
+            byte[] unpadded = strategy.Unpad(source, blockSize);
             ThrowHelper.ThrowIfSpanLengthIsInsufficient(destination, 0, unpadded.Length);
             unpadded.AsSpan().CopyTo(destination);
             return unpadded.Length;
@@ -393,7 +393,7 @@ internal static partial class CryptographyHelper
             ThrowHelper.ThrowIfLessThan(blockSize, 1);
 
             var strategy = new Iso7816_4Padding();
-            var padded = strategy.Pad(source, blockSize);
+            byte[] padded = strategy.Pad(source, blockSize);
             ThrowHelper.ThrowIfSpanLengthIsInsufficient(destination, 0, padded.Length);
             padded.AsSpan().CopyTo(destination);
             return padded.Length;
@@ -475,7 +475,7 @@ internal static partial class CryptographyHelper
     /// </returns>
     private static bool IsUniformPadding(ReadOnlySpan<byte> span, byte expected)
     {
-        foreach (var b in span)
+        foreach (byte b in span)
         {
             if (b != expected)
                 return false;

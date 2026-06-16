@@ -31,7 +31,7 @@ public partial class Utf8BencodeReaderTests
     [DataRow("i18446744073709551615e", ulong.MaxValue)]
     public void GetUInt64_WhenNonNegativeInteger_ShouldDecodeValue(string text, ulong expected)
     {
-        var bytes = Bytes(text);
+        byte[] bytes = Bytes(text);
         var reader = new Utf8BencodeReader(bytes);
 
         Assert.IsTrue(reader.Read());
@@ -48,7 +48,7 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void GetInt64_WhenIntegerExceedsInt64Range_ShouldThrowBencodeFormatException()
     {
-        var bytes = Bytes("i18446744073709551615e");
+        byte[] bytes = Bytes("i18446744073709551615e");
 
         Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
@@ -66,7 +66,7 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void GetUInt64_WhenNegativeInteger_ShouldThrowBencodeFormatException()
     {
-        var bytes = Bytes("i-1e");
+        byte[] bytes = Bytes("i-1e");
 
         Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
@@ -83,11 +83,11 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void TryGetUInt64_WhenNonNegativeInteger_ShouldReturnTrueAndValue()
     {
-        var bytes = Bytes("i18446744073709551615e");
+        byte[] bytes = Bytes("i18446744073709551615e");
         var reader = new Utf8BencodeReader(bytes);
 
         Assert.IsTrue(reader.Read());
-        Assert.IsTrue(reader.TryGetUInt64(out var value));
+        Assert.IsTrue(reader.TryGetUInt64(out ulong value));
         Assert.AreEqual(ulong.MaxValue, value);
     }
 
@@ -98,11 +98,11 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void TryGetUInt64_WhenNegativeInteger_ShouldReturnFalse()
     {
-        var bytes = Bytes("i-42e");
+        byte[] bytes = Bytes("i-42e");
         var reader = new Utf8BencodeReader(bytes);
 
         Assert.IsTrue(reader.Read());
-        Assert.IsFalse(reader.TryGetUInt64(out var value));
+        Assert.IsFalse(reader.TryGetUInt64(out ulong value));
         Assert.AreEqual(0UL, value);
     }
 
@@ -113,7 +113,7 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void GetUInt64_WhenTokenIsNotInteger_ShouldThrowInvalidOperationException()
     {
-        var bytes = Bytes("4:spam");
+        byte[] bytes = Bytes("4:spam");
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
@@ -130,7 +130,7 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void TryGetUInt64_WhenTokenIsNotInteger_ShouldThrowInvalidOperationException()
     {
-        var bytes = Bytes("le");
+        byte[] bytes = Bytes("le");
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
@@ -148,7 +148,7 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void Read_WhenIntegerExceedsUInt64Range_ShouldThrowBencodeFormatException()
     {
-        var bytes = Bytes("i18446744073709551616e");
+        byte[] bytes = Bytes("i18446744073709551616e");
 
         Assert.ThrowsExactly<BencodeFormatException>(() =>
         {

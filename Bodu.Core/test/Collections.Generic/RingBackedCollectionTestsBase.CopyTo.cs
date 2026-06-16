@@ -35,7 +35,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
         AddToTail(collection, 2);
         AddToTail(collection, 3);
 
-        var target = new int[2];
+        int[] target = new int[2];
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
             CopyTo(collection, target, 0);
@@ -52,7 +52,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
         AddToTail(collection, 2);
         AddToTail(collection, 3);
 
-        var target = new int[3];
+        int[] target = new int[3];
         CopyTo(collection, target, 0);
 
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, target);
@@ -67,7 +67,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
         TCollection collection = CreateCollection(3);
         AddToTail(collection, 1);
 
-        var target = new int[3];
+        int[] target = new int[3];
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             CopyTo(collection, target, -1);
@@ -90,12 +90,12 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
         AddToTail(collection, 1);
         AddToTail(collection, 2);
 
-        var target = new int[5];
+        int[] target = new int[5];
         CopyTo(collection, target, offset);
 
-        for (var i = 0; i < 5; i++)
+        for (int i = 0; i < 5; i++)
         {
-            var expected = i == offset ? 1 : i == offset + 1 ? 2 : 0;
+            int expected = i == offset ? 1 : i == offset + 1 ? 2 : 0;
             Assert.AreEqual(expected, target[i], $"target[{i}] mismatch (offset={offset})");
         }
     }
@@ -113,7 +113,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
         _ = RemoveFromHead(collection);
         AddToTail(collection, 4);
 
-        var target = new int[3];
+        int[] target = new int[3];
         CopyTo(collection, target, 0);
 
         CollectionAssert.AreEqual(new[] { 2, 3, 4 }, target);

@@ -64,7 +64,7 @@ public partial class PooledBufferBuilderTests
     public void EnsureCapacity_WhenMinimumEqualsCurrentCapacity_ShouldNotGrow()
     {
         using var builder = new PooledBufferBuilder<int>(16);
-        var currentCapacity = builder.Capacity;
+        int currentCapacity = builder.Capacity;
 
         builder.EnsureCapacity(currentCapacity);
 
@@ -94,7 +94,7 @@ public partial class PooledBufferBuilderTests
     public void EnsureCapacity_WhenMinimumIsZero_ShouldSucceedWithoutChangingCapacity()
     {
         using var builder = new PooledBufferBuilder<int>(16);
-        var capacityBefore = builder.Capacity;
+        int capacityBefore = builder.Capacity;
 
         builder.EnsureCapacity(0);
 
@@ -108,7 +108,7 @@ public partial class PooledBufferBuilderTests
     public void EnsureCapacity_WhenRequestedCapacityAlreadySatisfied_ShouldNotGrow()
     {
         using var builder = new PooledBufferBuilder<int>(32);
-        var capacityBefore = builder.Capacity;
+        int capacityBefore = builder.Capacity;
 
         builder.EnsureCapacity(8);
 

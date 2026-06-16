@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateSeriesBuilderTests.TryGetRate.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -18,7 +18,7 @@ public partial class ExchangeRateSeriesBuilderTests
         ExchangeRateSeriesBuilder builder = new(s_usdAud, "RBA");
         builder.Add(new DateOnly(2026, 6, 1), 1.50m);
 
-        Assert.IsTrue(builder.TryGetRate(new DateOnly(2026, 6, 1), out var rate));
+        Assert.IsTrue(builder.TryGetRate(new DateOnly(2026, 6, 1), out decimal rate));
         Assert.AreEqual(1.50m, rate);
     }
 
@@ -32,7 +32,7 @@ public partial class ExchangeRateSeriesBuilderTests
         ExchangeRateSeriesBuilder builder = new(s_usdAud, "RBA");
         builder.Add(new DateOnly(2026, 6, 1), 1.50m);
 
-        Assert.IsFalse(builder.TryGetRate(new DateOnly(2026, 6, 2), out var rate));
+        Assert.IsFalse(builder.TryGetRate(new DateOnly(2026, 6, 2), out decimal rate));
         Assert.AreEqual(0m, rate);
     }
 

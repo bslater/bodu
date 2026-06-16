@@ -56,7 +56,7 @@ public partial class MultiValueDictionaryTests
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
-            foreach (var _ in mvd.Keys)
+            foreach (string _ in mvd.Keys)
                 mvd.Add("c", 3);
         });
     }

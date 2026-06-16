@@ -203,7 +203,7 @@ public sealed partial class ConfigurationPattern
     {
         ThrowHelper.ThrowIfNull(relativePath);
 
-        var normalized = relativePath.Replace('\\', '/');
+        string normalized = relativePath.Replace('\\', '/');
         return _regex.IsMatch(normalized);
     }
 }

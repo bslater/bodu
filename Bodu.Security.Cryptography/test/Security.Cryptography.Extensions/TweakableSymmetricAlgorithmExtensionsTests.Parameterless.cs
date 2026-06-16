@@ -21,7 +21,7 @@ public partial class TweakableSymmetricAlgorithmExtensionsTests
         TweakableSymmetricAlgorithm algorithm = CreateAlgorithm();
         algorithm.Dispose();
 
-        var result = algorithm.TryCreateEncryptor(out ICryptoTransform? transform);
+        bool result = algorithm.TryCreateEncryptor(out ICryptoTransform? transform);
 
         Assert.IsFalse(result);
         Assert.IsNull(transform);
@@ -38,7 +38,7 @@ public partial class TweakableSymmetricAlgorithmExtensionsTests
         TweakableSymmetricAlgorithm algorithm = CreateAlgorithm();
         algorithm.Dispose();
 
-        var result = algorithm.TryCreateDecryptor(out ICryptoTransform? transform);
+        bool result = algorithm.TryCreateDecryptor(out ICryptoTransform? transform);
 
         Assert.IsFalse(result);
         Assert.IsNull(transform);

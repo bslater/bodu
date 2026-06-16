@@ -25,7 +25,7 @@ public static partial class StringExtensions
     {
         if (value is null) return null;
 
-        var trimmed = value.Trim();
+        string trimmed = value.Trim();
         return trimmed.Length == 0 ? null : trimmed;
     }
 }

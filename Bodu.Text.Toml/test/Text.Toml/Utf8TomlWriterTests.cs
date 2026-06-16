@@ -88,7 +88,7 @@ public sealed partial class Utf8TomlWriterTests
 
         writer.WriteEndTable();
 
-        var expected =
+        string expected =
             "name = \"x\"\n" +
             "nums = [1, 2, 3]\n" +
             "\n" +
@@ -219,7 +219,7 @@ public sealed partial class Utf8TomlWriterTests
 
         writer.WriteEndTable();
 
-        var expected =
+        string expected =
             "s = \"hi\\tthere\"\n" +
             "i = -42\n" +
             "f = 1.5\n" +

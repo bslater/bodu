@@ -36,7 +36,7 @@ internal static class ConfigurationDocumentWriter
         ThrowHelper.ThrowIfNull(writer);
         ThrowHelper.ThrowIfNull(options);
 
-        var wroteAny = WriteSection(document.GlobalSection, writer, options, isGlobal: true);
+        bool wroteAny = WriteSection(document.GlobalSection, writer, options, isGlobal: true);
 
         foreach (IniSection section in document.Sections)
         {
@@ -61,7 +61,7 @@ internal static class ConfigurationDocumentWriter
     /// <returns><see langword="true" /> when any line was written; otherwise, <see langword="false" />.</returns>
     private static bool WriteSection(IniSection section, TextWriter writer, ConfigurationWriteOptions options, bool isGlobal)
     {
-        var wroteAny = false;
+        bool wroteAny = false;
 
         if (options.PreserveComments)
         {

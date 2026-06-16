@@ -74,9 +74,9 @@ public sealed record AeadKnownAnswerVector(
         int tagLength,
         string? source = null)
     {
-        var combined = FromHexBytes(ciphertextWithTagHex);
-        var ciphertext = combined.AsSpan(0, combined.Length - tagLength).ToArray();
-        var tag = combined.AsSpan(combined.Length - tagLength).ToArray();
+        byte[] combined = FromHexBytes(ciphertextWithTagHex);
+        byte[] ciphertext = combined.AsSpan(0, combined.Length - tagLength).ToArray();
+        byte[] tag = combined.AsSpan(combined.Length - tagLength).ToArray();
 
         return new AeadKnownAnswerVector(
             count,

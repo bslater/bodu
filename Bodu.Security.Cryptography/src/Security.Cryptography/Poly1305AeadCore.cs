@@ -121,7 +121,7 @@ internal static class Poly1305AeadCore
     {
         ValidateOpenBuffers(ciphertextWithTag, output);
 
-        var ciphertextLength = ciphertextWithTag.Length - TagBytes;
+        int ciphertextLength = ciphertextWithTag.Length - TagBytes;
         ReadOnlySpan<byte> ciphertext = ciphertextWithTag[..ciphertextLength];
         ReadOnlySpan<byte> receivedTag = ciphertextWithTag[ciphertextLength..];
 
@@ -193,7 +193,7 @@ internal static class Poly1305AeadCore
     {
         ValidateOpenBuffers(ciphertextWithTag, output);
 
-        var ciphertextLength = ciphertextWithTag.Length - TagBytes;
+        int ciphertextLength = ciphertextWithTag.Length - TagBytes;
         ReadOnlySpan<byte> ciphertext = ciphertextWithTag[..ciphertextLength];
         ReadOnlySpan<byte> receivedTag = ciphertextWithTag[ciphertextLength..];
 
@@ -260,8 +260,8 @@ internal static class Poly1305AeadCore
         ReadOnlySpan<byte> input,
         Span<byte> output)
     {
-        var head = Math.Min(SecretboxKeystreamOffset, input.Length);
-        for (var i = 0; i < head; i++)
+        int head = Math.Min(SecretboxKeystreamOffset, input.Length);
+        for (int i = 0; i < head; i++)
             output[i] = (byte)(input[i] ^ block0[SecretboxKeystreamOffset + i]);
 
         if (input.Length > SecretboxKeystreamOffset)
@@ -281,13 +281,13 @@ internal static class Poly1305AeadCore
 
         try
         {
-            var offset = 0;
+            int offset = 0;
             while (offset < input.Length)
             {
                 engine.NextKeystreamBlock(keystream);
 
-                var count = Math.Min(KeystreamBlockBytes, input.Length - offset);
-                for (var i = 0; i < count; i++)
+                int count = Math.Min(KeystreamBlockBytes, input.Length - offset);
+                for (int i = 0; i < count; i++)
                     output[offset + i] = (byte)(input[offset + i] ^ keystream[i]);
 
                 offset += count;
@@ -319,8 +319,8 @@ internal static class Poly1305AeadCore
         // bytes — but authenticating a large message no longer needs a second message-sized allocation.
         const int chunkBytes = 4096;
 
-        var keyBuffer = poly1305Key.ToArray();
-        var chunk = ArrayPool<byte>.Shared.Rent(chunkBytes);
+        byte[] keyBuffer = poly1305Key.ToArray();
+        byte[] chunk = ArrayPool<byte>.Shared.Rent(chunkBytes);
 
         try
         {
@@ -336,7 +336,7 @@ internal static class Poly1305AeadCore
             BinaryPrimitives.WriteUInt64LittleEndian(chunk.AsSpan(sizeof(ulong), sizeof(ulong)), (ulong)ciphertext.Length);
             poly1305.TransformFinalBlock(chunk, 0, sizeof(ulong) * 2);
 
-            var hash = poly1305.Hash
+            byte[] hash = poly1305.Hash
                 ?? throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_HashAlgorithmDidNotProduceValue);
             hash.CopyTo(tag);
         }
@@ -356,10 +356,10 @@ internal static class Poly1305AeadCore
     /// <param name="chunk">A scratch buffer used to bridge spans to the byte-array transform API.</param>
     private static void FeedData(Poly1305 poly1305, ReadOnlySpan<byte> data, byte[] chunk)
     {
-        var offset = 0;
+        int offset = 0;
         while (offset < data.Length)
         {
-            var count = Math.Min(chunk.Length, data.Length - offset);
+            int count = Math.Min(chunk.Length, data.Length - offset);
             data.Slice(offset, count).CopyTo(chunk);
             poly1305.TransformBlock(chunk, 0, count, null, 0);
             offset += count;
@@ -392,7 +392,7 @@ internal static class Poly1305AeadCore
     /// <exception cref="CryptographicException">The MAC failed to produce a tag.</exception>
     private static void ComputePoly1305(ReadOnlySpan<byte> poly1305Key, ReadOnlySpan<byte> data, Span<byte> tag)
     {
-        var keyBuffer = poly1305Key.ToArray();
+        byte[] keyBuffer = poly1305Key.ToArray();
 
         try
         {
@@ -422,7 +422,7 @@ internal static class Poly1305AeadCore
     /// <exception cref="ArgumentException"><paramref name="output" /> is too small.</exception>
     private static void ValidateSealBuffers(ReadOnlySpan<byte> plaintext, Span<byte> output)
     {
-        var required = checked(plaintext.Length + TagBytes);
+        int required = checked(plaintext.Length + TagBytes);
         if (output.Length < required)
             throw new ArgumentException(
                 string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, required),

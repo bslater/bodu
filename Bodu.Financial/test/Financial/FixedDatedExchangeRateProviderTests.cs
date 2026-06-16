@@ -28,7 +28,7 @@ public partial class FixedDatedExchangeRateProviderTests
     {
         FixedDatedExchangeRateProvider table = new(SingleRate());
 
-        var found = table.TryGetRate(
+        bool found = table.TryGetRate(
             "USD",
             "AUD",
             s_d1,

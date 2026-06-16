@@ -19,7 +19,7 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void ThrowIfInvalidIVForMode_WhenIVIsValid_ShouldNotThrow()
     {
-        var iv = new byte[16];
+        byte[] iv = new byte[16];
         CryptographyThrowHelper.ThrowIfInvalidIVForMode(iv, CipherModeKind.CBC, 128, LegalBlockSizes);
     }
 
@@ -54,7 +54,7 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void ThrowIfInvalidIVForMode_WhenIVHasWrongLength_ShouldThrowExactly()
     {
-        var iv = new byte[8];
+        byte[] iv = new byte[8];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {

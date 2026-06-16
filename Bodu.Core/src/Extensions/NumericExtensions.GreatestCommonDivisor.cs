@@ -108,9 +108,9 @@ public static partial class NumericExtensions
         ThrowHelper.ThrowIfArrayLengthIsZero(values);
 
         ulong acc = 0;
-        for (var i = 0; i < values.Length; i++)
+        for (int i = 0; i < values.Length; i++)
         {
-            var v = values[i];
+            short v = values[i];
             ThrowHelper.ThrowIfNegative(v, nameof(values));
             acc = Gcd(acc, (ulong)v);
         }
@@ -135,9 +135,9 @@ public static partial class NumericExtensions
         ThrowHelper.ThrowIfArrayLengthIsZero(values);
 
         ulong acc = 0;
-        for (var i = 0; i < values.Length; i++)
+        for (int i = 0; i < values.Length; i++)
         {
-            var v = values[i];
+            int v = values[i];
             ThrowHelper.ThrowIfNegative(v, nameof(values));
             acc = Gcd(acc, (ulong)v);
         }
@@ -162,9 +162,9 @@ public static partial class NumericExtensions
         ThrowHelper.ThrowIfArrayLengthIsZero(values);
 
         ulong acc = 0;
-        for (var i = 0; i < values.Length; i++)
+        for (int i = 0; i < values.Length; i++)
         {
-            var v = values[i];
+            long v = values[i];
             ThrowHelper.ThrowIfNegative(v, nameof(values));
             acc = Gcd(acc, (ulong)v);
         }
@@ -185,7 +185,7 @@ public static partial class NumericExtensions
         ThrowHelper.ThrowIfArrayLengthIsZero(values);
 
         ulong acc = 0;
-        for (var i = 0; i < values.Length; i++)
+        for (int i = 0; i < values.Length; i++)
             acc = Gcd(acc, values[i]);
 
         return (ushort)acc;
@@ -204,7 +204,7 @@ public static partial class NumericExtensions
         ThrowHelper.ThrowIfArrayLengthIsZero(values);
 
         ulong acc = 0;
-        for (var i = 0; i < values.Length; i++)
+        for (int i = 0; i < values.Length; i++)
             acc = Gcd(acc, values[i]);
 
         return (uint)acc;
@@ -223,7 +223,7 @@ public static partial class NumericExtensions
         ThrowHelper.ThrowIfArrayLengthIsZero(values);
 
         ulong acc = 0;
-        for (var i = 0; i < values.Length; i++)
+        for (int i = 0; i < values.Length; i++)
             acc = Gcd(acc, values[i]);
 
         return acc;
@@ -243,7 +243,7 @@ public static partial class NumericExtensions
     {
         while (b != 0)
         {
-            var t = a % b;
+            ulong t = a % b;
             a = b;
             b = t;
         }

@@ -73,7 +73,7 @@ public sealed partial class TomlDocumentReaderTests
     public void Read_WhenCommentContainsControlCharacter_ShouldThrowTomlFormatException()
     {
         // Embed a NUL (U+0000) in the comment; TOML forbids control characters other than tab in comments.
-        var source = "v = 1 # bad" + (char)0x00 + "comment\n";
+        string source = "v = 1 # bad" + (char)0x00 + "comment\n";
 
         Assert.ThrowsExactly<TomlFormatException>(() =>
         {
@@ -88,7 +88,7 @@ public sealed partial class TomlDocumentReaderTests
     [TestMethod]
     public void Read_WhenCommentContainsBareCarriageReturn_ShouldThrowTomlFormatException()
     {
-        var source = "v = 1 # bad\rcomment\n";
+        string source = "v = 1 # bad\rcomment\n";
 
         Assert.ThrowsExactly<TomlFormatException>(() =>
         {

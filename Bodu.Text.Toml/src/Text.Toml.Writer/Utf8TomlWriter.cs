@@ -408,9 +408,9 @@ public ref partial struct Utf8TomlWriter
     /// </exception>
     private static void ThrowIfUnpairedSurrogate(string value, [System.Runtime.CompilerServices.CallerArgumentExpression(nameof(value))] string? paramName = null)
     {
-        for (var i = 0; i < value.Length; i++)
+        for (int i = 0; i < value.Length; i++)
         {
-            var c = value[i];
+            char c = value[i];
             if (char.IsHighSurrogate(c))
             {
                 if (i + 1 >= value.Length || !char.IsLowSurrogate(value[i + 1]))

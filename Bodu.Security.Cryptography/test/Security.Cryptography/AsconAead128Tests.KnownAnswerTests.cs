@@ -63,17 +63,17 @@ public partial class AsconAead128Tests
     public void EncryptAndDecrypt_WhenGivenNistKatVector_ShouldMatchExpectedCiphertextTagAndPlaintext(AeadKnownAnswerVector vector)
     {
         // Encrypt
-        var ciphertextWithTag = new byte[vector.Plaintext.Length + AsconAead128.TagBytes];
+        byte[] ciphertextWithTag = new byte[vector.Plaintext.Length + AsconAead128.TagBytes];
         using (var enc = new AsconAead128(vector.Key, vector.Nonce))
         {
             enc.ProcessAssociatedData(vector.AssociatedData);
-            var written = enc.Encrypt(vector.Plaintext, ciphertextWithTag);
+            int written = enc.Encrypt(vector.Plaintext, ciphertextWithTag);
             Assert.AreEqual(ciphertextWithTag.Length, written,
                 $"{vector}: Encrypt should write plaintext.Length + 16 bytes.");
         }
 
-        var actualCiphertext = ciphertextWithTag.AsSpan(0, vector.Plaintext.Length).ToArray();
-        var actualTag = ciphertextWithTag.AsSpan(vector.Plaintext.Length, AsconAead128.TagBytes).ToArray();
+        byte[] actualCiphertext = ciphertextWithTag.AsSpan(0, vector.Plaintext.Length).ToArray();
+        byte[] actualTag = ciphertextWithTag.AsSpan(vector.Plaintext.Length, AsconAead128.TagBytes).ToArray();
 
         CollectionAssert.AreEqual(vector.Ciphertext, actualCiphertext,
             $"{vector}: ciphertext must match reference.");
@@ -81,11 +81,11 @@ public partial class AsconAead128Tests
             $"{vector}: authentication tag must match reference.");
 
         // Decrypt round-trip
-        var recovered = new byte[vector.Plaintext.Length];
+        byte[] recovered = new byte[vector.Plaintext.Length];
         using (var dec = new AsconAead128(vector.Key, vector.Nonce))
         {
             dec.ProcessAssociatedData(vector.AssociatedData);
-            var written = dec.Decrypt(ciphertextWithTag, recovered);
+            int written = dec.Decrypt(ciphertextWithTag, recovered);
             Assert.AreEqual(vector.Plaintext.Length, written,
                 $"{vector}: Decrypt should return plaintext.Length bytes.");
         }

@@ -54,7 +54,7 @@ public sealed record DsaSigGenKnownAnswer(
                 Convert.FromHexString(HexFieldKatReader.GetRequired(record, "Pk")),
                 Convert.FromHexString(HexFieldKatReader.GetRequired(record, "Context")),
                 Convert.FromHexString(HexFieldKatReader.GetRequired(record, "Message")),
-                record.TryGetValue("Rnd", out var rnd) ? Convert.FromHexString(rnd) : null,
+                record.TryGetValue("Rnd", out string? rnd) ? Convert.FromHexString(rnd) : null,
                 Convert.FromHexString(HexFieldKatReader.GetRequired(record, "Signature")));
         }
     }

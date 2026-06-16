@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlDocument.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -143,7 +143,7 @@ public sealed partial class TomlDocument
     /// </remarks>
     public static TomlDocument Parse(ReadOnlySpan<byte> utf8Toml, TomlDocumentOptions options)
     {
-        var maxDepth = options.MaxDepth <= 0 ? DefaultMaxDepth : Math.Min(options.MaxDepth, TomlLimits.AbsoluteMaxDepth);
+        int maxDepth = options.MaxDepth <= 0 ? DefaultMaxDepth : Math.Min(options.MaxDepth, TomlLimits.AbsoluteMaxDepth);
 
         // Retain a copy of the source so string scalars can be decoded on demand; rent it so the retention costs no
         // managed allocation across repeated parses, and return it on disposal.
@@ -397,8 +397,8 @@ public sealed partial class TomlDocument
         // Report the public element indexer's parameter name, which is the caller-facing contract for this guard.
         ThrowHelper.ThrowIfGreaterThanOrEqual((uint)elementIndex, (uint)rows[index].ChildCount, "index");
 
-        var child = rows[index].FirstChild;
-        for (var i = 0; i < elementIndex; i++)
+        int child = rows[index].FirstChild;
+        for (int i = 0; i < elementIndex; i++)
             child = rows[child].NextSibling;
 
         return child;
@@ -469,7 +469,7 @@ public sealed partial class TomlDocument
         if (rows[tableIndex].Kind != TomlReaderNodeKind.Table)
             throw KindMismatch(TomlValueKind.Table, ToValueKind(rows[tableIndex]));
 
-        var child = rows[tableIndex].FirstChild;
+        int child = rows[tableIndex].FirstChild;
         while (child >= 0)
         {
             if (string.Equals(rows[child].Key, name, StringComparison.Ordinal))

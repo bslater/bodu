@@ -34,9 +34,9 @@ public partial class ConcurrentCircularBufferTests
     public void Contains_WhenAccessedConcurrently_ShouldHonorDefaultEquality()
     {
         var buffer = new ConcurrentCircularBuffer<string>(10);
-        for (var i = 0; i < 5; i++) buffer.Enqueue("Test" + i);
+        for (int i = 0; i < 5; i++) buffer.Enqueue("Test" + i);
 
-        var result = Enumerable.Range(0, 100).AsParallel().All(_ =>
+        bool result = Enumerable.Range(0, 100).AsParallel().All(_ =>
             buffer.Contains("Test2") && !buffer.Contains("Missing"));
 
         Assert.IsTrue(result, "Contains failed to honor equality under concurrency.");
@@ -75,7 +75,7 @@ public partial class ConcurrentCircularBufferTests
 
         var writer = Task.Run(() =>
         {
-            for (var i = 0; i < 100; i++)
+            for (int i = 0; i < 100; i++)
             {
                 buffer.TryEnqueue(i % 2 == 0 ? target : new TestItem(i));
                 if (i % 10 == 0) buffer.Clear();
@@ -85,7 +85,7 @@ public partial class ConcurrentCircularBufferTests
 
         var reader = Task.Run(() =>
         {
-            for (var i = 0; i < 200; i++)
+            for (int i = 0; i < 200; i++)
             {
                 try
                 {
@@ -111,7 +111,7 @@ public partial class ConcurrentCircularBufferTests
     public void Contains_WhenDequeueInProgress_ShouldNotThrow()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(6);
-        for (var i = 0; i < 6; i++) buffer.Enqueue(new TestItem(i));
+        for (int i = 0; i < 6; i++) buffer.Enqueue(new TestItem(i));
 
         var exceptions = new ConcurrentBag<Exception>();
         var cts = new CancellationTokenSource();
@@ -127,7 +127,7 @@ public partial class ConcurrentCircularBufferTests
 
         var reader = Task.Run(() =>
         {
-            for (var i = 0; i < 500; i++)
+            for (int i = 0; i < 500; i++)
             {
                 try { _ = buffer.Contains(new TestItem(-1)); } // always missing by ref
                 catch (Exception ex) { exceptions.Add(ex); }
@@ -170,10 +170,10 @@ public partial class ConcurrentCircularBufferTests
     public void Contains_WhenItemAbsent_ShouldReturnFalse()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(10);
-        for (var i = 0; i < 10; i++) buffer.Enqueue(new TestItem(i));
+        for (int i = 0; i < 10; i++) buffer.Enqueue(new TestItem(i));
 
         var missing = new TestItem(999);
-        var result = Enumerable.Range(0, 1000).AsParallel().All(_ => !buffer.Contains(missing));
+        bool result = Enumerable.Range(0, 1000).AsParallel().All(_ => !buffer.Contains(missing));
 
         Assert.IsTrue(result, "Contains returned true for missing item.");
     }
@@ -188,12 +188,12 @@ public partial class ConcurrentCircularBufferTests
         // evicted before the reader can observe it, regardless of thread scheduling.
         var buffer = new ConcurrentCircularBuffer<TestItem>(100);
         var target = new TestItem(999);
-        var found = false;
+        bool found = false;
         using var targetEnqueued = new ManualResetEventSlim(false);
 
         var writer = Task.Run(() =>
         {
-            for (var i = 0; i < 50; i++)
+            for (int i = 0; i < 50; i++)
             {
                 buffer.TryEnqueue(i == 25 ? target : new TestItem(i));
 
@@ -212,7 +212,7 @@ public partial class ConcurrentCircularBufferTests
             // this gate the reader can exhaust all iterations before the writer reaches i == 25.
             targetEnqueued.Wait();
 
-            for (var i = 0; i < 200; i++)
+            for (int i = 0; i < 200; i++)
             {
                 if (buffer.Contains(target))
                 {

@@ -30,10 +30,10 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
     {
         using TAlgorithm cipher = CreateAlgorithm();
         cipher.GenerateNonce();
-        var first = (byte[])cipher.Nonce.Clone();
+        byte[] first = (byte[])cipher.Nonce.Clone();
 
         cipher.GenerateNonce();
-        var second = cipher.Nonce;
+        byte[] second = cipher.Nonce;
 
         CollectionAssert.AreNotEqual(first, second);
     }

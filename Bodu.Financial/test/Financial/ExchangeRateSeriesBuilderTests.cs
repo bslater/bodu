@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateSeriesBuilderTests.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -37,7 +37,7 @@ public partial class ExchangeRateSeriesBuilderTests
         Assert.AreEqual(s_usdAud, snapshot.Pair);
         Assert.AreEqual("RBA", snapshot.Provider);
         Assert.AreEqual(1, snapshot.Count);
-        Assert.IsTrue(snapshot.TryGetRate(new DateOnly(2026, 6, 1), ExchangeRateLookupOptions.Exact, out _, out var rate));
+        Assert.IsTrue(snapshot.TryGetRate(new DateOnly(2026, 6, 1), ExchangeRateLookupOptions.Exact, out _, out decimal rate));
         Assert.AreEqual(1.50m, rate);
     }
 

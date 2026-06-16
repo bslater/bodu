@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RbaExchangeRateProvider.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -93,8 +93,12 @@ public sealed class RbaExchangeRateProvider
     /// </summary>
     /// <param name="options">The provider options.</param>
     /// <param name="logger">The logger. <see langword="null" /> selects <see cref="NullLogger.Instance" />.</param>
-    /// <param name="timeProvider">The time source. <see langword="null" /> selects <see cref="TimeProvider.System" />.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="options" /> is <see langword="null" />.</exception>
+    /// <param name="timeProvider">
+    /// The time source. <see langword="null" /> selects <see cref="TimeProvider.System" />.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="options" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> fails validation.</exception>
     public RbaExchangeRateProvider(RbaExchangeRateOptions options, ILogger? logger = null, TimeProvider? timeProvider = null)
         : this(options, CreateOwnedClient(options), logger, timeProvider)
@@ -108,7 +112,9 @@ public sealed class RbaExchangeRateProvider
     /// <param name="httpClient">The HTTP client used to download era files.</param>
     /// <param name="options">The provider options.</param>
     /// <param name="logger">The logger. <see langword="null" /> selects <see cref="NullLogger.Instance" />.</param>
-    /// <param name="timeProvider">The time source. <see langword="null" /> selects <see cref="TimeProvider.System" />.</param>
+    /// <param name="timeProvider">
+    /// The time source. <see langword="null" /> selects <see cref="TimeProvider.System" />.
+    /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="httpClient" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
@@ -125,7 +131,9 @@ public sealed class RbaExchangeRateProvider
     /// <param name="source">The table source.</param>
     /// <param name="options">The provider options.</param>
     /// <param name="logger">The logger. <see langword="null" /> selects <see cref="NullLogger.Instance" />.</param>
-    /// <param name="timeProvider">The time source. <see langword="null" /> selects <see cref="TimeProvider.System" />.</param>
+    /// <param name="timeProvider">
+    /// The time source. <see langword="null" /> selects <see cref="TimeProvider.System" />.
+    /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="source" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
@@ -136,8 +144,8 @@ public sealed class RbaExchangeRateProvider
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="RbaExchangeRateProvider" /> class from an owned client, building the
-    /// table source over it before forwarding to the core constructor.
+    /// Initializes a new instance of the <see cref="RbaExchangeRateProvider" /> class from an owned client, building
+    /// the table source over it before forwarding to the core constructor.
     /// </summary>
     /// <param name="options">The provider options.</param>
     /// <param name="ownedHttpClient">The HTTP client this provider creates and owns.</param>
@@ -200,7 +208,9 @@ public sealed class RbaExchangeRateProvider
     /// <param name="era">The era to load.</param>
     /// <param name="cancellationToken">A token to observe while awaiting the load.</param>
     /// <returns>A task that completes when the era has been loaded.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="era" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="era" /> is <see langword="null" />.
+    /// </exception>
     public Task LoadEraAsync(RbaEra era, CancellationToken cancellationToken = default)
     {
         ThrowHelper.ThrowIfNull(era);
@@ -377,7 +387,7 @@ public sealed class RbaExchangeRateProvider
             foreach (RbaSeriesInfo info in table.GetSeriesInfo())
                 _series[info.Pair] = info;
 
-            var count = AddObservations(table.EnumerateRates(), fetchedAt);
+            int count = AddObservations(table.EnumerateRates(), fetchedAt);
             RebuildSnapshot();
 
             Log.EraLoaded(_logger, _options.DownloadCompletedLogLevel, era.Label, count);

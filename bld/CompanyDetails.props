@@ -1,0 +1,14 @@
+<Project>
+
+  <!--
+    Company and product identity shared by every Bodu package and assembly.
+    Imported via bld/Bodu.props from the repository-root Directory.Build.props.
+  -->
+  <PropertyGroup>
+    <Authors>Bodu Pty. Ltd.</Authors>
+    <Company>Bodu Pty. Ltd.</Company>
+    <Product>Bodu</Product>
+    <NeutralLanguage>en-US</NeutralLanguage>
+  </PropertyGroup>
+
+</Project>

@@ -106,31 +106,31 @@ public sealed class Isin
         if (valueIncludingCheck.Length != SequenceLength) return false;
 
         // Short-circuit obvious rejections before allocating.
-        for (var i = 0; i < SequenceLength; i++)
+        for (int i = 0; i < SequenceLength; i++)
         {
-            var ch = valueIncludingCheck[i];
+            char ch = valueIncludingCheck[i];
             if ((uint)(ch - '0') > 9u && (uint)(ch - 'A') > 25u) return false;
         }
 
         if ((uint)(valueIncludingCheck[SequenceLength - 1] - '0') > 9u) return false;
 
-        var computed = Compute(valueIncludingCheck[..^1]);
+        char computed = Compute(valueIncludingCheck[..^1]);
         return computed == valueIncludingCheck[SequenceLength - 1];
     }
 
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> body)
     {
-        for (var i = 0; i < body.Length; i++)
+        for (int i = 0; i < body.Length; i++)
         {
-            var ch = body[i];
+            char ch = body[i];
             if ((uint)(ch - '0') <= 9u)
             {
                 _luhn.Append(ch);
             }
             else if ((uint)(ch - 'A') <= 25u)
             {
-                var value = ch - 'A' + 10;
+                int value = ch - 'A' + 10;
                 _luhn.Append((char)('0' + (value / 10)));
                 _luhn.Append((char)('0' + (value % 10)));
             }

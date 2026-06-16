@@ -69,9 +69,9 @@ public sealed partial class Damm
     public static char Compute(ReadOnlySpan<char> digits)
     {
         byte interim = 0;
-        for (var i = 0; i < digits.Length; i++)
+        for (int i = 0; i < digits.Length; i++)
         {
-            var ch = digits[i];
+            char ch = digits[i];
             if ((uint)(ch - '0') > 9u)
                 ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(digits));
 
@@ -96,9 +96,9 @@ public sealed partial class Damm
         if (digitsIncludingCheck.IsEmpty) return false;
 
         byte interim = 0;
-        for (var i = 0; i < digitsIncludingCheck.Length; i++)
+        for (int i = 0; i < digitsIncludingCheck.Length; i++)
         {
-            var ch = digitsIncludingCheck[i];
+            char ch = digitsIncludingCheck[i];
             if ((uint)(ch - '0') > 9u) return false;
 
             interim = s_table[interim, ch - '0'];
@@ -110,10 +110,10 @@ public sealed partial class Damm
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> digits)
     {
-        var interim = _interim;
-        for (var i = 0; i < digits.Length; i++)
+        byte interim = _interim;
+        for (int i = 0; i < digits.Length; i++)
         {
-            var ch = digits[i];
+            char ch = digits[i];
             if ((uint)(ch - '0') > 9u)
                 ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(digits));
 

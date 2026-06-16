@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlSerializerOptions.ConverterList.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -12,8 +12,8 @@ namespace Bodu.Text.Toml;
 public sealed partial class TomlSerializerOptions
 {
     /// <summary>
-    /// A guarded converter collection backing <see cref="Converters" />: it rejects a <see langword="null" /> entry
-    /// and refuses every mutating operation once the owning <see cref="TomlSerializerOptions" /> have become read-only,
+    /// A guarded converter collection backing <see cref="Converters" />: it rejects a <see langword="null" /> entry and
+    /// refuses every mutating operation once the owning <see cref="TomlSerializerOptions" /> have become read-only,
     /// while leaving read access available.
     /// </summary>
     private sealed class ConverterList
@@ -45,7 +45,9 @@ public sealed partial class TomlSerializerOptions
         /// <summary>
         /// Gets a value indicating whether the list rejects mutation.
         /// </summary>
-        /// <returns><see langword="true" /> once the owning options are read-only; otherwise <see langword="false" />.</returns>
+        /// <returns>
+        /// <see langword="true" /> once the owning options are read-only; otherwise <see langword="false" />.
+        /// </returns>
         public bool IsReadOnly => _owner.IsReadOnly;
 
         /// <summary>
@@ -53,7 +55,9 @@ public sealed partial class TomlSerializerOptions
         /// </summary>
         /// <param name="index">The zero-based index of the converter.</param>
         /// <returns>The converter at <paramref name="index" />.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when the assigned value is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown when the assigned value is <see langword="null" />.
+        /// </exception>
         /// <exception cref="InvalidOperationException">Thrown when the owning options are read-only.</exception>
         public TomlConverter this[int index]
         {
@@ -71,7 +75,9 @@ public sealed partial class TomlSerializerOptions
         /// Adds a converter to the end of the list.
         /// </summary>
         /// <param name="item">The converter to add.</param>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="item" /> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown when <paramref name="item" /> is <see langword="null" />.
+        /// </exception>
         /// <exception cref="InvalidOperationException">Thrown when the owning options are read-only.</exception>
         public void Add(TomlConverter item)
         {
@@ -96,7 +102,9 @@ public sealed partial class TomlSerializerOptions
         /// Determines whether the list contains the specified converter.
         /// </summary>
         /// <param name="item">The converter to locate.</param>
-        /// <returns><see langword="true" /> when the converter is present; otherwise <see langword="false" />.</returns>
+        /// <returns>
+        /// <see langword="true" /> when the converter is present; otherwise <see langword="false" />.
+        /// </returns>
         public bool Contains(TomlConverter item) =>
             _items.Contains(item);
 
@@ -128,7 +136,9 @@ public sealed partial class TomlSerializerOptions
         /// </summary>
         /// <param name="index">The zero-based index at which to insert.</param>
         /// <param name="item">The converter to insert.</param>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="item" /> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown when <paramref name="item" /> is <see langword="null" />.
+        /// </exception>
         /// <exception cref="InvalidOperationException">Thrown when the owning options are read-only.</exception>
         public void Insert(int index, TomlConverter item)
         {

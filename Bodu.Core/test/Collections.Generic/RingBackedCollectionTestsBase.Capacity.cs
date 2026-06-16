@@ -39,7 +39,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     public void Capacity_WhenItemsAdded_ShouldBeAtLeastCount()
     {
         TCollection collection = CreateCollection(4);
-        for (var i = 0; i < 4; i++)
+        for (int i = 0; i < 4; i++)
             AddToTail(collection, i);
 
         Assert.IsGreaterThanOrEqualTo(GetCount(collection), GetCapacity(collection));
@@ -53,7 +53,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     public void Capacity_WhenItemsAddedAndRemovedWithinCapacity_ShouldRemainConstant()
     {
         TCollection collection = CreateCollection(5);
-        var capacityBefore = GetCapacity(collection);
+        int capacityBefore = GetCapacity(collection);
 
         AddToTail(collection, 1);
         AddToTail(collection, 2);

@@ -41,7 +41,7 @@ public static partial class StringExtensions
     {
         ThrowHelper.ThrowIfNull(value);
 
-        var preserveAcronyms = (options & SentenceCaseOptions.PreserveAcronyms) == SentenceCaseOptions.PreserveAcronyms;
+        bool preserveAcronyms = (options & SentenceCaseOptions.PreserveAcronyms) == SentenceCaseOptions.PreserveAcronyms;
 
         WordCasingOptions casing = new()
         {
@@ -102,17 +102,17 @@ public static partial class StringExtensions
         CultureInfo culture = options.Culture;
 
         StringBuilder builder = new(value.Length);
-        var sentenceStart = true;
-        var sawWord = false;
-        var i = 0;
+        bool sentenceStart = true;
+        bool sawWord = false;
+        int i = 0;
         while (i < value.Length)
         {
-            var c = value[i];
+            char c = value[i];
             if (char.IsLetterOrDigit(c) || c == '\'')
             {
-                var start = i;
+                int start = i;
                 while (i < value.Length && (char.IsLetterOrDigit(value[i]) || value[i] == '\'')) i++;
-                var word = value[start..i];
+                string word = value[start..i];
                 builder.Append(CaseWordForSentence(word, canonical, options, culture, sentenceStart));
                 sentenceStart = false;
                 sawWord = true;
@@ -144,7 +144,7 @@ public static partial class StringExtensions
         CultureInfo culture = options.Culture;
 
         StringBuilder builder = new(value.Length);
-        for (var i = 0; i < words.Count; i++)
+        for (int i = 0; i < words.Count; i++)
         {
             if (i > 0) builder.Append(' ');
             builder.Append(CaseWordForSentence(words[i], canonical, options, culture, i == 0));
@@ -175,7 +175,7 @@ public static partial class StringExtensions
         if (options.PreserveAcronyms)
         {
             // A known acronym is emitted in its canonical spelling regardless of the input casing.
-            if (canonical.TryGetValue(word.ToUpperInvariant(), out var canonicalSpelling))
+            if (canonical.TryGetValue(word.ToUpperInvariant(), out string? canonicalSpelling))
             {
                 return canonicalSpelling;
             }
@@ -192,14 +192,14 @@ public static partial class StringExtensions
             return word;
         }
 
-        var lower = word.ToLower(culture);
+        string lower = word.ToLower(culture);
         if (!sentenceStart) return lower;
 
         StringBuilder builder = new(lower.Length);
-        var capitalised = false;
-        for (var i = 0; i < lower.Length; i++)
+        bool capitalised = false;
+        for (int i = 0; i < lower.Length; i++)
         {
-            var c = lower[i];
+            char c = lower[i];
             if (!capitalised && char.IsLetter(c))
             {
                 builder.Append(ToUpper(c, culture));

@@ -19,7 +19,7 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void ThrowIfInvalidKeySize_WhenKeyMatchesExpectedSize_ShouldNotThrow()
     {
-        var key = new byte[16];
+        byte[] key = new byte[16];
         CryptographyThrowHelper.ThrowIfInvalidKeySize(key, 128, LegalKeySizes);
     }
 
@@ -62,7 +62,7 @@ public partial class CryptoHelpersTests
     [DataRow(40, 128)]
     public void ThrowIfInvalidKeySize_WhenKeyHasWrongLength_ShouldThrowExactly(int actualBytes, int expectedBits)
     {
-        var key = new byte[actualBytes];
+        byte[] key = new byte[actualBytes];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {

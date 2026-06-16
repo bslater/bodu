@@ -54,13 +54,13 @@ public sealed partial class Whirlpool
     /// <returns>The freshly constructed or already-cached <see cref="VariantTables" /> instance.</returns>
     private static VariantTables BuildAndCacheTables(ref VariantTables? slot, byte[] sbox, byte[] mds)
     {
-        var mul = BuildMultiplicationTable(sbox, mds);
-        var constants = BuildRoundConstants(sbox);
+        ulong[] mul = BuildMultiplicationTable(sbox, mds);
+        ulong[] constants = BuildRoundConstants(sbox);
 
-        var roundKeys = new ulong[RoundCount][];
-        for (var i = 0; i < RoundCount; i++)
+        ulong[][] roundKeys = new ulong[RoundCount][];
+        for (int i = 0; i < RoundCount; i++)
         {
-            var rk = new ulong[8];
+            ulong[] rk = new ulong[8];
             rk[0] = constants[i];
             roundKeys[i] = rk;
         }

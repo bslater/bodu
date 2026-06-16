@@ -47,14 +47,14 @@ internal static class TibetanLosarCalculator
         DateOnly limit = new(year, 4, 1);
 
         DateOnly? losar = null;
-        var smallestDelta = double.MaxValue;
+        double smallestDelta = double.MaxValue;
 
         while (cursor < limit)
         {
             if (LunarPhaseCalculator.NewMoonOnOrAfter(cursor) is not DateOnly newMoon || newMoon >= limit)
                 break;
 
-            var delta = AngularDistance(SolarTermCalculator.SunTropicalLongitude(newMoon), LosarSolarLongitude);
+            double delta = AngularDistance(SolarTermCalculator.SunTropicalLongitude(newMoon), LosarSolarLongitude);
             if (delta < smallestDelta)
             {
                 smallestDelta = delta;
@@ -75,7 +75,7 @@ internal static class TibetanLosarCalculator
     /// <returns>The smallest absolute separation between the two longitudes.</returns>
     private static double AngularDistance(double first, double second)
     {
-        var delta = Math.Abs((first - second) % 360.0);
+        double delta = Math.Abs((first - second) % 360.0);
         return delta > 180.0 ? 360.0 - delta : delta;
     }
 }

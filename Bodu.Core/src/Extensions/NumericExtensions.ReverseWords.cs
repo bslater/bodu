@@ -87,11 +87,11 @@ public static partial class NumericExtensions
         ThrowHelper.ThrowIfNull(bytes);
         ThrowHelper.ThrowIfArrayLengthNotPositiveMultipleOf(bytes, 2);
 
-        var result = (byte[])bytes.Clone();
+        byte[] result = (byte[])bytes.Clone();
 
-        for (var i = 0; i < result.Length; i += 2)
+        for (int i = 0; i < result.Length; i += 2)
         {
-            var temp = result[i];
+            byte temp = result[i];
             result[i] = result[i + 1];
             result[i + 1] = temp;
         }
@@ -116,9 +116,9 @@ public static partial class NumericExtensions
     {
         ThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf(bytes, 2);
 
-        for (var i = 0; i < bytes.Length; i += 2)
+        for (int i = 0; i < bytes.Length; i += 2)
         {
-            var temp = bytes[i];
+            byte temp = bytes[i];
             bytes[i] = bytes[i + 1];
             bytes[i + 1] = temp;
         }

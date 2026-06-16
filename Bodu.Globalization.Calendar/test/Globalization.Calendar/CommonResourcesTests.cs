@@ -130,9 +130,9 @@ public sealed class CommonResourcesTests
 
         Assert.IsGreaterThanOrEqualTo(2, catalogues.Count, "expected the bundled catalogues to be embedded");
 
-        foreach (var catalogue in catalogues)
+        foreach (string? catalogue in catalogues)
         {
-            var content = CommonNotableDateResources.Resolve(catalogue);
+            string? content = CommonNotableDateResources.Resolve(catalogue);
             Assert.IsNotNull(content, $"catalogue '{catalogue}' did not resolve");
 
             NotableDateResource resource = NotableDateResourceLoader.Load(content!, CommonNotableDateResources.Resolver);

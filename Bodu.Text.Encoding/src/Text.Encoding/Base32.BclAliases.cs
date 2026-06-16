@@ -45,15 +45,15 @@ public static partial class Base32
         if (utf8Source.IsEmpty)
             return [];
 
-        var destination = new byte[GetMaxDecodedLength(utf8Source.Length)];
-        OperationStatus status = DecodeFromUtf8(utf8Source, destination, out _, out var bytesWritten, Base32Variant.Standard, BaseFormatStyles.None, isFinalBlock: true);
+        byte[] destination = new byte[GetMaxDecodedLength(utf8Source.Length)];
+        OperationStatus status = DecodeFromUtf8(utf8Source, destination, out _, out int bytesWritten, Base32Variant.Standard, BaseFormatStyles.None, isFinalBlock: true);
         if (status != OperationStatus.Done)
             throw new FormatException(EncodingResourceStrings.Format_Invalid_StandardBase32);
 
         if (bytesWritten == destination.Length)
             return destination;
 
-        var trimmed = new byte[bytesWritten];
+        byte[] trimmed = new byte[bytesWritten];
         Buffer.BlockCopy(destination, 0, trimmed, 0, bytesWritten);
         return trimmed;
     }

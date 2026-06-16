@@ -16,7 +16,7 @@ public partial class CryptoHelpersTests
     {
         Span<byte> span = stackalloc byte[64];
         CryptographyHelper.FillWithRandomBytesExcluding(0xFF, span);
-        foreach (var b in span)
+        foreach (byte b in span)
         {
             Assert.AreNotEqual(0xFF, b);
         }

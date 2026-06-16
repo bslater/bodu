@@ -180,7 +180,7 @@ public static partial class IEnumerableExtensions
             if (items is null)
                 return; // disposed concurrently; nothing to publish
 
-            var count = _count;
+            int count = _count;
             if (count == items.Length)
             {
                 var grown = new T[items.Length == 0 ? DefaultCapacity : items.Length * 2];
@@ -227,7 +227,7 @@ public static partial class IEnumerableExtensions
                 {
                     // Read the published length before the backing array so that, when _index is in range, the
                     // observed array is guaranteed new enough to contain the element (see Append remarks).
-                    var count = Volatile.Read(ref _parent._count);
+                    int count = Volatile.Read(ref _parent._count);
                     T[] items = Volatile.Read(ref _parent._items)
                         ?? throw new ObjectDisposedException(nameof(CacheEnumerable<T>));
                     return _index < 0 || _index >= count
@@ -252,7 +252,7 @@ public static partial class IEnumerableExtensions
 
                 // Read the published length first; observing _items only serves to detect disposal
                 // (a live cache always exposes a non-null backing array, even when empty).
-                var count = Volatile.Read(ref _parent._count);
+                int count = Volatile.Read(ref _parent._count);
                 _ = Volatile.Read(ref _parent._items) ?? throw new ObjectDisposedException(nameof(CacheEnumerable<T>));
 
                 // Fast path: the element at this index has already been published to the cache.

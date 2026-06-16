@@ -27,11 +27,11 @@ public sealed partial class Base64Tests
     [DataRow(1024)]
     public void Decode_AcrossStackallocBoundary_ShouldMatchBclResult(int byteCount)
     {
-        var source = new byte[byteCount];
+        byte[] source = new byte[byteCount];
         new Random(byteCount).NextBytes(source);
 
-        var encoded = Convert.ToBase64String(source);
-        var decoded = Base64.Decode(encoded.AsSpan());
+        string encoded = Convert.ToBase64String(source);
+        byte[] decoded = Base64.Decode(encoded.AsSpan());
 
         CollectionAssert.AreEqual(source, decoded);
     }

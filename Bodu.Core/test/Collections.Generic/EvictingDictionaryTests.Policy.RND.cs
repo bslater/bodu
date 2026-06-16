@@ -35,7 +35,7 @@ public partial class EvictingDictionaryTests
         const int trials = 200;
         var evictedKeys = new HashSet<string>();
 
-        for (var i = 0; i < trials; i++)
+        for (int i = 0; i < trials; i++)
         {
             var dictionary = new EvictingDictionary<string, int>(3, EvictingDictionaryPolicy.RandomReplacement);
             dictionary.Add("A", 1);
@@ -154,7 +154,7 @@ public partial class EvictingDictionaryTests
         dictionary.Add("alpha", 1);
         dictionary.Add("beta", 2);
 
-        var candidate = dictionary.PeekEvictionCandidate();
+        string? candidate = dictionary.PeekEvictionCandidate();
         Assert.IsTrue(dictionary.ContainsKey(candidate));
     }
 

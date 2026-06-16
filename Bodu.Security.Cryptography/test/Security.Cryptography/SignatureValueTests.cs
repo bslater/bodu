@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SignatureValueTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -39,7 +39,7 @@ public sealed partial class SignatureValueTests
     [TestMethod]
     public void ToHexAndBase64String_WhenValueIsNonEmpty_ShouldFormatBytes()
     {
-        var bytes = new byte[] { 0xDE, 0xAD, 0xBE, 0xEF };
+        byte[] bytes = new byte[] { 0xDE, 0xAD, 0xBE, 0xEF };
         var signature = SignatureValue.FromBytes(bytes, SignatureFormat.P1363);
 
         Assert.AreEqual("deadbeef", signature.ToHexString());

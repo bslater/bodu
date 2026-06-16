@@ -23,7 +23,7 @@ public sealed partial class NotableDateDocumentBuilder
     /// <exception cref="InvalidOperationException">The document is incomplete.</exception>
     public XDocument ToXDocument()
     {
-        var resourceId = RequireResourceId();
+        string resourceId = RequireResourceId();
 
         XElement root = new(
             BuilderXml.Namespace + "NotableDateResource",
@@ -144,7 +144,7 @@ public sealed partial class NotableDateDocumentBuilder
         XElement element = new(BuilderXml.Namespace + "Metadata");
         if (_metadataName is not null) element.Add(new XElement(BuilderXml.Namespace + "Name", _metadataName));
         if (_metadataDescription is not null) element.Add(new XElement(BuilderXml.Namespace + "Description", _metadataDescription));
-        foreach (var source in _sources)
+        foreach (string source in _sources)
             element.Add(new XElement(BuilderXml.Namespace + "Source", source));
 
         return element;
@@ -265,19 +265,19 @@ public sealed partial class NotableDateDocumentBuilder
         if (scope.FromYearValue is int fromYear) element.SetAttributeValue("fromYear", BuilderXml.Int(fromYear));
         if (scope.ToYearValue is int toYear) element.SetAttributeValue("toYear", BuilderXml.Int(toYear));
 
-        foreach (var territory in scope.Territories)
+        foreach (string territory in scope.Territories)
             element.Add(new XElement(BuilderXml.Namespace + "Territory", new XAttribute("code", territory)));
         foreach (CalendarSystem calendar in scope.Calendars)
             element.Add(new XElement(BuilderXml.Namespace + "Calendar", new XAttribute("name", calendar.ToString())));
         foreach (NotableDateCategory category in scope.Categories)
             element.Add(new XElement(BuilderXml.Namespace + "Category", new XAttribute("value", category.ToString())));
-        foreach (var notableDateRef in scope.NotableDateRefs)
+        foreach (string notableDateRef in scope.NotableDateRefs)
             element.Add(new XElement(BuilderXml.Namespace + "NotableDate", new XAttribute("ref", notableDateRef)));
-        foreach ((var notableDateRef, var ruleRef) in scope.RuleRefs)
+        foreach ((string? notableDateRef, string? ruleRef) in scope.RuleRefs)
             element.Add(new XElement(BuilderXml.Namespace + "Rule", new XAttribute("notableDateRef", notableDateRef), new XAttribute("ruleRef", ruleRef)));
-        foreach (var year in scope.OnlyYears)
+        foreach (int year in scope.OnlyYears)
             element.Add(new XElement(BuilderXml.Namespace + "OnlyYear", new XAttribute("value", BuilderXml.Int(year))));
-        foreach (var year in scope.ExceptYears)
+        foreach (int year in scope.ExceptYears)
             element.Add(new XElement(BuilderXml.Namespace + "ExceptYear", new XAttribute("value", BuilderXml.Int(year))));
 
         return element;
@@ -321,7 +321,7 @@ public sealed partial class NotableDateDocumentBuilder
         if (use.Adjustments.Count > 0)
         {
             XElement adjustments = new(BuilderXml.Namespace + "Adjustments");
-            foreach (var policyRef in use.Adjustments)
+            foreach (string policyRef in use.Adjustments)
                 adjustments.Add(new XElement(BuilderXml.Namespace + "Adjustment", new XAttribute("policyRef", policyRef)));
 
             element.Add(adjustments);
@@ -438,11 +438,11 @@ public sealed partial class NotableDateDocumentBuilder
         if (rule.EveryYearsValue is int everyYears) element.SetAttributeValue("everyYears", BuilderXml.Int(everyYears));
         if (rule.AnchorYearValue is int anchorYear) element.SetAttributeValue("anchorYear", BuilderXml.Int(anchorYear));
 
-        foreach (var territory in rule.Territories)
+        foreach (string territory in rule.Territories)
             element.Add(new XElement(BuilderXml.Namespace + "Territory", new XAttribute("code", territory)));
-        foreach (var year in rule.OnlyYearsValues)
+        foreach (int year in rule.OnlyYearsValues)
             element.Add(new XElement(BuilderXml.Namespace + "OnlyYear", new XAttribute("value", BuilderXml.Int(year))));
-        foreach (var year in rule.ExceptYearsValues)
+        foreach (int year in rule.ExceptYearsValues)
             element.Add(new XElement(BuilderXml.Namespace + "ExceptYear", new XAttribute("value", BuilderXml.Int(year))));
 
         return element;
@@ -459,7 +459,7 @@ public sealed partial class NotableDateDocumentBuilder
             return null;
 
         XElement element = new(BuilderXml.Namespace + "Tags");
-        foreach (var tag in tags)
+        foreach (string tag in tags)
             element.Add(new XElement(BuilderXml.Namespace + "Tag", new XAttribute("value", tag)));
 
         return element;
@@ -476,7 +476,7 @@ public sealed partial class NotableDateDocumentBuilder
             return null;
 
         XElement element = new(BuilderXml.Namespace + "Adjustments");
-        foreach (var policyRef in adjustments)
+        foreach (string policyRef in adjustments)
             element.Add(new XElement(BuilderXml.Namespace + "Adjustment", new XAttribute("policyRef", policyRef)));
 
         return element;

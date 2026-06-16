@@ -253,7 +253,7 @@ public sealed class ParallelMerkleTreeHash
 
             // Read in chunks larger than one block so that a single ReadAsync can feed several leaves,
             // keeping the I/O system ahead of the hashing pipeline.
-            var readBuffer = ArrayPool<byte>.Shared.Rent(_blockSize * 8);
+            byte[] readBuffer = ArrayPool<byte>.Shared.Rent(_blockSize * 8);
             try
             {
                 int bytesRead;
@@ -398,7 +398,7 @@ public sealed class ParallelMerkleTreeHash
     {
         while (!data.IsEmpty)
         {
-            var toWrite = Math.Min(_blockSize - _bufferLength, data.Length);
+            int toWrite = Math.Min(_blockSize - _bufferLength, data.Length);
             data[..toWrite].CopyTo(_blockBuffer.AsSpan(_bufferLength));
             _bufferLength += toWrite;
             data = data[toWrite..];
@@ -419,7 +419,7 @@ public sealed class ParallelMerkleTreeHash
     /// <param name="length">The number of valid bytes in <paramref name="data" />.</param>
     private void SubmitLeaf(byte[] data, int length)
     {
-        var hash = HashSpan(data.AsSpan(0, length));
+        byte[] hash = HashSpan(data.AsSpan(0, length));
         _diagnostics?.RecordLeaf(_leafIndex, hash);
         WriteToLevel(0, hash);
         _leafIndex++;
@@ -529,17 +529,17 @@ public sealed class ParallelMerkleTreeHash
     private async Task RunLevelWorkerAsync(int level, Channel<byte[]> channel, CancellationToken token)
     {
         var pending = new List<byte[]>(_fanOut);
-        var parentIndex = 0;
+        int parentIndex = 0;
 
         // Drain the channel. The worker below runs concurrently, so tree reduction at this
         // level overlaps with continued leaf production and lower-level promotion.
-        await foreach (var hash in channel.Reader.ReadAllAsync(token))
+        await foreach (byte[] hash in channel.Reader.ReadAllAsync(token))
         {
             pending.Add(hash);
 
             if (pending.Count == _fanOut)
             {
-                var parentHash = CombineAndHash(pending, level, parentIndex);
+                byte[] parentHash = CombineAndHash(pending, level, parentIndex);
                 parentIndex++;
                 pending.Clear();
                 EnsureLevelExists(level + 1);
@@ -562,7 +562,7 @@ public sealed class ParallelMerkleTreeHash
             default:
                 // Partial group, or a lone node alongside a pre-existing higher level:
                 // combine and promote so the next worker can make the root determination.
-                var remainderHash = CombineAndHash(pending, level, parentIndex);
+                byte[] remainderHash = CombineAndHash(pending, level, parentIndex);
                 EnsureLevelExists(level + 1);
                 WriteToLevel(level + 1, remainderHash);
                 break;
@@ -601,7 +601,7 @@ public sealed class ParallelMerkleTreeHash
 
         // Complete → await → advance: each iteration closes one level and waits for its
         // worker to finish all promotions before the next level's channel is closed.
-        for (var level = 0; _levelChannels.TryGetValue(level, out Channel<byte[]>? channel); level++)
+        for (int level = 0; _levelChannels.TryGetValue(level, out Channel<byte[]>? channel); level++)
         {
             channel.Writer.Complete();
 
@@ -632,7 +632,7 @@ public sealed class ParallelMerkleTreeHash
     /// <returns>A task that completes when every level worker has drained and exited.</returns>
     private async Task DrainWorkersAsync()
     {
-        for (var level = 0; _levelChannels.TryGetValue(level, out Channel<byte[]>? channel); level++)
+        for (int level = 0; _levelChannels.TryGetValue(level, out Channel<byte[]>? channel); level++)
         {
             channel.Writer.TryComplete();
 #pragma warning disable VSTHRD003 // Avoid awaiting foreign Tasks
@@ -663,7 +663,7 @@ public sealed class ParallelMerkleTreeHash
     private byte[] HashSpan(ReadOnlySpan<byte> data)
     {
         using HashAlgorithm hasher = _algorithmFactory();
-        var result = new byte[hasher.HashSize / 8];
+        byte[] result = new byte[hasher.HashSize / 8];
         CryptographyThrowHelper.ThrowIfHashAlgorithmDestinationTooSmall(
             hasher.TryComputeHash(data, result, out _));
         return result;
@@ -693,20 +693,20 @@ public sealed class ParallelMerkleTreeHash
         using HashAlgorithm hasher = _algorithmFactory();
 
         // Feed all but the last child via TransformBlock — purely state accumulation, no output.
-        for (var i = 0; i < hashes.Count - 1; i++)
+        for (int i = 0; i < hashes.Count - 1; i++)
             hasher.TransformBlock(hashes[i], 0, hashes[i].Length, null, 0);
 
         // TransformFinalBlock finalizes accumulation and populates hasher.Hash.
         hasher.TransformFinalBlock(hashes[^1], 0, hashes[^1].Length);
 
-        var result = hasher.Hash!;
+        byte[] result = hasher.Hash!;
 
         // Snapshot child hashes and record the node only when diagnostics are active.
         // Keeping the snapshot and the recording in the same guarded block makes the
         // nullability relationship self-evident and avoids any suppression operator.
         if (_diagnostics is not null)
         {
-            var childSnapshots = hashes.ConvertAll(static h => (byte[])h.Clone()).ToArray();
+            byte[][] childSnapshots = hashes.ConvertAll(static h => (byte[])h.Clone()).ToArray();
             _diagnostics.RecordInternal(sourceLevel + 1, parentIndex, childSnapshots, result);
         }
 

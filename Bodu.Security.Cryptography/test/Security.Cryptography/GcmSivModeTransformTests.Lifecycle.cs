@@ -28,17 +28,17 @@ public sealed partial class GcmSivModeTransformTests
     {
         byte[] plaintext = [0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08];
         byte[] aad = [0xAA, 0xBB, 0xCC];
-        var iv = new byte[16];
-        for (var i = 0; i < iv.Length; i++) iv[i] = (byte)i;
+        byte[] iv = new byte[16];
+        for (int i = 0; i < iv.Length; i++) iv[i] = (byte)i;
 
         using GcmSivModeTransform transformA = CreateTransform(new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA), iv);
         transformA.ProcessAssociatedData(aad);
-        var outA = new byte[plaintext.Length + (transformA.TagSize / 8)];
+        byte[] outA = new byte[plaintext.Length + (transformA.TagSize / 8)];
         transformA.Encrypt(plaintext, outA);
 
         using GcmSivModeTransform transformB = CreateTransform(new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA), iv);
         transformB.ProcessAssociatedData(aad);
-        var outB = new byte[plaintext.Length + (transformB.TagSize / 8)];
+        byte[] outB = new byte[plaintext.Length + (transformB.TagSize / 8)];
         transformB.Encrypt(plaintext, outB);
 
         CollectionAssert.AreEqual(outA, outB,
@@ -53,7 +53,7 @@ public sealed partial class GcmSivModeTransformTests
     [TestMethod]
     public void Encrypt_DistinctPlaintextsUnderSameNonce_ShouldProduceDistinctOutputs()
     {
-        var iv = new byte[16];
+        byte[] iv = new byte[16];
         byte[] aad = [0xAA, 0xBB];
 
         byte[] plaintextA = [0x10, 0x20, 0x30, 0x40];
@@ -61,12 +61,12 @@ public sealed partial class GcmSivModeTransformTests
 
         using GcmSivModeTransform transformA = CreateTransform(new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA), iv);
         transformA.ProcessAssociatedData(aad);
-        var outA = new byte[plaintextA.Length + (transformA.TagSize / 8)];
+        byte[] outA = new byte[plaintextA.Length + (transformA.TagSize / 8)];
         transformA.Encrypt(plaintextA, outA);
 
         using GcmSivModeTransform transformB = CreateTransform(new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA), iv);
         transformB.ProcessAssociatedData(aad);
-        var outB = new byte[plaintextB.Length + (transformB.TagSize / 8)];
+        byte[] outB = new byte[plaintextB.Length + (transformB.TagSize / 8)];
         transformB.Encrypt(plaintextB, outB);
 
         CollectionAssert.AreNotEqual(outA, outB,
@@ -82,16 +82,16 @@ public sealed partial class GcmSivModeTransformTests
     public void Encrypt_SamePlaintextDifferentAad_ShouldProduceDistinctOutputs()
     {
         byte[] plaintext = [0xDE, 0xAD, 0xBE, 0xEF];
-        var iv = new byte[16];
+        byte[] iv = new byte[16];
 
         using GcmSivModeTransform transformA = CreateTransform(new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA), iv);
         transformA.ProcessAssociatedData([0x01]);
-        var outA = new byte[plaintext.Length + (transformA.TagSize / 8)];
+        byte[] outA = new byte[plaintext.Length + (transformA.TagSize / 8)];
         transformA.Encrypt(plaintext, outA);
 
         using GcmSivModeTransform transformB = CreateTransform(new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA), iv);
         transformB.ProcessAssociatedData([0x02]);
-        var outB = new byte[plaintext.Length + (transformB.TagSize / 8)];
+        byte[] outB = new byte[plaintext.Length + (transformB.TagSize / 8)];
         transformB.Encrypt(plaintext, outB);
 
         CollectionAssert.AreNotEqual(outA, outB,

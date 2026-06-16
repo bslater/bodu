@@ -100,8 +100,8 @@ public readonly partial struct Interval<T> :
             return false;
         }
 
-        var openBracket = trimmed[0];
-        var closeBracket = trimmed[^1];
+        char openBracket = trimmed[0];
+        char closeBracket = trimmed[^1];
 
         bool lowerInclusive;
         switch (openBracket)
@@ -124,7 +124,7 @@ public readonly partial struct Interval<T> :
         }
 
         ReadOnlySpan<char> body = trimmed[1..^1];
-        var commaIndex = body.IndexOf(',');
+        int commaIndex = body.IndexOf(',');
         if (commaIndex < 0)
         {
             result = default;

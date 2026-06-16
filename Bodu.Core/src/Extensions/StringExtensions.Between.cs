@@ -36,11 +36,11 @@ public static partial class StringExtensions
         ThrowHelper.ThrowIfNull(start);
         ThrowHelper.ThrowIfNull(end);
 
-        var startIndex = value.IndexOf(start, comparison);
+        int startIndex = value.IndexOf(start, comparison);
         if (startIndex < 0) return null;
 
-        var contentStart = startIndex + start.Length;
-        var endIndex = value.IndexOf(end, contentStart, comparison);
+        int contentStart = startIndex + start.Length;
+        int endIndex = value.IndexOf(end, contentStart, comparison);
         return endIndex < 0 ? null : value[contentStart..endIndex];
     }
 }

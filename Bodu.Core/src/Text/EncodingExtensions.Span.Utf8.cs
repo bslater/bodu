@@ -27,10 +27,10 @@ public static partial class EncodingExtensions
     /// </remarks>
     public static byte[] ToUtf8Bytes(this ReadOnlySpan<char> chars)
     {
-        var count = System.Text.Encoding.UTF8.GetByteCount(chars);
+        int count = System.Text.Encoding.UTF8.GetByteCount(chars);
         if (count == 0) return [];
 
-        var buffer = new byte[count];
+        byte[] buffer = new byte[count];
         System.Text.Encoding.UTF8.GetBytes(chars, buffer);
         return buffer;
     }

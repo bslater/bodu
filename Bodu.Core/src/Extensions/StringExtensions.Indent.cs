@@ -34,12 +34,12 @@ public static partial class StringExtensions
 
         if (count == 0 || value.Length == 0) return value;
 
-        var prefix = new string(indentChar, count);
+        string prefix = new string(indentChar, count);
         StringBuilder builder = new(value.Length + (count * 4));
-        var atLineStart = true;
-        for (var i = 0; i < value.Length; i++)
+        bool atLineStart = true;
+        for (int i = 0; i < value.Length; i++)
         {
-            var c = value[i];
+            char c = value[i];
             if (atLineStart)
             {
                 builder.Append(prefix);

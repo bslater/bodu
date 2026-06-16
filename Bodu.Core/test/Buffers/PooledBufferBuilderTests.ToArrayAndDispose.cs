@@ -18,7 +18,7 @@ public partial class PooledBufferBuilderTests
         var builder = new PooledBufferBuilder<int>();
         builder.AppendRange([1, 2, 3, 4, 5]);
 
-        var result = builder.ToArrayAndDispose();
+        int[] result = builder.ToArrayAndDispose();
 
         CollectionAssert.AreEqual(new[] { 1, 2, 3, 4, 5 }, result);
         Assert.ThrowsExactly<ObjectDisposedException>(() =>
@@ -36,7 +36,7 @@ public partial class PooledBufferBuilderTests
     {
         var builder = new PooledBufferBuilder<int>();
 
-        var result = builder.ToArrayAndDispose();
+        int[] result = builder.ToArrayAndDispose();
 
         Assert.IsEmpty(result);
         Assert.ThrowsExactly<ObjectDisposedException>(() =>
@@ -55,7 +55,7 @@ public partial class PooledBufferBuilderTests
         var builder = new PooledBufferBuilder<int>();
         builder.AppendRange([7, 8, 9]);
 
-        var result = builder.ToArrayAndDispose();
+        int[] result = builder.ToArrayAndDispose();
         result[0] = -42;
 
         var second = new PooledBufferBuilder<int>();
@@ -97,13 +97,13 @@ public partial class PooledBufferBuilderTests
     {
         WeakReference[] weakRefs = MaterializeAndDrop();
 
-        for (var i = 0; i < 3; i++)
+        for (int i = 0; i < 3; i++)
         {
             GC.Collect();
             GC.WaitForPendingFinalizers();
         }
 
-        for (var i = 0; i < weakRefs.Length; i++)
+        for (int i = 0; i < weakRefs.Length; i++)
             Assert.IsFalse(weakRefs[i].IsAlive, $"Reference {i} was retained after ToArrayAndDispose.");
 
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
@@ -112,9 +112,9 @@ public partial class PooledBufferBuilderTests
             var builder = new PooledBufferBuilder<object>(initialCapacity: 8);
             var refs = new WeakReference[5];
 
-            for (var i = 0; i < refs.Length; i++)
+            for (int i = 0; i < refs.Length; i++)
             {
-                var item = new object();
+                object item = new object();
                 refs[i] = new WeakReference(item);
                 builder.Append(item);
             }

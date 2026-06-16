@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CurrencyInfoValidator.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -64,7 +64,7 @@ internal static class CurrencyInfoValidator
 
         if (info.CashRoundingIncrement != 0m)
         {
-            var scaled = info.CashRoundingIncrement * MinorUnitFactor(info.MinorUnits);
+            decimal scaled = info.CashRoundingIncrement * MinorUnitFactor(info.MinorUnits);
             if (scaled != decimal.Truncate(scaled))
             {
                 throw new ArgumentException(
@@ -116,7 +116,7 @@ internal static class CurrencyInfoValidator
 
         if (info.CashRoundingIncrement != 0m)
         {
-            var scaled = info.CashRoundingIncrement * MinorUnitFactor(info.MinorUnits);
+            decimal scaled = info.CashRoundingIncrement * MinorUnitFactor(info.MinorUnits);
             if (scaled != decimal.Truncate(scaled))
                 return false;
         }
@@ -152,8 +152,8 @@ internal static class CurrencyInfoValidator
     /// <returns>The scale factor.</returns>
     private static decimal MinorUnitFactor(int minorUnits)
     {
-        var factor = 1m;
-        for (var i = 0; i < minorUnits; i++)
+        decimal factor = 1m;
+        for (int i = 0; i < minorUnits; i++)
             factor *= 10m;
         return factor;
     }

@@ -82,7 +82,7 @@ public partial class IndexedSetTests
     public void CopyTo_WhenIndexIsZero_ShouldCopyInInsertionOrder()
     {
         IndexedSet<int> sut = CreateSet([10, 20, 30]);
-        var target = new int[3];
+        int[] target = new int[3];
 
         sut.CopyTo(target, 0);
 
@@ -125,7 +125,7 @@ public partial class IndexedSetTests
     public void ToArray_WhenCalled_ShouldReturnDisconnectedSnapshot()
     {
         IndexedSet<int> sut = CreateSet([1, 2, 3]);
-        var snapshot = sut.ToArray();
+        int[] snapshot = sut.ToArray();
 
         sut.Add(4);
         sut.Remove(1);
@@ -145,7 +145,7 @@ public partial class IndexedSetTests
     {
         var sut = new IndexedSet<int>();
 
-        var array = sut.ToArray();
+        int[] array = sut.ToArray();
 
         Assert.IsEmpty(array);
     }
@@ -158,7 +158,7 @@ public partial class IndexedSetTests
     {
         IndexedSet<int> sut = CreateSet([10, 20, 30]);
 
-        var array = sut.ToArray();
+        int[] array = sut.ToArray();
 
         CollectionAssert.AreEqual(new[] { 10, 20, 30 }, array);
     }

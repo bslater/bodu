@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlSerializerTests.DepthCap.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -24,7 +24,7 @@ public partial class TomlSerializerTests
         var options = new TomlSerializerOptions { MaxDepth = int.MaxValue };
 
         RecursiveModel deep = new();
-        for (var i = 0; i < TomlLimits.AbsoluteMaxDepth + 1; i++)
+        for (int i = 0; i < TomlLimits.AbsoluteMaxDepth + 1; i++)
             deep = new RecursiveModel { Child = deep };
 
         Assert.ThrowsExactly<TomlSerializationException>(() =>
@@ -42,7 +42,7 @@ public partial class TomlSerializerTests
     public void Deserialize_WhenDocumentExceedsAbsoluteCapDespiteLargeMaxDepth_ShouldThrowTomlFormatException()
     {
         var options = new TomlSerializerOptions { MaxDepth = int.MaxValue };
-        var toml = BuildNestedInlineTableDocument(TomlLimits.AbsoluteMaxDepth + 1);
+        string toml = BuildNestedInlineTableDocument(TomlLimits.AbsoluteMaxDepth + 1);
 
         Assert.ThrowsExactly<TomlFormatException>(() =>
         {
@@ -68,7 +68,7 @@ public partial class TomlSerializerTests
         var options = new TomlSerializerOptions { MaxDepth = int.MaxValue };
 
         RecursiveModel deep = new();
-        for (var i = 0; i < (TomlLimits.AbsoluteMaxDepth * 32) + 1; i++)
+        for (int i = 0; i < (TomlLimits.AbsoluteMaxDepth * 32) + 1; i++)
             deep = new RecursiveModel { Child = deep };
 
         var captured = SerializeOnConstrainedStack(deep, options);
@@ -89,7 +89,7 @@ public partial class TomlSerializerTests
 
         var root = new Dictionary<string, object>();
         var current = root;
-        for (var i = 0; i < TomlLimits.AbsoluteMaxDepth + 2; i++)
+        for (int i = 0; i < TomlLimits.AbsoluteMaxDepth + 2; i++)
         {
             var next = new Dictionary<string, object>();
             current["child"] = next;
@@ -113,7 +113,7 @@ public partial class TomlSerializerTests
 
         var inner = new List<object>();
         var current = inner;
-        for (var i = 0; i < TomlLimits.AbsoluteMaxDepth + 2; i++)
+        for (int i = 0; i < TomlLimits.AbsoluteMaxDepth + 2; i++)
         {
             var next = new List<object>();
             current.Add(next);
@@ -140,7 +140,7 @@ public partial class TomlSerializerTests
 
         var inner = new List<object>();
         var current = inner;
-        for (var i = 0; i < (TomlLimits.AbsoluteMaxDepth * 32) + 1; i++)
+        for (int i = 0; i < (TomlLimits.AbsoluteMaxDepth * 32) + 1; i++)
         {
             var next = new List<object>();
             current.Add(next);
@@ -167,7 +167,7 @@ public partial class TomlSerializerTests
 
         var root = new Dictionary<string, object>();
         var current = root;
-        for (var i = 0; i < (TomlLimits.AbsoluteMaxDepth * 32) + 1; i++)
+        for (int i = 0; i < (TomlLimits.AbsoluteMaxDepth * 32) + 1; i++)
         {
             var next = new Dictionary<string, object>();
             current["child"] = next;
@@ -234,9 +234,9 @@ public partial class TomlSerializerTests
     private static string BuildNestedInlineTableDocument(int depth)
     {
         var builder = new System.Text.StringBuilder();
-        for (var i = 0; i < depth; i++)
+        for (int i = 0; i < depth; i++)
             builder.Append("Child = { ");
-        for (var i = 0; i < depth; i++)
+        for (int i = 0; i < depth; i++)
             builder.Append('}');
         builder.Append('\n');
 

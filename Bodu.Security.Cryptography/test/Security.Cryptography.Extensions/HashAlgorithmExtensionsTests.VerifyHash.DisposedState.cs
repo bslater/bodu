@@ -147,7 +147,7 @@ public partial class HashAlgorithmExtensionsTests
         MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         algorithm.Dispose();
 
-        var result = algorithm.VerifyHash(SampleData, expectedHex: "not-hex");
+        bool result = algorithm.VerifyHash(SampleData, expectedHex: "not-hex");
 
         Assert.IsFalse(result,
             "A malformed expectedHex argument should short-circuit the verification before the disposed-state check; the documented contract returns false rather than throwing.");
@@ -165,7 +165,7 @@ public partial class HashAlgorithmExtensionsTests
 
         using var stream = new MemoryStream(SampleData);
 
-        var result = algorithm.VerifyHash(stream, expectedHex: "zz");
+        bool result = algorithm.VerifyHash(stream, expectedHex: "zz");
 
         Assert.IsFalse(result,
             "A malformed expectedHex must short-circuit before any work is delegated to the disposed algorithm.");

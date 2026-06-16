@@ -42,7 +42,7 @@ public static partial class DateTimeExtensions
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(dayOfWeek);
 
-        (var year, var quarter) = DateTimeExtensions.GetQuarterAndYearFromDate(CalendarQuarterDefinition.JanuaryToDecember, dateTime);
+        (int year, int quarter) = DateTimeExtensions.GetQuarterAndYearFromDate(CalendarQuarterDefinition.JanuaryToDecember, dateTime);
         return DateTimeExtensions.GetLastDateOfWeekInQuarterInternal(
             year,
             quarter,
@@ -94,7 +94,7 @@ public static partial class DateTimeExtensions
 
         if (definition == CalendarQuarterDefinition.Custom) throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_ProviderInterface, nameof(IQuarterDefinitionProvider)));
 
-        (var year, var quarter) = DateTimeExtensions.GetQuarterAndYearFromDate(definition, dateTime);
+        (int year, int quarter) = DateTimeExtensions.GetQuarterAndYearFromDate(definition, dateTime);
         return DateTimeExtensions.GetLastDateOfWeekInQuarterInternal(
             year,
             quarter,
@@ -275,7 +275,7 @@ public static partial class DateTimeExtensions
     /// </remarks>
     private static DateTime GetLastDateOfWeekInQuarterInternal(int year, int quarter, DayOfWeek dayOfWeek, CalendarQuarterDefinition definition, DateTimeKind kind)
     {
-        var ticks = ComputeQuarterStartTicks(year, quarter, GetQuarterDefinition(definition));
+        long ticks = ComputeQuarterStartTicks(year, quarter, GetQuarterDefinition(definition));
         ticks += (dayOfWeek - GetDayOfWeekFromTicks(ticks) + 7) % 7 * TicksPerDay;
         return new DateTime(ticks, kind);
     }

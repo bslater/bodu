@@ -31,7 +31,7 @@ public class MoneyJsonConverterPolicyTests
     {
         var value = new Money(19.99m, "USD");
 
-        var json = JsonSerializer.Serialize(value, Options(FinancialJsonPolicy.Compact));
+        string json = JsonSerializer.Serialize(value, Options(FinancialJsonPolicy.Compact));
 
         Assert.AreEqual("\"19.99 USD\"", json);
     }
@@ -45,7 +45,7 @@ public class MoneyJsonConverterPolicyTests
         var original = new Money(1234.56m, "USD");
         JsonSerializerOptions options = Options(FinancialJsonPolicy.Compact);
 
-        var json = JsonSerializer.Serialize(original, options);
+        string json = JsonSerializer.Serialize(original, options);
         Money recovered = JsonSerializer.Deserialize<Money>(json, options);
 
         Assert.AreEqual(original, recovered);
@@ -57,7 +57,7 @@ public class MoneyJsonConverterPolicyTests
     [TestMethod]
     public void CompactPolicy_WhenReadingIsoPrefix_ShouldSucceed()
     {
-        var json = "\"USD 19.99\"";
+        string json = "\"USD 19.99\"";
 
         Money result = JsonSerializer.Deserialize<Money>(json, Options(FinancialJsonPolicy.Compact));
 
@@ -70,7 +70,7 @@ public class MoneyJsonConverterPolicyTests
     [TestMethod]
     public void CompactPolicy_WhenReadingObjectForm_ShouldThrowJsonException()
     {
-        var json = "{\"amount\":19.99,\"currency\":\"USD\"}";
+        string json = "{\"amount\":19.99,\"currency\":\"USD\"}";
 
         Assert.ThrowsExactly<JsonException>(() =>
         {
@@ -84,7 +84,7 @@ public class MoneyJsonConverterPolicyTests
     [TestMethod]
     public void LenientPolicy_WhenReadingLowercaseCurrency_ShouldSucceed()
     {
-        var json = "{\"amount\":19.99,\"currency\":\"usd\"}";
+        string json = "{\"amount\":19.99,\"currency\":\"usd\"}";
 
         Money result = JsonSerializer.Deserialize<Money>(json, Options(FinancialJsonPolicy.Lenient));
 
@@ -97,7 +97,7 @@ public class MoneyJsonConverterPolicyTests
     [TestMethod]
     public void StrictPolicy_WhenReadingLowercaseCurrency_ShouldThrowJsonException()
     {
-        var json = "{\"amount\":19.99,\"currency\":\"usd\"}";
+        string json = "{\"amount\":19.99,\"currency\":\"usd\"}";
 
         Assert.ThrowsExactly<JsonException>(() =>
         {

@@ -32,7 +32,7 @@ public static partial class StringExtensions
         ThrowHelper.ThrowIfNull(value);
         ThrowHelper.ThrowIfNull(marker);
 
-        var index = value.LastIndexOf(marker, comparison);
+        int index = value.LastIndexOf(marker, comparison);
         return index < 0 ? null : value[(index + marker.Length)..];
     }
 }

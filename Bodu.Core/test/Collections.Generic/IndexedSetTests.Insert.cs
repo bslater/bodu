@@ -156,7 +156,7 @@ public partial class IndexedSetTests
     {
         IndexedSet<int> sut = CreateSet([1, 2, 3]);
 
-        var inserted = sut.TryInsert(0, 2);
+        bool inserted = sut.TryInsert(0, 2);
 
         Assert.IsFalse(inserted);
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, SnapshotByIndexer(sut));

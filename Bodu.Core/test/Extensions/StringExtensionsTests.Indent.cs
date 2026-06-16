@@ -15,7 +15,7 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void Indent_WhenInputUsesLf_ShouldPrependIndentToEveryLine()
     {
-        var actual = "one\ntwo\nthree".Indent(2);
+        string actual = "one\ntwo\nthree".Indent(2);
 
         Assert.AreEqual("  one\n  two\n  three", actual);
     }
@@ -27,7 +27,7 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void Indent_WhenInputUsesCrLf_ShouldPrependIndentToEveryLine()
     {
-        var actual = "one\r\ntwo".Indent(2);
+        string actual = "one\r\ntwo".Indent(2);
 
         Assert.AreEqual("  one\r\n  two", actual);
     }
@@ -39,7 +39,7 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void Indent_WhenCustomIndentCharSupplied_ShouldUseIt()
     {
-        var actual = "a\nb".Indent(3, '>');
+        string actual = "a\nb".Indent(3, '>');
 
         Assert.AreEqual(">>>a\n>>>b", actual);
     }

@@ -205,7 +205,7 @@ public sealed class Ed25519
     {
         ThrowIfDisposed();
 
-        var privateKey = CryptographyHelper.GetRandomBytes(PrivateKeySizeInBytes);
+        byte[] privateKey = CryptographyHelper.GetRandomBytes(PrivateKeySizeInBytes);
         SetPrivateKey(privateKey);
     }
 
@@ -268,7 +268,7 @@ public sealed class Ed25519
     /// <exception cref="CryptographicException">The instance does not hold a private key.</exception>
     public byte[] SignData(ReadOnlySpan<byte> data)
     {
-        var signature = new byte[SignatureSizeInBytes];
+        byte[] signature = new byte[SignatureSizeInBytes];
         SignData(data, signature);
 
         return signature;
@@ -428,7 +428,7 @@ public sealed class Ed25519
         scalar[31] &= 127;
         scalar[31] |= 64;
 
-        var publicKey = new byte[PublicKeySizeInBytes];
+        byte[] publicKey = new byte[PublicKeySizeInBytes];
         Ed25519Point.ScalarMultBase(scalar).Encode(publicKey);
         CryptographyHelper.Clear(expanded);
 

@@ -135,7 +135,7 @@ public sealed class XmlNamespaceResolverTests
             new XElement(s_sampleNamespace + "item", "four"));
 
         var resolver = new XmlNamespaceResolver(root);
-        var items = resolver.Elements(root, "item").Select(e => e.Value).ToArray();
+        string[] items = resolver.Elements(root, "item").Select(e => e.Value).ToArray();
 
         CollectionAssert.AreEqual(new[] { "one", "two", "four" }, items);
     }
@@ -169,7 +169,7 @@ public sealed class XmlNamespaceResolverTests
             new XElement("item", "three"));
         var resolver = new XmlNamespaceResolver(root);
 
-        var items = resolver.Elements(root, "item").Select(e => e.Value).ToArray();
+        string[] items = resolver.Elements(root, "item").Select(e => e.Value).ToArray();
 
         CollectionAssert.AreEqual(new[] { "one", "two", "three" }, items);
     }

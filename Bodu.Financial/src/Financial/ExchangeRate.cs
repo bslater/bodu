@@ -146,7 +146,7 @@ public readonly record struct ExchangeRate
     {
         ThrowHelper.ThrowIfZeroOrNegative(observedRate);
 
-        var rate = isInverted ? 1m / observedRate : observedRate;
+        decimal rate = isInverted ? 1m / observedRate : observedRate;
         return new ExchangeRate(fromIsoCode, toIsoCode, date, rate, observedRate, provider, isInverted, fetchedAtUtc);
     }
 
@@ -221,9 +221,7 @@ public readonly record struct ExchangeRate
     /// Gets the UTC instant at which the upstream data backing this rate was originally fetched, or
     /// <see langword="null" /> when not tracked.
     /// </summary>
-    /// <returns>
-    /// The fetch instant when known; otherwise <see langword="null" />.
-    /// </returns>
+    /// <returns>The fetch instant when known; otherwise <see langword="null" />.</returns>
     /// <remarks>
     /// The value is provenance metadata describing when the load that produced this rate downloaded its source data. It
     /// is excluded from <see cref="Equals(ExchangeRate)" /> and <see cref="GetHashCode" />, so two rates that differ

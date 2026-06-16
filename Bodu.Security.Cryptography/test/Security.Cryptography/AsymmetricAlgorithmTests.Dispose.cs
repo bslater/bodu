@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsymmetricAlgorithmTests.Dispose.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -30,8 +30,8 @@ public abstract partial class AsymmetricAlgorithmTests<TTest, TAlgorithm>
     public void Dispose_WhenCalled_ShouldMakeKeyMembersThrowObjectDisposedException()
     {
         TAlgorithm algorithm = CreateAlgorithmWithGeneratedKey();
-        var privateKey = ExportPrivateKey(algorithm);
-        var publicKey = ExportPublicKey(algorithm);
+        byte[] privateKey = ExportPrivateKey(algorithm);
+        byte[] publicKey = ExportPublicKey(algorithm);
 
         algorithm.Dispose();
 

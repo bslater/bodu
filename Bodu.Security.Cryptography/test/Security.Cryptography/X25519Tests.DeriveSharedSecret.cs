@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="X25519Tests.DeriveSharedSecret.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -24,10 +24,10 @@ public sealed partial class X25519Tests
     {
         using var algorithm = new X25519();
         algorithm.ImportPrivateKey(Convert.FromHexString("77076d0a7318a57d3c16c17251b26645df4c2f87ebc0992ab177fba51db92c2a"));
-        var peer = Convert.FromHexString("de9edb7d7b7dc1b4d35b61c2ece435373f8343c85b78674dadfc7e146f882b4f");
+        byte[] peer = Convert.FromHexString("de9edb7d7b7dc1b4d35b61c2ece435373f8343c85b78674dadfc7e146f882b4f");
 
-        var allocating = algorithm.DeriveSharedSecret(peer);
-        var spanResult = new byte[X25519.SharedSecretSizeInBytes];
+        byte[] allocating = algorithm.DeriveSharedSecret(peer);
+        byte[] spanResult = new byte[X25519.SharedSecretSizeInBytes];
         algorithm.DeriveSharedSecret(peer, spanResult);
         CollectionAssert.AreEqual(allocating, spanResult);
 
@@ -64,7 +64,7 @@ public sealed partial class X25519Tests
         using var algorithm = new X25519();
         algorithm.GenerateKey();
 
-        var destination = new byte[X25519.SharedSecretSizeInBytes];
+        byte[] destination = new byte[X25519.SharedSecretSizeInBytes];
         Array.Fill(destination, (byte)0xAA);
 
         _ = Assert.ThrowsExactly<CryptographicException>(() =>

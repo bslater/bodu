@@ -26,8 +26,8 @@ public sealed class RemainingGapCoverageTests
     [TestMethod]
     public void Base16_EncodeSpan_WhenDestinationOneCharShort_ShouldThrowExactly()
     {
-        var bytes = new byte[4];
-        var destination = new char[7];
+        byte[] bytes = new byte[4];
+        char[] destination = new char[7];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -61,9 +61,9 @@ public sealed class RemainingGapCoverageTests
     [TestMethod]
     public void Base16_TryDecode_WhenLenientStylesAndInvalidChar_ShouldReturnFalse()
     {
-        var destination = new byte[4];
+        byte[] destination = new byte[4];
 
-        var ok = Base16.TryDecode("DE AD ZZ".AsSpan(), destination, out var bytesWritten, BaseFormatStyles.IgnoreWhitespace);
+        bool ok = Base16.TryDecode("DE AD ZZ".AsSpan(), destination, out int bytesWritten, BaseFormatStyles.IgnoreWhitespace);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0, bytesWritten);
@@ -93,8 +93,8 @@ public sealed class RemainingGapCoverageTests
     [TestMethod]
     public void Base32_EncodeSpan_WhenDestinationTooSmall_ShouldThrowExactly()
     {
-        var bytes = new byte[8];
-        var destination = new char[4];
+        byte[] bytes = new byte[8];
+        char[] destination = new char[4];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -109,7 +109,7 @@ public sealed class RemainingGapCoverageTests
     [TestMethod]
     public void Base32_EncodeToUtf8_WhenEmpty_ShouldReturnEmptyArray()
     {
-        var result = Base32.EncodeToUtf8([]);
+        byte[] result = Base32.EncodeToUtf8([]);
 
         Assert.AreEqual(0, result.Length);
     }
@@ -121,7 +121,7 @@ public sealed class RemainingGapCoverageTests
     [TestMethod]
     public void Base32_EncodeToUtf8_WithOmitPadding_ShouldTrimToActualLength()
     {
-        var result = Base32.EncodeToUtf8(Payload, Base32Variant.Standard, BaseFormattingOptions.OmitPadding);
+        byte[] result = Base32.EncodeToUtf8(Payload, Base32Variant.Standard, BaseFormattingOptions.OmitPadding);
 
         Assert.AreEqual(Base32.Encode(Payload, Base32Variant.Standard, BaseFormattingOptions.OmitPadding),
                         System.Text.Encoding.ASCII.GetString(result));
@@ -141,9 +141,9 @@ public sealed class RemainingGapCoverageTests
     [TestMethod]
     public void Base32_TryEncodeToUtf8_WhenDestinationTooSmall_ShouldReturnFalse()
     {
-        var destination = new byte[1];
+        byte[] destination = new byte[1];
 
-        var ok = Base32.TryEncodeToUtf8(Payload, destination, out var bytesWritten);
+        bool ok = Base32.TryEncodeToUtf8(Payload, destination, out int bytesWritten);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0, bytesWritten);
@@ -156,8 +156,8 @@ public sealed class RemainingGapCoverageTests
     [TestMethod]
     public void Base58_DecodeFromUtf8_WhenDestinationTooSmall_ShouldReturnDestinationTooSmall()
     {
-        var utf8 = Base58.EncodeToUtf8(Payload);
-        var destination = new byte[1];
+        byte[] utf8 = Base58.EncodeToUtf8(Payload);
+        byte[] destination = new byte[1];
 
         OperationStatus status = Base58.DecodeFromUtf8(utf8, destination, out _, out _);
 
@@ -171,7 +171,7 @@ public sealed class RemainingGapCoverageTests
     [TestMethod]
     public void Base58_EncodeSpan_WhenDestinationTooSmall_ShouldThrowExactly()
     {
-        var destination = new char[1];
+        char[] destination = new char[1];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -186,7 +186,7 @@ public sealed class RemainingGapCoverageTests
     [TestMethod]
     public void Base58_EncodeToUtf8_WhenEmpty_ShouldReturnEmptyArray()
     {
-        var result = Base58.EncodeToUtf8([]);
+        byte[] result = Base58.EncodeToUtf8([]);
 
         Assert.AreEqual(0, result.Length);
     }
@@ -222,9 +222,9 @@ public sealed class RemainingGapCoverageTests
     [TestMethod]
     public void Base58_TryEncodeSpan_WhenDestinationTooSmall_ShouldReturnFalse()
     {
-        var destination = new char[1];
+        char[] destination = new char[1];
 
-        var ok = Base58.TryEncode(Payload, destination, out var charsWritten);
+        bool ok = Base58.TryEncode(Payload, destination, out int charsWritten);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0, charsWritten);
@@ -237,9 +237,9 @@ public sealed class RemainingGapCoverageTests
     [TestMethod]
     public void Base58_TryEncodeToUtf8_WhenDestinationTooSmall_ShouldReturnFalse()
     {
-        var destination = new byte[1];
+        byte[] destination = new byte[1];
 
-        var ok = Base58.TryEncodeToUtf8(Payload, destination, out var bytesWritten);
+        bool ok = Base58.TryEncodeToUtf8(Payload, destination, out int bytesWritten);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0, bytesWritten);
@@ -252,9 +252,9 @@ public sealed class RemainingGapCoverageTests
     [TestMethod]
     public void Base58_TryEncodeToUtf8_WhenEmpty_ShouldReturnTrueAndZeroBytes()
     {
-        var destination = new byte[1];
+        byte[] destination = new byte[1];
 
-        var ok = Base58.TryEncodeToUtf8([], destination, out var bytesWritten);
+        bool ok = Base58.TryEncodeToUtf8([], destination, out int bytesWritten);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(0, bytesWritten);
@@ -286,9 +286,9 @@ public sealed class RemainingGapCoverageTests
     public void Base58Check_TryDecode_WhenDecodedTooShortForChecksum_ShouldReturnFalse()
     {
         // "1" decodes to a single zero byte under Base58 — shorter than the 4-byte checksum suffix.
-        var destination = new byte[16];
+        byte[] destination = new byte[16];
 
-        var ok = Base58Check.TryDecode("1".AsSpan(), destination, out var bytesWritten);
+        bool ok = Base58Check.TryDecode("1".AsSpan(), destination, out int bytesWritten);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0, bytesWritten);
@@ -301,11 +301,11 @@ public sealed class RemainingGapCoverageTests
     [TestMethod]
     public void Base58Check_TryDecode_WhenDestinationTooSmall_ShouldReturnFalse()
     {
-        var original = new byte[] { 0x00, 0x01, 0x02, 0x03, 0x04 };
-        var encoded = Base58Check.Encode(original);
-        var destination = new byte[1];
+        byte[] original = new byte[] { 0x00, 0x01, 0x02, 0x03, 0x04 };
+        string encoded = Base58Check.Encode(original);
+        byte[] destination = new byte[1];
 
-        var ok = Base58Check.TryDecode(encoded.AsSpan(), destination, out var bytesWritten);
+        bool ok = Base58Check.TryDecode(encoded.AsSpan(), destination, out int bytesWritten);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0, bytesWritten);
@@ -318,9 +318,9 @@ public sealed class RemainingGapCoverageTests
     [TestMethod]
     public void Base58Check_TryDecode_WhenInputContainsInvalidChar_ShouldReturnFalse()
     {
-        var destination = new byte[16];
+        byte[] destination = new byte[16];
 
-        var ok = Base58Check.TryDecode("0InvalidChar!".AsSpan(), destination, out var bytesWritten);
+        bool ok = Base58Check.TryDecode("0InvalidChar!".AsSpan(), destination, out int bytesWritten);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0, bytesWritten);
@@ -350,8 +350,8 @@ public sealed class RemainingGapCoverageTests
     [TestMethod]
     public void Base64_EncodeSpan_WhenDestinationTooSmall_ShouldThrowExactly()
     {
-        var bytes = new byte[3];
-        var destination = new char[2];
+        byte[] bytes = new byte[3];
+        char[] destination = new char[2];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -366,7 +366,7 @@ public sealed class RemainingGapCoverageTests
     [TestMethod]
     public void Base64_EncodeToUtf8_WhenEmpty_ShouldReturnEmptyArray()
     {
-        var result = Base64.EncodeToUtf8([]);
+        byte[] result = Base64.EncodeToUtf8([]);
 
         Assert.AreEqual(0, result.Length);
     }
@@ -378,7 +378,7 @@ public sealed class RemainingGapCoverageTests
     [TestMethod]
     public void Base64_EncodeToUtf8_WithOmitPadding_ShouldTrimToActualLength()
     {
-        var result = Base64.EncodeToUtf8(Payload, Base64Variant.Standard, BaseFormattingOptions.OmitPadding);
+        byte[] result = Base64.EncodeToUtf8(Payload, Base64Variant.Standard, BaseFormattingOptions.OmitPadding);
 
         Assert.AreEqual(Base64.Encode(Payload, Base64Variant.Standard, BaseFormattingOptions.OmitPadding),
                         System.Text.Encoding.ASCII.GetString(result));
@@ -393,7 +393,7 @@ public sealed class RemainingGapCoverageTests
     {
         ArrayBufferWriter<char> writer = new();
 
-        var written = Base85.Encode([], writer, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
+        int written = Base85.Encode([], writer, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
 
         Assert.AreEqual(4, written);
         Assert.AreEqual("<~~>", new string(writer.WrittenSpan));
@@ -406,7 +406,7 @@ public sealed class RemainingGapCoverageTests
     [TestMethod]
     public void Base85_Decode_WhenAllowPrefixButNoDelimitersInInput_ShouldStillDecode()
     {
-        var decoded = Base85.Decode("9jqo^".AsSpan(), Base85Variant.Ascii85, BaseFormatStyles.AllowPrefix);
+        byte[] decoded = Base85.Decode("9jqo^".AsSpan(), Base85Variant.Ascii85, BaseFormatStyles.AllowPrefix);
 
         CollectionAssert.AreEqual(System.Text.Encoding.ASCII.GetBytes("Man "), decoded);
     }
@@ -418,8 +418,8 @@ public sealed class RemainingGapCoverageTests
     [TestMethod]
     public void Base85_DecodeFromUtf8_WhenByteAbovePrintableAscii_ShouldReturnInvalidData()
     {
-        var utf8 = new byte[] { (byte)'9', (byte)'j', 0xFF, (byte)'o', (byte)'^' };
-        var destination = new byte[4];
+        byte[] utf8 = new byte[] { (byte)'9', (byte)'j', 0xFF, (byte)'o', (byte)'^' };
+        byte[] destination = new byte[4];
 
         OperationStatus status = Base85.DecodeFromUtf8(utf8, destination, out _, out _);
 
@@ -492,9 +492,9 @@ public sealed class RemainingGapCoverageTests
     [TestMethod]
     public void Base85_TryEncodeToUtf8_WhenDestinationTooSmall_ShouldReturnFalse()
     {
-        var destination = new byte[1];
+        byte[] destination = new byte[1];
 
-        var ok = Base85.TryEncodeToUtf8(Payload, destination, out var bytesWritten);
+        bool ok = Base85.TryEncodeToUtf8(Payload, destination, out int bytesWritten);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0, bytesWritten);
@@ -507,9 +507,9 @@ public sealed class RemainingGapCoverageTests
     [TestMethod]
     public void Base85_TryEncodeToUtf8_WhenEmpty_ShouldReturnTrueAndZeroBytes()
     {
-        var destination = new byte[1];
+        byte[] destination = new byte[1];
 
-        var ok = Base85.TryEncodeToUtf8([], destination, out var bytesWritten);
+        bool ok = Base85.TryEncodeToUtf8([], destination, out int bytesWritten);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(0, bytesWritten);
@@ -522,7 +522,7 @@ public sealed class RemainingGapCoverageTests
     [TestMethod]
     public void Base85_TryEncodeToUtf8_WhenZ85AndUnaligned_ShouldThrowExactly()
     {
-        var destination = new byte[10];
+        byte[] destination = new byte[10];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {

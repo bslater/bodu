@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="X25519Tests.KnownAnswerTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -159,7 +159,7 @@ public sealed partial class X25519Tests
         using var algorithm = new X25519();
         algorithm.ImportPrivateKey(vector.PrivateKey);
 
-        var actual = algorithm.DeriveSharedSecret(vector.PeerPublicKey);
+        byte[] actual = algorithm.DeriveSharedSecret(vector.PeerPublicKey);
 
         CollectionAssert.AreEqual(vector.ExpectedSharedSecret, actual);
     }

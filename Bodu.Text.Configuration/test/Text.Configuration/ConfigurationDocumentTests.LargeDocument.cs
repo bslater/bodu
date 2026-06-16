@@ -31,10 +31,10 @@ public partial class ConfigurationDocumentTests
         const int propertiesPerSection = 10;
 
         StringBuilder builder = new(sectionCount * propertiesPerSection * 32);
-        for (var i = 0; i < sectionCount; i++)
+        for (int i = 0; i < sectionCount; i++)
         {
             builder.Append('[').Append("section-").Append(i).Append(']').Append('\n');
-            for (var j = 0; j < propertiesPerSection; j++)
+            for (int j = 0; j < propertiesPerSection; j++)
                 builder.Append("key").Append(j).Append(" = value").Append(j).Append('\n');
         }
 
@@ -61,7 +61,7 @@ public partial class ConfigurationDocumentTests
 
         StringBuilder builder = new(entryCount * 32);
         builder.Append("[*]\n");
-        for (var i = 0; i < entryCount; i++)
+        for (int i = 0; i < entryCount; i++)
             builder.Append("key").Append(i).Append(" = value").Append(i).Append('\n');
 
         var stopwatch = Stopwatch.StartNew();

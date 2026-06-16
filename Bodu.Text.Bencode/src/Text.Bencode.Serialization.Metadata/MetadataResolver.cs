@@ -36,10 +36,10 @@ internal static class MetadataResolver
 
         List<Draft> drafts = [];
         PropertyMetadata? extensionData = null;
-        var declarationIndex = 0;
+        int declarationIndex = 0;
         foreach (PropertyInfo property in type.GetProperties(MemberFlags))
         {
-            var included = property.IsDefined(typeof(BencodeIncludeAttribute), inherit: true);
+            bool included = property.IsDefined(typeof(BencodeIncludeAttribute), inherit: true);
             if (property.GetIndexParameters().Length > 0 || property.GetMethod is null || (!property.GetMethod.IsPublic && !included))
                 continue;
 
@@ -48,10 +48,10 @@ internal static class MetadataResolver
                 continue;
 
             BencodeConverter converter = ResolveMemberConverter(property, property.PropertyType, options);
-            var order = property.GetCustomAttribute<BencodePropertyOrderAttribute>(inherit: true)?.Order ?? 0;
+            int order = property.GetCustomAttribute<BencodePropertyOrderAttribute>(inherit: true)?.Order ?? 0;
             BencodeIgnoreCondition? conditional = ignore?.Condition;
             BencodeObjectCreationHandling? creationHandling = property.GetCustomAttribute<BencodeObjectCreationHandlingAttribute>(inherit: true)?.Handling;
-            var requiredByAttribute = property.IsDefined(typeof(RequiredMemberAttribute), inherit: false)
+            bool requiredByAttribute = property.IsDefined(typeof(RequiredMemberAttribute), inherit: false)
                 || property.IsDefined(typeof(BencodeRequiredAttribute), inherit: false);
 
             if (property.IsDefined(typeof(BencodeExtensionDataAttribute), inherit: true))
@@ -66,7 +66,7 @@ internal static class MetadataResolver
                 continue;
             }
 
-            var wireName = property.GetCustomAttribute<BencodePropertyNameAttribute>(inherit: true)?.Name
+            string wireName = property.GetCustomAttribute<BencodePropertyNameAttribute>(inherit: true)?.Name
                 ?? namingPolicy?.ConvertName(property.Name)
                 ?? property.Name;
 
@@ -75,7 +75,7 @@ internal static class MetadataResolver
 
         foreach (FieldInfo field in type.GetFields(MemberFlags))
         {
-            var included = field.IsDefined(typeof(BencodeIncludeAttribute), inherit: true);
+            bool included = field.IsDefined(typeof(BencodeIncludeAttribute), inherit: true);
             if (!options.IncludeFields && !included)
                 continue;
 
@@ -84,10 +84,10 @@ internal static class MetadataResolver
                 continue;
 
             BencodeConverter converter = ResolveMemberConverter(field, field.FieldType, options);
-            var order = field.GetCustomAttribute<BencodePropertyOrderAttribute>(inherit: true)?.Order ?? 0;
+            int order = field.GetCustomAttribute<BencodePropertyOrderAttribute>(inherit: true)?.Order ?? 0;
             BencodeIgnoreCondition? conditional = ignore?.Condition;
             BencodeObjectCreationHandling? creationHandling = field.GetCustomAttribute<BencodeObjectCreationHandlingAttribute>(inherit: true)?.Handling;
-            var requiredByAttribute = field.IsDefined(typeof(RequiredMemberAttribute), inherit: false)
+            bool requiredByAttribute = field.IsDefined(typeof(RequiredMemberAttribute), inherit: false)
                 || field.IsDefined(typeof(BencodeRequiredAttribute), inherit: false);
 
             if (field.IsDefined(typeof(BencodeExtensionDataAttribute), inherit: true))
@@ -102,7 +102,7 @@ internal static class MetadataResolver
                 continue;
             }
 
-            var wireName = field.GetCustomAttribute<BencodePropertyNameAttribute>(inherit: true)?.Name
+            string wireName = field.GetCustomAttribute<BencodePropertyNameAttribute>(inherit: true)?.Name
                 ?? namingPolicy?.ConvertName(field.Name)
                 ?? field.Name;
 
@@ -144,7 +144,7 @@ internal static class MetadataResolver
         }
 
         var constructorParameters = new PropertyMetadata?[parameters.Length];
-        var constructorDefaults = new object?[parameters.Length];
+        object?[] constructorDefaults = new object?[parameters.Length];
         foreach (PropertyMetadata property in ordered)
         {
             if (property.ConstructorParameterIndex >= 0)
@@ -154,7 +154,7 @@ internal static class MetadataResolver
             }
         }
 
-        for (var i = 0; i < parameters.Length; i++)
+        for (int i = 0; i < parameters.Length; i++)
         {
             if (constructorParameters[i] is null)
                 constructorDefaults[i] = parameters[i].HasDefaultValue ? parameters[i].DefaultValue : DefaultOf(parameters[i].ParameterType);
@@ -238,7 +238,7 @@ internal static class MetadataResolver
     /// <param name="parameters">The chosen constructor's parameters.</param>
     private static void BindConstructorParameters(List<Draft> drafts, ParameterInfo[] parameters)
     {
-        for (var i = 0; i < parameters.Length; i++)
+        for (int i = 0; i < parameters.Length; i++)
         {
             ParameterInfo parameter = parameters[i];
             Draft? match = drafts.Find(draft => string.Equals(draft.Member.Name, parameter.Name, StringComparison.OrdinalIgnoreCase));

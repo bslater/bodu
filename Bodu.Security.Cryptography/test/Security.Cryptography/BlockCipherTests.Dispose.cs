@@ -81,14 +81,14 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
         }
 
         using TCipher cipher = CreateBlockCipher();
-        var buffer = new byte[cipher.BlockSize / 8];
+        byte[] buffer = new byte[cipher.BlockSize / 8];
         cipher.Encrypt(buffer, buffer);
         cipher.Dispose();
 
-        var value = field.GetValue(cipher);
-        var label = $"Field '{field.DeclaringType},{field.Name}'";
+        object? value = field.GetValue(cipher);
+        string label = $"Field '{field.DeclaringType},{field.Name}'";
 
-        var result = TestHelpers.AssertFieldValueIsNullOrDefault(field, cipher);
+        bool result = TestHelpers.AssertFieldValueIsNullOrDefault(field, cipher);
 
         Assert.IsTrue(result, $"{label} value is not null or default");
     }
@@ -104,7 +104,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
         using TCipher cipher = CreateBlockCipher(variant);
         cipher.Dispose();
 
-        var buffer = new byte[specification.BlockSize];
+        byte[] buffer = new byte[specification.BlockSize];
         Assert.ThrowsExactly<ObjectDisposedException>(() =>
         {
             cipher.Decrypt(buffer, buffer);
@@ -122,7 +122,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
         using TCipher cipher = CreateBlockCipher(variant);
         cipher.Dispose();
 
-        var buffer = new byte[specification.BlockSize];
+        byte[] buffer = new byte[specification.BlockSize];
         Assert.ThrowsExactly<ObjectDisposedException>(() =>
         {
             cipher.Encrypt(buffer, buffer);

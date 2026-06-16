@@ -28,8 +28,8 @@ public static class AeadTransformExtensions
     {
         if (transform is null) throw new ArgumentNullException(nameof(transform));
 
-        var output = new byte[plaintext.Length + (transform.TagSize / 8)];
-        var written = transform.Encrypt(plaintext, output, associatedData);
+        byte[] output = new byte[plaintext.Length + (transform.TagSize / 8)];
+        int written = transform.Encrypt(plaintext, output, associatedData);
 
         if (written != output.Length)
             Array.Resize(ref output, written);
@@ -58,8 +58,8 @@ public static class AeadTransformExtensions
     {
         if (transform is null) throw new ArgumentNullException(nameof(transform));
 
-        var output = new byte[ciphertextWithTag.Length - (transform.TagSize / 8)];
-        var written = transform.Decrypt(ciphertextWithTag, output, associatedData);
+        byte[] output = new byte[ciphertextWithTag.Length - (transform.TagSize / 8)];
+        int written = transform.Decrypt(ciphertextWithTag, output, associatedData);
 
         if (written != output.Length)
             Array.Resize(ref output, written);

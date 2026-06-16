@@ -63,7 +63,7 @@ public partial class RangeSetTests
         var sut = new RangeSet<int>();
         Assert.AreEqual(0, sut.Capacity);
 
-        var reported = sut.EnsureCapacity(1);
+        int reported = sut.EnsureCapacity(1);
 
         Assert.IsGreaterThanOrEqualTo(4, reported, $"Expected default capacity floor of 4 or more, got {reported}.");
         Assert.IsGreaterThanOrEqualTo(4, sut.Capacity);
@@ -80,7 +80,7 @@ public partial class RangeSetTests
         var sut = new RangeSet<int>();
         sut.EnsureCapacity(4); // initial small capacity
 
-        var reported = sut.EnsureCapacity(1024); // far exceeds 4*2 = 8
+        int reported = sut.EnsureCapacity(1024); // far exceeds 4*2 = 8
 
         Assert.IsGreaterThanOrEqualTo(1024, reported);
         Assert.IsGreaterThanOrEqualTo(1024, sut.Capacity);

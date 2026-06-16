@@ -80,7 +80,7 @@ public partial class Utf8BencodeReaderWriterTests
         var buffer = new ArrayBufferWriter<byte>();
         var writer = new Utf8BencodeWriter(buffer);
         kat.Write(writer);
-        var bytes = buffer.WrittenSpan.ToArray();
+        byte[] bytes = buffer.WrittenSpan.ToArray();
 
         var reader = new Utf8BencodeReader(bytes);
         var actual = new List<BencodeTokenType>();
@@ -111,9 +111,9 @@ public partial class Utf8BencodeReaderWriterTests
     [DataRow("d1:a2:aae")]
     public void RoundTrip_WhenCanonicalInputRewritten_ShouldBeByteEqual(string input)
     {
-        var original = Encoding.Latin1.GetBytes(input);
+        byte[] original = Encoding.Latin1.GetBytes(input);
 
-        var rewritten = Rewrite(original);
+        byte[] rewritten = Rewrite(original);
 
         CollectionAssert.AreEqual(original, rewritten);
     }

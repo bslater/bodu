@@ -18,7 +18,7 @@ public partial class ConcurrentCircularBufferTests
     public void TryPeek_WhenAfterClear_ShouldReturnFalse()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(5);
-        for (var i = 0; i < 5; i++) buffer.Enqueue(new TestItem(i));
+        for (int i = 0; i < 5; i++) buffer.Enqueue(new TestItem(i));
         buffer.Clear();
 
         Assert.IsFalse(buffer.TryPeek(out _), "TryPeek should return false after Clear when empty.");
@@ -55,17 +55,17 @@ public partial class ConcurrentCircularBufferTests
     public void TryPeek_WhenBufferContainsNullsUnderConcurrency_ShouldYieldNullSafely()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem?>(5);
-        var nullSeen = 0;
+        int nullSeen = 0;
 
         var writer = Task.Run(() =>
         {
-            for (var i = 0; i < 200; i++)             // more churn to rotate head
+            for (int i = 0; i < 200; i++)             // more churn to rotate head
                 buffer.Enqueue(i % 3 == 0 ? null : new TestItem(i));
         });
 
         var peeker = Task.Run(() =>
         {
-            for (var i = 0; i < 1000; i++)            // more opportunities to observe
+            for (int i = 0; i < 1000; i++)            // more opportunities to observe
             {
                 if (buffer.TryPeek(out TestItem? item) && item is null)
                     Interlocked.Increment(ref nullSeen);
@@ -133,13 +133,13 @@ public partial class ConcurrentCircularBufferTests
     public void TryPeek_WhenConcurrentDequeue_ShouldNotThrow()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(10);
-        for (var i = 0; i < 10; i++) buffer.Enqueue(new TestItem(i));
+        for (int i = 0; i < 10; i++) buffer.Enqueue(new TestItem(i));
 
-        var failures = 0;
+        int failures = 0;
 
         var peeker = Task.Run(() =>
         {
-            for (var i = 0; i < 100; i++)
+            for (int i = 0; i < 100; i++)
             {
                 try { buffer.TryPeek(out _); }
                 catch { Interlocked.Increment(ref failures); }
@@ -162,11 +162,11 @@ public partial class ConcurrentCircularBufferTests
     public void TryPeek_WhenConcurrentEnqueue_ShouldEventuallySucceed()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(10);
-        var peeked = 0;
+        int peeked = 0;
 
         var writer = Task.Run(() =>
         {
-            for (var i = 0; i < 100; i++)
+            for (int i = 0; i < 100; i++)
                 buffer.Enqueue(new TestItem(i));
         });
 
@@ -190,14 +190,14 @@ public partial class ConcurrentCircularBufferTests
     public void TryPeek_WhenManyReaders_ShouldNotThrowOrCorrupt()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(10);
-        for (var i = 0; i < 10; i++) buffer.Enqueue(new TestItem(i));
+        for (int i = 0; i < 10; i++) buffer.Enqueue(new TestItem(i));
 
-        var totalAttempts = 0;
-        var failures = 0;
+        int totalAttempts = 0;
+        int failures = 0;
 
         Task[] tasks = Enumerable.Range(0, 4).Select(_ => Task.Run(() =>
         {
-            for (var i = 0; i < 100; i++)
+            for (int i = 0; i < 100; i++)
             {
                 try
                 {
@@ -238,7 +238,7 @@ public partial class ConcurrentCircularBufferTests
     public void TryPeek_WhenRapidEnqueueDequeue_ShouldObserveItemsSometimes()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(10);
-        var observed = 0;
+        int observed = 0;
 
         using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
 
@@ -252,7 +252,7 @@ public partial class ConcurrentCircularBufferTests
 
         var enqueuer = Task.Run(() =>
         {
-            for (var i = 0; i < 50 && !cts.IsCancellationRequested; i++)
+            for (int i = 0; i < 50 && !cts.IsCancellationRequested; i++)
             {
                 buffer.Enqueue(new TestItem(i));
                 Thread.Sleep(1);
@@ -270,7 +270,7 @@ public partial class ConcurrentCircularBufferTests
 
         var peeker = Task.Run(() =>
         {
-            for (var i = 0; i < 100 && !cts.IsCancellationRequested; i++)
+            for (int i = 0; i < 100 && !cts.IsCancellationRequested; i++)
             {
                 if (buffer.TryPeek(out TestItem? item) && item != null)
                     Interlocked.Increment(ref observed);
@@ -302,9 +302,9 @@ public partial class ConcurrentCircularBufferTests
 
         // Read the current head-slot Sequence and pre-bump it so the first iteration of TryPeek
         // observes diff > 0 (the "stale head read — another thread dequeued this slot" branch).
-        var slot0 = slotArray.GetValue(0)!;
+        object slot0 = slotArray.GetValue(0)!;
         FieldInfo sequenceField = slot0.GetType().GetField("Sequence", BindingFlags.Instance | BindingFlags.Public)!;
-        var originalSequence = (int)sequenceField.GetValue(slot0)!;
+        int originalSequence = (int)sequenceField.GetValue(slot0)!;
 
         sequenceField.SetValue(slot0, originalSequence + 1);
         slotArray.SetValue(slot0, 0);
@@ -315,20 +315,20 @@ public partial class ConcurrentCircularBufferTests
         // that into a test failure instead.
         var realignTask = Task.Run(() =>
         {
-            for (var i = 0; i < 16; i++) Thread.SpinWait(100);
-            var slot = slotArray.GetValue(0)!;
+            for (int i = 0; i < 16; i++) Thread.SpinWait(100);
+            object slot = slotArray.GetValue(0)!;
             sequenceField.SetValue(slot, originalSequence);
             slotArray.SetValue(slot, 0);
         });
 
         TestItem? captured = null;
-        var peekResult = false;
+        bool peekResult = false;
         var peekTask = Task.Run(() =>
         {
             peekResult = buffer.TryPeek(out captured);
         });
 
-        var completed = Task.WaitAll([realignTask, peekTask], TimeSpan.FromSeconds(10));
+        bool completed = Task.WaitAll([realignTask, peekTask], TimeSpan.FromSeconds(10));
 
         Assert.IsTrue(completed,
             "TryPeek did not return after the slot sequence was restored — possible scheduling issue or missed realign.");

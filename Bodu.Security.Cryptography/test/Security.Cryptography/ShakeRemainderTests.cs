@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ShakeRemainderTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -20,10 +20,10 @@ public sealed class ShakeRemainderTests
     [TestMethod]
     public void ComputeHash_WhenOutputLengthHasSubLaneTail_ShouldProduceRequestedLength()
     {
-        var input = System.Text.Encoding.ASCII.GetBytes("the quick brown fox");
+        byte[] input = System.Text.Encoding.ASCII.GetBytes("the quick brown fox");
 
         using Shake shake = new(outputBits: 160, securityLevel: 128);
-        var hash = shake.ComputeHash(input);
+        byte[] hash = shake.ComputeHash(input);
 
         Assert.AreEqual(20, hash.Length);
         Assert.IsTrue(hash.Any(b => b != 0));

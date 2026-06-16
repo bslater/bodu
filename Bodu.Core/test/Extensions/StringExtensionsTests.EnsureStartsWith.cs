@@ -42,9 +42,9 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void EnsureStartsWith_WhenPrefixAlreadyPresent_ShouldReturnSameInstance()
     {
-        var value = "hello-world";
+        string value = "hello-world";
 
-        var actual = value.EnsureStartsWith("hello-");
+        string actual = value.EnsureStartsWith("hello-");
 
         Assert.AreSame(value, actual);
     }

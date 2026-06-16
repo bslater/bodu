@@ -84,7 +84,7 @@ public sealed class DelimitedDocumentTests
     {
         DelimitedDocument doc = Delimited.Parse("name\nAlice\nBob\nCarol");
 
-        var names = doc.Rows.Select(r => r[0]).ToArray();
+        string[] names = doc.Rows.Select(r => r[0]).ToArray();
 
         CollectionAssert.AreEqual(new[] { "Alice", "Bob", "Carol" }, names);
     }

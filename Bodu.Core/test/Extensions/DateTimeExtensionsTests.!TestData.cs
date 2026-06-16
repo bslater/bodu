@@ -1387,7 +1387,7 @@ public partial class DateTimeExtensionsTests
         Enumerable.Range(1, 12)
             .SelectMany(month =>
             {
-                var daysInMonth = DateTime.DaysInMonth(2024, month);
+                int daysInMonth = DateTime.DaysInMonth(2024, month);
                 return Enumerable.Range(2, daysInMonth - 1) //
                                  .Select(day => new object[] { new DateTime(2024, month, day) });
             });
@@ -1401,7 +1401,7 @@ public partial class DateTimeExtensionsTests
         Enumerable.Range(1, 12)
             .SelectMany(month =>
             {
-                var daysInMonth = DateTime.DaysInMonth(2024, month);
+                int daysInMonth = DateTime.DaysInMonth(2024, month);
                 return Enumerable.Range(1, daysInMonth - 2)
                                  .Select(day => new object[] { new DateTime(2024, month, day) });
             });

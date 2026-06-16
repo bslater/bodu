@@ -52,7 +52,7 @@ public partial class Utf8BencodeReaderTests
     public void ValueTextEquals_WhenComparedToText_ShouldCompareUtf8Encoding()
     {
         // "café" encodes to five UTF-8 bytes (the é is two bytes).
-        var data = "5:café"u8.ToArray();
+        byte[] data = "5:café"u8.ToArray();
         var reader = new Utf8BencodeReader(data);
         Assert.IsTrue(reader.Read());
 
@@ -86,7 +86,7 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void ValueTextEquals_WhenOnIntegerToken_ShouldThrowInvalidOperationException()
     {
-        var data = Bytes("i42e");
+        byte[] data = Bytes("i42e");
 
         _ = Assert.ThrowsExactly<InvalidOperationException>(() =>
         {

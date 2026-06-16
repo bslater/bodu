@@ -44,15 +44,15 @@ public sealed record KemEncapDecapKnownAnswer(
     {
         foreach (Dictionary<string, string> record in HexFieldKatReader.Read(stream))
         {
-            var function = HexFieldKatReader.GetRequired(record, "Function");
-            var keyField = function == "encapsulation" ? "Ek" : "Dk";
+            string function = HexFieldKatReader.GetRequired(record, "Function");
+            string keyField = function == "encapsulation" ? "Ek" : "Dk";
 
             yield return new KemEncapDecapKnownAnswer(
                 HexFieldKatReader.GetRequired(record, "Name"),
                 HexFieldKatReader.GetRequired(record, "Set"),
                 function,
                 Convert.FromHexString(HexFieldKatReader.GetRequired(record, keyField)),
-                record.TryGetValue("M", out var m) ? Convert.FromHexString(m) : null,
+                record.TryGetValue("M", out string? m) ? Convert.FromHexString(m) : null,
                 Convert.FromHexString(HexFieldKatReader.GetRequired(record, "C")),
                 Convert.FromHexString(HexFieldKatReader.GetRequired(record, "K")));
         }

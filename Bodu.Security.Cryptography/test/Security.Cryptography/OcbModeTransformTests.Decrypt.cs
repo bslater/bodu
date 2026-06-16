@@ -30,12 +30,12 @@ public sealed partial class OcbModeTransformTests
     public void Decrypt_WithNonDefaultTagSize_WhenTagTampered_ShouldThrowExactly(int tagSize)
     {
         using var cipher = new AesBlockCipherFixture(new byte[16]);
-        var iv = new byte[ExpectedBlockSize];
-        var plaintext = new byte[] { 0xDE, 0xAD, 0xBE, 0xEF };
+        byte[] iv = new byte[ExpectedBlockSize];
+        byte[] plaintext = new byte[] { 0xDE, 0xAD, 0xBE, 0xEF };
 
-        var tagBytes = tagSize / 8;
+        int tagBytes = tagSize / 8;
         OcbModeTransform enc = CreateTransform(cipher, (byte[])iv.Clone(), tagSize);
-        var ct = new byte[plaintext.Length + tagBytes];
+        byte[] ct = new byte[plaintext.Length + tagBytes];
         enc.Encrypt(plaintext, ct);
         ct[ct.Length - 1] ^= 0x01;         // flip last byte of tag
 
@@ -59,11 +59,11 @@ public sealed partial class OcbModeTransformTests
     public void Decrypt_WhenTagSizeMismatch_ShouldThrowExactly()
     {
         using var cipher = new AesBlockCipherFixture(new byte[16]);
-        var iv = new byte[ExpectedBlockSize];
-        var plaintext = new byte[ExpectedBlockSize];
+        byte[] iv = new byte[ExpectedBlockSize];
+        byte[] plaintext = new byte[ExpectedBlockSize];
 
         OcbModeTransform enc = CreateTransform(cipher, (byte[])iv.Clone(), tagSize: 128);
-        var ct = new byte[plaintext.Length + 16];
+        byte[] ct = new byte[plaintext.Length + 16];
         enc.Encrypt(plaintext, ct);
 
         OcbModeTransform dec = CreateTransform(cipher, (byte[])iv.Clone(), tagSize: 96);
@@ -92,15 +92,15 @@ public sealed partial class OcbModeTransformTests
     public void Decrypt_WithValidCiphertext_ShouldReturnPlaintextLengthAsWrittenCount(int ptLen)
     {
         using var cipher = new AesBlockCipherFixture(new byte[16]);
-        var iv = new byte[ExpectedBlockSize];
-        var plaintext = new byte[ptLen];
+        byte[] iv = new byte[ExpectedBlockSize];
+        byte[] plaintext = new byte[ptLen];
 
         var enc = new OcbModeTransform(cipher, (byte[])iv.Clone());
-        var ct = new byte[ptLen + (enc.TagSize / 8)];
+        byte[] ct = new byte[ptLen + (enc.TagSize / 8)];
         enc.Encrypt(plaintext, ct);
 
         var dec = new OcbModeTransform(cipher, (byte[])iv.Clone());
-        var written = dec.Decrypt(ct, new byte[ptLen]);
+        int written = dec.Decrypt(ct, new byte[ptLen]);
 
         Assert.AreEqual(ptLen, written,
             $"Decrypt must return the plaintext byte count ({ptLen}) as the written value.");

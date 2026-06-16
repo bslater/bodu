@@ -62,7 +62,7 @@ public static class MLKemAcvpVectors
     /// <param name="vector">The KAT vector.</param>
     public static void AssertKeyGen(MLKem kem, KemKeyGenKnownAnswer vector)
     {
-        var seed = vector.D.Concat(vector.Z).ToArray();
+        byte[] seed = vector.D.Concat(vector.Z).ToArray();
         kem.ImportPrivateSeed(seed);
 
         CollectionAssert.AreEqual(vector.ExpectedEncapsulationKey, kem.ExportEncapsulationKey());
@@ -79,8 +79,8 @@ public static class MLKemAcvpVectors
     {
         Assert.IsNotNull(vector.M, $"{vector.Name}: encapsulation vectors must carry the fixed randomness m.");
 
-        var ciphertext = new byte[parameters.CiphertextSize];
-        var sharedSecret = new byte[MLKemEngine.SharedSecretSize];
+        byte[] ciphertext = new byte[parameters.CiphertextSize];
+        byte[] sharedSecret = new byte[MLKemEngine.SharedSecretSize];
         MLKemEngine.Encapsulate(parameters, vector.Key, vector.M, ciphertext, sharedSecret);
 
         CollectionAssert.AreEqual(vector.Ciphertext, ciphertext);

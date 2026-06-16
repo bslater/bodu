@@ -97,7 +97,7 @@ internal sealed class ByteBuffer
     /// <exception cref="ArgumentException">The input span exceeds the remaining capacity of the buffer.</exception>
     public bool Add(ReadOnlySpan<byte> span)
     {
-        var currentCount = Count;
+        int currentCount = Count;
         ThrowHelper.ThrowIfGreaterThan(span.Length, _internalBuffer.Length - currentCount, nameof(span));
         span.CopyTo(new Span<byte>(_internalBuffer, currentCount, span.Length));
         _index += span.Length;
@@ -128,7 +128,7 @@ internal sealed class ByteBuffer
     /// </returns>
     public byte[] GetBytesZeroPadded()
     {
-        var count = Count;
+        int count = Count;
         CryptographyHelper.Clear(_internalBuffer.AsSpan(count, _internalBuffer.Length - count));
         _index = EmptyIndex;
         return _internalBuffer;

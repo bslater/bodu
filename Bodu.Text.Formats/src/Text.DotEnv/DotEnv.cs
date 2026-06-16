@@ -194,7 +194,7 @@ public static partial class DotEnv
 
         sb.Append('"');
 
-        foreach (var c in value)
+        foreach (char c in value)
         {
             switch (c)
             {
@@ -221,7 +221,7 @@ public static partial class DotEnv
     /// </returns>
     private static bool IsUnquotable(string value)
     {
-        foreach (var c in value)
+        foreach (char c in value)
         {
             if (!IsUnquotableChar(c))
                 return false;

@@ -180,7 +180,7 @@ public sealed class X25519
     {
         ThrowIfDisposed();
 
-        var privateKey = CryptographyHelper.GetRandomBytes(KeySizeInBytes);
+        byte[] privateKey = CryptographyHelper.GetRandomBytes(KeySizeInBytes);
         SetPrivateKey(privateKey);
     }
 
@@ -267,7 +267,7 @@ public sealed class X25519
     /// </exception>
     public byte[] DeriveSharedSecret(ReadOnlySpan<byte> peerPublicKey)
     {
-        var sharedSecret = new byte[SharedSecretSizeInBytes];
+        byte[] sharedSecret = new byte[SharedSecretSizeInBytes];
         DeriveSharedSecret(peerPublicKey, sharedSecret);
 
         return sharedSecret;
@@ -294,7 +294,7 @@ public sealed class X25519
         CryptographyThrowHelper.ThrowIfInvalidDestinationLength(destination, SharedSecretSizeInBytes);
         CryptographyThrowHelper.ThrowIfNoPrivateKey(_privateKey is not null);
 
-        var allZero = Curve25519.ScalarMult(_privateKey, peerPublicKey, destination);
+        bool allZero = Curve25519.ScalarMult(_privateKey, peerPublicKey, destination);
 
         // RFC 7748 §6.1 strict check: a low-order peer point collapses the secret to a value any observer can
         // predict; reject it rather than hand the caller attacker-known key material.
@@ -337,7 +337,7 @@ public sealed class X25519
     /// <param name="privateKey">The 32-byte private key array to take ownership of.</param>
     private void SetPrivateKey(byte[] privateKey)
     {
-        var publicKey = new byte[KeySizeInBytes];
+        byte[] publicKey = new byte[KeySizeInBytes];
         Curve25519.ScalarMultBase(privateKey, publicKey);
 
         CryptographyHelper.ClearAndNullify(ref _privateKey);

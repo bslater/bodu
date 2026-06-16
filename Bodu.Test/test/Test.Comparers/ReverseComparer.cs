@@ -11,7 +11,9 @@ namespace Bodu.Test.Comparers;
 /// observe the effect of a non-default comparer on ordering, range, and clamp semantics.
 /// </summary>
 /// <typeparam name="T">The type of objects to compare.</typeparam>
-/// <remarks>This class is intended exclusively for test harness use and must not appear in production code.</remarks>
+/// <remarks>
+/// This class is intended exclusively for test harness use and must not appear in production code.
+/// </remarks>
 public sealed class ReverseComparer<T>
     : IComparer<T>
 {
@@ -40,7 +42,9 @@ public sealed class ReverseComparer<T>
     /// <summary>
     /// Gets a shared instance that reverses <see cref="Comparer{T}.Default" />.
     /// </summary>
-    /// <returns>A singleton <see cref="ReverseComparer{T}" /> over the default comparer for <typeparamref name="T" />.</returns>
+    /// <returns>
+    /// A singleton <see cref="ReverseComparer{T}" /> over the default comparer for <typeparamref name="T" />.
+    /// </returns>
     public static ReverseComparer<T> Instance { get; } = new();
 
     /// <inheritdoc />

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BahaiHolyDayKnownAnswerTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -57,11 +57,11 @@ public sealed class BahaiHolyDayKnownAnswerTests
     {
         NotableDateService service = CreateService();
 
-        for (var year = 2023; year <= 2027; year++)
+        for (int year = 2023; year <= 2027; year++)
         {
             NotableDate observance = CommonCatalogues.ResolveSingle(service, notableDateId, year);
             var reference = new DateOnly(year, month, day);
-            var deltaDays = Math.Abs(observance.Date.DayNumber - reference.DayNumber);
+            int deltaDays = Math.Abs(observance.Date.DayNumber - reference.DayNumber);
 
             Assert.IsLessThanOrEqualTo(
                 ToleranceDays,

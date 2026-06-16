@@ -45,7 +45,7 @@ public partial class EvictingDictionaryTests
         var dictionary = new EvictingDictionary<string, int>(3);
         dictionary.Add("key", 99);
 
-        var before = dictionary.TotalTouches;
+        long before = dictionary.TotalTouches;
         _ = dictionary["key"];
 
         Assert.AreEqual(before + 1, dictionary.TotalTouches);
@@ -60,7 +60,7 @@ public partial class EvictingDictionaryTests
         var dictionary = new EvictingDictionary<string, int>(3);
         dictionary.Add("a", 1);
 
-        var before = dictionary.TotalTouches;
+        long before = dictionary.TotalTouches;
         dictionary.TryGetValue("a", out _);
 
         Assert.AreEqual(before + 1, dictionary.TotalTouches);
@@ -75,7 +75,7 @@ public partial class EvictingDictionaryTests
         var dictionary = new EvictingDictionary<string, int>(3);
         dictionary.Add("x", 10);
 
-        var before = dictionary.TotalTouches;
+        long before = dictionary.TotalTouches;
         dictionary.Touch("x");
 
         Assert.AreEqual(before + 1, dictionary.TotalTouches);
@@ -88,7 +88,7 @@ public partial class EvictingDictionaryTests
     public void TotalTouches_WhenSettingViaIndexer_ShouldNotChange()
     {
         var dictionary = new EvictingDictionary<string, int>(3);
-        var before = dictionary.TotalTouches;
+        long before = dictionary.TotalTouches;
 
         dictionary["new"] = 1;
         dictionary["new"] = 2;
@@ -103,7 +103,7 @@ public partial class EvictingDictionaryTests
     public void TotalTouches_WhenTouchCalledWithMissingKey_ShouldNotIncrement()
     {
         var dictionary = new EvictingDictionary<string, int>(3);
-        var before = dictionary.TotalTouches;
+        long before = dictionary.TotalTouches;
 
         dictionary.Touch("missing");
 
@@ -117,7 +117,7 @@ public partial class EvictingDictionaryTests
     public void TotalTouches_WhenTryGetValueFails_ShouldNotIncrement()
     {
         var dictionary = new EvictingDictionary<string, int>(3);
-        var before = dictionary.TotalTouches;
+        long before = dictionary.TotalTouches;
 
         dictionary.TryGetValue("missing", out _);
 

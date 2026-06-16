@@ -118,7 +118,7 @@ public partial class HashAlgorithmExtensionsTests
     public void TryVerifyHash_WhenHashDoesNotMatch_ShouldReturnFalse()
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
-        var badHash = BitConverter.GetBytes((uint)999);
+        byte[] badHash = BitConverter.GetBytes((uint)999);
         Assert.IsFalse(algorithm.TryVerifyHash(SampleData, badHash));
     }
 

@@ -45,11 +45,11 @@ public static partial class Base64
         if (bytes.IsEmpty)
             return string.Empty;
 
-        var required = GetEncodedLength(bytes.Length, variant, options);
-        var buffer = ArrayPool<char>.Shared.Rent(required);
+        int required = GetEncodedLength(bytes.Length, variant, options);
+        char[] buffer = ArrayPool<char>.Shared.Rent(required);
         try
         {
-            var written = EncodeIntoSpan(bytes, buffer, variant, options);
+            int written = EncodeIntoSpan(bytes, buffer, variant, options);
             return new string(buffer, 0, written);
         }
         finally
@@ -75,7 +75,7 @@ public static partial class Base64
     {
         EnsureValidVariant(variant);
 
-        var required = GetEncodedLength(bytes.Length, variant, options);
+        int required = GetEncodedLength(bytes.Length, variant, options);
         return destination.Length >= required
             ? bytes.IsEmpty
                 ? 0
@@ -128,7 +128,7 @@ public static partial class Base64
     {
         EnsureValidVariant(variant);
 
-        var required = GetEncodedLength(bytes.Length, variant, options);
+        int required = GetEncodedLength(bytes.Length, variant, options);
         if (destination.Length < required)
         {
             charsWritten = 0;
@@ -157,9 +157,9 @@ public static partial class Base64
     {
         if (variant == Base64Variant.UrlSafe)
         {
-            for (var i = 0; i < writtenLength; i++)
+            for (int i = 0; i < writtenLength; i++)
             {
-                var c = buffer[i];
+                char c = buffer[i];
                 if (c == '+')
                     buffer[i] = '-';
                 else if (c == '/')
@@ -185,34 +185,34 @@ public static partial class Base64
     /// <returns>The number of characters written after transformations.</returns>
     private static int EncodeIntoSpan(ReadOnlySpan<byte> bytes, Span<char> destination, Base64Variant variant, BaseFormattingOptions options)
     {
-        var insertLineBreaks = ShouldInsertLineBreaks(variant, options);
+        bool insertLineBreaks = ShouldInsertLineBreaks(variant, options);
         Base64FormattingOptions bclOpts = insertLineBreaks ? Base64FormattingOptions.InsertLineBreaks : Base64FormattingOptions.None;
-        var emitPadding = ShouldEmitPadding(variant, options);
+        bool emitPadding = ShouldEmitPadding(variant, options);
 
         // Convert.TryToBase64Chars always writes the canonical padded form. When the caller's destination is sized
         // for the unpadded URL-safe output (which is the typical case for JWT-style consumers) the BCL call would
         // fail with a too-small destination. Detect that case and route through a rented scratch buffer.
-        var bclRequired = ((bytes.Length + 2) / 3) * 4;
+        int bclRequired = ((bytes.Length + 2) / 3) * 4;
         if (insertLineBreaks)
         {
-            var breaks = (bclRequired - 1) / MimeLineLength;
+            int breaks = (bclRequired - 1) / MimeLineLength;
             bclRequired += breaks * 2;
         }
 
         if (destination.Length >= bclRequired)
         {
-            if (!Convert.TryToBase64Chars(bytes, destination, out var rawWritten, bclOpts))
+            if (!Convert.TryToBase64Chars(bytes, destination, out int rawWritten, bclOpts))
                 throw new InvalidOperationException(EncodingResourceStrings.Op_Invalid_Base64EncodeUnexpectedFailure);
 
             ApplyVariantTransforms(destination, ref rawWritten, variant, emitPadding);
             return rawWritten;
         }
 
-        var scratch = System.Buffers.ArrayPool<char>.Shared.Rent(bclRequired);
+        char[] scratch = System.Buffers.ArrayPool<char>.Shared.Rent(bclRequired);
         try
         {
             Span<char> scratchSpan = scratch.AsSpan(0, bclRequired);
-            if (!Convert.TryToBase64Chars(bytes, scratchSpan, out var rawWritten, bclOpts))
+            if (!Convert.TryToBase64Chars(bytes, scratchSpan, out int rawWritten, bclOpts))
                 throw new InvalidOperationException(EncodingResourceStrings.Op_Invalid_Base64EncodeUnexpectedFailure);
 
             ApplyVariantTransforms(scratchSpan, ref rawWritten, variant, emitPadding);

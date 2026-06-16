@@ -49,7 +49,7 @@ internal sealed class ConfigurationResolver
     {
         ThrowHelper.ThrowIfNull(document);
 
-        var pathRoot = _options.PathRoot;
+        string? pathRoot = _options.PathRoot;
         if (pathRoot is null && _options.MissingPathRootMode == ConfigurationMissingPathRootMode.Throw && targetPath is null)
             ConfigurationHelpers.ThrowResolveWithoutPathRoot();
 
@@ -57,7 +57,7 @@ internal sealed class ConfigurationResolver
         Dictionary<string, string?> values = new(comparer);
         Dictionary<string, ConfigurationResolvedEntry> entries = new(comparer);
 
-        var normalizedTarget = targetPath is null ? string.Empty : NormalizePath(targetPath, pathRoot, _options.PathComparison);
+        string normalizedTarget = targetPath is null ? string.Empty : NormalizePath(targetPath, pathRoot, _options.PathComparison);
 
         // Apply the global section (preamble) first when enabled. Preamble entries are signalled by passing
         // a null section pattern through to ApplySection.
@@ -109,7 +109,7 @@ internal sealed class ConfigurationResolver
     {
         foreach (IniEntry entry in section.Entries)
         {
-            var key = ConfigurationKey.Parse(entry.Key, _options.KeyOptions).Path;
+            string key = ConfigurationKey.Parse(entry.Key, _options.KeyOptions).Path;
 
             // EditorConfig "unset" sentinel handling.
             if (_options.UnsetValueMode == ConfigurationUnsetValueMode.RemoveEffectiveValue
@@ -141,11 +141,11 @@ internal sealed class ConfigurationResolver
     /// <returns>The normalized, root-relative path.</returns>
     private static string NormalizePath(string targetPath, string? pathRoot, StringComparison comparison)
     {
-        var normalizedTarget = targetPath.Replace('\\', '/');
+        string normalizedTarget = targetPath.Replace('\\', '/');
         if (string.IsNullOrEmpty(pathRoot))
             return normalizedTarget;
 
-        var normalizedRoot = pathRoot.Replace('\\', '/').TrimEnd('/');
+        string normalizedRoot = pathRoot.Replace('\\', '/').TrimEnd('/');
         return normalizedTarget.StartsWith(normalizedRoot + "/", comparison)
             ? normalizedTarget[(normalizedRoot.Length + 1)..]
             : string.Equals(normalizedTarget, normalizedRoot, comparison)

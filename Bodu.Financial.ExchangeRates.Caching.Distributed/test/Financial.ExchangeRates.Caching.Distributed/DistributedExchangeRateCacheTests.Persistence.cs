@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DistributedExchangeRateCacheTests.Persistence.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -142,7 +142,7 @@ public sealed partial class DistributedExchangeRateCacheTests
         DistributedExchangeRateCache cache = CreateCache(backingStore);
 
         // A hand-written legacy blob in the Web (camelCase) shape, with a rate object that predates observedAtUtc.
-        var legacyJson =
+        string legacyJson =
             "{\"rates\":[{\"date\":\"2023-01-03\",\"rate\":\"0.5000\",\"cachedAtUtc\":\""
             + now.ToString("O", System.Globalization.CultureInfo.InvariantCulture)
             + "\"}],\"coverage\":[]}";

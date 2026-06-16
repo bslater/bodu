@@ -16,7 +16,7 @@ public sealed partial class DotEnvTests
     [TestMethod]
     public void TryParse_WhenInputIsValid_ShouldReturnTrueAndDocument()
     {
-        var result = DotEnv.TryParse("KEY=value", out DotEnvDocument? document);
+        bool result = DotEnv.TryParse("KEY=value", out DotEnvDocument? document);
 
         Assert.IsTrue(result);
         Assert.IsNotNull(document);
@@ -30,7 +30,7 @@ public sealed partial class DotEnvTests
     [TestMethod]
     public void TryParse_WhenInputIsEmpty_ShouldReturnTrueWithEmptyDocument()
     {
-        var result = DotEnv.TryParse(string.Empty, out DotEnvDocument? document);
+        bool result = DotEnv.TryParse(string.Empty, out DotEnvDocument? document);
 
         Assert.IsTrue(result);
         Assert.IsNotNull(document);
@@ -44,7 +44,7 @@ public sealed partial class DotEnvTests
     [TestMethod]
     public void TryParse_WhenKeyIsInvalid_ShouldReturnFalseWithNull()
     {
-        var result = DotEnv.TryParse("1INVALID=value", out DotEnvDocument? document);
+        bool result = DotEnv.TryParse("1INVALID=value", out DotEnvDocument? document);
 
         Assert.IsFalse(result);
         Assert.IsNull(document);
@@ -59,7 +59,7 @@ public sealed partial class DotEnvTests
     {
         DotEnvParseOptions options = new() { DuplicateKeyBehavior = DuplicateKeyPolicy.Disallowed };
 
-        var result = DotEnv.TryParse("KEY=a\nKEY=b", options, out DotEnvDocument? document);
+        bool result = DotEnv.TryParse("KEY=a\nKEY=b", options, out DotEnvDocument? document);
 
         Assert.IsFalse(result);
         Assert.IsNull(document);
@@ -72,7 +72,7 @@ public sealed partial class DotEnvTests
     [TestMethod]
     public void TryParse_WhenInputIsMalformed_ShouldNotThrow()
     {
-        var result = false;
+        bool result = false;
         DotEnvDocument? document = null;
 
         Exception? caughtException = null;

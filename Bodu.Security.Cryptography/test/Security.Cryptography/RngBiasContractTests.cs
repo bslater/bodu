@@ -78,14 +78,14 @@ public sealed class RngBiasContractTests
                 if (method.IsAbstract) continue;
 
                 MethodBody? body = method.GetMethodBody();
-                var il = body?.GetILAsByteArray();
+                byte[]? il = body?.GetILAsByteArray();
                 if (il is null || il.Length == 0) continue;
 
-                foreach (var token in EnumerateCallTokens(il))
+                foreach (int token in EnumerateCallTokens(il))
                 {
                     if (forbiddenTokens.Contains(token))
                     {
-                        var helper = ResolveMethodName(type.Module, token);
+                        string helper = ResolveMethodName(type.Module, token);
                         violations.Add($"{type.FullName}.{method.Name} → {helper}");
                     }
                 }
@@ -96,7 +96,7 @@ public sealed class RngBiasContractTests
         {
             var sb = new StringBuilder("Generate* methods must use full-range RNG. Found ");
             sb.Append(violations.Count).Append(" violation(s):\n");
-            foreach (var v in violations)
+            foreach (string v in violations)
                 sb.Append("  ").Append(v).Append('\n');
             Assert.Fail(sb.ToString());
         }
@@ -116,10 +116,10 @@ public sealed class RngBiasContractTests
 
     private static IEnumerable<int> EnumerateCallTokens(byte[] il)
     {
-        var pos = 0;
+        int pos = 0;
         while (pos < il.Length)
         {
-            var first = il[pos];
+            byte first = il[pos];
 
             // Two-byte opcode prefix (0xFE). None of the call-family opcodes use this prefix.
             if (first == 0xFE)
@@ -129,7 +129,7 @@ public sealed class RngBiasContractTests
                 continue;
             }
 
-            var operandSize = s_singleByteOperandSize[first];
+            int operandSize = s_singleByteOperandSize[first];
 
             // call (0x28), callvirt (0x6F), newobj (0x73): operand is a 4-byte metadata token.
             if (first is 0x28 or 0x6F or 0x73)
@@ -140,7 +140,7 @@ public sealed class RngBiasContractTests
             else if (first == 0x45) // switch: 4-byte count followed by count*4 jump offsets.
             {
                 if (pos + 5 > il.Length) yield break;
-                var n = BinaryPrimitives.ReadInt32LittleEndian(il.AsSpan(pos + 1, 4));
+                int n = BinaryPrimitives.ReadInt32LittleEndian(il.AsSpan(pos + 1, 4));
                 operandSize = 4 + (n * 4);
             }
 
@@ -150,12 +150,12 @@ public sealed class RngBiasContractTests
 
     private static int[] BuildOperandSizeTable(bool twoByte)
     {
-        var table = new int[256];
+        int[] table = new int[256];
         foreach (FieldInfo field in typeof(OpCodes).GetFields(BindingFlags.Public | BindingFlags.Static))
         {
             var op = (OpCode)field.GetValue(null)!;
-            var value = unchecked((ushort)op.Value);
-            var fieldIsTwoByte = (value >> 8) == 0xFE;
+            ushort value = unchecked((ushort)op.Value);
+            bool fieldIsTwoByte = (value >> 8) == 0xFE;
             if (twoByte != fieldIsTwoByte) continue;
             table[value & 0xFF] = OperandTypeSize(op.OperandType);
         }

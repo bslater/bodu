@@ -64,14 +64,14 @@ internal static class MoneyMath
     /// </remarks>
     internal static void AllocateEvenly(decimal amount, int minorUnits, Span<decimal> shares)
     {
-        var parts = shares.Length;
+        int parts = shares.Length;
         BigInteger minorTotal = ToMinorUnits(amount, minorUnits);
         BigInteger basePer = minorTotal / parts;
         BigInteger residual = minorTotal - (basePer * parts);
-        var sign = residual.Sign >= 0 ? 1 : -1;
-        var residualMagnitude = (int)BigInteger.Abs(residual);
+        int sign = residual.Sign >= 0 ? 1 : -1;
+        int residualMagnitude = (int)BigInteger.Abs(residual);
 
-        for (var i = 0; i < parts; i++)
+        for (int i = 0; i < parts; i++)
         {
             BigInteger share = basePer + (i < residualMagnitude ? sign : 0);
             shares[i] = FromMinorUnits(share, minorUnits);
@@ -97,48 +97,48 @@ internal static class MoneyMath
     /// </remarks>
     internal static decimal[] AllocateByRatios(decimal amount, int minorUnits, ReadOnlySpan<decimal> ratios)
     {
-        var totalWeight = 0m;
-        for (var i = 0; i < ratios.Length; i++)
+        decimal totalWeight = 0m;
+        for (int i = 0; i < ratios.Length; i++)
             totalWeight += ratios[i];
 
         BigInteger minorTotalSigned = ToMinorUnits(amount, minorUnits);
-        var sign = minorTotalSigned.Sign >= 0 ? 1 : -1;
+        int sign = minorTotalSigned.Sign >= 0 ? 1 : -1;
         var minorTotal = BigInteger.Abs(minorTotalSigned);
-        var minorTotalDecimal = (decimal)minorTotal;
+        decimal minorTotalDecimal = (decimal)minorTotal;
 
         // Compute floored shares over absolute minor units; track each slot's fractional remainder so the residual
         // can go to the slot with the largest remainder (Hamilton / largest-remainder method).
         var shares = new BigInteger[ratios.Length];
-        var remainders = new decimal[ratios.Length];
+        decimal[] remainders = new decimal[ratios.Length];
         BigInteger allocated = BigInteger.Zero;
-        for (var i = 0; i < ratios.Length; i++)
+        for (int i = 0; i < ratios.Length; i++)
         {
-            var exact = minorTotalDecimal * ratios[i] / totalWeight;
-            var floored = decimal.Truncate(exact);
+            decimal exact = minorTotalDecimal * ratios[i] / totalWeight;
+            decimal floored = decimal.Truncate(exact);
             shares[i] = (BigInteger)floored;
             remainders[i] = exact - floored;
             allocated += shares[i];
         }
 
-        var residual = (int)(minorTotal - allocated);
+        int residual = (int)(minorTotal - allocated);
         if (residual > 0)
         {
             // Sort indices by (descending remainder, ascending index) so ties fall back to stable input order.
-            var order = new int[ratios.Length];
-            for (var i = 0; i < ratios.Length; i++)
+            int[] order = new int[ratios.Length];
+            for (int i = 0; i < ratios.Length; i++)
                 order[i] = i;
 
-            var remaindersLocal = remainders;
+            decimal[] remaindersLocal = remainders;
             Array.Sort(order, (a, b) =>
             {
-                var cmp = remaindersLocal[b].CompareTo(remaindersLocal[a]);
+                int cmp = remaindersLocal[b].CompareTo(remaindersLocal[a]);
                 return cmp != 0 ? cmp : a.CompareTo(b);
             });
 
-            var distributed = 0;
-            for (var k = 0; k < order.Length && distributed < residual; k++)
+            int distributed = 0;
+            for (int k = 0; k < order.Length && distributed < residual; k++)
             {
-                var idx = order[k];
+                int idx = order[k];
                 if (ratios[idx] <= 0m)
                     continue;     // never give residual to a zero-ratio slot
 
@@ -147,8 +147,8 @@ internal static class MoneyMath
             }
         }
 
-        var result = new decimal[ratios.Length];
-        for (var i = 0; i < ratios.Length; i++)
+        decimal[] result = new decimal[ratios.Length];
+        for (int i = 0; i < ratios.Length; i++)
             result[i] = FromMinorUnits(sign < 0 ? -shares[i] : shares[i], minorUnits);
 
         return result;
@@ -166,8 +166,8 @@ internal static class MoneyMath
         Span<int> bits = stackalloc int[4];
         decimal.GetBits(amount, bits);
 
-        var scale = (bits[3] >> 16) & 0xFF;
-        var negative = bits[3] < 0;
+        int scale = (bits[3] >> 16) & 0xFF;
+        bool negative = bits[3] < 0;
 
         BigInteger significand = ((BigInteger)(uint)bits[2] << 64) | ((BigInteger)(uint)bits[1] << 32) | (uint)bits[0];
 
@@ -200,9 +200,9 @@ internal static class MoneyMath
     /// <returns>The populated factor table indexed by minor units.</returns>
     private static decimal[] BuildMinorUnitFactors()
     {
-        var factors = new decimal[MaxMinorUnits + 1];
-        var factor = 1m;
-        for (var i = 0; i <= MaxMinorUnits; i++)
+        decimal[] factors = new decimal[MaxMinorUnits + 1];
+        decimal factor = 1m;
+        for (int i = 0; i <= MaxMinorUnits; i++)
         {
             factors[i] = factor;
             if (i < MaxMinorUnits)

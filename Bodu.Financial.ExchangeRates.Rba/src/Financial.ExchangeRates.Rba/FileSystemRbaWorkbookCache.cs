@@ -55,7 +55,7 @@ public sealed class FileSystemRbaWorkbookCache
     {
         ThrowHelper.ThrowIfNull(era);
 
-        var path = Path.Combine(_directory, era.FileName);
+        string path = Path.Combine(_directory, era.FileName);
 
         try
         {

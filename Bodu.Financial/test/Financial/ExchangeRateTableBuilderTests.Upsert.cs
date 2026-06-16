@@ -21,7 +21,7 @@ public partial class ExchangeRateTableBuilderTests
         table.Upsert(s_usdAud, "RBA", new DateOnly(2026, 6, 1), 1.50m);
 
         Assert.IsTrue(table.TryGetBuilder(s_usdAud, "RBA", out ExchangeRateSeriesBuilder? builder));
-        Assert.IsTrue(builder!.TryGetRate(new DateOnly(2026, 6, 1), out var rate));
+        Assert.IsTrue(builder!.TryGetRate(new DateOnly(2026, 6, 1), out decimal rate));
         Assert.AreEqual(1.50m, rate);
     }
 
@@ -38,7 +38,7 @@ public partial class ExchangeRateTableBuilderTests
 
         Assert.IsTrue(table.TryGetBuilder(s_usdAud, "RBA", out ExchangeRateSeriesBuilder? builder));
         Assert.AreEqual(1, builder!.Count);
-        Assert.IsTrue(builder.TryGetRate(new DateOnly(2026, 6, 1), out var rate));
+        Assert.IsTrue(builder.TryGetRate(new DateOnly(2026, 6, 1), out decimal rate));
         Assert.AreEqual(1.75m, rate);
     }
 

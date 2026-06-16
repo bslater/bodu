@@ -56,7 +56,7 @@ internal sealed class DictionaryConverterFactory
         ThrowHelper.ThrowIfNull(typeToConvert);
         ThrowHelper.ThrowIfNull(options);
 
-        _ = TryGetInfo(typeToConvert, out Type? keyType, out Type? valueType, out DictionaryKeyKind keyKind, out var concrete);
+        _ = TryGetInfo(typeToConvert, out Type? keyType, out Type? valueType, out DictionaryKeyKind keyKind, out bool concrete);
         TomlConverter valueConverter = options.GetConverter(valueType!);
         Type converterType = typeof(DictionaryConverter<,,>).MakeGenericType(typeToConvert, keyType!, valueType!);
         return (TomlConverter)Activator.CreateInstance(converterType, valueConverter, keyKind, concrete) !;

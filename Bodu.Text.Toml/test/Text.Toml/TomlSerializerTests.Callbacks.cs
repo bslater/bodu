@@ -41,7 +41,7 @@ public partial class TomlSerializerTests
     {
         var model = new MutatingSerializeModel { Value = 1 };
 
-        var text = TomlSerializer.Serialize(model);
+        string text = TomlSerializer.Serialize(model);
 
         // OnSerializing sets Value to 42 before the table is written.
         Assert.AreEqual("Value = 42\n", text);
@@ -109,7 +109,7 @@ public partial class TomlSerializerTests
         var serializeLog = new List<string>();
         var model = new AllCallbacksModel(serializeLog) { Value = 1 };
 
-        var text = TomlSerializer.Serialize(model);
+        string text = TomlSerializer.Serialize(model);
         CollectionAssert.AreEqual(new[] { "OnSerializing", "OnSerialized" }, serializeLog);
 
         var roundTripped = TomlSerializer.Deserialize<AllCallbacksModel>(text);

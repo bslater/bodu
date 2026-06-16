@@ -107,7 +107,7 @@ public abstract class TextDocumentFormatContractTests<TDocument, TOptions>
         foreach (TextDocumentKat<TDocument, TOptions> kat in ValidCases)
         {
             TDocument first = Parse(kat.Text, kat.Options!);
-            var serialised = Format(first, kat.Options!);
+            string serialised = Format(first, kat.Options!);
             TDocument again = Parse(serialised, kat.Options!);
 
             Assert.IsTrue(

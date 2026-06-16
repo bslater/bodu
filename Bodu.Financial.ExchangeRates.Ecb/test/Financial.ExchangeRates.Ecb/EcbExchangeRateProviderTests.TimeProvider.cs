@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EcbExchangeRateProviderTests.TimeProvider.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -21,7 +21,7 @@ public partial class EcbExchangeRateProviderTests
         EcbExchangeRateProvider provider = new(source, options, logger: null, timeProvider);
         await provider.LoadRangeAsync(new DateOnly(2023, 1, 1), new DateOnly(2023, 12, 31));
 
-        var rate = provider.GetRate("EUR", "USD").Rate.Rate;
+        decimal rate = provider.GetRate("EUR", "USD").Rate.Rate;
 
         Assert.AreEqual(1.0545m, rate);
     }

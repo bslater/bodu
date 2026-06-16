@@ -59,7 +59,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     public void Reset_OnFreshInstance_ShouldBeNoOp(TVariant variant)
     {
         TAlgorithm algorithm = CreateAlgorithm(variant);
-        var before = algorithm.GetCurrentHash();
+        byte[] before = algorithm.GetCurrentHash();
 
         algorithm.Reset();
 

@@ -15,7 +15,7 @@ public sealed partial class OfbModeTransformTests
     public void Dispose_WhenCalledOnce_ShouldNotThrow()
     {
         var cipher = new MonitoringBlockCipher(blockSize: 8);
-        var iv = new byte[cipher.BlockSize / 8];
+        byte[] iv = new byte[cipher.BlockSize / 8];
         var transform = new OfbModeTransform(cipher, iv);
 
         transform.Dispose();
@@ -28,7 +28,7 @@ public sealed partial class OfbModeTransformTests
     public void Dispose_WhenCalledTwice_ShouldNotThrow()
     {
         var cipher = new MonitoringBlockCipher(blockSize: 8);
-        var iv = new byte[cipher.BlockSize / 8];
+        byte[] iv = new byte[cipher.BlockSize / 8];
         var transform = new OfbModeTransform(cipher, iv);
 
         transform.Dispose();

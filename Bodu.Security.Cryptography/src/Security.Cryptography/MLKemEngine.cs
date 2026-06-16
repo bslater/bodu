@@ -57,8 +57,8 @@ internal static partial class MLKemEngine
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(encapsulationKey, parameters.EncapsulationKeySize);
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(decapsulationKey, parameters.DecapsulationKeySize);
 
-        var k = parameters.K;
-        var pkeSecretSize = 384 * k;
+        int k = parameters.K;
+        int pkeSecretSize = 384 * k;
 
         // dk = dk_PKE ‖ ek ‖ H(ek) ‖ z.
         Span<byte> dkPke = decapsulationKey[..pkeSecretSize];
@@ -128,8 +128,8 @@ internal static partial class MLKemEngine
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(ciphertext, parameters.CiphertextSize);
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(sharedSecret, SharedSecretSize);
 
-        var k = parameters.K;
-        var pkeSecretSize = 384 * k;
+        int k = parameters.K;
+        int pkeSecretSize = 384 * k;
 
         ReadOnlySpan<byte> dkPke = decapsulationKey[..pkeSecretSize];
         ReadOnlySpan<byte> ek = decapsulationKey.Slice(pkeSecretSize, parameters.EncapsulationKeySize);
@@ -147,10 +147,10 @@ internal static partial class MLKemEngine
         KeccakSponge.Shake256(z, ciphertext, rejectionKey);
 
         // Re-encrypt and select K' or K̄ without a data-dependent branch.
-        var ciphertextPrime = new byte[parameters.CiphertextSize];
+        byte[] ciphertextPrime = new byte[parameters.CiphertextSize];
         PkeEncrypt(parameters, ek, mPrime, kr[32..], ciphertextPrime);
 
-        var difference = CryptographyHelper.ConstantTimeDifference(ciphertext, ciphertextPrime);
+        int difference = CryptographyHelper.ConstantTimeDifference(ciphertext, ciphertextPrime);
         CryptographyHelper.ConstantTimeSelect(difference, kr[..32], rejectionKey, sharedSecret);
 
         CryptographyHelper.Clear(mPrime);
@@ -172,15 +172,15 @@ internal static partial class MLKemEngine
             return false;
 
         // Decode the 12-bit coefficients and reject any value at or above q.
-        var coefficientBytes = 384 * parameters.K;
-        for (var offset = 0; offset < coefficientBytes; offset += 3)
+        int coefficientBytes = 384 * parameters.K;
+        for (int offset = 0; offset < coefficientBytes; offset += 3)
         {
-            var b0 = encapsulationKey[offset];
-            var b1 = encapsulationKey[offset + 1];
-            var b2 = encapsulationKey[offset + 2];
+            byte b0 = encapsulationKey[offset];
+            byte b1 = encapsulationKey[offset + 1];
+            byte b2 = encapsulationKey[offset + 2];
 
-            var first = b0 | ((b1 & 0x0F) << 8);
-            var second = (b1 >> 4) | (b2 << 4);
+            int first = b0 | ((b1 & 0x0F) << 8);
+            int second = (b1 >> 4) | (b2 << 4);
 
             if (first >= Q || second >= Q)
                 return false;
@@ -201,7 +201,7 @@ internal static partial class MLKemEngine
         if (decapsulationKey.Length != parameters.DecapsulationKeySize)
             return false;
 
-        var pkeSecretSize = 384 * parameters.K;
+        int pkeSecretSize = 384 * parameters.K;
         ReadOnlySpan<byte> ek = decapsulationKey.Slice(pkeSecretSize, parameters.EncapsulationKeySize);
         ReadOnlySpan<byte> storedHash = decapsulationKey.Slice(pkeSecretSize + parameters.EncapsulationKeySize, 32);
 
@@ -221,7 +221,7 @@ internal static partial class MLKemEngine
     /// <param name="dkPke">The span receiving ByteEncode₁₂(ŝ).</param>
     private static void PkeKeyGen(MLKemParameters parameters, ReadOnlySpan<byte> d, Span<byte> ekPke, Span<byte> dkPke)
     {
-        var k = parameters.K;
+        int k = parameters.K;
 
         // (ρ, σ) = G(d ‖ k) with the rank appended as a single byte (FIPS 203 final).
         Span<byte> rhoSigma = stackalloc byte[64];
@@ -232,11 +232,11 @@ internal static partial class MLKemEngine
         ReadOnlySpan<byte> rho = rhoSigma[..32];
         ReadOnlySpan<byte> sigma = rhoSigma[32..];
 
-        var sHat = new int[k][];
-        var tHat = new int[k][];
+        int[][] sHat = new int[k][];
+        int[][] tHat = new int[k][];
 
         // ŝ = NTT(s) with s[i] ← CBD_η₁(PRF(σ, i)).
-        for (var i = 0; i < k; i++)
+        for (int i = 0; i < k; i++)
         {
             sHat[i] = new int[N];
             SamplePolyCbd(parameters.Eta1, sigma, (byte)i, sHat[i]);
@@ -244,15 +244,15 @@ internal static partial class MLKemEngine
         }
 
         // t̂[i] = Σⱼ Â[i][j] ∘ ŝ[j] + NTT(e[i]) with e[i] ← CBD_η₁(PRF(σ, k + i)).
-        var aRow = new int[N];
-        var product = new int[N];
-        for (var i = 0; i < k; i++)
+        int[] aRow = new int[N];
+        int[] product = new int[N];
+        for (int i = 0; i < k; i++)
         {
             tHat[i] = new int[N];
             SamplePolyCbd(parameters.Eta1, sigma, (byte)(k + i), tHat[i]);
             Ntt(tHat[i]);
 
-            for (var j = 0; j < k; j++)
+            for (int j = 0; j < k; j++)
             {
                 SampleNtt(rho, (byte)j, (byte)i, aRow);
                 MultiplyNtt(aRow, sHat[j], product);
@@ -260,7 +260,7 @@ internal static partial class MLKemEngine
             }
         }
 
-        for (var i = 0; i < k; i++)
+        for (int i = 0; i < k; i++)
         {
             ByteEncode(12, tHat[i], ekPke.Slice(i * 384, 384));
             ByteEncode(12, sHat[i], dkPke.Slice(i * 384, 384));
@@ -269,7 +269,7 @@ internal static partial class MLKemEngine
         rho.CopyTo(ekPke[(384 * k)..]);
 
         CryptographyHelper.Clear(rhoSigma);
-        foreach (var poly in sHat)
+        foreach (int[] poly in sHat)
             CryptographyHelper.Clear(poly);
     }
 
@@ -289,28 +289,28 @@ internal static partial class MLKemEngine
         ReadOnlySpan<byte> r,
         Span<byte> ciphertext)
     {
-        var k = parameters.K;
+        int k = parameters.K;
         ReadOnlySpan<byte> rho = ekPke[(384 * k)..];
 
         // ŷ[i] = NTT(y[i]) with y[i] ← CBD_η₁(PRF(r, i)).
-        var yHat = new int[k][];
-        for (var i = 0; i < k; i++)
+        int[][] yHat = new int[k][];
+        for (int i = 0; i < k; i++)
         {
             yHat[i] = new int[N];
             SamplePolyCbd(parameters.Eta1, r, (byte)i, yHat[i]);
             Ntt(yHat[i]);
         }
 
-        var aColumn = new int[N];
-        var product = new int[N];
-        var u = new int[N];
-        var noise = new int[N];
+        int[] aColumn = new int[N];
+        int[] product = new int[N];
+        int[] u = new int[N];
+        int[] noise = new int[N];
 
         // u[i] = InvNTT(Σⱼ Âᵀ[i][j] ∘ ŷ[j]) + e₁[i]; Âᵀ[i][j] = Â[j][i] is sampled with the indices (i, j).
-        for (var i = 0; i < k; i++)
+        for (int i = 0; i < k; i++)
         {
             Array.Clear(u);
-            for (var j = 0; j < k; j++)
+            for (int j = 0; j < k; j++)
             {
                 SampleNtt(rho, (byte)i, (byte)j, aColumn);
                 MultiplyNtt(aColumn, yHat[j], product);
@@ -325,9 +325,9 @@ internal static partial class MLKemEngine
         }
 
         // v = InvNTT(t̂ᵀ ∘ ŷ) + e₂ + Decompress₁(ByteDecode₁(m)).
-        var v = new int[N];
-        var tRow = new int[N];
-        for (var i = 0; i < k; i++)
+        int[] v = new int[N];
+        int[] tRow = new int[N];
+        for (int i = 0; i < k; i++)
         {
             ByteDecode(12, ekPke.Slice(i * 384, 384), tRow);
             MultiplyNtt(tRow, yHat[i], product);
@@ -338,14 +338,14 @@ internal static partial class MLKemEngine
         SamplePolyCbd(parameters.Eta2, r, (byte)(2 * k), noise);
         AddInto(v, noise);
 
-        var message = new int[N];
+        int[] message = new int[N];
         ByteDecode(1, m, message);
-        for (var i = 0; i < N; i++)
+        for (int i = 0; i < N; i++)
             v[i] = (v[i] + Decompress(1, message[i])) % Q;
 
         CompressEncode(parameters.Dv, v, ciphertext[(k * 32 * parameters.Du)..]);
 
-        foreach (var poly in yHat)
+        foreach (int[] poly in yHat)
             CryptographyHelper.Clear(poly);
         CryptographyHelper.Clear(v);
         CryptographyHelper.Clear(noise);
@@ -365,15 +365,15 @@ internal static partial class MLKemEngine
         ReadOnlySpan<byte> ciphertext,
         Span<byte> m)
     {
-        var k = parameters.K;
+        int k = parameters.K;
 
         // w = v' − InvNTT(ŝᵀ ∘ NTT(u')).
-        var w = new int[N];
-        var u = new int[N];
-        var s = new int[N];
-        var product = new int[N];
+        int[] w = new int[N];
+        int[] u = new int[N];
+        int[] s = new int[N];
+        int[] product = new int[N];
 
-        for (var i = 0; i < k; i++)
+        for (int i = 0; i < k; i++)
         {
             DecodeDecompress(parameters.Du, ciphertext.Slice(i * 32 * parameters.Du, 32 * parameters.Du), u);
             Ntt(u);
@@ -384,11 +384,11 @@ internal static partial class MLKemEngine
 
         InvNtt(w);
 
-        var v = new int[N];
+        int[] v = new int[N];
         DecodeDecompress(parameters.Dv, ciphertext[(k * 32 * parameters.Du)..], v);
 
-        var message = new int[N];
-        for (var i = 0; i < N; i++)
+        int[] message = new int[N];
+        for (int i = 0; i < N; i++)
             message[i] = Compress(1, (v[i] - w[i] + (Q * 2)) % Q);
 
         ByteEncode(1, message, m);
@@ -405,7 +405,7 @@ internal static partial class MLKemEngine
     /// <param name="source">The polynomial to add. Coefficients in [0, q).</param>
     private static void AddInto(Span<int> accumulator, ReadOnlySpan<int> source)
     {
-        for (var i = 0; i < N; i++)
+        for (int i = 0; i < N; i++)
             accumulator[i] = (accumulator[i] + source[i]) % Q;
     }
 

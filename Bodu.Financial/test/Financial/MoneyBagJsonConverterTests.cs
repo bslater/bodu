@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyBagJsonConverterTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -29,7 +29,7 @@ public class MoneyBagJsonConverterTests
     [TestMethod]
     public void Strict_WhenRoundTripped_ShouldPreserveBalances()
     {
-        var json = JsonSerializer.Serialize(SampleBag());
+        string json = JsonSerializer.Serialize(SampleBag());
         MoneyBag restored = JsonSerializer.Deserialize<MoneyBag>(json)!;
 
         StringAssert.Contains(json, "balances");
@@ -44,7 +44,7 @@ public class MoneyBagJsonConverterTests
     {
         JsonSerializerOptions options = OptionsFor(FinancialJsonPolicy.Compact);
 
-        var json = JsonSerializer.Serialize(SampleBag(), options);
+        string json = JsonSerializer.Serialize(SampleBag(), options);
         MoneyBag restored = JsonSerializer.Deserialize<MoneyBag>(json, options)!;
 
         Assert.IsFalse(json.Contains("balances", StringComparison.Ordinal));
@@ -57,7 +57,7 @@ public class MoneyBagJsonConverterTests
     [TestMethod]
     public void Strict_WhenEmpty_ShouldRoundTripToEmpty()
     {
-        var json = JsonSerializer.Serialize(new MoneyBag());
+        string json = JsonSerializer.Serialize(new MoneyBag());
         MoneyBag restored = JsonSerializer.Deserialize<MoneyBag>(json)!;
 
         Assert.AreEqual(0, restored.Count);

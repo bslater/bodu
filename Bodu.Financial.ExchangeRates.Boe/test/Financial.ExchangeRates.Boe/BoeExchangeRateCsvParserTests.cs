@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoeExchangeRateCsvParserTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -62,7 +62,7 @@ public class BoeExchangeRateCsvParserTests
     [TestMethod]
     public void Parse_WhenCellEmpty_ShouldSkipCell()
     {
-        var csv =
+        string csv =
             "\"DATE\",\"XUDLUSS\",\"XUDLJYS\"\n" +
             "\"03 Jan 2023\",\"\",\"159.10\"\n";
 
@@ -78,7 +78,7 @@ public class BoeExchangeRateCsvParserTests
     [TestMethod]
     public void Parse_WhenColumnNotConfigured_ShouldIgnoreColumn()
     {
-        var csv =
+        string csv =
             "\"DATE\",\"XUDLUSS\",\"XUDLZZZ\"\n" +
             "\"03 Jan 2023\",\"1.2065\",\"9.9999\"\n";
 

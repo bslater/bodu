@@ -15,10 +15,10 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void ToSafeFileName_WhenInputContainsInvalidChars_ShouldReplaceWithUnderscore()
     {
-        var invalid = Path.GetInvalidFileNameChars()[0];
-        var input = $"valid{invalid}name.txt";
+        char invalid = Path.GetInvalidFileNameChars()[0];
+        string input = $"valid{invalid}name.txt";
 
-        var actual = input.ToSafeFileName();
+        string actual = input.ToSafeFileName();
 
         Assert.AreEqual($"valid_name.txt", actual);
     }
@@ -32,7 +32,7 @@ public partial class StringExtensionsTests
     {
         const string input = "report-2024.txt";
 
-        var actual = input.ToSafeFileName();
+        string actual = input.ToSafeFileName();
 
         Assert.AreEqual(input, actual);
     }

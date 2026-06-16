@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="WebExchangeRateProvider.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -30,8 +30,8 @@ namespace Bodu.Financial;
 /// current instant supplied by the time provider. Derived types implement the feed-specific
 /// <see cref="EnsureLoadedAsync(ExchangeRatePair, DateOnly, DateOnly, CancellationToken)" /> and
 /// <see cref="IsLoaded(ExchangeRatePair, DateOnly, DateOnly)" /> and accumulate fetched observations through
-/// <see cref="AddObservations(IEnumerable{ExchangeRate}, DateTimeOffset?)" /> followed by <see cref="RebuildSnapshot" />, all under
-/// <see cref="SyncRoot" />.
+/// <see cref="AddObservations(IEnumerable{ExchangeRate}, DateTimeOffset?)" /> followed by
+/// <see cref="RebuildSnapshot" />, all under <see cref="SyncRoot" />.
 /// </para>
 /// </remarks>
 public abstract class WebExchangeRateProvider
@@ -60,8 +60,8 @@ public abstract class WebExchangeRateProvider
     private readonly TimeProvider _timeProvider;
 
     /// <summary>
-    /// The HTTP client owned by this provider, disposed with it; <see langword="null" /> when the client was supplied by
-    /// the caller and its lifetime is the caller's responsibility.
+    /// The HTTP client owned by this provider, disposed with it; <see langword="null" /> when the client was supplied
+    /// by the caller and its lifetime is the caller's responsibility.
     /// </summary>
     private readonly HttpClient? _ownedHttpClient;
 
@@ -216,7 +216,7 @@ public abstract class WebExchangeRateProvider
             FinancialThrowHelper.ThrowIfNotValidIsoCode(toIsoCode);
 
             ExchangeRatePair pair = new(fromIsoCode, toIsoCode);
-            var startDate = date.AddDays(-(int)DefaultLookback.TotalDays);
+            DateOnly startDate = date.AddDays(-(int)DefaultLookback.TotalDays);
             await EnsureLoadedAsync(pair, startDate, date, cancellationToken).ConfigureAwait(false);
         }
 
@@ -259,10 +259,12 @@ public abstract class WebExchangeRateProvider
     /// <summary>
     /// Ensures the inclusive window for a pair has been fetched and accumulated, idempotently. Implementations perform
     /// their own coverage check, request coalescing, fetch, and accumulation (via
-    /// <see cref="AddObservations(IEnumerable{ExchangeRate}, DateTimeOffset?)" /> and <see cref="RebuildSnapshot" /> under
-    /// <see cref="SyncRoot" />).
+    /// <see cref="AddObservations(IEnumerable{ExchangeRate}, DateTimeOffset?)" /> and <see cref="RebuildSnapshot" />
+    /// under <see cref="SyncRoot" />).
     /// </summary>
-    /// <param name="pair">The currency pair to ensure data for. Feeds that fetch by range, feed, or file may ignore it.</param>
+    /// <param name="pair">
+    /// The currency pair to ensure data for. Feeds that fetch by range, feed, or file may ignore it.
+    /// </param>
     /// <param name="startDate">The inclusive start of the window.</param>
     /// <param name="endDate">The inclusive end of the window.</param>
     /// <param name="cancellationToken">A token to observe while awaiting the fetch.</param>
@@ -270,13 +272,15 @@ public abstract class WebExchangeRateProvider
     protected abstract ValueTask EnsureLoadedAsync(ExchangeRatePair pair, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken);
 
     /// <summary>
-    /// Reports whether the inclusive window for a pair has already been fetched, so the synchronous lookup path can skip
-    /// a redundant blocking fetch.
+    /// Reports whether the inclusive window for a pair has already been fetched, so the synchronous lookup path can
+    /// skip a redundant blocking fetch.
     /// </summary>
     /// <param name="pair">The currency pair to test.</param>
     /// <param name="startDate">The inclusive start of the window.</param>
     /// <param name="endDate">The inclusive end of the window.</param>
-    /// <returns><see langword="true" /> when the window is already covered; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the window is already covered; otherwise <see langword="false" />.
+    /// </returns>
     protected abstract bool IsLoaded(ExchangeRatePair pair, DateOnly startDate, DateOnly endDate);
 
     /// <summary>
@@ -298,10 +302,10 @@ public abstract class WebExchangeRateProvider
     /// fetch continues to completion for any other joiner.
     /// </exception>
     /// <remarks>
-    /// The shared fetch runs under <see cref="CancellationToken.None" />, so one caller's cancellation abandons only its
-    /// own wait and never faults the fetch for the other joiners — appropriate for the idempotent cache-warming loads
-    /// whose result populates the shared snapshot. The in-flight entry is released as soon as the fetch completes,
-    /// including on failure, so a fault never poisons the key and the next caller starts a fresh attempt.
+    /// The shared fetch runs under <see cref="CancellationToken.None" />, so one caller's cancellation abandons only
+    /// its own wait and never faults the fetch for the other joiners — appropriate for the idempotent cache-warming
+    /// loads whose result populates the shared snapshot. The in-flight entry is released as soon as the fetch
+    /// completes, including on failure, so a fault never poisons the key and the next caller starts a fresh attempt.
     /// </remarks>
     protected Task LoadCoalescedAsync(string key, Func<CancellationToken, Task> load, CancellationToken cancellationToken)
     {
@@ -325,7 +329,7 @@ public abstract class WebExchangeRateProvider
     {
         ThrowHelper.ThrowIfNull(rates);
 
-        var count = 0;
+        int count = 0;
         foreach (ExchangeRate rate in rates)
         {
             _builder.Upsert(new ExchangeRatePair(rate.FromIsoCode, rate.ToIsoCode), ProviderId, rate.Date, rate.Rate, fetchedAtUtc);
@@ -436,7 +440,7 @@ public abstract class WebExchangeRateProvider
             return false;
 
         ExchangeRatePair pair = new(fromIsoCode, toIsoCode);
-        var startDate = date.AddDays(-(int)DefaultLookback.TotalDays);
+        DateOnly startDate = date.AddDays(-(int)DefaultLookback.TotalDays);
 
         if (IsLoaded(pair, startDate, date))
             return false;

@@ -16,10 +16,10 @@ public abstract partial class KeyedDeferredFinalBlockHashAlgorithmTests<TTest, T
     public void ComputeHash_WhenKeyedAndUnkeyed_ShouldProduceDifferentDigests()
     {
         using TAlgorithm reference = CreateAlgorithm();
-        var maxKeyBytes = reference.MaximumKeySize / 8;
-        var message = new byte[maxKeyBytes];
-        var keySize = Math.Max(1, maxKeyBytes / 2);
-        var key = Enumerable.Range(1, keySize).Select(i => (byte)i).ToArray();
+        int maxKeyBytes = reference.MaximumKeySize / 8;
+        byte[] message = new byte[maxKeyBytes];
+        int keySize = Math.Max(1, maxKeyBytes / 2);
+        byte[] key = Enumerable.Range(1, keySize).Select(i => (byte)i).ToArray();
 
         byte[] unkeyedHash;
         byte[] keyedHash;
@@ -43,14 +43,14 @@ public abstract partial class KeyedDeferredFinalBlockHashAlgorithmTests<TTest, T
     public void ComputeHash_WhenKeyedWithSameKeyAndInput_ShouldProduceConsistentDigest()
     {
         using TAlgorithm sut = CreateAlgorithm();
-        var maxKeyBytes = sut.MaximumKeySize / 8;
-        var keySize = Math.Max(1, maxKeyBytes / 2);
-        var message = new byte[maxKeyBytes * 2];
-        var key = Enumerable.Range(1, keySize).Select(i => (byte)i).ToArray();
+        int maxKeyBytes = sut.MaximumKeySize / 8;
+        int keySize = Math.Max(1, maxKeyBytes / 2);
+        byte[] message = new byte[maxKeyBytes * 2];
+        byte[] key = Enumerable.Range(1, keySize).Select(i => (byte)i).ToArray();
         sut.Key = key;
 
-        var hash1 = sut.ComputeHash(message);
-        var hash2 = sut.ComputeHash(message);
+        byte[] hash1 = sut.ComputeHash(message);
+        byte[] hash2 = sut.ComputeHash(message);
 
         CollectionAssert.AreEqual(hash1, hash2);
     }
@@ -62,11 +62,11 @@ public abstract partial class KeyedDeferredFinalBlockHashAlgorithmTests<TTest, T
     public void ComputeHash_WhenDifferentKeysUsed_ShouldProduceDifferentDigests()
     {
         using TAlgorithm reference = CreateAlgorithm();
-        var maxKeyBytes = reference.MaximumKeySize / 8;
-        var message = new byte[maxKeyBytes];
-        var keySize = Math.Max(1, maxKeyBytes / 2);
-        var key1 = Enumerable.Range(0, keySize).Select(i => (byte)i).ToArray();
-        var key2 = Enumerable.Range(0, keySize).Select(i => (byte)(i ^ 0xFF)).ToArray();
+        int maxKeyBytes = reference.MaximumKeySize / 8;
+        byte[] message = new byte[maxKeyBytes];
+        int keySize = Math.Max(1, maxKeyBytes / 2);
+        byte[] key1 = Enumerable.Range(0, keySize).Select(i => (byte)i).ToArray();
+        byte[] key2 = Enumerable.Range(0, keySize).Select(i => (byte)(i ^ 0xFF)).ToArray();
 
         byte[] hash1;
         byte[] hash2;
@@ -94,9 +94,9 @@ public abstract partial class KeyedDeferredFinalBlockHashAlgorithmTests<TTest, T
     public void ComputeHash_WhenKeyCleared_ShouldMatchUnkeyedDigest()
     {
         using TAlgorithm reference = CreateAlgorithm();
-        var maxKeyBytes = reference.MaximumKeySize / 8;
-        var message = new byte[maxKeyBytes];
-        var key = new byte[Math.Max(1, maxKeyBytes / 2)];
+        int maxKeyBytes = reference.MaximumKeySize / 8;
+        byte[] message = new byte[maxKeyBytes];
+        byte[] key = new byte[Math.Max(1, maxKeyBytes / 2)];
 
         byte[] unkeyedHash;
         byte[] clearedKeyHash;
@@ -125,10 +125,10 @@ public abstract partial class KeyedDeferredFinalBlockHashAlgorithmTests<TTest, T
     public void ComputeHash_WhenKeyedWithEmptyInput_ShouldReturnNonEmptyDigest()
     {
         using TAlgorithm sut = CreateAlgorithm();
-        var keySize = Math.Max(1, (sut.MaximumKeySize / 8) / 2);
+        int keySize = Math.Max(1, (sut.MaximumKeySize / 8) / 2);
         sut.Key = Enumerable.Range(0, keySize).Select(i => (byte)i).ToArray();
 
-        var digest = sut.ComputeHash([]);
+        byte[] digest = sut.ComputeHash([]);
 
         Assert.IsNotNull(digest);
         Assert.AreEqual(sut.HashSize / 8, digest.Length);
@@ -143,17 +143,17 @@ public abstract partial class KeyedDeferredFinalBlockHashAlgorithmTests<TTest, T
     public void ComputeHash_WhenKeyChangedBetweenCalls_ShouldProduceDifferentDigests()
     {
         using TAlgorithm sut = CreateAlgorithm();
-        var maxKeyBytes = sut.MaximumKeySize / 8;
-        var message = new byte[maxKeyBytes];
-        var keySize = Math.Max(1, maxKeyBytes / 2);
-        var key1 = Enumerable.Range(0, keySize).Select(i => (byte)i).ToArray();
-        var key2 = Enumerable.Range(0, keySize).Select(i => (byte)(255 - i)).ToArray();
+        int maxKeyBytes = sut.MaximumKeySize / 8;
+        byte[] message = new byte[maxKeyBytes];
+        int keySize = Math.Max(1, maxKeyBytes / 2);
+        byte[] key1 = Enumerable.Range(0, keySize).Select(i => (byte)i).ToArray();
+        byte[] key2 = Enumerable.Range(0, keySize).Select(i => (byte)(255 - i)).ToArray();
 
         sut.Key = key1;
-        var hash1 = sut.ComputeHash(message);
+        byte[] hash1 = sut.ComputeHash(message);
 
         sut.Key = key2;
-        var hash2 = sut.ComputeHash(message);
+        byte[] hash2 = sut.ComputeHash(message);
 
         Assert.AreNotEqual(Convert.ToHexString(hash1), Convert.ToHexString(hash2));
     }
@@ -166,7 +166,7 @@ public abstract partial class KeyedDeferredFinalBlockHashAlgorithmTests<TTest, T
     public void ComputeHash_WhenKeyIsMinimalOneByteKey_ShouldDifferFromUnkeyedDigest()
     {
         using TAlgorithm reference = CreateAlgorithm();
-        var message = new byte[reference.MaximumKeySize / 8];
+        byte[] message = new byte[reference.MaximumKeySize / 8];
         byte[] key = [0x42];
 
         byte[] unkeyedHash;
@@ -202,7 +202,7 @@ public abstract partial class KeyedDeferredFinalBlockHashAlgorithmTests<TTest, T
         using TAlgorithm sut = CreateAlgorithm(variant);
         sut.Key = key;
 
-        var actual = sut.ComputeHash(input);
+        byte[] actual = sut.ComputeHash(input);
 
         CollectionAssert.AreEqual(expected, actual,
             $"Keyed KAT mismatch for '{name}' using variant '{variant}'.  " +

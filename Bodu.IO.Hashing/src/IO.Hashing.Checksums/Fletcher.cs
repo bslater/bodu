@@ -110,7 +110,7 @@ public abstract class Fletcher<TSelf>
     /// <inheritdoc />
     protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength)
     {
-        var buffer = new byte[BlockSizeBytes];
+        byte[] buffer = new byte[BlockSizeBytes];
         block.CopyTo(buffer);
         return buffer;
     }
@@ -126,8 +126,8 @@ public abstract class Fletcher<TSelf>
     /// <inheritdoc />
     protected override byte[] ProcessFinalBlock()
     {
-        var result = new byte[_hashSizeBits / 8];
-        var halfLength = result.Length / 2;
+        byte[] result = new byte[_hashSizeBits / 8];
+        int halfLength = result.Length / 2;
 
         WriteBigEndian(_partB, result.AsSpan(0, halfLength));
         WriteBigEndian(_partA, result.AsSpan(halfLength, halfLength));
@@ -153,7 +153,7 @@ public abstract class Fletcher<TSelf>
     /// <param name="destination">The span that receives the big-endian bytes.</param>
     private static void WriteBigEndian(ulong value, Span<byte> destination)
     {
-        for (var i = 0; i < destination.Length; i++)
+        for (int i = 0; i < destination.Length; i++)
         {
             destination[i] = (byte)(value >> ((destination.Length - i - 1) << 3));
         }

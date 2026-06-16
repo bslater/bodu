@@ -16,7 +16,7 @@ public partial class SequenceGeneratorTests
     [DataRow(int.MaxValue - 2, int.MaxValue, new[] { int.MaxValue - 2, int.MaxValue - 1, int.MaxValue })]
     public void Range_WhenAtInt32Boundaries_ShouldReturnExpectedSequence(int start, int stop, int[] expected)
     {
-        var actual = SequenceGenerator.Range(start, stop).ToArray();
+        int[] actual = SequenceGenerator.Range(start, stop).ToArray();
         CollectionAssert.AreEqual(expected, actual);
     }
 
@@ -26,8 +26,8 @@ public partial class SequenceGeneratorTests
     [TestMethod]
     public void Range_WhenCalled_ShouldDeferExecution()
     {
-        var start = 1;
-        var stop = 10;
+        int start = 1;
+        int stop = 10;
 
         AssertExecutionIsDeferred("Range", _ =>
             SequenceGenerator.Range(start, stop), [start, stop]);
@@ -51,7 +51,7 @@ public partial class SequenceGeneratorTests
     [TestMethod]
     public void Range_WhenCountIsPositive_ShouldReturnCorrectLongSequence()
     {
-        var actual = SequenceGenerator.Range(1000L, 5).ToArray();
+        long[] actual = SequenceGenerator.Range(1000L, 5).ToArray();
         CollectionAssert.AreEqual(new long[] { 1000, 1001, 1002, 1003, 1004 }, actual);
     }
 
@@ -61,7 +61,7 @@ public partial class SequenceGeneratorTests
     [TestMethod]
     public void Range_WhenCountIsZero_ShouldReturnEmptySequence()
     {
-        var actual = SequenceGenerator.Range(500L, 0).ToArray();
+        long[] actual = SequenceGenerator.Range(500L, 0).ToArray();
         Assert.IsEmpty(actual);
     }
 
@@ -87,7 +87,7 @@ public partial class SequenceGeneratorTests
     [DataRow(3, 3, new[] { 3 })]
     public void Range_WhenStartAndStopAreValid_ShouldReturnInclusiveSequence(int start, int stop, int[] expected)
     {
-        var actual = SequenceGenerator.Range(start, stop).ToArray();
+        int[] actual = SequenceGenerator.Range(start, stop).ToArray();
         CollectionAssert.AreEqual(expected, actual);
     }
 
@@ -97,7 +97,7 @@ public partial class SequenceGeneratorTests
     [TestMethod]
     public void Range_WhenStartIsLongMaxAndCountIsOne_ShouldReturnSingleValue()
     {
-        var actual = SequenceGenerator.Range(long.MaxValue, 1).ToArray();
+        long[] actual = SequenceGenerator.Range(long.MaxValue, 1).ToArray();
         CollectionAssert.AreEqual(new[] { long.MaxValue }, actual);
     }
 
@@ -107,7 +107,7 @@ public partial class SequenceGeneratorTests
     [TestMethod]
     public void Range_WhenStepDirectionIsInvalid_ShouldYieldEmptySequence()
     {
-        var actual = SequenceGenerator.Range(0, 10, -1).ToArray();
+        int[] actual = SequenceGenerator.Range(0, 10, -1).ToArray();
         Assert.IsEmpty(actual);
     }
 
@@ -117,8 +117,8 @@ public partial class SequenceGeneratorTests
     [TestMethod]
     public void Range_WhenStepIsSpecified_ShouldDeferExecution()
     {
-        var start = 1;
-        var stop = 10;
+        int start = 1;
+        int stop = 10;
 
         AssertExecutionIsDeferred("Range", _ =>
             SequenceGenerator.Range(start, stop, 1), [start, stop]);
@@ -133,7 +133,7 @@ public partial class SequenceGeneratorTests
     [DataRow(4, 4, 0, new[] { 4, 4, 4, 4 })]
     public void Range_WhenStepIsSpecified_ShouldRespectStepDirection(int start, int stop, int step, int[] expected)
     {
-        var actual = SequenceGenerator.Range(start, stop, step).Take(expected.Length).ToArray();
+        int[] actual = SequenceGenerator.Range(start, stop, step).Take(expected.Length).ToArray();
         CollectionAssert.AreEqual(expected, actual);
     }
 
@@ -143,7 +143,7 @@ public partial class SequenceGeneratorTests
     [TestMethod]
     public void Range_WhenStepIsZero_ShouldRepeatStartIndefinitely()
     {
-        var actual = SequenceGenerator.Range(7, 100, 0).Take(4).ToArray();
+        int[] actual = SequenceGenerator.Range(7, 100, 0).Take(4).ToArray();
         CollectionAssert.AreEqual(new[] { 7, 7, 7, 7 }, actual);
     }
 

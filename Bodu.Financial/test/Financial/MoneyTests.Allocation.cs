@@ -120,15 +120,15 @@ public partial class MoneyTests
 
         Money[] shares = original.Allocate(ratios);
 
-        var totalWeight = 0m;
-        foreach (var r in ratios)
+        decimal totalWeight = 0m;
+        foreach (decimal r in ratios)
             totalWeight += r;
 
         var sum = Money.From(0m, "USD");
-        for (var i = 0; i < ratios.Length; i++)
+        for (int i = 0; i < ratios.Length; i++)
         {
             sum += shares[i];
-            var exact = original.Amount * ratios[i] / totalWeight;
+            decimal exact = original.Amount * ratios[i] / totalWeight;
             Assert.IsTrue(Math.Abs(shares[i].Amount - exact) <= 0.01m);
         }
 

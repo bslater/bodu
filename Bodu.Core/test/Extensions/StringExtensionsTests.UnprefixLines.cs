@@ -15,7 +15,7 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void UnprefixLines_WhenAllLinesArePrefixed_ShouldStripPrefixFromEveryLine()
     {
-        var actual = "// one\n// two".UnprefixLines("// ");
+        string actual = "// one\n// two".UnprefixLines("// ");
 
         Assert.AreEqual("one\ntwo", actual);
     }
@@ -27,7 +27,7 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void UnprefixLines_WhenLineDoesNotBeginWithPrefix_ShouldLeaveLineUnchanged()
     {
-        var actual = "// one\nxtwo".UnprefixLines("// ");
+        string actual = "// one\nxtwo".UnprefixLines("// ");
 
         Assert.AreEqual("one\nxtwo", actual);
     }
@@ -41,7 +41,7 @@ public partial class StringExtensionsTests
     {
         const string input = "one\ntwo\r\nthree";
 
-        var actual = input.PrefixLines("// ").UnprefixLines("// ");
+        string actual = input.PrefixLines("// ").UnprefixLines("// ");
 
         Assert.AreEqual(input, actual);
     }

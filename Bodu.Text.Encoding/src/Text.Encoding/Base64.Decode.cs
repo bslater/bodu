@@ -48,7 +48,7 @@ public static partial class Base64
         if (chars.IsEmpty)
             return [];
 
-        var rentSize = chars.Length + 4; // headroom for re-padding
+        int rentSize = chars.Length + 4; // headroom for re-padding
 
         // Stackalloc the scratch buffer for small inputs; fall back to ArrayPool for large inputs. The 256-char
         // threshold matches a single decoded payload of ~192 bytes, which covers JWTs, OAuth state tokens, and
@@ -59,7 +59,7 @@ public static partial class Base64
             return DecodeCore(chars, scratch, variant, style);
         }
 
-        var pooled = ArrayPool<char>.Shared.Rent(rentSize);
+        char[] pooled = ArrayPool<char>.Shared.Rent(rentSize);
 
         try
         {
@@ -84,12 +84,12 @@ public static partial class Base64
     /// <exception cref="FormatException">Thrown when the input is not valid Base64.</exception>
     private static byte[] DecodeCore(ReadOnlySpan<char> chars, Span<char> scratch, Base64Variant variant, BaseFormatStyles style)
     {
-        var normalized = NormalizeForDecode(chars, scratch, variant, style);
+        int normalized = NormalizeForDecode(chars, scratch, variant, style);
         if (normalized < 0)
             throw new FormatException(EncodingResourceStrings.Format_Invalid_Base64Alphabet);
 
-        var buffer = new byte[GetExactDecodedLength(scratch[..normalized])];
-        if (!Convert.TryFromBase64Chars(scratch[..normalized], buffer, out var bytesWritten)
+        byte[] buffer = new byte[GetExactDecodedLength(scratch[..normalized])];
+        if (!Convert.TryFromBase64Chars(scratch[..normalized], buffer, out int bytesWritten)
             || bytesWritten != buffer.Length)
         {
             throw new FormatException(EncodingResourceStrings.Format_Invalid_Base64);
@@ -112,8 +112,8 @@ public static partial class Base64
     /// <returns>The exact decoded byte count, never negative.</returns>
     private static int GetExactDecodedLength(ReadOnlySpan<char> normalized)
     {
-        var groups = normalized.Length / 4;
-        var padding = 0;
+        int groups = normalized.Length / 4;
+        int padding = 0;
 
         if (normalized.Length >= 1 && normalized[^1] == PaddingChar)
         {
@@ -175,11 +175,11 @@ public static partial class Base64
         if (chars.IsEmpty)
             return true;
 
-        var rentSize = chars.Length + 4;
-        var scratch = ArrayPool<char>.Shared.Rent(rentSize);
+        int rentSize = chars.Length + 4;
+        char[] scratch = ArrayPool<char>.Shared.Rent(rentSize);
         try
         {
-            var normalized = NormalizeForDecode(chars, scratch, variant, style);
+            int normalized = NormalizeForDecode(chars, scratch, variant, style);
             if (normalized < 0)
                 return false;
 
@@ -213,14 +213,14 @@ public static partial class Base64
     /// </returns>
     private static bool IsCanonicalEncoding(ReadOnlySpan<byte> decodedBytes, ReadOnlySpan<char> normalisedInput)
     {
-        var expectedLength = ((decodedBytes.Length + 2) / 3) * 4;
+        int expectedLength = ((decodedBytes.Length + 2) / 3) * 4;
         if (expectedLength != normalisedInput.Length)
             return false;
 
         Span<char> reencoded = expectedLength <= 256
             ? stackalloc char[256]
             : new char[expectedLength];
-        return Convert.TryToBase64Chars(decodedBytes, reencoded, out var reLen) && normalisedInput.SequenceEqual(reencoded.Slice(0, reLen));
+        return Convert.TryToBase64Chars(decodedBytes, reencoded, out int reLen) && normalisedInput.SequenceEqual(reencoded.Slice(0, reLen));
     }
 
     /// <summary>
@@ -234,14 +234,14 @@ public static partial class Base64
     /// <returns>The length of the normalised buffer, or <c>-1</c> if the input contains an illegal character.</returns>
     private static int NormalizeForDecode(ReadOnlySpan<char> source, Span<char> scratch, Base64Variant variant, BaseFormatStyles style)
     {
-        var ignoreWhitespace = style.HasFlag(BaseFormatStyles.IgnoreWhitespace) || variant == Base64Variant.Mime;
-        var urlSafe = variant == Base64Variant.UrlSafe;
-        var allowMissingPadding = style.HasFlag(BaseFormatStyles.AllowMissingPadding) || urlSafe;
+        bool ignoreWhitespace = style.HasFlag(BaseFormatStyles.IgnoreWhitespace) || variant == Base64Variant.Mime;
+        bool urlSafe = variant == Base64Variant.UrlSafe;
+        bool allowMissingPadding = style.HasFlag(BaseFormatStyles.AllowMissingPadding) || urlSafe;
 
-        var j = 0;
-        var paddingSeen = false;
+        int j = 0;
+        bool paddingSeen = false;
 
-        foreach (var c in source)
+        foreach (char c in source)
         {
             if (ignoreWhitespace && c is ' ' or '\t' or '\r' or '\n')
                 continue;
@@ -260,7 +260,7 @@ public static partial class Base64
 
             // Per RFC 4648 §4 and §5 the alphabets are disjoint with respect to '+/' and '-_'. Reject characters that
             // belong to the opposite variant before forwarding the normalised scratch buffer to the BCL decoder.
-            var isLetterOrDigit = c is (>= 'A' and <= 'Z') or (>= 'a' and <= 'z') or (>= '0' and <= '9');
+            bool isLetterOrDigit = c is (>= 'A' and <= 'Z') or (>= 'a' and <= 'z') or (>= '0' and <= '9');
             char mapped;
             if (urlSafe)
             {
@@ -288,7 +288,7 @@ public static partial class Base64
 
         if (allowMissingPadding)
         {
-            var remainder = j % 4;
+            int remainder = j % 4;
             if (remainder == 2)
             {
                 scratch[j++] = PaddingChar;

@@ -18,7 +18,7 @@ public partial class ThrowHelperTests
     [DataRow(7, 3)]  // Not a multiple
     public void ThrowIfSpanLengthNotPositiveMultipleOf_ReadOnlySpan_WhenLengthInvalid_ShouldThrowExactly(int length, int factor)
     {
-        var span = new int[length];
+        int[] span = new int[length];
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
             ThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf(new ReadOnlySpan<int>(span), factor);
@@ -47,7 +47,7 @@ public partial class ThrowHelperTests
     [DataRow(7, 3)]
     public void ThrowIfSpanLengthNotPositiveMultipleOf_Span_WhenLengthInvalid_ShouldThrowExactly(int length, int factor)
     {
-        var span = new int[length];
+        int[] span = new int[length];
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
             ThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf(span.AsSpan(), factor);
@@ -81,7 +81,7 @@ public partial class ThrowHelperTests
     public void ThrowIfSpanLengthNotPositiveMultipleOf_WhenLengthIsValidMultiple_ShouldNotThrowAndReportNothing(
         string testName, int length, int divisor)
     {
-        var buffer = new int[length];
+        int[] buffer = new int[length];
 
         AssertGuard(
             $"Span<T>: {testName}",
@@ -112,7 +112,7 @@ public partial class ThrowHelperTests
     public void ThrowIfSpanLengthNotPositiveMultipleOf_WhenLengthIsInvalid_ShouldThrowOnSpan(
         string testName, int length, int divisor)
     {
-        var buffer = new int[length];
+        int[] buffer = new int[length];
 
         AssertGuard(
             $"Span<T>: {testName}",

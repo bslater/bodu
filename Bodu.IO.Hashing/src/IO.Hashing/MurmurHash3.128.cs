@@ -110,14 +110,14 @@ public sealed class MurmurHash3_128
     {
         ulong h1 = Seed;
         ulong h2 = Seed;
-        var len = source.Length;
-        var nblocks = len / 16;
+        int len = source.Length;
+        int nblocks = len / 16;
 
         // Body: process 16-byte blocks as two 64-bit words.
-        for (var i = 0; i < nblocks; i++)
+        for (int i = 0; i < nblocks; i++)
         {
-            var k1 = BinaryPrimitives.ReadUInt64LittleEndian(source.Slice(i * 16, 8));
-            var k2 = BinaryPrimitives.ReadUInt64LittleEndian(source.Slice((i * 16) + 8, 8));
+            ulong k1 = BinaryPrimitives.ReadUInt64LittleEndian(source.Slice(i * 16, 8));
+            ulong k2 = BinaryPrimitives.ReadUInt64LittleEndian(source.Slice((i * 16) + 8, 8));
 
             k1 = unchecked(k1 * C1);
             k1 = RotateLeft(k1, 31);
@@ -186,7 +186,7 @@ public sealed class MurmurHash3_128
         h1 = unchecked(h1 + h2);
         h2 = unchecked(h2 + h1);
 
-        var result = new byte[16];
+        byte[] result = new byte[16];
         BinaryPrimitives.WriteUInt64LittleEndian(result.AsSpan(0, 8), h1);
         BinaryPrimitives.WriteUInt64LittleEndian(result.AsSpan(8, 8), h2);
         return result;

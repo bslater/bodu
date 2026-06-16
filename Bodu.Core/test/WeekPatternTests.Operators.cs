@@ -146,8 +146,8 @@ public partial class WeekPatternTests
     {
         var pattern = new WeekPattern(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
 
-        var viaToByte = pattern.ToByte();
-        var viaToInt32 = pattern.ToInt32();
+        byte viaToByte = pattern.ToByte();
+        int viaToInt32 = pattern.ToInt32();
         byte viaImplicitByte = pattern;
 
         Assert.AreEqual(viaToByte, (byte)viaToInt32, "ToByte and ToInt32 should agree.");

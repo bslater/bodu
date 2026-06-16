@@ -71,7 +71,7 @@ public partial class IndexedPriorityQueueTests
         _ = queue.Dequeue();
         _ = queue.Dequeue();
 
-        Assert.IsFalse(queue.TryPeek(out var element, out var priority));
+        Assert.IsFalse(queue.TryPeek(out string? element, out int priority));
         Assert.IsNull(element);
         Assert.AreEqual(0, priority);
     }
@@ -84,7 +84,7 @@ public partial class IndexedPriorityQueueTests
     {
         var queue = new IndexedPriorityQueue<string, int>();
 
-        Assert.IsFalse(queue.TryPeek(out var element, out var priority));
+        Assert.IsFalse(queue.TryPeek(out string? element, out int priority));
         Assert.IsNull(element);
         Assert.AreEqual(0, priority);
     }
@@ -99,7 +99,7 @@ public partial class IndexedPriorityQueueTests
         queue.Enqueue("a", 50);
         queue.Enqueue("b", 5);
 
-        Assert.IsTrue(queue.TryPeek(out var element, out var priority));
+        Assert.IsTrue(queue.TryPeek(out string? element, out int priority));
         Assert.AreEqual("b", element);
         Assert.AreEqual(5, priority);
     }

@@ -91,7 +91,7 @@ public partial class MoneyOfTCurrencyTests
         var a = new Money<USD>(10m);
         var b = new Money<USD>(4m);
 
-        var ratio = a / b;
+        decimal ratio = a / b;
 
         Assert.AreEqual(2.5m, ratio);
     }

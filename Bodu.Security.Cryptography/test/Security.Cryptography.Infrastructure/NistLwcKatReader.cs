@@ -43,7 +43,7 @@ public static class NistLwcKatReader
         string? line;
         while ((line = reader.ReadLine()) is not null)
         {
-            var trimmed = line.Trim();
+            string trimmed = line.Trim();
 
             if (trimmed.Length == 0)
             {
@@ -63,12 +63,12 @@ public static class NistLwcKatReader
 
             if (trimmed[0] == '#') continue;
 
-            var eqIndex = trimmed.IndexOf('=');
+            int eqIndex = trimmed.IndexOf('=');
             if (eqIndex < 0)
                 throw new FormatException($"Unrecognised KAT line (no '=' separator): '{trimmed}'.");
 
-            var label = trimmed[..eqIndex].TrimEnd();
-            var value = trimmed[(eqIndex + 1)..].TrimStart();
+            string label = trimmed[..eqIndex].TrimEnd();
+            string value = trimmed[(eqIndex + 1)..].TrimStart();
 
             switch (label)
             {

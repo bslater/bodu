@@ -54,8 +54,8 @@ public static partial class DateTimeExtensions
         if (after <= dateTime)
             return dateTime;
 
-        var intervalsPassed = (double)(after - dateTime).Ticks / interval.Ticks;
-        var nextIntervalCount = (long)Math.Ceiling(intervalsPassed);
+        double intervalsPassed = (double)(after - dateTime).Ticks / interval.Ticks;
+        long nextIntervalCount = (long)Math.Ceiling(intervalsPassed);
 
         return dateTime.AddTicks(nextIntervalCount * interval.Ticks);
     }

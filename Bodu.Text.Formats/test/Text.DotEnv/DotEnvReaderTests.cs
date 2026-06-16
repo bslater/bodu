@@ -36,8 +36,8 @@ public sealed class DotEnvReaderTests
     /// </summary>
     public static IEnumerable<object[]> ParityData()
     {
-        foreach (var source in ParitySources)
-            foreach (var bufferSize in new[] { 1, 2, 3, 7, 64, 4096 })
+        foreach (string source in ParitySources)
+            foreach (int bufferSize in new[] { 1, 2, 3, 7, 64, 4096 })
                 yield return new object[] { source, bufferSize };
     }
 
@@ -277,7 +277,7 @@ public sealed class DotEnvReaderTests
     [TestMethod]
     public void Read_WhenDoubleQuotedHasVariedEscapes_ShouldResolveThem()
     {
-        var source = "A=\"x" + "\\\\" + "\\t" + "\\r" + "\\$" + "\\q" + "\"\n";
+        string source = "A=\"x" + "\\\\" + "\\t" + "\\r" + "\\$" + "\\q" + "\"\n";
 
         var result = StreamAll(source);
 

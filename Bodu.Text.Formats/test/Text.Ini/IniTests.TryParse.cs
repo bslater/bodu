@@ -16,7 +16,7 @@ public sealed partial class IniTests
     [TestMethod]
     public void TryParse_WhenInputIsValid_ShouldReturnTrueAndDocument()
     {
-        var result = Ini.TryParse("[section]\nkey=value", out IniDocument? document);
+        bool result = Ini.TryParse("[section]\nkey=value", out IniDocument? document);
 
         Assert.IsTrue(result);
         Assert.IsNotNull(document);
@@ -30,7 +30,7 @@ public sealed partial class IniTests
     [TestMethod]
     public void TryParse_WhenInputIsEmpty_ShouldReturnTrueWithEmptyDocument()
     {
-        var result = Ini.TryParse(string.Empty, out IniDocument? document);
+        bool result = Ini.TryParse(string.Empty, out IniDocument? document);
 
         Assert.IsTrue(result);
         Assert.IsNotNull(document);
@@ -44,7 +44,7 @@ public sealed partial class IniTests
     [TestMethod]
     public void TryParse_WhenSectionHeaderIsMalformed_ShouldReturnFalseWithNull()
     {
-        var result = Ini.TryParse("[unclosed", out IniDocument? document);
+        bool result = Ini.TryParse("[unclosed", out IniDocument? document);
 
         Assert.IsFalse(result);
         Assert.IsNull(document);
@@ -59,7 +59,7 @@ public sealed partial class IniTests
     {
         IniParseOptions options = new() { AllowGlobalSection = false };
 
-        var result = Ini.TryParse("key=value", options, out IniDocument? document);
+        bool result = Ini.TryParse("key=value", options, out IniDocument? document);
 
         Assert.IsFalse(result);
         Assert.IsNull(document);
@@ -72,7 +72,7 @@ public sealed partial class IniTests
     [TestMethod]
     public void TryParse_WhenInputIsMalformed_ShouldNotThrow()
     {
-        var result = false;
+        bool result = false;
         IniDocument? document = null;
 
         Exception? caughtException = null;

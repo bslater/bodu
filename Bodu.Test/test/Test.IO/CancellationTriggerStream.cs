@@ -57,7 +57,7 @@ public sealed class CancellationTriggerStream :
     /// <inheritdoc />
     public override int Read(byte[] buffer, int offset, int count)
     {
-        var result = _inner.Read(buffer, offset, count);
+        int result = _inner.Read(buffer, offset, count);
         if (result > 0 && ++_readCount == _cancelAfterRead && !_cts.IsCancellationRequested)
             _cts.Cancel();
         return result;

@@ -40,7 +40,7 @@ public abstract class CalendarDataTestsBase
     [TestCategory("Regression")]
     public void CreateService_ForEverySupportedCountry_LoadsAndResolves()
     {
-        foreach (var country in SupportedCountries)
+        foreach (string country in SupportedCountries)
         {
             IReadOnlyList<NotableDate> holidays = ResolveYear(country, 2024);
 
@@ -88,7 +88,7 @@ public abstract class CalendarDataTestsBase
     /// <param name="context">A short scenario description included in the failure message.</param>
     protected static void AssertWithinDays(DateOnly actual, DateOnly expected, int toleranceDays, string context)
     {
-        var deltaDays = Math.Abs(actual.DayNumber - expected.DayNumber);
+        int deltaDays = Math.Abs(actual.DayNumber - expected.DayNumber);
 
         Assert.IsTrue(
             deltaDays <= toleranceDays,

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HashingStreamTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -33,8 +33,8 @@ public sealed partial class HashingStreamTests
     /// <returns>An array whose bytes cycle through <c>0x00</c>–<c>0xFF</c>.</returns>
     private static byte[] CreatePayload(int length)
     {
-        var payload = new byte[length];
-        for (var i = 0; i < payload.Length; i++)
+        byte[] payload = new byte[length];
+        for (int i = 0; i < payload.Length; i++)
             payload[i] = (byte)i;
 
         return payload;

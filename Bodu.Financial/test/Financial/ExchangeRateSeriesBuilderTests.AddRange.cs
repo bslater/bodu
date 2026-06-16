@@ -43,9 +43,9 @@ public partial class ExchangeRateSeriesBuilderTests
         ]);
 
         Assert.AreEqual(2, builder.Count);
-        Assert.IsTrue(builder.TryGetRate(new DateOnly(2024, 1, 1), out var first));
+        Assert.IsTrue(builder.TryGetRate(new DateOnly(2024, 1, 1), out decimal first));
         Assert.AreEqual(1.5m, first);
-        Assert.IsTrue(builder.TryGetRate(new DateOnly(2024, 1, 3), out var second));
+        Assert.IsTrue(builder.TryGetRate(new DateOnly(2024, 1, 3), out decimal second));
         Assert.AreEqual(1.6m, second);
     }
 
@@ -65,7 +65,7 @@ public partial class ExchangeRateSeriesBuilderTests
         ]);
 
         Assert.AreEqual(2, builder.Count);
-        Assert.IsTrue(builder.TryGetRate(new DateOnly(2024, 1, 1), out var replaced));
+        Assert.IsTrue(builder.TryGetRate(new DateOnly(2024, 1, 1), out decimal replaced));
         Assert.AreEqual(1.55m, replaced);
     }
 

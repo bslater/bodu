@@ -38,8 +38,8 @@ internal static class Biff8SharedStringTable
         uint unique = BinaryPrimitives.ReadUInt32LittleEndian(first.Slice(4));
         List<string> result = new();
 
-        var block = 0;
-        var offset = 8;
+        int block = 0;
+        int offset = 8;
 
         for (uint index = 0; index < unique; index++)
         {
@@ -54,17 +54,17 @@ internal static class Biff8SharedStringTable
             byte flags = header[offset];
             offset += 1;
 
-            var hasRichRuns = (flags & 0x08) != 0;
-            var hasExtended = (flags & 0x04) != 0;
+            bool hasRichRuns = (flags & 0x08) != 0;
+            bool hasExtended = (flags & 0x04) != 0;
 
-            var richRunCount = 0;
+            int richRunCount = 0;
             if (hasRichRuns)
             {
                 richRunCount = BinaryPrimitives.ReadUInt16LittleEndian(header.Slice(offset));
                 offset += 2;
             }
 
-            var extendedSize = 0;
+            int extendedSize = 0;
             if (hasExtended)
             {
                 extendedSize = (int)BinaryPrimitives.ReadUInt32LittleEndian(header.Slice(offset));
@@ -94,8 +94,8 @@ internal static class Biff8SharedStringTable
     private static string ReadCharacters(IReadOnlyList<ReadOnlyMemory<byte>> blocks, ref int block, ref int offset, int charCount, bool highByte)
     {
         StringBuilder builder = new(charCount);
-        var remaining = charCount;
-        var high = highByte;
+        int remaining = charCount;
+        bool high = highByte;
 
         while (remaining > 0)
         {
@@ -113,8 +113,8 @@ internal static class Biff8SharedStringTable
             ReadOnlySpan<byte> current = blocks[block].Span;
             if (high)
             {
-                var available = (current.Length - offset) / 2;
-                var take = Math.Min(available, remaining);
+                int available = (current.Length - offset) / 2;
+                int take = Math.Min(available, remaining);
                 if (take <= 0)
                     throw new Biff8FormatException(ExcelBinaryResourceStrings.Format_Invalid_Biff8SharedString);
 
@@ -124,13 +124,13 @@ internal static class Biff8SharedStringTable
             }
             else
             {
-                var available = current.Length - offset;
-                var take = Math.Min(available, remaining);
+                int available = current.Length - offset;
+                int take = Math.Min(available, remaining);
                 if (take <= 0)
                     throw new Biff8FormatException(ExcelBinaryResourceStrings.Format_Invalid_Biff8SharedString);
 
                 // Compressed segments encode one ISO-8859-1 code point per byte.
-                for (var i = 0; i < take; i++)
+                for (int i = 0; i < take; i++)
                     builder.Append((char)current[offset + i]);
 
                 offset += take;
@@ -151,7 +151,7 @@ internal static class Biff8SharedStringTable
     /// <exception cref="Biff8FormatException">Thrown when the trailing data runs past the available blocks.</exception>
     private static void SkipBytes(IReadOnlyList<ReadOnlyMemory<byte>> blocks, ref int block, ref int offset, int count)
     {
-        var remaining = count;
+        int remaining = count;
         while (remaining > 0)
         {
             if (offset >= blocks[block].Length)
@@ -162,8 +162,8 @@ internal static class Biff8SharedStringTable
                     throw new Biff8FormatException(ExcelBinaryResourceStrings.Format_Invalid_Biff8SharedString);
             }
 
-            var available = blocks[block].Length - offset;
-            var take = Math.Min(available, remaining);
+            int available = blocks[block].Length - offset;
+            int take = Math.Min(available, remaining);
             offset += take;
             remaining -= take;
         }

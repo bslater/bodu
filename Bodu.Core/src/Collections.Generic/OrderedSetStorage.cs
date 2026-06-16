@@ -150,7 +150,7 @@ internal sealed class OrderedSetStorage<T>
     {
         ThrowHelper.ThrowIfNull(collection);
 
-        var added = 0;
+        int added = 0;
 
         foreach (T item in collection)
         {
@@ -207,7 +207,7 @@ internal sealed class OrderedSetStorage<T>
     {
         ThrowHelper.ThrowIfNull(item);
 
-        var index = FindIndex(item);
+        int index = FindIndex(item);
         if (index < 0)
             return false;
 
@@ -277,7 +277,7 @@ internal sealed class OrderedSetStorage<T>
         ThrowHelper.ThrowIfGreaterThanOrEqual(index, _count);
         ThrowHelper.ThrowIfNull(value);
 
-        var existingIndex = FindIndex(value);
+        int existingIndex = FindIndex(value);
         if (existingIndex >= 0 && existingIndex != index) throw new ArgumentException(ResourceStrings.Arg_Invalid_DuplicateSetValue, nameof(value));
 
         if (existingIndex == index)
@@ -302,8 +302,8 @@ internal sealed class OrderedSetStorage<T>
     {
         ThrowHelper.ThrowIfNull(match);
 
-        var kept = 0;
-        for (var i = 0; i < _count; i++)
+        int kept = 0;
+        for (int i = 0; i < _count; i++)
         {
             T item = _items[i];
             if (!match(item))
@@ -314,7 +314,7 @@ internal sealed class OrderedSetStorage<T>
             }
         }
 
-        var removed = _count - kept;
+        int removed = _count - kept;
         if (removed > 0)
         {
             Array.Clear(_items, kept, removed);
@@ -447,9 +447,9 @@ internal sealed class OrderedSetStorage<T>
         if (_count == 0 || _buckets.Length == 0)
             return -1;
 
-        var bucket = GetBucket(item, _buckets.Length);
+        int bucket = GetBucket(item, _buckets.Length);
 
-        for (var index = _buckets[bucket] - 1; index >= 0; index = _next[index] - 1)
+        for (int index = _buckets[bucket] - 1; index >= 0; index = _next[index] - 1)
         {
             if (_comparer.Equals(_items[index], item))
                 return index;
@@ -464,7 +464,7 @@ internal sealed class OrderedSetStorage<T>
     /// <param name="index">The zero-based index to remove.</param>
     private void RemoveCore(int index)
     {
-        var moveCount = _count - index - 1;
+        int moveCount = _count - index - 1;
 
         if (moveCount > 0)
             Array.Copy(_items, index + 1, _items, index, moveCount);
@@ -485,7 +485,7 @@ internal sealed class OrderedSetStorage<T>
         if (_items.Length >= capacity)
             return;
 
-        var newCapacity = GrowCapacity(capacity);
+        int newCapacity = GrowCapacity(capacity);
         Array.Resize(ref _items, newCapacity);
         Array.Resize(ref _next, newCapacity);
     }
@@ -497,7 +497,7 @@ internal sealed class OrderedSetStorage<T>
     /// <param name="itemIndex">The index of the item in the contiguous storage.</param>
     private void AddToHashTable(T item, int itemIndex)
     {
-        var bucket = GetBucket(item, _buckets.Length);
+        int bucket = GetBucket(item, _buckets.Length);
 
         _next[itemIndex] = _buckets[bucket];
         _buckets[bucket] = itemIndex + 1;
@@ -520,7 +520,7 @@ internal sealed class OrderedSetStorage<T>
         Array.Clear(_buckets, 0, _buckets.Length);
         Array.Clear(_next, 0, _count);
 
-        for (var i = 0; i < _count; i++)
+        for (int i = 0; i < _count; i++)
             AddToHashTable(_items[i], i);
     }
 
@@ -556,7 +556,7 @@ internal sealed class OrderedSetStorage<T>
     /// <returns>The bucket array length to allocate.</returns>
     private static int CalculateBucketCapacity(int itemCapacity)
     {
-        var minimum = Math.Max(DefaultCapacity, (itemCapacity * MaxLoadFactorDenominator / MaxLoadFactorNumerator) + 1);
+        int minimum = Math.Max(DefaultCapacity, (itemCapacity * MaxLoadFactorDenominator / MaxLoadFactorNumerator) + 1);
         return RoundUpToPowerOfTwo(minimum);
     }
 
@@ -568,7 +568,7 @@ internal sealed class OrderedSetStorage<T>
     /// <returns>The chosen capacity.</returns>
     private int GrowCapacity(int minimum)
     {
-        var capacity = _items.Length == 0 ? DefaultCapacity : _items.Length * 2;
+        int capacity = _items.Length == 0 ? DefaultCapacity : _items.Length * 2;
 
         if ((uint)capacity > Array.MaxLength)
             capacity = Array.MaxLength;
@@ -587,7 +587,7 @@ internal sealed class OrderedSetStorage<T>
     /// <returns>The bucket index in <c>[0, bucketCount)</c>.</returns>
     private int GetBucket(T item, int bucketCount)
     {
-        var hash = _comparer.GetHashCode(item) & 0x7fffffff;
+        int hash = _comparer.GetHashCode(item) & 0x7fffffff;
         return hash & (bucketCount - 1);
     }
 

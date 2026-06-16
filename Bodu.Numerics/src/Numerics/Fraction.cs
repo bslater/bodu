@@ -485,6 +485,7 @@ public readonly partial struct Fraction<T>
     /// a finite range.
     /// </summary>
     /// <returns><see langword="true" /> when <typeparamref name="T" /> is a bounded type.</returns>
+    [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2090", Justification = "Feature-detects IMinMaxValue<T> on the backing type T; the interface list of the value types used to construct Fraction<T> is preserved.")]
     private static bool ImplementsMinMaxValue()
     {
         foreach (Type contract in typeof(T).GetInterfaces())
@@ -502,10 +503,12 @@ public readonly partial struct Fraction<T>
     /// <param name="methodName">The name of the bounded-type extreme-value helper to invoke.</param>
     /// <returns>The extreme value of <typeparamref name="T" /> yielded by the helper.</returns>
     /// <exception cref="ArgumentException">Thrown if <typeparamref name="T" /> is not a bounded type.</exception>
+    [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2060", Justification = "Invokes a private generic helper instantiated with the backing type T, which is already present in the constructed Fraction<T>.")]
+    [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Aot", "IL3050", Justification = "MakeGenericMethod instantiates a private helper with the backing type T, already used as a generic argument elsewhere in the assembly, so no new code is generated at run time.")]
     private static T InvokeExtreme(string methodName)
     {
         MethodInfo? definition = typeof(Fraction<T>).GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Static);
-        var extreme = definition!.MakeGenericMethod(typeof(T)).Invoke(null, null);
+        object? extreme = definition!.MakeGenericMethod(typeof(T)).Invoke(null, null);
         return (T)extreme!;
     }
 

@@ -140,15 +140,15 @@ public static partial class ICryptoTransformExtensions
 
         // Use a pooled buffer cleared on return so plaintext read from sourceStream cannot leak
         // to a subsequent pool consumer.
-        var buffer = ArrayPool<byte>.Shared.Rent(bufferSize);
+        byte[] buffer = ArrayPool<byte>.Shared.Rent(bufferSize);
         try
         {
             // leaveOpen: true because targetStream is caller-owned and must not be disposed here.
             var cryptoStream = new CryptoStream(targetStream, transform, CryptoStreamMode.Write, leaveOpen: true);
-            var completed = false;
+            bool completed = false;
             try
             {
-                var totalBytesRead = 0;
+                int totalBytesRead = 0;
                 int bytesRead;
 
                 while ((bytesRead = sourceStream.Read(buffer, 0, bufferSize)) > 0)

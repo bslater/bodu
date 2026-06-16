@@ -40,11 +40,11 @@ public static partial class BufferConverter
         ThrowHelper.ThrowIfNull(targetArray);
 
 #if NET5_0_OR_GREATER
-        var elementSize = Unsafe.SizeOf<T>();
+        int elementSize = Unsafe.SizeOf<T>();
 #else
         int elementSize = Marshal.SizeOf<T>();
 #endif
-        var byteCount = count * elementSize;
+        int byteCount = count * elementSize;
 
         ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(sourceArray, sourceIndex, byteCount);
         ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(targetArray, targetIndex, byteCount);
@@ -98,11 +98,11 @@ public static partial class BufferConverter
         where T : unmanaged
     {
 #if NET5_0_OR_GREATER
-        var elementSize = System.Runtime.CompilerServices.Unsafe.SizeOf<T>();
+        int elementSize = System.Runtime.CompilerServices.Unsafe.SizeOf<T>();
 #else
         int elementSize = Marshal.SizeOf<T>();
 #endif
-        var byteCount = count * elementSize;
+        int byteCount = count * elementSize;
 
         // ThrowHelper will handle range and size checks
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(sourceSpan, 0, byteCount);
@@ -141,7 +141,7 @@ public static partial class BufferConverter
         ThrowHelper.ThrowIfNull(targetArray);
 
 #if NET5_0_OR_GREATER
-        var elementSize = System.Runtime.CompilerServices.Unsafe.SizeOf<T>();
+        int elementSize = System.Runtime.CompilerServices.Unsafe.SizeOf<T>();
 #else
         int elementSize = Marshal.SizeOf<T>();
 #endif

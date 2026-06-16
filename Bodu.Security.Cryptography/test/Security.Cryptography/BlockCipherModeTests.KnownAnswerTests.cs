@@ -21,18 +21,18 @@ public abstract partial class BlockCipherModeTests<TMode>
     [TestMethod]
     public void Transform_WithRealAesCipher_RandomKey_ShouldRoundTrip()
     {
-        var key = new byte[16];
+        byte[] key = new byte[16];
         RandomNumberGenerator.Fill(key);
 
         using var cipher = new AesBlockCipherFixture(key);
 
-        var iv = new byte[cipher.BlockSize / 8];
+        byte[] iv = new byte[cipher.BlockSize / 8];
         RandomNumberGenerator.Fill(iv);
 
-        var plaintext = new byte[cipher.BlockSize / 8 * 4];
+        byte[] plaintext = new byte[cipher.BlockSize / 8 * 4];
         RandomNumberGenerator.Fill(plaintext);
-        var ciphertext = new byte[plaintext.Length];
-        var recovered = new byte[plaintext.Length];
+        byte[] ciphertext = new byte[plaintext.Length];
+        byte[] recovered = new byte[plaintext.Length];
 
         CreateTransform(cipher, (byte[])iv.Clone()).Transform(plaintext, ciphertext, encrypt: true);
         CreateTransform(cipher, (byte[])iv.Clone()).Transform(ciphertext, recovered, encrypt: false);
@@ -57,7 +57,7 @@ public abstract partial class BlockCipherModeTests<TMode>
         byte[] expectedCiphertext)
     {
         using var cipher = new AesBlockCipherFixture(key);
-        var output = new byte[plaintext.Length];
+        byte[] output = new byte[plaintext.Length];
 
         CreateTransform(cipher, iv).Transform(plaintext, output, encrypt: true);
 
@@ -79,7 +79,7 @@ public abstract partial class BlockCipherModeTests<TMode>
         byte[] ciphertext)
     {
         using var cipher = new AesBlockCipherFixture(key);
-        var output = new byte[ciphertext.Length];
+        byte[] output = new byte[ciphertext.Length];
 
         CreateTransform(cipher, (byte[])iv.Clone()).Transform(ciphertext, output, encrypt: false);
 

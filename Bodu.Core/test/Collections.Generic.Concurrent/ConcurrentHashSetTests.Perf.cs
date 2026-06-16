@@ -22,7 +22,7 @@ public partial class ConcurrentHashSetTests
         var set = new ConcurrentHashSet<int>();
 
         var stopwatch = Stopwatch.StartNew();
-        for (var i = 0; i < keyCount; i++)
+        for (int i = 0; i < keyCount; i++)
             set.Add(i);
         stopwatch.Stop();
 
@@ -46,9 +46,9 @@ public partial class ConcurrentHashSetTests
         const int keyCount = 100_000;
         var set = new ConcurrentHashSet<int>(Enumerable.Range(0, keyCount));
 
-        var hits = 0;
+        int hits = 0;
         var stopwatch = Stopwatch.StartNew();
-        for (var i = 0; i < keyCount; i++)
+        for (int i = 0; i < keyCount; i++)
         {
             if (set.Contains(i))
                 hits++;
@@ -79,10 +79,10 @@ public partial class ConcurrentHashSetTests
         var stopwatch = Stopwatch.StartNew();
         Parallel.For(0, threadCount, threadId =>
         {
-            var baseKey = threadId * keysPerThread;
-            for (var k = 0; k < keysPerThread; k++)
+            int baseKey = threadId * keysPerThread;
+            for (int k = 0; k < keysPerThread; k++)
                 set.Add(baseKey + k);
-            for (var k = 0; k < keysPerThread; k++)
+            for (int k = 0; k < keysPerThread; k++)
                 set.Remove(baseKey + k);
         });
         stopwatch.Stop();

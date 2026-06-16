@@ -38,7 +38,7 @@ public static partial class Base16
         if (source.IsEmpty)
             return 0;
 
-        var required = source.Length * 2;
+        int required = source.Length * 2;
         Span<char> destination = writer.GetSpan(required);
         EncodeToHexCore(source, destination, options.HasFlag(BaseFormattingOptions.UpperCase));
         writer.Advance(required);
@@ -70,7 +70,7 @@ public static partial class Base16
         if (source.IsEmpty)
             return 0;
 
-        var required = source.Length * 2;
+        int required = source.Length * 2;
         Span<byte> destination = writer.GetSpan(required);
         EncodeToUtf8Core(source, destination, options.HasFlag(BaseFormattingOptions.UpperCase));
         writer.Advance(required);

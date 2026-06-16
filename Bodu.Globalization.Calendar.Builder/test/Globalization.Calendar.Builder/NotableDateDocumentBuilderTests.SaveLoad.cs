@@ -14,7 +14,7 @@ public partial class NotableDateDocumentBuilderTests
     [TestMethod]
     public void SaveLoad_WhenXmlFile_ShouldRoundTripThroughDisk()
     {
-        var path = Path.Combine(Path.GetTempPath(), $"bodu-builder-{Guid.NewGuid():N}.xml");
+        string path = Path.Combine(Path.GetTempPath(), $"bodu-builder-{Guid.NewGuid():N}.xml");
         try
         {
             SampleDocument().Save(path);
@@ -36,7 +36,7 @@ public partial class NotableDateDocumentBuilderTests
     [TestMethod]
     public void SaveLoad_WhenJsonFile_ShouldRoundTripThroughDisk()
     {
-        var path = Path.Combine(Path.GetTempPath(), $"bodu-builder-{Guid.NewGuid():N}.json");
+        string path = Path.Combine(Path.GetTempPath(), $"bodu-builder-{Guid.NewGuid():N}.json");
         try
         {
             SampleDocument().Save(path);
@@ -58,7 +58,7 @@ public partial class NotableDateDocumentBuilderTests
     [TestMethod]
     public void Save_WhenExtensionUnrecognized_ShouldThrowArgumentException()
     {
-        var path = Path.Combine(Path.GetTempPath(), $"bodu-builder-{Guid.NewGuid():N}.txt");
+        string path = Path.Combine(Path.GetTempPath(), $"bodu-builder-{Guid.NewGuid():N}.txt");
 
         _ = Assert.ThrowsExactly<ArgumentException>(() => SampleDocument().Save(path));
     }

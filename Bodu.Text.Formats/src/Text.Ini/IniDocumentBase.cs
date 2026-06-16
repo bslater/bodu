@@ -226,8 +226,8 @@ public abstract class IniDocumentBase
         ThrowHelper.ThrowIfNull(name);
 
         IEqualityComparer<string> comparer = _lookup.Comparer;
-        var removed = false;
-        for (var i = _sections.Count - 1; i >= 0; i--)
+        bool removed = false;
+        for (int i = _sections.Count - 1; i >= 0; i--)
         {
             if (comparer.Equals(_sections[i].Name, name))
             {

@@ -19,9 +19,9 @@ public partial class XorShiftRandomTests
     public void Next_ShouldBeInRange_WhenGivenBounds(int min, int max)
     {
         var rng = new XorShiftRandom();
-        for (var i = 0; i < 100; i++)
+        for (int i = 0; i < 100; i++)
         {
-            var value = rng.Next(min, max);
+            int value = rng.Next(min, max);
             Assert.IsTrue(value >= min && value < max, $"Value {value} was not in range [{min}, {max}).");
         }
     }
@@ -38,8 +38,8 @@ public partial class XorShiftRandomTests
         var rng1 = new XorShiftRandom(seed);
         var rng2 = new XorShiftRandom(seed + 1);
 
-        var value1 = rng1.Next();
-        var value2 = rng2.Next();
+        int value1 = rng1.Next();
+        int value2 = rng2.Next();
 
         Assert.AreNotEqual(value1, value2, "Different seeds should produce different sequences.");
     }
@@ -51,7 +51,7 @@ public partial class XorShiftRandomTests
     public void Next_WhenCalled_ShouldReturnPositiveInteger()
     {
         var rng = new XorShiftRandom();
-        var value = rng.Next();
+        int value = rng.Next();
         Assert.IsGreaterThanOrEqualTo(0, value);
     }
 
@@ -64,7 +64,7 @@ public partial class XorShiftRandomTests
         var rng = new XorShiftRandom();
         var values = new HashSet<int>();
 
-        for (var i = 0; i < 50; i++)
+        for (int i = 0; i < 50; i++)
         {
             values.Add(rng.Next(1000));
         }
@@ -81,9 +81,9 @@ public partial class XorShiftRandomTests
     public void Next_WhenCalledWithinAndMax_ShouldRespectBounds(int min, int max)
     {
         var rng = new XorShiftRandom(42);
-        for (var i = 0; i < 1000; i++)
+        for (int i = 0; i < 1000; i++)
         {
-            var value = rng.Next(min, max);
+            int value = rng.Next(min, max);
             Assert.IsTrue(value >= min && value < max);
         }
     }
@@ -99,9 +99,9 @@ public partial class XorShiftRandomTests
     public void Next_WhenCalledWithMax_ShouldReturnWithinRange(int maxValue)
     {
         var rng = new XorShiftRandom(42);
-        for (var i = 0; i < 1000; i++)
+        for (int i = 0; i < 1000; i++)
         {
-            var value = rng.Next(maxValue);
+            int value = rng.Next(maxValue);
             Assert.IsTrue(value >= 0 && value < maxValue);
         }
     }
@@ -113,7 +113,7 @@ public partial class XorShiftRandomTests
     public void Next_WhenMaxValueIsOne_ShouldAlwaysReturnZero()
     {
         var rng = new XorShiftRandom();
-        for (var i = 0; i < 10; i++)
+        for (int i = 0; i < 10; i++)
         {
             Assert.AreEqual(0, rng.Next(1), "Next(1) should always return 0.");
         }
@@ -126,7 +126,7 @@ public partial class XorShiftRandomTests
     public void Next_WhenMaxValueIsPositive_ShouldReturnValueInRange()
     {
         var rng = new XorShiftRandom();
-        var actual = rng.Next(100);
+        int actual = rng.Next(100);
 
         Assert.IsTrue(actual is >= 0 and < 100, $"Result {actual} is out of expected range.");
     }
@@ -139,8 +139,8 @@ public partial class XorShiftRandomTests
         var rng1 = new XorShiftRandom(42);
         var rng2 = new XorShiftRandom(42);
 
-        var sequence1 = Enumerable.Range(0, 10).Select(_ => rng1.Next()).ToArray();
-        var sequence2 = Enumerable.Range(0, 10).Select(_ => rng2.Next()).ToArray();
+        int[] sequence1 = Enumerable.Range(0, 10).Select(_ => rng1.Next()).ToArray();
+        int[] sequence2 = Enumerable.Range(0, 10).Select(_ => rng2.Next()).ToArray();
 
         CollectionAssert.AreEqual(sequence1, sequence2);
     }
@@ -154,8 +154,8 @@ public partial class XorShiftRandomTests
         var rng1 = new XorShiftRandom(100);
         var rng2 = new XorShiftRandom(200);
 
-        var differenceFound = false;
-        for (var i = 0; i < 20; i++)
+        bool differenceFound = false;
+        for (int i = 0; i < 20; i++)
         {
             if (rng1.Next(1000) != rng2.Next(1000))
             {
@@ -174,9 +174,9 @@ public partial class XorShiftRandomTests
     public void Next_WithMaxValue_ShouldReturnInExpectedRange()
     {
         var rng = new XorShiftRandom();
-        for (var i = 0; i < 1000; i++)
+        for (int i = 0; i < 1000; i++)
         {
-            var actual = rng.Next(100);
+            int actual = rng.Next(100);
             Assert.IsTrue(actual is >= 0 and < 100);
         }
     }
@@ -200,9 +200,9 @@ public partial class XorShiftRandomTests
     public void Next_WithMinAndMax_ShouldReturnWithinRange()
     {
         var rng = new XorShiftRandom();
-        for (var i = 0; i < 1000; i++)
+        for (int i = 0; i < 1000; i++)
         {
-            var actual = rng.Next(10, 20);
+            int actual = rng.Next(10, 20);
             Assert.IsTrue(actual is >= 10 and < 20);
         }
     }
@@ -250,7 +250,7 @@ public partial class XorShiftRandomTests
         var rng1 = new XorShiftRandom(seed);
         var rng2 = new XorShiftRandom(seed);
 
-        for (var i = 0; i < 20; i++)
+        for (int i = 0; i < 20; i++)
         {
             Assert.AreEqual(rng1.Next(1000), rng2.Next(1000), $"Mismatch at iteration {i}");
         }
@@ -267,7 +267,7 @@ public partial class XorShiftRandomTests
     {
         var queue = new Queue<uint>([0u, 0x55555556u]);
 
-        var actual = XorShiftRandom.BoundedNextUInt32(3u, () => queue.Dequeue());
+        uint actual = XorShiftRandom.BoundedNextUInt32(3u, () => queue.Dequeue());
 
         Assert.IsEmpty(queue, "Expected the biased first value to be rejected and the second value consumed.");
         Assert.AreEqual(1u, actual);
@@ -280,9 +280,9 @@ public partial class XorShiftRandomTests
     [TestMethod]
     public void BoundedNextUInt32_WhenLowBitsAboveThreshold_ShouldReturnFromFirstDraw()
     {
-        var calls = 0;
+        int calls = 0;
 
-        var actual = XorShiftRandom.BoundedNextUInt32(3u, () =>
+        uint actual = XorShiftRandom.BoundedNextUInt32(3u, () =>
         {
             calls++;
             return 0x55555556u;
@@ -305,15 +305,15 @@ public partial class XorShiftRandomTests
     [DataRow((uint)int.MaxValue)]
     public void BoundedNextUInt32_WhenSourceProducesHighValue_ShouldReturnInRange(uint maxExclusive)
     {
-        var samples = new[] { uint.MaxValue, uint.MaxValue - 1u, 0u, 1u, 0x80000000u };
+        uint[] samples = new[] { uint.MaxValue, uint.MaxValue - 1u, 0u, 1u, 0x80000000u };
 
-        foreach (var sample in samples)
+        foreach (uint sample in samples)
         {
             var queue = new Queue<uint>();
             queue.Enqueue(sample);
-            for (var i = 0; i < 4; i++) queue.Enqueue(0x55555556u); // fallback values for redraws
+            for (int i = 0; i < 4; i++) queue.Enqueue(0x55555556u); // fallback values for redraws
 
-            var actual = XorShiftRandom.BoundedNextUInt32(maxExclusive, () => queue.Dequeue());
+            uint actual = XorShiftRandom.BoundedNextUInt32(maxExclusive, () => queue.Dequeue());
             Assert.IsLessThan(maxExclusive, actual, $"sample={sample:X}, maxExclusive={maxExclusive}, actual={actual}.");
         }
     }
@@ -327,9 +327,9 @@ public partial class XorShiftRandomTests
     {
         var rng = new XorShiftRandom(42);
 
-        for (var i = 0; i < 10_000; i++)
+        for (int i = 0; i < 10_000; i++)
         {
-            var value = rng.Next(int.MinValue, int.MaxValue);
+            int value = rng.Next(int.MinValue, int.MaxValue);
             Assert.IsTrue(value is >= int.MinValue and < int.MaxValue, $"value={value} outside [int.MinValue, int.MaxValue).");
         }
     }
@@ -344,12 +344,12 @@ public partial class XorShiftRandomTests
     public void Next_WhenRangeIsFullInt_ShouldReachBothHalves()
     {
         var rng = new XorShiftRandom(42);
-        var sawLower = false;
-        var sawUpper = false;
+        bool sawLower = false;
+        bool sawUpper = false;
 
-        for (var i = 0; i < 1_000_000 && (!sawLower || !sawUpper); i++)
+        for (int i = 0; i < 1_000_000 && (!sawLower || !sawUpper); i++)
         {
-            var value = rng.Next(int.MinValue, int.MaxValue);
+            int value = rng.Next(int.MinValue, int.MaxValue);
             if (value < int.MinValue / 2) sawLower = true;
             if (value > int.MaxValue / 2) sawUpper = true;
         }

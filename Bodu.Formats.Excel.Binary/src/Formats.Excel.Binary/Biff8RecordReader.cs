@@ -42,13 +42,13 @@ internal sealed class Biff8RecordReader
     {
         List<Biff8Record> records = new();
         ReadOnlySpan<byte> span = _data.Span;
-        var position = 0;
+        int position = 0;
 
         while (position + 4 <= span.Length)
         {
             ushort id = BinaryPrimitives.ReadUInt16LittleEndian(span.Slice(position));
             int length = BinaryPrimitives.ReadUInt16LittleEndian(span.Slice(position + 2));
-            var payloadStart = position + 4;
+            int payloadStart = position + 4;
 
             if (payloadStart + length > span.Length)
                 throw new Biff8FormatException(ExcelBinaryResourceStrings.Format_Invalid_Biff8Structure);

@@ -141,11 +141,11 @@ public sealed class OcbModeTransform
 
         _tagLen = tagSize / 8;
 
-        var blockSize = cipher.BlockSize / 8;
+        int blockSize = cipher.BlockSize / 8;
 
         // RFC 7253 §2.1 — Key-dependent constants derived once per key.
         // L_* = ENCIPHER(K, zeros(128)).
-        var zeroBlock = new byte[blockSize];
+        byte[] zeroBlock = new byte[blockSize];
         _lStar = new byte[blockSize];
 
         try
@@ -164,7 +164,7 @@ public sealed class OcbModeTransform
         _lArray = new byte[MaxLValues][];
         _lArray[0] = GfDouble(_lDollar);
 
-        for (var i = 1; i < MaxLValues; i++)
+        for (int i = 1; i < MaxLValues; i++)
             _lArray[i] = GfDouble(_lArray[i - 1]);
     }
 
@@ -189,12 +189,12 @@ public sealed class OcbModeTransform
         ThrowIfDisposed();
         ThrowIfCompleted();
 
-        var required = plaintext.Length + _tagLen;
+        int required = plaintext.Length + _tagLen;
         CryptographyThrowHelper.ThrowIfOutputBufferTooSmall(output, required);
 
         EnsureAadProcessed();
 
-        var blockSize = _cipher.BlockSize / 8;
+        int blockSize = _cipher.BlockSize / 8;
 
         byte[]? offset = null;
         byte[]? checksum = null;
@@ -208,11 +208,11 @@ public sealed class OcbModeTransform
             checksum = new byte[blockSize];
             block = new byte[blockSize];
 
-            var m = (plaintext.Length + blockSize - 1) / blockSize;
+            int m = (plaintext.Length + blockSize - 1) / blockSize;
 
-            for (var blockIdx = 1; blockIdx <= m - 1; blockIdx++)
+            for (int blockIdx = 1; blockIdx <= m - 1; blockIdx++)
             {
-                var src = (blockIdx - 1) * blockSize;
+                int src = (blockIdx - 1) * blockSize;
 
                 Xor(offset, _lArray[Ntz(blockIdx)], offset);
 
@@ -227,8 +227,8 @@ public sealed class OcbModeTransform
 
             if (plaintext.Length > 0)
             {
-                var lastSrc = (m - 1) * blockSize;
-                var lastLen = plaintext.Length - lastSrc;
+                int lastSrc = (m - 1) * blockSize;
+                int lastLen = plaintext.Length - lastSrc;
 
                 if (lastLen == blockSize)
                 {
@@ -244,8 +244,8 @@ public sealed class OcbModeTransform
                 }
                 else
                 {
-                    var pad = new byte[blockSize];
-                    var padBlock = new byte[blockSize];
+                    byte[] pad = new byte[blockSize];
+                    byte[] padBlock = new byte[blockSize];
 
                     try
                     {
@@ -253,7 +253,7 @@ public sealed class OcbModeTransform
 
                         _cipher.Encrypt(offset, pad);
 
-                        for (var i = 0; i < lastLen; i++)
+                        for (int i = 0; i < lastLen; i++)
                             output[lastSrc + i] = (byte)(plaintext[lastSrc + i] ^ pad[i]);
 
                         plaintext.Slice(lastSrc, lastLen).CopyTo(padBlock);
@@ -307,7 +307,7 @@ public sealed class OcbModeTransform
 
         CryptographyThrowHelper.ThrowIfCiphertextTooShort(ciphertextWithTag, _tagLen);
 
-        var plaintextLength = ciphertextWithTag.Length - _tagLen;
+        int plaintextLength = ciphertextWithTag.Length - _tagLen;
         CryptographyThrowHelper.ThrowIfOutputBufferTooSmall(output, plaintextLength);
 
         EnsureAadProcessed();
@@ -315,7 +315,7 @@ public sealed class OcbModeTransform
         ReadOnlySpan<byte> ciphertext = ciphertextWithTag[..plaintextLength];
         ReadOnlySpan<byte> receivedTag = ciphertextWithTag[plaintextLength..];
 
-        var blockSize = _cipher.BlockSize / 8;
+        int blockSize = _cipher.BlockSize / 8;
 
         byte[]? offset = null;
         byte[]? checksum = null;
@@ -329,11 +329,11 @@ public sealed class OcbModeTransform
             checksum = new byte[blockSize];
             block = new byte[blockSize];
 
-            var m = (plaintextLength + blockSize - 1) / blockSize;
+            int m = (plaintextLength + blockSize - 1) / blockSize;
 
-            for (var blockIdx = 1; blockIdx <= m - 1; blockIdx++)
+            for (int blockIdx = 1; blockIdx <= m - 1; blockIdx++)
             {
-                var src = (blockIdx - 1) * blockSize;
+                int src = (blockIdx - 1) * blockSize;
 
                 Xor(offset, _lArray[Ntz(blockIdx)], offset);
 
@@ -348,8 +348,8 @@ public sealed class OcbModeTransform
 
             if (plaintextLength > 0)
             {
-                var lastSrc = (m - 1) * blockSize;
-                var lastLen = plaintextLength - lastSrc;
+                int lastSrc = (m - 1) * blockSize;
+                int lastLen = plaintextLength - lastSrc;
 
                 if (lastLen == blockSize)
                 {
@@ -365,8 +365,8 @@ public sealed class OcbModeTransform
                 }
                 else
                 {
-                    var pad = new byte[blockSize];
-                    var padBlock = new byte[blockSize];
+                    byte[] pad = new byte[blockSize];
+                    byte[] padBlock = new byte[blockSize];
 
                     try
                     {
@@ -374,7 +374,7 @@ public sealed class OcbModeTransform
 
                         _cipher.Encrypt(offset, pad);
 
-                        for (var i = 0; i < lastLen; i++)
+                        for (int i = 0; i < lastLen; i++)
                             output[lastSrc + i] = (byte)(ciphertext[lastSrc + i] ^ pad[i]);
 
                         output.Slice(lastSrc, lastLen).CopyTo(padBlock);
@@ -456,7 +456,7 @@ public sealed class OcbModeTransform
             CryptographyHelper.Clear(_lStar);
             CryptographyHelper.Clear(_lDollar);
 
-            foreach (var value in _lArray)
+            foreach (byte[] value in _lArray)
                 CryptographyHelper.Clear(value);
 
             CryptographyHelper.ClearAndNullify(ref _aad);
@@ -487,9 +487,9 @@ public sealed class OcbModeTransform
     /// <returns>The initial <c>Offset_0</c> value derived from the nonce per RFC 7253.</returns>
     private byte[] ComputeInitialOffset()
     {
-        var blockSize = _cipher.BlockSize / 8;
+        int blockSize = _cipher.BlockSize / 8;
 
-        var nonceWord = new byte[blockSize];
+        byte[] nonceWord = new byte[blockSize];
         byte[]? ktopInput = null;
         byte[]? ktop = null;
         byte[]? stretch = null;
@@ -500,7 +500,7 @@ public sealed class OcbModeTransform
             nonceWord[3] = 0x01;
             _nonce.CopyTo(nonceWord, 4);
 
-            var bottom = nonceWord[blockSize - 1] & 0x3F;
+            int bottom = nonceWord[blockSize - 1] & 0x3F;
 
             ktopInput = (byte[])nonceWord.Clone();
             ktopInput[blockSize - 1] &= 0xC0;
@@ -511,13 +511,13 @@ public sealed class OcbModeTransform
             stretch = new byte[blockSize + (blockSize / 2)];
             ktop.CopyTo(stretch, 0);
 
-            for (var i = 0; i < blockSize / 2; i++)
+            for (int i = 0; i < blockSize / 2; i++)
                 stretch[blockSize + i] = (byte)(ktop[i] ^ ktop[i + 1]);
 
-            var offset = new byte[blockSize];
+            byte[] offset = new byte[blockSize];
 
-            var byteOffset = bottom / 8;
-            var bitOffset = bottom % 8;
+            int byteOffset = bottom / 8;
+            int bitOffset = bottom % 8;
 
             if (bitOffset == 0)
             {
@@ -525,7 +525,7 @@ public sealed class OcbModeTransform
             }
             else
             {
-                for (var i = 0; i < blockSize; i++)
+                for (int i = 0; i < blockSize; i++)
                 {
                     offset[i] = (byte)(
                         (stretch[byteOffset + i] << bitOffset) |
@@ -551,25 +551,25 @@ public sealed class OcbModeTransform
     /// <returns>The HASH value of <paramref name="aad" /> per RFC 7253.</returns>
     private byte[] ComputeHash(ReadOnlySpan<byte> aad)
     {
-        var blockSize = _cipher.BlockSize / 8;
+        int blockSize = _cipher.BlockSize / 8;
 
-        var sum = new byte[blockSize];
+        byte[] sum = new byte[blockSize];
 
         if (aad.Length == 0)
             return sum;
 
-        var offsetHash = new byte[blockSize];
-        var block = new byte[blockSize];
+        byte[] offsetHash = new byte[blockSize];
+        byte[] block = new byte[blockSize];
 
         try
         {
-            var m = (aad.Length + blockSize - 1) / blockSize;
+            int m = (aad.Length + blockSize - 1) / blockSize;
 
-            for (var blockIdx = 1; blockIdx <= m; blockIdx++)
+            for (int blockIdx = 1; blockIdx <= m; blockIdx++)
             {
-                var src = (blockIdx - 1) * blockSize;
-                var blockLen = Math.Min(blockSize, aad.Length - src);
-                var full = blockLen == blockSize;
+                int src = (blockIdx - 1) * blockSize;
+                int blockLen = Math.Min(blockSize, aad.Length - src);
+                bool full = blockLen == blockSize;
 
                 if (full)
                 {
@@ -582,7 +582,7 @@ public sealed class OcbModeTransform
                 }
                 else
                 {
-                    var padBlock = new byte[blockSize];
+                    byte[] padBlock = new byte[blockSize];
 
                     try
                     {
@@ -625,10 +625,10 @@ public sealed class OcbModeTransform
     /// <returns>The GF(2<sup>128</sup>) doubling of <paramref name="x" />.</returns>
     private static byte[] GfDouble(byte[] x)
     {
-        var result = new byte[x.Length];
-        var msb = (x[0] & 0x80) != 0;
+        byte[] result = new byte[x.Length];
+        bool msb = (x[0] & 0x80) != 0;
 
-        for (var i = 0; i < x.Length - 1; i++)
+        for (int i = 0; i < x.Length - 1; i++)
             result[i] = (byte)((x[i] << 1) | (x[i + 1] >> 7));
 
         result[x.Length - 1] = (byte)(x[^1] << 1);
@@ -647,7 +647,7 @@ public sealed class OcbModeTransform
     /// <param name="result">The destination span.</param>
     private static void Xor(ReadOnlySpan<byte> a, ReadOnlySpan<byte> b, Span<byte> result)
     {
-        for (var i = 0; i < result.Length; i++)
+        for (int i = 0; i < result.Length; i++)
             result[i] = (byte)(a[i] ^ b[i]);
     }
 
@@ -661,7 +661,7 @@ public sealed class OcbModeTransform
         if (n == 0)
             return 32;
 
-        var count = 0;
+        int count = 0;
 
         while ((n & 1) == 0)
         {

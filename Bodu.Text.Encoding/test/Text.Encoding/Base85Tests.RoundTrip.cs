@@ -28,12 +28,12 @@ public sealed partial class Base85Tests
     [DataRow(32)]
     public void RoundTrip_ForAscii85AcrossLengths_ShouldRecoverOriginalBytes(int byteCount)
     {
-        var original = new byte[byteCount];
-        for (var i = 0; i < byteCount; i++)
+        byte[] original = new byte[byteCount];
+        for (int i = 0; i < byteCount; i++)
             original[i] = (byte)((i * 17) + 3);
 
-        var encoded = Base85.Encode(original);
-        var decoded = Base85.Decode(encoded);
+        string encoded = Base85.Encode(original);
+        byte[] decoded = Base85.Decode(encoded);
 
         CollectionAssert.AreEqual(original, decoded, $"Round trip failed for length={byteCount}.");
     }
@@ -46,12 +46,12 @@ public sealed partial class Base85Tests
     [TestCategory("Regression")]
     public void RoundTrip_ForEverySingleByteValueAscii85_ShouldRecover()
     {
-        for (var value = 0; value <= 255; value++)
+        for (int value = 0; value <= 255; value++)
         {
-            var original = new byte[] { (byte)value };
+            byte[] original = new byte[] { (byte)value };
 
-            var encoded = Base85.Encode(original);
-            var decoded = Base85.Decode(encoded);
+            string encoded = Base85.Encode(original);
+            byte[] decoded = Base85.Decode(encoded);
 
             CollectionAssert.AreEqual(original, decoded, $"Round trip failed for byte 0x{value:X2}.");
         }
@@ -68,12 +68,12 @@ public sealed partial class Base85Tests
     [DataRow(Base85Variant.Z85)]
     public void RoundTrip_ForLargeRandomInput_ShouldRecover(Base85Variant variant)
     {
-        var size = 8192;
-        var original = new byte[size];
+        int size = 8192;
+        byte[] original = new byte[size];
         new Random(0xBEEF).NextBytes(original);
 
-        var encoded = Base85.Encode(original, variant);
-        var decoded = Base85.Decode(encoded, variant);
+        string encoded = Base85.Encode(original, variant);
+        byte[] decoded = Base85.Decode(encoded, variant);
 
         CollectionAssert.AreEqual(original, decoded);
     }
@@ -90,12 +90,12 @@ public sealed partial class Base85Tests
     [DataRow(32)]
     public void RoundTrip_ForZ85AlignedLengths_ShouldRecoverOriginalBytes(int byteCount)
     {
-        var original = new byte[byteCount];
-        for (var i = 0; i < byteCount; i++)
+        byte[] original = new byte[byteCount];
+        for (int i = 0; i < byteCount; i++)
             original[i] = (byte)((i * 13) + 7);
 
-        var encoded = Base85.Encode(original, Base85Variant.Z85);
-        var decoded = Base85.Decode(encoded, Base85Variant.Z85);
+        string encoded = Base85.Encode(original, Base85Variant.Z85);
+        byte[] decoded = Base85.Decode(encoded, Base85Variant.Z85);
 
         CollectionAssert.AreEqual(original, decoded, $"Z85 round trip failed for length={byteCount}.");
     }
@@ -107,10 +107,10 @@ public sealed partial class Base85Tests
     [TestMethod]
     public void RoundTrip_WhenAllOnesGroupForAscii85_ShouldRecover()
     {
-        var original = new byte[] { 0xFF, 0xFF, 0xFF, 0xFF };
+        byte[] original = new byte[] { 0xFF, 0xFF, 0xFF, 0xFF };
 
-        var encoded = Base85.Encode(original);
-        var decoded = Base85.Decode(encoded);
+        string encoded = Base85.Encode(original);
+        byte[] decoded = Base85.Decode(encoded);
 
         Assert.AreEqual(5, encoded.Length);
         Assert.AreNotEqual("z", encoded); // 0xFFFFFFFF is not the all-zero shortcut
@@ -123,12 +123,12 @@ public sealed partial class Base85Tests
     [TestMethod]
     public void RoundTrip_WhenAllZeroGroupsAndAscii85_ShouldPreserveBytes()
     {
-        var original = new byte[] { 0xDE, 0xAD, 0xBE, 0xEF, 0x00, 0x00, 0x00, 0x00, 0x12, 0x34, 0x56, 0x78 };
+        byte[] original = new byte[] { 0xDE, 0xAD, 0xBE, 0xEF, 0x00, 0x00, 0x00, 0x00, 0x12, 0x34, 0x56, 0x78 };
 
-        var encoded = Base85.Encode(original);
+        string encoded = Base85.Encode(original);
         Assert.IsTrue(encoded.Contains('z'), "All-zero group should be encoded with the 'z' shortcut.");
 
-        var decoded = Base85.Decode(encoded);
+        byte[] decoded = Base85.Decode(encoded);
         CollectionAssert.AreEqual(original, decoded);
     }
 
@@ -138,12 +138,12 @@ public sealed partial class Base85Tests
     [TestMethod]
     public void RoundTrip_WhenSpanTryPathForAscii85_ShouldRecoverOriginal()
     {
-        var original = new byte[] { 0xDE, 0xAD, 0xBE, 0xEF, 0xCA, 0xFE };
-        var charBuffer = new char[Base85.GetMaxEncodedLength(original.Length)];
-        var byteBuffer = new byte[Base85.GetMaxDecodedLength(charBuffer.Length)];
+        byte[] original = new byte[] { 0xDE, 0xAD, 0xBE, 0xEF, 0xCA, 0xFE };
+        char[] charBuffer = new char[Base85.GetMaxEncodedLength(original.Length)];
+        byte[] byteBuffer = new byte[Base85.GetMaxDecodedLength(charBuffer.Length)];
 
-        var encOk = Base85.TryEncode(original.AsSpan(), charBuffer, out var charsWritten);
-        var decOk = Base85.TryDecode(charBuffer.AsSpan(0, charsWritten), byteBuffer, out var bytesWritten);
+        bool encOk = Base85.TryEncode(original.AsSpan(), charBuffer, out int charsWritten);
+        bool decOk = Base85.TryDecode(charBuffer.AsSpan(0, charsWritten), byteBuffer, out int bytesWritten);
 
         Assert.IsTrue(encOk);
         Assert.IsTrue(decOk);

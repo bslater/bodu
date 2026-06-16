@@ -22,7 +22,7 @@ public sealed partial class GcmModeTransformTests
     public void Dispose_ShouldNotDisposeInnerCipher()
     {
         var cipher = new DisposalTrackingBlockCipher();
-        var nonce = new byte[NonceSizeBytes];
+        byte[] nonce = new byte[NonceSizeBytes];
 
         var transform = new GcmModeTransform(cipher, nonce);
         transform.Dispose();

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Bech32.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -112,14 +112,14 @@ public static partial class Bech32
         ThrowHelper.ThrowIfOutOfRange(fromBits, 1, 8);
         ThrowHelper.ThrowIfOutOfRange(toBits, 1, 8);
 
-        var acc = 0;
-        var bits = 0;
-        var maxValue = (1 << toBits) - 1;
-        var maxAccumulator = (1 << (fromBits + toBits - 1)) - 1;
+        int acc = 0;
+        int bits = 0;
+        int maxValue = (1 << toBits) - 1;
+        int maxAccumulator = (1 << (fromBits + toBits - 1)) - 1;
 
         var result = new List<byte>((data.Length * fromBits / toBits) + 1);
 
-        foreach (var value in data)
+        foreach (byte value in data)
         {
             if ((value >> fromBits) != 0)
                 return null;
@@ -188,11 +188,11 @@ public static partial class Bech32
     private static uint Polymod(ReadOnlySpan<byte> values)
     {
         uint chk = 1;
-        foreach (var value in values)
+        foreach (byte value in values)
         {
-            var top = chk >> 25;
+            uint top = chk >> 25;
             chk = ((chk & 0x1ffffff) << 5) ^ value;
-            for (var i = 0; i < 5; i++)
+            for (int i = 0; i < 5; i++)
             {
                 if (((top >> i) & 1) != 0)
                     chk ^= s_generators[i];
@@ -210,8 +210,8 @@ public static partial class Bech32
     /// <returns>An expansion of length <c>(2 × hrp.Length) + 1</c>.</returns>
     private static byte[] ExpandHrp(string hrp)
     {
-        var result = new byte[(hrp.Length * 2) + 1];
-        for (var i = 0; i < hrp.Length; i++)
+        byte[] result = new byte[(hrp.Length * 2) + 1];
+        for (int i = 0; i < hrp.Length; i++)
         {
             result[i] = (byte)(hrp[i] >> 5);
             result[hrp.Length + 1 + i] = (byte)(hrp[i] & 31);
@@ -231,13 +231,13 @@ public static partial class Bech32
     /// <param name="destination">A span of exactly <see cref="ChecksumSymbols" /> bytes receiving the checksum.</param>
     private static void CreateChecksum(string hrp, ReadOnlySpan<byte> data, Bech32Encoding encoding, Span<byte> destination)
     {
-        var expanded = ExpandHrp(hrp);
+        byte[] expanded = ExpandHrp(hrp);
         Span<byte> values = new byte[expanded.Length + data.Length + ChecksumSymbols];
         expanded.CopyTo(values);
         data.CopyTo(values.Slice(expanded.Length));
 
-        var polymod = Polymod(values) ^ ConstantFor(encoding);
-        for (var i = 0; i < ChecksumSymbols; i++)
+        uint polymod = Polymod(values) ^ ConstantFor(encoding);
+        for (int i = 0; i < ChecksumSymbols; i++)
             destination[i] = (byte)((polymod >> (5 * (5 - i))) & 31);
     }
 
@@ -255,12 +255,12 @@ public static partial class Bech32
     /// </returns>
     private static bool VerifyChecksum(string hrp, ReadOnlySpan<byte> data, out Bech32Encoding encoding)
     {
-        var expanded = ExpandHrp(hrp);
+        byte[] expanded = ExpandHrp(hrp);
         Span<byte> values = new byte[expanded.Length + data.Length];
         expanded.CopyTo(values);
         data.CopyTo(values.Slice(expanded.Length));
 
-        var polymod = Polymod(values);
+        uint polymod = Polymod(values);
         switch (polymod)
         {
             case Bech32Constant:
@@ -296,10 +296,10 @@ public static partial class Bech32
     /// <returns>The reverse lookup table, with <c>-1</c> for every non-alphabet code point.</returns>
     private static sbyte[] BuildReverse(string charset)
     {
-        var table = new sbyte[128];
+        sbyte[] table = new sbyte[128];
         Array.Fill(table, (sbyte)-1);
 
-        for (var i = 0; i < charset.Length; i++)
+        for (int i = 0; i < charset.Length; i++)
             table[charset[i]] = (sbyte)i;
 
         return table;

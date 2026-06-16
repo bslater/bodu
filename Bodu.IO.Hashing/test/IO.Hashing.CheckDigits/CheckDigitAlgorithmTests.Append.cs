@@ -44,7 +44,7 @@ public abstract partial class CheckDigitAlgorithmTests<TTest, TAlgorithm>
         _ = name;
         TAlgorithm algorithm = CreateAlgorithm();
 
-        foreach (var ch in body)
+        foreach (char ch in body)
             algorithm.Append(ch);
 
         Assert.AreEqual(expectedCheck, algorithm.GetCurrentCheckDigit());
@@ -65,7 +65,7 @@ public abstract partial class CheckDigitAlgorithmTests<TTest, TAlgorithm>
         if (body.Length < 2) return;
 
         TAlgorithm algorithm = CreateAlgorithm();
-        var split = body.Length / 2;
+        int split = body.Length / 2;
 
         algorithm.Append(body.AsSpan(0, split));
         algorithm.Append(body.AsSpan(split));
@@ -80,7 +80,7 @@ public abstract partial class CheckDigitAlgorithmTests<TTest, TAlgorithm>
     public void Append_WhenSpanIsEmpty_ShouldLeaveCheckDigitUnchanged()
     {
         TAlgorithm algorithm = CreateAlgorithm();
-        var initial = algorithm.GetCurrentCheckDigit();
+        char initial = algorithm.GetCurrentCheckDigit();
 
         algorithm.Append([]);
 
@@ -104,11 +104,11 @@ public abstract partial class CheckDigitAlgorithmTests<TTest, TAlgorithm>
         _ = expectedCheck;
 
         TAlgorithm algorithm = CreateAlgorithm();
-        for (var i = 0; i < body.Length; i++)
+        for (int i = 0; i < body.Length; i++)
         {
             algorithm.Append(body[i]);
-            var streaming = algorithm.GetCurrentCheckDigit();
-            var fromCompute = ComputeStatic(body.AsSpan(0, i + 1));
+            char streaming = algorithm.GetCurrentCheckDigit();
+            char fromCompute = ComputeStatic(body.AsSpan(0, i + 1));
             Assert.AreEqual(fromCompute, streaming, $"Prefix length {i + 1} (\"{body[..(i + 1)]}\").");
         }
     }

@@ -26,7 +26,7 @@ public sealed class AlphanumericTests
     [TestMethod]
     public void ExpandCusip_WhenCharacterIsDigit_ShouldReturnDigitValue()
     {
-        for (var c = '0'; c <= '9'; c++)
+        for (char c = '0'; c <= '9'; c++)
         {
             Assert.AreEqual(c - '0', Alphanumeric.ExpandCusip(c));
         }
@@ -73,7 +73,7 @@ public sealed class AlphanumericTests
     [TestMethod]
     public void ExpandCusip_WhenCharacterIsUppercaseLetter_ShouldReturnTenPlusOrdinal()
     {
-        for (var c = 'A'; c <= 'Z'; c++)
+        for (char c = 'A'; c <= 'Z'; c++)
         {
             Assert.AreEqual(c - 'A' + 10, Alphanumeric.ExpandCusip(c));
         }
@@ -88,7 +88,7 @@ public sealed class AlphanumericTests
     [TestMethod]
     public void ExpandLetterDigit_WhenCharacterIsDigit_ShouldReturnDigitValue()
     {
-        for (var c = '0'; c <= '9'; c++)
+        for (char c = '0'; c <= '9'; c++)
         {
             Assert.AreEqual(c - '0', Alphanumeric.ExpandLetterDigit(c));
         }
@@ -130,7 +130,7 @@ public sealed class AlphanumericTests
     [TestMethod]
     public void ExpandLetterDigit_WhenCharacterIsUppercaseLetter_ShouldReturnTenPlusOrdinal()
     {
-        for (var c = 'A'; c <= 'Z'; c++)
+        for (char c = 'A'; c <= 'Z'; c++)
         {
             Assert.AreEqual(c - 'A' + 10, Alphanumeric.ExpandLetterDigit(c));
         }
@@ -164,7 +164,7 @@ public sealed class AlphanumericTests
     [TestMethod]
     public void ValidateAlphanumeric_WhenCharacterIsOutsideAllowedRange_ShouldThrowExactly(char invalid)
     {
-        var sequence = "A1" + invalid + "2B";
+        string sequence = "A1" + invalid + "2B";
 
         ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -207,7 +207,7 @@ public sealed class AlphanumericTests
     [TestMethod]
     public void ValidateCusip_WhenCharacterIsOutsideCusipAlphabet_ShouldThrowExactly(char invalid)
     {
-        var sequence = "A1" + invalid + "2#";
+        string sequence = "A1" + invalid + "2#";
 
         ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

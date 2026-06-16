@@ -31,7 +31,7 @@ public partial class ArrayExtensionsTests
     {
         string?[] source = ["a", "b"];
 
-        var result = source.PadLeft(4, "x");
+        string?[] result = source.PadLeft(4, "x");
 
         CollectionAssert.AreEqual(new[] { "x", "x", "a", "b" }, result);
     }
@@ -45,7 +45,7 @@ public partial class ArrayExtensionsTests
     {
         int[] source = [1, 2, 3];
 
-        var result = source.PadLeft(6, 0);
+        int[] result = source.PadLeft(6, 0);
 
         CollectionAssert.AreEqual(new[] { 0, 0, 0, 1, 2, 3 }, result);
     }
@@ -56,9 +56,9 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void PadLeft_WhenSourceIsEmpty_ShouldReturnArrayOfPadValues()
     {
-        var source = Array.Empty<int>();
+        int[] source = Array.Empty<int>();
 
-        var result = source.PadLeft(4, 7);
+        int[] result = source.PadLeft(4, 7);
 
         CollectionAssert.AreEqual(new[] { 7, 7, 7, 7 }, result);
     }
@@ -71,7 +71,7 @@ public partial class ArrayExtensionsTests
     {
         int[] source = [1, 2, 3];
 
-        var result = source.PadLeft(3, 9);
+        int[] result = source.PadLeft(3, 9);
 
         CollectionAssert.AreEqual(source, result);
         AssertIsNewAllocation(source, result);
@@ -84,7 +84,7 @@ public partial class ArrayExtensionsTests
     {
         int[] source = [1, 2, 3];
 
-        var result = source.PadLeft(6, 9);
+        int[] result = source.PadLeft(6, 9);
 
         CollectionAssert.AreEqual(new[] { 9, 9, 9, 1, 2, 3 }, result);
         AssertIsNewAllocation(source, result);
@@ -114,8 +114,8 @@ public partial class ArrayExtensionsTests
     {
         string?[] source = ["a"];
 
-        var leftResult = source.PadLeft(3, null);
-        var rightResult = source.PadRight(3, null);
+        string?[] leftResult = source.PadLeft(3, null);
+        string?[] rightResult = source.PadRight(3, null);
 
         CollectionAssert.AreEqual(new string?[] { null, null, "a" }, leftResult);
         CollectionAssert.AreEqual(new string?[] { "a", null, null }, rightResult);
@@ -144,7 +144,7 @@ public partial class ArrayExtensionsTests
     {
         string?[] source = ["a", "b"];
 
-        var result = source.PadRight(4, "x");
+        string?[] result = source.PadRight(4, "x");
 
         CollectionAssert.AreEqual(new[] { "a", "b", "x", "x" }, result);
     }
@@ -158,7 +158,7 @@ public partial class ArrayExtensionsTests
     {
         int[] source = [1, 2, 3];
 
-        var result = source.PadRight(6, 0);
+        int[] result = source.PadRight(6, 0);
 
         CollectionAssert.AreEqual(new[] { 1, 2, 3, 0, 0, 0 }, result);
     }
@@ -169,9 +169,9 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void PadRight_WhenSourceIsEmpty_ShouldReturnArrayOfPadValues()
     {
-        var source = Array.Empty<int>();
+        int[] source = Array.Empty<int>();
 
-        var result = source.PadRight(4, 7);
+        int[] result = source.PadRight(4, 7);
 
         CollectionAssert.AreEqual(new[] { 7, 7, 7, 7 }, result);
     }
@@ -184,7 +184,7 @@ public partial class ArrayExtensionsTests
     {
         int[] source = [1, 2, 3];
 
-        var result = source.PadRight(3, 9);
+        int[] result = source.PadRight(3, 9);
 
         CollectionAssert.AreEqual(source, result);
         AssertIsNewAllocation(source, result);
@@ -198,7 +198,7 @@ public partial class ArrayExtensionsTests
     {
         int[] source = [1, 2, 3];
 
-        var result = source.PadRight(6, 9);
+        int[] result = source.PadRight(6, 9);
 
         CollectionAssert.AreEqual(new[] { 1, 2, 3, 9, 9, 9 }, result);
         AssertIsNewAllocation(source, result);

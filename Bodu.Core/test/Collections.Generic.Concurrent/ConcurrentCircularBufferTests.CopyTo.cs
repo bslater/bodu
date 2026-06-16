@@ -40,7 +40,7 @@ public partial class ConcurrentCircularBufferTests
         buffer.Enqueue(null);
         buffer.Enqueue("X");
 
-        var array = new string[2];
+        string[] array = new string[2];
         buffer.CopyTo(array, 0);
 
         Assert.IsNull(array[0]);
@@ -87,13 +87,13 @@ public partial class ConcurrentCircularBufferTests
     public void CopyTo_WhenConcurrentClear_ShouldNotThrow()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(5);
-        for (var i = 0; i < 5; i++) buffer.Enqueue(new TestItem(i));
+        for (int i = 0; i < 5; i++) buffer.Enqueue(new TestItem(i));
 
         var exceptions = new ConcurrentBag<Exception>();
 
         var clearer = Task.Run(() =>
         {
-            for (var i = 0; i < 50; i++)
+            for (int i = 0; i < 50; i++)
             {
                 buffer.Clear();
                 Thread.SpinWait(10);
@@ -102,7 +102,7 @@ public partial class ConcurrentCircularBufferTests
 
         var copier = Task.Run(() =>
         {
-            for (var i = 0; i < 100; i++)
+            for (int i = 0; i < 100; i++)
             {
                 try
                 {
@@ -129,14 +129,14 @@ public partial class ConcurrentCircularBufferTests
     public void CopyTo_WhenConcurrentEnqueue_ShouldNotThrowAndProduceWellSizedCopies()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(10);
-        for (var i = 0; i < 5; i++) buffer.Enqueue(new TestItem(i));
+        for (int i = 0; i < 5; i++) buffer.Enqueue(new TestItem(i));
 
         var exceptions = new ConcurrentBag<Exception>();
         var copies = new ConcurrentBag<TestItem[]>();
 
         var writer = Task.Run(() =>
         {
-            for (var i = 5; i < 50; i++)
+            for (int i = 5; i < 50; i++)
             {
                 buffer.TryEnqueue(new TestItem(i));
                 Thread.SpinWait(10);
@@ -145,7 +145,7 @@ public partial class ConcurrentCircularBufferTests
 
         var copier = Task.Run(() =>
         {
-            for (var i = 0; i < 100; i++)
+            for (int i = 0; i < 100; i++)
             {
                 try
                 {

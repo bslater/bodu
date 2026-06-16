@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XChaCha20Poly1305Tests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -26,7 +26,7 @@ public sealed class XChaCha20Poly1305Tests
     [TestCategory("Smoke")]
     public void Encrypt_WhenRoundTripped_ShouldRecoverPlaintext()
     {
-        var plaintext = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+        byte[] plaintext = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
         byte[] sealed_;
         using (var enc = new XChaCha20Poly1305(Key(), Nonce()))

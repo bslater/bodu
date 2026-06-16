@@ -56,12 +56,12 @@ public sealed class Ansix923Padding
     {
         CryptographyThrowHelper.ThrowIfNotPositiveMultipleOf(blockSize, 8);
 
-        var size = blockSize / 8;
-        var paddingLength = size - (input.Length % size);
+        int size = blockSize / 8;
+        int paddingLength = size - (input.Length % size);
         if (paddingLength == 0)
             paddingLength = size;
 
-        var result = new byte[input.Length + paddingLength];
+        byte[] result = new byte[input.Length + paddingLength];
         input.CopyTo(result);
 
         // Remaining pad bytes are already 0x00 from array allocation; only the trailing
@@ -89,39 +89,39 @@ public sealed class Ansix923Padding
         CryptographyThrowHelper.ThrowIfNotPositiveMultipleOf(blockSize, 8);
 
         // Constant-time verification to mitigate CBC padding-oracle attacks.
-        var size = blockSize / 8;
+        int size = blockSize / 8;
         if (input.Length == 0 || input.Length % size != 0)
             CryptographyHelper.ThrowInvalidPaddedSequence("ANSI X.923", nameof(input));
 
-        var length = input.Length;
+        int length = input.Length;
         int padLen = input[length - 1];
 
-        var geOne = ((-padLen) >> 31) & 1;                  // 1 iff padLen >= 1
-        var leBlock = ((padLen - size - 1) >> 31) & 1;      // 1 iff padLen <= blockSize
-        var valid = geOne & leBlock;
+        int geOne = ((-padLen) >> 31) & 1;                  // 1 iff padLen >= 1
+        int leBlock = ((padLen - size - 1) >> 31) & 1;      // 1 iff padLen <= blockSize
+        int valid = geOne & leBlock;
 
         // effective = valid == 1 ? padLen : size (branchless)
-        var effective = (valid * padLen) + ((1 - valid) * size);
+        int effective = (valid * padLen) + ((1 - valid) * size);
 
         // Walk the last blockSize bytes unconditionally. Every byte in the padding
         // region, other than the final length byte, must be 0x00.
-        var start = length - size;
-        var lastIndex = length - 1;
-        for (var i = start; i < length; i++)
+        int start = length - size;
+        int lastIndex = length - 1;
+        for (int i = start; i < length; i++)
         {
-            var diff = i - (length - effective);
-            var shouldBePadByte = ((~diff) >> 31) & 1; // 1 iff i >= length - effective
+            int diff = i - (length - effective);
+            int shouldBePadByte = ((~diff) >> 31) & 1; // 1 iff i >= length - effective
 
             // isLastByte = (i == length - 1) ? 1 : 0 (branchless)
-            var xorLast = i ^ lastIndex;
-            var isLastByte = (((xorLast - 1) & ~xorLast) >> 31) & 1;
+            int xorLast = i ^ lastIndex;
+            int isLastByte = (((xorLast - 1) & ~xorLast) >> 31) & 1;
 
             // Expected value in padding region: 0x00 for interior bytes, padLen for the last byte.
-            var expected = isLastByte * padLen;
-            var xorExpected = input[i] ^ expected;
-            var matches = (((xorExpected - 1) & ~xorExpected) >> 31) & 1;
+            int expected = isLastByte * padLen;
+            int xorExpected = input[i] ^ expected;
+            int matches = (((xorExpected - 1) & ~xorExpected) >> 31) & 1;
 
-            var constraint = (1 - shouldBePadByte) | matches;
+            int constraint = (1 - shouldBePadByte) | matches;
             valid &= constraint;
         }
 

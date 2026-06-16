@@ -60,7 +60,7 @@ public partial class ConfigurationDocumentTests
     [TestMethod]
     public void TryParse_WhenInputIsValid_ShouldReturnTrueAndProduceDocument()
     {
-        var ok = ConfigurationDocument.TryParse(ConfigurationFixtures.Minimal, out ConfigurationDocument? doc);
+        bool ok = ConfigurationDocument.TryParse(ConfigurationFixtures.Minimal, out ConfigurationDocument? doc);
 
         Assert.IsTrue(ok);
         Assert.IsNotNull(doc);
@@ -74,7 +74,7 @@ public partial class ConfigurationDocumentTests
     [TestMethod]
     public void TryParse_WhenInputIsMalformed_ShouldReturnFalse()
     {
-        var ok = ConfigurationDocument.TryParse("[*.cs]\nformat.indent.size\n", ConfigurationParseOptions.Strict, out ConfigurationDocument? doc);
+        bool ok = ConfigurationDocument.TryParse("[*.cs]\nformat.indent.size\n", ConfigurationParseOptions.Strict, out ConfigurationDocument? doc);
 
         Assert.IsFalse(ok);
         Assert.IsNull(doc);
@@ -87,7 +87,7 @@ public partial class ConfigurationDocumentTests
     [TestMethod]
     public void TryParse_WhenInputIsNull_ShouldReturnFalse()
     {
-        var ok = ConfigurationDocument.TryParse(null, out ConfigurationDocument? doc);
+        bool ok = ConfigurationDocument.TryParse(null, out ConfigurationDocument? doc);
 
         Assert.IsFalse(ok);
         Assert.IsNull(doc);

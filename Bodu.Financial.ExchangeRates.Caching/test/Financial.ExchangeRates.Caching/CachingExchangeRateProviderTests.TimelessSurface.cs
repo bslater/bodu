@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CachingExchangeRateProviderTests.TimelessSurface.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -25,7 +25,7 @@ public sealed partial class CachingExchangeRateProviderTests
         SeedCache(new ExchangeRatePair("AUD", "USD"), (today, 0.5m));
         CachingExchangeRateProvider sut = CreateDecorator(inner);
 
-        var rate = ((IExchangeRateProvider)sut).GetRate("AUD", "USD");
+        decimal rate = ((IExchangeRateProvider)sut).GetRate("AUD", "USD");
 
         Assert.AreEqual(0.5m, rate);
         Assert.AreEqual(0, inner.TotalCallCount);
@@ -41,7 +41,7 @@ public sealed partial class CachingExchangeRateProviderTests
         CountingDatedExchangeRateProvider inner = InnerWith(("AUD", "USD", today, 0.5m));
         CachingExchangeRateProvider sut = CreateDecorator(inner);
 
-        var rate = ((IExchangeRateProvider)sut).GetRate("AUD", "USD");
+        decimal rate = ((IExchangeRateProvider)sut).GetRate("AUD", "USD");
 
         Assert.AreEqual(0.5m, rate);
         Assert.AreEqual(1, inner.TotalCallCount);

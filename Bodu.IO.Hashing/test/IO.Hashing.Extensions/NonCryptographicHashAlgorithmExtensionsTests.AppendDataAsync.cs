@@ -65,7 +65,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     {
         MonitoringNonCryptographicHashAlgorithm reference = CreateAlgorithm();
         reference.AppendData(s_sampleData.AsSpan());
-        var expected = reference.GetCurrentHash();
+        byte[] expected = reference.GetCurrentHash();
 
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
         await algorithm.AppendDataAsync(new MemoryStream(s_sampleData), bufferSize: 1);
@@ -82,7 +82,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     {
         MonitoringNonCryptographicHashAlgorithm reference = CreateAlgorithm();
         reference.AppendData(s_sampleData.AsSpan());
-        var expected = reference.GetCurrentHash();
+        byte[] expected = reference.GetCurrentHash();
 
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
         await algorithm.AppendDataAsync(new MemoryStream(s_sampleData));
@@ -103,7 +103,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
 
         MonitoringNonCryptographicHashAlgorithm reference = CreateAlgorithm();
         reference.AppendData(combined.AsSpan());
-        var expected = reference.GetCurrentHash();
+        byte[] expected = reference.GetCurrentHash();
 
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
         await algorithm.AppendDataAsync(new MemoryStream(part1));
@@ -145,7 +145,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
 
         MonitoringNonCryptographicHashAlgorithm reference = CreateAlgorithm();
         reference.AppendData(combined.AsSpan());
-        var expected = reference.GetCurrentHash();
+        byte[] expected = reference.GetCurrentHash();
 
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
         algorithm.AppendData(part1.AsSpan());
@@ -177,7 +177,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     {
         MonitoringNonCryptographicHashAlgorithm reference = CreateAlgorithm();
         reference.AppendData(s_sampleData.AsSpan());
-        var expected = reference.GetCurrentHash();
+        byte[] expected = reference.GetCurrentHash();
 
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
         await algorithm.AppendDataAsync(new FixedChunkStream(s_sampleData, chunkSize: 1));
@@ -193,7 +193,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     {
         MonitoringNonCryptographicHashAlgorithm reference = CreateAlgorithm();
         reference.AppendData(s_sampleData.AsSpan());
-        var expected = reference.GetCurrentHash();
+        byte[] expected = reference.GetCurrentHash();
 
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
         await algorithm.AppendDataAsync(new NonSeekableStream(s_sampleData));

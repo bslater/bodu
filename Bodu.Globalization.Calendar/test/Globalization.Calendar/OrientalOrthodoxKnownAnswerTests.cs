@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="OrientalOrthodoxKnownAnswerTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -117,9 +117,9 @@ public sealed class OrientalOrthodoxKnownAnswerTests
     {
         NotableDateService service = CreateService();
 
-        for (var year = 2000; year <= 2050; year++)
+        for (int year = 2000; year <= 2050; year++)
         {
-            foreach (var id in new[] { "oriental-orthodox-palm-sunday", "oriental-orthodox-easter-sunday", "oriental-orthodox-pentecost" })
+            foreach (string? id in new[] { "oriental-orthodox-palm-sunday", "oriental-orthodox-easter-sunday", "oriental-orthodox-pentecost" })
             {
                 NotableDate feast = CommonCatalogues.ResolveSingle(service, id, year);
                 Assert.AreEqual(DayOfWeek.Sunday, feast.Date.DayOfWeek, $"{id} {year} ({feast.Date:yyyy-MM-dd})");

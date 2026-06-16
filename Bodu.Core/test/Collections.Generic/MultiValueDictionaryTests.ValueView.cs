@@ -222,7 +222,7 @@ public partial class MultiValueDictionaryTests
         var mvd = new MultiValueDictionary<string, int>();
         mvd.Add("a", 1);
 
-        var found = mvd.TryGetValues("a", out IReadOnlyList<int> values);
+        bool found = mvd.TryGetValues("a", out IReadOnlyList<int> values);
 
         Assert.IsTrue(found);
         AssertReadOnlyValueViewCannotBeMutated(values);

@@ -30,7 +30,7 @@ public partial class ByteBufferTests
     {
         var buffer = new ByteBuffer(2);
         buffer.Add([1, 2], 0, 2);
-        var result = buffer.GetBytes();
+        byte[] result = buffer.GetBytes();
         CollectionAssert.AreEqual(new byte[] { 1, 2 }, result);
     }
 
@@ -53,7 +53,7 @@ public partial class ByteBufferTests
     {
         var buffer = new ByteBuffer(2);
         buffer.Add([1, 2], 0, 2);
-        var _ = buffer.GetBytes(); // OK
+        byte[] _ = buffer.GetBytes(); // OK
         Assert.ThrowsExactly<InvalidOperationException>(() => buffer.GetBytes());
     }
 }

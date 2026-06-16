@@ -202,7 +202,7 @@ public sealed class TomlObject
     /// </remarks>
     public IEnumerator<KeyValuePair<string, TomlNode?>> GetEnumerator()
     {
-        foreach (var key in _order)
+        foreach (string key in _order)
             yield return new KeyValuePair<string, TomlNode?>(key, _properties[key]);
     }
 
@@ -236,7 +236,7 @@ public sealed class TomlObject
     /// <param name="key">The property name to remove.</param>
     private void RemoveFromOrder(string key)
     {
-        var index = _order.FindIndex(entry => _comparer.Equals(entry, key));
+        int index = _order.FindIndex(entry => _comparer.Equals(entry, key));
         if (index >= 0)
             _order.RemoveAt(index);
     }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="GatedYahooExchangeRateChartSource.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -67,7 +67,7 @@ internal sealed class GatedYahooExchangeRateChartSource
 
         await _gate.Task.ConfigureAwait(false);
 
-        var json = YahooFixtures.ReadBytes(YahooFixtures.AudUsd);
+        byte[] json = YahooFixtures.ReadBytes(YahooFixtures.AudUsd);
         return YahooChartResponseParser.Parse(json, request, _options);
     }
 }

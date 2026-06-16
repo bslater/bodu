@@ -34,7 +34,7 @@ public static partial class DateOnlyExtensions
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(workingWeek);
 
-        var dayNumber = date.DayNumber;
+        int dayNumber = date.DayNumber;
         do
         {
             dayNumber -= 1;
@@ -77,7 +77,7 @@ public static partial class DateOnlyExtensions
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(workingWeek);
 
-        var dayNumber = date.DayNumber;
+        int dayNumber = date.DayNumber;
         do
         {
             dayNumber -= 1;
@@ -106,7 +106,7 @@ public static partial class DateOnlyExtensions
     {
         if (workingWeek.Count == 0) throw new ArgumentOutOfRangeException(nameof(workingWeek), ResourceStrings.Arg_OutOfRange_WorkingWeekEmpty);
 
-        var dayNumber = date.DayNumber;
+        int dayNumber = date.DayNumber;
         do
         {
             dayNumber -= 1;

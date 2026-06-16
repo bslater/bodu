@@ -133,7 +133,7 @@ public class MonitoringHashAlgorithm
     {
         ThrowIfDisposed();
 
-        for (var i = ibStart; i < ibStart + cbSize; i++)
+        for (int i = ibStart; i < ibStart + cbSize; i++)
             _hashValue += array[i];
 
         _bytesProcessed += cbSize;
@@ -148,7 +148,7 @@ public class MonitoringHashAlgorithm
         HashCoreSpanCallCount++;
         HashCoreSpanCalled?.Invoke(this, EventArgs.Empty);
 
-        foreach (var b in source)
+        foreach (byte b in source)
             _hashValue += b;
 
         _bytesProcessed += source.Length;

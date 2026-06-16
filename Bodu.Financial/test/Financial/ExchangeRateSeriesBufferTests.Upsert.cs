@@ -40,7 +40,7 @@ public partial class ExchangeRateSeriesBufferTests
         buffer.Upsert(1000, 1.9m, RateParam);
 
         Assert.AreEqual(1, buffer.Count);
-        Assert.IsTrue(buffer.TryGetRate(1000, out var rate));
+        Assert.IsTrue(buffer.TryGetRate(1000, out decimal rate));
         Assert.AreEqual(1.9m, rate);
     }
 

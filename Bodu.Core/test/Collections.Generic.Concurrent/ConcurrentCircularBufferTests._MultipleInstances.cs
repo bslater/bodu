@@ -23,7 +23,7 @@ public partial class ConcurrentCircularBufferTests
 
         Parallel.ForEach(buffers, buffer =>
         {
-            for (var i = 0; i < 100; i++)
+            for (int i = 0; i < 100; i++)
                 buffer.Enqueue(new TestItem(i));
 
             TestItem[] snapshot = buffer.ToArray();
@@ -45,17 +45,17 @@ public partial class ConcurrentCircularBufferTests
         Parallel.Invoke(
             () =>
             {
-                for (var i = 0; i < 50; i++)
+                for (int i = 0; i < 50; i++)
                     buffer1.Enqueue(new TestItem(i));
             },
             () =>
             {
-                for (var i = 100; i < 150; i++)
+                for (int i = 100; i < 150; i++)
                     buffer2.Enqueue(new TestItem(i));
             });
 
-        var values1 = buffer1.ToArray().Select(x => x.Value).ToArray();
-        var values2 = buffer2.ToArray().Select(x => x.Value).ToArray();
+        int[] values1 = buffer1.ToArray().Select(x => x.Value).ToArray();
+        int[] values2 = buffer2.ToArray().Select(x => x.Value).ToArray();
 
         Assert.IsTrue(values1.All(v => v < 100), "Buffer1 should contain only < 100 values.");
         Assert.IsTrue(values2.All(v => v >= 100), "Buffer2 should contain only >= 100 values.");

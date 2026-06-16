@@ -49,9 +49,9 @@ public partial class ConfigurationViewTests
         var doc = ConfigurationDocument.Parse("[*]\nlogging.level.default = info\n");
         IReadOnlyDictionary<string, string?> view = doc.Resolve("any.cs");
 
-        Assert.IsTrue(view.TryGetValue("logging:level:default", out var colon));
+        Assert.IsTrue(view.TryGetValue("logging:level:default", out string? colon));
         Assert.AreEqual("info", colon);
-        Assert.IsTrue(view.TryGetValue("logging.level.default", out var dotted));
+        Assert.IsTrue(view.TryGetValue("logging.level.default", out string? dotted));
         Assert.AreEqual("info", dotted);
         Assert.IsFalse(view.TryGetValue("missing", out _));
     }

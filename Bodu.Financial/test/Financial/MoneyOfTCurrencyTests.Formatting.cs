@@ -103,7 +103,7 @@ public partial class MoneyOfTCurrencyTests
         var money = new Money<USD>(19.99m);
         Span<char> buffer = stackalloc char[32];
 
-        var ok = money.TryFormat(buffer, out var written, default, CultureInfo.InvariantCulture);
+        bool ok = money.TryFormat(buffer, out int written, default, CultureInfo.InvariantCulture);
 
         Assert.IsTrue(ok);
         Assert.AreEqual("USD 19.99", buffer[..written].ToString());
@@ -119,7 +119,7 @@ public partial class MoneyOfTCurrencyTests
         var money = new Money<USD>(19.99m);
         Span<char> buffer = stackalloc char[3];
 
-        var ok = money.TryFormat(buffer, out var written, default, CultureInfo.InvariantCulture);
+        bool ok = money.TryFormat(buffer, out int written, default, CultureInfo.InvariantCulture);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0, written);
@@ -134,7 +134,7 @@ public partial class MoneyOfTCurrencyTests
         var money = new Money<USD>(19.99m);
         Span<byte> buffer = stackalloc byte[32];
 
-        var ok = money.TryFormat(buffer, out var written, default, CultureInfo.InvariantCulture);
+        bool ok = money.TryFormat(buffer, out int written, default, CultureInfo.InvariantCulture);
 
         Assert.IsTrue(ok);
         Assert.AreEqual("USD 19.99", System.Text.Encoding.UTF8.GetString(buffer[..written]));
@@ -149,7 +149,7 @@ public partial class MoneyOfTCurrencyTests
     {
         var money = new Money<USD>(1234.56m);
 
-        var result = money.ToString("C", new CultureInfo("en-US"));
+        string result = money.ToString("C", new CultureInfo("en-US"));
 
         Assert.AreEqual("$1,234.56", result);
     }
@@ -163,7 +163,7 @@ public partial class MoneyOfTCurrencyTests
     {
         var money = new Money<EUR>(1234.56m);
 
-        var result = money.ToString("C", new CultureInfo("de-DE"));
+        string result = money.ToString("C", new CultureInfo("de-DE"));
 
         // de-DE: "1.234,56 €" — symbol after amount, comma decimal, period grouping.
         StringAssert.Contains(result, "€");
@@ -179,7 +179,7 @@ public partial class MoneyOfTCurrencyTests
     {
         var money = new Money<JPY>(1234m);
 
-        var result = money.ToString("C", new CultureInfo("en-US"));
+        string result = money.ToString("C", new CultureInfo("en-US"));
 
         Assert.AreEqual("JPY 1,234", result);
     }
@@ -193,7 +193,7 @@ public partial class MoneyOfTCurrencyTests
     {
         var money = new Money<USD>(1234.56m);
 
-        var result = money.ToString("C", new CultureInfo("de-DE"));
+        string result = money.ToString("C", new CultureInfo("de-DE"));
 
         Assert.AreEqual("1.234,56 USD", result);
     }
@@ -207,7 +207,7 @@ public partial class MoneyOfTCurrencyTests
     {
         var money = new Money<JPY>(2500m);
 
-        var result = money.ToString("C", new CultureInfo("en-US"));
+        string result = money.ToString("C", new CultureInfo("en-US"));
 
         Assert.AreEqual("JPY 2,500", result);
     }
@@ -221,7 +221,7 @@ public partial class MoneyOfTCurrencyTests
     {
         var money = new Money<USD>(19.99m);
 
-        var result = money.ToString("C0", new CultureInfo("en-US"));
+        string result = money.ToString("C0", new CultureInfo("en-US"));
 
         Assert.AreEqual("$20", result);
     }
@@ -235,7 +235,7 @@ public partial class MoneyOfTCurrencyTests
     {
         var money = new Money<USD>(19.99m);
 
-        var result = money.ToString("C", CultureInfo.InvariantCulture);
+        string result = money.ToString("C", CultureInfo.InvariantCulture);
 
         Assert.AreEqual("USD 19.99", result);
     }
@@ -249,7 +249,7 @@ public partial class MoneyOfTCurrencyTests
     {
         var money = new Money<USD>(1234.56m);
 
-        var result = money.ToString("~C", new CultureInfo("en-US"));
+        string result = money.ToString("~C", new CultureInfo("en-US"));
 
         Assert.AreEqual("1,234.56", result);
     }
@@ -263,7 +263,7 @@ public partial class MoneyOfTCurrencyTests
     {
         var money = new Money<JPY>(1234m);
 
-        var result = money.ToString("~C", new CultureInfo("en-US"));
+        string result = money.ToString("~C", new CultureInfo("en-US"));
 
         Assert.AreEqual("JPY 1,234", result);
     }
@@ -277,7 +277,7 @@ public partial class MoneyOfTCurrencyTests
     {
         var money = new Money<USD>(19.99m);
 
-        var result = money.ToString("~C", new CultureInfo("en-US"));
+        string result = money.ToString("~C", new CultureInfo("en-US"));
 
         Assert.AreEqual("19.99", result);
     }
@@ -291,7 +291,7 @@ public partial class MoneyOfTCurrencyTests
     {
         var money = new Money<JPY>(1234m);
 
-        var result = money.ToString("~C", new CultureInfo("en-US"));
+        string result = money.ToString("~C", new CultureInfo("en-US"));
 
         Assert.AreEqual("JPY 1,234", result);
     }
@@ -304,7 +304,7 @@ public partial class MoneyOfTCurrencyTests
     {
         var money = new Money<USD>(19.99m);
 
-        var result = money.ToString("~C0", new CultureInfo("en-US"));
+        string result = money.ToString("~C0", new CultureInfo("en-US"));
 
         Assert.AreEqual("20", result);
     }

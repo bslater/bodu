@@ -26,7 +26,7 @@ public partial class TomlSerializerTests
     {
         var original = new ReadWriteModel { Value = 42 };
 
-        var text = TomlSerializer.Serialize(original);
+        string text = TomlSerializer.Serialize(original);
         Assert.AreEqual("Value = 42\n", text);
 
         var roundTripped = TomlSerializer.Deserialize<ReadWriteModel>(text);
@@ -41,7 +41,7 @@ public partial class TomlSerializerTests
     {
         var original = new InitOnlyModel { Value = 7 };
 
-        var text = TomlSerializer.Serialize(original);
+        string text = TomlSerializer.Serialize(original);
         Assert.AreEqual("Value = 7\n", text);
 
         var roundTripped = TomlSerializer.Deserialize<InitOnlyModel>(text);
@@ -55,7 +55,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Serialize_WhenGetOnlyScalarProperty_ShouldWriteMember()
     {
-        var text = TomlSerializer.Serialize(new GetOnlyScalarModel(42));
+        string text = TomlSerializer.Serialize(new GetOnlyScalarModel(42));
 
         Assert.AreEqual("Value = 42\n", text);
     }
@@ -80,7 +80,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Serialize_WhenPrivateSetterProperty_ShouldWriteMember()
     {
-        var text = TomlSerializer.Serialize(new PrivateSetterModel(5));
+        string text = TomlSerializer.Serialize(new PrivateSetterModel(5));
 
         Assert.AreEqual("Value = 5\n", text);
     }
@@ -109,7 +109,7 @@ public partial class TomlSerializerTests
     {
         var original = new IncludedPrivateSetterModel(5);
 
-        var text = TomlSerializer.Serialize(original);
+        string text = TomlSerializer.Serialize(original);
         Assert.AreEqual("Value = 5\n", text);
 
         var roundTripped = TomlSerializer.Deserialize<IncludedPrivateSetterModel>(text);

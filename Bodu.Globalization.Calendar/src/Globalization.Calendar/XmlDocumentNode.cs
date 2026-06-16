@@ -84,7 +84,7 @@ internal sealed class XmlDocumentNode
         List<int> values = new();
         foreach (XElement item in container.Elements(_ns + xmlItem))
         {
-            if (int.TryParse((string?)item.Attribute(xmlAttribute), NumberStyles.Integer, CultureInfo.InvariantCulture, out var result))
+            if (int.TryParse((string?)item.Attribute(xmlAttribute), NumberStyles.Integer, CultureInfo.InvariantCulture, out int result))
                 values.Add(result);
         }
 

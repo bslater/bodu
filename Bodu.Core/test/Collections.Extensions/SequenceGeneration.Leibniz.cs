@@ -17,7 +17,7 @@ public class LeibnizTests
     [TestMethod]
     public void Leibniz_WhenFirstTermExceedsMax_ShouldReturnEmptySequence()
     {
-        var actual = SequenceGenerator.Leibniz(0.0, 0.9).Take(1).ToArray();
+        double[] actual = SequenceGenerator.Leibniz(0.0, 0.9).Take(1).ToArray();
 
         Assert.IsEmpty(actual);
     }
@@ -67,10 +67,10 @@ public class LeibnizTests
     public void Leibniz_WhenSummingManyTerms_ShouldApproximatePiOverFour()
     {
         double partial = 0;
-        foreach (var term in SequenceGenerator.Leibniz(0.0, 2.0).Take(2000))
+        foreach (double term in SequenceGenerator.Leibniz(0.0, 2.0).Take(2000))
             partial += term;
 
-        var pi = partial * 4;
+        double pi = partial * 4;
         Assert.AreEqual(Math.PI, pi, 0.01);
     }
 
@@ -81,7 +81,7 @@ public class LeibnizTests
     [TestMethod]
     public void Leibniz_WhenWindowCoversFirstTerms_ShouldReturnExpectedAlternatingSigns()
     {
-        var actual = SequenceGenerator.Leibniz(0.0, 1.1).Take(3).ToArray();
+        double[] actual = SequenceGenerator.Leibniz(0.0, 1.1).Take(3).ToArray();
 
         Assert.HasCount(3, actual);
         Assert.AreEqual(1.0, actual[0], 1e-12);
@@ -102,12 +102,12 @@ public class LeibnizTests
         const double min = 0.05;
         const double max = 2.0;
 
-        var actual = SequenceGenerator.Leibniz(min, max).Take(5).ToArray();
+        double[] actual = SequenceGenerator.Leibniz(min, max).Take(5).ToArray();
 
         Assert.HasCount(5, actual);
-        foreach (var term in actual)
+        foreach (double term in actual)
         {
-            var magnitude = Math.Abs(term);
+            double magnitude = Math.Abs(term);
             Assert.IsGreaterThanOrEqualTo(min, magnitude, $"Magnitude {magnitude} fell below the inclusive lower bound {min}.");
             Assert.IsLessThan(max, magnitude, $"Magnitude {magnitude} reached or exceeded the exclusive upper bound {max}.");
         }

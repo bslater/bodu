@@ -26,10 +26,10 @@ public sealed partial class Base32Tests
     [DataRow(11, 24)]
     public void TryEncode_WhenDestinationExactlyRequiredSize_ShouldReturnTrueAndFillBuffer(int byteCount, int expectedCharCount)
     {
-        var bytes = new byte[byteCount];
-        var destination = new char[expectedCharCount];
+        byte[] bytes = new byte[byteCount];
+        char[] destination = new char[expectedCharCount];
 
-        var ok = Base32.TryEncode(bytes.AsSpan(), destination, out var charsWritten);
+        bool ok = Base32.TryEncode(bytes.AsSpan(), destination, out int charsWritten);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(expectedCharCount, charsWritten);
@@ -40,10 +40,10 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void TryEncode_WhenDestinationLargeEnough_ShouldReturnTrueAndExactCharCount()
     {
-        var bytes = Ascii("foobar");
-        var destination = new char[16];
+        byte[] bytes = Ascii("foobar");
+        char[] destination = new char[16];
 
-        var ok = Base32.TryEncode(bytes.AsSpan(), destination, out var charsWritten);
+        bool ok = Base32.TryEncode(bytes.AsSpan(), destination, out int charsWritten);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(16, charsWritten);
@@ -62,10 +62,10 @@ public sealed partial class Base32Tests
     [DataRow(6, 16)]
     public void TryEncode_WhenDestinationOneCharShort_ShouldReturnFalseAndZeroCharsWritten(int byteCount, int exactRequired)
     {
-        var bytes = new byte[byteCount];
-        var destination = new char[exactRequired - 1];
+        byte[] bytes = new byte[byteCount];
+        char[] destination = new char[exactRequired - 1];
 
-        var ok = Base32.TryEncode(bytes.AsSpan(), destination, out var charsWritten);
+        bool ok = Base32.TryEncode(bytes.AsSpan(), destination, out int charsWritten);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0, charsWritten);
@@ -78,10 +78,10 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void TryEncode_WhenDestinationTooSmall_ShouldReturnFalseAndZeroCharsWritten()
     {
-        var bytes = Ascii("foobar");
-        var destination = new char[1];
+        byte[] bytes = Ascii("foobar");
+        char[] destination = new char[1];
 
-        var ok = Base32.TryEncode(bytes.AsSpan(), destination, out var charsWritten);
+        bool ok = Base32.TryEncode(bytes.AsSpan(), destination, out int charsWritten);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(0, charsWritten);
@@ -94,9 +94,9 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void TryEncode_WhenInputIsEmpty_ShouldReturnTrueAndZeroCharsWritten()
     {
-        var destination = new char[4];
+        char[] destination = new char[4];
 
-        var ok = Base32.TryEncode([], destination, out var charsWritten);
+        bool ok = Base32.TryEncode([], destination, out int charsWritten);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(0, charsWritten);
@@ -108,10 +108,10 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void TryEncode_WhenOmitPadding_ShouldWriteFewerCharacters()
     {
-        var bytes = Ascii("foo");
-        var destination = new char[8];
+        byte[] bytes = Ascii("foo");
+        char[] destination = new char[8];
 
-        var ok = Base32.TryEncode(bytes.AsSpan(), destination, out var charsWritten, Base32Variant.Standard, BaseFormattingOptions.OmitPadding);
+        bool ok = Base32.TryEncode(bytes.AsSpan(), destination, out int charsWritten, Base32Variant.Standard, BaseFormattingOptions.OmitPadding);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(5, charsWritten);
@@ -125,7 +125,7 @@ public sealed partial class Base32Tests
     [TestMethod]
     public void TryEncode_WhenUndefinedVariant_ShouldThrowExactly()
     {
-        var destination = new char[32];
+        char[] destination = new char[32];
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

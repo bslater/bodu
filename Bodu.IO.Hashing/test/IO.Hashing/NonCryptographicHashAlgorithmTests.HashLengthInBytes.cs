@@ -23,7 +23,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
         TAlgorithm algorithm = CreateAlgorithm(variant);
         algorithm.Append([0xAB, 0xCD, 0xEF]);
 
-        var digest = algorithm.GetCurrentHash();
+        byte[] digest = algorithm.GetCurrentHash();
 
         Assert.AreEqual(algorithm.HashLengthInBytes, digest.Length);
     }

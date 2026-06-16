@@ -79,10 +79,10 @@ public partial class NumericExtensionsTests
     /// </summary>
     public static IEnumerable<object[]> ByteArrayReverseBitsData()
     {
-        for (var len = 1; len <= 256; len++)
+        for (int len = 1; len <= 256; len++)
         {
-            var input = Enumerable.Range(1, len).Select(i => (byte)i).ToArray();
-            var expected = input.Select(b => ByteReverseLookup[b]).ToArray();
+            byte[] input = Enumerable.Range(1, len).Select(i => (byte)i).ToArray();
+            byte[] expected = input.Select(b => ByteReverseLookup[b]).ToArray();
             yield return new object[] { input, expected };
         }
     }
@@ -93,9 +93,9 @@ public partial class NumericExtensionsTests
     /// </summary>
     public static IEnumerable<object[]> ByteReverseBitsExhaustiveData()
     {
-        for (var v = 0; v <= byte.MaxValue; v++)
+        for (int v = 0; v <= byte.MaxValue; v++)
         {
-            for (var n = 0; n <= 8; n++)
+            for (int n = 0; n <= 8; n++)
                 yield return new object[] { (byte)v, n };
         }
     }
@@ -110,9 +110,9 @@ public partial class NumericExtensionsTests
     /// </summary>
     public static IEnumerable<object[]> CrossTypeConsistencyByteData()
     {
-        for (var v = 0; v <= byte.MaxValue; v++)
+        for (int v = 0; v <= byte.MaxValue; v++)
         {
-            for (var n = 0; n <= 8; n++)
+            for (int n = 0; n <= 8; n++)
                 yield return new object[] { (byte)v, n };
         }
     }
@@ -123,9 +123,9 @@ public partial class NumericExtensionsTests
     /// </summary>
     public static IEnumerable<object[]> UIntReverseBitsRepresentativeData()
     {
-        foreach (var v in s_uIntReverseBitsSampleValues)
+        foreach (uint v in s_uIntReverseBitsSampleValues)
         {
-            for (var n = 0; n <= 32; n++)
+            for (int n = 0; n <= 32; n++)
                 yield return new object[] { v, n };
         }
     }
@@ -136,9 +136,9 @@ public partial class NumericExtensionsTests
     /// </summary>
     public static IEnumerable<object[]> ULongReverseBitsRepresentativeData()
     {
-        foreach (var v in s_uLongReverseBitsSampleValues)
+        foreach (ulong v in s_uLongReverseBitsSampleValues)
         {
-            for (var n = 0; n <= 64; n++)
+            for (int n = 0; n <= 64; n++)
                 yield return new object[] { v, n };
         }
     }
@@ -149,9 +149,9 @@ public partial class NumericExtensionsTests
     /// </summary>
     public static IEnumerable<object[]> UShortReverseBitsRepresentativeData()
     {
-        foreach (var v in s_uShortReverseBitsSampleValues)
+        foreach (ushort v in s_uShortReverseBitsSampleValues)
         {
-            for (var n = 0; n <= 16; n++)
+            for (int n = 0; n <= 16; n++)
                 yield return new object[] { v, n };
         }
     }
@@ -280,7 +280,7 @@ public partial class NumericExtensionsTests
     [DataRow((byte)0x00, 6)]
     public void ReverseBits_WhenAppliedTwiceWithSameBitLength_ForByte_ShouldReturnLowBitsOfOriginal(byte value, int bitLength)
     {
-        var mask = (byte)((1 << bitLength) - 1);
+        byte mask = (byte)((1 << bitLength) - 1);
         Assert.AreEqual((byte)(value & mask), value.ReverseBits(bitLength).ReverseBits(bitLength));
     }
 
@@ -294,7 +294,7 @@ public partial class NumericExtensionsTests
     [DataRow(0xFFFFFFFFu, 20)]
     public void ReverseBits_WhenAppliedTwiceWithSameBitLength_ForUInt_ShouldReturnLowBitsOfOriginal(uint value, int bitLength)
     {
-        var mask = (1u << bitLength) - 1u;
+        uint mask = (1u << bitLength) - 1u;
         Assert.AreEqual(value & mask, value.ReverseBits(bitLength).ReverseBits(bitLength));
     }
 
@@ -308,7 +308,7 @@ public partial class NumericExtensionsTests
     [DataRow(0xFFFFFFFFFFFFFFFFul, 63)]
     public void ReverseBits_WhenAppliedTwiceWithSameBitLength_ForULong_ShouldReturnLowBitsOfOriginal(ulong value, int bitLength)
     {
-        var mask = (1ul << bitLength) - 1ul;
+        ulong mask = (1ul << bitLength) - 1ul;
         Assert.AreEqual(value & mask, value.ReverseBits(bitLength).ReverseBits(bitLength));
     }
 
@@ -322,7 +322,7 @@ public partial class NumericExtensionsTests
     [DataRow((ushort)0xFFFF, 10)]
     public void ReverseBits_WhenAppliedTwiceWithSameBitLength_ForUShort_ShouldReturnLowBitsOfOriginal(ushort value, int bitLength)
     {
-        var mask = (ushort)((1 << bitLength) - 1);
+        ushort mask = (ushort)((1 << bitLength) - 1);
         Assert.AreEqual((ushort)(value & mask), value.ReverseBits(bitLength).ReverseBits(bitLength));
     }
 
@@ -577,14 +577,14 @@ public partial class NumericExtensionsTests
     [DynamicData(nameof(ByteArrayReverseBitsData))]
     public void ReverseBits_WhenByteArrayIsIncremental_ShouldMatchLookupTable(byte[] bytes, byte[] expected)
     {
-        var actual = bytes.ReverseBits();
+        byte[] actual = bytes.ReverseBits();
 
         Trace.WriteLineIf(!actual.SequenceEqual(expected), $"Input   : {BitConverter.ToString(bytes)}");
         Trace.WriteLineIf(!actual.SequenceEqual(expected), $"Expected: {BitConverter.ToString(expected)}");
         Trace.WriteLineIf(!actual.SequenceEqual(expected), $"Actual  : {BitConverter.ToString(actual)}");
 
         Assert.HasCount(expected.Length, actual);
-        for (var i = 0; i < expected.Length; i++)
+        for (int i = 0; i < expected.Length; i++)
             Assert.AreEqual(expected[i], actual[i], $"Mismatch at index {i}");
     }
 
@@ -611,7 +611,7 @@ public partial class NumericExtensionsTests
     public void ReverseBits_WhenByteArrayIsValid_ShouldNotMutateOriginalArray()
     {
         byte[] input = [0x01, 0x02, 0x03, 0x04];
-        var snapshot = (byte[])input.Clone();
+        byte[] snapshot = (byte[])input.Clone();
 
         _ = input.ReverseBits();
 
@@ -655,7 +655,7 @@ public partial class NumericExtensionsTests
         new byte[] { 0x00, 0xFF, 0x00, 0xFF })]                                  // alternating 00000000 / 11111111
     public void ReverseBits_WhenByteArrayIsValid_ShouldReturnBitReversedArray(byte[] bytes, byte[] expected)
     {
-        var actual = bytes.ReverseBits();
+        byte[] actual = bytes.ReverseBits();
 
         Trace.WriteLineIf(!actual.SequenceEqual(expected), $"Input   : {BitConverter.ToString(bytes)}");
         Trace.WriteLineIf(!actual.SequenceEqual(expected), $"Expected: {BitConverter.ToString(expected)}");
@@ -672,8 +672,8 @@ public partial class NumericExtensionsTests
     [DynamicData(nameof(ByteReverseBitsExhaustiveData))]
     public void ReverseBits_WhenExhaustive_ForByte_ShouldMatchReferenceImplementation(byte value, int bitLength)
     {
-        var expected = (byte)ReflectLowBits(value, bitLength);
-        var actual = value.ReverseBits(bitLength);
+        byte expected = (byte)ReflectLowBits(value, bitLength);
+        byte actual = value.ReverseBits(bitLength);
 
         Trace.WriteLineIf(actual != expected, $"value     : 0x{value:X2}");
         Trace.WriteLineIf(actual != expected, $"bitLength : {bitLength}");
@@ -693,7 +693,7 @@ public partial class NumericExtensionsTests
     {
         // Inject noise into every bit above the 8-bit window; bitLength never exceeds 8 here,
         // so all noise bits are outside the reflected window and must be ignored.
-        var noisy = (ulong)lowByteValue | 0xFFFFFFFFFFFFFF00ul;
+        ulong noisy = (ulong)lowByteValue | 0xFFFFFFFFFFFFFF00ul;
         ulong clean = lowByteValue;
 
         Assert.AreEqual(clean.ReverseBits(bitLength), noisy.ReverseBits(bitLength));
@@ -707,8 +707,8 @@ public partial class NumericExtensionsTests
     [DynamicData(nameof(UIntReverseBitsRepresentativeData))]
     public void ReverseBits_WhenRepresentative_ForUInt_ShouldMatchReferenceImplementation(uint value, int bitLength)
     {
-        var expected = (uint)ReflectLowBits(value, bitLength);
-        var actual = value.ReverseBits(bitLength);
+        uint expected = (uint)ReflectLowBits(value, bitLength);
+        uint actual = value.ReverseBits(bitLength);
 
         Trace.WriteLineIf(actual != expected, $"value     : 0x{value:X8}");
         Trace.WriteLineIf(actual != expected, $"bitLength : {bitLength}");
@@ -726,8 +726,8 @@ public partial class NumericExtensionsTests
     [DynamicData(nameof(ULongReverseBitsRepresentativeData))]
     public void ReverseBits_WhenRepresentative_ForULong_ShouldMatchReferenceImplementation(ulong value, int bitLength)
     {
-        var expected = ReflectLowBits(value, bitLength);
-        var actual = value.ReverseBits(bitLength);
+        ulong expected = ReflectLowBits(value, bitLength);
+        ulong actual = value.ReverseBits(bitLength);
 
         Trace.WriteLineIf(actual != expected, $"value     : 0x{value:X16}");
         Trace.WriteLineIf(actual != expected, $"bitLength : {bitLength}");
@@ -745,8 +745,8 @@ public partial class NumericExtensionsTests
     [DynamicData(nameof(UShortReverseBitsRepresentativeData))]
     public void ReverseBits_WhenRepresentative_ForUShort_ShouldMatchReferenceImplementation(ushort value, int bitLength)
     {
-        var expected = (ushort)ReflectLowBits(value, bitLength);
-        var actual = value.ReverseBits(bitLength);
+        ushort expected = (ushort)ReflectLowBits(value, bitLength);
+        ushort actual = value.ReverseBits(bitLength);
 
         Trace.WriteLineIf(actual != expected, $"value     : 0x{value:X4}");
         Trace.WriteLineIf(actual != expected, $"bitLength : {bitLength}");
@@ -765,10 +765,10 @@ public partial class NumericExtensionsTests
     [DynamicData(nameof(CrossTypeConsistencyByteData))]
     public void ReverseBits_WhenValueFitsSmallerType_ShouldBeConsistentAcrossOverloads(byte value, int bitLength)
     {
-        var byteResult = value.ReverseBits(bitLength);
-        var ushortResult = ((ushort)value).ReverseBits(bitLength);
-        var uintResult = ((uint)value).ReverseBits(bitLength);
-        var ulongResult = ((ulong)value).ReverseBits(bitLength);
+        byte byteResult = value.ReverseBits(bitLength);
+        ushort ushortResult = ((ushort)value).ReverseBits(bitLength);
+        uint uintResult = ((uint)value).ReverseBits(bitLength);
+        ulong ulongResult = ((ulong)value).ReverseBits(bitLength);
 
         Assert.AreEqual(byteResult, (byte)ushortResult, $"ushort overload disagreed for value=0x{value:X2}, bitLength={bitLength}");
         Assert.AreEqual(byteResult, (byte)uintResult, $"uint overload disagreed for value=0x{value:X2}, bitLength={bitLength}");
@@ -801,7 +801,7 @@ public partial class NumericExtensionsTests
     [DataRow((byte)0xC0, (byte)0x03)] // 2 bits in high byte
     public void ReverseBits_WhenValueIsByte_ShouldReturnBitReversedValue(byte value, byte expected)
     {
-        var actual = value.ReverseBits();
+        byte actual = value.ReverseBits();
 
         Trace.WriteLineIf(actual != expected, $"value   : {value:X2}");
         Trace.WriteLineIf(actual != expected, $"expected: {expected:X2}");
@@ -833,7 +833,7 @@ public partial class NumericExtensionsTests
     [DataRow(0x00000100U, 0x00800000U)] // single bit in second byte
     public void ReverseBits_WhenValueIsUInt_ShouldReturnBitReversedValue(uint value, uint expected)
     {
-        var actual = value.ReverseBits();
+        uint actual = value.ReverseBits();
 
         Trace.WriteLineIf(actual != expected, $"value   : {value:X8}");
         Trace.WriteLineIf(actual != expected, $"expected: {expected:X8}");
@@ -867,7 +867,7 @@ public partial class NumericExtensionsTests
     [DataRow(0x0000000100000000UL, 0x0000000080000000UL)] // single bit in upper half
     public void ReverseBits_WhenValueIsULong_ShouldReturnBitReversedValue(ulong value, ulong expected)
     {
-        var actual = value.ReverseBits();
+        ulong actual = value.ReverseBits();
 
         Trace.WriteLineIf(actual != expected, $"value   : {value:X16}");
         Trace.WriteLineIf(actual != expected, $"expected: {expected:X16}");
@@ -898,7 +898,7 @@ public partial class NumericExtensionsTests
     [DataRow((ushort)0x0100, (ushort)0x0080)] // single bit in high byte
     public void ReverseBits_WhenValueIsUShort_ShouldReturnBitReversedValue(ushort value, ushort expected)
     {
-        var actual = value.ReverseBits();
+        ushort actual = value.ReverseBits();
 
         Trace.WriteLineIf(actual != expected, $"value   : {value:X4}");
         Trace.WriteLineIf(actual != expected, $"expected: {expected:X4}");
@@ -923,7 +923,7 @@ public partial class NumericExtensionsTests
     {
         ulong result = 0;
 
-        for (var i = 0; i < bitLength; i++)
+        for (int i = 0; i < bitLength; i++)
         {
             result = (result << 1) | (value & 1);
             value >>= 1;

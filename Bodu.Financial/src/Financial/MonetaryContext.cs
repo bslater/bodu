@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MonetaryContext.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -104,7 +104,7 @@ public sealed record MonetaryContext
     /// </returns>
     public decimal Round(decimal value, int currencyMinorUnits)
     {
-        var scale = ResolveScale(currencyMinorUnits);
+        int scale = ResolveScale(currencyMinorUnits);
         return scale < 0 ? value : Rounding.Round(value, scale);
     }
 

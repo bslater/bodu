@@ -19,7 +19,7 @@ public partial class ThrowHelperTests
     [DataRow(100)]
     public void ThrowIfArrayLengthIsZero_WhenArrayLengthIsNonZero_ShouldNotThrow(int length)
     {
-        var array = new int[length];
+        int[] array = new int[length];
         ThrowHelper.ThrowIfArrayLengthIsZero(array);
     }
 
@@ -30,7 +30,7 @@ public partial class ThrowHelperTests
     [DataRow(0)]
     public void ThrowIfArrayLengthIsZero_WhenArrayLengthIsZero_ShouldThrowExactly(int length)
     {
-        var array = new int[length];
+        int[] array = new int[length];
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
             ThrowHelper.ThrowIfArrayLengthIsZero(array);

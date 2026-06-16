@@ -83,7 +83,7 @@ public sealed class MoneyJsonConverter
         if (reader.TokenType != JsonTokenType.String)
             throw new JsonException(FinancialResourceStrings.Json_Invalid_ExpectedCompactString_Money);
 
-        var text = reader.GetString()!;
+        string text = reader.GetString()!;
         return !Money.TryParse(text.AsSpan(), CultureInfo.InvariantCulture, out Money result)
             ? throw new JsonException(
                 string.Format(
@@ -106,8 +106,8 @@ public sealed class MoneyJsonConverter
 
         decimal? amount = null;
         string? currency = null;
-        var amountSeen = false;
-        var currencySeen = false;
+        bool amountSeen = false;
+        bool currencySeen = false;
 
         while (reader.Read())
         {
@@ -117,7 +117,7 @@ public sealed class MoneyJsonConverter
             if (reader.TokenType != JsonTokenType.PropertyName)
                 throw new JsonException(FinancialResourceStrings.Json_Invalid_ExpectedPropertyName);
 
-            var propertyName = reader.GetString()!;
+            string propertyName = reader.GetString()!;
             if (!reader.Read())
                 throw new JsonException(FinancialResourceStrings.Json_Invalid_UnexpectedEnd);
 
@@ -129,8 +129,8 @@ public sealed class MoneyJsonConverter
 
                 if (reader.TokenType == JsonTokenType.String)
                 {
-                    var text = reader.GetString();
-                    if (text is null || !decimal.TryParse(text, NumberStyles.Number, CultureInfo.InvariantCulture, out var parsed))
+                    string? text = reader.GetString();
+                    if (text is null || !decimal.TryParse(text, NumberStyles.Number, CultureInfo.InvariantCulture, out decimal parsed))
                         throw new JsonException(FinancialResourceStrings.Json_Invalid_AmountMustBeNumber);
                     amount = parsed;
                 }
@@ -187,7 +187,7 @@ public sealed class MoneyJsonConverter
     /// <returns>The compact textual representation.</returns>
     private static string FormatCompact(Money value)
     {
-        var numericFormat = "F" + value.MinorUnits.ToString(CultureInfo.InvariantCulture);
+        string numericFormat = "F" + value.MinorUnits.ToString(CultureInfo.InvariantCulture);
         return string.Concat(
             value.Amount.ToString(numericFormat, CultureInfo.InvariantCulture),
             " ",

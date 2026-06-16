@@ -102,7 +102,7 @@ public partial class MultisetTests
         mvd.Add(new Point(7, 100));
         mvd.Add(new Point(7, 200));
 
-        var removed = mvd.Remove(new Point(7, 999));
+        bool removed = mvd.Remove(new Point(7, 999));
 
         Assert.IsTrue(removed);
         Assert.AreEqual(1, mvd.CountOf(new Point(7, 0)));
@@ -139,7 +139,7 @@ public partial class MultisetTests
         var mvd = new Multiset<Point>();
         mvd.Add(new Point(1, 2), 3);
 
-        var removed = mvd.Remove(new Point(1, 2));
+        bool removed = mvd.Remove(new Point(1, 2));
 
         Assert.IsTrue(removed);
         Assert.AreEqual(2, mvd.CountOf(new Point(1, 2)));

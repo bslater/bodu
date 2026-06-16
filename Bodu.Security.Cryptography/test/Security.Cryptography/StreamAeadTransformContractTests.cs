@@ -82,8 +82,8 @@ public abstract class StreamAeadTransformContractTests<TAead>
     [DataRow(200)]
     public void EncryptDecrypt_WhenPlaintextLengthVaries_ShouldRoundTrip(int length)
     {
-        var plaintext = Pattern(length);
-        var sealed_ = Seal(plaintext);
+        byte[] plaintext = Pattern(length);
+        byte[] sealed_ = Seal(plaintext);
 
         Assert.AreEqual(length + 16, sealed_.Length);
         CollectionAssert.AreEqual(plaintext, Open(sealed_));
@@ -106,10 +106,10 @@ public abstract class StreamAeadTransformContractTests<TAead>
         if (!SupportsAssociatedData)
             return;
 
-        var plaintext = Pattern(40);
-        var associatedData = Pattern(associatedDataLength);
+        byte[] plaintext = Pattern(40);
+        byte[] associatedData = Pattern(associatedDataLength);
 
-        var sealed_ = Seal(plaintext, associatedData);
+        byte[] sealed_ = Seal(plaintext, associatedData);
         CollectionAssert.AreEqual(plaintext, Open(sealed_, associatedData));
     }
 
@@ -121,11 +121,11 @@ public abstract class StreamAeadTransformContractTests<TAead>
     public void Encrypt_WhenAssociatedDataSupplied_ShouldBehaveAccordingToSupport()
     {
         using TAead enc = Create(Key(), Nonce());
-        var output = new byte[4 + 16];
+        byte[] output = new byte[4 + 16];
 
         if (SupportsAssociatedData)
         {
-            var written = enc.Encrypt(new byte[4], output, [1, 2, 3]);
+            int written = enc.Encrypt(new byte[4], output, [1, 2, 3]);
             Assert.AreEqual(output.Length, written);
         }
         else
@@ -162,7 +162,7 @@ public abstract class StreamAeadTransformContractTests<TAead>
     [TestMethod]
     public void Decrypt_WhenTagIsTampered_ShouldThrowCryptographicException()
     {
-        var sealed_ = Seal(Pattern(8));
+        byte[] sealed_ = Seal(Pattern(8));
         sealed_[^1] ^= 0x80;
         AssertOpenThrows(sealed_);
     }
@@ -173,7 +173,7 @@ public abstract class StreamAeadTransformContractTests<TAead>
     [TestMethod]
     public void Decrypt_WhenCiphertextIsTampered_ShouldThrowCryptographicException()
     {
-        var sealed_ = Seal(Pattern(8));
+        byte[] sealed_ = Seal(Pattern(8));
         sealed_[0] ^= 0x01;
         AssertOpenThrows(sealed_);
     }
@@ -184,7 +184,7 @@ public abstract class StreamAeadTransformContractTests<TAead>
     [TestMethod]
     public void Decrypt_WhenKeyDiffers_ShouldThrowCryptographicException()
     {
-        var sealed_ = Seal(Pattern(8));
+        byte[] sealed_ = Seal(Pattern(8));
 
         using TAead dec = Create(Key(0x99), Nonce());
         Assert.ThrowsExactly<CryptographicException>(() => { _ = dec.Decrypt(sealed_, new byte[sealed_.Length - 16]); });
@@ -196,7 +196,7 @@ public abstract class StreamAeadTransformContractTests<TAead>
     [TestMethod]
     public void Decrypt_WhenNonceDiffers_ShouldThrowCryptographicException()
     {
-        var sealed_ = Seal(Pattern(8));
+        byte[] sealed_ = Seal(Pattern(8));
 
         using TAead dec = Create(Key(), Nonce(0x99));
         Assert.ThrowsExactly<CryptographicException>(() => { _ = dec.Decrypt(sealed_, new byte[sealed_.Length - 16]); });
@@ -212,7 +212,7 @@ public abstract class StreamAeadTransformContractTests<TAead>
         if (!SupportsAssociatedData)
             return;
 
-        var sealed_ = Seal(Pattern(8), [0xaa]);
+        byte[] sealed_ = Seal(Pattern(8), [0xaa]);
 
         using TAead dec = Create(Key(), Nonce());
         Assert.ThrowsExactly<CryptographicException>(() =>
@@ -227,10 +227,10 @@ public abstract class StreamAeadTransformContractTests<TAead>
     [TestMethod]
     public void Decrypt_WhenAuthenticationFails_ShouldNotWriteOutput()
     {
-        var sealed_ = Seal(Pattern(40));
+        byte[] sealed_ = Seal(Pattern(40));
         sealed_[^1] ^= 0xff;
 
-        var output = new byte[sealed_.Length - 16];
+        byte[] output = new byte[sealed_.Length - 16];
         using TAead dec = Create(Key(), Nonce());
         Assert.ThrowsExactly<CryptographicException>(() => { _ = dec.Decrypt(sealed_, output); });
 
@@ -283,8 +283,8 @@ public abstract class StreamAeadTransformContractTests<TAead>
     [TestMethod]
     public void EncryptDecrypt_WhenExactInPlace_ShouldRoundTrip()
     {
-        var plaintext = Pattern(100);
-        var buffer = new byte[plaintext.Length + 16];
+        byte[] plaintext = Pattern(100);
+        byte[] buffer = new byte[plaintext.Length + 16];
         plaintext.CopyTo(buffer, 0);
 
         using (TAead enc = Create(Key(), Nonce()))
@@ -292,7 +292,7 @@ public abstract class StreamAeadTransformContractTests<TAead>
 
         using (TAead dec = Create(Key(), Nonce()))
         {
-            var written = dec.Decrypt(buffer, buffer);
+            int written = dec.Decrypt(buffer, buffer);
             Assert.AreEqual(plaintext.Length, written);
         }
 
@@ -306,7 +306,7 @@ public abstract class StreamAeadTransformContractTests<TAead>
     public void Encrypt_WhenBuffersPartiallyOverlap_ShouldThrowExactly()
     {
         const int length = 32;
-        var buffer = new byte[length + 16 + 1];
+        byte[] buffer = new byte[length + 16 + 1];
 
         using TAead enc = Create(Key(), Nonce());
         Assert.ThrowsExactly<ArgumentException>(() =>
@@ -323,8 +323,8 @@ public abstract class StreamAeadTransformContractTests<TAead>
     public void Decrypt_WhenBuffersPartiallyOverlap_ShouldThrowExactly()
     {
         const int length = 32;
-        var sealed_ = Seal(Pattern(length));
-        var buffer = new byte[sealed_.Length + 1];
+        byte[] sealed_ = Seal(Pattern(length));
+        byte[] buffer = new byte[sealed_.Length + 1];
         sealed_.CopyTo(buffer, 0);
 
         using TAead dec = Create(Key(), Nonce());
@@ -356,8 +356,8 @@ public abstract class StreamAeadTransformContractTests<TAead>
     /// <returns>A byte array filled with the pattern.</returns>
     private static byte[] Pattern(int length, byte seed = 1)
     {
-        var data = new byte[length];
-        for (var i = 0; i < length; i++)
+        byte[] data = new byte[length];
+        for (int i = 0; i < length; i++)
             data[i] = (byte)(seed + i);
         return data;
     }
@@ -371,7 +371,7 @@ public abstract class StreamAeadTransformContractTests<TAead>
     private byte[] Seal(byte[] plaintext, byte[]? associatedData = null)
     {
         using TAead enc = Create(Key(), Nonce());
-        var output = new byte[plaintext.Length + 16];
+        byte[] output = new byte[plaintext.Length + 16];
         enc.Encrypt(plaintext, output, associatedData ?? []);
         return output;
     }
@@ -385,7 +385,7 @@ public abstract class StreamAeadTransformContractTests<TAead>
     private byte[] Open(byte[] ciphertextWithTag, byte[]? associatedData = null)
     {
         using TAead dec = Create(Key(), Nonce());
-        var output = new byte[ciphertextWithTag.Length - 16];
+        byte[] output = new byte[ciphertextWithTag.Length - 16];
         dec.Decrypt(ciphertextWithTag, output, associatedData ?? []);
         return output;
     }

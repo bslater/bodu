@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CachingExchangeRateProviderTests.Expiry.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -19,7 +19,7 @@ public sealed partial class CachingExchangeRateProviderTests
 
         _ = sut.TryGetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact, out _);
         _clock.Advance(Duration + TimeSpan.FromHours(1));
-        var found = sut.TryGetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact, out _);
+        bool found = sut.TryGetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact, out _);
 
         Assert.IsTrue(found);
         Assert.AreEqual(2, inner.TryGetRateCallCount);
@@ -36,7 +36,7 @@ public sealed partial class CachingExchangeRateProviderTests
 
         _ = sut.TryGetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact, out _);
         _clock.Advance(Duration - TimeSpan.FromHours(1));
-        var found = sut.TryGetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact, out _);
+        bool found = sut.TryGetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact, out _);
 
         Assert.IsTrue(found);
         Assert.AreEqual(1, inner.TryGetRateCallCount);

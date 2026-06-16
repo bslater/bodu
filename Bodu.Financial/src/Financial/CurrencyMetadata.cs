@@ -47,10 +47,10 @@ internal static class CurrencyMetadata<TCurrency>
     /// </exception>
     private static CurrencyMetadataDescriptor Validate()
     {
-        var isoCode = TCurrency.IsoCode;
+        string isoCode = TCurrency.IsoCode;
         ValidateIsoCode(isoCode, nameof(ICurrency.IsoCode));
 
-        var minorUnits = TCurrency.MinorUnits;
+        int minorUnits = TCurrency.MinorUnits;
         if ((uint)minorUnits > 28u)
         {
             throw new InvalidOperationException(
@@ -62,9 +62,9 @@ internal static class CurrencyMetadata<TCurrency>
                     minorUnits));
         }
 
-        var minorUnitFactor = ComputeMinorUnitFactor(minorUnits);
+        decimal minorUnitFactor = ComputeMinorUnitFactor(minorUnits);
 
-        var cashIncrement = TCurrency.CashRoundingIncrement;
+        decimal cashIncrement = TCurrency.CashRoundingIncrement;
         if (cashIncrement < 0m)
         {
             throw new InvalidOperationException(
@@ -78,7 +78,7 @@ internal static class CurrencyMetadata<TCurrency>
 
         if (cashIncrement != 0m)
         {
-            var scaled = cashIncrement * minorUnitFactor;
+            decimal scaled = cashIncrement * minorUnitFactor;
             if (scaled != decimal.Truncate(scaled))
             {
                 throw new InvalidOperationException(
@@ -92,7 +92,7 @@ internal static class CurrencyMetadata<TCurrency>
             }
         }
 
-        var successorIsoCode = TCurrency.SuccessorIsoCode;
+        string? successorIsoCode = TCurrency.SuccessorIsoCode;
         if (successorIsoCode is not null)
             ValidateIsoCode(successorIsoCode, nameof(ICurrency.SuccessorIsoCode));
 
@@ -139,9 +139,9 @@ internal static class CurrencyMetadata<TCurrency>
                     value.Length));
         }
 
-        for (var i = 0; i < 3; i++)
+        for (int i = 0; i < 3; i++)
         {
-            var c = value[i];
+            char c = value[i];
             if (c is < 'A' or > 'Z')
             {
                 throw new InvalidOperationException(
@@ -162,8 +162,8 @@ internal static class CurrencyMetadata<TCurrency>
     /// <returns>The scale factor.</returns>
     private static decimal ComputeMinorUnitFactor(int minorUnits)
     {
-        var factor = 1m;
-        for (var i = 0; i < minorUnits; i++)
+        decimal factor = 1m;
+        for (int i = 0; i < minorUnits; i++)
             factor *= 10m;
         return factor;
     }

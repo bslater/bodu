@@ -219,7 +219,7 @@ public abstract class AsconXof<T>
         if (!_squeezing)
             BeginSqueezing();
 
-        var outOff = 0;
+        int outOff = 0;
         while (outOff < output.Length)
         {
             if (_squeezeBufAvailable == 0)
@@ -230,7 +230,7 @@ public abstract class AsconXof<T>
                 _squeezeBufAvailable = BlockSize;
             }
 
-            var toCopy = Math.Min(_squeezeBufAvailable, output.Length - outOff);
+            int toCopy = Math.Min(_squeezeBufAvailable, output.Length - outOff);
             _squeezeBuffer.AsSpan(_squeezeBufOffset, toCopy).CopyTo(output[outOff..]);
             _squeezeBufOffset += toCopy;
             _squeezeBufAvailable -= toCopy;
@@ -252,7 +252,7 @@ public abstract class AsconXof<T>
         ThrowIfDisposed();
         ThrowHelper.ThrowIfLessThanOrEqual(outputLength, 0);
 
-        var result = new byte[outputLength];
+        byte[] result = new byte[outputLength];
         Squeeze(result);
         return result;
     }
@@ -356,11 +356,11 @@ public abstract class AsconXof<T>
     /// <param name="data">The bytes to absorb.</param>
     private void ProcessInputBlocks(ReadOnlySpan<byte> data)
     {
-        var pos = 0;
+        int pos = 0;
 
         if (_residualBytes > 0)
         {
-            var needed = BlockSize - _residualBytes;
+            int needed = BlockSize - _residualBytes;
             if (data.Length >= needed)
             {
                 data[..needed].CopyTo(_residualBuffer.AsSpan(_residualBytes));
@@ -384,7 +384,7 @@ public abstract class AsconXof<T>
             pos += BlockSize;
         }
 
-        var remaining = data.Length - pos;
+        int remaining = data.Length - pos;
         if (remaining > 0)
         {
             data.Slice(pos, remaining).CopyTo(_residualBuffer.AsSpan(0, remaining));

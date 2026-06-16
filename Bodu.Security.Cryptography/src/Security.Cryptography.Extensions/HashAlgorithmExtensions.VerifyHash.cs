@@ -40,7 +40,7 @@ public static partial class HashAlgorithmExtensions
         ThrowHelper.ThrowIfNull(input);
         ThrowHelper.ThrowIfNull(expectedHash);
 
-        var actualHash = algorithm.ComputeHash(input);
+        byte[] actualHash = algorithm.ComputeHash(input);
 
         return CryptographicOperations.FixedTimeEquals(actualHash, expectedHash);
     }
@@ -96,7 +96,7 @@ public static partial class HashAlgorithmExtensions
             return false;
         }
 
-        var actualHash = algorithm.ComputeHash(input);
+        byte[] actualHash = algorithm.ComputeHash(input);
 
         return CryptographicOperations.FixedTimeEquals(actualHash, expectedBytes);
     }
@@ -129,7 +129,7 @@ public static partial class HashAlgorithmExtensions
         ThrowHelper.ThrowIfNull(stream);
         ThrowHelper.ThrowIfNull(expectedHash);
 
-        var actualHash = algorithm.ComputeHash(stream);
+        byte[] actualHash = algorithm.ComputeHash(stream);
 
         return CryptographicOperations.FixedTimeEquals(actualHash, expectedHash);
     }
@@ -185,7 +185,7 @@ public static partial class HashAlgorithmExtensions
             return false;
         }
 
-        var actualHash = algorithm.ComputeHash(stream);
+        byte[] actualHash = algorithm.ComputeHash(stream);
 
         return CryptographicOperations.FixedTimeEquals(actualHash, expectedBytes);
     }
@@ -219,11 +219,11 @@ public static partial class HashAlgorithmExtensions
     {
         ThrowHelper.ThrowIfNull(algorithm);
 
-        var hashLength = algorithm.HashSize >> 3;
-        var actualBuffer = ArrayPool<byte>.Shared.Rent(hashLength);
+        int hashLength = algorithm.HashSize >> 3;
+        byte[] actualBuffer = ArrayPool<byte>.Shared.Rent(hashLength);
         try
         {
-            return !algorithm.TryComputeHash(input, actualBuffer.AsSpan(0, hashLength), out var bytesWritten)
+            return !algorithm.TryComputeHash(input, actualBuffer.AsSpan(0, hashLength), out int bytesWritten)
                 ? false
                 : CryptographicOperations.FixedTimeEquals(actualBuffer.AsSpan(0, bytesWritten), expectedHash);
         }
@@ -292,7 +292,7 @@ public static partial class HashAlgorithmExtensions
         ThrowHelper.ThrowIfNull(encoding);
         ThrowHelper.ThrowIfNull(expectedHash);
 
-        var data = encoding.GetBytes(text);
+        byte[] data = encoding.GetBytes(text);
 
         return algorithm.VerifyHash(data, expectedHash);
     }

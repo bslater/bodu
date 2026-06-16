@@ -136,7 +136,7 @@ public sealed class DotEnvReader
         {
             ReadResult result = TryReadOneEntry(
                 _pending, _eof, _options, 1 + _consumedLines,
-                out var key, out var value, out var consumed, out var lineDelta, out var keyLineDelta);
+                out string? key, out string? value, out int consumed, out int lineDelta, out int keyLineDelta);
 
             if (result == ReadResult.Entry)
             {
@@ -148,7 +148,7 @@ public sealed class DotEnvReader
                 return false;
 
             // NeedMore: pull another chunk; mark EOF when the reader is drained.
-            var n = _reader.Read(_buffer, 0, _buffer.Length);
+            int n = _reader.Read(_buffer, 0, _buffer.Length);
             if (n == 0)
                 _eof = true;
             else
@@ -174,7 +174,7 @@ public sealed class DotEnvReader
         {
             ReadResult result = TryReadOneEntry(
                 _pending, _eof, _options, 1 + _consumedLines,
-                out var key, out var value, out var consumed, out var lineDelta, out var keyLineDelta);
+                out string? key, out string? value, out int consumed, out int lineDelta, out int keyLineDelta);
 
             if (result == ReadResult.Entry)
             {
@@ -185,7 +185,7 @@ public sealed class DotEnvReader
             if (result == ReadResult.End)
                 return false;
 
-            var n = await _reader.ReadAsync(_buffer.AsMemory(), cancellationToken).ConfigureAwait(false);
+            int n = await _reader.ReadAsync(_buffer.AsMemory(), cancellationToken).ConfigureAwait(false);
             if (n == 0)
                 _eof = true;
             else
@@ -297,8 +297,8 @@ public sealed class DotEnvReader
         lineDelta = 0;
         keyLineDelta = 0;
 
-        var i = 0;
-        var line = 0;
+        int i = 0;
+        int line = 0;
 
         // Skip leading whitespace, blank lines, and comment lines until a key candidate is found.
         while (true)
@@ -309,7 +309,7 @@ public sealed class DotEnvReader
             if (i >= s.Length)
                 return isFinal ? ReadResult.End : ReadResult.NeedMore;
 
-            var c = s[i];
+            char c = s[i];
 
             if (c == '\n')
             {
@@ -332,7 +332,7 @@ public sealed class DotEnvReader
 
             if (c == '#')
             {
-                var j = i;
+                int j = i;
                 while (j < s.Length && s[j] != '\n' && s[j] != '\r')
                     j++;
 
@@ -365,7 +365,7 @@ public sealed class DotEnvReader
         }
 
         keyLineDelta = line;
-        var entryLine = baseLine + line;
+        int entryLine = baseLine + line;
 
         // Optional "export " prefix.
         if (options.AllowExportPrefix)
@@ -392,11 +392,11 @@ public sealed class DotEnvReader
             if (i >= s.Length && !isFinal)
                 return ReadResult.NeedMore;
 
-            var badToken = i >= s.Length ? string.Empty : s[i].ToString();
+            string badToken = i >= s.Length ? string.Empty : s[i].ToString();
             DotEnv.ThrowInvalidKey(badToken, entryLine);
         }
 
-        var keyStart = i;
+        int keyStart = i;
         i++;
         while (i < s.Length && IsKeyContinue(s[i]))
             i++;
@@ -423,7 +423,7 @@ public sealed class DotEnvReader
         if (i >= s.Length && !isFinal)
             return ReadResult.NeedMore;
 
-        var lead = i < s.Length ? s[i] : '\0';
+        char lead = i < s.Length ? s[i] : '\0';
 
         ReadResult valueResult = lead switch
         {
@@ -487,8 +487,8 @@ public sealed class DotEnvReader
     private static ReadResult ParseDoubleQuoted(ReadOnlySpan<char> s, ref int i, ref int line, bool isFinal, int entryLine, out string value)
     {
         value = string.Empty;
-        var start = i;
-        var startLine = line;
+        int start = i;
+        int startLine = line;
         i++; // opening quote
 
         StringBuilder sb = new();
@@ -505,7 +505,7 @@ public sealed class DotEnvReader
                 return ReadResult.NeedMore;
             }
 
-            var c = s[i];
+            char c = s[i];
 
             if (c == '"')
             {
@@ -527,7 +527,7 @@ public sealed class DotEnvReader
                 }
 
                 i++; // consume backslash
-                var esc = s[i];
+                char esc = s[i];
                 i++;
                 if (esc == '\n')
                     line++;
@@ -595,11 +595,11 @@ public sealed class DotEnvReader
     private static ReadResult ParseSingleQuoted(ReadOnlySpan<char> s, ref int i, bool isFinal, int entryLine, out string value)
     {
         value = string.Empty;
-        var contentStart = i + 1;
+        int contentStart = i + 1;
 
-        for (var k = contentStart; k < s.Length; k++)
+        for (int k = contentStart; k < s.Length; k++)
         {
-            var c = s[k];
+            char c = s[k];
 
             if (c == '\'')
             {
@@ -637,7 +637,7 @@ public sealed class DotEnvReader
     {
         value = string.Empty;
 
-        var end = i;
+        int end = i;
         while (end < s.Length && s[end] != '\n' && s[end] != '\r')
             end++;
 
@@ -651,7 +651,7 @@ public sealed class DotEnvReader
 
         if (options.AllowInlineComments)
         {
-            for (var k = 1; k < raw.Length; k++)
+            for (int k = 1; k < raw.Length; k++)
             {
                 if (raw[k] == '#' && (raw[k - 1] == ' ' || raw[k - 1] == '\t'))
                 {

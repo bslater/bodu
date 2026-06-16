@@ -46,8 +46,8 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     [TestMethod]
     public void ComputeHash_RealAlgorithm_WhenInputReversed_ShouldProduceDifferentRoot()
     {
-        var forward = MakeData(64);
-        var reversed = (byte[])forward.Clone();
+        byte[] forward = MakeData(64);
+        byte[] reversed = (byte[])forward.Clone();
         Array.Reverse(reversed);
 
         using THasher h1 = Construct(Sha256Factory, DefaultBlockSize, DefaultFanOut);
@@ -66,11 +66,11 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     [TestMethod]
     public void ComputeHash_RealAlgorithm_WhenAdjacentBlocksSwapped_ShouldProduceDifferentRoot()
     {
-        var original = MakeData(16); // exactly 4 blocks of 4 bytes
+        byte[] original = MakeData(16); // exactly 4 blocks of 4 bytes
 
         // Swap block 0 and block 1.
-        var swapped = (byte[])original.Clone();
-        for (var i = 0; i < 4; i++)
+        byte[] swapped = (byte[])original.Clone();
+        for (int i = 0; i < 4; i++)
             (swapped[i], swapped[i + 4]) = (swapped[i + 4], swapped[i]);
 
         using THasher h1 = Construct(Sha256Factory, blockSize: 4, fanOut: 2);
@@ -95,7 +95,7 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     public void ComputeHash_RealAlgorithm_WhenSha256Used_ShouldReturn32ByteRoot()
     {
         using THasher hasher = Construct(Sha256Factory, DefaultBlockSize, DefaultFanOut);
-        var result = ComputeHash(hasher, MakeData(64));
+        byte[] result = ComputeHash(hasher, MakeData(64));
 
         Assert.AreEqual(32, result.Length,
             "SHA-256 root must be 32 bytes; implementation may be assuming MonitoringHashAlgorithm's 4-byte size.");
@@ -108,12 +108,12 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     [TestMethod]
     public void ComputeHash_RealAlgorithm_WhenCalledRepeatedly_ShouldProduceIdenticalResults()
     {
-        var data = MakeData(100);
+        byte[] data = MakeData(100);
         using THasher hasher = Construct(Sha256Factory, DefaultBlockSize, DefaultFanOut);
 
-        var first = ComputeHash(hasher, data);
-        var second = ComputeHash(hasher, data);
-        var third = ComputeHash(hasher, data);
+        byte[] first = ComputeHash(hasher, data);
+        byte[] second = ComputeHash(hasher, data);
+        byte[] third = ComputeHash(hasher, data);
 
         CollectionAssert.AreEqual(first, second, "Second call diverged from first.");
         CollectionAssert.AreEqual(first, third, "Third call diverged from first.");
@@ -131,7 +131,7 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     [TestMethod]
     public void ComputeHash_RealAlgorithm_WhenFanOutChanges_ShouldProduceDifferentRoot()
     {
-        var data = MakeData(64);
+        byte[] data = MakeData(64);
 
         using THasher h2 = Construct(Sha256Factory, blockSize: 4, fanOut: 2);
         using THasher h4 = Construct(Sha256Factory, blockSize: 4, fanOut: 4);
@@ -149,7 +149,7 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     [TestMethod]
     public void ComputeHash_RealAlgorithm_WhenBlockSizeChanges_ShouldProduceDifferentRoot()
     {
-        var data = MakeData(64);
+        byte[] data = MakeData(64);
 
         using THasher h4 = Construct(Sha256Factory, blockSize: 4, fanOut: 2);
         using THasher h8 = Construct(Sha256Factory, blockSize: 8, fanOut: 2);
@@ -183,7 +183,7 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     public void ComputeHash_RealAlgorithm_KnownAnswer_Sha256_TwoLeafTree()
     {
         byte[] data = [1, 2, 3, 4, 5, 6, 7, 8];
-        var expected = ComputeSha256MerkleRoot(data, blockSize: 4, fanOut: 2);
+        byte[] expected = ComputeSha256MerkleRoot(data, blockSize: 4, fanOut: 2);
 
         using THasher hasher = Construct(Sha256Factory, blockSize: 4, fanOut: 2);
         CollectionAssert.AreEqual(expected, ComputeHash(hasher, data));
@@ -197,8 +197,8 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     [TestMethod]
     public void ComputeHash_RealAlgorithm_KnownAnswer_Sha256_UnevenTree()
     {
-        var data = MakeData(12); // three 4-byte leaves with fanOut=2 → uneven at level 1
-        var expected = ComputeSha256MerkleRoot(data, blockSize: 4, fanOut: 2);
+        byte[] data = MakeData(12); // three 4-byte leaves with fanOut=2 → uneven at level 1
+        byte[] expected = ComputeSha256MerkleRoot(data, blockSize: 4, fanOut: 2);
 
         using THasher hasher = Construct(Sha256Factory, blockSize: 4, fanOut: 2);
         CollectionAssert.AreEqual(expected, ComputeHash(hasher, data));
@@ -223,10 +223,10 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
 
         // Leaves: zero-padded blocks hashed individually.
         var level = new List<byte[]>();
-        for (var offset = 0; offset < data.Length; offset += blockSize)
+        for (int offset = 0; offset < data.Length; offset += blockSize)
         {
-            var len = Math.Min(blockSize, data.Length - offset);
-            var block = new byte[blockSize];
+            int len = Math.Min(blockSize, data.Length - offset);
+            byte[] block = new byte[blockSize];
             Array.Copy(data, offset, block, 0, len);
             level.Add(sha.ComputeHash(block));
         }
@@ -235,16 +235,16 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
         while (level.Count > 1)
         {
             var next = new List<byte[]>();
-            for (var i = 0; i < level.Count; i += fanOut)
+            for (int i = 0; i < level.Count; i += fanOut)
             {
-                var groupSize = Math.Min(fanOut, level.Count - i);
+                int groupSize = Math.Min(fanOut, level.Count - i);
 
                 // Concatenate child hashes into a single buffer, then hash.
-                var totalLen = 0;
-                for (var j = 0; j < groupSize; j++) totalLen += level[i + j].Length;
-                var combined = new byte[totalLen];
-                var cursor = 0;
-                for (var j = 0; j < groupSize; j++)
+                int totalLen = 0;
+                for (int j = 0; j < groupSize; j++) totalLen += level[i + j].Length;
+                byte[] combined = new byte[totalLen];
+                int cursor = 0;
+                for (int j = 0; j < groupSize; j++)
                 {
                     Buffer.BlockCopy(level[i + j], 0, combined, cursor, level[i + j].Length);
                     cursor += level[i + j].Length;

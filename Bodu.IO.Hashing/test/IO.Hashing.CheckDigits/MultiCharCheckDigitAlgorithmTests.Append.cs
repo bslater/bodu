@@ -59,7 +59,7 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
         _ = name;
         TAlgorithm algorithm = CreateAlgorithm();
 
-        foreach (var ch in body)
+        foreach (char ch in body)
             algorithm.Append(ch);
 
         Assert.AreEqual(expectedCheck, algorithm.GetCurrentCheckDigits());
@@ -80,7 +80,7 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
         if (body.Length < 2) return;
 
         TAlgorithm algorithm = CreateAlgorithm();
-        var split = body.Length / 2;
+        int split = body.Length / 2;
 
         algorithm.Append(body.AsSpan(0, split));
         algorithm.Append(body.AsSpan(split));

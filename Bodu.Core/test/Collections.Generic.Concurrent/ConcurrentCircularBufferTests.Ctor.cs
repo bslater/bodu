@@ -60,7 +60,7 @@ public partial class ConcurrentCircularBufferTests
         IEnumerable<TestItem> source = Enumerable.Range(10, 3).Select(i => new TestItem(i));
         var buffer = new ConcurrentCircularBuffer<TestItem>(source, capacity: 5, allowOverwrite: true);
 
-        var values = buffer.ToArray().Select(x => x.Value).ToArray();
+        int[] values = buffer.ToArray().Select(x => x.Value).ToArray();
         CollectionAssert.AreEqual(new[] { 10, 11, 12 }, values);
         Assert.AreEqual(3, buffer.Count);
     }
@@ -124,7 +124,7 @@ public partial class ConcurrentCircularBufferTests
         buffer.Enqueue(new TestItem(3)); // evicts 1 → [2, 3]
         buffer.Enqueue(new TestItem(4)); // evicts 2 → [3, 4]
 
-        var arr = buffer.ToArray().Select(x => x.Value).ToArray();
+        int[] arr = buffer.ToArray().Select(x => x.Value).ToArray();
         CollectionAssert.AreEqual(new[] { 3, 4 }, arr);
         Assert.AreEqual(2, buffer.Capacity);
         Assert.AreEqual(2, buffer.Count);
@@ -159,7 +159,7 @@ public partial class ConcurrentCircularBufferTests
         IEnumerable<TestItem> source = Enumerable.Range(1, 5).Select(i => new TestItem(i));
         var buffer = new ConcurrentCircularBuffer<TestItem>(source, 3); // allowOverwrite defaults to true
 
-        var values = buffer.ToArray().Select(x => x.Value).ToArray();
+        int[] values = buffer.ToArray().Select(x => x.Value).ToArray();
         CollectionAssert.AreEqual(new[] { 3, 4, 5 }, values);
     }
 
@@ -202,7 +202,7 @@ public partial class ConcurrentCircularBufferTests
         IEnumerable<TestItem> source = Enumerable.Range(1, 3).Select(x => new TestItem(x));
         var buffer = new ConcurrentCircularBuffer<TestItem>(source, 5);
 
-        var values = buffer.ToArray().Select(x => x.Value).ToArray();
+        int[] values = buffer.ToArray().Select(x => x.Value).ToArray();
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, values);
     }
 
@@ -283,7 +283,7 @@ public partial class ConcurrentCircularBufferTests
         IEnumerable<TestItem> source = Enumerable.Range(1, 8).Select(i => new TestItem(i));
         var buffer = new ConcurrentCircularBuffer<TestItem>(source, capacity: 5, allowOverwrite: true);
 
-        var values = buffer.ToArray().Select(x => x.Value).ToArray();
+        int[] values = buffer.ToArray().Select(x => x.Value).ToArray();
         CollectionAssert.AreEqual(new[] { 4, 5, 6, 7, 8 }, values);
         Assert.AreEqual(5, buffer.Count);
         Assert.AreEqual(5, buffer.Capacity);
@@ -296,7 +296,7 @@ public partial class ConcurrentCircularBufferTests
     public void Ctor_WhenSourceExceedsCapacity_WithAllowOverwriteTrue_ShouldNotRaiseEvictionEvents()
     {
         IEnumerable<TestItem> source = Enumerable.Range(1, 10).Select(i => new TestItem(i));
-        var evicted = 0;
+        int evicted = 0;
 
         var buffer = new ConcurrentCircularBuffer<TestItem>(source, capacity: 5, allowOverwrite: true);
         buffer.ItemEvicted += _ => evicted++;
@@ -322,7 +322,7 @@ public partial class ConcurrentCircularBufferTests
 
         buffer.Enqueue(new TestItem(5));
 
-        var values = buffer.ToArray().Select(x => x.Value).ToArray();
+        int[] values = buffer.ToArray().Select(x => x.Value).ToArray();
         CollectionAssert.AreEqual(new[] { 2, 3, 4, 5 }, values);
     }
 

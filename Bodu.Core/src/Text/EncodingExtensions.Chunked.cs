@@ -77,7 +77,7 @@ public static partial class EncodingExtensions
             flush,
             out charsConsumed,
             out bytesWritten,
-            out var completed);
+            out bool completed);
 
         return completed
             ? OperationStatus.Done
@@ -127,7 +127,7 @@ public static partial class EncodingExtensions
             flush,
             out bytesConsumed,
             out charsWritten,
-            out var completed);
+            out bool completed);
 
         return completed
             ? OperationStatus.Done

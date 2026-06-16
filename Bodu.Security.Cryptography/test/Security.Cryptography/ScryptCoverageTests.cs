@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ScryptCoverageTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -35,7 +35,7 @@ public sealed class ScryptCoverageTests
     [TestMethod]
     public void Hash_WithRandomSalt_ShouldProduceEncodedString()
     {
-        var encoded = new Scrypt(2, 1, 1).Hash(Password, 32);
+        string encoded = new Scrypt(2, 1, 1).Hash(Password, 32);
 
         Assert.IsTrue(encoded.StartsWith("$scrypt$", StringComparison.Ordinal));
     }

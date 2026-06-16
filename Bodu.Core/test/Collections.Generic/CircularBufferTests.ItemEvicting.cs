@@ -15,7 +15,7 @@ public partial class CircularBufferTests
     [TestMethod]
     public void ItemEvicting_WhenBufferHasAvailableCapacity_ShouldNotFire()
     {
-        var anyEventFired = false;
+        bool anyEventFired = false;
         var buffer = new CircularBuffer<int>(3, allowOverwrite: true);
         buffer.ItemEvicting += _ => anyEventFired = true;
 
@@ -68,13 +68,13 @@ public partial class CircularBufferTests
     [TestMethod]
     public void ItemEvicting_WhenOverwriteIsDisabled_ShouldNotFire()
     {
-        var anyEventFired = false;
+        bool anyEventFired = false;
         var buffer = new CircularBuffer<int>(2, allowOverwrite: false);
         buffer.ItemEvicting += _ => anyEventFired = true;
 
         buffer.Enqueue(1);
         buffer.Enqueue(2);
-        var success = buffer.TryEnqueue(3); // Should not enqueue or fire event
+        bool success = buffer.TryEnqueue(3); // Should not enqueue or fire event
 
         Assert.IsFalse(success);
         Assert.IsFalse(anyEventFired);

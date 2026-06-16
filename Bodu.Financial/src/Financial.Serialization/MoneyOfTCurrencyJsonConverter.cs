@@ -115,7 +115,7 @@ public sealed class MoneyOfTCurrencyJsonConverter<TCurrency>
                     typeof(TCurrency).Name));
         }
 
-        var text = reader.GetString()!;
+        string text = reader.GetString()!;
         return !Money<TCurrency>.TryParse(text.AsSpan(), CultureInfo.InvariantCulture, out Money<TCurrency> result)
             ? throw new JsonException(
                 string.Format(
@@ -142,8 +142,8 @@ public sealed class MoneyOfTCurrencyJsonConverter<TCurrency>
 
         decimal? amount = null;
         string? currency = null;
-        var amountSeen = false;
-        var currencySeen = false;
+        bool amountSeen = false;
+        bool currencySeen = false;
 
         while (reader.Read())
         {
@@ -153,7 +153,7 @@ public sealed class MoneyOfTCurrencyJsonConverter<TCurrency>
             if (reader.TokenType != JsonTokenType.PropertyName)
                 throw new JsonException(FinancialResourceStrings.Json_Invalid_ExpectedPropertyName);
 
-            var propertyName = reader.GetString()!;
+            string propertyName = reader.GetString()!;
             if (!reader.Read())
                 throw new JsonException(FinancialResourceStrings.Json_Invalid_UnexpectedEnd);
 
@@ -165,8 +165,8 @@ public sealed class MoneyOfTCurrencyJsonConverter<TCurrency>
 
                 if (reader.TokenType == JsonTokenType.String)
                 {
-                    var text = reader.GetString();
-                    if (text is null || !decimal.TryParse(text, NumberStyles.Number, CultureInfo.InvariantCulture, out var parsed))
+                    string? text = reader.GetString();
+                    if (text is null || !decimal.TryParse(text, NumberStyles.Number, CultureInfo.InvariantCulture, out decimal parsed))
                         throw new JsonException(FinancialResourceStrings.Json_Invalid_AmountMustBeNumber);
 
                     amount = parsed;
@@ -206,7 +206,7 @@ public sealed class MoneyOfTCurrencyJsonConverter<TCurrency>
         if (_policy == FinancialJsonPolicy.Lenient)
             currency = currency.Trim().ToUpperInvariant();
 
-        var expectedIso = CurrencyMetadata<TCurrency>.Value.IsoCode;
+        string expectedIso = CurrencyMetadata<TCurrency>.Value.IsoCode;
         return !string.Equals(currency, expectedIso, StringComparison.Ordinal)
             ? throw new JsonException(
                 string.Format(
@@ -226,7 +226,7 @@ public sealed class MoneyOfTCurrencyJsonConverter<TCurrency>
     private static string FormatCompact(Money<TCurrency> value)
     {
         CurrencyMetadataDescriptor metadata = CurrencyMetadata<TCurrency>.Value;
-        var numericFormat = "F" + metadata.MinorUnits.ToString(CultureInfo.InvariantCulture);
+        string numericFormat = "F" + metadata.MinorUnits.ToString(CultureInfo.InvariantCulture);
         return string.Concat(
             value.Amount.ToString(numericFormat, CultureInfo.InvariantCulture),
             " ",

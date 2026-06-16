@@ -42,7 +42,7 @@ public partial class BencodeSerializerTests
     {
         var model = new MutatingSerializeModel { Value = 1 };
 
-        var bytes = BencodeSerializer.Serialize(model);
+        byte[] bytes = BencodeSerializer.Serialize(model);
 
         // OnSerializing sets Value to 42 before the dictionary is written.
         Assert.AreEqual("d5:Valuei42ee", Encoding.Latin1.GetString(bytes));
@@ -55,7 +55,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenCallbacksImplemented_ShouldFireDeserializingThenDeserialized()
     {
-        var bytes = Encoding.Latin1.GetBytes("d5:Valuei1ee");
+        byte[] bytes = Encoding.Latin1.GetBytes("d5:Valuei1ee");
 
         var model = BencodeSerializer.Deserialize<DeserializeCallbackModel>(bytes);
 
@@ -69,7 +69,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenOnDeserializing_ShouldRunBeforeSettableMembersAssigned()
     {
-        var bytes = Encoding.Latin1.GetBytes("d5:Valuei7ee");
+        byte[] bytes = Encoding.Latin1.GetBytes("d5:Valuei7ee");
 
         var model = BencodeSerializer.Deserialize<DeserializingObservesDefaultModel>(bytes);
 
@@ -84,7 +84,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenOnDeserialized_ShouldRunAfterSettableMembersAssigned()
     {
-        var bytes = Encoding.Latin1.GetBytes("d5:Valuei7ee");
+        byte[] bytes = Encoding.Latin1.GetBytes("d5:Valuei7ee");
 
         var model = BencodeSerializer.Deserialize<DeserializedObservesValueModel>(bytes);
 
@@ -100,7 +100,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenParameterizedConstructorAndOnDeserializing_ShouldObserveConstructorArgument()
     {
-        var bytes = Encoding.Latin1.GetBytes("d5:Valuei5ee");
+        byte[] bytes = Encoding.Latin1.GetBytes("d5:Valuei5ee");
 
         var model = BencodeSerializer.Deserialize<ConstructorDeserializingModel>(bytes);
 
@@ -118,7 +118,7 @@ public partial class BencodeSerializerTests
         var serializeLog = new List<string>();
         var model = new AllCallbacksModel(serializeLog) { Value = 1 };
 
-        var bytes = BencodeSerializer.Serialize(model);
+        byte[] bytes = BencodeSerializer.Serialize(model);
         CollectionAssert.AreEqual(new[] { "OnSerializing", "OnSerialized" }, serializeLog);
 
         var roundTripped = BencodeSerializer.Deserialize<AllCallbacksModel>(bytes);

@@ -35,10 +35,10 @@ public static partial class StringExtensions
 
         if (valuesToRemove.Length == 0) return value;
 
-        var current = value;
-        for (var i = 0; i < valuesToRemove.Length; i++)
+        string current = value;
+        for (int i = 0; i < valuesToRemove.Length; i++)
         {
-            var item = valuesToRemove[i];
+            string item = valuesToRemove[i];
             ThrowHelper.ThrowIfNull(item);
             if (item.Length == 0) throw new ArgumentException(ResourceStrings.Arg_Invalid_EmptyCollectionElement, nameof(valuesToRemove));
             current = current.Replace(item, string.Empty, StringComparison.Ordinal);

@@ -29,13 +29,13 @@ public abstract partial class AdlerTests<TTest, TAlgorithm, TModulo>
     [DynamicData(nameof(NonCryptographicHashAlgorithmVariants), DynamicDataDisplayName = nameof(NonCryptographicHashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(NonCryptographicHashAlgorithmVariantDisplayName))]
     public void Append_WhenInputEngagesSimdBranch_ShouldMatchPerByteScalarPath(SingleTestVariant variant)
     {
-        var data = AdlerSimdRegressionInputs.ModuloByte8K;
+        byte[] data = AdlerSimdRegressionInputs.ModuloByte8K;
 
         NonCryptographicHashAlgorithm whole = CreateAlgorithm(variant);
         whole.Append(data);
 
         NonCryptographicHashAlgorithm perByte = CreateAlgorithm(variant);
-        for (var i = 0; i < data.Length; i++)
+        for (int i = 0; i < data.Length; i++)
             perByte.Append(data.AsSpan(i, 1));
 
         CollectionAssert.AreEqual(whole.GetCurrentHash(), perByte.GetCurrentHash());
@@ -64,8 +64,8 @@ internal static class AdlerSimdRegressionInputs
 
     private static byte[] Build(int length)
     {
-        var data = new byte[length];
-        for (var i = 0; i < length; i++)
+        byte[] data = new byte[length];
+        for (int i = 0; i < length; i++)
             data[i] = (byte)i;
         return data;
     }

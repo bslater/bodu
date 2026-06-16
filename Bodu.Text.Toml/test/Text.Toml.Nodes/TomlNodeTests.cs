@@ -25,7 +25,7 @@ public partial class TomlNodeTests
     [TestCategory("Smoke")]
     public void Parse_WhenInputIsTable_ShouldReturnReadableObject()
     {
-        var data = Encoding.UTF8.GetBytes("name = \"x\"\nport = 8080\n");
+        byte[] data = Encoding.UTF8.GetBytes("name = \"x\"\nport = 8080\n");
 
         var node = TomlNode.Parse(data);
 
@@ -44,7 +44,7 @@ public partial class TomlNodeTests
     [TestMethod]
     public void GetValue_WhenReadingScalarKinds_ShouldReturnTypedValues()
     {
-        var data = Encoding.UTF8.GetBytes(
+        byte[] data = Encoding.UTF8.GetBytes(
             "s = \"hi\"\ni = 42\nf = 1.5\nb = true\nwhen = 1979-05-27T07:32:00Z\n");
 
         TomlObject obj = TomlNode.Parse(data)!.AsObject();
@@ -84,9 +84,9 @@ public partial class TomlNodeTests
     [TestMethod]
     public void ToUtf8Bytes_WhenRoundTrippingCanonicalInput_ShouldBeByteEqual()
     {
-        var bytes = Encoding.UTF8.GetBytes("name = \"x\"\nport = 8080\nnums = [1, 2, 3]\n\n[sub]\nk = \"v\"\n");
+        byte[] bytes = Encoding.UTF8.GetBytes("name = \"x\"\nport = 8080\nnums = [1, 2, 3]\n\n[sub]\nk = \"v\"\n");
 
-        var roundTripped = TomlNode.Parse(bytes)!.ToUtf8Bytes();
+        byte[] roundTripped = TomlNode.Parse(bytes)!.ToUtf8Bytes();
 
         CollectionAssert.AreEqual(bytes, roundTripped);
     }
@@ -226,7 +226,7 @@ public partial class TomlNodeTests
     {
         var value = TomlValue.Create("hello");
 
-        var result = value.TryGetValue(out long converted);
+        bool result = value.TryGetValue(out long converted);
 
         Assert.IsFalse(result);
         Assert.AreEqual(0L, converted);
@@ -428,7 +428,7 @@ public partial class TomlNodeTests
         o["name"] = "x";
         o["port"] = 8080;
 
-        var serialized = TomlSerializer.Serialize((TomlNode)o);
+        string serialized = TomlSerializer.Serialize((TomlNode)o);
 
         Assert.AreEqual(Encoding.UTF8.GetString(o.ToUtf8Bytes()), serialized);
     }

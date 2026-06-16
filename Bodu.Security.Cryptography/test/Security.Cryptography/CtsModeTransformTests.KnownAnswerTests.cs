@@ -26,21 +26,21 @@ public sealed partial class CtsModeTransformTests
     [TestMethod]
     public void Transform_WithRealAesCipher_NonAlignedInput_ShouldRoundTrip()
     {
-        var key = new byte[16];
+        byte[] key = new byte[16];
         RandomNumberGenerator.Fill(key);
 
         using var cipher = new AesBlockCipherFixture(key);
 
         // 3 full blocks + half a block to force the steal path. Convert from bits to bytes.
-        var blockBytes = cipher.BlockSize / 8;
-        var length = blockBytes * 3 + blockBytes / 2;
-        var iv = new byte[blockBytes];
-        var plaintext = new byte[length];
+        int blockBytes = cipher.BlockSize / 8;
+        int length = blockBytes * 3 + blockBytes / 2;
+        byte[] iv = new byte[blockBytes];
+        byte[] plaintext = new byte[length];
         RandomNumberGenerator.Fill(iv);
         RandomNumberGenerator.Fill(plaintext);
 
-        var ciphertext = new byte[length];
-        var recovered = new byte[length];
+        byte[] ciphertext = new byte[length];
+        byte[] recovered = new byte[length];
 
         CreateTransform(cipher, (byte[])iv.Clone()).Transform(plaintext, ciphertext, encrypt: true);
         CreateTransform(cipher, (byte[])iv.Clone()).Transform(ciphertext, recovered, encrypt: false);

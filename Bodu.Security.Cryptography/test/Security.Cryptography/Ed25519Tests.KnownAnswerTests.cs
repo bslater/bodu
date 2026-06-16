@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Ed25519Tests.KnownAnswerTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -166,14 +166,14 @@ public sealed partial class Ed25519Tests
         using var algorithm = new Ed25519();
         algorithm.ImportPrivateKey(Convert.FromHexString("9d61b19deffd5a60ba844af492ec2cc44449c5697b326919703bac031cae7f60"));
 
-        var message = new byte[256];
-        for (var i = 0; i < message.Length; i++)
+        byte[] message = new byte[256];
+        for (int i = 0; i < message.Length; i++)
             message[i] = (byte)i;
 
-        for (var length = 0; length <= message.Length; length++)
+        for (int length = 0; length <= message.Length; length++)
         {
             ReadOnlySpan<byte> slice = message.AsSpan(0, length);
-            var signature = algorithm.SignData(slice);
+            byte[] signature = algorithm.SignData(slice);
 
             Assert.IsTrue(algorithm.VerifyData(slice, signature), $"Round-trip failed at message length {length}.");
         }

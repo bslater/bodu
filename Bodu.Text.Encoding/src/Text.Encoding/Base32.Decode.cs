@@ -49,21 +49,21 @@ public static partial class Base32
         if (chars.IsEmpty)
             return [];
 
-        (_, var lookup) = GetVariantConfig(variant);
-        var ignoreWhitespace = style.HasFlag(BaseFormatStyles.IgnoreWhitespace);
-        var padIsRequired = ShouldRequireExactPadding(variant, style);
-        var strictQuantum = variant is Base32Variant.Standard or Base32Variant.HexExtended;
-        var requireCanonical = style.HasFlag(BaseFormatStyles.RequireCanonicalEncoding);
+        (_, sbyte[]? lookup) = GetVariantConfig(variant);
+        bool ignoreWhitespace = style.HasFlag(BaseFormatStyles.IgnoreWhitespace);
+        bool padIsRequired = ShouldRequireExactPadding(variant, style);
+        bool strictQuantum = variant is Base32Variant.Standard or Base32Variant.HexExtended;
+        bool requireCanonical = style.HasFlag(BaseFormatStyles.RequireCanonicalEncoding);
 
-        var buffer = new byte[GetMaxDecodedLength(chars.Length)];
+        byte[] buffer = new byte[GetMaxDecodedLength(chars.Length)];
 
-        if (!DecodeCore(chars, lookup, ignoreWhitespace, padIsRequired, strictQuantum, requireCanonical, buffer, out var written, out var error))
+        if (!DecodeCore(chars, lookup, ignoreWhitespace, padIsRequired, strictQuantum, requireCanonical, buffer, out int written, out string? error))
             throw new FormatException(error);
 
         if (written == buffer.Length)
             return buffer;
 
-        var trimmed = new byte[written];
+        byte[] trimmed = new byte[written];
         Buffer.BlockCopy(buffer, 0, trimmed, 0, written);
         return trimmed;
     }
@@ -121,11 +121,11 @@ public static partial class Base32
         if (chars.IsEmpty)
             return true;
 
-        (_, var lookup) = GetVariantConfig(variant);
-        var ignoreWhitespace = style.HasFlag(BaseFormatStyles.IgnoreWhitespace);
-        var padIsRequired = ShouldRequireExactPadding(variant, style);
-        var strictQuantum = variant is Base32Variant.Standard or Base32Variant.HexExtended;
-        var requireCanonical = style.HasFlag(BaseFormatStyles.RequireCanonicalEncoding);
+        (_, sbyte[]? lookup) = GetVariantConfig(variant);
+        bool ignoreWhitespace = style.HasFlag(BaseFormatStyles.IgnoreWhitespace);
+        bool padIsRequired = ShouldRequireExactPadding(variant, style);
+        bool strictQuantum = variant is Base32Variant.Standard or Base32Variant.HexExtended;
+        bool requireCanonical = style.HasFlag(BaseFormatStyles.RequireCanonicalEncoding);
 
         return DecodeCore(chars, lookup, ignoreWhitespace, padIsRequired, strictQuantum, requireCanonical, destination, out bytesWritten, out _);
     }
@@ -160,12 +160,12 @@ public static partial class Base32
         bytesWritten = 0;
         error = null;
 
-        var accumulator = 0;
-        var bitsAccumulated = 0;
-        var symbolsConsumed = 0;
-        var paddingSeen = 0;
+        int accumulator = 0;
+        int bitsAccumulated = 0;
+        int symbolsConsumed = 0;
+        int paddingSeen = 0;
 
-        foreach (var c in chars)
+        foreach (char c in chars)
         {
             if (ignoreWhitespace && c is ' ' or '\t' or '\r' or '\n')
                 continue;
@@ -215,7 +215,7 @@ public static partial class Base32
             }
         }
 
-        var totalSymbols = symbolsConsumed + paddingSeen;
+        int totalSymbols = symbolsConsumed + paddingSeen;
         if (requireExactPadding && (totalSymbols % 8) != 0)
         {
             error = EncodingResourceStrings.Format_Invalid_Base32LengthNotMultipleOfEight;
@@ -225,7 +225,7 @@ public static partial class Base32
 
         if (requireExactPadding)
         {
-            var expectedPadding = (8 - (symbolsConsumed % 8)) % 8;
+            int expectedPadding = (8 - (symbolsConsumed % 8)) % 8;
             if (paddingSeen != expectedPadding)
             {
                 error = string.Format(System.Globalization.CultureInfo.CurrentCulture, EncodingResourceStrings.Format_Invalid_Base32PaddingCount, expectedPadding, paddingSeen);
@@ -236,7 +236,7 @@ public static partial class Base32
 
         // Per RFC 4648 §6 the valid terminal-quantum data character counts are 2, 4, 5, 7, or 8. Crockford and
         // Z-Base32 do not impose this rule, so the check is gated by the strictQuantum flag.
-        var dataMod = symbolsConsumed % 8;
+        int dataMod = symbolsConsumed % 8;
         if (strictQuantum && dataMod is 1 or 3 or 6)
         {
             error = EncodingResourceStrings.Format_Invalid_Base32TerminalQuantum;
@@ -248,7 +248,7 @@ public static partial class Base32
         // multiple distinct inputs decode to the same bytes (RFC 4648 §3.5).
         if (requireCanonical && bitsAccumulated > 0)
         {
-            var leftoverMask = (1 << bitsAccumulated) - 1;
+            int leftoverMask = (1 << bitsAccumulated) - 1;
             if ((accumulator & leftoverMask) != 0)
             {
                 error = EncodingResourceStrings.Format_Invalid_Base32NonCanonical;

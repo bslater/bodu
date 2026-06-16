@@ -27,7 +27,7 @@ public partial class ExchangeRateSeriesTests
         ExchangeRateSeries series = new(new ExchangeRatePair("USD", "AUD"), "RBA", rates);
         ExchangeRateLookupOptions options = new(kat.Resolution, kat.ToleranceDays);
 
-        var actual = series.TryGetRate(kat.RequestedDate, options, out DateOnly resolved, out _);
+        bool actual = series.TryGetRate(kat.RequestedDate, options, out DateOnly resolved, out _);
 
         Assert.AreEqual(kat.ExpectedSuccess, actual);
 
@@ -269,11 +269,11 @@ public partial class ExchangeRateSeriesTests
     {
         ExchangeRateSeries series = new(s_usdAud, "RBA", SampleRates());
 
-        var found = series.TryGetRate(
+        bool found = series.TryGetRate(
             new DateOnly(2024, 1, 5),
             ExchangeRateLookupOptions.Exact,
             out DateOnly resolved,
-            out var rate);
+            out decimal rate);
 
         Assert.IsTrue(found);
         Assert.AreEqual(new DateOnly(2024, 1, 5), resolved);

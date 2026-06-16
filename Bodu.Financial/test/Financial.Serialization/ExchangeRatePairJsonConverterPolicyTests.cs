@@ -33,7 +33,7 @@ public class ExchangeRatePairJsonConverterPolicyTests
     {
         var pair = new ExchangeRatePair("USD", "JPY");
 
-        var json = JsonSerializer.Serialize(pair);
+        string json = JsonSerializer.Serialize(pair);
 
         Assert.AreEqual("{\"from\":\"USD\",\"to\":\"JPY\"}", json);
     }
@@ -54,7 +54,7 @@ public class ExchangeRatePairJsonConverterPolicyTests
         var pair = new ExchangeRatePair("USD", "JPY");
         JsonSerializerOptions options = Options(FinancialJsonPolicy.Strict);
 
-        var json = JsonSerializer.Serialize(pair, options);
+        string json = JsonSerializer.Serialize(pair, options);
         ExchangeRatePair recovered = JsonSerializer.Deserialize<ExchangeRatePair>(json, options);
 
         Assert.AreEqual(pair, recovered);
@@ -68,7 +68,7 @@ public class ExchangeRatePairJsonConverterPolicyTests
     {
         var pair = new ExchangeRatePair("USD", "JPY");
 
-        var json = JsonSerializer.Serialize(pair, Options(FinancialJsonPolicy.Compact));
+        string json = JsonSerializer.Serialize(pair, Options(FinancialJsonPolicy.Compact));
 
         Assert.AreEqual("\"USD/JPY\"", json);
     }
@@ -82,7 +82,7 @@ public class ExchangeRatePairJsonConverterPolicyTests
         var pair = new ExchangeRatePair("EUR", "GBP");
         JsonSerializerOptions options = Options(FinancialJsonPolicy.Compact);
 
-        var json = JsonSerializer.Serialize(pair, options);
+        string json = JsonSerializer.Serialize(pair, options);
         ExchangeRatePair recovered = JsonSerializer.Deserialize<ExchangeRatePair>(json, options);
 
         Assert.AreEqual(pair, recovered);
@@ -94,7 +94,7 @@ public class ExchangeRatePairJsonConverterPolicyTests
     [TestMethod]
     public void CompactPolicy_WhenReadingObjectForm_ShouldThrowJsonException()
     {
-        var json = "{\"from\":\"USD\",\"to\":\"JPY\"}";
+        string json = "{\"from\":\"USD\",\"to\":\"JPY\"}";
 
         Assert.ThrowsExactly<JsonException>(() =>
         {
@@ -108,7 +108,7 @@ public class ExchangeRatePairJsonConverterPolicyTests
     [TestMethod]
     public void CompactPolicy_WhenReadingStringWithoutSlash_ShouldThrowJsonException()
     {
-        var json = "\"USDJPY\"";
+        string json = "\"USDJPY\"";
 
         Assert.ThrowsExactly<JsonException>(() =>
         {
@@ -122,7 +122,7 @@ public class ExchangeRatePairJsonConverterPolicyTests
     [TestMethod]
     public void LenientPolicy_WhenReadingLowercaseCurrency_ShouldSucceed()
     {
-        var json = "{\"from\":\"usd\",\"to\":\"jpy\"}";
+        string json = "{\"from\":\"usd\",\"to\":\"jpy\"}";
 
         ExchangeRatePair pair = JsonSerializer.Deserialize<ExchangeRatePair>(json, Options(FinancialJsonPolicy.Lenient));
 
@@ -135,7 +135,7 @@ public class ExchangeRatePairJsonConverterPolicyTests
     [TestMethod]
     public void StrictPolicy_WhenReadingLowercaseCurrency_ShouldThrowJsonException()
     {
-        var json = "{\"from\":\"usd\",\"to\":\"jpy\"}";
+        string json = "{\"from\":\"usd\",\"to\":\"jpy\"}";
 
         Assert.ThrowsExactly<JsonException>(() =>
         {
@@ -149,7 +149,7 @@ public class ExchangeRatePairJsonConverterPolicyTests
     [TestMethod]
     public void StrictPolicy_WhenDuplicateFromProperty_ShouldThrowJsonException()
     {
-        var json = "{\"from\":\"USD\",\"from\":\"EUR\",\"to\":\"JPY\"}";
+        string json = "{\"from\":\"USD\",\"from\":\"EUR\",\"to\":\"JPY\"}";
 
         Assert.ThrowsExactly<JsonException>(() =>
         {
@@ -163,7 +163,7 @@ public class ExchangeRatePairJsonConverterPolicyTests
     [TestMethod]
     public void StrictPolicy_WhenMissingFromProperty_ShouldThrowJsonException()
     {
-        var json = "{\"to\":\"JPY\"}";
+        string json = "{\"to\":\"JPY\"}";
 
         Assert.ThrowsExactly<JsonException>(() =>
         {

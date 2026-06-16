@@ -54,7 +54,7 @@ public sealed record ScryptParameters
                 nameof(CostN), CostN, CryptoResourceStrings.Arg_OutOfRange_ScryptCostNotPowerOfTwo);
 
         // p <= ((2^32 - 1) * 32) / (128 * r) (RFC 7914 Section 6).
-        var maxParallelization = ((long)uint.MaxValue * 32) / (128L * BlockSizeR);
+        long maxParallelization = ((long)uint.MaxValue * 32) / (128L * BlockSizeR);
         if (Parallelization < 1 || Parallelization > maxParallelization)
             throw new ArgumentOutOfRangeException(
                 nameof(Parallelization),

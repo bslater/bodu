@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Ed25519Tests.SignData.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -21,7 +21,7 @@ public sealed partial class Ed25519Tests
     {
         using var algorithm = new Ed25519();
         algorithm.GenerateKey();
-        var message = new byte[] { 1, 2, 3, 4, 5 };
+        byte[] message = new byte[] { 1, 2, 3, 4, 5 };
 
         CollectionAssert.AreEqual(algorithm.SignData(message), algorithm.SignData(message));
     }
@@ -35,10 +35,10 @@ public sealed partial class Ed25519Tests
     {
         using var algorithm = new Ed25519();
         algorithm.ImportPrivateKey(Convert.FromHexString("9d61b19deffd5a60ba844af492ec2cc44449c5697b326919703bac031cae7f60"));
-        var message = new byte[] { 0x72 };
+        byte[] message = new byte[] { 0x72 };
 
-        var allocating = algorithm.SignData(message);
-        var spanResult = new byte[Ed25519.SignatureSizeInBytes];
+        byte[] allocating = algorithm.SignData(message);
+        byte[] spanResult = new byte[Ed25519.SignatureSizeInBytes];
         algorithm.SignData(message, spanResult);
         CollectionAssert.AreEqual(allocating, spanResult);
 

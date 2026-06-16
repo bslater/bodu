@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base62.Decode.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -38,7 +38,7 @@ public static partial class Base62
     public static byte[] Decode(ReadOnlySpan<char> chars, BaseFormatStyles style = BaseFormatStyles.None) =>
         chars.IsEmpty
             ? []
-            : TryDecodeCore(chars, style, out var result, out var error)
+            : TryDecodeCore(chars, style, out byte[]? result, out string? error)
                 ? result!
                 : throw new FormatException(error);
 
@@ -87,7 +87,7 @@ public static partial class Base62
         if (chars.IsEmpty)
             return true;
 
-        if (!TryDecodeCore(chars, style, out var result, out _))
+        if (!TryDecodeCore(chars, style, out byte[]? result, out _))
             return false;
 
         if (destination.Length < result!.Length)
@@ -113,13 +113,13 @@ public static partial class Base62
         result = null;
         error = null;
 
-        var ignoreWhitespace = style.HasFlag(BaseFormatStyles.IgnoreWhitespace);
+        bool ignoreWhitespace = style.HasFlag(BaseFormatStyles.IgnoreWhitespace);
 
-        var leadingZeros = 0;
+        int leadingZeros = 0;
         BigInteger value = BigInteger.Zero;
-        var seenNonZero = false;
+        bool seenNonZero = false;
 
-        foreach (var c in chars)
+        foreach (char c in chars)
         {
             if (ignoreWhitespace && c is ' ' or '\t' or '\r' or '\n')
                 continue;
@@ -141,7 +141,7 @@ public static partial class Base62
             value = (value * Radix) + symbolValue;
         }
 
-        var decoded = value.IsZero
+        byte[] decoded = value.IsZero
             ? []
             : value.ToByteArray(isUnsigned: true, isBigEndian: true);
 
@@ -151,7 +151,7 @@ public static partial class Base62
             return true;
         }
 
-        var combined = new byte[leadingZeros + decoded.Length];
+        byte[] combined = new byte[leadingZeros + decoded.Length];
         Buffer.BlockCopy(decoded, 0, combined, leadingZeros, decoded.Length);
         result = combined;
         return true;

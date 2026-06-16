@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateCacheContractTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -548,7 +548,7 @@ public abstract class ExchangeRateCacheContractTests<TCache>
         Assert.AreEqual(Windows, cache.GetRates(Pair, Duration, now).Count);
 
         DateRangeCoverage coverage = cache.GetCoverage(Pair, Duration, now);
-        for (var i = 0; i < Windows; i++)
+        for (int i = 0; i < Windows; i++)
         {
             var date = new DateOnly(2023, 2, 1).AddDays(i);
             Assert.IsTrue(coverage.Contains(date, date), $"coverage missing for {date:O}");

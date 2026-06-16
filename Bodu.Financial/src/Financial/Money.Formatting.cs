@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Money.Formatting.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -49,7 +49,7 @@ public readonly partial struct Money :
     /// <returns><see langword="true" /> if the span was large enough.</returns>
     public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format, IFormatProvider? provider)
     {
-        var text = Format(format, provider, string.Empty);
+        string text = Format(format, provider, string.Empty);
         if (text.Length <= destination.Length)
         {
             text.AsSpan().CopyTo(destination);
@@ -71,7 +71,7 @@ public readonly partial struct Money :
     /// <returns><see langword="true" /> if the span was large enough.</returns>
     public bool TryFormat(Span<byte> utf8Destination, out int bytesWritten, ReadOnlySpan<char> format, IFormatProvider? provider)
     {
-        var text = Format(format, provider, string.Empty);
+        string text = Format(format, provider, string.Empty);
         return Encoding.UTF8.TryGetBytes(text, utf8Destination, out bytesWritten);
     }
 
@@ -135,12 +135,12 @@ public readonly partial struct Money :
     /// <exception cref="FormatException">The format specifier is not supported.</exception>
     internal string Format(ReadOnlySpan<char> format, IFormatProvider? provider, string magnitudeSuffix)
     {
-        var isoCode = IsoCode;
-        var minorUnits = MinorUnits;
-        var englishName = CurrencyResolution.TryGet(isoCode, out CurrencyInfo? info) && info is not null
+        string isoCode = IsoCode;
+        int minorUnits = MinorUnits;
+        string englishName = CurrencyResolution.TryGet(isoCode, out CurrencyInfo? info) && info is not null
             ? info.EnglishName
             : string.Empty;
-        ParseSpecifier(format, minorUnits, out var specifier, out var decimals, out var elideIfMatched, out var hasPrecisionSuffix);
+        ParseSpecifier(format, minorUnits, out char specifier, out int decimals, out bool elideIfMatched, out bool hasPrecisionSuffix);
 
         if (specifier == 'R')
         {
@@ -156,7 +156,7 @@ public readonly partial struct Money :
         }
 
         IFormatProvider effective = provider ?? CultureInfo.CurrentCulture;
-        var decimalsSuffix = decimals.ToString(CultureInfo.InvariantCulture);
+        string decimalsSuffix = decimals.ToString(CultureInfo.InvariantCulture);
 
         switch (specifier)
         {
@@ -166,7 +166,7 @@ public readonly partial struct Money :
                 return $"{isoCode} {_amount.ToString("N" + decimalsSuffix, effective)}{magnitudeSuffix}";
 
             case 'C':
-                var matchesC = MoneyFormattingHelpers.CultureMatchesIsoCode(effective, isoCode);
+                bool matchesC = MoneyFormattingHelpers.CultureMatchesIsoCode(effective, isoCode);
                 if (elideIfMatched && matchesC)
                     return _amount.ToString("N" + decimalsSuffix, effective) + magnitudeSuffix;
                 return matchesC
@@ -174,7 +174,7 @@ public readonly partial struct Money :
                     : MoneyFormattingHelpers.FormatLocaleMismatch(_amount, isoCode, decimals, magnitudeSuffix, effective);
 
             case 'L':
-                var matchesL = MoneyFormattingHelpers.CultureMatchesIsoCode(effective, isoCode);
+                bool matchesL = MoneyFormattingHelpers.CultureMatchesIsoCode(effective, isoCode);
                 if (elideIfMatched && matchesL)
                     return _amount.ToString("N" + decimalsSuffix, effective) + magnitudeSuffix;
                 if (string.IsNullOrEmpty(englishName))
@@ -216,7 +216,7 @@ public readonly partial struct Money :
     {
         elideIfMatched = false;
         hasPrecisionSuffix = false;
-        var cursor = 0;
+        int cursor = 0;
         if (!format.IsEmpty && format[0] == '~')
         {
             elideIfMatched = true;

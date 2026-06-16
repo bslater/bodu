@@ -39,7 +39,7 @@ public partial class ConcurrentHashSetTests
     {
         var set = new ConcurrentHashSet<int>([1, 2, 3]);
 
-        var array = set.ToArray();
+        int[] array = set.ToArray();
         array[0] = 999;
 
         Assert.AreEqual(3, set.Count);
@@ -55,7 +55,7 @@ public partial class ConcurrentHashSetTests
     {
         var set = new ConcurrentHashSet<int>([1, 2, 3]);
 
-        var array = set.ToArray();
+        int[] array = set.ToArray();
         set.Add(4);
         set.Remove(1);
 

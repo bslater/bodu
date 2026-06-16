@@ -158,7 +158,7 @@ public partial class EvictingDictionaryTests
 
         IEnumerable values = dictionary.Values;
         var observed = new List<int>();
-        foreach (var value in values)
+        foreach (object? value in values)
             observed.Add((int)value);
 
         CollectionAssert.AreEquivalent(new[] { 1, 2, 3 }, observed);
@@ -184,7 +184,7 @@ public partial class EvictingDictionaryTests
     public void ValueCollection_SyncRoot_ShouldReturnDictionarySyncRoot()
     {
         var dictionary = new EvictingDictionary<string, int>(3);
-        var syncRoot = ((ICollection)dictionary.Values).SyncRoot;
+        object syncRoot = ((ICollection)dictionary.Values).SyncRoot;
         Assert.IsNotNull(syncRoot);
         Assert.AreSame(((ICollection)dictionary).SyncRoot, syncRoot);
     }

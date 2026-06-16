@@ -38,7 +38,7 @@ public partial class BencodeSerializerTests
             Counts = new Dictionary<string, int> { ["b"] = 2, ["a"] = 1 },
         };
 
-        var bytes = BencodeSerializer.Serialize(original);
+        byte[] bytes = BencodeSerializer.Serialize(original);
 
         // Keys sort bytewise ascending: Count, Counts, Length, Name, Nested, Numbers, Payload.
         const string Expected =
@@ -72,7 +72,7 @@ public partial class BencodeSerializerTests
     {
         var model = new OutOfOrderModel { Zebra = "z", Apple = "a", Mango = "m" };
 
-        var bytes = BencodeSerializer.Serialize(model);
+        byte[] bytes = BencodeSerializer.Serialize(model);
 
         Assert.AreEqual("d5:Apple1:a5:Mango1:m5:Zebra1:ze", Encoding.Latin1.GetString(bytes));
     }
@@ -85,7 +85,7 @@ public partial class BencodeSerializerTests
     {
         var model = new RenamedModel { Identifier = 5 };
 
-        var bytes = BencodeSerializer.Serialize(model);
+        byte[] bytes = BencodeSerializer.Serialize(model);
 
         Assert.AreEqual("d2:idi5ee", Encoding.Latin1.GetString(bytes));
 
@@ -101,7 +101,7 @@ public partial class BencodeSerializerTests
     {
         var model = new IgnoredModel { Kept = "k", Skipped = "s" };
 
-        var bytes = BencodeSerializer.Serialize(model);
+        byte[] bytes = BencodeSerializer.Serialize(model);
 
         Assert.AreEqual("d4:Kept1:ke", Encoding.Latin1.GetString(bytes));
     }
@@ -115,7 +115,7 @@ public partial class BencodeSerializerTests
         var options = new BencodeSerializerOptions { PropertyNamingPolicy = BencodeNamingPolicy.CamelCase };
         var model = new OutOfOrderModel { Zebra = "z", Apple = "a", Mango = "m" };
 
-        var bytes = BencodeSerializer.Serialize(model, options);
+        byte[] bytes = BencodeSerializer.Serialize(model, options);
 
         Assert.AreEqual("d5:apple1:a5:mango1:m5:zebra1:ze", Encoding.Latin1.GetString(bytes));
     }
@@ -131,7 +131,7 @@ public partial class BencodeSerializerTests
         options.Converters.Add(new BooleanConverter());
 
         var model = new FlagModel { Enabled = true, Disabled = false };
-        var bytes = BencodeSerializer.Serialize(model, options);
+        byte[] bytes = BencodeSerializer.Serialize(model, options);
 
         Assert.AreEqual("d8:Disabledi0e7:Enabledi1ee", Encoding.Latin1.GetString(bytes));
 
@@ -164,7 +164,7 @@ public partial class BencodeSerializerTests
     {
         var model = new NullableMemberModel { Present = "here", Absent = null };
 
-        var bytes = BencodeSerializer.Serialize(model);
+        byte[] bytes = BencodeSerializer.Serialize(model);
 
         Assert.AreEqual("d7:Present4:heree", Encoding.Latin1.GetString(bytes));
 

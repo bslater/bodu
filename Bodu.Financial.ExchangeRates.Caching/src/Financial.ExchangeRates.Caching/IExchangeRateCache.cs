@@ -112,7 +112,9 @@ public interface IExchangeRateCache
     /// <paramref name="start" />..<paramref name="end" /> as covered, persisting both halves together or neither.
     /// </summary>
     /// <param name="pair">The currency pair.</param>
-    /// <param name="rows">The rows fetched for the range, which may be empty when the fetch returned no observation.</param>
+    /// <param name="rows">
+    /// The rows fetched for the range, which may be empty when the fetch returned no observation.
+    /// </param>
     /// <param name="start">The inclusive first date of the fetched range.</param>
     /// <param name="end">The inclusive last date of the fetched range.</param>
     /// <param name="duration">

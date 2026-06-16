@@ -68,14 +68,14 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     {
         // Fill to capacity, drain one, refill — this places the head past zero and the tail wrapped to slot zero.
         TCollection collection = CreateCollection(capacity);
-        for (var i = 0; i < capacity; i++)
+        for (int i = 0; i < capacity; i++)
             AddToTail(collection, i);
 
         _ = RemoveFromHead(collection);
         AddToTail(collection, capacity); // wraps into slot 0
 
         // Logical order is now [1, 2, ..., capacity]
-        for (var i = 0; i < capacity; i++)
+        for (int i = 0; i < capacity; i++)
             Assert.AreEqual(i + 1, GetAt(collection, i));
     }
 

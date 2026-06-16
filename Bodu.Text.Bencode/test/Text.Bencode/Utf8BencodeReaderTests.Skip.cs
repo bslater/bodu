@@ -21,11 +21,11 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void Skip_WhenOnInteger_ShouldRemainOnSameToken()
     {
-        var bytes = Bytes("li1e3:abce");
+        byte[] bytes = Bytes("li1e3:abce");
         var reader = new Utf8BencodeReader(bytes);
         Assert.IsTrue(reader.Read()); // StartList
         Assert.IsTrue(reader.Read()); // Integer 1
-        var consumed = reader.BytesConsumed;
+        int consumed = reader.BytesConsumed;
 
         reader.Skip();
 
@@ -47,11 +47,11 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void Skip_WhenOnByteString_ShouldRemainOnSameToken()
     {
-        var bytes = Bytes("l3:abci1ee");
+        byte[] bytes = Bytes("l3:abci1ee");
         var reader = new Utf8BencodeReader(bytes);
         Assert.IsTrue(reader.Read()); // StartList
         Assert.IsTrue(reader.Read()); // ByteString abc
-        var consumed = reader.BytesConsumed;
+        int consumed = reader.BytesConsumed;
 
         reader.Skip();
 
@@ -71,7 +71,7 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void Skip_WhenTokenIsNone_ShouldBeNoOp()
     {
-        var bytes = Bytes("le");
+        byte[] bytes = Bytes("le");
         var reader = new Utf8BencodeReader(bytes);
 
         reader.Skip();
@@ -90,7 +90,7 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void Skip_WhenOnListStart_ShouldAdvanceToMatchingEnd()
     {
-        var bytes = Bytes("lli1eee");
+        byte[] bytes = Bytes("lli1eee");
         var reader = new Utf8BencodeReader(bytes);
         Assert.IsTrue(reader.Read()); // outer StartList
         Assert.IsTrue(reader.Read()); // inner StartList
@@ -114,7 +114,7 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void Skip_WhenOnDictionaryStart_ShouldAdvancePastSubtree()
     {
-        var bytes = Bytes("ld3:cow3:mooe6:afterxe");
+        byte[] bytes = Bytes("ld3:cow3:mooe6:afterxe");
         var reader = new Utf8BencodeReader(bytes);
         Assert.IsTrue(reader.Read()); // StartList
         Assert.IsTrue(reader.Read()); // StartDictionary
@@ -141,7 +141,7 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void Skip_WhenOnRootContainer_ShouldConsumeEntireDocument()
     {
-        var bytes = Bytes("d3:cow3:moo4:spam4:eggse");
+        byte[] bytes = Bytes("d3:cow3:moo4:spam4:eggse");
         var reader = new Utf8BencodeReader(bytes);
         Assert.IsTrue(reader.Read()); // StartDictionary
 
@@ -161,7 +161,7 @@ public partial class Utf8BencodeReaderTests
     public void Skip_WhenOnDeeplyNestedContainer_ShouldUnwindToMatchingEnd()
     {
         // [ [ [ [ 9 ] ] ], "tail" ]
-        var bytes = Bytes("lllli9eeee4:taile");
+        byte[] bytes = Bytes("lllli9eeee4:taile");
         var reader = new Utf8BencodeReader(bytes);
         Assert.IsTrue(reader.Read()); // depth 1
         Assert.IsTrue(reader.Read()); // depth 2
@@ -190,7 +190,7 @@ public partial class Utf8BencodeReaderTests
     public void Skip_WhenOnDictionaryValueMidDocument_ShouldSkipOnlyThatValue()
     {
         // { "a": [1,2,3], "b": 7 }
-        var bytes = Bytes("d1:ali1ei2ei3ee1:bi7ee");
+        byte[] bytes = Bytes("d1:ali1ei2ei3ee1:bi7ee");
         var reader = new Utf8BencodeReader(bytes);
         Assert.IsTrue(reader.Read()); // StartDictionary
         Assert.IsTrue(reader.Read()); // PropertyName a
@@ -225,7 +225,7 @@ public partial class Utf8BencodeReaderTests
     public void Skip_WhenOnPropertyNameWithScalarValue_ShouldSkipPropertyValue()
     {
         // { "a": 1, "b": 2 }
-        var bytes = Bytes("d1:ai1e1:bi2ee");
+        byte[] bytes = Bytes("d1:ai1e1:bi2ee");
         var reader = new Utf8BencodeReader(bytes);
         Assert.IsTrue(reader.Read()); // StartDictionary
         Assert.IsTrue(reader.Read()); // PropertyName a
@@ -256,7 +256,7 @@ public partial class Utf8BencodeReaderTests
     public void Skip_WhenOnPropertyNameWithContainerValue_ShouldSkipValueSubtree()
     {
         // { "a": [1,2,3], "b": 7 }
-        var bytes = Bytes("d1:ali1ei2ei3ee1:bi7ee");
+        byte[] bytes = Bytes("d1:ali1ei2ei3ee1:bi7ee");
         var reader = new Utf8BencodeReader(bytes);
         Assert.IsTrue(reader.Read()); // StartDictionary
         Assert.IsTrue(reader.Read()); // PropertyName a
@@ -286,7 +286,7 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void TrySkip_WhenOnContainerStart_ShouldSkipSubtreeAndReturnTrue()
     {
-        var bytes = Bytes("ld3:cow3:mooei7ee");
+        byte[] bytes = Bytes("ld3:cow3:mooei7ee");
         var reader = new Utf8BencodeReader(bytes);
         Assert.IsTrue(reader.Read()); // StartList
         Assert.IsTrue(reader.Read()); // StartDictionary
@@ -304,11 +304,11 @@ public partial class Utf8BencodeReaderTests
     [TestMethod]
     public void Skip_WhenOnContainerEnd_ShouldBeNoOp()
     {
-        var bytes = Bytes("le");
+        byte[] bytes = Bytes("le");
         var reader = new Utf8BencodeReader(bytes);
         Assert.IsTrue(reader.Read()); // StartList
         Assert.IsTrue(reader.Read()); // EndList
-        var consumed = reader.BytesConsumed;
+        int consumed = reader.BytesConsumed;
 
         reader.Skip();
 

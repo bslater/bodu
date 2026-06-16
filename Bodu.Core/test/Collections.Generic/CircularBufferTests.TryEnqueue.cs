@@ -20,7 +20,7 @@ public partial class CircularBufferTests
         buffer.TryEnqueue(1);
         buffer.TryEnqueue(2);
 
-        var actual = buffer.TryEnqueue(3);
+        bool actual = buffer.TryEnqueue(3);
 
         Assert.IsFalse(actual);
         Assert.AreEqual(2, buffer.Count);
@@ -38,7 +38,7 @@ public partial class CircularBufferTests
         buffer.TryEnqueue(1);
         buffer.TryEnqueue(2);
 
-        var actual = buffer.TryEnqueue(3);
+        bool actual = buffer.TryEnqueue(3);
 
         Assert.IsTrue(actual);
         Assert.AreEqual(2, buffer.Count);
@@ -61,7 +61,7 @@ public partial class CircularBufferTests
         buffer.ItemEvicting += item => events.Add("Evicting:" + item);
         buffer.ItemEvicted += item => events.Add("Evicted:" + item);
 
-        var actual = buffer.TryEnqueue("C"); // should evict "A"
+        bool actual = buffer.TryEnqueue("C"); // should evict "A"
 
         Assert.IsTrue(actual);
         CollectionAssert.AreEqual(new[] { "Evicting:A", "Evicted:A" }, events);

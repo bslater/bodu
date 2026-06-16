@@ -33,7 +33,7 @@ public class IntervalJsonConverterPolicyTests
     {
         var interval = Interval.ClosedOpen(1, 5);
 
-        var json = JsonSerializer.Serialize(interval);
+        string json = JsonSerializer.Serialize(interval);
 
         Assert.AreEqual("{\"lower\":1,\"upper\":5,\"lowerInclusive\":true,\"upperInclusive\":false}", json);
     }
@@ -45,7 +45,7 @@ public class IntervalJsonConverterPolicyTests
     [TestMethod]
     public void DefaultAttribute_WhenSerializingEmpty_ShouldEmitEmptyMarker()
     {
-        var json = JsonSerializer.Serialize(Interval<int>.Empty);
+        string json = JsonSerializer.Serialize(Interval<int>.Empty);
 
         Assert.AreEqual("{\"empty\":true}", json);
     }
@@ -71,7 +71,7 @@ public class IntervalJsonConverterPolicyTests
         var original = Interval.Closed(1, 5);
         JsonSerializerOptions options = Options(NumericsJsonPolicy.Strict);
 
-        var json = JsonSerializer.Serialize(original, options);
+        string json = JsonSerializer.Serialize(original, options);
         Interval<int> recovered = JsonSerializer.Deserialize<Interval<int>>(json, options);
 
         Assert.AreEqual(original, recovered);
@@ -88,7 +88,7 @@ public class IntervalJsonConverterPolicyTests
         var original = Interval.Open(1, 5);
         JsonSerializerOptions options = Options(NumericsJsonPolicy.Strict);
 
-        var json = JsonSerializer.Serialize(original, options);
+        string json = JsonSerializer.Serialize(original, options);
         Interval<int> recovered = JsonSerializer.Deserialize<Interval<int>>(json, options);
 
         Assert.AreEqual(original, recovered);
@@ -105,7 +105,7 @@ public class IntervalJsonConverterPolicyTests
         Interval<int> original = Interval<int>.Empty;
         JsonSerializerOptions options = Options(NumericsJsonPolicy.Strict);
 
-        var json = JsonSerializer.Serialize(original, options);
+        string json = JsonSerializer.Serialize(original, options);
         Interval<int> recovered = JsonSerializer.Deserialize<Interval<int>>(json, options);
 
         Assert.AreEqual(original, recovered);
@@ -118,7 +118,7 @@ public class IntervalJsonConverterPolicyTests
     [TestMethod]
     public void StrictPolicy_WhenReadingCompactString_ShouldThrowJsonException()
     {
-        var json = "\"[1, 5]\"";
+        string json = "\"[1, 5]\"";
 
         Assert.ThrowsExactly<JsonException>(() =>
         {
@@ -132,7 +132,7 @@ public class IntervalJsonConverterPolicyTests
     [TestMethod]
     public void StrictPolicy_WhenReadingMissingLowerInclusive_ShouldThrowJsonException()
     {
-        var json = "{\"lower\":1,\"upper\":5,\"upperInclusive\":true}";
+        string json = "{\"lower\":1,\"upper\":5,\"upperInclusive\":true}";
 
         Assert.ThrowsExactly<JsonException>(() =>
         {
@@ -146,7 +146,7 @@ public class IntervalJsonConverterPolicyTests
     [TestMethod]
     public void StrictPolicy_WhenReadingMissingLower_ShouldThrowJsonException()
     {
-        var json = "{\"upper\":5,\"lowerInclusive\":true,\"upperInclusive\":true}";
+        string json = "{\"upper\":5,\"lowerInclusive\":true,\"upperInclusive\":true}";
 
         Assert.ThrowsExactly<JsonException>(() =>
         {
@@ -160,7 +160,7 @@ public class IntervalJsonConverterPolicyTests
     [TestMethod]
     public void StrictPolicy_WhenReadingDuplicateLower_ShouldThrowJsonException()
     {
-        var json = "{\"lower\":1,\"lower\":2,\"upper\":5,\"lowerInclusive\":true,\"upperInclusive\":true}";
+        string json = "{\"lower\":1,\"lower\":2,\"upper\":5,\"lowerInclusive\":true,\"upperInclusive\":true}";
 
         Assert.ThrowsExactly<JsonException>(() =>
         {
@@ -174,7 +174,7 @@ public class IntervalJsonConverterPolicyTests
     [TestMethod]
     public void StrictPolicy_WhenReadingEmptyMarkerWithEndpoints_ShouldThrowJsonException()
     {
-        var json = "{\"empty\":true,\"lower\":1,\"upper\":5,\"lowerInclusive\":true,\"upperInclusive\":true}";
+        string json = "{\"empty\":true,\"lower\":1,\"upper\":5,\"lowerInclusive\":true,\"upperInclusive\":true}";
 
         Assert.ThrowsExactly<JsonException>(() =>
         {
@@ -188,7 +188,7 @@ public class IntervalJsonConverterPolicyTests
     [TestMethod]
     public void StrictPolicy_WhenLowerInclusiveIsNotBoolean_ShouldThrowJsonException()
     {
-        var json = "{\"lower\":1,\"upper\":5,\"lowerInclusive\":\"yes\",\"upperInclusive\":true}";
+        string json = "{\"lower\":1,\"upper\":5,\"lowerInclusive\":\"yes\",\"upperInclusive\":true}";
 
         Assert.ThrowsExactly<JsonException>(() =>
         {
@@ -202,7 +202,7 @@ public class IntervalJsonConverterPolicyTests
     [TestMethod]
     public void StrictPolicy_WhenObjectCarriesUnknownProperty_ShouldIgnoreIt()
     {
-        var json = "{\"lower\":1,\"upper\":5,\"lowerInclusive\":true,\"upperInclusive\":true,\"unused\":\"x\"}";
+        string json = "{\"lower\":1,\"upper\":5,\"lowerInclusive\":true,\"upperInclusive\":true,\"unused\":\"x\"}";
 
         Interval<int> result = JsonSerializer.Deserialize<Interval<int>>(json, Options(NumericsJsonPolicy.Strict));
 
@@ -216,7 +216,7 @@ public class IntervalJsonConverterPolicyTests
     [TestMethod]
     public void StrictPolicy_WhenEndpointValuesAreStrings_ShouldStillRead()
     {
-        var json = "{\"lower\":\"1\",\"upper\":\"5\",\"lowerInclusive\":true,\"upperInclusive\":true}";
+        string json = "{\"lower\":\"1\",\"upper\":\"5\",\"lowerInclusive\":true,\"upperInclusive\":true}";
 
         Interval<int> result = JsonSerializer.Deserialize<Interval<int>>(json, Options(NumericsJsonPolicy.Strict));
 
@@ -231,7 +231,7 @@ public class IntervalJsonConverterPolicyTests
     {
         var interval = Interval.Closed(1, 5);
 
-        var json = JsonSerializer.Serialize(interval, Options(NumericsJsonPolicy.Compact));
+        string json = JsonSerializer.Serialize(interval, Options(NumericsJsonPolicy.Compact));
 
         Assert.AreEqual("\"[1, 5]\"", json);
     }
@@ -244,7 +244,7 @@ public class IntervalJsonConverterPolicyTests
     {
         var interval = Interval.ClosedOpen(1, 5);
 
-        var json = JsonSerializer.Serialize(interval, Options(NumericsJsonPolicy.Compact));
+        string json = JsonSerializer.Serialize(interval, Options(NumericsJsonPolicy.Compact));
 
         Assert.AreEqual("\"[1, 5)\"", json);
     }
@@ -255,7 +255,7 @@ public class IntervalJsonConverterPolicyTests
     [TestMethod]
     public void CompactPolicy_WhenSerializingEmpty_ShouldEmitEmptyGlyph()
     {
-        var json = JsonSerializer.Serialize(Interval<int>.Empty, Options(NumericsJsonPolicy.Compact));
+        string json = JsonSerializer.Serialize(Interval<int>.Empty, Options(NumericsJsonPolicy.Compact));
 
         Assert.AreEqual("\"\\u2205\"", json);
     }
@@ -269,7 +269,7 @@ public class IntervalJsonConverterPolicyTests
         var original = Interval.OpenClosed(2, 8);
         JsonSerializerOptions options = Options(NumericsJsonPolicy.Compact);
 
-        var json = JsonSerializer.Serialize(original, options);
+        string json = JsonSerializer.Serialize(original, options);
         Interval<int> recovered = JsonSerializer.Deserialize<Interval<int>>(json, options);
 
         Assert.AreEqual(original, recovered);
@@ -284,7 +284,7 @@ public class IntervalJsonConverterPolicyTests
         Interval<int> original = Interval<int>.Empty;
         JsonSerializerOptions options = Options(NumericsJsonPolicy.Compact);
 
-        var json = JsonSerializer.Serialize(original, options);
+        string json = JsonSerializer.Serialize(original, options);
         Interval<int> recovered = JsonSerializer.Deserialize<Interval<int>>(json, options);
 
         Assert.AreEqual(original, recovered);
@@ -297,7 +297,7 @@ public class IntervalJsonConverterPolicyTests
     [TestMethod]
     public void CompactPolicy_WhenReadingObjectForm_ShouldThrowJsonException()
     {
-        var json = "{\"lower\":1,\"upper\":5,\"lowerInclusive\":true,\"upperInclusive\":true}";
+        string json = "{\"lower\":1,\"upper\":5,\"lowerInclusive\":true,\"upperInclusive\":true}";
 
         Assert.ThrowsExactly<JsonException>(() =>
         {
@@ -311,7 +311,7 @@ public class IntervalJsonConverterPolicyTests
     [TestMethod]
     public void CompactPolicy_WhenReadingMalformedString_ShouldThrowJsonException()
     {
-        var json = "\"not an interval\"";
+        string json = "\"not an interval\"";
 
         Assert.ThrowsExactly<JsonException>(() =>
         {
@@ -325,7 +325,7 @@ public class IntervalJsonConverterPolicyTests
     [TestMethod]
     public void LenientPolicy_WhenUsingMinMaxAliases_ShouldSucceed()
     {
-        var json = "{\"min\":1,\"max\":5,\"lowerInclusive\":true,\"upperInclusive\":true}";
+        string json = "{\"min\":1,\"max\":5,\"lowerInclusive\":true,\"upperInclusive\":true}";
 
         Interval<int> result = JsonSerializer.Deserialize<Interval<int>>(json, Options(NumericsJsonPolicy.Lenient));
 
@@ -338,7 +338,7 @@ public class IntervalJsonConverterPolicyTests
     [TestMethod]
     public void LenientPolicy_WhenInclusiveFlagsMissing_ShouldDefaultToClosed()
     {
-        var json = "{\"lower\":1,\"upper\":5}";
+        string json = "{\"lower\":1,\"upper\":5}";
 
         Interval<int> result = JsonSerializer.Deserialize<Interval<int>>(json, Options(NumericsJsonPolicy.Lenient));
 
@@ -351,7 +351,7 @@ public class IntervalJsonConverterPolicyTests
     [TestMethod]
     public void LenientPolicy_WhenReadingBracketString_ShouldSucceed()
     {
-        var json = "\"[1, 5)\"";
+        string json = "\"[1, 5)\"";
 
         Interval<int> result = JsonSerializer.Deserialize<Interval<int>>(json, Options(NumericsJsonPolicy.Lenient));
 
@@ -364,7 +364,7 @@ public class IntervalJsonConverterPolicyTests
     [TestMethod]
     public void LenientPolicy_WhenReadingCanonicalObject_ShouldSucceed()
     {
-        var json = "{\"lower\":1,\"upper\":5,\"lowerInclusive\":true,\"upperInclusive\":true}";
+        string json = "{\"lower\":1,\"upper\":5,\"lowerInclusive\":true,\"upperInclusive\":true}";
 
         Interval<int> result = JsonSerializer.Deserialize<Interval<int>>(json, Options(NumericsJsonPolicy.Lenient));
 
@@ -377,7 +377,7 @@ public class IntervalJsonConverterPolicyTests
     [TestMethod]
     public void LenientPolicy_WhenReadingEmptyMarkerWithEndpoints_ShouldThrowJsonException()
     {
-        var json = "{\"empty\":true,\"lower\":1,\"upper\":5}";
+        string json = "{\"empty\":true,\"lower\":1,\"upper\":5}";
 
         Assert.ThrowsExactly<JsonException>(() =>
         {
@@ -394,7 +394,7 @@ public class IntervalJsonConverterPolicyTests
         var original = Interval.Closed(1.5m, 9.75m);
         JsonSerializerOptions options = Options(NumericsJsonPolicy.Strict);
 
-        var json = JsonSerializer.Serialize(original, options);
+        string json = JsonSerializer.Serialize(original, options);
         Interval<decimal> recovered = JsonSerializer.Deserialize<Interval<decimal>>(json, options);
 
         Assert.AreEqual(original, recovered);

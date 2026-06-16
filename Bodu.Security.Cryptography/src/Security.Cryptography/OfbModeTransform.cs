@@ -85,7 +85,7 @@ public sealed class OfbModeTransform
     /// <inheritdoc />
     public int Transform(ReadOnlySpan<byte> input, Span<byte> output, bool encrypt)
     {
-        var blockSize = _cipher.BlockSize / 8;
+        int blockSize = _cipher.BlockSize / 8;
 
         // Empty input is a no-op, consistent with CbcModeTransform.
         CryptographyThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize, throwIfZero: false);
@@ -94,7 +94,7 @@ public sealed class OfbModeTransform
 
         Span<byte> keystream = stackalloc byte[blockSize];
 
-        for (var offset = 0; offset < input.Length; offset += blockSize)
+        for (int offset = 0; offset < input.Length; offset += blockSize)
         {
             ReadOnlySpan<byte> inBlock = input.Slice(offset, blockSize);
             Span<byte> outBlock = output.Slice(offset, blockSize);
@@ -103,7 +103,7 @@ public sealed class OfbModeTransform
             _cipher.Encrypt(_currentIv, keystream);
 
             // XOR keystream with plaintext or ciphertext
-            for (var i = 0; i < blockSize; i++)
+            for (int i = 0; i < blockSize; i++)
                 outBlock[i] = (byte)(inBlock[i] ^ keystream[i]);
 
             // Update feedback register with generated keystream

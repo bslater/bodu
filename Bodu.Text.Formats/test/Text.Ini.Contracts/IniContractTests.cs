@@ -71,7 +71,7 @@ public sealed class IniContractTests
             if (x.Sections.Count != y.Sections.Count)
                 return false;
 
-            for (var i = 0; i < x.Sections.Count; i++)
+            for (int i = 0; i < x.Sections.Count; i++)
             {
                 if (x.Sections[i].Name != y.Sections[i].Name)
                     return false;

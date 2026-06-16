@@ -49,7 +49,7 @@ public partial class IndexedSetTests
     {
         var sut = new IndexedSet<int>();
 
-        var reported = sut.EnsureCapacity(128);
+        int reported = sut.EnsureCapacity(128);
 
         Assert.IsGreaterThanOrEqualTo(128, reported);
         Assert.IsGreaterThanOrEqualTo(128, sut.Capacity);
@@ -63,9 +63,9 @@ public partial class IndexedSetTests
     public void EnsureCapacity_WhenSmallerCapacityRequested_ShouldNotShrink()
     {
         var sut = new IndexedSet<int>(64);
-        var capacityBefore = sut.Capacity;
+        int capacityBefore = sut.Capacity;
 
-        var reported = sut.EnsureCapacity(4);
+        int reported = sut.EnsureCapacity(4);
 
         Assert.AreEqual(capacityBefore, sut.Capacity);
         Assert.AreEqual(capacityBefore, reported);

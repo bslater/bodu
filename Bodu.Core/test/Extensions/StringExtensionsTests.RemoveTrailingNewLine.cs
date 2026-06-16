@@ -44,9 +44,9 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void RemoveTrailingNewLine_WhenInputHasNoTrailingNewLine_ShouldReturnSameInstance()
     {
-        var value = "hello";
+        string value = "hello";
 
-        var actual = value.RemoveTrailingNewLine();
+        string actual = value.RemoveTrailingNewLine();
 
         Assert.AreSame(value, actual);
     }

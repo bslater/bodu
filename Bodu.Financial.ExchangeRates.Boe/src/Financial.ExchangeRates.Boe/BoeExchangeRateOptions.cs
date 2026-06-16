@@ -128,7 +128,7 @@ public sealed class BoeExchangeRateOptions
     /// </exception>
     public void Validate()
     {
-        if (!TryValidate(out var error))
+        if (!TryValidate(out string? error))
             throw new ArgumentException(error);
     }
 

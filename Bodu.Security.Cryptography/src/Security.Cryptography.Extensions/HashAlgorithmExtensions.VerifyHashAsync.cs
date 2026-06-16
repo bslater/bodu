@@ -49,7 +49,7 @@ public static partial class HashAlgorithmExtensions
         // ComputeHashAsync would otherwise throw the derived TaskCanceledException.
         cancellationToken.ThrowIfCancellationRequested();
 
-        var actualHash = await algorithm.ComputeHashAsync(stream, cancellationToken).ConfigureAwait(false);
+        byte[] actualHash = await algorithm.ComputeHashAsync(stream, cancellationToken).ConfigureAwait(false);
 
         return CryptographicOperations.FixedTimeEquals(actualHash, expectedHash);
     }
@@ -110,7 +110,7 @@ public static partial class HashAlgorithmExtensions
             return false;
         }
 
-        var actualHash = await algorithm.ComputeHashAsync(stream, cancellationToken).ConfigureAwait(false);
+        byte[] actualHash = await algorithm.ComputeHashAsync(stream, cancellationToken).ConfigureAwait(false);
 
         return CryptographicOperations.FixedTimeEquals(actualHash, expectedBytes);
     }
@@ -152,7 +152,7 @@ public static partial class HashAlgorithmExtensions
         // ComputeHashAsync would otherwise throw the derived TaskCanceledException.
         cancellationToken.ThrowIfCancellationRequested();
 
-        var actualHash = await algorithm.ComputeHashAsync(stream, cancellationToken).ConfigureAwait(false);
+        byte[] actualHash = await algorithm.ComputeHashAsync(stream, cancellationToken).ConfigureAwait(false);
 
         return CryptographicOperations.FixedTimeEquals(actualHash, expectedHash.Span);
     }

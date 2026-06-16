@@ -16,7 +16,7 @@ public partial class ComparableHelperTests
     [DynamicData(nameof(GetCoalesceTestData))]
     public void Coalesce_WhenEvaluatingValues_ShouldReturnExpectedResult(int? first, int? second, int? expected)
     {
-        var actual = ComparableHelper.Coalesce(first, second);
+        int? actual = ComparableHelper.Coalesce(first, second);
         Assert.AreEqual(expected, actual);
     }
     private static IEnumerable<object?[]> GetCoalesceTestData()

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YahooExchangeRateProviderTests.Matrix.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -67,7 +67,7 @@ public partial class YahooExchangeRateProviderTests
         List<ExchangeRate> rates = [.. provider.GetRates("AUD", "USD", new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31))];
 
         Assert.IsTrue(rates.Count > 0);
-        for (var i = 1; i < rates.Count; i++)
+        for (int i = 1; i < rates.Count; i++)
             Assert.IsTrue(rates[i - 1].Date <= rates[i].Date);
     }
 }

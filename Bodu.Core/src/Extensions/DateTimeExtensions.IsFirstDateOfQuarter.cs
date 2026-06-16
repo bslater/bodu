@@ -32,7 +32,7 @@ public static partial class DateTimeExtensions
     /// </remarks>
     public static bool IsFirstDateOfQuarter(this DateTime dateTime)
     {
-        (var year, var quarter) = GetQuarterAndYearFromDate(CalendarQuarterDefinition.JanuaryToDecember, referenceDate: dateTime);
+        (int year, int quarter) = GetQuarterAndYearFromDate(CalendarQuarterDefinition.JanuaryToDecember, referenceDate: dateTime);
         return dateTime.Date.Ticks == ComputeQuarterStartTicks(year, quarter, GetQuarterDefinition(CalendarQuarterDefinition.JanuaryToDecember));
     }
 
@@ -68,7 +68,7 @@ public static partial class DateTimeExtensions
 
         if (definition == CalendarQuarterDefinition.Custom) throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_ProviderInterface, nameof(IQuarterDefinitionProvider)));
 
-        (var year, var quarter) = GetQuarterAndYearFromDate(definition, referenceDate: dateTime);
+        (int year, int quarter) = GetQuarterAndYearFromDate(definition, referenceDate: dateTime);
         return dateTime.Date.Ticks == ComputeQuarterStartTicks(year, quarter, GetQuarterDefinition(definition));
     }
 

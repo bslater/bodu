@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoeServiceCollectionExtensions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -24,7 +24,9 @@ public static class BoeServiceCollectionExtensions
     /// An optional configuration root. When supplied, <see cref="FinancialOptions" /> is bound from the
     /// <c>Financial</c> section and <see cref="BoeExchangeRateOptions" /> from <paramref name="sectionName" />.
     /// </param>
-    /// <param name="sectionName">The Bank of England configuration section name. Defaults to <c>Financial:Boe</c>.</param>
+    /// <param name="sectionName">
+    /// The Bank of England configuration section name. Defaults to <c>Financial:Boe</c>.
+    /// </param>
     /// <param name="configure">An optional callback applied after Bank of England configuration binding.</param>
     /// <returns>An <see cref="IFinancialServiceBuilder" /> for further composition.</returns>
     /// <exception cref="ArgumentNullException">

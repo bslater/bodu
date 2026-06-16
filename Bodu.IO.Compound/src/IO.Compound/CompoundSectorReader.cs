@@ -78,13 +78,13 @@ internal sealed class CompoundSectorReader
         if (size <= 0 || startSector == CompoundFileHeader.EndOfChain)
             return [];
 
-        var chain = ReadChainToEnd(startSector);
+        byte[] chain = ReadChainToEnd(startSector);
         CompoundThrowHelper.ThrowFormatIf(chain.Length < size, CompoundResourceStrings.Format_Invalid_CompoundSectorChain);
 
         if (chain.Length == size)
             return chain;
 
-        var result = new byte[size];
+        byte[] result = new byte[size];
         Array.Copy(chain, result, size);
         return result;
     }
@@ -104,7 +104,7 @@ internal sealed class CompoundSectorReader
 
         using MemoryStream buffer = new();
         uint sector = startSector;
-        var guard = 0;
+        int guard = 0;
 
         while (sector != CompoundFileHeader.EndOfChain)
         {
@@ -132,9 +132,9 @@ internal sealed class CompoundSectorReader
     {
         _miniStream = ReadChain(rootStartSector, rootStreamSize);
 
-        var miniFatBytes = ReadChain(_header.FirstMiniFatSector, (long)_header.MiniFatSectorCount * _header.SectorSize);
-        var miniFat = new uint[miniFatBytes.Length / sizeof(uint)];
-        for (var i = 0; i < miniFat.Length; i++)
+        byte[] miniFatBytes = ReadChain(_header.FirstMiniFatSector, (long)_header.MiniFatSectorCount * _header.SectorSize);
+        uint[] miniFat = new uint[miniFatBytes.Length / sizeof(uint)];
+        for (int i = 0; i < miniFat.Length; i++)
             miniFat[i] = BinaryPrimitives.ReadUInt32LittleEndian(miniFatBytes.AsSpan(i * sizeof(uint)));
 
         _miniFat = miniFat;
@@ -162,7 +162,7 @@ internal sealed class CompoundSectorReader
 
         using MemoryStream buffer = new();
         uint sector = startMiniSector;
-        var guard = 0;
+        int guard = 0;
 
         while (sector != CompoundFileHeader.EndOfChain)
         {
@@ -170,7 +170,7 @@ internal sealed class CompoundSectorReader
                 sector >= (uint)_miniFat!.Length || guard++ > _miniFat.Length,
                 CompoundResourceStrings.Format_Invalid_CompoundSectorChain);
 
-            var offset = (int)sector * _header.MiniSectorSize;
+            int offset = (int)sector * _header.MiniSectorSize;
             CompoundThrowHelper.ThrowFormatIf(
                 offset + _header.MiniSectorSize > _miniStream!.Length,
                 CompoundResourceStrings.Format_Invalid_CompoundSectorChain);
@@ -195,7 +195,7 @@ internal sealed class CompoundSectorReader
     {
         CompoundThrowHelper.ThrowFormatIf(buffer.Length < size, CompoundResourceStrings.Format_Invalid_CompoundSectorChain);
 
-        var result = new byte[size];
+        byte[] result = new byte[size];
         buffer.Position = 0;
         _ = buffer.Read(result, 0, (int)size);
         return result;
@@ -211,7 +211,7 @@ internal sealed class CompoundSectorReader
     /// </exception>
     private ReadOnlySpan<byte> ReadSector(uint sector)
     {
-        var offset = (long)(sector + 1) * _header.SectorSize;
+        long offset = (long)(sector + 1) * _header.SectorSize;
         CompoundThrowHelper.ThrowFormatIf(
             offset + _header.SectorSize > _data.Length,
             CompoundResourceStrings.Format_Invalid_CompoundSectorChain);
@@ -228,24 +228,24 @@ internal sealed class CompoundSectorReader
     {
         List<uint> fatSectors = new();
 
-        foreach (var id in _header.Difat)
+        foreach (uint id in _header.Difat)
         {
             if (IsRegularSector(id))
                 fatSectors.Add(id);
         }
 
         uint difatSector = _header.FirstDifatSector;
-        var perSector = _header.EntriesPerSector;
-        var guard = 0;
+        int perSector = _header.EntriesPerSector;
+        int guard = 0;
 
         while (difatSector != CompoundFileHeader.EndOfChain && difatSector != CompoundFileHeader.FreeSector)
         {
             CompoundThrowHelper.ThrowFormatIf(guard++ > (_data.Length / _header.SectorSize) + 1, CompoundResourceStrings.Format_Invalid_CompoundDirectory);
 
             ReadOnlySpan<byte> sector = ReadSector(difatSector);
-            for (var i = 0; i < perSector - 1; i++)
+            for (int i = 0; i < perSector - 1; i++)
             {
-                var id = BinaryPrimitives.ReadUInt32LittleEndian(sector.Slice(i * sizeof(uint)));
+                uint id = BinaryPrimitives.ReadUInt32LittleEndian(sector.Slice(i * sizeof(uint)));
                 if (IsRegularSector(id))
                     fatSectors.Add(id);
             }
@@ -253,12 +253,12 @@ internal sealed class CompoundSectorReader
             difatSector = BinaryPrimitives.ReadUInt32LittleEndian(sector.Slice((perSector - 1) * sizeof(uint)));
         }
 
-        var fat = new uint[fatSectors.Count * perSector];
-        var index = 0;
-        foreach (var fatSector in fatSectors)
+        uint[] fat = new uint[fatSectors.Count * perSector];
+        int index = 0;
+        foreach (uint fatSector in fatSectors)
         {
             ReadOnlySpan<byte> sector = ReadSector(fatSector);
-            for (var i = 0; i < perSector; i++)
+            for (int i = 0; i < perSector; i++)
                 fat[index++] = BinaryPrimitives.ReadUInt32LittleEndian(sector.Slice(i * sizeof(uint)));
         }
 

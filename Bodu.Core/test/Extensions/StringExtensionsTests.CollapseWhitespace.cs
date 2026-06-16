@@ -46,9 +46,9 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void CollapseWhitespace_WhenInputIsAlreadyCollapsed_ShouldReturnSameInstance()
     {
-        var value = "a b c d";
+        string value = "a b c d";
 
-        var actual = value.CollapseWhitespace();
+        string actual = value.CollapseWhitespace();
 
         Assert.AreSame(value, actual);
     }
@@ -60,9 +60,9 @@ public partial class StringExtensionsTests
     [TestMethod]
     public void CollapseWhitespace_WhenInputContainsUnicodeWhitespace_ShouldCollapseToAsciiSpace()
     {
-        var value = "a b c";
+        string value = "a b c";
 
-        var actual = value.CollapseWhitespace();
+        string actual = value.CollapseWhitespace();
 
         Assert.AreEqual("a b c", actual);
     }

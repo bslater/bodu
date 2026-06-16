@@ -55,7 +55,7 @@ public static partial class DateOnlyExtensions
         culture ??= Thread.CurrentThread.CurrentCulture;
         DayOfWeek firstDayOfWeek = culture.DateTimeFormat.FirstDayOfWeek;
 
-        var dayNumber = date.DayNumber - ((7 + (date.DayOfWeek - firstDayOfWeek)) % 7);
+        int dayNumber = date.DayNumber - ((7 + (date.DayOfWeek - firstDayOfWeek)) % 7);
 
         return dayNumber < DateOnly.MinValue.DayNumber
             ? throw new ArgumentOutOfRangeException(
@@ -92,7 +92,7 @@ public static partial class DateOnlyExtensions
         ThrowHelper.ThrowIfEnumValueIsUndefined(workingWeek);
         DayOfWeek firstDayOfWeek = DateTimeExtensions.GetWeekStartDay(workingWeek);
 
-        var dayNumber = date.DayNumber - ((7 + (date.DayOfWeek - firstDayOfWeek)) % 7);
+        int dayNumber = date.DayNumber - ((7 + (date.DayOfWeek - firstDayOfWeek)) % 7);
 
         return dayNumber < DateOnly.MinValue.DayNumber
             ? throw new ArgumentOutOfRangeException(

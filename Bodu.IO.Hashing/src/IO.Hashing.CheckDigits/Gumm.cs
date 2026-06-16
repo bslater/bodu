@@ -86,9 +86,9 @@ public sealed partial class Gumm
 
         // The body digit at string index i occupies absolute position (length - i) from the right, so the leftmost
         // digit carries the highest position. Folding left to right multiplies the highest-position factor first.
-        for (var i = 0; i < digits.Length; i++)
+        for (int i = 0; i < digits.Length; i++)
         {
-            var ch = digits[i];
+            char ch = digits[i];
             if ((uint)(ch - '0') > 9u)
                 ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(digits));
 
@@ -113,9 +113,9 @@ public sealed partial class Gumm
         if (digitsIncludingCheck.IsEmpty) return false;
 
         byte product = 0;
-        for (var i = 0; i < digitsIncludingCheck.Length; i++)
+        for (int i = 0; i < digitsIncludingCheck.Length; i++)
         {
-            var ch = digitsIncludingCheck[i];
+            char ch = digitsIncludingCheck[i];
             if ((uint)(ch - '0') > 9u) return false;
 
             product = s_d[product, Permute(digitsIncludingCheck.Length - 1 - i, ch - '0')];
@@ -127,21 +127,21 @@ public sealed partial class Gumm
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> digits)
     {
-        var c0 = _c[0];
-        var c1 = _c[1];
-        for (var i = 0; i < digits.Length; i++)
+        byte c0 = _c[0];
+        byte c1 = _c[1];
+        for (int i = 0; i < digits.Length; i++)
         {
-            var ch = digits[i];
+            char ch = digits[i];
             if ((uint)(ch - '0') > 9u)
                 ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(digits));
 
-            var v = ch - '0';
+            int v = ch - '0';
 
             // The new digit becomes the rightmost body factor. Under the hypothesis that it sits at right-index 0
             // (odd position, transform T) the earlier digits are demoted to the index-1 product; under right-index 1
             // (even position, identity) they are demoted to the index-0 product.
-            var n0 = s_d[c1, s_t[v]];
-            var n1 = s_d[c0, v];
+            byte n0 = s_d[c1, s_t[v]];
+            byte n1 = s_d[c0, v];
             c0 = n0;
             c1 = n1;
         }

@@ -15,7 +15,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void Decode_WhenAllowPrefixAndIgnoreWhitespaceAndPrefixFollowedByWhitespace_ShouldDecode()
     {
-        var actual = Base16.Decode(
+        byte[] actual = Base16.Decode(
             "0x  DE AD BE EF",
             BaseFormatStyles.AllowPrefix | BaseFormatStyles.IgnoreWhitespace);
 
@@ -54,7 +54,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void Decode_WhenAllowPrefixAndNoPrefix_ShouldDecodeSuccessfully()
     {
-        var actual = Base16.Decode("deadbeef", BaseFormatStyles.AllowPrefix);
+        byte[] actual = Base16.Decode("deadbeef", BaseFormatStyles.AllowPrefix);
 
         CollectionAssert.AreEqual(CanonicalBytes, actual);
     }
@@ -81,7 +81,7 @@ public sealed partial class Base16Tests
     [DataRow("0X")]
     public void Decode_WhenAllowPrefixAndPrefixCaseVariants_ShouldStripPrefix(string prefix)
     {
-        var actual = Base16.Decode(prefix + "DEADBEEF", BaseFormatStyles.AllowPrefix);
+        byte[] actual = Base16.Decode(prefix + "DEADBEEF", BaseFormatStyles.AllowPrefix);
 
         CollectionAssert.AreEqual(CanonicalBytes, actual);
     }
@@ -108,7 +108,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void Decode_WhenIgnoreWhitespaceAndAllAsciiWhitespace_ShouldStripAndDecode()
     {
-        var actual = Base16.Decode("de\tad\rbe\nef ", BaseFormatStyles.IgnoreWhitespace);
+        byte[] actual = Base16.Decode("de\tad\rbe\nef ", BaseFormatStyles.IgnoreWhitespace);
 
         CollectionAssert.AreEqual(CanonicalBytes, actual);
     }
@@ -138,7 +138,7 @@ public sealed partial class Base16Tests
     [DataRow('　')] // ideographic space
     public void Decode_WhenIgnoreWhitespaceAndNonAsciiWhitespaceCharacter_ShouldThrowExactly(char whitespaceChar)
     {
-        var input = "DE" + whitespaceChar + "AD";
+        string input = "DE" + whitespaceChar + "AD";
 
         Assert.ThrowsExactly<FormatException>(() =>
         {
@@ -164,7 +164,7 @@ public sealed partial class Base16Tests
     [DataRow("DE  AD  BE  EF")] // multiple consecutive spaces
     public void Decode_WhenIgnoreWhitespaceAndVariousWhitespacePatterns_ShouldStripAndDecode(string input)
     {
-        var actual = Base16.Decode(input, BaseFormatStyles.IgnoreWhitespace);
+        byte[] actual = Base16.Decode(input, BaseFormatStyles.IgnoreWhitespace);
 
         CollectionAssert.AreEqual(CanonicalBytes, actual);
     }
@@ -174,7 +174,7 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void Decode_WhenStrictAndCleanDigits_ShouldDecodeSuccessfully()
     {
-        var actual = Base16.Decode("deadbeef");
+        byte[] actual = Base16.Decode("deadbeef");
 
         CollectionAssert.AreEqual(CanonicalBytes, actual);
     }

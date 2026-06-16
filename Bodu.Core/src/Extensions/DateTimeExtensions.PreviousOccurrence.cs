@@ -62,16 +62,16 @@ public static partial class DateTimeExtensions
         if (before <= dateTime)
             return dateTime.AddTicks(-interval.Ticks);
 
-        var elapsedTicks = (before - dateTime).Ticks;
-        var intervalTicks = interval.Ticks;
+        long elapsedTicks = (before - dateTime).Ticks;
+        long intervalTicks = interval.Ticks;
 
         // Use integer arithmetic to avoid floating-point imprecision.
         // When before lands exactly on an occurrence boundary, the remainder is zero and we step
         // back one interval so the result is always strictly less than before.
-        var quotient = elapsedTicks / intervalTicks;
-        var remainder = elapsedTicks % intervalTicks;
+        long quotient = elapsedTicks / intervalTicks;
+        long remainder = elapsedTicks % intervalTicks;
 
-        var previousIntervalCount = remainder == 0 ? quotient - 1 : quotient;
+        long previousIntervalCount = remainder == 0 ? quotient - 1 : quotient;
 
         return dateTime.AddTicks(previousIntervalCount * intervalTicks);
     }

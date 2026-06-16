@@ -19,7 +19,7 @@ internal static class NotableDateFixtures
     /// <exception cref="InvalidOperationException">The fixture is not embedded.</exception>
     public static string ReadText(string fileName)
     {
-        var resourceName = "Bodu.Globalization.Calendar.Fixtures." + fileName;
+        string resourceName = "Bodu.Globalization.Calendar.Fixtures." + fileName;
         using Stream stream = typeof(NotableDateFixtures).Assembly.GetManifestResourceStream(resourceName)
             ?? throw new InvalidOperationException($"Missing embedded fixture '{resourceName}'.");
         using StreamReader reader = new(stream);

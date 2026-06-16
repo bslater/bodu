@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CachingExchangeRateProviderTests.TryGetRate.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -17,7 +17,7 @@ public sealed partial class CachingExchangeRateProviderTests
         CountingDatedExchangeRateProvider inner = InnerWith(("AUD", "USD", new DateOnly(2023, 1, 3), 0.5m));
         CachingExchangeRateProvider sut = CreateDecorator(inner);
 
-        var found = sut.TryGetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact, out ExchangeRateLookupResult result);
+        bool found = sut.TryGetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact, out ExchangeRateLookupResult result);
 
         Assert.IsTrue(found);
         Assert.AreEqual(0.5m, result.Rate.Rate);
@@ -35,7 +35,7 @@ public sealed partial class CachingExchangeRateProviderTests
         CachingExchangeRateProvider sut = CreateDecorator(inner);
 
         _ = sut.TryGetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact, out _);
-        var found = sut.TryGetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact, out ExchangeRateLookupResult result);
+        bool found = sut.TryGetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact, out ExchangeRateLookupResult result);
 
         Assert.IsTrue(found);
         Assert.AreEqual(0.5m, result.Rate.Rate);
@@ -52,7 +52,7 @@ public sealed partial class CachingExchangeRateProviderTests
         SeedCache(new ExchangeRatePair("AUD", "USD"), (new DateOnly(2023, 1, 3), 0.5m));
         CachingExchangeRateProvider sut = CreateDecorator(inner);
 
-        var found = sut.TryGetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact, out ExchangeRateLookupResult result);
+        bool found = sut.TryGetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact, out ExchangeRateLookupResult result);
 
         Assert.IsTrue(found);
         Assert.AreEqual(0.5m, result.Rate.Rate);
@@ -68,7 +68,7 @@ public sealed partial class CachingExchangeRateProviderTests
         CountingDatedExchangeRateProvider inner = InnerWith();
         CachingExchangeRateProvider sut = CreateDecorator(inner);
 
-        var found = sut.TryGetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact, out ExchangeRateLookupResult result);
+        bool found = sut.TryGetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact, out ExchangeRateLookupResult result);
 
         Assert.IsFalse(found);
         Assert.AreEqual(default, result);
@@ -85,7 +85,7 @@ public sealed partial class CachingExchangeRateProviderTests
         SeedCache(new ExchangeRatePair("AUD", "USD"), (new DateOnly(2023, 1, 3), 0.5m));
         CachingExchangeRateProvider sut = CreateDecorator(inner);
 
-        var found = sut.TryGetRate("AUD", "USD", new DateOnly(2023, 1, 5), ExchangeRateLookupOptions.PreviousWithin(7), out ExchangeRateLookupResult result);
+        bool found = sut.TryGetRate("AUD", "USD", new DateOnly(2023, 1, 5), ExchangeRateLookupOptions.PreviousWithin(7), out ExchangeRateLookupResult result);
 
         Assert.IsTrue(found);
         Assert.AreEqual(new DateOnly(2023, 1, 3), result.Rate.Date);

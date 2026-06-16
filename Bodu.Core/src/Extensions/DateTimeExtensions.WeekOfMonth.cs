@@ -106,7 +106,7 @@ public static partial class DateTimeExtensions
     private static int GetWeekOfMonth(DateTime dateTime, CalendarWeekRule weekRule, DayOfWeek weekStart)
     {
         var firstOfMonth = new DateTime(dateTime.Year, dateTime.Month, 1);
-        var offsetDays = ((int)firstOfMonth.DayOfWeek - (int)weekStart + 7) % 7;
+        int offsetDays = ((int)firstOfMonth.DayOfWeek - (int)weekStart + 7) % 7;
         return ((dateTime.Day + offsetDays - 1) / 7) + 1;
     }
 }

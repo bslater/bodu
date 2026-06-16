@@ -89,18 +89,18 @@ public sealed class Isbn13
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> digits)
     {
-        var sumEven = _sumEvenHypothesis;
-        var sumOdd = _sumOddHypothesis;
-        var count = _count;
+        int sumEven = _sumEvenHypothesis;
+        int sumOdd = _sumOddHypothesis;
+        int count = _count;
 
-        for (var i = 0; i < digits.Length; i++)
+        for (int i = 0; i < digits.Length; i++)
         {
-            var ch = digits[i];
+            char ch = digits[i];
             if ((uint)(ch - '0') > 9u)
                 ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(digits));
 
-            var v = ch - '0';
-            var tripled = v * 3;
+            int v = ch - '0';
+            int tripled = v * 3;
 
             // Dual-hypothesis accumulator. The rightmost data digit always carries weight 3, so whether the
             // digit at body-index i carries weight 1 or weight 3 depends on whether the final body length N
@@ -127,7 +127,7 @@ public sealed class Isbn13
     /// <inheritdoc />
     public override char GetCurrentCheckDigit()
     {
-        var sum = (_count & 1) == 0 ? _sumEvenHypothesis : _sumOddHypothesis;
+        int sum = (_count & 1) == 0 ? _sumEvenHypothesis : _sumOddHypothesis;
         return (char)('0' + ((10 - (sum % 10)) % 10));
     }
 

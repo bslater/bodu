@@ -58,12 +58,12 @@ public sealed class Iso7816_4Padding
     {
         CryptographyThrowHelper.ThrowIfNotPositiveMultipleOf(blockSize, 8);
 
-        var size = blockSize / 8;
-        var paddingLength = size - (input.Length % size);
+        int size = blockSize / 8;
+        int paddingLength = size - (input.Length % size);
         if (paddingLength == 0)
             paddingLength = size;
 
-        var result = new byte[input.Length + paddingLength];
+        byte[] result = new byte[input.Length + paddingLength];
         input.CopyTo(result);
 
         // First pad byte is 0x80; remaining pad bytes are 0x00 (already from allocation).
@@ -89,36 +89,36 @@ public sealed class Iso7816_4Padding
     {
         CryptographyThrowHelper.ThrowIfNotPositiveMultipleOf(blockSize, 8);
 
-        var size = blockSize / 8;
+        int size = blockSize / 8;
 
         if (input.Length == 0 || input.Length % size != 0)
             CryptographyHelper.ThrowInvalidPaddedSequence("ISO/IEC 7816-4", nameof(input));
 
-        var length = input.Length;
-        var start = length - size;
+        int length = input.Length;
+        int start = length - size;
 
         // Constant-time terminator scan over the final block. Walk every byte; for each
         // position compute two masks:
         //  - terminatorHere: 1 iff the byte equals 0x80 and no terminator has been seen yet.
         //  - validTail:      1 iff the byte equals 0x00 (expected after the terminator).
         // Accumulate the terminator index and verify the tail beyond it is all zeros.
-        var terminatorSeen = 0;
-        var terminatorIndex = -1;
-        var valid = 1;
+        int terminatorSeen = 0;
+        int terminatorIndex = -1;
+        int valid = 1;
 
-        for (var i = length - 1; i >= start; i--)
+        for (int i = length - 1; i >= start; i--)
         {
-            var b = input[i];
+            byte b = input[i];
 
             // is80 = (b == 0x80) ? 1 : 0 (branchless)
-            var xor80 = b ^ 0x80;
-            var is80 = (((xor80 - 1) & ~xor80) >> 31) & 1;
+            int xor80 = b ^ 0x80;
+            int is80 = (((xor80 - 1) & ~xor80) >> 31) & 1;
 
             // is00 = (b == 0x00) ? 1 : 0 (branchless)
-            var is00 = (((b - 1) & ~b) >> 31) & 1;
+            int is00 = (((b - 1) & ~b) >> 31) & 1;
 
             // First 0x80 found while walking backwards marks the terminator.
-            var firstTerminatorHere = is80 & (1 - terminatorSeen);
+            int firstTerminatorHere = is80 & (1 - terminatorSeen);
 
             // Record the terminator index (branchless).
             terminatorIndex = (firstTerminatorHere * i) + ((1 - firstTerminatorHere) * terminatorIndex);
@@ -127,7 +127,7 @@ public sealed class Iso7816_4Padding
             // Before the terminator is found, every byte must be 0x00. After the terminator
             // is found (including the terminator byte itself), no further constraint applies
             // to that iteration — the bytes further left belong to the plaintext.
-            var constraint = terminatorSeen | is00;
+            int constraint = terminatorSeen | is00;
             valid &= constraint;
         }
 

@@ -110,7 +110,7 @@ public static partial class DotEnv
                 if (IsEmpty)
                     break;
 
-                var c = Current;
+                char c = Current;
 
                 if (c is '\r' or '\n')
                 {
@@ -120,9 +120,9 @@ public static partial class DotEnv
 
                 if (c == '#')
                 {
-                    var commentLine = _lineNumber;
+                    int commentLine = _lineNumber;
                     _remaining = _remaining[1..]; // consume '#'
-                    var len = 0;
+                    int len = 0;
                     while (len < _remaining.Length && _remaining[len] != '\n' && _remaining[len] != '\r')
                         len++;
 
@@ -137,7 +137,7 @@ public static partial class DotEnv
                     continue;
                 }
 
-                var entryLineNumber = _lineNumber;
+                int entryLineNumber = _lineNumber;
 
                 // Optionally strip "export " prefix (word "export" followed by one or more spaces/tabs).
                 if (_options.AllowExportPrefix &&
@@ -152,15 +152,15 @@ public static partial class DotEnv
                 // Parse key: [A-Za-z_][A-Za-z0-9_]*
                 if (IsEmpty || !IsKeyStart(Current))
                 {
-                    var badToken = IsEmpty ? string.Empty : Current.ToString();
+                    string badToken = IsEmpty ? string.Empty : Current.ToString();
                     DotEnv.ThrowInvalidKey(badToken, entryLineNumber);
                 }
 
-                var keyLen = 1;
+                int keyLen = 1;
                 while (keyLen < _remaining.Length && IsKeyContinue(_remaining[keyLen]))
                     keyLen++;
 
-                var key = new string(_remaining[..keyLen]);
+                string key = new string(_remaining[..keyLen]);
                 _remaining = _remaining[keyLen..];
 
                 // Expect '='
@@ -170,7 +170,7 @@ public static partial class DotEnv
                 _remaining = _remaining[1..];
 
                 // Dispatch value parsing by leading delimiter.
-                var value = Current == '"'
+                string value = Current == '"'
                     ? ParseDoubleQuotedValue(entryLineNumber)
                     : Current == '\'' ? ParseSingleQuotedValue(entryLineNumber) : ParseUnquotedValue();
 
@@ -193,7 +193,7 @@ public static partial class DotEnv
 
                         case DuplicateKeyPolicy.LastWins:
                             DotEnvEntry replacement = new(key, value, leadingComments);
-                            var idx = entries.IndexOf(existing);
+                            int idx = entries.IndexOf(existing);
                             entries[idx] = replacement;
                             lookup[key] = replacement;
                             break;
@@ -252,7 +252,7 @@ public static partial class DotEnv
                 if (IsEmpty)
                     DotEnv.ThrowUnterminatedDoubleQuote(startLineNumber);
 
-                var c = Current;
+                char c = Current;
 
                 if (c == '"')
                 {
@@ -267,7 +267,7 @@ public static partial class DotEnv
                     if (IsEmpty)
                         DotEnv.ThrowUnterminatedDoubleQuote(startLineNumber);
 
-                    var esc = Current;
+                    char esc = Current;
                     Advance(); // consume escape char (may be '\n', incrementing _lineNumber)
 
                     switch (esc)
@@ -310,13 +310,13 @@ public static partial class DotEnv
             _remaining = _remaining[1..]; // consume opening '\''
 
             // Locate the closing quote, ensuring it appears before any line break.
-            for (var i = 0; i < _remaining.Length; i++)
+            for (int i = 0; i < _remaining.Length; i++)
             {
-                var c = _remaining[i];
+                char c = _remaining[i];
 
                 if (c == '\'')
                 {
-                    var value = new string(_remaining[..i]);
+                    string value = new string(_remaining[..i]);
                     _remaining = _remaining[(i + 1)..];
                     return value;
                 }
@@ -337,7 +337,7 @@ public static partial class DotEnv
         /// <returns>The trimmed value string.</returns>
         private string ParseUnquotedValue()
         {
-            var len = 0;
+            int len = 0;
 
             while (len < _remaining.Length && _remaining[len] != '\n' && _remaining[len] != '\r')
                 len++;
@@ -349,7 +349,7 @@ public static partial class DotEnv
 
             if (_options.AllowInlineComments)
             {
-                for (var i = 1; i < raw.Length; i++)
+                for (int i = 1; i < raw.Length; i++)
                 {
                     if (raw[i] == '#' && (raw[i - 1] == ' ' || raw[i - 1] == '\t'))
                     {

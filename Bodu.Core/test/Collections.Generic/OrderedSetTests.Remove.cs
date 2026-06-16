@@ -69,7 +69,7 @@ public partial class OrderedSetTests
     {
         OrderedSet<int> sut = CreateSet([1, 2, 3]);
 
-        var removed = sut.Remove(99);
+        bool removed = sut.Remove(99);
 
         Assert.IsFalse(removed);
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, SnapshotByIndexer(sut));
@@ -103,7 +103,7 @@ public partial class OrderedSetTests
     {
         OrderedSet<int> sut = CreateSet([1, 2, 3]);
 
-        var removed = sut.Remove(target);
+        bool removed = sut.Remove(target);
 
         Assert.IsTrue(removed);
         CollectionAssert.AreEqual(expected, SnapshotByIndexer(sut));

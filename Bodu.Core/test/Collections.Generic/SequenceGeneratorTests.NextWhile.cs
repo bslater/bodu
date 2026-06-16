@@ -15,7 +15,7 @@ public partial class SequenceGeneratorTests
     [TestMethod]
     public void NextWhile_WhenInitialConditionIsFalse_ShouldReturnEmptySequence()
     {
-        var actual = SequenceGenerator.NextWhile(
+        int[] actual = SequenceGenerator.NextWhile(
             5,
             x => false,
             x => x + 1).ToArray();
@@ -52,7 +52,7 @@ public partial class SequenceGeneratorTests
     [TestMethod]
     public void NextWhile_WhenUsingIndexedTransform_ShouldReturnExpectedSequence()
     {
-        var actual = SequenceGenerator.NextWhile(
+        int[] actual = SequenceGenerator.NextWhile(
             0,
             x => x < 5,
             (x, _) => x + 1).ToArray();
@@ -66,7 +66,7 @@ public partial class SequenceGeneratorTests
     [TestMethod]
     public void NextWhile_WhenUsingSimpleTransform_ShouldReturnExpectedSequence()
     {
-        var actual = SequenceGenerator.NextWhile(
+        int[] actual = SequenceGenerator.NextWhile(
             1,
             x => x <= 8,
             x => x * 2).ToArray();
@@ -80,7 +80,7 @@ public partial class SequenceGeneratorTests
     [TestMethod]
     public void NextWhile_WhenUsingStateObject_ShouldReturnProjectedSequence()
     {
-        var actual = SequenceGenerator.NextWhile(
+        int[] actual = SequenceGenerator.NextWhile(
             new { A = 1, B = 1 },
             state => state.B < 8,
             state => new { A = state.B, B = state.A + state.B },

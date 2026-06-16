@@ -23,7 +23,7 @@ public partial class DateOnlyExtensionsTests
         var input = DateOnly.FromDateTime(inputDateTime);
         var start = DateOnly.FromDateTime(startDateTime);
         var end = DateOnly.FromDateTime(endDateTime);
-        var actual = input.IsInRange(start, end);
+        bool actual = input.IsInRange(start, end);
 
         Assert.AreEqual(expected, actual, $"Failed for inputDateTime={inputDateTime:yyyy-MM-dd}, start={start:yyyy-MM-dd}, end={end:yyyy-MM-dd}");
     }
@@ -42,7 +42,7 @@ public partial class DateOnlyExtensionsTests
         DateOnly? input = inputDateTime.HasValue ? DateOnly.FromDateTime(inputDateTime.Value) : null;
         var start = DateOnly.FromDateTime(startDateTime);
         var end = DateOnly.FromDateTime(endDateTime);
-        var actual = input.IsInRange(start, end);
+        bool actual = input.IsInRange(start, end);
 
         Assert.AreEqual(expected, actual, $"Failed for inputDateTime={(inputDateTime.HasValue ? inputDateTime.Value.ToString("yyyy-MM-dd") : "null")}, start={start:yyyy-MM-dd}, end={end:yyyy-MM-dd}");
     }
