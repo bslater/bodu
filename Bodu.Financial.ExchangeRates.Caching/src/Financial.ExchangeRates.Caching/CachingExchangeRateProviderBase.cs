@@ -36,9 +36,9 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// them with an <see cref="AggregatingExchangeRateProvider" />.
 /// </para>
 /// <para>
-/// Each of the four serve points additionally emits a provenance record alongside its hit/miss diagnostic, recording
-/// whether the rate was resolved live or from the cache, the cache backend that served it, and — for a cache serve —
-/// the age of the served data. The provenance event is logged at
+/// Both the single-date and range surfaces additionally emit a provenance record alongside each hit/miss diagnostic,
+/// recording whether the rate was resolved live or from the cache, the cache backend that served it, and — for a cache
+/// serve — the age of the served data. The provenance event is logged at
 /// <see cref="CachingExchangeRateOptions.RateProvenanceLogLevel" />.
 /// </para>
 /// </remarks>

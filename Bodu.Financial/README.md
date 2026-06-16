@@ -127,6 +127,16 @@ Provider stack:
 - Timeless: `IExchangeRateProvider` with `FixedExchangeRateTable` (inverse-rate fallback).
 - Dated: `IDatedExchangeRateProvider`, `FixedDatedExchangeRateProvider`, `ExchangeRateBook`, `ExchangeRateSeries`, and `DatedExchangeRateProviderAdapter`. Grouping several providers (priority-fallback, averaging, per-pair routing) lives in `Bodu.Financial.ExchangeRates.Caching` as `AggregatingExchangeRateProvider`.
 
+Lookup surface — `IDatedExchangeRateProvider` exposes a symmetric matrix of single-date and range getters, each with a synchronous and an asynchronous form:
+
+- Single-date `GetRate` / `GetRateAsync` (timeless and dated overloads) return an `ExchangeRateLookupResult` — the resolved `ExchangeRate` plus the `RequestedDate`, the `ExchangeRateDateResolution` that was applied, and the `OffsetDays` between the requested and resolved dates. Resolution and tolerance are controlled per call through `ExchangeRateLookupOptions`.
+- Range `GetRates` / `GetRatesAsync` return an `ExchangeRateRangeResult`: the observations within the window ordered by date, the requested window (`RequestedStartDate` / `RequestedEndDate`), and the observed span (`FirstObservedDate` / `LastObservedDate`, plus `Count` / `IsEmpty`). The result *is* the rate sequence — it implements `IReadOnlyList<ExchangeRate>`, so it indexes, enumerates, and composes with LINQ directly, while comparing the requested window to the observed span reveals how much of the window carried data.
+
+HTTP-backed providers (`Bodu.Financial.ExchangeRates.{Yahoo,Boe,Ecb,Rba}`) share the `WebExchangeRateProvider` base, which centralizes accumulation, the snapshot/lookup matrix, and on-demand fetch coalescing. Each provider offers two constructors and is `IDisposable`:
+
+- `new XProvider(options, ...)` — the provider builds, owns, and disposes its own `HttpClient` (created via `ExchangeRateHttpClientFactory.Create`). Dispose the provider to release it.
+- `new XProvider(httpClient, options, ...)` — the caller supplies the client and owns its lifetime; the provider never disposes a borrowed client. This is the form the `*.DependencyInjection` packages use with `IHttpClientFactory`.
+
 ## `MoneyBag`
 
 Immutable mixed-currency aggregate for portfolios and ledgers. Per-currency balances are tracked separately, zero balances pruned automatically, and the bag converts to a single target currency through `IExchangeRateProvider`.

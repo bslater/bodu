@@ -14,15 +14,17 @@ interfaces and DI shape, a different data source.
 ```csharp
 using Bodu.Financial.ExchangeRates.Yahoo;
 
-var provider = new YahooExchangeRateProvider(httpClient, new YahooExchangeRateOptions());
+// The provider builds and owns its HttpClient from the options; dispose it to release the client.
+using var provider = new YahooExchangeRateProvider(new YahooExchangeRateOptions());
 
 // Warm a pair for a range (recommended), then look rates up synchronously.
 await provider.LoadPairAsync("AUD", "USD", new DateOnly(2023, 1, 1), new DateOnly(2026, 6, 30));
 
 ExchangeRateLookupResult usd = provider.GetRate("AUD", "USD", new DateOnly(2023, 1, 3));
 
-// Read a whole range at once.
-IReadOnlyList<ExchangeRate> series =
+// Read a whole range at once. The result is an IReadOnlyList<ExchangeRate> that also reports
+// the requested window (RequestedStartDate/RequestedEndDate) and the observed span.
+ExchangeRateRangeResult series =
     await provider.GetRatesAsync("AUD", "JPY", new DateOnly(2026, 1, 1), new DateOnly(2026, 6, 12));
 
 // The latest available spot rate.
@@ -49,6 +51,17 @@ decimal latest = provider.GetRate("EUR", "GBP");
   [`Bodu.Financial.ExchangeRates.Caching`](../Bodu.Financial.ExchangeRates.Caching) package
   — rather than a provider-local cache.
 
+## HTTP client and lifetime
+
+The provider is `IDisposable` and offers two construction styles:
+
+- `new YahooExchangeRateProvider(options, ...)` — the provider builds, owns, and disposes its
+  own `HttpClient`, created via `ExchangeRateHttpClientFactory.Create` from the configured user
+  agent and timeout. Dispose the provider (for example with `using`) to release the client.
+- `new YahooExchangeRateProvider(httpClient, options, ...)` — you supply the client and own its
+  lifetime; the provider never disposes a client it did not create. This is the form the
+  `*.DependencyInjection` package uses, backed by `IHttpClientFactory`.
+
 ## Endpoint configuration
 
 `YahooExchangeRateOptions` is centred on configuring the REST endpoint:
@@ -59,7 +72,7 @@ decimal latest = provider.GetRate("EUR", "GBP");
 | `ChartPath` | `v8/finance/chart/{symbol}` | The chart path template (`{symbol}` placeholder). |
 | `SymbolFormat` | `{from}{to}=X` | The FX ticker template (`{from}` / `{to}` placeholders). |
 | `UserAgent` | browser-like | Yahoo rejects requests without a recognizable user agent. |
-| `HttpTimeout` | 30 s | Applied to the configured `HttpClient` by the DI registration. |
+| `HttpTimeout` | 30 s | Applied to the `HttpClient` the provider creates from these options, or by the DI registration when you supply your own client. |
 | `AllowSynchronousNetworkAccess` | `false` | Opt in to blocking on-demand fetches from synchronous lookups. |
 | `DefaultLookback` | 7 days | The window fetched around a date for on-demand and latest-rate lookups. |
 | `CurrencyAliases` | empty | Maps ISO codes to Yahoo symbol components where they differ. |
