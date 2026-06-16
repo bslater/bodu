@@ -104,4 +104,7 @@
     </PackageReference>
   </ItemGroup>
 
+  <!-- Strip InternalsVisibleTo grants to test assemblies from Release builds. -->
+  <Import Project="$(MSBuildThisFileDirectory)bld/InternalsVisibleTo.targets" />
+
 </Project>

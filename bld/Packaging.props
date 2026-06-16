@@ -10,6 +10,13 @@
     <!--<PackageProjectUrl>https://www.bodu.com.au/</PackageProjectUrl>-->
 
     <PackageTags>bodu;utilities;library</PackageTags>
+
+    <!--
+      Opt-in shipping switch. Off for ordinary inner-loop and CI test builds; the pack / publish
+      pipeline sets -p:BoduShipping=true. When true, InternalsVisibleTo grants to test assemblies are
+      stripped from the produced assemblies (see bld/InternalsVisibleTo.targets).
+    -->
+    <BoduShipping Condition="'$(BoduShipping)' == ''">false</BoduShipping>
   </PropertyGroup>
 
   <!--

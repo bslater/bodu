@@ -25,6 +25,7 @@
     <File Path="bld\SourceLink.props" />
     <File Path="bld\Signing.props" />
     <File Path="bld\Analyzers.props" />
+    <File Path="bld\InternalsVisibleTo.targets" />
   </Folder>
   <Folder Name="/Bodu.Core/">
     <Project Path="Bodu.Core\src\Bodu.Core.csproj" />
