@@ -1,13 +1,23 @@
 <Project>
 
   <!--
-    Centralized target-framework selection. Projects today set their own <TargetFrameworks>;
-    the multi-targeting change layers per-tier selection here so a framework bump is a single
-    edit. The feasible libraries additionally target netstandard2.0 for downlevel reach.
+    Centralized target-framework selection. Libraries that multi-target down to netstandard2.0 for
+    downlevel reach set <TargetFrameworks>$(BoduMultiTargetFrameworks)</TargetFrameworks>; the rest
+    keep their own single TFM.
   -->
   <PropertyGroup>
     <BoduNetTarget>net8.0</BoduNetTarget>
     <BoduDownlevelTarget>netstandard2.0</BoduDownlevelTarget>
+    <BoduMultiTargetFrameworks>net8.0;netstandard2.0</BoduMultiTargetFrameworks>
+  </PropertyGroup>
+
+  <!--
+    True only for .NET (Core) target frameworks. Evaluated per inner build (TargetFramework is a global
+    property by then), so it gates net-only switches such as IsAotCompatible to the net8.0 leg of a
+    multi-targeted project and is empty for the netstandard2.0 leg and the outer build.
+  -->
+  <PropertyGroup>
+    <BoduTfmIsNetCore Condition="$([MSBuild]::GetTargetFrameworkIdentifier('$(TargetFramework)')) == '.NETCoreApp'">true</BoduTfmIsNetCore>
   </PropertyGroup>
 
 </Project>
