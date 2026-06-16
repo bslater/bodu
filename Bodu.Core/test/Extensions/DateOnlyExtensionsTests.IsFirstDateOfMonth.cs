@@ -18,7 +18,7 @@ public partial class DateOnlyExtensionsTests
     public void IsFirstDateOfMonth_WhenDateIsFirstDay_ShouldReturnTrue(DateTime inputDateTime)
     {
         var input = DateOnly.FromDateTime(inputDateTime);
-        Assert.IsTrue(input.IsFirstDateOfMonth());
+        Assert.IsTrue(input.IsFirstDateOfMonth);
     }
 
     /// <summary>
@@ -30,7 +30,7 @@ public partial class DateOnlyExtensionsTests
     public void IsFirstDateOfMonth_WhenDateIsNotFirstDay_ShouldReturnFalse(DateTime inputDateTime)
     {
         var input = DateOnly.FromDateTime(inputDateTime);
-        Assert.IsFalse(input.IsFirstDateOfMonth());
+        Assert.IsFalse(input.IsFirstDateOfMonth);
     }
 
 }

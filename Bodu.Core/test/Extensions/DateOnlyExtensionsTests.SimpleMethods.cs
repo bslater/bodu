@@ -154,7 +154,7 @@ public partial class DateOnlyExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.IsLastDateOfMonth(DateOnly)" /> identifies month-end dates correctly.
+    /// Verifies that <see cref="DateOnlyExtensions.IsLastDateOfMonth" /> identifies month-end dates correctly.
     /// </summary>
     [TestMethod]
     [DataRow(2024, 1, 31, true)]
@@ -166,7 +166,7 @@ public partial class DateOnlyExtensionsTests
     public void IsLastDateOfMonth_ShouldReturnExpectedResult(int year, int month, int day, bool expected)
     {
         var date = new DateOnly(year, month, day);
-        Assert.AreEqual(expected, date.IsLastDateOfMonth());
+        Assert.AreEqual(expected, date.IsLastDateOfMonth);
     }
 
     /// <summary>
