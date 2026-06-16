@@ -12,4 +12,20 @@
     <PublicSign Condition="'$(SignAssembly)' == 'true' and '$(ContinuousIntegrationBuild)' != 'true'">true</PublicSign>
   </PropertyGroup>
 
+  <!--
+    Full public key for the Bodu strong-name identity, as the hex string printed by
+    'sn -tp Bodu.public.snk' (the long PublicKey, not the short 8-byte PublicKeyToken). It is
+    consumed by bld/InternalsVisibleTo.targets, which appends ", PublicKey=$(BoduPublicKey)" to every
+    InternalsVisibleTo grant when signing is enabled, because a strong-named assembly may only grant
+    its internals to a friend that presents this public key.
+
+    Left empty until the key pair is generated and checked in. While empty (or while SignAssembly is
+    false) the public-key suffix is not applied, so unsigned builds continue to grant internals by
+    simple name. Populating this and setting BoduSignAssembly=true is all that is required to turn on
+    strong-name signing across the solution.
+  -->
+  <PropertyGroup>
+    <BoduPublicKey Condition="'$(BoduPublicKey)' == ''"></BoduPublicKey>
+  </PropertyGroup>
+
 </Project>
