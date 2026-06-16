@@ -1,6 +1,32 @@
 <Project>
 
   <!--
+    Deliberate out-of-band version override. By default every Bodu library ships lock-step at the
+    shared BoduBaseVersion (bld/Versioning.props). A project breaks rank for an isolated fix by
+    setting <BoduPackageVersionOverride> in its own csproj (or passing -p:BoduPackageVersionOverride
+    for a one-off release build), and is reported below so the divergence is visible in build output
+    and traceable in source control.
+
+    This overrides Version (not just VersionPrefix) because the SDK finalizes Version from
+    VersionPrefix earlier than this file is imported (Directory.Build.targets is imported at the top
+    of Microsoft.Common.targets, after the default Version has already been computed). Version is the
+    value AssemblyVersion, FileVersion, PackageVersion, and InformationalVersion all derive from in
+    later build targets, so reassigning it here flows the override through every version field.
+    VersionPrefix is kept in sync for any consumer that reads it directly.
+  -->
+  <PropertyGroup Condition="'$(BoduPackageVersionOverride)' != ''">
+    <VersionPrefix>$(BoduPackageVersionOverride)</VersionPrefix>
+    <Version Condition="'$(VersionSuffix)' == ''">$(BoduPackageVersionOverride)</Version>
+    <Version Condition="'$(VersionSuffix)' != ''">$(BoduPackageVersionOverride)-$(VersionSuffix)</Version>
+  </PropertyGroup>
+
+  <Target Name="BoduReportVersionOverride" BeforeTargets="Build;Pack"
+          Condition="'$(BoduPackageVersionOverride)' != ''">
+    <Message Importance="high"
+             Text="$(MSBuildProjectName): out-of-band version override $(BoduPackageVersionOverride) (lock-step baseline is $(BoduBaseVersion))." />
+  </Target>
+
+  <!--
     Define BODU_EXTENSION_MEMBERS when the building SDK is .NET 10 or later, which ships the C# 14
     compiler that supports extension members. Combined with LangVersion=latest (bld/Bodu.props), this
     lets sources express convenience members as C# 14 extension properties; older SDKs fall back to
