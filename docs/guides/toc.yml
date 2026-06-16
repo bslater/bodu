@@ -328,6 +328,8 @@
           href: financial/money.md
         - name: Working with exchange rates
           href: financial/exchange-rates.md
+        - name: Built-in exchange-rate providers
+          href: financial/exchange-rate-providers.md
         - name: Exchange-rate types (usage catalogue)
           href: financial/exchange-types.md
         - name: Exchange-rate lookups (worked dataset)

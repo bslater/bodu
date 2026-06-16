@@ -310,7 +310,7 @@ resolvable by name:
 ```csharp
 services.AddBoduFinancial()
         .AddRbaHistoricalRates()
-        .AddEcbHistoricalRates()
+        .AddEcbReferenceRates()
         .AddAggregatedExchangeRateProvider(agg => agg
             .AddCachedChild<RbaExchangeRateProvider>("RBA")
             .AddCachedChild<EcbExchangeRateProvider>("ECB")
