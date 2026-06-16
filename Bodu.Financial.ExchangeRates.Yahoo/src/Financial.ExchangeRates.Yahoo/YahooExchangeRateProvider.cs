@@ -40,7 +40,17 @@ namespace Bodu.Financial.ExchangeRates.Yahoo;
 /// <see cref="NullLogger.Instance" />, so logging is opt-in and free when unused.
 /// </para>
 /// </remarks>
-public sealed partial class YahooExchangeRateProvider
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// using var yahoo = new YahooExchangeRateProvider(new YahooExchangeRateOptions());
+/// await yahoo.LoadPairAsync("AUD", "USD", new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31));
+///
+/// ExchangeRateLookupResult aud = yahoo.GetRate("AUD", "USD", new DateOnly(2023, 1, 3));
+///]]>
+/// </code>
+/// </example>
+public sealed class YahooExchangeRateProvider
     : WebExchangeRateProvider
 {
     /// <summary>
@@ -74,12 +84,6 @@ public sealed partial class YahooExchangeRateProvider
     /// The discovered currency series, keyed by pair.
     /// </summary>
     private readonly Dictionary<ExchangeRatePair, YahooSeriesInfo> _series = new();
-
-    /// <summary>
-    /// Coalesces concurrent fetches of the same pair-and-window so a cache miss triggers at most one in-flight chart
-    /// request, with other callers awaiting the shared fetch.
-    /// </summary>
-    private readonly SingleFlightCoordinator<PairWindow> _loadCoordinator = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="YahooExchangeRateProvider" /> class backed by an
@@ -239,8 +243,8 @@ public sealed partial class YahooExchangeRateProvider
         // Coalesce concurrent fetches of the same pair-and-window so only one chart request is in flight. The shared
         // fetch runs under a token decoupled from any caller, so one caller's cancellation cannot fault the others;
         // cancellationToken only abandons this caller's wait.
-        return new ValueTask(_loadCoordinator.RunAsync(
-            new PairWindow(pair, startDate, endDate),
+        return new ValueTask(LoadCoalescedAsync(
+            $"{pair.FromIsoCode}/{pair.ToIsoCode}:{startDate.DayNumber}-{endDate.DayNumber}",
             ct => LoadPairCoreAsync(pair, startDate, endDate, ct),
             cancellationToken));
     }

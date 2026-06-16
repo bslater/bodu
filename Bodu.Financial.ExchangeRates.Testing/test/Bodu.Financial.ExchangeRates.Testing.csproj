@@ -5,11 +5,10 @@
     <LangVersion>latest</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <RootNamespace>Bodu</RootNamespace>
+    <RootNamespace>Bodu.Financial.ExchangeRates.Testing</RootNamespace>
     <AssemblyName>$(MSBuildProjectName)</AssemblyName>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
-    <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
   </PropertyGroup>
 
   <ItemGroup>
@@ -27,20 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Bodu.Test\test\Bodu.Test.csproj" />
     <ProjectReference Include="..\..\Bodu.Financial\src\Bodu.Financial.csproj" />
-    <ProjectReference Include="..\..\Bodu.Financial.ExchangeRates.Testing\test\Bodu.Financial.ExchangeRates.Testing.csproj" />
-    <ProjectReference Include="..\..\Bodu.Formats.Excel.Binary\src\Bodu.Formats.Excel.Binary.csproj" />
-    <ProjectReference Include="..\src\Bodu.Financial.ExchangeRates.Rba.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Fixtures\*.xls">
-      <LogicalName>Bodu.Financial.ExchangeRates.Rba.Fixtures.%(Filename)%(Extension)</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Fixtures\*.json">
-      <LogicalName>Bodu.Financial.ExchangeRates.Rba.Fixtures.%(Filename)%(Extension)</LogicalName>
-    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

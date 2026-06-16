@@ -83,6 +83,17 @@ IDatedExchangeRateProvider cachedEcb =
     new CachingExchangeRateProvider(ecb, new InMemoryExchangeRateCache("ECB"), options);
 ```
 
+The decorator is `IDisposable`. By default it does **not** dispose the inner
+provider — under dependency injection the container owns it, and a hand-composed
+inner is owned by whoever created it. Pass `ownsInner: true` to make disposing the
+decorator also dispose a disposable inner (for example a provider that built its
+own `HttpClient`):
+
+```csharp
+using var cached = new CachingExchangeRateProvider(
+    "RBA", new RbaExchangeRateProvider(rbaOptions), options, ownsInner: true);
+```
+
 The decorator also implements the timeless surface, which resolves the current UTC
 date under `CachingExchangeRateOptions.DefaultLookupOptions`:
 
@@ -310,7 +321,7 @@ resolvable by name:
 ```csharp
 services.AddBoduFinancial()
         .AddRbaHistoricalRates()
-        .AddEcbHistoricalRates()
+        .AddEcbReferenceRates()
         .AddAggregatedExchangeRateProvider(agg => agg
             .AddCachedChild<RbaExchangeRateProvider>("RBA")
             .AddCachedChild<EcbExchangeRateProvider>("ECB")

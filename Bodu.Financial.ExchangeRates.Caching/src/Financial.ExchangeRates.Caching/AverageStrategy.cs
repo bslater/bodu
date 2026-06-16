@@ -130,6 +130,52 @@ public sealed class AverageStrategy
             perCandidate.Add(byDate);
         }
 
+        return JoinAverage(fromIsoCode, toIsoCode, perCandidate);
+    }
+
+    /// <inheritdoc />
+    public IReadOnlyList<ExchangeRate> AggregateRange(
+        string fromIsoCode,
+        string toIsoCode,
+        DateOnly startDate,
+        DateOnly endDate,
+        IReadOnlyList<NamedDatedExchangeRateProvider> candidates)
+    {
+        ThrowHelper.ThrowIfNull(candidates);
+
+        if (candidates.Count == 0)
+            return Array.Empty<ExchangeRate>();
+
+        // Gather each candidate's observations keyed by date; the last observation wins for a duplicated date.
+        List<Dictionary<DateOnly, decimal>> perCandidate = new(candidates.Count);
+        foreach (NamedDatedExchangeRateProvider candidate in candidates)
+        {
+            IReadOnlyList<ExchangeRate> rates = candidate.Provider.GetRates(fromIsoCode, toIsoCode, startDate, endDate);
+
+            Dictionary<DateOnly, decimal> byDate = new();
+            foreach (ExchangeRate rate in rates)
+                byDate[rate.Date] = rate.Rate;
+
+            // A missing or empty candidate makes the inner join empty; return early.
+            if (byDate.Count == 0)
+                return Array.Empty<ExchangeRate>();
+
+            perCandidate.Add(byDate);
+        }
+
+        return JoinAverage(fromIsoCode, toIsoCode, perCandidate);
+    }
+
+    /// <summary>
+    /// Computes the per-date arithmetic mean across the candidates' date-keyed observations, keeping only dates present
+    /// in every candidate (an inner join), and returns the synthesized rates ordered by date.
+    /// </summary>
+    /// <param name="fromIsoCode">The source-currency ISO code stamped on each synthesized rate.</param>
+    /// <param name="toIsoCode">The destination-currency ISO code stamped on each synthesized rate.</param>
+    /// <param name="perCandidate">Each contributing candidate's observations keyed by date; never empty.</param>
+    /// <returns>The synthesized average rates ordered by date.</returns>
+    private List<ExchangeRate> JoinAverage(string fromIsoCode, string toIsoCode, List<Dictionary<DateOnly, decimal>> perCandidate)
+    {
         // Drive the join from the smallest candidate so the membership probes are minimized.
         Dictionary<DateOnly, decimal> smallest = perCandidate[0];
         for (var i = 1; i < perCandidate.Count; i++)

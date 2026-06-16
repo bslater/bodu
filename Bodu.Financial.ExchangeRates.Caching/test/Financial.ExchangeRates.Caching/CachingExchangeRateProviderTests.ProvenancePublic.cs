@@ -35,6 +35,27 @@ public sealed partial class CachingExchangeRateProviderTests
     }
 
     /// <summary>
+    /// Verifies that a single-date cache hit served through the asynchronous surface returns the same cache provenance
+    /// as the synchronous surface: <c>Cache</c> origin, the in-memory cache backend, the instant the served row was
+    /// cached, and an age equal to the elapsed time since it was cached.
+    /// </summary>
+    [TestMethod]
+    public async Task GetRateAsync_WhenCacheHit_ShouldReturnCacheProvenanceWithBackendAndAge()
+    {
+        SeedCache(new ExchangeRatePair("AUD", "USD"), (new DateOnly(2023, 1, 3), 0.5m));
+        CachingExchangeRateProvider sut = new(InnerWith(), _cache, _options, _clock);
+
+        _clock.Advance(TimeSpan.FromHours(1));
+        ExchangeRateLookupResult result = await sut.GetRateAsync("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact);
+
+        Assert.AreEqual(ExchangeRateOrigin.Cache, result.Provenance.Origin);
+        Assert.AreEqual(Provider, result.Provenance.Provider);
+        Assert.AreEqual(nameof(InMemoryExchangeRateCache), result.Provenance.Backend);
+        Assert.AreEqual(Now, result.Provenance.CachedAtUtc);
+        Assert.AreEqual(TimeSpan.FromHours(1), result.Provenance.Age);
+    }
+
+    /// <summary>
     /// Verifies that a single-date cache miss resolved from the inner source returns a result whose provenance reports
     /// <c>Live</c> origin attributed to the inner source, with no cache backend, cache instant, or age.
     /// </summary>

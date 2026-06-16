@@ -38,6 +38,17 @@ namespace Bodu.Financial.ExchangeRates.Boe;
 /// omitting the logger selects <see cref="NullLogger.Instance" />, so logging is opt-in and free when unused.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// using var boe = new BoeExchangeRateProvider(new BoeExchangeRateOptions());
+/// await boe.LoadRangeAsync(new DateOnly(2023, 1, 1), new DateOnly(2023, 12, 31));
+///
+/// ExchangeRateLookupResult gbp = boe.GetRate("GBP", "USD", new DateOnly(2023, 1, 3));
+/// // The reverse direction (USD->GBP) is served by inverting the GBP-based series.
+///]]>
+/// </code>
+/// </example>
 public sealed class BoeExchangeRateProvider
     : WebExchangeRateProvider
 {
@@ -75,12 +86,6 @@ public sealed class BoeExchangeRateProvider
     /// The discovered currency series, keyed by pair.
     /// </summary>
     private readonly Dictionary<ExchangeRatePair, BoeSeriesInfo> _series = new();
-
-    /// <summary>
-    /// Coalesces concurrent downloads of the same series window so a cache miss triggers at most one in-flight fetch
-    /// per requested range.
-    /// </summary>
-    private readonly SingleFlightCoordinator<(DateOnly From, DateOnly To)> _loadCoordinator = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="BoeExchangeRateProvider" /> class backed by an
@@ -295,7 +300,7 @@ public sealed class BoeExchangeRateProvider
         // Coalesce concurrent loads of the same window so only one download is in flight; joiners await that task. The
         // shared fetch runs under a token decoupled from any caller, so one caller's cancellation cannot fault the
         // others; cancellationToken only abandons this caller's wait.
-        return _loadCoordinator.RunAsync((startDate, endDate), ct => LoadRangeCoreAsync(startDate, endDate, ct), cancellationToken);
+        return LoadCoalescedAsync($"{startDate.DayNumber}-{endDate.DayNumber}", ct => LoadRangeCoreAsync(startDate, endDate, ct), cancellationToken);
     }
 
     /// <summary>

@@ -42,7 +42,7 @@ services.AddBoduFinancial()
 // A group of cached providers with per-FX-pair routing.
 services.AddBoduFinancial()
         .AddRbaHistoricalRates()
-        .AddEcbHistoricalRates()
+        .AddEcbReferenceRates()
         .AddAggregatedExchangeRateProvider(agg => agg
             .AddCachedChild<RbaExchangeRateProvider>("RBA")
             .AddCachedChild<EcbExchangeRateProvider>("ECB")

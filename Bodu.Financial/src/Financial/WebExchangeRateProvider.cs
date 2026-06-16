@@ -66,6 +66,13 @@ public abstract class WebExchangeRateProvider
     private readonly HttpClient? _ownedHttpClient;
 
     /// <summary>
+    /// Coalesces concurrent loads keyed by a string so callers requesting the same endpoint window share a single
+    /// in-flight fetch rather than each issuing a duplicate request. Used by derived types through
+    /// <see cref="LoadCoalescedAsync(string, Func{CancellationToken, Task}, CancellationToken)" />.
+    /// </summary>
+    private readonly SingleFlightCoordinator<string> _loadCoordinator = new();
+
+    /// <summary>
     /// The current immutable book backing range queries; replaced under <see cref="_gate" /> after each fetch.
     /// </summary>
     private volatile ExchangeRateBook _book;
@@ -271,6 +278,37 @@ public abstract class WebExchangeRateProvider
     /// <param name="endDate">The inclusive end of the window.</param>
     /// <returns><see langword="true" /> when the window is already covered; otherwise <see langword="false" />.</returns>
     protected abstract bool IsLoaded(ExchangeRatePair pair, DateOnly startDate, DateOnly endDate);
+
+    /// <summary>
+    /// Runs <paramref name="load" /> for <paramref name="key" />, or joins the load already in flight for that key, so
+    /// concurrent callers requesting the same endpoint window share a single fetch rather than each issuing a duplicate
+    /// request. Derived types call this from
+    /// <see cref="EnsureLoadedAsync(ExchangeRatePair, DateOnly, DateOnly, CancellationToken)" /> with a key identifying
+    /// the unit they download — an era, a feed, a date range, a pair-and-window.
+    /// </summary>
+    /// <param name="key">The key identifying the load; equal keys share one in-flight fetch.</param>
+    /// <param name="load">The fetch to run on a miss, invoked with a token decoupled from any single caller.</param>
+    /// <param name="cancellationToken">A token that abandons this caller's wait on the shared fetch.</param>
+    /// <returns>A task that completes when the load for <paramref name="key" /> completes.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="key" /> or <paramref name="load" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="OperationCanceledException">
+    /// Thrown when <paramref name="cancellationToken" /> is signalled before the shared fetch completes; the shared
+    /// fetch continues to completion for any other joiner.
+    /// </exception>
+    /// <remarks>
+    /// The shared fetch runs under <see cref="CancellationToken.None" />, so one caller's cancellation abandons only its
+    /// own wait and never faults the fetch for the other joiners — appropriate for the idempotent cache-warming loads
+    /// whose result populates the shared snapshot. The in-flight entry is released as soon as the fetch completes,
+    /// including on failure, so a fault never poisons the key and the next caller starts a fresh attempt.
+    /// </remarks>
+    protected Task LoadCoalescedAsync(string key, Func<CancellationToken, Task> load, CancellationToken cancellationToken)
+    {
+        ThrowHelper.ThrowIfNull(key);
+
+        return _loadCoordinator.RunAsync(key, load, cancellationToken);
+    }
 
     /// <summary>
     /// Upserts a batch of fetched observations into the accumulator under the provider's identifier, invoking

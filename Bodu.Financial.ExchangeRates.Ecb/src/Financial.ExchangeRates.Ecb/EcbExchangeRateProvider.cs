@@ -39,6 +39,17 @@ namespace Bodu.Financial.ExchangeRates.Ecb;
 /// <see cref="NullLogger.Instance" />, so logging is opt-in and free when unused.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// using var ecb = new EcbExchangeRateProvider(new EcbExchangeRateOptions());
+/// await ecb.LoadRangeAsync(new DateOnly(2023, 1, 1), new DateOnly(2023, 12, 31));
+///
+/// ExchangeRateLookupResult usd = ecb.GetRate("EUR", "USD", new DateOnly(2023, 1, 3));
+/// ExchangeRateLookupResult eur = ecb.GetRate("USD", "EUR", new DateOnly(2023, 1, 3)); // inverted
+///]]>
+/// </code>
+/// </example>
 public sealed class EcbExchangeRateProvider
     : WebExchangeRateProvider
 {
@@ -76,11 +87,6 @@ public sealed class EcbExchangeRateProvider
     /// The discovered currency series, keyed by pair.
     /// </summary>
     private readonly Dictionary<ExchangeRatePair, EcbSeriesInfo> _series = new();
-
-    /// <summary>
-    /// Coalesces concurrent downloads of the same feed so a cache miss triggers at most one in-flight fetch per feed.
-    /// </summary>
-    private readonly SingleFlightCoordinator<string> _loadCoordinator = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="EcbExchangeRateProvider" /> class backed by an
@@ -212,7 +218,7 @@ public sealed class EcbExchangeRateProvider
         // Coalesce concurrent loads of the same feed so only one download is in flight; joiners await that shared task.
         // The shared fetch runs under a token decoupled from any caller, so one caller's cancellation cannot fault the
         // others; cancellationToken only abandons this caller's wait.
-        return _loadCoordinator.RunAsync(feed.Name, ct => LoadFeedCoreAsync(feed, ct), cancellationToken);
+        return LoadCoalescedAsync(feed.Name, ct => LoadFeedCoreAsync(feed, ct), cancellationToken);
     }
 
     /// <summary>
