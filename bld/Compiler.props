@@ -22,6 +22,9 @@
   <PropertyGroup>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+
+    <!-- Emit nullable annotation attributes only for the public surface, keeping assemblies smaller. -->
+    <Features>$(Features);nullablePublicOnly</Features>
   </PropertyGroup>
 
   <!--
