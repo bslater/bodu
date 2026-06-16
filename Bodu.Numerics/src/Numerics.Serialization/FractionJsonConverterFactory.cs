@@ -73,6 +73,7 @@ public sealed class FractionJsonConverterFactory
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="typeToConvert" /> is <see langword="null" />.
     /// </exception>
+    [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Aot", "IL3050", Justification = "Reached only through reflection-based JSON serialization, whose public entry points carry the RequiresDynamicCode annotation.")]
     public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options)
     {
         ThrowHelper.ThrowIfNull(typeToConvert);

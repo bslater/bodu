@@ -24,6 +24,8 @@ public readonly partial struct Fraction<T>
     /// <c>AddNumericsJsonConverters(NumericsJsonPolicy.Compact)</c> has been called.
     /// </para>
     /// </remarks>
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("JSON serialization of Fraction<T> uses the reflection-based JsonSerializer. Use AddNumericsJsonConverters with a source-generated JsonSerializerContext for trimming and AOT.")]
+    [System.Diagnostics.CodeAnalysis.RequiresDynamicCode("JSON serialization of Fraction<T> uses the reflection-based JsonSerializer. Use AddNumericsJsonConverters with a source-generated JsonSerializerContext for trimming and AOT.")]
     public string ToJson() =>
         JsonSerializer.Serialize(this);
 
@@ -43,6 +45,8 @@ public readonly partial struct Fraction<T>
     /// on which <c>AddNumericsJsonConverters(NumericsJsonPolicy.Compact)</c> has been called.
     /// </para>
     /// </remarks>
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("JSON deserialization of Fraction<T> uses the reflection-based JsonSerializer. Use AddNumericsJsonConverters with a source-generated JsonSerializerContext for trimming and AOT.")]
+    [System.Diagnostics.CodeAnalysis.RequiresDynamicCode("JSON deserialization of Fraction<T> uses the reflection-based JsonSerializer. Use AddNumericsJsonConverters with a source-generated JsonSerializerContext for trimming and AOT.")]
     public static Fraction<T> FromJson(string json)
     {
         ThrowHelper.ThrowIfNull(json);

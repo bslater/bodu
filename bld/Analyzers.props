@@ -1,0 +1,58 @@
+<Project>
+
+  <!--
+    Analyzer configuration shared across the repository: the SDK analyzer baseline, the
+    Bodu.CodeStyle XML-documentation analyzer package, and the shared AdditionalFiles that
+    drive StyleCop and the Bodu XML-doc rules.
+
+    The per-project analyzer PackageReference *stack* (StyleCop / Roslynator / AsyncFixer /
+    MSTest.Analyzers) lives in Directory.Build.targets, because it must be evaluated after the
+    project file resolves $(IsTestProject) / $(GenerateDocumentationFile).
+  -->
+  <PropertyGroup>
+    <!--
+      Use the SDK-owned .NET/Roslyn analyzer set as the primary baseline, kept on the .NET 10
+      recommended wave. Change AnalysisLevel to latest-recommended to track new SDK waves.
+    -->
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisLevel>10-recommended</AnalysisLevel>
+
+    <!-- Enforce IDE-style code rules (IDExxxx) at build time so style regressions surface in CI. -->
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+
+    <!--
+      Enables the Bodu XML documentation analyzers on the consuming project. The analyzer ships
+      as the Bodu.CodeStyle.XmlDocumentation NuGet package (built in this repository, restored
+      from the `bodu-local` source in the root NuGet.config). Set BoduCodeStyleAnalyzers=false to
+      opt out — the Bodu.CodeStyle/* projects do this to avoid analyzing themselves.
+    -->
+    <BoduCodeStyleAnalyzers Condition="'$(BoduCodeStyleAnalyzers)' == ''">true</BoduCodeStyleAnalyzers>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(BoduCodeStyleAnalyzers)' == 'true'">
+    <PackageReference Include="Bodu.CodeStyle.XmlDocumentation" Version="1.0.0" PrivateAssets="all" />
+  </ItemGroup>
+
+  <!--
+    Surface the repository-wide bodu.xmldocstyle.json policy to the analyzer via AdditionalFiles
+    so every consuming project sees the same rules. The Exists() guard keeps the build green for
+    projects that opt out or for checkouts where the JSON has not been added yet.
+  -->
+  <ItemGroup Condition="'$(BoduCodeStyleAnalyzers)' == 'true' AND Exists('$(MSBuildThisFileDirectory)..\bodu.xmldocstyle.json')">
+    <AdditionalFiles Include="$(MSBuildThisFileDirectory)..\bodu.xmldocstyle.json"
+                     Link="bodu.xmldocstyle.json"
+                     Visible="false" />
+  </ItemGroup>
+
+  <!--
+    Surface the repository-wide StyleCop.Analyzers configuration to every consuming project so
+    rules such as SA1636 use the repository's copyright/header policy. Independent of
+    BoduCodeStyleAnalyzers because StyleCop.Analyzers is a separate analyzer/configuration path.
+  -->
+  <ItemGroup Condition="Exists('$(MSBuildThisFileDirectory)..\stylecop.json')">
+    <AdditionalFiles Include="$(MSBuildThisFileDirectory)..\stylecop.json"
+                     Link="stylecop.json"
+                     Visible="false" />
+  </ItemGroup>
+
+</Project>

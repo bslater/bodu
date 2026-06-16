@@ -1,0 +1,15 @@
+<Project>
+
+  <!--
+    Assembly strong-name signing, centralized but disabled by default. Bodu assemblies are
+    not currently strong-named, and adopting a strong name for published packages is
+    effectively permanent. To enable, set BoduSignAssembly=true and provide bld/Bodu.snk.
+  -->
+  <PropertyGroup>
+    <BoduSignAssembly Condition="'$(BoduSignAssembly)' == ''">false</BoduSignAssembly>
+    <SignAssembly>$(BoduSignAssembly)</SignAssembly>
+    <AssemblyOriginatorKeyFile Condition="'$(SignAssembly)' == 'true'">$(MSBuildThisFileDirectory)Bodu.snk</AssemblyOriginatorKeyFile>
+    <PublicSign Condition="'$(SignAssembly)' == 'true' and '$(ContinuousIntegrationBuild)' != 'true'">true</PublicSign>
+  </PropertyGroup>
+
+</Project>

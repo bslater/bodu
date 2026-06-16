@@ -2,23 +2,12 @@
 
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
-    <LangVersion>latest</LangVersion>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
     <RootNamespace>Bodu</RootNamespace>
-    <AssemblyName>$(MSBuildProjectName)</AssemblyName>
-    <OutputType>Library</OutputType>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+    <IsAotCompatible Condition="'$(BoduTfmIsNetCore)' == 'true'">true</IsAotCompatible>
     <Version>1.0.0</Version>
     <Description>Numeric value primitives for .NET. Provides Fraction&lt;T&gt;, a generic exact-rational number type backed by any IBinaryInteger&lt;T&gt;, and Interval&lt;T&gt;, an immutable bounded interval over any INumber&lt;T&gt; with independent open or closed endpoints and full set algebra. Money, currency, and foreign-exchange types ship in the companion Bodu.Financial package.</Description>
     <PackageTags>bodu;numerics;fraction;rational;ratio;bigrational;interval;range;math</PackageTags>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Include="..\README.md" Pack="true" PackagePath="\" />
-  </ItemGroup>
 
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">

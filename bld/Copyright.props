@@ -1,0 +1,12 @@
+<Project>
+
+  <!--
+    Copyright and license metadata shared by every Bodu package and assembly.
+  -->
+  <PropertyGroup>
+    <Copyright>&#169; Bodu Pty. Ltd.  All rights reserved.</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+  </PropertyGroup>
+
+</Project>

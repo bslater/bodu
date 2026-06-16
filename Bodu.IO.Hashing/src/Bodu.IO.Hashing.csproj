@@ -2,15 +2,9 @@
 
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
-    <LangVersion>latest</LangVersion>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
     <RootNamespace>Bodu</RootNamespace>
-    <AssemblyName>$(MSBuildProjectName)</AssemblyName>
-    <OutputType>Library</OutputType>
     <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+    <IsAotCompatible Condition="'$(BoduTfmIsNetCore)' == 'true'">true</IsAotCompatible>
     <Description>Non-cryptographic hashing and integrity primitives for .NET: Fletcher-16/32/64, the full RevEng CRC catalogue, and check-digit algorithms (Luhn, Damm, Verhoeff, EAN/UPC/GTIN, ISBN, IBAN, ISIN, LEI, ISO 7064, ...). These are for data integrity and validation, NOT security — do not use them where a cryptographic hash or MAC is required.</Description>
   </PropertyGroup>
 
@@ -38,15 +32,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>HashingResourceStrings.resx</DependentUpon>
     </Compile>
-  </ItemGroup>
-
-
-  <PropertyGroup>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <None Include="..\README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>
