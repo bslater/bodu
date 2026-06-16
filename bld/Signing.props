@@ -8,8 +8,40 @@
   <PropertyGroup>
     <BoduSignAssembly Condition="'$(BoduSignAssembly)' == ''">false</BoduSignAssembly>
     <SignAssembly>$(BoduSignAssembly)</SignAssembly>
-    <AssemblyOriginatorKeyFile Condition="'$(SignAssembly)' == 'true'">$(MSBuildThisFileDirectory)Bodu.snk</AssemblyOriginatorKeyFile>
-    <PublicSign Condition="'$(SignAssembly)' == 'true' and '$(ContinuousIntegrationBuild)' != 'true'">true</PublicSign>
+
+    <!--
+      Key file used for strong-naming. Defaults to the committed public-only key (Bodu.public.snk),
+      which is all that public signing needs. A real-signing release overrides BoduStrongNameKeyFile
+      with the full private key — materialized from a secret at build time, never committed — and sets
+      BoduRealSign=true.
+    -->
+    <BoduStrongNameKeyFile Condition="'$(BoduStrongNameKeyFile)' == ''">$(MSBuildThisFileDirectory)Bodu.public.snk</BoduStrongNameKeyFile>
+    <AssemblyOriginatorKeyFile Condition="'$(SignAssembly)' == 'true'">$(BoduStrongNameKeyFile)</AssemblyOriginatorKeyFile>
+
+    <!--
+      Public-sign by default: the committed key is public-only, so builds stamp the correct public-key
+      identity (and PublicKeyToken) without a real RSA signature — which .NET Core / .NET 5+ does not
+      verify at load. A release that wants a full, verifiable signature (for example, for .NET Framework
+      consumers with verification enabled) sets BoduRealSign=true and supplies the private key through
+      BoduStrongNameKeyFile.
+    -->
+    <PublicSign Condition="'$(SignAssembly)' == 'true' and '$(BoduRealSign)' != 'true'">true</PublicSign>
+  </PropertyGroup>
+
+  <!--
+    Full public key for the Bodu strong-name identity, as the hex string printed by
+    'sn -tp Bodu.public.snk' (the long PublicKey, not the short 8-byte PublicKeyToken). It is
+    consumed by bld/InternalsVisibleTo.targets, which appends ", PublicKey=$(BoduPublicKey)" to every
+    InternalsVisibleTo grant when signing is enabled, because a strong-named assembly may only grant
+    its internals to a friend that presents this public key.
+
+    Left empty until the key pair is generated and checked in. While empty (or while SignAssembly is
+    false) the public-key suffix is not applied, so unsigned builds continue to grant internals by
+    simple name. Populating this and setting BoduSignAssembly=true is all that is required to turn on
+    strong-name signing across the solution.
+  -->
+  <PropertyGroup>
+    <BoduPublicKey Condition="'$(BoduPublicKey)' == ''"></BoduPublicKey>
   </PropertyGroup>
 
 </Project>

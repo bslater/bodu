@@ -1,11 +1,20 @@
 <Project>
 
   <!--
-    Shared package-version baseline. Individual projects may still override <Version> or
-    <VersionPrefix> where they ship on an independent cadence.
+    Shared, lock-step package-version baseline. Every Bodu library ships at BoduBaseVersion by
+    default, so consumers can treat a matched version number across all Bodu.* packages as a
+    coherent set.
+
+    Breaking rank: a single library that needs an out-of-band fix overrides this deliberately by
+    setting <BoduPackageVersionOverride> in its own .csproj. That property is applied (and reported)
+    in the repository-root Directory.Build.targets, which is processed after the project body so the
+    divergence is explicit, visible in build output, and auditable in source control. Do not edit
+    <VersionPrefix> directly in a project to break rank — use BoduPackageVersionOverride so the
+    intent is obvious.
   -->
   <PropertyGroup>
-    <VersionPrefix>1.0.0</VersionPrefix>
+    <BoduBaseVersion>1.0.0</BoduBaseVersion>
+    <VersionPrefix>$(BoduBaseVersion)</VersionPrefix>
   </PropertyGroup>
 
 </Project>

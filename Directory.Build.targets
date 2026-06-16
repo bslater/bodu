@@ -1,6 +1,54 @@
 <Project>
 
   <!--
+    Deliberate out-of-band version override. By default every Bodu library ships lock-step at the
+    shared BoduBaseVersion (bld/Versioning.props). A project breaks rank for an isolated fix by
+    setting <BoduPackageVersionOverride> in its own csproj (or passing -p:BoduPackageVersionOverride
+    for a one-off release build), and is reported below so the divergence is visible in build output
+    and traceable in source control.
+
+    This overrides Version (not just VersionPrefix) because the SDK finalizes Version from
+    VersionPrefix earlier than this file is imported (Directory.Build.targets is imported at the top
+    of Microsoft.Common.targets, after the default Version has already been computed). Version is the
+    value AssemblyVersion, FileVersion, PackageVersion, and InformationalVersion all derive from in
+    later build targets, so reassigning it here flows the override through every version field.
+    VersionPrefix is kept in sync for any consumer that reads it directly.
+  -->
+  <PropertyGroup Condition="'$(BoduPackageVersionOverride)' != ''">
+    <VersionPrefix>$(BoduPackageVersionOverride)</VersionPrefix>
+    <Version Condition="'$(VersionSuffix)' == ''">$(BoduPackageVersionOverride)</Version>
+    <Version Condition="'$(VersionSuffix)' != ''">$(BoduPackageVersionOverride)-$(VersionSuffix)</Version>
+  </PropertyGroup>
+
+  <!--
+    Pin AssemblyVersion to Major.Minor.0.0 so the assembly's binding identity stays stable across
+    patch and out-of-band releases, while FileVersion, PackageVersion, and InformationalVersion still
+    carry the full version. This matters most once assemblies are strong-named (bld/Signing.props),
+    where AssemblyVersion is part of the strong identity and a patch bump would otherwise force every
+    consumer to rebind. VersionPrefix holds the effective version at this point — the lock-step
+    BoduBaseVersion, or the out-of-band override applied above. A project may opt out by setting
+    AssemblyVersion explicitly in its own body.
+  -->
+  <PropertyGroup Condition="'$(VersionPrefix)' != ''">
+    <AssemblyVersion Condition="'$(AssemblyVersion)' == ''">$([System.Version]::Parse('$(VersionPrefix)').Major).$([System.Version]::Parse('$(VersionPrefix)').Minor).0.0</AssemblyVersion>
+
+    <!--
+      FileVersion carries the full effective version (including the patch) for diagnostics, even
+      though AssemblyVersion is pinned to Major.Minor.0.0 above. Without this the SDK would default
+      FileVersion to the pinned AssemblyVersion and the patch component would be lost. VersionPrefix
+      holds the numeric effective version with no pre-release suffix, which is the correct FileVersion
+      source.
+    -->
+    <FileVersion Condition="'$(FileVersion)' == ''">$(VersionPrefix)</FileVersion>
+  </PropertyGroup>
+
+  <Target Name="BoduReportVersionOverride" BeforeTargets="Build;Pack"
+          Condition="'$(BoduPackageVersionOverride)' != ''">
+    <Message Importance="high"
+             Text="$(MSBuildProjectName): out-of-band version override $(BoduPackageVersionOverride) (lock-step baseline is $(BoduBaseVersion))." />
+  </Target>
+
+  <!--
     Define BODU_EXTENSION_MEMBERS when the building SDK is .NET 10 or later, which ships the C# 14
     compiler that supports extension members. Combined with LangVersion=latest (bld/Bodu.props), this
     lets sources express convenience members as C# 14 extension properties; older SDKs fall back to
