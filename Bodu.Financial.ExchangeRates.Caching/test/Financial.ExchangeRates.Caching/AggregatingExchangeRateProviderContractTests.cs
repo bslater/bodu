@@ -25,13 +25,13 @@ public sealed class AggregatingExchangeRateProviderContractTests
     /// <summary>
     /// The date the grouped child is seeded to resolve.
     /// </summary>
-    private static readonly DateOnly Seeded = new(2023, 1, 3);
+    private static readonly DateOnly s_seeded = new(2023, 1, 3);
 
     /// <inheritdoc />
     protected override ExchangeRatePair CanonicalPair => new("AUD", "USD");
 
     /// <inheritdoc />
-    protected override DateOnly KnownDate => Seeded;
+    protected override DateOnly KnownDate => s_seeded;
 
     /// <inheritdoc />
     protected override DateOnly UnknownDate => new(2024, 6, 17);
@@ -39,7 +39,7 @@ public sealed class AggregatingExchangeRateProviderContractTests
     /// <inheritdoc />
     protected override AggregatingExchangeRateProvider CreateProvider()
     {
-        FixedDatedExchangeRateProvider child = new(new[] { new ExchangeRate("AUD", "USD", Seeded, 0.6828m, ProviderName) });
+        FixedDatedExchangeRateProvider child = new(new[] { new ExchangeRate("AUD", "USD", s_seeded, 0.6828m, ProviderName) });
 
         return new AggregatingExchangeRateProvider(new[] { new NamedDatedExchangeRateProvider(ProviderName, child) });
     }

@@ -26,13 +26,13 @@ public sealed class CachingExchangeRateProviderContractTests
     /// <summary>
     /// The date the inner source is seeded to resolve.
     /// </summary>
-    private static readonly DateOnly Seeded = new(2023, 1, 3);
+    private static readonly DateOnly s_seeded = new(2023, 1, 3);
 
     /// <inheritdoc />
     protected override ExchangeRatePair CanonicalPair => new("AUD", "USD");
 
     /// <inheritdoc />
-    protected override DateOnly KnownDate => Seeded;
+    protected override DateOnly KnownDate => s_seeded;
 
     /// <inheritdoc />
     protected override DateOnly UnknownDate => new(2024, 6, 17);
@@ -40,7 +40,7 @@ public sealed class CachingExchangeRateProviderContractTests
     /// <inheritdoc />
     protected override CachingExchangeRateProvider CreateProvider()
     {
-        FixedDatedExchangeRateProvider inner = new(new[] { new ExchangeRate("AUD", "USD", Seeded, 0.6828m, ProviderName) });
+        FixedDatedExchangeRateProvider inner = new(new[] { new ExchangeRate("AUD", "USD", s_seeded, 0.6828m, ProviderName) });
         InMemoryExchangeRateCache cache = new(ProviderName);
         CachingExchangeRateOptions options = new() { DefaultExpiry = TimeSpan.FromHours(24) };
 
