@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlDocumentBuilder.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -124,15 +124,15 @@ internal sealed class TomlDocumentBuilder
     }
 
     /// <summary>
-    /// Estimates the number of rows a document of the supplied byte length will produce, used to size the row store so it
-    /// grows without repeated doubling for typical documents.
+    /// Estimates the number of rows a document of the supplied byte length will produce, used to size the row store so
+    /// it grows without repeated doubling for typical documents.
     /// </summary>
     /// <param name="sourceLength">The UTF-8 source length in bytes.</param>
     /// <returns>The initial row-store capacity.</returns>
     /// <remarks>
     /// Flat TOML produces roughly one row per dozen bytes of key/value text. The estimate is clamped to a ceiling so a
-    /// large but sparse document — for example one dominated by long string values — cannot over-allocate the store; such
-    /// a document simply grows it on demand instead.
+    /// large but sparse document — for example one dominated by long string values — cannot over-allocate the store;
+    /// such a document simply grows it on demand instead.
     /// </remarks>
     private static int EstimateRowCapacity(int sourceLength) =>
         Math.Clamp(sourceLength / 12, 4, 4096);
@@ -155,8 +155,9 @@ internal sealed class TomlDocumentBuilder
     /// <param name="lexer">The lexer to read from.</param>
     /// <returns>The key segments in order, held in the depth's reusable scratch list.</returns>
     /// <remarks>
-    /// The returned list is scratch reused for the next path read at the same depth, so the caller must consume it before
-    /// reading another path at that depth. The key strings it holds are independent and remain valid once extracted.
+    /// The returned list is scratch reused for the next path read at the same depth, so the caller must consume it
+    /// before reading another path at that depth. The key strings it holds are independent and remain valid once
+    /// extracted.
     /// </remarks>
     private List<string> ReadKeyPath(ref Utf8TomlReader lexer)
     {

@@ -27,10 +27,11 @@ namespace Bodu.Globalization.Calendar;
 /// resolver overload, whose delegate maps a resource name to that resource's XML or JSON content.
 /// </para>
 /// <para>
-/// <strong>When to use.</strong> Call <see cref="Load(string, ILogger)" /> / <see cref="LoadJson(string, ILogger)" /> (or the
-/// <see cref="Stream" /> overloads) for a self-contained document, and the resolver overloads when the document imports
-/// shared concepts or adjustment policies from other resources. For the bundled territory packs prefer the data-pack
-/// factories (for example the <c>AmericasCalendarData</c> bundle), which load and wire the embedded resources for you.
+/// <strong>When to use.</strong> Call <see cref="Load(string, ILogger)" /> / <see cref="LoadJson(string, ILogger)" />
+/// (or the <see cref="Stream" /> overloads) for a self-contained document, and the resolver overloads when the document
+/// imports shared concepts or adjustment policies from other resources. For the bundled territory packs prefer the
+/// data-pack factories (for example the <c>AmericasCalendarData</c> bundle), which load and wire the embedded resources
+/// for you.
 /// </para>
 /// <para>
 /// <strong>Logging.</strong> Each <c>Load</c> / <c>LoadJson</c> overload accepts an optional <see cref="ILogger" />

@@ -33,9 +33,9 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// <para>
 /// <strong>Logging.</strong> Each <c>LoadFrom</c> / <see cref="RegisterAlgorithms" /> overload accepts an optional
 /// <see cref="ILogger" /> (defaulting to <see cref="NullLogger.Instance" />, so logging is opt-in). When supplied it
-/// records a trust-policy rejection (<see cref="LogLevel.Warning" />), a passed trust check
-/// (<see cref="LogLevel.Debug" />), an activated plugin (<see cref="LogLevel.Information" />), and the number of
-/// algorithms a plugin contributed (<see cref="LogLevel.Information" />). These levels are fixed.
+/// records a trust-policy rejection (<see cref="LogLevel.Warning" />), a passed trust check (<see cref="LogLevel.Debug" />),
+/// an activated plugin (<see cref="LogLevel.Information" />), and the number of algorithms a plugin contributed (<see cref="LogLevel.Information" />).
+/// These levels are fixed.
 /// </para>
 /// </remarks>
 /// <example>

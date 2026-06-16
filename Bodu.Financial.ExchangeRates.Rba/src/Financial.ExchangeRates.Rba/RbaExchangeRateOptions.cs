@@ -36,7 +36,7 @@ public sealed class RbaExchangeRateOptions
     /// Gets or sets the catalogue of era files to draw from.
     /// </summary>
     /// <value>The era catalogue; defaults to <see cref="RbaEra.Default" />.</value>
-    internal IReadOnlyList<RbaEra> Eras { get; set; } = RbaEra.Default;
+    public IReadOnlyList<RbaEra> Eras { get; set; } = RbaEra.Default;
 
     /// <summary>
     /// Gets or sets the HTTP request timeout applied to era downloads by the dependency-injection registration.

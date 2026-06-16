@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IEnumerableExtensions.Cache._Stress.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -16,10 +16,10 @@ public sealed partial class IEnumerableExtensionsTests_Cache
     public TestContext TestContext { get; set; } = default!;
 
     /// <summary>
-    /// Verifies that a cached sequence populated for the first time concurrently from many readers yields the
-    /// complete, correct sequence to every reader, never dropping the final element nor exposing a torn read of the
-    /// shared cache. Each iteration starts a fresh cache and rendezvouses every reader on it simultaneously to
-    /// maximize contention on the lock-free reader path.
+    /// Verifies that a cached sequence populated for the first time concurrently from many readers yields the complete,
+    /// correct sequence to every reader, never dropping the final element nor exposing a torn read of the shared cache.
+    /// Each iteration starts a fresh cache and rendezvouses every reader on it simultaneously to maximize contention on
+    /// the lock-free reader path.
     /// </summary>
     [TestMethod]
     [TestCategory("Stress")]
@@ -104,8 +104,8 @@ public sealed partial class IEnumerableExtensionsTests_Cache
     }
 
     /// <summary>
-    /// Starts a stress worker on a dedicated long-running thread so the thread pool cannot starve it of execution
-    /// while sibling workers run CPU-bound hot loops.
+    /// Starts a stress worker on a dedicated long-running thread so the thread pool cannot starve it of execution while
+    /// sibling workers run CPU-bound hot loops.
     /// </summary>
     /// <param name="action">The worker body to execute.</param>
     /// <returns>A <see cref="Task" /> representing the running worker.</returns>

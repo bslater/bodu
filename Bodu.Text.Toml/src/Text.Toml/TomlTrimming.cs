@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlTrimming.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -9,8 +9,8 @@ namespace Bodu.Text.Toml;
 /// <summary>
 /// Provides the diagnostic messages attached to the reflection-based serialization surface through
 /// <see cref="System.Diagnostics.CodeAnalysis.RequiresUnreferencedCodeAttribute" /> and
-/// <see cref="System.Diagnostics.CodeAnalysis.RequiresDynamicCodeAttribute" />, so consumers that trim or compile
-/// ahead of time receive a clear warning at the call site.
+/// <see cref="System.Diagnostics.CodeAnalysis.RequiresDynamicCodeAttribute" />, so consumers that trim or compile ahead
+/// of time receive a clear warning at the call site.
 /// </summary>
 internal static class TomlTrimming
 {

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlDocumentReader.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -488,7 +488,9 @@ public ref struct TomlDocumentReader
     /// Sets the current token's kind, value, source offset, and owning row.
     /// </summary>
     /// <param name="tokenType">The kind of the token.</param>
-    /// <param name="value">The string carried by the token (a key or string scalar), or <see langword="null" />.</param>
+    /// <param name="value">
+    /// The string carried by the token (a key or string scalar), or <see langword="null" />.
+    /// </param>
     /// <param name="offset">The zero-based source byte offset at which the token begins.</param>
     /// <param name="row">The row index the token belongs to.</param>
     private void SetToken(TomlTokenType tokenType, string? value, int offset, int row)

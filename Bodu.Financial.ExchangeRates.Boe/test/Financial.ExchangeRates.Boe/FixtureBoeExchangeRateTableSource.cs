@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FixtureBoeExchangeRateTableSource.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -7,7 +7,8 @@
 namespace Bodu.Financial.ExchangeRates.Boe;
 
 /// <summary>
-/// A test table source that parses an embedded IADB CSV fixture for every range, recording how many times it is invoked.
+/// A test table source that parses an embedded IADB CSV fixture for every range, recording how many times it is
+/// invoked.
 /// </summary>
 internal sealed class FixtureBoeExchangeRateTableSource
     : IBoeExchangeRateTableSource

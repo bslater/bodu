@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CountingDatedExchangeRateProvider.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -7,8 +7,8 @@
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// An <see cref="IDatedExchangeRateProvider" /> test double that delegates to a fixed in-memory book and counts how many
-/// times each lookup method is invoked, so tests can assert when the caching decorator avoided the inner provider.
+/// An <see cref="IDatedExchangeRateProvider" /> test double that delegates to a fixed in-memory book and counts how
+/// many times each lookup method is invoked, so tests can assert when the caching decorator avoided the inner provider.
 /// </summary>
 internal sealed class CountingDatedExchangeRateProvider
     : IDatedExchangeRateProvider

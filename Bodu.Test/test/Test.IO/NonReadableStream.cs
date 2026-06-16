@@ -13,8 +13,8 @@ namespace Bodu.Test.IO;
 /// <remarks>
 /// <para>
 /// Only <see cref="CanRead" /> is overridden, so a consumer's "is this stream readable?" precondition fails
-/// deterministically without changing any other observable stream behavior. Use it to verify that read-accepting
-/// entry points reject a non-readable source.
+/// deterministically without changing any other observable stream behavior. Use it to verify that read-accepting entry
+/// points reject a non-readable source.
 /// </para>
 /// <para>
 /// This class is intended exclusively for test harness use and must not appear in production code.

@@ -17,8 +17,8 @@ namespace Bodu.Test.IO;
 /// exception type — for example <see cref="IOException" /> — when exercising error-propagation paths.
 /// </para>
 /// <para>
-/// Every read overload — synchronous and both asynchronous forms — sets <see cref="WasRead" /> before throwing, so
-/// the flag reflects an attempt through any surface.
+/// Every read overload — synchronous and both asynchronous forms — sets <see cref="WasRead" /> before throwing, so the
+/// flag reflects an attempt through any surface.
 /// </para>
 /// <para>
 /// This class is intended exclusively for test harness use and must not appear in production code.
@@ -45,7 +45,9 @@ public sealed class ThrowOnReadStream
     /// <summary>
     /// Gets a value indicating whether a read operation was attempted.
     /// </summary>
-    /// <returns><see langword="true" /> if any read overload was invoked; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if any read overload was invoked; otherwise, <see langword="false" />.
+    /// </returns>
     public bool WasRead { get; private set; }
 
     /// <inheritdoc />

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TransientFaultHttpMessageHandler.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -29,7 +29,9 @@ internal sealed class TransientFaultHttpMessageHandler
     /// Initializes a new instance of the <see cref="TransientFaultHttpMessageHandler" /> class.
     /// </summary>
     /// <param name="failuresBeforeSuccess">The number of leading requests answered with a failure status.</param>
-    /// <param name="failureStatus">The status returned while failing. Defaults to <see cref="HttpStatusCode.ServiceUnavailable" />.</param>
+    /// <param name="failureStatus">
+    /// The status returned while failing. Defaults to <see cref="HttpStatusCode.ServiceUnavailable" />.
+    /// </param>
     public TransientFaultHttpMessageHandler(int failuresBeforeSuccess, HttpStatusCode failureStatus = HttpStatusCode.ServiceUnavailable)
     {
         _failuresBeforeSuccess = failuresBeforeSuccess;

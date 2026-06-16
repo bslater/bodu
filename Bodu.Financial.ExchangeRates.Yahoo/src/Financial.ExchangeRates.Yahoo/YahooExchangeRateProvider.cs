@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YahooExchangeRateProvider.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -98,7 +98,9 @@ public sealed class YahooExchangeRateProvider
     /// The time source used to resolve the current instant for the undated lookup surface. <see langword="null" />
     /// selects <see cref="TimeProvider.System" />.
     /// </param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="options" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="options" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> fails validation.</exception>
     public YahooExchangeRateProvider(YahooExchangeRateOptions options, ILogger? logger = null, TimeProvider? timeProvider = null)
         : this(options, CreateOwnedClient(options), logger, timeProvider)
@@ -136,7 +138,9 @@ public sealed class YahooExchangeRateProvider
     /// <param name="source">The chart source.</param>
     /// <param name="options">The provider options.</param>
     /// <param name="logger">The logger. <see langword="null" /> selects <see cref="NullLogger.Instance" />.</param>
-    /// <param name="timeProvider">The time source. <see langword="null" /> selects <see cref="TimeProvider.System" />.</param>
+    /// <param name="timeProvider">
+    /// The time source. <see langword="null" /> selects <see cref="TimeProvider.System" />.
+    /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="source" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>

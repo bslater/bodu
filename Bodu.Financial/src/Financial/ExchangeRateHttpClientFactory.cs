@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateHttpClientFactory.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -30,7 +30,9 @@ public static class ExchangeRateHttpClientFactory
     /// The <c>User-Agent</c> header applied to every request. A <see langword="null" />, empty, or white-space value
     /// suppresses the header.
     /// </param>
-    /// <param name="httpTimeout">The request timeout applied to the client. Values not greater than zero are ignored.</param>
+    /// <param name="httpTimeout">
+    /// The request timeout applied to the client. Values not greater than zero are ignored.
+    /// </param>
     /// <returns>A new, configured <see cref="HttpClient" />.</returns>
     /// <remarks>
     /// The timeout is applied to <see cref="HttpClient.Timeout" /> directly because a provider-owned client has no

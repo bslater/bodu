@@ -15,8 +15,7 @@ namespace Bodu.IO.Hashing;
 /// Base class for the <c>CityHash</c> family of non-cryptographic hash algorithms developed by Google. See the
 /// <a href="https://github.com/google/cityhash">CityHash reference repository</a> for the specification.
 /// </summary>
-/// <typeparam name="T">
-/// The concrete CityHash variant derived from this class. Must expose a public parameterless constructor.
+/// <typeparam name="T">The concrete CityHash variant derived from this class. Must expose a public parameterless constructor.
 /// </typeparam>
 /// <remarks>
 /// <para>

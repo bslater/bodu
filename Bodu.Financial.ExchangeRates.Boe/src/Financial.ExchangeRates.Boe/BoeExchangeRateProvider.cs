@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoeExchangeRateProvider.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -19,8 +19,8 @@ namespace Bodu.Financial.ExchangeRates.Boe;
 /// The provider derives from <see cref="WebExchangeRateProvider" />, which supplies the in-memory accumulator, the
 /// immutable snapshot, the full synchronous and asynchronous lookup matrix, and ownership of the
 /// <see cref="HttpClient" /> when this provider creates one. The IADB is queried by date range, so loading is
-/// range-based: each load fetches the requested inclusive range and accumulates it. Use <see cref="LoadRangeAsync" /> to
-/// warm a range.
+/// range-based: each load fetches the requested inclusive range and accumulates it. Use <see cref="LoadRangeAsync" />
+/// to warm a range.
 /// </para>
 /// <para>
 /// <strong>HttpClient ownership.</strong> The constructor that takes only options builds and owns an
@@ -93,8 +93,12 @@ public sealed class BoeExchangeRateProvider
     /// </summary>
     /// <param name="options">The provider options.</param>
     /// <param name="logger">The logger. <see langword="null" /> selects <see cref="NullLogger.Instance" />.</param>
-    /// <param name="timeProvider">The time source. <see langword="null" /> selects <see cref="TimeProvider.System" />.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="options" /> is <see langword="null" />.</exception>
+    /// <param name="timeProvider">
+    /// The time source. <see langword="null" /> selects <see cref="TimeProvider.System" />.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="options" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> fails validation.</exception>
     public BoeExchangeRateProvider(BoeExchangeRateOptions options, ILogger? logger = null, TimeProvider? timeProvider = null)
         : this(options, CreateOwnedClient(options), logger, timeProvider)
@@ -108,7 +112,9 @@ public sealed class BoeExchangeRateProvider
     /// <param name="httpClient">The HTTP client used to download range responses.</param>
     /// <param name="options">The provider options.</param>
     /// <param name="logger">The logger. <see langword="null" /> selects <see cref="NullLogger.Instance" />.</param>
-    /// <param name="timeProvider">The time source. <see langword="null" /> selects <see cref="TimeProvider.System" />.</param>
+    /// <param name="timeProvider">
+    /// The time source. <see langword="null" /> selects <see cref="TimeProvider.System" />.
+    /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="httpClient" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
@@ -125,7 +131,9 @@ public sealed class BoeExchangeRateProvider
     /// <param name="source">The table source.</param>
     /// <param name="options">The provider options.</param>
     /// <param name="logger">The logger. <see langword="null" /> selects <see cref="NullLogger.Instance" />.</param>
-    /// <param name="timeProvider">The time source. <see langword="null" /> selects <see cref="TimeProvider.System" />.</param>
+    /// <param name="timeProvider">
+    /// The time source. <see langword="null" /> selects <see cref="TimeProvider.System" />.
+    /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="source" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
@@ -136,8 +144,8 @@ public sealed class BoeExchangeRateProvider
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="BoeExchangeRateProvider" /> class from an owned client, building the
-    /// table source over it before forwarding to the core constructor.
+    /// Initializes a new instance of the <see cref="BoeExchangeRateProvider" /> class from an owned client, building
+    /// the table source over it before forwarding to the core constructor.
     /// </summary>
     /// <param name="options">The provider options.</param>
     /// <param name="ownedHttpClient">The HTTP client this provider creates and owns.</param>

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlReaderRow.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -17,8 +17,8 @@ namespace Bodu.Text.Toml.Reader;
 /// No scalar holds a reference. A numeric, Boolean, or date/time scalar packs its value into <see cref="ScalarBits" />
 /// (with <see cref="ScalarOffsetMinutes" /> for an offset date-time), and a string scalar packs its content's source
 /// span into <see cref="ScalarBits" /> instead — decoded on demand from the retained source rather than at parse. The
-/// <c>As…</c> value accessors and the <c>StringContent…</c> span accessors are the single counterpart to the packing the
-/// builder performs, so the two cannot drift.
+/// <c>As…</c> value accessors and the <c>StringContent…</c> span accessors are the single counterpart to the packing
+/// the builder performs, so the two cannot drift.
 /// </remarks>
 internal struct TomlReaderRow
 {
@@ -127,7 +127,9 @@ internal struct TomlReaderRow
     /// <summary>
     /// Decodes this local-date-time scalar's value.
     /// </summary>
-    /// <returns>The local date-time, whose <see cref="DateTime.Kind" /> is <see cref="DateTimeKind.Unspecified" />.</returns>
+    /// <returns>
+    /// The local date-time, whose <see cref="DateTime.Kind" /> is <see cref="DateTimeKind.Unspecified" />.
+    /// </returns>
     public readonly DateTime AsDateTime() =>
         new(ScalarBits, DateTimeKind.Unspecified);
 
@@ -141,14 +143,18 @@ internal struct TomlReaderRow
     /// <summary>
     /// Gets the source byte offset at which this string scalar's content begins, inside its delimiters.
     /// </summary>
-    /// <returns>The content start offset, paired with <see cref="StringContentLength" /> to slice the retained source.</returns>
+    /// <returns>
+    /// The content start offset, paired with <see cref="StringContentLength" /> to slice the retained source.
+    /// </returns>
     public readonly int StringContentStart =>
         (int)(ScalarBits >> 32);
 
     /// <summary>
     /// Gets the byte length of this string scalar's content.
     /// </summary>
-    /// <returns>The content length, paired with <see cref="StringContentStart" /> to slice the retained source.</returns>
+    /// <returns>
+    /// The content length, paired with <see cref="StringContentStart" /> to slice the retained source.
+    /// </returns>
     public readonly int StringContentLength =>
         (int)((uint)ScalarBits & LengthMask);
 

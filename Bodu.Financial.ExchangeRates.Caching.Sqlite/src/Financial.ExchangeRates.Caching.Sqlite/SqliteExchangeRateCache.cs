@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SqliteExchangeRateCache.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -81,8 +81,8 @@ public sealed class SqliteExchangeRateCache
 
     /// <summary>
     /// The striped per-pair locks guarding the read-modify-write sequences in <see cref="Store" />,
-    /// <see cref="RecordCoverage" />, and <see cref="StoreFetchedRange" />. One lock object is created per pair on first
-    /// use and reused thereafter.
+    /// <see cref="RecordCoverage" />, and <see cref="StoreFetchedRange" />. One lock object is created per pair on
+    /// first use and reused thereafter.
     /// </summary>
     private readonly ConcurrentDictionary<ExchangeRatePair, object> _pairLocks = new();
 

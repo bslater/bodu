@@ -303,7 +303,9 @@ public abstract class CachingExchangeRateProviderBase
     /// The cache-write instant representing the served data, or <see langword="null" /> when no cached row backs it.
     /// </param>
     /// <param name="asOf">The lookup instant the served data's age is derived from.</param>
-    /// <returns>An <see cref="ExchangeRateProvenance" /> carrying <see cref="ExchangeRateOrigin.Cache" /> lineage.</returns>
+    /// <returns>
+    /// An <see cref="ExchangeRateProvenance" /> carrying <see cref="ExchangeRateOrigin.Cache" /> lineage.
+    /// </returns>
     /// <remarks>
     /// Used by every serve path — single-date and range, synchronous and asynchronous — so a cache hit reports an
     /// identical provenance regardless of the surface it was served through.

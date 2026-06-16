@@ -7,10 +7,12 @@
 namespace Bodu.Test.IO;
 
 /// <summary>
-/// A disposable wrapper around a single temporary file. Writes the supplied content on creation and deletes the file
-/// on disposal so individual tests do not leak files into the temp directory.
+/// A disposable wrapper around a single temporary file. Writes the supplied content on creation and deletes the file on
+/// disposal so individual tests do not leak files into the temp directory.
 /// </summary>
-/// <remarks>This class is intended exclusively for test harness use and must not appear in production code.</remarks>
+/// <remarks>
+/// This class is intended exclusively for test harness use and must not appear in production code.
+/// </remarks>
 public sealed class TempFileScope
     : IDisposable
 {

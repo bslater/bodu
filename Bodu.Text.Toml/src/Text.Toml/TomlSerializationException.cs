@@ -88,7 +88,9 @@ public sealed class TomlSerializationException
     /// Prepends a path segment to an existing member path, joining a key segment with a dot and an array-index segment
     /// (which already begins with <c>[</c>) directly.
     /// </summary>
-    /// <param name="segment">The parent segment to prepend, a member or dictionary key, or an array index of the form <c>[i]</c>.</param>
+    /// <param name="segment">
+    /// The parent segment to prepend, a member or dictionary key, or an array index of the form <c>[i]</c>.
+    /// </param>
     /// <param name="childPath">The already-accumulated child path, or <see langword="null" /> when none.</param>
     /// <returns>The combined path.</returns>
     internal static string CombinePath(string segment, string? childPath)

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateCacheRules.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -46,8 +46,8 @@ public static class ExchangeRateCacheRules
     /// </returns>
     /// <remarks>
     /// Invalid rows are silently skipped on both write (rejecting bad incoming data) and read (rejecting persisted or
-    /// tampered rows) so a malformed cache never surfaces a nonsensical rate. A small clock-skew tolerance is allowed so
-    /// a row stamped marginally ahead of the evaluating clock is not discarded.
+    /// tampered rows) so a malformed cache never surfaces a nonsensical rate. A small clock-skew tolerance is allowed
+    /// so a row stamped marginally ahead of the evaluating clock is not discarded.
     /// </remarks>
     public static bool IsValid(CachedExchangeRate row, DateTimeOffset asOf) =>
         row.Rate > 0m
@@ -92,8 +92,8 @@ public static class ExchangeRateCacheRules
     /// Thrown when <paramref name="existing" /> or <paramref name="incoming" /> is <see langword="null" />.
     /// </exception>
     /// <remarks>
-    /// An incoming invalid row is skipped before it can overwrite a valid stored row for the same date. After the merge,
-    /// every surviving row is re-checked for freshness and validity so the store self-cleans on each write.
+    /// An incoming invalid row is skipped before it can overwrite a valid stored row for the same date. After the
+    /// merge, every surviving row is re-checked for freshness and validity so the store self-cleans on each write.
     /// </remarks>
     public static List<CachedExchangeRate> MergeRows(
         IEnumerable<CachedExchangeRate> existing,

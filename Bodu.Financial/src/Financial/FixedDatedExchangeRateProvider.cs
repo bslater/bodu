@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FixedDatedExchangeRateProvider.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -398,8 +398,8 @@ public sealed class FixedDatedExchangeRateProvider
     }
 
     /// <summary>
-    /// Attempts to resolve the most recent observation for the supplied <paramref name="pair" /> by walking the provider
-    /// priority and selecting the latest dated observation of the first matching series.
+    /// Attempts to resolve the most recent observation for the supplied <paramref name="pair" /> by walking the
+    /// provider priority and selecting the latest dated observation of the first matching series.
     /// </summary>
     /// <param name="pair">The pair to probe, possibly the inverse of the user's requested pair.</param>
     /// <param name="options">The lookup options to apply.</param>

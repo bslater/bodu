@@ -10,11 +10,13 @@ namespace Bodu.Test.Collections;
 
 /// <summary>
 /// Wraps an array as an <see cref="IReadOnlyCollection{T}" /> only — deliberately not implementing
-/// <see cref="ICollection{T}" /> or <see cref="IList{T}" /> — so that capacity-hint and projection helpers exercise
-/// the read-only-collection code path rather than the mutable-collection one.
+/// <see cref="ICollection{T}" /> or <see cref="IList{T}" /> — so that capacity-hint and projection helpers exercise the
+/// read-only-collection code path rather than the mutable-collection one.
 /// </summary>
 /// <typeparam name="T">The element type.</typeparam>
-/// <remarks>This class is intended exclusively for test harness use and must not appear in production code.</remarks>
+/// <remarks>
+/// This class is intended exclusively for test harness use and must not appear in production code.
+/// </remarks>
 public sealed class ReadOnlyCollectionOnly<T>
     : IReadOnlyCollection<T>
 {
