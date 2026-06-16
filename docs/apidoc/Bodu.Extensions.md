@@ -67,7 +67,7 @@ using Bodu.Extensions;
 // Calendar arithmetic — first Monday of Q3, ISO week, age.
 DateTime monday = new DateTime(2026, 7, 1).GetFirstDateOfWeek(DayOfWeek.Monday);
 DateTime endQ   = DateTime.Today.LastDateOfQuarter();
-int isoWeek    = DateTime.Today.IsoWeekOfYear();
+int isoWeek    = DateTime.Today.IsoWeekOfYear;
 int age        = new DateOnly(1990, 5, 4).Age();
 
 // Numeric — bit operations and rounding.
