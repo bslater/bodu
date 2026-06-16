@@ -1,0 +1,131 @@
+name: Release
+
+# Builds, strong-name (real) signs, packs, and optionally publishes the Bodu packages.
+#
+# Triggered for a release by pushing a version tag (e.g. v1.0.0), or manually via the Actions tab.
+# The private strong-name key is never stored in the repo: it is supplied as the base64-encoded
+# BODU_SNK secret, decoded to a path outside the working tree for the duration of the job, and shredded
+# afterwards. Real signing is opt-in here (BoduRealSign=true); ordinary CI builds stay public-signed.
+#
+# Required/optional secrets:
+#   BODU_SNK        (required) base64 of the full private Bodu.snk strong-name key.
+#   NUGET_API_KEY   (optional) nuget.org push key. When unset, packages are built and uploaded as
+#                   artifacts but not published, so the workflow is safe to run as a dry run.
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: 'Publish the packed packages to nuget.org (requires NUGET_API_KEY).'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    env:
+      CONFIGURATION: Release
+      ARTIFACTS_DIR: ${{ github.workspace }}/artifacts
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+            10.0.x
+
+      - name: Pack Bodu.CodeStyle.XmlDocumentation analyzer (local feed)
+        working-directory: Bodu.CodeStyle
+        run: |
+          dotnet pack Bodu.CodeStyle.XmlDocumentation/Bodu.CodeStyle.XmlDocumentation.csproj \
+            --configuration "$CONFIGURATION" \
+            --output "${{ github.workspace }}/local-packages"
+
+      - name: Guard — fail fast if the public key is not configured
+        shell: bash
+        run: |
+          # Real signing produces strong-named assemblies whose retained cross-library
+          # InternalsVisibleTo grants must carry the public key (BoduPublicKey). Refuse to publish a
+          # half-configured release where signing is on but the public key was never populated.
+          key=$(dotnet msbuild Bodu.Core/src/Bodu.Core.csproj -nologo -v:q \
+            -getProperty:BoduPublicKey 2>/dev/null | tr -d '[:space:]')
+          if [ -z "$key" ]; then
+            echo "::error::BoduPublicKey is empty in bld/Signing.props. Populate it (sn -tp Bodu.public.snk) before releasing a signed build."
+            exit 1
+          fi
+          echo "BoduPublicKey is configured."
+
+      - name: Decode strong-name private key
+        shell: bash
+        env:
+          BODU_SNK: ${{ secrets.BODU_SNK }}
+        run: |
+          if [ -z "$BODU_SNK" ]; then
+            echo "::error::Secret BODU_SNK is not set. Add the base64 of the private Bodu.snk key."
+            exit 1
+          fi
+          printf '%s' "$BODU_SNK" | base64 -d > "$RUNNER_TEMP/Bodu.snk"
+          # Sanity check: a valid .snk is non-empty binary.
+          if [ ! -s "$RUNNER_TEMP/Bodu.snk" ]; then
+            echo "::error::Decoded key is empty — BODU_SNK is not valid base64 of a .snk file."
+            exit 1
+          fi
+
+      - name: Pack (real-signed, shipping)
+        shell: bash
+        run: |
+          dotnet pack bodu.slnx \
+            --configuration "$CONFIGURATION" \
+            --output "$ARTIFACTS_DIR" \
+            -p:BoduSignAssembly=true \
+            -p:BoduRealSign=true \
+            -p:BoduStrongNameKeyFile="$RUNNER_TEMP/Bodu.snk" \
+            -p:BoduShipping=true
+
+      - name: Shred strong-name private key
+        if: always()
+        shell: bash
+        run: |
+          if [ -f "$RUNNER_TEMP/Bodu.snk" ]; then
+            shred -u "$RUNNER_TEMP/Bodu.snk" 2>/dev/null || rm -f "$RUNNER_TEMP/Bodu.snk"
+          fi
+
+      - name: Upload package artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget-packages
+          path: |
+            ${{ env.ARTIFACTS_DIR }}/*.nupkg
+            ${{ env.ARTIFACTS_DIR }}/*.snupkg
+          retention-days: 30
+          if-no-files-found: error
+
+      - name: Publish to nuget.org
+        # Publish on a tag release, or a manual run that opted in — and only when the key exists.
+        if: ${{ github.event_name == 'push' || github.event.inputs.publish == 'true' }}
+        shell: bash
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        run: |
+          if [ -z "$NUGET_API_KEY" ]; then
+            echo "::warning::NUGET_API_KEY is not set — skipping publish. Packages remain available as artifacts."
+            exit 0
+          fi
+          dotnet nuget push "$ARTIFACTS_DIR"/*.nupkg \
+            --api-key "$NUGET_API_KEY" \
+            --source https://api.nuget.org/v3/index.json \
+            --skip-duplicate
