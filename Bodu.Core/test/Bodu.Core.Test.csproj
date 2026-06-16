@@ -15,15 +15,6 @@
     <NoWarn>$(NoWarn);CS8600;CS8601;CS8602;CS8604;CS8618;CS8625</NoWarn>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="coverlet.collector" Version="10.0.0">
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.5.0" />
-    <PackageReference Include="MSTest.TestAdapter" Version="4.2.1" />
-    <PackageReference Include="MSTest.TestFramework" Version="4.2.1" />
-  </ItemGroup>
-
   <!-- Exclude files that are not supported in .net standards -->
   <ItemGroup>
     <Compile Remove="Collections.Generic.Concurrent\ConcurrentCircularBufferTests.TrimExcess.cs" />
@@ -31,7 +22,6 @@
 
   <!-- Exclude files that are incompatible with netstandard2.0 -->
   <ItemGroup>
-    <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
     <!--
       Static-import ExceptionAssert so the unqualified AssertGuard(...) calls in the existing
       ThrowHelperTests partial-class files continue to resolve after the private partial helper was

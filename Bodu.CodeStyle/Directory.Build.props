@@ -7,6 +7,13 @@
       PackageReference cycle). The flag is read in bld/Bodu.props.
     -->
     <BoduCodeStyleAnalyzers>false</BoduCodeStyleAnalyzers>
+
+    <!--
+      The root Directory.Build.targets centralises the test harness (MSTest framework/adapter, test
+      SDK, coverage collector) for the main solution. The Bodu.CodeStyle test projects pin their own
+      older, Roslyn-compatible versions, so they opt out and keep their explicit PackageReferences.
+    -->
+    <BoduManagedTestDependencies>false</BoduManagedTestDependencies>
   </PropertyGroup>
 
   <!--

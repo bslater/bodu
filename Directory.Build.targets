@@ -78,6 +78,24 @@
     </PackageReference>
   </ItemGroup>
 
+  <!--
+    Common test harness for every test project: the MSTest framework/adapter, the test SDK, the
+    coverage collector, and the project-wide MSTest using. Centralised here (rather than repeated in
+    each test csproj) and gated on IsTestProject, which test projects set in their body before this
+    targets file is evaluated. The Bodu.CodeStyle subtree opts out via BoduManagedTestDependencies so
+    it can keep its own (older, Roslyn-compatible) pins.
+  -->
+  <ItemGroup Condition="'$(IsTestProject)' == 'true' and '$(BoduManagedTestDependencies)' != 'false'">
+    <PackageReference Include="coverlet.collector" Version="10.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.5.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="4.2.1" />
+    <PackageReference Include="MSTest.TestFramework" Version="4.2.1" />
+    <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
+  </ItemGroup>
+
   <!-- Formatting analysers applied to all projects. -->
   <ItemGroup>
     <PackageReference Include="Roslynator.Formatting.Analyzers" Version="4.15.0">
