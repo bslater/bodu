@@ -223,7 +223,7 @@ public sealed class AggregatingExchangeRateProvider
         if (options.AllowSameCurrencyIdentityRate && string.Equals(pair.FromIsoCode, pair.ToIsoCode, StringComparison.Ordinal))
         {
             ExchangeRate identity = new(pair.FromIsoCode, pair.ToIsoCode, date, 1m, IdentityProvider);
-            result = new ExchangeRateLookupResult(identity, date, options.DateResolution, 0);
+            result = new ExchangeRateLookupResult(identity, date, options.DateResolution, 0, ExchangeRateProvenance.Live(identity.Provider));
             return true;
         }
 

@@ -14,6 +14,10 @@ coverage, and validation semantics — and is validated against the same shared 
   windows per pair.
 * Decimal rates are stored as invariant strings and all dates and instants as invariant ISO text (`yyyy-MM-dd` for
   dates, round-trip `"O"` for instants) so precision and scale round-trip losslessly.
+* The `rates` table carries an additive `observed_at TEXT NULL` column holding the upstream fetch instant
+  (`ExchangeRate.FetchedAtUtc`), distinct from the `cached_at` cache-write instant. A pre-existing database created
+  before the column was added is migrated idempotently on open (`ALTER TABLE ... ADD COLUMN`, a no-op when already
+  present); rows from before the migration, or whose source supplied no fetch instant, store and read back `null`.
 
 ## Behaviour
 
@@ -26,6 +30,11 @@ coverage, and validation semantics — and is validated against the same shared 
   `ExchangeRateCacheWriteStatus` (`Stored` / `Failed` / `Skipped`).
 * Single-process best-effort: same-pair writes are serialized under a per-pair lock and run in a transaction. A storage
   failure (`SqliteException` / `IOException`) degrades to an empty read or skipped write rather than throwing.
+
+Because the persisted `observed_at` is restored onto a served rate's `ExchangeRate.FetchedAtUtc`, a cache-served rate
+reports its **original** upstream fetch instant (data age), distinct from the cache-write age surfaced through
+`ExchangeRateLookupResult.Provenance` (`CachedAtUtc` / `Age`). See the served-rate provenance notes in the
+`Bodu.Financial.ExchangeRates.Caching` README.
 
 ## Usage
 

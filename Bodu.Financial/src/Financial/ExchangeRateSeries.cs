@@ -46,6 +46,10 @@ public sealed class ExchangeRateSeries
     /// <param name="rates">
     /// The observations to include. Must contain at least one entry and must not contain duplicate dates.
     /// </param>
+    /// <param name="fetchedAtUtc">
+    /// The UTC instant at which the load that produced this series downloaded its source data, or
+    /// <see langword="null" /> when not tracked.
+    /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="provider" /> or <paramref name="rates" /> is <see langword="null" />.
     /// </exception>
@@ -59,7 +63,8 @@ public sealed class ExchangeRateSeries
     public ExchangeRateSeries(
         ExchangeRatePair pair,
         string provider,
-        IEnumerable<(DateOnly Date, decimal Rate)> rates)
+        IEnumerable<(DateOnly Date, decimal Rate)> rates,
+        DateTimeOffset? fetchedAtUtc = null)
     {
         FinancialThrowHelper.ThrowIfInvalidExchangeRatePair(pair);
         FinancialThrowHelper.ThrowIfNullOrWhiteSpaceProvider(provider);
@@ -67,6 +72,7 @@ public sealed class ExchangeRateSeries
 
         Pair = pair;
         Provider = provider;
+        FetchedAtUtc = fetchedAtUtc;
         _storage = ExchangeRateSeriesStorage.Create(rates, nameof(rates));
     }
 
@@ -78,6 +84,10 @@ public sealed class ExchangeRateSeries
     /// <param name="provider">The non-empty identifier of the publishing source.</param>
     /// <param name="observations">
     /// The observations to include. Must contain at least one entry and must not contain duplicate dates.
+    /// </param>
+    /// <param name="fetchedAtUtc">
+    /// The UTC instant at which the load that produced this series downloaded its source data, or
+    /// <see langword="null" /> when not tracked.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="provider" /> or <paramref name="observations" /> is <see langword="null" />.
@@ -92,7 +102,8 @@ public sealed class ExchangeRateSeries
     public ExchangeRateSeries(
         ExchangeRatePair pair,
         string provider,
-        IEnumerable<ExchangeRateObservation> observations)
+        IEnumerable<ExchangeRateObservation> observations,
+        DateTimeOffset? fetchedAtUtc = null)
     {
         FinancialThrowHelper.ThrowIfInvalidExchangeRatePair(pair);
         FinancialThrowHelper.ThrowIfNullOrWhiteSpaceProvider(provider);
@@ -100,6 +111,7 @@ public sealed class ExchangeRateSeries
 
         Pair = pair;
         Provider = provider;
+        FetchedAtUtc = fetchedAtUtc;
         _storage = ExchangeRateSeriesStorage.Create(observations, nameof(observations));
     }
 
@@ -110,10 +122,15 @@ public sealed class ExchangeRateSeries
     /// <param name="pair">The currency pair this series describes.</param>
     /// <param name="provider">The non-empty identifier of the publishing source.</param>
     /// <param name="storage">The storage instance the new series should adopt.</param>
-    internal ExchangeRateSeries(ExchangeRatePair pair, string provider, ExchangeRateSeriesStorage storage)
+    /// <param name="fetchedAtUtc">
+    /// The UTC instant at which the load that produced this series downloaded its source data, or
+    /// <see langword="null" /> when not tracked.
+    /// </param>
+    internal ExchangeRateSeries(ExchangeRatePair pair, string provider, ExchangeRateSeriesStorage storage, DateTimeOffset? fetchedAtUtc = null)
     {
         Pair = pair;
         Provider = provider;
+        FetchedAtUtc = fetchedAtUtc;
         _storage = storage;
     }
 
@@ -128,6 +145,20 @@ public sealed class ExchangeRateSeries
     /// </summary>
     /// <returns>A non-empty provider identifier.</returns>
     public string Provider { get; }
+
+    /// <summary>
+    /// Gets the UTC instant at which the load that produced this series downloaded its source data, or
+    /// <see langword="null" /> when not tracked.
+    /// </summary>
+    /// <returns>
+    /// The fetch instant when known; otherwise <see langword="null" />.
+    /// </returns>
+    /// <remarks>
+    /// The fetch instant is recorded at the series grain and stamped onto every <see cref="ExchangeRate" /> the series
+    /// materializes, so downstream audit consumers can attribute a served rate to the moment its backing data was
+    /// fetched. It is provenance metadata only and does not affect resolution.
+    /// </remarks>
+    public DateTimeOffset? FetchedAtUtc { get; }
 
     /// <summary>
     /// Gets the number of observations stored in this series.

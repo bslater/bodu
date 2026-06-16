@@ -25,4 +25,23 @@ public partial class EcbExchangeRateProviderTests
 
         Assert.AreEqual(1.0545m, rate);
     }
+
+    /// <summary>
+    /// Verifies that a served rate is stamped with the load instant captured from the injected
+    /// <see cref="TimeProvider" /> at the moment the feed was downloaded.
+    /// </summary>
+    [TestMethod]
+    public async Task GetRate_WhenFeedLoaded_ShouldStampServedRateWithFetchInstant()
+    {
+        DateTimeOffset fetchedAt = new(2023, 1, 3, 16, 0, 0, TimeSpan.Zero);
+        EcbExchangeRateOptions options = new() { AllowSynchronousNetworkAccess = false, EnableDiskCache = false };
+        FixtureEcbExchangeRateTableSource source = new(options);
+        MutableTimeProvider timeProvider = new(fetchedAt);
+        EcbExchangeRateProvider provider = new(source, options, logger: null, timeProvider);
+        await provider.LoadRangeAsync(new DateOnly(2023, 1, 1), new DateOnly(2023, 12, 31));
+
+        ExchangeRateLookupResult result = provider.GetRate("EUR", "USD", new DateOnly(2023, 1, 3));
+
+        Assert.AreEqual(fetchedAt, result.Rate.FetchedAtUtc);
+    }
 }

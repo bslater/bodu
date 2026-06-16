@@ -21,6 +21,8 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// <para>
 /// A file written before coverage was tracked has no <c>[[Coverage]]</c> section; it deserializes to its rate rows with
 /// empty coverage and no error, so older caches remain readable and simply refetch ranges until coverage is recorded.
+/// Likewise, an entry written before the upstream fetch instant was tracked has no <c>ObservedAtUtc</c> key and
+/// deserializes that field to <see langword="null" />.
 /// </para>
 /// <para>
 /// Files are laid out under a per-provider subdirectory of the configured cache directory; malformed content is treated
@@ -36,11 +38,13 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// Date = 2023-01-03
 /// Rate = "0.5000"
 /// CachedAtUtc = 2023-01-04T09:15:00+00:00
+/// ObservedAtUtc = 2023-01-03T16:00:00+00:00
 ///
 /// [[Entries]]
 /// Date = 2023-01-06
 /// Rate = "0.5100"
 /// CachedAtUtc = 2023-01-04T09:15:00+00:00
+/// ObservedAtUtc = 2023-01-06T16:00:00+00:00
 ///
 /// [[Coverage]]
 /// Start = 2023-01-03
@@ -83,7 +87,7 @@ public sealed class TomlFileExchangeRateCache
         };
 
         foreach (CachedExchangeRate entry in state.Entries)
-            file.Entries.Add(new ExchangeRateCacheEntry { Date = entry.Date, Rate = entry.Rate, CachedAtUtc = entry.CachedAtUtc });
+            file.Entries.Add(new ExchangeRateCacheEntry { Date = entry.Date, Rate = entry.Rate, CachedAtUtc = entry.CachedAtUtc, ObservedAtUtc = entry.ObservedAtUtc });
 
         foreach (CoverageWindow window in state.Coverage)
             file.Coverage.Add(new ExchangeRateCacheCoverageEntry { Start = window.Start, End = window.End, FetchedAtUtc = window.FetchedAtUtc });
@@ -104,8 +108,10 @@ public sealed class TomlFileExchangeRateCache
             List<CachedExchangeRate> entries = new(file.Entries?.Count ?? 0);
             if (file.Entries is { Count: > 0 })
             {
+                // A pre-C file with no ObservedAtUtc key deserializes that property to null, same as the missing
+                // [[Coverage]] array handling above, so older caches keep their rows and simply carry no fetch instant.
                 foreach (ExchangeRateCacheEntry entry in file.Entries)
-                    entries.Add(new CachedExchangeRate(entry.Date, entry.Rate, entry.CachedAtUtc));
+                    entries.Add(new CachedExchangeRate(entry.Date, entry.Rate, entry.CachedAtUtc, entry.ObservedAtUtc));
             }
 
             List<CoverageWindow> coverage = new(file.Coverage?.Count ?? 0);

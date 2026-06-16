@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FixedDatedExchangeRateProvider.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -157,7 +157,7 @@ public sealed class FixedDatedExchangeRateProvider
         {
             var identityDate = LatestDateInBook();
             ExchangeRate identity = new(fromIsoCode, toIsoCode, identityDate, 1m, IdentityProviderName);
-            return new ExchangeRateLookupResult(identity, identityDate, options.DateResolution, 0);
+            return new ExchangeRateLookupResult(identity, identityDate, options.DateResolution, 0, ExchangeRateProvenance.Live(identity.Provider));
         }
 
         ExchangeRatePair directPair = new(fromIsoCode, toIsoCode);
@@ -213,7 +213,7 @@ public sealed class FixedDatedExchangeRateProvider
             string.Equals(fromIsoCode, toIsoCode, StringComparison.Ordinal))
         {
             ExchangeRate identity = new(fromIsoCode, toIsoCode, date, 1m, IdentityProviderName);
-            result = new ExchangeRateLookupResult(identity, date, options.DateResolution, 0);
+            result = new ExchangeRateLookupResult(identity, date, options.DateResolution, 0, ExchangeRateProvenance.Live(identity.Provider));
             return true;
         }
 
@@ -384,11 +384,12 @@ public sealed class FixedDatedExchangeRateProvider
             var reportedTo = isInverted ? pair.FromIsoCode : pair.ToIsoCode;
 
             // Pass the originally observed rate so an inverted conversion divides by it rather than multiplying by a
-            // pre-rounded reciprocal; the reported Rate is still the From->To multiplier.
-            var rate = ExchangeRate.FromObservedRate(reportedFrom, reportedTo, resolvedDate, rawRate, series.Provider, isInverted);
+            // pre-rounded reciprocal; the reported Rate is still the From->To multiplier. The series' fetch instant is
+            // stamped onto the served rate as provenance.
+            var rate = ExchangeRate.FromObservedRate(reportedFrom, reportedTo, resolvedDate, rawRate, series.Provider, isInverted, series.FetchedAtUtc);
 
             var offsetDays = Math.Abs(resolvedDate.DayNumber - requestedDate.DayNumber);
-            result = new ExchangeRateLookupResult(rate, requestedDate, options.DateResolution, offsetDays);
+            result = new ExchangeRateLookupResult(rate, requestedDate, options.DateResolution, offsetDays, ExchangeRateProvenance.Live(rate.Provider));
             return true;
         }
 
@@ -425,9 +426,11 @@ public sealed class FixedDatedExchangeRateProvider
 
             var reportedFrom = isInverted ? pair.ToIsoCode : pair.FromIsoCode;
             var reportedTo = isInverted ? pair.FromIsoCode : pair.ToIsoCode;
-            var rate = ExchangeRate.FromObservedRate(reportedFrom, reportedTo, latest.Date, latest.Rate, series.Provider, isInverted);
 
-            result = new ExchangeRateLookupResult(rate, latest.Date, options.DateResolution, 0);
+            // Stamp the series' fetch instant onto the served rate as provenance.
+            var rate = ExchangeRate.FromObservedRate(reportedFrom, reportedTo, latest.Date, latest.Rate, series.Provider, isInverted, series.FetchedAtUtc);
+
+            result = new ExchangeRateLookupResult(rate, latest.Date, options.DateResolution, 0, ExchangeRateProvenance.Live(rate.Provider));
             return true;
         }
 
@@ -437,7 +440,7 @@ public sealed class FixedDatedExchangeRateProvider
 
     /// <summary>
     /// Collects the in-window observations for the supplied <paramref name="pair" /> from the first series that matches
-    /// it under the provider priority, appending one <see cref="ExchangeRateLookupResult" /> per observation.
+    /// it under the provider priority, appending one <see cref="ExchangeRate" /> per observation.
     /// </summary>
     /// <param name="pair">The pair to probe, possibly the inverse of the user's requested pair.</param>
     /// <param name="startDate">The inclusive start of the range.</param>
@@ -472,7 +475,8 @@ public sealed class FixedDatedExchangeRateProvider
                 if (observation.Date < startDate || observation.Date > endDate)
                     continue;
 
-                result.Add(ExchangeRate.FromObservedRate(reportedFrom, reportedTo, observation.Date, observation.Rate, series.Provider, isInverted));
+                // Stamp the resolving series' fetch instant onto each materialized observation.
+                result.Add(ExchangeRate.FromObservedRate(reportedFrom, reportedTo, observation.Date, observation.Rate, series.Provider, isInverted, series.FetchedAtUtc));
             }
 
             return true;

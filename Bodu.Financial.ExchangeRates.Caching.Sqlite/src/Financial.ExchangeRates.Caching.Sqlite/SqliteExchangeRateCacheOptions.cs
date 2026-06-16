@@ -50,8 +50,15 @@ public class SqliteExchangeRateCacheOptions
     /// </value>
     /// <returns>The configured connection string, or <see langword="null" /> when none is set.</returns>
     /// <remarks>
+    /// <para>
     /// Takes precedence over <see cref="DatabaseFilePath" /> when both are supplied, allowing scenarios such as a
     /// shared in-memory database (<c>Data Source=name;Mode=Memory;Cache=Shared</c>) or custom connection flags.
+    /// </para>
+    /// <para>
+    /// A supplied value is not parsed or validated when the options are constructed — only its presence is checked. A
+    /// malformed or unusable connection string is therefore not rejected up front; it surfaces later at connect time,
+    /// where the cache's best-effort behaviour degrades to an empty read or a skipped write rather than throwing.
+    /// </para>
     /// </remarks>
     public string? ConnectionString { get; set; }
 

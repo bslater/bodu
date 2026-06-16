@@ -125,4 +125,27 @@ public sealed partial class CachingExchangeRateProviderTests
         Assert.AreEqual(2, inner.GetRatesAsyncCallCount);
         Assert.AreEqual(2, failingCache.StoreFetchedRangeCallCount);
     }
+
+    /// <summary>
+    /// Verifies that a backend modelling a swallowed storage write reports <see cref="ExchangeRateCacheWriteStatus.Failed" />
+    /// from <see cref="IExchangeRateCache.StoreFetchedRange" />, the contract signal the decorator relies on to refetch
+    /// rather than trust coverage that was never persisted.
+    /// </summary>
+    [TestMethod]
+    public void StoreFetchedRange_WhenBackendSwallowsWrite_ShouldReportFailed()
+    {
+        var failingCache = new FailingStoreExchangeRateCache(Provider);
+        var now = _clock.GetUtcNow();
+
+        ExchangeRateCacheWriteStatus status = failingCache.StoreFetchedRange(
+            new ExchangeRatePair("AUD", "USD"),
+            new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5m, now) },
+            new DateOnly(2023, 1, 3),
+            new DateOnly(2023, 1, 3),
+            Duration,
+            now);
+
+        Assert.AreEqual(ExchangeRateCacheWriteStatus.Failed, status);
+        Assert.AreEqual(1, failingCache.StoreFetchedRangeCallCount);
+    }
 }

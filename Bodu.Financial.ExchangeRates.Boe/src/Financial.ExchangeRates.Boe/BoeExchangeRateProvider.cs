@@ -327,12 +327,15 @@ public sealed class BoeExchangeRateProvider
             throw;
         }
 
+        // Capture the load instant immediately after the download completes so it stamps every rate this range produces.
+        var fetchedAt = TimeProvider.GetUtcNow();
+
         lock (SyncRoot)
         {
             foreach (BoeSeriesInfo info in table.GetSeriesInfo())
                 _series[info.Pair] = info;
 
-            var count = AddObservations(table.EnumerateRates());
+            var count = AddObservations(table.EnumerateRates(), fetchedAt);
             _loadedRanges.Add((startDate, endDate));
             RebuildSnapshot();
 

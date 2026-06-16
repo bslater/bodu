@@ -73,4 +73,35 @@ public partial class ExchangeRateTableBuilderTests
             },
             "provider");
     }
+
+    /// <summary>
+    /// Verifies that <see cref="ExchangeRateTableBuilder.Upsert" /> records a supplied fetch instant at the series grain
+    /// so the materialized series carries it.
+    /// </summary>
+    [TestMethod]
+    public void Upsert_WhenFetchInstantSupplied_ShouldStampSeries()
+    {
+        DateTimeOffset fetchedAt = new(2026, 6, 1, 8, 0, 0, TimeSpan.Zero);
+        ExchangeRateTableBuilder table = new();
+
+        table.Upsert(s_usdAud, "RBA", new DateOnly(2026, 6, 1), 1.50m, fetchedAt);
+
+        Assert.IsTrue(table.TryGetSeries(s_usdAud, "RBA", out ExchangeRateSeries? series));
+        Assert.AreEqual(fetchedAt, series!.FetchedAtUtc);
+    }
+
+    /// <summary>
+    /// Verifies that the four-argument <see cref="ExchangeRateTableBuilder.Upsert" /> overload leaves the materialized
+    /// series' fetch instant <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void Upsert_WhenFetchInstantOmitted_ShouldLeaveSeriesInstantNull()
+    {
+        ExchangeRateTableBuilder table = new();
+
+        table.Upsert(s_usdAud, "RBA", new DateOnly(2026, 6, 1), 1.50m);
+
+        Assert.IsTrue(table.TryGetSeries(s_usdAud, "RBA", out ExchangeRateSeries? series));
+        Assert.IsNull(series!.FetchedAtUtc);
+    }
 }

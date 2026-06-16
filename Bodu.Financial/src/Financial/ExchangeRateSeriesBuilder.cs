@@ -65,6 +65,7 @@ public sealed class ExchangeRateSeriesBuilder
 
         Pair = series.Pair;
         Provider = series.Provider;
+        FetchedAtUtc = series.FetchedAtUtc;
         _buffer = ExchangeRateSeriesBuffer.FromStorage(series.GetStorage());
     }
 
@@ -79,6 +80,20 @@ public sealed class ExchangeRateSeriesBuilder
     /// </summary>
     /// <returns>A non-empty provider identifier.</returns>
     public string Provider { get; }
+
+    /// <summary>
+    /// Gets or sets the UTC instant at which the load that produced this series downloaded its source data, or
+    /// <see langword="null" /> when not tracked.
+    /// </summary>
+    /// <returns>
+    /// The fetch instant when known; otherwise <see langword="null" />.
+    /// </returns>
+    /// <remarks>
+    /// The value is carried verbatim onto the <see cref="ExchangeRateSeries" /> produced by <see cref="ToSeries" /> and
+    /// from there onto every <see cref="ExchangeRate" /> the series materializes. Editing the observation buffer does
+    /// not change it; assign it explicitly to stamp a fresh load instant.
+    /// </remarks>
+    public DateTimeOffset? FetchedAtUtc { get; set; }
 
     /// <summary>
     /// Gets the number of observations currently held.
@@ -274,5 +289,5 @@ public sealed class ExchangeRateSeriesBuilder
     /// <exception cref="InvalidOperationException">
     /// Thrown if the builder is empty; an immutable series must contain at least one observation.
     /// </exception>
-    public ExchangeRateSeries ToSeries() => new(Pair, Provider, _buffer.ToStorage());
+    public ExchangeRateSeries ToSeries() => new(Pair, Provider, _buffer.ToStorage(), FetchedAtUtc);
 }

@@ -78,10 +78,13 @@ internal static partial class Log
     /// <param name="fromIsoCode">The source-currency ISO code.</param>
     /// <param name="toIsoCode">The destination-currency ISO code.</param>
     /// <param name="origin">Whether the rate was resolved live from a source or served from the cache.</param>
-    /// <param name="backend">The runtime identity of the cache backend that served the request.</param>
+    /// <param name="backend">
+    /// The runtime identity of the cache backend that served the request, or <see langword="null" /> for a rate
+    /// resolved directly by the inner source.
+    /// </param>
     /// <param name="age">
     /// The age of the served data, or <see langword="null" /> for a live serve or when no row backs the serve.
     /// </param>
     [LoggerMessage(EventId = 4505, Message = "Resolved {fromIsoCode}->{toIsoCode} for source '{source}' from {origin} (backend '{backend}', age {age})")]
-    public static partial void RateProvenance(ILogger logger, LogLevel level, string source, string fromIsoCode, string toIsoCode, ExchangeRateOrigin origin, string backend, TimeSpan? age);
+    public static partial void RateProvenance(ILogger logger, LogLevel level, string source, string fromIsoCode, string toIsoCode, ExchangeRateOrigin origin, string? backend, TimeSpan? age);
 }

@@ -16,15 +16,24 @@ namespace Bodu.Financial;
 /// <param name="OffsetDays">
 /// The absolute distance, in days, between <see cref="RequestedDate" /> and the date carried by <see cref="Rate" />.
 /// </param>
+/// <param name="Provenance">The lineage of the resolved rate: where it came from and, for a cache serve, how old it is.</param>
 /// <remarks>
 /// <para>
 /// Returning this metadata alongside the rate gives the caller everything required to explain which observed value was
 /// selected (provider, date, inversion direction, distance from the requested date, and policy applied) without having
 /// to re-query the underlying table.
 /// </para>
+/// <para>
+/// <see cref="Provenance" /> is always populated. A rate resolved directly by a provider carries
+/// <see cref="ExchangeRateOrigin.Live" /> with a <see langword="null" /> <see cref="ExchangeRateProvenance.Backend" />,
+/// <see cref="ExchangeRateProvenance.CachedAtUtc" />, and <see cref="ExchangeRateProvenance.Age" />. A rate served from
+/// a cache carries <see cref="ExchangeRateOrigin.Cache" /> with the serving backend, the instant the served data was
+/// cached, and the age it had at the lookup instant.
+/// </para>
 /// </remarks>
 public readonly record struct ExchangeRateLookupResult(
     ExchangeRate Rate,
     DateOnly RequestedDate,
     ExchangeRateDateResolution Resolution,
-    int OffsetDays);
+    int OffsetDays,
+    ExchangeRateProvenance Provenance);

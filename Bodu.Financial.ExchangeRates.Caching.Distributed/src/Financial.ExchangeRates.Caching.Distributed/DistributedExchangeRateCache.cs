@@ -266,7 +266,10 @@ public sealed class DistributedExchangeRateCache
         {
             try
             {
-                rows.Add(new CachedExchangeRate(ParseDate(rate.Date), ParseRate(rate.Rate), ParseInstant(rate.CachedAtUtc)));
+                // A legacy blob, or a row whose source never supplied a fetch instant, omits ObservedAtUtc and reads
+                // back as a null upstream fetch instant.
+                DateTimeOffset? observedAt = rate.ObservedAtUtc is { } s ? ParseInstant(s) : (DateTimeOffset?)null;
+                rows.Add(new CachedExchangeRate(ParseDate(rate.Date), ParseRate(rate.Rate), ParseInstant(rate.CachedAtUtc), observedAt));
             }
             catch (FormatException)
             {
@@ -306,9 +309,11 @@ public sealed class DistributedExchangeRateCache
         {
             payload = _cache.Get(_options.BuildKey(pair));
         }
-        catch (Exception)
+        catch (Exception ex) when (ex is not OperationCanceledException)
         {
             // Best-effort cache: a backing-store fault degrades to an empty read rather than breaking rate retrieval.
+            // Cancellation (and fatal exceptions surfaced as OperationCanceledException) propagates rather than being
+            // masked as an empty read.
             return PairState.Empty;
         }
 
@@ -362,6 +367,7 @@ public sealed class DistributedExchangeRateCache
                     Date = FormatDate(row.Date),
                     Rate = FormatRate(row.Rate),
                     CachedAtUtc = FormatInstant(row.CachedAtUtc),
+                    ObservedAtUtc = row.ObservedAtUtc is { } o ? FormatInstant(o) : null,
                 });
             }
 
@@ -379,13 +385,14 @@ public sealed class DistributedExchangeRateCache
             _cache.Set(key, payload);
             return true;
         }
-        catch (Exception)
+        catch (Exception ex) when (ex is not OperationCanceledException)
         {
             // Best-effort cache: a fault from an arbitrary IDistributedCache implementation (a network error, a
             // timeout, a disposed or misconfigured cache) or a serialization fault must degrade to a skipped write
             // rather than break rate retrieval, as the IExchangeRateCache contract requires. The exception is
             // deliberately swallowed and reported as a failure; argument validation runs before this block and still
-            // throws.
+            // throws. Cancellation (and fatal exceptions surfaced as OperationCanceledException) propagates rather than
+            // being masked as a failed write.
             return false;
         }
     }

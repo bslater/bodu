@@ -94,7 +94,7 @@ public sealed class AverageStrategy
         }
 
         ExchangeRate rate = new(fromIsoCode, toIsoCode, date, sum / count, _providerLabel);
-        result = new ExchangeRateLookupResult(rate, date, options.DateResolution, maxOffset);
+        result = new ExchangeRateLookupResult(rate, date, options.DateResolution, maxOffset, ExchangeRateProvenance.Live(rate.Provider));
         return true;
     }
 

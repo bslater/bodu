@@ -30,7 +30,7 @@ namespace Bodu.Financial;
 /// current instant supplied by the time provider. Derived types implement the feed-specific
 /// <see cref="EnsureLoadedAsync(ExchangeRatePair, DateOnly, DateOnly, CancellationToken)" /> and
 /// <see cref="IsLoaded(ExchangeRatePair, DateOnly, DateOnly)" /> and accumulate fetched observations through
-/// <see cref="AddObservations(IEnumerable{ExchangeRate})" /> followed by <see cref="RebuildSnapshot" />, all under
+/// <see cref="AddObservations(IEnumerable{ExchangeRate}, DateTimeOffset?)" /> followed by <see cref="RebuildSnapshot" />, all under
 /// <see cref="SyncRoot" />.
 /// </para>
 /// </remarks>
@@ -252,7 +252,7 @@ public abstract class WebExchangeRateProvider
     /// <summary>
     /// Ensures the inclusive window for a pair has been fetched and accumulated, idempotently. Implementations perform
     /// their own coverage check, request coalescing, fetch, and accumulation (via
-    /// <see cref="AddObservations(IEnumerable{ExchangeRate})" /> and <see cref="RebuildSnapshot" /> under
+    /// <see cref="AddObservations(IEnumerable{ExchangeRate}, DateTimeOffset?)" /> and <see cref="RebuildSnapshot" /> under
     /// <see cref="SyncRoot" />).
     /// </summary>
     /// <param name="pair">The currency pair to ensure data for. Feeds that fetch by range, feed, or file may ignore it.</param>
@@ -278,15 +278,19 @@ public abstract class WebExchangeRateProvider
     /// follow the batch with <see cref="RebuildSnapshot" />.
     /// </summary>
     /// <param name="rates">The observations to upsert.</param>
+    /// <param name="fetchedAtUtc">
+    /// The UTC instant at which the batch was downloaded, recorded at the series grain as load provenance, or
+    /// <see langword="null" /> when not tracked.
+    /// </param>
     /// <returns>The number of observations upserted.</returns>
-    protected int AddObservations(IEnumerable<ExchangeRate> rates)
+    protected int AddObservations(IEnumerable<ExchangeRate> rates, DateTimeOffset? fetchedAtUtc = null)
     {
         ThrowHelper.ThrowIfNull(rates);
 
         var count = 0;
         foreach (ExchangeRate rate in rates)
         {
-            _builder.Upsert(new ExchangeRatePair(rate.FromIsoCode, rate.ToIsoCode), ProviderId, rate.Date, rate.Rate);
+            _builder.Upsert(new ExchangeRatePair(rate.FromIsoCode, rate.ToIsoCode), ProviderId, rate.Date, rate.Rate, fetchedAtUtc);
             OnObservationIngested(rate);
             count++;
         }

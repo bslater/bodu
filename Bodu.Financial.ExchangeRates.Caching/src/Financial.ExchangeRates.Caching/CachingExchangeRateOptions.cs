@@ -61,6 +61,11 @@ public sealed class CachingExchangeRateOptions
     /// in <see cref="ProviderExpiry" />.
     /// </summary>
     /// <value>The default caching duration; defaults to 24 hours.</value>
+    /// <remarks>
+    /// Validation requires only a strictly positive duration; there is no upper bound. This property and the
+    /// <see cref="ProviderExpiry" /> overrides accept an arbitrarily large value, so an extreme duration leaves cached
+    /// rows fresh indefinitely and effectively disables expiry for the affected provider.
+    /// </remarks>
     public TimeSpan DefaultExpiry { get; set; } = TimeSpan.FromHours(24);
 
     /// <summary>

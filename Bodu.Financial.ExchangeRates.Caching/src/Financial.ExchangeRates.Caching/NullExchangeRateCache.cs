@@ -49,7 +49,10 @@ public sealed class NullExchangeRateCache
     /// <inheritdoc />
     public void Store(ExchangeRatePair pair, IReadOnlyList<CachedExchangeRate> rates, TimeSpan duration, DateTimeOffset asOf)
     {
-        // Intentionally no-op: this cache never stores anything.
+        ThrowHelper.ThrowIfNull(rates);
+
+        // Intentionally no-op after validation: this cache never stores anything, but it still enforces the same
+        // argument contract as every other backend so a caller cannot pass a null collection undetected.
     }
 
     /// <inheritdoc />
@@ -59,7 +62,10 @@ public sealed class NullExchangeRateCache
     /// <inheritdoc />
     public void RecordCoverage(ExchangeRatePair pair, DateOnly start, DateOnly end, TimeSpan duration, DateTimeOffset asOf)
     {
-        // Intentionally no-op: this cache records no coverage.
+        ThrowHelper.ThrowIfGreaterThan(start, end);
+
+        // Intentionally no-op after validation: this cache records no coverage, but it still rejects an inverted window
+        // so the argument contract matches every other backend.
     }
 
     /// <inheritdoc />
@@ -69,8 +75,13 @@ public sealed class NullExchangeRateCache
         DateOnly start,
         DateOnly end,
         TimeSpan duration,
-        DateTimeOffset asOf) =>
+        DateTimeOffset asOf)
+    {
+        ThrowHelper.ThrowIfNull(rows);
+        ThrowHelper.ThrowIfGreaterThan(start, end);
 
-        // Intentionally no-op: this cache persists neither rows nor coverage, so it reports the write as skipped.
-        ExchangeRateCacheWriteStatus.Skipped;
+        // Intentionally no-op after validation: this cache persists neither rows nor coverage, so it reports the write
+        // as skipped while still enforcing the same argument contract as every other backend.
+        return ExchangeRateCacheWriteStatus.Skipped;
+    }
 }

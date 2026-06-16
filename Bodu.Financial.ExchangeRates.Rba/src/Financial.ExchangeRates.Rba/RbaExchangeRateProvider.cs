@@ -360,6 +360,9 @@ public sealed class RbaExchangeRateProvider
             throw;
         }
 
+        // Capture the load instant immediately after the download completes so it stamps every rate this era produces.
+        var fetchedAt = TimeProvider.GetUtcNow();
+
         lock (SyncRoot)
         {
             if (!_loadedEras.Add(era.Label))
@@ -368,7 +371,7 @@ public sealed class RbaExchangeRateProvider
             foreach (RbaSeriesInfo info in table.GetSeriesInfo())
                 _series[info.Pair] = info;
 
-            var count = AddObservations(table.EnumerateRates());
+            var count = AddObservations(table.EnumerateRates(), fetchedAt);
             RebuildSnapshot();
 
             Log.EraLoaded(_logger, _options.DownloadCompletedLogLevel, era.Label, count);

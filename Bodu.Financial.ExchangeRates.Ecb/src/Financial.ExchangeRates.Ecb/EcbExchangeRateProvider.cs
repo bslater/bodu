@@ -348,6 +348,9 @@ public sealed class EcbExchangeRateProvider
             throw;
         }
 
+        // Capture the load instant immediately after the download completes so it stamps every rate this feed produces.
+        var fetchedAt = TimeProvider.GetUtcNow();
+
         lock (SyncRoot)
         {
             if (!_loadedFeeds.Add(feed.Name))
@@ -356,7 +359,7 @@ public sealed class EcbExchangeRateProvider
             foreach (EcbSeriesInfo info in table.GetSeriesInfo())
                 _series[info.Pair] = info;
 
-            var count = AddObservations(table.EnumerateRates());
+            var count = AddObservations(table.EnumerateRates(), fetchedAt);
             RebuildSnapshot();
 
             Log.FeedLoaded(_logger, _options.DownloadCompletedLogLevel, feed.Name, count);

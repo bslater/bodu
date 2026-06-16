@@ -111,6 +111,21 @@ public sealed partial class SqliteExchangeRateCacheTests
     }
 
     /// <summary>
+    /// Verifies that disposing the cache twice is a safe no-op, so the keep-alive connection is never disposed more
+    /// than once.
+    /// </summary>
+    [TestMethod]
+    public void Dispose_WhenCalledTwice_ShouldNotThrow()
+    {
+        SqliteExchangeRateCache cache = CreateFileCache();
+
+        cache.Dispose();
+
+        // A second dispose must not throw; the idempotent guard means only the first call releases the connection.
+        cache.Dispose();
+    }
+
+    /// <summary>
     /// Creates a cache over a fresh temporary database file, tracking both for cleanup.
     /// </summary>
     /// <returns>A new cache bound to <see cref="Provider" /> over a unique file.</returns>

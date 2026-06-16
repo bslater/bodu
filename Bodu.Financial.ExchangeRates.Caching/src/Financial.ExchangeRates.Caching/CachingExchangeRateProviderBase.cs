@@ -131,8 +131,12 @@ public abstract class CachingExchangeRateProviderBase
 
         if (TryServeFromCache(duration, fromIsoCode, toIsoCode, date, options, now, out result, out DateTimeOffset? servedCachedAtUtc))
         {
+            // The snapshot built from cached rows yields Live provenance; overwrite it with the cache lineage so the
+            // returned result and the logged provenance describe the same serve and cannot diverge.
+            result = result with { Provenance = ExchangeRateProvenance.FromCache(_cache.Provider, _backend, servedCachedAtUtc, now) };
+
             Log.CacheHit(_logger, _options.CacheHitLogLevel, _cache.Provider, fromIsoCode, toIsoCode, date);
-            EmitProvenance(ExchangeRateProvenance.FromCache(_cache.Provider, _backend, servedCachedAtUtc, now), fromIsoCode, toIsoCode);
+            EmitProvenance(result.Provenance, fromIsoCode, toIsoCode);
             return true;
         }
 
@@ -140,7 +144,9 @@ public abstract class CachingExchangeRateProviderBase
         {
             StoreResult(duration, fromIsoCode, toIsoCode, result, now);
             Log.CacheMissStored(_logger, _options.CacheMissLogLevel, _cache.Provider, fromIsoCode, toIsoCode, date);
-            EmitProvenance(ExchangeRateProvenance.Live(_cache.Provider, _backend), fromIsoCode, toIsoCode);
+
+            // A miss carries the inner provider's Live provenance through unchanged.
+            EmitProvenance(result.Provenance, fromIsoCode, toIsoCode);
             return true;
         }
 
@@ -309,6 +315,11 @@ public abstract class CachingExchangeRateProviderBase
         }
 
         servedCachedAtUtc = ResolveServedInstant(direct, inverse, result.Rate.Date);
+
+        // FixedDatedExchangeRateProvider flattens the cached rows to (Date, Rate) and drops the fetch instant, so restore
+        // it from the matching cached row onto the rebuilt rate; the cache-write instant stays separate in the provenance.
+        DateTimeOffset? servedObservedAt = ResolveServedObservedInstant(direct, inverse, result.Rate.Date);
+        result = result with { Rate = result.Rate.WithFetchedAtUtc(servedObservedAt) };
         return true;
     }
 
@@ -349,7 +360,9 @@ public abstract class CachingExchangeRateProviderBase
         {
             if (rate.Date >= startDate && rate.Date <= endDate)
             {
-                rates.Add(new ExchangeRate(pair.FromIsoCode, pair.ToIsoCode, rate.Date, rate.Rate, provider));
+                // This serve path returns the rebuilt rows directly, so the cached fetch instant is stamped onto the
+                // rate here rather than restored later; no FixedDatedExchangeRateProvider round-trip drops it.
+                rates.Add(new ExchangeRate(pair.FromIsoCode, pair.ToIsoCode, rate.Date, rate.Rate, provider, isInverted: false, rate.ObservedAtUtc));
                 if (oldest is not { } current || rate.CachedAtUtc < current)
                     oldest = rate.CachedAtUtc;
             }
@@ -368,10 +381,16 @@ public abstract class CachingExchangeRateProviderBase
     /// <param name="toIsoCode">The destination-currency ISO code.</param>
     /// <param name="result">The resolved lookup result returned by the inner provider.</param>
     /// <param name="now">The instant to stamp the cached row with.</param>
+    /// <remarks>
+    /// A single-date miss caches only the resolved row through <see cref="IExchangeRateCache.Store" /> and records no
+    /// coverage window, so a later range query that spans the same day still refetches it. This asymmetry is by design:
+    /// a single-date serve is satisfied per row, whereas only a range fetch establishes the contiguous coverage a range
+    /// serve requires.
+    /// </remarks>
     private void StoreResult(TimeSpan duration, string fromIsoCode, string toIsoCode, ExchangeRateLookupResult result, DateTimeOffset now)
     {
         ExchangeRatePair pair = new(fromIsoCode, toIsoCode);
-        CachedExchangeRate[] rows = { new(result.Rate.Date, result.Rate.Rate, now) };
+        CachedExchangeRate[] rows = { new(result.Rate.Date, result.Rate.Rate, now, result.Rate.FetchedAtUtc) };
         _cache.Store(pair, rows, duration, now);
     }
 
@@ -396,7 +415,7 @@ public abstract class CachingExchangeRateProviderBase
     {
         var rows = new CachedExchangeRate[rates.Count];
         for (var i = 0; i < rates.Count; i++)
-            rows[i] = new CachedExchangeRate(rates[i].Date, rates[i].Rate, now);
+            rows[i] = new CachedExchangeRate(rates[i].Date, rates[i].Rate, now, rates[i].FetchedAtUtc);
 
         return _cache.StoreFetchedRange(pair, rows, startDate, endDate, duration, now);
     }
@@ -439,6 +458,56 @@ public abstract class CachingExchangeRateProviderBase
         }
 
         return oldest;
+    }
+
+    /// <summary>
+    /// Resolves the upstream fetch instant that represents a single-date serve: the
+    /// <see cref="CachedExchangeRate.ObservedAtUtc" /> of the candidate row whose date matches the resolved result, or
+    /// the upstream fetch instant of the oldest candidate row (by cache-write instant) when no row matches that date.
+    /// </summary>
+    /// <param name="direct">The fresh candidate rows for the requested pair.</param>
+    /// <param name="inverse">The fresh candidate rows for the inverse pair, empty when inversion is disallowed.</param>
+    /// <param name="resolvedDate">The observation date of the resolved result.</param>
+    /// <returns>
+    /// The upstream fetch instant of the row dated <paramref name="resolvedDate" /> when one exists, otherwise the
+    /// upstream fetch instant of the oldest candidate row, or <see langword="null" /> when no candidate rows are
+    /// present or none carried an upstream fetch instant.
+    /// </returns>
+    /// <remarks>
+    /// Parallels <see cref="ResolveServedInstant" />: a nearest-date or inverse serve has no row dated exactly
+    /// <paramref name="resolvedDate" />, so the oldest candidate's upstream fetch instant is reported, matching the
+    /// cache-write instant the same serve reports through the provenance.
+    /// </remarks>
+    private static DateTimeOffset? ResolveServedObservedInstant(IReadOnlyList<CachedExchangeRate> direct, IReadOnlyList<CachedExchangeRate> inverse, DateOnly resolvedDate)
+    {
+        DateTimeOffset? oldestCachedAt = null;
+        DateTimeOffset? oldestObservedAt = null;
+
+        foreach (CachedExchangeRate row in direct)
+        {
+            if (row.Date == resolvedDate)
+                return row.ObservedAtUtc;
+
+            if (oldestCachedAt is not { } current || row.CachedAtUtc < current)
+            {
+                oldestCachedAt = row.CachedAtUtc;
+                oldestObservedAt = row.ObservedAtUtc;
+            }
+        }
+
+        foreach (CachedExchangeRate row in inverse)
+        {
+            if (row.Date == resolvedDate)
+                return row.ObservedAtUtc;
+
+            if (oldestCachedAt is not { } current || row.CachedAtUtc < current)
+            {
+                oldestCachedAt = row.CachedAtUtc;
+                oldestObservedAt = row.ObservedAtUtc;
+            }
+        }
+
+        return oldestObservedAt;
     }
 
     /// <summary>

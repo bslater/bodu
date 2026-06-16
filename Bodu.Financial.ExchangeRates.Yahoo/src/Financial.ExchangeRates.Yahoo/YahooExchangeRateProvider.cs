@@ -332,12 +332,15 @@ public sealed partial class YahooExchangeRateProvider
             throw;
         }
 
+        // Capture the load instant immediately after the download completes so it stamps every rate this pair produces.
+        var fetchedAt = TimeProvider.GetUtcNow();
+
         lock (SyncRoot)
         {
             YahooSeriesInfo info = chart.GetSeriesInfo();
             _series[info.Pair] = info;
 
-            var count = AddObservations(chart.EnumerateRates());
+            var count = AddObservations(chart.EnumerateRates(), fetchedAt);
             ExtendCoveredRange(pair, startDate, endDate);
             RebuildSnapshot();
 

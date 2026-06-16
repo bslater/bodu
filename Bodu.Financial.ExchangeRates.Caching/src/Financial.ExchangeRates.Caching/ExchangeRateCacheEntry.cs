@@ -29,4 +29,16 @@ public sealed class ExchangeRateCacheEntry
     /// </summary>
     /// <returns>The caching instant.</returns>
     public DateTimeOffset CachedAtUtc { get; set; }
+
+    /// <summary>
+    /// Gets or sets the UTC instant the upstream data backing the rate was originally fetched, or
+    /// <see langword="null" /> when the source did not supply it.
+    /// </summary>
+    /// <returns>The upstream fetch instant, or <see langword="null" /> when not tracked.</returns>
+    /// <remarks>
+    /// A cache file written before this field was tracked has no <c>ObservedAtUtc</c> key; it deserializes to
+    /// <see langword="null" /> with no error, mirroring how a pre-coverage file deserializes its missing
+    /// <c>[[Coverage]]</c> array, so older caches remain readable.
+    /// </remarks>
+    public DateTimeOffset? ObservedAtUtc { get; set; }
 }
