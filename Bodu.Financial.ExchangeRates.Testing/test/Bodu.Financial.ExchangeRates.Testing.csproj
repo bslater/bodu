@@ -5,7 +5,7 @@
     <LangVersion>latest</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <RootNamespace>Bodu</RootNamespace>
+    <RootNamespace>Bodu.Financial.ExchangeRates.Testing</RootNamespace>
     <AssemblyName>$(MSBuildProjectName)</AssemblyName>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
@@ -23,17 +23,10 @@
 
   <ItemGroup>
     <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
-    <Using Include="Bodu.Financial.Extensions" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Bodu.Test\test\Bodu.Test.csproj" />
-    <ProjectReference Include="..\..\Bodu.Financial.ExchangeRates.Testing\test\Bodu.Financial.ExchangeRates.Testing.csproj" />
-    <ProjectReference Include="..\src\Bodu.Financial.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Financial.Serialization\" />
+    <ProjectReference Include="..\..\Bodu.Financial\src\Bodu.Financial.csproj" />
   </ItemGroup>
 
 </Project>
