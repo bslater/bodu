@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Collections.Concurrent;
+
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
@@ -35,6 +37,15 @@ public abstract class FileExchangeRateCacheBase<TOptions>
     /// The resolved directory in which this provider's cached rate files are stored.
     /// </summary>
     private readonly string _directory;
+
+    /// <summary>
+    /// Memoizes the most recently parsed state per pair, keyed by the file's last-write instant, so a repeated read of
+    /// an unchanged file serves the cached parse rather than re-reading and re-deserializing it on every lookup. The
+    /// entry is invalidated when this instance writes the pair, and a differing last-write instant — an external or
+    /// cross-process change — is detected on the next read, so the memo never serves data from a file whose timestamp
+    /// has moved.
+    /// </summary>
+    private readonly ConcurrentDictionary<ExchangeRatePair, (DateTime StampUtc, CachePairState State)> _parsed = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="FileExchangeRateCacheBase{TOptions}" /> class.
@@ -73,10 +84,22 @@ public abstract class FileExchangeRateCacheBase<TOptions>
         try
         {
             if (!File.Exists(path))
+            {
+                _parsed.TryRemove(pair, out _);
                 return CachePairState.Empty;
+            }
+
+            var stamp = File.GetLastWriteTimeUtc(path);
+            if (_parsed.TryGetValue(pair, out (DateTime StampUtc, CachePairState State) memo) && memo.StampUtc == stamp)
+                return memo.State;
 
             var text = File.ReadAllText(path);
-            return Deserialize(text);
+            CachePairState state = Deserialize(text);
+
+            // Memoize the parse against the file's last-write instant. A later write (here or in another process) moves
+            // the timestamp, so the next read misses this entry and re-parses the fresh file.
+            _parsed[pair] = (stamp, state);
+            return state;
         }
         catch (IOException)
         {
@@ -102,6 +125,7 @@ public abstract class FileExchangeRateCacheBase<TOptions>
                 if (File.Exists(path))
                     File.Delete(path);
 
+                _parsed.TryRemove(pair, out _);
                 return true;
             }
 
@@ -109,6 +133,9 @@ public abstract class FileExchangeRateCacheBase<TOptions>
 
             var text = Serialize(state);
             WriteAtomic(path, text);
+
+            // Invalidate the parse memo so the next read re-parses from the freshly written file and re-stamps it.
+            _parsed.TryRemove(pair, out _);
             return true;
         }
         catch (IOException)

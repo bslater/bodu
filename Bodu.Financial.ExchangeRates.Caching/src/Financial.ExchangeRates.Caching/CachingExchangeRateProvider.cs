@@ -52,6 +52,10 @@ public sealed class CachingExchangeRateProvider
     /// <param name="logger">
     /// The logger that records cache diagnostics, or <see langword="null" /> to disable logging.
     /// </param>
+    /// <param name="ownsInner">
+    /// <see langword="true" /> to dispose <paramref name="inner" /> (when it is <see cref="IDisposable" />) as part of
+    /// disposing this provider; otherwise <see langword="false" /> to leave the inner's lifetime to its owner.
+    /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="inner" />, <paramref name="cache" />, or <paramref name="options" /> is
     /// <see langword="null" />.
@@ -62,8 +66,9 @@ public sealed class CachingExchangeRateProvider
         IExchangeRateCache cache,
         CachingExchangeRateOptions options,
         TimeProvider? timeProvider = null,
-        ILogger? logger = null)
-        : base(cache, options, timeProvider, logger)
+        ILogger? logger = null,
+        bool ownsInner = false)
+        : base(cache, options, timeProvider, logger, ownsInner)
     {
         ThrowHelper.ThrowIfNull(inner);
 
@@ -85,6 +90,10 @@ public sealed class CachingExchangeRateProvider
     /// <param name="logger">
     /// The logger that records cache diagnostics, or <see langword="null" /> to disable logging.
     /// </param>
+    /// <param name="ownsInner">
+    /// <see langword="true" /> to dispose <paramref name="inner" /> (when it is <see cref="IDisposable" />) as part of
+    /// disposing this provider; otherwise <see langword="false" /> to leave the inner's lifetime to its owner.
+    /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="inner" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
@@ -97,8 +106,9 @@ public sealed class CachingExchangeRateProvider
         IDatedExchangeRateProvider inner,
         CachingExchangeRateOptions options,
         TimeProvider? timeProvider = null,
-        ILogger? logger = null)
-        : this(inner, CreateFileCache(providerName, options), options, timeProvider, logger)
+        ILogger? logger = null,
+        bool ownsInner = false)
+        : this(inner, CreateFileCache(providerName, options), options, timeProvider, logger, ownsInner)
     {
     }
 
