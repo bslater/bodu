@@ -40,6 +40,16 @@ namespace Bodu.Financial.ExchangeRates.Yahoo;
 /// <see cref="NullLogger.Instance" />, so logging is opt-in and free when unused.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// using var yahoo = new YahooExchangeRateProvider(new YahooExchangeRateOptions());
+/// await yahoo.LoadPairAsync("AUD", "USD", new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31));
+///
+/// ExchangeRateLookupResult aud = yahoo.GetRate("AUD", "USD", new DateOnly(2023, 1, 3));
+///]]>
+/// </code>
+/// </example>
 public sealed partial class YahooExchangeRateProvider
     : WebExchangeRateProvider
 {

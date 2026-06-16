@@ -39,6 +39,17 @@ namespace Bodu.Financial.ExchangeRates.Ecb;
 /// <see cref="NullLogger.Instance" />, so logging is opt-in and free when unused.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// using var ecb = new EcbExchangeRateProvider(new EcbExchangeRateOptions());
+/// await ecb.LoadRangeAsync(new DateOnly(2023, 1, 1), new DateOnly(2023, 12, 31));
+///
+/// ExchangeRateLookupResult usd = ecb.GetRate("EUR", "USD", new DateOnly(2023, 1, 3));
+/// ExchangeRateLookupResult eur = ecb.GetRate("USD", "EUR", new DateOnly(2023, 1, 3)); // inverted
+///]]>
+/// </code>
+/// </example>
 public sealed class EcbExchangeRateProvider
     : WebExchangeRateProvider
 {

@@ -38,6 +38,17 @@ namespace Bodu.Financial.ExchangeRates.Rba;
 /// omitting the logger selects <see cref="NullLogger.Instance" />, so logging is opt-in and free when unused.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// using var rba = new RbaExchangeRateProvider(new RbaExchangeRateOptions());
+/// await rba.LoadRangeAsync(new DateOnly(2023, 1, 1), new DateOnly(2026, 6, 30));
+///
+/// ExchangeRateLookupResult aud = rba.GetRate("AUD", "USD", new DateOnly(2023, 1, 3));
+/// // aud.Rate.Provider == RbaExchangeRateProvider.ProviderName; the reverse direction (USD->AUD) is inverted.
+///]]>
+/// </code>
+/// </example>
 public sealed class RbaExchangeRateProvider
     : WebExchangeRateProvider
 {

@@ -38,6 +38,17 @@ namespace Bodu.Financial.ExchangeRates.Boe;
 /// omitting the logger selects <see cref="NullLogger.Instance" />, so logging is opt-in and free when unused.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// using var boe = new BoeExchangeRateProvider(new BoeExchangeRateOptions());
+/// await boe.LoadRangeAsync(new DateOnly(2023, 1, 1), new DateOnly(2023, 12, 31));
+///
+/// ExchangeRateLookupResult gbp = boe.GetRate("GBP", "USD", new DateOnly(2023, 1, 3));
+/// // The reverse direction (USD->GBP) is served by inverting the GBP-based series.
+///]]>
+/// </code>
+/// </example>
 public sealed class BoeExchangeRateProvider
     : WebExchangeRateProvider
 {
