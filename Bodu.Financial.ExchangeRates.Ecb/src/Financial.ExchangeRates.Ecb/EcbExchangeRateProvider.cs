@@ -89,11 +89,6 @@ public sealed class EcbExchangeRateProvider
     private readonly Dictionary<ExchangeRatePair, EcbSeriesInfo> _series = new();
 
     /// <summary>
-    /// Coalesces concurrent downloads of the same feed so a cache miss triggers at most one in-flight fetch per feed.
-    /// </summary>
-    private readonly SingleFlightCoordinator<string> _loadCoordinator = new();
-
-    /// <summary>
     /// Initializes a new instance of the <see cref="EcbExchangeRateProvider" /> class backed by an
     /// <see cref="HttpClient" /> the provider creates and owns, configured from the supplied options.
     /// </summary>
@@ -223,7 +218,7 @@ public sealed class EcbExchangeRateProvider
         // Coalesce concurrent loads of the same feed so only one download is in flight; joiners await that shared task.
         // The shared fetch runs under a token decoupled from any caller, so one caller's cancellation cannot fault the
         // others; cancellationToken only abandons this caller's wait.
-        return _loadCoordinator.RunAsync(feed.Name, ct => LoadFeedCoreAsync(feed, ct), cancellationToken);
+        return LoadCoalescedAsync(feed.Name, ct => LoadFeedCoreAsync(feed, ct), cancellationToken);
     }
 
     /// <summary>

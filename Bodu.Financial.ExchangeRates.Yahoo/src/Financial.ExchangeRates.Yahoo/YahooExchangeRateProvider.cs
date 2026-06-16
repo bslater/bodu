@@ -50,7 +50,7 @@ namespace Bodu.Financial.ExchangeRates.Yahoo;
 ///]]>
 /// </code>
 /// </example>
-public sealed partial class YahooExchangeRateProvider
+public sealed class YahooExchangeRateProvider
     : WebExchangeRateProvider
 {
     /// <summary>
@@ -84,12 +84,6 @@ public sealed partial class YahooExchangeRateProvider
     /// The discovered currency series, keyed by pair.
     /// </summary>
     private readonly Dictionary<ExchangeRatePair, YahooSeriesInfo> _series = new();
-
-    /// <summary>
-    /// Coalesces concurrent fetches of the same pair-and-window so a cache miss triggers at most one in-flight chart
-    /// request, with other callers awaiting the shared fetch.
-    /// </summary>
-    private readonly SingleFlightCoordinator<PairWindow> _loadCoordinator = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="YahooExchangeRateProvider" /> class backed by an
@@ -249,8 +243,8 @@ public sealed partial class YahooExchangeRateProvider
         // Coalesce concurrent fetches of the same pair-and-window so only one chart request is in flight. The shared
         // fetch runs under a token decoupled from any caller, so one caller's cancellation cannot fault the others;
         // cancellationToken only abandons this caller's wait.
-        return new ValueTask(_loadCoordinator.RunAsync(
-            new PairWindow(pair, startDate, endDate),
+        return new ValueTask(LoadCoalescedAsync(
+            $"{pair.FromIsoCode}/{pair.ToIsoCode}:{startDate.DayNumber}-{endDate.DayNumber}",
             ct => LoadPairCoreAsync(pair, startDate, endDate, ct),
             cancellationToken));
     }

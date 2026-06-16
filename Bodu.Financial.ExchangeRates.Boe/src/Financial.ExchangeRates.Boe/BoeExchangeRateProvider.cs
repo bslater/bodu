@@ -88,12 +88,6 @@ public sealed class BoeExchangeRateProvider
     private readonly Dictionary<ExchangeRatePair, BoeSeriesInfo> _series = new();
 
     /// <summary>
-    /// Coalesces concurrent downloads of the same series window so a cache miss triggers at most one in-flight fetch
-    /// per requested range.
-    /// </summary>
-    private readonly SingleFlightCoordinator<(DateOnly From, DateOnly To)> _loadCoordinator = new();
-
-    /// <summary>
     /// Initializes a new instance of the <see cref="BoeExchangeRateProvider" /> class backed by an
     /// <see cref="HttpClient" /> the provider creates and owns, configured from the supplied options.
     /// </summary>
@@ -306,7 +300,7 @@ public sealed class BoeExchangeRateProvider
         // Coalesce concurrent loads of the same window so only one download is in flight; joiners await that task. The
         // shared fetch runs under a token decoupled from any caller, so one caller's cancellation cannot fault the
         // others; cancellationToken only abandons this caller's wait.
-        return _loadCoordinator.RunAsync((startDate, endDate), ct => LoadRangeCoreAsync(startDate, endDate, ct), cancellationToken);
+        return LoadCoalescedAsync($"{startDate.DayNumber}-{endDate.DayNumber}", ct => LoadRangeCoreAsync(startDate, endDate, ct), cancellationToken);
     }
 
     /// <summary>
