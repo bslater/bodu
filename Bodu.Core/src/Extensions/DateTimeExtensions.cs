@@ -41,6 +41,11 @@ namespace Bodu.Extensions;
 /// requested. <see cref="ArgumentOutOfRangeException" /> is thrown whenever a result would leave the supported
 /// <see cref="DateTime" /> range.
 /// </para>
+/// <para>
+/// When compiled with a tool-chain that supports C# 14 extension members, the parameterless predicate and
+/// scalar-accessor helpers are exposed as extension properties (for example <c>dateTime.IsFirstDateOfMonth</c>);
+/// otherwise they compile as classic extension methods (for example <c>dateTime.IsFirstDateOfMonth()</c>).
+/// </para>
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
@@ -51,8 +56,8 @@ namespace Bodu.Extensions;
 /// DateTime endOfDay = dt.EndOfDay(); // 2025-04-30T23:59:59.9999999Z
 ///
 /// // ISO 8601 week-of-year and matching ISO year.
-/// int isoWeek = dt.IsoWeekOfYear(); // 18
-/// int isoYear = dt.IsoYear(); // 2025
+/// int isoWeek = dt.IsoWeekOfYear; // 18
+/// int isoYear = dt.IsoYear; // 2025
 ///
 /// // Walk to the first Monday strictly after this date.
 /// DateTime nextMonday = dt.NextDateOfWeek(DayOfWeek.Monday); // 2025-05-05T14:35:00Z

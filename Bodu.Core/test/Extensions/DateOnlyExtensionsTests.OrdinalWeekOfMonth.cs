@@ -24,7 +24,7 @@ public partial class DateOnlyExtensionsTests
     {
         var input = DateOnly.FromDateTime(inputDateTime);
 
-        var actual = input.WeekOrdinalOfMonth();
+        var actual = input.WeekOrdinalOfMonth;
 
         Assert.AreEqual(expected, actual);
     }
@@ -36,7 +36,7 @@ public partial class DateOnlyExtensionsTests
     public void DayOfWeekOccurrenceInMonth_WhenLeapDay_ShouldReturnCorrectOrdinal()
     {
         var leapDay = new DateOnly(2024, 2, 29); // Thursday
-        WeekOrdinal actual = leapDay.WeekOrdinalOfMonth();
+        WeekOrdinal actual = leapDay.WeekOrdinalOfMonth;
 
         Assert.AreEqual(WeekOrdinal.Fifth, actual); // 1st = 1st, 8th = 2nd, ..., 29th = 5th Thursday
     }

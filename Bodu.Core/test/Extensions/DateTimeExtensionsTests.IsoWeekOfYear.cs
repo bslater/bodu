@@ -48,7 +48,7 @@ public partial class DateTimeExtensionsTests
     {
         var input = new DateTime(year, month, day);
         int expected = ISOWeek.GetWeekOfYear(input);
-        int actual = input.IsoWeekOfYear();
+        int actual = input.IsoWeekOfYear;
         Assert.AreEqual(expected, actual);
     }
 
@@ -59,7 +59,7 @@ public partial class DateTimeExtensionsTests
     [DynamicData(nameof(GetIsoWeekOfYearTestData))]
     public void IsoWeekOfYear_WhenCalled_ShouldReturnExpectedWeekNumber(DateTime input, int expected)
     {
-        int actual = input.IsoWeekOfYear();
+        int actual = input.IsoWeekOfYear;
         Assert.AreEqual(expected, actual);
     }
 
@@ -70,7 +70,7 @@ public partial class DateTimeExtensionsTests
     public void IsoWeekOfYear_WhenCalled_ShouldReturnValueInRange1To53()
     {
         var input = new DateTime(2024, 8, 15);
-        int actual = input.IsoWeekOfYear();
+        int actual = input.IsoWeekOfYear;
         Assert.IsTrue(actual is >= 1 and <= 53);
     }
 
@@ -82,7 +82,7 @@ public partial class DateTimeExtensionsTests
     {
         var morning = new DateTime(2024, 1, 4, 0, 0, 0);
         var evening = new DateTime(2024, 1, 4, 23, 59, 59);
-        Assert.AreEqual(morning.IsoWeekOfYear(), evening.IsoWeekOfYear());
+        Assert.AreEqual(morning.IsoWeekOfYear, evening.IsoWeekOfYear);
     }
 
 }

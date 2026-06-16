@@ -84,7 +84,7 @@ DateTime today = DateTime.Today;
 DateTime startOfWeek    = today.GetFirstDateOfWeek(DayOfWeek.Monday);
 DateTime nextFriday     = today.NextOccurrence(DayOfWeek.Friday);
 DateTime endOfQuarter   = today.LastDateOfQuarter();
-int isoWeek             = today.IsoWeekOfYear();
+int isoWeek             = today.IsoWeekOfYear;
 ```
 
 ### Centralized argument validation (`ThrowHelper`)

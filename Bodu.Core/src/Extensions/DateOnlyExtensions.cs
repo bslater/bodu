@@ -35,6 +35,11 @@ namespace Bodu.Extensions;
 /// <see cref="ArgumentOutOfRangeException" /> is thrown when an arithmetic operation would leave the supported
 /// <see cref="DateOnly" /> range.
 /// </para>
+/// <para>
+/// When compiled with a tool-chain that supports C# 14 extension members, the parameterless predicate and
+/// scalar-accessor helpers are exposed as extension properties (for example <c>date.IsFirstDateOfMonth</c>); otherwise
+/// they compile as classic extension methods (for example <c>date.IsFirstDateOfMonth()</c>).
+/// </para>
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[

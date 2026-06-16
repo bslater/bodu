@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensions.IsoYear.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -11,6 +11,44 @@ namespace Bodu.Extensions;
 
 public static partial class DateTimeExtensions
 {
+#if BODU_EXTENSION_MEMBERS
+
+    extension(DateTime date)
+    {
+        /// <summary>
+        /// Gets the ISO 8601 year associated with this date.
+        /// </summary>
+        /// <returns>The ISO 8601 calendar year that contains the ISO week of this date.</returns>
+        /// <remarks>
+        /// <para>
+        /// The ISO 8601 year may differ from the calendar year of this date. A date near the start or end of a calendar
+        /// year may belong to the ISO year of the adjacent calendar year, depending on which ISO week it falls into. For
+        /// example, January 1 may belong to the last week of the previous ISO year, and December 31 may belong to week 1
+        /// of the following ISO year.
+        /// </para>
+        /// </remarks>
+        public int IsoYear
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+#if NETSTANDARD2_0
+
+                // ISO 8601 rule: Week 1 is the week with Jan 4 in it. So we shift the date to Thursday (which is always in the same ISO week)
+                DayOfWeek day = date.DayOfWeek;
+                int delta = DayOfWeek.Thursday - day;
+                DateTime adjusted = date.AddDays(delta);
+
+                return adjusted.Year;
+#else
+                return ISOWeek.GetYear(date);
+#endif
+            }
+        }
+    }
+
+#else
+
     /// <summary>
     /// Returns the ISO 8601 year associated with the specified <paramref name="date" />.
     /// </summary>
@@ -39,4 +77,6 @@ public static partial class DateTimeExtensions
         return ISOWeek.GetYear(date);
 #endif
     }
+
+#endif
 }

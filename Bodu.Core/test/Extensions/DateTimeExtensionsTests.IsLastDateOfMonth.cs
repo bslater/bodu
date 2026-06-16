@@ -10,27 +10,27 @@ public partial class DateTimeExtensionsTests
 {
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.IsLastDateOfMonth(DateTime)" /> returns <c>true</c> when the date represents the last
+    /// Verifies that <see cref="DateTimeExtensions.IsLastDateOfMonth" /> returns <c>true</c> when the date represents the last
     /// day of the month.
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(DateTimeExtensionsTests.IsLastDateOfMonthDataTestData))]
     public void IsLastDateOfMonth_WhenDateIsLastDay_ShouldReturnTrue(DateTime input)
     {
-        bool actual = input.IsLastDateOfMonth();
+        bool actual = input.IsLastDateOfMonth;
 
         Assert.IsTrue(actual);
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.IsLastDateOfMonth(DateTime)" /> returns <c>false</c> when the date does not represent
+    /// Verifies that <see cref="DateTimeExtensions.IsLastDateOfMonth" /> returns <c>false</c> when the date does not represent
     /// the last day of the month.
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(DateTimeExtensionsTests.IsNotLastDateOfMonthTestData))]
     public void IsLastDateOfMonth_WhenDateIsNotLastDay_ShouldReturnFalse(DateTime input)
     {
-        bool actual = input.IsLastDateOfMonth();
+        bool actual = input.IsLastDateOfMonth;
 
         Assert.IsFalse(actual);
     }

@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensions.IsLeapYear.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -8,6 +8,12 @@ namespace Bodu.Extensions;
 
 public static partial class DateTimeExtensions
 {
+    // Note: IsLeapYear is intentionally kept as a classic extension method rather than a C# 14 extension property.
+    // The BCL declares a static DateTime.IsLeapYear(int); normal member lookup of dateTime.IsLeapYear binds to that
+    // static method group and preempts extension-property lookup, so an extension property of the same name can never
+    // resolve on a DateTime receiver. The method form remains usable because invocation falls back to extension
+    // methods after the static overload fails to apply to an instance call.
+
     /// <summary>
     /// Determines whether the year of the specified <see cref="DateTime" /> is a leap year, according to the proleptic
     /// Gregorian calendar.

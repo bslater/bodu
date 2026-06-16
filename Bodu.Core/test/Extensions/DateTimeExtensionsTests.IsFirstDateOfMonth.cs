@@ -10,27 +10,27 @@ public partial class DateTimeExtensionsTests
 {
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.IsFirstDateOfMonth(DateTime)" /> returns <c>true</c> when the date represents the
+    /// Verifies that <see cref="DateTimeExtensions.IsFirstDateOfMonth" /> returns <c>true</c> when the date represents the
     /// first day of the month.
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(IsFirstDateOfMonthTestData))]
     public void IsFirstDateOfMonth_WhenDateIsFirstDay_ShouldReturnTrue(DateTime input)
     {
-        bool actual = input.IsFirstDateOfMonth();
+        bool actual = input.IsFirstDateOfMonth;
 
         Assert.IsTrue(actual);
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.IsFirstDateOfMonth(DateTime)" /> returns <c>false</c> when the date does not
+    /// Verifies that <see cref="DateTimeExtensions.IsFirstDateOfMonth" /> returns <c>false</c> when the date does not
     /// represent the first day of the month.
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(IsNotFirstDateOfMonthTestData))]
     public void IsFirstDateOfMonth_WhenDateIsNotFirstDay_ShouldReturnFalse(DateTime input)
     {
-        bool actual = input.IsFirstDateOfMonth();
+        bool actual = input.IsFirstDateOfMonth;
 
         Assert.IsFalse(actual);
     }
