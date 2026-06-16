@@ -9,6 +9,15 @@
     <IsPackable>true</IsPackable>
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+
+    <!--
+      This is an analyzer-only package: it ships the analyzer/code-fix assemblies under
+      analyzers/dotnet/cs and excludes the build output (IncludeBuildOutput=false), so there is
+      no primary assembly or .pdb for a symbol package to carry. The shared snupkg policy from
+      bld/SourceLink.props (IncludeSymbols=true) would therefore produce an empty symbol package
+      and fail packing with NU5017. Opt this package out of symbol packaging.
+    -->
+    <IncludeSymbols>false</IncludeSymbols>
     <PackageId>Bodu.CodeStyle.XmlDocumentation</PackageId>
     <DevelopmentDependency>true</DevelopmentDependency>
     <NoPackageAnalysis>true</NoPackageAnalysis>
