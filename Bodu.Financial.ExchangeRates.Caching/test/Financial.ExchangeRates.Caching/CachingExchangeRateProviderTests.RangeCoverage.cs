@@ -28,7 +28,7 @@ public sealed partial class CachingExchangeRateProviderTests
         SeedCoverage(pair, new DateOnly(2023, 1, 6), new DateOnly(2023, 1, 6));
         CachingExchangeRateProvider sut = CreateDecorator(inner);
 
-        IReadOnlyList<ExchangeRate> rates = await sut.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 6));
+        IReadOnlyList<ExchangeRate> rates = [.. await sut.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 6))];
 
         Assert.AreEqual(1, inner.GetRatesAsyncCallCount);
         Assert.AreEqual(3, rates.Count);
@@ -49,7 +49,7 @@ public sealed partial class CachingExchangeRateProviderTests
         CachingExchangeRateProvider sut = CreateDecorator(inner);
 
         _ = await sut.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 6));
-        IReadOnlyList<ExchangeRate> sub = await sut.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 4), new DateOnly(2023, 1, 5));
+        IReadOnlyList<ExchangeRate> sub = [.. await sut.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 4), new DateOnly(2023, 1, 5))];
 
         Assert.AreEqual(1, inner.GetRatesAsyncCallCount);
         Assert.AreEqual(2, sub.Count);

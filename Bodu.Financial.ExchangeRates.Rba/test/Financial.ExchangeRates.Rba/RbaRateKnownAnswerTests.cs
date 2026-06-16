@@ -109,7 +109,7 @@ public class RbaRateKnownAnswerTests
         RbaEra era = RbaEra.Default.Single(e => string.Equals(e.FileName, sourceFileName, StringComparison.Ordinal));
         DateOnly end = era.End ?? new DateOnly(2100, 1, 1);
 
-        IReadOnlyList<ExchangeRate> series = await provider.GetRatesAsync("AUD", ResolveCurrency(currency), era.Start, end);
+        IReadOnlyList<ExchangeRate> series = [.. await provider.GetRatesAsync("AUD", ResolveCurrency(currency), era.Start, end)];
         Assert.IsNotEmpty(series);
 
         var byType = s_allRows

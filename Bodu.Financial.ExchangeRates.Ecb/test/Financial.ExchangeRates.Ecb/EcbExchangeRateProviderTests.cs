@@ -118,7 +118,7 @@ public partial class EcbExchangeRateProviderTests
     {
         EcbExchangeRateProvider provider = await CreatePreloadedAsync();
 
-        var latest = provider.GetRate("EUR", "USD");
+        var latest = provider.GetRate("EUR", "USD").Rate.Rate;
 
         Assert.AreEqual(1.0600m, latest);
     }

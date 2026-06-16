@@ -18,7 +18,7 @@ public partial class YahooExchangeRateProviderTests
         (YahooExchangeRateProvider provider, _) = Create(allowSync: false);
 
         IReadOnlyList<ExchangeRate> rates =
-            await provider.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31));
+            [.. await provider.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31))];
 
         Assert.AreEqual(3, rates.Count);
         Assert.IsTrue(rates.SequenceEqual(rates.OrderBy(r => r.Date)));
@@ -39,7 +39,7 @@ public partial class YahooExchangeRateProviderTests
         YahooExchangeRateProvider provider = await CreatePreloadedAsync();
 
         IReadOnlyList<ExchangeRate> rates =
-            await provider.GetRatesAsync("USD", "AUD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 3));
+            [.. await provider.GetRatesAsync("USD", "AUD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 3))];
 
         Assert.AreEqual(1, rates.Count);
         Assert.IsTrue(rates[0].IsInverted);

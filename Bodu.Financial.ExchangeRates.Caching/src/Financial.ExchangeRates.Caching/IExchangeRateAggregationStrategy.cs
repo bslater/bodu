@@ -43,8 +43,8 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 ///     {
 ///         for (int i = candidates.Count - 1; i >= 0; i--)
 ///         {
-///             IReadOnlyList<ExchangeRate> rates = await candidates[i].Provider
-///                 .GetRatesAsync(fromIsoCode, toIsoCode, startDate, endDate, cancellationToken);
+///             IReadOnlyList<ExchangeRate> rates = [.. await candidates[i].Provider
+///                 .GetRatesAsync(fromIsoCode, toIsoCode, startDate, endDate, cancellationToken)];
 ///             if (rates.Count > 0)
 ///                 return rates;
 ///         }

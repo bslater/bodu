@@ -182,6 +182,13 @@ public sealed class AggregatingExchangeRateProvider
     }
 
     /// <inheritdoc />
+    public ExchangeRateLookupResult GetRate(string fromIsoCode, string toIsoCode, ExchangeRateLookupOptions? options = null)
+    {
+        var today = DateOnly.FromDateTime(_timeProvider.GetUtcNow().UtcDateTime);
+        return GetRate(fromIsoCode, toIsoCode, today, options ?? _options.DefaultLookupOptions);
+    }
+
+    /// <inheritdoc />
     public ExchangeRateLookupResult GetRate(string fromIsoCode, string toIsoCode, DateOnly date, ExchangeRateLookupOptions? options = null)
     {
         return TryGetRate(fromIsoCode, toIsoCode, date, options, out ExchangeRateLookupResult result)
@@ -189,6 +196,23 @@ public sealed class AggregatingExchangeRateProvider
             : throw new KeyNotFoundException(
                 string.Format(CultureInfo.CurrentCulture, CachingResourceStrings.IO_KeyNotFound_ExchangeRate, fromIsoCode, toIsoCode, date));
     }
+
+    /// <inheritdoc />
+    public ValueTask<ExchangeRateLookupResult> GetRateAsync(
+        string fromIsoCode,
+        string toIsoCode,
+        ExchangeRateLookupOptions? options = null,
+        CancellationToken cancellationToken = default) =>
+        new(GetRate(fromIsoCode, toIsoCode, options));
+
+    /// <inheritdoc />
+    public ValueTask<ExchangeRateLookupResult> GetRateAsync(
+        string fromIsoCode,
+        string toIsoCode,
+        DateOnly date,
+        ExchangeRateLookupOptions? options = null,
+        CancellationToken cancellationToken = default) =>
+        new(GetRate(fromIsoCode, toIsoCode, date, options));
 
     /// <inheritdoc />
     public bool TryGetRate(string fromIsoCode, string toIsoCode, DateOnly date, ExchangeRateLookupOptions? options, out ExchangeRateLookupResult result)
@@ -227,7 +251,15 @@ public sealed class AggregatingExchangeRateProvider
     }
 
     /// <inheritdoc />
-    public ValueTask<IReadOnlyList<ExchangeRate>> GetRatesAsync(
+    public ExchangeRateRangeResult GetRates(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate)
+    {
+#pragma warning disable VSTHRD002 // The aggregation strategy exposes range combination only asynchronously.
+        return GetRatesAsync(fromIsoCode, toIsoCode, startDate, endDate, CancellationToken.None).AsTask().GetAwaiter().GetResult();
+#pragma warning restore VSTHRD002
+    }
+
+    /// <inheritdoc />
+    public async ValueTask<ExchangeRateRangeResult> GetRatesAsync(
         string fromIsoCode,
         string toIsoCode,
         DateOnly startDate,
@@ -246,16 +278,14 @@ public sealed class AggregatingExchangeRateProvider
             Log.RouteSelected(_logger, _options.RouteSelectedLogLevel, fromIsoCode, toIsoCode, providerOrder);
         }
 
-        return strategy.AggregateRangeAsync(fromIsoCode, toIsoCode, startDate, endDate, candidates, cancellationToken);
+        IReadOnlyList<ExchangeRate> rates =
+            await strategy.AggregateRangeAsync(fromIsoCode, toIsoCode, startDate, endDate, candidates, cancellationToken).ConfigureAwait(false);
+        return new ExchangeRateRangeResult(fromIsoCode, toIsoCode, startDate, endDate, rates);
     }
 
     /// <inheritdoc />
-    public decimal GetRate(string fromIsoCode, string toIsoCode)
-    {
-        var today = DateOnly.FromDateTime(_timeProvider.GetUtcNow().UtcDateTime);
-
-        return new DatedExchangeRateProviderAdapter(this, today, _options.DefaultLookupOptions).GetRate(fromIsoCode, toIsoCode);
-    }
+    decimal IExchangeRateProvider.GetRate(string fromIsoCode, string toIsoCode) =>
+        GetRate(fromIsoCode, toIsoCode).Rate.Rate;
 
     /// <summary>
     /// Resolves the candidate set and strategy for a pair, preferring a direct route, then an inverse route (when

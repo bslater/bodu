@@ -20,7 +20,7 @@ public partial class EcbExchangeRateProviderTests
         (EcbExchangeRateProvider provider, _) = Create(allowSync: false);
 
         IReadOnlyList<ExchangeRate> rates =
-            await provider.GetRatesAsync("EUR", "JPY", new DateOnly(2023, 1, 1), new DateOnly(2023, 12, 31));
+            [.. await provider.GetRatesAsync("EUR", "JPY", new DateOnly(2023, 1, 1), new DateOnly(2023, 12, 31))];
 
         Assert.AreEqual(2, rates.Count);
         Assert.AreEqual(new DateOnly(2023, 1, 3), rates[0].Date);
@@ -38,7 +38,7 @@ public partial class EcbExchangeRateProviderTests
         (EcbExchangeRateProvider provider, _) = Create(allowSync: false);
 
         IReadOnlyList<ExchangeRate> rates =
-            await provider.GetRatesAsync("JPY", "EUR", new DateOnly(2023, 1, 1), new DateOnly(2023, 12, 31));
+            [.. await provider.GetRatesAsync("JPY", "EUR", new DateOnly(2023, 1, 1), new DateOnly(2023, 12, 31))];
 
         Assert.AreEqual(2, rates.Count);
         Assert.IsTrue(rates[0].IsInverted);
