@@ -261,7 +261,7 @@ internal sealed class TomlDocumentBuilder
 
             case TomlTokenType.OffsetDateTime:
             {
-                var dateTimeOffset = lexer.GetDateTimeOffset();
+                DateTimeOffset dateTimeOffset = lexer.GetDateTimeOffset();
                 return NewScalar(TomlTokenType.OffsetDateTime, lexer.TokenStartIndex, bits: dateTimeOffset.Ticks, offsetMinutes: (short)(dateTimeOffset.Offset.Ticks / TimeSpan.TicksPerMinute));
             }
 

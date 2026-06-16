@@ -366,7 +366,7 @@ public sealed class EcbExchangeRateProvider
         }
 
         // Capture the load instant immediately after the download completes so it stamps every rate this feed produces.
-        var fetchedAt = TimeProvider.GetUtcNow();
+        DateTimeOffset fetchedAt = TimeProvider.GetUtcNow();
 
         lock (SyncRoot)
         {
