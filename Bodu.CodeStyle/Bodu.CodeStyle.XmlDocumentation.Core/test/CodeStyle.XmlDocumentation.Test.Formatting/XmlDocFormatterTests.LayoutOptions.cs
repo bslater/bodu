@@ -95,4 +95,66 @@ public partial class XmlDocFormatterTests
         Assert.IsFalse(result.Changed);
         Assert.AreEqual(input, result.FormattedText);
     }
+
+    /// <summary>
+    /// Verifies that a single-line-when-short tag added to <see cref="XmlDocFormatOptions.NeverSplitTagContent" />
+    /// stays on a single line even when its content exceeds the line budget, instead of expanding to a block.
+    /// </summary>
+    [TestMethod]
+    public void Format_WhenSingleLineTagInNeverSplitContent_ShouldStaySingleLineOverBudget()
+    {
+        XmlDocFormatOptions options = CreateOptions()
+            .WithMaxLineLength(40)
+            .WithNeverSplitTagContent(CreateOptions().NeverSplitTagContent.Add("returns"));
+
+        var input = "/// <returns>A long description that easily exceeds the configured budget.</returns>\r\n";
+
+        XmlDocFormatResult result = CreateFormatter().FormatTrivia(input, CreateContext(baseIndent: string.Empty), options);
+
+        Assert.IsFalse(result.Changed, "Never-split content must not be expanded even when it overflows the budget.");
+        Assert.AreEqual(input, result.FormattedText);
+    }
+
+    /// <summary>
+    /// Verifies that, by default (no never-split entry), an over-budget single-line <c>&lt;returns&gt;</c>
+    /// expands to a block — the contrast case for the never-split behavior above.
+    /// </summary>
+    [TestMethod]
+    public void Format_WhenSingleLineTagOverBudgetAndWrappingAllowed_ShouldExpandToBlock()
+    {
+        XmlDocFormatOptions options = CreateOptions().WithMaxLineLength(40);
+
+        var input = "/// <returns>A long description that easily exceeds the configured budget.</returns>\r\n";
+
+        XmlDocFormatResult result = CreateFormatter().FormatTrivia(input, CreateContext(baseIndent: string.Empty), options);
+
+        Assert.IsTrue(result.Changed);
+        Assert.AreEqual(
+            "/// <returns>\r\n" +
+            "/// A long description that easily\r\n" +
+            "/// exceeds the configured budget.\r\n" +
+            "/// </returns>\r\n",
+            result.FormattedText);
+    }
+
+    /// <summary>
+    /// Verifies that a per-tag policy with <see cref="XmlDocTagPolicy.AllowLineBreakInside" /> set to
+    /// <see langword="false" /> also prevents an over-budget single-line tag from expanding.
+    /// </summary>
+    [TestMethod]
+    public void Format_WhenTagPolicyForbidsLineBreakInside_ShouldStaySingleLineOverBudget()
+    {
+        XmlDocFormatOptions options = CreateOptions().WithMaxLineLength(40);
+        var policies = options.TagPolicies.SetItem(
+            "returns",
+            new XmlDocTagPolicy(XmlDocTagLayout.SingleLineWhenShort, maxSingleLineLength: null, allowLineBreakInside: false, selfClosingTrailingSpace: null));
+        options = options.WithTagPolicies(policies);
+
+        var input = "/// <returns>A long description that easily exceeds the configured budget.</returns>\r\n";
+
+        XmlDocFormatResult result = CreateFormatter().FormatTrivia(input, CreateContext(baseIndent: string.Empty), options);
+
+        Assert.IsFalse(result.Changed);
+        Assert.AreEqual(input, result.FormattedText);
+    }
 }

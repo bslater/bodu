@@ -181,6 +181,14 @@ public sealed class XmlDocFormatOptions
         this.With(tagPolicies: tagPolicies);
 
     /// <summary>
+    /// Returns a new <see cref="XmlDocFormatOptions" /> instance with <see cref="NeverSplitTagContent" /> replaced.
+    /// </summary>
+    /// <param name="neverSplitTagContent">The new set of never-split tag names.</param>
+    /// <returns>A new instance with the requested override applied.</returns>
+    public XmlDocFormatOptions WithNeverSplitTagContent(ImmutableHashSet<string> neverSplitTagContent) =>
+        this.With(neverSplitTagContent: neverSplitTagContent);
+
+    /// <summary>
     /// Returns the per-tag policy for the given element name, or <see cref="XmlDocTagPolicy.Default" /> when no
     /// explicit policy is configured.
     /// </summary>
@@ -225,6 +233,31 @@ public sealed class XmlDocFormatOptions
         if (this.BlockTags.Contains(tagName)) return XmlDocTagLayout.MultilineBlock;
 
         return XmlDocTagLayout.Auto;
+    }
+
+    /// <summary>
+    /// Determines whether the content of the given element may wrap across lines.
+    /// </summary>
+    /// <param name="tagName">The element name to test.</param>
+    /// <returns>
+    /// <see langword="false" /> when the tag is in <see cref="NeverSplitTagContent" /> or its per-tag policy sets
+    /// <see cref="XmlDocTagPolicy.AllowLineBreakInside" /> to <see langword="false" />; otherwise <see langword="true" />.
+    /// </returns>
+    /// <remarks>
+    /// When wrapping is forbidden, a single-line-when-short tag whose content overflows the budget is emitted on
+    /// one line rather than expanded to a multiline block, keeping the element intact.
+    /// </remarks>
+    public bool AllowsContentWrapping(string tagName)
+    {
+        if (tagName is null) throw new System.ArgumentNullException(nameof(tagName));
+
+        if (this.NeverSplitTagContent.Contains(tagName)) return false;
+        if (this.TagPolicies.TryGetValue(tagName, out XmlDocTagPolicy? policy) && policy is not null && policy.AllowLineBreakInside == false)
+        {
+            return false;
+        }
+
+        return true;
     }
 
     private XmlDocFormatOptions With(

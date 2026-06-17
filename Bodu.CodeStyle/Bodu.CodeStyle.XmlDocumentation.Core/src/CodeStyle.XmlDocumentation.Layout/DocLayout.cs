@@ -228,6 +228,15 @@ internal static class DocLayout
             return;
         }
 
+        // The candidate overflows the budget. Normally it expands to a multiline block, but when the tag's
+        // content must never wrap (NeverSplitTagContent or a policy AllowLineBreakInside == false) it is kept
+        // intact on a single line, accepting the overflow rather than splitting it.
+        if (!options.AllowsContentWrapping(openToken.TagName!))
+        {
+            output.Add(singleLine);
+            return;
+        }
+
         EmitExpandedSingleLineCandidate(tokens, openIndex, closeIndex, options, contentBudget, output);
     }
 
