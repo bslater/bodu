@@ -141,7 +141,34 @@ internal static class DiagnosticDescriptors
         description: "Requires <typeparam> documentation elements to fit on a single line within the comment width. Explanatory prose beyond a concise statement of the type parameter is relocated into a <para> block inside the type-level <remarks>.",
         helpLinkUri: HelpLinkBase + "#bodu1406");
 
-    /// <summary>Gets the immutable collection of every descriptor surfaced by this analyzer.</summary>
+    /// <summary>
+    /// Gets the descriptors emitted by <see cref="XmlDocFormatAnalyzer" /> — the per-tag formatting diagnostics
+    /// (<c>BODU1001</c>–<c>BODU1018</c>) plus the cross-cutting <c>BODU1040</c>. This is the set the formatting
+    /// analyzer advertises; the content-quality (<c>BODU1405</c>/<c>BODU1406</c>) and configuration
+    /// (<c>BODU0001</c>) diagnostics are owned by their own analyzers.
+    /// </summary>
+    public static ImmutableArray<DiagnosticDescriptor> FormattingDescriptors { get; } = ImmutableArray.Create(
+        XmlDocSummary,
+        XmlDocRemarks,
+        XmlDocPara,
+        XmlDocExample,
+        XmlDocCode,
+        XmlDocList,
+        XmlDocItem,
+        XmlDocDescription,
+        XmlDocTerm,
+        XmlDocParam,
+        XmlDocTypeParam,
+        XmlDocReturns,
+        XmlDocException,
+        XmlDocValue,
+        XmlDocInlineCode,
+        XmlDocSee,
+        XmlDocParamRef,
+        XmlDocTypeParamRef,
+        XmlDocCrossCutting);
+
+    /// <summary>Gets the immutable collection of every descriptor surfaced by this analyzer package. Intended for documentation and tests, not for an individual analyzer's <c>SupportedDiagnostics</c>.</summary>
     public static ImmutableArray<DiagnosticDescriptor> All { get; } = ImmutableArray.Create(
         XmlDocSummary,
         XmlDocRemarks,

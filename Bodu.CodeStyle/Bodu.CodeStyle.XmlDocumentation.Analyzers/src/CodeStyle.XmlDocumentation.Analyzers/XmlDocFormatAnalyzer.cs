@@ -34,7 +34,7 @@ public sealed class XmlDocFormatAnalyzer : DiagnosticAnalyzer
 
     /// <inheritdoc />
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
-        DiagnosticDescriptors.All;
+        DiagnosticDescriptors.FormattingDescriptors;
 
     /// <inheritdoc />
     public override void Initialize(AnalysisContext context)
