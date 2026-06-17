@@ -9,7 +9,7 @@
 
   "maxLineLength": 120,
   "documentationPrefix": "/// ",
-  "indentText": "    ",
+  "indentText": "",
   "collapseProseWhitespace": true,
   "preserveBlankLines": false,
   "preserveXmlTagAttributes": true,
