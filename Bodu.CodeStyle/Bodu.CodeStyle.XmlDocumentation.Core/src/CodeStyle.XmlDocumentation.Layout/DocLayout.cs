@@ -76,13 +76,14 @@ internal static class DocLayout
             {
                 if (TryFindMatchingEnd(tokens, position, end, token.TagName!, out var matchEnd))
                 {
-                    // ForceMultilineTags and SingleLineWhenShortTags are the authoritative source of truth for
-                    // layout. Per-tag policies (XmlDocTagPolicy.Layout) carry supplementary metadata such as
-                    // self-closing attribute spacing but do NOT promote a tag into a layout class — that way a
-                    // JSON config that narrows ForceMultilineTags can take effect without also having to
-                    // override every tagPolicy entry.
-                    var forceMultiline = options.ForceMultilineTags.Contains(token.TagName!);
-                    var singleLineCandidate = options.SingleLineWhenShortTags.Contains(token.TagName!);
+                    // XmlDocFormatOptions.ResolveLayout is the single authoritative layout source: an explicit
+                    // per-tag policy layout wins, otherwise the convenience sets (ForceMultilineTags,
+                    // SingleLineWhenShortTags, InlineTags, BlockTags) are consulted in precedence order. This
+                    // makes tagPolicies.layout authoritative and gives BlockTags a real effect while leaving the
+                    // default Bodu profile byte-identical.
+                    XmlDocTagLayout layout = options.ResolveLayout(token.TagName!);
+                    var forceMultiline = layout == XmlDocTagLayout.MultilineBlock;
+                    var singleLineCandidate = layout == XmlDocTagLayout.SingleLineWhenShort;
 
                     if (forceMultiline)
                     {

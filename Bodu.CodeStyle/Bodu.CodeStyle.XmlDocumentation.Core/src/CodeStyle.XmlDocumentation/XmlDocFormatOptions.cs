@@ -162,20 +162,23 @@ public sealed class XmlDocFormatOptions
     /// <param name="maxLineLength">The new maximum line length.</param>
     /// <returns>A new instance with the requested override applied.</returns>
     public XmlDocFormatOptions WithMaxLineLength(int maxLineLength) =>
-        new XmlDocFormatOptions(
-            maxLineLength,
-            this.DocumentationPrefix,
-            this.IndentText,
-            this.CollapseProseWhitespace,
-            this.PreserveBlankLines,
-            this.PreserveXmlTagAttributes,
-            this.PreserveCrefText,
-            this.BlockTags,
-            this.InlineTags,
-            this.ForceMultilineTags,
-            this.SingleLineWhenShortTags,
-            this.NeverSplitTagContent,
-            this.TagPolicies);
+        this.With(maxLineLength: maxLineLength);
+
+    /// <summary>
+    /// Returns a new <see cref="XmlDocFormatOptions" /> instance with <see cref="BlockTags" /> replaced.
+    /// </summary>
+    /// <param name="blockTags">The new set of block tag names.</param>
+    /// <returns>A new instance with the requested override applied.</returns>
+    public XmlDocFormatOptions WithBlockTags(ImmutableHashSet<string> blockTags) =>
+        this.With(blockTags: blockTags);
+
+    /// <summary>
+    /// Returns a new <see cref="XmlDocFormatOptions" /> instance with <see cref="TagPolicies" /> replaced.
+    /// </summary>
+    /// <param name="tagPolicies">The new per-tag policy dictionary.</param>
+    /// <returns>A new instance with the requested override applied.</returns>
+    public XmlDocFormatOptions WithTagPolicies(ImmutableDictionary<string, XmlDocTagPolicy> tagPolicies) =>
+        this.With(tagPolicies: tagPolicies);
 
     /// <summary>
     /// Returns the per-tag policy for the given element name, or <see cref="XmlDocTagPolicy.Default" /> when no
@@ -191,4 +194,65 @@ public sealed class XmlDocFormatOptions
             ? policy
             : XmlDocTagPolicy.Default;
     }
+
+    /// <summary>
+    /// Resolves the authoritative layout for the given element name.
+    /// </summary>
+    /// <param name="tagName">The element name to classify.</param>
+    /// <returns>The effective <see cref="XmlDocTagLayout" /> for the tag.</returns>
+    /// <remarks>
+    /// <para>
+    /// An explicit per-tag policy whose <see cref="XmlDocTagPolicy.Layout" /> is not
+    /// <see cref="XmlDocTagLayout.Auto" /> wins outright; this makes <c>tagPolicies</c> the single authoritative
+    /// layout source. The convenience sets act as shorthand consulted only when no explicit policy layout
+    /// applies, in precedence order: <see cref="ForceMultilineTags" /> (block), <see cref="SingleLineWhenShortTags" />,
+    /// <see cref="InlineTags" /> (inline atomic), then <see cref="BlockTags" /> (block). When none match the tag
+    /// flows inline with the surrounding prose (<see cref="XmlDocTagLayout.Auto" />).
+    /// </para>
+    /// </remarks>
+    public XmlDocTagLayout ResolveLayout(string tagName)
+    {
+        if (tagName is null) throw new System.ArgumentNullException(nameof(tagName));
+
+        if (this.TagPolicies.TryGetValue(tagName, out XmlDocTagPolicy? policy) && policy is not null && policy.Layout != XmlDocTagLayout.Auto)
+        {
+            return policy.Layout;
+        }
+
+        if (this.ForceMultilineTags.Contains(tagName)) return XmlDocTagLayout.MultilineBlock;
+        if (this.SingleLineWhenShortTags.Contains(tagName)) return XmlDocTagLayout.SingleLineWhenShort;
+        if (this.InlineTags.Contains(tagName)) return XmlDocTagLayout.InlineAtomic;
+        if (this.BlockTags.Contains(tagName)) return XmlDocTagLayout.MultilineBlock;
+
+        return XmlDocTagLayout.Auto;
+    }
+
+    private XmlDocFormatOptions With(
+        int? maxLineLength = null,
+        string? documentationPrefix = null,
+        string? indentText = null,
+        bool? collapseProseWhitespace = null,
+        bool? preserveBlankLines = null,
+        bool? preserveXmlTagAttributes = null,
+        bool? preserveCrefText = null,
+        ImmutableHashSet<string>? blockTags = null,
+        ImmutableHashSet<string>? inlineTags = null,
+        ImmutableHashSet<string>? forceMultilineTags = null,
+        ImmutableHashSet<string>? singleLineWhenShortTags = null,
+        ImmutableHashSet<string>? neverSplitTagContent = null,
+        ImmutableDictionary<string, XmlDocTagPolicy>? tagPolicies = null) =>
+        new XmlDocFormatOptions(
+            maxLineLength ?? this.MaxLineLength,
+            documentationPrefix ?? this.DocumentationPrefix,
+            indentText ?? this.IndentText,
+            collapseProseWhitespace ?? this.CollapseProseWhitespace,
+            preserveBlankLines ?? this.PreserveBlankLines,
+            preserveXmlTagAttributes ?? this.PreserveXmlTagAttributes,
+            preserveCrefText ?? this.PreserveCrefText,
+            blockTags ?? this.BlockTags,
+            inlineTags ?? this.InlineTags,
+            forceMultilineTags ?? this.ForceMultilineTags,
+            singleLineWhenShortTags ?? this.SingleLineWhenShortTags,
+            neverSplitTagContent ?? this.NeverSplitTagContent,
+            tagPolicies ?? this.TagPolicies);
 }

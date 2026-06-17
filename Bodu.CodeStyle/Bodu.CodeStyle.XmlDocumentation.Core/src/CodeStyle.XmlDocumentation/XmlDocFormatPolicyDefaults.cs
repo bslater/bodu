@@ -38,6 +38,11 @@ public static class XmlDocFormatPolicyDefaults
     /// Gets the default set of block tag names.
     /// </summary>
     /// <returns>The ordinal immutable set of block tag names.</returns>
+    /// <remarks>
+    /// This set matches <see cref="DefaultForceMultilineTags" />: every default block tag is also forced
+    /// multiline. <c>term</c> is intentionally excluded so it flows inline within its enclosing
+    /// <c>&lt;item&gt;</c>, matching the canonical Bodu rendering.
+    /// </remarks>
     public static ImmutableHashSet<string> DefaultBlockTags { get; } = ImmutableHashSet.Create(
         StringComparer.Ordinal,
         "summary",
@@ -47,7 +52,6 @@ public static class XmlDocFormatPolicyDefaults
         "list",
         "item",
         "description",
-        "term",
         "code");
 
     /// <summary>
