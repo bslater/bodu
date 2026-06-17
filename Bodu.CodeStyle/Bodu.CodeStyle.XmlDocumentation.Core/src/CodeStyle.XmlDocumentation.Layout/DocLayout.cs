@@ -175,7 +175,10 @@ internal static class DocLayout
             }
         }
 
-        if (start <= cdataRawText.Length)
+        // Emit the trailing segment only when there is content after the final newline. A well-formed CDATA
+        // literal ends with "]]>", so this is normally taken; the guard ensures a literal that happened to end
+        // with a newline would not append a spurious empty content line.
+        if (start < cdataRawText.Length)
         {
             output.Add(cdataRawText.Substring(start));
         }
