@@ -54,6 +54,9 @@ public sealed class Iso7064Mod97_10
     /// </summary>
     public const int CheckDigits = 2;
 
+    /// <summary>
+    /// The running remainder, updated modulo ninety-seven as each body character is absorbed.
+    /// </summary>
     private int _r;
 
     /// <summary>

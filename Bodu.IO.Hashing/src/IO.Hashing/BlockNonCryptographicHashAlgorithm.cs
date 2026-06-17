@@ -144,7 +144,14 @@ public abstract class BlockNonCryptographicHashAlgorithm<T>
     /// </summary>
     protected readonly int BlockSizeBytes;
 
+    /// <summary>
+    /// The fixed-size buffer holding trailing input bytes that do not yet fill a complete block.
+    /// </summary>
     private readonly byte[] _residualByteBuffer;
+
+    /// <summary>
+    /// The number of bytes currently buffered in <see cref="_residualByteBuffer" /> awaiting a complete block.
+    /// </summary>
     private int _residualBytes;
 
     /// <summary>

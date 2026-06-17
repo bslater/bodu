@@ -51,6 +51,7 @@ public sealed class HashingStream
     /// The algorithm that accumulates every byte transferred through this stream.
     /// </summary>
     private readonly NonCryptographicHashAlgorithm _algorithm;
+
     /// <summary>
     /// The stream that bytes are transferred to or from.
     /// </summary>

@@ -42,10 +42,24 @@ namespace Bodu.Text.Encoding;
 /// </example>
 public static partial class Base58
 {
+    /// <summary>
+    /// The 58-character Bitcoin/Flickr alphabet, which omits the visually ambiguous characters 0, O, I, and l.
+    /// </summary>
     private const string BitcoinFlickrAlphabet = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
+
+    /// <summary>
+    /// The 58-character Ripple alphabet, a permutation of the Bitcoin/Flickr alphabet used by the XRP ledger.
+    /// </summary>
     private const string RippleAlphabet = "rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz";
 
+    /// <summary>
+    /// The reverse lookup table mapping each ASCII character to its value for the Bitcoin/Flickr alphabet.
+    /// </summary>
     private static readonly sbyte[] s_bitcoinFlickrLookup = BuildLookup(BitcoinFlickrAlphabet);
+
+    /// <summary>
+    /// The reverse lookup table mapping each ASCII character to its value for the Ripple alphabet.
+    /// </summary>
     private static readonly sbyte[] s_rippleLookup = BuildLookup(RippleAlphabet);
 
     /// <summary>

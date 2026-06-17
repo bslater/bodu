@@ -77,9 +77,24 @@ namespace Bodu.Security.Cryptography;
 public sealed class XtsModeTransform
     : IBlockCipherModeTransform
 {
+    /// <summary>
+    /// The data cipher (Key₁) used to encrypt or decrypt data blocks.
+    /// </summary>
     private readonly IBlockCipher _cipher;
+
+    /// <summary>
+    /// The tweak cipher (Key₂) used to encrypt the sector number.
+    /// </summary>
     private readonly IBlockCipher _tweakCipher;
-    private readonly byte[] _tweak; // sector number / tweak value
+
+    /// <summary>
+    /// The sector number (tweak value) stored as a defensive copy of the supplied block-size byte array.
+    /// </summary>
+    private readonly byte[] _tweak;
+
+    /// <summary>
+    /// Indicates whether the instance has been disposed.
+    /// </summary>
     private bool _disposed;
 
     /// <summary>

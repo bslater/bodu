@@ -47,6 +47,9 @@ namespace Bodu.Xml.Linq;
 /// </example>
 public sealed class XmlNamespaceResolver
 {
+    /// <summary>
+    /// The default namespace extracted from the root element and applied to subsequent local-name lookups.
+    /// </summary>
     private readonly XNamespace _xNamespace;
 
     /// <summary>

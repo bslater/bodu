@@ -135,14 +135,45 @@ public sealed class GcmModeTransform
     /// </summary>
     private const int NonceSize = 96;
 
+    /// <summary>
+    /// The 128-bit block cipher used by GCM. Not owned by this instance.
+    /// </summary>
     private readonly IBlockCipher _cipher;
+
+    /// <summary>
+    /// The cached associated authenticated data, or <see langword="null" /> until it has been processed.
+    /// </summary>
     private byte[]? _aad;
+
+    /// <summary>
+    /// Indicates whether the associated data has been processed.
+    /// </summary>
     private bool _aadProcessed;
+
+    /// <summary>
+    /// Indicates whether this single-use transform has completed an encryption or decryption.
+    /// </summary>
     private bool _completed;
-    private byte[]? _counter;    // running CTR counter (incremented per block)
+
+    /// <summary>
+    /// The running CTR counter block, incremented per processed block.
+    /// </summary>
+    private byte[]? _counter;
+
+    /// <summary>
+    /// Indicates whether the instance has been disposed.
+    /// </summary>
     private bool _disposed;
-    private byte[]? _h;          // GHASH subkey H = E_K(0¹²⁸)
-    private byte[]? _j0;         // initial counter J0 (base for the tag)
+
+    /// <summary>
+    /// The GHASH subkey <c>H = E_K(0¹²⁸)</c>.
+    /// </summary>
+    private byte[]? _h;
+
+    /// <summary>
+    /// The initial counter block <c>J0</c>, reserved as the base for the authentication tag.
+    /// </summary>
+    private byte[]? _j0;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="GcmModeTransform" /> class with a 96-bit GCM nonce.

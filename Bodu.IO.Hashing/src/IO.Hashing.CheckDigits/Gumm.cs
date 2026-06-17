@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Gumm.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -53,11 +53,17 @@ namespace Bodu.IO.Hashing.CheckDigits;
 public sealed partial class Gumm
     : CheckDigitAlgorithm
 {
-    // Two parallel accumulators let the streaming Append surface compute the check digit without buffering. _c[k]
-    // holds the body product under the hypothesis that the most recently appended digit sits at right-index k, where
-    // right-index 0 is the rightmost body position (an odd absolute position, so transform T applies) and right-index
-    // 1 is the next position out (even, identity). Appending a digit demotes every earlier digit by one right-index,
-    // which flips its identity/T parity; the recurrence below threads that shift through the (period-2) index space.
+    /// <summary>
+    /// The two parallel body-product accumulators that let the streaming <see cref="Append" /> surface compute the
+    /// check digit without buffering the appended digits.
+    /// </summary>
+    /// <remarks>
+    /// <c>_c[k]</c> holds the body product under the hypothesis that the most recently appended digit sits at
+    /// right-index <c>k</c>, where right-index 0 is the rightmost body position (an odd absolute position, so transform
+    /// <c>T</c> applies) and right-index 1 is the next position out (even, identity). Appending a digit demotes every
+    /// earlier digit by one right-index, which flips its identity/<c>T</c> parity; the append recurrence threads that
+    /// shift through the period-two index space.
+    /// </remarks>
     private readonly byte[] _c = new byte[2];
 
     /// <summary>

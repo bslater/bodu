@@ -86,8 +86,15 @@ public sealed partial class ConfigurationPattern
     /// </summary>
     private const int CompileCacheCapacity = 512;
 
+    /// <summary>
+    /// The process-wide cache of compiled patterns keyed by source pattern and comparison mode, used to amortize
+    /// regular-expression compilation across repeated resolve calls.
+    /// </summary>
     private static readonly ConcurrentDictionary<(string Pattern, StringComparison Comparison), ConfigurationPattern> CompileCache = new();
 
+    /// <summary>
+    /// The compiled regular expression that backs the pattern's match operations.
+    /// </summary>
     private readonly Regex _regex;
 
     /// <summary>

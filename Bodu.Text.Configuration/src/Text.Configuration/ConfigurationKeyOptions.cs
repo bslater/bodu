@@ -32,6 +32,9 @@ namespace Bodu.Text.Configuration;
 /// </remarks>
 public sealed class ConfigurationKeyOptions
 {
+    /// <summary>
+    /// The separator characters recognised by default when splitting a raw key into segments.
+    /// </summary>
     private static readonly char[] s_defaultSeparators = ['.', ':'];
 
     /// <summary>

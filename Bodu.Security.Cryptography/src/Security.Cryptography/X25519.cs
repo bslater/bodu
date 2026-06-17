@@ -95,10 +95,24 @@ public sealed class X25519
     /// </summary>
     private const int KeySizeBits = 256;
 
+    /// <summary>
+    /// The legal key sizes reported through <see cref="AsymmetricAlgorithm.LegalKeySizes" />, fixed at 256 bits.
+    /// </summary>
     private static readonly KeySizes[] s_legalKeySizes = [new KeySizes(KeySizeBits, KeySizeBits, 0)];
 
+    /// <summary>
+    /// The raw 32-byte private key, or <see langword="null" /> when no private key is set.
+    /// </summary>
     private byte[]? _privateKey;
+
+    /// <summary>
+    /// The raw 32-byte public key, or <see langword="null" /> when no public key is set.
+    /// </summary>
     private byte[]? _publicKey;
+
+    /// <summary>
+    /// Indicates whether this instance has been disposed.
+    /// </summary>
     private bool _disposed;
 
     /// <summary>

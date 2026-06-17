@@ -44,9 +44,19 @@ namespace Bodu.Collections.Generic;
 public sealed class SegmentedBuffer<T> :
     System.Collections.Generic.IEnumerable<T>
 {
+    /// <summary>
+    /// The segment size used when the buffer is constructed without an explicit size.
+    /// </summary>
     private const int DefaultSegmentSize = 512;
 
+    /// <summary>
+    /// The list of fixed-size array segments that together hold the buffered elements.
+    /// </summary>
     private readonly List<T[]> _segments;
+
+    /// <summary>
+    /// The fixed number of elements each segment can hold.
+    /// </summary>
     private readonly int _segmentSize;
 
     /// <summary>

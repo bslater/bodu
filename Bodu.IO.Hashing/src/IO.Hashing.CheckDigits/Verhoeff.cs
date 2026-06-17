@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Verhoeff.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -44,15 +44,24 @@ namespace Bodu.IO.Hashing.CheckDigits;
 public sealed partial class Verhoeff
     : CheckDigitAlgorithm
 {
-    // Eight parallel accumulators allow the streaming Append surface to compute the check digit without
-    // buffering digits. _c[k] holds the Verhoeff running value 'c' under the hypothesis that the most
-    // recently appended digit occupies right-index k in the final sequence. Update: on each append of v,
-    //   newC[k] = d[p[k, v], _c[(k + 1) & 7]]
-    // because shifting in a new most-recent digit demotes every existing digit by one right-index. The
-    // previous state under hypothesis (k+1) is the product of the older digits' permutation values, and
-    // the new digit's permutation value p[k, v] is left-multiplied onto it — matching the left-to-right
-    // accumulation of the static rtl walk c_{i+1} = d[c_i, p[j, digit]]. D5 is non-abelian, so operand
-    // order is load-bearing.
+    /// <summary>
+    /// The eight parallel Verhoeff running-value accumulators that let the streaming <see cref="Append" /> surface
+    /// compute the check digit without buffering the appended digits.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// <c>_c[k]</c> holds the Verhoeff running value <c>c</c> under the hypothesis that the most recently appended
+    /// digit occupies right-index <c>k</c> in the final sequence. On each append of <c>v</c> the state is updated as
+    /// <c>newC[k] = d[p[k, v], _c[(k + 1) &amp; 7]]</c>, because shifting in a new most-recent digit demotes every
+    /// existing digit by one right-index.
+    /// </para>
+    /// <para>
+    /// The previous state under hypothesis <c>(k + 1)</c> is the product of the older digits' permutation values, and
+    /// the new digit's permutation value <c>p[k, v]</c> is left-multiplied onto it, matching the left-to-right
+    /// accumulation of the static right-to-left walk <c>c_{i+1} = d[c_i, p[j, digit]]</c>. <i>D</i><sub>5</sub> is
+    /// non-abelian, so the operand order is load-bearing.
+    /// </para>
+    /// </remarks>
     private readonly byte[] _c = new byte[8];
 
     /// <summary>

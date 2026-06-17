@@ -94,14 +94,29 @@ namespace Bodu.Security.Cryptography;
 public sealed class MerkleTreeHash
     : IDisposable
 {
+    /// <summary>
+    /// The size, in bytes, of each leaf block.
+    /// </summary>
     private readonly int _blockSize;
+
+    /// <summary>
+    /// The number of child nodes combined into each parent node during tree reduction.
+    /// </summary>
     private readonly int _fanOut;
+
+    /// <summary>
+    /// The factory invoked once per leaf and internal node to obtain a fresh, independent hash algorithm.
+    /// </summary>
     private readonly Func<HashAlgorithm> _algorithmFactory;
 
-    // Accumulates raw bytes for the current partial block; reused across ComputeHash calls.
+    /// <summary>
+    /// Accumulates raw bytes for the current partial block; reused across <c>ComputeHash</c> calls.
+    /// </summary>
     private readonly MemoryStream _buffer;
 
-    // Holds the hash values produced at the current tree level during reduction.
+    /// <summary>
+    /// Holds the hash values produced at the current tree level during reduction.
+    /// </summary>
     private List<byte[]> _currentLevel;
 
     /// <summary>

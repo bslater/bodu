@@ -100,14 +100,35 @@ public sealed class Twofish
     /// </summary>
     internal const int MaxKeySize = 256;
 
-    // Twofish has a single fixed 128-bit block size.
+    /// <summary>
+    /// The legal block sizes for Twofish.
+    /// </summary>
+    /// <remarks>
+    /// Twofish has a single fixed 128-bit block size.
+    /// </remarks>
     private static readonly KeySizes[] s_twofishBlockSizes = [new KeySizes(BlockSizeBits, BlockSizeBits, 0)];
 
-    // Legal key sizes are 128, 192, and 256 bits.
+    /// <summary>
+    /// The legal key sizes for Twofish.
+    /// </summary>
+    /// <remarks>
+    /// Legal key sizes are 128, 192, and 256 bits.
+    /// </remarks>
     private static readonly KeySizes[] s_twofishKeySizes = [new KeySizes(128, 256, 64)];
 
+    /// <summary>
+    /// Indicates whether this instance has been disposed.
+    /// </summary>
     private bool _disposed;
+
+    /// <summary>
+    /// The block cipher mode of operation used when creating encryptors and decryptors.
+    /// </summary>
     private CipherModeKind _blockMode = CipherModeKind.CBC;
+
+    /// <summary>
+    /// The extended padding mode used when creating encryptors and decryptors.
+    /// </summary>
     private PaddingModeKind _blockPadding = PaddingModeKind.PKCS7;
 
     /// <summary>

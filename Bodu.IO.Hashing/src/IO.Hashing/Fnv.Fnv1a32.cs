@@ -63,7 +63,14 @@ namespace Bodu.IO.Hashing;
 public sealed class Fnv1a32
     : Fnv<Fnv1a32>
 {
+    /// <summary>
+    /// The FNV-1a 32-bit offset basis used as the initial hash state.
+    /// </summary>
     private const ulong OffsetBasis = 0x811C9DC5UL;
+
+    /// <summary>
+    /// The FNV-1a 32-bit prime multiplied into the hash state for each input byte.
+    /// </summary>
     private const ulong Prime = 0x01000193UL;
 
     /// <summary>

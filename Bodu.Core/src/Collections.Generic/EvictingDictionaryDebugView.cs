@@ -21,6 +21,9 @@ namespace Bodu.Collections.Generic;
 internal sealed class EvictingDictionaryDebugView<TKey, TValue>
     where TKey : notnull
 {
+    /// <summary>
+    /// The dictionary whose contents are surfaced to the debugger.
+    /// </summary>
     private readonly EvictingDictionary<TKey, TValue> _dictionary;
 
     /// <summary>

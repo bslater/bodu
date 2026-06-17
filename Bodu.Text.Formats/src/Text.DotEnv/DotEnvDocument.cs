@@ -39,7 +39,14 @@ namespace Bodu.Text.DotEnv;
 /// </example>
 public sealed class DotEnvDocument
 {
+    /// <summary>
+    /// The ordered list of entries in source order.
+    /// </summary>
     private readonly List<DotEnvEntry> _entries;
+
+    /// <summary>
+    /// The key-to-entry lookup used for fast value resolution.
+    /// </summary>
     private readonly Dictionary<string, DotEnvEntry> _lookup;
 
     /// <summary>

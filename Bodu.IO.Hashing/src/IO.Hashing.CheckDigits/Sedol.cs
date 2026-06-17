@@ -56,9 +56,19 @@ public sealed class Sedol
     /// </summary>
     public const int SequenceLength = 7;
 
+    /// <summary>
+    /// The SEDOL position weights <c>{1, 3, 1, 7, 3, 9}</c> applied left to right across the six body characters.
+    /// </summary>
     private static readonly int[] s_weights = [1, 3, 1, 7, 3, 9];
+
+    /// <summary>
+    /// The number of body characters appended so far, used to select the position weight.
+    /// </summary>
     private int _count;
 
+    /// <summary>
+    /// The running weighted sum accumulated over the appended body characters.
+    /// </summary>
     private int _sum;
 
     /// <summary>

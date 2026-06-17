@@ -63,13 +63,35 @@ public abstract partial class Snefru<T>
     : BlockHashAlgorithm<T>
     where T : Snefru<T>, new()
 {
-    private const int TotalWords = 16;                              // number of 32-bit words in the working buffer.
-    private const int Mask = TotalWords - 1;                        // bitmask to constrain index calculations to the buffer length; inlined as an immediate by the JIT.
-    private static readonly int[] s_shifts = [16, 8, 16, 24];       // fixed bitwise rotation amounts applied after each S-box round.
+    /// <summary>
+    /// The number of 32-bit words in the working buffer.
+    /// </summary>
+    private const int TotalWords = 16;
+
+    /// <summary>
+    /// The bitmask that constrains index calculations to the buffer length.
+    /// </summary>
+    private const int Mask = TotalWords - 1;
+
+    /// <summary>
+    /// The fixed bitwise rotation amounts applied after each S-box round.
+    /// </summary>
+    private static readonly int[] s_shifts = [16, 8, 16, 24];
+
+    /// <summary>
+    /// The supported output hash sizes, in bits.
+    /// </summary>
     private static readonly int[] s_permittedHashSizes = [128, 256];
 
-    private readonly uint[] _buffer = new uint[TotalWords];         // internal working buffer used for permutation and round processing.
-    private readonly uint[] _state;                                 // internal state used to accumulate the hash output across input blocks.
+    /// <summary>
+    /// The internal working buffer used for permutation and round processing.
+    /// </summary>
+    private readonly uint[] _buffer = new uint[TotalWords];
+
+    /// <summary>
+    /// The internal state used to accumulate the hash output across input blocks.
+    /// </summary>
+    private readonly uint[] _state;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Snefru{T}" /> class with the specified output hash size.

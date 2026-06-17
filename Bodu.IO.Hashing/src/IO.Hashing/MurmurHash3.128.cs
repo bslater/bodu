@@ -78,7 +78,14 @@ namespace Bodu.IO.Hashing;
 public sealed class MurmurHash3_128
     : MurmurHash3<MurmurHash3_128>
 {
+    /// <summary>
+    /// The first mixing constant applied to each block during the MurmurHash3 x64 128-bit body pass.
+    /// </summary>
     private const ulong C1 = 0x87C37B91114253D5uL;
+
+    /// <summary>
+    /// The second mixing constant applied to each block during the MurmurHash3 x64 128-bit body pass.
+    /// </summary>
     private const ulong C2 = 0x4CF5AD432745937FuL;
 
     /// <summary>

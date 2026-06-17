@@ -48,11 +48,29 @@ namespace Bodu.IO.Hashing;
 public sealed class Pjw32
     : NonCryptographicHashAlgorithm
 {
+    /// <summary>
+    /// The fixed digest length, in bytes, produced by this algorithm.
+    /// </summary>
     private const int HashLength = 4;
+
+    /// <summary>
+    /// The bit mask isolating the high 4 bits of the running hash that are folded back into the low bits.
+    /// </summary>
     private const uint HighBitsMask = 0xF0000000u;
+
+    /// <summary>
+    /// The bit mask clearing the high 4 bits of the running hash after the fold step.
+    /// </summary>
     private const uint LowBitsMask = 0x0FFFFFFFu;
+
+    /// <summary>
+    /// The right-shift amount that aligns the masked high bits before they are XOR-folded into the low bits.
+    /// </summary>
     private const int Shift = 28;
 
+    /// <summary>
+    /// The running hash accumulator, updated as each input byte is shifted and folded in.
+    /// </summary>
     private uint _workingHash;
 
     /// <summary>

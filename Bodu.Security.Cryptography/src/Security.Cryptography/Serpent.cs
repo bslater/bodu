@@ -61,8 +61,14 @@ public abstract class Serpent
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Exposed as a protected field so derived wide-block Serpent types can read the key byte count directly on cipher-construction paths without virtual dispatch.")]
     protected readonly int KeySizeBytes;
 
+    /// <summary>
+    /// The default tweak size in bytes, used when no tweak length is otherwise specified.
+    /// </summary>
     private readonly int _defaultTweakSizeBytes;
 
+    /// <summary>
+    /// A value indicating whether this instance has been disposed.
+    /// </summary>
     private bool _disposed;
 
     /// <summary>

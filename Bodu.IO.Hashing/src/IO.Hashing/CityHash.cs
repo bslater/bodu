@@ -118,9 +118,19 @@ public abstract class CityHash<T>
     /// </summary>
     protected const ulong KMul = 0x9DDFEA08EB382D69UL;
 
+    /// <summary>
+    /// The set of hash sizes, in bits, accepted by the constructor.
+    /// </summary>
     private static readonly int[] s_validHashSizes = [32, 64, 128];
 
+    /// <summary>
+    /// The buffer accumulating all appended input, since CityHash is a one-shot algorithm hashed at finalization.
+    /// </summary>
     private readonly MemoryStream _inputBuffer = new();
+
+    /// <summary>
+    /// Indicates whether the instance has been disposed and its buffered input released.
+    /// </summary>
     private bool _disposed;
 
     /// <summary>

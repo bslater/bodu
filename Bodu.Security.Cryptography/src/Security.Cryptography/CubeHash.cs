@@ -102,6 +102,9 @@ public sealed class CubeHash
     /// </summary>
     public const int MinRounds = 1;
 
+    /// <summary>
+    /// The set of hash output sizes, in bits, accepted by the algorithm.
+    /// </summary>
     private static readonly int[] s_permittedHashSizes = [224, 256, 384, 512];
 
     /// <summary>
@@ -125,20 +128,49 @@ public sealed class CubeHash
     /// </summary>
     private static readonly Vector512<uint> s_permXor1 = Vector512.Create(1u, 0u, 3u, 2u, 5u, 4u, 7u, 6u, 9u, 8u, 11u, 10u, 13u, 12u, 15u, 14u);
 
+    /// <summary>
+    /// Indicates whether the instance has been disposed.
+    /// </summary>
     private bool _disposed = false;
 
-    // Internal algorithm parameters
+    /// <summary>
+    /// The number of finalization rounds applied after all input has been processed.
+    /// </summary>
     private int _finalizationRounds;
 
+    /// <summary>
+    /// The number of initialization rounds applied before input is processed.
+    /// </summary>
     private int _initializationRounds;
+
+    /// <summary>
+    /// The cached post-initialization state snapshot used to reset the working state without recomputation.
+    /// </summary>
     private uint[] _initializedState;
+
+    /// <summary>
+    /// The size, in bytes, of the input block that triggers a state transformation.
+    /// </summary>
     private int _inputBlockSizeBytes;
+
+    /// <summary>
+    /// Indicates whether the post-initialization state snapshot has been computed and cached.
+    /// </summary>
     private bool _isInitializedStateCached = false;
 
-    // Number of bytes accumulated in the current partial block
+    /// <summary>
+    /// The number of bytes accumulated in the current partial block.
+    /// </summary>
     private int _pendingBytes;
 
+    /// <summary>
+    /// The number of transformation rounds applied to each full input block.
+    /// </summary>
     private int _rounds;
+
+    /// <summary>
+    /// The 32-word (1024-bit) internal state updated in place across permutation rounds.
+    /// </summary>
     private uint[] _state;
 
 

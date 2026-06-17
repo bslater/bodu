@@ -47,9 +47,19 @@ namespace Bodu.IO.Hashing;
 public sealed class JSHash
     : NonCryptographicHashAlgorithm
 {
+    /// <summary>
+    /// The fixed digest length, in bytes, produced by this algorithm.
+    /// </summary>
     private const int HashLength = 4;
+
+    /// <summary>
+    /// The constant initial value used to seed the running hash.
+    /// </summary>
     private const uint Seed = 0x4E67C6A7;
 
+    /// <summary>
+    /// The running hash accumulator, updated as each input byte is mixed in and seeded from <see cref="Seed" />.
+    /// </summary>
     private uint _workingHash = Seed;
 
     /// <summary>

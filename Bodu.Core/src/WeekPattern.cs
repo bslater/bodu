@@ -50,13 +50,31 @@ public readonly partial struct WeekPattern
 {
 
 #pragma warning disable IDE1006
+
+    /// <summary>
+    /// The single-letter day symbols (Sunday through Saturday) used when formatting a pattern.
+    /// </summary>
     private static readonly char[] WeekdaySymbols = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 #pragma warning restore IDE1006
 
+    /// <summary>
+    /// The packed bitmask of selected days backing this pattern, one bit per day of the week.
+    /// </summary>
     private readonly byte _selectedDays;
 
+    /// <summary>
+    /// The bitmask value with every day selected.
+    /// </summary>
     private const int MaxValue = 0b1111111;
+
+    /// <summary>
+    /// The bitmask value with no days selected.
+    /// </summary>
     private const int MinValue = 0b0000000;
+
+    /// <summary>
+    /// The single-bit step used to test and set each successive day in the bitmask.
+    /// </summary>
     private const byte ShiftValue = 0x01;
 
 #pragma warning disable IDE1006

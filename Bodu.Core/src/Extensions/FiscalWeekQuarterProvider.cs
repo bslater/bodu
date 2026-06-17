@@ -62,9 +62,24 @@ namespace Bodu.Extensions;
 public sealed class FiscalWeekQuarterProvider
     : IQuarterDefinitionProvider
 {
+    /// <summary>
+    /// The calendar month (1-12) that anchors the fiscal year.
+    /// </summary>
     private readonly int _anchorMonth;
+
+    /// <summary>
+    /// The day of week on which each fiscal week begins.
+    /// </summary>
     private readonly DayOfWeek _anchorDayOfWeek;
+
+    /// <summary>
+    /// Indicates whether the fiscal year starts on the nearest <see cref="_anchorDayOfWeek" /> rather than the first.
+    /// </summary>
     private readonly bool _useNearestDayOfWeek;
+
+    /// <summary>
+    /// The fiscal week pattern that governs how weeks are grouped into quarters.
+    /// </summary>
     private readonly FiscalWeekPattern _pattern;
 
     /// <summary>

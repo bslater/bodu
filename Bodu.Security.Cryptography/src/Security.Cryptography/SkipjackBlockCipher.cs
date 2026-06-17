@@ -83,9 +83,13 @@ public sealed class SkipjackBlockCipher
     /// </summary>
     public const int KeySize = 80;
 
-    // Fixed Skipjack F-table. This 256-entry byte substitution table is the only nonlinear component used by the
-    // 16-bit G permutation. Every round calls G once, and G performs four F-table substitutions keyed by four
-    // consecutive bytes from the 80-bit key schedule.
+    /// <summary>
+    /// The fixed Skipjack F-table — the 256-entry byte substitution table used by the cipher.
+    /// </summary>
+    /// <remarks>
+    /// This is the only nonlinear component used by the 16-bit G permutation. Every round calls G once, and G performs
+    /// four F-table substitutions keyed by four consecutive bytes from the 80-bit key schedule.
+    /// </remarks>
     private static readonly byte[] s_ftable =
     [
         0xa3,
@@ -348,11 +352,19 @@ public sealed class SkipjackBlockCipher
 
 #pragma warning disable SA1132 // Do not combine fields
 
-    // Expanded round-key byte streams. Round k uses _key0[k].._key3[k], equivalent to
-    // key[(4k + 0) mod 10] through key[(4k + 3) mod 10]. Keeping four arrays avoids modulo arithmetic in G/H.
+    /// <summary>
+    /// The four expanded round-key byte streams consumed by the G and H permutations.
+    /// </summary>
+    /// <remarks>
+    /// Round <c>k</c> uses <c>_key0[k]</c>..<c>_key3[k]</c>, equivalent to <c>key[(4k + 0) mod 10]</c> through
+    /// <c>key[(4k + 3) mod 10]</c>. Keeping four arrays avoids modulo arithmetic in G/H.
+    /// </remarks>
     private readonly int[] _key0, _key1, _key2, _key3;
 #pragma warning restore SA1132 // Do not combine fields
 
+    /// <summary>
+    /// Indicates whether this instance has been disposed.
+    /// </summary>
     private bool _disposed = false;
 
     /// <summary>

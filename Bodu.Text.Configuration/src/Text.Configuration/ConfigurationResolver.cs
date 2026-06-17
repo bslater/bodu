@@ -22,6 +22,9 @@ internal sealed class ConfigurationResolver
     /// </summary>
     private const string UnsetSentinel = "unset";
 
+    /// <summary>
+    /// The resolve options that govern key matching, precedence, and unset handling.
+    /// </summary>
     private readonly ConfigurationResolveOptions _options;
 
     /// <summary>

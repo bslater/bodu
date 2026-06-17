@@ -46,15 +46,34 @@ internal sealed class Hc128StreamCipher
     /// </summary>
     internal const int BlockSizeBytes = 64;
 
+    /// <summary>
+    /// The number of 32-bit words in each of the two secret tables.
+    /// </summary>
     private const int TableSize = 512;
+
+    /// <summary>
+    /// The bit mask used to wrap table indices into the range <c>0</c> to <c>TableSize - 1</c>.
+    /// </summary>
     private const int TableMask = TableSize - 1;
 
-    // The two secret tables P and Q, each 512 words.
+    /// <summary>
+    /// The secret table <c>P</c>, holding 512 evolving 32-bit state words.
+    /// </summary>
     private readonly uint[] _p = new uint[TableSize];
+
+    /// <summary>
+    /// The secret table <c>Q</c>, holding 512 evolving 32-bit state words.
+    /// </summary>
     private readonly uint[] _q = new uint[TableSize];
 
-    // The step counter, taken mod 1024 to alternate between the P and Q halves.
+    /// <summary>
+    /// The step counter, taken modulo 1024 to alternate between the <c>P</c> and <c>Q</c> halves.
+    /// </summary>
     private uint _counter;
+
+    /// <summary>
+    /// Indicates whether this instance has been disposed and its secret tables cleared.
+    /// </summary>
     private bool _disposed;
 
     /// <summary>

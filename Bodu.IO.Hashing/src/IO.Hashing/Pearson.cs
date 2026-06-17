@@ -67,9 +67,19 @@ public sealed partial class Pearson
     /// </summary>
     public const int MinHashSizeBits = 8;
 
+    /// <summary>
+    /// The 256-byte permutation table applied to each input byte during the Pearson hashing rounds.
+    /// </summary>
     private readonly byte[] _permutationTable;
+
+    /// <summary>
+    /// The per-output-byte hash accumulator updated as each input byte is processed.
+    /// </summary>
     private readonly byte[] _workingHash;
 
+    /// <summary>
+    /// Indicates whether the next appended byte is the first of the message and must seed the working hash.
+    /// </summary>
     private bool _isFirstByte;
 
     /// <summary>

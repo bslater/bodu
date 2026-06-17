@@ -55,9 +55,19 @@ namespace Bodu.IO.Hashing;
 public sealed class SuperFastHash
     : NonCryptographicHashAlgorithm, IDisposable
 {
+    /// <summary>
+    /// The fixed digest length, in bytes, produced by this algorithm.
+    /// </summary>
     private const int HashLength = 4;
 
+    /// <summary>
+    /// The buffer accumulating all appended input, since the algorithm requires the full payload before finalization.
+    /// </summary>
     private readonly MemoryStream _buffer = new();
+
+    /// <summary>
+    /// Indicates whether the instance has been disposed and its buffered input released.
+    /// </summary>
     private bool _disposed;
 
     /// <summary>

@@ -119,38 +119,93 @@ namespace Bodu.Security.Cryptography;
 public sealed class ParallelMerkleTreeHash
     : IDisposable
 {
+    /// <summary>
+    /// The size in bytes of each leaf block.
+    /// </summary>
     private readonly int _blockSize;
+
+    /// <summary>
+    /// The number of child nodes combined into each parent node during tree reduction.
+    /// </summary>
     private readonly int _fanOut;
+
+    /// <summary>
+    /// The factory that produces a fresh, independent <see cref="HashAlgorithm" /> per hash operation.
+    /// </summary>
     private readonly Func<HashAlgorithm> _algorithmFactory;
+
+    /// <summary>
+    /// The cancellation source signaled on disposal to tear down any in-flight level workers.
+    /// </summary>
     private readonly CancellationTokenSource _cts = new();
 
-    // One channel and one worker task per tree level, created lazily as the tree grows.
-    // Both dictionaries are cleared and rebuilt by Reset() at the start of each computation.
+    /// <summary>
+    /// The per-level input channels, one per tree level.
+    /// </summary>
+    /// <remarks>
+    /// One channel and one worker task is created lazily per tree level as the tree grows. Both dictionaries are
+    /// cleared and rebuilt by <see cref="Reset" /> at the start of each computation.
+    /// </remarks>
     private readonly ConcurrentDictionary<int, Channel<byte[]>> _levelChannels = new();
+
+    /// <summary>
+    /// The per-level worker tasks, one per tree level.
+    /// </summary>
     private readonly ConcurrentDictionary<int, Task> _levelWorkers = new();
+
+    /// <summary>
+    /// The lock guarding lazy creation of a level's channel and worker.
+    /// </summary>
     private readonly object _levelCreationLock = new();
 
-    // Raw-byte accumulation buffer. Single-caller only; not thread-safe.
-    // Allocated once and reused across calls; Reset() zeroes _bufferLength without clearing the
-    // buffer contents, since FinalizeAsync always explicitly pads before hashing any tail block.
+    /// <summary>
+    /// The raw-byte accumulation buffer used to assemble each leaf block.
+    /// </summary>
+    /// <remarks>
+    /// Single-caller only; not thread-safe. Allocated once and reused across calls; <see cref="Reset" /> zeroes
+    /// <see cref="_bufferLength" /> without clearing the buffer contents, since <see cref="FinalizeAsync" /> always
+    /// explicitly pads before hashing any tail block.
+    /// </remarks>
     private readonly byte[] _blockBuffer;
+
+    /// <summary>
+    /// The number of valid bytes currently held in <see cref="_blockBuffer" />.
+    /// </summary>
     private int _bufferLength;
 
-    // Incremented each time a leaf is submitted; used to assign stable indices for diagnostics.
-    // Only accessed from the producer thread — no atomic operation required.
-    // Reset to 0 by Reset() at the start of each computation.
+    /// <summary>
+    /// The running leaf index, incremented each time a leaf is submitted.
+    /// </summary>
+    /// <remarks>
+    /// Used to assign stable indices for diagnostics. Only accessed from the producer thread, so no atomic operation is
+    /// required. Reset to 0 by <see cref="Reset" /> at the start of each computation.
+    /// </remarks>
     private int _leafIndex;
 
-    // Set per-call via Reset(); null when diagnostics are not requested for the current call.
+    /// <summary>
+    /// The diagnostics sink for the current computation, or <see langword="null" /> when diagnostics are not requested.
+    /// </summary>
     private MerkleTreeDiagnostics? _diagnostics;
 
-    // Written by whichever level worker identifies the final surviving node as the root.
-    // Cleared to null by Reset() at the start of each computation.
+    /// <summary>
+    /// The Merkle root hash, written by whichever level worker identifies the final surviving node as the root.
+    /// </summary>
+    /// <remarks>
+    /// Cleared to <see langword="null" /> by <see cref="Reset" /> at the start of each computation.
+    /// </remarks>
     private byte[]? _rootHash;
+
+    /// <summary>
+    /// Indicates whether this instance has been disposed.
+    /// </summary>
     private bool _disposed;
 
-    // Set per-call by ComputeHash* methods; links the disposal token with any user-supplied
-    // cancellation token so that level workers respond to external cancellation.
+    /// <summary>
+    /// The cancellation token for the current computation, linking the disposal token with any user-supplied token.
+    /// </summary>
+    /// <remarks>
+    /// Set per call by the <c>ComputeHash*</c> methods so that level workers respond to external cancellation.
+    /// </remarks>
     private CancellationToken _activeToken;
 
     /// <summary>

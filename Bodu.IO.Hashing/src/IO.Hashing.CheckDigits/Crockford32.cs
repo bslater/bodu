@@ -67,6 +67,10 @@ public sealed class Crockford32
     /// </summary>
     private const int Modulus = 37;
 
+    /// <summary>
+    /// The running decoded value, reduced modulo <see cref="Modulus" /> by Horner's method across appended body
+    /// characters.
+    /// </summary>
     private int _value;
 
     /// <summary>

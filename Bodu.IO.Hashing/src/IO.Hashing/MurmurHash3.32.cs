@@ -77,7 +77,14 @@ namespace Bodu.IO.Hashing;
 public sealed class MurmurHash3_32
     : MurmurHash3<MurmurHash3_32>
 {
+    /// <summary>
+    /// The first mixing constant applied to each block during the MurmurHash3 32-bit body pass.
+    /// </summary>
     private const uint C1 = 0xCC9E2D51u;
+
+    /// <summary>
+    /// The second mixing constant applied to each block during the MurmurHash3 32-bit body pass.
+    /// </summary>
     private const uint C2 = 0x1B873593u;
 
     /// <summary>

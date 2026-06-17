@@ -66,25 +66,77 @@ internal sealed class Salsa20StreamCipher
     /// </summary>
     private const int Rounds = 20;
 
-    // The four little-endian words of the ASCII constant "expand 32-byte k".
+    /// <summary>
+    /// The first little-endian word of the ASCII constant <c>"expand 32-byte k"</c>, seeded into state word 0 for a
+    /// 256-bit key.
+    /// </summary>
     private const uint Sigma0 = 0x61707865;
 
+    /// <summary>
+    /// The second little-endian word of the ASCII constant <c>"expand 32-byte k"</c>, seeded into state word 5 for a
+    /// 256-bit key.
+    /// </summary>
     private const uint Sigma1 = 0x3320646e;
+
+    /// <summary>
+    /// The third little-endian word of the ASCII constant <c>"expand 32-byte k"</c>, seeded into state word 10 for a
+    /// 256-bit key.
+    /// </summary>
     private const uint Sigma2 = 0x79622d32;
+
+    /// <summary>
+    /// The fourth little-endian word of the ASCII constant <c>"expand 32-byte k"</c>, seeded into state word 15 for a
+    /// 256-bit key.
+    /// </summary>
     private const uint Sigma3 = 0x6b206574;
 
-    // The four little-endian words of the ASCII constant "expand 16-byte k".
+    /// <summary>
+    /// The first little-endian word of the ASCII constant <c>"expand 16-byte k"</c>, seeded into state word 0 for a
+    /// 128-bit key.
+    /// </summary>
     private const uint Tau0 = 0x61707865;
 
+    /// <summary>
+    /// The second little-endian word of the ASCII constant <c>"expand 16-byte k"</c>, seeded into state word 5 for a
+    /// 128-bit key.
+    /// </summary>
     private const uint Tau1 = 0x3120646e;
+
+    /// <summary>
+    /// The third little-endian word of the ASCII constant <c>"expand 16-byte k"</c>, seeded into state word 10 for a
+    /// 128-bit key.
+    /// </summary>
     private const uint Tau2 = 0x79622d36;
+
+    /// <summary>
+    /// The fourth little-endian word of the ASCII constant <c>"expand 16-byte k"</c>, seeded into state word 15 for a
+    /// 128-bit key.
+    /// </summary>
     private const uint Tau3 = 0x6b206574;
 
-    // The 16 state words (j0..j15) of the Salsa20 matrix, with j8/j9 reserved for the block counter.
+    /// <summary>
+    /// The 16 state words (j0..j15) of the Salsa20 matrix, with words 8 and 9 reserved for the block counter.
+    /// </summary>
     private readonly uint[] _state = new uint[16];
+
+    /// <summary>
+    /// The block counter value supplied at construction for the first keystream block.
+    /// </summary>
     private readonly ulong _initialCounter;
+
+    /// <summary>
+    /// The block counter for the next keystream block.
+    /// </summary>
     private ulong _counter;
+
+    /// <summary>
+    /// Indicates whether the 64-bit block counter has wrapped back to its initial value, exhausting the keystream.
+    /// </summary>
     private bool _counterExhausted;
+
+    /// <summary>
+    /// Indicates whether the instance has been disposed and its state cleared.
+    /// </summary>
     private bool _disposed;
 
     /// <summary>

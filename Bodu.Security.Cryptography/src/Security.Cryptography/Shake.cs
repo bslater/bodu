@@ -97,12 +97,25 @@ namespace Bodu.Security.Cryptography;
 public sealed class Shake
     : BufferedBlockHashAlgorithm<Shake>
 {
+    /// <summary>
+    /// The number of 64-bit lanes in the Keccak-f[1600] state (5 × 5 = 25 words).
+    /// </summary>
     private const int StateWords = 25;
+
+    /// <summary>
+    /// The SHAKE domain-separation byte applied during multi-rate padding, distinguishing SHAKE from SHA-3 and raw
+    /// Keccak.
+    /// </summary>
     private const byte DomainSuffix = 0x1F;
 
+    /// <summary>
+    /// The set of supported SHAKE security levels, in bits.
+    /// </summary>
     private static readonly int[] s_validSecurityLevels = [128, 256];
 
-    // Round constants for the ι (iota) step — 24 values, one per round.
+    /// <summary>
+    /// The 24 round constants for the ι (iota) step of the Keccak-f permutation, one per round.
+    /// </summary>
     private static readonly ulong[] s_roundConstants =
     [
         0x0000000000000001UL, 0x0000000000008082UL, 0x800000000000808AUL, 0x8000000080008000UL,
@@ -113,8 +126,11 @@ public sealed class Shake
         0x8000000080008081UL, 0x8000000000008080UL, 0x0000000080000001UL, 0x8000000080008008UL,
     ];
 
-    // ρ (rho) rotation offsets indexed as rho[x + 5*y].
 #pragma warning disable SA1137 // Elements should have the same indentation
+
+    /// <summary>
+    /// The ρ (rho) rotation offsets for the Keccak-f permutation, indexed as <c>rho[x + 5*y]</c>.
+    /// </summary>
     private static readonly int[] s_rho =
     [
          0,  1, 62, 28, 27,
@@ -124,7 +140,9 @@ public sealed class Shake
         18,  2, 61, 56, 14,
     ];
 
-    // π (pi) permutation indices mapping state[i] → B[pi[i]].
+    /// <summary>
+    /// The π (pi) permutation indices for the Keccak-f permutation, mapping <c>state[i]</c> to <c>B[pi[i]]</c>.
+    /// </summary>
     private static readonly int[] s_pi =
     [
          0, 10, 20,  5, 15,
@@ -135,7 +153,14 @@ public sealed class Shake
     ];
 #pragma warning restore SA1137 // Elements should have the same indentation
 
+    /// <summary>
+    /// The 1600-bit Keccak sponge state, held as 25 little-endian 64-bit lanes.
+    /// </summary>
     private readonly ulong[] _state = new ulong[StateWords];
+
+    /// <summary>
+    /// The SHAKE security level, in bits, selected at construction (128 or 256).
+    /// </summary>
     private readonly int _securityLevel;
 
     /// <summary>

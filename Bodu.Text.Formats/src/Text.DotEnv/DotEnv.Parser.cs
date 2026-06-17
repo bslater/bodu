@@ -66,8 +66,19 @@ public static partial class DotEnv
     /// </summary>
     private ref struct Parser
     {
+        /// <summary>
+        /// The parse options that govern quoting, escaping, and interpolation behavior.
+        /// </summary>
         private readonly DotEnvParseOptions _options;
+
+        /// <summary>
+        /// The unconsumed portion of the source text remaining to be parsed.
+        /// </summary>
         private ReadOnlySpan<char> _remaining;
+
+        /// <summary>
+        /// The one-based line number of the current parse position.
+        /// </summary>
         private int _lineNumber;
 
         /// <summary>

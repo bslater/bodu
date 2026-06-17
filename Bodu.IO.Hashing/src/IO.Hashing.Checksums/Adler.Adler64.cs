@@ -59,6 +59,9 @@ namespace Bodu.IO.Hashing.Checksums;
 public sealed class Adler64
     : Adler64Base
 {
+    /// <summary>
+    /// The Adler-64 modulus, the largest prime less than 2^32.
+    /// </summary>
     private const ulong Adler64Modulo = 4294967291UL;
 
     /// <summary>

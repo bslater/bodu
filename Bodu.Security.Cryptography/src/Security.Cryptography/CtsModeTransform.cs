@@ -73,9 +73,24 @@ namespace Bodu.Security.Cryptography;
 public sealed class CtsModeTransform
     : IBlockCipherModeTransform
 {
+    /// <summary>
+    /// The underlying block cipher used for CBC encryption, decryption, and the raw-block steal.
+    /// </summary>
     private readonly IBlockCipher _cipher;
-    private readonly byte[] _currentIv; // running CBC chaining vector
+
+    /// <summary>
+    /// The running CBC chaining vector, advanced as each block is processed.
+    /// </summary>
+    private readonly byte[] _currentIv;
+
+    /// <summary>
+    /// The defensive copy of the seed initialization vector that seeds the CBC chain.
+    /// </summary>
     private readonly byte[] _iv;
+
+    /// <summary>
+    /// Indicates whether this instance has been disposed.
+    /// </summary>
     private bool _disposed;
 
     /// <summary>

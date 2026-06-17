@@ -44,18 +44,28 @@ namespace Bodu.Security.Cryptography;
 public sealed class TwofishBlockCipher
     : IBlockCipher
 {
-    // Twofish is defined as a 16-round Feistel-like cipher over a 128-bit block.
+    /// <summary>
+    /// The number of Feistel-like rounds in the Twofish cipher over a 128-bit block.
+    /// </summary>
     private const int Rounds = 16;
 
-    // The key schedule produces K0..K39: 4 input-whitening words, 4 output-whitening words,
-    // and 32 round subkey words used as pairs by the round F function.
+    /// <summary>
+    /// The number of expanded key words produced by the key schedule: 4 input-whitening words, 4 output-whitening
+    /// words, and 32 round subkey words used as pairs by the round F function.
+    /// </summary>
     private const int ExpandedKeyWords = 40;
 
-    // Each key-dependent S-box is byte-wide, so each precomputed MDS/S-box contribution table has 256 entries.
+    /// <summary>
+    /// The number of entries in each precomputed key-dependent MDS/S-box contribution table, one per byte value.
+    /// </summary>
     private const int SBoxLength = 256;
 
-    // Fixed 4x4 MDS matrix used by the Twofish g() function after the four key-dependent byte S-boxes.
-    // Multiplication is performed over GF(2^8) using the MDS field polynomial with low reduction byte 0x69.
+    /// <summary>
+    /// The fixed 4x4 MDS matrix applied by the Twofish g() function after the four key-dependent byte S-boxes.
+    /// </summary>
+    /// <remarks>
+    /// Multiplication is performed over GF(2^8) using the MDS field polynomial with low reduction byte 0x69.
+    /// </remarks>
     private static readonly byte[,] s_mds =
     {
         { 0x01, 0xEF, 0x5B, 0x5B },
@@ -64,9 +74,13 @@ public sealed class TwofishBlockCipher
         { 0xEF, 0x01, 0xEF, 0x5B },
     };
 
-    // Reed-Solomon matrix used by the key schedule to derive S = (S{k-1}, ..., S0),
-    // the key material that parameterizes the four key-dependent S-boxes.
-    // Multiplication is performed over GF(2^8) using the RS field polynomial with low reduction byte 0x4D.
+    /// <summary>
+    /// The Reed-Solomon matrix used by the key schedule to derive the S vector that parameterizes the four
+    /// key-dependent S-boxes.
+    /// </summary>
+    /// <remarks>
+    /// Multiplication is performed over GF(2^8) using the RS field polynomial with low reduction byte 0x4D.
+    /// </remarks>
     private static readonly byte[,] s_rs =
     {
         { 0x01, 0xA4, 0x55, 0x87, 0x5A, 0x58, 0xDB, 0x9E },
@@ -75,31 +89,63 @@ public sealed class TwofishBlockCipher
         { 0xA4, 0x55, 0x87, 0x5A, 0x58, 0xDB, 0x9E, 0x03 },
     };
 
-    // Twofish defines q0 and q1 as fixed 8-bit permutations built from four 4-bit permutations.
-    // The key-dependent S-boxes are formed by layering these q permutations with bytes from the S vector.
+    /// <summary>
+    /// The fixed Twofish q0 8-bit permutation, built from four 4-bit permutations.
+    /// </summary>
+    /// <remarks>
+    /// The key-dependent S-boxes are formed by layering the q0 and q1 permutations with bytes from the S vector.
+    /// </remarks>
     private static readonly byte[] s_q0 = CreateQ(
         [0x8, 0x1, 0x7, 0xD, 0x6, 0xF, 0x3, 0x2, 0x0, 0xB, 0x5, 0x9, 0xE, 0xC, 0xA, 0x4],
         [0xE, 0xC, 0xB, 0x8, 0x1, 0x2, 0x3, 0x5, 0xF, 0x4, 0xA, 0x6, 0x7, 0x0, 0x9, 0xD],
         [0xB, 0xA, 0x5, 0xE, 0x6, 0xD, 0x9, 0x0, 0xC, 0x8, 0xF, 0x3, 0x2, 0x4, 0x7, 0x1],
         [0xD, 0x7, 0xF, 0x4, 0x1, 0x2, 0x6, 0xE, 0x9, 0xB, 0x3, 0x0, 0x8, 0x5, 0xC, 0xA]);
 
+    /// <summary>
+    /// The fixed Twofish q1 8-bit permutation, built from four 4-bit permutations.
+    /// </summary>
+    /// <remarks>
+    /// The key-dependent S-boxes are formed by layering the q0 and q1 permutations with bytes from the S vector.
+    /// </remarks>
     private static readonly byte[] s_q1 = CreateQ(
         [0x2, 0x8, 0xB, 0xD, 0xF, 0x7, 0x6, 0xE, 0x3, 0x1, 0x9, 0x4, 0x0, 0xA, 0xC, 0x5],
         [0x1, 0xE, 0x2, 0xB, 0x4, 0xC, 0x3, 0x7, 0x6, 0xD, 0xA, 0x5, 0xF, 0x9, 0x0, 0x8],
         [0x4, 0xC, 0x7, 0x5, 0x1, 0x6, 0x9, 0xA, 0x0, 0xE, 0xD, 0x8, 0x2, 0xB, 0x3, 0xF],
         [0xB, 0x9, 0x5, 0x1, 0xC, 0x3, 0xD, 0xE, 0x6, 0x4, 0x7, 0xF, 0x2, 0x0, 0x8, 0xA]);
 
-    // Expanded subkeys K0..K39, where K0..K3 are input whitening, K4..K7 are output whitening,
-    // and K8..K39 are consumed in pairs by the F function across the 16 rounds.
+    /// <summary>
+    /// The expanded subkeys K0..K39, where K0..K3 are input whitening, K4..K7 are output whitening, and K8..K39 are
+    /// consumed in pairs by the F function across the rounds.
+    /// </summary>
     private readonly uint[] _k = new uint[ExpandedKeyWords];
 
-    // Precomputed key-dependent S-box/MDS contribution tables. Each table represents one byte lane of g(),
-    // allowing the runtime g() function to reduce to four lookups and XORs rather than recomputing q/MDS steps.
+    /// <summary>
+    /// The precomputed key-dependent S-box/MDS contribution table for the first g() byte lane.
+    /// </summary>
+    /// <remarks>
+    /// Each table represents one byte lane of g(), allowing the runtime g() function to reduce to four lookups and XORs
+    /// rather than recomputing the q/MDS steps.
+    /// </remarks>
     private readonly uint[] _s1 = new uint[SBoxLength];
+
+    /// <summary>
+    /// The precomputed key-dependent S-box/MDS contribution table for the second g() byte lane.
+    /// </summary>
     private readonly uint[] _s2 = new uint[SBoxLength];
+
+    /// <summary>
+    /// The precomputed key-dependent S-box/MDS contribution table for the third g() byte lane.
+    /// </summary>
     private readonly uint[] _s3 = new uint[SBoxLength];
+
+    /// <summary>
+    /// The precomputed key-dependent S-box/MDS contribution table for the fourth g() byte lane.
+    /// </summary>
     private readonly uint[] _s4 = new uint[SBoxLength];
 
+    /// <summary>
+    /// Indicates whether this instance has been disposed and its key material cleared.
+    /// </summary>
     private bool _disposed;
 
     /// <summary>

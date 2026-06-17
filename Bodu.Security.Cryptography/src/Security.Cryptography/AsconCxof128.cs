@@ -101,16 +101,43 @@ namespace Bodu.Security.Cryptography;
 public sealed class AsconCxof128
     : AsconXof<AsconCxof128>
 {
-    // Pre-computed initial state for Ascon-CXOF128 (NIST SP 800-232).
-    // These five words are the result of applying Ascon-p12 to [raw_IV, 0, 0, 0, 0].
-    // Source: NIST SP 800-232 / ascon-c opt64/constants.h (ASCON_CXOF128_IV0..IV4).
+    /// <summary>
+    /// The pre-computed initial state word 0 for Ascon-CXOF128.
+    /// </summary>
+    /// <remarks>
+    /// The five IV words are the result of applying Ascon-p12 to <c>[raw_IV, 0, 0, 0, 0]</c>. Source: NIST SP 800-232 /
+    /// ascon-c opt64/constants.h (ASCON_CXOF128_IV0..IV4).
+    /// </remarks>
     private const ulong Iv0 = 0x3e228512a6849c43UL;
+
+    /// <summary>
+    /// The pre-computed initial state word 1 for Ascon-CXOF128.
+    /// </summary>
     private const ulong Iv1 = 0x3b0e9f7a5e1f9a92UL;
+
+    /// <summary>
+    /// The pre-computed initial state word 2 for Ascon-CXOF128.
+    /// </summary>
     private const ulong Iv2 = 0x77be5ee5826c2fc0UL;
+
+    /// <summary>
+    /// The pre-computed initial state word 3 for Ascon-CXOF128.
+    /// </summary>
     private const ulong Iv3 = 0x1eca27ad2e7e3636UL;
+
+    /// <summary>
+    /// The pre-computed initial state word 4 for Ascon-CXOF128.
+    /// </summary>
     private const ulong Iv4 = 0x7d0765b2c5a6d428UL;
 
+    /// <summary>
+    /// Indicates whether a customization string has been absorbed via <see cref="Customize" />.
+    /// </summary>
     private bool _customized;
+
+    /// <summary>
+    /// Indicates whether message data has been absorbed via <see cref="Absorb" />.
+    /// </summary>
     private bool _absorbed;
 
     /// <summary>

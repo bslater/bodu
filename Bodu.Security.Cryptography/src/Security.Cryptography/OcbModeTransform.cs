@@ -86,17 +86,59 @@ public sealed class OcbModeTransform
     /// </summary>
     private const int NonceSizeBits = 96;
 
-    private const int MaxLValues = 32; // enough for 2^32 blocks
+    /// <summary>
+    /// The number of precomputed L values, sufficient for up to 2^32 blocks.
+    /// </summary>
+    private const int MaxLValues = 32;
 
+    /// <summary>
+    /// The underlying block cipher used for OCB3 encipher operations.
+    /// </summary>
     private readonly IBlockCipher _cipher;
-    private readonly byte[] _nonce;        // 12-byte nonce
-    private readonly int _tagLen;          // TAGLEN in bytes (1–blockSize)
-    private readonly byte[] _lStar;        // L_* = E(0^128)
-    private readonly byte[] _lDollar;      // L_$ = double(L_*)
-    private readonly byte[][] _lArray;     // L[0] = double(L_$), L[1] = double(L[0]), …
+
+    /// <summary>
+    /// The 12-byte OCB3 nonce derived from the supplied initialization vector.
+    /// </summary>
+    private readonly byte[] _nonce;
+
+    /// <summary>
+    /// The authentication-tag length, in bytes (between 1 and the cipher block size).
+    /// </summary>
+    private readonly int _tagLen;
+
+    /// <summary>
+    /// The L_* constant, equal to <c>E(0^128)</c>.
+    /// </summary>
+    private readonly byte[] _lStar;
+
+    /// <summary>
+    /// The L_$ constant, equal to <c>double(L_*)</c>.
+    /// </summary>
+    private readonly byte[] _lDollar;
+
+    /// <summary>
+    /// The precomputed L array where <c>L[0] = double(L_$)</c> and <c>L[i] = double(L[i-1])</c>.
+    /// </summary>
+    private readonly byte[][] _lArray;
+
+    /// <summary>
+    /// The buffered associated authenticated data, or <see langword="null" /> until processed.
+    /// </summary>
     private byte[]? _aad;
+
+    /// <summary>
+    /// Indicates whether the associated data has been processed.
+    /// </summary>
     private bool _aadProcessed;
+
+    /// <summary>
+    /// Indicates whether this transform has already completed an encrypt or decrypt operation.
+    /// </summary>
     private bool _completed;
+
+    /// <summary>
+    /// Indicates whether this instance has been disposed.
+    /// </summary>
     private bool _disposed;
 
     /// <summary>

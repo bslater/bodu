@@ -61,7 +61,14 @@ namespace Bodu.IO.Hashing;
 public sealed class Fnv164
     : Fnv<Fnv164>
 {
+    /// <summary>
+    /// The FNV-1 64-bit offset basis used as the initial hash state.
+    /// </summary>
     private const ulong OffsetBasis = 0xCBF29CE484222325UL;
+
+    /// <summary>
+    /// The FNV-1 64-bit prime multiplied into the hash state for each input byte.
+    /// </summary>
     private const ulong Prime = 0x00000100000001B3UL;
 
     /// <summary>

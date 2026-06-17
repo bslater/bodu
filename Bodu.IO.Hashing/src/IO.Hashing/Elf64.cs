@@ -52,12 +52,34 @@ namespace Bodu.IO.Hashing;
 public sealed class Elf64
     : NonCryptographicHashAlgorithm
 {
+    /// <summary>
+    /// The fixed digest length, in bytes, produced by this algorithm.
+    /// </summary>
     private const int HashLength = 8;
+
+    /// <summary>
+    /// The bit mask isolating the high 4 bits of the running hash that are folded back into the low bits.
+    /// </summary>
     private const ulong HighBitsMask = 0xF000000000000000UL;
+
+    /// <summary>
+    /// The right-shift amount that aligns the masked high bits before they are XOR-folded into the low bits.
+    /// </summary>
     private const int HighBitsShift = 56;
 
+    /// <summary>
+    /// The initial seed applied to the running hash accumulator and restored on reset.
+    /// </summary>
     private ulong _seed;
+
+    /// <summary>
+    /// Indicates whether the algorithm has begun consuming input, used to guard reconfiguration of the seed.
+    /// </summary>
     private bool _started;
+
+    /// <summary>
+    /// The running hash accumulator, updated as each input byte is shifted and folded in.
+    /// </summary>
     private ulong _workingHash;
 
     /// <summary>

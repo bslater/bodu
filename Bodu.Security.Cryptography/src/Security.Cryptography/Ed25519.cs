@@ -89,10 +89,24 @@ public sealed class Ed25519
     /// </summary>
     private const int KeySizeBits = 256;
 
+    /// <summary>
+    /// The single legal key size reported through <see cref="AsymmetricAlgorithm.LegalKeySizes" />.
+    /// </summary>
     private static readonly KeySizes[] s_legalKeySizes = [new KeySizes(KeySizeBits, KeySizeBits, 0)];
+
+    /// <summary>
+    /// Indicates whether this instance has been disposed.
+    /// </summary>
     private bool _disposed;
 
+    /// <summary>
+    /// The 32-byte RFC 8032 private key seed, or <see langword="null" /> when no private key is held.
+    /// </summary>
     private byte[]? _privateKey;
+
+    /// <summary>
+    /// The 32-byte RFC 8032 public key, or <see langword="null" /> when no public key is held.
+    /// </summary>
     private byte[]? _publicKey;
 
     /// <summary>

@@ -78,6 +78,9 @@ namespace Bodu.Security.Cryptography;
 public abstract class Threefish
     : TweakableSymmetricAlgorithm
 {
+    /// <summary>
+    /// Indicates whether this instance has been disposed.
+    /// </summary>
     private bool _disposed;
 
     /// <summary>
