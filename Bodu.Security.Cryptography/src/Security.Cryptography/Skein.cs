@@ -76,75 +76,46 @@ public abstract partial class Skein<T>
     : KeyedBlockHashAlgorithm<T>
     where T : Skein<T>, new()
 {
-    /// <summary>
-    /// Maximum accepted length for <see cref="Key" /> across every Skein variant is 8192 bits (1024 bytes). Keys longer
-    /// than this bound are rejected to prevent unbounded memory usage; this value is far above any practical MAC key.
-    /// </summary>
+    /// <summary>Maximum accepted length for <see cref="Key" /> across every Skein variant is 8192 bits (1024 bytes). Keys longer than this bound are rejected to prevent unbounded memory usage; this value is far above any practical MAC key.</summary>
     public const int MaxKeySize = 8192;
 
-    /// <summary>
-    /// The schema identifier placed in the first four bytes of the configuration block.
-    /// </summary>
+    /// <summary>The schema identifier placed in the first four bytes of the configuration block.</summary>
     /// <remarks>
     /// Spells ASCII <c>"SHA3"</c> in little-endian byte order, as required by the Skein 1.3 specification.
     /// </remarks>
     private const uint SchemaIdentifier = 0x33414853;
 
-    /// <summary>
-    /// The Skein protocol version encoded into the configuration block.
-    /// </summary>
+    /// <summary>The Skein protocol version encoded into the configuration block.</summary>
     private const ushort SchemaVersion = 1;
 
-    /// <summary>
-    /// Length of the Skein tweak value is 128 bits (16 bytes). Byte length is derived inline via
-    /// <see cref="TweakSize" /> / 8 where needed.
-    /// </summary>
+    /// <summary>Length of the Skein tweak value is 128 bits (16 bytes). Byte length is derived inline via <see cref="TweakSize" /> / 8 where needed.</summary>
     private const int TweakSize = 128;
 
-    /// <summary>
-    /// The underlying Threefish cipher used by every UBI compression call. Owned and disposed by this instance.
-    /// </summary>
+    /// <summary>The underlying Threefish cipher used by every UBI compression call. Owned and disposed by this instance.</summary>
     private readonly ThreefishBlockCipher _cipher;
 
-    /// <summary>
-    /// The current chaining value, expressed as state words and updated after each UBI block.
-    /// </summary>
+    /// <summary>The current chaining value, expressed as state words and updated after each UBI block.</summary>
     private readonly ulong[] _state;
 
-    /// <summary>
-    /// The cached chaining value produced by the configuration (and optional key) UBI phases, copied into
-    /// <see cref="_state" /> on each <see cref="Initialize" />.
-    /// </summary>
+    /// <summary>The cached chaining value produced by the configuration (and optional key) UBI phases, copied into <see cref="_state" /> on each <see cref="Initialize" />.</summary>
     private readonly ulong[] _initialChainingValue;
 
-    /// <summary>
-    /// The buffer holding bytes accumulated toward the next full message block.
-    /// </summary>
+    /// <summary>The buffer holding bytes accumulated toward the next full message block.</summary>
     private readonly byte[] _pendingBlock;
 
-    /// <summary>
-    /// The scratch buffer that receives the Threefish encryption output for each UBI block.
-    /// </summary>
+    /// <summary>The scratch buffer that receives the Threefish encryption output for each UBI block.</summary>
     private readonly byte[] _ubiCipherOutput;
 
-    /// <summary>
-    /// The number of valid bytes currently buffered in <see cref="_pendingBlock" />.
-    /// </summary>
+    /// <summary>The number of valid bytes currently buffered in <see cref="_pendingBlock" />.</summary>
     private int _pendingBytes;
 
-    /// <summary>
-    /// The running count of message bytes absorbed so far, used to populate the UBI tweak position field.
-    /// </summary>
+    /// <summary>The running count of message bytes absorbed so far, used to populate the UBI tweak position field.</summary>
     private ulong _messageBytesProcessed;
 
-    /// <summary>
-    /// A value indicating whether at least one message block has been processed, used to set the UBI first-block flag.
-    /// </summary>
+    /// <summary>A value indicating whether at least one message block has been processed, used to set the UBI first-block flag.</summary>
     private bool _hasProcessedAnyMessageBlock;
 
-    /// <summary>
-    /// A value indicating whether <see cref="_initialChainingValue" /> currently holds a valid cached chaining value.
-    /// </summary>
+    /// <summary>A value indicating whether <see cref="_initialChainingValue" /> currently holds a valid cached chaining value.</summary>
     private bool _isChainingValueCached;
 
 

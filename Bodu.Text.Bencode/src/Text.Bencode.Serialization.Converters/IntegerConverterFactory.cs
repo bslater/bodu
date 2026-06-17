@@ -20,9 +20,7 @@ namespace Bodu.Text.Bencode.Serialization.Converters;
 internal sealed class IntegerConverterFactory
     : BencodeConverterFactory
 {
-    /// <summary>
-    /// The integer types this factory handles.
-    /// </summary>
+    /// <summary>The integer types this factory handles.</summary>
     private static readonly HashSet<Type> s_integerTypes =
     [
         typeof(sbyte),

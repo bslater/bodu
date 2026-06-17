@@ -26,14 +26,10 @@ public static partial class DateOnlyExtensions
     /// </para>
     /// <list type="bullet">
     /// <item>
-    /// <description>
-    /// U.S. system: week 1 starts on Sunday and includes January 1.
-    /// </description>
+    /// <description>U.S. system: week 1 starts on Sunday and includes January 1.</description>
     /// </item>
     /// <item>
-    /// <description>
-    /// ISO 8601: week 1 starts on Monday and includes the first Thursday of the year.
-    /// </description>
+    /// <description>ISO 8601: week 1 starts on Monday and includes the first Thursday of the year.</description>
     /// </item>
     /// </list>
     /// </remarks>

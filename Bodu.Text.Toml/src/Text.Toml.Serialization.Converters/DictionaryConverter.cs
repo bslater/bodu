@@ -42,19 +42,13 @@ internal sealed class DictionaryConverter<TDictionary, TKey, TValue>
     where TDictionary : class
     where TKey : notnull
 {
-    /// <summary>
-    /// The converter for the value type.
-    /// </summary>
+    /// <summary>The converter for the value type.</summary>
     private readonly TomlConverter _valueConverter;
 
-    /// <summary>
-    /// The kind of key conversion applied between <typeparamref name="TKey" /> and the TOML table key.
-    /// </summary>
+    /// <summary>The kind of key conversion applied between <typeparamref name="TKey" /> and the TOML table key.</summary>
     private readonly DictionaryKeyKind _keyKind;
 
-    /// <summary>
-    /// Indicates whether the declared type is a concrete dictionary that must be instantiated and populated.
-    /// </summary>
+    /// <summary>Indicates whether the declared type is a concrete dictionary that must be instantiated and populated.</summary>
     private readonly bool _concrete;
 
     /// <summary>

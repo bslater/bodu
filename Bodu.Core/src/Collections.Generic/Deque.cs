@@ -108,20 +108,13 @@ namespace Bodu.Collections.Generic;
 public sealed class Deque<T>
     : RingBackedCollection<T>
 {
-    /// <summary>
-    /// The capacity used when the deque is constructed without an explicit capacity.
-    /// </summary>
+    /// <summary>The capacity used when the deque is constructed without an explicit capacity.</summary>
     private const int DefaultCapacity = 16;
 
-    /// <summary>
-    /// The smallest capacity a growable deque expands to when its initial capacity is below this floor.
-    /// </summary>
+    /// <summary>The smallest capacity a growable deque expands to when its initial capacity is below this floor.</summary>
     private const int MinGrowCapacity = 4;
 
-    /// <summary>
-    /// Sentinel value passed to the private ctor to indicate that the (IEnumerable) overload should derive its capacity
-    /// as <c>max(items.Length, DefaultCapacity)</c>.
-    /// </summary>
+    /// <summary>Sentinel value passed to the private ctor to indicate that the (IEnumerable) overload should derive its capacity as <c>max(items.Length, DefaultCapacity)</c>.</summary>
     private const int UseFloorCapacity = -1;
 
     /// <summary>

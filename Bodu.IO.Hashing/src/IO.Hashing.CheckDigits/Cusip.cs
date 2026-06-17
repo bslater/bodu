@@ -47,24 +47,16 @@ namespace Bodu.IO.Hashing.CheckDigits;
 public sealed class Cusip
     : AlphanumericCheckDigitAlgorithm
 {
-    /// <summary>
-    /// The required body length of <c>8</c> characters.
-    /// </summary>
+    /// <summary>The required body length of <c>8</c> characters.</summary>
     public const int BodyLength = 8;
 
-    /// <summary>
-    /// The required full-sequence length of <c>9</c> characters.
-    /// </summary>
+    /// <summary>The required full-sequence length of <c>9</c> characters.</summary>
     public const int SequenceLength = 9;
 
-    /// <summary>
-    /// The number of body characters appended so far, used to select the position weight.
-    /// </summary>
+    /// <summary>The number of body characters appended so far, used to select the position weight.</summary>
     private int _count;
 
-    /// <summary>
-    /// The running weighted sum accumulated over the appended body characters.
-    /// </summary>
+    /// <summary>The running weighted sum accumulated over the appended body characters.</summary>
     private int _sum;
 
     /// <summary>

@@ -20,9 +20,7 @@ namespace Bodu.Financial.ExchangeRates.Boe.DependencyInjection;
 /// </summary>
 public static class BoeFinancialServiceBuilderExtensions
 {
-    /// <summary>
-    /// The name of the <see cref="HttpClient" /> configured for Bank of England downloads.
-    /// </summary>
+    /// <summary>The name of the <see cref="HttpClient" /> configured for Bank of England downloads.</summary>
     public const string HttpClientName = "Bodu.Financial.ExchangeRates.Boe";
 
     /// <summary>

@@ -12,22 +12,14 @@ namespace Bodu.Text.Configuration;
 
 public sealed partial class ConfigurationPattern
 {
-    /// <summary>
-    /// The maximum number of integer alternatives a single <c>{n1..n2}</c> brace expansion is permitted to produce.
-    /// Beyond this, the compiler emits <see cref="ConfigurationDiagnosticCode.NumericRangeTooLarge" /> rather than
-    /// silently allocating a regex over hundreds of megabytes of text.
-    /// </summary>
+    /// <summary>The maximum number of integer alternatives a single <c>{n1..n2}</c> brace expansion is permitted to produce. Beyond this, the compiler emits <see cref="ConfigurationDiagnosticCode.NumericRangeTooLarge" /> rather than silently allocating a regex over hundreds of megabytes of text.</summary>
     /// <remarks>
     /// EditorConfig in the wild uses ranges like <c>{1..10}</c> or <c>{0..99}</c>; a cap of 10,000 covers every
     /// realistic configuration use case while preventing pathological inputs from exhausting memory.
     /// </remarks>
     internal const int MaxNumericRangeExpansion = 10_000;
 
-    /// <summary>
-    /// The maximum depth that nested brace alternations (<c>{a,{b,{c,…}}}</c>) may reach in a single glob expression.
-    /// Beyond this, the compiler emits <see cref="ConfigurationDiagnosticCode.BraceNestingTooDeep" /> rather than
-    /// recursing through a pathologically deep pattern that risks stack exhaustion or unbounded expansion.
-    /// </summary>
+    /// <summary>The maximum depth that nested brace alternations (<c>{a,{b,{c,…}}}</c>) may reach in a single glob expression. Beyond this, the compiler emits <see cref="ConfigurationDiagnosticCode.BraceNestingTooDeep" /> rather than recursing through a pathologically deep pattern that risks stack exhaustion or unbounded expansion.</summary>
     /// <remarks>
     /// EditorConfig in the wild rarely nests beyond two or three levels — patterns like <c>*.{cs,{vb,fs}}</c>. A cap of
     /// 32 leaves four times the deepest realistic nesting in the existing test corpus, which is comfortable for
@@ -35,11 +27,7 @@ public sealed partial class ConfigurationPattern
     /// </remarks>
     internal const int MaxBraceNestingDepth = 32;
 
-    /// <summary>
-    /// The maximum number of characters a glob expression may contain. Beyond this, the compiler emits
-    /// <see cref="ConfigurationDiagnosticCode.PatternTooLong" /> rather than allocating a regex source over double the
-    /// pattern length and asking the regex engine to compile it.
-    /// </summary>
+    /// <summary>The maximum number of characters a glob expression may contain. Beyond this, the compiler emits <see cref="ConfigurationDiagnosticCode.PatternTooLong" /> rather than allocating a regex source over double the pattern length and asking the regex engine to compile it.</summary>
     /// <remarks>
     /// EditorConfig patterns in the wild rarely exceed 80 characters; even verbose configurations with deeply nested
     /// alternations and character classes fit comfortably within a few hundred. A cap of 4096 gives generous headroom
@@ -47,12 +35,7 @@ public sealed partial class ConfigurationPattern
     /// </remarks>
     internal const int MaxPatternLength = 4096;
 
-    /// <summary>
-    /// The upper bound on the time a single <see cref="Regex.IsMatch(string)" /> evaluation may run before the engine
-    /// abandons it with <see cref="RegexMatchTimeoutException" />. This bounds the evaluation time of any single match
-    /// and is the practical ReDoS guard for untrusted section-name globs; the translated patterns are simple enough
-    /// that this ceiling is never expected to be reached in practice.
-    /// </summary>
+    /// <summary>The upper bound on the time a single <see cref="Regex.IsMatch(string)" /> evaluation may run before the engine abandons it with <see cref="RegexMatchTimeoutException" />. This bounds the evaluation time of any single match and is the practical ReDoS guard for untrusted section-name globs; the translated patterns are simple enough that this ceiling is never expected to be reached in practice.</summary>
     internal static readonly TimeSpan MatchTimeout = TimeSpan.FromMilliseconds(100);
 
     /// <summary>

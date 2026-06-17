@@ -34,14 +34,10 @@ internal sealed class CollectionConverter<TCollection, TElement>
     : BencodeConverter<TCollection>
     where TCollection : class
 {
-    /// <summary>
-    /// The converter for the element type.
-    /// </summary>
+    /// <summary>The converter for the element type.</summary>
     private readonly BencodeConverter _elementConverter;
 
-    /// <summary>
-    /// The strategy used to materialize the collection when reading.
-    /// </summary>
+    /// <summary>The strategy used to materialize the collection when reading.</summary>
     private readonly CollectionStrategy _strategy;
 
     /// <summary>

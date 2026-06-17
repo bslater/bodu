@@ -33,19 +33,13 @@ namespace Bodu.Security.Cryptography;
 /// </description>
 /// </item>
 /// <item>
-/// <description>
-/// Call <see cref="AsconXof{T}.Absorb" /> zero or more times.
-/// </description>
+/// <description>Call <see cref="AsconXof{T}.Absorb" /> zero or more times.</description>
 /// </item>
 /// <item>
-/// <description>
-/// Call <see cref="AsconXof{T}.Squeeze" /> to produce output.
-/// </description>
+/// <description>Call <see cref="AsconXof{T}.Squeeze" /> to produce output.</description>
 /// </item>
 /// <item>
-/// <description>
-/// Call <see cref="AsconXof{T}.Initialize" /> to reset for reuse.
-/// </description>
+/// <description>Call <see cref="AsconXof{T}.Initialize" /> to reset for reuse.</description>
 /// </item>
 /// </list>
 /// <para>
@@ -53,9 +47,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>
-/// Output size: variable, any positive multiple of 8 bits.
-/// </description>
+/// <description>Output size: variable, any positive multiple of 8 bits.</description>
 /// </item>
 /// <item>
 /// <description>
@@ -63,19 +55,13 @@ namespace Bodu.Security.Cryptography;
 /// </description>
 /// </item>
 /// <item>
-/// <description>
-/// State: 320-bit sponge; rate: 8 bytes (64 bits).
-/// </description>
+/// <description>State: 320-bit sponge; rate: 8 bytes (64 bits).</description>
 /// </item>
 /// <item>
-/// <description>
-/// Permutation: Ascon-p12 for transitions; Ascon-p8 between absorption rounds.
-/// </description>
+/// <description>Permutation: Ascon-p12 for transitions; Ascon-p8 between absorption rounds.</description>
 /// </item>
 /// <item>
-/// <description>
-/// Specification: NIST SP 800-232 (ASCON family).
-/// </description>
+/// <description>Specification: NIST SP 800-232 (ASCON family).</description>
 /// </item>
 /// </list>
 /// <para>
@@ -101,43 +87,29 @@ namespace Bodu.Security.Cryptography;
 public sealed class AsconCxof128
     : AsconXof<AsconCxof128>
 {
-    /// <summary>
-    /// The pre-computed initial state word 0 for Ascon-CXOF128.
-    /// </summary>
+    /// <summary>The pre-computed initial state word 0 for Ascon-CXOF128.</summary>
     /// <remarks>
     /// The five IV words are the result of applying Ascon-p12 to <c>[raw_IV, 0, 0, 0, 0]</c>. Source: NIST SP 800-232 /
     /// ascon-c opt64/constants.h (ASCON_CXOF128_IV0..IV4).
     /// </remarks>
     private const ulong Iv0 = 0x3e228512a6849c43UL;
 
-    /// <summary>
-    /// The pre-computed initial state word 1 for Ascon-CXOF128.
-    /// </summary>
+    /// <summary>The pre-computed initial state word 1 for Ascon-CXOF128.</summary>
     private const ulong Iv1 = 0x3b0e9f7a5e1f9a92UL;
 
-    /// <summary>
-    /// The pre-computed initial state word 2 for Ascon-CXOF128.
-    /// </summary>
+    /// <summary>The pre-computed initial state word 2 for Ascon-CXOF128.</summary>
     private const ulong Iv2 = 0x77be5ee5826c2fc0UL;
 
-    /// <summary>
-    /// The pre-computed initial state word 3 for Ascon-CXOF128.
-    /// </summary>
+    /// <summary>The pre-computed initial state word 3 for Ascon-CXOF128.</summary>
     private const ulong Iv3 = 0x1eca27ad2e7e3636UL;
 
-    /// <summary>
-    /// The pre-computed initial state word 4 for Ascon-CXOF128.
-    /// </summary>
+    /// <summary>The pre-computed initial state word 4 for Ascon-CXOF128.</summary>
     private const ulong Iv4 = 0x7d0765b2c5a6d428UL;
 
-    /// <summary>
-    /// Indicates whether a customization string has been absorbed via <see cref="Customize" />.
-    /// </summary>
+    /// <summary>Indicates whether a customization string has been absorbed via <see cref="Customize" />.</summary>
     private bool _customized;
 
-    /// <summary>
-    /// Indicates whether message data has been absorbed via <see cref="Absorb" />.
-    /// </summary>
+    /// <summary>Indicates whether message data has been absorbed via <see cref="Absorb" />.</summary>
     private bool _absorbed;
 
     /// <summary>

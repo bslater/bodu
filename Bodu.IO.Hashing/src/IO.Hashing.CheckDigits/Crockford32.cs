@@ -51,26 +51,16 @@ namespace Bodu.IO.Hashing.CheckDigits;
 public sealed class Crockford32
     : AlphanumericCheckDigitAlgorithm
 {
-    /// <summary>
-    /// The Crockford Base32 check alphabet, indexed by check value (<c>0</c> to <c>36</c>). The first thirty-two
-    /// entries are the encoding symbols; the last five are the check-only symbols.
-    /// </summary>
+    /// <summary>The Crockford Base32 check alphabet, indexed by check value (<c>0</c> to <c>36</c>). The first thirty-two entries are the encoding symbols; the last five are the check-only symbols.</summary>
     private const string CheckSymbols = "0123456789ABCDEFGHJKMNPQRSTVWXYZ*~$=U";
 
-    /// <summary>
-    /// The radix of the Crockford Base32 encoding.
-    /// </summary>
+    /// <summary>The radix of the Crockford Base32 encoding.</summary>
     private const int Radix = 32;
 
-    /// <summary>
-    /// The modulus applied to the decoded value.
-    /// </summary>
+    /// <summary>The modulus applied to the decoded value.</summary>
     private const int Modulus = 37;
 
-    /// <summary>
-    /// The running decoded value, reduced modulo <see cref="Modulus" /> by Horner's method across appended body
-    /// characters.
-    /// </summary>
+    /// <summary>The running decoded value, reduced modulo <see cref="Modulus" /> by Horner's method across appended body characters.</summary>
     private int _value;
 
     /// <summary>

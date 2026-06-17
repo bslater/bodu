@@ -26,15 +26,10 @@ namespace Bodu.Text;
 /// </remarks>
 internal sealed class SlicedMemoryOwner<T> : IMemoryOwner<T>
 {
-    /// <summary>
-    /// The narrowed length that <see cref="Memory" /> exposes, captured at construction.
-    /// </summary>
+    /// <summary>The narrowed length that <see cref="Memory" /> exposes, captured at construction.</summary>
     private readonly int _length;
 
-    /// <summary>
-    /// The wrapped inner owner. Set to <see langword="null" /> by <see cref="Dispose" /> to enforce single disposal and
-    /// to surface use-after-dispose access via <see cref="ObjectDisposedException" />.
-    /// </summary>
+    /// <summary>The wrapped inner owner. Set to <see langword="null" /> by <see cref="Dispose" /> to enforce single disposal and to surface use-after-dispose access via <see cref="ObjectDisposedException" />.</summary>
     private IMemoryOwner<T>? _inner;
 
     /// <summary>

@@ -21,19 +21,13 @@ namespace Bodu.IO.Hashing.Checksums;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>
-/// Output size: 32 bits (4 bytes).
-/// </description>
+/// <description>Output size: 32 bits (4 bytes).</description>
 /// </item>
 /// <item>
-/// <description>
-/// Modulus: <c>65521</c> (largest prime &lt; 2<sup>16</sup>).
-/// </description>
+/// <description>Modulus: <c>65521</c> (largest prime &lt; 2<sup>16</sup>).</description>
 /// </item>
 /// <item>
-/// <description>
-/// Specification: zlib (RFC 1950); standard for deflate / PNG chunk integrity.
-/// </description>
+/// <description>Specification: zlib (RFC 1950); standard for deflate / PNG chunk integrity.</description>
 /// </item>
 /// </list>
 /// <para>
@@ -62,9 +56,7 @@ namespace Bodu.IO.Hashing.Checksums;
 public sealed class Adler32
     : Adler32Base
 {
-    /// <summary>
-    /// The standard Adler-32 modulus, the largest prime less than 2^16.
-    /// </summary>
+    /// <summary>The standard Adler-32 modulus, the largest prime less than 2^16.</summary>
     private const uint Adler32Modulo = 65521U;
 
     /// <summary>

@@ -8,19 +8,13 @@ namespace Bodu.Security.Cryptography;
 
 public sealed partial class Whirlpool
 {
-    /// <summary>
-    /// The lazily built and cached tables for the <see cref="WhirlpoolVersion.WhirlpoolInfo1" /> variant.
-    /// </summary>
+    /// <summary>The lazily built and cached tables for the <see cref="WhirlpoolVersion.WhirlpoolInfo1" /> variant.</summary>
     private static VariantTables? s_tablesInfo1;
 
-    /// <summary>
-    /// The lazily built and cached tables for the <see cref="WhirlpoolVersion.WhirlpoolInfo2" /> variant.
-    /// </summary>
+    /// <summary>The lazily built and cached tables for the <see cref="WhirlpoolVersion.WhirlpoolInfo2" /> variant.</summary>
     private static VariantTables? s_tablesInfo2;
 
-    /// <summary>
-    /// The lazily built and cached tables for the <see cref="WhirlpoolVersion.WhirlpoolInfo3" /> variant.
-    /// </summary>
+    /// <summary>The lazily built and cached tables for the <see cref="WhirlpoolVersion.WhirlpoolInfo3" /> variant.</summary>
     private static VariantTables? s_tablesInfo3;
 
     /// <summary>

@@ -22,11 +22,7 @@ namespace Bodu.Text.Bencode.Serialization.Converters;
 internal sealed class ObjectConverterFactory
     : BencodeConverterFactory
 {
-    /// <summary>
-    /// The well-known framework scalar types that have no native Bencode mapping. They expose public properties the
-    /// object converter would otherwise treat as dictionary entries, so the factory declines them and lets the
-    /// serializer report a missing-converter error rather than emitting a lossy dictionary.
-    /// </summary>
+    /// <summary>The well-known framework scalar types that have no native Bencode mapping. They expose public properties the object converter would otherwise treat as dictionary entries, so the factory declines them and lets the serializer report a missing-converter error rather than emitting a lossy dictionary.</summary>
     private static readonly HashSet<Type> s_unsupportedScalars =
     [
         typeof(DateTime),

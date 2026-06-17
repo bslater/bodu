@@ -111,14 +111,10 @@ public sealed partial class CrcStandard
     : System.Runtime.Serialization.ISerializable,
       System.IEquatable<CrcStandard>
 {
-    /// <summary>
-    /// The maximum size allowed for a CRC standard (in bits).
-    /// </summary>
+    /// <summary>The maximum size allowed for a CRC standard (in bits).</summary>
     public const int MaxSize = 64;
 
-    /// <summary>
-    /// The minimum size allowed for a CRC standard (in bits).
-    /// </summary>
+    /// <summary>The minimum size allowed for a CRC standard (in bits).</summary>
     public const int MinSize = 1;
 
     /// <summary>

@@ -47,19 +47,13 @@ namespace Bodu.IO.Hashing.CheckDigits;
 public sealed class Isin
     : AlphanumericCheckDigitAlgorithm
 {
-    /// <summary>
-    /// The required body length of <c>11</c> characters.
-    /// </summary>
+    /// <summary>The required body length of <c>11</c> characters.</summary>
     public const int BodyLength = 11;
 
-    /// <summary>
-    /// The required full-sequence length of <c>12</c> characters.
-    /// </summary>
+    /// <summary>The required full-sequence length of <c>12</c> characters.</summary>
     public const int SequenceLength = 12;
 
-    /// <summary>
-    /// The underlying Luhn engine that absorbs the expanded digit stream and produces the ISIN check digit.
-    /// </summary>
+    /// <summary>The underlying Luhn engine that absorbs the expanded digit stream and produces the ISIN check digit.</summary>
     private readonly Luhn _luhn = new();
 
     /// <summary>

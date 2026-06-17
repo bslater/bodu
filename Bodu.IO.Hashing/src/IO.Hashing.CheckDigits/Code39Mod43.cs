@@ -50,19 +50,13 @@ namespace Bodu.IO.Hashing.CheckDigits;
 public sealed class Code39Mod43
     : AlphanumericCheckDigitAlgorithm
 {
-    /// <summary>
-    /// The Code 39 alphabet, indexed by character value (<c>0</c> to <c>42</c>).
-    /// </summary>
+    /// <summary>The Code 39 alphabet, indexed by character value (<c>0</c> to <c>42</c>).</summary>
     private const string Alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-. $/+%";
 
-    /// <summary>
-    /// The modulus applied to the running character-value sum.
-    /// </summary>
+    /// <summary>The modulus applied to the running character-value sum.</summary>
     private const int Modulus = 43;
 
-    /// <summary>
-    /// The running character-value sum, reduced modulo <see cref="Modulus" /> across appended body characters.
-    /// </summary>
+    /// <summary>The running character-value sum, reduced modulo <see cref="Modulus" /> across appended body characters.</summary>
     private int _sum;
 
     /// <summary>

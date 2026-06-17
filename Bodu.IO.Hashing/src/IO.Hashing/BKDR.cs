@@ -53,37 +53,25 @@ namespace Bodu.IO.Hashing;
 public sealed class BKDR
     : NonCryptographicHashAlgorithm
 {
-    /// <summary>
-    /// Represents the default seed value used by the <see cref="BKDR" /> hash algorithm.
-    /// </summary>
+    /// <summary>Represents the default seed value used by the <see cref="BKDR" /> hash algorithm.</summary>
     public const uint DefaultSeed = 131U;
 
-    /// <summary>
-    /// The fixed digest length, in bytes, produced by this algorithm.
-    /// </summary>
+    /// <summary>The fixed digest length, in bytes, produced by this algorithm.</summary>
     private const int HashLength = 4;
 
-    /// <summary>
-    /// The set of seed multipliers accepted by the constructor and the <see cref="Seed" /> setter.
-    /// </summary>
+    /// <summary>The set of seed multipliers accepted by the constructor and the <see cref="Seed" /> setter.</summary>
     private static readonly uint[] s_validSeedValues =
     [
         31U, 131U, 1313U, 13131U, 131313U, 1313131U, 13131313U, 131313131U, 1313131313U,
     ];
 
-    /// <summary>
-    /// The seed multiplier applied to the running hash for each input byte, restored on reset.
-    /// </summary>
+    /// <summary>The seed multiplier applied to the running hash for each input byte, restored on reset.</summary>
     private uint _seed;
 
-    /// <summary>
-    /// Indicates whether the algorithm has begun consuming input, used to guard reconfiguration of the seed.
-    /// </summary>
+    /// <summary>Indicates whether the algorithm has begun consuming input, used to guard reconfiguration of the seed.</summary>
     private bool _started;
 
-    /// <summary>
-    /// The running hash accumulator, updated as each input byte is folded in.
-    /// </summary>
+    /// <summary>The running hash accumulator, updated as each input byte is folded in.</summary>
     private uint _workingHash;
 
     /// <summary>

@@ -60,19 +60,13 @@ public abstract class Adler<T>
     : NonCryptographicHashAlgorithm
     where T : unmanaged, INumber<T>
 {
-    /// <summary>
-    /// The A accumulator, initialized to one and updated with each input byte.
-    /// </summary>
+    /// <summary>The A accumulator, initialized to one and updated with each input byte.</summary>
     protected T PartA;
 
-    /// <summary>
-    /// The B accumulator, which holds the running sum of <see cref="PartA" /> across all processed bytes.
-    /// </summary>
+    /// <summary>The B accumulator, which holds the running sum of <see cref="PartA" /> across all processed bytes.</summary>
     protected T PartB;
 
-    /// <summary>
-    /// The modulus applied to both accumulators after each reduction step.
-    /// </summary>
+    /// <summary>The modulus applied to both accumulators after each reduction step.</summary>
     private readonly T _modulo;
 
     /// <summary>

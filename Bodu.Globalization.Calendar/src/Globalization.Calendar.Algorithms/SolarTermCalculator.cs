@@ -19,26 +19,16 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// </remarks>
 internal static class SolarTermCalculator
 {
-    /// <summary>
-    /// The number of mean days the sun takes to traverse the fifteen degrees of ecliptic longitude between the vernal
-    /// equinox and Qingming.
-    /// </summary>
+    /// <summary>The number of mean days the sun takes to traverse the fifteen degrees of ecliptic longitude between the vernal equinox and Qingming.</summary>
     private const double QingmingDegreeDays = 15.0 * 365.2422 / 360.0;
 
-    /// <summary>
-    /// The Julian Ephemeris Day of the J2000.0 epoch.
-    /// </summary>
+    /// <summary>The Julian Ephemeris Day of the J2000.0 epoch.</summary>
     private const double J2000JulianDay = 2451545.0;
 
-    /// <summary>
-    /// The J2000.0 epoch as a calendar instant (1 January 2000, 12:00 UT).
-    /// </summary>
+    /// <summary>The J2000.0 epoch as a calendar instant (1 January 2000, 12:00 UT).</summary>
     private static readonly DateTime s_j2000Epoch = new(2000, 1, 1, 12, 0, 0, DateTimeKind.Unspecified);
 
-    /// <summary>
-    /// The periodic correction terms of Meeus table 27.c, as (amplitude, phase in degrees, rate in degrees per
-    /// century).
-    /// </summary>
+    /// <summary>The periodic correction terms of Meeus table 27.c, as (amplitude, phase in degrees, rate in degrees per century).</summary>
     private static readonly (double Amplitude, double Phase, double Rate)[] s_correctionTerms =
     [
         (485, 324.96, 1934.136), (203, 337.23, 32964.467), (199, 342.08, 20.186), (182, 27.85, 445267.112),

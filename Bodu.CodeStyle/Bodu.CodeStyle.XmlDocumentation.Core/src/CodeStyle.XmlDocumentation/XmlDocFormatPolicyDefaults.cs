@@ -43,8 +43,9 @@ public static class XmlDocFormatPolicyDefaults
     /// <returns>The ordinal immutable set of block tag names.</returns>
     /// <remarks>
     /// This set matches <see cref="DefaultForceMultilineTags" />: every default block tag is also forced
-    /// multiline. <c>term</c> is intentionally excluded so it flows inline within its enclosing
-    /// <c>&lt;item&gt;</c>, matching the canonical Bodu rendering.
+    /// multiline. <c>term</c> and <c>description</c> are intentionally excluded — they are
+    /// single-line-when-short (see <see cref="DefaultSingleLineWhenShortTags" />) so each row of a
+    /// <c>&lt;list&gt;</c> reads as one line, wrapping only when its content overflows.
     /// </remarks>
     public static ImmutableHashSet<string> DefaultBlockTags { get; } = ImmutableHashSet.Create(
         StringComparer.Ordinal,
@@ -54,7 +55,7 @@ public static class XmlDocFormatPolicyDefaults
         "example",
         "list",
         "item",
-        "description",
+        "listheader",
         "code");
 
     /// <summary>
@@ -80,20 +81,27 @@ public static class XmlDocFormatPolicyDefaults
         "example",
         "list",
         "item",
-        "description",
+        "listheader",
         "code");
 
     /// <summary>
     /// Gets the default set of tags that may stay single-line when short enough.
     /// </summary>
     /// <returns>The ordinal immutable set of single-line-when-short tag names.</returns>
+    /// <remarks>
+    /// <c>term</c> and <c>description</c> are single-line-when-short so each row of a <c>&lt;list&gt;</c> renders
+    /// as one line — <c>&lt;term&gt;Combination&lt;/term&gt;</c>, <c>&lt;description&gt;Yield&lt;/description&gt;</c>
+    /// — and expands to the multiline block form only when the content overflows the line budget.
+    /// </remarks>
     public static ImmutableHashSet<string> DefaultSingleLineWhenShortTags { get; } = ImmutableHashSet.Create(
         StringComparer.Ordinal,
         "param",
         "typeparam",
         "returns",
         "exception",
-        "value");
+        "value",
+        "term",
+        "description");
 
     /// <summary>
     /// Gets the default set of tags whose content must never wrap.
@@ -119,6 +127,7 @@ public static class XmlDocFormatPolicyDefaults
             preserveBlankLines: false,
             preserveXmlTagAttributes: false,
             preserveCrefText: true,
+            keepFieldSummaryOnSingleLine: false,
             blockTags: DefaultBlockTags,
             inlineTags: DefaultInlineTags,
             forceMultilineTags: DefaultForceMultilineTags,
@@ -145,13 +154,15 @@ public static class XmlDocFormatPolicyDefaults
         builder.Add("example", multiline);
         builder.Add("list", multiline);
         builder.Add("item", multiline);
-        builder.Add("description", multiline);
+        builder.Add("listheader", multiline);
 
         builder.Add("param", singleLine);
         builder.Add("typeparam", singleLine);
         builder.Add("returns", singleLine);
         builder.Add("exception", singleLine);
         builder.Add("value", singleLine);
+        builder.Add("term", singleLine);
+        builder.Add("description", singleLine);
 
         builder.Add("c", inlineAtomic);
         builder.Add("see", inlineAtomic);

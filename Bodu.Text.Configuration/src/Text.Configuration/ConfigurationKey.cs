@@ -48,21 +48,13 @@ public readonly partial struct ConfigurationKey
     : IEquatable<ConfigurationKey>
 {
 
-    /// <summary>
-    /// The raw key string as authored in the configuration source, backing <see cref="RawKey" />, or
-    /// <see langword="null" /> for a default-initialized instance.
-    /// </summary>
+    /// <summary>The raw key string as authored in the configuration source, backing <see cref="RawKey" />, or <see langword="null" /> for a default-initialized instance.</summary>
     private readonly string? _rawKey;
 
-    /// <summary>
-    /// The normalized hierarchical path backing <see cref="Path" />, or <see langword="null" /> for a
-    /// default-initialized instance.
-    /// </summary>
+    /// <summary>The normalized hierarchical path backing <see cref="Path" />, or <see langword="null" /> for a default-initialized instance.</summary>
     private readonly string? _path;
 
-    /// <summary>
-    /// The individual path segments parsed from the raw key, in document order.
-    /// </summary>
+    /// <summary>The individual path segments parsed from the raw key, in document order.</summary>
     private readonly ImmutableArray<string> _segments;
 
     /// <summary>

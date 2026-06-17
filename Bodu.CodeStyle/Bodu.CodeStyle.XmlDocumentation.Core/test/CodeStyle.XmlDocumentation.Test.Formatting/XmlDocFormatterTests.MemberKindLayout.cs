@@ -86,4 +86,44 @@ public partial class XmlDocFormatterTests
             "/// </summary>\r\n",
             result.FormattedText);
     }
+
+    /// <summary>
+    /// Verifies that with <see cref="XmlDocFormatOptions.KeepFieldSummaryOnSingleLine" /> enabled a field
+    /// <c>&lt;summary&gt;</c> whose content exceeds the width budget is kept on a single line rather than expanded
+    /// to the multiline block form — the contrast case to
+    /// <see cref="Format_WhenFieldSummaryExceedsWidth_ShouldExpandToMultiline" />.
+    /// </summary>
+    [TestMethod]
+    public void Format_WhenFieldSummaryExceedsWidthAndKeepSingleLineEnabled_ShouldNotWrap()
+    {
+        XmlDocFormatOptions options = CreateOptions().WithMaxLineLength(40).WithKeepFieldSummaryOnSingleLine(true);
+
+        var input = "/// <summary>Holds the running total accumulated across the whole batch.</summary>\r\n";
+
+        XmlDocFormatResult result = CreateFormatter().FormatTrivia(input, CreateFieldContext(), options);
+
+        Assert.IsFalse(result.Changed, "An overflowing field summary should be kept on its single line.");
+        Assert.AreEqual(input, result.FormattedText);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="XmlDocFormatOptions.KeepFieldSummaryOnSingleLine" /> only affects fields: a
+    /// method <c>&lt;summary&gt;</c> that exceeds the width budget still expands to the multiline block form even
+    /// when the option is enabled.
+    /// </summary>
+    [TestMethod]
+    public void Format_WhenMethodSummaryExceedsWidthAndKeepSingleLineEnabled_ShouldStillExpand()
+    {
+        XmlDocFormatOptions options = CreateOptions().WithMaxLineLength(40).WithKeepFieldSummaryOnSingleLine(true);
+
+        var input = "/// <summary>Holds the running total accumulated across the whole batch.</summary>\r\n";
+
+        XmlDocFormatResult result = CreateFormatter().FormatTrivia(
+            input,
+            new XmlDocFormatContext(string.Empty, "\r\n", XmlDocMemberKindHint.Method),
+            options);
+
+        Assert.IsTrue(result.Changed);
+        StringAssert.StartsWith(result.FormattedText, "/// <summary>\r\n");
+    }
 }

@@ -28,20 +28,17 @@ namespace Bodu.Security.Cryptography;
 /// SIV requires two independent ciphers keyed with different material:
 /// <list type="bullet">
 /// <item>
-/// <description>
-/// <c>s2vCipher</c> (K₁) — used by CMAC and S2V to derive the synthetic IV.
-/// </description>
+/// <description><c>s2vCipher</c> (K₁) — used by CMAC and S2V to derive the synthetic IV.</description>
 /// </item>
 /// <item>
-/// <description>
-/// <c>ctrCipher</c> (K₂) — used by AES-CTR to encrypt the plaintext.
-/// </description>
+/// <description><c>ctrCipher</c> (K₂) — used by AES-CTR to encrypt the plaintext.</description>
 /// </item>
 /// </list>
 /// </para>
 /// <para>
 /// The S2V algorithm (RFC 5297 Section 2.4) accumulates all associated data blocks and the plaintext into a single
-/// 128-bit tag using CMAC: <code>
+/// 128-bit tag using CMAC:
+/// <code>
 ///<![CDATA[
 /// D ← CMAC(K₁, 0^128)
 /// for each AD block Sᵢ (i < n): D ← dbl(D) ⊕ CMAC(K₁, Sᵢ)
@@ -88,46 +85,28 @@ namespace Bodu.Security.Cryptography;
 public sealed class SivModeTransform
     : IAeadBlockCipherModeTransform, IDisposable
 {
-    /// <summary>
-    /// Length of the SIV cipher block is 128 bits (16 bytes). Byte length derived inline via
-    /// <see cref="BlockSizeBits" /> / 8.
-    /// </summary>
+    /// <summary>Length of the SIV cipher block is 128 bits (16 bytes). Byte length derived inline via <see cref="BlockSizeBits" /> / 8.</summary>
     private const int BlockSizeBits = 128;
 
-    /// <summary>
-    /// Length of the SIV authentication tag is 128 bits (16 bytes). Byte length derived inline via
-    /// <see cref="TagSizeBits" /> / 8.
-    /// </summary>
+    /// <summary>Length of the SIV authentication tag is 128 bits (16 bytes). Byte length derived inline via <see cref="TagSizeBits" /> / 8.</summary>
     private const int TagSizeBits = 128;
 
-    /// <summary>
-    /// The cipher keyed with K₁, used by CMAC and S2V to derive the synthetic IV.
-    /// </summary>
+    /// <summary>The cipher keyed with K₁, used by CMAC and S2V to derive the synthetic IV.</summary>
     private readonly IBlockCipher _s2vCipher;
 
-    /// <summary>
-    /// The cipher keyed with K₂, used by AES-CTR to encrypt the plaintext.
-    /// </summary>
+    /// <summary>The cipher keyed with K₂, used by AES-CTR to encrypt the plaintext.</summary>
     private readonly IBlockCipher _ctrCipher;
 
-    /// <summary>
-    /// The retained associated-data bytes contributed to the S2V computation, or <see langword="null" /> until set.
-    /// </summary>
+    /// <summary>The retained associated-data bytes contributed to the S2V computation, or <see langword="null" /> until set.</summary>
     private byte[]? _aad;
 
-    /// <summary>
-    /// Indicates whether the associated data has been supplied for this transform.
-    /// </summary>
+    /// <summary>Indicates whether the associated data has been supplied for this transform.</summary>
     private bool _aadProcessed;
 
-    /// <summary>
-    /// Indicates whether this single-use transform has already encrypted or decrypted a message.
-    /// </summary>
+    /// <summary>Indicates whether this single-use transform has already encrypted or decrypted a message.</summary>
     private bool _completed;
 
-    /// <summary>
-    /// Indicates whether the instance has been disposed and its retained state cleared.
-    /// </summary>
+    /// <summary>Indicates whether the instance has been disposed and its retained state cleared.</summary>
     private bool _disposed;
 
     /// <summary>

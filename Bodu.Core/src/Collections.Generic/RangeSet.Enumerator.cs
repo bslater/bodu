@@ -29,24 +29,16 @@ public sealed partial class RangeSet<T>
     public struct Enumerator
         : IEnumerator<Range<T>>
     {
-        /// <summary>
-        /// The set being enumerated.
-        /// </summary>
+        /// <summary>The set being enumerated.</summary>
         private readonly RangeSet<T> _owner;
 
-        /// <summary>
-        /// The version captured from <see cref="_owner" /> at construction.
-        /// </summary>
+        /// <summary>The version captured from <see cref="_owner" /> at construction.</summary>
         private readonly int _version;
 
-        /// <summary>
-        /// The index of the next range to yield.
-        /// </summary>
+        /// <summary>The index of the next range to yield.</summary>
         private int _index;
 
-        /// <summary>
-        /// The range returned by <see cref="Current" /> for the current position.
-        /// </summary>
+        /// <summary>The range returned by <see cref="Current" /> for the current position.</summary>
         private Range<T> _current;
 
         /// <summary>

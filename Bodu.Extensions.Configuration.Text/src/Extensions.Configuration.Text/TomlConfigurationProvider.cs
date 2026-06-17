@@ -29,19 +29,13 @@ namespace Bodu.Extensions.Configuration.Text;
 public sealed class TomlConfigurationProvider
     : IConfigurationProvider
 {
-    /// <summary>
-    /// The source that produced this provider.
-    /// </summary>
+    /// <summary>The source that produced this provider.</summary>
     private readonly TomlConfigurationSource _source;
 
-    /// <summary>
-    /// The change token returned by <see cref="GetReloadToken" />. The provider does not reload, so it never fires.
-    /// </summary>
+    /// <summary>The change token returned by <see cref="GetReloadToken" />. The provider does not reload, so it never fires.</summary>
     private readonly ConfigurationReloadToken _reloadToken = new();
 
-    /// <summary>
-    /// The flattened configuration data, keyed case-insensitively.
-    /// </summary>
+    /// <summary>The flattened configuration data, keyed case-insensitively.</summary>
     private IDictionary<string, string?> _data = new Dictionary<string, string?>(StringComparer.OrdinalIgnoreCase);
 
     /// <summary>

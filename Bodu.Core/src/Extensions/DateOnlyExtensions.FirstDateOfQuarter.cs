@@ -26,27 +26,19 @@ public static partial class DateOnlyExtensions
     /// <list type="bullet">
     /// <item>
     /// <term>Q1</term>
-    /// <description>
-    /// January – March
-    /// </description>
+    /// <description>January – March</description>
     /// </item>
     /// <item>
     /// <term>Q2</term>
-    /// <description>
-    /// April – June
-    /// </description>
+    /// <description>April – June</description>
     /// </item>
     /// <item>
     /// <term>Q3</term>
-    /// <description>
-    /// July – September
-    /// </description>
+    /// <description>July – September</description>
     /// </item>
     /// <item>
     /// <term>Q4</term>
-    /// <description>
-    /// October – December
-    /// </description>
+    /// <description>October – December</description>
     /// </item>
     /// </list>
     /// </remarks>

@@ -25,9 +25,7 @@ public partial class EvictingDictionary<TKey, TValue>
         IReadOnlyCollection<TKey>,
         ICollection
     {
-        /// <summary>
-        /// The dictionary whose keys this collection exposes.
-        /// </summary>
+        /// <summary>The dictionary whose keys this collection exposes.</summary>
         private readonly EvictingDictionary<TKey, TValue> _dictionary;
 
         /// <summary>

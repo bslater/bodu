@@ -30,10 +30,7 @@ namespace Bodu.Financial.ExchangeRates.Boe;
 /// </remarks>
 internal static class BoeExchangeRateCsvParser
 {
-    /// <summary>
-    /// The delimited-parse options used to read the IADB CSV: an RFC 4180 grid with a header row, trimmed fields, and a
-    /// tolerant reaction to ragged or malformed rows.
-    /// </summary>
+    /// <summary>The delimited-parse options used to read the IADB CSV: an RFC 4180 grid with a header row, trimmed fields, and a tolerant reaction to ragged or malformed rows.</summary>
     private static readonly DelimitedParseOptions s_csvOptions = new()
     {
         HasHeader = true,

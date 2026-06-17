@@ -27,19 +27,13 @@ namespace Bodu.Security.Cryptography;
 /// Fixed parameters (matching the most common deployment profile):
 /// <list type="bullet">
 /// <item>
-/// <description>
-/// Nonce (Nlen): 12 bytes — first 12 bytes of the IV.
-/// </description>
+/// <description>Nonce (Nlen): 12 bytes — first 12 bytes of the IV.</description>
 /// </item>
 /// <item>
-/// <description>
-/// Length field (q): 3 bytes — messages up to 2^24 − 1 bytes.
-/// </description>
+/// <description>Length field (q): 3 bytes — messages up to 2^24 − 1 bytes.</description>
 /// </item>
 /// <item>
-/// <description>
-/// Tag (T): 16 bytes.
-/// </description>
+/// <description>Tag (T): 16 bytes.</description>
 /// </item>
 /// </list>
 /// </para>
@@ -87,70 +81,46 @@ namespace Bodu.Security.Cryptography;
 public sealed class CcmModeTransform
     : IAeadBlockCipherModeTransform, IDisposable
 {
-    /// <summary>
-    /// Length of the CCM nonce is 96 bits (12 bytes). Byte length is derived inline via <see cref="NonceSizeBits" /> /
-    /// 8.
-    /// </summary>
+    /// <summary>Length of the CCM nonce is 96 bits (12 bytes). Byte length is derived inline via <see cref="NonceSizeBits" /> / 8.</summary>
     private const int NonceSizeBits = 96;
 
-    /// <summary>
-    /// Length of the CCM authentication tag is 128 bits (16 bytes). Byte length is derived inline via
-    /// <see cref="TagSizeBits" /> / 8.
-    /// </summary>
+    /// <summary>Length of the CCM authentication tag is 128 bits (16 bytes). Byte length is derived inline via <see cref="TagSizeBits" /> / 8.</summary>
     private const int TagSizeBits = 128;
 
-    /// <summary>
-    /// The first byte of every CTR counter block A_i.
-    /// </summary>
+    /// <summary>The first byte of every CTR counter block A_i.</summary>
     /// <remarks>
     /// Encodes <c>L' = q - 1 = 2</c>.
     /// </remarks>
     private const byte CounterFlagByte = 0x02; // L' = q-1 = 2
 
-    /// <summary>
-    /// The base value of the CBC-MAC flag byte B0 when no associated data is present.
-    /// </summary>
+    /// <summary>The base value of the CBC-MAC flag byte B0 when no associated data is present.</summary>
     /// <remarks>
     /// Bit layout <c>0_111_010</c>: Adata = 0, M' = 7, L' = 2.
     /// </remarks>
     private const byte BaseB0NoAad = 0x3A;  // 0_111_010
 
-    /// <summary>
-    /// The base value of the CBC-MAC flag byte B0 when associated data is present.
-    /// </summary>
+    /// <summary>The base value of the CBC-MAC flag byte B0 when associated data is present.</summary>
     /// <remarks>
     /// Bit layout <c>1_111_010</c>: Adata = 1, M' = 7, L' = 2.
     /// </remarks>
     private const byte BaseB0WithAad = 0x7A;  // 1_111_010
 
-    /// <summary>
-    /// The underlying block cipher used for CTR encryption and the CBC-MAC chain.
-    /// </summary>
+    /// <summary>The underlying block cipher used for CTR encryption and the CBC-MAC chain.</summary>
     private readonly IBlockCipher _cipher;
 
-    /// <summary>
-    /// The 12-byte CCM nonce derived from the supplied initialization vector.
-    /// </summary>
+    /// <summary>The 12-byte CCM nonce derived from the supplied initialization vector.</summary>
     private readonly byte[] _nonce;
 
-    /// <summary>
-    /// The associated authenticated data captured for the MAC, or <see langword="null" /> until set.
-    /// </summary>
+    /// <summary>The associated authenticated data captured for the MAC, or <see langword="null" /> until set.</summary>
     private byte[]? _aad;
 
-    /// <summary>
-    /// Indicates whether the associated data has been captured.
-    /// </summary>
+    /// <summary>Indicates whether the associated data has been captured.</summary>
     private bool _aadProcessed;
 
-    /// <summary>
-    /// Indicates whether this single-use transform has already processed a message.
-    /// </summary>
+    /// <summary>Indicates whether this single-use transform has already processed a message.</summary>
     private bool _completed;
 
-    /// <summary>
-    /// Indicates whether this instance has been disposed.
-    /// </summary>
+    /// <summary>Indicates whether this instance has been disposed.</summary>
     private bool _disposed;
 
     /// <summary>

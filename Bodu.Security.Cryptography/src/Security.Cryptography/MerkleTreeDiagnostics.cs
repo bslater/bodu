@@ -45,9 +45,7 @@ namespace Bodu.Security.Cryptography;
 /// </example>
 public sealed class MerkleTreeDiagnostics
 {
-    /// <summary>
-    /// The thread-safe collection of recorded leaf and internal nodes captured during the tree computation.
-    /// </summary>
+    /// <summary>The thread-safe collection of recorded leaf and internal nodes captured during the tree computation.</summary>
     private readonly ConcurrentBag<MerkleTreeDiagnosticNode> _nodes = new();
 
     // -----------------------------------------------------------------------------------------

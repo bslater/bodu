@@ -20,14 +20,10 @@ namespace Bodu.Text.Toml.Writer;
 internal sealed class TomlTableWriterNode
     : TomlWriterNode
 {
-    /// <summary>
-    /// The key/value pairs of the table, in insertion order.
-    /// </summary>
+    /// <summary>The key/value pairs of the table, in insertion order.</summary>
     private readonly List<KeyValuePair<string, TomlWriterNode>> _items = [];
 
-    /// <summary>
-    /// The set of keys already present, used to reject duplicates.
-    /// </summary>
+    /// <summary>The set of keys already present, used to reject duplicates.</summary>
     private readonly HashSet<string> _keys = new(StringComparer.Ordinal);
 
     /// <summary>

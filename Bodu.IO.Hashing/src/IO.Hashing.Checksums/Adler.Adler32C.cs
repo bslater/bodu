@@ -21,19 +21,13 @@ namespace Bodu.IO.Hashing.Checksums;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>
-/// Output size: 32 bits (4 bytes).
-/// </description>
+/// <description>Output size: 32 bits (4 bytes).</description>
 /// </item>
 /// <item>
-/// <description>
-/// Modulus: <c>65536</c> (power of two; SIMD-friendly).
-/// </description>
+/// <description>Modulus: <c>65536</c> (power of two; SIMD-friendly).</description>
 /// </item>
 /// <item>
-/// <description>
-/// Compatibility: <strong>not</strong> interchangeable with <see cref="Adler32" /> outputs.
-/// </description>
+/// <description>Compatibility: <strong>not</strong> interchangeable with <see cref="Adler32" /> outputs.</description>
 /// </item>
 /// </list>
 /// <para>
@@ -61,9 +55,7 @@ namespace Bodu.IO.Hashing.Checksums;
 public sealed class Adler32C
     : Adler32Base
 {
-    /// <summary>
-    /// The SIMD-friendly power-of-two modulus used in place of the standard Adler-32 prime.
-    /// </summary>
+    /// <summary>The SIMD-friendly power-of-two modulus used in place of the standard Adler-32 prime.</summary>
     private const uint Adler32CModulo = 65536U;
 
     /// <summary>

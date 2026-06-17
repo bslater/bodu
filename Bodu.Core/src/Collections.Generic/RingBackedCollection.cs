@@ -95,29 +95,19 @@ namespace Bodu.Collections.Generic;
 [Serializable]
 public abstract partial class RingBackedCollection<T>
 {
-    /// <summary>
-    /// The backing array. The active region wraps from <see cref="_head" /> through <see cref="_tail" />.
-    /// </summary>
+    /// <summary>The backing array. The active region wraps from <see cref="_head" /> through <see cref="_tail" />.</summary>
     private T[] _array;
 
-    /// <summary>
-    /// The index of the first (oldest / head) element. Undefined when <see cref="_count" /> is zero.
-    /// </summary>
+    /// <summary>The index of the first (oldest / head) element. Undefined when <see cref="_count" /> is zero.</summary>
     private int _head;
 
-    /// <summary>
-    /// The index at which the next tail-side write occurs (one past the last element, modulo capacity).
-    /// </summary>
+    /// <summary>The index at which the next tail-side write occurs (one past the last element, modulo capacity).</summary>
     private int _tail;
 
-    /// <summary>
-    /// The number of live elements currently held.
-    /// </summary>
+    /// <summary>The number of live elements currently held.</summary>
     private int _count;
 
-    /// <summary>
-    /// A monotonic counter incremented on every structural mutation; consumed by enumerators for invalidation.
-    /// </summary>
+    /// <summary>A monotonic counter incremented on every structural mutation; consumed by enumerators for invalidation.</summary>
     private int _version;
 
     /// <summary>

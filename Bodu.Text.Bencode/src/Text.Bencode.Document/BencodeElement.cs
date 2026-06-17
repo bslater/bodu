@@ -25,14 +25,10 @@ namespace Bodu.Text.Bencode.Document;
 /// </remarks>
 public readonly partial struct BencodeElement
 {
-    /// <summary>
-    /// The owning document.
-    /// </summary>
+    /// <summary>The owning document.</summary>
     private readonly BencodeDocument _document;
 
-    /// <summary>
-    /// The index of this element's row within the owning document's flat metadata index.
-    /// </summary>
+    /// <summary>The index of this element's row within the owning document's flat metadata index.</summary>
     private readonly int _index;
 
     /// <summary>

@@ -51,9 +51,7 @@ namespace Bodu.Extensions;
 /// </seealso>
 public static partial class NotableDateOnlyExtensions
 {
-    /// <summary>
-    /// The maximum number of days a traversal will probe before giving up, guarding against a degenerate working week.
-    /// </summary>
+    /// <summary>The maximum number of days a traversal will probe before giving up, guarding against a degenerate working week.</summary>
     private const int TraversalGuard = 4000;
 
     /// <summary>

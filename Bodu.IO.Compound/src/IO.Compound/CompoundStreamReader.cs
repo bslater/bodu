@@ -18,14 +18,10 @@ namespace Bodu.IO.Compound;
 /// </remarks>
 internal ref struct CompoundStreamReader
 {
-    /// <summary>
-    /// The backing data the cursor reads from.
-    /// </summary>
+    /// <summary>The backing data the cursor reads from.</summary>
     private readonly ReadOnlySpan<byte> _data;
 
-    /// <summary>
-    /// The current read offset, in bytes, from the start of <see cref="_data" />.
-    /// </summary>
+    /// <summary>The current read offset, in bytes, from the start of <see cref="_data" />.</summary>
     private int _position;
 
     /// <summary>

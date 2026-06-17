@@ -22,9 +22,7 @@ namespace Bodu.Security.Cryptography;
 /// The CTS steal algorithm (CS3 / IEEE 1619 variant):
 /// <list type="bullet">
 /// <item>
-/// <description>
-/// All complete blocks except the last two are processed normally in CBC mode.
-/// </description>
+/// <description>All complete blocks except the last two are processed normally in CBC mode.</description>
 /// </item>
 /// <item>
 /// <description>
@@ -73,24 +71,16 @@ namespace Bodu.Security.Cryptography;
 public sealed class CtsModeTransform
     : IBlockCipherModeTransform
 {
-    /// <summary>
-    /// The underlying block cipher used for CBC encryption, decryption, and the raw-block steal.
-    /// </summary>
+    /// <summary>The underlying block cipher used for CBC encryption, decryption, and the raw-block steal.</summary>
     private readonly IBlockCipher _cipher;
 
-    /// <summary>
-    /// The running CBC chaining vector, advanced as each block is processed.
-    /// </summary>
+    /// <summary>The running CBC chaining vector, advanced as each block is processed.</summary>
     private readonly byte[] _currentIv;
 
-    /// <summary>
-    /// The defensive copy of the seed initialization vector that seeds the CBC chain.
-    /// </summary>
+    /// <summary>The defensive copy of the seed initialization vector that seeds the CBC chain.</summary>
     private readonly byte[] _iv;
 
-    /// <summary>
-    /// Indicates whether this instance has been disposed.
-    /// </summary>
+    /// <summary>Indicates whether this instance has been disposed.</summary>
     private bool _disposed;
 
     /// <summary>

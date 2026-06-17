@@ -50,39 +50,25 @@ public sealed partial class RangeDictionary<TKey, TValue>
     : IReadOnlyCollection<ValueRange<TKey, TValue>>
     where TKey : IComparable<TKey>
 {
-    /// <summary>
-    /// The capacity used when the dictionary is constructed without an explicit capacity.
-    /// </summary>
+    /// <summary>The capacity used when the dictionary is constructed without an explicit capacity.</summary>
     private const int DefaultCapacity = 4;
 
-    /// <summary>
-    /// The comparer used to order and compare range endpoints.
-    /// </summary>
+    /// <summary>The comparer used to order and compare range endpoints.</summary>
     private readonly IComparer<TKey> _comparer;
 
-    /// <summary>
-    /// The inclusive lower endpoints of the stored ranges, kept sorted and parallel to <see cref="_ends" />.
-    /// </summary>
+    /// <summary>The inclusive lower endpoints of the stored ranges, kept sorted and parallel to <see cref="_ends" />.</summary>
     private TKey[] _starts;
 
-    /// <summary>
-    /// The upper endpoints of the stored ranges, parallel to <see cref="_starts" />.
-    /// </summary>
+    /// <summary>The upper endpoints of the stored ranges, parallel to <see cref="_starts" />.</summary>
     private TKey[] _ends;
 
-    /// <summary>
-    /// The values associated with each range, parallel to <see cref="_starts" /> and <see cref="_ends" />.
-    /// </summary>
+    /// <summary>The values associated with each range, parallel to <see cref="_starts" /> and <see cref="_ends" />.</summary>
     private TValue[] _values;
 
-    /// <summary>
-    /// The number of ranges currently stored.
-    /// </summary>
+    /// <summary>The number of ranges currently stored.</summary>
     private int _count;
 
-    /// <summary>
-    /// The modification counter used to detect concurrent mutation during enumeration.
-    /// </summary>
+    /// <summary>The modification counter used to detect concurrent mutation during enumeration.</summary>
     private int _version;
 
     /// <summary>

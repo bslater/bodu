@@ -52,39 +52,25 @@ namespace Bodu.Financial.ExchangeRates.Rba;
 public sealed class RbaExchangeRateProvider
     : WebExchangeRateProvider
 {
-    /// <summary>
-    /// The provider identifier stamped on every rate this provider produces.
-    /// </summary>
+    /// <summary>The provider identifier stamped on every rate this provider produces.</summary>
     public const string ProviderName = "RBA";
 
-    /// <summary>
-    /// The base currency the RBA quotes against.
-    /// </summary>
+    /// <summary>The base currency the RBA quotes against.</summary>
     public const string BaseCurrencyIsoCode = "AUD";
 
-    /// <summary>
-    /// The source that downloads and parses era files.
-    /// </summary>
+    /// <summary>The source that downloads and parses era files.</summary>
     private readonly IRbaExchangeRateTableSource _source;
 
-    /// <summary>
-    /// The provider options.
-    /// </summary>
+    /// <summary>The provider options.</summary>
     private readonly RbaExchangeRateOptions _options;
 
-    /// <summary>
-    /// The logger that records era downloads and on-demand network fetches.
-    /// </summary>
+    /// <summary>The logger that records era downloads and on-demand network fetches.</summary>
     private readonly ILogger _logger;
 
-    /// <summary>
-    /// The labels of eras whose data has been loaded.
-    /// </summary>
+    /// <summary>The labels of eras whose data has been loaded.</summary>
     private readonly HashSet<string> _loadedEras = new(StringComparer.Ordinal);
 
-    /// <summary>
-    /// The discovered currency series, keyed by pair.
-    /// </summary>
+    /// <summary>The discovered currency series, keyed by pair.</summary>
     private readonly Dictionary<ExchangeRatePair, RbaSeriesInfo> _series = new();
 
     /// <summary>

@@ -13,14 +13,10 @@ namespace Bodu.Financial.ExchangeRates.Boe;
 internal sealed class FixtureBoeExchangeRateTableSource
     : IBoeExchangeRateTableSource
 {
-    /// <summary>
-    /// The options used when parsing the response.
-    /// </summary>
+    /// <summary>The options used when parsing the response.</summary>
     private readonly BoeExchangeRateOptions _options;
 
-    /// <summary>
-    /// The embedded fixture file name to parse.
-    /// </summary>
+    /// <summary>The embedded fixture file name to parse.</summary>
     private readonly string _fileName;
 
     /// <summary>

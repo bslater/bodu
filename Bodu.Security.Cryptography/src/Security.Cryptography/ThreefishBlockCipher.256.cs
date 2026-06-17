@@ -60,14 +60,10 @@ public sealed partial class Threefish256Cipher
     public Threefish256Cipher(ReadOnlySpan<byte> key, ReadOnlySpan<byte> tweak)
         : base(key, tweak) { }
 
-    /// <summary>
-    /// Length of the Threefish-256 key is 256 bits (32 bytes).
-    /// </summary>
+    /// <summary>Length of the Threefish-256 key is 256 bits (32 bytes).</summary>
     public const int KeySize = 256;
 
-    /// <summary>
-    /// The spec-defined Threefish-256 rotation constants for rounds 0 through 3.
-    /// </summary>
+    /// <summary>The spec-defined Threefish-256 rotation constants for rounds 0 through 3.</summary>
     /// <remarks>
     /// Declared as named integer constants so the JIT can fold each <c>Mix</c> and <c>Unmix</c> call to a ROL or ROR
     /// with an immediate count, and so all 16 values live in one place rather than being duplicated across encryption,
@@ -75,24 +71,16 @@ public sealed partial class Threefish256Cipher
     /// </remarks>
     private const int R0 = 14, R1 = 16, R2 = 52, R3 = 57;
 
-    /// <summary>
-    /// The spec-defined Threefish-256 rotation constants for rounds 4 through 7.
-    /// </summary>
+    /// <summary>The spec-defined Threefish-256 rotation constants for rounds 4 through 7.</summary>
     private const int R4 = 23, R5 = 40, R6 = 5, R7 = 37;
 
-    /// <summary>
-    /// The spec-defined Threefish-256 rotation constants for rounds 8 through 11.
-    /// </summary>
+    /// <summary>The spec-defined Threefish-256 rotation constants for rounds 8 through 11.</summary>
     private const int R8 = 25, R9 = 33, R10 = 46, R11 = 12;
 
-    /// <summary>
-    /// The spec-defined Threefish-256 rotation constants for rounds 12 through 15.
-    /// </summary>
+    /// <summary>The spec-defined Threefish-256 rotation constants for rounds 12 through 15.</summary>
     private const int R12 = 58, R13 = 22, R14 = 32, R15 = 32;
 
-    /// <summary>
-    /// The 16 Threefish-256 rotation constants in round order, exposed through <see cref="RotationSchedule" />.
-    /// </summary>
+    /// <summary>The 16 Threefish-256 rotation constants in round order, exposed through <see cref="RotationSchedule" />.</summary>
     private static readonly int[] s_rotationSchedule =
     [
         R0, R1, R2, R3, R4, R5, R6, R7,

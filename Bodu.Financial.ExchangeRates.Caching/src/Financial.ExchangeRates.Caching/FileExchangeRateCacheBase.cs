@@ -28,23 +28,13 @@ public abstract class FileExchangeRateCacheBase<TOptions>
     : ExchangeRateCacheBase<TOptions>, IFileExchangeRateCache
     where TOptions : FileExchangeRateCacheOptions
 {
-    /// <summary>
-    /// The cached set of characters that are not permitted in a file-name segment.
-    /// </summary>
+    /// <summary>The cached set of characters that are not permitted in a file-name segment.</summary>
     private static readonly char[] s_invalidFileNameChars = Path.GetInvalidFileNameChars();
 
-    /// <summary>
-    /// The resolved directory in which this provider's cached rate files are stored.
-    /// </summary>
+    /// <summary>The resolved directory in which this provider's cached rate files are stored.</summary>
     private readonly string _directory;
 
-    /// <summary>
-    /// Memoizes the most recently parsed state per pair, keyed by the file's last-write instant, so a repeated read of
-    /// an unchanged file serves the cached parse rather than re-reading and re-deserializing it on every lookup. The
-    /// entry is invalidated when this instance writes the pair, and a differing last-write instant — an external or
-    /// cross-process change — is detected on the next read, so the memo never serves data from a file whose timestamp
-    /// has moved.
-    /// </summary>
+    /// <summary>Memoizes the most recently parsed state per pair, keyed by the file's last-write instant, so a repeated read of an unchanged file serves the cached parse rather than re-reading and re-deserializing it on every lookup. The entry is invalidated when this instance writes the pair, and a differing last-write instant — an external or cross-process change — is detected on the next read, so the memo never serves data from a file whose timestamp has moved.</summary>
     private readonly ConcurrentDictionary<ExchangeRatePair, (DateTime StampUtc, CachePairState State)> _parsed = new();
 
     /// <summary>

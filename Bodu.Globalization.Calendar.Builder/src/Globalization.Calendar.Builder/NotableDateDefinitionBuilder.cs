@@ -36,14 +36,10 @@ namespace Bodu.Globalization.Calendar.Builder;
 /// <seealso href="../guides/calendar/rule-authoring.html">Authoring notable date rules (guide)</seealso>
 public sealed class NotableDateDefinitionBuilder
 {
-    /// <summary>
-    /// The concept-level tags, in declaration order.
-    /// </summary>
+    /// <summary>The concept-level tags, in declaration order.</summary>
     private readonly List<string> _tags = new();
 
-    /// <summary>
-    /// The rules belonging to the concept, in declaration order.
-    /// </summary>
+    /// <summary>The rules belonging to the concept, in declaration order.</summary>
     private readonly List<NotableDateRuleBuilder> _rules = new();
 
     /// <summary>

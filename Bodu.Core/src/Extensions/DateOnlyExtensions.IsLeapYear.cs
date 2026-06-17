@@ -22,19 +22,13 @@ public static partial class DateOnlyExtensions
     /// </para>
     /// <list type="bullet">
     /// <item>
-    /// <description>
-    /// Years divisible by 4 are leap years,
-    /// </description>
+    /// <description>Years divisible by 4 are leap years,</description>
     /// </item>
     /// <item>
-    /// <description>
-    /// except years divisible by 100,
-    /// </description>
+    /// <description>except years divisible by 100,</description>
     /// </item>
     /// <item>
-    /// <description>
-    /// unless also divisible by 400.
-    /// </description>
+    /// <description>unless also divisible by 400.</description>
     /// </item>
     /// </list>
     /// <para>

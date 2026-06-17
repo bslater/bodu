@@ -59,9 +59,7 @@ namespace Bodu.IO.Hashing.Checksums;
 /// <seealso cref="Crc"/> <seealso cref="CrcStandard"/> <seealso cref="CrcLookupTableBuilder"/>
 public class CrcLookupTableCache
 {
-    /// <summary>
-    /// The thread-safe backing store that memoizes lookup tables keyed by width, polynomial, and input reflection.
-    /// </summary>
+    /// <summary>The thread-safe backing store that memoizes lookup tables keyed by width, polynomial, and input reflection.</summary>
     private readonly ConcurrentDictionary<CrcLookupKey, ulong[]> _localCache;
 
     /// <summary>

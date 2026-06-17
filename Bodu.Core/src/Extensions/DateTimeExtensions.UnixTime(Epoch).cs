@@ -8,46 +8,25 @@ namespace Bodu.Extensions;
 
 public static partial class DateTimeExtensions
 {
-    /// <summary>
-    /// Represents the maximum number of milliseconds since the Unix epoch that can be converted to a
-    /// <see cref="DateTime" />.
-    /// </summary>
+    /// <summary>Represents the maximum number of milliseconds since the Unix epoch that can be converted to a <see cref="DateTime" />.</summary>
     internal const long MaxEpochMilliseconds = (MaxTicks / TicksPerMillisecond) - UnixEpochMilliseconds;
 
-    /// <summary>
-    /// Represents the maximum number of seconds since the Unix epoch that can be converted to a <see cref="DateTime" />
-    /// .
-    /// </summary>
+    /// <summary>Represents the maximum number of seconds since the Unix epoch that can be converted to a <see cref="DateTime" /> .</summary>
     internal const long MaxEpochSeconds = (MaxTicks / TicksPerSecond) - UnixEpochSeconds;
 
-    /// <summary>
-    /// Represents the minimum number of milliseconds since the Unix epoch that can be converted to a
-    /// <see cref="DateTime" />.
-    /// </summary>
+    /// <summary>Represents the minimum number of milliseconds since the Unix epoch that can be converted to a <see cref="DateTime" />.</summary>
     internal const long MinEpochMilliseconds = (MinTicks / TicksPerMillisecond) - UnixEpochMilliseconds;
 
-    /// <summary>
-    /// Represents the minimum number of seconds since the Unix epoch that can be converted to a <see cref="DateTime" />
-    /// .
-    /// </summary>
+    /// <summary>Represents the minimum number of seconds since the Unix epoch that can be converted to a <see cref="DateTime" /> .</summary>
     internal const long MinEpochSeconds = (MinTicks / TicksPerSecond) - UnixEpochSeconds;
 
-    /// <summary>
-    /// Represents the number of milliseconds between <see cref="DateTime.MinValue" /> and the Unix epoch
-    /// (1970-01-01T00:00:00Z).
-    /// </summary>
+    /// <summary>Represents the number of milliseconds between <see cref="DateTime.MinValue" /> and the Unix epoch (1970-01-01T00:00:00Z).</summary>
     internal const long UnixEpochMilliseconds = UnixEpochTicks / TicksPerMillisecond;
 
-    /// <summary>
-    /// Represents the number of seconds between <see cref="DateTime.MinValue" /> and the Unix epoch
-    /// (1970-01-01T00:00:00Z).
-    /// </summary>
+    /// <summary>Represents the number of seconds between <see cref="DateTime.MinValue" /> and the Unix epoch (1970-01-01T00:00:00Z).</summary>
     internal const long UnixEpochSeconds = UnixEpochTicks / TicksPerSecond;
 
-    /// <summary>
-    /// Represents the number of ticks (100 nanoseconds) between <see cref="DateTime.MinValue" /> and the Unix epoch
-    /// (1970-01-01T00:00:00Z).
-    /// </summary>
+    /// <summary>Represents the number of ticks (100 nanoseconds) between <see cref="DateTime.MinValue" /> and the Unix epoch (1970-01-01T00:00:00Z).</summary>
     internal const long UnixEpochTicks = TicksPerDay * DaysTo1970;
 
     /// <summary>

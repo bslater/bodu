@@ -35,14 +35,10 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>
-/// Block size: 128 bits (16 bytes).
-/// </description>
+/// <description>Block size: 128 bits (16 bytes).</description>
 /// </item>
 /// <item>
-/// <description>
-/// Key sizes: 128, 192, or 256 bits.
-/// </description>
+/// <description>Key sizes: 128, 192, or 256 bits.</description>
 /// </item>
 /// <item>
 /// <description>
@@ -50,9 +46,7 @@ namespace Bodu.Security.Cryptography;
 /// </description>
 /// </item>
 /// <item>
-/// <description>
-/// 32 rounds, 8 × 4-bit S-boxes, bitsliced linear transform.
-/// </description>
+/// <description>32 rounds, 8 × 4-bit S-boxes, bitsliced linear transform.</description>
 /// </item>
 /// </list>
 /// <para>
@@ -87,37 +81,25 @@ namespace Bodu.Security.Cryptography;
 public sealed class Serpent128
     : SymmetricAlgorithm
 {
-    /// <summary>
-    /// Length of the Serpent block is 128 bits (16 bytes).
-    /// </summary>
+    /// <summary>Length of the Serpent block is 128 bits (16 bytes).</summary>
     internal const int BlockSizeBits = 128;
 
-    /// <summary>
-    /// The supported Serpent block sizes, fixed at 128 bits.
-    /// </summary>
+    /// <summary>The supported Serpent block sizes, fixed at 128 bits.</summary>
     private static readonly KeySizes[] s_serpentBlockSizes = [new KeySizes(BlockSizeBits, BlockSizeBits, 0)];
 
-    /// <summary>
-    /// The supported Serpent key sizes — 128, 192, or 256 bits (the three AES key sizes).
-    /// </summary>
+    /// <summary>The supported Serpent key sizes — 128, 192, or 256 bits (the three AES key sizes).</summary>
     /// <remarks>
     /// The step is 64 bits, so the range is expressed exactly by a single <see cref="KeySizes" /> entry.
     /// </remarks>
     private static readonly KeySizes[] s_serpentKeySizes = [new KeySizes(128, 256, 64)];
 
-    /// <summary>
-    /// Indicates whether the instance has been disposed and its key material cleared.
-    /// </summary>
+    /// <summary>Indicates whether the instance has been disposed and its key material cleared.</summary>
     private bool _disposed;
 
-    /// <summary>
-    /// The block cipher mode of operation used when creating encryptors and decryptors.
-    /// </summary>
+    /// <summary>The block cipher mode of operation used when creating encryptors and decryptors.</summary>
     private CipherModeKind _blockMode = CipherModeKind.CBC;
 
-    /// <summary>
-    /// The padding mode used when creating encryptors and decryptors.
-    /// </summary>
+    /// <summary>The padding mode used when creating encryptors and decryptors.</summary>
     private PaddingModeKind _blockPadding = PaddingModeKind.PKCS7;
 
     /// <summary>

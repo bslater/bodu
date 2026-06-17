@@ -12,9 +12,7 @@ namespace Bodu.Text.DotEnv;
 /// </summary>
 public static class DotEnvKnownAnswerVectors
 {
-    /// <summary>
-    /// Dotenv community specification citation source for vectors derived from the canonical specification.
-    /// </summary>
+    /// <summary>Dotenv community specification citation source for vectors derived from the canonical specification.</summary>
     private const string Spec = "dotenv community specification";
 
     /// <summary>

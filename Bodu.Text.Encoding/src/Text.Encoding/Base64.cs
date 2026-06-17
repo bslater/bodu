@@ -45,13 +45,9 @@ namespace Bodu.Text.Encoding;
 /// </example>
 public static partial class Base64
 {
-    /// <summary>
-    /// The number of encoded characters per MIME / line-break line.
-    /// </summary>
+    /// <summary>The number of encoded characters per MIME / line-break line.</summary>
     private const int MimeLineLength = 76;
-    /// <summary>
-    /// The padding character used by Base64 per RFC 4648.
-    /// </summary>
+    /// <summary>The padding character used by Base64 per RFC 4648.</summary>
     private const char PaddingChar = '=';
 
     /// <summary>

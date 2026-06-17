@@ -31,21 +31,13 @@ using Microsoft.Extensions.Logging;
 /// </remarks>
 public sealed class YahooExchangeRateOptions
 {
-    /// <summary>
-    /// The placeholder token replaced by the ticker symbol when building a request path from <see cref="ChartPath" />.
-    /// </summary>
+    /// <summary>The placeholder token replaced by the ticker symbol when building a request path from <see cref="ChartPath" />.</summary>
     internal const string SymbolPlaceholder = "{symbol}";
 
-    /// <summary>
-    /// The placeholder token replaced by the source-currency code when building a ticker from
-    /// <see cref="SymbolFormat" />.
-    /// </summary>
+    /// <summary>The placeholder token replaced by the source-currency code when building a ticker from <see cref="SymbolFormat" />.</summary>
     internal const string FromPlaceholder = "{from}";
 
-    /// <summary>
-    /// The placeholder token replaced by the destination-currency code when building a ticker from
-    /// <see cref="SymbolFormat" />.
-    /// </summary>
+    /// <summary>The placeholder token replaced by the destination-currency code when building a ticker from <see cref="SymbolFormat" />.</summary>
     internal const string ToPlaceholder = "{to}";
 
     /// <summary>

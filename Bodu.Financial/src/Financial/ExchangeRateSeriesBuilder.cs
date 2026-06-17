@@ -27,9 +27,7 @@ namespace Bodu.Financial;
 [DebuggerDisplay("{Pair.FromIsoCode,nq}/{Pair.ToIsoCode,nq} ({Provider,nq}) Count={Count}")]
 public sealed class ExchangeRateSeriesBuilder
 {
-    /// <summary>
-    /// The mutable buffer holding the live observations.
-    /// </summary>
+    /// <summary>The mutable buffer holding the live observations.</summary>
     private readonly ExchangeRateSeriesBuffer _buffer;
 
     /// <summary>

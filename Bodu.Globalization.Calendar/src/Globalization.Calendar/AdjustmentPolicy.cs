@@ -26,14 +26,10 @@ namespace Bodu.Globalization.Calendar;
 /// <seealso href="../guides/calendar/adjustment-rules.html">Observance adjustment rules (guide)</seealso>
 public sealed class AdjustmentPolicy
 {
-    /// <summary>
-    /// The number of days a bounded working-day search scans when no explicit maximum is configured.
-    /// </summary>
+    /// <summary>The number of days a bounded working-day search scans when no explicit maximum is configured.</summary>
     private const int DefaultMaxSearchDays = 7;
 
-    /// <summary>
-    /// The shared empty parameter map used when a policy declares no custom-handler parameters.
-    /// </summary>
+    /// <summary>The shared empty parameter map used when a policy declares no custom-handler parameters.</summary>
     private static readonly IReadOnlyDictionary<string, string> s_emptyParameters = new Dictionary<string, string>(0);
 
     /// <summary>

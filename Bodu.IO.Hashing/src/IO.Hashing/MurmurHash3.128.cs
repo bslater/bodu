@@ -30,24 +30,16 @@ namespace Bodu.IO.Hashing;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>
-/// Output size: 128 bits (16 bytes), little-endian.
-/// </description>
+/// <description>Output size: 128 bits (16 bytes), little-endian.</description>
 /// </item>
 /// <item>
-/// <description>
-/// Variant: <c>MurmurHash3_x64_128</c> — optimized for 64-bit platforms.
-/// </description>
+/// <description>Variant: <c>MurmurHash3_x64_128</c> — optimized for 64-bit platforms.</description>
 /// </item>
 /// <item>
-/// <description>
-/// Block size: 16 bytes; tail pass for remaining 1–15 bytes.
-/// </description>
+/// <description>Block size: 16 bytes; tail pass for remaining 1–15 bytes.</description>
 /// </item>
 /// <item>
-/// <description>
-/// Seed: 32 bits, applied to both accumulators; defaults to <c>0</c>.
-/// </description>
+/// <description>Seed: 32 bits, applied to both accumulators; defaults to <c>0</c>.</description>
 /// </item>
 /// </list>
 /// <para>
@@ -78,14 +70,10 @@ namespace Bodu.IO.Hashing;
 public sealed class MurmurHash3_128
     : MurmurHash3<MurmurHash3_128>
 {
-    /// <summary>
-    /// The first mixing constant applied to each block during the MurmurHash3 x64 128-bit body pass.
-    /// </summary>
+    /// <summary>The first mixing constant applied to each block during the MurmurHash3 x64 128-bit body pass.</summary>
     private const ulong C1 = 0x87C37B91114253D5uL;
 
-    /// <summary>
-    /// The second mixing constant applied to each block during the MurmurHash3 x64 128-bit body pass.
-    /// </summary>
+    /// <summary>The second mixing constant applied to each block during the MurmurHash3 x64 128-bit body pass.</summary>
     private const ulong C2 = 0x4CF5AD432745937FuL;
 
     /// <summary>

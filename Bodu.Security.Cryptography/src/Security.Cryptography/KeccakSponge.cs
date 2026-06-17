@@ -29,39 +29,25 @@ namespace Bodu.Security.Cryptography;
 internal struct KeccakSponge
 {
 
-    /// <summary>
-    /// The sponge rate, in bytes.
-    /// </summary>
+    /// <summary>The sponge rate, in bytes.</summary>
     private readonly int _rateBytes;
 
-    /// <summary>
-    /// The FIPS 202 domain-separation suffix byte applied during multi-rate padding.
-    /// </summary>
+    /// <summary>The FIPS 202 domain-separation suffix byte applied during multi-rate padding.</summary>
     private readonly byte _domainSuffix;
 
-    /// <summary>
-    /// The 25-lane Keccak state buffer permuted in place across the sponge operation.
-    /// </summary>
+    /// <summary>The 25-lane Keccak state buffer permuted in place across the sponge operation.</summary>
     private LaneBuffer _state;
 
-    /// <summary>
-    /// The current byte position within the rate portion of the state.
-    /// </summary>
+    /// <summary>The current byte position within the rate portion of the state.</summary>
     private int _position;
 
-    /// <summary>
-    /// Indicates whether the sponge has entered the squeeze phase.
-    /// </summary>
+    /// <summary>Indicates whether the sponge has entered the squeeze phase.</summary>
     private bool _squeezing;
 
-    /// <summary>
-    /// Domain-separation suffix for the fixed-output SHA-3 hashes.
-    /// </summary>
+    /// <summary>Domain-separation suffix for the fixed-output SHA-3 hashes.</summary>
     private const byte Sha3DomainSuffix = 0x06;
 
-    /// <summary>
-    /// Domain-separation suffix for the SHAKE extendable-output functions.
-    /// </summary>
+    /// <summary>Domain-separation suffix for the SHAKE extendable-output functions.</summary>
     private const byte ShakeDomainSuffix = 0x1F;
 
     /// <summary>
@@ -301,9 +287,7 @@ internal struct KeccakSponge
     [InlineArray(KeccakPermutation.StateWords)]
     private struct LaneBuffer
     {
-        /// <summary>
-        /// The first lane of the inline buffer; the <see cref="InlineArrayAttribute" /> expands it to 25 lanes.
-        /// </summary>
+        /// <summary>The first lane of the inline buffer; the <see cref="InlineArrayAttribute" /> expands it to 25 lanes.</summary>
         private ulong _lane0;
     }
 }

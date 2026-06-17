@@ -21,19 +21,13 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// </remarks>
 internal static class DefaultNotableDateAlgorithms
 {
-    /// <summary>
-    /// The UTC offset, in hours, of Japan Standard Time, used to date the Japanese equinox holidays.
-    /// </summary>
+    /// <summary>The UTC offset, in hours, of Japan Standard Time, used to date the Japanese equinox holidays.</summary>
     private const double JapanStandardTimeOffset = 9.0;
 
-    /// <summary>
-    /// The UTC offset, in hours, of China Standard Time, used to date Qingming.
-    /// </summary>
+    /// <summary>The UTC offset, in hours, of China Standard Time, used to date Qingming.</summary>
     private const double ChinaStandardTimeOffset = 8.0;
 
-    /// <summary>
-    /// The pre-seeded registry of every built-in algorithm, keyed by algorithm key.
-    /// </summary>
+    /// <summary>The pre-seeded registry of every built-in algorithm, keyed by algorithm key.</summary>
     private static readonly INotableDateAlgorithmRegistry s_registry = Build();
 
     /// <summary>

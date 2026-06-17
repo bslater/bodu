@@ -11,19 +11,13 @@ namespace Bodu.Financial.ExchangeRates.Yahoo;
 /// </summary>
 internal static class YahooFixtures
 {
-    /// <summary>
-    /// The prefix under which fixtures are embedded.
-    /// </summary>
+    /// <summary>The prefix under which fixtures are embedded.</summary>
     private const string ResourcePrefix = "Bodu.Financial.ExchangeRates.Yahoo.Fixtures.";
 
-    /// <summary>
-    /// The file name of the sample AUD/USD chart response (early January 2023).
-    /// </summary>
+    /// <summary>The file name of the sample AUD/USD chart response (early January 2023).</summary>
     public const string AudUsd = "audusd-2023.json";
 
-    /// <summary>
-    /// The file name of the sample chart-error response.
-    /// </summary>
+    /// <summary>The file name of the sample chart-error response.</summary>
     public const string ErrorNotFound = "error-not-found.json";
 
     /// <summary>

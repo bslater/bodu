@@ -38,9 +38,7 @@ namespace Bodu.Globalization.Calendar;
 /// <seealso href="../guides/calendar/data-packs.html">Calendar data packs (guide)</seealso>
 public static class AsiaPacificCalendarData
 {
-    /// <summary>
-    /// The manifest-resource-name prefix shared by the bundle's region resources.
-    /// </summary>
+    /// <summary>The manifest-resource-name prefix shared by the bundle's region resources.</summary>
     private const string ResourcePrefix = "Bodu.Globalization.Calendar.Resources.region-";
 
     /// <summary>

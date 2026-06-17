@@ -310,11 +310,7 @@ public readonly partial struct Money<TCurrency> :
         hasPrecisionSuffix = true;
     }
 
-    /// <summary>
-    /// The maximum explicit display precision accepted by the format parser, matching <see cref="decimal" />'s 28-digit
-    /// native precision. Precisions above this either produce nonsense output or, for pathological values like
-    /// <see cref="int.MaxValue" />, exhaust resources in the underlying <c>decimal.ToString</c> call.
-    /// </summary>
+    /// <summary>The maximum explicit display precision accepted by the format parser, matching <see cref="decimal" />'s 28-digit native precision. Precisions above this either produce nonsense output or, for pathological values like <see cref="int.MaxValue" />, exhaust resources in the underlying <c>decimal.ToString</c> call.</summary>
     private const int MaxDisplayPrecision = 28;
 
     /// <summary>

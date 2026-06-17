@@ -12,39 +12,25 @@ namespace Bodu.Globalization.Calendar.Builder;
 /// </summary>
 public sealed class AdjustmentScopeBuilder
 {
-    /// <summary>
-    /// The territory codes in scope, in declaration order.
-    /// </summary>
+    /// <summary>The territory codes in scope, in declaration order.</summary>
     private readonly List<string> _territories = new();
 
-    /// <summary>
-    /// The calendar systems in scope, in declaration order.
-    /// </summary>
+    /// <summary>The calendar systems in scope, in declaration order.</summary>
     private readonly List<CalendarSystem> _calendars = new();
 
-    /// <summary>
-    /// The categories in scope, in declaration order.
-    /// </summary>
+    /// <summary>The categories in scope, in declaration order.</summary>
     private readonly List<NotableDateCategory> _categories = new();
 
-    /// <summary>
-    /// The concept identifiers in scope, in declaration order.
-    /// </summary>
+    /// <summary>The concept identifiers in scope, in declaration order.</summary>
     private readonly List<string> _notableDateRefs = new();
 
-    /// <summary>
-    /// The concept-and-rule pairs in scope, in declaration order.
-    /// </summary>
+    /// <summary>The concept-and-rule pairs in scope, in declaration order.</summary>
     private readonly List<(string NotableDateRef, string RuleRef)> _ruleRefs = new();
 
-    /// <summary>
-    /// The explicit included years, in declaration order.
-    /// </summary>
+    /// <summary>The explicit included years, in declaration order.</summary>
     private readonly List<int> _onlyYears = new();
 
-    /// <summary>
-    /// The explicit excluded years, in declaration order.
-    /// </summary>
+    /// <summary>The explicit excluded years, in declaration order.</summary>
     private readonly List<int> _exceptYears = new();
 
     /// <summary>

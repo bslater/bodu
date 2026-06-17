@@ -53,9 +53,7 @@ public sealed partial class IndexedSet<T>
     : IList<T>, IReadOnlyList<T>
     where T : notnull
 {
-    /// <summary>
-    /// The shared ordered-set storage engine that preserves insertion order and enforces uniqueness.
-    /// </summary>
+    /// <summary>The shared ordered-set storage engine that preserves insertion order and enforces uniqueness.</summary>
     private readonly OrderedSetStorage<T> _storage;
 
     /// <summary>

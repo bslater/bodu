@@ -23,24 +23,16 @@ namespace Bodu.Text.Delimited;
 /// </description>
 /// </item>
 /// <item>
-/// <description>
-/// Quoted fields may span multiple lines; literal newlines are preserved.
-/// </description>
+/// <description>Quoted fields may span multiple lines; literal newlines are preserved.</description>
 /// </item>
 /// <item>
-/// <description>
-/// Two consecutive quote characters inside a quoted field represent a single literal quote.
-/// </description>
+/// <description>Two consecutive quote characters inside a quoted field represent a single literal quote.</description>
 /// </item>
 /// <item>
-/// <description>
-/// Blank lines (zero characters before the newline) are silently skipped.
-/// </description>
+/// <description>Blank lines (zero characters before the newline) are silently skipped.</description>
 /// </item>
 /// <item>
-/// <description>
-/// Optionally, lines whose first character is a configurable comment character are skipped.
-/// </description>
+/// <description>Optionally, lines whose first character is a configurable comment character are skipped.</description>
 /// </item>
 /// </list>
 /// </remarks>

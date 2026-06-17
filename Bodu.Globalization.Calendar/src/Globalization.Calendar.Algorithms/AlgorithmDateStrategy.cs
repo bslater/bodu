@@ -22,14 +22,10 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 public sealed class AlgorithmDateStrategy
     : IDateCalculationStrategy
 {
-    /// <summary>
-    /// The algorithm key for Western (Gregorian) Easter Sunday.
-    /// </summary>
+    /// <summary>The algorithm key for Western (Gregorian) Easter Sunday.</summary>
     public const string WesternEasterKey = "western-easter";
 
-    /// <summary>
-    /// The algorithm key for Eastern Orthodox Easter Sunday.
-    /// </summary>
+    /// <summary>The algorithm key for Eastern Orthodox Easter Sunday.</summary>
     public const string OrthodoxEasterKey = "orthodox-easter";
 
     /// <summary>

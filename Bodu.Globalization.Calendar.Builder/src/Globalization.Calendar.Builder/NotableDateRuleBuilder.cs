@@ -40,29 +40,19 @@ namespace Bodu.Globalization.Calendar.Builder;
 /// </seealso>
 public sealed class NotableDateRuleBuilder
 {
-    /// <summary>
-    /// The territory codes scoping the rule, in declaration order.
-    /// </summary>
+    /// <summary>The territory codes scoping the rule, in declaration order.</summary>
     private readonly List<string> _territories = new();
 
-    /// <summary>
-    /// The exclusive list of years for which the rule applies, in declaration order.
-    /// </summary>
+    /// <summary>The exclusive list of years for which the rule applies, in declaration order.</summary>
     private readonly List<int> _onlyYears = new();
 
-    /// <summary>
-    /// The years for which the rule is suppressed, in declaration order.
-    /// </summary>
+    /// <summary>The years for which the rule is suppressed, in declaration order.</summary>
     private readonly List<int> _exceptYears = new();
 
-    /// <summary>
-    /// The rule-specific tags, in declaration order.
-    /// </summary>
+    /// <summary>The rule-specific tags, in declaration order.</summary>
     private readonly List<string> _tags = new();
 
-    /// <summary>
-    /// The adjustment policy identifiers applied to the rule, in declaration order.
-    /// </summary>
+    /// <summary>The adjustment policy identifiers applied to the rule, in declaration order.</summary>
     private readonly List<string> _adjustments = new();
 
     /// <summary>

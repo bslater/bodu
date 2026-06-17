@@ -57,40 +57,25 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 public abstract class CachingExchangeRateProviderBase
     : IDatedExchangeRateProvider, IExchangeRateProvider, IDisposable
 {
-    /// <summary>
-    /// The single-provider cache that serves fresh rates and stores resolved observations.
-    /// </summary>
+    /// <summary>The single-provider cache that serves fresh rates and stores resolved observations.</summary>
     private readonly IExchangeRateCache _cache;
 
-    /// <summary>
-    /// The options carrying the caching durations and the timeless-surface lookup options.
-    /// </summary>
+    /// <summary>The options carrying the caching durations and the timeless-surface lookup options.</summary>
     private readonly CachingExchangeRateOptions _options;
 
-    /// <summary>
-    /// The time source used to evaluate freshness and stamp newly cached rows.
-    /// </summary>
+    /// <summary>The time source used to evaluate freshness and stamp newly cached rows.</summary>
     private readonly TimeProvider _timeProvider;
 
-    /// <summary>
-    /// The logger that records cache hits, misses, and refetches.
-    /// </summary>
+    /// <summary>The logger that records cache hits, misses, and refetches.</summary>
     private readonly ILogger _logger;
 
-    /// <summary>
-    /// The runtime identity of the cache backend, captured once at construction to avoid recomputing it on the serve
-    /// path. It is reported as the backend of every provenance record this provider emits.
-    /// </summary>
+    /// <summary>The runtime identity of the cache backend, captured once at construction to avoid recomputing it on the serve path. It is reported as the backend of every provenance record this provider emits.</summary>
     private readonly string _backend;
 
-    /// <summary>
-    /// Indicates whether disposing this provider also disposes a disposable inner provider.
-    /// </summary>
+    /// <summary>Indicates whether disposing this provider also disposes a disposable inner provider.</summary>
     private readonly bool _ownsInner;
 
-    /// <summary>
-    /// Tracks whether <see cref="Dispose()" /> has already run, so disposal is idempotent.
-    /// </summary>
+    /// <summary>Tracks whether <see cref="Dispose()" /> has already run, so disposal is idempotent.</summary>
     private bool _disposed;
 
     /// <summary>

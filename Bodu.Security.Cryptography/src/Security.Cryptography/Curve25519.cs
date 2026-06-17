@@ -19,14 +19,10 @@ namespace Bodu.Security.Cryptography;
 /// </remarks>
 internal static class Curve25519
 {
-    /// <summary>
-    /// The size, in bytes, of a Curve25519 scalar, u-coordinate, and scalar multiplication result.
-    /// </summary>
+    /// <summary>The size, in bytes, of a Curve25519 scalar, u-coordinate, and scalar multiplication result.</summary>
     internal const int PointSizeInBytes = 32;
 
-    /// <summary>
-    /// The curve constant (A − 2) / 4 = 121665 used by the Montgomery ladder step.
-    /// </summary>
+    /// <summary>The curve constant (A − 2) / 4 = 121665 used by the Montgomery ladder step.</summary>
     private const uint A24 = 121665;
 
     /// <summary>

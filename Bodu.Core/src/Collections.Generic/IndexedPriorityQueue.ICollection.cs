@@ -16,10 +16,7 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority> :
 #pragma warning restore CA1010 // Generic interface should also be implemented
     ICollection
 {
-    /// <summary>
-    /// Lazily-allocated synchronization root returned by the explicit <see cref="ICollection.SyncRoot" />
-    /// implementation.
-    /// </summary>
+    /// <summary>Lazily-allocated synchronization root returned by the explicit <see cref="ICollection.SyncRoot" /> implementation.</summary>
     [NonSerialized]
     private object? _syncRoot;
 

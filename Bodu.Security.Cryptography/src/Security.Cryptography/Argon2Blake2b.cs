@@ -26,19 +26,13 @@ namespace Bodu.Security.Cryptography;
 /// </remarks>
 internal static class Argon2Blake2b
 {
-    /// <summary>
-    /// The BLAKE2b block size, in bytes.
-    /// </summary>
+    /// <summary>The BLAKE2b block size, in bytes.</summary>
     internal const int BlockSizeBytes = 128;
 
-    /// <summary>
-    /// The maximum BLAKE2b digest length, in bytes.
-    /// </summary>
+    /// <summary>The maximum BLAKE2b digest length, in bytes.</summary>
     internal const int MaxDigestBytes = 64;
 
-    /// <summary>
-    /// The BLAKE2b initialization vector (the SHA-512 IV).
-    /// </summary>
+    /// <summary>The BLAKE2b initialization vector (the SHA-512 IV).</summary>
     private static readonly ulong[] s_iv =
     [
         0x6A09E667F3BCC908UL, 0xBB67AE8584CAA73BUL,
@@ -47,9 +41,7 @@ internal static class Argon2Blake2b
         0x1F83D9ABFB41BD6BUL, 0x5BE0CD19137E2179UL,
     ];
 
-    /// <summary>
-    /// The BLAKE2b message-word permutation schedule (twelve rounds of sixteen indices each).
-    /// </summary>
+    /// <summary>The BLAKE2b message-word permutation schedule (twelve rounds of sixteen indices each).</summary>
     private static readonly byte[][] s_sigma =
     [
         [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],

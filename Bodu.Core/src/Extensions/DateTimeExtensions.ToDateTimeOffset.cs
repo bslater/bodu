@@ -24,21 +24,15 @@ public static partial class DateTimeExtensions
     /// <list type="bullet">
     /// <item>
     /// <term><see cref="DateTimeKind.Utc" /></term>
-    /// <description>
-    /// applies a zero offset (UTC).
-    /// </description>
+    /// <description>applies a zero offset (UTC).</description>
     /// </item>
     /// <item>
     /// <term><see cref="DateTimeKind.Local" /></term>
-    /// <description>
-    /// applies the system's local time zone offset.
-    /// </description>
+    /// <description>applies the system's local time zone offset.</description>
     /// </item>
     /// <item>
     /// <term><see cref="DateTimeKind.Unspecified" /></term>
-    /// <description>
-    /// treats the value as local time and applies the system's local offset.
-    /// </description>
+    /// <description>treats the value as local time and applies the system's local offset.</description>
     /// </item>
     /// </list>
     /// </remarks>

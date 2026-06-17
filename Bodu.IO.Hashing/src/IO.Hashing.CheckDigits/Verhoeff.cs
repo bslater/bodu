@@ -44,10 +44,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 public sealed partial class Verhoeff
     : CheckDigitAlgorithm
 {
-    /// <summary>
-    /// The eight parallel Verhoeff running-value accumulators that let the streaming <see cref="Append" /> surface
-    /// compute the check digit without buffering the appended digits.
-    /// </summary>
+    /// <summary>The eight parallel Verhoeff running-value accumulators that let the streaming <see cref="Append" /> surface compute the check digit without buffering the appended digits.</summary>
     /// <remarks>
     /// <para>
     /// <c>_c[k]</c> holds the Verhoeff running value <c>c</c> under the hypothesis that the most recently appended

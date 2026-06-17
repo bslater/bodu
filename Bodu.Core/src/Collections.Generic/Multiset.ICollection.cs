@@ -11,9 +11,7 @@ namespace Bodu.Collections.Generic;
 public sealed partial class Multiset<T>
     : System.Collections.ICollection
 {
-    /// <summary>
-    /// Lazily initialized synchronization root for <see cref="System.Collections.ICollection.SyncRoot" />.
-    /// </summary>
+    /// <summary>Lazily initialized synchronization root for <see cref="System.Collections.ICollection.SyncRoot" />.</summary>
     [NonSerialized]
     private object? _syncRoot;
 

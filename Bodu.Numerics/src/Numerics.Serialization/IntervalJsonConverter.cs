@@ -53,9 +53,7 @@ public sealed class IntervalJsonConverter<T>
     : JsonConverter<Interval<T>>
     where T : INumber<T>
 {
-    /// <summary>
-    /// The policy used by this converter instance.
-    /// </summary>
+    /// <summary>The policy used by this converter instance.</summary>
     private readonly NumericsJsonPolicy _policy;
 
     /// <summary>

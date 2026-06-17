@@ -22,29 +22,19 @@ namespace Bodu.Globalization.Calendar;
 /// </remarks>
 internal static class CalendarSystems
 {
-    /// <summary>
-    /// The shared tabular Islamic calendar instance.
-    /// </summary>
+    /// <summary>The shared tabular Islamic calendar instance.</summary>
     private static readonly HijriCalendar s_hijri = new();
 
-    /// <summary>
-    /// The shared Umm al-Qura Islamic calendar instance.
-    /// </summary>
+    /// <summary>The shared Umm al-Qura Islamic calendar instance.</summary>
     private static readonly UmAlQuraCalendar s_ummAlQura = new();
 
-    /// <summary>
-    /// The shared Hebrew calendar instance.
-    /// </summary>
+    /// <summary>The shared Hebrew calendar instance.</summary>
     private static readonly HebrewCalendar s_hebrew = new();
 
-    /// <summary>
-    /// The shared Persian calendar instance.
-    /// </summary>
+    /// <summary>The shared Persian calendar instance.</summary>
     private static readonly PersianCalendar s_persian = new();
 
-    /// <summary>
-    /// The shared Chinese lunisolar calendar instance.
-    /// </summary>
+    /// <summary>The shared Chinese lunisolar calendar instance.</summary>
     private static readonly ChineseLunisolarCalendar s_chinese = new();
 
     /// <summary>

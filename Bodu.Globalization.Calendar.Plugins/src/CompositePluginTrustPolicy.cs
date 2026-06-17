@@ -13,9 +13,7 @@ namespace Bodu.Globalization.Calendar.Plugins;
 public sealed class CompositePluginTrustPolicy
     : IPluginTrustPolicy
 {
-    /// <summary>
-    /// The composed policies, all of which must trust the candidate.
-    /// </summary>
+    /// <summary>The composed policies, all of which must trust the candidate.</summary>
     private readonly IPluginTrustPolicy[] _policies;
 
     /// <summary>

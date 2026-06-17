@@ -34,53 +34,35 @@ namespace Bodu.Security.Cryptography;
 /// </remarks>
 public sealed partial class Threefish256Cipher
 {
-    /// <summary>
-    /// The packed per-lane rotation amounts for the first MIX round (R0, R1).
-    /// </summary>
+    /// <summary>The packed per-lane rotation amounts for the first MIX round (R0, R1).</summary>
     /// <remarks>
     /// Each <c>s_rotVec*</c> vector packs the two MIX rotations for one round at lane positions matching the <c>hi</c>
     /// register's lane layout when the round executes.
     /// </remarks>
     private static readonly Vector128<ulong> s_rotVec0 = Vector128.Create((ulong)R0, R1);
 
-    /// <summary>
-    /// The packed per-lane rotation amounts for the second MIX round (R2, R3).
-    /// </summary>
+    /// <summary>The packed per-lane rotation amounts for the second MIX round (R2, R3).</summary>
     private static readonly Vector128<ulong> s_rotVec1 = Vector128.Create((ulong)R2, R3);
 
-    /// <summary>
-    /// The packed per-lane rotation amounts for the third MIX round (R4, R5).
-    /// </summary>
+    /// <summary>The packed per-lane rotation amounts for the third MIX round (R4, R5).</summary>
     private static readonly Vector128<ulong> s_rotVec2 = Vector128.Create((ulong)R4, R5);
 
-    /// <summary>
-    /// The packed per-lane rotation amounts for the fourth MIX round (R6, R7).
-    /// </summary>
+    /// <summary>The packed per-lane rotation amounts for the fourth MIX round (R6, R7).</summary>
     private static readonly Vector128<ulong> s_rotVec3 = Vector128.Create((ulong)R6, R7);
 
-    /// <summary>
-    /// The packed per-lane rotation amounts for the fifth MIX round (R8, R9).
-    /// </summary>
+    /// <summary>The packed per-lane rotation amounts for the fifth MIX round (R8, R9).</summary>
     private static readonly Vector128<ulong> s_rotVec4 = Vector128.Create((ulong)R8, R9);
 
-    /// <summary>
-    /// The packed per-lane rotation amounts for the sixth MIX round (R10, R11).
-    /// </summary>
+    /// <summary>The packed per-lane rotation amounts for the sixth MIX round (R10, R11).</summary>
     private static readonly Vector128<ulong> s_rotVec5 = Vector128.Create((ulong)R10, R11);
 
-    /// <summary>
-    /// The packed per-lane rotation amounts for the seventh MIX round (R12, R13).
-    /// </summary>
+    /// <summary>The packed per-lane rotation amounts for the seventh MIX round (R12, R13).</summary>
     private static readonly Vector128<ulong> s_rotVec6 = Vector128.Create((ulong)R12, R13);
 
-    /// <summary>
-    /// The packed per-lane rotation amounts for the eighth MIX round (R14, R15).
-    /// </summary>
+    /// <summary>The packed per-lane rotation amounts for the eighth MIX round (R14, R15).</summary>
     private static readonly Vector128<ulong> s_rotVec7 = Vector128.Create((ulong)R14, R15);
 
-    /// <summary>
-    /// The lane-swap index vector that exchanges the two 64-bit lanes of a <see cref="Vector128{T}" />.
-    /// </summary>
+    /// <summary>The lane-swap index vector that exchanges the two 64-bit lanes of a <see cref="Vector128{T}" />.</summary>
     /// <remarks>
     /// The swap is its own inverse, so the same vector serves both the forward (Encrypt) and inverse (Decrypt)
     /// directions.

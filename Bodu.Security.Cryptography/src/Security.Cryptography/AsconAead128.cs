@@ -63,19 +63,13 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>
-/// Key size: 128 bits (16 bytes).
-/// </description>
+/// <description>Key size: 128 bits (16 bytes).</description>
 /// </item>
 /// <item>
-/// <description>
-/// Nonce size: 128 bits (16 bytes), must be unique per key.
-/// </description>
+/// <description>Nonce size: 128 bits (16 bytes), must be unique per key.</description>
 /// </item>
 /// <item>
-/// <description>
-/// Tag size: 128 bits (16 bytes).
-/// </description>
+/// <description>Tag size: 128 bits (16 bytes).</description>
 /// </item>
 /// <item>
 /// <description>
@@ -83,9 +77,7 @@ namespace Bodu.Security.Cryptography;
 /// </description>
 /// </item>
 /// <item>
-/// <description>
-/// Specification: NIST SP 800-232 (ASCON family).
-/// </description>
+/// <description>Specification: NIST SP 800-232 (ASCON family).</description>
 /// </item>
 /// </list>
 /// <para>
@@ -119,39 +111,25 @@ namespace Bodu.Security.Cryptography;
 public sealed class AsconAead128
     : IAeadBlockCipherModeTransform, IDisposable
 {
-    /// <summary>
-    /// Length of the Ascon-AEAD128 key is 128 bits (16 bytes).
-    /// </summary>
+    /// <summary>Length of the Ascon-AEAD128 key is 128 bits (16 bytes).</summary>
     public const int KeySize = 128;
 
-    /// <summary>
-    /// Length of the Ascon-AEAD128 nonce is 128 bits (16 bytes).
-    /// </summary>
+    /// <summary>Length of the Ascon-AEAD128 nonce is 128 bits (16 bytes).</summary>
     public const int NonceSize = 128;
 
-    /// <summary>
-    /// Byte length of <see cref="KeySize" /> (16 bytes). Derived helper used for span-length checks.
-    /// </summary>
+    /// <summary>Byte length of <see cref="KeySize" /> (16 bytes). Derived helper used for span-length checks.</summary>
     internal const int KeyBytes = KeySize / 8;
 
-    /// <summary>
-    /// Byte length of <see cref="NonceSize" /> (16 bytes). Derived helper used for span-length checks.
-    /// </summary>
+    /// <summary>Byte length of <see cref="NonceSize" /> (16 bytes). Derived helper used for span-length checks.</summary>
     internal const int NonceBytes = NonceSize / 8;
 
-    /// <summary>
-    /// Byte length of <see cref="TagSizeBits" /> (16 bytes). Derived helper used for span sizing.
-    /// </summary>
+    /// <summary>Byte length of <see cref="TagSizeBits" /> (16 bytes). Derived helper used for span sizing.</summary>
     internal const int TagBytes = TagSizeBits / 8;
 
-    /// <summary>
-    /// Length of the Ascon-AEAD128 authentication tag is 128 bits (16 bytes).
-    /// </summary>
+    /// <summary>Length of the Ascon-AEAD128 authentication tag is 128 bits (16 bytes).</summary>
     internal const int TagSizeBits = 128;
 
-    /// <summary>
-    /// The initialization-vector word for Ascon-AEAD128 (NIST SP 800-232).
-    /// </summary>
+    /// <summary>The initialization-vector word for Ascon-AEAD128 (NIST SP 800-232).</summary>
     /// <remarks>
     /// Sourced from the official ascon-c reference constants header. The packed fields, least-significant first, are
     /// the variant identifier, the initialization round count, the absorption round count, the tag length in bits, and
@@ -159,50 +137,31 @@ public sealed class AsconAead128
     /// </remarks>
     private const ulong IvWord = 0x00001000808c0001UL;
 
-    /// <summary>
-    /// The number of permutation rounds (Ascon-p12) applied during initialization and finalization.
-    /// </summary>
+    /// <summary>The number of permutation rounds (Ascon-p12) applied during initialization and finalization.</summary>
     private const int Pa = 12;
 
-    /// <summary>
-    /// The number of permutation rounds (Ascon-p8) applied between absorbed blocks.
-    /// </summary>
+    /// <summary>The number of permutation rounds (Ascon-p8) applied between absorbed blocks.</summary>
     private const int Pb = 8;
 
-    /// <summary>
-    /// Byte length of <see cref="RateSizeBits" /> (16 bytes). Derived helper used for block iteration over the sponge
-    /// rate.
-    /// </summary>
+    /// <summary>Byte length of <see cref="RateSizeBits" /> (16 bytes). Derived helper used for block iteration over the sponge rate.</summary>
     private const int Rate = RateSizeBits / 8;
 
-    /// <summary>
-    /// Length of the Ascon-AEAD128 sponge absorption rate is 128 bits (16 bytes).
-    /// </summary>
+    /// <summary>Length of the Ascon-AEAD128 sponge absorption rate is 128 bits (16 bytes).</summary>
     private const int RateSizeBits = 128;
 
-    /// <summary>
-    /// The retained 128-bit key material used during initialization and finalization.
-    /// </summary>
+    /// <summary>The retained 128-bit key material used during initialization and finalization.</summary>
     private readonly KeyMaterial128 _key;
 
-    /// <summary>
-    /// Indicates whether associated data has been processed for this instance.
-    /// </summary>
+    /// <summary>Indicates whether associated data has been processed for this instance.</summary>
     private bool _aadProcessed;
 
-    /// <summary>
-    /// Indicates whether encryption or decryption has completed for this single-use instance.
-    /// </summary>
+    /// <summary>Indicates whether encryption or decryption has completed for this single-use instance.</summary>
     private bool _completed;
 
-    /// <summary>
-    /// Indicates whether this instance has been disposed and its key material and sponge state cleared.
-    /// </summary>
+    /// <summary>Indicates whether this instance has been disposed and its key material and sponge state cleared.</summary>
     private bool _disposed;
 
-    /// <summary>
-    /// The 320-bit ASCON sponge state updated in place across the AEAD phases.
-    /// </summary>
+    /// <summary>The 320-bit ASCON sponge state updated in place across the AEAD phases.</summary>
     private AsconState _state;
 
     /// <summary>
@@ -600,14 +559,10 @@ public sealed class AsconAead128
     /// </remarks>
     private sealed class KeyMaterial128
     {
-        /// <summary>
-        /// The first 64-bit key word.
-        /// </summary>
+        /// <summary>The first 64-bit key word.</summary>
         private ulong _k0;
 
-        /// <summary>
-        /// The second 64-bit key word.
-        /// </summary>
+        /// <summary>The second 64-bit key word.</summary>
         private ulong _k1;
 
         /// <summary>

@@ -44,9 +44,7 @@ namespace Bodu.Financial.Serialization;
 public sealed class ExchangeRateJsonConverter
     : JsonConverter<ExchangeRate>
 {
-    /// <summary>
-    /// The policy used by this converter instance.
-    /// </summary>
+    /// <summary>The policy used by this converter instance.</summary>
     private readonly FinancialJsonPolicy _policy;
 
     /// <summary>

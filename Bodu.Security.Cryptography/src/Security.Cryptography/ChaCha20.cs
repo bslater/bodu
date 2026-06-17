@@ -30,19 +30,13 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>
-/// Key size: 256 bits (32 bytes).
-/// </description>
+/// <description>Key size: 256 bits (32 bytes).</description>
 /// </item>
 /// <item>
-/// <description>
-/// Nonce (IV) size: 96 bits (12 bytes).
-/// </description>
+/// <description>Nonce (IV) size: 96 bits (12 bytes).</description>
 /// </item>
 /// <item>
-/// <description>
-/// Block counter: 32-bit, starting at <see cref="InitialCounter" /> (default 0).
-/// </description>
+/// <description>Block counter: 32-bit, starting at <see cref="InitialCounter" /> (default 0).</description>
 /// </item>
 /// </list>
 /// <para>
@@ -78,14 +72,10 @@ namespace Bodu.Security.Cryptography;
 public sealed class ChaCha20
     : SymmetricStreamAlgorithm
 {
-    /// <summary>
-    /// The required ChaCha20 key size, in bits (256).
-    /// </summary>
+    /// <summary>The required ChaCha20 key size, in bits (256).</summary>
     internal const int KeySizeBits = ChaCha20StreamCipher.KeySizeBytes * 8;
 
-    /// <summary>
-    /// The ChaCha20 nonce size, in bits (96).
-    /// </summary>
+    /// <summary>The ChaCha20 nonce size, in bits (96).</summary>
     internal const int NonceSizeBits = ChaCha20StreamCipher.NonceSizeBytes * 8;
 
     /// <summary>

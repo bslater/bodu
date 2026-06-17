@@ -46,29 +46,19 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
     public struct Enumerator
         : IEnumerator<KeyValuePair<TKey, IReadOnlyList<TValue>>>
     {
-        /// <summary>
-        /// The dictionary whose entries this enumerator iterates over.
-        /// </summary>
+        /// <summary>The dictionary whose entries this enumerator iterates over.</summary>
         private readonly MultiValueDictionary<TKey, TValue> _dictionary;
 
-        /// <summary>
-        /// The dictionary version captured at construction, used to detect concurrent modification.
-        /// </summary>
+        /// <summary>The dictionary version captured at construction, used to detect concurrent modification.</summary>
         private readonly int _version;
 
-        /// <summary>
-        /// The underlying bucket enumerator that supplies each key and its associated values.
-        /// </summary>
+        /// <summary>The underlying bucket enumerator that supplies each key and its associated values.</summary>
         private Dictionary<TKey, ValueBucket>.Enumerator _inner;
 
-        /// <summary>
-        /// The current key/value-list pair. Read through <see cref="Current" />.
-        /// </summary>
+        /// <summary>The current key/value-list pair. Read through <see cref="Current" />.</summary>
         private KeyValuePair<TKey, IReadOnlyList<TValue>> _current;
 
-        /// <summary>
-        /// Indicates whether <see cref="_current" /> holds a valid element at the current position.
-        /// </summary>
+        /// <summary>Indicates whether <see cref="_current" /> holds a valid element at the current position.</summary>
         private bool _hasCurrent;
 
         /// <summary>

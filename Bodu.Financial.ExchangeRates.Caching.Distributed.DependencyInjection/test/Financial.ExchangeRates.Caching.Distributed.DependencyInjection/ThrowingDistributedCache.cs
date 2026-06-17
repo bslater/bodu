@@ -9,8 +9,8 @@ using Microsoft.Extensions.Caching.Distributed;
 namespace Bodu.Financial.ExchangeRates.Caching.Distributed.DependencyInjection;
 
 /// <summary>
-/// An <see cref="IDistributedCache" /> whose every operation throws, standing in for an unreachable backing store so the
-/// startup storage probe can be exercised without a live distributed cache.
+/// An <see cref="IDistributedCache" /> whose every operation throws, standing in for an unreachable backing store so
+/// the startup storage probe can be exercised without a live distributed cache.
 /// </summary>
 internal sealed class ThrowingDistributedCache
     : IDistributedCache

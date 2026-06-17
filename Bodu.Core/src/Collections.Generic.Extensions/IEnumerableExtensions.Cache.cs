@@ -50,44 +50,28 @@ public static partial class IEnumerableExtensions
        System.Collections.Generic.IEnumerable<T>,
        System.IDisposable
     {
-        /// <summary>
-        /// The initial backing-array length allocated when the first element is appended.
-        /// </summary>
+        /// <summary>The initial backing-array length allocated when the first element is appended.</summary>
         private const int DefaultCapacity = 4;
 
-        /// <summary>
-        /// The original sequence whose elements are cached on first enumeration.
-        /// </summary>
+        /// <summary>The original sequence whose elements are cached on first enumeration.</summary>
         private readonly IEnumerable<T> _source;
 
-        /// <summary>
-        /// The append-only backing store; <see langword="null" /> until initialized and after disposal.
-        /// </summary>
+        /// <summary>The append-only backing store; <see langword="null" /> until initialized and after disposal.</summary>
         private T[]? _items;
 
-        /// <summary>
-        /// The number of elements currently published into <see cref="_items" />.
-        /// </summary>
+        /// <summary>The number of elements currently published into <see cref="_items" />.</summary>
         private int _count;
 
-        /// <summary>
-        /// The shared source enumerator, also used as the monitor guarding source advancement.
-        /// </summary>
+        /// <summary>The shared source enumerator, also used as the monitor guarding source advancement.</summary>
         private IEnumerator<T>? _enumerator;
 
-        /// <summary>
-        /// The exception captured if the source faulted during enumeration.
-        /// </summary>
+        /// <summary>The exception captured if the source faulted during enumeration.</summary>
         private volatile ExceptionDispatchInfo? _exception;
 
-        /// <summary>
-        /// The index at which <see cref="_exception" /> was captured, or <c>-1</c> if none.
-        /// </summary>
+        /// <summary>The index at which <see cref="_exception" /> was captured, or <c>-1</c> if none.</summary>
         private int _exceptionIndex = -1;
 
-        /// <summary>
-        /// The initialization state: <c>0</c> not initialized, <c>1</c> initializing, <c>2</c> initialized.
-        /// </summary>
+        /// <summary>The initialization state: <c>0</c> not initialized, <c>1</c> initializing, <c>2</c> initialized.</summary>
         private int _initializationState;
 
         /// <summary>
@@ -199,14 +183,10 @@ public static partial class IEnumerableExtensions
         private sealed class Enumerator :
            System.Collections.Generic.IEnumerator<T>
         {
-            /// <summary>
-            /// The parent <see cref="CacheEnumerable{T}" /> whose cache this enumerator reads.
-            /// </summary>
+            /// <summary>The parent <see cref="CacheEnumerable{T}" /> whose cache this enumerator reads.</summary>
             private readonly CacheEnumerable<T> _parent;
 
-            /// <summary>
-            /// The current zero-based position of this enumerator within the cached sequence.
-            /// </summary>
+            /// <summary>The current zero-based position of this enumerator within the cached sequence.</summary>
             private int _index;
 
             /// <summary>

@@ -49,26 +49,18 @@ namespace Bodu.Security.Cryptography;
 public abstract class Serpent
     : TweakableSymmetricAlgorithm
 {
-    /// <summary>
-    /// The block size in bytes.
-    /// </summary>
+    /// <summary>The block size in bytes.</summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Exposed as a protected field so derived wide-block Serpent types can read the block byte count directly on cipher-construction paths without virtual dispatch.")]
     protected readonly int BlockSizeBytes;
 
-    /// <summary>
-    /// The key size in bytes.
-    /// </summary>
+    /// <summary>The key size in bytes.</summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Exposed as a protected field so derived wide-block Serpent types can read the key byte count directly on cipher-construction paths without virtual dispatch.")]
     protected readonly int KeySizeBytes;
 
-    /// <summary>
-    /// The default tweak size in bytes, used when no tweak length is otherwise specified.
-    /// </summary>
+    /// <summary>The default tweak size in bytes, used when no tweak length is otherwise specified.</summary>
     private readonly int _defaultTweakSizeBytes;
 
-    /// <summary>
-    /// A value indicating whether this instance has been disposed.
-    /// </summary>
+    /// <summary>A value indicating whether this instance has been disposed.</summary>
     private bool _disposed;
 
     /// <summary>

@@ -41,9 +41,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>
-/// An all-zero key, all-zero plaintext row — basic regression sanity.
-/// </description>
+/// <description>An all-zero key, all-zero plaintext row — basic regression sanity.</description>
 /// </item>
 /// <item>
 /// <description>

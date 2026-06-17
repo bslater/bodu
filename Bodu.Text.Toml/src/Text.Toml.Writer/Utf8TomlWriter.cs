@@ -59,28 +59,20 @@ namespace Bodu.Text.Toml.Writer;
 /// </example>
 public ref partial struct Utf8TomlWriter
 {
-    /// <summary>
-    /// The destination buffer writer that receives the completed document.
-    /// </summary>
+    /// <summary>The destination buffer writer that receives the completed document.</summary>
     private readonly IBufferWriter<byte> _output;
 
-    /// <summary>
-    /// The stack of open containers, innermost last.
-    /// </summary>
+    /// <summary>The stack of open containers, innermost last.</summary>
     private readonly List<Frame> _frames;
 
-    /// <summary>
-    /// The single-element holder that receives the completed root node when the outermost container is closed.
-    /// </summary>
+    /// <summary>The single-element holder that receives the completed root node when the outermost container is closed.</summary>
     /// <remarks>
     /// The holder is a shared managed object so that the result of the final <see cref="Emit" /> survives a by-value
     /// copy of the writer, just as the <see cref="_frames" /> stack does.
     /// </remarks>
     private readonly TomlWriterNode?[] _root;
 
-    /// <summary>
-    /// The maximum permitted container nesting depth.
-    /// </summary>
+    /// <summary>The maximum permitted container nesting depth.</summary>
     /// <remarks>
     /// The field is <see langword="readonly" /> and assigned once at construction. The writer is a
     /// <see langword="ref struct" /> passed by value with its mutable state held in the shared managed
@@ -90,26 +82,16 @@ public ref partial struct Utf8TomlWriter
     /// </remarks>
     private readonly int _maxDepth;
 
-    /// <summary>
-    /// The destination stream when the writer was constructed over a <see cref="Stream" />, with the buffered output
-    /// awaiting <see cref="Flush" />; otherwise <see langword="null" />.
-    /// </summary>
+    /// <summary>The destination stream when the writer was constructed over a <see cref="Stream" />, with the buffered output awaiting <see cref="Flush" />; otherwise <see langword="null" />.</summary>
     private readonly Stream? _stream;
 
-    /// <summary>
-    /// The intermediate buffer that receives rendered bytes in stream mode until they are flushed.
-    /// </summary>
+    /// <summary>The intermediate buffer that receives rendered bytes in stream mode until they are flushed.</summary>
     private readonly ArrayBufferWriter<byte>? _streamBuffer;
 
-    /// <summary>
-    /// The shared committed/pending byte counters (committed at index 0, pending at index 1), held in an array so the
-    /// counts survive a by-value copy of the writer.
-    /// </summary>
+    /// <summary>The shared committed/pending byte counters (committed at index 0, pending at index 1), held in an array so the counts survive a by-value copy of the writer.</summary>
     private readonly long[] _byteCounts;
 
-    /// <summary>
-    /// The single-element holder for the serializer's write state, when the writer is driven by the serializer.
-    /// </summary>
+    /// <summary>The single-element holder for the serializer's write state, when the writer is driven by the serializer.</summary>
     /// <remarks>
     /// The holder is a shared managed object so the attached state survives a by-value copy of the writer, just as
     /// <see cref="_frames" /> and <see cref="_root" /> do. It is <see langword="null" /> for direct, imperative, or DOM

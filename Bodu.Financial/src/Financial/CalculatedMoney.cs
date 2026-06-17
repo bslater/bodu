@@ -40,15 +40,10 @@ namespace Bodu.Financial;
 [DebuggerDisplay("{Amount} {IsoCode,nq} (unrounded)")]
 public readonly partial struct CalculatedMoney
 {
-    /// <summary>
-    /// The unrounded amount in the major unit of the currency identified by <see cref="_isoCode" />.
-    /// </summary>
+    /// <summary>The unrounded amount in the major unit of the currency identified by <see cref="_isoCode" />.</summary>
     private readonly decimal _amount;
 
-    /// <summary>
-    /// The ISO 4217 alphabetic code identifying the currency, or <see langword="null" /> for a default-initialised
-    /// value.
-    /// </summary>
+    /// <summary>The ISO 4217 alphabetic code identifying the currency, or <see langword="null" /> for a default-initialised value.</summary>
     private readonly string? _isoCode;
 
     /// <summary>

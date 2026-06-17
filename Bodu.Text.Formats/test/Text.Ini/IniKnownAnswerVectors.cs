@@ -13,9 +13,7 @@ namespace Bodu.Text.Ini;
 /// </summary>
 public static class IniKnownAnswerVectors
 {
-    /// <summary>
-    /// Citation source for vectors derived from the Wikipedia INI file format article.
-    /// </summary>
+    /// <summary>Citation source for vectors derived from the Wikipedia INI file format article.</summary>
     private const string Spec = "INI file format (Wikipedia)";
 
     /// <summary>

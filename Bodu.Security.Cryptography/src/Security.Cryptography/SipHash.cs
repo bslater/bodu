@@ -73,30 +73,19 @@ public abstract class SipHash<T>
     : KeyedBlockHashAlgorithm<T>
     where T : SipHash<T>, new()
 {
-    /// <summary>
-    /// Length of the SipHash key is 128 bits (16 bytes).
-    /// </summary>
+    /// <summary>Length of the SipHash key is 128 bits (16 bytes).</summary>
     public const int KeySize = 128;
 
-    /// <summary>
-    /// The minimum number of compression rounds required by SipHash.
-    /// </summary>
+    /// <summary>The minimum number of compression rounds required by SipHash.</summary>
     public const int MinCompressionRounds = 2;
 
-    /// <summary>
-    /// The minimum number of finalization rounds required by SipHash.
-    /// </summary>
+    /// <summary>The minimum number of finalization rounds required by SipHash.</summary>
     public const int MinFinalizationRounds = 4;
 
-    /// <summary>
-    /// The SipHash input block size, in bytes (64 bits).
-    /// </summary>
+    /// <summary>The SipHash input block size, in bytes (64 bits).</summary>
     private static readonly int s_blockSize = 64;
 
-    /// <summary>
-    /// The four 64-bit constants used to seed the SipHash state, derived from the ASCII string
-    /// <c>"somepseudorandomlygeneratedbytes"</c>.
-    /// </summary>
+    /// <summary>The four 64-bit constants used to seed the SipHash state, derived from the ASCII string <c>"somepseudorandomlygeneratedbytes"</c>.</summary>
     private static readonly ulong[] s_initialStates =
     [
         0x736f6d6570736575UL,
@@ -105,25 +94,17 @@ public abstract class SipHash<T>
         0x7465646279746573UL,
     ];
 
-    /// <summary>
-    /// The set of hash output sizes, in bits, accepted by the algorithm.
-    /// </summary>
+    /// <summary>The set of hash output sizes, in bits, accepted by the algorithm.</summary>
     private static readonly int[] s_permittedHashSizes = [64, 128];
 
-    /// <summary>
-    /// The number of compression rounds applied to each input block.
-    /// </summary>
+    /// <summary>The number of compression rounds applied to each input block.</summary>
     private int _compressionRounds;
 
-    /// <summary>
-    /// The number of finalization rounds applied after all input has been processed.
-    /// </summary>
+    /// <summary>The number of finalization rounds applied after all input has been processed.</summary>
     private int _finalizationRounds;
 #pragma warning disable SA1132 // Do not combine fields
 
-    /// <summary>
-    /// The four 64-bit state words mixed in place across the SipHash compression and finalization rounds.
-    /// </summary>
+    /// <summary>The four 64-bit state words mixed in place across the SipHash compression and finalization rounds.</summary>
     private ulong _v0, _v1, _v2, _v3;
 #pragma warning restore SA1132 // Do not combine fields
 
@@ -152,19 +133,13 @@ public abstract class SipHash<T>
     /// Follows the convention "SipHash-c-d-x", where:
     /// <list type="bullet">
     /// <item>
-    /// <description>
-    /// <c>c</c>: compression rounds
-    /// </description>
+    /// <description><c>c</c>: compression rounds</description>
     /// </item>
     /// <item>
-    /// <description>
-    /// <c>d</c>: finalization rounds
-    /// </description>
+    /// <description><c>d</c>: finalization rounds</description>
     /// </item>
     /// <item>
-    /// <description>
-    /// <c>x</c>: output hash size in bits
-    /// </description>
+    /// <description><c>x</c>: output hash size in bits</description>
     /// </item>
     /// </list>
     /// </remarks>

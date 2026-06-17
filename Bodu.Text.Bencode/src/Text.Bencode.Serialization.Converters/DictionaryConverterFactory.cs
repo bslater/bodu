@@ -21,9 +21,7 @@ namespace Bodu.Text.Bencode.Serialization.Converters;
 internal sealed class DictionaryConverterFactory
     : BencodeConverterFactory
 {
-    /// <summary>
-    /// The non-enum key types this factory supports, mapped to their key-conversion kind.
-    /// </summary>
+    /// <summary>The non-enum key types this factory supports, mapped to their key-conversion kind.</summary>
     private static readonly Dictionary<Type, DictionaryKeyKind> s_keyKinds = new()
     {
         [typeof(string)] = DictionaryKeyKind.String,

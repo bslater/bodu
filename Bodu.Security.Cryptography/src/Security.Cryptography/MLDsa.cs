@@ -64,33 +64,21 @@ public abstract class MLDsa
     : AsymmetricAlgorithm
 {
 
-    /// <summary>
-    /// The maximum length, in bytes, of the signature context string.
-    /// </summary>
+    /// <summary>The maximum length, in bytes, of the signature context string.</summary>
     public const int MaxContextSizeInBytes = 255;
-    /// <summary>
-    /// The size, in bytes, of the private seed ξ accepted by <see cref="ImportPrivateSeed" />.
-    /// </summary>
+    /// <summary>The size, in bytes, of the private seed ξ accepted by <see cref="ImportPrivateSeed" />.</summary>
     public const int PrivateSeedSizeInBytes = 32;
 
-    /// <summary>
-    /// The FIPS 204 parameter set implemented by the derived type.
-    /// </summary>
+    /// <summary>The FIPS 204 parameter set implemented by the derived type.</summary>
     private readonly MLDsaParameters _parameters;
 
-    /// <summary>
-    /// Indicates whether this instance has been disposed.
-    /// </summary>
+    /// <summary>Indicates whether this instance has been disposed.</summary>
     private bool _disposed;
 
-    /// <summary>
-    /// The encoded private key, or <see langword="null" /> when no private key is set.
-    /// </summary>
+    /// <summary>The encoded private key, or <see langword="null" /> when no private key is set.</summary>
     private byte[]? _privateKey;
 
-    /// <summary>
-    /// The encoded public key, or <see langword="null" /> when no public key is set.
-    /// </summary>
+    /// <summary>The encoded public key, or <see langword="null" /> when no public key is set.</summary>
     private byte[]? _publicKey;
 
     /// <summary>

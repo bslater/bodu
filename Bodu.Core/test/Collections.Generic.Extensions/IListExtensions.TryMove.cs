@@ -112,8 +112,8 @@ public sealed partial class IListExtensionsTests_TryMove
     }
 
     /// <summary>
-    /// Verifies that <c>TryMove</c> returns <see langword="true" /> without mutating when <paramref name="newIndex"/>
-    /// is one greater than <paramref name="oldIndex"/>, matching the method's documented no-op contract.
+    /// Verifies that <c>TryMove</c> returns <see langword="true" /> without mutating when <paramref name="newIndex" />
+    /// is one greater than <paramref name="oldIndex" />, matching the method's documented no-op contract.
     /// </summary>
     [TestMethod]
     public void TryMove_WhenNewIndexIsAdjacentToOldIndex_ShouldReturnTrueWithoutMutating()

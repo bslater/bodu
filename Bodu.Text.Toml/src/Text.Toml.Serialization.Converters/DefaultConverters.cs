@@ -38,9 +38,7 @@ namespace Bodu.Text.Toml.Serialization.Converters;
 /// </remarks>
 internal static class DefaultConverters
 {
-    /// <summary>
-    /// The built-in converters, in resolution order.
-    /// </summary>
+    /// <summary>The built-in converters, in resolution order.</summary>
     private static readonly TomlConverter[] s_builtIn =
     [
         new TomlNodeConverter(),

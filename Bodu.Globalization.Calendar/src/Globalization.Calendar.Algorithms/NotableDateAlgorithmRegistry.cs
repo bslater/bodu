@@ -37,9 +37,7 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 public sealed class NotableDateAlgorithmRegistry
     : INotableDateAlgorithmRegistry
 {
-    /// <summary>
-    /// The registered algorithms keyed by algorithm key.
-    /// </summary>
+    /// <summary>The registered algorithms keyed by algorithm key.</summary>
     private readonly Dictionary<string, INotableDateAlgorithm> _algorithms = new(StringComparer.Ordinal);
 
     /// <summary>

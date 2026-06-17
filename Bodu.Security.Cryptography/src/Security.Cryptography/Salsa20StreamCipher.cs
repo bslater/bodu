@@ -36,107 +36,61 @@ namespace Bodu.Security.Cryptography;
 internal sealed class Salsa20StreamCipher
     : IStreamCipher
 {
-    /// <summary>
-    /// The 128-bit key length, in bytes.
-    /// </summary>
+    /// <summary>The 128-bit key length, in bytes.</summary>
     internal const int KeySize128Bytes = 16;
 
-    /// <summary>
-    /// The 256-bit key length, in bytes.
-    /// </summary>
+    /// <summary>The 256-bit key length, in bytes.</summary>
     internal const int KeySize256Bytes = 32;
 
-    /// <summary>
-    /// The Salsa20 nonce length, in bytes (64 bits).
-    /// </summary>
+    /// <summary>The Salsa20 nonce length, in bytes (64 bits).</summary>
     internal const int NonceSizeBytes = 8;
 
-    /// <summary>
-    /// The HSalsa20 input nonce length, in bytes (128 bits), consumed during XSalsa20 subkey derivation.
-    /// </summary>
+    /// <summary>The HSalsa20 input nonce length, in bytes (128 bits), consumed during XSalsa20 subkey derivation.</summary>
     internal const int HSalsaNonceSizeBytes = 16;
 
-    /// <summary>
-    /// The keystream block length, in bytes (512 bits).
-    /// </summary>
+    /// <summary>The keystream block length, in bytes (512 bits).</summary>
     internal const int BlockSizeBytes = 64;
 
-    /// <summary>
-    /// The number of Salsa20 rounds (ten column-round / row-round double rounds).
-    /// </summary>
+    /// <summary>The number of Salsa20 rounds (ten column-round / row-round double rounds).</summary>
     private const int Rounds = 20;
 
-    /// <summary>
-    /// The first little-endian word of the ASCII constant <c>"expand 32-byte k"</c>, seeded into state word 0 for a
-    /// 256-bit key.
-    /// </summary>
+    /// <summary>The first little-endian word of the ASCII constant <c>"expand 32-byte k"</c>, seeded into state word 0 for a 256-bit key.</summary>
     private const uint Sigma0 = 0x61707865;
 
-    /// <summary>
-    /// The second little-endian word of the ASCII constant <c>"expand 32-byte k"</c>, seeded into state word 5 for a
-    /// 256-bit key.
-    /// </summary>
+    /// <summary>The second little-endian word of the ASCII constant <c>"expand 32-byte k"</c>, seeded into state word 5 for a 256-bit key.</summary>
     private const uint Sigma1 = 0x3320646e;
 
-    /// <summary>
-    /// The third little-endian word of the ASCII constant <c>"expand 32-byte k"</c>, seeded into state word 10 for a
-    /// 256-bit key.
-    /// </summary>
+    /// <summary>The third little-endian word of the ASCII constant <c>"expand 32-byte k"</c>, seeded into state word 10 for a 256-bit key.</summary>
     private const uint Sigma2 = 0x79622d32;
 
-    /// <summary>
-    /// The fourth little-endian word of the ASCII constant <c>"expand 32-byte k"</c>, seeded into state word 15 for a
-    /// 256-bit key.
-    /// </summary>
+    /// <summary>The fourth little-endian word of the ASCII constant <c>"expand 32-byte k"</c>, seeded into state word 15 for a 256-bit key.</summary>
     private const uint Sigma3 = 0x6b206574;
 
-    /// <summary>
-    /// The first little-endian word of the ASCII constant <c>"expand 16-byte k"</c>, seeded into state word 0 for a
-    /// 128-bit key.
-    /// </summary>
+    /// <summary>The first little-endian word of the ASCII constant <c>"expand 16-byte k"</c>, seeded into state word 0 for a 128-bit key.</summary>
     private const uint Tau0 = 0x61707865;
 
-    /// <summary>
-    /// The second little-endian word of the ASCII constant <c>"expand 16-byte k"</c>, seeded into state word 5 for a
-    /// 128-bit key.
-    /// </summary>
+    /// <summary>The second little-endian word of the ASCII constant <c>"expand 16-byte k"</c>, seeded into state word 5 for a 128-bit key.</summary>
     private const uint Tau1 = 0x3120646e;
 
-    /// <summary>
-    /// The third little-endian word of the ASCII constant <c>"expand 16-byte k"</c>, seeded into state word 10 for a
-    /// 128-bit key.
-    /// </summary>
+    /// <summary>The third little-endian word of the ASCII constant <c>"expand 16-byte k"</c>, seeded into state word 10 for a 128-bit key.</summary>
     private const uint Tau2 = 0x79622d36;
 
-    /// <summary>
-    /// The fourth little-endian word of the ASCII constant <c>"expand 16-byte k"</c>, seeded into state word 15 for a
-    /// 128-bit key.
-    /// </summary>
+    /// <summary>The fourth little-endian word of the ASCII constant <c>"expand 16-byte k"</c>, seeded into state word 15 for a 128-bit key.</summary>
     private const uint Tau3 = 0x6b206574;
 
-    /// <summary>
-    /// The 16 state words (j0..j15) of the Salsa20 matrix, with words 8 and 9 reserved for the block counter.
-    /// </summary>
+    /// <summary>The 16 state words (j0..j15) of the Salsa20 matrix, with words 8 and 9 reserved for the block counter.</summary>
     private readonly uint[] _state = new uint[16];
 
-    /// <summary>
-    /// The block counter value supplied at construction for the first keystream block.
-    /// </summary>
+    /// <summary>The block counter value supplied at construction for the first keystream block.</summary>
     private readonly ulong _initialCounter;
 
-    /// <summary>
-    /// The block counter for the next keystream block.
-    /// </summary>
+    /// <summary>The block counter for the next keystream block.</summary>
     private ulong _counter;
 
-    /// <summary>
-    /// Indicates whether the 64-bit block counter has wrapped back to its initial value, exhausting the keystream.
-    /// </summary>
+    /// <summary>Indicates whether the 64-bit block counter has wrapped back to its initial value, exhausting the keystream.</summary>
     private bool _counterExhausted;
 
-    /// <summary>
-    /// Indicates whether the instance has been disposed and its state cleared.
-    /// </summary>
+    /// <summary>Indicates whether the instance has been disposed and its state cleared.</summary>
     private bool _disposed;
 
     /// <summary>

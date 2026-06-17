@@ -88,47 +88,31 @@ namespace Bodu.Security.Cryptography;
 public abstract class BlockCipherTransform
     : ICryptoTransform
 {
-    /// <summary>
-    /// The configured block cipher engine used by the mode transform.
-    /// </summary>
+    /// <summary>The configured block cipher engine used by the mode transform.</summary>
     private readonly IBlockCipher _cipher;
 
-    /// <summary>
-    /// Indicates whether this transform encrypts input data; otherwise, it decrypts input data.
-    /// </summary>
+    /// <summary>Indicates whether this transform encrypts input data; otherwise, it decrypts input data.</summary>
     private readonly bool _encrypt;
 
-    /// <summary>
-    /// The block cipher mode transform that applies chaining, feedback, counter, or equivalent mode semantics.
-    /// </summary>
+    /// <summary>The block cipher mode transform that applies chaining, feedback, counter, or equivalent mode semantics.</summary>
     /// <remarks>
     /// This object may contain mutable per-operation state and is therefore not reset after finalization.
     /// </remarks>
     private readonly IBlockCipherModeTransform _mode;
 
-    /// <summary>
-    /// The padding strategy used to pad plaintext during encryption or remove padding during decryption.
-    /// </summary>
+    /// <summary>The padding strategy used to pad plaintext during encryption or remove padding during decryption.</summary>
     private readonly IPaddingStrategy _padding;
 
-    /// <summary>
-    /// Holds the final deferred ciphertext block when decrypting with a padding mode that must inspect the stream
-    /// boundary before removing padding.
-    /// </summary>
+    /// <summary>Holds the final deferred ciphertext block when decrypting with a padding mode that must inspect the stream boundary before removing padding.</summary>
     /// <remarks>
     /// The contents are zeroed before being replaced, cleared, or disposed.
     /// </remarks>
     private byte[]? _deferredInput;
 
-    /// <summary>
-    /// Indicates whether this transform has been disposed.
-    /// </summary>
+    /// <summary>Indicates whether this transform has been disposed.</summary>
     private bool _disposed;
 
-    /// <summary>
-    /// Indicates whether <see cref="TransformFinalBlock(byte[], int, int)" /> has completed and this one-shot transform
-    /// can no longer process additional input.
-    /// </summary>
+    /// <summary>Indicates whether <see cref="TransformFinalBlock(byte[], int, int)" /> has completed and this one-shot transform can no longer process additional input.</summary>
     private bool _finalized;
 
     /// <summary>

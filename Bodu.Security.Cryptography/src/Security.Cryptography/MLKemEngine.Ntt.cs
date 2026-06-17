@@ -11,20 +11,13 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 internal static partial class MLKemEngine
 {
-    /// <summary>
-    /// The primitive 256th root of unity ζ = 17 modulo q from which the twiddle tables are derived.
-    /// </summary>
+    /// <summary>The primitive 256th root of unity ζ = 17 modulo q from which the twiddle tables are derived.</summary>
     private const int Zeta = 17;
 
-    /// <summary>
-    /// Twiddle factors ζ^BitRev₇(i) mod q for i = 0–127, computed once at type initialization rather than transcribed,
-    /// eliminating table-copy defects.
-    /// </summary>
+    /// <summary>Twiddle factors ζ^BitRev₇(i) mod q for i = 0–127, computed once at type initialization rather than transcribed, eliminating table-copy defects.</summary>
     private static readonly int[] s_zetas = BuildZetaTable();
 
-    /// <summary>
-    /// Base-case multipliers γ[i] = ζ^(2·BitRev₇(i) + 1) mod q for the degree-two pairwise products.
-    /// </summary>
+    /// <summary>Base-case multipliers γ[i] = ζ^(2·BitRev₇(i) + 1) mod q for the degree-two pairwise products.</summary>
     private static readonly int[] s_gammas = BuildGammaTable();
 
     /// <summary>

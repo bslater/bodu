@@ -27,24 +27,16 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>
-/// Output size: 256 bits (32 bytes), fixed.
-/// </description>
+/// <description>Output size: 256 bits (32 bytes), fixed.</description>
 /// </item>
 /// <item>
-/// <description>
-/// State: 320 bits sponge; rate: 64 bits (8 bytes).
-/// </description>
+/// <description>State: 320 bits sponge; rate: 64 bits (8 bytes).</description>
 /// </item>
 /// <item>
-/// <description>
-/// Permutation: Ascon-p12 at every phase (initialization, absorption, squeezing).
-/// </description>
+/// <description>Permutation: Ascon-p12 at every phase (initialization, absorption, squeezing).</description>
 /// </item>
 /// <item>
-/// <description>
-/// Specification: NIST SP 800-232 (ASCON family).
-/// </description>
+/// <description>Specification: NIST SP 800-232 (ASCON family).</description>
 /// </item>
 /// </list>
 /// <para>
@@ -68,33 +60,23 @@ namespace Bodu.Security.Cryptography;
 public sealed class AsconHash256
     : AsconHash<AsconHash256>
 {
-    /// <summary>
-    /// The first word of the pre-computed ASCON-HASH256 initial sponge state (NIST SP 800-232).
-    /// </summary>
+    /// <summary>The first word of the pre-computed ASCON-HASH256 initial sponge state (NIST SP 800-232).</summary>
     /// <remarks>
     /// These five words are the result of applying Ascon-p12 to <c>[raw_IV, 0, 0, 0, 0]</c>. Source: ascon-c
     /// opt64/constants.h, <c>ASCON_HASH_IV0..IV4</c>.
     /// </remarks>
     private const ulong Iv0 = 0x9b1e5494e934d681UL;
 
-    /// <summary>
-    /// The second word of the pre-computed ASCON-HASH256 initial sponge state (NIST SP 800-232).
-    /// </summary>
+    /// <summary>The second word of the pre-computed ASCON-HASH256 initial sponge state (NIST SP 800-232).</summary>
     private const ulong Iv1 = 0x4bc3a01e333751d2UL;
 
-    /// <summary>
-    /// The third word of the pre-computed ASCON-HASH256 initial sponge state (NIST SP 800-232).
-    /// </summary>
+    /// <summary>The third word of the pre-computed ASCON-HASH256 initial sponge state (NIST SP 800-232).</summary>
     private const ulong Iv2 = 0xae65396c6b34b81aUL;
 
-    /// <summary>
-    /// The fourth word of the pre-computed ASCON-HASH256 initial sponge state (NIST SP 800-232).
-    /// </summary>
+    /// <summary>The fourth word of the pre-computed ASCON-HASH256 initial sponge state (NIST SP 800-232).</summary>
     private const ulong Iv3 = 0x3c7fd4a4d56a4db3UL;
 
-    /// <summary>
-    /// The fifth word of the pre-computed ASCON-HASH256 initial sponge state (NIST SP 800-232).
-    /// </summary>
+    /// <summary>The fifth word of the pre-computed ASCON-HASH256 initial sponge state (NIST SP 800-232).</summary>
     private const ulong Iv4 = 0x1a5c464906c5976dUL;
 
     /// <summary>

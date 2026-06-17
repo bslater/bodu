@@ -11,9 +11,7 @@ namespace Bodu.Collections.Generic;
 public partial class EvictingDictionary<TKey, TValue> :
     System.Collections.ICollection
 {
-    /// <summary>
-    /// The lazily allocated object returned by <see cref="ICollection.SyncRoot" />.
-    /// </summary>
+    /// <summary>The lazily allocated object returned by <see cref="ICollection.SyncRoot" />.</summary>
     private object? _syncRoot;
 
     /// <inheritdoc />

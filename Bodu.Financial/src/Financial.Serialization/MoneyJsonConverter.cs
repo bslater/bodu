@@ -18,9 +18,7 @@ namespace Bodu.Financial.Serialization;
 public sealed class MoneyJsonConverter
     : JsonConverter<Money>
 {
-    /// <summary>
-    /// The policy used by this converter instance.
-    /// </summary>
+    /// <summary>The policy used by this converter instance.</summary>
     private readonly FinancialJsonPolicy _policy;
 
     /// <summary>

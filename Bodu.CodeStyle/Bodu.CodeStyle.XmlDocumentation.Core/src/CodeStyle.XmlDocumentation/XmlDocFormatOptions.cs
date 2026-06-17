@@ -32,6 +32,7 @@ public sealed class XmlDocFormatOptions
     /// <param name="preserveBlankLines">Whether existing blank documentation lines are preserved.</param>
     /// <param name="preserveXmlTagAttributes">Whether attribute spacing inside XML tags is preserved verbatim.</param>
     /// <param name="preserveCrefText">Whether <c>cref</c> attribute values are preserved verbatim.</param>
+    /// <param name="keepFieldSummaryOnSingleLine">Whether a field's single-line <c>&lt;summary&gt;</c> is kept on one line even when its content overflows the line budget.</param>
     /// <param name="blockTags">The set of element names treated as block tags.</param>
     /// <param name="inlineTags">The set of element names treated as inline-atomic tags.</param>
     /// <param name="forceMultilineTags">The set of element names that must always emit on their own lines.</param>
@@ -46,6 +47,7 @@ public sealed class XmlDocFormatOptions
         bool preserveBlankLines,
         bool preserveXmlTagAttributes,
         bool preserveCrefText,
+        bool keepFieldSummaryOnSingleLine,
         ImmutableHashSet<string> blockTags,
         ImmutableHashSet<string> inlineTags,
         ImmutableHashSet<string> forceMultilineTags,
@@ -70,6 +72,7 @@ public sealed class XmlDocFormatOptions
         this.PreserveBlankLines = preserveBlankLines;
         this.PreserveXmlTagAttributes = preserveXmlTagAttributes;
         this.PreserveCrefText = preserveCrefText;
+        this.KeepFieldSummaryOnSingleLine = keepFieldSummaryOnSingleLine;
         this.BlockTags = blockTags;
         this.InlineTags = inlineTags;
         this.ForceMultilineTags = forceMultilineTags;
@@ -119,6 +122,18 @@ public sealed class XmlDocFormatOptions
     /// </summary>
     /// <returns><see langword="true" /> when <c>cref</c> text is preserved; otherwise <see langword="false" />.</returns>
     public bool PreserveCrefText { get; }
+
+    /// <summary>
+    /// Gets a value indicating whether a field's single-line <c>&lt;summary&gt;</c> is kept on one line even when
+    /// its content overflows the line budget.
+    /// </summary>
+    /// <returns><see langword="true" /> when a field summary is never wrapped; otherwise <see langword="false" />.</returns>
+    /// <remarks>
+    /// When enabled, a field's <c>&lt;summary&gt;</c> is treated as single-line content whose wrapping is
+    /// forbidden, so it stays on one physical line regardless of length rather than expanding to the multiline
+    /// block form. Other member kinds, and summaries that contain genuinely multi-line content, are unaffected.
+    /// </remarks>
+    public bool KeepFieldSummaryOnSingleLine { get; }
 
     /// <summary>
     /// Gets the set of element names treated as block tags.
@@ -245,6 +260,15 @@ public sealed class XmlDocFormatOptions
         this.With(preserveCrefText: preserveCrefText);
 
     /// <summary>
+    /// Returns a new <see cref="XmlDocFormatOptions" /> instance with <see cref="KeepFieldSummaryOnSingleLine" />
+    /// replaced.
+    /// </summary>
+    /// <param name="keepFieldSummaryOnSingleLine">The new keep-field-summary-on-single-line setting.</param>
+    /// <returns>A new instance with the requested override applied.</returns>
+    public XmlDocFormatOptions WithKeepFieldSummaryOnSingleLine(bool keepFieldSummaryOnSingleLine) =>
+        this.With(keepFieldSummaryOnSingleLine: keepFieldSummaryOnSingleLine);
+
+    /// <summary>
     /// Returns the per-tag policy for the given element name, or <see cref="XmlDocTagPolicy.Default" /> when no
     /// explicit policy is configured.
     /// </summary>
@@ -324,6 +348,7 @@ public sealed class XmlDocFormatOptions
         bool? preserveBlankLines = null,
         bool? preserveXmlTagAttributes = null,
         bool? preserveCrefText = null,
+        bool? keepFieldSummaryOnSingleLine = null,
         ImmutableHashSet<string>? blockTags = null,
         ImmutableHashSet<string>? inlineTags = null,
         ImmutableHashSet<string>? forceMultilineTags = null,
@@ -338,6 +363,7 @@ public sealed class XmlDocFormatOptions
             preserveBlankLines ?? this.PreserveBlankLines,
             preserveXmlTagAttributes ?? this.PreserveXmlTagAttributes,
             preserveCrefText ?? this.PreserveCrefText,
+            keepFieldSummaryOnSingleLine ?? this.KeepFieldSummaryOnSingleLine,
             blockTags ?? this.BlockTags,
             inlineTags ?? this.InlineTags,
             forceMultilineTags ?? this.ForceMultilineTags,

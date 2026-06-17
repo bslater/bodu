@@ -40,163 +40,97 @@ namespace Bodu.Text.Toml.Reader;
 public ref partial struct Utf8TomlReader
 {
 
-    /// <summary>
-    /// The UTF-8 source bytes being lexed.
-    /// </summary>
+    /// <summary>The UTF-8 source bytes being lexed.</summary>
     private readonly ReadOnlySpan<byte> _source;
 
-    /// <summary>
-    /// The TOML specification version whose grammar features the reader enforces.
-    /// </summary>
+    /// <summary>The TOML specification version whose grammar features the reader enforces.</summary>
     private readonly TomlSpecVersion _specVersion;
 
-    /// <summary>
-    /// The maximum nesting depth of arrays and inline tables the reader will accept.
-    /// </summary>
+    /// <summary>The maximum nesting depth of arrays and inline tables the reader will accept.</summary>
     private readonly int _maxDepth;
 
-    /// <summary>
-    /// Whether the supplied bytes contain the final block of the document, so that running out of input mid-token is an
-    /// error rather than a request for more data.
-    /// </summary>
+    /// <summary>Whether the supplied bytes contain the final block of the document, so that running out of input mid-token is an error rather than a request for more data.</summary>
     private readonly bool _isFinalBlock;
 
-    /// <summary>
-    /// Whether the reader is still positioned at the document start, where a byte-order mark may be skipped.
-    /// </summary>
+    /// <summary>Whether the reader is still positioned at the document start, where a byte-order mark may be skipped.</summary>
     private bool _atStart;
 
-    /// <summary>
-    /// Whether the last failed read stopped because the buffer ended mid-token and more data may follow, signalling
-    /// <see cref="Read" /> to restore the pre-read snapshot.
-    /// </summary>
+    /// <summary>Whether the last failed read stopped because the buffer ended mid-token and more data may follow, signalling <see cref="Read" /> to restore the pre-read snapshot.</summary>
     private bool _needMoreData;
 
-    /// <summary>
-    /// The cursor position within <see cref="_source" />.
-    /// </summary>
+    /// <summary>The cursor position within <see cref="_source" />.</summary>
     private int _pos;
 
-    /// <summary>
-    /// The current 1-based source line.
-    /// </summary>
+    /// <summary>The current 1-based source line.</summary>
     private int _line;
 
-    /// <summary>
-    /// The byte offset at which the current line begins, used to derive the column as <c>_pos - _lineStart + 1</c>.
-    /// </summary>
+    /// <summary>The byte offset at which the current line begins, used to derive the column as <c>_pos - _lineStart + 1</c>.</summary>
     private int _lineStart;
 
-    /// <summary>
-    /// The lexical context the next <see cref="Read" /> resumes from.
-    /// </summary>
+    /// <summary>The lexical context the next <see cref="Read" /> resumes from.</summary>
     private TomlScanState _state;
 
-    /// <summary>
-    /// The container context stack: one entry per open array or inline table, lazily allocated on first nesting.
-    /// </summary>
+    /// <summary>The container context stack: one entry per open array or inline table, lazily allocated on first nesting.</summary>
     private byte[]? _containers;
 
-    /// <summary>
-    /// The number of open containers on <see cref="_containers" />.
-    /// </summary>
+    /// <summary>The number of open containers on <see cref="_containers" />.</summary>
     private int _containerCount;
 
-    /// <summary>
-    /// Whether the cursor inside an inline table sits immediately after a value separator comma, which strict TOML
-    /// v1.0.0 forbids from being followed by the closing brace.
-    /// </summary>
+    /// <summary>Whether the cursor inside an inline table sits immediately after a value separator comma, which strict TOML v1.0.0 forbids from being followed by the closing brace.</summary>
     private bool _inlineAfterComma;
 
-    /// <summary>
-    /// Whether the header being lexed is an <c>[[array-of-tables]]</c> header, requiring a double closing bracket.
-    /// </summary>
+    /// <summary>Whether the header being lexed is an <c>[[array-of-tables]]</c> header, requiring a double closing bracket.</summary>
     private bool _headerIsArray;
 
-    /// <summary>
-    /// The kind of the current token.
-    /// </summary>
+    /// <summary>The kind of the current token.</summary>
     private TomlTokenType _tokenType;
 
-    /// <summary>
-    /// The byte offset at which the current token begins, including any delimiters.
-    /// </summary>
+    /// <summary>The byte offset at which the current token begins, including any delimiters.</summary>
     private int _tokenStart;
 
-    /// <summary>
-    /// The 1-based line on which the current token begins.
-    /// </summary>
+    /// <summary>The 1-based line on which the current token begins.</summary>
     private int _tokenLine;
 
-    /// <summary>
-    /// The 1-based byte column at which the current token begins.
-    /// </summary>
+    /// <summary>The 1-based byte column at which the current token begins.</summary>
     private int _tokenColumn;
 
-    /// <summary>
-    /// The byte offset at which the current token's raw text content begins (inside any delimiters).
-    /// </summary>
+    /// <summary>The byte offset at which the current token's raw text content begins (inside any delimiters).</summary>
     private int _valueStart;
 
-    /// <summary>
-    /// The byte length of the current token's raw text content.
-    /// </summary>
+    /// <summary>The byte length of the current token's raw text content.</summary>
     private int _valueLength;
 
-    /// <summary>
-    /// Whether the current string token contains escape sequences or line-ending backslashes that
-    /// <see cref="GetString" /> must resolve.
-    /// </summary>
+    /// <summary>Whether the current string token contains escape sequences or line-ending backslashes that <see cref="GetString" /> must resolve.</summary>
     private bool _hasEscapes;
 
-    /// <summary>
-    /// Whether the current <see cref="TomlTokenType.Key" /> token is the final segment of its dotted path.
-    /// </summary>
+    /// <summary>Whether the current <see cref="TomlTokenType.Key" /> token is the final segment of its dotted path.</summary>
     private bool _isFinalKeySegment;
 
-    /// <summary>
-    /// How <see cref="GetString" /> decodes the current text token.
-    /// </summary>
+    /// <summary>How <see cref="GetString" /> decodes the current text token.</summary>
     private TomlScalarTextKind _textKind;
 
-    /// <summary>
-    /// The decoded value of the current <see cref="TomlTokenType.Integer" /> token.
-    /// </summary>
+    /// <summary>The decoded value of the current <see cref="TomlTokenType.Integer" /> token.</summary>
     private long _longValue;
 
-    /// <summary>
-    /// The decoded value of the current <see cref="TomlTokenType.Float" /> token.
-    /// </summary>
+    /// <summary>The decoded value of the current <see cref="TomlTokenType.Float" /> token.</summary>
     private double _doubleValue;
 
-    /// <summary>
-    /// The decoded value of the current <see cref="TomlTokenType.Boolean" /> token.
-    /// </summary>
+    /// <summary>The decoded value of the current <see cref="TomlTokenType.Boolean" /> token.</summary>
     private bool _boolValue;
 
-    /// <summary>
-    /// The decoded value of the current <see cref="TomlTokenType.OffsetDateTime" /> token.
-    /// </summary>
+    /// <summary>The decoded value of the current <see cref="TomlTokenType.OffsetDateTime" /> token.</summary>
     private DateTimeOffset _dateTimeOffsetValue;
 
-    /// <summary>
-    /// The decoded value of the current <see cref="TomlTokenType.LocalDateTime" /> token.
-    /// </summary>
+    /// <summary>The decoded value of the current <see cref="TomlTokenType.LocalDateTime" /> token.</summary>
     private DateTime _dateTimeValue;
 
-    /// <summary>
-    /// The decoded value of the current <see cref="TomlTokenType.LocalDate" /> token.
-    /// </summary>
+    /// <summary>The decoded value of the current <see cref="TomlTokenType.LocalDate" /> token.</summary>
     private DateOnly _dateOnlyValue;
 
-    /// <summary>
-    /// The decoded value of the current <see cref="TomlTokenType.LocalTime" /> token.
-    /// </summary>
+    /// <summary>The decoded value of the current <see cref="TomlTokenType.LocalTime" /> token.</summary>
     private TimeOnly _timeOnlyValue;
 
-    /// <summary>
-    /// The number of 100-nanosecond ticks in one second.
-    /// </summary>
+    /// <summary>The number of 100-nanosecond ticks in one second.</summary>
     private const long TicksPerSecond = 10_000_000L;
 
     /// <summary>

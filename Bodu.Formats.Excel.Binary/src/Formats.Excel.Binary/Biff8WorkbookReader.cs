@@ -28,29 +28,19 @@ namespace Bodu.Formats.Excel.Binary;
 /// </remarks>
 public sealed class Biff8WorkbookReader
 {
-    /// <summary>
-    /// The BIFF version stored in a BIFF8 beginning-of-file record.
-    /// </summary>
+    /// <summary>The BIFF version stored in a BIFF8 beginning-of-file record.</summary>
     private const ushort Biff8Version = 0x0600;
 
-    /// <summary>
-    /// The complete ordered record list of the workbook stream.
-    /// </summary>
+    /// <summary>The complete ordered record list of the workbook stream.</summary>
     private readonly List<Biff8Record> _records;
 
-    /// <summary>
-    /// The decoded shared string table.
-    /// </summary>
+    /// <summary>The decoded shared string table.</summary>
     private readonly string[] _sharedStrings;
 
-    /// <summary>
-    /// The worksheets, in workbook order.
-    /// </summary>
+    /// <summary>The worksheets, in workbook order.</summary>
     private readonly List<Biff8SheetInfo> _sheets;
 
-    /// <summary>
-    /// The record-index ranges of each worksheet substream, parallel to <see cref="_sheets" />.
-    /// </summary>
+    /// <summary>The record-index ranges of each worksheet substream, parallel to <see cref="_sheets" />.</summary>
     private readonly List<(int Start, int EndExclusive)> _sheetRanges;
 
     /// <summary>

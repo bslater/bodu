@@ -17,14 +17,10 @@ namespace Bodu.IO.Compound;
 public sealed class CompoundStream
     : Stream
 {
-    /// <summary>
-    /// The materialized stream payload.
-    /// </summary>
+    /// <summary>The materialized stream payload.</summary>
     private readonly byte[] _buffer;
 
-    /// <summary>
-    /// The current read position within <see cref="_buffer" />.
-    /// </summary>
+    /// <summary>The current read position within <see cref="_buffer" />.</summary>
     private int _position;
 
     /// <summary>

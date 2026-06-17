@@ -50,34 +50,22 @@ namespace Bodu.IO.Hashing.CheckDigits;
 public sealed class Iban
     : MultiCharCheckDigitAlgorithm
 {
-    /// <summary>
-    /// The fixed check-code length of <c>2</c> decimal digits.
-    /// </summary>
+    /// <summary>The fixed check-code length of <c>2</c> decimal digits.</summary>
     public const int CheckDigits = 2;
 
-    /// <summary>
-    /// The length of the country-code prefix (<c>2</c> letters).
-    /// </summary>
+    /// <summary>The length of the country-code prefix (<c>2</c> letters).</summary>
     public const int CountryCodeLength = 2;
 
-    /// <summary>
-    /// The first character of the captured country-code prefix.
-    /// </summary>
+    /// <summary>The first character of the captured country-code prefix.</summary>
     private char _cc0;
 
-    /// <summary>
-    /// The second character of the captured country-code prefix.
-    /// </summary>
+    /// <summary>The second character of the captured country-code prefix.</summary>
     private char _cc1;
 
-    /// <summary>
-    /// The number of body characters appended so far.
-    /// </summary>
+    /// <summary>The number of body characters appended so far.</summary>
     private int _consumed;
 
-    /// <summary>
-    /// The running ISO 7064 mod-97 remainder accumulated over the BBAN portion of the body.
-    /// </summary>
+    /// <summary>The running ISO 7064 mod-97 remainder accumulated over the BBAN portion of the body.</summary>
     private int _rBban;
 
     /// <summary>

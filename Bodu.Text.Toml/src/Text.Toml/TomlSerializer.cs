@@ -47,9 +47,7 @@ namespace Bodu.Text.Toml;
 /// </example>
 public static class TomlSerializer
 {
-    /// <summary>
-    /// The strict UTF-8 encoding used for text and stream input and output; it omits a byte-order mark.
-    /// </summary>
+    /// <summary>The strict UTF-8 encoding used for text and stream input and output; it omits a byte-order mark.</summary>
     private static readonly UTF8Encoding s_utf8 = new(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: true);
 
     /// <summary>

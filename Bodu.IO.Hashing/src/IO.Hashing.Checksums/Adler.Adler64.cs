@@ -20,14 +20,10 @@ namespace Bodu.IO.Hashing.Checksums;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>
-/// Output size: 64 bits (8 bytes).
-/// </description>
+/// <description>Output size: 64 bits (8 bytes).</description>
 /// </item>
 /// <item>
-/// <description>
-/// Modulus: <c>4294967291</c> (largest prime &lt; 2<sup>32</sup>).
-/// </description>
+/// <description>Modulus: <c>4294967291</c> (largest prime &lt; 2<sup>32</sup>).</description>
 /// </item>
 /// <item>
 /// <description>
@@ -59,9 +55,7 @@ namespace Bodu.IO.Hashing.Checksums;
 public sealed class Adler64
     : Adler64Base
 {
-    /// <summary>
-    /// The Adler-64 modulus, the largest prime less than 2^32.
-    /// </summary>
+    /// <summary>The Adler-64 modulus, the largest prime less than 2^32.</summary>
     private const ulong Adler64Modulo = 4294967291UL;
 
     /// <summary>

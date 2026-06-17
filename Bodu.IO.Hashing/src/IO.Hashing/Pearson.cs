@@ -57,29 +57,19 @@ namespace Bodu.IO.Hashing;
 public sealed partial class Pearson
     : NonCryptographicHashAlgorithm
 {
-    /// <summary>
-    /// The maximum allowable hash size in bits.
-    /// </summary>
+    /// <summary>The maximum allowable hash size in bits.</summary>
     public const int MaxHashSizeBits = 2048;
 
-    /// <summary>
-    /// The minimum allowable hash size in bits.
-    /// </summary>
+    /// <summary>The minimum allowable hash size in bits.</summary>
     public const int MinHashSizeBits = 8;
 
-    /// <summary>
-    /// The 256-byte permutation table applied to each input byte during the Pearson hashing rounds.
-    /// </summary>
+    /// <summary>The 256-byte permutation table applied to each input byte during the Pearson hashing rounds.</summary>
     private readonly byte[] _permutationTable;
 
-    /// <summary>
-    /// The per-output-byte hash accumulator updated as each input byte is processed.
-    /// </summary>
+    /// <summary>The per-output-byte hash accumulator updated as each input byte is processed.</summary>
     private readonly byte[] _workingHash;
 
-    /// <summary>
-    /// Indicates whether the next appended byte is the first of the message and must seed the working hash.
-    /// </summary>
+    /// <summary>Indicates whether the next appended byte is the first of the message and must seed the working hash.</summary>
     private bool _isFirstByte;
 
     /// <summary>

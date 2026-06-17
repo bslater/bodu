@@ -40,24 +40,16 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>
-/// Output size: configurable — 128, 160, 192, 224, 256, 384, or 512 bits.
-/// </description>
+/// <description>Output size: configurable — 128, 160, 192, 224, 256, 384, or 512 bits.</description>
 /// </item>
 /// <item>
-/// <description>
-/// Block size: 128 bytes (1024 bits); 8 × 64-bit state words; 12 rounds.
-/// </description>
+/// <description>Block size: 128 bytes (1024 bits); 8 × 64-bit state words; 12 rounds.</description>
 /// </item>
 /// <item>
-/// <description>
-/// Optional key: 1–64 bytes for BLAKE2b-MAC mode (RFC 7693 §2.8).
-/// </description>
+/// <description>Optional key: 1–64 bytes for BLAKE2b-MAC mode (RFC 7693 §2.8).</description>
 /// </item>
 /// <item>
-/// <description>
-/// Specification: RFC 7693; optimized for 64-bit hosts.
-/// </description>
+/// <description>Specification: RFC 7693; optimized for 64-bit hosts.</description>
 /// </item>
 /// </list>
 /// <para>
@@ -85,30 +77,19 @@ namespace Bodu.Security.Cryptography;
 public sealed partial class Blake2b
     : KeyedDeferredFinalBlockHashAlgorithm<Blake2b>
 {
-    /// <summary>
-    /// The set of output sizes, in bits, accepted by this algorithm.
-    /// </summary>
+    /// <summary>The set of output sizes, in bits, accepted by this algorithm.</summary>
     private static readonly int[] s_permittedHashSizes = [128, 160, 192, 224, 256, 384, 512];
 
-    /// <summary>
-    /// Maximum accepted key length for the keyed <c>BLAKE2b-MAC</c> mode is 512 bits (64 bytes).
-    /// </summary>
+    /// <summary>Maximum accepted key length for the keyed <c>BLAKE2b-MAC</c> mode is 512 bits (64 bytes).</summary>
     public const int MaxKeySize = 512;
 
-    /// <summary>
-    /// The block size, in bits, processed by each compression call (128 bytes).
-    /// </summary>
+    /// <summary>The block size, in bits, processed by each compression call (128 bytes).</summary>
     private const int BlockSizeValue = 1024;
 
-    /// <summary>
-    /// Convenience constant for the byte length of <see cref="BlockSizeValue" />, used when slicing or allocating
-    /// <see cref="byte" /> buffers from the bit-valued constant.
-    /// </summary>
+    /// <summary>Convenience constant for the byte length of <see cref="BlockSizeValue" />, used when slicing or allocating <see cref="byte" /> buffers from the bit-valued constant.</summary>
     private const int BlockSizeBytesValue = BlockSizeValue / 8;
 
-    /// <summary>
-    /// The SHA-512 initialization constants used as the BLAKE2b IV.
-    /// </summary>
+    /// <summary>The SHA-512 initialization constants used as the BLAKE2b IV.</summary>
     private static readonly ulong[] s_iv =
     [
         0x6A09E667F3BCC908UL, 0xBB67AE8584CAA73BUL,
@@ -117,9 +98,7 @@ public sealed partial class Blake2b
         0x1F83D9ABFB41BD6BUL, 0x5BE0CD19137E2179UL,
     ];
 
-    /// <summary>
-    /// The eight 64-bit internal hash state words.
-    /// </summary>
+    /// <summary>The eight 64-bit internal hash state words.</summary>
     private readonly ulong[] _h = new ulong[8];
 
     /// <summary>

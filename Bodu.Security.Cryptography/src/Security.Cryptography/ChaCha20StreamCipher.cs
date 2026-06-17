@@ -36,89 +36,55 @@ namespace Bodu.Security.Cryptography;
 internal sealed class ChaCha20StreamCipher
     : IStreamCipher
 {
-    /// <summary>
-    /// The required key length, in bytes (256 bits).
-    /// </summary>
+    /// <summary>The required key length, in bytes (256 bits).</summary>
     internal const int KeySizeBytes = 32;
 
-    /// <summary>
-    /// The ChaCha20 nonce length, in bytes (96 bits), as specified by RFC 8439.
-    /// </summary>
+    /// <summary>The ChaCha20 nonce length, in bytes (96 bits), as specified by RFC 8439.</summary>
     internal const int NonceSizeBytes = 12;
 
-    /// <summary>
-    /// The HChaCha20 input nonce length, in bytes (128 bits), consumed during XChaCha20 subkey derivation.
-    /// </summary>
+    /// <summary>The HChaCha20 input nonce length, in bytes (128 bits), consumed during XChaCha20 subkey derivation.</summary>
     internal const int HChaChaNonceSizeBytes = 16;
 
-    /// <summary>
-    /// The keystream block length, in bytes (512 bits).
-    /// </summary>
+    /// <summary>The keystream block length, in bytes (512 bits).</summary>
     internal const int BlockSizeBytes = 64;
 
-    /// <summary>
-    /// The number of ChaCha20 rounds (ten column-round / diagonal-round double rounds).
-    /// </summary>
+    /// <summary>The number of ChaCha20 rounds (ten column-round / diagonal-round double rounds).</summary>
     private const int Rounds = 20;
 
-    /// <summary>
-    /// The first little-endian word of the ASCII constant <c>"expand 32-byte k"</c>.
-    /// </summary>
+    /// <summary>The first little-endian word of the ASCII constant <c>"expand 32-byte k"</c>.</summary>
     private const uint Sigma0 = 0x61707865;
 
-    /// <summary>
-    /// The second little-endian word of the ASCII constant <c>"expand 32-byte k"</c>.
-    /// </summary>
+    /// <summary>The second little-endian word of the ASCII constant <c>"expand 32-byte k"</c>.</summary>
     private const uint Sigma1 = 0x3320646e;
 
-    /// <summary>
-    /// The third little-endian word of the ASCII constant <c>"expand 32-byte k"</c>.
-    /// </summary>
+    /// <summary>The third little-endian word of the ASCII constant <c>"expand 32-byte k"</c>.</summary>
     private const uint Sigma2 = 0x79622d32;
 
-    /// <summary>
-    /// The fourth little-endian word of the ASCII constant <c>"expand 32-byte k"</c>.
-    /// </summary>
+    /// <summary>The fourth little-endian word of the ASCII constant <c>"expand 32-byte k"</c>.</summary>
     private const uint Sigma3 = 0x6b206574;
 
-    /// <summary>
-    /// The 256-bit key expanded into eight little-endian 32-bit words.
-    /// </summary>
+    /// <summary>The 256-bit key expanded into eight little-endian 32-bit words.</summary>
     private readonly uint[] _key = new uint[8];
 
-    /// <summary>
-    /// The first 32-bit little-endian word of the 96-bit nonce.
-    /// </summary>
+    /// <summary>The first 32-bit little-endian word of the 96-bit nonce.</summary>
     private readonly uint _nonce0;
 
-    /// <summary>
-    /// The second 32-bit little-endian word of the 96-bit nonce.
-    /// </summary>
+    /// <summary>The second 32-bit little-endian word of the 96-bit nonce.</summary>
     private readonly uint _nonce1;
 
-    /// <summary>
-    /// The third 32-bit little-endian word of the 96-bit nonce.
-    /// </summary>
+    /// <summary>The third 32-bit little-endian word of the 96-bit nonce.</summary>
     private readonly uint _nonce2;
 
-    /// <summary>
-    /// The block counter supplied at construction for the first keystream block.
-    /// </summary>
+    /// <summary>The block counter supplied at construction for the first keystream block.</summary>
     private readonly uint _initialCounter;
 
-    /// <summary>
-    /// The current block counter, advanced after each keystream block is produced.
-    /// </summary>
+    /// <summary>The current block counter, advanced after each keystream block is produced.</summary>
     private uint _counter;
 
-    /// <summary>
-    /// Indicates whether the block counter has wrapped back to its initial value, marking the keystream as exhausted.
-    /// </summary>
+    /// <summary>Indicates whether the block counter has wrapped back to its initial value, marking the keystream as exhausted.</summary>
     private bool _counterExhausted;
 
-    /// <summary>
-    /// Indicates whether the instance has been disposed.
-    /// </summary>
+    /// <summary>Indicates whether the instance has been disposed.</summary>
     private bool _disposed;
 
     /// <summary>

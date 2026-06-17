@@ -33,15 +33,10 @@ namespace Bodu.Financial.Extensions;
 /// </remarks>
 public static partial class MoneyCompactFormattingExtensions
 {
-    /// <summary>
-    /// The default fractional-digit count for compact-notation output when none is supplied.
-    /// </summary>
+    /// <summary>The default fractional-digit count for compact-notation output when none is supplied.</summary>
     private const int DefaultCompactPrecision = 1;
 
-    /// <summary>
-    /// The thresholds at which the magnitude suffix switches, paired with their suffix letter. Ordered from largest to
-    /// smallest so the first match wins.
-    /// </summary>
+    /// <summary>The thresholds at which the magnitude suffix switches, paired with their suffix letter. Ordered from largest to smallest so the first match wins.</summary>
     private static readonly (decimal Scale, string Suffix)[] s_thresholds =
     [
         (1_000_000_000_000m, "T"),

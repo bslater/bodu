@@ -10,24 +10,16 @@ namespace Bodu.Text.Encoding;
 
 public static partial class Base64
 {
-    /// <summary>
-    /// The Standard variant alphabet, used for UTF-8 encode paths.
-    /// </summary>
+    /// <summary>The Standard variant alphabet, used for UTF-8 encode paths.</summary>
     private const string StandardAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-    /// <summary>
-    /// The URL- and filename-safe variant alphabet.
-    /// </summary>
+    /// <summary>The URL- and filename-safe variant alphabet.</summary>
     private const string UrlSafeAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
 
-    /// <summary>
-    /// The reverse lookup table mapping each ASCII character to its 6-bit value for the standard alphabet.
-    /// </summary>
+    /// <summary>The reverse lookup table mapping each ASCII character to its 6-bit value for the standard alphabet.</summary>
     private static readonly sbyte[] s_standardLookup = BuildLookup(StandardAlphabet);
 
-    /// <summary>
-    /// The reverse lookup table mapping each ASCII character to its 6-bit value for the URL-safe alphabet.
-    /// </summary>
+    /// <summary>The reverse lookup table mapping each ASCII character to its 6-bit value for the URL-safe alphabet.</summary>
     private static readonly sbyte[] s_urlSafeLookup = BuildLookup(UrlSafeAlphabet);
 
     /// <summary>

@@ -29,14 +29,10 @@ namespace Bodu.Financial;
 /// </remarks>
 public static class CurrencyRegistry
 {
-    /// <summary>
-    /// The shipped catalogue, snapshotted into a <see cref="FrozenDictionary{TKey, TValue}" /> at static-ctor time.
-    /// </summary>
+    /// <summary>The shipped catalogue, snapshotted into a <see cref="FrozenDictionary{TKey, TValue}" /> at static-ctor time.</summary>
     private static readonly FrozenDictionary<string, CurrencyInfo> s_shipped = BuildShipped();
 
-    /// <summary>
-    /// User-registered currencies layered on top of the shipped catalogue.
-    /// </summary>
+    /// <summary>User-registered currencies layered on top of the shipped catalogue.</summary>
     private static readonly ConcurrentDictionary<string, CurrencyInfo> s_custom = new(StringComparer.Ordinal);
 
     /// <summary>

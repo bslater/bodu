@@ -20,24 +20,16 @@ namespace Bodu.IO.Hashing;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>
-/// Output size: 64 bits (8 bytes), little-endian.
-/// </description>
+/// <description>Output size: 64 bits (8 bytes), little-endian.</description>
 /// </item>
 /// <item>
-/// <description>
-/// Offset basis: <c>0xCBF29CE484222325</c>.
-/// </description>
+/// <description>Offset basis: <c>0xCBF29CE484222325</c>.</description>
 /// </item>
 /// <item>
-/// <description>
-/// FNV prime: <c>0x00000100000001B3</c>.
-/// </description>
+/// <description>FNV prime: <c>0x00000100000001B3</c>.</description>
 /// </item>
 /// <item>
-/// <description>
-/// Variant: FNV-1a (XOR, then multiply).
-/// </description>
+/// <description>Variant: FNV-1a (XOR, then multiply).</description>
 /// </item>
 /// </list>
 /// <para>
@@ -63,14 +55,10 @@ namespace Bodu.IO.Hashing;
 public sealed class Fnv1a64
     : Fnv<Fnv1a64>
 {
-    /// <summary>
-    /// The FNV-1a 64-bit offset basis used as the initial hash state.
-    /// </summary>
+    /// <summary>The FNV-1a 64-bit offset basis used as the initial hash state.</summary>
     private const ulong OffsetBasis = 0xCBF29CE484222325UL;
 
-    /// <summary>
-    /// The FNV-1a 64-bit prime multiplied into the hash state for each input byte.
-    /// </summary>
+    /// <summary>The FNV-1a 64-bit prime multiplied into the hash state for each input byte.</summary>
     private const ulong Prime = 0x00000100000001B3UL;
 
     /// <summary>

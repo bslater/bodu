@@ -10,9 +10,7 @@ namespace Bodu.Collections.Extensions;
 public class FibonacciTests
 {
 
-    /// <summary>
-    /// A known ordered list of Fibonacci numbers, starting from 0.
-    /// </summary>
+    /// <summary>A known ordered list of Fibonacci numbers, starting from 0.</summary>
     public static readonly long[] Values =
     [
         0, 1, 1, 2, 3, 5, 8, 13, 21, 34,

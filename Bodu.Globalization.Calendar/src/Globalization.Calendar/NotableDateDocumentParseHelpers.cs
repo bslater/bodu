@@ -15,9 +15,7 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 internal static class NotableDateDocumentParseHelpers
 {
-    /// <summary>
-    /// The full English month names, indexed so that January is at index zero.
-    /// </summary>
+    /// <summary>The full English month names, indexed so that January is at index zero.</summary>
     private static readonly string[] s_monthNames =
     [
         "January", "February", "March", "April", "May", "June",

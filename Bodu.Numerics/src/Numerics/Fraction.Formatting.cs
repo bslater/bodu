@@ -15,9 +15,7 @@ public readonly partial struct Fraction<T> :
     ISpanFormattable,
     IUtf8SpanFormattable
 {
-    /// <summary>
-    /// Maps a proper-fraction numerator and denominator to its Unicode vulgar-fraction glyph.
-    /// </summary>
+    /// <summary>Maps a proper-fraction numerator and denominator to its Unicode vulgar-fraction glyph.</summary>
     private static readonly Dictionary<(int Numerator, int Denominator), char> s_vulgarFractions = new()
     {
         [(1, 2)] = '½',

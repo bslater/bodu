@@ -16,9 +16,7 @@ namespace Bodu.Extensions;
 /// </remarks>
 public sealed class SlugOptions
 {
-    /// <summary>
-    /// The shared default instance returned by <see cref="Default" />.
-    /// </summary>
+    /// <summary>The shared default instance returned by <see cref="Default" />.</summary>
     private static readonly SlugOptions s_default = new();
 
     /// <summary>

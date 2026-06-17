@@ -11,16 +11,10 @@ namespace Bodu.Extensions;
 
 public static partial class StringExtensions
 {
-    /// <summary>
-    /// The control character (U+001F unit separator) prefixing a synthetic punctuation token in the phrase token
-    /// stream. It cannot collide with any letter, digit, or punctuation produced by tokenisation.
-    /// </summary>
+    /// <summary>The control character (U+001F unit separator) prefixing a synthetic punctuation token in the phrase token stream. It cannot collide with any letter, digit, or punctuation produced by tokenisation.</summary>
     private const char PunctuationMarker = '\u001F';
 
-    /// <summary>
-    /// The connective words lower-cased when <see cref="TitleCaseOptions.LowerCaseSmallWords" /> is set on the
-    /// flag-based overload.
-    /// </summary>
+    /// <summary>The connective words lower-cased when <see cref="TitleCaseOptions.LowerCaseSmallWords" /> is set on the flag-based overload.</summary>
     private static readonly string[] s_titleCaseSmallWords =
     [
         "a", "an", "and", "as", "at", "but", "by", "for", "in", "nor",

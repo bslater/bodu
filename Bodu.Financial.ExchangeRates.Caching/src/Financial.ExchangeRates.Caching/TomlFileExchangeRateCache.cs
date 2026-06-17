@@ -32,7 +32,8 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// </remarks>
 /// <example>
 /// A cache bound to provider <c>RBA</c> stores the <c>AUD/USD</c> pair as <c>&lt;directory&gt;/RBA/AUDUSD.toml</c> with
-/// one table per dated rate and one table per fetched window: <code language="toml">
+/// one table per dated rate and one table per fetched window:
+/// <code language="toml">
 ///<![CDATA[
 /// [[Entries]]
 /// Date = 2023-01-03
@@ -56,9 +57,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 public sealed class TomlFileExchangeRateCache
     : FileExchangeRateCacheBase<FileExchangeRateCacheOptions>
 {
-    /// <summary>
-    /// The serializer options shared by every read and write; decimals are written as strings for lossless round-trips.
-    /// </summary>
+    /// <summary>The serializer options shared by every read and write; decimals are written as strings for lossless round-trips.</summary>
     private static readonly TomlSerializerOptions s_tomlOptions = new() { DecimalHandling = TomlDecimalHandling.String };
 
     /// <summary>

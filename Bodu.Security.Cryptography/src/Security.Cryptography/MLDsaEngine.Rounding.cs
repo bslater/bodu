@@ -11,9 +11,7 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 internal static partial class MLDsaEngine
 {
-    /// <summary>
-    /// The dropped-bits parameter d = 13 of Power2Round.
-    /// </summary>
+    /// <summary>The dropped-bits parameter d = 13 of Power2Round.</summary>
     private const int D = 13;
 
     /// <summary>

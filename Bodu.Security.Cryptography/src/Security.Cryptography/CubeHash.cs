@@ -29,9 +29,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>
-/// State size: 1024 bits (32 × 32-bit words).
-/// </description>
+/// <description>State size: 1024 bits (32 × 32-bit words).</description>
 /// </item>
 /// <item>
 /// <description>
@@ -72,105 +70,64 @@ namespace Bodu.Security.Cryptography;
 public sealed class CubeHash
     : System.Security.Cryptography.HashAlgorithm
 {
-    /// <summary>
-    /// The maximum allowable size of the computed hash, in bits.
-    /// </summary>
+    /// <summary>The maximum allowable size of the computed hash, in bits.</summary>
     public const int MaxHashSize = 512;
 
-    /// <summary>
-    /// The maximum allowable size of the input block, in bytes.
-    /// </summary>
+    /// <summary>The maximum allowable size of the input block, in bytes.</summary>
     public const int MaxInputBlockSize = 128;
 
-    /// <summary>
-    /// The maximum number of rounds permitted for initialization, processing, or finalization.
-    /// </summary>
+    /// <summary>The maximum number of rounds permitted for initialization, processing, or finalization.</summary>
     public const int MaxRounds = 4096;
 
-    /// <summary>
-    /// The minimum allowable size of the computed hash, in bits.
-    /// </summary>
+    /// <summary>The minimum allowable size of the computed hash, in bits.</summary>
     public const int MinHashSize = 224;
 
-    /// <summary>
-    /// The minimum allowable size of the input block, in bytes.
-    /// </summary>
+    /// <summary>The minimum allowable size of the input block, in bytes.</summary>
     public const int MinInputBlockSize = 1;
 
-    /// <summary>
-    /// The minimum number of rounds permitted for initialization, processing, or finalization.
-    /// </summary>
+    /// <summary>The minimum number of rounds permitted for initialization, processing, or finalization.</summary>
     public const int MinRounds = 1;
 
-    /// <summary>
-    /// The set of hash output sizes, in bits, accepted by the algorithm.
-    /// </summary>
+    /// <summary>The set of hash output sizes, in bits, accepted by the algorithm.</summary>
     private static readonly int[] s_permittedHashSizes = [224, 256, 384, 512];
 
-    /// <summary>
-    /// Gather-index vector for the scatter-by-XOR-8 step: element j receives the value from position j^8, swapping the
-    /// two 256-bit halves of the 512-bit state register.
-    /// </summary>
+    /// <summary>Gather-index vector for the scatter-by-XOR-8 step: element j receives the value from position j^8, swapping the two 256-bit halves of the 512-bit state register.</summary>
     private static readonly Vector512<uint> s_permXor8 = Vector512.Create(8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u);
 
-    /// <summary>
-    /// Gather-index vector for the scatter-by-XOR-4 step: element j receives the value from position j^4.
-    /// </summary>
+    /// <summary>Gather-index vector for the scatter-by-XOR-4 step: element j receives the value from position j^4.</summary>
     private static readonly Vector512<uint> s_permXor4 = Vector512.Create(4u, 5u, 6u, 7u, 0u, 1u, 2u, 3u, 12u, 13u, 14u, 15u, 8u, 9u, 10u, 11u);
 
-    /// <summary>
-    /// Gather-index vector for the scatter-by-XOR-2 step: element j receives the value from position j^2.
-    /// </summary>
+    /// <summary>Gather-index vector for the scatter-by-XOR-2 step: element j receives the value from position j^2.</summary>
     private static readonly Vector512<uint> s_permXor2 = Vector512.Create(2u, 3u, 0u, 1u, 6u, 7u, 4u, 5u, 10u, 11u, 8u, 9u, 14u, 15u, 12u, 13u);
 
-    /// <summary>
-    /// Gather-index vector for the scatter-by-XOR-1 step: element j receives the value from position j^1.
-    /// </summary>
+    /// <summary>Gather-index vector for the scatter-by-XOR-1 step: element j receives the value from position j^1.</summary>
     private static readonly Vector512<uint> s_permXor1 = Vector512.Create(1u, 0u, 3u, 2u, 5u, 4u, 7u, 6u, 9u, 8u, 11u, 10u, 13u, 12u, 15u, 14u);
 
-    /// <summary>
-    /// Indicates whether the instance has been disposed.
-    /// </summary>
+    /// <summary>Indicates whether the instance has been disposed.</summary>
     private bool _disposed = false;
 
-    /// <summary>
-    /// The number of finalization rounds applied after all input has been processed.
-    /// </summary>
+    /// <summary>The number of finalization rounds applied after all input has been processed.</summary>
     private int _finalizationRounds;
 
-    /// <summary>
-    /// The number of initialization rounds applied before input is processed.
-    /// </summary>
+    /// <summary>The number of initialization rounds applied before input is processed.</summary>
     private int _initializationRounds;
 
-    /// <summary>
-    /// The cached post-initialization state snapshot used to reset the working state without recomputation.
-    /// </summary>
+    /// <summary>The cached post-initialization state snapshot used to reset the working state without recomputation.</summary>
     private uint[] _initializedState;
 
-    /// <summary>
-    /// The size, in bytes, of the input block that triggers a state transformation.
-    /// </summary>
+    /// <summary>The size, in bytes, of the input block that triggers a state transformation.</summary>
     private int _inputBlockSizeBytes;
 
-    /// <summary>
-    /// Indicates whether the post-initialization state snapshot has been computed and cached.
-    /// </summary>
+    /// <summary>Indicates whether the post-initialization state snapshot has been computed and cached.</summary>
     private bool _isInitializedStateCached = false;
 
-    /// <summary>
-    /// The number of bytes accumulated in the current partial block.
-    /// </summary>
+    /// <summary>The number of bytes accumulated in the current partial block.</summary>
     private int _pendingBytes;
 
-    /// <summary>
-    /// The number of transformation rounds applied to each full input block.
-    /// </summary>
+    /// <summary>The number of transformation rounds applied to each full input block.</summary>
     private int _rounds;
 
-    /// <summary>
-    /// The 32-word (1024-bit) internal state updated in place across permutation rounds.
-    /// </summary>
+    /// <summary>The 32-word (1024-bit) internal state updated in place across permutation rounds.</summary>
     private uint[] _state;
 
 
@@ -274,29 +231,19 @@ public sealed class CubeHash
     /// </para>
     /// <list type="bullet">
     /// <item>
-    /// <description>
-    /// <c>r</c> = number of initialization rounds
-    /// </description>
+    /// <description><c>r</c> = number of initialization rounds</description>
     /// </item>
     /// <item>
-    /// <description>
-    /// <c>b</c> = number of transformation rounds per block
-    /// </description>
+    /// <description><c>b</c> = number of transformation rounds per block</description>
     /// </item>
     /// <item>
-    /// <description>
-    /// <c>w</c> = block size in bytes
-    /// </description>
+    /// <description><c>w</c> = block size in bytes</description>
     /// </item>
     /// <item>
-    /// <description>
-    /// <c>f</c> = number of finalization rounds
-    /// </description>
+    /// <description><c>f</c> = number of finalization rounds</description>
     /// </item>
     /// <item>
-    /// <description>
-    /// <c>h</c> = hash size in bits
-    /// </description>
+    /// <description><c>h</c> = hash size in bits</description>
     /// </item>
     /// </list>
     /// <para>

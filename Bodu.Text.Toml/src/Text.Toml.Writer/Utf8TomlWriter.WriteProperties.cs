@@ -10,10 +10,7 @@ namespace Bodu.Text.Toml.Writer;
 
 public ref partial struct Utf8TomlWriter
 {
-    /// <summary>
-    /// The strict UTF-8 encoding used to decode UTF-8 name and value overloads; invalid byte sequences are rejected
-    /// rather than replaced.
-    /// </summary>
+    /// <summary>The strict UTF-8 encoding used to decode UTF-8 name and value overloads; invalid byte sequences are rejected rather than replaced.</summary>
     private static readonly UTF8Encoding s_utf8Strict = new(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: true);
 
     /// <summary>

@@ -25,24 +25,16 @@ namespace Bodu.IO.Hashing;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>
-/// Output size: 32 bits (4 bytes), little-endian.
-/// </description>
+/// <description>Output size: 32 bits (4 bytes), little-endian.</description>
 /// </item>
 /// <item>
-/// <description>
-/// Variant: <c>CityHash32</c>.
-/// </description>
+/// <description>Variant: <c>CityHash32</c>.</description>
 /// </item>
 /// <item>
-/// <description>
-/// Length-dispatched mixing: 0–4, 5–12, 13–24, and 25+ byte paths.
-/// </description>
+/// <description>Length-dispatched mixing: 0–4, 5–12, 13–24, and 25+ byte paths.</description>
 /// </item>
 /// <item>
-/// <description>
-/// Seedless — for seeded variants prefer <see cref="MurmurHash3_32" />.
-/// </description>
+/// <description>Seedless — for seeded variants prefer <see cref="MurmurHash3_32" />.</description>
 /// </item>
 /// </list>
 /// <para>

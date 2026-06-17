@@ -39,14 +39,10 @@ public sealed partial class MoneyBag :
     IEquatable<MoneyBag>,
     IEnumerable<Money>
 {
-    /// <summary>
-    /// The shared empty bag instance.
-    /// </summary>
+    /// <summary>The shared empty bag instance.</summary>
     public static readonly MoneyBag Empty = new();
 
-    /// <summary>
-    /// The internal balance map keyed by ISO 4217 code (case-sensitive) and kept in ISO-code order.
-    /// </summary>
+    /// <summary>The internal balance map keyed by ISO 4217 code (case-sensitive) and kept in ISO-code order.</summary>
     private readonly ImmutableSortedDictionary<string, decimal> _balances;
 
     /// <summary>

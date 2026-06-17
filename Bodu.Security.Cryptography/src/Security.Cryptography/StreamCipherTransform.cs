@@ -54,29 +54,19 @@ namespace Bodu.Security.Cryptography;
 internal sealed class StreamCipherTransform
     : ICryptoTransform
 {
-    /// <summary>
-    /// The configured stream cipher engine that produces keystream blocks.
-    /// </summary>
+    /// <summary>The configured stream cipher engine that produces keystream blocks.</summary>
     private readonly IStreamCipher _cipher;
 
-    /// <summary>
-    /// The current keystream block carried between transform calls.
-    /// </summary>
+    /// <summary>The current keystream block carried between transform calls.</summary>
     private readonly byte[] _keystream;
 
-    /// <summary>
-    /// The offset of the next unused byte within the carried keystream block.
-    /// </summary>
+    /// <summary>The offset of the next unused byte within the carried keystream block.</summary>
     private int _keystreamOffset;
 
-    /// <summary>
-    /// Indicates whether this instance has been disposed and its keystream cleared.
-    /// </summary>
+    /// <summary>Indicates whether this instance has been disposed and its keystream cleared.</summary>
     private bool _disposed;
 
-    /// <summary>
-    /// Indicates whether the final block has been transformed and the instance finalized.
-    /// </summary>
+    /// <summary>Indicates whether the final block has been transformed and the instance finalized.</summary>
     private bool _finalized;
 
     /// <summary>

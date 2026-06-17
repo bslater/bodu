@@ -33,9 +33,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 public sealed class CachingExchangeRateProvider
     : CachingExchangeRateProviderBase
 {
-    /// <summary>
-    /// The inner provider consulted on a cache miss.
-    /// </summary>
+    /// <summary>The inner provider consulted on a cache miss.</summary>
     private readonly IDatedExchangeRateProvider _inner;
 
     /// <summary>

@@ -23,9 +23,7 @@ namespace Bodu.Text.Toml.Nodes;
 public sealed class TomlArray
     : TomlNode, IList<TomlNode?>
 {
-    /// <summary>
-    /// The backing list of child nodes, in order.
-    /// </summary>
+    /// <summary>The backing list of child nodes, in order.</summary>
     private readonly List<TomlNode?> _items;
 
     /// <summary>

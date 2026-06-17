@@ -12,19 +12,13 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 internal sealed class MLKemParameters
 {
-    /// <summary>
-    /// The parameters of ML-KEM-512 (k = 2, η₁ = 3, η₂ = 2, dᵤ = 10, dᵥ = 4).
-    /// </summary>
+    /// <summary>The parameters of ML-KEM-512 (k = 2, η₁ = 3, η₂ = 2, dᵤ = 10, dᵥ = 4).</summary>
     internal static readonly MLKemParameters MLKem512 = new("ML-KEM-512", 2, 3, 2, 10, 4);
 
-    /// <summary>
-    /// The parameters of ML-KEM-768 (k = 3, η₁ = 2, η₂ = 2, dᵤ = 10, dᵥ = 4).
-    /// </summary>
+    /// <summary>The parameters of ML-KEM-768 (k = 3, η₁ = 2, η₂ = 2, dᵤ = 10, dᵥ = 4).</summary>
     internal static readonly MLKemParameters MLKem768 = new("ML-KEM-768", 3, 2, 2, 10, 4);
 
-    /// <summary>
-    /// The parameters of ML-KEM-1024 (k = 4, η₁ = 2, η₂ = 2, dᵤ = 11, dᵥ = 5).
-    /// </summary>
+    /// <summary>The parameters of ML-KEM-1024 (k = 4, η₁ = 2, η₂ = 2, dᵤ = 11, dᵥ = 5).</summary>
     internal static readonly MLKemParameters MLKem1024 = new("ML-KEM-1024", 4, 2, 2, 11, 5);
 
     /// <summary>

@@ -46,9 +46,7 @@ namespace Bodu.Security.Cryptography.Extensions;
 /// </item>
 /// <item>
 /// <term><c>Decrypt(transform, ciphertextWithTag)</c></term>
-/// <description>
-/// One-shot decrypt with no associated data; throws on tag mismatch.
-/// </description>
+/// <description>One-shot decrypt with no associated data; throws on tag mismatch.</description>
 /// </item>
 /// <item>
 /// <term><c>Decrypt(transform, ciphertextWithTag, associatedData)</c></term>

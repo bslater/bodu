@@ -14,9 +14,7 @@ namespace Bodu.Financial.ExchangeRates.Rba;
 internal sealed class StubHttpMessageHandler
     : HttpMessageHandler
 {
-    /// <summary>
-    /// The content returned for every request.
-    /// </summary>
+    /// <summary>The content returned for every request.</summary>
     private readonly byte[] _content;
 
     /// <summary>

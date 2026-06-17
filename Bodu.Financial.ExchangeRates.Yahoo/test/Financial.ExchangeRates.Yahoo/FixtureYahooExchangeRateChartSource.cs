@@ -13,14 +13,10 @@ namespace Bodu.Financial.ExchangeRates.Yahoo;
 internal sealed class FixtureYahooExchangeRateChartSource
     : IYahooExchangeRateChartSource
 {
-    /// <summary>
-    /// The provider options used while parsing fixtures.
-    /// </summary>
+    /// <summary>The provider options used while parsing fixtures.</summary>
     private readonly YahooExchangeRateOptions _options;
 
-    /// <summary>
-    /// The map from ticker symbol to fixture file name.
-    /// </summary>
+    /// <summary>The map from ticker symbol to fixture file name.</summary>
     private readonly IReadOnlyDictionary<string, string> _fixtureBySymbol;
 
     /// <summary>

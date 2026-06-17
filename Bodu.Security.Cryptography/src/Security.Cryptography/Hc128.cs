@@ -28,14 +28,10 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>
-/// Key size: 128 bits (16 bytes).
-/// </description>
+/// <description>Key size: 128 bits (16 bytes).</description>
 /// </item>
 /// <item>
-/// <description>
-/// Nonce (IV) size: 128 bits (16 bytes).
-/// </description>
+/// <description>Nonce (IV) size: 128 bits (16 bytes).</description>
 /// </item>
 /// </list>
 /// <para>
@@ -64,14 +60,10 @@ namespace Bodu.Security.Cryptography;
 public sealed class Hc128
     : SymmetricStreamAlgorithm
 {
-    /// <summary>
-    /// The required HC-128 key size, in bits (128).
-    /// </summary>
+    /// <summary>The required HC-128 key size, in bits (128).</summary>
     internal const int KeySizeBits = Hc128StreamCipher.KeySizeBytes * 8;
 
-    /// <summary>
-    /// The HC-128 IV size, in bits (128).
-    /// </summary>
+    /// <summary>The HC-128 IV size, in bits (128).</summary>
     internal const int NonceSizeBits = Hc128StreamCipher.NonceSizeBytes * 8;
 
     /// <summary>

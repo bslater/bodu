@@ -45,9 +45,7 @@ namespace Bodu.Globalization.Calendar;
 public readonly struct TerritoryCode
     : IEquatable<TerritoryCode>
 {
-    /// <summary>
-    /// The normalized uppercase country part, or <see langword="null" /> for the default (empty) value.
-    /// </summary>
+    /// <summary>The normalized uppercase country part, or <see langword="null" /> for the default (empty) value.</summary>
     private readonly string? _country;
 
     /// <summary>

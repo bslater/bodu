@@ -21,34 +21,22 @@ public readonly partial struct BencodeElement
     public struct ObjectEnumerator
         : IEnumerable<BencodeProperty>, IEnumerator<BencodeProperty>
     {
-        /// <summary>
-        /// The owning document.
-        /// </summary>
+        /// <summary>The owning document.</summary>
         private readonly BencodeDocument _document;
 
-        /// <summary>
-        /// The row index of the object being enumerated.
-        /// </summary>
+        /// <summary>The row index of the object being enumerated.</summary>
         private readonly int _objectIndex;
 
-        /// <summary>
-        /// The total number of key/value pairs in the object.
-        /// </summary>
+        /// <summary>The total number of key/value pairs in the object.</summary>
         private readonly int _count;
 
-        /// <summary>
-        /// The row index of the key of the pair currently being yielded, or <c>-1</c> before the first move.
-        /// </summary>
+        /// <summary>The row index of the key of the pair currently being yielded, or <c>-1</c> before the first move.</summary>
         private int _currentKeyRow;
 
-        /// <summary>
-        /// The row index where the next pair's key begins.
-        /// </summary>
+        /// <summary>The row index where the next pair's key begins.</summary>
         private int _nextKeyRow;
 
-        /// <summary>
-        /// The number of pairs already yielded.
-        /// </summary>
+        /// <summary>The number of pairs already yielded.</summary>
         private int _consumed;
 
         /// <summary>

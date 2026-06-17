@@ -20,19 +20,13 @@ namespace Bodu.Security.Cryptography;
 /// </remarks>
 internal static partial class MLKemEngine
 {
-    /// <summary>
-    /// The polynomial degree n = 256 shared by every parameter set.
-    /// </summary>
+    /// <summary>The polynomial degree n = 256 shared by every parameter set.</summary>
     internal const int N = 256;
 
-    /// <summary>
-    /// The coefficient modulus q = 3329.
-    /// </summary>
+    /// <summary>The coefficient modulus q = 3329.</summary>
     internal const int Q = 3329;
 
-    /// <summary>
-    /// The size, in bytes, of the shared secret produced by encapsulation and decapsulation.
-    /// </summary>
+    /// <summary>The size, in bytes, of the shared secret produced by encapsulation and decapsulation.</summary>
     internal const int SharedSecretSize = 32;
 
     /// <summary>

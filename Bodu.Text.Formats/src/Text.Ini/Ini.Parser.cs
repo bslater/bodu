@@ -64,19 +64,13 @@ public static partial class Ini
     /// </summary>
     private ref struct Parser
     {
-        /// <summary>
-        /// The parse options that govern section, comment, and duplicate-key behavior.
-        /// </summary>
+        /// <summary>The parse options that govern section, comment, and duplicate-key behavior.</summary>
         private readonly IniParseOptions _options;
 
-        /// <summary>
-        /// The unconsumed portion of the source text remaining to be parsed.
-        /// </summary>
+        /// <summary>The unconsumed portion of the source text remaining to be parsed.</summary>
         private ReadOnlySpan<char> _remaining;
 
-        /// <summary>
-        /// The zero-based line number of the current parse position.
-        /// </summary>
+        /// <summary>The zero-based line number of the current parse position.</summary>
         private int _lineNumber;
 
         /// <summary>

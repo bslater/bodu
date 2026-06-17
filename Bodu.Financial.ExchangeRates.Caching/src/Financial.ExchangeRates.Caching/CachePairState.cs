@@ -19,9 +19,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// </remarks>
 internal sealed class CachePairState
 {
-    /// <summary>
-    /// The shared empty state, returned by a backend when a pair has neither rows nor coverage recorded.
-    /// </summary>
+    /// <summary>The shared empty state, returned by a backend when a pair has neither rows nor coverage recorded.</summary>
     private static readonly CachePairState s_empty =
         new(Array.Empty<CachedExchangeRate>(), Array.Empty<CoverageWindow>());
 

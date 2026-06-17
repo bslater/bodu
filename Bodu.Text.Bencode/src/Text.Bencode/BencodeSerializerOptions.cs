@@ -45,75 +45,46 @@ namespace Bodu.Text.Bencode;
 /// </example>
 public sealed class BencodeSerializerOptions
 {
-    /// <summary>
-    /// The default maximum nesting depth.
-    /// </summary>
+    /// <summary>The default maximum nesting depth.</summary>
     public const int DefaultMaxDepth = 64;
 
-    /// <summary>
-    /// The user-registered converters, consulted before the built-in converters.
-    /// </summary>
+    /// <summary>The user-registered converters, consulted before the built-in converters.</summary>
     private readonly List<BencodeConverter> _converters = [];
 
-    /// <summary>
-    /// The cache of concrete converters resolved per type.
-    /// </summary>
+    /// <summary>The cache of concrete converters resolved per type.</summary>
     private readonly ConcurrentDictionary<Type, BencodeConverter> _converterCache = new();
 
-    /// <summary>
-    /// The cache of resolved type metadata.
-    /// </summary>
+    /// <summary>The cache of resolved type metadata.</summary>
     private readonly ConcurrentDictionary<Type, TypeMetadata> _metadataCache = new();
 
-    /// <summary>
-    /// The frozen snapshot of user converters captured when the options became read-only, or <see langword="null" />
-    /// while mutable.
-    /// </summary>
+    /// <summary>The frozen snapshot of user converters captured when the options became read-only, or <see langword="null" /> while mutable.</summary>
     private BencodeConverter[]? _frozenConverters;
 
-    /// <summary>
-    /// The configured property naming policy.
-    /// </summary>
+    /// <summary>The configured property naming policy.</summary>
     private BencodeNamingPolicy? _namingPolicy;
 
-    /// <summary>
-    /// Whether property-name matching ignores case when reading.
-    /// </summary>
+    /// <summary>Whether property-name matching ignores case when reading.</summary>
     private bool _caseInsensitive = true;
 
-    /// <summary>
-    /// Whether public fields are surfaced as serializable members.
-    /// </summary>
+    /// <summary>Whether public fields are surfaced as serializable members.</summary>
     private bool _includeFields;
 
-    /// <summary>
-    /// Whether deserialization accepts dictionaries whose keys are not in ascending bytewise order.
-    /// </summary>
+    /// <summary>Whether deserialization accepts dictionaries whose keys are not in ascending bytewise order.</summary>
     private bool _allowUnsortedKeys;
 
-    /// <summary>
-    /// Whether deserialization accepts dictionaries carrying more than one entry for the same key.
-    /// </summary>
+    /// <summary>Whether deserialization accepts dictionaries carrying more than one entry for the same key.</summary>
     private bool _allowDuplicateKeys;
 
-    /// <summary>
-    /// The serializer-wide default condition under which a member is omitted on write.
-    /// </summary>
+    /// <summary>The serializer-wide default condition under which a member is omitted on write.</summary>
     private BencodeIgnoreCondition _defaultIgnoreCondition = BencodeIgnoreCondition.Never;
 
-    /// <summary>
-    /// The serializer-wide handling for a dictionary key that maps to no member when reading.
-    /// </summary>
+    /// <summary>The serializer-wide handling for a dictionary key that maps to no member when reading.</summary>
     private BencodeUnmappedMemberHandling _unmappedMemberHandling = BencodeUnmappedMemberHandling.Skip;
 
-    /// <summary>
-    /// The serializer-wide preference for replacing or populating a member's value when reading.
-    /// </summary>
+    /// <summary>The serializer-wide preference for replacing or populating a member's value when reading.</summary>
     private BencodeObjectCreationHandling _preferredObjectCreationHandling = BencodeObjectCreationHandling.Replace;
 
-    /// <summary>
-    /// The maximum nesting depth.
-    /// </summary>
+    /// <summary>The maximum nesting depth.</summary>
     private int _maxDepth = DefaultMaxDepth;
 
     /// <summary>

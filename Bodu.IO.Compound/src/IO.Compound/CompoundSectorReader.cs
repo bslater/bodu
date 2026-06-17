@@ -19,31 +19,19 @@ namespace Bodu.IO.Compound;
 /// </remarks>
 internal sealed class CompoundSectorReader
 {
-    /// <summary>
-    /// The full compound-file byte content.
-    /// </summary>
+    /// <summary>The full compound-file byte content.</summary>
     private readonly byte[] _data;
 
-    /// <summary>
-    /// The parsed header providing sector sizes and entry points.
-    /// </summary>
+    /// <summary>The parsed header providing sector sizes and entry points.</summary>
     private readonly CompoundFileHeader _header;
 
-    /// <summary>
-    /// The materialized regular file-allocation table.
-    /// </summary>
+    /// <summary>The materialized regular file-allocation table.</summary>
     private readonly uint[] _fat;
 
-    /// <summary>
-    /// The materialized mini-FAT, or <see langword="null" /> until <see cref="InitializeMiniStream(uint, long)" />
-    /// runs.
-    /// </summary>
+    /// <summary>The materialized mini-FAT, or <see langword="null" /> until <see cref="InitializeMiniStream(uint, long)" /> runs.</summary>
     private uint[]? _miniFat;
 
-    /// <summary>
-    /// The materialized mini stream, or <see langword="null" /> until <see cref="InitializeMiniStream(uint, long)" />
-    /// runs.
-    /// </summary>
+    /// <summary>The materialized mini stream, or <see langword="null" /> until <see cref="InitializeMiniStream(uint, long)" /> runs.</summary>
     private byte[]? _miniStream;
 
     /// <summary>

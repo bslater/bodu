@@ -15,19 +15,13 @@ namespace Bodu.Financial.ExchangeRates.Caching.DependencyInjection;
 internal sealed class AggregatedExchangeRateBuilder
     : IAggregatedExchangeRateBuilder
 {
-    /// <summary>
-    /// The accumulated named child factories, in insertion order.
-    /// </summary>
+    /// <summary>The accumulated named child factories, in insertion order.</summary>
     private readonly List<KeyValuePair<string, Func<IServiceProvider, IDatedExchangeRateProvider>>> _children = new();
 
-    /// <summary>
-    /// The accumulated per-pair routes, in insertion order.
-    /// </summary>
+    /// <summary>The accumulated per-pair routes, in insertion order.</summary>
     private readonly List<(ExchangeRatePair Pair, string[] ProviderOrder, IExchangeRateAggregationStrategy? Strategy)> _routes = new();
 
-    /// <summary>
-    /// The configured default strategy, or <see langword="null" /> to use the aggregator's own default.
-    /// </summary>
+    /// <summary>The configured default strategy, or <see langword="null" /> to use the aggregator's own default.</summary>
     private IExchangeRateAggregationStrategy? _defaultStrategy;
 
     /// <summary>

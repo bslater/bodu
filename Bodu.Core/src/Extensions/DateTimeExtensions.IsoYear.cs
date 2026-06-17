@@ -22,9 +22,9 @@ public static partial class DateTimeExtensions
         /// <remarks>
         /// <para>
         /// The ISO 8601 year may differ from the calendar year of this date. A date near the start or end of a calendar
-        /// year may belong to the ISO year of the adjacent calendar year, depending on which ISO week it falls into. For
-        /// example, January 1 may belong to the last week of the previous ISO year, and December 31 may belong to week 1
-        /// of the following ISO year.
+        /// year may belong to the ISO year of the adjacent calendar year, depending on which ISO week it falls into.
+        /// For example, January 1 may belong to the last week of the previous ISO year, and December 31 may belong to
+        /// week 1 of the following ISO year.
         /// </para>
         /// </remarks>
         public int IsoYear

@@ -37,14 +37,10 @@ public sealed class BencodeStringEnumConverter<TEnum>
     : BencodeConverterFactory
     where TEnum : struct, Enum
 {
-    /// <summary>
-    /// The naming policy applied to member names, or <see langword="null" /> to use member names unchanged.
-    /// </summary>
+    /// <summary>The naming policy applied to member names, or <see langword="null" /> to use member names unchanged.</summary>
     private readonly BencodeNamingPolicy? _namingPolicy;
 
-    /// <summary>
-    /// Whether a Bencode integer is accepted as an enumeration value on read.
-    /// </summary>
+    /// <summary>Whether a Bencode integer is accepted as an enumeration value on read.</summary>
     private readonly bool _allowIntegerValues;
 
     /// <summary>

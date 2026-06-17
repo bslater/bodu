@@ -59,20 +59,14 @@ public abstract class KeyedBlockHashAlgorithm<T>
     : BlockHashAlgorithm<T>
     where T : KeyedBlockHashAlgorithm<T>, new()
 {
-    /// <summary>
-    /// Holds the required key size, in bits, that the derived algorithm accepts. Supplied via the constructor; aligns
-    /// with the BCL convention used by <see cref="System.Security.Cryptography.SymmetricAlgorithm.KeySize" />. Divide
-    /// by 8 to obtain the equivalent byte length used when validating <see cref="Key" />.
-    /// </summary>
+    /// <summary>Holds the required key size, in bits, that the derived algorithm accepts. Supplied via the constructor; aligns with the BCL convention used by <see cref="System.Security.Cryptography.SymmetricAlgorithm.KeySize" />. Divide by 8 to obtain the equivalent byte length used when validating <see cref="Key" />.</summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage(
         "StyleCop.CSharp.NamingRules",
         "SA1306:Field names should begin with lower-case letter",
         Justification = "The field intentionally follows the protected field naming pattern used by HashAlgorithm, such as HashSizeValue, because it forms part of the inherited algorithm-state surface for derived cryptographic types.")]
     protected readonly int KeySizeValue;
 
-    /// <summary>
-    /// Internal storage for the key used by the algorithm. Always assigned via defensive copy and cleared on disposal.
-    /// </summary>
+    /// <summary>Internal storage for the key used by the algorithm. Always assigned via defensive copy and cleared on disposal.</summary>
     /// <remarks>
     /// Declared <see cref="byte" />[] nullable to honestly reflect that the field can be observed in three states:
     /// <see langword="null" /> on a freshly-constructed instance whose constructor has not yet seeded a key, after

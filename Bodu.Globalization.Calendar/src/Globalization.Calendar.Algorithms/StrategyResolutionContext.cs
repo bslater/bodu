@@ -18,14 +18,10 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// </remarks>
 public sealed class StrategyResolutionContext
 {
-    /// <summary>
-    /// The resource that referential strategies resolve against.
-    /// </summary>
+    /// <summary>The resource that referential strategies resolve against.</summary>
     private readonly NotableDateResource _resource;
 
-    /// <summary>
-    /// The identities currently being resolved, used to break circular references.
-    /// </summary>
+    /// <summary>The identities currently being resolved, used to break circular references.</summary>
     private readonly HashSet<NotableDateRuleIdentity> _inProgress = new();
 
     /// <summary>

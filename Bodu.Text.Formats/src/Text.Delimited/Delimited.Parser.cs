@@ -122,19 +122,13 @@ public static partial class Delimited
     /// </summary>
     private ref struct Parser
     {
-        /// <summary>
-        /// The parse options that govern delimiter, quoting, and trimming behavior.
-        /// </summary>
+        /// <summary>The parse options that govern delimiter, quoting, and trimming behavior.</summary>
         private readonly DelimitedParseOptions _options;
 
-        /// <summary>
-        /// The unconsumed portion of the source text remaining to be parsed.
-        /// </summary>
+        /// <summary>The unconsumed portion of the source text remaining to be parsed.</summary>
         private ReadOnlySpan<char> _remaining;
 
-        /// <summary>
-        /// The one-based line number of the current parse position.
-        /// </summary>
+        /// <summary>The one-based line number of the current parse position.</summary>
         private int _lineNumber;
 
         /// <summary>

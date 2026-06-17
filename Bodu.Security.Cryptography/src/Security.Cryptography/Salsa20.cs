@@ -30,19 +30,13 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>
-/// Key size: 128 or 256 bits (16 or 32 bytes); 256-bit is the default.
-/// </description>
+/// <description>Key size: 128 or 256 bits (16 or 32 bytes); 256-bit is the default.</description>
 /// </item>
 /// <item>
-/// <description>
-/// Nonce (IV) size: 64 bits (8 bytes).
-/// </description>
+/// <description>Nonce (IV) size: 64 bits (8 bytes).</description>
 /// </item>
 /// <item>
-/// <description>
-/// Block counter: 64-bit, starting at <see cref="InitialCounter" /> (default 0).
-/// </description>
+/// <description>Block counter: 64-bit, starting at <see cref="InitialCounter" /> (default 0).</description>
 /// </item>
 /// </list>
 /// <para>
@@ -70,19 +64,13 @@ namespace Bodu.Security.Cryptography;
 public sealed class Salsa20
     : SymmetricStreamAlgorithm
 {
-    /// <summary>
-    /// The default Salsa20 key size, in bits (256).
-    /// </summary>
+    /// <summary>The default Salsa20 key size, in bits (256).</summary>
     internal const int DefaultKeySizeBits = Salsa20StreamCipher.KeySize256Bytes * 8;
 
-    /// <summary>
-    /// The Salsa20 nonce size, in bits (64).
-    /// </summary>
+    /// <summary>The Salsa20 nonce size, in bits (64).</summary>
     internal const int NonceSizeBits = Salsa20StreamCipher.NonceSizeBytes * 8;
 
-    /// <summary>
-    /// The legal key sizes supported by the Salsa20 algorithm.
-    /// </summary>
+    /// <summary>The legal key sizes supported by the Salsa20 algorithm.</summary>
     private static readonly KeySizes[] s_keySizes = [new KeySizes(128, 256, 128)];
 
     /// <summary>

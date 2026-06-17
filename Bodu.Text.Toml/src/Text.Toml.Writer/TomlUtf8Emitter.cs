@@ -20,29 +20,19 @@ namespace Bodu.Text.Toml.Writer;
 /// </remarks>
 internal ref struct TomlUtf8Emitter
 {
-    /// <summary>
-    /// The destination buffer writer receiving the emitted bytes.
-    /// </summary>
+    /// <summary>The destination buffer writer receiving the emitted bytes.</summary>
     private readonly IBufferWriter<byte> _output;
 
-    /// <summary>
-    /// The current span leased from <see cref="_output" />.
-    /// </summary>
+    /// <summary>The current span leased from <see cref="_output" />.</summary>
     private Span<byte> _buffer;
 
-    /// <summary>
-    /// The number of bytes written into <see cref="_buffer" /> and not yet advanced.
-    /// </summary>
+    /// <summary>The number of bytes written into <see cref="_buffer" /> and not yet advanced.</summary>
     private int _pos;
 
-    /// <summary>
-    /// Whether any byte has been emitted.
-    /// </summary>
+    /// <summary>Whether any byte has been emitted.</summary>
     private bool _hasContent;
 
-    /// <summary>
-    /// The total number of bytes emitted.
-    /// </summary>
+    /// <summary>The total number of bytes emitted.</summary>
     private long _bytesWritten;
 
     /// <summary>

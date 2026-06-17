@@ -33,9 +33,7 @@ namespace Bodu.Security.Cryptography;
 /// </item>
 /// <item>
 /// <term>Disk-encryption mode</term>
-/// <description>
-/// <see cref="XtsModeTransform" />.
-/// </description>
+/// <description><see cref="XtsModeTransform" />.</description>
 /// </item>
 /// <item>
 /// <term>Authenticated modes (AEAD)</term>

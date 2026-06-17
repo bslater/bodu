@@ -27,9 +27,7 @@ namespace Bodu.Security.Cryptography;
 /// </remarks>
 public sealed partial class Blake3
 {
-    /// <summary>
-    /// The first rotation amount (16) used by Blake3's <c>G</c> function, broadcast across all four lanes.
-    /// </summary>
+    /// <summary>The first rotation amount (16) used by Blake3's <c>G</c> function, broadcast across all four lanes.</summary>
     /// <remarks>
     /// The four rotation amounts are taken from §2.4 of the BLAKE3 specification and are encoded as broadcast vectors
     /// so that <c>Avx512F.VL.RotateRightVariable</c> lowers each rotate to a single VPRORD instruction. The values
@@ -37,19 +35,13 @@ public sealed partial class Blake3
     /// </remarks>
     private static readonly Vector128<uint> s_ror16 = Vector128.Create(16U);
 
-    /// <summary>
-    /// The second rotation amount (12) used by Blake3's <c>G</c> function, broadcast across all four lanes.
-    /// </summary>
+    /// <summary>The second rotation amount (12) used by Blake3's <c>G</c> function, broadcast across all four lanes.</summary>
     private static readonly Vector128<uint> s_ror12 = Vector128.Create(12U);
 
-    /// <summary>
-    /// The third rotation amount (8) used by Blake3's <c>G</c> function, broadcast across all four lanes.
-    /// </summary>
+    /// <summary>The third rotation amount (8) used by Blake3's <c>G</c> function, broadcast across all four lanes.</summary>
     private static readonly Vector128<uint> s_ror8 = Vector128.Create(8U);
 
-    /// <summary>
-    /// The fourth rotation amount (7) used by Blake3's <c>G</c> function, broadcast across all four lanes.
-    /// </summary>
+    /// <summary>The fourth rotation amount (7) used by Blake3's <c>G</c> function, broadcast across all four lanes.</summary>
     private static readonly Vector128<uint> s_ror7 = Vector128.Create(7U);
 
     /// <summary>

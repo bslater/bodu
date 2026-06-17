@@ -46,9 +46,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 public sealed class Iso7064Mod11_2
     : AlphanumericCheckDigitAlgorithm
 {
-    /// <summary>
-    /// The running working digit, updated as <c>p ← ((p + a) × 2) mod 11</c> across appended body digits.
-    /// </summary>
+    /// <summary>The running working digit, updated as <c>p ← ((p + a) × 2) mod 11</c> across appended body digits.</summary>
     private int _p;
 
     /// <summary>

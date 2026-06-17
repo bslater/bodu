@@ -21,9 +21,7 @@ namespace Bodu.Financial.ExchangeRates.Caching.Distributed.DependencyInjection;
 /// </summary>
 public static class DistributedExchangeRateCacheServiceBuilderExtensions
 {
-    /// <summary>
-    /// The default configuration section bound into <see cref="DistributedExchangeRateCacheOptions" />.
-    /// </summary>
+    /// <summary>The default configuration section bound into <see cref="DistributedExchangeRateCacheOptions" />.</summary>
     private const string DefaultCacheSection = "Financial:ExchangeRateCache:Distributed";
 
     /// <summary>

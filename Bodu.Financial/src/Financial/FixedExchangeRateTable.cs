@@ -27,10 +27,7 @@ namespace Bodu.Financial;
 public sealed class FixedExchangeRateTable
     : IExchangeRateProvider
 {
-    /// <summary>
-    /// The underlying rate table keyed by validated <see cref="ExchangeRatePair" /> values, frozen after construction
-    /// for fast read-only access.
-    /// </summary>
+    /// <summary>The underlying rate table keyed by validated <see cref="ExchangeRatePair" /> values, frozen after construction for fast read-only access.</summary>
     private readonly FrozenDictionary<ExchangeRatePair, decimal> _rates;
 
     /// <summary>

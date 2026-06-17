@@ -53,36 +53,22 @@ namespace Bodu.Financial.ExchangeRates.Yahoo;
 public sealed class YahooExchangeRateProvider
     : WebExchangeRateProvider
 {
-    /// <summary>
-    /// The provider identifier stamped on every rate this provider produces.
-    /// </summary>
+    /// <summary>The provider identifier stamped on every rate this provider produces.</summary>
     public const string ProviderName = "Yahoo";
 
-    /// <summary>
-    /// The source that fetches and parses charts.
-    /// </summary>
+    /// <summary>The source that fetches and parses charts.</summary>
     private readonly IYahooExchangeRateChartSource _source;
 
-    /// <summary>
-    /// The provider options.
-    /// </summary>
+    /// <summary>The provider options.</summary>
     private readonly YahooExchangeRateOptions _options;
 
-    /// <summary>
-    /// The logger that records chart downloads and on-demand network fetches.
-    /// </summary>
+    /// <summary>The logger that records chart downloads and on-demand network fetches.</summary>
     private readonly ILogger _logger;
 
-    /// <summary>
-    /// The set of inclusive date ranges fetched so far for each pair. A gap-respecting coverage set is used rather than
-    /// a single <c>(min, max)</c> envelope so a request that straddles an unfetched interior gap is correctly treated
-    /// as uncovered and re-fetched.
-    /// </summary>
+    /// <summary>The set of inclusive date ranges fetched so far for each pair. A gap-respecting coverage set is used rather than a single <c>(min, max)</c> envelope so a request that straddles an unfetched interior gap is correctly treated as uncovered and re-fetched.</summary>
     private readonly Dictionary<ExchangeRatePair, DateRangeCoverage> _coverage = new();
 
-    /// <summary>
-    /// The discovered currency series, keyed by pair.
-    /// </summary>
+    /// <summary>The discovered currency series, keyed by pair.</summary>
     private readonly Dictionary<ExchangeRatePair, YahooSeriesInfo> _series = new();
 
     /// <summary>

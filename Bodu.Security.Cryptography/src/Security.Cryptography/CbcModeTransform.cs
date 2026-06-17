@@ -58,19 +58,13 @@ namespace Bodu.Security.Cryptography;
 public sealed class CbcModeTransform
     : IBlockCipherModeTransform
 {
-    /// <summary>
-    /// The block cipher over which CBC mode is applied.
-    /// </summary>
+    /// <summary>The block cipher over which CBC mode is applied.</summary>
     private readonly IBlockCipher _cipher;
 
-    /// <summary>
-    /// The evolving chaining value — initially the IV, then the most recent ciphertext block.
-    /// </summary>
+    /// <summary>The evolving chaining value — initially the IV, then the most recent ciphertext block.</summary>
     private readonly byte[] _currentIv;
 
-    /// <summary>
-    /// Indicates whether the instance has been disposed and its chaining value cleared.
-    /// </summary>
+    /// <summary>Indicates whether the instance has been disposed and its chaining value cleared.</summary>
     private bool _disposed;
 
     /// <summary>

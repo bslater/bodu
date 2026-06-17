@@ -14,15 +14,10 @@ namespace Bodu.Financial;
 /// </summary>
 internal static class MoneyFormattingHelpers
 {
-    /// <summary>
-    /// The positional templates corresponding to <see cref="NumberFormatInfo.CurrencyPositivePattern" /> values 0–3.
-    /// </summary>
+    /// <summary>The positional templates corresponding to <see cref="NumberFormatInfo.CurrencyPositivePattern" /> values 0–3.</summary>
     private static readonly string[] s_currencyPositivePatterns = ["$n", "n$", "$ n", "n $"];
 
-    /// <summary>
-    /// The positional templates corresponding to <see cref="NumberFormatInfo.CurrencyNegativePattern" /> values 0–15,
-    /// matching the documented BCL pattern table.
-    /// </summary>
+    /// <summary>The positional templates corresponding to <see cref="NumberFormatInfo.CurrencyNegativePattern" /> values 0–15, matching the documented BCL pattern table.</summary>
     private static readonly string[] s_currencyNegativePatterns =
     [
         "($n)", "-$n", "$-n", "$n-", "(n$)", "-n$", "n-$", "n$-",

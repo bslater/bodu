@@ -68,38 +68,21 @@ public sealed partial class ConcurrentHashSet<T>
     where T : notnull
 {
 
-    /// <summary>
-    /// The upper bound applied to <see cref="DefaultConcurrencyLevel" /> so that the lock array stays small on
-    /// high-core machines where the typical set is also small. Explicit constructors can request a higher level via the
-    /// internal initializer.
-    /// </summary>
+    /// <summary>The upper bound applied to <see cref="DefaultConcurrencyLevel" /> so that the lock array stays small on high-core machines where the typical set is also small. Explicit constructors can request a higher level via the internal initializer.</summary>
     internal const int MaxDefaultConcurrencyLevel = 32;
-    /// <summary>
-    /// The default initial bucket count used when no capacity hint is supplied.
-    /// </summary>
+    /// <summary>The default initial bucket count used when no capacity hint is supplied.</summary>
     private const int DefaultCapacity = 31;
 
-    /// <summary>
-    /// The equality comparer used to hash and compare elements. Never <see langword="null" />.
-    /// </summary>
+    /// <summary>The equality comparer used to hash and compare elements. Never <see langword="null" />.</summary>
     private readonly IEqualityComparer<T> _comparer;
 
-    /// <summary>
-    /// The fixed array of monitor objects used for lock striping. Bucket <c>b</c> is guarded by
-    /// <c>_locks[b % _locks.Length]</c>. Allocated once at construction and never replaced or resized.
-    /// </summary>
+    /// <summary>The fixed array of monitor objects used for lock striping. Bucket <c>b</c> is guarded by <c>_locks[b % _locks.Length]</c>. Allocated once at construction and never replaced or resized.</summary>
     private readonly object[] _locks;
 
-    /// <summary>
-    /// The maximum number of elements a single lock region may own before <see cref="Add" /> requests a resize.
-    /// Recomputed whenever the bucket table grows.
-    /// </summary>
+    /// <summary>The maximum number of elements a single lock region may own before <see cref="Add" /> requests a resize. Recomputed whenever the bucket table grows.</summary>
     private int _budget;
 
-    /// <summary>
-    /// The current bucket table. Replaced atomically by <see cref="GrowTable" /> and <see cref="Clear" /> while every
-    /// lock is held; declared <see langword="volatile" /> so lock-free readers observe a fully published table.
-    /// </summary>
+    /// <summary>The current bucket table. Replaced atomically by <see cref="GrowTable" /> and <see cref="Clear" /> while every lock is held; declared <see langword="volatile" /> so lock-free readers observe a fully published table.</summary>
     private volatile Tables _tables;
 
     /// <summary>

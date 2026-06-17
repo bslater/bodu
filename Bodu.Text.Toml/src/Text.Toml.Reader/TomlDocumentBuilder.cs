@@ -30,37 +30,22 @@ namespace Bodu.Text.Toml.Reader;
 /// </remarks>
 internal sealed class TomlDocumentBuilder
 {
-    /// <summary>
-    /// The flat row store, with the document root table at index 0.
-    /// </summary>
+    /// <summary>The flat row store, with the document root table at index 0.</summary>
     private readonly List<TomlReaderRow> _rows = [];
 
-    /// <summary>
-    /// Per-depth scratch lists reused to collect the segments of a key path without allocating a list per key. Indexed
-    /// by the current nesting <see cref="_depth" />, so an outer key path is never overwritten by an inner path read
-    /// while the outer value is being materialized.
-    /// </summary>
+    /// <summary>Per-depth scratch lists reused to collect the segments of a key path without allocating a list per key. Indexed by the current nesting <see cref="_depth" />, so an outer key path is never overwritten by an inner path read while the outer value is being materialized.</summary>
     private readonly List<List<string>> _pathScratch = [];
 
-    /// <summary>
-    /// The TOML specification version whose grammar features the lexer enforces.
-    /// </summary>
+    /// <summary>The TOML specification version whose grammar features the lexer enforces.</summary>
     private readonly TomlSpecVersion _specVersion;
 
-    /// <summary>
-    /// The maximum nesting depth of tables and arrays the builder will accept, clamped to
-    /// <see cref="TomlLimits.AbsoluteMaxDepth" />.
-    /// </summary>
+    /// <summary>The maximum nesting depth of tables and arrays the builder will accept, clamped to <see cref="TomlLimits.AbsoluteMaxDepth" />.</summary>
     private readonly int _maxDepth;
 
-    /// <summary>
-    /// The current nesting depth of arrays and inline tables, used to enforce <see cref="_maxDepth" />.
-    /// </summary>
+    /// <summary>The current nesting depth of arrays and inline tables, used to enforce <see cref="_maxDepth" />.</summary>
     private int _depth;
 
-    /// <summary>
-    /// The row index of the table that bare key/value pairs are currently assigned to.
-    /// </summary>
+    /// <summary>The row index of the table that bare key/value pairs are currently assigned to.</summary>
     private int _current;
 
     /// <summary>

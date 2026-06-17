@@ -61,34 +61,22 @@ namespace Bodu.Security.Cryptography;
 public abstract class MLKem
     : AsymmetricAlgorithm
 {
-    /// <summary>
-    /// The size, in bytes, of the shared secret produced by encapsulation and decapsulation.
-    /// </summary>
+    /// <summary>The size, in bytes, of the shared secret produced by encapsulation and decapsulation.</summary>
     public const int SharedSecretSizeInBytes = 32;
 
-    /// <summary>
-    /// The size, in bytes, of the private seed d ‖ z accepted by <see cref="ImportPrivateSeed" />.
-    /// </summary>
+    /// <summary>The size, in bytes, of the private seed d ‖ z accepted by <see cref="ImportPrivateSeed" />.</summary>
     public const int PrivateSeedSizeInBytes = 64;
 
-    /// <summary>
-    /// The FIPS 203 parameter set implemented by the derived type.
-    /// </summary>
+    /// <summary>The FIPS 203 parameter set implemented by the derived type.</summary>
     private readonly MLKemParameters _parameters;
 
-    /// <summary>
-    /// The encoded decapsulation (private) key, or <see langword="null" /> when none is held.
-    /// </summary>
+    /// <summary>The encoded decapsulation (private) key, or <see langword="null" /> when none is held.</summary>
     private byte[]? _decapsulationKey;
 
-    /// <summary>
-    /// The encoded encapsulation (public) key, or <see langword="null" /> when none is held.
-    /// </summary>
+    /// <summary>The encoded encapsulation (public) key, or <see langword="null" /> when none is held.</summary>
     private byte[]? _encapsulationKey;
 
-    /// <summary>
-    /// Indicates whether the instance has been disposed.
-    /// </summary>
+    /// <summary>Indicates whether the instance has been disposed.</summary>
     private bool _disposed;
 
     /// <summary>

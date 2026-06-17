@@ -18,9 +18,7 @@ namespace Bodu.Globalization.Calendar.Builder;
 /// </remarks>
 public sealed class ImportBuilder
 {
-    /// <summary>
-    /// The selective <c>Use</c> directives, in declaration order.
-    /// </summary>
+    /// <summary>The selective <c>Use</c> directives, in declaration order.</summary>
     private readonly List<ImportUseBuilder> _uses = new();
 
     /// <summary>

@@ -21,28 +21,16 @@ namespace Bodu.Text.Bencode.Nodes;
 public sealed class BencodeValue
     : BencodeNode
 {
-    /// <summary>
-    /// The kind of scalar this value holds.
-    /// </summary>
+    /// <summary>The kind of scalar this value holds.</summary>
     private readonly BencodeValueKind _kind;
 
-    /// <summary>
-    /// The integer payload, valid when <see cref="_kind" /> is <see cref="BencodeValueKind.Integer" />. When
-    /// <see cref="_integerExceedsInt64" /> is set, the field holds the unchecked bit pattern of an unsigned value above
-    /// <see cref="long.MaxValue" />.
-    /// </summary>
+    /// <summary>The integer payload, valid when <see cref="_kind" /> is <see cref="BencodeValueKind.Integer" />. When <see cref="_integerExceedsInt64" /> is set, the field holds the unchecked bit pattern of an unsigned value above <see cref="long.MaxValue" />.</summary>
     private readonly long _integer;
 
-    /// <summary>
-    /// Whether the stored integer exceeds <see cref="long.MaxValue" /> and is therefore representable only as
-    /// <see cref="ulong" />. Values within the signed range are always stored in signed form, so two equal integers
-    /// always share one representation.
-    /// </summary>
+    /// <summary>Whether the stored integer exceeds <see cref="long.MaxValue" /> and is therefore representable only as <see cref="ulong" />. Values within the signed range are always stored in signed form, so two equal integers always share one representation.</summary>
     private readonly bool _integerExceedsInt64;
 
-    /// <summary>
-    /// The byte-string payload, valid when <see cref="_kind" /> is <see cref="BencodeValueKind.ByteString" />.
-    /// </summary>
+    /// <summary>The byte-string payload, valid when <see cref="_kind" /> is <see cref="BencodeValueKind.ByteString" />.</summary>
     private readonly byte[] _bytes;
 
     /// <summary>

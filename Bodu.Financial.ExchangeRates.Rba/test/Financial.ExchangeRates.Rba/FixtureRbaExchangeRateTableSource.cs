@@ -14,14 +14,10 @@ namespace Bodu.Financial.ExchangeRates.Rba;
 internal sealed class FixtureRbaExchangeRateTableSource
     : IRbaExchangeRateTableSource
 {
-    /// <summary>
-    /// The options used when parsing the workbook.
-    /// </summary>
+    /// <summary>The options used when parsing the workbook.</summary>
     private readonly RbaExchangeRateOptions _options;
 
-    /// <summary>
-    /// The embedded fixture file name to parse.
-    /// </summary>
+    /// <summary>The embedded fixture file name to parse.</summary>
     private readonly string _fileName;
 
     /// <summary>

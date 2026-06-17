@@ -48,51 +48,35 @@ namespace Bodu;
 public readonly partial struct WeekPattern
     : IEnumerable<DayOfWeek>
 {
-    /// <summary>
-    /// The bitmask value with every day selected.
-    /// </summary>
+    /// <summary>The bitmask value with every day selected.</summary>
     private const int MaxValue = 0b1111111;
 
-    /// <summary>
-    /// The bitmask value with no days selected.
-    /// </summary>
+    /// <summary>The bitmask value with no days selected.</summary>
     private const int MinValue = 0b0000000;
 
-    /// <summary>
-    /// The single-bit step used to test and set each successive day in the bitmask.
-    /// </summary>
+    /// <summary>The single-bit step used to test and set each successive day in the bitmask.</summary>
     private const byte ShiftValue = 0x01;
 
 
 #pragma warning disable IDE1006
 
-    /// <summary>
-    /// The single-letter day symbols (Sunday through Saturday) used when formatting a pattern.
-    /// </summary>
+    /// <summary>The single-letter day symbols (Sunday through Saturday) used when formatting a pattern.</summary>
     private static readonly char[] WeekdaySymbols = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 #pragma warning restore IDE1006
 
-    /// <summary>
-    /// The packed bitmask of selected days backing this pattern, one bit per day of the week.
-    /// </summary>
+    /// <summary>The packed bitmask of selected days backing this pattern, one bit per day of the week.</summary>
     private readonly byte _selectedDays;
 
 #pragma warning disable IDE1006
 
-    /// <summary>
-    /// Represents a <see cref="WeekPattern" /> with no days selected.
-    /// </summary>
+    /// <summary>Represents a <see cref="WeekPattern" /> with no days selected.</summary>
     public static readonly WeekPattern Empty;
 
-    /// <summary>
-    /// Represents a <see cref="WeekPattern" /> with Monday through Friday selected.
-    /// </summary>
+    /// <summary>Represents a <see cref="WeekPattern" /> with Monday through Friday selected.</summary>
     public static readonly WeekPattern Weekdays = new(
         DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday);
 
-    /// <summary>
-    /// Represents a <see cref="WeekPattern" /> with Saturday and Sunday selected.
-    /// </summary>
+    /// <summary>Represents a <see cref="WeekPattern" /> with Saturday and Sunday selected.</summary>
     public static readonly WeekPattern Weekend = new(DayOfWeek.Saturday, DayOfWeek.Sunday);
 
 #pragma warning restore IDE1006

@@ -48,34 +48,22 @@ public sealed partial class Multiset<T>
     public struct Enumerator
         : IEnumerator<T>
     {
-        /// <summary>
-        /// The multiset whose elements this enumerator iterates over.
-        /// </summary>
+        /// <summary>The multiset whose elements this enumerator iterates over.</summary>
         private readonly Multiset<T> _multiset;
 
-        /// <summary>
-        /// The multiset version captured at construction, used to detect concurrent modification.
-        /// </summary>
+        /// <summary>The multiset version captured at construction, used to detect concurrent modification.</summary>
         private readonly int _version;
 
-        /// <summary>
-        /// The underlying element/count enumerator that drives iteration over distinct elements.
-        /// </summary>
+        /// <summary>The underlying element/count enumerator that drives iteration over distinct elements.</summary>
         private Dictionary<T, int>.Enumerator _inner;
 
-        /// <summary>
-        /// The element currently being yielded. Read through <see cref="Current" />.
-        /// </summary>
+        /// <summary>The element currently being yielded. Read through <see cref="Current" />.</summary>
         private T _current;
 
-        /// <summary>
-        /// The number of remaining repetitions of <see cref="_current" /> still to be yielded.
-        /// </summary>
+        /// <summary>The number of remaining repetitions of <see cref="_current" /> still to be yielded.</summary>
         private int _remaining;
 
-        /// <summary>
-        /// Indicates whether the enumerator is positioned before the first element.
-        /// </summary>
+        /// <summary>Indicates whether the enumerator is positioned before the first element.</summary>
         private bool _beforeFirst;
 
         /// <summary>

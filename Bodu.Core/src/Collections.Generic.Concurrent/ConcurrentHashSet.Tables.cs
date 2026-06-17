@@ -18,15 +18,10 @@ public sealed partial class ConcurrentHashSet<T>
     /// </remarks>
     private sealed class Tables
     {
-        /// <summary>
-        /// The bucket array. Each slot holds the head of a singly linked <see cref="Node" /> chain, or
-        /// <see langword="null" /> when the bucket is empty.
-        /// </summary>
+        /// <summary>The bucket array. Each slot holds the head of a singly linked <see cref="Node" /> chain, or <see langword="null" /> when the bucket is empty.</summary>
         internal readonly Node?[] _buckets;
 
-        /// <summary>
-        /// The number of elements owned by each stripe lock, indexed by lock number.
-        /// </summary>
+        /// <summary>The number of elements owned by each stripe lock, indexed by lock number.</summary>
         /// <remarks>
         /// Each counter is mutated only while the corresponding stripe lock is held. Summing every counter while all
         /// locks are held yields an exact element count.

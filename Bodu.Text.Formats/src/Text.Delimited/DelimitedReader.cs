@@ -43,75 +43,46 @@ namespace Bodu.Text.Delimited;
 public sealed class DelimitedReader
     : IDisposable
 {
-    /// <summary>
-    /// The default size of the internal character buffer in characters used when no buffer size is supplied to the
-    /// constructor.
-    /// </summary>
+    /// <summary>The default size of the internal character buffer in characters used when no buffer size is supplied to the constructor.</summary>
     public const int DefaultBufferSize = 4096;
 
-    /// <summary>
-    /// The parse options that govern delimiter, quoting, and trimming behavior.
-    /// </summary>
+    /// <summary>The parse options that govern delimiter, quoting, and trimming behavior.</summary>
     private readonly DelimitedParseOptions _options;
 
-    /// <summary>
-    /// The internal character buffer that holds characters read from the underlying reader.
-    /// </summary>
+    /// <summary>The internal character buffer that holds characters read from the underlying reader.</summary>
     private readonly char[] _buffer;
 
-    /// <summary>
-    /// The header field values captured from the first row when header parsing is enabled.
-    /// </summary>
+    /// <summary>The header field values captured from the first row when header parsing is enabled.</summary>
     private readonly List<string> _headers = new();
 
-    /// <summary>
-    /// The field values parsed for the current row.
-    /// </summary>
+    /// <summary>The field values parsed for the current row.</summary>
     private readonly List<string> _fields = new();
 
-    /// <summary>
-    /// The underlying text reader supplying the delimited input. Owned by this instance.
-    /// </summary>
+    /// <summary>The underlying text reader supplying the delimited input. Owned by this instance.</summary>
     private TextReader _reader;
 
-    /// <summary>
-    /// The number of valid characters currently held in <see cref="_buffer" />.
-    /// </summary>
+    /// <summary>The number of valid characters currently held in <see cref="_buffer" />.</summary>
     private int _bufferLen;
 
-    /// <summary>
-    /// The index of the next unconsumed character within <see cref="_buffer" />.
-    /// </summary>
+    /// <summary>The index of the next unconsumed character within <see cref="_buffer" />.</summary>
     private int _pos;
 
-    /// <summary>
-    /// Indicates whether the end of the underlying reader has been reached.
-    /// </summary>
+    /// <summary>Indicates whether the end of the underlying reader has been reached.</summary>
     private bool _eof;
 
-    /// <summary>
-    /// Indicates whether this instance has been disposed.
-    /// </summary>
+    /// <summary>Indicates whether this instance has been disposed.</summary>
     private bool _disposed;
 
-    /// <summary>
-    /// Indicates whether the reader has performed its one-time initialization.
-    /// </summary>
+    /// <summary>Indicates whether the reader has performed its one-time initialization.</summary>
     private bool _initialized;
 
-    /// <summary>
-    /// Indicates whether the synchronous buffer was drained in preparation for asynchronous reads.
-    /// </summary>
+    /// <summary>Indicates whether the synchronous buffer was drained in preparation for asynchronous reads.</summary>
     private bool _drainedForAsync;
 
-    /// <summary>
-    /// The one-based line number of the current parse position.
-    /// </summary>
+    /// <summary>The one-based line number of the current parse position.</summary>
     private int _lineNumber = 1;
 
-    /// <summary>
-    /// The zero-based count of data rows read so far.
-    /// </summary>
+    /// <summary>The zero-based count of data rows read so far.</summary>
     private int _rowNumber;
 
     /// <summary>

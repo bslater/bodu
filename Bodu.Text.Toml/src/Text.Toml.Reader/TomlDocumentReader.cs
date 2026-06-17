@@ -43,67 +43,37 @@ namespace Bodu.Text.Toml.Reader;
 /// </remarks>
 public ref struct TomlDocumentReader
 {
-    /// <summary>
-    /// The initial capacity of the traversal stack; it grows on demand for documents nested deeper than this.
-    /// </summary>
+    /// <summary>The initial capacity of the traversal stack; it grows on demand for documents nested deeper than this.</summary>
     private const int InitialStackDepth = 8;
 
-    /// <summary>
-    /// The flat row store the cursor walks, with the document root at index 0.
-    /// </summary>
+    /// <summary>The flat row store the cursor walks, with the document root at index 0.</summary>
     private readonly List<TomlReaderRow> _rows;
 
-    /// <summary>
-    /// The UTF-8 source bytes, retained so a string value can be decoded on demand and a token's byte offset mapped to
-    /// a line and column on a binding failure. Held as a span because the reader is a <see langword="ref struct" />
-    /// scoped to a single read.
-    /// </summary>
+    /// <summary>The UTF-8 source bytes, retained so a string value can be decoded on demand and a token's byte offset mapped to a line and column on a binding failure. Held as a span because the reader is a <see langword="ref struct" /> scoped to a single read.</summary>
     private readonly ReadOnlySpan<byte> _source;
 
-    /// <summary>
-    /// A lazily created garbage-collected copy of <see cref="_source" />, materialized on the first
-    /// <see cref="GetOwnedSource" /> so that subtree documents from <c>TomlDocument.ParseValue</c> can retain the
-    /// source the reader holds only as a span. Every such document from one read shares this single copy.
-    /// </summary>
+    /// <summary>A lazily created garbage-collected copy of <see cref="_source" />, materialized on the first <see cref="GetOwnedSource" /> so that subtree documents from <c>TomlDocument.ParseValue</c> can retain the source the reader holds only as a span. Every such document from one read shares this single copy.</summary>
     private byte[]? _ownedSource;
 
-    /// <summary>
-    /// The stack of open containers, one frame per open table or array, innermost last.
-    /// </summary>
+    /// <summary>The stack of open containers, one frame per open table or array, innermost last.</summary>
     private Frame[] _stack;
 
-    /// <summary>
-    /// The number of open containers on <see cref="_stack" />, counting the document-root table. The publicly reported
-    /// <see cref="CurrentDepth" /> excludes the root, so it is this value less one.
-    /// </summary>
+    /// <summary>The number of open containers on <see cref="_stack" />, counting the document-root table. The publicly reported <see cref="CurrentDepth" /> excludes the root, so it is this value less one.</summary>
     private int _depth;
 
-    /// <summary>
-    /// Whether the first <see cref="Read" /> has occurred, after which the cursor is positioned within the store.
-    /// </summary>
+    /// <summary>Whether the first <see cref="Read" /> has occurred, after which the cursor is positioned within the store.</summary>
     private bool _started;
 
-    /// <summary>
-    /// The kind of the current token.
-    /// </summary>
+    /// <summary>The kind of the current token.</summary>
     private TomlTokenType _tokenType;
 
-    /// <summary>
-    /// The string carried by the current token: the key for a property name, or the decoded string for a string scalar.
-    /// It is <see langword="null" /> for a value-type scalar — whose value is decoded on demand from the current row —
-    /// and for a structural token.
-    /// </summary>
+    /// <summary>The string carried by the current token: the key for a property name, or the decoded string for a string scalar. It is <see langword="null" /> for a value-type scalar — whose value is decoded on demand from the current row — and for a structural token.</summary>
     private string? _value;
 
-    /// <summary>
-    /// The zero-based source byte offset at which the current token begins.
-    /// </summary>
+    /// <summary>The zero-based source byte offset at which the current token begins.</summary>
     private int _offset;
 
-    /// <summary>
-    /// The row index of the value the current token belongs to: the value row for a property name, scalar, or container
-    /// start; the container row for a container end.
-    /// </summary>
+    /// <summary>The row index of the value the current token belongs to: the value row for a property name, scalar, or container start; the container row for a container end.</summary>
     private int _currentRow;
 
     /// <summary>
@@ -506,20 +476,13 @@ public ref struct TomlDocumentReader
     /// </summary>
     private struct Frame
     {
-        /// <summary>
-        /// The row index of the container this frame walks.
-        /// </summary>
+        /// <summary>The row index of the container this frame walks.</summary>
         public int Container;
 
-        /// <summary>
-        /// The row index of the child currently being emitted, or <c>-1</c> before the first child.
-        /// </summary>
+        /// <summary>The row index of the child currently being emitted, or <c>-1</c> before the first child.</summary>
         public int CurrentChild;
 
-        /// <summary>
-        /// For a table frame, whether the property name for <see cref="CurrentChild" /> has been emitted and its value
-        /// is the next token to produce.
-        /// </summary>
+        /// <summary>For a table frame, whether the property name for <see cref="CurrentChild" /> has been emitted and its value is the next token to produce.</summary>
         public bool AwaitingValue;
 
         /// <summary>

@@ -12,9 +12,7 @@ namespace Bodu.Globalization.Calendar.Builder;
 /// </summary>
 public sealed class ImportUseBuilder
 {
-    /// <summary>
-    /// The adjustment policy identifiers applied to the imported concept, in declaration order.
-    /// </summary>
+    /// <summary>The adjustment policy identifiers applied to the imported concept, in declaration order.</summary>
     private readonly List<string> _adjustments = new();
 
     /// <summary>

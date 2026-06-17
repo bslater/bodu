@@ -12,10 +12,7 @@ namespace Bodu.Text.Bencode;
 /// </summary>
 internal static class BencodeLimits
 {
-    /// <summary>
-    /// The absolute maximum container nesting depth enforced while parsing or writing, applied even when a caller
-    /// configures a larger maximum depth.
-    /// </summary>
+    /// <summary>The absolute maximum container nesting depth enforced while parsing or writing, applied even when a caller configures a larger maximum depth.</summary>
     /// <remarks>
     /// <para>
     /// A configurable maximum depth only bounds normal use; left unbounded, a caller could set an arbitrarily large

@@ -29,39 +29,25 @@ namespace Bodu.IO.Compound;
 public sealed class CompoundBinaryFile
     : IDisposable
 {
-    /// <summary>
-    /// The fixed size, in bytes, of a single directory entry.
-    /// </summary>
+    /// <summary>The fixed size, in bytes, of a single directory entry.</summary>
     private const int DirectoryEntrySize = 128;
 
-    /// <summary>
-    /// The source stream retained only so it can be disposed according to the <c>leaveOpen</c> contract.
-    /// </summary>
+    /// <summary>The source stream retained only so it can be disposed according to the <c>leaveOpen</c> contract.</summary>
     private readonly Stream _source;
 
-    /// <summary>
-    /// Whether the source stream should be left open when this instance is disposed.
-    /// </summary>
+    /// <summary>Whether the source stream should be left open when this instance is disposed.</summary>
     private readonly bool _leaveOpen;
 
-    /// <summary>
-    /// The parsed header.
-    /// </summary>
+    /// <summary>The parsed header.</summary>
     private readonly CompoundFileHeader _header;
 
-    /// <summary>
-    /// The sector reader used to materialize stream payloads.
-    /// </summary>
+    /// <summary>The sector reader used to materialize stream payloads.</summary>
     private readonly CompoundSectorReader _sectors;
 
-    /// <summary>
-    /// The stream entries indexed by ordinal name for fast lookup.
-    /// </summary>
+    /// <summary>The stream entries indexed by ordinal name for fast lookup.</summary>
     private readonly Dictionary<string, CompoundDirectoryEntry> _streamsByName;
 
-    /// <summary>
-    /// Whether this instance has been disposed.
-    /// </summary>
+    /// <summary>Whether this instance has been disposed.</summary>
     private bool _disposed;
 
     /// <summary>

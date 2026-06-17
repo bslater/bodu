@@ -31,15 +31,10 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// </remarks>
 internal static class HinduLunarCalculator
 {
-    /// <summary>
-    /// The mean length of a tithi (one thirtieth of a synodic month), in days.
-    /// </summary>
+    /// <summary>The mean length of a tithi (one thirtieth of a synodic month), in days.</summary>
     private const double TithiDays = 29.530588861 / 30.0;
 
-    /// <summary>
-    /// The festival coordinates keyed by algorithm key: the amanta lunar month (1 = Chaitra to 12 = Phalguna), the
-    /// offset in tithis from that month's new moon, and whether the festival is the full moon (Purnima) of the month.
-    /// </summary>
+    /// <summary>The festival coordinates keyed by algorithm key: the amanta lunar month (1 = Chaitra to 12 = Phalguna), the offset in tithis from that month's new moon, and whether the festival is the full moon (Purnima) of the month.</summary>
     /// <remarks>
     /// <para>
     /// Festivals named in the purnimanta (northern) convention for the dark fortnight are expressed here in the

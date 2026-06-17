@@ -29,25 +29,16 @@ internal sealed class EnumConverter<T>
     : TomlConverter<T>
     where T : struct, Enum
 {
-    /// <summary>
-    /// The naming policy applied to member names, or <see langword="null" /> to use member names unchanged.
-    /// </summary>
+    /// <summary>The naming policy applied to member names, or <see langword="null" /> to use member names unchanged.</summary>
     private readonly TomlNamingPolicy? _namingPolicy;
 
-    /// <summary>
-    /// Whether a TOML integer is accepted as an enumeration value on read.
-    /// </summary>
+    /// <summary>Whether a TOML integer is accepted as an enumeration value on read.</summary>
     private readonly bool _allowIntegerValues;
 
-    /// <summary>
-    /// Maps each wire name to its enumeration value, matched case-insensitively.
-    /// </summary>
+    /// <summary>Maps each wire name to its enumeration value, matched case-insensitively.</summary>
     private readonly Dictionary<string, T> _nameToValue = new(StringComparer.OrdinalIgnoreCase);
 
-    /// <summary>
-    /// Maps each enumeration value to the wire name used when writing it; the first name wins when several members
-    /// share a value.
-    /// </summary>
+    /// <summary>Maps each enumeration value to the wire name used when writing it; the first name wins when several members share a value.</summary>
     private readonly Dictionary<T, string> _valueToName = new();
 
     /// <summary>

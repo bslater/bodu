@@ -21,19 +21,13 @@ namespace Bodu.Financial.ExchangeRates.Yahoo;
 internal sealed class YahooChartExchangeRateSource
     : IYahooExchangeRateChartSource
 {
-    /// <summary>
-    /// The fixed daily bar interval requested from the chart endpoint.
-    /// </summary>
+    /// <summary>The fixed daily bar interval requested from the chart endpoint.</summary>
     private const string DailyInterval = "1d";
 
-    /// <summary>
-    /// The HTTP client used to issue chart requests.
-    /// </summary>
+    /// <summary>The HTTP client used to issue chart requests.</summary>
     private readonly HttpClient _httpClient;
 
-    /// <summary>
-    /// The provider options supplying the base address, chart path, and symbol format.
-    /// </summary>
+    /// <summary>The provider options supplying the base address, chart path, and symbol format.</summary>
     private readonly YahooExchangeRateOptions _options;
 
     /// <summary>

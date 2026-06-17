@@ -12,19 +12,13 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 internal sealed class MLDsaParameters
 {
-    /// <summary>
-    /// The parameters of ML-DSA-44 (k = 4, ℓ = 4, η = 2, τ = 39, γ₁ = 2¹⁷, γ₂ = (q−1)/88, ω = 80, λ = 128).
-    /// </summary>
+    /// <summary>The parameters of ML-DSA-44 (k = 4, ℓ = 4, η = 2, τ = 39, γ₁ = 2¹⁷, γ₂ = (q−1)/88, ω = 80, λ = 128).</summary>
     internal static readonly MLDsaParameters MLDsa44 = new("ML-DSA-44", 4, 4, 2, 39, 1 << 17, (MLDsaEngine.Q - 1) / 88, 80, 128);
 
-    /// <summary>
-    /// The parameters of ML-DSA-65 (k = 6, ℓ = 5, η = 4, τ = 49, γ₁ = 2¹⁹, γ₂ = (q−1)/32, ω = 55, λ = 192).
-    /// </summary>
+    /// <summary>The parameters of ML-DSA-65 (k = 6, ℓ = 5, η = 4, τ = 49, γ₁ = 2¹⁹, γ₂ = (q−1)/32, ω = 55, λ = 192).</summary>
     internal static readonly MLDsaParameters MLDsa65 = new("ML-DSA-65", 6, 5, 4, 49, 1 << 19, (MLDsaEngine.Q - 1) / 32, 55, 192);
 
-    /// <summary>
-    /// The parameters of ML-DSA-87 (k = 8, ℓ = 7, η = 2, τ = 60, γ₁ = 2¹⁹, γ₂ = (q−1)/32, ω = 75, λ = 256).
-    /// </summary>
+    /// <summary>The parameters of ML-DSA-87 (k = 8, ℓ = 7, η = 2, τ = 60, γ₁ = 2¹⁹, γ₂ = (q−1)/32, ω = 75, λ = 256).</summary>
     internal static readonly MLDsaParameters MLDsa87 = new("ML-DSA-87", 8, 7, 2, 60, 1 << 19, (MLDsaEngine.Q - 1) / 32, 75, 256);
 
     /// <summary>

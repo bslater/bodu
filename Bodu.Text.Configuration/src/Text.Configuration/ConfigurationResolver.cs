@@ -15,16 +15,10 @@ namespace Bodu.Text.Configuration;
 /// </summary>
 internal sealed class ConfigurationResolver
 {
-    /// <summary>
-    /// The EditorConfig sentinel value that removes a previously set key from the effective configuration. Compared
-    /// case-insensitively to match real-world EditorConfig tooling — a deliberate deviation from the strict
-    /// lower-case-only reading of the spec.
-    /// </summary>
+    /// <summary>The EditorConfig sentinel value that removes a previously set key from the effective configuration. Compared case-insensitively to match real-world EditorConfig tooling — a deliberate deviation from the strict lower-case-only reading of the spec.</summary>
     private const string UnsetSentinel = "unset";
 
-    /// <summary>
-    /// The resolve options that govern key matching, precedence, and unset handling.
-    /// </summary>
+    /// <summary>The resolve options that govern key matching, precedence, and unset handling.</summary>
     private readonly ConfigurationResolveOptions _options;
 
     /// <summary>

@@ -64,9 +64,7 @@ namespace Bodu.Financial;
 public readonly partial struct Money<TCurrency>
     where TCurrency : ICurrency
 {
-    /// <summary>
-    /// The rounded amount in the major unit of <typeparamref name="TCurrency" />.
-    /// </summary>
+    /// <summary>The rounded amount in the major unit of <typeparamref name="TCurrency" />.</summary>
     private readonly decimal _amount;
 
     /// <summary>

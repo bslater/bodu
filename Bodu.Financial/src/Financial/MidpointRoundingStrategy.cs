@@ -13,19 +13,13 @@ namespace Bodu.Financial;
 public sealed class MidpointRoundingStrategy
     : IRoundingStrategy
 {
-    /// <summary>
-    /// The shared banker's-rounding (<see cref="MidpointRounding.ToEven" />) strategy.
-    /// </summary>
+    /// <summary>The shared banker's-rounding (<see cref="MidpointRounding.ToEven" />) strategy.</summary>
     public static readonly MidpointRoundingStrategy ToEven = new(MidpointRounding.ToEven);
 
-    /// <summary>
-    /// The shared away-from-zero (<see cref="MidpointRounding.AwayFromZero" />) strategy.
-    /// </summary>
+    /// <summary>The shared away-from-zero (<see cref="MidpointRounding.AwayFromZero" />) strategy.</summary>
     public static readonly MidpointRoundingStrategy AwayFromZero = new(MidpointRounding.AwayFromZero);
 
-    /// <summary>
-    /// The midpoint-rounding mode applied by this strategy.
-    /// </summary>
+    /// <summary>The midpoint-rounding mode applied by this strategy.</summary>
     private readonly MidpointRounding _mode;
 
     /// <summary>

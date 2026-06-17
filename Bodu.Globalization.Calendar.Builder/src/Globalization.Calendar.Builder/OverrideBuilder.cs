@@ -12,9 +12,7 @@ namespace Bodu.Globalization.Calendar.Builder;
 /// </summary>
 public sealed class OverrideBuilder
 {
-    /// <summary>
-    /// The override operations, in declaration order.
-    /// </summary>
+    /// <summary>The override operations, in declaration order.</summary>
     private readonly List<OverrideEntry> _entries = new();
 
     /// <summary>

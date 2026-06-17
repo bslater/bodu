@@ -46,29 +46,19 @@ namespace Bodu.IO.Hashing.CheckDigits;
 public sealed class Sedol
     : AlphanumericCheckDigitAlgorithm
 {
-    /// <summary>
-    /// The required body length of <c>6</c> characters.
-    /// </summary>
+    /// <summary>The required body length of <c>6</c> characters.</summary>
     public const int BodyLength = 6;
 
-    /// <summary>
-    /// The required full-sequence length of <c>7</c> characters.
-    /// </summary>
+    /// <summary>The required full-sequence length of <c>7</c> characters.</summary>
     public const int SequenceLength = 7;
 
-    /// <summary>
-    /// The SEDOL position weights <c>{1, 3, 1, 7, 3, 9}</c> applied left to right across the six body characters.
-    /// </summary>
+    /// <summary>The SEDOL position weights <c>{1, 3, 1, 7, 3, 9}</c> applied left to right across the six body characters.</summary>
     private static readonly int[] s_weights = [1, 3, 1, 7, 3, 9];
 
-    /// <summary>
-    /// The number of body characters appended so far, used to select the position weight.
-    /// </summary>
+    /// <summary>The number of body characters appended so far, used to select the position weight.</summary>
     private int _count;
 
-    /// <summary>
-    /// The running weighted sum accumulated over the appended body characters.
-    /// </summary>
+    /// <summary>The running weighted sum accumulated over the appended body characters.</summary>
     private int _sum;
 
     /// <summary>

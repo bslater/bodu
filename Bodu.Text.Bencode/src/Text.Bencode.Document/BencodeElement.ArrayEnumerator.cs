@@ -21,29 +21,19 @@ public readonly partial struct BencodeElement
     public struct ArrayEnumerator
         : IEnumerable<BencodeElement>, IEnumerator<BencodeElement>
     {
-        /// <summary>
-        /// The owning document.
-        /// </summary>
+        /// <summary>The owning document.</summary>
         private readonly BencodeDocument _document;
 
-        /// <summary>
-        /// The row index of the array being enumerated.
-        /// </summary>
+        /// <summary>The row index of the array being enumerated.</summary>
         private readonly int _arrayIndex;
 
-        /// <summary>
-        /// The total number of elements in the array.
-        /// </summary>
+        /// <summary>The total number of elements in the array.</summary>
         private readonly int _count;
 
-        /// <summary>
-        /// The row index of the element currently being yielded, or <c>-1</c> before the first move.
-        /// </summary>
+        /// <summary>The row index of the element currently being yielded, or <c>-1</c> before the first move.</summary>
         private int _currentRow;
 
-        /// <summary>
-        /// The number of elements already yielded.
-        /// </summary>
+        /// <summary>The number of elements already yielded.</summary>
         private int _consumed;
 
         /// <summary>

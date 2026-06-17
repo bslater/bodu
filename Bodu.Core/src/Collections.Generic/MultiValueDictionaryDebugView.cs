@@ -16,9 +16,7 @@ namespace Bodu.Collections.Generic;
 internal sealed class MultiValueDictionaryDebugView<TKey, TValue>
     where TKey : notnull
 {
-    /// <summary>
-    /// The dictionary whose contents are surfaced to the debugger.
-    /// </summary>
+    /// <summary>The dictionary whose contents are surfaced to the debugger.</summary>
     private readonly MultiValueDictionary<TKey, TValue> _dictionary;
 
     /// <summary>

@@ -20,9 +20,7 @@ namespace Bodu.Financial.ExchangeRates.Ecb.DependencyInjection;
 /// </summary>
 public static class EcbFinancialServiceBuilderExtensions
 {
-    /// <summary>
-    /// The name of the <see cref="HttpClient" /> configured for ECB downloads.
-    /// </summary>
+    /// <summary>The name of the <see cref="HttpClient" /> configured for ECB downloads.</summary>
     public const string HttpClientName = "Bodu.Financial.ExchangeRates.Ecb";
 
     /// <summary>

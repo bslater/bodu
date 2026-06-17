@@ -25,17 +25,10 @@ namespace Bodu.Financial;
 [JsonConverter(typeof(ExchangeRateJsonConverter))]
 public readonly record struct ExchangeRate
 {
-    /// <summary>
-    /// The underlying observed rate used for precise conversion. For a non-inverted rate this equals
-    /// <see cref="Rate" />; for an inverted rate it is the original reverse-pair rate, so conversion divides by it
-    /// rather than multiplying by a pre-rounded reciprocal.
-    /// </summary>
+    /// <summary>The underlying observed rate used for precise conversion. For a non-inverted rate this equals <see cref="Rate" />; for an inverted rate it is the original reverse-pair rate, so conversion divides by it rather than multiplying by a pre-rounded reciprocal.</summary>
     private readonly decimal _observedRate;
 
-    /// <summary>
-    /// The UTC instant at which the upstream data backing this rate was originally fetched, or <see langword="null" />
-    /// when the fetch instant is not tracked. Carried as provenance metadata only and excluded from equality.
-    /// </summary>
+    /// <summary>The UTC instant at which the upstream data backing this rate was originally fetched, or <see langword="null" /> when the fetch instant is not tracked. Carried as provenance metadata only and excluded from equality.</summary>
     private readonly DateTimeOffset? _fetchedAtUtc;
 
     /// <summary>

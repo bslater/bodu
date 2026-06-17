@@ -18,9 +18,7 @@ namespace Bodu.Text.Bencode.Serialization.Metadata;
 /// </summary>
 internal static class MetadataResolver
 {
-    /// <summary>
-    /// The binding flags used to discover serializable instance members.
-    /// </summary>
+    /// <summary>The binding flags used to discover serializable instance members.</summary>
     private const BindingFlags MemberFlags = BindingFlags.Public | BindingFlags.Instance;
 
     /// <summary>

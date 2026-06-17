@@ -44,21 +44,13 @@ namespace Bodu.Financial;
 [JsonConverter(typeof(MoneyJsonConverter))]
 public readonly partial struct Money
 {
-    /// <summary>
-    /// The rounded amount in the major unit of the currency identified by <see cref="_isoCode" />.
-    /// </summary>
+    /// <summary>The rounded amount in the major unit of the currency identified by <see cref="_isoCode" />.</summary>
     private readonly decimal _amount;
 
-    /// <summary>
-    /// The ISO 4217 alphabetic code identifying the currency, or <see langword="null" /> for a default-initialised
-    /// value.
-    /// </summary>
+    /// <summary>The ISO 4217 alphabetic code identifying the currency, or <see langword="null" /> for a default-initialised value.</summary>
     private readonly string? _isoCode;
 
-    /// <summary>
-    /// The explicit minor-unit scale plus one, or <c>0</c> when no explicit scale is associated and the precision is
-    /// derived from <see cref="CurrencyRegistry" />.
-    /// </summary>
+    /// <summary>The explicit minor-unit scale plus one, or <c>0</c> when no explicit scale is associated and the precision is derived from <see cref="CurrencyRegistry" />.</summary>
     /// <remarks>
     /// The "+1" bias lets a default-initialised <see cref="Money" /> (all-zero fields) mean "use the registry" rather
     /// than "explicit scale 0". A value of <c>n + 1</c> denotes an explicit minor-unit scale of <c>n</c> in the range

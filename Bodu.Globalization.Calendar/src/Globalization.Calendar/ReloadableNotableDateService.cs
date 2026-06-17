@@ -43,34 +43,22 @@ namespace Bodu.Globalization.Calendar;
 public sealed class ReloadableNotableDateService
     : INotableDateService
 {
-    /// <summary>
-    /// The provider supplying the resource currently in effect.
-    /// </summary>
+    /// <summary>The provider supplying the resource currently in effect.</summary>
     private readonly INotableDateResourceProvider _provider;
 
-    /// <summary>
-    /// The optional collaborators passed to each rebuilt inner service, or <see langword="null" /> for built-ins only.
-    /// </summary>
+    /// <summary>The optional collaborators passed to each rebuilt inner service, or <see langword="null" /> for built-ins only.</summary>
     private readonly NotableDateServiceOptions? _options;
 
-    /// <summary>
-    /// Guards the paired update of <see cref="_inner" /> and <see cref="_builtFrom" />.
-    /// </summary>
+    /// <summary>Guards the paired update of <see cref="_inner" /> and <see cref="_builtFrom" />.</summary>
     private readonly object _gate = new();
 
-    /// <summary>
-    /// The logger that records resolution-state rebuilds after a reload.
-    /// </summary>
+    /// <summary>The logger that records resolution-state rebuilds after a reload.</summary>
     private readonly ILogger _logger;
 
-    /// <summary>
-    /// The inner service resolving against <see cref="_builtFrom" />.
-    /// </summary>
+    /// <summary>The inner service resolving against <see cref="_builtFrom" />.</summary>
     private NotableDateService _inner;
 
-    /// <summary>
-    /// The resource <see cref="_inner" /> was built from, used to detect a reload.
-    /// </summary>
+    /// <summary>The resource <see cref="_inner" /> was built from, used to detect a reload.</summary>
     private NotableDateResource _builtFrom;
 
     /// <summary>

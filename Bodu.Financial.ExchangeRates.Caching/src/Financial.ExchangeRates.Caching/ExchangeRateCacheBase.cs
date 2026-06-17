@@ -41,15 +41,10 @@ public abstract class ExchangeRateCacheBase<TOptions>
     : IExchangeRateCache
     where TOptions : ExchangeRateCacheOptions
 {
-    /// <summary>
-    /// The validated options carrying the bound provider and any storage settings.
-    /// </summary>
+    /// <summary>The validated options carrying the bound provider and any storage settings.</summary>
     private readonly TOptions _options;
 
-    /// <summary>
-    /// The striped per-pair locks guarding the read-modify-write sequences in <see cref="Store" /> and
-    /// <see cref="RecordCoverage" />. One lock object is created per pair on first use and reused thereafter.
-    /// </summary>
+    /// <summary>The striped per-pair locks guarding the read-modify-write sequences in <see cref="Store" /> and <see cref="RecordCoverage" />. One lock object is created per pair on first use and reused thereafter.</summary>
     private readonly ConcurrentDictionary<ExchangeRatePair, object> _pairLocks = new();
 
     /// <summary>

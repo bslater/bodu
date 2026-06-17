@@ -14,9 +14,7 @@ namespace Bodu.Collections.Generic;
 /// <typeparam name="T">Specifies the type of elements stored in the deque.</typeparam>
 internal sealed class DequeDebugView<T>
 {
-    /// <summary>
-    /// The instance of <see cref="Deque{T}" /> being displayed.
-    /// </summary>
+    /// <summary>The instance of <see cref="Deque{T}" /> being displayed.</summary>
     private readonly Deque<T> _deque;
 
     /// <summary>

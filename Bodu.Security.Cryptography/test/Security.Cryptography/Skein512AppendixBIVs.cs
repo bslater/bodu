@@ -13,9 +13,7 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 internal static class Skein512AppendixBIVs
 {
-    /// <summary>
-    /// Skein-512-128 initial chaining value (state size 512 bits, output 128 bits).
-    /// </summary>
+    /// <summary>Skein-512-128 initial chaining value (state size 512 bits, output 128 bits).</summary>
     public static readonly IReadOnlyList<ulong> Skein512_128 =
     [
         0xA8BC7BF36FBF9F52UL,
@@ -28,9 +26,7 @@ internal static class Skein512AppendixBIVs
         0x6982AB289D46982DUL,
     ];
 
-    /// <summary>
-    /// Skein-512-160 initial chaining value (state size 512 bits, output 160 bits).
-    /// </summary>
+    /// <summary>Skein-512-160 initial chaining value (state size 512 bits, output 160 bits).</summary>
     public static readonly IReadOnlyList<ulong> Skein512_160 =
     [
         0x28B81A2AE013BD91UL,
@@ -43,9 +39,7 @@ internal static class Skein512AppendixBIVs
         0x01A47BB8A3F27A6EUL,
     ];
 
-    /// <summary>
-    /// Skein-512-224 initial chaining value (state size 512 bits, output 224 bits).
-    /// </summary>
+    /// <summary>Skein-512-224 initial chaining value (state size 512 bits, output 224 bits).</summary>
     public static readonly IReadOnlyList<ulong> Skein512_224 =
     [
         0xCCD0616248677224UL,
@@ -58,9 +52,7 @@ internal static class Skein512AppendixBIVs
         0x9E2CFCCFE1C41EF7UL,
     ];
 
-    /// <summary>
-    /// Skein-512-256 initial chaining value (state size 512 bits, output 256 bits).
-    /// </summary>
+    /// <summary>Skein-512-256 initial chaining value (state size 512 bits, output 256 bits).</summary>
     public static readonly IReadOnlyList<ulong> Skein512_256 =
     [
         0xCCD044A12FDB3E13UL,
@@ -73,9 +65,7 @@ internal static class Skein512AppendixBIVs
         0x3EEDBA1833EDFC13UL,
     ];
 
-    /// <summary>
-    /// Skein-512-384 initial chaining value (state size 512 bits, output 384 bits).
-    /// </summary>
+    /// <summary>Skein-512-384 initial chaining value (state size 512 bits, output 384 bits).</summary>
     public static readonly IReadOnlyList<ulong> Skein512_384 =
     [
         0xA3F6C6BF3A75EF5FUL,
@@ -88,9 +78,7 @@ internal static class Skein512AppendixBIVs
         0x266E17546AA18FF8UL,
     ];
 
-    /// <summary>
-    /// Skein-512-512 initial chaining value (state size 512 bits, output 512 bits).
-    /// </summary>
+    /// <summary>Skein-512-512 initial chaining value (state size 512 bits, output 512 bits).</summary>
     public static readonly IReadOnlyList<ulong> Skein512_512 =
     [
         0x4903ADFF749C51CEUL,

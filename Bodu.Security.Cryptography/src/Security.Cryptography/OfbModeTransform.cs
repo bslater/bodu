@@ -58,19 +58,13 @@ namespace Bodu.Security.Cryptography;
 public sealed class OfbModeTransform
     : IBlockCipherModeTransform
 {
-    /// <summary>
-    /// The underlying block cipher used to generate the keystream.
-    /// </summary>
+    /// <summary>The underlying block cipher used to generate the keystream.</summary>
     private readonly IBlockCipher _cipher;
 
-    /// <summary>
-    /// The running feedback register, updated with each generated keystream block.
-    /// </summary>
+    /// <summary>The running feedback register, updated with each generated keystream block.</summary>
     private readonly byte[] _currentIv;
 
-    /// <summary>
-    /// Indicates whether this instance has been disposed.
-    /// </summary>
+    /// <summary>Indicates whether this instance has been disposed.</summary>
     private bool _disposed;
 
     /// <summary>

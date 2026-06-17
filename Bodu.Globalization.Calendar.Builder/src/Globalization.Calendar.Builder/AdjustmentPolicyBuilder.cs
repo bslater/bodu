@@ -37,14 +37,10 @@ namespace Bodu.Globalization.Calendar.Builder;
 /// <seealso href="../guides/calendar/adjustment-rules.html">Observance adjustment rules (guide)</seealso>
 public sealed class AdjustmentPolicyBuilder
 {
-    /// <summary>
-    /// The weekdays attached to the trigger, in declaration order.
-    /// </summary>
+    /// <summary>The weekdays attached to the trigger, in declaration order.</summary>
     private readonly List<DayOfWeek> _triggerWeekdays = new();
 
-    /// <summary>
-    /// The custom handler parameters, keyed by name in insertion order.
-    /// </summary>
+    /// <summary>The custom handler parameters, keyed by name in insertion order.</summary>
     private readonly Dictionary<string, string> _parameters = new(StringComparer.Ordinal);
 
     /// <summary>

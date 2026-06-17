@@ -17,9 +17,7 @@ namespace Bodu.Globalization.Calendar.Builder;
 /// </summary>
 public sealed partial class NotableDateDocumentBuilder
 {
-    /// <summary>
-    /// Maps each JSON strategy property name to the corresponding XML strategy element local name.
-    /// </summary>
+    /// <summary>Maps each JSON strategy property name to the corresponding XML strategy element local name.</summary>
     private static readonly Dictionary<string, string> s_jsonStrategyElementNames = new(StringComparer.Ordinal)
     {
         ["fixed"] = "Fixed",

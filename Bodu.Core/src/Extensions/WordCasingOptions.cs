@@ -33,9 +33,7 @@ namespace Bodu.Extensions;
 /// </remarks>
 public sealed class WordCasingOptions
 {
-    /// <summary>
-    /// The default acronym catalogue applied when an instance does not supply its own list.
-    /// </summary>
+    /// <summary>The default acronym catalogue applied when an instance does not supply its own list.</summary>
     private static readonly string[] s_defaultAcronyms =
     [
         "API", "ASCII", "ATO", "BCL", "CPU", "CSS", "CSV", "DNS", "DTO", "EOF",
@@ -44,18 +42,14 @@ public sealed class WordCasingOptions
         "TCP", "TLS", "UI", "URI", "URL", "UTF8", "XML", "XOF",
     ];
 
-    /// <summary>
-    /// The default minor-word list applied when an instance does not supply its own list.
-    /// </summary>
+    /// <summary>The default minor-word list applied when an instance does not supply its own list.</summary>
     private static readonly string[] s_defaultMinorWords =
     [
         "a", "an", "and", "as", "at", "but", "by", "for", "from", "in", "into",
         "nor", "of", "on", "or", "over", "per", "the", "to", "via", "with",
     ];
 
-    /// <summary>
-    /// The shared default instance returned by <see cref="Default" />.
-    /// </summary>
+    /// <summary>The shared default instance returned by <see cref="Default" />.</summary>
     private static readonly WordCasingOptions s_default = new();
 
     /// <summary>

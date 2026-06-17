@@ -19,9 +19,7 @@ namespace Bodu.Financial.ExchangeRates.Caching.Sqlite.DependencyInjection;
 /// </summary>
 public static class SqliteExchangeRateCacheServiceBuilderExtensions
 {
-    /// <summary>
-    /// The default configuration section bound into <see cref="SqliteExchangeRateCacheOptions" />.
-    /// </summary>
+    /// <summary>The default configuration section bound into <see cref="SqliteExchangeRateCacheOptions" />.</summary>
     private const string DefaultCacheSection = "Financial:ExchangeRateCache:Sqlite";
 
     /// <summary>

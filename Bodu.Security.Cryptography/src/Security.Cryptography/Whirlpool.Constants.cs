@@ -8,21 +8,13 @@ namespace Bodu.Security.Cryptography;
 
 public sealed partial class Whirlpool
 {
-    /// <summary>
-    /// The number of rounds used by the internal <c>W</c> block cipher in every published revision of Whirlpool.
-    /// </summary>
+    /// <summary>The number of rounds used by the internal <c>W</c> block cipher in every published revision of Whirlpool.</summary>
     private const int RoundCount = 10;
 
-    /// <summary>
-    /// The reduction polynomial for the Galois field <c>GF(2^8)</c> used by Whirlpool: <c>x^8 + x^4 + x^3 + x^2 + 1</c>
-    /// .
-    /// </summary>
+    /// <summary>The reduction polynomial for the Galois field <c>GF(2^8)</c> used by Whirlpool: <c>x^8 + x^4 + x^3 + x^2 + 1</c> .</summary>
     private const int GaloisReductionPolynomial = 0x11D;
 
-    /// <summary>
-    /// The 256-entry S-box of the original <c>Whirlpool-0</c> function, reproduced verbatim from the 2000 <c>NESSIE</c>
-    /// submission.
-    /// </summary>
+    /// <summary>The 256-entry S-box of the original <c>Whirlpool-0</c> function, reproduced verbatim from the 2000 <c>NESSIE</c> submission.</summary>
     private static readonly byte[] s_sBoxWhirlpool0 =
     [
         0x68, 0xD0, 0xEB, 0x2B, 0x48, 0x9D, 0x6A, 0xE4, 0xE3, 0xA3, 0x56, 0x81, 0x7D, 0xF1, 0x85, 0x9E,
@@ -43,35 +35,25 @@ public sealed partial class Whirlpool
         0x13, 0xBB, 0xF7, 0x6F, 0xB9, 0x47, 0x2F, 0xEE, 0xB8, 0x7B, 0x89, 0x30, 0xD3, 0x7F, 0x76, 0x82,
     ];
 
-    /// <summary>
-    /// The <c>E</c> mini-box used to construct the <c>Whirlpool-T</c> and <c>Whirlpool</c> S-box.
-    /// </summary>
+    /// <summary>The <c>E</c> mini-box used to construct the <c>Whirlpool-T</c> and <c>Whirlpool</c> S-box.</summary>
     private static readonly byte[] s_miniBoxE =
     [
         0x1, 0xB, 0x9, 0xC, 0xD, 0x6, 0xF, 0x3, 0xE, 0x8, 0x7, 0x4, 0xA, 0x2, 0x5, 0x0,
     ];
 
-    /// <summary>
-    /// The <c>R</c> mini-box used to construct the <c>Whirlpool-T</c> and <c>Whirlpool</c> S-box.
-    /// </summary>
+    /// <summary>The <c>R</c> mini-box used to construct the <c>Whirlpool-T</c> and <c>Whirlpool</c> S-box.</summary>
     private static readonly byte[] s_miniBoxR =
     [
         0x7, 0xC, 0xB, 0xD, 0xE, 0x4, 0x9, 0xF, 0x6, 0x3, 0x8, 0xA, 0x2, 0x5, 0x1, 0x0,
     ];
 
-    /// <summary>
-    /// The diffusion matrix coefficients common to <c>Whirlpool-0</c> and <c>Whirlpool-T</c>, expressed in the order
-    /// <c>(c0, c1, …, c7)</c> used by <see cref="BuildMultiplicationTable" />.
-    /// </summary>
+    /// <summary>The diffusion matrix coefficients common to <c>Whirlpool-0</c> and <c>Whirlpool-T</c>, expressed in the order <c>(c0, c1, …, c7)</c> used by <see cref="BuildMultiplicationTable" />.</summary>
     private static readonly byte[] s_mdsOriginal =
     [
         0x01, 0x01, 0x03, 0x01, 0x05, 0x08, 0x09, 0x05,
     ];
 
-    /// <summary>
-    /// The diffusion matrix coefficients used by the final <c>Whirlpool</c> function, expressed in the order
-    /// <c>(c0, c1, …, c7)</c> used by <see cref="BuildMultiplicationTable" />.
-    /// </summary>
+    /// <summary>The diffusion matrix coefficients used by the final <c>Whirlpool</c> function, expressed in the order <c>(c0, c1, …, c7)</c> used by <see cref="BuildMultiplicationTable" />.</summary>
     private static readonly byte[] s_mdsFinal =
     [
         0x01, 0x01, 0x04, 0x01, 0x08, 0x05, 0x02, 0x09,

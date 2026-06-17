@@ -46,6 +46,7 @@ public static class XmlDocConfigJsonReader
         var preserveBlankLines = defaults.PreserveBlankLines;
         var preserveXmlTagAttributes = defaults.PreserveXmlTagAttributes;
         var preserveCrefText = defaults.PreserveCrefText;
+        var keepFieldSummaryOnSingleLine = defaults.KeepFieldSummaryOnSingleLine;
         ImmutableHashSet<string> blockTags = defaults.BlockTags;
         ImmutableHashSet<string> inlineTags = defaults.InlineTags;
         ImmutableHashSet<string> forceMultilineTags = defaults.ForceMultilineTags;
@@ -105,6 +106,10 @@ public static class XmlDocConfigJsonReader
                     preserveCrefText = ReadBoolean(property.Key, property.Value);
                     break;
 
+                case "keepFieldSummaryOnSingleLine":
+                    keepFieldSummaryOnSingleLine = ReadBoolean(property.Key, property.Value);
+                    break;
+
                 case "blockTags":
                     blockTags = ReadStringSet(property.Key, property.Value);
                     break;
@@ -139,6 +144,7 @@ public static class XmlDocConfigJsonReader
             preserveBlankLines,
             preserveXmlTagAttributes,
             preserveCrefText,
+            keepFieldSummaryOnSingleLine,
             blockTags,
             inlineTags,
             forceMultilineTags,

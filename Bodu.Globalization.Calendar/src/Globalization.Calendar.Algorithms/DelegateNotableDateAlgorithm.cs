@@ -14,9 +14,7 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 internal sealed class DelegateNotableDateAlgorithm
     : INotableDateAlgorithm
 {
-    /// <summary>
-    /// The delegate that computes the occurrence for a Gregorian year.
-    /// </summary>
+    /// <summary>The delegate that computes the occurrence for a Gregorian year.</summary>
     private readonly Func<int, DateOnly?> _calculate;
 
     /// <summary>

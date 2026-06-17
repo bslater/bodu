@@ -44,9 +44,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 public sealed partial class Damm
     : CheckDigitAlgorithm
 {
-    /// <summary>
-    /// The running interim digit accumulated across appended body digits; the final value is the Damm check digit.
-    /// </summary>
+    /// <summary>The running interim digit accumulated across appended body digits; the final value is the Damm check digit.</summary>
     private byte _interim;
 
     /// <summary>

@@ -20,19 +20,13 @@ namespace Bodu.Financial;
 public sealed class DatedExchangeRateProviderAdapter
     : IExchangeRateProvider
 {
-    /// <summary>
-    /// The underlying dated provider that resolves the actual rate.
-    /// </summary>
+    /// <summary>The underlying dated provider that resolves the actual rate.</summary>
     private readonly IDatedExchangeRateProvider _inner;
 
-    /// <summary>
-    /// The fixed valuation date supplied to <see cref="_inner" /> on every lookup.
-    /// </summary>
+    /// <summary>The fixed valuation date supplied to <see cref="_inner" /> on every lookup.</summary>
     private readonly DateOnly _date;
 
-    /// <summary>
-    /// The fixed (non-null) lookup options supplied to <see cref="_inner" /> on every lookup.
-    /// </summary>
+    /// <summary>The fixed (non-null) lookup options supplied to <see cref="_inner" /> on every lookup.</summary>
     private readonly ExchangeRateLookupOptions _options;
 
     /// <summary>

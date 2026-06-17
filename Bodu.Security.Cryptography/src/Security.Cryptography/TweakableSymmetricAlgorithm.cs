@@ -70,9 +70,7 @@ namespace Bodu.Security.Cryptography;
 public abstract class TweakableSymmetricAlgorithm
     : System.Security.Cryptography.SymmetricAlgorithm
 {
-    /// <summary>
-    /// Specifies the tweak sizes, in bits, that are supported by the algorithm.
-    /// </summary>
+    /// <summary>Specifies the tweak sizes, in bits, that are supported by the algorithm.</summary>
     /// <remarks>
     /// Each <see cref="KeySizes" /> entry expresses its minimum, maximum, and skip values in bits. This backing field
     /// defines the range of acceptable tweak sizes for a given algorithm and is used internally by the
@@ -86,9 +84,7 @@ public abstract class TweakableSymmetricAlgorithm
     [MaybeNull]
     protected KeySizes[] LegalTweakSizesValue = null!;
 
-    /// <summary>
-    /// Stores the currently configured tweak size, in bits, for the algorithm instance.
-    /// </summary>
+    /// <summary>Stores the currently configured tweak size, in bits, for the algorithm instance.</summary>
     /// <remarks>
     /// This backing field represents the effective size of the tweak currently configured via <see cref="TweakSize" />
     /// or <see cref="Tweak" />.
@@ -100,9 +96,7 @@ public abstract class TweakableSymmetricAlgorithm
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Follows the BCL protected field naming convention (like KeySizeValue on SymmetricAlgorithm) so that derived tweakable cipher types can read the tweak size without virtual dispatch.")]
     protected int TweakSizeValue = 0;
 
-    /// <summary>
-    /// Stores the current tweak value used by the algorithm.
-    /// </summary>
+    /// <summary>Stores the current tweak value used by the algorithm.</summary>
     /// <remarks>
     /// The value stored here is used internally and may be cleared or regenerated via <see cref="Dispose" />,
     /// <see cref="GenerateTweak" />, or changes to <see cref="TweakSize" />. Defensive copies are used when accessing
@@ -115,9 +109,7 @@ public abstract class TweakableSymmetricAlgorithm
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Follows the BCL protected field naming convention (like IVValue on SymmetricAlgorithm) so that derived tweakable cipher types can read and clear tweak material directly without virtual dispatch.")]
     protected byte[]? TweakValue = null;
 
-    /// <summary>
-    /// Indicates whether this instance has been disposed.
-    /// </summary>
+    /// <summary>Indicates whether this instance has been disposed.</summary>
     private bool _disposed = false;
 
     /// <summary>

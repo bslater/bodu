@@ -43,63 +43,42 @@ namespace Bodu.Security.Cryptography;
 public sealed partial class BlowfishBlockCipher
     : IBlockCipher
 {
-    /// <summary>
-    /// Length of the Blowfish block in bytes. Blowfish always operates on one 64-bit block at a time.
-    /// </summary>
+    /// <summary>Length of the Blowfish block in bytes. Blowfish always operates on one 64-bit block at a time.</summary>
     private const int BlockSizeInBytes = 8;
 
-    /// <summary>
-    /// Number of Feistel rounds defined by Blowfish.
-    /// </summary>
+    /// <summary>Number of Feistel rounds defined by Blowfish.</summary>
     private const int FeistelRounds = 16;
 
-    /// <summary>
-    /// Number of 32-bit words in the Blowfish P-array. The first 16 entries are round subkeys and the final two entries
-    /// are used after the final swap as whitening words.
-    /// </summary>
+    /// <summary>Number of 32-bit words in the Blowfish P-array. The first 16 entries are round subkeys and the final two entries are used after the final swap as whitening words.</summary>
     private const int PArrayLength = 18;
 
-    /// <summary>
-    /// Number of 32-bit entries in each Blowfish S-box.
-    /// </summary>
+    /// <summary>Number of 32-bit entries in each Blowfish S-box.</summary>
     private const int SBoxLength = 256;
 
-    /// <summary>
-    /// The mutable per-instance P-array.
-    /// </summary>
+    /// <summary>The mutable per-instance P-array.</summary>
     /// <remarks>
     /// Starts as <c>s_initP</c>, is XORed with cyclic key words, and is then replaced pair-by-pair during the
     /// all-zero-block expansion phase.
     /// </remarks>
     private readonly uint[] _p = new uint[PArrayLength];
 
-    /// <summary>
-    /// The mutable per-instance first S-box.
-    /// </summary>
+    /// <summary>The mutable per-instance first S-box.</summary>
     /// <remarks>
     /// The four S-boxes start as the pi-derived constants and become key-dependent lookup tables during key schedule
     /// expansion. They are secret-derived state and are cleared on disposal.
     /// </remarks>
     private readonly uint[] _s0 = new uint[SBoxLength];
 
-    /// <summary>
-    /// The mutable per-instance second S-box.
-    /// </summary>
+    /// <summary>The mutable per-instance second S-box.</summary>
     private readonly uint[] _s1 = new uint[SBoxLength];
 
-    /// <summary>
-    /// The mutable per-instance third S-box.
-    /// </summary>
+    /// <summary>The mutable per-instance third S-box.</summary>
     private readonly uint[] _s2 = new uint[SBoxLength];
 
-    /// <summary>
-    /// The mutable per-instance fourth S-box.
-    /// </summary>
+    /// <summary>The mutable per-instance fourth S-box.</summary>
     private readonly uint[] _s3 = new uint[SBoxLength];
 
-    /// <summary>
-    /// A value indicating whether this instance has been disposed.
-    /// </summary>
+    /// <summary>A value indicating whether this instance has been disposed.</summary>
     private bool _disposed;
 
     /// <summary>

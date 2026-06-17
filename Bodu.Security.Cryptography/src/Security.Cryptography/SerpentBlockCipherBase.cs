@@ -37,24 +37,18 @@ namespace Bodu.Security.Cryptography;
 public abstract partial class SerpentBlockCipherBase
     : IBlockCipher
 {
-    /// <summary>
-    /// The golden-ratio fractional constant used in the Serpent prekey recurrence.
-    /// </summary>
+    /// <summary>The golden-ratio fractional constant used in the Serpent prekey recurrence.</summary>
     /// <remarks>
     /// Serpent defines this value as <c>floor((sqrt(5) - 1) * 2^31)</c>, encoded as <c>0x9E3779B9</c>. It is mixed into
     /// every generated prekey word together with the word index before the 11-bit rotation.
     /// </remarks>
     private protected const uint Phi = 0x9E3779B9u;
 
-    /// <summary>
-    /// Indicates whether the instance has been disposed.
-    /// </summary>
+    /// <summary>Indicates whether the instance has been disposed.</summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Scoped private protected so only in-assembly Serpent variant classes can read the disposal flag directly in ThrowIfDisposed without virtual dispatch.")]
     private protected bool _disposed;
 
-    /// <summary>
-    /// The eight Serpent S-boxes, indexed <c>[sboxIndex * 16 + nibble]</c>.
-    /// </summary>
+    /// <summary>The eight Serpent S-boxes, indexed <c>[sboxIndex * 16 + nibble]</c>.</summary>
     /// <remarks>
     /// These are the fixed 4-bit Serpent substitution boxes <c>S0..S7</c>. They are applied in bitsliced form to 32
     /// parallel 4-bit columns rather than to individual nibbles in memory order.
@@ -87,9 +81,7 @@ public abstract partial class SerpentBlockCipherBase
         1, 13, 15, 0, 14, 8, 2, 11, 7, 4, 12, 10, 9, 3, 5, 6,
     ];
 
-    /// <summary>
-    /// The eight Serpent inverse S-boxes, indexed <c>[sboxIndex * 16 + nibble]</c>.
-    /// </summary>
+    /// <summary>The eight Serpent inverse S-boxes, indexed <c>[sboxIndex * 16 + nibble]</c>.</summary>
     /// <remarks>
     /// These tables reverse <see cref="s_sBoxes" /> during decryption. For every S-box index <c>s</c> and nibble
     /// <c>x</c>, <c>InvS_s[S_s[x]] == x</c>.

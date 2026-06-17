@@ -479,7 +479,7 @@ public static class BoduCodeStyleKats
 
         CodeStyleKat.XmlFormat(
             id: "XMLFMT-0012",
-            name: "List structure is preserved and expanded",
+            name: "List structure is preserved with single-line rows",
             input:
             """
             /// <remarks><list type="bullet"><item><description>Blank lines are ignored.</description></item><item><description>Assignments are parsed as key-value pairs.</description></item></list></remarks>
@@ -489,14 +489,10 @@ public static class BoduCodeStyleKats
             /// <remarks>
             /// <list type="bullet">
             /// <item>
-            /// <description>
-            /// Blank lines are ignored.
-            /// </description>
+            /// <description>Blank lines are ignored.</description>
             /// </item>
             /// <item>
-            /// <description>
-            /// Assignments are parsed as key-value pairs.
-            /// </description>
+            /// <description>Assignments are parsed as key-value pairs.</description>
             /// </item>
             /// </list>
             /// </remarks>

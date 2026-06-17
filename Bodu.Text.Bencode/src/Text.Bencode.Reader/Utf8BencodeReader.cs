@@ -36,71 +36,43 @@ namespace Bodu.Text.Bencode.Reader;
 /// </remarks>
 public ref struct Utf8BencodeReader
 {
-    /// <summary>
-    /// The source bytes being read.
-    /// </summary>
+    /// <summary>The source bytes being read.</summary>
     private readonly ReadOnlySpan<byte> _data;
 
-    /// <summary>
-    /// The maximum permitted container nesting depth.
-    /// </summary>
+    /// <summary>The maximum permitted container nesting depth.</summary>
     private readonly int _maxDepth;
 
-    /// <summary>
-    /// Whether dictionary keys may appear out of ascending bytewise order.
-    /// </summary>
+    /// <summary>Whether dictionary keys may appear out of ascending bytewise order.</summary>
     private readonly bool _allowUnsortedKeys;
 
-    /// <summary>
-    /// Whether a dictionary may contain more than one entry for the same key.
-    /// </summary>
+    /// <summary>Whether a dictionary may contain more than one entry for the same key.</summary>
     private readonly bool _allowDuplicateKeys;
 
-    /// <summary>
-    /// The stack of open containers, innermost last.
-    /// </summary>
+    /// <summary>The stack of open containers, innermost last.</summary>
     private readonly List<Frame> _frames;
 
-    /// <summary>
-    /// The read position of the next byte to consume.
-    /// </summary>
+    /// <summary>The read position of the next byte to consume.</summary>
     private int _position;
 
-    /// <summary>
-    /// The kind of the current token.
-    /// </summary>
+    /// <summary>The kind of the current token.</summary>
     private BencodeTokenType _tokenType;
 
-    /// <summary>
-    /// The decoded value of the current integer token, when it fits the signed 64-bit range.
-    /// </summary>
+    /// <summary>The decoded value of the current integer token, when it fits the signed 64-bit range.</summary>
     private long _intValue;
 
-    /// <summary>
-    /// The decoded value of the current integer token, when it is non-negative. Valid alongside
-    /// <see cref="_intValue" /> so both accessors can serve the same token.
-    /// </summary>
+    /// <summary>The decoded value of the current integer token, when it is non-negative. Valid alongside <see cref="_intValue" /> so both accessors can serve the same token.</summary>
     private ulong _uintValue;
 
-    /// <summary>
-    /// Whether the current integer token exceeds <see cref="long.MaxValue" /> and is therefore representable only
-    /// through <see cref="GetUInt64" />.
-    /// </summary>
+    /// <summary>Whether the current integer token exceeds <see cref="long.MaxValue" /> and is therefore representable only through <see cref="GetUInt64" />.</summary>
     private bool _intExceedsInt64;
 
-    /// <summary>
-    /// The start offset of the current token within the source bytes.
-    /// </summary>
+    /// <summary>The start offset of the current token within the source bytes.</summary>
     private int _tokenStart;
 
-    /// <summary>
-    /// The start offset of the current byte-string token's content.
-    /// </summary>
+    /// <summary>The start offset of the current byte-string token's content.</summary>
     private int _valueStart;
 
-    /// <summary>
-    /// The length of the current byte-string token's content.
-    /// </summary>
+    /// <summary>The length of the current byte-string token's content.</summary>
     private int _valueLength;
 
     /// <summary>

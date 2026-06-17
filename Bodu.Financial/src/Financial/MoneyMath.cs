@@ -16,19 +16,13 @@ namespace Bodu.Financial;
 /// </summary>
 internal static class MoneyMath
 {
-    /// <summary>
-    /// The maximum minor-unit precision a currency may declare, matching the <see cref="decimal" /> scale ceiling.
-    /// </summary>
+    /// <summary>The maximum minor-unit precision a currency may declare, matching the <see cref="decimal" /> scale ceiling.</summary>
     internal const int MaxMinorUnits = 28;
 
-    /// <summary>
-    /// The largest share count allocated on the stack before falling back to a heap buffer.
-    /// </summary>
+    /// <summary>The largest share count allocated on the stack before falling back to a heap buffer.</summary>
     internal const int StackAllocShareThreshold = 64;
 
-    /// <summary>
-    /// Pre-computed <c>10^n</c> factors for <c>n</c> in the inclusive range <c>[0, 28]</c>, indexed by minor units.
-    /// </summary>
+    /// <summary>Pre-computed <c>10^n</c> factors for <c>n</c> in the inclusive range <c>[0, 28]</c>, indexed by minor units.</summary>
     private static readonly decimal[] s_minorUnitFactors = BuildMinorUnitFactors();
 
     /// <summary>

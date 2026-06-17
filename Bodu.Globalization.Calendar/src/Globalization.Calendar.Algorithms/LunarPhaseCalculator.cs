@@ -18,19 +18,13 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// </remarks>
 internal static class LunarPhaseCalculator
 {
-    /// <summary>
-    /// The mean length of a synodic month, in days.
-    /// </summary>
+    /// <summary>The mean length of a synodic month, in days.</summary>
     private const double SynodicMonth = 29.530588861;
 
-    /// <summary>
-    /// The Julian Ephemeris Day of the J2000.0 epoch.
-    /// </summary>
+    /// <summary>The Julian Ephemeris Day of the J2000.0 epoch.</summary>
     private const double J2000JulianDay = 2451545.0;
 
-    /// <summary>
-    /// The J2000.0 epoch as a calendar instant (1 January 2000, 12:00 UT).
-    /// </summary>
+    /// <summary>The J2000.0 epoch as a calendar instant (1 January 2000, 12:00 UT).</summary>
     private static readonly DateTime s_j2000Epoch = new(2000, 1, 1, 12, 0, 0, DateTimeKind.Unspecified);
 
     /// <summary>

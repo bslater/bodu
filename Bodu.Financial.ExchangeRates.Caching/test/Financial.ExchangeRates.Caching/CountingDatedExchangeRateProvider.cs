@@ -13,9 +13,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 internal sealed class CountingDatedExchangeRateProvider
     : IDatedExchangeRateProvider
 {
-    /// <summary>
-    /// The fixed provider backing the counted lookups.
-    /// </summary>
+    /// <summary>The fixed provider backing the counted lookups.</summary>
     private readonly FixedDatedExchangeRateProvider _inner;
 
     /// <summary>

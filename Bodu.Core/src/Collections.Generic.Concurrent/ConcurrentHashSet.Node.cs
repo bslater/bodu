@@ -14,19 +14,13 @@ public sealed partial class ConcurrentHashSet<T>
     /// </summary>
     private sealed class Node
     {
-        /// <summary>
-        /// The element stored in this node.
-        /// </summary>
+        /// <summary>The element stored in this node.</summary>
         internal readonly T _item;
 
-        /// <summary>
-        /// The cached hash code of <see cref="_item" />, retained so lookups and resizes never recompute it.
-        /// </summary>
+        /// <summary>The cached hash code of <see cref="_item" />, retained so lookups and resizes never recompute it.</summary>
         internal readonly int _hashCode;
 
-        /// <summary>
-        /// The next node in the same bucket chain, or <see langword="null" /> at the end of the chain.
-        /// </summary>
+        /// <summary>The next node in the same bucket chain, or <see langword="null" /> at the end of the chain.</summary>
         /// <remarks>
         /// Declared <see langword="volatile" /> so that a lock-free reader walking the chain always observes a fully
         /// published successor rather than a torn or stale reference.

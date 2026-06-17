@@ -39,10 +39,7 @@ namespace Bodu.Text.Delimited;
 /// </example>
 public readonly struct DelimitedParseOptions
 {
-    /// <summary>
-    /// Gets a <see cref="DelimitedParseOptions" /> instance initialised with all default values — comma delimiter,
-    /// double-quote character, header row present, no field trimming, no inline comments.
-    /// </summary>
+    /// <summary>Gets a <see cref="DelimitedParseOptions" /> instance initialised with all default values — comma delimiter, double-quote character, header row present, no field trimming, no inline comments.</summary>
     /// <returns>A default <see cref="DelimitedParseOptions" /> value.</returns>
     public static readonly DelimitedParseOptions Default = new();
 

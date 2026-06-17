@@ -16,9 +16,7 @@ namespace Bodu.Globalization.Calendar;
 internal sealed class JsonDocumentNode
     : IDocumentNode
 {
-    /// <summary>
-    /// The wrapped element.
-    /// </summary>
+    /// <summary>The wrapped element.</summary>
     private readonly JsonElement _element;
 
     /// <summary>

@@ -44,24 +44,16 @@ public sealed record Argon2Parameters
     /// <returns>The number of lanes.</returns>
     public required int Parallelism { get; init; }
 
-    /// <summary>
-    /// The minimum supported tag length, in bytes.
-    /// </summary>
+    /// <summary>The minimum supported tag length, in bytes.</summary>
     internal const int MinTagLength = 4;
 
-    /// <summary>
-    /// The exclusive upper bound on the degree of parallelism (2^24).
-    /// </summary>
+    /// <summary>The exclusive upper bound on the degree of parallelism (2^24).</summary>
     internal const int MaxParallelism = (1 << 24) - 1;
 
-    /// <summary>
-    /// The Argon2 version 1.0 code (0x10).
-    /// </summary>
+    /// <summary>The Argon2 version 1.0 code (0x10).</summary>
     internal const int Version10 = 0x10;
 
-    /// <summary>
-    /// The Argon2 version 1.3 code (0x13), mandated by RFC 9106.
-    /// </summary>
+    /// <summary>The Argon2 version 1.3 code (0x13), mandated by RFC 9106.</summary>
     internal const int Version13 = 0x13;
 
     /// <summary>

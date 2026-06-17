@@ -24,14 +24,10 @@ namespace Bodu.Security.Cryptography;
 /// </remarks>
 internal static partial class MLDsaEngine
 {
-    /// <summary>
-    /// The polynomial degree n = 256 shared by every parameter set.
-    /// </summary>
+    /// <summary>The polynomial degree n = 256 shared by every parameter set.</summary>
     internal const int N = 256;
 
-    /// <summary>
-    /// The coefficient modulus q = 8380417.
-    /// </summary>
+    /// <summary>The coefficient modulus q = 8380417.</summary>
     internal const int Q = 8380417;
 
     /// <summary>

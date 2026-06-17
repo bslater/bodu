@@ -26,20 +26,16 @@ public static partial class DateTimeExtensions
         /// </para>
         /// <list type="bullet">
         /// <item>
-        /// <description>
-        /// weeks begin on Monday;
-        /// </description>
+        /// <description>weeks begin on Monday;</description>
         /// </item>
         /// <item>
-        /// <description>
-        /// week 1 is the first week containing at least four days of the new year.
-        /// </description>
+        /// <description>week 1 is the first week containing at least four days of the new year.</description>
         /// </item>
         /// </list>
         /// <para>
         /// The result is computed using <see cref="CalendarWeekRule.FirstFourDayWeek" /> and
-        /// <see cref="DayOfWeek.Monday" /> against the date portion of this value. Any time-of-day component is discarded
-        /// before the calculation.
+        /// <see cref="DayOfWeek.Monday" /> against the date portion of this value. Any time-of-day component is
+        /// discarded before the calculation.
         /// </para>
         /// </remarks>
         public int IsoWeekOfYear =>

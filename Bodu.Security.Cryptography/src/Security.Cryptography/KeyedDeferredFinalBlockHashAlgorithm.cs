@@ -62,11 +62,7 @@ public abstract class KeyedDeferredFinalBlockHashAlgorithm<T>
     : DeferredFinalBlockHashAlgorithm<T>
     where T : KeyedDeferredFinalBlockHashAlgorithm<T>, new()
 {
-    /// <summary>
-    /// Internal storage for the optional secret key. <see langword="null" /> when the instance operates in the unkeyed
-    /// digest profile; otherwise a defensive copy of the caller-supplied key. Always assigned via defensive copy and
-    /// cleared on disposal.
-    /// </summary>
+    /// <summary>Internal storage for the optional secret key. <see langword="null" /> when the instance operates in the unkeyed digest profile; otherwise a defensive copy of the caller-supplied key. Always assigned via defensive copy and cleared on disposal.</summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage(
         "StyleCop.CSharp.NamingRules",
         "SA1306:Field names should begin with lower-case letter",
@@ -74,10 +70,7 @@ public abstract class KeyedDeferredFinalBlockHashAlgorithm<T>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Follows the BCL protected field naming convention (like KeyValue on HMAC) so that derived BLAKE-family keyed hash types can read and clear key material directly without virtual dispatch.")]
     protected byte[]? KeyValue;
 
-    /// <summary>
-    /// The maximum accepted key size, in bits. Supplied by the derived class via the constructor and used by the
-    /// <see cref="Key" /> setter (after dividing by 8) to validate caller-supplied key material.
-    /// </summary>
+    /// <summary>The maximum accepted key size, in bits. Supplied by the derived class via the constructor and used by the <see cref="Key" /> setter (after dividing by 8) to validate caller-supplied key material.</summary>
     private readonly int _maximumKeySize;
 
     /// <summary>

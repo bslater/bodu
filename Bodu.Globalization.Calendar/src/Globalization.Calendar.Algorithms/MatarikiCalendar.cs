@@ -18,10 +18,7 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// </remarks>
 internal static class MatarikiCalendar
 {
-    /// <summary>
-    /// The gazetted Matariki observance dates, keyed by Gregorian year, from the schedule to the Te Kāhui o Matariki
-    /// Public Holiday Act 2022.
-    /// </summary>
+    /// <summary>The gazetted Matariki observance dates, keyed by Gregorian year, from the schedule to the Te Kāhui o Matariki Public Holiday Act 2022.</summary>
     private static readonly Dictionary<int, DateOnly> s_dates = new()
     {
         [2022] = new(2022, 6, 24),

@@ -26,14 +26,10 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>
-/// State / block size: 1024 bits (128 bytes).
-/// </description>
+/// <description>State / block size: 1024 bits (128 bytes).</description>
 /// </item>
 /// <item>
-/// <description>
-/// Output sizes: 384, 512, or 1024 bits — default 1024.
-/// </description>
+/// <description>Output sizes: 384, 512, or 1024 bits — default 1024.</description>
 /// </item>
 /// <item>
 /// <description>
@@ -41,9 +37,7 @@ namespace Bodu.Security.Cryptography;
 /// </description>
 /// </item>
 /// <item>
-/// <description>
-/// Optional variable-length key: 0–<see cref="Skein{T}.MaxKeySize" /> / 8 bytes.
-/// </description>
+/// <description>Optional variable-length key: 0–<see cref="Skein{T}.MaxKeySize" /> / 8 bytes.</description>
 /// </item>
 /// </list>
 /// <para>
@@ -66,9 +60,7 @@ namespace Bodu.Security.Cryptography;
 public sealed class Skein1024
     : Skein<Skein1024>
 {
-    /// <summary>
-    /// The set of output sizes, in bits, permitted by <see cref="Skein1024" />.
-    /// </summary>
+    /// <summary>The set of output sizes, in bits, permitted by <see cref="Skein1024" />.</summary>
     private static readonly int[] s_permittedHashSizes = [384, 512, 1024];
 
     /// <summary>

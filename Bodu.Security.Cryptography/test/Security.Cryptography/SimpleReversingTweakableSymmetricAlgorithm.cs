@@ -23,14 +23,10 @@ namespace Bodu.Security.Cryptography;
 /// The tweak is incorporated into the block cipher as follows:
 /// <list type="bullet">
 /// <item>
-/// <description>
-/// <b>Encrypt:</b> XOR the plaintext block with the tweak (cycling), then reverse the bytes.
-/// </description>
+/// <description><b>Encrypt:</b> XOR the plaintext block with the tweak (cycling), then reverse the bytes.</description>
 /// </item>
 /// <item>
-/// <description>
-/// <b>Decrypt:</b> Reverse the ciphertext block bytes, then XOR with the tweak (cycling).
-/// </description>
+/// <description><b>Decrypt:</b> Reverse the ciphertext block bytes, then XOR with the tweak (cycling).</description>
 /// </item>
 /// </list>
 /// This guarantees <c>Decrypt(Encrypt(pt, tweak), tweak) == pt</c> for any tweak and any block size.
@@ -48,55 +44,42 @@ namespace Bodu.Security.Cryptography;
 /// </note>
 /// </remarks>
 /// <example>
-/// <code language="csharp"> using var algo = new SimpleReversingTweakableSymmetricAlgorithm(); algo.GenerateKey();
-/// algo.GenerateIV(); algo.GenerateTweak(); var encryptor = (SimpleReversingCryptoTransform)algo.CreateEncryptor();
-/// byte[] ciphertext = encryptor.TransformFinalBlock(plaintext, 0, plaintext.Length); var decryptor =
+/// <code language="csharp">
+/// using var algo = new SimpleReversingTweakableSymmetricAlgorithm(); algo.GenerateKey(); algo.GenerateIV();
+/// algo.GenerateTweak(); var encryptor = (SimpleReversingCryptoTransform)algo.CreateEncryptor(); byte[] ciphertext =
+/// encryptor.TransformFinalBlock(plaintext, 0, plaintext.Length); var decryptor =
 /// (SimpleReversingCryptoTransform)algo.CreateDecryptor(); byte[] recovered = decryptor.TransformFinalBlock(ciphertext,
 /// 0, ciphertext.Length); Assert.AreEqual(1, encryptor.Diagnostics.EncryptLog.Count); Assert.AreEqual(1,
-/// decryptor.Diagnostics.DecryptLog.Count); </code>
+/// decryptor.Diagnostics.DecryptLog.Count);
+/// </code>
 /// </example>
 public sealed class SimpleReversingTweakableSymmetricAlgorithm
     : TweakableSymmetricAlgorithm
 {
     // ── Constants ─────────────────────────────────────────────────────────────────────────────
 
-    /// <summary>
-    /// The default block size in bits.
-    /// </summary>
+    /// <summary>The default block size in bits.</summary>
     public const int DefaultBlockSizeBits = 128;
 
-    /// <summary>
-    /// The default key size in bits.
-    /// </summary>
+    /// <summary>The default key size in bits.</summary>
     public const int DefaultKeySizeBits = 128;
 
-    /// <summary>
-    /// The default tweak size in bits.
-    /// </summary>
+    /// <summary>The default tweak size in bits.</summary>
     public const int DefaultTweakSizeBits = 128;
 
     // ── Static legal size declarations ────────────────────────────────────────────────────────
 
-    /// <summary>
-    /// The legal block sizes supported by this algorithm, mirroring
-    /// <see cref="SimpleReversingSymmetricAlgorithm.BlockSizesValue" />.
-    /// </summary>
+    /// <summary>The legal block sizes supported by this algorithm, mirroring <see cref="SimpleReversingSymmetricAlgorithm.BlockSizesValue" />.</summary>
     /// <remarks>
     /// <list type="bullet">
     /// <item>
-    /// <description>
-    /// 128, 192, 256 bits (step 64)
-    /// </description>
+    /// <description>128, 192, 256 bits (step 64)</description>
     /// </item>
     /// <item>
-    /// <description>
-    /// 448, 576 bits (step 128)
-    /// </description>
+    /// <description>448, 576 bits (step 128)</description>
     /// </item>
     /// <item>
-    /// <description>
-    /// 1024, 1536, 2048 bits (step 512)
-    /// </description>
+    /// <description>1024, 1536, 2048 bits (step 512)</description>
     /// </item>
     /// </list>
     /// </remarks>
@@ -107,19 +90,13 @@ public sealed class SimpleReversingTweakableSymmetricAlgorithm
         new KeySizes(1024, 2048, 512),
     ];
 
-    /// <summary>
-    /// The legal key sizes supported by this algorithm. Keys may be any byte-aligned length between 8 and 2048 bits
-    /// (step 8).
-    /// </summary>
+    /// <summary>The legal key sizes supported by this algorithm. Keys may be any byte-aligned length between 8 and 2048 bits (step 8).</summary>
     public static readonly KeySizes[] KeySizesValue =
     [
         new KeySizes(8, 2048, 8),
     ];
 
-    /// <summary>
-    /// The legal tweak sizes supported by this algorithm. Tweak sizes mirror the legal block sizes, allowing tests to
-    /// exercise matching, mismatched, and cycling tweak configurations.
-    /// </summary>
+    /// <summary>The legal tweak sizes supported by this algorithm. Tweak sizes mirror the legal block sizes, allowing tests to exercise matching, mismatched, and cycling tweak configurations.</summary>
     public static readonly KeySizes[] TweakSizesValue =
     [
         new KeySizes(128,  256,  64),

@@ -13,14 +13,10 @@ namespace Bodu.Financial.ExchangeRates.Ecb;
 internal sealed class FixtureEcbExchangeRateTableSource
     : IEcbExchangeRateTableSource
 {
-    /// <summary>
-    /// The options used when parsing the feed.
-    /// </summary>
+    /// <summary>The options used when parsing the feed.</summary>
     private readonly EcbExchangeRateOptions _options;
 
-    /// <summary>
-    /// The embedded fixture file name to parse.
-    /// </summary>
+    /// <summary>The embedded fixture file name to parse.</summary>
     private readonly string _fileName;
 
     /// <summary>

@@ -60,14 +60,10 @@ public sealed partial class Threefish512Cipher
     public Threefish512Cipher(ReadOnlySpan<byte> key, ReadOnlySpan<byte> tweak)
         : base(key, tweak) { }
 
-    /// <summary>
-    /// Length of the Threefish-512 key is 512 bits (64 bytes).
-    /// </summary>
+    /// <summary>Length of the Threefish-512 key is 512 bits (64 bytes).</summary>
     public const int KeySize = 512;
 
-    /// <summary>
-    /// The spec-defined rotation constants for the Threefish-512 Mix/Unmix operations (rotation amounts 0 through 3).
-    /// </summary>
+    /// <summary>The spec-defined rotation constants for the Threefish-512 Mix/Unmix operations (rotation amounts 0 through 3).</summary>
     /// <remarks>
     /// Declared as named <see langword="int" /> constants so the JIT can fold each Mix/Unmix call to a ROL/ROR with an
     /// immediate count, and so all 32 values live in one place rather than being duplicated between Encrypt, Decrypt,
@@ -75,44 +71,28 @@ public sealed partial class Threefish512Cipher
     /// </remarks>
     private const int R0 = 46, R1 = 36, R2 = 19, R3 = 37;
 
-    /// <summary>
-    /// The spec-defined Threefish-512 rotation constants (rotation amounts 4 through 7).
-    /// </summary>
+    /// <summary>The spec-defined Threefish-512 rotation constants (rotation amounts 4 through 7).</summary>
     private const int R4 = 33, R5 = 27, R6 = 14, R7 = 42;
 
-    /// <summary>
-    /// The spec-defined Threefish-512 rotation constants (rotation amounts 8 through 11).
-    /// </summary>
+    /// <summary>The spec-defined Threefish-512 rotation constants (rotation amounts 8 through 11).</summary>
     private const int R8 = 17, R9 = 49, R10 = 36, R11 = 39;
 
-    /// <summary>
-    /// The spec-defined Threefish-512 rotation constants (rotation amounts 12 through 15).
-    /// </summary>
+    /// <summary>The spec-defined Threefish-512 rotation constants (rotation amounts 12 through 15).</summary>
     private const int R12 = 44, R13 = 9, R14 = 54, R15 = 56;
 
-    /// <summary>
-    /// The spec-defined Threefish-512 rotation constants (rotation amounts 16 through 19).
-    /// </summary>
+    /// <summary>The spec-defined Threefish-512 rotation constants (rotation amounts 16 through 19).</summary>
     private const int R16 = 39, R17 = 30, R18 = 34, R19 = 24;
 
-    /// <summary>
-    /// The spec-defined Threefish-512 rotation constants (rotation amounts 20 through 23).
-    /// </summary>
+    /// <summary>The spec-defined Threefish-512 rotation constants (rotation amounts 20 through 23).</summary>
     private const int R20 = 13, R21 = 50, R22 = 10, R23 = 17;
 
-    /// <summary>
-    /// The spec-defined Threefish-512 rotation constants (rotation amounts 24 through 27).
-    /// </summary>
+    /// <summary>The spec-defined Threefish-512 rotation constants (rotation amounts 24 through 27).</summary>
     private const int R24 = 25, R25 = 29, R26 = 39, R27 = 43;
 
-    /// <summary>
-    /// The spec-defined Threefish-512 rotation constants (rotation amounts 28 through 31).
-    /// </summary>
+    /// <summary>The spec-defined Threefish-512 rotation constants (rotation amounts 28 through 31).</summary>
     private const int R28 = 8, R29 = 35, R30 = 56, R31 = 22;
 
-    /// <summary>
-    /// The full 32-entry Threefish-512 rotation schedule exposed through <see cref="RotationSchedule" />.
-    /// </summary>
+    /// <summary>The full 32-entry Threefish-512 rotation schedule exposed through <see cref="RotationSchedule" />.</summary>
     private static readonly int[] s_rotationSchedule =
     [
         R0, R1, R2, R3, R4, R5, R6, R7,

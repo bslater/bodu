@@ -33,9 +33,7 @@ namespace Bodu.Test.IO;
 /// </description>
 /// </item>
 /// <item>
-/// <description>
-/// <see cref="AsyncDisposeCalled" /> — whether <see cref="DisposeAsync" /> was called.
-/// </description>
+/// <description><see cref="AsyncDisposeCalled" /> — whether <see cref="DisposeAsync" /> was called.</description>
 /// </item>
 /// </list>
 /// <para>

@@ -28,9 +28,7 @@ namespace Bodu.Financial;
 /// </remarks>
 public sealed class ExchangeRateBook
 {
-    /// <summary>
-    /// The per-pair-and-provider series store, frozen after construction for fast read-only access.
-    /// </summary>
+    /// <summary>The per-pair-and-provider series store, frozen after construction for fast read-only access.</summary>
     private readonly FrozenDictionary<ExchangeRateSeriesKey, ExchangeRateSeries> _series;
 
     /// <summary>

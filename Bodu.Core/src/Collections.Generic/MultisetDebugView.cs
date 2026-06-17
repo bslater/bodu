@@ -16,9 +16,7 @@ namespace Bodu.Collections.Generic;
 internal sealed class MultisetDebugView<T>
     where T : notnull
 {
-    /// <summary>
-    /// The <see cref="Multiset{T}" /> instance being debugged.
-    /// </summary>
+    /// <summary>The <see cref="Multiset{T}" /> instance being debugged.</summary>
     private readonly Multiset<T> _multiset;
 
     /// <summary>

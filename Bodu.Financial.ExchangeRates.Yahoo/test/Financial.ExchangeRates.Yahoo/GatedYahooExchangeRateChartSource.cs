@@ -13,24 +13,16 @@ namespace Bodu.Financial.ExchangeRates.Yahoo;
 internal sealed class GatedYahooExchangeRateChartSource
     : IYahooExchangeRateChartSource
 {
-    /// <summary>
-    /// The provider options used while parsing the fixture once the gate opens.
-    /// </summary>
+    /// <summary>The provider options used while parsing the fixture once the gate opens.</summary>
     private readonly YahooExchangeRateOptions _options;
 
-    /// <summary>
-    /// The gate that callers await; the fetch completes only after it is released.
-    /// </summary>
+    /// <summary>The gate that callers await; the fetch completes only after it is released.</summary>
     private readonly TaskCompletionSource _gate = new(TaskCreationOptions.RunContinuationsAsynchronously);
 
-    /// <summary>
-    /// Signals when the first caller has entered the fetch, so the test can release the gate after a race has formed.
-    /// </summary>
+    /// <summary>Signals when the first caller has entered the fetch, so the test can release the gate after a race has formed.</summary>
     private readonly TaskCompletionSource _entered = new(TaskCreationOptions.RunContinuationsAsynchronously);
 
-    /// <summary>
-    /// The number of times <see cref="GetChartAsync" /> has been entered.
-    /// </summary>
+    /// <summary>The number of times <see cref="GetChartAsync" /> has been entered.</summary>
     private int _callCount;
 
     /// <summary>

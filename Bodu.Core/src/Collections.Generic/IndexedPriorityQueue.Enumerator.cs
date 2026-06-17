@@ -38,25 +38,16 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
     public struct Enumerator :
         IEnumerator<KeyValuePair<TElement, TPriority>>
     {
-        /// <summary>
-        /// The queue being enumerated.
-        /// </summary>
+        /// <summary>The queue being enumerated.</summary>
         private readonly IndexedPriorityQueue<TElement, TPriority> _queue;
 
-        /// <summary>
-        /// The queue's <see cref="_version" /> captured at construction; used to detect concurrent modification.
-        /// </summary>
+        /// <summary>The queue's <see cref="_version" /> captured at construction; used to detect concurrent modification.</summary>
         private readonly int _version;
 
-        /// <summary>
-        /// The slot index currently exposed by <see cref="Current" />; <c>-1</c> indicates an unstarted or exhausted
-        /// enumerator.
-        /// </summary>
+        /// <summary>The slot index currently exposed by <see cref="Current" />; <c>-1</c> indicates an unstarted or exhausted enumerator.</summary>
         private int _index;
 
-        /// <summary>
-        /// The element-priority pair returned by <see cref="Current" /> for the current position.
-        /// </summary>
+        /// <summary>The element-priority pair returned by <see cref="Current" /> for the current position.</summary>
         private KeyValuePair<TElement, TPriority> _current;
 
         /// <summary>

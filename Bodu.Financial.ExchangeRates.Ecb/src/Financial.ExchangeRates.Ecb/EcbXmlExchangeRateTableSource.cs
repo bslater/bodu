@@ -12,19 +12,13 @@ namespace Bodu.Financial.ExchangeRates.Ecb;
 internal sealed class EcbXmlExchangeRateTableSource
     : IEcbExchangeRateTableSource
 {
-    /// <summary>
-    /// The HTTP client used to download feed files.
-    /// </summary>
+    /// <summary>The HTTP client used to download feed files.</summary>
     private readonly HttpClient _httpClient;
 
-    /// <summary>
-    /// The provider options supplying the base URL, refresh interval, and alias map.
-    /// </summary>
+    /// <summary>The provider options supplying the base URL, refresh interval, and alias map.</summary>
     private readonly EcbExchangeRateOptions _options;
 
-    /// <summary>
-    /// The feed byte cache.
-    /// </summary>
+    /// <summary>The feed byte cache.</summary>
     private readonly IEcbFeedCache _cache;
 
     /// <summary>

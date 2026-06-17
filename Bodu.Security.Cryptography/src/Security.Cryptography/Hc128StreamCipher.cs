@@ -31,49 +31,31 @@ namespace Bodu.Security.Cryptography;
 internal sealed class Hc128StreamCipher
     : IStreamCipher
 {
-    /// <summary>
-    /// The required key length, in bytes (128 bits).
-    /// </summary>
+    /// <summary>The required key length, in bytes (128 bits).</summary>
     internal const int KeySizeBytes = 16;
 
-    /// <summary>
-    /// The required IV length, in bytes (128 bits).
-    /// </summary>
+    /// <summary>The required IV length, in bytes (128 bits).</summary>
     internal const int NonceSizeBytes = 16;
 
-    /// <summary>
-    /// The keystream block length, in bytes (512 bits, i.e. sixteen 32-bit words).
-    /// </summary>
+    /// <summary>The keystream block length, in bytes (512 bits, i.e. sixteen 32-bit words).</summary>
     internal const int BlockSizeBytes = 64;
 
-    /// <summary>
-    /// The number of 32-bit words in each of the two secret tables.
-    /// </summary>
+    /// <summary>The number of 32-bit words in each of the two secret tables.</summary>
     private const int TableSize = 512;
 
-    /// <summary>
-    /// The bit mask used to wrap table indices into the range <c>0</c> to <c>TableSize - 1</c>.
-    /// </summary>
+    /// <summary>The bit mask used to wrap table indices into the range <c>0</c> to <c>TableSize - 1</c>.</summary>
     private const int TableMask = TableSize - 1;
 
-    /// <summary>
-    /// The secret table <c>P</c>, holding 512 evolving 32-bit state words.
-    /// </summary>
+    /// <summary>The secret table <c>P</c>, holding 512 evolving 32-bit state words.</summary>
     private readonly uint[] _p = new uint[TableSize];
 
-    /// <summary>
-    /// The secret table <c>Q</c>, holding 512 evolving 32-bit state words.
-    /// </summary>
+    /// <summary>The secret table <c>Q</c>, holding 512 evolving 32-bit state words.</summary>
     private readonly uint[] _q = new uint[TableSize];
 
-    /// <summary>
-    /// The step counter, taken modulo 1024 to alternate between the <c>P</c> and <c>Q</c> halves.
-    /// </summary>
+    /// <summary>The step counter, taken modulo 1024 to alternate between the <c>P</c> and <c>Q</c> halves.</summary>
     private uint _counter;
 
-    /// <summary>
-    /// Indicates whether this instance has been disposed and its secret tables cleared.
-    /// </summary>
+    /// <summary>Indicates whether this instance has been disposed and its secret tables cleared.</summary>
     private bool _disposed;
 
     /// <summary>
