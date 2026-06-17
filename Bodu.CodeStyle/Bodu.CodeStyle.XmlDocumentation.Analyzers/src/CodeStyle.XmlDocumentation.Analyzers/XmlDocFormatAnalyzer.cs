@@ -14,6 +14,7 @@ using Bodu.CodeStyle.XmlDocumentation.Analyzers.Diagnostics;
 using Bodu.CodeStyle.XmlDocumentation.Analyzers.Internal;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
 
@@ -85,7 +86,7 @@ public sealed class XmlDocFormatAnalyzer : DiagnosticAnalyzer
             var triviaText = trivia.ToFullString();
             var baseIndent = ResolveBaseIndent(trivia);
 
-            var formatContext = new XmlDocFormatContext(baseIndent, lineEnding, XmlDocMemberKindHint.Unknown);
+            var formatContext = new XmlDocFormatContext(baseIndent, lineEnding, ResolveMemberKind(trivia));
             XmlDocFormatResult result = formatter.FormatTrivia(triviaText, formatContext, options);
 
             if (!result.Changed) continue;
@@ -114,6 +115,24 @@ public sealed class XmlDocFormatAnalyzer : DiagnosticAnalyzer
                 treeContext.ReportDiagnostic(Diagnostic.Create(descriptor, location, properties));
             }
         }
+    }
+
+    private static XmlDocMemberKindHint ResolveMemberKind(SyntaxTrivia trivia)
+    {
+        SyntaxNode? owner = trivia.Token.Parent?.FirstAncestorOrSelf<MemberDeclarationSyntax>();
+        return owner switch
+        {
+            BaseTypeDeclarationSyntax => XmlDocMemberKindHint.Type,
+            DelegateDeclarationSyntax => XmlDocMemberKindHint.Method,
+            MethodDeclarationSyntax => XmlDocMemberKindHint.Method,
+            ConstructorDeclarationSyntax => XmlDocMemberKindHint.Constructor,
+            PropertyDeclarationSyntax => XmlDocMemberKindHint.Property,
+            IndexerDeclarationSyntax => XmlDocMemberKindHint.Property,
+            FieldDeclarationSyntax => XmlDocMemberKindHint.Field,
+            EventFieldDeclarationSyntax => XmlDocMemberKindHint.Event,
+            EventDeclarationSyntax => XmlDocMemberKindHint.Event,
+            _ => XmlDocMemberKindHint.Unknown,
+        };
     }
 
     private static string ResolveBaseIndent(SyntaxTrivia trivia)

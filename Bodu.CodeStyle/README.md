@@ -73,6 +73,8 @@ Reserved future ranges within BODU1xxx:
 Defaults match the Bodu codebase conventions:
 
 - `<summary>`, `<remarks>`, `<para>`, `<example>`, and `<list>` are block tags that emit on their own lines.
+- On a **field** declaration, `<summary>` instead stays on a single line unless its content exceeds the width
+  budget, matching how Bodu documents simple field values; on all other member kinds `<summary>` is block.
 - `<param>`, `<typeparam>`, `<returns>`, `<exception>`, and `<value>` stay single-line when short enough.
 - `<c>`, `<see>`, `<paramref>`, and `<typeparamref>` are inline atomic tokens and are never split across lines.
 - Lines wrap at `120` characters by default, breaking only between tokens.
