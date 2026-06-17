@@ -181,6 +181,46 @@ public sealed class SqliteExchangeRateCacheServiceBuilderExtensionsTests
     }
 
     /// <summary>
+    /// Verifies that, with <see cref="ExchangeRateCacheOptions.ValidateStorageOnStart" /> set over a database that
+    /// cannot be opened, the startup validation the host runs fails, so a misconfigured database fails the host start
+    /// rather than the first lookup.
+    /// </summary>
+    [TestMethod]
+    public void AddSqliteExchangeRateCache_WhenValidateStorageOnStartAndDatabaseUnusable_ShouldFailStartupValidation()
+    {
+        string unusablePath = Path.Combine(Path.GetDirectoryName(_databasePath)!, "missing-subdirectory", "x.db");
+        ServiceProvider provider = BuildProvider(builder =>
+            builder.AddSqliteExchangeRateCache("RBA", configure: o =>
+            {
+                o.DatabaseFilePath = unusablePath;
+                o.ValidateStorageOnStart = true;
+            }));
+
+        IStartupValidator startup = provider.GetRequiredService<IStartupValidator>();
+
+        _ = Assert.ThrowsExactly<OptionsValidationException>(startup.Validate);
+    }
+
+    /// <summary>
+    /// Verifies that, with <see cref="ExchangeRateCacheOptions.ValidateStorageOnStart" /> set over a usable database,
+    /// the startup validation the host runs passes.
+    /// </summary>
+    [TestMethod]
+    public void AddSqliteExchangeRateCache_WhenValidateStorageOnStartAndDatabaseUsable_ShouldPassStartupValidation()
+    {
+        ServiceProvider provider = BuildProvider(builder =>
+            builder.AddSqliteExchangeRateCache("RBA", configure: o =>
+            {
+                o.DatabaseFilePath = _databasePath;
+                o.ValidateStorageOnStart = true;
+            }));
+
+        IStartupValidator startup = provider.GetRequiredService<IStartupValidator>();
+
+        startup.Validate();
+    }
+
+    /// <summary>
     /// Builds a service provider after applying the supplied registration against a fresh financial builder.
     /// </summary>
     /// <param name="register">The registration callback.</param>

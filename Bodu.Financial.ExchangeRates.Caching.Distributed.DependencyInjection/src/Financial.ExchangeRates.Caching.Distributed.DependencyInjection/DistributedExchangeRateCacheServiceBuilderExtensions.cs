@@ -93,6 +93,10 @@ public static class DistributedExchangeRateCacheServiceBuilderExtensions
             .Validate(static options => options.TryValidate(out _), "Distributed exchange-rate cache options are invalid.")
             .ValidateOnStart();
 
+        // Probe the backing store at host start when ValidateStorageOnStart is set, so an unreachable distributed cache
+        // fails the start rather than the first lookup. The probe runs through the same ValidateOnStart wiring.
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IValidateOptions<DistributedExchangeRateCacheOptions>, DistributedCacheStorageStartupValidator>());
+
         // Register the concrete cache once as a singleton so a single instance — and its per-pair locks — backs every
         // resolution. The backing IDistributedCache is resolved from the container so any registered distributed cache
         // (Redis, in-memory, SQL Server, …) can host it.

@@ -53,10 +53,11 @@ public class ExchangeRateCacheOptions
     /// <returns>The configured startup-validation setting.</returns>
     /// <remarks>
     /// The probe surfaces a misconfigured directory, an unopenable database, or an unreachable distributed cache at
-    /// construction. Under dependency injection a cache is constructed when first resolved, so resolve it during
-    /// startup to fail at start. This setting is independent of <see cref="ThrowOnStorageFailure" />: a cache can
-    /// validate once at construction yet still degrade best-effort on a later transient fault, or run best-effort at
-    /// construction yet fail fast on every later read or write.
+    /// construction. The SQLite and distributed dependency-injection packages run this probe through their
+    /// <c>ValidateOnStart</c> wiring, so a misconfigured store fails the host start; a cache constructed directly
+    /// probes in its constructor instead. This setting is independent of <see cref="ThrowOnStorageFailure" />: a cache
+    /// can validate once at construction yet still degrade best-effort on a later transient fault, or run best-effort
+    /// at construction yet fail fast on every later read or write.
     /// </remarks>
     public bool ValidateStorageOnStart { get; set; }
 
