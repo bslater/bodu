@@ -139,6 +139,12 @@ the cache only when the recorded coverage **contains** the whole requested windo
 otherwise the range is refetched and the rows plus the covered window are written back
 together (atomically) through `StoreFetchedRange`.
 
+When the direct pair's coverage does not contain the window but the **inverse** pair's
+does — and inversion is permitted by the provider's `DefaultLookupOptions` (the default) —
+the range is served from the inverse pair by reciprocating each rate. So a `USD/AUD` range
+already fetched also satisfies an `AUD/USD` range request without a refetch, mirroring the
+single-date surface.
+
 ```csharp
 IReadOnlyList<ExchangeRate> january =
     await cachedRba.GetRatesAsync("AUD", "USD", new DateOnly(2024, 1, 1), new DateOnly(2024, 1, 31));

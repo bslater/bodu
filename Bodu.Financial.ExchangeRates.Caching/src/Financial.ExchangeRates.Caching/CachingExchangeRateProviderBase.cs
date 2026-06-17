@@ -387,9 +387,20 @@ public abstract class CachingExchangeRateProviderBase
     }
 
     /// <summary>
+    /// Gets a value indicating whether a range request that misses the direct pair's coverage may instead be served
+    /// from a complete inverse-pair coverage by reciprocating each rate, governed by the provider's default lookup
+    /// options.
+    /// </summary>
+    /// <returns>
+    /// <see langword="true" /> when inverse range serving is permitted; otherwise <see langword="false" />.
+    /// </returns>
+    private bool AllowInverseRangeServe => _options.DefaultLookupOptions.AllowInverse;
+
+    /// <summary>
     /// Attempts to serve a range request from the cache, treating the window as cached only when the recorded coverage
     /// contains every day of it — so a window that straddles an unfetched interior gap is not served from a sparse set
-    /// of rows.
+    /// of rows. The direct pair is preferred; a complete inverse-pair coverage serves the window by inverting each rate
+    /// when inversion is permitted.
     /// </summary>
     /// <param name="duration">The duration cached rows and coverage windows stay fresh.</param>
     /// <param name="pair">The requested currency pair.</param>
@@ -407,28 +418,70 @@ public abstract class CachingExchangeRateProviderBase
     /// </returns>
     private bool TryServeRangeFromCache(TimeSpan duration, ExchangeRatePair pair, DateOnly startDate, DateOnly endDate, DateTimeOffset now, out IReadOnlyList<ExchangeRate> result, out DateTimeOffset? oldestCachedAtUtc)
     {
-        // The fresh coverage, not the span of the rate rows, decides whether the whole window was actually fetched.
-        if (!_cache.GetCoverage(pair, duration, now).Contains(startDate, endDate))
-        {
-            result = Array.Empty<ExchangeRate>();
-            oldestCachedAtUtc = null;
-            return false;
-        }
+        // The fresh coverage, not the span of the rate rows, decides whether the whole window was actually fetched. The
+        // direct pair is tried first; when inversion is permitted a complete inverse-pair coverage serves the window by
+        // inverting each rate, mirroring the single-date serve path.
+        if (_cache.GetCoverage(pair, duration, now).Contains(startDate, endDate))
+            return BuildRange(pair, duration, startDate, endDate, now, invert: false, out result, out oldestCachedAtUtc);
 
+        if (AllowInverseRangeServe && _cache.GetCoverage(pair.Inverse(), duration, now).Contains(startDate, endDate))
+            return BuildRange(pair.Inverse(), duration, startDate, endDate, now, invert: true, out result, out oldestCachedAtUtc);
+
+        result = Array.Empty<ExchangeRate>();
+        oldestCachedAtUtc = null;
+        return false;
+    }
+
+    /// <summary>
+    /// Builds the in-window rates for a range serve from the cached rows of <paramref name="cachedPair" />, optionally
+    /// reciprocating each rate so a complete inverse-pair coverage can satisfy the requested direction.
+    /// </summary>
+    /// <param name="cachedPair">
+    /// The pair whose cached rows back the serve — the requested pair, or its inverse when <paramref name="invert" />
+    /// is set.
+    /// </param>
+    /// <param name="duration">The duration cached rows stay fresh.</param>
+    /// <param name="startDate">The inclusive start of the range.</param>
+    /// <param name="endDate">The inclusive end of the range.</param>
+    /// <param name="now">The instant against which cached rows are evaluated for freshness.</param>
+    /// <param name="invert">
+    /// <see langword="true" /> to reciprocate each cached rate and emit the inverse direction; otherwise
+    /// <see langword="false" />.
+    /// </param>
+    /// <param name="result">The rates within the range, always carrying the requested direction.</param>
+    /// <param name="oldestCachedAtUtc">
+    /// The oldest <see cref="CachedExchangeRate.CachedAtUtc" /> among the in-window rows, or <see langword="null" />
+    /// when the covered window yields no rows.
+    /// </param>
+    /// <returns>Always <see langword="true" />; the caller has already confirmed the window is covered.</returns>
+    private bool BuildRange(ExchangeRatePair cachedPair, TimeSpan duration, DateOnly startDate, DateOnly endDate, DateTimeOffset now, bool invert, out IReadOnlyList<ExchangeRate> result, out DateTimeOffset? oldestCachedAtUtc)
+    {
         string provider = _cache.Provider;
-        IReadOnlyList<CachedExchangeRate> fresh = _cache.GetRates(pair, duration, now);
+        IReadOnlyList<CachedExchangeRate> fresh = _cache.GetRates(cachedPair, duration, now);
+
+        // The output always carries the requested direction. When inverting, the cached pair is the requested pair's
+        // inverse, so the requested from/to are the cached pair's to/from.
+        string fromIsoCode = invert ? cachedPair.ToIsoCode : cachedPair.FromIsoCode;
+        string toIsoCode = invert ? cachedPair.FromIsoCode : cachedPair.ToIsoCode;
+
         List<ExchangeRate> rates = new();
         DateTimeOffset? oldest = null;
         foreach (CachedExchangeRate rate in fresh)
         {
-            if (rate.Date >= startDate && rate.Date <= endDate)
-            {
-                // This serve path returns the rebuilt rows directly, so the cached fetch instant is stamped onto the
-                // rate here rather than restored later; no FixedDatedExchangeRateProvider round-trip drops it.
-                rates.Add(new ExchangeRate(pair.FromIsoCode, pair.ToIsoCode, rate.Date, rate.Rate, provider, isInverted: false, rate.ObservedAtUtc));
-                if (oldest is not { } current || rate.CachedAtUtc < current)
-                    oldest = rate.CachedAtUtc;
-            }
+            if (rate.Date < startDate || rate.Date > endDate)
+                continue;
+
+            // A non-positive cached rate cannot be reciprocated; skip it rather than divide by zero or flip its sign.
+            if (invert && rate.Rate <= 0m)
+                continue;
+
+            decimal value = invert ? 1m / rate.Rate : rate.Rate;
+
+            // This serve path returns the rebuilt rows directly, so the cached fetch instant is stamped onto the rate
+            // here rather than restored later; no FixedDatedExchangeRateProvider round-trip drops it.
+            rates.Add(new ExchangeRate(fromIsoCode, toIsoCode, rate.Date, value, provider, isInverted: invert, rate.ObservedAtUtc));
+            if (oldest is not { } current || rate.CachedAtUtc < current)
+                oldest = rate.CachedAtUtc;
         }
 
         result = rates;
