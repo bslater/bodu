@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AbaRoutingNumber.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -56,12 +56,18 @@ public sealed class AbaRoutingNumber
     /// </summary>
     public const int SequenceLength = 9;
 
-    // Weights applied from the left of the body toward the right. Position 0 weight 3, position 1 weight 7,
-    // position 2 weight 1, repeating. The dual-hypothesis trick used by the ISBN-13 family does not apply here
-    // — the cycle period is 3, so a streaming consumer cannot weigh incoming digits until the final body
-    // length is known. To preserve the streaming contract (Append / GetCurrentCheckDigit at any point), the
-    // implementation buffers the running list of digit values (at most 8) and recomputes the weighted sum on
-    // each GetCurrentCheckDigit call. This is acceptably cheap given the tiny fixed body length.
+    /// <summary>
+    /// The running list of appended body digit values, retained so the streaming surface can recompute the weighted sum
+    /// on demand.
+    /// </summary>
+    /// <remarks>
+    /// The ABA weights (<c>3</c>, <c>7</c>, <c>1</c>, repeating, applied from the left of the body toward the right)
+    /// have a cycle period of three, so the dual-hypothesis trick used by the ISBN-13 family does not apply: a
+    /// streaming consumer cannot weigh incoming digits until the final body length is known. To preserve the streaming
+    /// contract (<see cref="Append" /> / <see cref="GetCurrentCheckDigit" /> at any point), the implementation buffers
+    /// the digit values (at most eight) and recomputes the weighted sum on each <see cref="GetCurrentCheckDigit" />
+    /// call, which is acceptably cheap given the tiny fixed body length.
+    /// </remarks>
     private readonly List<int> _digits = new(BodyLength);
 
     /// <summary>

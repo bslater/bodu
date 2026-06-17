@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Crc.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -114,12 +114,32 @@ public sealed class Crc
     : NonCryptographicHashAlgorithm,
       IResumableHashAlgorithm
 {
+    /// <summary>
+    /// The lazily initialized, process-wide cache that shares CRC lookup tables across <see cref="Crc" /> instances,
+    /// exposed through <see cref="GlobalCache" />.
+    /// </summary>
     private static Lazy<CrcLookupTableCache> s_globalLookupTableCache =
         new(() => new CrcLookupTableCache());
+
+    /// <summary>
+    /// The width of the CRC, in bits, taken from the configured <see cref="CrcStandard.Size" />.
+    /// </summary>
     private readonly int _hashSizeBits;
+
+    /// <summary>
+    /// The shared, precomputed lookup table for the active polynomial and input-reflection setting.
+    /// </summary>
     private readonly ulong[] _lookupTable;
 
+    /// <summary>
+    /// The CRC parameter set (polynomial, width, reflection, initial value, and final XOR) that configures this
+    /// instance.
+    /// </summary>
     private readonly CrcStandard _standard;
+
+    /// <summary>
+    /// The running CRC accumulator updated as each input byte is processed.
+    /// </summary>
     private ulong _workingHash;
 
     /// <summary>

@@ -50,8 +50,19 @@ namespace Bodu.IO.Hashing.CheckDigits;
 public sealed class Luhn
     : CheckDigitAlgorithm
 {
+    /// <summary>
+    /// The number of body digits appended so far.
+    /// </summary>
     private int _count;
+
+    /// <summary>
+    /// The running Luhn sum computed under the hypothesis that the final body length is even.
+    /// </summary>
     private int _sumEvenHypothesis;
+
+    /// <summary>
+    /// The running Luhn sum computed under the hypothesis that the final body length is odd.
+    /// </summary>
     private int _sumOddHypothesis;
 
     /// <summary>

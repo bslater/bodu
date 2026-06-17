@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Fnv.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -73,13 +73,35 @@ public abstract class Fnv<TSelf>
     : NonCryptographicHashAlgorithm
     where TSelf : Fnv<TSelf>, new()
 {
+    /// <summary>
+    /// The set of hash sizes, in bits, accepted by the constructor.
+    /// </summary>
     private static readonly int[] s_validHashSizes = [32, 64];
 
+    /// <summary>
+    /// The configured digest length, in bits (32 or 64), used to select how the running hash is emitted.
+    /// </summary>
     private readonly int _hashSizeBits;
+
+    /// <summary>
+    /// The initial offset basis used to seed the running hash and restore it on reset.
+    /// </summary>
     private readonly ulong _offsetBasis;
+
+    /// <summary>
+    /// The FNV prime multiplier applied to the running hash for each input byte.
+    /// </summary>
     private readonly ulong _prime;
+
+    /// <summary>
+    /// Indicates whether the FNV-1a ordering (XOR then multiply) is used; otherwise the FNV-1 ordering (multiply then
+    /// XOR).
+    /// </summary>
     private readonly bool _useFnv1a;
 
+    /// <summary>
+    /// The running hash accumulator, updated as each input byte is folded in and seeded from the offset basis.
+    /// </summary>
     private ulong _workingHash;
 
     /// <summary>

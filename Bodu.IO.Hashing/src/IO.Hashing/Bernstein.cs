@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Bernstein.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -66,11 +66,30 @@ public sealed class Bernstein
     /// </summary>
     public const uint DefaultInitialValue = 5381U;
 
+    /// <summary>
+    /// The fixed digest length, in bytes, produced by this algorithm.
+    /// </summary>
     private const int HashLength = 4;
 
+    /// <summary>
+    /// The initial seed value applied to the running hash accumulator and restored on reset.
+    /// </summary>
     private uint _initialValue;
+
+    /// <summary>
+    /// Indicates whether the algorithm has begun consuming input, used to guard reconfiguration of the seed and
+    /// variant.
+    /// </summary>
     private bool _started;
+
+    /// <summary>
+    /// Indicates whether the XOR-modified (djb2a) recurrence is used; otherwise the original additive djb2 recurrence.
+    /// </summary>
     private bool _useModified;
+
+    /// <summary>
+    /// The running hash accumulator, updated as each input byte is folded in.
+    /// </summary>
     private uint _workingHash;
 
     /// <summary>

@@ -33,6 +33,9 @@ namespace Bodu.IO.Hashing.Checksums;
 public abstract class Adler32Base
     : Adler<uint>
 {
+    /// <summary>
+    /// The digest length, in bytes, produced by the 32-bit Adler finalization.
+    /// </summary>
     private const int HashLength = 4;
 
     /// <summary>

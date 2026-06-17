@@ -58,12 +58,29 @@ public abstract class Fletcher<TSelf>
     : BlockNonCryptographicHashAlgorithm<TSelf>
     where TSelf : Fletcher<TSelf>, new()
 {
+    /// <summary>
+    /// The set of output widths, in bits, that the Fletcher family supports (16, 32, and 64).
+    /// </summary>
     private static readonly int[] s_validHashSizes = [16, 32, 64];
 
+    /// <summary>
+    /// The configured output width, in bits, of this instance.
+    /// </summary>
     private readonly int _hashSizeBits;
+
+    /// <summary>
+    /// The modulus applied to each accumulator, equal to <c>2^(hashSize/2) - 1</c> for the configured width.
+    /// </summary>
     private readonly ulong _modulus;
 
+    /// <summary>
+    /// The A accumulator holding the running sum of input bytes, reduced modulo <see cref="_modulus" />.
+    /// </summary>
     private ulong _partA;
+
+    /// <summary>
+    /// The B accumulator holding the running sum of <see cref="_partA" />, reduced modulo <see cref="_modulus" />.
+    /// </summary>
     private ulong _partB;
 
     /// <summary>

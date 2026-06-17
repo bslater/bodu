@@ -62,6 +62,9 @@ namespace Bodu.IO.Hashing.Checksums;
 public sealed class Adler32
     : Adler32Base
 {
+    /// <summary>
+    /// The standard Adler-32 modulus, the largest prime less than 2^16.
+    /// </summary>
     private const uint Adler32Modulo = 65521U;
 
     /// <summary>

@@ -58,6 +58,9 @@ public sealed class Lei
     /// </summary>
     public const int SequenceLength = 20;
 
+    /// <summary>
+    /// The underlying ISO 7064 MOD 97-10 engine that absorbs the body and produces the two-digit LEI check code.
+    /// </summary>
     private readonly Iso7064Mod97_10 _engine = new();
 
     /// <summary>

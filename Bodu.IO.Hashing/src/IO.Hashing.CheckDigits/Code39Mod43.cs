@@ -60,6 +60,9 @@ public sealed class Code39Mod43
     /// </summary>
     private const int Modulus = 43;
 
+    /// <summary>
+    /// The running character-value sum, reduced modulo <see cref="Modulus" /> across appended body characters.
+    /// </summary>
     private int _sum;
 
     /// <summary>

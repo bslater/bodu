@@ -49,10 +49,24 @@ namespace Bodu.IO.Hashing;
 public sealed class ApHash
     : NonCryptographicHashAlgorithm
 {
+    /// <summary>
+    /// The fixed digest length, in bytes, produced by this algorithm.
+    /// </summary>
     private const int HashLength = 4;
+
+    /// <summary>
+    /// The constant initial value used to seed the running hash.
+    /// </summary>
     private const uint Seed = 0xAAAAAAAAu;
+
+    /// <summary>
+    /// The running count of input bytes processed, whose parity selects the per-byte mixing pattern.
+    /// </summary>
     private ulong _size;
 
+    /// <summary>
+    /// The running hash accumulator, updated as each input byte is mixed in and seeded from <see cref="Seed" />.
+    /// </summary>
     private uint _workingHash = Seed;
 
     /// <summary>

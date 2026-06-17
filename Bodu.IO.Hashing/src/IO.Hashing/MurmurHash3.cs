@@ -72,9 +72,19 @@ public abstract class MurmurHash3<T>
     : NonCryptographicHashAlgorithm, IDisposable
     where T : MurmurHash3<T>, new()
 {
+    /// <summary>
+    /// The set of hash output sizes, in bits, that this algorithm family supports.
+    /// </summary>
     private static readonly int[] s_validHashSizes = [32, 128];
 
+    /// <summary>
+    /// The buffer that accumulates all appended input until the one-shot hash is computed.
+    /// </summary>
     private readonly MemoryStream _inputBuffer = new();
+
+    /// <summary>
+    /// Indicates whether this instance has been disposed and its buffered input released.
+    /// </summary>
     private bool _disposed;
 
     /// <summary>

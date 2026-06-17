@@ -70,6 +70,9 @@ public abstract class Adler<T>
     /// </summary>
     protected T PartB;
 
+    /// <summary>
+    /// The modulus applied to both accumulators after each reduction step.
+    /// </summary>
     private readonly T _modulo;
 
     /// <summary>

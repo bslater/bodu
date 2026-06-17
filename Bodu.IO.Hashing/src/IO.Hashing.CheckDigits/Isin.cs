@@ -57,6 +57,9 @@ public sealed class Isin
     /// </summary>
     public const int SequenceLength = 12;
 
+    /// <summary>
+    /// The underlying Luhn engine that absorbs the expanded digit stream and produces the ISIN check digit.
+    /// </summary>
     private readonly Luhn _luhn = new();
 
     /// <summary>

@@ -61,6 +61,9 @@ namespace Bodu.IO.Hashing.Checksums;
 public sealed class Adler32C
     : Adler32Base
 {
+    /// <summary>
+    /// The SIMD-friendly power-of-two modulus used in place of the standard Adler-32 prime.
+    /// </summary>
     private const uint Adler32CModulo = 65536U;
 
     /// <summary>

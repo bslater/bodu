@@ -49,8 +49,14 @@ namespace Bodu.IO.Hashing;
 public sealed class SDBM
     : NonCryptographicHashAlgorithm
 {
+    /// <summary>
+    /// The fixed digest length, in bytes, produced by this algorithm.
+    /// </summary>
     private const int HashLength = 4;
 
+    /// <summary>
+    /// The running hash accumulator, updated as each input byte is folded in.
+    /// </summary>
     private uint _workingHash;
 
     /// <summary>

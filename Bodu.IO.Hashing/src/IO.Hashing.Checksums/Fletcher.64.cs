@@ -62,6 +62,9 @@ namespace Bodu.IO.Hashing.Checksums;
 public sealed class Fletcher64
     : Fletcher<Fletcher64>
 {
+    /// <summary>
+    /// The output width, in bits, of the Fletcher-64 algorithm.
+    /// </summary>
     private const int FletcherHashSize = 64;
 
     /// <summary>

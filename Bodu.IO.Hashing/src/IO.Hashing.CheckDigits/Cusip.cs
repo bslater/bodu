@@ -56,8 +56,15 @@ public sealed class Cusip
     /// The required full-sequence length of <c>9</c> characters.
     /// </summary>
     public const int SequenceLength = 9;
+
+    /// <summary>
+    /// The number of body characters appended so far, used to select the position weight.
+    /// </summary>
     private int _count;
 
+    /// <summary>
+    /// The running weighted sum accumulated over the appended body characters.
+    /// </summary>
     private int _sum;
 
     /// <summary>

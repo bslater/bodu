@@ -53,8 +53,15 @@ public sealed class Isbn10
     /// The required full-sequence length of <c>10</c> characters.
     /// </summary>
     public const int SequenceLength = 10;
+
+    /// <summary>
+    /// The number of body characters appended so far, used to derive each position weight.
+    /// </summary>
     private int _count;
 
+    /// <summary>
+    /// The running weighted sum accumulated over the appended body characters.
+    /// </summary>
     private int _sum;
 
     /// <summary>
