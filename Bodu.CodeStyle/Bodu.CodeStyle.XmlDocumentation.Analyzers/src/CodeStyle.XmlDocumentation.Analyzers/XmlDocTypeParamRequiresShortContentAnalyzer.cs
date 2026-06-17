@@ -85,7 +85,7 @@ public sealed class XmlDocTypeParamRequiresShortContentAnalyzer : DiagnosticAnal
         if (renderedLineLength <= budget) return;
 
         var content = GetContentText(element);
-        var splitIndex = FindFirstSentenceBoundary(content);
+        var splitIndex = XmlDocSentenceBoundary.FindFirstSentenceBoundary(content);
         if (splitIndex < 0) return;
 
         // Length of the line after the fix: indent + "/// " + start-tag + first-sentence + end-tag.
@@ -132,25 +132,6 @@ public sealed class XmlDocTypeParamRequiresShortContentAnalyzer : DiagnosticAnal
         }
 
         return sb.ToString();
-    }
-
-    private static int FindFirstSentenceBoundary(string content)
-    {
-        // A sentence boundary is the first `'.'` immediately followed by either a single ASCII space or a
-        // tab. Newlines do not count — the rule's single-line invariant means inter-sentence breaks live in
-        // horizontal whitespace.
-        for (var i = 0; i < content.Length - 1; i++)
-        {
-            if (content[i] != '.') continue;
-
-            var next = content[i + 1];
-            if (next == ' ' || next == '\t')
-            {
-                return i;
-            }
-        }
-
-        return -1;
     }
 
     private static bool IsInGeneratedCode(SyntaxNodeAnalysisContext context) =>

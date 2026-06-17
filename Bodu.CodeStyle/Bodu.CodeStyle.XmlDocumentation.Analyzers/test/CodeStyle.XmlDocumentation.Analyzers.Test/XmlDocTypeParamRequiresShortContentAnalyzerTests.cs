@@ -43,6 +43,24 @@ public sealed class XmlDocTypeParamRequiresShortContentAnalyzerTests
     }
 
     /// <summary>
+    /// Verifies that an over-budget <c>&lt;typeparam&gt;</c> whose only period belongs to an abbreviation
+    /// (<c>e.g.</c>) does not trigger BODU1406, because there is no unambiguous sentence boundary to split on.
+    /// </summary>
+    [TestMethod]
+    public async Task Analyze_WhenOverflowButOnlyAbbreviationPeriod_ShouldNotReport()
+    {
+        var source =
+            "/// <summary>Sample.</summary>\r\n" +
+            "/// <typeparam name=\"T\">The element type used by the algorithm e.g. when computing the running aggregate across the buffer</typeparam>\r\n" +
+            "public sealed class Sample<T>\r\n" +
+            "{\r\n" +
+            "    public int X { get; set; }\r\n" +
+            "}\r\n";
+
+        await CreateTest(source).RunAsync(TestContext.CancellationTokenSource.Token);
+    }
+
+    /// <summary>
     /// Verifies that a multi-sentence <c>&lt;typeparam&gt;</c> whose rendered line exceeds the 120-char
     /// budget triggers BODU1406 at the element's start tag.
     /// </summary>

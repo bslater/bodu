@@ -131,7 +131,7 @@ public sealed class XmlDocTypeParamRequiresShortContentCodeFixProvider : CodeFix
         foreach (XmlElementSyntax typeParam in ordered)
         {
             var content = GetContentText(typeParam);
-            var splitIndex = FindFirstSentenceBoundary(content);
+            var splitIndex = XmlDocSentenceBoundary.FindFirstSentenceBoundary(content);
             if (splitIndex < 0) continue;
 
             var firstSentence = content.Substring(0, splitIndex + 1);
@@ -199,22 +199,6 @@ public sealed class XmlDocTypeParamRequiresShortContentCodeFixProvider : CodeFix
         }
 
         return sb.ToString();
-    }
-
-    private static int FindFirstSentenceBoundary(string content)
-    {
-        for (var i = 0; i < content.Length - 1; i++)
-        {
-            if (content[i] != '.') continue;
-
-            var next = content[i + 1];
-            if (next == ' ' || next == '\t')
-            {
-                return i;
-            }
-        }
-
-        return -1;
     }
 
     private static string TrimRemainingProse(string remaining)
