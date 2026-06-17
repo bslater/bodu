@@ -1,8 +1,0 @@
-{
-  "useFrom": [
-    {
-      "resource": "Bodu.Globalization.Calendar.Fixtures.CircularJsonA.json",
-      "useAll": true
-    }
-  ]
-}
