@@ -240,7 +240,7 @@ public readonly partial struct Money<TCurrency>
     /// </summary>
     /// <param name="numerator">The original dividend (its sign determines round-away direction).</param>
     /// <param name="denominator">The positive divisor.</param>
-    /// <param name="quotient">The truncated quotient from <see cref="BigInteger.DivRem" />.</param>
+    /// <param name="quotient">The truncated quotient from <see cref="BigInteger.DivRem(BigInteger, BigInteger)" />.</param>
     /// <param name="remainder">The non-zero remainder.</param>
     /// <param name="tiesAwayFromZero">
     /// Whether to round midpoints away from zero (true) or to the nearest even (false).

@@ -308,6 +308,11 @@ internal static class TomlCanonicalWriter
     private static void WriteBasicString(ref TomlUtf8Emitter emitter, string value)
     {
         emitter.Append((byte)'"');
+
+        // Reused across iterations for the \uXXXX escape of control characters; hoisted out of the loop so the
+        // stackalloc runs once rather than on every control character (CA2014).
+        Span<char> hex = stackalloc char[4];
+
         for (int i = 0; i < value.Length; i++)
         {
             char c = value[i];
@@ -335,7 +340,6 @@ internal static class TomlCanonicalWriter
                 default:
                     if (c < 0x20 || c == 0x7F)
                     {
-                        Span<char> hex = stackalloc char[4];
                         _ = ((int)c).TryFormat(hex, out _, "X4", CultureInfo.InvariantCulture);
                         emitter.Append("\\u"u8);
                         emitter.AppendAscii(hex);

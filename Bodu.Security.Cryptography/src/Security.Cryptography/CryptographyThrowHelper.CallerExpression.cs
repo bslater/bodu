@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CryptographyThrowHelper.ThrowHelper.CallerExpression.cs" company="Bodu Pty. Ltd.">
+// <copyright file="CryptographyThrowHelper.CallerExpression.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
