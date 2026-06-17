@@ -49,9 +49,7 @@ public static class HashAlgorithmFactory
     /// Creates a delegate-based factory that constructs new instances of the hash algorithm using the specified
     /// <paramref name="builder" />.
     /// </summary>
-    /// <typeparam name="T">
-    /// The type of <see cref="HashAlgorithm" /> returned by the factory. Must be a concrete subclass.
-    /// </typeparam>
+    /// <typeparam name="T">The type of <see cref="HashAlgorithm" /> returned by the factory.</typeparam>
     /// <param name="builder">
     /// A delegate that returns a fully configured instance of <typeparamref name="T" />. This delegate is invoked each
     /// time <see cref="IHashAlgorithmFactory{T}.Create" /> is called.
@@ -63,6 +61,12 @@ public static class HashAlgorithmFactory
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="builder" /> is <see langword="null" />.
     /// </exception>
+    /// <remarks>
+    /// <para>
+    /// The type argument <typeparamref name="T" /> must be a concrete <see cref="HashAlgorithm" /> subclass that
+    /// <paramref name="builder" /> can construct.
+    /// </para>
+    /// </remarks>
     public static DelegateHashAlgorithmFactory<T> From<T>(Func<T> builder)
         where T : System.Security.Cryptography.HashAlgorithm =>
         new(builder ?? throw new ArgumentNullException(nameof(builder)));

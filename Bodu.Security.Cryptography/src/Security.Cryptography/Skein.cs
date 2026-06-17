@@ -15,9 +15,7 @@ namespace Bodu.Security.Cryptography;
 /// functions, built by Bruce Schneier and co-authors on top of the <see cref="ThreefishBlockCipher" /> tweakable block
 /// cipher and submitted as a finalist to the NIST SHA-3 competition.
 /// </summary>
-/// <typeparam name="T">
-/// The concrete Skein variant derived from this class. Must expose a public parameterless constructor.
-/// </typeparam>
+/// <typeparam name="T">The concrete Skein variant derived from this class.</typeparam>
 /// <remarks>
 /// <para>
 /// Skein hashes a message by repeatedly applying the <c>UBI</c> (Unique Block Iteration) mode of operation. Each UBI
@@ -58,6 +56,10 @@ namespace Bodu.Security.Cryptography;
 /// Only the sequential hashing profile of Skein is implemented. Tree hashing, personalization strings, public-key or
 /// key-derivation identifiers, and nonce modes are not exposed; the corresponding Skein tweak types are reserved for
 /// potential future extension (see <see cref="SkeinTweakType" />).
+/// </para>
+/// <para>
+/// The concrete type <typeparamref name="T" /> must expose a public parameterless constructor to satisfy the base
+/// class's <c>new()</c> constraint.
 /// </para>
 /// <para>
 /// <strong>When to choose Skein.</strong> Pick the Skein family for interop with code that has standardized on it (the

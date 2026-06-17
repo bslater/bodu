@@ -11,10 +11,7 @@ namespace Bodu.Security.Cryptography;
 /// <summary>
 /// Defines a factory that produces configured instances of a specific <see cref="HashAlgorithm" /> implementation.
 /// </summary>
-/// <typeparam name="T">
-/// The concrete type of <see cref="HashAlgorithm" /> this factory creates. Must inherit from
-/// <see cref="HashAlgorithm" />.
-/// </typeparam>
+/// <typeparam name="T">The concrete type of <see cref="HashAlgorithm" /> this factory creates.</typeparam>
 /// <remarks>
 /// <para>
 /// This interface decouples the creation and configuration of hash algorithm instances from the logic that consumes
@@ -34,6 +31,9 @@ namespace Bodu.Security.Cryptography;
 /// <see cref="MerkleTreeHash" />, or <see cref="ParallelMerkleTreeHash" />. Each call gets a fresh, fully configured
 /// algorithm instance — the callers do not need to manage <see cref="System.IDisposable" /> lifecycles or
 /// thread-safety.
+/// </para>
+/// <para>
+/// The type argument <typeparamref name="T" /> must derive from <see cref="HashAlgorithm" />.
 /// </para>
 /// </remarks>
 /// <seealso cref="HashAlgorithmFactory"/> <seealso cref="DelegateHashAlgorithmFactory{T}"/>

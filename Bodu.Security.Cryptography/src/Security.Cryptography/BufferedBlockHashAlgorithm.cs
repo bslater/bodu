@@ -15,9 +15,7 @@ namespace Bodu.Security.Cryptography;
 /// <see cref="HashAlgorithm.HashCore(byte[], int, int)" /> to <see cref="HashAlgorithm.HashCore(ReadOnlySpan{byte})" />
 /// delegation.
 /// </summary>
-/// <typeparam name="T">
-/// The concrete hash algorithm derived from this class. Must expose a public parameterless constructor.
-/// </typeparam>
+/// <typeparam name="T">The concrete hash algorithm derived from this class.</typeparam>
 /// <example>
 ///<![CDATA[
 /// // Consume a concrete derivative through the standard HashAlgorithm contract — the base
@@ -100,6 +98,10 @@ namespace Bodu.Security.Cryptography;
 /// </description>
 /// </item>
 /// </list>
+/// <para>
+/// The concrete type <typeparamref name="T" /> must expose a public parameterless constructor to satisfy the base
+/// class's <c>new()</c> constraint.
+/// </para>
 /// <para>
 /// Derive from <see cref="BufferedBlockHashAlgorithm{T}" /> directly only when implementing a <em>new</em> buffering
 /// pattern that doesn't fit either family — e.g. a sponge construction with a non-Merkle–Damgård finalization step.

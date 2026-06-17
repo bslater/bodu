@@ -13,9 +13,7 @@ namespace Bodu.Security.Cryptography;
 /// shared sponge construction, residual-buffer management, padding, and Ascon-p permutation used by
 /// <see cref="AsconXof128" /> and <see cref="AsconCxof128" />.
 /// </summary>
-/// <typeparam name="T">
-/// The concrete XOF type derived from this class. Must expose a public parameterless constructor.
-/// </typeparam>
+/// <typeparam name="T">The concrete XOF type derived from this class.</typeparam>
 /// <remarks>
 /// <para>
 /// All ASCON XOF algorithms share a 320-bit internal state of five 64-bit words, a 64-bit (8-byte) rate, and a
@@ -73,6 +71,10 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// For fixed-length Ascon hashing use <see cref="AsconHash256" /> or <see cref="AsconHashA256" />; for the AEAD member
 /// of the Ascon suite use <see cref="AsconAead128" />.
+/// </para>
+/// <para>
+/// The concrete type <typeparamref name="T" /> must expose a public parameterless constructor to satisfy the base
+/// class's <c>new()</c> constraint.
 /// </para>
 /// </remarks>
 /// <example>

@@ -15,9 +15,7 @@ namespace Bodu.Security.Cryptography;
 /// Base class for the <c>Snefru</c> family of unkeyed hash functions designed by Ralph Merkle, implementing the core
 /// compression routine using S-box substitutions and word rotations over 512-bit blocks.
 /// </summary>
-/// <typeparam name="T">
-/// The concrete Snefru variant derived from this class. Must expose a public parameterless constructor.
-/// </typeparam>
+/// <typeparam name="T">The concrete Snefru variant derived from this class.</typeparam>
 /// <remarks>
 /// <para>
 /// <see cref="Snefru{T}" /> is one of the earliest cryptographic hash functions developed and is now considered broken:
@@ -44,6 +42,10 @@ namespace Bodu.Security.Cryptography;
 /// Each input block is processed by 8 rounds consisting of an S-box substitution step followed by a word-wise circular
 /// rotation. After all input has been absorbed, the internal state is serialized in big-endian byte order to produce
 /// the final digest.
+/// </para>
+/// <para>
+/// The concrete type <typeparamref name="T" /> must expose a public parameterless constructor to satisfy the base
+/// class's <c>new()</c> constraint.
 /// </para>
 /// <para>
 /// <strong>When to choose Snefru.</strong> Academic study and legacy interop only — Snefru has practical collision
