@@ -21,7 +21,7 @@
     <PackageId>Bodu.CodeStyle.XmlDocumentation</PackageId>
     <DevelopmentDependency>true</DevelopmentDependency>
     <NoPackageAnalysis>true</NoPackageAnalysis>
-    <Description>Roslyn analyzer and code fix enforcing the Bodu XML documentation formatting policy (BODUXML001).</Description>
+    <Description>Roslyn analyzers and code fixes enforcing the Bodu XML documentation formatting policy: per-tag formatting (BODU1001-BODU1018), cross-cutting formatting (BODU1040), content-quality rules (BODU1405/BODU1406), and configuration diagnostics (BODU0001).</Description>
     <PackageTags>analyzer roslyn codefix xmldoc bodu</PackageTags>
     <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);_AddAnalyzersToPack</TargetsForTfmSpecificContentInPackage>
   </PropertyGroup>
