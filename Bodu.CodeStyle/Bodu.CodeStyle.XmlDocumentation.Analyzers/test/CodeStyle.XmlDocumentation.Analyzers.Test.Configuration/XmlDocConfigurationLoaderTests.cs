@@ -61,6 +61,51 @@ public sealed class XmlDocConfigurationLoaderTests
     }
 
     /// <summary>
+    /// Verifies that malformed JSON is surfaced as a configuration error so the analyzer can report it,
+    /// rather than being swallowed silently.
+    /// </summary>
+    [TestMethod]
+    public void CollectConfigurationErrors_WhenJsonIsMalformed_ShouldReturnError()
+    {
+        var additional = ImmutableArray.Create<AdditionalText>(
+            new FakeAdditionalText("/repo/bodu.xmldocstyle.json", "{not valid"));
+
+        ImmutableArray<XmlDocConfigurationError> errors =
+            XmlDocConfigurationLoader.CollectConfigurationErrors(additional, CancellationToken.None);
+
+        Assert.AreEqual(1, errors.Length);
+        Assert.AreEqual("/repo/bodu.xmldocstyle.json", errors[0].Location.GetLineSpan().Path);
+        Assert.IsFalse(string.IsNullOrWhiteSpace(errors[0].Message));
+    }
+
+    /// <summary>
+    /// Verifies that a valid configuration file produces no configuration errors.
+    /// </summary>
+    [TestMethod]
+    public void CollectConfigurationErrors_WhenJsonIsValid_ShouldReturnNoErrors()
+    {
+        var additional = ImmutableArray.Create<AdditionalText>(
+            new FakeAdditionalText("/repo/bodu.xmldocstyle.json", "{\"maxLineLength\":80}"));
+
+        ImmutableArray<XmlDocConfigurationError> errors =
+            XmlDocConfigurationLoader.CollectConfigurationErrors(additional, CancellationToken.None);
+
+        Assert.AreEqual(0, errors.Length);
+    }
+
+    /// <summary>
+    /// Verifies that no configuration error is produced when no configuration file is present.
+    /// </summary>
+    [TestMethod]
+    public void CollectConfigurationErrors_WhenNoConfigFile_ShouldReturnNoErrors()
+    {
+        ImmutableArray<XmlDocConfigurationError> errors =
+            XmlDocConfigurationLoader.CollectConfigurationErrors([], CancellationToken.None);
+
+        Assert.AreEqual(0, errors.Length);
+    }
+
+    /// <summary>
     /// Verifies that additional files with unrelated names are ignored.
     /// </summary>
     [TestMethod]

@@ -65,6 +65,40 @@ internal static class XmlDocConfigurationLoader
     }
 
     /// <summary>
+    /// Re-reads each <c>bodu.xmldocstyle.json</c> additional file and collects the errors that prevented it from
+    /// being applied, so a diagnostic analyzer can surface them instead of failing silently.
+    /// </summary>
+    /// <param name="additionalFiles">The compilation's additional files.</param>
+    /// <param name="cancellationToken">The cancellation token to observe.</param>
+    /// <returns>The configuration errors discovered; empty when every configuration file is valid or absent.</returns>
+    public static ImmutableArray<XmlDocConfigurationError> CollectConfigurationErrors(
+        ImmutableArray<AdditionalText> additionalFiles,
+        CancellationToken cancellationToken)
+    {
+        ImmutableArray<XmlDocConfigurationError>.Builder builder = ImmutableArray.CreateBuilder<XmlDocConfigurationError>();
+
+        foreach (AdditionalText file in additionalFiles)
+        {
+            if (!IsConfigFile(file.Path)) continue;
+            cancellationToken.ThrowIfCancellationRequested();
+
+            SourceText? text = file.GetText(cancellationToken);
+            if (text is null) continue;
+
+            try
+            {
+                _ = XmlDocConfigJsonReader.Read(text.ToString());
+            }
+            catch (XmlDocConfigException ex)
+            {
+                builder.Add(new XmlDocConfigurationError(CreateFileLocation(file.Path, text), ex.Message));
+            }
+        }
+
+        return builder.ToImmutable();
+    }
+
+    /// <summary>
     /// Applies per-tree <c>.editorconfig</c> scalar overrides on top of the compilation-level options.
     /// </summary>
     /// <param name="compilationOptions">The compilation-level options.</param>
@@ -118,5 +152,13 @@ internal static class XmlDocConfigurationLoader
     {
         var fileName = Path.GetFileName(path);
         return string.Equals(fileName, "bodu.xmldocstyle.json", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static Location CreateFileLocation(string path, SourceText text)
+    {
+        // Attribute the diagnostic to the start of the configuration file. The JSON reader does not surface a
+        // precise offset, so the file-level location is the most specific anchor available.
+        var span = new TextSpan(0, 0);
+        return Location.Create(path, span, text.Lines.GetLinePositionSpan(span));
     }
 }

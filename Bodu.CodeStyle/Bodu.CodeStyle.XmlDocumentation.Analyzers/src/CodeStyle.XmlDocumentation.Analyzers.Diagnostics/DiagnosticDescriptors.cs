@@ -25,7 +25,23 @@ internal static class DiagnosticDescriptors
 {
     private const string Category = "Documentation";
 
+    private const string ConfigurationCategory = "BoduCodeStyle";
+
     private const string HelpLinkBase = "https://github.com/bodu/bodu/blob/master/Bodu.CodeStyle/README.md";
+
+    /// <summary>
+    /// Gets the descriptor for <c>BODU0001</c> — a <c>bodu.xmldocstyle.json</c> configuration file is invalid
+    /// and was ignored.
+    /// </summary>
+    public static DiagnosticDescriptor XmlDocConfigInvalid { get; } = new DiagnosticDescriptor(
+        id: DiagnosticIds.XmlDocConfigInvalid,
+        title: "Bodu XML documentation configuration file is invalid",
+        messageFormat: "bodu.xmldocstyle.json is invalid and was ignored; defaults are in effect: {0}",
+        category: ConfigurationCategory,
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true,
+        description: "Reports that a bodu.xmldocstyle.json configuration file could not be parsed or applied, so the analyzer fell back to the built-in defaults. Fix the file so the intended policy takes effect.",
+        helpLinkUri: HelpLinkBase + "#bodu0001");
 
     /// <summary>Gets the descriptor for <c>BODU1001</c> — <c>&lt;summary&gt;</c> formatting differs from policy.</summary>
     public static DiagnosticDescriptor XmlDocSummary { get; } = CreateTagDescriptor(DiagnosticIds.XmlDocSummary, "summary");
