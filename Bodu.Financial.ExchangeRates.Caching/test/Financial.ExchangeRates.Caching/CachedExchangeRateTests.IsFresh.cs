@@ -17,7 +17,7 @@ public sealed class CachedExchangeRateTests
     /// </summary>
     /// <param name="ageHours">The age of the cached rate, in hours, relative to the evaluation instant.</param>
     /// <param name="expectedFresh">The expected freshness outcome.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(0, true)]
     [DataRow(23, true)]
     [DataRow(24, false)]

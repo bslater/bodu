@@ -42,7 +42,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
 
         CryptographicException ex = Assert.ThrowsExactly<CryptographicException>(() => algo.Initialize());
         Assert.IsTrue(
-            ex.Message.IndexOf("key", StringComparison.OrdinalIgnoreCase) >= 0,
+            ex.Message.Contains("key", StringComparison.OrdinalIgnoreCase),
             $"Expected exception message to mention 'key'. Actual: '{ex.Message}'");
     }
 

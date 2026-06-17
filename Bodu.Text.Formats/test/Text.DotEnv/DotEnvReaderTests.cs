@@ -50,7 +50,7 @@ public sealed class DotEnvReaderTests
     /// <param name="bufferSize">The reader buffer size in characters.</param>
     [TestMethod]
     [TestCategory("Regression")]
-    [DynamicData(nameof(ParityData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(ParityData))]
     public void Read_ShouldMatchParse_AcrossBufferSizes(string source, int bufferSize)
     {
         DotEnvDocument expected = DotEnv.Parse(source);
