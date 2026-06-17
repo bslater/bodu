@@ -130,7 +130,9 @@ public sealed class XmlDocTypeParamRequiresShortContentCodeFixProvider : CodeFix
 
         foreach (XmlElementSyntax typeParam in ordered)
         {
-            var content = GetContentText(typeParam);
+            // Operate on the canonical single-line content so the split point matches the analyzer's measure and
+            // the rewritten element (and relocated paragraph) are emitted as clean single lines.
+            var content = XmlDocProseText.Canonicalize(GetContentText(typeParam));
             var splitIndex = XmlDocSentenceBoundary.FindFirstSentenceBoundary(content);
             if (splitIndex < 0) continue;
 
@@ -138,7 +140,9 @@ public sealed class XmlDocTypeParamRequiresShortContentCodeFixProvider : CodeFix
             var remaining = TrimRemainingProse(content.Substring(splitIndex + 1));
             if (remaining.Length == 0) continue;
 
-            var newTypeParamText = typeParam.StartTag.ToString() + firstSentence + typeParam.EndTag.ToString();
+            var startTagText = XmlDocProseText.Canonicalize(typeParam.StartTag.ToString());
+            var endTagText = XmlDocProseText.Canonicalize(typeParam.EndTag.ToString());
+            var newTypeParamText = startTagText + firstSentence + endTagText;
             changes.Add(new TextChange(typeParam.Span, newTypeParamText));
             paragraphs.Add(remaining);
         }

@@ -43,6 +43,26 @@ public sealed class XmlDocTypeParamRequiresShortContentAnalyzerTests
     }
 
     /// <summary>
+    /// Verifies that a <c>&lt;typeparam&gt;</c> authored across multiple source lines whose canonical
+    /// single-line rendering fits the budget does not trigger BODU1406 — the rule measures the canonical
+    /// rendering, not the inflated raw multi-line span, so it does not fire on content the formatter would
+    /// simply join back onto one line.
+    /// </summary>
+    [TestMethod]
+    public async Task Analyze_WhenMultiLineButCanonicalFits_ShouldNotReport()
+    {
+        var source =
+            "/// <summary>Sample.</summary>\r\n" +
+            "/// <typeparam name=\"T\">The element type. It is\r\n" +
+            "/// used by the sample class.</typeparam>\r\n" +
+            "public sealed class Sample<T>\r\n" +
+            "{\r\n" +
+            "}\r\n";
+
+        await CreateTest(source).RunAsync(TestContext.CancellationTokenSource.Token);
+    }
+
+    /// <summary>
     /// Verifies that an over-budget <c>&lt;typeparam&gt;</c> whose only period belongs to an abbreviation
     /// (<c>e.g.</c>) does not trigger BODU1406, because there is no unambiguous sentence boundary to split on.
     /// </summary>
