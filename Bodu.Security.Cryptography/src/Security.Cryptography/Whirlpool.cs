@@ -89,8 +89,19 @@ public sealed partial class Whirlpool
     /// </summary>
     private const int LengthFieldBits = 256;
 
+    /// <summary>
+    /// The eight 64-bit chaining variables updated in place across the Merkle–Damgård compression.
+    /// </summary>
     private readonly ulong[] _state = new ulong[8];
+
+    /// <summary>
+    /// The selected Whirlpool revision used to compute the hash value.
+    /// </summary>
     private WhirlpoolVersion _version = WhirlpoolVersion.WhirlpoolInfo3;
+
+    /// <summary>
+    /// Indicates whether any input has been consumed, latching the <see cref="Version" /> setter once hashing starts.
+    /// </summary>
     private bool _inputConsumed;
 
     /// <summary>

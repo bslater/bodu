@@ -34,25 +34,75 @@ namespace Bodu.Security.Cryptography;
 /// </remarks>
 public sealed partial class Threefish512Cipher
 {
-    // Per-round rotation vectors. Each Vector256<ulong> packs four spec-defined rotation amounts (the four
-    // MIX rotations for one round) at lane positions matching the hi register's lane layout when the round
-    // executes.
+    /// <summary>
+    /// Packs the four spec-defined MIX rotation amounts for the first round into a single vector.
+    /// </summary>
+    /// <remarks>
+    /// Each lane position matches the <c>hi</c> register's lane layout when the round executes.
+    /// </remarks>
     private static readonly Vector256<ulong> s_rotVec0 = Vector256.Create((ulong)R0, R1, R2, R3);
+
+    /// <summary>
+    /// Packs the four spec-defined MIX rotation amounts for the second round into a single vector.
+    /// </summary>
     private static readonly Vector256<ulong> s_rotVec1 = Vector256.Create((ulong)R4, R5, R6, R7);
+
+    /// <summary>
+    /// Packs the four spec-defined MIX rotation amounts for the third round into a single vector.
+    /// </summary>
     private static readonly Vector256<ulong> s_rotVec2 = Vector256.Create((ulong)R8, R9, R10, R11);
+
+    /// <summary>
+    /// Packs the four spec-defined MIX rotation amounts for the fourth round into a single vector.
+    /// </summary>
     private static readonly Vector256<ulong> s_rotVec3 = Vector256.Create((ulong)R12, R13, R14, R15);
+
+    /// <summary>
+    /// Packs the four spec-defined MIX rotation amounts for the fifth round into a single vector.
+    /// </summary>
     private static readonly Vector256<ulong> s_rotVec4 = Vector256.Create((ulong)R16, R17, R18, R19);
+
+    /// <summary>
+    /// Packs the four spec-defined MIX rotation amounts for the sixth round into a single vector.
+    /// </summary>
     private static readonly Vector256<ulong> s_rotVec5 = Vector256.Create((ulong)R20, R21, R22, R23);
+
+    /// <summary>
+    /// Packs the four spec-defined MIX rotation amounts for the seventh round into a single vector.
+    /// </summary>
     private static readonly Vector256<ulong> s_rotVec6 = Vector256.Create((ulong)R24, R25, R26, R27);
+
+    /// <summary>
+    /// Packs the four spec-defined MIX rotation amounts for the eighth round into a single vector.
+    /// </summary>
     private static readonly Vector256<ulong> s_rotVec7 = Vector256.Create((ulong)R28, R29, R30, R31);
 
-    // VPERMQ control bytes used by the inter-round shuffle. ShuffleLoForward rotates lo's four lanes left
-    // by one position; ShuffleHiSwap13 swaps hi's lanes 1 and 3 (an involution, so the same byte serves
-    // both the forward and inverse direction). ShuffleLoInverse rotates lo's lanes right by one for the
-    // Decrypt pass.
-    private const byte ShuffleLoForward = 0x39;  // lanes (1, 2, 3, 0) — left-rotate by 1
-    private const byte ShuffleLoInverse = 0x93;  // lanes (3, 0, 1, 2) — right-rotate by 1
-    private const byte ShuffleHiSwap13 = 0x6C;   // lanes (0, 3, 2, 1) — swap 1 and 3 (self-inverse)
+    /// <summary>
+    /// The <c>VPERMQ</c> control byte that rotates the <c>lo</c> register's four lanes left by one position for the
+    /// forward inter-round shuffle.
+    /// </summary>
+    /// <remarks>
+    /// Selects lanes <c>(1, 2, 3, 0)</c> — a left-rotate by one.
+    /// </remarks>
+    private const byte ShuffleLoForward = 0x39;
+
+    /// <summary>
+    /// The <c>VPERMQ</c> control byte that rotates the <c>lo</c> register's four lanes right by one position for the
+    /// Decrypt pass.
+    /// </summary>
+    /// <remarks>
+    /// Selects lanes <c>(3, 0, 1, 2)</c> — a right-rotate by one.
+    /// </remarks>
+    private const byte ShuffleLoInverse = 0x93;
+
+    /// <summary>
+    /// The <c>VPERMQ</c> control byte that swaps lanes 1 and 3 of the <c>hi</c> register; an involution, so the same
+    /// byte serves both the forward and inverse directions.
+    /// </summary>
+    /// <remarks>
+    /// Selects lanes <c>(0, 3, 2, 1)</c> — swap 1 and 3 (self-inverse).
+    /// </remarks>
+    private const byte ShuffleHiSwap13 = 0x6C;
 
     /// <summary>
     /// Encrypts a single 64-byte block using the AVX-512 vectorised Threefish-512 implementation.

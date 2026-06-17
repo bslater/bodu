@@ -100,10 +100,13 @@ public sealed class CamelliaBlockCipher
     /// </summary>
     private const int Key256SizeBits = 256;
 
-    // SBOX1 from RFC 3713 Appendix A. Camellia defines only this table explicitly;
-    // SBOX2, SBOX3, and SBOX4 are derived by byte rotations or by rotating the lookup index.
-    // SBOX1 from RFC 3713 Appendix A. Camellia defines only this table explicitly;
-    // SBOX2, SBOX3, and SBOX4 are derived by byte rotations or by rotating the lookup index.
+    /// <summary>
+    /// The Camellia <c>SBOX1</c> substitution table from RFC 3713 Appendix A.
+    /// </summary>
+    /// <remarks>
+    /// Camellia defines only this table explicitly; <c>SBOX2</c>, <c>SBOX3</c>, and <c>SBOX4</c> are derived by byte
+    /// rotations or by rotating the lookup index.
+    /// </remarks>
     private static readonly byte[] s_sbox1 =
     [
         0x70, 0x82, 0x2C, 0xEC, 0xB3, 0x27, 0xC0, 0xE5, 0xE4, 0x85, 0x57, 0x35, 0xEA, 0x0C, 0xAE, 0x41,
@@ -124,8 +127,13 @@ public sealed class CamelliaBlockCipher
         0x40, 0x28, 0xD3, 0x7B, 0xBB, 0xC9, 0x43, 0xC1, 0x15, 0xE3, 0xAD, 0xF4, 0x77, 0xC7, 0x80, 0x9E,
     ];
 
-    // SIGMA1..SIGMA6 from RFC 3713 §2.4, represented as 64-bit constants.
-    // These fixed constants key the Feistel derivation of KA and KB during key expansion; they are not data-round keys.
+    /// <summary>
+    /// The <c>SIGMA1</c>..<c>SIGMA6</c> constants from RFC 3713 §2.4, represented as 64-bit values.
+    /// </summary>
+    /// <remarks>
+    /// These fixed constants key the Feistel derivation of <c>KA</c> and <c>KB</c> during key expansion; they are not
+    /// data-round keys.
+    /// </remarks>
     private static readonly ulong[] s_sigma =
     [
         0xA09E667F3BCC908BUL,
@@ -136,18 +144,36 @@ public sealed class CamelliaBlockCipher
         0xB05688C2B3E6C1FDUL,
     ];
 
-    // Whitening keys kw1..kw4 in RFC order. kw1/kw2 are applied before the Feistel rounds; kw3/kw4 are applied
-    // after the final Feistel swap.
+    /// <summary>
+    /// The whitening keys <c>kw1</c>..<c>kw4</c> in RFC order.
+    /// </summary>
+    /// <remarks>
+    /// <c>kw1</c>/<c>kw2</c> are applied before the Feistel rounds; <c>kw3</c>/<c>kw4</c> are applied after the final
+    /// Feistel swap.
+    /// </remarks>
     private readonly ulong[] _kw;
 
-    // Round keys k1..k18 (128-bit key) or k1..k24 (192/256-bit key) in RFC order. Array index 0 corresponds to k1.
+    /// <summary>
+    /// The round subkeys <c>k1</c>..<c>k18</c> (128-bit key) or <c>k1</c>..<c>k24</c> (192/256-bit key) in RFC order,
+    /// where array index 0 corresponds to <c>k1</c>.
+    /// </summary>
     private readonly ulong[] _k;
 
-    // FL/FLINV keys ke1..ke4 (128-bit key) or ke1..ke6 (192/256-bit key) in RFC order. Array index 0 corresponds to ke1.
+    /// <summary>
+    /// The FL/FL<sup>−1</sup> layer keys <c>ke1</c>..<c>ke4</c> (128-bit key) or <c>ke1</c>..<c>ke6</c> (192/256-bit
+    /// key) in RFC order, where array index 0 corresponds to <c>ke1</c>.
+    /// </summary>
     private readonly ulong[] _ke;
 
-    // True for 192- and 256-bit keys, which derive KB and use the 24-round key schedule from RFC 3713 §2.4.2.
+    /// <summary>
+    /// A value indicating whether the extended 24-round key schedule is in use. <see langword="true" /> for 192- and
+    /// 256-bit keys, which derive <c>KB</c> and use the schedule from RFC 3713 §2.4.2.
+    /// </summary>
     private readonly bool _usesExtendedKeySchedule;
+
+    /// <summary>
+    /// A value indicating whether this instance has been disposed.
+    /// </summary>
     private bool _disposed;
 
     /// <summary>

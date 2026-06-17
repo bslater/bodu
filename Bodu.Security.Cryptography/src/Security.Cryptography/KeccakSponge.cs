@@ -51,10 +51,29 @@ internal struct KeccakSponge
         private ulong _lane0;
     }
 
+    /// <summary>
+    /// The 25-lane Keccak state buffer permuted in place across the sponge operation.
+    /// </summary>
     private LaneBuffer _state;
+
+    /// <summary>
+    /// The sponge rate, in bytes.
+    /// </summary>
     private readonly int _rateBytes;
+
+    /// <summary>
+    /// The FIPS 202 domain-separation suffix byte applied during multi-rate padding.
+    /// </summary>
     private readonly byte _domainSuffix;
+
+    /// <summary>
+    /// The current byte position within the rate portion of the state.
+    /// </summary>
     private int _position;
+
+    /// <summary>
+    /// Indicates whether the sponge has entered the squeeze phase.
+    /// </summary>
     private bool _squeezing;
 
     /// <summary>

@@ -75,13 +75,33 @@ namespace Bodu.Security.Cryptography;
 public sealed class AsconXof128
     : AsconXof<AsconXof128>
 {
-    // Pre-computed initial state for Ascon-XOF128 (NIST SP 800-232).
-    // These five words are the result of applying Ascon-p12 to [raw_IV, 0, 0, 0, 0].
-    // Source: NIST SP 800-232 / ascon-c opt64/constants.h (ASCON_XOF128_IV0..IV4).
+    /// <summary>
+    /// The first word of the pre-computed Ascon-XOF128 initial sponge state.
+    /// </summary>
+    /// <remarks>
+    /// The five <c>Iv*</c> words are the result of applying Ascon-p12 to <c>[raw_IV, 0, 0, 0, 0]</c>, taken from NIST
+    /// SP 800-232 / ascon-c <c>opt64/constants.h</c> (<c>ASCON_XOF128_IV0..IV4</c>).
+    /// </remarks>
     private const ulong Iv0 = 0xb57e273b814cd416UL;
+
+    /// <summary>
+    /// The second word of the pre-computed Ascon-XOF128 initial sponge state.
+    /// </summary>
     private const ulong Iv1 = 0x2b51042562ae2420UL;
+
+    /// <summary>
+    /// The third word of the pre-computed Ascon-XOF128 initial sponge state.
+    /// </summary>
     private const ulong Iv2 = 0x66a3a7768ddf2218UL;
+
+    /// <summary>
+    /// The fourth word of the pre-computed Ascon-XOF128 initial sponge state.
+    /// </summary>
     private const ulong Iv3 = 0x5aad0a7a8153650cUL;
+
+    /// <summary>
+    /// The fifth word of the pre-computed Ascon-XOF128 initial sponge state.
+    /// </summary>
     private const ulong Iv4 = 0x4f3e0e32539493b6UL;
 
     /// <summary>

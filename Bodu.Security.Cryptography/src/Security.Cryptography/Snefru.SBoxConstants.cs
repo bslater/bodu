@@ -8,10 +8,14 @@ namespace Bodu.Security.Cryptography;
 
 public abstract partial class Snefru<T>
 {
-    // Flat S-box lookup table: 16 tables of 256 uint entries, stored contiguously.
-    // Access pattern: Constants[(tableIndex << 8) | byteValue]
-    // This layout eliminates the double pointer indirection and secondary bounds check
-    // that a jagged uint[][] would incur on every S-box lookup in the hot inner loop.
+    /// <summary>
+    /// The flat S-box lookup table: 16 tables of 256 <see langword="uint" /> entries, stored contiguously.
+    /// </summary>
+    /// <remarks>
+    /// Indexed as <c>s_constants[(tableIndex &lt;&lt; 8) | byteValue]</c>. This contiguous layout eliminates the double
+    /// pointer indirection and secondary bounds check that a jagged <see langword="uint" /><c>[][]</c> would incur on
+    /// every S-box lookup in the hot inner loop.
+    /// </remarks>
     private static readonly uint[] s_constants =
     [
 

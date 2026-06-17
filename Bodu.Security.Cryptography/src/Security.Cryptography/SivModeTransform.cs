@@ -100,11 +100,34 @@ public sealed class SivModeTransform
     /// </summary>
     private const int TagSizeBits = 128;
 
+    /// <summary>
+    /// The cipher keyed with K₁, used by CMAC and S2V to derive the synthetic IV.
+    /// </summary>
     private readonly IBlockCipher _s2vCipher;
+
+    /// <summary>
+    /// The cipher keyed with K₂, used by AES-CTR to encrypt the plaintext.
+    /// </summary>
     private readonly IBlockCipher _ctrCipher;
+
+    /// <summary>
+    /// The retained associated-data bytes contributed to the S2V computation, or <see langword="null" /> until set.
+    /// </summary>
     private byte[]? _aad;
+
+    /// <summary>
+    /// Indicates whether the associated data has been supplied for this transform.
+    /// </summary>
     private bool _aadProcessed;
+
+    /// <summary>
+    /// Indicates whether this single-use transform has already encrypted or decrypted a message.
+    /// </summary>
     private bool _completed;
+
+    /// <summary>
+    /// Indicates whether the instance has been disposed and its retained state cleared.
+    /// </summary>
     private bool _disposed;
 
     /// <summary>

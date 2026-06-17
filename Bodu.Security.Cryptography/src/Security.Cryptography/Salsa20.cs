@@ -80,6 +80,9 @@ public sealed class Salsa20
     /// </summary>
     internal const int NonceSizeBits = Salsa20StreamCipher.NonceSizeBytes * 8;
 
+    /// <summary>
+    /// The legal key sizes supported by the Salsa20 algorithm.
+    /// </summary>
     private static readonly KeySizes[] s_keySizes = [new KeySizes(128, 256, 128)];
 
     /// <summary>

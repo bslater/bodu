@@ -71,9 +71,24 @@ public abstract class MLKem
     /// </summary>
     public const int PrivateSeedSizeInBytes = 64;
 
+    /// <summary>
+    /// The FIPS 203 parameter set implemented by the derived type.
+    /// </summary>
     private readonly MLKemParameters _parameters;
+
+    /// <summary>
+    /// The encoded decapsulation (private) key, or <see langword="null" /> when none is held.
+    /// </summary>
     private byte[]? _decapsulationKey;
+
+    /// <summary>
+    /// The encoded encapsulation (public) key, or <see langword="null" /> when none is held.
+    /// </summary>
     private byte[]? _encapsulationKey;
+
+    /// <summary>
+    /// Indicates whether the instance has been disposed.
+    /// </summary>
     private bool _disposed;
 
     /// <summary>

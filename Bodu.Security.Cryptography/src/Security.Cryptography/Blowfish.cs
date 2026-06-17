@@ -100,16 +100,30 @@ public sealed class Blowfish
     /// </summary>
     internal const int MaxKeySize = 448;
 
-    // Blowfish has a single fixed 64-bit block size; expressed as a single-entry range with skip size 0.
+    /// <summary>
+    /// The legal block sizes for Blowfish, expressed as a single-entry range with skip size 0 because Blowfish has a
+    /// single fixed 64-bit block size.
+    /// </summary>
     private static readonly KeySizes[] s_blowfishBlockSizes = [new KeySizes(BlowFishBlockSize, BlowFishBlockSize, 0)];
 
-    // Legal key sizes span 32..448 bits in 8-bit (single-byte) increments.
+    /// <summary>
+    /// The legal key sizes for Blowfish, spanning 32..448 bits in 8-bit (single-byte) increments.
+    /// </summary>
     private static readonly KeySizes[] s_blowfishKeySizes = [new KeySizes(MinKeySize, MaxKeySize, 8)];
 
+    /// <summary>
+    /// A value indicating whether this instance has been disposed.
+    /// </summary>
     private bool _disposed = false;
 
+    /// <summary>
+    /// The block cipher mode of operation used when creating encryptors and decryptors.
+    /// </summary>
     private CipherModeKind _blockMode = CipherModeKind.CBC;
 
+    /// <summary>
+    /// The padding mode applied when creating encryptors and decryptors.
+    /// </summary>
     private PaddingModeKind _blockPadding = PaddingModeKind.PKCS7;
 
     /// <summary>

@@ -92,16 +92,32 @@ public sealed class Serpent128
     /// </summary>
     internal const int BlockSizeBits = 128;
 
+    /// <summary>
+    /// The supported Serpent block sizes, fixed at 128 bits.
+    /// </summary>
     private static readonly KeySizes[] s_serpentBlockSizes = [new KeySizes(BlockSizeBits, BlockSizeBits, 0)];
 
-    // Serpent permits 128-, 192-, or 256-bit keys (the three AES key sizes). The step is 64 bits so the range
-    // is expressed exactly by a single KeySizes entry.
+    /// <summary>
+    /// The supported Serpent key sizes — 128, 192, or 256 bits (the three AES key sizes).
+    /// </summary>
+    /// <remarks>
+    /// The step is 64 bits, so the range is expressed exactly by a single <see cref="KeySizes" /> entry.
+    /// </remarks>
     private static readonly KeySizes[] s_serpentKeySizes = [new KeySizes(128, 256, 64)];
 
+    /// <summary>
+    /// Indicates whether the instance has been disposed and its key material cleared.
+    /// </summary>
     private bool _disposed;
 
+    /// <summary>
+    /// The block cipher mode of operation used when creating encryptors and decryptors.
+    /// </summary>
     private CipherModeKind _blockMode = CipherModeKind.CBC;
 
+    /// <summary>
+    /// The padding mode used when creating encryptors and decryptors.
+    /// </summary>
     private PaddingModeKind _blockPadding = PaddingModeKind.PKCS7;
 
     /// <summary>

@@ -98,15 +98,59 @@ public sealed class CcmModeTransform
     /// <see cref="TagSizeBits" /> / 8.
     /// </summary>
     private const int TagSizeBits = 128;
+
+    /// <summary>
+    /// The first byte of every CTR counter block A_i.
+    /// </summary>
+    /// <remarks>
+    /// Encodes <c>L' = q - 1 = 2</c>.
+    /// </remarks>
     private const byte CounterFlagByte = 0x02; // L' = q-1 = 2
+
+    /// <summary>
+    /// The base value of the CBC-MAC flag byte B0 when no associated data is present.
+    /// </summary>
+    /// <remarks>
+    /// Bit layout <c>0_111_010</c>: Adata = 0, M' = 7, L' = 2.
+    /// </remarks>
     private const byte BaseB0NoAad = 0x3A;  // 0_111_010
+
+    /// <summary>
+    /// The base value of the CBC-MAC flag byte B0 when associated data is present.
+    /// </summary>
+    /// <remarks>
+    /// Bit layout <c>1_111_010</c>: Adata = 1, M' = 7, L' = 2.
+    /// </remarks>
     private const byte BaseB0WithAad = 0x7A;  // 1_111_010
 
+    /// <summary>
+    /// The underlying block cipher used for CTR encryption and the CBC-MAC chain.
+    /// </summary>
     private readonly IBlockCipher _cipher;
+
+    /// <summary>
+    /// The 12-byte CCM nonce derived from the supplied initialization vector.
+    /// </summary>
     private readonly byte[] _nonce;
+
+    /// <summary>
+    /// The associated authenticated data captured for the MAC, or <see langword="null" /> until set.
+    /// </summary>
     private byte[]? _aad;
+
+    /// <summary>
+    /// Indicates whether the associated data has been captured.
+    /// </summary>
     private bool _aadProcessed;
+
+    /// <summary>
+    /// Indicates whether this single-use transform has already processed a message.
+    /// </summary>
     private bool _completed;
+
+    /// <summary>
+    /// Indicates whether this instance has been disposed.
+    /// </summary>
     private bool _disposed;
 
     /// <summary>

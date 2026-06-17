@@ -33,35 +33,101 @@ namespace Bodu.Security.Cryptography;
 /// </remarks>
 public sealed partial class Threefish1024Cipher
 {
-    // Per-round rotation vectors. Each Vector512<ulong> packs eight spec-defined rotation amounts (the
-    // eight MIX rotations for one round) at lane positions matching the hi register's lane layout when
-    // the round executes.
+    /// <summary>
+    /// The per-round rotation vector for the first round of each four-round group.
+    /// </summary>
+    /// <remarks>
+    /// Each <see cref="Vector512{T}" /> packs the eight spec-defined MIX rotation amounts for one round at lane
+    /// positions matching the hi register's lane layout when the round executes.
+    /// </remarks>
     private static readonly Vector512<ulong> s_rotVec0 = Vector512.Create((ulong)R0, R1, R2, R3, R4, R5, R6, R7);
+
+    /// <summary>
+    /// The per-round rotation vector for the second round of each four-round group.
+    /// </summary>
     private static readonly Vector512<ulong> s_rotVec1 = Vector512.Create((ulong)R8, R9, R10, R11, R12, R13, R14, R15);
+
+    /// <summary>
+    /// The per-round rotation vector for the third round of each four-round group.
+    /// </summary>
     private static readonly Vector512<ulong> s_rotVec2 = Vector512.Create((ulong)R16, R17, R18, R19, R20, R21, R22, R23);
+
+    /// <summary>
+    /// The per-round rotation vector for the fourth round of each four-round group.
+    /// </summary>
     private static readonly Vector512<ulong> s_rotVec3 = Vector512.Create((ulong)R24, R25, R26, R27, R28, R29, R30, R31);
+
+    /// <summary>
+    /// The per-round rotation vector for the fifth round of each eight-round cycle.
+    /// </summary>
     private static readonly Vector512<ulong> s_rotVec4 = Vector512.Create((ulong)R32, R33, R34, R35, R36, R37, R38, R39);
+
+    /// <summary>
+    /// The per-round rotation vector for the sixth round of each eight-round cycle.
+    /// </summary>
     private static readonly Vector512<ulong> s_rotVec5 = Vector512.Create((ulong)R40, R41, R42, R43, R44, R45, R46, R47);
+
+    /// <summary>
+    /// The per-round rotation vector for the seventh round of each eight-round cycle.
+    /// </summary>
     private static readonly Vector512<ulong> s_rotVec6 = Vector512.Create((ulong)R48, R49, R50, R51, R52, R53, R54, R55);
+
+    /// <summary>
+    /// The per-round rotation vector for the eighth round of each eight-round cycle.
+    /// </summary>
     private static readonly Vector512<ulong> s_rotVec7 = Vector512.Create((ulong)R56, R57, R58, R59, R60, R61, R62, R63);
 
-    // Inter-round lane-shuffle vectors. Forward shuffle takes canonical lane order to the round-1 layout
-    // (and applied four times in a row cycles back to canonical); inverse shuffle takes canonical back to
-    // the round-3 post-MIX layout that Decrypt's first UNMIX operates on.
+    /// <summary>
+    /// The forward lane-shuffle index vector applied to the even-position register between rounds.
+    /// </summary>
+    /// <remarks>
+    /// The forward shuffle takes canonical lane order to the round-1 layout and, applied four times in a row, cycles
+    /// back to canonical; the inverse shuffle takes canonical back to the round-3 post-MIX layout that the first UNMIX
+    /// of <c>Decrypt</c> operates on.
+    /// </remarks>
     private static readonly Vector512<ulong> s_loShuffleForward = Vector512.Create(0UL, 1, 3, 2, 5, 6, 7, 4);
+
+    /// <summary>
+    /// The forward lane-shuffle index vector applied to the odd-position register between rounds.
+    /// </summary>
     private static readonly Vector512<ulong> s_hiShuffleForward = Vector512.Create(4UL, 6, 5, 7, 3, 1, 2, 0);
+
+    /// <summary>
+    /// The inverse lane-shuffle index vector applied to the even-position register between inverse rounds.
+    /// </summary>
     private static readonly Vector512<ulong> s_loShuffleInverse = Vector512.Create(0UL, 1, 3, 2, 7, 4, 5, 6);
+
+    /// <summary>
+    /// The inverse lane-shuffle index vector applied to the odd-position register between inverse rounds.
+    /// </summary>
     private static readonly Vector512<ulong> s_hiShuffleInverse = Vector512.Create(7UL, 5, 6, 4, 0, 2, 1, 3);
 
-    // Deinterleave indices for the initial block load: separate the canonical-byte-order block into the
-    // even-position loVec and odd-position hiVec via a single VPERMI2Q each (indices 0-7 select from the
-    // first source vector, 8-15 from the second).
+    /// <summary>
+    /// The deinterleave index vector that selects the even-position words from a loaded block.
+    /// </summary>
+    /// <remarks>
+    /// Separates the canonical-byte-order block into the even-position <c>loVec</c> and odd-position <c>hiVec</c> via a
+    /// single <c>VPERMI2Q</c> each, where indices 0-7 select from the first source vector and 8-15 from the second.
+    /// </remarks>
     private static readonly Vector512<ulong> s_evenWordIndices = Vector512.Create(0UL, 2, 4, 6, 8, 10, 12, 14);
+
+    /// <summary>
+    /// The deinterleave index vector that selects the odd-position words from a loaded block.
+    /// </summary>
     private static readonly Vector512<ulong> s_oddWordIndices = Vector512.Create(1UL, 3, 5, 7, 9, 11, 13, 15);
 
-    // Reinterleave indices for the final block store: combine UnpackLow / UnpackHigh of (loVec, hiVec)
-    // into the canonical-byte-order halves of the output block.
+    /// <summary>
+    /// The reinterleave index vector that assembles the first canonical half of the output block.
+    /// </summary>
+    /// <remarks>
+    /// Combines <c>UnpackLow</c> / <c>UnpackHigh</c> of <c>(loVec, hiVec)</c> into the canonical-byte-order halves of
+    /// the output block.
+    /// </remarks>
     private static readonly Vector512<ulong> s_outFirstHalfIndices = Vector512.Create(0UL, 1, 8, 9, 2, 3, 10, 11);
+
+    /// <summary>
+    /// The reinterleave index vector that assembles the second canonical half of the output block.
+    /// </summary>
     private static readonly Vector512<ulong> s_outSecondHalfIndices = Vector512.Create(4UL, 5, 12, 13, 6, 7, 14, 15);
 
     /// <summary>

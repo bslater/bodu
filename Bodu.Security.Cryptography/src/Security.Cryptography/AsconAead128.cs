@@ -149,12 +149,24 @@ public sealed class AsconAead128
     /// </summary>
     internal const int TagSizeBits = 128;
 
-    // IV word for Ascon-AEAD128 (NIST SP 800-232).
-    // Source: official ascon-c reference (crypto_aead/asconaead128/ref/constants.h, ASCON_128A_IV).
-    // Packed fields (LSB first): variant=1, pa=12 << 16, pb=8 << 20, tagBits=128 << 24, rateBytes=16 << 40.
+    /// <summary>
+    /// The initialization-vector word for Ascon-AEAD128 (NIST SP 800-232).
+    /// </summary>
+    /// <remarks>
+    /// Sourced from the official ascon-c reference constants header. The packed fields, least-significant first, are
+    /// the variant identifier, the initialization round count, the absorption round count, the tag length in bits, and
+    /// the rate in bytes.
+    /// </remarks>
     private const ulong IvWord = 0x00001000808c0001UL;
 
+    /// <summary>
+    /// The number of permutation rounds (Ascon-p12) applied during initialization and finalization.
+    /// </summary>
     private const int Pa = 12;
+
+    /// <summary>
+    /// The number of permutation rounds (Ascon-p8) applied between absorbed blocks.
+    /// </summary>
     private const int Pb = 8;
 
     /// <summary>
@@ -168,11 +180,29 @@ public sealed class AsconAead128
     /// </summary>
     private const int RateSizeBits = 128;
 
+    /// <summary>
+    /// The retained 128-bit key material used during initialization and finalization.
+    /// </summary>
     private readonly KeyMaterial128 _key;
 
+    /// <summary>
+    /// Indicates whether associated data has been processed for this instance.
+    /// </summary>
     private bool _aadProcessed;
+
+    /// <summary>
+    /// Indicates whether encryption or decryption has completed for this single-use instance.
+    /// </summary>
     private bool _completed;
+
+    /// <summary>
+    /// Indicates whether this instance has been disposed and its key material and sponge state cleared.
+    /// </summary>
     private bool _disposed;
+
+    /// <summary>
+    /// The 320-bit ASCON sponge state updated in place across the AEAD phases.
+    /// </summary>
     private AsconState _state;
 
     /// <summary>
@@ -570,7 +600,14 @@ public sealed class AsconAead128
     /// </remarks>
     private sealed class KeyMaterial128
     {
+        /// <summary>
+        /// The first 64-bit key word.
+        /// </summary>
         private ulong _k0;
+
+        /// <summary>
+        /// The second 64-bit key word.
+        /// </summary>
         private ulong _k1;
 
         /// <summary>

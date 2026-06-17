@@ -96,11 +96,24 @@ public sealed class Camellia
     /// </summary>
     internal const int MaxKeySize = 256;
 
+    /// <summary>
+    /// The legal block sizes supported by the Camellia algorithm.
+    /// </summary>
     private static readonly KeySizes[] s_camelliaBlockSizes = [new KeySizes(BlockSizeBits, BlockSizeBits, 0)];
+
+    /// <summary>
+    /// The legal key sizes supported by the Camellia algorithm.
+    /// </summary>
     private static readonly KeySizes[] s_camelliaKeySizes = [new KeySizes(128, 256, 64)];
 
+    /// <summary>
+    /// Indicates whether this instance has been disposed and its key material cleared.
+    /// </summary>
     private bool _disposed;
 
+    /// <summary>
+    /// The extended padding mode applied when creating encryptors and decryptors.
+    /// </summary>
     private PaddingModeKind _blockPadding = PaddingModeKind.PKCS7;
 
     /// <summary>

@@ -90,14 +90,44 @@ namespace Bodu.Security.Cryptography;
 public sealed class EaxModeTransform
     : IAeadBlockCipherModeTransform, IDisposable
 {
+    /// <summary>
+    /// The default EAX authentication-tag size, in bits.
+    /// </summary>
     private const int DefaultTagSizeBits = 128;
+
+    /// <summary>
+    /// The default EAX authentication-tag size, in bytes.
+    /// </summary>
     private const int DefaultTagSize = DefaultTagSizeBits / 8;
 
+    /// <summary>
+    /// The underlying block cipher used for both OMAC and the CTR keystream.
+    /// </summary>
     private readonly IBlockCipher _cipher;
-    private readonly byte[] _nonce;     // raw user nonce, defensive clone
+
+    /// <summary>
+    /// The raw user-supplied nonce, held as a defensive clone.
+    /// </summary>
+    private readonly byte[] _nonce;
+
+    /// <summary>
+    /// The buffered associated authenticated data, or <see langword="null" /> until processed.
+    /// </summary>
     private byte[]? _aad;
+
+    /// <summary>
+    /// Indicates whether the associated data has been processed.
+    /// </summary>
     private bool _aadProcessed;
+
+    /// <summary>
+    /// Indicates whether this transform has already completed an encrypt or decrypt operation.
+    /// </summary>
     private bool _completed;
+
+    /// <summary>
+    /// Indicates whether this instance has been disposed.
+    /// </summary>
     private bool _disposed;
 
     /// <summary>

@@ -56,6 +56,9 @@ namespace Bodu.Security.Cryptography;
 public sealed class EcbModeTransform
     : IBlockCipherModeTransform
 {
+    /// <summary>
+    /// The underlying block cipher over which ECB is applied.
+    /// </summary>
     private readonly IBlockCipher _cipher;
 
     /// <summary>

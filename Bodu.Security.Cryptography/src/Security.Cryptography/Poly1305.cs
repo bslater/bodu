@@ -97,6 +97,9 @@ public sealed class Poly1305
     /// </summary>
     public const int KeySize = 256;
 
+    /// <summary>
+    /// The 26-bit mask applied to each limb of the radix-2^26 representation.
+    /// </summary>
     private const uint Mask26 = 0x3ffffff;
 
     /// <summary>
@@ -105,19 +108,34 @@ public sealed class Poly1305
     /// </summary>
     private new const int BlockSize = 128;
 
+    /// <summary>
+    /// The polynomial accumulator, held as five radix-2^26 limbs.
+    /// </summary>
     private readonly uint[] _acc = new uint[5];
+
+    /// <summary>
+    /// The encrypted-nonce key half <c>s</c>, held as four 32-bit words.
+    /// </summary>
     private readonly uint[] _key = new uint[4];
-    private readonly uint[] _r = new uint[5];    // Polynomial key
 
-    // Encrypted nonce
-    private readonly uint[] _s = new uint[4];    // Precomputed 5 * r[1..4]
+    /// <summary>
+    /// The clamped polynomial key <c>r</c>, held as five radix-2^26 limbs.
+    /// </summary>
+    private readonly uint[] _r = new uint[5];
 
-    // Tracks whether ProcessFinalBlock has run for the currently-assigned key. Once set, the instance must
-    // not accept further blocks or finalize again until the caller explicitly assigns a fresh Key —
-    // Poly1305 is a one-time MAC and reusing a (key, accumulator) pair across messages enables forgery.
+    /// <summary>
+    /// The precomputed <c>5 * r[1..4]</c> multiples used to fold the reduction modulo <c>2^130 - 5</c>.
+    /// </summary>
+    private readonly uint[] _s = new uint[4];
+
+    /// <summary>
+    /// Indicates whether <c>ProcessFinalBlock</c> has run for the currently-assigned key.
+    /// </summary>
+    /// <remarks>
+    /// Once set, the instance must not accept further blocks or finalize again until the caller explicitly assigns a
+    /// fresh Key — Poly1305 is a one-time MAC and reusing a (key, accumulator) pair across messages enables forgery.
+    /// </remarks>
     private bool _finalized;
-
-    // Polynomial accumulator
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Poly1305" /> class with no key set.

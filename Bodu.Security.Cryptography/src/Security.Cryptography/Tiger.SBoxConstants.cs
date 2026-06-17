@@ -8,6 +8,9 @@ namespace Bodu.Security.Cryptography;
 
 public sealed partial class Tiger
 {
+    /// <summary>
+    /// The first Tiger substitution table (S-box 1) used by the round function.
+    /// </summary>
     private static readonly ulong[] s_sBox0 = [
         0x02AAB17CF7E90C5E, 0xAC424B03E243A8EC,
         0x72CD5BE30DD5FCD3, 0x6D019B93F6F97F3A,
@@ -139,6 +142,9 @@ public sealed partial class Tiger
         0xA6300F170BDC4820, 0xEBC18760ED78A77A
 ];
 
+    /// <summary>
+    /// The second Tiger substitution table (S-box 2) used by the round function.
+    /// </summary>
     private static readonly ulong[] s_sBox1 = [
         0xE6A6BE5A05A12138, 0xB5A122A5B4F87C98,
         0x563C6089140B6990, 0x4C46CB2E391F5DD5,
@@ -270,6 +276,9 @@ public sealed partial class Tiger
         0xD62A2EABC0977179, 0x22FAC097AA8D5C0E
     ];
 
+    /// <summary>
+    /// The third Tiger substitution table (S-box 3) used by the round function.
+    /// </summary>
     private static readonly ulong[] s_sBox2 = [
         0xF49FCC2FF1DAF39B, 0x487FD5C66FF29281,
         0xE8A30667FCDCA83F, 0x2C9B4BE3D2FCCE63,
@@ -401,6 +410,9 @@ public sealed partial class Tiger
         0xD3DC3BEF265B0F70, 0x6D0E60F5C3578A9E
     ];
 
+    /// <summary>
+    /// The fourth Tiger substitution table (S-box 4) used by the round function.
+    /// </summary>
     private static readonly ulong[] s_sBox3 = [
         0x5B0E608526323C55, 0x1A46C1A9FA1B59F5,
         0xA9E245A17C4C8FFA, 0x65CA5159DB2955D7,

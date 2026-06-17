@@ -115,6 +115,9 @@ public abstract class TweakableSymmetricAlgorithm
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Follows the BCL protected field naming convention (like IVValue on SymmetricAlgorithm) so that derived tweakable cipher types can read and clear tweak material directly without virtual dispatch.")]
     protected byte[]? TweakValue = null;
 
+    /// <summary>
+    /// Indicates whether this instance has been disposed.
+    /// </summary>
     private bool _disposed = false;
 
     /// <summary>

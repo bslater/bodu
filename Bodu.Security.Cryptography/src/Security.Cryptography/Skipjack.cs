@@ -95,14 +95,24 @@ public sealed class Skipjack
     /// </summary>
     internal const int SkipjackKeySize = 80;
 
-    // Skipjack has a single fixed 64-bit block size; expressed as a single-entry range with skip size 0.
+    /// <summary>
+    /// The legal block sizes for Skipjack, expressed as a single fixed 64-bit entry with a skip size of 0.
+    /// </summary>
     private static readonly KeySizes[] s_skipjackBlockSizes = [new KeySizes(SkipjackBlockSize, SkipjackBlockSize, 0)];
 
-    // Skipjack has a single fixed 80-bit key size; expressed as a single-entry range with skip size 0.
+    /// <summary>
+    /// The legal key sizes for Skipjack, expressed as a single fixed 80-bit entry with a skip size of 0.
+    /// </summary>
     private static readonly KeySizes[] s_skipjackKeySizes = [new KeySizes(SkipjackKeySize, SkipjackKeySize, 0)];
 
+    /// <summary>
+    /// Indicates whether this instance has been disposed.
+    /// </summary>
     private bool _disposed = false;
 
+    /// <summary>
+    /// The extended padding mode used when creating encryptors and decryptors.
+    /// </summary>
     private PaddingModeKind _blockPadding = PaddingModeKind.PKCS7;
 
     /// <summary>

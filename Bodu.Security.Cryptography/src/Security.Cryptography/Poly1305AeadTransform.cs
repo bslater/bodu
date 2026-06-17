@@ -56,10 +56,24 @@ public abstract class Poly1305AeadTransform
     /// </summary>
     private const int TagSizeBits = TagBytes * 8;
 
+    /// <summary>
+    /// The retained 256-bit secret key, cleared on disposal.
+    /// </summary>
     private readonly byte[] _key;
+
+    /// <summary>
+    /// The retained 192-bit nonce, cleared on disposal.
+    /// </summary>
     private readonly byte[] _nonce;
 
+    /// <summary>
+    /// A value indicating whether this single-use transform has already processed a message.
+    /// </summary>
     private bool _completed;
+
+    /// <summary>
+    /// A value indicating whether this instance has been disposed.
+    /// </summary>
     private bool _disposed;
 
     /// <summary>

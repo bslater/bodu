@@ -8,14 +8,14 @@ namespace Bodu.Security.Cryptography;
 
 public sealed partial class BlowfishBlockCipher
 {
-    // ----------------------------------------------------------------------------------------
-    // Static initializers — hexadecimal digits of pi (π), per the Blowfish specification.
-    // These immutable tables are copied into the per-instance P-array/S-box arrays before the key
-    // schedule mutates the working copies into key-dependent state.
-    // ----------------------------------------------------------------------------------------
-
-    // Initial P-array P[0..17]. After key expansion these words become the 16 round subkeys plus two
-    // final whitening subkeys used by EncipherBlock and DecipherBlock.
+    /// <summary>
+    /// The initial P-array <c>P[0..17]</c> for Blowfish, derived from the hexadecimal digits of pi (π).
+    /// </summary>
+    /// <remarks>
+    /// These immutable static tables are copied into the per-instance P-array and S-box arrays before the key schedule
+    /// mutates the working copies into key-dependent state. After key expansion the P-array words become the 16 round
+    /// subkeys plus the two final whitening subkeys used by <c>EncipherBlock</c> and <c>DecipherBlock</c>.
+    /// </remarks>
     private static readonly uint[] s_initP =
     [
         0x243F6A88, 0x85A308D3, 0x13198A2E, 0x03707344,
@@ -25,7 +25,12 @@ public sealed partial class BlowfishBlockCipher
         0x9216D5D9, 0x8979FB1B,
     ];
 
-    // Initial S-box 0. The four S-boxes provide the nonlinear lookup state used by the Blowfish F function.
+    /// <summary>
+    /// The initial S-box 0 for Blowfish, derived from the hexadecimal digits of pi (π).
+    /// </summary>
+    /// <remarks>
+    /// The four S-boxes provide the nonlinear lookup state used by the Blowfish F function.
+    /// </remarks>
     private static readonly uint[] s_initS0 =
     [
         0xD1310BA6, 0x98DFB5AC, 0x2FFD72DB, 0xD01ADFB7,
@@ -94,8 +99,13 @@ public sealed partial class BlowfishBlockCipher
         0x53B02D5D, 0xA99F8FA1, 0x08BA4799, 0x6E85076A,
     ];
 
-    // Initial S-box 1. Together with S0, S2, and S3 this table is transformed by the key schedule into
-    // the key-dependent S-box state consumed by the Blowfish F function.
+    /// <summary>
+    /// The initial S-box 1 for Blowfish, derived from the hexadecimal digits of pi (π).
+    /// </summary>
+    /// <remarks>
+    /// Together with S0, S2, and S3 this table is transformed by the key schedule into the key-dependent S-box state
+    /// consumed by the Blowfish F function.
+    /// </remarks>
     private static readonly uint[] s_initS1 =
     [
         0x4B7A70E9, 0xB5B32944, 0xDB75092E, 0xC4192623,
@@ -164,8 +174,13 @@ public sealed partial class BlowfishBlockCipher
         0x153E21E7, 0x8FB03D4A, 0xE6E39F2B, 0xDB83ADF7,
     ];
 
-    // Initial S-box 2. All S-boxes are expanded by repeatedly encrypting the evolving all-zero block
-    // after the P-array has been expanded.
+    /// <summary>
+    /// The initial S-box 2 for Blowfish, derived from the hexadecimal digits of pi (π).
+    /// </summary>
+    /// <remarks>
+    /// All S-boxes are expanded by repeatedly encrypting the evolving all-zero block after the P-array has been
+    /// expanded.
+    /// </remarks>
     private static readonly uint[] s_initS2 =
     [
         0xE93D5A68, 0x948140F7, 0xF64C261C, 0x94692934,
@@ -234,8 +249,13 @@ public sealed partial class BlowfishBlockCipher
         0xD79A3234, 0x92638212, 0x670EFA8E, 0x406000E0,
     ];
 
-    // Initial S-box 3. The final expanded S-box entry is therefore dependent on every prior expansion
-    // step and indirectly on every byte of the supplied key.
+    /// <summary>
+    /// The initial S-box 3 for Blowfish, derived from the hexadecimal digits of pi (π).
+    /// </summary>
+    /// <remarks>
+    /// The final expanded S-box entry is therefore dependent on every prior expansion step and indirectly on every byte
+    /// of the supplied key.
+    /// </remarks>
     private static readonly uint[] s_initS3 =
     [
         0x3A39CE37, 0xD3FAF5CF, 0xABC27737, 0x5AC52D1B,

@@ -34,15 +34,50 @@ public abstract partial class AsconHash<T>
     : BlockHashAlgorithm<T>
     where T : AsconHash<T>, new()
 {
+    /// <summary>
+    /// The canonical algorithm identifier string supplied by the derived variant.
+    /// </summary>
     private readonly string _algorithmName;
+
+    /// <summary>
+    /// The number of Ascon-p permutation rounds applied after each absorbed message block.
+    /// </summary>
     private readonly int _absorptionRounds;
+
+    /// <summary>
+    /// The pre-computed post-initialization state word 0 supplied by the derived variant.
+    /// </summary>
     private readonly ulong _iv0;
+
+    /// <summary>
+    /// The pre-computed post-initialization state word 1 supplied by the derived variant.
+    /// </summary>
     private readonly ulong _iv1;
+
+    /// <summary>
+    /// The pre-computed post-initialization state word 2 supplied by the derived variant.
+    /// </summary>
     private readonly ulong _iv2;
+
+    /// <summary>
+    /// The pre-computed post-initialization state word 3 supplied by the derived variant.
+    /// </summary>
     private readonly ulong _iv3;
+
+    /// <summary>
+    /// The pre-computed post-initialization state word 4 supplied by the derived variant.
+    /// </summary>
     private readonly ulong _iv4;
 
+    /// <summary>
+    /// Indicates whether the next processed block is the final padded block and must use the 12-round Ascon-p12
+    /// permutation rather than the configured absorption round count.
+    /// </summary>
     private bool _useP12ForFinalPad;
+
+    /// <summary>
+    /// The 320-bit Ascon sponge state comprising five 64-bit words, updated in place during absorption and squeezing.
+    /// </summary>
     private AsconState _state;
 
     /// <summary>

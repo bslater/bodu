@@ -81,13 +81,34 @@ namespace Bodu.Security.Cryptography;
 public sealed partial class Tiger
     : BlockHashAlgorithm<Tiger>
 {
+    /// <summary>
+    /// The number of bits in the full Tiger digest that is always computed internally before truncation.
+    /// </summary>
     private const int MaxOutputBits = 192;
 
+    /// <summary>
+    /// The set of hash output sizes, in bits, that the Tiger algorithm permits.
+    /// </summary>
     private static readonly int[] s_permittedHashSizes = [128, 160, 192];
 
+    /// <summary>
+    /// The first 64-bit chaining variable of the Tiger state.
+    /// </summary>
     private ulong _state0 = 0x0123456789ABCDEF;
+
+    /// <summary>
+    /// The second 64-bit chaining variable of the Tiger state.
+    /// </summary>
     private ulong _state1 = 0xFEDCBA9876543210;
+
+    /// <summary>
+    /// The third 64-bit chaining variable of the Tiger state.
+    /// </summary>
     private ulong _state2 = 0xF096A5B4C3B2E187;
+
+    /// <summary>
+    /// The padding variant that selects the final-block padding byte (<c>0x01</c> for Tiger, <c>0x80</c> for Tiger2).
+    /// </summary>
     private TigerHashingVariant _variant = TigerHashingVariant.Tiger;
 
     /// <summary>

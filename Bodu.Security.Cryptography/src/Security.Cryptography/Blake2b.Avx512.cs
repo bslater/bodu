@@ -28,11 +28,28 @@ namespace Bodu.Security.Cryptography;
 /// </remarks>
 public sealed partial class Blake2b
 {
+    /// <summary>
+    /// The broadcast vector for the 16-bit right rotation in the BLAKE2b <c>G</c> function.
+    /// </summary>
+    /// <remarks>
+    /// The four rotation amounts used by Blake2b's <c>G</c> function (RFC 7693 §3.1) are encoded as broadcast vectors
+    /// so that <c>Avx512F.VL.RotateRightVariable</c> lowers each rotate to a single <c>VPRORQ</c> instruction.
+    /// </remarks>
     private static readonly Vector256<ulong> s_ror16 = Vector256.Create(16UL);
+
+    /// <summary>
+    /// The broadcast vector for the 24-bit right rotation in the BLAKE2b <c>G</c> function.
+    /// </summary>
     private static readonly Vector256<ulong> s_ror24 = Vector256.Create(24UL);
-    // The four rotation amounts used by Blake2b's G function (RFC 7693 §3.1). Encoded as broadcast
-    // vectors so that Avx512F.VL.RotateRightVariable lowers each rotate to a single VPRORQ instruction.
+
+    /// <summary>
+    /// The broadcast vector for the 32-bit right rotation in the BLAKE2b <c>G</c> function.
+    /// </summary>
     private static readonly Vector256<ulong> s_ror32 = Vector256.Create(32UL);
+
+    /// <summary>
+    /// The broadcast vector for the 63-bit right rotation in the BLAKE2b <c>G</c> function.
+    /// </summary>
     private static readonly Vector256<ulong> s_ror63 = Vector256.Create(63UL);
 
     /// <summary>

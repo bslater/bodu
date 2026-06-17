@@ -64,17 +64,42 @@ public sealed partial class BlowfishBlockCipher
     /// </summary>
     private const int SBoxLength = 256;
 
-    // Mutable per-instance P-array. This starts as s_initP, is XORed with cyclic key words, and is then
-    // replaced pair-by-pair during the all-zero-block expansion phase.
+    /// <summary>
+    /// The mutable per-instance P-array.
+    /// </summary>
+    /// <remarks>
+    /// Starts as <c>s_initP</c>, is XORed with cyclic key words, and is then replaced pair-by-pair during the
+    /// all-zero-block expansion phase.
+    /// </remarks>
     private readonly uint[] _p = new uint[PArrayLength];
 
-    // Mutable per-instance S-boxes. These start as the pi-derived constants and become key-dependent
-    // lookup tables during key schedule expansion. They are secret-derived state and are cleared on disposal.
+    /// <summary>
+    /// The mutable per-instance first S-box.
+    /// </summary>
+    /// <remarks>
+    /// The four S-boxes start as the pi-derived constants and become key-dependent lookup tables during key schedule
+    /// expansion. They are secret-derived state and are cleared on disposal.
+    /// </remarks>
     private readonly uint[] _s0 = new uint[SBoxLength];
+
+    /// <summary>
+    /// The mutable per-instance second S-box.
+    /// </summary>
     private readonly uint[] _s1 = new uint[SBoxLength];
+
+    /// <summary>
+    /// The mutable per-instance third S-box.
+    /// </summary>
     private readonly uint[] _s2 = new uint[SBoxLength];
+
+    /// <summary>
+    /// The mutable per-instance fourth S-box.
+    /// </summary>
     private readonly uint[] _s3 = new uint[SBoxLength];
 
+    /// <summary>
+    /// A value indicating whether this instance has been disposed.
+    /// </summary>
     private bool _disposed;
 
     /// <summary>

@@ -66,10 +66,29 @@ namespace Bodu.Security.Cryptography;
 public sealed class CtrModeTransform
     : IBlockCipherModeTransform
 {
+    /// <summary>
+    /// The underlying block cipher whose encrypt primitive generates the keystream.
+    /// </summary>
     private readonly IBlockCipher _cipher;
+
+    /// <summary>
+    /// The starting counter block, retained to detect wrap-around back to the initial value.
+    /// </summary>
     private readonly byte[] _initialCounter;
+
+    /// <summary>
+    /// The current counter block, incremented after each keystream block is produced.
+    /// </summary>
     private readonly byte[] _counter;
+
+    /// <summary>
+    /// Indicates whether the counter has wrapped around to its initial value.
+    /// </summary>
     private bool _counterWrapped;
+
+    /// <summary>
+    /// Indicates whether this instance has been disposed.
+    /// </summary>
     private bool _disposed;
 
     /// <summary>

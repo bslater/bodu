@@ -61,20 +61,64 @@ internal sealed class ChaCha20StreamCipher
     /// </summary>
     private const int Rounds = 20;
 
-    // The four little-endian words of the ASCII constant "expand 32-byte k".
+    /// <summary>
+    /// The first little-endian word of the ASCII constant <c>"expand 32-byte k"</c>.
+    /// </summary>
     private const uint Sigma0 = 0x61707865;
 
+    /// <summary>
+    /// The second little-endian word of the ASCII constant <c>"expand 32-byte k"</c>.
+    /// </summary>
     private const uint Sigma1 = 0x3320646e;
+
+    /// <summary>
+    /// The third little-endian word of the ASCII constant <c>"expand 32-byte k"</c>.
+    /// </summary>
     private const uint Sigma2 = 0x79622d32;
+
+    /// <summary>
+    /// The fourth little-endian word of the ASCII constant <c>"expand 32-byte k"</c>.
+    /// </summary>
     private const uint Sigma3 = 0x6b206574;
 
+    /// <summary>
+    /// The 256-bit key expanded into eight little-endian 32-bit words.
+    /// </summary>
     private readonly uint[] _key = new uint[8];
+
+    /// <summary>
+    /// The first 32-bit little-endian word of the 96-bit nonce.
+    /// </summary>
     private readonly uint _nonce0;
+
+    /// <summary>
+    /// The second 32-bit little-endian word of the 96-bit nonce.
+    /// </summary>
     private readonly uint _nonce1;
+
+    /// <summary>
+    /// The third 32-bit little-endian word of the 96-bit nonce.
+    /// </summary>
     private readonly uint _nonce2;
+
+    /// <summary>
+    /// The block counter supplied at construction for the first keystream block.
+    /// </summary>
     private readonly uint _initialCounter;
+
+    /// <summary>
+    /// The current block counter, advanced after each keystream block is produced.
+    /// </summary>
     private uint _counter;
+
+    /// <summary>
+    /// Indicates whether the block counter has wrapped back to its initial value, marking the keystream as exhausted.
+    /// </summary>
     private bool _counterExhausted;
+
+    /// <summary>
+    /// Indicates whether the instance has been disposed.
+    /// </summary>
     private bool _disposed;
 
     /// <summary>

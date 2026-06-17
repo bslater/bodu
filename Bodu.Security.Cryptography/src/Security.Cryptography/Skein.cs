@@ -99,14 +99,50 @@ public abstract partial class Skein<T>
     /// </summary>
     private const int TweakSize = 128;
 
+    /// <summary>
+    /// The underlying Threefish cipher used by every UBI compression call. Owned and disposed by this instance.
+    /// </summary>
     private readonly ThreefishBlockCipher _cipher;
+
+    /// <summary>
+    /// The current chaining value, expressed as state words and updated after each UBI block.
+    /// </summary>
     private readonly ulong[] _state;
+
+    /// <summary>
+    /// The cached chaining value produced by the configuration (and optional key) UBI phases, copied into
+    /// <see cref="_state" /> on each <see cref="Initialize" />.
+    /// </summary>
     private readonly ulong[] _initialChainingValue;
+
+    /// <summary>
+    /// The buffer holding bytes accumulated toward the next full message block.
+    /// </summary>
     private readonly byte[] _pendingBlock;
+
+    /// <summary>
+    /// The scratch buffer that receives the Threefish encryption output for each UBI block.
+    /// </summary>
     private readonly byte[] _ubiCipherOutput;
+
+    /// <summary>
+    /// The number of valid bytes currently buffered in <see cref="_pendingBlock" />.
+    /// </summary>
     private int _pendingBytes;
+
+    /// <summary>
+    /// The running count of message bytes absorbed so far, used to populate the UBI tweak position field.
+    /// </summary>
     private ulong _messageBytesProcessed;
+
+    /// <summary>
+    /// A value indicating whether at least one message block has been processed, used to set the UBI first-block flag.
+    /// </summary>
     private bool _hasProcessedAnyMessageBlock;
+
+    /// <summary>
+    /// A value indicating whether <see cref="_initialChainingValue" /> currently holds a valid cached chaining value.
+    /// </summary>
     private bool _isChainingValueCached;
 
 

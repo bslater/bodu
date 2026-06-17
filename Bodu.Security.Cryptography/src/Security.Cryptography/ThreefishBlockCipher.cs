@@ -58,6 +58,10 @@ public abstract partial class ThreefishBlockCipher
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Scoped private protected so only in-assembly Threefish variant classes can read the disposal flag directly in ThrowIfDisposed without virtual dispatch.")]
     private protected bool _disposed = false;
 
+    /// <summary>
+    /// The key parity constant <c>C240</c> defined by the Threefish specification, XORed into the key words to form the
+    /// parity word of the key schedule.
+    /// </summary>
     private const ulong KeyParityValue = 0x1BD11BDAA9FC1A22;
 
     /// <summary>

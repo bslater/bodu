@@ -29,11 +29,28 @@ namespace Bodu.Security.Cryptography;
 /// </remarks>
 public sealed partial class Blake2s
 {
+    /// <summary>
+    /// The broadcast rotation amount of 12 used by the BLAKE2s <c>G</c> mixing function.
+    /// </summary>
+    /// <remarks>
+    /// The four rotation amounts used by the BLAKE2s <c>G</c> function (RFC 7693 §3.1) are encoded as broadcast vectors
+    /// so that <c>Avx512F.VL.RotateRightVariable</c> lowers each rotate to a single VPRORD instruction.
+    /// </remarks>
     private static readonly Vector128<uint> s_ror12 = Vector128.Create(12U);
-    // The four rotation amounts used by Blake2s's G function (RFC 7693 §3.1). Encoded as broadcast
-    // vectors so that Avx512F.VL.RotateRightVariable lowers each rotate to a single VPRORD instruction.
+
+    /// <summary>
+    /// The broadcast rotation amount of 16 used by the BLAKE2s <c>G</c> mixing function.
+    /// </summary>
     private static readonly Vector128<uint> s_ror16 = Vector128.Create(16U);
+
+    /// <summary>
+    /// The broadcast rotation amount of 7 used by the BLAKE2s <c>G</c> mixing function.
+    /// </summary>
     private static readonly Vector128<uint> s_ror7 = Vector128.Create(7U);
+
+    /// <summary>
+    /// The broadcast rotation amount of 8 used by the BLAKE2s <c>G</c> mixing function.
+    /// </summary>
     private static readonly Vector128<uint> s_ror8 = Vector128.Create(8U);
 
     /// <summary>

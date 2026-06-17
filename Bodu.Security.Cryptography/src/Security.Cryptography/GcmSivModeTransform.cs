@@ -89,13 +89,40 @@ public sealed class GcmSivModeTransform
     /// <see cref="TagSizeBits" /> / 8.
     /// </summary>
     private const int TagSizeBits = 128;
-    private readonly byte[] _authKey;          // derived K_auth (POLYVAL key)
 
-    private readonly IBlockCipher _encCipher;  // cipher keyed with derived K_enc
-    private readonly byte[] _nonce;            // 12-byte nonce
+    /// <summary>
+    /// The derived authentication key <c>K_auth</c> used as the POLYVAL hash key.
+    /// </summary>
+    private readonly byte[] _authKey;
+
+    /// <summary>
+    /// The block cipher keyed with the derived encryption key <c>K_enc</c>.
+    /// </summary>
+    private readonly IBlockCipher _encCipher;
+
+    /// <summary>
+    /// The 12-byte nonce used for per-message key derivation and tag computation.
+    /// </summary>
+    private readonly byte[] _nonce;
+
+    /// <summary>
+    /// The buffered associated data to authenticate, or <see langword="null" /> until processed.
+    /// </summary>
     private byte[]? _aad;
+
+    /// <summary>
+    /// Indicates whether associated data has been processed for this instance.
+    /// </summary>
     private bool _aadProcessed;
+
+    /// <summary>
+    /// Indicates whether encryption or decryption has completed for this single-use instance.
+    /// </summary>
     private bool _completed;
+
+    /// <summary>
+    /// Indicates whether this instance has been disposed and its key material and nonce cleared.
+    /// </summary>
     private bool _disposed;
 
     /// <summary>
