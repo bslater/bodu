@@ -288,7 +288,7 @@ public static class CodeStyleKatConstants
           "maxLineLength": 120,
           "collapseProseWhitespace": true,
           "preserveBlankLines": false,
-          "preserveXmlTagAttributes": true,
+          "preserveXmlTagAttributes": false,
           "preserveCrefText": true,
           "blockTags": [ "summary", "remarks", "para", "example", "list", "item", "description", "code" ],
           "inlineTags": [ "c", "see", "paramref", "typeparamref" ],

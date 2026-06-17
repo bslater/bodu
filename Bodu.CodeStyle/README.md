@@ -85,8 +85,21 @@ The analyzer reads policy from three layers, applied in order:
 
 1. **Defaults in code** — `XmlDocFormatPolicyDefaults.CreateBoduDefaults()`.
 2. **JSON additional file** — `bodu.xmldocstyle.json` added as `<AdditionalFiles>` in the consumer csproj. The
-   JSON shape mirrors `XmlDocFormatOptions` (`maxLineLength`, `documentationPrefix`, `blockTags`, `inlineTags`,
-   `forceMultilineTags`, `singleLineWhenShort`, `neverSplitTagContent`, `tagPolicies`).
+   JSON shape mirrors `XmlDocFormatOptions`. Every property is honored by the formatter:
+   - `maxLineLength`, `documentationPrefix`, `indentText` — physical layout (line width, line prefix, and the
+     per-level indent applied to nested block content; the default `indentText` is empty, i.e. flush).
+   - `blockTags`, `inlineTags`, `forceMultilineTags`, `singleLineWhenShort`, `neverSplitTagContent`,
+     `tagPolicies` — tag layout. A non-`auto` `tagPolicies.<tag>.layout` is authoritative and overrides the
+     convenience sets; otherwise layout is resolved from `forceMultilineTags` → `singleLineWhenShort` →
+     `inlineTags` → `blockTags`. `neverSplitTagContent` (and a per-tag `allowLineBreakInside: false`) keeps an
+     over-budget single-line tag intact rather than expanding it.
+   - `collapseProseWhitespace`, `preserveBlankLines`, `preserveXmlTagAttributes`, `preserveCrefText` —
+     normalization toggles. `collapseProseWhitespace` (default `true`) collapses runs of prose whitespace to a
+     single space; `preserveBlankLines` (default `false`) keeps authored blank lines; `preserveXmlTagAttributes`
+     (default `false`) keeps inter-attribute spacing when a multi-line tag is reflowed; `preserveCrefText`
+     (default `true`) keeps whitespace inside attribute values. Note: a multi-line tag is always joined onto a
+     single line for the line-based formatter — these two toggles govern whitespace collapsing, not newline
+     preservation.
 3. **`.editorconfig` scalar overrides** — keys such as `bodu_xmldoc_max_line_length`, plus the standard
    `dotnet_diagnostic.BODU####.severity` per individual rule and `end_of_line`. To silence or re-target the
    whole XML-doc family at once, use

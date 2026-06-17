@@ -60,8 +60,8 @@ internal static class XmlDocChangeAttributor
         var inputContent = DocIndent.Strip(inputTriviaText, context.BaseIndent, options.DocumentationPrefix);
         var outputContent = DocIndent.Strip(formattedText, context.BaseIndent, options.DocumentationPrefix);
 
-        ImmutableArray<XmlDocToken> inputTokens = XmlDocTokenizer.Tokenize(inputContent, options.InlineTags);
-        ImmutableArray<XmlDocToken> outputTokens = XmlDocTokenizer.Tokenize(outputContent, options.InlineTags);
+        ImmutableArray<XmlDocToken> inputTokens = XmlDocTokenizer.Tokenize(inputContent, options.InlineTags, options.PreserveXmlTagAttributes, options.PreserveCrefText);
+        ImmutableArray<XmlDocToken> outputTokens = XmlDocTokenizer.Tokenize(outputContent, options.InlineTags, options.PreserveXmlTagAttributes, options.PreserveCrefText);
 
         var builder = ImmutableArray.CreateBuilder<XmlDocFormattingChange>();
         var seenTags = new HashSet<string>(StringComparer.Ordinal);

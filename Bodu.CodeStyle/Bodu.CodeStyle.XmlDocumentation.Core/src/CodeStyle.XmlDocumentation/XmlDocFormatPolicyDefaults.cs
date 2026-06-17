@@ -117,7 +117,7 @@ public static class XmlDocFormatPolicyDefaults
             indentText: DefaultIndentText,
             collapseProseWhitespace: true,
             preserveBlankLines: false,
-            preserveXmlTagAttributes: true,
+            preserveXmlTagAttributes: false,
             preserveCrefText: true,
             blockTags: DefaultBlockTags,
             inlineTags: DefaultInlineTags,

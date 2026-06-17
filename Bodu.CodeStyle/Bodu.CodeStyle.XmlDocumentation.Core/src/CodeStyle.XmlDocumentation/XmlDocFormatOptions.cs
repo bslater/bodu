@@ -213,6 +213,22 @@ public sealed class XmlDocFormatOptions
         this.With(indentText: indentText);
 
     /// <summary>
+    /// Returns a new <see cref="XmlDocFormatOptions" /> instance with <see cref="PreserveXmlTagAttributes" /> replaced.
+    /// </summary>
+    /// <param name="preserveXmlTagAttributes">The new preserve-attribute-spacing setting.</param>
+    /// <returns>A new instance with the requested override applied.</returns>
+    public XmlDocFormatOptions WithPreserveXmlTagAttributes(bool preserveXmlTagAttributes) =>
+        this.With(preserveXmlTagAttributes: preserveXmlTagAttributes);
+
+    /// <summary>
+    /// Returns a new <see cref="XmlDocFormatOptions" /> instance with <see cref="PreserveCrefText" /> replaced.
+    /// </summary>
+    /// <param name="preserveCrefText">The new preserve-cref-text setting.</param>
+    /// <returns>A new instance with the requested override applied.</returns>
+    public XmlDocFormatOptions WithPreserveCrefText(bool preserveCrefText) =>
+        this.With(preserveCrefText: preserveCrefText);
+
+    /// <summary>
     /// Returns the per-tag policy for the given element name, or <see cref="XmlDocTagPolicy.Default" /> when no
     /// explicit policy is configured.
     /// </summary>

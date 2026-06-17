@@ -25,7 +25,7 @@ public sealed class XmlDocFormatPolicyDefaultsTests
         Assert.AreEqual(string.Empty, options.IndentText);
         Assert.IsTrue(options.CollapseProseWhitespace);
         Assert.IsFalse(options.PreserveBlankLines);
-        Assert.IsTrue(options.PreserveXmlTagAttributes);
+        Assert.IsFalse(options.PreserveXmlTagAttributes);
         Assert.IsTrue(options.PreserveCrefText);
     }
 

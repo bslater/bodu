@@ -72,7 +72,7 @@ public sealed class XmlDocFormatter
     private static XmlDocFormatResult FormatCore(string triviaText, XmlDocFormatContext context, XmlDocFormatOptions options)
     {
         var content = DocIndent.Strip(triviaText, context.BaseIndent, options.DocumentationPrefix);
-        ImmutableArray<XmlDocToken> tokens = XmlDocTokenizer.Tokenize(content, options.InlineTags);
+        ImmutableArray<XmlDocToken> tokens = XmlDocTokenizer.Tokenize(content, options.InlineTags, options.PreserveXmlTagAttributes, options.PreserveCrefText);
 
         if (tokens.Length == 0 || HasNoMeaningfulTokens(tokens))
         {
