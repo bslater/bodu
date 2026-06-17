@@ -59,6 +59,98 @@ public partial class XmlDocFormatterTests
     }
 
     /// <summary>
+    /// Verifies that a table <c>&lt;list&gt;</c> collapses each <c>&lt;term&gt;</c> and
+    /// <c>&lt;description&gt;</c> onto a single line while keeping <c>&lt;list&gt;</c>, <c>&lt;listheader&gt;</c>,
+    /// and <c>&lt;item&gt;</c> as multiline block containers, producing a readable table.
+    /// </summary>
+    [TestMethod]
+    public void Format_WhenTableListHasHeaderAndItems_ShouldEmitTermsAndDescriptionsOnSingleLines()
+    {
+        var input =
+            "/// <list type=\"table\">\r\n" +
+            "/// <listheader>\r\n" +
+            "/// <term>\r\n" +
+            "/// Combination\r\n" +
+            "/// </term>\r\n" +
+            "/// <description>\r\n" +
+            "/// Yield\r\n" +
+            "/// </description>\r\n" +
+            "/// </listheader>\r\n" +
+            "/// <item>\r\n" +
+            "/// <term>\r\n" +
+            "/// <see cref=\"SkipOnly\" />\r\n" +
+            "/// </term>\r\n" +
+            "/// <description>\r\n" +
+            "/// No\r\n" +
+            "/// </description>\r\n" +
+            "/// </item>\r\n" +
+            "/// </list>\r\n";
+
+        XmlDocFormatResult result = CreateFormatter().FormatTrivia(input, CreateContext(baseIndent: string.Empty), CreateOptions());
+
+        Assert.AreEqual(
+            "/// <list type=\"table\">\r\n" +
+            "/// <listheader>\r\n" +
+            "/// <term>Combination</term>\r\n" +
+            "/// <description>Yield</description>\r\n" +
+            "/// </listheader>\r\n" +
+            "/// <item>\r\n" +
+            "/// <term><see cref=\"SkipOnly\" /></term>\r\n" +
+            "/// <description>No</description>\r\n" +
+            "/// </item>\r\n" +
+            "/// </list>\r\n",
+            result.FormattedText);
+    }
+
+    /// <summary>
+    /// Verifies that the readable single-line table layout is a fixed point: re-formatting it leaves it
+    /// unchanged.
+    /// </summary>
+    [TestMethod]
+    public void Format_WhenTableListAlreadySingleLine_ShouldBeIdempotent()
+    {
+        var table =
+            "/// <list type=\"table\">\r\n" +
+            "/// <listheader>\r\n" +
+            "/// <term>Combination</term>\r\n" +
+            "/// <description>Yield</description>\r\n" +
+            "/// </listheader>\r\n" +
+            "/// <item>\r\n" +
+            "/// <term><see cref=\"SkipOnly\" /></term>\r\n" +
+            "/// <description>No</description>\r\n" +
+            "/// </item>\r\n" +
+            "/// </list>\r\n";
+
+        XmlDocFormatResult result = CreateFormatter().FormatTrivia(table, CreateContext(baseIndent: string.Empty), CreateOptions());
+
+        Assert.IsFalse(result.Changed, "The single-line table layout should be a fixed point.");
+        Assert.AreEqual(table, result.FormattedText);
+    }
+
+    /// <summary>
+    /// Verifies that a <c>&lt;description&gt;</c> whose content overflows the line budget expands to the
+    /// multiline block form (open and close tags on their own lines) so the content can wrap.
+    /// </summary>
+    [TestMethod]
+    public void Format_WhenDescriptionExceedsWidth_ShouldExpandToMultilineBlock()
+    {
+        var longText = new string('x', 200);
+        var input =
+            "/// <list type=\"table\">\r\n" +
+            "/// <item>\r\n" +
+            "/// <description>" + longText + "</description>\r\n" +
+            "/// </item>\r\n" +
+            "/// </list>\r\n";
+
+        XmlDocFormatResult result = CreateFormatter().FormatTrivia(input, CreateContext(baseIndent: string.Empty), CreateOptions());
+
+        // The overflowing description must not stay on the single-line form; it expands so the open tag sits on
+        // its own line ahead of the wrapped content.
+        StringAssert.Contains(result.FormattedText, "/// <description>\r\n");
+        StringAssert.Contains(result.FormattedText, "/// </description>\r\n");
+    }
+
+    /// <summary>
     /// Verifies that a force-multiline block containing only an inline atomic token still emits the atomic token
     /// on a content line between the open and close tags.
     /// </summary>

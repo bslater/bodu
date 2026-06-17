@@ -22,8 +22,7 @@
     "example",
     "list",
     "item",
-    "description",
-    "term",
+    "listheader",
     "code"
   ],
 
@@ -41,7 +40,7 @@
     "example",
     "list",
     "item",
-    "description"
+    "listheader"
   ],
 
   "singleLineWhenShort": [
@@ -49,7 +48,9 @@
     "typeparam",
     "returns",
     "exception",
-    "value"
+    "value",
+    "term",
+    "description"
   ],
 
   "neverSplitTagContent": [
@@ -67,13 +68,15 @@
     "example":     { "layout": "multilineBlock",      "allowLineBreakInside": true },
     "list":        { "layout": "multilineBlock",      "allowLineBreakInside": true },
     "item":        { "layout": "multilineBlock",      "allowLineBreakInside": true },
-    "description": { "layout": "multilineBlock",      "allowLineBreakInside": true },
+    "listheader":  { "layout": "multilineBlock",      "allowLineBreakInside": true },
 
     "param":       { "layout": "singleLineWhenShort", "maxSingleLineLength": 120, "allowLineBreakInside": true },
     "typeparam":   { "layout": "singleLineWhenShort", "maxSingleLineLength": 120, "allowLineBreakInside": true },
     "returns":     { "layout": "singleLineWhenShort", "maxSingleLineLength": 120, "allowLineBreakInside": true },
     "exception":   { "layout": "singleLineWhenShort", "maxSingleLineLength": 120, "allowLineBreakInside": true },
     "value":       { "layout": "singleLineWhenShort", "maxSingleLineLength": 120, "allowLineBreakInside": true },
+    "term":        { "layout": "singleLineWhenShort", "maxSingleLineLength": 120, "allowLineBreakInside": true },
+    "description": { "layout": "singleLineWhenShort", "maxSingleLineLength": 120, "allowLineBreakInside": true },
 
     "c":            { "layout": "inlineAtomic", "allowLineBreakInside": false, "selfClosingTrailingSpace": true },
     "see":          { "layout": "inlineAtomic", "allowLineBreakInside": false, "selfClosingTrailingSpace": true },
