@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NullableConverterFactory.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -25,9 +25,9 @@ internal sealed class NullableConverterFactory
         ThrowHelper.ThrowIfNull(typeToConvert);
         ThrowHelper.ThrowIfNull(options);
 
-        Type underlying = Nullable.GetUnderlyingType(typeToConvert) !;
+        Type underlying = Nullable.GetUnderlyingType(typeToConvert)!;
         BencodeConverter inner = options.GetConverter(underlying);
         Type converterType = typeof(NullableConverter<>).MakeGenericType(underlying);
-        return (BencodeConverter)Activator.CreateInstance(converterType, inner) !;
+        return (BencodeConverter)Activator.CreateInstance(converterType, inner)!;
     }
 }

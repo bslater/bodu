@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensions.WeekOrdinalOfMonth.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -17,8 +17,8 @@ public static partial class DateOnlyExtensions
         /// <see cref="DateOnly.DayOfWeek" /> within the month.
         /// </summary>
         /// <returns>
-        /// A <see cref="WeekOrdinal" /> value indicating which occurrence of the weekday this date represents within its
-        /// calendar month.
+        /// A <see cref="WeekOrdinal" /> value indicating which occurrence of the weekday this date represents within
+        /// its calendar month.
         /// </returns>
         /// <remarks>
         /// <para>

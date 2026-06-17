@@ -259,29 +259,29 @@ internal static class NotableDateRuleValidator
         switch (rule.Strategy)
         {
             case OffsetFromRuleStrategy offset:
-                {
+            {
                 string reference = string.IsNullOrEmpty(offset.RuleRef)
                         ? offset.NotableDateRef
                         : $"{offset.NotableDateRef}/{offset.RuleRef}";
 
                 int matches = CountReferenceMatches(resource, offset.NotableDateRef, offset.RuleRef);
-                    if (matches == 0)
-                    {
-                        diagnostics.Add(new NotableDateValidationDiagnostic(
-                            NotableDateValidationSeverity.Error,
-                            "BODU-CAL-OFFSET-MISSING",
-                            string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_OffsetReferenceNotFound, definition.Id, rule.Id, reference)));
-                    }
-                    else if (matches > 1)
-                    {
-                        diagnostics.Add(new NotableDateValidationDiagnostic(
-                            NotableDateValidationSeverity.Error,
-                            "BODU-CAL-OFFSET-AMBIGUOUS",
-                            string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_OffsetReferenceAmbiguous, definition.Id, rule.Id, reference)));
-                    }
-
-                    break;
+                if (matches == 0)
+                {
+                    diagnostics.Add(new NotableDateValidationDiagnostic(
+                        NotableDateValidationSeverity.Error,
+                        "BODU-CAL-OFFSET-MISSING",
+                        string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_OffsetReferenceNotFound, definition.Id, rule.Id, reference)));
                 }
+                else if (matches > 1)
+                {
+                    diagnostics.Add(new NotableDateValidationDiagnostic(
+                        NotableDateValidationSeverity.Error,
+                        "BODU-CAL-OFFSET-AMBIGUOUS",
+                        string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_OffsetReferenceAmbiguous, definition.Id, rule.Id, reference)));
+                }
+
+                break;
+            }
 
             case AlgorithmDateStrategy algorithm when !AlgorithmDateStrategy.IsKnownKey(algorithm.Key) && !(algorithms?.Contains(algorithm.Key) ?? false):
                 diagnostics.Add(new NotableDateValidationDiagnostic(

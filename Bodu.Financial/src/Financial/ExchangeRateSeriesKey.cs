@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateSeriesKey.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -19,7 +19,7 @@ namespace Bodu.Financial;
 public readonly record struct ExchangeRateSeriesKey
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="ExchangeRateSeriesKey" /> struct.
+    /// Initializes a new instance of the <see cref="ExchangeRateSeriesKey" /> class.
     /// </summary>
     /// <param name="pair">The currency pair the series describes.</param>
     /// <param name="provider">The non-empty identifier of the publishing source.</param>

@@ -71,7 +71,7 @@ internal sealed class CollectionConverter<TCollection, TElement>
 
         List<TElement> items = [];
         while (reader.Read() && reader.TokenType != BencodeTokenType.EndList)
-            items.Add((TElement)_elementConverter.ReadAsObject(ref reader, typeof(TElement), options) !);
+            items.Add((TElement)_elementConverter.ReadAsObject(ref reader, typeof(TElement), options)!);
 
         return Materialize(items);
     }

@@ -35,7 +35,7 @@ public readonly record struct ExchangeRate<TBase, TQuote>
     private readonly decimal _observedRate;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ExchangeRate{TBase, TQuote}" /> struct.
+    /// Initializes a new instance of the <see cref="ExchangeRate{TBase, TQuote}" /> class.
     /// </summary>
     /// <param name="rate">
     /// The multiplier that converts a <typeparamref name="TBase" /> amount to <typeparamref name="TQuote" />.
@@ -54,7 +54,7 @@ public readonly record struct ExchangeRate<TBase, TQuote>
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ExchangeRate{TBase, TQuote}" /> struct from fully resolved field
+    /// Initializes a new instance of the <see cref="ExchangeRate{TBase, TQuote}" /> class from fully resolved field
     /// values, including the underlying observed rate.
     /// </summary>
     /// <param name="rate">

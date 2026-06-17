@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NullableConverter.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -42,7 +42,7 @@ internal sealed class NullableConverter<T>
 
     /// <inheritdoc />
     public override T? Read(ref Utf8BencodeReader reader, Type typeToConvert, BencodeSerializerOptions options) =>
-        (T)_inner.ReadAsObject(ref reader, typeof(T), options) !;
+        (T)_inner.ReadAsObject(ref reader, typeof(T), options)!;
 
     /// <inheritdoc />
     public override void Write(Utf8BencodeWriter writer, T? value, BencodeSerializerOptions options) =>

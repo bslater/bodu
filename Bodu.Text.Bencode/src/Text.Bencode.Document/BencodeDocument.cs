@@ -567,47 +567,49 @@ public sealed partial class BencodeDocument
                 return;
 
             case BencodeTokenType.StartList:
-                {
+            {
                 int self = rows.Count;
-                    rows.Add(default);
+                rows.Add(default);
                 int count = 0;
-                    while (true)
-                    {
+
+                while (true)
+                {
                     int childStart = reader.BytesConsumed;
-                        if (!reader.Read() || reader.TokenType == BencodeTokenType.EndList)
-                            break;
+                    if (!reader.Read() || reader.TokenType == BencodeTokenType.EndList)
+                        break;
 
-                        ReadValue(ref reader, rows, childStart);
-                        count++;
-                    }
-
-                    rows[self] = Row.Container(BencodeValueKind.Array, childCount: count, numberOfRows: rows.Count - self, rawLocation: valueStart, rawLength: reader.BytesConsumed - valueStart);
-                    return;
+                    ReadValue(ref reader, rows, childStart);
+                    count++;
                 }
+
+                rows[self] = Row.Container(BencodeValueKind.Array, childCount: count, numberOfRows: rows.Count - self, rawLocation: valueStart, rawLength: reader.BytesConsumed - valueStart);
+                return;
+            }
 
             case BencodeTokenType.StartDictionary:
-                {
+            {
                 int self = rows.Count;
-                    rows.Add(default);
+                rows.Add(default);
                 int pairs = 0;
-                    while (true)
-                    {
-                    int keyStart = reader.BytesConsumed;
-                        if (!reader.Read() || reader.TokenType == BencodeTokenType.EndDictionary)
-                            break;
 
-                        // The key is a property-name token; store it as a byte-string row.
-                        rows.Add(Row.Bytes(reader.BytesConsumed - reader.ValueSpan.Length, reader.ValueSpan.Length, keyStart, reader.BytesConsumed - keyStart));
+                while (true)
+                {
+                    int keyStart = reader.BytesConsumed;
+                    if (!reader.Read() || reader.TokenType == BencodeTokenType.EndDictionary)
+                        break;
+
+                    // The key is a property-name token; store it as a byte-string row.
+                    rows.Add(Row.Bytes(reader.BytesConsumed - reader.ValueSpan.Length, reader.ValueSpan.Length, keyStart, reader.BytesConsumed - keyStart));
 
                     int pairValueStart = reader.BytesConsumed;
-                        reader.Read();
-                        ReadValue(ref reader, rows, pairValueStart);
-                        pairs++;
-                    }
-
-                    rows[self] = Row.Container(BencodeValueKind.Object, childCount: pairs, numberOfRows: rows.Count - self, rawLocation: valueStart, rawLength: reader.BytesConsumed - valueStart);
-                    return;
+                    reader.Read();
+                    ReadValue(ref reader, rows, pairValueStart);
+                    pairs++;
                 }
+
+                rows[self] = Row.Container(BencodeValueKind.Object, childCount: pairs, numberOfRows: rows.Count - self, rawLocation: valueStart, rawLength: reader.BytesConsumed - valueStart);
+                return;
+            }
 
             default:
                 throw new BencodeFormatException(BencodeResourceStrings.Format_Invalid_BencodeUnexpectedEndOfData, reader.BytesConsumed);
