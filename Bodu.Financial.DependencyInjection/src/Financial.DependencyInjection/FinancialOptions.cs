@@ -14,13 +14,15 @@ namespace Bodu.Financial.DependencyInjection;
 public sealed class FinancialOptions
 {
     /// <summary>
-    /// Gets or sets the JSON serialization policy registered for financial types.
+    /// Gets or sets the JSON serialization policy applied to the financial JSON options that
+    /// <c>AddBoduFinancial</c> registers, unless a later <c>AddFinancialJson</c> overrides it.
     /// </summary>
     /// <value>The configured policy; defaults to <see cref="FinancialJsonPolicy.Strict" />.</value>
     public FinancialJsonPolicy JsonPolicy { get; set; } = FinancialJsonPolicy.Strict;
 
     /// <summary>
-    /// Gets or sets the default unknown-currency policy advertised to consumers.
+    /// Gets or sets the unknown-currency policy that seeds the default <see cref="MoneyParseOptions" />
+    /// <c>AddBoduFinancial</c> registers, unless a caller registers its own.
     /// </summary>
     /// <value>The configured policy; defaults to <see cref="UnknownCurrencyPolicy.Reject" />.</value>
     public UnknownCurrencyPolicy UnknownCurrency { get; set; } = UnknownCurrencyPolicy.Reject;
