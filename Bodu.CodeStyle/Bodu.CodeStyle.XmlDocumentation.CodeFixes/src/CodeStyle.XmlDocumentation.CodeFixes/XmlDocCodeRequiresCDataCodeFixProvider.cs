@@ -120,8 +120,8 @@ public sealed class XmlDocCodeRequiresCDataCodeFixProvider : CodeFixProvider
         SourceText text = await document.GetTextAsync(cancellationToken).ConfigureAwait(false);
         var localName = element.Name.LocalName.ValueText;
 
-        var lineEnding = DetectLineEnding(text);
-        var indent = ExtractDocCommentIndent(text, element.SpanStart);
+        var lineEnding = DocCommentSource.ResolveLineEnding(text);
+        var indent = DocCommentSource.ExtractIndent(text, element.SpanStart);
 
         var sb = new StringBuilder();
         sb.Append('<').Append(localName).Append('>');
@@ -143,11 +143,11 @@ public sealed class XmlDocCodeRequiresCDataCodeFixProvider : CodeFixProvider
         var bodyEnd = element.EndTag.Span.Start;
         if (bodyStart > bodyEnd) return document;
 
-        var lineEnding = DetectLineEnding(text);
-        var indent = ExtractDocCommentIndent(text, element.StartTag.SpanStart);
+        var lineEnding = DocCommentSource.ResolveLineEnding(text);
+        var indent = DocCommentSource.ExtractIndent(text, element.StartTag.SpanStart);
 
         var existing = text.ToString(TextSpan.FromBounds(bodyStart, bodyEnd));
-        IReadOnlyList<string> bodyLines = ExtractLogicalBodyLines(existing);
+        IReadOnlyList<string> bodyLines = XmlDocProseText.ToLogicalBodyLines(existing);
 
         // Compose the multi-line CDATA replacement: opener and closer each on their own line flush
         // against `///`. Every logical body line is re-emitted under the standard `/// ` prefix, so the
@@ -170,90 +170,5 @@ public sealed class XmlDocCodeRequiresCDataCodeFixProvider : CodeFixProvider
 
         SourceText updated = text.WithChanges(new TextChange(TextSpan.FromBounds(bodyStart, bodyEnd), sb.ToString()));
         return document.WithText(updated);
-    }
-
-    private static IReadOnlyList<string> ExtractLogicalBodyLines(string body)
-    {
-        // Split the raw inter-tag body into physical lines, strip each line's leading indentation, its
-        // `///` doc-comment prefix, and one following space to recover the logical code content, then drop
-        // any leading or trailing blank lines so the CDATA wrapper alone controls the surrounding layout.
-        var stripped = new List<string>();
-        var start = 0;
-        for (var i = 0; i <= body.Length; i++)
-        {
-            if (i < body.Length && body[i] != '\n' && body[i] != '\r') continue;
-
-            stripped.Add(StripDocCommentPrefix(body.Substring(start, i - start)));
-            if (i < body.Length && body[i] == '\r' && i + 1 < body.Length && body[i + 1] == '\n') i++;
-            start = i + 1;
-        }
-
-        var first = 0;
-        while (first < stripped.Count && stripped[first].Length == 0) first++;
-        var last = stripped.Count - 1;
-        while (last >= first && stripped[last].Length == 0) last--;
-
-        var result = new List<string>();
-        for (var k = first; k <= last; k++)
-        {
-            result.Add(stripped[k]);
-        }
-
-        return result;
-    }
-
-    private static string StripDocCommentPrefix(string physicalLine)
-    {
-        var i = 0;
-        while (i < physicalLine.Length && (physicalLine[i] == ' ' || physicalLine[i] == '\t')) i++;
-
-        // Strip a single `///` prefix when present, plus one following space (the standard `/// ` form).
-        if (i + 2 < physicalLine.Length && physicalLine[i] == '/' && physicalLine[i + 1] == '/' && physicalLine[i + 2] == '/')
-        {
-            i += 3;
-            if (i < physicalLine.Length && physicalLine[i] == ' ') i++;
-        }
-
-        return physicalLine.Substring(i).TrimEnd();
-    }
-
-    private static string DetectLineEnding(SourceText text)
-    {
-        var length = text.Length;
-        for (var i = 0; i < length; i++)
-        {
-            var ch = text[i];
-            if (ch == '\r')
-            {
-                return i + 1 < length && text[i + 1] == '\n' ? "\r\n" : "\r";
-            }
-
-            if (ch == '\n')
-            {
-                return "\n";
-            }
-        }
-
-        return "\r\n";
-    }
-
-    private static string ExtractDocCommentIndent(SourceText text, int position)
-    {
-        // Walk backward from `position` to find the start of the current line.
-        var lineStart = position;
-        while (lineStart > 0 && text[lineStart - 1] != '\n' && text[lineStart - 1] != '\r')
-        {
-            lineStart--;
-        }
-
-        // The indent is the whitespace run from line start up to the first non-whitespace character
-        // (which on a doc-comment line will be the first `/` of the `///` prefix).
-        var end = lineStart;
-        while (end < text.Length && (text[end] == ' ' || text[end] == '\t'))
-        {
-            end++;
-        }
-
-        return text.ToString(TextSpan.FromBounds(lineStart, end));
     }
 }

@@ -55,8 +55,6 @@ public sealed class XmlDocTypeParamRequiresShortContentCodeFixProvider : CodeFix
 
     private const string MoveProseEquivalenceKey = "BoduMoveTypeParamProseToRemarks";
 
-    private const string DefaultDocCommentPrefix = "/// ";
-
     /// <inheritdoc />
     public override ImmutableArray<string> FixableDiagnosticIds =>
         ImmutableArray.Create(DiagnosticIds.XmlDocTypeParamRequiresShortContent);
@@ -105,7 +103,7 @@ public sealed class XmlDocTypeParamRequiresShortContentCodeFixProvider : CodeFix
         DocumentationCommentTriviaSyntax? docComment = typeParam.FirstAncestorOrSelf<DocumentationCommentTriviaSyntax>();
         if (docComment is null) return document;
 
-        var lineEnding = DetectLineEnding(text);
+        var lineEnding = DocCommentSource.ResolveLineEnding(text);
         IReadOnlyList<TextChange> changes = BuildChangesForDocComment(
             text, docComment, new[] { typeParam }, lineEnding);
         if (changes.Count == 0) return document;
@@ -149,8 +147,8 @@ public sealed class XmlDocTypeParamRequiresShortContentCodeFixProvider : CodeFix
 
         if (paragraphs.Count == 0) return changes;
 
-        var indent = ExtractLineIndent(text, ordered[0].SpanStart);
-        var prefix = DetectDocCommentPrefix(text, ordered[0].SpanStart);
+        var indent = DocCommentSource.ExtractIndent(text, ordered[0].SpanStart);
+        var prefix = DocCommentSource.DetectPrefix(text, ordered[0].SpanStart);
 
         XmlElementSyntax? remarks = FindRemarksElement(docComment);
         if (remarks is not null)
@@ -158,7 +156,7 @@ public sealed class XmlDocTypeParamRequiresShortContentCodeFixProvider : CodeFix
             // Append the new paragraphs as the final paragraphs inside the existing <remarks> body. The
             // insertion point is the start of the line carrying the </remarks> end tag, which re-uses the
             // indent + prefix already in the source.
-            var endTagLineStart = FindLineStart(text, remarks.EndTag.SpanStart);
+            var endTagLineStart = DocCommentSource.FindLineStart(text, remarks.EndTag.SpanStart);
             var insertion = BuildParagraphs(indent, prefix, lineEnding, paragraphs);
             changes.Add(new TextChange(new TextSpan(endTagLineStart, 0), insertion));
         }
@@ -168,7 +166,7 @@ public sealed class XmlDocTypeParamRequiresShortContentCodeFixProvider : CodeFix
             // carrying the LAST <typeparam>'s end tag, so the canonical summary → typeparam(s) → remarks
             // ordering is preserved and every relocated paragraph lands in one shared block.
             XmlElementSyntax anchor = FindLastTypeParam(docComment) ?? ordered[ordered.Count - 1];
-            var afterAnchorLineEnd = FindLineEndIncludingTerminator(text, anchor.Span.End);
+            var afterAnchorLineEnd = DocCommentSource.FindLineEndIncludingTerminator(text, anchor.Span.End);
             var insertion = BuildRemarksBlock(indent, prefix, lineEnding, paragraphs);
             changes.Add(new TextChange(new TextSpan(afterAnchorLineEnd, 0), insertion));
         }
@@ -256,93 +254,6 @@ public sealed class XmlDocTypeParamRequiresShortContentCodeFixProvider : CodeFix
         sb.Append(indent).Append(prefix).Append("</para>").Append(lineEnding);
     }
 
-    private static string DetectLineEnding(SourceText text)
-    {
-        var length = text.Length;
-        for (var i = 0; i < length; i++)
-        {
-            var ch = text[i];
-            if (ch == '\r')
-            {
-                return i + 1 < length && text[i + 1] == '\n' ? "\r\n" : "\r";
-            }
-
-            if (ch == '\n')
-            {
-                return "\n";
-            }
-        }
-
-        return "\r\n";
-    }
-
-    // Recovers the documentation-comment prefix actually used on the line at `position` — the "///" run plus a
-    // single following space when present — so synthesized blocks match the source style instead of assuming a
-    // hardcoded "/// ". Falls back to the canonical Bodu prefix when no "///" is found.
-    private static string DetectDocCommentPrefix(SourceText text, int position)
-    {
-        var lineStart = FindLineStart(text, position);
-        var i = lineStart;
-        while (i < text.Length && (text[i] == ' ' || text[i] == '\t')) i++;
-
-        if (i + 2 < text.Length && text[i] == '/' && text[i + 1] == '/' && text[i + 2] == '/')
-        {
-            var end = i + 3;
-            if (end < text.Length && text[end] == ' ') end++;
-            return text.ToString(TextSpan.FromBounds(i, end));
-        }
-
-        return DefaultDocCommentPrefix;
-    }
-
-    private static string ExtractLineIndent(SourceText text, int position)
-    {
-        var lineStart = FindLineStart(text, position);
-
-        var end = lineStart;
-        while (end < text.Length && (text[end] == ' ' || text[end] == '\t'))
-        {
-            end++;
-        }
-
-        return text.ToString(TextSpan.FromBounds(lineStart, end));
-    }
-
-    private static int FindLineStart(SourceText text, int position)
-    {
-        var lineStart = position;
-        while (lineStart > 0 && text[lineStart - 1] != '\n' && text[lineStart - 1] != '\r')
-        {
-            lineStart--;
-        }
-
-        return lineStart;
-    }
-
-    private static int FindLineEndIncludingTerminator(SourceText text, int position)
-    {
-        var index = position;
-        while (index < text.Length && text[index] != '\n' && text[index] != '\r')
-        {
-            index++;
-        }
-
-        if (index < text.Length && text[index] == '\r')
-        {
-            index++;
-            if (index < text.Length && text[index] == '\n')
-            {
-                index++;
-            }
-        }
-        else if (index < text.Length && text[index] == '\n')
-        {
-            index++;
-        }
-
-        return index;
-    }
-
     /// <summary>
     /// Provides a <see cref="DocumentBasedFixAllProvider" /> that applies <c>BODU1406</c> fixes one
     /// documentation comment at a time, coalescing every relocated paragraph into a single
@@ -364,7 +275,7 @@ public sealed class XmlDocTypeParamRequiresShortContentCodeFixProvider : CodeFix
             if (root is null) return document;
 
             SourceText text = await document.GetTextAsync(fixAllContext.CancellationToken).ConfigureAwait(false);
-            var lineEnding = DetectLineEnding(text);
+            var lineEnding = DocCommentSource.ResolveLineEnding(text);
 
             // Resolve each diagnostic to its <typeparam> element and group by the containing documentation
             // comment, so each comment receives exactly one coherent transformation.
