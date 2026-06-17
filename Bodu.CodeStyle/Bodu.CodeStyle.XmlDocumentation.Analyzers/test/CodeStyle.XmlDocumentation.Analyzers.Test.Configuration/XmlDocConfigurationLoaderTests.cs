@@ -271,6 +271,49 @@ public sealed class XmlDocConfigurationLoaderTests
         Assert.AreEqual("\r\n", result);
     }
 
+    /// <summary>
+    /// Verifies that, with no <c>end_of_line</c> key, the line ending is inferred from the file's first newline
+    /// — an LF file resolves to LF rather than the CRLF default.
+    /// </summary>
+    [TestMethod]
+    public void ResolveLineEnding_WhenNotSpecifiedButFileIsLf_ShouldReturnLf()
+    {
+        var config = new FakeAnalyzerConfigOptions(new Dictionary<string, string>());
+
+        var result = XmlDocConfigurationLoader.ResolveLineEnding(config, SourceText.From("line one\nline two\n"));
+
+        Assert.AreEqual("\n", result);
+    }
+
+    /// <summary>
+    /// Verifies that, with no <c>end_of_line</c> key, a CRLF file is inferred as CRLF.
+    /// </summary>
+    [TestMethod]
+    public void ResolveLineEnding_WhenNotSpecifiedButFileIsCrlf_ShouldReturnCrlf()
+    {
+        var config = new FakeAnalyzerConfigOptions(new Dictionary<string, string>());
+
+        var result = XmlDocConfigurationLoader.ResolveLineEnding(config, SourceText.From("line one\r\nline two\r\n"));
+
+        Assert.AreEqual("\r\n", result);
+    }
+
+    /// <summary>
+    /// Verifies that an explicit <c>end_of_line</c> key wins over the file's observed newline style.
+    /// </summary>
+    [TestMethod]
+    public void ResolveLineEnding_WhenEditorConfigSpecifiedAndFileDiffers_ShouldHonourEditorConfig()
+    {
+        var config = new FakeAnalyzerConfigOptions(new Dictionary<string, string>
+        {
+            ["end_of_line"] = "lf",
+        });
+
+        var result = XmlDocConfigurationLoader.ResolveLineEnding(config, SourceText.From("line one\r\nline two\r\n"));
+
+        Assert.AreEqual("\n", result);
+    }
+
     private sealed class FakeAdditionalText : AdditionalText
     {
         private readonly string _content;

@@ -15,6 +15,7 @@ using Bodu.CodeStyle.XmlDocumentation.Analyzers.Internal;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
+using Microsoft.CodeAnalysis.Text;
 
 namespace Bodu.CodeStyle.XmlDocumentation.Analyzers;
 
@@ -68,7 +69,8 @@ public sealed class XmlDocFormatAnalyzer : DiagnosticAnalyzer
 
         AnalyzerConfigOptions treeOptions = treeContext.Options.AnalyzerConfigOptionsProvider.GetOptions(treeContext.Tree);
         XmlDocFormatOptions options = XmlDocConfigurationLoader.ApplyEditorConfigOverrides(compilationOptions, treeOptions);
-        var lineEnding = XmlDocConfigurationLoader.ResolveLineEnding(treeOptions);
+        SourceText sourceText = treeContext.Tree.GetText(treeContext.CancellationToken);
+        var lineEnding = XmlDocConfigurationLoader.ResolveLineEnding(treeOptions, sourceText);
 
         SyntaxNode root = treeContext.Tree.GetRoot(treeContext.CancellationToken);
         foreach (SyntaxTrivia trivia in root.DescendantTrivia(descendIntoTrivia: true))

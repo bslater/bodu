@@ -163,11 +163,17 @@ internal static class XmlDocConfigurationLoader
     }
 
     /// <summary>
-    /// Resolves the line ending to use for emitted trivia, honouring <c>.editorconfig</c> <c>end_of_line</c>.
+    /// Resolves the line ending to use for emitted trivia.
     /// </summary>
     /// <param name="treeOptions">The Roslyn-supplied options for the syntax tree under analysis.</param>
-    /// <returns>The resolved line ending; defaults to <c>"\r\n"</c>.</returns>
-    public static string ResolveLineEnding(AnalyzerConfigOptions treeOptions)
+    /// <param name="text">The source text of the file under analysis, used to infer the existing newline style.</param>
+    /// <returns>The resolved line ending.</returns>
+    /// <remarks>
+    /// Resolution order: the <c>.editorconfig</c> <c>end_of_line</c> key when present; otherwise the file's first
+    /// observed newline; otherwise <c>"\r\n"</c>. Inferring from the file avoids introducing CRLF into an
+    /// otherwise-LF file when no explicit policy is configured.
+    /// </remarks>
+    public static string ResolveLineEnding(AnalyzerConfigOptions treeOptions, SourceText? text = null)
     {
         if (treeOptions is null) throw new ArgumentNullException(nameof(treeOptions));
 
@@ -184,7 +190,30 @@ internal static class XmlDocConfigurationLoader
             }
         }
 
-        return "\r\n";
+        var inferred = InferLineEnding(text);
+        return inferred ?? "\r\n";
+    }
+
+    private static string? InferLineEnding(SourceText? text)
+    {
+        if (text is null) return null;
+
+        var length = text.Length;
+        for (var i = 0; i < length; i++)
+        {
+            var ch = text[i];
+            if (ch == '\r')
+            {
+                return i + 1 < length && text[i + 1] == '\n' ? "\r\n" : "\r";
+            }
+
+            if (ch == '\n')
+            {
+                return "\n";
+            }
+        }
+
+        return null;
     }
 
     private static bool IsConfigFile(string path)
