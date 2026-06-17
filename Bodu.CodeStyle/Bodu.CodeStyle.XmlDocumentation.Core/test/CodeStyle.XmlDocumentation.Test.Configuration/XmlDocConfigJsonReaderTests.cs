@@ -39,6 +39,18 @@ public sealed class XmlDocConfigJsonReaderTests
 
         Assert.AreEqual(120, options.MaxLineLength);
         Assert.AreEqual("/// ", options.DocumentationPrefix);
+        Assert.IsFalse(options.KeepFieldSummaryOnSingleLine);
+    }
+
+    /// <summary>
+    /// Verifies that <c>keepFieldSummaryOnSingleLine</c> overrides the default value.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenKeepFieldSummaryOnSingleLineExplicit_ShouldOverrideDefault()
+    {
+        XmlDocFormatOptions options = XmlDocConfigJsonReader.Read("{\"keepFieldSummaryOnSingleLine\":true}");
+
+        Assert.IsTrue(options.KeepFieldSummaryOnSingleLine);
     }
 
     /// <summary>

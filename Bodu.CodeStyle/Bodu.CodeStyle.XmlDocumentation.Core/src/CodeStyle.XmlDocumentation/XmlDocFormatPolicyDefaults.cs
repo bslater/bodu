@@ -127,6 +127,7 @@ public static class XmlDocFormatPolicyDefaults
             preserveBlankLines: false,
             preserveXmlTagAttributes: false,
             preserveCrefText: true,
+            keepFieldSummaryOnSingleLine: false,
             blockTags: DefaultBlockTags,
             inlineTags: DefaultInlineTags,
             forceMultilineTags: DefaultForceMultilineTags,

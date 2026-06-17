@@ -109,7 +109,12 @@ public sealed class XmlDocFormatter
         }
 
         XmlDocTagPolicy current = options.GetTagPolicy("summary");
-        if (current.Layout == XmlDocTagLayout.SingleLineWhenShort)
+
+        // When KeepFieldSummaryOnSingleLine is set, the field summary must never wrap: forbid breaking inside it so
+        // an overflowing single line is kept intact rather than expanded to the multiline block form. Otherwise it
+        // keeps the current setting and wraps as normal once it exceeds the budget.
+        bool? allowLineBreakInside = options.KeepFieldSummaryOnSingleLine ? false : current.AllowLineBreakInside;
+        if (current.Layout == XmlDocTagLayout.SingleLineWhenShort && current.AllowLineBreakInside == allowLineBreakInside)
         {
             return options;
         }
@@ -117,7 +122,7 @@ public sealed class XmlDocFormatter
         var fieldSummaryPolicy = new XmlDocTagPolicy(
             XmlDocTagLayout.SingleLineWhenShort,
             current.MaxSingleLineLength,
-            current.AllowLineBreakInside,
+            allowLineBreakInside,
             current.SelfClosingTrailingSpace);
 
         return options.WithTagPolicies(options.TagPolicies.SetItem("summary", fieldSummaryPolicy));

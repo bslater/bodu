@@ -27,6 +27,7 @@ public sealed class XmlDocFormatPolicyDefaultsTests
         Assert.IsFalse(options.PreserveBlankLines);
         Assert.IsFalse(options.PreserveXmlTagAttributes);
         Assert.IsTrue(options.PreserveCrefText);
+        Assert.IsFalse(options.KeepFieldSummaryOnSingleLine);
     }
 
     /// <summary>

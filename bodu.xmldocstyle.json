@@ -14,6 +14,7 @@
   "preserveBlankLines": false,
   "preserveXmlTagAttributes": true,
   "preserveCrefText": true,
+  "keepFieldSummaryOnSingleLine": true,
 
   "blockTags": [
     "summary",
