@@ -41,8 +41,19 @@ namespace Bodu.Text.Ini;
 /// </example>
 public sealed class IniSection
 {
+    /// <summary>
+    /// The entries belonging to this section in source order.
+    /// </summary>
     private readonly List<IniEntry> _entries;
+
+    /// <summary>
+    /// The key-to-entry lookup used for fast value resolution within this section.
+    /// </summary>
     private readonly Dictionary<string, IniEntry> _lookup;
+
+    /// <summary>
+    /// The comments that immediately precede this section's header in source order.
+    /// </summary>
     private readonly List<IniComment> _leadingComments = new();
 
     /// <summary>

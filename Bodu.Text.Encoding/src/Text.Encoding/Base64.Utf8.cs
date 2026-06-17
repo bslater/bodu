@@ -20,7 +20,14 @@ public static partial class Base64
     /// </summary>
     private const string UrlSafeAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
 
+    /// <summary>
+    /// The reverse lookup table mapping each ASCII character to its 6-bit value for the standard alphabet.
+    /// </summary>
     private static readonly sbyte[] s_standardLookup = BuildLookup(StandardAlphabet);
+
+    /// <summary>
+    /// The reverse lookup table mapping each ASCII character to its 6-bit value for the URL-safe alphabet.
+    /// </summary>
     private static readonly sbyte[] s_urlSafeLookup = BuildLookup(UrlSafeAlphabet);
 
     /// <summary>

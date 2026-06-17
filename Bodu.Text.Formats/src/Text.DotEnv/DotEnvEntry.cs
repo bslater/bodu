@@ -38,6 +38,9 @@ namespace Bodu.Text.DotEnv;
 /// </example>
 public sealed class DotEnvEntry
 {
+    /// <summary>
+    /// The shared empty comment collection used when an entry has no associated comments.
+    /// </summary>
     private static readonly IReadOnlyList<DotEnvComment> EmptyComments = Array.Empty<DotEnvComment>();
 
     /// <summary>

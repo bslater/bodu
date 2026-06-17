@@ -31,8 +31,19 @@ public sealed partial class ConcurrentCircularBuffer<T> :
     public struct Enumerator :
        System.Collections.Generic.IEnumerator<T>
     {
+        /// <summary>
+        /// The eagerly captured copy of the buffer's elements that this enumerator iterates over.
+        /// </summary>
         private readonly T[] _snapshot;
+
+        /// <summary>
+        /// The element at the current enumerator position. Read through <see cref="Current" />.
+        /// </summary>
         private T? _current;
+
+        /// <summary>
+        /// The zero-based index of the current element within <see cref="_snapshot" />.
+        /// </summary>
         private int _index;
 
         /// <summary>

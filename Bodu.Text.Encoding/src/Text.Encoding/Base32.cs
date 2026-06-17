@@ -42,7 +42,14 @@ namespace Bodu.Text.Encoding;
 /// </example>
 public static partial class Base32
 {
+    /// <summary>
+    /// The 32-character Crockford Base32 alphabet, which omits the visually ambiguous letters I, L, O, and U.
+    /// </summary>
     private const string CrockfordAlphabet = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
+
+    /// <summary>
+    /// The 32-character RFC 4648 base32hex alphabet, which preserves binary sort order.
+    /// </summary>
     private const string HexExtendedAlphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUV";
 
     /// <summary>
@@ -55,12 +62,35 @@ public static partial class Base32
     /// The padding character used to align Base32 output to a multiple of eight characters per RFC 4648.
     /// </summary>
     private const char PaddingChar = '=';
+
+    /// <summary>
+    /// The 32-character RFC 4648 standard Base32 alphabet.
+    /// </summary>
     private const string StandardAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+
+    /// <summary>
+    /// The 32-character z-base-32 alphabet, which orders characters for human readability.
+    /// </summary>
     private const string ZBase32Alphabet = "ybndrfg8ejkmcpqxot1uwisza345h769";
 
+    /// <summary>
+    /// The reverse lookup table mapping each ASCII character to its 5-bit value for the standard alphabet.
+    /// </summary>
     private static readonly sbyte[] s_standardLookup = BuildLookup(StandardAlphabet);
+
+    /// <summary>
+    /// The reverse lookup table mapping each ASCII character to its 5-bit value for the base32hex alphabet.
+    /// </summary>
     private static readonly sbyte[] s_hexExtendedLookup = BuildLookup(HexExtendedAlphabet);
+
+    /// <summary>
+    /// The reverse lookup table mapping each ASCII character to its 5-bit value for the Crockford alphabet.
+    /// </summary>
     private static readonly sbyte[] s_crockfordLookup = BuildCrockfordLookup();
+
+    /// <summary>
+    /// The reverse lookup table mapping each ASCII character to its 5-bit value for the z-base-32 alphabet.
+    /// </summary>
     private static readonly sbyte[] s_zBase32Lookup = BuildLookup(ZBase32Alphabet);
 
     /// <summary>

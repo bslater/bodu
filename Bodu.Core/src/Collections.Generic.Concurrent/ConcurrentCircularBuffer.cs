@@ -75,7 +75,14 @@ namespace Bodu.Collections.Generic.Concurrent;
 public sealed partial class ConcurrentCircularBuffer<T>
     where T : class?
 {
+    /// <summary>
+    /// The capacity used when the buffer is constructed without an explicit capacity.
+    /// </summary>
     private const int DefaultCapacity = 16;
+
+    /// <summary>
+    /// The smallest capacity the Vyukov MPMC protocol permits.
+    /// </summary>
     private const int MinCapacity = 2;
 
     /// <summary>
@@ -90,20 +97,30 @@ public sealed partial class ConcurrentCircularBuffer<T>
     /// </summary>
     private const int SnapshotOuterRetryBudget = 64;
 
-    // Immutable after construction
+    /// <summary>
+    /// The fixed array of slots backing the ring. Immutable after construction.
+    /// </summary>
     private readonly Slot[] _buffer;
 
+    /// <summary>
+    /// The maximum number of elements the buffer can hold. Immutable after construction.
+    /// </summary>
     private readonly int _capacity;
 
-    // Mode flag
+    /// <summary>
+    /// Indicates whether the oldest element is evicted when the buffer is full.
+    /// </summary>
     private bool _allowOverwrite;
 
-    // Head (consumer) and tail (producer) positions; increase monotonically using unchecked signed arithmetic.
-    // Slot indices are derived via SlotIndex(), which uses unsigned modulo to ensure non-negative results even
-    // after int overflow. The signed diff arithmetic (seq - tail, seq - head) remains valid across wrapping
-    // because capacity is always much smaller than int.MaxValue / 2.
+    /// <summary>
+    /// The consumer (head) position, incremented monotonically using unchecked signed arithmetic as elements are
+    /// dequeued. Slot indices are derived from it via unsigned modulo so they stay non-negative across overflow.
+    /// </summary>
     private int _head;
 
+    /// <summary>
+    /// The producer (tail) position, incremented monotonically as elements are enqueued.
+    /// </summary>
     private int _tail;
 
     /// <summary>
@@ -910,12 +927,35 @@ public sealed partial class ConcurrentCircularBuffer<T>
         /// </summary>
         private readonly int _sequencePadding;
 
-        // Pads the struct to 64 bytes: 4 (Sequence) + 4 (pad) + 8 (Value ref) + 6×8 (pad) = 64.
+        /// <summary>
+        /// Padding to isolate the slot onto its own cache line and avoid false sharing. Together with the other padding
+        /// fields, pads the struct to 64 bytes: 4 (Sequence) + 4 (pad) + 8 (Value ref) + 6×8 (pad) = 64.
+        /// </summary>
         private readonly long _pad0;
+
+        /// <summary>
+        /// Padding to isolate the slot onto its own cache line and avoid false sharing.
+        /// </summary>
         private readonly long _pad1;
+
+        /// <summary>
+        /// Padding to isolate the slot onto its own cache line and avoid false sharing.
+        /// </summary>
         private readonly long _pad2;
+
+        /// <summary>
+        /// Padding to isolate the slot onto its own cache line and avoid false sharing.
+        /// </summary>
         private readonly long _pad3;
+
+        /// <summary>
+        /// Padding to isolate the slot onto its own cache line and avoid false sharing.
+        /// </summary>
         private readonly long _pad4;
+
+        /// <summary>
+        /// Padding to isolate the slot onto its own cache line and avoid false sharing.
+        /// </summary>
         private readonly long _pad5;
 
         /// <summary>

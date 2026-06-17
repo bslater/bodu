@@ -11,6 +11,9 @@ namespace Bodu.Collections.Generic;
 public abstract partial class RingBackedCollection<T>
     : System.Collections.ICollection
 {
+    /// <summary>
+    /// The lazily allocated object returned by <see cref="ICollection.SyncRoot" />.
+    /// </summary>
     [NonSerialized]
     private object? _syncRoot;
 

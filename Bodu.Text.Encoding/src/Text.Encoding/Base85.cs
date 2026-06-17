@@ -53,6 +53,9 @@ namespace Bodu.Text.Encoding;
 /// </example>
 public static partial class Base85
 {
+    /// <summary>
+    /// The 85-character Adobe Ascii85 alphabet, starting at the ASCII <c>!</c> character (code point 33).
+    /// </summary>
     private const string Ascii85Alphabet = "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstu";
 
     /// <summary>
@@ -69,6 +72,10 @@ public static partial class Base85
     /// The Adobe Ascii85 leading delimiter emitted when <see cref="BaseFormattingOptions.IncludePrefix" /> is set.
     /// </summary>
     private const string Ascii85DelimiterStart = "<~";
+
+    /// <summary>
+    /// The 85-character ZeroMQ Z85 alphabet, composed of shell-safe characters.
+    /// </summary>
     private const string Z85Alphabet = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.-:+=^!/*?&<>()[]{}@%$#";
 
     /// <summary>
@@ -76,7 +83,14 @@ public static partial class Base85
     /// </summary>
     private const char ZeroShortcut = 'z';
 
+    /// <summary>
+    /// The reverse lookup table mapping each ASCII character to its value for the Ascii85 alphabet.
+    /// </summary>
     private static readonly sbyte[] s_ascii85Lookup = BuildLookup(Ascii85Alphabet);
+
+    /// <summary>
+    /// The reverse lookup table mapping each ASCII character to its value for the Z85 alphabet.
+    /// </summary>
     private static readonly sbyte[] s_z85Lookup = BuildLookup(Z85Alphabet);
 
     /// <summary>

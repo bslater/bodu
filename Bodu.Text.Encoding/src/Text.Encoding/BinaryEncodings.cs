@@ -161,11 +161,16 @@ public static class BinaryEncodings
         };
     }
 
+    /// <summary>
+    /// Adapts lower-case Base16 to the <see cref="IBinaryEncoding" /> contract.
+    /// </summary>
     private sealed class Base16LowerAdapter
         : IBinaryEncoding
     {
+        /// <inheritdoc />
         public string Description => "Base16 / hexadecimal, lower case (default Bodu Base16 form; compatible with Convert.ToHexStringLower).";
 
+        /// <inheritdoc />
         public string Name => "base16-lower";
 
         /// <inheritdoc />
@@ -192,11 +197,16 @@ public static class BinaryEncodings
             global::Bodu.Text.Encoding.Base16.TryEncode(source, destination, out charsWritten);
     }
 
+    /// <summary>
+    /// Adapts upper-case Base16 to the <see cref="IBinaryEncoding" /> contract.
+    /// </summary>
     private sealed class Base16UpperAdapter
         : IBinaryEncoding
     {
+        /// <inheritdoc />
         public string Description => "Base16 / hexadecimal, upper case (RFC 4648 §8 canonical case; compatible with Convert.ToHexString).";
 
+        /// <inheritdoc />
         public string Name => "base16-upper";
 
         /// <inheritdoc />
@@ -223,33 +233,51 @@ public static class BinaryEncodings
             global::Bodu.Text.Encoding.Base16.TryEncode(source, destination, out charsWritten, BaseFormattingOptions.UpperCase);
     }
 
+    /// <summary>
+    /// Adapts RFC 9285 Base45 to the <see cref="IBinaryEncoding" /> contract.
+    /// </summary>
     private sealed class Base45Adapter
         : IBinaryEncoding
     {
+        /// <inheritdoc />
         public string Description => "RFC 9285 Base45 (QR-code Alphanumeric-mode alphabet; no padding).";
 
+        /// <inheritdoc />
         public string Name => "base45";
 
+        /// <inheritdoc />
         public byte[] Decode(ReadOnlySpan<char> chars) => global::Bodu.Text.Encoding.Base45.Decode(chars);
 
+        /// <inheritdoc />
         public string Encode(ReadOnlySpan<byte> bytes) => global::Bodu.Text.Encoding.Base45.Encode(bytes);
 
+        /// <inheritdoc />
         public int GetMaxDecodedLength(int charCount) => global::Bodu.Text.Encoding.Base45.GetMaxDecodedLength(charCount);
 
+        /// <inheritdoc />
         public int GetMaxEncodedLength(int byteCount) => global::Bodu.Text.Encoding.Base45.GetMaxEncodedLength(byteCount);
 
+        /// <inheritdoc />
         public bool IsValid(ReadOnlySpan<char> source) => global::Bodu.Text.Encoding.Base45.IsValid(source);
 
+        /// <inheritdoc />
         public bool TryDecode(ReadOnlySpan<char> source, Span<byte> destination, out int bytesWritten) =>
             global::Bodu.Text.Encoding.Base45.TryDecode(source, destination, out bytesWritten);
 
+        /// <inheritdoc />
         public bool TryEncode(ReadOnlySpan<byte> source, Span<char> destination, out int charsWritten) =>
             global::Bodu.Text.Encoding.Base45.TryEncode(source, destination, out charsWritten);
     }
 
+    /// <summary>
+    /// Adapts a configured <see cref="Base32Variant" /> to the <see cref="IBinaryEncoding" /> contract.
+    /// </summary>
     private sealed class Base32VariantAdapter
         : IBinaryEncoding
     {
+        /// <summary>
+        /// The Base32 variant this adapter delegates to.
+        /// </summary>
         private readonly Base32Variant _variant;
 
         /// <summary>
@@ -267,8 +295,10 @@ public static class BinaryEncodings
             Description = description;
         }
 
+        /// <inheritdoc />
         public string Description { get; }
 
+        /// <inheritdoc />
         public string Name { get; }
 
         /// <inheritdoc />
@@ -295,33 +325,51 @@ public static class BinaryEncodings
             global::Bodu.Text.Encoding.Base32.TryEncode(source, destination, out charsWritten, _variant);
     }
 
+    /// <summary>
+    /// Adapts GMP-style Base62 to the <see cref="IBinaryEncoding" /> contract.
+    /// </summary>
     private sealed class Base62Adapter
         : IBinaryEncoding
     {
+        /// <inheritdoc />
         public string Description => "GMP-style Base62 (0-9, A-Z, a-z; leading zero bytes preserved).";
 
+        /// <inheritdoc />
         public string Name => "base62";
 
+        /// <inheritdoc />
         public byte[] Decode(ReadOnlySpan<char> chars) => global::Bodu.Text.Encoding.Base62.Decode(chars);
 
+        /// <inheritdoc />
         public string Encode(ReadOnlySpan<byte> bytes) => global::Bodu.Text.Encoding.Base62.Encode(bytes);
 
+        /// <inheritdoc />
         public int GetMaxDecodedLength(int charCount) => global::Bodu.Text.Encoding.Base62.GetMaxDecodedLength(charCount);
 
+        /// <inheritdoc />
         public int GetMaxEncodedLength(int byteCount) => global::Bodu.Text.Encoding.Base62.GetMaxEncodedLength(byteCount);
 
+        /// <inheritdoc />
         public bool IsValid(ReadOnlySpan<char> source) => global::Bodu.Text.Encoding.Base62.IsValid(source);
 
+        /// <inheritdoc />
         public bool TryDecode(ReadOnlySpan<char> source, Span<byte> destination, out int bytesWritten) =>
             global::Bodu.Text.Encoding.Base62.TryDecode(source, destination, out bytesWritten);
 
+        /// <inheritdoc />
         public bool TryEncode(ReadOnlySpan<byte> source, Span<char> destination, out int charsWritten) =>
             global::Bodu.Text.Encoding.Base62.TryEncode(source, destination, out charsWritten);
     }
 
+    /// <summary>
+    /// Adapts a configured <see cref="Base58Variant" /> to the <see cref="IBinaryEncoding" /> contract.
+    /// </summary>
     private sealed class Base58VariantAdapter
         : IBinaryEncoding
     {
+        /// <summary>
+        /// The Base58 variant this adapter delegates to.
+        /// </summary>
         private readonly Base58Variant _variant;
 
         /// <summary>
@@ -339,8 +387,10 @@ public static class BinaryEncodings
             Description = description;
         }
 
+        /// <inheritdoc />
         public string Description { get; }
 
+        /// <inheritdoc />
         public string Name { get; }
 
         /// <inheritdoc />
@@ -367,9 +417,15 @@ public static class BinaryEncodings
             global::Bodu.Text.Encoding.Base58.TryEncode(source, destination, out charsWritten, _variant);
     }
 
+    /// <summary>
+    /// Adapts a configured <see cref="Base64Variant" /> to the <see cref="IBinaryEncoding" /> contract.
+    /// </summary>
     private sealed class Base64VariantAdapter
         : IBinaryEncoding
     {
+        /// <summary>
+        /// The Base64 variant this adapter delegates to.
+        /// </summary>
         private readonly Base64Variant _variant;
 
         /// <summary>
@@ -387,8 +443,10 @@ public static class BinaryEncodings
             Description = description;
         }
 
+        /// <inheritdoc />
         public string Description { get; }
 
+        /// <inheritdoc />
         public string Name { get; }
 
         /// <inheritdoc />
@@ -415,9 +473,15 @@ public static class BinaryEncodings
             global::Bodu.Text.Encoding.Base64.TryEncode(source, destination, out charsWritten, _variant);
     }
 
+    /// <summary>
+    /// Adapts a configured <see cref="Base85Variant" /> to the <see cref="IBinaryEncoding" /> contract.
+    /// </summary>
     private sealed class Base85VariantAdapter
         : IBinaryEncoding
     {
+        /// <summary>
+        /// The Base85 variant this adapter delegates to.
+        /// </summary>
         private readonly Base85Variant _variant;
 
         /// <summary>
@@ -435,8 +499,10 @@ public static class BinaryEncodings
             Description = description;
         }
 
+        /// <inheritdoc />
         public string Description { get; }
 
+        /// <inheritdoc />
         public string Name { get; }
 
         /// <inheritdoc />

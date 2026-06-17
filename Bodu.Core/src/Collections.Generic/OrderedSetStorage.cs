@@ -31,8 +31,19 @@ namespace Bodu.Collections.Generic;
 internal sealed class OrderedSetStorage<T>
     where T : notnull
 {
+    /// <summary>
+    /// The capacity used when the storage is constructed without an explicit capacity.
+    /// </summary>
     private const int DefaultCapacity = 4;
+
+    /// <summary>
+    /// The numerator of the maximum load factor (3/4) that triggers a resize.
+    /// </summary>
     private const int MaxLoadFactorNumerator = 3;
+
+    /// <summary>
+    /// The denominator of the maximum load factor (3/4) that triggers a resize.
+    /// </summary>
     private const int MaxLoadFactorDenominator = 4;
 
     /// <summary>

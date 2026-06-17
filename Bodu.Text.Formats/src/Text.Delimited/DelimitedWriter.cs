@@ -37,9 +37,24 @@ namespace Bodu.Text.Delimited;
 public sealed class DelimitedWriter
     : IDisposable
 {
+    /// <summary>
+    /// The underlying text writer that receives the delimited output. Owned by this instance.
+    /// </summary>
     private readonly TextWriter _writer;
+
+    /// <summary>
+    /// The parse options that govern delimiter, quoting, and line-ending behavior.
+    /// </summary>
     private readonly DelimitedParseOptions _options;
+
+    /// <summary>
+    /// Indicates whether this instance has been disposed.
+    /// </summary>
     private bool _disposed;
+
+    /// <summary>
+    /// The number of rows written so far, including the header row when present.
+    /// </summary>
     private int _rowsWritten;
 
     /// <summary>

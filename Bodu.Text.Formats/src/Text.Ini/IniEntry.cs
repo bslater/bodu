@@ -43,6 +43,9 @@ namespace Bodu.Text.Ini;
 /// </example>
 public sealed class IniEntry
 {
+    /// <summary>
+    /// The comments that immediately precede this entry in source order.
+    /// </summary>
     private readonly List<IniComment> _leadingComments;
 
     /// <summary>

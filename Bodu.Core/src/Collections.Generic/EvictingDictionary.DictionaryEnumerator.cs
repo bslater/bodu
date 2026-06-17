@@ -26,7 +26,14 @@ public partial class EvictingDictionary<TKey, TValue>
     public struct DictionaryEnumerator :
        System.Collections.IDictionaryEnumerator
     {
+        /// <summary>
+        /// The dictionary whose entries this enumerator iterates over.
+        /// </summary>
         private readonly EvictingDictionary<TKey, TValue> _dictionary;
+
+        /// <summary>
+        /// The underlying key/value-pair enumerator that supplies the dictionary entries.
+        /// </summary>
         private IEnumerator<KeyValuePair<TKey, TValue>> _inner;
 
         /// <summary>

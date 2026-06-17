@@ -40,17 +40,54 @@ public sealed class DotEnvReader
     /// </summary>
     public const int DefaultBufferSize = 4096;
 
+    /// <summary>
+    /// The underlying text reader supplying the DotEnv input. Owned by this instance.
+    /// </summary>
     private readonly TextReader _reader;
+
+    /// <summary>
+    /// The parse options that govern quoting, escaping, and interpolation behavior.
+    /// </summary>
     private readonly DotEnvParseOptions _options;
+
+    /// <summary>
+    /// The internal character buffer that holds characters read from the underlying reader.
+    /// </summary>
     private readonly char[] _buffer;
 
+    /// <summary>
+    /// The buffered text carried over from a previous read that has not yet formed a complete line.
+    /// </summary>
     private string _pending = string.Empty;
+
+    /// <summary>
+    /// Indicates whether the end of the underlying reader has been reached.
+    /// </summary>
     private bool _eof;
+
+    /// <summary>
+    /// Indicates whether this instance has been disposed.
+    /// </summary>
     private bool _disposed;
+
+    /// <summary>
+    /// The number of source lines consumed so far.
+    /// </summary>
     private int _consumedLines;
 
+    /// <summary>
+    /// The key of the entry produced by the most recent successful read.
+    /// </summary>
     private string _key = string.Empty;
+
+    /// <summary>
+    /// The value of the entry produced by the most recent successful read.
+    /// </summary>
     private string _value = string.Empty;
+
+    /// <summary>
+    /// The one-based line number of the entry produced by the most recent successful read.
+    /// </summary>
     private int _lineNumber;
 
     /// <summary>

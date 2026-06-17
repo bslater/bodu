@@ -97,6 +97,9 @@ namespace Bodu.Collections.Generic;
 public sealed class CircularBuffer<T>
     : RingBackedCollection<T>
 {
+    /// <summary>
+    /// The capacity used when the buffer is constructed without an explicit capacity.
+    /// </summary>
     private const int DefaultCapacity = 16;
 
     /// <summary>

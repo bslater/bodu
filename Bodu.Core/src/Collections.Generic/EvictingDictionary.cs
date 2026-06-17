@@ -70,18 +70,58 @@ namespace Bodu.Collections.Generic;
 public partial class EvictingDictionary<TKey, TValue>
     where TKey : notnull
 {
+    /// <summary>
+    /// The capacity used when the dictionary is constructed without an explicit capacity.
+    /// </summary>
     private const int DefaultCapacity = 16;
+
+    /// <summary>
+    /// The eviction policy used when the dictionary is constructed without an explicit policy.
+    /// </summary>
     private const EvictingDictionaryPolicy DefaultPolicy = EvictingDictionaryPolicy.LeastRecentlyUsed;
+
+    /// <summary>
+    /// The equality comparer used for key identity and hash-table lookup.
+    /// </summary>
     private readonly IEqualityComparer<TKey> _comparer;
+
+    /// <summary>
+    /// Maps access frequency to the keys observed at that frequency, used by the least-frequently-used policy.
+    /// </summary>
     private readonly SortedDictionary<int, LinkedList<TKey>> _frequencyList = null!;
+
+    /// <summary>
+    /// The backing store mapping each key to its cached value and bookkeeping metadata.
+    /// </summary>
     private readonly Dictionary<TKey, CacheItem> _store;
+
+    /// <summary>
+    /// Tracks key recency ordering, used by the least-recently-used policy.
+    /// </summary>
     private readonly LinkedList<TKey> _order = null!;
+
+    /// <summary>
+    /// Indicates whether an eviction is currently in progress, used to suppress re-entrant bookkeeping.
+    /// </summary>
     private bool _isEvicting;
+
+    /// <summary>
+    /// The cached key collection returned by the keys accessor, allocated on first access.
+    /// </summary>
     private KeyCollection? _keys;
+
+    /// <summary>
+    /// The cached value collection returned by the values accessor, allocated on first access.
+    /// </summary>
     private ValueCollection? _values;
 
-    // Incremented on every mutation (Add, Remove, Clear, in-place replace) so enumerators can detect
-    // concurrent modification and fail fast rather than produce undefined ordering.
+    /// <summary>
+    /// The modification counter used to detect concurrent mutation during enumeration.
+    /// </summary>
+    /// <remarks>
+    /// Incremented on every mutation (add, remove, clear, in-place replace) so enumerators can detect concurrent
+    /// modification and fail fast rather than produce undefined ordering.
+    /// </remarks>
     private int _version;
 
     /// <summary>

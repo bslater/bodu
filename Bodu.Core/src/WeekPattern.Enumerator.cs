@@ -27,8 +27,19 @@ public readonly partial struct WeekPattern
     public struct Enumerator
         : IEnumerator<DayOfWeek>
     {
+        /// <summary>
+        /// The packed selected-day bitmask captured from the originating pattern at construction.
+        /// </summary>
         private readonly byte _bits;
+
+        /// <summary>
+        /// The zero-based day index (0 = Sunday) currently under examination.
+        /// </summary>
         private int _index;
+
+        /// <summary>
+        /// The day currently being yielded. Read through <see cref="Current" />.
+        /// </summary>
         private DayOfWeek _current;
 
         /// <summary>

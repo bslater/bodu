@@ -43,8 +43,19 @@ public sealed class PooledBufferBuilder<T> :
     System.Buffers.IBufferWriter<T>,
     System.Buffers.IMemoryOwner<T>
 {
+    /// <summary>
+    /// The number of elements written to the buffer so far. Exposed through <see cref="WrittenCount" />.
+    /// </summary>
     private int _count;
+
+    /// <summary>
+    /// Indicates whether the builder has been disposed and its rented buffer returned to the pool.
+    /// </summary>
     private bool _disposed;
+
+    /// <summary>
+    /// The currently rented backing array. Replaced by a larger rental when the buffer grows.
+    /// </summary>
     private T[] _internalBuffer;
 
     /// <summary>

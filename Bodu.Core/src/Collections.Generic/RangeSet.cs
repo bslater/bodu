@@ -44,12 +44,34 @@ public sealed partial class RangeSet<T>
     : IReadOnlyCollection<Range<T>>
     where T : IComparable<T>
 {
+    /// <summary>
+    /// The capacity used when the set is constructed without an explicit capacity.
+    /// </summary>
     private const int DefaultCapacity = 4;
 
+    /// <summary>
+    /// The comparer used to order and compare range endpoints.
+    /// </summary>
     private readonly IComparer<T> _comparer;
+
+    /// <summary>
+    /// The inclusive lower endpoints of the stored ranges, kept sorted and parallel to <see cref="_ends" />.
+    /// </summary>
     private T[] _starts;
+
+    /// <summary>
+    /// The upper endpoints of the stored ranges, parallel to <see cref="_starts" />.
+    /// </summary>
     private T[] _ends;
+
+    /// <summary>
+    /// The number of ranges currently stored.
+    /// </summary>
     private int _count;
+
+    /// <summary>
+    /// The modification counter used to detect concurrent mutation during enumeration.
+    /// </summary>
     private int _version;
 
     /// <summary>
