@@ -219,4 +219,36 @@ public sealed class XmlDocTokenizerTests
 
         Assert.IsTrue(tokens.Any(t => t.Kind == XmlDocTokenKind.Text && t.RawText.Contains('<')));
     }
+
+    /// <summary>
+    /// Verifies that an inline tag's closing match respects element-name boundaries: <c>&lt;c&gt;</c> is not
+    /// bundled as an inline atom against an unrelated longer-named close tag (<c>&lt;/code&gt;</c>), which
+    /// merely shares the <c>&lt;/c</c> prefix.
+    /// </summary>
+    [TestMethod]
+    public void Tokenize_WhenInlineCloseSharesPrefixWithLongerName_ShouldNotBundle()
+    {
+        ImmutableArray<XmlDocToken> tokens = XmlDocTokenizer.Tokenize("<c>x</code>", s_inlineTags);
+
+        XmlDocToken open = tokens.First(t => t.TagName == "c");
+        Assert.AreEqual(XmlDocTokenKind.BlockStart, open.Kind);
+        Assert.IsFalse(
+            tokens.Any(t => t.Kind == XmlDocTokenKind.InlineXml && t.RawText.Contains("</code>")),
+            "The inline matcher must not consume an unrelated </code> close tag.");
+    }
+
+    /// <summary>
+    /// Verifies that a tag whose name begins with an invalid start character (a digit) is not recognised as a
+    /// tag and is preserved as literal text.
+    /// </summary>
+    [TestMethod]
+    public void Tokenize_WhenTagNameStartsWithDigit_ShouldPreserveAsText()
+    {
+        ImmutableArray<XmlDocToken> tokens = XmlDocTokenizer.Tokenize("<1tag>x</1tag>", s_inlineTags);
+
+        Assert.IsFalse(
+            tokens.Any(t => t.Kind == XmlDocTokenKind.BlockStart || t.Kind == XmlDocTokenKind.InlineXml || t.Kind == XmlDocTokenKind.BlockEnd),
+            "A name starting with a digit is not a valid element name and must be treated as text.");
+        Assert.IsTrue(tokens.Any(t => t.Kind == XmlDocTokenKind.Text && t.RawText.Contains('<')));
+    }
 }

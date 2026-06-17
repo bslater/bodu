@@ -209,8 +209,11 @@ internal static class XmlDocTokenizer
             position++;
         }
 
-        if (position == nameStart)
+        if (position == nameStart || !IsNameStartChar(content[nameStart]))
         {
+            // Either no name characters, or the name begins with a character that is not a valid XML
+            // NameStartChar (a digit, '-', or '.'). Defer the '<' to the text-run path so the malformed
+            // construct is preserved verbatim.
             end = 0;
             token = null;
             return false;
@@ -290,18 +293,34 @@ internal static class XmlDocTokenizer
         if (inlineTags.Contains(tagName))
         {
             var closeSequence = "</" + tagName;
-            var closeIndex = content.IndexOf(closeSequence, position, StringComparison.Ordinal);
-            if (closeIndex >= 0)
+            var searchFrom = position;
+            while (true)
             {
-                var closeTagEnd = content.IndexOf('>', closeIndex + closeSequence.Length);
-                if (closeTagEnd >= 0)
+                var closeIndex = content.IndexOf(closeSequence, searchFrom, StringComparison.Ordinal);
+                if (closeIndex < 0)
                 {
-                    var totalEnd = closeTagEnd + 1;
-                    var atomic = NormalizeTagWhitespace(content.Substring(start, totalEnd - start), preserveTagAttributes, preserveCrefText);
-                    end = totalEnd;
-                    token = new XmlDocToken(XmlDocTokenKind.InlineXml, atomic, tagName, isSelfClosing: false);
-                    return true;
+                    break;
                 }
+
+                // Require an element-name boundary after the matched name so "</c" does not match "</code>";
+                // the next character must end the close tag (whitespace or '>'), not continue the name.
+                var afterName = closeIndex + closeSequence.Length;
+                if (afterName < content.Length && IsCloseTagNameBoundary(content[afterName]))
+                {
+                    var closeTagEnd = content.IndexOf('>', afterName);
+                    if (closeTagEnd >= 0)
+                    {
+                        var totalEnd = closeTagEnd + 1;
+                        var atomic = NormalizeTagWhitespace(content.Substring(start, totalEnd - start), preserveTagAttributes, preserveCrefText);
+                        end = totalEnd;
+                        token = new XmlDocToken(XmlDocTokenKind.InlineXml, atomic, tagName, isSelfClosing: false);
+                        return true;
+                    }
+
+                    break;
+                }
+
+                searchFrom = closeIndex + 1;
             }
 
             // Inline tag without a matching closer — fall through and treat as a block start.
@@ -514,4 +533,12 @@ internal static class XmlDocTokenizer
         (ch >= 'a' && ch <= 'z') ||
         (ch >= '0' && ch <= '9') ||
         ch == '-' || ch == '_' || ch == '.' || ch == ':';
+
+    private static bool IsNameStartChar(char ch) =>
+        (ch >= 'A' && ch <= 'Z') ||
+        (ch >= 'a' && ch <= 'z') ||
+        ch == '_' || ch == ':';
+
+    private static bool IsCloseTagNameBoundary(char ch) =>
+        ch == '>' || ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n';
 }
