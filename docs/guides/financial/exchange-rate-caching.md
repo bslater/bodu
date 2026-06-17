@@ -193,6 +193,7 @@ on read yields an empty result, and a failed write is swallowed, so a cache
 problem never breaks rate retrieval. You can use a cache directly — note there is
 no provider argument; the cache is bound to its provider at construction:
 
+<!-- compile -->
 ```csharp
 var cache = new TomlFileExchangeRateCache(
     new FileExchangeRateCacheOptions { Provider = "RBA", CacheDirectory = "/var/cache/fx" });
