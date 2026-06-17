@@ -109,6 +109,48 @@ internal static class DocLayout
                 continue;
             }
 
+            // When blank-line preservation is enabled, a run of two or more line breaks (optionally separated by
+            // whitespace) is an authored blank line. Flush the pending content, emit one empty content line per
+            // blank line, and skip the break run so the blank line survives instead of collapsing into a space.
+            if (token.Kind == XmlDocTokenKind.LineBreak && options.PreserveBlankLines)
+            {
+                var lookahead = position + 1;
+                var breaks = 1;
+                while (lookahead < end)
+                {
+                    XmlDocTokenKind kind = tokens[lookahead].Kind;
+                    if (kind == XmlDocTokenKind.Whitespace)
+                    {
+                        lookahead++;
+                        continue;
+                    }
+
+                    if (kind == XmlDocTokenKind.LineBreak)
+                    {
+                        breaks++;
+                        lookahead++;
+                        continue;
+                    }
+
+                    break;
+                }
+
+                if (breaks >= 2)
+                {
+                    FlushRun(currentRun, options, contentBudget, output);
+                    for (var b = 0; b < breaks - 1; b++)
+                    {
+                        if (output.Count > 0)
+                        {
+                            output.Add(string.Empty);
+                        }
+                    }
+
+                    position = lookahead;
+                    continue;
+                }
+            }
+
             currentRun.Add(token);
             position++;
         }

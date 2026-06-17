@@ -189,6 +189,14 @@ public sealed class XmlDocFormatOptions
         this.With(neverSplitTagContent: neverSplitTagContent);
 
     /// <summary>
+    /// Returns a new <see cref="XmlDocFormatOptions" /> instance with <see cref="PreserveBlankLines" /> replaced.
+    /// </summary>
+    /// <param name="preserveBlankLines">The new preserve-blank-lines setting.</param>
+    /// <returns>A new instance with the requested override applied.</returns>
+    public XmlDocFormatOptions WithPreserveBlankLines(bool preserveBlankLines) =>
+        this.With(preserveBlankLines: preserveBlankLines);
+
+    /// <summary>
     /// Returns the per-tag policy for the given element name, or <see cref="XmlDocTagPolicy.Default" /> when no
     /// explicit policy is configured.
     /// </summary>
