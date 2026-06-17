@@ -39,11 +39,11 @@ internal static class DocLayout
         if (contentBudget <= 0) throw new ArgumentOutOfRangeException(nameof(contentBudget), XmlDocResourceStrings.Arg_OutOfRange_ContentBudgetNotPositive);
 
         var output = new List<string>();
-        ComposeRange(tokens, 0, tokens.Count, options, contentBudget, output);
+        ComposeRange(tokens, 0, tokens.Count, options, contentBudget, string.Empty, output);
         return output;
     }
 
-    private static int ComposeRange(IReadOnlyList<XmlDocToken> tokens, int start, int end, XmlDocFormatOptions options, int contentBudget, List<string> output)
+    private static int ComposeRange(IReadOnlyList<XmlDocToken> tokens, int start, int end, XmlDocFormatOptions options, int contentBudget, string currentIndent, List<string> output)
     {
         var currentRun = new List<XmlDocToken>();
         var position = start;
@@ -61,7 +61,7 @@ internal static class DocLayout
             {
                 if (token.RawText.IndexOf('\n') >= 0)
                 {
-                    FlushRun(currentRun, options, contentBudget, output);
+                    FlushRun(currentRun, options, contentBudget, currentIndent, output);
                     EmitCDataLines(token.RawText, output);
                     position++;
                     continue;
@@ -87,18 +87,18 @@ internal static class DocLayout
 
                     if (forceMultiline)
                     {
-                        FlushRun(currentRun, options, contentBudget, output);
-                        output.Add(token.RawText);
-                        ComposeRange(tokens, position + 1, matchEnd, options, contentBudget, output);
-                        output.Add(tokens[matchEnd].RawText);
+                        FlushRun(currentRun, options, contentBudget, currentIndent, output);
+                        output.Add(currentIndent + token.RawText);
+                        ComposeRange(tokens, position + 1, matchEnd, options, contentBudget, currentIndent + options.IndentText, output);
+                        output.Add(currentIndent + tokens[matchEnd].RawText);
                         position = matchEnd + 1;
                         continue;
                     }
 
                     if (singleLineCandidate)
                     {
-                        FlushRun(currentRun, options, contentBudget, output);
-                        ComposeSingleLineCandidate(tokens, position, matchEnd, options, contentBudget, output);
+                        FlushRun(currentRun, options, contentBudget, currentIndent, output);
+                        ComposeSingleLineCandidate(tokens, position, matchEnd, options, contentBudget, currentIndent, output);
                         position = matchEnd + 1;
                         continue;
                     }
@@ -137,7 +137,7 @@ internal static class DocLayout
 
                 if (breaks >= 2)
                 {
-                    FlushRun(currentRun, options, contentBudget, output);
+                    FlushRun(currentRun, options, contentBudget, currentIndent, output);
                     for (var b = 0; b < breaks - 1; b++)
                     {
                         if (output.Count > 0)
@@ -155,7 +155,7 @@ internal static class DocLayout
             position++;
         }
 
-        FlushRun(currentRun, options, contentBudget, output);
+        FlushRun(currentRun, options, contentBudget, currentIndent, output);
         return position;
     }
 
@@ -206,7 +206,7 @@ internal static class DocLayout
         return false;
     }
 
-    private static void ComposeSingleLineCandidate(IReadOnlyList<XmlDocToken> tokens, int openIndex, int closeIndex, XmlDocFormatOptions options, int contentBudget, List<string> output)
+    private static void ComposeSingleLineCandidate(IReadOnlyList<XmlDocToken> tokens, int openIndex, int closeIndex, XmlDocFormatOptions options, int contentBudget, string currentIndent, List<string> output)
     {
         XmlDocToken openToken = tokens[openIndex];
         XmlDocToken closeToken = tokens[closeIndex];
@@ -218,7 +218,7 @@ internal static class DocLayout
         {
             if (tokens[k].Kind == XmlDocTokenKind.CData && tokens[k].RawText.IndexOf('\n') >= 0)
             {
-                EmitExpandedSingleLineCandidate(tokens, openIndex, closeIndex, options, contentBudget, output);
+                EmitExpandedSingleLineCandidate(tokens, openIndex, closeIndex, options, contentBudget, currentIndent, output);
                 return;
             }
         }
@@ -262,11 +262,12 @@ internal static class DocLayout
         candidate.Append(closeToken.RawText);
 
         XmlDocTagPolicy policy = options.GetTagPolicy(openToken.TagName!);
+        var effectiveBudget = Math.Max(1, contentBudget - currentIndent.Length);
         var singleLineLimit = policy.MaxSingleLineLength ?? options.MaxLineLength;
         var singleLine = candidate.ToString();
-        if (singleLine.Length <= singleLineLimit && singleLine.Length <= contentBudget)
+        if (singleLine.Length <= singleLineLimit && singleLine.Length <= effectiveBudget)
         {
-            output.Add(singleLine);
+            output.Add(currentIndent + singleLine);
             return;
         }
 
@@ -275,20 +276,20 @@ internal static class DocLayout
         // intact on a single line, accepting the overflow rather than splitting it.
         if (!options.AllowsContentWrapping(openToken.TagName!))
         {
-            output.Add(singleLine);
+            output.Add(currentIndent + singleLine);
             return;
         }
 
-        EmitExpandedSingleLineCandidate(tokens, openIndex, closeIndex, options, contentBudget, output);
+        EmitExpandedSingleLineCandidate(tokens, openIndex, closeIndex, options, contentBudget, currentIndent, output);
     }
 
-    private static void EmitExpandedSingleLineCandidate(IReadOnlyList<XmlDocToken> tokens, int openIndex, int closeIndex, XmlDocFormatOptions options, int contentBudget, List<string> output)
+    private static void EmitExpandedSingleLineCandidate(IReadOnlyList<XmlDocToken> tokens, int openIndex, int closeIndex, XmlDocFormatOptions options, int contentBudget, string currentIndent, List<string> output)
     {
         // Expanded form: open on its own line, content on subsequent lines, close on its own line.
         XmlDocToken openToken = tokens[openIndex];
         XmlDocToken closeToken = tokens[closeIndex];
 
-        output.Add(openToken.RawText);
+        output.Add(currentIndent + openToken.RawText);
 
         var contentTokens = new List<XmlDocToken>();
         for (var i = openIndex + 1; i < closeIndex; i++)
@@ -297,16 +298,16 @@ internal static class DocLayout
         }
 
         var innerLines = new List<string>();
-        ComposeRange(contentTokens, 0, contentTokens.Count, options, contentBudget, innerLines);
+        ComposeRange(contentTokens, 0, contentTokens.Count, options, contentBudget, currentIndent + options.IndentText, innerLines);
         foreach (var line in innerLines)
         {
             output.Add(line);
         }
 
-        output.Add(closeToken.RawText);
+        output.Add(currentIndent + closeToken.RawText);
     }
 
-    private static void FlushRun(List<XmlDocToken> run, XmlDocFormatOptions options, int contentBudget, List<string> output)
+    private static void FlushRun(List<XmlDocToken> run, XmlDocFormatOptions options, int contentBudget, string currentIndent, List<string> output)
     {
         if (run.Count == 0)
         {
@@ -364,10 +365,14 @@ internal static class DocLayout
             return;
         }
 
-        IEnumerable<string> wrapped = DocWrapper.Wrap(atoms, contentBudget);
+        // Reduce the available width by the nesting indent, then re-prepend that indent to each wrapped line so
+        // the total line still fits the configured budget. With the default empty IndentText the indent is empty
+        // and this is a no-op, leaving the canonical flush layout byte-identical.
+        var effectiveBudget = Math.Max(1, contentBudget - currentIndent.Length);
+        IEnumerable<string> wrapped = DocWrapper.Wrap(atoms, effectiveBudget);
         foreach (var line in wrapped)
         {
-            output.Add(line);
+            output.Add(currentIndent + line);
         }
     }
 

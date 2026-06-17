@@ -205,6 +205,14 @@ public sealed class XmlDocFormatOptions
         this.With(collapseProseWhitespace: collapseProseWhitespace);
 
     /// <summary>
+    /// Returns a new <see cref="XmlDocFormatOptions" /> instance with <see cref="IndentText" /> replaced.
+    /// </summary>
+    /// <param name="indentText">The new indent unit applied beneath block tags.</param>
+    /// <returns>A new instance with the requested override applied.</returns>
+    public XmlDocFormatOptions WithIndentText(string indentText) =>
+        this.With(indentText: indentText);
+
+    /// <summary>
     /// Returns the per-tag policy for the given element name, or <see cref="XmlDocTagPolicy.Default" /> when no
     /// explicit policy is configured.
     /// </summary>

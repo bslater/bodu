@@ -903,9 +903,9 @@ public static class BoduCodeStyleKats
                     {
                       "profile": "Compact",
                       "maxLineLength": 120,
-                      "forceMultilineTags": [ "remarks", "para" ],
                       "inlineTags": [ "c", "see", "paramref", "typeparamref" ],
-                      "neverSplitTagContent": [ "c", "see", "paramref", "typeparamref" ]
+                      "neverSplitTagContent": [ "c", "see", "paramref", "typeparamref" ],
+                      "tagPolicies": { "summary": { "layout": "singleLineWhenShort" } }
                     }
                     """),
             ]),

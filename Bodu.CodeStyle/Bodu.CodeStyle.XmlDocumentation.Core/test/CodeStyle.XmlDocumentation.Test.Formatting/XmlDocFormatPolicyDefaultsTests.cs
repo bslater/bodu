@@ -22,7 +22,7 @@ public sealed class XmlDocFormatPolicyDefaultsTests
 
         Assert.AreEqual(120, options.MaxLineLength);
         Assert.AreEqual("/// ", options.DocumentationPrefix);
-        Assert.AreEqual("    ", options.IndentText);
+        Assert.AreEqual(string.Empty, options.IndentText);
         Assert.IsTrue(options.CollapseProseWhitespace);
         Assert.IsFalse(options.PreserveBlankLines);
         Assert.IsTrue(options.PreserveXmlTagAttributes);
@@ -93,6 +93,6 @@ public sealed class XmlDocFormatPolicyDefaultsTests
     {
         Assert.AreEqual(120, XmlDocFormatPolicyDefaults.DefaultMaxLineLength);
         Assert.AreEqual("/// ", XmlDocFormatPolicyDefaults.DefaultDocumentationPrefix);
-        Assert.AreEqual("    ", XmlDocFormatPolicyDefaults.DefaultIndentText);
+        Assert.AreEqual(string.Empty, XmlDocFormatPolicyDefaults.DefaultIndentText);
     }
 }
