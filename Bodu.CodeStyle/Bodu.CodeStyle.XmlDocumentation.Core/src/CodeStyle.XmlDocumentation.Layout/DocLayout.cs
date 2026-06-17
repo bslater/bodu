@@ -39,11 +39,11 @@ internal static class DocLayout
         if (contentBudget <= 0) throw new ArgumentOutOfRangeException(nameof(contentBudget), XmlDocResourceStrings.Arg_OutOfRange_ContentBudgetNotPositive);
 
         var output = new List<string>();
-        ComposeRange(tokens, 0, tokens.Count, options, contentBudget, output);
+        ComposeRange(tokens, 0, tokens.Count, options, contentBudget, string.Empty, output);
         return output;
     }
 
-    private static int ComposeRange(IReadOnlyList<XmlDocToken> tokens, int start, int end, XmlDocFormatOptions options, int contentBudget, List<string> output)
+    private static int ComposeRange(IReadOnlyList<XmlDocToken> tokens, int start, int end, XmlDocFormatOptions options, int contentBudget, string currentIndent, List<string> output)
     {
         var currentRun = new List<XmlDocToken>();
         var position = start;
@@ -61,7 +61,7 @@ internal static class DocLayout
             {
                 if (token.RawText.IndexOf('\n') >= 0)
                 {
-                    FlushRun(currentRun, options, contentBudget, output);
+                    FlushRun(currentRun, options, contentBudget, currentIndent, output);
                     EmitCDataLines(token.RawText, output);
                     position++;
                     continue;
@@ -76,28 +76,29 @@ internal static class DocLayout
             {
                 if (TryFindMatchingEnd(tokens, position, end, token.TagName!, out var matchEnd))
                 {
-                    // ForceMultilineTags and SingleLineWhenShortTags are the authoritative source of truth for
-                    // layout. Per-tag policies (XmlDocTagPolicy.Layout) carry supplementary metadata such as
-                    // self-closing attribute spacing but do NOT promote a tag into a layout class — that way a
-                    // JSON config that narrows ForceMultilineTags can take effect without also having to
-                    // override every tagPolicy entry.
-                    var forceMultiline = options.ForceMultilineTags.Contains(token.TagName!);
-                    var singleLineCandidate = options.SingleLineWhenShortTags.Contains(token.TagName!);
+                    // XmlDocFormatOptions.ResolveLayout is the single authoritative layout source: an explicit
+                    // per-tag policy layout wins, otherwise the convenience sets (ForceMultilineTags,
+                    // SingleLineWhenShortTags, InlineTags, BlockTags) are consulted in precedence order. This
+                    // makes tagPolicies.layout authoritative and gives BlockTags a real effect while leaving the
+                    // default Bodu profile byte-identical.
+                    XmlDocTagLayout layout = options.ResolveLayout(token.TagName!);
+                    var forceMultiline = layout == XmlDocTagLayout.MultilineBlock;
+                    var singleLineCandidate = layout == XmlDocTagLayout.SingleLineWhenShort;
 
                     if (forceMultiline)
                     {
-                        FlushRun(currentRun, options, contentBudget, output);
-                        output.Add(token.RawText);
-                        ComposeRange(tokens, position + 1, matchEnd, options, contentBudget, output);
-                        output.Add(tokens[matchEnd].RawText);
+                        FlushRun(currentRun, options, contentBudget, currentIndent, output);
+                        output.Add(currentIndent + token.RawText);
+                        ComposeRange(tokens, position + 1, matchEnd, options, contentBudget, currentIndent + options.IndentText, output);
+                        output.Add(currentIndent + tokens[matchEnd].RawText);
                         position = matchEnd + 1;
                         continue;
                     }
 
                     if (singleLineCandidate)
                     {
-                        FlushRun(currentRun, options, contentBudget, output);
-                        ComposeSingleLineCandidate(tokens, position, matchEnd, options, contentBudget, output);
+                        FlushRun(currentRun, options, contentBudget, currentIndent, output);
+                        ComposeSingleLineCandidate(tokens, position, matchEnd, options, contentBudget, currentIndent, output);
                         position = matchEnd + 1;
                         continue;
                     }
@@ -108,11 +109,53 @@ internal static class DocLayout
                 continue;
             }
 
+            // When blank-line preservation is enabled, a run of two or more line breaks (optionally separated by
+            // whitespace) is an authored blank line. Flush the pending content, emit one empty content line per
+            // blank line, and skip the break run so the blank line survives instead of collapsing into a space.
+            if (token.Kind == XmlDocTokenKind.LineBreak && options.PreserveBlankLines)
+            {
+                var lookahead = position + 1;
+                var breaks = 1;
+                while (lookahead < end)
+                {
+                    XmlDocTokenKind kind = tokens[lookahead].Kind;
+                    if (kind == XmlDocTokenKind.Whitespace)
+                    {
+                        lookahead++;
+                        continue;
+                    }
+
+                    if (kind == XmlDocTokenKind.LineBreak)
+                    {
+                        breaks++;
+                        lookahead++;
+                        continue;
+                    }
+
+                    break;
+                }
+
+                if (breaks >= 2)
+                {
+                    FlushRun(currentRun, options, contentBudget, currentIndent, output);
+                    for (var b = 0; b < breaks - 1; b++)
+                    {
+                        if (output.Count > 0)
+                        {
+                            output.Add(string.Empty);
+                        }
+                    }
+
+                    position = lookahead;
+                    continue;
+                }
+            }
+
             currentRun.Add(token);
             position++;
         }
 
-        FlushRun(currentRun, options, contentBudget, output);
+        FlushRun(currentRun, options, contentBudget, currentIndent, output);
         return position;
     }
 
@@ -132,7 +175,10 @@ internal static class DocLayout
             }
         }
 
-        if (start <= cdataRawText.Length)
+        // Emit the trailing segment only when there is content after the final newline. A well-formed CDATA
+        // literal ends with "]]>", so this is normally taken; the guard ensures a literal that happened to end
+        // with a newline would not append a spurious empty content line.
+        if (start < cdataRawText.Length)
         {
             output.Add(cdataRawText.Substring(start));
         }
@@ -163,19 +209,24 @@ internal static class DocLayout
         return false;
     }
 
-    private static void ComposeSingleLineCandidate(IReadOnlyList<XmlDocToken> tokens, int openIndex, int closeIndex, XmlDocFormatOptions options, int contentBudget, List<string> output)
+    private static void ComposeSingleLineCandidate(IReadOnlyList<XmlDocToken> tokens, int openIndex, int closeIndex, XmlDocFormatOptions options, int contentBudget, string currentIndent, List<string> output)
     {
         XmlDocToken openToken = tokens[openIndex];
         XmlDocToken closeToken = tokens[closeIndex];
 
-        // Multi-line CDATA sections cannot be represented on a single line. When the body carries one, skip
-        // the candidate stage entirely and fall through to the expanded form, which dispatches to
-        // ComposeRange's CDATA handler. Single-line CDATA flows through the candidate as an indivisible atom.
+        // A single-line candidate cannot represent any content token that spans multiple lines — a multi-line
+        // CDATA section, or a tag preserved verbatim under PreserveXmlTagAttributes. When the body carries one,
+        // skip the candidate stage and fall through to the expanded form so the multi-line content is emitted
+        // across its own lines.
         for (var k = openIndex + 1; k < closeIndex; k++)
         {
-            if (tokens[k].Kind == XmlDocTokenKind.CData && tokens[k].RawText.IndexOf('\n') >= 0)
+            // Structural line breaks do not count — only a content token that itself spans lines (a multi-line
+            // CDATA section or a verbatim-preserved tag) forces the expanded form.
+            if (tokens[k].Kind != XmlDocTokenKind.LineBreak &&
+                tokens[k].Kind != XmlDocTokenKind.Whitespace &&
+                tokens[k].RawText.IndexOf('\n') >= 0)
             {
-                EmitExpandedSingleLineCandidate(tokens, openIndex, closeIndex, options, contentBudget, output);
+                EmitExpandedSingleLineCandidate(tokens, openIndex, closeIndex, options, contentBudget, currentIndent, output);
                 return;
             }
         }
@@ -219,24 +270,34 @@ internal static class DocLayout
         candidate.Append(closeToken.RawText);
 
         XmlDocTagPolicy policy = options.GetTagPolicy(openToken.TagName!);
+        var effectiveBudget = Math.Max(1, contentBudget - currentIndent.Length);
         var singleLineLimit = policy.MaxSingleLineLength ?? options.MaxLineLength;
         var singleLine = candidate.ToString();
-        if (singleLine.Length <= singleLineLimit && singleLine.Length <= contentBudget)
+        if (singleLine.Length <= singleLineLimit && singleLine.Length <= effectiveBudget)
         {
-            output.Add(singleLine);
+            output.Add(currentIndent + singleLine);
             return;
         }
 
-        EmitExpandedSingleLineCandidate(tokens, openIndex, closeIndex, options, contentBudget, output);
+        // The candidate overflows the budget. Normally it expands to a multiline block, but when the tag's
+        // content must never wrap (NeverSplitTagContent or a policy AllowLineBreakInside == false) it is kept
+        // intact on a single line, accepting the overflow rather than splitting it.
+        if (!options.AllowsContentWrapping(openToken.TagName!))
+        {
+            output.Add(currentIndent + singleLine);
+            return;
+        }
+
+        EmitExpandedSingleLineCandidate(tokens, openIndex, closeIndex, options, contentBudget, currentIndent, output);
     }
 
-    private static void EmitExpandedSingleLineCandidate(IReadOnlyList<XmlDocToken> tokens, int openIndex, int closeIndex, XmlDocFormatOptions options, int contentBudget, List<string> output)
+    private static void EmitExpandedSingleLineCandidate(IReadOnlyList<XmlDocToken> tokens, int openIndex, int closeIndex, XmlDocFormatOptions options, int contentBudget, string currentIndent, List<string> output)
     {
         // Expanded form: open on its own line, content on subsequent lines, close on its own line.
         XmlDocToken openToken = tokens[openIndex];
         XmlDocToken closeToken = tokens[closeIndex];
 
-        output.Add(openToken.RawText);
+        output.Add(currentIndent + openToken.RawText);
 
         var contentTokens = new List<XmlDocToken>();
         for (var i = openIndex + 1; i < closeIndex; i++)
@@ -245,16 +306,16 @@ internal static class DocLayout
         }
 
         var innerLines = new List<string>();
-        ComposeRange(contentTokens, 0, contentTokens.Count, options, contentBudget, innerLines);
+        ComposeRange(contentTokens, 0, contentTokens.Count, options, contentBudget, currentIndent + options.IndentText, innerLines);
         foreach (var line in innerLines)
         {
             output.Add(line);
         }
 
-        output.Add(closeToken.RawText);
+        output.Add(currentIndent + closeToken.RawText);
     }
 
-    private static void FlushRun(List<XmlDocToken> run, XmlDocFormatOptions options, int contentBudget, List<string> output)
+    private static void FlushRun(List<XmlDocToken> run, XmlDocFormatOptions options, int contentBudget, string currentIndent, List<string> output)
     {
         if (run.Count == 0)
         {
@@ -262,7 +323,8 @@ internal static class DocLayout
         }
 
         var atoms = new List<string>();
-        var pendingWhitespace = false;
+        string? pendingWhitespace = null;
+        var gapHasLineBreak = false;
         foreach (XmlDocToken token in run)
         {
             switch (token.Kind)
@@ -270,7 +332,8 @@ internal static class DocLayout
                 case XmlDocTokenKind.Whitespace:
                     if (atoms.Count > 0)
                     {
-                        pendingWhitespace = true;
+                        // Collapse to a single space, or carry the exact run when collapsing is disabled.
+                        pendingWhitespace = options.CollapseProseWhitespace ? " " : token.RawText;
                     }
 
                     break;
@@ -280,20 +343,23 @@ internal static class DocLayout
                 case XmlDocTokenKind.BlockStart:
                 case XmlDocTokenKind.BlockEnd:
                 case XmlDocTokenKind.CData:
-                    if (pendingWhitespace)
+                    if (atoms.Count > 0 && (pendingWhitespace != null || gapHasLineBreak))
                     {
-                        atoms.Add(" ");
-                        pendingWhitespace = false;
+                        // A soft line break in the gap always joins as a single space; otherwise reproduce the
+                        // pending horizontal whitespace (a single space when collapsing, the exact run when not).
+                        atoms.Add(gapHasLineBreak ? " " : pendingWhitespace ?? " ");
                     }
 
                     atoms.Add(NormalizeTagRaw(token, options));
+                    pendingWhitespace = null;
+                    gapHasLineBreak = false;
                     break;
 
                 case XmlDocTokenKind.LineBreak:
-                    // Soft line break inside the run; treat as a whitespace boundary.
+                    // Soft line break inside the run; treat as a whitespace boundary that joins as one space.
                     if (atoms.Count > 0)
                     {
-                        pendingWhitespace = true;
+                        gapHasLineBreak = true;
                     }
 
                     break;
@@ -307,10 +373,14 @@ internal static class DocLayout
             return;
         }
 
-        IEnumerable<string> wrapped = DocWrapper.Wrap(atoms, contentBudget);
+        // Reduce the available width by the nesting indent, then re-prepend that indent to each wrapped line so
+        // the total line still fits the configured budget. With the default empty IndentText the indent is empty
+        // and this is a no-op, leaving the canonical flush layout byte-identical.
+        var effectiveBudget = Math.Max(1, contentBudget - currentIndent.Length);
+        IEnumerable<string> wrapped = DocWrapper.Wrap(atoms, effectiveBudget);
         foreach (var line in wrapped)
         {
-            output.Add(line);
+            output.Add(currentIndent + line);
         }
     }
 

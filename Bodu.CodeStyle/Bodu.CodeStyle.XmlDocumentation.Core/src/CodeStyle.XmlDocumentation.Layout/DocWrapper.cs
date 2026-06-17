@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DocWrapper.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -22,15 +22,18 @@ namespace Bodu.CodeStyle.XmlDocumentation.Layout;
 /// </para>
 /// <para>
 /// The wrap strategy is natural greedy: pack as many atoms onto a line as fit within the content budget and
-/// break at the last fitting word boundary. Clause-aware wrapping (breaking at <c>','</c>, <c>';'</c>,
-/// <c>'.'</c>, or <c>':'</c>) is deliberately not applied — it caused multi-sentence paragraphs to fragment
-/// at every clause even when the line could comfortably absorb more text.
+/// break at the last fitting word boundary. Clause-aware wrapping is deliberately not applied.
 /// </para>
 /// <para>
-/// Adjacent atoms with no whitespace between them (for example a trailing <c>'.'</c> immediately after an
-/// inline <c>&lt;see /&gt;</c> reference) are treated as a single typographic unit and are never split across
-/// a line boundary, even when the join exceeds the budget. There is no whitespace to absorb such a break and
-/// the resulting orphan-punctuation line is wrong.
+/// Adjacent atoms with no whitespace between them (for example a trailing <c>'.'</c> immediately after an inline
+/// <c>&lt;see /&gt;</c> reference) are treated as a single typographic unit and are never split across a line
+/// boundary, even when the join exceeds the budget.
+/// </para>
+/// <para>
+/// An atom that itself contains line breaks (a tag preserved verbatim under
+/// <see cref="XmlDocFormatOptions.PreserveXmlTagAttributes" />) is emitted across multiple lines: its first
+/// segment continues the current line, its interior segments stand alone, and its final segment seeds the next
+/// line so following prose continues from it.
 /// </para>
 /// </remarks>
 internal static class DocWrapper
@@ -41,71 +44,91 @@ internal static class DocWrapper
     /// <param name="atoms">The list of atoms; whitespace atoms are <c>" "</c> singletons.</param>
     /// <param name="contentBudget">The maximum content length per line, excluding the documentation prefix and base indent.</param>
     /// <returns>An enumerable of physical content lines, one entry per output line.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="atoms" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="contentBudget" /> is non-positive.</exception>
     public static IEnumerable<string> Wrap(IReadOnlyList<string> atoms, int contentBudget)
     {
         if (atoms is null) throw new ArgumentNullException(nameof(atoms));
         if (contentBudget <= 0) throw new ArgumentOutOfRangeException(nameof(contentBudget), XmlDocResourceStrings.Arg_OutOfRange_ContentBudgetNotPositive);
 
-        var lineAtoms = new List<LineAtom>();
-        var lineLength = 0;
-        var pendingWhitespace = false;
+        var lines = new List<string>();
+        var current = new StringBuilder();
+        var currentHasContent = false;
+        string? pendingWhitespace = null;
 
         foreach (var atom in atoms)
         {
             if (IsWhitespaceAtom(atom))
             {
-                if (lineAtoms.Count > 0)
+                if (currentHasContent)
                 {
-                    pendingWhitespace = true;
+                    pendingWhitespace = atom;
                 }
 
                 continue;
             }
 
-            var hasLeadingSpace = pendingWhitespace && lineAtoms.Count > 0;
-            var addedLength = (hasLeadingSpace ? 1 : 0) + atom.Length;
-
-            // Atoms with no preceding whitespace are typographically joined to the previous atom (e.g. a
-            // trailing '.' after </see> or <see ... />) and must not be split across a line boundary even
-            // when the join exceeds the budget — there is no whitespace to absorb the break and an orphan
-            // punctuation line is wrong.
-            if (lineAtoms.Count == 0 || lineLength + addedLength <= contentBudget || !hasLeadingSpace)
+            if (atom.IndexOf('\n') >= 0)
             {
-                lineAtoms.Add(new LineAtom(atom, hasLeadingSpace));
-                lineLength += addedLength;
-                pendingWhitespace = false;
+                AppendMultiLineAtom(atom, lines, current, ref currentHasContent, ref pendingWhitespace);
                 continue;
             }
 
-            // Natural greedy wrap: emit the current line at the last fitting word boundary, then start the
-            // next line with the overflowing atom.
-            yield return JoinAtoms(lineAtoms, 0, lineAtoms.Count);
-            lineAtoms.Clear();
-            lineAtoms.Add(new LineAtom(atom, hasLeadingSpace: false));
-            lineLength = atom.Length;
-            pendingWhitespace = false;
-        }
+            var leadingWhitespace = currentHasContent ? pendingWhitespace ?? string.Empty : string.Empty;
+            var addedLength = leadingWhitespace.Length + atom.Length;
 
-        if (lineAtoms.Count > 0)
-        {
-            yield return JoinAtoms(lineAtoms, 0, lineAtoms.Count);
-        }
-    }
-
-    private static string JoinAtoms(List<LineAtom> atoms, int start, int count)
-    {
-        var sb = new StringBuilder();
-        for (var i = start; i < start + count; i++)
-        {
-            if (i > start && atoms[i].HasLeadingSpace)
+            // Atoms with no preceding whitespace are typographically joined to the previous atom (e.g. a trailing
+            // '.' after </see>) and must not be split across a line boundary even when the join exceeds budget.
+            if (!currentHasContent || current.Length + addedLength <= contentBudget || leadingWhitespace.Length == 0)
             {
-                sb.Append(' ');
+                current.Append(leadingWhitespace).Append(atom);
+                currentHasContent = true;
+                pendingWhitespace = null;
+                continue;
             }
 
-            sb.Append(atoms[i].Text);
+            // Natural greedy wrap: emit the current line at the last fitting word boundary, then start the next
+            // line with the overflowing atom.
+            lines.Add(current.ToString());
+            current.Clear();
+            current.Append(atom);
+            currentHasContent = true;
+            pendingWhitespace = null;
         }
 
-        return sb.ToString();
+        if (currentHasContent)
+        {
+            lines.Add(current.ToString());
+        }
+
+        return lines;
+    }
+
+    private static void AppendMultiLineAtom(string atom, List<string> lines, StringBuilder current, ref bool currentHasContent, ref string? pendingWhitespace)
+    {
+        var segments = atom.Split('\n');
+
+        // The first segment continues the current line (attaching to preceding prose through any pending space).
+        if (currentHasContent && pendingWhitespace is not null)
+        {
+            current.Append(pendingWhitespace);
+        }
+
+        current.Append(segments[0]);
+        lines.Add(current.ToString());
+        current.Clear();
+        pendingWhitespace = null;
+
+        // Interior segments stand alone, preserving the authored layout verbatim.
+        for (var i = 1; i < segments.Length - 1; i++)
+        {
+            lines.Add(segments[i]);
+        }
+
+        // The final segment seeds the running line so following atoms continue from it.
+        var last = segments[segments.Length - 1];
+        current.Append(last);
+        currentHasContent = last.Length > 0;
     }
 
     private static bool IsWhitespaceAtom(string atom)
@@ -121,18 +144,5 @@ internal static class DocWrapper
         }
 
         return true;
-    }
-
-    private readonly struct LineAtom
-    {
-        public LineAtom(string text, bool hasLeadingSpace)
-        {
-            this.Text = text;
-            this.HasLeadingSpace = hasLeadingSpace;
-        }
-
-        public string Text { get; }
-
-        public bool HasLeadingSpace { get; }
     }
 }

@@ -55,7 +55,7 @@ public partial class XmlDocFormatAnalyzerTests
             "    /// See <see cref=\"Sample\"\r\n" +
             "    ///      langword=\"null\" /> for details.\r\n" +
             "    /// </summary>\r\n" +
-            "    public int X;\r\n" +
+            "    public void M() { }\r\n" +
             "}\r\n";
 
         CSharpAnalyzerTest<XmlDocFormatAnalyzer, MSTestVerifier> test = CreateTest(source);

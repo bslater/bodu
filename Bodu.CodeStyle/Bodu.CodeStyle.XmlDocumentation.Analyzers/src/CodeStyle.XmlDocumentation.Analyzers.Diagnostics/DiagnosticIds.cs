@@ -19,6 +19,12 @@ namespace Bodu.CodeStyle.XmlDocumentation.Analyzers.Diagnostics;
 /// </remarks>
 internal static class DiagnosticIds
 {
+    /// <summary>
+    /// The infrastructure diagnostic identifier reported when a <c>bodu.xmldocstyle.json</c> configuration file
+    /// is invalid and cannot be applied.
+    /// </summary>
+    public const string XmlDocConfigInvalid = "BODU0001";
+
     /// <summary>The diagnostic identifier for <c>&lt;summary&gt;</c> formatting issues.</summary>
     public const string XmlDocSummary = "BODU1001";
 

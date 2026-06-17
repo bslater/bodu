@@ -28,7 +28,7 @@ public partial class XmlDocFormatAnalyzerTests
             "    /// Foo.\r\n" +
             "    /// </summary>\r\n" +
             "    /// <remarks>Long-form notes.</remarks>\r\n" +
-            "    public int X;\r\n" +
+            "    public void M() { }\r\n" +
             "}\r\n";
 
         CSharpAnalyzerTest<XmlDocFormatAnalyzer, MSTestVerifier> test = CreateTest(source);
@@ -54,7 +54,7 @@ public partial class XmlDocFormatAnalyzerTests
             "    /// <summary>\r\n" +
             "    /// See <see cref=\"Sample\"/> for details.\r\n" +
             "    /// </summary>\r\n" +
-            "    public int X;\r\n" +
+            "    public void M() { }\r\n" +
             "}\r\n";
 
         CSharpAnalyzerTest<XmlDocFormatAnalyzer, MSTestVerifier> test = CreateTest(source);

@@ -162,20 +162,87 @@ public sealed class XmlDocFormatOptions
     /// <param name="maxLineLength">The new maximum line length.</param>
     /// <returns>A new instance with the requested override applied.</returns>
     public XmlDocFormatOptions WithMaxLineLength(int maxLineLength) =>
-        new XmlDocFormatOptions(
-            maxLineLength,
-            this.DocumentationPrefix,
-            this.IndentText,
-            this.CollapseProseWhitespace,
-            this.PreserveBlankLines,
-            this.PreserveXmlTagAttributes,
-            this.PreserveCrefText,
-            this.BlockTags,
-            this.InlineTags,
-            this.ForceMultilineTags,
-            this.SingleLineWhenShortTags,
-            this.NeverSplitTagContent,
-            this.TagPolicies);
+        this.With(maxLineLength: maxLineLength);
+
+    /// <summary>
+    /// Returns a new <see cref="XmlDocFormatOptions" /> instance with <see cref="BlockTags" /> replaced.
+    /// </summary>
+    /// <param name="blockTags">The new set of block tag names.</param>
+    /// <returns>A new instance with the requested override applied.</returns>
+    public XmlDocFormatOptions WithBlockTags(ImmutableHashSet<string> blockTags) =>
+        this.With(blockTags: blockTags);
+
+    /// <summary>
+    /// Returns a new <see cref="XmlDocFormatOptions" /> instance with <see cref="InlineTags" /> replaced.
+    /// </summary>
+    /// <param name="inlineTags">The new set of inline-atomic tag names.</param>
+    /// <returns>A new instance with the requested override applied.</returns>
+    public XmlDocFormatOptions WithInlineTags(ImmutableHashSet<string> inlineTags) =>
+        this.With(inlineTags: inlineTags);
+
+    /// <summary>
+    /// Returns a new <see cref="XmlDocFormatOptions" /> instance with <see cref="ForceMultilineTags" /> replaced.
+    /// </summary>
+    /// <param name="forceMultilineTags">The new set of force-multiline tag names.</param>
+    /// <returns>A new instance with the requested override applied.</returns>
+    public XmlDocFormatOptions WithForceMultilineTags(ImmutableHashSet<string> forceMultilineTags) =>
+        this.With(forceMultilineTags: forceMultilineTags);
+
+    /// <summary>
+    /// Returns a new <see cref="XmlDocFormatOptions" /> instance with <see cref="TagPolicies" /> replaced.
+    /// </summary>
+    /// <param name="tagPolicies">The new per-tag policy dictionary.</param>
+    /// <returns>A new instance with the requested override applied.</returns>
+    public XmlDocFormatOptions WithTagPolicies(ImmutableDictionary<string, XmlDocTagPolicy> tagPolicies) =>
+        this.With(tagPolicies: tagPolicies);
+
+    /// <summary>
+    /// Returns a new <see cref="XmlDocFormatOptions" /> instance with <see cref="NeverSplitTagContent" /> replaced.
+    /// </summary>
+    /// <param name="neverSplitTagContent">The new set of never-split tag names.</param>
+    /// <returns>A new instance with the requested override applied.</returns>
+    public XmlDocFormatOptions WithNeverSplitTagContent(ImmutableHashSet<string> neverSplitTagContent) =>
+        this.With(neverSplitTagContent: neverSplitTagContent);
+
+    /// <summary>
+    /// Returns a new <see cref="XmlDocFormatOptions" /> instance with <see cref="PreserveBlankLines" /> replaced.
+    /// </summary>
+    /// <param name="preserveBlankLines">The new preserve-blank-lines setting.</param>
+    /// <returns>A new instance with the requested override applied.</returns>
+    public XmlDocFormatOptions WithPreserveBlankLines(bool preserveBlankLines) =>
+        this.With(preserveBlankLines: preserveBlankLines);
+
+    /// <summary>
+    /// Returns a new <see cref="XmlDocFormatOptions" /> instance with <see cref="CollapseProseWhitespace" /> replaced.
+    /// </summary>
+    /// <param name="collapseProseWhitespace">The new collapse-prose-whitespace setting.</param>
+    /// <returns>A new instance with the requested override applied.</returns>
+    public XmlDocFormatOptions WithCollapseProseWhitespace(bool collapseProseWhitespace) =>
+        this.With(collapseProseWhitespace: collapseProseWhitespace);
+
+    /// <summary>
+    /// Returns a new <see cref="XmlDocFormatOptions" /> instance with <see cref="IndentText" /> replaced.
+    /// </summary>
+    /// <param name="indentText">The new indent unit applied beneath block tags.</param>
+    /// <returns>A new instance with the requested override applied.</returns>
+    public XmlDocFormatOptions WithIndentText(string indentText) =>
+        this.With(indentText: indentText);
+
+    /// <summary>
+    /// Returns a new <see cref="XmlDocFormatOptions" /> instance with <see cref="PreserveXmlTagAttributes" /> replaced.
+    /// </summary>
+    /// <param name="preserveXmlTagAttributes">The new preserve-attribute-spacing setting.</param>
+    /// <returns>A new instance with the requested override applied.</returns>
+    public XmlDocFormatOptions WithPreserveXmlTagAttributes(bool preserveXmlTagAttributes) =>
+        this.With(preserveXmlTagAttributes: preserveXmlTagAttributes);
+
+    /// <summary>
+    /// Returns a new <see cref="XmlDocFormatOptions" /> instance with <see cref="PreserveCrefText" /> replaced.
+    /// </summary>
+    /// <param name="preserveCrefText">The new preserve-cref-text setting.</param>
+    /// <returns>A new instance with the requested override applied.</returns>
+    public XmlDocFormatOptions WithPreserveCrefText(bool preserveCrefText) =>
+        this.With(preserveCrefText: preserveCrefText);
 
     /// <summary>
     /// Returns the per-tag policy for the given element name, or <see cref="XmlDocTagPolicy.Default" /> when no
@@ -191,4 +258,90 @@ public sealed class XmlDocFormatOptions
             ? policy
             : XmlDocTagPolicy.Default;
     }
+
+    /// <summary>
+    /// Resolves the authoritative layout for the given element name.
+    /// </summary>
+    /// <param name="tagName">The element name to classify.</param>
+    /// <returns>The effective <see cref="XmlDocTagLayout" /> for the tag.</returns>
+    /// <remarks>
+    /// <para>
+    /// An explicit per-tag policy whose <see cref="XmlDocTagPolicy.Layout" /> is not
+    /// <see cref="XmlDocTagLayout.Auto" /> wins outright; this makes <c>tagPolicies</c> the single authoritative
+    /// layout source. The convenience sets act as shorthand consulted only when no explicit policy layout
+    /// applies, in precedence order: <see cref="ForceMultilineTags" /> (block), <see cref="SingleLineWhenShortTags" />,
+    /// <see cref="InlineTags" /> (inline atomic), then <see cref="BlockTags" /> (block). When none match the tag
+    /// flows inline with the surrounding prose (<see cref="XmlDocTagLayout.Auto" />).
+    /// </para>
+    /// </remarks>
+    public XmlDocTagLayout ResolveLayout(string tagName)
+    {
+        if (tagName is null) throw new System.ArgumentNullException(nameof(tagName));
+
+        if (this.TagPolicies.TryGetValue(tagName, out XmlDocTagPolicy? policy) && policy is not null && policy.Layout != XmlDocTagLayout.Auto)
+        {
+            return policy.Layout;
+        }
+
+        if (this.ForceMultilineTags.Contains(tagName)) return XmlDocTagLayout.MultilineBlock;
+        if (this.SingleLineWhenShortTags.Contains(tagName)) return XmlDocTagLayout.SingleLineWhenShort;
+        if (this.InlineTags.Contains(tagName)) return XmlDocTagLayout.InlineAtomic;
+        if (this.BlockTags.Contains(tagName)) return XmlDocTagLayout.MultilineBlock;
+
+        return XmlDocTagLayout.Auto;
+    }
+
+    /// <summary>
+    /// Determines whether the content of the given element may wrap across lines.
+    /// </summary>
+    /// <param name="tagName">The element name to test.</param>
+    /// <returns>
+    /// <see langword="false" /> when the tag is in <see cref="NeverSplitTagContent" /> or its per-tag policy sets
+    /// <see cref="XmlDocTagPolicy.AllowLineBreakInside" /> to <see langword="false" />; otherwise <see langword="true" />.
+    /// </returns>
+    /// <remarks>
+    /// When wrapping is forbidden, a single-line-when-short tag whose content overflows the budget is emitted on
+    /// one line rather than expanded to a multiline block, keeping the element intact.
+    /// </remarks>
+    public bool AllowsContentWrapping(string tagName)
+    {
+        if (tagName is null) throw new System.ArgumentNullException(nameof(tagName));
+
+        if (this.NeverSplitTagContent.Contains(tagName)) return false;
+        if (this.TagPolicies.TryGetValue(tagName, out XmlDocTagPolicy? policy) && policy is not null && policy.AllowLineBreakInside == false)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    private XmlDocFormatOptions With(
+        int? maxLineLength = null,
+        string? documentationPrefix = null,
+        string? indentText = null,
+        bool? collapseProseWhitespace = null,
+        bool? preserveBlankLines = null,
+        bool? preserveXmlTagAttributes = null,
+        bool? preserveCrefText = null,
+        ImmutableHashSet<string>? blockTags = null,
+        ImmutableHashSet<string>? inlineTags = null,
+        ImmutableHashSet<string>? forceMultilineTags = null,
+        ImmutableHashSet<string>? singleLineWhenShortTags = null,
+        ImmutableHashSet<string>? neverSplitTagContent = null,
+        ImmutableDictionary<string, XmlDocTagPolicy>? tagPolicies = null) =>
+        new XmlDocFormatOptions(
+            maxLineLength ?? this.MaxLineLength,
+            documentationPrefix ?? this.DocumentationPrefix,
+            indentText ?? this.IndentText,
+            collapseProseWhitespace ?? this.CollapseProseWhitespace,
+            preserveBlankLines ?? this.PreserveBlankLines,
+            preserveXmlTagAttributes ?? this.PreserveXmlTagAttributes,
+            preserveCrefText ?? this.PreserveCrefText,
+            blockTags ?? this.BlockTags,
+            inlineTags ?? this.InlineTags,
+            forceMultilineTags ?? this.ForceMultilineTags,
+            singleLineWhenShortTags ?? this.SingleLineWhenShortTags,
+            neverSplitTagContent ?? this.NeverSplitTagContent,
+            tagPolicies ?? this.TagPolicies);
 }

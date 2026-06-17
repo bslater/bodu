@@ -123,7 +123,10 @@ public sealed class XmlDocFormatOptionsTests
 
         XmlDocTagPolicy policy = options.GetTagPolicy("summary");
 
-        Assert.AreEqual(XmlDocTagLayout.MultilineBlock, policy.Layout);
+        // Default per-tag policies defer the layout decision to the convenience sets (Layout = Auto). The
+        // effective layout is resolved by ResolveLayout, which classifies summary as a multiline block.
+        Assert.AreEqual(XmlDocTagLayout.Auto, policy.Layout);
+        Assert.AreEqual(XmlDocTagLayout.MultilineBlock, options.ResolveLayout("summary"));
     }
 
     /// <summary>

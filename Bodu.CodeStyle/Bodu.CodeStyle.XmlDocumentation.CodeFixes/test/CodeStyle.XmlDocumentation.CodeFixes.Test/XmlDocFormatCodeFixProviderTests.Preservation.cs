@@ -66,9 +66,9 @@ public partial class XmlDocFormatCodeFixProviderTests
             "public sealed class Sample\r\n" +
             "{\r\n" +
             "    /// <summary>Foo.</summary>\r\n" +
-            "    public int X;\r\n" +
+            "    public void M() { }\r\n" +
             "    /// <summary>Bar.</summary>\r\n" +
-            "    public int Y;\r\n" +
+            "    public void N() { }\r\n" +
             "}\r\n";
 
         var expected =
@@ -77,11 +77,11 @@ public partial class XmlDocFormatCodeFixProviderTests
             "    /// <summary>\r\n" +
             "    /// Foo.\r\n" +
             "    /// </summary>\r\n" +
-            "    public int X;\r\n" +
+            "    public void M() { }\r\n" +
             "    /// <summary>\r\n" +
             "    /// Bar.\r\n" +
             "    /// </summary>\r\n" +
-            "    public int Y;\r\n" +
+            "    public void N() { }\r\n" +
             "}\r\n";
 
         var test =
@@ -314,7 +314,7 @@ public partial class XmlDocFormatCodeFixProviderTests
             "    /// <summary>\r\n" +
             "    /// Foo.\r\n" +
             "    /// </summary>\r\n" +
-            "    public int X;\r\n" +
+            "    public void M() { }\r\n" +
             "}\r\n";
 
         var test =
@@ -324,6 +324,44 @@ public partial class XmlDocFormatCodeFixProviderTests
                 FixedCode = source,
                 ReferenceAssemblies = ReferenceAssemblies.Net.Net80,
             };
+
+        await test.RunAsync(TestContext.CancellationTokenSource.Token);
+    }
+
+    /// <summary>
+    /// Verifies that the formatting code fix collapses a multi-line <c>&lt;summary&gt;</c> on a field back onto
+    /// a single line, applying the field-specific summary layout rule end to end.
+    /// </summary>
+    [TestMethod]
+    public async Task CodeFix_WhenFieldSummaryIsMultiLine_ShouldCollapseToSingleLine()
+    {
+        var source =
+            "public sealed class Sample\r\n" +
+            "{\r\n" +
+            "    /// <summary>\r\n" +
+            "    /// Holds the count.\r\n" +
+            "    /// </summary>\r\n" +
+            "    public int X;\r\n" +
+            "}\r\n";
+
+        var expected =
+            "public sealed class Sample\r\n" +
+            "{\r\n" +
+            "    /// <summary>Holds the count.</summary>\r\n" +
+            "    public int X;\r\n" +
+            "}\r\n";
+
+        var test =
+            new CSharpCodeFixTest<XmlDocFormatAnalyzer, XmlDocFormatCodeFixProvider, MSTestVerifier>
+            {
+                TestCode = source,
+                FixedCode = expected,
+                ReferenceAssemblies = ReferenceAssemblies.Net.Net80,
+            };
+
+        test.ExpectedDiagnostics.Add(
+            new DiagnosticResult(DiagnosticDescriptors.XmlDocSummary)
+                .WithSpan(3, 5, 6, 1));
 
         await test.RunAsync(TestContext.CancellationTokenSource.Token);
     }

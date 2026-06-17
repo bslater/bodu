@@ -59,22 +59,42 @@ public partial class XmlDocFormatAnalyzerTests
     }
 
     /// <summary>
-    /// Verifies that a misformatted comment on a field declaration triggers BODU1001.
+    /// Verifies that a short single-line <c>&lt;summary&gt;</c> on a field is accepted as-is and does not
+    /// trigger BODU1001 — a field summary is canonical on one line when it fits the width.
     /// </summary>
     [TestMethod]
-    public async Task Analyze_WhenDocOnFieldDeclarationMisformatted_ShouldReport()
+    public async Task Analyze_WhenFieldSummaryIsShortSingleLine_ShouldNotReport()
     {
         var source =
             "public sealed class Sample\r\n" +
             "{\r\n" +
-            "    /// <summary>Foo.</summary>\r\n" +
+            "    /// <summary>Holds the count.</summary>\r\n" +
+            "    public int X;\r\n" +
+            "}\r\n";
+
+        await CreateTest(source).RunAsync(TestContext.CancellationTokenSource.Token);
+    }
+
+    /// <summary>
+    /// Verifies that a multi-line <c>&lt;summary&gt;</c> on a field is reported (BODU1001) so it can be
+    /// collapsed back onto a single line.
+    /// </summary>
+    [TestMethod]
+    public async Task Analyze_WhenFieldSummaryIsMultiLine_ShouldReport()
+    {
+        var source =
+            "public sealed class Sample\r\n" +
+            "{\r\n" +
+            "    /// <summary>\r\n" +
+            "    /// Holds the count.\r\n" +
+            "    /// </summary>\r\n" +
             "    public int X;\r\n" +
             "}\r\n";
 
         CSharpAnalyzerTest<XmlDocFormatAnalyzer, MSTestVerifier> test = CreateTest(source);
         test.ExpectedDiagnostics.Add(
             new DiagnosticResult(DiagnosticDescriptors.XmlDocSummary)
-                .WithSpan(3, 5, 4, 1)
+                .WithSpan(3, 5, 6, 1)
                 );
 
         await test.RunAsync(TestContext.CancellationTokenSource.Token);
@@ -111,10 +131,10 @@ public partial class XmlDocFormatAnalyzerTests
         var source =
             "public sealed class Sample\r\n" +
             "{\r\n" +
-            "    /// <summary>Foo.</summary>\r\n" +
-            "    public int X;\r\n" +
-            "    /// <summary>Bar.</summary>\r\n" +
-            "    public int Y;\r\n" +
+            "    /// <summary>Foo bar.</summary>\r\n" +
+            "    public void M() { }\r\n" +
+            "    /// <summary>Baz qux.</summary>\r\n" +
+            "    public void N() { }\r\n" +
             "}\r\n";
 
         CSharpAnalyzerTest<XmlDocFormatAnalyzer, MSTestVerifier> test = CreateTest(source);

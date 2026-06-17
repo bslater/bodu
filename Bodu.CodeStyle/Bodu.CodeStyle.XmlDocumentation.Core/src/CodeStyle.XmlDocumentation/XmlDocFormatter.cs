@@ -71,8 +71,10 @@ public sealed class XmlDocFormatter
 
     private static XmlDocFormatResult FormatCore(string triviaText, XmlDocFormatContext context, XmlDocFormatOptions options)
     {
+        options = ApplyMemberKindLayout(options, context.MemberKindHint);
+
         var content = DocIndent.Strip(triviaText, context.BaseIndent, options.DocumentationPrefix);
-        ImmutableArray<XmlDocToken> tokens = XmlDocTokenizer.Tokenize(content, options.InlineTags);
+        ImmutableArray<XmlDocToken> tokens = XmlDocTokenizer.Tokenize(content, options.InlineTags, options.PreserveXmlTagAttributes, options.PreserveCrefText);
 
         if (tokens.Length == 0 || HasNoMeaningfulTokens(tokens))
         {
@@ -95,6 +97,30 @@ public sealed class XmlDocFormatter
             : ImmutableArray<XmlDocFormattingChange>.Empty;
 
         return new XmlDocFormatResult(changed, formatted, changes);
+    }
+
+    private static XmlDocFormatOptions ApplyMemberKindLayout(XmlDocFormatOptions options, XmlDocMemberKindHint memberKind)
+    {
+        // A field's <summary> stays on a single line unless its content exceeds the width budget, matching the
+        // way Bodu documents simple field values. Other member kinds keep the default force-multiline <summary>.
+        if (memberKind != XmlDocMemberKindHint.Field)
+        {
+            return options;
+        }
+
+        XmlDocTagPolicy current = options.GetTagPolicy("summary");
+        if (current.Layout == XmlDocTagLayout.SingleLineWhenShort)
+        {
+            return options;
+        }
+
+        var fieldSummaryPolicy = new XmlDocTagPolicy(
+            XmlDocTagLayout.SingleLineWhenShort,
+            current.MaxSingleLineLength,
+            current.AllowLineBreakInside,
+            current.SelfClosingTrailingSpace);
+
+        return options.WithTagPolicies(options.TagPolicies.SetItem("summary", fieldSummaryPolicy));
     }
 
     private static bool HasNoMeaningfulTokens(ImmutableArray<XmlDocToken> tokens)

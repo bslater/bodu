@@ -288,7 +288,7 @@ public static class CodeStyleKatConstants
           "maxLineLength": 120,
           "collapseProseWhitespace": true,
           "preserveBlankLines": false,
-          "preserveXmlTagAttributes": true,
+          "preserveXmlTagAttributes": false,
           "preserveCrefText": true,
           "blockTags": [ "summary", "remarks", "para", "example", "list", "item", "description", "code" ],
           "inlineTags": [ "c", "see", "paramref", "typeparamref" ],
@@ -903,9 +903,9 @@ public static class BoduCodeStyleKats
                     {
                       "profile": "Compact",
                       "maxLineLength": 120,
-                      "forceMultilineTags": [ "remarks", "para" ],
                       "inlineTags": [ "c", "see", "paramref", "typeparamref" ],
-                      "neverSplitTagContent": [ "c", "see", "paramref", "typeparamref" ]
+                      "neverSplitTagContent": [ "c", "see", "paramref", "typeparamref" ],
+                      "tagPolicies": { "summary": { "layout": "singleLineWhenShort" } }
                     }
                     """),
             ]),

@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XmlDocConfigJsonReader.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Globalization;
-using System.Text.Json;
 
 namespace Bodu.CodeStyle.XmlDocumentation.Configuration;
 
@@ -17,6 +16,10 @@ namespace Bodu.CodeStyle.XmlDocumentation.Configuration;
 /// <see cref="XmlDocFormatOptions" /> by overlaying the JSON values on top of
 /// <see cref="XmlDocFormatPolicyDefaults.CreateBoduDefaults" />.
 /// </summary>
+/// <remarks>
+/// Parsing uses the dependency-free <see cref="BoduJsonParser" /> rather than <c>System.Text.Json</c> so the
+/// analyzer package needs no external runtime assembly in the analyzer host.
+/// </remarks>
 public static class XmlDocConfigJsonReader
 {
     /// <summary>
@@ -50,85 +53,81 @@ public static class XmlDocConfigJsonReader
         ImmutableHashSet<string> neverSplitTagContent = defaults.NeverSplitTagContent;
         ImmutableDictionary<string, XmlDocTagPolicy> tagPolicies = defaults.TagPolicies;
 
-        JsonDocument document;
+        BoduJsonValue root;
         try
         {
-            document = JsonDocument.Parse(json);
+            root = BoduJsonParser.Parse(json);
         }
-        catch (JsonException ex)
+        catch (FormatException ex)
         {
             throw new XmlDocConfigException(XmlDocResourceStrings.Json_Invalid_Document, ex);
         }
 
-        using (document)
+        if (root.Kind != BoduJsonValueKind.Object || root.Members is null)
         {
-            JsonElement root = document.RootElement;
-            if (root.ValueKind != JsonValueKind.Object)
+            throw new XmlDocConfigException(XmlDocResourceStrings.Json_Invalid_TopLevelNotObject);
+        }
+
+        foreach (KeyValuePair<string, BoduJsonValue> property in root.Members)
+        {
+            switch (property.Key)
             {
-                throw new XmlDocConfigException(XmlDocResourceStrings.Json_Invalid_TopLevelNotObject);
-            }
+                case "$schema":
+                case "profile":
+                    // Informational only.
+                    break;
 
-            foreach (JsonProperty property in root.EnumerateObject())
-            {
-                switch (property.Name)
-                {
-                    case "$schema":
-                    case "profile":
-                        // Informational only.
-                        break;
+                case "maxLineLength":
+                    maxLineLength = ReadInt32(property.Key, property.Value);
+                    break;
 
-                    case "maxLineLength":
-                        maxLineLength = ReadInt32(property);
-                        break;
+                case "documentationPrefix":
+                    documentationPrefix = ReadString(property.Key, property.Value);
+                    break;
 
-                    case "documentationPrefix":
-                        documentationPrefix = ReadString(property);
-                        break;
+                case "indentText":
+                    indentText = ReadString(property.Key, property.Value);
+                    break;
 
-                    case "indentText":
-                        indentText = ReadString(property);
-                        break;
+                case "collapseProseWhitespace":
+                    collapseProseWhitespace = ReadBoolean(property.Key, property.Value);
+                    break;
 
-                    case "collapseProseWhitespace":
-                        collapseProseWhitespace = ReadBoolean(property);
-                        break;
+                case "preserveBlankLines":
+                    preserveBlankLines = ReadBoolean(property.Key, property.Value);
+                    break;
 
-                    case "preserveBlankLines":
-                        preserveBlankLines = ReadBoolean(property);
-                        break;
+                case "preserveXmlTagAttributes":
+                    preserveXmlTagAttributes = ReadBoolean(property.Key, property.Value);
+                    break;
 
-                    case "preserveXmlTagAttributes":
-                        preserveXmlTagAttributes = ReadBoolean(property);
-                        break;
+                case "preserveCrefText":
+                    preserveCrefText = ReadBoolean(property.Key, property.Value);
+                    break;
 
-                    case "preserveCrefText":
-                        preserveCrefText = ReadBoolean(property);
-                        break;
+                case "blockTags":
+                    blockTags = ReadStringSet(property.Key, property.Value);
+                    break;
 
-                    case "blockTags":
-                        blockTags = ReadStringSet(property);
-                        break;
+                case "inlineTags":
+                    inlineTags = ReadStringSet(property.Key, property.Value);
+                    break;
 
-                    case "inlineTags":
-                        inlineTags = ReadStringSet(property);
-                        break;
+                case "forceMultilineTags":
+                    forceMultilineTags = ReadStringSet(property.Key, property.Value);
+                    break;
 
-                    case "forceMultilineTags":
-                        forceMultilineTags = ReadStringSet(property);
-                        break;
+                case "singleLineWhenShort":
+                    singleLineWhenShortTags = ReadStringSet(property.Key, property.Value);
+                    break;
 
-                    case "singleLineWhenShort":
-                        singleLineWhenShortTags = ReadStringSet(property);
-                        break;
+                case "neverSplitTagContent":
+                    neverSplitTagContent = ReadStringSet(property.Key, property.Value);
+                    break;
 
-                    case "neverSplitTagContent":
-                        neverSplitTagContent = ReadStringSet(property);
-                        break;
-
-                    case "tagPolicies":
-                        tagPolicies = ReadTagPolicies(property, tagPolicies);
-                        break;
-                }
+                case "tagPolicies":
+                    tagPolicies = ReadTagPolicies(property.Key, property.Value, tagPolicies);
+                    break;
             }
         }
 
@@ -148,83 +147,82 @@ public static class XmlDocConfigJsonReader
             tagPolicies);
     }
 
-    private static int ReadInt32(JsonProperty property)
+    private static int ReadInt32(string name, BoduJsonValue value)
     {
-        if (property.Value.ValueKind != JsonValueKind.Number || !property.Value.TryGetInt32(out var value))
+        if (!value.TryGetInt32(out var result))
         {
-            throw new XmlDocConfigException(string.Format(CultureInfo.CurrentCulture, XmlDocResourceStrings.Json_Invalid_PropertyInteger, property.Name));
+            throw new XmlDocConfigException(string.Format(CultureInfo.CurrentCulture, XmlDocResourceStrings.Json_Invalid_PropertyInteger, name));
         }
 
-        return value;
+        return result;
     }
 
-    private static string ReadString(JsonProperty property)
+    private static string ReadString(string name, BoduJsonValue value)
     {
-        if (property.Value.ValueKind != JsonValueKind.String)
+        if (value.Kind != BoduJsonValueKind.String)
         {
-            throw new XmlDocConfigException(string.Format(CultureInfo.CurrentCulture, XmlDocResourceStrings.Json_Invalid_PropertyString, property.Name));
+            throw new XmlDocConfigException(string.Format(CultureInfo.CurrentCulture, XmlDocResourceStrings.Json_Invalid_PropertyString, name));
         }
 
-        return property.Value.GetString() ?? string.Empty;
+        return value.StringValue ?? string.Empty;
     }
 
-    private static bool ReadBoolean(JsonProperty property)
+    private static bool ReadBoolean(string name, BoduJsonValue value)
     {
-        if (property.Value.ValueKind != JsonValueKind.True && property.Value.ValueKind != JsonValueKind.False)
+        if (value.Kind != BoduJsonValueKind.Boolean)
         {
-            throw new XmlDocConfigException(string.Format(CultureInfo.CurrentCulture, XmlDocResourceStrings.Json_Invalid_PropertyBoolean, property.Name));
+            throw new XmlDocConfigException(string.Format(CultureInfo.CurrentCulture, XmlDocResourceStrings.Json_Invalid_PropertyBoolean, name));
         }
 
-        return property.Value.GetBoolean();
+        return value.BooleanValue;
     }
 
-    private static ImmutableHashSet<string> ReadStringSet(JsonProperty property)
+    private static ImmutableHashSet<string> ReadStringSet(string name, BoduJsonValue value)
     {
-        if (property.Value.ValueKind != JsonValueKind.Array)
+        if (value.Kind != BoduJsonValueKind.Array || value.Items is null)
         {
-            throw new XmlDocConfigException(string.Format(CultureInfo.CurrentCulture, XmlDocResourceStrings.Json_Invalid_PropertyArrayOfStrings, property.Name));
+            throw new XmlDocConfigException(string.Format(CultureInfo.CurrentCulture, XmlDocResourceStrings.Json_Invalid_PropertyArrayOfStrings, name));
         }
 
         ImmutableHashSet<string>.Builder builder = ImmutableHashSet.CreateBuilder(StringComparer.Ordinal);
-        foreach (JsonElement element in property.Value.EnumerateArray())
+        foreach (BoduJsonValue element in value.Items)
         {
-            if (element.ValueKind != JsonValueKind.String)
+            if (element.Kind != BoduJsonValueKind.String)
             {
-                throw new XmlDocConfigException(string.Format(CultureInfo.CurrentCulture, XmlDocResourceStrings.Json_Invalid_PropertyArrayOfStrings, property.Name));
+                throw new XmlDocConfigException(string.Format(CultureInfo.CurrentCulture, XmlDocResourceStrings.Json_Invalid_PropertyArrayOfStrings, name));
             }
 
-            var value = element.GetString();
-            if (!string.IsNullOrEmpty(value))
+            var entry = element.StringValue;
+            if (!string.IsNullOrEmpty(entry))
             {
-                builder.Add(value!);
+                builder.Add(entry!);
             }
         }
 
         return builder.ToImmutable();
     }
 
-    private static ImmutableDictionary<string, XmlDocTagPolicy> ReadTagPolicies(JsonProperty property, ImmutableDictionary<string, XmlDocTagPolicy> defaults)
+    private static ImmutableDictionary<string, XmlDocTagPolicy> ReadTagPolicies(string name, BoduJsonValue value, ImmutableDictionary<string, XmlDocTagPolicy> defaults)
     {
-        if (property.Value.ValueKind != JsonValueKind.Object)
+        if (value.Kind != BoduJsonValueKind.Object || value.Members is null)
         {
-            throw new XmlDocConfigException(string.Format(CultureInfo.CurrentCulture, XmlDocResourceStrings.Json_Invalid_PropertyObject, property.Name));
+            throw new XmlDocConfigException(string.Format(CultureInfo.CurrentCulture, XmlDocResourceStrings.Json_Invalid_PropertyObject, name));
         }
 
-        var builder = defaults.ToBuilder();
-        foreach (JsonProperty tag in property.Value.EnumerateObject())
+        ImmutableDictionary<string, XmlDocTagPolicy>.Builder builder = defaults.ToBuilder();
+        foreach (KeyValuePair<string, BoduJsonValue> tag in value.Members)
         {
-            XmlDocTagPolicy policy = ReadTagPolicy(tag);
-            builder[tag.Name] = policy;
+            builder[tag.Key] = ReadTagPolicy(tag.Key, tag.Value);
         }
 
         return builder.ToImmutable();
     }
 
-    private static XmlDocTagPolicy ReadTagPolicy(JsonProperty property)
+    private static XmlDocTagPolicy ReadTagPolicy(string name, BoduJsonValue value)
     {
-        if (property.Value.ValueKind != JsonValueKind.Object)
+        if (value.Kind != BoduJsonValueKind.Object || value.Members is null)
         {
-            throw new XmlDocConfigException(string.Format(CultureInfo.CurrentCulture, XmlDocResourceStrings.Json_Invalid_TagPolicyObject, property.Name));
+            throw new XmlDocConfigException(string.Format(CultureInfo.CurrentCulture, XmlDocResourceStrings.Json_Invalid_TagPolicyObject, name));
         }
 
         XmlDocTagLayout layout = XmlDocTagLayout.Auto;
@@ -232,24 +230,24 @@ public static class XmlDocConfigJsonReader
         bool? allowLineBreakInside = null;
         bool? selfClosingTrailingSpace = null;
 
-        foreach (JsonProperty entry in property.Value.EnumerateObject())
+        foreach (KeyValuePair<string, BoduJsonValue> entry in value.Members)
         {
-            switch (entry.Name)
+            switch (entry.Key)
             {
                 case "layout":
-                    layout = ParseLayout(entry);
+                    layout = ParseLayout(entry.Key, entry.Value);
                     break;
 
                 case "maxSingleLineLength":
-                    maxSingleLineLength = ReadInt32(entry);
+                    maxSingleLineLength = ReadInt32(entry.Key, entry.Value);
                     break;
 
                 case "allowLineBreakInside":
-                    allowLineBreakInside = ReadBoolean(entry);
+                    allowLineBreakInside = ReadBoolean(entry.Key, entry.Value);
                     break;
 
                 case "selfClosingTrailingSpace":
-                    selfClosingTrailingSpace = ReadBoolean(entry);
+                    selfClosingTrailingSpace = ReadBoolean(entry.Key, entry.Value);
                     break;
             }
         }
@@ -257,9 +255,9 @@ public static class XmlDocConfigJsonReader
         return new XmlDocTagPolicy(layout, maxSingleLineLength, allowLineBreakInside, selfClosingTrailingSpace);
     }
 
-    private static XmlDocTagLayout ParseLayout(JsonProperty property)
+    private static XmlDocTagLayout ParseLayout(string name, BoduJsonValue value)
     {
-        var raw = ReadString(property);
+        var raw = ReadString(name, value);
         switch (raw)
         {
             case "auto":

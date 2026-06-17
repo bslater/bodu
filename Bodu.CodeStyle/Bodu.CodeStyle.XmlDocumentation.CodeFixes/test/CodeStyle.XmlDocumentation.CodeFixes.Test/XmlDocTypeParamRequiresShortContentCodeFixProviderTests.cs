@@ -111,5 +111,57 @@ public sealed class XmlDocTypeParamRequiresShortContentCodeFixProviderTests
         await test.RunAsync(TestContext.CancellationTokenSource.Token);
     }
 
+    /// <summary>
+    /// Verifies that Fix All over two long <c>&lt;typeparam&gt;</c> elements in the same doc comment with no
+    /// existing <c>&lt;remarks&gt;</c> produces a single synthesized <c>&lt;remarks&gt;</c> block containing
+    /// both relocated paragraphs in source order — not two competing or overlapping remarks insertions.
+    /// </summary>
+    [TestMethod]
+    public async Task CodeFix_WhenMultipleTypeParamsAndNoRemarks_FixAll_ShouldEmitSingleRemarksWithBothParas()
+    {
+        var source =
+            "/// <summary>Sample.</summary>\r\n" +
+            "/// <typeparam name=\"T\">The element type. Some additional explanatory prose for T that should be relocated to a remarks block.</typeparam>\r\n" +
+            "/// <typeparam name=\"U\">The other type. Some additional explanatory prose for U that should be relocated to a remarks block.</typeparam>\r\n" +
+            "public sealed class Sample<T, U>\r\n" +
+            "{\r\n" +
+            "    public int X { get; set; }\r\n" +
+            "}\r\n";
+
+        var expected =
+            "/// <summary>Sample.</summary>\r\n" +
+            "/// <typeparam name=\"T\">The element type.</typeparam>\r\n" +
+            "/// <typeparam name=\"U\">The other type.</typeparam>\r\n" +
+            "/// <remarks>\r\n" +
+            "/// <para>\r\n" +
+            "/// Some additional explanatory prose for T that should be relocated to a remarks block.\r\n" +
+            "/// </para>\r\n" +
+            "/// <para>\r\n" +
+            "/// Some additional explanatory prose for U that should be relocated to a remarks block.\r\n" +
+            "/// </para>\r\n" +
+            "/// </remarks>\r\n" +
+            "public sealed class Sample<T, U>\r\n" +
+            "{\r\n" +
+            "    public int X { get; set; }\r\n" +
+            "}\r\n";
+
+        var test =
+            new CSharpCodeFixTest<XmlDocTypeParamRequiresShortContentAnalyzer, XmlDocTypeParamRequiresShortContentCodeFixProvider, MSTestVerifier>
+            {
+                TestCode = source,
+                FixedCode = expected,
+                ReferenceAssemblies = ReferenceAssemblies.Net.Net80,
+            };
+
+        test.ExpectedDiagnostics.Add(
+            new DiagnosticResult(DiagnosticDescriptors.XmlDocTypeParamRequiresShortContent)
+                .WithSpan(2, 5, 2, 25));
+        test.ExpectedDiagnostics.Add(
+            new DiagnosticResult(DiagnosticDescriptors.XmlDocTypeParamRequiresShortContent)
+                .WithSpan(3, 5, 3, 25));
+
+        await test.RunAsync(TestContext.CancellationTokenSource.Token);
+    }
+
     public TestContext TestContext { get; set; } = null!;
 }

@@ -31,13 +31,21 @@ public static class XmlDocFormatPolicyDefaults
     /// <summary>
     /// Gets the default indent unit applied beneath block tags.
     /// </summary>
-    /// <returns>Four space characters.</returns>
-    public static string DefaultIndentText => "    ";
+    /// <returns>
+    /// The empty string. The canonical Bodu layout keeps nested block content flush with its enclosing tag, so
+    /// no per-level indentation is applied by default; set a non-empty indent to indent nested content.
+    /// </returns>
+    public static string DefaultIndentText => string.Empty;
 
     /// <summary>
     /// Gets the default set of block tag names.
     /// </summary>
     /// <returns>The ordinal immutable set of block tag names.</returns>
+    /// <remarks>
+    /// This set matches <see cref="DefaultForceMultilineTags" />: every default block tag is also forced
+    /// multiline. <c>term</c> is intentionally excluded so it flows inline within its enclosing
+    /// <c>&lt;item&gt;</c>, matching the canonical Bodu rendering.
+    /// </remarks>
     public static ImmutableHashSet<string> DefaultBlockTags { get; } = ImmutableHashSet.Create(
         StringComparer.Ordinal,
         "summary",
@@ -47,7 +55,6 @@ public static class XmlDocFormatPolicyDefaults
         "list",
         "item",
         "description",
-        "term",
         "code");
 
     /// <summary>
@@ -110,7 +117,7 @@ public static class XmlDocFormatPolicyDefaults
             indentText: DefaultIndentText,
             collapseProseWhitespace: true,
             preserveBlankLines: false,
-            preserveXmlTagAttributes: true,
+            preserveXmlTagAttributes: false,
             preserveCrefText: true,
             blockTags: DefaultBlockTags,
             inlineTags: DefaultInlineTags,
@@ -124,9 +131,13 @@ public static class XmlDocFormatPolicyDefaults
         ImmutableDictionary<string, XmlDocTagPolicy>.Builder builder =
             ImmutableDictionary.CreateBuilder<string, XmlDocTagPolicy>(StringComparer.Ordinal);
 
-        var multiline = new XmlDocTagPolicy(XmlDocTagLayout.MultilineBlock, null, allowLineBreakInside: true, selfClosingTrailingSpace: null);
-        var singleLine = new XmlDocTagPolicy(XmlDocTagLayout.SingleLineWhenShort, maxSingleLineLength: DefaultMaxLineLength, allowLineBreakInside: true, selfClosingTrailingSpace: null);
-        var inlineAtomic = new XmlDocTagPolicy(XmlDocTagLayout.InlineAtomic, null, allowLineBreakInside: false, selfClosingTrailingSpace: true);
+        // The default per-tag policies carry only supplementary metadata and leave Layout = Auto, so they defer
+        // to the convenience sets (ForceMultilineTags / SingleLineWhenShortTags / InlineTags / BlockTags) for the
+        // layout decision. This keeps the sets as the single shorthand source for the default profile; an
+        // explicit, non-Auto tagPolicies.layout in user configuration is what authoritatively overrides them.
+        var multiline = new XmlDocTagPolicy(XmlDocTagLayout.Auto, null, allowLineBreakInside: true, selfClosingTrailingSpace: null);
+        var singleLine = new XmlDocTagPolicy(XmlDocTagLayout.Auto, maxSingleLineLength: DefaultMaxLineLength, allowLineBreakInside: true, selfClosingTrailingSpace: null);
+        var inlineAtomic = new XmlDocTagPolicy(XmlDocTagLayout.Auto, null, allowLineBreakInside: false, selfClosingTrailingSpace: true);
 
         builder.Add("summary", multiline);
         builder.Add("remarks", multiline);

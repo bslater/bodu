@@ -35,9 +35,16 @@ namespace Bodu.CodeStyle.XmlDocumentation.CodeFixes;
 /// <para>
 /// When the source already contains a type-level <c>&lt;remarks&gt;</c> block, the new <c>&lt;para&gt;</c>
 /// is appended as the final paragraph so the original reading order is preserved. When no
-/// <c>&lt;remarks&gt;</c> exists, a fresh three-line block is synthesized immediately after the
+/// <c>&lt;remarks&gt;</c> exists, a fresh block is synthesized immediately after the last
 /// <c>&lt;typeparam&gt;</c> line, matching the canonical Bodu doc-tag ordering of summary → typeparam →
 /// remarks.
+/// </para>
+/// <para>
+/// Fix All is served by a dedicated <see cref="DocumentBasedFixAllProvider" /> that groups all diagnostics by
+/// their containing documentation comment and emits a single coherent transformation per comment — one
+/// <c>&lt;remarks&gt;</c> block carrying every relocated paragraph in source order. This avoids the
+/// overlapping / duplicate <c>&lt;remarks&gt;</c> insertions that a batch merge of independently-computed
+/// fixes would otherwise produce when a generic type declares several overflowing type parameters.
 /// </para>
 /// </remarks>
 [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(XmlDocTypeParamRequiresShortContentCodeFixProvider))]
@@ -48,16 +55,14 @@ public sealed class XmlDocTypeParamRequiresShortContentCodeFixProvider : CodeFix
 
     private const string MoveProseEquivalenceKey = "BoduMoveTypeParamProseToRemarks";
 
-    private const string DocCommentPrefix = "/// ";
-
-    private const string DocCommentPrefixNoSpace = "///";
+    private const string DefaultDocCommentPrefix = "/// ";
 
     /// <inheritdoc />
     public override ImmutableArray<string> FixableDiagnosticIds =>
         ImmutableArray.Create(DiagnosticIds.XmlDocTypeParamRequiresShortContent);
 
     /// <inheritdoc />
-    public override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
+    public override FixAllProvider GetFixAllProvider() => TypeParamFixAllProvider.Instance;
 
     /// <inheritdoc />
     public override async Task RegisterCodeFixesAsync(CodeFixContext context)
@@ -97,55 +102,78 @@ public sealed class XmlDocTypeParamRequiresShortContentCodeFixProvider : CodeFix
     {
         SourceText text = await document.GetTextAsync(cancellationToken).ConfigureAwait(false);
 
-        var content = GetContentText(typeParam);
-        var splitIndex = FindFirstSentenceBoundary(content);
-        if (splitIndex < 0) return document;
-
-        var firstSentence = content.Substring(0, splitIndex + 1);
-        var remainingRaw = content.Substring(splitIndex + 1);
-        var remaining = TrimRemainingProse(remainingRaw);
-        if (remaining.Length == 0) return document;
-
-        var startTagText = typeParam.StartTag.ToString();
-        var endTagText = typeParam.EndTag.ToString();
-        var newTypeParamText = startTagText + firstSentence + endTagText;
-
-        var lineEnding = DetectLineEnding(text);
-        var indent = ExtractLineIndent(text, typeParam.SpanStart);
-
         DocumentationCommentTriviaSyntax? docComment = typeParam.FirstAncestorOrSelf<DocumentationCommentTriviaSyntax>();
         if (docComment is null) return document;
 
-        XmlElementSyntax? remarks = FindRemarksElement(docComment);
+        var lineEnding = DetectLineEnding(text);
+        IReadOnlyList<TextChange> changes = BuildChangesForDocComment(
+            text, docComment, new[] { typeParam }, lineEnding);
+        if (changes.Count == 0) return document;
 
-        var changes = new List<TextChange>
+        SourceText updated = text.WithChanges(changes);
+        return document.WithText(updated);
+    }
+
+    // Computes the ordered, non-overlapping text changes that relocate the trailing prose of every supplied
+    // <typeparam> in a single documentation comment: each element is shortened to its first sentence in place,
+    // and the collected paragraphs are appended to the comment's existing <remarks> block — or, when none
+    // exists, wrapped in one fresh <remarks> block inserted after the last <typeparam> line.
+    private static IReadOnlyList<TextChange> BuildChangesForDocComment(
+        SourceText text,
+        DocumentationCommentTriviaSyntax docComment,
+        IReadOnlyList<XmlElementSyntax> typeParams,
+        string lineEnding)
+    {
+        var ordered = typeParams.OrderBy(e => e.SpanStart).ToList();
+        var changes = new List<TextChange>();
+        var paragraphs = new List<string>();
+
+        foreach (XmlElementSyntax typeParam in ordered)
         {
-            new TextChange(typeParam.Span, newTypeParamText),
-        };
+            // Operate on the canonical single-line content so the split point matches the analyzer's measure and
+            // the rewritten element (and relocated paragraph) are emitted as clean single lines.
+            var content = XmlDocProseText.Canonicalize(GetContentText(typeParam));
+            var splitIndex = XmlDocSentenceBoundary.FindFirstSentenceBoundary(content);
+            if (splitIndex < 0) continue;
 
+            var firstSentence = content.Substring(0, splitIndex + 1);
+            var remaining = TrimRemainingProse(content.Substring(splitIndex + 1));
+            if (remaining.Length == 0) continue;
+
+            var startTagText = XmlDocProseText.Canonicalize(typeParam.StartTag.ToString());
+            var endTagText = XmlDocProseText.Canonicalize(typeParam.EndTag.ToString());
+            var newTypeParamText = startTagText + firstSentence + endTagText;
+            changes.Add(new TextChange(typeParam.Span, newTypeParamText));
+            paragraphs.Add(remaining);
+        }
+
+        if (paragraphs.Count == 0) return changes;
+
+        var indent = ExtractLineIndent(text, ordered[0].SpanStart);
+        var prefix = DetectDocCommentPrefix(text, ordered[0].SpanStart);
+
+        XmlElementSyntax? remarks = FindRemarksElement(docComment);
         if (remarks is not null)
         {
-            // Append a new <para> as the final paragraph inside the existing <remarks> body. The insertion
-            // point is the start of the line carrying the </remarks> end tag — this keeps the indentation
-            // contract by re-using the indent + prefix already in the source.
+            // Append the new paragraphs as the final paragraphs inside the existing <remarks> body. The
+            // insertion point is the start of the line carrying the </remarks> end tag, which re-uses the
+            // indent + prefix already in the source.
             var endTagLineStart = FindLineStart(text, remarks.EndTag.SpanStart);
-            var insertion = BuildAppendedPara(indent, lineEnding, remaining);
+            var insertion = BuildParagraphs(indent, prefix, lineEnding, paragraphs);
             changes.Add(new TextChange(new TextSpan(endTagLineStart, 0), insertion));
         }
         else
         {
-            // No <remarks> present: insert a synthesized <remarks><para>…</para></remarks> immediately
-            // after the line carrying the LAST <typeparam>'s end tag — when a generic type declares several
-            // type parameters this keeps the canonical summary → typeparam(s) → remarks ordering AND lets
-            // subsequent fixes in a FixAll pass append their relocated paragraphs to one shared block.
-            XmlElementSyntax anchor = FindLastTypeParam(docComment) ?? typeParam;
+            // No <remarks> present: insert a single synthesized <remarks> block immediately after the line
+            // carrying the LAST <typeparam>'s end tag, so the canonical summary → typeparam(s) → remarks
+            // ordering is preserved and every relocated paragraph lands in one shared block.
+            XmlElementSyntax anchor = FindLastTypeParam(docComment) ?? ordered[ordered.Count - 1];
             var afterAnchorLineEnd = FindLineEndIncludingTerminator(text, anchor.Span.End);
-            var insertion = BuildNewRemarksBlock(indent, lineEnding, remaining);
+            var insertion = BuildRemarksBlock(indent, prefix, lineEnding, paragraphs);
             changes.Add(new TextChange(new TextSpan(afterAnchorLineEnd, 0), insertion));
         }
 
-        SourceText updated = text.WithChanges(changes);
-        return document.WithText(updated);
+        return changes;
     }
 
     private static XmlElementSyntax? FindRemarksElement(DocumentationCommentTriviaSyntax docComment)
@@ -177,22 +205,6 @@ public sealed class XmlDocTypeParamRequiresShortContentCodeFixProvider : CodeFix
         return sb.ToString();
     }
 
-    private static int FindFirstSentenceBoundary(string content)
-    {
-        for (var i = 0; i < content.Length - 1; i++)
-        {
-            if (content[i] != '.') continue;
-
-            var next = content[i + 1];
-            if (next == ' ' || next == '\t')
-            {
-                return i;
-            }
-        }
-
-        return -1;
-    }
-
     private static string TrimRemainingProse(string remaining)
     {
         var start = 0;
@@ -213,24 +225,35 @@ public sealed class XmlDocTypeParamRequiresShortContentCodeFixProvider : CodeFix
     private static bool IsTrailingTrim(char ch) =>
         ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n';
 
-    private static string BuildAppendedPara(string indent, string lineEnding, string proseText)
+    private static string BuildParagraphs(string indent, string prefix, string lineEnding, IReadOnlyList<string> paragraphs)
     {
         var sb = new StringBuilder();
-        sb.Append(indent).Append(DocCommentPrefix).Append("<para>").Append(lineEnding);
-        sb.Append(indent).Append(DocCommentPrefix).Append(proseText).Append(lineEnding);
-        sb.Append(indent).Append(DocCommentPrefix).Append("</para>").Append(lineEnding);
+        foreach (var prose in paragraphs)
+        {
+            AppendParagraph(sb, indent, prefix, lineEnding, prose);
+        }
+
         return sb.ToString();
     }
 
-    private static string BuildNewRemarksBlock(string indent, string lineEnding, string proseText)
+    private static string BuildRemarksBlock(string indent, string prefix, string lineEnding, IReadOnlyList<string> paragraphs)
     {
         var sb = new StringBuilder();
-        sb.Append(indent).Append(DocCommentPrefix).Append("<remarks>").Append(lineEnding);
-        sb.Append(indent).Append(DocCommentPrefix).Append("<para>").Append(lineEnding);
-        sb.Append(indent).Append(DocCommentPrefix).Append(proseText).Append(lineEnding);
-        sb.Append(indent).Append(DocCommentPrefix).Append("</para>").Append(lineEnding);
-        sb.Append(indent).Append(DocCommentPrefix).Append("</remarks>").Append(lineEnding);
+        sb.Append(indent).Append(prefix).Append("<remarks>").Append(lineEnding);
+        foreach (var prose in paragraphs)
+        {
+            AppendParagraph(sb, indent, prefix, lineEnding, prose);
+        }
+
+        sb.Append(indent).Append(prefix).Append("</remarks>").Append(lineEnding);
         return sb.ToString();
+    }
+
+    private static void AppendParagraph(StringBuilder sb, string indent, string prefix, string lineEnding, string prose)
+    {
+        sb.Append(indent).Append(prefix).Append("<para>").Append(lineEnding);
+        sb.Append(indent).Append(prefix).Append(prose).Append(lineEnding);
+        sb.Append(indent).Append(prefix).Append("</para>").Append(lineEnding);
     }
 
     private static string DetectLineEnding(SourceText text)
@@ -251,6 +274,25 @@ public sealed class XmlDocTypeParamRequiresShortContentCodeFixProvider : CodeFix
         }
 
         return "\r\n";
+    }
+
+    // Recovers the documentation-comment prefix actually used on the line at `position` — the "///" run plus a
+    // single following space when present — so synthesized blocks match the source style instead of assuming a
+    // hardcoded "/// ". Falls back to the canonical Bodu prefix when no "///" is found.
+    private static string DetectDocCommentPrefix(SourceText text, int position)
+    {
+        var lineStart = FindLineStart(text, position);
+        var i = lineStart;
+        while (i < text.Length && (text[i] == ' ' || text[i] == '\t')) i++;
+
+        if (i + 2 < text.Length && text[i] == '/' && text[i + 1] == '/' && text[i + 2] == '/')
+        {
+            var end = i + 3;
+            if (end < text.Length && text[end] == ' ') end++;
+            return text.ToString(TextSpan.FromBounds(i, end));
+        }
+
+        return DefaultDocCommentPrefix;
     }
 
     private static string ExtractLineIndent(SourceText text, int position)
@@ -299,5 +341,62 @@ public sealed class XmlDocTypeParamRequiresShortContentCodeFixProvider : CodeFix
         }
 
         return index;
+    }
+
+    /// <summary>
+    /// Provides a <see cref="DocumentBasedFixAllProvider" /> that applies <c>BODU1406</c> fixes one
+    /// documentation comment at a time, coalescing every relocated paragraph into a single
+    /// <c>&lt;remarks&gt;</c> block so concurrently-computed fixes never produce overlapping or duplicate
+    /// insertions.
+    /// </summary>
+    private sealed class TypeParamFixAllProvider : DocumentBasedFixAllProvider
+    {
+        public static TypeParamFixAllProvider Instance { get; } = new TypeParamFixAllProvider();
+
+        protected override async Task<Document?> FixAllAsync(
+            FixAllContext fixAllContext,
+            Document document,
+            ImmutableArray<Diagnostic> diagnostics)
+        {
+            if (diagnostics.IsDefaultOrEmpty) return document;
+
+            SyntaxNode? root = await document.GetSyntaxRootAsync(fixAllContext.CancellationToken).ConfigureAwait(false);
+            if (root is null) return document;
+
+            SourceText text = await document.GetTextAsync(fixAllContext.CancellationToken).ConfigureAwait(false);
+            var lineEnding = DetectLineEnding(text);
+
+            // Resolve each diagnostic to its <typeparam> element and group by the containing documentation
+            // comment, so each comment receives exactly one coherent transformation.
+            var groups = new Dictionary<DocumentationCommentTriviaSyntax, List<XmlElementSyntax>>();
+            foreach (Diagnostic diagnostic in diagnostics)
+            {
+                SyntaxNode? node = root.FindNode(diagnostic.Location.SourceSpan, findInsideTrivia: true, getInnermostNodeForTie: true);
+                XmlElementSyntax? element = ResolveTypeParamElement(node);
+                DocumentationCommentTriviaSyntax? docComment = element?.FirstAncestorOrSelf<DocumentationCommentTriviaSyntax>();
+                if (element is null || docComment is null) continue;
+
+                if (!groups.TryGetValue(docComment, out List<XmlElementSyntax>? elements))
+                {
+                    elements = new List<XmlElementSyntax>();
+                    groups.Add(docComment, elements);
+                }
+
+                elements.Add(element);
+            }
+
+            if (groups.Count == 0) return document;
+
+            var allChanges = new List<TextChange>();
+            foreach (KeyValuePair<DocumentationCommentTriviaSyntax, List<XmlElementSyntax>> group in groups)
+            {
+                allChanges.AddRange(BuildChangesForDocComment(text, group.Key, group.Value, lineEnding));
+            }
+
+            if (allChanges.Count == 0) return document;
+
+            SourceText updated = text.WithChanges(allChanges);
+            return document.WithText(updated);
+        }
     }
 }

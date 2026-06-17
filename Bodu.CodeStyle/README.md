@@ -19,7 +19,7 @@ organised, so suppressing or re-targeting a family in `.editorconfig` stays stra
 
 | Range | Family | Status |
 |---|---|---|
-| `BODU0xxx` | Reserved — analyzer infrastructure (config errors, internal diagnostics) | reserved |
+| `BODU0xxx` | Analyzer infrastructure (config errors, internal diagnostics) | shipping (`BODU0001`) |
 | `BODU1xxx` | **XML documentation** | shipping |
 | `BODU2xxx` | Member ordering | deferred |
 | `BODU3xxx` | Naming conventions | deferred |
@@ -57,6 +57,19 @@ XML-doc family in one line.
 | `BODU1018` | `<typeparamref>` | inline atomic |
 | `BODU1040` | _(none — cross-cutting)_ | prose / prefix / indent changes outside any tag |
 
+#### BODU14xx — content quality (shipping)
+
+These rules go beyond formatting and assert documentation *content*. Each is enabled by default at warning
+severity and ships with a code fix.
+
+| ID | Tag | Rule | Fix |
+|---|---|---|---|
+| `BODU1405` | `<code>` | A `<code>` element must begin with a `<![CDATA[…]]>` section flush against the `///` prefix, so language samples and XML-significant characters render verbatim. | Wraps the body in `<![CDATA[…]]>` (or removes the stray space before an existing opener). |
+| `BODU1406` | `<typeparam>` | A `<typeparam>` element must fit on a single line; explanatory prose beyond a concise statement is relocated. | **Content rewrite** — shortens the element to its first sentence and moves the trailing prose into a `<para>` in the type's `<remarks>`. Fires only when there is an unambiguous sentence boundary. |
+
+> `BODU1406` moves prose between documentation sections, so it changes rendered output rather than only
+> reformatting. Its Fix All coalesces every relocated paragraph for a doc comment into one `<remarks>` block.
+
 Reserved future ranges within BODU1xxx:
 
 | Range | Purpose |
@@ -66,13 +79,24 @@ Reserved future ranges within BODU1xxx:
 | `BODU1100` – `BODU1199` | Required tags (e.g. missing `<summary>` on a public method). |
 | `BODU1200` – `BODU1299` | Tag / element ordering inside doc comments. |
 | `BODU1300` – `BODU1399` | `cref` / `paramref` / `typeparamref` reference validity. |
-| `BODU1400` – `BODU1499` | Content quality (empty tags, redundant prose). |
+| `BODU1400` – `BODU1404`, `BODU1407` – `BODU1499` | Reserved for further content-quality rules (empty tags, redundant prose). |
+
+### BODU0xxx — analyzer infrastructure
+
+| ID | Severity | Purpose |
+|---|---|---|
+| `BODU0001` | warning | Reported when a `bodu.xmldocstyle.json` configuration file is present but invalid. The formatting analyzers fall back to the built-in defaults; this diagnostic makes the misconfiguration visible instead of silent. Category `BoduCodeStyle`. |
+
+`BODU0002` – `BODU0099` remain reserved for further infrastructure diagnostics (unknown JSON property in strict
+mode, invalid `.editorconfig` value, dependency/load failure).
 
 ## Formatting policy
 
 Defaults match the Bodu codebase conventions:
 
 - `<summary>`, `<remarks>`, `<para>`, `<example>`, and `<list>` are block tags that emit on their own lines.
+- On a **field** declaration, `<summary>` instead stays on a single line unless its content exceeds the width
+  budget, matching how Bodu documents simple field values; on all other member kinds `<summary>` is block.
 - `<param>`, `<typeparam>`, `<returns>`, `<exception>`, and `<value>` stay single-line when short enough.
 - `<c>`, `<see>`, `<paramref>`, and `<typeparamref>` are inline atomic tokens and are never split across lines.
 - Lines wrap at `120` characters by default, breaking only between tokens.
@@ -85,8 +109,21 @@ The analyzer reads policy from three layers, applied in order:
 
 1. **Defaults in code** — `XmlDocFormatPolicyDefaults.CreateBoduDefaults()`.
 2. **JSON additional file** — `bodu.xmldocstyle.json` added as `<AdditionalFiles>` in the consumer csproj. The
-   JSON shape mirrors `XmlDocFormatOptions` (`maxLineLength`, `documentationPrefix`, `blockTags`, `inlineTags`,
-   `forceMultilineTags`, `singleLineWhenShort`, `neverSplitTagContent`, `tagPolicies`).
+   JSON shape mirrors `XmlDocFormatOptions`. Every property is honored by the formatter:
+   - `maxLineLength`, `documentationPrefix`, `indentText` — physical layout (line width, line prefix, and the
+     per-level indent applied to nested block content; the default `indentText` is empty, i.e. flush).
+   - `blockTags`, `inlineTags`, `forceMultilineTags`, `singleLineWhenShort`, `neverSplitTagContent`,
+     `tagPolicies` — tag layout. A non-`auto` `tagPolicies.<tag>.layout` is authoritative and overrides the
+     convenience sets; otherwise layout is resolved from `forceMultilineTags` → `singleLineWhenShort` →
+     `inlineTags` → `blockTags`. `neverSplitTagContent` (and a per-tag `allowLineBreakInside: false`) keeps an
+     over-budget single-line tag intact rather than expanding it.
+   - `collapseProseWhitespace`, `preserveBlankLines`, `preserveXmlTagAttributes`, `preserveCrefText` —
+     normalization toggles. `collapseProseWhitespace` (default `true`) collapses runs of prose whitespace to a
+     single space; `preserveBlankLines` (default `false`) keeps authored blank lines; `preserveXmlTagAttributes`
+     (default `false`) preserves a tag's authored layout verbatim — including line breaks across a multi-line
+     tag — instead of reflowing it onto one line; `preserveCrefText` (default `true`) keeps whitespace inside
+     attribute values when a tag is reflowed (it has no effect when `preserveXmlTagAttributes` already preserves
+     the tag verbatim).
 3. **`.editorconfig` scalar overrides** — keys such as `bodu_xmldoc_max_line_length`, plus the standard
    `dotnet_diagnostic.BODU####.severity` per individual rule and `end_of_line`. To silence or re-target the
    whole XML-doc family at once, use

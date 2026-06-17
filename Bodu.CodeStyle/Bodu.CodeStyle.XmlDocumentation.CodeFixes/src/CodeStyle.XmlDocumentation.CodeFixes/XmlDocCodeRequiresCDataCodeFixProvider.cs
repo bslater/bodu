@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Composition;
 using System.Text;
@@ -42,6 +43,10 @@ public sealed class XmlDocCodeRequiresCDataCodeFixProvider : CodeFixProvider
     private const string RemoveSpaceEquivalenceKey = "BoduRemoveSpaceBeforeXmlDocCData";
 
     private const string WrapEquivalenceKey = "BoduWrapXmlDocCodeBodyInCData";
+
+    private const string DocCommentPrefix = "/// ";
+
+    private const string DocCommentPrefixNoSpace = "///";
 
     /// <inheritdoc />
     public override ImmutableArray<string> FixableDiagnosticIds =>
@@ -142,27 +147,74 @@ public sealed class XmlDocCodeRequiresCDataCodeFixProvider : CodeFixProvider
         var indent = ExtractDocCommentIndent(text, element.StartTag.SpanStart);
 
         var existing = text.ToString(TextSpan.FromBounds(bodyStart, bodyEnd));
-        var trimmed = TrimBody(existing);
+        IReadOnlyList<string> bodyLines = ExtractLogicalBodyLines(existing);
 
         // Compose the multi-line CDATA replacement: opener and closer each on their own line flush
-        // against `///`, body content between them with the standard `/// ` prefix on its first line
-        // (continuation lines inside the body retain whatever prefix the original source had).
+        // against `///`. Every logical body line is re-emitted under the standard `/// ` prefix, so the
+        // physical doc-comment prefixes that introduced each source line are never embedded into — nor
+        // duplicated within — the CDATA content. Blank body lines collapse to a bare `///` with no
+        // trailing whitespace.
         var sb = new StringBuilder();
         sb.Append(lineEnding);
         sb.Append(indent).Append("///<![CDATA[");
         sb.Append(lineEnding);
-        if (trimmed.Length > 0)
+        foreach (var line in bodyLines)
         {
-            sb.Append(indent).Append("/// ").Append(trimmed);
+            sb.Append(line.Length == 0 ? indent + DocCommentPrefixNoSpace : indent + DocCommentPrefix + line);
             sb.Append(lineEnding);
         }
 
         sb.Append(indent).Append("///]]>");
         sb.Append(lineEnding);
-        sb.Append(indent).Append("/// ");
+        sb.Append(indent).Append(DocCommentPrefix);
 
         SourceText updated = text.WithChanges(new TextChange(TextSpan.FromBounds(bodyStart, bodyEnd), sb.ToString()));
         return document.WithText(updated);
+    }
+
+    private static IReadOnlyList<string> ExtractLogicalBodyLines(string body)
+    {
+        // Split the raw inter-tag body into physical lines, strip each line's leading indentation, its
+        // `///` doc-comment prefix, and one following space to recover the logical code content, then drop
+        // any leading or trailing blank lines so the CDATA wrapper alone controls the surrounding layout.
+        var stripped = new List<string>();
+        var start = 0;
+        for (var i = 0; i <= body.Length; i++)
+        {
+            if (i < body.Length && body[i] != '\n' && body[i] != '\r') continue;
+
+            stripped.Add(StripDocCommentPrefix(body.Substring(start, i - start)));
+            if (i < body.Length && body[i] == '\r' && i + 1 < body.Length && body[i + 1] == '\n') i++;
+            start = i + 1;
+        }
+
+        var first = 0;
+        while (first < stripped.Count && stripped[first].Length == 0) first++;
+        var last = stripped.Count - 1;
+        while (last >= first && stripped[last].Length == 0) last--;
+
+        var result = new List<string>();
+        for (var k = first; k <= last; k++)
+        {
+            result.Add(stripped[k]);
+        }
+
+        return result;
+    }
+
+    private static string StripDocCommentPrefix(string physicalLine)
+    {
+        var i = 0;
+        while (i < physicalLine.Length && (physicalLine[i] == ' ' || physicalLine[i] == '\t')) i++;
+
+        // Strip a single `///` prefix when present, plus one following space (the standard `/// ` form).
+        if (i + 2 < physicalLine.Length && physicalLine[i] == '/' && physicalLine[i + 1] == '/' && physicalLine[i + 2] == '/')
+        {
+            i += 3;
+            if (i < physicalLine.Length && physicalLine[i] == ' ') i++;
+        }
+
+        return physicalLine.Substring(i).TrimEnd();
     }
 
     private static string DetectLineEnding(SourceText text)
@@ -204,19 +256,4 @@ public sealed class XmlDocCodeRequiresCDataCodeFixProvider : CodeFixProvider
 
         return text.ToString(TextSpan.FromBounds(lineStart, end));
     }
-
-    private static string TrimBody(string body)
-    {
-        // Trim leading/trailing whitespace including newlines so the replacement controls line breaks
-        // around the CDATA wrapper. Internal whitespace and continuation-line `///` prefixes are
-        // preserved verbatim because they belong to the body content.
-        var start = 0;
-        while (start < body.Length && IsWhitespace(body[start])) start++;
-        var end = body.Length;
-        while (end > start && IsWhitespace(body[end - 1])) end--;
-        return body.Substring(start, end - start);
-    }
-
-    private static bool IsWhitespace(char ch) =>
-        ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n';
 }

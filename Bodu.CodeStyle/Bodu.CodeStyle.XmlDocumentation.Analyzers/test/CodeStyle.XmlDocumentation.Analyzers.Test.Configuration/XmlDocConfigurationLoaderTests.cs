@@ -61,6 +61,51 @@ public sealed class XmlDocConfigurationLoaderTests
     }
 
     /// <summary>
+    /// Verifies that malformed JSON is surfaced as a configuration error so the analyzer can report it,
+    /// rather than being swallowed silently.
+    /// </summary>
+    [TestMethod]
+    public void CollectConfigurationErrors_WhenJsonIsMalformed_ShouldReturnError()
+    {
+        var additional = ImmutableArray.Create<AdditionalText>(
+            new FakeAdditionalText("/repo/bodu.xmldocstyle.json", "{not valid"));
+
+        ImmutableArray<XmlDocConfigurationError> errors =
+            XmlDocConfigurationLoader.CollectConfigurationErrors(additional, CancellationToken.None);
+
+        Assert.AreEqual(1, errors.Length);
+        Assert.AreEqual("/repo/bodu.xmldocstyle.json", errors[0].Location.GetLineSpan().Path);
+        Assert.IsFalse(string.IsNullOrWhiteSpace(errors[0].Message));
+    }
+
+    /// <summary>
+    /// Verifies that a valid configuration file produces no configuration errors.
+    /// </summary>
+    [TestMethod]
+    public void CollectConfigurationErrors_WhenJsonIsValid_ShouldReturnNoErrors()
+    {
+        var additional = ImmutableArray.Create<AdditionalText>(
+            new FakeAdditionalText("/repo/bodu.xmldocstyle.json", "{\"maxLineLength\":80}"));
+
+        ImmutableArray<XmlDocConfigurationError> errors =
+            XmlDocConfigurationLoader.CollectConfigurationErrors(additional, CancellationToken.None);
+
+        Assert.AreEqual(0, errors.Length);
+    }
+
+    /// <summary>
+    /// Verifies that no configuration error is produced when no configuration file is present.
+    /// </summary>
+    [TestMethod]
+    public void CollectConfigurationErrors_WhenNoConfigFile_ShouldReturnNoErrors()
+    {
+        ImmutableArray<XmlDocConfigurationError> errors =
+            XmlDocConfigurationLoader.CollectConfigurationErrors([], CancellationToken.None);
+
+        Assert.AreEqual(0, errors.Length);
+    }
+
+    /// <summary>
     /// Verifies that additional files with unrelated names are ignored.
     /// </summary>
     [TestMethod]
@@ -110,6 +155,78 @@ public sealed class XmlDocConfigurationLoaderTests
     }
 
     /// <summary>
+    /// Verifies that the <c>bodu_xmldoc_indent_size</c> override sets <see cref="XmlDocFormatOptions.IndentText" />
+    /// to that many spaces.
+    /// </summary>
+    [TestMethod]
+    public void ApplyEditorConfigOverrides_WhenIndentSizeSet_ShouldSetIndentText()
+    {
+        XmlDocFormatOptions defaults = XmlDocFormatPolicyDefaults.CreateBoduDefaults();
+        var config = new FakeAnalyzerConfigOptions(new Dictionary<string, string>
+        {
+            ["bodu_xmldoc_indent_size"] = "2",
+        });
+
+        XmlDocFormatOptions result = XmlDocConfigurationLoader.ApplyEditorConfigOverrides(defaults, config);
+
+        Assert.AreEqual("  ", result.IndentText);
+    }
+
+    /// <summary>
+    /// Verifies that <c>bodu_xmldoc_force_summary_multiline = false</c> removes <c>summary</c> from the
+    /// force-multiline set.
+    /// </summary>
+    [TestMethod]
+    public void ApplyEditorConfigOverrides_WhenForceSummaryMultilineFalse_ShouldRemoveSummary()
+    {
+        XmlDocFormatOptions defaults = XmlDocFormatPolicyDefaults.CreateBoduDefaults();
+        var config = new FakeAnalyzerConfigOptions(new Dictionary<string, string>
+        {
+            ["bodu_xmldoc_force_summary_multiline"] = "false",
+        });
+
+        XmlDocFormatOptions result = XmlDocConfigurationLoader.ApplyEditorConfigOverrides(defaults, config);
+
+        Assert.IsFalse(result.ForceMultilineTags.Contains("summary"));
+    }
+
+    /// <summary>
+    /// Verifies that <c>bodu_xmldoc_force_para_multiline = false</c> removes <c>para</c> from the force-multiline
+    /// set.
+    /// </summary>
+    [TestMethod]
+    public void ApplyEditorConfigOverrides_WhenForceParaMultilineFalse_ShouldRemovePara()
+    {
+        XmlDocFormatOptions defaults = XmlDocFormatPolicyDefaults.CreateBoduDefaults();
+        var config = new FakeAnalyzerConfigOptions(new Dictionary<string, string>
+        {
+            ["bodu_xmldoc_force_para_multiline"] = "false",
+        });
+
+        XmlDocFormatOptions result = XmlDocConfigurationLoader.ApplyEditorConfigOverrides(defaults, config);
+
+        Assert.IsFalse(result.ForceMultilineTags.Contains("para"));
+    }
+
+    /// <summary>
+    /// Verifies that <c>bodu_xmldoc_preserve_inline_tags = false</c> clears the inline-atomic tag set so inline
+    /// elements may wrap.
+    /// </summary>
+    [TestMethod]
+    public void ApplyEditorConfigOverrides_WhenPreserveInlineTagsFalse_ShouldClearInlineTags()
+    {
+        XmlDocFormatOptions defaults = XmlDocFormatPolicyDefaults.CreateBoduDefaults();
+        var config = new FakeAnalyzerConfigOptions(new Dictionary<string, string>
+        {
+            ["bodu_xmldoc_preserve_inline_tags"] = "false",
+        });
+
+        XmlDocFormatOptions result = XmlDocConfigurationLoader.ApplyEditorConfigOverrides(defaults, config);
+
+        Assert.AreEqual(0, result.InlineTags.Count);
+    }
+
+    /// <summary>
     /// Verifies that the resolved line ending defaults to CRLF when not specified.
     /// </summary>
     [TestMethod]
@@ -152,6 +269,49 @@ public sealed class XmlDocConfigurationLoaderTests
         var result = XmlDocConfigurationLoader.ResolveLineEnding(config);
 
         Assert.AreEqual("\r\n", result);
+    }
+
+    /// <summary>
+    /// Verifies that, with no <c>end_of_line</c> key, the line ending is inferred from the file's first newline
+    /// — an LF file resolves to LF rather than the CRLF default.
+    /// </summary>
+    [TestMethod]
+    public void ResolveLineEnding_WhenNotSpecifiedButFileIsLf_ShouldReturnLf()
+    {
+        var config = new FakeAnalyzerConfigOptions(new Dictionary<string, string>());
+
+        var result = XmlDocConfigurationLoader.ResolveLineEnding(config, SourceText.From("line one\nline two\n"));
+
+        Assert.AreEqual("\n", result);
+    }
+
+    /// <summary>
+    /// Verifies that, with no <c>end_of_line</c> key, a CRLF file is inferred as CRLF.
+    /// </summary>
+    [TestMethod]
+    public void ResolveLineEnding_WhenNotSpecifiedButFileIsCrlf_ShouldReturnCrlf()
+    {
+        var config = new FakeAnalyzerConfigOptions(new Dictionary<string, string>());
+
+        var result = XmlDocConfigurationLoader.ResolveLineEnding(config, SourceText.From("line one\r\nline two\r\n"));
+
+        Assert.AreEqual("\r\n", result);
+    }
+
+    /// <summary>
+    /// Verifies that an explicit <c>end_of_line</c> key wins over the file's observed newline style.
+    /// </summary>
+    [TestMethod]
+    public void ResolveLineEnding_WhenEditorConfigSpecifiedAndFileDiffers_ShouldHonourEditorConfig()
+    {
+        var config = new FakeAnalyzerConfigOptions(new Dictionary<string, string>
+        {
+            ["end_of_line"] = "lf",
+        });
+
+        var result = XmlDocConfigurationLoader.ResolveLineEnding(config, SourceText.From("line one\r\nline two\r\n"));
+
+        Assert.AreEqual("\n", result);
     }
 
     private sealed class FakeAdditionalText : AdditionalText

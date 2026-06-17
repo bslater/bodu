@@ -57,6 +57,13 @@ public sealed class XmlDocFormatCodeFixProvider : CodeFixProvider
             DiagnosticIds.XmlDocCrossCutting);
 
     /// <inheritdoc />
+    /// <remarks>
+    /// The formatting analyzer reports one diagnostic per changed tag, so a single documentation comment can
+    /// carry several diagnostics at the same trivia. Each of those diagnostics, however, carries the identical
+    /// whole-comment replacement (the canonical formatted text), so the batch fixer's merge collapses them to
+    /// one edit — there is no overlapping or conflicting replacement. The
+    /// <c>CodeFix_WhenTwoTagsMisformattedInOneComment_FixAll_ShouldReformatOnce</c> test guards this.
+    /// </remarks>
     public override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
 
     /// <inheritdoc />

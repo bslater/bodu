@@ -25,7 +25,23 @@ internal static class DiagnosticDescriptors
 {
     private const string Category = "Documentation";
 
+    private const string ConfigurationCategory = "BoduCodeStyle";
+
     private const string HelpLinkBase = "https://github.com/bodu/bodu/blob/master/Bodu.CodeStyle/README.md";
+
+    /// <summary>
+    /// Gets the descriptor for <c>BODU0001</c> — a <c>bodu.xmldocstyle.json</c> configuration file is invalid
+    /// and was ignored.
+    /// </summary>
+    public static DiagnosticDescriptor XmlDocConfigInvalid { get; } = new DiagnosticDescriptor(
+        id: DiagnosticIds.XmlDocConfigInvalid,
+        title: "Bodu XML documentation configuration file is invalid",
+        messageFormat: "bodu.xmldocstyle.json is invalid and was ignored; defaults are in effect: {0}",
+        category: ConfigurationCategory,
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true,
+        description: "Reports that a bodu.xmldocstyle.json configuration file could not be parsed or applied, so the analyzer fell back to the built-in defaults. Fix the file so the intended policy takes effect.",
+        helpLinkUri: HelpLinkBase + "#bodu0001");
 
     /// <summary>Gets the descriptor for <c>BODU1001</c> — <c>&lt;summary&gt;</c> formatting differs from policy.</summary>
     public static DiagnosticDescriptor XmlDocSummary { get; } = CreateTagDescriptor(DiagnosticIds.XmlDocSummary, "summary");
@@ -125,7 +141,34 @@ internal static class DiagnosticDescriptors
         description: "Requires <typeparam> documentation elements to fit on a single line within the comment width. Explanatory prose beyond a concise statement of the type parameter is relocated into a <para> block inside the type-level <remarks>.",
         helpLinkUri: HelpLinkBase + "#bodu1406");
 
-    /// <summary>Gets the immutable collection of every descriptor surfaced by this analyzer.</summary>
+    /// <summary>
+    /// Gets the descriptors emitted by <see cref="XmlDocFormatAnalyzer" /> — the per-tag formatting diagnostics
+    /// (<c>BODU1001</c>–<c>BODU1018</c>) plus the cross-cutting <c>BODU1040</c>. This is the set the formatting
+    /// analyzer advertises; the content-quality (<c>BODU1405</c>/<c>BODU1406</c>) and configuration
+    /// (<c>BODU0001</c>) diagnostics are owned by their own analyzers.
+    /// </summary>
+    public static ImmutableArray<DiagnosticDescriptor> FormattingDescriptors { get; } = ImmutableArray.Create(
+        XmlDocSummary,
+        XmlDocRemarks,
+        XmlDocPara,
+        XmlDocExample,
+        XmlDocCode,
+        XmlDocList,
+        XmlDocItem,
+        XmlDocDescription,
+        XmlDocTerm,
+        XmlDocParam,
+        XmlDocTypeParam,
+        XmlDocReturns,
+        XmlDocException,
+        XmlDocValue,
+        XmlDocInlineCode,
+        XmlDocSee,
+        XmlDocParamRef,
+        XmlDocTypeParamRef,
+        XmlDocCrossCutting);
+
+    /// <summary>Gets the immutable collection of every descriptor surfaced by this analyzer package. Intended for documentation and tests, not for an individual analyzer's <c>SupportedDiagnostics</c>.</summary>
     public static ImmutableArray<DiagnosticDescriptor> All { get; } = ImmutableArray.Create(
         XmlDocSummary,
         XmlDocRemarks,

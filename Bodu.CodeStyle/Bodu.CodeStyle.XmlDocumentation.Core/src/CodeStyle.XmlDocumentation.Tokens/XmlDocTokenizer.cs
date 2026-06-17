@@ -29,11 +29,13 @@ internal static class XmlDocTokenizer
     /// </summary>
     /// <param name="content">The doc-comment content with the <c>"/// "</c> prefix already stripped from each line.</param>
     /// <param name="inlineTags">The set of element names treated as inline atomic tokens.</param>
+    /// <param name="preserveTagAttributes">When <see langword="true" />, inter-attribute spacing in a reflowed tag is preserved rather than collapsed.</param>
+    /// <param name="preserveCrefText">When <see langword="true" />, whitespace inside attribute values is preserved rather than collapsed.</param>
     /// <returns>The ordered list of tokens produced from the input.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="content" /> or <paramref name="inlineTags" /> is <see langword="null" />.
     /// </exception>
-    public static ImmutableArray<XmlDocToken> Tokenize(string content, ImmutableHashSet<string> inlineTags)
+    public static ImmutableArray<XmlDocToken> Tokenize(string content, ImmutableHashSet<string> inlineTags, bool preserveTagAttributes = false, bool preserveCrefText = true)
     {
         if (content is null) throw new ArgumentNullException(nameof(content));
         if (inlineTags is null) throw new ArgumentNullException(nameof(inlineTags));
@@ -90,7 +92,7 @@ internal static class XmlDocTokenizer
                     continue;
                 }
 
-                if (TryReadTag(content, position, inlineTags, out var tagEnd, out XmlDocToken? tagToken))
+                if (TryReadTag(content, position, inlineTags, preserveTagAttributes, preserveCrefText, out var tagEnd, out XmlDocToken? tagToken))
                 {
                     builder.Add(tagToken!);
                     position = tagEnd;
@@ -182,7 +184,7 @@ internal static class XmlDocTokenizer
         return true;
     }
 
-    private static bool TryReadTag(string content, int start, ImmutableHashSet<string> inlineTags, out int end, out XmlDocToken? token)
+    private static bool TryReadTag(string content, int start, ImmutableHashSet<string> inlineTags, bool preserveTagAttributes, bool preserveCrefText, out int end, out XmlDocToken? token)
     {
         // Parse: < [/] name [attrs ...] [ /] >
         var position = start;
@@ -207,8 +209,11 @@ internal static class XmlDocTokenizer
             position++;
         }
 
-        if (position == nameStart)
+        if (position == nameStart || !IsNameStartChar(content[nameStart]))
         {
+            // Either no name characters, or the name begins with a character that is not a valid XML
+            // NameStartChar (a digit, '-', or '.'). Defer the '<' to the text-run path so the malformed
+            // construct is preserved verbatim.
             end = 0;
             token = null;
             return false;
@@ -268,7 +273,7 @@ internal static class XmlDocTokenizer
             return false;
         }
 
-        var raw = NormalizeTagWhitespace(content.Substring(start, position - start));
+        var raw = NormalizeTagWhitespace(content.Substring(start, position - start), preserveTagAttributes, preserveCrefText);
 
         if (isClosing)
         {
@@ -288,18 +293,34 @@ internal static class XmlDocTokenizer
         if (inlineTags.Contains(tagName))
         {
             var closeSequence = "</" + tagName;
-            var closeIndex = content.IndexOf(closeSequence, position, StringComparison.Ordinal);
-            if (closeIndex >= 0)
+            var searchFrom = position;
+            while (true)
             {
-                var closeTagEnd = content.IndexOf('>', closeIndex + closeSequence.Length);
-                if (closeTagEnd >= 0)
+                var closeIndex = content.IndexOf(closeSequence, searchFrom, StringComparison.Ordinal);
+                if (closeIndex < 0)
                 {
-                    var totalEnd = closeTagEnd + 1;
-                    var atomic = NormalizeTagWhitespace(content.Substring(start, totalEnd - start));
-                    end = totalEnd;
-                    token = new XmlDocToken(XmlDocTokenKind.InlineXml, atomic, tagName, isSelfClosing: false);
-                    return true;
+                    break;
                 }
+
+                // Require an element-name boundary after the matched name so "</c" does not match "</code>";
+                // the next character must end the close tag (whitespace or '>'), not continue the name.
+                var afterName = closeIndex + closeSequence.Length;
+                if (afterName < content.Length && IsCloseTagNameBoundary(content[afterName]))
+                {
+                    var closeTagEnd = content.IndexOf('>', afterName);
+                    if (closeTagEnd >= 0)
+                    {
+                        var totalEnd = closeTagEnd + 1;
+                        var atomic = NormalizeTagWhitespace(content.Substring(start, totalEnd - start), preserveTagAttributes, preserveCrefText);
+                        end = totalEnd;
+                        token = new XmlDocToken(XmlDocTokenKind.InlineXml, atomic, tagName, isSelfClosing: false);
+                        return true;
+                    }
+
+                    break;
+                }
+
+                searchFrom = closeIndex + 1;
             }
 
             // Inline tag without a matching closer — fall through and treat as a block start.
@@ -310,29 +331,42 @@ internal static class XmlDocTokenizer
         return true;
     }
 
-    private static string NormalizeTagWhitespace(string raw)
+    private static string NormalizeTagWhitespace(string raw, bool preserveTagAttributes, bool preserveCrefText)
     {
+        if (preserveTagAttributes)
+        {
+            // Preserve the tag exactly as authored, including any internal line breaks and alignment. The
+            // composer emits a multi-line tag verbatim across prefixed output lines, so its layout survives.
+            return raw;
+        }
+
         if (raw.IndexOf('\n') < 0 && raw.IndexOf('\r') < 0)
         {
             return raw;
         }
 
+        // A tag spanning multiple physical lines is joined onto one line for the line-based composer: embedded
+        // newlines are normalized to a single space. preserveCrefText governs whether redundant whitespace
+        // inside attribute values (such as cref) is also collapsed.
+        const bool collapseOutsideQuotes = true;
+        var collapseInsideQuotes = !preserveCrefText;
+
         var openTagEnd = ScanToTagEnd(raw, 0);
         if (openTagEnd < 0)
         {
-            return NormalizeAttributeSection(raw, 0, raw.Length);
+            return NormalizeAttributeSection(raw, 0, raw.Length, collapseOutsideQuotes, collapseInsideQuotes);
         }
 
         var closeTagStart = FindClosingTagStart(raw, openTagEnd + 1);
         if (closeTagStart < 0)
         {
-            return NormalizeAttributeSection(raw, 0, raw.Length);
+            return NormalizeAttributeSection(raw, 0, raw.Length, collapseOutsideQuotes, collapseInsideQuotes);
         }
 
         var result = new StringBuilder(raw.Length);
-        result.Append(NormalizeAttributeSection(raw, 0, openTagEnd + 1));
+        result.Append(NormalizeAttributeSection(raw, 0, openTagEnd + 1, collapseOutsideQuotes, collapseInsideQuotes));
         AppendBodyWithoutNewlines(result, raw, openTagEnd + 1, closeTagStart);
-        result.Append(NormalizeAttributeSection(raw, closeTagStart, raw.Length));
+        result.Append(NormalizeAttributeSection(raw, closeTagStart, raw.Length, collapseOutsideQuotes, collapseInsideQuotes));
         return result.ToString();
     }
 
@@ -417,7 +451,7 @@ internal static class XmlDocTokenizer
         }
     }
 
-    private static string NormalizeAttributeSection(string raw, int start, int end)
+    private static string NormalizeAttributeSection(string raw, int start, int end, bool collapseOutsideQuotes, bool collapseInsideQuotes)
     {
         var result = new StringBuilder(end - start);
         var inQuote = false;
@@ -428,7 +462,12 @@ internal static class XmlDocTokenizer
             var ch = raw[i];
             if (inQuote)
             {
-                if (ch == '\n' || ch == '\r')
+                var isNewline = ch == '\n' || ch == '\r';
+                var isHorizontalWs = ch == ' ' || ch == '\t';
+
+                // Newlines inside a value can never survive on a single line, so they always collapse to one
+                // space. Other whitespace inside the value collapses only when value/cref preservation is off.
+                if (isNewline || (isHorizontalWs && collapseInsideQuotes))
                 {
                     if (!lastWasSpace)
                     {
@@ -468,7 +507,18 @@ internal static class XmlDocTokenizer
 
             if (ch == '\n' || ch == '\r' || ch == ' ' || ch == '\t')
             {
-                if (!lastWasSpace)
+                // Newlines outside quotes can never survive on a single line; collapse them. Horizontal
+                // whitespace runs collapse only when attribute-spacing preservation is off — otherwise each
+                // whitespace character is emitted as a space so the authored spacing is kept.
+                if (ch == '\n' || ch == '\r' || collapseOutsideQuotes)
+                {
+                    if (!lastWasSpace)
+                    {
+                        result.Append(' ');
+                        lastWasSpace = true;
+                    }
+                }
+                else
                 {
                     result.Append(' ');
                     lastWasSpace = true;
@@ -489,4 +539,12 @@ internal static class XmlDocTokenizer
         (ch >= 'a' && ch <= 'z') ||
         (ch >= '0' && ch <= '9') ||
         ch == '-' || ch == '_' || ch == '.' || ch == ':';
+
+    private static bool IsNameStartChar(char ch) =>
+        (ch >= 'A' && ch <= 'Z') ||
+        (ch >= 'a' && ch <= 'z') ||
+        ch == '_' || ch == ':';
+
+    private static bool IsCloseTagNameBoundary(char ch) =>
+        ch == '>' || ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n';
 }
