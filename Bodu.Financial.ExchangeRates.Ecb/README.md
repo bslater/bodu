@@ -41,7 +41,9 @@ foreach (EcbSeriesInfo info in provider.GetAvailablePairs())
   dates you ask for, minimizing bandwidth.
 - **Loading.** Call `PreloadAsync` / `LoadRangeAsync` to warm the in-memory store. A
   synchronous lookup that misses an unloaded date will block to download its covering feed
-  when `AllowSynchronousNetworkAccess` is enabled (the default).
+  only when `AllowSynchronousNetworkAccess` is enabled (it is `false` by default, so the
+  provider serves a snapshot of already-loaded data and a synchronous miss does not reach
+  the network).
 - **Caching.** Downloaded files are cached on disk (configurable); because every feed
   extends to the latest business day, each is refreshed on a TTL.
 - **Configuration.** `EcbExchangeRateOptions` carries working defaults and binds through

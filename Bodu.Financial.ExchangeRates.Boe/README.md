@@ -40,7 +40,9 @@ foreach (BoeSeriesInfo info in provider.GetAvailablePairs())
 - **Range queries.** The IADB is queried by date range rather than by fixed file, so
   loading is range-based. `LoadRangeAsync` fetches an inclusive range; a synchronous lookup
   that misses an unloaded date blocks to download a bounded window around it (configurable
-  via `OnDemandWindowDays`) when `AllowSynchronousNetworkAccess` is enabled (the default).
+  via `OnDemandWindowDays`) only when `AllowSynchronousNetworkAccess` is enabled (it is
+  `false` by default, so the provider serves a snapshot of already-loaded data and a
+  synchronous miss does not reach the network).
 - **Caching.** Downloaded range responses are cached on disk (configurable) and refreshed
   on a TTL, since a range ending near today can gain an observation each business day.
 - **Configuration.** `BoeExchangeRateOptions` carries working defaults and binds through

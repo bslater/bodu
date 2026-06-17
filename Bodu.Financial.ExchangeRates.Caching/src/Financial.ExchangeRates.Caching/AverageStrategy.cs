@@ -22,6 +22,14 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// requested date; under fallback resolutions the contributors may have resolved different dates. The range overload
 /// averages only the dates present in <em>every</em> contributing candidate (an inner join by date).
 /// </para>
+/// <para>
+/// The synthesized mean is an <em>analytical, composite</em> value, not an authoritative observation: it can differ
+/// from every contributor and so may equal a rate that no source actually published, and under a fallback resolution it
+/// can blend observations the contributors resolved on different dates. It is well suited to smoothing or cross-source
+/// comparison, but a consumer that needs a rate a specific source actually published — for tax, accounting, audit, or
+/// other compliance use — should prefer a single source (for example through <see cref="PriorityFallbackStrategy" /> or
+/// per-pair routing) rather than this strategy.
+/// </para>
 /// </remarks>
 public sealed class AverageStrategy
     : IExchangeRateAggregationStrategy

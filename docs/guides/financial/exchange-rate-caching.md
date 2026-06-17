@@ -132,10 +132,12 @@ cachedRba.TryGetRate("AUD", "USD", new DateOnly(2024, 1, 5),
 
 ### Range lookups
 
-`GetRatesAsync` returns every rate whose date falls in the inclusive window. The
-cache serves a range only when the fresh cached rows **span** the requested window
-(their earliest date is on or before `start` and their latest is on or after
-`end`); otherwise the whole range is refetched and re-cached.
+`GetRatesAsync` returns every rate whose date falls in the inclusive window. Whether
+the cache can serve a range is decided by **coverage** — the date ranges the source
+was actually fetched for — not by the span of the stored rows. A range is served from
+the cache only when the recorded coverage **contains** the whole requested window;
+otherwise the range is refetched and the rows plus the covered window are written back
+together (atomically) through `StoreFetchedRange`.
 
 ```csharp
 IReadOnlyList<ExchangeRate> january =
@@ -143,9 +145,11 @@ IReadOnlyList<ExchangeRate> january =
 ```
 
 > [!NOTE]
-> Because the cache stores only the dates that actually had rates, a range whose
-> edge falls on a non-trading day (for example a weekend) reads as "not spanned"
-> and triggers a refetch. This keeps the design free of extra coverage metadata.
+> Coverage is recorded for the whole fetched window even on days that returned no
+> observation (a weekend, a holiday, a true gap), so a later lookup of the same window
+> is served from the cache rather than refetched. A sparse set of rows is therefore
+> never mistaken for proof that every interior day was fetched — the distinction a
+> [`DateRangeCoverage`](xref:Bodu.Financial.DateRangeCoverage) makes explicit.
 
 ## The cache cascade
 
@@ -153,8 +157,8 @@ The cache is deliberately layered so you can plug in at whichever level fits:
 
 | Layer | Type | Responsibility |
 |---|---|---|
-| Contract | [`IExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.IExchangeRateCache) | Single-provider store: a bound `Provider`; `GetRates`/`Store` by pair. |
-| Core | [`ExchangeRateCacheBase<TOptions>`](xref:Bodu.Financial.ExchangeRates.Caching.ExchangeRateCacheBase`1) | Freshness filtering + merge/prune. **No physical layout.** |
+| Contract | [`IExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.IExchangeRateCache) | Single-provider store: a bound `Provider`; rate rows via `GetRates`/`Store`, fetch coverage via `GetCoverage`/`RecordCoverage`, and the atomic `StoreFetchedRange` that writes both together. |
+| Core | [`ExchangeRateCacheBase<TOptions>`](xref:Bodu.Financial.ExchangeRates.Caching.ExchangeRateCacheBase`1) | Per-pair locking + row/coverage freshness filtering, merge, and prune. **No physical layout.** |
 | File seam | [`IFileExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.IFileExchangeRateCache) / [`FileExchangeRateCacheBase<TOptions>`](xref:Bodu.Financial.ExchangeRates.Caching.FileExchangeRateCacheBase`1) | Directory + per-pair file-name resolution, best-effort IO. |
 | Leaf | [`TomlFileExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.TomlFileExchangeRateCache) | The TOML serialization format only. |
 
@@ -198,31 +202,25 @@ IReadOnlyList<CachedExchangeRate> fresh =
 
 ### Custom cache stores
 
-To back the cache with something other than the file system, derive from
-[`ExchangeRateCacheBase<TOptions>`](xref:Bodu.Financial.ExchangeRates.Caching.ExchangeRateCacheBase`1).
-It provides the merge-by-date, read-time freshness filter, and write-time prune;
-you supply only the raw per-pair persistence:
+A cache backend is any [`IExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.IExchangeRateCache)
+implementation. To back the cache with a store of your own, implement that interface
+directly — the shipped
+[`SqliteExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.Sqlite.SqliteExchangeRateCache)
+and [`DistributedExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.Distributed.DistributedExchangeRateCache)
+are exactly that and serve as worked references. Delegate the freshness, validity,
+merge, and coverage rules to the shared, public
+[`ExchangeRateCacheRules`](xref:Bodu.Financial.ExchangeRates.Caching.ExchangeRateCacheRules)
+so your backend stays behaviourally identical to the in-box caches (the same
+`ExchangeRateCacheContractTests` apply), and make `StoreFetchedRange` write the merged
+rows and the covered window as one atomic unit so a reader never observes coverage
+without its rows.
 
-```csharp
-public sealed class DictionaryExchangeRateCache : ExchangeRateCacheBase<ExchangeRateCacheOptions>
-{
-    private readonly Dictionary<ExchangeRatePair, IReadOnlyList<CachedExchangeRate>> _store = new();
-
-    public DictionaryExchangeRateCache(string provider)
-        : base(new ExchangeRateCacheOptions { Provider = provider }) { }
-
-    protected override IReadOnlyList<CachedExchangeRate> ReadEntries(ExchangeRatePair pair) =>
-        _store.TryGetValue(pair, out var rows) ? rows : Array.Empty<CachedExchangeRate>();
-
-    protected override void WriteEntries(ExchangeRatePair pair, IReadOnlyList<CachedExchangeRate> entries) =>
-        _store[pair] = entries;
-}
-```
-
-For a new **file format**, derive from
-[`FileExchangeRateCacheBase<TOptions>`](xref:Bodu.Financial.ExchangeRates.Caching.FileExchangeRateCacheBase`1)
-instead and override only `FileExtension`, `Serialize`, and `Deserialize` — the
-base handles the directory layout and best-effort IO.
+The in-box [`ExchangeRateCacheBase<TOptions>`](xref:Bodu.Financial.ExchangeRates.Caching.ExchangeRateCacheBase`1)
+and [`FileExchangeRateCacheBase<TOptions>`](xref:Bodu.Financial.ExchangeRates.Caching.FileExchangeRateCacheBase`1)
+are internal scaffolding for the in-memory and TOML caches — they own the per-pair
+locking and the read-modify-write sequencing over a `CachePairState` — and their
+storage seam is not a public subclassing point. Implement `IExchangeRateCache`
+directly, as the SQLite and distributed backends do.
 
 ### Persistent and shared backends
 
@@ -241,8 +239,26 @@ it through its `*.DependencyInjection` companion:
   `AddRedisExchangeRateCache("RBA", redis => …)`.
 
 Every backend shares the same freshness, merge, and coverage semantics — the same
-`ExchangeRateCacheContractTests` — so the choice is one of reach: in-memory or TOML
-for a single process, SQLite for durable single-process, distributed for many.
+`ExchangeRateCacheContractTests`.
+
+> [!IMPORTANT]
+> The distributed cache is a **best-effort shared performance hint, not an
+> authoritative multi-writer store.** `IDistributedCache` offers no atomic
+> read-modify-write, so same-process races are guarded by a per-pair in-process lock
+> while **cross-process** writes to one pair are last-write-wins (a `StoreFetchedRange`
+> blob is still all-or-nothing per write, so a reader never sees coverage without its
+> rows). When correctness under concurrent writers matters, prefer the SQLite backend
+> (one transaction per write) or a real database.
+
+The choice is one of reach and durability:
+
+| Backend | Best for | Not for | Correctness note |
+|---|---|---|---|
+| [`NullExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.NullExchangeRateCache) | tests / disabling the cache | any reuse | stores nothing; every lookup is a miss |
+| [`InMemoryExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.InMemoryExchangeRateCache) | a single, long-lived process | restarts; multiple processes | process-local; lost on restart |
+| [`TomlFileExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.TomlFileExchangeRateCache) | simple durable local cache | high multi-process write concurrency | atomic temp-and-move per file; best-effort |
+| [`SqliteExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.Sqlite.SqliteExchangeRateCache) | durable single-host cache | a cache shared across hosts | strongest shipped local option; one transaction per write |
+| [`DistributedExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.Distributed.DistributedExchangeRateCache) | a warm cache shared across processes/hosts | an authoritative multi-writer store | last-write-wins per pair across processes |
 
 ## Grouping providers with the aggregator
 
@@ -273,7 +289,10 @@ The combination is a pluggable
   former `CompositeDatedExchangeRateProvider`.
 - [`AverageStrategy`](xref:Bodu.Financial.ExchangeRates.Caching.AverageStrategy)
   returns the arithmetic mean of every child that resolves, tagged with a
-  synthetic provider label (`Average` by default).
+  synthetic provider label (`Average` by default). The mean is an analytical,
+  composite value — it can equal a rate no source actually published — so it suits
+  smoothing or cross-source comparison rather than an authoritative observation; for
+  tax, accounting, or audit use prefer a single source (priority or per-pair routing).
 - Implement the interface for anything else (weighted, median, first-non-stale).
 
 ```csharp
@@ -364,8 +383,10 @@ var rbaOnly = provider.GetRequiredKeyedService<IDatedExchangeRateProvider>("RBA"
   the provider's resolved expiry. Single-date serving filters per row.
 - A write merges new rows with existing ones (latest `CachedAtUtc` wins per date)
   and prunes rows that are no longer fresh, so the store self-cleans over time.
-- Range serving uses the min/max dates of the fresh rows as a coverage proxy and
-  refetches the whole range when they do not span the request.
+- Range serving is decided by recorded **coverage**, not by the rows: a range is
+  served only when the still-fresh coverage windows contain the whole request, and a
+  range fetch writes its rows and covered window together through `StoreFetchedRange`.
+  Coverage windows expire on the same `duration` and are pruned on write.
 
 ## See also
 
