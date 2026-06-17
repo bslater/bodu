@@ -31,7 +31,10 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// A fetched range writes both halves at once through <see cref="StoreFetchedRange" />, which merges the fetched rows
 /// and records the covered window as one atomic unit. Splitting that into a separate <see cref="Store" /> and
 /// <see cref="RecordCoverage" /> risks persisting coverage without its rows on a backend that silently swallows a write
-/// failure, which would let a later range lookup report a false hit and return incomplete data as if complete.
+/// failure, which would let a later range lookup report a false hit and return incomplete data as if complete. Treat
+/// <see cref="StoreFetchedRange" /> as the primary range-fetch contract every backend must satisfy;
+/// <see cref="Store" /> (the single-date miss path) and <see cref="RecordCoverage" /> are the lower-level halves,
+/// intended for the cache's own composition rather than a provider fetch path.
 /// </para>
 /// <para>
 /// Implementations are expected to be resilient: a cache failure should manifest as an empty result or a no-op rather
@@ -105,6 +108,12 @@ public interface IExchangeRateCache
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="start" /> is later than <paramref name="end" />.
     /// </exception>
+    /// <remarks>
+    /// This is a low-level building block that records the coverage half only, with no rows. It exists for the cache's
+    /// own composition and is <strong>not</strong> the path a provider fetch should use: recording coverage here and
+    /// writing rows through a separate <see cref="Store" /> risks persisting coverage a backend later serves as a false
+    /// hit. A range fetch must instead use <see cref="StoreFetchedRange" />, which writes both halves atomically.
+    /// </remarks>
     void RecordCoverage(ExchangeRatePair pair, DateOnly start, DateOnly end, TimeSpan duration, DateTimeOffset asOf);
 
     /// <summary>

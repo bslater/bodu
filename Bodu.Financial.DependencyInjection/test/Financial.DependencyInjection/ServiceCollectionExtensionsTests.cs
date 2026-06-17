@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Text.Json;
 using Bodu.Financial;
 using Bodu.Financial.Serialization;
 using Microsoft.Extensions.Configuration;
@@ -55,6 +56,97 @@ public sealed class ServiceCollectionExtensionsTests
 
         Assert.AreEqual(FinancialJsonPolicy.Compact, options.JsonPolicy);
         Assert.AreEqual(UnknownCurrencyPolicy.AllowUnscaled, options.UnknownCurrency);
+    }
+
+    /// <summary>
+    /// Verifies that a configuration-bound <see cref="FinancialOptions.JsonPolicy" /> drives the financial
+    /// <see cref="JsonSerializerOptions" /> registered under <see cref="FinancialServiceBuilderExtensions.JsonOptionsKey" />,
+    /// so binding the policy is authoritative rather than decorative.
+    /// </summary>
+    [TestMethod]
+    public void AddBoduFinancial_WhenJsonPolicyBound_ShouldDriveRegisteredJsonOptions()
+    {
+        IConfiguration configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                ["Financial:JsonPolicy"] = nameof(FinancialJsonPolicy.Compact),
+            })
+            .Build();
+
+        ServiceProvider provider = new ServiceCollection().AddBoduFinancial(configuration).Services.BuildServiceProvider();
+
+        JsonSerializerOptions options = provider.GetRequiredKeyedService<JsonSerializerOptions>(FinancialServiceBuilderExtensions.JsonOptionsKey);
+        string json = JsonSerializer.Serialize(new Money(19.99m, "USD"), options);
+
+        Assert.AreEqual("\"19.99 USD\"", json);
+    }
+
+    /// <summary>
+    /// Verifies that a configuration-bound <see cref="FinancialOptions.UnknownCurrency" /> seeds the default
+    /// <see cref="MoneyParseOptions" /> registered by <c>AddBoduFinancial</c>.
+    /// </summary>
+    [TestMethod]
+    public void AddBoduFinancial_WhenUnknownCurrencyBound_ShouldSeedDefaultParseOptions()
+    {
+        IConfiguration configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                ["Financial:UnknownCurrency"] = nameof(UnknownCurrencyPolicy.AllowUnscaled),
+            })
+            .Build();
+
+        ServiceProvider provider = new ServiceCollection().AddBoduFinancial(configuration).Services.BuildServiceProvider();
+
+        MoneyParseOptions parseOptions = provider.GetRequiredService<MoneyParseOptions>();
+
+        Assert.AreEqual(UnknownCurrencyPolicy.AllowUnscaled, parseOptions.UnknownCurrency);
+    }
+
+    /// <summary>
+    /// Verifies that an explicit <c>AddFinancialJson</c> overrides a JSON policy already bound from configuration,
+    /// because it is registered last under the same key.
+    /// </summary>
+    [TestMethod]
+    public void AddFinancialJson_WhenCalledAfterBoundPolicy_ShouldOverrideRegisteredJsonOptions()
+    {
+        IConfiguration configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                ["Financial:JsonPolicy"] = nameof(FinancialJsonPolicy.Compact),
+            })
+            .Build();
+
+        ServiceProvider provider = new ServiceCollection()
+            .AddBoduFinancial(configuration)
+            .AddFinancialJson(FinancialJsonPolicy.Strict)
+            .Services.BuildServiceProvider();
+
+        JsonSerializerOptions options = provider.GetRequiredKeyedService<JsonSerializerOptions>(FinancialServiceBuilderExtensions.JsonOptionsKey);
+        string json = JsonSerializer.Serialize(new Money(19.99m, "USD"), options);
+
+        Assert.AreNotEqual("\"19.99 USD\"", json, "the explicit Strict policy should override the bound Compact policy");
+    }
+
+    /// <summary>
+    /// Verifies that binding an undefined enum value to <see cref="FinancialOptions" /> fails options validation, so a
+    /// misconfigured policy is rejected when resolved rather than silently used.
+    /// </summary>
+    [TestMethod]
+    public void AddBoduFinancial_WhenJsonPolicyUndefined_ShouldFailOptionsValidation()
+    {
+        IConfiguration configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                ["Financial:JsonPolicy"] = "999",
+            })
+            .Build();
+
+        ServiceProvider provider = new ServiceCollection().AddBoduFinancial(configuration).Services.BuildServiceProvider();
+
+        _ = Assert.ThrowsExactly<OptionsValidationException>(() =>
+        {
+            _ = provider.GetRequiredService<IOptions<FinancialOptions>>().Value;
+        });
     }
 
     /// <summary>

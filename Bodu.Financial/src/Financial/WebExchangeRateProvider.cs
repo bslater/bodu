@@ -143,6 +143,8 @@ public abstract class WebExchangeRateProvider
     /// <inheritdoc />
     public ExchangeRateLookupResult GetRate(string fromIsoCode, string toIsoCode, ExchangeRateLookupOptions? options = null)
     {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+
         var today = DateOnly.FromDateTime(_timeProvider.GetUtcNow().UtcDateTime);
         return GetRate(fromIsoCode, toIsoCode, today, options ?? ExchangeRateLookupOptions.PreviousWithin(LatestRateToleranceDays));
     }
@@ -156,6 +158,8 @@ public abstract class WebExchangeRateProvider
     /// <inheritdoc />
     public bool TryGetRate(string fromIsoCode, string toIsoCode, DateOnly date, ExchangeRateLookupOptions? options, out ExchangeRateLookupResult result)
     {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+
         if (_snapshot.TryGetRate(fromIsoCode, toIsoCode, date, options, out result))
             return true;
 
@@ -172,6 +176,7 @@ public abstract class WebExchangeRateProvider
     /// <inheritdoc />
     public ExchangeRateRangeResult GetRates(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate)
     {
+        ObjectDisposedException.ThrowIf(_disposed, this);
         FinancialThrowHelper.ThrowIfNotValidIsoCode(fromIsoCode);
         FinancialThrowHelper.ThrowIfNotValidIsoCode(toIsoCode);
         if (endDate < startDate)
@@ -193,6 +198,8 @@ public abstract class WebExchangeRateProvider
         ExchangeRateLookupOptions? options = null,
         CancellationToken cancellationToken = default)
     {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+
         var today = DateOnly.FromDateTime(_timeProvider.GetUtcNow().UtcDateTime);
         return await GetRateAsync(
             fromIsoCode,
@@ -210,6 +217,8 @@ public abstract class WebExchangeRateProvider
         ExchangeRateLookupOptions? options = null,
         CancellationToken cancellationToken = default)
     {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+
         if (!string.Equals(fromIsoCode, toIsoCode, StringComparison.Ordinal))
         {
             FinancialThrowHelper.ThrowIfNotValidIsoCode(fromIsoCode);
@@ -233,6 +242,7 @@ public abstract class WebExchangeRateProvider
         DateOnly endDate,
         CancellationToken cancellationToken = default)
     {
+        ObjectDisposedException.ThrowIf(_disposed, this);
         FinancialThrowHelper.ThrowIfNotValidIsoCode(fromIsoCode);
         FinancialThrowHelper.ThrowIfNotValidIsoCode(toIsoCode);
         if (endDate < startDate)

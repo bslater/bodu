@@ -81,6 +81,14 @@ public abstract class DatedExchangeRateProviderContractTests<TProvider>
     protected virtual bool SupportsIdentityRate => true;
 
     /// <summary>
+    /// Gets a value indicating whether the provider guards its public surface with <see cref="ObjectDisposedException" />
+    /// after disposal. Defaults to <see langword="false" /> for providers that are not <see cref="IDisposable" /> or that
+    /// intentionally keep serving an in-memory snapshot after disposal.
+    /// </summary>
+    /// <returns><see langword="true" /> when disposed members throw; otherwise <see langword="false" />.</returns>
+    protected virtual bool SupportsDisposalGuard => false;
+
+    /// <summary>
     /// Verifies that resolving the same known date through the synchronous and asynchronous single-date surfaces yields
     /// the same rate and the same provenance lineage, so a caller cannot observe a different result merely by awaiting.
     /// </summary>
@@ -241,6 +249,38 @@ public abstract class DatedExchangeRateProviderContractTests<TProvider>
         ExchangeRateLookupResult result = provider.GetRate(code, code, KnownDate, ExchangeRateLookupOptions.Exact);
 
         Assert.AreEqual(1m, result.Rate.Rate);
+    }
+
+    /// <summary>
+    /// Verifies that once the provider is disposed every public lookup surface throws
+    /// <see cref="ObjectDisposedException" /> rather than serving from a released in-memory snapshot, so a caller cannot
+    /// keep using a disposed provider.
+    /// </summary>
+    [TestMethod]
+    public async Task Members_WhenDisposed_ShouldThrowObjectDisposedException()
+    {
+        if (!SupportsDisposalGuard)
+        {
+            Assert.Inconclusive("Provider does not guard its members after disposal.");
+            return;
+        }
+
+        TProvider provider = CreateProvider();
+        string from = CanonicalPair.FromIsoCode;
+        string to = CanonicalPair.ToIsoCode;
+
+        ((IDisposable)provider).Dispose();
+
+        _ = Assert.ThrowsExactly<ObjectDisposedException>(() =>
+            _ = provider.GetRate(from, to, KnownDate, ExchangeRateLookupOptions.Exact));
+        _ = Assert.ThrowsExactly<ObjectDisposedException>(() =>
+            provider.TryGetRate(from, to, KnownDate, ExchangeRateLookupOptions.Exact, out _));
+        _ = Assert.ThrowsExactly<ObjectDisposedException>(() =>
+            _ = provider.GetRates(from, to, RangeStart, RangeEnd));
+        _ = await Assert.ThrowsExactlyAsync<ObjectDisposedException>(async () =>
+            await provider.GetRateAsync(from, to, KnownDate, ExchangeRateLookupOptions.Exact));
+        _ = await Assert.ThrowsExactlyAsync<ObjectDisposedException>(async () =>
+            await provider.GetRatesAsync(from, to, RangeStart, RangeEnd));
     }
 
     /// <summary>

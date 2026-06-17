@@ -37,8 +37,10 @@ foreach (RbaSeriesInfo info in provider.GetAvailablePairs())
 - **AUD-based.** RBA quotes the Australian dollar against each currency. Direct
   (`AUD→X`) and inverse (`X→AUD`) lookups are supported; cross pairs are not.
 - **Loading.** Call `PreloadAsync` / `LoadRangeAsync` to warm the in-memory store. A
-  synchronous lookup that misses an unloaded era will block to download it when
-  `AllowSynchronousNetworkAccess` is enabled (the default).
+  synchronous lookup that misses an unloaded era will block to download it only when
+  `AllowSynchronousNetworkAccess` is enabled (it is `false` by default, so the provider
+  serves a snapshot of already-loaded data and a synchronous miss does not reach the
+  network).
 - **Caching.** Downloaded files are cached on disk (configurable); immutable historical
   eras are cached indefinitely and the open-ended current era refreshes on a TTL.
 - **Configuration.** `RbaExchangeRateOptions` carries working defaults and binds through

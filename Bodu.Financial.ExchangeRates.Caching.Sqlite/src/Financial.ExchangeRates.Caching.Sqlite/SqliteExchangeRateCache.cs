@@ -105,7 +105,10 @@ public sealed class SqliteExchangeRateCache
     /// The schema is created if it does not already exist, and a pre-existing <c>rates</c> table is migrated to add the
     /// <c>observed_at</c> column when it is absent, in one transaction, when the instance is constructed. A failure to
     /// create or migrate the schema is swallowed so a transiently unwritable database surfaces later as empty reads and
-    /// skipped writes rather than a construction-time exception.
+    /// skipped writes rather than a construction-time exception, unless
+    /// <see cref="ExchangeRateCacheOptions.ValidateStorageOnStart" /> or
+    /// <see cref="ExchangeRateCacheOptions.ThrowOnStorageFailure" /> is set, in which case the failure propagates from
+    /// the constructor.
     /// </remarks>
     public SqliteExchangeRateCache(SqliteExchangeRateCacheOptions options)
     {
@@ -124,12 +127,13 @@ public sealed class SqliteExchangeRateCache
             _keepAlive.Open();
             EnsureSchema(_keepAlive);
         }
-        catch (SqliteException)
+        catch (SqliteException) when (!_options.ValidateStorageOnStart && !_options.ThrowOnStorageFailure)
         {
             // Best-effort cache: a database that cannot be opened or initialized now degrades to empty reads and
-            // skipped writes rather than failing construction.
+            // skipped writes rather than failing construction. When either strict flag is set the failure propagates
+            // from the constructor instead.
         }
-        catch (IOException)
+        catch (IOException) when (!_options.ValidateStorageOnStart && !_options.ThrowOnStorageFailure)
         {
             // Best-effort cache: see above.
         }
@@ -154,6 +158,16 @@ public sealed class SqliteExchangeRateCache
 
     /// <inheritdoc />
     public string Provider => _options.Provider;
+
+    /// <summary>
+    /// Gets a value indicating whether a caught storage failure should degrade to a best-effort fallback rather than
+    /// propagate. Used as the exception filter on the read and write catch blocks so a strict cache fails fast.
+    /// </summary>
+    /// <returns>
+    /// <see langword="true" /> when <see cref="ExchangeRateCacheOptions.ThrowOnStorageFailure" /> is not set; otherwise
+    /// <see langword="false" />, so the failure propagates.
+    /// </returns>
+    private bool ShouldSwallowStorageFailure => !_options.ThrowOnStorageFailure;
 
     /// <inheritdoc />
     public IReadOnlyList<CachedExchangeRate> GetRates(ExchangeRatePair pair, TimeSpan duration, DateTimeOffset asOf)
@@ -421,11 +435,11 @@ public sealed class SqliteExchangeRateCache
                 }
             }
         }
-        catch (SqliteException)
+        catch (SqliteException) when (ShouldSwallowStorageFailure)
         {
             return Array.Empty<CachedExchangeRate>();
         }
-        catch (IOException)
+        catch (IOException) when (ShouldSwallowStorageFailure)
         {
             return Array.Empty<CachedExchangeRate>();
         }
@@ -454,11 +468,11 @@ public sealed class SqliteExchangeRateCache
 
             transaction.Commit();
         }
-        catch (SqliteException)
+        catch (SqliteException) when (ShouldSwallowStorageFailure)
         {
             // Best-effort cache: a failed write must not break rate retrieval.
         }
-        catch (IOException)
+        catch (IOException) when (ShouldSwallowStorageFailure)
         {
             // Best-effort cache: a failed write must not break rate retrieval.
         }
@@ -553,11 +567,11 @@ public sealed class SqliteExchangeRateCache
                 }
             }
         }
-        catch (SqliteException)
+        catch (SqliteException) when (ShouldSwallowStorageFailure)
         {
             return Array.Empty<(DateOnly, DateOnly, DateTimeOffset)>();
         }
-        catch (IOException)
+        catch (IOException) when (ShouldSwallowStorageFailure)
         {
             return Array.Empty<(DateOnly, DateOnly, DateTimeOffset)>();
         }
@@ -586,11 +600,11 @@ public sealed class SqliteExchangeRateCache
 
             transaction.Commit();
         }
-        catch (SqliteException)
+        catch (SqliteException) when (ShouldSwallowStorageFailure)
         {
             // Best-effort cache: a failed write must not break rate retrieval.
         }
-        catch (IOException)
+        catch (IOException) when (ShouldSwallowStorageFailure)
         {
             // Best-effort cache: a failed write must not break rate retrieval.
         }
@@ -671,13 +685,13 @@ public sealed class SqliteExchangeRateCache
             transaction.Commit();
             return true;
         }
-        catch (SqliteException)
+        catch (SqliteException) when (ShouldSwallowStorageFailure)
         {
             // Best-effort cache: a failed write must not break rate retrieval. Report the failure so the caller can
             // refetch rather than trust coverage that was never persisted.
             return false;
         }
-        catch (IOException)
+        catch (IOException) when (ShouldSwallowStorageFailure)
         {
             // Best-effort cache: see above.
             return false;
