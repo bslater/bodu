@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IntegerConverterFactory.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -46,6 +46,6 @@ internal sealed class IntegerConverterFactory
         ThrowHelper.ThrowIfNull(typeToConvert);
 
         Type converterType = typeof(IntegerConverter<>).MakeGenericType(typeToConvert);
-        return (TomlConverter)Activator.CreateInstance(converterType) !;
+        return (TomlConverter)Activator.CreateInstance(converterType)!;
     }
 }

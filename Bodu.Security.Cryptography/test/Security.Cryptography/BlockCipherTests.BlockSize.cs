@@ -14,7 +14,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     /// </summary>
     /// <param name="variant">The cipher variant that determines the expected block size.</param>
     [TestMethod]
-    [DynamicData(nameof(BlockCipherVariants), DynamicDataDisplayName =nameof(VariantDisplayNameHelper.GetDisplayName), DynamicDataDisplayNameDeclaringType =typeof(VariantDisplayNameHelper))]
+    [DynamicData(nameof(BlockCipherVariants), DynamicDataDisplayName = nameof(VariantDisplayNameHelper.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(VariantDisplayNameHelper))]
     public void BlockSize_WhenAccessed_ShouldReturnExpected(TVariant variant)
     {
         BlockCipherSpecification specification = GetSpecification(variant);

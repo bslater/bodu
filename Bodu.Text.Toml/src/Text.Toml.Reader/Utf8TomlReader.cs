@@ -939,16 +939,143 @@ public ref partial struct Utf8TomlReader
             switch (_state)
             {
                 case TomlScanState.Expression:
+                {
+                    SkipInlineWhitespace();
+                    if (Eof)
                     {
-                        SkipInlineWhitespace();
-                        if (Eof)
+                        if (_isFinalBlock)
+                            _tokenType = TomlTokenType.None;
+                        return false;
+                    }
+
+                    if (Current == (byte)'#')
+                        return TryScanComment();
+
+                    if (PendingCarriageReturn())
+                        return NeedMoreData();
+
+                    if (AtNewline())
+                    {
+                        ConsumeNewline();
+                        continue;
+                    }
+
+                    if (Current == (byte)'[')
+                        return TryStartHeader();
+
+                    _state = TomlScanState.KeyPath;
+                    continue;
+                }
+
+                case TomlScanState.HeaderPath:
+                {
+                    SkipInlineWhitespace();
+                    if (!TryScanKeySegment())
+                        return false;
+                    SkipInlineWhitespace();
+
+                    if (Eof && !_isFinalBlock)
+                        return NeedMoreData();
+
+                    if (!Eof && Current == (byte)'.')
+                    {
+                        Advance();
+                        _isFinalKeySegment = false;
+                    }
+                    else
+                    {
+                        if (Eof || Current != (byte)']')
+                            throw Error(TomlResourceStrings.Format_Invalid_TomlUnterminatedTable);
+                        Advance();
+
+                        if (_headerIsArray)
                         {
-                            if (_isFinalBlock)
-                                _tokenType = TomlTokenType.None;
-                            return false;
+                            if (Eof && !_isFinalBlock)
+                                return NeedMoreData();
+                            if (Eof || Current != (byte)']')
+                                throw Error(TomlResourceStrings.Format_Invalid_TomlUnterminatedTable);
+                            Advance();
                         }
 
-                        if (Current == (byte)'#')
+                        _isFinalKeySegment = true;
+                        _state = TomlScanState.LineEnd;
+                    }
+
+                    return true;
+                }
+
+                case TomlScanState.KeyPath:
+                {
+                    SkipInlineWhitespace();
+                    if (!TryScanKeySegment())
+                        return false;
+                    SkipInlineWhitespace();
+
+                    if (Eof && !_isFinalBlock)
+                        return NeedMoreData();
+
+                    if (!Eof && Current == (byte)'.')
+                    {
+                        Advance();
+                        _isFinalKeySegment = false;
+                    }
+                    else if (!Eof && Current == (byte)'=')
+                    {
+                        Advance();
+                        _isFinalKeySegment = true;
+                        _state = TomlScanState.Value;
+                    }
+                    else
+                    {
+                        throw Error(TomlResourceStrings.Format_Invalid_TomlExpectedEquals);
+                    }
+
+                    return true;
+                }
+
+                case TomlScanState.Value:
+                {
+                    SkipInlineWhitespace();
+                    return TryScanValue();
+                }
+
+                case TomlScanState.ArrayBody:
+                {
+                    SkipInlineWhitespace();
+                    if (Eof)
+                    {
+                        if (!_isFinalBlock)
+                            return NeedMoreData();
+                        throw Error(TomlResourceStrings.Format_Invalid_TomlInvalidArray);
+                    }
+
+                    if (Current == (byte)'#')
+                        return TryScanComment();
+
+                    if (PendingCarriageReturn())
+                        return NeedMoreData();
+
+                    if (AtNewline())
+                    {
+                        ConsumeNewline();
+                        continue;
+                    }
+
+                    if (Current == (byte)']')
+                    {
+                        CloseContainer(TomlTokenType.EndArray);
+                        return true;
+                    }
+
+                    return TryScanValue();
+                }
+
+                case TomlScanState.InlineBody:
+                {
+                    SkipInlineWhitespace();
+                    if (_specVersion == TomlSpecVersion.V1_1)
+                    {
+                        if (!Eof && Current == (byte)'#')
                             return TryScanComment();
 
                         if (PendingCarriageReturn())
@@ -959,88 +1086,35 @@ public ref partial struct Utf8TomlReader
                             ConsumeNewline();
                             continue;
                         }
+                    }
 
-                        if (Current == (byte)'[')
-                            return TryStartHeader();
+                    if (Eof && !_isFinalBlock)
+                        return NeedMoreData();
 
-                        _state = TomlScanState.KeyPath;
+                    if (!Eof && Current == (byte)'}')
+                    {
+                        if (_inlineAfterComma && _specVersion != TomlSpecVersion.V1_1)
+                            throw Error(TomlResourceStrings.Format_Invalid_TomlInlineTableTrailingComma);
+
+                        CloseContainer(TomlTokenType.EndInlineTable);
+                        return true;
+                    }
+
+                    _state = TomlScanState.KeyPath;
+                    continue;
+                }
+
+                case TomlScanState.AfterValue:
+                {
+                    if (_containerCount == 0)
+                    {
+                        _state = TomlScanState.LineEnd;
                         continue;
                     }
 
-                case TomlScanState.HeaderPath:
+                    if (_containers![_containerCount - 1] == 0)
                     {
-                        SkipInlineWhitespace();
-                        if (!TryScanKeySegment())
-                            return false;
-                        SkipInlineWhitespace();
-
-                        if (Eof && !_isFinalBlock)
-                            return NeedMoreData();
-
-                        if (!Eof && Current == (byte)'.')
-                        {
-                            Advance();
-                            _isFinalKeySegment = false;
-                        }
-                        else
-                        {
-                            if (Eof || Current != (byte)']')
-                                throw Error(TomlResourceStrings.Format_Invalid_TomlUnterminatedTable);
-                            Advance();
-
-                            if (_headerIsArray)
-                            {
-                                if (Eof && !_isFinalBlock)
-                                    return NeedMoreData();
-                                if (Eof || Current != (byte)']')
-                                    throw Error(TomlResourceStrings.Format_Invalid_TomlUnterminatedTable);
-                                Advance();
-                            }
-
-                            _isFinalKeySegment = true;
-                            _state = TomlScanState.LineEnd;
-                        }
-
-                        return true;
-                    }
-
-                case TomlScanState.KeyPath:
-                    {
-                        SkipInlineWhitespace();
-                        if (!TryScanKeySegment())
-                            return false;
-                        SkipInlineWhitespace();
-
-                        if (Eof && !_isFinalBlock)
-                            return NeedMoreData();
-
-                        if (!Eof && Current == (byte)'.')
-                        {
-                            Advance();
-                            _isFinalKeySegment = false;
-                        }
-                        else if (!Eof && Current == (byte)'=')
-                        {
-                            Advance();
-                            _isFinalKeySegment = true;
-                            _state = TomlScanState.Value;
-                        }
-                        else
-                        {
-                            throw Error(TomlResourceStrings.Format_Invalid_TomlExpectedEquals);
-                        }
-
-                        return true;
-                    }
-
-                case TomlScanState.Value:
-                    {
-                        SkipInlineWhitespace();
-                        return TryScanValue();
-                    }
-
-                case TomlScanState.ArrayBody:
-                    {
+                        // Inside an array: the ws-comment-newline production separates elements.
                         SkipInlineWhitespace();
                         if (Eof)
                         {
@@ -1058,6 +1132,13 @@ public ref partial struct Utf8TomlReader
                         if (AtNewline())
                         {
                             ConsumeNewline();
+                            continue;
+                        }
+
+                        if (Current == (byte)',')
+                        {
+                            Advance();
+                            _state = TomlScanState.ArrayBody;
                             continue;
                         }
 
@@ -1067,161 +1148,80 @@ public ref partial struct Utf8TomlReader
                             return true;
                         }
 
-                        return TryScanValue();
+                        throw Error(TomlResourceStrings.Format_Invalid_TomlInvalidArray);
                     }
 
-                case TomlScanState.InlineBody:
+                    // Inside an inline table: TOML v1.1.0 permits the full separator production; v1.0 only ws.
+                    SkipInlineWhitespace();
+                    if (_specVersion == TomlSpecVersion.V1_1)
                     {
-                        SkipInlineWhitespace();
-                        if (_specVersion == TomlSpecVersion.V1_1)
-                        {
-                            if (!Eof && Current == (byte)'#')
-                                return TryScanComment();
-
-                            if (PendingCarriageReturn())
-                                return NeedMoreData();
-
-                            if (AtNewline())
-                            {
-                                ConsumeNewline();
-                                continue;
-                            }
-                        }
-
-                        if (Eof && !_isFinalBlock)
-                            return NeedMoreData();
-
-                        if (!Eof && Current == (byte)'}')
-                        {
-                            if (_inlineAfterComma && _specVersion != TomlSpecVersion.V1_1)
-                                throw Error(TomlResourceStrings.Format_Invalid_TomlInlineTableTrailingComma);
-
-                            CloseContainer(TomlTokenType.EndInlineTable);
-                            return true;
-                        }
-
-                        _state = TomlScanState.KeyPath;
-                        continue;
-                    }
-
-                case TomlScanState.AfterValue:
-                    {
-                        if (_containerCount == 0)
-                        {
-                            _state = TomlScanState.LineEnd;
-                            continue;
-                        }
-
-                        if (_containers![_containerCount - 1] == 0)
-                        {
-                            // Inside an array: the ws-comment-newline production separates elements.
-                            SkipInlineWhitespace();
-                            if (Eof)
-                            {
-                                if (!_isFinalBlock)
-                                    return NeedMoreData();
-                                throw Error(TomlResourceStrings.Format_Invalid_TomlInvalidArray);
-                            }
-
-                            if (Current == (byte)'#')
-                                return TryScanComment();
-
-                            if (PendingCarriageReturn())
-                                return NeedMoreData();
-
-                            if (AtNewline())
-                            {
-                                ConsumeNewline();
-                                continue;
-                            }
-
-                            if (Current == (byte)',')
-                            {
-                                Advance();
-                                _state = TomlScanState.ArrayBody;
-                                continue;
-                            }
-
-                            if (Current == (byte)']')
-                            {
-                                CloseContainer(TomlTokenType.EndArray);
-                                return true;
-                            }
-
-                            throw Error(TomlResourceStrings.Format_Invalid_TomlInvalidArray);
-                        }
-
-                        // Inside an inline table: TOML v1.1.0 permits the full separator production; v1.0 only ws.
-                        SkipInlineWhitespace();
-                        if (_specVersion == TomlSpecVersion.V1_1)
-                        {
-                            if (!Eof && Current == (byte)'#')
-                                return TryScanComment();
-
-                            if (PendingCarriageReturn())
-                                return NeedMoreData();
-
-                            if (AtNewline())
-                            {
-                                ConsumeNewline();
-                                continue;
-                            }
-                        }
-
-                        if (Eof)
-                        {
-                            if (!_isFinalBlock)
-                                return NeedMoreData();
-                            throw Error(TomlResourceStrings.Format_Invalid_TomlInvalidInlineTable);
-                        }
-
-                        if (Current == (byte)',')
-                        {
-                            Advance();
-                            _inlineAfterComma = true;
-                            _state = TomlScanState.InlineBody;
-                            continue;
-                        }
-
-                        if (Current == (byte)'}')
-                        {
-                            CloseContainer(TomlTokenType.EndInlineTable);
-                            return true;
-                        }
-
-                        throw Error(TomlResourceStrings.Format_Invalid_TomlInvalidInlineTable);
-                    }
-
-                case TomlScanState.LineEnd:
-                default:
-                    {
-                        SkipInlineWhitespace();
-                        if (Eof)
-                        {
-                            if (!_isFinalBlock)
-                            {
-                                // The expression is complete; pause in LineEnd so a continuation block may not start a
-                                // new expression on the same line.
-                                return false;
-                            }
-
-                            _state = TomlScanState.Expression;
-                            continue;
-                        }
-
-                        if (Current == (byte)'#')
+                        if (!Eof && Current == (byte)'#')
                             return TryScanComment();
 
                         if (PendingCarriageReturn())
                             return NeedMoreData();
 
-                        if (!AtNewline())
-                            throw Error(TomlResourceStrings.Format_Invalid_TomlExpectedNewline);
+                        if (AtNewline())
+                        {
+                            ConsumeNewline();
+                            continue;
+                        }
+                    }
 
-                        ConsumeNewline();
+                    if (Eof)
+                    {
+                        if (!_isFinalBlock)
+                            return NeedMoreData();
+                        throw Error(TomlResourceStrings.Format_Invalid_TomlInvalidInlineTable);
+                    }
+
+                    if (Current == (byte)',')
+                    {
+                        Advance();
+                        _inlineAfterComma = true;
+                        _state = TomlScanState.InlineBody;
+                        continue;
+                    }
+
+                    if (Current == (byte)'}')
+                    {
+                        CloseContainer(TomlTokenType.EndInlineTable);
+                        return true;
+                    }
+
+                    throw Error(TomlResourceStrings.Format_Invalid_TomlInvalidInlineTable);
+                }
+
+                case TomlScanState.LineEnd:
+                default:
+                {
+                    SkipInlineWhitespace();
+                    if (Eof)
+                    {
+                        if (!_isFinalBlock)
+                        {
+                            // The expression is complete; pause in LineEnd so a continuation block may not start a
+                            // new expression on the same line.
+                            return false;
+                        }
+
                         _state = TomlScanState.Expression;
                         continue;
                     }
+
+                    if (Current == (byte)'#')
+                        return TryScanComment();
+
+                    if (PendingCarriageReturn())
+                        return NeedMoreData();
+
+                    if (!AtNewline())
+                        throw Error(TomlResourceStrings.Format_Invalid_TomlExpectedNewline);
+
+                    ConsumeNewline();
+                    _state = TomlScanState.Expression;
+                    continue;
+                }
             }
         }
     }

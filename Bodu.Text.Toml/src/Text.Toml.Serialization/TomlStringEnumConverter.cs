@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlStringEnumConverter.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -77,6 +77,6 @@ public sealed class TomlStringEnumConverter
         ThrowHelper.ThrowIfNull(typeToConvert);
 
         Type converterType = typeof(EnumConverter<>).MakeGenericType(typeToConvert);
-        return (TomlConverter)Activator.CreateInstance(converterType, new object?[] { _namingPolicy, _allowIntegerValues }) !;
+        return (TomlConverter)Activator.CreateInstance(converterType, new object?[] { _namingPolicy, _allowIntegerValues })!;
     }
 }

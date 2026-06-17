@@ -509,7 +509,7 @@ public sealed partial class TomlSerializerOptions
         if (converterType.GetConstructor(Type.EmptyTypes) is null)
             throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Arg_Invalid_ConverterNoParameterlessCtor, converterType));
 
-        var converter = (TomlConverter)Activator.CreateInstance(converterType) !;
+        var converter = (TomlConverter)Activator.CreateInstance(converterType)!;
         return Materialize(converter, targetType);
     }
 

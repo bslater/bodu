@@ -74,7 +74,7 @@ internal sealed class CollectionConverter<TCollection, TElement>
         {
             try
             {
-                items.Add((TElement)_elementConverter.ReadAsObject(ref reader, typeof(TElement), options) !);
+                items.Add((TElement)_elementConverter.ReadAsObject(ref reader, typeof(TElement), options)!);
             }
             catch (TomlSerializationException ex)
             {

@@ -223,11 +223,11 @@ public sealed class NotableDateService
                 return KeepBestPriority(group, higherWins);
 
             case CollisionPolicy.CategoryPriority:
-                {
+            {
                 int bestRank = group.Max(n => CategoryRank(n.Category));
-                    var topCategory = group.Where(n => CategoryRank(n.Category) == bestRank).ToList();
-                    return KeepBestPriority(topCategory, higherWins);
-                }
+                var topCategory = group.Where(n => CategoryRank(n.Category) == bestRank).ToList();
+                return KeepBestPriority(topCategory, higherWins);
+            }
 
             case CollisionPolicy.Custom:
                 return _collisionResolver?.Resolve(date, group) ?? group;
@@ -318,7 +318,7 @@ public sealed class NotableDateService
             .SelectMany(definition => definition.Rules)
             .Select(rule => rule.Applicability.Calendar)
             .Distinct()
-            .OrderBy(calendar => calendar)];
+            .Order()];
 
     /// <summary>
     /// Phase one: calculates every applicable actual occurrence and seeds the occupied-day set with the actual dates of

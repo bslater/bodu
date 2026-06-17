@@ -61,11 +61,6 @@ public abstract class FileExchangeRateCacheBase<TOptions>
         _directory = string.IsNullOrWhiteSpace(options.CacheDirectory)
             ? Path.Combine(Path.GetTempPath(), "bodu-exchange-rates")
             : options.CacheDirectory!;
-
-        // Eagerly create the provider directory so a misconfigured or unwritable path surfaces here rather than on the
-        // first read or write. Any IOException / UnauthorizedAccessException propagates from the constructor.
-        if (options.ValidateStorageOnStart)
-            Directory.CreateDirectory(Path.Combine(_directory, SanitizeProvider(Provider)));
     }
 
     /// <inheritdoc />
@@ -108,12 +103,10 @@ public abstract class FileExchangeRateCacheBase<TOptions>
         }
         catch (IOException)
         {
-            if (Options.ThrowOnStorageFailure) throw;
             return CachePairState.Empty;
         }
         catch (UnauthorizedAccessException)
         {
-            if (Options.ThrowOnStorageFailure) throw;
             return CachePairState.Empty;
         }
     }
@@ -136,7 +129,7 @@ public abstract class FileExchangeRateCacheBase<TOptions>
                 return true;
             }
 
-            Directory.CreateDirectory(Path.GetDirectoryName(path) !);
+            Directory.CreateDirectory(Path.GetDirectoryName(path)!);
 
             string text = Serialize(state);
             WriteAtomic(path, text);
@@ -147,16 +140,12 @@ public abstract class FileExchangeRateCacheBase<TOptions>
         }
         catch (IOException)
         {
-            if (Options.ThrowOnStorageFailure) throw;
-
             // Best-effort cache: a failed write must not break rate retrieval. Report the failure so the caller can
             // refetch rather than trust coverage that was never persisted.
             return false;
         }
         catch (UnauthorizedAccessException)
         {
-            if (Options.ThrowOnStorageFailure) throw;
-
             // Best-effort cache: see above.
             return false;
         }

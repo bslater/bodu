@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TypeMetadata.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -170,7 +170,7 @@ internal sealed class TypeMetadata
     internal object Construct(object?[]? arguments) =>
         _constructor is not null && _constructorParameters.Length > 0
             ? _constructor.Invoke(arguments)
-            : _constructor?.Invoke(null) ?? Activator.CreateInstance(Type) !;
+            : _constructor?.Invoke(null) ?? Activator.CreateInstance(Type)!;
 
     /// <summary>
     /// Determines whether the type declares a public parameterless constructor.

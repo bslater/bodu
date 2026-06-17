@@ -89,7 +89,7 @@ internal sealed class DictionaryConverter<TDictionary, TKey, TValue>
         {
             TKey key = ParseKey(reader.GetString());
             reader.Read();
-            entries[key] = (TValue)_valueConverter.ReadAsObject(ref reader, typeof(TValue), options) !;
+            entries[key] = (TValue)_valueConverter.ReadAsObject(ref reader, typeof(TValue), options)!;
         }
 
         return Materialize(entries);
@@ -136,7 +136,7 @@ internal sealed class DictionaryConverter<TDictionary, TKey, TValue>
             DictionaryKeyKind.String => (string)(object)key,
             DictionaryKeyKind.Integer => ((IFormattable)key).ToString(null, CultureInfo.InvariantCulture),
             DictionaryKeyKind.Guid => ((Guid)(object)key).ToString("D", CultureInfo.InvariantCulture),
-            _ => key.ToString() !,
+            _ => key.ToString()!,
         };
 
     /// <summary>

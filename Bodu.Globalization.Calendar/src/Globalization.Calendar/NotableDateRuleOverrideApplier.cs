@@ -61,38 +61,38 @@ internal static class NotableDateRuleOverrideApplier
         switch (operation)
         {
             case RemoveRuleOverride remove:
-                {
-                    var rules = definition.Rules.ToList();
+            {
+                var rules = definition.Rules.ToList();
                 int removed = rules.RemoveAll(r => string.Equals(r.Id, remove.RuleRef, StringComparison.Ordinal));
-                    if (removed == 0)
-                    {
-                        AddRuleNotFound(diagnostics, remove.RuleRef, definition.Id);
-                        return definition;
-                    }
-
-                    return definition.WithRules(rules);
+                if (removed == 0)
+                {
+                    AddRuleNotFound(diagnostics, remove.RuleRef, definition.Id);
+                    return definition;
                 }
+
+                return definition.WithRules(rules);
+            }
 
             case PatchRuleOverride patch:
-                {
-                    var rules = definition.Rules.ToList();
+            {
+                var rules = definition.Rules.ToList();
                 int ruleIndex = rules.FindIndex(r => string.Equals(r.Id, patch.RuleRef, StringComparison.Ordinal));
-                    if (ruleIndex < 0)
-                    {
-                        AddRuleNotFound(diagnostics, patch.RuleRef, definition.Id);
-                        return definition;
-                    }
-
-                    rules[ruleIndex] = ApplyPatch(rules[ruleIndex], patch);
-                    return definition.WithRules(rules);
+                if (ruleIndex < 0)
+                {
+                    AddRuleNotFound(diagnostics, patch.RuleRef, definition.Id);
+                    return definition;
                 }
+
+                rules[ruleIndex] = ApplyPatch(rules[ruleIndex], patch);
+                return definition.WithRules(rules);
+            }
 
             case AddRuleOverride add:
-                {
-                    var rules = definition.Rules.ToList();
-                    rules.Add(add.Rule);
-                    return definition.WithRules(rules);
-                }
+            {
+                var rules = definition.Rules.ToList();
+                rules.Add(add.Rule);
+                return definition.WithRules(rules);
+            }
 
             default:
                 return definition;

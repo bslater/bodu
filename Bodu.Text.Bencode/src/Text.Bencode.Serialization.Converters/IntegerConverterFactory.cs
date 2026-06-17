@@ -55,6 +55,6 @@ internal sealed class IntegerConverterFactory
             return new UInt128Converter();
 
         Type converterType = typeof(IntegerConverter<>).MakeGenericType(typeToConvert);
-        return (BencodeConverter)Activator.CreateInstance(converterType) !;
+        return (BencodeConverter)Activator.CreateInstance(converterType)!;
     }
 }

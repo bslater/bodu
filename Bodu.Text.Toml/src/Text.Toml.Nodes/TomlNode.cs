@@ -305,26 +305,26 @@ public abstract class TomlNode
                 return TomlValue.Create(reader.GetTimeOnly());
 
             case TomlTokenType.StartArray:
-                {
-                    var array = new TomlArray();
-                    while (reader.Read() && reader.TokenType != TomlTokenType.EndArray)
-                        array.Add(ReadFrom(ref reader, options));
+            {
+                var array = new TomlArray();
+                while (reader.Read() && reader.TokenType != TomlTokenType.EndArray)
+                    array.Add(ReadFrom(ref reader, options));
 
-                    return array;
-                }
+                return array;
+            }
 
             case TomlTokenType.StartTable:
+            {
+                var obj = new TomlObject(options);
+                while (reader.Read() && reader.TokenType != TomlTokenType.EndTable)
                 {
-                    var obj = new TomlObject(options);
-                    while (reader.Read() && reader.TokenType != TomlTokenType.EndTable)
-                    {
                     string key = reader.GetString();
-                        reader.Read();
-                        obj[key] = ReadFrom(ref reader, options);
-                    }
-
-                    return obj;
+                    reader.Read();
+                    obj[key] = ReadFrom(ref reader, options);
                 }
+
+                return obj;
+            }
 
             default:
                 throw new TomlSerializationException(

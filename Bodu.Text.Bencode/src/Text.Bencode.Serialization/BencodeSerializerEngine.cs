@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeSerializerEngine.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -71,6 +71,6 @@ internal static class BencodeSerializerEngine
         if (!reader.Read())
             throw new BencodeSerializationException(string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Op_Invalid_UnexpectedEndOfInput, typeof(T)));
 
-        return (T)converter.ReadAsObject(ref reader, typeof(T), options) !;
+        return (T)converter.ReadAsObject(ref reader, typeof(T), options)!;
     }
 }

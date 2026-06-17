@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeStringEnumConverter.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -77,6 +77,6 @@ public sealed class BencodeStringEnumConverter
         ThrowHelper.ThrowIfNull(typeToConvert);
 
         Type converterType = typeof(EnumConverter<>).MakeGenericType(typeToConvert);
-        return (BencodeConverter)Activator.CreateInstance(converterType, new object?[] { _namingPolicy, _allowIntegerValues }) !;
+        return (BencodeConverter)Activator.CreateInstance(converterType, new object?[] { _namingPolicy, _allowIntegerValues })!;
     }
 }

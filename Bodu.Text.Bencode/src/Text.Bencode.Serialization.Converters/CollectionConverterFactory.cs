@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CollectionConverterFactory.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -36,7 +36,7 @@ internal sealed class CollectionConverterFactory
         _ = TryGetInfo(typeToConvert, out Type? elementType, out CollectionStrategy strategy);
         BencodeConverter elementConverter = options.GetConverter(elementType!);
         Type converterType = typeof(CollectionConverter<,>).MakeGenericType(typeToConvert, elementType!);
-        return (BencodeConverter)Activator.CreateInstance(converterType, elementConverter, strategy) !;
+        return (BencodeConverter)Activator.CreateInstance(converterType, elementConverter, strategy)!;
     }
 
     /// <summary>

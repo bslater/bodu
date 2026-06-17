@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeSerializerOptions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -443,7 +443,7 @@ public sealed class BencodeSerializerOptions
         if (converterType.GetConstructor(Type.EmptyTypes) is null)
             throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Arg_Invalid_ConverterNoParameterlessCtor, converterType));
 
-        var converter = (BencodeConverter)Activator.CreateInstance(converterType) !;
+        var converter = (BencodeConverter)Activator.CreateInstance(converterType)!;
         return Materialize(converter, targetType);
     }
 

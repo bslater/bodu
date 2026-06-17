@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ObjectConverterFactory.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -43,6 +43,6 @@ internal sealed class ObjectConverterFactory
         ThrowHelper.ThrowIfNull(typeToConvert);
 
         Type converterType = typeof(ObjectConverter<>).MakeGenericType(typeToConvert);
-        return (TomlConverter)Activator.CreateInstance(converterType) !;
+        return (TomlConverter)Activator.CreateInstance(converterType)!;
     }
 }
