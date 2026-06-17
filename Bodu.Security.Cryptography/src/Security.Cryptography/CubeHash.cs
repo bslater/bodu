@@ -130,7 +130,6 @@ public sealed class CubeHash
     /// <summary>The 32-word (1024-bit) internal state updated in place across permutation rounds.</summary>
     private uint[] _state;
 
-
     /// <summary>
     /// Initializes a new instance of the <see cref="CubeHash" /> class with default parameters: 512-bit output, 32-byte
     /// input block, and 16 / 16 / 32 initialization / transform / finalization rounds.

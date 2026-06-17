@@ -123,7 +123,6 @@ public abstract class DeferredFinalBlockHashAlgorithm<T>
     {
         ThrowIfDisposed();
 
-
         int pos = 0;
         int remaining = source.Length;
         int blockBytes = BlockSize / 8;
@@ -162,7 +161,6 @@ public abstract class DeferredFinalBlockHashAlgorithm<T>
     protected override byte[] HashFinal()
     {
         ThrowIfDisposed();
-
 
         Span<byte> residualSpan = _residualBlock.Span;
 

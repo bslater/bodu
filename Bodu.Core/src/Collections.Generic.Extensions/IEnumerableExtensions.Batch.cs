@@ -115,7 +115,8 @@ public static partial class IEnumerableExtensions
                 do
                 {
                     batch[count++] = selector(enumerator.Current, index++);
-                } while (count < size && enumerator.MoveNext());
+                }
+                while (count < size && enumerator.MoveNext());
 
                 // Trim the final batch if it did not fill completely, to avoid exposing
                 // unused default(T) slots to callers.

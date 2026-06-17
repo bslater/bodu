@@ -758,7 +758,7 @@ public static partial class DateTimeExtensions
     private static long GetFirstDateOfWeekInMonthTicks(DateTime dateTime, DayOfWeek dayOfWeek)
     {
         long ticks = DateTimeExtensions.GetFirstDateOfMonthTicks(dateTime);
-        ticks += (dayOfWeek - DateTimeExtensions.GetDayOfWeekFromTicks(ticks) + 7) % 7 * DateTimeExtensions.TicksPerDay;
+        ticks += ((dayOfWeek - DateTimeExtensions.GetDayOfWeekFromTicks(ticks) + 7) % 7) * DateTimeExtensions.TicksPerDay;
         return ticks;
     }
 
@@ -789,7 +789,7 @@ public static partial class DateTimeExtensions
     private static long GetFirstDateOfWeekInMonthTicks(int year, int month, DayOfWeek dayOfWeek)
     {
         long ticks = DateTimeExtensions.GetDateTicks(year, month, 1);
-        ticks += (dayOfWeek - DateTimeExtensions.GetDayOfWeekFromTicks(ticks) + 7) % 7 * DateTimeExtensions.TicksPerDay;
+        ticks += ((dayOfWeek - DateTimeExtensions.GetDayOfWeekFromTicks(ticks) + 7) % 7) * DateTimeExtensions.TicksPerDay;
         return ticks;
     }
 
@@ -847,7 +847,7 @@ public static partial class DateTimeExtensions
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static long GetLastDateOfWeekInMonth(long ticks, DayOfWeek dayOfWeek)
     {
-        ticks += (dayOfWeek - DateTimeExtensions.GetDayOfWeekFromTicks(ticks) - 7) % 7 * DateTimeExtensions.TicksPerDay;
+        ticks += ((dayOfWeek - DateTimeExtensions.GetDayOfWeekFromTicks(ticks) - 7) % 7) * DateTimeExtensions.TicksPerDay;
         return ticks;
     }
 
@@ -889,7 +889,7 @@ public static partial class DateTimeExtensions
     private static long GetLastDateOfWeekInMonthAsTicks(int year, int month, DayOfWeek dayOfWeek)
     {
         long ticks = DateTimeExtensions.GetDateTicks(year, month, DateTime.DaysInMonth(year, month));
-        ticks += (dayOfWeek - DateTimeExtensions.GetDayOfWeekFromTicks(ticks) - 7) % 7 * DateTimeExtensions.TicksPerDay;
+        ticks += ((dayOfWeek - DateTimeExtensions.GetDayOfWeekFromTicks(ticks) - 7) % 7) * DateTimeExtensions.TicksPerDay;
         return ticks;
     }
 

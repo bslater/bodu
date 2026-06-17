@@ -6,7 +6,6 @@
 
 using System.Globalization;
 
-
 namespace Bodu.IO.Hashing.CheckDigits;
 
 /// <summary>
@@ -177,6 +176,7 @@ public sealed class Code39Mod43
     {
         int value = TryValueOf(ch);
         if (value < 0)
+        {
             throw new ArgumentOutOfRangeException(
                 paramName,
                 ch,
@@ -187,6 +187,7 @@ public sealed class Code39Mod43
                     (int)ch,
                     "Code 39",
                     "'0'-'9', 'A'-'Z', '-', '.', space, '$', '/', '+', or '%'"));
+        }
 
         return value;
     }

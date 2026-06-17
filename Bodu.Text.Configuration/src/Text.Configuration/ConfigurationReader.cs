@@ -255,7 +255,7 @@ internal sealed partial class ConfigurationReader
                 break;
 
             case IniDuplicateSectionBehavior.MergeAdjacent:
-            {
+                {
                 IEqualityComparer<string> comparer = _options.KeyOptions.CaseSensitive
                     ? StringComparer.Ordinal
                     : StringComparer.OrdinalIgnoreCase;
@@ -263,7 +263,7 @@ internal sealed partial class ConfigurationReader
                     return document.Sections[^1];
             }
 
-            break;
+                break;
         }
 
         IniSection created = new(name, [], _options.KeyOptions.CaseSensitive);

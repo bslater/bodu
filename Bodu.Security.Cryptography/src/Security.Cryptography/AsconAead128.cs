@@ -265,15 +265,19 @@ public sealed class AsconAead128
         ThrowIfAadNotProcessed();
 
         if (ciphertextWithTag.Length < TagBytes)
+        {
             throw new ArgumentException(
                 string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_CiphertextTooShort, TagBytes),
                 nameof(ciphertextWithTag));
+        }
 
         int ptLen = ciphertextWithTag.Length - TagBytes;
         if (output.Length < ptLen)
+        {
             throw new ArgumentException(
                 string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, ptLen),
                 nameof(output));
+        }
 
         try
         {
@@ -368,9 +372,11 @@ public sealed class AsconAead128
 
         int required = plaintext.Length + TagBytes;
         if (output.Length < required)
+        {
             throw new ArgumentException(
                 string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, required),
                 nameof(output));
+        }
 
         try
         {
@@ -529,7 +535,6 @@ public sealed class AsconAead128
         if (!_aadProcessed)
             throw new InvalidOperationException(CryptoResourceStrings.Crypt_Invalid_AssociatedDataNotProcessed);
     }
-
 
     /// <summary>
     /// Throws <see cref="InvalidOperationException" /> if this instance has already completed encryption or decryption.

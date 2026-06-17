@@ -213,9 +213,11 @@ public static partial class EncodingExtensions
         int total = preamble.Length + encodedCount;
 
         if (destination.Length < total)
+        {
             throw new ArgumentException(
                 ResourceStrings.Arg_Invalid_DestinationTooSmallForEncoded,
                 nameof(destination));
+        }
 
         if (!preamble.IsEmpty) preamble.CopyTo(destination);
         if (encodedCount > 0) encoding.GetBytes(chars, destination.Slice(preamble.Length));

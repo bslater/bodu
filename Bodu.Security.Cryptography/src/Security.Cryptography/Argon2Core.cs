@@ -64,9 +64,13 @@ internal static class Argon2Core
             InitializeBlocks(memory, h0, lanes, laneLength);
 
             for (int pass = 0; pass < parameters.Iterations; pass++)
+            {
                 for (int slice = 0; slice < SyncPoints; slice++)
+                {
                     for (int lane = 0; lane < lanes; lane++)
                         FillSegment(type, parameters, memory, pass, slice, lane, lanes, laneLength, segmentLength);
+                }
+            }
 
             Finalize(memory, lanes, laneLength, tag);
         }
@@ -144,7 +148,7 @@ internal static class Argon2Core
                 BinaryPrimitives.WriteInt32LittleEndian(input.Slice(Argon2Blake2b.MaxDigestBytes + 4, 4), lane);
 
                 Argon2Blake2b.HashVariableLength(input, block);
-                LoadBlockLE(block, BlockSpan(memory, lane * laneLength + column));
+                LoadBlockLE(block, BlockSpan(memory, (lane * laneLength) + column));
             }
         }
     }
@@ -200,7 +204,7 @@ internal static class Argon2Core
 
         for (int i = startIndex; i < segmentLength; i++)
         {
-            int column = slice * segmentLength + i;
+            int column = (slice * segmentLength) + i;
             int prevColumn = column == 0 ? laneLength - 1 : column - 1;
 
             ulong pseudoRand;
@@ -212,7 +216,7 @@ internal static class Argon2Core
             }
             else
             {
-                pseudoRand = BlockSpan(memory, lane * laneLength + prevColumn)[0];
+                pseudoRand = BlockSpan(memory, (lane * laneLength) + prevColumn)[0];
             }
 
             uint refLane = (pass == 0 && slice == 0)
@@ -223,9 +227,9 @@ internal static class Argon2Core
                 pass, slice, i, segmentLength, laneLength,
                 (uint)(pseudoRand & 0xFFFFFFFF), refLane == (uint)lane);
 
-            ReadOnlySpan<ulong> prevBlock = BlockSpan(memory, lane * laneLength + prevColumn);
-            ReadOnlySpan<ulong> refBlock = BlockSpan(memory, (int)refLane * laneLength + refIndex);
-            Span<ulong> curBlock = BlockSpan(memory, lane * laneLength + column);
+            ReadOnlySpan<ulong> prevBlock = BlockSpan(memory, (lane * laneLength) + prevColumn);
+            ReadOnlySpan<ulong> refBlock = BlockSpan(memory, ((int)refLane * laneLength) + refIndex);
+            Span<ulong> curBlock = BlockSpan(memory, (lane * laneLength) + column);
 
             // Version 0x10 always overwrites; version 0x13 XORs on subsequent passes.
             bool withXor = pass != 0 && parameters.Version != Argon2Parameters.Version10;
@@ -264,11 +268,15 @@ internal static class Argon2Core
         if (pass == 0)
         {
             if (slice == 0)
+            {
                 referenceAreaSize = index - 1;
+            }
             else
+            {
                 referenceAreaSize = sameLane
                     ? (slice * segmentLength) + index - 1
                     : (slice * segmentLength) + (index == 0 ? -1 : 0);
+            }
         }
         else
         {
@@ -304,7 +312,7 @@ internal static class Argon2Core
 
         for (int lane = 1; lane < lanes; lane++)
         {
-            ReadOnlySpan<ulong> last = BlockSpan(memory, lane * laneLength + laneLength - 1);
+            ReadOnlySpan<ulong> last = BlockSpan(memory, (lane * laneLength) + laneLength - 1);
             for (int k = 0; k < WordsPerBlock; k++)
                 c[k] ^= last[k];
         }
@@ -334,8 +342,10 @@ internal static class Argon2Core
 
         r.CopyTo(tmp);
         if (withXor)
+        {
             for (int k = 0; k < WordsPerBlock; k++)
                 tmp[k] ^= next[k];
+        }
 
         Permute(r);
 
@@ -357,25 +367,41 @@ internal static class Argon2Core
         for (int col = 0; col < 8; col++)
         {
             int b = col * 2;
-            column[0] = block[b]; column[1] = block[b + 1];
-            column[2] = block[b + 16]; column[3] = block[b + 17];
-            column[4] = block[b + 32]; column[5] = block[b + 33];
-            column[6] = block[b + 48]; column[7] = block[b + 49];
-            column[8] = block[b + 64]; column[9] = block[b + 65];
-            column[10] = block[b + 80]; column[11] = block[b + 81];
-            column[12] = block[b + 96]; column[13] = block[b + 97];
-            column[14] = block[b + 112]; column[15] = block[b + 113];
+            column[0] = block[b];
+            column[1] = block[b + 1];
+            column[2] = block[b + 16];
+            column[3] = block[b + 17];
+            column[4] = block[b + 32];
+            column[5] = block[b + 33];
+            column[6] = block[b + 48];
+            column[7] = block[b + 49];
+            column[8] = block[b + 64];
+            column[9] = block[b + 65];
+            column[10] = block[b + 80];
+            column[11] = block[b + 81];
+            column[12] = block[b + 96];
+            column[13] = block[b + 97];
+            column[14] = block[b + 112];
+            column[15] = block[b + 113];
 
             Round(column);
 
-            block[b] = column[0]; block[b + 1] = column[1];
-            block[b + 16] = column[2]; block[b + 17] = column[3];
-            block[b + 32] = column[4]; block[b + 33] = column[5];
-            block[b + 48] = column[6]; block[b + 49] = column[7];
-            block[b + 64] = column[8]; block[b + 65] = column[9];
-            block[b + 80] = column[10]; block[b + 81] = column[11];
-            block[b + 96] = column[12]; block[b + 97] = column[13];
-            block[b + 112] = column[14]; block[b + 113] = column[15];
+            block[b] = column[0];
+            block[b + 1] = column[1];
+            block[b + 16] = column[2];
+            block[b + 17] = column[3];
+            block[b + 32] = column[4];
+            block[b + 33] = column[5];
+            block[b + 48] = column[6];
+            block[b + 49] = column[7];
+            block[b + 64] = column[8];
+            block[b + 65] = column[9];
+            block[b + 80] = column[10];
+            block[b + 81] = column[11];
+            block[b + 96] = column[12];
+            block[b + 97] = column[13];
+            block[b + 112] = column[14];
+            block[b + 113] = column[15];
         }
     }
 

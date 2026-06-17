@@ -298,7 +298,7 @@ public static partial class NumericExtensions
 
         ulong divisor = Pow10(count);
         ulong multiplier = Pow10(length - count);
-        return (value % divisor * multiplier) + (value / divisor);
+        return ((value % divisor) * multiplier) + (value / divisor);
     }
 
     /// <summary>

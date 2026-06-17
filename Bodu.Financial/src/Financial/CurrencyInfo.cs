@@ -51,7 +51,7 @@ public sealed record CurrencyInfo(
     /// </summary>
     /// <value>The display symbol associated with the currency.</value>
     /// <returns>The currency symbol, or an empty string.</returns>
-    public string Symbol { get; init; } = "";
+    public string Symbol { get; init; } = string.Empty;
 
     /// <summary>
     /// Gets the currency's internationally disambiguated symbol (for example, <c>"US$"</c> or <c>"R$"</c>), or an empty
@@ -59,14 +59,14 @@ public sealed record CurrencyInfo(
     /// </summary>
     /// <value>The unambiguous symbol used where the bare <see cref="Symbol" /> would be ambiguous.</value>
     /// <returns>The international symbol, or an empty string.</returns>
-    public string InternationalSymbol { get; init; } = "";
+    public string InternationalSymbol { get; init; } = string.Empty;
 
     /// <summary>
     /// Gets the currency's name in its primary native language, or an empty string when none is supplied.
     /// </summary>
     /// <value>The localized currency name.</value>
     /// <returns>The native name, or an empty string.</returns>
-    public string NativeName { get; init; } = "";
+    public string NativeName { get; init; } = string.Empty;
 
     /// <summary>
     /// Gets the ISO 3166 region codes in which the currency is used.

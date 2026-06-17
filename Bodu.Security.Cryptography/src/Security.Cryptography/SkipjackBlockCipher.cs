@@ -614,5 +614,4 @@ public sealed class SkipjackBlockCipher
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfDisposed() =>
         ObjectDisposedException.ThrowIf(_disposed, this);
-
 }

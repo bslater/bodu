@@ -300,8 +300,10 @@ public sealed class ExchangeRateJsonConverter
     private static DateOnly ReadDateProperty(ref Utf8JsonReader reader, string propertyName)
     {
         if (reader.TokenType != JsonTokenType.String)
+        {
             throw new JsonException(
                 string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Json_Invalid_PropertyMustBeDateString, propertyName));
+        }
 
         string? text = reader.GetString();
         return text is not null
@@ -323,8 +325,10 @@ public sealed class ExchangeRateJsonConverter
     private static DateTimeOffset ReadInstantProperty(ref Utf8JsonReader reader, string propertyName)
     {
         if (reader.TokenType != JsonTokenType.String)
+        {
             throw new JsonException(
                 string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Json_Invalid_PropertyMustBeDateString, propertyName));
+        }
 
         string? text = reader.GetString();
         return text is not null

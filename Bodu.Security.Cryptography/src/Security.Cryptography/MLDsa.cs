@@ -63,9 +63,9 @@ namespace Bodu.Security.Cryptography;
 public abstract class MLDsa
     : AsymmetricAlgorithm
 {
-
     /// <summary>The maximum length, in bytes, of the signature context string.</summary>
     public const int MaxContextSizeInBytes = 255;
+
     /// <summary>The size, in bytes, of the private seed ξ accepted by <see cref="ImportPrivateSeed" />.</summary>
     public const int PrivateSeedSizeInBytes = 32;
 

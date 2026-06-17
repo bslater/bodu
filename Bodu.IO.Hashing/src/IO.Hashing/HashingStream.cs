@@ -46,7 +46,6 @@ namespace Bodu.IO.Hashing;
 public sealed class HashingStream
     : Stream
 {
-
     /// <summary>The algorithm that accumulates every byte transferred through this stream.</summary>
     private readonly NonCryptographicHashAlgorithm _algorithm;
 

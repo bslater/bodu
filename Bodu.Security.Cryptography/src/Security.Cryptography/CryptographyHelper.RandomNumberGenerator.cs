@@ -111,7 +111,6 @@ internal static partial class CryptographyHelper
     internal static void FillWithRandomBytes(Span<byte> buffer) =>
         RandomNumberGenerator.Fill(buffer);
 
-
     /// <summary>
     /// Returns a new byte array filled with cryptographically secure random bytes, drawn uniformly over the full
     /// <c>0x00</c>–<c>0xFF</c> range.

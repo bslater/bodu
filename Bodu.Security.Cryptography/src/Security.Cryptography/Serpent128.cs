@@ -254,5 +254,4 @@ public sealed class Serpent128
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfDisposed() =>
         ObjectDisposedException.ThrowIf(_disposed, this);
-
 }

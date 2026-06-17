@@ -145,8 +145,10 @@ public readonly partial struct Money :
         if (specifier == 'R')
         {
             if (elideIfMatched || hasPrecisionSuffix)
+            {
                 throw new FormatException(
                     string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Format_Invalid_FormatSpecifier, format.ToString()));
+            }
 
             return string.Concat(
                 isoCode,

@@ -20,7 +20,6 @@ namespace Bodu.Security.Cryptography;
 /// </remarks>
 internal partial struct Ed25519Point
 {
-
     /// <summary>The curve constant d = −121665/121666 mod p, decoded from its canonical encoding at type initialization.</summary>
     private static readonly Curve25519FieldElement s_d = Curve25519FieldElement.FromBytes(
         Convert.FromHexString("a3785913ca4deb75abd841414d0a700098e879777940c78c73fe6f2bee6c0352"));

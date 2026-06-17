@@ -118,7 +118,6 @@ public abstract partial class Skein<T>
     /// <summary>A value indicating whether <see cref="_initialChainingValue" /> currently holds a valid cached chaining value.</summary>
     private bool _isChainingValueCached;
 
-
     /// <summary>
     /// Initializes a new instance of the <see cref="Skein{T}" /> class using a pre-constructed cipher supplied by a
     /// derived variant.
@@ -196,12 +195,14 @@ public abstract partial class Skein<T>
             ThrowHelper.ThrowIfNull(value);
 
             if (value.Length > MaxKeySize / 8)
+            {
                 throw new CryptographicException(
                     string.Format(
                         CultureInfo.CurrentCulture,
                         CryptoResourceStrings.Crypt_Invalid_KeySize,
                         value.Length * 8,
                         $"0..{MaxKeySize}"));
+            }
 
             KeyValue = value.Copy();
             _isChainingValueCached = false;
@@ -253,7 +254,6 @@ public abstract partial class Skein<T>
         ThrowHelper.ThrowIfNull(array);
         ThrowIfDisposed();
 
-
         HashCore(array.AsSpan(ibStart, cbSize));
     }
 
@@ -261,7 +261,6 @@ public abstract partial class Skein<T>
     protected override void HashCore(ReadOnlySpan<byte> source)
     {
         ThrowIfDisposed();
-
 
         EnsureChainingStateReadyForHashing();
         AbsorbMessage(source);
@@ -278,7 +277,6 @@ public abstract partial class Skein<T>
     protected override byte[] HashFinal()
     {
         ThrowIfDisposed();
-
 
         EnsureChainingStateReadyForHashing();
 

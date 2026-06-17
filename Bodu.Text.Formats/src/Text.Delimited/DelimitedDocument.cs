@@ -35,7 +35,6 @@ namespace Bodu.Text.Delimited;
 /// </example>
 public sealed class DelimitedDocument
 {
-
     /// <summary>
     /// Initializes a new instance of the <see cref="DelimitedDocument" /> class.
     /// </summary>

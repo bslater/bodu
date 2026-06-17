@@ -276,5 +276,4 @@ public abstract partial class ThreefishBlockCipher
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected void ThrowIfDisposed() =>
         ObjectDisposedException.ThrowIf(_disposed, this);
-
 }

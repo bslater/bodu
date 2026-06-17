@@ -16,7 +16,6 @@ namespace Bodu.Security.Cryptography;
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1001:Add braces (when expression spans over multiple lines)", Justification = "Single-statement throw guards are intentionally brace-free to maintain density; these are pure guard-clause helpers that do not benefit from braces.")]
 internal static partial class CryptographyThrowHelper
 {
-
     /// <summary>
     /// Throws an <see cref="InvalidOperationException" /> if the transform has already completed.
     /// </summary>
@@ -87,6 +86,7 @@ internal static partial class CryptographyThrowHelper
                     paramArrayName));
         }
     }
+
     /// <summary>
     /// Throws an <see cref="InvalidOperationException" /> if associated data has already been processed.
     /// </summary>

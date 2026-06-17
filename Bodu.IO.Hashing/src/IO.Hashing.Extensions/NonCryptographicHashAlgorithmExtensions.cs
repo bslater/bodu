@@ -77,7 +77,7 @@ namespace Bodu.IO.Hashing.Extensions;
 /// byte[] digest = xx.ComputeHash(File.ReadAllBytes("payload.bin"));
 ///
 /// // 2. Stream-hash a large file without loading it into memory.
-/// using FileStream fs = File.OpenRead("payload.bin"); 
+/// using FileStream fs = File.OpenRead("payload.bin");
 /// byte[] streamDigest = xx.ComputeHash(fs);
 ///
 /// // 3. Verify a downloaded artefact against an expected hex digest, without throwing on a malformed string.

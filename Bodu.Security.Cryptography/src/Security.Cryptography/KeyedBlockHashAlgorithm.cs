@@ -146,12 +146,14 @@ public abstract class KeyedBlockHashAlgorithm<T>
             ThrowHelper.ThrowIfNull(value);
 
             if (value.Length != KeySizeValue / 8)
+            {
                 throw new CryptographicException(
                     string.Format(
                         CultureInfo.CurrentCulture,
                         CryptoResourceStrings.Crypt_Invalid_KeySize,
                         value.Length * 8,
                         KeySizeValue));
+            }
 
             // Defensive copy ensures external references cannot mutate the internal key.
             KeyValue = value.Copy();

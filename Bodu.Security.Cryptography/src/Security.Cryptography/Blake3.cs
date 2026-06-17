@@ -88,6 +88,7 @@ public sealed partial class Blake3
 
     /// <summary>The flag applied to the last compression block of every chunk.</summary>
     private const uint FlagChunkEnd = 2u;
+
     // ---- domain-separation flags (§2.5 of the BLAKE3 specification) ----
 
     /// <summary>The flag applied to the first compression block of every chunk.</summary>
@@ -563,8 +564,10 @@ public sealed partial class Blake3
         }
 
         if (_cvStackDepth >= MaxCvStackDepth)
+        {
             throw new InvalidOperationException(
                 string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Op_Invalid_Blake3CvStackDepth, MaxCvStackDepth));
+        }
 
         working.CopyTo(_cvStack.AsSpan(_cvStackDepth * 8, 8));
         _cvStackDepth++;

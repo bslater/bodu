@@ -80,6 +80,7 @@ public static partial class Base32
     /// <returns>An <see cref="OperationStatus" /> describing the outcome.</returns>
     public static OperationStatus FromBase32String(ReadOnlySpan<byte> utf8Source, Span<byte> destination, out int bytesConsumed, out int bytesWritten) =>
         DecodeFromUtf8(utf8Source, destination, out bytesConsumed, out bytesWritten, Base32Variant.Standard, BaseFormatStyles.None, isFinalBlock: true);
+
     /// <summary>
     /// Encodes <paramref name="inArray" /> into a Base32 string using the Standard variant with default formatting.
     /// </summary>

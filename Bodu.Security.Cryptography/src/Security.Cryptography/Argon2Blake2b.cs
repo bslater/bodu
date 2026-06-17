@@ -185,6 +185,7 @@ internal static class Argon2Blake2b
         s_iv.CopyTo(v[8..]);
 
         v[12] ^= counter;     // low 64 bits of the byte counter
+
         // v[13] ^= 0;        // high 64 bits — always zero for Argon2's inputs
         if (last)
             v[14] ^= 0xFFFF_FFFF_FFFF_FFFFUL;

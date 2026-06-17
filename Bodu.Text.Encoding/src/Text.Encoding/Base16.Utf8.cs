@@ -64,7 +64,7 @@ public static partial class Base16
         for (int i = start; i < source.Length; i++)
         {
             byte b = source[i];
-            if (ignoreWhitespace && b is ((byte)' ') or ((byte)'\t') or ((byte)'\r') or ((byte)'\n'))
+            if (ignoreWhitespace && b is (byte)' ' or (byte)'\t' or (byte)'\r' or (byte)'\n')
                 continue;
 
             keptToSource[kept] = i;

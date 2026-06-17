@@ -267,5 +267,4 @@ public sealed class Twofish
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfDisposed() =>
         ObjectDisposedException.ThrowIf(_disposed, this);
-
 }

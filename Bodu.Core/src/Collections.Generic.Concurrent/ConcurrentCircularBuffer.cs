@@ -312,7 +312,8 @@ public sealed partial class ConcurrentCircularBuffer<T>
 
         T? _;
         for (int i = 0; i < count && TryDequeue(out _); i++)
-        { }
+        {
+        }
     }
 
     /// <summary>

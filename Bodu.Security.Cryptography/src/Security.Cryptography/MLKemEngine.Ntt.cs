@@ -87,7 +87,7 @@ internal static partial class MLKemEngine
             int b0 = right[2 * i];
             int b1 = right[(2 * i) + 1];
 
-            destination[2 * i] = (int)((((long)a0 * b0) + (((long)a1 * b1 % Q) * s_gammas[i])) % Q);
+            destination[2 * i] = (int)((((long)a0 * b0) + ((((long)a1 * b1) % Q) * s_gammas[i])) % Q);
             destination[(2 * i) + 1] = (int)((((long)a0 * b1) + ((long)a1 * b0)) % Q);
         }
     }
@@ -132,9 +132,9 @@ internal static partial class MLKemEngine
         while (exponent > 0)
         {
             if ((exponent & 1) != 0)
-                result = result * basis % Q;
+                result = (result * basis) % Q;
 
-            basis = basis * basis % Q;
+            basis = (basis * basis) % Q;
             exponent >>= 1;
         }
 

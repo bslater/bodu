@@ -162,8 +162,10 @@ public sealed class MoneyBagJsonConverter
             {
                 string? text = reader.GetString();
                 if (text is null || !decimal.TryParse(text, NumberStyles.Number, CultureInfo.InvariantCulture, out amount))
+                {
                     throw new JsonException(
                         string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Json_Invalid_BalanceMustBeNumber, iso));
+                }
             }
             else
             {

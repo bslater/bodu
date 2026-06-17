@@ -357,12 +357,14 @@ public abstract class TweakableSymmetricAlgorithm
     protected void ThrowIfInvalidTweakSize(int bitLength)
     {
         if (!ValidTweakSize(bitLength))
+        {
             throw new CryptographicException(
                 string.Format(
                     CultureInfo.CurrentCulture,
                     CryptoResourceStrings.Crypt_Invalid_TweakSize,
                     bitLength,
                     CryptographyHelper.FormatLegalSizes(LegalTweakSizes)));
+        }
     }
 
     /// <summary>
@@ -390,5 +392,4 @@ public abstract class TweakableSymmetricAlgorithm
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfDisposed() =>
         ObjectDisposedException.ThrowIf(_disposed, this);
-
 }

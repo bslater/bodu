@@ -415,9 +415,11 @@ internal static class Poly1305AeadCore
     {
         int required = checked(plaintext.Length + TagBytes);
         if (output.Length < required)
+        {
             throw new ArgumentException(
                 string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, required),
                 nameof(output));
+        }
     }
 
     /// <summary>
@@ -432,13 +434,17 @@ internal static class Poly1305AeadCore
     private static void ValidateOpenBuffers(ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output)
     {
         if (ciphertextWithTag.Length < TagBytes)
+        {
             throw new ArgumentException(
                 string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_CiphertextTooShort, TagBytes),
                 nameof(ciphertextWithTag));
+        }
 
         if (output.Length < ciphertextWithTag.Length - TagBytes)
+        {
             throw new ArgumentException(
                 string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, ciphertextWithTag.Length - TagBytes),
                 nameof(output));
+        }
     }
 }

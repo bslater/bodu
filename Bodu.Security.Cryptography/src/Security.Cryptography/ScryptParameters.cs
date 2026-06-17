@@ -46,19 +46,25 @@ public sealed record ScryptParameters
     internal void Validate()
     {
         if (BlockSizeR < 1)
+        {
             throw new ArgumentOutOfRangeException(
                 nameof(BlockSizeR), BlockSizeR, CryptoResourceStrings.Arg_OutOfRange_ScryptBlockSize);
+        }
 
         if (CostN <= 1 || (CostN & (CostN - 1)) != 0)
+        {
             throw new ArgumentOutOfRangeException(
                 nameof(CostN), CostN, CryptoResourceStrings.Arg_OutOfRange_ScryptCostNotPowerOfTwo);
+        }
 
         // p <= ((2^32 - 1) * 32) / (128 * r) (RFC 7914 Section 6).
         long maxParallelization = ((long)uint.MaxValue * 32) / (128L * BlockSizeR);
         if (Parallelization < 1 || Parallelization > maxParallelization)
+        {
             throw new ArgumentOutOfRangeException(
                 nameof(Parallelization),
                 Parallelization,
                 string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Arg_OutOfRange_ScryptParallelization, maxParallelization));
+        }
     }
 }

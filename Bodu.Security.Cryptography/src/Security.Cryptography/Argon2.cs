@@ -140,9 +140,11 @@ public abstract class Argon2
     {
         ThrowIfSaltTooShort(salt);
         if (destination.Length != Parameters.TagLength)
+        {
             throw new ArgumentException(
                 string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Arg_Invalid_Argon2DestinationLength, Parameters.TagLength),
                 nameof(destination));
+        }
 
         Argon2Core.DeriveTag(Type, Parameters, password, salt, destination);
     }
@@ -344,9 +346,11 @@ public abstract class Argon2
     private static void ThrowIfSaltTooShort(ReadOnlySpan<byte> salt)
     {
         if (salt.Length < MinSaltLength)
+        {
             throw new ArgumentException(
                 string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Arg_Invalid_KdfSaltTooShort, MinSaltLength),
                 nameof(salt));
+        }
     }
 
     /// <summary>

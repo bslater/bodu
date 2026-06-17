@@ -253,8 +253,10 @@ public abstract class BlockNonCryptographicHashAlgorithm<T>
             else
             {
                 if (finalBlock.Length % snapshot.BlockSizeBytes != 0)
+                {
                     throw new InvalidOperationException(
                         string.Format(CultureInfo.CurrentCulture, HashingResourceStrings.Op_Invalid_PadBlockMisaligned, nameof(PadBlock), finalBlock.Length, nameof(BlockSizeBytes), snapshot.BlockSizeBytes, nameof(AllowUnalignedFinalBlock)));
+                }
 
                 for (int i = 0; i < finalBlock.Length; i += snapshot.BlockSizeBytes)
                     snapshot.ProcessBlock(finalBlock.AsSpan(i, snapshot.BlockSizeBytes));
@@ -340,8 +342,10 @@ public abstract class BlockNonCryptographicHashAlgorithm<T>
         int pos = 0;
         ulong bufferLength = (ulong)buffer.Length;
         if (bufferLength > ulong.MaxValue - TotalLength)
+        {
             throw new InvalidOperationException(
                 string.Format(CultureInfo.CurrentCulture, HashingResourceStrings.Op_Invalid_TotalLengthOverflow, ulong.MaxValue, nameof(TotalLength)));
+        }
 
         TotalLength += bufferLength;
 

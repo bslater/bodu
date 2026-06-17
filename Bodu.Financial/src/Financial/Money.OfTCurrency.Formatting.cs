@@ -196,8 +196,10 @@ public readonly partial struct Money<TCurrency> :
         if (specifier == 'R')
         {
             if (elideIfMatched || hasPrecisionSuffix)
+            {
                 throw new FormatException(
                     string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Format_Invalid_FormatSpecifier, format.ToString()));
+            }
 
             return string.Concat(
                 metadata.IsoCode,
@@ -324,5 +326,4 @@ public readonly partial struct Money<TCurrency> :
     /// </exception>
     private string Format(string? format, IFormatProvider? provider) =>
         Format(format is null ? default : format.AsSpan(), provider);
-
 }

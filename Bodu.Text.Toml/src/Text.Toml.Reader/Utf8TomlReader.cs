@@ -39,7 +39,6 @@ namespace Bodu.Text.Toml.Reader;
 /// </remarks>
 public ref partial struct Utf8TomlReader
 {
-
     /// <summary>The UTF-8 source bytes being lexed.</summary>
     private readonly ReadOnlySpan<byte> _source;
 

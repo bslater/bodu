@@ -68,7 +68,10 @@ public static partial class SequenceGenerator
             long sum;
             try
             {
-                checked { sum = prev + next; }
+                checked
+                {
+                    sum = prev + next;
+                }
             }
             catch (OverflowException)
             {
