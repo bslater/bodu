@@ -26,6 +26,41 @@ public class ExchangeRateCacheOptions
     public string Provider { get; set; } = default!;
 
     /// <summary>
+    /// Gets or sets a value indicating whether a storage read or write failure is surfaced as an exception rather than
+    /// degrading to an empty read or a skipped write.
+    /// </summary>
+    /// <value>
+    /// <see langword="true" /> to rethrow the underlying storage failure; <see langword="false" /> (the default) to
+    /// keep the best-effort behaviour the <see cref="IExchangeRateCache" /> contract describes.
+    /// </value>
+    /// <returns>The configured strict-failure setting.</returns>
+    /// <remarks>
+    /// The default keeps a cache fault from breaking rate retrieval, which suits most consumers. Set it for a
+    /// deployment that must not run with a silently broken cache: the underlying failure then propagates from the read
+    /// or write so a caller fails fast rather than trusting an empty or stale result. Argument validation always throws
+    /// regardless of this setting.
+    /// </remarks>
+    public bool ThrowOnStorageFailure { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the cache eagerly probes its backing store when constructed and throws
+    /// when the store is unusable, rather than deferring the discovery to the first read or write.
+    /// </summary>
+    /// <value>
+    /// <see langword="true" /> to probe the store at construction; <see langword="false" /> (the default) to skip the
+    /// probe.
+    /// </value>
+    /// <returns>The configured startup-validation setting.</returns>
+    /// <remarks>
+    /// The probe surfaces a misconfigured directory, an unopenable database, or an unreachable distributed cache at
+    /// construction. Under dependency injection a cache is constructed when first resolved, so resolve it during
+    /// startup to fail at start. This setting is independent of <see cref="ThrowOnStorageFailure" />: a cache can
+    /// validate once at construction yet still degrade best-effort on a later transient fault, or run best-effort at
+    /// construction yet fail fast on every later read or write.
+    /// </remarks>
+    public bool ValidateStorageOnStart { get; set; }
+
+    /// <summary>
     /// Validates the option values, throwing when a rule is violated.
     /// </summary>
     /// <exception cref="ArgumentNullException">

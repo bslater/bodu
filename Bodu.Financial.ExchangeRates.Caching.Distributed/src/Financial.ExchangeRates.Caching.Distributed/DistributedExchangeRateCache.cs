@@ -66,6 +66,12 @@ public sealed class DistributedExchangeRateCache
     private static readonly JsonSerializerOptions s_serializerOptions = new(JsonSerializerDefaults.Web);
 
     /// <summary>
+    /// The reserved-code currency pair used only to build a sentinel key for the startup probe under
+    /// <see cref="ExchangeRateCacheOptions.ValidateStorageOnStart" />; it is read, never written.
+    /// </summary>
+    private static readonly ExchangeRatePair s_probePair = new("XXX", "XTS");
+
+    /// <summary>
     /// The backing distributed cache the per-pair blobs are read from and written to.
     /// </summary>
     private readonly IDistributedCache _cache;
@@ -99,6 +105,12 @@ public sealed class DistributedExchangeRateCache
 
         _cache = cache;
         _options = options;
+
+        // Eagerly probe the backing store so an unreachable or misconfigured distributed cache surfaces here rather than
+        // on the first read or write. A connectivity or configuration fault propagates from the constructor; a missing
+        // probe key simply reads back null.
+        if (options.ValidateStorageOnStart)
+            _ = _cache.Get(_options.BuildKey(s_probePair));
     }
 
     /// <summary>
@@ -121,6 +133,17 @@ public sealed class DistributedExchangeRateCache
 
     /// <inheritdoc />
     public string Provider => _options.Provider;
+
+    /// <summary>
+    /// Gets a value indicating whether a caught backing-store or serialization fault should degrade to a best-effort
+    /// fallback rather than propagate. Used as the exception filter on the read and write paths so a strict cache fails
+    /// fast.
+    /// </summary>
+    /// <returns>
+    /// <see langword="true" /> when <see cref="ExchangeRateCacheOptions.ThrowOnStorageFailure" /> is not set; otherwise
+    /// <see langword="false" />, so the failure propagates.
+    /// </returns>
+    private bool ShouldSwallowStorageFailure => !_options.ThrowOnStorageFailure;
 
     /// <inheritdoc />
     public IReadOnlyList<CachedExchangeRate> GetRates(ExchangeRatePair pair, TimeSpan duration, DateTimeOffset asOf)
@@ -309,7 +332,7 @@ public sealed class DistributedExchangeRateCache
         {
             payload = _cache.Get(_options.BuildKey(pair));
         }
-        catch (Exception ex) when (ex is not OperationCanceledException)
+        catch (Exception ex) when (ex is not OperationCanceledException && ShouldSwallowStorageFailure)
         {
             // Best-effort cache: a backing-store fault degrades to an empty read rather than breaking rate retrieval.
             // Cancellation (and fatal exceptions surfaced as OperationCanceledException) propagates rather than being
@@ -325,7 +348,7 @@ public sealed class DistributedExchangeRateCache
             DistributedCacheEntry? entry = JsonSerializer.Deserialize<DistributedCacheEntry>(payload, s_serializerOptions);
             return entry is null ? PairState.Empty : Project(entry);
         }
-        catch (JsonException)
+        catch (JsonException) when (ShouldSwallowStorageFailure)
         {
             // A corrupt or incompatible blob degrades to an empty read rather than breaking rate retrieval.
             return PairState.Empty;
@@ -385,7 +408,7 @@ public sealed class DistributedExchangeRateCache
             _cache.Set(key, payload);
             return true;
         }
-        catch (Exception ex) when (ex is not OperationCanceledException)
+        catch (Exception ex) when (ex is not OperationCanceledException && ShouldSwallowStorageFailure)
         {
             // Best-effort cache: a fault from an arbitrary IDistributedCache implementation (a network error, a
             // timeout, a disposed or misconfigured cache) or a serialization fault must degrade to a skipped write
