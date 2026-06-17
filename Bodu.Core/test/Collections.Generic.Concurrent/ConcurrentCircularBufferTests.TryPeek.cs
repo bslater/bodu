@@ -55,26 +55,42 @@ public partial class ConcurrentCircularBufferTests
     public void TryPeek_WhenBufferContainsNullsUnderConcurrency_ShouldYieldNullSafely()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem?>(5);
-        int nullSeen = 0;
+        Exception? peekFailure = null;
 
         var writer = Task.Run(() =>
         {
-            for (int i = 0; i < 200; i++)             // more churn to rotate head
+            for (int i = 0; i < 200; i++)             // churn to rotate the head through null and non-null slots
                 buffer.Enqueue(i % 3 == 0 ? null : new TestItem(i));
         });
 
         var peeker = Task.Run(() =>
         {
-            for (int i = 0; i < 1000; i++)            // more opportunities to observe
+            try
             {
-                if (buffer.TryPeek(out TestItem? item) && item is null)
-                    Interlocked.Increment(ref nullSeen);
-                Thread.SpinWait(20);
+                for (int i = 0; i < 1000; i++)
+                {
+                    // The contract under test is that concurrent peeking never throws or tears when the
+                    // head slot holds null — not that any particular interleaving is observed.
+                    buffer.TryPeek(out _);
+                    Thread.SpinWait(20);
+                }
+            }
+            catch (Exception ex)
+            {
+                peekFailure = ex;
             }
         });
 
         Task.WaitAll(writer, peeker);
-        Assert.IsGreaterThan(0, nullSeen, "Expected TryPeek to observe null items.");
+        Assert.IsNull(peekFailure, "TryPeek threw while the buffer contained nulls under a concurrent writer.");
+
+        // Deterministically confirm a null at the head is yielded as null, independent of the
+        // timing-dependent interleaving above.
+        var nullHead = new ConcurrentCircularBuffer<TestItem?>(2);
+        nullHead.Enqueue(null);
+
+        Assert.IsTrue(nullHead.TryPeek(out TestItem? head));
+        Assert.IsNull(head);
     }
 
     /// <summary>
