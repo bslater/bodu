@@ -333,16 +333,22 @@ internal static class XmlDocTokenizer
 
     private static string NormalizeTagWhitespace(string raw, bool preserveTagAttributes, bool preserveCrefText)
     {
+        if (preserveTagAttributes)
+        {
+            // Preserve the tag exactly as authored, including any internal line breaks and alignment. The
+            // composer emits a multi-line tag verbatim across prefixed output lines, so its layout survives.
+            return raw;
+        }
+
         if (raw.IndexOf('\n') < 0 && raw.IndexOf('\r') < 0)
         {
             return raw;
         }
 
-        // A tag spanning multiple physical lines must always be joined onto one line for the line-based composer:
-        // embedded newlines are unconditionally normalized to a single space. The two flags only govern whether
-        // redundant horizontal whitespace is also collapsed — between attributes (preserveTagAttributes) and
-        // inside attribute values such as cref (preserveCrefText).
-        var collapseOutsideQuotes = !preserveTagAttributes;
+        // A tag spanning multiple physical lines is joined onto one line for the line-based composer: embedded
+        // newlines are normalized to a single space. preserveCrefText governs whether redundant whitespace
+        // inside attribute values (such as cref) is also collapsed.
+        const bool collapseOutsideQuotes = true;
         var collapseInsideQuotes = !preserveCrefText;
 
         var openTagEnd = ScanToTagEnd(raw, 0);

@@ -12,48 +12,45 @@ namespace Bodu.CodeStyle.XmlDocumentation.Test.Formatting;
 public partial class XmlDocFormatterTests
 {
     /// <summary>
-    /// Verifies that with <see cref="XmlDocFormatOptions.PreserveXmlTagAttributes" /> enabled the horizontal
-    /// spacing between a reflowed tag's attributes is preserved (the tag is still joined to a single line, but
-    /// the inter-attribute spacing is not collapsed).
+    /// Verifies that with <see cref="XmlDocFormatOptions.PreserveXmlTagAttributes" /> enabled a tag authored
+    /// across multiple lines is preserved verbatim — its line breaks and alignment whitespace are kept, with
+    /// surrounding prose still flowing into the tag's first line and continuing from its last line.
     /// </summary>
     [TestMethod]
-    public void Format_WhenPreserveXmlTagAttributesTrue_ShouldKeepInterAttributeSpacing()
+    public void Format_WhenPreserveXmlTagAttributesTrue_ShouldPreserveMultiLineTagLayout()
     {
         XmlDocFormatOptions options = CreateOptions().WithPreserveXmlTagAttributes(true);
 
         var input =
             "/// <summary>\r\n" +
-            "/// Text <see   cref=\"T\"\r\n" +
-            "/// /> end.\r\n" +
+            "/// See <see cref=\"Sample\"\r\n" +
+            "///      langword=\"null\" /> for details.\r\n" +
             "/// </summary>\r\n";
 
         XmlDocFormatResult result = CreateFormatter().FormatTrivia(input, CreateContext(baseIndent: string.Empty), options);
 
-        Assert.AreEqual(
-            "/// <summary>\r\n" +
-            "/// Text <see   cref=\"T\" /> end.\r\n" +
-            "/// </summary>\r\n",
-            result.FormattedText);
+        Assert.IsFalse(result.Changed, "A verbatim-preserved multi-line tag should be left unchanged.");
+        Assert.AreEqual(input, result.FormattedText);
     }
 
     /// <summary>
-    /// Verifies that with the default <see cref="XmlDocFormatOptions.PreserveXmlTagAttributes" /> (disabled) the
-    /// inter-attribute spacing of a reflowed tag collapses to a single space — the contrast case.
+    /// Verifies that with the default <see cref="XmlDocFormatOptions.PreserveXmlTagAttributes" /> (disabled) a
+    /// multi-line tag is reflowed onto a single line — the contrast case.
     /// </summary>
     [TestMethod]
-    public void Format_WhenPreserveXmlTagAttributesFalse_ShouldCollapseInterAttributeSpacing()
+    public void Format_WhenPreserveXmlTagAttributesFalse_ShouldReflowMultiLineTagToSingleLine()
     {
         var input =
             "/// <summary>\r\n" +
-            "/// Text <see   cref=\"T\"\r\n" +
-            "/// /> end.\r\n" +
+            "/// See <see cref=\"Sample\"\r\n" +
+            "///      langword=\"null\" /> for details.\r\n" +
             "/// </summary>\r\n";
 
         XmlDocFormatResult result = CreateFormatter().FormatTrivia(input, CreateContext(baseIndent: string.Empty), CreateOptions());
 
         Assert.AreEqual(
             "/// <summary>\r\n" +
-            "/// Text <see cref=\"T\" /> end.\r\n" +
+            "/// See <see cref=\"Sample\" langword=\"null\" /> for details.\r\n" +
             "/// </summary>\r\n",
             result.FormattedText);
     }

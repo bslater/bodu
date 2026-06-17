@@ -120,10 +120,10 @@ The analyzer reads policy from three layers, applied in order:
    - `collapseProseWhitespace`, `preserveBlankLines`, `preserveXmlTagAttributes`, `preserveCrefText` —
      normalization toggles. `collapseProseWhitespace` (default `true`) collapses runs of prose whitespace to a
      single space; `preserveBlankLines` (default `false`) keeps authored blank lines; `preserveXmlTagAttributes`
-     (default `false`) keeps inter-attribute spacing when a multi-line tag is reflowed; `preserveCrefText`
-     (default `true`) keeps whitespace inside attribute values. Note: a multi-line tag is always joined onto a
-     single line for the line-based formatter — these two toggles govern whitespace collapsing, not newline
-     preservation.
+     (default `false`) preserves a tag's authored layout verbatim — including line breaks across a multi-line
+     tag — instead of reflowing it onto one line; `preserveCrefText` (default `true`) keeps whitespace inside
+     attribute values when a tag is reflowed (it has no effect when `preserveXmlTagAttributes` already preserves
+     the tag verbatim).
 3. **`.editorconfig` scalar overrides** — keys such as `bodu_xmldoc_max_line_length`, plus the standard
    `dotnet_diagnostic.BODU####.severity` per individual rule and `end_of_line`. To silence or re-target the
    whole XML-doc family at once, use
