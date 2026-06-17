@@ -120,7 +120,46 @@ internal static class XmlDocConfigurationLoader
             current = current.WithMaxLineLength(parsedMaxLineLength);
         }
 
+        if (treeOptions.TryGetValue(EditorConfigKeys.IndentSize, out var indentSize) &&
+            int.TryParse(indentSize, out var parsedIndentSize) &&
+            parsedIndentSize >= 0)
+        {
+            current = current.WithIndentText(new string(' ', parsedIndentSize));
+        }
+
+        if (treeOptions.TryGetValue(EditorConfigKeys.PreserveInlineTags, out var preserveInlineTags) &&
+            bool.TryParse(preserveInlineTags, out var parsedPreserveInlineTags) &&
+            !parsedPreserveInlineTags)
+        {
+            // Disabling inline-tag preservation removes the inline-atomic classification so inline elements
+            // flow with the surrounding prose and may wrap across lines.
+            current = current.WithInlineTags(ImmutableHashSet.Create<string>(StringComparer.Ordinal));
+        }
+
+        current = ApplyForceMultilineOverride(current, treeOptions, EditorConfigKeys.ForceSummaryMultiline, "summary");
+        current = ApplyForceMultilineOverride(current, treeOptions, EditorConfigKeys.ForceParaMultiline, "para");
+
         return current;
+    }
+
+    private static XmlDocFormatOptions ApplyForceMultilineOverride(
+        XmlDocFormatOptions options,
+        AnalyzerConfigOptions treeOptions,
+        string key,
+        string tagName)
+    {
+        if (!treeOptions.TryGetValue(key, out var raw) || !bool.TryParse(raw, out var force))
+        {
+            return options;
+        }
+
+        ImmutableHashSet<string> updated = force
+            ? options.ForceMultilineTags.Add(tagName)
+            : options.ForceMultilineTags.Remove(tagName);
+
+        return ReferenceEquals(updated, options.ForceMultilineTags)
+            ? options
+            : options.WithForceMultilineTags(updated);
     }
 
     /// <summary>

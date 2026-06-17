@@ -173,6 +173,22 @@ public sealed class XmlDocFormatOptions
         this.With(blockTags: blockTags);
 
     /// <summary>
+    /// Returns a new <see cref="XmlDocFormatOptions" /> instance with <see cref="InlineTags" /> replaced.
+    /// </summary>
+    /// <param name="inlineTags">The new set of inline-atomic tag names.</param>
+    /// <returns>A new instance with the requested override applied.</returns>
+    public XmlDocFormatOptions WithInlineTags(ImmutableHashSet<string> inlineTags) =>
+        this.With(inlineTags: inlineTags);
+
+    /// <summary>
+    /// Returns a new <see cref="XmlDocFormatOptions" /> instance with <see cref="ForceMultilineTags" /> replaced.
+    /// </summary>
+    /// <param name="forceMultilineTags">The new set of force-multiline tag names.</param>
+    /// <returns>A new instance with the requested override applied.</returns>
+    public XmlDocFormatOptions WithForceMultilineTags(ImmutableHashSet<string> forceMultilineTags) =>
+        this.With(forceMultilineTags: forceMultilineTags);
+
+    /// <summary>
     /// Returns a new <see cref="XmlDocFormatOptions" /> instance with <see cref="TagPolicies" /> replaced.
     /// </summary>
     /// <param name="tagPolicies">The new per-tag policy dictionary.</param>

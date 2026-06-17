@@ -155,6 +155,78 @@ public sealed class XmlDocConfigurationLoaderTests
     }
 
     /// <summary>
+    /// Verifies that the <c>bodu_xmldoc_indent_size</c> override sets <see cref="XmlDocFormatOptions.IndentText" />
+    /// to that many spaces.
+    /// </summary>
+    [TestMethod]
+    public void ApplyEditorConfigOverrides_WhenIndentSizeSet_ShouldSetIndentText()
+    {
+        XmlDocFormatOptions defaults = XmlDocFormatPolicyDefaults.CreateBoduDefaults();
+        var config = new FakeAnalyzerConfigOptions(new Dictionary<string, string>
+        {
+            ["bodu_xmldoc_indent_size"] = "2",
+        });
+
+        XmlDocFormatOptions result = XmlDocConfigurationLoader.ApplyEditorConfigOverrides(defaults, config);
+
+        Assert.AreEqual("  ", result.IndentText);
+    }
+
+    /// <summary>
+    /// Verifies that <c>bodu_xmldoc_force_summary_multiline = false</c> removes <c>summary</c> from the
+    /// force-multiline set.
+    /// </summary>
+    [TestMethod]
+    public void ApplyEditorConfigOverrides_WhenForceSummaryMultilineFalse_ShouldRemoveSummary()
+    {
+        XmlDocFormatOptions defaults = XmlDocFormatPolicyDefaults.CreateBoduDefaults();
+        var config = new FakeAnalyzerConfigOptions(new Dictionary<string, string>
+        {
+            ["bodu_xmldoc_force_summary_multiline"] = "false",
+        });
+
+        XmlDocFormatOptions result = XmlDocConfigurationLoader.ApplyEditorConfigOverrides(defaults, config);
+
+        Assert.IsFalse(result.ForceMultilineTags.Contains("summary"));
+    }
+
+    /// <summary>
+    /// Verifies that <c>bodu_xmldoc_force_para_multiline = false</c> removes <c>para</c> from the force-multiline
+    /// set.
+    /// </summary>
+    [TestMethod]
+    public void ApplyEditorConfigOverrides_WhenForceParaMultilineFalse_ShouldRemovePara()
+    {
+        XmlDocFormatOptions defaults = XmlDocFormatPolicyDefaults.CreateBoduDefaults();
+        var config = new FakeAnalyzerConfigOptions(new Dictionary<string, string>
+        {
+            ["bodu_xmldoc_force_para_multiline"] = "false",
+        });
+
+        XmlDocFormatOptions result = XmlDocConfigurationLoader.ApplyEditorConfigOverrides(defaults, config);
+
+        Assert.IsFalse(result.ForceMultilineTags.Contains("para"));
+    }
+
+    /// <summary>
+    /// Verifies that <c>bodu_xmldoc_preserve_inline_tags = false</c> clears the inline-atomic tag set so inline
+    /// elements may wrap.
+    /// </summary>
+    [TestMethod]
+    public void ApplyEditorConfigOverrides_WhenPreserveInlineTagsFalse_ShouldClearInlineTags()
+    {
+        XmlDocFormatOptions defaults = XmlDocFormatPolicyDefaults.CreateBoduDefaults();
+        var config = new FakeAnalyzerConfigOptions(new Dictionary<string, string>
+        {
+            ["bodu_xmldoc_preserve_inline_tags"] = "false",
+        });
+
+        XmlDocFormatOptions result = XmlDocConfigurationLoader.ApplyEditorConfigOverrides(defaults, config);
+
+        Assert.AreEqual(0, result.InlineTags.Count);
+    }
+
+    /// <summary>
     /// Verifies that the resolved line ending defaults to CRLF when not specified.
     /// </summary>
     [TestMethod]
