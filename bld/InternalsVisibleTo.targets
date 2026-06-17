@@ -38,22 +38,22 @@
     that already carry a PublicKey are skipped. Runs after BoduDropTestInternalsVisibleToOnShipping
     (DependsOnTargets) so that on a shipping build the ".Test" grants are removed by their bare name
     before the key is appended; otherwise the appended suffix would defeat the ".Test" name match.
+
+    The key is woven in by updating the matching items' _Parameter1 metadata in place. An in-place
+    Update is used rather than a remove-and-re-add because re-adding through a literal Include while
+    batching the new _Parameter1 over a separate item list synthesizes one spurious empty-named grant
+    ("<empty>, PublicKey=...", warning CS1700) whenever that list is empty — for example on a leaf
+    project whose only grants were ".Test" and have already been dropped on a shipping build. Update
+    simply no-ops when nothing matches.
   -->
   <Target Name="BoduAppendPublicKeyToInternalsVisibleTo"
           BeforeTargets="CreateGeneratedAssemblyInfoInputsCacheFile;CoreGenerateAssemblyInfo"
           DependsOnTargets="BoduDropTestInternalsVisibleToOnShipping"
           Condition="'$(SignAssembly)' == 'true' and '$(BoduPublicKey)' != ''">
     <ItemGroup>
-      <!-- Snapshot the friend names of grants that do not yet carry a public key. -->
-      <_BoduUnsignedInternalsVisibleTo Include="%(AssemblyAttribute._Parameter1)"
-                                       Condition="'%(AssemblyAttribute.Identity)' == 'System.Runtime.CompilerServices.InternalsVisibleTo' And !$([System.String]::Copy('%(AssemblyAttribute._Parameter1)').Contains('PublicKey='))" />
-    </ItemGroup>
-    <ItemGroup>
-      <!-- Drop the bare grants and re-add them with the public key appended. -->
-      <AssemblyAttribute Remove="@(AssemblyAttribute)"
-                         Condition="'%(Identity)' == 'System.Runtime.CompilerServices.InternalsVisibleTo' And !$([System.String]::Copy('%(_Parameter1)').Contains('PublicKey='))" />
-      <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-        <_Parameter1>%(_BoduUnsignedInternalsVisibleTo.Identity), PublicKey=$(BoduPublicKey)</_Parameter1>
+      <AssemblyAttribute Update="@(AssemblyAttribute)"
+                         Condition="'%(Identity)' == 'System.Runtime.CompilerServices.InternalsVisibleTo' And !$([System.String]::Copy('%(_Parameter1)').Contains('PublicKey='))">
+        <_Parameter1>%(_Parameter1), PublicKey=$(BoduPublicKey)</_Parameter1>
       </AssemblyAttribute>
     </ItemGroup>
   </Target>
