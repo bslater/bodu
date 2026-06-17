@@ -32,6 +32,9 @@ public sealed class RbaExchangeRateProviderContractTests
     protected override DateOnly UnknownDate => new(2020, 1, 1);
 
     /// <inheritdoc />
+    protected override bool SupportsDisposalGuard => true;
+
+    /// <inheritdoc />
     protected override RbaExchangeRateProvider CreateProvider()
     {
         RbaExchangeRateOptions options = new() { AllowSynchronousNetworkAccess = true, EnableDiskCache = false };

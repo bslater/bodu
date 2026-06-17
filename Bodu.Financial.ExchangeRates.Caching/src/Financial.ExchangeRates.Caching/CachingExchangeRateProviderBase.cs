@@ -137,6 +137,8 @@ public abstract class CachingExchangeRateProviderBase
     /// <inheritdoc />
     public ExchangeRateLookupResult GetRate(string fromIsoCode, string toIsoCode, ExchangeRateLookupOptions? options = null)
     {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+
         var today = DateOnly.FromDateTime(_timeProvider.GetUtcNow().UtcDateTime);
         return GetRate(fromIsoCode, toIsoCode, today, options ?? _options.DefaultLookupOptions);
     }
@@ -153,6 +155,8 @@ public abstract class CachingExchangeRateProviderBase
     /// <inheritdoc />
     public bool TryGetRate(string fromIsoCode, string toIsoCode, DateOnly date, ExchangeRateLookupOptions? options, out ExchangeRateLookupResult result)
     {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+
         var now = _timeProvider.GetUtcNow();
         var duration = _options.GetExpiry(_cache.Provider);
 
@@ -188,6 +192,8 @@ public abstract class CachingExchangeRateProviderBase
         ExchangeRateLookupOptions? options = null,
         CancellationToken cancellationToken = default)
     {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+
         var today = DateOnly.FromDateTime(_timeProvider.GetUtcNow().UtcDateTime);
         return GetRateAsync(fromIsoCode, toIsoCode, today, options ?? _options.DefaultLookupOptions, cancellationToken);
     }
@@ -200,6 +206,8 @@ public abstract class CachingExchangeRateProviderBase
         ExchangeRateLookupOptions? options = null,
         CancellationToken cancellationToken = default)
     {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+
         var now = _timeProvider.GetUtcNow();
         var duration = _options.GetExpiry(_cache.Provider);
 
@@ -226,6 +234,7 @@ public abstract class CachingExchangeRateProviderBase
     /// <inheritdoc />
     public ExchangeRateRangeResult GetRates(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate)
     {
+        ObjectDisposedException.ThrowIf(_disposed, this);
         if (endDate < startDate)
             throw new ArgumentException(CachingResourceStrings.Arg_Invalid_RangeInverted, nameof(endDate));
 
@@ -260,6 +269,7 @@ public abstract class CachingExchangeRateProviderBase
         DateOnly endDate,
         CancellationToken cancellationToken = default)
     {
+        ObjectDisposedException.ThrowIf(_disposed, this);
         if (endDate < startDate)
             throw new ArgumentException(CachingResourceStrings.Arg_Invalid_RangeInverted, nameof(endDate));
 
@@ -290,6 +300,8 @@ public abstract class CachingExchangeRateProviderBase
     /// <inheritdoc />
     public decimal GetRate(string fromIsoCode, string toIsoCode)
     {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+
         var today = DateOnly.FromDateTime(_timeProvider.GetUtcNow().UtcDateTime);
 
         return new DatedExchangeRateProviderAdapter(this, today, _options.DefaultLookupOptions).GetRate(fromIsoCode, toIsoCode);

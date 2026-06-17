@@ -38,6 +38,9 @@ public sealed class CachingExchangeRateProviderContractTests
     protected override DateOnly UnknownDate => new(2024, 6, 17);
 
     /// <inheritdoc />
+    protected override bool SupportsDisposalGuard => true;
+
+    /// <inheritdoc />
     protected override CachingExchangeRateProvider CreateProvider()
     {
         FixedDatedExchangeRateProvider inner = new(new[] { new ExchangeRate("AUD", "USD", s_seeded, 0.6828m, ProviderName) });

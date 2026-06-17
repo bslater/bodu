@@ -32,6 +32,9 @@ public sealed class YahooExchangeRateProviderContractTests
     protected override DateOnly UnknownDate => new(2020, 1, 1);
 
     /// <inheritdoc />
+    protected override bool SupportsDisposalGuard => true;
+
+    /// <inheritdoc />
     protected override YahooExchangeRateProvider CreateProvider()
     {
         YahooExchangeRateOptions options = new() { AllowSynchronousNetworkAccess = true };
