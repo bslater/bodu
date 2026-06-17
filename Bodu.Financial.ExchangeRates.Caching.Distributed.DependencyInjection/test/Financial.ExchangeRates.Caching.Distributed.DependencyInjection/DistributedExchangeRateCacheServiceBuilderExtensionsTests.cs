@@ -168,6 +168,43 @@ public sealed class DistributedExchangeRateCacheServiceBuilderExtensionsTests
     }
 
     /// <summary>
+    /// Verifies that, with <see cref="ExchangeRateCacheOptions.ValidateStorageOnStart" /> set over an unreachable
+    /// backing store, the startup validation the host runs fails, so an unreachable distributed cache fails the host
+    /// start rather than the first lookup.
+    /// </summary>
+    [TestMethod]
+    public void AddDistributedExchangeRateCache_WhenValidateStorageOnStartAndStoreUnreachable_ShouldFailStartupValidation()
+    {
+        ServiceProvider provider = BuildProvider(services =>
+        {
+            services.AddSingleton<IDistributedCache>(new ThrowingDistributedCache());
+            services.AddBoduFinancial().AddDistributedExchangeRateCache("RBA", configure: o => o.ValidateStorageOnStart = true);
+        });
+
+        IStartupValidator startup = provider.GetRequiredService<IStartupValidator>();
+
+        _ = Assert.ThrowsExactly<OptionsValidationException>(startup.Validate);
+    }
+
+    /// <summary>
+    /// Verifies that, with <see cref="ExchangeRateCacheOptions.ValidateStorageOnStart" /> set over a reachable backing
+    /// store, the startup validation the host runs passes.
+    /// </summary>
+    [TestMethod]
+    public void AddDistributedExchangeRateCache_WhenValidateStorageOnStartAndStoreReachable_ShouldPassStartupValidation()
+    {
+        ServiceProvider provider = BuildProvider(services =>
+        {
+            services.AddDistributedMemoryCache();
+            services.AddBoduFinancial().AddDistributedExchangeRateCache("RBA", configure: o => o.ValidateStorageOnStart = true);
+        });
+
+        IStartupValidator startup = provider.GetRequiredService<IStartupValidator>();
+
+        startup.Validate();
+    }
+
+    /// <summary>
     /// Verifies that <c>AddRedisExchangeRateCache</c> registers a Redis <see cref="IDistributedCache" /> together with
     /// the exchange-rate cache, asserting service registration without requiring a live Redis server.
     /// </summary>

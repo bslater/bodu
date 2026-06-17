@@ -87,6 +87,10 @@ public static class SqliteExchangeRateCacheServiceBuilderExtensions
             .Validate(static options => options.TryValidate(out _), "SQLite exchange-rate cache options are invalid.")
             .ValidateOnStart();
 
+        // Probe the database at host start when ValidateStorageOnStart is set, so a misconfigured or unwritable database
+        // fails the start rather than the first lookup. The probe runs through the same ValidateOnStart wiring.
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IValidateOptions<SqliteExchangeRateCacheOptions>, SqliteCacheStorageStartupValidator>());
+
         // Register the concrete cache once as a singleton so a single instance — and its single keep-alive connection
         // and per-pair locks — backs every resolution and the container disposes it on shutdown.
         services.TryAddSingleton(serviceProvider =>
