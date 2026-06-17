@@ -314,7 +314,8 @@ internal static class DocLayout
         }
 
         var atoms = new List<string>();
-        var pendingWhitespace = false;
+        string? pendingWhitespace = null;
+        var gapHasLineBreak = false;
         foreach (XmlDocToken token in run)
         {
             switch (token.Kind)
@@ -322,7 +323,8 @@ internal static class DocLayout
                 case XmlDocTokenKind.Whitespace:
                     if (atoms.Count > 0)
                     {
-                        pendingWhitespace = true;
+                        // Collapse to a single space, or carry the exact run when collapsing is disabled.
+                        pendingWhitespace = options.CollapseProseWhitespace ? " " : token.RawText;
                     }
 
                     break;
@@ -332,20 +334,23 @@ internal static class DocLayout
                 case XmlDocTokenKind.BlockStart:
                 case XmlDocTokenKind.BlockEnd:
                 case XmlDocTokenKind.CData:
-                    if (pendingWhitespace)
+                    if (atoms.Count > 0 && (pendingWhitespace != null || gapHasLineBreak))
                     {
-                        atoms.Add(" ");
-                        pendingWhitespace = false;
+                        // A soft line break in the gap always joins as a single space; otherwise reproduce the
+                        // pending horizontal whitespace (a single space when collapsing, the exact run when not).
+                        atoms.Add(gapHasLineBreak ? " " : pendingWhitespace ?? " ");
                     }
 
                     atoms.Add(NormalizeTagRaw(token, options));
+                    pendingWhitespace = null;
+                    gapHasLineBreak = false;
                     break;
 
                 case XmlDocTokenKind.LineBreak:
-                    // Soft line break inside the run; treat as a whitespace boundary.
+                    // Soft line break inside the run; treat as a whitespace boundary that joins as one space.
                     if (atoms.Count > 0)
                     {
-                        pendingWhitespace = true;
+                        gapHasLineBreak = true;
                     }
 
                     break;

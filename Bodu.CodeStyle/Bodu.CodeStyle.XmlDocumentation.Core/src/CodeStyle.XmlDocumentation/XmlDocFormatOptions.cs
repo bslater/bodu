@@ -197,6 +197,14 @@ public sealed class XmlDocFormatOptions
         this.With(preserveBlankLines: preserveBlankLines);
 
     /// <summary>
+    /// Returns a new <see cref="XmlDocFormatOptions" /> instance with <see cref="CollapseProseWhitespace" /> replaced.
+    /// </summary>
+    /// <param name="collapseProseWhitespace">The new collapse-prose-whitespace setting.</param>
+    /// <returns>A new instance with the requested override applied.</returns>
+    public XmlDocFormatOptions WithCollapseProseWhitespace(bool collapseProseWhitespace) =>
+        this.With(collapseProseWhitespace: collapseProseWhitespace);
+
+    /// <summary>
     /// Returns the per-tag policy for the given element name, or <see cref="XmlDocTagPolicy.Default" /> when no
     /// explicit policy is configured.
     /// </summary>

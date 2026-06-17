@@ -48,7 +48,7 @@ internal static class DocWrapper
 
         var lineAtoms = new List<LineAtom>();
         var lineLength = 0;
-        var pendingWhitespace = false;
+        var pendingWhitespace = string.Empty;
 
         foreach (var atom in atoms)
         {
@@ -56,24 +56,27 @@ internal static class DocWrapper
             {
                 if (lineAtoms.Count > 0)
                 {
-                    pendingWhitespace = true;
+                    // Remember the exact whitespace run so it can be reproduced verbatim when prose-whitespace
+                    // collapsing is disabled. When collapsing is enabled the caller has already reduced the run
+                    // to a single space, so this faithfully reproduces either policy.
+                    pendingWhitespace = atom;
                 }
 
                 continue;
             }
 
-            var hasLeadingSpace = pendingWhitespace && lineAtoms.Count > 0;
-            var addedLength = (hasLeadingSpace ? 1 : 0) + atom.Length;
+            var leadingWhitespace = lineAtoms.Count > 0 ? pendingWhitespace : string.Empty;
+            var addedLength = leadingWhitespace.Length + atom.Length;
 
             // Atoms with no preceding whitespace are typographically joined to the previous atom (e.g. a
             // trailing '.' after </see> or <see ... />) and must not be split across a line boundary even
             // when the join exceeds the budget — there is no whitespace to absorb the break and an orphan
             // punctuation line is wrong.
-            if (lineAtoms.Count == 0 || lineLength + addedLength <= contentBudget || !hasLeadingSpace)
+            if (lineAtoms.Count == 0 || lineLength + addedLength <= contentBudget || leadingWhitespace.Length == 0)
             {
-                lineAtoms.Add(new LineAtom(atom, hasLeadingSpace));
+                lineAtoms.Add(new LineAtom(atom, leadingWhitespace));
                 lineLength += addedLength;
-                pendingWhitespace = false;
+                pendingWhitespace = string.Empty;
                 continue;
             }
 
@@ -81,9 +84,9 @@ internal static class DocWrapper
             // next line with the overflowing atom.
             yield return JoinAtoms(lineAtoms, 0, lineAtoms.Count);
             lineAtoms.Clear();
-            lineAtoms.Add(new LineAtom(atom, hasLeadingSpace: false));
+            lineAtoms.Add(new LineAtom(atom, string.Empty));
             lineLength = atom.Length;
-            pendingWhitespace = false;
+            pendingWhitespace = string.Empty;
         }
 
         if (lineAtoms.Count > 0)
@@ -97,9 +100,9 @@ internal static class DocWrapper
         var sb = new StringBuilder();
         for (var i = start; i < start + count; i++)
         {
-            if (i > start && atoms[i].HasLeadingSpace)
+            if (i > start)
             {
-                sb.Append(' ');
+                sb.Append(atoms[i].LeadingWhitespace);
             }
 
             sb.Append(atoms[i].Text);
@@ -125,14 +128,14 @@ internal static class DocWrapper
 
     private readonly struct LineAtom
     {
-        public LineAtom(string text, bool hasLeadingSpace)
+        public LineAtom(string text, string leadingWhitespace)
         {
             this.Text = text;
-            this.HasLeadingSpace = hasLeadingSpace;
+            this.LeadingWhitespace = leadingWhitespace;
         }
 
         public string Text { get; }
 
-        public bool HasLeadingSpace { get; }
+        public string LeadingWhitespace { get; }
     }
 }

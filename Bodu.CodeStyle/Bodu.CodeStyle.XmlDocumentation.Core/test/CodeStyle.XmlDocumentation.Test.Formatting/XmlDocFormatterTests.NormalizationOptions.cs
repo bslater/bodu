@@ -56,4 +56,46 @@ public partial class XmlDocFormatterTests
             "    /// </remarks>\r\n",
             result.FormattedText);
     }
+
+    /// <summary>
+    /// Verifies that with <see cref="XmlDocFormatOptions.CollapseProseWhitespace" /> disabled, multiple
+    /// consecutive spaces between words on a line are preserved verbatim.
+    /// </summary>
+    [TestMethod]
+    public void Format_WhenCollapseProseWhitespaceFalse_ShouldPreserveMultipleSpaces()
+    {
+        XmlDocFormatOptions options = CreateOptions().WithCollapseProseWhitespace(false);
+
+        var input =
+            "/// <summary>\r\n" +
+            "    /// Foo    bar.\r\n" +
+            "    /// </summary>\r\n";
+
+        XmlDocFormatResult result = CreateFormatter().FormatTrivia(input, CreateContext(), options);
+
+        Assert.IsFalse(result.Changed, "Multiple spaces should be preserved when collapsing is disabled.");
+        Assert.AreEqual(input, result.FormattedText);
+    }
+
+    /// <summary>
+    /// Verifies that with the default <see cref="XmlDocFormatOptions.CollapseProseWhitespace" /> (enabled),
+    /// runs of consecutive spaces between words collapse to a single space — the contrast case.
+    /// </summary>
+    [TestMethod]
+    public void Format_WhenCollapseProseWhitespaceTrue_ShouldCollapseMultipleSpaces()
+    {
+        var input =
+            "/// <summary>\r\n" +
+            "    /// Foo    bar.\r\n" +
+            "    /// </summary>\r\n";
+
+        XmlDocFormatResult result = CreateFormatter().FormatTrivia(input, CreateContext(), CreateOptions());
+
+        Assert.IsTrue(result.Changed);
+        Assert.AreEqual(
+            "/// <summary>\r\n" +
+            "    /// Foo bar.\r\n" +
+            "    /// </summary>\r\n",
+            result.FormattedText);
+    }
 }
