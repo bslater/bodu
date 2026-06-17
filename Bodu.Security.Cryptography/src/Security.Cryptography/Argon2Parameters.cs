@@ -27,6 +27,24 @@ namespace Bodu.Security.Cryptography;
 public sealed record Argon2Parameters
 {
     /// <summary>
+    /// Gets the amount of memory to fill, in kibibytes (the RFC 9106 parameter <c>m</c>).
+    /// </summary>
+    /// <returns>The memory size in kibibytes.</returns>
+    public required int MemoryKiB { get; init; }
+
+    /// <summary>
+    /// Gets the number of passes over memory (the RFC 9106 parameter <c>t</c>).
+    /// </summary>
+    /// <returns>The iteration count.</returns>
+    public required int Iterations { get; init; }
+
+    /// <summary>
+    /// Gets the degree of parallelism — the number of independent lanes (the RFC 9106 parameter <c>p</c>).
+    /// </summary>
+    /// <returns>The number of lanes.</returns>
+    public required int Parallelism { get; init; }
+
+    /// <summary>
     /// The minimum supported tag length, in bytes.
     /// </summary>
     internal const int MinTagLength = 4;
@@ -45,24 +63,6 @@ public sealed record Argon2Parameters
     /// The Argon2 version 1.3 code (0x13), mandated by RFC 9106.
     /// </summary>
     internal const int Version13 = 0x13;
-
-    /// <summary>
-    /// Gets the amount of memory to fill, in kibibytes (the RFC 9106 parameter <c>m</c>).
-    /// </summary>
-    /// <returns>The memory size in kibibytes.</returns>
-    public required int MemoryKiB { get; init; }
-
-    /// <summary>
-    /// Gets the number of passes over memory (the RFC 9106 parameter <c>t</c>).
-    /// </summary>
-    /// <returns>The iteration count.</returns>
-    public required int Iterations { get; init; }
-
-    /// <summary>
-    /// Gets the degree of parallelism — the number of independent lanes (the RFC 9106 parameter <c>p</c>).
-    /// </summary>
-    /// <returns>The number of lanes.</returns>
-    public required int Parallelism { get; init; }
 
     /// <summary>
     /// Gets the length of the derived tag, in bytes (the RFC 9106 parameter <c>T</c>).

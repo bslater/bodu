@@ -332,9 +332,9 @@ public sealed partial class ConcurrentHashSet<T>
     }
 
     /// <summary>
-    /// Gets an <strong>approximate</strong> indication of whether the set is empty, computed without acquiring any
-    /// stripe lock. The "Approximate" suffix matches <see cref="ApproximateCount" /> and signals that the answer may
-    /// briefly disagree with reality under concurrent mutation.
+    /// Gets a value indicating whether the set is empty. This is an <strong>approximate</strong> indication and is
+    /// computed without acquiring any stripe lock. The "Approximate" suffix matches <see cref="ApproximateCount" /> and
+    /// signals that the answer may briefly disagree with reality under concurrent mutation.
     /// </summary>
     /// <returns>
     /// <see langword="true" /> when every per-stripe counter reads as zero at the moment of inspection; otherwise
