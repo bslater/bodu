@@ -83,19 +83,13 @@ public static partial class DateTimeExtensions
     /// A <see cref="string" /> representation of <paramref name="dateTime" /> in ISO 8601 format:
     /// <list type="bullet">
     /// <item>
-    /// <description>
-    /// <see cref="DateTimeKind.Utc" /> — ends with <c>'Z'</c>;
-    /// </description>
+    /// <description><see cref="DateTimeKind.Utc" /> — ends with <c>'Z'</c>;</description>
     /// </item>
     /// <item>
-    /// <description>
-    /// <see cref="DateTimeKind.Local" /> — includes the local time zone offset;
-    /// </description>
+    /// <description><see cref="DateTimeKind.Local" /> — includes the local time zone offset;</description>
     /// </item>
     /// <item>
-    /// <description>
-    /// <see cref="DateTimeKind.Unspecified" /> — omits any offset.
-    /// </description>
+    /// <description><see cref="DateTimeKind.Unspecified" /> — omits any offset.</description>
     /// </item>
     /// </list>
     /// </returns>

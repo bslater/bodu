@@ -22,9 +22,7 @@ internal sealed class NullableConverter<T>
     : BencodeConverter<T?>
     where T : struct
 {
-    /// <summary>
-    /// The converter for the underlying type.
-    /// </summary>
+    /// <summary>The converter for the underlying type.</summary>
     private readonly BencodeConverter _inner;
 
     /// <summary>

@@ -40,29 +40,19 @@ namespace Bodu.Text.Encoding;
 /// </example>
 public static partial class Base45
 {
-    /// <summary>
-    /// The RFC 9285 §4.2 Base45 alphabet, indexed by symbol value <c>0</c>–<c>44</c>.
-    /// </summary>
+    /// <summary>The RFC 9285 §4.2 Base45 alphabet, indexed by symbol value <c>0</c>–<c>44</c>.</summary>
     private const string Alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:";
 
-    /// <summary>
-    /// The encoding radix.
-    /// </summary>
+    /// <summary>The encoding radix.</summary>
     private const int Radix = 45;
 
-    /// <summary>
-    /// The maximum value a valid three-character group may decode to (a 16-bit byte pair).
-    /// </summary>
+    /// <summary>The maximum value a valid three-character group may decode to (a 16-bit byte pair).</summary>
     private const int MaxPairValue = 65535;
 
-    /// <summary>
-    /// The maximum value a valid two-character group may decode to (a single byte).
-    /// </summary>
+    /// <summary>The maximum value a valid two-character group may decode to (a single byte).</summary>
     private const int MaxSingleValue = 255;
 
-    /// <summary>
-    /// Maps a US-ASCII code point to its Base45 symbol value, or <c>-1</c> when the character is not in the alphabet.
-    /// </summary>
+    /// <summary>Maps a US-ASCII code point to its Base45 symbol value, or <c>-1</c> when the character is not in the alphabet.</summary>
     private static readonly sbyte[] s_lookup = BuildLookup(Alphabet);
 
     /// <summary>

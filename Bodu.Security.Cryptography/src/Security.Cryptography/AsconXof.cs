@@ -25,14 +25,10 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <list type="number">
 /// <item>
-/// <description>
-/// Optionally customize (only <see cref="AsconCxof128" />).
-/// </description>
+/// <description>Optionally customize (only <see cref="AsconCxof128" />).</description>
 /// </item>
 /// <item>
-/// <description>
-/// Call <see cref="Absorb" /> zero or more times to supply input data.
-/// </description>
+/// <description>Call <see cref="Absorb" /> zero or more times to supply input data.</description>
 /// </item>
 /// <item>
 /// <description>
@@ -41,9 +37,7 @@ namespace Bodu.Security.Cryptography;
 /// </description>
 /// </item>
 /// <item>
-/// <description>
-/// Call <see cref="Initialize" /> to reset the instance and reuse it for a new message.
-/// </description>
+/// <description>Call <see cref="Initialize" /> to reset the instance and reuse it for a new message.</description>
 /// </item>
 /// </list>
 /// <para>
@@ -57,9 +51,7 @@ namespace Bodu.Security.Cryptography;
 /// <list type="bullet">
 /// <item>
 /// <term><see cref="AsconXof128" /></term>
-/// <description>
-/// Plain Ascon XOF — variable-length output without a customization string.
-/// </description>
+/// <description>Plain Ascon XOF — variable-length output without a customization string.</description>
 /// </item>
 /// <item>
 /// <term><see cref="AsconCxof128" /></term>
@@ -102,84 +94,52 @@ public abstract class AsconXof<T>
     : IDisposable
     where T : AsconXof<T>, new()
 {
-    /// <summary>
-    /// The sponge rate in bytes (64-bit rate).
-    /// </summary>
+    /// <summary>The sponge rate in bytes (64-bit rate).</summary>
     private const int BlockSize = 8; // 64-bit rate
 
-    /// <summary>
-    /// The canonical algorithm identifier reported by <see cref="AlgorithmName" />.
-    /// </summary>
+    /// <summary>The canonical algorithm identifier reported by <see cref="AlgorithmName" />.</summary>
     private readonly string _algorithmName;
 
-    /// <summary>
-    /// The number of Ascon-p rounds applied after each absorbed block and between squeeze blocks.
-    /// </summary>
+    /// <summary>The number of Ascon-p rounds applied after each absorbed block and between squeeze blocks.</summary>
     private readonly int _absorptionRounds;
 
-    /// <summary>
-    /// The pre-computed initial state word 0 used to seed the sponge on reset.
-    /// </summary>
+    /// <summary>The pre-computed initial state word 0 used to seed the sponge on reset.</summary>
     private readonly ulong _iv0;
 
-    /// <summary>
-    /// The pre-computed initial state word 1 used to seed the sponge on reset.
-    /// </summary>
+    /// <summary>The pre-computed initial state word 1 used to seed the sponge on reset.</summary>
     private readonly ulong _iv1;
 
-    /// <summary>
-    /// The pre-computed initial state word 2 used to seed the sponge on reset.
-    /// </summary>
+    /// <summary>The pre-computed initial state word 2 used to seed the sponge on reset.</summary>
     private readonly ulong _iv2;
 
-    /// <summary>
-    /// The pre-computed initial state word 3 used to seed the sponge on reset.
-    /// </summary>
+    /// <summary>The pre-computed initial state word 3 used to seed the sponge on reset.</summary>
     private readonly ulong _iv3;
 
-    /// <summary>
-    /// The pre-computed initial state word 4 used to seed the sponge on reset.
-    /// </summary>
+    /// <summary>The pre-computed initial state word 4 used to seed the sponge on reset.</summary>
     private readonly ulong _iv4;
 
-    /// <summary>
-    /// The buffer that accumulates partial input bytes that do not yet fill a full rate block.
-    /// </summary>
+    /// <summary>The buffer that accumulates partial input bytes that do not yet fill a full rate block.</summary>
     private readonly byte[] _residualBuffer = new byte[BlockSize];
 
-    /// <summary>
-    /// The buffer that holds the most recently squeezed rate block awaiting output.
-    /// </summary>
+    /// <summary>The buffer that holds the most recently squeezed rate block awaiting output.</summary>
     private readonly byte[] _squeezeBuffer = new byte[BlockSize];
 
-    /// <summary>
-    /// The 320-bit Ascon sponge state of five 64-bit words.
-    /// </summary>
+    /// <summary>The 320-bit Ascon sponge state of five 64-bit words.</summary>
     private AsconState _state;
 
-    /// <summary>
-    /// The number of bytes currently held in <see cref="_residualBuffer" />.
-    /// </summary>
+    /// <summary>The number of bytes currently held in <see cref="_residualBuffer" />.</summary>
     private int _residualBytes;
 
-    /// <summary>
-    /// The read offset into <see cref="_squeezeBuffer" /> for the next squeezed byte.
-    /// </summary>
+    /// <summary>The read offset into <see cref="_squeezeBuffer" /> for the next squeezed byte.</summary>
     private int _squeezeBufOffset;
 
-    /// <summary>
-    /// The number of unread bytes remaining in <see cref="_squeezeBuffer" />.
-    /// </summary>
+    /// <summary>The number of unread bytes remaining in <see cref="_squeezeBuffer" />.</summary>
     private int _squeezeBufAvailable;
 
-    /// <summary>
-    /// Indicates whether the sponge has transitioned from absorbing to squeezing.
-    /// </summary>
+    /// <summary>Indicates whether the sponge has transitioned from absorbing to squeezing.</summary>
     private bool _squeezing;
 
-    /// <summary>
-    /// Indicates whether this instance has been disposed.
-    /// </summary>
+    /// <summary>Indicates whether this instance has been disposed.</summary>
     private bool _disposed;
 
     /// <summary>

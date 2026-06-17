@@ -8,9 +8,7 @@ namespace Bodu.Security.Cryptography;
 
 internal static partial class CryptographyHelper
 {
-    /// <summary>
-    /// The lowercase hexadecimal digit alphabet used by <see cref="ToLowercaseHexString(ReadOnlySpan{byte})" />.
-    /// </summary>
+    /// <summary>The lowercase hexadecimal digit alphabet used by <see cref="ToLowercaseHexString(ReadOnlySpan{byte})" />.</summary>
     private const string LowercaseHexAlphabet = "0123456789abcdef";
 
     /// <summary>

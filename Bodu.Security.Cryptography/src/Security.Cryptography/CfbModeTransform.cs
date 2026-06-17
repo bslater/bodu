@@ -57,19 +57,13 @@ namespace Bodu.Security.Cryptography;
 public sealed class CfbModeTransform
     : IBlockCipherModeTransform
 {
-    /// <summary>
-    /// The block cipher over which Cipher Feedback (CFB) mode is applied.
-    /// </summary>
+    /// <summary>The block cipher over which Cipher Feedback (CFB) mode is applied.</summary>
     private readonly IBlockCipher _cipher;
 
-    /// <summary>
-    /// The running feedback register, updated to the most recent ciphertext block after each block.
-    /// </summary>
+    /// <summary>The running feedback register, updated to the most recent ciphertext block after each block.</summary>
     private readonly byte[] _currentIv;
 
-    /// <summary>
-    /// Indicates whether this instance has been disposed and its feedback register cleared.
-    /// </summary>
+    /// <summary>Indicates whether this instance has been disposed and its feedback register cleared.</summary>
     private bool _disposed;
 
     /// <summary>

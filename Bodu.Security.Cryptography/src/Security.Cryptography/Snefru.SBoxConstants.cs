@@ -8,9 +8,7 @@ namespace Bodu.Security.Cryptography;
 
 public abstract partial class Snefru<T>
 {
-    /// <summary>
-    /// The flat S-box lookup table: 16 tables of 256 <see langword="uint" /> entries, stored contiguously.
-    /// </summary>
+    /// <summary>The flat S-box lookup table: 16 tables of 256 <see langword="uint" /> entries, stored contiguously.</summary>
     /// <remarks>
     /// Indexed as <c>s_constants[(tableIndex &lt;&lt; 8) | byteValue]</c>. This contiguous layout eliminates the double
     /// pointer indirection and secondary bounds check that a jagged <see langword="uint" /><c>[][]</c> would incur on

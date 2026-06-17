@@ -28,51 +28,31 @@ namespace Bodu.Text.Toml.Reader;
 /// </remarks>
 public struct TomlReaderState
 {
-    /// <summary>
-    /// The reader options the state was created with.
-    /// </summary>
+    /// <summary>The reader options the state was created with.</summary>
     private readonly TomlReaderOptions _options;
 
-    /// <summary>
-    /// The lexical context the next read resumes from.
-    /// </summary>
+    /// <summary>The lexical context the next read resumes from.</summary>
     internal TomlScanState ScanState;
 
-    /// <summary>
-    /// The container context stack: one entry per open array or inline table.
-    /// </summary>
+    /// <summary>The container context stack: one entry per open array or inline table.</summary>
     internal byte[]? Containers;
 
-    /// <summary>
-    /// The number of open containers on <see cref="Containers" />.
-    /// </summary>
+    /// <summary>The number of open containers on <see cref="Containers" />.</summary>
     internal int ContainerCount;
 
-    /// <summary>
-    /// Whether the cursor inside an inline table sits immediately after a value separator comma.
-    /// </summary>
+    /// <summary>Whether the cursor inside an inline table sits immediately after a value separator comma.</summary>
     internal bool InlineAfterComma;
 
-    /// <summary>
-    /// Whether the header being lexed is an <c>[[array-of-tables]]</c> header.
-    /// </summary>
+    /// <summary>Whether the header being lexed is an <c>[[array-of-tables]]</c> header.</summary>
     internal bool HeaderIsArray;
 
-    /// <summary>
-    /// The number of source lines completed before the resume point, so that the zero of a default-initialized state
-    /// means line one.
-    /// </summary>
+    /// <summary>The number of source lines completed before the resume point, so that the zero of a default-initialized state means line one.</summary>
     internal int LinesRead;
 
-    /// <summary>
-    /// The number of bytes of the current line already consumed in earlier blocks, used to keep columns accurate.
-    /// </summary>
+    /// <summary>The number of bytes of the current line already consumed in earlier blocks, used to keep columns accurate.</summary>
     internal int BytesInLine;
 
-    /// <summary>
-    /// Whether the reader has moved past the document start, where a byte-order mark may be skipped. Stored inverted so
-    /// that a default-initialized state describes the document start.
-    /// </summary>
+    /// <summary>Whether the reader has moved past the document start, where a byte-order mark may be skipped. Stored inverted so that a default-initialized state describes the document start.</summary>
     internal bool PastStart;
 
     /// <summary>

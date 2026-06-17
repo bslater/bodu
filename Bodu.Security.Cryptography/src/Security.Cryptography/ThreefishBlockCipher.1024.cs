@@ -60,14 +60,10 @@ public sealed partial class Threefish1024Cipher
     public Threefish1024Cipher(ReadOnlySpan<byte> key, ReadOnlySpan<byte> tweak)
         : base(key, tweak) { }
 
-    /// <summary>
-    /// Length of the Threefish-1024 key is 1024 bits (128 bytes).
-    /// </summary>
+    /// <summary>Length of the Threefish-1024 key is 1024 bits (128 bytes).</summary>
     public const int KeySize = 1024;
 
-    /// <summary>
-    /// Threefish-1024 word-rotation constants <c>R0</c>–<c>R3</c> used by the mix function.
-    /// </summary>
+    /// <summary>Threefish-1024 word-rotation constants <c>R0</c>–<c>R3</c> used by the mix function.</summary>
     /// <remarks>
     /// The spec-defined rotation constants for Threefish-1024 are declared as named <c>const int</c>s so the JIT can
     /// fold each <c>Mix</c>/<c>Unmix</c> call to a ROL/ROR with an immediate count, and so all 64 values live in one
@@ -76,85 +72,52 @@ public sealed partial class Threefish1024Cipher
     /// </remarks>
     private const int R0 = 24, R1 = 13, R2 = 8, R3 = 47;
 
-    /// <summary>
-    /// Threefish-1024 word-rotation constants <c>R4</c>–<c>R7</c> used by the mix function.
-    /// </summary>
+    /// <summary>Threefish-1024 word-rotation constants <c>R4</c>–<c>R7</c> used by the mix function.</summary>
     private const int R4 = 8, R5 = 17, R6 = 22, R7 = 37;
 
-    /// <summary>
-    /// Threefish-1024 word-rotation constants <c>R8</c>–<c>R11</c> used by the mix function.
-    /// </summary>
+    /// <summary>Threefish-1024 word-rotation constants <c>R8</c>–<c>R11</c> used by the mix function.</summary>
     private const int R8 = 38, R9 = 19, R10 = 10, R11 = 55;
 
-    /// <summary>
-    /// Threefish-1024 word-rotation constants <c>R12</c>–<c>R15</c> used by the mix function.
-    /// </summary>
+    /// <summary>Threefish-1024 word-rotation constants <c>R12</c>–<c>R15</c> used by the mix function.</summary>
     private const int R12 = 49, R13 = 18, R14 = 23, R15 = 52;
 
-    /// <summary>
-    /// Threefish-1024 word-rotation constants <c>R16</c>–<c>R19</c> used by the mix function.
-    /// </summary>
+    /// <summary>Threefish-1024 word-rotation constants <c>R16</c>–<c>R19</c> used by the mix function.</summary>
     private const int R16 = 33, R17 = 4, R18 = 51, R19 = 13;
 
-    /// <summary>
-    /// Threefish-1024 word-rotation constants <c>R20</c>–<c>R23</c> used by the mix function.
-    /// </summary>
+    /// <summary>Threefish-1024 word-rotation constants <c>R20</c>–<c>R23</c> used by the mix function.</summary>
     private const int R20 = 34, R21 = 41, R22 = 59, R23 = 17;
 
-    /// <summary>
-    /// Threefish-1024 word-rotation constants <c>R24</c>–<c>R27</c> used by the mix function.
-    /// </summary>
+    /// <summary>Threefish-1024 word-rotation constants <c>R24</c>–<c>R27</c> used by the mix function.</summary>
     private const int R24 = 5, R25 = 20, R26 = 48, R27 = 41;
 
-    /// <summary>
-    /// Threefish-1024 word-rotation constants <c>R28</c>–<c>R31</c> used by the mix function.
-    /// </summary>
+    /// <summary>Threefish-1024 word-rotation constants <c>R28</c>–<c>R31</c> used by the mix function.</summary>
     private const int R28 = 47, R29 = 28, R30 = 16, R31 = 25;
 
-    /// <summary>
-    /// Threefish-1024 word-rotation constants <c>R32</c>–<c>R35</c> used by the mix function.
-    /// </summary>
+    /// <summary>Threefish-1024 word-rotation constants <c>R32</c>–<c>R35</c> used by the mix function.</summary>
     private const int R32 = 41, R33 = 9, R34 = 37, R35 = 31;
 
-    /// <summary>
-    /// Threefish-1024 word-rotation constants <c>R36</c>–<c>R39</c> used by the mix function.
-    /// </summary>
+    /// <summary>Threefish-1024 word-rotation constants <c>R36</c>–<c>R39</c> used by the mix function.</summary>
     private const int R36 = 12, R37 = 47, R38 = 44, R39 = 30;
 
-    /// <summary>
-    /// Threefish-1024 word-rotation constants <c>R40</c>–<c>R43</c> used by the mix function.
-    /// </summary>
+    /// <summary>Threefish-1024 word-rotation constants <c>R40</c>–<c>R43</c> used by the mix function.</summary>
     private const int R40 = 16, R41 = 34, R42 = 56, R43 = 51;
 
-    /// <summary>
-    /// Threefish-1024 word-rotation constants <c>R44</c>–<c>R47</c> used by the mix function.
-    /// </summary>
+    /// <summary>Threefish-1024 word-rotation constants <c>R44</c>–<c>R47</c> used by the mix function.</summary>
     private const int R44 = 4, R45 = 53, R46 = 42, R47 = 41;
 
-    /// <summary>
-    /// Threefish-1024 word-rotation constants <c>R48</c>–<c>R51</c> used by the mix function.
-    /// </summary>
+    /// <summary>Threefish-1024 word-rotation constants <c>R48</c>–<c>R51</c> used by the mix function.</summary>
     private const int R48 = 31, R49 = 44, R50 = 47, R51 = 46;
 
-    /// <summary>
-    /// Threefish-1024 word-rotation constants <c>R52</c>–<c>R55</c> used by the mix function.
-    /// </summary>
+    /// <summary>Threefish-1024 word-rotation constants <c>R52</c>–<c>R55</c> used by the mix function.</summary>
     private const int R52 = 19, R53 = 42, R54 = 44, R55 = 25;
 
-    /// <summary>
-    /// Threefish-1024 word-rotation constants <c>R56</c>–<c>R59</c> used by the mix function.
-    /// </summary>
+    /// <summary>Threefish-1024 word-rotation constants <c>R56</c>–<c>R59</c> used by the mix function.</summary>
     private const int R56 = 9, R57 = 48, R58 = 35, R59 = 52;
 
-    /// <summary>
-    /// Threefish-1024 word-rotation constants <c>R60</c>–<c>R63</c> used by the mix function.
-    /// </summary>
+    /// <summary>Threefish-1024 word-rotation constants <c>R60</c>–<c>R63</c> used by the mix function.</summary>
     private const int R60 = 23, R61 = 31, R62 = 37, R63 = 20;
 
-    /// <summary>
-    /// The full Threefish-1024 rotation schedule, holding the 64 rotation constants <c>R0</c>–<c>R63</c> exposed
-    /// through <see cref="RotationSchedule" />.
-    /// </summary>
+    /// <summary>The full Threefish-1024 rotation schedule, holding the 64 rotation constants <c>R0</c>–<c>R63</c> exposed through <see cref="RotationSchedule" />.</summary>
     private static readonly int[] s_rotationSchedule =
     [
         R0, R1, R2, R3, R4, R5, R6, R7,

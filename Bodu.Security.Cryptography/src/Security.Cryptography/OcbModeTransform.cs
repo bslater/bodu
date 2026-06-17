@@ -31,7 +31,8 @@ namespace Bodu.Security.Cryptography;
 /// bytes).
 /// </para>
 /// <para>
-/// Offset initialization uses the RFC 7253 §2.4 K_top stretch: <code>
+/// Offset initialization uses the RFC 7253 §2.4 K_top stretch:
+/// <code>
 ///<![CDATA[
 ///   Nonce  = num2str(TAGLEN mod 128, 7) || zeros(120-bitlen(N)) || 1 || N
 ///   bottom = str2num(Nonce[123..128])
@@ -75,70 +76,43 @@ namespace Bodu.Security.Cryptography;
 public sealed class OcbModeTransform
     : IAeadBlockCipherModeTransform, IDisposable
 {
-    /// <summary>
-    /// Length of the OCB cipher block is 128 bits (16 bytes). Byte length derived inline via
-    /// <see cref="BlockSizeBits" /> / 8.
-    /// </summary>
+    /// <summary>Length of the OCB cipher block is 128 bits (16 bytes). Byte length derived inline via <see cref="BlockSizeBits" /> / 8.</summary>
     private const int BlockSizeBits = 128;
 
-    /// <summary>
-    /// Length of the OCB nonce is 96 bits (12 bytes). Byte length derived inline via <see cref="NonceSizeBits" /> / 8.
-    /// </summary>
+    /// <summary>Length of the OCB nonce is 96 bits (12 bytes). Byte length derived inline via <see cref="NonceSizeBits" /> / 8.</summary>
     private const int NonceSizeBits = 96;
 
-    /// <summary>
-    /// The number of precomputed L values, sufficient for up to 2^32 blocks.
-    /// </summary>
+    /// <summary>The number of precomputed L values, sufficient for up to 2^32 blocks.</summary>
     private const int MaxLValues = 32;
 
-    /// <summary>
-    /// The underlying block cipher used for OCB3 encipher operations.
-    /// </summary>
+    /// <summary>The underlying block cipher used for OCB3 encipher operations.</summary>
     private readonly IBlockCipher _cipher;
 
-    /// <summary>
-    /// The 12-byte OCB3 nonce derived from the supplied initialization vector.
-    /// </summary>
+    /// <summary>The 12-byte OCB3 nonce derived from the supplied initialization vector.</summary>
     private readonly byte[] _nonce;
 
-    /// <summary>
-    /// The authentication-tag length, in bytes (between 1 and the cipher block size).
-    /// </summary>
+    /// <summary>The authentication-tag length, in bytes (between 1 and the cipher block size).</summary>
     private readonly int _tagLen;
 
-    /// <summary>
-    /// The L_* constant, equal to <c>E(0^128)</c>.
-    /// </summary>
+    /// <summary>The L_* constant, equal to <c>E(0^128)</c>.</summary>
     private readonly byte[] _lStar;
 
-    /// <summary>
-    /// The L_$ constant, equal to <c>double(L_*)</c>.
-    /// </summary>
+    /// <summary>The L_$ constant, equal to <c>double(L_*)</c>.</summary>
     private readonly byte[] _lDollar;
 
-    /// <summary>
-    /// The precomputed L array where <c>L[0] = double(L_$)</c> and <c>L[i] = double(L[i-1])</c>.
-    /// </summary>
+    /// <summary>The precomputed L array where <c>L[0] = double(L_$)</c> and <c>L[i] = double(L[i-1])</c>.</summary>
     private readonly byte[][] _lArray;
 
-    /// <summary>
-    /// The buffered associated authenticated data, or <see langword="null" /> until processed.
-    /// </summary>
+    /// <summary>The buffered associated authenticated data, or <see langword="null" /> until processed.</summary>
     private byte[]? _aad;
 
-    /// <summary>
-    /// Indicates whether the associated data has been processed.
-    /// </summary>
+    /// <summary>Indicates whether the associated data has been processed.</summary>
     private bool _aadProcessed;
 
-    /// <summary>
-    /// Indicates whether this transform has already completed an encrypt or decrypt operation.
-    /// </summary>
+    /// <summary>Indicates whether this transform has already completed an encrypt or decrypt operation.</summary>
     private bool _completed;
 
-    /// <summary>
-    /// Indicates whether this instance has been disposed.
-    /// </summary>
+    /// <summary>Indicates whether this instance has been disposed.</summary>
     private bool _disposed;
 
     /// <summary>

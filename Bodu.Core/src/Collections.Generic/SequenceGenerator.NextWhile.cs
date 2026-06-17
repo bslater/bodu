@@ -215,14 +215,10 @@ public static partial class SequenceGenerator
     /// <typeparam name="T">The type of the accompanying value.</typeparam>
     private struct State<T>
     {
-        /// <summary>
-        /// The zero-based index of the current iteration step.
-        /// </summary>
+        /// <summary>The zero-based index of the current iteration step.</summary>
         public int Index;
 
-        /// <summary>
-        /// The value associated with the current iteration step.
-        /// </summary>
+        /// <summary>The value associated with the current iteration step.</summary>
         public T Value;
     }
 }

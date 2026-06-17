@@ -41,19 +41,13 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>
-/// <b>Block size:</b> 16 bytes (128 bits)
-/// </description>
+/// <description><b>Block size:</b> 16 bytes (128 bits)</description>
 /// </item>
 /// <item>
-/// <description>
-/// <b>Key sizes:</b> 16 bytes (128 bits), 24 bytes (192 bits), 32 bytes (256 bits)
-/// </description>
+/// <description><b>Key sizes:</b> 16 bytes (128 bits), 24 bytes (192 bits), 32 bytes (256 bits)</description>
 /// </item>
 /// <item>
-/// <description>
-/// <b>Rounds:</b> 18 (128-bit key) or 24 (192/256-bit key)
-/// </description>
+/// <description><b>Rounds:</b> 18 (128-bit key) or 24 (192/256-bit key)</description>
 /// </item>
 /// </list>
 /// </remarks>
@@ -79,30 +73,19 @@ namespace Bodu.Security.Cryptography;
 public sealed class CamelliaBlockCipher
     : IBlockCipher
 {
-    /// <summary>
-    /// Length of the Camellia block is 128 bits (16 bytes). Internal constant kept for span-length validation; callers
-    /// should read <see cref="BlockSize" /> instead.
-    /// </summary>
+    /// <summary>Length of the Camellia block is 128 bits (16 bytes). Internal constant kept for span-length validation; callers should read <see cref="BlockSize" /> instead.</summary>
     private const int BlockSizeBits = 128;
 
-    /// <summary>
-    /// Length of the Camellia 128-bit key is 128 bits (16 bytes). Internal use only.
-    /// </summary>
+    /// <summary>Length of the Camellia 128-bit key is 128 bits (16 bytes). Internal use only.</summary>
     private const int Key128SizeBits = 128;
 
-    /// <summary>
-    /// Length of the Camellia 192-bit key is 192 bits (24 bytes). Internal use only.
-    /// </summary>
+    /// <summary>Length of the Camellia 192-bit key is 192 bits (24 bytes). Internal use only.</summary>
     private const int Key192SizeBits = 192;
 
-    /// <summary>
-    /// Length of the Camellia 256-bit key is 256 bits (32 bytes). Internal use only.
-    /// </summary>
+    /// <summary>Length of the Camellia 256-bit key is 256 bits (32 bytes). Internal use only.</summary>
     private const int Key256SizeBits = 256;
 
-    /// <summary>
-    /// The Camellia <c>SBOX1</c> substitution table from RFC 3713 Appendix A.
-    /// </summary>
+    /// <summary>The Camellia <c>SBOX1</c> substitution table from RFC 3713 Appendix A.</summary>
     /// <remarks>
     /// Camellia defines only this table explicitly; <c>SBOX2</c>, <c>SBOX3</c>, and <c>SBOX4</c> are derived by byte
     /// rotations or by rotating the lookup index.
@@ -127,9 +110,7 @@ public sealed class CamelliaBlockCipher
         0x40, 0x28, 0xD3, 0x7B, 0xBB, 0xC9, 0x43, 0xC1, 0x15, 0xE3, 0xAD, 0xF4, 0x77, 0xC7, 0x80, 0x9E,
     ];
 
-    /// <summary>
-    /// The <c>SIGMA1</c>..<c>SIGMA6</c> constants from RFC 3713 §2.4, represented as 64-bit values.
-    /// </summary>
+    /// <summary>The <c>SIGMA1</c>..<c>SIGMA6</c> constants from RFC 3713 §2.4, represented as 64-bit values.</summary>
     /// <remarks>
     /// These fixed constants key the Feistel derivation of <c>KA</c> and <c>KB</c> during key expansion; they are not
     /// data-round keys.
@@ -144,36 +125,23 @@ public sealed class CamelliaBlockCipher
         0xB05688C2B3E6C1FDUL,
     ];
 
-    /// <summary>
-    /// The whitening keys <c>kw1</c>..<c>kw4</c> in RFC order.
-    /// </summary>
+    /// <summary>The whitening keys <c>kw1</c>..<c>kw4</c> in RFC order.</summary>
     /// <remarks>
     /// <c>kw1</c>/<c>kw2</c> are applied before the Feistel rounds; <c>kw3</c>/<c>kw4</c> are applied after the final
     /// Feistel swap.
     /// </remarks>
     private readonly ulong[] _kw;
 
-    /// <summary>
-    /// The round subkeys <c>k1</c>..<c>k18</c> (128-bit key) or <c>k1</c>..<c>k24</c> (192/256-bit key) in RFC order,
-    /// where array index 0 corresponds to <c>k1</c>.
-    /// </summary>
+    /// <summary>The round subkeys <c>k1</c>..<c>k18</c> (128-bit key) or <c>k1</c>..<c>k24</c> (192/256-bit key) in RFC order, where array index 0 corresponds to <c>k1</c>.</summary>
     private readonly ulong[] _k;
 
-    /// <summary>
-    /// The FL/FL<sup>−1</sup> layer keys <c>ke1</c>..<c>ke4</c> (128-bit key) or <c>ke1</c>..<c>ke6</c> (192/256-bit
-    /// key) in RFC order, where array index 0 corresponds to <c>ke1</c>.
-    /// </summary>
+    /// <summary>The FL/FL<sup>−1</sup> layer keys <c>ke1</c>..<c>ke4</c> (128-bit key) or <c>ke1</c>..<c>ke6</c> (192/256-bit key) in RFC order, where array index 0 corresponds to <c>ke1</c>.</summary>
     private readonly ulong[] _ke;
 
-    /// <summary>
-    /// A value indicating whether the extended 24-round key schedule is in use. <see langword="true" /> for 192- and
-    /// 256-bit keys, which derive <c>KB</c> and use the schedule from RFC 3713 §2.4.2.
-    /// </summary>
+    /// <summary>A value indicating whether the extended 24-round key schedule is in use. <see langword="true" /> for 192- and 256-bit keys, which derive <c>KB</c> and use the schedule from RFC 3713 §2.4.2.</summary>
     private readonly bool _usesExtendedKeySchedule;
 
-    /// <summary>
-    /// A value indicating whether this instance has been disposed.
-    /// </summary>
+    /// <summary>A value indicating whether this instance has been disposed.</summary>
     private bool _disposed;
 
     /// <summary>

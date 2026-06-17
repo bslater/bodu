@@ -8,10 +8,7 @@ namespace Bodu.IO.Hashing;
 
 public sealed partial class Pearson
 {
-    /// <summary>
-    /// The lazily initialized 256-byte permutation table built from the AES S-box, selected by
-    /// <see cref="PearsonTableType.AESSBox" />.
-    /// </summary>
+    /// <summary>The lazily initialized 256-byte permutation table built from the AES S-box, selected by <see cref="PearsonTableType.AESSBox" />.</summary>
     private static readonly Lazy<byte[]> s_aESSBoxTable = new(() =>
     [
         0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5, 0x30, 0x01, 0x67, 0x2b, 0xfe, 0xd7, 0xab, 0x76,
@@ -32,10 +29,7 @@ public sealed partial class Pearson
         0x8c, 0xa1, 0x89, 0x0d, 0xbf, 0xe6, 0x42, 0x68, 0x41, 0x99, 0x2d, 0x0f, 0xb0, 0x54, 0xbb, 0x16,
     ]);
 
-    /// <summary>
-    /// The lazily initialized 256-byte permutation table built from the high byte of the standard CRC-32 polynomial
-    /// lookup, selected by <see cref="PearsonTableType.CRC32HighByte" />.
-    /// </summary>
+    /// <summary>The lazily initialized 256-byte permutation table built from the high byte of the standard CRC-32 polynomial lookup, selected by <see cref="PearsonTableType.CRC32HighByte" />.</summary>
     private static readonly Lazy<byte[]> s_cRC32HighByteTable = new(() =>
     [
         0x00, 0x77, 0xEE, 0x99, 0x07, 0x70, 0xE9, 0x9E, 0x0E, 0x79, 0xE0, 0x97, 0x09, 0x7E, 0xE7, 0x90,
@@ -56,10 +50,7 @@ public sealed partial class Pearson
         0xBD, 0xCA, 0x53, 0x24, 0xBA, 0xCD, 0x54, 0x23, 0xB3, 0xC4, 0x5D, 0x2A, 0xB4, 0xC3, 0x5A, 0x2D
     ]);
 
-    /// <summary>
-    /// The lazily initialized original Pearson 1990 256-byte permutation table, selected by
-    /// <see cref="PearsonTableType.Pearson" />.
-    /// </summary>
+    /// <summary>The lazily initialized original Pearson 1990 256-byte permutation table, selected by <see cref="PearsonTableType.Pearson" />.</summary>
     private static readonly Lazy<byte[]> s_pearsonTable = new(() =>
     [
         0x01, 0x57, 0x31, 0x0C, 0xB0, 0xB2, 0x66, 0xA6, 0x79, 0xC1, 0x06, 0x54, 0xF9, 0xE6, 0x2C, 0xA3,
@@ -80,10 +71,7 @@ public sealed partial class Pearson
         0x33, 0x41, 0x1C, 0x90, 0xFE, 0xDD, 0x5D, 0xBD, 0xC2, 0x8B, 0x70, 0x2B, 0x47, 0x6D, 0xB8, 0xD1
     ]);
 
-    /// <summary>
-    /// The lazily initialized 256-byte permutation table derived from the first 64 SHA-256 round constants, selected by
-    /// <see cref="PearsonTableType.SHA256Constants" />.
-    /// </summary>
+    /// <summary>The lazily initialized 256-byte permutation table derived from the first 64 SHA-256 round constants, selected by <see cref="PearsonTableType.SHA256Constants" />.</summary>
     private static readonly Lazy<byte[]> s_sHA256ConstantsTable = new(() =>
     [
         0x48, 0x62, 0x46, 0x3D, 0x8F, 0x57, 0xBC, 0xAC, 0x2A, 0x97, 0xA0, 0x3C, 0xFB, 0x5A, 0xE6, 0x3B,

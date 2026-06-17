@@ -15,14 +15,10 @@ namespace Bodu.Financial.ExchangeRates.Rba.DependencyInjection;
 internal sealed class TransientFaultHttpMessageHandler
     : HttpMessageHandler
 {
-    /// <summary>
-    /// The number of leading requests answered with <see cref="_failureStatus" />.
-    /// </summary>
+    /// <summary>The number of leading requests answered with <see cref="_failureStatus" />.</summary>
     private readonly int _failuresBeforeSuccess;
 
-    /// <summary>
-    /// The status returned for the leading failing requests.
-    /// </summary>
+    /// <summary>The status returned for the leading failing requests.</summary>
     private readonly HttpStatusCode _failureStatus;
 
     /// <summary>

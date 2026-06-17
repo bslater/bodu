@@ -27,15 +27,10 @@ namespace Bodu.Financial;
 /// </remarks>
 internal sealed class ExchangeRateSeriesStorage
 {
-    /// <summary>
-    /// The observation day numbers in strictly ascending order. Index <c>i</c> corresponds to <see cref="_rates" /> at
-    /// the same index.
-    /// </summary>
+    /// <summary>The observation day numbers in strictly ascending order. Index <c>i</c> corresponds to <see cref="_rates" /> at the same index.</summary>
     private readonly int[] _dayNumbers;
 
-    /// <summary>
-    /// The observed rates aligned positionally with <see cref="_dayNumbers" />. Every entry is strictly positive.
-    /// </summary>
+    /// <summary>The observed rates aligned positionally with <see cref="_dayNumbers" />. Every entry is strictly positive.</summary>
     private readonly decimal[] _rates;
 
     /// <summary>

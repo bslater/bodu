@@ -27,29 +27,19 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>
-/// Output size: variable, any positive multiple of 8 bits.
-/// </description>
+/// <description>Output size: variable, any positive multiple of 8 bits.</description>
 /// </item>
 /// <item>
-/// <description>
-/// State: 320-bit sponge; rate: 8 bytes (64 bits).
-/// </description>
+/// <description>State: 320-bit sponge; rate: 8 bytes (64 bits).</description>
 /// </item>
 /// <item>
-/// <description>
-/// Permutation: Ascon-p12 for absorption-to-squeeze transition; Ascon-p8 elsewhere.
-/// </description>
+/// <description>Permutation: Ascon-p12 for absorption-to-squeeze transition; Ascon-p8 elsewhere.</description>
 /// </item>
 /// <item>
-/// <description>
-/// Security level: 128 bits (for outputs ≥ 32 bytes).
-/// </description>
+/// <description>Security level: 128 bits (for outputs ≥ 32 bytes).</description>
 /// </item>
 /// <item>
-/// <description>
-/// Specification: NIST SP 800-232 (ASCON family).
-/// </description>
+/// <description>Specification: NIST SP 800-232 (ASCON family).</description>
 /// </item>
 /// </list>
 /// <para>
@@ -75,33 +65,23 @@ namespace Bodu.Security.Cryptography;
 public sealed class AsconXof128
     : AsconXof<AsconXof128>
 {
-    /// <summary>
-    /// The first word of the pre-computed Ascon-XOF128 initial sponge state.
-    /// </summary>
+    /// <summary>The first word of the pre-computed Ascon-XOF128 initial sponge state.</summary>
     /// <remarks>
     /// The five <c>Iv*</c> words are the result of applying Ascon-p12 to <c>[raw_IV, 0, 0, 0, 0]</c>, taken from NIST
     /// SP 800-232 / ascon-c <c>opt64/constants.h</c> (<c>ASCON_XOF128_IV0..IV4</c>).
     /// </remarks>
     private const ulong Iv0 = 0xb57e273b814cd416UL;
 
-    /// <summary>
-    /// The second word of the pre-computed Ascon-XOF128 initial sponge state.
-    /// </summary>
+    /// <summary>The second word of the pre-computed Ascon-XOF128 initial sponge state.</summary>
     private const ulong Iv1 = 0x2b51042562ae2420UL;
 
-    /// <summary>
-    /// The third word of the pre-computed Ascon-XOF128 initial sponge state.
-    /// </summary>
+    /// <summary>The third word of the pre-computed Ascon-XOF128 initial sponge state.</summary>
     private const ulong Iv2 = 0x66a3a7768ddf2218UL;
 
-    /// <summary>
-    /// The fourth word of the pre-computed Ascon-XOF128 initial sponge state.
-    /// </summary>
+    /// <summary>The fourth word of the pre-computed Ascon-XOF128 initial sponge state.</summary>
     private const ulong Iv3 = 0x5aad0a7a8153650cUL;
 
-    /// <summary>
-    /// The fifth word of the pre-computed Ascon-XOF128 initial sponge state.
-    /// </summary>
+    /// <summary>The fifth word of the pre-computed Ascon-XOF128 initial sponge state.</summary>
     private const ulong Iv4 = 0x4f3e0e32539493b6UL;
 
     /// <summary>

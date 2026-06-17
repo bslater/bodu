@@ -32,48 +32,38 @@ namespace Bodu.Security.Cryptography;
 /// </note>
 /// </remarks>
 /// <example>
-/// <code language="csharp"> using var algo = new SimpleReversingSymmetricAlgorithm(); algo.GenerateKey();
-/// algo.GenerateIV(); var encryptor = (SimpleReversingCryptoTransform)algo.CreateEncryptor(); byte[] ciphertext; using
-/// (var ms = new MemoryStream()) using (var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write)) {
-/// cs.Write(plaintext); cs.FlushFinalBlock(); ciphertext = ms.ToArray(); } Inspect diagnostics after the operation.
-/// Assert.AreEqual(expectedBlockCount, encryptor.Diagnostics.EncryptLog.Count); </code>
+/// <code language="csharp">
+/// using var algo = new SimpleReversingSymmetricAlgorithm(); algo.GenerateKey(); algo.GenerateIV(); var encryptor =
+/// (SimpleReversingCryptoTransform)algo.CreateEncryptor(); byte[] ciphertext; using (var ms = new MemoryStream()) using
+/// (var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write)) { cs.Write(plaintext); cs.FlushFinalBlock();
+/// ciphertext = ms.ToArray(); } Inspect diagnostics after the operation. Assert.AreEqual(expectedBlockCount,
+/// encryptor.Diagnostics.EncryptLog.Count);
+/// </code>
 /// </example>
 public sealed class SimpleReversingSymmetricAlgorithm
     : SymmetricAlgorithm
 {
     // ── Constants ─────────────────────────────────────────────────────────────────────────────
 
-    /// <summary>
-    /// The default block size in bits.
-    /// </summary>
+    /// <summary>The default block size in bits.</summary>
     public const int DefaultBlockSizeBits = 128;
 
-    /// <summary>
-    /// The default key size in bits.
-    /// </summary>
+    /// <summary>The default key size in bits.</summary>
     public const int DefaultKeySizeBits = 128;
 
     // ── Static legal size declarations ────────────────────────────────────────────────────────
 
-    /// <summary>
-    /// The legal block sizes supported by this algorithm.
-    /// </summary>
+    /// <summary>The legal block sizes supported by this algorithm.</summary>
     /// <remarks>
     /// <list type="bullet">
     /// <item>
-    /// <description>
-    /// 128, 192, 256 bits (step 64)
-    /// </description>
+    /// <description>128, 192, 256 bits (step 64)</description>
     /// </item>
     /// <item>
-    /// <description>
-    /// 448, 576 bits (step 128)
-    /// </description>
+    /// <description>448, 576 bits (step 128)</description>
     /// </item>
     /// <item>
-    /// <description>
-    /// 1024, 1536, 2048 bits (step 512)
-    /// </description>
+    /// <description>1024, 1536, 2048 bits (step 512)</description>
     /// </item>
     /// </list>
     /// </remarks>
@@ -84,10 +74,7 @@ public sealed class SimpleReversingSymmetricAlgorithm
         new KeySizes(1024, 2048, 512),
     ];
 
-    /// <summary>
-    /// The legal key sizes supported by this algorithm. Keys may be any byte-aligned length between 8 and 2048 bits
-    /// (step 8).
-    /// </summary>
+    /// <summary>The legal key sizes supported by this algorithm. Keys may be any byte-aligned length between 8 and 2048 bits (step 8).</summary>
     public static readonly KeySizes[] KeySizesValue =
     [
         new KeySizes(8, 2048, 8),

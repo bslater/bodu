@@ -52,39 +52,25 @@ namespace Bodu.Financial.ExchangeRates.Boe;
 public sealed class BoeExchangeRateProvider
     : WebExchangeRateProvider
 {
-    /// <summary>
-    /// The provider identifier stamped on every rate this provider produces.
-    /// </summary>
+    /// <summary>The provider identifier stamped on every rate this provider produces.</summary>
     public const string ProviderName = "BoE";
 
-    /// <summary>
-    /// The base currency the Bank of England quotes against.
-    /// </summary>
+    /// <summary>The base currency the Bank of England quotes against.</summary>
     public const string BaseCurrencyIsoCode = "GBP";
 
-    /// <summary>
-    /// The source that downloads and parses range responses.
-    /// </summary>
+    /// <summary>The source that downloads and parses range responses.</summary>
     private readonly IBoeExchangeRateTableSource _source;
 
-    /// <summary>
-    /// The provider options.
-    /// </summary>
+    /// <summary>The provider options.</summary>
     private readonly BoeExchangeRateOptions _options;
 
-    /// <summary>
-    /// The logger that records range downloads and on-demand network fetches.
-    /// </summary>
+    /// <summary>The logger that records range downloads and on-demand network fetches.</summary>
     private readonly ILogger _logger;
 
-    /// <summary>
-    /// The inclusive ranges whose data has been loaded.
-    /// </summary>
+    /// <summary>The inclusive ranges whose data has been loaded.</summary>
     private readonly List<(DateOnly From, DateOnly To)> _loadedRanges = new();
 
-    /// <summary>
-    /// The discovered currency series, keyed by pair.
-    /// </summary>
+    /// <summary>The discovered currency series, keyed by pair.</summary>
     private readonly Dictionary<ExchangeRatePair, BoeSeriesInfo> _series = new();
 
     /// <summary>

@@ -33,19 +33,13 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>
-/// Block size: 64 bits (8 bytes).
-/// </description>
+/// <description>Block size: 64 bits (8 bytes).</description>
 /// </item>
 /// <item>
-/// <description>
-/// Key size: variable, 32–448 bits (4–56 bytes).
-/// </description>
+/// <description>Key size: variable, 32–448 bits (4–56 bytes).</description>
 /// </item>
 /// <item>
-/// <description>
-/// 16-round Feistel network with key-dependent S-boxes initialized from the digits of π.
-/// </description>
+/// <description>16-round Feistel network with key-dependent S-boxes initialized from the digits of π.</description>
 /// </item>
 /// <item>
 /// <description>
@@ -85,45 +79,28 @@ namespace Bodu.Security.Cryptography;
 public sealed class Blowfish
     : SymmetricAlgorithm
 {
-    /// <summary>
-    /// Length of the Blowfish block is 64 bits (8 bytes).
-    /// </summary>
+    /// <summary>Length of the Blowfish block is 64 bits (8 bytes).</summary>
     internal const int BlowFishBlockSize = 64;
 
-    /// <summary>
-    /// Length of the minimum permitted Blowfish key is 32 bits (4 bytes).
-    /// </summary>
+    /// <summary>Length of the minimum permitted Blowfish key is 32 bits (4 bytes).</summary>
     internal const int MinKeySize = 32;
 
-    /// <summary>
-    /// Length of the maximum permitted Blowfish key is 448 bits (56 bytes).
-    /// </summary>
+    /// <summary>Length of the maximum permitted Blowfish key is 448 bits (56 bytes).</summary>
     internal const int MaxKeySize = 448;
 
-    /// <summary>
-    /// The legal block sizes for Blowfish, expressed as a single-entry range with skip size 0 because Blowfish has a
-    /// single fixed 64-bit block size.
-    /// </summary>
+    /// <summary>The legal block sizes for Blowfish, expressed as a single-entry range with skip size 0 because Blowfish has a single fixed 64-bit block size.</summary>
     private static readonly KeySizes[] s_blowfishBlockSizes = [new KeySizes(BlowFishBlockSize, BlowFishBlockSize, 0)];
 
-    /// <summary>
-    /// The legal key sizes for Blowfish, spanning 32..448 bits in 8-bit (single-byte) increments.
-    /// </summary>
+    /// <summary>The legal key sizes for Blowfish, spanning 32..448 bits in 8-bit (single-byte) increments.</summary>
     private static readonly KeySizes[] s_blowfishKeySizes = [new KeySizes(MinKeySize, MaxKeySize, 8)];
 
-    /// <summary>
-    /// A value indicating whether this instance has been disposed.
-    /// </summary>
+    /// <summary>A value indicating whether this instance has been disposed.</summary>
     private bool _disposed = false;
 
-    /// <summary>
-    /// The block cipher mode of operation used when creating encryptors and decryptors.
-    /// </summary>
+    /// <summary>The block cipher mode of operation used when creating encryptors and decryptors.</summary>
     private CipherModeKind _blockMode = CipherModeKind.CBC;
 
-    /// <summary>
-    /// The padding mode applied when creating encryptors and decryptors.
-    /// </summary>
+    /// <summary>The padding mode applied when creating encryptors and decryptors.</summary>
     private PaddingModeKind _blockPadding = PaddingModeKind.PKCS7;
 
     /// <summary>

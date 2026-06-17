@@ -52,31 +52,22 @@ namespace Bodu.Security.Cryptography;
 public sealed class Serpent128Cipher
     : SerpentBlockCipherBase
 {
-    /// <summary>
-    /// Length of the Serpent block is 128 bits (16 bytes). Internal constant kept for span-length validation; callers
-    /// should read <see cref="BlockSize" /> instead.
-    /// </summary>
+    /// <summary>Length of the Serpent block is 128 bits (16 bytes). Internal constant kept for span-length validation; callers should read <see cref="BlockSize" /> instead.</summary>
     private const int BlockSizeBits = 128;
 
-    /// <summary>
-    /// The number of cipher rounds executed by Serpent.
-    /// </summary>
+    /// <summary>The number of cipher rounds executed by Serpent.</summary>
     /// <remarks>
     /// Canonical Serpent always uses 32 rounds regardless of whether the input key is 128, 192, or 256 bits.
     /// </remarks>
     private const int RoundCount = 32;
 
-    /// <summary>
-    /// The number of 32-bit round-key words (<c>(RoundCount + 1) * 4 = 132</c>).
-    /// </summary>
+    /// <summary>The number of 32-bit round-key words (<c>(RoundCount + 1) * 4 = 132</c>).</summary>
     /// <remarks>
     /// Serpent requires one 128-bit subkey for each of the 32 rounds plus one final post-S-box whitening subkey.
     /// </remarks>
     private const int RoundKeyWordCount = (RoundCount + 1) * 4;
 
-    /// <summary>
-    /// The expanded round keys (<c>K_0..K_32</c>), each four 32-bit words, laid out contiguously as 132 words.
-    /// </summary>
+    /// <summary>The expanded round keys (<c>K_0..K_32</c>), each four 32-bit words, laid out contiguously as 132 words.</summary>
     /// <remarks>
     /// Round key <c>K_r</c> starts at offset <c>r * 4</c>. Encryption consumes <c>K_0..K_31</c> before each S-box layer
     /// and <c>K_32</c> after the final S-box layer.

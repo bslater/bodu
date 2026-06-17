@@ -60,32 +60,19 @@ namespace Bodu.Financial.ExchangeRates.Caching.Distributed;
 public sealed class DistributedExchangeRateCache
     : IExchangeRateCache
 {
-    /// <summary>
-    /// The serializer options used for every read and write so the wire format is stable and culture-independent.
-    /// </summary>
+    /// <summary>The serializer options used for every read and write so the wire format is stable and culture-independent.</summary>
     private static readonly JsonSerializerOptions s_serializerOptions = new(JsonSerializerDefaults.Web);
 
-    /// <summary>
-    /// The reserved-code currency pair used only to build a sentinel key for the startup probe under
-    /// <see cref="ExchangeRateCacheOptions.ValidateStorageOnStart" />; it is read, never written.
-    /// </summary>
+    /// <summary>The reserved-code currency pair used only to build a sentinel key for the startup probe under <see cref="ExchangeRateCacheOptions.ValidateStorageOnStart" />; it is read, never written.</summary>
     private static readonly ExchangeRatePair s_probePair = new("XXX", "XTS");
 
-    /// <summary>
-    /// The backing distributed cache the per-pair blobs are read from and written to.
-    /// </summary>
+    /// <summary>The backing distributed cache the per-pair blobs are read from and written to.</summary>
     private readonly IDistributedCache _cache;
 
-    /// <summary>
-    /// The validated options carrying the bound provider and the optional key prefix.
-    /// </summary>
+    /// <summary>The validated options carrying the bound provider and the optional key prefix.</summary>
     private readonly DistributedExchangeRateCacheOptions _options;
 
-    /// <summary>
-    /// The striped per-pair locks guarding the read-modify-write sequences in <see cref="Store" />,
-    /// <see cref="RecordCoverage" />, and <see cref="StoreFetchedRange" />. One lock object is created per pair on
-    /// first use and reused thereafter.
-    /// </summary>
+    /// <summary>The striped per-pair locks guarding the read-modify-write sequences in <see cref="Store" />, <see cref="RecordCoverage" />, and <see cref="StoreFetchedRange" />. One lock object is created per pair on first use and reused thereafter.</summary>
     private readonly ConcurrentDictionary<ExchangeRatePair, object> _pairLocks = new();
 
     /// <summary>

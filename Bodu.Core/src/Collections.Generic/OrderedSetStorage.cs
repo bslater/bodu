@@ -31,49 +31,31 @@ namespace Bodu.Collections.Generic;
 internal sealed class OrderedSetStorage<T>
     where T : notnull
 {
-    /// <summary>
-    /// The capacity used when the storage is constructed without an explicit capacity.
-    /// </summary>
+    /// <summary>The capacity used when the storage is constructed without an explicit capacity.</summary>
     private const int DefaultCapacity = 4;
 
-    /// <summary>
-    /// The numerator of the maximum load factor (3/4) that triggers a resize.
-    /// </summary>
+    /// <summary>The numerator of the maximum load factor (3/4) that triggers a resize.</summary>
     private const int MaxLoadFactorNumerator = 3;
 
-    /// <summary>
-    /// The denominator of the maximum load factor (3/4) that triggers a resize.
-    /// </summary>
+    /// <summary>The denominator of the maximum load factor (3/4) that triggers a resize.</summary>
     private const int MaxLoadFactorDenominator = 4;
 
-    /// <summary>
-    /// The equality comparer used for element identity and hash-table lookup.
-    /// </summary>
+    /// <summary>The equality comparer used for element identity and hash-table lookup.</summary>
     internal readonly IEqualityComparer<T> _comparer;
 
-    /// <summary>
-    /// The one-based bucket heads used by the open-addressing hash table.
-    /// </summary>
+    /// <summary>The one-based bucket heads used by the open-addressing hash table.</summary>
     internal int[] _buckets;
 
-    /// <summary>
-    /// The one-based chain links for entries stored in each bucket.
-    /// </summary>
+    /// <summary>The one-based chain links for entries stored in each bucket.</summary>
     internal int[] _next;
 
-    /// <summary>
-    /// The contiguous element storage that preserves insertion order.
-    /// </summary>
+    /// <summary>The contiguous element storage that preserves insertion order.</summary>
     internal T[] _items;
 
-    /// <summary>
-    /// The number of active elements stored in <see cref="_items" />.
-    /// </summary>
+    /// <summary>The number of active elements stored in <see cref="_items" />.</summary>
     internal int _count;
 
-    /// <summary>
-    /// The mutation version used to detect changes during enumeration.
-    /// </summary>
+    /// <summary>The mutation version used to detect changes during enumeration.</summary>
     internal int _version;
 
     /// <summary>

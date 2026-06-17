@@ -28,24 +28,16 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>
-/// Tag size: 64 bits (8 bytes).
-/// </description>
+/// <description>Tag size: 64 bits (8 bytes).</description>
 /// </item>
 /// <item>
-/// <description>
-/// Key size: 128 bits (16 bytes).
-/// </description>
+/// <description>Key size: 128 bits (16 bytes).</description>
 /// </item>
 /// <item>
-/// <description>
-/// Default parameterization: SipHash-2-4 (2 compression rounds, 4 finalization rounds).
-/// </description>
+/// <description>Default parameterization: SipHash-2-4 (2 compression rounds, 4 finalization rounds).</description>
 /// </item>
 /// <item>
-/// <description>
-/// Multi-message key reuse is supported — unlike <see cref="Poly1305" />.
-/// </description>
+/// <description>Multi-message key reuse is supported — unlike <see cref="Poly1305" />.</description>
 /// </item>
 /// </list>
 /// <para>
@@ -79,34 +71,25 @@ public sealed class SipHash64
     /// <remarks>
     /// The instance is created with the following defaults:
     /// <list type="table">
-    /// <listheader> <term>Property</term>
-    /// <description>
-    /// Default Value
-    /// </description>
+    /// <listheader>
+    /// <term>Property</term>
+    /// <description>Default Value</description>
     /// </listheader>
     /// <item>
     /// <term><see cref="SipHash{T}.CompressionRounds" /></term>
-    /// <description>
-    /// <see cref="SipHash{T}.MinCompressionRounds" /> (2)
-    /// </description>
+    /// <description><see cref="SipHash{T}.MinCompressionRounds" /> (2)</description>
     /// </item>
     /// <item>
     /// <term><see cref="SipHash{T}.FinalizationRounds" /></term>
-    /// <description>
-    /// <see cref="SipHash{T}.MinFinalizationRounds" /> (4)
-    /// </description>
+    /// <description><see cref="SipHash{T}.MinFinalizationRounds" /> (4)</description>
     /// </item>
     /// <item>
     /// <term><see cref="HashAlgorithm.HashSize" /></term>
-    /// <description>
-    /// 64
-    /// </description>
+    /// <description>64</description>
     /// </item>
     /// <item>
     /// <term><see cref="KeyedBlockHashAlgorithm{T}.Key" /></term>
-    /// <description>
-    /// Cryptographically random 16-byte key containing no zero bytes.
-    /// </description>
+    /// <description>Cryptographically random 16-byte key containing no zero bytes.</description>
     /// </item>
     /// </list>
     /// </remarks>

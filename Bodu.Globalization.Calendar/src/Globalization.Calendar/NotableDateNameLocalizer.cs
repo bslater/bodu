@@ -22,9 +22,7 @@ namespace Bodu.Globalization.Calendar;
 public sealed class NotableDateNameLocalizer
     : INotableDateNameLocalizer
 {
-    /// <summary>
-    /// The registered display names keyed by concept id and culture name.
-    /// </summary>
+    /// <summary>The registered display names keyed by concept id and culture name.</summary>
     private readonly Dictionary<(string Id, string Culture), string> _names = new();
 
     /// <summary>

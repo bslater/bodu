@@ -20,9 +20,7 @@ namespace Bodu.Collections.Generic.Concurrent;
 internal sealed class ConcurrentHashSetDebugView<T>
     where T : notnull
 {
-    /// <summary>
-    /// The set instance being inspected.
-    /// </summary>
+    /// <summary>The set instance being inspected.</summary>
     private readonly ConcurrentHashSet<T> _set;
 
     /// <summary>

@@ -32,20 +32,12 @@ public sealed partial class BencodeDocument
     : IDisposable
 {
 
-    /// <summary>
-    /// Whether <see cref="_data" /> was rented from <see cref="ArrayPool{T}.Shared" /> and must be returned on
-    /// disposal. Documents produced by <see cref="BencodeElement.Clone" /> own a plain array instead, so disposal is a
-    /// no-op and their elements remain valid indefinitely.
-    /// </summary>
+    /// <summary>Whether <see cref="_data" /> was rented from <see cref="ArrayPool{T}.Shared" /> and must be returned on disposal. Documents produced by <see cref="BencodeElement.Clone" /> own a plain array instead, so disposal is a no-op and their elements remain valid indefinitely.</summary>
     private readonly bool _pooled;
-    /// <summary>
-    /// The flat metadata index describing the parsed document in document order.
-    /// </summary>
+    /// <summary>The flat metadata index describing the parsed document in document order.</summary>
     private readonly Row[] _rows;
 
-    /// <summary>
-    /// The buffer holding a copy of the parsed bytes, or <see langword="null" /> once the document has been disposed.
-    /// </summary>
+    /// <summary>The buffer holding a copy of the parsed bytes, or <see langword="null" /> once the document has been disposed.</summary>
     private byte[]? _data;
 
     /// <summary>

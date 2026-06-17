@@ -59,9 +59,7 @@ namespace Bodu.Globalization.Calendar;
 /// <seealso href="../guides/calendar/notable-dates.html">Using NotableDateService (guide)</seealso>
 public sealed class NotableDateFilter
 {
-    /// <summary>
-    /// The underlying predicate evaluated against a resolved occurrence.
-    /// </summary>
+    /// <summary>The underlying predicate evaluated against a resolved occurrence.</summary>
     private readonly Func<NotableDate, bool> _predicate;
 
     /// <summary>

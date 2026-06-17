@@ -11,9 +11,7 @@ namespace Bodu.Formats.Excel.Binary;
 /// </summary>
 internal static class ExcelBinaryFixtures
 {
-    /// <summary>
-    /// The file name of the real-world sample BIFF8 workbook (an RBA exchange-rate workbook).
-    /// </summary>
+    /// <summary>The file name of the real-world sample BIFF8 workbook (an RBA exchange-rate workbook).</summary>
     public const string SampleBiff8 = "sample-biff8.xls";
 
     /// <summary>

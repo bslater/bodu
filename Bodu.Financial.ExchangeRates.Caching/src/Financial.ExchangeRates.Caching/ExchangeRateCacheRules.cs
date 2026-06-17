@@ -27,10 +27,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// </remarks>
 public static class ExchangeRateCacheRules
 {
-    /// <summary>
-    /// The clock-skew tolerance applied when validating a row's caching instant: a row stamped more than this far in
-    /// the future of the evaluation instant is treated as invalid rather than fresh.
-    /// </summary>
+    /// <summary>The clock-skew tolerance applied when validating a row's caching instant: a row stamped more than this far in the future of the evaluation instant is treated as invalid rather than fresh.</summary>
     private static readonly TimeSpan s_clockSkewTolerance = TimeSpan.FromMinutes(1);
 
     /// <summary>

@@ -17,9 +17,7 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 internal static class ScryptCore
 {
-    /// <summary>
-    /// The number of 32-bit words in a Salsa20 block (64 bytes).
-    /// </summary>
+    /// <summary>The number of 32-bit words in a Salsa20 block (64 bytes).</summary>
     private const int BlockWords = 16;
 
     /// <summary>

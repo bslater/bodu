@@ -45,29 +45,19 @@ namespace Bodu.Security.Cryptography;
 /// </remarks>
 internal struct AsconState
 {
-    /// <summary>
-    /// State word 0.
-    /// </summary>
+    /// <summary>State word 0.</summary>
     public ulong S0;
 
-    /// <summary>
-    /// State word 1.
-    /// </summary>
+    /// <summary>State word 1.</summary>
     public ulong S1;
 
-    /// <summary>
-    /// State word 2.
-    /// </summary>
+    /// <summary>State word 2.</summary>
     public ulong S2;
 
-    /// <summary>
-    /// State word 3.
-    /// </summary>
+    /// <summary>State word 3.</summary>
     public ulong S3;
 
-    /// <summary>
-    /// State word 4.
-    /// </summary>
+    /// <summary>State word 4.</summary>
     public ulong S4;
 
     /// <summary>

@@ -51,14 +51,10 @@ namespace Bodu.Text.Configuration;
 public sealed partial class ConfigurationView
     : IEnumerable<KeyValuePair<string, string?>>, IReadOnlyDictionary<string, string?>
 {
-    /// <summary>
-    /// The resolved configuration entries exposed by the view, keyed by their effective key.
-    /// </summary>
+    /// <summary>The resolved configuration entries exposed by the view, keyed by their effective key.</summary>
     private readonly IReadOnlyDictionary<string, ConfigurationResolvedEntry> _entries;
 
-    /// <summary>
-    /// The key options used to normalize and compare lookup keys against the resolved entries.
-    /// </summary>
+    /// <summary>The key options used to normalize and compare lookup keys against the resolved entries.</summary>
     private readonly ConfigurationKeyOptions _keyOptions;
 
     /// <summary>

@@ -27,9 +27,7 @@ namespace Bodu.Text.Bencode.Serialization;
 /// </remarks>
 internal sealed class BencodeWriteStack
 {
-    /// <summary>
-    /// The first failure recorded during the write, or <see langword="null" /> while none has occurred.
-    /// </summary>
+    /// <summary>The first failure recorded during the write, or <see langword="null" /> while none has occurred.</summary>
     private BencodeSerializationException? _failure;
 
     /// <summary>

@@ -24,9 +24,7 @@ namespace Bodu.Numerics.Serialization;
 public sealed class FractionJsonConverterFactory
     : JsonConverterFactory
 {
-    /// <summary>
-    /// The policy passed to every <see cref="FractionJsonConverter{T}" /> produced by this factory.
-    /// </summary>
+    /// <summary>The policy passed to every <see cref="FractionJsonConverter{T}" /> produced by this factory.</summary>
     private readonly NumericsJsonPolicy _policy;
 
     /// <summary>

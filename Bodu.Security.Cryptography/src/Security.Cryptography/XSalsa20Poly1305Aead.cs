@@ -44,14 +44,10 @@ namespace Bodu.Security.Cryptography;
 public sealed class XSalsa20Poly1305Aead
     : Poly1305AeadTransform
 {
-    /// <summary>
-    /// Length of the XSalsa20-Poly1305 key is 256 bits (32 bytes).
-    /// </summary>
+    /// <summary>Length of the XSalsa20-Poly1305 key is 256 bits (32 bytes).</summary>
     public const int KeySize = KeyBytes * 8;
 
-    /// <summary>
-    /// Length of the XSalsa20-Poly1305 nonce is 192 bits (24 bytes).
-    /// </summary>
+    /// <summary>Length of the XSalsa20-Poly1305 nonce is 192 bits (24 bytes).</summary>
     public const int NonceSize = NonceBytes * 8;
 
     /// <summary>

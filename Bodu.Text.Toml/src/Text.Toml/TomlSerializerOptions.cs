@@ -46,86 +46,49 @@ namespace Bodu.Text.Toml;
 /// </example>
 public sealed partial class TomlSerializerOptions
 {
-    /// <summary>
-    /// The default maximum container nesting depth applied when <see cref="MaxDepth" /> is left at zero. It is also the
-    /// library's hard ceiling (<see cref="TomlLimits.AbsoluteMaxDepth" />): a configured depth is never effective
-    /// beyond this value, because the recursive reader, writer, and serializer must stay within a safe call-stack
-    /// budget.
-    /// </summary>
+    /// <summary>The default maximum container nesting depth applied when <see cref="MaxDepth" /> is left at zero. It is also the library's hard ceiling (<see cref="TomlLimits.AbsoluteMaxDepth" />): a configured depth is never effective beyond this value, because the recursive reader, writer, and serializer must stay within a safe call-stack budget.</summary>
     public const int DefaultMaxDepth = 64;
 
-    /// <summary>
-    /// The user-registered converters, consulted before the built-in converters. The list rejects a
-    /// <see langword="null" /> entry and refuses every mutation once the options have become read-only.
-    /// </summary>
+    /// <summary>The user-registered converters, consulted before the built-in converters. The list rejects a <see langword="null" /> entry and refuses every mutation once the options have become read-only.</summary>
     private readonly ConverterList _converters;
 
-    /// <summary>
-    /// The cache of concrete converters resolved per type.
-    /// </summary>
+    /// <summary>The cache of concrete converters resolved per type.</summary>
     private readonly ConcurrentDictionary<Type, TomlConverter> _converterCache = new();
 
-    /// <summary>
-    /// The cache of resolved type metadata.
-    /// </summary>
+    /// <summary>The cache of resolved type metadata.</summary>
     private readonly ConcurrentDictionary<Type, TypeMetadata> _metadataCache = new();
 
-    /// <summary>
-    /// The frozen snapshot of user converters captured when the options became read-only, or <see langword="null" />
-    /// while mutable.
-    /// </summary>
+    /// <summary>The frozen snapshot of user converters captured when the options became read-only, or <see langword="null" /> while mutable.</summary>
     private TomlConverter[]? _frozenConverters;
 
-    /// <summary>
-    /// The configured property naming policy.
-    /// </summary>
+    /// <summary>The configured property naming policy.</summary>
     private TomlNamingPolicy? _namingPolicy;
 
-    /// <summary>
-    /// Whether property-name matching ignores case when reading. Case-sensitive by default for general options,
-    /// matching <see cref="System.Text.Json.JsonSerializer" /> and TOML's case-sensitive keys; the
-    /// <see cref="TomlSerializerDefaults.Web" /> preset enables case-insensitive matching.
-    /// </summary>
+    /// <summary>Whether property-name matching ignores case when reading. Case-sensitive by default for general options, matching <see cref="System.Text.Json.JsonSerializer" /> and TOML's case-sensitive keys; the <see cref="TomlSerializerDefaults.Web" /> preset enables case-insensitive matching.</summary>
     private bool _caseInsensitive;
 
-    /// <summary>
-    /// Whether public fields are surfaced as serializable members.
-    /// </summary>
+    /// <summary>Whether public fields are surfaced as serializable members.</summary>
     private bool _includeFields;
 
-    /// <summary>
-    /// The serializer-wide default condition under which a member is omitted on write.
-    /// </summary>
+    /// <summary>The serializer-wide default condition under which a member is omitted on write.</summary>
     private TomlIgnoreCondition _defaultIgnoreCondition = TomlIgnoreCondition.Never;
 
-    /// <summary>
-    /// The serializer-wide handling for a dictionary key that maps to no member when reading.
-    /// </summary>
+    /// <summary>The serializer-wide handling for a dictionary key that maps to no member when reading.</summary>
     private TomlUnmappedMemberHandling _unmappedMemberHandling = TomlUnmappedMemberHandling.Skip;
 
-    /// <summary>
-    /// The serializer-wide preference for replacing or populating a member's value when reading.
-    /// </summary>
+    /// <summary>The serializer-wide preference for replacing or populating a member's value when reading.</summary>
     private TomlObjectCreationHandling _preferredObjectCreationHandling = TomlObjectCreationHandling.Replace;
 
-    /// <summary>
-    /// The maximum nesting depth.
-    /// </summary>
+    /// <summary>The maximum nesting depth.</summary>
     private int _maxDepth = DefaultMaxDepth;
 
-    /// <summary>
-    /// The TOML specification version whose grammar is accepted when deserializing.
-    /// </summary>
+    /// <summary>The TOML specification version whose grammar is accepted when deserializing.</summary>
     private TomlSpecVersion _specVersion = TomlSpecVersion.V1_0;
 
-    /// <summary>
-    /// The representation used when writing a byte array.
-    /// </summary>
+    /// <summary>The representation used when writing a byte array.</summary>
     private TomlByteArrayHandling _byteArrayHandling = TomlByteArrayHandling.IntegerArray;
 
-    /// <summary>
-    /// The representation used when writing a decimal value.
-    /// </summary>
+    /// <summary>The representation used when writing a decimal value.</summary>
     private TomlDecimalHandling _decimalHandling = TomlDecimalHandling.Float;
 
     /// <summary>

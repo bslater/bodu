@@ -33,9 +33,7 @@ namespace Bodu.Collections.Generic;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>
-/// <see cref="Union" /> — each element appears max(a, b) times.
-/// </description>
+/// <description><see cref="Union" /> — each element appears max(a, b) times.</description>
 /// </item>
 /// <item>
 /// <description>
@@ -48,9 +46,7 @@ namespace Bodu.Collections.Generic;
 /// </description>
 /// </item>
 /// <item>
-/// <description>
-/// <see cref="Sum" /> — each element appears a + b times.
-/// </description>
+/// <description><see cref="Sum" /> — each element appears a + b times.</description>
 /// </item>
 /// </list>
 /// <para>
@@ -87,24 +83,16 @@ public sealed partial class Multiset<T>
     : ICollection<T>, IReadOnlyCollection<T>
     where T : notnull
 {
-    /// <summary>
-    /// The equality comparer used to determine element equality.
-    /// </summary>
+    /// <summary>The equality comparer used to determine element equality.</summary>
     private readonly IEqualityComparer<T> _comparer;
 
-    /// <summary>
-    /// The backing dictionary mapping each distinct element to its occurrence count.
-    /// </summary>
+    /// <summary>The backing dictionary mapping each distinct element to its occurrence count.</summary>
     private readonly Dictionary<T, int> _items;
 
-    /// <summary>
-    /// The total number of elements, counting all occurrences.
-    /// </summary>
+    /// <summary>The total number of elements, counting all occurrences.</summary>
     private int _count;
 
-    /// <summary>
-    /// Incremented on every structural change; used by enumerators to detect concurrent modification.
-    /// </summary>
+    /// <summary>Incremented on every structural change; used by enumerators to detect concurrent modification.</summary>
     private int _version;
 
     /// <summary>

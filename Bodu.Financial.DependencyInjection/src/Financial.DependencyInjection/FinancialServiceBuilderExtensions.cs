@@ -17,9 +17,7 @@ namespace Bodu.Financial.DependencyInjection;
 /// </summary>
 public static class FinancialServiceBuilderExtensions
 {
-    /// <summary>
-    /// The service key under which the configured financial <see cref="JsonSerializerOptions" /> is registered.
-    /// </summary>
+    /// <summary>The service key under which the configured financial <see cref="JsonSerializerOptions" /> is registered.</summary>
     public const string JsonOptionsKey = "Financial";
 
     /// <summary>

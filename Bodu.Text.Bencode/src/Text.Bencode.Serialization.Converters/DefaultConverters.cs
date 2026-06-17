@@ -32,9 +32,7 @@ namespace Bodu.Text.Bencode.Serialization.Converters;
 /// </remarks>
 internal static class DefaultConverters
 {
-    /// <summary>
-    /// The built-in converters, in resolution order.
-    /// </summary>
+    /// <summary>The built-in converters, in resolution order.</summary>
     private static readonly BencodeConverter[] s_builtIn =
     [
         new BencodeNodeConverter(),

@@ -54,44 +54,28 @@ namespace Bodu.Globalization.Calendar;
 public sealed class NotableDateService
     : INotableDateService
 {
-    /// <summary>
-    /// The loaded resource the service draws occurrences from.
-    /// </summary>
+    /// <summary>The loaded resource the service draws occurrences from.</summary>
     private readonly NotableDateResource _resource;
 
-    /// <summary>
-    /// The custom algorithm registry, or <see langword="null" /> when only built-in algorithms are available.
-    /// </summary>
+    /// <summary>The custom algorithm registry, or <see langword="null" /> when only built-in algorithms are available.</summary>
     private readonly INotableDateAlgorithmRegistry? _algorithms;
 
-    /// <summary>
-    /// The custom same-day collision resolver, consulted when the policy is <see cref="CollisionPolicy.Custom" />.
-    /// </summary>
+    /// <summary>The custom same-day collision resolver, consulted when the policy is <see cref="CollisionPolicy.Custom" />.</summary>
     private readonly INotableDateCollisionResolver? _collisionResolver;
 
-    /// <summary>
-    /// The custom adjustment-handler registry, consulted when an action is <see cref="AdjustmentAction.Custom" />.
-    /// </summary>
+    /// <summary>The custom adjustment-handler registry, consulted when an action is <see cref="AdjustmentAction.Custom" />.</summary>
     private readonly IAdjustmentHandlerRegistry? _handlers;
 
-    /// <summary>
-    /// The custom trigger-handler registry, consulted when a trigger is <see cref="AdjustmentTrigger.Custom" />.
-    /// </summary>
+    /// <summary>The custom trigger-handler registry, consulted when a trigger is <see cref="AdjustmentTrigger.Custom" />.</summary>
     private readonly IAdjustmentTriggerHandlerRegistry? _triggerHandlers;
 
-    /// <summary>
-    /// The code-first providers contributing finished occurrences, or <see langword="null" /> when none are registered.
-    /// </summary>
+    /// <summary>The code-first providers contributing finished occurrences, or <see langword="null" /> when none are registered.</summary>
     private readonly IReadOnlyList<INotableDateProvider>? _providers;
 
-    /// <summary>
-    /// The supported territories, computed once from the immutable resource.
-    /// </summary>
+    /// <summary>The supported territories, computed once from the immutable resource.</summary>
     private readonly IReadOnlyList<string> _supportedTerritories;
 
-    /// <summary>
-    /// The supported calendar systems, computed once from the immutable resource.
-    /// </summary>
+    /// <summary>The supported calendar systems, computed once from the immutable resource.</summary>
     private readonly IReadOnlyList<CalendarSystem> _supportedCalendars;
 
     /// <summary>

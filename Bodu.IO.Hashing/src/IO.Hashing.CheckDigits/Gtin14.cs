@@ -41,29 +41,19 @@ namespace Bodu.IO.Hashing.CheckDigits;
 public sealed class Gtin14
     : CheckDigitAlgorithm
 {
-    /// <summary>
-    /// The required body length of <c>13</c> decimal digits.
-    /// </summary>
+    /// <summary>The required body length of <c>13</c> decimal digits.</summary>
     public const int BodyLength = 13;
 
-    /// <summary>
-    /// The required full-sequence length of <c>14</c> decimal digits.
-    /// </summary>
+    /// <summary>The required full-sequence length of <c>14</c> decimal digits.</summary>
     public const int SequenceLength = 14;
 
-    /// <summary>
-    /// The number of body digits appended so far.
-    /// </summary>
+    /// <summary>The number of body digits appended so far.</summary>
     private int _count;
 
-    /// <summary>
-    /// The running weighted sum computed under the hypothesis that the final body length is even.
-    /// </summary>
+    /// <summary>The running weighted sum computed under the hypothesis that the final body length is even.</summary>
     private int _sumEvenHypothesis;
 
-    /// <summary>
-    /// The running weighted sum computed under the hypothesis that the final body length is odd.
-    /// </summary>
+    /// <summary>The running weighted sum computed under the hypothesis that the final body length is odd.</summary>
     private int _sumOddHypothesis;
 
     /// <summary>

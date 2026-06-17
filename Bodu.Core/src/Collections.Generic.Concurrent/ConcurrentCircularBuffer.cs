@@ -75,52 +75,31 @@ namespace Bodu.Collections.Generic.Concurrent;
 public sealed partial class ConcurrentCircularBuffer<T>
     where T : class?
 {
-    /// <summary>
-    /// The capacity used when the buffer is constructed without an explicit capacity.
-    /// </summary>
+    /// <summary>The capacity used when the buffer is constructed without an explicit capacity.</summary>
     private const int DefaultCapacity = 16;
 
-    /// <summary>
-    /// The smallest capacity the Vyukov MPMC protocol permits.
-    /// </summary>
+    /// <summary>The smallest capacity the Vyukov MPMC protocol permits.</summary>
     private const int MinCapacity = 2;
 
-    /// <summary>
-    /// Maximum number of seqlock pre/post sequence-read retries on a single slot before treating the slot as unstable
-    /// and aborting the surrounding snapshot or index read.
-    /// </summary>
+    /// <summary>Maximum number of seqlock pre/post sequence-read retries on a single slot before treating the slot as unstable and aborting the surrounding snapshot or index read.</summary>
     private const int SlotReadRetryBudget = 8;
 
-    /// <summary>
-    /// Maximum number of complete snapshot/index/contains attempts before falling back to a best-effort or failing
-    /// read. Sized for sustained-contention scenarios; under typical load a snapshot stabilizes on the first attempt.
-    /// </summary>
+    /// <summary>Maximum number of complete snapshot/index/contains attempts before falling back to a best-effort or failing read. Sized for sustained-contention scenarios; under typical load a snapshot stabilizes on the first attempt.</summary>
     private const int SnapshotOuterRetryBudget = 64;
 
-    /// <summary>
-    /// The fixed array of slots backing the ring. Immutable after construction.
-    /// </summary>
+    /// <summary>The fixed array of slots backing the ring. Immutable after construction.</summary>
     private readonly Slot[] _buffer;
 
-    /// <summary>
-    /// The maximum number of elements the buffer can hold. Immutable after construction.
-    /// </summary>
+    /// <summary>The maximum number of elements the buffer can hold. Immutable after construction.</summary>
     private readonly int _capacity;
 
-    /// <summary>
-    /// Indicates whether the oldest element is evicted when the buffer is full.
-    /// </summary>
+    /// <summary>Indicates whether the oldest element is evicted when the buffer is full.</summary>
     private bool _allowOverwrite;
 
-    /// <summary>
-    /// The consumer (head) position, incremented monotonically using unchecked signed arithmetic as elements are
-    /// dequeued. Slot indices are derived from it via unsigned modulo so they stay non-negative across overflow.
-    /// </summary>
+    /// <summary>The consumer (head) position, incremented monotonically using unchecked signed arithmetic as elements are dequeued. Slot indices are derived from it via unsigned modulo so they stay non-negative across overflow.</summary>
     private int _head;
 
-    /// <summary>
-    /// The producer (tail) position, incremented monotonically as elements are enqueued.
-    /// </summary>
+    /// <summary>The producer (tail) position, incremented monotonically as elements are enqueued.</summary>
     private int _tail;
 
     /// <summary>
@@ -922,50 +901,31 @@ public sealed partial class ConcurrentCircularBuffer<T>
     [StructLayout(LayoutKind.Sequential)]
     private struct Slot
     {
-        /// <summary>
-        /// Aligns <see cref="Value" /> to an 8-byte boundary on all supported platforms.
-        /// </summary>
+        /// <summary>Aligns <see cref="Value" /> to an 8-byte boundary on all supported platforms.</summary>
         private readonly int _sequencePadding;
 
-        /// <summary>
-        /// Padding to isolate the slot onto its own cache line and avoid false sharing. Together with the other padding
-        /// fields, pads the struct to 64 bytes: 4 (Sequence) + 4 (pad) + 8 (Value ref) + 6×8 (pad) = 64.
-        /// </summary>
+        /// <summary>Padding to isolate the slot onto its own cache line and avoid false sharing. Together with the other padding fields, pads the struct to 64 bytes: 4 (Sequence) + 4 (pad) + 8 (Value ref) + 6×8 (pad) = 64.</summary>
         private readonly long _pad0;
 
-        /// <summary>
-        /// Padding to isolate the slot onto its own cache line and avoid false sharing.
-        /// </summary>
+        /// <summary>Padding to isolate the slot onto its own cache line and avoid false sharing.</summary>
         private readonly long _pad1;
 
-        /// <summary>
-        /// Padding to isolate the slot onto its own cache line and avoid false sharing.
-        /// </summary>
+        /// <summary>Padding to isolate the slot onto its own cache line and avoid false sharing.</summary>
         private readonly long _pad2;
 
-        /// <summary>
-        /// Padding to isolate the slot onto its own cache line and avoid false sharing.
-        /// </summary>
+        /// <summary>Padding to isolate the slot onto its own cache line and avoid false sharing.</summary>
         private readonly long _pad3;
 
-        /// <summary>
-        /// Padding to isolate the slot onto its own cache line and avoid false sharing.
-        /// </summary>
+        /// <summary>Padding to isolate the slot onto its own cache line and avoid false sharing.</summary>
         private readonly long _pad4;
 
-        /// <summary>
-        /// Padding to isolate the slot onto its own cache line and avoid false sharing.
-        /// </summary>
+        /// <summary>Padding to isolate the slot onto its own cache line and avoid false sharing.</summary>
         private readonly long _pad5;
 
-        /// <summary>
-        /// The Vyukov sequence number used to coordinate producers and consumers for this slot.
-        /// </summary>
+        /// <summary>The Vyukov sequence number used to coordinate producers and consumers for this slot.</summary>
         public int Sequence;
 
-        /// <summary>
-        /// The stored element. Written by the producer, cleared by the consumer.
-        /// </summary>
+        /// <summary>The stored element. Written by the producer, cleared by the consumer.</summary>
         public T? Value;
     }
 }

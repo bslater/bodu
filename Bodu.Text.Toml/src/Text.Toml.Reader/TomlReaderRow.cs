@@ -22,71 +22,40 @@ namespace Bodu.Text.Toml.Reader;
 /// </remarks>
 internal struct TomlReaderRow
 {
-    /// <summary>
-    /// The kind of node: <see cref="TomlReaderNodeKind.Table" />, <see cref="TomlReaderNodeKind.Array" />, or
-    /// <see cref="TomlReaderNodeKind.Scalar" />.
-    /// </summary>
+    /// <summary>The kind of node: <see cref="TomlReaderNodeKind.Table" />, <see cref="TomlReaderNodeKind.Array" />, or <see cref="TomlReaderNodeKind.Scalar" />.</summary>
     public TomlReaderNodeKind Kind;
 
-    /// <summary>
-    /// For a scalar, the token type that classifies the value; unused for a table or array.
-    /// </summary>
+    /// <summary>For a scalar, the token type that classifies the value; unused for a table or array.</summary>
     public TomlTokenType TokenType;
 
-    /// <summary>
-    /// The scalar's packed payload, interpreted by <see cref="TokenType" />. A value-type scalar stores its value: the
-    /// integer itself; the float reinterpreted with <see cref="BitConverter.DoubleToInt64Bits(double)" />; zero or one
-    /// for a Boolean; the day number for a local date; or the tick count for a local time, a local date-time, or the
-    /// local clock time of an offset date-time. A string scalar stores its content's source span, packed by
-    /// <see cref="PackStringSpan(int, int, bool)" />. Unused for a table or array.
-    /// </summary>
+    /// <summary>The scalar's packed payload, interpreted by <see cref="TokenType" />. A value-type scalar stores its value: the integer itself; the float reinterpreted with <see cref="BitConverter.DoubleToInt64Bits(double)" />; zero or one for a Boolean; the day number for a local date; or the tick count for a local time, a local date-time, or the local clock time of an offset date-time. A string scalar stores its content's source span, packed by <see cref="PackStringSpan(int, int, bool)" />. Unused for a table or array.</summary>
     public long ScalarBits;
 
-    /// <summary>
-    /// The key under which this row sits in its parent table, or <see langword="null" /> for an array element or the
-    /// document root.
-    /// </summary>
+    /// <summary>The key under which this row sits in its parent table, or <see langword="null" /> for an array element or the document root.</summary>
     public string? Key;
 
-    /// <summary>
-    /// The zero-based source byte offset at which the node begins.
-    /// </summary>
+    /// <summary>The zero-based source byte offset at which the node begins.</summary>
     public int Offset;
 
-    /// <summary>
-    /// The row index of this container's first child, or <c>-1</c> when it has none.
-    /// </summary>
+    /// <summary>The row index of this container's first child, or <c>-1</c> when it has none.</summary>
     public int FirstChild;
 
-    /// <summary>
-    /// The row index of this container's last child, used to append in constant time during the build, or <c>-1</c>.
-    /// </summary>
+    /// <summary>The row index of this container's last child, used to append in constant time during the build, or <c>-1</c>.</summary>
     public int LastChild;
 
-    /// <summary>
-    /// The row index of the sibling that follows this row within its parent, or <c>-1</c> when it is the last child.
-    /// </summary>
+    /// <summary>The row index of the sibling that follows this row within its parent, or <c>-1</c> when it is the last child.</summary>
     public int NextSibling;
 
-    /// <summary>
-    /// The number of children: key/value pairs for a table, elements for an array.
-    /// </summary>
+    /// <summary>The number of children: key/value pairs for a table, elements for an array.</summary>
     public int ChildCount;
 
-    /// <summary>
-    /// The nesting depth of a table within its tree, where the document root is zero, used to bound nesting created by
-    /// dotted keys and header paths.
-    /// </summary>
+    /// <summary>The nesting depth of a table within its tree, where the document root is zero, used to bound nesting created by dotted keys and header paths.</summary>
     public int Depth;
 
-    /// <summary>
-    /// For an offset date-time scalar, the UTC offset in whole minutes; zero for every other kind.
-    /// </summary>
+    /// <summary>For an offset date-time scalar, the UTC offset in whole minutes; zero for every other kind.</summary>
     public short ScalarOffsetMinutes;
 
-    /// <summary>
-    /// The structural classifications recorded while building, used to enforce TOML's table rules.
-    /// </summary>
+    /// <summary>The structural classifications recorded while building, used to enforce TOML's table rules.</summary>
     public TomlReaderRowFlags Flags;
 
     /// <summary>
@@ -175,13 +144,9 @@ internal struct TomlReaderRow
     public static long PackStringSpan(int start, int length, bool hasEscapes) =>
         ((long)(uint)start << 32) | (uint)length | (hasEscapes ? EscapeFlag : 0U);
 
-    /// <summary>
-    /// The bit within the low 32 bits of <see cref="ScalarBits" /> that flags a string scalar's content as escaped.
-    /// </summary>
+    /// <summary>The bit within the low 32 bits of <see cref="ScalarBits" /> that flags a string scalar's content as escaped.</summary>
     private const uint EscapeFlag = 0x8000_0000U;
 
-    /// <summary>
-    /// The mask selecting a string scalar's content length from the low 32 bits of <see cref="ScalarBits" />.
-    /// </summary>
+    /// <summary>The mask selecting a string scalar's content length from the low 32 bits of <see cref="ScalarBits" />.</summary>
     private const uint LengthMask = 0x7FFF_FFFFU;
 }

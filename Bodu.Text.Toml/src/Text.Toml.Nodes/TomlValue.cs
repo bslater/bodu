@@ -21,14 +21,10 @@ namespace Bodu.Text.Toml.Nodes;
 public sealed class TomlValue
     : TomlNode
 {
-    /// <summary>
-    /// The kind of scalar this value holds.
-    /// </summary>
+    /// <summary>The kind of scalar this value holds.</summary>
     private readonly TomlValueKind _kind;
 
-    /// <summary>
-    /// The boxed scalar payload, whose runtime type matches <see cref="_kind" />.
-    /// </summary>
+    /// <summary>The boxed scalar payload, whose runtime type matches <see cref="_kind" />.</summary>
     private readonly object _value;
 
     /// <summary>

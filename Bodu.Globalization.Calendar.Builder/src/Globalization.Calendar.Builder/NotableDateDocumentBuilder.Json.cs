@@ -24,9 +24,7 @@ namespace Bodu.Globalization.Calendar.Builder;
 /// </remarks>
 public sealed partial class NotableDateDocumentBuilder
 {
-    /// <summary>
-    /// The trigger types representable in the JSON subset.
-    /// </summary>
+    /// <summary>The trigger types representable in the JSON subset.</summary>
     private static readonly HashSet<AdjustmentTrigger> s_jsonTriggers = new()
     {
         AdjustmentTrigger.Always,
@@ -37,9 +35,7 @@ public sealed partial class NotableDateDocumentBuilder
         AdjustmentTrigger.IfWorkingDay,
     };
 
-    /// <summary>
-    /// The action types representable in the JSON subset.
-    /// </summary>
+    /// <summary>The action types representable in the JSON subset.</summary>
     private static readonly HashSet<AdjustmentAction> s_jsonActions = new()
     {
         AdjustmentAction.None,

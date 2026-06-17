@@ -16,29 +16,19 @@ namespace Bodu.Text;
 /// Detection is intentionally limited to the five canonical Unicode byte-order-marks defined by the Unicode standard:
 /// <list type="bullet">
 /// <item>
-/// <description>
-/// UTF-8: <c>EF BB BF</c>
-/// </description>
+/// <description>UTF-8: <c>EF BB BF</c></description>
 /// </item>
 /// <item>
-/// <description>
-/// UTF-16 little endian: <c>FF FE</c>
-/// </description>
+/// <description>UTF-16 little endian: <c>FF FE</c></description>
 /// </item>
 /// <item>
-/// <description>
-/// UTF-16 big endian: <c>FE FF</c>
-/// </description>
+/// <description>UTF-16 big endian: <c>FE FF</c></description>
 /// </item>
 /// <item>
-/// <description>
-/// UTF-32 little endian: <c>FF FE 00 00</c>
-/// </description>
+/// <description>UTF-32 little endian: <c>FF FE 00 00</c></description>
 /// </item>
 /// <item>
-/// <description>
-/// UTF-32 big endian: <c>00 00 FE FF</c>
-/// </description>
+/// <description>UTF-32 big endian: <c>00 00 FE FF</c></description>
 /// </item>
 /// </list>
 /// <para>

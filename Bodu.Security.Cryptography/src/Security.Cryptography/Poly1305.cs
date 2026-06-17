@@ -40,9 +40,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>
-/// Tag size: 128 bits (16 bytes), fixed.
-/// </description>
+/// <description>Tag size: 128 bits (16 bytes), fixed.</description>
 /// </item>
 /// <item>
 /// <description>
@@ -50,19 +48,13 @@ namespace Bodu.Security.Cryptography;
 /// </description>
 /// </item>
 /// <item>
-/// <description>
-/// Block size: 16 bytes; arithmetic modulo <c>2¹³⁰ − 5</c>.
-/// </description>
+/// <description>Block size: 16 bytes; arithmetic modulo <c>2¹³⁰ − 5</c>.</description>
 /// </item>
 /// <item>
-/// <description>
-/// Specification: RFC 8439 (ChaCha20-Poly1305).
-/// </description>
+/// <description>Specification: RFC 8439 (ChaCha20-Poly1305).</description>
 /// </item>
 /// <item>
-/// <description>
-/// <strong>Single-use:</strong> a key must authenticate exactly one message.
-/// </description>
+/// <description><strong>Single-use:</strong> a key must authenticate exactly one message.</description>
 /// </item>
 /// </list>
 /// <para>
@@ -92,45 +84,28 @@ namespace Bodu.Security.Cryptography;
 public sealed class Poly1305
     : KeyedBlockHashAlgorithm<Poly1305>
 {
-    /// <summary>
-    /// Length of the Poly1305 key is 256 bits (32 bytes).
-    /// </summary>
+    /// <summary>Length of the Poly1305 key is 256 bits (32 bytes).</summary>
     public const int KeySize = 256;
 
-    /// <summary>
-    /// The 26-bit mask applied to each limb of the radix-2^26 representation.
-    /// </summary>
+    /// <summary>The 26-bit mask applied to each limb of the radix-2^26 representation.</summary>
     private const uint Mask26 = 0x3ffffff;
 
-    /// <summary>
-    /// Length of the Poly1305 input block is 128 bits (16 bytes). Byte length is derived inline via
-    /// <see cref="BlockSize" /> / 8 where needed.
-    /// </summary>
+    /// <summary>Length of the Poly1305 input block is 128 bits (16 bytes). Byte length is derived inline via <see cref="BlockSize" /> / 8 where needed.</summary>
     private new const int BlockSize = 128;
 
-    /// <summary>
-    /// The polynomial accumulator, held as five radix-2^26 limbs.
-    /// </summary>
+    /// <summary>The polynomial accumulator, held as five radix-2^26 limbs.</summary>
     private readonly uint[] _acc = new uint[5];
 
-    /// <summary>
-    /// The encrypted-nonce key half <c>s</c>, held as four 32-bit words.
-    /// </summary>
+    /// <summary>The encrypted-nonce key half <c>s</c>, held as four 32-bit words.</summary>
     private readonly uint[] _key = new uint[4];
 
-    /// <summary>
-    /// The clamped polynomial key <c>r</c>, held as five radix-2^26 limbs.
-    /// </summary>
+    /// <summary>The clamped polynomial key <c>r</c>, held as five radix-2^26 limbs.</summary>
     private readonly uint[] _r = new uint[5];
 
-    /// <summary>
-    /// The precomputed <c>5 * r[1..4]</c> multiples used to fold the reduction modulo <c>2^130 - 5</c>.
-    /// </summary>
+    /// <summary>The precomputed <c>5 * r[1..4]</c> multiples used to fold the reduction modulo <c>2^130 - 5</c>.</summary>
     private readonly uint[] _s = new uint[4];
 
-    /// <summary>
-    /// Indicates whether <c>ProcessFinalBlock</c> has run for the currently-assigned key.
-    /// </summary>
+    /// <summary>Indicates whether <c>ProcessFinalBlock</c> has run for the currently-assigned key.</summary>
     /// <remarks>
     /// Once set, the instance must not accept further blocks or finalize again until the caller explicitly assigns a
     /// fresh Key — Poly1305 is a one-time MAC and reusing a (key, accumulator) pair across messages enables forgery.

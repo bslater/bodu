@@ -42,9 +42,7 @@ namespace Bodu.Globalization.Calendar;
 /// <seealso href="../guides/calendar/data-packs.html">Calendar data packs (guide)</seealso>
 public static class AmericasCalendarData
 {
-    /// <summary>
-    /// The manifest-resource-name prefix shared by the bundle's region resources.
-    /// </summary>
+    /// <summary>The manifest-resource-name prefix shared by the bundle's region resources.</summary>
     private const string ResourcePrefix = "Bodu.Globalization.Calendar.Resources.region-";
 
     /// <summary>
@@ -91,9 +89,7 @@ public static class AmericasCalendarData
             ? s_americasCommon.Value
             : CommonNotableDateResources.Resolve(resourceName);
 
-    /// <summary>
-    /// The lazily-read XML content of the embedded <c>americas-common</c> hub resource.
-    /// </summary>
+    /// <summary>The lazily-read XML content of the embedded <c>americas-common</c> hub resource.</summary>
     private static readonly Lazy<string?> s_americasCommon = new(static () =>
     {
         using Stream? stream = typeof(AmericasCalendarData).Assembly

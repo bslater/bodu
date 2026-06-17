@@ -10,29 +10,19 @@ namespace Bodu.Collections.Generic.Extensions;
 
 public static partial class IEnumerableExtensions
 {
-    /// <summary>
-    /// Control flag that stops iteration of remaining siblings at the current recursion level.
-    /// </summary>
+    /// <summary>Control flag that stops iteration of remaining siblings at the current recursion level.</summary>
     internal const int Break = 1 << 3;
 
-    /// <summary>
-    /// Control flag that terminates the entire recursive traversal immediately.
-    /// </summary>
+    /// <summary>Control flag that terminates the entire recursive traversal immediately.</summary>
     internal const int Exit = 1 << 4;
 
-    /// <summary>
-    /// Control flag that indicates child elements should be processed recursively.
-    /// </summary>
+    /// <summary>Control flag that indicates child elements should be processed recursively.</summary>
     internal const int Recurse = 1 << 1;
 
-    /// <summary>
-    /// Control flag that skips yielding the current element in the output sequence.
-    /// </summary>
+    /// <summary>Control flag that skips yielding the current element in the output sequence.</summary>
     internal const int Skip = 1 << 2;
 
-    /// <summary>
-    /// Control flag that includes the current element in the output sequence.
-    /// </summary>
+    /// <summary>Control flag that includes the current element in the output sequence.</summary>
     internal const int Yield = 1 << 0;
 
     /// <summary>
@@ -252,24 +242,16 @@ public static partial class IEnumerableExtensions
     /// The traversal uses a depth-first strategy. At each level:
     /// <list type="bullet">
     /// <item>
-    /// <description>
-    /// If <c>Yield</c> is set and <c>Skip</c> is not set, the element is yielded.
-    /// </description>
+    /// <description>If <c>Yield</c> is set and <c>Skip</c> is not set, the element is yielded.</description>
     /// </item>
     /// <item>
-    /// <description>
-    /// If <c>Recurse</c> is set, child elements are visited recursively.
-    /// </description>
+    /// <description>If <c>Recurse</c> is set, child elements are visited recursively.</description>
     /// </item>
     /// <item>
-    /// <description>
-    /// If <c>Break</c> is set, remaining siblings are skipped at the current level.
-    /// </description>
+    /// <description>If <c>Break</c> is set, remaining siblings are skipped at the current level.</description>
     /// </item>
     /// <item>
-    /// <description>
-    /// If <c>Exit</c> is set, traversal halts immediately across all levels.
-    /// </description>
+    /// <description>If <c>Exit</c> is set, traversal halts immediately across all levels.</description>
     /// </item>
     /// </list>
     /// </para>

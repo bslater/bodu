@@ -14,9 +14,7 @@ public readonly partial struct Interval<T> :
     ISpanFormattable,
     IUtf8SpanFormattable
 {
-    /// <summary>
-    /// The string representation used for any empty interval.
-    /// </summary>
+    /// <summary>The string representation used for any empty interval.</summary>
     private const string EmptyText = "∅";
 
     /// <summary>

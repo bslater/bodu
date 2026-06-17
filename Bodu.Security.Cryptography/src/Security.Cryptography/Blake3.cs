@@ -45,14 +45,10 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>
-/// Output size: 256 bits (32 bytes), fixed.
-/// </description>
+/// <description>Output size: 256 bits (32 bytes), fixed.</description>
 /// </item>
 /// <item>
-/// <description>
-/// Block size: 64 bytes; chunk size: 1024 bytes (the leaf of the hash tree).
-/// </description>
+/// <description>Block size: 64 bytes; chunk size: 1024 bytes (the leaf of the hash tree).</description>
 /// </item>
 /// <item>
 /// <description>
@@ -60,9 +56,7 @@ namespace Bodu.Security.Cryptography;
 /// </description>
 /// </item>
 /// <item>
-/// <description>
-/// Mode: standard unkeyed hash only — keyed hash and KDF modes are not exposed.
-/// </description>
+/// <description>Mode: standard unkeyed hash only — keyed hash and KDF modes are not exposed.</description>
 /// </item>
 /// </list>
 /// <para>
@@ -86,62 +80,39 @@ namespace Bodu.Security.Cryptography;
 public sealed partial class Blake3
     : DeferredFinalBlockHashAlgorithm<Blake3>
 {
-    /// <summary>
-    /// Size, in bytes, of a single compression input block.
-    /// </summary>
+    /// <summary>Size, in bytes, of a single compression input block.</summary>
     private new const int BlockSize = 64;
 
-    /// <summary>
-    /// Size, in bytes, of a single input chunk (leaf of the hash tree).
-    /// </summary>
+    /// <summary>Size, in bytes, of a single input chunk (leaf of the hash tree).</summary>
     private const int ChunkSize = 1024;
 
-    /// <summary>
-    /// The flag applied to the last compression block of every chunk.
-    /// </summary>
+    /// <summary>The flag applied to the last compression block of every chunk.</summary>
     private const uint FlagChunkEnd = 2u;
     // ---- domain-separation flags (§2.5 of the BLAKE3 specification) ----
 
-    /// <summary>
-    /// The flag applied to the first compression block of every chunk.
-    /// </summary>
+    /// <summary>The flag applied to the first compression block of every chunk.</summary>
     private const uint FlagChunkStart = 1u;
 
-    /// <summary>
-    /// The flag applied to every parent (non-leaf) node compression call.
-    /// </summary>
+    /// <summary>The flag applied to every parent (non-leaf) node compression call.</summary>
     private const uint FlagParent = 4u;
 
-    /// <summary>
-    /// The flag applied to the root compression call to enable output extraction.
-    /// </summary>
+    /// <summary>The flag applied to the root compression call to enable output extraction.</summary>
     private const uint FlagRoot = 8u;
 
-    /// <summary>
-    /// Maximum possible depth of the chaining-value stack. BLAKE3 supports up to <c>2^54</c> chunks per message, so the
-    /// Merkle tree height is bounded at 54 — any well-formed input fits within this bound.
-    /// </summary>
+    /// <summary>Maximum possible depth of the chaining-value stack. BLAKE3 supports up to <c>2^54</c> chunks per message, so the Merkle tree height is bounded at 54 — any well-formed input fits within this bound.</summary>
     private const int MaxCvStackDepth = 54;
 
-    /// <summary>
-    /// Output length in bytes.
-    /// </summary>
+    /// <summary>Output length in bytes.</summary>
     private const int OutLen = 32;
 
-    /// <summary>
-    /// The BLAKE3 initialization vector, taken from the fractional parts of the square roots of the first eight prime
-    /// numbers, identical to the SHA-256 IV.
-    /// </summary>
+    /// <summary>The BLAKE3 initialization vector, taken from the fractional parts of the square roots of the first eight prime numbers, identical to the SHA-256 IV.</summary>
     private static readonly uint[] s_iv =
     [
         0x6A09E667u, 0xBB67AE85u, 0x3C6EF372u, 0xA54FF53Au,
         0x510E527Fu, 0x9B05688Cu, 0x1F83D9ABu, 0x5BE0CD19u,
     ];
 
-    /// <summary>
-    /// The per-round message word permutation table (§2.4 of the BLAKE3 specification). Each row gives the 16
-    /// message-word indices consumed by a single round's G calls.
-    /// </summary>
+    /// <summary>The per-round message word permutation table (§2.4 of the BLAKE3 specification). Each row gives the 16 message-word indices consumed by a single round's G calls.</summary>
 #pragma warning disable SA1025 // Code should not contain multiple whitespace in a row
     private static readonly byte[,] s_msgSchedule =
     {
@@ -155,9 +126,7 @@ public sealed partial class Blake3
     };
 #pragma warning restore SA1025 // Code should not contain multiple whitespace in a row
 
-    /// <summary>
-    /// Running chaining value for the chunk currently being compressed.
-    /// </summary>
+    /// <summary>Running chaining value for the chunk currently being compressed.</summary>
     /// <remarks>
     /// Reset to the IV at the start of each new chunk (when the first block of a chunk is processed) and updated in
     /// place after every compression call. Carries the accumulated chaining state block-by-block until the chunk
@@ -165,23 +134,13 @@ public sealed partial class Blake3
     /// </remarks>
     private readonly uint[] _chunkCv = new uint[8];
 
-    /// <summary>
-    /// Chaining-value stack used to build parent nodes as chunks complete. Laid out as a flat 8-word slice per level,
-    /// indexed by <see cref="_cvStackDepth" />, so per-level pushes and merges run without per-level array allocations.
-    /// </summary>
+    /// <summary>Chaining-value stack used to build parent nodes as chunks complete. Laid out as a flat 8-word slice per level, indexed by <see cref="_cvStackDepth" />, so per-level pushes and merges run without per-level array allocations.</summary>
     private readonly uint[] _cvStack = new uint[MaxCvStackDepth * 8];
 
-    /// <summary>
-    /// Pre-allocated 16-word scratch buffer used by <see cref="ParentCv" /> to assemble the concatenation of a left and
-    /// a right child chaining value before invoking <see cref="Compress" />. Reusing this field removes the per-call
-    /// <c>uint[16]</c> allocation that would otherwise occur at every tree-merge step.
-    /// </summary>
+    /// <summary>Pre-allocated 16-word scratch buffer used by <see cref="ParentCv" /> to assemble the concatenation of a left and a right child chaining value before invoking <see cref="Compress" />. Reusing this field removes the per-call <c>uint[16]</c> allocation that would otherwise occur at every tree-merge step.</summary>
     private readonly uint[] _parentBlockWords = new uint[16];
 
-    /// <summary>
-    /// Current depth of <see cref="_cvStack" /> — the number of 8-word CV slices currently live, with the active top
-    /// slice occupying words <c>[(_cvStackDepth - 1) * 8, _cvStackDepth * 8)</c> when non-zero.
-    /// </summary>
+    /// <summary>Current depth of <see cref="_cvStack" /> — the number of 8-word CV slices currently live, with the active top slice occupying words <c>[(_cvStackDepth - 1) * 8, _cvStackDepth * 8)</c> when non-zero.</summary>
     private int _cvStackDepth;
 
     /// <summary>

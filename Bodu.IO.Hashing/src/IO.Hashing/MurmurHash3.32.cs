@@ -28,24 +28,16 @@ namespace Bodu.IO.Hashing;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>
-/// Output size: 32 bits (4 bytes), little-endian.
-/// </description>
+/// <description>Output size: 32 bits (4 bytes), little-endian.</description>
 /// </item>
 /// <item>
-/// <description>
-/// Variant: <c>MurmurHash3_x86_32</c>.
-/// </description>
+/// <description>Variant: <c>MurmurHash3_x86_32</c>.</description>
 /// </item>
 /// <item>
-/// <description>
-/// Block size: 4 bytes; tail pass for remaining 1–3 bytes.
-/// </description>
+/// <description>Block size: 4 bytes; tail pass for remaining 1–3 bytes.</description>
 /// </item>
 /// <item>
-/// <description>
-/// Seed: 32 bits, defaults to <c>0</c>.
-/// </description>
+/// <description>Seed: 32 bits, defaults to <c>0</c>.</description>
 /// </item>
 /// </list>
 /// <para>
@@ -77,14 +69,10 @@ namespace Bodu.IO.Hashing;
 public sealed class MurmurHash3_32
     : MurmurHash3<MurmurHash3_32>
 {
-    /// <summary>
-    /// The first mixing constant applied to each block during the MurmurHash3 32-bit body pass.
-    /// </summary>
+    /// <summary>The first mixing constant applied to each block during the MurmurHash3 32-bit body pass.</summary>
     private const uint C1 = 0xCC9E2D51u;
 
-    /// <summary>
-    /// The second mixing constant applied to each block during the MurmurHash3 32-bit body pass.
-    /// </summary>
+    /// <summary>The second mixing constant applied to each block during the MurmurHash3 32-bit body pass.</summary>
     private const uint C2 = 0x1B873593u;
 
     /// <summary>

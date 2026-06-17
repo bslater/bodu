@@ -17,9 +17,7 @@ namespace Bodu.Text.Toml.Serialization.Converters;
 internal sealed class IntegerConverterFactory
     : TomlConverterFactory
 {
-    /// <summary>
-    /// The integer types this factory handles.
-    /// </summary>
+    /// <summary>The integer types this factory handles.</summary>
     private static readonly HashSet<Type> s_integerTypes =
     [
         typeof(sbyte),

@@ -76,29 +76,19 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
     : IReadOnlyCollection<KeyValuePair<TKey, IReadOnlyList<TValue>>>
     where TKey : notnull
 {
-    /// <summary>
-    /// Shared empty read-only list returned when a key is absent.
-    /// </summary>
+    /// <summary>Shared empty read-only list returned when a key is absent.</summary>
     private static readonly IReadOnlyList<TValue> s_emptyValues = Array.AsReadOnly(Array.Empty<TValue>());
 
-    /// <summary>
-    /// The equality comparer used to determine key equality.
-    /// </summary>
+    /// <summary>The equality comparer used to determine key equality.</summary>
     private readonly IEqualityComparer<TKey> _comparer;
 
-    /// <summary>
-    /// The backing dictionary mapping each key to its value bucket.
-    /// </summary>
+    /// <summary>The backing dictionary mapping each key to its value bucket.</summary>
     private readonly Dictionary<TKey, ValueBucket> _map;
 
-    /// <summary>
-    /// The total number of value entries across all keys.
-    /// </summary>
+    /// <summary>The total number of value entries across all keys.</summary>
     private int _count;
 
-    /// <summary>
-    /// Incremented on every structural change; used by enumerators to detect concurrent modification.
-    /// </summary>
+    /// <summary>Incremented on every structural change; used by enumerators to detect concurrent modification.</summary>
     private int _version;
 
     /// <summary>

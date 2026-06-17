@@ -36,32 +36,21 @@ namespace Bodu.Security.Cryptography;
 public abstract partial class ThreefishBlockCipher
     : IBlockCipher
 {
-    /// <summary>
-    /// The expanded key schedule, containing the original key words, the parity word, and the repeated key words used
-    /// during subkey injection.
-    /// </summary>
+    /// <summary>The expanded key schedule, containing the original key words, the parity word, and the repeated key words used during subkey injection.</summary>
     // KeySchedule: [K0, K1, K2, K3, K4=parity, K0, K1, K2, K3]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Scoped private protected so only the three in-assembly Threefish variant classes can access the key schedule directly, avoiding property dispatch on the hot encrypt/decrypt path.")]
     private protected readonly ulong[] _keySchedule;
 
-    /// <summary>
-    /// The expanded tweak schedule, containing the two tweak words, their XOR, and the repeated tweak words used during
-    /// subkey injection.
-    /// </summary>
+    /// <summary>The expanded tweak schedule, containing the two tweak words, their XOR, and the repeated tweak words used during subkey injection.</summary>
     // TweakSchedule: [T0, T1, T2=T0^T1, T0, T1]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Scoped private protected so only the three in-assembly Threefish variant classes can access the tweak schedule directly, avoiding property dispatch on the hot encrypt/decrypt path.")]
     private protected readonly ulong[] _tweakSchedule;
 
-    /// <summary>
-    /// Indicates whether the instance has been disposed.
-    /// </summary>
+    /// <summary>Indicates whether the instance has been disposed.</summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Scoped private protected so only in-assembly Threefish variant classes can read the disposal flag directly in ThrowIfDisposed without virtual dispatch.")]
     private protected bool _disposed = false;
 
-    /// <summary>
-    /// The key parity constant <c>C240</c> defined by the Threefish specification, XORed into the key words to form the
-    /// parity word of the key schedule.
-    /// </summary>
+    /// <summary>The key parity constant <c>C240</c> defined by the Threefish specification, XORed into the key words to form the parity word of the key schedule.</summary>
     private const ulong KeyParityValue = 0x1BD11BDAA9FC1A22;
 
     /// <summary>

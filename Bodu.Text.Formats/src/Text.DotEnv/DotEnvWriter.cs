@@ -35,14 +35,10 @@ namespace Bodu.Text.DotEnv;
 public sealed class DotEnvWriter
     : IDisposable
 {
-    /// <summary>
-    /// The underlying text writer that receives the DotEnv output. Owned by this instance.
-    /// </summary>
+    /// <summary>The underlying text writer that receives the DotEnv output. Owned by this instance.</summary>
     private readonly TextWriter _writer;
 
-    /// <summary>
-    /// Indicates whether this instance has been disposed.
-    /// </summary>
+    /// <summary>Indicates whether this instance has been disposed.</summary>
     private bool _disposed;
 
     /// <summary>

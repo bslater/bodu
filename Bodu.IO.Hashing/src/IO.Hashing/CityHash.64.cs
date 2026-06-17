@@ -26,24 +26,16 @@ namespace Bodu.IO.Hashing;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>
-/// Output size: 64 bits (8 bytes), little-endian.
-/// </description>
+/// <description>Output size: 64 bits (8 bytes), little-endian.</description>
 /// </item>
 /// <item>
-/// <description>
-/// Variant: <c>CityHash64</c>.
-/// </description>
+/// <description>Variant: <c>CityHash64</c>.</description>
 /// </item>
 /// <item>
-/// <description>
-/// Length-dispatched mixing: 0–16, 17–32, 33–64, and 65+ byte paths.
-/// </description>
+/// <description>Length-dispatched mixing: 0–16, 17–32, 33–64, and 65+ byte paths.</description>
 /// </item>
 /// <item>
-/// <description>
-/// Block size on the long path: 64 bytes.
-/// </description>
+/// <description>Block size on the long path: 64 bytes.</description>
 /// </item>
 /// </list>
 /// <para>

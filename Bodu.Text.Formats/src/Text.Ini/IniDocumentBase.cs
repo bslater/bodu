@@ -29,19 +29,13 @@ namespace Bodu.Text.Ini;
 /// </remarks>
 public abstract class IniDocumentBase
 {
-    /// <summary>
-    /// The named sections in source order, excluding the global section.
-    /// </summary>
+    /// <summary>The named sections in source order, excluding the global section.</summary>
     private readonly List<IniSection> _sections;
 
-    /// <summary>
-    /// The section-name-to-section lookup used for fast section resolution.
-    /// </summary>
+    /// <summary>The section-name-to-section lookup used for fast section resolution.</summary>
     private readonly Dictionary<string, IniSection> _lookup;
 
-    /// <summary>
-    /// Indicates whether section names are compared with ordinal case sensitivity.
-    /// </summary>
+    /// <summary>Indicates whether section names are compared with ordinal case sensitivity.</summary>
     private readonly bool _caseSensitiveSections;
 
     /// <summary>

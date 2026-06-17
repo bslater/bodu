@@ -15,14 +15,10 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 internal static class KeccakPermutation
 {
-    /// <summary>
-    /// The number of 64-bit lanes in the Keccak-f[1600] state.
-    /// </summary>
+    /// <summary>The number of 64-bit lanes in the Keccak-f[1600] state.</summary>
     internal const int StateWords = 25;
 
-    /// <summary>
-    /// Round constants for the ι (iota) step — 24 values, one per round.
-    /// </summary>
+    /// <summary>Round constants for the ι (iota) step — 24 values, one per round.</summary>
     private static readonly ulong[] s_roundConstants =
     [
         0x0000000000000001UL, 0x0000000000008082UL, 0x800000000000808AUL, 0x8000000080008000UL,
@@ -33,9 +29,7 @@ internal static class KeccakPermutation
         0x8000000080008081UL, 0x8000000000008080UL, 0x0000000080000001UL, 0x8000000080008008UL,
     ];
 
-    /// <summary>
-    /// ρ (rho) rotation offsets indexed as rho[x + 5y].
-    /// </summary>
+    /// <summary>ρ (rho) rotation offsets indexed as rho[x + 5y].</summary>
 #pragma warning disable SA1137 // Elements should have the same indentation
     private static readonly int[] s_rho =
     [
@@ -46,9 +40,7 @@ internal static class KeccakPermutation
         18,  2, 61, 56, 14,
     ];
 
-    /// <summary>
-    /// π (pi) permutation indices mapping state[i] → B[pi[i]].
-    /// </summary>
+    /// <summary>π (pi) permutation indices mapping state[i] → B[pi[i]].</summary>
     private static readonly int[] s_pi =
     [
          0, 10, 20,  5, 15,

@@ -13,20 +13,13 @@ namespace Bodu.Financial.ExchangeRates.Rba;
 /// </summary>
 internal static class RbaFixtures
 {
-    /// <summary>
-    /// The prefix under which fixtures are embedded.
-    /// </summary>
+    /// <summary>The prefix under which fixtures are embedded.</summary>
     private const string ResourcePrefix = "Bodu.Financial.ExchangeRates.Rba.Fixtures.";
 
-    /// <summary>
-    /// The file name of the real-world sample RBA workbook (the 2023-to-current era). The fixture is embedded under the
-    /// RBA's own file name so it matches both <see cref="RbaEra.FileName" /> and a known-answer row's source file.
-    /// </summary>
+    /// <summary>The file name of the real-world sample RBA workbook (the 2023-to-current era). The fixture is embedded under the RBA's own file name so it matches both <see cref="RbaEra.FileName" /> and a known-answer row's source file.</summary>
     public const string Sample = "2023-current.xls";
 
-    /// <summary>
-    /// The file name of the embedded known-answer data set.
-    /// </summary>
+    /// <summary>The file name of the embedded known-answer data set.</summary>
     public const string KnownAnswerData = "rba-known-answers.json";
 
     /// <summary>

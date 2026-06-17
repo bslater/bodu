@@ -13,9 +13,7 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 internal static class Skein1024AppendixBIVs
 {
-    /// <summary>
-    /// Skein-1024-384 initial chaining value (state size 1024 bits, output 384 bits).
-    /// </summary>
+    /// <summary>Skein-1024-384 initial chaining value (state size 1024 bits, output 384 bits).</summary>
     public static readonly IReadOnlyList<ulong> Skein1024_384 =
     [
         0x5102B6B8C1894A35UL,
@@ -36,9 +34,7 @@ internal static class Skein1024AppendixBIVs
         0x2D136947D4CBAFEAUL,
     ];
 
-    /// <summary>
-    /// Skein-1024-512 initial chaining value (state size 1024 bits, output 512 bits).
-    /// </summary>
+    /// <summary>Skein-1024-512 initial chaining value (state size 1024 bits, output 512 bits).</summary>
     public static readonly IReadOnlyList<ulong> Skein1024_512 =
     [
         0xCAEC0E5D7C1B1B18UL,
@@ -59,9 +55,7 @@ internal static class Skein1024AppendixBIVs
         0x0E2940B815804974UL,
     ];
 
-    /// <summary>
-    /// Skein-1024-1024 initial chaining value (state size 1024 bits, output 1024 bits).
-    /// </summary>
+    /// <summary>Skein-1024-1024 initial chaining value (state size 1024 bits, output 1024 bits).</summary>
     public static readonly IReadOnlyList<ulong> Skein1024_1024 =
     [
         0xD593DA0741E72355UL,

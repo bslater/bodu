@@ -37,9 +37,7 @@ namespace Bodu.Text.DotEnv;
 /// </example>
 public readonly struct DotEnvParseOptions
 {
-    /// <summary>
-    /// Gets a <see cref="DotEnvParseOptions" /> instance initialised with all default values.
-    /// </summary>
+    /// <summary>Gets a <see cref="DotEnvParseOptions" /> instance initialised with all default values.</summary>
     /// <returns>A default <see cref="DotEnvParseOptions" /> value.</returns>
     public static readonly DotEnvParseOptions Default = new();
 

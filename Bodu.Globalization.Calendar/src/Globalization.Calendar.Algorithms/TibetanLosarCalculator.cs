@@ -23,10 +23,7 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// </remarks>
 internal static class TibetanLosarCalculator
 {
-    /// <summary>
-    /// The apparent tropical solar longitude, in degrees, that the Tibetan first-month new moon sits nearest. Chosen to
-    /// reproduce the published Phukpa Gyalpo Losar dates for the modern era.
-    /// </summary>
+    /// <summary>The apparent tropical solar longitude, in degrees, that the Tibetan first-month new moon sits nearest. Chosen to reproduce the published Phukpa Gyalpo Losar dates for the modern era.</summary>
     private const double LosarSolarLongitude = 333.5;
 
     /// <summary>

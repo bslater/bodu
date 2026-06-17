@@ -32,9 +32,7 @@ namespace Bodu.Text.Toml.Writer;
 /// </remarks>
 internal static class TomlCanonicalWriter
 {
-    /// <summary>
-    /// The number of 100-nanosecond ticks in one second, used to extract the fractional-second portion of a time.
-    /// </summary>
+    /// <summary>The number of 100-nanosecond ticks in one second, used to extract the fractional-second portion of a time.</summary>
     private const long TicksPerSecond = 10_000_000L;
 
     /// <summary>

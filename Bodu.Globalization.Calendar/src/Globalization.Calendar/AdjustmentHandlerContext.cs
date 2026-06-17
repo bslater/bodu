@@ -13,9 +13,7 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 public sealed class AdjustmentHandlerContext
 {
-    /// <summary>
-    /// The predicate reporting whether a candidate day is already claimed by another non-working occurrence.
-    /// </summary>
+    /// <summary>The predicate reporting whether a candidate day is already claimed by another non-working occurrence.</summary>
     private readonly Func<DateOnly, bool> _isOccupied;
 
     /// <summary>

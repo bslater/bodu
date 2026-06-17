@@ -34,18 +34,13 @@ namespace Bodu.Security.Cryptography;
 public abstract partial class SerpentBlockCipher
     : SerpentBlockCipherBase
 {
-    /// <summary>
-    /// The tweak size in bits.
-    /// </summary>
+    /// <summary>The tweak size in bits.</summary>
     /// <remarks>
     /// The tweak is always four 32-bit words, independent of the selected wide-block state size.
     /// </remarks>
     private protected const int TweakSizeBits = 128;
 
-    /// <summary>
-    /// The expanded tweak schedule — five cycling 32-bit entries <c>[T0, T1, T2, T3, T0 ^ T1 ^ T2 ^ T3]</c> —
-    /// XOR-injected at the tail of the state every four rounds.
-    /// </summary>
+    /// <summary>The expanded tweak schedule — five cycling 32-bit entries <c>[T0, T1, T2, T3, T0 ^ T1 ^ T2 ^ T3]</c> — XOR-injected at the tail of the state every four rounds.</summary>
     /// <remarks>
     /// At injection point <c>j</c>, this class injects <c>tw[j mod 5]</c>, <c>tw[(j + 1) mod 5]</c>, and the injection
     /// counter into the final three state words. The parity entry prevents the cycle from being a simple repetition of
@@ -54,9 +49,7 @@ public abstract partial class SerpentBlockCipher
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Scoped private protected so only the in-assembly wide-block Serpent variant classes can access the tweak schedule directly, avoiding property dispatch on the hot encrypt/decrypt path.")]
     private protected readonly uint[] _tweakSchedule;
 
-    /// <summary>
-    /// The expanded round-key schedule, laid out as <c>(Rounds + 1) * BlockWords</c> contiguous 32-bit words.
-    /// </summary>
+    /// <summary>The expanded round-key schedule, laid out as <c>(Rounds + 1) * BlockWords</c> contiguous 32-bit words.</summary>
     /// <remarks>
     /// Round key <c>r</c> starts at offset <c>r * BlockWords</c>. Encryption uses one key before each round and a final
     /// post-S-box key after the last round, mirroring canonical Serpent's <c>R + 1</c> key schedule shape.

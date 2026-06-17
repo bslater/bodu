@@ -49,9 +49,7 @@ public sealed class FractionJsonConverter<T>
     : JsonConverter<Fraction<T>>
     where T : IBinaryInteger<T>
 {
-    /// <summary>
-    /// The policy used by this converter instance.
-    /// </summary>
+    /// <summary>The policy used by this converter instance.</summary>
     private readonly NumericsJsonPolicy _policy;
 
     /// <summary>

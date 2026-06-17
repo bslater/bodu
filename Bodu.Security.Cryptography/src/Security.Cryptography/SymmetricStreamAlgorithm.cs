@@ -39,34 +39,22 @@ namespace Bodu.Security.Cryptography;
 public abstract class SymmetricStreamAlgorithm
     : IDisposable
 {
-    /// <summary>
-    /// The required nonce size, in bits.
-    /// </summary>
+    /// <summary>The required nonce size, in bits.</summary>
     private readonly int _nonceSizeBits;
 
-    /// <summary>
-    /// The key sizes, in bits, that the cipher accepts.
-    /// </summary>
+    /// <summary>The key sizes, in bits, that the cipher accepts.</summary>
     private readonly KeySizes[] _legalKeySizes;
 
-    /// <summary>
-    /// The current key size, in bits.
-    /// </summary>
+    /// <summary>The current key size, in bits.</summary>
     private int _keySizeBits;
 
-    /// <summary>
-    /// The private copy of the secret key, or <see langword="null" /> until generated or assigned.
-    /// </summary>
+    /// <summary>The private copy of the secret key, or <see langword="null" /> until generated or assigned.</summary>
     private byte[]? _key;
 
-    /// <summary>
-    /// The private copy of the nonce, or <see langword="null" /> until generated or assigned.
-    /// </summary>
+    /// <summary>The private copy of the nonce, or <see langword="null" /> until generated or assigned.</summary>
     private byte[]? _nonce;
 
-    /// <summary>
-    /// Indicates whether this instance has been disposed.
-    /// </summary>
+    /// <summary>Indicates whether this instance has been disposed.</summary>
     private bool _disposed;
 
     /// <summary>

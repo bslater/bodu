@@ -31,24 +31,16 @@ public sealed partial class RangeDictionary<TKey, TValue>
     public struct Enumerator
         : IEnumerator<ValueRange<TKey, TValue>>
     {
-        /// <summary>
-        /// The dictionary being enumerated.
-        /// </summary>
+        /// <summary>The dictionary being enumerated.</summary>
         private readonly RangeDictionary<TKey, TValue> _owner;
 
-        /// <summary>
-        /// The version captured from <c>owner</c> at construction.
-        /// </summary>
+        /// <summary>The version captured from <c>owner</c> at construction.</summary>
         private readonly int _version;
 
-        /// <summary>
-        /// The index of the next entry to yield.
-        /// </summary>
+        /// <summary>The index of the next entry to yield.</summary>
         private int _index;
 
-        /// <summary>
-        /// The entry returned by <see cref="Current" /> for the current position.
-        /// </summary>
+        /// <summary>The entry returned by <see cref="Current" /> for the current position.</summary>
         private ValueRange<TKey, TValue> _current;
 
         /// <summary>

@@ -43,26 +43,16 @@ namespace Bodu.Text.Encoding;
 /// </example>
 public static partial class Base16
 {
-    /// <summary>
-    /// The Base16 alphabet using lower case letters.
-    /// </summary>
+    /// <summary>The Base16 alphabet using lower case letters.</summary>
     private const string HexLowerAlphabet = "0123456789abcdef";
 
-    /// <summary>
-    /// The Base16 alphabet using upper case letters.
-    /// </summary>
+    /// <summary>The Base16 alphabet using upper case letters.</summary>
     private const string HexUpperAlphabet = "0123456789ABCDEF";
 
-    /// <summary>
-    /// The number of encoded hexadecimal characters per output line when
-    /// <see cref="BaseFormattingOptions.InsertLineBreaks" /> is requested.
-    /// </summary>
+    /// <summary>The number of encoded hexadecimal characters per output line when <see cref="BaseFormattingOptions.InsertLineBreaks" /> is requested.</summary>
     private const int LineBreakInterval = 64;
 
-    /// <summary>
-    /// The decorative prefix emitted when <see cref="BaseFormattingOptions.IncludePrefix" /> is requested, and the
-    /// prefix accepted when <see cref="BaseFormatStyles.AllowPrefix" /> is set.
-    /// </summary>
+    /// <summary>The decorative prefix emitted when <see cref="BaseFormattingOptions.IncludePrefix" /> is requested, and the prefix accepted when <see cref="BaseFormatStyles.AllowPrefix" /> is set.</summary>
     private const string Prefix = "0x";
 
     /// <summary>

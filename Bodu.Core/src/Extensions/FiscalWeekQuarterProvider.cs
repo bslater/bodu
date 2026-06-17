@@ -21,27 +21,19 @@ namespace Bodu.Extensions;
 /// <list type="bullet">
 /// <item>
 /// <term>Q1</term>
-/// <description>
-/// Weeks 1–13
-/// </description>
+/// <description>Weeks 1–13</description>
 /// </item>
 /// <item>
 /// <term>Q2</term>
-/// <description>
-/// Weeks 14–26
-/// </description>
+/// <description>Weeks 14–26</description>
 /// </item>
 /// <item>
 /// <term>Q3</term>
-/// <description>
-/// Weeks 27–39
-/// </description>
+/// <description>Weeks 27–39</description>
 /// </item>
 /// <item>
 /// <term>Q4</term>
-/// <description>
-/// Weeks 40–52 (or 40–53 in a 53-week year)
-/// </description>
+/// <description>Weeks 40–52 (or 40–53 in a 53-week year)</description>
 /// </item>
 /// </list>
 /// <para>
@@ -62,24 +54,16 @@ namespace Bodu.Extensions;
 public sealed class FiscalWeekQuarterProvider
     : IQuarterDefinitionProvider
 {
-    /// <summary>
-    /// The calendar month (1-12) that anchors the fiscal year.
-    /// </summary>
+    /// <summary>The calendar month (1-12) that anchors the fiscal year.</summary>
     private readonly int _anchorMonth;
 
-    /// <summary>
-    /// The day of week on which each fiscal week begins.
-    /// </summary>
+    /// <summary>The day of week on which each fiscal week begins.</summary>
     private readonly DayOfWeek _anchorDayOfWeek;
 
-    /// <summary>
-    /// Indicates whether the fiscal year starts on the nearest <see cref="_anchorDayOfWeek" /> rather than the first.
-    /// </summary>
+    /// <summary>Indicates whether the fiscal year starts on the nearest <see cref="_anchorDayOfWeek" /> rather than the first.</summary>
     private readonly bool _useNearestDayOfWeek;
 
-    /// <summary>
-    /// The fiscal week pattern that governs how weeks are grouped into quarters.
-    /// </summary>
+    /// <summary>The fiscal week pattern that governs how weeks are grouped into quarters.</summary>
     private readonly FiscalWeekPattern _pattern;
 
     /// <summary>

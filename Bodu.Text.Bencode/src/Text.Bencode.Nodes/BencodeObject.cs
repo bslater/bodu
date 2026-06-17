@@ -24,9 +24,7 @@ namespace Bodu.Text.Bencode.Nodes;
 public sealed class BencodeObject
     : BencodeNode, IDictionary<string, BencodeNode?>
 {
-    /// <summary>
-    /// The backing map of property names to child nodes.
-    /// </summary>
+    /// <summary>The backing map of property names to child nodes.</summary>
     private readonly Dictionary<string, BencodeNode?> _properties;
 
     /// <summary>

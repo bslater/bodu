@@ -18,9 +18,7 @@ namespace Bodu.Text.Toml.Writer;
 internal sealed class TomlArrayWriterNode
     : TomlWriterNode
 {
-    /// <summary>
-    /// The elements of the array, in insertion order.
-    /// </summary>
+    /// <summary>The elements of the array, in insertion order.</summary>
     private readonly List<TomlWriterNode> _items = [];
 
     /// <summary>

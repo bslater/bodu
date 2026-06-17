@@ -27,11 +27,7 @@ public readonly record struct ExchangeRate<TBase, TQuote>
     where TBase : ICurrency
     where TQuote : ICurrency
 {
-    /// <summary>
-    /// The underlying observed rate used for precise conversion. Equals <see cref="Rate" /> for a non-inverted rate;
-    /// for an inverted rate it is the original reverse-pair rate, so conversion divides by it rather than multiplying
-    /// by a pre-rounded reciprocal.
-    /// </summary>
+    /// <summary>The underlying observed rate used for precise conversion. Equals <see cref="Rate" /> for a non-inverted rate; for an inverted rate it is the original reverse-pair rate, so conversion divides by it rather than multiplying by a pre-rounded reciprocal.</summary>
     private readonly decimal _observedRate;
 
     /// <summary>

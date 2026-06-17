@@ -281,7 +281,7 @@ public sealed class IListExtensionsTests_LastIndexOf
     }
 
     /// <summary>
-    /// Verifies that the ranged overload of <c>LastIndexOf</c> honours <paramref name="count"/> by ignoring matches
+    /// Verifies that the ranged overload of <c>LastIndexOf</c> honours <paramref name="count" /> by ignoring matches
     /// outside the window.
     /// </summary>
     [TestMethod]
@@ -320,7 +320,7 @@ public sealed class IListExtensionsTests_LastIndexOf
     }
 
     /// <summary>
-    /// Verifies that the indexed overload of <c>LastIndexOf</c> searches backward from <paramref name="startIndex"/>.
+    /// Verifies that the indexed overload of <c>LastIndexOf</c> searches backward from <paramref name="startIndex" />.
     /// </summary>
     [TestMethod]
     public void LastIndexOf_WithStartIndex_WhenIndexExcludesLaterMatch_ShouldReturnLastMatchInPrefix()

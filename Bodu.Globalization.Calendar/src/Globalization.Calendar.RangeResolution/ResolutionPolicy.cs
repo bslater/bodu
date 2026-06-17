@@ -21,11 +21,7 @@ namespace Bodu.Globalization.Calendar.RangeResolution;
 /// resolution (guide)</seealso>
 public sealed class ResolutionPolicy
 {
-    /// <summary>
-    /// The built-in category precedence, highest-winning first, used when a resource does not author its own and to
-    /// fill any categories a partial authored list omits. <see cref="NotableDateCategory.None" /> is intentionally
-    /// excluded so an uncategorized occurrence never wins a category collision.
-    /// </summary>
+    /// <summary>The built-in category precedence, highest-winning first, used when a resource does not author its own and to fill any categories a partial authored list omits. <see cref="NotableDateCategory.None" /> is intentionally excluded so an uncategorized occurrence never wins a category collision.</summary>
     private static readonly NotableDateCategory[] s_defaultCategoryPrecedence =
     [
         NotableDateCategory.PublicHoliday,

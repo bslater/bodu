@@ -21,54 +21,34 @@ namespace Bodu.Security.Cryptography;
 internal partial struct Ed25519Point
 {
 
-    /// <summary>
-    /// The curve constant d = −121665/121666 mod p, decoded from its canonical encoding at type initialization.
-    /// </summary>
+    /// <summary>The curve constant d = −121665/121666 mod p, decoded from its canonical encoding at type initialization.</summary>
     private static readonly Curve25519FieldElement s_d = Curve25519FieldElement.FromBytes(
         Convert.FromHexString("a3785913ca4deb75abd841414d0a700098e879777940c78c73fe6f2bee6c0352"));
 
-    /// <summary>
-    /// The doubled curve constant 2d used by the unified addition formula.
-    /// </summary>
+    /// <summary>The doubled curve constant 2d used by the unified addition formula.</summary>
     private static readonly Curve25519FieldElement s_d2 = Curve25519FieldElement.Add(s_d, s_d);
 
-    /// <summary>
-    /// The square root of −1 modulo p, used to correct the candidate root during point decompression.
-    /// </summary>
+    /// <summary>The square root of −1 modulo p, used to correct the candidate root during point decompression.</summary>
     private static readonly Curve25519FieldElement s_sqrtMinusOne = Curve25519FieldElement.FromBytes(
         Convert.FromHexString("b0a00e4a271beec478e42fad0618432fa7d7fb3d99004d2b0bdfc14f8024832b"));
 
-    /// <summary>
-    /// The Ed25519 base point B = (x, 4/5) with x positive, decoded from its canonical encoding. Declared after the
-    /// curve constants in this file because static field initializers run in declaration order and the decoder consumes
-    /// <see cref="s_d" /> and <see cref="s_sqrtMinusOne" />.
-    /// </summary>
+    /// <summary>The Ed25519 base point B = (x, 4/5) with x positive, decoded from its canonical encoding. Declared after the curve constants in this file because static field initializers run in declaration order and the decoder consumes <see cref="s_d" /> and <see cref="s_sqrtMinusOne" />.</summary>
     private static readonly Ed25519Point s_basePoint = DecodeConstant(
         "5866666666666666666666666666666666666666666666666666666666666666");
 
-    /// <summary>
-    /// The X coordinate of the extended representation.
-    /// </summary>
+    /// <summary>The X coordinate of the extended representation.</summary>
     private Curve25519FieldElement _x;
 
-    /// <summary>
-    /// The Y coordinate of the extended representation.
-    /// </summary>
+    /// <summary>The Y coordinate of the extended representation.</summary>
     private Curve25519FieldElement _y;
 
-    /// <summary>
-    /// The Z coordinate of the extended representation.
-    /// </summary>
+    /// <summary>The Z coordinate of the extended representation.</summary>
     private Curve25519FieldElement _z;
 
-    /// <summary>
-    /// The extended coordinate T = XY/Z.
-    /// </summary>
+    /// <summary>The extended coordinate T = XY/Z.</summary>
     private Curve25519FieldElement _t;
 
-    /// <summary>
-    /// The size, in bytes, of an encoded point.
-    /// </summary>
+    /// <summary>The size, in bytes, of an encoded point.</summary>
     internal const int EncodedSizeInBytes = 32;
 
     /// <summary>

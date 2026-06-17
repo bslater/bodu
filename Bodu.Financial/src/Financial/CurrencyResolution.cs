@@ -27,14 +27,10 @@ namespace Bodu.Financial;
 /// </remarks>
 public static class CurrencyResolution
 {
-    /// <summary>
-    /// The process-wide default lookup, used whenever no scoped override is active.
-    /// </summary>
+    /// <summary>The process-wide default lookup, used whenever no scoped override is active.</summary>
     private static volatile ICurrencyLookup s_default = new CurrencyLookupService();
 
-    /// <summary>
-    /// The flow-local override installed by <see cref="PushScoped(ICurrencyLookup)" />, when present.
-    /// </summary>
+    /// <summary>The flow-local override installed by <see cref="PushScoped(ICurrencyLookup)" />, when present.</summary>
     private static readonly AsyncLocal<ICurrencyLookup?> s_scoped = new();
 
     /// <summary>
@@ -105,14 +101,10 @@ public static class CurrencyResolution
     private sealed class ScopeReverter
         : IDisposable
     {
-        /// <summary>
-        /// The override that was active before the enclosing <see cref="PushScoped(ICurrencyLookup)" /> call.
-        /// </summary>
+        /// <summary>The override that was active before the enclosing <see cref="PushScoped(ICurrencyLookup)" /> call.</summary>
         private readonly ICurrencyLookup? _previous;
 
-        /// <summary>
-        /// Guards against repeated restoration on multiple <see cref="Dispose" /> calls.
-        /// </summary>
+        /// <summary>Guards against repeated restoration on multiple <see cref="Dispose" /> calls.</summary>
         private bool _disposed;
 
         /// <summary>

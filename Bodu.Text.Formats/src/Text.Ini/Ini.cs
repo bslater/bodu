@@ -18,9 +18,7 @@ namespace Bodu.Text.Ini;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>
-/// Section headers are delimited by <c>[</c> and <c>]</c>.
-/// </description>
+/// <description>Section headers are delimited by <c>[</c> and <c>]</c>.</description>
 /// </item>
 /// <item>
 /// <description>
@@ -34,9 +32,7 @@ namespace Bodu.Text.Ini;
 /// </description>
 /// </item>
 /// <item>
-/// <description>
-/// Blank lines are ignored.
-/// </description>
+/// <description>Blank lines are ignored.</description>
 /// </item>
 /// </list>
 /// <para>

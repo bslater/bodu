@@ -21,19 +21,13 @@ namespace Bodu.Text.Configuration;
 /// </remarks>
 internal sealed partial class ConfigurationReader
 {
-    /// <summary>
-    /// The parse options that govern comment, duplicate, and diagnostic handling.
-    /// </summary>
+    /// <summary>The parse options that govern comment, duplicate, and diagnostic handling.</summary>
     private readonly ConfigurationParseOptions _options;
 
-    /// <summary>
-    /// The diagnostics accumulated while reading the source, in the order they were encountered.
-    /// </summary>
+    /// <summary>The diagnostics accumulated while reading the source, in the order they were encountered.</summary>
     private readonly List<ConfigurationDiagnostic> _diagnostics = [];
 
-    /// <summary>
-    /// The leading comments buffered ahead of the next section or key-value entry they annotate.
-    /// </summary>
+    /// <summary>The leading comments buffered ahead of the next section or key-value entry they annotate.</summary>
     private readonly List<IniComment> _pendingLeadingComments = [];
 
     /// <summary>

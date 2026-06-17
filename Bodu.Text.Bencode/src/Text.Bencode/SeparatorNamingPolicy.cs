@@ -21,14 +21,10 @@ namespace Bodu.Text.Bencode;
 internal sealed class SeparatorNamingPolicy
     : BencodeNamingPolicy
 {
-    /// <summary>
-    /// The character inserted at word boundaries.
-    /// </summary>
+    /// <summary>The character inserted at word boundaries.</summary>
     private readonly char _separator;
 
-    /// <summary>
-    /// Indicates whether the result is uppercased; otherwise it is lowercased.
-    /// </summary>
+    /// <summary>Indicates whether the result is uppercased; otherwise it is lowercased.</summary>
     private readonly bool _toUpper;
 
     /// <summary>

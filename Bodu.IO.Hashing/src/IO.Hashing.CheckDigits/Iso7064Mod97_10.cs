@@ -49,14 +49,10 @@ namespace Bodu.IO.Hashing.CheckDigits;
 public sealed class Iso7064Mod97_10
     : MultiCharCheckDigitAlgorithm
 {
-    /// <summary>
-    /// The fixed check-code length of <c>2</c> decimal digits.
-    /// </summary>
+    /// <summary>The fixed check-code length of <c>2</c> decimal digits.</summary>
     public const int CheckDigits = 2;
 
-    /// <summary>
-    /// The running remainder, updated modulo ninety-seven as each body character is absorbed.
-    /// </summary>
+    /// <summary>The running remainder, updated modulo ninety-seven as each body character is absorbed.</summary>
     private int _r;
 
     /// <summary>

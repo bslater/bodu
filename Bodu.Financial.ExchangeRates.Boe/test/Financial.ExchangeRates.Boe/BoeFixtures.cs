@@ -11,14 +11,10 @@ namespace Bodu.Financial.ExchangeRates.Boe;
 /// </summary>
 internal static class BoeFixtures
 {
-    /// <summary>
-    /// The prefix under which fixtures are embedded.
-    /// </summary>
+    /// <summary>The prefix under which fixtures are embedded.</summary>
     private const string ResourcePrefix = "Bodu.Financial.ExchangeRates.Boe.Fixtures.";
 
-    /// <summary>
-    /// The file name of the sample IADB CSV response.
-    /// </summary>
+    /// <summary>The file name of the sample IADB CSV response.</summary>
     public const string Sample = "boe-spot.csv";
 
     /// <summary>

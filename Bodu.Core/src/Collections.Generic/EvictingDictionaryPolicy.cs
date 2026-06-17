@@ -31,40 +31,29 @@ namespace Bodu.Collections.Generic;
 /// The item that is evicted varies depending on the selected <see cref="EvictingDictionaryPolicy" />:
 /// </para>
 /// <list type="table">
-/// <listheader> <term>Policy</term>
-/// <description>
-/// Item Evicted
-/// </description>
+/// <listheader>
+/// <term>Policy</term>
+/// <description>Item Evicted</description>
 /// </listheader>
 /// <item>
 /// <term><see cref="FirstInFirstOut" /></term>
-/// <description>
-/// <c>"A"</c> - the first item added, regardless of access.
-/// </description>
+/// <description><c>"A"</c> - the first item added, regardless of access.</description>
 /// </item>
 /// <item>
 /// <term><see cref="LeastRecentlyUsed" /></term>
-/// <description>
-/// <c>"C"</c> - the item least recently accessed (A was accessed, C was not).
-/// </description>
+/// <description><c>"C"</c> - the item least recently accessed (A was accessed, C was not).</description>
 /// </item>
 /// <item>
 /// <term><see cref="LeastFrequentlyUsed" /></term>
-/// <description>
-/// <c>"B"</c> - the first item with the lowest access count.
-/// </description>
+/// <description><c>"B"</c> - the first item with the lowest access count.</description>
 /// </item>
 /// <item>
 /// <term><see cref="MostRecentlyUsed" /></term>
-/// <description>
-/// <c>"A"</c> - the most recently accessed item.
-/// </description>
+/// <description><c>"A"</c> - the most recently accessed item.</description>
 /// </item>
 /// <item>
 /// <term><see cref="RandomReplacement" /></term>
-/// <description>
-/// A randomly chosen item from <c>"A"</c>, <c>"B"</c>, or <c>"C"</c>.
-/// </description>
+/// <description>A randomly chosen item from <c>"A"</c>, <c>"B"</c>, or <c>"C"</c>.</description>
 /// </item>
 /// <item>
 /// <term><see cref="SecondChance" /></term>

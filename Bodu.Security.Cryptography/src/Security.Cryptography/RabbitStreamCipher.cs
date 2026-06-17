@@ -41,57 +41,37 @@ namespace Bodu.Security.Cryptography;
 internal sealed partial class RabbitStreamCipher
     : IStreamCipher
 {
-    /// <summary>
-    /// The required key length, in bytes (128 bits).
-    /// </summary>
+    /// <summary>The required key length, in bytes (128 bits).</summary>
     internal const int KeySizeBytes = 16;
 
-    /// <summary>
-    /// The Rabbit IV length, in bytes (64 bits).
-    /// </summary>
+    /// <summary>The Rabbit IV length, in bytes (64 bits).</summary>
     internal const int NonceSizeBytes = 8;
 
-    /// <summary>
-    /// The keystream block length, in bytes (128 bits).
-    /// </summary>
+    /// <summary>The keystream block length, in bytes (128 bits).</summary>
     internal const int BlockSizeBytes = 16;
 
-    /// <summary>
-    /// The first of the three repeating counter-increment constants A0–A7 (RFC 4503 §2.5).
-    /// </summary>
+    /// <summary>The first of the three repeating counter-increment constants A0–A7 (RFC 4503 §2.5).</summary>
     /// <remarks>
     /// The eight counter-increment constants A0–A7 alternate these three repeating words across the counter system.
     /// </remarks>
     private const uint A0 = 0x4D34D34D;
 
-    /// <summary>
-    /// The second of the three repeating counter-increment constants A0–A7 (RFC 4503 §2.5).
-    /// </summary>
+    /// <summary>The second of the three repeating counter-increment constants A0–A7 (RFC 4503 §2.5).</summary>
     private const uint A1 = 0xD34D34D3;
 
-    /// <summary>
-    /// The third of the three repeating counter-increment constants A0–A7 (RFC 4503 §2.5).
-    /// </summary>
+    /// <summary>The third of the three repeating counter-increment constants A0–A7 (RFC 4503 §2.5).</summary>
     private const uint A2 = 0x34D34D34;
 
-    /// <summary>
-    /// The eight 32-bit state variables of the Rabbit working state.
-    /// </summary>
+    /// <summary>The eight 32-bit state variables of the Rabbit working state.</summary>
     private readonly uint[] _x = new uint[8];
 
-    /// <summary>
-    /// The eight 32-bit counter variables of the Rabbit working state.
-    /// </summary>
+    /// <summary>The eight 32-bit counter variables of the Rabbit working state.</summary>
     private readonly uint[] _c = new uint[8];
 
-    /// <summary>
-    /// The counter carry bit propagated across next-state iterations.
-    /// </summary>
+    /// <summary>The counter carry bit propagated across next-state iterations.</summary>
     private uint _carry;
 
-    /// <summary>
-    /// Indicates whether this instance has been disposed.
-    /// </summary>
+    /// <summary>Indicates whether this instance has been disposed.</summary>
     private bool _disposed;
 
     /// <summary>

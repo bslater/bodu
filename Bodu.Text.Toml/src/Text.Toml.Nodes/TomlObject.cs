@@ -24,20 +24,13 @@ namespace Bodu.Text.Toml.Nodes;
 public sealed class TomlObject
     : TomlNode, IDictionary<string, TomlNode?>
 {
-    /// <summary>
-    /// The backing map of property names to child nodes.
-    /// </summary>
+    /// <summary>The backing map of property names to child nodes.</summary>
     private readonly Dictionary<string, TomlNode?> _properties;
 
-    /// <summary>
-    /// The property names in insertion order, kept consistent across removals so that enumeration and serialization
-    /// order is deterministic.
-    /// </summary>
+    /// <summary>The property names in insertion order, kept consistent across removals so that enumeration and serialization order is deterministic.</summary>
     private readonly List<string> _order;
 
-    /// <summary>
-    /// The comparer used for property-name equality, shared by the map and the order list.
-    /// </summary>
+    /// <summary>The comparer used for property-name equality, shared by the map and the order list.</summary>
     private readonly StringComparer _comparer;
 
     /// <summary>

@@ -25,9 +25,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>
-/// Private key: 32 bytes; clamped per RFC 7748 §5 at the point of use, never in stored form.
-/// </description>
+/// <description>Private key: 32 bytes; clamped per RFC 7748 §5 at the point of use, never in stored form.</description>
 /// </item>
 /// <item>
 /// <description>
@@ -35,14 +33,10 @@ namespace Bodu.Security.Cryptography;
 /// </description>
 /// </item>
 /// <item>
-/// <description>
-/// Shared secret: 32 bytes; security level: 128 bits.
-/// </description>
+/// <description>Shared secret: 32 bytes; security level: 128 bits.</description>
 /// </item>
 /// <item>
-/// <description>
-/// Specification: RFC 7748.
-/// </description>
+/// <description>Specification: RFC 7748.</description>
 /// </item>
 /// </list>
 /// <para>
@@ -80,39 +74,25 @@ namespace Bodu.Security.Cryptography;
 public sealed class X25519
     : AsymmetricAlgorithm
 {
-    /// <summary>
-    /// The size, in bytes, of an X25519 private key and public key (32 bytes each).
-    /// </summary>
+    /// <summary>The size, in bytes, of an X25519 private key and public key (32 bytes each).</summary>
     public const int KeySizeInBytes = 32;
 
-    /// <summary>
-    /// The size, in bytes, of the shared secret produced by <see cref="DeriveSharedSecret(ReadOnlySpan{byte})" />.
-    /// </summary>
+    /// <summary>The size, in bytes, of the shared secret produced by <see cref="DeriveSharedSecret(ReadOnlySpan{byte})" />.</summary>
     public const int SharedSecretSizeInBytes = 32;
 
-    /// <summary>
-    /// The fixed key size, in bits, reported through <see cref="AsymmetricAlgorithm.KeySize" />.
-    /// </summary>
+    /// <summary>The fixed key size, in bits, reported through <see cref="AsymmetricAlgorithm.KeySize" />.</summary>
     private const int KeySizeBits = 256;
 
-    /// <summary>
-    /// The legal key sizes reported through <see cref="AsymmetricAlgorithm.LegalKeySizes" />, fixed at 256 bits.
-    /// </summary>
+    /// <summary>The legal key sizes reported through <see cref="AsymmetricAlgorithm.LegalKeySizes" />, fixed at 256 bits.</summary>
     private static readonly KeySizes[] s_legalKeySizes = [new KeySizes(KeySizeBits, KeySizeBits, 0)];
 
-    /// <summary>
-    /// The raw 32-byte private key, or <see langword="null" /> when no private key is set.
-    /// </summary>
+    /// <summary>The raw 32-byte private key, or <see langword="null" /> when no private key is set.</summary>
     private byte[]? _privateKey;
 
-    /// <summary>
-    /// The raw 32-byte public key, or <see langword="null" /> when no public key is set.
-    /// </summary>
+    /// <summary>The raw 32-byte public key, or <see langword="null" /> when no public key is set.</summary>
     private byte[]? _publicKey;
 
-    /// <summary>
-    /// Indicates whether this instance has been disposed.
-    /// </summary>
+    /// <summary>Indicates whether this instance has been disposed.</summary>
     private bool _disposed;
 
     /// <summary>

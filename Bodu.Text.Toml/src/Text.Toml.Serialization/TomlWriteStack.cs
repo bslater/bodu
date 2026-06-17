@@ -28,20 +28,13 @@ namespace Bodu.Text.Toml.Serialization;
 /// </remarks>
 internal sealed class TomlWriteStack
 {
-    /// <summary>
-    /// The path segments for every open container level, innermost last. Each entry is a member or dictionary key, or
-    /// an array index of the form <c>[i]</c>.
-    /// </summary>
+    /// <summary>The path segments for every open container level, innermost last. Each entry is a member or dictionary key, or an array index of the form <c>[i]</c>.</summary>
     private readonly List<string> _path = [];
 
-    /// <summary>
-    /// The reference instances currently being written, used to detect an object cycle by reference identity.
-    /// </summary>
+    /// <summary>The reference instances currently being written, used to detect an object cycle by reference identity.</summary>
     private readonly HashSet<object> _references = new(ReferenceEqualityComparer.Instance);
 
-    /// <summary>
-    /// The first failure recorded during the write, or <see langword="null" /> while none has occurred.
-    /// </summary>
+    /// <summary>The first failure recorded during the write, or <see langword="null" /> while none has occurred.</summary>
     private TomlSerializationException? _failure;
 
     /// <summary>

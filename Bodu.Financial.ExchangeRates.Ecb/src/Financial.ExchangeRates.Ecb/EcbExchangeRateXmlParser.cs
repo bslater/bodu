@@ -28,9 +28,7 @@ namespace Bodu.Financial.ExchangeRates.Ecb;
 /// </remarks>
 internal static class EcbExchangeRateXmlParser
 {
-    /// <summary>
-    /// The ECB <c>eurofxref</c> vocabulary namespace in which the <c>Cube</c> elements are declared.
-    /// </summary>
+    /// <summary>The ECB <c>eurofxref</c> vocabulary namespace in which the <c>Cube</c> elements are declared.</summary>
     private static readonly XNamespace s_ecbNamespace = "http://www.ecb.int/vocabulary/2002-08-01/eurofxref";
 
     /// <summary>

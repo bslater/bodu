@@ -19,14 +19,10 @@ public sealed partial class TomlSerializerOptions
     private sealed class ConverterList
         : IList<TomlConverter>
     {
-        /// <summary>
-        /// The underlying converter storage.
-        /// </summary>
+        /// <summary>The underlying converter storage.</summary>
         private readonly List<TomlConverter> _items = [];
 
-        /// <summary>
-        /// The options instance that owns this list, consulted to determine whether mutation is permitted.
-        /// </summary>
+        /// <summary>The options instance that owns this list, consulted to determine whether mutation is permitted.</summary>
         private readonly TomlSerializerOptions _owner;
 
         /// <summary>

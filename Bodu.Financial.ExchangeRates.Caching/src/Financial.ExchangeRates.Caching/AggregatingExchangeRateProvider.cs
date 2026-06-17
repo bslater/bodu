@@ -62,34 +62,22 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 public sealed class AggregatingExchangeRateProvider
     : IDatedExchangeRateProvider, IExchangeRateProvider
 {
-    /// <summary>
-    /// The synthetic provider name reported for a same-currency identity rate.
-    /// </summary>
+    /// <summary>The synthetic provider name reported for a same-currency identity rate.</summary>
     private const string IdentityProvider = "Identity";
 
-    /// <summary>
-    /// The children in the order supplied, used as the default candidate set.
-    /// </summary>
+    /// <summary>The children in the order supplied, used as the default candidate set.</summary>
     private readonly NamedDatedExchangeRateProvider[] _children;
 
-    /// <summary>
-    /// The children indexed by name for routing and direct resolution.
-    /// </summary>
+    /// <summary>The children indexed by name for routing and direct resolution.</summary>
     private readonly Dictionary<string, IDatedExchangeRateProvider> _byName;
 
-    /// <summary>
-    /// The aggregation options carrying the default strategy, default order, and per-pair routes.
-    /// </summary>
+    /// <summary>The aggregation options carrying the default strategy, default order, and per-pair routes.</summary>
     private readonly ExchangeRateAggregationOptions _options;
 
-    /// <summary>
-    /// The time source used to resolve the current date for the timeless surface.
-    /// </summary>
+    /// <summary>The time source used to resolve the current date for the timeless surface.</summary>
     private readonly TimeProvider _timeProvider;
 
-    /// <summary>
-    /// The logger that records routing and aggregation outcomes.
-    /// </summary>
+    /// <summary>The logger that records routing and aggregation outcomes.</summary>
     private readonly ILogger _logger;
 
     /// <summary>

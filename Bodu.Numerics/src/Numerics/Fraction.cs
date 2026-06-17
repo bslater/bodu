@@ -61,34 +61,22 @@ namespace Bodu.Numerics;
 public readonly partial struct Fraction<T>
     where T : IBinaryInteger<T>
 {
-    /// <summary>
-    /// Indicates whether <typeparamref name="T" /> is a bounded integer type and therefore has a finite range.
-    /// </summary>
+    /// <summary>Indicates whether <typeparamref name="T" /> is a bounded integer type and therefore has a finite range.</summary>
     private static readonly bool s_isBounded;
 
-    /// <summary>
-    /// The smallest value <typeparamref name="T" /> can represent when it is bounded.
-    /// </summary>
+    /// <summary>The smallest value <typeparamref name="T" /> can represent when it is bounded.</summary>
     private static readonly T s_minBacking;
 
-    /// <summary>
-    /// The largest value <typeparamref name="T" /> can represent when it is bounded.
-    /// </summary>
+    /// <summary>The largest value <typeparamref name="T" /> can represent when it is bounded.</summary>
     private static readonly T s_maxBacking;
 
-    /// <summary>
-    /// <see cref="s_minBacking" /> widened to <see cref="BigInteger" />, cached for the non-throwing narrowing check.
-    /// </summary>
+    /// <summary><see cref="s_minBacking" /> widened to <see cref="BigInteger" />, cached for the non-throwing narrowing check.</summary>
     private static readonly BigInteger s_minBackingBig;
 
-    /// <summary>
-    /// <see cref="s_maxBacking" /> widened to <see cref="BigInteger" />, cached for the non-throwing narrowing check.
-    /// </summary>
+    /// <summary><see cref="s_maxBacking" /> widened to <see cref="BigInteger" />, cached for the non-throwing narrowing check.</summary>
     private static readonly BigInteger s_maxBackingBig;
 
-    /// <summary>
-    /// The canonical denominator backing <see cref="Denominator" />, or zero for a default-initialized instance.
-    /// </summary>
+    /// <summary>The canonical denominator backing <see cref="Denominator" />, or zero for a default-initialized instance.</summary>
     private readonly T _denominator;
 
     /// <summary>

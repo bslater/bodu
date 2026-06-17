@@ -26,14 +26,10 @@ namespace Bodu.Security.Cryptography;
 /// When a tweak is provided the operations differ so that the transform is still self-consistent:
 /// <list type="bullet">
 /// <item>
-/// <description>
-/// <b>Encrypt:</b> XOR the plaintext with the tweak (cycling), then reverse the result.
-/// </description>
+/// <description><b>Encrypt:</b> XOR the plaintext with the tweak (cycling), then reverse the result.</description>
 /// </item>
 /// <item>
-/// <description>
-/// <b>Decrypt:</b> Reverse the ciphertext, then XOR the result with the tweak (cycling).
-/// </description>
+/// <description><b>Decrypt:</b> Reverse the ciphertext, then XOR the result with the tweak (cycling).</description>
 /// </item>
 /// </list>
 /// This guarantees <c>Decrypt(Encrypt(pt, tweak), tweak) == pt</c> for any tweak.

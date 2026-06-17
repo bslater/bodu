@@ -23,19 +23,13 @@ namespace Bodu.IO.Hashing.Checksums;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>
-/// Output size: 64 bits (8 bytes).
-/// </description>
+/// <description>Output size: 64 bits (8 bytes).</description>
 /// </item>
 /// <item>
-/// <description>
-/// Accumulator width: two 32-bit rolling sums (A and B).
-/// </description>
+/// <description>Accumulator width: two 32-bit rolling sums (A and B).</description>
 /// </item>
 /// <item>
-/// <description>
-/// Modulus: <c>4294967295</c>.
-/// </description>
+/// <description>Modulus: <c>4294967295</c>.</description>
 /// </item>
 /// </list>
 /// <para>
@@ -62,9 +56,7 @@ namespace Bodu.IO.Hashing.Checksums;
 public sealed class Fletcher64
     : Fletcher<Fletcher64>
 {
-    /// <summary>
-    /// The output width, in bits, of the Fletcher-64 algorithm.
-    /// </summary>
+    /// <summary>The output width, in bits, of the Fletcher-64 algorithm.</summary>
     private const int FletcherHashSize = 64;
 
     /// <summary>

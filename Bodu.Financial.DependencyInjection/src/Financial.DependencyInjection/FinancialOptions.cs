@@ -14,8 +14,8 @@ namespace Bodu.Financial.DependencyInjection;
 public sealed class FinancialOptions
 {
     /// <summary>
-    /// Gets or sets the JSON serialization policy applied to the financial JSON options that
-    /// <c>AddBoduFinancial</c> registers, unless a later <c>AddFinancialJson</c> overrides it.
+    /// Gets or sets the JSON serialization policy applied to the financial JSON options that <c>AddBoduFinancial</c>
+    /// registers, unless a later <c>AddFinancialJson</c> overrides it.
     /// </summary>
     /// <value>The configured policy; defaults to <see cref="FinancialJsonPolicy.Strict" />.</value>
     public FinancialJsonPolicy JsonPolicy { get; set; } = FinancialJsonPolicy.Strict;

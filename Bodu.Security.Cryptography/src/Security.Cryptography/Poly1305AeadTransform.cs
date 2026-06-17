@@ -36,44 +36,28 @@ namespace Bodu.Security.Cryptography;
 public abstract class Poly1305AeadTransform
     : IStreamAeadTransform
 {
-    /// <summary>
-    /// Length of the key, in bytes (256 bits).
-    /// </summary>
+    /// <summary>Length of the key, in bytes (256 bits).</summary>
     internal const int KeyBytes = 32;
 
-    /// <summary>
-    /// Length of the extended nonce, in bytes (192 bits).
-    /// </summary>
+    /// <summary>Length of the extended nonce, in bytes (192 bits).</summary>
     internal const int NonceBytes = 24;
 
-    /// <summary>
-    /// Length of the authentication tag, in bytes (128 bits).
-    /// </summary>
+    /// <summary>Length of the authentication tag, in bytes (128 bits).</summary>
     internal const int TagBytes = Poly1305AeadCore.TagBytes;
 
-    /// <summary>
-    /// Length of the authentication tag, in bits (128).
-    /// </summary>
+    /// <summary>Length of the authentication tag, in bits (128).</summary>
     private const int TagSizeBits = TagBytes * 8;
 
-    /// <summary>
-    /// The retained 256-bit secret key, cleared on disposal.
-    /// </summary>
+    /// <summary>The retained 256-bit secret key, cleared on disposal.</summary>
     private readonly byte[] _key;
 
-    /// <summary>
-    /// The retained 192-bit nonce, cleared on disposal.
-    /// </summary>
+    /// <summary>The retained 192-bit nonce, cleared on disposal.</summary>
     private readonly byte[] _nonce;
 
-    /// <summary>
-    /// A value indicating whether this single-use transform has already processed a message.
-    /// </summary>
+    /// <summary>A value indicating whether this single-use transform has already processed a message.</summary>
     private bool _completed;
 
-    /// <summary>
-    /// A value indicating whether this instance has been disposed.
-    /// </summary>
+    /// <summary>A value indicating whether this instance has been disposed.</summary>
     private bool _disposed;
 
     /// <summary>

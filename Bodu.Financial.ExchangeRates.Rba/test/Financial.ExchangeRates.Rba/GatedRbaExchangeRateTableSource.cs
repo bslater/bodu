@@ -15,29 +15,19 @@ namespace Bodu.Financial.ExchangeRates.Rba;
 internal sealed class GatedRbaExchangeRateTableSource
     : IRbaExchangeRateTableSource
 {
-    /// <summary>
-    /// The options used when parsing the workbook fixture.
-    /// </summary>
+    /// <summary>The options used when parsing the workbook fixture.</summary>
     private readonly RbaExchangeRateOptions _options;
 
-    /// <summary>
-    /// The embedded fixture file name to parse once the gate opens.
-    /// </summary>
+    /// <summary>The embedded fixture file name to parse once the gate opens.</summary>
     private readonly string _fileName;
 
-    /// <summary>
-    /// The gate that callers await; the fetch completes only after it is released.
-    /// </summary>
+    /// <summary>The gate that callers await; the fetch completes only after it is released.</summary>
     private readonly TaskCompletionSource _gate = new(TaskCreationOptions.RunContinuationsAsynchronously);
 
-    /// <summary>
-    /// Signals when the first caller has entered the fetch, so the test can release the gate after a race has formed.
-    /// </summary>
+    /// <summary>Signals when the first caller has entered the fetch, so the test can release the gate after a race has formed.</summary>
     private readonly TaskCompletionSource _entered = new(TaskCreationOptions.RunContinuationsAsynchronously);
 
-    /// <summary>
-    /// The number of times <see cref="GetTableAsync" /> has been entered.
-    /// </summary>
+    /// <summary>The number of times <see cref="GetTableAsync" /> has been entered.</summary>
     private int _callCount;
 
     /// <summary>

@@ -52,14 +52,10 @@ namespace Bodu.Security.Cryptography;
 public sealed class SecretBytes
     : IDisposable
 {
-    /// <summary>
-    /// The pinned buffer holding the secret bytes. Zeroed by <see cref="Clear" /> and <see cref="Dispose" />.
-    /// </summary>
+    /// <summary>The pinned buffer holding the secret bytes. Zeroed by <see cref="Clear" /> and <see cref="Dispose" />.</summary>
     private readonly byte[] _buffer;
 
-    /// <summary>
-    /// Indicates whether <see cref="Dispose" /> has been called.
-    /// </summary>
+    /// <summary>Indicates whether <see cref="Dispose" /> has been called.</summary>
     private bool _disposed;
 
     /// <summary>

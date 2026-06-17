@@ -21,9 +21,7 @@ public class HashBenchmarks
     private CubeHash _cubeHash = null!;
     private Whirlpool _whirlpool = null!;
 
-    /// <summary>
-    /// The size, in bytes, of the input buffer hashed by each benchmark.
-    /// </summary>
+    /// <summary>The size, in bytes, of the input buffer hashed by each benchmark.</summary>
     [Params(256, 65536, 1048576)]
     public int PayloadSize;
 

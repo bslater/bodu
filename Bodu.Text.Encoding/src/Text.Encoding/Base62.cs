@@ -37,19 +37,13 @@ namespace Bodu.Text.Encoding;
 /// </example>
 public static partial class Base62
 {
-    /// <summary>
-    /// The GMP-style Base62 alphabet, indexed by symbol value.
-    /// </summary>
+    /// <summary>The GMP-style Base62 alphabet, indexed by symbol value.</summary>
     private const string Alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
-    /// <summary>
-    /// The encoding radix.
-    /// </summary>
+    /// <summary>The encoding radix.</summary>
     private const int Radix = 62;
 
-    /// <summary>
-    /// Maps a US-ASCII code point to its Base62 value, or <c>-1</c> when the character is not in the alphabet.
-    /// </summary>
+    /// <summary>Maps a US-ASCII code point to its Base62 value, or <c>-1</c> when the character is not in the alphabet.</summary>
     private static readonly sbyte[] s_lookup = BuildLookup(Alphabet);
 
     /// <summary>

@@ -31,14 +31,10 @@ namespace Bodu.Text.Toml.Serialization;
 public sealed class TomlStringEnumConverter
     : TomlConverterFactory
 {
-    /// <summary>
-    /// The naming policy applied to member names, or <see langword="null" /> to use member names unchanged.
-    /// </summary>
+    /// <summary>The naming policy applied to member names, or <see langword="null" /> to use member names unchanged.</summary>
     private readonly TomlNamingPolicy? _namingPolicy;
 
-    /// <summary>
-    /// Whether a TOML integer is accepted as an enumeration value on read.
-    /// </summary>
+    /// <summary>Whether a TOML integer is accepted as an enumeration value on read.</summary>
     private readonly bool _allowIntegerValues;
 
     /// <summary>

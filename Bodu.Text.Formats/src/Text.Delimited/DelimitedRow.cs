@@ -44,10 +44,7 @@ namespace Bodu.Text.Delimited;
 /// </example>
 public sealed class DelimitedRow
 {
-    /// <summary>
-    /// The column-name-to-index map built from the document's header row, or <see langword="null" /> when the document
-    /// was parsed without a header row.
-    /// </summary>
+    /// <summary>The column-name-to-index map built from the document's header row, or <see langword="null" /> when the document was parsed without a header row.</summary>
     private readonly IReadOnlyDictionary<string, int>? _headerIndex;
 
     /// <summary>

@@ -29,14 +29,10 @@ namespace Bodu.Globalization.Calendar;
 /// </remarks>
 public static class CommonNotableDateResources
 {
-    /// <summary>
-    /// The manifest-resource-name prefix shared by the embedded common catalogues.
-    /// </summary>
+    /// <summary>The manifest-resource-name prefix shared by the embedded common catalogues.</summary>
     private const string ResourcePrefix = "Bodu.Globalization.Calendar.Resources.";
 
-    /// <summary>
-    /// The cache of resolved catalogue content, keyed by case-insensitive resource name.
-    /// </summary>
+    /// <summary>The cache of resolved catalogue content, keyed by case-insensitive resource name.</summary>
     private static readonly ConcurrentDictionary<string, string?> s_cache = new(StringComparer.OrdinalIgnoreCase);
 
     /// <summary>

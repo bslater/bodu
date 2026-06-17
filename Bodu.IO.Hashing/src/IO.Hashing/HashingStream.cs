@@ -47,24 +47,16 @@ public sealed class HashingStream
     : Stream
 {
 
-    /// <summary>
-    /// The algorithm that accumulates every byte transferred through this stream.
-    /// </summary>
+    /// <summary>The algorithm that accumulates every byte transferred through this stream.</summary>
     private readonly NonCryptographicHashAlgorithm _algorithm;
 
-    /// <summary>
-    /// The stream that bytes are transferred to or from.
-    /// </summary>
+    /// <summary>The stream that bytes are transferred to or from.</summary>
     private readonly Stream _innerStream;
 
-    /// <summary>
-    /// Indicates whether the inner stream is left open when this stream is disposed.
-    /// </summary>
+    /// <summary>Indicates whether the inner stream is left open when this stream is disposed.</summary>
     private readonly bool _leaveOpen;
 
-    /// <summary>
-    /// Indicates whether this stream has been disposed.
-    /// </summary>
+    /// <summary>Indicates whether this stream has been disposed.</summary>
     private bool _disposed;
 
     /// <summary>

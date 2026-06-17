@@ -21,59 +21,43 @@ namespace Bodu.Text.Configuration;
 /// preset and override the few properties that differ. The behavioural matrix is:
 /// </para>
 /// <list type="table">
-/// <listheader> <term>Behaviour</term>
-/// <description>
-/// Bodu | EditorConfigCompatible | Strict | Relaxed
-/// </description>
+/// <listheader>
+/// <term>Behaviour</term>
+/// <description>Bodu | EditorConfigCompatible | Strict | Relaxed</description>
 /// </listheader>
 /// <item>
 /// <term>Inline comments (<see cref="ConfigurationInlineCommentMode" />)</term>
-/// <description>
-/// WhitespaceIntroduced | Disabled | Disabled | WhitespaceIntroduced
-/// </description>
+/// <description>WhitespaceIntroduced | Disabled | Disabled | WhitespaceIntroduced</description>
 /// </item>
 /// <item>
 /// <term>Duplicate keys (<see cref="Bodu.Text.DuplicateKeyPolicy" />)</term>
-/// <description>
-/// LastWins | LastWins | Disallowed | LastWins
-/// </description>
+/// <description>LastWins | LastWins | Disallowed | LastWins</description>
 /// </item>
 /// <item>
 /// <term>Duplicate sections (<see cref="Bodu.Text.Ini.IniDuplicateSectionBehavior" />)</term>
-/// <description>
-/// Preserve | Preserve | Disallowed | Preserve
-/// </description>
+/// <description>Preserve | Preserve | Disallowed | Preserve</description>
 /// </item>
 /// <item>
 /// <term>Section header trailing content (<see cref="ConfigurationSectionHeaderMode" />)</term>
-/// <description>
-/// Lenient | Strict | Strict | Lenient
-/// </description>
+/// <description>Lenient | Strict | Strict | Lenient</description>
 /// </item>
 /// <item>
 /// <term>Diagnostic routing (<see cref="ConfigurationDiagnosticMode" />)</term>
-/// <description>
-/// Throw | Throw | Throw | Collect
-/// </description>
+/// <description>Throw | Throw | Throw | Collect</description>
 /// </item>
 /// <item>
-/// <term>Preamble contributes to resolved view (<see cref="ConfigurationResolveOptions.ApplyPreambleProperties" />)
+/// <term>
+/// Preamble contributes to resolved view (<see cref="ConfigurationResolveOptions.ApplyPreambleProperties" />)
 /// </term>
-/// <description>
-/// Yes | No | Yes | Yes
-/// </description>
+/// <description>Yes | No | Yes | Yes</description>
 /// </item>
 /// <item>
 /// <term><c>unset</c> sentinel (<see cref="ConfigurationUnsetValueMode" />)</term>
-/// <description>
-/// TreatAsLiteral | RemoveEffectiveValue | RemoveEffectiveValue | TreatAsLiteral
-/// </description>
+/// <description>TreatAsLiteral | RemoveEffectiveValue | RemoveEffectiveValue | TreatAsLiteral</description>
 /// </item>
 /// <item>
 /// <term>Missing path root (<see cref="ConfigurationMissingPathRootMode" />)</term>
-/// <description>
-/// UseEmptyRoot | Throw | Throw | UseEmptyRoot
-/// </description>
+/// <description>UseEmptyRoot | Throw | Throw | UseEmptyRoot</description>
 /// </item>
 /// </list>
 /// </remarks>

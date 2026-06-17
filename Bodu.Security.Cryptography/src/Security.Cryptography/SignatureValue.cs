@@ -45,15 +45,10 @@ namespace Bodu.Security.Cryptography;
 public readonly struct SignatureValue
     : IEquatable<SignatureValue>
 {
-    /// <summary>
-    /// The signature bytes, or <see langword="null" /> for the default (empty) instance. Never exposed directly; all
-    /// accessors normalize <see langword="null" /> to an empty value.
-    /// </summary>
+    /// <summary>The signature bytes, or <see langword="null" /> for the default (empty) instance. Never exposed directly; all accessors normalize <see langword="null" /> to an empty value.</summary>
     private readonly byte[]? _value;
 
-    /// <summary>
-    /// The wire encoding of the signature bytes.
-    /// </summary>
+    /// <summary>The wire encoding of the signature bytes.</summary>
     private readonly SignatureFormat _format;
 
     /// <summary>

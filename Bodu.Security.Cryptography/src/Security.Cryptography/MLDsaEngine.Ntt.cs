@@ -11,20 +11,13 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 internal static partial class MLDsaEngine
 {
-    /// <summary>
-    /// The primitive 512th root of unity ζ = 1753 modulo q from which the twiddle table is derived.
-    /// </summary>
+    /// <summary>The primitive 512th root of unity ζ = 1753 modulo q from which the twiddle table is derived.</summary>
     private const int Zeta = 1753;
 
-    /// <summary>
-    /// 256⁻¹ mod q, applied as the final scaling of the inverse transform.
-    /// </summary>
+    /// <summary>256⁻¹ mod q, applied as the final scaling of the inverse transform.</summary>
     private const long InverseOf256 = 8347681;
 
-    /// <summary>
-    /// Twiddle factors ζ^BitRev₈(m) mod q for m = 0–255, computed once at type initialization rather than transcribed,
-    /// eliminating table-copy defects.
-    /// </summary>
+    /// <summary>Twiddle factors ζ^BitRev₈(m) mod q for m = 0–255, computed once at type initialization rather than transcribed, eliminating table-copy defects.</summary>
     private static readonly int[] s_zetas = BuildZetaTable();
 
     /// <summary>

@@ -19,21 +19,13 @@ namespace Bodu.Text.Toml.Serialization.Metadata;
 /// </remarks>
 internal sealed class PropertyMetadata
 {
-    /// <summary>
-    /// The reflected property used to read and write the member value, or <see langword="null" /> when the member is a
-    /// field.
-    /// </summary>
+    /// <summary>The reflected property used to read and write the member value, or <see langword="null" /> when the member is a field.</summary>
     private readonly PropertyInfo? _property;
 
-    /// <summary>
-    /// The reflected field used to read and write the member value, or <see langword="null" /> when the member is a
-    /// property.
-    /// </summary>
+    /// <summary>The reflected field used to read and write the member value, or <see langword="null" /> when the member is a property.</summary>
     private readonly FieldInfo? _field;
 
-    /// <summary>
-    /// Whether the member is opted into binding through non-public accessors by <see cref="TomlIncludeAttribute" />.
-    /// </summary>
+    /// <summary>Whether the member is opted into binding through non-public accessors by <see cref="TomlIncludeAttribute" />.</summary>
     private readonly bool _included;
 
     /// <summary>

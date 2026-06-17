@@ -23,9 +23,7 @@ namespace Bodu.Financial.ExchangeRates.Caching.Distributed.DependencyInjection;
 internal sealed class DistributedCacheStorageStartupValidator
     : IValidateOptions<DistributedExchangeRateCacheOptions>
 {
-    /// <summary>
-    /// The distributed cache the exchange-rate cache is backed by, probed at startup.
-    /// </summary>
+    /// <summary>The distributed cache the exchange-rate cache is backed by, probed at startup.</summary>
     private readonly IDistributedCache _distributedCache;
 
     /// <summary>

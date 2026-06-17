@@ -20,19 +20,13 @@ namespace Bodu.Financial;
 public sealed class CurrencyLookupService
     : ICurrencyLookup
 {
-    /// <summary>
-    /// Lazily built numeric-code index; non-historic entries win on a numeric-code collision.
-    /// </summary>
+    /// <summary>Lazily built numeric-code index; non-historic entries win on a numeric-code collision.</summary>
     private readonly Lazy<IReadOnlyDictionary<int, CurrencyInfo>> _byNumericCode;
 
-    /// <summary>
-    /// Lazily built symbol index, keyed by primary and alternative symbols.
-    /// </summary>
+    /// <summary>Lazily built symbol index, keyed by primary and alternative symbols.</summary>
     private readonly Lazy<IReadOnlyDictionary<string, IReadOnlyList<CurrencyInfo>>> _bySymbol;
 
-    /// <summary>
-    /// Lazily built region index, keyed by ISO 3166 region code.
-    /// </summary>
+    /// <summary>Lazily built region index, keyed by ISO 3166 region code.</summary>
     private readonly Lazy<IReadOnlyDictionary<string, IReadOnlyList<CurrencyInfo>>> _byRegion;
 
     /// <summary>

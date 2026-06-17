@@ -31,19 +31,13 @@ public sealed partial class ConcurrentHashSet<T>
     public struct Enumerator
         : IEnumerator<T>
     {
-        /// <summary>
-        /// The point-in-time snapshot of the set's elements captured when the enumerator was created.
-        /// </summary>
+        /// <summary>The point-in-time snapshot of the set's elements captured when the enumerator was created.</summary>
         private readonly T[] _snapshot;
 
-        /// <summary>
-        /// The element exposed by <see cref="Current" /> for the current position.
-        /// </summary>
+        /// <summary>The element exposed by <see cref="Current" /> for the current position.</summary>
         private T _current;
 
-        /// <summary>
-        /// The index of the most recently yielded element, or <c>-1</c> before the first <see cref="MoveNext" /> call.
-        /// </summary>
+        /// <summary>The index of the most recently yielded element, or <c>-1</c> before the first <see cref="MoveNext" /> call.</summary>
         private int _index;
 
         /// <summary>

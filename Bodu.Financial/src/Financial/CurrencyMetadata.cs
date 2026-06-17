@@ -22,13 +22,7 @@ namespace Bodu.Financial;
 internal static class CurrencyMetadata<TCurrency>
     where TCurrency : ICurrency
 {
-    /// <summary>
-    /// Lazy-initialised descriptor. Using <see cref="Lazy{T}" /> with the default
-    /// <see cref="System.Threading.LazyThreadSafetyMode.ExecutionAndPublication" /> mode means a validation failure
-    /// surfaces as the original <see cref="InvalidOperationException" /> rather than being wrapped in a
-    /// <see cref="TypeInitializationException" /> by the runtime's static-field initialiser, and the cached exception
-    /// is rethrown directly on every subsequent access.
-    /// </summary>
+    /// <summary>Lazy-initialised descriptor. Using <see cref="Lazy{T}" /> with the default <see cref="System.Threading.LazyThreadSafetyMode.ExecutionAndPublication" /> mode means a validation failure surfaces as the original <see cref="InvalidOperationException" /> rather than being wrapped in a <see cref="TypeInitializationException" /> by the runtime's static-field initialiser, and the cached exception is rethrown directly on every subsequent access.</summary>
     private static readonly Lazy<CurrencyMetadataDescriptor> s_value = new(Validate);
 
     /// <summary>

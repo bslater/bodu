@@ -19,9 +19,7 @@ namespace Bodu.Financial.DependencyInjection;
 /// </summary>
 public static class ServiceCollectionExtensions
 {
-    /// <summary>
-    /// The default <see cref="IConfiguration" /> section name bound into <see cref="FinancialOptions" />.
-    /// </summary>
+    /// <summary>The default <see cref="IConfiguration" /> section name bound into <see cref="FinancialOptions" />.</summary>
     public const string DefaultConfigurationSection = "Financial";
 
     /// <summary>

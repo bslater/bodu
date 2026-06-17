@@ -50,14 +50,10 @@ public partial struct WeekPattern
     /// A format string determining day ordering and the unselected-day placeholder. Supported values:
     /// <list type="bullet">
     /// <item>
-    /// <description>
-    /// <c>'S'</c> or <c>'s'</c> — Sunday-to-Saturday; unselected = <c>'_'</c>.
-    /// </description>
+    /// <description><c>'S'</c> or <c>'s'</c> — Sunday-to-Saturday; unselected = <c>'_'</c>.</description>
     /// </item>
     /// <item>
-    /// <description>
-    /// <c>'M'</c> or <c>'m'</c> — Monday-to-Sunday; unselected = <c>'_'</c>.
-    /// </description>
+    /// <description><c>'M'</c> or <c>'m'</c> — Monday-to-Sunday; unselected = <c>'_'</c>.</description>
     /// </item>
     /// <item>
     /// <description>

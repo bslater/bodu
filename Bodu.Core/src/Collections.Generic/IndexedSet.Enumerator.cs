@@ -30,24 +30,16 @@ public sealed partial class IndexedSet<T>
     public struct Enumerator
         : IEnumerator<T>
     {
-        /// <summary>
-        /// The storage being enumerated.
-        /// </summary>
+        /// <summary>The storage being enumerated.</summary>
         private readonly OrderedSetStorage<T> _storage;
 
-        /// <summary>
-        /// The version captured from <see cref="_storage" /> at construction.
-        /// </summary>
+        /// <summary>The version captured from <see cref="_storage" /> at construction.</summary>
         private readonly int _version;
 
-        /// <summary>
-        /// The index of the next item to yield.
-        /// </summary>
+        /// <summary>The index of the next item to yield.</summary>
         private int _index;
 
-        /// <summary>
-        /// The item returned by <see cref="Current" /> for the current position.
-        /// </summary>
+        /// <summary>The item returned by <see cref="Current" /> for the current position.</summary>
         private T _current;
 
         /// <summary>

@@ -43,24 +43,16 @@ namespace Bodu.IO.Hashing.CheckDigits;
 public sealed class Lei
     : MultiCharCheckDigitAlgorithm
 {
-    /// <summary>
-    /// The required body length of <c>18</c> characters.
-    /// </summary>
+    /// <summary>The required body length of <c>18</c> characters.</summary>
     public const int BodyLength = 18;
 
-    /// <summary>
-    /// The fixed check-code length of <c>2</c> decimal digits.
-    /// </summary>
+    /// <summary>The fixed check-code length of <c>2</c> decimal digits.</summary>
     public const int CheckDigits = 2;
 
-    /// <summary>
-    /// The required full-sequence length of <c>20</c> characters.
-    /// </summary>
+    /// <summary>The required full-sequence length of <c>20</c> characters.</summary>
     public const int SequenceLength = 20;
 
-    /// <summary>
-    /// The underlying ISO 7064 MOD 97-10 engine that absorbs the body and produces the two-digit LEI check code.
-    /// </summary>
+    /// <summary>The underlying ISO 7064 MOD 97-10 engine that absorbs the body and produces the two-digit LEI check code.</summary>
     private readonly Iso7064Mod97_10 _engine = new();
 
     /// <summary>

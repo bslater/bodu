@@ -15,24 +15,16 @@ namespace Bodu.Globalization.Calendar.Builder;
 /// </summary>
 internal static class BuilderXml
 {
-    /// <summary>
-    /// The XML namespace URI of the notable-date document schema.
-    /// </summary>
+    /// <summary>The XML namespace URI of the notable-date document schema.</summary>
     internal const string NamespaceUri = "urn:bodu:globalization:calendar";
 
-    /// <summary>
-    /// The default schema version emitted when a document does not specify one.
-    /// </summary>
+    /// <summary>The default schema version emitted when a document does not specify one.</summary>
     internal const string DefaultSchemaVersion = "1.0";
 
-    /// <summary>
-    /// The reusable <see cref="XNamespace" /> for the notable-date document schema.
-    /// </summary>
+    /// <summary>The reusable <see cref="XNamespace" /> for the notable-date document schema.</summary>
     internal static readonly XNamespace Namespace = XNamespace.Get(NamespaceUri);
 
-    /// <summary>
-    /// The full English month names indexed one-based from January (index 1) to December (index 12).
-    /// </summary>
+    /// <summary>The full English month names indexed one-based from January (index 1) to December (index 12).</summary>
     private static readonly string[] s_monthNames =
     [
         string.Empty,

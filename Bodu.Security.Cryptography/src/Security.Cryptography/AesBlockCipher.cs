@@ -47,20 +47,13 @@ namespace Bodu.Security.Cryptography;
 public sealed class AesBlockCipher
     : IBlockCipher
 {
-    /// <summary>
-    /// Length of the AES block is 128 bits (16 bytes). Internal constant kept for span-length validation; callers
-    /// should read <see cref="BlockSize" /> instead.
-    /// </summary>
+    /// <summary>Length of the AES block is 128 bits (16 bytes). Internal constant kept for span-length validation; callers should read <see cref="BlockSize" /> instead.</summary>
     private const int BlockSizeBits = 128;
 
-    /// <summary>
-    /// The underlying BCL <see cref="Aes" /> instance that performs the single-block ECB transforms.
-    /// </summary>
+    /// <summary>The underlying BCL <see cref="Aes" /> instance that performs the single-block ECB transforms.</summary>
     private readonly Aes _aes;
 
-    /// <summary>
-    /// Indicates whether the instance has been disposed.
-    /// </summary>
+    /// <summary>Indicates whether the instance has been disposed.</summary>
     private bool _disposed;
 
     /// <summary>

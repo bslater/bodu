@@ -55,10 +55,7 @@ public sealed class DelegateHashAlgorithmFactory<T> :
     Bodu.Security.Cryptography.IHashAlgorithmFactory<T>
     where T : System.Security.Cryptography.HashAlgorithm
 {
-    /// <summary>
-    /// The delegate invoked to construct a configured instance of <typeparamref name="T" /> on each
-    /// <see cref="Create" /> call.
-    /// </summary>
+    /// <summary>The delegate invoked to construct a configured instance of <typeparamref name="T" /> on each <see cref="Create" /> call.</summary>
     private readonly Func<T> _builder;
 
     /// <summary>

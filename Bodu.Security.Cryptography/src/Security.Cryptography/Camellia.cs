@@ -31,19 +31,13 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>
-/// Block size: 128 bits (16 bytes).
-/// </description>
+/// <description>Block size: 128 bits (16 bytes).</description>
 /// </item>
 /// <item>
-/// <description>
-/// Key sizes: 128 (18 rounds), 192 or 256 bits (24 rounds).
-/// </description>
+/// <description>Key sizes: 128 (18 rounds), 192 or 256 bits (24 rounds).</description>
 /// </item>
 /// <item>
-/// <description>
-/// Specification: RFC 3713; approved by ISO/IEC, CRYPTREC, and NESSIE.
-/// </description>
+/// <description>Specification: RFC 3713; approved by ISO/IEC, CRYPTREC, and NESSIE.</description>
 /// </item>
 /// <item>
 /// <description>
@@ -81,39 +75,25 @@ namespace Bodu.Security.Cryptography;
 public sealed class Camellia
     : SymmetricAlgorithm
 {
-    /// <summary>
-    /// Length of the Camellia block is 128 bits (16 bytes).
-    /// </summary>
+    /// <summary>Length of the Camellia block is 128 bits (16 bytes).</summary>
     internal const int BlockSizeBits = 128;
 
-    /// <summary>
-    /// Length of the minimum permitted Camellia key is 128 bits (16 bytes).
-    /// </summary>
+    /// <summary>Length of the minimum permitted Camellia key is 128 bits (16 bytes).</summary>
     internal const int MinKeySize = 128;
 
-    /// <summary>
-    /// Length of the maximum permitted Camellia key is 256 bits (32 bytes).
-    /// </summary>
+    /// <summary>Length of the maximum permitted Camellia key is 256 bits (32 bytes).</summary>
     internal const int MaxKeySize = 256;
 
-    /// <summary>
-    /// The legal block sizes supported by the Camellia algorithm.
-    /// </summary>
+    /// <summary>The legal block sizes supported by the Camellia algorithm.</summary>
     private static readonly KeySizes[] s_camelliaBlockSizes = [new KeySizes(BlockSizeBits, BlockSizeBits, 0)];
 
-    /// <summary>
-    /// The legal key sizes supported by the Camellia algorithm.
-    /// </summary>
+    /// <summary>The legal key sizes supported by the Camellia algorithm.</summary>
     private static readonly KeySizes[] s_camelliaKeySizes = [new KeySizes(128, 256, 64)];
 
-    /// <summary>
-    /// Indicates whether this instance has been disposed and its key material cleared.
-    /// </summary>
+    /// <summary>Indicates whether this instance has been disposed and its key material cleared.</summary>
     private bool _disposed;
 
-    /// <summary>
-    /// The extended padding mode applied when creating encryptors and decryptors.
-    /// </summary>
+    /// <summary>The extended padding mode applied when creating encryptors and decryptors.</summary>
     private PaddingModeKind _blockPadding = PaddingModeKind.PKCS7;
 
     /// <summary>

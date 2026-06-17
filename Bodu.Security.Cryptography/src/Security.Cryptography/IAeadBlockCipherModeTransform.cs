@@ -20,12 +20,15 @@ namespace Bodu.Security.Cryptography;
 /// the ciphertext and AAD together.
 /// </para>
 /// <para>
-/// Usage pattern for encryption: <code>
+/// Usage pattern for encryption:
+/// <code>
 ///<![CDATA[
 /// transform.ProcessAssociatedData(aad);
 /// int written = transform.Encrypt(plaintext, output); // output = ciphertext || tag
 ///]]>
-/// </code> Usage pattern for decryption: <code>
+/// </code>
+/// Usage pattern for decryption:
+/// <code>
 ///<![CDATA[
 /// transform.ProcessAssociatedData(aad);
 /// int written = transform.Decrypt(ciphertextWithTag, output); // throws if tag invalid
@@ -56,9 +59,7 @@ namespace Bodu.Security.Cryptography;
 /// </item>
 /// <item>
 /// <term>Two-pass alternatives</term>
-/// <description>
-/// <see cref="EaxModeTransform" /> — flexible nonce length, OMAC-based authentication.
-/// </description>
+/// <description><see cref="EaxModeTransform" /> — flexible nonce length, OMAC-based authentication.</description>
 /// </item>
 /// <item>
 /// <term>Misuse-resistant</term>
@@ -69,9 +70,7 @@ namespace Bodu.Security.Cryptography;
 /// </item>
 /// <item>
 /// <term>Single-pass without GCM's failure profile</term>
-/// <description>
-/// <see cref="OcbModeTransform" /> — RFC 7253, single-pass, graceful nonce-reuse failure.
-/// </description>
+/// <description><see cref="OcbModeTransform" /> — RFC 7253, single-pass, graceful nonce-reuse failure.</description>
 /// </item>
 /// </list>
 /// <para>
@@ -98,9 +97,7 @@ namespace Bodu.Security.Cryptography;
 /// </item>
 /// <item>
 /// <term>Two-pass alternatives</term>
-/// <description>
-/// <see cref="EaxModeTransform" /> — flexible nonce length, OMAC-based authentication.
-/// </description>
+/// <description><see cref="EaxModeTransform" /> — flexible nonce length, OMAC-based authentication.</description>
 /// </item>
 /// <item>
 /// <term>Misuse-resistant</term>
@@ -111,9 +108,7 @@ namespace Bodu.Security.Cryptography;
 /// </item>
 /// <item>
 /// <term>Single-pass without GCM's failure profile</term>
-/// <description>
-/// <see cref="OcbModeTransform" /> — RFC 7253, single-pass, graceful nonce-reuse failure.
-/// </description>
+/// <description><see cref="OcbModeTransform" /> — RFC 7253, single-pass, graceful nonce-reuse failure.</description>
 /// </item>
 /// </list>
 /// <para>

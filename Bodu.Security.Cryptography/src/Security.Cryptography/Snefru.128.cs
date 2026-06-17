@@ -22,19 +22,13 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>
-/// Output size: 128 bits (16 bytes).
-/// </description>
+/// <description>Output size: 128 bits (16 bytes).</description>
 /// </item>
 /// <item>
-/// <description>
-/// Block size: 48 bytes; 4-word internal state; 8 rounds per block.
-/// </description>
+/// <description>Block size: 48 bytes; 4-word internal state; 8 rounds per block.</description>
 /// </item>
 /// <item>
-/// <description>
-/// Status: <strong>broken</strong> — practical collision attacks are known.
-/// </description>
+/// <description>Status: <strong>broken</strong> — practical collision attacks are known.</description>
 /// </item>
 /// </list>
 /// <para>

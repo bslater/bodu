@@ -15,9 +15,7 @@ namespace Bodu.Collections.Generic;
 internal sealed class OrderedSetStorageDebugView<T>
     where T : notnull
 {
-    /// <summary>
-    /// The ordered-set storage whose contents are surfaced to the debugger.
-    /// </summary>
+    /// <summary>The ordered-set storage whose contents are surfaced to the debugger.</summary>
     private readonly OrderedSetStorage<T> _storage;
 
     /// <summary>

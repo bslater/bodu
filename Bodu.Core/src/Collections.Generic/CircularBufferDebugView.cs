@@ -17,9 +17,7 @@ namespace Bodu.Collections.Generic;
 /// </remarks>
 internal sealed class CircularBufferDebugView<T>
 {
-    /// <summary>
-    /// The instance of <see cref="CircularBuffer{T}" /> being debugged.
-    /// </summary>
+    /// <summary>The instance of <see cref="CircularBuffer{T}" /> being debugged.</summary>
     private readonly CircularBuffer<T> _circularBuffer;
 
     /// <summary>

@@ -28,34 +28,22 @@ namespace Bodu.Financial.ExchangeRates.Rba;
 /// </remarks>
 internal static class RbaExchangeRateWorkbookParser
 {
-    /// <summary>
-    /// The worksheet that holds the rate data.
-    /// </summary>
+    /// <summary>The worksheet that holds the rate data.</summary>
     private const string DataSheetName = "Data";
 
-    /// <summary>
-    /// The first-column label of the units header row.
-    /// </summary>
+    /// <summary>The first-column label of the units header row.</summary>
     private const string UnitsLabel = "Units";
 
-    /// <summary>
-    /// The first-column label of the series-identifier header row.
-    /// </summary>
+    /// <summary>The first-column label of the series-identifier header row.</summary>
     private const string SeriesIdLabel = "Series ID";
 
-    /// <summary>
-    /// The first-column label of the title header row.
-    /// </summary>
+    /// <summary>The first-column label of the title header row.</summary>
     private const string TitleLabel = "Title";
 
-    /// <summary>
-    /// The first-column label of the description header row.
-    /// </summary>
+    /// <summary>The first-column label of the description header row.</summary>
     private const string DescriptionLabel = "Description";
 
-    /// <summary>
-    /// The prefix of the title cell from which a currency code can be recovered when the units row is absent.
-    /// </summary>
+    /// <summary>The prefix of the title cell from which a currency code can be recovered when the units row is absent.</summary>
     private const string TitlePrefix = "A$1=";
 
     /// <summary>

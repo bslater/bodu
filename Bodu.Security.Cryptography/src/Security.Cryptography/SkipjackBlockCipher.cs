@@ -29,19 +29,13 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>
-/// <b>Block size:</b><c>8 bytes</c> (64 bits)
-/// </description>
+/// <description><b>Block size:</b><c>8 bytes</c> (64 bits)</description>
 /// </item>
 /// <item>
-/// <description>
-/// <b>Key size:</b><c>10 bytes</c> (80 bits)
-/// </description>
+/// <description><b>Key size:</b><c>10 bytes</c> (80 bits)</description>
 /// </item>
 /// <item>
-/// <description>
-/// <b>Rounds:</b><c>32</c> (16 × Rule A + 16 × Rule B)
-/// </description>
+/// <description><b>Rounds:</b><c>32</c> (16 × Rule A + 16 × Rule B)</description>
 /// </item>
 /// </list>
 /// <para>
@@ -78,14 +72,10 @@ namespace Bodu.Security.Cryptography;
 public sealed class SkipjackBlockCipher
     : IBlockCipher
 {
-    /// <summary>
-    /// Length of the Skipjack key is 80 bits (10 bytes).
-    /// </summary>
+    /// <summary>Length of the Skipjack key is 80 bits (10 bytes).</summary>
     public const int KeySize = 80;
 
-    /// <summary>
-    /// The fixed Skipjack F-table — the 256-entry byte substitution table used by the cipher.
-    /// </summary>
+    /// <summary>The fixed Skipjack F-table — the 256-entry byte substitution table used by the cipher.</summary>
     /// <remarks>
     /// This is the only nonlinear component used by the 16-bit G permutation. Every round calls G once, and G performs
     /// four F-table substitutions keyed by four consecutive bytes from the 80-bit key schedule.
@@ -352,9 +342,7 @@ public sealed class SkipjackBlockCipher
 
 #pragma warning disable SA1132 // Do not combine fields
 
-    /// <summary>
-    /// The four expanded round-key byte streams consumed by the G and H permutations.
-    /// </summary>
+    /// <summary>The four expanded round-key byte streams consumed by the G and H permutations.</summary>
     /// <remarks>
     /// Round <c>k</c> uses <c>_key0[k]</c>..<c>_key3[k]</c>, equivalent to <c>key[(4k + 0) mod 10]</c> through
     /// <c>key[(4k + 3) mod 10]</c>. Keeping four arrays avoids modulo arithmetic in G/H.
@@ -362,9 +350,7 @@ public sealed class SkipjackBlockCipher
     private readonly int[] _key0, _key1, _key2, _key3;
 #pragma warning restore SA1132 // Do not combine fields
 
-    /// <summary>
-    /// Indicates whether this instance has been disposed.
-    /// </summary>
+    /// <summary>Indicates whether this instance has been disposed.</summary>
     private bool _disposed = false;
 
     /// <summary>

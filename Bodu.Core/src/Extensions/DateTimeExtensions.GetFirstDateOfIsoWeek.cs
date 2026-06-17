@@ -33,19 +33,13 @@ public static partial class DateTimeExtensions
     /// </para>
     /// <list type="bullet">
     /// <item>
-    /// <description>
-    /// weeks begin on Monday;
-    /// </description>
+    /// <description>weeks begin on Monday;</description>
     /// </item>
     /// <item>
-    /// <description>
-    /// week 1 is the first week containing at least four days of the new year;
-    /// </description>
+    /// <description>week 1 is the first week containing at least four days of the new year;</description>
     /// </item>
     /// <item>
-    /// <description>
-    /// years contain either 52 or 53 weeks.
-    /// </description>
+    /// <description>years contain either 52 or 53 weeks.</description>
     /// </item>
     /// </list>
     /// <para>

@@ -16,14 +16,10 @@ namespace Bodu.Globalization.Calendar;
 internal sealed class XmlDocumentNode
     : IDocumentNode
 {
-    /// <summary>
-    /// The document namespace every element is qualified with.
-    /// </summary>
+    /// <summary>The document namespace every element is qualified with.</summary>
     private readonly XNamespace _ns;
 
-    /// <summary>
-    /// The wrapped element.
-    /// </summary>
+    /// <summary>The wrapped element.</summary>
     private readonly XElement _element;
 
     /// <summary>

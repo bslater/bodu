@@ -41,29 +41,19 @@ namespace Bodu.IO.Hashing.CheckDigits;
 public sealed class UpcA
     : CheckDigitAlgorithm
 {
-    /// <summary>
-    /// The required body length of <c>11</c> decimal digits.
-    /// </summary>
+    /// <summary>The required body length of <c>11</c> decimal digits.</summary>
     public const int BodyLength = 11;
 
-    /// <summary>
-    /// The required full-sequence length of <c>12</c> decimal digits.
-    /// </summary>
+    /// <summary>The required full-sequence length of <c>12</c> decimal digits.</summary>
     public const int SequenceLength = 12;
 
-    /// <summary>
-    /// The number of body digits appended so far.
-    /// </summary>
+    /// <summary>The number of body digits appended so far.</summary>
     private int _count;
 
-    /// <summary>
-    /// The running weighted sum computed under the hypothesis that the final body length is even.
-    /// </summary>
+    /// <summary>The running weighted sum computed under the hypothesis that the final body length is even.</summary>
     private int _sumEvenHypothesis;
 
-    /// <summary>
-    /// The running weighted sum computed under the hypothesis that the final body length is odd.
-    /// </summary>
+    /// <summary>The running weighted sum computed under the hypothesis that the final body length is odd.</summary>
     private int _sumOddHypothesis;
 
     /// <summary>

@@ -19,9 +19,7 @@ public static partial class SequenceGenerator
     private sealed class AnonymousEnumerable<TResult>
         : IEnumerable<TResult>
     {
-        /// <summary>
-        /// The factory delegate invoked to produce a fresh enumerator for each enumeration.
-        /// </summary>
+        /// <summary>The factory delegate invoked to produce a fresh enumerator for each enumeration.</summary>
         private readonly Func<IEnumerator<TResult>> _createEnumerator;
 
         /// <summary>

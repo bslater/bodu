@@ -34,19 +34,13 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>
-/// Output size: 512 bits (64 bytes), fixed.
-/// </description>
+/// <description>Output size: 512 bits (64 bytes), fixed.</description>
 /// </item>
 /// <item>
-/// <description>
-/// Block size: 64 bytes (512 bits); 256-bit big-endian length field.
-/// </description>
+/// <description>Block size: 64 bytes (512 bits); 256-bit big-endian length field.</description>
 /// </item>
 /// <item>
-/// <description>
-/// Internal cipher <c>W</c> on the wide-trail (Rijndael-family) design principle.
-/// </description>
+/// <description>Internal cipher <c>W</c> on the wide-trail (Rijndael-family) design principle.</description>
 /// </item>
 /// <item>
 /// <description>
@@ -74,34 +68,22 @@ namespace Bodu.Security.Cryptography;
 public sealed partial class Whirlpool
     : BlockHashAlgorithm<Whirlpool>
 {
-    /// <summary>
-    /// Length of the Whirlpool compression block is 512 bits (64 bytes).
-    /// </summary>
+    /// <summary>Length of the Whirlpool compression block is 512 bits (64 bytes).</summary>
     private const int BlockSizeBits = 512;
 
-    /// <summary>
-    /// Length of the Whirlpool digest is 512 bits (64 bytes).
-    /// </summary>
+    /// <summary>Length of the Whirlpool digest is 512 bits (64 bytes).</summary>
     private const int HashSizeBits = 512;
 
-    /// <summary>
-    /// Length of the Whirlpool message-length trailer appended during padding is 256 bits (32 bytes).
-    /// </summary>
+    /// <summary>Length of the Whirlpool message-length trailer appended during padding is 256 bits (32 bytes).</summary>
     private const int LengthFieldBits = 256;
 
-    /// <summary>
-    /// The eight 64-bit chaining variables updated in place across the Merkle–Damgård compression.
-    /// </summary>
+    /// <summary>The eight 64-bit chaining variables updated in place across the Merkle–Damgård compression.</summary>
     private readonly ulong[] _state = new ulong[8];
 
-    /// <summary>
-    /// The selected Whirlpool revision used to compute the hash value.
-    /// </summary>
+    /// <summary>The selected Whirlpool revision used to compute the hash value.</summary>
     private WhirlpoolVersion _version = WhirlpoolVersion.WhirlpoolInfo3;
 
-    /// <summary>
-    /// Indicates whether any input has been consumed, latching the <see cref="Version" /> setter once hashing starts.
-    /// </summary>
+    /// <summary>Indicates whether any input has been consumed, latching the <see cref="Version" /> setter once hashing starts.</summary>
     private bool _inputConsumed;
 
     /// <summary>

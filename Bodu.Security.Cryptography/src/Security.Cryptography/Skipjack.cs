@@ -31,19 +31,13 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>
-/// Block size: 64 bits (8 bytes).
-/// </description>
+/// <description>Block size: 64 bits (8 bytes).</description>
 /// </item>
 /// <item>
-/// <description>
-/// Key size: 80 bits (10 bytes), fixed.
-/// </description>
+/// <description>Key size: 80 bits (10 bytes), fixed.</description>
 /// </item>
 /// <item>
-/// <description>
-/// 32 rounds, unbalanced Feistel network.
-/// </description>
+/// <description>32 rounds, unbalanced Feistel network.</description>
 /// </item>
 /// <item>
 /// <description>
@@ -85,34 +79,22 @@ namespace Bodu.Security.Cryptography;
 public sealed class Skipjack
     : SymmetricAlgorithm
 {
-    /// <summary>
-    /// Length of the Skipjack block is 64 bits (8 bytes).
-    /// </summary>
+    /// <summary>Length of the Skipjack block is 64 bits (8 bytes).</summary>
     internal const int SkipjackBlockSize = 64;
 
-    /// <summary>
-    /// Length of the Skipjack key is 80 bits (10 bytes). Skipjack defines a single fixed key length.
-    /// </summary>
+    /// <summary>Length of the Skipjack key is 80 bits (10 bytes). Skipjack defines a single fixed key length.</summary>
     internal const int SkipjackKeySize = 80;
 
-    /// <summary>
-    /// The legal block sizes for Skipjack, expressed as a single fixed 64-bit entry with a skip size of 0.
-    /// </summary>
+    /// <summary>The legal block sizes for Skipjack, expressed as a single fixed 64-bit entry with a skip size of 0.</summary>
     private static readonly KeySizes[] s_skipjackBlockSizes = [new KeySizes(SkipjackBlockSize, SkipjackBlockSize, 0)];
 
-    /// <summary>
-    /// The legal key sizes for Skipjack, expressed as a single fixed 80-bit entry with a skip size of 0.
-    /// </summary>
+    /// <summary>The legal key sizes for Skipjack, expressed as a single fixed 80-bit entry with a skip size of 0.</summary>
     private static readonly KeySizes[] s_skipjackKeySizes = [new KeySizes(SkipjackKeySize, SkipjackKeySize, 0)];
 
-    /// <summary>
-    /// Indicates whether this instance has been disposed.
-    /// </summary>
+    /// <summary>Indicates whether this instance has been disposed.</summary>
     private bool _disposed = false;
 
-    /// <summary>
-    /// The extended padding mode used when creating encryptors and decryptors.
-    /// </summary>
+    /// <summary>The extended padding mode used when creating encryptors and decryptors.</summary>
     private PaddingModeKind _blockPadding = PaddingModeKind.PKCS7;
 
     /// <summary>

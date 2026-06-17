@@ -20,11 +20,7 @@ namespace Bodu.Numerics;
 internal readonly struct UnsupportedNumber
     : INumberBase<UnsupportedNumber>
 {
-    /// <summary>
-    /// When <see langword="true" />, the value reports itself as non-integer yet finite, and its double conversion
-    /// yields positive infinity, so a conversion <em>from</em> it exercises the guard that rejects a finite source
-    /// whose floating-point approximation is not finite.
-    /// </summary>
+    /// <summary>When <see langword="true" />, the value reports itself as non-integer yet finite, and its double conversion yields positive infinity, so a conversion <em>from</em> it exercises the guard that rejects a finite source whose floating-point approximation is not finite.</summary>
     private readonly bool _yieldInfiniteDoubleApproximation;
 
     /// <summary>

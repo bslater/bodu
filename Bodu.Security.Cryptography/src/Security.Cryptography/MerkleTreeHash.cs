@@ -51,14 +51,10 @@ namespace Bodu.Security.Cryptography;
 /// </description>
 /// </item>
 /// <item>
-/// <description>
-/// Block size: configurable, default 1024 bytes — the input chunk that becomes one leaf.
-/// </description>
+/// <description>Block size: configurable, default 1024 bytes — the input chunk that becomes one leaf.</description>
 /// </item>
 /// <item>
-/// <description>
-/// Fan-out: configurable, default 3 — number of children combined into each parent.
-/// </description>
+/// <description>Fan-out: configurable, default 3 — number of children combined into each parent.</description>
 /// </item>
 /// <item>
 /// <description>
@@ -94,29 +90,19 @@ namespace Bodu.Security.Cryptography;
 public sealed class MerkleTreeHash
     : IDisposable
 {
-    /// <summary>
-    /// The size, in bytes, of each leaf block.
-    /// </summary>
+    /// <summary>The size, in bytes, of each leaf block.</summary>
     private readonly int _blockSize;
 
-    /// <summary>
-    /// The number of child nodes combined into each parent node during tree reduction.
-    /// </summary>
+    /// <summary>The number of child nodes combined into each parent node during tree reduction.</summary>
     private readonly int _fanOut;
 
-    /// <summary>
-    /// The factory invoked once per leaf and internal node to obtain a fresh, independent hash algorithm.
-    /// </summary>
+    /// <summary>The factory invoked once per leaf and internal node to obtain a fresh, independent hash algorithm.</summary>
     private readonly Func<HashAlgorithm> _algorithmFactory;
 
-    /// <summary>
-    /// Accumulates raw bytes for the current partial block; reused across <c>ComputeHash</c> calls.
-    /// </summary>
+    /// <summary>Accumulates raw bytes for the current partial block; reused across <c>ComputeHash</c> calls.</summary>
     private readonly MemoryStream _buffer;
 
-    /// <summary>
-    /// Holds the hash values produced at the current tree level during reduction.
-    /// </summary>
+    /// <summary>Holds the hash values produced at the current tree level during reduction.</summary>
     private List<byte[]> _currentLevel;
 
     /// <summary>

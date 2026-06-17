@@ -18,19 +18,13 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 internal static class Argon2Core
 {
-    /// <summary>
-    /// The number of 64-bit words in a 1024-byte memory block.
-    /// </summary>
+    /// <summary>The number of 64-bit words in a 1024-byte memory block.</summary>
     private const int WordsPerBlock = 128;
 
-    /// <summary>
-    /// The number of vertical slices (synchronization points) each lane is divided into.
-    /// </summary>
+    /// <summary>The number of vertical slices (synchronization points) each lane is divided into.</summary>
     private const int SyncPoints = 4;
 
-    /// <summary>
-    /// The number of (J1, J2) address pairs produced by a single Argon2i address block.
-    /// </summary>
+    /// <summary>The number of (J1, J2) address pairs produced by a single Argon2i address block.</summary>
     private const int AddressesPerBlock = WordsPerBlock;
 
     /// <summary>

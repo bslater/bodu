@@ -8,10 +8,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 
 public sealed partial class Gumm
 {
-    /// <summary>
-    /// The standard Cayley table of the dihedral group <i>D</i><sub>5</sub> (order 10), where <c>s_d[a, b]</c> is the
-    /// index of <c>a * b</c>.
-    /// </summary>
+    /// <summary>The standard Cayley table of the dihedral group <i>D</i><sub>5</sub> (order 10), where <c>s_d[a, b]</c> is the index of <c>a * b</c>.</summary>
     /// <remarks>
     /// Elements are numbered 0 to 9: 0 to 4 are the rotations <c>(1, x)</c> for <c>x = 0..4</c> and 5 to 9 are the
     /// reflections <c>(-1, x)</c> for <c>x = 0..4</c>. The group operation is
@@ -31,16 +28,10 @@ public sealed partial class Gumm
         { 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 },
     };
 
-    /// <summary>
-    /// The multiplicative inverse table in the dihedral group <i>D</i><sub>5</sub>: <c>s_inv[x]</c> is the element
-    /// <c>y</c> such that <c>s_d[x, y]</c> is zero.
-    /// </summary>
+    /// <summary>The multiplicative inverse table in the dihedral group <i>D</i><sub>5</sub>: <c>s_inv[x]</c> is the element <c>y</c> such that <c>s_d[x, y]</c> is zero.</summary>
     private static readonly byte[] s_inv = [0, 4, 3, 2, 1, 5, 6, 7, 8, 9];
 
-    /// <summary>
-    /// Gumm's transform <c>T</c> applied at odd positions, where <c>s_t[n]</c> is the index of <c>T</c> applied to
-    /// element <c>n</c>.
-    /// </summary>
+    /// <summary>Gumm's transform <c>T</c> applied at odd positions, where <c>s_t[n]</c> is the index of <c>T</c> applied to element <c>n</c>.</summary>
     /// <remarks>
     /// <c>T(e, x) = (e, e(a - x) + b)</c> with <c>a = 2</c> and <c>b = 1</c>. <c>T</c> is a permutation of <i>D</i><sub>5</sub>,
     /// and because <c>a</c> and <c>b</c> are both nonzero modulo five it satisfies the anti-symmetry property under

@@ -40,19 +40,13 @@ namespace Bodu.Text.Bencode.Writer;
 /// </remarks>
 public ref struct Utf8BencodeWriter
 {
-    /// <summary>
-    /// The destination buffer writer that receives the completed document.
-    /// </summary>
+    /// <summary>The destination buffer writer that receives the completed document.</summary>
     private readonly IBufferWriter<byte> _output;
 
-    /// <summary>
-    /// The shared mutable state — the container stack — that survives by-value copies of the writer.
-    /// </summary>
+    /// <summary>The shared mutable state — the container stack — that survives by-value copies of the writer.</summary>
     private readonly List<Frame> _frames;
 
-    /// <summary>
-    /// The maximum permitted container nesting depth.
-    /// </summary>
+    /// <summary>The maximum permitted container nesting depth.</summary>
     /// <remarks>
     /// The field is <see langword="readonly" /> and assigned once at construction. The writer is a
     /// <see langword="ref struct" /> passed by value with its mutable state held in the shared managed
@@ -62,15 +56,10 @@ public ref struct Utf8BencodeWriter
     /// </remarks>
     private readonly int _maxDepth;
 
-    /// <summary>
-    /// Whether the writer accepts more than one value at the top level.
-    /// </summary>
+    /// <summary>Whether the writer accepts more than one value at the top level.</summary>
     private readonly bool _allowMultipleRootValues;
 
-    /// <summary>
-    /// The shared root-completion flag, held on the heap so by-value copies of the writer observe the same document
-    /// state.
-    /// </summary>
+    /// <summary>The shared root-completion flag, held on the heap so by-value copies of the writer observe the same document state.</summary>
     private readonly RootState _root;
 
     /// <summary>

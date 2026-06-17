@@ -23,9 +23,7 @@ namespace Bodu.Text.Bencode.Nodes;
 public sealed class BencodeArray
     : BencodeNode, IList<BencodeNode?>
 {
-    /// <summary>
-    /// The backing list of child nodes, in order.
-    /// </summary>
+    /// <summary>The backing list of child nodes, in order.</summary>
     private readonly List<BencodeNode?> _items;
 
     /// <summary>

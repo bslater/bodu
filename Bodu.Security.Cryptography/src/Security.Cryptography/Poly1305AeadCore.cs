@@ -47,25 +47,16 @@ namespace Bodu.Security.Cryptography;
 /// </remarks>
 internal static class Poly1305AeadCore
 {
-    /// <summary>
-    /// Length of the Poly1305 authentication tag, in bytes (128 bits).
-    /// </summary>
+    /// <summary>Length of the Poly1305 authentication tag, in bytes (128 bits).</summary>
     internal const int TagBytes = 16;
 
-    /// <summary>
-    /// Length of the one-time Poly1305 key, in bytes (256 bits).
-    /// </summary>
+    /// <summary>Length of the one-time Poly1305 key, in bytes (256 bits).</summary>
     private const int Poly1305KeyBytes = 32;
 
-    /// <summary>
-    /// Keystream block length, in bytes, of the ChaCha20 and Salsa20 engines (512 bits).
-    /// </summary>
+    /// <summary>Keystream block length, in bytes, of the ChaCha20 and Salsa20 engines (512 bits).</summary>
     private const int KeystreamBlockBytes = 64;
 
-    /// <summary>
-    /// Offset, in bytes, into the counter-0 keystream block at which the secretbox message keystream begins. Equal to
-    /// the Poly1305 key length because the key occupies the leading 32 bytes of that block.
-    /// </summary>
+    /// <summary>Offset, in bytes, into the counter-0 keystream block at which the secretbox message keystream begins. Equal to the Poly1305 key length because the key occupies the leading 32 bytes of that block.</summary>
     private const int SecretboxKeystreamOffset = Poly1305KeyBytes;
 
     /// <summary>

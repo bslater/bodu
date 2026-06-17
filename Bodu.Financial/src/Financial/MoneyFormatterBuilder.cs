@@ -11,9 +11,7 @@ namespace Bodu.Financial;
 /// </summary>
 public sealed class MoneyFormatterBuilder
 {
-    /// <summary>
-    /// The options accumulated by the builder.
-    /// </summary>
+    /// <summary>The options accumulated by the builder.</summary>
     private MoneyFormatOptions _options = MoneyFormatOptions.Default;
 
     /// <summary>

@@ -44,9 +44,7 @@ public sealed class MoneyOfTCurrencyJsonConverter<TCurrency>
     : JsonConverter<Money<TCurrency>>
     where TCurrency : ICurrency
 {
-    /// <summary>
-    /// The policy used by this converter instance.
-    /// </summary>
+    /// <summary>The policy used by this converter instance.</summary>
     private readonly FinancialJsonPolicy _policy;
 
     /// <summary>

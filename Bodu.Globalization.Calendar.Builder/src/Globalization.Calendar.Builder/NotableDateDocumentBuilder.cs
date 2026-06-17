@@ -63,54 +63,34 @@ namespace Bodu.Globalization.Calendar.Builder;
 /// date rules (guide)</seealso>
 public sealed partial class NotableDateDocumentBuilder
 {
-    /// <summary>
-    /// The metadata source entries, in declaration order.
-    /// </summary>
+    /// <summary>The metadata source entries, in declaration order.</summary>
     private readonly List<string> _sources = new();
 
-    /// <summary>
-    /// The adjustment policies, in declaration order.
-    /// </summary>
+    /// <summary>The adjustment policies, in declaration order.</summary>
     private readonly List<AdjustmentPolicyBuilder> _adjustmentPolicies = new();
 
-    /// <summary>
-    /// The imports, in declaration order.
-    /// </summary>
+    /// <summary>The imports, in declaration order.</summary>
     private readonly List<ImportBuilder> _imports = new();
 
-    /// <summary>
-    /// The notable-date concepts, in declaration order.
-    /// </summary>
+    /// <summary>The notable-date concepts, in declaration order.</summary>
     private readonly List<NotableDateDefinitionBuilder> _definitions = new();
 
-    /// <summary>
-    /// The resource identifier, or <see langword="null" /> until one is supplied.
-    /// </summary>
+    /// <summary>The resource identifier, or <see langword="null" /> until one is supplied.</summary>
     private string? _resourceId;
 
-    /// <summary>
-    /// The schema version emitted on the root element.
-    /// </summary>
+    /// <summary>The schema version emitted on the root element.</summary>
     private string _schemaVersion = BuilderXml.DefaultSchemaVersion;
 
-    /// <summary>
-    /// The metadata name, or <see langword="null" /> when unset.
-    /// </summary>
+    /// <summary>The metadata name, or <see langword="null" /> when unset.</summary>
     private string? _metadataName;
 
-    /// <summary>
-    /// The metadata description, or <see langword="null" /> when unset.
-    /// </summary>
+    /// <summary>The metadata description, or <see langword="null" /> when unset.</summary>
     private string? _metadataDescription;
 
-    /// <summary>
-    /// The resolution-policy builder, or <see langword="null" /> when no policy is configured.
-    /// </summary>
+    /// <summary>The resolution-policy builder, or <see langword="null" /> when no policy is configured.</summary>
     private ResolutionPolicyBuilder? _resolutionPolicy;
 
-    /// <summary>
-    /// The override builder, or <see langword="null" /> when no override is configured.
-    /// </summary>
+    /// <summary>The override builder, or <see langword="null" /> when no override is configured.</summary>
     private OverrideBuilder? _overrides;
 
     /// <summary>

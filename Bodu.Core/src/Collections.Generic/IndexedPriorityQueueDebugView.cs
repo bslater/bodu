@@ -20,9 +20,7 @@ namespace Bodu.Collections.Generic;
 internal sealed class IndexedPriorityQueueDebugView<TElement, TPriority>
     where TElement : notnull
 {
-    /// <summary>
-    /// The queue instance being inspected.
-    /// </summary>
+    /// <summary>The queue instance being inspected.</summary>
     private readonly IndexedPriorityQueue<TElement, TPriority> _queue;
 
     /// <summary>

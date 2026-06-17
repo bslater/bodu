@@ -13,9 +13,7 @@ namespace Bodu.Tests.KnownAnswers;
 /// </summary>
 public static class StringFormattingKnownAnswers
 {
-    /// <summary>
-    /// The default acronym list every scenario is allowed to know about unless overridden.
-    /// </summary>
+    /// <summary>The default acronym list every scenario is allowed to know about unless overridden.</summary>
     private static readonly string[] DefaultAcronyms =
     [
         "API", "ASCII", "ATO", "BCL", "CPU", "CSS", "CSV", "DNS", "DTO", "EOF",
@@ -24,9 +22,7 @@ public static class StringFormattingKnownAnswers
         "TCP", "TLS", "UI", "URI", "URL", "UTF8", "XML", "XOF",
     ];
 
-    /// <summary>
-    /// The default minor (connective) words eligible for title-case down-casing.
-    /// </summary>
+    /// <summary>The default minor (connective) words eligible for title-case down-casing.</summary>
     private static readonly string[] DefaultMinorWords =
     [
         "a", "an", "and", "as", "at", "but", "by", "for", "from", "in", "into",

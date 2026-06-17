@@ -25,9 +25,7 @@ namespace Bodu.Financial.ExchangeRates.Ecb;
 public sealed class FileSystemEcbFeedCache
     : IEcbFeedCache
 {
-    /// <summary>
-    /// The directory in which cached feeds are stored.
-    /// </summary>
+    /// <summary>The directory in which cached feeds are stored.</summary>
     private readonly string _directory;
 
     /// <summary>

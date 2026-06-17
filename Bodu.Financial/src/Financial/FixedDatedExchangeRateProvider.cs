@@ -32,20 +32,13 @@ namespace Bodu.Financial;
 public sealed class FixedDatedExchangeRateProvider
     : IDatedExchangeRateProvider
 {
-    /// <summary>
-    /// The label used as the provider name on synthetic same-currency identity results. Exposed publicly so audit
-    /// consumers can filter by it without depending on a magic-string literal.
-    /// </summary>
+    /// <summary>The label used as the provider name on synthetic same-currency identity results. Exposed publicly so audit consumers can filter by it without depending on a magic-string literal.</summary>
     public const string IdentityProviderName = "Identity";
 
-    /// <summary>
-    /// The underlying immutable multi-provider book that backs every lookup.
-    /// </summary>
+    /// <summary>The underlying immutable multi-provider book that backs every lookup.</summary>
     private readonly ExchangeRateBook _book;
 
-    /// <summary>
-    /// The ordered set of providers consulted for each pair, in priority order.
-    /// </summary>
+    /// <summary>The ordered set of providers consulted for each pair, in priority order.</summary>
     private readonly string[] _providerPriority;
 
     /// <summary>

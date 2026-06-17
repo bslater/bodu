@@ -25,29 +25,19 @@ public abstract partial class RingBackedCollection<T>
     public struct Enumerator :
         System.Collections.Generic.IEnumerator<T>
     {
-        /// <summary>
-        /// The collection whose elements this enumerator iterates over.
-        /// </summary>
+        /// <summary>The collection whose elements this enumerator iterates over.</summary>
         private readonly RingBackedCollection<T> _collection;
 
-        /// <summary>
-        /// The collection version captured at construction, used to detect concurrent modification.
-        /// </summary>
+        /// <summary>The collection version captured at construction, used to detect concurrent modification.</summary>
         private readonly int _version;
 
-        /// <summary>
-        /// The element at the current enumerator position. Read through <see cref="Current" />.
-        /// </summary>
+        /// <summary>The element at the current enumerator position. Read through <see cref="Current" />.</summary>
         private T _current;
 
-        /// <summary>
-        /// The index within the ring buffer of the current element.
-        /// </summary>
+        /// <summary>The index within the ring buffer of the current element.</summary>
         private int _currentIndex;
 
-        /// <summary>
-        /// The number of elements yielded so far, used to detect the end of iteration.
-        /// </summary>
+        /// <summary>The number of elements yielded so far, used to detect the end of iteration.</summary>
         private int _iteratedCount;
 
         /// <summary>

@@ -14,9 +14,7 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 internal static class NotableDateRuleValidator
 {
-    /// <summary>
-    /// The maximum day-of-month for each month, indexed so that January is at index zero and February allows 29.
-    /// </summary>
+    /// <summary>The maximum day-of-month for each month, indexed so that January is at index zero and February allows 29.</summary>
     private static readonly int[] s_maxDaysPerMonth = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
     /// <summary>

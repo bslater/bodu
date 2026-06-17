@@ -67,140 +67,85 @@ namespace Bodu.Extensions;
 /// </remarks>
 public static partial class DateTimeExtensions
 {
-    /// <summary>
-    /// Represents a small threshold used for comparing floating-point numbers where exact equality is unreliable due to
-    /// binary precision. This field is constant.
-    /// </summary>
+    /// <summary>Represents a small threshold used for comparing floating-point numbers where exact equality is unreliable due to binary precision. This field is constant.</summary>
     internal const double Epsilon = 1e-10;
 
-    /// <summary>
-    /// The maximum year supported by <see cref="DateTime" />.
-    /// </summary>
+    /// <summary>The maximum year supported by <see cref="DateTime" />.</summary>
     internal const int MaxYear = 9999;
 
-    /// <summary>
-    /// Represents the number of milliseconds in 1 day. This field is constant.
-    /// </summary>
+    /// <summary>Represents the number of milliseconds in 1 day. This field is constant.</summary>
     internal const int MillisecondsPerDay = DateTimeExtensions.MillisecondsPerHour * 24;
 
-    /// <summary>
-    /// Represents the number of milliseconds in 1 hour. This field is constant.
-    /// </summary>
+    /// <summary>Represents the number of milliseconds in 1 hour. This field is constant.</summary>
     internal const int MillisecondsPerHour = DateTimeExtensions.MillisecondsPerMinute * 60;
 
-    /// <summary>
-    /// Represents the number of milliseconds in 1 minute. This field is constant.
-    /// </summary>
+    /// <summary>Represents the number of milliseconds in 1 minute. This field is constant.</summary>
     internal const int MillisecondsPerMinute = DateTimeExtensions.MillisecondsPerSecond * 60;
 
-    /// <summary>
-    /// Represents the number of ticks (100ns) in 1 second. This field is constant.
-    /// </summary>
+    /// <summary>Represents the number of ticks (100ns) in 1 second. This field is constant.</summary>
     internal const int MillisecondsPerSecond = 1000;
 
-    /// <summary>
-    /// The minimum year supported by <see cref="DateTime" />.
-    /// </summary>
+    /// <summary>The minimum year supported by <see cref="DateTime" />.</summary>
     internal const int MinYear = 1;
 
-    /// <summary>
-    /// Represents the number of ticks (100ns) in 30 days. This field is constant.
-    /// </summary>
+    /// <summary>Represents the number of ticks (100ns) in 30 days. This field is constant.</summary>
     internal const long TicksPer30Days = DateTimeExtensions.TicksPerDay * 30;
 
-    /// <summary>
-    /// Represents the number of ticks (100ns) in 1 day. This field is constant.
-    /// </summary>
+    /// <summary>Represents the number of ticks (100ns) in 1 day. This field is constant.</summary>
     internal const long TicksPerDay = DateTimeExtensions.TicksPerHour * 24;
 
-    /// <summary>
-    /// Represents the number of ticks (100ns) in 1 hour. This field is constant.
-    /// </summary>
+    /// <summary>Represents the number of ticks (100ns) in 1 hour. This field is constant.</summary>
     internal const long TicksPerHour = DateTimeExtensions.TicksPerMinute * 60;
 
-    /// <summary>
-    /// Represents the number of ticks (100ns) in 1 millisecond. This field is constant.
-    /// </summary>
+    /// <summary>Represents the number of ticks (100ns) in 1 millisecond. This field is constant.</summary>
     internal const long TicksPerMillisecond = 10000;
 
-    /// <summary>
-    /// Represents the number of ticks (100ns) in 1 minute. This field is constant.
-    /// </summary>
+    /// <summary>Represents the number of ticks (100ns) in 1 minute. This field is constant.</summary>
     internal const long TicksPerMinute = DateTimeExtensions.TicksPerSecond * 60;
 
-    /// <summary>
-    /// Represents the number of ticks (100ns) in 1 second. This field is constant.
-    /// </summary>
+    /// <summary>Represents the number of ticks (100ns) in 1 second. This field is constant.</summary>
     internal const long TicksPerSecond = DateTimeExtensions.TicksPerMillisecond * 1000;
 
-    /// <summary>
-    /// Represents the number of ticks (100ns) in 1 week (7 days). This field is constant.
-    /// </summary>
+    /// <summary>Represents the number of ticks (100ns) in 1 week (7 days). This field is constant.</summary>
     internal const long TicksPerWeek = DateTimeExtensions.TicksPerDay * 7;
 
-    /// <summary>
-    /// Represents the number of ticks (100ns) in 1 year. This field is constant.
-    /// </summary>
+    /// <summary>Represents the number of ticks (100ns) in 1 year. This field is constant.</summary>
     internal const long TicksPerYear = DateTimeExtensions.TicksPerDay * DaysPerYear;
 
-    /// <summary>
-    /// Cumulative day counts at the start of each month in a non-leap year (365 days).
-    /// </summary>
+    /// <summary>Cumulative day counts at the start of each month in a non-leap year (365 days).</summary>
     internal static readonly int[] DaysToMonth365 = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365];
 
-    /// <summary>
-    /// Cumulative day counts at the start of each month in a leap year (366 days).
-    /// </summary>
+    /// <summary>Cumulative day counts at the start of each month in a leap year (366 days).</summary>
     internal static readonly int[] DaysToMonth366 = [0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366];
 
-    /// <summary>
-    /// Represents the number of days in 100 years. This field is constant.
-    /// </summary>
+    /// <summary>Represents the number of days in 100 years. This field is constant.</summary>
     private const int DaysPer100Years = (DateTimeExtensions.DaysPer4Years * 25) - 1;
 
-    /// <summary>
-    /// Represents the number of days in 400 years. This field is constant.
-    /// </summary>
+    /// <summary>Represents the number of days in 400 years. This field is constant.</summary>
     private const int DaysPer400Years = (DateTimeExtensions.DaysPer100Years * 4) + 1;
 
-    /// <summary>
-    /// Represents the number of days in 4 years. This field is constant.
-    /// </summary>
+    /// <summary>Represents the number of days in 4 years. This field is constant.</summary>
     private const int DaysPer4Years = (DateTimeExtensions.DaysPerYear * 4) + 1;
 
-    /// <summary>
-    /// Represents the number of days a non-leap year. This field is constant.
-    /// </summary>
+    /// <summary>Represents the number of days a non-leap year. This field is constant.</summary>
     private const int DaysPerYear = 365;
 
-    /// <summary>
-    /// Represents the number of days from 1-Jan-0001 to 31-Dec-9999. This field is constant.
-    /// </summary>
+    /// <summary>Represents the number of days from 1-Jan-0001 to 31-Dec-9999. This field is constant.</summary>
     private const int DaysTo10000 = (DateTimeExtensions.DaysPer400Years * 25) - 366;
 
-    /// <summary>
-    /// Represents the number of days from 1-Jan-0001 to 31-Dec-1969. This field is constant.
-    /// </summary>
+    /// <summary>Represents the number of days from 1-Jan-0001 to 31-Dec-1969. This field is constant.</summary>
     private const int DaysTo1970 = (DateTimeExtensions.DaysPer400Years * 4) + (DateTimeExtensions.DaysPer100Years * 3) + (DateTimeExtensions.DaysPer4Years * 17) + DateTimeExtensions.DaysPerYear;
 
-    /// <summary>
-    /// Represents the maximum number of milliseconds. This field is constant.
-    /// </summary>
+    /// <summary>Represents the maximum number of milliseconds. This field is constant.</summary>
     private const long MaxMilliseconds = (long)DateTimeExtensions.DaysTo10000 * DateTimeExtensions.MillisecondsPerDay;
 
-    /// <summary>
-    /// Represents the maximum number of ticks (100ns). This field is constant.
-    /// </summary>
+    /// <summary>Represents the maximum number of ticks (100ns). This field is constant.</summary>
     private const long MaxTicks = (DateTimeExtensions.DaysTo10000 * DateTimeExtensions.TicksPerDay) - 1;
 
-    /// <summary>
-    /// Represents the minimum number of milliseconds. This field is constant.
-    /// </summary>
+    /// <summary>Represents the minimum number of milliseconds. This field is constant.</summary>
     private const long MinMilliseconds = 0;
 
-    /// <summary>
-    /// Represents the minimum number of ticks (100ns). This field is constant.
-    /// </summary>
+    /// <summary>Represents the minimum number of ticks (100ns). This field is constant.</summary>
     private const long MinTicks = 0;
 
     /// <summary>

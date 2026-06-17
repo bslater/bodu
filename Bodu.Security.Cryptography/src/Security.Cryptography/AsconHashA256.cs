@@ -26,14 +26,10 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>
-/// Output size: 256 bits (32 bytes), fixed.
-/// </description>
+/// <description>Output size: 256 bits (32 bytes), fixed.</description>
 /// </item>
 /// <item>
-/// <description>
-/// State: 320 bits sponge; rate: 64 bits (8 bytes).
-/// </description>
+/// <description>State: 320 bits sponge; rate: 64 bits (8 bytes).</description>
 /// </item>
 /// <item>
 /// <description>
@@ -41,9 +37,7 @@ namespace Bodu.Security.Cryptography;
 /// </description>
 /// </item>
 /// <item>
-/// <description>
-/// Specification: NIST SP 800-232 (ASCON family).
-/// </description>
+/// <description>Specification: NIST SP 800-232 (ASCON family).</description>
 /// </item>
 /// </list>
 /// <para>
@@ -67,33 +61,23 @@ namespace Bodu.Security.Cryptography;
 public sealed class AsconHashA256
     : AsconHash<AsconHashA256>
 {
-    /// <summary>
-    /// The first word of the pre-computed initial state for ASCON-HASHA256 (NIST SP 800-232).
-    /// </summary>
+    /// <summary>The first word of the pre-computed initial state for ASCON-HASHA256 (NIST SP 800-232).</summary>
     /// <remarks>
     /// The five IV words are the result of applying Ascon-p12 to <c>[raw_IV, 0, 0, 0, 0]</c>, sourced from ascon-c
     /// <c>opt64/constants.h</c> (<c>ASCON_HASHA_IV0..IV4</c>).
     /// </remarks>
     private const ulong Iv0 = 0xe2ffb4d17ffcadc5UL;
 
-    /// <summary>
-    /// The second word of the pre-computed initial state for ASCON-HASHA256.
-    /// </summary>
+    /// <summary>The second word of the pre-computed initial state for ASCON-HASHA256.</summary>
     private const ulong Iv1 = 0xdd364b655fa88cebUL;
 
-    /// <summary>
-    /// The third word of the pre-computed initial state for ASCON-HASHA256.
-    /// </summary>
+    /// <summary>The third word of the pre-computed initial state for ASCON-HASHA256.</summary>
     private const ulong Iv2 = 0xdcaabe85a70319d2UL;
 
-    /// <summary>
-    /// The fourth word of the pre-computed initial state for ASCON-HASHA256.
-    /// </summary>
+    /// <summary>The fourth word of the pre-computed initial state for ASCON-HASHA256.</summary>
     private const ulong Iv3 = 0xd98f049404be3214UL;
 
-    /// <summary>
-    /// The fifth word of the pre-computed initial state for ASCON-HASHA256.
-    /// </summary>
+    /// <summary>The fifth word of the pre-computed initial state for ASCON-HASHA256.</summary>
     private const ulong Iv4 = 0xca8c9d516e8a2221UL;
 
     /// <summary>

@@ -39,9 +39,7 @@ namespace Bodu.IO.Hashing;
 /// </description>
 /// </item>
 /// <item>
-/// <description>
-/// <see cref="ProcessFinalBlock" /> — emit the final digest from the accumulator.
-/// </description>
+/// <description><see cref="ProcessFinalBlock" /> — emit the final digest from the accumulator.</description>
 /// </item>
 /// <item>
 /// <description>
@@ -139,19 +137,13 @@ public abstract class BlockNonCryptographicHashAlgorithm<T>
     : NonCryptographicHashAlgorithm
     where T : BlockNonCryptographicHashAlgorithm<T>, new()
 {
-    /// <summary>
-    /// The fixed size, in bytes, of each block processed by the algorithm.
-    /// </summary>
+    /// <summary>The fixed size, in bytes, of each block processed by the algorithm.</summary>
     protected readonly int BlockSizeBytes;
 
-    /// <summary>
-    /// The fixed-size buffer holding trailing input bytes that do not yet fill a complete block.
-    /// </summary>
+    /// <summary>The fixed-size buffer holding trailing input bytes that do not yet fill a complete block.</summary>
     private readonly byte[] _residualByteBuffer;
 
-    /// <summary>
-    /// The number of bytes currently buffered in <see cref="_residualByteBuffer" /> awaiting a complete block.
-    /// </summary>
+    /// <summary>The number of bytes currently buffered in <see cref="_residualByteBuffer" /> awaiting a complete block.</summary>
     private int _residualBytes;
 
     /// <summary>

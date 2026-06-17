@@ -37,10 +37,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 public sealed class InMemoryExchangeRateCache
     : ExchangeRateCacheBase<ExchangeRateCacheOptions>
 {
-    /// <summary>
-    /// The in-memory store of per-pair state, keyed by currency pair. Each value is an immutable snapshot owned by the
-    /// cache, carrying both the cached rows and the coverage windows.
-    /// </summary>
+    /// <summary>The in-memory store of per-pair state, keyed by currency pair. Each value is an immutable snapshot owned by the cache, carrying both the cached rows and the coverage windows.</summary>
     private readonly ConcurrentDictionary<ExchangeRatePair, CachePairState> _store = new();
 
     /// <summary>

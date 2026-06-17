@@ -33,9 +33,7 @@ namespace Bodu.Text.Ini;
 /// </remarks>
 public readonly struct IniParseOptions
 {
-    /// <summary>
-    /// Gets a pre-constructed <see cref="IniParseOptions" /> instance with all properties set to their default values.
-    /// </summary>
+    /// <summary>Gets a pre-constructed <see cref="IniParseOptions" /> instance with all properties set to their default values.</summary>
     /// <returns>An <see cref="IniParseOptions" /> equivalent to <c>new IniParseOptions()</c>.</returns>
     public static readonly IniParseOptions Default = new();
 

@@ -17,39 +17,25 @@ namespace Bodu.IO.Compound;
 /// </remarks>
 internal sealed class CompoundFileHeader
 {
-    /// <summary>
-    /// The sentinel marking the end of a sector chain.
-    /// </summary>
+    /// <summary>The sentinel marking the end of a sector chain.</summary>
     internal const uint EndOfChain = 0xFFFFFFFE;
 
-    /// <summary>
-    /// The sentinel marking a free (unallocated) sector.
-    /// </summary>
+    /// <summary>The sentinel marking a free (unallocated) sector.</summary>
     internal const uint FreeSector = 0xFFFFFFFF;
 
-    /// <summary>
-    /// The sentinel marking a sector that holds part of the FAT.
-    /// </summary>
+    /// <summary>The sentinel marking a sector that holds part of the FAT.</summary>
     internal const uint FatSector = 0xFFFFFFFD;
 
-    /// <summary>
-    /// The sentinel marking a sector that holds part of the DIFAT.
-    /// </summary>
+    /// <summary>The sentinel marking a sector that holds part of the DIFAT.</summary>
     internal const uint DifatSector = 0xFFFFFFFC;
 
-    /// <summary>
-    /// The sentinel stored in a directory entry's sibling/child slots when there is no such entry.
-    /// </summary>
+    /// <summary>The sentinel stored in a directory entry's sibling/child slots when there is no such entry.</summary>
     internal const uint NoStream = 0xFFFFFFFF;
 
-    /// <summary>
-    /// The number of DIFAT entries stored inline in the header.
-    /// </summary>
+    /// <summary>The number of DIFAT entries stored inline in the header.</summary>
     internal const int HeaderDifatCount = 109;
 
-    /// <summary>
-    /// The eight-byte signature that identifies a compound file.
-    /// </summary>
+    /// <summary>The eight-byte signature that identifies a compound file.</summary>
     internal static readonly byte[] Signature = [0xD0, 0xCF, 0x11, 0xE0, 0xA1, 0xB1, 0x1A, 0xE1];
 
     /// <summary>

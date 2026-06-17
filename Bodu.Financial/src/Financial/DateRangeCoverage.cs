@@ -23,10 +23,7 @@ namespace Bodu.Financial;
 /// </remarks>
 public sealed class DateRangeCoverage
 {
-    /// <summary>
-    /// The covered intervals, kept sorted by start date and mutually disjoint, with no two intervals overlapping or
-    /// touching.
-    /// </summary>
+    /// <summary>The covered intervals, kept sorted by start date and mutually disjoint, with no two intervals overlapping or touching.</summary>
     private readonly List<(DateOnly Start, DateOnly End)> _intervals = new();
 
     /// <summary>

@@ -68,49 +68,28 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
     : IReadOnlyCollection<KeyValuePair<TElement, TPriority>>
     where TElement : notnull
 {
-    /// <summary>
-    /// The default capacity used when the heap is grown from an empty backing array.
-    /// </summary>
+    /// <summary>The default capacity used when the heap is grown from an empty backing array.</summary>
     private const int DefaultGrowCapacity = 4;
 
-    /// <summary>
-    /// The composite-format string used when reporting a duplicate element key. The single placeholder receives the
-    /// offending element's <see cref="object.ToString" /> representation.
-    /// </summary>
+    /// <summary>The composite-format string used when reporting a duplicate element key. The single placeholder receives the offending element's <see cref="object.ToString" /> representation.</summary>
     private const string DuplicateElementMessageFormat = "An element with the key '{0}' already exists in the queue.";
 
-    /// <summary>
-    /// The composite-format string used when reporting a missing element key. The single placeholder receives the
-    /// requested element's <see cref="object.ToString" /> representation.
-    /// </summary>
+    /// <summary>The composite-format string used when reporting a missing element key. The single placeholder receives the requested element's <see cref="object.ToString" /> representation.</summary>
     private const string ElementNotFoundMessageFormat = "The element '{0}' was not found in the queue.";
 
-    /// <summary>
-    /// The priority comparer used for heap ordering. Smaller values (per this comparer) are dequeued first.
-    /// </summary>
+    /// <summary>The priority comparer used for heap ordering. Smaller values (per this comparer) are dequeued first.</summary>
     private readonly IComparer<TPriority> _comparer;
 
-    /// <summary>
-    /// Maps each element currently in the heap to its position in <see cref="_nodes" />. Kept in lock-step with every
-    /// swap, insert, and removal so that lookup-by-element remains O(1).
-    /// </summary>
+    /// <summary>Maps each element currently in the heap to its position in <see cref="_nodes" />. Kept in lock-step with every swap, insert, and removal so that lookup-by-element remains O(1).</summary>
     private readonly Dictionary<TElement, int> _index;
 
-    /// <summary>
-    /// Backing storage for the heap. Slots <c>[0.._size)</c> are valid heap nodes; the remainder is uninitialized
-    /// reserve capacity.
-    /// </summary>
+    /// <summary>Backing storage for the heap. Slots <c>[0.._size)</c> are valid heap nodes; the remainder is uninitialized reserve capacity.</summary>
     private (TElement Element, TPriority Priority)[] _nodes;
 
-    /// <summary>
-    /// The number of nodes currently stored in the heap. Always satisfies <c>_size &lt;= _nodes.Length</c>.
-    /// </summary>
+    /// <summary>The number of nodes currently stored in the heap. Always satisfies <c>_size &lt;= _nodes.Length</c>.</summary>
     private int _size;
 
-    /// <summary>
-    /// Mutation counter used by <see cref="Enumerator" /> to detect concurrent modification. Incremented on every
-    /// operation that adds, removes, or re-prioritizes an element, and on <see cref="Clear" />.
-    /// </summary>
+    /// <summary>Mutation counter used by <see cref="Enumerator" /> to detect concurrent modification. Incremented on every operation that adds, removes, or re-prioritizes an element, and on <see cref="Clear" />.</summary>
     private int _version;
 
     /// <summary>

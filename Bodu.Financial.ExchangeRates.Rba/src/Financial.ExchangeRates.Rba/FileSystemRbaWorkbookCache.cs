@@ -25,9 +25,7 @@ namespace Bodu.Financial.ExchangeRates.Rba;
 public sealed class FileSystemRbaWorkbookCache
     : IRbaWorkbookCache
 {
-    /// <summary>
-    /// The directory in which cached workbooks are stored.
-    /// </summary>
+    /// <summary>The directory in which cached workbooks are stored.</summary>
     private readonly string _directory;
 
     /// <summary>

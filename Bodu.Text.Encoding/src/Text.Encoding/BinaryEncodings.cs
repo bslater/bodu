@@ -275,9 +275,7 @@ public static class BinaryEncodings
     private sealed class Base32VariantAdapter
         : IBinaryEncoding
     {
-        /// <summary>
-        /// The Base32 variant this adapter delegates to.
-        /// </summary>
+        /// <summary>The Base32 variant this adapter delegates to.</summary>
         private readonly Base32Variant _variant;
 
         /// <summary>
@@ -367,9 +365,7 @@ public static class BinaryEncodings
     private sealed class Base58VariantAdapter
         : IBinaryEncoding
     {
-        /// <summary>
-        /// The Base58 variant this adapter delegates to.
-        /// </summary>
+        /// <summary>The Base58 variant this adapter delegates to.</summary>
         private readonly Base58Variant _variant;
 
         /// <summary>
@@ -423,9 +419,7 @@ public static class BinaryEncodings
     private sealed class Base64VariantAdapter
         : IBinaryEncoding
     {
-        /// <summary>
-        /// The Base64 variant this adapter delegates to.
-        /// </summary>
+        /// <summary>The Base64 variant this adapter delegates to.</summary>
         private readonly Base64Variant _variant;
 
         /// <summary>
@@ -479,9 +473,7 @@ public static class BinaryEncodings
     private sealed class Base85VariantAdapter
         : IBinaryEncoding
     {
-        /// <summary>
-        /// The Base85 variant this adapter delegates to.
-        /// </summary>
+        /// <summary>The Base85 variant this adapter delegates to.</summary>
         private readonly Base85Variant _variant;
 
         /// <summary>

@@ -23,9 +23,7 @@ namespace Bodu.Extensions.Configuration.Text;
 /// Five overload shapes are available, mirroring the JSON provider's surface:
 /// <list type="bullet">
 /// <item>
-/// <description>
-/// File path with optional reload-on-change — the everyday production shape.
-/// </description>
+/// <description>File path with optional reload-on-change — the everyday production shape.</description>
 /// </item>
 /// <item>
 /// <description>
@@ -98,16 +96,10 @@ namespace Bodu.Extensions.Configuration.Text;
 /// </example>
 public static class TextConfigurationExtensions
 {
-    /// <summary>
-    /// The conventional file name probed by <see cref="AddBoduConfiguration(IConfigurationBuilder, bool, bool)" />.
-    /// </summary>
+    /// <summary>The conventional file name probed by <see cref="AddBoduConfiguration(IConfigurationBuilder, bool, bool)" />.</summary>
     private const string DefaultDotFileName = ".boduconfig";
 
-    /// <summary>
-    /// The alternative conventional file name probed by
-    /// <see cref="AddBoduConfiguration(IConfigurationBuilder, bool, bool)" /> when <see cref="DefaultDotFileName" /> is
-    /// absent.
-    /// </summary>
+    /// <summary>The alternative conventional file name probed by <see cref="AddBoduConfiguration(IConfigurationBuilder, bool, bool)" /> when <see cref="DefaultDotFileName" /> is absent.</summary>
     private const string DefaultPlainFileName = "bodu.config";
 
     /// <summary>

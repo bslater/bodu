@@ -12,9 +12,7 @@ namespace Bodu.Text.Delimited;
 /// </summary>
 public static class DelimitedKnownAnswerVectors
 {
-    /// <summary>
-    /// RFC 4180, §2 citation source.
-    /// </summary>
+    /// <summary>RFC 4180, §2 citation source.</summary>
     private const string Rfc4180 = "RFC 4180, §2";
 
     /// <summary>

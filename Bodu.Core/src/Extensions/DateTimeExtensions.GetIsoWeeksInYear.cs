@@ -22,9 +22,7 @@ public static partial class DateTimeExtensions
     /// </para>
     /// <list type="bullet">
     /// <item>
-    /// <description>
-    /// January 1 of the supplied year falls on a Thursday;
-    /// </description>
+    /// <description>January 1 of the supplied year falls on a Thursday;</description>
     /// </item>
     /// <item>
     /// <description>

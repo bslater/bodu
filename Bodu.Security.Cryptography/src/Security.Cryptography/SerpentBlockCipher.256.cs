@@ -49,9 +49,7 @@ namespace Bodu.Security.Cryptography;
 public sealed class Serpent256Cipher
     : SerpentBlockCipher
 {
-    /// <summary>
-    /// Length of the Serpent-256 key is 256 bits (32 bytes).
-    /// </summary>
+    /// <summary>Length of the Serpent-256 key is 256 bits (32 bytes).</summary>
     public const int KeySize = 256;
 
     /// <summary>

@@ -49,9 +49,7 @@ namespace Bodu.Security.Cryptography;
 public sealed class Serpent512Cipher
     : SerpentBlockCipher
 {
-    /// <summary>
-    /// Length of the Serpent-512 key is 512 bits (64 bytes).
-    /// </summary>
+    /// <summary>Length of the Serpent-512 key is 512 bits (64 bytes).</summary>
     public const int KeySize = 512;
 
     /// <summary>

@@ -25,14 +25,10 @@ namespace Bodu.Text.Toml.Document;
 /// </remarks>
 public readonly partial struct TomlElement
 {
-    /// <summary>
-    /// The owning document.
-    /// </summary>
+    /// <summary>The owning document.</summary>
     private readonly TomlDocument _document;
 
-    /// <summary>
-    /// The index of this element's row within the owning document's flat metadata index.
-    /// </summary>
+    /// <summary>The index of this element's row within the owning document's flat metadata index.</summary>
     private readonly int _index;
 
     /// <summary>

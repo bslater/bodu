@@ -23,19 +23,13 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>
-/// <see cref="Pkcs7Padding" /> — RFC 5652 / PKCS#7 (the de-facto standard).
-/// </description>
+/// <description><see cref="Pkcs7Padding" /> — RFC 5652 / PKCS#7 (the de-facto standard).</description>
 /// </item>
 /// <item>
-/// <description>
-/// <see cref="Ansix923Padding" /> — ANSI X.923 (zero pad with length byte).
-/// </description>
+/// <description><see cref="Ansix923Padding" /> — ANSI X.923 (zero pad with length byte).</description>
 /// </item>
 /// <item>
-/// <description>
-/// <see cref="Iso10126Padding" /> — ISO 10126 (random pad with length byte).
-/// </description>
+/// <description><see cref="Iso10126Padding" /> — ISO 10126 (random pad with length byte).</description>
 /// </item>
 /// <item>
 /// <description>
@@ -48,9 +42,7 @@ namespace Bodu.Security.Cryptography;
 /// </description>
 /// </item>
 /// <item>
-/// <description>
-/// <see cref="NoPadding" /> — pass-through; the caller guarantees alignment.
-/// </description>
+/// <description><see cref="NoPadding" /> — pass-through; the caller guarantees alignment.</description>
 /// </item>
 /// </list>
 /// <para>

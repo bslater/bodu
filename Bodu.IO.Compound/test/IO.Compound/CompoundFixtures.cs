@@ -11,9 +11,7 @@ namespace Bodu.IO.Compound;
 /// </summary>
 internal static class CompoundFixtures
 {
-    /// <summary>
-    /// The file name of the real-world sample compound file (an RBA exchange-rate workbook).
-    /// </summary>
+    /// <summary>The file name of the real-world sample compound file (an RBA exchange-rate workbook).</summary>
     public const string SampleCompound = "sample-compound.xls";
 
     /// <summary>

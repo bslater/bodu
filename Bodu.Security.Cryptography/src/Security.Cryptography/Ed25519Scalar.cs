@@ -20,19 +20,13 @@ namespace Bodu.Security.Cryptography;
 /// </remarks>
 internal static class Ed25519Scalar
 {
-    /// <summary>
-    /// The size, in bytes, of a canonical scalar.
-    /// </summary>
+    /// <summary>The size, in bytes, of a canonical scalar.</summary>
     internal const int SizeInBytes = 32;
 
-    /// <summary>
-    /// Mask isolating the low 21 bits of a limb.
-    /// </summary>
+    /// <summary>Mask isolating the low 21 bits of a limb.</summary>
     private const long LimbMask = (1L << 21) - 1;
 
-    /// <summary>
-    /// The canonical little-endian encoding of the group order L, used by <see cref="IsCanonical" />.
-    /// </summary>
+    /// <summary>The canonical little-endian encoding of the group order L, used by <see cref="IsCanonical" />.</summary>
     private static readonly byte[] s_orderBytes = Convert.FromHexString(
         "edd3f55c1a631258d69cf7a2def9de1400000000000000000000000000000010");
 

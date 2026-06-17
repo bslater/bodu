@@ -25,9 +25,7 @@ namespace Bodu.Financial.Serialization;
 public sealed class MoneyOfTCurrencyJsonConverterFactory
     : JsonConverterFactory
 {
-    /// <summary>
-    /// The policy passed to every <see cref="MoneyOfTCurrencyJsonConverter{TCurrency}" /> produced by this factory.
-    /// </summary>
+    /// <summary>The policy passed to every <see cref="MoneyOfTCurrencyJsonConverter{TCurrency}" /> produced by this factory.</summary>
     private readonly FinancialJsonPolicy _policy;
 
     /// <summary>

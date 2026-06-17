@@ -53,10 +53,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 public sealed partial class Gumm
     : CheckDigitAlgorithm
 {
-    /// <summary>
-    /// The two parallel body-product accumulators that let the streaming <see cref="Append" /> surface compute the
-    /// check digit without buffering the appended digits.
-    /// </summary>
+    /// <summary>The two parallel body-product accumulators that let the streaming <see cref="Append" /> surface compute the check digit without buffering the appended digits.</summary>
     /// <remarks>
     /// <c>_c[k]</c> holds the body product under the hypothesis that the most recently appended digit sits at
     /// right-index <c>k</c>, where right-index 0 is the rightmost body position (an odd absolute position, so transform

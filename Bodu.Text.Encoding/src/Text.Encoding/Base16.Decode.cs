@@ -8,10 +8,7 @@ namespace Bodu.Text.Encoding;
 
 public static partial class Base16
 {
-    /// <summary>
-    /// The maximum scratch-buffer size that may be allocated on the stack during lenient decoding. Inputs larger than
-    /// this fall back to a heap allocation to avoid stack overflow.
-    /// </summary>
+    /// <summary>The maximum scratch-buffer size that may be allocated on the stack during lenient decoding. Inputs larger than this fall back to a heap allocation to avoid stack overflow.</summary>
     private const int StackallocThreshold = 256;
 
     /// <summary>

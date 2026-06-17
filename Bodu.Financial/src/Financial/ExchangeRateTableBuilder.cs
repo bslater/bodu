@@ -22,9 +22,7 @@ namespace Bodu.Financial;
 /// </remarks>
 public sealed class ExchangeRateTableBuilder
 {
-    /// <summary>
-    /// The series builders, keyed by (pair, provider).
-    /// </summary>
+    /// <summary>The series builders, keyed by (pair, provider).</summary>
     private readonly Dictionary<ExchangeRateSeriesKey, ExchangeRateSeriesBuilder> _series;
 
     /// <summary>

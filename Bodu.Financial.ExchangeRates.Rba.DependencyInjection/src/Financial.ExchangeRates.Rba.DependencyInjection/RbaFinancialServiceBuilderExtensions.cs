@@ -20,9 +20,7 @@ namespace Bodu.Financial.ExchangeRates.Rba.DependencyInjection;
 /// </summary>
 public static class RbaFinancialServiceBuilderExtensions
 {
-    /// <summary>
-    /// The name of the <see cref="HttpClient" /> configured for RBA downloads.
-    /// </summary>
+    /// <summary>The name of the <see cref="HttpClient" /> configured for RBA downloads.</summary>
     public const string HttpClientName = "Bodu.Financial.ExchangeRates.Rba";
 
     /// <summary>

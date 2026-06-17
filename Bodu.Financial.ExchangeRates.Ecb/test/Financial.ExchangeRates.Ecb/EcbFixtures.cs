@@ -11,14 +11,10 @@ namespace Bodu.Financial.ExchangeRates.Ecb;
 /// </summary>
 internal static class EcbFixtures
 {
-    /// <summary>
-    /// The prefix under which fixtures are embedded.
-    /// </summary>
+    /// <summary>The prefix under which fixtures are embedded.</summary>
     private const string ResourcePrefix = "Bodu.Financial.ExchangeRates.Ecb.Fixtures.";
 
-    /// <summary>
-    /// The file name of the sample <c>eurofxref</c> history feed, embedded under the ECB's own file name.
-    /// </summary>
+    /// <summary>The file name of the sample <c>eurofxref</c> history feed, embedded under the ECB's own file name.</summary>
     public const string Sample = "eurofxref-hist.xml";
 
     /// <summary>

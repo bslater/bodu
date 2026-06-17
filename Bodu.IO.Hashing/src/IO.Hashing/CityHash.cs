@@ -78,59 +78,37 @@ public abstract class CityHash<T>
     : NonCryptographicHashAlgorithm, IDisposable
     where T : CityHash<T>, new()
 {
-    /// <summary>
-    /// The first Murmur-style mixing constant used in 32-bit operations.
-    /// </summary>
+    /// <summary>The first Murmur-style mixing constant used in 32-bit operations.</summary>
     protected const uint C1 = 0xCC9E2D51U;
 
-    /// <summary>
-    /// The second Murmur-style mixing constant used in 32-bit operations.
-    /// </summary>
+    /// <summary>The second Murmur-style mixing constant used in 32-bit operations.</summary>
     protected const uint C2 = 0x1B873593U;
 
-    /// <summary>
-    /// The 32-bit finalization magic constant applied during the iterative mixing phase.
-    /// </summary>
+    /// <summary>The 32-bit finalization magic constant applied during the iterative mixing phase.</summary>
     protected const uint HashMagic = 0xE6546B64U;
 
-    /// <summary>
-    /// The first 64-bit mixing constant, derived from the CityHash reference implementation.
-    /// </summary>
+    /// <summary>The first 64-bit mixing constant, derived from the CityHash reference implementation.</summary>
     protected const ulong K0 = 0xC3A5C85C97CB3127UL;
 
-    /// <summary>
-    /// The second 64-bit mixing constant, derived from the CityHash reference implementation.
-    /// </summary>
+    /// <summary>The second 64-bit mixing constant, derived from the CityHash reference implementation.</summary>
     protected const ulong K1 = 0xB492B66FBE98F273UL;
 
-    /// <summary>
-    /// The third 64-bit mixing constant, derived from the CityHash reference implementation.
-    /// </summary>
+    /// <summary>The third 64-bit mixing constant, derived from the CityHash reference implementation.</summary>
     protected const ulong K2 = 0x9AE16A3B2F90404FUL;
 
-    /// <summary>
-    /// The fourth 64-bit constant used by the 128-bit variant to seed the accumulator from the first 16 bytes of input.
-    /// </summary>
+    /// <summary>The fourth 64-bit constant used by the 128-bit variant to seed the accumulator from the first 16 bytes of input.</summary>
     protected const ulong K3 = 0xC949D7C7509E6557UL;
 
-    /// <summary>
-    /// The prime multiplier used by the 64-bit <see cref="HashLen16(ulong, ulong)" /> finalization step.
-    /// </summary>
+    /// <summary>The prime multiplier used by the 64-bit <see cref="HashLen16(ulong, ulong)" /> finalization step.</summary>
     protected const ulong KMul = 0x9DDFEA08EB382D69UL;
 
-    /// <summary>
-    /// The set of hash sizes, in bits, accepted by the constructor.
-    /// </summary>
+    /// <summary>The set of hash sizes, in bits, accepted by the constructor.</summary>
     private static readonly int[] s_validHashSizes = [32, 64, 128];
 
-    /// <summary>
-    /// The buffer accumulating all appended input, since CityHash is a one-shot algorithm hashed at finalization.
-    /// </summary>
+    /// <summary>The buffer accumulating all appended input, since CityHash is a one-shot algorithm hashed at finalization.</summary>
     private readonly MemoryStream _inputBuffer = new();
 
-    /// <summary>
-    /// Indicates whether the instance has been disposed and its buffered input released.
-    /// </summary>
+    /// <summary>Indicates whether the instance has been disposed and its buffered input released.</summary>
     private bool _disposed;
 
     /// <summary>

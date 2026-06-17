@@ -43,14 +43,10 @@ namespace Bodu.Globalization.Calendar;
 public sealed class MutableNotableDateResourceProvider
     : INotableDateResourceProvider
 {
-    /// <summary>
-    /// The logger that records resource reloads.
-    /// </summary>
+    /// <summary>The logger that records resource reloads.</summary>
     private readonly ILogger _logger;
 
-    /// <summary>
-    /// The resource currently in effect. Marked <see langword="volatile" /> so a swap is visible to all readers.
-    /// </summary>
+    /// <summary>The resource currently in effect. Marked <see langword="volatile" /> so a swap is visible to all readers.</summary>
     private volatile NotableDateResource _current;
 
     /// <summary>

@@ -30,19 +30,13 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>
-/// Block size: 128 bits (16 bytes).
-/// </description>
+/// <description>Block size: 128 bits (16 bytes).</description>
 /// </item>
 /// <item>
-/// <description>
-/// Key sizes: 128, 192, or 256 bits.
-/// </description>
+/// <description>Key sizes: 128, 192, or 256 bits.</description>
 /// </item>
 /// <item>
-/// <description>
-/// 16-round Feistel structure with key-dependent S-boxes and an MDS-based linear layer.
-/// </description>
+/// <description>16-round Feistel structure with key-dependent S-boxes and an MDS-based linear layer.</description>
 /// </item>
 /// <item>
 /// <description>
@@ -85,50 +79,34 @@ namespace Bodu.Security.Cryptography;
 public sealed class Twofish
     : SymmetricAlgorithm
 {
-    /// <summary>
-    /// Length of the Twofish block is 128 bits (16 bytes).
-    /// </summary>
+    /// <summary>Length of the Twofish block is 128 bits (16 bytes).</summary>
     internal const int BlockSizeBits = 128;
 
-    /// <summary>
-    /// Length of the minimum permitted Twofish key is 128 bits (16 bytes).
-    /// </summary>
+    /// <summary>Length of the minimum permitted Twofish key is 128 bits (16 bytes).</summary>
     internal const int MinKeySize = 128;
 
-    /// <summary>
-    /// Length of the maximum permitted Twofish key is 256 bits (32 bytes).
-    /// </summary>
+    /// <summary>Length of the maximum permitted Twofish key is 256 bits (32 bytes).</summary>
     internal const int MaxKeySize = 256;
 
-    /// <summary>
-    /// The legal block sizes for Twofish.
-    /// </summary>
+    /// <summary>The legal block sizes for Twofish.</summary>
     /// <remarks>
     /// Twofish has a single fixed 128-bit block size.
     /// </remarks>
     private static readonly KeySizes[] s_twofishBlockSizes = [new KeySizes(BlockSizeBits, BlockSizeBits, 0)];
 
-    /// <summary>
-    /// The legal key sizes for Twofish.
-    /// </summary>
+    /// <summary>The legal key sizes for Twofish.</summary>
     /// <remarks>
     /// Legal key sizes are 128, 192, and 256 bits.
     /// </remarks>
     private static readonly KeySizes[] s_twofishKeySizes = [new KeySizes(128, 256, 64)];
 
-    /// <summary>
-    /// Indicates whether this instance has been disposed.
-    /// </summary>
+    /// <summary>Indicates whether this instance has been disposed.</summary>
     private bool _disposed;
 
-    /// <summary>
-    /// The block cipher mode of operation used when creating encryptors and decryptors.
-    /// </summary>
+    /// <summary>The block cipher mode of operation used when creating encryptors and decryptors.</summary>
     private CipherModeKind _blockMode = CipherModeKind.CBC;
 
-    /// <summary>
-    /// The extended padding mode used when creating encryptors and decryptors.
-    /// </summary>
+    /// <summary>The extended padding mode used when creating encryptors and decryptors.</summary>
     private PaddingModeKind _blockPadding = PaddingModeKind.PKCS7;
 
     /// <summary>

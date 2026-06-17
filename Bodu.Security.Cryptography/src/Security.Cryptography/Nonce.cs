@@ -41,10 +41,7 @@ namespace Bodu.Security.Cryptography;
 public readonly struct Nonce
     : IEquatable<Nonce>
 {
-    /// <summary>
-    /// The nonce bytes, or <see langword="null" /> for the default (empty) instance. Never exposed directly; all
-    /// accessors normalize <see langword="null" /> to an empty value.
-    /// </summary>
+    /// <summary>The nonce bytes, or <see langword="null" /> for the default (empty) instance. Never exposed directly; all accessors normalize <see langword="null" /> to an empty value.</summary>
     private readonly byte[]? _value;
 
     /// <summary>

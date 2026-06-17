@@ -20,9 +20,7 @@ namespace Bodu.Collections.Generic.Concurrent;
 internal sealed class ConcurrentCircularBufferDebugView<T>
     where T : class?
 {
-    /// <summary>
-    /// The buffer instance being inspected.
-    /// </summary>
+    /// <summary>The buffer instance being inspected.</summary>
     private readonly ConcurrentCircularBuffer<T> _buffer;
 
     /// <summary>

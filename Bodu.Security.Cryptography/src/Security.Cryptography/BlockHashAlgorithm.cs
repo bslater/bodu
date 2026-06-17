@@ -27,9 +27,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>
-/// <see cref="ProcessBlock" /> processes a single complete block of input data.
-/// </description>
+/// <description><see cref="ProcessBlock" /> processes a single complete block of input data.</description>
 /// </item>
 /// <item>
 /// <description>

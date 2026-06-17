@@ -27,24 +27,16 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>
-/// Block size: 256 bits (32 bytes).
-/// </description>
+/// <description>Block size: 256 bits (32 bytes).</description>
 /// </item>
 /// <item>
-/// <description>
-/// Key size: 256 bits (32 bytes).
-/// </description>
+/// <description>Key size: 256 bits (32 bytes).</description>
 /// </item>
 /// <item>
-/// <description>
-/// Tweak size: 128 bits (16 bytes).
-/// </description>
+/// <description>Tweak size: 128 bits (16 bytes).</description>
 /// </item>
 /// <item>
-/// <description>
-/// 48 rounds; tweak subkey injected every 4 rounds.
-/// </description>
+/// <description>48 rounds; tweak subkey injected every 4 rounds.</description>
 /// </item>
 /// <item>
 /// <description>

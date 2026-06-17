@@ -8,9 +8,7 @@ namespace Bodu.Security.Cryptography;
 
 public sealed partial class BlowfishBlockCipher
 {
-    /// <summary>
-    /// The initial P-array <c>P[0..17]</c> for Blowfish, derived from the hexadecimal digits of pi (π).
-    /// </summary>
+    /// <summary>The initial P-array <c>P[0..17]</c> for Blowfish, derived from the hexadecimal digits of pi (π).</summary>
     /// <remarks>
     /// These immutable static tables are copied into the per-instance P-array and S-box arrays before the key schedule
     /// mutates the working copies into key-dependent state. After key expansion the P-array words become the 16 round
@@ -25,9 +23,7 @@ public sealed partial class BlowfishBlockCipher
         0x9216D5D9, 0x8979FB1B,
     ];
 
-    /// <summary>
-    /// The initial S-box 0 for Blowfish, derived from the hexadecimal digits of pi (π).
-    /// </summary>
+    /// <summary>The initial S-box 0 for Blowfish, derived from the hexadecimal digits of pi (π).</summary>
     /// <remarks>
     /// The four S-boxes provide the nonlinear lookup state used by the Blowfish F function.
     /// </remarks>
@@ -99,9 +95,7 @@ public sealed partial class BlowfishBlockCipher
         0x53B02D5D, 0xA99F8FA1, 0x08BA4799, 0x6E85076A,
     ];
 
-    /// <summary>
-    /// The initial S-box 1 for Blowfish, derived from the hexadecimal digits of pi (π).
-    /// </summary>
+    /// <summary>The initial S-box 1 for Blowfish, derived from the hexadecimal digits of pi (π).</summary>
     /// <remarks>
     /// Together with S0, S2, and S3 this table is transformed by the key schedule into the key-dependent S-box state
     /// consumed by the Blowfish F function.
@@ -174,9 +168,7 @@ public sealed partial class BlowfishBlockCipher
         0x153E21E7, 0x8FB03D4A, 0xE6E39F2B, 0xDB83ADF7,
     ];
 
-    /// <summary>
-    /// The initial S-box 2 for Blowfish, derived from the hexadecimal digits of pi (π).
-    /// </summary>
+    /// <summary>The initial S-box 2 for Blowfish, derived from the hexadecimal digits of pi (π).</summary>
     /// <remarks>
     /// All S-boxes are expanded by repeatedly encrypting the evolving all-zero block after the P-array has been
     /// expanded.
@@ -249,9 +241,7 @@ public sealed partial class BlowfishBlockCipher
         0xD79A3234, 0x92638212, 0x670EFA8E, 0x406000E0,
     ];
 
-    /// <summary>
-    /// The initial S-box 3 for Blowfish, derived from the hexadecimal digits of pi (π).
-    /// </summary>
+    /// <summary>The initial S-box 3 for Blowfish, derived from the hexadecimal digits of pi (π).</summary>
     /// <remarks>
     /// The final expanded S-box entry is therefore dependent on every prior expansion step and indirectly on every byte
     /// of the supplied key.

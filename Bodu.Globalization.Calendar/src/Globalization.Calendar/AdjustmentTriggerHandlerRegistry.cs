@@ -18,9 +18,7 @@ namespace Bodu.Globalization.Calendar;
 public sealed class AdjustmentTriggerHandlerRegistry
     : IAdjustmentTriggerHandlerRegistry
 {
-    /// <summary>
-    /// The registered handlers keyed by handler key.
-    /// </summary>
+    /// <summary>The registered handlers keyed by handler key.</summary>
     private readonly Dictionary<string, IAdjustmentTriggerHandler> _handlers = new(StringComparer.Ordinal);
 
     /// <summary>

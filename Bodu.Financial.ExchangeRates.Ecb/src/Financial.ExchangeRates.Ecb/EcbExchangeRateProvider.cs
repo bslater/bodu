@@ -54,39 +54,25 @@ namespace Bodu.Financial.ExchangeRates.Ecb;
 public sealed class EcbExchangeRateProvider
     : WebExchangeRateProvider
 {
-    /// <summary>
-    /// The provider identifier stamped on every rate this provider produces.
-    /// </summary>
+    /// <summary>The provider identifier stamped on every rate this provider produces.</summary>
     public const string ProviderName = "ECB";
 
-    /// <summary>
-    /// The base currency the ECB quotes against.
-    /// </summary>
+    /// <summary>The base currency the ECB quotes against.</summary>
     public const string BaseCurrencyIsoCode = "EUR";
 
-    /// <summary>
-    /// The source that downloads and parses feed files.
-    /// </summary>
+    /// <summary>The source that downloads and parses feed files.</summary>
     private readonly IEcbExchangeRateTableSource _source;
 
-    /// <summary>
-    /// The provider options.
-    /// </summary>
+    /// <summary>The provider options.</summary>
     private readonly EcbExchangeRateOptions _options;
 
-    /// <summary>
-    /// The logger that records feed downloads and on-demand network fetches.
-    /// </summary>
+    /// <summary>The logger that records feed downloads and on-demand network fetches.</summary>
     private readonly ILogger _logger;
 
-    /// <summary>
-    /// The names of feeds whose data has been loaded.
-    /// </summary>
+    /// <summary>The names of feeds whose data has been loaded.</summary>
     private readonly HashSet<string> _loadedFeeds = new(StringComparer.Ordinal);
 
-    /// <summary>
-    /// The discovered currency series, keyed by pair.
-    /// </summary>
+    /// <summary>The discovered currency series, keyed by pair.</summary>
     private readonly Dictionary<ExchangeRatePair, EcbSeriesInfo> _series = new();
 
     /// <summary>

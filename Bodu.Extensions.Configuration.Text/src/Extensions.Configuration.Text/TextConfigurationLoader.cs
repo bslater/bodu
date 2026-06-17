@@ -22,9 +22,7 @@ namespace Bodu.Extensions.Configuration.Text;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>
-/// Leading and inline comments are kept on the parsed document but discarded here.
-/// </description>
+/// <description>Leading and inline comments are kept on the parsed document but discarded here.</description>
 /// </item>
 /// <item>
 /// <description>

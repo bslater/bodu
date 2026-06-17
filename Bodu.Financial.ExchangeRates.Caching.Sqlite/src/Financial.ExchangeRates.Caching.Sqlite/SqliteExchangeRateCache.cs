@@ -63,34 +63,19 @@ namespace Bodu.Financial.ExchangeRates.Caching.Sqlite;
 public sealed class SqliteExchangeRateCache
     : IExchangeRateCache, IDisposable
 {
-    /// <summary>
-    /// The validated options carrying the bound provider and the database location.
-    /// </summary>
+    /// <summary>The validated options carrying the bound provider and the database location.</summary>
     private readonly SqliteExchangeRateCacheOptions _options;
 
-    /// <summary>
-    /// The resolved connection string every connection is opened with.
-    /// </summary>
+    /// <summary>The resolved connection string every connection is opened with.</summary>
     private readonly string _connectionString;
 
-    /// <summary>
-    /// The keep-alive connection held open for the instance lifetime so a shared in-memory database is not torn down
-    /// between operations. Closed on <see cref="Dispose" />.
-    /// </summary>
+    /// <summary>The keep-alive connection held open for the instance lifetime so a shared in-memory database is not torn down between operations. Closed on <see cref="Dispose" />.</summary>
     private readonly SqliteConnection _keepAlive;
 
-    /// <summary>
-    /// The striped per-pair locks guarding the read-modify-write sequences in <see cref="Store" />,
-    /// <see cref="RecordCoverage" />, and <see cref="StoreFetchedRange" />. One lock object is created per pair on
-    /// first use and reused thereafter.
-    /// </summary>
+    /// <summary>The striped per-pair locks guarding the read-modify-write sequences in <see cref="Store" />, <see cref="RecordCoverage" />, and <see cref="StoreFetchedRange" />. One lock object is created per pair on first use and reused thereafter.</summary>
     private readonly ConcurrentDictionary<ExchangeRatePair, object> _pairLocks = new();
 
-    /// <summary>
-    /// Tracks whether the instance has been disposed, as <c>0</c> for live and <c>1</c> for disposed. Stored as an
-    /// <see cref="int" /> so <see cref="Interlocked.Exchange(ref int, int)" /> can make <see cref="Dispose" />
-    /// idempotent: only the first caller observes the transition and releases the keep-alive connection.
-    /// </summary>
+    /// <summary>Tracks whether the instance has been disposed, as <c>0</c> for live and <c>1</c> for disposed. Stored as an <see cref="int" /> so <see cref="Interlocked.Exchange(ref int, int)" /> can make <see cref="Dispose" /> idempotent: only the first caller observes the transition and releases the keep-alive connection.</summary>
     private int _disposed;
 
     /// <summary>

@@ -17,9 +17,7 @@ namespace Bodu.Formats.Excel.Binary;
 /// </remarks>
 internal sealed class Biff8RecordReader
 {
-    /// <summary>
-    /// The workbook stream bytes.
-    /// </summary>
+    /// <summary>The workbook stream bytes.</summary>
     private readonly ReadOnlyMemory<byte> _data;
 
     /// <summary>

@@ -17,9 +17,7 @@ namespace Bodu.Collections.Generic.Extensions;
 public sealed class SystemRandomAdapter :
     IRandomGenerator
 {
-    /// <summary>
-    /// The wrapped <see cref="System.Random" /> instance to which generation calls are delegated.
-    /// </summary>
+    /// <summary>The wrapped <see cref="System.Random" /> instance to which generation calls are delegated.</summary>
     private readonly Random _random;
 
     /// <summary>

@@ -24,9 +24,7 @@ namespace Bodu.Financial;
 /// </remarks>
 public sealed class ExchangeRateLookupOptions
 {
-    /// <summary>
-    /// The cached singleton returned from <see cref="Exact" />.
-    /// </summary>
+    /// <summary>The cached singleton returned from <see cref="Exact" />.</summary>
     private static readonly ExchangeRateLookupOptions s_exact = new(ExchangeRateDateResolution.Exact);
 
     /// <summary>

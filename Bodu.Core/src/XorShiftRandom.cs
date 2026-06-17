@@ -51,28 +51,18 @@ public sealed class XorShiftRandom :
     IRandomGenerator
 {
 
-    /// <summary>
-    /// The delegate that produces the next 32 random bits, allowing the core generator to be overridden.
-    /// </summary>
+    /// <summary>The delegate that produces the next 32 random bits, allowing the core generator to be overridden.</summary>
     private readonly Func<uint> _bitsSource;
 
-    /// <summary>
-    /// The fourth of the four 32-bit state words of the xorshift128 generator, and the source of each generated value.
-    /// </summary>
+    /// <summary>The fourth of the four 32-bit state words of the xorshift128 generator, and the source of each generated value.</summary>
     private uint _w;
-    /// <summary>
-    /// The first of the four 32-bit state words of the xorshift128 generator.
-    /// </summary>
+    /// <summary>The first of the four 32-bit state words of the xorshift128 generator.</summary>
     private uint _x;
 
-    /// <summary>
-    /// The second of the four 32-bit state words of the xorshift128 generator.
-    /// </summary>
+    /// <summary>The second of the four 32-bit state words of the xorshift128 generator.</summary>
     private uint _y;
 
-    /// <summary>
-    /// The third of the four 32-bit state words of the xorshift128 generator.
-    /// </summary>
+    /// <summary>The third of the four 32-bit state words of the xorshift128 generator.</summary>
     private uint _z;
 
     /// <summary>

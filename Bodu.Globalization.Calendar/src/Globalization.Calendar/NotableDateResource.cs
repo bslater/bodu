@@ -25,14 +25,10 @@ namespace Bodu.Globalization.Calendar;
 /// <seealso href="../guides/calendar/building-the-service.html">Building and extending the service (guide)</seealso>
 public sealed class NotableDateResource
 {
-    /// <summary>
-    /// The reusable adjustment policies indexed by their identifier for O(1) lookup, first-wins on duplicates.
-    /// </summary>
+    /// <summary>The reusable adjustment policies indexed by their identifier for O(1) lookup, first-wins on duplicates.</summary>
     private readonly Dictionary<string, AdjustmentPolicy> _adjustmentPoliciesById;
 
-    /// <summary>
-    /// The notable-date concepts indexed by their identifier for O(1) lookup, first-wins on duplicates.
-    /// </summary>
+    /// <summary>The notable-date concepts indexed by their identifier for O(1) lookup, first-wins on duplicates.</summary>
     private readonly Dictionary<string, NotableDateDefinition> _definitionsById;
 
     /// <summary>

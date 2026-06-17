@@ -18,9 +18,7 @@ namespace Bodu.Text.DotEnv;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>
-/// Blank lines and lines whose first non-whitespace character is <c>#</c> are ignored.
-/// </description>
+/// <description>Blank lines and lines whose first non-whitespace character is <c>#</c> are ignored.</description>
 /// </item>
 /// <item>
 /// <description>
@@ -33,9 +31,7 @@ namespace Bodu.Text.DotEnv;
 /// </description>
 /// </item>
 /// <item>
-/// <description>
-/// Double-quoted values may span multiple lines; single-quoted values may not.
-/// </description>
+/// <description>Double-quoted values may span multiple lines; single-quoted values may not.</description>
 /// </item>
 /// <item>
 /// <description>

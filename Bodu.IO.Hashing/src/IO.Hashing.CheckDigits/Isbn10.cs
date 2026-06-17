@@ -44,24 +44,16 @@ namespace Bodu.IO.Hashing.CheckDigits;
 public sealed class Isbn10
     : AlphanumericCheckDigitAlgorithm
 {
-    /// <summary>
-    /// The required body length of <c>9</c> decimal digits.
-    /// </summary>
+    /// <summary>The required body length of <c>9</c> decimal digits.</summary>
     public const int BodyLength = 9;
 
-    /// <summary>
-    /// The required full-sequence length of <c>10</c> characters.
-    /// </summary>
+    /// <summary>The required full-sequence length of <c>10</c> characters.</summary>
     public const int SequenceLength = 10;
 
-    /// <summary>
-    /// The number of body characters appended so far, used to derive each position weight.
-    /// </summary>
+    /// <summary>The number of body characters appended so far, used to derive each position weight.</summary>
     private int _count;
 
-    /// <summary>
-    /// The running weighted sum accumulated over the appended body characters.
-    /// </summary>
+    /// <summary>The running weighted sum accumulated over the appended body characters.</summary>
     private int _sum;
 
     /// <summary>

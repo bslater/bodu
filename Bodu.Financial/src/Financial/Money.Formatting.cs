@@ -250,9 +250,7 @@ public readonly partial struct Money :
         hasPrecisionSuffix = true;
     }
 
-    /// <summary>
-    /// The maximum explicit display precision accepted by the format parser.
-    /// </summary>
+    /// <summary>The maximum explicit display precision accepted by the format parser.</summary>
     private const int MaxDisplayPrecision = 28;
 
     /// <summary>

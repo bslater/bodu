@@ -14,19 +14,13 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 internal sealed class ByteBuffer
 {
-    /// <summary>
-    /// The sentinel index value that marks the buffer as empty.
-    /// </summary>
+    /// <summary>The sentinel index value that marks the buffer as empty.</summary>
     private const int EmptyIndex = -1;
 
-    /// <summary>
-    /// The fixed-capacity backing array that holds the buffered bytes.
-    /// </summary>
+    /// <summary>The fixed-capacity backing array that holds the buffered bytes.</summary>
     private readonly byte[] _internalBuffer;
 
-    /// <summary>
-    /// The zero-based index of the last written byte, or <see cref="EmptyIndex" /> when the buffer is empty.
-    /// </summary>
+    /// <summary>The zero-based index of the last written byte, or <see cref="EmptyIndex" /> when the buffer is empty.</summary>
     private int _index;
 
     /// <summary>

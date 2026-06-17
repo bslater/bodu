@@ -33,15 +33,17 @@ namespace Bodu.Security.Cryptography;
 /// Using the same key for both reduces XTS to a single-key construction and weakens security.
 /// </para>
 /// <para>
-/// For each 128-bit block j in a sector, the XEX construction is: <code>
+/// For each 128-bit block j in a sector, the XEX construction is:
+/// <code>
 ///<![CDATA[
 /// T_j  = α^j ⊗ tweakCipher.Encrypt(tweak)     // Galois field multiplication
 /// C_j  = dataCipher.Encrypt(P_j ⊕ T_j) ⊕ T_j  // encrypt
 /// P_j  = dataCipher.Decrypt(C_j ⊕ T_j) ⊕ T_j  // decrypt
 ///]]>
-/// </code> The horizontal tweak bus in the diagram corresponds to this successive <c>·α</c> multiplication: each <b>·α
-/// </b> box doubles the tweak in GF(2¹²⁸) so the Tⱼ arriving at cell <em>j</em> is αʲ times the base tweak. The two XOR
-/// nodes inside each cell — before and after the data cipher — realize the <c>⊕ T_j</c> pairs in the equation above.
+/// </code>
+/// The horizontal tweak bus in the diagram corresponds to this successive <c>·α</c> multiplication: each <b>·α </b> box
+/// doubles the tweak in GF(2¹²⁸) so the Tⱼ arriving at cell <em>j</em> is αʲ times the base tweak. The two XOR nodes
+/// inside each cell — before and after the data cipher — realize the <c>⊕ T_j</c> pairs in the equation above.
 /// </para>
 /// <para>
 /// GF(2^128) multiplication uses the primitive polynomial x^128 + x^7 + x^2 + x + 1 with little-endian bit
@@ -77,24 +79,16 @@ namespace Bodu.Security.Cryptography;
 public sealed class XtsModeTransform
     : IBlockCipherModeTransform
 {
-    /// <summary>
-    /// The data cipher (Key₁) used to encrypt or decrypt data blocks.
-    /// </summary>
+    /// <summary>The data cipher (Key₁) used to encrypt or decrypt data blocks.</summary>
     private readonly IBlockCipher _cipher;
 
-    /// <summary>
-    /// The tweak cipher (Key₂) used to encrypt the sector number.
-    /// </summary>
+    /// <summary>The tweak cipher (Key₂) used to encrypt the sector number.</summary>
     private readonly IBlockCipher _tweakCipher;
 
-    /// <summary>
-    /// The sector number (tweak value) stored as a defensive copy of the supplied block-size byte array.
-    /// </summary>
+    /// <summary>The sector number (tweak value) stored as a defensive copy of the supplied block-size byte array.</summary>
     private readonly byte[] _tweak;
 
-    /// <summary>
-    /// Indicates whether the instance has been disposed.
-    /// </summary>
+    /// <summary>Indicates whether the instance has been disposed.</summary>
     private bool _disposed;
 
     /// <summary>

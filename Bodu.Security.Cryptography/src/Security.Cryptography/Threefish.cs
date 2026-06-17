@@ -31,9 +31,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>
-/// <see cref="Threefish256" /> — 256-bit block, 256-bit key, 128-bit tweak.
-/// </description>
+/// <description><see cref="Threefish256" /> — 256-bit block, 256-bit key, 128-bit tweak.</description>
 /// </item>
 /// <item>
 /// <description>
@@ -41,9 +39,7 @@ namespace Bodu.Security.Cryptography;
 /// </description>
 /// </item>
 /// <item>
-/// <description>
-/// <see cref="Threefish1024" /> — 1024-bit block, 1024-bit key, 128-bit tweak.
-/// </description>
+/// <description><see cref="Threefish1024" /> — 1024-bit block, 1024-bit key, 128-bit tweak.</description>
 /// </item>
 /// </list>
 /// <para>
@@ -78,9 +74,7 @@ namespace Bodu.Security.Cryptography;
 public abstract class Threefish
     : TweakableSymmetricAlgorithm
 {
-    /// <summary>
-    /// Indicates whether this instance has been disposed.
-    /// </summary>
+    /// <summary>Indicates whether this instance has been disposed.</summary>
     private bool _disposed;
 
     /// <summary>

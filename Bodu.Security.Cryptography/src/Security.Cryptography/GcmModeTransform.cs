@@ -21,24 +21,16 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>
-/// Hash subkey: <c>H = E_K(0¹²⁸)</c>.
-/// </description>
+/// <description>Hash subkey: <c>H = E_K(0¹²⁸)</c>.</description>
 /// </item>
 /// <item>
-/// <description>
-/// Initial counter <c>J0 = nonce ‖ 0x00000001</c>; payload counter starts at <c>J0 + 1</c>.
-/// </description>
+/// <description>Initial counter <c>J0 = nonce ‖ 0x00000001</c>; payload counter starts at <c>J0 + 1</c>.</description>
 /// </item>
 /// <item>
-/// <description>
-/// Ciphertext: <c>C_i = P_i ⊕ E_K(counter_i)</c>, counter incremented per block.
-/// </description>
+/// <description>Ciphertext: <c>C_i = P_i ⊕ E_K(counter_i)</c>, counter incremented per block.</description>
 /// </item>
 /// <item>
-/// <description>
-/// Tag: <c>T = GHASH_H(AAD ‖ C ‖ len(AAD)‖len(C)) ⊕ E_K(J0)</c>.
-/// </description>
+/// <description>Tag: <c>T = GHASH_H(AAD ‖ C ‖ len(AAD)‖len(C)) ⊕ E_K(J0)</c>.</description>
 /// </item>
 /// </list>
 /// <para>
@@ -109,70 +101,42 @@ public sealed class GcmModeTransform
     : IAeadBlockCipherModeTransform, IDisposable
 {
 
-    /// <summary>
-    /// SP 800-38D §5.2.1.1 associated-data length ceiling: <c>2⁶⁴</c> bits, expressed in bytes (
-    /// <c>2⁶⁴ / 8 = 2⁶¹ = 2 305 843 009 213 693 952</c>). Internal so tests can validate the constant.
-    /// </summary>
+    /// <summary>SP 800-38D §5.2.1.1 associated-data length ceiling: <c>2⁶⁴</c> bits, expressed in bytes ( <c>2⁶⁴ / 8 = 2⁶¹ = 2 305 843 009 213 693 952</c>). Internal so tests can validate the constant.</summary>
     internal const long MaxAadBytes = 1L << 61;
 
-    /// <summary>
-    /// SP 800-38D §5.2.1.1 plaintext length ceiling: <c>2³⁹ − 256</c> bits, expressed in bytes (
-    /// <c>(2³⁹ − 256) / 8 = 68 719 476 704</c>). Internal so tests can validate the constant.
-    /// </summary>
+    /// <summary>SP 800-38D §5.2.1.1 plaintext length ceiling: <c>2³⁹ − 256</c> bits, expressed in bytes ( <c>(2³⁹ − 256) / 8 = 68 719 476 704</c>). Internal so tests can validate the constant.</summary>
     internal const long MaxPlaintextBytes = ((1L << 39) - 256) / 8;
-    /// <summary>
-    /// The fixed GCM block size in bits (128 bits = 16 bytes).
-    /// </summary>
+    /// <summary>The fixed GCM block size in bits (128 bits = 16 bytes).</summary>
     private const int BlockSize = 128;
 
-    /// <summary>
-    /// The GCM authentication tag size in bits (128 bits = 16 bytes).
-    /// </summary>
+    /// <summary>The GCM authentication tag size in bits (128 bits = 16 bytes).</summary>
     private const int DefaultTagSize = 128;
 
-    /// <summary>
-    /// The required GCM nonce size in bits (96 bits = 12 bytes).
-    /// </summary>
+    /// <summary>The required GCM nonce size in bits (96 bits = 12 bytes).</summary>
     private const int NonceSize = 96;
 
-    /// <summary>
-    /// The 128-bit block cipher used by GCM. Not owned by this instance.
-    /// </summary>
+    /// <summary>The 128-bit block cipher used by GCM. Not owned by this instance.</summary>
     private readonly IBlockCipher _cipher;
 
-    /// <summary>
-    /// The cached associated authenticated data, or <see langword="null" /> until it has been processed.
-    /// </summary>
+    /// <summary>The cached associated authenticated data, or <see langword="null" /> until it has been processed.</summary>
     private byte[]? _aad;
 
-    /// <summary>
-    /// Indicates whether the associated data has been processed.
-    /// </summary>
+    /// <summary>Indicates whether the associated data has been processed.</summary>
     private bool _aadProcessed;
 
-    /// <summary>
-    /// Indicates whether this single-use transform has completed an encryption or decryption.
-    /// </summary>
+    /// <summary>Indicates whether this single-use transform has completed an encryption or decryption.</summary>
     private bool _completed;
 
-    /// <summary>
-    /// The running CTR counter block, incremented per processed block.
-    /// </summary>
+    /// <summary>The running CTR counter block, incremented per processed block.</summary>
     private byte[]? _counter;
 
-    /// <summary>
-    /// Indicates whether the instance has been disposed.
-    /// </summary>
+    /// <summary>Indicates whether the instance has been disposed.</summary>
     private bool _disposed;
 
-    /// <summary>
-    /// The GHASH subkey <c>H = E_K(0¹²⁸)</c>.
-    /// </summary>
+    /// <summary>The GHASH subkey <c>H = E_K(0¹²⁸)</c>.</summary>
     private byte[]? _h;
 
-    /// <summary>
-    /// The initial counter block <c>J0</c>, reserved as the base for the authentication tag.
-    /// </summary>
+    /// <summary>The initial counter block <c>J0</c>, reserved as the base for the authentication tag.</summary>
     private byte[]? _j0;
 
     /// <summary>

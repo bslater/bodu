@@ -13,19 +13,13 @@ namespace Bodu.Financial.ExchangeRates.Boe;
 internal sealed class BoeCsvExchangeRateTableSource
     : IBoeExchangeRateTableSource
 {
-    /// <summary>
-    /// The HTTP client used to download range responses.
-    /// </summary>
+    /// <summary>The HTTP client used to download range responses.</summary>
     private readonly HttpClient _httpClient;
 
-    /// <summary>
-    /// The provider options supplying the endpoint, series catalogue, and refresh interval.
-    /// </summary>
+    /// <summary>The provider options supplying the endpoint, series catalogue, and refresh interval.</summary>
     private readonly BoeExchangeRateOptions _options;
 
-    /// <summary>
-    /// The response byte cache.
-    /// </summary>
+    /// <summary>The response byte cache.</summary>
     private readonly IBoeResponseCache _cache;
 
     /// <summary>

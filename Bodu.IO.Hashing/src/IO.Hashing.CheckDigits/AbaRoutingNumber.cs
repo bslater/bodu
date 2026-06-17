@@ -46,20 +46,13 @@ namespace Bodu.IO.Hashing.CheckDigits;
 public sealed class AbaRoutingNumber
     : CheckDigitAlgorithm
 {
-    /// <summary>
-    /// The required body length of <c>8</c> decimal digits.
-    /// </summary>
+    /// <summary>The required body length of <c>8</c> decimal digits.</summary>
     public const int BodyLength = 8;
 
-    /// <summary>
-    /// The required full-sequence length of <c>9</c> decimal digits.
-    /// </summary>
+    /// <summary>The required full-sequence length of <c>9</c> decimal digits.</summary>
     public const int SequenceLength = 9;
 
-    /// <summary>
-    /// The running list of appended body digit values, retained so the streaming surface can recompute the weighted sum
-    /// on demand.
-    /// </summary>
+    /// <summary>The running list of appended body digit values, retained so the streaming surface can recompute the weighted sum on demand.</summary>
     /// <remarks>
     /// The ABA weights (<c>3</c>, <c>7</c>, <c>1</c>, repeating, applied from the left of the body toward the right)
     /// have a cycle period of three, so the dual-hypothesis trick used by the ISBN-13 family does not apply: a

@@ -38,19 +38,13 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>
-/// Output size: 128, 160, or 192 bits — internally always 192 bits, then truncated.
-/// </description>
+/// <description>Output size: 128, 160, or 192 bits — internally always 192 bits, then truncated.</description>
 /// </item>
 /// <item>
-/// <description>
-/// Block size: 64 bytes (512 bits); three 64-bit state variables.
-/// </description>
+/// <description>Block size: 64 bytes (512 bits); three 64-bit state variables.</description>
 /// </item>
 /// <item>
-/// <description>
-/// Three passes per block, eight S-box rounds per pass; optimized for 64-bit hosts.
-/// </description>
+/// <description>Three passes per block, eight S-box rounds per pass; optimized for 64-bit hosts.</description>
 /// </item>
 /// <item>
 /// <description>
@@ -81,34 +75,22 @@ namespace Bodu.Security.Cryptography;
 public sealed partial class Tiger
     : BlockHashAlgorithm<Tiger>
 {
-    /// <summary>
-    /// The number of bits in the full Tiger digest that is always computed internally before truncation.
-    /// </summary>
+    /// <summary>The number of bits in the full Tiger digest that is always computed internally before truncation.</summary>
     private const int MaxOutputBits = 192;
 
-    /// <summary>
-    /// The set of hash output sizes, in bits, that the Tiger algorithm permits.
-    /// </summary>
+    /// <summary>The set of hash output sizes, in bits, that the Tiger algorithm permits.</summary>
     private static readonly int[] s_permittedHashSizes = [128, 160, 192];
 
-    /// <summary>
-    /// The first 64-bit chaining variable of the Tiger state.
-    /// </summary>
+    /// <summary>The first 64-bit chaining variable of the Tiger state.</summary>
     private ulong _state0 = 0x0123456789ABCDEF;
 
-    /// <summary>
-    /// The second 64-bit chaining variable of the Tiger state.
-    /// </summary>
+    /// <summary>The second 64-bit chaining variable of the Tiger state.</summary>
     private ulong _state1 = 0xFEDCBA9876543210;
 
-    /// <summary>
-    /// The third 64-bit chaining variable of the Tiger state.
-    /// </summary>
+    /// <summary>The third 64-bit chaining variable of the Tiger state.</summary>
     private ulong _state2 = 0xF096A5B4C3B2E187;
 
-    /// <summary>
-    /// The padding variant that selects the final-block padding byte (<c>0x01</c> for Tiger, <c>0x80</c> for Tiger2).
-    /// </summary>
+    /// <summary>The padding variant that selects the final-block padding byte (<c>0x01</c> for Tiger, <c>0x80</c> for Tiger2).</summary>
     private TigerHashingVariant _variant = TigerHashingVariant.Tiger;
 
     /// <summary>

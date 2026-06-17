@@ -39,54 +39,34 @@ namespace Bodu.Text.Encoding;
 /// </example>
 public static partial class Bech32
 {
-    /// <summary>
-    /// The BIP-173 data alphabet, indexed by 5-bit symbol value.
-    /// </summary>
+    /// <summary>The BIP-173 data alphabet, indexed by 5-bit symbol value.</summary>
     private const string Charset = "qpzry9x8gf2tvdw0s3jn54khce6mua7l";
 
-    /// <summary>
-    /// The separator that divides the human-readable part from the data part.
-    /// </summary>
+    /// <summary>The separator that divides the human-readable part from the data part.</summary>
     private const char Separator = '1';
 
-    /// <summary>
-    /// The number of checksum symbols appended to the data part.
-    /// </summary>
+    /// <summary>The number of checksum symbols appended to the data part.</summary>
     private const int ChecksumSymbols = 6;
 
-    /// <summary>
-    /// The maximum overall length of a Bech32 string defined by BIP-173.
-    /// </summary>
+    /// <summary>The maximum overall length of a Bech32 string defined by BIP-173.</summary>
     private const int MaxEncodedLength = 90;
 
-    /// <summary>
-    /// The lowest US-ASCII code point permitted in a human-readable part.
-    /// </summary>
+    /// <summary>The lowest US-ASCII code point permitted in a human-readable part.</summary>
     private const int MinHrpChar = 33;
 
-    /// <summary>
-    /// The highest US-ASCII code point permitted in a human-readable part.
-    /// </summary>
+    /// <summary>The highest US-ASCII code point permitted in a human-readable part.</summary>
     private const int MaxHrpChar = 126;
 
-    /// <summary>
-    /// The checksum constant for the original Bech32 scheme (BIP-173).
-    /// </summary>
+    /// <summary>The checksum constant for the original Bech32 scheme (BIP-173).</summary>
     private const uint Bech32Constant = 1;
 
-    /// <summary>
-    /// The checksum constant for the Bech32m scheme (BIP-350).
-    /// </summary>
+    /// <summary>The checksum constant for the Bech32m scheme (BIP-350).</summary>
     private const uint Bech32mConstant = 0x2bc830a3;
 
-    /// <summary>
-    /// The five generator coefficients used by the checksum polynomial.
-    /// </summary>
+    /// <summary>The five generator coefficients used by the checksum polynomial.</summary>
     private static readonly uint[] s_generators = [0x3b6a57b2, 0x26508e6d, 0x1ea119fa, 0x3d4233dd, 0x2a1462b3];
 
-    /// <summary>
-    /// Maps a US-ASCII code point to its 5-bit data value, or <c>-1</c> when the character is not in the alphabet.
-    /// </summary>
+    /// <summary>Maps a US-ASCII code point to its 5-bit data value, or <c>-1</c> when the character is not in the alphabet.</summary>
     private static readonly sbyte[] s_charsetReverse = BuildReverse(Charset);
 
     /// <summary>

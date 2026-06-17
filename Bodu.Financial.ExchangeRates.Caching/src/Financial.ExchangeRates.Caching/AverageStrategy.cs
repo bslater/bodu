@@ -34,14 +34,10 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 public sealed class AverageStrategy
     : IExchangeRateAggregationStrategy
 {
-    /// <summary>
-    /// The default provider label applied to a synthesized average rate.
-    /// </summary>
+    /// <summary>The default provider label applied to a synthesized average rate.</summary>
     public const string DefaultProviderLabel = "Average";
 
-    /// <summary>
-    /// The label tagged onto each synthesized average rate.
-    /// </summary>
+    /// <summary>The label tagged onto each synthesized average rate.</summary>
     private readonly string _providerLabel;
 
     /// <summary>

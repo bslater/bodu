@@ -45,19 +45,13 @@ namespace Bodu.IO.Hashing.CheckDigits;
 public sealed class Isbn13
     : CheckDigitAlgorithm
 {
-    /// <summary>
-    /// The number of body digits appended so far.
-    /// </summary>
+    /// <summary>The number of body digits appended so far.</summary>
     private int _count;
 
-    /// <summary>
-    /// The running weighted sum computed under the hypothesis that the final body length is even.
-    /// </summary>
+    /// <summary>The running weighted sum computed under the hypothesis that the final body length is even.</summary>
     private int _sumEvenHypothesis;
 
-    /// <summary>
-    /// The running weighted sum computed under the hypothesis that the final body length is odd.
-    /// </summary>
+    /// <summary>The running weighted sum computed under the hypothesis that the final body length is odd.</summary>
     private int _sumOddHypothesis;
 
     /// <summary>

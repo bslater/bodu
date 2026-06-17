@@ -19,31 +19,19 @@ namespace Bodu.Text.Bencode.Serialization.Metadata;
 /// </remarks>
 internal sealed class TypeMetadata
 {
-    /// <summary>
-    /// The serializable members, in write order.
-    /// </summary>
+    /// <summary>The serializable members, in write order.</summary>
     private readonly PropertyMetadata[] _properties;
 
-    /// <summary>
-    /// The member lookup used when reading, keyed by wire name with the options' configured case sensitivity.
-    /// </summary>
+    /// <summary>The member lookup used when reading, keyed by wire name with the options' configured case sensitivity.</summary>
     private readonly Dictionary<string, PropertyMetadata> _byWireName;
 
-    /// <summary>
-    /// The constructor invoked during deserialization, or <see langword="null" /> when a parameterless constructor is
-    /// used.
-    /// </summary>
+    /// <summary>The constructor invoked during deserialization, or <see langword="null" /> when a parameterless constructor is used.</summary>
     private readonly ConstructorInfo? _constructor;
 
-    /// <summary>
-    /// The member bound to each constructor parameter by position, or <see langword="null" /> for an unmapped
-    /// parameter.
-    /// </summary>
+    /// <summary>The member bound to each constructor parameter by position, or <see langword="null" /> for an unmapped parameter.</summary>
     private readonly PropertyMetadata?[] _constructorParameters;
 
-    /// <summary>
-    /// The default value supplied for each constructor parameter when its member is absent.
-    /// </summary>
+    /// <summary>The default value supplied for each constructor parameter when its member is absent.</summary>
     private readonly object?[] _constructorDefaults;
 
     /// <summary>

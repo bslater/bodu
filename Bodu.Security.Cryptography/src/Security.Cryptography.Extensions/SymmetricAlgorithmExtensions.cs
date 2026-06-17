@@ -88,9 +88,6 @@ namespace Bodu.Security.Cryptography.Extensions;
 /// </remarks>
 public static partial class SymmetricAlgorithmExtensions
 {
-    /// <summary>
-    /// The default buffer size, in bytes, used when reading from or writing to streams during encryption and decryption
-    /// operations.
-    /// </summary>
+    /// <summary>The default buffer size, in bytes, used when reading from or writing to streams during encryption and decryption operations.</summary>
     public const int DefaultBufferSize = 81920;
 }

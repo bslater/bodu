@@ -16,14 +16,10 @@ namespace Bodu.Financial;
 /// </summary>
 internal static class CurrencyInfoValidator
 {
-    /// <summary>
-    /// The maximum number of fractional digits a currency's minor unit may declare.
-    /// </summary>
+    /// <summary>The maximum number of fractional digits a currency's minor unit may declare.</summary>
     private const int MaxMinorUnits = 28;
 
-    /// <summary>
-    /// The exclusive upper bound for an ISO 4217 three-digit numeric code.
-    /// </summary>
+    /// <summary>The exclusive upper bound for an ISO 4217 three-digit numeric code.</summary>
     private const int NumericCodeUpperBound = 1000;
 
     /// <summary>

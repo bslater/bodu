@@ -20,9 +20,7 @@ namespace Bodu.Financial.ExchangeRates.Yahoo.DependencyInjection;
 /// </summary>
 public static class YahooFinancialServiceBuilderExtensions
 {
-    /// <summary>
-    /// The name of the <see cref="HttpClient" /> configured for Yahoo Finance requests.
-    /// </summary>
+    /// <summary>The name of the <see cref="HttpClient" /> configured for Yahoo Finance requests.</summary>
     public const string HttpClientName = "Bodu.Financial.ExchangeRates.Yahoo";
 
     /// <summary>

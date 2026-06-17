@@ -48,44 +48,28 @@ namespace Bodu.Text.Ini;
 public sealed class IniReader
     : IDisposable
 {
-    /// <summary>
-    /// The underlying text reader supplying the INI input. Owned by this instance.
-    /// </summary>
+    /// <summary>The underlying text reader supplying the INI input. Owned by this instance.</summary>
     private readonly TextReader _reader;
 
-    /// <summary>
-    /// The parse options that govern section, comment, and duplicate-key behavior.
-    /// </summary>
+    /// <summary>The parse options that govern section, comment, and duplicate-key behavior.</summary>
     private readonly IniParseOptions _options;
 
-    /// <summary>
-    /// The name of the section that contains the entry produced by the most recent successful read.
-    /// </summary>
+    /// <summary>The name of the section that contains the entry produced by the most recent successful read.</summary>
     private string _section = string.Empty;
 
-    /// <summary>
-    /// The key of the entry produced by the most recent successful read.
-    /// </summary>
+    /// <summary>The key of the entry produced by the most recent successful read.</summary>
     private string _key = string.Empty;
 
-    /// <summary>
-    /// The value of the entry produced by the most recent successful read.
-    /// </summary>
+    /// <summary>The value of the entry produced by the most recent successful read.</summary>
     private string _value = string.Empty;
 
-    /// <summary>
-    /// The one-based line number of the entry produced by the most recent successful read.
-    /// </summary>
+    /// <summary>The one-based line number of the entry produced by the most recent successful read.</summary>
     private int _lineNumber;
 
-    /// <summary>
-    /// Indicates whether the reader is currently positioned within the global (unnamed) section.
-    /// </summary>
+    /// <summary>Indicates whether the reader is currently positioned within the global (unnamed) section.</summary>
     private bool _inGlobal = true;
 
-    /// <summary>
-    /// Indicates whether this instance has been disposed.
-    /// </summary>
+    /// <summary>Indicates whether this instance has been disposed.</summary>
     private bool _disposed;
 
     /// <summary>

@@ -14,17 +14,11 @@ namespace Bodu.Text.Toml;
 /// </summary>
 internal static class TomlTrimming
 {
-    /// <summary>
-    /// The message describing why the serializer is incompatible with trimming: it reflects over the serialized types
-    /// and their members, which a trimmer may remove.
-    /// </summary>
+    /// <summary>The message describing why the serializer is incompatible with trimming: it reflects over the serialized types and their members, which a trimmer may remove.</summary>
     internal const string RequiresUnreferencedCodeMessage =
         "TOML serialization and deserialization reflect over the serialized types and their members, which trimming may remove. Ensure the required types and members are preserved.";
 
-    /// <summary>
-    /// The message describing why the serializer is incompatible with native AOT: it constructs converters for
-    /// collection, dictionary, and nullable types at runtime, which requires dynamic code generation.
-    /// </summary>
+    /// <summary>The message describing why the serializer is incompatible with native AOT: it constructs converters for collection, dictionary, and nullable types at runtime, which requires dynamic code generation.</summary>
     internal const string RequiresDynamicCodeMessage =
         "TOML serialization and deserialization construct converters for collection, dictionary, and nullable types at runtime, which native AOT cannot do without runtime code generation.";
 }

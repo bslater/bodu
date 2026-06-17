@@ -91,21 +91,13 @@ namespace Bodu.Numerics;
 public readonly partial struct Interval<T>
     where T : INumber<T>
 {
-    /// <summary>
-    /// The lower endpoint backing field. Read through <see cref="Lower" />.
-    /// </summary>
+    /// <summary>The lower endpoint backing field. Read through <see cref="Lower" />.</summary>
     private readonly T _lower;
 
-    /// <summary>
-    /// The upper endpoint backing field. Read through <see cref="Upper" />.
-    /// </summary>
+    /// <summary>The upper endpoint backing field. Read through <see cref="Upper" />.</summary>
     private readonly T _upper;
 
-    /// <summary>
-    /// Packed endpoint inclusion flags. Bit 0 is <see cref="LowerInclusive" />; bit 1 is <see cref="UpperInclusive" />.
-    /// Storing both flags in a single byte keeps the struct size at <c>2 * sizeof(T) + 1</c> with the JIT supplying the
-    /// trailing alignment padding.
-    /// </summary>
+    /// <summary>Packed endpoint inclusion flags. Bit 0 is <see cref="LowerInclusive" />; bit 1 is <see cref="UpperInclusive" />. Storing both flags in a single byte keeps the struct size at <c>2 * sizeof(T) + 1</c> with the JIT supplying the trailing alignment padding.</summary>
     private readonly byte _flags;
 
     /// <summary>

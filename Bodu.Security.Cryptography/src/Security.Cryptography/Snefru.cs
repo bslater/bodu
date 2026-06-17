@@ -28,14 +28,10 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>
-/// <see cref="Snefru128" /> produces a 128-bit (16-byte) hash with a 4-word internal state.
-/// </description>
+/// <description><see cref="Snefru128" /> produces a 128-bit (16-byte) hash with a 4-word internal state.</description>
 /// </item>
 /// <item>
-/// <description>
-/// <see cref="Snefru256" /> produces a 256-bit (32-byte) hash with an 8-word internal state.
-/// </description>
+/// <description><see cref="Snefru256" /> produces a 256-bit (32-byte) hash with an 8-word internal state.</description>
 /// </item>
 /// </list>
 /// <para>
@@ -63,34 +59,22 @@ public abstract partial class Snefru<T>
     : BlockHashAlgorithm<T>
     where T : Snefru<T>, new()
 {
-    /// <summary>
-    /// The number of 32-bit words in the working buffer.
-    /// </summary>
+    /// <summary>The number of 32-bit words in the working buffer.</summary>
     private const int TotalWords = 16;
 
-    /// <summary>
-    /// The bitmask that constrains index calculations to the buffer length.
-    /// </summary>
+    /// <summary>The bitmask that constrains index calculations to the buffer length.</summary>
     private const int Mask = TotalWords - 1;
 
-    /// <summary>
-    /// The fixed bitwise rotation amounts applied after each S-box round.
-    /// </summary>
+    /// <summary>The fixed bitwise rotation amounts applied after each S-box round.</summary>
     private static readonly int[] s_shifts = [16, 8, 16, 24];
 
-    /// <summary>
-    /// The supported output hash sizes, in bits.
-    /// </summary>
+    /// <summary>The supported output hash sizes, in bits.</summary>
     private static readonly int[] s_permittedHashSizes = [128, 256];
 
-    /// <summary>
-    /// The internal working buffer used for permutation and round processing.
-    /// </summary>
+    /// <summary>The internal working buffer used for permutation and round processing.</summary>
     private readonly uint[] _buffer = new uint[TotalWords];
 
-    /// <summary>
-    /// The internal state used to accumulate the hash output across input blocks.
-    /// </summary>
+    /// <summary>The internal state used to accumulate the hash output across input blocks.</summary>
     private readonly uint[] _state;
 
     /// <summary>

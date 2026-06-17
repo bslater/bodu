@@ -18,30 +18,20 @@ namespace Bodu.Security.Cryptography;
 /// </remarks>
 internal static class HashAlgorithmSharedInputs
 {
-    /// <summary>
-    /// The empty input (zero bytes).
-    /// </summary>
+    /// <summary>The empty input (zero bytes).</summary>
     public static readonly byte[] Empty = [];
 
-    /// <summary>
-    /// The three ASCII bytes of the string <c>"ABC"</c>.
-    /// </summary>
+    /// <summary>The three ASCII bytes of the string <c>"ABC"</c>.</summary>
     public static readonly byte[] Abc = Encoding.ASCII.GetBytes("ABC");
 
-    /// <summary>
-    /// The 43 ASCII bytes of the pangram <c>"The quick brown fox jumps over the lazy dog"</c>.
-    /// </summary>
+    /// <summary>The 43 ASCII bytes of the pangram <c>"The quick brown fox jumps over the lazy dog"</c>.</summary>
     public static readonly byte[] QuickBrownFox =
         Encoding.ASCII.GetBytes("The quick brown fox jumps over the lazy dog");
 
-    /// <summary>
-    /// Sixteen zero bytes.
-    /// </summary>
+    /// <summary>Sixteen zero bytes.</summary>
     public static readonly byte[] Zeros16 = new byte[16];
 
-    /// <summary>
-    /// The 255-byte sequence <c>0x00, 0x01, …, 0xFE</c>.
-    /// </summary>
+    /// <summary>The 255-byte sequence <c>0x00, 0x01, …, 0xFE</c>.</summary>
     public static readonly byte[] Sequential0To255 =
         Enumerable.Range(0, 255).Select(i => (byte)i).ToArray();
 }

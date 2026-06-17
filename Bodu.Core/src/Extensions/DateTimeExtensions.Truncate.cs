@@ -29,58 +29,41 @@ public static partial class DateTimeExtensions
     /// The following examples show the result of truncating <c>2024-04-18T14:37:56.7891234</c>:
     /// </para>
     /// <list type="table">
-    /// <listheader><term>Resolution</term>
-    /// <description>
-    /// Result
-    /// </description>
+    /// <listheader>
+    /// <term>Resolution</term>
+    /// <description>Result</description>
     /// </listheader>
     /// <item>
     /// <term><see cref="DateTimeResolution.Year" /></term>
-    /// <description>
-    /// <c>2024-01-01T00:00:00.0000000</c>
-    /// </description>
+    /// <description><c>2024-01-01T00:00:00.0000000</c></description>
     /// </item>
     /// <item>
     /// <term><see cref="DateTimeResolution.Month" /></term>
-    /// <description>
-    /// <c>2024-04-01T00:00:00.0000000</c>
-    /// </description>
+    /// <description><c>2024-04-01T00:00:00.0000000</c></description>
     /// </item>
     /// <item>
     /// <term><see cref="DateTimeResolution.Day" /></term>
-    /// <description>
-    /// <c>2024-04-18T00:00:00.0000000</c>
-    /// </description>
+    /// <description><c>2024-04-18T00:00:00.0000000</c></description>
     /// </item>
     /// <item>
     /// <term><see cref="DateTimeResolution.Hour" /></term>
-    /// <description>
-    /// <c>2024-04-18T14:00:00.0000000</c>
-    /// </description>
+    /// <description><c>2024-04-18T14:00:00.0000000</c></description>
     /// </item>
     /// <item>
     /// <term><see cref="DateTimeResolution.Minute" /></term>
-    /// <description>
-    /// <c>2024-04-18T14:37:00.0000000</c>
-    /// </description>
+    /// <description><c>2024-04-18T14:37:00.0000000</c></description>
     /// </item>
     /// <item>
     /// <term><see cref="DateTimeResolution.Second" /></term>
-    /// <description>
-    /// <c>2024-04-18T14:37:56.0000000</c>
-    /// </description>
+    /// <description><c>2024-04-18T14:37:56.0000000</c></description>
     /// </item>
     /// <item>
     /// <term><see cref="DateTimeResolution.Millisecond" /></term>
-    /// <description>
-    /// <c>2024-04-18T14:37:56.7890000</c>
-    /// </description>
+    /// <description><c>2024-04-18T14:37:56.7890000</c></description>
     /// </item>
     /// <item>
     /// <term><see cref="DateTimeResolution.Tick" /></term>
-    /// <description>
-    /// <c>2024-04-18T14:37:56.7891234</c> (unchanged)
-    /// </description>
+    /// <description><c>2024-04-18T14:37:56.7891234</c> (unchanged)</description>
     /// </item>
     /// </list>
     /// </remarks>

@@ -15,14 +15,10 @@ namespace Bodu.Financial;
 /// </summary>
 public sealed class MoneyFormatter
 {
-    /// <summary>
-    /// The options governing this formatter's output.
-    /// </summary>
+    /// <summary>The options governing this formatter's output.</summary>
     private readonly MoneyFormatOptions _options;
 
-    /// <summary>
-    /// The pre-computed format specifier derived from <see cref="_options" />.
-    /// </summary>
+    /// <summary>The pre-computed format specifier derived from <see cref="_options" />.</summary>
     private readonly string _format;
 
     /// <summary>

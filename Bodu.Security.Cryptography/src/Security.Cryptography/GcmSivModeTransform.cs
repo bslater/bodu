@@ -24,7 +24,8 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// GCM-SIV derives per-message authentication and encryption keys from the master key and a 12-byte nonce using four
-/// cipher calls with little-endian counters (RFC 8452 Section 4): <code>
+/// cipher calls with little-endian counters (RFC 8452 Section 4):
+/// <code>
 ///<![CDATA[
 /// K_auth = E_K(LE32(0) || nonce)[0..7] || E_K(LE32(1) || nonce)[0..7]   (16 bytes)
 /// K_enc  = E_K(LE32(2) || nonce)[0..7] || E_K(LE32(3) || nonce)[0..7]   (16 bytes)
@@ -79,50 +80,30 @@ public sealed class GcmSivModeTransform
     : IAeadBlockCipherModeTransform, IDisposable
 {
 
-    /// <summary>
-    /// Length of the AES-GCM-SIV nonce is 96 bits (12 bytes). Byte length derived inline via
-    /// <see cref="NonceSizeBits" /> / 8.
-    /// </summary>
+    /// <summary>Length of the AES-GCM-SIV nonce is 96 bits (12 bytes). Byte length derived inline via <see cref="NonceSizeBits" /> / 8.</summary>
     private const int NonceSizeBits = 96;
-    /// <summary>
-    /// Length of the AES-GCM-SIV authentication tag is 128 bits (16 bytes). Byte length derived inline via
-    /// <see cref="TagSizeBits" /> / 8.
-    /// </summary>
+    /// <summary>Length of the AES-GCM-SIV authentication tag is 128 bits (16 bytes). Byte length derived inline via <see cref="TagSizeBits" /> / 8.</summary>
     private const int TagSizeBits = 128;
 
-    /// <summary>
-    /// The derived authentication key <c>K_auth</c> used as the POLYVAL hash key.
-    /// </summary>
+    /// <summary>The derived authentication key <c>K_auth</c> used as the POLYVAL hash key.</summary>
     private readonly byte[] _authKey;
 
-    /// <summary>
-    /// The block cipher keyed with the derived encryption key <c>K_enc</c>.
-    /// </summary>
+    /// <summary>The block cipher keyed with the derived encryption key <c>K_enc</c>.</summary>
     private readonly IBlockCipher _encCipher;
 
-    /// <summary>
-    /// The 12-byte nonce used for per-message key derivation and tag computation.
-    /// </summary>
+    /// <summary>The 12-byte nonce used for per-message key derivation and tag computation.</summary>
     private readonly byte[] _nonce;
 
-    /// <summary>
-    /// The buffered associated data to authenticate, or <see langword="null" /> until processed.
-    /// </summary>
+    /// <summary>The buffered associated data to authenticate, or <see langword="null" /> until processed.</summary>
     private byte[]? _aad;
 
-    /// <summary>
-    /// Indicates whether associated data has been processed for this instance.
-    /// </summary>
+    /// <summary>Indicates whether associated data has been processed for this instance.</summary>
     private bool _aadProcessed;
 
-    /// <summary>
-    /// Indicates whether encryption or decryption has completed for this single-use instance.
-    /// </summary>
+    /// <summary>Indicates whether encryption or decryption has completed for this single-use instance.</summary>
     private bool _completed;
 
-    /// <summary>
-    /// Indicates whether this instance has been disposed and its key material and nonce cleared.
-    /// </summary>
+    /// <summary>Indicates whether this instance has been disposed and its key material and nonce cleared.</summary>
     private bool _disposed;
 
     /// <summary>

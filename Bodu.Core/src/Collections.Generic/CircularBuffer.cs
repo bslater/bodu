@@ -44,9 +44,7 @@ namespace Bodu.Collections.Generic;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>
-/// <see cref="Enqueue(T)" /> / <see cref="TryEnqueue(T)" /> — add an element at the tail.
-/// </description>
+/// <description><see cref="Enqueue(T)" /> / <see cref="TryEnqueue(T)" /> — add an element at the tail.</description>
 /// </item>
 /// <item>
 /// <description>
@@ -97,9 +95,7 @@ namespace Bodu.Collections.Generic;
 public sealed class CircularBuffer<T>
     : RingBackedCollection<T>
 {
-    /// <summary>
-    /// The capacity used when the buffer is constructed without an explicit capacity.
-    /// </summary>
+    /// <summary>The capacity used when the buffer is constructed without an explicit capacity.</summary>
     private const int DefaultCapacity = 16;
 
     /// <summary>

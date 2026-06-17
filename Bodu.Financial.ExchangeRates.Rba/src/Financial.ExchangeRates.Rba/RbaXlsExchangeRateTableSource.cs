@@ -15,19 +15,13 @@ namespace Bodu.Financial.ExchangeRates.Rba;
 internal sealed class RbaXlsExchangeRateTableSource
     : IRbaExchangeRateTableSource
 {
-    /// <summary>
-    /// The HTTP client used to download era files.
-    /// </summary>
+    /// <summary>The HTTP client used to download era files.</summary>
     private readonly HttpClient _httpClient;
 
-    /// <summary>
-    /// The provider options supplying the base URL, refresh interval, and alias map.
-    /// </summary>
+    /// <summary>The provider options supplying the base URL, refresh interval, and alias map.</summary>
     private readonly RbaExchangeRateOptions _options;
 
-    /// <summary>
-    /// The workbook byte cache.
-    /// </summary>
+    /// <summary>The workbook byte cache.</summary>
     private readonly IRbaWorkbookCache _cache;
 
     /// <summary>

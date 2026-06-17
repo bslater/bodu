@@ -40,10 +40,7 @@ namespace Bodu.Financial;
 public sealed class SingleFlightCoordinator<TKey>
     where TKey : notnull
 {
-    /// <summary>
-    /// The promise tasks for operations currently in flight, keyed by <typeparamref name="TKey" />. The first caller to
-    /// register a key owns running the operation and completing the promise; concurrent callers await the same promise.
-    /// </summary>
+    /// <summary>The promise tasks for operations currently in flight, keyed by <typeparamref name="TKey" />. The first caller to register a key owns running the operation and completing the promise; concurrent callers await the same promise.</summary>
     private readonly ConcurrentDictionary<TKey, Task> _inFlight = new();
 
     /// <summary>

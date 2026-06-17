@@ -31,9 +31,7 @@ namespace Bodu.Security.Cryptography;
 /// authentication logic. The five panels above show the classic, non-authenticated modes:
 /// <list type="number">
 /// <item>
-/// <description>
-/// <b>ECB</b> — no feedback. Identical plaintext blocks produce identical ciphertext blocks.
-/// </description>
+/// <description><b>ECB</b> — no feedback. Identical plaintext blocks produce identical ciphertext blocks.</description>
 /// </item>
 /// <item>
 /// <description>
@@ -41,9 +39,7 @@ namespace Bodu.Security.Cryptography;
 /// </description>
 /// </item>
 /// <item>
-/// <description>
-/// <b>CFB</b> — encrypted previous ciphertext, or IV, acts as keystream; self-synchronizing.
-/// </description>
+/// <description><b>CFB</b> — encrypted previous ciphertext, or IV, acts as keystream; self-synchronizing.</description>
 /// </item>
 /// <item>
 /// <description>
@@ -178,14 +174,10 @@ public enum CipherModeKind
     /// across consecutive blocks in a sector:
     /// <list type="bullet">
     /// <item>
-    /// <description>
-    /// Encrypt: C_i = E(P_i ⊕ T_i) ⊕ T_i
-    /// </description>
+    /// <description>Encrypt: C_i = E(P_i ⊕ T_i) ⊕ T_i</description>
     /// </item>
     /// <item>
-    /// <description>
-    /// Decrypt: P_i = D(C_i ⊕ T_i) ⊕ T_i
-    /// </description>
+    /// <description>Decrypt: P_i = D(C_i ⊕ T_i) ⊕ T_i</description>
     /// </item>
     /// </list>
     /// </para>
@@ -207,14 +199,10 @@ public enum CipherModeKind
     /// OCB derives a sequence of offsets from a nonce and pre-computed multiples of E(0...0):
     /// <list type="bullet">
     /// <item>
-    /// <description>
-    /// Encrypt: C_i = E(P_i ⊕ Δ_i) ⊕ Δ_i
-    /// </description>
+    /// <description>Encrypt: C_i = E(P_i ⊕ Δ_i) ⊕ Δ_i</description>
     /// </item>
     /// <item>
-    /// <description>
-    /// Decrypt: P_i = D(C_i ⊕ Δ_i) ⊕ Δ_i
-    /// </description>
+    /// <description>Decrypt: P_i = D(C_i ⊕ Δ_i) ⊕ Δ_i</description>
     /// </item>
     /// </list>
     /// where Δ_i = Δ_{i−1} ⊕ L[ntz(i)] and ntz(i) is the number of trailing zeros of i.
@@ -237,14 +225,10 @@ public enum CipherModeKind
     /// EAX encryption applies CTR mode using OMAC(nonce) as the counter start:
     /// <list type="bullet">
     /// <item>
-    /// <description>
-    /// Keystream_i = E(counter_i), where counter increments each block.
-    /// </description>
+    /// <description>Keystream_i = E(counter_i), where counter increments each block.</description>
     /// </item>
     /// <item>
-    /// <description>
-    /// Both encrypt and decrypt XOR the input with the keystream (CTR property).
-    /// </description>
+    /// <description>Both encrypt and decrypt XOR the input with the keystream (CTR property).</description>
     /// </item>
     /// </list>
     /// </para>
