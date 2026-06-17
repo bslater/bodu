@@ -140,4 +140,40 @@ public sealed class XmlDocConfigJsonReaderTests
             _ = XmlDocConfigJsonReader.Read("{\"tagPolicies\":{\"summary\":{\"layout\":\"banana\"}}}");
         });
     }
+
+    /// <summary>
+    /// Verifies that a boolean value is parsed and applied (exercising the dependency-free parser's boolean and
+    /// whitespace handling).
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenBooleanWithSurroundingWhitespace_ShouldApply()
+    {
+        XmlDocFormatOptions options = XmlDocConfigJsonReader.Read("{\r\n  \"preserveBlankLines\" : true\r\n}");
+
+        Assert.IsTrue(options.PreserveBlankLines);
+    }
+
+    /// <summary>
+    /// Verifies that trailing content after the JSON value is rejected as malformed.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenTrailingContentAfterObject_ShouldThrowXmlDocConfigException()
+    {
+        Assert.ThrowsExactly<XmlDocConfigException>(() =>
+        {
+            _ = XmlDocConfigJsonReader.Read("{} trailing");
+        });
+    }
+
+    /// <summary>
+    /// Verifies that an unterminated string is rejected as malformed.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenStringIsUnterminated_ShouldThrowXmlDocConfigException()
+    {
+        Assert.ThrowsExactly<XmlDocConfigException>(() =>
+        {
+            _ = XmlDocConfigJsonReader.Read("{\"documentationPrefix\":\"oops}");
+        });
+    }
 }

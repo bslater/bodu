@@ -49,14 +49,16 @@ internal static class XmlDocConfigurationLoader
             }
             catch (XmlDocConfigException)
             {
-                // Malformed config file — fall back to defaults silently so the analyzer keeps reporting on
-                // valid trivia. The user-facing error path is the JSON schema validator, not the analyzer.
+                // Malformed config file — fall back to defaults here so the formatting analyzers keep reporting
+                // on valid trivia. The user-facing error is surfaced separately as BODU0001 by
+                // XmlDocConfigurationAnalyzer (see CollectConfigurationErrors).
             }
 #pragma warning disable RCS1075 // Avoid empty catch clause that catches System.Exception
             catch (System.Exception)
             {
-                // Defensive: System.Text.Json may not be available in every analyzer host (e.g. legacy MSBuild).
-                // Falling back to defaults keeps the analyzer functional for the common no-config case.
+                // Defensive: never let an unexpected configuration-loading failure break analysis. Configuration
+                // JSON is parsed by the dependency-free BoduJsonParser, so the host's assembly set is not a
+                // factor; falling back to defaults keeps the analyzer functional regardless.
             }
 #pragma warning restore RCS1075
         }
