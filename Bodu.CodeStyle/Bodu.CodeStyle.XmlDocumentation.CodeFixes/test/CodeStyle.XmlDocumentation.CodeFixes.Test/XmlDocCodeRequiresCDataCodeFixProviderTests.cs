@@ -184,5 +184,99 @@ public sealed class XmlDocCodeRequiresCDataCodeFixProviderTests
         await test.RunAsync(TestContext.CancellationTokenSource.Token);
     }
 
+    /// <summary>
+    /// Verifies that the fix wraps a multi-line <c>&lt;code&gt;</c> body in a <c>&lt;![CDATA[…]]&gt;</c>
+    /// section while preserving each physical body line verbatim — the existing <c>///</c> doc-comment
+    /// prefixes must not be embedded into the CDATA content or duplicated by a second prefix.
+    /// </summary>
+    [TestMethod]
+    public async Task CodeFix_WhenCodeBodyIsMultiLine_ShouldWrapInCDataWithoutDuplicatingPrefix()
+    {
+        var source =
+            "public sealed class Sample\r\n" +
+            "{\r\n" +
+            "    /// <code>\r\n" +
+            "    /// var x = 5;\r\n" +
+            "    /// var y = 6;\r\n" +
+            "    /// </code>\r\n" +
+            "    public int X { get; set; }\r\n" +
+            "}\r\n";
+
+        var expected =
+            "public sealed class Sample\r\n" +
+            "{\r\n" +
+            "    /// <code>\r\n" +
+            "    ///<![CDATA[\r\n" +
+            "    /// var x = 5;\r\n" +
+            "    /// var y = 6;\r\n" +
+            "    ///]]>\r\n" +
+            "    /// </code>\r\n" +
+            "    public int X { get; set; }\r\n" +
+            "}\r\n";
+
+        var test =
+            new CSharpCodeFixTest<XmlDocCodeRequiresCDataAnalyzer, XmlDocCodeRequiresCDataCodeFixProvider, MSTestVerifier>
+            {
+                TestCode = source,
+                FixedCode = expected,
+                ReferenceAssemblies = ReferenceAssemblies.Net.Net80,
+            };
+
+        test.ExpectedDiagnostics.Add(
+            new DiagnosticResult(DiagnosticDescriptors.XmlDocCodeRequiresCData)
+                .WithSpan(3, 9, 3, 15));
+
+        await test.RunAsync(TestContext.CancellationTokenSource.Token);
+    }
+
+    /// <summary>
+    /// Verifies that the fix preserves interior code indentation when wrapping a multi-line
+    /// <c>&lt;code&gt;</c> body that contains braces and indented statements, again without embedding or
+    /// duplicating the <c>///</c> doc-comment prefixes.
+    /// </summary>
+    [TestMethod]
+    public async Task CodeFix_WhenCodeBodyIsMultiLineWithIndentation_ShouldPreserveInteriorIndentation()
+    {
+        var source =
+            "public sealed class Sample\r\n" +
+            "{\r\n" +
+            "    /// <code>\r\n" +
+            "    /// if (ready)\r\n" +
+            "    /// {\r\n" +
+            "    ///     Run();\r\n" +
+            "    /// }\r\n" +
+            "    /// </code>\r\n" +
+            "    public int X { get; set; }\r\n" +
+            "}\r\n";
+
+        var expected =
+            "public sealed class Sample\r\n" +
+            "{\r\n" +
+            "    /// <code>\r\n" +
+            "    ///<![CDATA[\r\n" +
+            "    /// if (ready)\r\n" +
+            "    /// {\r\n" +
+            "    ///     Run();\r\n" +
+            "    /// }\r\n" +
+            "    ///]]>\r\n" +
+            "    /// </code>\r\n" +
+            "    public int X { get; set; }\r\n" +
+            "}\r\n";
+
+        var test =
+            new CSharpCodeFixTest<XmlDocCodeRequiresCDataAnalyzer, XmlDocCodeRequiresCDataCodeFixProvider, MSTestVerifier>
+            {
+                TestCode = source,
+                FixedCode = expected,
+                ReferenceAssemblies = ReferenceAssemblies.Net.Net80,
+            };
+
+        test.ExpectedDiagnostics.Add(
+            new DiagnosticResult(DiagnosticDescriptors.XmlDocCodeRequiresCData)
+                .WithSpan(3, 9, 3, 15));
+
+        await test.RunAsync(TestContext.CancellationTokenSource.Token);
+    }
+
     public TestContext TestContext { get; set; } = null!;
 }
