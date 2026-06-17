@@ -17,15 +17,16 @@ namespace Bodu.Numerics;
 /// Represents an immutable exact rational number — a ratio of two integers — backed by an arbitrary
 /// <see cref="IBinaryInteger{TSelf}" /> component type.
 /// </summary>
-/// <typeparam name="T">
-/// The integer type used to store the numerator and denominator. Use a fixed-width type such as <see cref="int" /> or
-/// <see cref="long" /> for compact storage, or <see cref="BigInteger" /> for arithmetic that never overflows.
-/// </typeparam>
+/// <typeparam name="T">The integer type used to store the numerator and denominator.</typeparam>
 /// <remarks>
 /// <para>
 /// A <see cref="Fraction{T}" /> is always held in canonical form: the denominator is strictly positive, the numerator
 /// carries the sign, and the two components share no common factor other than one. Equal rational values therefore have
 /// identical components and compare and hash equally.
+/// </para>
+/// <para>
+/// Choose a fixed-width <typeparamref name="T" /> such as <see cref="int" /> or <see cref="long" /> for compact
+/// storage, or <see cref="BigInteger" /> for arithmetic that never overflows.
 /// </para>
 /// <para>
 /// Arithmetic is exact. Intermediate results are evaluated with <see cref="BigInteger" /> precision and the canonical

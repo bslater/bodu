@@ -17,9 +17,7 @@ namespace Bodu.Security.Cryptography;
 /// Bernstein for short input messages. See the official <a href="https://131002.net/siphash/">SipHash specification</a>
 /// for details.
 /// </summary>
-/// <typeparam name="T">
-/// The concrete SipHash variant derived from this class. Must expose a public parameterless constructor.
-/// </typeparam>
+/// <typeparam name="T">The concrete SipHash variant derived from this class.</typeparam>
 /// <remarks>
 /// <para>
 /// <see cref="SipHash{T}" /> is a keyed hash function that requires a 128-bit (16-byte) secret key. It mixes each input
@@ -45,6 +43,10 @@ namespace Bodu.Security.Cryptography;
 /// Each 64-bit input block is absorbed during a compression phase consisting of <see cref="CompressionRounds" />
 /// rounds. Once all input has been processed, <see cref="FinalizationRounds" /> rounds are applied to produce the final
 /// digest. The defaults (<c>c = 2</c>, <c>d = 4</c>) correspond to the standard <c>SipHash-2-4</c> parameterization.
+/// </para>
+/// <para>
+/// The concrete type <typeparamref name="T" /> must expose a public parameterless constructor to satisfy the base
+/// class's <c>new()</c> constraint.
 /// </para>
 /// <para>
 /// <strong>When to choose SipHash.</strong> SipHash is the de-facto standard for protecting hash tables and bloom

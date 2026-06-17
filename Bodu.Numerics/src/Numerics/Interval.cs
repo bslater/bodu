@@ -15,11 +15,7 @@ namespace Bodu.Numerics;
 /// Represents an immutable, bounded interval over any <see cref="INumber{TSelf}" /> type, with independent open or
 /// closed endpoints on each side.
 /// </summary>
-/// <typeparam name="T">
-/// The numeric type used for the interval's endpoints. Any type implementing <see cref="INumber{TSelf}" /> works,
-/// including <see cref="int" />, <see cref="long" />, <see cref="double" />, <see cref="decimal" />, and
-/// <see cref="BigInteger" />.
-/// </typeparam>
+/// <typeparam name="T">The numeric type used for the interval's endpoints.</typeparam>
 /// <remarks>
 /// <para>
 /// <see cref="Interval{T}" /> is the value-typed building block for working with numeric ranges as first-class data.

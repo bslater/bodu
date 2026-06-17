@@ -14,10 +14,7 @@ namespace Bodu.IO.Hashing;
 /// handles residual buffering, block alignment, total-length tracking, snapshot-based <c>GetCurrentHash</c>, and
 /// optional final-block padding so that derived implementations only need to express the per-block compression step.
 /// </summary>
-/// <typeparam name="T">
-/// The concrete hash algorithm type derived from this class. Must expose a public parameterless constructor so the base
-/// class can satisfy its <c>new()</c> constraint when constructing snapshot clones.
-/// </typeparam>
+/// <typeparam name="T">The concrete hash algorithm type derived from this class.</typeparam>
 /// <remarks>
 /// <para>
 /// Many non-cryptographic hashes — Murmur, CityHash, Pearson, the FNV variants — define their compression step over a
@@ -63,6 +60,10 @@ namespace Bodu.IO.Hashing;
 /// </description>
 /// </item>
 /// </list>
+/// <para>
+/// The concrete type <typeparamref name="T" /> must expose a public parameterless constructor so the base class can
+/// satisfy its <c>new()</c> constraint when constructing snapshot clones.
+/// </para>
 /// <para>
 /// <strong>Lifecycle.</strong> Input arrives via the standard
 /// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.Append(System.ReadOnlySpan{byte})" /> entry point and is

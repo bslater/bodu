@@ -15,9 +15,7 @@ namespace Bodu.IO.Hashing;
 /// Base class for the <c>CityHash</c> family of non-cryptographic hash algorithms developed by Google. See the
 /// <a href="https://github.com/google/cityhash">CityHash reference repository</a> for the specification.
 /// </summary>
-/// <typeparam name="T">
-/// The concrete CityHash variant derived from this class. Must expose a public parameterless constructor.
-/// </typeparam>
+/// <typeparam name="T">The concrete CityHash variant derived from this class.</typeparam>
 /// <remarks>
 /// <para>
 /// CityHash is a one-shot algorithm. To satisfy the incremental input contract of
@@ -49,6 +47,10 @@ namespace Bodu.IO.Hashing;
 /// buffers every appended byte until <see cref="GetCurrentHashCore(Span{byte})" /> is called. Memory consumption grows
 /// linearly with input length between resets — avoid feeding it multi-gigabyte streams. Instances are not thread-safe;
 /// share behind explicit synchronization.
+/// </para>
+/// <para>
+/// The concrete type <typeparamref name="T" /> must expose a public parameterless constructor to satisfy the base
+/// class's <c>new()</c> constraint.
 /// </para>
 /// <note type="important"> CityHash is <b>not</b> cryptographically secure. It must <b>not</b> be used for password
 /// hashing, digital signatures, or any application that requires collision resistance under adversarial conditions.

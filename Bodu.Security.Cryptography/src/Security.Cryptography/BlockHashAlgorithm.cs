@@ -14,9 +14,7 @@ namespace Bodu.Security.Cryptography;
 /// on behalf of derived implementations; the residual buffer, running byte total, and disposal latch are inherited from
 /// <see cref="BufferedBlockHashAlgorithm{T}" />.
 /// </summary>
-/// <typeparam name="T">
-/// The concrete hash algorithm derived from this class. Must expose a public parameterless constructor.
-/// </typeparam>
+/// <typeparam name="T">The concrete hash algorithm derived from this class.</typeparam>
 /// <remarks>
 /// <para>
 /// Input data is accumulated into the inherited residual buffer until a complete block of
@@ -44,6 +42,10 @@ namespace Bodu.Security.Cryptography;
 /// </description>
 /// </item>
 /// </list>
+/// <para>
+/// Derived classes must also expose a public parameterless constructor to satisfy the base class's <c>new()</c>
+/// constraint.
+/// </para>
 /// <para>
 /// <strong>When to derive from this class.</strong> Pick <see cref="BlockHashAlgorithm{T}" /> for any classic
 /// Merkle–Damgård cryptographic hash — the family includes the SHA-2 hashes, Tiger, Whirlpool, Snefru, and similar

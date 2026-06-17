@@ -110,10 +110,7 @@ public static partial class Base32
     /// <summary>
     /// Generic bit-stream decoder shared by the char-source and UTF-8-source <see cref="OperationStatus" /> paths.
     /// </summary>
-    /// <typeparam name="TSource">
-    /// The source kind selector. Use <see cref="CharSource" /> for <paramref name="charSource" /> or
-    /// <see cref="Utf8Source" /> for <paramref name="utf8Source" />.
-    /// </typeparam>
+    /// <typeparam name="TSource">The source kind selector.</typeparam>
     /// <param name="charSource">
     /// The character source (used when <typeparamref name="TSource" /> is <see cref="CharSource" />).
     /// </param>
