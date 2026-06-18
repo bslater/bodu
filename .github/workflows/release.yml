@@ -55,19 +55,31 @@ jobs:
             --configuration "$CONFIGURATION" \
             --output "${{ github.workspace }}/local-packages"
 
-      - name: Guard — fail fast if the public key is not configured
+      - name: Guard — fail fast if the public key is misconfigured
         shell: bash
         run: |
           # Real signing produces strong-named assemblies whose retained cross-library
           # InternalsVisibleTo grants must carry the public key (BoduPublicKey). Refuse to publish a
-          # half-configured release where signing is on but the public key was never populated.
+          # half-configured release where signing is on but the public key is missing or stale.
           key=$(dotnet msbuild Bodu.Core/src/Bodu.Core.csproj -nologo -v:q \
-            -getProperty:BoduPublicKey 2>/dev/null | tr -d '[:space:]')
+            -getProperty:BoduPublicKey 2>/dev/null | tr -d '[:space:]' | tr 'A-F' 'a-f')
           if [ -z "$key" ]; then
-            echo "::error::BoduPublicKey is empty in bld/Signing.props. Populate it (sn -tp Bodu.public.snk) before releasing a signed build."
+            echo "::error::BoduPublicKey is empty in bld/Signing.props. Populate it (sn -tp bld/Bodu.public.snk) before releasing a signed build."
             exit 1
           fi
-          echo "BoduPublicKey is configured."
+
+          # bld/Bodu.public.snk is a public-only key blob, so its raw bytes are exactly the
+          # strong-name public key. Compare it to BoduPublicKey: if the hand-maintained hex string
+          # has drifted from the committed key file, every InternalsVisibleTo grant would advertise a
+          # public key the signed assemblies do not carry, and the build fails late with CS0281.
+          filekey=$(od -An -v -t x1 bld/Bodu.public.snk | tr -d ' \n' | tr 'A-F' 'a-f')
+          if [ "$key" != "$filekey" ]; then
+            echo "::error::BoduPublicKey in bld/Signing.props does not match bld/Bodu.public.snk. Regenerate it with 'sn -tp bld/Bodu.public.snk' and update bld/Signing.props."
+            echo "::error::BoduPublicKey   = $key"
+            echo "::error::Bodu.public.snk = $filekey"
+            exit 1
+          fi
+          echo "BoduPublicKey matches bld/Bodu.public.snk."
 
       - name: Decode strong-name private key
         shell: bash
