@@ -7,8 +7,6 @@
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Text.Json;
-using Bodu.Test;
-using Bodu.Test.Kat;
 
 namespace Bodu.Financial.ExchangeRates.Rba;
 
@@ -25,7 +23,7 @@ namespace Bodu.Financial.ExchangeRates.Rba;
 /// </para>
 /// </remarks>
 [TestClass]
-public class RbaRateKnownAnswerTests
+public partial class RbaRateKnownAnswerTests
 {
     /// <summary>
     /// Shared options (no disk cache) used to build providers and to resolve currency aliases consistently.
@@ -60,25 +58,6 @@ public class RbaRateKnownAnswerTests
         s_allRows.Where(row => s_embeddedWorkbooks.Contains(row.SourceFileName)).Select(row => new object[] { row });
 
     /// <summary>
-    /// Verifies that an exact-date lookup returns the rate RBA published for the row's currency.
-    /// </summary>
-    /// <param name="answer">The known-answer row under test.</param>
-    /// <returns>A task that completes when the assertion has run.</returns>
-    [TestMethod(UnfoldingStrategy = TestDataSourceUnfoldingStrategy.Unfold)]
-    [TestCategory(TestCategories.Regression)]
-    [DynamicData(nameof(KnownAnswers), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public async Task GetRate_WhenKnownAnswer_ShouldReturnPublishedRate(RbaRateKnownAnswer answer)
-    {
-        ArgumentNullException.ThrowIfNull(answer);
-
-        RbaExchangeRateProvider provider = await GetProviderAsync(answer.SourceFileName);
-
-        ExchangeRateLookupResult result = provider.GetRate("AUD", ResolveCurrency(answer.Currency), answer.Date);
-
-        Assert.AreEqual(answer.ExpectedRate, result.Rate.Rate);
-    }
-
-    /// <summary>
     /// Gets the distinct (workbook, currency) groups whose workbook fixture is embedded, as dynamic-data rows.
     /// </summary>
     /// <returns>One object array of (source file, currency) per runnable group.</returns>
@@ -88,66 +67,6 @@ public class RbaRateKnownAnswerTests
             .Select(row => (row.SourceFileName, row.Currency))
             .Distinct()
             .Select(group => new object[] { group.SourceFileName, group.Currency });
-
-    /// <summary>
-    /// Verifies that the first, last, minimum, and maximum rows selected for a workbook currency genuinely match the
-    /// extremes of that currency's full series, confirming both the selections and the completeness of the read series.
-    /// </summary>
-    /// <param name="sourceFileName">The RBA workbook file name.</param>
-    /// <param name="currency">The RBA currency label.</param>
-    /// <returns>A task that completes when the assertions have run.</returns>
-    /// <remarks>
-    /// The closest-to-median row is intentionally not recomputed here (its selection is algorithm-dependent); it is
-    /// still verified as a point value by <see cref="GetRate_WhenKnownAnswer_ShouldReturnPublishedRate" />.
-    /// </remarks>
-    [TestMethod]
-    [TestCategory(TestCategories.Regression)]
-    [DynamicData(nameof(ClassificationGroups))]
-    public async Task GetRates_WhenKnownAnswerSeries_ShouldMatchSelectedExtremes(string sourceFileName, string currency)
-    {
-        RbaExchangeRateProvider provider = await GetProviderAsync(sourceFileName);
-        RbaEra era = RbaEra.Default.Single(e => string.Equals(e.FileName, sourceFileName, StringComparison.Ordinal));
-        DateOnly end = era.End ?? new DateOnly(2100, 1, 1);
-
-        IReadOnlyList<ExchangeRate> series = [.. await provider.GetRatesAsync("AUD", ResolveCurrency(currency), era.Start, end)];
-        Assert.IsNotEmpty(series);
-
-        var byType = s_allRows
-            .Where(row => row.SourceFileName == sourceFileName && string.Equals(row.Currency, currency, StringComparison.Ordinal))
-            .ToDictionary(row => row.Type, StringComparer.OrdinalIgnoreCase);
-
-        if (byType.TryGetValue("First", out RbaRateKnownAnswer? first))
-        {
-            Assert.AreEqual(first.Date, series[0].Date);
-            Assert.AreEqual(first.ExpectedRate, series[0].Rate);
-        }
-
-        if (byType.TryGetValue("Last", out RbaRateKnownAnswer? last))
-        {
-            Assert.AreEqual(last.Date, series[^1].Date);
-            Assert.AreEqual(last.ExpectedRate, series[^1].Rate);
-        }
-
-        if (byType.TryGetValue("Min", out RbaRateKnownAnswer? min))
-            Assert.AreEqual(min.ExpectedRate, series.Min(rate => rate.Rate));
-
-        if (byType.TryGetValue("Max", out RbaRateKnownAnswer? max))
-            Assert.AreEqual(max.ExpectedRate, series.Max(rate => rate.Rate));
-    }
-
-    /// <summary>
-    /// Verifies that the embedded data set loads and every row references a workbook in the RBA era catalogue.
-    /// </summary>
-    [TestMethod]
-    public void KnownAnswerData_ShouldMapEveryRowToAKnownWorkbook()
-    {
-        var knownFiles = RbaEra.Default.Select(era => era.FileName).ToHashSet(StringComparer.Ordinal);
-
-        Assert.IsNotEmpty(s_allRows);
-        Assert.IsTrue(
-            s_allRows.All(row => knownFiles.Contains(row.SourceFileName)),
-            "Every known-answer row must reference a workbook in the RBA era catalogue.");
-    }
 
     /// <summary>
     /// Deserializes the embedded known-answer data set.
