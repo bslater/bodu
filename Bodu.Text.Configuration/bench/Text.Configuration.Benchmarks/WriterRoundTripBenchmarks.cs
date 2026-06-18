@@ -13,13 +13,13 @@ namespace Bodu.Text.Configuration.Benchmarks;
 
 /// <summary>
 /// Measures round-trip throughput: parse a document and then write it back via
-/// <see cref="ConfigurationDocument.Save(IniDocument, Stream, ConfigurationWriteOptions?, bool)" />.
+/// <see cref="ConfigurationDocument.Save(IniDocumentBase, Stream, ConfigurationWriteOptions?, bool)" />.
 /// </summary>
 [MemoryDiagnoser]
 public class WriterRoundTripBenchmarks
 {
     private string _source = string.Empty;
-    private IniDocument _parsed = null!;
+    private ConfigurationDocument _parsed = null!;
 
     /// <summary>
     /// Gets or sets the number of sections in the synthetic document round-tripped by each iteration.
@@ -58,7 +58,7 @@ public class WriterRoundTripBenchmarks
     [Benchmark(Baseline = true)]
     public long ParseAndSave()
     {
-        IniDocument doc = ConfigurationDocument.Parse(_source);
+        var doc = ConfigurationDocument.Parse(_source);
         using MemoryStream stream = new();
         ConfigurationDocument.Save(doc, stream);
         return stream.Length;
