@@ -84,9 +84,11 @@ public static partial class Base45
 
         int length = GetEncodedLength(bytes.Length);
         if (destination.Length < length)
+        {
             throw new ArgumentException(
                 string.Format(System.Globalization.CultureInfo.CurrentCulture, EncodingResourceStrings.Arg_Invalid_Base45DestinationSize, length),
                 nameof(destination));
+        }
 
         EncodeInto(bytes, destination.Slice(0, length));
         return length;

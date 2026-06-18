@@ -280,6 +280,7 @@ public sealed partial class MoneyBag :
             hash.Add(entry.Key);
             hash.Add(entry.Value);
         }
+
         return hash.ToHashCode();
     }
 

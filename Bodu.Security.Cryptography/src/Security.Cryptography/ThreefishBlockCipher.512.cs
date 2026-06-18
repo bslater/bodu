@@ -75,10 +75,25 @@ public sealed partial class Threefish512Cipher
     private const int R4 = 33, R5 = 27, R6 = 14, R7 = 42;
 
     /// <summary>The spec-defined Threefish-512 rotation constants (rotation amounts 8 through 11).</summary>
-    private const int R8 = 17, R9 = 49, R10 = 36, R11 = 39;
+    private const int R8 = 17;
+
+    /// <summary>The spec-defined Threefish-512 rotation constants (rotation amounts 8 through 11).</summary>
+    private const int R9 = 49;
+
+    /// <summary>The spec-defined Threefish-512 rotation constants (rotation amounts 8 through 11).</summary>
+    private const int R10 = 36;
+
+    /// <summary>The spec-defined Threefish-512 rotation constants (rotation amounts 8 through 11).</summary>
+    private const int R11 = 39;
 
     /// <summary>The spec-defined Threefish-512 rotation constants (rotation amounts 12 through 15).</summary>
-    private const int R12 = 44, R13 = 9, R14 = 54, R15 = 56;
+    private const int R12 = 44;
+    /// <summary>The spec-defined Threefish-512 rotation constants (rotation amounts 12 through 15).</summary>
+    private const int R13 = 9;
+    /// <summary>The spec-defined Threefish-512 rotation constants (rotation amounts 12 through 15).</summary>
+    private const int R14 = 54;
+    /// <summary>The spec-defined Threefish-512 rotation constants (rotation amounts 12 through 15).</summary>
+    private const int R15 = 56;
 
     /// <summary>The spec-defined Threefish-512 rotation constants (rotation amounts 16 through 19).</summary>
     private const int R16 = 39, R17 = 30, R18 = 34, R19 = 24;

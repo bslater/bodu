@@ -70,10 +70,43 @@ public sealed partial class Threefish1024Cipher
     /// place rather than being duplicated between <see cref="Encrypt" />, <see cref="Decrypt" />, and the rotation
     /// schedule.
     /// </remarks>
-    private const int R0 = 24, R1 = 13, R2 = 8, R3 = 47;
+    private const int R0 = 24;
+    /// <summary>Threefish-1024 word-rotation constants <c>R0</c>–<c>R3</c> used by the mix function.</summary>
+    /// <remarks>
+    /// The spec-defined rotation constants for Threefish-1024 are declared as named <c>const int</c>s so the JIT can
+    /// fold each <c>Mix</c>/<c>Unmix</c> call to a ROL/ROR with an immediate count, and so all 64 values live in one
+    /// place rather than being duplicated between <see cref="Encrypt" />, <see cref="Decrypt" />, and the rotation
+    /// schedule.
+    /// </remarks>
+    private const int R1 = 13;
+    /// <summary>Threefish-1024 word-rotation constants <c>R0</c>–<c>R3</c> used by the mix function.</summary>
+    /// <remarks>
+    /// The spec-defined rotation constants for Threefish-1024 are declared as named <c>const int</c>s so the JIT can
+    /// fold each <c>Mix</c>/<c>Unmix</c> call to a ROL/ROR with an immediate count, and so all 64 values live in one
+    /// place rather than being duplicated between <see cref="Encrypt" />, <see cref="Decrypt" />, and the rotation
+    /// schedule.
+    /// </remarks>
+    private const int R2 = 8;
+    /// <summary>Threefish-1024 word-rotation constants <c>R0</c>–<c>R3</c> used by the mix function.</summary>
+    /// <remarks>
+    /// The spec-defined rotation constants for Threefish-1024 are declared as named <c>const int</c>s so the JIT can
+    /// fold each <c>Mix</c>/<c>Unmix</c> call to a ROL/ROR with an immediate count, and so all 64 values live in one
+    /// place rather than being duplicated between <see cref="Encrypt" />, <see cref="Decrypt" />, and the rotation
+    /// schedule.
+    /// </remarks>
+    private const int R3 = 47;
 
     /// <summary>Threefish-1024 word-rotation constants <c>R4</c>–<c>R7</c> used by the mix function.</summary>
-    private const int R4 = 8, R5 = 17, R6 = 22, R7 = 37;
+    private const int R4 = 8;
+
+    /// <summary>Threefish-1024 word-rotation constants <c>R4</c>–<c>R7</c> used by the mix function.</summary>
+    private const int R5 = 17;
+
+    /// <summary>Threefish-1024 word-rotation constants <c>R4</c>–<c>R7</c> used by the mix function.</summary>
+    private const int R6 = 22;
+
+    /// <summary>Threefish-1024 word-rotation constants <c>R4</c>–<c>R7</c> used by the mix function.</summary>
+    private const int R7 = 37;
 
     /// <summary>Threefish-1024 word-rotation constants <c>R8</c>–<c>R11</c> used by the mix function.</summary>
     private const int R8 = 38, R9 = 19, R10 = 10, R11 = 55;

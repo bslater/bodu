@@ -37,6 +37,10 @@ internal static class NotableDateAssert
         NotableDateCategory category,
         string? adjustmentPolicyId)
     {
+        // Arguments are in MSTest (expected, actual) order: the leading parameter is the expected value and
+        // actual.* is the produced value. MSTEST0017's heuristic misreads this because the `actualDate`
+        // parameter name matches its `actual` token, so suppress the swap warning for this helper only.
+#pragma warning disable MSTEST0017 // Assertion arguments should be passed in the correct order
         Assert.AreEqual(date, actual.Date, "Date");
         Assert.AreEqual(actualDate, actual.ActualDate, "ActualDate");
         Assert.AreEqual(isObserved, actual.IsObserved, "IsObserved");
@@ -46,6 +50,7 @@ internal static class NotableDateAssert
         Assert.AreEqual(territory, actual.TerritoryCode, "TerritoryCode");
         Assert.AreEqual(category, actual.Category, "Category");
         Assert.AreEqual(adjustmentPolicyId, actual.AdjustmentPolicyId, "AdjustmentPolicyId");
+#pragma warning restore MSTEST0017
     }
 
     /// <summary>

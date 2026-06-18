@@ -57,7 +57,6 @@ public readonly partial struct WeekPattern
     /// <summary>The single-bit step used to test and set each successive day in the bitmask.</summary>
     private const byte ShiftValue = 0x01;
 
-
 #pragma warning disable IDE1006
 
     /// <summary>The single-letter day symbols (Sunday through Saturday) used when formatting a pattern.</summary>

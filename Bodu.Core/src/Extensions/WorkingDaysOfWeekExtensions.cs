@@ -103,14 +103,22 @@ public static class WorkingDaysOfWeekExtensions
     /// </returns>
     public static bool TryGetWorkingDaysOfWeek(this WeekPattern pattern, out WorkingDaysOfWeek value)
     {
-        if (pattern == WeekPattern.MondayToFriday) { value = WorkingDaysOfWeek.MondayToFriday; return true; }
-        if (pattern == WeekPattern.MondayToSaturday) { value = WorkingDaysOfWeek.MondayToSaturday; return true; }
-        if (pattern == WeekPattern.MondayToThursdayAndSaturday) { value = WorkingDaysOfWeek.MondayToThursdayAndSaturday; return true; }
-        if (pattern == WeekPattern.SaturdayToThursday) { value = WorkingDaysOfWeek.SaturdayToThursday; return true; }
-        if (pattern == WeekPattern.SaturdayToWednesday) { value = WorkingDaysOfWeek.SaturdayToWednesday; return true; }
-        if (pattern == WeekPattern.SundayToFriday) { value = WorkingDaysOfWeek.SundayToFriday; return true; }
-        if (pattern == WeekPattern.SundayToThursday) { value = WorkingDaysOfWeek.SundayToThursday; return true; }
-        if (pattern == WeekPattern.AllDays) { value = WorkingDaysOfWeek.AllDays; return true; }
+        if (pattern == WeekPattern.MondayToFriday) { value = WorkingDaysOfWeek.MondayToFriday;
+            return true; }
+        if (pattern == WeekPattern.MondayToSaturday) { value = WorkingDaysOfWeek.MondayToSaturday;
+            return true; }
+        if (pattern == WeekPattern.MondayToThursdayAndSaturday) { value = WorkingDaysOfWeek.MondayToThursdayAndSaturday;
+            return true; }
+        if (pattern == WeekPattern.SaturdayToThursday) { value = WorkingDaysOfWeek.SaturdayToThursday;
+            return true; }
+        if (pattern == WeekPattern.SaturdayToWednesday) { value = WorkingDaysOfWeek.SaturdayToWednesday;
+            return true; }
+        if (pattern == WeekPattern.SundayToFriday) { value = WorkingDaysOfWeek.SundayToFriday;
+            return true; }
+        if (pattern == WeekPattern.SundayToThursday) { value = WorkingDaysOfWeek.SundayToThursday;
+            return true; }
+        if (pattern == WeekPattern.AllDays) { value = WorkingDaysOfWeek.AllDays;
+            return true; }
 
         value = WorkingDaysOfWeek.Custom;
         return false;

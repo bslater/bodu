@@ -139,7 +139,6 @@ public abstract class BlockHashAlgorithm<T>
     {
         ThrowIfDisposed();
 
-
         ProcessBlocks(source);
     }
 
@@ -154,7 +153,6 @@ public abstract class BlockHashAlgorithm<T>
     protected override byte[] HashFinal()
     {
         ThrowIfDisposed();
-
 
         if (ShouldPadFinalBlock())
         {

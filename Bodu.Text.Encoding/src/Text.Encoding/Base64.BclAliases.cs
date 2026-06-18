@@ -84,6 +84,7 @@ public static partial class Base64
     /// <returns>An <see cref="OperationStatus" /> describing the outcome.</returns>
     public static OperationStatus FromBase64String(ReadOnlySpan<byte> utf8Source, Span<byte> destination, out int bytesConsumed, out int bytesWritten) =>
         DecodeFromUtf8(utf8Source, destination, out bytesConsumed, out bytesWritten, Base64Variant.Standard, BaseFormatStyles.None, isFinalBlock: true);
+
     /// <summary>
     /// Encodes <paramref name="inArray" /> into a Standard Base64 string with default formatting.
     /// </summary>

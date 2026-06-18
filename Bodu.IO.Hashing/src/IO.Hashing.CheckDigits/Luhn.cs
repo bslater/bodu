@@ -153,7 +153,6 @@ public sealed class Luhn
 
             // _sumEvenHypothesis (body length N will be even): body[i] is doubled iff i is odd.
             // _sumOddHypothesis  (body length N will be odd):  body[i] is doubled iff i is even.
-
             if ((count & 1) == 0)
             {
                 sumEven += v;

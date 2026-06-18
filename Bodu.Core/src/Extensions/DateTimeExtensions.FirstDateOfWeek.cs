@@ -66,7 +66,7 @@ public static partial class DateTimeExtensions
         DayOfWeek firstDayOfWeek = culture.DateTimeFormat.FirstDayOfWeek;
 
         long baseTicks = TruncateToDateTicks(dateTime);
-        long offsetTicks = (7 + (dateTime.DayOfWeek - firstDayOfWeek)) % 7 * TicksPerDay;
+        long offsetTicks = ((7 + (dateTime.DayOfWeek - firstDayOfWeek)) % 7) * TicksPerDay;
 
         long ticks = baseTicks - offsetTicks;
 

@@ -81,9 +81,11 @@ public static partial class Base58
             // Compare against the ACTUAL encoded length, not the worst-case upper bound, so callers that pre-size
             // destination for the actual output (rather than the max bound) still succeed.
             if (destination.Length < written)
+            {
                 throw new ArgumentException(
                     string.Format(System.Globalization.CultureInfo.CurrentCulture, EncodingResourceStrings.Arg_Invalid_Base58DestinationSize, written),
                     nameof(destination));
+            }
 
             scratch.AsSpan(upperBound - written, written).CopyTo(destination);
             return written;

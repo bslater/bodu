@@ -90,6 +90,7 @@ public sealed partial class ConfigurationPattern
                         sb.Append(Regex.Escape("\\"));
                         i++;
                     }
+
                     break;
 
                 case '/':
@@ -104,6 +105,7 @@ public sealed partial class ConfigurationPattern
                         sb.Append('/');
                         i++;
                     }
+
                     break;
 
                 case '*':
@@ -117,6 +119,7 @@ public sealed partial class ConfigurationPattern
                         sb.Append("[^/]*");
                         i++;
                     }
+
                     break;
 
                 case '?':
@@ -152,11 +155,13 @@ public sealed partial class ConfigurationPattern
     {
         int close = FindClosingBracket(pattern, start);
         if (close < 0)
+        {
             throw new ConfigurationParseException(new ConfigurationDiagnostic(
                 ConfigurationDiagnosticSeverity.Error,
                 ConfigurationDiagnosticCode.UnbalancedBracket,
                 ConfigurationResourceStrings.Format_Invalid_UnbalancedBracket,
                 ConfigurationSourceLocation.None));
+        }
 
         string body = pattern.Substring(start + 1, close - start - 1);
         sb.Append('[');
@@ -225,11 +230,13 @@ public sealed partial class ConfigurationPattern
     {
         int close = FindMatchingBrace(pattern, start);
         if (close < 0)
+        {
             throw new ConfigurationParseException(new ConfigurationDiagnostic(
                 ConfigurationDiagnosticSeverity.Error,
                 ConfigurationDiagnosticCode.UnbalancedBrace,
                 ConfigurationResourceStrings.Format_Invalid_UnbalancedBrace,
                 ConfigurationSourceLocation.None));
+        }
 
         string body = pattern.Substring(start + 1, close - start - 1);
 
@@ -246,6 +253,7 @@ public sealed partial class ConfigurationPattern
                 sb.Append('|');
             TranslateExpression(alternatives[i], sb);
         }
+
         sb.Append(')');
         return close + 1;
     }
@@ -323,9 +331,13 @@ public sealed partial class ConfigurationPattern
             }
 
             if (c == '{')
+            {
                 depth++;
+            }
             else if (c == '}')
+            {
                 depth--;
+            }
             else if (c == ',' && depth == 0)
             {
                 result.Add(body[start..i]);
@@ -392,6 +404,7 @@ public sealed partial class ConfigurationPattern
                 sb.Append('|');
             sb.Append(value.ToString(CultureInfo.InvariantCulture));
         }
+
         sb.Append(')');
         return true;
     }

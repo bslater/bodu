@@ -67,9 +67,9 @@ namespace Bodu.Collections.Generic.Concurrent;
 public sealed partial class ConcurrentHashSet<T>
     where T : notnull
 {
-
     /// <summary>The upper bound applied to <see cref="DefaultConcurrencyLevel" /> so that the lock array stays small on high-core machines where the typical set is also small. Explicit constructors can request a higher level via the internal initializer.</summary>
     internal const int MaxDefaultConcurrencyLevel = 32;
+
     /// <summary>The default initial bucket count used when no capacity hint is supplied.</summary>
     private const int DefaultCapacity = 31;
 

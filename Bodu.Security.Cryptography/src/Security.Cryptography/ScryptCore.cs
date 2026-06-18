@@ -138,7 +138,7 @@ internal static class ScryptCore
             Salsa20_8(x);
 
             // Even-indexed results occupy the first half; odd-indexed the second.
-            int dest = (i % 2 == 0) ? (i / 2) : (blockSizeR + (i - 1) / 2);
+            int dest = (i % 2 == 0) ? (i / 2) : (blockSizeR + ((i - 1) / 2));
             x.CopyTo(output.Slice(dest * BlockWords, BlockWords));
         }
     }
@@ -151,7 +151,7 @@ internal static class ScryptCore
     /// <returns>The little-endian integer value of the final 64-byte sub-block.</returns>
     private static ulong Integerify(ReadOnlySpan<uint> block, int blockSizeR)
     {
-        int offset = (2 * blockSizeR - 1) * BlockWords;
+        int offset = ((2 * blockSizeR) - 1) * BlockWords;
         return ((ulong)block[offset + 1] << 32) | block[offset];
     }
 

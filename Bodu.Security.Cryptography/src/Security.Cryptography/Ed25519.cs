@@ -313,7 +313,7 @@ public sealed class Ed25519
 
             // S = (r + SHA-512(R ‖ A ‖ M) · s) mod L.
             hash.AppendData(rEncoded);
-            hash.AppendData(_publicKey);
+            hash.AppendData(_publicKey!);
             hash.AppendData(data);
             hash.GetHashAndReset(digest);
 
@@ -370,7 +370,7 @@ public sealed class Ed25519
         using (var hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA512))
         {
             hash.AppendData(rEncoded);
-            hash.AppendData(_publicKey);
+            hash.AppendData(_publicKey!);
             hash.AppendData(data);
             hash.GetHashAndReset(digest);
         }

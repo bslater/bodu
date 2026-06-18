@@ -183,14 +183,18 @@ public sealed class XSalsa20Poly1305
     private static int ValidateCombined(ReadOnlySpan<byte> source, Span<byte> destination)
     {
         if (source.Length < TagBytes)
+        {
             throw new ArgumentException(
                 string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_CiphertextTooShort, TagBytes),
                 nameof(source));
+        }
 
         if (destination.Length < source.Length)
+        {
             throw new ArgumentException(
                 string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, source.Length),
                 nameof(destination));
+        }
 
         return source.Length - TagBytes;
     }

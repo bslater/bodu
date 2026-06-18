@@ -69,10 +69,40 @@ public sealed partial class Threefish256Cipher
     /// with an immediate count, and so all 16 values live in one place rather than being duplicated across encryption,
     /// decryption, and the public rotation schedule.
     /// </remarks>
-    private const int R0 = 14, R1 = 16, R2 = 52, R3 = 57;
+    private const int R0 = 14;
+
+    /// <summary>The spec-defined Threefish-256 rotation constants for rounds 0 through 3.</summary>
+    /// <remarks>
+    /// Declared as named integer constants so the JIT can fold each <c>Mix</c> and <c>Unmix</c> call to a ROL or ROR
+    /// with an immediate count, and so all 16 values live in one place rather than being duplicated across encryption,
+    /// decryption, and the public rotation schedule.
+    /// </remarks>
+    private const int R1 = 16;
+
+    /// <summary>The spec-defined Threefish-256 rotation constants for rounds 0 through 3.</summary>
+    /// <remarks>
+    /// Declared as named integer constants so the JIT can fold each <c>Mix</c> and <c>Unmix</c> call to a ROL or ROR
+    /// with an immediate count, and so all 16 values live in one place rather than being duplicated across encryption,
+    /// decryption, and the public rotation schedule.
+    /// </remarks>
+    private const int R2 = 52;
+
+    /// <summary>The spec-defined Threefish-256 rotation constants for rounds 0 through 3.</summary>
+    /// <remarks>
+    /// Declared as named integer constants so the JIT can fold each <c>Mix</c> and <c>Unmix</c> call to a ROL or ROR
+    /// with an immediate count, and so all 16 values live in one place rather than being duplicated across encryption,
+    /// decryption, and the public rotation schedule.
+    /// </remarks>
+    private const int R3 = 57;
 
     /// <summary>The spec-defined Threefish-256 rotation constants for rounds 4 through 7.</summary>
-    private const int R4 = 23, R5 = 40, R6 = 5, R7 = 37;
+    private const int R4 = 23;
+    /// <summary>The spec-defined Threefish-256 rotation constants for rounds 4 through 7.</summary>
+    private const int R5 = 40;
+    /// <summary>The spec-defined Threefish-256 rotation constants for rounds 4 through 7.</summary>
+    private const int R6 = 5;
+    /// <summary>The spec-defined Threefish-256 rotation constants for rounds 4 through 7.</summary>
+    private const int R7 = 37;
 
     /// <summary>The spec-defined Threefish-256 rotation constants for rounds 8 through 11.</summary>
     private const int R8 = 25, R9 = 33, R10 = 46, R11 = 12;

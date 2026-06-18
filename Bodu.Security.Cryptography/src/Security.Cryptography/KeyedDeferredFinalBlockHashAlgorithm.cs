@@ -154,8 +154,10 @@ public abstract class KeyedDeferredFinalBlockHashAlgorithm<T>
             ThrowHelper.ThrowIfNull(value);
 
             if (value.Length > _maximumKeySize / 8)
+            {
                 throw new CryptographicException(
                     string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_KeySize, value.Length * 8, $"0..{_maximumKeySize}"));
+            }
 
             KeyValue = value.Length > 0 ? value.Copy() : null;
             Initialize();

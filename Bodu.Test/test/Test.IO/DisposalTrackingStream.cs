@@ -164,10 +164,16 @@ public sealed class DisposalTrackingStream
         base.Dispose(disposing);
     }
 
+    // DisposeAsync intentionally does not chain to base.DisposeAsync(): the base implementation routes through
+    // the synchronous Dispose(bool) path, which would set SyncDisposeCalled and defeat this mock's purpose of
+    // distinguishing asynchronous from synchronous disposal.
+#pragma warning disable CA2215 // Dispose methods should call base class dispose
+
     /// <inheritdoc />
     public override async ValueTask DisposeAsync()
     {
         AsyncDisposeCalled = true;
         await _inner.DisposeAsync().ConfigureAwait(false);
     }
+#pragma warning restore CA2215
 }

@@ -301,9 +301,11 @@ public sealed class Crc
         out int bytesWritten)
     {
         if (previousHash.Length != HashLengthInBytes)
+        {
             throw new ArgumentException(
                 HashingResourceStrings.Arg_Invalid_PreviousHashLengthMismatch,
                 nameof(previousHash));
+        }
 
         if (destination.Length < HashLengthInBytes)
         {
@@ -384,6 +386,7 @@ public sealed class Crc
                 crc = (crc << 1) ^ table[inputBit ^ crcBit];
             }
         }
+
         return crc;
     }
 
@@ -407,6 +410,7 @@ public sealed class Crc
                 crc = (crc >> 1) ^ table[inputBit ^ crcBit];
             }
         }
+
         return crc;
     }
 
@@ -426,6 +430,7 @@ public sealed class Crc
         {
             crc = (crc << 8) ^ table[(byte)((crc >> shift) ^ b)];
         }
+
         return crc;
     }
 
@@ -444,6 +449,7 @@ public sealed class Crc
         {
             crc = (crc >> 8) ^ table[(byte)(crc ^ b)];
         }
+
         return crc;
     }
 

@@ -79,9 +79,9 @@ namespace Bodu.Security.Cryptography;
 public sealed class GcmSivModeTransform
     : IAeadBlockCipherModeTransform, IDisposable
 {
-
     /// <summary>Length of the AES-GCM-SIV nonce is 96 bits (12 bytes). Byte length derived inline via <see cref="NonceSizeBits" /> / 8.</summary>
     private const int NonceSizeBits = 96;
+
     /// <summary>Length of the AES-GCM-SIV authentication tag is 128 bits (16 bytes). Byte length derived inline via <see cref="TagSizeBits" /> / 8.</summary>
     private const int TagSizeBits = 128;
 
@@ -594,5 +594,4 @@ public sealed class GcmSivModeTransform
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfDisposed() =>
         ObjectDisposedException.ThrowIf(_disposed, this);
-
 }

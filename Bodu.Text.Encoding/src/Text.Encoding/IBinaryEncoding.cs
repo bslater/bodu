@@ -42,6 +42,7 @@ public interface IBinaryEncoding
     /// Gets a human-readable description of the encoding and its origin (specification clause, RFC, etc.).
     /// </summary>
     string Description { get; }
+
     /// <summary>
     /// Gets a short stable name identifying the encoding and variant — for example, <c>"base16-lower"</c>,
     /// <c>"base32"</c>, <c>"base64-urlsafe"</c>. Suitable as a key in configuration and for diagnostic output.

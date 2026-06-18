@@ -34,7 +34,7 @@ internal static partial class MLDsaEngine
                 int zeta = s_zetas[++m];
                 for (int j = start; j < start + len; j++)
                 {
-                    int t = (int)((long)zeta * w[j + len] % Q);
+                    int t = (int)(((long)zeta * w[j + len]) % Q);
                     w[j + len] = (w[j] - t + Q) % Q;
                     w[j] = (w[j] + t) % Q;
                 }
@@ -61,13 +61,13 @@ internal static partial class MLDsaEngine
                 {
                     int t = w[j];
                     w[j] = (t + w[j + len]) % Q;
-                    w[j + len] = (int)((long)zeta * ((w[j + len] - t + Q) % Q) % Q);
+                    w[j + len] = (int)(((long)zeta * ((w[j + len] - t + Q) % Q)) % Q);
                 }
             }
         }
 
         for (int j = 0; j < N; j++)
-            w[j] = (int)(w[j] * InverseOf256 % Q);
+            w[j] = (int)((w[j] * InverseOf256) % Q);
     }
 
     /// <summary>
@@ -79,7 +79,7 @@ internal static partial class MLDsaEngine
     private static void MultiplyNtt(ReadOnlySpan<int> left, ReadOnlySpan<int> right, Span<int> destination)
     {
         for (int i = 0; i < N; i++)
-            destination[i] = (int)((long)left[i] * right[i] % Q);
+            destination[i] = (int)(((long)left[i] * right[i]) % Q);
     }
 
     /// <summary>
@@ -131,9 +131,9 @@ internal static partial class MLDsaEngine
         while (exponent > 0)
         {
             if ((exponent & 1) != 0)
-                result = result * basis % Q;
+                result = (result * basis) % Q;
 
-            basis = basis * basis % Q;
+            basis = (basis * basis) % Q;
             exponent >>= 1;
         }
 

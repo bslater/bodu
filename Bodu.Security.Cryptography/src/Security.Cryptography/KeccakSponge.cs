@@ -28,7 +28,6 @@ namespace Bodu.Security.Cryptography;
 /// </remarks>
 internal struct KeccakSponge
 {
-
     /// <summary>The sponge rate, in bytes.</summary>
     private readonly int _rateBytes;
 

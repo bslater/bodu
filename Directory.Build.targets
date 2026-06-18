@@ -127,6 +127,44 @@
   </ItemGroup>
 
   <!--
+    Test-project rule relaxations. These rules are noisy and carry no value in non-shipping test
+    assemblies: argument-null guarding of framework-supplied DynamicData/KAT rows (CA1062), the
+    s_/_ field-prefix and underscore-method-name naming conventions (IDE1006, CA1707) that the
+    MSTest `Method_WhenX_ShouldY` style and ad-hoc fixtures deliberately ignore, static members on
+    generic test helpers (CA1000), culture-explicit formatting (CA1304/CA1305/CA1310), the
+    micro-performance / modernization family (CA18xx), and the broken-crypto warnings (CA5350/CA5351)
+    for the hash and cipher test suites that exercise MD5 and SHA-1 as known-answer vectors.
+
+    Applied here via NoWarn — rather than the .editorconfig [**/*Test*.cs] block — because it must
+    cover *every* file in a test project, including infrastructure and extension-method test files
+    whose names do not contain "Test" (e.g. IEnumerableExtensions.Aggregate.cs). A directory-scoped
+    editorconfig glob ([**/test/**/*.cs]) is not honoured reliably by the analyzer-config matcher in
+    this tree, whereas the IsTestProject gate is exact. The documentation-family relaxations
+    (SA1600/SA1601/CS1591 and the Documentation category) remain in .editorconfig, since those fire
+    only on documented members, which in test code are confined to the *Test*.cs files it matches.
+  -->
+  <PropertyGroup Condition="'$(IsTestProject)' == 'true'">
+    <NoWarn>$(NoWarn);CA1000;CA1062;CA1304;CA1305;CA1310;CA1513;CA1707;CA1805;CA1806;CA1822;CA1825;CA1826;CA1832;CA1835;CA1844;CA1847;CA1850;CA1852;CA1859;CA1860;CA1861;CA1865;CA1869;CA5350;CA5351;IDE1006</NoWarn>
+
+    <!--
+      MSTEST0025/0032 flag assertions whose operands are compile-time constants as "always
+      true/failing". The suite deliberately uses that idiom as a regression guard: enum-value
+      stability tests and spec-constant pins (e.g. the GCM SP 800-38D length ceilings) assert a
+      hand-computed expected against the shipped constant so the test flips to failing the moment
+      the production value drifts. They are intentional, not dead assertions.
+    -->
+    <NoWarn>$(NoWarn);MSTEST0025;MSTEST0032</NoWarn>
+
+    <!--
+      Type-naming and operator-design rules on deliberately minimal test fixtures: helper types whose
+      names are chosen for the scenario they exercise (TestEnum, ReadOnlyCollectionOnly<T>) rather than
+      BCL suffix conventions (CA1710/CA1711), and lightweight IComparable stand-ins that need no
+      operator set (CA1036).
+    -->
+    <NoWarn>$(NoWarn);CA1036;CA1710;CA1711</NoWarn>
+  </PropertyGroup>
+
+  <!--
     Common test harness for every test project: the MSTest framework/adapter, the test SDK, the
     coverage collector, and the project-wide MSTest using. Centralised here (rather than repeated in
     each test csproj) and gated on IsTestProject, which test projects set in their body before this

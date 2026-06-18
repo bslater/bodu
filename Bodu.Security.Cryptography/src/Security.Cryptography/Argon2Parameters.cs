@@ -88,32 +88,42 @@ public sealed record Argon2Parameters
     internal void Validate()
     {
         if (Parallelism is < 1 or > MaxParallelism)
+        {
             throw new ArgumentOutOfRangeException(
                 nameof(Parallelism),
                 Parallelism,
                 string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Arg_OutOfRange_Argon2Parallelism, MaxParallelism));
+        }
 
         if (Iterations < 1)
+        {
             throw new ArgumentOutOfRangeException(
                 nameof(Iterations), Iterations, CryptoResourceStrings.Arg_OutOfRange_Argon2Iterations);
+        }
 
         if (TagLength < MinTagLength)
+        {
             throw new ArgumentOutOfRangeException(
                 nameof(TagLength),
                 TagLength,
                 string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Arg_OutOfRange_Argon2TagLength, MinTagLength));
+        }
 
         // m must be at least 8 * p kibibytes (RFC 9106 Section 3.1).
         long minMemory = 8L * Parallelism;
         if (MemoryKiB < minMemory)
+        {
             throw new ArgumentOutOfRangeException(
                 nameof(MemoryKiB),
                 MemoryKiB,
                 string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Arg_OutOfRange_Argon2Memory, minMemory));
+        }
 
         if (Version is not (Version10 or Version13))
+        {
             throw new ArgumentException(
                 string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Arg_Invalid_Argon2Version, Version.ToString("X2", CultureInfo.InvariantCulture)),
                 nameof(Version));
+        }
     }
 }

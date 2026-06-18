@@ -36,7 +36,7 @@ public abstract partial class ThreefishCipherTests<TTest, TCipher>
     protected sealed override TCipher CreateBlockCipher(TweakableBlockCipherVariant variant)
     {
         BlockCipherSpecification spec = GetSpecification(variant);
-        return CreateCipher(spec.TestKey, spec.TestTweak);
+        return CreateCipher(spec.TestKey!, spec.TestTweak!);
     }
 
     /// <inheritdoc />

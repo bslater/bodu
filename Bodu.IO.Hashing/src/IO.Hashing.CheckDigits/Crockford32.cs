@@ -6,7 +6,6 @@
 
 using System.Globalization;
 
-
 namespace Bodu.IO.Hashing.CheckDigits;
 
 /// <summary>
@@ -91,7 +90,7 @@ public sealed class Crockford32
     {
         int value = 0;
         for (int i = 0; i < body.Length; i++)
-            value = (value * Radix + DecodeBody(body[i], nameof(body))) % Modulus;
+            value = ((value * Radix) + DecodeBody(body[i], nameof(body))) % Modulus;
 
         return CheckSymbols[value];
     }
@@ -116,7 +115,7 @@ public sealed class Crockford32
             int digit = TryDecodeBody(valueIncludingCheck[i]);
             if (digit < 0) return false;
 
-            value = (value * Radix + digit) % Modulus;
+            value = ((value * Radix) + digit) % Modulus;
         }
 
         int check = TryDecodeCheck(valueIncludingCheck[^1]);
@@ -130,7 +129,7 @@ public sealed class Crockford32
     {
         int value = _value;
         for (int i = 0; i < body.Length; i++)
-            value = (value * Radix + DecodeBody(body[i], nameof(body))) % Modulus;
+            value = ((value * Radix) + DecodeBody(body[i], nameof(body))) % Modulus;
 
         _value = value;
     }
@@ -215,6 +214,7 @@ public sealed class Crockford32
     {
         int value = TryDecodeBody(ch);
         if (value < 0)
+        {
             throw new ArgumentOutOfRangeException(
                 paramName,
                 ch,
@@ -225,6 +225,7 @@ public sealed class Crockford32
                     (int)ch,
                     "Crockford Base32",
                     "'0'-'9' or 'A'-'Z' excluding 'U' (case-insensitive; 'I'/'L' = 1, 'O' = 0)"));
+        }
 
         return value;
     }

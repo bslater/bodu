@@ -276,7 +276,7 @@ public static partial class DateTimeExtensions
     private static DateTime GetFirstDateOfWeekInQuarterInternal(int year, int quarter, DayOfWeek dayOfWeek, CalendarQuarterDefinition definition, DateTimeKind kind)
     {
         long ticks = ComputeQuarterStartTicks(year, quarter, GetQuarterDefinition(definition));
-        ticks += (dayOfWeek - GetDayOfWeekFromTicks(ticks) + 7) % 7 * TicksPerDay;
+        ticks += ((dayOfWeek - GetDayOfWeekFromTicks(ticks) + 7) % 7) * TicksPerDay;
         return new DateTime(ticks, kind);
     }
 }

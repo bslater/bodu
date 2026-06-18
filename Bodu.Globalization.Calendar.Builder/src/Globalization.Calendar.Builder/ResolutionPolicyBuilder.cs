@@ -14,7 +14,6 @@ namespace Bodu.Globalization.Calendar.Builder;
 /// </summary>
 public sealed class ResolutionPolicyBuilder
 {
-
     /// <summary>
     /// Initializes a new instance of the <see cref="ResolutionPolicyBuilder" /> class with no configured values.
     /// </summary>

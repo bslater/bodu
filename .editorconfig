@@ -302,8 +302,10 @@ dotnet_diagnostic.CA1708.severity = none # Identifiers should differ by more tha
 # Qualification alignment: allow field access without this. when using _camelCase private fields.
 dotnet_diagnostic.SA1101.severity = none
 
-# Member ordering.
-dotnet_diagnostic.SA1201.severity = suggestion # Elements must appear in the correct order
+# Member ordering. SA1201 is disabled (not merely advisory) because StyleCop 1.1.118 throws a
+# KeyNotFoundException on 'record struct' declarations (emitted as AD0001), and it is a single-diagnostic
+# analyzer, so setting it to none makes Roslyn skip it and removes the crash. Re-enable after a StyleCop upgrade.
+dotnet_diagnostic.SA1201.severity = none       # Elements must appear in the correct order (crashes on record struct)
 dotnet_diagnostic.SA1202.severity = suggestion # Elements must be ordered by access modifier
 dotnet_diagnostic.SA1204.severity = suggestion # Static elements must appear before instance elements
 
@@ -332,10 +334,31 @@ dotnet_diagnostic.SA1001.severity = warning # Commas should be spaced correctly
 dotnet_diagnostic.SA1000.severity = none    # Incorrectly flags some target-typed new() constructs
 dotnet_diagnostic.SA1010.severity = none    # Incorrectly flags C# 12 collection expressions
 dotnet_diagnostic.SA1011.severity = none    # Incorrectly flags nullable array types such as byte[]?
+dotnet_diagnostic.SA1313.severity = none    # Incorrectly flags PascalCase record positional parameters (StyleCop 1.1.118)
 
 # Low-signal StyleCop rules for this codebase.
 dotnet_diagnostic.SA1312.severity = silent
 dotnet_diagnostic.SA1502.severity = silent
+
+# .NET design rules that do not fit this library's intentional API shape.
+# CA1000: the generic value types (Fraction<T>, Money<TCurrency>, ExchangeRate<TBase,TQuote>, ...) expose
+# static factory/parse/constant members by design, mirroring the BCL generic-math surface (e.g. INumber<T>).
+dotnet_diagnostic.CA1000.severity = none
+# CA1716: date/rate/calendar interfaces use the clearest domain parameter names (date, end, error); the
+# cross-language reserved-keyword concern is low value for this C#-first library.
+dotnet_diagnostic.CA1716.severity = none
+# CA1720: Float/Integer/String/Object are the correct member names of the TOML/Bencode/numeric value-kind enums.
+dotnet_diagnostic.CA1720.severity = none
+# CA1710: BencodeObject/TomlObject mirror the BCL's JsonObject (itself exempt); Multiset and the buffer/queue
+# types carry their established domain names rather than a forced 'Collection' suffix.
+dotnet_diagnostic.CA1710.severity = none
+# CA1711: IndexedPriorityQueue, RangeDictionary, and MultiValueDictionary are exactly the collection shapes
+# their suffixes name.
+dotnet_diagnostic.CA1711.severity = none
+# CA1707: identifiers mirror external standard/version designations whose underscores delimit numeric components
+# (CRC16_ARC and the RevEng CRC catalogue, Iso7064Mod11_2, Iso7816_4Padding, MurmurHash3_128, TOML version enums).
+# Renaming would break the published-name mapping and the public API.
+dotnet_diagnostic.CA1707.severity = none
 
 # File header template.
 dotnet_diagnostic.IDE0073.severity = none

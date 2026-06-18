@@ -76,6 +76,7 @@ public static partial class Base85
     /// <returns>An <see cref="OperationStatus" /> describing the outcome.</returns>
     public static OperationStatus FromBase85String(ReadOnlySpan<byte> utf8Source, Span<byte> destination, out int bytesConsumed, out int bytesWritten) =>
         DecodeFromUtf8(utf8Source, destination, out bytesConsumed, out bytesWritten, Base85Variant.Ascii85, BaseFormatStyles.None);
+
     /// <summary>
     /// Encodes <paramref name="inArray" /> into an Adobe Ascii85 string.
     /// </summary>

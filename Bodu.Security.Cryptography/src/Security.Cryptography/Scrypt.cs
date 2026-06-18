@@ -209,10 +209,12 @@ public sealed class Scrypt
         // The RFC 7914 upper bound of (2^32 - 1) * 32 always exceeds Array.MaxLength, so only the lower bound is
         // meaningful for a managed array.
         if (length < 1)
+        {
             throw new ArgumentOutOfRangeException(
                 nameof(length),
                 length,
                 string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Arg_OutOfRange_ScryptOutputLength, (long)uint.MaxValue * 32));
+        }
     }
 
     /// <summary>

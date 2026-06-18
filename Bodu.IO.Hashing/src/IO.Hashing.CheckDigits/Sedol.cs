@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-
 namespace Bodu.IO.Hashing.CheckDigits;
 
 /// <summary>
@@ -143,6 +142,7 @@ public sealed class Sedol
         {
             char ch = body[i];
             if (Alphanumeric.IsVowel(ch) || ((uint)(ch - '0') > 9u && (uint)(ch - 'A') > 25u))
+            {
                 throw new ArgumentOutOfRangeException(
                     nameof(body),
                     ch,
@@ -151,6 +151,7 @@ public sealed class Sedol
                         HashingResourceStrings.Arg_OutOfRange_InvalidSedolCharacter,
                         ch,
                         (int)ch));
+            }
 
             int weight = count < s_weights.Length ? s_weights[count] : 1;
             sum += Alphanumeric.ExpandLetterDigit(ch) * weight;

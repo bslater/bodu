@@ -142,7 +142,6 @@ public abstract class BufferedBlockHashAlgorithm<T>
     /// <summary>Indicates whether <see cref="Dispose(bool)" /> has been called. Used to guard <see cref="ThrowIfDisposed" /> and to suppress duplicate disposal work.</summary>
     private bool _disposed;
 
-
     /// <summary>
     /// Initializes a new instance of the <see cref="BufferedBlockHashAlgorithm{T}" /> class with the specified input
     /// block size.
@@ -279,7 +278,6 @@ public abstract class BufferedBlockHashAlgorithm<T>
         ThrowHelper.ThrowIfNull(array);
         ThrowIfDisposed();
         CryptographyThrowHelper.ThrowIfArrayOffsetOrCountInvalid(array, ibStart, cbSize);
-
 
         HashCore(array.AsSpan(ibStart, cbSize));
     }

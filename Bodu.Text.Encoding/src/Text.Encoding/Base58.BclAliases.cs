@@ -82,6 +82,7 @@ public static partial class Base58
     /// <returns>An <see cref="OperationStatus" /> describing the outcome.</returns>
     public static OperationStatus FromBase58String(ReadOnlySpan<byte> utf8Source, Span<byte> destination, out int bytesConsumed, out int bytesWritten) =>
         DecodeFromUtf8(utf8Source, destination, out bytesConsumed, out bytesWritten, Base58Variant.BitcoinFlickr, BaseFormatStyles.None);
+
     /// <summary>
     /// Encodes <paramref name="inArray" /> into a Base58 string using the Bitcoin/Flickr alphabet.
     /// </summary>

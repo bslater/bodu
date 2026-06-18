@@ -123,12 +123,14 @@ public abstract class SymmetricStreamAlgorithm
             ThrowIfDisposed();
 
             if (!IsLegalKeySize(value, _legalKeySizes))
+            {
                 throw new CryptographicException(
                     string.Format(
                         CultureInfo.CurrentCulture,
                         CryptoResourceStrings.Crypt_Invalid_KeySize,
                         value,
                         CryptographyHelper.FormatLegalSizes(_legalKeySizes)));
+            }
 
             _keySizeBits = value;
             CryptographyHelper.ClearAndNullify(ref _key);

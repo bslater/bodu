@@ -63,6 +63,7 @@ internal static class ExchangeRateDateSearch
                     candidate = previous;
                     return true;
                 }
+
                 break;
 
             case ExchangeRateDateResolution.NextOnOrAfter:
@@ -71,6 +72,7 @@ internal static class ExchangeRateDateSearch
                     candidate = next;
                     return true;
                 }
+
                 break;
 
             case ExchangeRateDateResolution.Nearest:

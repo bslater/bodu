@@ -116,9 +116,11 @@ public static partial class Base85
                 return 0;
 
             if (destination.Length < Ascii85DelimiterLength)
+            {
                 throw new ArgumentException(
                     EncodingResourceStrings.Arg_Invalid_Ascii85DestinationDelimiter,
                     nameof(destination));
+            }
 
             destination[0] = '<';
             destination[1] = '~';
@@ -162,9 +164,11 @@ public static partial class Base85
             int written = EncodeIntoBuffer(bytes, variant, scratch);
             int required = emitDelimiters ? written + Ascii85DelimiterLength : written;
             if (destination.Length < required)
+            {
                 throw new ArgumentException(
                     string.Format(System.Globalization.CultureInfo.CurrentCulture, EncodingResourceStrings.Arg_Invalid_Base85DestinationSize, required),
                     nameof(destination));
+            }
 
             int pos = 0;
             if (emitDelimiters)

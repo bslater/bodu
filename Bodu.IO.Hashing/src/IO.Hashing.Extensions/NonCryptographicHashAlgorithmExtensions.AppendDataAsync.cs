@@ -72,8 +72,10 @@ public static partial class NonCryptographicHashAlgorithmExtensions
         ArgumentNullException.ThrowIfNull(source);
 
         if (bufferSize <= 0)
+        {
             throw new ArgumentOutOfRangeException(
                 nameof(bufferSize), bufferSize, HashingResourceStrings.Arg_OutOfRange_BufferSizeNotPositive);
+        }
 
         cancellationToken.ThrowIfCancellationRequested();
 

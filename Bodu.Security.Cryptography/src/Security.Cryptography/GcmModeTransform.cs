@@ -100,12 +100,12 @@ namespace Bodu.Security.Cryptography;
 public sealed class GcmModeTransform
     : IAeadBlockCipherModeTransform, IDisposable
 {
-
     /// <summary>SP 800-38D §5.2.1.1 associated-data length ceiling: <c>2⁶⁴</c> bits, expressed in bytes ( <c>2⁶⁴ / 8 = 2⁶¹ = 2 305 843 009 213 693 952</c>). Internal so tests can validate the constant.</summary>
     internal const long MaxAadBytes = 1L << 61;
 
     /// <summary>SP 800-38D §5.2.1.1 plaintext length ceiling: <c>2³⁹ − 256</c> bits, expressed in bytes ( <c>(2³⁹ − 256) / 8 = 68 719 476 704</c>). Internal so tests can validate the constant.</summary>
     internal const long MaxPlaintextBytes = ((1L << 39) - 256) / 8;
+
     /// <summary>The fixed GCM block size in bits (128 bits = 16 bytes).</summary>
     private const int BlockSize = 128;
 
@@ -675,6 +675,7 @@ public sealed class GcmModeTransform
             _aadProcessed = true;
         }
     }
+
     /// <summary>
     /// Throws <see cref="InvalidOperationException" /> if this instance has already encrypted or decrypted a message.
     /// GCM transforms are single-use; create a fresh instance per message.
@@ -697,5 +698,4 @@ public sealed class GcmModeTransform
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfDisposed() =>
         ObjectDisposedException.ThrowIf(_disposed, this);
-
 }

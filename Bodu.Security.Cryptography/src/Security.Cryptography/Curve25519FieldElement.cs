@@ -30,7 +30,6 @@ namespace Bodu.Security.Cryptography;
 /// </remarks>
 internal struct Curve25519FieldElement
 {
-
     /// <summary>Limb 0 of the radix-2^51 representation (bits 0–50 of the element value).</summary>
     internal ulong L0;
 
@@ -247,13 +246,13 @@ internal struct Curve25519FieldElement
         ulong g0 = right.L0, g1 = right.L1, g2 = right.L2, g3 = right.L3, g4 = right.L4;
 
         UInt128 t0 = ((UInt128)f0 * g0)
-                   + (UInt128)19 * (((UInt128)f1 * g4) + ((UInt128)f2 * g3) + ((UInt128)f3 * g2) + ((UInt128)f4 * g1));
+                   + ((UInt128)19 * (((UInt128)f1 * g4) + ((UInt128)f2 * g3) + ((UInt128)f3 * g2) + ((UInt128)f4 * g1)));
         UInt128 t1 = ((UInt128)f0 * g1) + ((UInt128)f1 * g0)
-                   + (UInt128)19 * (((UInt128)f2 * g4) + ((UInt128)f3 * g3) + ((UInt128)f4 * g2));
+                   + ((UInt128)19 * (((UInt128)f2 * g4) + ((UInt128)f3 * g3) + ((UInt128)f4 * g2)));
         UInt128 t2 = ((UInt128)f0 * g2) + ((UInt128)f1 * g1) + ((UInt128)f2 * g0)
-                   + (UInt128)19 * (((UInt128)f3 * g4) + ((UInt128)f4 * g3));
+                   + ((UInt128)19 * (((UInt128)f3 * g4) + ((UInt128)f4 * g3)));
         UInt128 t3 = ((UInt128)f0 * g3) + ((UInt128)f1 * g2) + ((UInt128)f2 * g1) + ((UInt128)f3 * g0)
-                   + (UInt128)19 * ((UInt128)f4 * g4);
+                   + ((UInt128)19 * ((UInt128)f4 * g4));
         UInt128 t4 = ((UInt128)f0 * g4) + ((UInt128)f1 * g3) + ((UInt128)f2 * g2) + ((UInt128)f3 * g1) + ((UInt128)f4 * g0);
 
         return CarryReduce(t0, t1, t2, t3, t4);

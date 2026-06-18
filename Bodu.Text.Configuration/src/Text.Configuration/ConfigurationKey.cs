@@ -47,7 +47,6 @@ namespace Bodu.Text.Configuration;
 public readonly partial struct ConfigurationKey
     : IEquatable<ConfigurationKey>
 {
-
     /// <summary>The raw key string as authored in the configuration source, backing <see cref="RawKey" />, or <see langword="null" /> for a default-initialized instance.</summary>
     private readonly string? _rawKey;
 

@@ -85,10 +85,12 @@ public static partial class NonCryptographicHashAlgorithmExtensions
         ArgumentNullException.ThrowIfNull(source);
 
         if (bufferSize <= 0)
+        {
             throw new ArgumentOutOfRangeException(
                 nameof(bufferSize),
                 bufferSize,
                 HashingResourceStrings.Arg_OutOfRange_BufferSizeNotPositive);
+        }
 
         byte[] buffer = ArrayPool<byte>.Shared.Rent(bufferSize);
         try

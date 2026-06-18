@@ -215,7 +215,7 @@ public static partial class DateOnlyExtensions
     private static int GetQuarterForDate(this DateOnly date, (uint defMonth, uint defDay) definition)
     {
         // Compute quarter number using modular offset from anchor month
-        int quarter = ((date.Month + 12 - (int)definition.defMonth) % 12 / 3) + 1;
+        int quarter = (((date.Month + 12 - (int)definition.defMonth) % 12) / 3) + 1;
 
         // If anchor day is not the 1st, check if we are in the quarter's start month but still before the anchor day - in that case, we
         // belong to the previous quarter
