@@ -6,7 +6,6 @@
 
 using System.Text;
 using BenchmarkDotNet.Attributes;
-using Bodu.Text.Ini;
 
 namespace Bodu.Text.Configuration.Benchmarks;
 
@@ -53,7 +52,7 @@ public class DocumentParseBenchmarks
     /// </summary>
     /// <returns>The parsed document.</returns>
     [Benchmark(Baseline = true)]
-    public IniDocument Parse_Default() =>
+    public ConfigurationDocument Parse_Default() =>
         ConfigurationDocument.Parse(_source);
 
     /// <summary>
@@ -62,7 +61,7 @@ public class DocumentParseBenchmarks
     /// </summary>
     /// <returns>The parsed document.</returns>
     [Benchmark]
-    public IniDocument Parse_EditorConfigCompatible() =>
+    public ConfigurationDocument Parse_EditorConfigCompatible() =>
         ConfigurationDocument.Parse(_source, ConfigurationParseOptions.EditorConfigCompatible);
 
     /// <summary>

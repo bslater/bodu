@@ -19,17 +19,6 @@ jobs:
     timeout-minutes: 30
     if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
 
-    env:
-      TEST_PROJECTS: >-
-        Bodu.Core/test/Bodu.Core.Test.csproj
-        Bodu.Numerics/test/Bodu.Numerics.Test.csproj
-        Bodu.Security.Cryptography/test/Bodu.Security.Cryptography.Test.csproj
-        Bodu.IO.Hashing/test/Bodu.IO.Hashing.Test.csproj
-        Bodu.Globalization.Calendar/test/Bodu.Globalization.Calendar.Test.csproj
-        Bodu.Globalization.Calendar.Data/Bodu.Globalization.Calendar.Americas/test/Bodu.Globalization.Calendar.Americas.Test.csproj
-        Bodu.Globalization.Calendar.Data/Bodu.Globalization.Calendar.Europe/test/Bodu.Globalization.Calendar.Europe.Test.csproj
-        Bodu.Globalization.Calendar.Data/Bodu.Globalization.Calendar.AsiaPacific/test/Bodu.Globalization.Calendar.AsiaPacific.Test.csproj
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -49,6 +38,29 @@ jobs:
           dotnet pack Bodu.CodeStyle.XmlDocumentation/Bodu.CodeStyle.XmlDocumentation.csproj \
             --configuration Release \
             --output "${{ github.workspace }}/local-packages"
+
+      - name: Discover test projects
+        run: |
+          # Every '*.Test.csproj' that is a member of bodu.slnx. Deriving the list from the
+          # solution keeps CI in sync as projects are added or removed, and naturally excludes
+          # the benchmark harnesses (which are not test projects and are not built in CI).
+          projects=$(grep -oE 'Path="[^"]*\.Test\.csproj"' bodu.slnx \
+            | sed -E 's/^Path="//; s/"$//; s/\\/\//g' \
+            | sort -u)
+
+          if [ -z "$projects" ]; then
+            echo "::error::No test projects discovered in bodu.slnx" >&2
+            exit 1
+          fi
+
+          echo "Discovered test projects:"
+          echo "$projects"
+
+          {
+            echo 'TEST_PROJECTS<<EOF'
+            echo "$projects"
+            echo 'EOF'
+          } >> "$GITHUB_ENV"
 
       - name: Restore
         run: |

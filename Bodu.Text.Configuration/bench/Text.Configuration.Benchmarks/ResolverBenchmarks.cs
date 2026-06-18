@@ -11,14 +11,14 @@ using Bodu.Text.Ini;
 namespace Bodu.Text.Configuration.Benchmarks;
 
 /// <summary>
-/// Measures throughput of <see cref="ConfigurationExtensions.Resolve(IniDocument, string?)" /> when applied
+/// Measures throughput of <see cref="ConfigurationExtensions.Resolve(IniDocumentBase, string?)" /> when applied
 /// to documents with progressively more sections, exercising the compiled-pattern cache that
 /// <see cref="ConfigurationPattern" /> maintains.
 /// </summary>
 [MemoryDiagnoser]
 public class ResolverBenchmarks
 {
-    private IniDocument _document = null!;
+    private ConfigurationDocument _document = null!;
     private string _targetPath = string.Empty;
 
     /// <summary>
