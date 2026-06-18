@@ -37,10 +37,38 @@ public static class ConfigurationKnownAnswerData
            .Select(kat => new object[] { kat });
 
     /// <summary>
+    /// Gets parser and lexer KATs that are expected to succeed.
+    /// </summary>
+    public static IEnumerable<object[]> ParserDataPass =>
+        All.Where(kat => kat.Kind is ConfigurationKatKind.Parse && kat.Outcome is ConfigurationKatOutcome.Pass)
+           .Select(kat => new object[] { kat });
+
+    /// <summary>
+    /// Gets parser and lexer KATs that are expected to fail.
+    /// </summary>
+    public static IEnumerable<object[]> ParserDataFail =>
+        All.Where(kat => kat.Kind is ConfigurationKatKind.Parse && kat.Outcome is ConfigurationKatOutcome.Fail)
+           .Select(kat => new object[] { kat });
+
+    /// <summary>
     /// Gets key-mapping KATs.
     /// </summary>
     public static IEnumerable<object[]> KeyData =>
         All.Where(kat => kat.Kind is ConfigurationKatKind.KeyMapping)
+           .Select(kat => new object[] { kat });
+
+    /// <summary>
+    /// Gets key-mapping KATs that are expected to succeed.
+    /// </summary>
+    public static IEnumerable<object[]> KeyDataPass =>
+        All.Where(kat => kat.Kind is ConfigurationKatKind.KeyMapping && kat.Outcome is ConfigurationKatOutcome.Pass)
+           .Select(kat => new object[] { kat });
+
+    /// <summary>
+    /// Gets key-mapping KATs that are expected to fail.
+    /// </summary>
+    public static IEnumerable<object[]> KeyDataFail =>
+        All.Where(kat => kat.Kind is ConfigurationKatKind.KeyMapping && kat.Outcome is ConfigurationKatOutcome.Fail)
            .Select(kat => new object[] { kat });
 
     /// <summary>
@@ -51,10 +79,38 @@ public static class ConfigurationKnownAnswerData
            .Select(kat => new object[] { kat });
 
     /// <summary>
+    /// Gets glob-pattern KATs that are expected to succeed.
+    /// </summary>
+    public static IEnumerable<object[]> PatternDataPass =>
+        All.Where(kat => kat.Kind is ConfigurationKatKind.Pattern && kat.Outcome is ConfigurationKatOutcome.Pass)
+           .Select(kat => new object[] { kat });
+
+    /// <summary>
+    /// Gets glob-pattern KATs that are expected to fail.
+    /// </summary>
+    public static IEnumerable<object[]> PatternDataFail =>
+        All.Where(kat => kat.Kind is ConfigurationKatKind.Pattern && kat.Outcome is ConfigurationKatOutcome.Fail)
+           .Select(kat => new object[] { kat });
+
+    /// <summary>
     /// Gets document resolution KATs.
     /// </summary>
     public static IEnumerable<object[]> ResolutionData =>
         All.Where(kat => kat.Kind is ConfigurationKatKind.Resolve)
+           .Select(kat => new object[] { kat });
+
+    /// <summary>
+    /// Gets document resolution KATs that are expected to succeed.
+    /// </summary>
+    public static IEnumerable<object[]> ResolutionDataPass =>
+        All.Where(kat => kat.Kind is ConfigurationKatKind.Resolve && kat.Outcome is ConfigurationKatOutcome.Pass)
+           .Select(kat => new object[] { kat });
+
+    /// <summary>
+    /// Gets document resolution KATs that are expected to fail.
+    /// </summary>
+    public static IEnumerable<object[]> ResolutionDataFail =>
+        All.Where(kat => kat.Kind is ConfigurationKatKind.Resolve && kat.Outcome is ConfigurationKatOutcome.Fail)
            .Select(kat => new object[] { kat });
 
     /// <summary>
@@ -69,6 +125,20 @@ public static class ConfigurationKnownAnswerData
     /// </summary>
     public static IEnumerable<object[]> TypedValueData =>
         All.Where(kat => kat.Kind is ConfigurationKatKind.TypedValue)
+           .Select(kat => new object[] { kat });
+
+    /// <summary>
+    /// Gets typed accessor KATs that are expected to succeed.
+    /// </summary>
+    public static IEnumerable<object[]> TypedValueDataPass =>
+        All.Where(kat => kat.Kind is ConfigurationKatKind.TypedValue && kat.Outcome is ConfigurationKatOutcome.Pass)
+           .Select(kat => new object[] { kat });
+
+    /// <summary>
+    /// Gets typed accessor KATs that are expected to fail.
+    /// </summary>
+    public static IEnumerable<object[]> TypedValueDataFail =>
+        All.Where(kat => kat.Kind is ConfigurationKatKind.TypedValue && kat.Outcome is ConfigurationKatOutcome.Fail)
            .Select(kat => new object[] { kat });
 
     /// <summary>

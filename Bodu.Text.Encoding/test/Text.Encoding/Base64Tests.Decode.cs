@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Kat;
+
 namespace Bodu.Text.Encoding;
 
 public sealed partial class Base64Tests
@@ -15,7 +17,9 @@ public sealed partial class Base64Tests
     /// </summary>
     /// <param name="vector">A negative KAT vector.</param>
     [TestMethod]
-    [DynamicData(nameof(Base64KnownAnswerVectors.StandardNegativeVectors), typeof(Base64KnownAnswerVectors))]
+    [DynamicData(nameof(Base64KnownAnswerVectors.StandardNegativeVectors), typeof(Base64KnownAnswerVectors),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void Decode_ForStandardKnownMalformedInput_ShouldThrowExactly(EncodingNegativeDecodeVector vector)
     {
         Exception? actual = null;
@@ -39,7 +43,9 @@ public sealed partial class Base64Tests
     /// </summary>
     /// <param name="vector">A KAT vector.</param>
     [TestMethod]
-    [DynamicData(nameof(Base64KnownAnswerVectors.StandardRfc4648Vectors), typeof(Base64KnownAnswerVectors))]
+    [DynamicData(nameof(Base64KnownAnswerVectors.StandardRfc4648Vectors), typeof(Base64KnownAnswerVectors),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void Decode_ForStandardRfc4648KnownAnswerVector_ShouldRecoverBytes(EncodingKnownAnswerVector vector)
     {
         byte[] actual = Base64.Decode(vector.Encoded, Base64Variant.Standard);
@@ -53,7 +59,9 @@ public sealed partial class Base64Tests
     /// </summary>
     /// <param name="vector">A URL-safe KAT vector.</param>
     [TestMethod]
-    [DynamicData(nameof(Base64KnownAnswerVectors.UrlSafeVectors), typeof(Base64KnownAnswerVectors))]
+    [DynamicData(nameof(Base64KnownAnswerVectors.UrlSafeVectors), typeof(Base64KnownAnswerVectors),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void Decode_ForUrlSafeKnownAnswerVector_ShouldRecoverBytes(EncodingKnownAnswerVector vector)
     {
         byte[] actual = Base64.Decode(vector.Encoded, Base64Variant.UrlSafe);
@@ -67,7 +75,9 @@ public sealed partial class Base64Tests
     /// </summary>
     /// <param name="vector">A negative KAT vector.</param>
     [TestMethod]
-    [DynamicData(nameof(Base64KnownAnswerVectors.UrlSafeNegativeVectors), typeof(Base64KnownAnswerVectors))]
+    [DynamicData(nameof(Base64KnownAnswerVectors.UrlSafeNegativeVectors), typeof(Base64KnownAnswerVectors),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void Decode_ForUrlSafeKnownMalformedInput_ShouldThrowExactly(EncodingNegativeDecodeVector vector)
     {
         Exception? actual = null;

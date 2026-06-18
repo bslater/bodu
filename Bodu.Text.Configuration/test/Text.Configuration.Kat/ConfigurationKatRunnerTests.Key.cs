@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Kat;
 using Bodu.Text.Configuration.Test.Infrastructure;
 
 namespace Bodu.Text.Configuration.Kat;
@@ -11,24 +12,36 @@ namespace Bodu.Text.Configuration.Kat;
 public partial class ConfigurationKatRunnerTests
 {
     /// <summary>
-    /// Drives every <see cref="ConfigurationKatKind.KeyMapping" /> KAT in the catalogue.
+    /// Verifies that a valid <see cref="ConfigurationKatKind.KeyMapping" /> KAT maps to the expected configuration key
+    /// and segments.
     /// </summary>
     /// <param name="kat">The KAT case to execute.</param>
     [TestMethod]
-    [DynamicData(nameof(ConfigurationKnownAnswerData.KeyData),
+    [DynamicData(nameof(ConfigurationKnownAnswerData.KeyDataPass),
         typeof(ConfigurationKnownAnswerData),
-        DynamicDataDisplayName = nameof(GetKatDisplayName))]
-    public void Key_Kat(ConfigurationKat kat)
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void Key_WhenValid_ShouldProduceExpectedKey(ConfigurationKat kat)
     {
         ConfigurationKeyOptions options = BuildKeyOptions(kat.Options);
 
-        if (kat.Outcome is ConfigurationKatOutcome.Fail)
-        {
-            ExecuteKeyFail(kat, options);
-            return;
-        }
-
         ExecuteKeyPass(kat, options);
+    }
+
+    /// <summary>
+    /// Verifies that an invalid <see cref="ConfigurationKatKind.KeyMapping" /> KAT throws the expected exception.
+    /// </summary>
+    /// <param name="kat">The KAT case to execute.</param>
+    [TestMethod]
+    [DynamicData(nameof(ConfigurationKnownAnswerData.KeyDataFail),
+        typeof(ConfigurationKnownAnswerData),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void Key_WhenInvalid_ShouldThrowExpectedException(ConfigurationKat kat)
+    {
+        ConfigurationKeyOptions options = BuildKeyOptions(kat.Options);
+
+        ExecuteKeyFail(kat, options);
     }
 
     private static void ExecuteKeyPass(ConfigurationKat kat, ConfigurationKeyOptions options)

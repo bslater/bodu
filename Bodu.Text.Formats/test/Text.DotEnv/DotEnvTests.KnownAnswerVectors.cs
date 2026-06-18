@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Kat;
+
 namespace Bodu.Text.DotEnv;
 
 public sealed partial class DotEnvTests
@@ -15,7 +17,9 @@ public sealed partial class DotEnvTests
     /// </summary>
     /// <param name="vector">A KAT vector sourced from <see cref="DotEnvKnownAnswerVectors.SpecVectors" />.</param>
     [TestMethod]
-    [DynamicData(nameof(DotEnvKnownAnswerVectors.SpecVectors), typeof(DotEnvKnownAnswerVectors))]
+    [DynamicData(nameof(DotEnvKnownAnswerVectors.SpecVectors), typeof(DotEnvKnownAnswerVectors),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void Parse_ForSpecKnownAnswerVector_ShouldProduceExpectedDocument(DotEnvKnownAnswerVector vector)
     {
         DotEnvParseOptions options = vector.Options ?? DotEnvParseOptions.Default;
@@ -42,7 +46,9 @@ public sealed partial class DotEnvTests
     /// </summary>
     /// <param name="vector">A KAT vector sourced from <see cref="DotEnvKnownAnswerVectors.SpecVectors" />.</param>
     [TestMethod]
-    [DynamicData(nameof(DotEnvKnownAnswerVectors.SpecVectors), typeof(DotEnvKnownAnswerVectors))]
+    [DynamicData(nameof(DotEnvKnownAnswerVectors.SpecVectors), typeof(DotEnvKnownAnswerVectors),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void Format_ForSpecKnownAnswerVector_ShouldRoundTripDocument(DotEnvKnownAnswerVector vector)
     {
         DotEnvParseOptions options = vector.Options ?? DotEnvParseOptions.Default;

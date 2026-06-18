@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Kat;
 using Bodu.Text.Configuration.Test.Infrastructure;
 using Bodu.Text.Ini;
 
@@ -12,13 +13,17 @@ namespace Bodu.Text.Configuration.Kat;
 public partial class ConfigurationKatRunnerTests
 {
     /// <summary>
-    /// Drives every <see cref="ConfigurationKatKind.Write" /> and
-    /// <see cref="ConfigurationKatKind.RoundTrip" /> KAT in the catalogue.
+    /// Verifies that a valid <see cref="ConfigurationKatKind.Write" /> or
+    /// <see cref="ConfigurationKatKind.RoundTrip" /> KAT produces the expected serialized output or round-trips to an
+    /// equivalent document.
     /// </summary>
     /// <param name="kat">The KAT case to execute.</param>
     [TestMethod]
-    [DynamicData(nameof(ConfigurationKnownAnswerData.WriterData), typeof(ConfigurationKnownAnswerData), DynamicDataDisplayName = nameof(GetKatDisplayName))]
-    public void Writer_Kat(ConfigurationKat kat)
+    [DynamicData(nameof(ConfigurationKnownAnswerData.WriterData),
+        typeof(ConfigurationKnownAnswerData),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void Writer_WhenValid_ShouldProduceExpectedOutput(ConfigurationKat kat)
     {
         ConfigurationProfile writeProfile = MapProfile(kat.Profile);
 

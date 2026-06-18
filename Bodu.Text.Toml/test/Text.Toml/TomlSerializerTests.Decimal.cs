@@ -181,6 +181,10 @@ public partial class TomlSerializerTests
         }
     }
 
+    // DecimalCanon carries an extra TomlDecimalHandling Handling field (consumed by
+    // Serialize_WhenDecimal_ShouldEmitCanonicalTextForHandling) beyond the input/expected pair; this domain shape does
+    // not map to ValidKat<TInput, TExpected>, so it stays a local record.
+
     /// <summary>
     /// A known-answer row pinning the canonical value text a decimal serializes to under a specific handling.
     /// </summary>

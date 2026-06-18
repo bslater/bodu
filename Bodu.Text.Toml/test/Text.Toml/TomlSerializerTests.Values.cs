@@ -48,19 +48,19 @@ public partial class TomlSerializerTests
     /// <returns>The sequence of single-element argument arrays, each carrying one float canonical-text row.</returns>
     public static IEnumerable<object[]> FloatCanonicalRows()
     {
-        yield return [new FloatCanon("float half", 1.5, "1.5")];
-        yield return [new FloatCanon("float whole gets point", 1.0, "1.0")];
-        yield return [new FloatCanon("float zero", 0.0, "0.0")];
-        yield return [new FloatCanon("float negative zero", -0.0, "-0.0")];
-        yield return [new FloatCanon("float large no exp", 1e10, "10000000000.0")];
-        yield return [new FloatCanon("float small exp", 1e-10, "1E-10")];
-        yield return [new FloatCanon("float avogadro", 6.022e23, "6.022E+23")];
-        yield return [new FloatCanon("float pi", Math.PI, "3.141592653589793")];
-        yield return [new FloatCanon("float nan", double.NaN, "nan")];
-        yield return [new FloatCanon("float positive infinity", double.PositiveInfinity, "inf")];
-        yield return [new FloatCanon("float negative infinity", double.NegativeInfinity, "-inf")];
-        yield return [new FloatCanon("float max", double.MaxValue, "1.7976931348623157E+308")];
-        yield return [new FloatCanon("float epsilon", double.Epsilon, "5E-324")];
+        yield return [new ValidKat<double, string>("float half", 1.5, "1.5")];
+        yield return [new ValidKat<double, string>("float whole gets point", 1.0, "1.0")];
+        yield return [new ValidKat<double, string>("float zero", 0.0, "0.0")];
+        yield return [new ValidKat<double, string>("float negative zero", -0.0, "-0.0")];
+        yield return [new ValidKat<double, string>("float large no exp", 1e10, "10000000000.0")];
+        yield return [new ValidKat<double, string>("float small exp", 1e-10, "1E-10")];
+        yield return [new ValidKat<double, string>("float avogadro", 6.022e23, "6.022E+23")];
+        yield return [new ValidKat<double, string>("float pi", Math.PI, "3.141592653589793")];
+        yield return [new ValidKat<double, string>("float nan", double.NaN, "nan")];
+        yield return [new ValidKat<double, string>("float positive infinity", double.PositiveInfinity, "inf")];
+        yield return [new ValidKat<double, string>("float negative infinity", double.NegativeInfinity, "-inf")];
+        yield return [new ValidKat<double, string>("float max", double.MaxValue, "1.7976931348623157E+308")];
+        yield return [new ValidKat<double, string>("float epsilon", double.Epsilon, "5E-324")];
     }
 
     /// <summary>
@@ -70,20 +70,20 @@ public partial class TomlSerializerTests
     /// <returns>The sequence of single-element argument arrays, each carrying one string canonical-text row.</returns>
     public static IEnumerable<object[]> StringCanonicalRows()
     {
-        yield return [new StringCanon("string simple", "hello", "\"hello\"")];
-        yield return [new StringCanon("string empty", string.Empty, "\"\"")];
-        yield return [new StringCanon("string tab", "a\tb", "\"a\\tb\"")];
-        yield return [new StringCanon("string newline", "a\nb", "\"a\\nb\"")];
-        yield return [new StringCanon("string carriage return", "a\rb", "\"a\\rb\"")];
-        yield return [new StringCanon("string quote", "a\"b", "\"a\\\"b\"")];
-        yield return [new StringCanon("string backslash", "a\\b", "\"a\\\\b\"")];
-        yield return [new StringCanon("string backspace", "a\bb", "\"a\\bb\"")];
-        yield return [new StringCanon("string form feed", "a\fb", "\"a\\fb\"")];
-        yield return [new StringCanon("string nul", "a\0b", "\"a\\u0000b\"")];
-        yield return [new StringCanon("string delete", "ab", "\"a\\u007Fb\"")];
-        yield return [new StringCanon("string unit separator", "ab", "\"a\\u001Fb\"")];
-        yield return [new StringCanon("string accented passthrough", "café", "\"café\"")];
-        yield return [new StringCanon("string emoji passthrough", "\U0001F600", "\"\U0001F600\"")];
+        yield return [new ValidKat<string, string>("string simple", "hello", "\"hello\"")];
+        yield return [new ValidKat<string, string>("string empty", string.Empty, "\"\"")];
+        yield return [new ValidKat<string, string>("string tab", "a\tb", "\"a\\tb\"")];
+        yield return [new ValidKat<string, string>("string newline", "a\nb", "\"a\\nb\"")];
+        yield return [new ValidKat<string, string>("string carriage return", "a\rb", "\"a\\rb\"")];
+        yield return [new ValidKat<string, string>("string quote", "a\"b", "\"a\\\"b\"")];
+        yield return [new ValidKat<string, string>("string backslash", "a\\b", "\"a\\\\b\"")];
+        yield return [new ValidKat<string, string>("string backspace", "a\bb", "\"a\\bb\"")];
+        yield return [new ValidKat<string, string>("string form feed", "a\fb", "\"a\\fb\"")];
+        yield return [new ValidKat<string, string>("string nul", "a\0b", "\"a\\u0000b\"")];
+        yield return [new ValidKat<string, string>("string delete", "ab", "\"a\\u007Fb\"")];
+        yield return [new ValidKat<string, string>("string unit separator", "ab", "\"a\\u001Fb\"")];
+        yield return [new ValidKat<string, string>("string accented passthrough", "café", "\"café\"")];
+        yield return [new ValidKat<string, string>("string emoji passthrough", "\U0001F600", "\"\U0001F600\"")];
     }
 
     /// <summary>
@@ -106,7 +106,7 @@ public partial class TomlSerializerTests
     /// <param name="kat">The float canonical-text row under test.</param>
     [TestMethod]
     [DynamicData(nameof(FloatCanonicalRows), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void Serialize_WhenFloatValue_ShouldEmitCanonicalText(FloatCanon kat)
+    public void Serialize_WhenFloatValue_ShouldEmitCanonicalText(ValidKat<double, string> kat)
     {
         ArgumentNullException.ThrowIfNull(kat);
 
@@ -120,7 +120,7 @@ public partial class TomlSerializerTests
     /// <param name="kat">The float canonical-text row, reused as a round-trip input.</param>
     [TestMethod]
     [DynamicData(nameof(FloatCanonicalRows), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void SerializeDeserialize_WhenFloatValue_ShouldRoundTripBitExact(FloatCanon kat)
+    public void SerializeDeserialize_WhenFloatValue_ShouldRoundTripBitExact(ValidKat<double, string> kat)
     {
         ArgumentNullException.ThrowIfNull(kat);
 
@@ -166,7 +166,7 @@ public partial class TomlSerializerTests
     /// <param name="kat">The string canonical-text row under test.</param>
     [TestMethod]
     [DynamicData(nameof(StringCanonicalRows), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void Serialize_WhenStringValue_ShouldEmitCanonicalText(StringCanon kat)
+    public void Serialize_WhenStringValue_ShouldEmitCanonicalText(ValidKat<string, string> kat)
     {
         ArgumentNullException.ThrowIfNull(kat);
 
@@ -180,7 +180,7 @@ public partial class TomlSerializerTests
     /// <param name="kat">The string canonical-text row, reused as a round-trip input.</param>
     [TestMethod]
     [DynamicData(nameof(StringCanonicalRows), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void SerializeDeserialize_WhenStringValue_ShouldRoundTrip(StringCanon kat)
+    public void SerializeDeserialize_WhenStringValue_ShouldRoundTrip(ValidKat<string, string> kat)
     {
         ArgumentNullException.ThrowIfNull(kat);
 
@@ -947,6 +947,10 @@ public partial class TomlSerializerTests
         public T Value { get; set; } = default!;
     }
 
+    // IntCanon carries a Func<string> Serialize delegate (not a plain Input value) so each row can exercise a
+    // different strongly typed boxed-integer write path; this domain shape does not map to ValidKat<TInput, TExpected>,
+    // so it stays a local record.
+
     /// <summary>
     /// A known-answer row pinning the canonical text an integer value serializes to, deferring the serialization so the
     /// boxed type stays strongly typed.
@@ -955,22 +959,6 @@ public partial class TomlSerializerTests
     /// <param name="Serialize">A function that serializes the boxed integer to TOML text.</param>
     /// <param name="Expected">The expected canonical value text, excluding the <c>Value = </c> prefix.</param>
     public sealed record IntCanon(string Name, Func<string> Serialize, string Expected) : IKat;
-
-    /// <summary>
-    /// A known-answer row pinning the canonical spelling a <see cref="double" /> value serializes to.
-    /// </summary>
-    /// <param name="Name">The short label that identifies the row in failure diagnostics.</param>
-    /// <param name="Input">The double value to serialize.</param>
-    /// <param name="Expected">The expected canonical value text, excluding the <c>Value = </c> prefix.</param>
-    public sealed record FloatCanon(string Name, double Input, string Expected) : IKat;
-
-    /// <summary>
-    /// A known-answer row pinning the canonical basic-quoted form a string value serializes to.
-    /// </summary>
-    /// <param name="Name">The short label that identifies the row in failure diagnostics.</param>
-    /// <param name="Input">The string value to serialize.</param>
-    /// <param name="Expected">The expected canonical value text, excluding the <c>Value = </c> prefix.</param>
-    public sealed record StringCanon(string Name, string Input, string Expected) : IKat;
 
     /// <summary>
     /// A custom converter mapping <see cref="decimal" /> to and from a TOML basic string, supplying the native form TOML

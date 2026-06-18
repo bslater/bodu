@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Kat;
+
 namespace Bodu.Text.Encoding;
 
 public sealed partial class Base85Tests
@@ -15,7 +17,9 @@ public sealed partial class Base85Tests
     /// </summary>
     /// <param name="vector">A KAT vector.</param>
     [TestMethod]
-    [DynamicData(nameof(Base85KnownAnswerVectors.Ascii85Vectors), typeof(Base85KnownAnswerVectors))]
+    [DynamicData(nameof(Base85KnownAnswerVectors.Ascii85Vectors), typeof(Base85KnownAnswerVectors),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void Decode_ForAscii85KnownAnswerVector_ShouldRecoverBytes(EncodingKnownAnswerVector vector)
     {
         byte[] actual = Base85.Decode(vector.Encoded, Base85Variant.Ascii85);
@@ -29,7 +33,9 @@ public sealed partial class Base85Tests
     /// </summary>
     /// <param name="vector">A negative KAT vector.</param>
     [TestMethod]
-    [DynamicData(nameof(Base85KnownAnswerVectors.Ascii85NegativeVectors), typeof(Base85KnownAnswerVectors))]
+    [DynamicData(nameof(Base85KnownAnswerVectors.Ascii85NegativeVectors), typeof(Base85KnownAnswerVectors),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void Decode_ForAscii85KnownMalformedInput_ShouldThrowExactly(EncodingNegativeDecodeVector vector)
     {
         Exception? actual = null;
@@ -53,7 +59,9 @@ public sealed partial class Base85Tests
     /// </summary>
     /// <param name="vector">A KAT vector.</param>
     [TestMethod]
-    [DynamicData(nameof(Base85KnownAnswerVectors.Z85Vectors), typeof(Base85KnownAnswerVectors))]
+    [DynamicData(nameof(Base85KnownAnswerVectors.Z85Vectors), typeof(Base85KnownAnswerVectors),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void Decode_ForZ85KnownAnswerVector_ShouldRecoverBytes(EncodingKnownAnswerVector vector)
     {
         byte[] actual = Base85.Decode(vector.Encoded, Base85Variant.Z85);
@@ -67,7 +75,9 @@ public sealed partial class Base85Tests
     /// </summary>
     /// <param name="vector">A negative KAT vector.</param>
     [TestMethod]
-    [DynamicData(nameof(Base85KnownAnswerVectors.Z85NegativeVectors), typeof(Base85KnownAnswerVectors))]
+    [DynamicData(nameof(Base85KnownAnswerVectors.Z85NegativeVectors), typeof(Base85KnownAnswerVectors),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void Decode_ForZ85KnownMalformedInput_ShouldThrowExactly(EncodingNegativeDecodeVector vector)
     {
         Exception? actual = null;
