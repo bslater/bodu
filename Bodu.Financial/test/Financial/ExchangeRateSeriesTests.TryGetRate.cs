@@ -13,14 +13,14 @@ public partial class ExchangeRateSeriesTests
 {
     /// <summary>
     /// Verifies that <see cref="ExchangeRateSeries.TryGetRate" /> resolves the expected date under every documented
-    /// <see cref="ExchangeRateDateResolution" /> policy and tolerance combination.
+    /// <see cref="ExchangeRateDateResolution" /> policy and tolerance combination that is expected to succeed.
     /// </summary>
     [TestMethod]
     [DynamicData(
-        nameof(DateResolutionCases),
+        nameof(DateResolutionSuccessCases),
         DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void TryGetRate_WhenDateResolutionPolicyApplied_ShouldMatchExpectedOutcome(ExchangeRateDateResolutionKat kat)
+    public void TryGetRate_WhenResolutionSucceeds_ShouldReturnExpectedDate(ExchangeRateDateResolutionKat kat)
     {
         (DateOnly Date, decimal Rate)[] rates = [.. kat.AvailableDates.Select((date, index) => (date, 1m + (index * 0.01m)))];
 
@@ -29,11 +29,36 @@ public partial class ExchangeRateSeriesTests
 
         bool actual = series.TryGetRate(kat.RequestedDate, options, out DateOnly resolved, out _);
 
-        Assert.AreEqual(kat.ExpectedSuccess, actual);
-
-        if (kat.ExpectedSuccess)
-            Assert.AreEqual(kat.ExpectedDate, resolved);
+        Assert.IsTrue(actual);
+        Assert.AreEqual(kat.ExpectedDate, resolved);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="ExchangeRateSeries.TryGetRate" /> returns <see langword="false" /> under every documented
+    /// <see cref="ExchangeRateDateResolution" /> policy and tolerance combination that is expected to fail.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(
+        nameof(DateResolutionFailureCases),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void TryGetRate_WhenResolutionFails_ShouldReturnFalse(ExchangeRateDateResolutionKat kat)
+    {
+        (DateOnly Date, decimal Rate)[] rates = [.. kat.AvailableDates.Select((date, index) => (date, 1m + (index * 0.01m)))];
+
+        ExchangeRateSeries series = new(new ExchangeRatePair("USD", "AUD"), "RBA", rates);
+        ExchangeRateLookupOptions options = new(kat.Resolution, kat.ToleranceDays);
+
+        bool actual = series.TryGetRate(kat.RequestedDate, options, out _, out _);
+
+        Assert.IsFalse(actual);
+    }
+
+    public static IEnumerable<object[]> DateResolutionSuccessCases() =>
+        DateResolutionCases().Where(row => ((ExchangeRateDateResolutionKat)row[0]).ExpectedSuccess);
+
+    public static IEnumerable<object[]> DateResolutionFailureCases() =>
+        DateResolutionCases().Where(row => !((ExchangeRateDateResolutionKat)row[0]).ExpectedSuccess);
 
     public static IEnumerable<object[]> DateResolutionCases()
     {

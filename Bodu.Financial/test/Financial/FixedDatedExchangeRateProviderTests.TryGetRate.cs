@@ -13,14 +13,14 @@ public partial class FixedDatedExchangeRateProviderTests
 {
     /// <summary>
     /// Verifies that <see cref="FixedDatedExchangeRateProvider.TryGetRate" /> returns the rate, provider, resolved date,
-    /// inversion flag, and offset days expected for the supplied lookup scenario.
+    /// inversion flag, and offset days expected for a lookup scenario that is expected to succeed.
     /// </summary>
     [TestMethod]
     [DynamicData(
-        nameof(ProviderLookupCases),
+        nameof(ProviderLookupSuccessCases),
         DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void TryGetRate_WhenLookupRequested_ShouldReturnExpectedRateMetadata(ExchangeRateLookupKat kat)
+    public void TryGetRate_WhenLookupSucceeds_ShouldReturnExpectedRateMetadata(ExchangeRateLookupKat kat)
     {
         FixedDatedExchangeRateProvider table = new(kat.Rates);
 
@@ -31,10 +31,7 @@ public partial class FixedDatedExchangeRateProviderTests
             kat.Options,
             out ExchangeRateLookupResult result);
 
-        Assert.AreEqual(kat.ExpectedSuccess, actual);
-
-        if (!kat.ExpectedSuccess)
-            return;
+        Assert.IsTrue(actual);
 
         Assert.AreEqual(kat.ExpectedRate, result.Rate.Rate);
         Assert.AreEqual(kat.ExpectedResolvedDate, result.Rate.Date);
@@ -47,6 +44,35 @@ public partial class FixedDatedExchangeRateProviderTests
             Math.Abs(result.Rate.Date.DayNumber - kat.RequestedDate.DayNumber),
             result.OffsetDays);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="FixedDatedExchangeRateProvider.TryGetRate" /> returns <see langword="false" /> for a lookup
+    /// scenario that is expected to fail.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(
+        nameof(ProviderLookupFailureCases),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void TryGetRate_WhenLookupFails_ShouldReturnFalse(ExchangeRateLookupKat kat)
+    {
+        FixedDatedExchangeRateProvider table = new(kat.Rates);
+
+        bool actual = table.TryGetRate(
+            kat.FromIsoCode,
+            kat.ToIsoCode,
+            kat.RequestedDate,
+            kat.Options,
+            out _);
+
+        Assert.IsFalse(actual);
+    }
+
+    public static IEnumerable<object[]> ProviderLookupSuccessCases() =>
+        ProviderLookupCases().Where(row => ((ExchangeRateLookupKat)row[0]).ExpectedSuccess);
+
+    public static IEnumerable<object[]> ProviderLookupFailureCases() =>
+        ProviderLookupCases().Where(row => !((ExchangeRateLookupKat)row[0]).ExpectedSuccess);
 
     public static IEnumerable<object[]> ProviderLookupCases()
     {
