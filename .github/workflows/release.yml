@@ -97,6 +97,36 @@ jobs:
             exit 1
           fi
 
+      - name: Guard — verify the signing key matches the committed public key
+        shell: bash
+        run: |
+          # The BODU_SNK secret is the full private key the assemblies are actually signed with; the
+          # earlier guard only proved BoduPublicKey matches the committed public-only key file. Confirm
+          # the secret is the private half of that same key pair, otherwise the signed assemblies would
+          # carry a public key the InternalsVisibleTo grants never advertise (CS0281), and consumers
+          # would receive packages signed under an unexpected identity.
+          #
+          # Both files are CAPI key blobs that store the RSA modulus in the clear, identical between a
+          # key pair's private and public forms. bld/Bodu.public.snk is [12-byte strong-name header]
+          # [PUBLICKEYBLOB]: bType 0x06 at offset 12, "RSA1" at 20, modulus at 32. The private blob is a
+          # raw PRIVATEKEYBLOB: bType 0x07 at offset 0, "RSA2" at 8, modulus at 20. Compare the moduli.
+          priv="$RUNNER_TEMP/Bodu.snk"
+          btype=$(od -An -v -t x1 -N 1 "$priv" | tr -d ' \n')
+          magic=$(od -An -v -t x1 -j 8 -N 4 "$priv" | tr -d ' \n')
+          if [ "$btype" != "07" ] || [ "$magic" != "52534132" ]; then
+            echo "::error::BODU_SNK is not a CAPI RSA private key blob (expected bType 0x07 and 'RSA2' magic). It must be the full private key produced by 'sn -k'."
+            exit 1
+          fi
+
+          modlen=$(( $(stat -c%s bld/Bodu.public.snk) - 32 ))
+          pubmod=$(od -An -v -t x1 -j 32 -N "$modlen" bld/Bodu.public.snk | tr -d ' \n')
+          privmod=$(od -An -v -t x1 -j 20 -N "$modlen" "$priv" | tr -d ' \n')
+          if [ "$pubmod" != "$privmod" ]; then
+            echo "::error::The BODU_SNK signing key does not match bld/Bodu.public.snk — they are different key pairs. Update the secret and the committed public key together when rotating the strong-name key."
+            exit 1
+          fi
+          echo "BODU_SNK matches bld/Bodu.public.snk."
+
       - name: Pack (real-signed, shipping)
         shell: bash
         run: |
