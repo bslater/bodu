@@ -21,7 +21,7 @@ with `-p:BoduRealSign=true` and supplies the private key.
 
 - `bld/Signing.props` — `BoduSignAssembly` (off), `SignAssembly`, `BoduStrongNameKeyFile`
   (→ committed `bld/Bodu.public.snk`), `PublicSign` (on unless `BoduRealSign=true`), and the
-  `BoduPublicKey` hex string (empty).
+  `BoduPublicKey` hex string (the public key of `bld/Bodu.public.snk`).
 - `bld/InternalsVisibleTo.targets` — `BoduAppendPublicKeyToInternalsVisibleTo` weaves
   `, PublicKey=$(BoduPublicKey)` into every `InternalsVisibleTo` grant when signing is on, so the bare
   grants in the project files need no per-project edits.
@@ -69,6 +69,22 @@ dotnet pack bodu.slnx -c Release \
   -p:BoduRealSign=true \
   -p:BoduStrongNameKeyFile="$RUNNER_TEMP/Bodu.snk"
 ```
+
+## Three artifacts, one key pair
+
+`bld/Bodu.public.snk`, the `BoduPublicKey` hex in `bld/Signing.props`, and the `BODU_SNK` release
+secret are three views of the **same** key pair and must never drift apart:
+
+- `BoduPublicKey` is stamped into every `InternalsVisibleTo` grant, so if it disagrees with the key the
+  assemblies are actually signed with, the build fails with `CS0281` on every grant.
+- The `BODU_SNK` secret is the private half used for real signing; if it is a *different* pair from the
+  committed public key, releases ship under an unexpected identity.
+
+The `Release` workflow guards both invariants before it packs: it checks `BoduPublicKey` against
+`bld/Bodu.public.snk`, and (after decoding the secret) checks the `BODU_SNK` private key's modulus
+against the same file. **When rotating the key, update all three together** — regenerate
+`bld/Bodu.public.snk`, refresh `BoduPublicKey` from `sn -tp bld/Bodu.public.snk`, and replace the
+`BODU_SNK` secret with the new private key.
 
 ## Notes
 
