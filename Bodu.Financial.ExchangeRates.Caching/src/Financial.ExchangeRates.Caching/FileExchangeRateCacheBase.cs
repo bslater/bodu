@@ -51,10 +51,28 @@ public abstract class FileExchangeRateCacheBase<TOptions>
         _directory = string.IsNullOrWhiteSpace(options.CacheDirectory)
             ? Path.Combine(Path.GetTempPath(), "bodu-exchange-rates")
             : options.CacheDirectory!;
+
+        if (Options.ValidateStorageOnStart)
+        {
+            // Eagerly create the per-provider directory so a misconfigured or unwritable location surfaces at
+            // construction rather than on the first write. The failure propagates by design; this mirrors the
+            // startup probe the SQLite and distributed backends run under the same option.
+            Directory.CreateDirectory(Path.Combine(_directory, SanitizeProvider(Provider)));
+        }
     }
 
     /// <inheritdoc />
     public string CacheDirectory => _directory;
+
+    /// <summary>
+    /// Gets a value indicating whether a caught storage failure should degrade to a best-effort fallback rather than
+    /// propagate. Used as the exception filter on the read and write catch blocks so a strict cache fails fast.
+    /// </summary>
+    /// <returns>
+    /// <see langword="true" /> when <see cref="ExchangeRateCacheOptions.ThrowOnStorageFailure" /> is not set; otherwise
+    /// <see langword="false" />, so the failure propagates.
+    /// </returns>
+    private bool ShouldSwallowStorageFailure => !Options.ThrowOnStorageFailure;
 
     /// <summary>
     /// Gets the file extension, including the leading period, applied to cached rate files.
@@ -91,11 +109,11 @@ public abstract class FileExchangeRateCacheBase<TOptions>
             _parsed[pair] = (stamp, state);
             return state;
         }
-        catch (IOException)
+        catch (IOException) when (ShouldSwallowStorageFailure)
         {
             return CachePairState.Empty;
         }
-        catch (UnauthorizedAccessException)
+        catch (UnauthorizedAccessException) when (ShouldSwallowStorageFailure)
         {
             return CachePairState.Empty;
         }
@@ -128,13 +146,14 @@ public abstract class FileExchangeRateCacheBase<TOptions>
             _parsed.TryRemove(pair, out _);
             return true;
         }
-        catch (IOException)
+        catch (IOException) when (ShouldSwallowStorageFailure)
         {
             // Best-effort cache: a failed write must not break rate retrieval. Report the failure so the caller can
-            // refetch rather than trust coverage that was never persisted.
+            // refetch rather than trust coverage that was never persisted. When ThrowOnStorageFailure is set the
+            // failure propagates instead.
             return false;
         }
-        catch (UnauthorizedAccessException)
+        catch (UnauthorizedAccessException) when (ShouldSwallowStorageFailure)
         {
             // Best-effort cache: see above.
             return false;
