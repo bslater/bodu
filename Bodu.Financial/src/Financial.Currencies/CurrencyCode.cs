@@ -4,482 +4,758 @@
 //     To regenerate: dotnet run --project tools/CurrencyCatalogueGenerator
 // </auto-generated>
 // ---------------------------------------------------------------------------------------------------------------
+#nullable enable
 namespace Bodu.Financial.Currencies;
 
 /// <summary>
-/// Source-generated enumeration of the active ISO 4217 currencies shipped with Bodu.Financial.
+/// Source-generated enumeration of the ISO 4217 currencies shipped with Bodu.Financial.
 /// </summary>
 /// <remarks>
 /// Each member name is the three-letter ISO 4217 alphabetic code; each member value is the
-/// corresponding ISO 4217 numeric code. Historic / demonetized currencies are intentionally
-/// excluded so the enum stays stable when an ISO code is retired; access historic currencies
-/// via <see cref="global::Bodu.Financial.CurrencyRegistry" /> or the tag classes in this
-/// namespace.
+/// corresponding ISO 4217 numeric code. Both active and historic / demonetized currencies are
+/// included; a member's lifecycle is declared by its <see cref="CurrencyStatusAttribute" /> and
+/// can be queried via <see cref="CurrencyCodeExtensions.GetStatus(CurrencyCode)" />. The
+/// <see cref="None" /> sentinel (value 0) represents the absence of a currency.
 /// </remarks>
 public enum CurrencyCode
 {
+    /// <summary>No currency; sentinel for a currency-less or default-initialized value.</summary>
+    [CurrencyStatus(CurrencyStatus.None)]
+    None = 0,
+
     /// <summary>United Arab Emirates Dirham (numeric 784).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     AED = 784,
 
     /// <summary>Afghani (numeric 971).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     AFN = 971,
 
     /// <summary>Lek (numeric 8).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     ALL = 8,
 
     /// <summary>Armenian Dram (numeric 51).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     AMD = 51,
 
     /// <summary>Netherlands Antillean Guilder (numeric 532).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     ANG = 532,
 
     /// <summary>Kwanza (numeric 973).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     AOA = 973,
 
     /// <summary>Argentine Peso (numeric 32).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     ARS = 32,
 
     /// <summary>Australian Dollar (numeric 36).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     AUD = 36,
 
     /// <summary>Aruban Florin (numeric 533).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     AWG = 533,
 
     /// <summary>Azerbaijan Manat (numeric 944).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     AZN = 944,
 
     /// <summary>Convertible Mark (numeric 977).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     BAM = 977,
 
     /// <summary>Barbados Dollar (numeric 52).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     BBD = 52,
 
     /// <summary>Taka (numeric 50).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     BDT = 50,
 
     /// <summary>Bulgarian Lev (numeric 975).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     BGN = 975,
 
     /// <summary>Bahraini Dinar (numeric 48).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     BHD = 48,
 
     /// <summary>Burundi Franc (numeric 108).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     BIF = 108,
 
     /// <summary>Bermudian Dollar (numeric 60).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     BMD = 60,
 
     /// <summary>Brunei Dollar (numeric 96).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     BND = 96,
 
     /// <summary>Boliviano (numeric 68).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     BOB = 68,
 
     /// <summary>Brazilian Real (numeric 986).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     BRL = 986,
 
     /// <summary>Bahamian Dollar (numeric 44).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     BSD = 44,
 
     /// <summary>Ngultrum (numeric 64).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     BTN = 64,
 
     /// <summary>Pula (numeric 72).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     BWP = 72,
 
     /// <summary>Belarusian Ruble (numeric 933).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     BYN = 933,
 
     /// <summary>Belize Dollar (numeric 84).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     BZD = 84,
 
     /// <summary>Canadian Dollar (numeric 124).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     CAD = 124,
 
     /// <summary>Congolese Franc (numeric 976).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     CDF = 976,
 
     /// <summary>Swiss Franc (numeric 756).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     CHF = 756,
 
     /// <summary>Chilean Peso (numeric 152).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     CLP = 152,
 
     /// <summary>Yuan Renminbi (numeric 156).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     CNY = 156,
 
     /// <summary>Colombian Peso (numeric 170).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     COP = 170,
 
     /// <summary>Costa Rican Colon (numeric 188).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     CRC = 188,
 
     /// <summary>Cuban Peso (numeric 192).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     CUP = 192,
 
     /// <summary>Cabo Verde Escudo (numeric 132).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     CVE = 132,
 
     /// <summary>Czech Koruna (numeric 203).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     CZK = 203,
 
     /// <summary>Djibouti Franc (numeric 262).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     DJF = 262,
 
     /// <summary>Danish Krone (numeric 208).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     DKK = 208,
 
     /// <summary>Dominican Peso (numeric 214).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     DOP = 214,
 
     /// <summary>Algerian Dinar (numeric 12).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     DZD = 12,
 
     /// <summary>Egyptian Pound (numeric 818).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     EGP = 818,
 
     /// <summary>Nakfa (numeric 232).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     ERN = 232,
 
     /// <summary>Ethiopian Birr (numeric 230).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     ETB = 230,
 
     /// <summary>Euro (numeric 978).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     EUR = 978,
 
     /// <summary>Fiji Dollar (numeric 242).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     FJD = 242,
 
     /// <summary>Falkland Islands Pound (numeric 238).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     FKP = 238,
 
     /// <summary>Pound Sterling (numeric 826).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     GBP = 826,
 
     /// <summary>Lari (numeric 981).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     GEL = 981,
 
     /// <summary>Ghana Cedi (numeric 936).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     GHS = 936,
 
     /// <summary>Gibraltar Pound (numeric 292).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     GIP = 292,
 
     /// <summary>Dalasi (numeric 270).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     GMD = 270,
 
     /// <summary>Guinean Franc (numeric 324).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     GNF = 324,
 
     /// <summary>Quetzal (numeric 320).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     GTQ = 320,
 
     /// <summary>Guyana Dollar (numeric 328).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     GYD = 328,
 
     /// <summary>Hong Kong Dollar (numeric 344).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     HKD = 344,
 
     /// <summary>Lempira (numeric 340).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     HNL = 340,
 
     /// <summary>Gourde (numeric 332).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     HTG = 332,
 
     /// <summary>Forint (numeric 348).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     HUF = 348,
 
     /// <summary>Rupiah (numeric 360).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     IDR = 360,
 
     /// <summary>New Israeli Sheqel (numeric 376).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     ILS = 376,
 
     /// <summary>Indian Rupee (numeric 356).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     INR = 356,
 
     /// <summary>Iraqi Dinar (numeric 368).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     IQD = 368,
 
     /// <summary>Iranian Rial (numeric 364).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     IRR = 364,
 
     /// <summary>Iceland Krona (numeric 352).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     ISK = 352,
 
     /// <summary>Jamaican Dollar (numeric 388).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     JMD = 388,
 
     /// <summary>Jordanian Dinar (numeric 400).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     JOD = 400,
 
     /// <summary>Yen (numeric 392).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     JPY = 392,
 
     /// <summary>Kenyan Shilling (numeric 404).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     KES = 404,
 
     /// <summary>Som (numeric 417).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     KGS = 417,
 
     /// <summary>Riel (numeric 116).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     KHR = 116,
 
     /// <summary>Comorian Franc (numeric 174).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     KMF = 174,
 
     /// <summary>North Korean Won (numeric 408).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     KPW = 408,
 
     /// <summary>Won (numeric 410).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     KRW = 410,
 
     /// <summary>Kuwaiti Dinar (numeric 414).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     KWD = 414,
 
     /// <summary>Cayman Islands Dollar (numeric 136).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     KYD = 136,
 
     /// <summary>Tenge (numeric 398).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     KZT = 398,
 
     /// <summary>Lao Kip (numeric 418).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     LAK = 418,
 
     /// <summary>Lebanese Pound (numeric 422).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     LBP = 422,
 
     /// <summary>Sri Lanka Rupee (numeric 144).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     LKR = 144,
 
     /// <summary>Liberian Dollar (numeric 430).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     LRD = 430,
 
     /// <summary>Loti (numeric 426).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     LSL = 426,
 
     /// <summary>Libyan Dinar (numeric 434).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     LYD = 434,
 
     /// <summary>Moroccan Dirham (numeric 504).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     MAD = 504,
 
     /// <summary>Moldovan Leu (numeric 498).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     MDL = 498,
 
     /// <summary>Malagasy Ariary (numeric 969).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     MGA = 969,
 
     /// <summary>Denar (numeric 807).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     MKD = 807,
 
     /// <summary>Kyat (numeric 104).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     MMK = 104,
 
     /// <summary>Tugrik (numeric 496).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     MNT = 496,
 
     /// <summary>Pataca (numeric 446).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     MOP = 446,
 
     /// <summary>Ouguiya (numeric 929).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     MRU = 929,
 
     /// <summary>Mauritius Rupee (numeric 480).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     MUR = 480,
 
     /// <summary>Rufiyaa (numeric 462).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     MVR = 462,
 
     /// <summary>Malawi Kwacha (numeric 454).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     MWK = 454,
 
     /// <summary>Mexican Peso (numeric 484).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     MXN = 484,
 
     /// <summary>Malaysian Ringgit (numeric 458).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     MYR = 458,
 
     /// <summary>Mozambique Metical (numeric 943).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     MZN = 943,
 
     /// <summary>Namibia Dollar (numeric 516).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     NAD = 516,
 
     /// <summary>Naira (numeric 566).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     NGN = 566,
 
     /// <summary>Cordoba Oro (numeric 558).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     NIO = 558,
 
     /// <summary>Norwegian Krone (numeric 578).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     NOK = 578,
 
     /// <summary>Nepalese Rupee (numeric 524).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     NPR = 524,
 
     /// <summary>New Zealand Dollar (numeric 554).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     NZD = 554,
 
     /// <summary>Rial Omani (numeric 512).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     OMR = 512,
 
     /// <summary>Balboa (numeric 590).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     PAB = 590,
 
     /// <summary>Sol (numeric 604).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     PEN = 604,
 
     /// <summary>Kina (numeric 598).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     PGK = 598,
 
     /// <summary>Philippine Peso (numeric 608).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     PHP = 608,
 
     /// <summary>Pakistan Rupee (numeric 586).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     PKR = 586,
 
     /// <summary>Zloty (numeric 985).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     PLN = 985,
 
     /// <summary>Guarani (numeric 600).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     PYG = 600,
 
     /// <summary>Qatari Rial (numeric 634).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     QAR = 634,
 
     /// <summary>Romanian Leu (numeric 946).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     RON = 946,
 
     /// <summary>Serbian Dinar (numeric 941).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     RSD = 941,
 
     /// <summary>Russian Ruble (numeric 643).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     RUB = 643,
 
     /// <summary>Rwanda Franc (numeric 646).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     RWF = 646,
 
     /// <summary>Saudi Riyal (numeric 682).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     SAR = 682,
 
     /// <summary>Solomon Islands Dollar (numeric 90).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     SBD = 90,
 
     /// <summary>Seychelles Rupee (numeric 690).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     SCR = 690,
 
     /// <summary>Sudanese Pound (numeric 938).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     SDG = 938,
 
     /// <summary>Swedish Krona (numeric 752).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     SEK = 752,
 
     /// <summary>Singapore Dollar (numeric 702).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     SGD = 702,
 
     /// <summary>Saint Helena Pound (numeric 654).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     SHP = 654,
 
     /// <summary>Leone (numeric 925).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     SLE = 925,
 
     /// <summary>Somali Shilling (numeric 706).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     SOS = 706,
 
     /// <summary>Surinam Dollar (numeric 968).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     SRD = 968,
 
     /// <summary>South Sudanese Pound (numeric 728).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     SSP = 728,
 
     /// <summary>Dobra (numeric 930).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     STN = 930,
 
     /// <summary>El Salvador Colon (numeric 222).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     SVC = 222,
 
     /// <summary>Syrian Pound (numeric 760).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     SYP = 760,
 
     /// <summary>Lilangeni (numeric 748).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     SZL = 748,
 
     /// <summary>Baht (numeric 764).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     THB = 764,
 
     /// <summary>Somoni (numeric 972).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     TJS = 972,
 
     /// <summary>Turkmenistan New Manat (numeric 934).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     TMT = 934,
 
     /// <summary>Tunisian Dinar (numeric 788).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     TND = 788,
 
     /// <summary>Pa’anga (numeric 776).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     TOP = 776,
 
     /// <summary>Turkish Lira (numeric 949).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     TRY = 949,
 
     /// <summary>Trinidad and Tobago Dollar (numeric 780).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     TTD = 780,
 
     /// <summary>New Taiwan Dollar (numeric 901).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     TWD = 901,
 
     /// <summary>Tanzanian Shilling (numeric 834).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     TZS = 834,
 
     /// <summary>Hryvnia (numeric 980).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     UAH = 980,
 
     /// <summary>Uganda Shilling (numeric 800).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     UGX = 800,
 
     /// <summary>US Dollar (numeric 840).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     USD = 840,
 
     /// <summary>Peso Uruguayo (numeric 858).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     UYU = 858,
 
     /// <summary>Uzbekistan Sum (numeric 860).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     UZS = 860,
 
     /// <summary>Bolivar Soberano (numeric 928).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     VES = 928,
 
     /// <summary>Dong (numeric 704).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     VND = 704,
 
     /// <summary>Vatu (numeric 548).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     VUV = 548,
 
     /// <summary>Tala (numeric 882).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     WST = 882,
 
     /// <summary>CFA Franc BEAC (numeric 950).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     XAF = 950,
 
     /// <summary>East Caribbean Dollar (numeric 951).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     XCD = 951,
 
     /// <summary>CFA Franc BCEAO (numeric 952).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     XOF = 952,
 
     /// <summary>CFP Franc (numeric 953).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     XPF = 953,
 
     /// <summary>Yemeni Rial (numeric 886).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     YER = 886,
 
     /// <summary>Rand (numeric 710).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     ZAR = 710,
 
     /// <summary>Zambian Kwacha (numeric 967).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     ZMW = 967,
 
     /// <summary>Zimbabwe Gold (numeric 924).</summary>
+    [CurrencyStatus(CurrencyStatus.Active)]
     ZWG = 924,
+
+    /// <summary>Austrian Schilling (numeric 40; historic).</summary>
+    [CurrencyStatus(CurrencyStatus.Historic)]
+    ATS = 40,
+
+    /// <summary>Old Azerbaijan Manat (numeric 31; historic).</summary>
+    [CurrencyStatus(CurrencyStatus.Historic)]
+    AZM = 31,
+
+    /// <summary>Belgian Franc (numeric 56; historic).</summary>
+    [CurrencyStatus(CurrencyStatus.Historic)]
+    BEF = 56,
+
+    /// <summary>Cypriot Pound (numeric 196; historic).</summary>
+    [CurrencyStatus(CurrencyStatus.Historic)]
+    CYP = 196,
+
+    /// <summary>Deutsche Mark (numeric 276; historic).</summary>
+    [CurrencyStatus(CurrencyStatus.Historic)]
+    DEM = 276,
+
+    /// <summary>Estonian Kroon (numeric 233; historic).</summary>
+    [CurrencyStatus(CurrencyStatus.Historic)]
+    EEK = 233,
+
+    /// <summary>Spanish Peseta (numeric 724; historic).</summary>
+    [CurrencyStatus(CurrencyStatus.Historic)]
+    ESP = 724,
+
+    /// <summary>Finnish Markka (numeric 246; historic).</summary>
+    [CurrencyStatus(CurrencyStatus.Historic)]
+    FIM = 246,
+
+    /// <summary>French Franc (numeric 250; historic).</summary>
+    [CurrencyStatus(CurrencyStatus.Historic)]
+    FRF = 250,
+
+    /// <summary>Old Ghana Cedi (numeric 288; historic).</summary>
+    [CurrencyStatus(CurrencyStatus.Historic)]
+    GHC = 288,
+
+    /// <summary>Greek Drachma (numeric 300; historic).</summary>
+    [CurrencyStatus(CurrencyStatus.Historic)]
+    GRD = 300,
+
+    /// <summary>Croatian Kuna (numeric 191; historic).</summary>
+    [CurrencyStatus(CurrencyStatus.Historic)]
+    HRK = 191,
+
+    /// <summary>Irish Pound (numeric 372; historic).</summary>
+    [CurrencyStatus(CurrencyStatus.Historic)]
+    IEP = 372,
+
+    /// <summary>Italian Lira (numeric 380; historic).</summary>
+    [CurrencyStatus(CurrencyStatus.Historic)]
+    ITL = 380,
+
+    /// <summary>Lithuanian Litas (numeric 440; historic).</summary>
+    [CurrencyStatus(CurrencyStatus.Historic)]
+    LTL = 440,
+
+    /// <summary>Luxembourg Franc (numeric 442; historic).</summary>
+    [CurrencyStatus(CurrencyStatus.Historic)]
+    LUF = 442,
+
+    /// <summary>Latvian Lats (numeric 428; historic).</summary>
+    [CurrencyStatus(CurrencyStatus.Historic)]
+    LVL = 428,
+
+    /// <summary>Maltese Lira (numeric 470; historic).</summary>
+    [CurrencyStatus(CurrencyStatus.Historic)]
+    MTL = 470,
+
+    /// <summary>Old Mozambican Metical (numeric 508; historic).</summary>
+    [CurrencyStatus(CurrencyStatus.Historic)]
+    MZM = 508,
+
+    /// <summary>Netherlands Guilder (numeric 528; historic).</summary>
+    [CurrencyStatus(CurrencyStatus.Historic)]
+    NLG = 528,
+
+    /// <summary>Portuguese Escudo (numeric 620; historic).</summary>
+    [CurrencyStatus(CurrencyStatus.Historic)]
+    PTE = 620,
+
+    /// <summary>Old Romanian Leu (numeric 642; historic).</summary>
+    [CurrencyStatus(CurrencyStatus.Historic)]
+    ROL = 642,
+
+    /// <summary>Slovenian Tolar (numeric 705; historic).</summary>
+    [CurrencyStatus(CurrencyStatus.Historic)]
+    SIT = 705,
+
+    /// <summary>Slovak Koruna (numeric 703; historic).</summary>
+    [CurrencyStatus(CurrencyStatus.Historic)]
+    SKK = 703,
+
+    /// <summary>Suriname Guilder (numeric 740; historic).</summary>
+    [CurrencyStatus(CurrencyStatus.Historic)]
+    SRG = 740,
+
+    /// <summary>Old Turkmenistan Manat (numeric 795; historic).</summary>
+    [CurrencyStatus(CurrencyStatus.Historic)]
+    TMM = 795,
+
+    /// <summary>Venezuelan Bolívar (numeric 862; historic).</summary>
+    [CurrencyStatus(CurrencyStatus.Historic)]
+    VEB = 862,
+
+    /// <summary>Venezuelan Bolívar Fuerte (numeric 937; historic).</summary>
+    [CurrencyStatus(CurrencyStatus.Historic)]
+    VEF = 937,
+
+    /// <summary>Zimbabwe Dollar (numeric 932; historic).</summary>
+    [CurrencyStatus(CurrencyStatus.Historic)]
+    ZWL = 932,
 }
