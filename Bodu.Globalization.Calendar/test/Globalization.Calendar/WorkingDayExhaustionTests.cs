@@ -11,7 +11,7 @@ namespace Bodu.Globalization.Calendar;
 /// the traversal guard.
 /// </summary>
 [TestClass]
-public class WorkingDayExhaustionTests
+public partial class WorkingDayExhaustionTests
 {
     // A resource whose only holiday applies to territory "ZZ", so territory "XX" has no non-working holidays.
     private const string Xml = """
@@ -33,31 +33,4 @@ public class WorkingDayExhaustionTests
     private static INotableDateService Service =>
         new NotableDateService(NotableDateResourceLoader.Load(Xml));
 
-    /// <summary>
-    /// Verifies that the next-working-day search throws when no day of the week is a working day.
-    /// </summary>
-    [TestMethod]
-    public void NextWorkingDay_WhenNoDayIsWorking_ShouldThrowInvalidOperationException()
-    {
-        Assert.ThrowsExactly<InvalidOperationException>(() =>
-        {
-            _ = new DateOnly(2025, 6, 2).NextWorkingDay(Service, "XX", WeekPattern.Empty);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that the next-non-working-day search throws when every day is a working day and no holiday applies.
-    /// </summary>
-    [TestMethod]
-    public void NextNonWorkingDay_WhenEveryDayIsWorking_ShouldThrowInvalidOperationException()
-    {
-        var allWorking = new WeekPattern(
-            DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday,
-            DayOfWeek.Thursday, DayOfWeek.Friday, DayOfWeek.Saturday);
-
-        Assert.ThrowsExactly<InvalidOperationException>(() =>
-        {
-            _ = new DateOnly(2025, 6, 2).NextNonWorkingDay(Service, "XX", allWorking);
-        });
-    }
 }

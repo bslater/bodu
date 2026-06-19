@@ -6,6 +6,7 @@
 
 using Bodu.Extensions.Configuration.Text;
 using Bodu.Test.IO;
+using Bodu.Test.Kat;
 using Bodu.Text.Configuration.Test.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
@@ -17,25 +18,34 @@ namespace Bodu.Text.Configuration.Kat.Bridge;
 /// KAT subset, exercising the Microsoft.Extensions.Configuration bridge end to end.
 /// </summary>
 [TestClass]
-public class TextConfigurationBridgeKatRunnerTests
+public partial class TextConfigurationBridgeKatRunnerTests
 {
     /// <summary>
-    /// Drives every bridge KAT in the catalogue.
+    /// Verifies that a valid bridge KAT builds the configuration and exposes the expected values.
     /// </summary>
     /// <param name="kat">The KAT case to execute.</param>
     [TestMethod]
-    [DynamicData(nameof(ConfigurationKnownAnswerData.BridgeData),
+    [DynamicData(nameof(ConfigurationKnownAnswerData.BridgeDataPass),
         typeof(ConfigurationKnownAnswerData),
-        DynamicDataDisplayName = nameof(GetKatDisplayName))]
-    public void Bridge_Kat(ConfigurationKat kat)
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void Bridge_WhenValid_ShouldMatchExpectedConfiguration(ConfigurationKat kat)
     {
-        if (kat.Outcome is ConfigurationKatOutcome.Fail)
-        {
-            ExecuteBridgeFail(kat);
-            return;
-        }
-
         ExecuteBridgePass(kat);
+    }
+
+    /// <summary>
+    /// Verifies that an invalid bridge KAT throws the expected exception when the configuration is built.
+    /// </summary>
+    /// <param name="kat">The KAT case to execute.</param>
+    [TestMethod]
+    [DynamicData(nameof(ConfigurationKnownAnswerData.BridgeDataFail),
+        typeof(ConfigurationKnownAnswerData),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void Bridge_WhenInvalid_ShouldThrowExpectedException(ConfigurationKat kat)
+    {
+        ExecuteBridgeFail(kat);
     }
 
     private static void ExecuteBridgePass(ConfigurationKat kat)
@@ -100,17 +110,5 @@ public class TextConfigurationBridgeKatRunnerTests
                 ex.GetType().Name,
                 $"{kat.Id}: expected '{kat.ExpectedException}' but got '{ex.GetType().Name}': {ex.Message}");
         }
-    }
-
-    /// <summary>
-    /// Supplies the per-row display name used by the MSTest runner for KAT-driven tests.
-    /// </summary>
-    /// <param name="methodInfo">The driver method.</param>
-    /// <param name="data">The row data; the single element is a <see cref="ConfigurationKat" />.</param>
-    /// <returns>A short identifier derived from the KAT's stable ID and title.</returns>
-    public static string GetKatDisplayName(System.Reflection.MethodInfo methodInfo, object[] data)
-    {
-        var kat = (ConfigurationKat)data[0];
-        return $"{kat.Id} - {kat.Title}";
     }
 }
