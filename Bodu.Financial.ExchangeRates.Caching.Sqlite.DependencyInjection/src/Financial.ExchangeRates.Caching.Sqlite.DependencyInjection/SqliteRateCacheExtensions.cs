@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="SqliteExchangeRateCacheServiceBuilderExtensions.cs" company="Bodu Pty. Ltd.">
+// <copyright file="SqliteRateCacheExtensions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -17,7 +17,7 @@ namespace Bodu.Financial.ExchangeRates.Caching.Sqlite.DependencyInjection;
 /// Provides the fluent registration of a SQLite-backed exchange-rate cache onto an
 /// <see cref="IFinancialServiceBuilder" />.
 /// </summary>
-public static class SqliteExchangeRateCacheServiceBuilderExtensions
+public static class SqliteRateCacheExtensions
 {
     /// <summary>The default configuration section bound into <see cref="SqliteExchangeRateCacheOptions" />.</summary>
     private const string DefaultCacheSection = "Financial:ExchangeRateCache:Sqlite";
@@ -52,14 +52,14 @@ public static class SqliteExchangeRateCacheServiceBuilderExtensions
     /// <code language="csharp">
     ///<![CDATA[
     /// services.AddBoduFinancial()
-    ///         .AddSqliteExchangeRateCache("RBA", configure: o => o.DatabaseFilePath = "/var/cache/rba.db");
+    ///         .AddSqliteRateCache("RBA", configure: o => o.DatabaseFilePath = "/var/cache/rba.db");
     ///
     /// // Resolve the cache, or wrap a source provider with a CachingExchangeRateProvider over it.
     /// var cache = provider.GetRequiredService<IExchangeRateCache>();
     ///]]>
     /// </code>
     /// </example>
-    public static IFinancialServiceBuilder AddSqliteExchangeRateCache(
+    public static IFinancialServiceBuilder AddSqliteRateCache(
         this IFinancialServiceBuilder builder,
         string providerName,
         IConfiguration? configuration = null,

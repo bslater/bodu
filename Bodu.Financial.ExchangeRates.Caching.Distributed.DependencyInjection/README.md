@@ -2,11 +2,11 @@
 
 Dependency-injection extensions for the distributed (Redis-capable) `Bodu.Financial` exchange-rate cache.
 
-`AddDistributedExchangeRateCache` registers a per-provider `DistributedExchangeRateCache` as an `IExchangeRateCache`
+`AddDistributedRateCache` registers a per-provider `DistributedExchangeRateCache` as an `IExchangeRateCache`
 (and as a keyed `IExchangeRateCache` under the provider name) over whatever `IDistributedCache` is already registered in
 the container, binding and validating `DistributedExchangeRateCacheOptions` from configuration and an optional callback.
 
-`AddRedisExchangeRateCache` is a convenience that first registers a Redis `IDistributedCache` (via
+`AddRedisRateCache` is a convenience that first registers a Redis `IDistributedCache` (via
 `Microsoft.Extensions.Caching.StackExchangeRedis`) and then registers the exchange-rate cache over it.
 
 ## Usage
@@ -16,7 +16,7 @@ Over an already-registered `IDistributedCache`:
 ```csharp
 services.AddStackExchangeRedisCache(o => o.Configuration = "localhost:6379");
 services.AddBoduFinancial()
-        .AddDistributedExchangeRateCache("RBA");
+        .AddDistributedRateCache("RBA");
 
 // Resolve the cache, or wrap a source provider with a CachingExchangeRateProvider over it.
 var cache = provider.GetRequiredService<IExchangeRateCache>();
@@ -26,7 +26,7 @@ Or register the Redis cache and the exchange-rate cache together:
 
 ```csharp
 services.AddBoduFinancial()
-        .AddRedisExchangeRateCache("RBA", redis => redis.Configuration = "localhost:6379");
+        .AddRedisRateCache("RBA", redis => redis.Configuration = "localhost:6379");
 ```
 
 An optional key prefix may also be bound from configuration (default section

@@ -19,7 +19,7 @@ uid: Bodu.Financial.ExchangeRates.Caching.DependencyInjection
 
 ## Key types
 
-- <xref:Bodu.Financial.ExchangeRates.Caching.DependencyInjection.ExchangeRateCachingServiceBuilderExtensions> — the registration surface:
+- <xref:Bodu.Financial.ExchangeRates.Caching.DependencyInjection.RateCachingExtensions> — the registration surface:
   - `AddCachedExchangeRateProvider<TProvider>(name, …)` — one cache per provider.
   - `AddAggregatedExchangeRateProvider(Action<IAggregatedExchangeRateBuilder>, …)` — a group of cached children with routing and a strategy.
 - <xref:Bodu.Financial.ExchangeRates.Caching.DependencyInjection.IAggregatedExchangeRateBuilder> — the fluent builder: `AddCachedChild<TProvider>(name)` / `AddCachedChild(name, factory)`, `UseDefaultStrategy(strategy)`, and `MapPair(pair, …, order)`.

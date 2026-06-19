@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="DistributedExchangeRateCacheServiceBuilderExtensionsTests.AddDistributedExchangeRateCache.cs" company="Bodu Pty. Ltd.">
+// <copyright file="DistributedRateCacheExtensionsTests.AddDistributedRateCache.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -13,7 +13,7 @@ using Microsoft.Extensions.Options;
 
 namespace Bodu.Financial.ExchangeRates.Caching.Distributed.DependencyInjection;
 
-public sealed partial class DistributedExchangeRateCacheServiceBuilderExtensionsTests
+public sealed partial class DistributedRateCacheExtensionsTests
 {
     /// <summary>
     /// Verifies that the registered cache resolves as an <see cref="IExchangeRateCache" /> bound to the supplied
@@ -21,12 +21,12 @@ public sealed partial class DistributedExchangeRateCacheServiceBuilderExtensions
     /// </summary>
     [TestMethod]
     [TestCategory("Smoke")]
-    public void AddDistributedExchangeRateCache_WhenRegistered_ShouldResolveCacheBoundToProvider()
+    public void AddDistributedRateCache_WhenRegistered_ShouldResolveCacheBoundToProvider()
     {
         ServiceProvider provider = BuildProvider(services =>
         {
             services.AddDistributedMemoryCache();
-            services.AddBoduFinancial().AddDistributedExchangeRateCache("RBA");
+            services.AddBoduFinancial().AddDistributedRateCache("RBA");
         });
 
         var cache = provider.GetRequiredService<IExchangeRateCache>();
@@ -39,12 +39,12 @@ public sealed partial class DistributedExchangeRateCacheServiceBuilderExtensions
     /// singleton as the default registration.
     /// </summary>
     [TestMethod]
-    public void AddDistributedExchangeRateCache_WhenRegistered_ShouldResolveKeyedSameInstance()
+    public void AddDistributedRateCache_WhenRegistered_ShouldResolveKeyedSameInstance()
     {
         ServiceProvider provider = BuildProvider(services =>
         {
             services.AddDistributedMemoryCache();
-            services.AddBoduFinancial().AddDistributedExchangeRateCache("RBA");
+            services.AddBoduFinancial().AddDistributedRateCache("RBA");
         });
 
         var byDefault = provider.GetRequiredService<IExchangeRateCache>();
@@ -57,12 +57,12 @@ public sealed partial class DistributedExchangeRateCacheServiceBuilderExtensions
     /// Verifies that the resolved cache persists and serves rates through the registered <see cref="IDistributedCache" />.
     /// </summary>
     [TestMethod]
-    public void AddDistributedExchangeRateCache_WhenResolved_ShouldPersistThroughDistributedCache()
+    public void AddDistributedRateCache_WhenResolved_ShouldPersistThroughDistributedCache()
     {
         ServiceProvider provider = BuildProvider(services =>
         {
             services.AddDistributedMemoryCache();
-            services.AddBoduFinancial().AddDistributedExchangeRateCache("RBA");
+            services.AddBoduFinancial().AddDistributedRateCache("RBA");
         });
         var cache = provider.GetRequiredService<IExchangeRateCache>();
         var now = DateTimeOffset.UtcNow;
@@ -76,7 +76,7 @@ public sealed partial class DistributedExchangeRateCacheServiceBuilderExtensions
     /// Verifies that the key prefix is bound from configuration so the cache writes under the prefixed key.
     /// </summary>
     [TestMethod]
-    public void AddDistributedExchangeRateCache_WhenConfigurationProvided_ShouldBindKeyPrefix()
+    public void AddDistributedRateCache_WhenConfigurationProvided_ShouldBindKeyPrefix()
     {
         IConfiguration config = new ConfigurationBuilder()
             .AddInMemoryCollection(new Dictionary<string, string?> { ["Financial:ExchangeRateCache:Distributed:KeyPrefix"] = "fx:" })
@@ -85,7 +85,7 @@ public sealed partial class DistributedExchangeRateCacheServiceBuilderExtensions
         ServiceProvider provider = BuildProvider(services =>
         {
             services.AddDistributedMemoryCache();
-            services.AddBoduFinancial().AddDistributedExchangeRateCache("RBA", config);
+            services.AddBoduFinancial().AddDistributedRateCache("RBA", config);
         });
         var distributedCache = provider.GetRequiredService<IDistributedCache>();
         var cache = provider.GetRequiredService<IExchangeRateCache>();
@@ -98,31 +98,31 @@ public sealed partial class DistributedExchangeRateCacheServiceBuilderExtensions
     }
 
     /// <summary>
-    /// Verifies that a <see langword="null" /> builder is rejected by <c>AddDistributedExchangeRateCache</c>.
+    /// Verifies that a <see langword="null" /> builder is rejected by <c>AddDistributedRateCache</c>.
     /// </summary>
     [TestMethod]
-    public void AddDistributedExchangeRateCache_WhenBuilderIsNull_ShouldThrowArgumentNullException()
+    public void AddDistributedRateCache_WhenBuilderIsNull_ShouldThrowArgumentNullException()
     {
         var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = DistributedExchangeRateCacheServiceBuilderExtensions.AddDistributedExchangeRateCache(null!, "RBA");
+            _ = DistributedRateCacheExtensions.AddDistributedRateCache(null!, "RBA");
         });
 
         Assert.AreEqual("builder", ex.ParamName);
     }
 
     /// <summary>
-    /// Verifies that a blank provider name is rejected by <c>AddDistributedExchangeRateCache</c>.
+    /// Verifies that a blank provider name is rejected by <c>AddDistributedRateCache</c>.
     /// </summary>
     [TestMethod]
-    public void AddDistributedExchangeRateCache_WhenProviderNameIsBlank_ShouldThrowArgumentException()
+    public void AddDistributedRateCache_WhenProviderNameIsBlank_ShouldThrowArgumentException()
     {
         var services = new ServiceCollection();
         IFinancialServiceBuilder builder = services.AddBoduFinancial();
 
         var ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            _ = builder.AddDistributedExchangeRateCache("  ");
+            _ = builder.AddDistributedRateCache("  ");
         });
 
         Assert.AreEqual("providerName", ex.ParamName);
@@ -133,12 +133,12 @@ public sealed partial class DistributedExchangeRateCacheServiceBuilderExtensions
     /// the cache is resolved.
     /// </summary>
     [TestMethod]
-    public void AddDistributedExchangeRateCache_WhenOptionsInvalid_ShouldThrowOnResolve()
+    public void AddDistributedRateCache_WhenOptionsInvalid_ShouldThrowOnResolve()
     {
         ServiceProvider provider = BuildProvider(services =>
         {
             services.AddDistributedMemoryCache();
-            services.AddBoduFinancial().AddDistributedExchangeRateCache("RBA", configure: o => o.KeyPrefix = "   ");
+            services.AddBoduFinancial().AddDistributedRateCache("RBA", configure: o => o.KeyPrefix = "   ");
         });
 
         _ = Assert.ThrowsExactly<OptionsValidationException>(() =>
@@ -151,12 +151,12 @@ public sealed partial class DistributedExchangeRateCacheServiceBuilderExtensions
     /// Verifies that valid options pass <c>ValidateOnStart</c> and resolve the cache.
     /// </summary>
     [TestMethod]
-    public void AddDistributedExchangeRateCache_WhenOptionsValid_ShouldResolveCache()
+    public void AddDistributedRateCache_WhenOptionsValid_ShouldResolveCache()
     {
         ServiceProvider provider = BuildProvider(services =>
         {
             services.AddDistributedMemoryCache();
-            services.AddBoduFinancial().AddDistributedExchangeRateCache("RBA", configure: o => o.KeyPrefix = "fx:");
+            services.AddBoduFinancial().AddDistributedRateCache("RBA", configure: o => o.KeyPrefix = "fx:");
         });
 
         Assert.IsNotNull(provider.GetRequiredService<IExchangeRateCache>());
@@ -168,12 +168,12 @@ public sealed partial class DistributedExchangeRateCacheServiceBuilderExtensions
     /// start rather than the first lookup.
     /// </summary>
     [TestMethod]
-    public void AddDistributedExchangeRateCache_WhenValidateStorageOnStartAndStoreUnreachable_ShouldFailStartupValidation()
+    public void AddDistributedRateCache_WhenValidateStorageOnStartAndStoreUnreachable_ShouldFailStartupValidation()
     {
         ServiceProvider provider = BuildProvider(services =>
         {
             services.AddSingleton<IDistributedCache>(new ThrowingDistributedCache());
-            services.AddBoduFinancial().AddDistributedExchangeRateCache("RBA", configure: o => o.ValidateStorageOnStart = true);
+            services.AddBoduFinancial().AddDistributedRateCache("RBA", configure: o => o.ValidateStorageOnStart = true);
         });
 
         IStartupValidator startup = provider.GetRequiredService<IStartupValidator>();
@@ -186,12 +186,12 @@ public sealed partial class DistributedExchangeRateCacheServiceBuilderExtensions
     /// store, the startup validation the host runs passes.
     /// </summary>
     [TestMethod]
-    public void AddDistributedExchangeRateCache_WhenValidateStorageOnStartAndStoreReachable_ShouldPassStartupValidation()
+    public void AddDistributedRateCache_WhenValidateStorageOnStartAndStoreReachable_ShouldPassStartupValidation()
     {
         ServiceProvider provider = BuildProvider(services =>
         {
             services.AddDistributedMemoryCache();
-            services.AddBoduFinancial().AddDistributedExchangeRateCache("RBA", configure: o => o.ValidateStorageOnStart = true);
+            services.AddBoduFinancial().AddDistributedRateCache("RBA", configure: o => o.ValidateStorageOnStart = true);
         });
 
         IStartupValidator startup = provider.GetRequiredService<IStartupValidator>();

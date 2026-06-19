@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="SqliteExchangeRateCacheServiceBuilderExtensionsTests.cs" company="Bodu Pty. Ltd.">
+// <copyright file="SqliteRateCacheExtensionsTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -16,7 +16,7 @@ namespace Bodu.Financial.ExchangeRates.Caching.Sqlite.DependencyInjection;
 /// Verifies the dependency-injection wiring of the SQLite-backed exchange-rate cache.
 /// </summary>
 [TestClass]
-public sealed class SqliteExchangeRateCacheServiceBuilderExtensionsTests
+public sealed class SqliteRateCacheExtensionsTests
 {
     /// <summary>
     /// The isolated database file for the current test.
@@ -60,10 +60,10 @@ public sealed class SqliteExchangeRateCacheServiceBuilderExtensionsTests
     /// </summary>
     [TestMethod]
     [TestCategory("Smoke")]
-    public void AddSqliteExchangeRateCache_WhenRegistered_ShouldResolveCacheBoundToProvider()
+    public void AddSqliteRateCache_WhenRegistered_ShouldResolveCacheBoundToProvider()
     {
         ServiceProvider provider = BuildProvider(builder =>
-            builder.AddSqliteExchangeRateCache("RBA", configure: o => o.DatabaseFilePath = _databasePath));
+            builder.AddSqliteRateCache("RBA", configure: o => o.DatabaseFilePath = _databasePath));
 
         var cache = provider.GetRequiredService<IExchangeRateCache>();
 
@@ -75,10 +75,10 @@ public sealed class SqliteExchangeRateCacheServiceBuilderExtensionsTests
     /// singleton as the default registration.
     /// </summary>
     [TestMethod]
-    public void AddSqliteExchangeRateCache_WhenRegistered_ShouldResolveKeyedSameInstance()
+    public void AddSqliteRateCache_WhenRegistered_ShouldResolveKeyedSameInstance()
     {
         ServiceProvider provider = BuildProvider(builder =>
-            builder.AddSqliteExchangeRateCache("RBA", configure: o => o.DatabaseFilePath = _databasePath));
+            builder.AddSqliteRateCache("RBA", configure: o => o.DatabaseFilePath = _databasePath));
 
         var byDefault = provider.GetRequiredService<IExchangeRateCache>();
         var byKey = provider.GetRequiredKeyedService<IExchangeRateCache>("RBA");
@@ -90,10 +90,10 @@ public sealed class SqliteExchangeRateCacheServiceBuilderExtensionsTests
     /// Verifies that the resolved cache persists and serves rates against the configured database file.
     /// </summary>
     [TestMethod]
-    public void AddSqliteExchangeRateCache_WhenResolved_ShouldPersistToConfiguredDatabase()
+    public void AddSqliteRateCache_WhenResolved_ShouldPersistToConfiguredDatabase()
     {
         ServiceProvider provider = BuildProvider(builder =>
-            builder.AddSqliteExchangeRateCache("RBA", configure: o => o.DatabaseFilePath = _databasePath));
+            builder.AddSqliteRateCache("RBA", configure: o => o.DatabaseFilePath = _databasePath));
         var cache = provider.GetRequiredService<IExchangeRateCache>();
         var now = DateTimeOffset.UtcNow;
 
@@ -107,13 +107,13 @@ public sealed class SqliteExchangeRateCacheServiceBuilderExtensionsTests
     /// Verifies that the database location is bound from configuration.
     /// </summary>
     [TestMethod]
-    public void AddSqliteExchangeRateCache_WhenConfigurationProvided_ShouldBindDatabasePath()
+    public void AddSqliteRateCache_WhenConfigurationProvided_ShouldBindDatabasePath()
     {
         IConfiguration config = new ConfigurationBuilder()
             .AddInMemoryCollection(new Dictionary<string, string?> { ["Financial:ExchangeRateCache:Sqlite:DatabaseFilePath"] = _databasePath })
             .Build();
 
-        ServiceProvider provider = BuildProvider(builder => builder.AddSqliteExchangeRateCache("RBA", config));
+        ServiceProvider provider = BuildProvider(builder => builder.AddSqliteRateCache("RBA", config));
         var cache = provider.GetRequiredService<IExchangeRateCache>();
         var now = DateTimeOffset.UtcNow;
 
@@ -126,11 +126,11 @@ public sealed class SqliteExchangeRateCacheServiceBuilderExtensionsTests
     /// Verifies that a <see langword="null" /> builder is rejected.
     /// </summary>
     [TestMethod]
-    public void AddSqliteExchangeRateCache_WhenBuilderIsNull_ShouldThrowArgumentNullException()
+    public void AddSqliteRateCache_WhenBuilderIsNull_ShouldThrowArgumentNullException()
     {
         var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = SqliteExchangeRateCacheServiceBuilderExtensions.AddSqliteExchangeRateCache(null!, "RBA");
+            _ = SqliteRateCacheExtensions.AddSqliteRateCache(null!, "RBA");
         });
 
         Assert.AreEqual("builder", ex.ParamName);
@@ -140,14 +140,14 @@ public sealed class SqliteExchangeRateCacheServiceBuilderExtensionsTests
     /// Verifies that a blank provider name is rejected.
     /// </summary>
     [TestMethod]
-    public void AddSqliteExchangeRateCache_WhenProviderNameIsBlank_ShouldThrowArgumentException()
+    public void AddSqliteRateCache_WhenProviderNameIsBlank_ShouldThrowArgumentException()
     {
         var services = new ServiceCollection();
         IFinancialServiceBuilder builder = services.AddBoduFinancial();
 
         var ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            _ = builder.AddSqliteExchangeRateCache("  ");
+            _ = builder.AddSqliteRateCache("  ");
         });
 
         Assert.AreEqual("providerName", ex.ParamName);
@@ -158,9 +158,9 @@ public sealed class SqliteExchangeRateCacheServiceBuilderExtensionsTests
     /// when the cache is resolved.
     /// </summary>
     [TestMethod]
-    public void AddSqliteExchangeRateCache_WhenOptionsInvalid_ShouldThrowOnResolve()
+    public void AddSqliteRateCache_WhenOptionsInvalid_ShouldThrowOnResolve()
     {
-        ServiceProvider provider = BuildProvider(builder => builder.AddSqliteExchangeRateCache("RBA"));
+        ServiceProvider provider = BuildProvider(builder => builder.AddSqliteRateCache("RBA"));
 
         _ = Assert.ThrowsExactly<OptionsValidationException>(() =>
         {
@@ -172,10 +172,10 @@ public sealed class SqliteExchangeRateCacheServiceBuilderExtensionsTests
     /// Verifies that valid options pass <c>ValidateOnStart</c> and resolve the cache.
     /// </summary>
     [TestMethod]
-    public void AddSqliteExchangeRateCache_WhenOptionsValid_ShouldResolveCache()
+    public void AddSqliteRateCache_WhenOptionsValid_ShouldResolveCache()
     {
         ServiceProvider provider = BuildProvider(builder =>
-            builder.AddSqliteExchangeRateCache("RBA", configure: o => o.DatabaseFilePath = _databasePath));
+            builder.AddSqliteRateCache("RBA", configure: o => o.DatabaseFilePath = _databasePath));
 
         Assert.IsNotNull(provider.GetRequiredService<IExchangeRateCache>());
     }
@@ -186,11 +186,11 @@ public sealed class SqliteExchangeRateCacheServiceBuilderExtensionsTests
     /// rather than the first lookup.
     /// </summary>
     [TestMethod]
-    public void AddSqliteExchangeRateCache_WhenValidateStorageOnStartAndDatabaseUnusable_ShouldFailStartupValidation()
+    public void AddSqliteRateCache_WhenValidateStorageOnStartAndDatabaseUnusable_ShouldFailStartupValidation()
     {
         string unusablePath = Path.Combine(Path.GetDirectoryName(_databasePath)!, "missing-subdirectory", "x.db");
         ServiceProvider provider = BuildProvider(builder =>
-            builder.AddSqliteExchangeRateCache("RBA", configure: o =>
+            builder.AddSqliteRateCache("RBA", configure: o =>
             {
                 o.DatabaseFilePath = unusablePath;
                 o.ValidateStorageOnStart = true;
@@ -206,10 +206,10 @@ public sealed class SqliteExchangeRateCacheServiceBuilderExtensionsTests
     /// the startup validation the host runs passes.
     /// </summary>
     [TestMethod]
-    public void AddSqliteExchangeRateCache_WhenValidateStorageOnStartAndDatabaseUsable_ShouldPassStartupValidation()
+    public void AddSqliteRateCache_WhenValidateStorageOnStartAndDatabaseUsable_ShouldPassStartupValidation()
     {
         ServiceProvider provider = BuildProvider(builder =>
-            builder.AddSqliteExchangeRateCache("RBA", configure: o =>
+            builder.AddSqliteRateCache("RBA", configure: o =>
             {
                 o.DatabaseFilePath = _databasePath;
                 o.ValidateStorageOnStart = true;

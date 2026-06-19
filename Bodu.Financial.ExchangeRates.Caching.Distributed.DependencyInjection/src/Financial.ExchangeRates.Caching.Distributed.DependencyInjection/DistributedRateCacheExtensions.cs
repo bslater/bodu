@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="DistributedExchangeRateCacheServiceBuilderExtensions.cs" company="Bodu Pty. Ltd.">
+// <copyright file="DistributedRateCacheExtensions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -19,7 +19,7 @@ namespace Bodu.Financial.ExchangeRates.Caching.Distributed.DependencyInjection;
 /// Provides the fluent registration of a distributed (Redis-capable) exchange-rate cache onto an
 /// <see cref="IFinancialServiceBuilder" />.
 /// </summary>
-public static class DistributedExchangeRateCacheServiceBuilderExtensions
+public static class DistributedRateCacheExtensions
 {
     /// <summary>The default configuration section bound into <see cref="DistributedExchangeRateCacheOptions" />.</summary>
     private const string DefaultCacheSection = "Financial:ExchangeRateCache:Distributed";
@@ -47,25 +47,25 @@ public static class DistributedExchangeRateCacheServiceBuilderExtensions
     /// </exception>
     /// <remarks>
     /// The caller is responsible for registering an <see cref="IDistributedCache" /> (for example via
-    /// <c>AddStackExchangeRedisCache</c> or <c>AddDistributedMemoryCache</c>); use
-    /// <see cref="AddRedisExchangeRateCache" /> to register a Redis cache and the exchange-rate cache together. The
-    /// cache is registered as a singleton so its per-pair write locks are shared across resolutions, and is exposed on
-    /// both the default and the keyed <see cref="IExchangeRateCache" /> surface as the same instance. Options are
-    /// validated through <c>ValidateOnStart</c>, so misconfiguration fails fast at application startup.
+    /// <c>AddStackExchangeRedisCache</c> or <c>AddDistributedMemoryCache</c>); use <see cref="AddRedisRateCache" /> to
+    /// register a Redis cache and the exchange-rate cache together. The cache is registered as a singleton so its
+    /// per-pair write locks are shared across resolutions, and is exposed on both the default and the keyed
+    /// <see cref="IExchangeRateCache" /> surface as the same instance. Options are validated through
+    /// <c>ValidateOnStart</c>, so misconfiguration fails fast at application startup.
     /// </remarks>
     /// <example>
     /// <code language="csharp">
     ///<![CDATA[
     /// services.AddStackExchangeRedisCache(o => o.Configuration = "localhost:6379");
     /// services.AddBoduFinancial()
-    ///         .AddDistributedExchangeRateCache("RBA");
+    ///         .AddDistributedRateCache("RBA");
     ///
     /// // Resolve the cache, or wrap a source provider with a CachingExchangeRateProvider over it.
     /// var cache = provider.GetRequiredService<IExchangeRateCache>();
     ///]]>
     /// </code>
     /// </example>
-    public static IFinancialServiceBuilder AddDistributedExchangeRateCache(
+    public static IFinancialServiceBuilder AddDistributedRateCache(
         this IFinancialServiceBuilder builder,
         string providerName,
         IConfiguration? configuration = null,
@@ -137,20 +137,20 @@ public static class DistributedExchangeRateCacheServiceBuilderExtensions
     /// Thrown when <paramref name="providerName" /> or <paramref name="sectionName" /> is empty or white space.
     /// </exception>
     /// <remarks>
-    /// A convenience over <see cref="AddDistributedExchangeRateCache" /> that first registers a Redis
+    /// A convenience over <see cref="AddDistributedRateCache" /> that first registers a Redis
     /// <see cref="IDistributedCache" /> via <c>AddStackExchangeRedisCache</c>, then registers the exchange-rate cache
-    /// over it. Use the lower-level <see cref="AddDistributedExchangeRateCache" /> directly when the
+    /// over it. Use the lower-level <see cref="AddDistributedRateCache" /> directly when the
     /// <see cref="IDistributedCache" /> is registered separately or is not Redis.
     /// </remarks>
     /// <example>
     /// <code language="csharp">
     ///<![CDATA[
     /// services.AddBoduFinancial()
-    ///         .AddRedisExchangeRateCache("RBA", redis => redis.Configuration = "localhost:6379");
+    ///         .AddRedisRateCache("RBA", redis => redis.Configuration = "localhost:6379");
     ///]]>
     /// </code>
     /// </example>
-    public static IFinancialServiceBuilder AddRedisExchangeRateCache(
+    public static IFinancialServiceBuilder AddRedisRateCache(
         this IFinancialServiceBuilder builder,
         Action<RedisCacheOptions> configureRedis,
         string providerName,
@@ -167,6 +167,6 @@ public static class DistributedExchangeRateCacheServiceBuilderExtensions
         // registered. AddStackExchangeRedisCache registers IDistributedCache as a singleton RedisCache.
         builder.Services.AddStackExchangeRedisCache(configureRedis);
 
-        return builder.AddDistributedExchangeRateCache(providerName, configuration, sectionName, configure);
+        return builder.AddDistributedRateCache(providerName, configuration, sectionName, configure);
     }
 }

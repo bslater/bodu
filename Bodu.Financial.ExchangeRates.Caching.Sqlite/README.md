@@ -48,7 +48,7 @@ Or, through dependency injection (see `Bodu.Financial.ExchangeRates.Caching.Sqli
 
 ```csharp
 services.AddBoduFinancial()
-        .AddSqliteExchangeRateCache("RBA", configure: o => o.DatabaseFilePath = "/var/cache/rba.db");
+        .AddSqliteRateCache("RBA", configure: o => o.DatabaseFilePath = "/var/cache/rba.db");
 ```
 
 A `SqliteExchangeRateCache` holds one keep-alive connection open for its lifetime so a shared in-memory database

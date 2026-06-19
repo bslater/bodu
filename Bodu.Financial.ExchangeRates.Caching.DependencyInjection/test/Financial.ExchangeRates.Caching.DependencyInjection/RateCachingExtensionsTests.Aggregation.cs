@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="ExchangeRateCachingServiceBuilderExtensionsTests.Aggregation.cs" company="Bodu Pty. Ltd.">
+// <copyright file="RateCachingExtensionsTests.Aggregation.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Bodu.Financial.ExchangeRates.Caching.DependencyInjection;
 
-public sealed partial class ExchangeRateCachingServiceBuilderExtensionsTests
+public sealed partial class RateCachingExtensionsTests
 {
     /// <summary>
     /// Verifies that the registered aggregator resolves on both the dated and timeless surfaces as the same instance.
