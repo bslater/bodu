@@ -14,10 +14,10 @@ public readonly partial struct CalculatedMoney
     /// </summary>
     /// <param name="other">The value to compare against.</param>
     /// <returns>
-    /// <see langword="true" /> when both the amount and ISO code match; otherwise <see langword="false" />.
+    /// <see langword="true" /> when both the amount and currency match; otherwise <see langword="false" />.
     /// </returns>
     public bool Equals(CalculatedMoney other) =>
-        _amount == other._amount && string.Equals(IsoCode, other.IsoCode, StringComparison.Ordinal);
+        _amount == other._amount && _code == other._code;
 
     /// <inheritdoc />
     public override bool Equals(object? obj) =>
@@ -25,7 +25,7 @@ public readonly partial struct CalculatedMoney
 
     /// <inheritdoc />
     public override int GetHashCode() =>
-        HashCode.Combine(_amount, IsoCode);
+        HashCode.Combine(_amount, _code);
 
     /// <summary>
     /// Determines whether two values are equal.

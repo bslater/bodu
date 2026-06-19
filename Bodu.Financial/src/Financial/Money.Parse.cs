@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using Bodu.Financial.Currencies;
 
 namespace Bodu.Financial;
 
@@ -111,16 +112,16 @@ public readonly partial struct Money :
         result = default;
         if (numericPart.IsEmpty) return false;
 
-        // The strict parser only yields a value for currencies the ambient lookup knows; an unregistered code is a
-        // parse failure here (it cannot be constructed under the default reject policy) rather than an exception.
-        if (!CurrencyResolution.Contains(iso))
+        // The strict parser only yields a value for currencies the ambient lookup knows and that map to a stored
+        // CurrencyCode; an unmapped code is a parse failure here rather than an exception.
+        if (!CurrencyResolution.Contains(iso) || !CurrencyInfo.TryGetCurrencyCode(iso, out CurrencyCode code))
             return false;
 
         IFormatProvider effective = provider ?? CultureInfo.CurrentCulture;
         if (!decimal.TryParse(numericPart, NumberStyles.Number | NumberStyles.AllowLeadingSign, effective, out decimal amount))
             return false;
 
-        result = new Money(amount, iso);
+        result = new Money(amount, code);
         return true;
     }
 

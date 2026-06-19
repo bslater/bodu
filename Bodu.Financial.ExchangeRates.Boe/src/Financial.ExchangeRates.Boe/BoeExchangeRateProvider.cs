@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using Bodu.Financial.Currencies;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -56,7 +57,7 @@ public sealed class BoeExchangeRateProvider
     public const string ProviderName = "BoE";
 
     /// <summary>The base currency the Bank of England quotes against.</summary>
-    public const string BaseCurrencyIsoCode = "GBP";
+    public const CurrencyCode BaseCurrency = CurrencyCode.GBP;
 
     /// <summary>The source that downloads and parses range responses.</summary>
     private readonly IBoeExchangeRateTableSource _source;
@@ -223,8 +224,9 @@ public sealed class BoeExchangeRateProvider
     /// <inheritdoc />
     protected override void ValidateRangeRequest(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate)
     {
-        if (!string.Equals(fromIsoCode, BaseCurrencyIsoCode, StringComparison.Ordinal) &&
-            !string.Equals(toIsoCode, BaseCurrencyIsoCode, StringComparison.Ordinal))
+        string baseIso = BaseCurrency.ToString();
+        if (!string.Equals(fromIsoCode, baseIso, StringComparison.Ordinal) &&
+            !string.Equals(toIsoCode, baseIso, StringComparison.Ordinal))
         {
             throw new BoeExchangeRateSeriesNotFoundException(
                 string.Format(CultureInfo.CurrentCulture, BoeResourceStrings.IO_KeyNotFound_BoeSeries, fromIsoCode, toIsoCode));
@@ -233,7 +235,7 @@ public sealed class BoeExchangeRateProvider
 
     /// <inheritdoc />
     protected override void OnObservationIngested(ExchangeRate rate) =>
-        Log.ObservationIngested(_logger, _options.ObservationIngestedLogLevel, rate.FromIsoCode, rate.ToIsoCode, rate.Date, rate.Rate);
+        Log.ObservationIngested(_logger, _options.ObservationIngestedLogLevel, rate.From.ToString(), rate.To.ToString(), rate.Date, rate.Rate);
 
     /// <inheritdoc />
     protected override Exception CreateRangeInvertedException(DateOnly startDate, DateOnly endDate) =>

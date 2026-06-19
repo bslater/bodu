@@ -153,7 +153,7 @@ public sealed class YahooExchangeRateProvider
 
     /// <inheritdoc />
     protected override string FormatPairForLog(ExchangeRatePair pair) =>
-        _options.BuildSymbol(pair.FromIsoCode, pair.ToIsoCode);
+        _options.BuildSymbol(pair.From.ToString(), pair.To.ToString());
 
     /// <inheritdoc />
     protected override Exception CreateRangeInvertedException(DateOnly startDate, DateOnly endDate) =>

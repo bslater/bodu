@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using Bodu.Financial.Currencies;
 
 namespace Bodu.Financial;
 
@@ -14,14 +15,14 @@ public readonly partial struct Money
     /// Returns a high-precision <see cref="CalculatedMoney" /> in the same currency, suitable for deferred-rounding
     /// calculation chains.
     /// </summary>
-    /// <returns>A <see cref="CalculatedMoney" /> carrying this value's amount and ISO code.</returns>
-    /// <exception cref="InvalidOperationException">This value carries no ISO code (default-initialised).</exception>
+    /// <returns>A <see cref="CalculatedMoney" /> carrying this value's amount and currency.</returns>
+    /// <exception cref="InvalidOperationException">This value carries no currency (default-initialised).</exception>
     public CalculatedMoney ToCalculated()
     {
-        if (string.IsNullOrEmpty(IsoCode))
+        if (_code == CurrencyCode.None)
             throw new InvalidOperationException(FinancialResourceStrings.Op_Invalid_MoneyRequiresCurrency);
 
-        return new CalculatedMoney(_amount, IsoCode);
+        return new CalculatedMoney(_amount, _code);
     }
 
     /// <summary>
@@ -31,17 +32,17 @@ public readonly partial struct Money
     /// <typeparam name="TCurrency">The target currency type.</typeparam>
     /// <returns>The strongly-typed monetary value.</returns>
     /// <exception cref="InvalidOperationException">
-    /// The instance's <see cref="IsoCode" /> does not match the ISO code of <typeparamref name="TCurrency" />.
+    /// The instance's <see cref="Code" /> does not match the currency of <typeparamref name="TCurrency" />.
     /// </exception>
     public Money<TCurrency> As<TCurrency>()
         where TCurrency : ICurrency
     {
-        return !string.Equals(IsoCode, CurrencyMetadata<TCurrency>.Value.IsoCode, StringComparison.Ordinal)
+        return !string.Equals(IsoCodeOrEmpty, CurrencyMetadata<TCurrency>.Value.IsoCode, StringComparison.Ordinal)
             ? throw new InvalidOperationException(
                 string.Format(
                     CultureInfo.CurrentCulture,
                     FinancialResourceStrings.Op_Invalid_CurrencyMismatchInAs,
-                    IsoCode,
+                    IsoCodeOrEmpty,
                     typeof(TCurrency).Name,
                     CurrencyMetadata<TCurrency>.Value.IsoCode))
             : new Money<TCurrency>(_amount);
@@ -56,7 +57,7 @@ public readonly partial struct Money
     public bool TryAs<TCurrency>(out Money<TCurrency> result)
         where TCurrency : ICurrency
     {
-        if (string.Equals(IsoCode, CurrencyMetadata<TCurrency>.Value.IsoCode, StringComparison.Ordinal))
+        if (string.Equals(IsoCodeOrEmpty, CurrencyMetadata<TCurrency>.Value.IsoCode, StringComparison.Ordinal))
         {
             result = new Money<TCurrency>(_amount);
             return true;
@@ -91,7 +92,7 @@ public readonly partial struct Money
     /// </param>
     /// <returns>The converted <see cref="Money" /> in the rate's target currency.</returns>
     /// <exception cref="InvalidOperationException">
-    /// The rate's source currency does not match this value's <see cref="IsoCode" />.
+    /// The rate's source currency does not match this value's <see cref="Code" />.
     /// </exception>
     /// <remarks>
     /// Prefer this quote-first overload over the raw-decimal <see cref="Convert(string, decimal, MidpointRounding)" />
@@ -112,24 +113,24 @@ public readonly partial struct Money
     /// </param>
     /// <returns>The <see cref="MoneyConversionResult" /> describing the conversion.</returns>
     /// <exception cref="InvalidOperationException">
-    /// The rate's source currency does not match this value's <see cref="IsoCode" />.
+    /// The rate's source currency does not match this value's <see cref="Code" />.
     /// </exception>
     public MoneyConversionResult ConvertWithResult(ExchangeRate rate, MonetaryContext? context = null)
     {
-        if (!string.Equals(rate.FromIsoCode, IsoCode, StringComparison.Ordinal))
+        if (rate.From != _code)
         {
             throw new InvalidOperationException(
                 string.Format(
                     CultureInfo.CurrentCulture,
                     FinancialResourceStrings.Op_Invalid_ConversionRateDirectionMismatch,
-                    IsoCode,
-                    rate.FromIsoCode,
-                    rate.ToIsoCode));
+                    IsoCodeOrEmpty,
+                    rate.From.ToString(),
+                    rate.To.ToString()));
         }
 
         MonetaryContext effective = context ?? MonetaryContext.Default;
         decimal raw = rate.Convert(_amount);
-        Money target = new CalculatedMoney(raw, rate.ToIsoCode).RoundToMoney(effective);
+        Money target = new CalculatedMoney(raw, rate.To).RoundToMoney(effective);
 
         return new MoneyConversionResult(this, target, rate, effective, target.Amount - raw);
     }
@@ -149,7 +150,7 @@ public readonly partial struct Money
     public Money Convert(string targetIsoCode, decimal exchangeRate, MidpointRounding rounding)
     {
         FinancialThrowHelper.ThrowIfExchangeRateNotPositive(exchangeRate);
-        return new Money(_amount * exchangeRate, targetIsoCode, rounding);
+        return new Money(_amount * exchangeRate, CurrencyInfo.ParseCurrencyCode(targetIsoCode), rounding);
     }
 
     /// <summary>

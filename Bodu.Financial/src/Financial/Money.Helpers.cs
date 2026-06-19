@@ -12,21 +12,6 @@ namespace Bodu.Financial;
 public readonly partial struct Money
 {
     /// <summary>
-    /// Creates a runtime-tagged <see cref="Money" /> from the supplied amount and ISO 4217 code, rounding to the
-    /// currency's minor-unit precision.
-    /// </summary>
-    /// <param name="amount">The monetary amount in the major unit.</param>
-    /// <param name="isoCode">The ISO 4217 three-letter alphabetic code identifying the currency.</param>
-    /// <param name="rounding">The midpoint-rounding rule applied when normalising to the minor-unit precision.</param>
-    /// <returns>The constructed monetary value.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="isoCode" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentException">
-    /// <paramref name="isoCode" /> is not exactly three uppercase ASCII letters.
-    /// </exception>
-    public static Money From(decimal amount, string isoCode, MidpointRounding rounding = MidpointRounding.ToEven) =>
-        new(amount, isoCode, rounding);
-
-    /// <summary>
     /// Creates a <see cref="Money" /> that carries an explicit minor-unit scale, rounding the amount to that scale and
     /// reporting it from <see cref="Money.MinorUnits" />.
     /// </summary>
@@ -63,10 +48,13 @@ public readonly partial struct Money
     /// <param name="rounding">The midpoint-rounding rule applied when normalising to the minor-unit precision.</param>
     /// <returns>The constructed monetary value.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="currency" /> is <see langword="null" />.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// <paramref name="currency" />'s ISO code does not correspond to any <see cref="CurrencyCode" /> member.
+    /// </exception>
     public static Money From(decimal amount, CurrencyInfo currency, MidpointRounding rounding = MidpointRounding.ToEven)
     {
         ThrowHelper.ThrowIfNull(currency);
-        return new(amount, currency.IsoCode, rounding);
+        return new(amount, currency.ToCurrencyCode(), rounding);
     }
 
     /// <summary>

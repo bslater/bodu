@@ -27,8 +27,8 @@ public readonly partial struct Money
     /// <summary>
     /// Gets the ISO 4217 alphabetic code identifying the currency, or an empty string for a default-initialised value.
     /// </summary>
-    /// <returns>The currency's ISO code.</returns>
-    public string IsoCode =>
+    /// <returns>The currency's ISO code, used by the formatting, parsing, and serialization paths that consult the string-keyed currency lookup.</returns>
+    internal string IsoCodeOrEmpty =>
         _code == CurrencyCode.None ? string.Empty : _code.ToString();
 
     /// <summary>
@@ -40,9 +40,9 @@ public readonly partial struct Money
     /// </returns>
     /// <remarks>
     /// A default-initialised <see cref="Money" /> is the unavoidable zero value of the struct, not a valid financial
-    /// zero. It carries no ISO code and is rejected by every arithmetic, allocation, and conversion operation; use
-    /// <see cref="Zero(string)" /> to obtain a usable zero for a specific currency. Equality, hashing, and formatting
-    /// remain safe to call so diagnostic surfaces do not throw.
+    /// zero. It carries no currency and is rejected by every arithmetic, allocation, and conversion operation; use
+    /// <see cref="Zero(CurrencyCode)" /> to obtain a usable zero for a specific currency. Equality, hashing, and
+    /// formatting remain safe to call so diagnostic surfaces do not throw.
     /// </remarks>
     public bool IsDefault =>
         _code == CurrencyCode.None;
@@ -73,18 +73,17 @@ public readonly partial struct Money
     public int MinorUnits =>
         _explicitScalePlusOne > 0
             ? _explicitScalePlusOne - 1
-            : CurrencyResolution.TryGet(IsoCode, out CurrencyInfo? info) ? info!.MinorUnits : 0;
+            : CurrencyResolution.TryGet(IsoCodeOrEmpty, out CurrencyInfo? info) ? info!.MinorUnits : 0;
 
     /// <summary>
     /// Returns a <see cref="Money" /> representing zero of the specified currency.
     /// </summary>
-    /// <param name="isoCode">The ISO 4217 code.</param>
-    /// <returns>A zero <see cref="Money" /> in <paramref name="isoCode" />.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="isoCode" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentException">
-    /// <paramref name="isoCode" /> is not exactly three uppercase ASCII letters, or is structurally valid but not
-    /// registered in <see cref="CurrencyRegistry" />.
+    /// <param name="code">The currency identifying the zero value.</param>
+    /// <returns>A zero <see cref="Money" /> in <paramref name="code" />.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="code" /> is <see cref="CurrencyCode.None" /> or is not a defined <see cref="CurrencyCode" />
+    /// member.
     /// </exception>
-    public static Money Zero(string isoCode) =>
-        new(0m, isoCode);
+    public static Money Zero(CurrencyCode code) =>
+        new(0m, code);
 }

@@ -37,7 +37,7 @@ namespace Bodu.Financial;
 /// is deferred-rounding decimal, and the <c>Fraction</c> APIs are exact rational.
 /// </para>
 /// </remarks>
-[DebuggerDisplay("{Amount} {IsoCode,nq} (unrounded)")]
+[DebuggerDisplay("{Amount} {IsoCodeOrEmpty,nq} (unrounded)")]
 public readonly partial struct CalculatedMoney
 {
     /// <summary>The unrounded amount in the major unit of the currency identified by <see cref="_code" />.</summary>
@@ -45,20 +45,6 @@ public readonly partial struct CalculatedMoney
 
     /// <summary>The currency identifying this value, or <see cref="CurrencyCode.None" /> for a default-initialised value.</summary>
     private readonly CurrencyCode _code;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="CalculatedMoney" /> struct from an amount and ISO 4217 code,
-    /// preserving the amount's full precision.
-    /// </summary>
-    /// <param name="amount">The unrounded monetary amount in the major unit.</param>
-    /// <param name="isoCode">The ISO 4217 three-letter alphabetic code identifying the currency.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="isoCode" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentException"><paramref name="isoCode" /> is not a known currency.</exception>
-    public CalculatedMoney(decimal amount, string isoCode)
-    {
-        _amount = amount;
-        _code = CurrencyInfo.ParseCurrencyCode(isoCode);
-    }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CalculatedMoney" /> struct from an amount and currency, preserving

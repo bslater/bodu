@@ -7,6 +7,7 @@
 using System.Collections.Frozen;
 using System.Globalization;
 using System.Runtime.CompilerServices;
+using Bodu.Financial.Currencies;
 
 namespace Bodu.Financial;
 
@@ -148,12 +149,13 @@ public sealed class FixedDatedExchangeRateProvider
 
         if (options.AllowSameCurrencyIdentityRate && string.Equals(fromIsoCode, toIsoCode, StringComparison.Ordinal))
         {
+            CurrencyCode identityCode = CurrencyInfo.ParseCurrencyCode(fromIsoCode);
             DateOnly identityDate = LatestDateInBook();
-            ExchangeRate identity = new(fromIsoCode, toIsoCode, identityDate, 1m, IdentityProviderName);
+            ExchangeRate identity = new(identityCode, identityCode, identityDate, 1m, IdentityProviderName);
             return new ExchangeRateLookupResult(identity, identityDate, options.DateResolution, 0, ExchangeRateProvenance.Live(identity.Provider));
         }
 
-        ExchangeRatePair directPair = new(fromIsoCode, toIsoCode);
+        ExchangeRatePair directPair = new(CurrencyInfo.ParseCurrencyCode(fromIsoCode), CurrencyInfo.ParseCurrencyCode(toIsoCode));
 
         if (TryGetLatestRate(directPair, options, isInverted: false, out ExchangeRateLookupResult result))
             return result;
@@ -205,12 +207,13 @@ public sealed class FixedDatedExchangeRateProvider
         if (options.AllowSameCurrencyIdentityRate &&
             string.Equals(fromIsoCode, toIsoCode, StringComparison.Ordinal))
         {
-            ExchangeRate identity = new(fromIsoCode, toIsoCode, date, 1m, IdentityProviderName);
+            CurrencyCode identityCode = CurrencyInfo.ParseCurrencyCode(fromIsoCode);
+            ExchangeRate identity = new(identityCode, identityCode, date, 1m, IdentityProviderName);
             result = new ExchangeRateLookupResult(identity, date, options.DateResolution, 0, ExchangeRateProvenance.Live(identity.Provider));
             return true;
         }
 
-        ExchangeRatePair directPair = new(fromIsoCode, toIsoCode);
+        ExchangeRatePair directPair = new(CurrencyInfo.ParseCurrencyCode(fromIsoCode), CurrencyInfo.ParseCurrencyCode(toIsoCode));
 
         if (TryGetDirectRate(directPair, date, options, isInverted: false, out result))
             return true;
@@ -239,7 +242,7 @@ public sealed class FixedDatedExchangeRateProvider
         if (endDate < startDate)
             throw new ArgumentException(FinancialResourceStrings.Arg_Invalid_ExchangeRateRangeInverted, nameof(endDate));
 
-        ExchangeRatePair pair = new(fromIsoCode, toIsoCode);
+        ExchangeRatePair pair = new(CurrencyInfo.ParseCurrencyCode(fromIsoCode), CurrencyInfo.ParseCurrencyCode(toIsoCode));
         List<ExchangeRate> result = new();
 
         // Prefer the directly quoted series; fall back to the reverse pair, reporting each observation inverted.
@@ -275,7 +278,7 @@ public sealed class FixedDatedExchangeRateProvider
 
         foreach (ExchangeRate observation in rates)
         {
-            ExchangeRatePair pair = new(observation.FromIsoCode, observation.ToIsoCode);
+            ExchangeRatePair pair = observation.Pair;
 
             if (!grouped.TryGetValue(pair, out (string Provider, List<(DateOnly, decimal)> Entries) bucket))
             {
@@ -288,8 +291,8 @@ public sealed class FixedDatedExchangeRateProvider
                     string.Format(
                         CultureInfo.CurrentCulture,
                         FinancialResourceStrings.Arg_Invalid_RateSeriesProviderConflict,
-                        pair.FromIsoCode,
-                        pair.ToIsoCode,
+                        pair.From.ToString(),
+                        pair.To.ToString(),
                         bucket.Provider,
                         observation.Provider),
                     nameof(rates));
@@ -330,8 +333,8 @@ public sealed class FixedDatedExchangeRateProvider
                     string.Format(
                         CultureInfo.CurrentCulture,
                         FinancialResourceStrings.Arg_Invalid_RateSeriesProviderConflict,
-                        key.Pair.FromIsoCode,
-                        key.Pair.ToIsoCode,
+                        key.Pair.From.ToString(),
+                        key.Pair.To.ToString(),
                         existing,
                         key.Provider),
                     nameof(book));
@@ -373,8 +376,8 @@ public sealed class FixedDatedExchangeRateProvider
             if (!series.TryGetRate(requestedDate, options, out DateOnly resolvedDate, out decimal rawRate))
                 continue;
 
-            string reportedFrom = isInverted ? pair.ToIsoCode : pair.FromIsoCode;
-            string reportedTo = isInverted ? pair.FromIsoCode : pair.ToIsoCode;
+            CurrencyCode reportedFrom = isInverted ? pair.To : pair.From;
+            CurrencyCode reportedTo = isInverted ? pair.From : pair.To;
 
             // Pass the originally observed rate so an inverted conversion divides by it rather than multiplying by a
             // pre-rounded reciprocal; the reported Rate is still the From->To multiplier. The series' fetch instant is
@@ -417,8 +420,8 @@ public sealed class FixedDatedExchangeRateProvider
             // Observations are stored in ascending date order, so the last is the most recent.
             ExchangeRateObservation latest = series.GetObservations().Last();
 
-            string reportedFrom = isInverted ? pair.ToIsoCode : pair.FromIsoCode;
-            string reportedTo = isInverted ? pair.FromIsoCode : pair.ToIsoCode;
+            CurrencyCode reportedFrom = isInverted ? pair.To : pair.From;
+            CurrencyCode reportedTo = isInverted ? pair.From : pair.To;
 
             // Stamp the series' fetch instant onto the served rate as provenance.
             var rate = ExchangeRate.FromObservedRate(reportedFrom, reportedTo, latest.Date, latest.Rate, series.Provider, isInverted, series.FetchedAtUtc);
@@ -460,8 +463,8 @@ public sealed class FixedDatedExchangeRateProvider
             if (!_book.TryGetSeries(pair, priority[i], out ExchangeRateSeries? series) || series is null)
                 continue;
 
-            string reportedFrom = isInverted ? pair.ToIsoCode : pair.FromIsoCode;
-            string reportedTo = isInverted ? pair.FromIsoCode : pair.ToIsoCode;
+            CurrencyCode reportedFrom = isInverted ? pair.To : pair.From;
+            CurrencyCode reportedTo = isInverted ? pair.From : pair.To;
 
             foreach (ExchangeRateObservation observation in series.GetObservations())
             {

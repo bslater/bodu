@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Diagnostics;
-using System.Globalization;
 using System.Text.Json.Serialization;
 using Bodu.Financial.Currencies;
 using Bodu.Financial.Serialization;
@@ -59,57 +58,6 @@ public readonly partial struct Money
     private readonly byte _explicitScalePlusOne;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Money" /> struct from an amount and ISO 4217 code, rounding the
-    /// amount to the currency's minor-unit precision using banker's rounding.
-    /// </summary>
-    /// <param name="amount">The monetary amount in the major unit.</param>
-    /// <param name="isoCode">The ISO 4217 three-letter alphabetic code identifying the currency.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="isoCode" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentException">
-    /// <paramref name="isoCode" /> is not exactly three uppercase ASCII letters, or it is not registered in
-    /// <see cref="CurrencyRegistry" />.
-    /// </exception>
-    public Money(decimal amount, string isoCode)
-        : this(amount, isoCode, MidpointRounding.ToEven)
-    {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="Money" /> struct from an amount and ISO 4217 code, rounding the
-    /// amount to the currency's minor-unit precision using the supplied rule.
-    /// </summary>
-    /// <param name="amount">The monetary amount in the major unit.</param>
-    /// <param name="isoCode">The ISO 4217 three-letter alphabetic code identifying the currency.</param>
-    /// <param name="rounding">The midpoint-rounding rule applied when normalising to the minor-unit precision.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="isoCode" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentException">
-    /// <paramref name="isoCode" /> is not exactly three uppercase ASCII letters — empty, whitespace, the wrong length,
-    /// lowercase, or contains non-letter characters — or it is structurally valid but not registered in
-    /// <see cref="CurrencyRegistry" />.
-    /// </exception>
-    /// <remarks>
-    /// The ISO code is validated to ISO 4217's three-uppercase-ASCII-letters shape and must resolve to a registered
-    /// <see cref="CurrencyInfo" />; the amount is then rounded to the registry's <c>MinorUnits</c>. A structurally
-    /// valid code that is not a known currency is rejected so a value can never store a precision it cannot describe.
-    /// </remarks>
-    public Money(decimal amount, string isoCode, MidpointRounding rounding)
-    {
-        ThrowHelper.ThrowIfNull(isoCode);
-        ValidateIsoCode(isoCode);
-
-        if (!CurrencyInfo.TryGetCurrencyCode(isoCode, out CurrencyCode code))
-        {
-            throw new ArgumentException(
-                string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Arg_Invalid_UnknownCurrencyRejected, isoCode),
-                nameof(isoCode));
-        }
-
-        _amount = MoneyMath.Round(amount, CurrencyInfo.FromCurrencyCode(code).MinorUnits, rounding);
-        _code = code;
-        _explicitScalePlusOne = 0;
-    }
-
-    /// <summary>
     /// Initializes a new instance of the <see cref="Money" /> struct from an amount and currency, rounding the amount to
     /// the currency's minor-unit precision using the supplied rule.
     /// </summary>
@@ -126,42 +74,6 @@ public readonly partial struct Money
         _amount = MoneyMath.Round(amount, CurrencyInfo.FromCurrencyCode(code).MinorUnits, rounding);
         _code = code;
         _explicitScalePlusOne = 0;
-    }
-
-    /// <summary>
-    /// Validates that <paramref name="isoCode" /> is exactly three uppercase ASCII letters.
-    /// </summary>
-    /// <param name="isoCode">The candidate ISO code.</param>
-    /// <exception cref="ArgumentException">
-    /// <paramref name="isoCode" /> is not exactly three uppercase ASCII letters.
-    /// </exception>
-    private static void ValidateIsoCode(string isoCode)
-    {
-        if (isoCode.Length != 3)
-        {
-            throw new ArgumentException(
-                string.Format(
-                    CultureInfo.CurrentCulture,
-                    FinancialResourceStrings.Arg_Invalid_IsoCodeLength,
-                    isoCode,
-                    isoCode.Length),
-                nameof(isoCode));
-        }
-
-        for (int i = 0; i < 3; i++)
-        {
-            char c = isoCode[i];
-            if (c is < 'A' or > 'Z')
-            {
-                throw new ArgumentException(
-                    string.Format(
-                        CultureInfo.CurrentCulture,
-                        FinancialResourceStrings.Arg_Invalid_IsoCodeNonAscii,
-                        isoCode,
-                        c),
-                    nameof(isoCode));
-            }
-        }
     }
 
     /// <summary>
@@ -188,15 +100,6 @@ public readonly partial struct Money
     /// <returns>The wrapped <see cref="Money" />.</returns>
     internal static Money FromNormalized(decimal amount, CurrencyCode code) =>
         new(amount, code, (byte)0);
-
-    /// <summary>
-    /// Transitional string overload of <see cref="FromNormalized(decimal, CurrencyCode)" />.
-    /// </summary>
-    /// <param name="amount">The normalised amount.</param>
-    /// <param name="isoCode">The ISO 4217 code.</param>
-    /// <returns>The wrapped <see cref="Money" />.</returns>
-    internal static Money FromNormalized(decimal amount, string isoCode) =>
-        new(amount, CurrencyInfo.ParseCurrencyCode(isoCode), (byte)0);
 
     /// <summary>
     /// Returns a copy of this value with a different amount, preserving the currency and any explicit scale.

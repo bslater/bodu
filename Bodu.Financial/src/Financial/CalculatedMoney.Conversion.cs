@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
+
 namespace Bodu.Financial;
 
 public readonly partial struct CalculatedMoney
@@ -30,13 +32,13 @@ public readonly partial struct CalculatedMoney
     /// </remarks>
     public Money RoundToMoney(MonetaryContext? context = null)
     {
-        if (string.IsNullOrEmpty(IsoCode))
+        if (_code == CurrencyCode.None)
             throw new InvalidOperationException(FinancialResourceStrings.Op_Invalid_MoneyRequiresCurrency);
 
         MonetaryContext effective = context ?? MonetaryContext.Default;
         effective.Validate();
 
-        bool registered = CurrencyResolution.TryGet(IsoCode, out CurrencyInfo? info) && info is not null;
+        bool registered = CurrencyResolution.TryGet(IsoCodeOrEmpty, out CurrencyInfo? info) && info is not null;
         int currencyMinorUnits = registered ? info!.MinorUnits : 0;
 
         int scale = effective.ResolveScale(currencyMinorUnits);

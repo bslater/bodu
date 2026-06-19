@@ -7,6 +7,7 @@
 using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Bodu.Financial.Currencies;
 
 namespace Bodu.Financial.Serialization;
 
@@ -63,7 +64,7 @@ public sealed class MoneyJsonConverter
 
         writer.WriteStartObject();
         writer.WriteNumber("amount", value.Amount);
-        writer.WriteString("currency", value.IsoCode);
+        writer.WriteString("currency", value.Code == CurrencyCode.None ? string.Empty : value.Code.ToString());
         writer.WriteEndObject();
     }
 
@@ -168,12 +169,19 @@ public sealed class MoneyJsonConverter
 
         // Pre-validate the ISO shape so a malformed code surfaces as JsonException rather than the
         // ArgumentException that the Money constructor would otherwise raise.
-        return currency.Length != 3
+        if (currency.Length != 3
             || !char.IsAsciiLetterUpper(currency[0])
             || !char.IsAsciiLetterUpper(currency[1])
-            || !char.IsAsciiLetterUpper(currency[2])
-            ? throw new JsonException(FinancialResourceStrings.Arg_Invalid_IsoCodeShape)
-            : new Money(amount.Value, currency);
+            || !char.IsAsciiLetterUpper(currency[2]))
+        {
+            throw new JsonException(FinancialResourceStrings.Arg_Invalid_IsoCodeShape);
+        }
+
+        // Resolve the wire ISO string to its stored CurrencyCode; an unknown code is a deserialization error.
+        return CurrencyInfo.TryGetCurrencyCode(currency, out CurrencyCode code)
+            ? new Money(amount.Value, code)
+            : throw new JsonException(
+                string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Arg_Invalid_UnknownCurrencyRejected, currency));
     }
 
     /// <summary>
@@ -189,6 +197,6 @@ public sealed class MoneyJsonConverter
         return string.Concat(
             value.Amount.ToString(numericFormat, CultureInfo.InvariantCulture),
             " ",
-            value.IsoCode);
+            value.Code == CurrencyCode.None ? string.Empty : value.Code.ToString());
     }
 }

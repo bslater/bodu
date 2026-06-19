@@ -5,9 +5,11 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Collections;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Text.Json.Serialization;
+using Bodu.Financial.Currencies;
 using Bodu.Financial.Serialization;
 
 namespace Bodu.Financial;
@@ -42,41 +44,49 @@ public sealed partial class MoneyBag :
     /// <summary>The shared empty bag instance.</summary>
     public static readonly MoneyBag Empty = new();
 
-    /// <summary>The internal balance map keyed by ISO 4217 code (case-sensitive) and kept in ISO-code order.</summary>
-    private readonly ImmutableSortedDictionary<string, decimal> _balances;
+    /// <summary>
+    /// Orders <see cref="CurrencyCode" /> keys by their ISO 4217 alphabetic code (ordinal) rather than their numeric
+    /// enum value, so enumeration stays in ISO-code lexicographic order as it was when the bag was keyed by string.
+    /// </summary>
+    private static readonly IComparer<CurrencyCode> s_codeComparer =
+        Comparer<CurrencyCode>.Create(static (a, b) => string.CompareOrdinal(a.ToString(), b.ToString()));
+
+    /// <summary>The internal balance map keyed by <see cref="CurrencyCode" /> and kept in ISO-code lexicographic order.</summary>
+    private readonly ImmutableSortedDictionary<CurrencyCode, decimal> _balances;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MoneyBag" /> class.
     /// </summary>
     public MoneyBag()
     {
-        _balances = ImmutableSortedDictionary.Create<string, decimal>(StringComparer.Ordinal);
+        _balances = ImmutableSortedDictionary.Create<CurrencyCode, decimal>(s_codeComparer);
     }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MoneyBag" /> class from a sequence of <see cref="Money" />
-    /// balances, summing amounts with the same ISO code.
+    /// balances, summing amounts with the same currency.
     /// </summary>
     /// <param name="balances">The starting balances.</param>
     /// <exception cref="ArgumentNullException"><paramref name="balances" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentException">A balance carries no currency (default-initialised).</exception>
     public MoneyBag(IEnumerable<Money> balances)
     {
         ThrowHelper.ThrowIfNull(balances);
 
-        ImmutableSortedDictionary<string, decimal>.Builder builder =
-            ImmutableSortedDictionary.CreateBuilder<string, decimal>(StringComparer.Ordinal);
+        ImmutableSortedDictionary<CurrencyCode, decimal>.Builder builder =
+            ImmutableSortedDictionary.CreateBuilder<CurrencyCode, decimal>(s_codeComparer);
         foreach (Money balance in balances)
         {
-            string iso = balance.IsoCode;
-            if (string.IsNullOrEmpty(iso))
+            CurrencyCode code = balance.Code;
+            if (code == CurrencyCode.None)
                 throw new ArgumentException(FinancialResourceStrings.Arg_Invalid_BalanceMissingIsoCode, nameof(balances));
 
-            builder[iso] = builder.TryGetValue(iso, out decimal existing) ? existing + balance.Amount : balance.Amount;
+            builder[code] = builder.TryGetValue(code, out decimal existing) ? existing + balance.Amount : balance.Amount;
         }
 
         // Prune zero balances introduced by mutual cancellation during the sum.
-        foreach (string? iso in builder.Where(entry => entry.Value == 0m).Select(entry => entry.Key).ToList())
-            builder.Remove(iso);
+        foreach (CurrencyCode code in builder.Where(entry => entry.Value == 0m).Select(entry => entry.Key).ToList())
+            builder.Remove(code);
 
         _balances = builder.ToImmutable();
     }
@@ -86,7 +96,7 @@ public sealed partial class MoneyBag :
     /// fast path used by factories and mutators).
     /// </summary>
     /// <param name="source">The balance map the new bag adopts.</param>
-    private MoneyBag(ImmutableSortedDictionary<string, decimal> source)
+    private MoneyBag(ImmutableSortedDictionary<CurrencyCode, decimal> source)
     {
         _balances = source;
     }
@@ -106,14 +116,14 @@ public sealed partial class MoneyBag :
         _balances.Count;
 
     /// <summary>
-    /// Gets a read-only view of the balance map keyed by ISO code, in ISO-code order.
+    /// Gets a read-only view of the balance map keyed by <see cref="CurrencyCode" />, in ISO-code lexicographic order.
     /// </summary>
     /// <returns>
     /// The immutable balance map. Because the backing store is an
     /// <see cref="ImmutableSortedDictionary{TKey, TValue}" />, the view is genuinely read-only and is returned without
     /// allocating a wrapper.
     /// </returns>
-    public IReadOnlyDictionary<string, decimal> Balances =>
+    public IReadOnlyDictionary<CurrencyCode, decimal> Balances =>
         _balances;
 
     /// <summary>
@@ -122,7 +132,7 @@ public sealed partial class MoneyBag :
     /// <returns>An enumerator over <see cref="Money" /> entries.</returns>
     public IEnumerator<Money> GetEnumerator()
     {
-        foreach (KeyValuePair<string, decimal> entry in _balances)
+        foreach (KeyValuePair<CurrencyCode, decimal> entry in _balances)
             yield return Money.FromNormalized(entry.Value, entry.Key);
     }
 
@@ -136,24 +146,24 @@ public sealed partial class MoneyBag :
     /// <param name="amount">The amount to add.</param>
     /// <returns>The updated bag.</returns>
     /// <exception cref="ArgumentException">
-    /// <paramref name="amount" /> has no ISO code (default-initialised).
+    /// <paramref name="amount" /> has no currency (default-initialised).
     /// </exception>
     public MoneyBag Add(Money amount)
     {
-        string iso = amount.IsoCode;
-        if (string.IsNullOrEmpty(iso))
+        CurrencyCode code = amount.Code;
+        if (code == CurrencyCode.None)
             throw new ArgumentException(FinancialResourceStrings.Arg_Invalid_MoneyMissingIsoCode, nameof(amount));
 
         if (amount.Amount == 0m)
             return this;
 
-        if (_balances.TryGetValue(iso, out decimal existing))
+        if (_balances.TryGetValue(code, out decimal existing))
         {
             decimal sum = existing + amount.Amount;
-            return new MoneyBag(sum == 0m ? _balances.Remove(iso) : _balances.SetItem(iso, sum));
+            return new MoneyBag(sum == 0m ? _balances.Remove(code) : _balances.SetItem(code, sum));
         }
 
-        return new MoneyBag(_balances.SetItem(iso, amount.Amount));
+        return new MoneyBag(_balances.SetItem(code, amount.Amount));
     }
 
     /// <summary>
@@ -200,7 +210,7 @@ public sealed partial class MoneyBag :
             return other;
 
         var builder = _balances.ToBuilder();
-        foreach (KeyValuePair<string, decimal> entry in other._balances)
+        foreach (KeyValuePair<CurrencyCode, decimal> entry in other._balances)
         {
             if (builder.TryGetValue(entry.Key, out decimal existing))
             {
@@ -220,28 +230,13 @@ public sealed partial class MoneyBag :
     }
 
     /// <summary>
-    /// Returns the balance for the currency identified by <paramref name="isoCode" />, or <see langword="null" /> when
-    /// the bag has no entry for that currency.
-    /// </summary>
-    /// <param name="isoCode">The ISO 4217 code.</param>
-    /// <returns>The runtime-tagged balance, or <see langword="null" /> when absent.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="isoCode" /> is <see langword="null" />.</exception>
-    public Money? GetBalance(string isoCode)
-    {
-        ThrowHelper.ThrowIfNull(isoCode);
-        return _balances.TryGetValue(isoCode, out decimal amount)
-            ? Money.FromNormalized(amount, isoCode)
-            : null;
-    }
-
-    /// <summary>
     /// Returns the typed balance for <typeparamref name="TCurrency" />, or <see langword="null" /> when absent.
     /// </summary>
     /// <typeparam name="TCurrency">The currency type.</typeparam>
     /// <returns>The typed balance, or <see langword="null" /> when the bag has no entry for that currency.</returns>
     public Money<TCurrency>? GetBalance<TCurrency>()
         where TCurrency : ICurrency =>
-        _balances.TryGetValue(CurrencyMetadata<TCurrency>.Value.IsoCode, out decimal amount)
+        _balances.TryGetValue(CurrencyMetadata<TCurrency>.Value.Code, out decimal amount)
             ? new Money<TCurrency>(amount)
             : null;
 
@@ -256,7 +251,7 @@ public sealed partial class MoneyBag :
         if (ReferenceEquals(this, other)) return true;
         if (_balances.Count != other._balances.Count) return false;
 
-        foreach (KeyValuePair<string, decimal> entry in _balances)
+        foreach (KeyValuePair<CurrencyCode, decimal> entry in _balances)
         {
             if (!other._balances.TryGetValue(entry.Key, out decimal otherAmount))
                 return false;
@@ -275,7 +270,7 @@ public sealed partial class MoneyBag :
     public override int GetHashCode()
     {
         HashCode hash = default;
-        foreach (KeyValuePair<string, decimal> entry in _balances)
+        foreach (KeyValuePair<CurrencyCode, decimal> entry in _balances)
         {
             hash.Add(entry.Key);
             hash.Add(entry.Value);

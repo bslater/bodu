@@ -18,10 +18,10 @@ public readonly partial struct Money :
     /// </summary>
     /// <param name="other">The other value.</param>
     /// <returns>
-    /// <see langword="true" /> when both ISO code and amount match; otherwise <see langword="false" />.
+    /// <see langword="true" /> when both currency and amount match; otherwise <see langword="false" />.
     /// </returns>
     public bool Equals(Money other) =>
-        _amount == other._amount && string.Equals(IsoCode, other.IsoCode, StringComparison.Ordinal);
+        _amount == other._amount && _code == other._code;
 
     /// <summary>
     /// Determines whether this instance equals the boxed <paramref name="obj" />.
@@ -36,23 +36,23 @@ public readonly partial struct Money :
     /// </summary>
     /// <returns>A 32-bit hash code.</returns>
     public override int GetHashCode() =>
-        HashCode.Combine(IsoCode, _amount);
+        HashCode.Combine(_code, _amount);
 
     /// <summary>
     /// Compares this instance to another value of the same currency.
     /// </summary>
     /// <param name="other">The value to compare against.</param>
     /// <returns>A negative, zero, or positive value.</returns>
-    /// <exception cref="InvalidOperationException">The operands have different ISO codes.</exception>
+    /// <exception cref="InvalidOperationException">The operands have different currencies.</exception>
     public int CompareTo(Money other)
     {
-        return !string.Equals(IsoCode, other.IsoCode, StringComparison.Ordinal)
+        return _code != other._code
             ? throw new InvalidOperationException(
                 string.Format(
                     CultureInfo.CurrentCulture,
                     FinancialResourceStrings.Op_Invalid_MoneyCompareSameCurrencyRequired,
-                    IsoCode,
-                    other.IsoCode))
+                    IsoCodeOrEmpty,
+                    other.IsoCodeOrEmpty))
             : _amount.CompareTo(other._amount);
     }
 

@@ -7,6 +7,7 @@
 using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Bodu.Financial.Currencies;
 
 namespace Bodu.Financial.Serialization;
 
@@ -61,15 +62,18 @@ public sealed class ExchangeRatePairJsonConverter
     {
         ThrowHelper.ThrowIfNull(writer);
 
+        string from = value.From == CurrencyCode.None ? string.Empty : value.From.ToString();
+        string to = value.To == CurrencyCode.None ? string.Empty : value.To.ToString();
+
         if (_policy == FinancialJsonPolicy.Compact)
         {
-            writer.WriteStringValue($"{value.FromIsoCode}/{value.ToIsoCode}");
+            writer.WriteStringValue($"{from}/{to}");
             return;
         }
 
         writer.WriteStartObject();
-        writer.WriteString("from", value.FromIsoCode);
-        writer.WriteString("to", value.ToIsoCode);
+        writer.WriteString("from", from);
+        writer.WriteString("to", to);
         writer.WriteEndObject();
     }
 
@@ -96,7 +100,7 @@ public sealed class ExchangeRatePairJsonConverter
 
         try
         {
-            return new ExchangeRatePair(from, to);
+            return new ExchangeRatePair(CurrencyInfo.ParseCurrencyCode(from), CurrencyInfo.ParseCurrencyCode(to));
         }
         catch (ArgumentException ex)
         {
@@ -165,7 +169,7 @@ public sealed class ExchangeRatePairJsonConverter
 
         try
         {
-            return new ExchangeRatePair(from, to);
+            return new ExchangeRatePair(CurrencyInfo.ParseCurrencyCode(from), CurrencyInfo.ParseCurrencyCode(to));
         }
         catch (ArgumentException ex)
         {

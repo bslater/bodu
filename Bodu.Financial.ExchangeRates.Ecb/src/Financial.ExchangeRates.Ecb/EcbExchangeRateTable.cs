@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
+
 namespace Bodu.Financial.ExchangeRates.Ecb;
 
 /// <summary>
@@ -38,8 +40,8 @@ internal sealed class EcbExchangeRateTable
         foreach (EcbExchangeRateObservation observation in Observations)
         {
             yield return new ExchangeRate(
-                EcbExchangeRateProvider.BaseCurrencyIsoCode,
-                observation.CurrencyCode,
+                EcbExchangeRateProvider.BaseCurrency,
+                CurrencyInfo.ParseCurrencyCode(observation.CurrencyCode),
                 observation.Date,
                 observation.Rate,
                 EcbExchangeRateProvider.ProviderName);
@@ -59,7 +61,7 @@ internal sealed class EcbExchangeRateTable
         {
             if (seen.Add(observation.CurrencyCode))
             {
-                ExchangeRatePair pair = new(EcbExchangeRateProvider.BaseCurrencyIsoCode, observation.CurrencyCode);
+                ExchangeRatePair pair = new(EcbExchangeRateProvider.BaseCurrency, CurrencyInfo.ParseCurrencyCode(observation.CurrencyCode));
                 result.Add(new EcbSeriesInfo(pair, observation.CurrencyCode));
             }
         }

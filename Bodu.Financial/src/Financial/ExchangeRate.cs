@@ -5,8 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Diagnostics;
-using System.Globalization;
-using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 using Bodu.Financial.Currencies;
 using Bodu.Financial.Serialization;
@@ -64,46 +62,6 @@ public readonly record struct ExchangeRate
         bool isInverted = false,
         DateTimeOffset? fetchedAtUtc = null)
         : this(from, to, date, rate, isInverted ? 1m / rate : rate, provider, isInverted, fetchedAtUtc)
-    {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ExchangeRate" /> struct from two ISO 4217 alphabetic codes.
-    /// </summary>
-    /// <param name="fromIsoCode">The source-currency ISO 4217 alphabetic code.</param>
-    /// <param name="toIsoCode">The destination-currency ISO 4217 alphabetic code.</param>
-    /// <param name="date">The calendar date on which the rate was observed.</param>
-    /// <param name="rate">The multiplier that converts a source-currency amount to the destination currency.</param>
-    /// <param name="provider">The non-empty identifier of the publishing source.</param>
-    /// <param name="isInverted">
-    /// <see langword="true" /> when the rate was derived from the reverse pair; otherwise <see langword="false" />.
-    /// </param>
-    /// <param name="fetchedAtUtc">
-    /// The UTC instant at which the upstream data backing this rate was originally fetched, or <see langword="null" />
-    /// when not tracked.
-    /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// Thrown if <paramref name="fromIsoCode" />, <paramref name="toIsoCode" />, or <paramref name="provider" /> is
-    /// <see langword="null" />.
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    /// Thrown if <paramref name="fromIsoCode" /> or <paramref name="toIsoCode" /> is not a known currency, or if
-    /// <paramref name="provider" /> is empty or white-space.
-    /// </exception>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="rate" /> is zero or negative.</exception>
-    /// <remarks>
-    /// Transitional string entry point retained while the exchange-rate surface migrates to <see cref="CurrencyCode" />;
-    /// prefer the <see cref="CurrencyCode" /> constructor.
-    /// </remarks>
-    public ExchangeRate(
-        string fromIsoCode,
-        string toIsoCode,
-        DateOnly date,
-        decimal rate,
-        string provider,
-        bool isInverted = false,
-        DateTimeOffset? fetchedAtUtc = null)
-        : this(Parse(fromIsoCode), Parse(toIsoCode), date, rate, provider, isInverted, fetchedAtUtc)
     {
     }
 
@@ -182,27 +140,6 @@ public readonly record struct ExchangeRate
     }
 
     /// <summary>
-    /// Transitional string overload of <see cref="FromObservedRate(CurrencyCode, CurrencyCode, DateOnly, decimal, string, bool, DateTimeOffset?)" />.
-    /// </summary>
-    /// <param name="fromIsoCode">The reported source-currency ISO code.</param>
-    /// <param name="toIsoCode">The reported destination-currency ISO code.</param>
-    /// <param name="date">The calendar date on which the rate was observed.</param>
-    /// <param name="observedRate">The originally observed rate.</param>
-    /// <param name="provider">The non-empty identifier of the publishing source.</param>
-    /// <param name="isInverted"><see langword="true" /> when <paramref name="observedRate" /> is the reverse-pair rate.</param>
-    /// <param name="fetchedAtUtc">The upstream fetch instant, or <see langword="null" /> when not tracked.</param>
-    /// <returns>The constructed exchange rate.</returns>
-    internal static ExchangeRate FromObservedRate(
-        string fromIsoCode,
-        string toIsoCode,
-        DateOnly date,
-        decimal observedRate,
-        string provider,
-        bool isInverted,
-        DateTimeOffset? fetchedAtUtc = null) =>
-        FromObservedRate(Parse(fromIsoCode), Parse(toIsoCode), date, observedRate, provider, isInverted, fetchedAtUtc);
-
-    /// <summary>
     /// Creates an <see cref="ExchangeRate" /> from independently supplied reported multiplier and underlying observed
     /// rate, preserving both exactly. Used when rehydrating a serialized rate so neither value is recomputed (and thus
     /// re-rounded) from the other.
@@ -231,29 +168,6 @@ public readonly record struct ExchangeRate
         new(from, to, date, rate, observedRate, provider, isInverted, fetchedAtUtc);
 
     /// <summary>
-    /// Transitional string overload of <see cref="FromComponents(CurrencyCode, CurrencyCode, DateOnly, decimal, decimal, string, bool, DateTimeOffset?)" />.
-    /// </summary>
-    /// <param name="fromIsoCode">The source-currency ISO code.</param>
-    /// <param name="toIsoCode">The destination-currency ISO code.</param>
-    /// <param name="date">The calendar date on which the rate was observed.</param>
-    /// <param name="rate">The reported source-to-destination multiplier.</param>
-    /// <param name="observedRate">The underlying observed rate used for precise conversion.</param>
-    /// <param name="provider">The non-empty identifier of the publishing source.</param>
-    /// <param name="isInverted"><see langword="true" /> when derived from the reverse pair.</param>
-    /// <param name="fetchedAtUtc">The upstream fetch instant, or <see langword="null" /> when not tracked.</param>
-    /// <returns>The constructed exchange rate.</returns>
-    internal static ExchangeRate FromComponents(
-        string fromIsoCode,
-        string toIsoCode,
-        DateOnly date,
-        decimal rate,
-        decimal observedRate,
-        string provider,
-        bool isInverted,
-        DateTimeOffset? fetchedAtUtc = null) =>
-        FromComponents(Parse(fromIsoCode), Parse(toIsoCode), date, rate, observedRate, provider, isInverted, fetchedAtUtc);
-
-    /// <summary>
     /// Gets the source currency.
     /// </summary>
     /// <returns>The currency an amount is converted from.</returns>
@@ -264,18 +178,6 @@ public readonly record struct ExchangeRate
     /// </summary>
     /// <returns>The currency an amount is converted to.</returns>
     public CurrencyCode To { get; }
-
-    /// <summary>
-    /// Gets the source-currency ISO 4217 alphabetic code.
-    /// </summary>
-    /// <returns>The source currency's code, or an empty string when <see cref="From" /> is <see cref="CurrencyCode.None" />.</returns>
-    public string FromIsoCode => From == CurrencyCode.None ? string.Empty : From.ToString();
-
-    /// <summary>
-    /// Gets the destination-currency ISO 4217 alphabetic code.
-    /// </summary>
-    /// <returns>The destination currency's code, or an empty string when <see cref="To" /> is <see cref="CurrencyCode.None" />.</returns>
-    public string ToIsoCode => To == CurrencyCode.None ? string.Empty : To.ToString();
 
     /// <summary>
     /// Gets the directional currency pair this rate quotes.
@@ -383,25 +285,4 @@ public readonly record struct ExchangeRate
     /// <returns>The hash code.</returns>
     public override int GetHashCode() =>
         HashCode.Combine(From, To, Date, Rate, Provider, IsInverted);
-
-    /// <summary>
-    /// Resolves an ISO 4217 alphabetic code to a <see cref="CurrencyCode" />, reporting the originating constructor
-    /// parameter on failure.
-    /// </summary>
-    /// <param name="isoCode">The ISO 4217 alphabetic code to resolve.</param>
-    /// <param name="paramName">The originating parameter name; inferred from the call site.</param>
-    /// <returns>The resolved <see cref="CurrencyCode" />.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="isoCode" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentException"><paramref name="isoCode" /> is not a known currency.</exception>
-    private static CurrencyCode Parse(string isoCode, [CallerArgumentExpression(nameof(isoCode))] string? paramName = null)
-    {
-        ThrowHelper.ThrowIfNull(isoCode, paramName);
-
-        if (!CurrencyInfo.TryGetCurrencyCode(isoCode, out CurrencyCode code))
-            throw new ArgumentException(
-                string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Arg_Invalid_UnknownCurrencyRejected, isoCode),
-                paramName);
-
-        return code;
-    }
 }

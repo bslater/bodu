@@ -38,8 +38,8 @@ public static partial class MoneyExchangeRateExtensions
     {
         ThrowHelper.ThrowIfNull(provider);
 
-        ExchangeRateLookupResult lookup = provider.GetRate(amount.IsoCode, targetIsoCode, date, options);
-        Money target = new(amount.Amount * lookup.Rate.Rate, targetIsoCode, rounding);
+        ExchangeRateLookupResult lookup = provider.GetRate(amount.Code.ToString(), targetIsoCode, date, options);
+        Money target = new(amount.Amount * lookup.Rate.Rate, CurrencyInfo.ParseCurrencyCode(targetIsoCode), rounding);
         return (target, lookup);
     }
 }

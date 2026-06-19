@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
+
 namespace Bodu.Financial.ExchangeRates.Boe;
 
 /// <summary>
@@ -46,8 +48,8 @@ internal sealed class BoeExchangeRateTable
         foreach (BoeExchangeRateObservation observation in Observations)
         {
             yield return new ExchangeRate(
-                BoeExchangeRateProvider.BaseCurrencyIsoCode,
-                observation.CurrencyCode,
+                BoeExchangeRateProvider.BaseCurrency,
+                CurrencyInfo.ParseCurrencyCode(observation.CurrencyCode),
                 observation.Date,
                 observation.Rate,
                 BoeExchangeRateProvider.ProviderName);
@@ -68,7 +70,7 @@ internal sealed class BoeExchangeRateTable
             if (!seen.Add(observation.CurrencyCode))
                 continue;
 
-            ExchangeRatePair pair = new(BoeExchangeRateProvider.BaseCurrencyIsoCode, observation.CurrencyCode);
+            ExchangeRatePair pair = new(BoeExchangeRateProvider.BaseCurrency, CurrencyInfo.ParseCurrencyCode(observation.CurrencyCode));
             Series.TryGetValue(observation.CurrencyCode, out BoeSeries? series);
             result.Add(new BoeSeriesInfo(
                 pair,

@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
+
 namespace Bodu.Financial.ExchangeRates.Rba;
 
 /// <summary>
@@ -53,11 +55,11 @@ internal sealed class RbaExchangeRateTable
 
                 // Skip series whose code is not a circulating ISO 4217 currency (for example XDR, the IMF Special
                 // Drawing Rights unit): the runtime exchange-rate types model currencies only.
-                if (value is > 0m && CurrencyInfo.TryGetCurrencyCode(Series[i].CurrencyCode, out _))
+                if (value is > 0m && CurrencyInfo.TryGetCurrencyCode(Series[i].CurrencyCode, out CurrencyCode quote))
                 {
                     yield return new ExchangeRate(
-                        RbaExchangeRateProvider.BaseCurrencyIsoCode,
-                        Series[i].CurrencyCode,
+                        RbaExchangeRateProvider.BaseCurrency,
+                        quote,
                         row.Date,
                         value.Value,
                         RbaExchangeRateProvider.ProviderName);
@@ -77,10 +79,10 @@ internal sealed class RbaExchangeRateTable
         {
             // Skip non-currency series (for example XDR, the IMF Special Drawing Rights unit) that the runtime
             // exchange-rate types cannot represent.
-            if (!CurrencyInfo.TryGetCurrencyCode(series.CurrencyCode, out _))
+            if (!CurrencyInfo.TryGetCurrencyCode(series.CurrencyCode, out CurrencyCode quote))
                 continue;
 
-            ExchangeRatePair pair = new(RbaExchangeRateProvider.BaseCurrencyIsoCode, series.CurrencyCode);
+            ExchangeRatePair pair = new(RbaExchangeRateProvider.BaseCurrency, quote);
             result.Add(new RbaSeriesInfo(pair, series.CurrencyCode, series.SeriesId, series.Description, series.Units));
         }
 

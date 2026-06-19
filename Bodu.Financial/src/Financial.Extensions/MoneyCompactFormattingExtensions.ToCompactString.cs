@@ -82,7 +82,7 @@ public static partial class MoneyCompactFormattingExtensions
 
         // Use Money's instance Format directly with the scaled amount via a temporary normalised wrapper.
         // The wrapped value bypasses normalisation so the scaled fractional portion is preserved.
-        var scaledMoney = Money.FromNormalized(scaled, money.IsoCode);
+        var scaledMoney = Money.FromNormalized(scaled, money.Code);
         return scaledMoney.Format(formatWithPrecision, provider, suffix);
     }
 }

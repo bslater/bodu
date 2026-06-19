@@ -6,6 +6,7 @@
 
 namespace Bodu.Financial;
 
+using Bodu.Financial.Currencies;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -115,7 +116,7 @@ public abstract class PairWebExchangeRateProvider<TSeries>
         if (endDate < startDate)
             throw CreateRangeInvertedException(startDate, endDate);
 
-        ExchangeRatePair pair = new(fromIsoCode, toIsoCode);
+        ExchangeRatePair pair = new(CurrencyInfo.ParseCurrencyCode(fromIsoCode), CurrencyInfo.ParseCurrencyCode(toIsoCode));
         return EnsureLoadedAsync(pair, startDate, endDate, cancellationToken).AsTask();
     }
 
@@ -144,7 +145,7 @@ public abstract class PairWebExchangeRateProvider<TSeries>
         // runs under a token decoupled from any caller, so one caller's cancellation cannot fault the others;
         // cancellationToken only abandons this caller's wait.
         return new ValueTask(LoadCoalescedAsync(
-            $"{pair.FromIsoCode}/{pair.ToIsoCode}:{startDate.DayNumber}-{endDate.DayNumber}",
+            $"{pair.From}/{pair.To}:{startDate.DayNumber}-{endDate.DayNumber}",
             ct => LoadPairCoreAsync(pair, startDate, endDate, ct),
             cancellationToken));
     }
@@ -160,7 +161,7 @@ public abstract class PairWebExchangeRateProvider<TSeries>
 
     /// <inheritdoc />
     protected sealed override void OnObservationIngested(ExchangeRate rate) =>
-        WebExchangeRateProviderLog.ObservationIngested(_logger, _options.ObservationIngestedLogLevel, rate.FromIsoCode, rate.ToIsoCode, rate.Date, rate.Rate);
+        WebExchangeRateProviderLog.ObservationIngested(_logger, _options.ObservationIngestedLogLevel, rate.From.ToString(), rate.To.ToString(), rate.Date, rate.Rate);
 
     /// <inheritdoc />
     protected sealed override void OnSynchronousNetworkFetch(DateOnly date) =>
@@ -173,7 +174,7 @@ public abstract class PairWebExchangeRateProvider<TSeries>
     /// <param name="pair">The pair being logged.</param>
     /// <returns>The label to log.</returns>
     protected virtual string FormatPairForLog(ExchangeRatePair pair) =>
-        $"{pair.FromIsoCode}/{pair.ToIsoCode}";
+        $"{pair.From}/{pair.To}";
 
     /// <summary>
     /// Fetches and stores a pair's observations for the inclusive window, re-checking coverage inside the single-flight
@@ -234,8 +235,8 @@ public abstract class PairWebExchangeRateProvider<TSeries>
         foreach (ExchangeRateObservation observation in data.Observations)
         {
             yield return new ExchangeRate(
-                data.Pair.FromIsoCode,
-                data.Pair.ToIsoCode,
+                data.Pair.From,
+                data.Pair.To,
                 observation.Date,
                 observation.Rate,
                 ProviderId);

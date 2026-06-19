@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using Bodu.Financial.Currencies;
 
 namespace Bodu.Financial;
 
@@ -102,20 +103,21 @@ public sealed partial class MoneyBag
     {
         FinancialThrowHelper.ThrowIfMoneyBagRoundingPolicyUndefined(policy);
 
+        CurrencyCode targetCode = CurrencyMetadata<TTarget>.Value.Code;
         string targetIso = CurrencyMetadata<TTarget>.Value.IsoCode;
 
         if (policy == MoneyBagConversionRoundingPolicy.SumRawThenRound)
         {
             decimal total = 0m;
-            foreach (KeyValuePair<string, decimal> entry in _balances)
+            foreach (KeyValuePair<CurrencyCode, decimal> entry in _balances)
             {
-                if (string.Equals(entry.Key, targetIso, StringComparison.Ordinal))
+                if (entry.Key == targetCode)
                 {
                     total += entry.Value;
                 }
                 else
                 {
-                    decimal rate = ValidateRate(rateLookup, entry.Key, targetIso);
+                    decimal rate = ValidateRate(rateLookup, entry.Key.ToString(), targetIso);
                     total += entry.Value * rate;
                 }
             }
@@ -125,16 +127,16 @@ public sealed partial class MoneyBag
 
         // RoundEachCurrencyThenSum: round each converted balance to TTarget's precision before adding it in.
         Money<TTarget> running = Money<TTarget>.Zero;
-        foreach (KeyValuePair<string, decimal> entry in _balances)
+        foreach (KeyValuePair<CurrencyCode, decimal> entry in _balances)
         {
             Money<TTarget> contribution;
-            if (string.Equals(entry.Key, targetIso, StringComparison.Ordinal))
+            if (entry.Key == targetCode)
             {
                 contribution = new Money<TTarget>(entry.Value);
             }
             else
             {
-                decimal rate = ValidateRate(rateLookup, entry.Key, targetIso);
+                decimal rate = ValidateRate(rateLookup, entry.Key.ToString(), targetIso);
                 contribution = new Money<TTarget>(entry.Value * rate);
             }
 

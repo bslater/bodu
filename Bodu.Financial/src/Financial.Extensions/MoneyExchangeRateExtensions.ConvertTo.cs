@@ -40,8 +40,8 @@ public static partial class MoneyExchangeRateExtensions
     {
         ThrowHelper.ThrowIfNull(provider);
 
-        ExchangeRateLookupResult lookup = provider.GetRate(amount.IsoCode, targetIsoCode, date, options);
-        return new Money(amount.Amount * lookup.Rate.Rate, targetIsoCode, rounding);
+        ExchangeRateLookupResult lookup = provider.GetRate(amount.Code.ToString(), targetIsoCode, date, options);
+        return new Money(amount.Amount * lookup.Rate.Rate, CurrencyInfo.ParseCurrencyCode(targetIsoCode), rounding);
     }
 
     /// <summary>
@@ -72,7 +72,7 @@ public static partial class MoneyExchangeRateExtensions
     {
         ThrowHelper.ThrowIfNull(provider);
 
-        ExchangeRateLookupResult lookup = provider.GetRate(amount.IsoCode, Money<TTarget>.IsoCode, date, options);
+        ExchangeRateLookupResult lookup = provider.GetRate(amount.Code.ToString(), Money<TTarget>.IsoCode, date, options);
         return new Money<TTarget>(amount.Amount * lookup.Rate.Rate, rounding);
     }
 }

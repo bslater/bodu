@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using Bodu.Financial.Currencies;
 
 namespace Bodu.Financial;
 
@@ -108,22 +109,22 @@ public readonly partial struct CalculatedMoney
         WithAmount(_amount / divisor);
 
     /// <summary>
-    /// Asserts that both operands carry a non-empty ISO code and that the two codes match.
+    /// Asserts that both operands carry a currency and that the two currencies match.
     /// </summary>
     /// <param name="left">The first operand.</param>
     /// <param name="right">The second operand.</param>
     /// <exception cref="InvalidOperationException">
-    /// Either operand carries no ISO code, or the two codes differ.
+    /// Either operand carries no currency, or the two currencies differ.
     /// </exception>
     private static void EnsureSameCurrency(CalculatedMoney left, CalculatedMoney right)
     {
-        if (string.IsNullOrEmpty(left.IsoCode) || string.IsNullOrEmpty(right.IsoCode))
+        if (left._code == CurrencyCode.None || right._code == CurrencyCode.None)
             throw new InvalidOperationException(FinancialResourceStrings.Op_Invalid_MoneyRequiresCurrency);
 
-        if (!string.Equals(left.IsoCode, right.IsoCode, StringComparison.Ordinal))
+        if (left._code != right._code)
         {
             throw new InvalidOperationException(
-                string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Op_Invalid_MoneySameCurrencyRequired, left.IsoCode, right.IsoCode));
+                string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Op_Invalid_MoneySameCurrencyRequired, left.IsoCodeOrEmpty, right.IsoCodeOrEmpty));
         }
     }
 }

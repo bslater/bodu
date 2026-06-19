@@ -58,7 +58,7 @@ internal sealed class OfxSpotRateHistorySource
     private Uri BuildRequestUri(ExchangeRatePairRequest request)
     {
         // The path is built from validated ISO letters substituted into a fixed template, so it is composed directly.
-        string path = _options.BuildPath(request.Pair.FromIsoCode, request.Pair.ToIsoCode);
+        string path = _options.BuildPath(request.Pair.From.ToString(), request.Pair.To.ToString());
 
         UriBuilder builder = new(new Uri(_options.BaseAddress, path))
         {

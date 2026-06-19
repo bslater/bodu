@@ -7,6 +7,7 @@
 using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Bodu.Financial.Currencies;
 
 namespace Bodu.Financial.Serialization;
 
@@ -181,11 +182,14 @@ public sealed class ExchangeRateJsonConverter
 
         try
         {
+            CurrencyCode fromCode = CurrencyInfo.ParseCurrencyCode(from);
+            CurrencyCode toCode = CurrencyInfo.ParseCurrencyCode(to);
+
             // When the originally observed rate is present, restore both the reported multiplier and the observed rate
             // exactly so neither is recomputed (and re-rounded) from the other; otherwise use the reported multiplier.
             return observedRate is not null
-                ? ExchangeRate.FromComponents(from, to, date.Value, rate.Value, observedRate.Value, provider, isInverted, fetchedAtUtc)
-                : new ExchangeRate(from, to, date.Value, rate.Value, provider, isInverted, fetchedAtUtc);
+                ? ExchangeRate.FromComponents(fromCode, toCode, date.Value, rate.Value, observedRate.Value, provider, isInverted, fetchedAtUtc)
+                : new ExchangeRate(fromCode, toCode, date.Value, rate.Value, provider, isInverted, fetchedAtUtc);
         }
         catch (ArgumentException ex)
         {
@@ -200,9 +204,12 @@ public sealed class ExchangeRateJsonConverter
 
         writer.WriteStartObject();
 
+        string from = value.From == CurrencyCode.None ? string.Empty : value.From.ToString();
+        string to = value.To == CurrencyCode.None ? string.Empty : value.To.ToString();
+
         if (_policy == FinancialJsonPolicy.Compact)
         {
-            writer.WriteString("pair", $"{value.FromIsoCode}/{value.ToIsoCode}");
+            writer.WriteString("pair", $"{from}/{to}");
             writer.WriteString("date", value.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
             writer.WriteNumber("rate", value.Rate);
             writer.WriteString("provider", value.Provider);
@@ -217,8 +224,8 @@ public sealed class ExchangeRateJsonConverter
         }
         else
         {
-            writer.WriteString("from", value.FromIsoCode);
-            writer.WriteString("to", value.ToIsoCode);
+            writer.WriteString("from", from);
+            writer.WriteString("to", to);
             writer.WriteString("date", value.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
             writer.WriteNumber("rate", value.Rate);
             writer.WriteString("provider", value.Provider);

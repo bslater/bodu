@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using Bodu.Financial.Currencies;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -56,7 +57,7 @@ public sealed class RbaExchangeRateProvider
     public const string ProviderName = "RBA";
 
     /// <summary>The base currency the RBA quotes against.</summary>
-    public const string BaseCurrencyIsoCode = "AUD";
+    public const CurrencyCode BaseCurrency = CurrencyCode.AUD;
 
     /// <summary>The source that downloads and parses era files.</summary>
     private readonly IRbaExchangeRateTableSource _source;
@@ -265,8 +266,9 @@ public sealed class RbaExchangeRateProvider
     /// <inheritdoc />
     protected override void ValidateRangeRequest(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate)
     {
-        if (!string.Equals(fromIsoCode, BaseCurrencyIsoCode, StringComparison.Ordinal) &&
-            !string.Equals(toIsoCode, BaseCurrencyIsoCode, StringComparison.Ordinal))
+        string baseIso = BaseCurrency.ToString();
+        if (!string.Equals(fromIsoCode, baseIso, StringComparison.Ordinal) &&
+            !string.Equals(toIsoCode, baseIso, StringComparison.Ordinal))
         {
             throw new RbaExchangeRateSeriesNotFoundException(
                 string.Format(CultureInfo.CurrentCulture, RbaResourceStrings.IO_KeyNotFound_RbaSeries, fromIsoCode, toIsoCode));
@@ -275,7 +277,7 @@ public sealed class RbaExchangeRateProvider
 
     /// <inheritdoc />
     protected override void OnObservationIngested(ExchangeRate rate) =>
-        Log.ObservationIngested(_logger, _options.ObservationIngestedLogLevel, rate.FromIsoCode, rate.ToIsoCode, rate.Date, rate.Rate);
+        Log.ObservationIngested(_logger, _options.ObservationIngestedLogLevel, rate.From.ToString(), rate.To.ToString(), rate.Date, rate.Rate);
 
     /// <inheritdoc />
     protected override Exception CreateRangeInvertedException(DateOnly startDate, DateOnly endDate) =>

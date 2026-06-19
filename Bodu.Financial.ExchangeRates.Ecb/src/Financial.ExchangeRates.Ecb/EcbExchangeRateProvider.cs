@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using Bodu.Financial.Currencies;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -58,7 +59,7 @@ public sealed class EcbExchangeRateProvider
     public const string ProviderName = "ECB";
 
     /// <summary>The base currency the ECB quotes against.</summary>
-    public const string BaseCurrencyIsoCode = "EUR";
+    public const CurrencyCode BaseCurrency = CurrencyCode.EUR;
 
     /// <summary>The source that downloads and parses feed files.</summary>
     private readonly IEcbExchangeRateTableSource _source;
@@ -266,8 +267,9 @@ public sealed class EcbExchangeRateProvider
     /// <inheritdoc />
     protected override void ValidateRangeRequest(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate)
     {
-        if (!string.Equals(fromIsoCode, BaseCurrencyIsoCode, StringComparison.Ordinal) &&
-            !string.Equals(toIsoCode, BaseCurrencyIsoCode, StringComparison.Ordinal))
+        string baseIso = BaseCurrency.ToString();
+        if (!string.Equals(fromIsoCode, baseIso, StringComparison.Ordinal) &&
+            !string.Equals(toIsoCode, baseIso, StringComparison.Ordinal))
         {
             throw new EcbExchangeRateSeriesNotFoundException(
                 string.Format(CultureInfo.CurrentCulture, EcbResourceStrings.IO_KeyNotFound_EcbSeries, fromIsoCode, toIsoCode));
@@ -276,7 +278,7 @@ public sealed class EcbExchangeRateProvider
 
     /// <inheritdoc />
     protected override void OnObservationIngested(ExchangeRate rate) =>
-        Log.ObservationIngested(_logger, _options.ObservationIngestedLogLevel, rate.FromIsoCode, rate.ToIsoCode, rate.Date, rate.Rate);
+        Log.ObservationIngested(_logger, _options.ObservationIngestedLogLevel, rate.From.ToString(), rate.To.ToString(), rate.Date, rate.Rate);
 
     /// <inheritdoc />
     protected override void OnSynchronousNetworkFetch(DateOnly date) =>

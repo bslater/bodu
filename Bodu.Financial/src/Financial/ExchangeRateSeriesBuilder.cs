@@ -24,7 +24,7 @@ namespace Bodu.Financial;
 /// Instances are not thread-safe; concurrent mutation requires external synchronisation.
 /// </para>
 /// </remarks>
-[DebuggerDisplay("{Pair.FromIsoCode,nq}/{Pair.ToIsoCode,nq} ({Provider,nq}) Count={Count}")]
+[DebuggerDisplay("{Pair.From,nq}/{Pair.To,nq} ({Provider,nq}) Count={Count}")]
 public sealed class ExchangeRateSeriesBuilder
 {
     /// <summary>The mutable buffer holding the live observations.</summary>

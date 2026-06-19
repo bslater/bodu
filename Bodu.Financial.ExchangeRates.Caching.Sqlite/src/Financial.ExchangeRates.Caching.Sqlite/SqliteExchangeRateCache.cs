@@ -691,8 +691,8 @@ public sealed class SqliteExchangeRateCache
     private void BindPair(SqliteCommand command, ExchangeRatePair pair)
     {
         command.Parameters.AddWithValue("$provider", _options.Provider);
-        command.Parameters.AddWithValue("$from", pair.FromIsoCode);
-        command.Parameters.AddWithValue("$to", pair.ToIsoCode);
+        command.Parameters.AddWithValue("$from", pair.From.ToString());
+        command.Parameters.AddWithValue("$to", pair.To.ToString());
     }
 
     /// <summary>

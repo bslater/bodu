@@ -59,7 +59,7 @@ internal static class OfxSpotRateHistoryResponseParser
             observations.Add(new ExchangeRateObservation(date, rate));
         }
 
-        OfxSeriesInfo series = new(request.Pair, request.Pair.ToIsoCode);
+        OfxSeriesInfo series = new(request.Pair, request.Pair.To.ToString());
         return new PairRateData<OfxSeriesInfo>(request.Pair, observations, series);
     }
 
@@ -80,7 +80,7 @@ internal static class OfxSpotRateHistoryResponseParser
         catch (JsonException ex)
         {
             throw new OfxExchangeRateFormatException(
-                string.Format(CultureInfo.CurrentCulture, OfxResourceStrings.Format_Invalid_OfxNoData, request.Pair.FromIsoCode, request.Pair.ToIsoCode),
+                string.Format(CultureInfo.CurrentCulture, OfxResourceStrings.Format_Invalid_OfxNoData, request.Pair.From.ToString(), request.Pair.To.ToString()),
                 ex);
         }
     }
@@ -136,5 +136,5 @@ internal static class OfxSpotRateHistoryResponseParser
     /// <param name="request">The originating request.</param>
     /// <returns>The exception to throw.</returns>
     private static OfxExchangeRateFormatException NoData(ExchangeRatePairRequest request) =>
-        new(string.Format(CultureInfo.CurrentCulture, OfxResourceStrings.Format_Invalid_OfxNoData, request.Pair.FromIsoCode, request.Pair.ToIsoCode));
+        new(string.Format(CultureInfo.CurrentCulture, OfxResourceStrings.Format_Invalid_OfxNoData, request.Pair.From.ToString(), request.Pair.To.ToString()));
 }

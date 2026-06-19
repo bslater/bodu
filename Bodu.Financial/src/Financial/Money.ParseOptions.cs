@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using Bodu.Financial.Currencies;
 
 namespace Bodu.Financial;
 
@@ -172,9 +173,9 @@ public readonly partial struct Money
         if (!decimal.TryParse(numericPart, NumberStyles.Number | NumberStyles.AllowLeadingSign, provider, out decimal amount))
             return false;
 
-        if (CurrencyResolution.Contains(iso))
+        if (CurrencyResolution.Contains(iso) && CurrencyInfo.TryGetCurrencyCode(iso, out CurrencyCode code))
         {
-            result = new Money(amount, iso);
+            result = new Money(amount, code);
             return true;
         }
 
