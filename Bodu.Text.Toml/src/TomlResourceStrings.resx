@@ -17,8 +17,6 @@
   <resheader name="version"><value>2.0</value></resheader>
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <data name="Arg_Invalid_StreamNotReadable" xml:space="preserve"><value>Stream does not support reading.</value></data>
-  <data name="Arg_Invalid_StreamNotWritable" xml:space="preserve"><value>Stream does not support writing.</value></data>
   <data name="Format_Invalid_TomlAppendToStaticArray" xml:space="preserve"><value>Cannot append a table to a statically defined array.</value></data>
   <data name="Format_Invalid_TomlArrayTableConflict" xml:space="preserve"><value>The key conflicts with an existing array of tables.</value></data>
   <data name="Format_Invalid_TomlControlCharacter" xml:space="preserve"><value>A control character is not permitted in this context.</value></data>

@@ -129,7 +129,7 @@ public static class TomlSerializer
     public static ValueTask SerializeAsync<T>(Stream destination, T value, TomlSerializerOptions? options = null, CancellationToken cancellationToken = default)
     {
         ThrowHelper.ThrowIfNull(destination);
-        TomlThrowHelper.ThrowIfStreamNotWritable(destination);
+        ThrowHelper.ThrowIfStreamNotWritable(destination);
 
         var buffer = new ArrayBufferWriter<byte>();
         Serialize(buffer, value, options);
@@ -204,7 +204,7 @@ public static class TomlSerializer
     public static T Deserialize<T>(Stream source, TomlSerializerOptions? options = null)
     {
         ThrowHelper.ThrowIfNull(source);
-        TomlThrowHelper.ThrowIfStreamNotReadable(source);
+        ThrowHelper.ThrowIfStreamNotReadable(source);
 
         using var memory = new MemoryStream();
         source.CopyTo(memory);
@@ -238,7 +238,7 @@ public static class TomlSerializer
     public static async ValueTask<T> DeserializeAsync<T>(Stream source, TomlSerializerOptions? options = null, CancellationToken cancellationToken = default)
     {
         ThrowHelper.ThrowIfNull(source);
-        TomlThrowHelper.ThrowIfStreamNotReadable(source);
+        ThrowHelper.ThrowIfStreamNotReadable(source);
 
         using var memory = new MemoryStream();
         await source.CopyToAsync(memory, cancellationToken).ConfigureAwait(false);

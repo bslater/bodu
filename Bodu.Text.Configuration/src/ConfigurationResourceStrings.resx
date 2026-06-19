@@ -123,12 +123,6 @@
   <data name="Arg_Invalid_ConfigKeyEmptySegment" xml:space="preserve">
     <value>A configuration key contains an empty segment.</value>
   </data>
-  <data name="Arg_Invalid_StreamNotReadable" xml:space="preserve">
-    <value>Stream does not support reading.</value>
-  </data>
-  <data name="Arg_Invalid_StreamNotWritable" xml:space="preserve">
-    <value>Stream does not support writing.</value>
-  </data>
   <data name="Format_Invalid_DuplicateKey" xml:space="preserve">
     <value>Duplicate configuration key '{0}'.</value>
   </data>

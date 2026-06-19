@@ -107,7 +107,7 @@ public static class BencodeSerializer
     public static void Serialize<T>(Stream destination, T value, BencodeSerializerOptions? options = null)
     {
         ThrowHelper.ThrowIfNull(destination);
-        BencodeThrowHelper.ThrowIfStreamNotWritable(destination);
+        ThrowHelper.ThrowIfStreamNotWritable(destination);
 
         byte[] bytes = Serialize(value, options);
         destination.Write(bytes, 0, bytes.Length);
@@ -187,7 +187,7 @@ public static class BencodeSerializer
     public static ValueTask SerializeAsync<T>(Stream destination, T value, BencodeSerializerOptions? options = null, CancellationToken cancellationToken = default)
     {
         ThrowHelper.ThrowIfNull(destination);
-        BencodeThrowHelper.ThrowIfStreamNotWritable(destination);
+        ThrowHelper.ThrowIfStreamNotWritable(destination);
 
         byte[] bytes = Serialize(value, options);
         return destination.WriteAsync(bytes, cancellationToken);
@@ -262,7 +262,7 @@ public static class BencodeSerializer
     public static T Deserialize<T>(Stream source, BencodeSerializerOptions? options = null)
     {
         ThrowHelper.ThrowIfNull(source);
-        BencodeThrowHelper.ThrowIfStreamNotReadable(source);
+        ThrowHelper.ThrowIfStreamNotReadable(source);
 
         using var memory = new MemoryStream();
         source.CopyTo(memory);
@@ -288,7 +288,7 @@ public static class BencodeSerializer
     public static async ValueTask<T> DeserializeAsync<T>(Stream source, BencodeSerializerOptions? options = null, CancellationToken cancellationToken = default)
     {
         ThrowHelper.ThrowIfNull(source);
-        BencodeThrowHelper.ThrowIfStreamNotReadable(source);
+        ThrowHelper.ThrowIfStreamNotReadable(source);
 
         using var memory = new MemoryStream();
         await source.CopyToAsync(memory, cancellationToken).ConfigureAwait(false);

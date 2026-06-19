@@ -141,12 +141,6 @@
   <data name="Arg_Invalid_NullListElement" xml:space="preserve">
     <value>The list cannot contain null values.</value>
   </data>
-  <data name="Arg_Invalid_StreamNotReadable" xml:space="preserve">
-    <value>Stream does not support reading.</value>
-  </data>
-  <data name="Arg_Invalid_StreamNotWritable" xml:space="preserve">
-    <value>Stream does not support writing.</value>
-  </data>
   <data name="Format_Invalid_DelimitedDuplicateHeader" xml:space="preserve">
     <value>Duplicate header '{0}' on line {1}.</value>
   </data>
