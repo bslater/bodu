@@ -47,7 +47,7 @@ public sealed class MoneyOfTCurrencyJsonConverterFactory
     /// </exception>
     public MoneyOfTCurrencyJsonConverterFactory(FinancialJsonPolicy policy)
     {
-        FinancialThrowHelper.ThrowIfFinancialJsonPolicyUndefined(policy);
+        ThrowHelper.ThrowIfEnumValueIsUndefined(policy);
         _policy = policy;
     }
 

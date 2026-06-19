@@ -197,15 +197,6 @@ namespace Bodu.Financial {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Provider identifier must not be empty or white-space..
-        /// </summary>
-        internal static string Arg_Invalid_ProviderNullOrWhiteSpace {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_ProviderNullOrWhiteSpace", resourceCulture);
-            }
-        }
-
-        /// <summary>
         ///   Looks up a localized string similar to The end date must not be earlier than the start date..
         /// </summary>
         internal static string Arg_Invalid_ExchangeRateRangeInverted {
@@ -279,33 +270,6 @@ namespace Bodu.Financial {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to AllocationPolicy &apos;{0}&apos; is not a defined value..
-        /// </summary>
-        internal static string Arg_OutOfRange_AllocationPolicyUndefined {
-            get {
-                return ResourceManager.GetString("Arg_OutOfRange_AllocationPolicyUndefined", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to CashRoundingPolicy &apos;{0}&apos; is not a defined value..
-        /// </summary>
-        internal static string Arg_OutOfRange_CashRoundingPolicyUndefined {
-            get {
-                return ResourceManager.GetString("Arg_OutOfRange_CashRoundingPolicyUndefined", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to ConversionRoundingPolicy &apos;{0}&apos; is not a defined value..
-        /// </summary>
-        internal static string Arg_OutOfRange_ConversionRoundingPolicyUndefined {
-            get {
-                return ResourceManager.GetString("Arg_OutOfRange_ConversionRoundingPolicyUndefined", resourceCulture);
-            }
-        }
-
-        /// <summary>
         ///   Looks up a localized string similar to CurrencyDisplay &apos;{0}&apos; is not a defined value..
         /// </summary>
         internal static string Arg_OutOfRange_CurrencyDisplayUndefined {
@@ -324,33 +288,6 @@ namespace Bodu.Financial {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to MoneyParseMode &apos;{0}&apos; is not a defined value..
-        /// </summary>
-        internal static string Arg_OutOfRange_MoneyParseModeUndefined {
-            get {
-                return ResourceManager.GetString("Arg_OutOfRange_MoneyParseModeUndefined", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to ScalePolicy &apos;{0}&apos; is not a defined value..
-        /// </summary>
-        internal static string Arg_OutOfRange_ScalePolicyUndefined {
-            get {
-                return ResourceManager.GetString("Arg_OutOfRange_ScalePolicyUndefined", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Exchange rate must be strictly positive..
-        /// </summary>
-        internal static string Arg_OutOfRange_ExchangeRateNotPositive {
-            get {
-                return ResourceManager.GetString("Arg_OutOfRange_ExchangeRateNotPositive", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Rate must be greater than zero..
         /// </summary>
         internal static string Arg_OutOfRange_RateNotPositive {
@@ -368,15 +305,6 @@ namespace Bodu.Financial {
             }
         }
         
-        /// <summary>
-        ///   Looks up a localized string similar to Unsupported MoneyBag conversion rounding policy..
-        /// </summary>
-        internal static string Arg_OutOfRange_UnsupportedMoneyBagRoundingPolicy {
-            get {
-                return ResourceManager.GetString("Arg_OutOfRange_UnsupportedMoneyBagRoundingPolicy", resourceCulture);
-            }
-        }
-
         /// <summary>
         ///   Looks up a localized string similar to Explicit minor-unit scale {0} for currency &apos;{1}&apos; is out of the supported range 0 to 28..
         /// </summary>
@@ -801,15 +729,6 @@ namespace Bodu.Financial {
             }
         }
 
-        /// <summary>
-        ///   Looks up a localized string similar to Unsupported FinancialJsonPolicy value &apos;{0}&apos;..
-        /// </summary>
-        internal static string Op_Invalid_FinancialJsonPolicyUndefined {
-            get {
-                return ResourceManager.GetString("Op_Invalid_FinancialJsonPolicyUndefined", resourceCulture);
-            }
-        }
-        
         /// <summary>
         ///   Looks up a localized string similar to Money comparison requires the same currency; got &apos;{0}&apos; and &apos;{1}&apos;..
         /// </summary>

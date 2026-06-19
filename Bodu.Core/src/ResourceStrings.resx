@@ -282,6 +282,12 @@
   <data name="Arg_Invalid_StreamLengthExceeded" xml:space="preserve">
     <value>Cannot write beyond the end of the stream.</value>
   </data>
+  <data name="Arg_Invalid_StreamNotReadable" xml:space="preserve">
+    <value>The stream does not support reading.</value>
+  </data>
+  <data name="Arg_Invalid_StreamNotWritable" xml:space="preserve">
+    <value>The stream does not support writing.</value>
+  </data>
   <data name="Arg_Invalid_StringComparison" xml:space="preserve">
     <value>The string comparison type is not supported.</value>
   </data>

@@ -65,7 +65,7 @@ public sealed class ExchangeRateSeries
         DateTimeOffset? fetchedAtUtc = null)
     {
         FinancialThrowHelper.ThrowIfInvalidExchangeRatePair(pair);
-        FinancialThrowHelper.ThrowIfNullOrWhiteSpaceProvider(provider);
+        ThrowHelper.ThrowIfNullOrWhiteSpace(provider);
         ThrowHelper.ThrowIfNull(rates);
 
         Pair = pair;
@@ -104,7 +104,7 @@ public sealed class ExchangeRateSeries
         DateTimeOffset? fetchedAtUtc = null)
     {
         FinancialThrowHelper.ThrowIfInvalidExchangeRatePair(pair);
-        FinancialThrowHelper.ThrowIfNullOrWhiteSpaceProvider(provider);
+        ThrowHelper.ThrowIfNullOrWhiteSpace(provider);
         ThrowHelper.ThrowIfNull(observations);
 
         Pair = pair;
@@ -224,7 +224,7 @@ public sealed class ExchangeRateSeries
     /// </remarks>
     public ExchangeRateSeries WithRate(DateOnly date, decimal rate)
     {
-        FinancialThrowHelper.ThrowIfExchangeRateNotPositive(rate);
+        ThrowHelper.ThrowIfZeroOrNegative(rate);
 
         if (_storage.TryGetExactRate(date, out decimal existing) && existing == rate)
             return this;

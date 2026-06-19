@@ -414,12 +414,7 @@ internal static class Poly1305AeadCore
     private static void ValidateSealBuffers(ReadOnlySpan<byte> plaintext, Span<byte> output)
     {
         int required = checked(plaintext.Length + TagBytes);
-        if (output.Length < required)
-        {
-            throw new ArgumentException(
-                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, required),
-                nameof(output));
-        }
+        ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, required);
     }
 
     /// <summary>
@@ -440,11 +435,6 @@ internal static class Poly1305AeadCore
                 nameof(ciphertextWithTag));
         }
 
-        if (output.Length < ciphertextWithTag.Length - TagBytes)
-        {
-            throw new ArgumentException(
-                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, ciphertextWithTag.Length - TagBytes),
-                nameof(output));
-        }
+        ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, ciphertextWithTag.Length - TagBytes);
     }
 }

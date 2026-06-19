@@ -149,7 +149,7 @@ public readonly partial struct Money
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="exchangeRate" /> is negative.</exception>
     public Money Convert(string targetIsoCode, decimal exchangeRate, MidpointRounding rounding)
     {
-        FinancialThrowHelper.ThrowIfExchangeRateNotPositive(exchangeRate);
+        ThrowHelper.ThrowIfZeroOrNegative(exchangeRate);
         return new Money(_amount * exchangeRate, CurrencyInfo.ParseCurrencyCode(targetIsoCode), rounding);
     }
 
@@ -176,7 +176,7 @@ public readonly partial struct Money
     public Money<TTarget> Convert<TTarget>(decimal exchangeRate, MidpointRounding rounding)
         where TTarget : ICurrency
     {
-        FinancialThrowHelper.ThrowIfExchangeRateNotPositive(exchangeRate);
+        ThrowHelper.ThrowIfZeroOrNegative(exchangeRate);
         return new Money<TTarget>(_amount * exchangeRate, rounding);
     }
 }

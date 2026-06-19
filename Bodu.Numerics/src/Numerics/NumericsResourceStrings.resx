@@ -153,9 +153,6 @@
   <data name="Json_Invalid_UpperMustBeNumber" xml:space="preserve">
     <value>The 'upper' property must be a number or a numeric string.</value>
   </data>
-  <data name="Op_Invalid_NumericsJsonPolicyUndefined" xml:space="preserve">
-    <value>Unsupported NumericsJsonPolicy value '{0}'.</value>
-  </data>
   <data name="Op_Invalid_UnableToCreateConverter" xml:space="preserve">
     <value>Unable to create a JSON converter for '{0}'.</value>
   </data>

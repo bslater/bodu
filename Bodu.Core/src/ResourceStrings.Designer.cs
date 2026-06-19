@@ -554,7 +554,25 @@ namespace Bodu {
                 return ResourceManager.GetString("Arg_Invalid_StreamLengthExceeded", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to The stream does not support reading..
+        /// </summary>
+        internal static string Arg_Invalid_StreamNotReadable {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_StreamNotReadable", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The stream does not support writing..
+        /// </summary>
+        internal static string Arg_Invalid_StreamNotWritable {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_StreamNotWritable", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to The string comparison type is not supported..
         /// </summary>

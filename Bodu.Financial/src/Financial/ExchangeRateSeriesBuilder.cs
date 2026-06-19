@@ -42,7 +42,7 @@ public sealed class ExchangeRateSeriesBuilder
     public ExchangeRateSeriesBuilder(ExchangeRatePair pair, string provider)
     {
         FinancialThrowHelper.ThrowIfInvalidExchangeRatePair(pair);
-        FinancialThrowHelper.ThrowIfNullOrWhiteSpaceProvider(provider);
+        ThrowHelper.ThrowIfNullOrWhiteSpace(provider);
 
         Pair = pair;
         Provider = provider;

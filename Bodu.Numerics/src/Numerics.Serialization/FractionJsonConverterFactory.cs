@@ -46,7 +46,7 @@ public sealed class FractionJsonConverterFactory
     /// </exception>
     public FractionJsonConverterFactory(NumericsJsonPolicy policy)
     {
-        NumericsThrowHelper.ThrowIfNumericsJsonPolicyUndefined(policy);
+        ThrowHelper.ThrowIfEnumValueIsUndefined(policy);
         _policy = policy;
     }
 

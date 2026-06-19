@@ -282,12 +282,7 @@ public sealed class GcmModeTransform
         }
 
         int plaintextLength = ciphertextWithTag.Length - (DefaultTagSize / 8);
-        if (output.Length < plaintextLength)
-        {
-            throw new ArgumentException(
-                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, plaintextLength),
-                nameof(output));
-        }
+        ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, plaintextLength);
 
         ValidatePlaintextLength(plaintextLength);
 
@@ -363,12 +358,7 @@ public sealed class GcmModeTransform
         ThrowIfCompleted();
 
         int required = checked(plaintext.Length + (DefaultTagSize / 8));
-        if (output.Length < required)
-        {
-            throw new ArgumentException(
-                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, required),
-                nameof(output));
-        }
+        ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, required);
 
         ValidatePlaintextLength(plaintext.Length);
 

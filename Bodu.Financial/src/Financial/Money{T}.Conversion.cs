@@ -79,7 +79,7 @@ public readonly partial struct Money<TCurrency>
     public Money<TTarget> Convert<TTarget>(decimal exchangeRate, MidpointRounding rounding = MidpointRounding.ToEven)
         where TTarget : ICurrency
     {
-        FinancialThrowHelper.ThrowIfExchangeRateNotPositive(exchangeRate);
+        ThrowHelper.ThrowIfZeroOrNegative(exchangeRate);
 
         return new Money<TTarget>(_amount * exchangeRate, rounding);
     }

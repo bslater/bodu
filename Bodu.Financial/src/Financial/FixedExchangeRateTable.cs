@@ -55,7 +55,7 @@ public sealed class FixedExchangeRateTable
         {
             FinancialThrowHelper.ThrowIfNotValidIsoCode(entry.Key.From, nameof(rates));
             FinancialThrowHelper.ThrowIfNotValidIsoCode(entry.Key.To, nameof(rates));
-            FinancialThrowHelper.ThrowIfExchangeRateNotPositive(entry.Value, nameof(rates));
+            ThrowHelper.ThrowIfZeroOrNegative(entry.Value, nameof(rates));
 
             validated[new ExchangeRatePair(CurrencyInfo.ParseCurrencyCode(entry.Key.From), CurrencyInfo.ParseCurrencyCode(entry.Key.To))] = entry.Value;
         }

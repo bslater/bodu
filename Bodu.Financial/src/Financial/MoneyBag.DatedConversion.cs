@@ -85,7 +85,7 @@ public sealed partial class MoneyBag
     {
         ThrowHelper.ThrowIfNull(rates);
 
-        FinancialThrowHelper.ThrowIfMoneyBagRoundingPolicyUndefined(policy);
+        ThrowHelper.ThrowIfEnumValueIsUndefined(policy);
 
         CurrencyCode targetCode = CurrencyMetadata<TTarget>.Value.Code;
         string targetIso = CurrencyMetadata<TTarget>.Value.IsoCode;

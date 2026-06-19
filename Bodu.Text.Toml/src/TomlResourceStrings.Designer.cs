@@ -47,24 +47,6 @@ namespace Bodu {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Stream does not support reading..
-        /// </summary>
-        internal static string Arg_Invalid_StreamNotReadable {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_StreamNotReadable", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Stream does not support writing..
-        /// </summary>
-        internal static string Arg_Invalid_StreamNotWritable {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_StreamNotWritable", resourceCulture);
-            }
-        }
-
-        /// <summary>
         ///   Looks up a localized string similar to Cannot append a table to a statically defined array..
         /// </summary>
         internal static string Format_Invalid_TomlAppendToStaticArray {

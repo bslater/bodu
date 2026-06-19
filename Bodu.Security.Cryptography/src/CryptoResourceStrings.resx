@@ -181,10 +181,7 @@
   <data name="Crypt_Invalid_NonCompliantFipsAlgorithm" xml:space="preserve">
     <value>This implementation is not part of the Windows Platform FIPS validated cryptographic algorithms.</value>
   </data>
-  <data name="Crypt_Invalid_OutputBufferTooSmall" xml:space="preserve">
-    <value>The output buffer is too small. At least {0} bytes are required.</value>
-  </data>
-  <data name="Crypt_Invalid_Padding" xml:space="preserve">
+<data name="Crypt_Invalid_Padding" xml:space="preserve">
     <value>The input block contains invalid padding and cannot be depadded. The padding bytes do not match the expected format for the specified padding mode.</value>
   </data>
   <data name="Crypt_Invalid_PaddingModeNoneInputNotAligned" xml:space="preserve">

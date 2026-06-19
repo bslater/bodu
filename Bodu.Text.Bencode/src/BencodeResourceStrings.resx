@@ -35,8 +35,6 @@
   <data name="Format_Invalid_BencodeDuplicateDictionaryKeys" xml:space="preserve"><value>Bencoded dictionary keys must be unique.</value></data>
   <data name="Format_Invalid_BencodeUnterminatedDictionary" xml:space="preserve"><value>Unterminated bencoded dictionary.</value></data>
   <data name="Format_Invalid_BencodeUnterminatedInteger" xml:space="preserve"><value>Unterminated bencoded integer.</value></data>
-  <data name="Arg_Invalid_StreamNotReadable" xml:space="preserve"><value>Stream does not support reading.</value></data>
-  <data name="Arg_Invalid_StreamNotWritable" xml:space="preserve"><value>Stream does not support writing.</value></data>
   <data name="Arg_Invalid_ConverterAttributeType" xml:space="preserve"><value>The type '{0}' specified by a converter attribute is not a BencodeConverter.</value></data>
   <data name="Arg_Invalid_ConverterNoParameterlessCtor" xml:space="preserve"><value>The converter type '{0}' must declare a public parameterless constructor to be referenced by a converter attribute.</value></data>
   <data name="Arg_OutOfRange_DefaultIgnoreConditionAlways" xml:space="preserve"><value>BencodeIgnoreCondition.Always is not a valid value for DefaultIgnoreCondition.</value></data>

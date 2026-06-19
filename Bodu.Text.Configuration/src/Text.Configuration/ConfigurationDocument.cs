@@ -220,7 +220,7 @@ public sealed class ConfigurationDocument
         bool leaveOpen = false)
     {
         ThrowHelper.ThrowIfNull(stream);
-        ConfigurationThrowHelper.ThrowIfStreamNotReadable(stream);
+        ThrowHelper.ThrowIfStreamNotReadable(stream);
 
         ConfigurationParseOptions effective = options ?? ConfigurationParseOptions.Bodu;
         Encoding effectiveEncoding = encoding ?? effective.DefaultEncoding;
@@ -278,7 +278,7 @@ public sealed class ConfigurationDocument
     {
         ThrowHelper.ThrowIfNull(document);
         ThrowHelper.ThrowIfNull(stream);
-        ConfigurationThrowHelper.ThrowIfStreamNotWritable(stream);
+        ThrowHelper.ThrowIfStreamNotWritable(stream);
 
         ConfigurationWriteOptions effective = options ?? ConfigurationWriteOptions.Bodu;
         using StreamWriter writer = new(stream, effective.Encoding, bufferSize: 1024, leaveOpen: leaveOpen);

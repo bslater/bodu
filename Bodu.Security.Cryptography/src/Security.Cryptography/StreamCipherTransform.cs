@@ -156,8 +156,8 @@ internal sealed class StreamCipherTransform
 
         ThrowHelper.ThrowIfNull(inputBuffer);
         ThrowHelper.ThrowIfNull(outputBuffer);
-        CryptographyThrowHelper.ThrowIfArrayOffsetOrCountInvalid(inputBuffer, inputOffset, inputCount);
-        CryptographyThrowHelper.ThrowIfArrayOffsetOrCountInvalid(outputBuffer, outputOffset, inputCount);
+        ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(inputBuffer, inputOffset, inputCount);
+        ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(outputBuffer, outputOffset, inputCount);
 
         ReadOnlySpan<byte> input = inputBuffer.AsSpan(inputOffset, inputCount);
         Span<byte> output = outputBuffer.AsSpan(outputOffset, inputCount);
@@ -194,7 +194,7 @@ internal sealed class StreamCipherTransform
         ThrowIfFinalized();
 
         ThrowHelper.ThrowIfNull(inputBuffer);
-        CryptographyThrowHelper.ThrowIfArrayOffsetOrCountInvalid(inputBuffer, inputOffset, inputCount);
+        ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(inputBuffer, inputOffset, inputCount);
 
         // No overlap check is needed: a fresh output array is allocated here, so it can never alias the input buffer.
         byte[] output = new byte[inputCount];

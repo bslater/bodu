@@ -47,7 +47,7 @@ public sealed class MoneyBagJsonConverter
     /// </exception>
     public MoneyBagJsonConverter(FinancialJsonPolicy policy)
     {
-        FinancialThrowHelper.ThrowIfFinancialJsonPolicyUndefined(policy);
+        ThrowHelper.ThrowIfEnumValueIsUndefined(policy);
         _policy = policy;
     }
 

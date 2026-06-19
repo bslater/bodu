@@ -47,7 +47,7 @@ public sealed class ExchangeRatePairJsonConverter
     /// </exception>
     public ExchangeRatePairJsonConverter(FinancialJsonPolicy policy)
     {
-        FinancialThrowHelper.ThrowIfFinancialJsonPolicyUndefined(policy);
+        ThrowHelper.ThrowIfEnumValueIsUndefined(policy);
         _policy = policy;
     }
 

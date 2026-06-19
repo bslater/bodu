@@ -206,7 +206,7 @@ public sealed class OcbModeTransform
         ThrowIfCompleted();
 
         int required = plaintext.Length + _tagLen;
-        CryptographyThrowHelper.ThrowIfOutputBufferTooSmall(output, required);
+        ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, required);
 
         EnsureAadProcessed();
 
@@ -324,7 +324,7 @@ public sealed class OcbModeTransform
         CryptographyThrowHelper.ThrowIfCiphertextTooShort(ciphertextWithTag, _tagLen);
 
         int plaintextLength = ciphertextWithTag.Length - _tagLen;
-        CryptographyThrowHelper.ThrowIfOutputBufferTooSmall(output, plaintextLength);
+        ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, plaintextLength);
 
         EnsureAadProcessed();
 

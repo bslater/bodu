@@ -87,10 +87,7 @@ public sealed class FixedDatedExchangeRateProvider
             throw new ArgumentException(FinancialResourceStrings.Arg_Invalid_ProviderPriorityEmpty, nameof(providerPriority));
 
         for (int i = 0; i < snapshot.Length; i++)
-        {
-            if (string.IsNullOrWhiteSpace(snapshot[i]))
-                throw new ArgumentException(FinancialResourceStrings.Arg_Invalid_ProviderNullOrWhiteSpace, nameof(providerPriority));
-        }
+            ThrowHelper.ThrowIfNullOrWhiteSpace(snapshot[i], nameof(providerPriority));
 
         _book = book;
         _providerPriority = snapshot;

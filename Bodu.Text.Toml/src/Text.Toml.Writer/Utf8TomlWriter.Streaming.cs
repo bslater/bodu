@@ -46,7 +46,7 @@ public ref partial struct Utf8TomlWriter
     public Utf8TomlWriter(Stream utf8Toml, TomlWriterOptions options)
     {
         ThrowHelper.ThrowIfNull(utf8Toml);
-        TomlThrowHelper.ThrowIfStreamNotWritable(utf8Toml);
+        ThrowHelper.ThrowIfStreamNotWritable(utf8Toml);
 
         _stream = utf8Toml;
         _streamBuffer = new ArrayBufferWriter<byte>();

@@ -272,12 +272,7 @@ public sealed class AsconAead128
         }
 
         int ptLen = ciphertextWithTag.Length - TagBytes;
-        if (output.Length < ptLen)
-        {
-            throw new ArgumentException(
-                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, ptLen),
-                nameof(output));
-        }
+        ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, ptLen);
 
         try
         {
@@ -371,12 +366,7 @@ public sealed class AsconAead128
         ThrowIfAadNotProcessed();
 
         int required = plaintext.Length + TagBytes;
-        if (output.Length < required)
-        {
-            throw new ArgumentException(
-                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, required),
-                nameof(output));
-        }
+        ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, required);
 
         try
         {

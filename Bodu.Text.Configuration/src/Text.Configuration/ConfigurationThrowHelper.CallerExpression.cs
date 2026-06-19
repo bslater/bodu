@@ -13,38 +13,6 @@ namespace Bodu.Text.Configuration;
 internal static partial class ConfigurationThrowHelper
 {
     /// <summary>
-    /// Throws an <see cref="ArgumentException" /> when <paramref name="stream" /> does not support reading.
-    /// </summary>
-    /// <param name="stream">The stream to validate.</param>
-    /// <param name="paramName">The parameter name reported in the exception; inferred from the call site.</param>
-    /// <exception cref="ArgumentException">
-    /// Thrown when <paramref name="stream" />.<see cref="Stream.CanRead" /> is <see langword="false" />.
-    /// </exception>
-    internal static void ThrowIfStreamNotReadable(
-        Stream stream,
-        [CallerArgumentExpression(nameof(stream))] string? paramName = null)
-    {
-        if (!stream.CanRead)
-            throw new ArgumentException(ConfigurationResourceStrings.Arg_Invalid_StreamNotReadable, paramName);
-    }
-
-    /// <summary>
-    /// Throws an <see cref="ArgumentException" /> when <paramref name="stream" /> does not support writing.
-    /// </summary>
-    /// <param name="stream">The stream to validate.</param>
-    /// <param name="paramName">The parameter name reported in the exception; inferred from the call site.</param>
-    /// <exception cref="ArgumentException">
-    /// Thrown when <paramref name="stream" />.<see cref="Stream.CanWrite" /> is <see langword="false" />.
-    /// </exception>
-    internal static void ThrowIfStreamNotWritable(
-        Stream stream,
-        [CallerArgumentExpression(nameof(stream))] string? paramName = null)
-    {
-        if (!stream.CanWrite)
-            throw new ArgumentException(ConfigurationResourceStrings.Arg_Invalid_StreamNotWritable, paramName);
-    }
-
-    /// <summary>
     /// Throws an <see cref="ArgumentException" /> when <paramref name="rawKey" /> contains any control character.
     /// </summary>
     /// <param name="rawKey">The candidate configuration key to scan.</param>

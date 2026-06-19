@@ -63,7 +63,8 @@ public abstract partial class CryptoTransformTests<TCryptoTransform>
 
     /// <summary>
     /// Verifies that <see cref="ICryptoTransform.TransformFinalBlock" /> throws an
-    /// <see cref="ArgumentOutOfRangeException" /> when <c>inputCount</c> is negative.
+    /// <see cref="ArgumentOutOfRangeException" /> (domain transforms) or <see cref="ArgumentException" />
+    /// (BCL hash algorithms) when <c>inputCount</c> is negative.
     /// </summary>
     [TestMethod]
     public void TransformFinalBlock_WhenInputCountIsNegative_ShouldThrowExactly()
@@ -71,13 +72,26 @@ public abstract partial class CryptoTransformTests<TCryptoTransform>
         using TCryptoTransform transform = CreateAlgorithm();
         byte[] inputBuffer = new byte[transform.InputBlockSize];
 
-        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        if (NegativeInputCountThrowsOutOfRange)
         {
-            _ = transform.TransformFinalBlock(inputBuffer, 0, -1);
-        });
+            ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            {
+                _ = transform.TransformFinalBlock(inputBuffer, 0, -1);
+            });
 
-        if (ex.ParamName != null)
-            Assert.AreEqual("inputCount", ex.ParamName);
+            if (ex.ParamName != null)
+                Assert.AreEqual("inputCount", ex.ParamName);
+        }
+        else
+        {
+            ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
+            {
+                _ = transform.TransformFinalBlock(inputBuffer, 0, -1);
+            });
+
+            if (ex.ParamName != null)
+                Assert.AreEqual("inputCount", ex.ParamName);
+        }
     }
 
     /// <summary>

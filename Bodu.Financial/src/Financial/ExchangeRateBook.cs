@@ -97,7 +97,7 @@ public sealed class ExchangeRateBook
     public bool TryGetSeries(ExchangeRatePair pair, string provider, out ExchangeRateSeries? series)
     {
         FinancialThrowHelper.ThrowIfInvalidExchangeRatePair(pair);
-        FinancialThrowHelper.ThrowIfNullOrWhiteSpaceProvider(provider);
+        ThrowHelper.ThrowIfNullOrWhiteSpace(provider);
 
         return _series.TryGetValue(new ExchangeRateSeriesKey(pair, provider), out series);
     }
