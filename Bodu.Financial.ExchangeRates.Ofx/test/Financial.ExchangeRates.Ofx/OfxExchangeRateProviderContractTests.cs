@@ -15,7 +15,7 @@ namespace Bodu.Financial.ExchangeRates.Ofx;
 /// </summary>
 [TestClass]
 public sealed class OfxExchangeRateProviderContractTests
-    : DatedExchangeRateProviderContractTests<OfxExchangeRateProvider>
+    : PairWebExchangeRateProviderContractTests<OfxExchangeRateProvider, OfxSeriesInfo>
 {
     /// <summary>
     /// A date present in the embedded January 2023 fixture (AUD/USD = 0.6828).

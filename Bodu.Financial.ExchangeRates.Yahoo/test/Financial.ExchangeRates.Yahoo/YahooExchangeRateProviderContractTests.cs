@@ -15,7 +15,7 @@ namespace Bodu.Financial.ExchangeRates.Yahoo;
 /// </summary>
 [TestClass]
 public sealed class YahooExchangeRateProviderContractTests
-    : DatedExchangeRateProviderContractTests<YahooExchangeRateProvider>
+    : PairWebExchangeRateProviderContractTests<YahooExchangeRateProvider, YahooSeriesInfo>
 {
     /// <summary>
     /// A date present in the embedded January 2023 chart fixture (AUD/USD = 0.6828).
