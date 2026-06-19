@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="DistributedExchangeRateCacheServiceBuilderExtensionsTests.cs" company="Bodu Pty. Ltd.">
+// <copyright file="DistributedRateCacheExtensionsTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -12,7 +12,7 @@ namespace Bodu.Financial.ExchangeRates.Caching.Distributed.DependencyInjection;
 /// Verifies the dependency-injection wiring of the distributed (Redis-capable) exchange-rate cache.
 /// </summary>
 [TestClass]
-public sealed partial class DistributedExchangeRateCacheServiceBuilderExtensionsTests
+public sealed partial class DistributedRateCacheExtensionsTests
 {
     /// <summary>
     /// Builds a service provider after applying the supplied registration against a fresh service collection.

@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="ExchangeRateCachingServiceBuilderExtensions.cs" company="Bodu Pty. Ltd.">
+// <copyright file="RateCachingExtensions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -17,7 +17,7 @@ namespace Bodu.Financial.ExchangeRates.Caching.DependencyInjection;
 /// Provides fluent registration of caching and aggregating exchange-rate providers onto an
 /// <see cref="IFinancialServiceBuilder" />.
 /// </summary>
-public static class ExchangeRateCachingServiceBuilderExtensions
+public static class RateCachingExtensions
 {
     /// <summary>The default configuration section bound into <see cref="CachingExchangeRateOptions" />.</summary>
     private const string DefaultCacheSection = "Financial:ExchangeRateCache";

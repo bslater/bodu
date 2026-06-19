@@ -71,9 +71,9 @@ Or, through dependency injection (see `Bodu.Financial.ExchangeRates.Caching.Dist
 ```csharp
 // Over an already-registered IDistributedCache:
 services.AddBoduFinancial()
-        .AddDistributedExchangeRateCache("RBA");
+        .AddDistributedRateCache("RBA");
 
 // Or register a Redis IDistributedCache and the cache together:
 services.AddBoduFinancial()
-        .AddRedisExchangeRateCache("RBA", redis => redis.Configuration = "localhost:6379");
+        .AddRedisRateCache("RBA", redis => redis.Configuration = "localhost:6379");
 ```

@@ -2,7 +2,7 @@
 
 Dependency-injection extensions for the SQLite-backed `Bodu.Financial` exchange-rate cache.
 
-`AddSqliteExchangeRateCache` registers a per-provider `SqliteExchangeRateCache` as an `IExchangeRateCache` (and as a
+`AddSqliteRateCache` registers a per-provider `SqliteExchangeRateCache` as an `IExchangeRateCache` (and as a
 keyed `IExchangeRateCache` under the provider name), binding and validating `SqliteExchangeRateCacheOptions` from
 configuration and an optional callback.
 
@@ -10,7 +10,7 @@ configuration and an optional callback.
 
 ```csharp
 services.AddBoduFinancial()
-        .AddSqliteExchangeRateCache("RBA", configure: o => o.DatabaseFilePath = "/var/cache/rba.db");
+        .AddSqliteRateCache("RBA", configure: o => o.DatabaseFilePath = "/var/cache/rba.db");
 
 // Resolve the cache, or wrap a source provider with a CachingExchangeRateProvider over it.
 var cache = provider.GetRequiredService<IExchangeRateCache>();

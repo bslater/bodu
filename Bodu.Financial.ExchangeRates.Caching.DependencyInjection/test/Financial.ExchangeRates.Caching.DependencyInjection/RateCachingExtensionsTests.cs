@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="ExchangeRateCachingServiceBuilderExtensionsTests.cs" company="Bodu Pty. Ltd.">
+// <copyright file="RateCachingExtensionsTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -15,7 +15,7 @@ namespace Bodu.Financial.ExchangeRates.Caching.DependencyInjection;
 /// Verifies the dependency-injection wiring of the single-provider caching exchange-rate provider.
 /// </summary>
 [TestClass]
-public sealed partial class ExchangeRateCachingServiceBuilderExtensionsTests
+public sealed partial class RateCachingExtensionsTests
 {
     /// <summary>
     /// The isolated cache directory for the current test.
@@ -123,7 +123,7 @@ public sealed partial class ExchangeRateCachingServiceBuilderExtensionsTests
     {
         var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = ExchangeRateCachingServiceBuilderExtensions.AddCachedExchangeRateProvider<StubRbaProvider>(null!, "RBA");
+            _ = RateCachingExtensions.AddCachedExchangeRateProvider<StubRbaProvider>(null!, "RBA");
         });
 
         Assert.AreEqual("builder", ex.ParamName);

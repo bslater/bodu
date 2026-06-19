@@ -8,8 +8,8 @@ uid: Bodu.Financial.ExchangeRates.Caching.Distributed.DependencyInjection
 
 **Bodu.Financial.ExchangeRates.Caching.Distributed.DependencyInjection** provides the `Microsoft.Extensions.DependencyInjection` wiring for the [distributed exchange-rate cache](Bodu.Financial.ExchangeRates.Caching.Distributed.md). Both methods on the <xref:Bodu.Financial.DependencyInjection.IFinancialServiceBuilder> bind <xref:Bodu.Financial.ExchangeRates.Caching.Distributed.DistributedExchangeRateCacheOptions> (default section `Financial:ExchangeRateCache:Distributed`) and register a singleton <xref:Bodu.Financial.ExchangeRates.Caching.Distributed.DistributedExchangeRateCache> bound to the provider, resolvable as <xref:Bodu.Financial.ExchangeRates.Caching.IExchangeRateCache> and as a keyed `IExchangeRateCache` under the provider name; options validate on start:
 
-- `AddDistributedExchangeRateCache(name, …)` binds over the `IDistributedCache` already registered in the container (Redis, in-memory, SQL Server, …).
-- `AddRedisExchangeRateCache(name, configureRedis, …)` is a convenience that first registers a Redis `IDistributedCache` (via `AddStackExchangeRedisCache`) and then the exchange-rate cache over it.
+- `AddDistributedRateCache(name, …)` binds over the `IDistributedCache` already registered in the container (Redis, in-memory, SQL Server, …).
+- `AddRedisRateCache(name, configureRedis, …)` is a convenience that first registers a Redis `IDistributedCache` (via `AddStackExchangeRedisCache`) and then the exchange-rate cache over it.
 
 ## Static documentation
 
@@ -17,9 +17,9 @@ uid: Bodu.Financial.ExchangeRates.Caching.Distributed.DependencyInjection
 
 ## Key types
 
-- <xref:Bodu.Financial.ExchangeRates.Caching.Distributed.DependencyInjection.DistributedExchangeRateCacheServiceBuilderExtensions> — the registration surface:
-  - `AddDistributedExchangeRateCache(providerName, configuration?, sectionName?, configure?)` — over an existing `IDistributedCache`.
-  - `AddRedisExchangeRateCache(configureRedis, providerName, configuration?, sectionName?, configure?)` — registers Redis and the cache together.
+- <xref:Bodu.Financial.ExchangeRates.Caching.Distributed.DependencyInjection.DistributedRateCacheExtensions> — the registration surface:
+  - `AddDistributedRateCache(providerName, configuration?, sectionName?, configure?)` — over an existing `IDistributedCache`.
+  - `AddRedisRateCache(configureRedis, providerName, configuration?, sectionName?, configure?)` — registers Redis and the cache together.
 
 ## Minimal sample
 
@@ -32,11 +32,11 @@ using Microsoft.Extensions.DependencyInjection;
 // Over an already-registered IDistributedCache.
 services.AddStackExchangeRedisCache(o => o.Configuration = "localhost:6379");
 services.AddBoduFinancial()
-        .AddDistributedExchangeRateCache("RBA");
+        .AddDistributedRateCache("RBA");
 
 // Or register Redis and the cache together.
 services.AddBoduFinancial()
-        .AddRedisExchangeRateCache("RBA", redis => redis.Configuration = "localhost:6379");
+        .AddRedisRateCache("RBA", redis => redis.Configuration = "localhost:6379");
 
 var cache = provider.GetRequiredService<IExchangeRateCache>();
 ```
