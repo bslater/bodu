@@ -48,7 +48,7 @@ internal sealed class FixtureOfxExchangeRateSource
     {
         GetPairCallCount++;
 
-        string key = $"{request.Pair.FromIsoCode}/{request.Pair.ToIsoCode}";
+        string key = $"{request.Pair.From}/{request.Pair.To}";
         if (_fixtureByPair.TryGetValue(key, out string? fixture))
         {
             byte[] json = OfxFixtures.ReadBytes(fixture);
@@ -57,6 +57,6 @@ internal sealed class FixtureOfxExchangeRateSource
 
         // Unknown pair: behave like one with no published data so inverse-fallback paths can be exercised.
         return ValueTask.FromResult(
-            new PairRateData<OfxSeriesInfo>(request.Pair, Array.Empty<ExchangeRateObservation>(), new OfxSeriesInfo(request.Pair, request.Pair.ToIsoCode)));
+            new PairRateData<OfxSeriesInfo>(request.Pair, Array.Empty<ExchangeRateObservation>(), new OfxSeriesInfo(request.Pair, request.Pair.To.ToString())));
     }
 }

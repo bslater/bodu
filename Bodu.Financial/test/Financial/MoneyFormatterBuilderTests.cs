@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using Bodu.Financial.Currencies;
 
 namespace Bodu.Financial;
 
@@ -27,7 +28,7 @@ public class MoneyFormatterBuilderTests
             .WithCulture(CultureInfo.InvariantCulture)
             .Build();
 
-        Assert.AreEqual("1234.56", formatter.Format(new Money(1234.56m, "USD")));
+        Assert.AreEqual("1234.56", formatter.Format(new Money(1234.56m, CurrencyCode.USD)));
     }
 
     /// <summary>
@@ -42,7 +43,7 @@ public class MoneyFormatterBuilderTests
             .WithCulture(CultureInfo.InvariantCulture)
             .Build();
 
-        Assert.AreEqual("1,235 US Dollar", formatter.Format(new Money(1234.56m, "USD")));
+        Assert.AreEqual("1,235 US Dollar", formatter.Format(new Money(1234.56m, CurrencyCode.USD)));
     }
 
     /// <summary>
@@ -56,7 +57,7 @@ public class MoneyFormatterBuilderTests
             .WithCulture(CultureInfo.InvariantCulture)
             .Build();
 
-        StringAssert.Contains(formatter.Format(new Money(1234.56m, "USD")), "USD");
+        StringAssert.Contains(formatter.Format(new Money(1234.56m, CurrencyCode.USD)), "USD");
     }
 
     /// <summary>
@@ -70,7 +71,7 @@ public class MoneyFormatterBuilderTests
             .WithCulture(new CultureInfo("en-US"))
             .Build();
 
-        StringAssert.Contains(formatter.Format(new Money(1234.56m, "USD")), "$");
+        StringAssert.Contains(formatter.Format(new Money(1234.56m, CurrencyCode.USD)), "$");
     }
 
     /// <summary>
@@ -86,6 +87,6 @@ public class MoneyFormatterBuilderTests
             .WithCulture(new CultureInfo("en-US"))
             .Build();
 
-        Assert.IsFalse(formatter.Format(new Money(1234.56m, "USD")).Contains("USD", StringComparison.Ordinal));
+        Assert.IsFalse(formatter.Format(new Money(1234.56m, CurrencyCode.USD)).Contains("USD", StringComparison.Ordinal));
     }
 }

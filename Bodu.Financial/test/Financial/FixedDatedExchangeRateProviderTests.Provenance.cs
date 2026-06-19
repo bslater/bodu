@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
+
 namespace Bodu.Financial;
 
 public partial class FixedDatedExchangeRateProviderTests
@@ -21,7 +23,7 @@ public partial class FixedDatedExchangeRateProviderTests
     private static FixedDatedExchangeRateProvider StampedProvider()
     {
         ExchangeRateTableBuilder builder = new();
-        builder.Upsert(new ExchangeRatePair("USD", "AUD"), "RBA", s_d1, 1.50m, s_fetchedAt);
+        builder.Upsert(new ExchangeRatePair(CurrencyCode.USD, CurrencyCode.AUD), "RBA", s_d1, 1.50m, s_fetchedAt);
         return new FixedDatedExchangeRateProvider(builder.ToBook());
     }
 
@@ -61,8 +63,8 @@ public partial class FixedDatedExchangeRateProviderTests
     public async Task GetRatesAsync_WhenSeriesHasFetchInstant_ShouldStampEveryRate()
     {
         ExchangeRateTableBuilder builder = new();
-        builder.Upsert(new ExchangeRatePair("USD", "AUD"), "RBA", new DateOnly(2024, 1, 2), 1.49m, s_fetchedAt);
-        builder.Upsert(new ExchangeRatePair("USD", "AUD"), "RBA", new DateOnly(2024, 1, 3), 1.50m, s_fetchedAt);
+        builder.Upsert(new ExchangeRatePair(CurrencyCode.USD, CurrencyCode.AUD), "RBA", new DateOnly(2024, 1, 2), 1.49m, s_fetchedAt);
+        builder.Upsert(new ExchangeRatePair(CurrencyCode.USD, CurrencyCode.AUD), "RBA", new DateOnly(2024, 1, 3), 1.50m, s_fetchedAt);
         FixedDatedExchangeRateProvider table = new(builder.ToBook());
 
         IReadOnlyList<ExchangeRate> rates = await table.GetRatesAsync("USD", "AUD", new DateOnly(2024, 1, 1), new DateOnly(2024, 1, 31));

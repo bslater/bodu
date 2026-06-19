@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
+
 namespace Bodu.Financial;
 
 public partial class CalculatedMoneyTests
@@ -17,7 +19,7 @@ public partial class CalculatedMoneyTests
     [TestMethod]
     public void Amount_WhenStoringOneThird_ShouldBeDecimalPrecisionNotExactRational()
     {
-        CalculatedMoney third = new CalculatedMoney(1m, "USD") / 3m;
+        CalculatedMoney third = new CalculatedMoney(1m, CurrencyCode.USD) / 3m;
 
         Assert.AreEqual(1m / 3m, third.Amount);
         Assert.AreNotEqual(1m, third.Amount * 3m);

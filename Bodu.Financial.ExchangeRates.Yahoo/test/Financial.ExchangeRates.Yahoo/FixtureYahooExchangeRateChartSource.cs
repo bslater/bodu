@@ -56,6 +56,6 @@ internal sealed class FixtureYahooExchangeRateChartSource
 
         // Unknown symbol: behave like a pair with no published data so inverse-fallback paths can be exercised.
         return ValueTask.FromResult(
-            new YahooExchangeRateChart(request.Pair, request.Symbol, request.Pair.ToIsoCode, Array.Empty<ExchangeRateObservation>()));
+            new YahooExchangeRateChart(request.Pair, request.Symbol, request.Pair.To.ToString(), Array.Empty<ExchangeRateObservation>()));
     }
 }

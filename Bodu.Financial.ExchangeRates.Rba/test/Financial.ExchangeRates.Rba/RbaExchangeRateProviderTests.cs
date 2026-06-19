@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Linq;
+using Bodu.Financial.Currencies;
 using Bodu.Test;
 
 namespace Bodu.Financial.ExchangeRates.Rba;
@@ -133,6 +134,6 @@ public partial class RbaExchangeRateProviderTests
 
         var pairs = provider.GetAvailablePairs().Select(p => p.Pair).ToList();
 
-        CollectionAssert.Contains(pairs, new ExchangeRatePair("AUD", "USD"));
+        CollectionAssert.Contains(pairs, new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD));
     }
 }

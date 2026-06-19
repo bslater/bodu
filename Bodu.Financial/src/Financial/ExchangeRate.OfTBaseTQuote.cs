@@ -6,6 +6,7 @@
 
 using System.Diagnostics;
 using System.Globalization;
+using Bodu.Financial.Currencies;
 
 namespace Bodu.Financial;
 
@@ -18,9 +19,9 @@ namespace Bodu.Financial;
 /// <remarks>
 /// Use this typed form when an FX conversion's direction is fixed by the surrounding contract (settlement workflows,
 /// ledger-to-ledger transfers, account-currency mappings). Direction errors that <see cref="ExchangeRate" /> can
-/// surface only at runtime (mismatched <see cref="ExchangeRate.FromIsoCode" /> / <see cref="ExchangeRate.ToIsoCode" />
-/// against the caller's expectation) become compile errors when the typed form is used. Bridge to and from the runtime
-/// form via <see cref="ToRuntime" /> and <see cref="FromRuntime" />.
+/// surface only at runtime (mismatched <see cref="ExchangeRate.From" /> / <see cref="ExchangeRate.To" /> against the
+/// caller's expectation) become compile errors when the typed form is used. Bridge to and from the runtime form via
+/// <see cref="ToRuntime" /> and <see cref="FromRuntime" />.
 /// </remarks>
 [DebuggerDisplay("{FromIsoCode,nq}->{ToIsoCode,nq} @ {Date,nq} = {Rate} ({Provider,nq})")]
 public readonly record struct ExchangeRate<TBase, TQuote>
@@ -153,37 +154,43 @@ public readonly record struct ExchangeRate<TBase, TQuote>
     /// Bridges this typed rate to the runtime-tagged <see cref="ExchangeRate" /> record.
     /// </summary>
     /// <returns>
-    /// An <see cref="ExchangeRate" /> carrying the same fields with the ISO codes inlined as strings.
+    /// An <see cref="ExchangeRate" /> carrying the same fields with the currencies resolved from
+    /// <typeparamref name="TBase" /> and <typeparamref name="TQuote" />.
     /// </returns>
     public ExchangeRate ToRuntime() =>
-        ExchangeRate.FromObservedRate(FromIsoCode, ToIsoCode, Date, _observedRate, Provider, IsInverted);
+        ExchangeRate.FromObservedRate(
+            CurrencyMetadata<TBase>.Value.Code,
+            CurrencyMetadata<TQuote>.Value.Code,
+            Date,
+            _observedRate,
+            Provider,
+            IsInverted);
 
     /// <summary>
-    /// Adopts a runtime-tagged <see cref="ExchangeRate" /> as the typed form when the runtime ISO codes match
+    /// Adopts a runtime-tagged <see cref="ExchangeRate" /> as the typed form when the runtime currencies match
     /// <typeparamref name="TBase" /> and <typeparamref name="TQuote" />.
     /// </summary>
     /// <param name="rate">The runtime-tagged rate.</param>
     /// <returns>The strongly-typed equivalent.</returns>
     /// <exception cref="InvalidOperationException">
-    /// The runtime rate's <see cref="ExchangeRate.FromIsoCode" /> or <see cref="ExchangeRate.ToIsoCode" /> does not
-    /// match the ISO code of <typeparamref name="TBase" /> or <typeparamref name="TQuote" /> respectively.
+    /// The runtime rate's <see cref="ExchangeRate.From" /> or <see cref="ExchangeRate.To" /> does not match the currency
+    /// of <typeparamref name="TBase" /> or <typeparamref name="TQuote" /> respectively.
     /// </exception>
     public static ExchangeRate<TBase, TQuote> FromRuntime(ExchangeRate rate)
     {
-        string baseIso = CurrencyMetadata<TBase>.Value.IsoCode;
-        string quoteIso = CurrencyMetadata<TQuote>.Value.IsoCode;
+        CurrencyCode baseCode = CurrencyMetadata<TBase>.Value.Code;
+        CurrencyCode quoteCode = CurrencyMetadata<TQuote>.Value.Code;
 
-        if (!string.Equals(rate.FromIsoCode, baseIso, StringComparison.Ordinal) ||
-            !string.Equals(rate.ToIsoCode, quoteIso, StringComparison.Ordinal))
+        if (rate.From != baseCode || rate.To != quoteCode)
         {
             throw new InvalidOperationException(
                 string.Format(
                     CultureInfo.CurrentCulture,
                     FinancialResourceStrings.Op_Invalid_ExchangeRateRuntimeMismatch,
-                    rate.FromIsoCode,
-                    rate.ToIsoCode,
-                    baseIso,
-                    quoteIso));
+                    rate.From.ToString(),
+                    rate.To.ToString(),
+                    CurrencyMetadata<TBase>.Value.IsoCode,
+                    CurrencyMetadata<TQuote>.Value.IsoCode));
         }
 
         return FromComponents(rate.Rate, rate.ObservedRate, rate.Date, rate.Provider, rate.IsInverted);

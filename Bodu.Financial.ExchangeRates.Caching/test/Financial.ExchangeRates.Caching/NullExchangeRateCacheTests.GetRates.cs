@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
+
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 public sealed partial class NullExchangeRateCacheTests
@@ -15,7 +17,7 @@ public sealed partial class NullExchangeRateCacheTests
     public void GetRates_WhenAnythingStored_ShouldReturnEmpty()
     {
         IExchangeRateCache cache = NullExchangeRateCache.Create("Yahoo");
-        ExchangeRatePair pair = new("AUD", "USD");
+        ExchangeRatePair pair = new(CurrencyCode.AUD, CurrencyCode.USD);
         var now = DateTimeOffset.UtcNow;
 
         cache.Store(pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5m, now) }, TimeSpan.FromHours(24), now);

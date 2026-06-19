@@ -6,6 +6,7 @@
 
 using System.Text.Json;
 using Bodu.Financial;
+using Bodu.Financial.Currencies;
 using Bodu.Financial.Serialization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -34,7 +35,7 @@ public sealed partial class ServiceCollectionExtensionsTests
             .Services.BuildServiceProvider();
 
         JsonSerializerOptions options = provider.GetRequiredKeyedService<JsonSerializerOptions>(FinancialServiceBuilderExtensions.JsonOptionsKey);
-        string json = JsonSerializer.Serialize(new Money(19.99m, "USD"), options);
+        string json = JsonSerializer.Serialize(new Money(19.99m, CurrencyCode.USD), options);
 
         Assert.AreNotEqual("\"19.99 USD\"", json, "the explicit Strict policy should override the bound Compact policy");
     }

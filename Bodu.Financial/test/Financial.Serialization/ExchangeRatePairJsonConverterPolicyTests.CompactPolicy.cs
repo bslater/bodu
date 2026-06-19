@@ -6,6 +6,7 @@
 
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Bodu.Financial.Currencies;
 
 namespace Bodu.Financial.Serialization;
 
@@ -18,7 +19,7 @@ public partial class ExchangeRatePairJsonConverterPolicyTests
     [TestMethod]
     public void CompactPolicy_WhenSerializing_ShouldEmitFromSlashToString()
     {
-        var pair = new ExchangeRatePair("USD", "JPY");
+        var pair = new ExchangeRatePair(CurrencyCode.USD, CurrencyCode.JPY);
 
         string json = JsonSerializer.Serialize(pair, Options(FinancialJsonPolicy.Compact));
 
@@ -31,7 +32,7 @@ public partial class ExchangeRatePairJsonConverterPolicyTests
     [TestMethod]
     public void CompactPolicy_WhenRoundTripping_ShouldPreserveValue()
     {
-        var pair = new ExchangeRatePair("EUR", "GBP");
+        var pair = new ExchangeRatePair(CurrencyCode.EUR, CurrencyCode.GBP);
         JsonSerializerOptions options = Options(FinancialJsonPolicy.Compact);
 
         string json = JsonSerializer.Serialize(pair, options);

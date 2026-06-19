@@ -76,7 +76,7 @@ internal sealed class StubPairSource
             .Where(observation => observation.Date >= request.StartDate && observation.Date <= request.EndDate)
             .ToList();
 
-        string series = $"{request.Pair.FromIsoCode}/{request.Pair.ToIsoCode}";
+        string series = $"{request.Pair.From}/{request.Pair.To}";
         return ValueTask.FromResult(new PairRateData<string>(request.Pair, inRange, series));
     }
 }

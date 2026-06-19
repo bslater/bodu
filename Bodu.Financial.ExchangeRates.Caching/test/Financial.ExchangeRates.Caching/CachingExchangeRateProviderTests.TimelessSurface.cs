@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
+
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
@@ -22,7 +24,7 @@ public sealed partial class CachingExchangeRateProviderTests
     {
         var today = DateOnly.FromDateTime(Now.UtcDateTime);
         CountingDatedExchangeRateProvider inner = InnerWith();
-        SeedCache(new ExchangeRatePair("AUD", "USD"), (today, 0.5m));
+        SeedCache(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), (today, 0.5m));
         CachingExchangeRateProvider sut = CreateDecorator(inner);
 
         decimal rate = ((IExchangeRateProvider)sut).GetRate("AUD", "USD");

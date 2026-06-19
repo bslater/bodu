@@ -6,6 +6,7 @@
 
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Bodu.Financial.Currencies;
 
 namespace Bodu.Financial.Serialization;
 
@@ -34,11 +35,11 @@ public partial class ExchangeRateJsonConverterPolicyTests
     /// Builds a representative exchange-rate observation.
     /// </summary>
     private static ExchangeRate SampleRate(bool isInverted = false) =>
-        new("USD", "JPY", new DateOnly(2024, 5, 30), 156.42m, "ECB", isInverted);
+        new(CurrencyCode.USD, CurrencyCode.JPY, new DateOnly(2024, 5, 30), 156.42m, "ECB", isInverted);
 
     /// <summary>
     /// Builds a representative exchange-rate observation carrying a non-null fetch instant.
     /// </summary>
     private static ExchangeRate SampleRateWithFetch(bool isInverted = false) =>
-        new("USD", "JPY", new DateOnly(2024, 5, 30), 156.42m, "ECB", isInverted, s_fetchedAt);
+        new(CurrencyCode.USD, CurrencyCode.JPY, new DateOnly(2024, 5, 30), 156.42m, "ECB", isInverted, s_fetchedAt);
 }

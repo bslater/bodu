@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
 using Bodu.Financial.ExchangeRates.Testing;
 
 namespace Bodu.Financial.ExchangeRates.Ecb;
@@ -23,7 +24,7 @@ public sealed class EcbExchangeRateProviderContractTests
     private static readonly DateOnly s_seeded = new(2023, 1, 3);
 
     /// <inheritdoc />
-    protected override ExchangeRatePair CanonicalPair => new("EUR", "USD");
+    protected override ExchangeRatePair CanonicalPair => new(CurrencyCode.EUR, CurrencyCode.USD);
 
     /// <inheritdoc />
     protected override DateOnly KnownDate => s_seeded;

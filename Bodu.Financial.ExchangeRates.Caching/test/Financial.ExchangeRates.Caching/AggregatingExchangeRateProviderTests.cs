@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
+
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
@@ -24,7 +26,7 @@ public sealed partial class AggregatingExchangeRateProviderTests
     /// <param name="rows">The observation rows.</param>
     /// <returns>The named child.</returns>
     private static NamedDatedExchangeRateProvider Named(string name, params (string From, string To, DateOnly Date, decimal Rate)[] rows) =>
-        new(name, new FixedDatedExchangeRateProvider(rows.Select(r => new ExchangeRate(r.From, r.To, r.Date, r.Rate, name))));
+        new(name, new FixedDatedExchangeRateProvider(rows.Select(r => new ExchangeRate(CurrencyInfo.ParseCurrencyCode(r.From), CurrencyInfo.ParseCurrencyCode(r.To), r.Date, r.Rate, name))));
 
     /// <summary>
     /// Verifies that a <see langword="null" /> children collection is rejected.
@@ -109,7 +111,7 @@ public sealed partial class AggregatingExchangeRateProviderTests
     public void Constructor_WhenRouteReferencesUnknownChild_ShouldThrowArgumentException()
     {
         ExchangeRateAggregationOptions options = new();
-        options.Routes[new ExchangeRatePair("AUD", "USD")] = new ExchangeRatePairRoute(new[] { "Unknown" });
+        options.Routes[new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD)] = new ExchangeRatePairRoute(new[] { "Unknown" });
 
         var ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {

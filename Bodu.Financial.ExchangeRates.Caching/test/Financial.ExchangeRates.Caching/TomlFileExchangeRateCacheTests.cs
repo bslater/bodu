@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
+
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
@@ -21,7 +23,7 @@ public sealed partial class TomlFileExchangeRateCacheTests
     /// <summary>
     /// The currency pair used by the tests.
     /// </summary>
-    private static readonly ExchangeRatePair Pair = new("AUD", "USD");
+    private static readonly ExchangeRatePair Pair = new(CurrencyCode.AUD, CurrencyCode.USD);
 
     /// <summary>
     /// The duration used by the tests.

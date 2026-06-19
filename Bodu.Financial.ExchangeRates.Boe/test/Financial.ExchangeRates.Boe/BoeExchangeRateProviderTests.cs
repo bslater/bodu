@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Linq;
+using Bodu.Financial.Currencies;
 using Bodu.Test;
 
 namespace Bodu.Financial.ExchangeRates.Boe;
@@ -147,6 +148,6 @@ public partial class BoeExchangeRateProviderTests
 
         var pairs = provider.GetAvailablePairs().Select(p => p.Pair).ToList();
 
-        CollectionAssert.Contains(pairs, new ExchangeRatePair("GBP", "USD"));
+        CollectionAssert.Contains(pairs, new ExchangeRatePair(CurrencyCode.GBP, CurrencyCode.USD));
     }
 }

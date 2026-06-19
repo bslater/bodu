@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
 using Bodu.Test;
 using Bodu.Test.Assertions;
 
@@ -18,7 +19,7 @@ public partial class ExchangeRateTests
     [TestMethod]
     public void Convert_WhenCalled_ShouldReturnAmountMultipliedByRate()
     {
-        ExchangeRate rate = new("USD", "AUD", s_sampleDate, 1.5m, "RBA");
+        ExchangeRate rate = new(CurrencyCode.USD, CurrencyCode.AUD, s_sampleDate, 1.5m, "RBA");
 
         decimal converted = rate.Convert(100m);
 

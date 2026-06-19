@@ -22,7 +22,7 @@ public partial class MoneyTests
         Money runtime = typed;
 
         Assert.AreEqual(42.50m, runtime.Amount);
-        Assert.AreEqual("EUR", runtime.IsoCode);
+        Assert.AreEqual(CurrencyCode.EUR, runtime.Code);
     }
 
     /// <summary>
@@ -32,7 +32,7 @@ public partial class MoneyTests
     [TestMethod]
     public void ExplicitOperator_ToTypedMoney_WhenCurrencyMatches_ShouldReturnTypedValue()
     {
-        Money runtime = new(99.99m, "USD");
+        Money runtime = new(99.99m, CurrencyCode.USD);
 
         var typed = (Money<USD>)runtime;
 
@@ -46,7 +46,7 @@ public partial class MoneyTests
     [TestMethod]
     public void ExplicitOperator_ToTypedMoney_WhenCurrencyMismatches_ShouldThrowInvalidOperationException()
     {
-        Money runtime = new(10m, "EUR");
+        Money runtime = new(10m, CurrencyCode.EUR);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
@@ -61,7 +61,7 @@ public partial class MoneyTests
     [TestMethod]
     public void TryAs_WhenCurrencyMatches_ShouldReturnTrueAndTypedValue()
     {
-        Money runtime = new(12.34m, "USD");
+        Money runtime = new(12.34m, CurrencyCode.USD);
 
         Assert.IsTrue(runtime.TryAs(out Money<USD> typed));
         Assert.AreEqual(12.34m, typed.Amount);

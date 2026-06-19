@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
 using Bodu.Test;
 using Bodu.Test.Assertions;
 
@@ -19,7 +20,7 @@ public partial class ExchangeRateTests
     public void WithFetchedAtUtc_WhenInstantSupplied_ShouldSetFetchedAtUtc()
     {
         var fetchedAt = new DateTimeOffset(2024, 1, 3, 9, 30, 0, TimeSpan.Zero);
-        ExchangeRate original = new("USD", "AUD", s_sampleDate, 1.5m, "RBA");
+        ExchangeRate original = new(CurrencyCode.USD, CurrencyCode.AUD, s_sampleDate, 1.5m, "RBA");
 
         ExchangeRate copy = original.WithFetchedAtUtc(fetchedAt);
 
@@ -33,7 +34,7 @@ public partial class ExchangeRateTests
     [TestMethod]
     public void WithFetchedAtUtc_WhenNull_ShouldClearFetchedAtUtc()
     {
-        ExchangeRate original = new("USD", "AUD", s_sampleDate, 1.5m, "RBA", isInverted: false, new DateTimeOffset(2024, 1, 3, 9, 30, 0, TimeSpan.Zero));
+        ExchangeRate original = new(CurrencyCode.USD, CurrencyCode.AUD, s_sampleDate, 1.5m, "RBA", isInverted: false, new DateTimeOffset(2024, 1, 3, 9, 30, 0, TimeSpan.Zero));
 
         ExchangeRate copy = original.WithFetchedAtUtc(null);
 
@@ -47,12 +48,12 @@ public partial class ExchangeRateTests
     [TestMethod]
     public void WithFetchedAtUtc_WhenApplied_ShouldPreserveAllOtherFieldsAndCompareEqual()
     {
-        ExchangeRate original = new("USD", "AUD", s_sampleDate, 1.5m, "RBA");
+        ExchangeRate original = new(CurrencyCode.USD, CurrencyCode.AUD, s_sampleDate, 1.5m, "RBA");
 
         ExchangeRate copy = original.WithFetchedAtUtc(new DateTimeOffset(2024, 1, 3, 9, 30, 0, TimeSpan.Zero));
 
-        Assert.AreEqual(original.FromIsoCode, copy.FromIsoCode);
-        Assert.AreEqual(original.ToIsoCode, copy.ToIsoCode);
+        Assert.AreEqual(original.From, copy.From);
+        Assert.AreEqual(original.To, copy.To);
         Assert.AreEqual(original.Date, copy.Date);
         Assert.AreEqual(original.Rate, copy.Rate);
         Assert.AreEqual(original.Provider, copy.Provider);
@@ -70,7 +71,7 @@ public partial class ExchangeRateTests
     {
         // An inverted rate divides by the original reverse-pair rate; 1/3 is not exactly representable, so a recompute
         // from the rounded public multiplier would drift. The copy must convert identically to the original.
-        ExchangeRate inverted = ExchangeRate.FromObservedRate("AUD", "USD", s_sampleDate, 3m, "RBA", isInverted: true);
+        ExchangeRate inverted = ExchangeRate.FromObservedRate(CurrencyCode.AUD, CurrencyCode.USD, s_sampleDate, 3m, "RBA", isInverted: true);
 
         ExchangeRate copy = inverted.WithFetchedAtUtc(new DateTimeOffset(2024, 1, 3, 9, 30, 0, TimeSpan.Zero));
 

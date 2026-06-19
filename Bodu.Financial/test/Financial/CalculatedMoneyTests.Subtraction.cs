@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
+
 namespace Bodu.Financial;
 
 public partial class CalculatedMoneyTests
@@ -15,6 +17,6 @@ public partial class CalculatedMoneyTests
     [TestMethod]
     public void Subtraction_WhenDifferentCurrencies_ShouldThrowInvalidOperationException()
     {
-        Assert.ThrowsExactly<InvalidOperationException>(() => _ = new CalculatedMoney(1m, "USD") - new CalculatedMoney(1m, "EUR"));
+        Assert.ThrowsExactly<InvalidOperationException>(() => _ = new CalculatedMoney(1m, CurrencyCode.USD) - new CalculatedMoney(1m, CurrencyCode.EUR));
     }
 }

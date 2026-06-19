@@ -120,6 +120,9 @@
   <data name="IO_Invalid_CatalogueDeserialize" xml:space="preserve">
     <value>currencies.json could not be deserialized.</value>
   </data>
+  <data name="IO_Invalid_DuplicateNumericCode" xml:space="preserve">
+    <value>ISO numeric code {0} is shared by '{1}' and '{2}'; CurrencyCode uses the numeric code as the enum value, so each currency must have a unique numeric.</value>
+  </data>
   <data name="IO_Invalid_IsoCodeLength" xml:space="preserve">
     <value>Invalid ISO code: '{0}'.</value>
   </data>

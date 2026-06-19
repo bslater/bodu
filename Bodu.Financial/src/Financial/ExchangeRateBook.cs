@@ -57,8 +57,8 @@ public sealed class ExchangeRateBook
                     string.Format(
                         CultureInfo.CurrentCulture,
                         FinancialResourceStrings.Arg_Invalid_ExchangeRateBookDuplicateKey,
-                        entry.Pair.FromIsoCode,
-                        entry.Pair.ToIsoCode,
+                        entry.Pair.From.ToString(),
+                        entry.Pair.To.ToString(),
                         entry.Provider),
                     nameof(series));
             }

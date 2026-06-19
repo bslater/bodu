@@ -166,7 +166,7 @@ public abstract class FileExchangeRateCacheBase<TOptions>
     /// <param name="pair">The currency pair.</param>
     /// <returns>The file name, for example <c>AUDUSD.toml</c>.</returns>
     protected virtual string BuildFileName(ExchangeRatePair pair) =>
-        $"{pair.FromIsoCode}{pair.ToIsoCode}{FileExtension}";
+        $"{pair.From}{pair.To}{FileExtension}";
 
     /// <summary>
     /// Maps a provider name to a safe path segment by replacing characters that are illegal in a file name.

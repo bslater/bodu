@@ -6,6 +6,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using Bodu.Financial.Currencies;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -206,11 +207,11 @@ public sealed class AggregatingExchangeRateProvider
     public bool TryGetRate(string fromIsoCode, string toIsoCode, DateOnly date, ExchangeRateLookupOptions? options, out ExchangeRateLookupResult result)
     {
         options ??= ExchangeRateLookupOptions.Exact;
-        ExchangeRatePair pair = new(fromIsoCode, toIsoCode);
+        ExchangeRatePair pair = new(CurrencyInfo.ParseCurrencyCode(fromIsoCode), CurrencyInfo.ParseCurrencyCode(toIsoCode));
 
-        if (options.AllowSameCurrencyIdentityRate && string.Equals(pair.FromIsoCode, pair.ToIsoCode, StringComparison.Ordinal))
+        if (options.AllowSameCurrencyIdentityRate && pair.From == pair.To)
         {
-            ExchangeRate identity = new(pair.FromIsoCode, pair.ToIsoCode, date, 1m, IdentityProvider);
+            ExchangeRate identity = new(pair.From, pair.To, date, 1m, IdentityProvider);
             result = new ExchangeRateLookupResult(identity, date, options.DateResolution, 0, ExchangeRateProvenance.Live(identity.Provider));
             return true;
         }
@@ -244,7 +245,7 @@ public sealed class AggregatingExchangeRateProvider
         if (endDate < startDate)
             throw new ArgumentException(CachingResourceStrings.Arg_Invalid_RangeInverted, nameof(endDate));
 
-        ExchangeRatePair pair = new(fromIsoCode, toIsoCode);
+        ExchangeRatePair pair = new(CurrencyInfo.ParseCurrencyCode(fromIsoCode), CurrencyInfo.ParseCurrencyCode(toIsoCode));
         (NamedDatedExchangeRateProvider[] candidates, IExchangeRateAggregationStrategy strategy) = ResolveRoute(pair, allowInverse: false);
 
         if (_logger.IsEnabled(_options.RouteSelectedLogLevel))
@@ -268,7 +269,7 @@ public sealed class AggregatingExchangeRateProvider
         if (endDate < startDate)
             throw new ArgumentException(CachingResourceStrings.Arg_Invalid_RangeInverted, nameof(endDate));
 
-        ExchangeRatePair pair = new(fromIsoCode, toIsoCode);
+        ExchangeRatePair pair = new(CurrencyInfo.ParseCurrencyCode(fromIsoCode), CurrencyInfo.ParseCurrencyCode(toIsoCode));
         (NamedDatedExchangeRateProvider[] candidates, IExchangeRateAggregationStrategy strategy) = ResolveRoute(pair, allowInverse: false);
 
         if (_logger.IsEnabled(_options.RouteSelectedLogLevel))

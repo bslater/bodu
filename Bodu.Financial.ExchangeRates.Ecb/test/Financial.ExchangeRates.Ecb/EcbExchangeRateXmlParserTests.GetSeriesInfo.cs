@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Linq;
+using Bodu.Financial.Currencies;
 
 namespace Bodu.Financial.ExchangeRates.Ecb;
 
@@ -21,8 +22,8 @@ public partial class EcbExchangeRateXmlParserTests
         var pairs = table.GetSeriesInfo().Select(s => s.Pair).ToList();
 
         Assert.AreEqual(3, pairs.Count);
-        CollectionAssert.Contains(pairs, new ExchangeRatePair("EUR", "USD"));
-        CollectionAssert.Contains(pairs, new ExchangeRatePair("EUR", "JPY"));
-        CollectionAssert.Contains(pairs, new ExchangeRatePair("EUR", "GBP"));
+        CollectionAssert.Contains(pairs, new ExchangeRatePair(CurrencyCode.EUR, CurrencyCode.USD));
+        CollectionAssert.Contains(pairs, new ExchangeRatePair(CurrencyCode.EUR, CurrencyCode.JPY));
+        CollectionAssert.Contains(pairs, new ExchangeRatePair(CurrencyCode.EUR, CurrencyCode.GBP));
     }
 }

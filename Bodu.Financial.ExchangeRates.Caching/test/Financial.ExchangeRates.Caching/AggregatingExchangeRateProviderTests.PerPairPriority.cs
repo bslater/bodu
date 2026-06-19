@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
+
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 public sealed partial class AggregatingExchangeRateProviderTests
@@ -17,7 +19,7 @@ public sealed partial class AggregatingExchangeRateProviderTests
         NamedDatedExchangeRateProvider rba = Named("RBA", ("AUD", "USD", D1, 0.50m));
         NamedDatedExchangeRateProvider ecb = Named("ECB", ("AUD", "USD", D1, 0.51m));
         ExchangeRateAggregationOptions options = new();
-        options.Routes[new ExchangeRatePair("AUD", "USD")] = new ExchangeRatePairRoute(new[] { "ECB", "RBA" });
+        options.Routes[new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD)] = new ExchangeRatePairRoute(new[] { "ECB", "RBA" });
         AggregatingExchangeRateProvider agg = new(new[] { rba, ecb }, options);
 
         agg.TryGetRate("AUD", "USD", D1, ExchangeRateLookupOptions.Exact, out ExchangeRateLookupResult result);
@@ -34,8 +36,8 @@ public sealed partial class AggregatingExchangeRateProviderTests
         NamedDatedExchangeRateProvider rba = Named("RBA", ("AUD", "USD", D1, 0.50m), ("USD", "GBP", D1, 0.80m));
         NamedDatedExchangeRateProvider ecb = Named("ECB", ("AUD", "USD", D1, 0.51m), ("USD", "GBP", D1, 0.81m));
         ExchangeRateAggregationOptions options = new();
-        options.Routes[new ExchangeRatePair("AUD", "USD")] = new ExchangeRatePairRoute(new[] { "RBA", "ECB" });
-        options.Routes[new ExchangeRatePair("USD", "GBP")] = new ExchangeRatePairRoute(new[] { "ECB", "RBA" });
+        options.Routes[new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD)] = new ExchangeRatePairRoute(new[] { "RBA", "ECB" });
+        options.Routes[new ExchangeRatePair(CurrencyCode.USD, CurrencyCode.GBP)] = new ExchangeRatePairRoute(new[] { "ECB", "RBA" });
         AggregatingExchangeRateProvider agg = new(new[] { rba, ecb }, options);
 
         agg.TryGetRate("AUD", "USD", D1, ExchangeRateLookupOptions.Exact, out ExchangeRateLookupResult audUsd);
@@ -89,7 +91,7 @@ public sealed partial class AggregatingExchangeRateProviderTests
     public void TryGetRate_WhenInversePairRequested_ShouldUseDirectRouteAndInvert()
     {
         ExchangeRateAggregationOptions options = new();
-        options.Routes[new ExchangeRatePair("AUD", "USD")] = new ExchangeRatePairRoute(new[] { "RBA" });
+        options.Routes[new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD)] = new ExchangeRatePairRoute(new[] { "RBA" });
         AggregatingExchangeRateProvider agg = new(new[] { Named("RBA", ("AUD", "USD", D1, 0.50m)) }, options);
 
         bool found = agg.TryGetRate("USD", "AUD", D1, ExchangeRateLookupOptions.Exact, out ExchangeRateLookupResult result);
@@ -108,7 +110,7 @@ public sealed partial class AggregatingExchangeRateProviderTests
         NamedDatedExchangeRateProvider rba = Named("RBA", ("AUD", "USD", D1, 0.50m));
         NamedDatedExchangeRateProvider ecb = Named("ECB", ("AUD", "USD", D1, 0.52m));
         ExchangeRateAggregationOptions options = new();
-        options.Routes[new ExchangeRatePair("AUD", "USD")] = new ExchangeRatePairRoute(new[] { "RBA", "ECB" }, new AverageStrategy());
+        options.Routes[new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD)] = new ExchangeRatePairRoute(new[] { "RBA", "ECB" }, new AverageStrategy());
         AggregatingExchangeRateProvider agg = new(new[] { rba, ecb }, options);
 
         agg.TryGetRate("AUD", "USD", D1, ExchangeRateLookupOptions.Exact, out ExchangeRateLookupResult result);

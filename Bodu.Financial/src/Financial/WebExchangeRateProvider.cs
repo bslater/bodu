@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using Bodu.Financial.Currencies;
 
 namespace Bodu.Financial;
 
@@ -160,7 +161,7 @@ public abstract class WebExchangeRateProvider
             throw CreateRangeInvertedException(startDate, endDate);
         ValidateRangeRequest(fromIsoCode, toIsoCode, startDate, endDate);
 
-        ExchangeRatePair pair = new(fromIsoCode, toIsoCode);
+        ExchangeRatePair pair = new(CurrencyInfo.ParseCurrencyCode(fromIsoCode), CurrencyInfo.ParseCurrencyCode(toIsoCode));
 
         if (AllowSynchronousNetworkAccess && !IsLoaded(pair, startDate, endDate))
             BlockingLoad(pair, startDate, endDate);
@@ -201,7 +202,7 @@ public abstract class WebExchangeRateProvider
             FinancialThrowHelper.ThrowIfNotValidIsoCode(fromIsoCode);
             FinancialThrowHelper.ThrowIfNotValidIsoCode(toIsoCode);
 
-            ExchangeRatePair pair = new(fromIsoCode, toIsoCode);
+            ExchangeRatePair pair = new(CurrencyInfo.ParseCurrencyCode(fromIsoCode), CurrencyInfo.ParseCurrencyCode(toIsoCode));
             DateOnly startDate = date.AddDays(-(int)DefaultLookback.TotalDays);
             await EnsureLoadedAsync(pair, startDate, date, cancellationToken).ConfigureAwait(false);
         }
@@ -226,7 +227,7 @@ public abstract class WebExchangeRateProvider
             throw CreateRangeInvertedException(startDate, endDate);
         ValidateRangeRequest(fromIsoCode, toIsoCode, startDate, endDate);
 
-        ExchangeRatePair pair = new(fromIsoCode, toIsoCode);
+        ExchangeRatePair pair = new(CurrencyInfo.ParseCurrencyCode(fromIsoCode), CurrencyInfo.ParseCurrencyCode(toIsoCode));
         await EnsureLoadedAsync(pair, startDate, endDate, cancellationToken).ConfigureAwait(false);
 
         return _snapshot.GetRates(fromIsoCode, toIsoCode, startDate, endDate);
@@ -319,7 +320,7 @@ public abstract class WebExchangeRateProvider
         int count = 0;
         foreach (ExchangeRate rate in rates)
         {
-            _builder.Upsert(new ExchangeRatePair(rate.FromIsoCode, rate.ToIsoCode), ProviderId, rate.Date, rate.Rate, fetchedAtUtc);
+            _builder.Upsert(rate.Pair, ProviderId, rate.Date, rate.Rate, fetchedAtUtc);
             OnObservationIngested(rate);
             count++;
         }
@@ -426,7 +427,7 @@ public abstract class WebExchangeRateProvider
         if (string.Equals(fromIsoCode, toIsoCode, StringComparison.Ordinal))
             return false;
 
-        ExchangeRatePair pair = new(fromIsoCode, toIsoCode);
+        ExchangeRatePair pair = new(CurrencyInfo.ParseCurrencyCode(fromIsoCode), CurrencyInfo.ParseCurrencyCode(toIsoCode));
         DateOnly startDate = date.AddDays(-(int)DefaultLookback.TotalDays);
 
         if (IsLoaded(pair, startDate, date))

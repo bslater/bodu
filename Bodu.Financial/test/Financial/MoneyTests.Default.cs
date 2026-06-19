@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
+
 namespace Bodu.Financial;
 
 public partial class MoneyTests
@@ -28,7 +30,7 @@ public partial class MoneyTests
     [TestMethod]
     public void IsDefault_WhenConstructed_ShouldReturnFalse()
     {
-        var money = Money.From(0m, "USD");
+        var money = Money.From(0m, CurrencyCode.USD);
 
         Assert.IsFalse(money.IsDefault);
         Assert.IsTrue(money.HasCurrency);

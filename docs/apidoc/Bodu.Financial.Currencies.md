@@ -11,7 +11,7 @@ uid: Bodu.Financial.Currencies
 ## Static documentation
 
 - **[Bodu.Financial introduction](~/docs/financial/index.md)** — how the tag types fit into the broader monetary surface.
-- **[Working with `Money<TCurrency>`](~/guides/financial/money.md)** — the `ICurrency` tag pattern in context, including custom currencies.
+- **[Working with `Money<TCurrency>`](~/guides/financial/money.md)** — the `ICurrency` tag pattern in context, including units outside the shipped catalogue.
 
 ## Catalogue shape
 
@@ -67,27 +67,27 @@ The shipped catalogue covers every active ISO 4217 currency plus a curated set o
 
 **Cash rounding** — `CHF`, `AUD`, `CAD`, `NZD`, `SEK`, `NOK`, `ISK` and a handful of others declare a non-zero `CashRoundingIncrement` for physical cash totals (5-rappen / 5-cent / 10-cent / whole-krone). See [Cash rounding](~/guides/financial/money.md#cash-rounding).
 
-## Adding a custom currency
+## A unit outside the shipped catalogue
 
-Implement <xref:Bodu.Financial.ICurrency> directly and register the metadata with <xref:Bodu.Financial.CurrencyRegistry> so `Money` and `MoneyBag` round at the correct precision when they see the ISO code at runtime:
+The shipped <xref:Bodu.Financial.Currencies.CurrencyCode> catalogue is closed, so the runtime <xref:Bodu.Financial.Money> cannot hold a code it does not define. For a *generic* amount in a unit outside ISO 4217 — a commodity, a loyalty-point unit — implement <xref:Bodu.Financial.ICurrency> directly and use `Money<TCurrency>`; the tag carries its own precision and never consults the runtime catalogue (its `IsoCode` must still be three uppercase ASCII letters):
 
 ```csharp
-public sealed class DOGE : ICurrency
+public sealed class XPT : ICurrency      // troy ounces of platinum, say
 {
-    public static string IsoCode    => "DOGE";
-    public static int    MinorUnits => 8;
-    private DOGE() { }
+    public static string IsoCode    => "XPT";
+    public static int    MinorUnits => 4;
+    private XPT() { }
 }
 
-CurrencyRegistry.Register(
-    new CurrencyInfo("DOGE", MinorUnits: 8, CashRoundingIncrement: 0m,
-                     IsHistoric: false, DemonetizedOn: null, SuccessorIsoCode: null));
+Money<XPT> holding = new Money<XPT>(12.3456m);   // generic arithmetic only
 ```
+
+Because `XPT` is not a `CurrencyCode` member, the value cannot bridge to the runtime-tagged `Money`. To substitute or restrict the metadata used for the *shipped* currencies — for a test, or an alternate data source — install a custom `ICurrencyLookup` through <xref:Bodu.Financial.CurrencyResolution>.
 
 ## Notes
 
 - **Sealed + private constructor.** Every tag type seals itself and hides its constructor, so the tag can only ever exist statically. `Money<USD>` is the only way to materialise a value tagged as USD.
 - **Static-abstract metadata.** All members are static via the `ICurrency` static-abstract pattern; consumers read them as `TCurrency.IsoCode` in generic code.
 - **Optional members default sensibly.** `CashRoundingIncrement`, `IsHistoric`, `DemonetizedOn`, `SuccessorIsoCode` have sensible defaults via `static virtual` so most currencies declare only `IsoCode` and `MinorUnits`.
-- **ISO numeric codes.** <xref:Bodu.Financial.Currencies.CurrencyCode> is an enum whose members are the three-letter ISO 4217 alphabetic codes and whose values are the corresponding ISO 4217 numeric codes; historic codes are intentionally excluded so the enum stays stable when a code is retired.
+- **ISO numeric codes.** <xref:Bodu.Financial.Currencies.CurrencyCode> is an enum whose members are the three-letter ISO 4217 alphabetic codes and whose values are the corresponding ISO 4217 numeric codes; both active and historic codes are members — each annotated with a `[CurrencyStatus]` attribute — alongside a `None` sentinel valued `0`.
 - **See also:** the [`Bodu.Financial` reference](xref:Bodu.Financial), the [`Money<TCurrency>` guide](~/guides/financial/money.md), [`CurrencyRegistry`](xref:Bodu.Financial.CurrencyRegistry).

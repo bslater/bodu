@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
+
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 public sealed partial class CachingExchangeRateProviderTests
@@ -16,7 +18,7 @@ public sealed partial class CachingExchangeRateProviderTests
     public void GetRate_WhenCacheFresh_ShouldServeWithoutInner()
     {
         CountingDatedExchangeRateProvider inner = InnerWith();
-        SeedCache(new ExchangeRatePair("AUD", "USD"), (new DateOnly(2023, 1, 3), 0.5m));
+        SeedCache(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), (new DateOnly(2023, 1, 3), 0.5m));
         CachingExchangeRateProvider sut = CreateDecorator(inner);
 
         ExchangeRateLookupResult result = sut.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact);
@@ -37,7 +39,7 @@ public sealed partial class CachingExchangeRateProviderTests
 
         _ = sut.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact);
 
-        IReadOnlyList<CachedExchangeRate> cached = _cache.GetRates(new ExchangeRatePair("AUD", "USD"), Duration, _clock.GetUtcNow());
+        IReadOnlyList<CachedExchangeRate> cached = _cache.GetRates(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), Duration, _clock.GetUtcNow());
         Assert.AreEqual(1, cached.Count);
         Assert.AreEqual(0.5m, cached[0].Rate);
         Assert.AreEqual(1, inner.TotalCallCount);

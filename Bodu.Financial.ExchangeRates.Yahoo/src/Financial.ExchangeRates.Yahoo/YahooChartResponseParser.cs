@@ -58,7 +58,7 @@ internal static class YahooChartResponseParser
         if (!TryGetCloseArray(first, out JsonElement closes))
             throw NoData(request);
 
-        string quoteIsoCode = ReadQuoteIsoCode(first, request.Pair.ToIsoCode);
+        string quoteIsoCode = ReadQuoteIsoCode(first, request.Pair.To.ToString());
 
         int count = Math.Min(timestamps.GetArrayLength(), closes.GetArrayLength());
         var observations = new List<ExchangeRateObservation>(count);

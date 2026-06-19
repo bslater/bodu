@@ -20,8 +20,8 @@ public partial class AttributeBoundJsonContractTests
     public void MoneyBag_WhenSerializedViaAttribute_ShouldEmitStrictBalancesShapeAndRoundTrip()
     {
         MoneyBag bag = MoneyBag.Empty
-            .Add(new Money(10m, "USD"))
-            .Add(new Money(5m, "EUR"));
+            .Add(new Money(10m, CurrencyCode.USD))
+            .Add(new Money(5m, CurrencyCode.EUR));
 
         string json = JsonSerializer.Serialize(bag);
 

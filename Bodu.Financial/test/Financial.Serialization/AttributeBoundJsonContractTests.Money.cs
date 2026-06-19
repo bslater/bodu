@@ -19,7 +19,7 @@ public partial class AttributeBoundJsonContractTests
     [TestCategory("Smoke")]
     public void Money_WhenSerializedViaAttribute_ShouldEmitStrictObjectShapeAndRoundTrip()
     {
-        var value = new Money(19.99m, "USD");
+        var value = new Money(19.99m, CurrencyCode.USD);
 
         string json = JsonSerializer.Serialize(value);
 
@@ -34,7 +34,7 @@ public partial class AttributeBoundJsonContractTests
     [TestMethod]
     public void Money_WhenSerializedViaAttribute_ShouldNotEmitCompactString()
     {
-        string json = JsonSerializer.Serialize(new Money(19.99m, "USD"));
+        string json = JsonSerializer.Serialize(new Money(19.99m, CurrencyCode.USD));
 
         Assert.IsTrue(json.StartsWith("{", StringComparison.Ordinal), $"Expected Strict object shape, got '{json}'.");
     }

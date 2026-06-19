@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using Bodu.Financial.Currencies;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -223,7 +224,7 @@ public abstract class CachingExchangeRateProviderBase
         if (endDate < startDate)
             throw new ArgumentException(CachingResourceStrings.Arg_Invalid_RangeInverted, nameof(endDate));
 
-        ExchangeRatePair pair = new(fromIsoCode, toIsoCode);
+        ExchangeRatePair pair = new(CurrencyInfo.ParseCurrencyCode(fromIsoCode), CurrencyInfo.ParseCurrencyCode(toIsoCode));
         var now = _timeProvider.GetUtcNow();
         var duration = _options.GetExpiry(_cache.Provider);
 
@@ -258,7 +259,7 @@ public abstract class CachingExchangeRateProviderBase
         if (endDate < startDate)
             throw new ArgumentException(CachingResourceStrings.Arg_Invalid_RangeInverted, nameof(endDate));
 
-        ExchangeRatePair pair = new(fromIsoCode, toIsoCode);
+        ExchangeRatePair pair = new(CurrencyInfo.ParseCurrencyCode(fromIsoCode), CurrencyInfo.ParseCurrencyCode(toIsoCode));
         var now = _timeProvider.GetUtcNow();
         var duration = _options.GetExpiry(_cache.Provider);
 
@@ -332,7 +333,7 @@ public abstract class CachingExchangeRateProviderBase
     /// </returns>
     private bool TryServeFromCache(TimeSpan duration, string fromIsoCode, string toIsoCode, DateOnly date, ExchangeRateLookupOptions? options, DateTimeOffset now, out ExchangeRateLookupResult result, out DateTimeOffset? servedCachedAtUtc)
     {
-        ExchangeRatePair pair = new(fromIsoCode, toIsoCode);
+        ExchangeRatePair pair = new(CurrencyInfo.ParseCurrencyCode(fromIsoCode), CurrencyInfo.ParseCurrencyCode(toIsoCode));
 
         IReadOnlyList<CachedExchangeRate> direct = _cache.GetRates(pair, duration, now);
 
@@ -351,9 +352,9 @@ public abstract class CachingExchangeRateProviderBase
         string provider = _cache.Provider;
         List<ExchangeRate> rates = new(direct.Count + inverse.Count);
         foreach (CachedExchangeRate rate in direct)
-            rates.Add(new ExchangeRate(fromIsoCode, toIsoCode, rate.Date, rate.Rate, provider));
+            rates.Add(new ExchangeRate(pair.From, pair.To, rate.Date, rate.Rate, provider));
         foreach (CachedExchangeRate rate in inverse)
-            rates.Add(new ExchangeRate(toIsoCode, fromIsoCode, rate.Date, rate.Rate, provider));
+            rates.Add(new ExchangeRate(pair.To, pair.From, rate.Date, rate.Rate, provider));
 
         FixedDatedExchangeRateProvider snapshot = new(rates);
         if (!snapshot.TryGetRate(fromIsoCode, toIsoCode, date, options, out result))
@@ -446,8 +447,8 @@ public abstract class CachingExchangeRateProviderBase
 
         // The output always carries the requested direction. When inverting, the cached pair is the requested pair's
         // inverse, so the requested from/to are the cached pair's to/from.
-        string fromIsoCode = invert ? cachedPair.ToIsoCode : cachedPair.FromIsoCode;
-        string toIsoCode = invert ? cachedPair.FromIsoCode : cachedPair.ToIsoCode;
+        CurrencyCode fromCode = invert ? cachedPair.To : cachedPair.From;
+        CurrencyCode toCode = invert ? cachedPair.From : cachedPair.To;
 
         List<ExchangeRate> rates = new();
         DateTimeOffset? oldest = null;
@@ -464,7 +465,7 @@ public abstract class CachingExchangeRateProviderBase
 
             // This serve path returns the rebuilt rows directly, so the cached fetch instant is stamped onto the rate
             // here rather than restored later; no FixedDatedExchangeRateProvider round-trip drops it.
-            rates.Add(new ExchangeRate(fromIsoCode, toIsoCode, rate.Date, value, provider, isInverted: invert, rate.ObservedAtUtc));
+            rates.Add(new ExchangeRate(fromCode, toCode, rate.Date, value, provider, isInverted: invert, rate.ObservedAtUtc));
             if (oldest is not { } current || rate.CachedAtUtc < current)
                 oldest = rate.CachedAtUtc;
         }
@@ -490,7 +491,7 @@ public abstract class CachingExchangeRateProviderBase
     /// </remarks>
     private void StoreResult(TimeSpan duration, string fromIsoCode, string toIsoCode, ExchangeRateLookupResult result, DateTimeOffset now)
     {
-        ExchangeRatePair pair = new(fromIsoCode, toIsoCode);
+        ExchangeRatePair pair = new(CurrencyInfo.ParseCurrencyCode(fromIsoCode), CurrencyInfo.ParseCurrencyCode(toIsoCode));
         CachedExchangeRate[] rows = { new(result.Rate.Date, result.Rate.Rate, now, result.Rate.FetchedAtUtc) };
         _cache.Store(pair, rows, duration, now);
     }

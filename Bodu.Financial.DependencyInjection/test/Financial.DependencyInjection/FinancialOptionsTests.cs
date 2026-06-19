@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Financial;
 using Bodu.Financial.Serialization;
 
 namespace Bodu.Financial.DependencyInjection;
@@ -19,11 +18,10 @@ public sealed class FinancialOptionsTests
     /// Verifies that a freshly constructed options instance exposes the documented defaults.
     /// </summary>
     [TestMethod]
-    public void Defaults_WhenConstructed_ShouldBeStrictAndReject()
+    public void Defaults_WhenConstructed_ShouldBeStrict()
     {
         FinancialOptions options = new();
 
         Assert.AreEqual(FinancialJsonPolicy.Strict, options.JsonPolicy);
-        Assert.AreEqual(UnknownCurrencyPolicy.Reject, options.UnknownCurrency);
     }
 }

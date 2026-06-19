@@ -96,5 +96,5 @@ public class DistributedExchangeRateCacheOptions
     /// a colon and concatenated so that no two distinct pairs (or providers) can ever map to the same key.
     /// </remarks>
     internal string BuildKey(ExchangeRatePair pair) =>
-        string.Format(CultureInfo.InvariantCulture, "{0}{1}:{2}{3}", KeyPrefix, Provider, pair.FromIsoCode, pair.ToIsoCode);
+        string.Format(CultureInfo.InvariantCulture, "{0}{1}:{2}{3}", KeyPrefix, Provider, pair.From, pair.To);
 }

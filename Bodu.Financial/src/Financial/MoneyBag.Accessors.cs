@@ -34,21 +34,18 @@ public sealed partial class MoneyBag
         new(balances);
 
     /// <summary>
-    /// Attempts to retrieve the balance for the currency identified by <paramref name="isoCode" />.
+    /// Attempts to retrieve the balance for the currency identified by <paramref name="code" />.
     /// </summary>
-    /// <param name="isoCode">The ISO 4217 code.</param>
+    /// <param name="code">The currency identifying the balance.</param>
     /// <param name="balance">When this method returns <see langword="true" />, the runtime-tagged balance.</param>
     /// <returns>
     /// <see langword="true" /> when the bag has an entry for the currency; otherwise <see langword="false" />.
     /// </returns>
-    /// <exception cref="ArgumentNullException"><paramref name="isoCode" /> is <see langword="null" />.</exception>
-    public bool TryGetBalance(string isoCode, out Money balance)
+    public bool TryGetBalance(CurrencyCode code, out Money balance)
     {
-        ThrowHelper.ThrowIfNull(isoCode);
-
-        if (_balances.TryGetValue(isoCode, out decimal amount))
+        if (code != CurrencyCode.None && _balances.TryGetValue(code, out decimal amount))
         {
-            balance = Money.FromNormalized(amount, isoCode);
+            balance = Money.FromNormalized(amount, code);
             return true;
         }
 
@@ -63,18 +60,23 @@ public sealed partial class MoneyBag
     /// <param name="currency">The currency metadata identifying the balance.</param>
     /// <returns>The balance, or <see langword="null" /> when absent.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="currency" /> is <see langword="null" />.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// <paramref name="currency" />'s ISO code does not correspond to any <see cref="CurrencyCode" /> member.
+    /// </exception>
     public Money? GetBalance(CurrencyInfo currency)
     {
         ThrowHelper.ThrowIfNull(currency);
-        return GetBalance(currency.IsoCode);
+        return GetBalance(currency.ToCurrencyCode());
     }
 
     /// <summary>
     /// Returns the balance for the currency identified by <paramref name="code" />, or <see langword="null" /> when the
     /// bag has no entry for that currency.
     /// </summary>
-    /// <param name="code">The active ISO 4217 currency code.</param>
+    /// <param name="code">The currency identifying the balance.</param>
     /// <returns>The balance, or <see langword="null" /> when absent.</returns>
     public Money? GetBalance(CurrencyCode code) =>
-        GetBalance(code.ToString());
+        code != CurrencyCode.None && _balances.TryGetValue(code, out decimal amount)
+            ? Money.FromNormalized(amount, code)
+            : null;
 }

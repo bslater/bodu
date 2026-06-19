@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
+
 namespace Bodu.Financial;
 
 public partial class MoneyBagTests
@@ -15,8 +17,8 @@ public partial class MoneyBagTests
     [TestMethod]
     public void Equality_WhenSameBalances_ShouldBeEqualThroughEveryMember()
     {
-        var a = new MoneyBag([new Money(10m, "USD"), new Money(5m, "EUR")]);
-        var b = new MoneyBag([new Money(5m, "EUR"), new Money(10m, "USD")]);
+        var a = new MoneyBag([new Money(10m, CurrencyCode.USD), new Money(5m, CurrencyCode.EUR)]);
+        var b = new MoneyBag([new Money(5m, CurrencyCode.EUR), new Money(10m, CurrencyCode.USD)]);
 
         Assert.IsTrue(a.Equals(b));
         Assert.IsTrue(a.Equals((object)b));
@@ -31,9 +33,9 @@ public partial class MoneyBagTests
     [TestMethod]
     public void Equality_WhenBalancesDiffer_ShouldNotBeEqual()
     {
-        var a = new MoneyBag([new Money(10m, "USD")]);
-        var differentAmount = new MoneyBag([new Money(20m, "USD")]);
-        var differentCount = new MoneyBag([new Money(10m, "USD"), new Money(1m, "EUR")]);
+        var a = new MoneyBag([new Money(10m, CurrencyCode.USD)]);
+        var differentAmount = new MoneyBag([new Money(20m, CurrencyCode.USD)]);
+        var differentCount = new MoneyBag([new Money(10m, CurrencyCode.USD), new Money(1m, CurrencyCode.EUR)]);
 
         Assert.IsFalse(a.Equals(differentAmount));
         Assert.IsFalse(a.Equals(differentCount));
@@ -47,7 +49,7 @@ public partial class MoneyBagTests
     [TestMethod]
     public void EqualityOperators_WhenOperandIsNull_ShouldHandleNull()
     {
-        var bag = new MoneyBag([new Money(1m, "USD")]);
+        var bag = new MoneyBag([new Money(1m, CurrencyCode.USD)]);
 
         Assert.IsTrue((MoneyBag?)null == (MoneyBag?)null);
         Assert.IsFalse(bag == null);

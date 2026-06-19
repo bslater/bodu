@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
+
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 public sealed partial class CachingExchangeRateProviderTests
@@ -19,7 +21,7 @@ public sealed partial class CachingExchangeRateProviderTests
             ("AUD", "USD", new DateOnly(2023, 1, 3), 0.5m),
             ("AUD", "USD", new DateOnly(2023, 1, 5), 0.505m),
             ("AUD", "USD", new DateOnly(2023, 1, 6), 0.51m));
-        ExchangeRatePair pair = new("AUD", "USD");
+        ExchangeRatePair pair = new(CurrencyCode.AUD, CurrencyCode.USD);
 
         // Seed rows that span 3..6 and coverage for only the disjoint ends 3..3 and 6..6: the interior of 4..5 was never
         // fetched, so a 3..6 request must not be served from the cache.
@@ -138,7 +140,7 @@ public sealed partial class CachingExchangeRateProviderTests
         var now = _clock.GetUtcNow();
 
         ExchangeRateCacheWriteStatus status = failingCache.StoreFetchedRange(
-            new ExchangeRatePair("AUD", "USD"),
+            new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD),
             new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5m, now) },
             new DateOnly(2023, 1, 3),
             new DateOnly(2023, 1, 3),

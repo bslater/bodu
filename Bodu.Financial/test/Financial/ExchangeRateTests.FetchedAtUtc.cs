@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
 using Bodu.Test;
 using Bodu.Test.Assertions;
 
@@ -19,7 +20,7 @@ public partial class ExchangeRateTests
     public void FetchedAtUtc_WhenSupplied_ShouldBeExposed()
     {
         DateTimeOffset fetchedAt = new(2024, 1, 3, 9, 30, 0, TimeSpan.Zero);
-        ExchangeRate rate = new("USD", "AUD", s_sampleDate, 1.5m, "RBA", isInverted: false, fetchedAt);
+        ExchangeRate rate = new(CurrencyCode.USD, CurrencyCode.AUD, s_sampleDate, 1.5m, "RBA", isInverted: false, fetchedAt);
 
         Assert.AreEqual(fetchedAt, rate.FetchedAtUtc);
     }
@@ -31,7 +32,7 @@ public partial class ExchangeRateTests
     [TestMethod]
     public void FetchedAtUtc_WhenOmitted_ShouldBeNull()
     {
-        ExchangeRate rate = new("USD", "AUD", s_sampleDate, 1.5m, "RBA");
+        ExchangeRate rate = new(CurrencyCode.USD, CurrencyCode.AUD, s_sampleDate, 1.5m, "RBA");
 
         Assert.IsNull(rate.FetchedAtUtc);
     }

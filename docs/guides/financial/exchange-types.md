@@ -49,7 +49,7 @@ the destination currency's minor-unit precision is applied only when
 the rate meets a `Money` at the conversion boundary.
 
 ```csharp
-var rate = new ExchangeRate("USD", "EUR", new DateOnly(2024, 6, 14), 0.928m, "ECB");
+var rate = new ExchangeRate(CurrencyCode.USD, CurrencyCode.EUR, new DateOnly(2024, 6, 14), 0.928m, "ECB");
 decimal eurAmount = rate.Convert(100m);   // 92.80 — unrounded
 ```
 
@@ -122,7 +122,7 @@ atomic rollback — a mid-batch failure leaves the builder untouched.
 builder because a series must hold at least one observation.
 
 ```csharp
-var builder = new ExchangeRateSeriesBuilder(new ExchangeRatePair("USD", "AUD"), "RBA");
+var builder = new ExchangeRateSeriesBuilder(new ExchangeRatePair(CurrencyCode.USD, CurrencyCode.AUD), "RBA");
 builder.Add(new DateOnly(2026, 6, 1), 1.50m);
 builder.Upsert(new DateOnly(2026, 6, 1), 1.51m);   // replace
 ExchangeRateSeries series = builder.ToSeries();
@@ -152,8 +152,8 @@ materialises the whole `ExchangeRateBook` ready to hand to a provider.
 
 ```csharp
 var table = new ExchangeRateTableBuilder();
-table.Upsert(new ExchangeRatePair("USD", "AUD"), "RBA", new DateOnly(2026, 6, 1), 1.50m);
-table.Upsert(new ExchangeRatePair("USD", "JPY"), "BoJ", new DateOnly(2026, 6, 1), 110m);
+table.Upsert(new ExchangeRatePair(CurrencyCode.USD, CurrencyCode.AUD), "RBA", new DateOnly(2026, 6, 1), 1.50m);
+table.Upsert(new ExchangeRatePair(CurrencyCode.USD, CurrencyCode.JPY), "BoJ", new DateOnly(2026, 6, 1), 110m);
 
 var provider = new FixedDatedExchangeRateProvider(table.ToBook());
 ```

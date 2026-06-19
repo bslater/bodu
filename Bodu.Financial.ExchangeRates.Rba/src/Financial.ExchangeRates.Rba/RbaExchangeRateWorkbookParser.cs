@@ -265,7 +265,7 @@ internal static class RbaExchangeRateWorkbookParser
             && char.IsAsciiLetterUpper(raw[0])
             && char.IsAsciiLetterUpper(raw[1])
             && char.IsAsciiLetterUpper(raw[2])
-            && !string.Equals(raw, RbaExchangeRateProvider.BaseCurrencyIsoCode, StringComparison.Ordinal);
+            && !string.Equals(raw, RbaExchangeRateProvider.BaseCurrency.ToString(), StringComparison.Ordinal);
 
         return isCurrency ? raw : null;
     }

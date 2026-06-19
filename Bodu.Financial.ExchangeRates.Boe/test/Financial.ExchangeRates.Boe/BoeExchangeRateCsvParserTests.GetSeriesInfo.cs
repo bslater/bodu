@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Linq;
+using Bodu.Financial.Currencies;
 
 namespace Bodu.Financial.ExchangeRates.Boe;
 
@@ -20,7 +21,7 @@ public partial class BoeExchangeRateCsvParserTests
 
         BoeSeriesInfo usd = table.GetSeriesInfo().Single(s => s.QuoteIsoCode == "USD");
 
-        Assert.AreEqual(new ExchangeRatePair("GBP", "USD"), usd.Pair);
+        Assert.AreEqual(new ExchangeRatePair(CurrencyCode.GBP, CurrencyCode.USD), usd.Pair);
         Assert.AreEqual("XUDLUSS", usd.SeriesCode);
     }
 }

@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
+
 namespace Bodu.Financial;
 
 public partial class CalculatedMoneyTests
@@ -15,8 +17,8 @@ public partial class CalculatedMoneyTests
     [TestMethod]
     public void Addition_WhenDifferentCurrencies_ShouldThrowInvalidOperationException()
     {
-        CalculatedMoney usd = new(1m, "USD");
-        CalculatedMoney eur = new(1m, "EUR");
+        CalculatedMoney usd = new(1m, CurrencyCode.USD);
+        CalculatedMoney eur = new(1m, CurrencyCode.EUR);
 
         Assert.ThrowsExactly<InvalidOperationException>(() => _ = usd + eur);
     }

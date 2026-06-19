@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
+
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 public sealed partial class CachingExchangeRateProviderTests
@@ -16,7 +18,7 @@ public sealed partial class CachingExchangeRateProviderTests
     public void TryGetRate_WhenInverseCachedAndAllowed_ShouldServeFromCache()
     {
         CountingDatedExchangeRateProvider inner = InnerWith();
-        SeedCache(new ExchangeRatePair("AUD", "USD"), (new DateOnly(2023, 1, 3), 0.5m));
+        SeedCache(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), (new DateOnly(2023, 1, 3), 0.5m));
         CachingExchangeRateProvider sut = CreateDecorator(inner);
 
         bool found = sut.TryGetRate("USD", "AUD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact, out ExchangeRateLookupResult result);
@@ -35,7 +37,7 @@ public sealed partial class CachingExchangeRateProviderTests
     public void TryGetRate_WhenInverseCachedButDisallowed_ShouldDelegateToInner()
     {
         CountingDatedExchangeRateProvider inner = InnerWith();
-        SeedCache(new ExchangeRatePair("AUD", "USD"), (new DateOnly(2023, 1, 3), 0.5m));
+        SeedCache(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), (new DateOnly(2023, 1, 3), 0.5m));
         CachingExchangeRateProvider sut = CreateDecorator(inner);
 
         var options = new ExchangeRateLookupOptions(ExchangeRateDateResolution.Exact, allowInverse: false);

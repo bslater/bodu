@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
 using Bodu.Test;
 using Bodu.Test.Assertions;
 
@@ -16,7 +17,7 @@ public partial class FixedDatedExchangeRateProviderTests
 
     private static ExchangeRate[] SingleRate() =>
     [
-        new ExchangeRate("USD", "AUD", s_d1, 1.50m, "RBA"),
+        new ExchangeRate(CurrencyCode.USD, CurrencyCode.AUD, s_d1, 1.50m, "RBA"),
     ];
 
     /// <summary>
@@ -65,8 +66,8 @@ public partial class FixedDatedExchangeRateProviderTests
     {
         ExchangeRate[] rates =
         [
-            new ExchangeRate("USD", "AUD", new DateOnly(2024, 1, 2), 1.50m, "RBA"),
-            new ExchangeRate("USD", "AUD", new DateOnly(2024, 1, 3), 1.51m, "ECB"),
+            new ExchangeRate(CurrencyCode.USD, CurrencyCode.AUD, new DateOnly(2024, 1, 2), 1.50m, "RBA"),
+            new ExchangeRate(CurrencyCode.USD, CurrencyCode.AUD, new DateOnly(2024, 1, 3), 1.51m, "ECB"),
         ];
 
         ExceptionAssert.ThrowsExactlyWithParamName<ArgumentException>(
@@ -86,8 +87,8 @@ public partial class FixedDatedExchangeRateProviderTests
     {
         ExchangeRate[] rates =
         [
-            new ExchangeRate("USD", "AUD", s_d1, 1.50m, "RBA"),
-            new ExchangeRate("USD", "AUD", s_d1, 1.51m, "RBA"),
+            new ExchangeRate(CurrencyCode.USD, CurrencyCode.AUD, s_d1, 1.50m, "RBA"),
+            new ExchangeRate(CurrencyCode.USD, CurrencyCode.AUD, s_d1, 1.51m, "RBA"),
         ];
 
         ExceptionAssert.ThrowsExactlyWithParamName<ArgumentException>(

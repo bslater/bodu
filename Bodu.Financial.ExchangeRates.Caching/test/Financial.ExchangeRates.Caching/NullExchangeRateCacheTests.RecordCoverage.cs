@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
+
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 public sealed partial class NullExchangeRateCacheTests
@@ -16,7 +18,7 @@ public sealed partial class NullExchangeRateCacheTests
     public void RecordCoverage_WhenStartAfterEnd_ShouldThrowArgumentOutOfRangeException()
     {
         IExchangeRateCache cache = NullExchangeRateCache.Create("Yahoo");
-        ExchangeRatePair pair = new("AUD", "USD");
+        ExchangeRatePair pair = new(CurrencyCode.AUD, CurrencyCode.USD);
 
         var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

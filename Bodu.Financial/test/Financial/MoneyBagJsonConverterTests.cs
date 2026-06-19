@@ -6,6 +6,7 @@
 
 using System.Linq;
 using System.Text.Json;
+using Bodu.Financial.Currencies;
 using Bodu.Financial.Serialization;
 
 namespace Bodu.Financial;
@@ -21,5 +22,5 @@ public partial class MoneyBagJsonConverterTests
         new JsonSerializerOptions().AddFinancialJsonConverters(policy);
 
     private static MoneyBag SampleBag() =>
-        new([new Money(10m, "USD"), new Money(5m, "EUR")]);
+        new([new Money(10m, CurrencyCode.USD), new Money(5m, CurrencyCode.EUR)]);
 }

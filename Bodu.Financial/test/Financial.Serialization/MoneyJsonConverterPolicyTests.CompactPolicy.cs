@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Text.Json;
+using Bodu.Financial.Currencies;
 
 namespace Bodu.Financial.Serialization;
 
@@ -17,7 +18,7 @@ public partial class MoneyJsonConverterPolicyTests
     [TestMethod]
     public void CompactPolicy_WhenSerializing_ShouldEmitAmountSpaceIsoString()
     {
-        var value = new Money(19.99m, "USD");
+        var value = new Money(19.99m, CurrencyCode.USD);
 
         string json = JsonSerializer.Serialize(value, Options(FinancialJsonPolicy.Compact));
 
@@ -30,7 +31,7 @@ public partial class MoneyJsonConverterPolicyTests
     [TestMethod]
     public void CompactPolicy_WhenRoundTripping_ShouldPreserveValue()
     {
-        var original = new Money(1234.56m, "USD");
+        var original = new Money(1234.56m, CurrencyCode.USD);
         JsonSerializerOptions options = Options(FinancialJsonPolicy.Compact);
 
         string json = JsonSerializer.Serialize(original, options);
@@ -49,7 +50,7 @@ public partial class MoneyJsonConverterPolicyTests
 
         Money result = JsonSerializer.Deserialize<Money>(json, Options(FinancialJsonPolicy.Compact));
 
-        Assert.AreEqual(new Money(19.99m, "USD"), result);
+        Assert.AreEqual(new Money(19.99m, CurrencyCode.USD), result);
     }
 
     /// <summary>

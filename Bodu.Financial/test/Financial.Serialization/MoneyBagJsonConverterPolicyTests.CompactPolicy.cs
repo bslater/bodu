@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Text.Json;
+using Bodu.Financial.Currencies;
 
 namespace Bodu.Financial.Serialization;
 
@@ -18,8 +19,8 @@ public partial class MoneyBagJsonConverterPolicyTests
     public void CompactPolicy_WhenSerializing_ShouldEmitFlatMapWithoutBalancesWrapper()
     {
         MoneyBag bag = MoneyBag.Empty
-            .Add(new Money(12.34m, "AUD"))
-            .Add(new Money(56.78m, "USD"));
+            .Add(new Money(12.34m, CurrencyCode.AUD))
+            .Add(new Money(56.78m, CurrencyCode.USD));
 
         string json = JsonSerializer.Serialize(bag, Options(FinancialJsonPolicy.Compact));
 
@@ -37,8 +38,8 @@ public partial class MoneyBagJsonConverterPolicyTests
         MoneyBag bag = JsonSerializer.Deserialize<MoneyBag>(json, Options(FinancialJsonPolicy.Compact))!;
 
         Assert.AreEqual(2, bag.Count);
-        Assert.AreEqual(12.34m, bag.GetBalance("AUD")!.Value.Amount);
-        Assert.AreEqual(56.78m, bag.GetBalance("USD")!.Value.Amount);
+        Assert.AreEqual(12.34m, bag.GetBalance(CurrencyCode.AUD)!.Value.Amount);
+        Assert.AreEqual(56.78m, bag.GetBalance(CurrencyCode.USD)!.Value.Amount);
     }
 
     /// <summary>
@@ -48,8 +49,8 @@ public partial class MoneyBagJsonConverterPolicyTests
     public void CompactPolicy_WhenRoundTripping_ShouldPreserveBalances()
     {
         MoneyBag original = MoneyBag.Empty
-            .Add(new Money(100m, "EUR"))
-            .Add(new Money(50m, "GBP"));
+            .Add(new Money(100m, CurrencyCode.EUR))
+            .Add(new Money(50m, CurrencyCode.GBP));
         JsonSerializerOptions options = Options(FinancialJsonPolicy.Compact);
 
         string json = JsonSerializer.Serialize(original, options);

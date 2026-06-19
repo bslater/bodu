@@ -7,6 +7,7 @@
 using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Bodu.Financial.Currencies;
 
 namespace Bodu.Financial.Serialization;
 
@@ -69,7 +70,7 @@ public sealed class MoneyBagJsonConverter
         {
             writer.WriteStartObject();
             foreach (Money balance in value)
-                writer.WriteNumber(balance.IsoCode, balance.Amount);
+                writer.WriteNumber(balance.Code.ToString(), balance.Amount);
             writer.WriteEndObject();
             return;
         }
@@ -77,7 +78,7 @@ public sealed class MoneyBagJsonConverter
         writer.WriteStartObject();
         writer.WriteStartObject("balances");
         foreach (Money balance in value)
-            writer.WriteNumber(balance.IsoCode, balance.Amount);
+            writer.WriteNumber(balance.Code.ToString(), balance.Amount);
         writer.WriteEndObject();
         writer.WriteEndObject();
     }
@@ -173,7 +174,13 @@ public sealed class MoneyBagJsonConverter
                     string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Json_Invalid_BalanceMustBeNumber, iso));
             }
 
-            entries.Add(new Money(amount, iso));
+            if (!CurrencyInfo.TryGetCurrencyCode(iso, out CurrencyCode code))
+            {
+                throw new JsonException(
+                    string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Arg_Invalid_UnknownCurrencyRejected, iso));
+            }
+
+            entries.Add(new Money(amount, code));
         }
     }
 }

@@ -21,9 +21,9 @@ public partial class MoneyBagTests
     /// <returns>The provider.</returns>
     private static IDatedExchangeRateProvider BuildDatedProvider() => new FixedDatedExchangeRateProvider(
     [
-        new ExchangeRate("EUR", "USD", s_asOf, 1.10m, "RBA"),
-        new ExchangeRate("JPY", "USD", s_asOf, 0.0067m, "RBA"),
-        new ExchangeRate("GBP", "USD", s_asOf, 1.25m, "RBA"),
+        new ExchangeRate(CurrencyCode.EUR, CurrencyCode.USD,s_asOf, 1.10m, "RBA"),
+        new ExchangeRate(CurrencyCode.JPY, CurrencyCode.USD,s_asOf, 0.0067m, "RBA"),
+        new ExchangeRate(CurrencyCode.GBP, CurrencyCode.USD,s_asOf, 1.25m, "RBA"),
     ]);
 
     /// <summary>
@@ -53,17 +53,17 @@ public partial class MoneyBagTests
     [DataRow(MoneyBagConversionRoundingPolicy.RoundEachCurrencyThenSum, 0.00)]
     public void DatedConvertTo_WhenTwoSubMinorUnitLinesAggregate_ShouldHonourPolicy(MoneyBagConversionRoundingPolicy policy, double expected)
     {
-        // Use unregistered currency tags (valid ISO shape, not in the catalogue) with an explicit minor-unit scale so
-        // Money preserves the sub-cent source precision — same trick as the timeless-rate test.
+        // Use two three-minor-unit currencies (BHD, KWD) so Money natively carries the sub-cent source precision that
+        // exposes the per-line vs sum-then-round difference.
         IDatedExchangeRateProvider rates = new FixedDatedExchangeRateProvider(
         [
-            new ExchangeRate("XQT", "USD", s_asOf, 1m, "Test"),
-            new ExchangeRate("XQU", "USD", s_asOf, 1m, "Test"),
+            new ExchangeRate(CurrencyCode.BHD, CurrencyCode.USD,s_asOf, 1m, "Test"),
+            new ExchangeRate(CurrencyCode.KWD, CurrencyCode.USD,s_asOf, 1m, "Test"),
         ]);
 
         MoneyBag bag = MoneyBag.Empty
-            .Add(Money.FromUnchecked(0.005m, "XQT", 3))
-            .Add(Money.FromUnchecked(0.005m, "XQU", 3));
+            .Add(new Money(0.005m, CurrencyCode.BHD))
+            .Add(new Money(0.005m, CurrencyCode.KWD));
 
         Money<USD> total = bag.ConvertTo<USD>(rates, s_asOf, ExchangeRateLookupOptions.Exact, policy);
 
@@ -79,7 +79,7 @@ public partial class MoneyBagTests
     {
         IDatedExchangeRateProvider rates = new FixedDatedExchangeRateProvider(
         [
-            new ExchangeRate("EUR", "USD", new DateOnly(2024, 6, 28), 1.10m, "RBA"),
+            new ExchangeRate(CurrencyCode.EUR, CurrencyCode.USD,new DateOnly(2024, 6, 28), 1.10m, "RBA"),
         ]);
 
         MoneyBag bag = MoneyBag.Empty.Add(new Money<EUR>(100m));
@@ -98,7 +98,7 @@ public partial class MoneyBagTests
     {
         IDatedExchangeRateProvider rates = new FixedDatedExchangeRateProvider(
         [
-            new ExchangeRate("EUR", "USD", s_asOf, 1.10m, "RBA"),
+            new ExchangeRate(CurrencyCode.EUR, CurrencyCode.USD,s_asOf, 1.10m, "RBA"),
         ]);
 
         MoneyBag bag = MoneyBag.Empty

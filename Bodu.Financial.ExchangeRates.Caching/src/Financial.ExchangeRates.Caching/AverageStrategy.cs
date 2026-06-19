@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
+
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
@@ -97,7 +99,7 @@ public sealed class AverageStrategy
             return false;
         }
 
-        ExchangeRate rate = new(fromIsoCode, toIsoCode, date, sum / count, _providerLabel);
+        ExchangeRate rate = new(CurrencyInfo.ParseCurrencyCode(fromIsoCode), CurrencyInfo.ParseCurrencyCode(toIsoCode), date, sum / count, _providerLabel);
         result = new ExchangeRateLookupResult(rate, date, options.DateResolution, maxOffset, ExchangeRateProvenance.Live(rate.Provider));
         return true;
     }
@@ -180,6 +182,9 @@ public sealed class AverageStrategy
     /// <returns>The synthesized average rates ordered by date.</returns>
     private List<ExchangeRate> JoinAverage(string fromIsoCode, string toIsoCode, List<Dictionary<DateOnly, decimal>> perCandidate)
     {
+        CurrencyCode fromCode = CurrencyInfo.ParseCurrencyCode(fromIsoCode);
+        CurrencyCode toCode = CurrencyInfo.ParseCurrencyCode(toIsoCode);
+
         // Drive the join from the smallest candidate so the membership probes are minimized.
         Dictionary<DateOnly, decimal> smallest = perCandidate[0];
         for (int i = 1; i < perCandidate.Count; i++)
@@ -206,7 +211,7 @@ public sealed class AverageStrategy
             }
 
             if (present)
-                result.Add(new ExchangeRate(fromIsoCode, toIsoCode, date, sum / perCandidate.Count, _providerLabel));
+                result.Add(new ExchangeRate(fromCode, toCode, date, sum / perCandidate.Count, _providerLabel));
         }
 
         result.Sort(static (left, right) => left.Date.CompareTo(right.Date));

@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
+
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 public sealed partial class NullExchangeRateCacheTests
@@ -16,7 +18,7 @@ public sealed partial class NullExchangeRateCacheTests
     public void StoreFetchedRange_WhenRowsNull_ShouldThrowArgumentNullException()
     {
         IExchangeRateCache cache = NullExchangeRateCache.Create("Yahoo");
-        ExchangeRatePair pair = new("AUD", "USD");
+        ExchangeRatePair pair = new(CurrencyCode.AUD, CurrencyCode.USD);
         var now = DateTimeOffset.UtcNow;
 
         var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
@@ -35,7 +37,7 @@ public sealed partial class NullExchangeRateCacheTests
     public void StoreFetchedRange_WhenStartAfterEnd_ShouldThrowArgumentOutOfRangeException()
     {
         IExchangeRateCache cache = NullExchangeRateCache.Create("Yahoo");
-        ExchangeRatePair pair = new("AUD", "USD");
+        ExchangeRatePair pair = new(CurrencyCode.AUD, CurrencyCode.USD);
 
         var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -58,7 +60,7 @@ public sealed partial class NullExchangeRateCacheTests
     public void StoreFetchedRange_WhenInvoked_ShouldReturnSkippedAndStoreNothing()
     {
         IExchangeRateCache cache = NullExchangeRateCache.Create("Yahoo");
-        ExchangeRatePair pair = new("AUD", "USD");
+        ExchangeRatePair pair = new(CurrencyCode.AUD, CurrencyCode.USD);
         var now = DateTimeOffset.UtcNow;
 
         ExchangeRateCacheWriteStatus status = cache.StoreFetchedRange(

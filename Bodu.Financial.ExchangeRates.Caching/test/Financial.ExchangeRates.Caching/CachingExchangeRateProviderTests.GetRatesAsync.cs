@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
+
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 public sealed partial class CachingExchangeRateProviderTests
@@ -16,7 +18,7 @@ public sealed partial class CachingExchangeRateProviderTests
     public async Task GetRatesAsync_WhenCoverageContainsRange_ShouldServeWithoutFetch()
     {
         CountingDatedExchangeRateProvider inner = InnerWith();
-        ExchangeRatePair pair = new("AUD", "USD");
+        ExchangeRatePair pair = new(CurrencyCode.AUD, CurrencyCode.USD);
         SeedCache(pair, (new DateOnly(2023, 1, 3), 0.5m), (new DateOnly(2023, 1, 6), 0.51m));
         SeedCoverage(pair, new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 6));
         CachingExchangeRateProvider sut = CreateDecorator(inner);
@@ -57,7 +59,7 @@ public sealed partial class CachingExchangeRateProviderTests
         CountingDatedExchangeRateProvider inner = InnerWith(
             ("AUD", "USD", new DateOnly(2023, 1, 3), 0.5m),
             ("AUD", "USD", new DateOnly(2023, 1, 10), 0.52m));
-        SeedCache(new ExchangeRatePair("AUD", "USD"), (new DateOnly(2023, 1, 3), 0.5m));
+        SeedCache(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), (new DateOnly(2023, 1, 3), 0.5m));
         CachingExchangeRateProvider sut = CreateDecorator(inner);
 
         IReadOnlyList<ExchangeRate> rates = [.. await sut.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 10))];
@@ -75,7 +77,7 @@ public sealed partial class CachingExchangeRateProviderTests
         CountingDatedExchangeRateProvider inner = InnerWith(
             ("AUD", "USD", new DateOnly(2023, 1, 3), 0.5m),
             ("AUD", "USD", new DateOnly(2023, 1, 6), 0.51m));
-        SeedCache(new ExchangeRatePair("AUD", "USD"), (new DateOnly(2023, 1, 3), 0.5m), (new DateOnly(2023, 1, 6), 0.51m));
+        SeedCache(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), (new DateOnly(2023, 1, 3), 0.5m), (new DateOnly(2023, 1, 6), 0.51m));
         CachingExchangeRateProvider sut = CreateDecorator(inner);
 
         _clock.Advance(Duration + TimeSpan.FromHours(1));

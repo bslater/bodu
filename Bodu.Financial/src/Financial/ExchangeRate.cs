@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRate.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -6,6 +6,7 @@
 
 using System.Diagnostics;
 using System.Text.Json.Serialization;
+using Bodu.Financial.Currencies;
 using Bodu.Financial.Serialization;
 
 namespace Bodu.Financial;
@@ -21,7 +22,7 @@ namespace Bodu.Financial;
 /// requiring the caller to reach back into the provider.
 /// </para>
 /// </remarks>
-[DebuggerDisplay("{FromIsoCode,nq}->{ToIsoCode,nq} @ {Date,nq} = {Rate} ({Provider,nq})")]
+[DebuggerDisplay("{From,nq}->{To,nq} @ {Date,nq} = {Rate} ({Provider,nq})")]
 [JsonConverter(typeof(ExchangeRateJsonConverter))]
 public readonly record struct ExchangeRate
 {
@@ -32,10 +33,10 @@ public readonly record struct ExchangeRate
     private readonly DateTimeOffset? _fetchedAtUtc;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ExchangeRate" /> class.
+    /// Initializes a new instance of the <see cref="ExchangeRate" /> struct.
     /// </summary>
-    /// <param name="fromIsoCode">The source-currency ISO-style code.</param>
-    /// <param name="toIsoCode">The destination-currency ISO-style code.</param>
+    /// <param name="from">The source currency.</param>
+    /// <param name="to">The destination currency.</param>
     /// <param name="date">The calendar date on which the rate was observed.</param>
     /// <param name="rate">The multiplier that converts a source-currency amount to the destination currency.</param>
     /// <param name="provider">The non-empty identifier of the publishing source.</param>
@@ -46,35 +47,30 @@ public readonly record struct ExchangeRate
     /// The UTC instant at which the upstream data backing this rate was originally fetched, or <see langword="null" />
     /// when not tracked.
     /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// Thrown if <paramref name="fromIsoCode" />, <paramref name="toIsoCode" />, or <paramref name="provider" /> is
-    /// <see langword="null" />.
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    /// Thrown if <paramref name="fromIsoCode" /> or <paramref name="toIsoCode" /> is not a three-character uppercase
-    /// ASCII code, or if <paramref name="provider" /> is empty or white-space.
-    /// </exception>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="provider" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="provider" /> is empty or white-space.</exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if <paramref name="rate" /> is zero or negative.
+    /// Thrown if <paramref name="from" /> or <paramref name="to" /> is not a defined currency, or if
+    /// <paramref name="rate" /> is zero or negative.
     /// </exception>
     public ExchangeRate(
-        string fromIsoCode,
-        string toIsoCode,
+        CurrencyCode from,
+        CurrencyCode to,
         DateOnly date,
         decimal rate,
         string provider,
         bool isInverted = false,
         DateTimeOffset? fetchedAtUtc = null)
-        : this(fromIsoCode, toIsoCode, date, rate, isInverted ? 1m / rate : rate, provider, isInverted, fetchedAtUtc)
+        : this(from, to, date, rate, isInverted ? 1m / rate : rate, provider, isInverted, fetchedAtUtc)
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ExchangeRate" /> class from fully resolved field values, including
+    /// Initializes a new instance of the <see cref="ExchangeRate" /> struct from fully resolved field values, including
     /// the underlying observed rate.
     /// </summary>
-    /// <param name="fromIsoCode">The source-currency ISO-style code.</param>
-    /// <param name="toIsoCode">The destination-currency ISO-style code.</param>
+    /// <param name="from">The source currency.</param>
+    /// <param name="to">The destination currency.</param>
     /// <param name="date">The calendar date on which the rate was observed.</param>
     /// <param name="rate">The multiplier that converts a source-currency amount to the destination currency.</param>
     /// <param name="observedRate">The underlying observed rate used for precise conversion.</param>
@@ -85,8 +81,8 @@ public readonly record struct ExchangeRate
     /// when not tracked.
     /// </param>
     private ExchangeRate(
-        string fromIsoCode,
-        string toIsoCode,
+        CurrencyCode from,
+        CurrencyCode to,
         DateOnly date,
         decimal rate,
         decimal observedRate,
@@ -94,13 +90,13 @@ public readonly record struct ExchangeRate
         bool isInverted,
         DateTimeOffset? fetchedAtUtc)
     {
-        FinancialThrowHelper.ThrowIfNotValidIsoCode(fromIsoCode);
-        FinancialThrowHelper.ThrowIfNotValidIsoCode(toIsoCode);
+        FinancialThrowHelper.ThrowIfNotDefinedCurrencyCode(from);
+        FinancialThrowHelper.ThrowIfNotDefinedCurrencyCode(to);
         FinancialThrowHelper.ThrowIfNullOrWhiteSpaceProvider(provider);
         ThrowHelper.ThrowIfZeroOrNegative(rate);
 
-        FromIsoCode = fromIsoCode;
-        ToIsoCode = toIsoCode;
+        From = from;
+        To = to;
         Date = date;
         Rate = rate;
         Provider = provider;
@@ -115,8 +111,8 @@ public readonly record struct ExchangeRate
     /// <paramref name="observedRate" /> is the reverse-pair rate and conversion divides by it, avoiding the precision
     /// loss of multiplying by a pre-rounded reciprocal.
     /// </summary>
-    /// <param name="fromIsoCode">The reported source-currency ISO-style code.</param>
-    /// <param name="toIsoCode">The reported destination-currency ISO-style code.</param>
+    /// <param name="from">The reported source currency.</param>
+    /// <param name="to">The reported destination currency.</param>
     /// <param name="date">The calendar date on which the rate was observed.</param>
     /// <param name="observedRate">The originally observed rate.</param>
     /// <param name="provider">The non-empty identifier of the publishing source.</param>
@@ -129,8 +125,8 @@ public readonly record struct ExchangeRate
     /// </param>
     /// <returns>The constructed exchange rate.</returns>
     internal static ExchangeRate FromObservedRate(
-        string fromIsoCode,
-        string toIsoCode,
+        CurrencyCode from,
+        CurrencyCode to,
         DateOnly date,
         decimal observedRate,
         string provider,
@@ -140,7 +136,7 @@ public readonly record struct ExchangeRate
         ThrowHelper.ThrowIfZeroOrNegative(observedRate);
 
         decimal rate = isInverted ? 1m / observedRate : observedRate;
-        return new ExchangeRate(fromIsoCode, toIsoCode, date, rate, observedRate, provider, isInverted, fetchedAtUtc);
+        return new ExchangeRate(from, to, date, rate, observedRate, provider, isInverted, fetchedAtUtc);
     }
 
     /// <summary>
@@ -148,8 +144,8 @@ public readonly record struct ExchangeRate
     /// rate, preserving both exactly. Used when rehydrating a serialized rate so neither value is recomputed (and thus
     /// re-rounded) from the other.
     /// </summary>
-    /// <param name="fromIsoCode">The source-currency ISO-style code.</param>
-    /// <param name="toIsoCode">The destination-currency ISO-style code.</param>
+    /// <param name="from">The source currency.</param>
+    /// <param name="to">The destination currency.</param>
     /// <param name="date">The calendar date on which the rate was observed.</param>
     /// <param name="rate">The reported source-to-destination multiplier.</param>
     /// <param name="observedRate">The underlying observed rate used for precise conversion.</param>
@@ -161,27 +157,33 @@ public readonly record struct ExchangeRate
     /// </param>
     /// <returns>The constructed exchange rate.</returns>
     internal static ExchangeRate FromComponents(
-        string fromIsoCode,
-        string toIsoCode,
+        CurrencyCode from,
+        CurrencyCode to,
         DateOnly date,
         decimal rate,
         decimal observedRate,
         string provider,
         bool isInverted,
         DateTimeOffset? fetchedAtUtc = null) =>
-        new(fromIsoCode, toIsoCode, date, rate, observedRate, provider, isInverted, fetchedAtUtc);
+        new(from, to, date, rate, observedRate, provider, isInverted, fetchedAtUtc);
 
     /// <summary>
-    /// Gets the source-currency ISO-style code.
+    /// Gets the source currency.
     /// </summary>
-    /// <returns>The three-character uppercase ASCII source-currency code.</returns>
-    public string FromIsoCode { get; }
+    /// <returns>The currency an amount is converted from.</returns>
+    public CurrencyCode From { get; }
 
     /// <summary>
-    /// Gets the destination-currency ISO-style code.
+    /// Gets the destination currency.
     /// </summary>
-    /// <returns>The three-character uppercase ASCII destination-currency code.</returns>
-    public string ToIsoCode { get; }
+    /// <returns>The currency an amount is converted to.</returns>
+    public CurrencyCode To { get; }
+
+    /// <summary>
+    /// Gets the directional currency pair this rate quotes.
+    /// </summary>
+    /// <returns>An <see cref="ExchangeRatePair" /> of <see cref="From" /> and <see cref="To" />.</returns>
+    public ExchangeRatePair Pair => new(From, To);
 
     /// <summary>
     /// Gets the calendar date on which the rate was observed.
@@ -190,7 +192,7 @@ public readonly record struct ExchangeRate
     public DateOnly Date { get; }
 
     /// <summary>
-    /// Gets the multiplier that converts an amount in <see cref="FromIsoCode" /> to <see cref="ToIsoCode" />.
+    /// Gets the multiplier that converts an amount in <see cref="From" /> to <see cref="To" />.
     /// </summary>
     /// <returns>A strictly positive multiplier.</returns>
     public decimal Rate { get; }
@@ -232,18 +234,13 @@ public readonly record struct ExchangeRate
     /// <summary>
     /// Converts <paramref name="amount" /> from the source currency to the destination currency.
     /// </summary>
-    /// <param name="amount">The amount in <see cref="FromIsoCode" /> to convert.</param>
-    /// <returns>The converted amount in <see cref="ToIsoCode" />, unrounded.</returns>
+    /// <param name="amount">The amount in <see cref="From" /> to convert.</param>
+    /// <returns>The converted amount in <see cref="To" />, unrounded.</returns>
     /// <remarks>
     /// A non-inverted rate multiplies by <see cref="Rate" />; an inverted rate divides by the original reverse-pair
     /// rate rather than multiplying by a pre-rounded reciprocal, avoiding a double-rounding step. Rounding is
     /// intentionally deferred to the money boundary so the rate object stays decoupled from the destination currency's
-    /// minor-unit precision. Use
-    /// <see cref="Bodu.Financial.Extensions.MoneyOfTCurrencyExchangeRateExtensions.ConvertTo{TSource, TTarget}(Money{TSource}, IDatedExchangeRateProvider, DateOnly, ExchangeRateLookupOptions?, MidpointRounding)" />
-    /// ,
-    /// <see cref="Bodu.Financial.Extensions.MoneyExchangeRateExtensions.ConvertTo(Money, IDatedExchangeRateProvider, string, DateOnly, ExchangeRateLookupOptions?, MidpointRounding)" />
-    /// , or <see cref="Money{TCurrency}.Convert{TTarget}(decimal, MidpointRounding)" /> to apply rounding at the
-    /// destination precision.
+    /// minor-unit precision.
     /// </remarks>
     public decimal Convert(decimal amount) =>
         IsInverted ? amount / _observedRate : amount * _observedRate;
@@ -264,7 +261,7 @@ public readonly record struct ExchangeRate
     /// this one.
     /// </remarks>
     public ExchangeRate WithFetchedAtUtc(DateTimeOffset? fetchedAtUtc) =>
-        new(FromIsoCode, ToIsoCode, Date, Rate, _observedRate, Provider, IsInverted, fetchedAtUtc);
+        new(From, To, Date, Rate, _observedRate, Provider, IsInverted, fetchedAtUtc);
 
     /// <summary>
     /// Determines whether this rate equals <paramref name="other" /> by its public fields. The internal observed rate
@@ -275,8 +272,8 @@ public readonly record struct ExchangeRate
     /// <param name="other">The rate to compare with.</param>
     /// <returns><see langword="true" /> when the public fields match; otherwise <see langword="false" />.</returns>
     public bool Equals(ExchangeRate other) =>
-        FromIsoCode == other.FromIsoCode
-        && ToIsoCode == other.ToIsoCode
+        From == other.From
+        && To == other.To
         && Date == other.Date
         && Rate == other.Rate
         && Provider == other.Provider
@@ -287,5 +284,5 @@ public readonly record struct ExchangeRate
     /// </summary>
     /// <returns>The hash code.</returns>
     public override int GetHashCode() =>
-        HashCode.Combine(FromIsoCode, ToIsoCode, Date, Rate, Provider, IsInverted);
+        HashCode.Combine(From, To, Date, Rate, Provider, IsInverted);
 }

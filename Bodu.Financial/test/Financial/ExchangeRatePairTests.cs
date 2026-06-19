@@ -1,9 +1,10 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRatePairTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
 using Bodu.Test;
 using Bodu.Test.Assertions;
 
@@ -13,40 +14,40 @@ namespace Bodu.Financial;
 public partial class ExchangeRatePairTests
 {
     /// <summary>
-    /// Verifies that the constructor stores both ISO codes verbatim.
+    /// Verifies that the constructor stores both currencies verbatim.
     /// </summary>
     [TestMethod]
     [TestCategory(TestCategories.Smoke)]
     public void Constructor_WhenInputsValid_ShouldStoreBothCodes()
     {
-        ExchangeRatePair pair = new("USD", "AUD");
+        ExchangeRatePair pair = new(CurrencyCode.USD, CurrencyCode.AUD);
 
-        Assert.AreEqual("USD", pair.FromIsoCode);
-        Assert.AreEqual("AUD", pair.ToIsoCode);
+        Assert.AreEqual(CurrencyCode.USD, pair.From);
+        Assert.AreEqual(CurrencyCode.AUD, pair.To);
     }
 
     /// <summary>
-    /// Verifies that <see cref="ExchangeRatePair.Inverse" /> swaps the source and destination codes.
+    /// Verifies that <see cref="ExchangeRatePair.Inverse" /> swaps the source and destination currencies.
     /// </summary>
     [TestMethod]
     public void Inverse_WhenCalled_ShouldReturnPairWithCodesSwapped()
     {
-        ExchangeRatePair pair = new("USD", "AUD");
+        ExchangeRatePair pair = new(CurrencyCode.USD, CurrencyCode.AUD);
 
         ExchangeRatePair inverse = pair.Inverse();
 
-        Assert.AreEqual("AUD", inverse.FromIsoCode);
-        Assert.AreEqual("USD", inverse.ToIsoCode);
+        Assert.AreEqual(CurrencyCode.AUD, inverse.From);
+        Assert.AreEqual(CurrencyCode.USD, inverse.To);
     }
 
     /// <summary>
-    /// Verifies that two pairs with identical codes compare equal via the generated record-struct equality.
+    /// Verifies that two pairs with identical currencies compare equal via the generated record-struct equality.
     /// </summary>
     [TestMethod]
     public void Equality_WhenComponentsMatch_ShouldReportEqual()
     {
-        ExchangeRatePair a = new("USD", "AUD");
-        ExchangeRatePair b = new("USD", "AUD");
+        ExchangeRatePair a = new(CurrencyCode.USD, CurrencyCode.AUD);
+        ExchangeRatePair b = new(CurrencyCode.USD, CurrencyCode.AUD);
 
         Assert.AreEqual(a, b);
         Assert.AreEqual(a.GetHashCode(), b.GetHashCode());
@@ -58,57 +59,56 @@ public partial class ExchangeRatePairTests
     [TestMethod]
     public void Equality_WhenDirectionDiffers_ShouldReportUnequal()
     {
-        ExchangeRatePair a = new("USD", "AUD");
-        ExchangeRatePair b = new("AUD", "USD");
+        ExchangeRatePair a = new(CurrencyCode.USD, CurrencyCode.AUD);
+        ExchangeRatePair b = new(CurrencyCode.AUD, CurrencyCode.USD);
 
         Assert.AreNotEqual(a, b);
     }
 
     /// <summary>
-    /// Verifies that a <see langword="null" /> source code throws <see cref="ArgumentNullException" /> with the
-    /// parameter name <c>fromIsoCode</c>.
+    /// Verifies that a <see cref="CurrencyCode.None" /> source currency throws
+    /// <see cref="ArgumentOutOfRangeException" /> with the parameter name <c>from</c>.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenFromIsoCodeIsNull_ShouldThrowArgumentNullException()
+    public void Constructor_WhenFromIsNone_ShouldThrowArgumentOutOfRangeException()
     {
-        ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(
+        ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(
             () =>
             {
-                _ = new ExchangeRatePair(null!, "AUD");
+                _ = new ExchangeRatePair(CurrencyCode.None, CurrencyCode.AUD);
             },
-            "fromIsoCode");
+            "from");
     }
 
     /// <summary>
-    /// Verifies that a <see langword="null" /> destination code throws <see cref="ArgumentNullException" /> with the
-    /// parameter name <c>toIsoCode</c>.
+    /// Verifies that a <see cref="CurrencyCode.None" /> destination currency throws
+    /// <see cref="ArgumentOutOfRangeException" /> with the parameter name <c>to</c>.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenToIsoCodeIsNull_ShouldThrowArgumentNullException()
+    public void Constructor_WhenToIsNone_ShouldThrowArgumentOutOfRangeException()
     {
-        ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(
+        ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(
             () =>
             {
-                _ = new ExchangeRatePair("USD", null!);
+                _ = new ExchangeRatePair(CurrencyCode.USD, CurrencyCode.None);
             },
-            "toIsoCode");
+            "to");
     }
 
     /// <summary>
-    /// Verifies that malformed ISO codes throw <see cref="ArgumentException" /> on either parameter.
+    /// Verifies that an undefined currency cast throws <see cref="ArgumentOutOfRangeException" /> on either parameter.
     /// </summary>
     [TestMethod]
-    [DataRow("usd", "AUD", "fromIsoCode")]
-    [DataRow("US", "AUD", "fromIsoCode")]
-    [DataRow("USDX", "AUD", "fromIsoCode")]
-    [DataRow("USD", "aud", "toIsoCode")]
-    [DataRow("USD", "AU", "toIsoCode")]
-    public void Constructor_WhenCodeMalformed_ShouldThrowArgumentExceptionWithExpectedParamName(
-        string from,
-        string to,
+    [DataRow(true, "from")]
+    [DataRow(false, "to")]
+    public void Constructor_WhenCodeUndefined_ShouldThrowArgumentOutOfRangeExceptionWithExpectedParamName(
+        bool invalidFrom,
         string expectedParamName)
     {
-        ExceptionAssert.ThrowsExactlyWithParamName<ArgumentException>(
+        CurrencyCode from = invalidFrom ? (CurrencyCode)9999 : CurrencyCode.USD;
+        CurrencyCode to = invalidFrom ? CurrencyCode.AUD : (CurrencyCode)9999;
+
+        ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(
             () =>
             {
                 _ = new ExchangeRatePair(from, to);

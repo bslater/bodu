@@ -6,6 +6,7 @@
 
 using System.Collections.Frozen;
 using System.Globalization;
+using Bodu.Financial.Currencies;
 
 namespace Bodu.Financial;
 
@@ -56,7 +57,7 @@ public sealed class FixedExchangeRateTable
             FinancialThrowHelper.ThrowIfNotValidIsoCode(entry.Key.To, nameof(rates));
             FinancialThrowHelper.ThrowIfExchangeRateNotPositive(entry.Value, nameof(rates));
 
-            validated[new ExchangeRatePair(entry.Key.From, entry.Key.To)] = entry.Value;
+            validated[new ExchangeRatePair(CurrencyInfo.ParseCurrencyCode(entry.Key.From), CurrencyInfo.ParseCurrencyCode(entry.Key.To))] = entry.Value;
         }
 
         _rates = validated.ToFrozenDictionary();
@@ -71,7 +72,7 @@ public sealed class FixedExchangeRateTable
         if (string.Equals(fromIsoCode, toIsoCode, StringComparison.Ordinal))
             return 1m;
 
-        ExchangeRatePair direct = new(fromIsoCode, toIsoCode);
+        ExchangeRatePair direct = new(CurrencyInfo.ParseCurrencyCode(fromIsoCode), CurrencyInfo.ParseCurrencyCode(toIsoCode));
         if (_rates.TryGetValue(direct, out decimal directRate))
             return directRate;
 

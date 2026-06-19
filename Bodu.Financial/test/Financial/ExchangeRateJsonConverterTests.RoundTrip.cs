@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Text.Json;
+using Bodu.Financial.Currencies;
 using Bodu.Financial.Serialization;
 
 namespace Bodu.Financial;
@@ -25,8 +26,8 @@ public partial class ExchangeRateJsonConverterTests
         string json = JsonSerializer.Serialize(Sample(), options);
         ExchangeRate restored = JsonSerializer.Deserialize<ExchangeRate>(json, options);
 
-        Assert.AreEqual("USD", restored.FromIsoCode);
-        Assert.AreEqual("JPY", restored.ToIsoCode);
+        Assert.AreEqual(CurrencyCode.USD, restored.From);
+        Assert.AreEqual(CurrencyCode.JPY, restored.To);
         Assert.AreEqual(new DateOnly(2024, 1, 15), restored.Date);
         Assert.AreEqual(150.25m, restored.Rate);
         Assert.AreEqual("ecb", restored.Provider);

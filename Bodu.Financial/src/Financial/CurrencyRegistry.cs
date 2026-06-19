@@ -1,10 +1,9 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CurrencyRegistry.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Collections.Concurrent;
 using System.Collections.Frozen;
 using System.Globalization;
 using Bodu.Financial.Currencies;
@@ -12,19 +11,17 @@ using Bodu.Financial.Currencies;
 namespace Bodu.Financial;
 
 /// <summary>
-/// Runtime catalogue of <see cref="CurrencyInfo" /> entries keyed by ISO 4217 alphabetic code. Supports lookup by code,
-/// enumeration of every known currency, and registration of custom currencies that are not in the shipped catalogue.
+/// Read-only catalogue of <see cref="CurrencyInfo" /> entries keyed by ISO 4217 alphabetic code. Supports lookup by
+/// code and enumeration of every shipped currency.
 /// </summary>
 /// <remarks>
 /// <para>
-/// The shipped catalogue is populated from the source-generated <see cref="GeneratedCurrencyRegistration" /> list at
-/// first access — no runtime reflection scans the assembly. Custom currencies can be registered via
-/// <see cref="Register(CurrencyInfo)" /> or <see cref="TryRegister(CurrencyInfo)" /> and take precedence over the
-/// shipped entry of the same code.
+/// The catalogue is populated from the source-generated <see cref="GeneratedCurrencyRegistration" /> list at first
+/// access — no runtime reflection scans the assembly. It covers the full active and historic ISO 4217 set; every
+/// entry has a corresponding <see cref="CurrencyCode" /> member.
 /// </para>
 /// <para>
-/// Lookups are thread-safe. Custom registrations are stored in a <see cref="ConcurrentDictionary{TKey, TValue}" /> so
-/// concurrent readers and writers do not need external coordination.
+/// Lookups are thread-safe because the backing <see cref="FrozenDictionary{TKey, TValue}" /> is immutable.
 /// </para>
 /// </remarks>
 public static class CurrencyRegistry
@@ -32,30 +29,11 @@ public static class CurrencyRegistry
     /// <summary>The shipped catalogue, snapshotted into a <see cref="FrozenDictionary{TKey, TValue}" /> at static-ctor time.</summary>
     private static readonly FrozenDictionary<string, CurrencyInfo> s_shipped = BuildShipped();
 
-    /// <summary>User-registered currencies layered on top of the shipped catalogue.</summary>
-    private static readonly ConcurrentDictionary<string, CurrencyInfo> s_custom = new(StringComparer.Ordinal);
-
     /// <summary>
-    /// Gets a snapshot of every known currency — the shipped catalogue layered with any custom registrations, with
-    /// custom registrations taking precedence on conflict.
+    /// Gets every shipped currency.
     /// </summary>
-    /// <returns>A point-in-time read-only enumeration of the registered <see cref="CurrencyInfo" /> entries.</returns>
-    public static IReadOnlyCollection<CurrencyInfo> All
-    {
-        get
-        {
-            if (s_custom.IsEmpty)
-                return s_shipped.Values;
-
-            Dictionary<string, CurrencyInfo> merged = new(s_shipped.Count + s_custom.Count, StringComparer.Ordinal);
-            foreach (KeyValuePair<string, CurrencyInfo> entry in s_shipped)
-                merged[entry.Key] = entry.Value;
-            foreach (KeyValuePair<string, CurrencyInfo> entry in s_custom)
-                merged[entry.Key] = entry.Value;
-
-            return merged.Values;
-        }
-    }
+    /// <returns>A read-only enumeration of the registered <see cref="CurrencyInfo" /> entries.</returns>
+    public static IReadOnlyCollection<CurrencyInfo> All => s_shipped.Values;
 
     /// <summary>
     /// Attempts to look up the currency identified by <paramref name="isoCode" />.
@@ -72,12 +50,6 @@ public static class CurrencyRegistry
         {
             info = null;
             return false;
-        }
-
-        if (s_custom.TryGetValue(isoCode, out CurrencyInfo? custom))
-        {
-            info = custom;
-            return true;
         }
 
         if (s_shipped.TryGetValue(isoCode, out CurrencyInfo? shipped))
@@ -114,100 +86,6 @@ public static class CurrencyRegistry
     /// <returns><see langword="true" /> when an entry exists; otherwise <see langword="false" />.</returns>
     public static bool Contains(string isoCode) =>
         TryGet(isoCode, out _);
-
-    /// <summary>
-    /// Registers a custom currency, taking precedence over the shipped catalogue when an entry already exists for the
-    /// same ISO code.
-    /// </summary>
-    /// <param name="info">The currency metadata to register.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="info" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentException"><paramref name="info" /> carries invalid metadata.</exception>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="info" /> carries out-of-range metadata.
-    /// </exception>
-    /// <exception cref="InvalidOperationException">
-    /// A custom registration already exists for <paramref name="info" />.<see cref="CurrencyInfo.IsoCode" />.
-    /// </exception>
-    /// <remarks>
-    /// The metadata is validated with the same rule set <see cref="CurrencyMetadata{TCurrency}" /> applies to tag
-    /// types. Use <see cref="TryRegister(CurrencyInfo)" /> when conflicts should be reported as
-    /// <see langword="false" /> rather than raised, or
-    /// <see cref="Register(CurrencyInfo, CurrencyRegistrationConflictPolicy)" /> to choose the conflict behaviour
-    /// explicitly.
-    /// </remarks>
-    public static void Register(CurrencyInfo info) =>
-        Register(info, CurrencyRegistrationConflictPolicy.Throw);
-
-    /// <summary>
-    /// Registers a custom currency, resolving an existing registration for the same ISO code according to
-    /// <paramref name="conflictPolicy" />.
-    /// </summary>
-    /// <param name="info">The currency metadata to register.</param>
-    /// <param name="conflictPolicy">The behaviour applied when a custom registration already exists.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="info" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentException"><paramref name="info" /> carries invalid metadata.</exception>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="info" /> carries out-of-range metadata, or <paramref name="conflictPolicy" /> is not a defined
-    /// value.
-    /// </exception>
-    /// <exception cref="InvalidOperationException">
-    /// <paramref name="conflictPolicy" /> is <see cref="CurrencyRegistrationConflictPolicy.Throw" /> and a custom
-    /// registration already exists for <paramref name="info" />.<see cref="CurrencyInfo.IsoCode" />.
-    /// </exception>
-    public static void Register(CurrencyInfo info, CurrencyRegistrationConflictPolicy conflictPolicy)
-    {
-        CurrencyInfoValidator.Validate(info, nameof(info));
-        FinancialThrowHelper.ThrowIfCurrencyRegistrationConflictPolicyUndefined(conflictPolicy);
-
-        if (s_custom.TryAdd(info.IsoCode, info))
-            return;
-
-        switch (conflictPolicy)
-        {
-            case CurrencyRegistrationConflictPolicy.Replace:
-                s_custom[info.IsoCode] = info;
-                break;
-
-            case CurrencyRegistrationConflictPolicy.Ignore:
-                break;
-
-            default:
-                throw new InvalidOperationException(
-                    string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Op_Invalid_DuplicateCustomCurrency, info.IsoCode));
-        }
-    }
-
-    /// <summary>
-    /// Attempts to register a custom currency.
-    /// </summary>
-    /// <param name="info">The currency metadata to register.</param>
-    /// <returns>
-    /// <see langword="true" /> when the registration succeeded; <see langword="false" /> when <paramref name="info" />
-    /// is <see langword="null" />, carries invalid metadata, or a custom registration with the same ISO code already
-    /// exists.
-    /// </returns>
-    public static bool TryRegister(CurrencyInfo info)
-    {
-        if (!CurrencyInfoValidator.TryValidate(info))
-            return false;
-
-        return s_custom.TryAdd(info.IsoCode, info);
-    }
-
-    /// <summary>
-    /// Registers a custom currency, replacing any existing custom registration for the same ISO code.
-    /// </summary>
-    /// <param name="info">The currency metadata to register.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="info" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentException"><paramref name="info" /> carries invalid metadata.</exception>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="info" /> carries out-of-range metadata.
-    /// </exception>
-    public static void Replace(CurrencyInfo info)
-    {
-        CurrencyInfoValidator.Validate(info, nameof(info));
-        s_custom[info.IsoCode] = info;
-    }
 
     /// <summary>
     /// Builds the frozen shipped catalogue from the source-generated registration list.

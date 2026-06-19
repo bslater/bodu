@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
 using Bodu.Financial.Kat;
 using Bodu.Test.Kat;
 
@@ -37,8 +38,8 @@ public partial class FixedDatedExchangeRateProviderTests
         Assert.AreEqual(kat.ExpectedResolvedDate, result.Rate.Date);
         Assert.AreEqual(kat.ExpectedProvider, result.Rate.Provider);
         Assert.AreEqual(kat.ExpectedInverted, result.Rate.IsInverted);
-        Assert.AreEqual(kat.FromIsoCode, result.Rate.FromIsoCode);
-        Assert.AreEqual(kat.ToIsoCode, result.Rate.ToIsoCode);
+        Assert.AreEqual(kat.FromIsoCode, result.Rate.From.ToString());
+        Assert.AreEqual(kat.ToIsoCode, result.Rate.To.ToString());
         Assert.AreEqual(kat.RequestedDate, result.RequestedDate);
         Assert.AreEqual(
             Math.Abs(result.Rate.Date.DayNumber - kat.RequestedDate.DayNumber),
@@ -76,18 +77,18 @@ public partial class FixedDatedExchangeRateProviderTests
 
     public static IEnumerable<object[]> ProviderLookupCases()
     {
-        ExchangeRate[] direct = [new ExchangeRate("USD", "AUD", new DateOnly(2024, 1, 3), 1.50m, "RBA")];
-        ExchangeRate[] inverseOnly = [new ExchangeRate("USD", "AUD", new DateOnly(2024, 1, 3), 1.50m, "RBA")];
+        ExchangeRate[] direct = [new ExchangeRate(CurrencyCode.USD, CurrencyCode.AUD, new DateOnly(2024, 1, 3), 1.50m, "RBA")];
+        ExchangeRate[] inverseOnly = [new ExchangeRate(CurrencyCode.USD, CurrencyCode.AUD, new DateOnly(2024, 1, 3), 1.50m, "RBA")];
         ExchangeRate[] bothDirections =
         [
-            new ExchangeRate("USD", "AUD", new DateOnly(2024, 1, 3), 1.50m, "RBA"),
-            new ExchangeRate("AUD", "USD", new DateOnly(2024, 1, 3), 0.67m, "RBA"),
+            new ExchangeRate(CurrencyCode.USD, CurrencyCode.AUD, new DateOnly(2024, 1, 3), 1.50m, "RBA"),
+            new ExchangeRate(CurrencyCode.AUD, CurrencyCode.USD, new DateOnly(2024, 1, 3), 0.67m, "RBA"),
         ];
         ExchangeRate[] series =
         [
-            new ExchangeRate("USD", "AUD", new DateOnly(2024, 1, 2), 1.49m, "RBA"),
-            new ExchangeRate("USD", "AUD", new DateOnly(2024, 1, 3), 1.50m, "RBA"),
-            new ExchangeRate("USD", "AUD", new DateOnly(2024, 1, 8), 1.55m, "RBA"),
+            new ExchangeRate(CurrencyCode.USD, CurrencyCode.AUD, new DateOnly(2024, 1, 2), 1.49m, "RBA"),
+            new ExchangeRate(CurrencyCode.USD, CurrencyCode.AUD, new DateOnly(2024, 1, 3), 1.50m, "RBA"),
+            new ExchangeRate(CurrencyCode.USD, CurrencyCode.AUD, new DateOnly(2024, 1, 8), 1.55m, "RBA"),
         ];
 
         yield return [new ExchangeRateLookupKat(

@@ -47,9 +47,12 @@ including all three minor-unit categories:
   vast majority of others.
 - `MinorUnits = 3` — `BHD`, `IQD`, `JOD`, `KWD`, `LYD`, `OMR`, `TND`.
 
-To add a custom currency or a deprecated one not in the shipped
-catalogue, declare your own type implementing `ICurrency`. There is
-nothing privileged about the bundled tags.
+The bundled tags are not privileged: you can declare your own type
+implementing `ICurrency` — its `IsoCode` must be three uppercase ASCII
+letters — to mint a `Money<TCurrency>` for a unit outside the shipped
+set. Such a tag stays in the generic world; bridging it to the
+runtime-tagged `Money` requires a code the shipped `CurrencyCode`
+catalogue defines (see [Runtime-tagged amounts](#runtime-tagged-amounts-money)).
 
 ## Creating amounts
 
@@ -399,11 +402,12 @@ your own formatter produced — pass a
 | `LenientImport` | Tolerant of spreadsheet / external-feed quirks; for ingest, not canonical storage. |
 | `RoundTripOnly` | Accepts exactly the shape this library emits, for loss-free round trips. |
 
-`MoneyParseOptions` also carries the `FormatProvider`, an
-`UnknownCurrencyPolicy` (how an unrecognised ISO code is handled), and
-an optional `ICurrencyLookup`. The runtime-tagged
-<xref:Bodu.Financial.Money> uses the same options object when parsing a
-value whose currency is not known until run time.
+`MoneyParseOptions` also carries the `FormatProvider` and an optional
+`ICurrencyLookup` (consulted for symbol resolution under
+`CultureAware`); an ISO code that does not resolve to a shipped
+currency is rejected. The runtime-tagged <xref:Bodu.Financial.Money>
+uses the same options object when parsing a value whose currency is not
+known until run time.
 
 ## JSON
 
@@ -487,10 +491,11 @@ if (info.IsHistoric && entry.PostedOn > info.DemonetizedOn)
 ## Runtime-tagged amounts: `Money`
 
 `Money` is the runtime-tagged sister of `Money<TCurrency>`. The
-currency is carried as a string field rather than a type parameter,
-so the same code path handles any ISO code at runtime — useful for
-deserialisation, generic invoicing engines, and FX systems where the
-currency comes from data, not type.
+currency is carried as a <xref:Bodu.Financial.Currencies.CurrencyCode>
+field rather than a type parameter, so the same code path handles any
+shipped currency at runtime — useful for deserialisation, generic
+invoicing engines, and FX systems where the currency comes from data,
+not type.
 
 ```csharp
 Money invoice = JsonSerializer.Deserialize<Money>(payload)!;
@@ -502,10 +507,10 @@ throw `InvalidOperationException` at runtime instead of failing the
 build:
 
 ```csharp
-Money usd = new Money(10m, "USD");
-Money eur = new Money(10m, "EUR");
+Money usd = new Money(10m, CurrencyCode.USD);
+Money eur = new Money(10m, CurrencyCode.EUR);
 
-Money total = usd + new Money(5m, "USD");   // OK
+Money total = usd + new Money(5m, CurrencyCode.USD);   // OK
 total = usd + eur;                                     // throws InvalidOperationException
 ```
 
@@ -517,10 +522,12 @@ bool ok = runtime.TryAs(out Money<USD> result);        // safe, returns false on
 Money runtime = new Money<USD>(19.99m).ToMoney();      // typed → runtime-tagged
 ```
 
-`Money` rounds to the registry's `MinorUnits` for the supplied
-ISO code on construction. Custom currencies not in the catalogue can
-be pre-registered (see [Custom currencies](#custom-currencies)) so
-the rounding follows your declared precision.
+`Money` rounds to the `MinorUnits` resolved for its
+<xref:Bodu.Financial.Currencies.CurrencyCode> on construction. The
+runtime currency set is the shipped ISO 4217 catalogue — active and
+historic — that the enum enumerates; a code outside it cannot be
+constructed, so a mistyped or unsupported currency fails fast rather
+than silently adopting a default precision.
 
 ## Mixed-currency portfolios: `MoneyBag`
 
@@ -533,17 +540,17 @@ MoneyBag wallet = MoneyBag.Empty
     .Add(new Money<EUR>(50m))
     .Add(new Money<JPY>(10_000m));
 
-wallet.GetBalance<USD>();           // Money<USD> 100.00
-wallet.GetBalance("EUR");           // Money { 50, "EUR" }
-wallet.Count;                       // 3
+wallet.GetBalance<USD>();              // Money<USD> 100.00
+wallet.GetBalance(CurrencyCode.EUR);   // Money — EUR 50.00
+wallet.Count;                          // 3
 ```
 
 Operators chain naturally:
 
 ```csharp
 MoneyBag updated = wallet
-    + new Money(25m, "USD")
-    - new Money(10m, "EUR");
+    + new Money(25m, CurrencyCode.USD)
+    - new Money(10m, CurrencyCode.EUR);
 ```
 
 Bags are immutable; every operation returns a new bag. Zero balances
@@ -569,43 +576,47 @@ and falls back to the inverse rate `1 / rate` when only the reverse
 pair is in the table, so a typical "USD → X" set of rates is enough
 to convert in both directions.
 
-## Custom currencies
+## Currencies outside the shipped catalogue
 
-Implement `ICurrency` directly to add a currency that isn't in the
-shipped catalogue:
+The runtime `Money` identifies its currency with the
+<xref:Bodu.Financial.Currencies.CurrencyCode> enum, which enumerates the
+full ISO 4217 set — every active code plus the historic ones above. That
+set is closed: there is no runtime registration seam, so a code the enum
+does not define cannot be constructed as a `Money`. The trade-off is
+deliberate — a mistyped or unsupported currency fails fast instead of
+flowing through the system as a silently accepted value.
+
+For a *generic* amount in a unit outside that set — a commodity weight, a
+loyalty-point unit, a pre-decimal currency — declare your own `ICurrency`
+tag and use `Money<TCurrency>`. The tag supplies its own precision and
+never consults the runtime catalogue:
 
 ```csharp
-public sealed class DOGE : ICurrency
+public sealed class XPT : ICurrency      // troy ounces of platinum, say
 {
-    public static string IsoCode => "DOGE";
-    public static int    MinorUnits => 8;
-    private DOGE() { }
+    public static string IsoCode   => "XPT";
+    public static int    MinorUnits => 4;
+    private XPT() { }
 }
+
+Money<XPT> holding = new Money<XPT>(12.3456m);   // generic arithmetic only
 ```
 
-Register it with `CurrencyRegistry` so `Money` and `MoneyBag`
-round to the right precision when they see the ISO code at runtime:
-
-```csharp
-CurrencyRegistry.Register(
-    new CurrencyInfo(IsoCode: "DOGE", MinorUnits: 8,
-        CashRoundingIncrement: 0m, IsHistoric: false,
-        DemonetizedOn: null, SuccessorIsoCode: null));
-
-Money<DOGE> tip = new Money<DOGE>(0.12345678m);
-Money runtime = JsonSerializer.Deserialize<Money>(
-    """{ "amount": 0.12345678, "currency": "DOGE" }""");
-```
+A custom tag's `IsoCode` must be three uppercase ASCII letters, and the
+value stays in the generic world: because `XPT` is not a `CurrencyCode`
+member, it cannot bridge to the runtime-tagged `Money`. To substitute or
+restrict the metadata used for the *shipped* currencies — for a test, or
+an alternate data source — install a custom `ICurrencyLookup` through
+`CurrencyResolution` (next section).
 
 ## Swapping the currency catalogue: `CurrencyResolution`
 
-Runtime `Money` resolves an ISO code to its minor-unit precision
-through an *ambient* `ICurrencyLookup`, exposed as
-`CurrencyResolution.Current`. By default this is a registry-backed
-lookup, so `CurrencyRegistry.Register` and ordinary construction behave
-exactly as described above — you only need this seam when you want to
-substitute the catalogue (a custom data source, or a fixed set for a
-test).
+Runtime `Money` resolves its <xref:Bodu.Financial.Currencies.CurrencyCode>
+to minor-unit precision through an *ambient* `ICurrencyLookup`, exposed
+as `CurrencyResolution.Current`. By default this is a registry-backed
+lookup, so ordinary construction and metadata resolution behave exactly
+as described above — you only need this seam when you want to substitute
+the catalogue (a custom data source, or a fixed set for a test).
 
 Replace the process-wide default once at start-up:
 
@@ -620,8 +631,8 @@ it is restored on dispose and isolated per async control flow:
 using (CurrencyResolution.PushScoped(myCurrencyLookup))
 {
     // Money construction, parsing, and formatting in this scope
-    // resolve currencies through myCurrencyLookup.
-    var m = new Money(1.239m, "ZZZ");   // resolves via the scoped catalogue
+    // resolve currency metadata through myCurrencyLookup.
+    var m = new Money(1.239m, CurrencyCode.BHD);   // precision via the scoped catalogue
 }   // previous lookup restored here
 ```
 
@@ -652,8 +663,10 @@ provider.UseBoduFinancialCurrencyResolution();   // ambient default = the DI loo
 Deserialisation on `Money<TCurrency>` rejects payloads whose
 `"currency"` field does not match `TCurrency.IsoCode` —
 currency drift surfaces as `JsonException`, not as a silently
-re-interpreted amount. `Money` accepts any ISO code (and rounds
-to the registry's `MinorUnits` for that code).
+re-interpreted amount. `Money` accepts any code the shipped
+`CurrencyCode` catalogue defines, rounding to that currency's
+`MinorUnits`, and rejects one it does not — an unknown or custom
+code in the payload throws rather than deserialising.
 
 `MoneyBag` uses a `{ "balances": { ... } }` wrapper:
 

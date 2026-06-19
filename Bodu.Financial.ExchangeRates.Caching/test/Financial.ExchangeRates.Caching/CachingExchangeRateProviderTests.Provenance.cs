@@ -6,6 +6,8 @@
 
 using Microsoft.Extensions.Logging;
 
+using Bodu.Financial.Currencies;
+
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
@@ -33,7 +35,7 @@ public sealed partial class CachingExchangeRateProviderTests
     public void GetRate_WhenCacheHit_ShouldLogProvenanceWithCacheOriginAndAge()
     {
         CapturingLogger logger = new();
-        SeedCache(new ExchangeRatePair("AUD", "USD"), (new DateOnly(2023, 1, 3), 0.5m));
+        SeedCache(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), (new DateOnly(2023, 1, 3), 0.5m));
         CachingExchangeRateProvider sut = new(InnerWith(), _cache, _options, _clock, logger);
 
         _clock.Advance(TimeSpan.FromHours(1));
@@ -73,7 +75,7 @@ public sealed partial class CachingExchangeRateProviderTests
     public async Task GetRatesAsync_WhenCacheHit_ShouldLogProvenanceWithCacheOrigin()
     {
         CapturingLogger logger = new();
-        ExchangeRatePair pair = new("AUD", "USD");
+        ExchangeRatePair pair = new(CurrencyCode.AUD, CurrencyCode.USD);
         SeedCache(pair, (new DateOnly(2023, 1, 3), 0.5m), (new DateOnly(2023, 1, 6), 0.51m));
         SeedCoverage(pair, new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 6));
         CachingExchangeRateProvider sut = new(InnerWith(), _cache, _options, _clock, logger);
@@ -118,7 +120,7 @@ public sealed partial class CachingExchangeRateProviderTests
     {
         CapturingLogger logger = new();
         _options.RateProvenanceLogLevel = LogLevel.None;
-        SeedCache(new ExchangeRatePair("AUD", "USD"), (new DateOnly(2023, 1, 3), 0.5m));
+        SeedCache(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), (new DateOnly(2023, 1, 3), 0.5m));
         CachingExchangeRateProvider sut = new(InnerWith(), _cache, _options, _clock, logger);
 
         _ = sut.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact);

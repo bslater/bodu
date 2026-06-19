@@ -90,7 +90,7 @@ public readonly partial struct Money :
     /// </item>
     /// <item>
     /// <description>
-    /// <c>"C"</c> — the culture's native currency format when its region currency matches <see cref="IsoCode" />, or
+    /// <c>"C"</c> — the culture's native currency format when its region currency matches <see cref="Code" />, or
     /// the ISO code substituted into the culture's currency-position slot when they differ.
     /// </description>
     /// </item>
@@ -116,7 +116,7 @@ public readonly partial struct Money :
     /// <item>
     /// <description>
     /// Prefix <c>"~"</c> on <c>"C"</c>, <c>"G"</c>, or <c>"L"</c> — elide the currency designator entirely when the
-    /// culture's region currency matches <see cref="IsoCode" />.
+    /// culture's region currency matches <see cref="Code" />.
     /// </description>
     /// </item>
     /// <item>
@@ -135,7 +135,7 @@ public readonly partial struct Money :
     /// <exception cref="FormatException">The format specifier is not supported.</exception>
     internal string Format(ReadOnlySpan<char> format, IFormatProvider? provider, string magnitudeSuffix)
     {
-        string isoCode = IsoCode;
+        string isoCode = IsoCodeOrEmpty;
         int minorUnits = MinorUnits;
         string englishName = CurrencyResolution.TryGet(isoCode, out CurrencyInfo? info) && info is not null
             ? info.EnglishName

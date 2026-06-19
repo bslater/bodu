@@ -53,16 +53,29 @@ public partial class CurrencyInfoTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="CurrencyInfo.TryGetCurrencyCode" /> returns <see langword="false" /> for historic
-    /// currencies that are intentionally excluded from <see cref="CurrencyCode" /> to preserve enum stability.
+    /// Verifies that <see cref="CurrencyInfo.TryGetCurrencyCode" /> resolves a historic currency now that the full
+    /// ISO 4217 catalogue — active and historic — is represented in <see cref="CurrencyCode" />.
     /// </summary>
     [TestMethod]
-    public void TryGetCurrencyCode_WhenIsoIsHistoric_ShouldReturnFalse()
+    public void TryGetCurrencyCode_WhenIsoIsHistoric_ShouldReturnTrue()
     {
         bool ok = CurrencyInfo.TryGetCurrencyCode("DEM", out CurrencyCode code);
 
+        Assert.IsTrue(ok);
+        Assert.AreEqual(CurrencyCode.DEM, code);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CurrencyInfo.TryGetCurrencyCode" /> returns <see langword="false" /> for the
+    /// <see cref="CurrencyCode.None" /> sentinel name, which is not an ISO 4217 currency.
+    /// </summary>
+    [TestMethod]
+    public void TryGetCurrencyCode_WhenIsoIsNoneSentinel_ShouldReturnFalse()
+    {
+        bool ok = CurrencyInfo.TryGetCurrencyCode("None", out CurrencyCode code);
+
         Assert.IsFalse(ok);
-        Assert.AreEqual(default, code);
+        Assert.AreEqual(CurrencyCode.None, code);
     }
 
     /// <summary>
@@ -93,17 +106,31 @@ public partial class CurrencyInfoTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="CurrencyInfo.ToCurrencyCode" /> throws <see cref="InvalidOperationException" /> for
-    /// historic currencies because they are not represented in <see cref="CurrencyCode" />.
+    /// Verifies that <see cref="CurrencyInfo.ToCurrencyCode" /> returns the matching enum member for a historic
+    /// currency, which is now represented in <see cref="CurrencyCode" />.
     /// </summary>
     [TestMethod]
-    public void ToCurrencyCode_WhenIsoIsHistoric_ShouldThrowInvalidOperationException()
+    public void ToCurrencyCode_WhenIsoIsHistoric_ShouldReturnMatchingCode()
     {
         CurrencyInfo info = CurrencyRegistry.Get("DEM");
 
-        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        var code = info.ToCurrencyCode();
+
+        Assert.AreEqual(CurrencyCode.DEM, code);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CurrencyInfo.FromCurrencyCode" /> throws <see cref="ArgumentOutOfRangeException" />
+    /// for the <see cref="CurrencyCode.None" /> sentinel, which carries no currency metadata.
+    /// </summary>
+    [TestMethod]
+    public void FromCurrencyCode_WhenCodeIsNone_ShouldThrowArgumentOutOfRangeException()
+    {
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            _ = info.ToCurrencyCode();
+            _ = CurrencyInfo.FromCurrencyCode(CurrencyCode.None);
         });
+
+        Assert.AreEqual("code", ex.ParamName);
     }
 }

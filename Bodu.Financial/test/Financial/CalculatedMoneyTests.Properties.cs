@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
+
 namespace Bodu.Financial;
 
 public partial class CalculatedMoneyTests
@@ -16,11 +18,11 @@ public partial class CalculatedMoneyTests
     [TestMethod]
     public void Properties_WhenInspectingAmount_ShouldReportZeroAndSign()
     {
-        Assert.IsTrue(new CalculatedMoney(0m, "USD").IsZero);
-        Assert.IsFalse(new CalculatedMoney(1m, "USD").IsZero);
+        Assert.IsTrue(new CalculatedMoney(0m, CurrencyCode.USD).IsZero);
+        Assert.IsFalse(new CalculatedMoney(1m, CurrencyCode.USD).IsZero);
 
-        Assert.AreEqual(1, new CalculatedMoney(2m, "USD").Sign);
-        Assert.AreEqual(-1, new CalculatedMoney(-2m, "USD").Sign);
-        Assert.AreEqual(0, new CalculatedMoney(0m, "USD").Sign);
+        Assert.AreEqual(1, new CalculatedMoney(2m, CurrencyCode.USD).Sign);
+        Assert.AreEqual(-1, new CalculatedMoney(-2m, CurrencyCode.USD).Sign);
+        Assert.AreEqual(0, new CalculatedMoney(0m, CurrencyCode.USD).Sign);
     }
 }

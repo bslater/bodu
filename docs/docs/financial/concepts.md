@@ -88,13 +88,13 @@ new Money<USD>(-10m).Allocate(3);    // [-3.34, -3.33, -3.33]
 - **Active**: USD, EUR, GBP, JPY, AUD, CAD, CHF, CNY, INR, BRL, MXN, ZAR, … (around 150 codes).
 - **Historic**: every Euro-zone predecessor (ATS, BEF, CYP, DEM, EEK, ESP, FIM, FRF, GRD, IEP, ITL, LTL, LUF, LVL, MTL, NLG, PTE, SIT, SKK) plus other notable replacements (AZM, GHC, MZM, ROL, SRG, TMM, VEB, VEF, ZWL). Each historic tag declares `IsHistoric => true`, the `DemonetizedOn` date, and the `SuccessorIsoCode`.
 
-Tag types are source-generated from `currencies.json` and registered with <xref:Bodu.Financial.CurrencyRegistry> at first access — no runtime reflection scans the assembly.
+Tag types are source-generated from `currencies.json`, and the runtime catalogue is built from the same generated data — no runtime reflection scans the assembly.
 
 ## `CurrencyRegistry`
 
-<xref:Bodu.Financial.CurrencyRegistry> is the thread-safe runtime table over <xref:Bodu.Financial.CurrencyInfo> records — the runtime-shape counterpart of an `ICurrency` tag. It backs <xref:Bodu.Financial.Money> rounding and <xref:Bodu.Financial.MoneyBag> conversions, both of which only know the ISO code at runtime.
+<xref:Bodu.Financial.CurrencyRegistry> is the read-only runtime catalogue of <xref:Bodu.Financial.CurrencyInfo> records — the runtime-shape counterpart of an `ICurrency` tag. It backs <xref:Bodu.Financial.Money> rounding and <xref:Bodu.Financial.MoneyBag> conversions, which resolve a currency's metadata at runtime.
 
-Custom or future currencies (e.g. cryptocurrencies, in-game tokens, regional vouchers) are registered via `CurrencyRegistry.Register(CurrencyInfo)` or `TryRegister`. Custom entries layer on top of the shipped catalogue and take precedence on conflict, so consumers can override shipped metadata in pinch.
+The catalogue is closed: it is fixed to the shipped ISO 4217 set (active and historic) and exposes no runtime registration seam, so a currency outside it cannot be constructed as a runtime <xref:Bodu.Financial.Money>. For a generic amount in a unit outside ISO 4217 (a commodity, an in-game token), declare your own `ICurrency` tag and use `Money<TCurrency>`; to substitute or restrict the metadata used for the *shipped* currencies, install a custom `ICurrencyLookup` through <xref:Bodu.Financial.CurrencyResolution>.
 
 ## `ExchangeRate`
 

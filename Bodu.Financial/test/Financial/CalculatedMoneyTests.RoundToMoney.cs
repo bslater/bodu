@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
+
 namespace Bodu.Financial;
 
 public partial class CalculatedMoneyTests
@@ -17,11 +19,11 @@ public partial class CalculatedMoneyTests
     [TestCategory("Smoke")]
     public void RoundToMoney_WhenDefaultContext_ShouldRoundToRegistryMinorUnits()
     {
-        CalculatedMoney calc = new(1.235m, "USD");
+        CalculatedMoney calc = new(1.235m, CurrencyCode.USD);
 
         Money settled = calc.RoundToMoney();
 
-        Assert.AreEqual(new Money(1.24m, "USD"), settled);
+        Assert.AreEqual(new Money(1.24m, CurrencyCode.USD), settled);
     }
 
     /// <summary>
@@ -32,11 +34,11 @@ public partial class CalculatedMoneyTests
     public void RoundToMoney_WhenChainDefersRounding_ShouldBeMoreAccurateThanEagerRounding()
     {
         // 1/3 * 3 = 1.00 when rounding is deferred; eager per-step Money rounding yields 0.99.
-        Money deferred = (new Money(1m, "USD").ToCalculated() / 3m * 3m).RoundToMoney();
-        Money eager = new Money(1m, "USD") / 3m * 3m;
+        Money deferred = (new Money(1m, CurrencyCode.USD).ToCalculated() / 3m * 3m).RoundToMoney();
+        Money eager = new Money(1m, CurrencyCode.USD) / 3m * 3m;
 
-        Assert.AreEqual(new Money(1.00m, "USD"), deferred);
-        Assert.AreEqual(new Money(0.99m, "USD"), eager);
+        Assert.AreEqual(new Money(1.00m, CurrencyCode.USD), deferred);
+        Assert.AreEqual(new Money(0.99m, CurrencyCode.USD), eager);
     }
 
     /// <summary>
@@ -45,25 +47,26 @@ public partial class CalculatedMoneyTests
     [TestMethod]
     public void RoundToMoney_WhenAwayFromZero_ShouldRoundMidpointAway()
     {
-        CalculatedMoney calc = new(1.225m, "USD");
+        CalculatedMoney calc = new(1.225m, CurrencyCode.USD);
 
-        Assert.AreEqual(new Money(1.23m, "USD"), calc.RoundToMoney(MidpointRounding.AwayFromZero));
-        Assert.AreEqual(new Money(1.22m, "USD"), calc.RoundToMoney());
+        Assert.AreEqual(new Money(1.23m, CurrencyCode.USD), calc.RoundToMoney(MidpointRounding.AwayFromZero));
+        Assert.AreEqual(new Money(1.22m, CurrencyCode.USD), calc.RoundToMoney());
     }
 
     /// <summary>
-    /// Verifies that an unregistered currency settles to the context's custom scale via the explicit-scale path.
+    /// Verifies that a context custom scale wider than the currency's minor units settles through the explicit-scale
+    /// path, so the resulting value reports the requested precision.
     /// </summary>
     [TestMethod]
-    public void RoundToMoney_WhenUnregisteredAndCustomScale_ShouldSettleWithExplicitScale()
+    public void RoundToMoney_WhenCustomScaleWiderThanMinorUnits_ShouldSettleWithExplicitScale()
     {
-        CalculatedMoney calc = new(1.23456m, "XYZ");
+        CalculatedMoney calc = new(1.23456m, CurrencyCode.USD);
 
         Money settled = calc.RoundToMoney(MonetaryContext.Default with { ScalePolicy = ScalePolicy.Custom, CustomScale = 4 });
 
         Assert.AreEqual(1.2346m, settled.Amount);
         Assert.AreEqual(4, settled.MinorUnits);
-        Assert.AreEqual("XYZ", settled.IsoCode);
+        Assert.AreEqual(CurrencyCode.USD, settled.Code);
     }
 
     /// <summary>
@@ -75,9 +78,9 @@ public partial class CalculatedMoneyTests
     [TestMethod]
     public void RoundToMoney_WhenChainDefersRounding_ShouldAvoidPerStepRoundingError()
     {
-        Money perStep = Money.From(10.00m, "USD") * 0.3333m * 3m;
+        Money perStep = Money.From(10.00m, CurrencyCode.USD) * 0.3333m * 3m;
 
-        CalculatedMoney deferred = new Money(10.00m, "USD").ToCalculated() * 0.3333m * 3m;
+        CalculatedMoney deferred = new Money(10.00m, CurrencyCode.USD).ToCalculated() * 0.3333m * 3m;
         Money settled = deferred.RoundToMoney();
 
         Assert.AreEqual(9.99m, perStep.Amount);

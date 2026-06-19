@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
+
 namespace Bodu.Financial;
 
 public partial class CalculatedMoneyTests
@@ -16,7 +18,7 @@ public partial class CalculatedMoneyTests
     [TestMethod]
     public void NamedMultiplyAndDivide_WhenInvoked_ShouldPreserveFullPrecision()
     {
-        var value = new CalculatedMoney(1m, "USD");
+        var value = new CalculatedMoney(1m, CurrencyCode.USD);
 
         Assert.AreEqual(value * 3m, value.Multiply(3m));
         Assert.AreEqual(value / 3m, value.Divide(3m));

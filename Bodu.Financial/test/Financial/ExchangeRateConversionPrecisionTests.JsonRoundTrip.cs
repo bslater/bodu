@@ -18,7 +18,7 @@ public sealed partial class ExchangeRateConversionPrecisionTests
     [TestMethod]
     public void JsonRoundTrip_WhenInvertedFromObservedRate_ShouldPreservePreciseConversion()
     {
-        var inverted = ExchangeRate.FromObservedRate("JPY", "USD", Date, 156.42m, "ECB", isInverted: true);
+        var inverted = ExchangeRate.FromObservedRate(CurrencyCode.JPY, CurrencyCode.USD, Date, 156.42m, "ECB", isInverted: true);
 
         string json = JsonSerializer.Serialize(inverted);
         ExchangeRate recovered = JsonSerializer.Deserialize<ExchangeRate>(json);

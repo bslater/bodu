@@ -30,7 +30,7 @@ namespace Bodu.Financial;
 /// snapshot via <see cref="ExchangeRateSeriesBuilder.ToSeries" />.
 /// </para>
 /// </remarks>
-[DebuggerDisplay("{Pair.FromIsoCode,nq}/{Pair.ToIsoCode,nq} ({Provider,nq}) Count={Count}")]
+[DebuggerDisplay("{Pair.From,nq}/{Pair.To,nq} ({Provider,nq}) Count={Count}")]
 public sealed class ExchangeRateSeries
 {
     /// <summary>The shared immutable storage holding the validated, sorted, unique day-number / rate arrays.</summary>

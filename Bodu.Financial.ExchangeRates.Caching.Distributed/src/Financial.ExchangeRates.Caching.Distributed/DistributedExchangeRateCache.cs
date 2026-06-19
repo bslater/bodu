@@ -7,6 +7,7 @@
 using System.Collections.Concurrent;
 using System.Globalization;
 using System.Text.Json;
+using Bodu.Financial.Currencies;
 using Microsoft.Extensions.Caching.Distributed;
 
 namespace Bodu.Financial.ExchangeRates.Caching.Distributed;
@@ -63,8 +64,8 @@ public sealed class DistributedExchangeRateCache
     /// <summary>The serializer options used for every read and write so the wire format is stable and culture-independent.</summary>
     private static readonly JsonSerializerOptions s_serializerOptions = new(JsonSerializerDefaults.Web);
 
-    /// <summary>The reserved-code currency pair used only to build a sentinel key for the startup probe under <see cref="ExchangeRateCacheOptions.ValidateStorageOnStart" />; it is read, never written.</summary>
-    private static readonly ExchangeRatePair s_probePair = new("XXX", "XTS");
+    /// <summary>The fixed currency pair used only to build a sentinel key for the startup probe under <see cref="ExchangeRateCacheOptions.ValidateStorageOnStart" />; it is read (and the result discarded), never written, so its value is irrelevant.</summary>
+    private static readonly ExchangeRatePair s_probePair = new(CurrencyCode.USD, CurrencyCode.USD);
 
     /// <summary>The backing distributed cache the per-pair blobs are read from and written to.</summary>
     private readonly IDistributedCache _cache;

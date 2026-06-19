@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
 using Bodu.Financial.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -81,7 +82,7 @@ public sealed partial class RateCachingExtensionsTests
                 agg => agg
                     .AddCachedChild("RBA", _ => Fixed("RBA", 0.50m))
                     .AddCachedChild("ECB", _ => Fixed("ECB", 0.51m))
-                    .MapPair(new ExchangeRatePair("AUD", "USD"), "ECB", "RBA"),
+                    .MapPair(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), "ECB", "RBA"),
                 configureCache: o => o.CacheDirectory = _directory));
 
         IDatedExchangeRateProvider resolved = provider.GetRequiredService<IDatedExchangeRateProvider>();
@@ -114,5 +115,5 @@ public sealed partial class RateCachingExtensionsTests
     /// <param name="rate">The rate.</param>
     /// <returns>A new fixed provider.</returns>
     private static IDatedExchangeRateProvider Fixed(string provider, decimal rate) =>
-        new FixedDatedExchangeRateProvider(new[] { new ExchangeRate("AUD", "USD", new DateOnly(2023, 1, 3), rate, provider) });
+        new FixedDatedExchangeRateProvider(new[] { new ExchangeRate(CurrencyCode.AUD, CurrencyCode.USD, new DateOnly(2023, 1, 3), rate, provider) });
 }

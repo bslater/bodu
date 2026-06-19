@@ -7,6 +7,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Runtime.CompilerServices;
+using Bodu.Financial.Currencies;
 
 namespace Bodu.Financial;
 
@@ -38,6 +39,34 @@ internal static partial class FinancialThrowHelper
             throw new ArgumentException(
                 FinancialResourceStrings.Arg_Invalid_IsoCodeShape,
                 paramName);
+        }
+    }
+
+    /// <summary>
+    /// Throws when <paramref name="value" /> is the <see cref="CurrencyCode.None" /> sentinel or is not a defined
+    /// <see cref="CurrencyCode" /> member.
+    /// </summary>
+    /// <param name="value">The candidate currency code to validate.</param>
+    /// <param name="paramName">The parameter name reported in the exception; inferred from the call site.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="value" /> is <see cref="CurrencyCode.None" /> or is not a defined
+    /// <see cref="CurrencyCode" /> value.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static void ThrowIfNotDefinedCurrencyCode(
+        CurrencyCode value,
+        [CallerArgumentExpression(nameof(value))] string? paramName = null)
+    {
+        if (value == CurrencyCode.None || !Enum.IsDefined(value))
+        {
+            throw new ArgumentOutOfRangeException(
+                paramName,
+                value,
+                string.Format(
+                    CultureInfo.CurrentCulture,
+                    FinancialResourceStrings.Arg_Invalid_CurrencyCodeNotMapped,
+                    value,
+                    (int)value));
         }
     }
 
@@ -140,33 +169,6 @@ internal static partial class FinancialThrowHelper
     }
 
     /// <summary>
-    /// Throws when <paramref name="policy" /> is not a defined <see cref="UnknownCurrencyPolicy" /> member.
-    /// </summary>
-    /// <param name="policy">The policy value to validate.</param>
-    /// <param name="paramName">The parameter name reported in the exception; inferred from the call site.</param>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="policy" /> is not a defined value.
-    /// </exception>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static void ThrowIfUnknownCurrencyPolicyUndefined(
-        UnknownCurrencyPolicy policy,
-        [CallerArgumentExpression(nameof(policy))] string? paramName = null)
-    {
-        if (policy is not UnknownCurrencyPolicy.Reject
-            and not UnknownCurrencyPolicy.AllowWithExplicitScale
-            and not UnknownCurrencyPolicy.AllowUnscaled)
-        {
-            throw new ArgumentOutOfRangeException(
-                paramName,
-                policy,
-                string.Format(
-                    CultureInfo.CurrentCulture,
-                    FinancialResourceStrings.Arg_OutOfRange_UnknownCurrencyPolicyUndefined,
-                    policy));
-        }
-    }
-
-    /// <summary>
     /// Throws when <paramref name="mode" /> is not a defined <see cref="MoneyParseMode" /> member.
     /// </summary>
     /// <param name="mode">The parse mode to validate.</param>
@@ -252,34 +254,6 @@ internal static partial class FinancialThrowHelper
     {
         if (policy is not ConversionRoundingPolicy.RoundAtTarget and not ConversionRoundingPolicy.Defer)
             throw new ArgumentOutOfRangeException(paramName, policy, string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Arg_OutOfRange_ConversionRoundingPolicyUndefined, policy));
-    }
-
-    /// <summary>
-    /// Throws when <paramref name="policy" /> is not a defined <see cref="CurrencyRegistrationConflictPolicy" />
-    /// member.
-    /// </summary>
-    /// <param name="policy">The conflict policy to validate.</param>
-    /// <param name="paramName">The parameter name reported in the exception; inferred from the call site.</param>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="policy" /> is not a defined value.
-    /// </exception>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static void ThrowIfCurrencyRegistrationConflictPolicyUndefined(
-        CurrencyRegistrationConflictPolicy policy,
-        [CallerArgumentExpression(nameof(policy))] string? paramName = null)
-    {
-        if (policy is not CurrencyRegistrationConflictPolicy.Throw
-            and not CurrencyRegistrationConflictPolicy.Replace
-            and not CurrencyRegistrationConflictPolicy.Ignore)
-        {
-            throw new ArgumentOutOfRangeException(
-                paramName,
-                policy,
-                string.Format(
-                    CultureInfo.CurrentCulture,
-                    FinancialResourceStrings.Arg_OutOfRange_CurrencyRegistrationConflictPolicyUndefined,
-                    policy));
-        }
     }
 
     /// <summary>

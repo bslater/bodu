@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using Bodu.Financial.Currencies;
 
 namespace Bodu.Financial;
 
@@ -14,7 +15,7 @@ public readonly partial struct Money
     /// Parses a <see cref="Money" /> using the supplied <paramref name="options" />.
     /// </summary>
     /// <param name="s">The text to parse.</param>
-    /// <param name="options">The parse options controlling mode, culture, and unknown-currency handling.</param>
+    /// <param name="options">The parse options controlling mode and culture.</param>
     /// <returns>The parsed value.</returns>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="s" /> or <paramref name="options" /> is <see langword="null" />.
@@ -35,7 +36,7 @@ public readonly partial struct Money
     /// Attempts to parse a <see cref="Money" /> using the supplied <paramref name="options" />.
     /// </summary>
     /// <param name="s">The text to parse.</param>
-    /// <param name="options">The parse options controlling mode, culture, and unknown-currency handling.</param>
+    /// <param name="options">The parse options controlling mode and culture.</param>
     /// <param name="result">
     /// When this method returns <see langword="true" />, the parsed value; otherwise the default.
     /// </param>
@@ -63,7 +64,7 @@ public readonly partial struct Money
             if (options.Mode == MoneyParseMode.LenientImport)
                 iso = iso.ToUpperInvariant();
 
-            return TryComposeWithPolicy(numericPart, iso, provider, options.UnknownCurrency, out result);
+            return TryCompose(numericPart, iso, provider, out result);
         }
 
         // No embedded ISO code: only culture-aware parsing can resolve a currency from a symbol.
@@ -72,7 +73,7 @@ public readonly partial struct Money
         {
             ICurrencyLookup lookup = options.CurrencyLookup ?? new CurrencyLookupService();
             if (lookup.TryBySymbol(symbol, out IReadOnlyList<CurrencyInfo> matches) && matches.Count == 1)
-                return TryComposeWithPolicy(symbolNumeric, matches[0].IsoCode, provider, options.UnknownCurrency, out result);
+                return TryCompose(symbolNumeric, matches[0].IsoCode, provider, out result);
         }
 
         return false;
@@ -148,19 +149,17 @@ public readonly partial struct Money
     }
 
     /// <summary>
-    /// Parses the numeric portion and constructs the value, honouring the unknown-currency policy.
+    /// Parses the numeric portion and constructs the value when the currency is registered.
     /// </summary>
     /// <param name="numericPart">The numeric span.</param>
     /// <param name="iso">The ISO code.</param>
     /// <param name="provider">The culture provider.</param>
-    /// <param name="unknownCurrency">The policy applied when the currency is unregistered.</param>
     /// <param name="result">The constructed value.</param>
     /// <returns><see langword="true" /> on success.</returns>
-    private static bool TryComposeWithPolicy(
+    private static bool TryCompose(
         ReadOnlySpan<char> numericPart,
         string iso,
         IFormatProvider provider,
-        UnknownCurrencyPolicy unknownCurrency,
         out Money result)
     {
         result = default;
@@ -174,16 +173,9 @@ public readonly partial struct Money
         if (!decimal.TryParse(numericPart, NumberStyles.Number | NumberStyles.AllowLeadingSign, provider, out decimal amount))
             return false;
 
-        if (CurrencyResolution.Contains(iso))
+        if (CurrencyResolution.Contains(iso) && CurrencyInfo.TryGetCurrencyCode(iso, out CurrencyCode code))
         {
-            result = new Money(amount, iso);
-            return true;
-        }
-
-        // Unregistered: AllowUnscaled is the only policy that yields a value without a caller-supplied scale.
-        if (unknownCurrency == UnknownCurrencyPolicy.AllowUnscaled)
-        {
-            result = Money.From(amount, iso, UnknownCurrencyPolicy.AllowUnscaled);
+            result = new Money(amount, code);
             return true;
         }
 

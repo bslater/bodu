@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
+
 namespace Bodu.Financial;
 
 public partial class FixedDatedExchangeRateProviderTests
@@ -17,7 +19,7 @@ public partial class FixedDatedExchangeRateProviderTests
     {
         ExchangeRate[] direct =
         [
-            new ExchangeRate("USD", "AUD", s_d1, 1.50m, "RBA"),
+            new ExchangeRate(CurrencyCode.USD, CurrencyCode.AUD, s_d1, 1.50m, "RBA"),
         ];
 
         FixedDatedExchangeRateProvider table = new(direct);
@@ -30,8 +32,8 @@ public partial class FixedDatedExchangeRateProviderTests
             out ExchangeRateLookupResult result);
 
         Assert.IsTrue(found);
-        Assert.AreEqual("AUD", result.Rate.FromIsoCode);
-        Assert.AreEqual("USD", result.Rate.ToIsoCode);
+        Assert.AreEqual(CurrencyCode.AUD, result.Rate.From);
+        Assert.AreEqual(CurrencyCode.USD, result.Rate.To);
         Assert.AreEqual(1m / 1.50m, result.Rate.Rate);
         Assert.IsTrue(result.Rate.IsInverted);
         Assert.AreEqual("RBA", result.Rate.Provider);
@@ -46,8 +48,8 @@ public partial class FixedDatedExchangeRateProviderTests
     {
         ExchangeRate[] rates =
         [
-            new ExchangeRate("USD", "AUD", new DateOnly(2024, 1, 1), 1.50m, "RBA"),
-            new ExchangeRate("AUD", "USD", new DateOnly(2024, 1, 10), 0.67m, "RBA"),
+            new ExchangeRate(CurrencyCode.USD, CurrencyCode.AUD, new DateOnly(2024, 1, 1), 1.50m, "RBA"),
+            new ExchangeRate(CurrencyCode.AUD, CurrencyCode.USD, new DateOnly(2024, 1, 10), 0.67m, "RBA"),
         ];
 
         FixedDatedExchangeRateProvider table = new(rates);

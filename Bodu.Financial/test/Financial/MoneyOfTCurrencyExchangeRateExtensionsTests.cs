@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
 using Bodu.Test;
 using Bodu.Test.Assertions;
 
@@ -16,6 +17,6 @@ public partial class MoneyOfTCurrencyExchangeRateExtensionsTests
 
     private static FixedDatedExchangeRateProvider BuildProvider() => new(
     [
-        new ExchangeRate("USD", "AUD", s_d1, 1.50m, "RBA"),
+        new ExchangeRate(CurrencyCode.USD, CurrencyCode.AUD, s_d1, 1.50m, "RBA"),
     ]);
 }

@@ -17,10 +17,10 @@ public partial class MoneyBagTests
     [TestCategory("Smoke")]
     public void Of_WhenDuplicateCurrencies_ShouldSumBalances()
     {
-        var bag = MoneyBag.Of(new Money(10m, "USD"), new Money(5m, "USD"), new Money(2m, "EUR"));
+        var bag = MoneyBag.Of(new Money(10m, CurrencyCode.USD), new Money(5m, CurrencyCode.USD), new Money(2m, CurrencyCode.EUR));
 
-        Assert.AreEqual(new Money(15m, "USD"), bag.GetBalance("USD"));
-        Assert.AreEqual(new Money(2m, "EUR"), bag.GetBalance("EUR"));
+        Assert.AreEqual(new Money(15m, CurrencyCode.USD), bag.GetBalance(CurrencyCode.USD));
+        Assert.AreEqual(new Money(2m, CurrencyCode.EUR), bag.GetBalance(CurrencyCode.EUR));
     }
 
     /// <summary>
@@ -29,24 +29,24 @@ public partial class MoneyBagTests
     [TestMethod]
     public void FromBalances_WhenGivenSequence_ShouldBuildBag()
     {
-        var bag = MoneyBag.FromBalances([new Money(10m, "USD"), new Money(2m, "EUR")]);
+        var bag = MoneyBag.FromBalances([new Money(10m, CurrencyCode.USD), new Money(2m, CurrencyCode.EUR)]);
 
         Assert.AreEqual(2, bag.Count);
     }
 
     /// <summary>
-    /// Verifies that <see cref="MoneyBag.TryGetBalance(string, out Money)" /> reports presence and absence without
+    /// Verifies that <see cref="MoneyBag.TryGetBalance(CurrencyCode, out Money)" /> reports presence and absence without
     /// throwing.
     /// </summary>
     [TestMethod]
     public void TryGetBalance_WhenPresentAndAbsent_ShouldReflectMembership()
     {
-        var bag = MoneyBag.Of(new Money(10m, "USD"));
+        var bag = MoneyBag.Of(new Money(10m, CurrencyCode.USD));
 
-        Assert.IsTrue(bag.TryGetBalance("USD", out Money usd));
-        Assert.AreEqual(new Money(10m, "USD"), usd);
+        Assert.IsTrue(bag.TryGetBalance(CurrencyCode.USD, out Money usd));
+        Assert.AreEqual(new Money(10m, CurrencyCode.USD), usd);
 
-        Assert.IsFalse(bag.TryGetBalance("EUR", out Money eur));
+        Assert.IsFalse(bag.TryGetBalance(CurrencyCode.EUR, out Money eur));
         Assert.AreEqual(default, eur);
     }
 
@@ -56,9 +56,9 @@ public partial class MoneyBagTests
     [TestMethod]
     public void GetBalance_WhenCurrencyInfo_ShouldResolveBalance()
     {
-        var bag = MoneyBag.Of(new Money(10m, "USD"));
+        var bag = MoneyBag.Of(new Money(10m, CurrencyCode.USD));
 
-        Assert.AreEqual(new Money(10m, "USD"), bag.GetBalance(CurrencyRegistry.Get("USD")));
+        Assert.AreEqual(new Money(10m, CurrencyCode.USD), bag.GetBalance(CurrencyRegistry.Get("USD")));
     }
 
     /// <summary>
@@ -67,9 +67,9 @@ public partial class MoneyBagTests
     [TestMethod]
     public void GetBalance_WhenCurrencyCode_ShouldResolveBalance()
     {
-        var bag = MoneyBag.Of(new Money(10m, "USD"));
+        var bag = MoneyBag.Of(new Money(10m, CurrencyCode.USD));
 
-        Assert.AreEqual(new Money(10m, "USD"), bag.GetBalance(CurrencyCode.USD));
+        Assert.AreEqual(new Money(10m, CurrencyCode.USD), bag.GetBalance(CurrencyCode.USD));
         Assert.IsNull(bag.GetBalance(CurrencyCode.EUR));
     }
 }

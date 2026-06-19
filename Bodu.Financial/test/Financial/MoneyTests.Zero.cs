@@ -1,72 +1,56 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyTests.Zero.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
+
+using Bodu.Financial.Currencies;
+using Bodu.Test.Assertions;
 
 namespace Bodu.Financial;
 
 public partial class MoneyTests
 {
     /// <summary>
-    /// Verifies that <see cref="Money.Zero(string)" /> returns a zero amount carrying the supplied registered currency.
+    /// Verifies that <see cref="Money.Zero(CurrencyCode)" /> returns a zero amount carrying the supplied currency.
     /// </summary>
     [TestMethod]
-    public void Zero_WhenIsoCodeValid_ShouldReturnZeroForCurrency()
+    public void Zero_WhenCurrencyCodeValid_ShouldReturnZeroForCurrency()
     {
-        var money = Money.Zero("USD");
+        var money = Money.Zero(CurrencyCode.USD);
 
         Assert.AreEqual(0m, money.Amount);
-        Assert.AreEqual("USD", money.IsoCode);
+        Assert.AreEqual(CurrencyCode.USD, money.Code);
         Assert.IsTrue(money.HasCurrency);
     }
 
     /// <summary>
-    /// Verifies that <see cref="Money.Zero(string)" /> throws <see cref="ArgumentNullException" /> when the ISO code is
-    /// <see langword="null" />.
+    /// Verifies that <see cref="Money.Zero(CurrencyCode)" /> throws <see cref="ArgumentOutOfRangeException" /> when the
+    /// currency is <see cref="CurrencyCode.None" />.
     /// </summary>
     [TestMethod]
-    public void Zero_WhenIsoCodeNull_ShouldThrowArgumentNullException()
+    public void Zero_WhenCodeIsNone_ShouldThrowArgumentOutOfRangeException()
     {
-        _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = Money.Zero(null!);
-        });
+        ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(
+            () =>
+            {
+                _ = Money.Zero(CurrencyCode.None);
+            },
+            "code");
     }
 
     /// <summary>
-    /// Verifies that <see cref="Money.Zero(string)" /> throws <see cref="ArgumentException" /> when the ISO code is not
-    /// exactly three uppercase ASCII letters, rather than only rejecting empty or whitespace input.
-    /// </summary>
-    /// <param name="isoCode">The malformed ISO code under test.</param>
-    [TestMethod]
-    [DataRow("")]
-    [DataRow("US")]
-    [DataRow("usd")]
-    [DataRow("US1")]
-    [DataRow("USDD")]
-    public void Zero_WhenIsoCodeWrongShape_ShouldThrowArgumentException(string isoCode)
-    {
-        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
-        {
-            _ = Money.Zero(isoCode);
-        });
-
-        Assert.AreEqual("isoCode", ex.ParamName);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="Money.Zero(string)" /> throws <see cref="ArgumentException" /> when the ISO code is
-    /// structurally valid but is not registered in <see cref="CurrencyRegistry" />.
+    /// Verifies that <see cref="Money.Zero(CurrencyCode)" /> throws <see cref="ArgumentOutOfRangeException" /> when the
+    /// currency is not a defined <see cref="CurrencyCode" /> member.
     /// </summary>
     [TestMethod]
-    public void Zero_WhenIsoCodeUnregistered_ShouldThrowArgumentException()
+    public void Zero_WhenCodeUndefined_ShouldThrowArgumentOutOfRangeException()
     {
-        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
-        {
-            _ = Money.Zero("QQQ");
-        });
-
-        Assert.AreEqual("isoCode", ex.ParamName);
+        ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(
+            () =>
+            {
+                _ = Money.Zero((CurrencyCode)9999);
+            },
+            "code");
     }
 }

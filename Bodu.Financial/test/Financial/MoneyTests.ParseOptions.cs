@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using Bodu.Financial.Currencies;
 
 namespace Bodu.Financial;
 
@@ -22,7 +23,7 @@ public partial class MoneyTests
 
         var money = Money.Parse(text, options);
 
-        Assert.AreEqual(new Money(19.99m, "USD"), money);
+        Assert.AreEqual(new Money(19.99m, CurrencyCode.USD), money);
     }
 
     /// <summary>
@@ -44,28 +45,7 @@ public partial class MoneyTests
 
         var money = Money.Parse("usd 19.99", options);
 
-        Assert.AreEqual(new Money(19.99m, "USD"), money);
-    }
-
-    /// <summary>
-    /// Verifies that lenient import with <see cref="UnknownCurrencyPolicy.AllowUnscaled" /> accepts an unregistered
-    /// currency at source precision.
-    /// </summary>
-    [TestMethod]
-    public void ParseOptions_WhenLenientImportAllowUnscaled_ShouldAcceptUnregistered()
-    {
-        MoneyParseOptions options = new()
-        {
-            Mode = MoneyParseMode.LenientImport,
-            FormatProvider = CultureInfo.InvariantCulture,
-            UnknownCurrency = UnknownCurrencyPolicy.AllowUnscaled,
-        };
-
-        var money = Money.Parse("XYZ 1.2345", options);
-
-        Assert.AreEqual(1.2345m, money.Amount);
-        Assert.AreEqual("XYZ", money.IsoCode);
-        Assert.AreEqual(0, money.MinorUnits);
+        Assert.AreEqual(new Money(19.99m, CurrencyCode.USD), money);
     }
 
     /// <summary>
@@ -76,28 +56,7 @@ public partial class MoneyTests
     {
         var money = Money.Parse("USD 1234.56", new MoneyParseOptions { Mode = MoneyParseMode.RoundTripOnly });
 
-        Assert.AreEqual(new Money(1234.56m, "USD"), money);
-    }
-
-    /// <summary>
-    /// Verifies that culture-aware parsing resolves an unambiguous currency symbol through the lookup.
-    /// </summary>
-    [TestMethod]
-    public void ParseOptions_WhenCultureAwareWithUniqueSymbol_ShouldResolveCurrency()
-    {
-        CurrencyRegistry.Replace(new CurrencyInfo("XQP", 2, 0m, false, null, null) { Symbol = "Ω" });
-
-        MoneyParseOptions options = new()
-        {
-            Mode = MoneyParseMode.CultureAware,
-            FormatProvider = CultureInfo.InvariantCulture,
-            CurrencyLookup = new CurrencyLookupService(),
-        };
-
-        var money = Money.Parse("Ω10.50", options);
-
-        Assert.AreEqual("XQP", money.IsoCode);
-        Assert.AreEqual(10.50m, money.Amount);
+        Assert.AreEqual(new Money(1234.56m, CurrencyCode.USD), money);
     }
 
     /// <summary>
@@ -129,26 +88,7 @@ public partial class MoneyTests
         var options = new MoneyParseOptions { Mode = MoneyParseMode.LenientImport, FormatProvider = CultureInfo.InvariantCulture };
 
         Assert.IsTrue(Money.TryParse("usd 10.50", options, out Money result));
-        Assert.AreEqual(new Money(10.50m, "USD"), result);
-    }
-
-    /// <summary>
-    /// Verifies that a trailing currency symbol is resolved through the culture-aware symbol lookup.
-    /// </summary>
-    [TestMethod]
-    public void ParseOptions_WhenSymbolIsSuffix_ShouldResolveViaLookup()
-    {
-        var options = new MoneyParseOptions
-        {
-            Mode = MoneyParseMode.CultureAware,
-            FormatProvider = CultureInfo.InvariantCulture,
-            CurrencyLookup = new CurrencyLookupService(),
-        };
-
-        var money = Money.Parse("10.50Ω", options);
-
-        Assert.AreEqual("XQP", money.IsoCode);
-        Assert.AreEqual(10.50m, money.Amount);
+        Assert.AreEqual(new Money(10.50m, CurrencyCode.USD), result);
     }
 
     /// <summary>
@@ -168,21 +108,6 @@ public partial class MoneyTests
     }
 
     /// <summary>
-    /// Verifies that the unknown-currency policy governs whether an unregistered ISO code parses: rejected by default,
-    /// accepted under <see cref="UnknownCurrencyPolicy.AllowUnscaled" />.
-    /// </summary>
-    [TestMethod]
-    public void ParseOptions_WhenCurrencyUnregistered_ShouldHonourUnknownCurrencyPolicy()
-    {
-        var reject = new MoneyParseOptions { Mode = MoneyParseMode.StrictIso, FormatProvider = CultureInfo.InvariantCulture, UnknownCurrency = UnknownCurrencyPolicy.Reject };
-        Assert.IsFalse(Money.TryParse("XYZ 10.50", reject, out _));
-
-        var allow = new MoneyParseOptions { Mode = MoneyParseMode.StrictIso, FormatProvider = CultureInfo.InvariantCulture, UnknownCurrency = UnknownCurrencyPolicy.AllowUnscaled };
-        Assert.IsTrue(Money.TryParse("XYZ 10.50", allow, out Money result));
-        Assert.AreEqual("XYZ", result.IsoCode);
-    }
-
-    /// <summary>
     /// Verifies that the plain <see cref="Money.TryParse(string?, IFormatProvider?, out Money)" /> recognizes the ISO
     /// suffix form, rejects a non-numeric amount, and rejects an unregistered currency.
     /// </summary>
@@ -190,7 +115,7 @@ public partial class MoneyTests
     public void TryParse_PlainCulture_ShouldHandleSuffixAndRejectInvalid()
     {
         Assert.IsTrue(Money.TryParse("19.99 USD", CultureInfo.InvariantCulture, out Money suffix));
-        Assert.AreEqual(new Money(19.99m, "USD"), suffix);
+        Assert.AreEqual(new Money(19.99m, CurrencyCode.USD), suffix);
 
         Assert.IsFalse(Money.TryParse("USD .", CultureInfo.InvariantCulture, out _));
         Assert.IsFalse(Money.TryParse("XYZ 10.00", CultureInfo.InvariantCulture, out _));

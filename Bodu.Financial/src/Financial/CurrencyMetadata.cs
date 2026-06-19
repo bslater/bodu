@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using Bodu.Financial.Currencies;
 
 namespace Bodu.Financial;
 
@@ -90,8 +91,13 @@ internal static class CurrencyMetadata<TCurrency>
         if (successorIsoCode is not null)
             ValidateIsoCode(successorIsoCode, nameof(ICurrency.SuccessorIsoCode));
 
+        // Resolve the stored CurrencyCode once. A tag whose ISO code is outside the shipped catalogue resolves to
+        // CurrencyCode.None; the runtime-tagged bridge paths surface that as a mismatch when they need the enum.
+        CurrencyCode code = CurrencyInfo.TryGetCurrencyCode(isoCode, out CurrencyCode resolved) ? resolved : CurrencyCode.None;
+
         return new CurrencyMetadataDescriptor(
             isoCode,
+            code,
             minorUnits,
             minorUnitFactor,
             cashIncrement,
@@ -167,6 +173,10 @@ internal static class CurrencyMetadata<TCurrency>
 /// Snapshotted validated metadata for a currency tag type.
 /// </summary>
 /// <param name="IsoCode">The validated ISO 4217 alphabetic code.</param>
+/// <param name="Code">
+/// The stored <see cref="CurrencyCode" /> matching <paramref name="IsoCode" />, or <see cref="CurrencyCode.None" /> when
+/// the ISO code is outside the shipped ISO 4217 catalogue.
+/// </param>
 /// <param name="MinorUnits">The validated minor-unit precision.</param>
 /// <param name="MinorUnitFactor">Pre-computed <c>10 ^ MinorUnits</c> for use in allocation and conversion.</param>
 /// <param name="CashRoundingIncrement">The validated cash-rounding increment, or <c>0m</c> when none.</param>
@@ -179,6 +189,7 @@ internal static class CurrencyMetadata<TCurrency>
 /// </param>
 internal readonly record struct CurrencyMetadataDescriptor(
     string IsoCode,
+    CurrencyCode Code,
     int MinorUnits,
     decimal MinorUnitFactor,
     decimal CashRoundingIncrement,

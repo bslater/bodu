@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
+
 namespace Bodu.Financial;
 
 [TestClass]
@@ -17,7 +19,7 @@ public partial class ExchangeRateLookupResultTests
     public void IsExactDate_WhenOffsetIsZero_ShouldReturnTrue()
     {
         DateOnly date = new(2024, 1, 3);
-        ExchangeRate rate = new("USD", "AUD", date, 1.5m, "RBA");
+        ExchangeRate rate = new(CurrencyCode.USD, CurrencyCode.AUD, date, 1.5m, "RBA");
         ExchangeRateLookupResult result = new(rate, date, ExchangeRateDateResolution.Exact, 0, ExchangeRateProvenance.Live(rate.Provider));
 
         Assert.IsTrue(result.IsExactDate);
@@ -32,7 +34,7 @@ public partial class ExchangeRateLookupResultTests
     {
         DateOnly requested = new(2024, 1, 5);
         DateOnly resolved = new(2024, 1, 3);
-        ExchangeRate rate = new("USD", "AUD", resolved, 1.5m, "RBA");
+        ExchangeRate rate = new(CurrencyCode.USD, CurrencyCode.AUD, resolved, 1.5m, "RBA");
         ExchangeRateLookupResult result = new(rate, requested, ExchangeRateDateResolution.PreviousOnOrBefore, 2, ExchangeRateProvenance.Live(rate.Provider));
 
         Assert.IsFalse(result.IsExactDate);
@@ -45,7 +47,7 @@ public partial class ExchangeRateLookupResultTests
     public void Equality_WhenComponentsMatch_ShouldReportEqual()
     {
         DateOnly date = new(2024, 1, 3);
-        ExchangeRate rate = new("USD", "AUD", date, 1.5m, "RBA");
+        ExchangeRate rate = new(CurrencyCode.USD, CurrencyCode.AUD, date, 1.5m, "RBA");
         ExchangeRateLookupResult a = new(rate, date, ExchangeRateDateResolution.Exact, 0, ExchangeRateProvenance.Live(rate.Provider));
         ExchangeRateLookupResult b = new(rate, date, ExchangeRateDateResolution.Exact, 0, ExchangeRateProvenance.Live(rate.Provider));
 

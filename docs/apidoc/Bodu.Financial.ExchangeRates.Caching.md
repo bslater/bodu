@@ -64,8 +64,8 @@ var ecbCached = new CachingExchangeRateProvider("ECB", ecb, options);
 
 // Group them with per-FX-pair routing.
 var aggregation = new ExchangeRateAggregationOptions();
-aggregation.Routes[new ExchangeRatePair("AUD", "USD")] = new ExchangeRatePairRoute(new[] { "RBA", "ECB" });
-aggregation.Routes[new ExchangeRatePair("USD", "GBP")] = new ExchangeRatePairRoute(new[] { "ECB", "RBA" });
+aggregation.Routes[new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD)] = new ExchangeRatePairRoute(new[] { "RBA", "ECB" });
+aggregation.Routes[new ExchangeRatePair(CurrencyCode.USD, CurrencyCode.GBP)] = new ExchangeRatePairRoute(new[] { "ECB", "RBA" });
 
 IDatedExchangeRateProvider provider = new AggregatingExchangeRateProvider(
     new[]

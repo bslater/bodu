@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
+
 namespace Bodu.Financial;
 
 public partial class FixedDatedExchangeRateProviderTests
@@ -16,9 +18,9 @@ public partial class FixedDatedExchangeRateProviderTests
     {
         FixedDatedExchangeRateProvider table = new(
         [
-            new ExchangeRate("AUD", "USD", new DateOnly(2024, 1, 3), 0.67m, "RBA"),
-            new ExchangeRate("AUD", "USD", new DateOnly(2024, 1, 10), 0.69m, "RBA"),
-            new ExchangeRate("AUD", "USD", new DateOnly(2024, 1, 6), 0.68m, "RBA"),
+            new ExchangeRate(CurrencyCode.AUD, CurrencyCode.USD, new DateOnly(2024, 1, 3), 0.67m, "RBA"),
+            new ExchangeRate(CurrencyCode.AUD, CurrencyCode.USD, new DateOnly(2024, 1, 10), 0.69m, "RBA"),
+            new ExchangeRate(CurrencyCode.AUD, CurrencyCode.USD, new DateOnly(2024, 1, 6), 0.68m, "RBA"),
         ]);
 
         ExchangeRateLookupResult result = table.GetRate("AUD", "USD");
@@ -36,8 +38,8 @@ public partial class FixedDatedExchangeRateProviderTests
     {
         FixedDatedExchangeRateProvider table = new(
         [
-            new ExchangeRate("USD", "AUD", new DateOnly(2024, 1, 3), 1.50m, "RBA"),
-            new ExchangeRate("USD", "AUD", new DateOnly(2024, 1, 10), 1.25m, "RBA"),
+            new ExchangeRate(CurrencyCode.USD, CurrencyCode.AUD, new DateOnly(2024, 1, 3), 1.50m, "RBA"),
+            new ExchangeRate(CurrencyCode.USD, CurrencyCode.AUD, new DateOnly(2024, 1, 10), 1.25m, "RBA"),
         ]);
 
         ExchangeRateLookupResult result = table.GetRate("AUD", "USD");
@@ -55,7 +57,7 @@ public partial class FixedDatedExchangeRateProviderTests
     {
         FixedDatedExchangeRateProvider table = new(
         [
-            new ExchangeRate("AUD", "USD", new DateOnly(2024, 1, 3), 0.67m, "RBA"),
+            new ExchangeRate(CurrencyCode.AUD, CurrencyCode.USD, new DateOnly(2024, 1, 3), 0.67m, "RBA"),
         ]);
 
         _ = Assert.ThrowsExactly<KeyNotFoundException>(() =>

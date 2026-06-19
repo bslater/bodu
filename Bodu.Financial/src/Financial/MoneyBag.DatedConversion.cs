@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
+
 namespace Bodu.Financial;
 
 public sealed partial class MoneyBag
@@ -85,32 +87,32 @@ public sealed partial class MoneyBag
 
         FinancialThrowHelper.ThrowIfMoneyBagRoundingPolicyUndefined(policy);
 
+        CurrencyCode targetCode = CurrencyMetadata<TTarget>.Value.Code;
         string targetIso = CurrencyMetadata<TTarget>.Value.IsoCode;
         List<MoneyBagConversionLine> lines = new(_balances.Count);
 
-        // Enumerate in ISO-lexicographic order so per-line audit output is stable and matches bag iteration.
-        IEnumerable<KeyValuePair<string, decimal>> ordered =
-            _balances.OrderBy(p => p.Key, StringComparer.Ordinal);
-
+        // The backing store is already kept in ISO-code lexicographic order, so per-line audit output is stable and
+        // matches bag iteration.
         decimal rawTotal = 0m;
         Money<TTarget> roundedTotal = Money<TTarget>.Zero;
-        foreach (KeyValuePair<string, decimal> entry in ordered)
+        foreach (KeyValuePair<CurrencyCode, decimal> entry in _balances)
         {
+            string sourceIso = entry.Key.ToString();
             decimal raw;
             ExchangeRateLookupResult? lookup;
-            if (string.Equals(entry.Key, targetIso, StringComparison.Ordinal))
+            if (entry.Key == targetCode)
             {
                 raw = entry.Value;
                 lookup = null;
             }
             else
             {
-                ExchangeRateLookupResult resolved = rates.GetRate(entry.Key, targetIso, date, options);
+                ExchangeRateLookupResult resolved = rates.GetRate(sourceIso, targetIso, date, options);
                 lookup = resolved;
                 raw = entry.Value * resolved.Rate.Rate;
             }
 
-            lines.Add(new MoneyBagConversionLine(entry.Key, entry.Value, lookup, raw));
+            lines.Add(new MoneyBagConversionLine(sourceIso, entry.Value, lookup, raw));
 
             if (policy == MoneyBagConversionRoundingPolicy.SumRawThenRound)
                 rawTotal += raw;

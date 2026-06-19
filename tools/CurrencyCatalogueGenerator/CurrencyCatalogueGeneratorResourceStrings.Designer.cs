@@ -70,6 +70,15 @@ namespace Bodu.Tools.CurrencyCatalogueGenerator {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to ISO numeric code {0} is shared by &apos;{1}&apos; and &apos;{2}&apos;; CurrencyCode uses the numeric code as the enum value, so each currency must have a unique numeric..
+        /// </summary>
+        internal static string IO_Invalid_DuplicateNumericCode {
+            get {
+                return ResourceManager.GetString("IO_Invalid_DuplicateNumericCode", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Invalid ISO code: &apos;{0}&apos;..
         /// </summary>
         internal static string IO_Invalid_IsoCodeLength {

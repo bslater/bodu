@@ -18,20 +18,20 @@ public readonly partial struct Money<TCurrency>
     /// A <see cref="Money" /> carrying the same amount and the ISO code derived from <typeparamref name="TCurrency" />.
     /// </returns>
     /// <remarks>
-    /// The conversion is lossless: <typeparamref name="TCurrency" /> determines the ISO code, which is encoded into the
-    /// runtime <see cref="Money.IsoCode" />. An <c>implicit</c> operator is also provided so typed values flow into
-    /// runtime APIs without an explicit cast.
+    /// The conversion is lossless: <typeparamref name="TCurrency" /> determines the currency, which is encoded into the
+    /// runtime <see cref="Money.Code" />. An <c>implicit</c> operator is also provided so typed values flow into runtime
+    /// APIs without an explicit cast.
     /// </remarks>
     public Money ToMoney() =>
-        Money.FromNormalized(_amount, CurrencyMetadata<TCurrency>.Value.IsoCode);
+        Money.FromNormalized(_amount, CurrencyMetadata<TCurrency>.Value.Code);
 
     /// <summary>
-    /// Returns a high-precision runtime-tagged <see cref="CalculatedMoney" /> carrying this value's amount and the ISO
-    /// code derived from <typeparamref name="TCurrency" />, suitable for deferred-rounding calculation chains.
+    /// Returns a high-precision runtime-tagged <see cref="CalculatedMoney" /> carrying this value's amount and the
+    /// currency derived from <typeparamref name="TCurrency" />, suitable for deferred-rounding calculation chains.
     /// </summary>
     /// <returns>A <see cref="CalculatedMoney" /> with this value's amount.</returns>
     public CalculatedMoney ToCalculated() =>
-        new(_amount, CurrencyMetadata<TCurrency>.Value.IsoCode);
+        new(_amount, CurrencyMetadata<TCurrency>.Value.Code);
 
     /// <summary>
     /// Implicitly converts a <see cref="Money{TCurrency}" /> to a runtime-tagged <see cref="Money" />.
@@ -50,7 +50,7 @@ public readonly partial struct Money<TCurrency>
     /// <param name="value">The runtime-tagged money.</param>
     /// <returns>The strongly-typed equivalent.</returns>
     /// <exception cref="InvalidOperationException">
-    /// <paramref name="value" />'s <see cref="Money.IsoCode" /> does not match the ISO code of
+    /// <paramref name="value" />'s <see cref="Money.Code" /> does not match the currency of
     /// <typeparamref name="TCurrency" />.
     /// </exception>
     public static explicit operator Money<TCurrency>(Money value)

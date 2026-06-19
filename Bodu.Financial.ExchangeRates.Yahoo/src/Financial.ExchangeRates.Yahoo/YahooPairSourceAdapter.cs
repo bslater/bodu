@@ -38,7 +38,7 @@ internal sealed class YahooPairSourceAdapter
     /// <inheritdoc />
     public async ValueTask<PairRateData<YahooSeriesInfo>> GetPairAsync(ExchangeRatePairRequest request, CancellationToken cancellationToken = default)
     {
-        string symbol = _options.BuildSymbol(request.Pair.FromIsoCode, request.Pair.ToIsoCode);
+        string symbol = _options.BuildSymbol(request.Pair.From.ToString(), request.Pair.To.ToString());
         YahooChartRequest chartRequest = new(request.Pair, symbol, request.StartDate, request.EndDate);
 
         YahooExchangeRateChart chart = await _source.GetChartAsync(chartRequest, cancellationToken).ConfigureAwait(false);
