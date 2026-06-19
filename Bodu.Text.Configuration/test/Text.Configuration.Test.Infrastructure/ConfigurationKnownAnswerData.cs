@@ -148,6 +148,20 @@ public static class ConfigurationKnownAnswerData
         All.Where(kat => kat.Kind is ConfigurationKatKind.ConfigurationBridge)
            .Select(kat => new object[] { kat });
 
+    /// <summary>
+    /// Gets Microsoft.Extensions.Configuration bridge KATs that are expected to succeed.
+    /// </summary>
+    public static IEnumerable<object[]> BridgeDataPass =>
+        All.Where(kat => kat.Kind is ConfigurationKatKind.ConfigurationBridge && kat.Outcome is ConfigurationKatOutcome.Pass)
+           .Select(kat => new object[] { kat });
+
+    /// <summary>
+    /// Gets Microsoft.Extensions.Configuration bridge KATs that are expected to fail.
+    /// </summary>
+    public static IEnumerable<object[]> BridgeDataFail =>
+        All.Where(kat => kat.Kind is ConfigurationKatKind.ConfigurationBridge && kat.Outcome is ConfigurationKatOutcome.Fail)
+           .Select(kat => new object[] { kat });
+
     private static IReadOnlyList<ConfigurationKat> CreateAll()
     {
         var items = new List<ConfigurationKat>();
