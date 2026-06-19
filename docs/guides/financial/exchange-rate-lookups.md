@@ -231,8 +231,8 @@ var r = provider.GetRate(
     ExchangeRateLookupOptions.Exact);
 
 r.Rate.Rate;        // 1m / 0.9280m  ≈ 1.07758621
-r.Rate.FromIsoCode; // "EUR"
-r.Rate.ToIsoCode;   // "USD"
+r.Rate.From;        // EUR
+r.Rate.To;          // USD
 r.Rate.IsInverted;  // true   — derived from the reverse pair
 r.Rate.Provider;    // "ECB"
 r.OffsetDays;       // 0      — date resolution still ran on the USD/EUR series

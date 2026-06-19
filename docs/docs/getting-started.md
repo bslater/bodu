@@ -324,8 +324,8 @@ Every `Fraction<T>` is GCD-reduced on construction and promotes to `BigInteger` 
 using Bodu.Financial;
 using Bodu.Financial.Currencies;
 
-// Runtime-tagged money — currency carried as an ISO 4217 code.
-Money price = new Money(125.50m, "AUD");
+// Runtime-tagged money — currency carried as a CurrencyCode.
+Money price = new Money(125.50m, CurrencyCode.AUD);
 Money gst   = price * 0.10m;
 Money total = price + gst;             // 138.05 AUD
 

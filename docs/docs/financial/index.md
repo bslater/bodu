@@ -17,10 +17,10 @@ The package depends on `Bodu.Numerics` so `Money<TCurrency>` can round-trip thro
 | Type | Purpose |
 |---|---|
 | <xref:Bodu.Financial.Money`1> | Immutable, value-equatable monetary amount whose currency is encoded as the type parameter. Cross-currency arithmetic fails the build, not at runtime. |
-| <xref:Bodu.Financial.Money> | Runtime-tagged sister type — currency carried as an ISO code string. The fallback when the currency is data rather than type, e.g. deserialisation or generic invoicing. |
+| <xref:Bodu.Financial.Money> | Runtime-tagged sister type — currency carried as a <xref:Bodu.Financial.Currencies.CurrencyCode>. The fallback when the currency is data rather than type, e.g. deserialisation or generic invoicing. |
 | <xref:Bodu.Financial.MoneyBag> | Immutable mixed-currency portfolio. Aggregates per-ISO balances, prunes zero balances, enumerates in lexicographic ISO order. |
 | <xref:Bodu.Financial.ICurrency> | Static-abstract interface carrying ISO code, minor-unit count, cash rounding increment, and demonetisation metadata. Implemented by every shipped currency tag. |
-| <xref:Bodu.Financial.CurrencyInfo>, <xref:Bodu.Financial.CurrencyRegistry> | Runtime currency metadata record and a thread-safe registry over shipped + caller-registered custom currencies. |
+| <xref:Bodu.Financial.CurrencyInfo>, <xref:Bodu.Financial.CurrencyRegistry> | Runtime currency metadata record and a read-only catalogue over the shipped ISO 4217 currencies (active and historic). |
 | <xref:Bodu.Financial.ExchangeRate>, <xref:Bodu.Financial.ExchangeRatePair>, <xref:Bodu.Financial.ExchangeRateObservation>, <xref:Bodu.Financial.ExchangeRateSeries> | Immutable FX observation value object, strongly-typed (from, to) key, single dated observation, and an O(log n) time series over observations. |
 | <xref:Bodu.Financial.ExchangeRateSeriesBuilder>, <xref:Bodu.Financial.ExchangeRateSeriesKey>, <xref:Bodu.Financial.ExchangeRateTableBuilder> | Mutable companion to `ExchangeRateSeries` for building or editing observations, the `(pair, provider)` key, and a higher-level multi-series editor for import workflows. |
 | <xref:Bodu.Financial.IExchangeRateProvider>, <xref:Bodu.Financial.IDatedExchangeRateProvider> | Timeless and dated provider contracts. The dated form returns an <xref:Bodu.Financial.ExchangeRateLookupResult> with provenance metadata (offset days, resolution policy, provider name). |
@@ -99,7 +99,7 @@ Deserialization on `Money<TCurrency>` rejects payloads whose `currency` field do
 | Splitting an amount fairly across N shares without remainder loss | `Money<T>.Allocate(parts)` / `Allocate(ratios)` |
 | Cash rounding for currencies with coarse coin denominations (CHF, AUD, NZD, …) | `Money<T>.RoundToCash()` and `ICurrency.CashRoundingIncrement` |
 | ISO 4217 currency lookup at runtime | <xref:Bodu.Financial.CurrencyRegistry> |
-| Custom or future currencies not in the shipped catalogue | `CurrencyRegistry.Register(CurrencyInfo)` + your own `ICurrency` tag |
+| A generic amount in a unit outside the shipped catalogue | your own `ICurrency` tag + `Money<TCurrency>` (generic only; cannot bridge to runtime `Money`) |
 | Dated FX lookup with audit-grade provenance metadata | <xref:Bodu.Financial.IDatedExchangeRateProvider> + <xref:Bodu.Financial.ExchangeRateLookupResult> |
 | Prioritised fallback (or averaging) across multiple FX sources | [`AggregatingExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.Caching.AggregatingExchangeRateProvider) (in `Bodu.Financial.ExchangeRates.Caching`) |
 | Build a rate series imperatively, or edit an existing one and snapshot the result | <xref:Bodu.Financial.ExchangeRateSeriesBuilder>, `ExchangeRateSeries.ToBuilder()` / `WithRate(...)` / `WithoutRate(...)` |

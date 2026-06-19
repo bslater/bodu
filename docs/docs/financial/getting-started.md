@@ -97,9 +97,9 @@ MoneyBag wallet = MoneyBag.Empty
     .Add(new Money<EUR>(50m))
     .Add(new Money<JPY>(10_000m));
 
-wallet.GetBalance<USD>();      // Money<USD>? 100.00
-wallet.GetBalance("EUR");      // Money? { 50, "EUR" }
-wallet.Count;                  // 3
+wallet.GetBalance<USD>();              // Money<USD>? 100.00
+wallet.GetBalance(CurrencyCode.EUR);   // Money? — EUR 50.00
+wallet.Count;                          // 3
 ```
 
 Convert the bag to a single target currency via an `IExchangeRateProvider`:
@@ -156,21 +156,23 @@ var options = new JsonSerializerOptions();
 options.AddFinancialJsonConverters(FinancialJsonPolicy.Compact);
 ```
 
-### Custom currencies
+### A unit outside the shipped catalogue
+
+The runtime `Money` is closed to the shipped `CurrencyCode` set. For a
+generic amount in a unit outside ISO 4217, declare your own `ICurrency`
+tag (its `IsoCode` must be three uppercase ASCII letters) and use
+`Money<TCurrency>`; it carries its own precision and stays in the
+generic world — it cannot bridge to the runtime `Money`.
 
 ```csharp
-public sealed class DOGE : ICurrency
+public sealed class XPT : ICurrency      // troy ounces of platinum, say
 {
-    public static string IsoCode => "DOGE";
-    public static int    MinorUnits => 8;
-    private DOGE() { }
+    public static string IsoCode   => "XPT";
+    public static int    MinorUnits => 4;
+    private XPT() { }
 }
 
-CurrencyRegistry.Register(
-    new CurrencyInfo("DOGE", MinorUnits: 8, CashRoundingIncrement: 0m,
-                     IsHistoric: false, DemonetizedOn: null, SuccessorIsoCode: null));
-
-Money<DOGE> tip = new Money<DOGE>(0.12345678m);
+Money<XPT> holding = new Money<XPT>(12.3456m);
 ```
 
 ## Where to go next

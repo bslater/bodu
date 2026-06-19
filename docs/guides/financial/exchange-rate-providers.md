@@ -111,7 +111,7 @@ await rba.LoadRangeAsync(new DateOnly(2023, 1, 1), new DateOnly(2026, 6, 30));
 ExchangeRateLookupResult aud = rba.GetRate("AUD", "USD", new DateOnly(2023, 1, 3));
 
 foreach (RbaSeriesInfo info in rba.GetAvailablePairs())
-    Console.WriteLine($"{info.Pair.FromIsoCode}/{info.Pair.ToIsoCode} ({info.SeriesId})");
+    Console.WriteLine($"{info.Pair.From}/{info.Pair.To} ({info.SeriesId})");
 ```
 
 ## European Central Bank (EUR)
