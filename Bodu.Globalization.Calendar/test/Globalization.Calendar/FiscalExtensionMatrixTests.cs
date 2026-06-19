@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FiscalExtensionMatrixTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -25,7 +25,7 @@ namespace Bodu.Globalization.Calendar;
 /// </para>
 /// </remarks>
 [TestClass]
-public sealed class FiscalExtensionMatrixTests
+public sealed partial class FiscalExtensionMatrixTests
 {
     /// <summary>
     /// A resource declaring no notable dates, so working days are governed only by the working week.
@@ -87,162 +87,5 @@ public sealed class FiscalExtensionMatrixTests
 
         // June fiscal year, 2025-08-15 -> Q1 (Jun-Aug): starts Sun 2025-06-01 -> Mon 2025-06-02; ends Sun 2025-08-31 -> Fri 2025-08-29.
         yield return new object[] { 2025, 8, 15, 6, 2025, 6, 2, 2025, 8, 29 };
-    }
-
-    /// <summary>
-    /// Verifies the first working day of the fiscal year that contains the date across a sweep of start months,
-    /// including a weekend start that snaps forward.
-    /// </summary>
-    /// <param name="year">The input year.</param>
-    /// <param name="month">The input month.</param>
-    /// <param name="day">The input day.</param>
-    /// <param name="startMonth">The fiscal-year start month.</param>
-    /// <param name="firstYear">The expected first-working-day year.</param>
-    /// <param name="firstMonth">The expected first-working-day month.</param>
-    /// <param name="firstDay">The expected first-working-day day.</param>
-    /// <param name="lastYear">Ignored; the last-working-day triple is asserted in a sibling test.</param>
-    /// <param name="lastMonth">Ignored.</param>
-    /// <param name="lastDay">Ignored.</param>
-    [TestMethod]
-    [TestCategory("Regression")]
-    [DynamicData(nameof(FiscalYearBoundaryRows))]
-    public void FirstWorkingDayOfFiscalYear_WhenSweepingStartMonths_ShouldReturnExpectedDate(
-        int year, int month, int day, int startMonth,
-        int firstYear, int firstMonth, int firstDay,
-        int lastYear, int lastMonth, int lastDay)
-    {
-        DateOnly result = new DateOnly(year, month, day).FirstWorkingDayOfFiscalYear(startMonth, Service, "XX");
-
-        Assert.AreEqual(new DateOnly(firstYear, firstMonth, firstDay), result);
-    }
-
-    /// <summary>
-    /// Verifies the last working day of the fiscal year that contains the date across a sweep of start months, including
-    /// a weekend end that snaps backward.
-    /// </summary>
-    /// <param name="year">The input year.</param>
-    /// <param name="month">The input month.</param>
-    /// <param name="day">The input day.</param>
-    /// <param name="startMonth">The fiscal-year start month.</param>
-    /// <param name="firstYear">Ignored; the first-working-day triple is asserted in a sibling test.</param>
-    /// <param name="firstMonth">Ignored.</param>
-    /// <param name="firstDay">Ignored.</param>
-    /// <param name="lastYear">The expected last-working-day year.</param>
-    /// <param name="lastMonth">The expected last-working-day month.</param>
-    /// <param name="lastDay">The expected last-working-day day.</param>
-    [TestMethod]
-    [TestCategory("Regression")]
-    [DynamicData(nameof(FiscalYearBoundaryRows))]
-    public void LastWorkingDayOfFiscalYear_WhenSweepingStartMonths_ShouldReturnExpectedDate(
-        int year, int month, int day, int startMonth,
-        int firstYear, int firstMonth, int firstDay,
-        int lastYear, int lastMonth, int lastDay)
-    {
-        DateOnly result = new DateOnly(year, month, day).LastWorkingDayOfFiscalYear(startMonth, Service, "XX");
-
-        Assert.AreEqual(new DateOnly(lastYear, lastMonth, lastDay), result);
-    }
-
-    /// <summary>
-    /// Verifies the first working day of the fiscal quarter that contains the date across a sweep of start months,
-    /// including a weekend start that snaps forward.
-    /// </summary>
-    /// <param name="year">The input year.</param>
-    /// <param name="month">The input month.</param>
-    /// <param name="day">The input day.</param>
-    /// <param name="startMonth">The fiscal-year start month.</param>
-    /// <param name="firstYear">The expected first-working-day year.</param>
-    /// <param name="firstMonth">The expected first-working-day month.</param>
-    /// <param name="firstDay">The expected first-working-day day.</param>
-    /// <param name="lastYear">Ignored.</param>
-    /// <param name="lastMonth">Ignored.</param>
-    /// <param name="lastDay">Ignored.</param>
-    [TestMethod]
-    [TestCategory("Regression")]
-    [DynamicData(nameof(FiscalQuarterBoundaryRows))]
-    public void FirstWorkingDayOfFiscalQuarter_WhenSweepingStartMonths_ShouldReturnExpectedDate(
-        int year, int month, int day, int startMonth,
-        int firstYear, int firstMonth, int firstDay,
-        int lastYear, int lastMonth, int lastDay)
-    {
-        DateOnly result = new DateOnly(year, month, day).FirstWorkingDayOfFiscalQuarter(startMonth, Service, "XX");
-
-        Assert.AreEqual(new DateOnly(firstYear, firstMonth, firstDay), result);
-    }
-
-    /// <summary>
-    /// Verifies the last working day of the fiscal quarter that contains the date across a sweep of start months,
-    /// including a weekend end that snaps backward.
-    /// </summary>
-    /// <param name="year">The input year.</param>
-    /// <param name="month">The input month.</param>
-    /// <param name="day">The input day.</param>
-    /// <param name="startMonth">The fiscal-year start month.</param>
-    /// <param name="firstYear">Ignored.</param>
-    /// <param name="firstMonth">Ignored.</param>
-    /// <param name="firstDay">Ignored.</param>
-    /// <param name="lastYear">The expected last-working-day year.</param>
-    /// <param name="lastMonth">The expected last-working-day month.</param>
-    /// <param name="lastDay">The expected last-working-day day.</param>
-    [TestMethod]
-    [TestCategory("Regression")]
-    [DynamicData(nameof(FiscalQuarterBoundaryRows))]
-    public void LastWorkingDayOfFiscalQuarter_WhenSweepingStartMonths_ShouldReturnExpectedDate(
-        int year, int month, int day, int startMonth,
-        int firstYear, int firstMonth, int firstDay,
-        int lastYear, int lastMonth, int lastDay)
-    {
-        DateOnly result = new DateOnly(year, month, day).LastWorkingDayOfFiscalQuarter(startMonth, Service, "XX");
-
-        Assert.AreEqual(new DateOnly(lastYear, lastMonth, lastDay), result);
-    }
-
-    /// <summary>
-    /// Verifies that a fiscal-year start month below 1 is rejected. This is the v2 equivalent of the v1 quarter-zero
-    /// guard, which has no direct port because v2 has no explicit quarter index.
-    /// </summary>
-    [TestMethod]
-    public void FirstWorkingDayOfFiscalQuarter_WhenStartMonthIsZero_ShouldThrow()
-    {
-        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = new DateOnly(2025, 9, 15).FirstWorkingDayOfFiscalQuarter(0, Service, "XX");
-        });
-    }
-
-    /// <summary>
-    /// Verifies that a fiscal-year start month above 12 is rejected by the fiscal-year query.
-    /// </summary>
-    [TestMethod]
-    public void FirstWorkingDayOfFiscalYear_WhenStartMonthOutOfRange_ShouldThrow()
-    {
-        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = new DateOnly(2025, 9, 15).FirstWorkingDayOfFiscalYear(13, Service, "XX");
-        });
-    }
-
-    /// <summary>
-    /// Verifies that a <see langword="null" /> service throws <see cref="ArgumentNullException" />.
-    /// </summary>
-    [TestMethod]
-    public void FirstWorkingDayOfFiscalYear_WhenServiceIsNull_ShouldThrow()
-    {
-        _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = new DateOnly(2025, 9, 15).FirstWorkingDayOfFiscalYear(7, null!, "XX");
-        });
-    }
-
-    /// <summary>
-    /// Verifies that a <see langword="null" /> territory throws <see cref="ArgumentNullException" />.
-    /// </summary>
-    [TestMethod]
-    public void LastWorkingDayOfFiscalQuarter_WhenTerritoryIsNull_ShouldThrow()
-    {
-        _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = new DateOnly(2025, 9, 15).LastWorkingDayOfFiscalQuarter(7, Service, null!);
-        });
     }
 }

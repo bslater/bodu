@@ -11,7 +11,7 @@ namespace Bodu.Globalization.Calendar;
 /// <see cref="NotableDateAlgorithmRegistry" /> is accepted during validation and dispatched during resolution.
 /// </summary>
 [TestClass]
-public sealed class CustomAlgorithmTests
+public sealed partial class CustomAlgorithmTests
 {
     /// <summary>
     /// A resource referencing a custom algorithm key.
@@ -63,70 +63,4 @@ public sealed class CustomAlgorithmTests
             new DateOnly(year, 4, 1);
     }
 
-    /// <summary>
-    /// Verifies that a registered custom algorithm validates and resolves to its computed date.
-    /// </summary>
-    [TestMethod]
-    public void CustomAlgorithm_WhenRegistered_ValidatesAndResolves()
-    {
-        NotableDateAlgorithmRegistry registry = new NotableDateAlgorithmRegistry().Register("pi-day", new PiDayAlgorithm());
-
-        NotableDateResource resource = NotableDateResourceLoader.Load(Xml, _ => null, registry);
-        NotableDateService service = new(resource, new NotableDateServiceOptions { Algorithms = registry });
-
-        NotableDate match = service
-            .Resolve(new DateRange(new DateOnly(2024, 1, 1), new DateOnly(2024, 12, 31)), "XX")
-            .Single(r => r.NotableDateId == "pi-day");
-
-        Assert.AreEqual(new DateOnly(2024, 3, 14), match.Date);
-    }
-
-    /// <summary>
-    /// Verifies that an unregistered custom algorithm key fails validation.
-    /// </summary>
-    [TestMethod]
-    public void CustomAlgorithm_WhenNotRegistered_FailsValidation()
-    {
-        NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
-        {
-            _ = NotableDateResourceLoader.Load(Xml);
-        });
-
-        Assert.Contains(d => d.Code == "BODU-CAL-ALGORITHM", ex.Diagnostics);
-    }
-
-    /// <summary>
-    /// Verifies that a custom algorithm registered under a built-in key takes precedence over the built-in computation.
-    /// </summary>
-    [TestMethod]
-    public void CustomAlgorithm_WhenRegisteredUnderBuiltInKey_OverridesBuiltIn()
-    {
-        NotableDateAlgorithmRegistry registry = new NotableDateAlgorithmRegistry().Register("western-easter", new AprilFoolsAlgorithm());
-
-        NotableDateResource resource = NotableDateResourceLoader.Load(EasterXml, _ => null, registry);
-        NotableDateService service = new(resource, new NotableDateServiceOptions { Algorithms = registry });
-
-        NotableDate match = service
-            .Resolve(new DateRange(new DateOnly(2024, 1, 1), new DateOnly(2024, 12, 31)), "XX")
-            .Single(r => r.NotableDateId == "easter");
-
-        Assert.AreEqual(new DateOnly(2024, 4, 1), match.Date);
-    }
-
-    /// <summary>
-    /// Verifies that the built-in <c>western-easter</c> algorithm resolves without any custom registry, confirming the
-    /// built-in catalogue is available through the default registry.
-    /// </summary>
-    [TestMethod]
-    public void BuiltInAlgorithm_WhenNoCustomRegistry_ResolvesFromDefaultCatalogue()
-    {
-        NotableDateResource resource = NotableDateResourceLoader.Load(EasterXml);
-        NotableDateService service = new(resource);
-
-        NotableDate match = service
-            .Resolve(new DateRange(new DateOnly(2024, 1, 1), new DateOnly(2024, 12, 31)), "XX")
-            .Single(r => r.NotableDateId == "easter");
-
-        Assert.AreEqual(new DateOnly(2024, 3, 31), match.Date);
-    }
 }
