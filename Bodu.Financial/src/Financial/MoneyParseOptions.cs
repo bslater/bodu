@@ -33,12 +33,6 @@ public sealed record MoneyParseOptions
     public IFormatProvider? FormatProvider { get; init; }
 
     /// <summary>
-    /// Gets the policy applied when the parsed currency is structurally valid but not registered.
-    /// </summary>
-    /// <returns>The configured <see cref="UnknownCurrencyPolicy" />.</returns>
-    public UnknownCurrencyPolicy UnknownCurrency { get; init; } = UnknownCurrencyPolicy.Reject;
-
-    /// <summary>
     /// Gets the currency lookup used to resolve symbols under <see cref="MoneyParseMode.CultureAware" />, or
     /// <see langword="null" /> to use a default <see cref="CurrencyLookupService" />.
     /// </summary>

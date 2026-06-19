@@ -19,11 +19,4 @@ public sealed class FinancialOptions
     /// </summary>
     /// <value>The configured policy; defaults to <see cref="FinancialJsonPolicy.Strict" />.</value>
     public FinancialJsonPolicy JsonPolicy { get; set; } = FinancialJsonPolicy.Strict;
-
-    /// <summary>
-    /// Gets or sets the unknown-currency policy that seeds the default <see cref="MoneyParseOptions" />
-    /// <c>AddBoduFinancial</c> registers, unless a caller registers its own.
-    /// </summary>
-    /// <value>The configured policy; defaults to <see cref="UnknownCurrencyPolicy.Reject" />.</value>
-    public UnknownCurrencyPolicy UnknownCurrency { get; set; } = UnknownCurrencyPolicy.Reject;
 }

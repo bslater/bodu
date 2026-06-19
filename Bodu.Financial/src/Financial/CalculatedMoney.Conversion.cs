@@ -47,7 +47,7 @@ public readonly partial struct CalculatedMoney
 
         return registered && scale == currencyMinorUnits
             ? new Money(rounded, IsoCode)
-            : Money.FromUnchecked(rounded, IsoCode, scale);
+            : Money.FromExplicitScale(rounded, IsoCode, scale);
     }
 
     /// <summary>

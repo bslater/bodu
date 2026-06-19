@@ -62,8 +62,8 @@ public partial class MoneyBagTests
         ]);
 
         MoneyBag bag = MoneyBag.Empty
-            .Add(Money.FromUnchecked(0.005m, "XQT", 3))
-            .Add(Money.FromUnchecked(0.005m, "XQU", 3));
+            .Add(Money.FromExplicitScale(0.005m, "XQT", 3))
+            .Add(Money.FromExplicitScale(0.005m, "XQU", 3));
 
         Money<USD> total = bag.ConvertTo<USD>(rates, s_asOf, ExchangeRateLookupOptions.Exact, policy);
 

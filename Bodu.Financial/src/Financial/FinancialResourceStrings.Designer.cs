@@ -261,7 +261,7 @@ namespace Bodu.Financial {
         
 
         /// <summary>
-        ///   Looks up a localized string similar to Currency &apos;{0}&apos; is not registered. Register it via CurrencyRegistry or use Money.FromUnchecked / an explicit UnknownCurrencyPolicy to supply a minor-unit scale..
+        ///   Looks up a localized string similar to Currency &apos;{0}&apos; is not a known ISO 4217 currency..
         /// </summary>
         internal static string Arg_Invalid_UnknownCurrencyRejected {
             get {
@@ -342,15 +342,6 @@ namespace Bodu.Financial {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Currency &apos;{0}&apos; is not registered; UnknownCurrencyPolicy.AllowWithExplicitScale requires a minor-unit scale. Use Money.FromUnchecked to supply one..
-        /// </summary>
-        internal static string Arg_Invalid_UnknownCurrencyRequiresScale {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_UnknownCurrencyRequiresScale", resourceCulture);
-            }
-        }
-
-        /// <summary>
         ///   Looks up a localized string similar to Exchange rate must be strictly positive..
         /// </summary>
         internal static string Arg_OutOfRange_ExchangeRateNotPositive {
@@ -392,15 +383,6 @@ namespace Bodu.Financial {
         internal static string Arg_OutOfRange_UnknownCurrencyMinorUnits {
             get {
                 return ResourceManager.GetString("Arg_OutOfRange_UnknownCurrencyMinorUnits", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to UnknownCurrencyPolicy &apos;{0}&apos; is not a defined value..
-        /// </summary>
-        internal static string Arg_OutOfRange_UnknownCurrencyPolicyUndefined {
-            get {
-                return ResourceManager.GetString("Arg_OutOfRange_UnknownCurrencyPolicyUndefined", resourceCulture);
             }
         }
 

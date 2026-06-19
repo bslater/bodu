@@ -40,14 +40,12 @@ public static class ServiceCollectionExtensions
     /// <exception cref="ArgumentException"><paramref name="sectionName" /> is empty or white space.</exception>
     /// <remarks>
     /// <para>
-    /// The bound <see cref="FinancialOptions" /> are validated on start — each enum value must be defined — and applied
-    /// to the services they govern: <see cref="FinancialOptions.JsonPolicy" /> configures the financial
+    /// The bound <see cref="FinancialOptions" /> are validated on start — the JSON policy must be a defined value — and
+    /// applied to the services they govern: <see cref="FinancialOptions.JsonPolicy" /> configures the financial
     /// <see cref="JsonSerializerOptions" /> registered under
-    /// <see cref="FinancialServiceBuilderExtensions.JsonOptionsKey" />, and
-    /// <see cref="FinancialOptions.UnknownCurrency" /> seeds the registered default <see cref="MoneyParseOptions" />.
-    /// Both are registered with <c>TryAdd</c>, so an explicit
+    /// <see cref="FinancialServiceBuilderExtensions.JsonOptionsKey" /> with <c>TryAdd</c>, so an explicit
     /// <see cref="FinancialServiceBuilderExtensions.AddFinancialJson(IFinancialServiceBuilder, FinancialJsonPolicy)" />
-    /// or a caller-registered <see cref="MoneyParseOptions" /> takes precedence.
+    /// takes precedence.
     /// </para>
     /// <para>
     /// No foreign-exchange provider is registered by default; supply one via
@@ -68,7 +66,7 @@ public static class ServiceCollectionExtensions
         var optionsBuilder = services
             .AddOptions<FinancialOptions>()
             .Validate(
-                static options => Enum.IsDefined(options.JsonPolicy) && Enum.IsDefined(options.UnknownCurrency),
+                static options => Enum.IsDefined(options.JsonPolicy),
                 DependencyInjectionResourceStrings.Op_Invalid_FinancialOptions)
             .ValidateOnStart();
 
@@ -77,20 +75,12 @@ public static class ServiceCollectionExtensions
 
         services.TryAddSingleton<ICurrencyLookup, CurrencyLookupService>();
 
-        // Apply the bound options to the services they govern so configuration drives behaviour rather than sitting
-        // inert: the financial JSON options reflect JsonPolicy and the registered default parse options reflect
-        // UnknownCurrency. Both use TryAdd so an explicit AddFinancialJson(...) or a caller-registered
-        // MoneyParseOptions still wins.
+        // Apply the bound JSON policy to the financial JSON options. TryAdd is used so an explicit
+        // AddFinancialJson(...) still wins.
         services.TryAddKeyedSingleton(
             FinancialServiceBuilderExtensions.JsonOptionsKey,
             static (provider, _) => new JsonSerializerOptions()
                 .AddFinancialJsonConverters(provider.GetRequiredService<IOptions<FinancialOptions>>().Value.JsonPolicy));
-
-        services.TryAddSingleton(
-            static provider => new MoneyParseOptions
-            {
-                UnknownCurrency = provider.GetRequiredService<IOptions<FinancialOptions>>().Value.UnknownCurrency,
-            });
 
         return new FinancialServiceBuilder(services);
     }

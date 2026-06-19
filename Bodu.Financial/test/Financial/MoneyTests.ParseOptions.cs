@@ -48,27 +48,6 @@ public partial class MoneyTests
     }
 
     /// <summary>
-    /// Verifies that lenient import with <see cref="UnknownCurrencyPolicy.AllowUnscaled" /> accepts an unregistered
-    /// currency at source precision.
-    /// </summary>
-    [TestMethod]
-    public void ParseOptions_WhenLenientImportAllowUnscaled_ShouldAcceptUnregistered()
-    {
-        MoneyParseOptions options = new()
-        {
-            Mode = MoneyParseMode.LenientImport,
-            FormatProvider = CultureInfo.InvariantCulture,
-            UnknownCurrency = UnknownCurrencyPolicy.AllowUnscaled,
-        };
-
-        var money = Money.Parse("XYZ 1.2345", options);
-
-        Assert.AreEqual(1.2345m, money.Amount);
-        Assert.AreEqual("XYZ", money.IsoCode);
-        Assert.AreEqual(0, money.MinorUnits);
-    }
-
-    /// <summary>
     /// Verifies that round-trip-only parsing interprets the invariant form without an explicit culture.
     /// </summary>
     [TestMethod]
@@ -125,21 +104,6 @@ public partial class MoneyTests
         };
 
         Assert.IsFalse(Money.TryParse("Ω", options, out _));
-    }
-
-    /// <summary>
-    /// Verifies that the unknown-currency policy governs whether an unregistered ISO code parses: rejected by default,
-    /// accepted under <see cref="UnknownCurrencyPolicy.AllowUnscaled" />.
-    /// </summary>
-    [TestMethod]
-    public void ParseOptions_WhenCurrencyUnregistered_ShouldHonourUnknownCurrencyPolicy()
-    {
-        var reject = new MoneyParseOptions { Mode = MoneyParseMode.StrictIso, FormatProvider = CultureInfo.InvariantCulture, UnknownCurrency = UnknownCurrencyPolicy.Reject };
-        Assert.IsFalse(Money.TryParse("XYZ 10.50", reject, out _));
-
-        var allow = new MoneyParseOptions { Mode = MoneyParseMode.StrictIso, FormatProvider = CultureInfo.InvariantCulture, UnknownCurrency = UnknownCurrencyPolicy.AllowUnscaled };
-        Assert.IsTrue(Money.TryParse("XYZ 10.50", allow, out Money result));
-        Assert.AreEqual("XYZ", result.IsoCode);
     }
 
     /// <summary>

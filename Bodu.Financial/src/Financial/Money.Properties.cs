@@ -56,10 +56,10 @@ public readonly partial struct Money
     /// precision as reported by <see cref="CurrencyRegistry" />, or zero when the currency is unknown to the registry.
     /// </returns>
     /// <remarks>
-    /// A value constructed for an unregistered currency through
-    /// <see cref="Money.FromUnchecked(decimal, string, int, MidpointRounding)" /> reports the caller-supplied scale,
-    /// keeping the stored precision and the reported minor units self-consistent. Ordinary construction always resolves
-    /// the precision from the registry.
+    /// A value materialised by the settlement path
+    /// (<see cref="CalculatedMoney.RoundToMoney(MonetaryContext?)" />) at a precision other than the currency's
+    /// registered minor units reports that explicit scale, keeping the stored precision and the reported minor units
+    /// self-consistent. Ordinary construction always resolves the precision from the registry.
     /// </remarks>
     public int MinorUnits =>
         _explicitScalePlusOne > 0

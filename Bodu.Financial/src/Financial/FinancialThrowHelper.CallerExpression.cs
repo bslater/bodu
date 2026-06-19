@@ -169,33 +169,6 @@ internal static partial class FinancialThrowHelper
     }
 
     /// <summary>
-    /// Throws when <paramref name="policy" /> is not a defined <see cref="UnknownCurrencyPolicy" /> member.
-    /// </summary>
-    /// <param name="policy">The policy value to validate.</param>
-    /// <param name="paramName">The parameter name reported in the exception; inferred from the call site.</param>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="policy" /> is not a defined value.
-    /// </exception>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static void ThrowIfUnknownCurrencyPolicyUndefined(
-        UnknownCurrencyPolicy policy,
-        [CallerArgumentExpression(nameof(policy))] string? paramName = null)
-    {
-        if (policy is not UnknownCurrencyPolicy.Reject
-            and not UnknownCurrencyPolicy.AllowWithExplicitScale
-            and not UnknownCurrencyPolicy.AllowUnscaled)
-        {
-            throw new ArgumentOutOfRangeException(
-                paramName,
-                policy,
-                string.Format(
-                    CultureInfo.CurrentCulture,
-                    FinancialResourceStrings.Arg_OutOfRange_UnknownCurrencyPolicyUndefined,
-                    policy));
-        }
-    }
-
-    /// <summary>
     /// Throws when <paramref name="mode" /> is not a defined <see cref="MoneyParseMode" /> member.
     /// </summary>
     /// <param name="mode">The parse mode to validate.</param>

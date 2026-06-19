@@ -41,7 +41,6 @@ public sealed partial class ServiceCollectionExtensionsTests
             .AddInMemoryCollection(new Dictionary<string, string?>
             {
                 ["Financial:JsonPolicy"] = nameof(FinancialJsonPolicy.Compact),
-                ["Financial:UnknownCurrency"] = nameof(UnknownCurrencyPolicy.AllowUnscaled),
             })
             .Build();
 
@@ -50,7 +49,6 @@ public sealed partial class ServiceCollectionExtensionsTests
         FinancialOptions options = provider.GetRequiredService<IOptions<FinancialOptions>>().Value;
 
         Assert.AreEqual(FinancialJsonPolicy.Compact, options.JsonPolicy);
-        Assert.AreEqual(UnknownCurrencyPolicy.AllowUnscaled, options.UnknownCurrency);
     }
 
     /// <summary>
@@ -74,27 +72,6 @@ public sealed partial class ServiceCollectionExtensionsTests
         string json = JsonSerializer.Serialize(new Money(19.99m, "USD"), options);
 
         Assert.AreEqual("\"19.99 USD\"", json);
-    }
-
-    /// <summary>
-    /// Verifies that a configuration-bound <see cref="FinancialOptions.UnknownCurrency" /> seeds the default
-    /// <see cref="MoneyParseOptions" /> registered by <c>AddBoduFinancial</c>.
-    /// </summary>
-    [TestMethod]
-    public void AddBoduFinancial_WhenUnknownCurrencyBound_ShouldSeedDefaultParseOptions()
-    {
-        IConfiguration configuration = new ConfigurationBuilder()
-            .AddInMemoryCollection(new Dictionary<string, string?>
-            {
-                ["Financial:UnknownCurrency"] = nameof(UnknownCurrencyPolicy.AllowUnscaled),
-            })
-            .Build();
-
-        ServiceProvider provider = new ServiceCollection().AddBoduFinancial(configuration).Services.BuildServiceProvider();
-
-        MoneyParseOptions parseOptions = provider.GetRequiredService<MoneyParseOptions>();
-
-        Assert.AreEqual(UnknownCurrencyPolicy.AllowUnscaled, parseOptions.UnknownCurrency);
     }
 
     /// <summary>

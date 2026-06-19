@@ -64,7 +64,7 @@ public partial class MoneyTests
     [TestMethod]
     public void ToString_WhenLSpecifierAndCurrencyNotRegistered_ShouldFallBackToIsoForm()
     {
-        var money = Money.FromUnchecked(1234m, "ZZZ", 0);
+        var money = Money.FromExplicitScale(1234m, "ZZZ", 0);
 
         string actual = money.ToString("L", CultureInfo.InvariantCulture);
 

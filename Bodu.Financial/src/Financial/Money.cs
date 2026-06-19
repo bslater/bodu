@@ -25,10 +25,8 @@ namespace Bodu.Financial;
 /// </para>
 /// <para>
 /// The amount is rounded on construction to the minor-unit precision reported by <see cref="CurrencyRegistry" /> for
-/// the supplied ISO code, using banker's rounding by default. A structurally valid but unregistered ISO code is
-/// rejected; use the explicit-scale escape hatches
-/// <see cref="FromUnchecked(decimal, string, int, MidpointRounding)" /> and
-/// <see cref="From(decimal, string, UnknownCurrencyPolicy, MidpointRounding)" /> for staging scenarios.
+/// the supplied ISO code, using banker's rounding by default. A structurally valid ISO code that is not a known
+/// currency is rejected.
 /// </para>
 /// <para>
 /// The type-level <see cref="JsonConverterAttribute" /> always serializes the canonical
@@ -53,7 +51,9 @@ public readonly partial struct Money
     /// <remarks>
     /// The "+1" bias lets a default-initialised <see cref="Money" /> (all-zero fields) mean "use the registry" rather
     /// than "explicit scale 0". A value of <c>n + 1</c> denotes an explicit minor-unit scale of <c>n</c> in the range
-    /// <c>0</c>..<c>28</c>, set only by the explicit-scale escape hatches for unregistered currencies.
+    /// <c>0</c>..<c>28</c>, set only by the internal explicit-scale settlement path
+    /// (<see cref="FromExplicitScale(decimal, string, int, MidpointRounding)" />) used by
+    /// <see cref="CalculatedMoney.RoundToMoney(MonetaryContext?)" />.
     /// </remarks>
     private readonly byte _explicitScalePlusOne;
 
@@ -88,11 +88,8 @@ public readonly partial struct Money
     /// </exception>
     /// <remarks>
     /// The ISO code is validated to ISO 4217's three-uppercase-ASCII-letters shape and must resolve to a registered
-    /// <see cref="CurrencyInfo" />; the amount is then rounded to the registry's <c>MinorUnits</c>. Structurally valid
-    /// but unregistered codes are rejected under <see cref="UnknownCurrencyPolicy.Reject" /> so a value can never store
-    /// a precision it cannot describe. Use
-    /// <see cref="Money.FromUnchecked(decimal, string, int, MidpointRounding)" /> /
-    /// <see cref="Money.From(decimal, string, UnknownCurrencyPolicy, MidpointRounding)" /> for staging scenarios.
+    /// <see cref="CurrencyInfo" />; the amount is then rounded to the registry's <c>MinorUnits</c>. A structurally
+    /// valid code that is not a known currency is rejected so a value can never store a precision it cannot describe.
     /// </remarks>
     public Money(decimal amount, string isoCode, MidpointRounding rounding)
     {

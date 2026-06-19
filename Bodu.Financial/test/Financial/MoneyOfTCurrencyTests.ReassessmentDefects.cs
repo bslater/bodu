@@ -471,8 +471,8 @@ public partial class MoneyOfTCurrencyTests
         // Use unregistered currency tags (valid ISO shape, not in the catalogue) with an explicit minor-unit scale so
         // Money preserves the sub-cent source precision instead of rounding it away.
         MoneyBag bag = MoneyBag.Empty
-            .Add(Money.FromUnchecked(0.005m, "XQT", 3))
-            .Add(Money.FromUnchecked(0.005m, "XQU", 3));
+            .Add(Money.FromExplicitScale(0.005m, "XQT", 3))
+            .Add(Money.FromExplicitScale(0.005m, "XQU", 3));
 
         FixedExchangeRateTable rates = new(new Dictionary<(string From, string To), decimal>
         {
