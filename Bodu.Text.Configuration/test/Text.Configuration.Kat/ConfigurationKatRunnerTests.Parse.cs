@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Kat;
 using Bodu.Text.Configuration.Test.Infrastructure;
 using Bodu.Text.Ini;
 
@@ -12,24 +13,35 @@ namespace Bodu.Text.Configuration.Kat;
 public partial class ConfigurationKatRunnerTests
 {
     /// <summary>
-    /// Drives every <see cref="ConfigurationKatKind.Parse" /> KAT in the catalogue.
+    /// Verifies that a valid <see cref="ConfigurationKatKind.Parse" /> KAT parses to the expected document model.
     /// </summary>
     /// <param name="kat">The KAT case to execute.</param>
     [TestMethod]
-    [DynamicData(nameof(ConfigurationKnownAnswerData.ParserData),
+    [DynamicData(nameof(ConfigurationKnownAnswerData.ParserDataPass),
         typeof(ConfigurationKnownAnswerData),
-        DynamicDataDisplayName = nameof(GetKatDisplayName))]
-    public void Parse_Kat(ConfigurationKat kat)
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void Parse_WhenValid_ShouldProduceExpectedDocument(ConfigurationKat kat)
     {
         ConfigurationParseOptions options = BuildParseOptions(kat);
 
-        if (kat.Outcome is ConfigurationKatOutcome.Fail)
-        {
-            ExecuteParseFail(kat, options);
-            return;
-        }
-
         ExecuteParsePass(kat, options);
+    }
+
+    /// <summary>
+    /// Verifies that an invalid <see cref="ConfigurationKatKind.Parse" /> KAT throws the expected exception.
+    /// </summary>
+    /// <param name="kat">The KAT case to execute.</param>
+    [TestMethod]
+    [DynamicData(nameof(ConfigurationKnownAnswerData.ParserDataFail),
+        typeof(ConfigurationKnownAnswerData),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void Parse_WhenInvalid_ShouldThrowExpectedException(ConfigurationKat kat)
+    {
+        ConfigurationParseOptions options = BuildParseOptions(kat);
+
+        ExecuteParseFail(kat, options);
     }
 
     private static void ExecuteParsePass(ConfigurationKat kat, ConfigurationParseOptions options)
@@ -111,17 +123,5 @@ public partial class ConfigurationKatRunnerTests
             if (expected.InlineCommentPrefix.HasValue)
                 Assert.AreEqual(expected.InlineCommentPrefix.Value, actual.InlineComment.Value.Prefix, $"{kat.Id}: inline comment prefix.");
         }
-    }
-
-    /// <summary>
-    /// Supplies the per-row display name used by the MSTest runner for KAT-driven tests.
-    /// </summary>
-    /// <param name="methodInfo">The driver method.</param>
-    /// <param name="data">The row data; the single element is a <see cref="ConfigurationKat" />.</param>
-    /// <returns>A short identifier derived from the KAT's stable ID and title.</returns>
-    public static string GetKatDisplayName(System.Reflection.MethodInfo methodInfo, object[] data)
-    {
-        var kat = (ConfigurationKat)data[0];
-        return $"{kat.Id} - {kat.Title}";
     }
 }

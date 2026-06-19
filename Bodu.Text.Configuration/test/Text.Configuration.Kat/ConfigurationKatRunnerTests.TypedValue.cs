@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Kat;
 using Bodu.Text.Configuration.Test.Infrastructure;
 
 using Bodu.Text.Ini;
@@ -21,24 +22,35 @@ public partial class ConfigurationKatRunnerTests
     }
 
     /// <summary>
-    /// Drives every <see cref="ConfigurationKatKind.TypedValue" /> KAT in the catalogue.
+    /// Verifies that a valid <see cref="ConfigurationKatKind.TypedValue" /> KAT returns the expected typed value.
     /// </summary>
     /// <param name="kat">The KAT case to execute.</param>
     [TestMethod]
-    [DynamicData(nameof(ConfigurationKnownAnswerData.TypedValueData),
+    [DynamicData(nameof(ConfigurationKnownAnswerData.TypedValueDataPass),
         typeof(ConfigurationKnownAnswerData),
-        DynamicDataDisplayName = nameof(GetKatDisplayName))]
-    public void TypedValue_Kat(ConfigurationKat kat)
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void TypedValue_WhenValid_ShouldReturnExpectedValue(ConfigurationKat kat)
     {
         ConfigurationView view = BuildTypedValueView(kat);
 
-        if (kat.Outcome is ConfigurationKatOutcome.Fail)
-        {
-            ExecuteTypedFail(kat, view);
-            return;
-        }
-
         ExecuteTypedPass(kat, view);
+    }
+
+    /// <summary>
+    /// Verifies that an invalid <see cref="ConfigurationKatKind.TypedValue" /> KAT throws the expected exception.
+    /// </summary>
+    /// <param name="kat">The KAT case to execute.</param>
+    [TestMethod]
+    [DynamicData(nameof(ConfigurationKnownAnswerData.TypedValueDataFail),
+        typeof(ConfigurationKnownAnswerData),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void TypedValue_WhenInvalid_ShouldThrowExpectedException(ConfigurationKat kat)
+    {
+        ConfigurationView view = BuildTypedValueView(kat);
+
+        ExecuteTypedFail(kat, view);
     }
 
     private static ConfigurationView BuildTypedValueView(ConfigurationKat kat)

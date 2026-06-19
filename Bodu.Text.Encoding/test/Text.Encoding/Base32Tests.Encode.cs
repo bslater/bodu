@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Kat;
+
 namespace Bodu.Text.Encoding;
 
 public sealed partial class Base32Tests
@@ -42,7 +44,9 @@ public sealed partial class Base32Tests
     /// </summary>
     /// <param name="vector">A KAT vector.</param>
     [TestMethod]
-    [DynamicData(nameof(Base32KnownAnswerVectors.HexExtendedRfc4648Vectors), typeof(Base32KnownAnswerVectors))]
+    [DynamicData(nameof(Base32KnownAnswerVectors.HexExtendedRfc4648Vectors), typeof(Base32KnownAnswerVectors),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void Encode_ForHexExtendedRfc4648KnownAnswerVector_ShouldMatch(EncodingKnownAnswerVector vector)
     {
         string actual = Base32.Encode(vector.DecodedBytes, Base32Variant.HexExtended);
@@ -56,7 +60,9 @@ public sealed partial class Base32Tests
     /// </summary>
     /// <param name="vector">A KAT vector.</param>
     [TestMethod]
-    [DynamicData(nameof(Base32KnownAnswerVectors.StandardRfc4648Vectors), typeof(Base32KnownAnswerVectors))]
+    [DynamicData(nameof(Base32KnownAnswerVectors.StandardRfc4648Vectors), typeof(Base32KnownAnswerVectors),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void Encode_ForStandardRfc4648KnownAnswerVector_ShouldMatch(EncodingKnownAnswerVector vector)
     {
         string actual = Base32.Encode(vector.DecodedBytes, Base32Variant.Standard);

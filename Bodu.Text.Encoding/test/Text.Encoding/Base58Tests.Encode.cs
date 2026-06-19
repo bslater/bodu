@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Kat;
+
 namespace Bodu.Text.Encoding;
 
 public sealed partial class Base58Tests
@@ -40,7 +42,9 @@ public sealed partial class Base58Tests
     /// </summary>
     /// <param name="vector">A KAT vector.</param>
     [TestMethod]
-    [DynamicData(nameof(Base58KnownAnswerVectors.BitcoinFlickrVectors), typeof(Base58KnownAnswerVectors))]
+    [DynamicData(nameof(Base58KnownAnswerVectors.BitcoinFlickrVectors), typeof(Base58KnownAnswerVectors),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void Encode_ForBitcoinFlickrKnownAnswerVector_ShouldMatch(EncodingKnownAnswerVector vector)
     {
         string actual = Base58.Encode(vector.DecodedBytes, Base58Variant.BitcoinFlickr);

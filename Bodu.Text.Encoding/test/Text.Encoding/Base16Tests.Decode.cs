@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Kat;
+
 namespace Bodu.Text.Encoding;
 
 public sealed partial class Base16Tests
@@ -15,7 +17,9 @@ public sealed partial class Base16Tests
     /// </summary>
     /// <param name="vector">A negative KAT vector.</param>
     [TestMethod]
-    [DynamicData(nameof(Base16KnownAnswerVectors.NegativeVectors), typeof(Base16KnownAnswerVectors))]
+    [DynamicData(nameof(Base16KnownAnswerVectors.NegativeVectors), typeof(Base16KnownAnswerVectors),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void Decode_ForKnownMalformedInput_ShouldThrowExactly(EncodingNegativeDecodeVector vector)
     {
         Exception? actual = null;
@@ -39,7 +43,9 @@ public sealed partial class Base16Tests
     /// </summary>
     /// <param name="vector">A KAT vector.</param>
     [TestMethod]
-    [DynamicData(nameof(Base16KnownAnswerVectors.Rfc4648Vectors), typeof(Base16KnownAnswerVectors))]
+    [DynamicData(nameof(Base16KnownAnswerVectors.Rfc4648Vectors), typeof(Base16KnownAnswerVectors),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void Decode_ForRfc4648KnownAnswerVector_ShouldRecoverBytes(EncodingKnownAnswerVector vector)
     {
         byte[] actual = Base16.Decode(vector.Encoded);
@@ -297,7 +303,9 @@ public sealed partial class Base16Tests
     /// </summary>
     /// <param name="vector">A negative KAT vector.</param>
     [TestMethod]
-    [DynamicData(nameof(Base16KnownAnswerVectors.NegativeVectors), typeof(Base16KnownAnswerVectors))]
+    [DynamicData(nameof(Base16KnownAnswerVectors.NegativeVectors), typeof(Base16KnownAnswerVectors),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void IsValid_ForKnownMalformedInput_ShouldReturnFalse(EncodingNegativeDecodeVector vector)
     {
         Assert.IsFalse(Base16.IsValid(vector.MalformedInput.AsSpan()),

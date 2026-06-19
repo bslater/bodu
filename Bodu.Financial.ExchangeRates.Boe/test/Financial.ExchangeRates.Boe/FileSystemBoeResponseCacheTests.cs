@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FileSystemBoeResponseCacheTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -10,7 +10,7 @@ namespace Bodu.Financial.ExchangeRates.Boe;
 /// Verifies the freshness and resilience behavior of <see cref="FileSystemBoeResponseCache" />.
 /// </summary>
 [TestClass]
-public class FileSystemBoeResponseCacheTests
+public partial class FileSystemBoeResponseCacheTests
 {
     /// <summary>
     /// The inclusive start of the range used by the cache tests.
@@ -21,88 +21,6 @@ public class FileSystemBoeResponseCacheTests
     /// The inclusive end of the range used by the cache tests.
     /// </summary>
     private static readonly DateOnly s_to = new(2023, 1, 31);
-
-    /// <summary>
-    /// Verifies that bytes stored for a range are returned while still within the refresh interval.
-    /// </summary>
-    [TestMethod]
-    public void TryGet_WhenStoredAndFresh_ShouldReturnBytes()
-    {
-        string directory = CreateTempDirectory();
-        try
-        {
-            FileSystemBoeResponseCache cache = new(directory);
-            byte[] payload = new byte[] { 1, 2, 3, 4 };
-            cache.Store(s_from, s_to, payload);
-
-            bool hit = cache.TryGet(s_from, s_to, TimeSpan.FromHours(1), out byte[]? bytes);
-
-            Assert.IsTrue(hit);
-            CollectionAssert.AreEqual(payload, bytes);
-        }
-        finally
-        {
-            Cleanup(directory);
-        }
-    }
-
-    /// <summary>
-    /// Verifies that two distinct ranges are cached independently.
-    /// </summary>
-    [TestMethod]
-    public void TryGet_WhenDifferentRange_ShouldReturnMiss()
-    {
-        string directory = CreateTempDirectory();
-        try
-        {
-            FileSystemBoeResponseCache cache = new(directory);
-            cache.Store(s_from, s_to, new byte[] { 1 });
-
-            bool hit = cache.TryGet(s_from, new DateOnly(2023, 2, 28), TimeSpan.FromHours(1), out _);
-
-            Assert.IsFalse(hit);
-        }
-        finally
-        {
-            Cleanup(directory);
-        }
-    }
-
-    /// <summary>
-    /// Verifies that a cached range older than the refresh interval is reported as a miss.
-    /// </summary>
-    [TestMethod]
-    public void TryGet_WhenStale_ShouldReturnMiss()
-    {
-        string directory = CreateTempDirectory();
-        try
-        {
-            FileSystemBoeResponseCache cache = new(directory);
-            cache.Store(s_from, s_to, new byte[] { 1 });
-
-            string path = Path.Combine(directory, "boe_20230101_20230131.csv");
-            File.SetLastWriteTimeUtc(path, DateTime.UtcNow - TimeSpan.FromHours(2));
-
-            bool hit = cache.TryGet(s_from, s_to, TimeSpan.FromMinutes(30), out _);
-
-            Assert.IsFalse(hit);
-        }
-        finally
-        {
-            Cleanup(directory);
-        }
-    }
-
-    /// <summary>
-    /// Verifies that a <see langword="null" /> directory falls back to a folder under the system temporary path.
-    /// </summary>
-    [TestMethod]
-    public void Directory_WhenNull_ShouldUseTempFallback()
-    {
-        FileSystemBoeResponseCache cache = new(null);
-
-        Assert.AreEqual(Path.Combine(Path.GetTempPath(), "bodu-boe"), cache.Directory);
-    }
 
     /// <summary>
     /// Creates a unique temporary directory for a test.

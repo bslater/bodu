@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Kat;
+
 namespace Bodu.Text.Encoding;
 
 public sealed partial class Base16Tests
@@ -42,7 +44,9 @@ public sealed partial class Base16Tests
     /// </summary>
     /// <param name="vector">A KAT vector sourced from <see cref="Base16KnownAnswerVectors" />.</param>
     [TestMethod]
-    [DynamicData(nameof(Base16KnownAnswerVectors.Rfc4648Vectors), typeof(Base16KnownAnswerVectors))]
+    [DynamicData(nameof(Base16KnownAnswerVectors.Rfc4648Vectors), typeof(Base16KnownAnswerVectors),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void Encode_ForRfc4648KnownAnswerVector_DefaultLowerCase_ShouldMatchLowerCase(EncodingKnownAnswerVector vector)
     {
         string actual = Base16.Encode(vector.DecodedBytes);
@@ -57,7 +61,9 @@ public sealed partial class Base16Tests
     /// </summary>
     /// <param name="vector">A KAT vector sourced from <see cref="Base16KnownAnswerVectors" />.</param>
     [TestMethod]
-    [DynamicData(nameof(Base16KnownAnswerVectors.Rfc4648Vectors), typeof(Base16KnownAnswerVectors))]
+    [DynamicData(nameof(Base16KnownAnswerVectors.Rfc4648Vectors), typeof(Base16KnownAnswerVectors),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void Encode_ForRfc4648KnownAnswerVector_WithUpperCaseFlag_ShouldMatch(EncodingKnownAnswerVector vector)
     {
         string actual = Base16.Encode(vector.DecodedBytes, BaseFormattingOptions.UpperCase);

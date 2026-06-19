@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Kat;
+
 namespace Bodu.Text.Encoding;
 
 public sealed partial class Base32Tests
@@ -15,7 +17,9 @@ public sealed partial class Base32Tests
     /// </summary>
     /// <param name="vector">A KAT vector.</param>
     [TestMethod]
-    [DynamicData(nameof(Base32KnownAnswerVectors.HexExtendedRfc4648Vectors), typeof(Base32KnownAnswerVectors))]
+    [DynamicData(nameof(Base32KnownAnswerVectors.HexExtendedRfc4648Vectors), typeof(Base32KnownAnswerVectors),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void Decode_ForHexExtendedRfc4648KnownAnswerVector_ShouldRecoverBytes(EncodingKnownAnswerVector vector)
     {
         byte[] actual = Base32.Decode(vector.Encoded, Base32Variant.HexExtended);
@@ -30,7 +34,9 @@ public sealed partial class Base32Tests
     /// </summary>
     /// <param name="vector">A negative KAT vector.</param>
     [TestMethod]
-    [DynamicData(nameof(Base32KnownAnswerVectors.StandardNegativeVectors), typeof(Base32KnownAnswerVectors))]
+    [DynamicData(nameof(Base32KnownAnswerVectors.StandardNegativeVectors), typeof(Base32KnownAnswerVectors),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void Decode_ForStandardKnownMalformedInput_ShouldThrowExactly(EncodingNegativeDecodeVector vector)
     {
         Exception? actual = null;
@@ -54,7 +60,9 @@ public sealed partial class Base32Tests
     /// </summary>
     /// <param name="vector">A KAT vector.</param>
     [TestMethod]
-    [DynamicData(nameof(Base32KnownAnswerVectors.StandardRfc4648Vectors), typeof(Base32KnownAnswerVectors))]
+    [DynamicData(nameof(Base32KnownAnswerVectors.StandardRfc4648Vectors), typeof(Base32KnownAnswerVectors),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void Decode_ForStandardRfc4648KnownAnswerVector_ShouldRecoverBytes(EncodingKnownAnswerVector vector)
     {
         byte[] actual = Base32.Decode(vector.Encoded, Base32Variant.Standard);
@@ -255,7 +263,9 @@ public sealed partial class Base32Tests
     /// </summary>
     /// <param name="vector">A negative KAT vector.</param>
     [TestMethod]
-    [DynamicData(nameof(Base32KnownAnswerVectors.StandardNegativeVectors), typeof(Base32KnownAnswerVectors))]
+    [DynamicData(nameof(Base32KnownAnswerVectors.StandardNegativeVectors), typeof(Base32KnownAnswerVectors),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void IsValid_ForStandardKnownMalformedInput_ShouldReturnFalse(EncodingNegativeDecodeVector vector)
     {
         Assert.IsFalse(Base32.IsValid(vector.MalformedInput.AsSpan(), Base32Variant.Standard),

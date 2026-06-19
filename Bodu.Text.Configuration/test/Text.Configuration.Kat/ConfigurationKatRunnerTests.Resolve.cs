@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Kat;
 using Bodu.Text.Configuration.Test.Infrastructure;
 using Bodu.Text.Ini;
 
@@ -12,31 +13,20 @@ namespace Bodu.Text.Configuration.Kat;
 public partial class ConfigurationKatRunnerTests
 {
     /// <summary>
-    /// Drives every <see cref="ConfigurationKatKind.Resolve" /> KAT in the catalogue.
+    /// Verifies that a valid <see cref="ConfigurationKatKind.Resolve" /> KAT resolves to the expected values and
+    /// preserves snapshot semantics.
     /// </summary>
     /// <param name="kat">The KAT case to execute.</param>
     [TestMethod]
-    [DynamicData(nameof(ConfigurationKnownAnswerData.ResolutionData),
+    [DynamicData(nameof(ConfigurationKnownAnswerData.ResolutionDataPass),
         typeof(ConfigurationKnownAnswerData),
-        DynamicDataDisplayName = nameof(GetKatDisplayName))]
-    public void Resolve_Kat(ConfigurationKat kat)
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void Resolve_WhenValid_ShouldMatchExpectedValues(ConfigurationKat kat)
     {
         ConfigurationProfile profile = MapProfile(kat.Profile);
         var doc = ConfigurationDocument.Parse(kat.Source!, ConfigurationParseOptions.For(profile));
         ConfigurationResolveOptions resolveOptions = BuildResolveOptions(kat, profile);
-
-        if (kat.Outcome is ConfigurationKatOutcome.Fail)
-        {
-            if (kat.ExpectedException is null)
-                Assert.Fail($"{kat.Id} is a fail KAT but has no ExpectedException.");
-
-            AssertThrowsExactlyByName(kat.ExpectedException!, () =>
-            {
-                _ = doc.Resolve(kat.TargetPath, resolveOptions);
-            });
-
-            return;
-        }
 
         ConfigurationView view = doc.Resolve(kat.TargetPath, resolveOptions);
 
@@ -59,6 +49,31 @@ public partial class ConfigurationKatRunnerTests
             ExpectedValue before = kat.ExpectedValues[0];
             Assert.AreEqual(before.Value, view[before.Key], $"{kat.Id}: post-mutation view should be a snapshot.");
         }
+    }
+
+    /// <summary>
+    /// Verifies that an invalid <see cref="ConfigurationKatKind.Resolve" /> KAT throws the expected exception during
+    /// resolution.
+    /// </summary>
+    /// <param name="kat">The KAT case to execute.</param>
+    [TestMethod]
+    [DynamicData(nameof(ConfigurationKnownAnswerData.ResolutionDataFail),
+        typeof(ConfigurationKnownAnswerData),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void Resolve_WhenInvalid_ShouldThrowExpectedException(ConfigurationKat kat)
+    {
+        ConfigurationProfile profile = MapProfile(kat.Profile);
+        var doc = ConfigurationDocument.Parse(kat.Source!, ConfigurationParseOptions.For(profile));
+        ConfigurationResolveOptions resolveOptions = BuildResolveOptions(kat, profile);
+
+        if (kat.ExpectedException is null)
+            Assert.Fail($"{kat.Id} is a fail KAT but has no ExpectedException.");
+
+        AssertThrowsExactlyByName(kat.ExpectedException!, () =>
+        {
+            _ = doc.Resolve(kat.TargetPath, resolveOptions);
+        });
     }
 
     private static ConfigurationResolveOptions BuildResolveOptions(ConfigurationKat kat, ConfigurationProfile profile)

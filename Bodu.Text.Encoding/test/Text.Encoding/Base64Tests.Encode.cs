@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Kat;
+
 namespace Bodu.Text.Encoding;
 
 public sealed partial class Base64Tests
@@ -15,7 +17,9 @@ public sealed partial class Base64Tests
     /// </summary>
     /// <param name="vector">A KAT vector.</param>
     [TestMethod]
-    [DynamicData(nameof(Base64KnownAnswerVectors.StandardRfc4648Vectors), typeof(Base64KnownAnswerVectors))]
+    [DynamicData(nameof(Base64KnownAnswerVectors.StandardRfc4648Vectors), typeof(Base64KnownAnswerVectors),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void Encode_ForStandardRfc4648KnownAnswerVector_ShouldMatch(EncodingKnownAnswerVector vector)
     {
         string actual = Base64.Encode(vector.DecodedBytes, Base64Variant.Standard);
@@ -29,7 +33,9 @@ public sealed partial class Base64Tests
     /// </summary>
     /// <param name="vector">A URL-safe KAT vector.</param>
     [TestMethod]
-    [DynamicData(nameof(Base64KnownAnswerVectors.UrlSafeVectors), typeof(Base64KnownAnswerVectors))]
+    [DynamicData(nameof(Base64KnownAnswerVectors.UrlSafeVectors), typeof(Base64KnownAnswerVectors),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void Encode_ForUrlSafeKnownAnswerVector_ShouldMatch(EncodingKnownAnswerVector vector)
     {
         string actual = Base64.Encode(vector.DecodedBytes, Base64Variant.UrlSafe);

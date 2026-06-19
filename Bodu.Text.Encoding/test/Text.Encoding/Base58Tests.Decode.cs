@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Kat;
+
 namespace Bodu.Text.Encoding;
 
 public sealed partial class Base58Tests
@@ -15,7 +17,9 @@ public sealed partial class Base58Tests
     /// </summary>
     /// <param name="vector">A KAT vector.</param>
     [TestMethod]
-    [DynamicData(nameof(Base58KnownAnswerVectors.BitcoinFlickrVectors), typeof(Base58KnownAnswerVectors))]
+    [DynamicData(nameof(Base58KnownAnswerVectors.BitcoinFlickrVectors), typeof(Base58KnownAnswerVectors),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void Decode_ForBitcoinFlickrKnownAnswerVector_ShouldRecoverBytes(EncodingKnownAnswerVector vector)
     {
         byte[] actual = Base58.Decode(vector.Encoded, Base58Variant.BitcoinFlickr);
@@ -29,7 +33,9 @@ public sealed partial class Base58Tests
     /// </summary>
     /// <param name="vector">A negative KAT vector.</param>
     [TestMethod]
-    [DynamicData(nameof(Base58KnownAnswerVectors.BitcoinFlickrNegativeVectors), typeof(Base58KnownAnswerVectors))]
+    [DynamicData(nameof(Base58KnownAnswerVectors.BitcoinFlickrNegativeVectors), typeof(Base58KnownAnswerVectors),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void Decode_ForBitcoinFlickrKnownMalformedInput_ShouldThrowExactly(EncodingNegativeDecodeVector vector)
     {
         Exception? actual = null;
@@ -169,7 +175,9 @@ public sealed partial class Base58Tests
     /// </summary>
     /// <param name="vector">A negative KAT vector.</param>
     [TestMethod]
-    [DynamicData(nameof(Base58KnownAnswerVectors.BitcoinFlickrNegativeVectors), typeof(Base58KnownAnswerVectors))]
+    [DynamicData(nameof(Base58KnownAnswerVectors.BitcoinFlickrNegativeVectors), typeof(Base58KnownAnswerVectors),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void IsValid_ForBitcoinFlickrKnownMalformedInput_ShouldReturnFalse(EncodingNegativeDecodeVector vector)
     {
         Assert.IsFalse(Base58.IsValid(vector.MalformedInput.AsSpan(), Base58Variant.BitcoinFlickr),

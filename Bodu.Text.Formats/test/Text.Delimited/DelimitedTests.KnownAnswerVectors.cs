@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Kat;
+
 namespace Bodu.Text.Delimited;
 
 public sealed partial class DelimitedTests
@@ -15,7 +17,9 @@ public sealed partial class DelimitedTests
     /// </summary>
     /// <param name="vector">A KAT vector sourced from <see cref="DelimitedKnownAnswerVectors.Rfc4180Vectors" />.</param>
     [TestMethod]
-    [DynamicData(nameof(DelimitedKnownAnswerVectors.Rfc4180Vectors), typeof(DelimitedKnownAnswerVectors))]
+    [DynamicData(nameof(DelimitedKnownAnswerVectors.Rfc4180Vectors), typeof(DelimitedKnownAnswerVectors),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void Parse_ForRfc4180KnownAnswerVector_ShouldProduceExpectedDocument(DelimitedKnownAnswerVector vector)
     {
         DelimitedParseOptions options = vector.Options ?? DelimitedParseOptions.Default;
@@ -44,7 +48,9 @@ public sealed partial class DelimitedTests
     /// </summary>
     /// <param name="vector">A KAT vector sourced from <see cref="DelimitedKnownAnswerVectors.Rfc4180Vectors" />.</param>
     [TestMethod]
-    [DynamicData(nameof(DelimitedKnownAnswerVectors.Rfc4180Vectors), typeof(DelimitedKnownAnswerVectors))]
+    [DynamicData(nameof(DelimitedKnownAnswerVectors.Rfc4180Vectors), typeof(DelimitedKnownAnswerVectors),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void Format_ForRfc4180KnownAnswerVector_ShouldRoundTripDocument(DelimitedKnownAnswerVector vector)
     {
         DelimitedParseOptions options = vector.Options ?? DelimitedParseOptions.Default;

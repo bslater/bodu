@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Kat;
+
 namespace Bodu.Text.Encoding;
 
 /// <summary>
@@ -19,8 +21,16 @@ public sealed record EncodingNegativeDecodeVector(
     string Description,
     string MalformedInput,
     Type ExpectedExceptionType,
-    string? Source = null)
+    string? Source = null) : IKat
 {
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// Returns <see cref="Description" /> so the row can be surfaced by <see cref="KatDisplayName.GetDisplayName" />
+    /// when a test method opts in via <c>DynamicDataDisplayName</c>. Existing tests that rely on the
+    /// <see cref="ToString" /> override for row naming continue to work unchanged.
+    /// </remarks>
+    string IKat.Name => Description;
 
     /// <summary>
     /// Returns the human-readable label, used by MSTest's <c>[DynamicData]</c> infrastructure when generating test
