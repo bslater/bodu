@@ -111,9 +111,6 @@
   <data name="Arg_Invalid_MoneyObject" xml:space="preserve">
     <value>Object must be a Money.</value>
   </data>
-  <data name="Arg_Invalid_ProviderNullOrWhiteSpace" xml:space="preserve">
-    <value>Provider identifier must not be empty or white-space.</value>
-  </data>
   <data name="Arg_Invalid_ExchangeRateRangeInverted" xml:space="preserve">
     <value>The end date must not be earlier than the start date.</value>
   </data>
@@ -135,38 +132,17 @@
   <data name="Arg_Invalid_UnknownCurrencyRejected" xml:space="preserve">
     <value>Currency '{0}' is not a known ISO 4217 currency.</value>
   </data>
-  <data name="Arg_OutOfRange_AllocationPolicyUndefined" xml:space="preserve">
-    <value>AllocationPolicy '{0}' is not a defined value.</value>
-  </data>
-  <data name="Arg_OutOfRange_CashRoundingPolicyUndefined" xml:space="preserve">
-    <value>CashRoundingPolicy '{0}' is not a defined value.</value>
-  </data>
-  <data name="Arg_OutOfRange_ConversionRoundingPolicyUndefined" xml:space="preserve">
-    <value>ConversionRoundingPolicy '{0}' is not a defined value.</value>
-  </data>
   <data name="Arg_OutOfRange_CurrencyDisplayUndefined" xml:space="preserve">
     <value>CurrencyDisplay '{0}' is not a defined value.</value>
   </data>
   <data name="Arg_OutOfRange_CustomScale" xml:space="preserve">
     <value>CustomScale {0} is outside the supported range 0 to 28.</value>
   </data>
-  <data name="Arg_OutOfRange_MoneyParseModeUndefined" xml:space="preserve">
-    <value>MoneyParseMode '{0}' is not a defined value.</value>
-  </data>
-  <data name="Arg_OutOfRange_ExchangeRateNotPositive" xml:space="preserve">
-    <value>Exchange rate must be strictly positive.</value>
-  </data>
   <data name="Arg_OutOfRange_RateNotPositive" xml:space="preserve">
     <value>Rate must be greater than zero.</value>
   </data>
-  <data name="Arg_OutOfRange_ScalePolicyUndefined" xml:space="preserve">
-    <value>ScalePolicy '{0}' is not a defined value.</value>
-  </data>
   <data name="Arg_OutOfRange_UnsupportedMidpointRounding" xml:space="preserve">
     <value>Unsupported midpoint-rounding mode.</value>
-  </data>
-  <data name="Arg_OutOfRange_UnsupportedMoneyBagRoundingPolicy" xml:space="preserve">
-    <value>Unsupported MoneyBag conversion rounding policy.</value>
   </data>
   <data name="Arg_OutOfRange_UnknownCurrencyMinorUnits" xml:space="preserve">
     <value>Explicit minor-unit scale {0} for currency '{1}' is out of the supported range 0 to 28.</value>
@@ -308,9 +284,6 @@
   </data>
   <data name="Op_Invalid_ExchangeRateRuntimeMismatch" xml:space="preserve">
     <value>Cannot adopt ExchangeRate {0}-&gt;{1} as ExchangeRate&lt;{2}, {3}&gt;: ISO codes differ.</value>
-  </data>
-  <data name="Op_Invalid_FinancialJsonPolicyUndefined" xml:space="preserve">
-    <value>Unsupported FinancialJsonPolicy value '{0}'.</value>
   </data>
   <data name="Op_Invalid_MoneyCompareSameCurrencyRequired" xml:space="preserve">
     <value>Money comparison requires the same currency; got '{0}' and '{1}'.</value>
