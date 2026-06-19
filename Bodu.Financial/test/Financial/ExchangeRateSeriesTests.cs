@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
 using Bodu.Test;
 using Bodu.Test.Assertions;
 
@@ -12,7 +13,7 @@ namespace Bodu.Financial;
 [TestClass]
 public partial class ExchangeRateSeriesTests
 {
-    private static readonly ExchangeRatePair s_usdAud = new("USD", "AUD");
+    private static readonly ExchangeRatePair s_usdAud = new(CurrencyCode.USD, CurrencyCode.AUD);
 
     private static (DateOnly Date, decimal Rate)[] SampleRates() =>
     [

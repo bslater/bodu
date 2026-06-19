@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
 using Bodu.Financial.DependencyInjection;
 using Bodu.Financial.ExchangeRates.Caching.Sqlite;
 using Microsoft.Extensions.Configuration;
@@ -97,9 +98,9 @@ public sealed class SqliteRateCacheExtensionsTests
         var cache = provider.GetRequiredService<IExchangeRateCache>();
         var now = DateTimeOffset.UtcNow;
 
-        cache.Store(new ExchangeRatePair("AUD", "USD"), new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5m, now) }, TimeSpan.FromHours(24), now);
+        cache.Store(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5m, now) }, TimeSpan.FromHours(24), now);
 
-        Assert.AreEqual(1, cache.GetRates(new ExchangeRatePair("AUD", "USD"), TimeSpan.FromHours(24), now).Count);
+        Assert.AreEqual(1, cache.GetRates(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), TimeSpan.FromHours(24), now).Count);
         Assert.IsTrue(File.Exists(_databasePath));
     }
 
@@ -117,7 +118,7 @@ public sealed class SqliteRateCacheExtensionsTests
         var cache = provider.GetRequiredService<IExchangeRateCache>();
         var now = DateTimeOffset.UtcNow;
 
-        cache.Store(new ExchangeRatePair("AUD", "USD"), new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5m, now) }, TimeSpan.FromHours(24), now);
+        cache.Store(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5m, now) }, TimeSpan.FromHours(24), now);
 
         Assert.IsTrue(File.Exists(_databasePath));
     }

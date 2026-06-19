@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
+
 namespace Bodu.Financial;
 
 public partial class ExchangeRatePairTests
@@ -27,7 +29,7 @@ public partial class ExchangeRatePairTests
     [TestMethod]
     public void IsValid_WhenInstanceConstructedFromValidCodes_ShouldReturnTrue()
     {
-        ExchangeRatePair pair = new("USD", "AUD");
+        ExchangeRatePair pair = new(CurrencyCode.USD, CurrencyCode.AUD);
 
         Assert.IsTrue(pair.IsValid);
     }

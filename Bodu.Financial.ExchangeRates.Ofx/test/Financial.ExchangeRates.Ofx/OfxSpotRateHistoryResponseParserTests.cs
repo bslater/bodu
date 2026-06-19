@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Text;
+using Bodu.Financial.Currencies;
 
 namespace Bodu.Financial.ExchangeRates.Ofx;
 
@@ -114,7 +115,7 @@ public class OfxSpotRateHistoryResponseParserTests
     }
 
     private static ExchangeRatePairRequest Request(DateOnly startDate, DateOnly endDate) =>
-        new(new ExchangeRatePair("AUD", "USD"), startDate, endDate);
+        new(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), startDate, endDate);
 
     private static byte[] Utf8(string text) => Encoding.UTF8.GetBytes(text);
 }

@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
 using Bodu.Test;
 using Bodu.Test.Assertions;
 
@@ -18,8 +19,8 @@ public partial class ExchangeRateTests
     [TestMethod]
     public void GetHashCode_WhenFieldsMatch_ShouldBeEqual()
     {
-        var a = new ExchangeRate("USD", "AUD", s_sampleDate, 1.5m, "ecb");
-        var b = new ExchangeRate("USD", "AUD", s_sampleDate, 1.5m, "ecb");
+        var a = new ExchangeRate(CurrencyCode.USD, CurrencyCode.AUD, s_sampleDate, 1.5m, "ecb");
+        var b = new ExchangeRate(CurrencyCode.USD, CurrencyCode.AUD, s_sampleDate, 1.5m, "ecb");
 
         Assert.AreEqual(a.GetHashCode(), b.GetHashCode());
     }
@@ -31,8 +32,8 @@ public partial class ExchangeRateTests
     [TestMethod]
     public void GetHashCode_WhenOnlyFetchedAtUtcDiffers_ShouldBeEqual()
     {
-        ExchangeRate stamped = new("USD", "AUD", s_sampleDate, 1.5m, "RBA", isInverted: false, new DateTimeOffset(2024, 1, 3, 9, 30, 0, TimeSpan.Zero));
-        ExchangeRate unstamped = new("USD", "AUD", s_sampleDate, 1.5m, "RBA");
+        ExchangeRate stamped = new(CurrencyCode.USD, CurrencyCode.AUD, s_sampleDate, 1.5m, "RBA", isInverted: false, new DateTimeOffset(2024, 1, 3, 9, 30, 0, TimeSpan.Zero));
+        ExchangeRate unstamped = new(CurrencyCode.USD, CurrencyCode.AUD, s_sampleDate, 1.5m, "RBA");
 
         Assert.AreEqual(unstamped.GetHashCode(), stamped.GetHashCode());
     }

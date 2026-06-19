@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Text.Json;
+using Bodu.Financial.Currencies;
 using Bodu.Financial.Serialization;
 
 namespace Bodu.Financial;
@@ -20,6 +21,6 @@ public partial class MoneyJsonConverterTests
     {
         Money money = JsonSerializer.Deserialize<Money>("{\"amount\":1,\"currency\":\" usd \"}", OptionsFor(FinancialJsonPolicy.Lenient));
 
-        Assert.AreEqual("USD", money.IsoCode);
+        Assert.AreEqual(CurrencyCode.USD, money.Code);
     }
 }

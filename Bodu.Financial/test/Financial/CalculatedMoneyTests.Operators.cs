@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
+
 namespace Bodu.Financial;
 
 public partial class CalculatedMoneyTests
@@ -15,7 +17,7 @@ public partial class CalculatedMoneyTests
     [TestMethod]
     public void Operators_WhenChained_ShouldPreserveFullPrecision()
     {
-        CalculatedMoney value = new(1m, "USD");
+        CalculatedMoney value = new(1m, CurrencyCode.USD);
 
         CalculatedMoney result = value / 3m;
 
@@ -29,15 +31,15 @@ public partial class CalculatedMoneyTests
     [TestMethod]
     public void Operators_WhenSameCurrency_ShouldComputeFullPrecisionResults()
     {
-        CalculatedMoney a = new(10m, "USD");
-        CalculatedMoney b = new(3m, "USD");
+        CalculatedMoney a = new(10m, CurrencyCode.USD);
+        CalculatedMoney b = new(3m, CurrencyCode.USD);
 
-        Assert.AreEqual(new CalculatedMoney(13m, "USD"), a + b);
-        Assert.AreEqual(new CalculatedMoney(7m, "USD"), a - b);
-        Assert.AreEqual(new CalculatedMoney(-10m, "USD"), -a);
+        Assert.AreEqual(new CalculatedMoney(13m, CurrencyCode.USD), a + b);
+        Assert.AreEqual(new CalculatedMoney(7m, CurrencyCode.USD), a - b);
+        Assert.AreEqual(new CalculatedMoney(-10m, CurrencyCode.USD), -a);
         Assert.AreEqual(a, +a);
-        Assert.AreEqual(new CalculatedMoney(20m, "USD"), a * 2m);
-        Assert.AreEqual(new CalculatedMoney(20m, "USD"), 2m * a);
-        Assert.AreEqual(new CalculatedMoney(5m, "USD"), a / 2m);
+        Assert.AreEqual(new CalculatedMoney(20m, CurrencyCode.USD), a * 2m);
+        Assert.AreEqual(new CalculatedMoney(20m, CurrencyCode.USD), 2m * a);
+        Assert.AreEqual(new CalculatedMoney(5m, CurrencyCode.USD), a / 2m);
     }
 }

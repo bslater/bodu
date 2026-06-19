@@ -51,17 +51,17 @@ public partial class FinancialJsonConverterGuardsTests
     [TestMethod]
     public void ObjectConverters_WhenUnknownPropertyPresent_ShouldIgnoreIt()
     {
-        Assert.AreEqual(new Money(1m, "USD"), JsonSerializer.Deserialize<Money>("{\"amount\":1,\"currency\":\"USD\",\"note\":\"x\"}"));
+        Assert.AreEqual(new Money(1m, CurrencyCode.USD), JsonSerializer.Deserialize<Money>("{\"amount\":1,\"currency\":\"USD\",\"note\":\"x\"}"));
         Assert.AreEqual(new Money<USD>(1m), JsonSerializer.Deserialize<Money<USD>>("{\"amount\":1,\"currency\":\"USD\",\"note\":\"x\"}"));
 
         MoneyBag bag = JsonSerializer.Deserialize<MoneyBag>("{\"note\":\"x\",\"balances\":{\"USD\":1}}")!;
-        Assert.AreEqual(new Money(1m, "USD"), bag.GetBalance("USD"));
+        Assert.AreEqual(new Money(1m, CurrencyCode.USD), bag.GetBalance(CurrencyCode.USD));
 
         ExchangeRatePair pair = JsonSerializer.Deserialize<ExchangeRatePair>("{\"from\":\"USD\",\"to\":\"JPY\",\"note\":\"x\"}");
-        Assert.AreEqual("USD", pair.FromIsoCode);
+        Assert.AreEqual(CurrencyCode.USD, pair.From);
 
         ExchangeRate rate = JsonSerializer.Deserialize<ExchangeRate>(
             "{\"from\":\"USD\",\"to\":\"JPY\",\"date\":\"2024-01-15\",\"rate\":1.5,\"provider\":\"x\",\"note\":\"y\"}");
-        Assert.AreEqual("USD", rate.FromIsoCode);
+        Assert.AreEqual(CurrencyCode.USD, rate.From);
     }
 }

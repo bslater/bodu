@@ -4,13 +4,14 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
 using Bodu.Test.Assertions;
 
 namespace Bodu.Financial;
 
 public partial class FixedDatedExchangeRateProviderTests
 {
-    private static readonly ExchangeRatePair s_usdAud = new("USD", "AUD");
+    private static readonly ExchangeRatePair s_usdAud = new(CurrencyCode.USD, CurrencyCode.AUD);
 
     private static ExchangeRateSeries Series(string provider, decimal rate) =>
         new(s_usdAud, provider, [(new DateOnly(2024, 1, 1), rate)]);

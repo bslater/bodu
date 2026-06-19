@@ -6,6 +6,7 @@
 
 using System.Text.Json;
 using Bodu.Financial;
+using Bodu.Financial.Currencies;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Bodu.Financial.DependencyInjection;
@@ -24,7 +25,7 @@ public sealed partial class FinancialServiceBuilderExtensionsTests
             .Services.BuildServiceProvider();
 
         JsonSerializerOptions options = provider.GetRequiredKeyedService<JsonSerializerOptions>(FinancialServiceBuilderExtensions.JsonOptionsKey);
-        string json = JsonSerializer.Serialize(new Money(19.99m, "USD"), options);
+        string json = JsonSerializer.Serialize(new Money(19.99m, CurrencyCode.USD), options);
 
         Assert.AreEqual("\"19.99 USD\"", json);
     }

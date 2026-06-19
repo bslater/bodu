@@ -19,7 +19,7 @@ public sealed partial class ExchangeRateConversionPrecisionTests
     [TestMethod]
     public void Convert_WhenInvertedFromObservedRate_ShouldDivideExactly()
     {
-        var inverted = ExchangeRate.FromObservedRate("JPY", "USD", Date, 156.42m, "ECB", isInverted: true);
+        var inverted = ExchangeRate.FromObservedRate(CurrencyCode.JPY, CurrencyCode.USD, Date, 156.42m, "ECB", isInverted: true);
 
         // 156.42 JPY -> USD must be exactly 1; amount * (1 / 156.42) would round to 0.999...9.
         Assert.AreEqual(1m, inverted.Convert(156.42m));

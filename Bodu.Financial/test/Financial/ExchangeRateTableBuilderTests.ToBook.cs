@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
+
 namespace Bodu.Financial;
 
 public partial class ExchangeRateTableBuilderTests
@@ -18,14 +20,14 @@ public partial class ExchangeRateTableBuilderTests
         ExchangeRateTableBuilder table = new();
         table.Upsert(s_usdAud, "RBA", new DateOnly(2024, 1, 1), 1.5m);
         table.Upsert(s_usdAud, "ECB", new DateOnly(2024, 1, 1), 1.6m);
-        table.Upsert(new ExchangeRatePair("EUR", "AUD"), "RBA", new DateOnly(2024, 1, 1), 1.7m);
+        table.Upsert(new ExchangeRatePair(CurrencyCode.EUR, CurrencyCode.AUD), "RBA", new DateOnly(2024, 1, 1), 1.7m);
 
         ExchangeRateBook book = table.ToBook();
 
         Assert.AreEqual(3, book.Count);
         Assert.IsTrue(book.TryGetSeries(s_usdAud, "RBA", out _));
         Assert.IsTrue(book.TryGetSeries(s_usdAud, "ECB", out _));
-        Assert.IsTrue(book.TryGetSeries(new ExchangeRatePair("EUR", "AUD"), "RBA", out _));
+        Assert.IsTrue(book.TryGetSeries(new ExchangeRatePair(CurrencyCode.EUR, CurrencyCode.AUD), "RBA", out _));
     }
 
     /// <summary>
@@ -37,7 +39,7 @@ public partial class ExchangeRateTableBuilderTests
     {
         ExchangeRateTableBuilder table = new();
         _ = table.GetOrAddSeries(s_usdAud, "RBA");
-        table.Upsert(new ExchangeRatePair("EUR", "AUD"), "RBA", new DateOnly(2024, 1, 1), 1.7m);
+        table.Upsert(new ExchangeRatePair(CurrencyCode.EUR, CurrencyCode.AUD), "RBA", new DateOnly(2024, 1, 1), 1.7m);
 
         ExchangeRateBook book = table.ToBook();
 

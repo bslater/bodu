@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
+
 namespace Bodu.Financial;
 
 public partial class MoneyTests
@@ -20,12 +22,12 @@ public partial class MoneyTests
     [TestMethod]
     public void Convert_WhenRateSourceMatches_ShouldProduceTargetCurrency()
     {
-        Money usd = new(100m, "USD");
-        ExchangeRate rate = new("USD", "AUD", s_rateDate, 1.5m, "Test");
+        Money usd = new(100m, CurrencyCode.USD);
+        ExchangeRate rate = new(CurrencyCode.USD, CurrencyCode.AUD, s_rateDate, 1.5m, "Test");
 
         Money aud = usd.Convert(rate);
 
-        Assert.AreEqual(new Money(150.00m, "AUD"), aud);
+        Assert.AreEqual(new Money(150.00m, CurrencyCode.AUD), aud);
     }
 
     /// <summary>
@@ -35,8 +37,8 @@ public partial class MoneyTests
     [TestMethod]
     public void Convert_WhenRateSourceMismatches_ShouldThrowInvalidOperationException()
     {
-        Money eur = new(100m, "EUR");
-        ExchangeRate rate = new("USD", "AUD", s_rateDate, 1.5m, "Test");
+        Money eur = new(100m, CurrencyCode.EUR);
+        ExchangeRate rate = new(CurrencyCode.USD, CurrencyCode.AUD, s_rateDate, 1.5m, "Test");
 
         Assert.ThrowsExactly<InvalidOperationException>(() => _ = eur.Convert(rate));
     }
@@ -48,13 +50,13 @@ public partial class MoneyTests
     [TestMethod]
     public void ConvertWithResult_ShouldReportRoundingAdjustment()
     {
-        Money usd = new(1m, "USD");
-        ExchangeRate rate = new("USD", "AUD", s_rateDate, 1.005m, "Test");
+        Money usd = new(1m, CurrencyCode.USD);
+        ExchangeRate rate = new(CurrencyCode.USD, CurrencyCode.AUD, s_rateDate, 1.005m, "Test");
 
         MoneyConversionResult result = usd.ConvertWithResult(rate);
 
         // 1 * 1.005 = 1.005, banker's rounding to 2 dp = 1.00, so the adjustment is -0.005.
-        Assert.AreEqual(new Money(1.00m, "AUD"), result.Target);
+        Assert.AreEqual(new Money(1.00m, CurrencyCode.AUD), result.Target);
         Assert.AreEqual(usd, result.Source);
         Assert.AreEqual(rate, result.Rate);
         Assert.AreEqual(-0.005m, result.RoundingAdjustment);

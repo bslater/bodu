@@ -25,7 +25,7 @@ public partial class MoneyExchangeRateExtensionsTests
     /// <returns>A provider with EUR/USD=1.10, JPY/USD=0.0067, USD/EUR=0.9091 (for inverse coverage).</returns>
     private static IDatedExchangeRateProvider BuildProvider() => new FixedDatedExchangeRateProvider(
     [
-        new ExchangeRate("EUR", "USD", s_asOf, 1.10m, "RBA"),
-        new ExchangeRate("JPY", "USD", s_asOf, 0.0067m, "RBA"),
+        new ExchangeRate(CurrencyCode.EUR, CurrencyCode.USD, s_asOf, 1.10m, "RBA"),
+        new ExchangeRate(CurrencyCode.JPY, CurrencyCode.USD, s_asOf, 0.0067m, "RBA"),
     ]);
 }

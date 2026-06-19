@@ -6,6 +6,7 @@
 
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Bodu.Financial.Currencies;
 
 namespace Bodu.Financial.Serialization;
 
@@ -18,7 +19,7 @@ public partial class ExchangeRatePairJsonConverterPolicyTests
     [TestMethod]
     public void StrictPolicy_WhenRoundTripping_ShouldPreserveValue()
     {
-        var pair = new ExchangeRatePair("USD", "JPY");
+        var pair = new ExchangeRatePair(CurrencyCode.USD, CurrencyCode.JPY);
         JsonSerializerOptions options = Options(FinancialJsonPolicy.Strict);
 
         string json = JsonSerializer.Serialize(pair, options);

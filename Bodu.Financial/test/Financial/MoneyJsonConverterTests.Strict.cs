@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Text.Json;
+using Bodu.Financial.Currencies;
 using Bodu.Financial.Serialization;
 
 namespace Bodu.Financial;
@@ -18,10 +19,10 @@ public partial class MoneyJsonConverterTests
     [TestMethod]
     public void Strict_WhenRoundTripped_ShouldPreserveValue()
     {
-        string json = JsonSerializer.Serialize(new Money(19.99m, "USD"));
+        string json = JsonSerializer.Serialize(new Money(19.99m, CurrencyCode.USD));
 
         Assert.AreEqual("{\"amount\":19.99,\"currency\":\"USD\"}", json);
-        Assert.AreEqual(new Money(19.99m, "USD"), JsonSerializer.Deserialize<Money>(json));
+        Assert.AreEqual(new Money(19.99m, CurrencyCode.USD), JsonSerializer.Deserialize<Money>(json));
     }
 
     /// <summary>
@@ -29,7 +30,7 @@ public partial class MoneyJsonConverterTests
     /// </summary>
     [TestMethod]
     public void Strict_WhenAmountIsNumericString_ShouldParse() =>
-        Assert.AreEqual(new Money(19.99m, "USD"), JsonSerializer.Deserialize<Money>("{\"amount\":\"19.99\",\"currency\":\"USD\"}"));
+        Assert.AreEqual(new Money(19.99m, CurrencyCode.USD), JsonSerializer.Deserialize<Money>("{\"amount\":\"19.99\",\"currency\":\"USD\"}"));
 
     /// <summary>
     /// Verifies that the canonical object form rejects malformed payloads — a non-object, a non-numeric amount, a

@@ -174,8 +174,8 @@ public sealed partial class SqliteExchangeRateCacheTests
             VALUES ($provider, $from, $to, $date, $rate, $cached);
             """;
         command.Parameters.AddWithValue("$provider", Provider);
-        command.Parameters.AddWithValue("$from", Pair.FromIsoCode);
-        command.Parameters.AddWithValue("$to", Pair.ToIsoCode);
+        command.Parameters.AddWithValue("$from", Pair.From.ToString());
+        command.Parameters.AddWithValue("$to", Pair.To.ToString());
         command.Parameters.AddWithValue("$date", date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
         command.Parameters.AddWithValue("$rate", rate.ToString(CultureInfo.InvariantCulture));
         command.Parameters.AddWithValue("$cached", cachedAt.ToString("O", CultureInfo.InvariantCulture));

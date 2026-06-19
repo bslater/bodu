@@ -22,8 +22,8 @@ public partial class ExchangeRateOfTBaseTQuoteTests
 
         ExchangeRate runtime = typed.ToRuntime();
 
-        Assert.AreEqual("USD", runtime.FromIsoCode);
-        Assert.AreEqual("AUD", runtime.ToIsoCode);
+        Assert.AreEqual(CurrencyCode.USD, runtime.From);
+        Assert.AreEqual(CurrencyCode.AUD, runtime.To);
         Assert.AreEqual(SampleDate, runtime.Date);
         Assert.AreEqual(1.52m, runtime.Rate);
         Assert.AreEqual(SampleProvider, runtime.Provider);

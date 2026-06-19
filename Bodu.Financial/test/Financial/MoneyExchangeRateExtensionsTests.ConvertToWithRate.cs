@@ -17,7 +17,7 @@ public partial class MoneyExchangeRateExtensionsTests
     [TestMethod]
     public void ConvertToWithRate_WhenRateAvailable_ShouldReturnAmountAndAuditMetadata()
     {
-        Money source = new(100m, "EUR");
+        Money source = new(100m, CurrencyCode.EUR);
 
         (Money target, ExchangeRateLookupResult lookup) = source.ConvertToWithRate(
             BuildProvider(),
@@ -25,7 +25,7 @@ public partial class MoneyExchangeRateExtensionsTests
             s_asOf,
             ExchangeRateLookupOptions.Exact);
 
-        Assert.AreEqual(new Money(110m, "USD"), target);
+        Assert.AreEqual(new Money(110m, CurrencyCode.USD), target);
         Assert.AreEqual(1.10m, lookup.Rate.Rate);
         Assert.AreEqual("RBA", lookup.Rate.Provider);
         Assert.IsFalse(lookup.Rate.IsInverted);
@@ -39,7 +39,7 @@ public partial class MoneyExchangeRateExtensionsTests
     public void ConvertToWithRate_WhenOnlyInverseRateAvailable_ShouldFlagInversion()
     {
         // Only EUR/USD is in the table; converting USD → EUR uses the inverse.
-        Money source = new(110m, "USD");
+        Money source = new(110m, CurrencyCode.USD);
 
         (Money target, ExchangeRateLookupResult lookup) = source.ConvertToWithRate(
             BuildProvider(),
@@ -47,7 +47,7 @@ public partial class MoneyExchangeRateExtensionsTests
             s_asOf,
             ExchangeRateLookupOptions.Exact);
 
-        Assert.AreEqual("EUR", target.IsoCode);
+        Assert.AreEqual(CurrencyCode.EUR, target.Code);
         Assert.IsTrue(lookup.Rate.IsInverted);
         Assert.AreEqual("RBA", lookup.Rate.Provider);
     }

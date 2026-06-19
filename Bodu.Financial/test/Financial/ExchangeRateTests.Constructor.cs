@@ -1,9 +1,10 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateTests.Constructor.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
 using Bodu.Test;
 using Bodu.Test.Assertions;
 
@@ -19,10 +20,10 @@ public partial class ExchangeRateTests
     [TestCategory(TestCategories.Smoke)]
     public void Constructor_WhenAllInputsValid_ShouldPopulateEveryComponent()
     {
-        ExchangeRate rate = new("USD", "AUD", s_sampleDate, 1.5m, "RBA");
+        ExchangeRate rate = new(CurrencyCode.USD, CurrencyCode.AUD, s_sampleDate, 1.5m, "RBA");
 
-        Assert.AreEqual("USD", rate.FromIsoCode);
-        Assert.AreEqual("AUD", rate.ToIsoCode);
+        Assert.AreEqual(CurrencyCode.USD, rate.From);
+        Assert.AreEqual(CurrencyCode.AUD, rate.To);
         Assert.AreEqual(s_sampleDate, rate.Date);
         Assert.AreEqual(1.5m, rate.Rate);
         Assert.AreEqual("RBA", rate.Provider);
@@ -35,62 +36,69 @@ public partial class ExchangeRateTests
     [TestMethod]
     public void Constructor_WhenIsInvertedSpecified_ShouldStoreFlag()
     {
-        ExchangeRate rate = new("AUD", "USD", s_sampleDate, 0.6m, "RBA", isInverted: true);
+        ExchangeRate rate = new(CurrencyCode.AUD, CurrencyCode.USD, s_sampleDate, 0.6m, "RBA", isInverted: true);
 
         Assert.IsTrue(rate.IsInverted);
     }
 
     /// <summary>
-    /// Verifies that constructing an <see cref="ExchangeRate" /> with a <see langword="null" /> source-currency code
-    /// throws <see cref="ArgumentNullException" /> with the parameter name <c>fromIsoCode</c>.
+    /// Verifies that constructing an <see cref="ExchangeRate" /> with a <see cref="CurrencyCode.None" /> source currency
+    /// throws <see cref="ArgumentOutOfRangeException" /> with the parameter name <c>from</c>.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenFromIsoCodeIsNull_ShouldThrowArgumentNullException()
+    public void Constructor_WhenFromIsNone_ShouldThrowArgumentOutOfRangeException()
     {
-        ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(
+        ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(
             () =>
             {
-                _ = new ExchangeRate(null!, "AUD", s_sampleDate, 1m, "RBA");
+                _ = new ExchangeRate(CurrencyCode.None, CurrencyCode.AUD, s_sampleDate, 1m, "RBA");
             },
-            "fromIsoCode");
+            "from");
     }
 
     /// <summary>
-    /// Verifies that an invalid source-currency code throws <see cref="ArgumentException" /> with the parameter name
-    /// <c>fromIsoCode</c>.
+    /// Verifies that an undefined source currency throws <see cref="ArgumentOutOfRangeException" /> with the parameter
+    /// name <c>from</c>.
     /// </summary>
     [TestMethod]
-    [DataRow("usd")]
-    [DataRow("US")]
-    [DataRow("USDX")]
-    [DataRow("   ")]
-    [DataRow("US1")]
-    public void Constructor_WhenFromIsoCodeIsMalformed_ShouldThrowArgumentException(string value)
+    public void Constructor_WhenFromCodeUndefined_ShouldThrowArgumentOutOfRangeException()
     {
-        ExceptionAssert.ThrowsExactlyWithParamName<ArgumentException>(
+        ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(
             () =>
             {
-                _ = new ExchangeRate(value, "AUD", s_sampleDate, 1m, "RBA");
+                _ = new ExchangeRate((CurrencyCode)9999, CurrencyCode.AUD, s_sampleDate, 1m, "RBA");
             },
-            "fromIsoCode");
+            "from");
     }
 
     /// <summary>
-    /// Verifies that an invalid destination-currency code throws <see cref="ArgumentException" /> with the parameter
-    /// name <c>toIsoCode</c>.
+    /// Verifies that constructing an <see cref="ExchangeRate" /> with a <see cref="CurrencyCode.None" /> destination
+    /// currency throws <see cref="ArgumentOutOfRangeException" /> with the parameter name <c>to</c>.
     /// </summary>
     [TestMethod]
-    [DataRow("aud")]
-    [DataRow("AU")]
-    [DataRow("AUDX")]
-    public void Constructor_WhenToIsoCodeIsMalformed_ShouldThrowArgumentException(string value)
+    public void Constructor_WhenToIsNone_ShouldThrowArgumentOutOfRangeException()
     {
-        ExceptionAssert.ThrowsExactlyWithParamName<ArgumentException>(
+        ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(
             () =>
             {
-                _ = new ExchangeRate("USD", value, s_sampleDate, 1m, "RBA");
+                _ = new ExchangeRate(CurrencyCode.USD, CurrencyCode.None, s_sampleDate, 1m, "RBA");
             },
-            "toIsoCode");
+            "to");
+    }
+
+    /// <summary>
+    /// Verifies that an undefined destination currency throws <see cref="ArgumentOutOfRangeException" /> with the
+    /// parameter name <c>to</c>.
+    /// </summary>
+    [TestMethod]
+    public void Constructor_WhenToCodeUndefined_ShouldThrowArgumentOutOfRangeException()
+    {
+        ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(
+            () =>
+            {
+                _ = new ExchangeRate(CurrencyCode.USD, (CurrencyCode)9999, s_sampleDate, 1m, "RBA");
+            },
+            "to");
     }
 
     /// <summary>
@@ -108,7 +116,7 @@ public partial class ExchangeRateTests
         ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(
             () =>
             {
-                _ = new ExchangeRate("USD", "AUD", s_sampleDate, rate, "RBA");
+                _ = new ExchangeRate(CurrencyCode.USD, CurrencyCode.AUD, s_sampleDate, rate, "RBA");
             },
             "rate");
     }
@@ -123,7 +131,7 @@ public partial class ExchangeRateTests
         ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(
             () =>
             {
-                _ = new ExchangeRate("USD", "AUD", s_sampleDate, 1m, null!);
+                _ = new ExchangeRate(CurrencyCode.USD, CurrencyCode.AUD, s_sampleDate, 1m, null!);
             },
             "provider");
     }
@@ -141,7 +149,7 @@ public partial class ExchangeRateTests
         ExceptionAssert.ThrowsExactlyWithParamName<ArgumentException>(
             () =>
             {
-                _ = new ExchangeRate("USD", "AUD", s_sampleDate, 1m, value);
+                _ = new ExchangeRate(CurrencyCode.USD, CurrencyCode.AUD, s_sampleDate, 1m, value);
             },
             "provider");
     }

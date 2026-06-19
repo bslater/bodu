@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Linq;
+using Bodu.Financial.Currencies;
 using Bodu.Formats.Excel.Binary;
 using Bodu.Test;
 
@@ -87,11 +88,11 @@ public partial class RbaExchangeRateWorkbookParserTests
     {
         var rates = ParseSample()
             .EnumerateRates()
-            .ToDictionary(r => (r.ToIsoCode, r.Date), r => r.Rate);
+            .ToDictionary(r => (r.To, r.Date), r => r.Rate);
 
-        Assert.AreEqual(0.6828m, rates[("USD", new DateOnly(2023, 1, 3))]);
-        Assert.AreEqual(0.7029m, rates[("USD", new DateOnly(2026, 6, 12))]);
-        Assert.AreEqual(112.71m, rates[("JPY", new DateOnly(2026, 6, 12))]);
+        Assert.AreEqual(0.6828m, rates[(CurrencyCode.USD, new DateOnly(2023, 1, 3))]);
+        Assert.AreEqual(0.7029m, rates[(CurrencyCode.USD, new DateOnly(2026, 6, 12))]);
+        Assert.AreEqual(112.71m, rates[(CurrencyCode.JPY, new DateOnly(2026, 6, 12))]);
     }
 
     /// <summary>
@@ -104,7 +105,7 @@ public partial class RbaExchangeRateWorkbookParserTests
         var firstRow = new DateOnly(2023, 1, 3);
         var rates = ParseSample().EnumerateRates().ToList();
 
-        Assert.IsTrue(rates.Any(r => r.ToIsoCode == "USD" && r.Date == firstRow));
-        Assert.IsFalse(rates.Any(r => r.ToIsoCode == "AED" && r.Date == firstRow));
+        Assert.IsTrue(rates.Any(r => r.To == CurrencyCode.USD && r.Date == firstRow));
+        Assert.IsFalse(rates.Any(r => r.To == CurrencyCode.AED && r.Date == firstRow));
     }
 }

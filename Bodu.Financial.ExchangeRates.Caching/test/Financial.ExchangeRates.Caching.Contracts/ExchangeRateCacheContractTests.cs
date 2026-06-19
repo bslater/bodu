@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
+
 namespace Bodu.Financial.ExchangeRates.Caching.Contracts;
 
 /// <summary>
@@ -22,7 +24,7 @@ public abstract class ExchangeRateCacheContractTests<TCache>
     /// <summary>
     /// The currency pair used by the contract tests.
     /// </summary>
-    protected static readonly ExchangeRatePair Pair = new("AUD", "USD");
+    protected static readonly ExchangeRatePair Pair = new(CurrencyCode.AUD, CurrencyCode.USD);
 
     /// <summary>
     /// The duration used by the contract tests.
@@ -190,7 +192,7 @@ public abstract class ExchangeRateCacheContractTests<TCache>
         var now = DateTimeOffset.UtcNow;
         cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, now) }, Duration, now);
 
-        IReadOnlyList<CachedExchangeRate> other = cache.GetRates(new ExchangeRatePair("EUR", "USD"), Duration, now);
+        IReadOnlyList<CachedExchangeRate> other = cache.GetRates(new ExchangeRatePair(CurrencyCode.EUR, CurrencyCode.USD), Duration, now);
 
         Assert.AreEqual(0, other.Count);
     }
@@ -286,7 +288,7 @@ public abstract class ExchangeRateCacheContractTests<TCache>
         var now = DateTimeOffset.UtcNow;
         cache.RecordCoverage(Pair, new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 10), Duration, now);
 
-        DateRangeCoverage other = cache.GetCoverage(new ExchangeRatePair("EUR", "USD"), Duration, now);
+        DateRangeCoverage other = cache.GetCoverage(new ExchangeRatePair(CurrencyCode.EUR, CurrencyCode.USD), Duration, now);
 
         Assert.IsTrue(other.IsEmpty);
     }

@@ -17,7 +17,7 @@ public partial class MoneyExchangeRateExtensionsTests
     [TestMethod]
     public void ConvertToTyped_WhenRateAvailable_ShouldReturnTypedAmount()
     {
-        Money source = new(100m, "EUR");
+        Money source = new(100m, CurrencyCode.EUR);
 
         Money<USD> result = source.ConvertTo<USD>(BuildProvider(), s_asOf, ExchangeRateLookupOptions.Exact);
 

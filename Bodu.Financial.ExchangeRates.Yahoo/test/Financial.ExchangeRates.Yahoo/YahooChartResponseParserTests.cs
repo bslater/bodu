@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Text;
+using Bodu.Financial.Currencies;
 
 namespace Bodu.Financial.ExchangeRates.Yahoo;
 
@@ -19,7 +20,7 @@ public class YahooChartResponseParserTests
     /// </summary>
     /// <returns>The chart request.</returns>
     private static YahooChartRequest CreateRequest() =>
-        new(new ExchangeRatePair("AUD", "USD"), "AUDUSD=X", new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31));
+        new(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), "AUDUSD=X", new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31));
 
     /// <summary>
     /// Verifies that a valid chart parses to the present close observations, skipping the null-close day.

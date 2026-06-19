@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
+
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
@@ -27,8 +29,8 @@ public sealed partial class CachingExchangeRateProviderTests
     private static FixedDatedExchangeRateProvider StampedInner()
     {
         ExchangeRateTableBuilder builder = new();
-        builder.Upsert(new ExchangeRatePair("AUD", "USD"), Provider, new DateOnly(2023, 1, 3), 0.5m, FetchedAt);
-        builder.Upsert(new ExchangeRatePair("AUD", "USD"), Provider, new DateOnly(2023, 1, 6), 0.51m, FetchedAt);
+        builder.Upsert(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), Provider, new DateOnly(2023, 1, 3), 0.5m, FetchedAt);
+        builder.Upsert(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), Provider, new DateOnly(2023, 1, 6), 0.51m, FetchedAt);
         return new FixedDatedExchangeRateProvider(builder.ToBook());
     }
 

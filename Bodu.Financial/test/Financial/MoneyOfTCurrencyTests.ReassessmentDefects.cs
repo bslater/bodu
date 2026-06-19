@@ -216,27 +216,27 @@ public partial class MoneyOfTCurrencyTests
     [TestMethod]
     public void Balances_WhenCastToMutableAndMutated_ShouldNotAffectBagState()
     {
-        var bag = new MoneyBag([new Money(100m, "USD")]);
+        var bag = new MoneyBag([new Money(100m, CurrencyCode.USD)]);
 
-        IReadOnlyDictionary<string, decimal> balances = bag.Balances;
+        IReadOnlyDictionary<CurrencyCode, decimal> balances = bag.Balances;
 
-        // The reviewer's exact attack: cast to Dictionary<string, decimal> and mutate. Either the cast must
+        // The reviewer's exact attack: cast to Dictionary<CurrencyCode, decimal> and mutate. Either the cast must
         // fail (an ICollection wrapper) or the mutation must not propagate (a snapshot copy).
-        if (balances is Dictionary<string, decimal> exposed)
+        if (balances is Dictionary<CurrencyCode, decimal> exposed)
         {
-            decimal originalUsd = bag.Balances["USD"];
+            decimal originalUsd = bag.Balances[CurrencyCode.USD];
             try
             {
-                exposed["USD"] = -999_999_999m;
-                exposed["AUD"] = 123.456789m;
+                exposed[CurrencyCode.USD] = -999_999_999m;
+                exposed[CurrencyCode.AUD] = 123.456789m;
             }
             catch (NotSupportedException)
             {
                 return;     // wrapper threw on mutation — acceptable.
             }
 
-            Assert.AreEqual(originalUsd, bag.Balances["USD"], "Bag state must not be mutable through Balances cast.");
-            Assert.IsFalse(bag.Balances.ContainsKey("AUD"), "Bag must not pick up keys mutated through Balances cast.");
+            Assert.AreEqual(originalUsd, bag.Balances[CurrencyCode.USD], "Bag state must not be mutable through Balances cast.");
+            Assert.IsFalse(bag.Balances.ContainsKey(CurrencyCode.AUD), "Bag must not pick up keys mutated through Balances cast.");
         }
     }
 
@@ -330,27 +330,32 @@ public partial class MoneyOfTCurrencyTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // P0.6 — Money must reject malformed ISO codes (lowercase, length, non-letter, surrounding whitespace).
+    // P0.6 — Money must reject the currency-less and undefined CurrencyCode values.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Verifies that <see cref="Money" />'s constructor rejects lowercase ISO codes — ISO 4217 codes are
-    /// strictly uppercase.
+    /// Verifies that <see cref="Money" />'s constructor rejects the currency-less <see cref="CurrencyCode.None" />
+    /// with <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    [DataRow("usd")]
-    [DataRow("Usd")]
-    [DataRow("USD ")]
-    [DataRow(" USD")]
-    [DataRow("US")]
-    [DataRow("USDX")]
-    [DataRow("U$D")]
-    [DataRow("12D")]
-    public void MoneyConstructor_WhenIsoCodeMalformed_ShouldThrowArgumentException(string iso)
+    public void MoneyConstructor_WhenCodeIsNone_ShouldThrowArgumentOutOfRangeException()
     {
-        Assert.ThrowsExactly<ArgumentException>(() =>
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            _ = new Money(10m, iso);
+            _ = new Money(10m, CurrencyCode.None);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Money" />'s constructor rejects an undefined <see cref="CurrencyCode" /> with
+    /// <see cref="ArgumentOutOfRangeException" />.
+    /// </summary>
+    [TestMethod]
+    public void MoneyConstructor_WhenCodeUndefined_ShouldThrowArgumentOutOfRangeException()
+    {
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = new Money(10m, (CurrencyCode)9999);
         });
     }
 
@@ -365,7 +370,7 @@ public partial class MoneyOfTCurrencyTests
     [TestMethod]
     public void MoneyBagConstructor_WhenBalanceCarriesEmptyIsoCode_ShouldThrowArgumentException()
     {
-        Money[] entries = [new Money(100m, "USD"), default];
+        Money[] entries = [new Money(100m, CurrencyCode.USD), default];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -414,7 +419,7 @@ public partial class MoneyOfTCurrencyTests
     [TestMethod]
     public void MoneyArithmetic_WhenOneOperandIsDefault_ShouldThrowInvalidOperationException()
     {
-        var real = new Money(100m, "USD");
+        var real = new Money(100m, CurrencyCode.USD);
         Money empty = default;
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
@@ -471,8 +476,8 @@ public partial class MoneyOfTCurrencyTests
         // Use two three-minor-unit currencies (BHD, KWD) so Money natively carries the sub-cent source precision
         // instead of rounding it away.
         MoneyBag bag = MoneyBag.Empty
-            .Add(new Money(0.005m, "BHD"))
-            .Add(new Money(0.005m, "KWD"));
+            .Add(new Money(0.005m, CurrencyCode.BHD))
+            .Add(new Money(0.005m, CurrencyCode.KWD));
 
         FixedExchangeRateTable rates = new(new Dictionary<(string From, string To), decimal>
         {

@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
+
 namespace Bodu.Financial;
 
 public partial class FixedDatedExchangeRateProviderTests
@@ -28,8 +30,8 @@ public partial class FixedDatedExchangeRateProviderTests
         Assert.AreEqual(1m, result.Rate.Rate);
         Assert.AreEqual("Identity", result.Rate.Provider);
         Assert.AreEqual(0, result.OffsetDays);
-        Assert.AreEqual("USD", result.Rate.FromIsoCode);
-        Assert.AreEqual("USD", result.Rate.ToIsoCode);
+        Assert.AreEqual(CurrencyCode.USD, result.Rate.From);
+        Assert.AreEqual(CurrencyCode.USD, result.Rate.To);
     }
 
     /// <summary>

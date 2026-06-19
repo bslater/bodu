@@ -22,11 +22,11 @@ public partial class MoneyExchangeRateExtensionsTests
     [DataRow("USD", "USD", 50, 50.00)]        // same-currency identity
     public void ConvertTo_WhenRateAvailable_ShouldReturnConvertedRuntimeAmount(string from, string to, double amount, double expected)
     {
-        Money source = new((decimal)amount, from);
+        Money source = new((decimal)amount, CurrencyInfo.ParseCurrencyCode(from));
 
         Money result = source.ConvertTo(BuildProvider(), to, s_asOf, ExchangeRateLookupOptions.Exact);
 
-        Assert.AreEqual(to, result.IsoCode);
+        Assert.AreEqual(to, result.Code.ToString());
         Assert.AreEqual((decimal)expected, result.Amount);
     }
 
@@ -36,7 +36,7 @@ public partial class MoneyExchangeRateExtensionsTests
     [TestMethod]
     public void ConvertTo_WhenProviderIsNull_ShouldThrowArgumentNullException()
     {
-        Money source = new(100m, "EUR");
+        Money source = new(100m, CurrencyCode.EUR);
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -50,7 +50,7 @@ public partial class MoneyExchangeRateExtensionsTests
     [TestMethod]
     public void ConvertTo_WhenRateUnavailable_ShouldThrowKeyNotFoundException()
     {
-        Money source = new(100m, "GBP");        // no GBP rates in the fixture
+        Money source = new(100m, CurrencyCode.GBP);        // no GBP rates in the fixture
 
         Assert.ThrowsExactly<KeyNotFoundException>(() =>
         {
@@ -66,7 +66,7 @@ public partial class MoneyExchangeRateExtensionsTests
     [TestMethod]
     public void ConvertTo_WhenSourceAndTargetAreSameCurrency_ShouldReturnSourceAmount()
     {
-        Money source = new(100m, "EUR");
+        Money source = new(100m, CurrencyCode.EUR);
 
         Money result = source.ConvertTo(BuildProvider(), "EUR", s_asOf, ExchangeRateLookupOptions.Exact);
 
@@ -82,10 +82,10 @@ public partial class MoneyExchangeRateExtensionsTests
         IDatedExchangeRateProvider rates = new FixedDatedExchangeRateProvider(
         [
             // 1.225 EUR/USD; 1 EUR × 1.225 = 1.225 → midpoint rounds to 1.22 banker's, 1.23 AwayFromZero.
-            new ExchangeRate("EUR", "USD", s_asOf, 1.225m, "Bench"),
+            new ExchangeRate(CurrencyCode.EUR, CurrencyCode.USD, s_asOf, 1.225m, "Bench"),
         ]);
 
-        Money source = new(1m, "EUR");
+        Money source = new(1m, CurrencyCode.EUR);
 
         Money banker = source.ConvertTo(rates, "USD", s_asOf, ExchangeRateLookupOptions.Exact);
         Money awayFromZero = source.ConvertTo(rates, "USD", s_asOf, ExchangeRateLookupOptions.Exact, MidpointRounding.AwayFromZero);

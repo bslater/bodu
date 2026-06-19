@@ -6,6 +6,8 @@
 
 using Bodu.Financial;
 
+using Bodu.Financial.Currencies;
+
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
@@ -22,7 +24,7 @@ public sealed partial class CachingExchangeRateProviderTests
     [TestMethod]
     public async Task GetRatesAsync_WhenOnlyInversePairCovered_ShouldServeInvertedWithoutFetch()
     {
-        ExchangeRatePair inverse = new("USD", "AUD");
+        ExchangeRatePair inverse = new(CurrencyCode.USD, CurrencyCode.AUD);
         CountingDatedExchangeRateProvider inner = InnerWith();
 
         // Seed only the inverse pair's rows and a full coverage window; the direct AUD/USD pair has nothing cached.
@@ -36,8 +38,8 @@ public sealed partial class CachingExchangeRateProviderTests
         Assert.AreEqual(0, inner.GetRatesAsyncCallCount);
         Assert.AreEqual(2, rates.Count);
 
-        Assert.AreEqual("AUD", rates[0].FromIsoCode);
-        Assert.AreEqual("USD", rates[0].ToIsoCode);
+        Assert.AreEqual(CurrencyCode.AUD, rates[0].From);
+        Assert.AreEqual(CurrencyCode.USD, rates[0].To);
         Assert.IsTrue(rates[0].IsInverted);
 
         Assert.AreEqual(new DateOnly(2023, 1, 3), rates[0].Date);
@@ -53,7 +55,7 @@ public sealed partial class CachingExchangeRateProviderTests
     [TestMethod]
     public void GetRates_WhenOnlyInversePairCovered_ShouldServeInverted()
     {
-        ExchangeRatePair inverse = new("USD", "AUD");
+        ExchangeRatePair inverse = new(CurrencyCode.USD, CurrencyCode.AUD);
         CountingDatedExchangeRateProvider inner = InnerWith();
 
         SeedCache(inverse, (new DateOnly(2023, 1, 3), 4.0m));
@@ -75,7 +77,7 @@ public sealed partial class CachingExchangeRateProviderTests
     [TestMethod]
     public async Task GetRatesAsync_WhenInverseServingDisabled_ShouldNotUseInverseCoverage()
     {
-        ExchangeRatePair inverse = new("USD", "AUD");
+        ExchangeRatePair inverse = new(CurrencyCode.USD, CurrencyCode.AUD);
         CountingDatedExchangeRateProvider inner = InnerWith(
             ("AUD", "USD", new DateOnly(2023, 1, 3), 0.5m));
 

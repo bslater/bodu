@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Financial;
+using Bodu.Financial.Currencies;
 using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Microsoft.Extensions.Options;
 
@@ -27,7 +28,7 @@ public sealed class RedisDistributedExchangeRateCacheIntegrationTests
     /// <summary>
     /// The currency pair used by the tests.
     /// </summary>
-    private static readonly ExchangeRatePair Pair = new("AUD", "USD");
+    private static readonly ExchangeRatePair Pair = new(CurrencyCode.AUD, CurrencyCode.USD);
 
     /// <summary>
     /// The freshness duration used by the tests.

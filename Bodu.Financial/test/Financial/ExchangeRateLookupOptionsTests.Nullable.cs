@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
+
 namespace Bodu.Financial;
 
 public partial class ExchangeRateLookupOptionsTests
@@ -29,7 +31,7 @@ public partial class ExchangeRateLookupOptionsTests
     [TestMethod]
     public void TryGetRate_WhenOptionsIsNull_ForSeries_ShouldFallBackToExact()
     {
-        ExchangeRatePair pair = new("USD", "AUD");
+        ExchangeRatePair pair = new(CurrencyCode.USD, CurrencyCode.AUD);
         ExchangeRateSeries series = new(
             pair,
             "RBA",
@@ -51,7 +53,7 @@ public partial class ExchangeRateLookupOptionsTests
     [TestMethod]
     public void TryGetRate_WhenOptionsIsNullAndDateMissing_ForSeries_ShouldReturnFalse()
     {
-        ExchangeRatePair pair = new("USD", "AUD");
+        ExchangeRatePair pair = new(CurrencyCode.USD, CurrencyCode.AUD);
         ExchangeRateSeries series = new(
             pair,
             "RBA",

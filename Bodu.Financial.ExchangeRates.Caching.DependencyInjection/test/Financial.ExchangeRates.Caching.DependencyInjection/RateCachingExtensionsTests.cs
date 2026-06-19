@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
 using Bodu.Financial.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -195,7 +196,7 @@ public sealed partial class RateCachingExtensionsTests
         /// The fixed provider backing the stub.
         /// </summary>
         private static readonly FixedDatedExchangeRateProvider Inner =
-            new(new[] { new ExchangeRate("AUD", "USD", new DateOnly(2023, 1, 3), 0.5m, "RBA") });
+            new(new[] { new ExchangeRate(CurrencyCode.AUD, CurrencyCode.USD, new DateOnly(2023, 1, 3), 0.5m, "RBA") });
 
         /// <inheritdoc />
         public ExchangeRateLookupResult GetRate(string fromIsoCode, string toIsoCode, ExchangeRateLookupOptions? options = null) =>

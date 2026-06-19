@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Text.Json;
+using Bodu.Financial.Currencies;
 
 namespace Bodu.Financial.Serialization;
 
@@ -17,7 +18,7 @@ public partial class MoneyBagJsonConverterPolicyTests
     [TestMethod]
     public void StrictPolicy_WhenSerializing_ShouldEmitBalancesWrappedForm()
     {
-        MoneyBag bag = MoneyBag.Empty.Add(new Money(12.34m, "AUD"));
+        MoneyBag bag = MoneyBag.Empty.Add(new Money(12.34m, CurrencyCode.AUD));
 
         string json = JsonSerializer.Serialize(bag, Options(FinancialJsonPolicy.Strict));
 

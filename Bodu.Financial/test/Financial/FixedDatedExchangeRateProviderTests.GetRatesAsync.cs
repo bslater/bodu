@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
+
 namespace Bodu.Financial;
 
 public partial class FixedDatedExchangeRateProviderTests
@@ -16,9 +18,9 @@ public partial class FixedDatedExchangeRateProviderTests
     {
         FixedDatedExchangeRateProvider table = new(
         [
-            new ExchangeRate("USD", "AUD", new DateOnly(2024, 1, 6), 1.52m, "RBA"),
-            new ExchangeRate("USD", "AUD", new DateOnly(2024, 1, 3), 1.50m, "RBA"),
-            new ExchangeRate("USD", "AUD", new DateOnly(2024, 1, 10), 1.55m, "RBA"),
+            new ExchangeRate(CurrencyCode.USD, CurrencyCode.AUD, new DateOnly(2024, 1, 6), 1.52m, "RBA"),
+            new ExchangeRate(CurrencyCode.USD, CurrencyCode.AUD, new DateOnly(2024, 1, 3), 1.50m, "RBA"),
+            new ExchangeRate(CurrencyCode.USD, CurrencyCode.AUD, new DateOnly(2024, 1, 10), 1.55m, "RBA"),
         ]);
 
         IReadOnlyList<ExchangeRate> rates =
@@ -67,9 +69,9 @@ public partial class FixedDatedExchangeRateProviderTests
     {
         FixedDatedExchangeRateProvider table = new(
         [
-            new ExchangeRate("USD", "AUD", new DateOnly(2024, 1, 6), 1.52m, "RBA"),
-            new ExchangeRate("USD", "AUD", new DateOnly(2024, 1, 3), 1.50m, "RBA"),
-            new ExchangeRate("USD", "AUD", new DateOnly(2024, 1, 10), 1.55m, "RBA"),
+            new ExchangeRate(CurrencyCode.USD, CurrencyCode.AUD, new DateOnly(2024, 1, 6), 1.52m, "RBA"),
+            new ExchangeRate(CurrencyCode.USD, CurrencyCode.AUD, new DateOnly(2024, 1, 3), 1.50m, "RBA"),
+            new ExchangeRate(CurrencyCode.USD, CurrencyCode.AUD, new DateOnly(2024, 1, 10), 1.55m, "RBA"),
         ]);
 
         ExchangeRateRangeResult result = table.GetRates("USD", "AUD", new DateOnly(2024, 1, 1), new DateOnly(2024, 1, 8));

@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
+
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
@@ -138,7 +140,7 @@ public sealed partial class CachingExchangeRateProviderTests
     /// <param name="rows">The observation rows, each a from/to/date/rate tuple.</param>
     /// <returns>A new counting inner source.</returns>
     private static CountingDatedExchangeRateProvider InnerWith(params (string From, string To, DateOnly Date, decimal Rate)[] rows) =>
-        new(rows.Select(static r => new ExchangeRate(r.From, r.To, r.Date, r.Rate, "Test")));
+        new(rows.Select(static r => new ExchangeRate(CurrencyInfo.ParseCurrencyCode(r.From), CurrencyInfo.ParseCurrencyCode(r.To), r.Date, r.Rate, "Test")));
 
     /// <summary>
     /// Seeds the cache with fresh rows for the supplied pair, stamped at the current clock instant.

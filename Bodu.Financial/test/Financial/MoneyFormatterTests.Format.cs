@@ -19,7 +19,7 @@ public partial class MoneyFormatterTests
     {
         MoneyFormatter formatter = new(new MoneyFormatOptions { FormatProvider = CultureInfo.InvariantCulture });
 
-        Assert.AreEqual("USD 1,234.56", formatter.Format(new Money(1234.56m, "USD")));
+        Assert.AreEqual("USD 1,234.56", formatter.Format(new Money(1234.56m, CurrencyCode.USD)));
     }
 
     /// <summary>
@@ -37,7 +37,7 @@ public partial class MoneyFormatterTests
             FormatProvider = CultureInfo.InvariantCulture,
         });
 
-        Assert.AreEqual(expected, formatter.Format(new Money(1234.56m, "USD")));
+        Assert.AreEqual(expected, formatter.Format(new Money(1234.56m, CurrencyCode.USD)));
     }
 
     /// <summary>
@@ -52,7 +52,7 @@ public partial class MoneyFormatterTests
             FormatProvider = CultureInfo.InvariantCulture,
         });
 
-        Assert.AreEqual("1,234.56 US Dollar", formatter.Format(new Money(1234.56m, "USD")));
+        Assert.AreEqual("1,234.56 US Dollar", formatter.Format(new Money(1234.56m, CurrencyCode.USD)));
     }
 
     /// <summary>
@@ -67,7 +67,7 @@ public partial class MoneyFormatterTests
             FormatProvider = CultureInfo.InvariantCulture,
         });
 
-        Assert.AreEqual("USD 1,235", formatter.Format(new Money(1234.56m, "USD")));
+        Assert.AreEqual("USD 1,235", formatter.Format(new Money(1234.56m, CurrencyCode.USD)));
     }
 
     /// <summary>

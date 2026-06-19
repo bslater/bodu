@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
+
 namespace Bodu.Financial;
 
 public partial class CalculatedMoneyTests
@@ -15,10 +17,10 @@ public partial class CalculatedMoneyTests
     [TestMethod]
     public void ToCalculated_FromMoney_ShouldPreserveAmountAndIsoCode()
     {
-        CalculatedMoney calc = new Money(12.34m, "USD").ToCalculated();
+        CalculatedMoney calc = new Money(12.34m, CurrencyCode.USD).ToCalculated();
 
         Assert.AreEqual(12.34m, calc.Amount);
-        Assert.AreEqual("USD", calc.IsoCode);
+        Assert.AreEqual(CurrencyCode.USD, calc.Code);
     }
 
     /// <summary>

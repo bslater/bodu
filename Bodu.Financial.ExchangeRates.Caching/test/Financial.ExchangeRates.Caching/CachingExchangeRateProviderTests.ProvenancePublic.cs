@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
+
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
@@ -21,7 +23,7 @@ public sealed partial class CachingExchangeRateProviderTests
     [TestMethod]
     public void GetRate_WhenCacheHit_ShouldReturnCacheProvenanceWithBackendAndAge()
     {
-        SeedCache(new ExchangeRatePair("AUD", "USD"), (new DateOnly(2023, 1, 3), 0.5m));
+        SeedCache(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), (new DateOnly(2023, 1, 3), 0.5m));
         CachingExchangeRateProvider sut = new(InnerWith(), _cache, _options, _clock);
 
         _clock.Advance(TimeSpan.FromHours(1));
@@ -42,7 +44,7 @@ public sealed partial class CachingExchangeRateProviderTests
     [TestMethod]
     public async Task GetRateAsync_WhenCacheHit_ShouldReturnCacheProvenanceWithBackendAndAge()
     {
-        SeedCache(new ExchangeRatePair("AUD", "USD"), (new DateOnly(2023, 1, 3), 0.5m));
+        SeedCache(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), (new DateOnly(2023, 1, 3), 0.5m));
         CachingExchangeRateProvider sut = new(InnerWith(), _cache, _options, _clock);
 
         _clock.Advance(TimeSpan.FromHours(1));
@@ -85,7 +87,7 @@ public sealed partial class CachingExchangeRateProviderTests
         // and fresh, but its raw age (asOf - cachedAtUtc) is negative and must clamp to zero.
         DateTimeOffset futureStamp = Now + TimeSpan.FromSeconds(30);
         _cache.Store(
-            new ExchangeRatePair("AUD", "USD"),
+            new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD),
             [new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5m, futureStamp)],
             Duration,
             futureStamp);

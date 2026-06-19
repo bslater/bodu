@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
 using Bodu.Test.Assertions;
 
 namespace Bodu.Financial;
@@ -20,7 +21,7 @@ public partial class DatedExchangeRateProviderAdapterTests
     {
         FixedDatedExchangeRateProvider inner = new(
         [
-            new ExchangeRate("USD", "AUD", s_d1, 1.50m, "RBA"),
+            new ExchangeRate(CurrencyCode.USD, CurrencyCode.AUD, s_d1, 1.50m, "RBA"),
         ]);
         DatedExchangeRateProviderAdapter adapter = new(inner, s_d1, ExchangeRateLookupOptions.Exact);
 

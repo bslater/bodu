@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
 using Microsoft.Extensions.Caching.Distributed;
 
 namespace Bodu.Financial.ExchangeRates.Caching.Distributed;
@@ -118,7 +119,7 @@ public sealed partial class DistributedExchangeRateCacheTests
         var now = DateTimeOffset.UtcNow;
         var backingStore = CreateBackingStore();
         DistributedExchangeRateCache cache = CreateCache(backingStore);
-        var other = new ExchangeRatePair("EUR", "USD");
+        var other = new ExchangeRatePair(CurrencyCode.EUR, CurrencyCode.USD);
 
         cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, now) }, Duration, now);
         cache.Store(other, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 1.1000m, now) }, Duration, now);

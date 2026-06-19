@@ -6,6 +6,7 @@
 
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Bodu.Financial.Currencies;
 
 namespace Bodu.Financial.Serialization;
 
@@ -22,6 +23,6 @@ public partial class ExchangeRatePairJsonConverterPolicyTests
 
         ExchangeRatePair pair = JsonSerializer.Deserialize<ExchangeRatePair>(json, Options(FinancialJsonPolicy.Lenient));
 
-        Assert.AreEqual(new ExchangeRatePair("USD", "JPY"), pair);
+        Assert.AreEqual(new ExchangeRatePair(CurrencyCode.USD, CurrencyCode.JPY), pair);
     }
 }

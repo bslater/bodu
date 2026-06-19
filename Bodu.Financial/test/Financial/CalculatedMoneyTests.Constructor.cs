@@ -4,16 +4,40 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
+using Bodu.Test.Assertions;
+
 namespace Bodu.Financial;
 
 public partial class CalculatedMoneyTests
 {
     /// <summary>
-    /// Verifies that the constructor rejects a malformed ISO code.
+    /// Verifies that the constructor rejects the currency-less <see cref="CurrencyCode.None" /> with
+    /// <see cref="ArgumentOutOfRangeException" /> for the parameter <c>code</c>.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenIsoCodeShapeInvalid_ShouldThrowArgumentException()
+    public void Constructor_WhenCodeIsNone_ShouldThrowArgumentOutOfRangeException()
     {
-        Assert.ThrowsExactly<ArgumentException>(() => _ = new CalculatedMoney(1m, "us"));
+        ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(
+            () =>
+            {
+                _ = new CalculatedMoney(1m, CurrencyCode.None);
+            },
+            "code");
+    }
+
+    /// <summary>
+    /// Verifies that the constructor rejects an undefined <see cref="CurrencyCode" /> with
+    /// <see cref="ArgumentOutOfRangeException" /> for the parameter <c>code</c>.
+    /// </summary>
+    [TestMethod]
+    public void Constructor_WhenCodeUndefined_ShouldThrowArgumentOutOfRangeException()
+    {
+        ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(
+            () =>
+            {
+                _ = new CalculatedMoney(1m, (CurrencyCode)9999);
+            },
+            "code");
     }
 }

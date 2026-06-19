@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using Bodu.Financial.Currencies;
 
 namespace Bodu.Financial;
 
@@ -22,7 +23,7 @@ public partial class MoneyTests
     [TestMethod]
     public void ToString_WhenCSpecifierAndCultureMatches_ShouldUseCultureNativeSymbol()
     {
-        var money = new Money(1234.56m, "USD");
+        var money = new Money(1234.56m, CurrencyCode.USD);
 
         string actual = money.ToString("C", new CultureInfo("en-US"));
 
@@ -36,7 +37,7 @@ public partial class MoneyTests
     [TestMethod]
     public void ToString_WhenCSpecifierAndCultureMismatched_ShouldSubstituteIsoCode()
     {
-        var money = new Money(1234.56m, "USD");
+        var money = new Money(1234.56m, CurrencyCode.USD);
 
         string actual = money.ToString("C", new CultureInfo("de-DE"));
 
@@ -49,7 +50,7 @@ public partial class MoneyTests
     [TestMethod]
     public void ToString_WhenLSpecifier_ShouldAppendEnglishNameFromRegistry()
     {
-        var money = new Money(1234.56m, "USD");
+        var money = new Money(1234.56m, CurrencyCode.USD);
 
         string actual = money.ToString("L", CultureInfo.InvariantCulture);
 
@@ -62,7 +63,7 @@ public partial class MoneyTests
     [TestMethod]
     public void ToString_WhenRSpecifier_ShouldEmitInvariantRoundTripForm()
     {
-        var money = new Money(1234.56m, "USD");
+        var money = new Money(1234.56m, CurrencyCode.USD);
 
         string actual = money.ToString("R", new CultureInfo("de-DE"));
 
@@ -80,7 +81,7 @@ public partial class MoneyTests
     [DataRow("BHD", 12.345)]
     public void ToString_WhenRSpecifier_ShouldRoundTripThroughParse(string iso, double amount)
     {
-        var original = new Money((decimal)amount, iso);
+        var original = new Money((decimal)amount, CurrencyInfo.ParseCurrencyCode(iso));
 
         string text = original.ToString("R", CultureInfo.InvariantCulture);
         var recovered = Money.Parse(text, CultureInfo.InvariantCulture);
@@ -95,7 +96,7 @@ public partial class MoneyTests
     [TestMethod]
     public void ToString_WhenTildeRSpecifier_ShouldThrowFormatException()
     {
-        var money = new Money(1m, "USD");
+        var money = new Money(1m, CurrencyCode.USD);
 
         Assert.ThrowsExactly<FormatException>(() =>
         {
@@ -109,7 +110,7 @@ public partial class MoneyTests
     [TestMethod]
     public void ToString_WhenTildeCAndCultureMatches_ShouldElideSymbol()
     {
-        var money = new Money(19.99m, "USD");
+        var money = new Money(19.99m, CurrencyCode.USD);
 
         string actual = money.ToString("~C", new CultureInfo("en-US"));
 
@@ -123,7 +124,7 @@ public partial class MoneyTests
     [TestMethod]
     public void ToString_WithFormatOnly_ShouldUseCurrentCulture()
     {
-        var money = new Money(1234.56m, "USD");
+        var money = new Money(1234.56m, CurrencyCode.USD);
 
         Assert.AreEqual(money.ToString("N", CultureInfo.CurrentCulture), money.ToString("N"));
     }
@@ -135,7 +136,7 @@ public partial class MoneyTests
     [TestMethod]
     public void ToString_WhenTildeGOrTildeLAndCultureMatches_ShouldElideQualifier()
     {
-        var money = new Money(19.99m, "USD");
+        var money = new Money(19.99m, CurrencyCode.USD);
         var enUs = new CultureInfo("en-US");
 
         Assert.AreEqual("19.99", money.ToString("~G", enUs));
@@ -149,7 +150,7 @@ public partial class MoneyTests
     [TestMethod]
     public void ToString_WhenFOrDSpecifier_ShouldRenderFixedPointAmount()
     {
-        var money = new Money(1234.56m, "USD");
+        var money = new Money(1234.56m, CurrencyCode.USD);
 
         Assert.AreEqual("1234.56", money.ToString("F", CultureInfo.InvariantCulture));
         Assert.AreEqual("1234.56", money.ToString("D", CultureInfo.InvariantCulture));
@@ -160,7 +161,7 @@ public partial class MoneyTests
     /// </summary>
     [TestMethod]
     public void ToString_WhenPrecisionSuffixIsMalformed_ShouldThrowFormatException() =>
-        Assert.ThrowsExactly<FormatException>(() => _ = new Money(1m, "USD").ToString("Nz", CultureInfo.InvariantCulture));
+        Assert.ThrowsExactly<FormatException>(() => _ = new Money(1m, CurrencyCode.USD).ToString("Nz", CultureInfo.InvariantCulture));
 
     /// <summary>
     /// Verifies that the <c>"C"</c> specifier substitutes the ISO code for a negative mismatched-currency amount,
@@ -169,7 +170,7 @@ public partial class MoneyTests
     [TestMethod]
     public void ToString_WhenCSpecifierMismatchedAndNegative_ShouldSubstituteIsoCode()
     {
-        var money = new Money(-1234.56m, "USD");
+        var money = new Money(-1234.56m, CurrencyCode.USD);
 
         string actual = money.ToString("C", new CultureInfo("de-DE"));
 
@@ -184,7 +185,7 @@ public partial class MoneyTests
     [TestMethod]
     public void TryFormat_Char_ShouldWriteWhenLargeEnoughAndFailWhenTooSmall()
     {
-        var money = new Money(1234.56m, "USD");
+        var money = new Money(1234.56m, CurrencyCode.USD);
 
         Span<char> large = stackalloc char[32];
         Assert.IsTrue(money.TryFormat(large, out int written, "N", CultureInfo.InvariantCulture));
@@ -202,7 +203,7 @@ public partial class MoneyTests
     [TestMethod]
     public void TryFormat_Utf8_ShouldWriteFormattedBytes()
     {
-        var money = new Money(1234.56m, "USD");
+        var money = new Money(1234.56m, CurrencyCode.USD);
 
         Span<byte> buffer = stackalloc byte[32];
         Assert.IsTrue(money.TryFormat(buffer, out int written, "N", CultureInfo.InvariantCulture));

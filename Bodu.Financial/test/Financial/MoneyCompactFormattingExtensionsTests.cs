@@ -241,7 +241,7 @@ public class MoneyCompactFormattingExtensionsTests
     [TestMethod]
     public void ToCompactString_WhenMoneyInThousands_ShouldUseKSuffix()
     {
-        var money = new Money(1234.56m, "USD");
+        var money = new Money(1234.56m, CurrencyCode.USD);
 
         string actual = money.ToCompactString("C", new CultureInfo("en-US"));
 
@@ -255,7 +255,7 @@ public class MoneyCompactFormattingExtensionsTests
     [TestMethod]
     public void ToCompactString_WhenMoneyLSpecifier_ShouldAppendEnglishNameAfterSuffix()
     {
-        var money = new Money(1_500_000m, "USD");
+        var money = new Money(1_500_000m, CurrencyCode.USD);
 
         string actual = money.ToCompactString("L", CultureInfo.InvariantCulture);
 

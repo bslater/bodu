@@ -36,8 +36,8 @@ public abstract class PairWebExchangeRateProviderContractTests<TProvider, TSerie
     public async Task LoadPairAsync_WhenWarmed_ShouldResolveKnownDate()
     {
         TProvider provider = CreateProvider();
-        string from = CanonicalPair.FromIsoCode;
-        string to = CanonicalPair.ToIsoCode;
+        string from = CanonicalPair.From.ToString();
+        string to = CanonicalPair.To.ToString();
 
         await provider.LoadPairAsync(from, to, RangeStart, RangeEnd);
 
@@ -54,8 +54,8 @@ public abstract class PairWebExchangeRateProviderContractTests<TProvider, TSerie
     public async Task LoadPairAsync_WhenWindowAlreadyCovered_ShouldRemainResolvable()
     {
         TProvider provider = CreateProvider();
-        string from = CanonicalPair.FromIsoCode;
-        string to = CanonicalPair.ToIsoCode;
+        string from = CanonicalPair.From.ToString();
+        string to = CanonicalPair.To.ToString();
 
         await provider.LoadPairAsync(from, to, RangeStart, RangeEnd);
         await provider.LoadPairAsync(from, to, RangeStart, RangeEnd);
@@ -76,7 +76,7 @@ public abstract class PairWebExchangeRateProviderContractTests<TProvider, TSerie
 
         Assert.AreEqual(0, provider.GetAvailablePairs().Count, "a cold provider reports no series");
 
-        await provider.LoadPairAsync(CanonicalPair.FromIsoCode, CanonicalPair.ToIsoCode, RangeStart, RangeEnd);
+        await provider.LoadPairAsync(CanonicalPair.From.ToString(), CanonicalPair.To.ToString(), RangeStart, RangeEnd);
 
         Assert.IsTrue(provider.GetAvailablePairs().Count >= 1, "the warmed pair is discoverable");
     }

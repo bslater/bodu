@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
+
 namespace Bodu.Financial;
 
 public partial class CalculatedMoneyTests
@@ -15,8 +17,8 @@ public partial class CalculatedMoneyTests
     [TestMethod]
     public void Equality_WhenSameAmountAndCurrency_ShouldBeEqual()
     {
-        Assert.AreEqual(new CalculatedMoney(1.5m, "USD"), new CalculatedMoney(1.5m, "USD"));
-        Assert.AreNotEqual(new CalculatedMoney(1.5m, "USD"), new CalculatedMoney(1.5m, "EUR"));
+        Assert.AreEqual(new CalculatedMoney(1.5m, CurrencyCode.USD), new CalculatedMoney(1.5m, CurrencyCode.USD));
+        Assert.AreNotEqual(new CalculatedMoney(1.5m, CurrencyCode.USD), new CalculatedMoney(1.5m, CurrencyCode.EUR));
     }
 
     /// <summary>
@@ -26,9 +28,9 @@ public partial class CalculatedMoneyTests
     [TestMethod]
     public void EqualityMembers_WhenComparingValues_ShouldBeConsistent()
     {
-        CalculatedMoney a = new(1.5m, "USD");
-        CalculatedMoney b = new(1.5m, "USD");
-        CalculatedMoney c = new(2.5m, "USD");
+        CalculatedMoney a = new(1.5m, CurrencyCode.USD);
+        CalculatedMoney b = new(1.5m, CurrencyCode.USD);
+        CalculatedMoney c = new(2.5m, CurrencyCode.USD);
 
         Assert.IsTrue(a == b);
         Assert.IsFalse(a != b);

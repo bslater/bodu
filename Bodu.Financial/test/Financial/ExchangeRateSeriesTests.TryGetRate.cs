@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
 using Bodu.Financial.Kat;
 using Bodu.Test.Kat;
 
@@ -24,7 +25,7 @@ public partial class ExchangeRateSeriesTests
     {
         (DateOnly Date, decimal Rate)[] rates = [.. kat.AvailableDates.Select((date, index) => (date, 1m + (index * 0.01m)))];
 
-        ExchangeRateSeries series = new(new ExchangeRatePair("USD", "AUD"), "RBA", rates);
+        ExchangeRateSeries series = new(new ExchangeRatePair(CurrencyCode.USD, CurrencyCode.AUD), "RBA", rates);
         ExchangeRateLookupOptions options = new(kat.Resolution, kat.ToleranceDays);
 
         bool actual = series.TryGetRate(kat.RequestedDate, options, out DateOnly resolved, out _);
@@ -46,7 +47,7 @@ public partial class ExchangeRateSeriesTests
     {
         (DateOnly Date, decimal Rate)[] rates = [.. kat.AvailableDates.Select((date, index) => (date, 1m + (index * 0.01m)))];
 
-        ExchangeRateSeries series = new(new ExchangeRatePair("USD", "AUD"), "RBA", rates);
+        ExchangeRateSeries series = new(new ExchangeRatePair(CurrencyCode.USD, CurrencyCode.AUD), "RBA", rates);
         ExchangeRateLookupOptions options = new(kat.Resolution, kat.ToleranceDays);
 
         bool actual = series.TryGetRate(kat.RequestedDate, options, out _, out _);

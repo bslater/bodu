@@ -34,17 +34,17 @@ public partial class MoneyBagTests
     {
         Money[] entries =
         [
-            new(100m, "USD"),
-            new(50m, "EUR"),
-            new(-100m, "USD"),    // cancels the USD entry
-            new(25m, "EUR"),      // sums with the prior EUR entry
+            new(100m, CurrencyCode.USD),
+            new(50m, CurrencyCode.EUR),
+            new(-100m, CurrencyCode.USD),    // cancels the USD entry
+            new(25m, CurrencyCode.EUR),      // sums with the prior EUR entry
         ];
 
         var bag = new MoneyBag(entries);
 
         Assert.AreEqual(1, bag.Count);
-        Assert.AreEqual(new Money(75m, "EUR"), bag.GetBalance("EUR"));
-        Assert.IsNull(bag.GetBalance("USD"));
+        Assert.AreEqual(new Money(75m, CurrencyCode.EUR), bag.GetBalance(CurrencyCode.EUR));
+        Assert.IsNull(bag.GetBalance(CurrencyCode.USD));
     }
 
     /// <summary>
@@ -55,7 +55,7 @@ public partial class MoneyBagTests
     {
         MoneyBag start = MoneyBag.Empty;
 
-        MoneyBag added = start.Add(new Money(100m, "USD"));
+        MoneyBag added = start.Add(new Money(100m, CurrencyCode.USD));
 
         Assert.AreNotEqual(start, added);
         Assert.IsTrue(start.IsEmpty);
@@ -69,7 +69,7 @@ public partial class MoneyBagTests
     public void Add_WhenTypedAndRuntimeTagged_ShouldYieldEquivalentBags()
     {
         MoneyBag typedAdded = MoneyBag.Empty.Add(new Money<USD>(100m));
-        MoneyBag runtimeAdded = MoneyBag.Empty.Add(new Money(100m, "USD"));
+        MoneyBag runtimeAdded = MoneyBag.Empty.Add(new Money(100m, CurrencyCode.USD));
 
         Assert.AreEqual(typedAdded, runtimeAdded);
     }
@@ -81,8 +81,8 @@ public partial class MoneyBagTests
     public void Add_WhenCancellingExistingBalance_ShouldRemoveCurrencyEntry()
     {
         MoneyBag bag = MoneyBag.Empty
-            .Add(new Money(100m, "USD"))
-            .Add(new Money(-100m, "USD"));
+            .Add(new Money(100m, CurrencyCode.USD))
+            .Add(new Money(-100m, CurrencyCode.USD));
 
         Assert.IsTrue(bag.IsEmpty);
     }
@@ -93,9 +93,9 @@ public partial class MoneyBagTests
     [TestMethod]
     public void Add_WhenAmountIsZero_ShouldReturnUnchangedBag()
     {
-        MoneyBag start = MoneyBag.Empty.Add(new Money(100m, "USD"));
+        MoneyBag start = MoneyBag.Empty.Add(new Money(100m, CurrencyCode.USD));
 
-        MoneyBag after = start.Add(Money.Zero("EUR"));
+        MoneyBag after = start.Add(Money.Zero(CurrencyCode.EUR));
 
         Assert.AreEqual(start, after);
     }
@@ -107,10 +107,10 @@ public partial class MoneyBagTests
     public void Subtract_WhenAppliedToSameCurrency_ShouldReduceBalance()
     {
         MoneyBag bag = MoneyBag.Empty
-            .Add(new Money(100m, "USD"))
-            .Subtract(new Money(30m, "USD"));
+            .Add(new Money(100m, CurrencyCode.USD))
+            .Subtract(new Money(30m, CurrencyCode.USD));
 
-        Assert.AreEqual(new Money(70m, "USD"), bag.GetBalance("USD"));
+        Assert.AreEqual(new Money(70m, CurrencyCode.USD), bag.GetBalance(CurrencyCode.USD));
     }
 
     /// <summary>
@@ -119,14 +119,14 @@ public partial class MoneyBagTests
     [TestMethod]
     public void Combine_WhenTwoBagsShareCurrency_ShouldSumPerCurrency()
     {
-        var left = new MoneyBag([new Money(100m, "USD"), new Money(50m, "EUR")]);
-        var right = new MoneyBag([new Money(25m, "USD"), new Money(75m, "JPY")]);
+        var left = new MoneyBag([new Money(100m, CurrencyCode.USD), new Money(50m, CurrencyCode.EUR)]);
+        var right = new MoneyBag([new Money(25m, CurrencyCode.USD), new Money(75m, CurrencyCode.JPY)]);
 
         MoneyBag combined = left.Combine(right);
 
-        Assert.AreEqual(new Money(125m, "USD"), combined.GetBalance("USD"));
-        Assert.AreEqual(new Money(50m, "EUR"), combined.GetBalance("EUR"));
-        Assert.AreEqual(new Money(75m, "JPY"), combined.GetBalance("JPY"));
+        Assert.AreEqual(new Money(125m, CurrencyCode.USD), combined.GetBalance(CurrencyCode.USD));
+        Assert.AreEqual(new Money(50m, CurrencyCode.EUR), combined.GetBalance(CurrencyCode.EUR));
+        Assert.AreEqual(new Money(75m, CurrencyCode.JPY), combined.GetBalance(CurrencyCode.JPY));
     }
 
     /// <summary>
@@ -135,7 +135,7 @@ public partial class MoneyBagTests
     [TestMethod]
     public void Combine_WhenOtherIsEmpty_ShouldReturnSameBag()
     {
-        MoneyBag left = MoneyBag.Empty.Add(new Money(100m, "USD"));
+        MoneyBag left = MoneyBag.Empty.Add(new Money(100m, CurrencyCode.USD));
 
         Assert.AreSame(left, left.Combine(MoneyBag.Empty));
     }
@@ -146,9 +146,9 @@ public partial class MoneyBagTests
     [TestMethod]
     public void GetBalance_WhenAbsent_ShouldReturnNull()
     {
-        MoneyBag bag = MoneyBag.Empty.Add(new Money(100m, "USD"));
+        MoneyBag bag = MoneyBag.Empty.Add(new Money(100m, CurrencyCode.USD));
 
-        Assert.IsNull(bag.GetBalance("EUR"));
+        Assert.IsNull(bag.GetBalance(CurrencyCode.EUR));
     }
 
     /// <summary>
@@ -173,13 +173,13 @@ public partial class MoneyBagTests
     {
         var bag = new MoneyBag(
         [
-            new Money(1m, "USD"),
-            new Money(2m, "EUR"),
-            new Money(3m, "AUD"),
-            new Money(4m, "JPY"),
+            new Money(1m, CurrencyCode.USD),
+            new Money(2m, CurrencyCode.EUR),
+            new Money(3m, CurrencyCode.AUD),
+            new Money(4m, CurrencyCode.JPY),
         ]);
 
-        var codes = bag.Select(v => v.IsoCode).ToList();
+        var codes = bag.Select(v => v.Code.ToString()).ToList();
 
         Assert.AreEqual(4, codes.Count);
         Assert.AreEqual("AUD", codes[0]);
@@ -195,11 +195,11 @@ public partial class MoneyBagTests
     public void Equals_WhenSameBalancesInDifferentInsertionOrder_ShouldReturnTrue()
     {
         MoneyBag a = MoneyBag.Empty
-            .Add(new Money(100m, "USD"))
-            .Add(new Money(50m, "EUR"));
+            .Add(new Money(100m, CurrencyCode.USD))
+            .Add(new Money(50m, CurrencyCode.EUR));
         MoneyBag b = MoneyBag.Empty
-            .Add(new Money(50m, "EUR"))
-            .Add(new Money(100m, "USD"));
+            .Add(new Money(50m, CurrencyCode.EUR))
+            .Add(new Money(100m, CurrencyCode.USD));
 
         Assert.IsTrue(a.Equals(b));
         Assert.AreEqual(a.GetHashCode(), b.GetHashCode());
@@ -212,12 +212,12 @@ public partial class MoneyBagTests
     public void Operators_WhenChained_ShouldProduceExpectedComposition()
     {
         MoneyBag bag = MoneyBag.Empty
-            + new Money(100m, "USD")
-            + new Money(50m, "EUR")
-            - new Money(25m, "USD");
+            + new Money(100m, CurrencyCode.USD)
+            + new Money(50m, CurrencyCode.EUR)
+            - new Money(25m, CurrencyCode.USD);
 
-        Assert.AreEqual(new Money(75m, "USD"), bag.GetBalance("USD"));
-        Assert.AreEqual(new Money(50m, "EUR"), bag.GetBalance("EUR"));
+        Assert.AreEqual(new Money(75m, CurrencyCode.USD), bag.GetBalance(CurrencyCode.USD));
+        Assert.AreEqual(new Money(50m, CurrencyCode.EUR), bag.GetBalance(CurrencyCode.EUR));
     }
 
     /// <summary>
@@ -316,8 +316,8 @@ public partial class MoneyBagTests
     public void Json_WhenRoundTripped_ShouldPreserveBag()
     {
         MoneyBag original = MoneyBag.Empty
-            .Add(new Money(100m, "USD"))
-            .Add(new Money(50m, "EUR"));
+            .Add(new Money(100m, CurrencyCode.USD))
+            .Add(new Money(50m, CurrencyCode.EUR));
 
         string json = JsonSerializer.Serialize(original);
         MoneyBag? recovered = JsonSerializer.Deserialize<MoneyBag>(json);
@@ -335,9 +335,9 @@ public partial class MoneyBagTests
     [TestMethod]
     public void Subtract_WhenTypedAmount_ShouldReduceBalance()
     {
-        MoneyBag bag = MoneyBag.Empty.Add(new Money(100m, "USD")).Subtract(new Money<USD>(25m));
+        MoneyBag bag = MoneyBag.Empty.Add(new Money(100m, CurrencyCode.USD)).Subtract(new Money<USD>(25m));
 
-        Assert.AreEqual(new Money(75m, "USD"), bag.GetBalance("USD"));
+        Assert.AreEqual(new Money(75m, CurrencyCode.USD), bag.GetBalance(CurrencyCode.USD));
     }
 
     /// <summary>
@@ -347,13 +347,13 @@ public partial class MoneyBagTests
     [TestMethod]
     public void OperatorPlus_WhenCombiningTwoBags_ShouldSumAndCancelToZero()
     {
-        var left = new MoneyBag([new Money(10m, "USD"), new Money(5m, "EUR")]);
-        var right = new MoneyBag([new Money(-10m, "USD"), new Money(3m, "EUR")]);
+        var left = new MoneyBag([new Money(10m, CurrencyCode.USD), new Money(5m, CurrencyCode.EUR)]);
+        var right = new MoneyBag([new Money(-10m, CurrencyCode.USD), new Money(3m, CurrencyCode.EUR)]);
 
         MoneyBag combined = left + right;
 
-        Assert.IsNull(combined.GetBalance("USD"));
-        Assert.AreEqual(new Money(8m, "EUR"), combined.GetBalance("EUR"));
+        Assert.IsNull(combined.GetBalance(CurrencyCode.USD));
+        Assert.AreEqual(new Money(8m, CurrencyCode.EUR), combined.GetBalance(CurrencyCode.EUR));
     }
 
     /// <summary>
@@ -363,14 +363,14 @@ public partial class MoneyBagTests
     [TestMethod]
     public void NonGenericEnumeration_ShouldYieldBalances()
     {
-        System.Collections.IEnumerable bag = new MoneyBag([new Money(1m, "USD")]);
+        System.Collections.IEnumerable bag = new MoneyBag([new Money(1m, CurrencyCode.USD)]);
 
         var items = new List<object>();
         foreach (object? item in bag)
             items.Add(item);
 
         Assert.AreEqual(1, items.Count);
-        Assert.AreEqual(new Money(1m, "USD"), (Money)items[0]);
+        Assert.AreEqual(new Money(1m, CurrencyCode.USD), (Money)items[0]);
     }
 
     /// <summary>

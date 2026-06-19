@@ -18,7 +18,7 @@ public partial class ExchangeRateOfTBaseTQuoteTests
     [TestMethod]
     public void FromRuntime_WhenIsoCodesMatch_ShouldReturnTypedRate()
     {
-        var runtime = new ExchangeRate("USD", "AUD", SampleDate, 1.52m, SampleProvider);
+        var runtime = new ExchangeRate(CurrencyCode.USD, CurrencyCode.AUD, SampleDate, 1.52m, SampleProvider);
 
         var typed = ExchangeRate<USD, AUD>.FromRuntime(runtime);
 
@@ -34,7 +34,7 @@ public partial class ExchangeRateOfTBaseTQuoteTests
     [TestMethod]
     public void FromRuntime_WhenIsoCodesDiffer_ShouldThrowInvalidOperationException()
     {
-        var runtime = new ExchangeRate("EUR", "AUD", SampleDate, 1.52m, SampleProvider);
+        var runtime = new ExchangeRate(CurrencyCode.EUR, CurrencyCode.AUD, SampleDate, 1.52m, SampleProvider);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {

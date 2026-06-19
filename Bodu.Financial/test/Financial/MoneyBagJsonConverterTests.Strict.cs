@@ -6,6 +6,7 @@
 
 using System.Linq;
 using System.Text.Json;
+using Bodu.Financial.Currencies;
 using Bodu.Financial.Serialization;
 
 namespace Bodu.Financial;
@@ -46,7 +47,7 @@ public partial class MoneyBagJsonConverterTests
     {
         MoneyBag restored = JsonSerializer.Deserialize<MoneyBag>("{\"balances\":{\"USD\":\"10.50\"}}")!;
 
-        Assert.AreEqual(new Money(10.50m, "USD"), restored.Single());
+        Assert.AreEqual(new Money(10.50m, CurrencyCode.USD), restored.Single());
     }
 
     /// <summary>

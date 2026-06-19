@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using Bodu.Financial.Currencies;
 
 namespace Bodu.Financial;
 
@@ -22,7 +23,7 @@ public partial class MoneyTests
 
         var money = Money.Parse(text, options);
 
-        Assert.AreEqual(new Money(19.99m, "USD"), money);
+        Assert.AreEqual(new Money(19.99m, CurrencyCode.USD), money);
     }
 
     /// <summary>
@@ -44,7 +45,7 @@ public partial class MoneyTests
 
         var money = Money.Parse("usd 19.99", options);
 
-        Assert.AreEqual(new Money(19.99m, "USD"), money);
+        Assert.AreEqual(new Money(19.99m, CurrencyCode.USD), money);
     }
 
     /// <summary>
@@ -55,7 +56,7 @@ public partial class MoneyTests
     {
         var money = Money.Parse("USD 1234.56", new MoneyParseOptions { Mode = MoneyParseMode.RoundTripOnly });
 
-        Assert.AreEqual(new Money(1234.56m, "USD"), money);
+        Assert.AreEqual(new Money(1234.56m, CurrencyCode.USD), money);
     }
 
     /// <summary>
@@ -87,7 +88,7 @@ public partial class MoneyTests
         var options = new MoneyParseOptions { Mode = MoneyParseMode.LenientImport, FormatProvider = CultureInfo.InvariantCulture };
 
         Assert.IsTrue(Money.TryParse("usd 10.50", options, out Money result));
-        Assert.AreEqual(new Money(10.50m, "USD"), result);
+        Assert.AreEqual(new Money(10.50m, CurrencyCode.USD), result);
     }
 
     /// <summary>
@@ -114,7 +115,7 @@ public partial class MoneyTests
     public void TryParse_PlainCulture_ShouldHandleSuffixAndRejectInvalid()
     {
         Assert.IsTrue(Money.TryParse("19.99 USD", CultureInfo.InvariantCulture, out Money suffix));
-        Assert.AreEqual(new Money(19.99m, "USD"), suffix);
+        Assert.AreEqual(new Money(19.99m, CurrencyCode.USD), suffix);
 
         Assert.IsFalse(Money.TryParse("USD .", CultureInfo.InvariantCulture, out _));
         Assert.IsFalse(Money.TryParse("XYZ 10.00", CultureInfo.InvariantCulture, out _));

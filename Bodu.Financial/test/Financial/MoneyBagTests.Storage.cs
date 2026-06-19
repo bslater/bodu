@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
+
 namespace Bodu.Financial;
 
 public partial class MoneyBagTests
@@ -15,7 +17,7 @@ public partial class MoneyBagTests
     [TestMethod]
     public void Balances_WhenAccessedRepeatedly_ShouldReturnSameImmutableInstance()
     {
-        var bag = MoneyBag.Of(new Money(10m, "USD"), new Money(5m, "EUR"));
+        var bag = MoneyBag.Of(new Money(10m, CurrencyCode.USD), new Money(5m, CurrencyCode.EUR));
 
         Assert.AreSame(bag.Balances, bag.Balances);
     }
@@ -27,13 +29,13 @@ public partial class MoneyBagTests
     public void Enumeration_WhenInsertedOutOfOrder_ShouldYieldIsoCodeOrder()
     {
         MoneyBag bag = MoneyBag.Empty
-            .Add(new Money(1m, "USD"))
-            .Add(new Money(2m, "AUD"))
-            .Add(new Money(3m, "EUR"));
+            .Add(new Money(1m, CurrencyCode.USD))
+            .Add(new Money(2m, CurrencyCode.AUD))
+            .Add(new Money(3m, CurrencyCode.EUR));
 
         CollectionAssert.AreEqual(
             new[] { "AUD", "EUR", "USD" },
-            bag.Select(m => m.IsoCode).ToArray());
+            bag.Select(m => m.Code.ToString()).ToArray());
     }
 
     /// <summary>
@@ -42,8 +44,8 @@ public partial class MoneyBagTests
     [TestMethod]
     public void Equality_WhenSameBalancesDifferentInsertionOrder_ShouldBeEqual()
     {
-        MoneyBag a = MoneyBag.Empty.Add(new Money(1m, "USD")).Add(new Money(2m, "EUR"));
-        MoneyBag b = MoneyBag.Empty.Add(new Money(2m, "EUR")).Add(new Money(1m, "USD"));
+        MoneyBag a = MoneyBag.Empty.Add(new Money(1m, CurrencyCode.USD)).Add(new Money(2m, CurrencyCode.EUR));
+        MoneyBag b = MoneyBag.Empty.Add(new Money(2m, CurrencyCode.EUR)).Add(new Money(1m, CurrencyCode.USD));
 
         Assert.AreEqual(a, b);
         Assert.AreEqual(a.GetHashCode(), b.GetHashCode());
@@ -55,7 +57,7 @@ public partial class MoneyBagTests
     [TestMethod]
     public void Add_WhenBalanceCancelsToZero_ShouldPruneCurrency()
     {
-        MoneyBag bag = MoneyBag.Empty.Add(new Money(10m, "USD")).Add(new Money(-10m, "USD"));
+        MoneyBag bag = MoneyBag.Empty.Add(new Money(10m, CurrencyCode.USD)).Add(new Money(-10m, CurrencyCode.USD));
 
         Assert.IsTrue(bag.IsEmpty);
     }

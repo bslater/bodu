@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Text.Json;
+using Bodu.Financial.Currencies;
 using Bodu.Financial.Serialization;
 
 namespace Bodu.Financial;
@@ -20,5 +21,5 @@ public partial class ExchangeRateJsonConverterTests
         new JsonSerializerOptions().AddFinancialJsonConverters(policy);
 
     private static ExchangeRate Sample() =>
-        new("USD", "JPY", new DateOnly(2024, 1, 15), 150.25m, "ecb");
+        new(CurrencyCode.USD, CurrencyCode.JPY, new DateOnly(2024, 1, 15), 150.25m, "ecb");
 }

@@ -41,15 +41,19 @@ public sealed partial class MoneyBag :
     IEquatable<MoneyBag>,
     IEnumerable<Money>
 {
-    /// <summary>The shared empty bag instance.</summary>
-    public static readonly MoneyBag Empty = new();
-
     /// <summary>
     /// Orders <see cref="CurrencyCode" /> keys by their ISO 4217 alphabetic code (ordinal) rather than their numeric
     /// enum value, so enumeration stays in ISO-code lexicographic order as it was when the bag was keyed by string.
     /// </summary>
+    /// <remarks>
+    /// Declared before <see cref="Empty" /> so the shared empty instance captures this comparer during static
+    /// initialization rather than the default (numeric) ordering — static fields initialize in textual order.
+    /// </remarks>
     private static readonly IComparer<CurrencyCode> s_codeComparer =
         Comparer<CurrencyCode>.Create(static (a, b) => string.CompareOrdinal(a.ToString(), b.ToString()));
+
+    /// <summary>The shared empty bag instance.</summary>
+    public static readonly MoneyBag Empty = new();
 
     /// <summary>The internal balance map keyed by <see cref="CurrencyCode" /> and kept in ISO-code lexicographic order.</summary>
     private readonly ImmutableSortedDictionary<CurrencyCode, decimal> _balances;

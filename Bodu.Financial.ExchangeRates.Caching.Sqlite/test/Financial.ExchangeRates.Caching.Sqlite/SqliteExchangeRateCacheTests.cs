@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Financial;
+using Bodu.Financial.Currencies;
 
 namespace Bodu.Financial.ExchangeRates.Caching.Sqlite;
 
@@ -23,7 +24,7 @@ public sealed partial class SqliteExchangeRateCacheTests
     /// <summary>
     /// The currency pair used by the tests.
     /// </summary>
-    private static readonly ExchangeRatePair Pair = new("AUD", "USD");
+    private static readonly ExchangeRatePair Pair = new(CurrencyCode.AUD, CurrencyCode.USD);
 
     /// <summary>
     /// The freshness duration used by the tests.

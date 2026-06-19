@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
 using Bodu.Test;
 
 namespace Bodu.Financial.ExchangeRates.Yahoo;
@@ -63,8 +64,8 @@ public partial class YahooExchangeRateProviderTests
 
         YahooSeriesInfo info = provider.GetAvailablePairs().Single();
 
-        Assert.AreEqual("AUD", info.Pair.FromIsoCode);
-        Assert.AreEqual("USD", info.Pair.ToIsoCode);
+        Assert.AreEqual(CurrencyCode.AUD, info.Pair.From);
+        Assert.AreEqual(CurrencyCode.USD, info.Pair.To);
         Assert.AreEqual("AUDUSD=X", info.Symbol);
     }
 }
