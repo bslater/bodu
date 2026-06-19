@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Collections.Generic;
+namespace Bodu.Sequences;
 
 public partial class SequenceGeneratorTests
 {

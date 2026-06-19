@@ -34,6 +34,10 @@ Targets `net8.0`.
 
 `WeekPattern` (root `Bodu` namespace) is an immutable bitmask over the seven days of the week, with composition operators, parsing, formatting, and a struct enumerator over the selected `DayOfWeek` values. It underpins weekend / working-day definitions across the solution.
 
+## Sequence generation
+
+`SequenceGenerator` (`Bodu.Sequences`) provides lazily evaluated `IEnumerable<T>` factories that mirror the conventions of `System.Linq.Enumerable`: general-purpose shapes (`Range`, `Repeat`, `NextWhile`, `Factory`) alongside well-known mathematical series (Fibonacci, Farey, Leibniz, look-and-say, Thue–Morse).
+
 ## Extensions
 
 The `Bodu.Extensions` and `Bodu.Collections.*.Extensions` namespaces add focused helpers over the BCL:
@@ -42,7 +46,7 @@ The `Bodu.Extensions` and `Bodu.Collections.*.Extensions` namespaces add focused
 - **Dates** — `DateOnlyExtensions` / `DateTimeExtensions` for week, month, quarter, and fiscal-period math; `IWeekendDefinitionProvider` / `IQuarterDefinitionProvider` abstractions.
 - **Numerics & spans** — `ReverseBits`, bit rotation, power-of-two helpers, and `Span<T>` / `ReadOnlySpan<T>` utilities.
 - **Comparison** — `IComparableExtensions` (`Min`, `Max`, `Clamp`, `IsBetween`) with custom-comparer overloads.
-- **Sequences** — `SequenceGenerator` (Fibonacci, Look-and-Say, Farey, Leibniz, Thue–Morse) and `RecursiveSelect`.
+- **Sequences** — `RecursiveSelect` for pre-order descent over tree-shaped sequences.
 - **Randomness** — `IRandomGenerator` with `XorShiftRandom` and a `SystemRandomAdapter`.
 - **XML** — `XmlNamespaceResolver` (`Bodu.Xml.Linq`) for namespace-qualified `XElement` / `XName` lookups.
 

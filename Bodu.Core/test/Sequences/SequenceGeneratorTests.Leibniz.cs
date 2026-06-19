@@ -1,15 +1,13 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="SequenceGeneration.Leibniz.cs" company="Bodu Pty. Ltd.">
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="SequenceGeneratorTests.Leibniz.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Collections.Extensions;
+namespace Bodu.Sequences;
 
-[TestClass]
-public class LeibnizTests
+public partial class SequenceGeneratorTests
 {
-
     /// <summary>
     /// Verifies that <see cref="SequenceGenerator.Leibniz" /> stops yielding once a term's magnitude reaches the
     /// exclusive upper bound.
@@ -47,6 +45,7 @@ public class LeibnizTests
             _ = SequenceGenerator.Leibniz(0.9, 0.1).ToList();
         });
     }
+
     /// <summary>
     /// Verifies that <see cref="SequenceGenerator.Leibniz" /> throws <see cref="ArgumentOutOfRangeException" /> when
     /// min is negative.
@@ -112,5 +111,4 @@ public class LeibnizTests
             Assert.IsLessThan(max, magnitude, $"Magnitude {magnitude} reached or exceeded the exclusive upper bound {max}.");
         }
     }
-
 }

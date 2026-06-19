@@ -1,11 +1,15 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="SequenceGeneration.cs" company="Bodu Pty. Ltd.">
+// <copyright file="SequenceGeneratorTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Collections.Extensions.SequenceGenerationTests;
+using Bodu.Collections;
 
-public class SequenceGeneration
+namespace Bodu.Sequences;
+
+[TestClass]
+public partial class SequenceGeneratorTests
+    : EnumerableTests
 {
 }

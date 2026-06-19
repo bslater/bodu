@@ -7,7 +7,7 @@
 using System.Collections;
 using System.Diagnostics;
 
-namespace Bodu.Collections.Generic;
+namespace Bodu.Sequences;
 
 public static partial class SequenceGenerator
 {

@@ -6,7 +6,7 @@
 
 using System.Collections;
 
-namespace Bodu.Collections.Generic;
+namespace Bodu.Sequences;
 
 public partial class SequenceGeneratorTests
 {

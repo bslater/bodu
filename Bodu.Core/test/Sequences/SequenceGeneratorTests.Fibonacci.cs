@@ -1,17 +1,15 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="SequenceGeneration.Fibonacci.cs" company="Bodu Pty. Ltd.">
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="SequenceGeneratorTests.Fibonacci.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Collections.Extensions;
+namespace Bodu.Sequences;
 
-[TestClass]
-public class FibonacciTests
+public partial class SequenceGeneratorTests
 {
-
     /// <summary>A known ordered list of Fibonacci numbers, starting from 0.</summary>
-    public static readonly long[] Values =
+    private static readonly long[] FibonacciValues =
     [
         0, 1, 1, 2, 3, 5, 8, 13, 21, 34,
         55, 89, 144, 233, 377, 610, 987,
@@ -22,7 +20,7 @@ public class FibonacciTests
     ];
 
     /// <summary>
-    /// Verifies that <see cref="Fibonacci.Fibonacci" /> throws ArgumentOutOfRangeException when maximum is negative.
+    /// Verifies that <see cref="SequenceGenerator.Fibonacci" /> throws ArgumentOutOfRangeException when maximum is negative.
     /// </summary>
     [TestMethod]
     public void Fibonacci_WhenMaximumIsNegative_ShouldThrowExactly()
@@ -59,7 +57,7 @@ public class FibonacciTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Fibonacci.Fibonacci" /> throws ArgumentException when minimum is greater than maximum.
+    /// Verifies that <see cref="SequenceGenerator.Fibonacci" /> throws ArgumentException when minimum is greater than maximum.
     /// </summary>
     [TestMethod]
     public void Fibonacci_WhenMinimumGreaterThanMaximum_ShouldThrowExactly()
@@ -71,7 +69,7 @@ public class FibonacciTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Fibonacci.Fibonacci" /> throws ArgumentOutOfRangeException when minimum is negative.
+    /// Verifies that <see cref="SequenceGenerator.Fibonacci" /> throws ArgumentOutOfRangeException when minimum is negative.
     /// </summary>
     [TestMethod]
     public void Fibonacci_WhenMinimumIsNegative_ShouldThrowExactly()
@@ -88,36 +86,36 @@ public class FibonacciTests
     [TestMethod]
     public void Fibonacci_WhenMinimumIsTwentyOne_ShouldExcludeLowerValues()
     {
-        long[] expected = Values.Where(n => n is >= 21 and < 35).ToArray();
+        long[] expected = FibonacciValues.Where(n => n is >= 21 and < 35).ToArray();
         long[] actual = SequenceGenerator.Fibonacci(21, 35).ToArray();
         CollectionAssert.AreEqual(expected, actual);
     }
 
     /// <summary>
-    /// Verifies that <see cref="Fibonacci.Fibonacci" /> returns a single matching value when the range bounds exactly
+    /// Verifies that <see cref="SequenceGenerator.Fibonacci" /> returns a single matching value when the range bounds exactly
     /// one value.
     /// </summary>
     [TestMethod]
     public void Fibonacci_WhenRangeBoundsSingleValue_ShouldReturnThatValue()
     {
-        long[] expected = Values.Where(n => n is >= 21 and < 22).ToArray();
+        long[] expected = FibonacciValues.Where(n => n is >= 21 and < 22).ToArray();
         long[] actual = SequenceGenerator.Fibonacci(21, 22).ToArray();
         CollectionAssert.AreEqual(expected, actual);
     }
 
     /// <summary>
-    /// Verifies that <see cref="Fibonacci.Fibonacci" /> returns only values between 5 and 15.
+    /// Verifies that <see cref="SequenceGenerator.Fibonacci" /> returns only values between 5 and 15.
     /// </summary>
     [TestMethod]
     public void Fibonacci_WhenRangeIsFiveToFifteen_ShouldReturnSubset()
     {
-        long[] expected = Values.Where(n => n is >= 5 and < 15).ToArray();
+        long[] expected = FibonacciValues.Where(n => n is >= 5 and < 15).ToArray();
         long[] actual = SequenceGenerator.Fibonacci(5, 15).ToArray();
         CollectionAssert.AreEqual(expected, actual);
     }
 
     /// <summary>
-    /// Verifies that <see cref="Fibonacci.Fibonacci" /> returns an empty sequence when the range excludes all values.
+    /// Verifies that <see cref="SequenceGenerator.Fibonacci" /> returns an empty sequence when the range excludes all values.
     /// </summary>
     [TestMethod]
     public void Fibonacci_WhenRangeIsOneToOne_ShouldReturnEmpty()
@@ -127,14 +125,13 @@ public class FibonacciTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Fibonacci.Fibonacci" /> returns all expected values in the range 0 to 100.
+    /// Verifies that <see cref="SequenceGenerator.Fibonacci" /> returns all expected values in the range 0 to 100.
     /// </summary>
     [TestMethod]
     public void Fibonacci_WhenRangeIsZeroToHundred_ShouldReturnExpectedValues()
     {
-        long[] expected = Values.Where(n => n is >= 0 and < 100).ToArray();
+        long[] expected = FibonacciValues.Where(n => n is >= 0 and < 100).ToArray();
         long[] actual = SequenceGenerator.Fibonacci(0, 100).ToArray();
         CollectionAssert.AreEqual(expected, actual);
     }
-
 }

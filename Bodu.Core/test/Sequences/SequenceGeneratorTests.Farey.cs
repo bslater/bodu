@@ -1,15 +1,13 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="SequenceGeneration.Farey.cs" company="Bodu Pty. Ltd.">
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="SequenceGeneratorTests.Farey.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Collections.Extensions;
+namespace Bodu.Sequences;
 
-[TestClass]
-public class FareyTests
+public partial class SequenceGeneratorTests
 {
-
     /// <summary>
     /// Verifies that the emitted fractions are in strictly ascending rational order.
     /// </summary>
@@ -71,6 +69,7 @@ public class FareyTests
 
         CollectionAssert.AreEqual(expected, actual);
     }
+
     /// <summary>
     /// Verifies that <see cref="SequenceGenerator.Farey" /> throws <see cref="ArgumentOutOfRangeException" /> when the
     /// order is below the minimum of 1.
@@ -96,5 +95,4 @@ public class FareyTests
         (int Numerator, int Denominator)[] actual = SequenceGenerator.Farey(1).ToArray();
         CollectionAssert.AreEqual(new[] { (0, 1), (1, 1) }, actual);
     }
-
 }
