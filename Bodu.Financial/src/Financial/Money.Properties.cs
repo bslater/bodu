@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
+
 namespace Bodu.Financial;
 
 public readonly partial struct Money
@@ -16,11 +18,18 @@ public readonly partial struct Money
         _amount;
 
     /// <summary>
+    /// Gets the currency identifying this value.
+    /// </summary>
+    /// <returns>The stored <see cref="CurrencyCode" />, or <see cref="CurrencyCode.None" /> for a default-initialised value.</returns>
+    public CurrencyCode Code =>
+        _code;
+
+    /// <summary>
     /// Gets the ISO 4217 alphabetic code identifying the currency, or an empty string for a default-initialised value.
     /// </summary>
     /// <returns>The currency's ISO code.</returns>
     public string IsoCode =>
-        _isoCode ?? string.Empty;
+        _code == CurrencyCode.None ? string.Empty : _code.ToString();
 
     /// <summary>
     /// Gets a value indicating whether this value is a default-initialised, currency-less <see cref="Money" />.
@@ -36,7 +45,7 @@ public readonly partial struct Money
     /// remain safe to call so diagnostic surfaces do not throw.
     /// </remarks>
     public bool IsDefault =>
-        _isoCode is null;
+        _code == CurrencyCode.None;
 
     /// <summary>
     /// Gets a value indicating whether this value carries a currency and can participate in financial operations.
@@ -46,7 +55,7 @@ public readonly partial struct Money
     /// default-initialised value.
     /// </returns>
     public bool HasCurrency =>
-        _isoCode is not null;
+        _code != CurrencyCode.None;
 
     /// <summary>
     /// Gets the minor-unit precision of this value.

@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Diagnostics;
+using Bodu.Financial.Currencies;
 
 namespace Bodu.Financial;
 
@@ -20,9 +21,8 @@ namespace Bodu.Financial;
 /// happens once, at the settlement boundary, through <see cref="RoundToMoney(MonetaryContext?)" />.
 /// </para>
 /// <para>
-/// The currency is identified at runtime by ISO 4217 code, validated only for shape. Unlike <see cref="Money" />, the
-/// currency need not be registered to participate in a calculation; registration (or an explicit scale) is required
-/// only when materialising a settlement value.
+/// The currency is identified at runtime by <see cref="CurrencyCode" />. Arithmetic preserves full precision; rounding
+/// to a settlement <see cref="Money" /> happens at the boundary through <see cref="RoundToMoney(MonetaryContext?)" />.
 /// </para>
 /// <para>
 /// <see cref="CalculatedMoney" /> carries <em>high-precision <see cref="decimal" /></em> arithmetic with deferred
@@ -40,11 +40,11 @@ namespace Bodu.Financial;
 [DebuggerDisplay("{Amount} {IsoCode,nq} (unrounded)")]
 public readonly partial struct CalculatedMoney
 {
-    /// <summary>The unrounded amount in the major unit of the currency identified by <see cref="_isoCode" />.</summary>
+    /// <summary>The unrounded amount in the major unit of the currency identified by <see cref="_code" />.</summary>
     private readonly decimal _amount;
 
-    /// <summary>The ISO 4217 alphabetic code identifying the currency, or <see langword="null" /> for a default-initialised value.</summary>
-    private readonly string? _isoCode;
+    /// <summary>The currency identifying this value, or <see cref="CurrencyCode.None" /> for a default-initialised value.</summary>
+    private readonly CurrencyCode _code;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CalculatedMoney" /> struct from an amount and ISO 4217 code,
@@ -53,34 +53,47 @@ public readonly partial struct CalculatedMoney
     /// <param name="amount">The unrounded monetary amount in the major unit.</param>
     /// <param name="isoCode">The ISO 4217 three-letter alphabetic code identifying the currency.</param>
     /// <exception cref="ArgumentNullException"><paramref name="isoCode" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentException">
-    /// <paramref name="isoCode" /> is not three uppercase ASCII letters.
-    /// </exception>
+    /// <exception cref="ArgumentException"><paramref name="isoCode" /> is not a known currency.</exception>
     public CalculatedMoney(decimal amount, string isoCode)
     {
-        FinancialThrowHelper.ThrowIfNotValidIsoCode(isoCode);
+        _amount = amount;
+        _code = CurrencyInfo.ParseCurrencyCode(isoCode);
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CalculatedMoney" /> struct from an amount and currency, preserving
+    /// the amount's full precision.
+    /// </summary>
+    /// <param name="amount">The unrounded monetary amount in the major unit.</param>
+    /// <param name="code">The currency identifying this value.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="code" /> is <see cref="CurrencyCode.None" /> or is not a defined <see cref="CurrencyCode" /> member.
+    /// </exception>
+    public CalculatedMoney(decimal amount, CurrencyCode code)
+    {
+        FinancialThrowHelper.ThrowIfNotDefinedCurrencyCode(code);
 
         _amount = amount;
-        _isoCode = isoCode;
+        _code = code;
     }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CalculatedMoney" /> struct from pre-validated field values.
     /// </summary>
     /// <param name="amount">The unrounded amount.</param>
-    /// <param name="isoCode">The ISO 4217 code, or <see langword="null" /> for a currency-less value.</param>
+    /// <param name="code">The currency, or <see cref="CurrencyCode.None" /> for a currency-less value.</param>
     /// <param name="_">Discriminator that selects the pre-validated construction path.</param>
-    private CalculatedMoney(decimal amount, string? isoCode, bool _)
+    private CalculatedMoney(decimal amount, CurrencyCode code, bool _)
     {
         _amount = amount;
-        _isoCode = isoCode;
+        _code = code;
     }
 
     /// <summary>
-    /// Returns a copy of this value with a different amount, preserving the ISO code.
+    /// Returns a copy of this value with a different amount, preserving the currency.
     /// </summary>
     /// <param name="amount">The replacement unrounded amount.</param>
     /// <returns>The updated <see cref="CalculatedMoney" />.</returns>
     private CalculatedMoney WithAmount(decimal amount) =>
-        new(amount, _isoCode, false);
+        new(amount, _code, false);
 }

@@ -31,7 +31,7 @@ public readonly partial struct Money
     /// reporting it from <see cref="Money.MinorUnits" />.
     /// </summary>
     /// <param name="amount">The monetary amount in the major unit.</param>
-    /// <param name="isoCode">The ISO 4217 three-letter alphabetic code identifying the currency.</param>
+    /// <param name="code">The currency identifying this value.</param>
     /// <param name="minorUnits">
     /// The number of fractional digits to round to and report as the value's minor units.
     /// </param>
@@ -39,24 +39,20 @@ public readonly partial struct Money
     /// The midpoint-rounding rule applied when normalising to <paramref name="minorUnits" />.
     /// </param>
     /// <returns>The constructed monetary value carrying an explicit scale.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="isoCode" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentException">
-    /// <paramref name="isoCode" /> is not exactly three uppercase ASCII letters.
-    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="minorUnits" /> is outside the range 0 to 28.
+    /// <paramref name="code" /> is not a defined currency, or <paramref name="minorUnits" /> is outside the range 0 to 28.
     /// </exception>
     /// <remarks>
     /// Settlement helper used by <see cref="CalculatedMoney.RoundToMoney(MonetaryContext?)" /> when a monetary context
     /// requests a precision other than the currency's registered minor units. Because the scale is supplied and stored,
     /// the value reports the resolved precision rather than the registry's default.
     /// </remarks>
-    internal static Money FromExplicitScale(decimal amount, string isoCode, int minorUnits, MidpointRounding rounding = MidpointRounding.ToEven)
+    internal static Money FromExplicitScale(decimal amount, CurrencyCode code, int minorUnits, MidpointRounding rounding = MidpointRounding.ToEven)
     {
-        FinancialThrowHelper.ThrowIfNotValidIsoCode(isoCode);
-        FinancialThrowHelper.ThrowIfMinorUnitsOutOfRange(minorUnits, isoCode);
+        FinancialThrowHelper.ThrowIfNotDefinedCurrencyCode(code);
+        FinancialThrowHelper.ThrowIfMinorUnitsOutOfRange(minorUnits, code.ToString());
 
-        return new Money(MoneyMath.Round(amount, minorUnits, rounding), isoCode, (byte)(minorUnits + 1));
+        return new Money(MoneyMath.Round(amount, minorUnits, rounding), code, (byte)(minorUnits + 1));
     }
 
     /// <summary>
@@ -84,12 +80,8 @@ public readonly partial struct Money
     /// <paramref name="code" /> is <see cref="CurrencyCode.None" /> or is not a defined <see cref="CurrencyCode" />
     /// member.
     /// </exception>
-    public static Money From(decimal amount, CurrencyCode code, MidpointRounding rounding = MidpointRounding.ToEven)
-    {
-        FinancialThrowHelper.ThrowIfNotDefinedCurrencyCode(code);
-
-        return new(amount, code.ToString(), rounding);
-    }
+    public static Money From(decimal amount, CurrencyCode code, MidpointRounding rounding = MidpointRounding.ToEven) =>
+        new(amount, code, rounding);
 
     /// <summary>
     /// Creates a <see cref="Money{TCurrency}" /> from the supplied amount, rounding to the currency's minor-unit

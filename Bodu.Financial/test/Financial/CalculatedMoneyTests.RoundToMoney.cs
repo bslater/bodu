@@ -52,18 +52,19 @@ public partial class CalculatedMoneyTests
     }
 
     /// <summary>
-    /// Verifies that an unregistered currency settles to the context's custom scale via the explicit-scale path.
+    /// Verifies that a context custom scale wider than the currency's minor units settles through the explicit-scale
+    /// path, so the resulting value reports the requested precision.
     /// </summary>
     [TestMethod]
-    public void RoundToMoney_WhenUnregisteredAndCustomScale_ShouldSettleWithExplicitScale()
+    public void RoundToMoney_WhenCustomScaleWiderThanMinorUnits_ShouldSettleWithExplicitScale()
     {
-        CalculatedMoney calc = new(1.23456m, "XYZ");
+        CalculatedMoney calc = new(1.23456m, "USD");
 
         Money settled = calc.RoundToMoney(MonetaryContext.Default with { ScalePolicy = ScalePolicy.Custom, CustomScale = 4 });
 
         Assert.AreEqual(1.2346m, settled.Amount);
         Assert.AreEqual(4, settled.MinorUnits);
-        Assert.AreEqual("XYZ", settled.IsoCode);
+        Assert.AreEqual("USD", settled.IsoCode);
     }
 
     /// <summary>

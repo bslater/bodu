@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
+
 namespace Bodu.Financial;
 
 public readonly partial struct CalculatedMoney
@@ -16,11 +18,18 @@ public readonly partial struct CalculatedMoney
         _amount;
 
     /// <summary>
+    /// Gets the currency identifying this value.
+    /// </summary>
+    /// <returns>The stored <see cref="CurrencyCode" />, or <see cref="CurrencyCode.None" /> for a default-initialised value.</returns>
+    public CurrencyCode Code =>
+        _code;
+
+    /// <summary>
     /// Gets the ISO 4217 alphabetic code identifying the currency, or an empty string for a default-initialised value.
     /// </summary>
     /// <returns>The currency's ISO code.</returns>
     public string IsoCode =>
-        _isoCode ?? string.Empty;
+        _code == CurrencyCode.None ? string.Empty : _code.ToString();
 
     /// <summary>
     /// Gets a value indicating whether this amount is zero.

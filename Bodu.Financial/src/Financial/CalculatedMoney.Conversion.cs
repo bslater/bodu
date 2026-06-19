@@ -46,8 +46,8 @@ public readonly partial struct CalculatedMoney
         decimal rounded = effective.Rounding.Round(_amount, scale);
 
         return registered && scale == currencyMinorUnits
-            ? new Money(rounded, IsoCode)
-            : Money.FromExplicitScale(rounded, IsoCode, scale);
+            ? new Money(rounded, Code)
+            : Money.FromExplicitScale(rounded, Code, scale);
     }
 
     /// <summary>

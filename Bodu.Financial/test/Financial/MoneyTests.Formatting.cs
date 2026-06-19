@@ -57,21 +57,6 @@ public partial class MoneyTests
     }
 
     /// <summary>
-    /// Verifies that the <c>"L"</c> specifier falls back to the ISO-code form when the runtime-tagged currency is
-    /// not registered in <see cref="CurrencyRegistry" />. Unregistered currencies report zero minor units, so an
-    /// integer amount is used here to keep the assertion independent of registry-driven rounding.
-    /// </summary>
-    [TestMethod]
-    public void ToString_WhenLSpecifierAndCurrencyNotRegistered_ShouldFallBackToIsoForm()
-    {
-        var money = Money.FromExplicitScale(1234m, "ZZZ", 0);
-
-        string actual = money.ToString("L", CultureInfo.InvariantCulture);
-
-        Assert.AreEqual("ZZZ 1,234", actual);
-    }
-
-    /// <summary>
     /// Verifies that the <c>"R"</c> specifier emits the invariant round-trip form for <see cref="Money" />.
     /// </summary>
     [TestMethod]
