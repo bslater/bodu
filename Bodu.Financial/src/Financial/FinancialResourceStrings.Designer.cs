@@ -270,15 +270,6 @@ namespace Bodu.Financial {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Currency &apos;{0}&apos; cash-rounding increment {1} is finer than its declared minor-unit precision {2}..
-        /// </summary>
-        internal static string Arg_Invalid_CurrencyInfoCashRoundingTooFine {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_CurrencyInfoCashRoundingTooFine", resourceCulture);
-            }
-        }
-
-        /// <summary>
         ///   Looks up a localized string similar to ScalePolicy.Custom requires a non-null CustomScale value..
         /// </summary>
         internal static string Arg_Invalid_CustomScaleRequiresValue {
@@ -347,51 +338,6 @@ namespace Bodu.Financial {
         internal static string Arg_OutOfRange_ScalePolicyUndefined {
             get {
                 return ResourceManager.GetString("Arg_OutOfRange_ScalePolicyUndefined", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Currency &apos;{0}&apos; is not historic but declares a demonetization date or successor ISO code..
-        /// </summary>
-        internal static string Arg_Invalid_CurrencyInfoHistoricInconsistent {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_CurrencyInfoHistoricInconsistent", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Currency &apos;{0}&apos; declares a negative cash-rounding increment {1}..
-        /// </summary>
-        internal static string Arg_OutOfRange_CurrencyInfoCashRoundingNegative {
-            get {
-                return ResourceManager.GetString("Arg_OutOfRange_CurrencyInfoCashRoundingNegative", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Currency &apos;{0}&apos; declares minor-unit precision {1}, which is outside the supported range 0 to 28..
-        /// </summary>
-        internal static string Arg_OutOfRange_CurrencyInfoMinorUnits {
-            get {
-                return ResourceManager.GetString("Arg_OutOfRange_CurrencyInfoMinorUnits", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Currency &apos;{0}&apos; declares numeric code {1}, which is outside the supported range 0 to 999..
-        /// </summary>
-        internal static string Arg_OutOfRange_CurrencyInfoNumericCode {
-            get {
-                return ResourceManager.GetString("Arg_OutOfRange_CurrencyInfoNumericCode", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to CurrencyRegistrationConflictPolicy &apos;{0}&apos; is not a defined value..
-        /// </summary>
-        internal static string Arg_OutOfRange_CurrencyRegistrationConflictPolicyUndefined {
-            get {
-                return ResourceManager.GetString("Arg_OutOfRange_CurrencyRegistrationConflictPolicyUndefined", resourceCulture);
             }
         }
 
@@ -855,15 +801,6 @@ namespace Bodu.Financial {
             }
         }
         
-        /// <summary>
-        ///   Looks up a localized string similar to A custom currency is already registered under &apos;{0}&apos;..
-        /// </summary>
-        internal static string Op_Invalid_DuplicateCustomCurrency {
-            get {
-                return ResourceManager.GetString("Op_Invalid_DuplicateCustomCurrency", resourceCulture);
-            }
-        }
-
         /// <summary>
         ///   Looks up a localized string similar to Cannot convert {0} using exchange rate {1}-&gt;{2}: the rate&apos;s source currency does not match..
         /// </summary>

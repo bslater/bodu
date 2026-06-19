@@ -26,10 +26,9 @@ namespace Bodu.Financial;
 /// <para>
 /// The amount is rounded on construction to the minor-unit precision reported by <see cref="CurrencyRegistry" /> for
 /// the supplied ISO code, using banker's rounding by default. A structurally valid but unregistered ISO code is
-/// rejected; register custom currencies via <see cref="CurrencyRegistry.Register(CurrencyInfo)" /> ahead of
-/// construction, or use the explicit-scale escape hatches
+/// rejected; use the explicit-scale escape hatches
 /// <see cref="FromUnchecked(decimal, string, int, MidpointRounding)" /> and
-/// <see cref="From(decimal, string, UnknownCurrencyPolicy, MidpointRounding)" />.
+/// <see cref="From(decimal, string, UnknownCurrencyPolicy, MidpointRounding)" /> for staging scenarios.
 /// </para>
 /// <para>
 /// The type-level <see cref="JsonConverterAttribute" /> always serializes the canonical
@@ -91,8 +90,7 @@ public readonly partial struct Money
     /// The ISO code is validated to ISO 4217's three-uppercase-ASCII-letters shape and must resolve to a registered
     /// <see cref="CurrencyInfo" />; the amount is then rounded to the registry's <c>MinorUnits</c>. Structurally valid
     /// but unregistered codes are rejected under <see cref="UnknownCurrencyPolicy.Reject" /> so a value can never store
-    /// a precision it cannot describe. Register custom currencies via
-    /// <see cref="CurrencyRegistry.Register(CurrencyInfo)" /> ahead of construction, or use
+    /// a precision it cannot describe. Use
     /// <see cref="Money.FromUnchecked(decimal, string, int, MidpointRounding)" /> /
     /// <see cref="Money.From(decimal, string, UnknownCurrencyPolicy, MidpointRounding)" /> for staging scenarios.
     /// </remarks>

@@ -80,27 +80,6 @@ public partial class MoneyTests
     }
 
     /// <summary>
-    /// Verifies that culture-aware parsing resolves an unambiguous currency symbol through the lookup.
-    /// </summary>
-    [TestMethod]
-    public void ParseOptions_WhenCultureAwareWithUniqueSymbol_ShouldResolveCurrency()
-    {
-        CurrencyRegistry.Replace(new CurrencyInfo("XQP", 2, 0m, false, null, null) { Symbol = "Ω" });
-
-        MoneyParseOptions options = new()
-        {
-            Mode = MoneyParseMode.CultureAware,
-            FormatProvider = CultureInfo.InvariantCulture,
-            CurrencyLookup = new CurrencyLookupService(),
-        };
-
-        var money = Money.Parse("Ω10.50", options);
-
-        Assert.AreEqual("XQP", money.IsoCode);
-        Assert.AreEqual(10.50m, money.Amount);
-    }
-
-    /// <summary>
     /// Verifies that an undefined parse mode is rejected with <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
@@ -130,25 +109,6 @@ public partial class MoneyTests
 
         Assert.IsTrue(Money.TryParse("usd 10.50", options, out Money result));
         Assert.AreEqual(new Money(10.50m, "USD"), result);
-    }
-
-    /// <summary>
-    /// Verifies that a trailing currency symbol is resolved through the culture-aware symbol lookup.
-    /// </summary>
-    [TestMethod]
-    public void ParseOptions_WhenSymbolIsSuffix_ShouldResolveViaLookup()
-    {
-        var options = new MoneyParseOptions
-        {
-            Mode = MoneyParseMode.CultureAware,
-            FormatProvider = CultureInfo.InvariantCulture,
-            CurrencyLookup = new CurrencyLookupService(),
-        };
-
-        var money = Money.Parse("10.50Ω", options);
-
-        Assert.AreEqual("XQP", money.IsoCode);
-        Assert.AreEqual(10.50m, money.Amount);
     }
 
     /// <summary>
