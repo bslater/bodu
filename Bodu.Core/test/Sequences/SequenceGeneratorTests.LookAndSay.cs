@@ -1,15 +1,13 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="SequenceGeneration.LookAndSay.cs" company="Bodu Pty. Ltd.">
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="SequenceGeneratorTests.LookAndSay.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Collections.Extensions;
+namespace Bodu.Sequences;
 
-[TestClass]
-public class LookAndSayTests
+public partial class SequenceGeneratorTests
 {
-
     /// <summary>
     /// Verifies that <see cref="SequenceGenerator.LookAndSay" /> throws <see cref="ArgumentOutOfRangeException" /> when
     /// count is below 1.
@@ -73,5 +71,4 @@ public class LookAndSayTests
                 Assert.IsTrue(ch is >= '0' and <= '9', $"Term '{term}' contained a non-digit character '{ch}'.");
         }
     }
-
 }

@@ -1,15 +1,13 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="SequenceGeneration.ThueMorse.cs" company="Bodu Pty. Ltd.">
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="SequenceGeneratorTests.ThueMorse.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Collections.Extensions;
+namespace Bodu.Sequences;
 
-[TestClass]
-public class ThueMorseTests
+public partial class SequenceGeneratorTests
 {
-
     /// <summary>
     /// Verifies that <see cref="SequenceGenerator.ThueMorse" /> throws <see cref="ArgumentOutOfRangeException" /> when
     /// count is negative.
@@ -69,5 +67,4 @@ public class ThueMorseTests
         foreach (int v in SequenceGenerator.ThueMorse(32))
             Assert.IsTrue(v is 0 or 1, $"Expected 0 or 1, got {v}.");
     }
-
 }
