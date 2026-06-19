@@ -193,11 +193,11 @@ both lazy creation and a multi-series snapshot operation:
 ```csharp
 ExchangeRateTableBuilder table = new();
 
-table.Upsert(new ExchangeRatePair("USD", "AUD"), "RBA", new DateOnly(2026, 6, 1), 1.50m);
-table.Upsert(new ExchangeRatePair("USD", "JPY"), "BoJ", new DateOnly(2026, 6, 1), 110m);
+table.Upsert(new ExchangeRatePair(CurrencyCode.USD, CurrencyCode.AUD), "RBA", new DateOnly(2026, 6, 1), 1.50m);
+table.Upsert(new ExchangeRatePair(CurrencyCode.USD, CurrencyCode.JPY), "BoJ", new DateOnly(2026, 6, 1), 110m);
 
 // Reach for the underlying builder if you need bulk operations on one series.
-ExchangeRateSeriesBuilder rba = table.GetOrAddSeries(new ExchangeRatePair("USD", "AUD"), "RBA");
+ExchangeRateSeriesBuilder rba = table.GetOrAddSeries(new ExchangeRatePair(CurrencyCode.USD, CurrencyCode.AUD), "RBA");
 rba.AddRange(/* observations */);
 
 // Snapshot every non-empty series in one pass.
