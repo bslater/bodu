@@ -1,0 +1,13 @@
+{
+  "BaseCurrency": "AUD",
+  "TermCurrency": "USD",
+  "CurrentInterbankRate": 0.685000,
+  "CurrentInverseInterbankRate": 1.459854,
+  "Average": 0.682600,
+  "HistoricalPoints": [
+    { "PointInTime": 1672617600000, "InterbankRate": 0.680000, "InverseInterbankRate": 1.470588 },
+    { "PointInTime": 1672704000000, "InterbankRate": 0.682800, "InverseInterbankRate": 1.464558 },
+    { "PointInTime": 1672790400000, "InterbankRate": 0.685000, "InverseInterbankRate": 1.459854 },
+    { "PointInTime": 1675209600000, "InterbankRate": 0.700000, "InverseInterbankRate": 1.428571 }
+  ]
+}

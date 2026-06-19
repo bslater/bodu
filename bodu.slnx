@@ -114,6 +114,14 @@
     <Project Path="Bodu.Financial.ExchangeRates.Ecb/src/Bodu.Financial.ExchangeRates.Ecb.csproj" />
     <Project Path="Bodu.Financial.ExchangeRates.Ecb/test/Bodu.Financial.ExchangeRates.Ecb.Test.csproj" />
   </Folder>
+  <Folder Name="/Bodu.Financial/Providers/Bodu.Financial.ExchangeRates.Ofx.DependencyInjection/">
+    <Project Path="Bodu.Financial.ExchangeRates.Ofx.DependencyInjection/src/Bodu.Financial.ExchangeRates.Ofx.DependencyInjection.csproj" />
+    <Project Path="Bodu.Financial.ExchangeRates.Ofx.DependencyInjection/test/Bodu.Financial.ExchangeRates.Ofx.DependencyInjection.Test.csproj" />
+  </Folder>
+  <Folder Name="/Bodu.Financial/Providers/Bodu.Financial.ExchangeRates.Ofx/">
+    <Project Path="Bodu.Financial.ExchangeRates.Ofx/src/Bodu.Financial.ExchangeRates.Ofx.csproj" />
+    <Project Path="Bodu.Financial.ExchangeRates.Ofx/test/Bodu.Financial.ExchangeRates.Ofx.Test.csproj" />
+  </Folder>
   <Folder Name="/Bodu.Financial/Providers/Bodu.Financial.ExchangeRates.Rba.DependencyInjection/">
     <Project Path="Bodu.Financial.ExchangeRates.Rba.DependencyInjection/src/Bodu.Financial.ExchangeRates.Rba.DependencyInjection.csproj" />
     <Project Path="Bodu.Financial.ExchangeRates.Rba.DependencyInjection/test/Bodu.Financial.ExchangeRates.Rba.DependencyInjection.Test.csproj" />

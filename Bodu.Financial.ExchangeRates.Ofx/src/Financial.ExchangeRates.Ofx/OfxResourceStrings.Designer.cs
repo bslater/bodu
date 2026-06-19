@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Bodu.Financial.ExchangeRates.Yahoo {
+namespace Bodu.Financial.ExchangeRates.Ofx {
     using System;
 
 
@@ -22,14 +22,14 @@ namespace Bodu.Financial.ExchangeRates.Yahoo {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "18.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class YahooResourceStrings {
+    internal class OfxResourceStrings {
 
         private static global::System.Resources.ResourceManager resourceMan;
 
         private static global::System.Globalization.CultureInfo resourceCulture;
 
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal YahooResourceStrings() {
+        internal OfxResourceStrings() {
         }
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace Bodu.Financial.ExchangeRates.Yahoo {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Bodu.Financial.ExchangeRates.Yahoo.YahooResourceStrings", typeof(YahooResourceStrings).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Bodu.Financial.ExchangeRates.Ofx.OfxResourceStrings", typeof(OfxResourceStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,56 +61,56 @@ namespace Bodu.Financial.ExchangeRates.Yahoo {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The Yahoo Finance chart endpoint returned an error for symbol {0}: {1}..
+        ///   Looks up a localized string similar to The OFX response for {0}/{1} did not contain any historical rate data..
         /// </summary>
-        internal static string Format_Invalid_YahooChartError {
+        internal static string Format_Invalid_OfxNoData {
             get {
-                return ResourceManager.GetString("Format_Invalid_YahooChartError", resourceCulture);
+                return ResourceManager.GetString("Format_Invalid_OfxNoData", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The Yahoo Finance response for symbol {0} did not contain any chart data..
+        ///   Looks up a localized string similar to No OFX exchange rate is available for {0}/{1} on {2}..
         /// </summary>
-        internal static string Format_Invalid_YahooNoData {
+        internal static string IO_KeyNotFound_OfxRate {
             get {
-                return ResourceManager.GetString("Format_Invalid_YahooNoData", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to No Yahoo Finance exchange rate is available for {0}/{1} on {2}..
-        /// </summary>
-        internal static string IO_KeyNotFound_YahooRate {
-            get {
-                return ResourceManager.GetString("IO_KeyNotFound_YahooRate", resourceCulture);
+                return ResourceManager.GetString("IO_KeyNotFound_OfxRate", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to The end date {1} must not be earlier than the start date {0}..
         /// </summary>
-        internal static string Arg_OutOfRange_YahooDateRange {
+        internal static string Arg_OutOfRange_OfxDateRange {
             get {
-                return ResourceManager.GetString("Arg_OutOfRange_YahooDateRange", resourceCulture);
+                return ResourceManager.GetString("Arg_OutOfRange_OfxDateRange", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The Yahoo options chart path must be specified and contain the '{symbol}' placeholder..
+        ///   Looks up a localized string similar to The OFX options history path must be specified and contain the '{interval}', '{from}', and '{to}' placeholders..
         /// </summary>
-        internal static string Arg_Invalid_YahooOptionsChartPath {
+        internal static string Arg_Invalid_OfxOptionsHistoryPath {
             get {
-                return ResourceManager.GetString("Arg_Invalid_YahooOptionsChartPath", resourceCulture);
+                return ResourceManager.GetString("Arg_Invalid_OfxOptionsHistoryPath", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The Yahoo options symbol format must be specified and contain the '{from}' and '{to}' placeholders..
+        ///   Looks up a localized string similar to The OFX options decimal places must be between 0 and 15..
         /// </summary>
-        internal static string Arg_Invalid_YahooOptionsSymbolFormat {
+        internal static string Arg_Invalid_OfxOptionsDecimalPlaces {
             get {
-                return ResourceManager.GetString("Arg_Invalid_YahooOptionsSymbolFormat", resourceCulture);
+                return ResourceManager.GetString("Arg_Invalid_OfxOptionsDecimalPlaces", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The OFX options reporting interval must be specified..
+        /// </summary>
+        internal static string Arg_Invalid_OfxOptionsReportingInterval {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_OfxOptionsReportingInterval", resourceCulture);
             }
         }
     }

@@ -1,5 +1,5 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="YahooFinancialServiceBuilderExtensions.cs" company="Bodu Pty. Ltd.">
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="OfxFinancialServiceBuilderExtensions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -12,27 +12,26 @@ using Microsoft.Extensions.Http.Resilience;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace Bodu.Financial.ExchangeRates.Yahoo.DependencyInjection;
+namespace Bodu.Financial.ExchangeRates.Ofx.DependencyInjection;
 
 /// <summary>
-/// Provides the fluent registration of the Yahoo Finance exchange-rate provider onto an
-/// <see cref="IFinancialServiceBuilder" />.
+/// Provides the fluent registration of the OFX exchange-rate provider onto an <see cref="IFinancialServiceBuilder" />.
 /// </summary>
-public static class YahooFinancialServiceBuilderExtensions
+public static class OfxFinancialServiceBuilderExtensions
 {
-    /// <summary>The name of the <see cref="HttpClient" /> configured for Yahoo Finance requests.</summary>
-    public const string HttpClientName = "Bodu.Financial.ExchangeRates.Yahoo";
+    /// <summary>The name of the <see cref="HttpClient" /> configured for OFX requests.</summary>
+    public const string HttpClientName = "Bodu.Financial.ExchangeRates.Ofx";
 
     /// <summary>
-    /// Registers the Yahoo Finance exchange-rate provider, binding its options and configuring a named
-    /// <see cref="HttpClient" /> for chart requests.
+    /// Registers the OFX exchange-rate provider, binding its options and configuring a named <see cref="HttpClient" />
+    /// for history requests.
     /// </summary>
     /// <param name="builder">The financial service builder.</param>
     /// <param name="configuration">
     /// An optional configuration root or section. When supplied, the section named <paramref name="sectionName" /> is
-    /// bound into <see cref="YahooExchangeRateOptions" />.
+    /// bound into <see cref="OfxExchangeRateOptions" />.
     /// </param>
-    /// <param name="sectionName">The configuration section name. Defaults to <c>Financial:Yahoo</c>.</param>
+    /// <param name="sectionName">The configuration section name. Defaults to <c>Financial:Ofx</c>.</param>
     /// <param name="configure">An optional callback applied after configuration binding.</param>
     /// <param name="configureResilience">
     /// An optional callback applied to the standard HTTP resilience options after the provider defaults have been set,
@@ -62,11 +61,11 @@ public static class YahooFinancialServiceBuilderExtensions
     /// <see cref="Timeout.InfiniteTimeSpan" /> so the two timeout mechanisms do not compete.
     /// </para>
     /// </remarks>
-    public static IFinancialServiceBuilder AddYahooExchangeRates(
+    public static IFinancialServiceBuilder AddOfxExchangeRates(
         this IFinancialServiceBuilder builder,
         IConfiguration? configuration = null,
-        string sectionName = "Financial:Yahoo",
-        Action<YahooExchangeRateOptions>? configure = null,
+        string sectionName = "Financial:Ofx",
+        Action<OfxExchangeRateOptions>? configure = null,
         Action<HttpStandardResilienceOptions>? configureResilience = null)
     {
         ThrowHelper.ThrowIfNull(builder);
@@ -74,19 +73,19 @@ public static class YahooFinancialServiceBuilderExtensions
 
         IServiceCollection services = builder.Services;
 
-        OptionsBuilder<YahooExchangeRateOptions> optionsBuilder = services.AddOptions<YahooExchangeRateOptions>();
+        OptionsBuilder<OfxExchangeRateOptions> optionsBuilder = services.AddOptions<OfxExchangeRateOptions>();
         if (configuration is not null)
             optionsBuilder.Bind(configuration.GetSection(sectionName));
         if (configure is not null)
             optionsBuilder.Configure(configure);
         optionsBuilder
-            .Validate(static options => options.TryValidate(out _), "Yahoo exchange-rate options are invalid.")
+            .Validate(static options => options.TryValidate(out _), "OFX exchange-rate options are invalid.")
             .ValidateOnStart();
 
         services
             .AddHttpClient(HttpClientName, static (serviceProvider, client) =>
             {
-                YahooExchangeRateOptions options = serviceProvider.GetRequiredService<IOptions<YahooExchangeRateOptions>>().Value;
+                OfxExchangeRateOptions options = serviceProvider.GetRequiredService<IOptions<OfxExchangeRateOptions>>().Value;
                 client.Timeout = Timeout.InfiniteTimeSpan;
                 if (!string.IsNullOrWhiteSpace(options.UserAgent))
                     client.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", options.UserAgent);
@@ -94,7 +93,7 @@ public static class YahooFinancialServiceBuilderExtensions
             .AddStandardResilienceHandler()
             .Configure((resilienceOptions, serviceProvider) =>
             {
-                YahooExchangeRateOptions options = serviceProvider.GetRequiredService<IOptions<YahooExchangeRateOptions>>().Value;
+                OfxExchangeRateOptions options = serviceProvider.GetRequiredService<IOptions<OfxExchangeRateOptions>>().Value;
                 ConfigureResilienceTimeouts(resilienceOptions, options.HttpTimeout);
                 configureResilience?.Invoke(resilienceOptions);
             });
@@ -102,15 +101,15 @@ public static class YahooFinancialServiceBuilderExtensions
         services.TryAddSingleton(static serviceProvider =>
         {
             HttpClient client = serviceProvider.GetRequiredService<IHttpClientFactory>().CreateClient(HttpClientName);
-            YahooExchangeRateOptions options = serviceProvider.GetRequiredService<IOptions<YahooExchangeRateOptions>>().Value;
-            return new YahooExchangeRateProvider(
+            OfxExchangeRateOptions options = serviceProvider.GetRequiredService<IOptions<OfxExchangeRateOptions>>().Value;
+            return new OfxExchangeRateProvider(
                 client,
                 options,
-                serviceProvider.GetService<ILoggerFactory>()?.CreateLogger<YahooExchangeRateProvider>(),
+                serviceProvider.GetService<ILoggerFactory>()?.CreateLogger<OfxExchangeRateProvider>(),
                 serviceProvider.GetService<TimeProvider>());
         });
-        services.TryAddSingleton<IDatedExchangeRateProvider>(static serviceProvider => serviceProvider.GetRequiredService<YahooExchangeRateProvider>());
-        services.TryAddSingleton<IExchangeRateProvider>(static serviceProvider => serviceProvider.GetRequiredService<YahooExchangeRateProvider>());
+        services.TryAddSingleton<IDatedExchangeRateProvider>(static serviceProvider => serviceProvider.GetRequiredService<OfxExchangeRateProvider>());
+        services.TryAddSingleton<IExchangeRateProvider>(static serviceProvider => serviceProvider.GetRequiredService<OfxExchangeRateProvider>());
 
         return builder;
     }

@@ -360,4 +360,19 @@
   <data name="Op_Invalid_UnableToCreateConverter" xml:space="preserve">
     <value>Unable to create a JSON converter for '{0}'.</value>
   </data>
+  <data name="Arg_Invalid_WebExchangeRateOptionsBaseAddress" xml:space="preserve">
+    <value>The exchange-rate provider options must specify a base address.</value>
+  </data>
+  <data name="Arg_Invalid_WebExchangeRateOptionsHttpTimeout" xml:space="preserve">
+    <value>The exchange-rate provider options HTTP timeout must be greater than zero.</value>
+  </data>
+  <data name="Arg_Invalid_WebExchangeRateOptionsDefaultLookback" xml:space="preserve">
+    <value>The exchange-rate provider options default look-back window must be greater than zero.</value>
+  </data>
+  <data name="Arg_Invalid_WebExchangeRateOptionsCurrencyAliases" xml:space="preserve">
+    <value>The exchange-rate provider options currency alias map must not be null.</value>
+  </data>
+  <data name="Arg_Invalid_WebExchangeRateOptionsLogLevel" xml:space="preserve">
+    <value>The exchange-rate provider options must specify a defined log level for every logging concern.</value>
+  </data>
 </root>

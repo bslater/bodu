@@ -58,22 +58,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Format_Invalid_YahooChartError" xml:space="preserve">
-    <value>The Yahoo Finance chart endpoint returned an error for symbol {0}: {1}.</value>
+  <data name="Format_Invalid_OfxNoData" xml:space="preserve">
+    <value>The OFX response for {0}/{1} did not contain any historical rate data.</value>
   </data>
-  <data name="Format_Invalid_YahooNoData" xml:space="preserve">
-    <value>The Yahoo Finance response for symbol {0} did not contain any chart data.</value>
+  <data name="IO_KeyNotFound_OfxRate" xml:space="preserve">
+    <value>No OFX exchange rate is available for {0}/{1} on {2}.</value>
   </data>
-  <data name="IO_KeyNotFound_YahooRate" xml:space="preserve">
-    <value>No Yahoo Finance exchange rate is available for {0}/{1} on {2}.</value>
-  </data>
-  <data name="Arg_OutOfRange_YahooDateRange" xml:space="preserve">
+  <data name="Arg_OutOfRange_OfxDateRange" xml:space="preserve">
     <value>The end date {1} must not be earlier than the start date {0}.</value>
   </data>
-  <data name="Arg_Invalid_YahooOptionsChartPath" xml:space="preserve">
-    <value>The Yahoo options chart path must be specified and contain the '{symbol}' placeholder.</value>
+  <data name="Arg_Invalid_OfxOptionsHistoryPath" xml:space="preserve">
+    <value>The OFX options history path must be specified and contain the '{interval}', '{from}', and '{to}' placeholders.</value>
   </data>
-  <data name="Arg_Invalid_YahooOptionsSymbolFormat" xml:space="preserve">
-    <value>The Yahoo options symbol format must be specified and contain the '{from}' and '{to}' placeholders.</value>
+  <data name="Arg_Invalid_OfxOptionsDecimalPlaces" xml:space="preserve">
+    <value>The OFX options decimal places must be between 0 and 15.</value>
+  </data>
+  <data name="Arg_Invalid_OfxOptionsReportingInterval" xml:space="preserve">
+    <value>The OFX options reporting interval must be specified.</value>
   </data>
 </root>
