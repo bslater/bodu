@@ -277,7 +277,7 @@ public abstract class BufferedBlockHashAlgorithm<T>
     {
         ThrowHelper.ThrowIfNull(array);
         ThrowIfDisposed();
-        CryptographyThrowHelper.ThrowIfArrayOffsetOrCountInvalid(array, ibStart, cbSize);
+        ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(array, ibStart, cbSize);
 
         HashCore(array.AsSpan(ibStart, cbSize));
     }

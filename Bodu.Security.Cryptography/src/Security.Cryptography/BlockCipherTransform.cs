@@ -233,8 +233,8 @@ public abstract class BlockCipherTransform
 
         ThrowHelper.ThrowIfNull(inputBuffer);
         ThrowHelper.ThrowIfNull(outputBuffer);
-        CryptographyThrowHelper.ThrowIfArrayOffsetOrCountInvalid(inputBuffer, inputOffset, inputCount);
-        CryptographyThrowHelper.ThrowIfArrayOffsetOrCountInvalid(outputBuffer, outputOffset, inputCount);
+        ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(inputBuffer, inputOffset, inputCount);
+        ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(outputBuffer, outputOffset, inputCount);
 
         ReadOnlySpan<byte> input = inputBuffer.AsSpan(inputOffset, inputCount);
 
@@ -306,7 +306,7 @@ public abstract class BlockCipherTransform
         ThrowIfFinalized();
 
         ThrowHelper.ThrowIfNull(inputBuffer);
-        CryptographyThrowHelper.ThrowIfArrayOffsetOrCountInvalid(inputBuffer, inputOffset, inputCount);
+        ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(inputBuffer, inputOffset, inputCount);
 
         ReadOnlySpan<byte> input = inputBuffer.AsSpan(inputOffset, inputCount);
 

@@ -113,12 +113,7 @@ public abstract class Poly1305AeadTransform
         ThrowIfAssociatedDataUnsupported(associatedData);
 
         int required = checked(plaintext.Length + TagBytes);
-        if (output.Length < required)
-        {
-            throw new ArgumentException(
-                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, required),
-                nameof(output));
-        }
+        ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, required);
 
         ThrowIfPartialOverlap(plaintext, output);
 
@@ -148,12 +143,7 @@ public abstract class Poly1305AeadTransform
         }
 
         int plaintextLength = ciphertextWithTag.Length - TagBytes;
-        if (output.Length < plaintextLength)
-        {
-            throw new ArgumentException(
-                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, plaintextLength),
-                nameof(output));
-        }
+        ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, plaintextLength);
 
         ThrowIfPartialOverlap(ciphertextWithTag, output);
 

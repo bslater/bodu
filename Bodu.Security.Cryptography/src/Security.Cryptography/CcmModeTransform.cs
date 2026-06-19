@@ -170,7 +170,7 @@ public sealed class CcmModeTransform
         ThrowIfCompleted();
 
         int required = plaintext.Length + (TagSizeBits / 8);
-        CryptographyThrowHelper.ThrowIfOutputBufferTooSmall(output, required);
+        ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, required);
 
         EnsureAadProcessed();
 
@@ -198,7 +198,7 @@ public sealed class CcmModeTransform
         CryptographyThrowHelper.ThrowIfCiphertextTooShort(ciphertextWithTag, TagSizeBits / 8);
 
         int plaintextLength = ciphertextWithTag.Length - (TagSizeBits / 8);
-        CryptographyThrowHelper.ThrowIfOutputBufferTooSmall(output, plaintextLength);
+        ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, plaintextLength);
 
         EnsureAadProcessed();
 

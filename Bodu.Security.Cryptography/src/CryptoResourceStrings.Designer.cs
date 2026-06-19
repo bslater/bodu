@@ -682,15 +682,6 @@ namespace Bodu {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The output buffer is too small. At least {0} bytes are required..
-        /// </summary>
-        internal static string Crypt_Invalid_OutputBufferTooSmall {
-            get {
-                return ResourceManager.GetString("Crypt_Invalid_OutputBufferTooSmall", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The input block contains invalid padding and cannot be depadded. The padding bytes do not match the expected format for the specified padding mode..
         /// </summary>
         internal static string Crypt_Invalid_Padding {

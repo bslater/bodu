@@ -179,7 +179,7 @@ public sealed class GcmSivModeTransform
 
         CryptographyThrowHelper.ThrowIfCiphertextTooShort(ciphertextWithTag, TagSizeBits / 8);
         int plaintextLength = ciphertextWithTag.Length - (TagSizeBits / 8);
-        CryptographyThrowHelper.ThrowIfOutputBufferTooSmall(output, plaintextLength);
+        ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, plaintextLength);
         EnsureAadProcessed();
 
         try
@@ -229,7 +229,7 @@ public sealed class GcmSivModeTransform
         ThrowIfCompleted();
 
         int required = plaintext.Length + (TagSizeBits / 8);
-        CryptographyThrowHelper.ThrowIfOutputBufferTooSmall(output, required);
+        ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, required);
         EnsureAadProcessed();
 
         try

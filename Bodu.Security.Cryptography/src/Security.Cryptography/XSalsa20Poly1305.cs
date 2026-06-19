@@ -189,12 +189,7 @@ public sealed class XSalsa20Poly1305
                 nameof(source));
         }
 
-        if (destination.Length < source.Length)
-        {
-            throw new ArgumentException(
-                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, source.Length),
-                nameof(destination));
-        }
+        ThrowHelper.ThrowIfSpanLengthIsInsufficient(destination, source.Length);
 
         return source.Length - TagBytes;
     }

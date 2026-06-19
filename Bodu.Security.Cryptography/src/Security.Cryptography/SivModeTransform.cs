@@ -163,7 +163,7 @@ public sealed class SivModeTransform
         ThrowIfCompleted();
 
         int required = plaintext.Length + (TagSizeBits / 8);
-        CryptographyThrowHelper.ThrowIfOutputBufferTooSmall(output, required);
+        ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, required);
 
         EnsureAadProcessed();
 
@@ -204,7 +204,7 @@ public sealed class SivModeTransform
         CryptographyThrowHelper.ThrowIfCiphertextTooShort(ciphertextWithTag, TagSizeBits / 8);
 
         int plaintextLength = ciphertextWithTag.Length - (TagSizeBits / 8);
-        CryptographyThrowHelper.ThrowIfOutputBufferTooSmall(output, plaintextLength);
+        ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, plaintextLength);
 
         EnsureAadProcessed();
 

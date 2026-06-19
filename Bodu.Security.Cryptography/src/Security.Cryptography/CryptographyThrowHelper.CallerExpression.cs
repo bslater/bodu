@@ -33,61 +33,6 @@ internal static partial class CryptographyThrowHelper
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentNullException" /> if the array is <see langword="null" />, an
-    /// <see cref="ArgumentException" /> if <paramref name="offset" /> or <paramref name="count" /> is out of range, or
-    /// an <see cref="ArgumentException" /> if the segment they define exceeds the bounds of <paramref name="array" />.
-    /// </summary>
-    /// <param name="array">The array to validate. Must not be <see langword="null" />.</param>
-    /// <param name="offset">The zero-based starting index within the array.</param>
-    /// <param name="count">The number of elements to access from <paramref name="offset" />.</param>
-    /// <param name="paramArrayName">The name of the array parameter. Supplied automatically by the compiler.</param>
-    /// <param name="paramOffsetName">The name of the index parameter. Supplied automatically by the compiler.</param>
-    /// <param name="paramCountName">The name of the count parameter. Supplied automatically by the compiler.</param>
-    /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="array" /> is <see langword="null" />.
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    /// Thrown when <paramref name="offset" /> or <paramref name="count" /> is negative or exceeds <c>array.Length</c>.
-    /// </exception>
-    /// <exception cref="ArgumentException">Thrown when <c>index + count</c> exceeds <c>array.Length</c>.</exception>
-    public static void ThrowIfArrayOffsetOrCountInvalid(
-        Array array, int offset, int count,
-        [CallerArgumentExpression(nameof(array))] string? paramArrayName = null,
-        [CallerArgumentExpression(nameof(offset))] string? paramOffsetName = null,
-        [CallerArgumentExpression(nameof(count))] string? paramCountName = null)
-    {
-        if (array is null)
-        {
-            throw new ArgumentNullException(paramArrayName);
-        }
-
-        if (offset < 0 || offset > array.Length)
-        {
-            throw new ArgumentOutOfRangeException(
-                paramOffsetName,
-                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_ArrayOffset, paramOffsetName));
-        }
-
-        if (count < 0 || count > array.Length)
-        {
-            throw new ArgumentException(
-                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_ArrayOffset, paramCountName),
-                paramCountName);
-        }
-
-        if (count > array.Length - offset)
-        {
-            throw new ArgumentException(
-                string.Format(
-                    CultureInfo.CurrentCulture,
-                    ResourceStrings.Arg_Invalid_ArrayOffsetOrLength,
-                    paramOffsetName,
-                    paramCountName,
-                    paramArrayName));
-        }
-    }
-
-    /// <summary>
     /// Throws an <see cref="InvalidOperationException" /> if associated data has already been processed.
     /// </summary>
     /// <param name="alreadyProcessed">
@@ -533,27 +478,6 @@ internal static partial class CryptographyThrowHelper
             throw new CryptographicException(
                 paramName!,
                 string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_HashSizePositiveMultipleOf, divisor));
-    }
-
-    /// <summary>
-    /// Throws an <see cref="ArgumentException" /> if <paramref name="output" /> is smaller than
-    /// <paramref name="required" /> bytes.
-    /// </summary>
-    /// <param name="output">The output buffer to validate.</param>
-    /// <param name="required">The minimum number of bytes the buffer must hold.</param>
-    /// <param name="paramName">The name of the parameter. Supplied automatically by the compiler.</param>
-    /// <exception cref="ArgumentException">Thrown when <c>output.Length &lt; required</c>.</exception>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIfOutputBufferTooSmall(
-        Span<byte> output, int required,
-        [CallerArgumentExpression(nameof(output))] string? paramName = null)
-    {
-        if (output.Length < required)
-        {
-            throw new ArgumentException(
-                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, required),
-                paramName);
-        }
     }
 
     /// <summary>

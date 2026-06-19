@@ -154,7 +154,7 @@ public sealed class EaxModeTransform
         ThrowIfCompleted();
 
         int required = plaintext.Length + DefaultTagSize;
-        CryptographyThrowHelper.ThrowIfOutputBufferTooSmall(output, required);
+        ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, required);
 
         EnsureAadProcessed();
 
@@ -204,7 +204,7 @@ public sealed class EaxModeTransform
         CryptographyThrowHelper.ThrowIfCiphertextTooShort(ciphertextWithTag, DefaultTagSize);
 
         int plaintextLength = ciphertextWithTag.Length - DefaultTagSize;
-        CryptographyThrowHelper.ThrowIfOutputBufferTooSmall(output, plaintextLength);
+        ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, plaintextLength);
 
         EnsureAadProcessed();
 
