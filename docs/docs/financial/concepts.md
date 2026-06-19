@@ -161,9 +161,9 @@ Strategies are expressed through `IExchangeRateAggregationStrategy` (PriorityFal
 
 <xref:Bodu.Financial.FixedDatedExchangeRateProvider> implements the dated <xref:Bodu.Financial.IDatedExchangeRateProvider> from a flat sequence of <xref:Bodu.Financial.ExchangeRate> observations grouped into one <xref:Bodu.Financial.ExchangeRateSeries> per pair. Each pair is described by exactly one series and therefore one provider, so composing rates from multiple publishing sources is done by stacking several tables behind an [`AggregatingExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.Caching.AggregatingExchangeRateProvider) (in `Bodu.Financial.ExchangeRates.Caching`) rather than mixing providers in a single table. Identity (same-currency) results carry the well-known `FixedDatedExchangeRateProvider.IdentityProviderName` label so audit consumers can filter by it.
 
-## `TypedMoneyConversionResult<TSource, TTarget>`
+## `MoneyConversionResult<TSource, TTarget>`
 
-<xref:Bodu.Financial.TypedMoneyConversionResult`2> is the audit record returned by the `ConvertTo<TTarget>(IDatedExchangeRateProvider, …)` extension methods on `Money<T>`, `Money`, and `MoneyBag`. It bundles the original source amount, the rounded target amount, and the full <xref:Bodu.Financial.ExchangeRateLookupResult> that produced it — so the consumer sees both the answer and the provenance of the rate in a single value, without a second lookup.
+<xref:Bodu.Financial.MoneyConversionResult`2> is the audit record returned by the `ConvertTo<TTarget>(IDatedExchangeRateProvider, …)` extension methods on `Money<T>`, `Money`, and `MoneyBag`. It bundles the original source amount, the rounded target amount, and the full <xref:Bodu.Financial.ExchangeRateLookupResult> that produced it — so the consumer sees both the answer and the provenance of the rate in a single value, without a second lookup.
 
 ## `MoneyBag`
 

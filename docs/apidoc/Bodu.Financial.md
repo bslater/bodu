@@ -50,7 +50,7 @@ Reach for this library when you need monetary arithmetic that the compiler valid
 - <xref:Bodu.Financial.ExchangeRateSeriesBuilder>, <xref:Bodu.Financial.ExchangeRateSeriesKey>, <xref:Bodu.Financial.ExchangeRateTableBuilder> — mutable companion for building or editing a series, the (pair, provider) key, and a higher-level multi-series editor for import workflows.
 - <xref:Bodu.Financial.ExchangeRateLookupOptions>, <xref:Bodu.Financial.ExchangeRateLookupResult>, <xref:Bodu.Financial.ExchangeRateDateResolution> — resolution policy options and the audit-grade lookup result.
 - <xref:Bodu.Financial.FixedExchangeRateTable>, <xref:Bodu.Financial.FixedDatedExchangeRateProvider>, <xref:Bodu.Financial.DatedExchangeRateProviderAdapter> — in-memory provider implementations and an adapter that pins a date to a dated provider for codebases that don't need the dated surface. Grouping several providers (prioritised fallback, averaging, per-FX-pair routing) and read-through caching live in [`Bodu.Financial.ExchangeRates.Caching`](Bodu.Financial.ExchangeRates.Caching.md).
-- <xref:Bodu.Financial.TypedMoneyConversionResult`2> — audit record bundling source and target money with the full lookup result.
+- <xref:Bodu.Financial.MoneyConversionResult`2> — audit record bundling source and target money with the full lookup result.
 
 **Related namespaces**
 

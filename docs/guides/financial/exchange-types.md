@@ -31,7 +31,7 @@ behaviour, see [Working with exchange rates](exchange-rates.md) and
 | To expose a dated source as timeless | [`DatedExchangeRateProviderAdapter`](xref:Bodu.Financial.DatedExchangeRateProviderAdapter) | adapter |
 | The rules applied on a date miss | [`ExchangeRateLookupOptions`](xref:Bodu.Financial.ExchangeRateLookupOptions) | options |
 | The outcome of a dated lookup | [`ExchangeRateLookupResult`](xref:Bodu.Financial.ExchangeRateLookupResult) | value (record struct) |
-| A converted amount + its rate provenance | [`TypedMoneyConversionResult<,>`](xref:Bodu.Financial.TypedMoneyConversionResult`2) | value (record struct) |
+| A converted amount + its rate provenance | [`MoneyConversionResult<,>`](xref:Bodu.Financial.MoneyConversionResult`2) | value (record struct) |
 
 The rest of this page groups these by the role they play.
 
@@ -260,9 +260,9 @@ and `IsFutureDate`. It is everything needed to explain *which* observed
 value was selected and *how far* from the request — without re-querying
 the table.
 
-### `TypedMoneyConversionResult<TSource, TTarget>` — convert + audit
+### `MoneyConversionResult<TSource, TTarget>` — convert + audit
 
-[`TypedMoneyConversionResult<,>`](xref:Bodu.Financial.TypedMoneyConversionResult`2)
+[`MoneyConversionResult<,>`](xref:Bodu.Financial.MoneyConversionResult`2)
 is what `Money<T>.ConvertToWithRate<TSource, TTarget>(...)` returns: the
 source amount, the rounded target amount, and the full
 `ExchangeRateLookupResult` that produced it. **Reach for it** for a
@@ -270,7 +270,7 @@ ledger entry that must record both the converted figure and the rate
 provenance in a single value.
 
 ```csharp
-TypedMoneyConversionResult<USD, EUR> audited = Money.Of<USD>(100m)
+MoneyConversionResult<USD, EUR> audited = Money.Of<USD>(100m)
     .ConvertToWithRate<USD, EUR>(provider, new DateOnly(2024, 6, 15),
         ExchangeRateLookupOptions.PreviousWithin(3));
 
@@ -302,7 +302,7 @@ line of provenance per source currency alongside the total.
    `Money<TCurrency>` + `ExchangeRate<TBase, TQuote>`. No →
    `Money` + `ExchangeRate`.
 5. **Do you need to record provenance per conversion?** Yes →
-   `ConvertToWithRate(...)` → `TypedMoneyConversionResult<,>`. No →
+   `ConvertToWithRate(...)` → `MoneyConversionResult<,>`. No →
    `ConvertTo(...)`.
 
 ## See also

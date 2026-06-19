@@ -110,7 +110,7 @@ Local developer machines are untouched (the hook short-circuits when `CLAUDE_COD
 ## Test Conventions
 
 - Framework: **MSTest** (`Microsoft.VisualStudio.TestTools.UnitTesting`, `[TestClass]` / `[TestMethod]`). Do **not** introduce xUnit or NUnit.
-- Tests live in `<Project>/test/` and are organised as **partial classes** that mirror the source layout — e.g. `CircularBuffer.cs` → `CircularBufferTests.Enqueue.cs`, `CircularBufferTests.Dequeue.cs`. Extend the existing partial class when adding tests for an existing type.
+- Tests live in `<Project>/test/` and are organised as **partial classes** that mirror the source layout — e.g. `CircularBuffer{T}.cs` → `CircularBufferTests.Enqueue.cs`, `CircularBufferTests.Dequeue.cs`. Extend the existing partial class when adding tests for an existing type.
 - No shared test base classes; each test is self-contained.
 
 ### Test File Organisation
@@ -335,9 +335,10 @@ Every `.cs` file begins with the standard banner — preserve the separator line
 ### File Layout
 
 - **One public type per file.** Every `.cs` file declares exactly one top-level type. Nested / child types must live in separate partial-class files nested under the parent file per `.filenesting.json` (see Build & Tooling).
+- **Generic type files.** Every `.cs` file whose primary declared type is generic is suffixed with `{T}` for one type parameter, `{T,T}` for two, `{T,T,T}` for three, using a single literal `T` per parameter position — e.g. `CircularBuffer{T}.cs`, `EvictingDictionary{T,T}.cs`. Partial files for a generic type carry the same infix before the part name: `TypeName{T}.PartName.cs`. Non-generic companion types (extension method classes, factory classes, non-generic overloads) are not renamed. Nested or secondary type declarations within a partial file of a non-generic parent are also not renamed. The `.filenesting.json` configuration nests `Foo{T}.cs` under `Foo.cs` so generic companions visually group with their non-generic counterpart in the IDE. Do not use the full type-parameter name in file suffixes — always use a single `T` per position regardless of the declared parameter name (e.g. `<TKey, TValue>` → `{T,T}`).
 - Partial-file naming is `<Base>.<Part>.cs` where `<Base>.cs` holds the root declaration. Examples:
-  - `CircularBuffer.cs` ← root
-  - `CircularBuffer.Enumerator.cs`, `CircularBuffer.Debug.cs` ← partials/child-type splits
+  - `CircularBuffer{T}.cs` ← root
+  - `CircularBuffer{T}.Enumerator.cs`, `CircularBuffer{T}.Debug.cs` ← partials/child-type splits
   - `CrcStandard.cs` ← root; `CrcStandard.Catalog.cs` ← auto-generated catalogue partial
 - Don't stack unrelated helper types into the same file. If a type only makes sense alongside its parent (private nested enum, internal helper record), split it into a partial file under the parent rather than co-locating it in the root.
 
