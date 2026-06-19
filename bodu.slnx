@@ -71,6 +71,9 @@
     <Project Path="Bodu.IO.Compound/test/Bodu.IO.Compound.Test.csproj" />
   </Folder>
   <Folder Name="/Bodu.Financial/Providers/" />
+  <Folder Name="/Bodu.Financial/Providers/Bodu.Financial.ExchangeRates.DependencyInjection/">
+    <Project Path="Bodu.Financial.ExchangeRates.DependencyInjection/src/Bodu.Financial.ExchangeRates.DependencyInjection.csproj" />
+  </Folder>
   <Folder Name="/Bodu.Financial/Providers/Bodu.Financial.ExchangeRates.Testing/">
     <Project Path="Bodu.Financial.ExchangeRates.Testing/test/Bodu.Financial.ExchangeRates.Testing.csproj" />
   </Folder>

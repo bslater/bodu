@@ -4,15 +4,15 @@
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
-    <Title>Bodu — ECB Exchange Rates DI</Title>
-    <Description>Dependency-injection extensions for the ECB euro reference-rate provider. Registers EcbExchangeRateProvider as a singleton backed by a configured HttpClient and binds EcbExchangeRateOptions through Microsoft.Extensions.Options.</Description>
-    <PackageTags>$(PackageTags);financial;ecb;exchange-rate;dependency-injection;options</PackageTags>
+    <Title>Bodu — Exchange Rates Provider DI</Title>
+    <Description>Shared dependency-injection machinery for Bodu.Financial web-based exchange-rate providers. Exposes AddWebExchangeRateProvider on IFinancialServiceBuilder, handling HttpClient configuration with Polly resilience, options binding, and singleton registration so per-provider DI packages delegate their plumbing here.</Description>
+    <PackageTags>$(PackageTags);financial;exchange-rate;dependency-injection;options</PackageTags>
   </PropertyGroup>
 
   <!-- Grant the companion test project access to internal members. -->
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>Bodu.Financial.ExchangeRates.Ecb.DependencyInjection.Test</_Parameter1>
+      <_Parameter1>Bodu.Financial.ExchangeRates.DependencyInjection.Test</_Parameter1>
     </AssemblyAttribute>
   </ItemGroup>
 
@@ -32,8 +32,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
     <ProjectReference Include="..\..\Bodu.Financial.DependencyInjection\src\Bodu.Financial.DependencyInjection.csproj" />
-    <ProjectReference Include="..\..\Bodu.Financial.ExchangeRates.DependencyInjection\src\Bodu.Financial.ExchangeRates.DependencyInjection.csproj" />
-    <ProjectReference Include="..\..\Bodu.Financial.ExchangeRates.Ecb\src\Bodu.Financial.ExchangeRates.Ecb.csproj" />
   </ItemGroup>
 
 </Project>

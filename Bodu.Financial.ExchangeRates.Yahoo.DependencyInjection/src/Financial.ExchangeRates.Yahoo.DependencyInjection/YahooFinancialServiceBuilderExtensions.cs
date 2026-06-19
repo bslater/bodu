@@ -1,16 +1,14 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YahooFinancialServiceBuilderExtensions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Financial.DependencyInjection;
+using Bodu.Financial.ExchangeRates.DependencyInjection;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Http.Resilience;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace Bodu.Financial.ExchangeRates.Yahoo.DependencyInjection;
 
@@ -68,72 +66,13 @@ public static class YahooFinancialServiceBuilderExtensions
         string sectionName = "Financial:Yahoo",
         Action<YahooExchangeRateOptions>? configure = null,
         Action<HttpStandardResilienceOptions>? configureResilience = null)
-    {
-        ThrowHelper.ThrowIfNull(builder);
-        ThrowHelper.ThrowIfNullOrWhiteSpace(sectionName);
-
-        IServiceCollection services = builder.Services;
-
-        OptionsBuilder<YahooExchangeRateOptions> optionsBuilder = services.AddOptions<YahooExchangeRateOptions>();
-        if (configuration is not null)
-            optionsBuilder.Bind(configuration.GetSection(sectionName));
-        if (configure is not null)
-            optionsBuilder.Configure(configure);
-        optionsBuilder
-            .Validate(static options => options.TryValidate(out _), "Yahoo exchange-rate options are invalid.")
-            .ValidateOnStart();
-
-        services
-            .AddHttpClient(HttpClientName, static (serviceProvider, client) =>
-            {
-                YahooExchangeRateOptions options = serviceProvider.GetRequiredService<IOptions<YahooExchangeRateOptions>>().Value;
-                client.Timeout = Timeout.InfiniteTimeSpan;
-                if (!string.IsNullOrWhiteSpace(options.UserAgent))
-                    client.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", options.UserAgent);
-            })
-            .AddStandardResilienceHandler()
-            .Configure((resilienceOptions, serviceProvider) =>
-            {
-                YahooExchangeRateOptions options = serviceProvider.GetRequiredService<IOptions<YahooExchangeRateOptions>>().Value;
-                ConfigureResilienceTimeouts(resilienceOptions, options.HttpTimeout);
-                configureResilience?.Invoke(resilienceOptions);
-            });
-
-        services.TryAddSingleton(static serviceProvider =>
-        {
-            HttpClient client = serviceProvider.GetRequiredService<IHttpClientFactory>().CreateClient(HttpClientName);
-            YahooExchangeRateOptions options = serviceProvider.GetRequiredService<IOptions<YahooExchangeRateOptions>>().Value;
-            return new YahooExchangeRateProvider(
-                client,
-                options,
-                serviceProvider.GetService<ILoggerFactory>()?.CreateLogger<YahooExchangeRateProvider>(),
-                serviceProvider.GetService<TimeProvider>());
-        });
-        services.TryAddSingleton<IDatedExchangeRateProvider>(static serviceProvider => serviceProvider.GetRequiredService<YahooExchangeRateProvider>());
-        services.TryAddSingleton<IExchangeRateProvider>(static serviceProvider => serviceProvider.GetRequiredService<YahooExchangeRateProvider>());
-
-        return builder;
-    }
-
-    /// <summary>
-    /// Aligns the standard resilience handler's timeouts and circuit-breaker sampling window with the configured
-    /// per-attempt HTTP timeout so the pipeline passes its built-in validation.
-    /// </summary>
-    /// <param name="options">The standard resilience options to adjust.</param>
-    /// <param name="attemptTimeout">The per-attempt HTTP timeout taken from the provider options.</param>
-    /// <remarks>
-    /// The standard handler requires the total-request timeout to exceed the per-attempt timeout and the circuit
-    /// breaker's sampling duration to be at least double the per-attempt timeout. The attempt timeout is set from
-    /// <paramref name="attemptTimeout" />, the total-request timeout to three times that value to leave room for
-    /// retries, and the sampling duration is widened to at least twice the attempt timeout when the default is smaller.
-    /// </remarks>
-    private static void ConfigureResilienceTimeouts(HttpStandardResilienceOptions options, TimeSpan attemptTimeout)
-    {
-        options.AttemptTimeout.Timeout = attemptTimeout;
-        options.TotalRequestTimeout.Timeout = attemptTimeout * 3;
-
-        TimeSpan minimumSamplingDuration = attemptTimeout * 2;
-        if (options.CircuitBreaker.SamplingDuration < minimumSamplingDuration)
-            options.CircuitBreaker.SamplingDuration = minimumSamplingDuration;
-    }
+        => builder.AddWebExchangeRateProvider<YahooExchangeRateProvider, YahooExchangeRateOptions>(
+            HttpClientName,
+            configuration,
+            sectionName,
+            "Yahoo exchange-rate options are invalid.",
+            configure,
+            configureResilience,
+            static (client, opts, loggerFactory, timeProvider) =>
+                new YahooExchangeRateProvider(client, opts, loggerFactory?.CreateLogger<YahooExchangeRateProvider>(), timeProvider));
 }
