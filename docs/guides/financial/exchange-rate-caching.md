@@ -199,12 +199,12 @@ var cache = new TomlFileExchangeRateCache(
     new FileExchangeRateCacheOptions { Provider = "RBA", CacheDirectory = "/var/cache/fx" });
 
 var now = DateTimeOffset.UtcNow;
-cache.Store(new ExchangeRatePair("AUD", "USD"),
+cache.Store(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD),
     new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, now) },
     TimeSpan.FromHours(24), now);
 
 IReadOnlyList<CachedExchangeRate> fresh =
-    cache.GetRates(new ExchangeRatePair("AUD", "USD"), TimeSpan.FromHours(24), now);
+    cache.GetRates(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), TimeSpan.FromHours(24), now);
 ```
 
 ### Custom cache stores
@@ -315,9 +315,9 @@ each pair can prefer a different source — `AUD/USD` via `[RBA, ECB]` while
 
 ```csharp
 var aggregation = new ExchangeRateAggregationOptions();
-aggregation.Routes[new ExchangeRatePair("AUD", "USD")] = new ExchangeRatePairRoute(new[] { "RBA", "ECB" });
-aggregation.Routes[new ExchangeRatePair("USD", "GBP")] = new ExchangeRatePairRoute(new[] { "ECB", "RBA" });
-aggregation.Routes[new ExchangeRatePair("EUR", "USD")] = new ExchangeRatePairRoute(new[] { "ECB", "RBA" }, new AverageStrategy());
+aggregation.Routes[new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD)] = new ExchangeRatePairRoute(new[] { "RBA", "ECB" });
+aggregation.Routes[new ExchangeRatePair(CurrencyCode.USD, CurrencyCode.GBP)] = new ExchangeRatePairRoute(new[] { "ECB", "RBA" });
+aggregation.Routes[new ExchangeRatePair(CurrencyCode.EUR, CurrencyCode.USD)] = new ExchangeRatePairRoute(new[] { "ECB", "RBA" }, new AverageStrategy());
 
 var provider = new AggregatingExchangeRateProvider(children, aggregation);
 ```
@@ -371,8 +371,8 @@ services.AddBoduFinancial()
         .AddAggregatedExchangeRateProvider(agg => agg
             .AddCachedChild<RbaExchangeRateProvider>("RBA")
             .AddCachedChild<EcbExchangeRateProvider>("ECB")
-            .MapPair(new ExchangeRatePair("AUD", "USD"), "RBA", "ECB")
-            .MapPair(new ExchangeRatePair("USD", "GBP"), "ECB", "RBA"));
+            .MapPair(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), "RBA", "ECB")
+            .MapPair(new ExchangeRatePair(CurrencyCode.USD, CurrencyCode.GBP), "ECB", "RBA"));
 
 // Later: the aggregate, or a specific source.
 var aggregate = provider.GetRequiredService<IDatedExchangeRateProvider>();
