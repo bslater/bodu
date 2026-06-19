@@ -66,7 +66,7 @@ public sealed class MoneyOfTCurrencyJsonConverter<TCurrency>
     /// </exception>
     public MoneyOfTCurrencyJsonConverter(FinancialJsonPolicy policy)
     {
-        FinancialThrowHelper.ThrowIfFinancialJsonPolicyUndefined(policy);
+        ThrowHelper.ThrowIfEnumValueIsUndefined(policy);
         _policy = policy;
     }
 

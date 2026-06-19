@@ -98,7 +98,7 @@ internal sealed class ExchangeRateSeriesBuffer
     /// </exception>
     public void Add(int dayNumber, decimal rate, string rateParamName, string dateParamName)
     {
-        FinancialThrowHelper.ThrowIfExchangeRateNotPositive(rate, rateParamName);
+        ThrowHelper.ThrowIfZeroOrNegative(rate, rateParamName);
 
         int index = IndexOf(dayNumber);
         if (index >= 0)
@@ -132,7 +132,7 @@ internal sealed class ExchangeRateSeriesBuffer
     /// </exception>
     public bool TryAdd(int dayNumber, decimal rate, string rateParamName)
     {
-        FinancialThrowHelper.ThrowIfExchangeRateNotPositive(rate, rateParamName);
+        ThrowHelper.ThrowIfZeroOrNegative(rate, rateParamName);
 
         int index = IndexOf(dayNumber);
         if (index >= 0)
@@ -158,7 +158,7 @@ internal sealed class ExchangeRateSeriesBuffer
     /// </exception>
     public void Set(int dayNumber, decimal rate, string rateParamName)
     {
-        FinancialThrowHelper.ThrowIfExchangeRateNotPositive(rate, rateParamName);
+        ThrowHelper.ThrowIfZeroOrNegative(rate, rateParamName);
 
         int index = IndexOf(dayNumber);
         if (index < 0)
@@ -189,7 +189,7 @@ internal sealed class ExchangeRateSeriesBuffer
     /// </exception>
     public bool TrySet(int dayNumber, decimal rate, string rateParamName)
     {
-        FinancialThrowHelper.ThrowIfExchangeRateNotPositive(rate, rateParamName);
+        ThrowHelper.ThrowIfZeroOrNegative(rate, rateParamName);
 
         int index = IndexOf(dayNumber);
         if (index < 0)
@@ -212,7 +212,7 @@ internal sealed class ExchangeRateSeriesBuffer
     /// </exception>
     public void Upsert(int dayNumber, decimal rate, string rateParamName)
     {
-        FinancialThrowHelper.ThrowIfExchangeRateNotPositive(rate, rateParamName);
+        ThrowHelper.ThrowIfZeroOrNegative(rate, rateParamName);
 
         int index = IndexOf(dayNumber);
         if (index >= 0)

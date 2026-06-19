@@ -82,7 +82,7 @@ public sealed record MonetaryContext
     /// </exception>
     public int ResolveScale(int currencyMinorUnits)
     {
-        FinancialThrowHelper.ThrowIfScalePolicyUndefined(ScalePolicy);
+        ThrowHelper.ThrowIfEnumValueIsUndefined(ScalePolicy);
 
         return ScalePolicy switch
         {
@@ -119,10 +119,10 @@ public sealed record MonetaryContext
     /// </exception>
     public void Validate()
     {
-        FinancialThrowHelper.ThrowIfScalePolicyUndefined(ScalePolicy);
-        FinancialThrowHelper.ThrowIfCashRoundingPolicyUndefined(CashRounding);
-        FinancialThrowHelper.ThrowIfAllocationPolicyUndefined(Allocation);
-        FinancialThrowHelper.ThrowIfConversionRoundingPolicyUndefined(ConversionRounding);
+        ThrowHelper.ThrowIfEnumValueIsUndefined(ScalePolicy);
+        ThrowHelper.ThrowIfEnumValueIsUndefined(CashRounding);
+        ThrowHelper.ThrowIfEnumValueIsUndefined(Allocation);
+        ThrowHelper.ThrowIfEnumValueIsUndefined(ConversionRounding);
 
         if (ScalePolicy == ScalePolicy.Custom)
         {

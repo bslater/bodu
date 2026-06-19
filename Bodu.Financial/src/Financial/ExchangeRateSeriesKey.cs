@@ -33,7 +33,7 @@ public readonly record struct ExchangeRateSeriesKey
     public ExchangeRateSeriesKey(ExchangeRatePair pair, string provider)
     {
         FinancialThrowHelper.ThrowIfInvalidExchangeRatePair(pair);
-        FinancialThrowHelper.ThrowIfNullOrWhiteSpaceProvider(provider);
+        ThrowHelper.ThrowIfNullOrWhiteSpace(provider);
 
         Pair = pair;
         Provider = provider;

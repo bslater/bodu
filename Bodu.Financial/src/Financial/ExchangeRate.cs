@@ -92,7 +92,7 @@ public readonly record struct ExchangeRate
     {
         FinancialThrowHelper.ThrowIfNotDefinedCurrencyCode(from);
         FinancialThrowHelper.ThrowIfNotDefinedCurrencyCode(to);
-        FinancialThrowHelper.ThrowIfNullOrWhiteSpaceProvider(provider);
+        ThrowHelper.ThrowIfNullOrWhiteSpace(provider);
         ThrowHelper.ThrowIfZeroOrNegative(rate);
 
         From = from;

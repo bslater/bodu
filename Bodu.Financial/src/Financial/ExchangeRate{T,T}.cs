@@ -63,7 +63,7 @@ public readonly record struct ExchangeRate<TBase, TQuote>
     /// <param name="isInverted"><see langword="true" /> when derived from the reverse pair.</param>
     private ExchangeRate(decimal rate, decimal observedRate, DateOnly date, string provider, bool isInverted)
     {
-        FinancialThrowHelper.ThrowIfNullOrWhiteSpaceProvider(provider);
+        ThrowHelper.ThrowIfNullOrWhiteSpace(provider);
         ThrowHelper.ThrowIfZeroOrNegative(rate);
 
         Rate = rate;

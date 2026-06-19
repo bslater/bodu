@@ -51,7 +51,7 @@ public static class FinancialJsonSerializerOptionsExtensions
         FinancialJsonPolicy policy = FinancialJsonPolicy.Strict)
     {
         ThrowHelper.ThrowIfNull(options);
-        FinancialThrowHelper.ThrowIfFinancialJsonPolicyUndefined(policy);
+        ThrowHelper.ThrowIfEnumValueIsUndefined(policy);
 
         options.Converters.Add(new MoneyOfTCurrencyJsonConverterFactory(policy));
         options.Converters.Add(new MoneyJsonConverter(policy));

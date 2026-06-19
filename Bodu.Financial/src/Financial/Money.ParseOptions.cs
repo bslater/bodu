@@ -48,7 +48,7 @@ public readonly partial struct Money
     public static bool TryParse(ReadOnlySpan<char> s, MoneyParseOptions options, out Money result)
     {
         ThrowHelper.ThrowIfNull(options);
-        FinancialThrowHelper.ThrowIfMoneyParseModeUndefined(options.Mode);
+        ThrowHelper.ThrowIfEnumValueIsUndefined(options.Mode);
 
         result = default;
 

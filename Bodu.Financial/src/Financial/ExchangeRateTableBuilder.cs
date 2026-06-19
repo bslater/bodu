@@ -58,7 +58,7 @@ public sealed class ExchangeRateTableBuilder
     public ExchangeRateSeriesBuilder GetOrAddSeries(ExchangeRatePair pair, string provider)
     {
         FinancialThrowHelper.ThrowIfInvalidExchangeRatePair(pair);
-        FinancialThrowHelper.ThrowIfNullOrWhiteSpaceProvider(provider);
+        ThrowHelper.ThrowIfNullOrWhiteSpace(provider);
 
         var key = new ExchangeRateSeriesKey(pair, provider);
         if (!_series.TryGetValue(key, out ExchangeRateSeriesBuilder? builder))
@@ -116,7 +116,7 @@ public sealed class ExchangeRateTableBuilder
     public bool Remove(ExchangeRatePair pair, string provider)
     {
         FinancialThrowHelper.ThrowIfInvalidExchangeRatePair(pair);
-        FinancialThrowHelper.ThrowIfNullOrWhiteSpaceProvider(provider);
+        ThrowHelper.ThrowIfNullOrWhiteSpace(provider);
 
         return _series.Remove(new ExchangeRateSeriesKey(pair, provider));
     }
@@ -134,7 +134,7 @@ public sealed class ExchangeRateTableBuilder
     public bool ContainsSeries(ExchangeRatePair pair, string provider)
     {
         FinancialThrowHelper.ThrowIfInvalidExchangeRatePair(pair);
-        FinancialThrowHelper.ThrowIfNullOrWhiteSpaceProvider(provider);
+        ThrowHelper.ThrowIfNullOrWhiteSpace(provider);
 
         return _series.ContainsKey(new ExchangeRateSeriesKey(pair, provider));
     }
@@ -155,7 +155,7 @@ public sealed class ExchangeRateTableBuilder
     public bool TryGetBuilder(ExchangeRatePair pair, string provider, out ExchangeRateSeriesBuilder? builder)
     {
         FinancialThrowHelper.ThrowIfInvalidExchangeRatePair(pair);
-        FinancialThrowHelper.ThrowIfNullOrWhiteSpaceProvider(provider);
+        ThrowHelper.ThrowIfNullOrWhiteSpace(provider);
 
         return _series.TryGetValue(new ExchangeRateSeriesKey(pair, provider), out builder);
     }
@@ -179,7 +179,7 @@ public sealed class ExchangeRateTableBuilder
     public bool TryGetSeries(ExchangeRatePair pair, string provider, out ExchangeRateSeries? series)
     {
         FinancialThrowHelper.ThrowIfInvalidExchangeRatePair(pair);
-        FinancialThrowHelper.ThrowIfNullOrWhiteSpaceProvider(provider);
+        ThrowHelper.ThrowIfNullOrWhiteSpace(provider);
 
         if (_series.TryGetValue(new ExchangeRateSeriesKey(pair, provider), out ExchangeRateSeriesBuilder? builder) && !builder.IsEmpty)
         {

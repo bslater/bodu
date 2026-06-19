@@ -101,7 +101,7 @@ public sealed partial class MoneyBag
     private Money<TTarget> ConvertCore<TTarget>(Func<string, string, decimal> rateLookup, MoneyBagConversionRoundingPolicy policy)
         where TTarget : ICurrency
     {
-        FinancialThrowHelper.ThrowIfMoneyBagRoundingPolicyUndefined(policy);
+        ThrowHelper.ThrowIfEnumValueIsUndefined(policy);
 
         CurrencyCode targetCode = CurrencyMetadata<TTarget>.Value.Code;
         string targetIso = CurrencyMetadata<TTarget>.Value.IsoCode;
