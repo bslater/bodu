@@ -1,0 +1,54 @@
+﻿// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="RingBackedCollectionTestsBase{T,T}.PeekHead.cs" company="Bodu Pty. Ltd.">
+// Copyright (c) Bodu Pty. Ltd. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+namespace Bodu.Collections.Generic;
+
+public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
+{
+
+    /// <summary>
+    /// Verifies that <see cref="PeekHead(TCollection)"/> reflects the new head after a previous head has
+    /// been removed.
+    /// </summary>
+    [TestMethod]
+    public void PeekHead_AfterRemoveFromHead_ShouldReturnNewHead()
+    {
+        TCollection collection = CreateCollection(3);
+        AddToTail(collection, 1);
+        AddToTail(collection, 2);
+        _ = RemoveFromHead(collection);
+
+        Assert.AreEqual(2, PeekHead(collection));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="PeekHead(TCollection)"/> throws <see cref="InvalidOperationException"/> when
+    /// the collection is empty.
+    /// </summary>
+    [TestMethod]
+    public void PeekHead_WhenEmpty_ShouldThrowExactly()
+    {
+        TCollection collection = CreateCollection(3);
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            _ = PeekHead(collection);
+        });
+    }
+    /// <summary>
+    /// Verifies that <see cref="PeekHead(TCollection)"/> returns the head element without modifying the count.
+    /// </summary>
+    [TestMethod]
+    public void PeekHead_WhenItemsPresent_ShouldReturnHeadWithoutRemoving()
+    {
+        TCollection collection = CreateCollection(3);
+        AddToTail(collection, 1);
+        AddToTail(collection, 2);
+
+        Assert.AreEqual(1, PeekHead(collection));
+        Assert.AreEqual(2, GetCount(collection));
+    }
+
+}

@@ -22,7 +22,7 @@ public static partial class MoneyOfTCurrencyExchangeRateExtensions
     /// The rounding mode applied to the converted amount. Defaults to <see cref="MidpointRounding.ToEven" />.
     /// </param>
     /// <returns>
-    /// A <see cref="TypedMoneyConversionResult{TSource, TTarget}" /> containing the source, target, and rate metadata.
+    /// A <see cref="MoneyConversionResult{TSource, TTarget}" /> containing the source, target, and rate metadata.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="provider" /> is <see langword="null" />.
@@ -30,7 +30,7 @@ public static partial class MoneyOfTCurrencyExchangeRateExtensions
     /// <exception cref="KeyNotFoundException">
     /// Thrown if no rate is available for the requested pair under the supplied options.
     /// </exception>
-    public static TypedMoneyConversionResult<TSource, TTarget> ConvertToWithRate<TSource, TTarget>(
+    public static MoneyConversionResult<TSource, TTarget> ConvertToWithRate<TSource, TTarget>(
         this Money<TSource> amount,
         IDatedExchangeRateProvider provider,
         DateOnly date,
@@ -48,6 +48,6 @@ public static partial class MoneyOfTCurrencyExchangeRateExtensions
             options);
 
         Money<TTarget> target = amount.Convert<TTarget>(lookup.Rate.Rate, rounding);
-        return new TypedMoneyConversionResult<TSource, TTarget>(amount, target, lookup);
+        return new MoneyConversionResult<TSource, TTarget>(amount, target, lookup);
     }
 }

@@ -1,0 +1,244 @@
+﻿// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="TweakableSymmetricAlgorithmTests{T,T}.CreateDecryptor.cs" company="Bodu Pty. Ltd.">
+// Copyright (c) Bodu Pty. Ltd. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+using System.Security.Cryptography;
+
+namespace Bodu.Security.Cryptography;
+
+public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm>
+{
+    /// <summary>
+    /// Verifies that attempting to create a cryptographic transform on a disposed
+    /// <typeparamref name="TAlgorithm" /> instance throws <see cref="ObjectDisposedException" /> whose
+    /// <see cref="ObjectDisposedException.ObjectName" /> carries the concrete algorithm type
+    /// name.
+    /// </summary>
+    [TestMethod]
+    public void CreateDecryptor_WhenSetAfterDisposeWithTweak_ShouldThrowExactly()
+    {
+        TAlgorithm algorithm = CreateAlgorithm();
+        algorithm.Dispose();
+
+        ObjectDisposedException ex = Assert.ThrowsExactly<ObjectDisposedException>(() =>
+        {
+            _ = algorithm.CreateDecryptor();
+        });
+
+        Assert.AreEqual(typeof(TAlgorithm).FullName, ex.ObjectName,
+             $"ObjectDisposedException.ObjectName must match the concrete type name '{typeof(TAlgorithm).FullName}'.");
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="TweakableSymmetricAlgorithm.CreateDecryptor(byte[], byte[], byte[])" /> throws
+    /// <see cref="ArgumentNullException" /> when the key is <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void CreateDecryptor_WhenKeyIsNullWithTweak_ShouldThrowExactly()
+    {
+        using TAlgorithm algorithm = CreateAlgorithm();
+
+        byte[] key = null!;
+        byte[] iv = new byte[algorithm.BlockSize / 8];
+        byte[] tweak = new byte[algorithm.TweakSize / 8];
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = algorithm.CreateDecryptor(key, iv, tweak);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="TweakableSymmetricAlgorithm.CreateDecryptor(byte[], byte[], byte[])" /> throws
+    /// <see cref="CryptographicException" /> when the IV is <see langword="null" /> in a non-ECB mode.
+    /// </summary>
+    [TestMethod]
+    public void CreateDecryptor_WhenIvIsNullInNonEcbModeWithTweak_ShouldThrowExactly()
+    {
+        using TAlgorithm algorithm = CreateAlgorithm();    // default mode is CBC
+
+        byte[] key = new byte[algorithm.KeySize / 8];
+        byte[] tweak = new byte[algorithm.TweakSize / 8];
+
+        Assert.ThrowsExactly<CryptographicException>(() =>
+        {
+            _ = algorithm.CreateDecryptor(key, null, tweak);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="TweakableSymmetricAlgorithm.CreateDecryptor(byte[], byte[], byte[])" /> throws
+    /// <see cref="CryptographicException" /> when the IV length does not match the configured block size in
+    /// a non-ECB mode.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(InvalidBlockSizeBytesData))]
+    public void CreateDecryptor_WhenIvLengthIsInvalidInNonEcbModeWithTweak_ShouldThrowExactly(int blockSize)
+    {
+        if (blockSize < 0) return;
+
+        using TAlgorithm algorithm = CreateAlgorithm();    // default mode is CBC
+
+        byte[] key = new byte[algorithm.KeySize / 8];
+        byte[] badIv = new byte[blockSize];
+        byte[] tweak = new byte[algorithm.TweakSize / 8];
+
+        Assert.ThrowsExactly<CryptographicException>(() =>
+        {
+            _ = algorithm.CreateDecryptor(key, badIv, tweak);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="TweakableSymmetricAlgorithm.CreateDecryptor(byte[], byte[], byte[])" /> throws
+    /// <see cref="CryptographicException" /> when the IV is non-null but has the wrong length in ECB mode — a
+    /// supplied IV must always be valid if provided.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(InvalidBlockSizeBytesData))]
+    public void CreateDecryptor_WhenIvLengthIsInvalidInEcbModeWithTweak_ShouldThrowExactly(int blockSize)
+    {
+        if (blockSize < 0) return;
+
+        using TAlgorithm algorithm = CreateAlgorithm();
+        SetEcbMode(algorithm);
+
+        byte[] key = new byte[algorithm.KeySize / 8];
+        byte[] badIv = new byte[blockSize];
+        byte[] tweak = new byte[algorithm.TweakSize / 8];
+
+        Assert.ThrowsExactly<CryptographicException>(() =>
+        {
+            _ = algorithm.CreateDecryptor(key, badIv, tweak);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="TweakableSymmetricAlgorithm.CreateDecryptor(byte[], byte[], byte[])" /> throws
+    /// <see cref="CryptographicException" /> when the Key length does not match the configured key size.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(InvalidKeySizeBytesData))]
+    public void CreateDecryptor_WhenKeyLengthIsInvalidWithTweak_ShouldThrowExactly(int keySize)
+    {
+        if (keySize < 0) return;
+
+        using TAlgorithm algorithm = CreateAlgorithm();
+
+        byte[] badKey = new byte[keySize];
+        byte[] iv = new byte[algorithm.BlockSize / 8];
+        byte[] tweak = new byte[algorithm.TweakSize / 8];
+
+        Assert.ThrowsExactly<CryptographicException>(() =>
+        {
+            _ = algorithm.CreateDecryptor(badKey, iv, tweak);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="TweakableSymmetricAlgorithm.CreateDecryptor(byte[], byte[], byte[])" /> throws
+    /// <see cref="ArgumentNullException" /> when the tweak is <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void CreateDecryptor_WhenTweakIsNull_ShouldThrowExactly()
+    {
+        using TAlgorithm algorithm = CreateAlgorithm();
+
+        byte[] key = new byte[algorithm.KeySize / 8];
+        byte[] iv = new byte[algorithm.BlockSize / 8];
+        byte[] badTweak = null!;
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = algorithm.CreateDecryptor(key, iv, badTweak);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="TweakableSymmetricAlgorithm.CreateDecryptor()" /> uses the configured tweak.
+    /// </summary>
+    [TestMethod]
+    public void CreateDecryptor_WithoutParameters_ShouldUseConfiguredTweak()
+    {
+        using TAlgorithm algorithm = CreateAlgorithm();
+        using ICryptoTransform decryptor = algorithm.CreateDecryptor();
+        Assert.IsNotNull(decryptor);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="TweakableSymmetricAlgorithm.CreateDecryptor(byte[], byte[], byte[])" /> throws
+    /// <see cref="CryptographicException" /> for every invalid tweak byte-length supplied by
+    /// <see cref="InvalidTweakSizeBitsData" />.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(InvalidTweakSizeBytesData))]
+    public void CreateDecryptor_WhenTweakLengthIsInvalid_ShouldThrowExactly(int tweakSize)
+    {
+        if (tweakSize < 0) return;
+
+        using TAlgorithm algorithm = CreateAlgorithm();
+
+        byte[] key = new byte[algorithm.KeySize / 8];
+        byte[] iv = new byte[algorithm.BlockSize / 8];
+        byte[] badTweak = new byte[tweakSize];
+
+        Assert.ThrowsExactly<CryptographicException>(() =>
+        {
+            _ = algorithm.CreateDecryptor(key, iv, badTweak);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="TweakableSymmetricAlgorithm.CreateDecryptor(byte[], byte[], byte[])" /> succeeds
+    /// when the IV is <see langword="null" /> in ECB mode, because ECB does not use an IV.
+    /// </summary>
+    [TestMethod]
+    public void CreateDecryptor_WhenIvIsNullInEcbModeWithTweak_ShouldSucceed()
+    {
+        using TAlgorithm algorithm = CreateAlgorithm();
+        SetEcbMode(algorithm);
+
+        byte[] key = new byte[algorithm.KeySize / 8];
+        byte[] tweak = new byte[algorithm.TweakSize / 8];
+
+        using ICryptoTransform transform = algorithm.CreateDecryptor(key, null, tweak);
+        Assert.IsNotNull(transform);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="TweakableSymmetricAlgorithm.CreateDecryptor(byte[], byte[], byte[])" /> succeeds
+    /// when the IV has the correct block-size length in ECB mode (the IV is accepted but ignored at runtime).
+    /// </summary>
+    [TestMethod]
+    public void CreateDecryptor_WhenIvIsValidLengthInEcbModeWithTweak_ShouldSucceed()
+    {
+        using TAlgorithm algorithm = CreateAlgorithm();
+        SetEcbMode(algorithm);
+
+        byte[] key = new byte[algorithm.KeySize / 8];
+        byte[] iv = new byte[algorithm.BlockSize / 8];
+        byte[] tweak = new byte[algorithm.TweakSize / 8];
+
+        using ICryptoTransform transform = algorithm.CreateDecryptor(key, iv, tweak);
+        Assert.IsNotNull(transform);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="TweakableSymmetricAlgorithm.CreateDecryptor(byte[], byte[], byte[])" /> succeeds
+    /// when a valid key, IV, and tweak are supplied in the default (non-ECB) mode.
+    /// </summary>
+    [TestMethod]
+    public void CreateDecryptor_WhenKeyIvAndTweakAreValidInNonEcbMode_ShouldSucceed()
+    {
+        using TAlgorithm algorithm = CreateAlgorithm();    // default mode is CBC
+
+        byte[] key = new byte[algorithm.KeySize / 8];
+        byte[] iv = new byte[algorithm.BlockSize / 8];
+        byte[] tweak = new byte[algorithm.TweakSize / 8];
+
+        using ICryptoTransform transform = algorithm.CreateDecryptor(key, iv, tweak);
+        Assert.IsNotNull(transform);
+    }
+}

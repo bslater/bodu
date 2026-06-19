@@ -1,0 +1,264 @@
+﻿// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="FileExchangeRateCacheBase{T}.cs" company="Bodu Pty. Ltd.">
+// Copyright (c) Bodu Pty. Ltd. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+using System.Collections.Concurrent;
+
+namespace Bodu.Financial.ExchangeRates.Caching;
+
+/// <summary>
+/// Provides the file-storage mechanism for an <see cref="IExchangeRateCache" />: directory resolution, per-pair
+/// file-name resolution, and best-effort file read and write. Derived types supply only the serialization format.
+/// </summary>
+/// <typeparam name="TOptions">
+/// The file-cache options type carrying the bound provider and storage directory.
+/// </typeparam>
+/// <remarks>
+/// <para>
+/// A cache instance is bound to one provider, so files are laid out under a per-provider subdirectory of
+/// <see cref="CacheDirectory" /> and named by the currency pair alone (see <see cref="ResolveFilePath" />). Reads and
+/// writes are best-effort: any <see cref="IOException" /> or <see cref="UnauthorizedAccessException" /> surfaces as an
+/// empty read result or a skipped write, so a storage problem never breaks rate retrieval. Derived types are expected
+/// to treat malformed content the same way by returning an empty list from <see cref="Deserialize" />.
+/// </para>
+/// </remarks>
+public abstract class FileExchangeRateCacheBase<TOptions>
+    : ExchangeRateCacheBase<TOptions>, IFileExchangeRateCache
+    where TOptions : FileExchangeRateCacheOptions
+{
+    /// <summary>The cached set of characters that are not permitted in a file-name segment.</summary>
+    private static readonly char[] s_invalidFileNameChars = Path.GetInvalidFileNameChars();
+
+    /// <summary>The resolved directory in which this provider's cached rate files are stored.</summary>
+    private readonly string _directory;
+
+    /// <summary>Memoizes the most recently parsed state per pair, keyed by the file's last-write instant, so a repeated read of an unchanged file serves the cached parse rather than re-reading and re-deserializing it on every lookup. The entry is invalidated when this instance writes the pair, and a differing last-write instant — an external or cross-process change — is detected on the next read, so the memo never serves data from a file whose timestamp has moved.</summary>
+    private readonly ConcurrentDictionary<ExchangeRatePair, (DateTime StampUtc, CachePairState State)> _parsed = new();
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="FileExchangeRateCacheBase{TOptions}" /> class.
+    /// </summary>
+    /// <param name="options">The file-cache options selecting the bound provider and storage directory.</param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="options" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> fails validation.</exception>
+    protected FileExchangeRateCacheBase(TOptions options)
+        : base(options)
+    {
+        _directory = string.IsNullOrWhiteSpace(options.CacheDirectory)
+            ? Path.Combine(Path.GetTempPath(), "bodu-exchange-rates")
+            : options.CacheDirectory!;
+
+        if (Options.ValidateStorageOnStart)
+        {
+            // Eagerly create the per-provider directory so a misconfigured or unwritable location surfaces at
+            // construction rather than on the first write. The failure propagates by design; this mirrors the
+            // startup probe the SQLite and distributed backends run under the same option.
+            Directory.CreateDirectory(Path.Combine(_directory, SanitizeProvider(Provider)));
+        }
+    }
+
+    /// <inheritdoc />
+    public string CacheDirectory => _directory;
+
+    /// <summary>
+    /// Gets a value indicating whether a caught storage failure should degrade to a best-effort fallback rather than
+    /// propagate. Used as the exception filter on the read and write catch blocks so a strict cache fails fast.
+    /// </summary>
+    /// <returns>
+    /// <see langword="true" /> when <see cref="ExchangeRateCacheOptions.ThrowOnStorageFailure" /> is not set; otherwise
+    /// <see langword="false" />, so the failure propagates.
+    /// </returns>
+    private bool ShouldSwallowStorageFailure => !Options.ThrowOnStorageFailure;
+
+    /// <summary>
+    /// Gets the file extension, including the leading period, applied to cached rate files.
+    /// </summary>
+    /// <returns>The file extension used by the serialization format, for example <c>.toml</c>.</returns>
+    protected abstract string FileExtension { get; }
+
+    /// <inheritdoc />
+    public string ResolveFilePath(ExchangeRatePair pair) =>
+        Path.Combine(_directory, SanitizeProvider(Provider), BuildFileName(pair));
+
+    /// <inheritdoc />
+    private protected sealed override CachePairState ReadState(ExchangeRatePair pair)
+    {
+        string path = ResolveFilePath(pair);
+
+        try
+        {
+            if (!File.Exists(path))
+            {
+                _parsed.TryRemove(pair, out _);
+                return CachePairState.Empty;
+            }
+
+            var stamp = File.GetLastWriteTimeUtc(path);
+            if (_parsed.TryGetValue(pair, out (DateTime StampUtc, CachePairState State) memo) && memo.StampUtc == stamp)
+                return memo.State;
+
+            string text = File.ReadAllText(path);
+            CachePairState state = Deserialize(text);
+
+            // Memoize the parse against the file's last-write instant. A later write (here or in another process) moves
+            // the timestamp, so the next read misses this entry and re-parses the fresh file.
+            _parsed[pair] = (stamp, state);
+            return state;
+        }
+        catch (IOException) when (ShouldSwallowStorageFailure)
+        {
+            return CachePairState.Empty;
+        }
+        catch (UnauthorizedAccessException) when (ShouldSwallowStorageFailure)
+        {
+            return CachePairState.Empty;
+        }
+    }
+
+    /// <inheritdoc />
+    private protected sealed override bool WriteState(ExchangeRatePair pair, CachePairState state)
+    {
+        string path = ResolveFilePath(pair);
+
+        try
+        {
+            // An entirely empty state has nothing worth persisting: delete the file so a stale, empty file is not left
+            // behind, mirroring the in-memory cache that removes the pair entry.
+            if (state.Entries.Count == 0 && state.Coverage.Count == 0)
+            {
+                if (File.Exists(path))
+                    File.Delete(path);
+
+                _parsed.TryRemove(pair, out _);
+                return true;
+            }
+
+            Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+
+            string text = Serialize(state);
+            WriteAtomic(path, text);
+
+            // Invalidate the parse memo so the next read re-parses from the freshly written file and re-stamps it.
+            _parsed.TryRemove(pair, out _);
+            return true;
+        }
+        catch (IOException) when (ShouldSwallowStorageFailure)
+        {
+            // Best-effort cache: a failed write must not break rate retrieval. Report the failure so the caller can
+            // refetch rather than trust coverage that was never persisted. When ThrowOnStorageFailure is set the
+            // failure propagates instead.
+            return false;
+        }
+        catch (UnauthorizedAccessException) when (ShouldSwallowStorageFailure)
+        {
+            // Best-effort cache: see above.
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Builds the file name (without directory) for a pair under this cache's provider.
+    /// </summary>
+    /// <param name="pair">The currency pair.</param>
+    /// <returns>The file name, for example <c>AUDUSD.toml</c>.</returns>
+    protected virtual string BuildFileName(ExchangeRatePair pair) =>
+        $"{pair.From}{pair.To}{FileExtension}";
+
+    /// <summary>
+    /// Maps a provider name to a safe path segment by replacing characters that are illegal in a file name.
+    /// </summary>
+    /// <param name="provider">The provider name.</param>
+    /// <returns>The provider name with any illegal characters replaced by an underscore.</returns>
+    protected virtual string SanitizeProvider(string provider)
+    {
+        ThrowHelper.ThrowIfNull(provider);
+
+        if (provider.AsSpan().IndexOfAny(s_invalidFileNameChars) < 0)
+            return provider;
+
+        char[] chars = provider.ToCharArray();
+        for (int i = 0; i < chars.Length; i++)
+        {
+            if (Array.IndexOf(s_invalidFileNameChars, chars[i]) >= 0)
+                chars[i] = '_';
+        }
+
+        return new string(chars);
+    }
+
+    /// <summary>
+    /// Serializes the supplied state to the cache file's text format.
+    /// </summary>
+    /// <param name="state">The per-pair state — cached rows and coverage windows — to persist.</param>
+    /// <returns>The serialized text to write to the cache file.</returns>
+    /// <remarks>
+    /// Declared <see langword="private protected" /> because <see cref="CachePairState" /> is an internal storage
+    /// detail shared only with same-assembly backends.
+    /// </remarks>
+    private protected abstract string Serialize(CachePairState state);
+
+    /// <summary>
+    /// Deserializes the cache file's text into per-pair state, returning <see cref="CachePairState.Empty" /> when the
+    /// content is malformed.
+    /// </summary>
+    /// <param name="text">The file text to parse.</param>
+    /// <returns>The parsed state, or <see cref="CachePairState.Empty" /> when the content cannot be parsed.</returns>
+    /// <remarks>
+    /// Declared <see langword="private protected" /> because <see cref="CachePairState" /> is an internal storage
+    /// detail shared only with same-assembly backends.
+    /// </remarks>
+    private protected abstract CachePairState Deserialize(string text);
+
+    /// <summary>
+    /// Writes <paramref name="text" /> to <paramref name="path" /> atomically by writing to a uniquely named temporary
+    /// file in the same directory and moving it into place, so a reader never observes a partially written file.
+    /// </summary>
+    /// <param name="path">The destination file path.</param>
+    /// <param name="text">The text to write.</param>
+    /// <remarks>
+    /// The temporary file shares the destination directory so the final <see cref="File.Move(string, string, bool)" />
+    /// is a same-volume rename rather than a copy. The temporary file is removed on failure so a crashed or rejected
+    /// write leaves no orphan behind.
+    /// </remarks>
+    private static void WriteAtomic(string path, string text)
+    {
+        string tempPath = $"{path}.{Guid.NewGuid():N}.tmp";
+
+        try
+        {
+            File.WriteAllText(tempPath, text);
+            File.Move(tempPath, path, overwrite: true);
+        }
+        catch
+        {
+            TryDelete(tempPath);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Deletes the file at <paramref name="path" /> if it exists, swallowing file-system failures so cleanup never
+    /// masks the original error.
+    /// </summary>
+    /// <param name="path">The path of the file to delete.</param>
+    private static void TryDelete(string path)
+    {
+        try
+        {
+            if (File.Exists(path))
+                File.Delete(path);
+        }
+        catch (IOException)
+        {
+            // Best-effort cleanup of the temp file.
+        }
+        catch (UnauthorizedAccessException)
+        {
+            // Best-effort cleanup of the temp file.
+        }
+    }
+}

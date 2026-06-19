@@ -275,7 +275,7 @@ resolve the rate, apply it, and return either the converted amount
 ```csharp
 Money<USD> price = new(100m);
 
-TypedMoneyConversionResult<USD, EUR> audited = price.ConvertToWithRate<USD, EUR>(
+MoneyConversionResult<USD, EUR> audited = price.ConvertToWithRate<USD, EUR>(
     provider, new DateOnly(2024, 6, 15),
     ExchangeRateLookupOptions.PreviousWithin(3));
 
@@ -298,7 +298,7 @@ extension methods for runtime-tagged amounts. For bags, see
 | In-memory table where the date matters | `FixedDatedExchangeRateProvider` + `ExchangeRateLookupOptions.PreviousWithin(...)` |
 | Primary feed plus fallbacks | `AggregatingExchangeRateProvider` (in `Bodu.Financial.ExchangeRates.Caching`) over multiple dated providers |
 | Reporting period that pins one date everywhere | `DatedExchangeRateProviderAdapter` over the period-end date |
-| Ledger entry that records the rate provenance | `Money<T>.ConvertToWithRate<,>(provider, date, options)` returning `TypedMoneyConversionResult<,>` |
+| Ledger entry that records the rate provenance | `Money<T>.ConvertToWithRate<,>(provider, date, options)` returning `MoneyConversionResult<,>` |
 | Runtime-tagged amount via a dated provider | `MoneyExchangeRateExtensions.ConvertToWithRate(...)` |
 | Aggregate-then-convert a bag with per-line provenance | `MoneyBag.ConvertToWithAudit<TTarget>(provider, date, options)` |
 | Build a new series imperatively, or merge incoming observations into an existing one | `ExchangeRateSeriesBuilder` + `Add` / `Upsert` / `AddRange` / `UpsertRange` |
@@ -312,5 +312,5 @@ extension methods for runtime-tagged amounts. For bags, see
 - Values — [`ExchangeRate`](xref:Bodu.Financial.ExchangeRate), [`ExchangeRatePair`](xref:Bodu.Financial.ExchangeRatePair), [`ExchangeRateObservation`](xref:Bodu.Financial.ExchangeRateObservation), [`ExchangeRateSeries`](xref:Bodu.Financial.ExchangeRateSeries)
 - Editing — [`ExchangeRateSeriesBuilder`](xref:Bodu.Financial.ExchangeRateSeriesBuilder), [`ExchangeRateSeriesKey`](xref:Bodu.Financial.ExchangeRateSeriesKey), [`ExchangeRateTableBuilder`](xref:Bodu.Financial.ExchangeRateTableBuilder), [`ExchangeRateBook`](xref:Bodu.Financial.ExchangeRateBook)
 - Providers — [`FixedExchangeRateTable`](xref:Bodu.Financial.FixedExchangeRateTable), [`FixedDatedExchangeRateProvider`](xref:Bodu.Financial.FixedDatedExchangeRateProvider), [`DatedExchangeRateProviderAdapter`](xref:Bodu.Financial.DatedExchangeRateProviderAdapter); grouping via [`AggregatingExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.Caching.AggregatingExchangeRateProvider)
-- Lookup metadata — [`ExchangeRateLookupOptions`](xref:Bodu.Financial.ExchangeRateLookupOptions), [`ExchangeRateLookupResult`](xref:Bodu.Financial.ExchangeRateLookupResult), [`ExchangeRateDateResolution`](xref:Bodu.Financial.ExchangeRateDateResolution), [`TypedMoneyConversionResult<TSource, TTarget>`](xref:Bodu.Financial.TypedMoneyConversionResult`2)
+- Lookup metadata — [`ExchangeRateLookupOptions`](xref:Bodu.Financial.ExchangeRateLookupOptions), [`ExchangeRateLookupResult`](xref:Bodu.Financial.ExchangeRateLookupResult), [`ExchangeRateDateResolution`](xref:Bodu.Financial.ExchangeRateDateResolution), [`MoneyConversionResult<TSource, TTarget>`](xref:Bodu.Financial.MoneyConversionResult`2)
 - **[Numerics & Financial guides](../topics/numerics-and-financial.md)** — every guide in this topic, across Bodu.Numerics and Bodu.Financial.

@@ -1,0 +1,70 @@
+﻿// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="AeadBlockCipherModeTests{T,T}.ProcessAssociatedData.cs" company="Bodu Pty. Ltd.">
+// Copyright (c) Bodu Pty. Ltd. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+namespace Bodu.Security.Cryptography;
+
+public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
+{
+    /// <summary>
+    /// Verifies that <see cref="IAeadBlockCipherModeTransform.ProcessAssociatedData" /> throws
+    /// <see cref="InvalidOperationException" /> when called more than once on the same instance.
+    /// Associated data must be supplied exactly once before any encryption or decryption.
+    /// </summary>
+    [TestMethod]
+    public void ProcessAssociatedData_WhenCalledTwice_ShouldThrowExactly()
+    {
+        TTransform transform = MakeTransform();
+        transform.ProcessAssociatedData([1, 2, 3]);
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+            transform.ProcessAssociatedData([4, 5, 6]));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="IAeadBlockCipherModeTransform.ProcessAssociatedData" /> throws
+    /// <see cref="InvalidOperationException" /> when called after
+    /// <see cref="IAeadBlockCipherModeTransform.Encrypt" /> has been invoked on the same instance.
+    /// </summary>
+    /// <remarks>
+    /// AEAD transforms enforce a single-pass contract: each instance is intended for exactly one
+    /// encrypt or decrypt operation, and associated data must be supplied before that call.
+    /// </remarks>
+    [TestMethod]
+    public void ProcessAssociatedData_AfterEncrypt_ShouldThrowExactly()
+    {
+        TTransform transform = MakeTransform();
+        byte[] plaintext = new byte[ExpectedBlockSize];
+        transform.Encrypt(plaintext, new byte[plaintext.Length + (transform.TagSize / 8)]);
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+            transform.ProcessAssociatedData([0x01, 0x02, 0x03]),
+            "ProcessAssociatedData must throw after Encrypt has been called on the same instance.");
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="IAeadBlockCipherModeTransform.ProcessAssociatedData" /> throws
+    /// <see cref="InvalidOperationException" /> when called after
+    /// <see cref="IAeadBlockCipherModeTransform.Decrypt" /> has been invoked on the same instance.
+    /// </summary>
+    [TestMethod]
+    public void ProcessAssociatedData_AfterDecrypt_ShouldThrowExactly()
+    {
+        var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
+        byte[] iv = CreateInitializationVector();
+        byte[] plaintext = new byte[ExpectedBlockSize];
+
+        TTransform enc = CreateTransform(cipher, (byte[])iv.Clone());
+        byte[] ct = new byte[plaintext.Length + (enc.TagSize / 8)];
+        enc.Encrypt(plaintext, ct);
+
+        TTransform dec = CreateTransform(cipher, (byte[])iv.Clone());
+        dec.Decrypt(ct, new byte[plaintext.Length]);
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+            dec.ProcessAssociatedData([0x01, 0x02, 0x03]),
+            "ProcessAssociatedData must throw after Decrypt has been called on the same instance.");
+    }
+}
