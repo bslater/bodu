@@ -919,7 +919,7 @@ namespace Bodu.Financial {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to There is no CurrencyCode enum member for ISO code &apos;{0}&apos;. Historic or custom currencies are not represented in CurrencyCode..
+        ///   Looks up a localized string similar to There is no CurrencyCode enum member for ISO code &apos;{0}&apos;..
         /// </summary>
         internal static string Op_Invalid_NoCurrencyCodeForIsoCode {
             get {

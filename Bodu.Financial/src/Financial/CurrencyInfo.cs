@@ -93,17 +93,7 @@ public sealed record CurrencyInfo(
     /// </exception>
     public static CurrencyInfo FromCurrencyCode(CurrencyCode code)
     {
-        if (code == CurrencyCode.None || !Enum.IsDefined(code))
-        {
-            throw new ArgumentOutOfRangeException(
-                nameof(code),
-                code,
-                string.Format(
-                    CultureInfo.CurrentCulture,
-                    FinancialResourceStrings.Arg_Invalid_CurrencyCodeNotMapped,
-                    code,
-                    (int)code));
-        }
+        FinancialThrowHelper.ThrowIfNotDefinedCurrencyCode(code);
 
         return CurrencyRegistry.Get(code.ToString());
     }

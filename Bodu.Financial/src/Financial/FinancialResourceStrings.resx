@@ -349,7 +349,7 @@
     <value>Money operations require the same currency; got '{0}' and '{1}'.</value>
   </data>
   <data name="Op_Invalid_NoCurrencyCodeForIsoCode" xml:space="preserve">
-    <value>There is no CurrencyCode enum member for ISO code '{0}'. Historic or custom currencies are not represented in CurrencyCode.</value>
+    <value>There is no CurrencyCode enum member for ISO code '{0}'.</value>
   </data>
   <data name="Op_Invalid_RateNotStrictlyPositive" xml:space="preserve">
     <value>Exchange rate for {0} → {1} must be strictly positive; rate provider returned {2}.</value>

@@ -130,25 +130,16 @@ public readonly partial struct Money
     /// Creates a runtime-tagged <see cref="Money" /> from the supplied amount and ISO 4217 enum value.
     /// </summary>
     /// <param name="amount">The monetary amount in the major unit.</param>
-    /// <param name="code">The active ISO 4217 currency code.</param>
+    /// <param name="code">The ISO 4217 currency code.</param>
     /// <param name="rounding">The midpoint-rounding rule applied when normalising to the minor-unit precision.</param>
     /// <returns>The constructed monetary value.</returns>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="code" /> is not a defined <see cref="CurrencyCode" /> member.
+    /// <paramref name="code" /> is <see cref="CurrencyCode.None" /> or is not a defined <see cref="CurrencyCode" />
+    /// member.
     /// </exception>
     public static Money From(decimal amount, CurrencyCode code, MidpointRounding rounding = MidpointRounding.ToEven)
     {
-        if (!Enum.IsDefined(code))
-        {
-            throw new ArgumentOutOfRangeException(
-                nameof(code),
-                code,
-                string.Format(
-                    CultureInfo.CurrentCulture,
-                    FinancialResourceStrings.Arg_Invalid_CurrencyCodeNotMapped,
-                    code,
-                    (int)code));
-        }
+        FinancialThrowHelper.ThrowIfNotDefinedCurrencyCode(code);
 
         return new(amount, code.ToString(), rounding);
     }
