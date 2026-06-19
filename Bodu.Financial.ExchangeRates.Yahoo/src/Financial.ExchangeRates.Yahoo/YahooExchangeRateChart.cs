@@ -57,23 +57,6 @@ internal sealed class YahooExchangeRateChart
     public IReadOnlyList<ExchangeRateObservation> Observations { get; }
 
     /// <summary>
-    /// Enumerates the chart as <see cref="ExchangeRate" /> values, each quoting the pair on an observation date.
-    /// </summary>
-    /// <returns>One <see cref="ExchangeRate" /> per observation.</returns>
-    public IEnumerable<ExchangeRate> EnumerateRates()
-    {
-        foreach (ExchangeRateObservation observation in Observations)
-        {
-            yield return new ExchangeRate(
-                Pair.FromIsoCode,
-                Pair.ToIsoCode,
-                observation.Date,
-                observation.Rate,
-                YahooExchangeRateProvider.ProviderName);
-        }
-    }
-
-    /// <summary>
     /// Produces the discovered-pair metadata for the chart.
     /// </summary>
     /// <returns>The <see cref="YahooSeriesInfo" /> describing this chart's series.</returns>

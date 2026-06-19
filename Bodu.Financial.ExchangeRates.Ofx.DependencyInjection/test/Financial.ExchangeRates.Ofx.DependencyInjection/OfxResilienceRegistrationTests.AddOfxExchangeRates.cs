@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="YahooResilienceRegistrationTests.AddYahooExchangeRates.cs" company="Bodu Pty. Ltd.">
+// <copyright file="OfxResilienceRegistrationTests.AddOfxExchangeRates.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -9,19 +9,19 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Http.Resilience;
 using Microsoft.Extensions.Options;
 
-namespace Bodu.Financial.ExchangeRates.Yahoo.DependencyInjection;
+namespace Bodu.Financial.ExchangeRates.Ofx.DependencyInjection;
 
-public partial class YahooResilienceRegistrationTests
+public partial class OfxResilienceRegistrationTests
 {
     /// <summary>
     /// Verifies that the standard resilience options are registered for the named client with the per-attempt timeout
     /// driven from the configured <see cref="WebExchangeRateProviderOptions.HttpTimeout" />.
     /// </summary>
     [TestMethod]
-    public void AddYahooExchangeRates_ShouldRegisterStandardResilienceOptionsForNamedClient()
+    public void AddOfxExchangeRates_ShouldRegisterStandardResilienceOptionsForNamedClient()
     {
         ServiceCollection services = new();
-        services.AddBoduFinancial().AddYahooExchangeRates(configure: o => o.HttpTimeout = TimeSpan.FromSeconds(7));
+        services.AddBoduFinancial().AddOfxExchangeRates(configure: o => o.HttpTimeout = TimeSpan.FromSeconds(7));
         using ServiceProvider provider = services.BuildServiceProvider();
 
         HttpStandardResilienceOptions options = provider

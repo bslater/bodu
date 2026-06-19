@@ -954,5 +954,50 @@ namespace Bodu.Financial {
                 return ResourceManager.GetString("Op_Invalid_UnableToCreateConverter", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The exchange-rate provider options must specify a base address..
+        /// </summary>
+        internal static string Arg_Invalid_WebExchangeRateOptionsBaseAddress {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_WebExchangeRateOptionsBaseAddress", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The exchange-rate provider options HTTP timeout must be greater than zero..
+        /// </summary>
+        internal static string Arg_Invalid_WebExchangeRateOptionsHttpTimeout {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_WebExchangeRateOptionsHttpTimeout", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The exchange-rate provider options default look-back window must be greater than zero..
+        /// </summary>
+        internal static string Arg_Invalid_WebExchangeRateOptionsDefaultLookback {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_WebExchangeRateOptionsDefaultLookback", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The exchange-rate provider options currency alias map must not be null..
+        /// </summary>
+        internal static string Arg_Invalid_WebExchangeRateOptionsCurrencyAliases {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_WebExchangeRateOptionsCurrencyAliases", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The exchange-rate provider options must specify a defined log level for every logging concern..
+        /// </summary>
+        internal static string Arg_Invalid_WebExchangeRateOptionsLogLevel {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_WebExchangeRateOptionsLogLevel", resourceCulture);
+            }
+        }
     }
 }
