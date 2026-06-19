@@ -5,7 +5,7 @@ title: Caching and aggregating exchange rates
 # Caching and aggregating exchange rates
 
 `Bodu.Financial.ExchangeRates.Caching` adds two pieces **in front of** the
-exchange-rate providers. The concrete providers (Yahoo, RBA, ECB, BoE) stay pure
+exchange-rate providers. The concrete providers (Yahoo, OFX, RBA, ECB, BoE) stay pure
 fetchers that know nothing of caching; each piece implements the same
 [`IDatedExchangeRateProvider`](xref:Bodu.Financial.IDatedExchangeRateProvider)
 contract (and the timeless [`IExchangeRateProvider`](xref:Bodu.Financial.IExchangeRateProvider)),
