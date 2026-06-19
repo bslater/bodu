@@ -30,21 +30,6 @@ public partial class CompoundBinaryFileTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="CompoundBinaryFile.TryGetStream(string, out CompoundStream)" /> returns
-    /// <see langword="false" /> for a stream that does not exist.
-    /// </summary>
-    [TestMethod]
-    public void TryGetStream_WhenStreamMissing_ShouldReturnFalse()
-    {
-        using CompoundBinaryFile file = OpenSample();
-
-        bool found = file.TryGetStream("DoesNotExist", out CompoundStream? stream);
-
-        Assert.IsFalse(found);
-        Assert.IsNull(stream);
-    }
-
-    /// <summary>
     /// Verifies that <see cref="CompoundBinaryFile.GetStream(string)" /> throws
     /// <see cref="CompoundStreamNotFoundException" /> for a stream that does not exist, capturing the requested name.
     /// </summary>

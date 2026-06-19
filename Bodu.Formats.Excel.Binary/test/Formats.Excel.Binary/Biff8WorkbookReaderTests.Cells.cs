@@ -71,4 +71,32 @@ public partial class Biff8WorkbookReaderTests
         Assert.AreEqual(0.7029, grid[(874, 1)].NumberValue!.Value, 1e-10);
         Assert.AreEqual(112.71, grid[(874, 4)].NumberValue!.Value, 1e-10);
     }
+
+    /// <summary>
+    /// Verifies that requesting a sheet index outside the range throws <see cref="ArgumentOutOfRangeException" />.
+    /// </summary>
+    [TestMethod]
+    public void ReadSheetCells_WhenSheetIndexOutOfRange_ShouldThrowArgumentOutOfRangeException()
+    {
+        Biff8WorkbookReader reader = OpenSample();
+
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = reader.ReadSheetCells(99).ToList();
+        });
+    }
+
+    /// <summary>
+    /// Verifies that requesting an unknown sheet name throws <see cref="KeyNotFoundException" />.
+    /// </summary>
+    [TestMethod]
+    public void ReadSheetCells_WhenSheetNameMissing_ShouldThrowKeyNotFoundException()
+    {
+        Biff8WorkbookReader reader = OpenSample();
+
+        _ = Assert.ThrowsExactly<KeyNotFoundException>(() =>
+        {
+            _ = reader.ReadSheetCells("NoSuchSheet").ToList();
+        });
+    }
 }
