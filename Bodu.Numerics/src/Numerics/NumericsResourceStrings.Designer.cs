@@ -331,15 +331,6 @@ namespace Bodu.Numerics {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Unsupported NumericsJsonPolicy value &apos;{0}&apos;..
-        /// </summary>
-        internal static string Op_Invalid_NumericsJsonPolicyUndefined {
-            get {
-                return ResourceManager.GetString("Op_Invalid_NumericsJsonPolicyUndefined", resourceCulture);
-            }
-        }
-
-        /// <summary>
         ///   Looks up a localized string similar to Unable to create a JSON converter for &apos;{0}&apos;..
         /// </summary>
         internal static string Op_Invalid_UnableToCreateConverter {

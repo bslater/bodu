@@ -75,7 +75,7 @@ public sealed class IntervalJsonConverter<T>
     /// </exception>
     public IntervalJsonConverter(NumericsJsonPolicy policy)
     {
-        NumericsThrowHelper.ThrowIfNumericsJsonPolicyUndefined(policy);
+        ThrowHelper.ThrowIfEnumValueIsUndefined(policy);
         _policy = policy;
     }
 

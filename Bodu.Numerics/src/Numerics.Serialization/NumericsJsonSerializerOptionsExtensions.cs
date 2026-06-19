@@ -51,7 +51,7 @@ public static class NumericsJsonSerializerOptionsExtensions
         NumericsJsonPolicy policy = NumericsJsonPolicy.Strict)
     {
         ThrowHelper.ThrowIfNull(options);
-        NumericsThrowHelper.ThrowIfNumericsJsonPolicyUndefined(policy);
+        ThrowHelper.ThrowIfEnumValueIsUndefined(policy);
 
         options.Converters.Add(new FractionJsonConverterFactory(policy));
         options.Converters.Add(new IntervalJsonConverterFactory(policy));
