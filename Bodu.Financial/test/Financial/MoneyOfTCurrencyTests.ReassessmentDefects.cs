@@ -468,16 +468,16 @@ public partial class MoneyOfTCurrencyTests
     [TestMethod]
     public void ConvertTo_WhenTwoSubMinorUnitLinesAggregate_ShouldDifferByRoundingPolicy()
     {
-        // Use unregistered currency tags (valid ISO shape, not in the catalogue) with an explicit minor-unit scale so
-        // Money preserves the sub-cent source precision instead of rounding it away.
+        // Use two three-minor-unit currencies (BHD, KWD) so Money natively carries the sub-cent source precision
+        // instead of rounding it away.
         MoneyBag bag = MoneyBag.Empty
-            .Add(Money.FromExplicitScale(0.005m, "XQT", 3))
-            .Add(Money.FromExplicitScale(0.005m, "XQU", 3));
+            .Add(new Money(0.005m, "BHD"))
+            .Add(new Money(0.005m, "KWD"));
 
         FixedExchangeRateTable rates = new(new Dictionary<(string From, string To), decimal>
         {
-            { ("XQT", "USD"), 1m },
-            { ("XQU", "USD"), 1m },
+            { ("BHD", "USD"), 1m },
+            { ("KWD", "USD"), 1m },
         });
 
         Money<USD> defaultPolicy = bag.ConvertTo<USD>(rates);

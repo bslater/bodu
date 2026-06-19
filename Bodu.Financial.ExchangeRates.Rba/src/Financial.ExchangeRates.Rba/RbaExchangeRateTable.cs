@@ -50,7 +50,10 @@ internal sealed class RbaExchangeRateTable
             for (int i = 0; i < Series.Count; i++)
             {
                 decimal? value = row.Values[i];
-                if (value is > 0m)
+
+                // Skip series whose code is not a circulating ISO 4217 currency (for example XDR, the IMF Special
+                // Drawing Rights unit): the runtime exchange-rate types model currencies only.
+                if (value is > 0m && CurrencyInfo.TryGetCurrencyCode(Series[i].CurrencyCode, out _))
                 {
                     yield return new ExchangeRate(
                         RbaExchangeRateProvider.BaseCurrencyIsoCode,
@@ -72,6 +75,11 @@ internal sealed class RbaExchangeRateTable
         var result = new List<RbaSeriesInfo>(Series.Count);
         foreach (RbaExchangeRateSeries series in Series)
         {
+            // Skip non-currency series (for example XDR, the IMF Special Drawing Rights unit) that the runtime
+            // exchange-rate types cannot represent.
+            if (!CurrencyInfo.TryGetCurrencyCode(series.CurrencyCode, out _))
+                continue;
+
             ExchangeRatePair pair = new(RbaExchangeRateProvider.BaseCurrencyIsoCode, series.CurrencyCode);
             result.Add(new RbaSeriesInfo(pair, series.CurrencyCode, series.SeriesId, series.Description, series.Units));
         }

@@ -116,6 +116,33 @@ public sealed record CurrencyInfo(
         Enum.TryParse(isoCode, ignoreCase: false, out code) && code != CurrencyCode.None && Enum.IsDefined(code);
 
     /// <summary>
+    /// Resolves an ISO 4217 alphabetic code to the matching <see cref="CurrencyCode" /> enum member.
+    /// </summary>
+    /// <param name="isoCode">The three-letter uppercase ISO code.</param>
+    /// <returns>The <see cref="CurrencyCode" /> member matching <paramref name="isoCode" />.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="isoCode" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="isoCode" /> does not match any active or historic currency in <see cref="CurrencyCode" />.
+    /// </exception>
+    /// <remarks>
+    /// The throwing counterpart of <see cref="TryGetCurrencyCode(string, out CurrencyCode)" />, and the canonical
+    /// boundary helper for turning an externally supplied ISO string into the stored enum representation.
+    /// </remarks>
+    public static CurrencyCode ParseCurrencyCode(string isoCode)
+    {
+        ThrowHelper.ThrowIfNull(isoCode);
+
+        if (!TryGetCurrencyCode(isoCode, out CurrencyCode code))
+        {
+            throw new ArgumentException(
+                string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Arg_Invalid_UnknownCurrencyRejected, isoCode),
+                nameof(isoCode));
+        }
+
+        return code;
+    }
+
+    /// <summary>
     /// Returns the <see cref="CurrencyCode" /> enum value corresponding to this <see cref="CurrencyInfo" />.
     /// </summary>
     /// <returns>The matching enum member.</returns>
