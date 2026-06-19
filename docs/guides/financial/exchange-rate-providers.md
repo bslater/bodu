@@ -4,7 +4,7 @@ title: Built-in exchange-rate providers
 
 # Built-in exchange-rate providers
 
-Bodu ships four exchange-rate providers, one per published source. Each is a thin
+Bodu ships five exchange-rate providers, one per published source. Each is a thin
 **fetcher** that downloads and parses its source and serves the result through the
 same [`IDatedExchangeRateProvider`](xref:Bodu.Financial.IDatedExchangeRateProvider)
 and timeless [`IExchangeRateProvider`](xref:Bodu.Financial.IExchangeRateProvider)
@@ -21,10 +21,11 @@ caching; that is added in front (see the caching guide).
 | European Central Bank | `Bodu.Financial.ExchangeRates.Ecb` | EUR | the `eurofxref` XML **feed** | `AddEcbReferenceRates()` |
 | Bank of England | `Bodu.Financial.ExchangeRates.Boe` | GBP | CSV over a date **window** | `AddBoeReferenceRates()` |
 | Yahoo Finance | `Bodu.Financial.ExchangeRates.Yahoo` | *any pair* | per-**ticker** chart JSON | `AddYahooExchangeRates()` |
+| OFX (ofx.com) | `Bodu.Financial.ExchangeRates.Ofx` | *any pair* | per-**pair** spot-rate-history JSON | `AddOfxExchangeRates()` |
 
 RBA, ECB, and BoE quote one base currency against many others; direct (`BASE→X`)
-and inverse (`X→BASE`) lookups are supported, cross pairs are not. Yahoo fetches a
-distinct ticker per pair, so it serves arbitrary pairs directly.
+and inverse (`X→BASE`) lookups are supported, cross pairs are not. Yahoo and OFX
+fetch a distinct series per pair, so they serve arbitrary pairs directly.
 
 ## What every provider shares
 
@@ -166,6 +167,23 @@ await yahoo.LoadPairAsync("AUD", "USD", new DateOnly(2023, 1, 1), new DateOnly(2
 ExchangeRateLookupResult aud = yahoo.GetRate("AUD", "USD", new DateOnly(2023, 1, 3));
 ```
 
+## OFX (any pair)
+
+[`OfxExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.Ofx.OfxExchangeRateProvider)
+fetches the OFX (ofx.com) public spot-rate-history JSON service per currency pair,
+so like Yahoo it serves arbitrary pairs rather than one base currency. Warm a pair
+over a window with `LoadPairAsync`. Options are
+[`OfxExchangeRateOptions`](xref:Bodu.Financial.ExchangeRates.Ofx.OfxExchangeRateOptions).
+
+```csharp
+using Bodu.Financial.ExchangeRates.Ofx;
+
+using var ofx = new OfxExchangeRateProvider(new OfxExchangeRateOptions());
+await ofx.LoadPairAsync("USD", "AUD", new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31));
+
+ExchangeRateLookupResult aud = ofx.GetRate("USD", "AUD", new DateOnly(2023, 1, 3));
+```
+
 ## Registering a provider with dependency injection
 
 Each provider has a companion `*.DependencyInjection` package whose extension method
@@ -211,7 +229,7 @@ fallback or averaging strategy, group them with the
 | Official AUD rates with deep history | RBA |
 | Official EUR reference rates | ECB |
 | Official GBP spot rates | BoE |
-| An arbitrary pair not quoted by a central bank | Yahoo |
+| An arbitrary pair not quoted by a central bank | Yahoo or OFX |
 | One pair from several sources, with fallback or an average | the [aggregator](exchange-rate-caching.md) over any mix |
 
 ## See also
@@ -224,4 +242,5 @@ fallback or averaging strategy, group them with the
 - [`RbaExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.Rba.RbaExchangeRateProvider),
   [`EcbExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.Ecb.EcbExchangeRateProvider),
   [`BoeExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.Boe.BoeExchangeRateProvider),
-  [`YahooExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.Yahoo.YahooExchangeRateProvider)
+  [`YahooExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.Yahoo.YahooExchangeRateProvider),
+  [`OfxExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.Ofx.OfxExchangeRateProvider)
