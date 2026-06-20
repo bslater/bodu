@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YahooResilienceRegistrationTests.AddYahooExchangeRates.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -21,7 +21,7 @@ public partial class YahooResilienceRegistrationTests
     public void AddYahooExchangeRates_ShouldRegisterStandardResilienceOptionsForNamedClient()
     {
         ServiceCollection services = new();
-        services.AddBoduFinancial().AddYahooExchangeRates(configure: o => o.HttpTimeout = TimeSpan.FromSeconds(7));
+        services.AddFinancialService().AddYahooExchangeRates(configure: o => o.HttpTimeout = TimeSpan.FromSeconds(7));
         using ServiceProvider provider = services.BuildServiceProvider();
 
         HttpStandardResilienceOptions options = provider

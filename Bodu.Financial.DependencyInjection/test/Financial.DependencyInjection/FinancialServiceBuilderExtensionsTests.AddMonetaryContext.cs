@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FinancialServiceBuilderExtensionsTests.AddMonetaryContext.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -20,7 +20,7 @@ public sealed partial class FinancialServiceBuilderExtensionsTests
         MonetaryContext tax = MonetaryContext.Default with { Rounding = MidpointRoundingStrategy.AwayFromZero };
 
         ServiceProvider provider = new ServiceCollection()
-            .AddBoduFinancial()
+            .AddFinancialService()
             .AddMonetaryContext("Tax", tax)
             .Services.BuildServiceProvider();
 
@@ -33,7 +33,7 @@ public sealed partial class FinancialServiceBuilderExtensionsTests
     [TestMethod]
     public void AddMonetaryContext_WhenNameBlank_ShouldThrowArgumentException()
     {
-        IFinancialServiceBuilder builder = new ServiceCollection().AddBoduFinancial();
+        IFinancialServiceBuilder builder = new ServiceCollection().AddFinancialService();
 
         Assert.ThrowsExactly<ArgumentException>(() => builder.AddMonetaryContext("  ", MonetaryContext.Default));
     }

@@ -22,7 +22,7 @@ public partial class RbaServiceRegistrationTests
     public void AddRbaHistoricalRates_ShouldRegisterProviderAsSingleton()
     {
         ServiceCollection services = new();
-        services.AddBoduFinancial().AddRbaHistoricalRates();
+        services.AddFinancialService().AddRbaHistoricalRates();
         using ServiceProvider provider = services.BuildServiceProvider();
 
         RbaExchangeRateProvider? concrete = provider.GetService<RbaExchangeRateProvider>();
@@ -41,7 +41,7 @@ public partial class RbaServiceRegistrationTests
     public void AddRbaHistoricalRates_ShouldRegisterNamedHttpClient()
     {
         ServiceCollection services = new();
-        services.AddBoduFinancial().AddRbaHistoricalRates();
+        services.AddFinancialService().AddRbaHistoricalRates();
         using ServiceProvider provider = services.BuildServiceProvider();
 
         IHttpClientFactory? factory = provider.GetService<IHttpClientFactory>();
@@ -66,7 +66,7 @@ public partial class RbaServiceRegistrationTests
             .Build();
 
         ServiceCollection services = new();
-        services.AddBoduFinancial(configuration).AddRbaHistoricalRates(configuration);
+        services.AddFinancialService(configuration).AddRbaHistoricalRates(configuration);
         using ServiceProvider provider = services.BuildServiceProvider();
 
         RbaExchangeRateOptions options = provider.GetRequiredService<IOptions<RbaExchangeRateOptions>>().Value;
@@ -82,7 +82,7 @@ public partial class RbaServiceRegistrationTests
     public void AddRbaHistoricalRates_ShouldApplyConfigureCallback()
     {
         ServiceCollection services = new();
-        services.AddBoduFinancial().AddRbaHistoricalRates(configure: o => o.UserAgent = "test-agent");
+        services.AddFinancialService().AddRbaHistoricalRates(configure: o => o.UserAgent = "test-agent");
         using ServiceProvider provider = services.BuildServiceProvider();
 
         RbaExchangeRateOptions options = provider.GetRequiredService<IOptions<RbaExchangeRateOptions>>().Value;
@@ -109,7 +109,7 @@ public partial class RbaServiceRegistrationTests
     public void AddRbaHistoricalRates_WhenOptionsInvalid_ShouldThrowOnResolve()
     {
         ServiceCollection services = new();
-        services.AddBoduFinancial().AddRbaHistoricalRates(configure: o => o.Eras = []);
+        services.AddFinancialService().AddRbaHistoricalRates(configure: o => o.Eras = []);
         using ServiceProvider provider = services.BuildServiceProvider();
 
         _ = Assert.ThrowsExactly<OptionsValidationException>(() =>
@@ -125,7 +125,7 @@ public partial class RbaServiceRegistrationTests
     public void AddRbaHistoricalRates_WhenOptionsValid_ShouldResolveProvider()
     {
         ServiceCollection services = new();
-        services.AddBoduFinancial().AddRbaHistoricalRates();
+        services.AddFinancialService().AddRbaHistoricalRates();
         using ServiceProvider provider = services.BuildServiceProvider();
 
         Assert.IsNotNull(provider.GetRequiredService<RbaExchangeRateProvider>());

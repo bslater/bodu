@@ -1,5 +1,5 @@
-// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="ServiceCollectionExtensionsTests.AddBoduFinancial.cs" company="Bodu Pty. Ltd.">
+﻿// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="ServiceCollectionExtensionsTests.AddFinancialService.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -17,13 +17,13 @@ namespace Bodu.Financial.DependencyInjection;
 public sealed partial class ServiceCollectionExtensionsTests
 {
     /// <summary>
-    /// Verifies that <c>AddBoduFinancial</c> registers an <see cref="ICurrencyLookup" /> resolvable as a singleton.
+    /// Verifies that <c>AddFinancialService</c> registers an <see cref="ICurrencyLookup" /> resolvable as a singleton.
     /// </summary>
     [TestMethod]
     [TestCategory("Smoke")]
     public void AddBoduFinancial_WhenCalled_ShouldRegisterCurrencyLookupSingleton()
     {
-        ServiceProvider provider = new ServiceCollection().AddBoduFinancial().Services.BuildServiceProvider();
+        ServiceProvider provider = new ServiceCollection().AddFinancialService().Services.BuildServiceProvider();
 
         ICurrencyLookup first = provider.GetRequiredService<ICurrencyLookup>();
         ICurrencyLookup second = provider.GetRequiredService<ICurrencyLookup>();
@@ -45,7 +45,7 @@ public sealed partial class ServiceCollectionExtensionsTests
             })
             .Build();
 
-        ServiceProvider provider = new ServiceCollection().AddBoduFinancial(configuration).Services.BuildServiceProvider();
+        ServiceProvider provider = new ServiceCollection().AddFinancialService(configuration).Services.BuildServiceProvider();
 
         FinancialOptions options = provider.GetRequiredService<IOptions<FinancialOptions>>().Value;
 
@@ -67,7 +67,7 @@ public sealed partial class ServiceCollectionExtensionsTests
             })
             .Build();
 
-        ServiceProvider provider = new ServiceCollection().AddBoduFinancial(configuration).Services.BuildServiceProvider();
+        ServiceProvider provider = new ServiceCollection().AddFinancialService(configuration).Services.BuildServiceProvider();
 
         JsonSerializerOptions options = provider.GetRequiredKeyedService<JsonSerializerOptions>(FinancialServiceBuilderExtensions.JsonOptionsKey);
         string json = JsonSerializer.Serialize(new Money(19.99m, CurrencyCode.USD), options);
@@ -89,7 +89,7 @@ public sealed partial class ServiceCollectionExtensionsTests
             })
             .Build();
 
-        ServiceProvider provider = new ServiceCollection().AddBoduFinancial(configuration).Services.BuildServiceProvider();
+        ServiceProvider provider = new ServiceCollection().AddFinancialService(configuration).Services.BuildServiceProvider();
 
         _ = Assert.ThrowsExactly<OptionsValidationException>(() =>
         {
@@ -104,8 +104,8 @@ public sealed partial class ServiceCollectionExtensionsTests
     public void AddBoduFinancial_WhenCalledTwice_ShouldRegisterLookupIdempotently()
     {
         IServiceCollection services = new ServiceCollection();
-        services.AddBoduFinancial();
-        services.AddBoduFinancial();
+        services.AddFinancialService();
+        services.AddFinancialService();
 
         Assert.AreEqual(1, services.Count(d => d.ServiceType == typeof(ICurrencyLookup)));
     }
@@ -118,7 +118,7 @@ public sealed partial class ServiceCollectionExtensionsTests
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = new ServiceCollection().AddBoduFinancial((Action<IFinancialServiceBuilder>)null!);
+            _ = new ServiceCollection().AddFinancialService((Action<IFinancialServiceBuilder>)null!);
         });
     }
 
@@ -130,7 +130,7 @@ public sealed partial class ServiceCollectionExtensionsTests
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = ServiceCollectionExtensions.AddBoduFinancial(null!);
+            _ = ServiceCollectionExtensions.AddFinancialService(null!);
         });
     }
 }

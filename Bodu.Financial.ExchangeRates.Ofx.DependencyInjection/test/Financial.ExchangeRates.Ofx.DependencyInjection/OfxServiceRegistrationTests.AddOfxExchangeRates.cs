@@ -22,7 +22,7 @@ public partial class OfxServiceRegistrationTests
     public void AddOfxExchangeRates_ShouldRegisterProviderAsSingleton()
     {
         ServiceCollection services = new();
-        services.AddBoduFinancial().AddOfxExchangeRates();
+        services.AddFinancialService().AddOfxExchangeRates();
         using ServiceProvider provider = services.BuildServiceProvider();
 
         OfxExchangeRateProvider? concrete = provider.GetService<OfxExchangeRateProvider>();
@@ -41,7 +41,7 @@ public partial class OfxServiceRegistrationTests
     public void AddOfxExchangeRates_ShouldRegisterNamedHttpClient()
     {
         ServiceCollection services = new();
-        services.AddBoduFinancial().AddOfxExchangeRates();
+        services.AddFinancialService().AddOfxExchangeRates();
         using ServiceProvider provider = services.BuildServiceProvider();
 
         IHttpClientFactory? factory = provider.GetService<IHttpClientFactory>();
@@ -66,7 +66,7 @@ public partial class OfxServiceRegistrationTests
             .Build();
 
         ServiceCollection services = new();
-        services.AddBoduFinancial(configuration).AddOfxExchangeRates(configuration);
+        services.AddFinancialService(configuration).AddOfxExchangeRates(configuration);
         using ServiceProvider provider = services.BuildServiceProvider();
 
         OfxExchangeRateOptions options = provider.GetRequiredService<IOptions<OfxExchangeRateOptions>>().Value;
@@ -82,7 +82,7 @@ public partial class OfxServiceRegistrationTests
     public void AddOfxExchangeRates_ShouldApplyConfigureCallback()
     {
         ServiceCollection services = new();
-        services.AddBoduFinancial().AddOfxExchangeRates(configure: o => o.UserAgent = "test-agent");
+        services.AddFinancialService().AddOfxExchangeRates(configure: o => o.UserAgent = "test-agent");
         using ServiceProvider provider = services.BuildServiceProvider();
 
         OfxExchangeRateOptions options = provider.GetRequiredService<IOptions<OfxExchangeRateOptions>>().Value;
@@ -109,7 +109,7 @@ public partial class OfxServiceRegistrationTests
     public void AddOfxExchangeRates_WhenOptionsInvalid_ShouldThrowOnResolve()
     {
         ServiceCollection services = new();
-        services.AddBoduFinancial().AddOfxExchangeRates(configure: o => o.ReportingInterval = string.Empty);
+        services.AddFinancialService().AddOfxExchangeRates(configure: o => o.ReportingInterval = string.Empty);
         using ServiceProvider provider = services.BuildServiceProvider();
 
         _ = Assert.ThrowsExactly<OptionsValidationException>(() =>
@@ -125,7 +125,7 @@ public partial class OfxServiceRegistrationTests
     public void AddOfxExchangeRates_WhenOptionsValid_ShouldResolveProvider()
     {
         ServiceCollection services = new();
-        services.AddBoduFinancial().AddOfxExchangeRates();
+        services.AddFinancialService().AddOfxExchangeRates();
         using ServiceProvider provider = services.BuildServiceProvider();
 
         Assert.IsNotNull(provider.GetRequiredService<OfxExchangeRateProvider>());

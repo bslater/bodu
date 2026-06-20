@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="OfxServiceCollectionExtensions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -43,7 +43,7 @@ public static class OfxServiceCollectionExtensions
         ThrowHelper.ThrowIfNull(services);
 
         return services
-            .AddBoduFinancial(configuration)
+            .AddFinancialService(configuration)
             .AddOfxExchangeRates(configuration, sectionName, configure);
     }
 }

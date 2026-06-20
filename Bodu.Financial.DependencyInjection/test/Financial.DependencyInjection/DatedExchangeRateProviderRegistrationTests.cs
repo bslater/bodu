@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DatedExchangeRateProviderRegistrationTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -57,7 +57,7 @@ public sealed class DatedExchangeRateProviderRegistrationTests
     [TestMethod]
     public void AddDatedExchangeRateProvider_WhenType_ShouldRegisterResolvableProvider()
     {
-        IFinancialServiceBuilder builder = new ServiceCollection().AddBoduFinancial();
+        IFinancialServiceBuilder builder = new ServiceCollection().AddFinancialService();
 
         builder.AddDatedExchangeRateProvider<StubDatedRateProvider>();
 
@@ -72,7 +72,7 @@ public sealed class DatedExchangeRateProviderRegistrationTests
     public void AddDatedExchangeRateProvider_WhenInstance_ShouldRegisterSameInstance()
     {
         StubDatedRateProvider stub = new();
-        IFinancialServiceBuilder builder = new ServiceCollection().AddBoduFinancial();
+        IFinancialServiceBuilder builder = new ServiceCollection().AddFinancialService();
 
         builder.AddDatedExchangeRateProvider(stub);
 

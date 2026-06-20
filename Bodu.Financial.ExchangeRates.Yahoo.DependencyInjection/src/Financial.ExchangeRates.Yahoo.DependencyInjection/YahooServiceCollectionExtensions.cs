@@ -43,7 +43,7 @@ public static class YahooServiceCollectionExtensions
         ThrowHelper.ThrowIfNull(services);
 
         return services
-            .AddBoduFinancial(configuration)
+            .AddFinancialService(configuration)
             .AddYahooExchangeRates(configuration, sectionName, configure);
     }
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="OfxResilienceRegistrationTests.NamedClient.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -23,7 +23,7 @@ public partial class OfxResilienceRegistrationTests
 
         ServiceCollection services = new();
         services
-            .AddBoduFinancial()
+            .AddFinancialService()
             .AddOfxExchangeRates(configureResilience: ConfigureFastRetry);
         services
             .AddHttpClient(OfxFinancialServiceBuilderExtensions.HttpClientName)
@@ -52,7 +52,7 @@ public partial class OfxResilienceRegistrationTests
 
         ServiceCollection services = new();
         services
-            .AddBoduFinancial()
+            .AddFinancialService()
             .AddOfxExchangeRates(configureResilience: ConfigureFastBreaker);
         services
             .AddHttpClient(OfxFinancialServiceBuilderExtensions.HttpClientName)

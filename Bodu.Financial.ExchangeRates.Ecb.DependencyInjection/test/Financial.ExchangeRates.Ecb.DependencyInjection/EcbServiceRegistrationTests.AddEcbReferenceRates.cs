@@ -22,7 +22,7 @@ public partial class EcbServiceRegistrationTests
     public void AddEcbReferenceRates_ShouldRegisterProviderAsSingleton()
     {
         ServiceCollection services = new();
-        services.AddBoduFinancial().AddEcbReferenceRates();
+        services.AddFinancialService().AddEcbReferenceRates();
         using ServiceProvider provider = services.BuildServiceProvider();
 
         EcbExchangeRateProvider? concrete = provider.GetService<EcbExchangeRateProvider>();
@@ -41,7 +41,7 @@ public partial class EcbServiceRegistrationTests
     public void AddEcbReferenceRates_ShouldRegisterNamedHttpClient()
     {
         ServiceCollection services = new();
-        services.AddBoduFinancial().AddEcbReferenceRates();
+        services.AddFinancialService().AddEcbReferenceRates();
         using ServiceProvider provider = services.BuildServiceProvider();
 
         IHttpClientFactory? factory = provider.GetService<IHttpClientFactory>();
@@ -68,7 +68,7 @@ public partial class EcbServiceRegistrationTests
             .Build();
 
         ServiceCollection services = new();
-        services.AddBoduFinancial(configuration).AddEcbReferenceRates(configuration);
+        services.AddFinancialService(configuration).AddEcbReferenceRates(configuration);
         using ServiceProvider provider = services.BuildServiceProvider();
 
         EcbExchangeRateOptions options = provider.GetRequiredService<IOptions<EcbExchangeRateOptions>>().Value;
@@ -86,7 +86,7 @@ public partial class EcbServiceRegistrationTests
     public void AddEcbReferenceRates_ShouldApplyConfigureCallback()
     {
         ServiceCollection services = new();
-        services.AddBoduFinancial().AddEcbReferenceRates(configure: o => o.Endpoint.UserAgent = "callback-agent");
+        services.AddFinancialService().AddEcbReferenceRates(configure: o => o.Endpoint.UserAgent = "callback-agent");
         using ServiceProvider provider = services.BuildServiceProvider();
 
         EcbExchangeRateOptions options = provider.GetRequiredService<IOptions<EcbExchangeRateOptions>>().Value;
@@ -113,7 +113,7 @@ public partial class EcbServiceRegistrationTests
     public void AddEcbReferenceRates_WhenOptionsInvalid_ShouldThrowOnResolve()
     {
         ServiceCollection services = new();
-        services.AddBoduFinancial().AddEcbReferenceRates(configure: o => o.Feeds = []);
+        services.AddFinancialService().AddEcbReferenceRates(configure: o => o.Feeds = []);
         using ServiceProvider provider = services.BuildServiceProvider();
 
         _ = Assert.ThrowsExactly<OptionsValidationException>(() =>
@@ -129,7 +129,7 @@ public partial class EcbServiceRegistrationTests
     public void AddEcbReferenceRates_WhenOptionsValid_ShouldResolveProvider()
     {
         ServiceCollection services = new();
-        services.AddBoduFinancial().AddEcbReferenceRates();
+        services.AddFinancialService().AddEcbReferenceRates();
         using ServiceProvider provider = services.BuildServiceProvider();
 
         Assert.IsNotNull(provider.GetRequiredService<EcbExchangeRateProvider>());

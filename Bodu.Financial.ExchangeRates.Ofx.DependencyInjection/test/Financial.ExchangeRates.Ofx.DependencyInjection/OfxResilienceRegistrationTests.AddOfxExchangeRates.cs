@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="OfxResilienceRegistrationTests.AddOfxExchangeRates.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -21,7 +21,7 @@ public partial class OfxResilienceRegistrationTests
     public void AddOfxExchangeRates_ShouldRegisterStandardResilienceOptionsForNamedClient()
     {
         ServiceCollection services = new();
-        services.AddBoduFinancial().AddOfxExchangeRates(configure: o => o.HttpTimeout = TimeSpan.FromSeconds(7));
+        services.AddFinancialService().AddOfxExchangeRates(configure: o => o.HttpTimeout = TimeSpan.FromSeconds(7));
         using ServiceProvider provider = services.BuildServiceProvider();
 
         HttpStandardResilienceOptions options = provider

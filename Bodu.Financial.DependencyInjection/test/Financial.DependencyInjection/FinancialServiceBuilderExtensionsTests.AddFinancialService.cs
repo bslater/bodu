@@ -1,5 +1,5 @@
-// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="FinancialServiceBuilderExtensionsTests.AddBoduFinancial.cs" company="Bodu Pty. Ltd.">
+﻿// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="FinancialServiceBuilderExtensionsTests.AddFinancialService.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -15,9 +15,9 @@ public sealed partial class FinancialServiceBuilderExtensionsTests
     /// Verifies that no exchange-rate provider is registered by default.
     /// </summary>
     [TestMethod]
-    public void AddBoduFinancial_WhenNoProviderSupplied_ShouldNotRegisterExchangeRateProvider()
+    public void AddFinancialService_WhenNoProviderSupplied_ShouldNotRegisterExchangeRateProvider()
     {
-        ServiceProvider provider = new ServiceCollection().AddBoduFinancial().Services.BuildServiceProvider();
+        ServiceProvider provider = new ServiceCollection().AddFinancialService().Services.BuildServiceProvider();
 
         Assert.IsNull(provider.GetService<IExchangeRateProvider>());
     }

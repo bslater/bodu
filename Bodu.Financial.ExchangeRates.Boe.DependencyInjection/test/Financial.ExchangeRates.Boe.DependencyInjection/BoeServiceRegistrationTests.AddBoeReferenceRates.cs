@@ -22,7 +22,7 @@ public partial class BoeServiceRegistrationTests
     public void AddBoeReferenceRates_ShouldRegisterProviderAsSingleton()
     {
         ServiceCollection services = new();
-        services.AddBoduFinancial().AddBoeReferenceRates();
+        services.AddFinancialService().AddBoeReferenceRates();
         using ServiceProvider provider = services.BuildServiceProvider();
 
         BoeExchangeRateProvider? concrete = provider.GetService<BoeExchangeRateProvider>();
@@ -41,7 +41,7 @@ public partial class BoeServiceRegistrationTests
     public void AddBoeReferenceRates_ShouldRegisterNamedHttpClient()
     {
         ServiceCollection services = new();
-        services.AddBoduFinancial().AddBoeReferenceRates();
+        services.AddFinancialService().AddBoeReferenceRates();
         using ServiceProvider provider = services.BuildServiceProvider();
 
         IHttpClientFactory? factory = provider.GetService<IHttpClientFactory>();
@@ -68,7 +68,7 @@ public partial class BoeServiceRegistrationTests
             .Build();
 
         ServiceCollection services = new();
-        services.AddBoduFinancial(configuration).AddBoeReferenceRates(configuration);
+        services.AddFinancialService(configuration).AddBoeReferenceRates(configuration);
         using ServiceProvider provider = services.BuildServiceProvider();
 
         BoeExchangeRateOptions options = provider.GetRequiredService<IOptions<BoeExchangeRateOptions>>().Value;
@@ -86,7 +86,7 @@ public partial class BoeServiceRegistrationTests
     public void AddBoeReferenceRates_ShouldApplyConfigureCallback()
     {
         ServiceCollection services = new();
-        services.AddBoduFinancial().AddBoeReferenceRates(configure: o => o.Endpoint.UserAgent = "callback-agent");
+        services.AddFinancialService().AddBoeReferenceRates(configure: o => o.Endpoint.UserAgent = "callback-agent");
         using ServiceProvider provider = services.BuildServiceProvider();
 
         BoeExchangeRateOptions options = provider.GetRequiredService<IOptions<BoeExchangeRateOptions>>().Value;
@@ -113,7 +113,7 @@ public partial class BoeServiceRegistrationTests
     public void AddBoeReferenceRates_WhenOptionsInvalid_ShouldThrowOnResolve()
     {
         ServiceCollection services = new();
-        services.AddBoduFinancial().AddBoeReferenceRates(configure: o => o.Series = []);
+        services.AddFinancialService().AddBoeReferenceRates(configure: o => o.Series = []);
         using ServiceProvider provider = services.BuildServiceProvider();
 
         _ = Assert.ThrowsExactly<OptionsValidationException>(() =>
@@ -129,7 +129,7 @@ public partial class BoeServiceRegistrationTests
     public void AddBoeReferenceRates_WhenOptionsValid_ShouldResolveProvider()
     {
         ServiceCollection services = new();
-        services.AddBoduFinancial().AddBoeReferenceRates();
+        services.AddFinancialService().AddBoeReferenceRates();
         using ServiceProvider provider = services.BuildServiceProvider();
 
         Assert.IsNotNull(provider.GetRequiredService<BoeExchangeRateProvider>());

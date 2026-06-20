@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoeResilienceRegistrationTests.AddBoeReferenceRates.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -21,7 +21,7 @@ public partial class BoeResilienceRegistrationTests
     public void AddBoeReferenceRates_ShouldRegisterStandardResilienceOptionsForNamedClient()
     {
         ServiceCollection services = new();
-        services.AddBoduFinancial().AddBoeReferenceRates(configure: o => o.Endpoint.HttpTimeout = TimeSpan.FromSeconds(7));
+        services.AddFinancialService().AddBoeReferenceRates(configure: o => o.Endpoint.HttpTimeout = TimeSpan.FromSeconds(7));
         using ServiceProvider provider = services.BuildServiceProvider();
 
         HttpStandardResilienceOptions options = provider

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RbaResilienceRegistrationTests.NamedClient.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -23,7 +23,7 @@ public partial class RbaResilienceRegistrationTests
 
         ServiceCollection services = new();
         services
-            .AddBoduFinancial()
+            .AddFinancialService()
             .AddRbaHistoricalRates(configureResilience: ConfigureFastRetry);
         services
             .AddHttpClient(RbaFinancialServiceBuilderExtensions.HttpClientName)
@@ -52,7 +52,7 @@ public partial class RbaResilienceRegistrationTests
 
         ServiceCollection services = new();
         services
-            .AddBoduFinancial()
+            .AddFinancialService()
             .AddRbaHistoricalRates(configureResilience: ConfigureFastBreaker);
         services
             .AddHttpClient(RbaFinancialServiceBuilderExtensions.HttpClientName)

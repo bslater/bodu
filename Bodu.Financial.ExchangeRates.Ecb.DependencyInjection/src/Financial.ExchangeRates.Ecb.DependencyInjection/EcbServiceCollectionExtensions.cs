@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EcbServiceCollectionExtensions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -42,7 +42,7 @@ public static class EcbServiceCollectionExtensions
         ThrowHelper.ThrowIfNull(services);
 
         return services
-            .AddBoduFinancial(configuration)
+            .AddFinancialService(configuration)
             .AddEcbReferenceRates(configuration, sectionName, configure);
     }
 }

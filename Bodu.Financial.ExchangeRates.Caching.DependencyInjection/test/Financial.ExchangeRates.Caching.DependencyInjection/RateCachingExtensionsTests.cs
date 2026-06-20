@@ -137,7 +137,7 @@ public sealed partial class RateCachingExtensionsTests
     public void AddCachedExchangeRateProvider_WhenProviderNameIsBlank_ShouldThrowArgumentException()
     {
         var services = new ServiceCollection();
-        IFinancialServiceBuilder builder = services.AddBoduFinancial();
+        IFinancialServiceBuilder builder = services.AddFinancialService();
 
         ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -182,7 +182,7 @@ public sealed partial class RateCachingExtensionsTests
     private static ServiceProvider BuildProvider(Action<IFinancialServiceBuilder> register)
     {
         var services = new ServiceCollection();
-        register(services.AddBoduFinancial());
+        register(services.AddFinancialService());
         return services.BuildServiceProvider();
     }
 

@@ -144,7 +144,7 @@ public sealed class SqliteRateCacheExtensionsTests
     public void AddSqliteRateCache_WhenProviderNameIsBlank_ShouldThrowArgumentException()
     {
         var services = new ServiceCollection();
-        IFinancialServiceBuilder builder = services.AddBoduFinancial();
+        IFinancialServiceBuilder builder = services.AddFinancialService();
 
         ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -229,7 +229,7 @@ public sealed class SqliteRateCacheExtensionsTests
     private static ServiceProvider BuildProvider(Action<IFinancialServiceBuilder> register)
     {
         var services = new ServiceCollection();
-        register(services.AddBoduFinancial());
+        register(services.AddFinancialService());
         return services.BuildServiceProvider();
     }
 }

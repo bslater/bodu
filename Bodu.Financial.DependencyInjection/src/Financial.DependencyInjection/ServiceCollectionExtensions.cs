@@ -14,7 +14,7 @@ using Microsoft.Extensions.Options;
 namespace Bodu.Financial.DependencyInjection;
 
 /// <summary>
-/// Provides the <c>AddBoduFinancial</c> entry points that register the Bodu.Financial services into an
+/// Provides the <c>AddFinancialService</c> entry points that register the Bodu.Financial services into an
 /// <see cref="IServiceCollection" /> and return a fluent <see cref="IFinancialServiceBuilder" />.
 /// </summary>
 public static class ServiceCollectionExtensions
@@ -53,7 +53,7 @@ public static class ServiceCollectionExtensions
     /// its dated counterpart.
     /// </para>
     /// </remarks>
-    public static IFinancialServiceBuilder AddBoduFinancial(
+    public static IFinancialServiceBuilder AddFinancialService(
         this IServiceCollection services,
         IConfiguration? configuration = null,
         string sectionName = DefaultConfigurationSection)
@@ -94,14 +94,14 @@ public static class ServiceCollectionExtensions
     /// <exception cref="ArgumentNullException">
     /// <paramref name="services" /> or <paramref name="configure" /> is <see langword="null" />.
     /// </exception>
-    public static IFinancialServiceBuilder AddBoduFinancial(
+    public static IFinancialServiceBuilder AddFinancialService(
         this IServiceCollection services,
         Action<IFinancialServiceBuilder> configure)
     {
         ThrowHelper.ThrowIfNull(services);
         ThrowHelper.ThrowIfNull(configure);
 
-        IFinancialServiceBuilder builder = services.AddBoduFinancial();
+        IFinancialServiceBuilder builder = services.AddFinancialService();
         configure(builder);
         return builder;
     }

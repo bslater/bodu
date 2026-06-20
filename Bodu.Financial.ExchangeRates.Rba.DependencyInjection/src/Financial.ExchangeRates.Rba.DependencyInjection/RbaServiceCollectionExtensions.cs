@@ -42,7 +42,7 @@ public static class RbaServiceCollectionExtensions
         ThrowHelper.ThrowIfNull(services);
 
         return services
-            .AddBoduFinancial(configuration)
+            .AddFinancialService(configuration)
             .AddRbaHistoricalRates(configuration, sectionName, configure);
     }
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SqliteRateCacheExtensions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -51,7 +51,7 @@ public static class SqliteRateCacheExtensions
     /// <example>
     /// <code language="csharp">
     ///<![CDATA[
-    /// services.AddBoduFinancial()
+    /// services.AddFinancialService()
     ///         .AddSqliteRateCache("RBA", configure: o => o.DatabaseFilePath = "/var/cache/rba.db");
     ///
     /// // Resolve the cache, or wrap a source provider with a CachingExchangeRateProvider over it.

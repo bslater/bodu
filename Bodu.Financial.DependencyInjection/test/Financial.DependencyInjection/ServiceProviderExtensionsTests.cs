@@ -31,7 +31,7 @@ public sealed class ServiceProviderExtensionsTests
     public void UseBoduFinancialCurrencyResolution_WhenCalled_ShouldInstallRegisteredLookupAsAmbient()
     {
         ServiceProvider provider = new ServiceCollection()
-            .AddBoduFinancial(builder => builder.AddCurrencyLookup<MarkerLookup>())
+            .AddFinancialService(builder => builder.AddCurrencyLookup<MarkerLookup>())
             .Services
             .BuildServiceProvider();
 

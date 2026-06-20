@@ -44,7 +44,7 @@ public static class BoeServiceCollectionExtensions
         ThrowHelper.ThrowIfNull(services);
 
         return services
-            .AddBoduFinancial(configuration)
+            .AddFinancialService(configuration)
             .AddBoeReferenceRates(configuration, sectionName, configure);
     }
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IntegrationTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -25,7 +25,7 @@ public sealed class IntegrationTests
         MonetaryContext tax = MonetaryContext.Default with { Rounding = MidpointRoundingStrategy.AwayFromZero };
 
         ServiceProvider provider = new ServiceCollection()
-            .AddBoduFinancial(builder => builder
+            .AddFinancialService(builder => builder
                 .AddMonetaryContext("Tax", tax)
                 .AddExchangeRateProvider(new FixedExchangeRateTable(new Dictionary<(string, string), decimal>
                 {

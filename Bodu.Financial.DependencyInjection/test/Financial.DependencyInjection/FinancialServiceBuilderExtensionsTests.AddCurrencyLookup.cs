@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FinancialServiceBuilderExtensionsTests.AddCurrencyLookup.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -18,7 +18,7 @@ public sealed partial class FinancialServiceBuilderExtensionsTests
     public void AddCurrencyLookup_WhenCustomType_ShouldReplaceDefault()
     {
         ServiceProvider provider = new ServiceCollection()
-            .AddBoduFinancial()
+            .AddFinancialService()
             .AddCurrencyLookup<CustomLookup>()
             .Services.BuildServiceProvider();
 

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EcbResilienceRegistrationTests.AddEcbReferenceRates.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -21,7 +21,7 @@ public partial class EcbResilienceRegistrationTests
     public void AddEcbReferenceRates_ShouldRegisterStandardResilienceOptionsForNamedClient()
     {
         ServiceCollection services = new();
-        services.AddBoduFinancial().AddEcbReferenceRates(configure: o => o.Endpoint.HttpTimeout = TimeSpan.FromSeconds(7));
+        services.AddFinancialService().AddEcbReferenceRates(configure: o => o.Endpoint.HttpTimeout = TimeSpan.FromSeconds(7));
         using ServiceProvider provider = services.BuildServiceProvider();
 
         HttpStandardResilienceOptions options = provider

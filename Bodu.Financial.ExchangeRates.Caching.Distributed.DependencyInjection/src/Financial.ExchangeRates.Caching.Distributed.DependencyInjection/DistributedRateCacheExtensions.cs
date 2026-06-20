@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DistributedRateCacheExtensions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -57,7 +57,7 @@ public static class DistributedRateCacheExtensions
     /// <code language="csharp">
     ///<![CDATA[
     /// services.AddStackExchangeRedisCache(o => o.Configuration = "localhost:6379");
-    /// services.AddBoduFinancial()
+    /// services.AddFinancialService()
     ///         .AddDistributedRateCache("RBA");
     ///
     /// // Resolve the cache, or wrap a source provider with a CachingExchangeRateProvider over it.
@@ -145,7 +145,7 @@ public static class DistributedRateCacheExtensions
     /// <example>
     /// <code language="csharp">
     ///<![CDATA[
-    /// services.AddBoduFinancial()
+    /// services.AddFinancialService()
     ///         .AddRedisRateCache("RBA", redis => redis.Configuration = "localhost:6379");
     ///]]>
     /// </code>

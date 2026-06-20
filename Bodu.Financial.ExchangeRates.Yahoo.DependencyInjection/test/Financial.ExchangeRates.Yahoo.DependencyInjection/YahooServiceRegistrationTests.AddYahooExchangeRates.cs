@@ -22,7 +22,7 @@ public partial class YahooServiceRegistrationTests
     public void AddYahooExchangeRates_ShouldRegisterProviderAsSingleton()
     {
         ServiceCollection services = new();
-        services.AddBoduFinancial().AddYahooExchangeRates();
+        services.AddFinancialService().AddYahooExchangeRates();
         using ServiceProvider provider = services.BuildServiceProvider();
 
         YahooExchangeRateProvider? concrete = provider.GetService<YahooExchangeRateProvider>();
@@ -41,7 +41,7 @@ public partial class YahooServiceRegistrationTests
     public void AddYahooExchangeRates_ShouldRegisterNamedHttpClient()
     {
         ServiceCollection services = new();
-        services.AddBoduFinancial().AddYahooExchangeRates();
+        services.AddFinancialService().AddYahooExchangeRates();
         using ServiceProvider provider = services.BuildServiceProvider();
 
         IHttpClientFactory? factory = provider.GetService<IHttpClientFactory>();
@@ -66,7 +66,7 @@ public partial class YahooServiceRegistrationTests
             .Build();
 
         ServiceCollection services = new();
-        services.AddBoduFinancial(configuration).AddYahooExchangeRates(configuration);
+        services.AddFinancialService(configuration).AddYahooExchangeRates(configuration);
         using ServiceProvider provider = services.BuildServiceProvider();
 
         YahooExchangeRateOptions options = provider.GetRequiredService<IOptions<YahooExchangeRateOptions>>().Value;
@@ -82,7 +82,7 @@ public partial class YahooServiceRegistrationTests
     public void AddYahooExchangeRates_ShouldApplyConfigureCallback()
     {
         ServiceCollection services = new();
-        services.AddBoduFinancial().AddYahooExchangeRates(configure: o => o.UserAgent = "test-agent");
+        services.AddFinancialService().AddYahooExchangeRates(configure: o => o.UserAgent = "test-agent");
         using ServiceProvider provider = services.BuildServiceProvider();
 
         YahooExchangeRateOptions options = provider.GetRequiredService<IOptions<YahooExchangeRateOptions>>().Value;
@@ -109,7 +109,7 @@ public partial class YahooServiceRegistrationTests
     public void AddYahooExchangeRates_WhenOptionsInvalid_ShouldThrowOnResolve()
     {
         ServiceCollection services = new();
-        services.AddBoduFinancial().AddYahooExchangeRates(configure: o => o.ChartPath = "no-placeholder");
+        services.AddFinancialService().AddYahooExchangeRates(configure: o => o.ChartPath = "no-placeholder");
         using ServiceProvider provider = services.BuildServiceProvider();
 
         _ = Assert.ThrowsExactly<OptionsValidationException>(() =>
@@ -125,7 +125,7 @@ public partial class YahooServiceRegistrationTests
     public void AddYahooExchangeRates_WhenOptionsValid_ShouldResolveProvider()
     {
         ServiceCollection services = new();
-        services.AddBoduFinancial().AddYahooExchangeRates();
+        services.AddFinancialService().AddYahooExchangeRates();
         using ServiceProvider provider = services.BuildServiceProvider();
 
         Assert.IsNotNull(provider.GetRequiredService<YahooExchangeRateProvider>());

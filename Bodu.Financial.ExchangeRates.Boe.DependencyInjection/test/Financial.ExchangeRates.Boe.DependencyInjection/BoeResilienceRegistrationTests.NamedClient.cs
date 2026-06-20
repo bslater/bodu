@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoeResilienceRegistrationTests.NamedClient.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -23,7 +23,7 @@ public partial class BoeResilienceRegistrationTests
 
         ServiceCollection services = new();
         services
-            .AddBoduFinancial()
+            .AddFinancialService()
             .AddBoeReferenceRates(configureResilience: ConfigureFastRetry);
         services
             .AddHttpClient(BoeFinancialServiceBuilderExtensions.HttpClientName)
@@ -52,7 +52,7 @@ public partial class BoeResilienceRegistrationTests
 
         ServiceCollection services = new();
         services
-            .AddBoduFinancial()
+            .AddFinancialService()
             .AddBoeReferenceRates(configureResilience: ConfigureFastBreaker);
         services
             .AddHttpClient(BoeFinancialServiceBuilderExtensions.HttpClientName)

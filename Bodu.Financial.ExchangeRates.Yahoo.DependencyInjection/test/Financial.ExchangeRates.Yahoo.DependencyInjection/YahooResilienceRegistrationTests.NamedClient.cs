@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YahooResilienceRegistrationTests.NamedClient.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -23,7 +23,7 @@ public partial class YahooResilienceRegistrationTests
 
         ServiceCollection services = new();
         services
-            .AddBoduFinancial()
+            .AddFinancialService()
             .AddYahooExchangeRates(configureResilience: ConfigureFastRetry);
         services
             .AddHttpClient(YahooFinancialServiceBuilderExtensions.HttpClientName)
@@ -52,7 +52,7 @@ public partial class YahooResilienceRegistrationTests
 
         ServiceCollection services = new();
         services
-            .AddBoduFinancial()
+            .AddFinancialService()
             .AddYahooExchangeRates(configureResilience: ConfigureFastBreaker);
         services
             .AddHttpClient(YahooFinancialServiceBuilderExtensions.HttpClientName)

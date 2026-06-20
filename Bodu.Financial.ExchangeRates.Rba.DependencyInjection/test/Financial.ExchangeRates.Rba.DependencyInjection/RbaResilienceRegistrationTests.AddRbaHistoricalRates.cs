@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RbaResilienceRegistrationTests.AddRbaHistoricalRates.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -21,7 +21,7 @@ public partial class RbaResilienceRegistrationTests
     public void AddRbaHistoricalRates_ShouldRegisterStandardResilienceOptionsForNamedClient()
     {
         ServiceCollection services = new();
-        services.AddBoduFinancial().AddRbaHistoricalRates(configure: o => o.HttpTimeout = TimeSpan.FromSeconds(7));
+        services.AddFinancialService().AddRbaHistoricalRates(configure: o => o.HttpTimeout = TimeSpan.FromSeconds(7));
         using ServiceProvider provider = services.BuildServiceProvider();
 
         HttpStandardResilienceOptions options = provider

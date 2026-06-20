@@ -27,7 +27,7 @@ public sealed partial class DistributedRateCacheExtensionsTests
         ServiceProvider provider = BuildProvider(services =>
         {
             services.AddDistributedMemoryCache();
-            services.AddBoduFinancial().AddDistributedRateCache("RBA");
+            services.AddFinancialService().AddDistributedRateCache("RBA");
         });
 
         IExchangeRateCache cache = provider.GetRequiredService<IExchangeRateCache>();
@@ -45,7 +45,7 @@ public sealed partial class DistributedRateCacheExtensionsTests
         ServiceProvider provider = BuildProvider(services =>
         {
             services.AddDistributedMemoryCache();
-            services.AddBoduFinancial().AddDistributedRateCache("RBA");
+            services.AddFinancialService().AddDistributedRateCache("RBA");
         });
 
         IExchangeRateCache byDefault = provider.GetRequiredService<IExchangeRateCache>();
@@ -63,7 +63,7 @@ public sealed partial class DistributedRateCacheExtensionsTests
         ServiceProvider provider = BuildProvider(services =>
         {
             services.AddDistributedMemoryCache();
-            services.AddBoduFinancial().AddDistributedRateCache("RBA");
+            services.AddFinancialService().AddDistributedRateCache("RBA");
         });
         IExchangeRateCache cache = provider.GetRequiredService<IExchangeRateCache>();
         DateTimeOffset now = DateTimeOffset.UtcNow;
@@ -86,7 +86,7 @@ public sealed partial class DistributedRateCacheExtensionsTests
         ServiceProvider provider = BuildProvider(services =>
         {
             services.AddDistributedMemoryCache();
-            services.AddBoduFinancial().AddDistributedRateCache("RBA", config);
+            services.AddFinancialService().AddDistributedRateCache("RBA", config);
         });
         IDistributedCache distributedCache = provider.GetRequiredService<IDistributedCache>();
         IExchangeRateCache cache = provider.GetRequiredService<IExchangeRateCache>();
@@ -119,7 +119,7 @@ public sealed partial class DistributedRateCacheExtensionsTests
     public void AddDistributedRateCache_WhenProviderNameIsBlank_ShouldThrowArgumentException()
     {
         var services = new ServiceCollection();
-        IFinancialServiceBuilder builder = services.AddBoduFinancial();
+        IFinancialServiceBuilder builder = services.AddFinancialService();
 
         ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -139,7 +139,7 @@ public sealed partial class DistributedRateCacheExtensionsTests
         ServiceProvider provider = BuildProvider(services =>
         {
             services.AddDistributedMemoryCache();
-            services.AddBoduFinancial().AddDistributedRateCache("RBA", configure: o => o.KeyPrefix = "   ");
+            services.AddFinancialService().AddDistributedRateCache("RBA", configure: o => o.KeyPrefix = "   ");
         });
 
         _ = Assert.ThrowsExactly<OptionsValidationException>(() =>
@@ -157,7 +157,7 @@ public sealed partial class DistributedRateCacheExtensionsTests
         ServiceProvider provider = BuildProvider(services =>
         {
             services.AddDistributedMemoryCache();
-            services.AddBoduFinancial().AddDistributedRateCache("RBA", configure: o => o.KeyPrefix = "fx:");
+            services.AddFinancialService().AddDistributedRateCache("RBA", configure: o => o.KeyPrefix = "fx:");
         });
 
         Assert.IsNotNull(provider.GetRequiredService<IExchangeRateCache>());
@@ -174,7 +174,7 @@ public sealed partial class DistributedRateCacheExtensionsTests
         ServiceProvider provider = BuildProvider(services =>
         {
             services.AddSingleton<IDistributedCache>(new ThrowingDistributedCache());
-            services.AddBoduFinancial().AddDistributedRateCache("RBA", configure: o => o.ValidateStorageOnStart = true);
+            services.AddFinancialService().AddDistributedRateCache("RBA", configure: o => o.ValidateStorageOnStart = true);
         });
 
         IStartupValidator startup = provider.GetRequiredService<IStartupValidator>();
@@ -192,7 +192,7 @@ public sealed partial class DistributedRateCacheExtensionsTests
         ServiceProvider provider = BuildProvider(services =>
         {
             services.AddDistributedMemoryCache();
-            services.AddBoduFinancial().AddDistributedRateCache("RBA", configure: o => o.ValidateStorageOnStart = true);
+            services.AddFinancialService().AddDistributedRateCache("RBA", configure: o => o.ValidateStorageOnStart = true);
         });
 
         IStartupValidator startup = provider.GetRequiredService<IStartupValidator>();

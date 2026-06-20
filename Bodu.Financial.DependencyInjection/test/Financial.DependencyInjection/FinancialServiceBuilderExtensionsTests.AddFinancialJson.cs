@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FinancialServiceBuilderExtensionsTests.AddFinancialJson.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -20,7 +20,7 @@ public sealed partial class FinancialServiceBuilderExtensionsTests
     public void AddFinancialJson_WhenRegistered_ShouldProvideConfiguredOptions()
     {
         ServiceProvider provider = new ServiceCollection()
-            .AddBoduFinancial()
+            .AddFinancialService()
             .AddFinancialJson(Serialization.FinancialJsonPolicy.Compact)
             .Services.BuildServiceProvider();
 

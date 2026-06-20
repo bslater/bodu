@@ -23,7 +23,7 @@ public sealed partial class DistributedRateCacheExtensionsTests
     {
         var services = new ServiceCollection();
 
-        services.AddBoduFinancial().AddRedisRateCache(redis => redis.Configuration = "localhost:6379", "RBA");
+        services.AddFinancialService().AddRedisRateCache(redis => redis.Configuration = "localhost:6379", "RBA");
 
         // AddStackExchangeRedisCache registers IDistributedCache; the builder registers IExchangeRateCache (default and
         // keyed) and the concrete cache. Assert the descriptors exist without resolving the Redis cache (which would
@@ -41,7 +41,7 @@ public sealed partial class DistributedRateCacheExtensionsTests
     public void AddRedisRateCache_WhenConfigureRedisIsNull_ShouldThrowArgumentNullException()
     {
         var services = new ServiceCollection();
-        IFinancialServiceBuilder builder = services.AddBoduFinancial();
+        IFinancialServiceBuilder builder = services.AddFinancialService();
 
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -59,7 +59,7 @@ public sealed partial class DistributedRateCacheExtensionsTests
     public void AddRedisRateCache_WhenDistributedCacheSubstituted_ShouldResolveCacheBoundToProvider()
     {
         var services = new ServiceCollection();
-        services.AddBoduFinancial().AddRedisRateCache(redis => redis.Configuration = "localhost:6379", "RBA");
+        services.AddFinancialService().AddRedisRateCache(redis => redis.Configuration = "localhost:6379", "RBA");
 
         // Replace the Redis IDistributedCache registration with an in-memory one so the cache can be resolved and used
         // without a live Redis server, while leaving the exchange-rate cache wiring under test intact.

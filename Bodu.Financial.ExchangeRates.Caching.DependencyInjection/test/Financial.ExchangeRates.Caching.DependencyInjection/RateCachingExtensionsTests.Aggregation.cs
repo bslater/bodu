@@ -98,7 +98,7 @@ public sealed partial class RateCachingExtensionsTests
     public void AddAggregatedExchangeRateProvider_WhenConfigureIsNull_ShouldThrowArgumentNullException()
     {
         var services = new ServiceCollection();
-        IFinancialServiceBuilder builder = services.AddBoduFinancial();
+        IFinancialServiceBuilder builder = services.AddFinancialService();
 
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

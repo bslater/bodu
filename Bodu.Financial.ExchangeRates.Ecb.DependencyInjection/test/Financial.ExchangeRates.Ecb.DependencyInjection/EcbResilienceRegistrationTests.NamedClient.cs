@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EcbResilienceRegistrationTests.NamedClient.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -23,7 +23,7 @@ public partial class EcbResilienceRegistrationTests
 
         ServiceCollection services = new();
         services
-            .AddBoduFinancial()
+            .AddFinancialService()
             .AddEcbReferenceRates(configureResilience: ConfigureFastRetry);
         services
             .AddHttpClient(EcbFinancialServiceBuilderExtensions.HttpClientName)
@@ -52,7 +52,7 @@ public partial class EcbResilienceRegistrationTests
 
         ServiceCollection services = new();
         services
-            .AddBoduFinancial()
+            .AddFinancialService()
             .AddEcbReferenceRates(configureResilience: ConfigureFastBreaker);
         services
             .AddHttpClient(EcbFinancialServiceBuilderExtensions.HttpClientName)

@@ -54,7 +54,7 @@ public static class RateCachingExtensions
     /// <example>
     /// <code language="csharp">
     ///<![CDATA[
-    /// services.AddBoduFinancial()
+    /// services.AddFinancialService()
     ///         .AddRbaHistoricalRates(configuration)
     ///         .AddCachedExchangeRateProvider<RbaExchangeRateProvider>("RBA", configuration,
     ///             configure: o => o.DefaultExpiry = TimeSpan.FromHours(12));
@@ -114,7 +114,7 @@ public static class RateCachingExtensions
     /// <example>
     /// <code language="csharp">
     ///<![CDATA[
-    /// services.AddBoduFinancial()
+    /// services.AddFinancialService()
     ///         .AddAggregatedExchangeRateProvider(agg => agg
     ///             .AddCachedChild<RbaExchangeRateProvider>("RBA")
     ///             .AddCachedChild<EcbExchangeRateProvider>("ECB")
