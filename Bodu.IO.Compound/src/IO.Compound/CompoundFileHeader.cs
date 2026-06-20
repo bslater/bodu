@@ -158,10 +158,10 @@ internal sealed class CompoundFileHeader
     /// </exception>
     internal static CompoundFileHeader Parse(ReadOnlySpan<byte> data)
     {
-        CompoundThrowHelper.ThrowFormatIf(data.Length < 512, CompoundResourceStrings.Format_Invalid_CompoundHeader);
+        CompoundThrowHelper.ThrowFormatIf(data.Length < 512, CompoundResourceStrings.Format_Invalid_CompoundHeader, CompoundFileError.TruncatedFile);
 
         if (!data.Slice(0, Signature.Length).SequenceEqual(Signature))
-            CompoundThrowHelper.ThrowFormat(CompoundResourceStrings.Format_Invalid_CompoundSignature);
+            CompoundThrowHelper.ThrowFormat(CompoundResourceStrings.Format_Invalid_CompoundSignature, CompoundFileError.InvalidSignature);
 
         CompoundStreamReader reader = new(data);
         reader.Seek(28);
@@ -169,9 +169,9 @@ internal sealed class CompoundFileHeader
         ushort sectorShift = reader.ReadUInt16();
         ushort miniSectorShift = reader.ReadUInt16();
 
-        CompoundThrowHelper.ThrowFormatIf(byteOrder != 0xFFFE, CompoundResourceStrings.Format_Invalid_CompoundHeader);
-        CompoundThrowHelper.ThrowFormatIf(sectorShift is not 9 and not 12, CompoundResourceStrings.Format_Invalid_CompoundHeader);
-        CompoundThrowHelper.ThrowFormatIf(miniSectorShift != 6, CompoundResourceStrings.Format_Invalid_CompoundHeader);
+        CompoundThrowHelper.ThrowFormatIf(byteOrder != 0xFFFE, CompoundResourceStrings.Format_Invalid_CompoundHeader, CompoundFileError.InvalidByteOrder);
+        CompoundThrowHelper.ThrowFormatIf(sectorShift is not 9 and not 12, CompoundResourceStrings.Format_Invalid_CompoundHeader, CompoundFileError.InvalidSectorSize);
+        CompoundThrowHelper.ThrowFormatIf(miniSectorShift != 6, CompoundResourceStrings.Format_Invalid_CompoundHeader, CompoundFileError.InvalidSectorSize);
 
         reader.Seek(44);
         uint fatSectorCount = reader.ReadUInt32();

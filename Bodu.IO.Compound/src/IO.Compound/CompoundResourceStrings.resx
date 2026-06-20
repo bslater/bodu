@@ -73,4 +73,16 @@
   <data name="IO_KeyNotFound_CompoundStream" xml:space="preserve">
     <value>No stream named '{0}' was found in the compound file.</value>
   </data>
+  <data name="Format_Invalid_CompoundDirectoryTree" xml:space="preserve">
+    <value>The compound file directory tree contains a cyclic or out-of-range entry link.</value>
+  </data>
+  <data name="Format_Invalid_CompoundPropertySet" xml:space="preserve">
+    <value>The stream is not a well-formed OLE property set.</value>
+  </data>
+  <data name="Op_NotSupported_CompoundFileWriteMode" xml:space="preserve">
+    <value>The compound file access mode '{0}' is not supported; only Read is currently available.</value>
+  </data>
+  <data name="Arg_Invalid_CompoundStreamNotSeekable" xml:space="preserve">
+    <value>The stream must be seekable to test for a compound file signature.</value>
+  </data>
 </root>
