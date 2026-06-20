@@ -76,7 +76,7 @@ public sealed partial class SqliteExchangeRateCacheTests
     [TestCategory("Smoke")]
     public void SqliteExchangeRateCache_WhenStoredAndReadBack_ShouldServeRate()
     {
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
         SqliteExchangeRateCache cache = CreateFileCache();
 
         cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, now) }, Duration, now);

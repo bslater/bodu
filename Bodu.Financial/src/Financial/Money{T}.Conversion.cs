@@ -19,8 +19,8 @@ public readonly partial struct Money<TCurrency>
     /// </returns>
     /// <remarks>
     /// The conversion is lossless: <typeparamref name="TCurrency" /> determines the currency, which is encoded into the
-    /// runtime <see cref="Money.Code" />. An <c>implicit</c> operator is also provided so typed values flow into runtime
-    /// APIs without an explicit cast.
+    /// runtime <see cref="Money.Code" />. An <c>implicit</c> operator is also provided so typed values flow into
+    /// runtime APIs without an explicit cast.
     /// </remarks>
     public Money ToMoney() =>
         Money.FromNormalized(_amount, CurrencyMetadata<TCurrency>.Value.Code);
@@ -240,7 +240,9 @@ public readonly partial struct Money<TCurrency>
     /// </summary>
     /// <param name="numerator">The original dividend (its sign determines round-away direction).</param>
     /// <param name="denominator">The positive divisor.</param>
-    /// <param name="quotient">The truncated quotient from <see cref="BigInteger.DivRem(BigInteger, BigInteger)" />.</param>
+    /// <param name="quotient">
+    /// The truncated quotient from <see cref="BigInteger.DivRem(BigInteger, BigInteger)" />.
+    /// </param>
     /// <param name="remainder">The non-zero remainder.</param>
     /// <param name="tiesAwayFromZero">
     /// Whether to round midpoints away from zero (true) or to the nearest even (false).

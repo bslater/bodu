@@ -87,7 +87,7 @@ public partial class TomlSerializerTests
     {
         var options = new TomlSerializerOptions { MaxDepth = 2 };
 
-        var model = TomlSerializer.Deserialize<RecursiveModel>("Child = { Child = {} }\n", options);
+        RecursiveModel model = TomlSerializer.Deserialize<RecursiveModel>("Child = { Child = {} }\n", options);
 
         Assert.IsNotNull(model.Child);
         Assert.IsNotNull(model.Child.Child);
@@ -104,7 +104,7 @@ public partial class TomlSerializerTests
     {
         var options = new TomlSerializerOptions { MaxDepth = 2 };
 
-        var model = TomlSerializer.Deserialize<RecursiveModel>("[Child]\n[Child.Child]\n", options);
+        RecursiveModel model = TomlSerializer.Deserialize<RecursiveModel>("[Child]\n[Child.Child]\n", options);
 
         Assert.IsNotNull(model.Child);
         Assert.IsNotNull(model.Child.Child);

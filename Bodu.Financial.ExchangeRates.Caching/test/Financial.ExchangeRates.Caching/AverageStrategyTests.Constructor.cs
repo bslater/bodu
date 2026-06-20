@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AverageStrategyTests.Constructor.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -14,7 +14,7 @@ public sealed partial class AverageStrategyTests
     [TestMethod]
     public void Constructor_WhenLabelIsBlank_ShouldThrowArgumentException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             _ = new AverageStrategy("  ");
         });

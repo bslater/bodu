@@ -43,7 +43,7 @@ public sealed partial class TomlTestCorpusTests
     [TestMethod]
     public void Corpus_EveryDocumentFileIsListedInAManifest()
     {
-        var listed = AllManifestPaths();
+        HashSet<string> listed = AllManifestPaths();
 
         foreach (string directory in CaseDirectoryNames)
         {
@@ -84,7 +84,7 @@ public sealed partial class TomlTestCorpusTests
     [TestMethod]
     public void Corpus_EverySkippedCaseExistsAndIsListed()
     {
-        var listed = AllManifestPaths();
+        HashSet<string> listed = AllManifestPaths();
 
         foreach (string skipped in SkippedCases.Keys)
         {
@@ -101,7 +101,7 @@ public sealed partial class TomlTestCorpusTests
     public void Corpus_MatchesPinnedProvenance()
     {
         using var provenance = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(CorpusRoot, "provenance.json")));
-        var root = provenance.RootElement;
+        JsonElement root = provenance.RootElement;
 
         int actualValid = Directory.EnumerateFiles(Path.Combine(CorpusRoot, "valid"), "*.toml", SearchOption.AllDirectories).Count();
         int actualInvalid = Directory.EnumerateFiles(Path.Combine(CorpusRoot, "invalid"), "*.toml", SearchOption.AllDirectories).Count();

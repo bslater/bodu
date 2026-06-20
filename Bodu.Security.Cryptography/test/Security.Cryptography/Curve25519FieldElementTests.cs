@@ -80,7 +80,7 @@ public class Curve25519FieldElementTests
     [TestMethod]
     public void FromBytes_WhenSourceLengthIsInvalid_ShouldThrowArgumentException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             _ = Curve25519FieldElement.FromBytes(new byte[31]);
         });

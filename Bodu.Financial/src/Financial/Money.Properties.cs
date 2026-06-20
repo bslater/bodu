@@ -20,14 +20,19 @@ public readonly partial struct Money
     /// <summary>
     /// Gets the currency identifying this value.
     /// </summary>
-    /// <returns>The stored <see cref="CurrencyCode" />, or <see cref="CurrencyCode.None" /> for a default-initialised value.</returns>
+    /// <returns>
+    /// The stored <see cref="CurrencyCode" />, or <see cref="CurrencyCode.None" /> for a default-initialised value.
+    /// </returns>
     public CurrencyCode Code =>
         _code;
 
     /// <summary>
     /// Gets the ISO 4217 alphabetic code identifying the currency, or an empty string for a default-initialised value.
     /// </summary>
-    /// <returns>The currency's ISO code, used by the formatting, parsing, and serialization paths that consult the string-keyed currency lookup.</returns>
+    /// <returns>
+    /// The currency's ISO code, used by the formatting, parsing, and serialization paths that consult the string-keyed
+    /// currency lookup.
+    /// </returns>
     internal string IsoCodeOrEmpty =>
         _code == CurrencyCode.None ? string.Empty : _code.ToString();
 
@@ -65,10 +70,10 @@ public readonly partial struct Money
     /// precision as reported by <see cref="CurrencyRegistry" />, or zero when the currency is unknown to the registry.
     /// </returns>
     /// <remarks>
-    /// A value materialised by the settlement path
-    /// (<see cref="CalculatedMoney.RoundToMoney(MonetaryContext?)" />) at a precision other than the currency's
-    /// registered minor units reports that explicit scale, keeping the stored precision and the reported minor units
-    /// self-consistent. Ordinary construction always resolves the precision from the registry.
+    /// A value materialised by the settlement path (<see cref="CalculatedMoney.RoundToMoney(MonetaryContext?)" />) at a
+    /// precision other than the currency's registered minor units reports that explicit scale, keeping the stored
+    /// precision and the reported minor units self-consistent. Ordinary construction always resolves the precision from
+    /// the registry.
     /// </remarks>
     public int MinorUnits =>
         _explicitScalePlusOne > 0

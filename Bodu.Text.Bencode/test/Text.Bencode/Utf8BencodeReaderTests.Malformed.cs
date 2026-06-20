@@ -231,7 +231,7 @@ public partial class Utf8BencodeReaderTests
         _ = testName;
         byte[] bytes = Bytes(input);
 
-        var ex = Assert.ThrowsExactly<BencodeFormatException>(() =>
+        BencodeFormatException ex = Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
             var reader = new Utf8BencodeReader(bytes);
             while (reader.Read())

@@ -23,8 +23,8 @@ public sealed partial class DistributedExchangeRateCacheTests
     [TestMethod]
     public void Store_WhenSecondInstanceSharesBackingStore_ShouldReadPersistedRates()
     {
-        var now = DateTimeOffset.UtcNow;
-        var backingStore = CreateBackingStore();
+        DateTimeOffset now = DateTimeOffset.UtcNow;
+        MemoryDistributedCache backingStore = CreateBackingStore();
 
         DistributedExchangeRateCache writer = CreateCache(backingStore);
         writer.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, now) }, Duration, now);
@@ -44,8 +44,8 @@ public sealed partial class DistributedExchangeRateCacheTests
     [TestMethod]
     public void RecordCoverage_WhenSecondInstanceSharesBackingStore_ShouldReadPersistedCoverage()
     {
-        var now = DateTimeOffset.UtcNow;
-        var backingStore = CreateBackingStore();
+        DateTimeOffset now = DateTimeOffset.UtcNow;
+        MemoryDistributedCache backingStore = CreateBackingStore();
 
         DistributedExchangeRateCache writer = CreateCache(backingStore);
         writer.RecordCoverage(Pair, new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 10), Duration, now);
@@ -62,8 +62,8 @@ public sealed partial class DistributedExchangeRateCacheTests
     [TestMethod]
     public void StoreAndRecordCoverage_WhenSecondInstanceSharesBackingStore_ShouldReadBothHalves()
     {
-        var now = DateTimeOffset.UtcNow;
-        var backingStore = CreateBackingStore();
+        DateTimeOffset now = DateTimeOffset.UtcNow;
+        MemoryDistributedCache backingStore = CreateBackingStore();
 
         DistributedExchangeRateCache writer = CreateCache(backingStore);
         writer.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, now) }, Duration, now);
@@ -82,8 +82,8 @@ public sealed partial class DistributedExchangeRateCacheTests
     [TestMethod]
     public void Store_WhenNoPrefixConfigured_ShouldWriteUnderProviderColonPairKey()
     {
-        var now = DateTimeOffset.UtcNow;
-        var backingStore = CreateBackingStore();
+        DateTimeOffset now = DateTimeOffset.UtcNow;
+        MemoryDistributedCache backingStore = CreateBackingStore();
         var cache = new DistributedExchangeRateCache(backingStore, new DistributedExchangeRateCacheOptions { Provider = Provider });
 
         cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, now) }, Duration, now);
@@ -99,8 +99,8 @@ public sealed partial class DistributedExchangeRateCacheTests
     [TestMethod]
     public void Store_WhenPrefixConfigured_ShouldWriteUnderPrefixedKey()
     {
-        var now = DateTimeOffset.UtcNow;
-        var backingStore = CreateBackingStore();
+        DateTimeOffset now = DateTimeOffset.UtcNow;
+        MemoryDistributedCache backingStore = CreateBackingStore();
         var cache = new DistributedExchangeRateCache(backingStore, new DistributedExchangeRateCacheOptions { Provider = Provider, KeyPrefix = "fx:" });
 
         cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, now) }, Duration, now);
@@ -116,8 +116,8 @@ public sealed partial class DistributedExchangeRateCacheTests
     [TestMethod]
     public void Store_WhenDifferentPairs_ShouldUseDistinctKeys()
     {
-        var now = DateTimeOffset.UtcNow;
-        var backingStore = CreateBackingStore();
+        DateTimeOffset now = DateTimeOffset.UtcNow;
+        MemoryDistributedCache backingStore = CreateBackingStore();
         DistributedExchangeRateCache cache = CreateCache(backingStore);
         var other = new ExchangeRatePair(CurrencyCode.EUR, CurrencyCode.USD);
 
@@ -138,8 +138,8 @@ public sealed partial class DistributedExchangeRateCacheTests
     [TestMethod]
     public void GetRates_WhenBlobHasNoObservedAtUtc_ShouldReadRowWithNullObservedAtUtc()
     {
-        var now = DateTimeOffset.UtcNow;
-        var backingStore = CreateBackingStore();
+        DateTimeOffset now = DateTimeOffset.UtcNow;
+        MemoryDistributedCache backingStore = CreateBackingStore();
         DistributedExchangeRateCache cache = CreateCache(backingStore);
 
         // A hand-written legacy blob in the Web (camelCase) shape, with a rate object that predates observedAtUtc.

@@ -32,7 +32,7 @@ public class BencodeEnumConverterTests
 
         Assert.AreEqual("d6:Status6:Activee", Encoding.Latin1.GetString(bytes));
 
-        var roundTripped = BencodeSerializer.Deserialize<StatusModel>(bytes);
+        StatusModel roundTripped = BencodeSerializer.Deserialize<StatusModel>(bytes);
         Assert.AreEqual(Status.Active, roundTripped.Status);
     }
 
@@ -60,7 +60,7 @@ public class BencodeEnumConverterTests
 
         Assert.AreEqual("d6:Status9:not-founde", Encoding.Latin1.GetString(bytes));
 
-        var roundTripped = BencodeSerializer.Deserialize<RenamedStatusModel>(bytes);
+        RenamedStatusModel roundTripped = BencodeSerializer.Deserialize<RenamedStatusModel>(bytes);
         Assert.AreEqual(RenamedStatus.NotFound, roundTripped.Status);
     }
 
@@ -79,7 +79,7 @@ public class BencodeEnumConverterTests
 
         Assert.AreEqual("d6:Status6:activee", Encoding.Latin1.GetString(bytes));
 
-        var roundTripped = BencodeSerializer.Deserialize<StatusModel>(bytes, options);
+        StatusModel roundTripped = BencodeSerializer.Deserialize<StatusModel>(bytes, options);
         Assert.AreEqual(Status.Active, roundTripped.Status);
     }
 
@@ -95,7 +95,7 @@ public class BencodeEnumConverterTests
 
         byte[] bytes = Encoding.Latin1.GetBytes("d6:Statusi2ee");
 
-        var roundTripped = BencodeSerializer.Deserialize<StatusModel>(bytes, options);
+        StatusModel roundTripped = BencodeSerializer.Deserialize<StatusModel>(bytes, options);
 
         Assert.AreEqual(Status.Archived, roundTripped.Status);
     }
@@ -149,7 +149,7 @@ public class BencodeEnumConverterTests
 
         Assert.AreEqual("d6:Statusi2ee", Encoding.Latin1.GetString(bytes));
 
-        var roundTripped = BencodeSerializer.Deserialize<NumberEnumModel>(bytes);
+        NumberEnumModel roundTripped = BencodeSerializer.Deserialize<NumberEnumModel>(bytes);
         Assert.AreEqual(Status.Archived, roundTripped.Status);
     }
 
@@ -167,7 +167,7 @@ public class BencodeEnumConverterTests
 
         Assert.AreEqual("d6:Status7:Pendinge", Encoding.Latin1.GetString(bytes));
 
-        var roundTripped = BencodeSerializer.Deserialize<StringEnumModel>(bytes);
+        StringEnumModel roundTripped = BencodeSerializer.Deserialize<StringEnumModel>(bytes);
         Assert.AreEqual(Status.Pending, roundTripped.Status);
     }
 
@@ -186,7 +186,7 @@ public class BencodeEnumConverterTests
 
         Assert.AreEqual("d6:Status6:Activee", Encoding.Latin1.GetString(bytes));
 
-        var roundTripped = BencodeSerializer.Deserialize<StatusModel>(bytes, options);
+        StatusModel roundTripped = BencodeSerializer.Deserialize<StatusModel>(bytes, options);
         Assert.AreEqual(Status.Active, roundTripped.Status);
     }
 
@@ -202,7 +202,7 @@ public class BencodeEnumConverterTests
 
         byte[] bytes = Encoding.Latin1.GetBytes("d6:Status6:activee");
 
-        var model = BencodeSerializer.Deserialize<StatusModel>(bytes, options);
+        StatusModel model = BencodeSerializer.Deserialize<StatusModel>(bytes, options);
 
         Assert.AreEqual(Status.Active, model.Status);
     }
@@ -216,7 +216,7 @@ public class BencodeEnumConverterTests
     {
         byte[] bytes = Encoding.Latin1.GetBytes("d6:Status1:2e");
 
-        var model = BencodeSerializer.Deserialize<StatusModel>(bytes);
+        StatusModel model = BencodeSerializer.Deserialize<StatusModel>(bytes);
 
         Assert.AreEqual(Status.Archived, model.Status);
     }
@@ -236,7 +236,7 @@ public class BencodeEnumConverterTests
 
         Assert.AreEqual("d6:Status6:activee", Encoding.Latin1.GetString(bytes));
 
-        var roundTripped = BencodeSerializer.Deserialize<StatusModel>(bytes, options);
+        StatusModel roundTripped = BencodeSerializer.Deserialize<StatusModel>(bytes, options);
         Assert.AreEqual(Status.Active, roundTripped.Status);
     }
 
@@ -255,7 +255,7 @@ public class BencodeEnumConverterTests
 
         Assert.AreEqual("d6:Statusi2ee", Encoding.Latin1.GetString(bytes));
 
-        var roundTripped = BencodeSerializer.Deserialize<StatusModel>(bytes, options);
+        StatusModel roundTripped = BencodeSerializer.Deserialize<StatusModel>(bytes, options);
         Assert.AreEqual(Status.Archived, roundTripped.Status);
     }
 
@@ -287,7 +287,7 @@ public class BencodeEnumConverterTests
 
         Assert.AreEqual("d6:Status2:99e", Encoding.Latin1.GetString(bytes));
 
-        var roundTripped = BencodeSerializer.Deserialize<StatusModel>(bytes);
+        StatusModel roundTripped = BencodeSerializer.Deserialize<StatusModel>(bytes);
         Assert.AreEqual((Status)99, roundTripped.Status);
     }
 
@@ -304,7 +304,7 @@ public class BencodeEnumConverterTests
 
         Assert.AreEqual("d5:Flags11:Read, Writee", Encoding.Latin1.GetString(bytes));
 
-        var roundTripped = BencodeSerializer.Deserialize<FlagsModel>(bytes);
+        FlagsModel roundTripped = BencodeSerializer.Deserialize<FlagsModel>(bytes);
         Assert.AreEqual(FlagsEnum.Read | FlagsEnum.Write, roundTripped.Flags);
     }
 
@@ -321,7 +321,7 @@ public class BencodeEnumConverterTests
 
         Assert.AreEqual("d5:Flags5:Writee", Encoding.Latin1.GetString(bytes));
 
-        var roundTripped = BencodeSerializer.Deserialize<FlagsModel>(bytes);
+        FlagsModel roundTripped = BencodeSerializer.Deserialize<FlagsModel>(bytes);
         Assert.AreEqual(FlagsEnum.Write, roundTripped.Flags);
     }
 

@@ -324,7 +324,7 @@ public sealed class BoeExchangeRateProvider
         }
 
         // Capture the load instant immediately after the download completes so it stamps every rate this range produces.
-        var fetchedAt = TimeProvider.GetUtcNow();
+        DateTimeOffset fetchedAt = TimeProvider.GetUtcNow();
 
         lock (SyncRoot)
         {

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Utf8TomlReaderTests.Malformed.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -53,7 +53,7 @@ public sealed partial class Utf8TomlReaderTests
     [DataRow("a = \"x\rb\"", DisplayName = "bare carriage return in string")]
     public void Read_WhenLexicallyMalformed_ShouldThrowTomlFormatException(string toml)
     {
-        var ex = Assert.ThrowsExactly<TomlFormatException>(() =>
+        TomlFormatException ex = Assert.ThrowsExactly<TomlFormatException>(() =>
         {
             Utf8TomlReader lexer = Create(toml);
             Drain(ref lexer);
@@ -73,7 +73,7 @@ public sealed partial class Utf8TomlReaderTests
     {
         byte[] document = [.. "s = \""u8.ToArray(), 0xFF, .. "\"\n"u8.ToArray()];
 
-        var ex = Assert.ThrowsExactly<TomlFormatException>(() =>
+        TomlFormatException ex = Assert.ThrowsExactly<TomlFormatException>(() =>
         {
             var lexer = new Utf8TomlReader(document, new TomlReaderOptions { SpecVersion = TomlSpecVersion.V1_0 });
             Drain(ref lexer);

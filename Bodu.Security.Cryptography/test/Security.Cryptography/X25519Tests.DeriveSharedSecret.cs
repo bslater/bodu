@@ -46,7 +46,7 @@ public sealed partial class X25519Tests
         algorithm.GenerateKey();
 
         // u = 0 is a low-order point: every scalar maps it to the all-zero shared secret.
-        var ex = Assert.ThrowsExactly<CryptographicException>(() =>
+        CryptographicException ex = Assert.ThrowsExactly<CryptographicException>(() =>
         {
             _ = algorithm.DeriveSharedSecret(new byte[X25519.KeySizeInBytes]);
         });

@@ -186,7 +186,7 @@ public sealed class IniEntryTests
     {
         IniEntry entry = new("k", "v");
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() => entry.SetLeadingComments(null!));
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() => entry.SetLeadingComments(null!));
 
         Assert.AreEqual("comments", ex.ParamName);
     }

@@ -66,7 +66,7 @@ public sealed class CompoundBinaryFile
         _header = CompoundFileHeader.Parse(data);
         _sectors = new CompoundSectorReader(data, _header);
 
-        var entries = ReadDirectory();
+        List<CompoundDirectoryEntry> entries = ReadDirectory();
         Entries = entries;
         _streamsByName = BuildStreamIndex(entries);
 

@@ -29,7 +29,7 @@ public partial class TomlSerializerTests
         string text = TomlSerializer.Serialize(original);
         Assert.AreEqual("Value = 42\n", text);
 
-        var roundTripped = TomlSerializer.Deserialize<ReadWriteModel>(text);
+        ReadWriteModel roundTripped = TomlSerializer.Deserialize<ReadWriteModel>(text);
         Assert.AreEqual(42, roundTripped.Value);
     }
 
@@ -44,7 +44,7 @@ public partial class TomlSerializerTests
         string text = TomlSerializer.Serialize(original);
         Assert.AreEqual("Value = 7\n", text);
 
-        var roundTripped = TomlSerializer.Deserialize<InitOnlyModel>(text);
+        InitOnlyModel roundTripped = TomlSerializer.Deserialize<InitOnlyModel>(text);
         Assert.AreEqual(7, roundTripped.Value);
     }
 
@@ -67,7 +67,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenGetOnlyScalarProperty_ShouldNotAssignMember()
     {
-        var model = TomlSerializer.Deserialize<GetOnlyScalarModel>("Value = 99\n");
+        GetOnlyScalarModel model = TomlSerializer.Deserialize<GetOnlyScalarModel>("Value = 99\n");
 
         Assert.AreEqual(0, model.Value);
     }
@@ -94,7 +94,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenPrivateSetterProperty_ShouldNotAssignMember()
     {
-        var model = TomlSerializer.Deserialize<PrivateSetterModel>("Value = 99\n");
+        PrivateSetterModel model = TomlSerializer.Deserialize<PrivateSetterModel>("Value = 99\n");
 
         Assert.AreEqual(0, model.Value);
     }
@@ -112,7 +112,7 @@ public partial class TomlSerializerTests
         string text = TomlSerializer.Serialize(original);
         Assert.AreEqual("Value = 5\n", text);
 
-        var roundTripped = TomlSerializer.Deserialize<IncludedPrivateSetterModel>(text);
+        IncludedPrivateSetterModel roundTripped = TomlSerializer.Deserialize<IncludedPrivateSetterModel>(text);
         Assert.AreEqual(5, roundTripped.Value);
     }
 

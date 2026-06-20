@@ -21,9 +21,7 @@ namespace Bodu.Globalization.Calendar;
 /// </remarks>
 internal static class CommonCatalogues
 {
-    /// <summary>
-    /// The neutral placeholder territory used to resolve unscoped catalogue concepts.
-    /// </summary>
+    /// <summary>The neutral placeholder territory used to resolve unscoped catalogue concepts.</summary>
     public const string NeutralTerritory = "XX";
 
     /// <summary>

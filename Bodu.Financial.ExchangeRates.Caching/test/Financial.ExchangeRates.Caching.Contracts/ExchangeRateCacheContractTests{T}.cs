@@ -68,7 +68,7 @@ public abstract class ExchangeRateCacheContractTests<TCache>
     public void GetRates_WhenStoredAndFresh_ShouldReturnRow()
     {
         TCache cache = CreateCache();
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
         cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, now) }, Duration, now);
 
         IReadOnlyList<CachedExchangeRate> result = cache.GetRates(Pair, Duration, now);
@@ -84,7 +84,7 @@ public abstract class ExchangeRateCacheContractTests<TCache>
     public void GetRates_WhenStoredButStale_ShouldFilterOut()
     {
         TCache cache = CreateCache();
-        var cachedAt = DateTimeOffset.UtcNow - TimeSpan.FromHours(48);
+        DateTimeOffset cachedAt = DateTimeOffset.UtcNow - TimeSpan.FromHours(48);
         cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, cachedAt) }, Duration, cachedAt);
 
         IReadOnlyList<CachedExchangeRate> result = cache.GetRates(Pair, Duration, DateTimeOffset.UtcNow);
@@ -99,8 +99,8 @@ public abstract class ExchangeRateCacheContractTests<TCache>
     public void GetRates_WhenAgeEqualsDuration_ShouldFilterOut()
     {
         TCache cache = CreateCache();
-        var cachedAt = DateTimeOffset.UtcNow - Duration;
-        var asOf = cachedAt + Duration;
+        DateTimeOffset cachedAt = DateTimeOffset.UtcNow - Duration;
+        DateTimeOffset asOf = cachedAt + Duration;
         cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, cachedAt) }, Duration, cachedAt);
 
         IReadOnlyList<CachedExchangeRate> result = cache.GetRates(Pair, Duration, asOf);
@@ -115,8 +115,8 @@ public abstract class ExchangeRateCacheContractTests<TCache>
     public void Store_WhenSameDateStoredTwice_ShouldKeepLatestCached()
     {
         TCache cache = CreateCache();
-        var older = DateTimeOffset.UtcNow - TimeSpan.FromHours(1);
-        var newer = DateTimeOffset.UtcNow;
+        DateTimeOffset older = DateTimeOffset.UtcNow - TimeSpan.FromHours(1);
+        DateTimeOffset newer = DateTimeOffset.UtcNow;
         var date = new DateOnly(2023, 1, 3);
 
         cache.Store(Pair, new[] { new CachedExchangeRate(date, 0.5000m, older) }, Duration, newer);
@@ -135,7 +135,7 @@ public abstract class ExchangeRateCacheContractTests<TCache>
     public void Store_WhenDifferentDates_ShouldMergeAndOrderByDate()
     {
         TCache cache = CreateCache();
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
 
         cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 6), 0.5100m, now) }, Duration, now);
         cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, now) }, Duration, now);
@@ -154,8 +154,8 @@ public abstract class ExchangeRateCacheContractTests<TCache>
     public void Store_WhenExistingRowsStale_ShouldPruneOnWrite()
     {
         TCache cache = CreateCache();
-        var stale = DateTimeOffset.UtcNow - TimeSpan.FromHours(48);
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset stale = DateTimeOffset.UtcNow - TimeSpan.FromHours(48);
+        DateTimeOffset now = DateTimeOffset.UtcNow;
 
         cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, stale) }, Duration, stale);
         cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 6), 0.5100m, now) }, Duration, now);
@@ -173,7 +173,7 @@ public abstract class ExchangeRateCacheContractTests<TCache>
     public void Store_WhenEmpty_ShouldBeNoOp()
     {
         TCache cache = CreateCache();
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
         cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, now) }, Duration, now);
 
         cache.Store(Pair, Array.Empty<CachedExchangeRate>(), Duration, now);
@@ -189,7 +189,7 @@ public abstract class ExchangeRateCacheContractTests<TCache>
     public void GetRates_WhenStoredUnderDifferentPair_ShouldNotLeak()
     {
         TCache cache = CreateCache();
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
         cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, now) }, Duration, now);
 
         IReadOnlyList<CachedExchangeRate> other = cache.GetRates(new ExchangeRatePair(CurrencyCode.EUR, CurrencyCode.USD), Duration, now);
@@ -205,7 +205,7 @@ public abstract class ExchangeRateCacheContractTests<TCache>
     public void GetCoverage_WhenWindowRecorded_ShouldContainWindowAndSubWindow()
     {
         TCache cache = CreateCache();
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
         cache.RecordCoverage(Pair, new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 10), Duration, now);
 
         DateRangeCoverage coverage = cache.GetCoverage(Pair, Duration, now);
@@ -222,7 +222,7 @@ public abstract class ExchangeRateCacheContractTests<TCache>
     public void GetCoverage_WhenWindowStraddlesGap_ShouldNotContainStraddlingWindow()
     {
         TCache cache = CreateCache();
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
         cache.RecordCoverage(Pair, new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 4), Duration, now);
         cache.RecordCoverage(Pair, new DateOnly(2023, 1, 8), new DateOnly(2023, 1, 10), Duration, now);
 
@@ -254,7 +254,7 @@ public abstract class ExchangeRateCacheContractTests<TCache>
     public void GetCoverage_WhenWindowExpired_ShouldNotBeCovered()
     {
         TCache cache = CreateCache();
-        var recordedAt = DateTimeOffset.UtcNow;
+        DateTimeOffset recordedAt = DateTimeOffset.UtcNow;
         cache.RecordCoverage(Pair, new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 10), Duration, recordedAt);
 
         DateRangeCoverage coverage = cache.GetCoverage(Pair, Duration, recordedAt + Duration);
@@ -270,7 +270,7 @@ public abstract class ExchangeRateCacheContractTests<TCache>
     {
         TCache cache = CreateCache();
 
-        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             cache.RecordCoverage(Pair, new DateOnly(2023, 1, 10), new DateOnly(2023, 1, 3), Duration, DateTimeOffset.UtcNow);
         });
@@ -285,7 +285,7 @@ public abstract class ExchangeRateCacheContractTests<TCache>
     public void GetCoverage_WhenRecordedUnderDifferentPair_ShouldNotLeak()
     {
         TCache cache = CreateCache();
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
         cache.RecordCoverage(Pair, new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 10), Duration, now);
 
         DateRangeCoverage other = cache.GetCoverage(new ExchangeRatePair(CurrencyCode.EUR, CurrencyCode.USD), Duration, now);
@@ -301,7 +301,7 @@ public abstract class ExchangeRateCacheContractTests<TCache>
     public void Store_WhenCoveragePreviouslyRecorded_ShouldPreserveCoverage()
     {
         TCache cache = CreateCache();
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
         cache.RecordCoverage(Pair, new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 10), Duration, now);
 
         cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, now) }, Duration, now);
@@ -318,7 +318,7 @@ public abstract class ExchangeRateCacheContractTests<TCache>
     public void RecordCoverage_WhenRatesPreviouslyStored_ShouldPreserveEntries()
     {
         TCache cache = CreateCache();
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
         cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, now) }, Duration, now);
 
         cache.RecordCoverage(Pair, new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 10), Duration, now);
@@ -336,7 +336,7 @@ public abstract class ExchangeRateCacheContractTests<TCache>
     public void Store_WhenRowHasNonPositiveRate_ShouldNotReturnRow()
     {
         TCache cache = CreateCache();
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
 
         cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0m, now) }, Duration, now);
 
@@ -350,7 +350,7 @@ public abstract class ExchangeRateCacheContractTests<TCache>
     public void Store_WhenRowHasDefaultDate_ShouldNotReturnRow()
     {
         TCache cache = CreateCache();
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
 
         cache.Store(Pair, new[] { new CachedExchangeRate(default, 0.5000m, now) }, Duration, now);
 
@@ -364,7 +364,7 @@ public abstract class ExchangeRateCacheContractTests<TCache>
     public void Store_WhenMixOfValidAndInvalidRows_ShouldRetainOnlyValid()
     {
         TCache cache = CreateCache();
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
 
         cache.Store(
             Pair,
@@ -389,7 +389,7 @@ public abstract class ExchangeRateCacheContractTests<TCache>
     public void StoreFetchedRange_WhenRowsAndWindowSupplied_ShouldStoreBothHalves()
     {
         TCache cache = CreateCache();
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
 
         ExchangeRateCacheWriteStatus status = cache.StoreFetchedRange(
             Pair,
@@ -416,7 +416,7 @@ public abstract class ExchangeRateCacheContractTests<TCache>
     public void StoreFetchedRange_WhenRowsEmpty_ShouldStillRecordCoverage()
     {
         TCache cache = CreateCache();
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
 
         ExchangeRateCacheWriteStatus status = cache.StoreFetchedRange(
             Pair,
@@ -442,7 +442,7 @@ public abstract class ExchangeRateCacheContractTests<TCache>
     public void StoreFetchedRange_WhenPriorStatePresent_ShouldPreserveOtherWindow()
     {
         TCache cache = CreateCache();
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
         cache.StoreFetchedRange(
             Pair,
             new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, now) },
@@ -477,7 +477,7 @@ public abstract class ExchangeRateCacheContractTests<TCache>
     public void StoreFetchedRange_WhenRowInvalid_ShouldDropRowButRecordCoverage()
     {
         TCache cache = CreateCache();
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
 
         ExchangeRateCacheWriteStatus status = cache.StoreFetchedRange(
             Pair,
@@ -507,7 +507,7 @@ public abstract class ExchangeRateCacheContractTests<TCache>
     {
         TCache cache = CreateCache();
 
-        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             cache.StoreFetchedRange(
                 Pair,
@@ -530,12 +530,12 @@ public abstract class ExchangeRateCacheContractTests<TCache>
     public async Task StoreFetchedRange_WhenConcurrentForSamePair_ShouldNotLoseRowsOrCoverage()
     {
         TCache cache = CreateCache();
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
         const int Windows = 16;
 
         IEnumerable<Task> writes = Enumerable.Range(0, Windows).Select(i => Task.Run(() =>
         {
-            var date = new DateOnly(2023, 2, 1).AddDays(i);
+            DateOnly date = new DateOnly(2023, 2, 1).AddDays(i);
             cache.StoreFetchedRange(
                 Pair,
                 new[] { new CachedExchangeRate(date, 0.5000m + (0.0001m * i), now) },
@@ -552,7 +552,7 @@ public abstract class ExchangeRateCacheContractTests<TCache>
         DateRangeCoverage coverage = cache.GetCoverage(Pair, Duration, now);
         for (int i = 0; i < Windows; i++)
         {
-            var date = new DateOnly(2023, 2, 1).AddDays(i);
+            DateOnly date = new DateOnly(2023, 2, 1).AddDays(i);
             Assert.IsTrue(coverage.Contains(date, date), $"coverage missing for {date:O}");
         }
     }
@@ -565,8 +565,8 @@ public abstract class ExchangeRateCacheContractTests<TCache>
     public void Store_WhenRowHasObservedAtUtc_ShouldRoundTripObservedAtUtc()
     {
         TCache cache = CreateCache();
-        var now = DateTimeOffset.UtcNow;
-        var observedAt = new DateTimeOffset(2023, 1, 3, 16, 0, 30, 123, TimeSpan.FromHours(10)).AddTicks(4567);
+        DateTimeOffset now = DateTimeOffset.UtcNow;
+        DateTimeOffset observedAt = new DateTimeOffset(2023, 1, 3, 16, 0, 30, 123, TimeSpan.FromHours(10)).AddTicks(4567);
 
         cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, now, observedAt) }, Duration, now);
 
@@ -584,7 +584,7 @@ public abstract class ExchangeRateCacheContractTests<TCache>
     public void Store_WhenRowHasNoObservedAtUtc_ShouldReadBackNull()
     {
         TCache cache = CreateCache();
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
 
         cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, now) }, Duration, now);
 
@@ -601,8 +601,8 @@ public abstract class ExchangeRateCacheContractTests<TCache>
     public void Store_WhenSameDateRestoredWithNewerCachedAt_ShouldKeepLatestObservedAt()
     {
         TCache cache = CreateCache();
-        var older = DateTimeOffset.UtcNow - TimeSpan.FromHours(1);
-        var newer = DateTimeOffset.UtcNow;
+        DateTimeOffset older = DateTimeOffset.UtcNow - TimeSpan.FromHours(1);
+        DateTimeOffset newer = DateTimeOffset.UtcNow;
         var date = new DateOnly(2023, 1, 3);
         var observedOld = new DateTimeOffset(2023, 1, 3, 8, 0, 0, TimeSpan.Zero);
         var observedNew = new DateTimeOffset(2023, 1, 3, 16, 0, 0, TimeSpan.Zero);

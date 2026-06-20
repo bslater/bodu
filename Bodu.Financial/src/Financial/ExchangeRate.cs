@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRate.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -47,7 +47,9 @@ public readonly record struct ExchangeRate
     /// The UTC instant at which the upstream data backing this rate was originally fetched, or <see langword="null" />
     /// when not tracked.
     /// </param>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="provider" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown if <paramref name="provider" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentException">Thrown if <paramref name="provider" /> is empty or white-space.</exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if <paramref name="from" /> or <paramref name="to" /> is not a defined currency, or if

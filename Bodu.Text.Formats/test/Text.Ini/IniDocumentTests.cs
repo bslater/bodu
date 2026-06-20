@@ -197,7 +197,7 @@ public sealed class IniDocumentTests
     [TestMethod]
     public void Constructor_WhenGlobalSectionIsNull_ShouldThrowArgumentNullException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() => _ = new IniDocument(null!, Array.Empty<IniSection>()));
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() => _ = new IniDocument(null!, Array.Empty<IniSection>()));
 
         Assert.AreEqual("globalSection", ex.ParamName);
     }
@@ -210,7 +210,7 @@ public sealed class IniDocumentTests
     {
         IniSection global = new(string.Empty, Array.Empty<IniEntry>());
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() => _ = new IniDocument(global, null!));
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() => _ = new IniDocument(global, null!));
 
         Assert.AreEqual("sections", ex.ParamName);
     }
@@ -223,7 +223,7 @@ public sealed class IniDocumentTests
     {
         IniSection notGlobal = new("named", Array.Empty<IniEntry>());
 
-        var ex = Assert.ThrowsExactly<ArgumentException>(() => _ = new IniDocument(notGlobal, Array.Empty<IniSection>()));
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() => _ = new IniDocument(notGlobal, Array.Empty<IniSection>()));
 
         Assert.AreEqual("globalSection", ex.ParamName);
     }
@@ -236,7 +236,7 @@ public sealed class IniDocumentTests
     {
         IniSection global = new(string.Empty, Array.Empty<IniEntry>());
 
-        var ex = Assert.ThrowsExactly<ArgumentException>(() => _ = new IniDocument(global, [null!]));
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() => _ = new IniDocument(global, [null!]));
 
         Assert.AreEqual("sections", ex.ParamName);
     }
@@ -264,7 +264,7 @@ public sealed class IniDocumentTests
     {
         IniDocument doc = new();
 
-        var ex = Assert.ThrowsExactly<ArgumentException>(() => doc.AddSection(new IniSection(string.Empty, Array.Empty<IniEntry>())));
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() => doc.AddSection(new IniSection(string.Empty, Array.Empty<IniEntry>())));
 
         Assert.AreEqual("section", ex.ParamName);
     }
@@ -303,7 +303,7 @@ public sealed class IniDocumentTests
     {
         IniDocument doc = new();
 
-        var ex = Assert.ThrowsExactly<ArgumentException>(() => _ = doc.GetOrAddSection(string.Empty));
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() => _ = doc.GetOrAddSection(string.Empty));
 
         Assert.AreEqual("name", ex.ParamName);
     }

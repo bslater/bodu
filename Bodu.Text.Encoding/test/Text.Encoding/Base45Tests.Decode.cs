@@ -40,7 +40,7 @@ public sealed partial class Base45Tests
     [TestMethod]
     public void Decode_WhenTripletOverflows_ShouldThrowFormatException()
     {
-        var ex = Assert.ThrowsExactly<FormatException>(() =>
+        FormatException ex = Assert.ThrowsExactly<FormatException>(() =>
         {
             _ = Base45.Decode("GGW");
         });
@@ -79,7 +79,7 @@ public sealed partial class Base45Tests
     [TestMethod]
     public void Decode_WhenCharacterNotInAlphabet_ShouldThrowFormatException()
     {
-        var ex = Assert.ThrowsExactly<FormatException>(() =>
+        FormatException ex = Assert.ThrowsExactly<FormatException>(() =>
         {
             _ = Base45.Decode("ab");
         });

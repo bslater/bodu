@@ -54,7 +54,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenCallbacksImplemented_ShouldFireDeserializingThenDeserialized()
     {
-        var model = TomlSerializer.Deserialize<DeserializeCallbackModel>("Value = 1\n");
+        DeserializeCallbackModel model = TomlSerializer.Deserialize<DeserializeCallbackModel>("Value = 1\n");
 
         CollectionAssert.AreEqual(new[] { "OnDeserializing", "OnDeserialized" }, model.Log);
     }
@@ -66,7 +66,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenOnDeserializing_ShouldRunBeforeSettableMembersAssigned()
     {
-        var model = TomlSerializer.Deserialize<DeserializingObservesDefaultModel>("Value = 7\n");
+        DeserializingObservesDefaultModel model = TomlSerializer.Deserialize<DeserializingObservesDefaultModel>("Value = 7\n");
 
         Assert.AreEqual(0, model.ValueAtDeserializing);
         Assert.AreEqual(7, model.Value);
@@ -79,7 +79,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenOnDeserialized_ShouldRunAfterSettableMembersAssigned()
     {
-        var model = TomlSerializer.Deserialize<DeserializedObservesValueModel>("Value = 7\n");
+        DeserializedObservesValueModel model = TomlSerializer.Deserialize<DeserializedObservesValueModel>("Value = 7\n");
 
         Assert.AreEqual(7, model.ValueAtDeserialized);
         Assert.AreEqual(7, model.Value);
@@ -93,7 +93,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenParameterizedConstructorAndOnDeserializing_ShouldObserveConstructorArgument()
     {
-        var model = TomlSerializer.Deserialize<ConstructorDeserializingModel>("Value = 5\n");
+        ConstructorDeserializingModel model = TomlSerializer.Deserialize<ConstructorDeserializingModel>("Value = 5\n");
 
         Assert.AreEqual(5, model.ValueAtDeserializing);
         Assert.AreEqual(5, model.Value);
@@ -112,7 +112,7 @@ public partial class TomlSerializerTests
         string text = TomlSerializer.Serialize(model);
         CollectionAssert.AreEqual(new[] { "OnSerializing", "OnSerialized" }, serializeLog);
 
-        var roundTripped = TomlSerializer.Deserialize<AllCallbacksModel>(text);
+        AllCallbacksModel roundTripped = TomlSerializer.Deserialize<AllCallbacksModel>(text);
         CollectionAssert.AreEqual(new[] { "OnDeserializing", "OnDeserialized" }, roundTripped.Log);
     }
 

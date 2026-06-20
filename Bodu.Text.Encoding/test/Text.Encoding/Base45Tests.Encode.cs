@@ -72,7 +72,7 @@ public sealed partial class Base45Tests
     [TestMethod]
     public void Encode_WhenDestinationTooSmall_ShouldThrowExactlyForDestination()
     {
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             Span<char> destination = new char[2];
             _ = Base45.Encode("AB"u8.ToArray(), destination);

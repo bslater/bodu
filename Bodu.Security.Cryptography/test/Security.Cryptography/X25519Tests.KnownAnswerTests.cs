@@ -181,7 +181,7 @@ public sealed partial class X25519Tests
         using var algorithm = new X25519();
         algorithm.ImportPrivateKey(vector.PrivateKey);
 
-        var ex = Assert.ThrowsExactly<CryptographicException>(() =>
+        CryptographicException ex = Assert.ThrowsExactly<CryptographicException>(() =>
         {
             _ = algorithm.DeriveSharedSecret(vector.PeerPublicKey);
         });

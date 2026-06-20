@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CachingExchangeRateProviderTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -62,7 +62,7 @@ public sealed partial class CachingExchangeRateProviderTests
     [TestMethod]
     public void Constructor_WhenInnerIsNull_ShouldThrowArgumentNullException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = new CachingExchangeRateProvider(null!, _cache, _options, _clock);
         });
@@ -76,7 +76,7 @@ public sealed partial class CachingExchangeRateProviderTests
     [TestMethod]
     public void Constructor_WhenCacheIsNull_ShouldThrowArgumentNullException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = new CachingExchangeRateProvider(InnerWith(), null!, _options, _clock);
         });
@@ -90,7 +90,7 @@ public sealed partial class CachingExchangeRateProviderTests
     [TestMethod]
     public void Constructor_WhenOptionsIsNull_ShouldThrowArgumentNullException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = new CachingExchangeRateProvider(InnerWith(), _cache, null!, _clock);
         });
@@ -104,7 +104,7 @@ public sealed partial class CachingExchangeRateProviderTests
     [TestMethod]
     public void Constructor_WhenDefaultExpiryNotPositive_ShouldThrowArgumentException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             _ = new CachingExchangeRateProvider(InnerWith(), _cache, new CachingExchangeRateOptions { DefaultExpiry = TimeSpan.Zero }, _clock);
         });
@@ -118,7 +118,7 @@ public sealed partial class CachingExchangeRateProviderTests
     [TestMethod]
     public void Constructor_WhenProviderNameIsBlank_ShouldThrowArgumentException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             _ = new CachingExchangeRateProvider("  ", InnerWith(), _options, _clock);
         });

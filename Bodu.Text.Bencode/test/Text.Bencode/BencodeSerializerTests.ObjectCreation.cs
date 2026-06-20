@@ -28,7 +28,7 @@ public partial class BencodeSerializerTests
     {
         byte[] bytes = Encoding.Latin1.GetBytes("d5:Itemsli2ei3eee");
 
-        var model = BencodeSerializer.Deserialize<SettableListModel>(bytes);
+        SettableListModel model = BencodeSerializer.Deserialize<SettableListModel>(bytes);
 
         CollectionAssert.AreEqual(new[] { 2, 3 }, model.Items);
     }
@@ -43,7 +43,7 @@ public partial class BencodeSerializerTests
         var options = new BencodeSerializerOptions { PreferredObjectCreationHandling = BencodeObjectCreationHandling.Populate };
         byte[] bytes = Encoding.Latin1.GetBytes("d5:Itemsli2ei3eee");
 
-        var model = BencodeSerializer.Deserialize<SettableListModel>(bytes, options);
+        SettableListModel model = BencodeSerializer.Deserialize<SettableListModel>(bytes, options);
 
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, model.Items);
     }
@@ -58,7 +58,7 @@ public partial class BencodeSerializerTests
         var options = new BencodeSerializerOptions { PreferredObjectCreationHandling = BencodeObjectCreationHandling.Populate };
         byte[] bytes = Encoding.Latin1.GetBytes("d5:Itemsli2ei3eee");
 
-        var model = BencodeSerializer.Deserialize<GetOnlyListModel>(bytes, options);
+        GetOnlyListModel model = BencodeSerializer.Deserialize<GetOnlyListModel>(bytes, options);
 
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, model.Items);
     }
@@ -73,7 +73,7 @@ public partial class BencodeSerializerTests
     {
         byte[] bytes = Encoding.Latin1.GetBytes("d5:Itemsli2ei3eee");
 
-        var model = BencodeSerializer.Deserialize<MemberPopulateModel>(bytes);
+        MemberPopulateModel model = BencodeSerializer.Deserialize<MemberPopulateModel>(bytes);
 
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, model.Items);
     }
@@ -88,7 +88,7 @@ public partial class BencodeSerializerTests
         var options = new BencodeSerializerOptions { PreferredObjectCreationHandling = BencodeObjectCreationHandling.Populate };
         byte[] bytes = Encoding.Latin1.GetBytes("d5:Itemsli2ei3eee");
 
-        var model = BencodeSerializer.Deserialize<MemberReplaceModel>(bytes, options);
+        MemberReplaceModel model = BencodeSerializer.Deserialize<MemberReplaceModel>(bytes, options);
 
         CollectionAssert.AreEqual(new[] { 2, 3 }, model.Items);
     }
@@ -102,7 +102,7 @@ public partial class BencodeSerializerTests
     {
         byte[] bytes = Encoding.Latin1.GetBytes("d5:Itemsli2ei3eee");
 
-        var model = BencodeSerializer.Deserialize<TypePopulateModel>(bytes);
+        TypePopulateModel model = BencodeSerializer.Deserialize<TypePopulateModel>(bytes);
 
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, model.Items);
     }
@@ -116,7 +116,7 @@ public partial class BencodeSerializerTests
     {
         byte[] bytes = Encoding.Latin1.GetBytes("d5:Itemsli2ei3eee");
 
-        var model = BencodeSerializer.Deserialize<TypePopulateWithMemberReplaceModel>(bytes);
+        TypePopulateWithMemberReplaceModel model = BencodeSerializer.Deserialize<TypePopulateWithMemberReplaceModel>(bytes);
 
         CollectionAssert.AreEqual(new[] { 2, 3 }, model.Items);
     }
@@ -131,7 +131,7 @@ public partial class BencodeSerializerTests
         var options = new BencodeSerializerOptions { PreferredObjectCreationHandling = BencodeObjectCreationHandling.Populate };
         byte[] bytes = Encoding.Latin1.GetBytes("d6:Countsd1:bi9e1:ci3eee");
 
-        var model = BencodeSerializer.Deserialize<SeededDictionaryModel>(bytes, options);
+        SeededDictionaryModel model = BencodeSerializer.Deserialize<SeededDictionaryModel>(bytes, options);
 
         Assert.AreEqual(1, model.Counts["a"]);
         Assert.AreEqual(9, model.Counts["b"]);
@@ -149,7 +149,7 @@ public partial class BencodeSerializerTests
         var options = new BencodeSerializerOptions { PreferredObjectCreationHandling = BencodeObjectCreationHandling.Populate };
         byte[] bytes = Encoding.Latin1.GetBytes("d5:Itemsli2ei3eee");
 
-        var model = BencodeSerializer.Deserialize<NullSeedListModel>(bytes, options);
+        NullSeedListModel model = BencodeSerializer.Deserialize<NullSeedListModel>(bytes, options);
 
         Assert.IsNotNull(model.Items);
         CollectionAssert.AreEqual(new[] { 2, 3 }, model.Items);

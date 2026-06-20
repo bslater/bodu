@@ -110,7 +110,7 @@ public abstract class MLKemContractTests<TTest, TKem>
         corrupted[^33] ^= 0x01;
 
         using var kem = new TKem();
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             kem.ImportDecapsulationKey(corrupted);
         });
@@ -134,7 +134,7 @@ public abstract class MLKemContractTests<TTest, TKem>
         corrupted[1] |= 0x0F;
 
         using var kem = new TKem();
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             kem.ImportEncapsulationKey(corrupted);
         });

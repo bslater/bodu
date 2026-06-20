@@ -20,9 +20,9 @@ public sealed partial class DistributedExchangeRateCacheTests
     [TestMethod]
     public void Store_WhenRateHasHighPrecision_ShouldRoundTripExactly()
     {
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
         decimal rate = 1.234567890123456789m;
-        var backingStore = CreateBackingStore();
+        MemoryDistributedCache backingStore = CreateBackingStore();
 
         DistributedExchangeRateCache writer = CreateCache(backingStore);
         writer.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), rate, now) }, Duration, now);
@@ -41,9 +41,9 @@ public sealed partial class DistributedExchangeRateCacheTests
     [TestMethod]
     public void Store_WhenRateHasTrailingZeros_ShouldPreserveScale()
     {
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
         decimal rate = 0.5000m;
-        var backingStore = CreateBackingStore();
+        MemoryDistributedCache backingStore = CreateBackingStore();
 
         DistributedExchangeRateCache writer = CreateCache(backingStore);
         writer.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), rate, now) }, Duration, now);
@@ -61,9 +61,9 @@ public sealed partial class DistributedExchangeRateCacheTests
     [TestMethod]
     public void Store_WhenDateIsFarFromPresent_ShouldRoundTripExactly()
     {
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
         var date = new DateOnly(1971, 2, 28);
-        var backingStore = CreateBackingStore();
+        MemoryDistributedCache backingStore = CreateBackingStore();
 
         DistributedExchangeRateCache writer = CreateCache(backingStore);
         writer.Store(Pair, new[] { new CachedExchangeRate(date, 0.42m, now) }, TimeSpan.FromDays(36500), now);
@@ -82,9 +82,9 @@ public sealed partial class DistributedExchangeRateCacheTests
     [TestMethod]
     public void Store_WhenCachedInstantHasOffsetAndSubSeconds_ShouldRoundTripExactly()
     {
-        var cachedAt = new DateTimeOffset(2023, 1, 4, 9, 15, 30, 123, TimeSpan.FromHours(10)).AddTicks(4567);
-        var asOf = cachedAt + TimeSpan.FromMinutes(1);
-        var backingStore = CreateBackingStore();
+        DateTimeOffset cachedAt = new DateTimeOffset(2023, 1, 4, 9, 15, 30, 123, TimeSpan.FromHours(10)).AddTicks(4567);
+        DateTimeOffset asOf = cachedAt + TimeSpan.FromMinutes(1);
+        MemoryDistributedCache backingStore = CreateBackingStore();
 
         DistributedExchangeRateCache writer = CreateCache(backingStore);
         writer.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5m, cachedAt) }, Duration, asOf);
@@ -103,9 +103,9 @@ public sealed partial class DistributedExchangeRateCacheTests
     [TestMethod]
     public void Store_WhenObservedAtUtcHasOffsetAndSubSeconds_ShouldRoundTripThroughBlob()
     {
-        var now = DateTimeOffset.UtcNow;
-        var observedAt = new DateTimeOffset(2023, 1, 3, 16, 0, 30, 123, TimeSpan.FromHours(10)).AddTicks(4567);
-        var backingStore = CreateBackingStore();
+        DateTimeOffset now = DateTimeOffset.UtcNow;
+        DateTimeOffset observedAt = new DateTimeOffset(2023, 1, 3, 16, 0, 30, 123, TimeSpan.FromHours(10)).AddTicks(4567);
+        MemoryDistributedCache backingStore = CreateBackingStore();
 
         DistributedExchangeRateCache writer = CreateCache(backingStore);
         writer.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5m, now, observedAt) }, Duration, now);
@@ -124,8 +124,8 @@ public sealed partial class DistributedExchangeRateCacheTests
     [TestMethod]
     public void Store_WhenObservedAtUtcNull_ShouldReadBackNullThroughBlob()
     {
-        var now = DateTimeOffset.UtcNow;
-        var backingStore = CreateBackingStore();
+        DateTimeOffset now = DateTimeOffset.UtcNow;
+        MemoryDistributedCache backingStore = CreateBackingStore();
 
         DistributedExchangeRateCache writer = CreateCache(backingStore);
         writer.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5m, now) }, Duration, now);
@@ -143,8 +143,8 @@ public sealed partial class DistributedExchangeRateCacheTests
     [TestMethod]
     public void Store_WhenObservedAtUtcNull_ShouldOmitPropertyFromBlob()
     {
-        var now = DateTimeOffset.UtcNow;
-        var backingStore = CreateBackingStore();
+        DateTimeOffset now = DateTimeOffset.UtcNow;
+        MemoryDistributedCache backingStore = CreateBackingStore();
         DistributedExchangeRateCache cache = CreateCache(backingStore);
 
         cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5m, now) }, Duration, now);
@@ -162,7 +162,7 @@ public sealed partial class DistributedExchangeRateCacheTests
         var fetchedAt = new DateTimeOffset(2023, 1, 4, 9, 15, 0, TimeSpan.Zero);
         var start = new DateOnly(2023, 1, 3);
         var end = new DateOnly(2023, 1, 10);
-        var backingStore = CreateBackingStore();
+        MemoryDistributedCache backingStore = CreateBackingStore();
 
         DistributedExchangeRateCache writer = CreateCache(backingStore);
         writer.RecordCoverage(Pair, start, end, Duration, fetchedAt);

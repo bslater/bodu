@@ -174,8 +174,8 @@ internal static class CurrencyMetadata<TCurrency>
 /// </summary>
 /// <param name="IsoCode">The validated ISO 4217 alphabetic code.</param>
 /// <param name="Code">
-/// The stored <see cref="CurrencyCode" /> matching <paramref name="IsoCode" />, or <see cref="CurrencyCode.None" /> when
-/// the ISO code is outside the shipped ISO 4217 catalogue.
+/// The stored <see cref="CurrencyCode" /> matching <paramref name="IsoCode" />, or <see cref="CurrencyCode.None" />
+/// when the ISO code is outside the shipped ISO 4217 catalogue.
 /// </param>
 /// <param name="MinorUnits">The validated minor-unit precision.</param>
 /// <param name="MinorUnitFactor">Pre-computed <c>10 ^ MinorUnits</c> for use in allocation and conversion.</param>

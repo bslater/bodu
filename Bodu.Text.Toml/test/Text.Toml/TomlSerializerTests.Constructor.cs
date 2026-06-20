@@ -22,7 +22,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenSingleParameterizedConstructor_ShouldBindArgumentsByName()
     {
-        var model = TomlSerializer.Deserialize<ImmutablePerson>("Age = 30\nName = \"Alice\"\n");
+        ImmutablePerson model = TomlSerializer.Deserialize<ImmutablePerson>("Age = 30\nName = \"Alice\"\n");
 
         Assert.AreEqual("Alice", model.Name);
         Assert.AreEqual(30, model.Age);
@@ -35,7 +35,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenConstructorParameterCaseDiffersFromProperty_ShouldBindByName()
     {
-        var model = TomlSerializer.Deserialize<LowerParameter>("Value = 7\n");
+        LowerParameter model = TomlSerializer.Deserialize<LowerParameter>("Value = 7\n");
 
         Assert.AreEqual(7, model.Value);
     }
@@ -47,7 +47,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenConstructorParameterBindsRenamedMember_ShouldReadFromWireName()
     {
-        var model = TomlSerializer.Deserialize<RenamedConstructorMember>("id = 9\n");
+        RenamedConstructorMember model = TomlSerializer.Deserialize<RenamedConstructorMember>("id = 9\n");
 
         Assert.AreEqual(9, model.Identifier);
     }
@@ -61,7 +61,7 @@ public partial class TomlSerializerTests
     {
         var options = new TomlSerializerOptions { PropertyNamingPolicy = TomlNamingPolicy.CamelCase };
 
-        var model = TomlSerializer.Deserialize<ImmutableName>("firstName = \"Alice\"\n", options);
+        ImmutableName model = TomlSerializer.Deserialize<ImmutableName>("firstName = \"Alice\"\n", options);
 
         Assert.AreEqual("Alice", model.FirstName);
     }
@@ -78,7 +78,7 @@ public partial class TomlSerializerTests
         string text = TomlSerializer.Serialize(original);
         Assert.AreEqual("X = 4\nY = 5\n", text);
 
-        var roundTripped = TomlSerializer.Deserialize<PointRecord>(text);
+        PointRecord roundTripped = TomlSerializer.Deserialize<PointRecord>(text);
         Assert.AreEqual(4, roundTripped.X);
         Assert.AreEqual(5, roundTripped.Y);
     }
@@ -90,7 +90,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenConstructorAttributePresent_ShouldUseAttributedConstructor()
     {
-        var model = TomlSerializer.Deserialize<AttributedConstructorModel>("A = 3\n");
+        AttributedConstructorModel model = TomlSerializer.Deserialize<AttributedConstructorModel>("A = 3\n");
 
         Assert.AreEqual(3, model.A);
         Assert.AreEqual("attributed", model.SelectedConstructor);
@@ -103,7 +103,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenParameterlessConstructorAvailable_ShouldPreferParameterlessAndSetMembers()
     {
-        var model = TomlSerializer.Deserialize<MixedConstructorModel>("A = 1\nB = 2\n");
+        MixedConstructorModel model = TomlSerializer.Deserialize<MixedConstructorModel>("A = 1\nB = 2\n");
 
         Assert.AreEqual("parameterless", model.SelectedConstructor);
         Assert.AreEqual(1, model.A);
@@ -117,7 +117,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenMultipleParameterizedConstructors_ShouldUseGreatestArity()
     {
-        var model = TomlSerializer.Deserialize<GreatestArityModel>("A = 1\nB = 2\n");
+        GreatestArityModel model = TomlSerializer.Deserialize<GreatestArityModel>("A = 1\nB = 2\n");
 
         Assert.AreEqual(2, model.ParameterCount);
         Assert.AreEqual(1, model.A);
@@ -131,7 +131,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenOptionalConstructorParameterAbsent_ShouldUseParameterDefault()
     {
-        var model = TomlSerializer.Deserialize<OptionalParameterModel>("Name = \"Alice\"\n");
+        OptionalParameterModel model = TomlSerializer.Deserialize<OptionalParameterModel>("Name = \"Alice\"\n");
 
         Assert.AreEqual("Alice", model.Name);
         Assert.AreEqual(99, model.Age);
@@ -144,7 +144,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenMemberNotBoundToConstructorParameter_ShouldSetThroughSetter()
     {
-        var model = TomlSerializer.Deserialize<PartiallyBoundModel>("Name = \"Alice\"\nNotes = \"hello\"\nStatus = 2\n");
+        PartiallyBoundModel model = TomlSerializer.Deserialize<PartiallyBoundModel>("Name = \"Alice\"\nNotes = \"hello\"\nStatus = 2\n");
 
         Assert.AreEqual("Alice", model.Name);
         Assert.AreEqual("hello", model.Notes);
@@ -163,7 +163,7 @@ public partial class TomlSerializerTests
         string text = TomlSerializer.Serialize(original);
         Assert.AreEqual("id = 11\n", text);
 
-        var roundTripped = TomlSerializer.Deserialize<RenamedConstructorMember>(text);
+        RenamedConstructorMember roundTripped = TomlSerializer.Deserialize<RenamedConstructorMember>(text);
         Assert.AreEqual(11, roundTripped.Identifier);
     }
 

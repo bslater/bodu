@@ -39,7 +39,7 @@ public sealed partial class Base62Tests
     [TestMethod]
     public void Decode_WhenCharacterNotInAlphabet_ShouldThrowFormatException()
     {
-        var ex = Assert.ThrowsExactly<FormatException>(() =>
+        FormatException ex = Assert.ThrowsExactly<FormatException>(() =>
         {
             _ = Base62.Decode("ab-cd");
         });

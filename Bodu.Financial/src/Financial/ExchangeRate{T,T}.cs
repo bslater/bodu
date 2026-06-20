@@ -173,8 +173,8 @@ public readonly record struct ExchangeRate<TBase, TQuote>
     /// <param name="rate">The runtime-tagged rate.</param>
     /// <returns>The strongly-typed equivalent.</returns>
     /// <exception cref="InvalidOperationException">
-    /// The runtime rate's <see cref="ExchangeRate.From" /> or <see cref="ExchangeRate.To" /> does not match the currency
-    /// of <typeparamref name="TBase" /> or <typeparamref name="TQuote" /> respectively.
+    /// The runtime rate's <see cref="ExchangeRate.From" /> or <see cref="ExchangeRate.To" /> does not match the
+    /// currency of <typeparamref name="TBase" /> or <typeparamref name="TQuote" /> respectively.
     /// </exception>
     public static ExchangeRate<TBase, TQuote> FromRuntime(ExchangeRate rate)
     {

@@ -45,7 +45,7 @@ public sealed partial class Bech32Tests
     [DataRow("?1v759aa", "?", Bech32Encoding.Bech32m)]
     public void Decode_WhenKnownVector_ShouldRecoverPartsAndScheme(string source, string expectedHrp, Bech32Encoding expectedEncoding)
     {
-        Bech32.Decode(source, out string? hrp, out byte[]? data, out var encoding);
+        Bech32.Decode(source, out string? hrp, out byte[]? data, out Bech32Encoding encoding);
 
         Assert.AreEqual(expectedHrp, hrp);
         Assert.AreEqual(0, data.Length);
@@ -61,7 +61,7 @@ public sealed partial class Bech32Tests
     {
         const string Vector = "an83characterlonghumanreadablepartthatcontainsthenumber1andtheexcludedcharactersbio1tt5tgs";
 
-        Bech32.Decode(Vector, out string? hrp, out byte[]? data, out var encoding);
+        Bech32.Decode(Vector, out string? hrp, out byte[]? data, out Bech32Encoding encoding);
 
         Assert.AreEqual("an83characterlonghumanreadablepartthatcontainsthenumber1andtheexcludedcharactersbio", hrp);
         Assert.AreEqual(0, data.Length);
@@ -86,7 +86,7 @@ public sealed partial class Bech32Tests
         string encoded = Bech32.Encode("bc", data, Bech32Encoding.Bech32);
         Assert.AreEqual(Address, encoded);
 
-        Bech32.Decode(Address, out string? hrp, out byte[]? decoded, out var encoding);
+        Bech32.Decode(Address, out string? hrp, out byte[]? decoded, out Bech32Encoding encoding);
         Assert.AreEqual("bc", hrp);
         Assert.AreEqual(Bech32Encoding.Bech32, encoding);
         Assert.AreEqual(0, decoded[0]);
@@ -107,7 +107,7 @@ public sealed partial class Bech32Tests
         byte[] payload = [0x00, 0x01, 0x02, 0xDE, 0xAD, 0xBE, 0xEF, 0xFF];
 
         string encoded = Bech32.EncodeFromBytes("bodu", payload, encoding);
-        Bech32.DecodeToBytes(encoded, out string? hrp, out byte[]? decoded, out var decodedEncoding);
+        Bech32.DecodeToBytes(encoded, out string? hrp, out byte[]? decoded, out Bech32Encoding decodedEncoding);
 
         Assert.AreEqual("bodu", hrp);
         Assert.AreEqual(encoding, decodedEncoding);
@@ -121,7 +121,7 @@ public sealed partial class Bech32Tests
     [TestMethod]
     public void Decode_WhenBech32StringDecoded_ShouldNotReportBech32m()
     {
-        Bech32.Decode("a12uel5l", out _, out _, out var encoding);
+        Bech32.Decode("a12uel5l", out _, out _, out Bech32Encoding encoding);
 
         Assert.AreNotEqual(Bech32Encoding.Bech32m, encoding);
     }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FixedDatedExchangeRateProviderTests.GetRatesAsync.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -53,7 +53,7 @@ public partial class FixedDatedExchangeRateProviderTests
     {
         FixedDatedExchangeRateProvider table = new(SingleRate());
 
-        var ex = await Assert.ThrowsExactlyAsync<ArgumentException>(async () =>
+        ArgumentException ex = await Assert.ThrowsExactlyAsync<ArgumentException>(async () =>
         {
             _ = await table.GetRatesAsync("USD", "AUD", new DateOnly(2024, 1, 31), new DateOnly(2024, 1, 1));
         });

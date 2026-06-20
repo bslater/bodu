@@ -175,14 +175,14 @@ public static partial class Bech32
             return false;
         }
 
-        var dataPart = lower.Slice(separator + 1);
+        Span<char> dataPart = lower.Slice(separator + 1);
         if (dataPart.Length < ChecksumSymbols)
         {
             error = EncodingResourceStrings.Format_Invalid_Bech32TooShort;
             return false;
         }
 
-        var hrpPart = lower.Slice(0, separator);
+        Span<char> hrpPart = lower.Slice(0, separator);
         foreach (char c in hrpPart)
         {
             if (c < MinHrpChar || c > MaxHrpChar)

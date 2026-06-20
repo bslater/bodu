@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NullExchangeRateCacheTests.Create.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -25,7 +25,7 @@ public sealed partial class NullExchangeRateCacheTests
     [TestMethod]
     public void Create_WhenProviderIsBlank_ShouldThrowArgumentException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             _ = NullExchangeRateCache.Create("  ");
         });

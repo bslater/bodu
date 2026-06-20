@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DistributedRateCacheExtensionsTests.AddDistributedRateCache.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -30,7 +30,7 @@ public sealed partial class DistributedRateCacheExtensionsTests
             services.AddBoduFinancial().AddDistributedRateCache("RBA");
         });
 
-        var cache = provider.GetRequiredService<IExchangeRateCache>();
+        IExchangeRateCache cache = provider.GetRequiredService<IExchangeRateCache>();
 
         Assert.AreEqual("RBA", cache.Provider);
     }
@@ -48,8 +48,8 @@ public sealed partial class DistributedRateCacheExtensionsTests
             services.AddBoduFinancial().AddDistributedRateCache("RBA");
         });
 
-        var byDefault = provider.GetRequiredService<IExchangeRateCache>();
-        var byKey = provider.GetRequiredKeyedService<IExchangeRateCache>("RBA");
+        IExchangeRateCache byDefault = provider.GetRequiredService<IExchangeRateCache>();
+        IExchangeRateCache byKey = provider.GetRequiredKeyedService<IExchangeRateCache>("RBA");
 
         Assert.AreSame(byDefault, byKey);
     }
@@ -65,8 +65,8 @@ public sealed partial class DistributedRateCacheExtensionsTests
             services.AddDistributedMemoryCache();
             services.AddBoduFinancial().AddDistributedRateCache("RBA");
         });
-        var cache = provider.GetRequiredService<IExchangeRateCache>();
-        var now = DateTimeOffset.UtcNow;
+        IExchangeRateCache cache = provider.GetRequiredService<IExchangeRateCache>();
+        DateTimeOffset now = DateTimeOffset.UtcNow;
 
         cache.Store(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5m, now) }, TimeSpan.FromHours(24), now);
 
@@ -88,9 +88,9 @@ public sealed partial class DistributedRateCacheExtensionsTests
             services.AddDistributedMemoryCache();
             services.AddBoduFinancial().AddDistributedRateCache("RBA", config);
         });
-        var distributedCache = provider.GetRequiredService<IDistributedCache>();
-        var cache = provider.GetRequiredService<IExchangeRateCache>();
-        var now = DateTimeOffset.UtcNow;
+        IDistributedCache distributedCache = provider.GetRequiredService<IDistributedCache>();
+        IExchangeRateCache cache = provider.GetRequiredService<IExchangeRateCache>();
+        DateTimeOffset now = DateTimeOffset.UtcNow;
 
         cache.Store(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5m, now) }, TimeSpan.FromHours(24), now);
 
@@ -104,7 +104,7 @@ public sealed partial class DistributedRateCacheExtensionsTests
     [TestMethod]
     public void AddDistributedRateCache_WhenBuilderIsNull_ShouldThrowArgumentNullException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = DistributedRateCacheExtensions.AddDistributedRateCache(null!, "RBA");
         });
@@ -121,7 +121,7 @@ public sealed partial class DistributedRateCacheExtensionsTests
         var services = new ServiceCollection();
         IFinancialServiceBuilder builder = services.AddBoduFinancial();
 
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             _ = builder.AddDistributedRateCache("  ");
         });

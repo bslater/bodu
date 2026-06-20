@@ -63,7 +63,7 @@ public static class ServiceCollectionExtensions
 
         services.AddOptions();
 
-        var optionsBuilder = services
+        OptionsBuilder<FinancialOptions> optionsBuilder = services
             .AddOptions<FinancialOptions>()
             .Validate(
                 static options => Enum.IsDefined(options.JsonPolicy),

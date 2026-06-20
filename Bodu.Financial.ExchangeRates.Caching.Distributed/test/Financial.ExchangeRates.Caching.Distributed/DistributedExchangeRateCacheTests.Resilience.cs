@@ -48,7 +48,7 @@ public sealed partial class DistributedExchangeRateCacheTests
     [TestMethod]
     public void Store_WhenBackingStoreFails_ShouldBeNoOp()
     {
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
         DistributedExchangeRateCache cache = CreateCache(new FailingDistributedCache());
 
         // The store must not throw, and a subsequent read (also against the failing store) must report nothing.
@@ -64,7 +64,7 @@ public sealed partial class DistributedExchangeRateCacheTests
     [TestMethod]
     public void RecordCoverage_WhenBackingStoreFails_ShouldBeNoOp()
     {
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
         DistributedExchangeRateCache cache = CreateCache(new FailingDistributedCache());
 
         cache.RecordCoverage(Pair, new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 10), Duration, now);
@@ -81,7 +81,7 @@ public sealed partial class DistributedExchangeRateCacheTests
     {
         DistributedExchangeRateCache cache = CreateCache(new FailingDistributedCache());
 
-        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             cache.RecordCoverage(Pair, new DateOnly(2023, 1, 10), new DateOnly(2023, 1, 3), Duration, DateTimeOffset.UtcNow);
         });
@@ -96,7 +96,7 @@ public sealed partial class DistributedExchangeRateCacheTests
     [TestMethod]
     public void GetRates_WhenBlobIsCorrupt_ShouldReturnEmpty()
     {
-        var backingStore = CreateBackingStore();
+        MemoryDistributedCache backingStore = CreateBackingStore();
         backingStore.Set("Test:AUDUSD", Encoding.UTF8.GetBytes("this is not json"));
         DistributedExchangeRateCache cache = CreateCache(backingStore);
 
@@ -112,9 +112,9 @@ public sealed partial class DistributedExchangeRateCacheTests
     [TestMethod]
     public void GetRates_WhenBlobHasOneMalformedRow_ShouldSkipOnlyThatRow()
     {
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
         string cachedAt = now.ToString("O", System.Globalization.CultureInfo.InvariantCulture);
-        var backingStore = CreateBackingStore();
+        MemoryDistributedCache backingStore = CreateBackingStore();
 
         // A blob whose first row carries an unparseable date and whose second row is well-formed.
         string json =

@@ -45,7 +45,7 @@ public partial class BencodeSerializerTests
         byte[] bytes = BencodeSerializer.Serialize(original, options);
         Assert.AreEqual("d5:Fieldi5e8:Propertyi6ee", Encoding.Latin1.GetString(bytes));
 
-        var roundTripped = BencodeSerializer.Deserialize<FieldAndPropertyModel>(bytes, options);
+        FieldAndPropertyModel roundTripped = BencodeSerializer.Deserialize<FieldAndPropertyModel>(bytes, options);
         Assert.AreEqual(5, roundTripped.Field);
         Assert.AreEqual(6, roundTripped.Property);
     }
@@ -63,7 +63,7 @@ public partial class BencodeSerializerTests
         byte[] bytes = BencodeSerializer.Serialize(original);
         Assert.AreEqual("d5:Fieldi5ee", Encoding.Latin1.GetString(bytes));
 
-        var roundTripped = BencodeSerializer.Deserialize<IncludedFieldModel>(bytes);
+        IncludedFieldModel roundTripped = BencodeSerializer.Deserialize<IncludedFieldModel>(bytes);
         Assert.AreEqual(5, roundTripped.Field);
     }
 
@@ -97,7 +97,7 @@ public partial class BencodeSerializerTests
         byte[] bytes = BencodeSerializer.Serialize(original, options);
         Assert.AreEqual("d1:ni7ee", Encoding.Latin1.GetString(bytes));
 
-        var roundTripped = BencodeSerializer.Deserialize<RenamedFieldModel>(bytes, options);
+        RenamedFieldModel roundTripped = BencodeSerializer.Deserialize<RenamedFieldModel>(bytes, options);
         Assert.AreEqual(7, roundTripped.Count);
     }
 
@@ -127,7 +127,7 @@ public partial class BencodeSerializerTests
         byte[] bytes = BencodeSerializer.Serialize(new ReadOnlyFieldModel(5), options);
         Assert.AreEqual("d5:Fieldi5ee", Encoding.Latin1.GetString(bytes));
 
-        var roundTripped = BencodeSerializer.Deserialize<ReadOnlyFieldModel>(Encoding.Latin1.GetBytes("d5:Fieldi99ee"), options);
+        ReadOnlyFieldModel roundTripped = BencodeSerializer.Deserialize<ReadOnlyFieldModel>(Encoding.Latin1.GetBytes("d5:Fieldi99ee"), options);
         Assert.AreEqual(0, roundTripped.Field);
     }
 
@@ -141,7 +141,7 @@ public partial class BencodeSerializerTests
         var options = new BencodeSerializerOptions { IncludeFields = true };
         byte[] bytes = Encoding.Latin1.GetBytes("de");
 
-        var ex = Assert.ThrowsExactly<BencodeSerializationException>(() =>
+        BencodeSerializationException ex = Assert.ThrowsExactly<BencodeSerializationException>(() =>
         {
             _ = BencodeSerializer.Deserialize<RequiredFieldModel>(bytes, options);
         });
@@ -162,7 +162,7 @@ public partial class BencodeSerializerTests
         byte[] bytes = BencodeSerializer.Serialize(original, options);
         Assert.AreEqual("d5:Fieldi3ee", Encoding.Latin1.GetString(bytes));
 
-        var roundTripped = BencodeSerializer.Deserialize<RequiredFieldModel>(bytes, options);
+        RequiredFieldModel roundTripped = BencodeSerializer.Deserialize<RequiredFieldModel>(bytes, options);
         Assert.AreEqual(3, roundTripped.Field);
     }
 

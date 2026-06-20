@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Utf8TomlReaderTests.Positions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -61,7 +61,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void Read_WhenUnterminatedString_ShouldReportExactBytePosition()
     {
-        var ex = Assert.ThrowsExactly<TomlFormatException>(() =>
+        TomlFormatException ex = Assert.ThrowsExactly<TomlFormatException>(() =>
         {
             Utf8TomlReader lexer = Create("a = \"x");
             Drain(ref lexer);
@@ -78,7 +78,7 @@ public sealed partial class Utf8TomlReaderTests
     [TestMethod]
     public void Read_WhenErrorOnSecondLine_ShouldReportSecondLinePosition()
     {
-        var ex = Assert.ThrowsExactly<TomlFormatException>(() =>
+        TomlFormatException ex = Assert.ThrowsExactly<TomlFormatException>(() =>
         {
             Utf8TomlReader lexer = Create("a = 1\nb = @\n");
             Drain(ref lexer);

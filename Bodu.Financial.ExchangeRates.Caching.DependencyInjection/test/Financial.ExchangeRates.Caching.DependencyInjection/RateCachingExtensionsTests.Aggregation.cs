@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RateCachingExtensionsTests.Aggregation.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -100,7 +100,7 @@ public sealed partial class RateCachingExtensionsTests
         var services = new ServiceCollection();
         IFinancialServiceBuilder builder = services.AddBoduFinancial();
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = builder.AddAggregatedExchangeRateProvider(null!);
         });

@@ -44,7 +44,7 @@ public partial class Utf8BencodeReaderTests
     {
         byte[] data = Bytes("d1:ai1e1:ai2ee");
 
-        var ex = Assert.ThrowsExactly<BencodeFormatException>(() =>
+        BencodeFormatException ex = Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
             _ = CountProperties(data, default);
         });
@@ -60,7 +60,7 @@ public partial class Utf8BencodeReaderTests
     {
         byte[] data = Bytes("d1:bi1e1:ai2ee");
 
-        var ex = Assert.ThrowsExactly<BencodeFormatException>(() =>
+        BencodeFormatException ex = Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
             _ = CountProperties(data, default);
         });
@@ -91,7 +91,7 @@ public partial class Utf8BencodeReaderTests
     {
         byte[] data = Bytes("d1:bi1e1:ai2e1:bi3ee");
 
-        var ex = Assert.ThrowsExactly<BencodeFormatException>(() =>
+        BencodeFormatException ex = Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
             _ = CountProperties(data, new BencodeReaderOptions { AllowUnsortedKeys = true });
         });
@@ -121,7 +121,7 @@ public partial class Utf8BencodeReaderTests
     {
         byte[] data = Bytes("d1:bi1e1:ai2ee");
 
-        var ex = Assert.ThrowsExactly<BencodeFormatException>(() =>
+        BencodeFormatException ex = Assert.ThrowsExactly<BencodeFormatException>(() =>
         {
             _ = CountProperties(data, new BencodeReaderOptions { AllowDuplicateKeys = true });
         });

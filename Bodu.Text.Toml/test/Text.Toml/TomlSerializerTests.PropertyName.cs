@@ -25,7 +25,7 @@ public partial class TomlSerializerTests
     {
         var options = new TomlSerializerOptions { PropertyNameCaseInsensitive = true };
 
-        var model = TomlSerializer.Deserialize<CaseInsensitiveModel>("VALUE = 7\n", options);
+        CaseInsensitiveModel model = TomlSerializer.Deserialize<CaseInsensitiveModel>("VALUE = 7\n", options);
 
         Assert.AreEqual(7, model.Value);
     }
@@ -38,7 +38,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenDefaultOptionsAndKeyCasingDiffers_ShouldNotBindMember()
     {
-        var model = TomlSerializer.Deserialize<CaseInsensitiveModel>("VALUE = 7\n");
+        CaseInsensitiveModel model = TomlSerializer.Deserialize<CaseInsensitiveModel>("VALUE = 7\n");
 
         Assert.AreEqual(0, model.Value);
     }
@@ -52,7 +52,7 @@ public partial class TomlSerializerTests
     {
         var options = new TomlSerializerOptions(TomlSerializerDefaults.Web);
 
-        var model = TomlSerializer.Deserialize<CaseInsensitiveModel>("VALUE = 7\n", options);
+        CaseInsensitiveModel model = TomlSerializer.Deserialize<CaseInsensitiveModel>("VALUE = 7\n", options);
 
         Assert.AreEqual(7, model.Value);
     }
@@ -66,7 +66,7 @@ public partial class TomlSerializerTests
     {
         var options = new TomlSerializerOptions { PropertyNameCaseInsensitive = false };
 
-        var model = TomlSerializer.Deserialize<CaseInsensitiveModel>("VALUE = 7\n", options);
+        CaseInsensitiveModel model = TomlSerializer.Deserialize<CaseInsensitiveModel>("VALUE = 7\n", options);
 
         Assert.AreEqual(0, model.Value);
     }
@@ -80,7 +80,7 @@ public partial class TomlSerializerTests
     {
         var options = new TomlSerializerOptions { PropertyNameCaseInsensitive = false };
 
-        var model = TomlSerializer.Deserialize<CaseInsensitiveModel>("Value = 7\n", options);
+        CaseInsensitiveModel model = TomlSerializer.Deserialize<CaseInsensitiveModel>("Value = 7\n", options);
 
         Assert.AreEqual(7, model.Value);
     }
@@ -101,7 +101,7 @@ public partial class TomlSerializerTests
         // FirstName follows the camel-case policy; LastName keeps its explicit wire name "surname".
         Assert.AreEqual("firstName = \"a\"\nsurname = \"b\"\n", text);
 
-        var roundTripped = TomlSerializer.Deserialize<ExplicitNameModel>(text, options);
+        ExplicitNameModel roundTripped = TomlSerializer.Deserialize<ExplicitNameModel>(text, options);
         Assert.AreEqual("a", roundTripped.FirstName);
         Assert.AreEqual("b", roundTripped.LastName);
     }
@@ -114,7 +114,7 @@ public partial class TomlSerializerTests
     public void Deserialize_WhenKeyMatchesClrNameNotWireName_ShouldNotBindMember()
     {
         // The wire name is "id"; a key of "Identifier" (the CLR name) must not bind.
-        var model = TomlSerializer.Deserialize<RenamedKeyModel>("Identifier = 5\n");
+        RenamedKeyModel model = TomlSerializer.Deserialize<RenamedKeyModel>("Identifier = 5\n");
 
         Assert.AreEqual(0, model.Identifier);
     }
@@ -126,7 +126,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenKeyMatchesWireName_ShouldBindMember()
     {
-        var model = TomlSerializer.Deserialize<RenamedKeyModel>("id = 5\n");
+        RenamedKeyModel model = TomlSerializer.Deserialize<RenamedKeyModel>("id = 5\n");
 
         Assert.AreEqual(5, model.Identifier);
     }
@@ -140,7 +140,7 @@ public partial class TomlSerializerTests
     {
         var options = new TomlSerializerOptions { PropertyNameCaseInsensitive = true };
 
-        var ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        TomlSerializationException ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
         {
             _ = TomlSerializer.Deserialize<CaseInsensitiveModel>("Value = 1\nvalue = 2\n", options);
         });

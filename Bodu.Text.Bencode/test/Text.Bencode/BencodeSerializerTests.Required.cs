@@ -25,7 +25,7 @@ public partial class BencodeSerializerTests
     {
         byte[] bytes = Encoding.Latin1.GetBytes("d4:Name5:Alicee");
 
-        var model = BencodeSerializer.Deserialize<RequiredKeywordModel>(bytes);
+        RequiredKeywordModel model = BencodeSerializer.Deserialize<RequiredKeywordModel>(bytes);
 
         Assert.AreEqual("Alice", model.Name);
     }
@@ -39,7 +39,7 @@ public partial class BencodeSerializerTests
     {
         byte[] bytes = Encoding.Latin1.GetBytes("de");
 
-        var ex = Assert.ThrowsExactly<BencodeSerializationException>(() =>
+        BencodeSerializationException ex = Assert.ThrowsExactly<BencodeSerializationException>(() =>
         {
             _ = BencodeSerializer.Deserialize<RequiredKeywordModel>(bytes);
         });
@@ -56,7 +56,7 @@ public partial class BencodeSerializerTests
     {
         byte[] bytes = Encoding.Latin1.GetBytes("d2:idi42ee");
 
-        var model = BencodeSerializer.Deserialize<RequiredAttributeModel>(bytes);
+        RequiredAttributeModel model = BencodeSerializer.Deserialize<RequiredAttributeModel>(bytes);
 
         Assert.AreEqual(42, model.Id);
     }
@@ -70,7 +70,7 @@ public partial class BencodeSerializerTests
     {
         byte[] bytes = Encoding.Latin1.GetBytes("de");
 
-        var ex = Assert.ThrowsExactly<BencodeSerializationException>(() =>
+        BencodeSerializationException ex = Assert.ThrowsExactly<BencodeSerializationException>(() =>
         {
             _ = BencodeSerializer.Deserialize<RequiredAttributeModel>(bytes);
         });
@@ -87,7 +87,7 @@ public partial class BencodeSerializerTests
     {
         byte[] bytes = Encoding.Latin1.GetBytes("de");
 
-        var ex = Assert.ThrowsExactly<BencodeSerializationException>(() =>
+        BencodeSerializationException ex = Assert.ThrowsExactly<BencodeSerializationException>(() =>
         {
             _ = BencodeSerializer.Deserialize<RequiredAttributeModel>(bytes);
         });
@@ -105,7 +105,7 @@ public partial class BencodeSerializerTests
     {
         byte[] bytes = Encoding.Latin1.GetBytes("de");
 
-        var ex = Assert.ThrowsExactly<BencodeSerializationException>(() =>
+        BencodeSerializationException ex = Assert.ThrowsExactly<BencodeSerializationException>(() =>
         {
             _ = BencodeSerializer.Deserialize<RequiredConstructorParameterModel>(bytes);
         });
@@ -122,7 +122,7 @@ public partial class BencodeSerializerTests
     {
         byte[] bytes = Encoding.Latin1.GetBytes("d5:Valuei7ee");
 
-        var model = BencodeSerializer.Deserialize<RequiredConstructorParameterModel>(bytes);
+        RequiredConstructorParameterModel model = BencodeSerializer.Deserialize<RequiredConstructorParameterModel>(bytes);
 
         Assert.AreEqual(7, model.Value);
     }
@@ -136,7 +136,7 @@ public partial class BencodeSerializerTests
     {
         byte[] bytes = Encoding.Latin1.GetBytes("de");
 
-        var model = BencodeSerializer.Deserialize<DefaultedConstructorParameterModel>(bytes);
+        DefaultedConstructorParameterModel model = BencodeSerializer.Deserialize<DefaultedConstructorParameterModel>(bytes);
 
         Assert.AreEqual(5, model.Value);
     }
@@ -164,7 +164,7 @@ public partial class BencodeSerializerTests
     {
         byte[] bytes = Encoding.Latin1.GetBytes("d5:First1:a6:Second1:be");
 
-        var model = BencodeSerializer.Deserialize<TwoRequiredMembersModel>(bytes);
+        TwoRequiredMembersModel model = BencodeSerializer.Deserialize<TwoRequiredMembersModel>(bytes);
 
         Assert.AreEqual("a", model.First);
         Assert.AreEqual("b", model.Second);

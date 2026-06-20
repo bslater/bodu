@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CurrencyCodeExtensions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -14,10 +14,7 @@ namespace Bodu.Financial.Currencies;
 /// </summary>
 public static class CurrencyCodeExtensions
 {
-    /// <summary>
-    /// Caches the <see cref="CurrencyStatus" /> of every <see cref="CurrencyCode" /> member, read once from its
-    /// <see cref="CurrencyStatusAttribute" />.
-    /// </summary>
+    /// <summary>Caches the <see cref="CurrencyStatus" /> of every <see cref="CurrencyCode" /> member, read once from its <see cref="CurrencyStatusAttribute" />.</summary>
     private static readonly FrozenDictionary<CurrencyCode, CurrencyStatus> s_status = BuildStatusMap();
 
     /// <summary>
@@ -35,7 +32,9 @@ public static class CurrencyCodeExtensions
     /// Returns a value indicating whether the specified currency is a historic (demonetized) currency.
     /// </summary>
     /// <param name="code">The currency to test.</param>
-    /// <returns><see langword="true" /> when <paramref name="code" /> is historic; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when <paramref name="code" /> is historic; otherwise <see langword="false" />.
+    /// </returns>
     public static bool IsHistoric(this CurrencyCode code) =>
         (GetStatus(code) & CurrencyStatus.Historic) != CurrencyStatus.None;
 
@@ -43,7 +42,9 @@ public static class CurrencyCodeExtensions
     /// Returns a value indicating whether the specified currency is an active currency.
     /// </summary>
     /// <param name="code">The currency to test.</param>
-    /// <returns><see langword="true" /> when <paramref name="code" /> is active; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when <paramref name="code" /> is active; otherwise <see langword="false" />.
+    /// </returns>
     public static bool IsActive(this CurrencyCode code) =>
         (GetStatus(code) & CurrencyStatus.Active) != CurrencyStatus.None;
 

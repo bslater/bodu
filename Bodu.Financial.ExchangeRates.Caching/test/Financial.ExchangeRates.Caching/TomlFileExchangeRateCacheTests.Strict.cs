@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlFileExchangeRateCacheTests.Strict.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -32,7 +32,7 @@ public sealed partial class TomlFileExchangeRateCacheTests
             CacheDirectory = _directory,
             ThrowOnStorageFailure = true,
         });
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
 
         _ = Assert.ThrowsExactly<DirectoryNotFoundException>(() =>
         {

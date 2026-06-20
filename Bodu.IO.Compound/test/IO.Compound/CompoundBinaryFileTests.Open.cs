@@ -14,7 +14,7 @@ public partial class CompoundBinaryFileTests
     [TestMethod]
     public void Open_WhenStreamIsNull_ShouldThrowArgumentNullException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = CompoundBinaryFile.Open(null!);
         });

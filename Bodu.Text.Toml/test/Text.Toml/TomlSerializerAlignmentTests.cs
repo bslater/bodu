@@ -87,7 +87,7 @@ public class TomlSerializerAlignmentTests
         var original = new RequiredMemberModel { Name = "server", Optional = "o" };
 
         string text = TomlSerializer.Serialize(original);
-        var roundTripped = TomlSerializer.Deserialize<RequiredMemberModel>(text);
+        RequiredMemberModel roundTripped = TomlSerializer.Deserialize<RequiredMemberModel>(text);
 
         Assert.AreEqual("server", roundTripped.Name);
         Assert.AreEqual("o", roundTripped.Optional);
@@ -105,7 +105,7 @@ public class TomlSerializerAlignmentTests
         string text = TomlSerializer.Serialize(original);
         Assert.AreEqual("Value = 42\n", text);
 
-        var roundTripped = TomlSerializer.Deserialize<IncludedModel>(text);
+        IncludedModel roundTripped = TomlSerializer.Deserialize<IncludedModel>(text);
         Assert.AreEqual(42, roundTripped.Value);
     }
 
@@ -116,7 +116,7 @@ public class TomlSerializerAlignmentTests
     [TestMethod]
     public void Deserialize_WhenExtraKeysPresent_ShouldCaptureIntoExtensionData()
     {
-        var model = TomlSerializer.Deserialize<ExtensionDataModel>("Name = \"test\"\na = 1\nz = 9\n");
+        ExtensionDataModel model = TomlSerializer.Deserialize<ExtensionDataModel>("Name = \"test\"\na = 1\nz = 9\n");
 
         Assert.AreEqual("test", model.Name);
         Assert.IsNotNull(model.Extra);
@@ -159,7 +159,7 @@ public class TomlSerializerAlignmentTests
         string text = TomlSerializer.Serialize(new CountModel { Count = 3, Label = "y" }, options);
         Assert.AreEqual("count = 3\nlabel = \"y\"\n", text);
 
-        var roundTripped = TomlSerializer.Deserialize<CountModel>(text, options);
+        CountModel roundTripped = TomlSerializer.Deserialize<CountModel>(text, options);
         Assert.AreEqual(3, roundTripped.Count);
         Assert.AreEqual("y", roundTripped.Label);
     }
@@ -216,7 +216,7 @@ public class TomlSerializerAlignmentTests
     [TestMethod]
     public void Deserialize_WhenValueImplementsCallbacks_ShouldInvokeDeserializingThenDeserialized()
     {
-        var model = TomlSerializer.Deserialize<CallbackModel>("Value = 7\n");
+        CallbackModel model = TomlSerializer.Deserialize<CallbackModel>("Value = 7\n");
 
         CollectionAssert.AreEqual(new[] { "OnDeserializing", "OnDeserialized" }, model.Calls);
     }
@@ -228,7 +228,7 @@ public class TomlSerializerAlignmentTests
     [TestMethod]
     public void Deserialize_WhenCallbackOrdered_ShouldRunDeserializingBeforeMemberAssignment()
     {
-        var model = TomlSerializer.Deserialize<CallbackModel>("Value = 7\n");
+        CallbackModel model = TomlSerializer.Deserialize<CallbackModel>("Value = 7\n");
 
         Assert.AreEqual(0, model.ValueAtDeserializing);
         Assert.AreEqual(7, model.Value);
@@ -241,7 +241,7 @@ public class TomlSerializerAlignmentTests
     [TestMethod]
     public void Deserialize_WhenUnmappedKeyAndHandlingIsSkip_ShouldIgnoreUnmappedKey()
     {
-        var model = TomlSerializer.Deserialize<PlainModel>("Extra = 9\nValue = 3\n");
+        PlainModel model = TomlSerializer.Deserialize<PlainModel>("Extra = 9\nValue = 3\n");
 
         Assert.AreEqual(3, model.Value);
     }
@@ -282,7 +282,7 @@ public class TomlSerializerAlignmentTests
     [TestMethod]
     public void Deserialize_WhenExtensionDataPresentAndDisallow_ShouldCaptureUnmappedKey()
     {
-        var model = TomlSerializer.Deserialize<DisallowWithExtensionDataModel>("Extra = 9\nValue = 3\n");
+        DisallowWithExtensionDataModel model = TomlSerializer.Deserialize<DisallowWithExtensionDataModel>("Extra = 9\nValue = 3\n");
 
         Assert.AreEqual(3, model.Value);
         Assert.IsNotNull(model.Extra);
@@ -297,7 +297,7 @@ public class TomlSerializerAlignmentTests
     [TestMethod]
     public void Deserialize_WhenMemberPopulates_ShouldAddIntoExistingCollection()
     {
-        var model = TomlSerializer.Deserialize<PopulateMemberModel>("Tags = [1, 2]\n");
+        PopulateMemberModel model = TomlSerializer.Deserialize<PopulateMemberModel>("Tags = [1, 2]\n");
 
         CollectionAssert.AreEqual(new[] { 99, 1, 2 }, model.Tags);
     }
@@ -311,7 +311,7 @@ public class TomlSerializerAlignmentTests
     {
         var options = new TomlSerializerOptions { PreferredObjectCreationHandling = TomlObjectCreationHandling.Populate };
 
-        var model = TomlSerializer.Deserialize<GetOnlyCollectionModel>("Tags = [1, 2]\n", options);
+        GetOnlyCollectionModel model = TomlSerializer.Deserialize<GetOnlyCollectionModel>("Tags = [1, 2]\n", options);
 
         CollectionAssert.AreEqual(new[] { 99, 1, 2 }, model.Tags);
     }
@@ -323,7 +323,7 @@ public class TomlSerializerAlignmentTests
     [TestMethod]
     public void Deserialize_WhenHandlingIsReplaceAndMemberGetOnly_ShouldNotPopulate()
     {
-        var model = TomlSerializer.Deserialize<GetOnlyCollectionModel>("Tags = [1, 2]\n");
+        GetOnlyCollectionModel model = TomlSerializer.Deserialize<GetOnlyCollectionModel>("Tags = [1, 2]\n");
 
         CollectionAssert.AreEqual(new[] { 99 }, model.Tags);
     }
@@ -356,7 +356,7 @@ public class TomlSerializerAlignmentTests
 
         Assert.AreEqual("Status = \"Active\"\n", text);
 
-        var roundTripped = TomlSerializer.Deserialize<StatusModel>(text);
+        StatusModel roundTripped = TomlSerializer.Deserialize<StatusModel>(text);
         Assert.AreEqual(Status.Active, roundTripped.Status);
     }
 
@@ -373,7 +373,7 @@ public class TomlSerializerAlignmentTests
 
         Assert.AreEqual("Status = \"not-found\"\n", text);
 
-        var roundTripped = TomlSerializer.Deserialize<RenamedStatusModel>(text);
+        RenamedStatusModel roundTripped = TomlSerializer.Deserialize<RenamedStatusModel>(text);
         Assert.AreEqual(RenamedStatus.NotFound, roundTripped.Status);
     }
 
@@ -390,7 +390,7 @@ public class TomlSerializerAlignmentTests
 
         Assert.AreEqual("Status = 2\n", text);
 
-        var roundTripped = TomlSerializer.Deserialize<NumberEnumModel>(text);
+        NumberEnumModel roundTripped = TomlSerializer.Deserialize<NumberEnumModel>(text);
         Assert.AreEqual(Status.Archived, roundTripped.Status);
     }
 
@@ -407,7 +407,7 @@ public class TomlSerializerAlignmentTests
         string text = TomlSerializer.Serialize(new StatusModel { Status = Status.Active }, options);
         Assert.AreEqual("Status = \"active\"\n", text);
 
-        var roundTripped = TomlSerializer.Deserialize<StatusModel>("Status = 2\n", options);
+        StatusModel roundTripped = TomlSerializer.Deserialize<StatusModel>("Status = 2\n", options);
         Assert.AreEqual(Status.Archived, roundTripped.Status);
     }
 

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NullExchangeRateCacheTests.StoreFetchedRange.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -19,9 +19,9 @@ public sealed partial class NullExchangeRateCacheTests
     {
         IExchangeRateCache cache = NullExchangeRateCache.Create("Yahoo");
         ExchangeRatePair pair = new(CurrencyCode.AUD, CurrencyCode.USD);
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             cache.StoreFetchedRange(pair, null!, new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 10), TimeSpan.FromHours(24), now);
         });
@@ -39,7 +39,7 @@ public sealed partial class NullExchangeRateCacheTests
         IExchangeRateCache cache = NullExchangeRateCache.Create("Yahoo");
         ExchangeRatePair pair = new(CurrencyCode.AUD, CurrencyCode.USD);
 
-        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             cache.StoreFetchedRange(
                 pair,
@@ -61,7 +61,7 @@ public sealed partial class NullExchangeRateCacheTests
     {
         IExchangeRateCache cache = NullExchangeRateCache.Create("Yahoo");
         ExchangeRatePair pair = new(CurrencyCode.AUD, CurrencyCode.USD);
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
 
         ExchangeRateCacheWriteStatus status = cache.StoreFetchedRange(
             pair,

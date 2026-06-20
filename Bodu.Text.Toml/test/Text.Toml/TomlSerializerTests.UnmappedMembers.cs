@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlSerializerTests.UnmappedMembers.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -24,7 +24,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenUnmappedKeyAndDefaultHandling_ShouldSkip()
     {
-        var model = TomlSerializer.Deserialize<PlainNameModel>("Name = \"n\"\nunknown = 1\n");
+        PlainNameModel model = TomlSerializer.Deserialize<PlainNameModel>("Name = \"n\"\nunknown = 1\n");
 
         Assert.AreEqual("n", model.Name);
     }
@@ -38,7 +38,7 @@ public partial class TomlSerializerTests
     {
         var options = new TomlSerializerOptions { UnmappedMemberHandling = TomlUnmappedMemberHandling.Disallow };
 
-        var ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        TomlSerializationException ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
         {
             _ = TomlSerializer.Deserialize<PlainNameModel>("Name = \"n\"\nunknown = 1\n", options);
         });
@@ -56,7 +56,7 @@ public partial class TomlSerializerTests
     {
         var options = new TomlSerializerOptions { UnmappedMemberHandling = TomlUnmappedMemberHandling.Disallow };
 
-        var model = TomlSerializer.Deserialize<PlainNameModel>("Name = \"n\"\n", options);
+        PlainNameModel model = TomlSerializer.Deserialize<PlainNameModel>("Name = \"n\"\n", options);
 
         Assert.AreEqual("n", model.Name);
     }
@@ -69,7 +69,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenAttributeDisallowsAndOptionsDefault_ShouldThrowTomlSerializationException()
     {
-        var ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        TomlSerializationException ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
         {
             _ = TomlSerializer.Deserialize<DisallowAttributeModel>("Name = \"n\"\nunknown = 1\n");
         });
@@ -88,7 +88,7 @@ public partial class TomlSerializerTests
     {
         var options = new TomlSerializerOptions { UnmappedMemberHandling = TomlUnmappedMemberHandling.Disallow };
 
-        var model = TomlSerializer.Deserialize<SkipAttributeModel>("Name = \"n\"\nunknown = 1\n", options);
+        SkipAttributeModel model = TomlSerializer.Deserialize<SkipAttributeModel>("Name = \"n\"\nunknown = 1\n", options);
 
         Assert.AreEqual("n", model.Name);
     }
@@ -102,7 +102,7 @@ public partial class TomlSerializerTests
     {
         var options = new TomlSerializerOptions { UnmappedMemberHandling = TomlUnmappedMemberHandling.Disallow };
 
-        var ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        TomlSerializationException ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
         {
             _ = TomlSerializer.Deserialize<PlainNameModel>("unknown = 1\n", options);
         });

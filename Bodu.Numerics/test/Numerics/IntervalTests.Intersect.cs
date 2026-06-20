@@ -97,7 +97,7 @@ public partial class IntervalTests
     [TestMethod]
     public void Intersect_WhenThisStartsAfterOther_ShouldClampToThisLowerAndOtherUpper()
     {
-        var result = Interval<int>.Closed(3, 8).Intersect(Interval<int>.Closed(1, 5));
+        Interval<int> result = Interval<int>.Closed(3, 8).Intersect(Interval<int>.Closed(1, 5));
 
         Assert.AreEqual(Interval<int>.Closed(3, 5), result);
     }

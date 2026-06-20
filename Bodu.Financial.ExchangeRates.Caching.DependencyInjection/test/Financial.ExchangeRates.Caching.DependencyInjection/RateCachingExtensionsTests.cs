@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RateCachingExtensionsTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -122,7 +122,7 @@ public sealed partial class RateCachingExtensionsTests
     [TestMethod]
     public void AddCachedExchangeRateProvider_WhenBuilderIsNull_ShouldThrowArgumentNullException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = RateCachingExtensions.AddCachedExchangeRateProvider<StubRbaProvider>(null!, "RBA");
         });
@@ -139,7 +139,7 @@ public sealed partial class RateCachingExtensionsTests
         var services = new ServiceCollection();
         IFinancialServiceBuilder builder = services.AddBoduFinancial();
 
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             _ = builder.AddCachedExchangeRateProvider<StubRbaProvider>("  ");
         });

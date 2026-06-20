@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DistributedExchangeRateCacheTests.CrossInstance.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -30,7 +30,7 @@ public sealed partial class DistributedExchangeRateCacheTests
         var cacheA = new DistributedExchangeRateCache(backingStore, new DistributedExchangeRateCacheOptions { Provider = Provider });
         var cacheB = new DistributedExchangeRateCache(backingStore, new DistributedExchangeRateCacheOptions { Provider = Provider });
         var date = new DateOnly(2023, 1, 3);
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
 
         List<Task> writes = new();
         for (int i = 0; i < 50; i++)

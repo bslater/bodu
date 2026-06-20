@@ -45,7 +45,7 @@ public partial class TomlSerializerTests
         string text = TomlSerializer.Serialize(original, options);
         Assert.AreEqual("Property = 6\nField = 5\n", text);
 
-        var roundTripped = TomlSerializer.Deserialize<FieldAndPropertyModel>(text, options);
+        FieldAndPropertyModel roundTripped = TomlSerializer.Deserialize<FieldAndPropertyModel>(text, options);
         Assert.AreEqual(5, roundTripped.Field);
         Assert.AreEqual(6, roundTripped.Property);
     }
@@ -63,7 +63,7 @@ public partial class TomlSerializerTests
         string text = TomlSerializer.Serialize(original);
         Assert.AreEqual("Field = 5\n", text);
 
-        var roundTripped = TomlSerializer.Deserialize<IncludedFieldModel>(text);
+        IncludedFieldModel roundTripped = TomlSerializer.Deserialize<IncludedFieldModel>(text);
         Assert.AreEqual(5, roundTripped.Field);
     }
 
@@ -97,7 +97,7 @@ public partial class TomlSerializerTests
         string text = TomlSerializer.Serialize(original, options);
         Assert.AreEqual("n = 7\n", text);
 
-        var roundTripped = TomlSerializer.Deserialize<RenamedFieldModel>(text, options);
+        RenamedFieldModel roundTripped = TomlSerializer.Deserialize<RenamedFieldModel>(text, options);
         Assert.AreEqual(7, roundTripped.Count);
     }
 
@@ -141,7 +141,7 @@ public partial class TomlSerializerTests
         string text = TomlSerializer.Serialize(new ReadOnlyFieldModel(5), options);
         Assert.AreEqual("Field = 5\n", text);
 
-        var roundTripped = TomlSerializer.Deserialize<ReadOnlyFieldModel>("Field = 99\n", options);
+        ReadOnlyFieldModel roundTripped = TomlSerializer.Deserialize<ReadOnlyFieldModel>("Field = 99\n", options);
         Assert.AreEqual(0, roundTripped.Field);
     }
 
@@ -154,7 +154,7 @@ public partial class TomlSerializerTests
     {
         var options = new TomlSerializerOptions { IncludeFields = true };
 
-        var ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        TomlSerializationException ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
         {
             _ = TomlSerializer.Deserialize<RequiredFieldModel>(string.Empty, options);
         });
@@ -175,7 +175,7 @@ public partial class TomlSerializerTests
         string text = TomlSerializer.Serialize(original, options);
         Assert.AreEqual("Field = 3\n", text);
 
-        var roundTripped = TomlSerializer.Deserialize<RequiredFieldModel>(text, options);
+        RequiredFieldModel roundTripped = TomlSerializer.Deserialize<RequiredFieldModel>(text, options);
         Assert.AreEqual(3, roundTripped.Field);
     }
 

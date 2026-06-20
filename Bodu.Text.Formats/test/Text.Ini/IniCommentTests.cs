@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IniCommentTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -32,7 +32,7 @@ public sealed class IniCommentTests
     [TestMethod]
     public void Constructor_WhenPrefixInvalid_ShouldThrowArgumentException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentException>(() => _ = new IniComment('/', "x"));
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() => _ = new IniComment('/', "x"));
 
         Assert.AreEqual("prefix", ex.ParamName);
     }
@@ -43,7 +43,7 @@ public sealed class IniCommentTests
     [TestMethod]
     public void Constructor_WhenTextIsNull_ShouldThrowArgumentNullException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() => _ = new IniComment('#', null!));
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() => _ = new IniComment('#', null!));
 
         Assert.AreEqual("text", ex.ParamName);
     }

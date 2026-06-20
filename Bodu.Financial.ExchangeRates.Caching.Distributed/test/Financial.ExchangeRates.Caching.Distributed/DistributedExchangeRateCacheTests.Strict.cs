@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DistributedExchangeRateCacheTests.Strict.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -38,7 +38,7 @@ public sealed partial class DistributedExchangeRateCacheTests
     [TestMethod]
     public void StoreFetchedRange_WhenBackingStoreFailsAndStrict_ShouldThrow()
     {
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
         DistributedExchangeRateCache cache = new(
             new FailingDistributedCache(),
             new DistributedExchangeRateCacheOptions { Provider = Provider, ThrowOnStorageFailure = true });

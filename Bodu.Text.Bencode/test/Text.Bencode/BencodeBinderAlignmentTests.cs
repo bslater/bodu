@@ -42,7 +42,7 @@ public class BencodeBinderAlignmentTests
     {
         byte[] bytes = Encoding.Latin1.GetBytes("d5:Valuei7ee");
 
-        var model = BencodeSerializer.Deserialize<CallbackModel>(bytes);
+        CallbackModel model = BencodeSerializer.Deserialize<CallbackModel>(bytes);
 
         CollectionAssert.AreEqual(new[] { "OnDeserializing", "OnDeserialized" }, model.Calls);
     }
@@ -56,7 +56,7 @@ public class BencodeBinderAlignmentTests
     {
         byte[] bytes = Encoding.Latin1.GetBytes("d5:Valuei7ee");
 
-        var model = BencodeSerializer.Deserialize<CallbackModel>(bytes);
+        CallbackModel model = BencodeSerializer.Deserialize<CallbackModel>(bytes);
 
         Assert.AreEqual(0, model.ValueAtDeserializing);
         Assert.AreEqual(7, model.Value);
@@ -71,7 +71,7 @@ public class BencodeBinderAlignmentTests
     {
         byte[] bytes = Encoding.Latin1.GetBytes("d5:Extrai9e5:Valuei3ee");
 
-        var model = BencodeSerializer.Deserialize<PlainModel>(bytes);
+        PlainModel model = BencodeSerializer.Deserialize<PlainModel>(bytes);
 
         Assert.AreEqual(3, model.Value);
     }
@@ -118,7 +118,7 @@ public class BencodeBinderAlignmentTests
     {
         byte[] bytes = Encoding.Latin1.GetBytes("d5:Extrai9e5:Valuei3ee");
 
-        var model = BencodeSerializer.Deserialize<DisallowWithExtensionDataModel>(bytes);
+        DisallowWithExtensionDataModel model = BencodeSerializer.Deserialize<DisallowWithExtensionDataModel>(bytes);
 
         Assert.AreEqual(3, model.Value);
         Assert.IsNotNull(model.Extra);
@@ -135,7 +135,7 @@ public class BencodeBinderAlignmentTests
     {
         byte[] bytes = Encoding.Latin1.GetBytes("d4:Tagsli1ei2eee");
 
-        var model = BencodeSerializer.Deserialize<PopulateMemberModel>(bytes);
+        PopulateMemberModel model = BencodeSerializer.Deserialize<PopulateMemberModel>(bytes);
 
         CollectionAssert.AreEqual(new[] { 99, 1, 2 }, model.Tags);
     }
@@ -150,7 +150,7 @@ public class BencodeBinderAlignmentTests
         var options = new BencodeSerializerOptions { PreferredObjectCreationHandling = BencodeObjectCreationHandling.Populate };
         byte[] bytes = Encoding.Latin1.GetBytes("d4:Tagsli1ei2eee");
 
-        var model = BencodeSerializer.Deserialize<GetOnlyCollectionModel>(bytes, options);
+        GetOnlyCollectionModel model = BencodeSerializer.Deserialize<GetOnlyCollectionModel>(bytes, options);
 
         CollectionAssert.AreEqual(new[] { 99, 1, 2 }, model.Tags);
     }
@@ -164,7 +164,7 @@ public class BencodeBinderAlignmentTests
     {
         byte[] bytes = Encoding.Latin1.GetBytes("d4:Tagsli1ei2eee");
 
-        var model = BencodeSerializer.Deserialize<GetOnlyCollectionModel>(bytes);
+        GetOnlyCollectionModel model = BencodeSerializer.Deserialize<GetOnlyCollectionModel>(bytes);
 
         CollectionAssert.AreEqual(new[] { 99 }, model.Tags);
     }
@@ -178,7 +178,7 @@ public class BencodeBinderAlignmentTests
     {
         byte[] bytes = Encoding.Latin1.GetBytes("d3:Mapd1:bi2eee");
 
-        var model = BencodeSerializer.Deserialize<PopulateDictionaryModel>(bytes);
+        PopulateDictionaryModel model = BencodeSerializer.Deserialize<PopulateDictionaryModel>(bytes);
 
         Assert.AreEqual(2, model.Map.Count);
         Assert.AreEqual(1L, model.Map["a"]);

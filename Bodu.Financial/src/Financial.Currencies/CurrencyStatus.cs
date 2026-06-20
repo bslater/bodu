@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CurrencyStatus.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -16,12 +16,18 @@ namespace Bodu.Financial.Currencies;
 [Flags]
 public enum CurrencyStatus
 {
-    /// <summary>No status; carried by the <see cref="CurrencyCode.None" /> sentinel.</summary>
+    /// <summary>
+    /// No status; carried by the <see cref="CurrencyCode.None" /> sentinel.
+    /// </summary>
     None = 0,
 
-    /// <summary>An active ISO 4217 currency in current circulation.</summary>
+    /// <summary>
+    /// An active ISO 4217 currency in current circulation.
+    /// </summary>
     Active = 1,
 
-    /// <summary>A historic ISO 4217 currency that has been demonetized.</summary>
+    /// <summary>
+    /// A historic ISO 4217 currency that has been demonetized.
+    /// </summary>
     Historic = 2,
 }

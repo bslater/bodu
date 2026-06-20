@@ -26,7 +26,7 @@ public partial class BencodeSerializerTests
     {
         byte[] bytes = Encoding.Latin1.GetBytes("d5:VALUEi7ee");
 
-        var model = BencodeSerializer.Deserialize<CaseInsensitiveModel>(bytes);
+        CaseInsensitiveModel model = BencodeSerializer.Deserialize<CaseInsensitiveModel>(bytes);
 
         Assert.AreEqual(7, model.Value);
     }
@@ -41,7 +41,7 @@ public partial class BencodeSerializerTests
         var options = new BencodeSerializerOptions { PropertyNameCaseInsensitive = false };
         byte[] bytes = Encoding.Latin1.GetBytes("d5:VALUEi7ee");
 
-        var model = BencodeSerializer.Deserialize<CaseInsensitiveModel>(bytes, options);
+        CaseInsensitiveModel model = BencodeSerializer.Deserialize<CaseInsensitiveModel>(bytes, options);
 
         Assert.AreEqual(0, model.Value);
     }
@@ -56,7 +56,7 @@ public partial class BencodeSerializerTests
         var options = new BencodeSerializerOptions { PropertyNameCaseInsensitive = false };
         byte[] bytes = Encoding.Latin1.GetBytes("d5:Valuei7ee");
 
-        var model = BencodeSerializer.Deserialize<CaseInsensitiveModel>(bytes, options);
+        CaseInsensitiveModel model = BencodeSerializer.Deserialize<CaseInsensitiveModel>(bytes, options);
 
         Assert.AreEqual(7, model.Value);
     }
@@ -76,7 +76,7 @@ public partial class BencodeSerializerTests
         // FirstName follows the camel-case policy; LastName keeps its explicit wire name "surname".
         Assert.AreEqual("d9:firstName1:a7:surname1:be", Encoding.Latin1.GetString(bytes));
 
-        var roundTripped = BencodeSerializer.Deserialize<ExplicitNameModel>(bytes, options);
+        ExplicitNameModel roundTripped = BencodeSerializer.Deserialize<ExplicitNameModel>(bytes, options);
         Assert.AreEqual("a", roundTripped.FirstName);
         Assert.AreEqual("b", roundTripped.LastName);
     }
@@ -91,7 +91,7 @@ public partial class BencodeSerializerTests
         // The wire name is "id"; a key of "Identifier" (the CLR name) must not bind.
         byte[] bytes = Encoding.Latin1.GetBytes("d10:Identifieri5ee");
 
-        var model = BencodeSerializer.Deserialize<RenamedKeyModel>(bytes);
+        RenamedKeyModel model = BencodeSerializer.Deserialize<RenamedKeyModel>(bytes);
 
         Assert.AreEqual(0, model.Identifier);
     }
@@ -105,7 +105,7 @@ public partial class BencodeSerializerTests
     {
         byte[] bytes = Encoding.Latin1.GetBytes("d2:idi5ee");
 
-        var model = BencodeSerializer.Deserialize<RenamedKeyModel>(bytes);
+        RenamedKeyModel model = BencodeSerializer.Deserialize<RenamedKeyModel>(bytes);
 
         Assert.AreEqual(5, model.Identifier);
     }
@@ -133,7 +133,7 @@ public partial class BencodeSerializerTests
     {
         var model = new CollidingWireNameModel { First = 1, Second = 2 };
 
-        var ex = Assert.ThrowsExactly<InvalidOperationException>(() =>
+        InvalidOperationException ex = Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
             _ = BencodeSerializer.Serialize(model);
         });

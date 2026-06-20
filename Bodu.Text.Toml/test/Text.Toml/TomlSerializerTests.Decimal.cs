@@ -139,7 +139,7 @@ public partial class TomlSerializerTests
     [DataRow("Value = 1e300\n", DisplayName = "out of range")]
     public void Deserialize_WhenDecimalFromUnconvertibleFloat_ShouldThrowTomlSerializationException(string toml)
     {
-        var ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        TomlSerializationException ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
         {
             _ = TomlSerializer.Deserialize<ValueModel<decimal>>(toml);
         });

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RedisDistributedExchangeRateCacheIntegrationTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -52,7 +52,7 @@ public sealed class RedisDistributedExchangeRateCacheIntegrationTests
 
         string keyPrefix = $"bodu-test:{Guid.NewGuid():N}:";
         using var redis = new RedisCache(Options.Create(new RedisCacheOptions { Configuration = connection }));
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
         var date = new DateOnly(2023, 1, 3);
         var cache = new DistributedExchangeRateCache(redis, new DistributedExchangeRateCacheOptions { Provider = "RedisTest", KeyPrefix = keyPrefix });
 
@@ -92,7 +92,7 @@ public sealed class RedisDistributedExchangeRateCacheIntegrationTests
 
         string keyPrefix = $"bodu-test:{Guid.NewGuid():N}:";
         using var redis = new RedisCache(Options.Create(new RedisCacheOptions { Configuration = connection }));
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
         var date = new DateOnly(2023, 1, 3);
         var cacheA = new DistributedExchangeRateCache(redis, new DistributedExchangeRateCacheOptions { Provider = "RedisTest", KeyPrefix = keyPrefix });
         var cacheB = new DistributedExchangeRateCache(redis, new DistributedExchangeRateCacheOptions { Provider = "RedisTest", KeyPrefix = keyPrefix });

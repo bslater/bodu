@@ -24,7 +24,7 @@ public sealed partial class TomlFileExchangeRateCacheTests
     public void Store_WhenRateIsHighPrecision_ShouldRoundTripExactly()
     {
         TomlFileExchangeRateCache cache = CreateCache();
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
         const decimal precise = 0.123456789012345678m;
 
         cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), precise, now) }, Duration, now);
@@ -59,7 +59,7 @@ public sealed partial class TomlFileExchangeRateCacheTests
     public void Store_WhenWritten_ShouldLayOutFileUnderProviderDirectory()
     {
         TomlFileExchangeRateCache cache = CreateCache();
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
         cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5m, now) }, Duration, now);
 
         Assert.IsTrue(File.Exists(PairFilePath));
@@ -88,7 +88,7 @@ public sealed partial class TomlFileExchangeRateCacheTests
     [TestMethod]
     public void GetRates_WhenReadByNewInstance_ShouldServePersistedRows()
     {
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
         CreateCache().Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5m, now) }, Duration, now);
 
         TomlFileExchangeRateCache reopened = new(new FileExchangeRateCacheOptions { Provider = Provider, CacheDirectory = _directory });
@@ -123,7 +123,7 @@ public sealed partial class TomlFileExchangeRateCacheTests
     [TestMethod]
     public void Store_AndRecordCoverage_WhenReadByNewInstance_ShouldRoundTripBoth()
     {
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
         TomlFileExchangeRateCache cache = CreateCache();
         cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5m, now) }, Duration, now);
         cache.RecordCoverage(Pair, new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 6), Duration, now);
@@ -143,7 +143,7 @@ public sealed partial class TomlFileExchangeRateCacheTests
     {
         TomlFileExchangeRateCache cache = CreateCache();
         Directory.CreateDirectory(Path.Combine(_directory, Provider));
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
 
         // A hand-written pre-coverage file: entries only, no [[Coverage]] array of tables.
         File.WriteAllText(
@@ -168,7 +168,7 @@ public sealed partial class TomlFileExchangeRateCacheTests
     {
         TomlFileExchangeRateCache cache = CreateCache();
         Directory.CreateDirectory(Path.Combine(_directory, Provider));
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
 
         // A hand-written pre-C file: an entry with Date, Rate, and CachedAtUtc but no ObservedAtUtc key.
         File.WriteAllText(
@@ -190,8 +190,8 @@ public sealed partial class TomlFileExchangeRateCacheTests
     [TestMethod]
     public void Store_WhenObservedAtUtcSet_ShouldRoundTripAcrossReopen()
     {
-        var observedAt = new DateTimeOffset(2023, 1, 3, 16, 0, 30, 123, TimeSpan.FromHours(10)).AddTicks(4567);
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset observedAt = new DateTimeOffset(2023, 1, 3, 16, 0, 30, 123, TimeSpan.FromHours(10)).AddTicks(4567);
+        DateTimeOffset now = DateTimeOffset.UtcNow;
         CreateCache().Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5m, now, observedAt) }, Duration, now);
 
         TomlFileExchangeRateCache reopened = new(new FileExchangeRateCacheOptions { Provider = Provider, CacheDirectory = _directory });

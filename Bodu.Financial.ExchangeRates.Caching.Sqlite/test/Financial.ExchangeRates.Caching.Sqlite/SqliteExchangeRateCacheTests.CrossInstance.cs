@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SqliteExchangeRateCacheTests.CrossInstance.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -30,7 +30,7 @@ public sealed partial class SqliteExchangeRateCacheTests
         _caches.Add(cacheB);
 
         var date = new DateOnly(2023, 1, 3);
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
 
         // Two independent instances write the same pair and date with different rates, concurrently and repeatedly. A
         // write that loses the database lock degrades to a swallowed failure (best-effort), but never corrupts the store.

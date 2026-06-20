@@ -22,7 +22,7 @@ public partial class FinancialJsonConverterGuardsTests
     [TestMethod]
     public void ExchangeRatePair_WhenCompactCodesInvalid_ShouldThrowJsonException()
     {
-        var options = new JsonSerializerOptions().AddFinancialJsonConverters(FinancialJsonPolicy.Compact);
+        JsonSerializerOptions options = new JsonSerializerOptions().AddFinancialJsonConverters(FinancialJsonPolicy.Compact);
 
         Assert.ThrowsExactly<JsonException>(() => JsonSerializer.Deserialize<ExchangeRatePair>("\"XX/YY\"", options));
     }

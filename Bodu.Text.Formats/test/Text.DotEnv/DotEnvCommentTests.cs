@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DotEnvCommentTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -29,7 +29,7 @@ public sealed class DotEnvCommentTests
     [TestMethod]
     public void Constructor_WhenPrefixInvalid_ShouldThrowArgumentException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentException>(() => _ = new DotEnvComment(';', "x"));
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() => _ = new DotEnvComment(';', "x"));
 
         Assert.AreEqual("prefix", ex.ParamName);
     }
@@ -40,7 +40,7 @@ public sealed class DotEnvCommentTests
     [TestMethod]
     public void Constructor_WhenTextIsNull_ShouldThrowArgumentNullException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() => _ = new DotEnvComment('#', null!));
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() => _ = new DotEnvComment('#', null!));
 
         Assert.AreEqual("text", ex.ParamName);
     }

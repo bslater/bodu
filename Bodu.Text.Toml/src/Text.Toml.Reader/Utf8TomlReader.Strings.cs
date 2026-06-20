@@ -444,7 +444,7 @@ public ref partial struct Utf8TomlReader
             if (content[i] != (byte)'\\')
             {
                 // Copy the verbatim run up to the next escape in one transcode.
-                var run = content[i..];
+                ReadOnlySpan<byte> run = content[i..];
                 int next = run.IndexOf((byte)'\\');
                 if (next < 0)
                     next = run.Length;

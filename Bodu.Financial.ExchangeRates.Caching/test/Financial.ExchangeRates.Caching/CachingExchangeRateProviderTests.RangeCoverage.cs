@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CachingExchangeRateProviderTests.RangeCoverage.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -137,7 +137,7 @@ public sealed partial class CachingExchangeRateProviderTests
     public void StoreFetchedRange_WhenBackendSwallowsWrite_ShouldReportFailed()
     {
         var failingCache = new FailingStoreExchangeRateCache(Provider);
-        var now = _clock.GetUtcNow();
+        DateTimeOffset now = _clock.GetUtcNow();
 
         ExchangeRateCacheWriteStatus status = failingCache.StoreFetchedRange(
             new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD),

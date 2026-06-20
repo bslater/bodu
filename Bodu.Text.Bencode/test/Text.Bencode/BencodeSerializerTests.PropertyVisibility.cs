@@ -31,7 +31,7 @@ public partial class BencodeSerializerTests
         byte[] bytes = BencodeSerializer.Serialize(original);
         Assert.AreEqual("d5:Valuei42ee", Encoding.Latin1.GetString(bytes));
 
-        var roundTripped = BencodeSerializer.Deserialize<ReadWriteModel>(bytes);
+        ReadWriteModel roundTripped = BencodeSerializer.Deserialize<ReadWriteModel>(bytes);
         Assert.AreEqual(42, roundTripped.Value);
     }
 
@@ -46,7 +46,7 @@ public partial class BencodeSerializerTests
         byte[] bytes = BencodeSerializer.Serialize(original);
         Assert.AreEqual("d5:Valuei7ee", Encoding.Latin1.GetString(bytes));
 
-        var roundTripped = BencodeSerializer.Deserialize<InitOnlyModel>(bytes);
+        InitOnlyModel roundTripped = BencodeSerializer.Deserialize<InitOnlyModel>(bytes);
         Assert.AreEqual(7, roundTripped.Value);
     }
 
@@ -71,7 +71,7 @@ public partial class BencodeSerializerTests
     {
         byte[] bytes = Encoding.Latin1.GetBytes("d5:Valuei99ee");
 
-        var model = BencodeSerializer.Deserialize<GetOnlyScalarModel>(bytes);
+        GetOnlyScalarModel model = BencodeSerializer.Deserialize<GetOnlyScalarModel>(bytes);
 
         Assert.AreEqual(0, model.Value);
     }
@@ -100,7 +100,7 @@ public partial class BencodeSerializerTests
     {
         byte[] bytes = Encoding.Latin1.GetBytes("d5:Valuei99ee");
 
-        var model = BencodeSerializer.Deserialize<PrivateSetterModel>(bytes);
+        PrivateSetterModel model = BencodeSerializer.Deserialize<PrivateSetterModel>(bytes);
 
         Assert.AreEqual(0, model.Value);
     }
@@ -118,7 +118,7 @@ public partial class BencodeSerializerTests
         byte[] bytes = BencodeSerializer.Serialize(original);
         Assert.AreEqual("d5:Valuei5ee", Encoding.Latin1.GetString(bytes));
 
-        var roundTripped = BencodeSerializer.Deserialize<IncludedPrivateSetterModel>(bytes);
+        IncludedPrivateSetterModel roundTripped = BencodeSerializer.Deserialize<IncludedPrivateSetterModel>(bytes);
         Assert.AreEqual(5, roundTripped.Value);
     }
 

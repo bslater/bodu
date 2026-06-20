@@ -140,7 +140,7 @@ public sealed partial class TomlTestCorpusTests
     {
         byte[] toml = File.ReadAllBytes(Path.Combine(CorpusRoot, kat.RelativePath));
 
-        var ex = Assert.ThrowsExactly<TomlFormatException>(() =>
+        TomlFormatException ex = Assert.ThrowsExactly<TomlFormatException>(() =>
         {
             _ = new TomlDocumentReader(toml, new TomlReaderOptions { SpecVersion = kat.SpecVersion });
         });

@@ -55,7 +55,7 @@ public partial class BencodeSerializerTests
         var options = new BencodeSerializerOptions { PropertyNamingPolicy = kat.Input };
         byte[] bytes = BencodeSerializer.Serialize(new TwoWordModel { FirstName = "value" }, options);
 
-        var roundTripped = BencodeSerializer.Deserialize<TwoWordModel>(bytes, options);
+        TwoWordModel roundTripped = BencodeSerializer.Deserialize<TwoWordModel>(bytes, options);
         Assert.AreEqual("value", roundTripped.FirstName);
     }
 

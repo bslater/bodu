@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CurrencyRegistry.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -17,8 +17,8 @@ namespace Bodu.Financial;
 /// <remarks>
 /// <para>
 /// The catalogue is populated from the source-generated <see cref="GeneratedCurrencyRegistration" /> list at first
-/// access — no runtime reflection scans the assembly. It covers the full active and historic ISO 4217 set; every
-/// entry has a corresponding <see cref="CurrencyCode" /> member.
+/// access — no runtime reflection scans the assembly. It covers the full active and historic ISO 4217 set; every entry
+/// has a corresponding <see cref="CurrencyCode" /> member.
 /// </para>
 /// <para>
 /// Lookups are thread-safe because the backing <see cref="FrozenDictionary{TKey, TValue}" /> is immutable.

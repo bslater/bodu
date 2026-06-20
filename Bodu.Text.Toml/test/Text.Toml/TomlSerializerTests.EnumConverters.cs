@@ -29,7 +29,7 @@ public partial class TomlSerializerTests
 
         Assert.AreEqual("Status = \"Active\"\n", text);
 
-        var roundTripped = TomlSerializer.Deserialize<StatusModel>(text);
+        StatusModel roundTripped = TomlSerializer.Deserialize<StatusModel>(text);
         Assert.AreEqual(Status.Active, roundTripped.Status);
     }
 
@@ -53,7 +53,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenDefaultEnumReadsInteger_ShouldReadIntegerAsEnum()
     {
-        var model = TomlSerializer.Deserialize<StatusModel>("Status = 2\n");
+        StatusModel model = TomlSerializer.Deserialize<StatusModel>("Status = 2\n");
 
         Assert.AreEqual(Status.Archived, model.Status);
     }
@@ -71,7 +71,7 @@ public partial class TomlSerializerTests
 
         Assert.AreEqual("Status = \"not-found\"\n", text);
 
-        var roundTripped = TomlSerializer.Deserialize<RenamedStatusModel>(text);
+        RenamedStatusModel roundTripped = TomlSerializer.Deserialize<RenamedStatusModel>(text);
         Assert.AreEqual(RenamedStatus.NotFound, roundTripped.Status);
     }
 
@@ -90,7 +90,7 @@ public partial class TomlSerializerTests
 
         Assert.AreEqual("Status = \"active\"\n", text);
 
-        var roundTripped = TomlSerializer.Deserialize<StatusModel>(text, options);
+        StatusModel roundTripped = TomlSerializer.Deserialize<StatusModel>(text, options);
         Assert.AreEqual(Status.Active, roundTripped.Status);
     }
 
@@ -104,7 +104,7 @@ public partial class TomlSerializerTests
         var options = new TomlSerializerOptions();
         options.Converters.Add(new TomlStringEnumConverter(TomlNamingPolicy.CamelCase, allowIntegerValues: true));
 
-        var model = TomlSerializer.Deserialize<StatusModel>("Status = 2\n", options);
+        StatusModel model = TomlSerializer.Deserialize<StatusModel>("Status = 2\n", options);
 
         Assert.AreEqual(Status.Archived, model.Status);
     }
@@ -154,7 +154,7 @@ public partial class TomlSerializerTests
 
         Assert.AreEqual("Status = 2\n", text);
 
-        var roundTripped = TomlSerializer.Deserialize<NumberEnumModel>(text);
+        NumberEnumModel roundTripped = TomlSerializer.Deserialize<NumberEnumModel>(text);
         Assert.AreEqual(Status.Archived, roundTripped.Status);
     }
 
@@ -172,7 +172,7 @@ public partial class TomlSerializerTests
 
         Assert.AreEqual("Status = \"Pending\"\n", text);
 
-        var roundTripped = TomlSerializer.Deserialize<StringEnumModel>(text);
+        StringEnumModel roundTripped = TomlSerializer.Deserialize<StringEnumModel>(text);
         Assert.AreEqual(Status.Pending, roundTripped.Status);
     }
 
@@ -191,7 +191,7 @@ public partial class TomlSerializerTests
 
         Assert.AreEqual("Status = \"Active\"\n", text);
 
-        var roundTripped = TomlSerializer.Deserialize<StatusModel>(text, options);
+        StatusModel roundTripped = TomlSerializer.Deserialize<StatusModel>(text, options);
         Assert.AreEqual(Status.Active, roundTripped.Status);
     }
 
@@ -202,7 +202,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenEnumStringCaseDiffers_ShouldMatchCaseInsensitively()
     {
-        var model = TomlSerializer.Deserialize<StatusModel>("Status = \"ACTIVE\"\n");
+        StatusModel model = TomlSerializer.Deserialize<StatusModel>("Status = \"ACTIVE\"\n");
 
         Assert.AreEqual(Status.Active, model.Status);
     }
@@ -214,7 +214,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenEnumReadsNumericString_ShouldParseToValue()
     {
-        var model = TomlSerializer.Deserialize<StatusModel>("Status = \"2\"\n");
+        StatusModel model = TomlSerializer.Deserialize<StatusModel>("Status = \"2\"\n");
 
         Assert.AreEqual(Status.Archived, model.Status);
     }
@@ -234,7 +234,7 @@ public partial class TomlSerializerTests
 
         Assert.AreEqual("Status = \"active\"\n", text);
 
-        var roundTripped = TomlSerializer.Deserialize<StatusModel>(text, options);
+        StatusModel roundTripped = TomlSerializer.Deserialize<StatusModel>(text, options);
         Assert.AreEqual(Status.Active, roundTripped.Status);
     }
 
@@ -253,7 +253,7 @@ public partial class TomlSerializerTests
 
         Assert.AreEqual("Status = 2\n", text);
 
-        var roundTripped = TomlSerializer.Deserialize<StatusModel>(text, options);
+        StatusModel roundTripped = TomlSerializer.Deserialize<StatusModel>(text, options);
         Assert.AreEqual(Status.Archived, roundTripped.Status);
     }
 
@@ -283,7 +283,7 @@ public partial class TomlSerializerTests
 
         Assert.AreEqual("Status = \"99\"\n", text);
 
-        var roundTripped = TomlSerializer.Deserialize<StatusModel>(text);
+        StatusModel roundTripped = TomlSerializer.Deserialize<StatusModel>(text);
         Assert.AreEqual((Status)99, roundTripped.Status);
     }
 
@@ -300,7 +300,7 @@ public partial class TomlSerializerTests
 
         Assert.AreEqual("Flags = \"Read, Write\"\n", text);
 
-        var roundTripped = TomlSerializer.Deserialize<FlagsModel>(text);
+        FlagsModel roundTripped = TomlSerializer.Deserialize<FlagsModel>(text);
         Assert.AreEqual(PermissionFlags.Read | PermissionFlags.Write, roundTripped.Flags);
     }
 
@@ -317,7 +317,7 @@ public partial class TomlSerializerTests
 
         Assert.AreEqual("Flags = \"Write\"\n", text);
 
-        var roundTripped = TomlSerializer.Deserialize<FlagsModel>(text);
+        FlagsModel roundTripped = TomlSerializer.Deserialize<FlagsModel>(text);
         Assert.AreEqual(PermissionFlags.Write, roundTripped.Flags);
     }
 

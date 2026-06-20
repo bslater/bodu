@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="PriorityFallbackStrategyTests.TryAggregate.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -61,7 +61,7 @@ public sealed partial class PriorityFallbackStrategyTests
     [TestMethod]
     public void TryAggregate_WhenCandidatesIsNull_ShouldThrowArgumentNullException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = PriorityFallbackStrategy.Instance.TryAggregate("USD", "AUD", D1, ExchangeRateLookupOptions.Exact, null!, out _);
         });

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NullExchangeRateCacheTests.GetCoverage.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -18,7 +18,7 @@ public sealed partial class NullExchangeRateCacheTests
     {
         IExchangeRateCache cache = NullExchangeRateCache.Create("Yahoo");
         ExchangeRatePair pair = new(CurrencyCode.AUD, CurrencyCode.USD);
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
 
         cache.RecordCoverage(pair, new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 10), TimeSpan.FromHours(24), now);
 

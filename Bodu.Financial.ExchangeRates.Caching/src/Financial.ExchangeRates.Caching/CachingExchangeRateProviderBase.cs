@@ -143,8 +143,8 @@ public abstract class CachingExchangeRateProviderBase
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
 
-        var now = _timeProvider.GetUtcNow();
-        var duration = _options.GetExpiry(_cache.Provider);
+        DateTimeOffset now = _timeProvider.GetUtcNow();
+        TimeSpan duration = _options.GetExpiry(_cache.Provider);
 
         if (TryServeFromCache(duration, fromIsoCode, toIsoCode, date, options, now, out result, out DateTimeOffset? servedCachedAtUtc))
         {
@@ -194,8 +194,8 @@ public abstract class CachingExchangeRateProviderBase
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
 
-        var now = _timeProvider.GetUtcNow();
-        var duration = _options.GetExpiry(_cache.Provider);
+        DateTimeOffset now = _timeProvider.GetUtcNow();
+        TimeSpan duration = _options.GetExpiry(_cache.Provider);
 
         if (TryServeFromCache(duration, fromIsoCode, toIsoCode, date, options, now, out ExchangeRateLookupResult result, out DateTimeOffset? servedCachedAtUtc))
         {
@@ -225,8 +225,8 @@ public abstract class CachingExchangeRateProviderBase
             throw new ArgumentException(CachingResourceStrings.Arg_Invalid_RangeInverted, nameof(endDate));
 
         ExchangeRatePair pair = new(CurrencyInfo.ParseCurrencyCode(fromIsoCode), CurrencyInfo.ParseCurrencyCode(toIsoCode));
-        var now = _timeProvider.GetUtcNow();
-        var duration = _options.GetExpiry(_cache.Provider);
+        DateTimeOffset now = _timeProvider.GetUtcNow();
+        TimeSpan duration = _options.GetExpiry(_cache.Provider);
 
         if (TryServeRangeFromCache(duration, pair, startDate, endDate, now, out IReadOnlyList<ExchangeRate> cached, out DateTimeOffset? oldestCachedAtUtc))
         {
@@ -260,8 +260,8 @@ public abstract class CachingExchangeRateProviderBase
             throw new ArgumentException(CachingResourceStrings.Arg_Invalid_RangeInverted, nameof(endDate));
 
         ExchangeRatePair pair = new(CurrencyInfo.ParseCurrencyCode(fromIsoCode), CurrencyInfo.ParseCurrencyCode(toIsoCode));
-        var now = _timeProvider.GetUtcNow();
-        var duration = _options.GetExpiry(_cache.Provider);
+        DateTimeOffset now = _timeProvider.GetUtcNow();
+        TimeSpan duration = _options.GetExpiry(_cache.Provider);
 
         if (TryServeRangeFromCache(duration, pair, startDate, endDate, now, out IReadOnlyList<ExchangeRate> cached, out DateTimeOffset? oldestCachedAtUtc))
         {

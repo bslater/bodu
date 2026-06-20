@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlFileExchangeRateCacheTests.CrossInstance.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -24,7 +24,7 @@ public sealed partial class TomlFileExchangeRateCacheTests
         var cacheA = new TomlFileExchangeRateCache(new FileExchangeRateCacheOptions { Provider = Provider, CacheDirectory = _directory });
         var cacheB = new TomlFileExchangeRateCache(new FileExchangeRateCacheOptions { Provider = Provider, CacheDirectory = _directory });
         var date = new DateOnly(2023, 1, 3);
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
 
         // Two independent instances (no shared in-process lock) write the same pair and date with different rates,
         // concurrently and repeatedly, modelling two processes sharing one cache directory.

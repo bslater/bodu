@@ -279,7 +279,7 @@ public sealed class DotEnvReaderTests
     {
         string source = "A=\"x" + "\\\\" + "\\t" + "\\r" + "\\$" + "\\q" + "\"\n";
 
-        var result = StreamAll(source);
+        List<(string Key, string Value)> result = StreamAll(source);
 
         Assert.AreEqual("x\\\t\r$\\q", result[0].Value);
     }
@@ -290,7 +290,7 @@ public sealed class DotEnvReaderTests
     [TestMethod]
     public void Read_WhenDoubleQuotedCarriageReturnContinuation_ShouldJoinLines()
     {
-        var result = StreamAll("A=\"a\\\r\nb\"\nB=2\n");
+        List<(string Key, string Value)> result = StreamAll("A=\"a\\\r\nb\"\nB=2\n");
 
         Assert.AreEqual("ab", result[0].Value);
     }

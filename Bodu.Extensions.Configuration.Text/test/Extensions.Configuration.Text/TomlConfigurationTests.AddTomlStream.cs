@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlConfigurationTests.AddTomlStream.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -22,7 +22,7 @@ public sealed partial class TomlConfigurationTests
     [TestMethod]
     public void AddTomlStream_WhenLoaded_ShouldFlattenNestedKeys()
     {
-        var config = BuildFromStream(Sample);
+        IConfigurationRoot config = BuildFromStream(Sample);
 
         Assert.AreEqual("app", config["title"]);
         Assert.AreEqual("localhost", config["server:host"]);
@@ -36,7 +36,7 @@ public sealed partial class TomlConfigurationTests
     [TestMethod]
     public void AddTomlStream_WhenArray_ShouldFlattenToIndexedKeys()
     {
-        var config = BuildFromStream(Sample);
+        IConfigurationRoot config = BuildFromStream(Sample);
 
         Assert.AreEqual("info", config["logging:levels:0"]);
         Assert.AreEqual("warn", config["logging:levels:1"]);
@@ -49,7 +49,7 @@ public sealed partial class TomlConfigurationTests
     [TestMethod]
     public void AddTomlStream_WhenGettingSection_ShouldExposeChildren()
     {
-        var config = BuildFromStream(Sample);
+        IConfigurationRoot config = BuildFromStream(Sample);
 
         IConfigurationSection server = config.GetSection("server");
         Assert.AreEqual("localhost", server["host"]);

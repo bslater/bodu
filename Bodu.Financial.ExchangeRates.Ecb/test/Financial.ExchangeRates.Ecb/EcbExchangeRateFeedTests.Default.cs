@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EcbExchangeRateFeedTests.Default.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -14,7 +14,7 @@ public partial class EcbExchangeRateFeedTests
     [TestMethod]
     public void Default_ShouldBeOrderedNarrowestToWidest()
     {
-        var feeds = EcbExchangeRateFeed.Default;
+        IReadOnlyList<EcbExchangeRateFeed> feeds = EcbExchangeRateFeed.Default;
 
         Assert.AreEqual(2, feeds.Count);
         Assert.AreEqual(90, feeds[0].LookbackDays);

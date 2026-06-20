@@ -55,7 +55,7 @@ public partial class BencodeSerializerTests
         var original = new OrderedTrioModel { Alpha = 1, Bravo = 2, Charlie = 3 };
 
         byte[] bytes = BencodeSerializer.Serialize(original);
-        var roundTripped = BencodeSerializer.Deserialize<OrderedTrioModel>(bytes);
+        OrderedTrioModel roundTripped = BencodeSerializer.Deserialize<OrderedTrioModel>(bytes);
 
         Assert.AreEqual(1, roundTripped.Alpha);
         Assert.AreEqual(2, roundTripped.Bravo);

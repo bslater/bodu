@@ -34,7 +34,7 @@ public partial class TomlSerializerTests
     {
         var original = new NullableValueModel { Number = 42, Flag = false, When = new DateOnly(2026, 1, 1) };
 
-        var roundTripped = TomlSerializer.Deserialize<NullableValueModel>(TomlSerializer.Serialize(original));
+        NullableValueModel roundTripped = TomlSerializer.Deserialize<NullableValueModel>(TomlSerializer.Serialize(original));
 
         Assert.AreEqual(42, roundTripped.Number);
         Assert.AreEqual(false, roundTripped.Flag);
@@ -70,7 +70,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenNullableValueTypeAbsent_ShouldReadNull()
     {
-        var model = TomlSerializer.Deserialize<NullableValueModel>("Number = 3\n");
+        NullableValueModel model = TomlSerializer.Deserialize<NullableValueModel>("Number = 3\n");
 
         Assert.AreEqual(3, model.Number);
         Assert.IsNull(model.Flag);
@@ -83,7 +83,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenNullableValueTypePresent_ShouldReadValue()
     {
-        var model = TomlSerializer.Deserialize<NullableValueModel>("Number = 1\nFlag = true\nWhen = 2026-12-31\n");
+        NullableValueModel model = TomlSerializer.Deserialize<NullableValueModel>("Number = 1\nFlag = true\nWhen = 2026-12-31\n");
 
         Assert.AreEqual(1, model.Number);
         Assert.AreEqual(true, model.Flag);
@@ -101,7 +101,7 @@ public partial class TomlSerializerTests
 
         Assert.AreEqual("Present = \"here\"\n", text);
 
-        var roundTripped = TomlSerializer.Deserialize<NullableReferenceModel>(text);
+        NullableReferenceModel roundTripped = TomlSerializer.Deserialize<NullableReferenceModel>(text);
         Assert.AreEqual("here", roundTripped.Present);
         Assert.IsNull(roundTripped.Absent);
     }

@@ -25,7 +25,8 @@ public readonly partial struct Money
     /// </param>
     /// <returns>The constructed monetary value carrying an explicit scale.</returns>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="code" /> is not a defined currency, or <paramref name="minorUnits" /> is outside the range 0 to 28.
+    /// <paramref name="code" /> is not a defined currency, or <paramref name="minorUnits" /> is outside the range 0 to
+    /// 28.
     /// </exception>
     /// <remarks>
     /// Settlement helper used by <see cref="CalculatedMoney.RoundToMoney(MonetaryContext?)" /> when a monetary context

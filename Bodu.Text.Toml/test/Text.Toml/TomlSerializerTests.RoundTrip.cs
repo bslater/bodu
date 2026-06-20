@@ -26,7 +26,7 @@ public partial class TomlSerializerTests
         var original = new DateTimeModel { Stamp = new DateTime(2026, 6, 10, 9, 30, 0, DateTimeKind.Utc) };
 
         string text = TomlSerializer.Serialize(original);
-        var roundTripped = TomlSerializer.Deserialize<DateTimeModel>(text);
+        DateTimeModel roundTripped = TomlSerializer.Deserialize<DateTimeModel>(text);
 
         Assert.AreEqual(original.Stamp.ToUniversalTime(), roundTripped.Stamp.ToUniversalTime());
     }
@@ -41,7 +41,7 @@ public partial class TomlSerializerTests
         var original = new DateTimeModel { Stamp = new DateTime(2026, 6, 10, 9, 30, 0, DateTimeKind.Local) };
 
         string text = TomlSerializer.Serialize(original);
-        var roundTripped = TomlSerializer.Deserialize<DateTimeModel>(text);
+        DateTimeModel roundTripped = TomlSerializer.Deserialize<DateTimeModel>(text);
 
         Assert.AreEqual(original.Stamp.ToUniversalTime(), roundTripped.Stamp.ToUniversalTime());
     }
@@ -56,7 +56,7 @@ public partial class TomlSerializerTests
         var original = new Int64ExtremesModel { Minimum = long.MinValue, Maximum = long.MaxValue };
 
         string text = TomlSerializer.Serialize(original);
-        var roundTripped = TomlSerializer.Deserialize<Int64ExtremesModel>(text);
+        Int64ExtremesModel roundTripped = TomlSerializer.Deserialize<Int64ExtremesModel>(text);
 
         Assert.AreEqual(long.MinValue, roundTripped.Minimum);
         Assert.AreEqual(long.MaxValue, roundTripped.Maximum);
@@ -80,7 +80,7 @@ public partial class TomlSerializerTests
         };
 
         string text = TomlSerializer.Serialize(original);
-        var roundTripped = TomlSerializer.Deserialize<DoubleExtremesModel>(text);
+        DoubleExtremesModel roundTripped = TomlSerializer.Deserialize<DoubleExtremesModel>(text);
 
         Assert.IsTrue(double.IsPositiveInfinity(roundTripped.PositiveInfinity));
         Assert.IsTrue(double.IsNegativeInfinity(roundTripped.NegativeInfinity));
@@ -103,7 +103,7 @@ public partial class TomlSerializerTests
         };
 
         string text = TomlSerializer.Serialize(original);
-        var roundTripped = TomlSerializer.Deserialize<DateTimeOffsetModel>(text);
+        DateTimeOffsetModel roundTripped = TomlSerializer.Deserialize<DateTimeOffsetModel>(text);
 
         Assert.AreEqual(original.Stamp, roundTripped.Stamp);
     }

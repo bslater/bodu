@@ -47,7 +47,7 @@ public partial class NotableDateDocumentBuilderTests
     [TestMethod]
     public void ToProvider_ShouldExposeBuiltResourceAsCurrent()
     {
-        var provider = SampleDocument().ToProvider();
+        INotableDateResourceProvider provider = SampleDocument().ToProvider();
 
         Assert.AreEqual("demo.sample", provider.Current.ResourceId);
     }

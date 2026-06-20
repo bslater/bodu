@@ -305,7 +305,7 @@ public sealed class IniSectionTests
     [TestMethod]
     public void Constructor_WhenEntriesContainNull_ShouldThrowArgumentException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentException>(() => _ = new IniSection("s", [null!]));
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() => _ = new IniSection("s", [null!]));
 
         Assert.AreEqual("entries", ex.ParamName);
     }

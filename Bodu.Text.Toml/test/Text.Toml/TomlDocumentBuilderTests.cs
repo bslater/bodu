@@ -47,7 +47,7 @@ public sealed class TomlDocumentBuilderTests
         }
 
         // The builder rejects it, carrying a position from the offending token.
-        var ex = Assert.ThrowsExactly<TomlFormatException>(() =>
+        TomlFormatException ex = Assert.ThrowsExactly<TomlFormatException>(() =>
         {
             _ = new TomlDocumentBuilder(TomlSpecVersion.V1_0, 256).Parse(source);
         });
@@ -95,7 +95,7 @@ public sealed class TomlDocumentBuilderTests
     [TestMethod]
     public void Parse_WhenNestingExceedsMaxDepth_ShouldThrowTomlFormatException()
     {
-        var ex = Assert.ThrowsExactly<TomlFormatException>(() =>
+        TomlFormatException ex = Assert.ThrowsExactly<TomlFormatException>(() =>
         {
             _ = new TomlDocumentBuilder(TomlSpecVersion.V1_0, 3).Parse(Encoding.UTF8.GetBytes("a = [[[[1]]]]\n"));
         });
@@ -156,8 +156,8 @@ public sealed class TomlDocumentBuilderTests
         // Bytes: s(0) sp(1) =(2) sp(3) "(4) é(5,6) "(7) LF(8) i(9) sp(10) =(11) sp(12) 1(13) LF(14).
         List<TomlReaderRow> rows = new TomlDocumentBuilder(TomlSpecVersion.V1_0, 256).Parse(Encoding.UTF8.GetBytes("s = \"é\"\ni = 1\n"));
 
-        var first = rows[rows[0].FirstChild];
-        var second = rows[first.NextSibling];
+        TomlReaderRow first = rows[rows[0].FirstChild];
+        TomlReaderRow second = rows[first.NextSibling];
 
         Assert.AreEqual(4, first.Offset);
         Assert.AreEqual(13, second.Offset);

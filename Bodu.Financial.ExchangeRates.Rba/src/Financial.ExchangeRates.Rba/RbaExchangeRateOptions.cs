@@ -4,9 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Financial.ExchangeRates.Rba;
-
 using Microsoft.Extensions.Logging;
+
+namespace Bodu.Financial.ExchangeRates.Rba;
 
 /// <summary>
 /// Configures how the <see cref="RbaExchangeRateProvider" /> downloads, caches, and interprets RBA exchange-rate data.

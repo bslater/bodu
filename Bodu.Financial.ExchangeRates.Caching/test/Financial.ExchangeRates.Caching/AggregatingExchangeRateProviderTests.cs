@@ -34,7 +34,7 @@ public sealed partial class AggregatingExchangeRateProviderTests
     [TestMethod]
     public void Constructor_WhenChildrenIsNull_ShouldThrowArgumentNullException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = new AggregatingExchangeRateProvider(null!);
         });
@@ -48,7 +48,7 @@ public sealed partial class AggregatingExchangeRateProviderTests
     [TestMethod]
     public void Constructor_WhenChildrenIsEmpty_ShouldThrowArgumentException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             _ = new AggregatingExchangeRateProvider(Array.Empty<NamedDatedExchangeRateProvider>());
         });
@@ -64,7 +64,7 @@ public sealed partial class AggregatingExchangeRateProviderTests
     {
         NamedDatedExchangeRateProvider blank = new("  ", new FixedDatedExchangeRateProvider(Array.Empty<ExchangeRate>()));
 
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             _ = new AggregatingExchangeRateProvider(new[] { blank });
         });
@@ -78,7 +78,7 @@ public sealed partial class AggregatingExchangeRateProviderTests
     [TestMethod]
     public void Constructor_WhenChildProviderIsNull_ShouldThrowArgumentException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             _ = new AggregatingExchangeRateProvider(new[] { new NamedDatedExchangeRateProvider("X", null!) });
         });
@@ -92,7 +92,7 @@ public sealed partial class AggregatingExchangeRateProviderTests
     [TestMethod]
     public void Constructor_WhenChildNameIsDuplicated_ShouldThrowArgumentException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             _ = new AggregatingExchangeRateProvider(new[]
             {
@@ -113,7 +113,7 @@ public sealed partial class AggregatingExchangeRateProviderTests
         ExchangeRateAggregationOptions options = new();
         options.Routes[new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD)] = new ExchangeRatePairRoute(new[] { "Unknown" });
 
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             _ = new AggregatingExchangeRateProvider(new[] { Named("RBA", ("USD", "AUD", D1, 1.5m)) }, options);
         });

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Utf8TomlWriterTests.Properties.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -91,7 +91,7 @@ public sealed partial class Utf8TomlWriterTests
     [TestMethod]
     public void WriteString_WhenInvalidUtf8_ShouldThrowArgumentException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             var buffer = new ArrayBufferWriter<byte>();
             var writer = new Utf8TomlWriter(buffer);

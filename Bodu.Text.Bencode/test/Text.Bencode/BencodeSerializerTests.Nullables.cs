@@ -27,7 +27,7 @@ public partial class BencodeSerializerTests
         byte[] bytes = BencodeSerializer.Serialize(model);
         Assert.AreEqual("d5:Counti42ee", Encoding.Latin1.GetString(bytes));
 
-        var roundTripped = BencodeSerializer.Deserialize<NullableScalarsModel>(bytes);
+        NullableScalarsModel roundTripped = BencodeSerializer.Deserialize<NullableScalarsModel>(bytes);
         Assert.AreEqual(42, roundTripped.Count);
         Assert.IsNull(roundTripped.Flag);
     }
@@ -44,7 +44,7 @@ public partial class BencodeSerializerTests
         byte[] bytes = BencodeSerializer.Serialize(model);
         Assert.AreEqual("d5:Color4:Bluee", Encoding.Latin1.GetString(bytes));
 
-        var roundTripped = BencodeSerializer.Deserialize<NullableEnumModel>(bytes);
+        NullableEnumModel roundTripped = BencodeSerializer.Deserialize<NullableEnumModel>(bytes);
         Assert.AreEqual(Color.Blue, roundTripped.Color);
     }
 
@@ -69,7 +69,7 @@ public partial class BencodeSerializerTests
     {
         byte[] bytes = Encoding.Latin1.GetBytes("de");
 
-        var model = BencodeSerializer.Deserialize<NullableScalarsModel>(bytes);
+        NullableScalarsModel model = BencodeSerializer.Deserialize<NullableScalarsModel>(bytes);
 
         Assert.IsNull(model.Count);
         Assert.IsNull(model.Flag);
@@ -87,7 +87,7 @@ public partial class BencodeSerializerTests
         byte[] bytes = BencodeSerializer.Serialize(model);
         Assert.AreEqual("d4:Flag5:Greene", Encoding.Latin1.GetString(bytes));
 
-        var roundTripped = BencodeSerializer.Deserialize<NullableScalarsModel>(bytes);
+        NullableScalarsModel roundTripped = BencodeSerializer.Deserialize<NullableScalarsModel>(bytes);
         Assert.IsNull(roundTripped.Count);
         Assert.AreEqual(Color.Green, roundTripped.Flag);
     }
@@ -105,13 +105,13 @@ public partial class BencodeSerializerTests
         byte[] present = BencodeSerializer.Serialize(new NullableBoolModel { Flag = true }, options);
         Assert.AreEqual("d4:Flagi1ee", Encoding.Latin1.GetString(present));
 
-        var roundTripped = BencodeSerializer.Deserialize<NullableBoolModel>(present, options);
+        NullableBoolModel roundTripped = BencodeSerializer.Deserialize<NullableBoolModel>(present, options);
         Assert.IsTrue(roundTripped.Flag);
 
         byte[] absent = BencodeSerializer.Serialize(new NullableBoolModel { Flag = null }, options);
         Assert.AreEqual("de", Encoding.Latin1.GetString(absent));
 
-        var absentRoundTripped = BencodeSerializer.Deserialize<NullableBoolModel>(absent, options);
+        NullableBoolModel absentRoundTripped = BencodeSerializer.Deserialize<NullableBoolModel>(absent, options);
         Assert.IsNull(absentRoundTripped.Flag);
     }
 

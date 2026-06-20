@@ -93,8 +93,8 @@ internal static class BoeExchangeRateCsvParser
             throw new ExchangeRateFormatException(BoeResourceStrings.Format_Invalid_BoeHeaderMissing);
         }
 
-        var byCode = BuildSeriesIndex(options);
-        var columns = MapColumns(document.Headers, byCode, out Dictionary<string, BoeSeries> present);
+        Dictionary<string, BoeSeries> byCode = BuildSeriesIndex(options);
+        BoeSeries?[] columns = MapColumns(document.Headers, byCode, out Dictionary<string, BoeSeries> present);
 
         var observations = new List<BoeExchangeRateObservation>();
         foreach (DelimitedRow row in document.Rows)

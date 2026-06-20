@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlSerializerTests.Diagnostics.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -24,7 +24,7 @@ public partial class TomlSerializerTests
         var node = new RecursiveModel();
         node.Child = node;
 
-        var ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        TomlSerializationException ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
         {
             _ = TomlSerializer.Serialize(node);
         });
@@ -46,7 +46,7 @@ public partial class TomlSerializerTests
         parent.Child = child;
         child.Parent = parent;
 
-        var ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        TomlSerializationException ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
         {
             _ = TomlSerializer.Serialize(parent);
         });
@@ -67,7 +67,7 @@ public partial class TomlSerializerTests
         items.Add(items);
         var root = new Dictionary<string, object> { ["items"] = items };
 
-        var ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        TomlSerializationException ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
         {
             _ = TomlSerializer.Serialize(root);
         });
@@ -86,7 +86,7 @@ public partial class TomlSerializerTests
         var options = new TomlSerializerOptions { MaxDepth = 3 };
         var deep = new RecursiveModel { Child = new RecursiveModel { Child = new RecursiveModel { Child = new RecursiveModel { Child = new RecursiveModel() } } } };
 
-        var ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        TomlSerializationException ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
         {
             _ = TomlSerializer.Serialize(deep, options);
         });
@@ -101,7 +101,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenNestedMemberTypeMismatches_ShouldReportPropertyPath()
     {
-        var ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        TomlSerializationException ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
         {
             _ = TomlSerializer.Deserialize<DiagnosticsOuter>("[Inner]\nValue = \"x\"\n");
         });
@@ -115,7 +115,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenNestedMemberTypeMismatches_ShouldReportOffset()
     {
-        var ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        TomlSerializationException ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
         {
             _ = TomlSerializer.Deserialize<DiagnosticsOuter>("[Inner]\nValue = \"x\"\n");
         });
@@ -130,7 +130,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenNestedMemberTypeMismatches_ShouldReportLineAndColumn()
     {
-        var ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        TomlSerializationException ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
         {
             _ = TomlSerializer.Deserialize<DiagnosticsOuter>("[Inner]\nValue = \"x\"\n");
         });
@@ -145,7 +145,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenArrayElementTypeMismatches_ShouldReportIndexedPath()
     {
-        var ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        TomlSerializationException ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
         {
             _ = TomlSerializer.Deserialize<DiagnosticsArrayHolder>("Values = [1, \"x\"]\n");
         });

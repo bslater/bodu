@@ -101,7 +101,7 @@ public partial class BencodeSerializerTests
         var options = new BencodeSerializerOptions { MaxDepth = int.MaxValue };
 
         var inner = new List<object>();
-        var current = inner;
+        List<object> current = inner;
         for (int i = 0; i < (BencodeLimits.AbsoluteMaxDepth * 32) + 1; i++)
         {
             var next = new List<object>();
@@ -109,7 +109,7 @@ public partial class BencodeSerializerTests
             current = next;
         }
 
-        var captured = RunOnConstrainedStack(() =>
+        Exception? captured = RunOnConstrainedStack(() =>
         {
             _ = BencodeSerializer.Serialize(inner, options);
         });
@@ -129,7 +129,7 @@ public partial class BencodeSerializerTests
         var options = new BencodeSerializerOptions { MaxDepth = int.MaxValue };
 
         var root = new Dictionary<string, object>();
-        var current = root;
+        Dictionary<string, object> current = root;
         for (int i = 0; i < (BencodeLimits.AbsoluteMaxDepth * 32) + 1; i++)
         {
             var next = new Dictionary<string, object>();
@@ -137,7 +137,7 @@ public partial class BencodeSerializerTests
             current = next;
         }
 
-        var captured = RunOnConstrainedStack(() =>
+        Exception? captured = RunOnConstrainedStack(() =>
         {
             _ = BencodeSerializer.Serialize(root, options);
         });
@@ -187,7 +187,7 @@ public partial class BencodeSerializerTests
         var options = new BencodeSerializerOptions { MaxDepth = 2 };
         byte[] bytes = Encoding.Latin1.GetBytes("d5:Childdee");
 
-        var model = BencodeSerializer.Deserialize<RecursiveModel>(bytes, options);
+        RecursiveModel model = BencodeSerializer.Deserialize<RecursiveModel>(bytes, options);
 
         Assert.IsNotNull(model.Child);
         Assert.IsNull(model.Child.Child);
@@ -277,7 +277,7 @@ public partial class BencodeSerializerTests
         var options = new BencodeSerializerOptions { MaxDepth = int.MaxValue };
         byte[] bytes = BuildNestedDictionaryDocument((BencodeLimits.AbsoluteMaxDepth * 32) + 1);
 
-        var captured = RunOnConstrainedStack(() =>
+        Exception? captured = RunOnConstrainedStack(() =>
         {
             _ = BencodeSerializer.Deserialize<RecursiveModel>(bytes, options);
         });

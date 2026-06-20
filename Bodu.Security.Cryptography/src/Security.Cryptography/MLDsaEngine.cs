@@ -120,7 +120,7 @@ internal static partial class MLDsaEngine
 
         DecodePrivateKey(
             parameters, privateKey,
-            out var rho, out var capK, out var tr, out int[][]? s1Hat, out int[][]? s2Hat, out int[][]? t0Hat);
+            out ReadOnlySpan<byte> rho, out ReadOnlySpan<byte> capK, out ReadOnlySpan<byte> tr, out int[][]? s1Hat, out int[][]? s2Hat, out int[][]? t0Hat);
 
         // ŝ₁, ŝ₂, t̂₀ are kept in the NTT domain for the per-iteration products.
         foreach (int[] poly in s1Hat)
@@ -384,7 +384,7 @@ internal static partial class MLDsaEngine
 
         DecodePrivateKey(
             parameters, privateKey,
-            out var rho, out _, out var tr, out int[][]? s1, out int[][]? s2, out int[][]? t0);
+            out ReadOnlySpan<byte> rho, out _, out ReadOnlySpan<byte> tr, out int[][]? s1, out int[][]? s2, out int[][]? t0);
 
         // t = NTT⁻¹(Â ∘ NTT(s₁)) + s₂ = t₁·2ᵈ + t₀; rebuild t₁ and the pk encoding from it.
         int[][] s1Hat = ClonePolyVector(s1);

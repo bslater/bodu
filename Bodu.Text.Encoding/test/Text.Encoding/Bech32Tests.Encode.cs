@@ -28,7 +28,7 @@ public sealed partial class Bech32Tests
     [TestMethod]
     public void Encode_WhenEmptyHrp_ShouldThrowExactlyForHrp()
     {
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             _ = Bech32.Encode(string.Empty, ReadOnlySpan<byte>.Empty);
         });
@@ -43,7 +43,7 @@ public sealed partial class Bech32Tests
     [TestMethod]
     public void Encode_WhenHrpCharOutOfRange_ShouldThrowExactlyForHrp()
     {
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             _ = Bech32.Encode("a b", ReadOnlySpan<byte>.Empty);
         });
@@ -58,7 +58,7 @@ public sealed partial class Bech32Tests
     [TestMethod]
     public void Encode_WhenDataValueExceedsFiveBits_ShouldThrowExactlyForData()
     {
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             _ = Bech32.Encode("a", new byte[] { 32 });
         });

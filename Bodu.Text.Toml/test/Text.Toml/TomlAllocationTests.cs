@@ -72,7 +72,7 @@ public sealed class TomlAllocationTests
     public void Utf8TomlReader_WhenTokenizingMultiSegmentSequence_ShouldCopyInputOnce()
     {
         byte[] bytes = Encoding.UTF8.GetBytes(BuildFlatDocument(SampleLineCount));
-        var sequence = BuildSegmented(bytes, chunkSize: 64);
+        ReadOnlySequence<byte> sequence = BuildSegmented(bytes, chunkSize: 64);
 
         _ = TokenizeSequence(sequence);
         long before = GC.GetAllocatedBytesForCurrentThread();
@@ -166,7 +166,7 @@ public sealed class TomlAllocationTests
     public void TomlNode_WhenWriting_ShouldStayWithinAllocationBaseline()
     {
         byte[] bytes = Encoding.UTF8.GetBytes(BuildFlatDocument(SampleLineCount));
-        var node = TomlNode.Parse(bytes)!;
+        TomlNode node = TomlNode.Parse(bytes)!;
 
         long allocated = Measure(() => { _ = node.ToUtf8Bytes(); });
 
@@ -197,7 +197,7 @@ public sealed class TomlAllocationTests
     public void TomlSerializer_WhenSerializing_ShouldStayWithinAllocationBaseline()
     {
         byte[] bytes = Encoding.UTF8.GetBytes(BuildFlatDocument(SampleLineCount));
-        var model = TomlSerializer.Deserialize<Dictionary<string, long>>(bytes);
+        Dictionary<string, long> model = TomlSerializer.Deserialize<Dictionary<string, long>>(bytes);
 
         long allocated = Measure(() => { _ = TomlSerializer.Serialize(model); });
 
@@ -300,7 +300,7 @@ public sealed class TomlAllocationTests
     private static ReadOnlySequence<byte> BuildSegmented(byte[] bytes, int chunkSize)
     {
         var first = new Segment(bytes.AsMemory(0, Math.Min(chunkSize, bytes.Length)));
-        var current = first;
+        Segment current = first;
         int offset = chunkSize;
         while (offset < bytes.Length)
         {

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EcbServiceRegistrationTests.AddEcbReferenceRates.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -25,9 +25,9 @@ public partial class EcbServiceRegistrationTests
         services.AddBoduFinancial().AddEcbReferenceRates();
         using ServiceProvider provider = services.BuildServiceProvider();
 
-        var concrete = provider.GetService<EcbExchangeRateProvider>();
-        var dated = provider.GetService<IDatedExchangeRateProvider>();
-        var simple = provider.GetService<IExchangeRateProvider>();
+        EcbExchangeRateProvider? concrete = provider.GetService<EcbExchangeRateProvider>();
+        IDatedExchangeRateProvider? dated = provider.GetService<IDatedExchangeRateProvider>();
+        IExchangeRateProvider? simple = provider.GetService<IExchangeRateProvider>();
 
         Assert.IsNotNull(concrete);
         Assert.AreSame(concrete, dated);
@@ -44,7 +44,7 @@ public partial class EcbServiceRegistrationTests
         services.AddBoduFinancial().AddEcbReferenceRates();
         using ServiceProvider provider = services.BuildServiceProvider();
 
-        var factory = provider.GetService<IHttpClientFactory>();
+        IHttpClientFactory? factory = provider.GetService<IHttpClientFactory>();
 
         Assert.IsNotNull(factory);
         using HttpClient client = factory.CreateClient(EcbFinancialServiceBuilderExtensions.HttpClientName);

@@ -336,7 +336,7 @@ public ref partial struct Utf8TomlReader
     /// </exception>
     /// <exception cref="FormatException">Thrown when the string is not a GUID in the <c>D</c> format.</exception>
     public readonly Guid GetGuid() =>
-        TryGetGuid(out var value) ? value : throw new FormatException();
+        TryGetGuid(out Guid value) ? value : throw new FormatException();
 
     /// <summary>
     /// Attempts to read the current token as a <see cref="Guid" /> in the 36-character hyphenated (<c>D</c>) format.

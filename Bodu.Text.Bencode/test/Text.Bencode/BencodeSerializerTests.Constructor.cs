@@ -25,7 +25,7 @@ public partial class BencodeSerializerTests
     {
         byte[] bytes = Encoding.Latin1.GetBytes("d3:Agei30e4:Name5:Alicee");
 
-        var model = BencodeSerializer.Deserialize<ImmutablePerson>(bytes);
+        ImmutablePerson model = BencodeSerializer.Deserialize<ImmutablePerson>(bytes);
 
         Assert.AreEqual("Alice", model.Name);
         Assert.AreEqual(30, model.Age);
@@ -40,7 +40,7 @@ public partial class BencodeSerializerTests
     {
         byte[] bytes = Encoding.Latin1.GetBytes("d5:Valuei7ee");
 
-        var model = BencodeSerializer.Deserialize<LowerParameter>(bytes);
+        LowerParameter model = BencodeSerializer.Deserialize<LowerParameter>(bytes);
 
         Assert.AreEqual(7, model.Value);
     }
@@ -54,7 +54,7 @@ public partial class BencodeSerializerTests
     {
         byte[] bytes = Encoding.Latin1.GetBytes("d2:idi9ee");
 
-        var model = BencodeSerializer.Deserialize<RenamedConstructorMember>(bytes);
+        RenamedConstructorMember model = BencodeSerializer.Deserialize<RenamedConstructorMember>(bytes);
 
         Assert.AreEqual(9, model.Identifier);
     }
@@ -69,7 +69,7 @@ public partial class BencodeSerializerTests
         var options = new BencodeSerializerOptions { PropertyNamingPolicy = BencodeNamingPolicy.CamelCase };
         byte[] bytes = Encoding.Latin1.GetBytes("d9:firstName5:Alicee");
 
-        var model = BencodeSerializer.Deserialize<ImmutableName>(bytes, options);
+        ImmutableName model = BencodeSerializer.Deserialize<ImmutableName>(bytes, options);
 
         Assert.AreEqual("Alice", model.FirstName);
     }
@@ -86,7 +86,7 @@ public partial class BencodeSerializerTests
         byte[] bytes = BencodeSerializer.Serialize(original);
         Assert.AreEqual("d1:Xi4e1:Yi5ee", Encoding.Latin1.GetString(bytes));
 
-        var roundTripped = BencodeSerializer.Deserialize<PointRecord>(bytes);
+        PointRecord roundTripped = BencodeSerializer.Deserialize<PointRecord>(bytes);
         Assert.AreEqual(4, roundTripped.X);
         Assert.AreEqual(5, roundTripped.Y);
     }
@@ -100,7 +100,7 @@ public partial class BencodeSerializerTests
     {
         byte[] bytes = Encoding.Latin1.GetBytes("d1:ai3ee");
 
-        var model = BencodeSerializer.Deserialize<AttributedConstructorModel>(bytes);
+        AttributedConstructorModel model = BencodeSerializer.Deserialize<AttributedConstructorModel>(bytes);
 
         Assert.AreEqual(3, model.A);
         Assert.AreEqual("attributed", model.SelectedConstructor);
@@ -115,7 +115,7 @@ public partial class BencodeSerializerTests
     {
         byte[] bytes = Encoding.Latin1.GetBytes("d1:ai1e1:bi2ee");
 
-        var model = BencodeSerializer.Deserialize<MixedConstructorModel>(bytes);
+        MixedConstructorModel model = BencodeSerializer.Deserialize<MixedConstructorModel>(bytes);
 
         Assert.AreEqual("parameterless", model.SelectedConstructor);
         Assert.AreEqual(1, model.A);
@@ -131,7 +131,7 @@ public partial class BencodeSerializerTests
     {
         byte[] bytes = Encoding.Latin1.GetBytes("d1:ai1e1:bi2ee");
 
-        var model = BencodeSerializer.Deserialize<GreatestArityModel>(bytes);
+        GreatestArityModel model = BencodeSerializer.Deserialize<GreatestArityModel>(bytes);
 
         Assert.AreEqual(2, model.ParameterCount);
         Assert.AreEqual(1, model.A);
@@ -147,7 +147,7 @@ public partial class BencodeSerializerTests
     {
         byte[] bytes = Encoding.Latin1.GetBytes("d4:Name5:Alicee");
 
-        var model = BencodeSerializer.Deserialize<OptionalParameterModel>(bytes);
+        OptionalParameterModel model = BencodeSerializer.Deserialize<OptionalParameterModel>(bytes);
 
         Assert.AreEqual("Alice", model.Name);
         Assert.AreEqual(99, model.Age);
@@ -162,7 +162,7 @@ public partial class BencodeSerializerTests
     {
         byte[] bytes = Encoding.Latin1.GetBytes("d4:Name5:Alice5:Notes5:hello6:Statusi2ee");
 
-        var model = BencodeSerializer.Deserialize<PartiallyBoundModel>(bytes);
+        PartiallyBoundModel model = BencodeSerializer.Deserialize<PartiallyBoundModel>(bytes);
 
         Assert.AreEqual("Alice", model.Name);
         Assert.AreEqual("hello", model.Notes);
@@ -181,7 +181,7 @@ public partial class BencodeSerializerTests
         byte[] bytes = BencodeSerializer.Serialize(original);
         Assert.AreEqual("d2:idi11ee", Encoding.Latin1.GetString(bytes));
 
-        var roundTripped = BencodeSerializer.Deserialize<RenamedConstructorMember>(bytes);
+        RenamedConstructorMember roundTripped = BencodeSerializer.Deserialize<RenamedConstructorMember>(bytes);
         Assert.AreEqual(11, roundTripped.Identifier);
     }
 

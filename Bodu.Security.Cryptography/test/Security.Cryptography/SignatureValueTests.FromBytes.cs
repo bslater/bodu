@@ -63,7 +63,7 @@ public sealed partial class SignatureValueTests
     [TestMethod]
     public void FromBytes_WhenFormatIsUndefined_ShouldThrowArgumentOutOfRangeException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = SignatureValue.FromBytes([0x01], (SignatureFormat)99);
         });

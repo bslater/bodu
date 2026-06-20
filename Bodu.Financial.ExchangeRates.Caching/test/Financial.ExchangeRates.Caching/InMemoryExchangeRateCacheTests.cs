@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="InMemoryExchangeRateCacheTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -27,7 +27,7 @@ public sealed class InMemoryExchangeRateCacheTests
     public void GetRates_ShouldServeWhileFreshAndExpireAfterDuration()
     {
         InMemoryExchangeRateCache cache = new("RBA");
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
         cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2024, 1, 3), 0.5m, now) }, TimeSpan.FromHours(1), now);
 
         IReadOnlyList<CachedExchangeRate> fresh = cache.GetRates(Pair, TimeSpan.FromHours(1), now);
@@ -43,7 +43,7 @@ public sealed class InMemoryExchangeRateCacheTests
     [TestMethod]
     public void GetRates_WhenReadByNewInstance_ShouldNotSeePreviousData()
     {
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
         new InMemoryExchangeRateCache("RBA").Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2024, 1, 3), 0.5m, now) }, TimeSpan.FromHours(1), now);
 
         InMemoryExchangeRateCache other = new("RBA");

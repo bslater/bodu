@@ -51,21 +51,21 @@ public readonly partial struct Money
     /// <remarks>
     /// The "+1" bias lets a default-initialised <see cref="Money" /> (all-zero fields) mean "use the registry" rather
     /// than "explicit scale 0". A value of <c>n + 1</c> denotes an explicit minor-unit scale of <c>n</c> in the range
-    /// <c>0</c>..<c>28</c>, set only by the internal explicit-scale settlement path
-    /// (<see cref="FromExplicitScale(decimal, CurrencyCode, int, MidpointRounding)" />) used by
-    /// <see cref="CalculatedMoney.RoundToMoney(MonetaryContext?)" />.
+    /// <c>0</c>..<c>28</c>, set only by the internal explicit-scale settlement path (<see cref="FromExplicitScale(decimal, CurrencyCode, int, MidpointRounding)" />)
+    /// used by <see cref="CalculatedMoney.RoundToMoney(MonetaryContext?)" />.
     /// </remarks>
     private readonly byte _explicitScalePlusOne;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Money" /> struct from an amount and currency, rounding the amount to
-    /// the currency's minor-unit precision using the supplied rule.
+    /// Initializes a new instance of the <see cref="Money" /> struct from an amount and currency, rounding the amount
+    /// to the currency's minor-unit precision using the supplied rule.
     /// </summary>
     /// <param name="amount">The monetary amount in the major unit.</param>
     /// <param name="code">The currency identifying this value.</param>
     /// <param name="rounding">The midpoint-rounding rule applied when normalising to the minor-unit precision.</param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="code" /> is <see cref="CurrencyCode.None" /> or is not a defined <see cref="CurrencyCode" /> member.
+    /// <paramref name="code" /> is <see cref="CurrencyCode.None" /> or is not a defined <see cref="CurrencyCode" />
+    /// member.
     /// </exception>
     public Money(decimal amount, CurrencyCode code, MidpointRounding rounding = MidpointRounding.ToEven)
     {

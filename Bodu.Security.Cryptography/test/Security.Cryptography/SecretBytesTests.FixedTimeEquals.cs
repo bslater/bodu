@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SecretBytesTests.FixedTimeEquals.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -47,7 +47,7 @@ public sealed partial class SecretBytesTests
     {
         using var secret = SecretBytes.CopyFrom([0x01]);
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = secret.FixedTimeEquals((SecretBytes)null!);
         });

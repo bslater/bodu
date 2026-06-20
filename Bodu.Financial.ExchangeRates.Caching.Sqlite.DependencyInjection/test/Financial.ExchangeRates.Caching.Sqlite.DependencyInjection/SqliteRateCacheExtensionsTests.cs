@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SqliteRateCacheExtensionsTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -66,7 +66,7 @@ public sealed class SqliteRateCacheExtensionsTests
         ServiceProvider provider = BuildProvider(builder =>
             builder.AddSqliteRateCache("RBA", configure: o => o.DatabaseFilePath = _databasePath));
 
-        var cache = provider.GetRequiredService<IExchangeRateCache>();
+        IExchangeRateCache cache = provider.GetRequiredService<IExchangeRateCache>();
 
         Assert.AreEqual("RBA", cache.Provider);
     }
@@ -81,8 +81,8 @@ public sealed class SqliteRateCacheExtensionsTests
         ServiceProvider provider = BuildProvider(builder =>
             builder.AddSqliteRateCache("RBA", configure: o => o.DatabaseFilePath = _databasePath));
 
-        var byDefault = provider.GetRequiredService<IExchangeRateCache>();
-        var byKey = provider.GetRequiredKeyedService<IExchangeRateCache>("RBA");
+        IExchangeRateCache byDefault = provider.GetRequiredService<IExchangeRateCache>();
+        IExchangeRateCache byKey = provider.GetRequiredKeyedService<IExchangeRateCache>("RBA");
 
         Assert.AreSame(byDefault, byKey);
     }
@@ -95,8 +95,8 @@ public sealed class SqliteRateCacheExtensionsTests
     {
         ServiceProvider provider = BuildProvider(builder =>
             builder.AddSqliteRateCache("RBA", configure: o => o.DatabaseFilePath = _databasePath));
-        var cache = provider.GetRequiredService<IExchangeRateCache>();
-        var now = DateTimeOffset.UtcNow;
+        IExchangeRateCache cache = provider.GetRequiredService<IExchangeRateCache>();
+        DateTimeOffset now = DateTimeOffset.UtcNow;
 
         cache.Store(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5m, now) }, TimeSpan.FromHours(24), now);
 
@@ -115,8 +115,8 @@ public sealed class SqliteRateCacheExtensionsTests
             .Build();
 
         ServiceProvider provider = BuildProvider(builder => builder.AddSqliteRateCache("RBA", config));
-        var cache = provider.GetRequiredService<IExchangeRateCache>();
-        var now = DateTimeOffset.UtcNow;
+        IExchangeRateCache cache = provider.GetRequiredService<IExchangeRateCache>();
+        DateTimeOffset now = DateTimeOffset.UtcNow;
 
         cache.Store(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5m, now) }, TimeSpan.FromHours(24), now);
 
@@ -129,7 +129,7 @@ public sealed class SqliteRateCacheExtensionsTests
     [TestMethod]
     public void AddSqliteRateCache_WhenBuilderIsNull_ShouldThrowArgumentNullException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = SqliteRateCacheExtensions.AddSqliteRateCache(null!, "RBA");
         });
@@ -146,7 +146,7 @@ public sealed class SqliteRateCacheExtensionsTests
         var services = new ServiceCollection();
         IFinancialServiceBuilder builder = services.AddBoduFinancial();
 
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             _ = builder.AddSqliteRateCache("  ");
         });

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SecretBytesTests.Clear.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -31,7 +31,7 @@ public sealed partial class SecretBytesTests
     public void Clear_WhenSpanObtainedBeforehand_ShouldBeObservedThroughSpan()
     {
         using var secret = SecretBytes.CopyFrom([0xAA, 0xBB]);
-        var span = secret.AsSpan();
+        ReadOnlySpan<byte> span = secret.AsSpan();
 
         secret.Clear();
 

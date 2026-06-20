@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsymmetricAlgorithmTests{T,T}.Ctor.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -58,7 +58,7 @@ public abstract partial class AsymmetricAlgorithmTests<TTest, TAlgorithm>
         algorithm.KeySize = spec.KeySizeDesignator;
         Assert.AreEqual(spec.KeySizeDesignator, algorithm.KeySize);
 
-        var ex = Assert.ThrowsExactly<CryptographicException>(() =>
+        CryptographicException ex = Assert.ThrowsExactly<CryptographicException>(() =>
         {
             algorithm.KeySize = spec.KeySizeDesignator - 1;
         });

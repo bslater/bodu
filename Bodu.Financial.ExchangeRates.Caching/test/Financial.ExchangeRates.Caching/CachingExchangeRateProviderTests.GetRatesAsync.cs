@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CachingExchangeRateProviderTests.GetRatesAsync.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -95,7 +95,7 @@ public sealed partial class CachingExchangeRateProviderTests
     {
         CachingExchangeRateProvider sut = CreateDecorator(InnerWith());
 
-        var ex = await Assert.ThrowsExactlyAsync<ArgumentException>(async () =>
+        ArgumentException ex = await Assert.ThrowsExactlyAsync<ArgumentException>(async () =>
         {
             _ = await sut.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 6), new DateOnly(2023, 1, 3));
         });

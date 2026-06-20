@@ -65,7 +65,7 @@ public sealed partial class SqliteExchangeRateCacheTests
     public void Store_WhenDatabaseIsCorrupt_ShouldBeNoOp()
     {
         string path = NewCorruptDatabaseFile();
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
 
         var cache = new SqliteExchangeRateCache(new SqliteExchangeRateCacheOptions { Provider = Provider, DatabaseFilePath = path });
         _caches.Add(cache);
@@ -84,7 +84,7 @@ public sealed partial class SqliteExchangeRateCacheTests
     public void RecordCoverage_WhenDatabaseIsCorrupt_ShouldBeNoOp()
     {
         string path = NewCorruptDatabaseFile();
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
 
         var cache = new SqliteExchangeRateCache(new SqliteExchangeRateCacheOptions { Provider = Provider, DatabaseFilePath = path });
         _caches.Add(cache);

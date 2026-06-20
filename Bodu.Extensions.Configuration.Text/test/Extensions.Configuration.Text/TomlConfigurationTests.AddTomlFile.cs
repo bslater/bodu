@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlConfigurationTests.AddTomlFile.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -22,7 +22,7 @@ public sealed partial class TomlConfigurationTests
     public void AddTomlFile_WhenFileExists_ShouldLoadValues()
     {
         using TempFileScope scope = new("name = \"from-file\"\n[db]\nport = 5432\n");
-        var config = new ConfigurationBuilder().AddTomlFile(scope.Path).Build();
+        IConfigurationRoot config = new ConfigurationBuilder().AddTomlFile(scope.Path).Build();
 
         Assert.AreEqual("from-file", config["name"]);
         Assert.AreEqual("5432", config["db:port"]);
@@ -34,7 +34,7 @@ public sealed partial class TomlConfigurationTests
     [TestMethod]
     public void AddTomlFile_WhenOptionalAndMissing_ShouldBuildEmpty()
     {
-        var config = new ConfigurationBuilder().AddTomlFile("does-not-exist.toml", optional: true).Build();
+        IConfigurationRoot config = new ConfigurationBuilder().AddTomlFile("does-not-exist.toml", optional: true).Build();
 
         Assert.IsNull(config["anything"]);
     }

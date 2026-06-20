@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AverageStrategyTests.TryAggregate.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -91,7 +91,7 @@ public sealed partial class AverageStrategyTests
     [TestMethod]
     public void TryAggregate_WhenCandidatesIsNull_ShouldThrowArgumentNullException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = new AverageStrategy().TryAggregate("AUD", "USD", D1, ExchangeRateLookupOptions.Exact, null!, out _);
         });

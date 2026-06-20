@@ -162,7 +162,7 @@ public abstract class MLDsaContractTests<TTest, TDsa>
         corrupted[70] ^= 0x01;
 
         using var dsa = new TDsa();
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             dsa.ImportPrivateKey(corrupted);
         });

@@ -49,7 +49,7 @@ public sealed partial class Bech32Tests
     [TestMethod]
     public void Decode_WhenMixedCase_ShouldThrowFormatException()
     {
-        var ex = Assert.ThrowsExactly<FormatException>(() =>
+        FormatException ex = Assert.ThrowsExactly<FormatException>(() =>
         {
             Bech32.Decode("a12UEL5L", out _, out _, out _);
         });
@@ -78,7 +78,7 @@ public sealed partial class Bech32Tests
     [TestMethod]
     public void Decode_WhenNoSeparator_ShouldThrowFormatException()
     {
-        var ex = Assert.ThrowsExactly<FormatException>(() =>
+        FormatException ex = Assert.ThrowsExactly<FormatException>(() =>
         {
             Bech32.Decode("pzry9x0s0muk", out _, out _, out _);
         });

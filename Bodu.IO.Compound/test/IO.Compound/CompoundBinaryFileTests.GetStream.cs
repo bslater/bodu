@@ -38,7 +38,7 @@ public partial class CompoundBinaryFileTests
     {
         using CompoundBinaryFile file = OpenSample();
 
-        var ex = Assert.ThrowsExactly<CompoundStreamNotFoundException>(() =>
+        CompoundStreamNotFoundException ex = Assert.ThrowsExactly<CompoundStreamNotFoundException>(() =>
         {
             using CompoundStream stream = file.GetStream("DoesNotExist");
         });

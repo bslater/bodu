@@ -210,7 +210,7 @@ public abstract class PairWebExchangeRateProvider<TSeries>
         }
 
         // Capture the load instant immediately after the download completes so it stamps every rate this pair produces.
-        var fetchedAt = TimeProvider.GetUtcNow();
+        DateTimeOffset fetchedAt = TimeProvider.GetUtcNow();
 
         lock (SyncRoot)
         {

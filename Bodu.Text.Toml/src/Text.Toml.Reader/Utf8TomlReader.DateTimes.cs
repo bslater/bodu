@@ -55,7 +55,7 @@ public ref partial struct Utf8TomlReader
             return true;
         }
 
-        if (!TryReadPartialTime(out var time))
+        if (!TryReadPartialTime(out (int Hour, int Minute, int Second, long FractionTicks) time))
             return false;
 
         // At the end of a non-final buffer the local date-time may still grow an offset.
@@ -64,10 +64,10 @@ public ref partial struct Utf8TomlReader
 
         if (!Eof && (Current == (byte)'Z' || Current == (byte)'z' || Current == (byte)'+' || Current == (byte)'-'))
         {
-            if (!TryReadTimeOffset(out var offset))
+            if (!TryReadTimeOffset(out TimeSpan offset))
                 return false;
 
-            var local = MakeDateTime(year, month, day, time.Hour, time.Minute, time.Second, time.FractionTicks);
+            DateTime local = MakeDateTime(year, month, day, time.Hour, time.Minute, time.Second, time.FractionTicks);
             try
             {
                 _dateTimeOffsetValue = new DateTimeOffset(local, offset);
@@ -114,7 +114,7 @@ public ref partial struct Utf8TomlReader
     /// </returns>
     private bool TryScanLocalTime()
     {
-        if (!TryReadPartialTime(out var time))
+        if (!TryReadPartialTime(out (int Hour, int Minute, int Second, long FractionTicks) time))
             return false;
 
         _timeOnlyValue = MakeTime(time.Hour, time.Minute, time.Second, time.FractionTicks);

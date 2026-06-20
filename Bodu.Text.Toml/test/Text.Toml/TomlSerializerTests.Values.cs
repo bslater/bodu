@@ -197,7 +197,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenIntegerOutOfTargetRange_ShouldThrowTomlSerializationException()
     {
-        var ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        TomlSerializationException ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
         {
             _ = TomlSerializer.Deserialize<ValueModel<byte>>("Value = 999\n");
         });
@@ -284,7 +284,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Serialize_WhenInt128ExceedsInt64Range_ShouldThrowTomlSerializationException()
     {
-        var ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        TomlSerializationException ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
         {
             _ = Serialize(Int128.MaxValue);
         });
@@ -300,7 +300,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Serialize_WhenUInt128ExceedsInt64Range_ShouldThrowTomlSerializationException()
     {
-        var ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        TomlSerializationException ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
         {
             _ = Serialize((UInt128)long.MaxValue + 1);
         });
@@ -567,7 +567,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void SerializeDeserialize_WhenTimeOnlyHasFraction_ShouldEmitTrimmedFractionAndRoundTrip()
     {
-        var value = new TimeOnly(9, 30, 0).Add(TimeSpan.FromTicks(5_000_000));
+        TimeOnly value = new TimeOnly(9, 30, 0).Add(TimeSpan.FromTicks(5_000_000));
 
         Assert.AreEqual("Value = 09:30:00.5\n", Serialize(value));
         Assert.AreEqual(value, RoundTrip(value));

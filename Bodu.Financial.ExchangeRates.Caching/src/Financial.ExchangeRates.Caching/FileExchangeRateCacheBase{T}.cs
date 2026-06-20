@@ -97,7 +97,7 @@ public abstract class FileExchangeRateCacheBase<TOptions>
                 return CachePairState.Empty;
             }
 
-            var stamp = File.GetLastWriteTimeUtc(path);
+            DateTime stamp = File.GetLastWriteTimeUtc(path);
             if (_parsed.TryGetValue(pair, out (DateTime StampUtc, CachePairState State) memo) && memo.StampUtc == stamp)
                 return memo.State;
 

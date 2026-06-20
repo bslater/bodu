@@ -41,10 +41,7 @@ public sealed partial class MoneyBag :
     IEquatable<MoneyBag>,
     IEnumerable<Money>
 {
-    /// <summary>
-    /// Orders <see cref="CurrencyCode" /> keys by their ISO 4217 alphabetic code (ordinal) rather than their numeric
-    /// enum value, so enumeration stays in ISO-code lexicographic order as it was when the bag was keyed by string.
-    /// </summary>
+    /// <summary>Orders <see cref="CurrencyCode" /> keys by their ISO 4217 alphabetic code (ordinal) rather than their numeric enum value, so enumeration stays in ISO-code lexicographic order as it was when the bag was keyed by string.</summary>
     /// <remarks>
     /// Declared before <see cref="Empty" /> so the shared empty instance captures this comparer during static
     /// initialization rather than the default (numeric) ordering — static fields initialize in textual order.

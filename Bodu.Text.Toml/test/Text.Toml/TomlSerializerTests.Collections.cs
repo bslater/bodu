@@ -27,7 +27,7 @@ public partial class TomlSerializerTests
         string text = TomlSerializer.Serialize(model);
         Assert.AreEqual("Numbers = [5, 3, 9, 1]\n", text);
 
-        var roundTripped = TomlSerializer.Deserialize<ListModel>(text);
+        ListModel roundTripped = TomlSerializer.Deserialize<ListModel>(text);
         CollectionAssert.AreEqual(new[] { 5, 3, 9, 1 }, roundTripped.Numbers);
     }
 
@@ -43,7 +43,7 @@ public partial class TomlSerializerTests
         string text = TomlSerializer.Serialize(model);
         Assert.AreEqual("Numbers = [3, 1, 2]\n", text);
 
-        var roundTripped = TomlSerializer.Deserialize<ArrayModel>(text);
+        ArrayModel roundTripped = TomlSerializer.Deserialize<ArrayModel>(text);
         Assert.IsInstanceOfType<int[]>(roundTripped.Numbers);
         CollectionAssert.AreEqual(new[] { 3, 1, 2 }, roundTripped.Numbers);
     }
@@ -60,7 +60,7 @@ public partial class TomlSerializerTests
         string text = TomlSerializer.Serialize(model);
         Assert.AreEqual("Numbers = []\n", text);
 
-        var roundTripped = TomlSerializer.Deserialize<ListModel>(text);
+        ListModel roundTripped = TomlSerializer.Deserialize<ListModel>(text);
         Assert.AreEqual(0, roundTripped.Numbers.Count);
     }
 
@@ -76,7 +76,7 @@ public partial class TomlSerializerTests
         string text = TomlSerializer.Serialize(model);
         Assert.AreEqual("Matrix = [[1, 2], [3]]\n", text);
 
-        var roundTripped = TomlSerializer.Deserialize<NestedListModel>(text);
+        NestedListModel roundTripped = TomlSerializer.Deserialize<NestedListModel>(text);
         Assert.AreEqual(2, roundTripped.Matrix.Count);
         CollectionAssert.AreEqual(new[] { 1, 2 }, roundTripped.Matrix[0]);
         CollectionAssert.AreEqual(new[] { 3 }, roundTripped.Matrix[1]);
@@ -94,7 +94,7 @@ public partial class TomlSerializerTests
         string text = TomlSerializer.Serialize(model);
         Assert.AreEqual("Words = [\"a b\", \"c\\td\"]\n", text);
 
-        var roundTripped = TomlSerializer.Deserialize<StringListModel>(text);
+        StringListModel roundTripped = TomlSerializer.Deserialize<StringListModel>(text);
         CollectionAssert.AreEqual(new[] { "a b", "c\td" }, roundTripped.Words);
     }
 
@@ -110,7 +110,7 @@ public partial class TomlSerializerTests
         string text = TomlSerializer.Serialize(model);
         Assert.AreEqual("Flags = [true, false, true]\n", text);
 
-        var roundTripped = TomlSerializer.Deserialize<BoolListModel>(text);
+        BoolListModel roundTripped = TomlSerializer.Deserialize<BoolListModel>(text);
         CollectionAssert.AreEqual(new[] { true, false, true }, roundTripped.Flags);
     }
 
@@ -141,7 +141,7 @@ public partial class TomlSerializerTests
         string text = TomlSerializer.Serialize(model);
         Assert.AreEqual("Numbers = [5]\n", text);
 
-        var roundTripped = TomlSerializer.Deserialize<HashSetModel>(text);
+        HashSetModel roundTripped = TomlSerializer.Deserialize<HashSetModel>(text);
         Assert.IsInstanceOfType<HashSet<int>>(roundTripped.Numbers);
         Assert.IsTrue(roundTripped.Numbers.Contains(5));
     }
@@ -153,7 +153,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenIListMember_ShouldMaterializeList()
     {
-        var model = TomlSerializer.Deserialize<IListModel>("Numbers = [1, 2]\n");
+        IListModel model = TomlSerializer.Deserialize<IListModel>("Numbers = [1, 2]\n");
 
         Assert.IsInstanceOfType<List<int>>(model.Numbers);
         CollectionAssert.AreEqual(new[] { 1, 2 }, (System.Collections.ICollection)model.Numbers);
@@ -166,7 +166,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenIEnumerableMember_ShouldMaterializeList()
     {
-        var model = TomlSerializer.Deserialize<EnumerableModel>("Numbers = [1, 2]\n");
+        EnumerableModel model = TomlSerializer.Deserialize<EnumerableModel>("Numbers = [1, 2]\n");
 
         Assert.IsInstanceOfType<List<int>>(model.Numbers);
         CollectionAssert.AreEqual(new[] { 1, 2 }, model.Numbers.ToArray());
@@ -179,7 +179,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenICollectionMember_ShouldMaterializeList()
     {
-        var model = TomlSerializer.Deserialize<CollectionModel>("Numbers = [9]\n");
+        CollectionModel model = TomlSerializer.Deserialize<CollectionModel>("Numbers = [9]\n");
 
         Assert.IsInstanceOfType<List<int>>(model.Numbers);
         CollectionAssert.AreEqual(new[] { 9 }, (System.Collections.ICollection)model.Numbers);
@@ -197,7 +197,7 @@ public partial class TomlSerializerTests
         string text = TomlSerializer.Serialize(model);
         Assert.AreEqual("Numbers = [4, 5, 6]\n", text);
 
-        var roundTripped = TomlSerializer.Deserialize<IListModel>(text);
+        IListModel roundTripped = TomlSerializer.Deserialize<IListModel>(text);
         CollectionAssert.AreEqual(new[] { 4, 5, 6 }, (System.Collections.ICollection)roundTripped.Numbers);
     }
 
@@ -234,7 +234,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Serialize_WhenRootIsList_ShouldReportRootTypeInMessage()
     {
-        var ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        TomlSerializationException ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
         {
             _ = TomlSerializer.Serialize(new List<int> { 1 });
         });
@@ -257,7 +257,7 @@ public partial class TomlSerializerTests
         string text = TomlSerializer.Serialize(model);
         Assert.AreEqual("Items = [1, 2, 3]\n", text);
 
-        var roundTripped = TomlSerializer.Deserialize<QueueModel>(text);
+        QueueModel roundTripped = TomlSerializer.Deserialize<QueueModel>(text);
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, roundTripped.Items.ToArray());
         Assert.AreEqual(1, roundTripped.Items.Dequeue());
     }
@@ -286,7 +286,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenStackMember_ShouldPushElementsInDocumentOrder()
     {
-        var model = TomlSerializer.Deserialize<StackModel>("Items = [1, 2, 3]\n");
+        StackModel model = TomlSerializer.Deserialize<StackModel>("Items = [1, 2, 3]\n");
 
         Assert.AreEqual(3, model.Items.Count);
         Assert.AreEqual(3, model.Items.Pop());
@@ -305,7 +305,7 @@ public partial class TomlSerializerTests
         var model = new StackModel { Items = new Stack<int>(new[] { 1, 2 }) };
 
         string text = TomlSerializer.Serialize(model);
-        var roundTripped = TomlSerializer.Deserialize<StackModel>(text);
+        StackModel roundTripped = TomlSerializer.Deserialize<StackModel>(text);
 
         CollectionAssert.AreEqual(model.Items.Reverse().ToArray(), roundTripped.Items.ToArray());
     }
@@ -325,7 +325,7 @@ public partial class TomlSerializerTests
         string text = TomlSerializer.Serialize(model);
         Assert.AreEqual("Items = [1, 2, 3]\n", text);
 
-        var roundTripped = TomlSerializer.Deserialize<ConcurrentQueueModel>(text);
+        ConcurrentQueueModel roundTripped = TomlSerializer.Deserialize<ConcurrentQueueModel>(text);
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, roundTripped.Items.ToArray());
         Assert.IsTrue(roundTripped.Items.TryPeek(out int head));
         Assert.AreEqual(1, head);
@@ -347,7 +347,7 @@ public partial class TomlSerializerTests
         string text = TomlSerializer.Serialize(model);
         Assert.AreEqual("Items = [2, 1]\n", text);
 
-        var roundTripped = TomlSerializer.Deserialize<ConcurrentStackModel>(text);
+        ConcurrentStackModel roundTripped = TomlSerializer.Deserialize<ConcurrentStackModel>(text);
         Assert.IsTrue(roundTripped.Items.TryPeek(out int top));
         Assert.AreEqual(1, top);
     }
@@ -363,7 +363,7 @@ public partial class TomlSerializerTests
 
         string text = TomlSerializer.Serialize(model);
 
-        var roundTripped = TomlSerializer.Deserialize<ConcurrentBagModel>(text);
+        ConcurrentBagModel roundTripped = TomlSerializer.Deserialize<ConcurrentBagModel>(text);
         CollectionAssert.AreEquivalent(model.Items.ToList(), roundTripped.Items.ToList());
     }
 

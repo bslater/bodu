@@ -71,7 +71,7 @@ public partial class TomlSerializerTests
         for (int i = 0; i < (TomlLimits.AbsoluteMaxDepth * 32) + 1; i++)
             deep = new RecursiveModel { Child = deep };
 
-        var captured = SerializeOnConstrainedStack(deep, options);
+        Exception? captured = SerializeOnConstrainedStack(deep, options);
 
         Assert.IsNotNull(captured);
         Assert.AreEqual(typeof(TomlSerializationException), captured.GetType());
@@ -88,7 +88,7 @@ public partial class TomlSerializerTests
         var options = new TomlSerializerOptions { MaxDepth = int.MaxValue };
 
         var root = new Dictionary<string, object>();
-        var current = root;
+        Dictionary<string, object> current = root;
         for (int i = 0; i < TomlLimits.AbsoluteMaxDepth + 2; i++)
         {
             var next = new Dictionary<string, object>();
@@ -112,7 +112,7 @@ public partial class TomlSerializerTests
         var options = new TomlSerializerOptions { MaxDepth = int.MaxValue };
 
         var inner = new List<object>();
-        var current = inner;
+        List<object> current = inner;
         for (int i = 0; i < TomlLimits.AbsoluteMaxDepth + 2; i++)
         {
             var next = new List<object>();
@@ -139,7 +139,7 @@ public partial class TomlSerializerTests
         var options = new TomlSerializerOptions { MaxDepth = int.MaxValue };
 
         var inner = new List<object>();
-        var current = inner;
+        List<object> current = inner;
         for (int i = 0; i < (TomlLimits.AbsoluteMaxDepth * 32) + 1; i++)
         {
             var next = new List<object>();
@@ -149,7 +149,7 @@ public partial class TomlSerializerTests
 
         var root = new Dictionary<string, object> { ["values"] = inner };
 
-        var captured = SerializeOnConstrainedStack(root, options);
+        Exception? captured = SerializeOnConstrainedStack(root, options);
 
         Assert.IsNotNull(captured);
         Assert.AreEqual(typeof(TomlSerializationException), captured.GetType());
@@ -166,7 +166,7 @@ public partial class TomlSerializerTests
         var options = new TomlSerializerOptions { MaxDepth = int.MaxValue };
 
         var root = new Dictionary<string, object>();
-        var current = root;
+        Dictionary<string, object> current = root;
         for (int i = 0; i < (TomlLimits.AbsoluteMaxDepth * 32) + 1; i++)
         {
             var next = new Dictionary<string, object>();
@@ -174,7 +174,7 @@ public partial class TomlSerializerTests
             current = next;
         }
 
-        var captured = SerializeOnConstrainedStack(root, options);
+        Exception? captured = SerializeOnConstrainedStack(root, options);
 
         Assert.IsNotNull(captured);
         Assert.AreEqual(typeof(TomlSerializationException), captured.GetType());

@@ -53,7 +53,7 @@ public partial class BencodeSerializerTests
             "e";
         Assert.AreEqual(Expected, Encoding.Latin1.GetString(bytes));
 
-        var roundTripped = BencodeSerializer.Deserialize<RichModel>(bytes);
+        RichModel roundTripped = BencodeSerializer.Deserialize<RichModel>(bytes);
         Assert.AreEqual(original.Name, roundTripped.Name);
         Assert.AreEqual(original.Count, roundTripped.Count);
         Assert.AreEqual(original.Length, roundTripped.Length);
@@ -89,7 +89,7 @@ public partial class BencodeSerializerTests
 
         Assert.AreEqual("d2:idi5ee", Encoding.Latin1.GetString(bytes));
 
-        var roundTripped = BencodeSerializer.Deserialize<RenamedModel>(bytes);
+        RenamedModel roundTripped = BencodeSerializer.Deserialize<RenamedModel>(bytes);
         Assert.AreEqual(5, roundTripped.Identifier);
     }
 
@@ -135,7 +135,7 @@ public partial class BencodeSerializerTests
 
         Assert.AreEqual("d8:Disabledi0e7:Enabledi1ee", Encoding.Latin1.GetString(bytes));
 
-        var roundTripped = BencodeSerializer.Deserialize<FlagModel>(bytes, options);
+        FlagModel roundTripped = BencodeSerializer.Deserialize<FlagModel>(bytes, options);
         Assert.IsTrue(roundTripped.Enabled);
         Assert.IsFalse(roundTripped.Disabled);
     }
@@ -168,7 +168,7 @@ public partial class BencodeSerializerTests
 
         Assert.AreEqual("d7:Present4:heree", Encoding.Latin1.GetString(bytes));
 
-        var roundTripped = BencodeSerializer.Deserialize<NullableMemberModel>(bytes);
+        NullableMemberModel roundTripped = BencodeSerializer.Deserialize<NullableMemberModel>(bytes);
         Assert.AreEqual("here", roundTripped.Present);
         Assert.IsNull(roundTripped.Absent);
     }

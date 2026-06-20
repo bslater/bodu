@@ -28,7 +28,7 @@ public sealed partial class TomlFileExchangeRateCacheTests
         Assert.AreEqual(0.50m, first.Single().Rate);
 
         string path = cache.ResolveFilePath(Pair);
-        var stamp = File.GetLastWriteTimeUtc(path);
+        DateTime stamp = File.GetLastWriteTimeUtc(path);
 
         // Rewrite the file's content through a second instance, then restore the original timestamp so the first
         // instance's memo (keyed by that timestamp) is still considered current.

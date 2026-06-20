@@ -133,7 +133,7 @@ public class Ed25519ScalarTests
         Array.Fill(allOnes, (byte)0xFF);
         yield return allOnes;
 
-        foreach (var value in new[] { s_order - 1, s_order, s_order + 1 })
+        foreach (BigInteger value in new[] { s_order - 1, s_order, s_order + 1 })
         {
             byte[] bytes = new byte[64];
             ToLittleEndian32(value).CopyTo(bytes, 0);

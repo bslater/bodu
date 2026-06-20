@@ -53,7 +53,8 @@ public readonly partial struct CalculatedMoney
     /// <param name="amount">The unrounded monetary amount in the major unit.</param>
     /// <param name="code">The currency identifying this value.</param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="code" /> is <see cref="CurrencyCode.None" /> or is not a defined <see cref="CurrencyCode" /> member.
+    /// <paramref name="code" /> is <see cref="CurrencyCode.None" /> or is not a defined <see cref="CurrencyCode" />
+    /// member.
     /// </exception>
     public CalculatedMoney(decimal amount, CurrencyCode code)
     {

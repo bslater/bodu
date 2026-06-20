@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DistributedRateCacheExtensionsTests.AddRedisRateCache.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -43,7 +43,7 @@ public sealed partial class DistributedRateCacheExtensionsTests
         var services = new ServiceCollection();
         IFinancialServiceBuilder builder = services.AddBoduFinancial();
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = builder.AddRedisRateCache(null!, "RBA");
         });
@@ -67,7 +67,7 @@ public sealed partial class DistributedRateCacheExtensionsTests
         services.AddDistributedMemoryCache();
 
         using ServiceProvider provider = services.BuildServiceProvider();
-        var cache = provider.GetRequiredService<IExchangeRateCache>();
+        IExchangeRateCache cache = provider.GetRequiredService<IExchangeRateCache>();
 
         Assert.AreEqual("RBA", cache.Provider);
     }

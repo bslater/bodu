@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlFileExchangeRateCacheTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -108,7 +108,7 @@ public sealed partial class TomlFileExchangeRateCacheTests
     [TestMethod]
     public void Constructor_WhenProviderIsBlank_ShouldThrowArgumentException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             _ = new TomlFileExchangeRateCache(new FileExchangeRateCacheOptions { Provider = "  ", CacheDirectory = _directory });
         });
@@ -130,7 +130,7 @@ public sealed partial class TomlFileExchangeRateCacheTests
         File.WriteAllText(_directory, "not a directory");
 
         TomlFileExchangeRateCache cache = CreateCache();
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
 
         ExchangeRateCacheWriteStatus status = cache.StoreFetchedRange(
             Pair,

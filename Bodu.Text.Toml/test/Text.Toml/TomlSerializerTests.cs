@@ -50,7 +50,7 @@ public partial class TomlSerializerTests
         };
 
         string text = TomlSerializer.Serialize(original);
-        var roundTripped = TomlSerializer.Deserialize<RichModel>(text);
+        RichModel roundTripped = TomlSerializer.Deserialize<RichModel>(text);
 
         Assert.AreEqual(original.Name, roundTripped.Name);
         Assert.AreEqual(original.Count, roundTripped.Count);
@@ -105,7 +105,7 @@ public partial class TomlSerializerTests
 
         Assert.AreEqual("firstName = \"a\"\nlastName = \"b\"\n", text);
 
-        var roundTripped = TomlSerializer.Deserialize<PascalModel>(text, options);
+        PascalModel roundTripped = TomlSerializer.Deserialize<PascalModel>(text, options);
         Assert.AreEqual("a", roundTripped.FirstName);
         Assert.AreEqual("b", roundTripped.LastName);
     }
@@ -122,7 +122,7 @@ public partial class TomlSerializerTests
 
         Assert.AreEqual("id = 5\n", text);
 
-        var roundTripped = TomlSerializer.Deserialize<RenamedModel>(text);
+        RenamedModel roundTripped = TomlSerializer.Deserialize<RenamedModel>(text);
         Assert.AreEqual(5, roundTripped.Identifier);
     }
 
@@ -155,7 +155,7 @@ public partial class TomlSerializerTests
 
         Assert.AreEqual("Amount = \"19.95\"\n", text);
 
-        var roundTripped = TomlSerializer.Deserialize<PriceModel>(text, options);
+        PriceModel roundTripped = TomlSerializer.Deserialize<PriceModel>(text, options);
         Assert.AreEqual(19.95m, roundTripped.Amount);
     }
 
@@ -194,7 +194,7 @@ public partial class TomlSerializerTests
         var model = new Dictionary<string, int> { ["a"] = 1, ["b"] = 2 };
 
         string text = TomlSerializer.Serialize(model);
-        var roundTripped = TomlSerializer.Deserialize<Dictionary<string, int>>(text);
+        Dictionary<string, int> roundTripped = TomlSerializer.Deserialize<Dictionary<string, int>>(text);
 
         CollectionAssert.AreEquivalent(model, roundTripped);
     }
@@ -211,7 +211,7 @@ public partial class TomlSerializerTests
 
         Assert.AreEqual("Payload = [1, 2, 255]\n", text);
 
-        var roundTripped = TomlSerializer.Deserialize<PayloadModel>(text);
+        PayloadModel roundTripped = TomlSerializer.Deserialize<PayloadModel>(text);
         CollectionAssert.AreEqual(model.Payload, roundTripped.Payload);
     }
 
@@ -230,7 +230,7 @@ public partial class TomlSerializerTests
 
         Assert.AreEqual("Payload = \"YWJj\"\n", text);
 
-        var roundTripped = TomlSerializer.Deserialize<PayloadModel>(text, options);
+        PayloadModel roundTripped = TomlSerializer.Deserialize<PayloadModel>(text, options);
         CollectionAssert.AreEqual(model.Payload, roundTripped.Payload);
     }
 
@@ -259,7 +259,7 @@ public partial class TomlSerializerTests
         var model = new SmallModel { Name = "x", Port = 1, Nested = new NestedModel { Title = "t" } };
 
         TomlSerializer.Serialize(buffer, model);
-        var roundTripped = TomlSerializer.Deserialize<SmallModel>(buffer.WrittenSpan);
+        SmallModel roundTripped = TomlSerializer.Deserialize<SmallModel>(buffer.WrittenSpan);
 
         Assert.AreEqual("x", roundTripped.Name);
         Assert.AreEqual(1, roundTripped.Port);
@@ -279,7 +279,7 @@ public partial class TomlSerializerTests
 
         Assert.AreEqual("Present = \"here\"\n", text);
 
-        var roundTripped = TomlSerializer.Deserialize<NullableMemberModel>(text);
+        NullableMemberModel roundTripped = TomlSerializer.Deserialize<NullableMemberModel>(text);
         Assert.AreEqual("here", roundTripped.Present);
         Assert.IsNull(roundTripped.Absent);
     }

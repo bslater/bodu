@@ -90,8 +90,8 @@ public readonly partial struct Money :
     /// </item>
     /// <item>
     /// <description>
-    /// <c>"C"</c> — the culture's native currency format when its region currency matches <see cref="Code" />, or
-    /// the ISO code substituted into the culture's currency-position slot when they differ.
+    /// <c>"C"</c> — the culture's native currency format when its region currency matches <see cref="Code" />, or the
+    /// ISO code substituted into the culture's currency-position slot when they differ.
     /// </description>
     /// </item>
     /// <item>

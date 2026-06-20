@@ -215,7 +215,7 @@ internal sealed class DictionaryConverter<TDictionary, TKey, TValue>
         if (!_concrete)
             return (TDictionary)(object)entries;
 
-        var instance = Activator.CreateInstance<TDictionary>()!;
+        TDictionary instance = Activator.CreateInstance<TDictionary>()!;
         var dictionary = (IDictionary<TKey, TValue>)instance;
         foreach (KeyValuePair<TKey, TValue> entry in entries)
             dictionary[entry.Key] = entry.Value;

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NullExchangeRateCacheTests.RecordCoverage.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -20,7 +20,7 @@ public sealed partial class NullExchangeRateCacheTests
         IExchangeRateCache cache = NullExchangeRateCache.Create("Yahoo");
         ExchangeRatePair pair = new(CurrencyCode.AUD, CurrencyCode.USD);
 
-        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             cache.RecordCoverage(pair, new DateOnly(2023, 1, 10), new DateOnly(2023, 1, 3), TimeSpan.FromHours(24), DateTimeOffset.UtcNow);
         });

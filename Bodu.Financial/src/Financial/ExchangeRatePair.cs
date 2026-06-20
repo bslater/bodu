@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRatePair.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -16,8 +16,8 @@ namespace Bodu.Financial;
 /// </summary>
 /// <remarks>
 /// <para>
-/// A pair is a strongly typed key intended for use in dictionaries and lookup tables. Compared to a raw tuple of
-/// codes, it centralises validation and makes the directional meaning of each currency obvious at the call site.
+/// A pair is a strongly typed key intended for use in dictionaries and lookup tables. Compared to a raw tuple of codes,
+/// it centralises validation and makes the directional meaning of each currency obvious at the call site.
 /// </para>
 /// </remarks>
 [DebuggerDisplay("{From,nq}/{To,nq}")]
@@ -59,14 +59,14 @@ public readonly record struct ExchangeRatePair
     /// directional key.
     /// </summary>
     /// <returns>
-    /// <see langword="true" /> when both <see cref="From" /> and <see cref="To" /> are not <see cref="CurrencyCode.None" />;
-    /// otherwise <see langword="false" />.
+    /// <see langword="true" /> when both <see cref="From" /> and <see cref="To" /> are not
+    /// <see cref="CurrencyCode.None" />; otherwise <see langword="false" />.
     /// </returns>
     /// <remarks>
     /// Because <see cref="ExchangeRatePair" /> is a value type, <see langword="default" /><c>(ExchangeRatePair)</c>
     /// bypasses the validating constructor and leaves both currencies <see cref="CurrencyCode.None" />. Public
-    /// boundaries that accept an <see cref="ExchangeRatePair" /> should reject any instance whose <see cref="IsValid" />
-    /// property is <see langword="false" />.
+    /// boundaries that accept an <see cref="ExchangeRatePair" /> should reject any instance whose
+    /// <see cref="IsValid" /> property is <see langword="false" />.
     /// </remarks>
     public bool IsValid => From != CurrencyCode.None && To != CurrencyCode.None;
 

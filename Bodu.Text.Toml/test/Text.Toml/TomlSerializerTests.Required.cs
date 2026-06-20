@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlSerializerTests.Required.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -22,7 +22,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenRequiredKeywordMemberPresent_ShouldRoundTrip()
     {
-        var model = TomlSerializer.Deserialize<RequiredKeywordModel>("Name = \"Alice\"\n");
+        RequiredKeywordModel model = TomlSerializer.Deserialize<RequiredKeywordModel>("Name = \"Alice\"\n");
 
         Assert.AreEqual("Alice", model.Name);
     }
@@ -34,7 +34,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenRequiredKeywordMemberMissing_ShouldThrowTomlSerializationException()
     {
-        var ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        TomlSerializationException ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
         {
             _ = TomlSerializer.Deserialize<RequiredKeywordModel>(string.Empty);
         });
@@ -49,7 +49,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenRequiredAttributeMemberPresent_ShouldRoundTrip()
     {
-        var model = TomlSerializer.Deserialize<RequiredAttributeModel>("id = 42\n");
+        RequiredAttributeModel model = TomlSerializer.Deserialize<RequiredAttributeModel>("id = 42\n");
 
         Assert.AreEqual(42, model.Id);
     }
@@ -61,7 +61,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenRequiredAttributeMemberMissing_ShouldThrowTomlSerializationException()
     {
-        var ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        TomlSerializationException ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
         {
             _ = TomlSerializer.Deserialize<RequiredAttributeModel>(string.Empty);
         });
@@ -76,7 +76,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenRequiredAttributeMemberMissing_ShouldReportWireNameInMessage()
     {
-        var ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        TomlSerializationException ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
         {
             _ = TomlSerializer.Deserialize<RequiredAttributeModel>(string.Empty);
         });
@@ -92,7 +92,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenConstructorParameterWithoutDefaultMissing_ShouldThrowTomlSerializationException()
     {
-        var ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        TomlSerializationException ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
         {
             _ = TomlSerializer.Deserialize<RequiredConstructorParameterModel>(string.Empty);
         });
@@ -107,7 +107,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenConstructorParameterWithoutDefaultPresent_ShouldRoundTrip()
     {
-        var model = TomlSerializer.Deserialize<RequiredConstructorParameterModel>("Value = 7\n");
+        RequiredConstructorParameterModel model = TomlSerializer.Deserialize<RequiredConstructorParameterModel>("Value = 7\n");
 
         Assert.AreEqual(7, model.Value);
     }
@@ -119,7 +119,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenConstructorParameterWithDefaultMissing_ShouldNotThrow()
     {
-        var model = TomlSerializer.Deserialize<DefaultedConstructorParameterModel>(string.Empty);
+        DefaultedConstructorParameterModel model = TomlSerializer.Deserialize<DefaultedConstructorParameterModel>(string.Empty);
 
         Assert.AreEqual(5, model.Value);
     }
@@ -143,7 +143,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenAllRequiredMembersPresent_ShouldRoundTrip()
     {
-        var model = TomlSerializer.Deserialize<TwoRequiredMembersModel>("First = \"a\"\nSecond = \"b\"\n");
+        TwoRequiredMembersModel model = TomlSerializer.Deserialize<TwoRequiredMembersModel>("First = \"a\"\nSecond = \"b\"\n");
 
         Assert.AreEqual("a", model.First);
         Assert.AreEqual("b", model.Second);

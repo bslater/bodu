@@ -19,7 +19,7 @@ public sealed partial class HashValueTests
     [DynamicData(nameof(ValidHexVectors), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void TryParseHex_WhenTextIsWellFormed_ShouldReturnTrueAndDecode(ValidKat<string, byte[]> kat)
     {
-        bool parsed = HashValue.TryParseHex(kat.Input, out var hash);
+        bool parsed = HashValue.TryParseHex(kat.Input, out HashValue hash);
 
         Assert.IsTrue(parsed);
         CollectionAssert.AreEqual(kat.Expected, hash.ToArray());
@@ -34,7 +34,7 @@ public sealed partial class HashValueTests
     [DynamicData(nameof(InvalidHexVectors), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void TryParseHex_WhenTextIsMalformed_ShouldReturnFalseWithEmptyValue(InvalidKat<string> kat)
     {
-        bool parsed = HashValue.TryParseHex(kat.Input, out var hash);
+        bool parsed = HashValue.TryParseHex(kat.Input, out HashValue hash);
 
         Assert.IsFalse(parsed);
         Assert.IsTrue(hash.IsEmpty);
@@ -47,7 +47,7 @@ public sealed partial class HashValueTests
     [TestMethod]
     public void TryParseHex_WhenTextIsNull_ShouldReturnFalseWithEmptyValue()
     {
-        bool parsed = HashValue.TryParseHex(null, out var hash);
+        bool parsed = HashValue.TryParseHex(null, out HashValue hash);
 
         Assert.IsFalse(parsed);
         Assert.IsTrue(hash.IsEmpty);

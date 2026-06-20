@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlSerializerTests.ObjectCreation.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -25,7 +25,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenDefaultHandlingAndSeededList_ShouldReplace()
     {
-        var model = TomlSerializer.Deserialize<SettableListModel>("Items = [2, 3]\n");
+        SettableListModel model = TomlSerializer.Deserialize<SettableListModel>("Items = [2, 3]\n");
 
         CollectionAssert.AreEqual(new[] { 2, 3 }, model.Items);
     }
@@ -39,7 +39,7 @@ public partial class TomlSerializerTests
     {
         var options = new TomlSerializerOptions { PreferredObjectCreationHandling = TomlObjectCreationHandling.Populate };
 
-        var model = TomlSerializer.Deserialize<SettableListModel>("Items = [2, 3]\n", options);
+        SettableListModel model = TomlSerializer.Deserialize<SettableListModel>("Items = [2, 3]\n", options);
 
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, model.Items);
     }
@@ -53,7 +53,7 @@ public partial class TomlSerializerTests
     {
         var options = new TomlSerializerOptions { PreferredObjectCreationHandling = TomlObjectCreationHandling.Populate };
 
-        var model = TomlSerializer.Deserialize<GetOnlyListModel>("Items = [2, 3]\n", options);
+        GetOnlyListModel model = TomlSerializer.Deserialize<GetOnlyListModel>("Items = [2, 3]\n", options);
 
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, model.Items);
     }
@@ -66,7 +66,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenMemberPopulateAttributeAndOptionsDefault_ShouldAppendToExisting()
     {
-        var model = TomlSerializer.Deserialize<MemberPopulateModel>("Items = [2, 3]\n");
+        MemberPopulateModel model = TomlSerializer.Deserialize<MemberPopulateModel>("Items = [2, 3]\n");
 
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, model.Items);
     }
@@ -80,7 +80,7 @@ public partial class TomlSerializerTests
     {
         var options = new TomlSerializerOptions { PreferredObjectCreationHandling = TomlObjectCreationHandling.Populate };
 
-        var model = TomlSerializer.Deserialize<MemberReplaceModel>("Items = [2, 3]\n", options);
+        MemberReplaceModel model = TomlSerializer.Deserialize<MemberReplaceModel>("Items = [2, 3]\n", options);
 
         CollectionAssert.AreEqual(new[] { 2, 3 }, model.Items);
     }
@@ -92,7 +92,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenTypePopulateAttribute_ShouldAppendToExisting()
     {
-        var model = TomlSerializer.Deserialize<TypePopulateModel>("Items = [2, 3]\n");
+        TypePopulateModel model = TomlSerializer.Deserialize<TypePopulateModel>("Items = [2, 3]\n");
 
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, model.Items);
     }
@@ -104,7 +104,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenMemberReplaceOverridesTypePopulate_ShouldReplace()
     {
-        var model = TomlSerializer.Deserialize<TypePopulateWithMemberReplaceModel>("Items = [2, 3]\n");
+        TypePopulateWithMemberReplaceModel model = TomlSerializer.Deserialize<TypePopulateWithMemberReplaceModel>("Items = [2, 3]\n");
 
         CollectionAssert.AreEqual(new[] { 2, 3 }, model.Items);
     }
@@ -118,7 +118,7 @@ public partial class TomlSerializerTests
     {
         var options = new TomlSerializerOptions { PreferredObjectCreationHandling = TomlObjectCreationHandling.Populate };
 
-        var model = TomlSerializer.Deserialize<SeededDictionaryModel>("[Counts]\nb = 9\nc = 3\n", options);
+        SeededDictionaryModel model = TomlSerializer.Deserialize<SeededDictionaryModel>("[Counts]\nb = 9\nc = 3\n", options);
 
         Assert.AreEqual(1, model.Counts["a"]);
         Assert.AreEqual(9, model.Counts["b"]);
@@ -135,7 +135,7 @@ public partial class TomlSerializerTests
     {
         var options = new TomlSerializerOptions { PreferredObjectCreationHandling = TomlObjectCreationHandling.Populate };
 
-        var model = TomlSerializer.Deserialize<NullSeedListModel>("Items = [2, 3]\n", options);
+        NullSeedListModel model = TomlSerializer.Deserialize<NullSeedListModel>("Items = [2, 3]\n", options);
 
         Assert.IsNotNull(model.Items);
         CollectionAssert.AreEqual(new[] { 2, 3 }, model.Items);

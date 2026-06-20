@@ -27,7 +27,7 @@ public partial class BencodeSerializerTests
     {
         byte[] bytes = Encoding.Latin1.GetBytes("d4:Name1:n5:alphai1e4:betai2ee");
 
-        var model = BencodeSerializer.Deserialize<ObjectExtensionDataModel>(bytes);
+        ObjectExtensionDataModel model = BencodeSerializer.Deserialize<ObjectExtensionDataModel>(bytes);
 
         Assert.AreEqual("n", model.Name);
         Assert.IsNotNull(model.Extra);
@@ -45,7 +45,7 @@ public partial class BencodeSerializerTests
     {
         byte[] bytes = Encoding.Latin1.GetBytes("d4:Name1:n5:alphai1e3:zzzi9ee");
 
-        var model = BencodeSerializer.Deserialize<ObjectExtensionDataModel>(bytes);
+        ObjectExtensionDataModel model = BencodeSerializer.Deserialize<ObjectExtensionDataModel>(bytes);
         byte[] rewritten = BencodeSerializer.Serialize(model);
 
         // Declared member Name and the two extension entries alpha and zzz merge into one sorted dictionary.
@@ -61,7 +61,7 @@ public partial class BencodeSerializerTests
     {
         byte[] bytes = Encoding.Latin1.GetBytes("d4:Name1:n5:extrai7ee");
 
-        var model = BencodeSerializer.Deserialize<DictionaryExtensionDataModel>(bytes);
+        DictionaryExtensionDataModel model = BencodeSerializer.Deserialize<DictionaryExtensionDataModel>(bytes);
 
         Assert.AreEqual("n", model.Name);
         Assert.IsNotNull(model.Extra);
@@ -78,7 +78,7 @@ public partial class BencodeSerializerTests
     {
         byte[] bytes = Encoding.Latin1.GetBytes("d4:Name1:n5:extrai7ee");
 
-        var model = BencodeSerializer.Deserialize<GetOnlyDictionaryExtensionDataModel>(bytes);
+        GetOnlyDictionaryExtensionDataModel model = BencodeSerializer.Deserialize<GetOnlyDictionaryExtensionDataModel>(bytes);
 
         Assert.AreEqual("n", model.Name);
         Assert.AreEqual(1, model.Extra.Count);
@@ -94,7 +94,7 @@ public partial class BencodeSerializerTests
     {
         byte[] bytes = Encoding.Latin1.GetBytes("d4:Name1:n5:extrai7ee");
 
-        var model = BencodeSerializer.Deserialize<ObjectExtensionDataModel>(bytes);
+        ObjectExtensionDataModel model = BencodeSerializer.Deserialize<ObjectExtensionDataModel>(bytes);
 
         Assert.AreEqual("n", model.Name);
         Assert.IsNotNull(model.Extra);
@@ -111,7 +111,7 @@ public partial class BencodeSerializerTests
     {
         byte[] bytes = Encoding.Latin1.GetBytes("d4:Name1:ne");
 
-        var model = BencodeSerializer.Deserialize<ObjectExtensionDataModel>(bytes);
+        ObjectExtensionDataModel model = BencodeSerializer.Deserialize<ObjectExtensionDataModel>(bytes);
 
         Assert.AreEqual("n", model.Name);
         Assert.IsNull(model.Extra);
@@ -127,7 +127,7 @@ public partial class BencodeSerializerTests
         var options = new BencodeSerializerOptions { UnmappedMemberHandling = BencodeUnmappedMemberHandling.Disallow };
         byte[] bytes = Encoding.Latin1.GetBytes("d4:Name1:n7:unknowni1ee");
 
-        var model = BencodeSerializer.Deserialize<ObjectExtensionDataModel>(bytes, options);
+        ObjectExtensionDataModel model = BencodeSerializer.Deserialize<ObjectExtensionDataModel>(bytes, options);
 
         Assert.AreEqual("n", model.Name);
         Assert.IsNotNull(model.Extra);

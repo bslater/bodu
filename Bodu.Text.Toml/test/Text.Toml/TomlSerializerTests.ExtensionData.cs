@@ -24,7 +24,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenUnmatchedKeysAndTomlObjectExtensionData_ShouldCaptureOverflow()
     {
-        var model = TomlSerializer.Deserialize<ObjectExtensionDataModel>("Name = \"n\"\nalpha = 1\nbeta = 2\n");
+        ObjectExtensionDataModel model = TomlSerializer.Deserialize<ObjectExtensionDataModel>("Name = \"n\"\nalpha = 1\nbeta = 2\n");
 
         Assert.AreEqual("n", model.Name);
         Assert.IsNotNull(model.Extra);
@@ -41,7 +41,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void SerializeDeserialize_WhenTomlObjectExtensionData_ShouldWriteBackAfterDeclaredMembers()
     {
-        var model = TomlSerializer.Deserialize<ObjectExtensionDataModel>("Name = \"n\"\nzzz = 9\nalpha = 1\n");
+        ObjectExtensionDataModel model = TomlSerializer.Deserialize<ObjectExtensionDataModel>("Name = \"n\"\nzzz = 9\nalpha = 1\n");
 
         string rewritten = TomlSerializer.Serialize(model);
 
@@ -56,7 +56,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenDictionaryExtensionData_ShouldCaptureOverflow()
     {
-        var model = TomlSerializer.Deserialize<DictionaryExtensionDataModel>("Name = \"n\"\nextra = 7\n");
+        DictionaryExtensionDataModel model = TomlSerializer.Deserialize<DictionaryExtensionDataModel>("Name = \"n\"\nextra = 7\n");
 
         Assert.AreEqual("n", model.Name);
         Assert.IsNotNull(model.Extra);
@@ -71,7 +71,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenGetOnlyDictionaryExtensionData_ShouldPopulateExistingInstance()
     {
-        var model = TomlSerializer.Deserialize<GetOnlyDictionaryExtensionDataModel>("Name = \"n\"\nextra = 7\n");
+        GetOnlyDictionaryExtensionDataModel model = TomlSerializer.Deserialize<GetOnlyDictionaryExtensionDataModel>("Name = \"n\"\nextra = 7\n");
 
         Assert.AreEqual("n", model.Name);
         Assert.AreEqual(1, model.Extra.Count);
@@ -85,7 +85,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenKeyMatchesDeclaredMember_ShouldNotCaptureIntoExtensionData()
     {
-        var model = TomlSerializer.Deserialize<ObjectExtensionDataModel>("Name = \"n\"\nextra = 7\n");
+        ObjectExtensionDataModel model = TomlSerializer.Deserialize<ObjectExtensionDataModel>("Name = \"n\"\nextra = 7\n");
 
         Assert.AreEqual("n", model.Name);
         Assert.IsNotNull(model.Extra);
@@ -100,7 +100,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenNoUnmatchedKeys_ShouldLeaveExtensionDataUnset()
     {
-        var model = TomlSerializer.Deserialize<ObjectExtensionDataModel>("Name = \"n\"\n");
+        ObjectExtensionDataModel model = TomlSerializer.Deserialize<ObjectExtensionDataModel>("Name = \"n\"\n");
 
         Assert.AreEqual("n", model.Name);
         Assert.IsNull(model.Extra);
@@ -115,7 +115,7 @@ public partial class TomlSerializerTests
     {
         var options = new TomlSerializerOptions { UnmappedMemberHandling = TomlUnmappedMemberHandling.Disallow };
 
-        var model = TomlSerializer.Deserialize<ObjectExtensionDataModel>("Name = \"n\"\nunknown = 1\n", options);
+        ObjectExtensionDataModel model = TomlSerializer.Deserialize<ObjectExtensionDataModel>("Name = \"n\"\nunknown = 1\n", options);
 
         Assert.AreEqual("n", model.Name);
         Assert.IsNotNull(model.Extra);

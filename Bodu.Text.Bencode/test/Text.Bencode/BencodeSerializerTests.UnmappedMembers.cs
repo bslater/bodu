@@ -27,7 +27,7 @@ public partial class BencodeSerializerTests
     {
         byte[] bytes = Encoding.Latin1.GetBytes("d4:Name1:n7:unknowni1ee");
 
-        var model = BencodeSerializer.Deserialize<PlainNameModel>(bytes);
+        PlainNameModel model = BencodeSerializer.Deserialize<PlainNameModel>(bytes);
 
         Assert.AreEqual("n", model.Name);
     }
@@ -42,7 +42,7 @@ public partial class BencodeSerializerTests
         var options = new BencodeSerializerOptions { UnmappedMemberHandling = BencodeUnmappedMemberHandling.Disallow };
         byte[] bytes = Encoding.Latin1.GetBytes("d4:Name1:n7:unknowni1ee");
 
-        var ex = Assert.ThrowsExactly<BencodeSerializationException>(() =>
+        BencodeSerializationException ex = Assert.ThrowsExactly<BencodeSerializationException>(() =>
         {
             _ = BencodeSerializer.Deserialize<PlainNameModel>(bytes, options);
         });
@@ -61,7 +61,7 @@ public partial class BencodeSerializerTests
         var options = new BencodeSerializerOptions { UnmappedMemberHandling = BencodeUnmappedMemberHandling.Disallow };
         byte[] bytes = Encoding.Latin1.GetBytes("d4:Name1:ne");
 
-        var model = BencodeSerializer.Deserialize<PlainNameModel>(bytes, options);
+        PlainNameModel model = BencodeSerializer.Deserialize<PlainNameModel>(bytes, options);
 
         Assert.AreEqual("n", model.Name);
     }
@@ -76,7 +76,7 @@ public partial class BencodeSerializerTests
     {
         byte[] bytes = Encoding.Latin1.GetBytes("d4:Name1:n7:unknowni1ee");
 
-        var ex = Assert.ThrowsExactly<BencodeSerializationException>(() =>
+        BencodeSerializationException ex = Assert.ThrowsExactly<BencodeSerializationException>(() =>
         {
             _ = BencodeSerializer.Deserialize<DisallowAttributeModel>(bytes);
         });
@@ -96,7 +96,7 @@ public partial class BencodeSerializerTests
         var options = new BencodeSerializerOptions { UnmappedMemberHandling = BencodeUnmappedMemberHandling.Disallow };
         byte[] bytes = Encoding.Latin1.GetBytes("d4:Name1:n7:unknowni1ee");
 
-        var model = BencodeSerializer.Deserialize<SkipAttributeModel>(bytes, options);
+        SkipAttributeModel model = BencodeSerializer.Deserialize<SkipAttributeModel>(bytes, options);
 
         Assert.AreEqual("n", model.Name);
     }
@@ -111,7 +111,7 @@ public partial class BencodeSerializerTests
         var options = new BencodeSerializerOptions { UnmappedMemberHandling = BencodeUnmappedMemberHandling.Disallow };
         byte[] bytes = Encoding.Latin1.GetBytes("d7:unknowni1ee");
 
-        var ex = Assert.ThrowsExactly<BencodeSerializationException>(() =>
+        BencodeSerializationException ex = Assert.ThrowsExactly<BencodeSerializationException>(() =>
         {
             _ = BencodeSerializer.Deserialize<PlainNameModel>(bytes, options);
         });

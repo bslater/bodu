@@ -88,7 +88,7 @@ public partial class TomlSerializerTests
         var original = new OrderedTrioModel { Alpha = 1, Bravo = 2, Charlie = 3 };
 
         string text = TomlSerializer.Serialize(original);
-        var roundTripped = TomlSerializer.Deserialize<OrderedTrioModel>(text);
+        OrderedTrioModel roundTripped = TomlSerializer.Deserialize<OrderedTrioModel>(text);
 
         Assert.AreEqual(1, roundTripped.Alpha);
         Assert.AreEqual(2, roundTripped.Bravo);

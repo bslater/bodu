@@ -52,7 +52,7 @@ public partial class TomlSerializerTests
         var options = new TomlSerializerOptions { PropertyNamingPolicy = kat.Input };
         string text = TomlSerializer.Serialize(new TwoWordModel { FirstName = "value" }, options);
 
-        var roundTripped = TomlSerializer.Deserialize<TwoWordModel>(text, options);
+        TwoWordModel roundTripped = TomlSerializer.Deserialize<TwoWordModel>(text, options);
         Assert.AreEqual("value", roundTripped.FirstName);
     }
 

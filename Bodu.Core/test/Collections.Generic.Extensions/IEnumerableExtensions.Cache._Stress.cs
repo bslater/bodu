@@ -65,7 +65,7 @@ public sealed partial class IEnumerableExtensionsTests_Cache
 
         // The controller publishes a fresh cache each iteration, releases the readers onto it, waits for them to
         // finish, then validates that every reader observed the full sequence.
-        var controller = StartWorker(() =>
+        Task controller = StartWorker(() =>
         {
             for (int i = 0; i < iterations; i++)
             {

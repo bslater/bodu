@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DistributedExchangeRateCacheOptionsTests.Constructor.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -18,7 +18,7 @@ public sealed partial class DistributedExchangeRateCacheOptionsTests
     [TestMethod]
     public void Constructor_WhenDistributedCacheIsNull_ShouldThrowArgumentNullException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = new DistributedExchangeRateCache(null!, new DistributedExchangeRateCacheOptions { Provider = "RBA" });
         });
@@ -34,7 +34,7 @@ public sealed partial class DistributedExchangeRateCacheOptionsTests
     {
         IDistributedCache backingStore = new MemoryDistributedCache(Options.Create(new MemoryDistributedCacheOptions()));
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = new DistributedExchangeRateCache(backingStore, (DistributedExchangeRateCacheOptions)null!);
         });

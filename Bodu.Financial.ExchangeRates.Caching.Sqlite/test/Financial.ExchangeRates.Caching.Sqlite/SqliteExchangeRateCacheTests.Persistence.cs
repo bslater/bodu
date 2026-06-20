@@ -22,7 +22,7 @@ public sealed partial class SqliteExchangeRateCacheTests
     [TestMethod]
     public void Store_WhenSecondInstanceOpensSameFile_ShouldReadPersistedRates()
     {
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
         string path = NewDatabasePath();
 
         SqliteExchangeRateCache writer = CreateFileCache(path);
@@ -44,7 +44,7 @@ public sealed partial class SqliteExchangeRateCacheTests
     [TestMethod]
     public void RecordCoverage_WhenSecondInstanceOpensSameFile_ShouldReadPersistedCoverage()
     {
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
         string path = NewDatabasePath();
 
         SqliteExchangeRateCache writer = CreateFileCache(path);
@@ -63,7 +63,7 @@ public sealed partial class SqliteExchangeRateCacheTests
     [TestMethod]
     public void StoreAndRecordCoverage_WhenSecondInstanceOpensSameFile_ShouldReadBothHalves()
     {
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
         string path = NewDatabasePath();
 
         SqliteExchangeRateCache writer = CreateFileCache(path);
@@ -84,7 +84,7 @@ public sealed partial class SqliteExchangeRateCacheTests
     [TestMethod]
     public void Store_WhenSharedInMemoryConnectionString_ShouldServeRate()
     {
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
         string connectionString = $"Data Source=bodu-test-{Guid.NewGuid():N};Mode=Memory;Cache=Shared";
 
         var cache = new SqliteExchangeRateCache(new SqliteExchangeRateCacheOptions { Provider = Provider, ConnectionString = connectionString });
@@ -106,7 +106,7 @@ public sealed partial class SqliteExchangeRateCacheTests
     public void GetRates_WhenDatabaseHasLegacyRatesSchema_ShouldMigrateAndReadRowWithNullObservedAtUtc()
     {
         string path = NewDatabasePath();
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
 
         // Build a database with the OLD rates schema (no observed_at column) and seed one row directly, modelling a
         // database written by a pre-C build of the cache.
@@ -130,7 +130,7 @@ public sealed partial class SqliteExchangeRateCacheTests
     public void Store_WhenDatabaseMigratedFromLegacySchema_ShouldPersistObservedAtUtc()
     {
         string path = NewDatabasePath();
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
         var observedAt = new DateTimeOffset(2023, 1, 6, 16, 0, 0, TimeSpan.Zero);
         SeedLegacyDatabase(path, new DateOnly(2023, 1, 3), 0.5000m, now);
 
