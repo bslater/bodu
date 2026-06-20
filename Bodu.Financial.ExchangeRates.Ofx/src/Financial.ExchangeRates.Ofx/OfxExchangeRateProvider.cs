@@ -144,11 +144,6 @@ public sealed class OfxExchangeRateProvider
     protected override string ProviderId => ProviderName;
 
     /// <inheritdoc />
-    protected override Exception CreateRangeInvertedException(DateOnly startDate, DateOnly endDate) =>
-        new OfxExchangeRateDateRangeException(
-            string.Format(CultureInfo.CurrentCulture, OfxResourceStrings.Arg_OutOfRange_OfxDateRange, startDate, endDate));
-
-    /// <inheritdoc />
     protected override string FormatRateNotFound(string fromIsoCode, string toIsoCode, DateOnly date) =>
         string.Format(CultureInfo.CurrentCulture, OfxResourceStrings.IO_KeyNotFound_OfxRate, fromIsoCode, toIsoCode, date);
 

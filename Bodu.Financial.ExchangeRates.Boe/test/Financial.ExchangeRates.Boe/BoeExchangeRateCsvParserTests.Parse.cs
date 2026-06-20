@@ -75,7 +75,7 @@ public partial class BoeExchangeRateCsvParserTests
     [TestMethod]
     public void Parse_WhenHeaderMissing_ShouldThrowFormatException()
     {
-        _ = Assert.ThrowsExactly<BoeExchangeRateFormatException>(() =>
+        _ = Assert.ThrowsExactly<ExchangeRateFormatException>(() =>
         {
             _ = BoeExchangeRateCsvParser.Parse("<html><body>Service unavailable</body></html>", new BoeExchangeRateOptions());
         });

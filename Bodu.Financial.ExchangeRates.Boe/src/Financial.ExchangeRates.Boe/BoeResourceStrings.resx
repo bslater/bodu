@@ -67,9 +67,6 @@
   <data name="IO_KeyNotFound_BoeSeries" xml:space="preserve">
     <value>Bank of England rates are quoted against GBP; the cross-currency pair {0}/{1} is not supported.</value>
   </data>
-  <data name="Arg_OutOfRange_BoeDateRange" xml:space="preserve">
-    <value>The end date {1} must not be earlier than the start date {0}.</value>
-  </data>
   <data name="Arg_Invalid_BoeOptionsEndpoint" xml:space="preserve">
     <value>The Bank of England options must specify endpoint options.</value>
   </data>

@@ -47,28 +47,28 @@ public partial class BoeExchangeRateProviderTests
 
     /// <summary>
     /// Verifies that a cross-currency pair with neither side equal to GBP throws
-    /// <see cref="BoeExchangeRateSeriesNotFoundException" />.
+    /// <see cref="ExchangeRateSeriesNotFoundException" />.
     /// </summary>
     [TestMethod]
     public async Task GetRatesAsync_WhenCrossPair_ShouldThrowSeriesNotFound()
     {
         (BoeExchangeRateProvider provider, _) = Create(allowSync: false);
 
-        _ = await Assert.ThrowsExactlyAsync<BoeExchangeRateSeriesNotFoundException>(async () =>
+        _ = await Assert.ThrowsExactlyAsync<ExchangeRateSeriesNotFoundException>(async () =>
         {
             _ = await provider.GetRatesAsync("USD", "JPY", new DateOnly(2023, 1, 1), new DateOnly(2023, 12, 31));
         });
     }
 
     /// <summary>
-    /// Verifies that an inverted date range throws <see cref="BoeExchangeRateDateRangeException" />.
+    /// Verifies that an inverted date range throws <see cref="ArgumentException" />.
     /// </summary>
     [TestMethod]
-    public async Task GetRatesAsync_WhenRangeInverted_ShouldThrowDateRange()
+    public async Task GetRatesAsync_WhenRangeInverted_ShouldThrowArgumentException()
     {
         (BoeExchangeRateProvider provider, _) = Create(allowSync: false);
 
-        _ = await Assert.ThrowsExactlyAsync<BoeExchangeRateDateRangeException>(async () =>
+        _ = await Assert.ThrowsExactlyAsync<ArgumentException>(async () =>
         {
             _ = await provider.GetRatesAsync("GBP", "USD", new DateOnly(2023, 12, 31), new DateOnly(2023, 1, 1));
         });

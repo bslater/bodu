@@ -39,28 +39,28 @@ public class YahooChartResponseParserTests
     }
 
     /// <summary>
-    /// Verifies that a chart-error response throws <see cref="YahooExchangeRateFormatException" />.
+    /// Verifies that a chart-error response throws <see cref="ExchangeRateFormatException" />.
     /// </summary>
     [TestMethod]
     public void Parse_WhenChartError_ShouldThrowFormatException()
     {
         byte[] json = YahooFixtures.ReadBytes(YahooFixtures.ErrorNotFound);
 
-        _ = Assert.ThrowsExactly<YahooExchangeRateFormatException>(() =>
+        _ = Assert.ThrowsExactly<ExchangeRateFormatException>(() =>
         {
             _ = YahooChartResponseParser.Parse(json, CreateRequest(), new YahooExchangeRateOptions());
         });
     }
 
     /// <summary>
-    /// Verifies that malformed JSON throws <see cref="YahooExchangeRateFormatException" />.
+    /// Verifies that malformed JSON throws <see cref="ExchangeRateFormatException" />.
     /// </summary>
     [TestMethod]
     public void Parse_WhenMalformedJson_ShouldThrowFormatException()
     {
         byte[] json = Encoding.UTF8.GetBytes("{ not json");
 
-        _ = Assert.ThrowsExactly<YahooExchangeRateFormatException>(() =>
+        _ = Assert.ThrowsExactly<ExchangeRateFormatException>(() =>
         {
             _ = YahooChartResponseParser.Parse(json, CreateRequest(), new YahooExchangeRateOptions());
         });

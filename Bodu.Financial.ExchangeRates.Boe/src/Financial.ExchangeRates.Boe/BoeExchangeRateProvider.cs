@@ -185,7 +185,7 @@ public sealed class BoeExchangeRateProvider
     /// <param name="endDate">The inclusive end of the range.</param>
     /// <param name="cancellationToken">A token to observe while awaiting the load.</param>
     /// <returns>A task that completes when the range has been loaded.</returns>
-    /// <exception cref="BoeExchangeRateDateRangeException">
+    /// <exception cref="ArgumentException">
     /// Thrown when <paramref name="endDate" /> precedes <paramref name="startDate" />.
     /// </exception>
     public Task LoadRangeAsync(DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default)
@@ -228,7 +228,7 @@ public sealed class BoeExchangeRateProvider
         if (!string.Equals(fromIsoCode, baseIso, StringComparison.Ordinal) &&
             !string.Equals(toIsoCode, baseIso, StringComparison.Ordinal))
         {
-            throw new BoeExchangeRateSeriesNotFoundException(
+            throw new ExchangeRateSeriesNotFoundException(
                 string.Format(CultureInfo.CurrentCulture, BoeResourceStrings.IO_KeyNotFound_BoeSeries, fromIsoCode, toIsoCode));
         }
     }
@@ -236,11 +236,6 @@ public sealed class BoeExchangeRateProvider
     /// <inheritdoc />
     protected override void OnObservationIngested(ExchangeRate rate) =>
         Log.ObservationIngested(_logger, _options.ObservationIngestedLogLevel, rate.From.ToString(), rate.To.ToString(), rate.Date, rate.Rate);
-
-    /// <inheritdoc />
-    protected override Exception CreateRangeInvertedException(DateOnly startDate, DateOnly endDate) =>
-        new BoeExchangeRateDateRangeException(
-            string.Format(CultureInfo.CurrentCulture, BoeResourceStrings.Arg_OutOfRange_BoeDateRange, startDate, endDate));
 
     /// <inheritdoc />
     protected override string FormatRateNotFound(string fromIsoCode, string toIsoCode, DateOnly date) =>

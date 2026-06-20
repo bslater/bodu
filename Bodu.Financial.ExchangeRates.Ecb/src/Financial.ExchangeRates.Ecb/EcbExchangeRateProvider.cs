@@ -226,7 +226,7 @@ public sealed class EcbExchangeRateProvider
     /// <param name="endDate">The inclusive end of the range.</param>
     /// <param name="cancellationToken">A token to observe while awaiting the load.</param>
     /// <returns>A task that completes when the covering feed has been loaded.</returns>
-    /// <exception cref="EcbExchangeRateDateRangeException">
+    /// <exception cref="ArgumentException">
     /// Thrown when <paramref name="endDate" /> precedes <paramref name="startDate" />.
     /// </exception>
     public Task LoadRangeAsync(DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default)
@@ -271,7 +271,7 @@ public sealed class EcbExchangeRateProvider
         if (!string.Equals(fromIsoCode, baseIso, StringComparison.Ordinal) &&
             !string.Equals(toIsoCode, baseIso, StringComparison.Ordinal))
         {
-            throw new EcbExchangeRateSeriesNotFoundException(
+            throw new ExchangeRateSeriesNotFoundException(
                 string.Format(CultureInfo.CurrentCulture, EcbResourceStrings.IO_KeyNotFound_EcbSeries, fromIsoCode, toIsoCode));
         }
     }
@@ -283,11 +283,6 @@ public sealed class EcbExchangeRateProvider
     /// <inheritdoc />
     protected override void OnSynchronousNetworkFetch(DateOnly date) =>
         Log.SynchronousNetworkFetch(_logger, _options.SynchronousNetworkFetchLogLevel, date);
-
-    /// <inheritdoc />
-    protected override Exception CreateRangeInvertedException(DateOnly startDate, DateOnly endDate) =>
-        new EcbExchangeRateDateRangeException(
-            string.Format(CultureInfo.CurrentCulture, EcbResourceStrings.Arg_OutOfRange_EcbDateRange, startDate, endDate));
 
     /// <inheritdoc />
     protected override string FormatRateNotFound(string fromIsoCode, string toIsoCode, DateOnly date) =>

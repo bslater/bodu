@@ -64,9 +64,6 @@
   <data name="IO_KeyNotFound_OfxRate" xml:space="preserve">
     <value>No OFX exchange rate is available for {0}/{1} on {2}.</value>
   </data>
-  <data name="Arg_OutOfRange_OfxDateRange" xml:space="preserve">
-    <value>The end date {1} must not be earlier than the start date {0}.</value>
-  </data>
   <data name="Arg_Invalid_OfxOptionsHistoryPath" xml:space="preserve">
     <value>The OFX options history path must be specified and contain the '{interval}', '{from}', and '{to}' placeholders.</value>
   </data>

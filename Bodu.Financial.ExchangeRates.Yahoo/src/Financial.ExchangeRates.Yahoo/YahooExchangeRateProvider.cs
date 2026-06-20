@@ -156,11 +156,6 @@ public sealed class YahooExchangeRateProvider
         _options.BuildSymbol(pair.From.ToString(), pair.To.ToString());
 
     /// <inheritdoc />
-    protected override Exception CreateRangeInvertedException(DateOnly startDate, DateOnly endDate) =>
-        new YahooExchangeRateDateRangeException(
-            string.Format(CultureInfo.CurrentCulture, YahooResourceStrings.Arg_OutOfRange_YahooDateRange, startDate, endDate));
-
-    /// <inheritdoc />
     protected override string FormatRateNotFound(string fromIsoCode, string toIsoCode, DateOnly date) =>
         string.Format(CultureInfo.CurrentCulture, YahooResourceStrings.IO_KeyNotFound_YahooRate, fromIsoCode, toIsoCode, date);
 

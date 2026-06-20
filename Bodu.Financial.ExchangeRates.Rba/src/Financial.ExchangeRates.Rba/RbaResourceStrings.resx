@@ -73,9 +73,6 @@
   <data name="IO_KeyNotFound_RbaSeries" xml:space="preserve">
     <value>RBA historical rates are quoted against AUD; the cross-currency pair {0}/{1} is not supported.</value>
   </data>
-  <data name="Arg_OutOfRange_RbaDateRange" xml:space="preserve">
-    <value>The end date {1} must not be earlier than the start date {0}.</value>
-  </data>
   <data name="Arg_Invalid_RbaOptionsBaseUrl" xml:space="preserve">
     <value>The RBA options must specify a base URL.</value>
   </data>

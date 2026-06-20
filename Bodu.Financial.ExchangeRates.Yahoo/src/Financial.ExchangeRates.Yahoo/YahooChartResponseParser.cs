@@ -26,7 +26,7 @@ internal static class YahooChartResponseParser
     /// <param name="request">The originating request, supplying the pair and date range.</param>
     /// <param name="options">The provider options (reserved for future response-shaping behaviour).</param>
     /// <returns>The parsed chart.</returns>
-    /// <exception cref="YahooExchangeRateFormatException">
+    /// <exception cref="ExchangeRateFormatException">
     /// Thrown when the response is not valid JSON, carries a chart error, or omits the expected chart data.
     /// </exception>
     public static YahooExchangeRateChart Parse(byte[] json, YahooChartRequest request, YahooExchangeRateOptions options)
@@ -89,7 +89,7 @@ internal static class YahooChartResponseParser
     /// <param name="json">The UTF-8 JSON response bytes.</param>
     /// <param name="request">The originating request, used for the error message.</param>
     /// <returns>The parsed document.</returns>
-    /// <exception cref="YahooExchangeRateFormatException">Thrown when the bytes are not valid JSON.</exception>
+    /// <exception cref="ExchangeRateFormatException">Thrown when the bytes are not valid JSON.</exception>
     private static JsonDocument ParseDocument(byte[] json, YahooChartRequest request)
     {
         try
@@ -98,7 +98,7 @@ internal static class YahooChartResponseParser
         }
         catch (JsonException ex)
         {
-            throw new YahooExchangeRateFormatException(
+            throw new ExchangeRateFormatException(
                 string.Format(CultureInfo.CurrentCulture, YahooResourceStrings.Format_Invalid_YahooNoData, request.Symbol),
                 ex);
         }
@@ -109,7 +109,7 @@ internal static class YahooChartResponseParser
     /// </summary>
     /// <param name="chart">The <c>chart</c> element.</param>
     /// <param name="request">The originating request, used for the error message.</param>
-    /// <exception cref="YahooExchangeRateFormatException">Thrown when an error is present.</exception>
+    /// <exception cref="ExchangeRateFormatException">Thrown when an error is present.</exception>
     private static void ThrowOnChartError(JsonElement chart, YahooChartRequest request)
     {
         if (!chart.TryGetProperty("error", out JsonElement error) || error.ValueKind is JsonValueKind.Null)
@@ -119,7 +119,7 @@ internal static class YahooChartResponseParser
             ? element.GetString() ?? string.Empty
             : string.Empty;
 
-        throw new YahooExchangeRateFormatException(
+        throw new ExchangeRateFormatException(
             string.Format(CultureInfo.CurrentCulture, YahooResourceStrings.Format_Invalid_YahooChartError, request.Symbol, description));
     }
 
@@ -165,6 +165,6 @@ internal static class YahooChartResponseParser
     /// </summary>
     /// <param name="request">The originating request.</param>
     /// <returns>The exception to throw.</returns>
-    private static YahooExchangeRateFormatException NoData(YahooChartRequest request) =>
+    private static ExchangeRateFormatException NoData(YahooChartRequest request) =>
         new(string.Format(CultureInfo.CurrentCulture, YahooResourceStrings.Format_Invalid_YahooNoData, request.Symbol));
 }

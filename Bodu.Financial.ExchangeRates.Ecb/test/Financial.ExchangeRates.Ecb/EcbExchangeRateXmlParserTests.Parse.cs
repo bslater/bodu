@@ -80,7 +80,7 @@ public partial class EcbExchangeRateXmlParserTests
     {
         string xml = $"<gesmes:Envelope {Namespaces}><Cube></Cube></gesmes:Envelope>";
 
-        _ = Assert.ThrowsExactly<EcbExchangeRateFormatException>(() =>
+        _ = Assert.ThrowsExactly<ExchangeRateFormatException>(() =>
         {
             _ = Parse(xml);
         });
@@ -92,7 +92,7 @@ public partial class EcbExchangeRateXmlParserTests
     [TestMethod]
     public void Parse_WhenMalformedXml_ShouldThrowFormatException()
     {
-        _ = Assert.ThrowsExactly<EcbExchangeRateFormatException>(() =>
+        _ = Assert.ThrowsExactly<ExchangeRateFormatException>(() =>
         {
             _ = Parse("<gesmes:Envelope><Cube>");
         });

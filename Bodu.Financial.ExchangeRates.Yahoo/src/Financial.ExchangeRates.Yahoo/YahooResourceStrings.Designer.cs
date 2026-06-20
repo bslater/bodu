@@ -88,15 +88,6 @@ namespace Bodu.Financial.ExchangeRates.Yahoo {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The end date {1} must not be earlier than the start date {0}..
-        /// </summary>
-        internal static string Arg_OutOfRange_YahooDateRange {
-            get {
-                return ResourceManager.GetString("Arg_OutOfRange_YahooDateRange", resourceCulture);
-            }
-        }
-
-        /// <summary>
         ///   Looks up a localized string similar to The Yahoo options chart path must be specified and contain the '{symbol}' placeholder..
         /// </summary>
         internal static string Arg_Invalid_YahooOptionsChartPath {

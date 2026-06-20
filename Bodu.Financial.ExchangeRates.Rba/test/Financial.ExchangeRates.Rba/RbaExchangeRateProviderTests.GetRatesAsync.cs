@@ -45,26 +45,26 @@ public partial class RbaExchangeRateProviderTests
     }
 
     /// <summary>
-    /// Verifies that requesting a cross-currency pair throws <see cref="RbaExchangeRateSeriesNotFoundException" />.
+    /// Verifies that requesting a cross-currency pair throws <see cref="ExchangeRateSeriesNotFoundException" />.
     /// </summary>
     [TestMethod]
     public async Task GetRatesAsync_WhenCrossPair_ShouldThrowSeriesNotFound()
     {
         (RbaExchangeRateProvider provider, _) = Create(allowSync: false);
 
-        await Assert.ThrowsExactlyAsync<RbaExchangeRateSeriesNotFoundException>(async () =>
+        await Assert.ThrowsExactlyAsync<ExchangeRateSeriesNotFoundException>(async () =>
             await provider.GetRatesAsync("USD", "JPY", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 31)));
     }
 
     /// <summary>
-    /// Verifies that an inverted date range throws <see cref="RbaExchangeRateDateRangeException" />.
+    /// Verifies that an inverted date range throws <see cref="ArgumentException" />.
     /// </summary>
     [TestMethod]
-    public async Task GetRatesAsync_WhenEndBeforeStart_ShouldThrowDateRange()
+    public async Task GetRatesAsync_WhenEndBeforeStart_ShouldThrowArgumentException()
     {
         (RbaExchangeRateProvider provider, _) = Create(allowSync: false);
 
-        await Assert.ThrowsExactlyAsync<RbaExchangeRateDateRangeException>(async () =>
+        await Assert.ThrowsExactlyAsync<ArgumentException>(async () =>
             await provider.GetRatesAsync("AUD", "USD", new DateOnly(2023, 2, 1), new DateOnly(2023, 1, 1)));
     }
 }

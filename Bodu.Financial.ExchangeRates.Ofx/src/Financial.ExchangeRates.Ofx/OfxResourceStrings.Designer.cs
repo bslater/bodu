@@ -79,15 +79,6 @@ namespace Bodu.Financial.ExchangeRates.Ofx {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The end date {1} must not be earlier than the start date {0}..
-        /// </summary>
-        internal static string Arg_OutOfRange_OfxDateRange {
-            get {
-                return ResourceManager.GetString("Arg_OutOfRange_OfxDateRange", resourceCulture);
-            }
-        }
-
-        /// <summary>
         ///   Looks up a localized string similar to The OFX options history path must be specified and contain the '{interval}', '{from}', and '{to}' placeholders..
         /// </summary>
         internal static string Arg_Invalid_OfxOptionsHistoryPath {

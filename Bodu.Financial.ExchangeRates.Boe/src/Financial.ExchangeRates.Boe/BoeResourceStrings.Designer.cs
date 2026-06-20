@@ -88,15 +88,6 @@ namespace Bodu.Financial.ExchangeRates.Boe {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The end date {1} must not be earlier than the start date {0}..
-        /// </summary>
-        internal static string Arg_OutOfRange_BoeDateRange {
-            get {
-                return ResourceManager.GetString("Arg_OutOfRange_BoeDateRange", resourceCulture);
-            }
-        }
-
-        /// <summary>
         ///   Looks up a localized string similar to The Bank of England options must specify endpoint options..
         /// </summary>
         internal static string Arg_Invalid_BoeOptionsEndpoint {

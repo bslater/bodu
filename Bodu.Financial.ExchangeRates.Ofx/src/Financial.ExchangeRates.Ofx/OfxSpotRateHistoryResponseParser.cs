@@ -27,7 +27,7 @@ internal static class OfxSpotRateHistoryResponseParser
     /// <param name="request">The originating request, supplying the pair and date range.</param>
     /// <param name="options">The provider options used to build the series metadata.</param>
     /// <returns>The parsed, range-restricted observations and series metadata.</returns>
-    /// <exception cref="OfxExchangeRateFormatException">
+    /// <exception cref="ExchangeRateFormatException">
     /// Thrown when the response is not valid JSON or omits the expected <c>HistoricalPoints</c> array.
     /// </exception>
     public static PairRateData<OfxSeriesInfo> Parse(byte[] json, ExchangeRatePairRequest request, OfxExchangeRateOptions options)
@@ -70,7 +70,7 @@ internal static class OfxSpotRateHistoryResponseParser
     /// <param name="json">The UTF-8 JSON response bytes.</param>
     /// <param name="request">The originating request, used for the error message.</param>
     /// <returns>The parsed document.</returns>
-    /// <exception cref="OfxExchangeRateFormatException">Thrown when the bytes are not valid JSON.</exception>
+    /// <exception cref="ExchangeRateFormatException">Thrown when the bytes are not valid JSON.</exception>
     private static JsonDocument ParseDocument(byte[] json, ExchangeRatePairRequest request)
     {
         try
@@ -79,7 +79,7 @@ internal static class OfxSpotRateHistoryResponseParser
         }
         catch (JsonException ex)
         {
-            throw new OfxExchangeRateFormatException(
+            throw new ExchangeRateFormatException(
                 string.Format(CultureInfo.CurrentCulture, OfxResourceStrings.Format_Invalid_OfxNoData, request.Pair.From.ToString(), request.Pair.To.ToString()),
                 ex);
         }
@@ -135,6 +135,6 @@ internal static class OfxSpotRateHistoryResponseParser
     /// </summary>
     /// <param name="request">The originating request.</param>
     /// <returns>The exception to throw.</returns>
-    private static OfxExchangeRateFormatException NoData(ExchangeRatePairRequest request) =>
+    private static ExchangeRateFormatException NoData(ExchangeRatePairRequest request) =>
         new(string.Format(CultureInfo.CurrentCulture, OfxResourceStrings.Format_Invalid_OfxNoData, request.Pair.From.ToString(), request.Pair.To.ToString()));
 }
