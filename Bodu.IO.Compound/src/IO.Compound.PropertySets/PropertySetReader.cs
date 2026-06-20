@@ -122,13 +122,20 @@ internal static class PropertySetReader
         foreach ((int pid, int offset) in pairs)
         {
             int valueOffset = sectionOffset + offset;
-            if (pid == DictionaryPropertyId)
-            {
-                ParseDictionary(data, valueOffset, encoding, propertyNames);
-                continue;
-            }
 
-            properties[pid] = ParseTypedValue(data, valueOffset, encoding);
+            // Decode each property independently: an unsupported or malformed individual value is skipped so the
+            // remaining well-formed properties of the section are still surfaced.
+            try
+            {
+                if (pid == DictionaryPropertyId)
+                    ParseDictionary(data, valueOffset, encoding, propertyNames);
+                else
+                    properties[pid] = ParseTypedValue(data, valueOffset, encoding);
+            }
+            catch (CompoundFileFormatException)
+            {
+                // Skip the individual property; the section remains usable.
+            }
         }
 
         return new OlePropertySection(formatId, codePage, properties, propertyNames);
@@ -281,10 +288,28 @@ internal static class PropertySetReader
             case OlePropertyType.ClipboardData:
                 return ReadBlob(data, offset);
 
+            case OlePropertyType.Variant:
+                return ReadVariant(data, offset, encoding);
+
             default:
                 CompoundThrowHelper.ThrowFormat(CompoundResourceStrings.Format_Invalid_CompoundPropertySet, CompoundFileError.InvalidPropertySet);
                 return (null, 0);
         }
+    }
+
+    /// <summary>
+    /// Reads a self-describing variant element, decoding the inner type and value.
+    /// </summary>
+    /// <param name="data">The property-set bytes.</param>
+    /// <param name="offset">The byte offset of the variant's inner type word.</param>
+    /// <param name="encoding">The encoding used to decode ANSI strings.</param>
+    /// <returns>The decoded inner value and the number of bytes consumed, including the four-byte type prefix.</returns>
+    private static (object? Value, int Consumed) ReadVariant(ReadOnlySpan<byte> data, int offset, Encoding encoding)
+    {
+        Ensure(data, offset, 4);
+        var innerType = (OlePropertyType)(BinaryPrimitives.ReadUInt16LittleEndian(data.Slice(offset)) & TypeMask);
+        (object? value, int consumed) = ReadScalar(data, offset + 4, innerType, encoding);
+        return (value, 4 + consumed);
     }
 
     /// <summary>

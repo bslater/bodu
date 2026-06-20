@@ -1,0 +1,256 @@
+{
+  "source": "waveform-computing/compoundfiles (MIT) + decalage2/olefile (BSD)",
+  "generatedBy": "olefile 0.47",
+  "generatedAtUtc": "2026-06-20T23:46:28Z",
+  "fixtures": [
+    {
+      "relativePath": "valid/clean.dat",
+      "expected": "valid",
+      "sectorSize": 512,
+      "miniSectorSize": 64,
+      "miniStreamCutoff": 4096,
+      "rootClsid": "56616700-c154-11ce-8553-00aa00a1f95b",
+      "entries": [
+        {
+          "path": "Storage 1",
+          "type": "storage",
+          "size": 0
+        },
+        {
+          "path": "Storage 1/Stream 1",
+          "type": "stream",
+          "size": 544,
+          "sha256": "b2dd7659147c6296e476bbba3ea1f73937693ead45067167662a6495a40a55a7"
+        }
+      ]
+    },
+    {
+      "relativePath": "valid/example.dat",
+      "expected": "valid",
+      "sectorSize": 512,
+      "miniSectorSize": 64,
+      "miniStreamCutoff": 4096,
+      "rootClsid": "56616700-c154-11ce-8553-00aa00a1f95b",
+      "entries": [
+        {
+          "path": "Storage 1",
+          "type": "storage",
+          "size": 0
+        },
+        {
+          "path": "Storage 1/Stream 1",
+          "type": "stream",
+          "size": 544,
+          "sha256": "b2dd7659147c6296e476bbba3ea1f73937693ead45067167662a6495a40a55a7"
+        }
+      ]
+    },
+    {
+      "relativePath": "valid/example2.dat",
+      "expected": "valid",
+      "sectorSize": 512,
+      "miniSectorSize": 64,
+      "miniStreamCutoff": 4096,
+      "rootClsid": "56616700-c154-11ce-8553-00aa00a1f95b",
+      "entries": [
+        {
+          "path": "Storage 1",
+          "type": "storage",
+          "size": 0
+        },
+        {
+          "path": "Storage 1/Stream 1",
+          "type": "stream",
+          "size": 544,
+          "sha256": "b2dd7659147c6296e476bbba3ea1f73937693ead45067167662a6495a40a55a7"
+        },
+        {
+          "path": "Storage 1/Stream 2",
+          "type": "stream",
+          "size": 4112,
+          "sha256": "c684a8a6cf8c6dd5a817de10f5961cda360b782af0465ac77d894c66f70893dd"
+        }
+      ]
+    },
+    {
+      "relativePath": "valid/sample1.doc",
+      "expected": "valid",
+      "sectorSize": 512,
+      "miniSectorSize": 64,
+      "miniStreamCutoff": 4096,
+      "rootClsid": "00020906-0000-0000-c000-000000000046",
+      "entries": [
+        {
+          "path": "\u0001CompObj",
+          "type": "stream",
+          "size": 106,
+          "sha256": "6f1ec717cd671c4e65321a1129f6fe3036e0effc4f87b3c72160eeed71483760"
+        },
+        {
+          "path": "\u0005DocumentSummaryInformation",
+          "type": "stream",
+          "size": 4096,
+          "sha256": "6542789f8281b67ddcb06fe4de314c7348efbaba10d22d0dfe199493f2d3f26e"
+        },
+        {
+          "path": "\u0005SummaryInformation",
+          "type": "stream",
+          "size": 4096,
+          "sha256": "dd3637124b93192f2a5fec130cae3ad5fae810f94f4f82e03c3e9fca8aec1201"
+        },
+        {
+          "path": "1Table",
+          "type": "stream",
+          "size": 8375,
+          "sha256": "892eaafd38168fb283c29cd1f28c50699e0b7f48a74dae52b1a436e453d838f6"
+        },
+        {
+          "path": "ObjectPool",
+          "type": "storage",
+          "size": 0
+        },
+        {
+          "path": "WordDocument",
+          "type": "stream",
+          "size": 9280,
+          "sha256": "7463c25c95e196f72f57d861938f04412ee20488fb95b2877a60fa1e8005903b"
+        }
+      ]
+    },
+    {
+      "relativePath": "valid/sample1.xls",
+      "expected": "valid",
+      "sectorSize": 512,
+      "miniSectorSize": 64,
+      "miniStreamCutoff": 4096,
+      "rootClsid": "00020820-0000-0000-c000-000000000046",
+      "entries": [
+        {
+          "path": "\u0005DocumentSummaryInformation",
+          "type": "stream",
+          "size": 4096,
+          "sha256": "382248a46c13b442eeec92d82c266389f391a2829856f5de4881c24ff2335375"
+        },
+        {
+          "path": "\u0005SummaryInformation",
+          "type": "stream",
+          "size": 4096,
+          "sha256": "3e7ffe2770d42b55471aad56fb51b95d31446bd9195540c2abf567ad94146d1e"
+        },
+        {
+          "path": "Workbook",
+          "type": "stream",
+          "size": 11073,
+          "sha256": "1559db0edff427bf9de650b09f4092f83b715ba0d6fd686222136ce170b4a339"
+        }
+      ]
+    },
+    {
+      "relativePath": "valid/sample2.doc",
+      "expected": "valid",
+      "sectorSize": 512,
+      "miniSectorSize": 64,
+      "miniStreamCutoff": 4096,
+      "rootClsid": "00020906-0000-0000-c000-000000000046",
+      "entries": [
+        {
+          "path": "\u0001CompObj",
+          "type": "stream",
+          "size": 113,
+          "sha256": "829234de090289036f7562eb821e9776c689f407da61eb9039892634732ebf08"
+        },
+        {
+          "path": "\u0005DocumentSummaryInformation",
+          "type": "stream",
+          "size": 4096,
+          "sha256": "3bbab5710398f4d5d61020499dd0bfcf3dd113cef333ac66597372ec48817463"
+        },
+        {
+          "path": "\u0005SummaryInformation",
+          "type": "stream",
+          "size": 4096,
+          "sha256": "6e342646b98b781a4ddb7801b0e2559c2b95100e839be6ccf63bd6ecf9308962"
+        },
+        {
+          "path": "1Table",
+          "type": "stream",
+          "size": 19168,
+          "sha256": "8156657b27f2fcd7c86f7555ed1d1bb64cbe1b95ee3aa77d6ed8c1f50970d61f"
+        },
+        {
+          "path": "Data",
+          "type": "stream",
+          "size": 8420,
+          "sha256": "f66de91eabeda0417832fb2009ae8252daa7a9c3f327effd48d2de09f9c9abaf"
+        },
+        {
+          "path": "WordDocument",
+          "type": "stream",
+          "size": 25657,
+          "sha256": "c7a54d32e949dcd9559bde956acc569a423a8357dc7892cd3f3c9a35ae448f82"
+        }
+      ]
+    },
+    {
+      "relativePath": "valid/strange_sector_size_v4.dat",
+      "expected": "valid",
+      "sectorSize": 512,
+      "miniSectorSize": 64,
+      "miniStreamCutoff": 4096,
+      "rootClsid": "56616700-c154-11ce-8553-00aa00a1f95b",
+      "entries": [
+        {
+          "path": "Storage 1",
+          "type": "storage",
+          "size": 0
+        },
+        {
+          "path": "Storage 1/Stream 1",
+          "type": "stream",
+          "size": 544,
+          "sha256": "b2dd7659147c6296e476bbba3ea1f73937693ead45067167662a6495a40a55a7"
+        }
+      ]
+    },
+    {
+      "relativePath": "valid/test-ole-file.doc",
+      "expected": "valid",
+      "sectorSize": 512,
+      "miniSectorSize": 64,
+      "miniStreamCutoff": 4096,
+      "rootClsid": "00020906-0000-0000-c000-000000000046",
+      "entries": [
+        {
+          "path": "\u0001CompObj",
+          "type": "stream",
+          "size": 114,
+          "sha256": "f70fe384c672865fff4bb8ab60d73098bc751e8f2aa915b8aff2e2085648b428"
+        },
+        {
+          "path": "\u0005DocumentSummaryInformation",
+          "type": "stream",
+          "size": 4096,
+          "sha256": "a4952f48c6d318471d3f893427ee515e56fe4ce5e647d7753aee58a64029dfc1"
+        },
+        {
+          "path": "\u0005SummaryInformation",
+          "type": "stream",
+          "size": 4096,
+          "sha256": "de76ae07afb9258ad74d3c9df6f6bd1aade474a049217d3e7e521c33cca1d045"
+        },
+        {
+          "path": "1Table",
+          "type": "stream",
+          "size": 6438,
+          "sha256": "fd02a4bd70a2a221509a32dac3378b781f8d41ecfaa4ab402d36d4b49f1c8076"
+        },
+        {
+          "path": "WordDocument",
+          "type": "stream",
+          "size": 4096,
+          "sha256": "0ae30e8503d5b79034883c73930cbe5246eaf5cc0d229f109dff5eec0efa63d2"
+        }
+      ]
+    }
+  ]
+}

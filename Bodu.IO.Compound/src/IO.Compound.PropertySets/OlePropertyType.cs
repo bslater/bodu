@@ -47,6 +47,11 @@ public enum OlePropertyType : ushort
     Float64 = 5,
 
     /// <summary>
+    /// A self-describing variant element (<c>VT_VARIANT</c>), used within variant vectors.
+    /// </summary>
+    Variant = 12,
+
+    /// <summary>
     /// A currency value (<c>VT_CY</c>), surfaced as <see cref="decimal" />.
     /// </summary>
     Currency = 6,

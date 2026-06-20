@@ -4,38 +4,52 @@ A small, dependency-free reader for the **OLE2 / Compound File Binary (CFB)** co
 format — the structured-storage envelope behind legacy Microsoft Office files such as
 `.xls`, `.doc`, `.ppt`, and `.msg`.
 
-The reader understands only the *container*: it surfaces the directory of storages and
-streams and materializes the bytes of any named stream from its sector chain. It applies
-no interpretation to the contents of a stream — turning those bytes into a workbook, a
-document, or anything else is the consumer's job.
+The reader understands the *container*: it navigates the storage hierarchy, exposes the
+metadata of every entry, materializes the bytes of any named stream, and parses OLE
+**property sets** (summary information). It applies no interpretation to application stream
+contents — turning those bytes into a workbook, a document, or anything else is the
+consumer's job.
 
 ```csharp
 using Bodu.IO.Compound;
 
-using var file = CompoundBinaryFile.Open(stream);
+using var file = CompoundFile.Open(stream);
 
-foreach (CompoundDirectoryEntry entry in file.Entries)
-    Console.WriteLine($"{entry.Name} ({entry.Type}, {entry.Size} bytes)");
+// Navigate the storage hierarchy (the IStorage / IStream model).
+foreach (CompoundEntryInfo entry in file.RootStorage.EnumerateEntries())
+    Console.WriteLine($"{entry.Name} ({entry.EntryType}, {entry.Length} bytes, clsid {entry.ClassId})");
 
-if (file.TryGetStream("Workbook", out CompoundStream? workbook))
+if (file.RootStorage.TryOpenStream("Workbook", out CompoundStreamEntry? workbook))
 {
-    using (workbook)
-    {
-        // read workbook.AsMemory() or use it as a Stream
-    }
+    using CompoundStream stream = workbook.Open();
+    // read stream.AsMemory() or use it as a Stream
 }
+
+// Read document metadata from the OLE property sets.
+if (file.TryGetSummaryInformation(out var summary))
+    Console.WriteLine($"{summary.Title} by {summary.Author}, created {summary.CreateTime}");
 ```
 
 ## Capabilities
 
-- Header, sector-size, and signature validation.
-- Regular FAT traversal, including extended DIFAT sectors.
-- Mini-FAT and mini-stream resolution for streams below the cutoff.
-- Named-stream lookup (`TryGetStream` / `GetStream`) returning a read-only, seekable
-  `CompoundStream`.
+- Header, sector-size, and signature validation; `CompoundFile.IsCompoundFile` for a
+  non-destructive signature probe.
+- Regular FAT traversal (including extended DIFAT sectors) and mini-FAT / mini-stream
+  resolution, with cycle and out-of-range detection.
+- A navigable storage hierarchy (`CompoundStorage` / `CompoundStreamEntry`) with child
+  lookups scoped per storage — the managed counterpart of COM `IStorage` / `IStream`.
+- Per-entry metadata via `CompoundEntryInfo` (the `STATSTG` analogue): class id, state
+  bits, creation / modified time stamps, and red-black node color.
+- OLE property-set parsing (`Bodu.IO.Compound.PropertySets`): `OlePropertySet` /
+  `OlePropertyValue` (PROPVARIANT) plus the strongly-typed `SummaryInformation` and
+  `DocumentSummaryInformation` views, including user-defined custom properties.
+- Stable, message-independent failure classification through
+  `CompoundFileFormatException.Category` (`CompoundFileError`).
 
-## Out of scope
+## Out of scope (for now)
 
-Writing, mutation, encryption, and damaged-file recovery are intentionally not supported.
+Writing and mutation are designed for (see `CompoundFileMode`) but not yet implemented;
+`CompoundFile.Open` currently accepts only `CompoundFileMode.Read`. Encryption and
+damaged-file recovery are out of scope.
 
 Part of the [Bodu](https://github.com/bodu/bodu) utility library.
