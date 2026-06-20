@@ -221,7 +221,7 @@ public sealed class RbaExchangeRateProvider
     /// <param name="endDate">The inclusive end of the range.</param>
     /// <param name="cancellationToken">A token to observe while awaiting the loads.</param>
     /// <returns>A task that completes when the overlapping eras have been loaded.</returns>
-    /// <exception cref="RbaExchangeRateDateRangeException">
+    /// <exception cref="ArgumentException">
     /// Thrown when <paramref name="endDate" /> precedes <paramref name="startDate" />.
     /// </exception>
     public Task LoadRangeAsync(DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default)
@@ -270,7 +270,7 @@ public sealed class RbaExchangeRateProvider
         if (!string.Equals(fromIsoCode, baseIso, StringComparison.Ordinal) &&
             !string.Equals(toIsoCode, baseIso, StringComparison.Ordinal))
         {
-            throw new RbaExchangeRateSeriesNotFoundException(
+            throw new ExchangeRateSeriesNotFoundException(
                 string.Format(CultureInfo.CurrentCulture, RbaResourceStrings.IO_KeyNotFound_RbaSeries, fromIsoCode, toIsoCode));
         }
     }
@@ -278,11 +278,6 @@ public sealed class RbaExchangeRateProvider
     /// <inheritdoc />
     protected override void OnObservationIngested(ExchangeRate rate) =>
         Log.ObservationIngested(_logger, _options.ObservationIngestedLogLevel, rate.From.ToString(), rate.To.ToString(), rate.Date, rate.Rate);
-
-    /// <inheritdoc />
-    protected override Exception CreateRangeInvertedException(DateOnly startDate, DateOnly endDate) =>
-        new RbaExchangeRateDateRangeException(
-            string.Format(CultureInfo.CurrentCulture, RbaResourceStrings.Arg_OutOfRange_RbaDateRange, startDate, endDate));
 
     /// <inheritdoc />
     protected override string FormatRateNotFound(string fromIsoCode, string toIsoCode, DateOnly date) =>

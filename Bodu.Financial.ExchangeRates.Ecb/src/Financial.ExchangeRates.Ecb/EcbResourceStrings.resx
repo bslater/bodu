@@ -73,9 +73,6 @@
   <data name="IO_KeyNotFound_EcbSeries" xml:space="preserve">
     <value>ECB reference rates are quoted against EUR; the cross-currency pair {0}/{1} is not supported.</value>
   </data>
-  <data name="Arg_OutOfRange_EcbDateRange" xml:space="preserve">
-    <value>The end date {1} must not be earlier than the start date {0}.</value>
-  </data>
   <data name="Arg_Invalid_EcbOptionsBaseUrl" xml:space="preserve">
     <value>The ECB endpoint options must specify a base URL.</value>
   </data>

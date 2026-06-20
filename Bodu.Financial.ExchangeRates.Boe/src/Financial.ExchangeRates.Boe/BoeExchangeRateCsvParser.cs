@@ -48,7 +48,7 @@ internal static class BoeExchangeRateCsvParser
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="stream" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="BoeExchangeRateFormatException">
+    /// <exception cref="ExchangeRateFormatException">
     /// Thrown when the content does not contain the expected IADB CSV header.
     /// </exception>
     public static BoeExchangeRateTable Parse(Stream stream, BoeExchangeRateOptions options)
@@ -69,7 +69,7 @@ internal static class BoeExchangeRateCsvParser
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="content" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="BoeExchangeRateFormatException">
+    /// <exception cref="ExchangeRateFormatException">
     /// Thrown when the content does not contain the expected IADB CSV header.
     /// </exception>
     public static BoeExchangeRateTable Parse(string content, BoeExchangeRateOptions options)
@@ -84,13 +84,13 @@ internal static class BoeExchangeRateCsvParser
         }
         catch (DelimitedFormatException ex)
         {
-            throw new BoeExchangeRateFormatException(BoeResourceStrings.Format_Invalid_BoeHeaderMissing, ex);
+            throw new ExchangeRateFormatException(BoeResourceStrings.Format_Invalid_BoeHeaderMissing, ex);
         }
 
         if (document.Headers.Count == 0 ||
             !string.Equals(document.Headers[0], "DATE", StringComparison.OrdinalIgnoreCase))
         {
-            throw new BoeExchangeRateFormatException(BoeResourceStrings.Format_Invalid_BoeHeaderMissing);
+            throw new ExchangeRateFormatException(BoeResourceStrings.Format_Invalid_BoeHeaderMissing);
         }
 
         var byCode = BuildSeriesIndex(options);

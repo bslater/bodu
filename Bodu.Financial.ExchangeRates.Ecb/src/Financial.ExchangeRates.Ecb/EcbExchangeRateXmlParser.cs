@@ -40,7 +40,7 @@ internal static class EcbExchangeRateXmlParser
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="stream" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="EcbExchangeRateFormatException">
+    /// <exception cref="ExchangeRateFormatException">
     /// Thrown when the content is well-formed XML but does not match the expected <c>eurofxref</c> layout.
     /// </exception>
     public static EcbExchangeRateTable Parse(Stream stream, EcbExchangeRateOptions options)
@@ -61,7 +61,7 @@ internal static class EcbExchangeRateXmlParser
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="document" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="EcbExchangeRateFormatException">
+    /// <exception cref="ExchangeRateFormatException">
     /// Thrown when the document does not match the expected <c>eurofxref</c> layout.
     /// </exception>
     public static EcbExchangeRateTable Parse(XDocument document, EcbExchangeRateOptions options)
@@ -70,14 +70,14 @@ internal static class EcbExchangeRateXmlParser
         ThrowHelper.ThrowIfNull(options);
 
         if (document.Root is null)
-            throw new EcbExchangeRateFormatException(EcbResourceStrings.Format_Invalid_EcbEnvelopeMissing);
+            throw new ExchangeRateFormatException(EcbResourceStrings.Format_Invalid_EcbEnvelopeMissing);
 
         var dayCubes = document.Descendants(s_ecbNamespace + "Cube")
             .Where(static cube => cube.Attribute("time") is not null)
             .ToList();
 
         if (dayCubes.Count == 0)
-            throw new EcbExchangeRateFormatException(EcbResourceStrings.Format_Invalid_EcbNoDataRows);
+            throw new ExchangeRateFormatException(EcbResourceStrings.Format_Invalid_EcbNoDataRows);
 
         var observations = new List<EcbExchangeRateObservation>();
 
@@ -102,7 +102,7 @@ internal static class EcbExchangeRateXmlParser
     /// </summary>
     /// <param name="stream">The stream positioned at the start of the feed XML.</param>
     /// <returns>The loaded document.</returns>
-    /// <exception cref="EcbExchangeRateFormatException">
+    /// <exception cref="ExchangeRateFormatException">
     /// Thrown when the stream does not contain well-formed XML.
     /// </exception>
     private static XDocument Load(Stream stream)
@@ -113,7 +113,7 @@ internal static class EcbExchangeRateXmlParser
         }
         catch (XmlException ex)
         {
-            throw new EcbExchangeRateFormatException(EcbResourceStrings.Format_Invalid_EcbMalformedXml, ex);
+            throw new ExchangeRateFormatException(EcbResourceStrings.Format_Invalid_EcbMalformedXml, ex);
         }
     }
 

@@ -23,7 +23,7 @@ namespace Bodu.Financial.ExchangeRates.Rba;
 /// <para>
 /// Header rows are located by their label rather than a fixed position so the parser tolerates the minor layout
 /// differences between RBA era files. A workbook that does not match the expected shape raises
-/// <see cref="RbaExchangeRateFormatException" />.
+/// <see cref="ExchangeRateFormatException" />.
 /// </para>
 /// </remarks>
 internal static class RbaExchangeRateWorkbookParser
@@ -55,7 +55,7 @@ internal static class RbaExchangeRateWorkbookParser
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="workbook" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="RbaExchangeRateFormatException">
+    /// <exception cref="ExchangeRateFormatException">
     /// Thrown when the workbook does not match the expected RBA layout.
     /// </exception>
     internal static RbaExchangeRateTable Parse(Biff8WorkbookReader workbook, RbaExchangeRateOptions options)
@@ -64,7 +64,7 @@ internal static class RbaExchangeRateWorkbookParser
         ThrowHelper.ThrowIfNull(options);
 
         if (!HasDataSheet(workbook))
-            throw new RbaExchangeRateFormatException(RbaResourceStrings.Format_Invalid_RbaDataSheetMissing);
+            throw new ExchangeRateFormatException(RbaResourceStrings.Format_Invalid_RbaDataSheetMissing);
 
         Dictionary<(int Row, int Column), ExcelCell> grid = BuildGrid(workbook);
 
@@ -74,11 +74,11 @@ internal static class RbaExchangeRateWorkbookParser
         int descriptionRow = FindLabelRow(grid, DescriptionLabel);
 
         if (unitsRow < 0 && titleRow < 0)
-            throw new RbaExchangeRateFormatException(RbaResourceStrings.Format_Invalid_RbaHeaderRows);
+            throw new ExchangeRateFormatException(RbaResourceStrings.Format_Invalid_RbaHeaderRows);
 
         List<int> dataRows = FindDataRows(grid);
         if (dataRows.Count == 0)
-            throw new RbaExchangeRateFormatException(RbaResourceStrings.Format_Invalid_RbaNoDataRows);
+            throw new ExchangeRateFormatException(RbaResourceStrings.Format_Invalid_RbaNoDataRows);
 
         List<RbaExchangeRateSeries> series = BuildSeries(grid, unitsRow, titleRow, seriesIdRow, descriptionRow, options);
         List<RbaExchangeRateRow> rows = BuildRows(grid, dataRows, series);

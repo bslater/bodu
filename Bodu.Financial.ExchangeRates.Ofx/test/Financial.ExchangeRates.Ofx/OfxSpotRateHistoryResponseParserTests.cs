@@ -63,28 +63,28 @@ public class OfxSpotRateHistoryResponseParserTests
     }
 
     /// <summary>
-    /// Verifies that malformed JSON throws <see cref="OfxExchangeRateFormatException" />.
+    /// Verifies that malformed JSON throws <see cref="ExchangeRateFormatException" />.
     /// </summary>
     [TestMethod]
     public void Parse_WhenMalformedJson_ShouldThrowFormatException()
     {
         byte[] json = Utf8("{ not json");
 
-        _ = Assert.ThrowsExactly<OfxExchangeRateFormatException>(() =>
+        _ = Assert.ThrowsExactly<ExchangeRateFormatException>(() =>
         {
             _ = OfxSpotRateHistoryResponseParser.Parse(json, Request(new(2023, 1, 1), new(2023, 1, 31)), Options);
         });
     }
 
     /// <summary>
-    /// Verifies that a response without a <c>HistoricalPoints</c> array throws <see cref="OfxExchangeRateFormatException" />.
+    /// Verifies that a response without a <c>HistoricalPoints</c> array throws <see cref="ExchangeRateFormatException" />.
     /// </summary>
     [TestMethod]
     public void Parse_WhenMissingHistoricalPoints_ShouldThrowFormatException()
     {
         byte[] json = Utf8("""{ "CurrentInterbankRate": 0.6828 }""");
 
-        _ = Assert.ThrowsExactly<OfxExchangeRateFormatException>(() =>
+        _ = Assert.ThrowsExactly<ExchangeRateFormatException>(() =>
         {
             _ = OfxSpotRateHistoryResponseParser.Parse(json, Request(new(2023, 1, 1), new(2023, 1, 31)), Options);
         });

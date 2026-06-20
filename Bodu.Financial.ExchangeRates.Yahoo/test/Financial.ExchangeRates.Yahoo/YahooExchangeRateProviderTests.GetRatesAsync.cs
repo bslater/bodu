@@ -47,14 +47,14 @@ public partial class YahooExchangeRateProviderTests
     }
 
     /// <summary>
-    /// Verifies that an inverted date range throws <see cref="YahooExchangeRateDateRangeException" />.
+    /// Verifies that an inverted date range throws <see cref="ArgumentException" />.
     /// </summary>
     [TestMethod]
-    public async Task GetRatesAsync_WhenEndBeforeStart_ShouldThrowDateRangeException()
+    public async Task GetRatesAsync_WhenEndBeforeStart_ShouldThrowArgumentException()
     {
         (YahooExchangeRateProvider provider, _) = Create(allowSync: false);
 
-        await Assert.ThrowsExactlyAsync<YahooExchangeRateDateRangeException>(async () =>
+        await Assert.ThrowsExactlyAsync<ArgumentException>(async () =>
         {
             _ = await provider.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 31), new DateOnly(2023, 1, 1));
         });

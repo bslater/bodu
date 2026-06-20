@@ -106,15 +106,6 @@ namespace Bodu.Financial.ExchangeRates.Ecb {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The end date {1} must not be earlier than the start date {0}..
-        /// </summary>
-        internal static string Arg_OutOfRange_EcbDateRange {
-            get {
-                return ResourceManager.GetString("Arg_OutOfRange_EcbDateRange", resourceCulture);
-            }
-        }
-
-        /// <summary>
         ///   Looks up a localized string similar to The ECB endpoint options must specify a base URL..
         /// </summary>
         internal static string Arg_Invalid_EcbOptionsBaseUrl {

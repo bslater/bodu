@@ -47,28 +47,28 @@ public partial class EcbExchangeRateProviderTests
 
     /// <summary>
     /// Verifies that a cross-currency pair with neither side equal to EUR throws
-    /// <see cref="EcbExchangeRateSeriesNotFoundException" />.
+    /// <see cref="ExchangeRateSeriesNotFoundException" />.
     /// </summary>
     [TestMethod]
     public async Task GetRatesAsync_WhenCrossPair_ShouldThrowSeriesNotFound()
     {
         (EcbExchangeRateProvider provider, _) = Create(allowSync: false);
 
-        _ = await Assert.ThrowsExactlyAsync<EcbExchangeRateSeriesNotFoundException>(async () =>
+        _ = await Assert.ThrowsExactlyAsync<ExchangeRateSeriesNotFoundException>(async () =>
         {
             _ = await provider.GetRatesAsync("USD", "JPY", new DateOnly(2023, 1, 1), new DateOnly(2023, 12, 31));
         });
     }
 
     /// <summary>
-    /// Verifies that an inverted date range throws <see cref="EcbExchangeRateDateRangeException" />.
+    /// Verifies that an inverted date range throws <see cref="ArgumentException" />.
     /// </summary>
     [TestMethod]
-    public async Task GetRatesAsync_WhenRangeInverted_ShouldThrowDateRange()
+    public async Task GetRatesAsync_WhenRangeInverted_ShouldThrowArgumentException()
     {
         (EcbExchangeRateProvider provider, _) = Create(allowSync: false);
 
-        _ = await Assert.ThrowsExactlyAsync<EcbExchangeRateDateRangeException>(async () =>
+        _ = await Assert.ThrowsExactlyAsync<ArgumentException>(async () =>
         {
             _ = await provider.GetRatesAsync("EUR", "USD", new DateOnly(2023, 12, 31), new DateOnly(2023, 1, 1));
         });

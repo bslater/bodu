@@ -106,15 +106,6 @@ namespace Bodu.Financial.ExchangeRates.Rba {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The end date {1} must not be earlier than the start date {0}..
-        /// </summary>
-        internal static string Arg_OutOfRange_RbaDateRange {
-            get {
-                return ResourceManager.GetString("Arg_OutOfRange_RbaDateRange", resourceCulture);
-            }
-        }
-
-        /// <summary>
         ///   Looks up a localized string similar to The RBA options must specify a base URL..
         /// </summary>
         internal static string Arg_Invalid_RbaOptionsBaseUrl {
