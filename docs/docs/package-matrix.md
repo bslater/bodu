@@ -44,6 +44,7 @@ Several exchange-rate providers ship as independent packages over a shared `IDat
 |---|---|---|---|
 | `Bodu.IO.Compound` | **Preview** | Read-only reader for the OLE2 / Compound File Binary (CFB) container — the structured-storage envelope used by legacy Office files. Exposes the embedded named streams with no application-format knowledge. | `Bodu.Core` |
 | `Bodu.Formats.Excel.Binary` | **Preview** | Narrow, read-only BIFF8 (`.xls`) reader that surfaces raw worksheet cell values — strings, numbers, booleans, and errors — without formula evaluation, styling, or higher-level interpretation. | `Bodu.IO.Compound`, `Bodu.Core` |
+| `Bodu.Financial.ExchangeRates.DependencyInjection` | **Preview** | Shared dependency-injection machinery for the web-based exchange-rate providers. Exposes `AddWebExchangeRateProvider` on `IFinancialServiceBuilder`, handling `HttpClient` configuration with Polly resilience, options binding, and singleton registration so the per-source DI packages delegate their plumbing here. | `Bodu.Financial.DependencyInjection`, `Bodu.Core`, `Microsoft.Extensions.Http.Resilience` |
 | `Bodu.Financial.ExchangeRates.Rba` | **Preview** | Downloads and parses the RBA's published daily exchange-rate `.xls` files, serving them as `ExchangeRate` values through `IDatedExchangeRateProvider` / `IExchangeRateProvider`, with an async range API and in-memory plus on-disk caching. | `Bodu.Formats.Excel.Binary`, `Bodu.Financial`, `Bodu.Core` |
 | `Bodu.Financial.ExchangeRates.Rba.DependencyInjection` | **Preview** | `IServiceCollection` extensions that register the RBA provider as a singleton backed by a configured `HttpClient`, binding `RbaExchangeRateOptions` through `Microsoft.Extensions.Options`. | `Bodu.Financial.ExchangeRates.Rba`, `Bodu.Financial.DependencyInjection`, `Microsoft.Extensions.Http` |
 | `Bodu.Financial.ExchangeRates.Boe` | **Preview** | Queries the Bank of England's Interactive Statistical Database (IADB) CSV endpoint for daily spot rates, serving them as `ExchangeRate` values through `IDatedExchangeRateProvider` / `IExchangeRateProvider`, with an async range API and in-memory plus on-disk caching. | `Bodu.Text.Formats`, `Bodu.Financial`, `Bodu.Core` |
@@ -110,6 +111,7 @@ dotnet add package Bodu.Financial.DependencyInjection
 # File formats and exchange-rate data
 dotnet add package Bodu.IO.Compound
 dotnet add package Bodu.Formats.Excel.Binary
+dotnet add package Bodu.Financial.ExchangeRates.DependencyInjection
 dotnet add package Bodu.Financial.ExchangeRates.Rba
 dotnet add package Bodu.Financial.ExchangeRates.Rba.DependencyInjection
 dotnet add package Bodu.Financial.ExchangeRates.Boe
