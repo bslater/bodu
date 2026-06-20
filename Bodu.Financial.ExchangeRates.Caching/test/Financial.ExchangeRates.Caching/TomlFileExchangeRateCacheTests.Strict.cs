@@ -34,7 +34,7 @@ public sealed partial class TomlFileExchangeRateCacheTests
         });
         DateTimeOffset now = DateTimeOffset.UtcNow;
 
-        _ = Assert.ThrowsExactly<DirectoryNotFoundException>(() =>
+        _ = Assert.ThrowsExactly<IOException>(() =>
         {
             _ = cache.StoreFetchedRange(
                 Pair,
@@ -56,7 +56,7 @@ public sealed partial class TomlFileExchangeRateCacheTests
         Directory.CreateDirectory(Path.GetDirectoryName(_directory)!);
         File.WriteAllText(_directory, "not a directory");
 
-        _ = Assert.ThrowsExactly<DirectoryNotFoundException>(() =>
+        _ = Assert.ThrowsExactly<IOException>(() =>
         {
             _ = new TomlFileExchangeRateCache(new FileExchangeRateCacheOptions
             {
