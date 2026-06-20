@@ -34,7 +34,7 @@ public static class YahooServiceCollectionExtensions
     /// <exception cref="ArgumentException">
     /// Thrown when <paramref name="sectionName" /> is empty or white space.
     /// </exception>
-    public static IFinancialServiceBuilder AddBoduYahooExchangeRates(
+    public static IFinancialServiceBuilder AddYahooExchangeRates(
         this IServiceCollection services,
         IConfiguration? configuration = null,
         string sectionName = "Financial:Yahoo",

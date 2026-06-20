@@ -12,11 +12,11 @@ Registers `YahooExchangeRateProvider` as a singleton backed by an
 using Bodu.Financial.ExchangeRates.Yahoo.DependencyInjection;
 
 // One-call entry point: core Bodu.Financial services + the Yahoo provider.
-services.AddBoduYahooExchangeRates(configuration);
+services.AddYahooExchangeRates(configuration);
 
 // Or compose onto an existing financial builder.
 services
-    .AddBoduFinancial(configuration)
+    .AddFinancialService(configuration)
     .AddYahooExchangeRates(configuration, configure: o => o.DefaultLookback = TimeSpan.FromDays(14));
 ```
 

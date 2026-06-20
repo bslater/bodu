@@ -68,7 +68,7 @@ api.healthcheck.timeoutseconds = 3
     {
         using MemoryStream stream = new(Encoding.UTF8.GetBytes(Source));
         return new ConfigurationBuilder()
-            .AddBoduConfigurationStream(stream)
+            .AddTextConfigurationStream(stream)
             .Build();
     }
 

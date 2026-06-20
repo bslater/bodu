@@ -19,7 +19,7 @@ the vocabulary (source, provider, target path, parse / resolve option propagatio
 
 ![IConfigurationBuilder to IConfiguration to IOptions](../../images/diagrams/extensions-configuration-text-flow.svg)
 
-`AddBoduConfigurationFile(...)` registers a <xref:Bodu.Extensions.Configuration.Text.TextConfigurationSource> on the
+`AddTextConfigurationFile(...)` registers a <xref:Bodu.Extensions.Configuration.Text.TextConfigurationSource> on the
 builder. When the builder calls `Build`, the source instantiates a
 <xref:Bodu.Extensions.Configuration.Text.TextConfigurationProvider> that parses the file via
 <xref:Bodu.Text.Configuration.ConfigurationDocument>, resolves it for the source's `TargetPath`, and copies the
@@ -32,7 +32,7 @@ sections to typed POCO classes through the standard `Microsoft.Extensions.Depend
 
 <div class="bodu-card">
   <h3><a href="configuration-sources.md">Configuration sources</a></h3>
-  <p>Every <code>AddBoduConfiguration*</code> overload — file, stream, pre-parsed document, convention-based discovery, fluent source configuration — plus reload-on-change, <code>IOptions&lt;T&gt;</code> binding, and layering alongside JSON and environment-variable sources.</p>
+  <p>Every <code>AddTextConfiguration*</code> overload — file, stream, pre-parsed document, convention-based discovery, fluent source configuration — plus reload-on-change, <code>IOptions&lt;T&gt;</code> binding, and layering alongside JSON and environment-variable sources.</p>
 </div>
 
 <div class="bodu-card">
@@ -55,7 +55,7 @@ sections to typed POCO classes through the standard `Microsoft.Extensions.Depend
 ## Reading path
 
 1. **[Getting started](../../docs/extensions-configuration-text/getting-started.md)** — install and confirm the minimal file-source sample runs.
-2. **[Configuration sources](configuration-sources.md)** — pick the right `AddBoduConfiguration*` overload for your scenario and wire up options binding and reload.
+2. **[Configuration sources](configuration-sources.md)** — pick the right `AddTextConfiguration*` overload for your scenario and wire up options binding and reload.
 3. **[Views and resolution](../text-configuration/views-and-resolution.md)** — when you need to understand *which* value the bridge surfaced, drop down to the underlying resolve layer.
 
 The bridge propagates `ParseOptions` and `ResolveOptions` verbatim to the underlying library, so everything in the

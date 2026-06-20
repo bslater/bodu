@@ -15,7 +15,7 @@ uid: Bodu.Financial.ExchangeRates.Ecb.DependencyInjection
 ## Key types
 
 - <xref:Bodu.Financial.ExchangeRates.Ecb.DependencyInjection.EcbFinancialServiceBuilderExtensions> — `AddEcbReferenceRates(configuration?, sectionName?, configure?, configureResilience?)` on the financial service builder.
-- <xref:Bodu.Financial.ExchangeRates.Ecb.DependencyInjection.EcbServiceCollectionExtensions> — `AddBoduEcbReferenceRates(…)`, the `IServiceCollection` convenience overload that adds the financial core and the ECB provider together.
+- <xref:Bodu.Financial.ExchangeRates.Ecb.DependencyInjection.EcbServiceCollectionExtensions> — `AddEcbReferenceRates(…)`, the `IServiceCollection` convenience overload that adds the financial core and the ECB provider together.
 
 ## Minimal sample
 
@@ -26,7 +26,7 @@ using Bodu.Financial.ExchangeRates.Ecb;
 using Bodu.Financial.ExchangeRates.Ecb.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 
-services.AddBoduFinancial()
+services.AddFinancialService()
         .AddEcbReferenceRates(builder.Configuration);   // binds the Financial:Ecb section
 
 var dated = provider.GetRequiredService<IDatedExchangeRateProvider>();

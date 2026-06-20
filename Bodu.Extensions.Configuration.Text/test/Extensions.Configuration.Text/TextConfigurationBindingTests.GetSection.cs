@@ -21,7 +21,7 @@ public sealed partial class TextConfigurationBindingTests
         using MemoryStream stream = new(Encoding.UTF8.GetBytes(PocoSample));
 
         IConfiguration configuration = new ConfigurationBuilder()
-            .AddBoduConfigurationStream(stream)
+            .AddTextConfigurationStream(stream)
             .Build();
 
         IConfigurationSection section = configuration.GetSection("logging");

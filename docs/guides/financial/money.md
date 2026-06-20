@@ -646,10 +646,10 @@ When you compose the library through dependency injection, register an
 the provider:
 
 ```csharp
-services.AddBoduFinancial(b => b.AddCurrencyLookup<MyCurrencyLookup>());
+services.AddFinancialService(b => b.AddCurrencyLookup<MyCurrencyLookup>());
 // ...
 IServiceProvider provider = services.BuildServiceProvider();
-provider.UseBoduFinancialCurrencyResolution();   // ambient default = the DI lookup
+provider.UseCurrencyResolution();   // ambient default = the DI lookup
 ```
 
 ## JSON wire shape

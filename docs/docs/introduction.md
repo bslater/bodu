@@ -53,7 +53,7 @@ Layered, EditorConfig-style configuration — a parser/resolver plus a bridge in
 | Package | What it provides | Target framework |
 |---|---|---|
 | **[Bodu.Text.Configuration](text-configuration/index.md)** | EditorConfig-style configuration layering over an INI document model. Layers a preamble plus glob-anchored sections in source order for a target file path, then projects the result into a flat, colon-delimited `ConfigurationView` with typed accessors (`GetInt32`, `GetEnum<T>`, `GetValue<T>`). Profile presets, optional diagnostic collection, and byte-faithful round-trip save. | `net8.0` |
-| **[Bodu.Extensions.Configuration.Text](extensions-configuration-text/index.md)** | Bridges `Bodu.Text.Configuration` to `Microsoft.Extensions.Configuration`. Adds `AddBoduConfiguration*` entry points on `IConfigurationBuilder` — mirroring `AddJsonFile` / `AddJsonStream` — so a Bodu configuration file layers alongside JSON, INI, XML, and environment-variable sources, with `IOptions<T>` binding and reload-on-change support. | `net8.0` |
+| **[Bodu.Extensions.Configuration.Text](extensions-configuration-text/index.md)** | Bridges `Bodu.Text.Configuration` to `Microsoft.Extensions.Configuration`. Adds `AddTextConfiguration*` entry points on `IConfigurationBuilder` — mirroring `AddJsonFile` / `AddJsonStream` — so a Bodu configuration file layers alongside JSON, INI, XML, and environment-variable sources, with `IOptions<T>` binding and reload-on-change support. | `net8.0` |
 
 ### [Numerics & Financial](topics/numerics-and-financial.md)
 
@@ -196,7 +196,7 @@ Each library has a dedicated introduction page that explains its namespaces, the
 
 <div class="bodu-card">
   <h3><a href="extensions-configuration-text/index.md">Bodu.Extensions.Configuration.Text</a></h3>
-  <p>The <code>Microsoft.Extensions.Configuration</code> bridge — an <code>AddBoduConfiguration*</code> builder entry point that layers a Bodu configuration file alongside JSON, INI, and environment-variable sources with <code>IOptions&lt;T&gt;</code> binding.</p>
+  <p>The <code>Microsoft.Extensions.Configuration</code> bridge — an <code>AddTextConfiguration*</code> builder entry point that layers a Bodu configuration file alongside JSON, INI, and environment-variable sources with <code>IOptions&lt;T&gt;</code> binding.</p>
   <div class="bodu-card-links">
     <a href="extensions-configuration-text/index.md">Introduction</a>
     <a href="extensions-configuration-text/getting-started.md">Getting started</a>

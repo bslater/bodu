@@ -46,7 +46,7 @@
     <g transform="translate(20 70)">
       <rect class="src" width="170" height="50" rx="6"/>
       <text class="lbl" fill="#2DD4BF" x="85" y="20">IConfigurationBuilder</text>
-      <text class="mut" x="85" y="36">.AddBoduConfiguration*(...)</text>
+      <text class="mut" x="85" y="36">.AddTextConfiguration*(...)</text>
     </g>
 
     <line class="wt" x1="190" y1="95" x2="220" y2="95" marker-end="url(#ef-a)"/>

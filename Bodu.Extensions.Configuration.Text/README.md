@@ -20,17 +20,17 @@ use for JSON, INI, or XML providers.
 
 | Feature | `Microsoft.Extensions.Configuration.Json` | `Bodu.Extensions.Configuration.Text` |
 |---|---|---|
-| `AddXxxFile(builder, path)` | `AddJsonFile(builder, path)` | `AddBoduConfiguration(builder, path)` |
+| `AddXxxFile(builder, path)` | `AddJsonFile(builder, path)` | `AddTextConfiguration(builder, path)` |
 | `AddXxxFile(builder, path, optional, reloadOnChange)` | yes | yes (extra `targetPath`) |
 | `AddXxxFile(builder, provider, path, optional, reloadOnChange)` | yes | yes |
 | `AddXxxFile(builder, Action<XxxSource>)` | yes | yes |
-| `AddXxxStream(builder, Stream)` | `AddJsonStream(builder, stream)` | `AddBoduConfiguration(builder, stream)` |
+| `AddXxxStream(builder, Stream)` | `AddJsonStream(builder, stream)` | `AddTextConfiguration(builder, stream)` |
 | `IFileProvider`-backed reload-on-change | yes | yes (inherited) |
 | `GetReloadToken` / change tokens | yes | yes (inherited) |
 | `GetSection`, `GetChildren`, `Bind` | yes | yes (via colon-delimited keys) |
 | Default-filename convention | none | `.boduconfig` then `bodu.config` |
-| Programmatic-document entry point | none | `AddBoduConfiguration(builder, IniDocument)` |
-| `IOptions<T>` helper | provided by `Microsoft.Extensions.Options.ConfigurationExtensions` | `AddBoduConfigurationOptions<TOptions>` |
+| Programmatic-document entry point | none | `AddTextConfiguration(builder, IniDocument)` |
+| `IOptions<T>` helper | provided by `Microsoft.Extensions.Options.ConfigurationExtensions` | `AddTextConfigurationOptions<TOptions>` |
 
 ## Worked examples
 
@@ -41,7 +41,7 @@ using Microsoft.Extensions.Configuration;
 using Bodu.Extensions.Configuration.Text;
 
 IConfiguration config = new ConfigurationBuilder()
-    .AddBoduConfiguration("app.boduconfig", optional: false, reloadOnChange: true)
+    .AddTextConfiguration("app.boduconfig", optional: false, reloadOnChange: true)
     .Build();
 
 string? indentSize = config["format:indent:size"];
@@ -59,7 +59,7 @@ service.port = 8080
 """));
 
 IConfiguration config = new ConfigurationBuilder()
-    .AddBoduConfiguration(stream)
+    .AddTextConfiguration(stream)
     .Build();
 ```
 
@@ -74,7 +74,7 @@ using Microsoft.Extensions.FileProviders;
 var fileProvider = new PhysicalFileProvider(repoRoot);
 
 IConfiguration config = new ConfigurationBuilder()
-    .AddBoduConfiguration(fileProvider, "app.boduconfig")
+    .AddTextConfiguration(fileProvider, "app.boduconfig")
     .Build();
 ```
 
@@ -85,7 +85,7 @@ which section a build resolves against:
 
 ```csharp
 new ConfigurationBuilder()
-    .AddBoduConfiguration(source =>
+    .AddTextConfiguration(source =>
     {
         source.Path = "app.boduconfig";
         source.TargetPath = "src/Foo.cs";  // selects [src/**/*.cs] when present
@@ -114,7 +114,7 @@ The resolved view exposes `items:0`, `items:1`, `items:2`, which bind through
 
 ## Default-filename convention
 
-`AddBoduConfiguration()` (no arguments) probes the builder's file provider for `.boduconfig` first, then
+`AddTextConfiguration()` (no arguments) probes the builder's file provider for `.boduconfig` first, then
 falls back to `bodu.config`. To resolve the dot-prefixed name through `PhysicalFileProvider`, construct the
 provider with `ExclusionFilters.None`:
 
@@ -124,7 +124,7 @@ using Microsoft.Extensions.FileProviders.Physical;
 
 var builder = new ConfigurationBuilder();
 builder.SetFileProvider(new PhysicalFileProvider(repoRoot, ExclusionFilters.None));
-IConfiguration config = builder.AddBoduConfiguration().Build();
+IConfiguration config = builder.AddTextConfiguration().Build();
 ```
 
 `bodu.config` resolves through the default `Sensitive` exclusion filters without any further configuration.
@@ -136,10 +136,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 services.AddOptions();
-services.AddBoduConfigurationOptions<ServiceOptions>(config, sectionName: "service");
+services.AddTextConfigurationOptions<ServiceOptions>(config, sectionName: "service");
 
 var options = provider.GetRequiredService<IOptions<ServiceOptions>>().Value;
 ```
 
 The helper is a thin shim over `services.Configure<TOptions>(config.GetSection(name))` — it exists for
-discoverability alongside the `AddBoduConfiguration` API surface.
+discoverability alongside the `AddTextConfiguration` API surface.

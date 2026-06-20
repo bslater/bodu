@@ -12,7 +12,7 @@ using Microsoft.Extensions.Configuration;
 namespace Bodu.Extensions.Configuration.Text;
 
 /// <summary>
-/// Verifies that the in-memory <see cref="IniDocument" /> overload of <c>AddBoduConfigurationDocument</c> resolves a
+/// Verifies that the in-memory <see cref="IniDocument" /> overload of <c>AddTextConfigurationDocument</c> resolves a
 /// pre-parsed document and flattens it into the configuration view via <c>AddInMemoryCollection</c>.
 /// </summary>
 [TestClass]
@@ -36,7 +36,7 @@ logging.level.default = Warning
         var document = ConfigurationDocument.Load(stream, ConfigurationParseOptions.Bodu);
 
         IConfiguration configuration = new ConfigurationBuilder()
-            .AddBoduConfigurationDocument(document)
+            .AddTextConfigurationDocument(document)
             .Build();
 
         Assert.AreEqual("Information", configuration["logging:level:default"]);
@@ -52,7 +52,7 @@ logging.level.default = Warning
         var document = ConfigurationDocument.Load(stream, ConfigurationParseOptions.Bodu);
 
         IConfiguration configuration = new ConfigurationBuilder()
-            .AddBoduConfigurationDocument(document, targetPath: "src/Foo.cs")
+            .AddTextConfigurationDocument(document, targetPath: "src/Foo.cs")
             .Build();
 
         Assert.AreEqual("Warning", configuration["logging:level:default"]);
@@ -68,7 +68,7 @@ logging.level.default = Warning
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = new ConfigurationBuilder().AddBoduConfigurationDocument(document);
+            _ = new ConfigurationBuilder().AddTextConfigurationDocument(document);
         });
     }
 
@@ -84,7 +84,7 @@ logging.level.default = Warning
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = builder.AddBoduConfigurationDocument(document);
+            _ = builder.AddTextConfigurationDocument(document);
         });
     }
 }

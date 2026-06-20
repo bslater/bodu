@@ -196,7 +196,7 @@ using Bodu.Financial.DependencyInjection;
 using Bodu.Financial.ExchangeRates.Rba.DependencyInjection;
 using Bodu.Financial.ExchangeRates.Ecb.DependencyInjection;
 
-services.AddBoduFinancial()
+services.AddFinancialService()
         .AddRbaHistoricalRates(builder.Configuration)    // section Financial:Rba
         .AddEcbReferenceRates(builder.Configuration);     // section Financial:Ecb
 
@@ -212,7 +212,7 @@ registered first — the cached registration resolves it, it does not build it:
 ```csharp
 using Bodu.Financial.ExchangeRates.Caching.DependencyInjection;
 
-services.AddBoduFinancial()
+services.AddFinancialService()
         .AddRbaHistoricalRates()
         .AddCachedExchangeRateProvider<RbaExchangeRateProvider>("RBA",
             configure: o => o.DefaultExpiry = TimeSpan.FromHours(12));

@@ -41,7 +41,7 @@ public class OptionsBindingBenchmarks
     {
         using MemoryStream stream = new(Encoding.UTF8.GetBytes(Source));
         _configuration = new ConfigurationBuilder()
-            .AddBoduConfigurationStream(stream, targetPath: "src/Source.cs")
+            .AddTextConfigurationStream(stream, targetPath: "src/Source.cs")
             .Build();
     }
 

@@ -7,10 +7,10 @@ Dependency-injection extensions for
 using Bodu.Financial.ExchangeRates.Rba.DependencyInjection;
 
 // One-call registration (core financial services + the RBA provider):
-services.AddBoduRbaHistoricalRates(configuration);
+services.AddRbaHistoricalRates(configuration);
 
 // Or compose onto an existing Bodu.Financial registration:
-services.AddBoduFinancial(configuration)
+services.AddFinancialService(configuration)
         .AddRbaHistoricalRates(configuration, configure: o => o.CurrentEraRefreshInterval = TimeSpan.FromHours(6));
 ```
 

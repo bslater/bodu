@@ -33,7 +33,7 @@ internal static class XmlDocConfigurationLoader
         ImmutableArray<AdditionalText> additionalFiles,
         CancellationToken cancellationToken)
     {
-        XmlDocFormatOptions options = XmlDocFormatPolicyDefaults.CreateBoduDefaults();
+        XmlDocFormatOptions options = XmlDocFormatPolicyDefaults.CreateDefaults();
 
         foreach (AdditionalText file in additionalFiles)
         {
@@ -57,7 +57,7 @@ internal static class XmlDocConfigurationLoader
             catch (System.Exception)
             {
                 // Defensive: never let an unexpected configuration-loading failure break analysis. Configuration
-                // JSON is parsed by the dependency-free BoduJsonParser, so the host's assembly set is not a
+                // JSON is parsed by the dependency-free ConfigJsonParser, so the host's assembly set is not a
                 // factor; falling back to defaults keeps the analyzer functional regardless.
             }
 #pragma warning restore RCS1075

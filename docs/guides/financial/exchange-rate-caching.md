@@ -354,7 +354,7 @@ A single cached provider:
 using Bodu.Financial.DependencyInjection;
 using Bodu.Financial.ExchangeRates.Caching.DependencyInjection;
 
-services.AddBoduFinancial()
+services.AddFinancialService()
         .AddRbaHistoricalRates()
         .AddCachedExchangeRateProvider<RbaExchangeRateProvider>("RBA",
             configure: o => o.DefaultExpiry = TimeSpan.FromHours(12));
@@ -365,7 +365,7 @@ registered as a keyed `IDatedExchangeRateProvider`, so a specific source is
 resolvable by name:
 
 ```csharp
-services.AddBoduFinancial()
+services.AddFinancialService()
         .AddRbaHistoricalRates()
         .AddEcbReferenceRates()
         .AddAggregatedExchangeRateProvider(agg => agg

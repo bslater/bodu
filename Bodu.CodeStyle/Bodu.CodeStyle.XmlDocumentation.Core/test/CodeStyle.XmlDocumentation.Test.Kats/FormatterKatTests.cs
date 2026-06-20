@@ -36,7 +36,7 @@ public sealed class FormatterKatTests
 
         var formatter = new XmlDocFormatter();
         var context = new XmlDocFormatContext(baseIndent, "\r\n", XmlDocMemberKindHint.Unknown);
-        XmlDocFormatOptions options = XmlDocFormatPolicyDefaults.CreateBoduDefaults();
+        XmlDocFormatOptions options = XmlDocFormatPolicyDefaults.CreateDefaults();
 
         XmlDocFormatResult result = formatter.FormatTrivia(canonicalInput, context, options);
 

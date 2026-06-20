@@ -33,7 +33,7 @@ public static class EcbServiceCollectionExtensions
     /// <exception cref="ArgumentException">
     /// Thrown when <paramref name="sectionName" /> is empty or white space.
     /// </exception>
-    public static IFinancialServiceBuilder AddBoduEcbReferenceRates(
+    public static IFinancialServiceBuilder AddEcbReferenceRates(
         this IServiceCollection services,
         IConfiguration? configuration = null,
         string sectionName = "Financial:Ecb",

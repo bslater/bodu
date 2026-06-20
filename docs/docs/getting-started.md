@@ -278,20 +278,20 @@ int indentSize = view.GetInt32("format:indent:size");   // 2 — the last matchi
 
 ### Bodu.Extensions.Configuration.Text
 
-**Bodu.Extensions.Configuration.Text** bridges `Bodu.Text.Configuration` into `Microsoft.Extensions.Configuration`. An `AddBoduConfiguration*` builder call layers a Bodu configuration file alongside JSON, INI, XML, and environment-variable sources, with `IOptions<T>` binding and reload-on-change support.
+**Bodu.Extensions.Configuration.Text** bridges `Bodu.Text.Configuration` into `Microsoft.Extensions.Configuration`. An `AddTextConfiguration*` builder call layers a Bodu configuration file alongside JSON, INI, XML, and environment-variable sources, with `IOptions<T>` binding and reload-on-change support.
 
 ```csharp
 using Microsoft.Extensions.Configuration;
 using Bodu.Extensions.Configuration.Text;
 
 IConfiguration config = new ConfigurationBuilder()
-    .AddBoduConfigurationFile("app.editorconfig", optional: true, reloadOnChange: true)
+    .AddTextConfigurationFile("app.editorconfig", optional: true, reloadOnChange: true)
     .Build();
 
 string? indentSize = config["format:indent:size"];
 ```
 
-`AddBoduConfigurationFile` mirrors `AddJsonFile` — the Bodu source layers into the standard provider stack and participates in `IOptions<T>` binding, so existing `Microsoft.Extensions.Configuration` code adopts it with no learning curve.
+`AddTextConfigurationFile` mirrors `AddJsonFile` — the Bodu source layers into the standard provider stack and participates in `IOptions<T>` binding, so existing `Microsoft.Extensions.Configuration` code adopts it with no learning curve.
 
 → **[Introduction](extensions-configuration-text/index.md)** · **[Getting started](extensions-configuration-text/getting-started.md)** · **[Guides](../guides/extensions-configuration-text/index.md)**
 
@@ -338,7 +338,7 @@ Mixing currencies on the typed form is a compile error; on the runtime form it t
 ```csharp
 using Bodu.Financial.DependencyInjection;
 
-services.AddBoduFinancial();
+services.AddFinancialService();
 ```
 
 → **[Introduction](financial/index.md)** · **[Getting started](financial/getting-started.md)** · **[Guides](../guides/financial/index.md)**

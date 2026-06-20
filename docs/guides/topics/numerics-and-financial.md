@@ -71,7 +71,7 @@ Money with the currency in the type system, the ISO 4217 catalogue, and dated FX
 
 <div class="bodu-card">
   <h3><a href="../financial/dependency-injection.md">Dependency injection</a></h3>
-  <p>Register the stack with <code>AddBoduFinancial(...)</code> — currency lookups, monetary contexts, FX providers, JSON converters, options binding.</p>
+  <p>Register the stack with <code>AddFinancialService(...)</code> — currency lookups, monetary contexts, FX providers, JSON converters, options binding.</p>
 </div>
 
 </div>

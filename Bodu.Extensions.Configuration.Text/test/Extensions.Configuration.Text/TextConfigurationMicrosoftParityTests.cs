@@ -34,7 +34,7 @@ public class TextConfigurationMicrosoftParityTests
         using MemoryStream iniStream = new(Encoding.UTF8.GetBytes(iniSource));
         using MemoryStream jsonStream = new(Encoding.UTF8.GetBytes(jsonSource));
 
-        IConfiguration bodu = new ConfigurationBuilder().AddBoduConfigurationStream(boduStream).Build();
+        IConfiguration bodu = new ConfigurationBuilder().AddTextConfigurationStream(boduStream).Build();
         IConfiguration ini = new ConfigurationBuilder().AddIniStream(iniStream).Build();
         IConfiguration json = new ConfigurationBuilder().AddJsonStream(jsonStream).Build();
 
@@ -58,7 +58,7 @@ public class TextConfigurationMicrosoftParityTests
         {
             IConfiguration config = new ConfigurationBuilder()
                 .AddIniStream(iniA)
-                .AddBoduConfigurationStream(bodu)
+                .AddTextConfigurationStream(bodu)
                 .Build();
             Assert.AreEqual("bodu", config["value"]);
         }
@@ -86,7 +86,7 @@ public class TextConfigurationMicrosoftParityTests
         {
             _ = new ConfigurationBuilder()
                 .SetBasePath(scope.Path)
-                .AddBoduConfigurationFile("missing.boduconfig", targetPath: null, optional: false, reloadOnChange: false)
+                .AddTextConfigurationFile("missing.boduconfig", targetPath: null, optional: false, reloadOnChange: false)
                 .Build();
         });
 
@@ -117,7 +117,7 @@ public class TextConfigurationMicrosoftParityTests
         using TempDirectoryScope scope = new();
         IConfiguration bodu = new ConfigurationBuilder()
             .SetBasePath(scope.Path)
-            .AddBoduConfigurationFile("missing.boduconfig", targetPath: null, optional: true, reloadOnChange: false)
+            .AddTextConfigurationFile("missing.boduconfig", targetPath: null, optional: true, reloadOnChange: false)
             .Build();
 
         IConfiguration ini = new ConfigurationBuilder()
@@ -150,7 +150,7 @@ public class TextConfigurationMicrosoftParityTests
         {
             _ = new ConfigurationBuilder()
                 .SetBasePath(scope.Path)
-                .AddBoduConfigurationFile("bad.boduconfig", targetPath: null, optional: false, reloadOnChange: false)
+                .AddTextConfigurationFile("bad.boduconfig", targetPath: null, optional: false, reloadOnChange: false)
                 .Build();
         });
 
@@ -180,7 +180,7 @@ items.2 = third
         using MemoryStream b = new(Encoding.UTF8.GetBytes(boduSource));
         using MemoryStream j = new(Encoding.UTF8.GetBytes(jsonSource));
 
-        IConfiguration bodu = new ConfigurationBuilder().AddBoduConfigurationStream(b).Build();
+        IConfiguration bodu = new ConfigurationBuilder().AddTextConfigurationStream(b).Build();
         IConfiguration json = new ConfigurationBuilder().AddJsonStream(j).Build();
 
         string[]? boduItems = bodu.GetSection("items").Get<string[]>();
@@ -199,7 +199,7 @@ items.2 = third
         using MemoryStream b = new(Encoding.UTF8.GetBytes("key = value\n"));
         using MemoryStream j = new(Encoding.UTF8.GetBytes("""{ "key": "value" }"""));
 
-        IConfigurationRoot bodu = new ConfigurationBuilder().AddBoduConfigurationStream(b).Build();
+        IConfigurationRoot bodu = new ConfigurationBuilder().AddTextConfigurationStream(b).Build();
         IConfigurationRoot json = new ConfigurationBuilder().AddJsonStream(j).Build();
 
         // Both providers should derive from StreamConfigurationProvider, not FileConfigurationProvider.

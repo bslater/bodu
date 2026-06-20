@@ -40,7 +40,7 @@ format.indent.size = 2
         using MemoryStream stream = new(Encoding.UTF8.GetBytes(Sample));
 
         IConfiguration configuration = new ConfigurationBuilder()
-            .AddBoduConfigurationStream(stream, targetPath: null)
+            .AddTextConfigurationStream(stream, targetPath: null)
             .Build();
 
         Assert.AreEqual("Bodu", configuration["service:name"]);
@@ -58,7 +58,7 @@ format.indent.size = 2
         using MemoryStream stream = new(Encoding.UTF8.GetBytes(Sample));
 
         IConfiguration configuration = new ConfigurationBuilder()
-            .AddBoduConfigurationStream(stream, targetPath: "Foo.cs")
+            .AddTextConfigurationStream(stream, targetPath: "Foo.cs")
             .Build();
 
         Assert.AreEqual("4", configuration["format:indent:size"]);
@@ -75,7 +75,7 @@ format.indent.size = 2
         using MemoryStream stream = new(Encoding.UTF8.GetBytes(Sample));
 
         IConfiguration configuration = new ConfigurationBuilder()
-            .AddBoduConfigurationStream(stream, targetPath: "src/Foo.cs")
+            .AddTextConfigurationStream(stream, targetPath: "src/Foo.cs")
             .Build();
 
         Assert.AreEqual("2", configuration["format:indent:size"]);
@@ -91,7 +91,7 @@ format.indent.size = 2
         using MemoryStream stream = new(Encoding.UTF8.GetBytes(Sample));
 
         IConfiguration configuration = new ConfigurationBuilder()
-            .AddBoduConfigurationStream(stream, targetPath: "README.md")
+            .AddTextConfigurationStream(stream, targetPath: "README.md")
             .Build();
 
         Assert.AreEqual("Bodu", configuration["service:name"]);
@@ -110,7 +110,7 @@ format.indent.size = 2
         ConfigurationResolveOptions resolve = new() { ApplyPreambleProperties = false };
 
         IConfiguration configuration = new ConfigurationBuilder()
-            .AddBoduConfigurationStream(stream, targetPath: null, parseOptions: null, resolveOptions: resolve)
+            .AddTextConfigurationStream(stream, targetPath: null, parseOptions: null, resolveOptions: resolve)
             .Build();
 
         Assert.IsNull(configuration["service:name"]);

@@ -16,9 +16,9 @@ public sealed class XmlDocFormatPolicyDefaultsTests
     /// Verifies that the default policy reports the documented scalar defaults.
     /// </summary>
     [TestMethod]
-    public void CreateBoduDefaults_ShouldExposeDocumentedScalarDefaults()
+    public void CreateDefaults_ShouldExposeDocumentedScalarDefaults()
     {
-        XmlDocFormatOptions options = XmlDocFormatPolicyDefaults.CreateBoduDefaults();
+        XmlDocFormatOptions options = XmlDocFormatPolicyDefaults.CreateDefaults();
 
         Assert.AreEqual(120, options.MaxLineLength);
         Assert.AreEqual("/// ", options.DocumentationPrefix);
@@ -34,9 +34,9 @@ public sealed class XmlDocFormatPolicyDefaultsTests
     /// Verifies that <c>summary</c> is in the block-tag, force-multiline tag set.
     /// </summary>
     [TestMethod]
-    public void CreateBoduDefaults_ShouldIncludeSummaryInBlockAndForceMultiline()
+    public void CreateDefaults_ShouldIncludeSummaryInBlockAndForceMultiline()
     {
-        XmlDocFormatOptions options = XmlDocFormatPolicyDefaults.CreateBoduDefaults();
+        XmlDocFormatOptions options = XmlDocFormatPolicyDefaults.CreateDefaults();
 
         Assert.IsTrue(options.BlockTags.Contains("summary"));
         Assert.IsTrue(options.ForceMultilineTags.Contains("summary"));
@@ -46,9 +46,9 @@ public sealed class XmlDocFormatPolicyDefaultsTests
     /// Verifies that the inline tag set contains the canonical Bodu inline atoms.
     /// </summary>
     [TestMethod]
-    public void CreateBoduDefaults_ShouldExposeInlineTagSet()
+    public void CreateDefaults_ShouldExposeInlineTagSet()
     {
-        XmlDocFormatOptions options = XmlDocFormatPolicyDefaults.CreateBoduDefaults();
+        XmlDocFormatOptions options = XmlDocFormatPolicyDefaults.CreateDefaults();
 
         Assert.IsTrue(options.InlineTags.Contains("c"));
         Assert.IsTrue(options.InlineTags.Contains("see"));
@@ -60,9 +60,9 @@ public sealed class XmlDocFormatPolicyDefaultsTests
     /// Verifies that the single-line-when-short tag set contains the canonical Bodu shortlist.
     /// </summary>
     [TestMethod]
-    public void CreateBoduDefaults_ShouldExposeSingleLineWhenShortTagSet()
+    public void CreateDefaults_ShouldExposeSingleLineWhenShortTagSet()
     {
-        XmlDocFormatOptions options = XmlDocFormatPolicyDefaults.CreateBoduDefaults();
+        XmlDocFormatOptions options = XmlDocFormatPolicyDefaults.CreateDefaults();
 
         Assert.IsTrue(options.SingleLineWhenShortTags.Contains("param"));
         Assert.IsTrue(options.SingleLineWhenShortTags.Contains("typeparam"));
@@ -76,9 +76,9 @@ public sealed class XmlDocFormatPolicyDefaultsTests
     /// override.
     /// </summary>
     [TestMethod]
-    public void CreateBoduDefaults_ShouldConfigureInlineAtomsWithTrailingSpace()
+    public void CreateDefaults_ShouldConfigureInlineAtomsWithTrailingSpace()
     {
-        XmlDocFormatOptions options = XmlDocFormatPolicyDefaults.CreateBoduDefaults();
+        XmlDocFormatOptions options = XmlDocFormatPolicyDefaults.CreateDefaults();
 
         Assert.AreEqual(true, options.GetTagPolicy("see").SelfClosingTrailingSpace);
         Assert.AreEqual(true, options.GetTagPolicy("paramref").SelfClosingTrailingSpace);

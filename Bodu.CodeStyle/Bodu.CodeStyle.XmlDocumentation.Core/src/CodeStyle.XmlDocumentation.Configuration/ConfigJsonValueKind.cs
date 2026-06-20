@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="BoduJsonValueKind.cs" company="Bodu Pty. Ltd.">
+// <copyright file="ConfigJsonValueKind.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -7,9 +7,9 @@
 namespace Bodu.CodeStyle.XmlDocumentation.Configuration;
 
 /// <summary>
-/// Identifies the kind of a <see cref="BoduJsonValue" /> parsed from a configuration document.
+/// Identifies the kind of a <see cref="ConfigJsonValue" /> parsed from a configuration document.
 /// </summary>
-internal enum BoduJsonValueKind
+internal enum ConfigJsonValueKind
 {
     /// <summary>A JSON object with named members.</summary>
     Object = 0,

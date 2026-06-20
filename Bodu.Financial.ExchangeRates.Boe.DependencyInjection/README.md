@@ -11,10 +11,10 @@ exposes the provider through `IDatedExchangeRateProvider` and `IExchangeRateProv
 using Bodu.Financial.ExchangeRates.Boe.DependencyInjection;
 
 // One-call entry point: core Bodu.Financial services + the BoE provider.
-services.AddBoduBoeReferenceRates(configuration);
+services.AddBoeReferenceRates(configuration);
 
 // Or onto an existing IFinancialServiceBuilder:
-services.AddBoduFinancial(configuration)
+services.AddFinancialService(configuration)
         .AddBoeReferenceRates(configuration, configure: o => o.EnableDiskCache = false);
 ```
 
