@@ -15,6 +15,9 @@ namespace Bodu.IO.Compound;
 /// </summary>
 /// <remarks>
 /// <para>
+/// <img src="../images/diagrams/io-compound-structure.svg" alt="A CompoundStorage is a named container of child storages and streams within a compound file, the managed counterpart of the COM IStorage interface. Navigation starts at RootStorage and descends through nested CompoundStorage containers to CompoundStreamEntry leaves. Lookups are scoped to a storage's direct children and matched with ordinal (case-sensitive) names."/>
+/// </para>
+/// <para>
 /// This type is the managed counterpart of the COM <c>IStorage</c> interface. The root storage and every nested storage
 /// are represented by the same type; the root is distinguished by an <see cref="CompoundEntryType.RootStorage" /> value
 /// on its <see cref="Stat" />. All lookups are scoped to a storage's direct children and compared using ordinal

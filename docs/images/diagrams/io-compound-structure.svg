@@ -1,0 +1,144 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 380" role="img" aria-labelledby="ics-t ics-d">
+  <title id="ics-t">Compound File Binary (CFB) — a file system inside one file</title>
+  <desc id="ics-d">A compound file is a structured-storage envelope: one physical file that begins with the OLE2 signature D0 CF 11 E0 and holds a header, allocation tables, and a directory of sectors. CompoundFile.Open parses that container and exposes a logical hierarchy. Navigation starts at RootStorage and descends through nested CompoundStorage containers to CompoundStreamEntry leaves. A CompoundStorage is the managed counterpart of the COM IStorage interface; a CompoundStreamEntry is the counterpart of IStream and carries the opaque byte payload.</desc>
+
+  <defs>
+    <style>
+      .ics-bg   { fill: #0F172A; }
+      .ics-pan  { fill: #1E293B; stroke: #334155; stroke-width: 1; }
+      .ics-hdr  { fill: #111827; stroke: #334155; stroke-width: 1; }
+      .ics-ttl  { fill: #F8FAFC; font: 700 15px/1 "Segoe UI",Arial,sans-serif; }
+      .ics-form { fill: #94A3B8; font: italic 12px/1 "Cambria",Georgia,serif; }
+      .ics-lbl  { fill: #E2E8F0; font: 700 12px/1 "Segoe UI",Arial,sans-serif; }
+      .ics-sub  { fill: #CBD5E1; font: 400 11px/1 "Segoe UI",Arial,sans-serif; }
+      .ics-mut  { fill: #94A3B8; font: 400 10px/1 "Segoe UI",Arial,sans-serif; }
+      .ics-mono { fill: #5EEAD4; font: 700 12px/1 "Consolas",Menlo,monospace; }
+      .ics-byte { fill: #FBBF24; font: 700 11px/1 "Consolas",Menlo,monospace; }
+      .ics-file { fill: #1E3A5F; stroke: #60A5FA; stroke-width: 1.2; }
+      .ics-seg  { fill: #0F172A; stroke: #60A5FA; stroke-width: 1; }
+      .ics-stg  { fill: #0D3331; stroke: #2DD4BF; stroke-width: 1.4; }
+      .ics-root { fill: #0D3331; stroke: #5EEAD4; stroke-width: 1.8; }
+      .ics-strm { fill: #2A1B54; stroke: #A78BFA; stroke-width: 1.4; }
+      .ics-w    { stroke: #CBD5E1; stroke-width: 1.4; fill: none; }
+      .ics-tree { stroke: #475569; stroke-width: 1.4; fill: none; }
+    </style>
+    <marker id="ics-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#CBD5E1"/>
+    </marker>
+  </defs>
+
+  <rect class="ics-bg" width="820" height="380"/>
+
+  <g transform="translate(10 10)">
+    <rect class="ics-pan" width="800" height="360" rx="8"/>
+    <rect class="ics-hdr" width="800" height="46" rx="8"/>
+    <rect class="ics-hdr" y="38" width="800" height="8"/>
+    <text class="ics-ttl" x="16" y="22">Compound File Binary (CFB) — a file system inside one file</text>
+    <text class="ics-form" x="784" y="22" text-anchor="end">.xls · .doc · .ppt · .msg</text>
+    <text class="ics-mut" x="16" y="38">CompoundFile.Open parses the physical container and exposes the logical storage hierarchy</text>
+
+    <!-- ─────────────── Physical container (left) ─────────────── -->
+    <text class="ics-lbl" x="28" y="78">Physical container</text>
+    <g transform="translate(28 88)">
+      <rect class="ics-file" width="250" height="244" rx="7"/>
+
+      <rect class="ics-seg" x="14" y="16" width="222" height="40" rx="4"/>
+      <text class="ics-lbl" x="24" y="33">Header (512 bytes)</text>
+      <text class="ics-byte" x="24" y="49">D0 CF 11 E0 A1 B1 1A E1</text>
+
+      <rect class="ics-seg" x="14" y="64" width="222" height="34" rx="4"/>
+      <text class="ics-sub" x="24" y="85">FAT / mini-FAT — sector chains</text>
+
+      <rect class="ics-seg" x="14" y="106" width="222" height="34" rx="4"/>
+      <text class="ics-sub" x="24" y="127">Directory — one entry per node</text>
+
+      <rect class="ics-seg" x="14" y="148" width="222" height="80" rx="4"/>
+      <text class="ics-mut" x="24" y="166">Sectors (regular + mini stream)</text>
+      <g transform="translate(24 176)">
+        <rect x="0"   y="0" width="30" height="18" rx="2" fill="#0B1220" stroke="#475569"/>
+        <rect x="36"  y="0" width="30" height="18" rx="2" fill="#0B1220" stroke="#475569"/>
+        <rect x="72"  y="0" width="30" height="18" rx="2" fill="#0B1220" stroke="#475569"/>
+        <rect x="108" y="0" width="30" height="18" rx="2" fill="#0B1220" stroke="#475569"/>
+        <rect x="144" y="0" width="30" height="18" rx="2" fill="#0B1220" stroke="#475569"/>
+        <rect x="180" y="0" width="30" height="18" rx="2" fill="#0B1220" stroke="#475569"/>
+        <rect x="0"   y="24" width="30" height="18" rx="2" fill="#0B1220" stroke="#475569"/>
+        <rect x="36"  y="24" width="30" height="18" rx="2" fill="#0B1220" stroke="#475569"/>
+        <rect x="72"  y="24" width="30" height="18" rx="2" fill="#0B1220" stroke="#475569"/>
+        <rect x="108" y="24" width="30" height="18" rx="2" fill="#0B1220" stroke="#475569"/>
+        <rect x="144" y="24" width="30" height="18" rx="2" fill="#0B1220" stroke="#475569"/>
+        <rect x="180" y="24" width="30" height="18" rx="2" fill="#0B1220" stroke="#475569"/>
+      </g>
+    </g>
+
+    <!-- Open arrow -->
+    <line class="ics-w" x1="286" y1="210" x2="330" y2="210" marker-end="url(#ics-a)"/>
+    <text class="ics-mono" x="308" y="200" text-anchor="middle" font-size="11">Open</text>
+
+    <!-- ─────────────── Logical hierarchy (right) ─────────────── -->
+    <text class="ics-lbl" x="340" y="78">Logical hierarchy (managed API)</text>
+
+    <!-- Root -->
+    <g transform="translate(340 88)">
+      <rect class="ics-root" width="210" height="40" rx="6"/>
+      <text class="ics-mono" x="14" y="18">RootStorage</text>
+      <text class="ics-mut" x="14" y="33">CompoundFile.RootStorage · "Root Entry"</text>
+    </g>
+
+    <!-- Tree connectors -->
+    <path class="ics-tree" d="M360 128 L360 312"/>
+    <path class="ics-tree" d="M360 158 H392"/>
+    <path class="ics-tree" d="M360 214 H392"/>
+    <path class="ics-tree" d="M360 290 H392"/>
+
+    <!-- child: Storage -->
+    <g transform="translate(392 140)">
+      <rect class="ics-stg" width="200" height="36" rx="6"/>
+      <text class="ics-mono" x="12" y="16" fill="#2DD4BF">Storage</text>
+      <text class="ics-mut" x="12" y="30">CompoundStorage · IStorage</text>
+    </g>
+
+    <!-- nested stream under storage -->
+    <path class="ics-tree" d="M412 176 L412 216 H444"/>
+    <g transform="translate(444 200)">
+      <rect class="ics-strm" width="148" height="32" rx="6"/>
+      <text class="ics-mono" x="12" y="14" fill="#C4B5FD">Stream</text>
+      <text class="ics-mut" x="12" y="27">CompoundStreamEntry</text>
+    </g>
+
+    <!-- child: Stream Workbook -->
+    <g transform="translate(392 240)">
+      <rect class="ics-strm" width="200" height="36" rx="6"/>
+      <text class="ics-mono" x="12" y="16" fill="#C4B5FD">"Workbook"</text>
+      <text class="ics-mut" x="12" y="30">CompoundStreamEntry · IStream</text>
+    </g>
+
+    <!-- child: Stream SummaryInformation -->
+    <g transform="translate(392 296)">
+      <rect class="ics-strm" width="200" height="36" rx="6"/>
+      <text class="ics-mono" x="12" y="16" fill="#C4B5FD">"\x05SummaryInformation"</text>
+      <text class="ics-mut" x="12" y="30">CompoundStreamEntry · IStream</text>
+    </g>
+
+    <!-- ─────────────── Legend (far right) ─────────────── -->
+    <g transform="translate(620 88)">
+      <rect class="ics-pan" width="160" height="244" rx="7"/>
+      <text class="ics-lbl" x="14" y="24">Legend</text>
+
+      <rect class="ics-stg" x="14" y="40" width="22" height="16" rx="3"/>
+      <text class="ics-sub" x="44" y="53">Storage</text>
+      <text class="ics-mut" x="44" y="68">named container</text>
+
+      <rect class="ics-strm" x="14" y="84" width="22" height="16" rx="3"/>
+      <text class="ics-sub" x="44" y="97">Stream</text>
+      <text class="ics-mut" x="44" y="112">named byte payload</text>
+
+      <text class="ics-mut" x="14" y="146">Lookups are scoped to a</text>
+      <text class="ics-mut" x="14" y="160">storage's direct children</text>
+      <text class="ics-mut" x="14" y="174">and matched with ordinal</text>
+      <text class="ics-mut" x="14" y="188">(case-sensitive) names.</text>
+
+      <text class="ics-mut" x="14" y="214">Read-only in this release;</text>
+      <text class="ics-mut" x="14" y="228">create / commit reserved.</text>
+    </g>
+  </g>
+</svg>

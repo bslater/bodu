@@ -11,6 +11,9 @@ namespace Bodu.IO.Compound;
 /// </summary>
 /// <remarks>
 /// <para>
+/// <img src="../images/diagrams/io-compound-stream-access.svg" alt="CompoundStreamEntry.Open returns a CompoundStream, a read-only seekable Stream cursor whose CanWrite is false. When the owning CompoundFile was opened buffered (the default), the stream's whole payload is materialized into an in-memory byte array at open time and Read, Seek, and AsMemory work over that array. When the file was opened with buffered false, the cursor walks the stream's sector chain in the source on demand: each Read locates the sector for the current Position, copies only the bytes within that sector, and advances, so the full payload is never held in memory. AsMemory materializes the whole chain on request."/>
+/// </para>
+/// <para>
 /// <see cref="CompoundStream" /> is a standard <see cref="Stream" /> cursor obtained from
 /// <see cref="CompoundStreamEntry.Open" />, so it composes with the BCL surfaces that consume a <see cref="Stream" />
 /// — <see cref="System.IO.StreamReader" />, <see cref="System.IO.BinaryReader" />, <see cref="Stream.CopyTo(Stream)" />,

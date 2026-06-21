@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 380" role="img" aria-labelledby="icsa-t icsa-d">
+  <title id="icsa-t">CompoundStream — buffered payload versus on-demand sector reads</title>
+  <desc id="icsa-d">CompoundStreamEntry.Open returns a CompoundStream, a read-only seekable Stream cursor whose CanWrite is false. When the owning CompoundFile was opened buffered (the default), the stream's whole payload is materialized into an in-memory byte array at open time, and Read, Seek, and AsMemory work over that array. When the file was opened with buffered false, the cursor instead walks the stream's sector chain in the source on demand: each Read locates the sector for the current Position, reads only the bytes within that sector, and advances, so the full payload is never held in memory. AsMemory materializes the whole chain on request.</desc>
+
+  <defs>
+    <style>
+      .icsa-bg   { fill: #0F172A; }
+      .icsa-pan  { fill: #1E293B; stroke: #334155; stroke-width: 1; }
+      .icsa-hdr  { fill: #111827; stroke: #334155; stroke-width: 1; }
+      .icsa-ttl  { fill: #F8FAFC; font: 700 15px/1 "Segoe UI",Arial,sans-serif; }
+      .icsa-lane { fill: #1E293B; stroke: #334155; stroke-width: 1; }
+      .icsa-lbl  { fill: #E2E8F0; font: 700 12px/1 "Segoe UI",Arial,sans-serif; }
+      .icsa-sub  { fill: #CBD5E1; font: 400 11px/1 "Segoe UI",Arial,sans-serif; }
+      .icsa-mut  { fill: #94A3B8; font: 400 10px/1 "Segoe UI",Arial,sans-serif; }
+      .icsa-mono { fill: #5EEAD4; font: 700 12px/1 "Consolas",Menlo,monospace; }
+      .icsa-cur  { fill: #0D3331; stroke: #2DD4BF; stroke-width: 1.6; }
+      .icsa-mem  { fill: #1E3A5F; stroke: #60A5FA; stroke-width: 1.2; }
+      .icsa-cell { fill: #0B1220; stroke: #475569; stroke-width: 1; }
+      .icsa-hot  { fill: #0D3331; stroke: #2DD4BF; stroke-width: 1.6; }
+      .icsa-sec  { fill: #2A1B54; stroke: #A78BFA; stroke-width: 1.3; }
+      .icsa-w    { stroke: #CBD5E1; stroke-width: 1.4; fill: none; }
+      .icsa-wt   { stroke: #2DD4BF; stroke-width: 1.5; fill: none; }
+    </style>
+    <marker id="icsa-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#CBD5E1"/>
+    </marker>
+    <marker id="icsa-at" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#2DD4BF"/>
+    </marker>
+  </defs>
+
+  <rect class="icsa-bg" width="820" height="380"/>
+
+  <g transform="translate(10 10)">
+    <rect class="icsa-pan" width="800" height="360" rx="8"/>
+    <rect class="icsa-hdr" width="800" height="46" rx="8"/>
+    <rect class="icsa-hdr" y="38" width="800" height="8"/>
+    <text class="icsa-ttl" x="16" y="22">CompoundStream — buffered payload vs on-demand sector reads</text>
+    <text class="icsa-mut" x="16" y="38">CompoundStreamEntry.Open() returns a read-only, seekable cursor — CanRead = true, CanSeek = true, CanWrite = false</text>
+
+    <!-- Cursor origin -->
+    <g transform="translate(16 60)">
+      <rect class="icsa-cur" width="180" height="44" rx="6"/>
+      <text class="icsa-mono" x="14" y="20">CompoundStream</text>
+      <text class="icsa-mut" x="14" y="36">Read · Seek · Position · AsMemory</text>
+    </g>
+    <line class="icsa-w" x1="196" y1="82" x2="232" y2="82" marker-end="url(#icsa-a)"/>
+
+    <!-- ─────────────── Lane A: buffered ─────────────── -->
+    <g transform="translate(232 60)">
+      <rect class="icsa-lane" width="552" height="128" rx="7"/>
+      <text class="icsa-lbl" x="16" y="24" fill="#93C5FD">Buffered file (default)</text>
+      <text class="icsa-mut" x="16" y="40">payload materialized into a byte[] at open — source can close immediately</text>
+
+      <!-- in-memory array -->
+      <g transform="translate(16 56)">
+        <rect class="icsa-mem" width="430" height="52" rx="5"/>
+        <text class="icsa-mut" x="10" y="16">in-memory payload (byte[])</text>
+        <g transform="translate(10 24)">
+          <rect class="icsa-cell" x="0"   y="0" width="40" height="20" rx="2"/>
+          <rect class="icsa-cell" x="44"  y="0" width="40" height="20" rx="2"/>
+          <rect class="icsa-hot"  x="88"  y="0" width="40" height="20" rx="2"/>
+          <rect class="icsa-cell" x="132" y="0" width="40" height="20" rx="2"/>
+          <rect class="icsa-cell" x="176" y="0" width="40" height="20" rx="2"/>
+          <rect class="icsa-cell" x="220" y="0" width="40" height="20" rx="2"/>
+          <rect class="icsa-cell" x="264" y="0" width="40" height="20" rx="2"/>
+          <rect class="icsa-cell" x="308" y="0" width="40" height="20" rx="2"/>
+          <rect class="icsa-cell" x="352" y="0" width="40" height="20" rx="2"/>
+        </g>
+      </g>
+      <text class="icsa-mono" x="460" y="86" font-size="11">Read →</text>
+      <text class="icsa-mut" x="460" y="100">Array.Copy</text>
+      <text class="icsa-mut" x="460" y="74">Position</text>
+    </g>
+
+    <!-- ─────────────── Lane B: streaming ─────────────── -->
+    <g transform="translate(232 200)">
+      <rect class="icsa-lane" width="552" height="148" rx="7"/>
+      <text class="icsa-lbl" x="16" y="24" fill="#C4B5FD">Streaming file (buffered: false)</text>
+      <text class="icsa-mut" x="16" y="40">sector chain read on demand — source stays open, memory bounded by one sector</text>
+
+      <!-- sector chain -->
+      <g transform="translate(16 58)">
+        <rect class="icsa-sec" x="0" y="0" width="92" height="40" rx="5"/>
+        <text class="icsa-mono" x="46" y="18" text-anchor="middle" fill="#C4B5FD" font-size="11">sector 4</text>
+        <text class="icsa-mut" x="46" y="32" text-anchor="middle">512 B</text>
+
+        <rect class="icsa-hot" x="124" y="0" width="92" height="40" rx="5"/>
+        <text class="icsa-mono" x="170" y="18" text-anchor="middle" font-size="11">sector 5</text>
+        <text class="icsa-mut" x="170" y="32" text-anchor="middle">current</text>
+
+        <rect class="icsa-sec" x="248" y="0" width="92" height="40" rx="5"/>
+        <text class="icsa-mono" x="294" y="18" text-anchor="middle" fill="#C4B5FD" font-size="11">sector 9</text>
+        <text class="icsa-mut" x="294" y="32" text-anchor="middle">512 B</text>
+
+        <rect class="icsa-cell" x="372" y="8" width="76" height="24" rx="4"/>
+        <text class="icsa-mut" x="410" y="24" text-anchor="middle">END (-2)</text>
+
+        <line class="icsa-w" x1="92"  y1="20" x2="124" y2="20" marker-end="url(#icsa-a)"/>
+        <line class="icsa-w" x1="216" y1="20" x2="248" y2="20" marker-end="url(#icsa-a)"/>
+        <line class="icsa-w" x1="340" y1="20" x2="372" y2="20" marker-end="url(#icsa-a)"/>
+      </g>
+
+      <!-- on-demand read callout -->
+      <line class="icsa-wt" x1="170" y1="116" x2="170" y2="100" marker-end="url(#icsa-at)"/>
+      <text class="icsa-mono" x="16" y="124" font-size="11">Read():</text>
+      <text class="icsa-sub" x="74" y="124">sector = Position / SectorSize, copy only the bytes within, advance</text>
+      <text class="icsa-mut" x="16" y="140">AsMemory() reads the whole chain into memory on request — prefer chunked Read for large payloads</text>
+    </g>
+  </g>
+</svg>

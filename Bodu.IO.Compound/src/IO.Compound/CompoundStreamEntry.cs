@@ -12,6 +12,9 @@ namespace Bodu.IO.Compound;
 /// </summary>
 /// <remarks>
 /// <para>
+/// <img src="../images/diagrams/io-compound-stream-access.svg" alt="CompoundStreamEntry is the directory node for a stream; its Open method returns a CompoundStream read cursor. For a buffered compound file the payload is materialized into an in-memory byte array at open time, whereas for a streaming file the cursor reads the stream's sector chain on demand. ReadAllBytes materializes the whole payload in one call."/>
+/// </para>
+/// <para>
 /// This type is the directory node for a stream, the managed counterpart of an <c>IStream</c>-bearing element. It is
 /// the persistent identity and metadata view; the transient, disposable read cursor over the bytes is produced by
 /// <see cref="Open" />, mirroring the relationship between <see cref="System.IO.Compression.ZipArchiveEntry" /> and its
