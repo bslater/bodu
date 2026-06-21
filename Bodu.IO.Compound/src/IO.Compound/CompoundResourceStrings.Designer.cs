@@ -104,5 +104,41 @@ namespace Bodu.IO.Compound {
                 return ResourceManager.GetString("IO_KeyNotFound_CompoundStream", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The compound file directory tree contains a cyclic or out-of-range entry link..
+        /// </summary>
+        internal static string Format_Invalid_CompoundDirectoryTree {
+            get {
+                return ResourceManager.GetString("Format_Invalid_CompoundDirectoryTree", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The stream is not a well-formed OLE property set..
+        /// </summary>
+        internal static string Format_Invalid_CompoundPropertySet {
+            get {
+                return ResourceManager.GetString("Format_Invalid_CompoundPropertySet", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The compound file access mode '{0}' is not supported; only Read is currently available..
+        /// </summary>
+        internal static string Op_NotSupported_CompoundFileWriteMode {
+            get {
+                return ResourceManager.GetString("Op_NotSupported_CompoundFileWriteMode", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The stream must be seekable to test for a compound file signature..
+        /// </summary>
+        internal static string Arg_Invalid_CompoundStreamNotSeekable {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_CompoundStreamNotSeekable", resourceCulture);
+            }
+        }
     }
 }

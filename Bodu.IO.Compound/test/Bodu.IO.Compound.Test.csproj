@@ -17,6 +17,15 @@
     <EmbeddedResource Include="Fixtures\*.xls">
       <LogicalName>Bodu.IO.Compound.Fixtures.%(Filename)%(Extension)</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="Fixtures\Reference\valid\*">
+      <LogicalName>Bodu.IO.Compound.Fixtures.Reference.valid.%(Filename)%(Extension)</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Fixtures\Reference\invalid\*">
+      <LogicalName>Bodu.IO.Compound.Fixtures.Reference.invalid.%(Filename)%(Extension)</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Fixtures\Reference\manifest.valid.json">
+      <LogicalName>Bodu.IO.Compound.Fixtures.Reference.manifest.valid.json</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

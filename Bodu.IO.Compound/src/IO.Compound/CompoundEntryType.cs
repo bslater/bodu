@@ -1,5 +1,5 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CompoundDirectoryEntryType.cs" company="Bodu Pty. Ltd.">
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="CompoundEntryType.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -7,16 +7,17 @@
 namespace Bodu.IO.Compound;
 
 /// <summary>
-/// Identifies the kind of object a <see cref="CompoundDirectoryEntry" /> describes within a compound file's directory.
+/// Identifies the kind of object an entry describes within a compound file's directory.
 /// </summary>
 /// <remarks>
 /// The numeric values match the object-type byte stored in each directory entry by the OLE2 / Compound File Binary
-/// specification, so the enum can be assigned directly from the parsed byte.
+/// specification, so the enum can be assigned directly from the parsed byte. They also correspond to the <c>STGTY_*</c>
+/// constants of the COM structured-storage API.
 /// </remarks>
-public enum CompoundDirectoryEntryType : byte
+public enum CompoundEntryType : byte
 {
     /// <summary>
-    /// An unknown or unallocated directory entry. Such entries are skipped during enumeration.
+    /// An unknown or unallocated directory entry. Such entries are not surfaced through the navigation API.
     /// </summary>
     Unknown = 0,
 

@@ -10,7 +10,7 @@ namespace Bodu.IO.Compound;
 /// Provides read-only, seekable access to the materialized bytes of a single stream within a compound file.
 /// </summary>
 /// <remarks>
-/// The stream is backed by an in-memory buffer that the owning <see cref="CompoundBinaryFile" /> assembled from the
+/// The stream is backed by an in-memory buffer that <see cref="CompoundStreamEntry.Open" /> assembled from the
 /// underlying sector chain, so reads never touch the original source after the stream has been opened. The instance is
 /// read-only: <see cref="Write(byte[], int, int)" /> and <see cref="SetLength(long)" /> always throw.
 /// </remarks>

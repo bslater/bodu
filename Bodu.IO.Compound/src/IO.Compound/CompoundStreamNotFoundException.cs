@@ -12,8 +12,10 @@ namespace Bodu.IO.Compound;
 /// The exception thrown when a named stream is requested from a compound file but no matching directory entry exists.
 /// </summary>
 /// <remarks>
-/// Thrown by <see cref="CompoundBinaryFile.GetStream(string)" />. Callers that prefer a non-throwing lookup should use
-/// <see cref="CompoundBinaryFile.TryGetStream(string, out CompoundStream)" /> instead.
+/// Thrown by <see cref="CompoundStorage.OpenStream(string)" /> and <see cref="CompoundStorage.OpenStorage(string)" />.
+/// Callers that prefer a non-throwing lookup should use
+/// <see cref="CompoundStorage.TryOpenStream(string, out CompoundStreamEntry)" /> or
+/// <see cref="CompoundStorage.TryOpenStorage(string, out CompoundStorage)" /> instead.
 /// </remarks>
 public sealed class CompoundStreamNotFoundException
     : KeyNotFoundException

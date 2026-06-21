@@ -56,7 +56,7 @@ internal ref struct CompoundStreamReader
     public void Seek(int position)
     {
         if ((uint)position > (uint)_data.Length)
-            CompoundThrowHelper.ThrowFormat(CompoundResourceStrings.Format_Invalid_CompoundHeader);
+            CompoundThrowHelper.ThrowFormat(CompoundResourceStrings.Format_Invalid_CompoundHeader, CompoundFileError.InvalidHeader);
 
         _position = position;
     }
@@ -125,7 +125,7 @@ internal ref struct CompoundStreamReader
     private ReadOnlySpan<byte> Take(int count)
     {
         if (count < 0 || _position + count > _data.Length)
-            CompoundThrowHelper.ThrowFormat(CompoundResourceStrings.Format_Invalid_CompoundHeader);
+            CompoundThrowHelper.ThrowFormat(CompoundResourceStrings.Format_Invalid_CompoundHeader, CompoundFileError.InvalidHeader);
 
         ReadOnlySpan<byte> slice = _data.Slice(_position, count);
         _position += count;

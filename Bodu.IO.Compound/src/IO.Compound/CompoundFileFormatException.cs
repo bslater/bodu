@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CompoundFileFormatException.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -12,7 +12,7 @@ namespace Bodu.IO.Compound;
 /// <remarks>
 /// This exception reports structural failures of the container itself — an invalid signature, a malformed header, a
 /// circular or out-of-range sector chain, or a corrupt directory — rather than any application-level format carried
-/// inside a stream.
+/// inside a stream. The <see cref="Category" /> classifies the failure in a message-independent way.
 /// </remarks>
 public sealed class CompoundFileFormatException
     : FormatException
@@ -43,4 +43,25 @@ public sealed class CompoundFileFormatException
         : base(message, innerException)
     {
     }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CompoundFileFormatException" /> class with the specified message
+    /// and failure category.
+    /// </summary>
+    /// <param name="message">A message that describes the structural failure.</param>
+    /// <param name="category">The category that classifies the failure.</param>
+    public CompoundFileFormatException(string message, CompoundFileError category)
+        : base(message)
+    {
+        Category = category;
+    }
+
+    /// <summary>
+    /// Gets the category that classifies the structural failure.
+    /// </summary>
+    /// <returns>
+    /// The <see cref="CompoundFileError" /> describing the failure; <see cref="CompoundFileError.Unknown" /> when
+    /// unspecified.
+    /// </returns>
+    public CompoundFileError Category { get; }
 }

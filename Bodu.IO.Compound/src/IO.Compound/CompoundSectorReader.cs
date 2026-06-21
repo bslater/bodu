@@ -67,7 +67,7 @@ internal sealed class CompoundSectorReader
             return [];
 
         byte[] chain = ReadChainToEnd(startSector);
-        CompoundThrowHelper.ThrowFormatIf(chain.Length < size, CompoundResourceStrings.Format_Invalid_CompoundSectorChain);
+        CompoundThrowHelper.ThrowFormatIf(chain.Length < size, CompoundResourceStrings.Format_Invalid_CompoundSectorChain, CompoundFileError.StreamChainTooShort);
 
         if (chain.Length == size)
             return chain;
@@ -97,8 +97,13 @@ internal sealed class CompoundSectorReader
         while (sector != CompoundFileHeader.EndOfChain)
         {
             CompoundThrowHelper.ThrowFormatIf(
-                sector >= (uint)_fat.Length || guard++ > _fat.Length,
-                CompoundResourceStrings.Format_Invalid_CompoundSectorChain);
+                sector >= (uint)_fat.Length,
+                CompoundResourceStrings.Format_Invalid_CompoundSectorChain,
+                CompoundFileError.SectorOutOfRange);
+            CompoundThrowHelper.ThrowFormatIf(
+                guard++ > _fat.Length,
+                CompoundResourceStrings.Format_Invalid_CompoundSectorChain,
+                CompoundFileError.FatCycle);
 
             buffer.Write(ReadSector(sector));
             sector = _fat[sector];
@@ -146,7 +151,7 @@ internal sealed class CompoundSectorReader
             return [];
 
         if (_miniFat is null || _miniStream is null)
-            CompoundThrowHelper.ThrowFormat(CompoundResourceStrings.Format_Invalid_CompoundSectorChain);
+            CompoundThrowHelper.ThrowFormat(CompoundResourceStrings.Format_Invalid_CompoundSectorChain, CompoundFileError.InvalidMiniFat);
 
         using MemoryStream buffer = new();
         uint sector = startMiniSector;
@@ -155,13 +160,19 @@ internal sealed class CompoundSectorReader
         while (sector != CompoundFileHeader.EndOfChain)
         {
             CompoundThrowHelper.ThrowFormatIf(
-                sector >= (uint)_miniFat!.Length || guard++ > _miniFat.Length,
-                CompoundResourceStrings.Format_Invalid_CompoundSectorChain);
+                sector >= (uint)_miniFat!.Length,
+                CompoundResourceStrings.Format_Invalid_CompoundSectorChain,
+                CompoundFileError.SectorOutOfRange);
+            CompoundThrowHelper.ThrowFormatIf(
+                guard++ > _miniFat.Length,
+                CompoundResourceStrings.Format_Invalid_CompoundSectorChain,
+                CompoundFileError.InvalidMiniFat);
 
             int offset = (int)sector * _header.MiniSectorSize;
             CompoundThrowHelper.ThrowFormatIf(
                 offset + _header.MiniSectorSize > _miniStream!.Length,
-                CompoundResourceStrings.Format_Invalid_CompoundSectorChain);
+                CompoundResourceStrings.Format_Invalid_CompoundSectorChain,
+                CompoundFileError.InvalidMiniFat);
 
             buffer.Write(_miniStream.AsSpan(offset, _header.MiniSectorSize));
             sector = _miniFat[sector];
@@ -181,7 +192,7 @@ internal sealed class CompoundSectorReader
     /// </exception>
     private static byte[] Trim(MemoryStream buffer, long size)
     {
-        CompoundThrowHelper.ThrowFormatIf(buffer.Length < size, CompoundResourceStrings.Format_Invalid_CompoundSectorChain);
+        CompoundThrowHelper.ThrowFormatIf(buffer.Length < size, CompoundResourceStrings.Format_Invalid_CompoundSectorChain, CompoundFileError.StreamChainTooShort);
 
         byte[] result = new byte[size];
         buffer.Position = 0;
@@ -202,7 +213,8 @@ internal sealed class CompoundSectorReader
         long offset = (long)(sector + 1) * _header.SectorSize;
         CompoundThrowHelper.ThrowFormatIf(
             offset + _header.SectorSize > _data.Length,
-            CompoundResourceStrings.Format_Invalid_CompoundSectorChain);
+            CompoundResourceStrings.Format_Invalid_CompoundSectorChain,
+            CompoundFileError.SectorOutOfRange);
 
         return _data.AsSpan((int)offset, _header.SectorSize);
     }
@@ -228,7 +240,7 @@ internal sealed class CompoundSectorReader
 
         while (difatSector != CompoundFileHeader.EndOfChain && difatSector != CompoundFileHeader.FreeSector)
         {
-            CompoundThrowHelper.ThrowFormatIf(guard++ > (_data.Length / _header.SectorSize) + 1, CompoundResourceStrings.Format_Invalid_CompoundDirectory);
+            CompoundThrowHelper.ThrowFormatIf(guard++ > (_data.Length / _header.SectorSize) + 1, CompoundResourceStrings.Format_Invalid_CompoundDirectory, CompoundFileError.InvalidDifat);
 
             ReadOnlySpan<byte> sector = ReadSector(difatSector);
             for (int i = 0; i < perSector - 1; i++)
