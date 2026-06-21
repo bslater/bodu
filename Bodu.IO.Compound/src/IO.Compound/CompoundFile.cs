@@ -16,6 +16,9 @@ namespace Bodu.IO.Compound;
 /// </summary>
 /// <remarks>
 /// <para>
+/// <img src="../images/diagrams/io-compound-structure.svg" alt="A compound file is a structured-storage envelope: one physical file that begins with the OLE2 signature D0 CF 11 E0 and holds a header, allocation tables (FAT and mini-FAT), a directory, and sectors. CompoundFile.Open parses that container and exposes a logical hierarchy. Navigation starts at RootStorage and descends through nested CompoundStorage containers to CompoundStreamEntry leaves; a CompoundStorage is the managed counterpart of the COM IStorage interface and a CompoundStreamEntry is the counterpart of IStream."/>
+/// </para>
+/// <para>
 /// A compound file is a structured-storage envelope — effectively a small file system embedded in a single file — used
 /// by legacy Microsoft Office formats (<c>.xls</c>, <c>.doc</c>, <c>.ppt</c>, <c>.msg</c>) and other technologies. This
 /// type is the managed counterpart of the COM <c>StgOpenStorage</c> entry point: navigation begins at
@@ -42,7 +45,7 @@ namespace Bodu.IO.Compound;
 ///
 /// using CompoundFile file = CompoundFile.Open(File.OpenRead("book.xls"));
 /// foreach (CompoundEntryInfo info in file.RootStorage.EnumerateEntries())
-///     Console.WriteLine($"{info.Type}: {info.Name}");
+///     Console.WriteLine($"{info.EntryType}: {info.Name} ({info.Length} bytes)");
 ///
 /// if (file.RootStorage.TryOpenStream("Workbook", out CompoundStreamEntry? workbook))
 /// {

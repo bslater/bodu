@@ -2,8 +2,6 @@
 
 Financial primitives for .NET — runtime-tagged and strongly-typed money, the full ISO 4217 currency catalogue (with numeric codes and an active-currency enum), multi-currency aggregates, and a foreign-exchange provider stack with both runtime and typed rate forms.
 
-> **API stability: Preview.** This is the initial 1.0 release. The public surface is expected to be stable, but minor breaking changes may still occur before the API is promoted to *Stable*.
-
 References **[Bodu.Numerics](https://www.nuget.org/packages/Bodu.Numerics)** for the exact-arithmetic escape hatch (`Money<T>.ToFraction()` / `FromFraction` / `MultiplyExact`) through `Fraction<BigInteger>`.
 
 ## Installation
@@ -180,7 +178,7 @@ Money[] proportional = pro.Allocate(new[] { 1m, 2m, 3m });       // largest-rema
 
 Compact-notation overloads (`ToCompactString(...)`) add a K/M/B/T magnitude suffix to the numeric portion, preserving the chosen specifier's symbol position.
 
-> **Breaking change (Preview → Stable).** The `C` and `L` specifiers changed meaning. The pre-1.0 `C` (ISO-code prefix) is now `G`. The pre-1.0 `L` (culture-native symbol) is now `C`. The new `L` emits the English currency name. The new `R` is the invariant round-trip form. Code that depended on the previous semantics should rename `C` → `G` (when ISO-prefix output was required) and `L` → `C` (when culture-native output was required).
+> **Format-specifier reference.** `G` is the ISO-code-prefixed form, `C` is the culture-native symbol form, `L` emits the English currency name, and `R` is the invariant round-trip form. (Earlier builds spelled the ISO-code-prefix form `C` and the culture-native form `L`; code written against those should rename `C` → `G` and `L` → `C`.)
 
 ## Serialization
 

@@ -4,11 +4,11 @@ title: Guides
 
 # Guides
 
-Recipe-style walk-throughs and conceptual introductions for every library in the Bodu suite, organized by the suite's **six topics**. Each topic has its own guides landing page that maps the member libraries' guide sections, and each library's section below is organized by **namespace**, with one walk-through per headline type.
+Recipe-style walk-throughs and conceptual introductions for every library in the Bodu suite, organized by the suite's **seven topics**. Each topic has its own guides landing page that maps the member libraries' guide sections, and each library's section below is organized by **namespace**, with one walk-through per headline type.
 
 If you are new to Bodu, start with the [introduction](../docs/introduction.md) for the project overview, or the [getting-started page](../docs/getting-started.md) for install commands. To choose between hashing or cryptography types that sound similar, see the [Bodu.IO.Hashing](../docs/io-hashing/index.md) and [Bodu.Security.Cryptography](../docs/cryptography/index.md) introductions.
 
-**Topic guide landings:** [Core Foundations](topics/core-foundations.md) · [Hashing & Cryptography](topics/hashing-and-cryptography.md) · [Globalization & Calendars](topics/globalization-and-calendars.md) · [Text & Serialization](topics/text-and-serialization.md) · [Configuration](topics/configuration.md) · [Numerics & Financial](topics/numerics-and-financial.md)
+**Topic guide landings:** [Core Foundations](topics/core-foundations.md) · [Hashing & Cryptography](topics/hashing-and-cryptography.md) · [Globalization & Calendars](topics/globalization-and-calendars.md) · [Text & Serialization](topics/text-and-serialization.md) · [Configuration](topics/configuration.md) · [Numerics & Financial](topics/numerics-and-financial.md) · [Binary Formats & I/O](topics/binary-formats.md)
 
 ## Core Foundations
 
@@ -606,3 +606,39 @@ Type-safe money, the ISO 4217 currency catalogue, exchange rates, allocation, an
 </div>
 
 [Bodu.Financial API reference](xref:Bodu.Financial)
+
+---
+
+## Binary Formats & I/O
+
+Read-only readers for legacy binary container and document formats — see the **[Binary Formats & I/O guides landing](topics/binary-formats.md)**.
+
+### Bodu.IO.Compound
+
+A read-only reader for the OLE2 / Compound File Binary (CFB) container — the structured-storage "file system in a file" used by legacy Office documents (`.xls`, `.doc`, `.ppt`, `.msg`). It exposes the storage hierarchy and the raw byte payload of each named stream with no application-format knowledge.
+
+<div class="bodu-cards">
+
+<div class="bodu-card">
+  <h3><a href="io-compound/index.md">Overview</a></h3>
+  <p>Namespace map (<code>Bodu.IO.Compound</code>, <code>.PropertySets</code>), the storage-hierarchy mental model, and where each guide fits.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="io-compound/reading-compound-files.md">Reading compound files</a></h3>
+  <p>Open a file, probe the signature, walk the hierarchy with the enumerate and <code>TryOpen</code> surfaces, and read a named stream's bytes.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="io-compound/streaming-and-buffering.md">Buffered vs streaming access</a></h3>
+  <p>The <code>buffered</code> flag, the <code>CompoundStream</code> cursor, <code>AsMemory</code> vs chunked <code>Read</code>, and bounding memory for large files.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="io-compound/property-sets.md">Reading property sets</a></h3>
+  <p>The <code>SummaryInformation</code> / <code>DocumentSummaryInformation</code> metadata streams, the raw <code>OlePropertySet</code>, and the <code>TryGet*</code> convenience methods.</p>
+</div>
+
+</div>
+
+[Bodu.IO.Compound API reference](xref:Bodu.IO.Compound)

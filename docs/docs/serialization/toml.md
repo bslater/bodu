@@ -6,9 +6,6 @@ title: Bodu.Text.Toml — Introduction
 
 **Bodu.Text.Toml** is a self-contained library for [TOML](https://toml.io/) v1.0.0 and v1.1.0, the human-readable configuration format built around typed key/value pairs and tables. It is one of the two [Bodu serializer twins](index.md) — it shares its shape member-for-member with [Bodu.Text.Bencode](bencode.md), so everything on the [family introduction](index.md) (the serializer / DOM / reader-writer tiers, converters, attributes, naming policies) applies here unchanged. This page covers what is *specific* to TOML.
 
-> [!NOTE]
-> `Bodu.Text.Toml` is in **Preview**: the public surface is intended to be stable, but pin the version you adopt if breakage would be costly.
-
 ## The format in one paragraph
 
 TOML is a text format aimed squarely at configuration files: obvious to read, typed without annotations, and table-structured. Unlike Bencode's four kinds, TOML has a rich native value model — strings, integers, floats (including `inf` / `nan`), Booleans, arrays, tables, arrays of tables, and the four RFC 3339 date-time forms (offset date-time, local date-time, local date, local time). The document root is always a table, so the type you serialize at the root must map to an object; a top-level scalar or array throws.

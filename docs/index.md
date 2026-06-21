@@ -14,8 +14,6 @@ _disableBreadcrumb: true
   .bodu-card p { margin: 0 0 .6rem; opacity: .9; font-size: clamp(.9rem, .87rem + .15vw, 1rem); line-height: 1.55; }
   .bodu-card code { overflow-wrap: anywhere; }
   .bodu-card .bodu-card-links a { margin-right: .9rem; font-size: clamp(.85rem, .83rem + .1vw, .95rem); }
-  .bodu-card .bodu-card-status { display: inline-block; margin-left: .5rem; padding: .05rem .45rem; font-size: clamp(.65rem, .62rem + .15vw, .78rem); font-weight: 600; letter-spacing: .5px; text-transform: uppercase; border-radius: 4px; vertical-align: middle; }
-  .bodu-card .bodu-card-status.preview { background: rgba(251, 191, 36, 0.15); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.35); }
   .bodu-card img { display: block; width: 100%; height: auto; aspect-ratio: 480 / 220; border-radius: 6px; margin-bottom: .6rem; }
   .bodu-topic > p.bodu-topic-lede { margin: .25rem 0 0; opacity: .85; max-width: 56rem; font-size: clamp(.95rem, .9rem + .25vw, 1.1rem); line-height: 1.5; }
   .bodu-install pre { margin: .25rem 0; }
@@ -27,7 +25,7 @@ _disableBreadcrumb: true
   <p class="tagline">A suite of small, focused .NET libraries for collections, non-cryptographic hashing, cryptography, calendar computation, binary-to-text encoding, document formats, serialization, configuration, numerics, and money.</p>
 </div>
 
-A family of focused primary libraries organized into **six topics** — alongside companion packages for dependency-injection bridges, regional calendar data packs, fluent calendar authoring, plugin loading, and financial service registration. Every package shares a single solution, a single set of conventions, and a single bar for quality: nullable-enabled, analyzer-clean, deterministic builds, and framework-style XML documentation.
+A family of focused primary libraries organized into **seven topics** — alongside companion packages for dependency-injection bridges, regional calendar data packs, fluent calendar authoring, plugin loading, and financial service registration. Every package shares a single solution, a single set of conventions, and a single bar for quality: nullable-enabled, analyzer-clean, deterministic builds, and framework-style XML documentation.
 
 ## Core Foundations
 
@@ -145,7 +143,7 @@ A family of focused primary libraries organized into **six topics** — alongsid
 
 <div class="bodu-card">
   <img src="images/hero-toml.svg" alt="Bodu.Text.Bencode and Bodu.Text.Toml" />
-  <h3>Bodu.Text.Bencode &amp; Bodu.Text.Toml <span class="bodu-card-status preview">Preview</span></h3>
+  <h3>Bodu.Text.Bencode &amp; Bodu.Text.Toml</h3>
   <p>Two self-contained serializers that map your own types to and from a format — deliberate twins with the same shape, member for member. Each ships a <code>…Serializer</code>, a mutable <code>…Node</code> and a read-only <code>…Document</code> DOM, and a low-level <code>Utf8…Reader</code> / <code>Utf8…Writer</code> pair, with the full converter / attribute / naming-policy surface. <strong>Bencode</strong> covers BitTorrent BEP 3; <strong>TOML</strong> covers v1.0.0 / v1.1.0.</p>
   <div class="bodu-card-links">
     <a href="docs/serialization/index.md">Introduction</a>
@@ -200,7 +198,7 @@ A family of focused primary libraries organized into **six topics** — alongsid
 
 <div class="bodu-card">
   <img src="images/hero-numerics.svg" alt="Bodu.Numerics" />
-  <h3>Bodu.Numerics <span class="bodu-card-status preview">Preview</span></h3>
+  <h3>Bodu.Numerics</h3>
   <p>Exact rational arithmetic (<code>Fraction&lt;T&gt;</code>) over any <code>IBinaryInteger&lt;T&gt;</code> backing type with canonical-form auto-reduction, <code>BigInteger</code>-promoted intermediates, the full <code>INumber&lt;T&gt;</code> / <code>ISignedNumber&lt;T&gt;</code> surface, mixed-number and Unicode-vulgar-fraction formatting, continued-fraction expansion, and best rational approximation — plus <code>Interval&lt;T&gt;</code> for closed / open / half-open bounded numeric intervals with intersection, union, and adjacency operations.</p>
   <div class="bodu-card-links">
     <a href="docs/numerics/index.md">Introduction</a>
@@ -211,12 +209,33 @@ A family of focused primary libraries organized into **six topics** — alongsid
 
 <div class="bodu-card">
   <img src="images/hero-financial.svg" alt="Bodu.Financial" />
-  <h3>Bodu.Financial <span class="bodu-card-status preview">Preview</span></h3>
+  <h3>Bodu.Financial</h3>
   <p>Type-safe monetary primitives: <code>Money&lt;TCurrency&gt;</code> where the currency is encoded as the type parameter so cross-currency arithmetic fails the build, <code>Money</code> for runtime-tagged scenarios, <code>MoneyBag</code> for multi-currency portfolios, a shipped catalogue of ~185 ISO 4217 currencies (active and historic), an audit-grade exchange-rate provider stack with both timeless and dated lookup, fair allocation, cash rounding, sub-minor-unit-precise <code>Fraction&lt;BigInteger&gt;</code> interop, and three JSON wire shapes (strict / lenient / compact).</p>
   <div class="bodu-card-links">
     <a href="docs/financial/index.md">Introduction</a>
     <a href="guides/financial/index.md">Guides</a>
     <a href="xref:Bodu.Financial">API reference</a>
+  </div>
+</div>
+
+</div>
+
+## Binary Formats & I/O
+
+<div class="bodu-topic">
+<p class="bodu-topic-lede">Read-only readers for legacy binary container and document formats — a general-purpose compound-file reader with narrower format readers layered on top. <a href="docs/topics/binary-formats.md">Topic overview →</a></p>
+</div>
+
+<div class="bodu-cards">
+
+<div class="bodu-card">
+  <img src="images/hero-io.svg" alt="Bodu.IO.Compound" />
+  <h3>Bodu.IO.Compound</h3>
+  <p>A read-only reader for the OLE2 / Compound File Binary (CFB) container — the structured-storage "file system in a file" behind legacy Office documents (<code>.xls</code>, <code>.doc</code>, <code>.ppt</code>, <code>.msg</code>). Navigates the <code>RootStorage</code> hierarchy, reads each named stream's bytes through a seekable <code>CompoundStream</code> cursor (buffered or on-demand), and parses the OLE summary-information property sets. The narrow BIFF8 <code>.xls</code> reader <code>Bodu.Formats.Excel.Binary</code> is built on top of it.</p>
+  <div class="bodu-card-links">
+    <a href="docs/io-compound/index.md">Introduction</a>
+    <a href="guides/io-compound/index.md">Guides</a>
+    <a href="xref:Bodu.IO.Compound">API reference</a>
   </div>
 </div>
 
@@ -239,6 +258,8 @@ dotnet add package Bodu.Text.Configuration
 dotnet add package Bodu.Extensions.Configuration.Text
 dotnet add package Bodu.Numerics
 dotnet add package Bodu.Financial
+dotnet add package Bodu.IO.Compound
+dotnet add package Bodu.Formats.Excel.Binary
 ```
 
 </div>
