@@ -26,6 +26,9 @@
     <EmbeddedResource Include="Fixtures\Reference\manifest.valid.json">
       <LogicalName>Bodu.IO.Compound.Fixtures.Reference.manifest.valid.json</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="Fixtures\Writer\*.cfb">
+      <LogicalName>Bodu.IO.Compound.Fixtures.Writer.%(Filename)%(Extension)</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

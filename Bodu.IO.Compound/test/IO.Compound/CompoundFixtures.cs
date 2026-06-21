@@ -69,6 +69,23 @@ internal static class CompoundFixtures
         new(ReadReferenceBytes(relativePath), writable: false);
 
     /// <summary>
+    /// Reads the raw bytes of an embedded writer golden fixture.
+    /// </summary>
+    /// <param name="fileName">The golden fixture file name, for example <c>golden-v3.cfb</c>.</param>
+    /// <returns>The fixture content.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when the fixture is not embedded.</exception>
+    public static byte[] ReadWriterGolden(string fileName)
+    {
+        string resourceName = "Bodu.IO.Compound.Fixtures.Writer." + fileName;
+        using Stream stream = typeof(CompoundFixtures).Assembly.GetManifestResourceStream(resourceName)
+            ?? throw new InvalidOperationException($"Missing embedded golden fixture '{resourceName}'.");
+        using MemoryStream buffer = new();
+        stream.CopyTo(buffer);
+
+        return buffer.ToArray();
+    }
+
+    /// <summary>
     /// Reads the embedded valid-fixture manifest as a UTF-8 string.
     /// </summary>
     /// <returns>The manifest JSON text.</returns>
