@@ -12,7 +12,7 @@ using Microsoft.Extensions.FileProviders.Physical;
 namespace Bodu.Extensions.Configuration.Text;
 
 /// <summary>
-/// Verifies the parameterless default-filename overload of <c>AddBoduConfiguration</c>, which probes for
+/// Verifies the parameterless default-filename overload of <c>AddTextConfiguration</c>, which probes for
 /// <c>.boduconfig</c> and falls back to <c>bodu.config</c>.
 /// </summary>
 [TestClass]
@@ -34,7 +34,7 @@ default.filename.loaded = yes
         ConfigurationBuilder builder = new();
         builder.SetFileProvider(new PhysicalFileProvider(scope.Path, ExclusionFilters.None));
 
-        IConfiguration configuration = builder.AddBoduConfiguration().Build();
+        IConfiguration configuration = builder.AddTextConfiguration().Build();
 
         Assert.AreEqual("yes", configuration["default:filename:loaded"]);
     }
@@ -52,7 +52,7 @@ default.filename.loaded = yes
         ConfigurationBuilder builder = new();
         builder.SetFileProvider(new PhysicalFileProvider(scope.Path));
 
-        IConfiguration configuration = builder.AddBoduConfiguration().Build();
+        IConfiguration configuration = builder.AddTextConfiguration().Build();
 
         Assert.AreEqual("yes", configuration["default:filename:loaded"]);
     }
@@ -68,7 +68,7 @@ default.filename.loaded = yes
         ConfigurationBuilder builder = new();
         builder.SetFileProvider(new PhysicalFileProvider(scope.Path));
 
-        IConfiguration configuration = builder.AddBoduConfiguration(optional: true).Build();
+        IConfiguration configuration = builder.AddTextConfiguration(optional: true).Build();
 
         Assert.IsNull(configuration["default:filename:loaded"]);
     }
@@ -86,7 +86,7 @@ default.filename.loaded = yes
 
         Assert.ThrowsExactly<FileNotFoundException>(() =>
         {
-            _ = builder.AddBoduConfiguration(optional: false).Build();
+            _ = builder.AddTextConfiguration(optional: false).Build();
         });
     }
 
@@ -100,7 +100,7 @@ default.filename.loaded = yes
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = builder.AddBoduConfiguration();
+            _ = builder.AddTextConfiguration();
         });
     }
 }

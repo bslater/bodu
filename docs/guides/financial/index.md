@@ -77,7 +77,7 @@ hand off to `Fraction<BigInteger>` for exact-arithmetic chains via
 
 <div class="bodu-card">
   <h3><a href="dependency-injection.md">Dependency injection</a></h3>
-  <p>Register the financial stack with <code>AddBoduFinancial(...)</code> — currency lookups, named monetary contexts, FX providers, JSON converters, and options binding.</p>
+  <p>Register the financial stack with <code>AddFinancialService(...)</code> — currency lookups, named monetary contexts, FX providers, JSON converters, and options binding.</p>
 </div>
 
 </div>

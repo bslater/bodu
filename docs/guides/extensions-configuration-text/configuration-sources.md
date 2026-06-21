@@ -13,14 +13,14 @@ using Bodu.Extensions.Configuration.Text;
 using Microsoft.Extensions.Configuration;
 
 IConfiguration configuration = new ConfigurationBuilder()
-    .AddBoduConfigurationFile("appsettings.ini", optional: false, reloadOnChange: true)
+    .AddTextConfigurationFile("appsettings.ini", optional: false, reloadOnChange: true)
     .Build();
 
 string? appName = configuration["appName"];
 string? level   = configuration["logging:level"];
 ```
 
-`AddBoduConfigurationFile(path, …)` registers a `TextConfigurationSource`. The provider uses the host's default file provider, watches for changes when `reloadOnChange: true`, and re-resolves the view when the file is rewritten. The dotted keys in the INI source flatten through `ConfigurationKeyOptions.Default` so `logging.level.default = …` is reachable as `"logging:level:default"` — the canonical colon-delimited form `IConfiguration` consumers expect.
+`AddTextConfigurationFile(path, …)` registers a `TextConfigurationSource`. The provider uses the host's default file provider, watches for changes when `reloadOnChange: true`, and re-resolves the view when the file is rewritten. The dotted keys in the INI source flatten through `ConfigurationKeyOptions.Default` so `logging.level.default = …` is reachable as `"logging:level:default"` — the canonical colon-delimited form `IConfiguration` consumers expect.
 
 ## Pattern 2 — explicit file provider
 
@@ -29,7 +29,7 @@ using Bodu.Extensions.Configuration.Text;
 using Microsoft.Extensions.FileProviders;
 
 IConfiguration configuration = new ConfigurationBuilder()
-    .AddBoduConfigurationFile(
+    .AddTextConfigurationFile(
         provider: new PhysicalFileProvider("/etc/myapp"),
         path: "config.ini",
         targetPath: null,
@@ -46,7 +46,7 @@ Pass an `IFileProvider` to read from a specific physical or embedded location ra
 using Bodu.Extensions.Configuration.Text;
 
 IConfiguration configuration = new ConfigurationBuilder()
-    .AddBoduConfiguration(optional: true, reloadOnChange: false)
+    .AddTextConfiguration(optional: true, reloadOnChange: false)
     .Build();
 ```
 
@@ -61,7 +61,7 @@ using Bodu.Text.Configuration;
 using var ms = new MemoryStream(Encoding.UTF8.GetBytes(iniText));
 
 IConfiguration configuration = new ConfigurationBuilder()
-    .AddBoduConfigurationStream(
+    .AddTextConfigurationStream(
         stream: ms,
         targetPath: null,
         parseOptions: ConfigurationParseOptions.Relaxed,
@@ -69,7 +69,7 @@ IConfiguration configuration = new ConfigurationBuilder()
     .Build();
 ```
 
-`AddBoduConfigurationStream(Stream, …)` registers a `TextStreamConfigurationSource`. Unlike file-backed sources, stream sources do not support reload-on-change — the stream is consumed once during `Build()`. Use the stream overload when the configuration comes from a network resource, an embedded resource, or anywhere else that cannot be expressed as a file path.
+`AddTextConfigurationStream(Stream, …)` registers a `TextStreamConfigurationSource`. Unlike file-backed sources, stream sources do not support reload-on-change — the stream is consumed once during `Build()`. Use the stream overload when the configuration comes from a network resource, an embedded resource, or anywhere else that cannot be expressed as a file path.
 
 ## Pattern 5 — pre-parsed document
 
@@ -84,7 +84,7 @@ ConfigurationDocument doc = ConfigurationDocument.Parse(iniText);
 doc.GetOrAddSection("logging").SetEntry("level", "Debug");
 
 IConfiguration configuration = new ConfigurationBuilder()
-    .AddBoduConfigurationDocument(doc, targetPath: null)
+    .AddTextConfigurationDocument(doc, targetPath: null)
     .Build();
 ```
 
@@ -96,7 +96,7 @@ When you already have an `IniDocument` in hand — built programmatically, mutat
 using Bodu.Extensions.Configuration.Text;
 
 IConfiguration configuration = new ConfigurationBuilder()
-    .AddBoduConfigurationFile(source =>
+    .AddTextConfigurationFile(source =>
     {
         source.Path           = "appsettings.ini";
         source.TargetPath     = "src/Foo.cs";          // enable EditorConfig glob mode
@@ -108,7 +108,7 @@ IConfiguration configuration = new ConfigurationBuilder()
     .Build();
 ```
 
-The delegate overload mirrors the `AddJsonFile(source => …)` pattern from `Microsoft.Extensions.Configuration.Json`. Set every property up front rather than choosing the right `AddBoduConfiguration*` overload for the combination you need.
+The delegate overload mirrors the `AddJsonFile(source => …)` pattern from `Microsoft.Extensions.Configuration.Json`. Set every property up front rather than choosing the right `AddTextConfiguration*` overload for the combination you need.
 
 ## Pattern 7 — binding to `IOptions<T>`
 
@@ -126,7 +126,7 @@ public sealed class LoggingOptions
 }
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Configuration.AddBoduConfigurationFile("appsettings.boduconfig");
+builder.Configuration.AddTextConfigurationFile("appsettings.boduconfig");
 
 // Bind by section name against the configuration root…
 builder.Services.AddConfigurationOptions<LoggingOptions>(
@@ -217,7 +217,7 @@ A Bodu source participates in the standard `IConfiguration` precedence rules: pr
 ```csharp
 IConfiguration configuration = new ConfigurationBuilder()
     .AddJsonFile("appsettings.json", optional: false)               // baseline
-    .AddBoduConfigurationFile("overrides.ini", optional: true)      // wins on conflict
+    .AddTextConfigurationFile("overrides.ini", optional: true)      // wins on conflict
     .AddEnvironmentVariables()                                      // wins over both
     .Build();
 

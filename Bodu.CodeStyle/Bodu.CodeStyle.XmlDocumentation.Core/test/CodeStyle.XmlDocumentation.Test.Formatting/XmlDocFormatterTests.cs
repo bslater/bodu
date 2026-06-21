@@ -14,7 +14,7 @@ public partial class XmlDocFormatterTests
 {
     private static XmlDocFormatter CreateFormatter() => new XmlDocFormatter();
 
-    private static XmlDocFormatOptions CreateOptions() => XmlDocFormatPolicyDefaults.CreateBoduDefaults();
+    private static XmlDocFormatOptions CreateOptions() => XmlDocFormatPolicyDefaults.CreateDefaults();
 
     private static XmlDocFormatContext CreateContext(string baseIndent = "    ", string lineEnding = "\r\n") =>
         new XmlDocFormatContext(baseIndent, lineEnding, XmlDocMemberKindHint.Method);

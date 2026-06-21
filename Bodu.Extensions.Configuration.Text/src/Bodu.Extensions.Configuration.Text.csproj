@@ -6,7 +6,7 @@
     <RootNamespace>Bodu</RootNamespace>
     <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
     <Title>Bodu — Configuration Provider</Title>
-    <Description>The EditorConfig-compatible Microsoft.Extensions.Configuration provider. Bridges Bodu.Text.Configuration into the standard IConfiguration / IOptions&lt;T&gt; pipeline so a .boduconfig or bodu.config file registers with the same AddBoduConfiguration(...) shape used for the JSON, INI, and XML providers — with file, stream, and programmatic-document overloads, reload-on-change, and colon-delimited section binding.</Description>
+    <Description>The EditorConfig-compatible Microsoft.Extensions.Configuration provider. Bridges Bodu.Text.Configuration into the standard IConfiguration / IOptions&lt;T&gt; pipeline so a .boduconfig or bodu.config file registers with the same AddTextConfiguration(...) shape used for the JSON, INI, and XML providers — with file, stream, and programmatic-document overloads, reload-on-change, and colon-delimited section binding.</Description>
     <PackageTags>$(PackageTags);configuration;editorconfig;microsoft-extensions-configuration;ioptions;config;settings</PackageTags>
   </PropertyGroup>
 

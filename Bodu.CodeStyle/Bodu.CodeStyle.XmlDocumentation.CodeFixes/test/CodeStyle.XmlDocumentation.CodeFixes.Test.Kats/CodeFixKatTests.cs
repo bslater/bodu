@@ -110,7 +110,7 @@ public sealed class CodeFixKatTests
 
     private static XmlDocFormatOptions ResolveOptions(CodeStyleKat kat)
     {
-        XmlDocFormatOptions options = XmlDocFormatPolicyDefaults.CreateBoduDefaults();
+        XmlDocFormatOptions options = XmlDocFormatPolicyDefaults.CreateDefaults();
 
         foreach (CodeStyleKatAdditionalFile file in kat.Files)
         {

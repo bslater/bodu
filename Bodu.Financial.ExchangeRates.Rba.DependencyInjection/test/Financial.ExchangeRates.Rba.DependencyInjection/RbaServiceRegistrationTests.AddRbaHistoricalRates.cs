@@ -15,6 +15,20 @@ namespace Bodu.Financial.ExchangeRates.Rba.DependencyInjection;
 public partial class RbaServiceRegistrationTests
 {
     /// <summary>
+    /// Verifies that the one-call entry point registers the core currency lookup alongside the RBA provider.
+    /// </summary>
+    [TestMethod]
+    public void AddRbaHistoricalRates_ShouldRegisterCoreServicesAndProvider()
+    {
+        ServiceCollection services = new();
+        services.AddRbaHistoricalRates();
+        using ServiceProvider provider = services.BuildServiceProvider();
+
+        Assert.IsNotNull(provider.GetService<ICurrencyLookup>());
+        Assert.IsNotNull(provider.GetService<RbaExchangeRateProvider>());
+    }
+
+    /// <summary>
     /// Verifies that the provider is registered once and exposed through both provider interfaces as the same instance.
     /// </summary>
     [TestMethod]

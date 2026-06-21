@@ -65,7 +65,7 @@ using Bodu.Extensions.Configuration.Text;
 using Microsoft.Extensions.Configuration;
 
 IConfiguration configuration = new ConfigurationBuilder()
-    .AddBoduConfigurationFile(".boduconfig", targetPath: "src/MyApp/Program.cs")
+    .AddTextConfigurationFile(".boduconfig", targetPath: "src/MyApp/Program.cs")
     .Build();
 
 string? level = configuration["logging:level:default"];    // "Warning"
@@ -78,7 +78,7 @@ Dotted keys (`logging.level.default`) project to the canonical colon-delimited f
 | Package | Status | What it provides | Docs |
 |---|---|---|---|
 | `Bodu.Text.Configuration` | Stable | The parser, profiles, layered resolver, typed `ConfigurationView`, key model, diagnostics, and round-trip `Save`. Built on the INI document model from `Bodu.Text.Formats`; no `Microsoft.Extensions` dependency. | [Intro](../text-configuration/index.md) · [Concepts](../text-configuration/concepts.md) · [Get started](../text-configuration/getting-started.md) |
-| `Bodu.Extensions.Configuration.Text` | Stable | The `Microsoft.Extensions.Configuration` bridge: `AddBoduConfigurationFile` / `AddBoduConfigurationStream`, the conventional `.boduconfig` → `bodu.config` probe, reload-on-change, and `AddConfigurationOptions<T>` binding. | [Intro](../extensions-configuration-text/index.md) · [Concepts](../extensions-configuration-text/concepts.md) · [Get started](../extensions-configuration-text/getting-started.md) |
+| `Bodu.Extensions.Configuration.Text` | Stable | The `Microsoft.Extensions.Configuration` bridge: `AddTextConfigurationFile` / `AddTextConfigurationStream`, the conventional `.boduconfig` → `bodu.config` probe, reload-on-change, and `AddConfigurationOptions<T>` binding. | [Intro](../extensions-configuration-text/index.md) · [Concepts](../extensions-configuration-text/concepts.md) · [Get started](../extensions-configuration-text/getting-started.md) |
 
 ### Boundaries
 
@@ -95,10 +95,10 @@ Dotted keys (`logging.level.default`) project to the canonical colon-delimited f
 | Surface every problem in a user-authored file at once | `ConfigurationDocument.ParseWithDiagnostics(text, ConfigurationParseOptions.Relaxed)` | Diagnostics collect instead of throwing; the valid portions of the document remain usable. |
 | Reject any input the parser cannot prove canonical | `ConfigurationParseOptions.Strict` | Duplicate keys are disallowed; suited to generated files. |
 | Round-trip a document through save | `ConfigurationDocument.Save(doc, path)` | Comments, section ordering, and property ordering are preserved. |
-| Feed the file into ASP.NET Core / Generic Host configuration | `builder.AddBoduConfigurationFile(".boduconfig")` | Keys surface in the colon-delimited form `IConfiguration` consumes. |
+| Feed the file into ASP.NET Core / Generic Host configuration | `builder.AddTextConfigurationFile(".boduconfig")` | Keys surface in the colon-delimited form `IConfiguration` consumes. |
 | Bind a section to a POCO with `IOptions<T>` | `services.AddConfigurationOptions<MyOptions>(configuration, "section")` | A discoverability shim over the standard `Configure<T>` shape. |
-| Hot-reload settings when the file changes | `AddBoduConfigurationFile(..., reloadOnChange: true)` | File watcher + standard reload tokens; `IOptionsMonitor<T>` re-binds automatically. |
-| Test fixtures or embedded resources | `builder.AddBoduConfigurationStream(stream)` | One-shot; no reload-on-change. |
+| Hot-reload settings when the file changes | `AddTextConfigurationFile(..., reloadOnChange: true)` | File watcher + standard reload tokens; `IOptionsMonitor<T>` re-binds automatically. |
+| Test fixtures or embedded resources | `builder.AddTextConfigurationStream(stream)` | One-shot; no reload-on-change. |
 | Plain INI editing with no layering | [`Bodu.Text.Formats`](../formats/index.md) `IniDocument` | The configuration layer is unnecessary overhead for that case. |
 
 ## Install

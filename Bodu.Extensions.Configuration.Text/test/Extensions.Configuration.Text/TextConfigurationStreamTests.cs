@@ -11,7 +11,7 @@ using Microsoft.Extensions.Configuration;
 namespace Bodu.Extensions.Configuration.Text;
 
 /// <summary>
-/// Verifies the stream-based <c>AddBoduConfigurationStream</c> overloads that mirror
+/// Verifies the stream-based <c>AddTextConfigurationStream</c> overloads that mirror
 /// <c>AddJsonStream</c> from <c>Microsoft.Extensions.Configuration.Json</c>.
 /// </summary>
 [TestClass]
@@ -25,7 +25,7 @@ logging.level.default = Warning
 """;
 
     /// <summary>
-    /// Verifies that <see cref="TextConfigurationExtensions.AddBoduConfigurationStream(IConfigurationBuilder, Stream, string?, ConfigurationParseOptions?, ConfigurationResolveOptions?)" />
+    /// Verifies that <see cref="TextConfigurationExtensions.AddTextConfigurationStream(IConfigurationBuilder, Stream, string?, ConfigurationParseOptions?, ConfigurationResolveOptions?)" />
     /// reads from a stream and exposes the resulting keys in colon-delimited form.
     /// </summary>
     [TestMethod]
@@ -34,7 +34,7 @@ logging.level.default = Warning
         using MemoryStream stream = new(Encoding.UTF8.GetBytes(Sample));
 
         IConfiguration configuration = new ConfigurationBuilder()
-            .AddBoduConfigurationStream(stream)
+            .AddTextConfigurationStream(stream)
             .Build();
 
         Assert.AreEqual("Information", configuration["logging:level:default"]);
@@ -50,7 +50,7 @@ logging.level.default = Warning
         using MemoryStream stream = new(Encoding.UTF8.GetBytes(Sample));
 
         IConfiguration configuration = new ConfigurationBuilder()
-            .AddBoduConfigurationStream(stream, targetPath: "src/Foo.cs")
+            .AddTextConfigurationStream(stream, targetPath: "src/Foo.cs")
             .Build();
 
         Assert.AreEqual("Warning", configuration["logging:level:default"]);
@@ -65,7 +65,7 @@ logging.level.default = Warning
         using MemoryStream stream = new(Encoding.UTF8.GetBytes(Sample));
 
         IConfiguration configuration = new ConfigurationBuilder()
-            .AddBoduConfigurationStream(source =>
+            .AddTextConfigurationStream(source =>
             {
                 source.Stream = stream;
                 source.TargetPath = "src/Foo.cs";
@@ -85,7 +85,7 @@ logging.level.default = Warning
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = new ConfigurationBuilder().AddBoduConfigurationStream(stream);
+            _ = new ConfigurationBuilder().AddTextConfigurationStream(stream);
         });
     }
 
@@ -99,7 +99,7 @@ logging.level.default = Warning
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = new ConfigurationBuilder().AddBoduConfigurationStream(configure);
+            _ = new ConfigurationBuilder().AddTextConfigurationStream(configure);
         });
     }
 
@@ -113,7 +113,7 @@ logging.level.default = Warning
         using MemoryStream stream = new(Encoding.UTF8.GetBytes(Sample));
 
         IConfiguration configuration = new ConfigurationBuilder()
-            .AddBoduConfigurationStream(
+            .AddTextConfigurationStream(
                 stream,
                 targetPath: null,
                 parseOptions: ConfigurationParseOptions.Bodu,

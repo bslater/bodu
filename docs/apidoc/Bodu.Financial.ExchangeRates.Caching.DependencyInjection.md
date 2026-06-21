@@ -34,13 +34,13 @@ using Bodu.Financial.ExchangeRates.Caching.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 
 // One cached provider.
-services.AddBoduFinancial()
+services.AddFinancialService()
         .AddRbaHistoricalRates()
         .AddCachedExchangeRateProvider<RbaExchangeRateProvider>("RBA",
             configure: o => o.DefaultExpiry = TimeSpan.FromHours(12));
 
 // A group of cached providers with per-FX-pair routing.
-services.AddBoduFinancial()
+services.AddFinancialService()
         .AddRbaHistoricalRates()
         .AddEcbReferenceRates()
         .AddAggregatedExchangeRateProvider(agg => agg

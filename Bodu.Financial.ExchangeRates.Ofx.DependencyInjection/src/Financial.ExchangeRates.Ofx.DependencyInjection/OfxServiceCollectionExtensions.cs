@@ -34,7 +34,7 @@ public static class OfxServiceCollectionExtensions
     /// <exception cref="ArgumentException">
     /// Thrown when <paramref name="sectionName" /> is empty or white space.
     /// </exception>
-    public static IFinancialServiceBuilder AddBoduOfxExchangeRates(
+    public static IFinancialServiceBuilder AddOfxExchangeRates(
         this IServiceCollection services,
         IConfiguration? configuration = null,
         string sectionName = "Financial:Ofx",

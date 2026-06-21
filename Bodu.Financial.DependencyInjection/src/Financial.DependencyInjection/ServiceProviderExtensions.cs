@@ -28,7 +28,7 @@ public static class ServiceProviderExtensions
     /// <see cref="CurrencyResolution.SetDefault(ICurrencyLookup)" />. Omitting the call leaves the registry-backed
     /// default in place, so existing applications behave identically without it.
     /// </remarks>
-    public static IServiceProvider UseBoduFinancialCurrencyResolution(this IServiceProvider provider)
+    public static IServiceProvider UseCurrencyResolution(this IServiceProvider provider)
     {
         ThrowHelper.ThrowIfNull(provider);
 

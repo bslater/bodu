@@ -33,7 +33,7 @@ public static class RbaServiceCollectionExtensions
     /// <exception cref="ArgumentException">
     /// Thrown when <paramref name="sectionName" /> is empty or white space.
     /// </exception>
-    public static IFinancialServiceBuilder AddBoduRbaHistoricalRates(
+    public static IFinancialServiceBuilder AddRbaHistoricalRates(
         this IServiceCollection services,
         IConfiguration? configuration = null,
         string sectionName = "Financial:Rba",

@@ -42,7 +42,7 @@ namespace Bodu.Extensions.Configuration.Text;
 /// using var stream = new MemoryStream(Encoding.UTF8.GetBytes(ConfigText));
 ///
 /// IConfigurationRoot root = new ConfigurationBuilder()
-///     .AddBoduConfigurationStream(source =>
+///     .AddTextConfigurationStream(source =>
 ///     {
 ///         source.Stream     = stream;
 ///         source.TargetPath = "src/Foo.cs";

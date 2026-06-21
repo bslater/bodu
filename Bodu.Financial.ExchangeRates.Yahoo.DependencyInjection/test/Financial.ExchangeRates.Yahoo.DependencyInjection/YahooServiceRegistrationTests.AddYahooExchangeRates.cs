@@ -15,6 +15,20 @@ namespace Bodu.Financial.ExchangeRates.Yahoo.DependencyInjection;
 public partial class YahooServiceRegistrationTests
 {
     /// <summary>
+    /// Verifies that the one-call entry point registers the core currency lookup alongside the Yahoo provider.
+    /// </summary>
+    [TestMethod]
+    public void AddYahooExchangeRates_ShouldRegisterCoreServicesAndProvider()
+    {
+        ServiceCollection services = new();
+        services.AddYahooExchangeRates();
+        using ServiceProvider provider = services.BuildServiceProvider();
+
+        Assert.IsNotNull(provider.GetService<ICurrencyLookup>());
+        Assert.IsNotNull(provider.GetService<YahooExchangeRateProvider>());
+    }
+
+    /// <summary>
     /// Verifies that the provider is registered once and exposed through both provider interfaces as the same instance.
     /// </summary>
     [TestMethod]

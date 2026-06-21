@@ -106,7 +106,7 @@ public sealed class XmlDocFormatOptionsTests
     [TestMethod]
     public void WithMaxLineLength_ShouldReturnNewInstanceWithOverride()
     {
-        XmlDocFormatOptions original = XmlDocFormatPolicyDefaults.CreateBoduDefaults();
+        XmlDocFormatOptions original = XmlDocFormatPolicyDefaults.CreateDefaults();
 
         XmlDocFormatOptions updated = original.WithMaxLineLength(80);
 
@@ -122,7 +122,7 @@ public sealed class XmlDocFormatOptionsTests
     [TestMethod]
     public void GetTagPolicy_WhenTagIsConfigured_ShouldReturnConfiguredPolicy()
     {
-        XmlDocFormatOptions options = XmlDocFormatPolicyDefaults.CreateBoduDefaults();
+        XmlDocFormatOptions options = XmlDocFormatPolicyDefaults.CreateDefaults();
 
         XmlDocTagPolicy policy = options.GetTagPolicy("summary");
 
@@ -139,7 +139,7 @@ public sealed class XmlDocFormatOptionsTests
     [TestMethod]
     public void GetTagPolicy_WhenTagIsUnknown_ShouldReturnDefaultPolicy()
     {
-        XmlDocFormatOptions options = XmlDocFormatPolicyDefaults.CreateBoduDefaults();
+        XmlDocFormatOptions options = XmlDocFormatPolicyDefaults.CreateDefaults();
 
         XmlDocTagPolicy policy = options.GetTagPolicy("unknownTag");
 
@@ -153,7 +153,7 @@ public sealed class XmlDocFormatOptionsTests
     [TestMethod]
     public void GetTagPolicy_WhenTagNameIsNull_ShouldThrowArgumentNullException()
     {
-        XmlDocFormatOptions options = XmlDocFormatPolicyDefaults.CreateBoduDefaults();
+        XmlDocFormatOptions options = XmlDocFormatPolicyDefaults.CreateDefaults();
 
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

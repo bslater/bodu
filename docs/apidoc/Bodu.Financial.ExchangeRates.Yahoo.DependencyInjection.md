@@ -15,7 +15,7 @@ uid: Bodu.Financial.ExchangeRates.Yahoo.DependencyInjection
 ## Key types
 
 - <xref:Bodu.Financial.ExchangeRates.Yahoo.DependencyInjection.YahooFinancialServiceBuilderExtensions> — `AddYahooExchangeRates(configuration?, sectionName?, configure?, configureResilience?)` on the financial service builder.
-- <xref:Bodu.Financial.ExchangeRates.Yahoo.DependencyInjection.YahooServiceCollectionExtensions> — `AddBoduYahooExchangeRates(…)`, the `IServiceCollection` convenience overload that adds the financial core and the Yahoo provider together.
+- <xref:Bodu.Financial.ExchangeRates.Yahoo.DependencyInjection.YahooServiceCollectionExtensions> — `AddYahooExchangeRates(…)`, the `IServiceCollection` convenience overload that adds the financial core and the Yahoo provider together.
 
 ## Minimal sample
 
@@ -26,7 +26,7 @@ using Bodu.Financial.ExchangeRates.Yahoo;
 using Bodu.Financial.ExchangeRates.Yahoo.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 
-services.AddBoduFinancial()
+services.AddFinancialService()
         .AddYahooExchangeRates(builder.Configuration);   // binds the Financial:Yahoo section
 
 var dated = provider.GetRequiredService<IDatedExchangeRateProvider>();

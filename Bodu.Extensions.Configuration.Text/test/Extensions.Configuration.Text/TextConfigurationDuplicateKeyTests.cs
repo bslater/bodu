@@ -34,7 +34,7 @@ service.name = Second
         using MemoryStream stream = new(Encoding.UTF8.GetBytes(sample));
 
         IConfiguration configuration = new ConfigurationBuilder()
-            .AddBoduConfigurationStream(stream)
+            .AddTextConfigurationStream(stream)
             .Build();
 
         Assert.AreEqual("Second", configuration["service:name"]);
@@ -54,7 +54,7 @@ service.name = Second
         using MemoryStream stream = new(Encoding.UTF8.GetBytes(sample));
 
         IConfigurationBuilder builder = new ConfigurationBuilder()
-            .AddBoduConfigurationStream(stream, targetPath: null, parseOptions: ConfigurationParseOptions.Strict);
+            .AddTextConfigurationStream(stream, targetPath: null, parseOptions: ConfigurationParseOptions.Strict);
 
         Assert.ThrowsExactly<ConfigurationParseException>(() => _ = builder.Build());
     }
@@ -76,7 +76,7 @@ format.indent.size = 2
         using MemoryStream stream = new(Encoding.UTF8.GetBytes(sample));
 
         IConfiguration configuration = new ConfigurationBuilder()
-            .AddBoduConfigurationStream(stream, targetPath: "src/Foo.cs")
+            .AddTextConfigurationStream(stream, targetPath: "src/Foo.cs")
             .Build();
 
         Assert.AreEqual("2", configuration["format:indent:size"]);
@@ -84,7 +84,7 @@ format.indent.size = 2
 
     /// <summary>
     /// Verifies that when the same key is set across multiple <em>providers</em>, Microsoft's
-    /// last-added-provider-wins rule applies — the second <c>AddBoduConfigurationStream</c> call overrides the first.
+    /// last-added-provider-wins rule applies — the second <c>AddTextConfigurationStream</c> call overrides the first.
     /// </summary>
     [TestMethod]
     public void Build_WhenSameKeyInMultipleProviders_ShouldUseLastAddedProvider()
@@ -96,8 +96,8 @@ format.indent.size = 2
         using MemoryStream b = new(Encoding.UTF8.GetBytes(second));
 
         IConfiguration configuration = new ConfigurationBuilder()
-            .AddBoduConfigurationStream(a)
-            .AddBoduConfigurationStream(b)
+            .AddTextConfigurationStream(a)
+            .AddTextConfigurationStream(b)
             .Build();
 
         Assert.AreEqual("Second", configuration["service:name"]);

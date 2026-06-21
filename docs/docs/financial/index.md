@@ -121,13 +121,13 @@ The companion **`Bodu.Financial.DependencyInjection`** package — a separate, S
 dotnet add package Bodu.Financial.DependencyInjection
 ```
 
-The entry point is `AddBoduFinancial(...)` on <xref:Bodu.Financial.DependencyInjection.ServiceCollectionExtensions>. Both overloads register the default <xref:Bodu.Financial.ICurrency> lookup and return a fluent <xref:Bodu.Financial.DependencyInjection.IFinancialServiceBuilder> on which you compose the rest of the stack: a replacement currency lookup, named monetary contexts, timeless and dated exchange-rate providers, and the JSON converters under a chosen policy. Passing an `IConfiguration` additionally binds <xref:Bodu.Financial.DependencyInjection.FinancialOptions> (`JsonPolicy`, `UnknownCurrency`) from a configuration section (default `"Financial"`).
+The entry point is `AddFinancialService(...)` on <xref:Bodu.Financial.DependencyInjection.ServiceCollectionExtensions>. Both overloads register the default <xref:Bodu.Financial.ICurrency> lookup and return a fluent <xref:Bodu.Financial.DependencyInjection.IFinancialServiceBuilder> on which you compose the rest of the stack: a replacement currency lookup, named monetary contexts, timeless and dated exchange-rate providers, and the JSON converters under a chosen policy. Passing an `IConfiguration` additionally binds <xref:Bodu.Financial.DependencyInjection.FinancialOptions> (`JsonPolicy`, `UnknownCurrency`) from a configuration section (default `"Financial"`).
 
 ```csharp
 using Bodu.Financial.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 
-builder.Services.AddBoduFinancial(configure: financial =>
+builder.Services.AddFinancialService(configure: financial =>
 {
     financial
         .AddFinancialJson(FinancialJsonPolicy.Strict)
@@ -136,14 +136,14 @@ builder.Services.AddBoduFinancial(configure: financial =>
 });
 ```
 
-The package depends only on `Bodu.Financial` and `Microsoft.Extensions.DependencyInjection.Abstractions`; applications that construct the financial types by hand (consoles, libraries, tests) do not need to reference it. See [Financial dependency injection](../../guides/financial/dependency-injection.md) for the full builder surface, options binding, and the post-build `UseBoduFinancialCurrencyResolution` activation step.
+The package depends only on `Bodu.Financial` and `Microsoft.Extensions.DependencyInjection.Abstractions`; applications that construct the financial types by hand (consoles, libraries, tests) do not need to reference it. See [Financial dependency injection](../../guides/financial/dependency-injection.md) for the full builder surface, options binding, and the post-build `UseCurrencyResolution` activation step.
 
 ## Where to go next
 
 - **[Core concepts](concepts.md)** — glossary the rest of the documentation assumes.
 - **[Getting started](getting-started.md)** — install the package and run minimal samples for `Money<TCurrency>`, `Money`, `MoneyBag`, the FX provider stack, and the JSON policies.
 - **[Working with `Money<TCurrency>`](../../guides/financial/money.md)** — type-parameter currency, allocation, conversion, exact-arithmetic chains, formatting and parsing, cash rounding, historic currencies, `Money` interop, `MoneyBag` portfolios.
-- **[Financial dependency injection](../../guides/financial/dependency-injection.md)** — `AddBoduFinancial`, the fluent builder, options binding, and activation.
+- **[Financial dependency injection](../../guides/financial/dependency-injection.md)** — `AddFinancialService`, the fluent builder, options binding, and activation.
 - **[Numerics & Financial topic overview](../topics/numerics-and-financial.md)** — how this package, `Bodu.Numerics`, and the DI companion fit together.
 - **[Numerics & Financial guides](../../guides/topics/numerics-and-financial.md)** — the guides landing page for both libraries.
 - **[Bodu.Numerics introduction](../numerics/index.md)** — the rational-arithmetic library that backs `Money<T>.ToFraction()`.

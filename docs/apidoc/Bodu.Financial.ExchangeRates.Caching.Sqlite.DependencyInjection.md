@@ -24,7 +24,7 @@ using Bodu.Financial.ExchangeRates.Caching;
 using Bodu.Financial.ExchangeRates.Caching.Sqlite.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 
-services.AddBoduFinancial()
+services.AddFinancialService()
         .AddSqliteRateCache("RBA", configure: o => o.DatabaseFilePath = "/var/cache/rba.db");
 
 // Resolve the cache (or the keyed cache for "RBA") and wrap a source with a CachingExchangeRateProvider over it.

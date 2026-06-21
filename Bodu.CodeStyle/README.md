@@ -107,7 +107,7 @@ Defaults match the Bodu codebase conventions:
 
 The analyzer reads policy from three layers, applied in order:
 
-1. **Defaults in code** — `XmlDocFormatPolicyDefaults.CreateBoduDefaults()`.
+1. **Defaults in code** — `XmlDocFormatPolicyDefaults.CreateDefaults()`.
 2. **JSON additional file** — `bodu.xmldocstyle.json` added as `<AdditionalFiles>` in the consumer csproj. The
    JSON shape mirrors `XmlDocFormatOptions`. Every property is honored by the formatter:
    - `maxLineLength`, `documentationPrefix`, `indentText` — physical layout (line width, line prefix, and the

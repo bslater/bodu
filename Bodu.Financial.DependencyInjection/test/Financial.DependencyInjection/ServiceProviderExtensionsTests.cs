@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Bodu.Financial.DependencyInjection;
 
 /// <summary>
-/// Verifies that <see cref="ServiceProviderExtensions.UseBoduFinancialCurrencyResolution(IServiceProvider)" /> promotes
+/// Verifies that <see cref="ServiceProviderExtensions.UseCurrencyResolution(IServiceProvider)" /> promotes
 /// the container-registered <see cref="ICurrencyLookup" /> to the ambient <see cref="CurrencyResolution" /> default.
 /// </summary>
 [TestClass]
@@ -28,14 +28,14 @@ public sealed class ServiceProviderExtensionsTests
     /// Verifies that the connector installs the registered lookup as the ambient resolver.
     /// </summary>
     [TestMethod]
-    public void UseBoduFinancialCurrencyResolution_WhenCalled_ShouldInstallRegisteredLookupAsAmbient()
+    public void UseCurrencyResolution_WhenCalled_ShouldInstallRegisteredLookupAsAmbient()
     {
         ServiceProvider provider = new ServiceCollection()
             .AddFinancialService(builder => builder.AddCurrencyLookup<MarkerLookup>())
             .Services
             .BuildServiceProvider();
 
-        IServiceProvider returned = provider.UseBoduFinancialCurrencyResolution();
+        IServiceProvider returned = provider.UseCurrencyResolution();
 
         Assert.AreSame(provider, returned);
         Assert.IsInstanceOfType<MarkerLookup>(CurrencyResolution.Current);
@@ -45,11 +45,11 @@ public sealed class ServiceProviderExtensionsTests
     /// Verifies that the connector rejects a <see langword="null" /> provider.
     /// </summary>
     [TestMethod]
-    public void UseBoduFinancialCurrencyResolution_WhenProviderIsNull_ShouldThrowArgumentNullException()
+    public void UseCurrencyResolution_WhenProviderIsNull_ShouldThrowArgumentNullException()
     {
         _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = ((IServiceProvider)null!).UseBoduFinancialCurrencyResolution();
+            _ = ((IServiceProvider)null!).UseCurrencyResolution();
         });
     }
 

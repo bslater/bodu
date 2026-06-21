@@ -9,7 +9,7 @@ that wraps a single source over its own on-disk cache. It resolves as both
 `IDatedExchangeRateProvider` and the timeless `IExchangeRateProvider`:
 
 ```csharp
-services.AddBoduFinancial()
+services.AddFinancialService()
         .AddRbaHistoricalRates()
         .AddCachedExchangeRateProvider<RbaExchangeRateProvider>("RBA", configuration,
             configure: o =>
@@ -27,7 +27,7 @@ Each child is also registered as a **keyed** `IDatedExchangeRateProvider`, so a 
 resolvable by name through the service catalog:
 
 ```csharp
-services.AddBoduFinancial()
+services.AddFinancialService()
         .AddRbaHistoricalRates()
         .AddEcbHistoricalRates()
         .AddAggregatedExchangeRateProvider(agg => agg

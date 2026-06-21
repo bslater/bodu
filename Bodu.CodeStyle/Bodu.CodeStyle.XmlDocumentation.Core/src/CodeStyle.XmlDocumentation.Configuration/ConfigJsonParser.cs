@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="BoduJsonParser.cs" company="Bodu Pty. Ltd.">
+// <copyright file="ConfigJsonParser.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -12,7 +12,7 @@ using System.Text;
 namespace Bodu.CodeStyle.XmlDocumentation.Configuration;
 
 /// <summary>
-/// Parses the small JSON dialect used by <c>bodu.xmldocstyle.json</c> into a <see cref="BoduJsonValue" /> tree.
+/// Parses the small JSON dialect used by <c>bodu.xmldocstyle.json</c> into a <see cref="ConfigJsonValue" /> tree.
 /// </summary>
 /// <remarks>
 /// This is a minimal, allocation-light recursive-descent parser that supports the JSON grammar (objects, arrays,
@@ -20,7 +20,7 @@ namespace Bodu.CodeStyle.XmlDocumentation.Configuration;
 /// and therefore the analyzer package — does not depend on <c>System.Text.Json</c>, which is not guaranteed to be
 /// present in every analyzer host. Malformed input throws <see cref="FormatException" />.
 /// </remarks>
-internal static class BoduJsonParser
+internal static class ConfigJsonParser
 {
     /// <summary>
     /// Parses the supplied JSON text.
@@ -28,11 +28,11 @@ internal static class BoduJsonParser
     /// <param name="json">The JSON document text.</param>
     /// <returns>The parsed value tree.</returns>
     /// <exception cref="FormatException">Thrown when the text is not well-formed JSON.</exception>
-    public static BoduJsonValue Parse(string json)
+    public static ConfigJsonValue Parse(string json)
     {
         var position = 0;
         SkipWhitespace(json, ref position);
-        BoduJsonValue value = ParseValue(json, ref position);
+        ConfigJsonValue value = ParseValue(json, ref position);
         SkipWhitespace(json, ref position);
         if (position != json.Length)
         {
@@ -42,7 +42,7 @@ internal static class BoduJsonParser
         return value;
     }
 
-    private static BoduJsonValue ParseValue(string json, ref int position)
+    private static ConfigJsonValue ParseValue(string json, ref int position)
     {
         if (position >= json.Length)
         {
@@ -57,33 +57,33 @@ internal static class BoduJsonParser
             case '[':
                 return ParseArray(json, ref position);
             case '"':
-                return BoduJsonValue.ForString(ParseString(json, ref position));
+                return ConfigJsonValue.ForString(ParseString(json, ref position));
             case 't':
             case 'f':
-                return BoduJsonValue.ForBoolean(ParseLiteralBoolean(json, ref position));
+                return ConfigJsonValue.ForBoolean(ParseLiteralBoolean(json, ref position));
             case 'n':
                 ParseLiteral(json, ref position, "null");
-                return BoduJsonValue.ForNull();
+                return ConfigJsonValue.ForNull();
             default:
                 if (c == '-' || (c >= '0' && c <= '9'))
                 {
-                    return BoduJsonValue.ForNumber(ParseNumber(json, ref position));
+                    return ConfigJsonValue.ForNumber(ParseNumber(json, ref position));
                 }
 
                 throw new FormatException(FormattableString.Invariant($"Unexpected character '{c}' at position {position}."));
         }
     }
 
-    private static BoduJsonValue ParseObject(string json, ref int position)
+    private static ConfigJsonValue ParseObject(string json, ref int position)
     {
         position++; // consume '{'
-        var members = new Dictionary<string, BoduJsonValue>(StringComparer.Ordinal);
+        var members = new Dictionary<string, ConfigJsonValue>(StringComparer.Ordinal);
 
         SkipWhitespace(json, ref position);
         if (Peek(json, position) == '}')
         {
             position++;
-            return BoduJsonValue.ForObject(members);
+            return ConfigJsonValue.ForObject(members);
         }
 
         while (true)
@@ -113,19 +113,19 @@ internal static class BoduJsonParser
             }
         }
 
-        return BoduJsonValue.ForObject(members);
+        return ConfigJsonValue.ForObject(members);
     }
 
-    private static BoduJsonValue ParseArray(string json, ref int position)
+    private static ConfigJsonValue ParseArray(string json, ref int position)
     {
         position++; // consume '['
-        var items = new List<BoduJsonValue>();
+        var items = new List<ConfigJsonValue>();
 
         SkipWhitespace(json, ref position);
         if (Peek(json, position) == ']')
         {
             position++;
-            return BoduJsonValue.ForArray(items);
+            return ConfigJsonValue.ForArray(items);
         }
 
         while (true)
@@ -146,7 +146,7 @@ internal static class BoduJsonParser
             }
         }
 
-        return BoduJsonValue.ForArray(items);
+        return ConfigJsonValue.ForArray(items);
     }
 
     private static string ParseString(string json, ref int position)

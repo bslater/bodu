@@ -85,7 +85,7 @@ fetches over HTTP with no provider-local disk cache. Use the generic
 ## Dependency injection
 
 See [`Bodu.Financial.ExchangeRates.Yahoo.DependencyInjection`](../Bodu.Financial.ExchangeRates.Yahoo.DependencyInjection)
-for `AddYahooExchangeRates` / `AddBoduYahooExchangeRates`.
+for `AddYahooExchangeRates` / `AddYahooExchangeRates`.
 
 ## Logging
 

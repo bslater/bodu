@@ -524,7 +524,7 @@ Surface a parsed and resolved document through the standard `IConfiguration` pip
 
 <div class="bodu-card">
   <h3><a href="extensions-configuration-text/configuration-sources.md">Configuration sources</a></h3>
-  <p><code>AddBoduConfigurationFile</code> / <code>AddBoduConfigurationStream</code>, the conventional file probe, reload-on-change, target-path anchoring, and <code>IOptions&lt;T&gt;</code> binding.</p>
+  <p><code>AddTextConfigurationFile</code> / <code>AddTextConfigurationStream</code>, the conventional file probe, reload-on-change, target-path anchoring, and <code>IOptions&lt;T&gt;</code> binding.</p>
 </div>
 
 </div>
@@ -600,7 +600,7 @@ Type-safe money, the ISO 4217 currency catalogue, exchange rates, allocation, an
 
 <div class="bodu-card">
   <h3><a href="financial/dependency-injection.md">Dependency injection</a></h3>
-  <p><code>AddBoduFinancial</code> — registering currency lookup, monetary contexts, and rate providers.</p>
+  <p><code>AddFinancialService</code> — registering currency lookup, monetary contexts, and rate providers.</p>
 </div>
 
 </div>
