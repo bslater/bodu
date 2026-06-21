@@ -13,8 +13,12 @@ public sealed partial class CompoundStorageNode
     /// </summary>
     /// <param name="source">The stream containing the compound file; read from its current position to the end.</param>
     /// <returns>A root <see cref="CompoundStorageNode" /> mirroring the file's contents.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="source" /> is <see langword="null" />.</exception>
-    /// <exception cref="CompoundFileFormatException">Thrown when the stream is not a well-formed compound file.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="source" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="CompoundFileFormatException">
+    /// Thrown when the stream is not a well-formed compound file.
+    /// </exception>
     public static CompoundStorageNode Load(Stream source)
     {
         ThrowHelper.ThrowIfNull(source);
@@ -28,7 +32,9 @@ public sealed partial class CompoundStorageNode
     /// </summary>
     /// <param name="file">The compound file to copy.</param>
     /// <returns>A root <see cref="CompoundStorageNode" /> mirroring the file's contents.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="file" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="file" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="CompoundFileFormatException">Thrown when a stream's sector chain is malformed.</exception>
     public static CompoundStorageNode FromFile(CompoundFile file)
     {

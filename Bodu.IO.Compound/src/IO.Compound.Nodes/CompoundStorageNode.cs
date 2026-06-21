@@ -142,18 +142,6 @@ public sealed partial class CompoundStorageNode
         return stream;
     }
 
-    /// <summary>
-    /// Adds a new child stream with the specified name and payload.
-    /// </summary>
-    /// <param name="name">The stream name.</param>
-    /// <param name="content">The payload bytes, copied into the node.</param>
-    /// <returns>The created <see cref="CompoundStreamNode" />.</returns>
-    /// <exception cref="CompoundFileSerializationException">
-    /// Thrown when the name is invalid or already present.
-    /// </exception>
-    public CompoundStreamNode AddStream(string name, ReadOnlySpan<byte> content) =>
-        AddStream(name, (ReadOnlyMemory<byte>)content.ToArray());
-
     /// <inheritdoc />
     /// <exception cref="CompoundFileSerializationException">
     /// Thrown when the name is invalid or already present.

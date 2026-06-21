@@ -62,18 +62,6 @@ public sealed class CompoundStreamNode
     }
 
     /// <summary>
-    /// Creates a stream node with the specified name and payload.
-    /// </summary>
-    /// <param name="name">The entry name.</param>
-    /// <param name="content">The payload bytes, copied into the node.</param>
-    /// <returns>A new <see cref="CompoundStreamNode" />.</returns>
-    /// <exception cref="CompoundFileSerializationException">
-    /// Thrown when <paramref name="name" /> is invalid.
-    /// </exception>
-    public static CompoundStreamNode Create(string name, ReadOnlySpan<byte> content) =>
-        Create(name, (ReadOnlyMemory<byte>)content.ToArray());
-
-    /// <summary>
     /// Creates a stream node whose payload is the encoded form of the supplied text.
     /// </summary>
     /// <param name="name">The entry name.</param>
