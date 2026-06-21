@@ -42,7 +42,7 @@ public sealed class XmlDocFormatterCDataTests
 
         var formatter = new XmlDocFormatter();
         var context = new XmlDocFormatContext("    ", "\r\n", XmlDocMemberKindHint.Unknown);
-        XmlDocFormatOptions options = XmlDocFormatPolicyDefaults.CreateBoduDefaults();
+        XmlDocFormatOptions options = XmlDocFormatPolicyDefaults.CreateDefaults();
 
         XmlDocFormatResult result = formatter.FormatTrivia(input, context, options);
 
@@ -70,7 +70,7 @@ public sealed class XmlDocFormatterCDataTests
 
         var formatter = new XmlDocFormatter();
         var context = new XmlDocFormatContext("    ", "\r\n", XmlDocMemberKindHint.Unknown);
-        XmlDocFormatOptions options = XmlDocFormatPolicyDefaults.CreateBoduDefaults();
+        XmlDocFormatOptions options = XmlDocFormatPolicyDefaults.CreateDefaults();
 
         XmlDocFormatResult result = formatter.FormatTrivia(input, context, options);
 
@@ -108,7 +108,7 @@ public sealed class XmlDocFormatterCDataTests
 
         var formatter = new XmlDocFormatter();
         var context = new XmlDocFormatContext("    ", "\r\n", XmlDocMemberKindHint.Unknown);
-        XmlDocFormatOptions options = XmlDocFormatPolicyDefaults.CreateBoduDefaults();
+        XmlDocFormatOptions options = XmlDocFormatPolicyDefaults.CreateDefaults();
 
         XmlDocFormatResult result = formatter.FormatTrivia(input, context, options);
 
@@ -149,7 +149,7 @@ public sealed class XmlDocFormatterCDataTests
 
         var formatter = new XmlDocFormatter();
         var context = new XmlDocFormatContext("    ", "\r\n", XmlDocMemberKindHint.Unknown);
-        XmlDocFormatOptions options = XmlDocFormatPolicyDefaults.CreateBoduDefaults();
+        XmlDocFormatOptions options = XmlDocFormatPolicyDefaults.CreateDefaults();
 
         XmlDocFormatResult result = formatter.FormatTrivia(input, context, options);
 
@@ -187,7 +187,7 @@ public sealed class XmlDocFormatterCDataTests
 
         var formatter = new XmlDocFormatter();
         var context = new XmlDocFormatContext("", "\r\n", XmlDocMemberKindHint.Unknown);
-        XmlDocFormatOptions options = XmlDocFormatPolicyDefaults.CreateBoduDefaults();
+        XmlDocFormatOptions options = XmlDocFormatPolicyDefaults.CreateDefaults();
 
         XmlDocFormatResult result = formatter.FormatTrivia(input, context, options);
 
@@ -227,7 +227,7 @@ public sealed class XmlDocFormatterCDataTests
 
         var formatter = new XmlDocFormatter();
         var context = new XmlDocFormatContext("    ", "\r\n", XmlDocMemberKindHint.Unknown);
-        XmlDocFormatOptions options = XmlDocFormatPolicyDefaults.CreateBoduDefaults();
+        XmlDocFormatOptions options = XmlDocFormatPolicyDefaults.CreateDefaults();
 
         XmlDocFormatResult result = formatter.FormatTrivia(input, context, options);
 
@@ -256,7 +256,7 @@ public sealed class XmlDocFormatterCDataTests
 
         var formatter = new XmlDocFormatter();
         var context = new XmlDocFormatContext("    ", "\r\n", XmlDocMemberKindHint.Unknown);
-        XmlDocFormatOptions options = XmlDocFormatPolicyDefaults.CreateBoduDefaults();
+        XmlDocFormatOptions options = XmlDocFormatPolicyDefaults.CreateDefaults();
 
         XmlDocFormatResult result = formatter.FormatTrivia(input, context, options);
 

@@ -13,7 +13,7 @@ namespace Bodu.Extensions.Configuration.Text;
 
 /// <summary>
 /// Pins the PhysicalFileProvider dot-file exclusion contract documented in
-/// <see cref="TextConfigurationExtensions.AddBoduConfiguration(IConfigurationBuilder, bool, bool)" />:
+/// <see cref="TextConfigurationExtensions.AddTextConfiguration(IConfigurationBuilder, bool, bool)" />:
 /// <see cref="PhysicalFileProvider" /> filters dot-prefixed files via <see cref="ExclusionFilters.Sensitive" />
 /// by default, which makes <c>.boduconfig</c> invisible. Callers who want the dot-prefixed convention
 /// discovery to work must construct the file provider with <see cref="ExclusionFilters.None" />.
@@ -41,7 +41,7 @@ discovered = yes
         builder.SetFileProvider(new PhysicalFileProvider(scope.Path)); // default = ExclusionFilters.Sensitive
 
         // No bodu.config fallback present, so optional+default-filter discovery sees neither file.
-        IConfiguration configuration = builder.AddBoduConfiguration(optional: true).Build();
+        IConfiguration configuration = builder.AddTextConfiguration(optional: true).Build();
 
         Assert.IsNull(configuration["discovered"]);
     }
@@ -60,7 +60,7 @@ discovered = yes
         ConfigurationBuilder builder = new();
         builder.SetFileProvider(new PhysicalFileProvider(scope.Path, ExclusionFilters.None));
 
-        IConfiguration configuration = builder.AddBoduConfiguration().Build();
+        IConfiguration configuration = builder.AddTextConfiguration().Build();
 
         Assert.AreEqual("yes", configuration["discovered"]);
     }
@@ -78,7 +78,7 @@ discovered = yes
         ConfigurationBuilder builder = new();
         builder.SetFileProvider(new PhysicalFileProvider(scope.Path)); // default = Sensitive
 
-        IConfiguration configuration = builder.AddBoduConfiguration().Build();
+        IConfiguration configuration = builder.AddTextConfiguration().Build();
 
         Assert.AreEqual("yes", configuration["discovered"]);
     }

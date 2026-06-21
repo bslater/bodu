@@ -20,7 +20,7 @@ public sealed class IntegrationTests
     /// options together.
     /// </summary>
     [TestMethod]
-    public void AddBoduFinancial_WhenComposedViaCallback_ShouldResolveAllServices()
+    public void AddFinancialService_WhenComposedViaCallback_ShouldResolveAllServices()
     {
         MonetaryContext tax = MonetaryContext.Default with { Rounding = MidpointRoundingStrategy.AwayFromZero };
 

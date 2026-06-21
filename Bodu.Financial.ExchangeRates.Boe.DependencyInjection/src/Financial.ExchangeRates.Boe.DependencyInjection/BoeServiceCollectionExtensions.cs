@@ -35,7 +35,7 @@ public static class BoeServiceCollectionExtensions
     /// <exception cref="ArgumentException">
     /// Thrown when <paramref name="sectionName" /> is empty or white space.
     /// </exception>
-    public static IFinancialServiceBuilder AddBoduBoeReferenceRates(
+    public static IFinancialServiceBuilder AddBoeReferenceRates(
         this IServiceCollection services,
         IConfiguration? configuration = null,
         string sectionName = "Financial:Boe",

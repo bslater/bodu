@@ -11,7 +11,7 @@ using Microsoft.Extensions.FileProviders;
 namespace Bodu.Extensions.Configuration.Text;
 
 /// <summary>
-/// Verifies the explicit <see cref="IFileProvider" /> overload of <c>AddBoduConfigurationFile</c>, mirroring
+/// Verifies the explicit <see cref="IFileProvider" /> overload of <c>AddTextConfigurationFile</c>, mirroring
 /// <c>AddJsonFile(IConfigurationBuilder, IFileProvider, string, bool, bool)</c>.
 /// </summary>
 [TestClass]
@@ -32,7 +32,7 @@ logging.level.default = Information
         PhysicalFileProvider fileProvider = new(scope.Directory);
 
         IConfiguration configuration = new ConfigurationBuilder()
-            .AddBoduConfigurationFile(fileProvider, Path.GetFileName(scope.Path))
+            .AddTextConfigurationFile(fileProvider, Path.GetFileName(scope.Path))
             .Build();
 
         Assert.AreEqual("Information", configuration["logging:level:default"]);
@@ -50,7 +50,7 @@ logging.level.default = Information
         builder.SetBasePath(scope.Directory);
 
         IConfiguration configuration = builder
-            .AddBoduConfigurationFile(provider: null, path: Path.GetFileName(scope.Path))
+            .AddTextConfigurationFile(provider: null, path: Path.GetFileName(scope.Path))
             .Build();
 
         Assert.AreEqual("Information", configuration["logging:level:default"]);
@@ -66,7 +66,7 @@ logging.level.default = Information
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = builder.AddBoduConfigurationFile(provider: null, path: "some.boduconfig");
+            _ = builder.AddTextConfigurationFile(provider: null, path: "some.boduconfig");
         });
     }
 
@@ -78,7 +78,7 @@ logging.level.default = Information
     {
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            _ = new ConfigurationBuilder().AddBoduConfigurationFile(provider: null, path: "   ");
+            _ = new ConfigurationBuilder().AddTextConfigurationFile(provider: null, path: "   ");
         });
     }
 }

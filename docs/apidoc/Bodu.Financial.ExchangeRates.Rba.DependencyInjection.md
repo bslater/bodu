@@ -15,7 +15,7 @@ uid: Bodu.Financial.ExchangeRates.Rba.DependencyInjection
 ## Key types
 
 - <xref:Bodu.Financial.ExchangeRates.Rba.DependencyInjection.RbaFinancialServiceBuilderExtensions> — `AddRbaHistoricalRates(configuration?, sectionName?, configure?, configureResilience?)` on the financial service builder.
-- <xref:Bodu.Financial.ExchangeRates.Rba.DependencyInjection.RbaServiceCollectionExtensions> — `AddBoduRbaHistoricalRates(…)`, the `IServiceCollection` convenience overload that adds the financial core and the RBA provider together.
+- <xref:Bodu.Financial.ExchangeRates.Rba.DependencyInjection.RbaServiceCollectionExtensions> — `AddRbaHistoricalRates(…)`, the `IServiceCollection` convenience overload that adds the financial core and the RBA provider together.
 
 ## Minimal sample
 
@@ -26,7 +26,7 @@ using Bodu.Financial.ExchangeRates.Rba;
 using Bodu.Financial.ExchangeRates.Rba.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 
-services.AddBoduFinancial()
+services.AddFinancialService()
         .AddRbaHistoricalRates(builder.Configuration);   // binds the Financial:Rba section
 
 // Later: resolve on either surface.

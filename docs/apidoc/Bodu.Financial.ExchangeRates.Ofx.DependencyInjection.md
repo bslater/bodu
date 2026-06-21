@@ -15,7 +15,7 @@ uid: Bodu.Financial.ExchangeRates.Ofx.DependencyInjection
 ## Key types
 
 - <xref:Bodu.Financial.ExchangeRates.Ofx.DependencyInjection.OfxFinancialServiceBuilderExtensions> — `AddOfxExchangeRates(configuration?, sectionName?, configure?, configureResilience?)` on the financial service builder.
-- <xref:Bodu.Financial.ExchangeRates.Ofx.DependencyInjection.OfxServiceCollectionExtensions> — `AddBoduOfxExchangeRates(…)`, the `IServiceCollection` convenience overload that adds the financial core and the OFX provider together.
+- <xref:Bodu.Financial.ExchangeRates.Ofx.DependencyInjection.OfxServiceCollectionExtensions> — `AddOfxExchangeRates(…)`, the `IServiceCollection` convenience overload that adds the financial core and the OFX provider together.
 
 ## Minimal sample
 
@@ -26,7 +26,7 @@ using Bodu.Financial.ExchangeRates.Ofx;
 using Bodu.Financial.ExchangeRates.Ofx.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 
-services.AddBoduFinancial()
+services.AddFinancialService()
         .AddOfxExchangeRates(builder.Configuration);   // binds the Financial:Ofx section
 
 var dated = provider.GetRequiredService<IDatedExchangeRateProvider>();

@@ -15,6 +15,20 @@ namespace Bodu.Financial.ExchangeRates.Ofx.DependencyInjection;
 public partial class OfxServiceRegistrationTests
 {
     /// <summary>
+    /// Verifies that the one-call entry point registers the core currency lookup alongside the OFX provider.
+    /// </summary>
+    [TestMethod]
+    public void AddOfxExchangeRates_ShouldRegisterCoreServicesAndProvider()
+    {
+        ServiceCollection services = new();
+        services.AddOfxExchangeRates();
+        using ServiceProvider provider = services.BuildServiceProvider();
+
+        Assert.IsNotNull(provider.GetService<ICurrencyLookup>());
+        Assert.IsNotNull(provider.GetService<OfxExchangeRateProvider>());
+    }
+
+    /// <summary>
     /// Verifies that the provider is registered once and exposed through both provider interfaces as the same instance.
     /// </summary>
     [TestMethod]

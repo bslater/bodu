@@ -21,7 +21,7 @@ public sealed partial class ServiceCollectionExtensionsTests
     /// </summary>
     [TestMethod]
     [TestCategory("Smoke")]
-    public void AddBoduFinancial_WhenCalled_ShouldRegisterCurrencyLookupSingleton()
+    public void AddFinancialService_WhenCalled_ShouldRegisterCurrencyLookupSingleton()
     {
         ServiceProvider provider = new ServiceCollection().AddFinancialService().Services.BuildServiceProvider();
 
@@ -36,7 +36,7 @@ public sealed partial class ServiceCollectionExtensionsTests
     /// Verifies that the configuration-driven overload binds <see cref="FinancialOptions" /> from the named section.
     /// </summary>
     [TestMethod]
-    public void AddBoduFinancial_WhenConfigurationSupplied_ShouldBindOptions()
+    public void AddFinancialService_WhenConfigurationSupplied_ShouldBindOptions()
     {
         IConfiguration configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(new Dictionary<string, string?>
@@ -58,7 +58,7 @@ public sealed partial class ServiceCollectionExtensionsTests
     /// so binding the policy is authoritative rather than decorative.
     /// </summary>
     [TestMethod]
-    public void AddBoduFinancial_WhenJsonPolicyBound_ShouldDriveRegisteredJsonOptions()
+    public void AddFinancialService_WhenJsonPolicyBound_ShouldDriveRegisteredJsonOptions()
     {
         IConfiguration configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(new Dictionary<string, string?>
@@ -80,7 +80,7 @@ public sealed partial class ServiceCollectionExtensionsTests
     /// misconfigured policy is rejected when resolved rather than silently used.
     /// </summary>
     [TestMethod]
-    public void AddBoduFinancial_WhenJsonPolicyUndefined_ShouldFailOptionsValidation()
+    public void AddFinancialService_WhenJsonPolicyUndefined_ShouldFailOptionsValidation()
     {
         IConfiguration configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(new Dictionary<string, string?>
@@ -101,7 +101,7 @@ public sealed partial class ServiceCollectionExtensionsTests
     /// Verifies that repeated registration resolves the same <see cref="ICurrencyLookup" /> instance.
     /// </summary>
     [TestMethod]
-    public void AddBoduFinancial_WhenCalledTwice_ShouldRegisterLookupIdempotently()
+    public void AddFinancialService_WhenCalledTwice_ShouldRegisterLookupIdempotently()
     {
         IServiceCollection services = new ServiceCollection();
         services.AddFinancialService();
@@ -114,7 +114,7 @@ public sealed partial class ServiceCollectionExtensionsTests
     /// Verifies that the builder-callback overload throws when the callback is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void AddBoduFinancial_WhenConfigureNull_ShouldThrowArgumentNullException()
+    public void AddFinancialService_WhenConfigureNull_ShouldThrowArgumentNullException()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -126,7 +126,7 @@ public sealed partial class ServiceCollectionExtensionsTests
     /// Verifies that a null service collection is rejected.
     /// </summary>
     [TestMethod]
-    public void AddBoduFinancial_WhenServicesNull_ShouldThrowArgumentNullException()
+    public void AddFinancialService_WhenServicesNull_ShouldThrowArgumentNullException()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

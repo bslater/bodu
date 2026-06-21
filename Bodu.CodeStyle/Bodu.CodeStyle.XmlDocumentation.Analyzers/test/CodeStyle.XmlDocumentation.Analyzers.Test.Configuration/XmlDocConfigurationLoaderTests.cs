@@ -126,7 +126,7 @@ public sealed class XmlDocConfigurationLoaderTests
     [TestMethod]
     public void ApplyEditorConfigOverrides_WhenMaxLineLengthOverride_ShouldApply()
     {
-        XmlDocFormatOptions defaults = XmlDocFormatPolicyDefaults.CreateBoduDefaults();
+        XmlDocFormatOptions defaults = XmlDocFormatPolicyDefaults.CreateDefaults();
         var config = new FakeAnalyzerConfigOptions(new Dictionary<string, string>
         {
             ["bodu_xmldoc_max_line_length"] = "100",
@@ -143,7 +143,7 @@ public sealed class XmlDocConfigurationLoaderTests
     [TestMethod]
     public void ApplyEditorConfigOverrides_WhenMaxLineLengthIsNotInteger_ShouldKeepCompilationValue()
     {
-        XmlDocFormatOptions defaults = XmlDocFormatPolicyDefaults.CreateBoduDefaults();
+        XmlDocFormatOptions defaults = XmlDocFormatPolicyDefaults.CreateDefaults();
         var config = new FakeAnalyzerConfigOptions(new Dictionary<string, string>
         {
             ["bodu_xmldoc_max_line_length"] = "abc",
@@ -161,7 +161,7 @@ public sealed class XmlDocConfigurationLoaderTests
     [TestMethod]
     public void ApplyEditorConfigOverrides_WhenIndentSizeSet_ShouldSetIndentText()
     {
-        XmlDocFormatOptions defaults = XmlDocFormatPolicyDefaults.CreateBoduDefaults();
+        XmlDocFormatOptions defaults = XmlDocFormatPolicyDefaults.CreateDefaults();
         var config = new FakeAnalyzerConfigOptions(new Dictionary<string, string>
         {
             ["bodu_xmldoc_indent_size"] = "2",
@@ -179,7 +179,7 @@ public sealed class XmlDocConfigurationLoaderTests
     [TestMethod]
     public void ApplyEditorConfigOverrides_WhenForceSummaryMultilineFalse_ShouldRemoveSummary()
     {
-        XmlDocFormatOptions defaults = XmlDocFormatPolicyDefaults.CreateBoduDefaults();
+        XmlDocFormatOptions defaults = XmlDocFormatPolicyDefaults.CreateDefaults();
         var config = new FakeAnalyzerConfigOptions(new Dictionary<string, string>
         {
             ["bodu_xmldoc_force_summary_multiline"] = "false",
@@ -197,7 +197,7 @@ public sealed class XmlDocConfigurationLoaderTests
     [TestMethod]
     public void ApplyEditorConfigOverrides_WhenForceParaMultilineFalse_ShouldRemovePara()
     {
-        XmlDocFormatOptions defaults = XmlDocFormatPolicyDefaults.CreateBoduDefaults();
+        XmlDocFormatOptions defaults = XmlDocFormatPolicyDefaults.CreateDefaults();
         var config = new FakeAnalyzerConfigOptions(new Dictionary<string, string>
         {
             ["bodu_xmldoc_force_para_multiline"] = "false",
@@ -215,7 +215,7 @@ public sealed class XmlDocConfigurationLoaderTests
     [TestMethod]
     public void ApplyEditorConfigOverrides_WhenPreserveInlineTagsFalse_ShouldClearInlineTags()
     {
-        XmlDocFormatOptions defaults = XmlDocFormatPolicyDefaults.CreateBoduDefaults();
+        XmlDocFormatOptions defaults = XmlDocFormatPolicyDefaults.CreateDefaults();
         var config = new FakeAnalyzerConfigOptions(new Dictionary<string, string>
         {
             ["bodu_xmldoc_preserve_inline_tags"] = "false",

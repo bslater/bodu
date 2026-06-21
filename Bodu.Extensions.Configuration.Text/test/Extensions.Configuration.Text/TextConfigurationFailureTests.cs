@@ -34,7 +34,7 @@ key = value
         using TempDirectoryScope scope = new();
         IConfigurationBuilder builder = new ConfigurationBuilder()
             .SetBasePath(scope.Path)
-            .AddBoduConfigurationFile("does-not-exist.boduconfig", targetPath: null, optional: false, reloadOnChange: false);
+            .AddTextConfigurationFile("does-not-exist.boduconfig", targetPath: null, optional: false, reloadOnChange: false);
 
         Assert.ThrowsExactly<FileNotFoundException>(() => _ = builder.Build());
     }
@@ -49,7 +49,7 @@ key = value
         using TempDirectoryScope scope = new();
         IConfiguration configuration = new ConfigurationBuilder()
             .SetBasePath(scope.Path)
-            .AddBoduConfigurationFile("missing.boduconfig", targetPath: null, optional: true, reloadOnChange: false)
+            .AddTextConfigurationFile("missing.boduconfig", targetPath: null, optional: true, reloadOnChange: false)
             .Build();
 
         Assert.IsNull(configuration["anything"]);
@@ -68,7 +68,7 @@ key = value
 
         IConfigurationBuilder builder = new ConfigurationBuilder()
             .SetBasePath(scope.Path)
-            .AddBoduConfigurationFile("malformed.boduconfig", targetPath: null, optional: false, reloadOnChange: false);
+            .AddTextConfigurationFile("malformed.boduconfig", targetPath: null, optional: false, reloadOnChange: false);
 
         InvalidDataException ex = Assert.ThrowsExactly<InvalidDataException>(() => _ = builder.Build());
 
@@ -88,7 +88,7 @@ key = value
 
         IConfigurationBuilder builder = new ConfigurationBuilder()
             .SetBasePath(scope.Path)
-            .AddBoduConfigurationFile("malformed.boduconfig", targetPath: null, optional: true, reloadOnChange: false);
+            .AddTextConfigurationFile("malformed.boduconfig", targetPath: null, optional: true, reloadOnChange: false);
 
         Assert.ThrowsExactly<InvalidDataException>(() => _ = builder.Build());
     }
@@ -103,7 +103,7 @@ key = value
     {
         using MemoryStream stream = new(Encoding.UTF8.GetBytes(Malformed));
 
-        IConfigurationBuilder builder = new ConfigurationBuilder().AddBoduConfigurationStream(stream);
+        IConfigurationBuilder builder = new ConfigurationBuilder().AddTextConfigurationStream(stream);
 
         Assert.ThrowsExactly<ConfigurationParseException>(() => _ = builder.Build());
     }
@@ -118,7 +118,7 @@ key = value
         using MemoryStream stream = new(System.Array.Empty<byte>());
 
         IConfiguration configuration = new ConfigurationBuilder()
-            .AddBoduConfigurationStream(stream)
+            .AddTextConfigurationStream(stream)
             .Build();
 
         Assert.IsNull(configuration["anything"]);
@@ -139,7 +139,7 @@ key = value
         using MemoryStream stream = new(Encoding.UTF8.GetBytes(slightlyBroken));
 
         IConfiguration configuration = new ConfigurationBuilder()
-            .AddBoduConfigurationStream(stream, targetPath: null, parseOptions: ConfigurationParseOptions.Relaxed)
+            .AddTextConfigurationStream(stream, targetPath: null, parseOptions: ConfigurationParseOptions.Relaxed)
             .Build();
 
         Assert.AreEqual("value", configuration["good"]);

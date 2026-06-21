@@ -30,7 +30,7 @@ using Bodu.Extensions.Configuration.Text;
 using Microsoft.Extensions.Configuration;
 
 IConfiguration configuration = new ConfigurationBuilder()
-    .AddBoduConfigurationFile("appsettings.bodu")
+    .AddTextConfigurationFile("appsettings.bodu")
     .Build();
 
 string? logLevel = configuration["logging:level:default"];
@@ -43,7 +43,7 @@ file is required by default; pass `optional: true` to tolerate a missing file.
 
 ```csharp
 IConfiguration configuration = new ConfigurationBuilder()
-    .AddBoduConfiguration(optional: true, reloadOnChange: true)
+    .AddTextConfiguration(optional: true, reloadOnChange: true)
     .Build();
 ```
 
@@ -55,7 +55,7 @@ single conventional configuration file in its working directory.
 
 ```csharp
 IConfiguration configuration = new ConfigurationBuilder()
-    .AddBoduConfigurationFile(
+    .AddTextConfigurationFile(
         path: "team.boduconfig",
         targetPath: "src/MyApp/Program.cs",
         optional: false,
@@ -73,7 +73,7 @@ using Bodu.Text.Configuration;
 using Microsoft.Extensions.FileProviders;
 
 IConfiguration configuration = new ConfigurationBuilder()
-    .AddBoduConfigurationFile(source =>
+    .AddTextConfigurationFile(source =>
     {
         source.FileProvider     = new PhysicalFileProvider("/etc/myapp");
         source.Path             = "settings.bodu";
@@ -102,7 +102,7 @@ service.port = 8080
 """));
 
 IConfiguration configuration = new ConfigurationBuilder()
-    .AddBoduConfigurationStream(stream)
+    .AddTextConfigurationStream(stream)
     .Build();
 
 string? name = configuration["service:name"];   // "Bodu"
@@ -151,7 +151,7 @@ earlier ones for the same key:
 IConfiguration configuration = new ConfigurationBuilder()
     .SetBasePath(Directory.GetCurrentDirectory())
     .AddJsonFile("appsettings.json", optional: true)
-    .AddBoduConfigurationFile("appsettings.bodu", optional: true)
+    .AddTextConfigurationFile("appsettings.bodu", optional: true)
     .AddEnvironmentVariables()
     .Build();
 ```
@@ -163,7 +163,7 @@ environment variables.
 
 ```csharp
 IConfiguration configuration = new ConfigurationBuilder()
-    .AddBoduConfigurationFile("appsettings.bodu", reloadOnChange: true)
+    .AddTextConfigurationFile("appsettings.bodu", reloadOnChange: true)
     .Build();
 
 ChangeToken.OnChange(
@@ -183,7 +183,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 IConfiguration configuration = new ConfigurationBuilder()
-    .AddBoduConfigurationFile("settings.bodu", optional: false, reloadOnChange: true)
+    .AddTextConfigurationFile("settings.bodu", optional: false, reloadOnChange: true)
     .Build();
 
 ServiceCollection services = new();

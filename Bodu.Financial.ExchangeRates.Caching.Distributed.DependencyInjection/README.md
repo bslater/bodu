@@ -15,7 +15,7 @@ Over an already-registered `IDistributedCache`:
 
 ```csharp
 services.AddStackExchangeRedisCache(o => o.Configuration = "localhost:6379");
-services.AddBoduFinancial()
+services.AddFinancialService()
         .AddDistributedRateCache("RBA");
 
 // Resolve the cache, or wrap a source provider with a CachingExchangeRateProvider over it.
@@ -25,7 +25,7 @@ var cache = provider.GetRequiredService<IExchangeRateCache>();
 Or register the Redis cache and the exchange-rate cache together:
 
 ```csharp
-services.AddBoduFinancial()
+services.AddFinancialService()
         .AddRedisRateCache("RBA", redis => redis.Configuration = "localhost:6379");
 ```
 

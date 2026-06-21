@@ -19,7 +19,7 @@ namespace Bodu.Extensions.Configuration.Text;
 /// These helpers are thin shims over
 /// <c>Microsoft.Extensions.DependencyInjection.OptionsConfigurationServiceCollectionExtensions.Configure</c>; they
 /// exist purely to keep the call-site short and discoverable for consumers who reach for an
-/// <c>AddBoduConfiguration*</c> API by name. Callers comfortable with
+/// <c>AddTextConfiguration*</c> API by name. Callers comfortable with
 /// <see cref="Microsoft.Extensions.Options.IOptions{TOptions}" /> binding may continue to call
 /// <see cref="Microsoft.Extensions.DependencyInjection.OptionsConfigurationServiceCollectionExtensions.Configure{TOptions}(IServiceCollection, IConfiguration)" />
 /// directly.
@@ -33,7 +33,7 @@ namespace Bodu.Extensions.Configuration.Text;
 /// </remarks>
 /// <example>
 ///<![CDATA[
-/// // Strongly-typed options bound to the "Logging" section produced by AddBoduConfigurationFile.
+/// // Strongly-typed options bound to the "Logging" section produced by AddTextConfigurationFile.
 /// public sealed class LoggingOptions
 /// {
 ///     public string Level { get; init; } = "Information";
@@ -41,7 +41,7 @@ namespace Bodu.Extensions.Configuration.Text;
 /// }
 ///
 /// var builder = WebApplication.CreateBuilder(args);
-/// builder.Configuration.AddBoduConfigurationFile("appsettings.boduconfig");
+/// builder.Configuration.AddTextConfigurationFile("appsettings.boduconfig");
 ///
 /// // Bind by section name against the configuration root.
 /// builder.Services.AddConfigurationOptions<LoggingOptions>(

@@ -11,7 +11,7 @@ namespace Bodu.CodeStyle.XmlDocumentation;
 
 /// <summary>
 /// Provides the immutable policy that drives <see cref="XmlDocFormatter" /> output. Use
-/// <see cref="XmlDocFormatPolicyDefaults.CreateBoduDefaults" /> for the standard Bodu profile or
+/// <see cref="XmlDocFormatPolicyDefaults.CreateDefaults" /> for the standard Bodu profile or
 /// construct a custom instance to override individual rules.
 /// </summary>
 /// <remarks>

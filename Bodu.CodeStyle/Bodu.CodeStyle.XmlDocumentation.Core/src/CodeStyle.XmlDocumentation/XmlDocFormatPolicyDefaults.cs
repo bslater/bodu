@@ -118,7 +118,7 @@ public static class XmlDocFormatPolicyDefaults
     /// Creates a new <see cref="XmlDocFormatOptions" /> populated with the canonical Bodu defaults.
     /// </summary>
     /// <returns>A fresh options instance carrying the Bodu profile.</returns>
-    public static XmlDocFormatOptions CreateBoduDefaults() =>
+    public static XmlDocFormatOptions CreateDefaults() =>
         new XmlDocFormatOptions(
             maxLineLength: DefaultMaxLineLength,
             documentationPrefix: DefaultDocumentationPrefix,

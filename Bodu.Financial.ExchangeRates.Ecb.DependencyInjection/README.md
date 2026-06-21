@@ -11,10 +11,10 @@ exposes the provider through `IDatedExchangeRateProvider` and `IExchangeRateProv
 using Bodu.Financial.ExchangeRates.Ecb.DependencyInjection;
 
 // One-call entry point: core Bodu.Financial services + the ECB provider.
-services.AddBoduEcbReferenceRates(configuration);
+services.AddEcbReferenceRates(configuration);
 
 // Or onto an existing IFinancialServiceBuilder:
-services.AddBoduFinancial(configuration)
+services.AddFinancialService(configuration)
         .AddEcbReferenceRates(configuration, configure: o => o.EnableDiskCache = false);
 ```
 

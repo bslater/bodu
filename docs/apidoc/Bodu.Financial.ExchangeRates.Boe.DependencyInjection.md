@@ -15,7 +15,7 @@ uid: Bodu.Financial.ExchangeRates.Boe.DependencyInjection
 ## Key types
 
 - <xref:Bodu.Financial.ExchangeRates.Boe.DependencyInjection.BoeFinancialServiceBuilderExtensions> — `AddBoeReferenceRates(configuration?, sectionName?, configure?, configureResilience?)` on the financial service builder.
-- <xref:Bodu.Financial.ExchangeRates.Boe.DependencyInjection.BoeServiceCollectionExtensions> — `AddBoduBoeReferenceRates(…)`, the `IServiceCollection` convenience overload that adds the financial core and the BoE provider together.
+- <xref:Bodu.Financial.ExchangeRates.Boe.DependencyInjection.BoeServiceCollectionExtensions> — `AddBoeReferenceRates(…)`, the `IServiceCollection` convenience overload that adds the financial core and the BoE provider together.
 
 ## Minimal sample
 
@@ -26,7 +26,7 @@ using Bodu.Financial.ExchangeRates.Boe;
 using Bodu.Financial.ExchangeRates.Boe.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 
-services.AddBoduFinancial()
+services.AddFinancialService()
         .AddBoeReferenceRates(builder.Configuration);   // binds the Financial:Boe section
 
 var dated = provider.GetRequiredService<IDatedExchangeRateProvider>();

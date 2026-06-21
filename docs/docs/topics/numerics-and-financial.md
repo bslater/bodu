@@ -16,7 +16,7 @@ Both value-type libraries are **generic-math first**. `Fraction<T>` accepts any 
 |---|---|---|---|
 | `Bodu.Numerics` | **Preview** | `Fraction<T>` — canonical, GCD-reduced rational arithmetic with `BigInteger` intermediates, mixed-number and Unicode-vulgar-fraction formatting, continued fractions, best rational approximation. `Interval<T>` — closed / open / half-open intervals with membership, intersection, union, and adjacency. `System.Text.Json` converters for both. | [Intro](../numerics/index.md) · [Concepts](../numerics/concepts.md) · [Get started](../numerics/getting-started.md) |
 | `Bodu.Financial` | **Preview** | `Money<TCurrency>` (compile-time currency) and `Money` (runtime-tagged), `MoneyBag` multi-currency portfolios, the ISO 4217 catalogue of ~185 currency tags, fair allocation, cash rounding, timeless and dated exchange-rate providers with provenance, and three JSON wire policies. | [Intro](../financial/index.md) · [Concepts](../financial/concepts.md) · [Get started](../financial/getting-started.md) |
-| `Bodu.Financial.DependencyInjection` | Stable | `IServiceCollection` extensions: `AddBoduFinancial(...)`, the fluent `IFinancialServiceBuilder`, named monetary contexts, FX provider registration, JSON converter registration, and `FinancialOptions` binding. | [Guide](../../guides/financial/dependency-injection.md) |
+| `Bodu.Financial.DependencyInjection` | Stable | `IServiceCollection` extensions: `AddFinancialService(...)`, the fluent `IFinancialServiceBuilder`, named monetary contexts, FX provider registration, JSON converter registration, and `FinancialOptions` binding. | [Guide](../../guides/financial/dependency-injection.md) |
 
 **Preview** means the package is fully usable but still in its initial release: the public surface is intended to be stable, but minor breaking adjustments may land before promotion to *Stable* — pin the version you adopt if breakage would be costly. See the [package matrix](../package-matrix.md) for the full status definitions.
 
@@ -76,7 +76,7 @@ Endpoint inclusivity is independent on each side, so closed, open, and both half
 | Sub-minor-unit-precise interest or percentage chains | `Money<T>.ToFraction()` / `FromFraction()` / `MultiplyExact()` | The bridge between the two libraries. |
 | FX conversion with dated rates and audit provenance | <xref:Bodu.Financial.IDatedExchangeRateProvider> + <xref:Bodu.Financial.ExchangeRateLookupResult> | Provider name, actual date used, offset days, resolution policy. |
 | Prioritised fallback (or averaging) across multiple FX sources | [`AggregatingExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.Caching.AggregatingExchangeRateProvider) | In the `Bodu.Financial.ExchangeRates.Caching` package; deterministic first-available (PriorityFallback) or mean (Average) via a pluggable strategy. |
-| Registering the financial stack in a DI container | `AddBoduFinancial(...)` | Currency lookup, monetary contexts, providers, JSON converters. |
+| Registering the financial stack in a DI container | `AddFinancialService(...)` | Currency lookup, monetary contexts, providers, JSON converters. |
 
 ## How the pieces compose
 

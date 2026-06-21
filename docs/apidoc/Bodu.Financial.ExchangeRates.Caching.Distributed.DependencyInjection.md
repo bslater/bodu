@@ -31,11 +31,11 @@ using Microsoft.Extensions.DependencyInjection;
 
 // Over an already-registered IDistributedCache.
 services.AddStackExchangeRedisCache(o => o.Configuration = "localhost:6379");
-services.AddBoduFinancial()
+services.AddFinancialService()
         .AddDistributedRateCache("RBA");
 
 // Or register Redis and the cache together.
-services.AddBoduFinancial()
+services.AddFinancialService()
         .AddRedisRateCache("RBA", redis => redis.Configuration = "localhost:6379");
 
 var cache = provider.GetRequiredService<IExchangeRateCache>();

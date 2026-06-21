@@ -9,7 +9,7 @@ configuration and an optional callback.
 ## Usage
 
 ```csharp
-services.AddBoduFinancial()
+services.AddFinancialService()
         .AddSqliteRateCache("RBA", configure: o => o.DatabaseFilePath = "/var/cache/rba.db");
 
 // Resolve the cache, or wrap a source provider with a CachingExchangeRateProvider over it.
