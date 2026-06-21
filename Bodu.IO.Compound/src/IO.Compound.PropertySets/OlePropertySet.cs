@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Buffers;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Bodu.IO.Compound.PropertySets;
@@ -19,6 +20,23 @@ namespace Bodu.IO.Compound.PropertySets;
 /// </remarks>
 public sealed class OlePropertySet
 {
+    /// <summary>The sections, in declared order.</summary>
+    private readonly List<OlePropertySection> _sections;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="OlePropertySet" /> class for authoring, with no sections.
+    /// </summary>
+    /// <param name="formatId">The format identifier of the first section.</param>
+    /// <param name="classId">The class identifier to declare in the property-set header.</param>
+    /// <param name="codePage">The code page of the first section.</param>
+    public OlePropertySet(Guid formatId, Guid classId, int codePage)
+    {
+        FormatId = formatId;
+        ClassId = classId;
+        CodePage = codePage;
+        _sections = new List<OlePropertySection>();
+    }
+
     /// <summary>
     /// Initializes a new instance of the <see cref="OlePropertySet" /> class.
     /// </summary>
@@ -26,12 +44,12 @@ public sealed class OlePropertySet
     /// <param name="classId">The class identifier declared in the property-set header.</param>
     /// <param name="codePage">The code page of the first section.</param>
     /// <param name="sections">The parsed sections, in declared order.</param>
-    internal OlePropertySet(Guid formatId, Guid classId, int codePage, IReadOnlyList<OlePropertySection> sections)
+    internal OlePropertySet(Guid formatId, Guid classId, int codePage, List<OlePropertySection> sections)
     {
         FormatId = formatId;
         ClassId = classId;
         CodePage = codePage;
-        Sections = sections;
+        _sections = sections;
     }
 
     /// <summary>
@@ -56,7 +74,42 @@ public sealed class OlePropertySet
     /// Gets the sections of the property set, in declared order.
     /// </summary>
     /// <returns>A read-only list of <see cref="OlePropertySection" />.</returns>
-    public IReadOnlyList<OlePropertySection> Sections { get; }
+    public IReadOnlyList<OlePropertySection> Sections => _sections;
+
+    /// <summary>
+    /// Appends a section to the property set.
+    /// </summary>
+    /// <param name="section">The section to add.</param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="section" /> is <see langword="null" />.
+    /// </exception>
+    public void AddSection(OlePropertySection section)
+    {
+        ThrowHelper.ThrowIfNull(section);
+
+        _sections.Add(section);
+    }
+
+    /// <summary>
+    /// Serializes the property set to its OLE byte form.
+    /// </summary>
+    /// <returns>The serialized property-set bytes.</returns>
+    public byte[] ToArray() =>
+        PropertySetWriter.Write(this);
+
+    /// <summary>
+    /// Serializes the property set to its OLE byte form, written to the supplied buffer writer.
+    /// </summary>
+    /// <param name="output">The buffer writer to write to.</param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="output" /> is <see langword="null" />.
+    /// </exception>
+    public void WriteTo(IBufferWriter<byte> output)
+    {
+        ThrowHelper.ThrowIfNull(output);
+
+        output.Write(PropertySetWriter.Write(this));
+    }
 
     /// <summary>
     /// Attempts to get the value of a property from the first section.

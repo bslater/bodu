@@ -44,6 +44,85 @@ public sealed record OlePropertyValue
     public object? Value { get; init; }
 
     /// <summary>
+    /// Creates a 32-bit integer property value.
+    /// </summary>
+    /// <param name="value">The integer value.</param>
+    /// <returns>A new <see cref="OlePropertyValue" />.</returns>
+    public static OlePropertyValue Create(int value) =>
+        new() { Type = OlePropertyType.Int32, Value = value };
+
+    /// <summary>
+    /// Creates a 16-bit integer property value.
+    /// </summary>
+    /// <param name="value">The integer value.</param>
+    /// <returns>A new <see cref="OlePropertyValue" />.</returns>
+    public static OlePropertyValue Create(short value) =>
+        new() { Type = OlePropertyType.Int16, Value = value };
+
+    /// <summary>
+    /// Creates a 64-bit integer property value.
+    /// </summary>
+    /// <param name="value">The integer value.</param>
+    /// <returns>A new <see cref="OlePropertyValue" />.</returns>
+    public static OlePropertyValue Create(long value) =>
+        new() { Type = OlePropertyType.Int64, Value = value };
+
+    /// <summary>
+    /// Creates a 64-bit floating-point property value.
+    /// </summary>
+    /// <param name="value">The floating-point value.</param>
+    /// <returns>A new <see cref="OlePropertyValue" />.</returns>
+    public static OlePropertyValue Create(double value) =>
+        new() { Type = OlePropertyType.Float64, Value = value };
+
+    /// <summary>
+    /// Creates a boolean property value.
+    /// </summary>
+    /// <param name="value">The boolean value.</param>
+    /// <returns>A new <see cref="OlePropertyValue" />.</returns>
+    public static OlePropertyValue Create(bool value) =>
+        new() { Type = OlePropertyType.Boolean, Value = value };
+
+    /// <summary>
+    /// Creates a string property value.
+    /// </summary>
+    /// <param name="value">The string value.</param>
+    /// <param name="type">The string property type; defaults to <see cref="OlePropertyType.AnsiString" />.</param>
+    /// <returns>A new <see cref="OlePropertyValue" />.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="value" /> is <see langword="null" />.
+    /// </exception>
+    public static OlePropertyValue Create(string value, OlePropertyType type = OlePropertyType.AnsiString)
+    {
+        ThrowHelper.ThrowIfNull(value);
+
+        return new OlePropertyValue { Type = type, Value = value };
+    }
+
+    /// <summary>
+    /// Creates a FILETIME property value from a point in time.
+    /// </summary>
+    /// <param name="value">The time to store.</param>
+    /// <returns>A new <see cref="OlePropertyValue" />.</returns>
+    public static OlePropertyValue Create(DateTimeOffset value) =>
+        new() { Type = OlePropertyType.FileTime, Value = value.ToFileTime() };
+
+    /// <summary>
+    /// Creates a blob property value.
+    /// </summary>
+    /// <param name="value">The blob bytes.</param>
+    /// <returns>A new <see cref="OlePropertyValue" />.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="value" /> is <see langword="null" />.
+    /// </exception>
+    public static OlePropertyValue CreateBlob(byte[] value)
+    {
+        ThrowHelper.ThrowIfNull(value);
+
+        return new OlePropertyValue { Type = OlePropertyType.Blob, Value = value };
+    }
+
+    /// <summary>
     /// Returns the value as a string when it is a string scalar.
     /// </summary>
     /// <returns>The string value, or <see langword="null" /> when the value is not a string.</returns>

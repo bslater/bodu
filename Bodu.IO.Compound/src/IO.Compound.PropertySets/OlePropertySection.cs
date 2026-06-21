@@ -20,10 +20,23 @@ namespace Bodu.IO.Compound.PropertySets;
 public sealed class OlePropertySection
 {
     /// <summary>The decoded properties keyed by property identifier.</summary>
-    private readonly IReadOnlyDictionary<int, OlePropertyValue> _properties;
+    private readonly Dictionary<int, OlePropertyValue> _properties;
 
     /// <summary>The optional property-name dictionary keyed by property identifier.</summary>
-    private readonly IReadOnlyDictionary<int, string> _propertyNames;
+    private readonly Dictionary<int, string> _propertyNames;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="OlePropertySection" /> class for authoring, with no properties.
+    /// </summary>
+    /// <param name="formatId">The section format identifier (FMTID).</param>
+    /// <param name="codePage">The code page used to encode ANSI strings in the section.</param>
+    public OlePropertySection(Guid formatId, int codePage)
+    {
+        FormatId = formatId;
+        CodePage = codePage;
+        _properties = new Dictionary<int, OlePropertyValue>();
+        _propertyNames = new Dictionary<int, string>();
+    }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="OlePropertySection" /> class.
@@ -35,8 +48,8 @@ public sealed class OlePropertySection
     internal OlePropertySection(
         Guid formatId,
         int codePage,
-        IReadOnlyDictionary<int, OlePropertyValue> properties,
-        IReadOnlyDictionary<int, string> propertyNames)
+        Dictionary<int, OlePropertyValue> properties,
+        Dictionary<int, string> propertyNames)
     {
         FormatId = formatId;
         CodePage = codePage;
@@ -89,6 +102,44 @@ public sealed class OlePropertySection
     /// <returns>The property value, or <see langword="null" /> when no such property exists.</returns>
     public OlePropertyValue? this[int propertyId] =>
         _properties.TryGetValue(propertyId, out OlePropertyValue? value) ? value : null;
+
+    /// <summary>
+    /// Sets the value of the property with the specified identifier.
+    /// </summary>
+    /// <param name="propertyId">The property identifier (PID).</param>
+    /// <param name="value">The value to assign.</param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="value" /> is <see langword="null" />.
+    /// </exception>
+    public void Set(int propertyId, OlePropertyValue value)
+    {
+        ThrowHelper.ThrowIfNull(value);
+
+        _properties[propertyId] = value;
+    }
+
+    /// <summary>
+    /// Assigns a human-readable name to a property identifier in this section's dictionary.
+    /// </summary>
+    /// <param name="propertyId">The property identifier (PID).</param>
+    /// <param name="name">The human-readable name.</param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="name" /> is <see langword="null" />.
+    /// </exception>
+    public void SetName(int propertyId, string name)
+    {
+        ThrowHelper.ThrowIfNull(name);
+
+        _propertyNames[propertyId] = name;
+    }
+
+    /// <summary>
+    /// Removes the property with the specified identifier.
+    /// </summary>
+    /// <param name="propertyId">The property identifier (PID).</param>
+    /// <returns><see langword="true" /> when a property was removed; otherwise <see langword="false" />.</returns>
+    public bool Remove(int propertyId) =>
+        _properties.Remove(propertyId);
 
     /// <summary>
     /// Builds a dictionary of the section's named properties, joining the property-name dictionary with the decoded
