@@ -5,8 +5,6 @@ Numeric value primitives for .NET. Ships two header types:
 - **`Fraction<T>`** — an immutable, exact-rational value type generic over any `IBinaryInteger<T>` backing component.
 - **`Interval<T>`** — an immutable bounded interval generic over any `INumber<T>` endpoint type, with independent open/closed endpoints and set algebra.
 
-> **API stability: Preview.** This is the initial 1.0 release. The public surface is expected to be stable, but minor breaking changes may still occur before the API is promoted to *Stable*.
-
 > Money, currency, and foreign-exchange types ship in the companion **[Bodu.Financial](https://www.nuget.org/packages/Bodu.Financial)** package. Keeping them separate means a consumer of just `Fraction<T>` does not pull in the ~185-currency ISO 4217 catalogue and FX provider stack.
 
 ## Installation

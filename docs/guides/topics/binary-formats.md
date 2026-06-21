@@ -42,12 +42,16 @@ The BIFF8 `.xls` reader built on `Bodu.IO.Compound` surfaces raw worksheet cell 
 
 ## Start here
 
-1. **[Reading compound files](../io-compound/reading-compound-files.md)** — the core open → navigate → read recipe that every other use builds on.
-2. **[Buffered vs streaming access](../io-compound/streaming-and-buffering.md)** — once the file is too large to hold whole, or you need to control the source's lifetime.
-3. **[Reading property sets](../io-compound/property-sets.md)** — when you want the authored document metadata rather than the format payload.
+1. **[Topic overview](../../docs/topics/binary-formats.md)** — the layered container-vs-format split and package selection on the docs side.
+2. **[Topic concepts](../../docs/topics/binary-formats-concepts.md)** — container, storage, stream, sector chain, BIFF record.
+3. **[Reading compound files](../io-compound/reading-compound-files.md)** — the core open → navigate → read recipe that every other use builds on.
+4. **[Buffered vs streaming access](../io-compound/streaming-and-buffering.md)** — once the file is too large to hold whole, or you need to control the source's lifetime.
+5. **[Reading property sets](../io-compound/property-sets.md)** — when you want the authored document metadata rather than the format payload.
 
 ## Where to go next
 
+- **[Binary Formats & I/O overview](../../docs/topics/binary-formats.md)** — the topic landing page on the docs side.
+- **[Binary Formats & I/O concepts](../../docs/topics/binary-formats-concepts.md)** — the cross-package vocabulary.
+- **Member introductions:** [Bodu.IO.Compound](../../docs/io-compound/index.md).
 - **Guide index:** [Bodu.IO.Compound](../io-compound/index.md).
 - **API reference:** [Bodu.IO.Compound](xref:Bodu.IO.Compound) · [Bodu.Formats.Excel.Binary](xref:Bodu.Formats.Excel.Binary).
-- **[Package matrix](../../docs/package-matrix.md)** — where these packages sit in the suite and their dependency stack.

@@ -6,9 +6,6 @@ title: Bodu.Text.Bencode — Introduction
 
 **Bodu.Text.Bencode** is a self-contained library for [Bencode (BEP 3)](https://www.bittorrent.org/beps/bep_0003.html), the compact binary encoding used by BitTorrent for `.torrent` metadata and tracker responses. It is one of the two [Bodu serializer twins](index.md) — it shares its shape member-for-member with [Bodu.Text.Toml](toml.md), so everything on the [family introduction](index.md) (the serializer / DOM / reader-writer tiers, converters, attributes, naming policies) applies here unchanged. This page covers what is *specific* to Bencode.
 
-> [!NOTE]
-> `Bodu.Text.Bencode` is in **Preview**: the public surface is intended to be stable, but pin the version you adopt if breakage would be costly.
-
 ## The format in one paragraph
 
 Bencode has exactly four kinds: **byte strings** (`4:spam`), **integers** (`i42e`), **lists** (`l…e`), and **dictionaries** (`d…e`) whose keys are byte strings in ascending bytewise order. There is no Boolean, no floating-point, no date-time, and no null. Documents are binary, self-framing, and — when the BEP 3 canonical rules are followed — byte-for-byte deterministic for the same data, which is why torrent info-hashes can be computed over the encoded form.

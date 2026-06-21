@@ -4,7 +4,7 @@ title: Getting started
 
 # Getting started
 
-This page is a **cross-library tour**. It installs the Bodu packages, then for each library gives a one-minute orientation, a minimal working sample, and pointers to that library's introduction and getting-started guide. The sections follow the suite's six topics — each topic heading links to its [topic overview](introduction.md#the-suite-in-six-topics) page.
+This page is a **cross-library tour**. It installs the Bodu packages, then for each library gives a one-minute orientation, a minimal working sample, and pointers to that library's introduction and getting-started guide. The sections follow the suite's seven topics — each topic heading links to its [topic overview](introduction.md#the-suite-in-seven-topics) page.
 
 If you only need a single library, jump straight to its section below — each one ends with links to its dedicated **Introduction**, **Getting started**, and **Guides** pages.
 
@@ -342,6 +342,32 @@ services.AddFinancialService();
 ```
 
 → **[Introduction](financial/index.md)** · **[Getting started](financial/getting-started.md)** · **[Guides](../guides/financial/index.md)**
+
+## Binary Formats & I/O
+
+Read-only readers for legacy binary container and document formats — see the **[Binary Formats & I/O overview](topics/binary-formats.md)** for the layered container-vs-format split.
+
+### Bodu.IO.Compound
+
+**Bodu.IO.Compound** reads the OLE2 / Compound File Binary (CFB) container behind legacy Office documents, exposing the embedded named streams with no application-format knowledge.
+
+```csharp
+using Bodu.IO.Compound;
+
+using CompoundFile file = CompoundFile.Open(File.OpenRead("book.xls"));
+
+// Walk the storage hierarchy.
+foreach (CompoundEntryInfo info in file.RootStorage.EnumerateEntries())
+    Console.WriteLine($"{info.EntryType}: {info.Name} ({info.Length} bytes)");
+
+// Read a named stream's bytes.
+CompoundStreamEntry workbook = file.RootStorage.OpenStream("Workbook");
+ReadOnlyMemory<byte> bytes = workbook.ReadAllBytes();
+```
+
+Open with `buffered: false` to read sectors on demand for large files, and use `OpenStream(name).Open()` for a seekable `CompoundStream` cursor. The BIFF8 `.xls` reader **Bodu.Formats.Excel.Binary** is built on top of this container reader.
+
+→ **[Introduction](io-compound/index.md)** · **[Getting started](io-compound/getting-started.md)** · **[Guides](../guides/io-compound/index.md)**
 
 ## Where to go next
 

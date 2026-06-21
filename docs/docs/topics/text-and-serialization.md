@@ -41,8 +41,8 @@ One nearby surface is easy to confuse with all three: the **`Bodu.Text` namespac
 |---|---|---|---|
 | `Bodu.Text.Encoding` | Stable | Binary-to-text encodings with span / UTF-8 surfaces, `OperationStatus` streaming, formatting decorations, lenient parsing, and the runtime-pluggable `IBinaryEncoding` contract. | [Introduction](../text-encoding/index.md) |
 | `Bodu.Text.Formats` | Stable | Self-framing document formats — Delimited (CSV / TSV), DotEnv, INI — each with a typed value model, `Parse` / `Format` / `Try*` codecs, and forward-only streaming I/O. | [Introduction](../formats/index.md) |
-| `Bodu.Text.Bencode` | **Preview** | Self-contained Bencode (BEP 3) serializer shaped after `System.Text.Json`: `BencodeSerializer`, mutable and read-only DOMs, and the `Utf8BencodeReader` / `Utf8BencodeWriter` ref-struct pair. | [Serializers introduction](../serialization/index.md) · [Bencode](../serialization/bencode.md) |
-| `Bodu.Text.Toml` | **Preview** | Self-contained TOML (v1.0.0 / v1.1.0) serializer with the same member-for-member shape: `TomlSerializer`, both DOMs, and `Utf8TomlReader` / `Utf8TomlWriter`. | [Serializers introduction](../serialization/index.md) · [TOML](../serialization/toml.md) |
+| `Bodu.Text.Bencode` | Stable | Self-contained Bencode (BEP 3) serializer shaped after `System.Text.Json`: `BencodeSerializer`, mutable and read-only DOMs, and the `Utf8BencodeReader` / `Utf8BencodeWriter` ref-struct pair. | [Serializers introduction](../serialization/index.md) · [Bencode](../serialization/bencode.md) |
+| `Bodu.Text.Toml` | Stable | Self-contained TOML (v1.0.0 / v1.1.0) serializer with the same member-for-member shape: `TomlSerializer`, both DOMs, and `Utf8TomlReader` / `Utf8TomlWriter`. | [Serializers introduction](../serialization/index.md) · [TOML](../serialization/toml.md) |
 
 The authoritative dependency and status rows live in the [package matrix](../package-matrix.md). All four packages depend only on `Bodu.Core`.
 
@@ -78,8 +78,6 @@ dotnet add package Bodu.Text.Formats
 dotnet add package Bodu.Text.Toml
 dotnet add package Bodu.Text.Bencode
 ```
-
-`Bodu.Text.Toml` and `Bodu.Text.Bencode` are **Preview**: fully usable, but pin the version you adopt if breakage would be costly. See the [package matrix](../package-matrix.md) for what each status commits to.
 
 ## Shared design traits
 

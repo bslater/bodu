@@ -6,9 +6,9 @@ title: Introduction
 
 **Bodu** is a solution that ships a family of independent .NET NuGet packages, each focused on a narrow, well-defined problem domain. Every package is versioned and released on its own — and most are self-contained, with the few cross-package dependencies listed below — but they share a single set of source and documentation conventions, a single analyzer and test configuration, and a single quality bar.
 
-The suite is organized into **six topics**. Each topic groups the packages that solve related problems, and each has a dedicated overview page explaining the collective purpose of its members and how they fit together. If you are new to Bodu, start with the topic that matches your problem, then drill into the member library's introduction.
+The suite is organized into **seven topics**. Each topic groups the packages that solve related problems, and each has a dedicated overview page explaining the collective purpose of its members and how they fit together. If you are new to Bodu, start with the topic that matches your problem, then drill into the member library's introduction.
 
-## The suite in six topics
+## The suite in seven topics
 
 ### [Core Foundations](topics/core-foundations.md)
 
@@ -64,11 +64,20 @@ Exact arithmetic — rational numbers and intervals, and the money, currency, an
 | **[Bodu.Numerics](numerics/index.md)** | Generic-math value primitives — `Fraction<T>` for exact rational arithmetic over any `IBinaryInteger<T>` with canonical-form auto-reduction and `BigInteger`-promoted intermediates, and `Interval<T>` for closed / open / half-open bounded intervals with intersection, union, and adjacency. | `net8.0` |
 | **[Bodu.Financial](financial/index.md)** | Type-safe monetary primitives — `Money<TCurrency>` (currency as type parameter, so cross-currency arithmetic fails the build), `Money` for runtime-tagged scenarios, `MoneyBag` for multi-currency portfolios, the ISO 4217 currency catalogue, exchange-rate providers, allocation, and cash rounding. | `net8.0` |
 
-Each package is versioned and released independently — take the one you need and ignore the others. The only shared runtime dependency is `Bodu.Core`, whose `ThrowHelper` provides argument validation for `Bodu.IO.Hashing`, `Bodu.Security.Cryptography`, `Bodu.Text.Encoding`, `Bodu.Text.Formats`, `Bodu.Text.Configuration`, `Bodu.Extensions.Configuration.Text`, `Bodu.Text`, `Bodu.Numerics`, and `Bodu.Financial`. Beyond that, `Bodu.Text.Formats` references `Bodu.Text.Encoding`; `Bodu.Text.Configuration` builds on `Bodu.Text.Formats`; `Bodu.Extensions.Configuration.Text` builds on `Bodu.Text.Configuration` plus `Microsoft.Extensions.Configuration`; and `Bodu.Financial` builds on `Bodu.Numerics` for its `Fraction<BigInteger>` precision escape hatch.
+### [Binary Formats & I/O](topics/binary-formats.md)
+
+Read-only readers for legacy binary container and document formats — a general-purpose compound-file reader, with narrower format readers layered on top.
+
+| Package | What it provides | Target framework |
+|---|---|---|
+| **[Bodu.IO.Compound](io-compound/index.md)** | A read-only reader for the OLE2 / Compound File Binary (CFB) container — the structured-storage "file system in a file" behind legacy Office documents (`.xls`, `.doc`, `.ppt`, `.msg`). Navigates the `RootStorage` hierarchy, reads each named stream through a seekable `CompoundStream` cursor (buffered or on-demand), and parses the OLE summary-information property sets. | `net8.0` |
+| **[Bodu.Formats.Excel.Binary](xref:Bodu.Formats.Excel.Binary)** | A narrow, read-only BIFF8 (`.xls`) reader built on `Bodu.IO.Compound` that surfaces raw worksheet cell values — strings, numbers, booleans, and errors — without formula evaluation, styling, or higher-level interpretation. | `net8.0` |
+
+Each package is versioned and released independently — take the one you need and ignore the others. The only shared runtime dependency is `Bodu.Core`, whose `ThrowHelper` provides argument validation for `Bodu.IO.Hashing`, `Bodu.Security.Cryptography`, `Bodu.Text.Encoding`, `Bodu.Text.Formats`, `Bodu.Text.Configuration`, `Bodu.Extensions.Configuration.Text`, `Bodu.Text`, `Bodu.Numerics`, `Bodu.Financial`, and `Bodu.IO.Compound`. Beyond that, `Bodu.Text.Formats` references `Bodu.Text.Encoding`; `Bodu.Text.Configuration` builds on `Bodu.Text.Formats`; `Bodu.Extensions.Configuration.Text` builds on `Bodu.Text.Configuration` plus `Microsoft.Extensions.Configuration`; and `Bodu.Financial` builds on `Bodu.Numerics` for its `Fraction<BigInteger>` precision escape hatch; and `Bodu.Formats.Excel.Binary` builds on `Bodu.IO.Compound` to read BIFF8 `.xls` workbooks.
 
 ## Library introductions
 
-Each library has a dedicated introduction page that explains its namespaces, the role of each headline type, and the scenarios it is designed for. Pair it with the matching getting-started page for install commands and a minimal sample. The cards below follow the six-topic order.
+Each library has a dedicated introduction page that explains its namespaces, the role of each headline type, and the scenarios it is designed for. Pair it with the matching getting-started page for install commands and a minimal sample. The cards below follow the seven-topic order.
 
 ### Core Foundations
 
@@ -235,6 +244,23 @@ Each library has a dedicated introduction page that explains its namespaces, the
 
 </div>
 
+### Binary Formats & I/O
+
+<div class="bodu-cards">
+
+<div class="bodu-card">
+  <h3><a href="io-compound/index.md">Bodu.IO.Compound</a></h3>
+  <p>A read-only OLE2 / Compound File Binary (CFB) container reader — navigate the storage hierarchy, read each named stream through a seekable <code>CompoundStream</code> cursor, and parse the OLE property sets. The BIFF8 <code>.xls</code> reader <code>Bodu.Formats.Excel.Binary</code> is built on it.</p>
+  <div class="bodu-card-links">
+    <a href="io-compound/index.md">Introduction</a>
+    <a href="io-compound/getting-started.md">Getting started</a>
+    <a href="../guides/io-compound/index.md">Guides</a>
+    <a href="xref:Bodu.IO.Compound">API reference</a>
+  </div>
+</div>
+
+</div>
+
 ## Design principles
 
 - **Small by intent.** Each library solves one coherent problem. If something already fits well elsewhere in .NET, we don't duplicate it.
@@ -250,8 +276,8 @@ The solution uses **MSTest** with a partial-class test layout that mirrors the s
 
 ## Where to go next
 
-- **Topic overviews:** [Core Foundations](topics/core-foundations.md) · [Hashing & Cryptography](topics/hashing-and-cryptography.md) · [Globalization & Calendars](topics/globalization-and-calendars.md) · [Text & Serialization](topics/text-and-serialization.md) · [Configuration](topics/configuration.md) · [Numerics & Financial](topics/numerics-and-financial.md).
+- **Topic overviews:** [Core Foundations](topics/core-foundations.md) · [Hashing & Cryptography](topics/hashing-and-cryptography.md) · [Globalization & Calendars](topics/globalization-and-calendars.md) · [Text & Serialization](topics/text-and-serialization.md) · [Configuration](topics/configuration.md) · [Numerics & Financial](topics/numerics-and-financial.md) · [Binary Formats & I/O](topics/binary-formats.md).
 - **[Getting started](getting-started.md)** — prerequisites, install commands, and a one-minute sample from each library.
 - **[Package matrix](package-matrix.md)** — the authoritative package list with status, dependencies, and install commands.
-- **Library introductions:** [Bodu.Core](core/index.md) · [Bodu.IO.Hashing](io-hashing/index.md) · [Bodu.Security.Cryptography](cryptography/index.md) · [Bodu.Globalization.Calendar](calendar/index.md) · [Bodu.Text.Encoding](text-encoding/index.md) · [Bodu.Text.Formats](formats/index.md) · [Bodu.Text.Bencode](serialization/bencode.md) · [Bodu.Text.Toml](serialization/toml.md) · [Bodu.Text.Configuration](text-configuration/index.md) · [Bodu.Extensions.Configuration.Text](extensions-configuration-text/index.md) · [Bodu.Text](text/index.md) · [Bodu.Numerics](numerics/index.md) · [Bodu.Financial](financial/index.md).
-- **API references:** [Bodu.Collections.Generic](xref:Bodu.Collections.Generic) · [Bodu.IO.Hashing](xref:Bodu.IO.Hashing) · [Bodu.Security.Cryptography](xref:Bodu.Security.Cryptography) · [Bodu.Globalization.Calendar](xref:Bodu.Globalization.Calendar) · [Bodu.Text](xref:Bodu.Text) · [Bodu.Numerics](xref:Bodu.Numerics) · [Bodu.Financial](xref:Bodu.Financial).
+- **Library introductions:** [Bodu.Core](core/index.md) · [Bodu.IO.Hashing](io-hashing/index.md) · [Bodu.Security.Cryptography](cryptography/index.md) · [Bodu.Globalization.Calendar](calendar/index.md) · [Bodu.Text.Encoding](text-encoding/index.md) · [Bodu.Text.Formats](formats/index.md) · [Bodu.Text.Bencode](serialization/bencode.md) · [Bodu.Text.Toml](serialization/toml.md) · [Bodu.Text.Configuration](text-configuration/index.md) · [Bodu.Extensions.Configuration.Text](extensions-configuration-text/index.md) · [Bodu.Text](text/index.md) · [Bodu.Numerics](numerics/index.md) · [Bodu.Financial](financial/index.md) · [Bodu.IO.Compound](io-compound/index.md).
+- **API references:** [Bodu.Collections.Generic](xref:Bodu.Collections.Generic) · [Bodu.IO.Hashing](xref:Bodu.IO.Hashing) · [Bodu.Security.Cryptography](xref:Bodu.Security.Cryptography) · [Bodu.Globalization.Calendar](xref:Bodu.Globalization.Calendar) · [Bodu.Text](xref:Bodu.Text) · [Bodu.Numerics](xref:Bodu.Numerics) · [Bodu.Financial](xref:Bodu.Financial) · [Bodu.IO.Compound](xref:Bodu.IO.Compound).

@@ -135,3 +135,16 @@
           href: financial/concepts.md
         - name: Getting started
           href: financial/getting-started.md
+- name: Binary Formats & I/O
+  href: topics/binary-formats.md
+  items:
+    - name: Topic concepts
+      href: topics/binary-formats-concepts.md
+    - name: Bodu.IO.Compound
+      items:
+        - name: Introduction
+          href: io-compound/index.md
+        - name: Core concepts
+          href: io-compound/concepts.md
+        - name: Getting started
+          href: io-compound/getting-started.md

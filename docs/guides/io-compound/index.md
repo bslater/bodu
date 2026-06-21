@@ -8,6 +8,8 @@ Recipe-style walk-throughs for **Bodu.IO.Compound**, the read-only reader for th
 
 The library has no application-format knowledge: it exposes the embedded storage hierarchy and the raw byte payload of each named stream, and leaves interpretation to the caller. The narrow BIFF8 `.xls` reader in <xref:Bodu.Formats.Excel.Binary> is built directly on top of it.
 
+If you are new to the library, start with the [introduction](../../docs/io-compound/index.md), the [Core concepts](../../docs/io-compound/concepts.md) glossary, and the [getting-started page](../../docs/io-compound/getting-started.md). The guides below assume you know the vocabulary (compound file, storage, stream, sector chain, property set).
+
 ## How the library works
 
 A compound file is effectively a small file system embedded in a single file. <xref:Bodu.IO.Compound.CompoundFile> is the managed counterpart of the COM `StgOpenStorage` entry point: navigation begins at `RootStorage` and descends through nested <xref:Bodu.IO.Compound.CompoundStorage> containers (the COM `IStorage`) to <xref:Bodu.IO.Compound.CompoundStreamEntry> leaves (the COM `IStream`). Opening a stream yields a <xref:Bodu.IO.Compound.CompoundStream> — a read-only, seekable <xref:System.IO.Stream> cursor over the bytes.
