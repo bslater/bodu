@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Buffers;
 using System.Buffers.Binary;
 using System.Globalization;
 using System.Text;
@@ -15,10 +16,17 @@ namespace Bodu.IO.Compound.Writer;
 /// Serializes a mutable compound-file object model into the OLE2 / Compound File Binary byte layout.
 /// </summary>
 /// <remarks>
-/// The layout is computed in a single allocate-then-back-patch pass: streams are partitioned into the mini stream and
-/// the regular sectors, the directory is encoded as a red-black tree per storage, the file-allocation table (FAT) and
-/// double-indirect FAT (DIFAT) sector counts are resolved to a fixed point, and finally the header and every sector are
-/// written. The result is byte-compatible with the reader and with other conforming parsers.
+/// <para>
+/// The layout is computed once into a small plan (the directory entries and the sector geometry), then emitted to the
+/// destination one sector at a time. The header, directory, file-allocation table (FAT), mini-FAT, and double-indirect
+/// FAT (DIFAT) are generated on the fly, and stream payloads are streamed directly from their sources, so peak memory
+/// is proportional to the number of directory entries plus a single sector — independent of the output size.
+/// </para>
+/// <para>
+/// Streams are partitioned into the mini stream (small) and the regular sectors, the directory is encoded as a
+/// red-black tree per storage, and the FAT/DIFAT sector counts are resolved to a fixed point. The result is
+/// byte-compatible with the reader and with other conforming parsers.
+/// </para>
 /// </remarks>
 internal static class CompoundContainerLayout
 {
@@ -37,6 +45,9 @@ internal static class CompoundContainerLayout
     /// <summary>The little-endian byte-order marker written to the header.</summary>
     private const ushort ByteOrderMarker = 0xFFFE;
 
+    /// <summary>The buffer size, in bytes, used when copying a deferred stream payload.</summary>
+    private const int CopyBufferSize = 81920;
+
     /// <summary>
     /// Serializes the supplied root storage into a compound-file byte array.
     /// </summary>
@@ -46,6 +57,20 @@ internal static class CompoundContainerLayout
     /// <exception cref="CompoundFileSerializationException">Thrown when the model cannot be represented.</exception>
     internal static byte[] Write(CompoundStorageNode root, CompoundWriterOptions options)
     {
+        using MemoryStream buffer = new();
+        WriteTo(buffer, root, options);
+        return buffer.ToArray();
+    }
+
+    /// <summary>
+    /// Serializes the supplied root storage to a destination stream, emitting one sector at a time.
+    /// </summary>
+    /// <param name="destination">The stream that receives the compound-file content.</param>
+    /// <param name="root">The root storage to serialize.</param>
+    /// <param name="options">The options controlling the output layout.</param>
+    /// <exception cref="CompoundFileSerializationException">Thrown when the model cannot be represented.</exception>
+    internal static void WriteTo(Stream destination, CompoundStorageNode root, CompoundWriterOptions options)
+    {
         int sectorSize = options.SectorSize;
         int entriesPerSector = sectorSize / 4;
         int directoriesPerSector = sectorSize / DirectoryEntrySize;
@@ -53,18 +78,16 @@ internal static class CompoundContainerLayout
 
         List<Entry> entries = Flatten(root, options.EffectiveMaxDepth);
 
-        // Partition streams into the mini stream (small) and the regular sectors (large).
-        BuildMiniStream(entries, out byte[] miniStreamBytes, out uint[] miniFat, entriesPerSector);
-
-        // Encode the directory entries (the red-black links were assigned during flatten).
-        int directorySectors = CeilDiv(entries.Count, directoriesPerSector);
-
-        int miniFatSectors = miniFat.Length / entriesPerSector;
-        int miniStreamSectors = CeilDiv(miniStreamBytes.Length, sectorSize);
+        // Mini-stream geometry: assign each small stream its mini-sector start without materializing any bytes.
+        int totalMiniSectors = AssignMiniStream(entries);
+        long miniStreamBytes = (long)totalMiniSectors * MiniSectorSize;
+        long miniFatSectors = totalMiniSectors == 0 ? 0 : CeilDiv(totalMiniSectors, entriesPerSector);
+        long miniStreamSectors = CeilDiv(miniStreamBytes, sectorSize);
+        long directorySectors = CeilDiv(entries.Count, directoriesPerSector);
 
         // Assign regular sector indices: directory, mini-FAT, mini-stream, then each large stream.
-        int next = 0;
-        int directoryStart = next;
+        long next = 0;
+        long directoryStart = next;
         next += directorySectors;
         uint miniFatStart = miniFatSectors > 0 ? (uint)next : CompoundFileHeader.EndOfChain;
         next += miniFatSectors;
@@ -76,28 +99,53 @@ internal static class CompoundContainerLayout
             if (entry.IsRegularStream)
             {
                 entry.StartSector = (uint)next;
-                next += CeilDiv((int)entry.Size, sectorSize);
+                next += CeilDiv(entry.Size, sectorSize);
             }
         }
 
-        int dataSectorCount = next;
+        long dataSectorCount = next;
 
         // The root entry owns the mini stream as its regular-sector chain.
         Entry rootEntry = entries[0];
         rootEntry.StartSector = miniStreamStart;
-        rootEntry.Size = miniStreamBytes.Length;
+        rootEntry.Size = miniStreamBytes;
 
         // Resolve the FAT/DIFAT counts to a fixed point (the FAT describes its own and the DIFAT's sectors).
-        ResolveFatCounts(dataSectorCount, entriesPerSector, out int fatSectors, out int difatSectors);
-        int fatStart = dataSectorCount;
-        int difatStart = dataSectorCount + fatSectors;
-        int totalSectors = dataSectorCount + fatSectors + difatSectors;
+        ResolveFatCounts(dataSectorCount, entriesPerSector, out long fatSectors, out long difatSectors);
+        long fatStart = dataSectorCount;
+        long difatStart = dataSectorCount + fatSectors;
+        long totalSectors = dataSectorCount + fatSectors + difatSectors;
+        if (totalSectors >= CompoundFileHeader.DifatSector)
+            throw new CompoundFileSerializationException(CompoundResourceStrings.Op_Invalid_CompoundWriterTooLarge);
 
-        uint[] fat = BuildFat(
+        var writer = new SectorWriter(destination, sectorSize);
+
+        EmitHeader(writer, isVersion4, fatSectors, directoryStart, directorySectors, miniFatStart, miniFatSectors, difatStart, difatSectors, fatStart);
+        EmitDirectory(writer, entries);
+        if (miniFatSectors > 0)
+            EmitMiniFat(writer, entries, totalMiniSectors, miniFatSectors, entriesPerSector);
+
+        if (miniStreamSectors > 0)
+        {
+            EmitMiniStream(writer, entries);
+            writer.PadToSector();
+        }
+
+        foreach (Entry entry in entries)
+        {
+            if (entry.IsRegularStream)
+            {
+                CopyContent(writer, entry);
+                writer.WriteZeros((CeilDiv(entry.Size, sectorSize) * sectorSize) - entry.Size);
+            }
+        }
+
+        EmitFat(
+            writer,
             entries,
+            dataSectorCount,
             fatStart,
             fatSectors,
-            difatStart,
             difatSectors,
             directoryStart,
             directorySectors,
@@ -108,35 +156,8 @@ internal static class CompoundContainerLayout
             sectorSize,
             entriesPerSector);
 
-        uint[] inlineDifat = BuildDifat(fatStart, fatSectors, difatStart, difatSectors, entriesPerSector, out uint[] difatSectorData);
-
-        byte[] file = new byte[(long)(totalSectors + 1) * sectorSize];
-        WriteHeader(
-            file,
-            isVersion4,
-            fatSectors,
-            directoryStart,
-            directorySectors,
-            miniFatStart,
-            miniFatSectors,
-            difatStart,
-            difatSectors,
-            inlineDifat);
-
-        WriteDirectory(file, entries, directoryStart, sectorSize);
-        WriteSectorData(file, UIntsToBytes(miniFat), miniFatStart, sectorSize);
-        WriteSectorData(file, miniStreamBytes, miniStreamStart, sectorSize);
-        foreach (Entry entry in entries)
-        {
-            if (entry.IsRegularStream)
-                WriteSectorData(file, entry.Content.Span, entry.StartSector, sectorSize);
-        }
-
-        WriteSectorData(file, UIntsToBytes(fat), (uint)fatStart, sectorSize);
         if (difatSectors > 0)
-            WriteSectorData(file, UIntsToBytes(difatSectorData), (uint)difatStart, sectorSize);
-
-        return file;
+            EmitDifat(writer, fatStart, fatSectors, difatStart, difatSectors, entriesPerSector);
     }
 
     /// <summary>
@@ -236,45 +257,23 @@ internal static class CompoundContainerLayout
     }
 
     /// <summary>
-    /// Builds the mini stream and mini-FAT from the small streams in the entry list.
+    /// Assigns each mini-stream member its starting mini-sector index, returning the total mini-sector count.
     /// </summary>
-    /// <param name="entries">The entry list; mini-stream members receive their starting mini-sector index.</param>
-    /// <param name="miniStreamBytes">The concatenated, padded mini-stream bytes.</param>
-    /// <param name="miniFat">The mini-FAT, padded to a whole number of sectors.</param>
-    /// <param name="entriesPerSector">The number of 32-bit entries per regular sector.</param>
-    private static void BuildMiniStream(List<Entry> entries, out byte[] miniStreamBytes, out uint[] miniFat, int entriesPerSector)
+    /// <param name="entries">The entry list.</param>
+    /// <returns>The total number of mini sectors.</returns>
+    private static int AssignMiniStream(List<Entry> entries)
     {
-        using MemoryStream mini = new();
-        List<uint> chains = new();
         uint miniSector = 0;
-
         foreach (Entry entry in entries)
         {
             if (!entry.IsMiniStream)
                 continue;
 
-            int length = (int)entry.Size;
-            int sectors = CeilDiv(length, MiniSectorSize);
             entry.StartSector = miniSector;
-
-            mini.Write(entry.Content.Span);
-            int padding = (sectors * MiniSectorSize) - length;
-            for (int i = 0; i < padding; i++)
-                mini.WriteByte(0);
-
-            for (int i = 0; i < sectors; i++)
-                chains.Add(i == sectors - 1 ? CompoundFileHeader.EndOfChain : miniSector + (uint)i + 1);
-
-            miniSector += (uint)sectors;
+            miniSector += (uint)CeilDiv(entry.Size, MiniSectorSize);
         }
 
-        miniStreamBytes = mini.ToArray();
-
-        // Pad the mini-FAT up to a whole number of sectors with free markers.
-        int miniFatLength = chains.Count == 0 ? 0 : CeilDiv(chains.Count, entriesPerSector) * entriesPerSector;
-        miniFat = new uint[miniFatLength];
-        for (int i = 0; i < miniFat.Length; i++)
-            miniFat[i] = i < chains.Count ? chains[i] : CompoundFileHeader.FreeSector;
+        return (int)miniSector;
     }
 
     /// <summary>
@@ -284,15 +283,15 @@ internal static class CompoundContainerLayout
     /// <param name="entriesPerSector">The number of 32-bit entries per regular sector.</param>
     /// <param name="fatSectors">The resolved FAT sector count.</param>
     /// <param name="difatSectors">The resolved DIFAT sector count.</param>
-    private static void ResolveFatCounts(int dataSectorCount, int entriesPerSector, out int fatSectors, out int difatSectors)
+    private static void ResolveFatCounts(long dataSectorCount, int entriesPerSector, out long fatSectors, out long difatSectors)
     {
         fatSectors = 0;
         difatSectors = 0;
         while (true)
         {
-            int total = dataSectorCount + fatSectors + difatSectors;
-            int newFat = CeilDiv(total, entriesPerSector);
-            int newDifat = newFat <= CompoundFileHeader.HeaderDifatCount
+            long total = dataSectorCount + fatSectors + difatSectors;
+            long newFat = CeilDiv(total, entriesPerSector);
+            long newDifat = newFat <= CompoundFileHeader.HeaderDifatCount
                 ? 0
                 : CeilDiv(newFat - CompoundFileHeader.HeaderDifatCount, entriesPerSector - 1);
 
@@ -305,126 +304,9 @@ internal static class CompoundContainerLayout
     }
 
     /// <summary>
-    /// Builds the regular file-allocation table, chaining every sector run and marking FAT and DIFAT sectors.
+    /// Emits the header sector: the 512-byte header followed by zero padding to the sector boundary.
     /// </summary>
-    /// <param name="entries">The directory entries; regular streams contribute their sector runs.</param>
-    /// <param name="fatStart">The index of the first FAT sector.</param>
-    /// <param name="fatSectors">The number of FAT sectors.</param>
-    /// <param name="difatStart">The index of the first DIFAT sector.</param>
-    /// <param name="difatSectors">The number of DIFAT sectors.</param>
-    /// <param name="directoryStart">The index of the first directory sector.</param>
-    /// <param name="directorySectors">The number of directory sectors.</param>
-    /// <param name="miniFatStart">The index of the first mini-FAT sector.</param>
-    /// <param name="miniFatSectors">The number of mini-FAT sectors.</param>
-    /// <param name="miniStreamStart">The index of the first mini-stream sector.</param>
-    /// <param name="miniStreamSectors">The number of mini-stream sectors.</param>
-    /// <param name="sectorSize">The regular sector size, in bytes.</param>
-    /// <param name="entriesPerSector">The number of 32-bit entries per regular sector.</param>
-    /// <returns>The FAT, padded to a whole number of FAT sectors.</returns>
-    private static uint[] BuildFat(
-        List<Entry> entries,
-        int fatStart,
-        int fatSectors,
-        int difatStart,
-        int difatSectors,
-        int directoryStart,
-        int directorySectors,
-        uint miniFatStart,
-        int miniFatSectors,
-        uint miniStreamStart,
-        int miniStreamSectors,
-        int sectorSize,
-        int entriesPerSector)
-    {
-        uint[] fat = new uint[fatSectors * entriesPerSector];
-        for (int i = 0; i < fat.Length; i++)
-            fat[i] = CompoundFileHeader.FreeSector;
-
-        ChainRun(fat, directoryStart, directorySectors);
-        if (miniFatSectors > 0)
-            ChainRun(fat, (int)miniFatStart, miniFatSectors);
-        if (miniStreamSectors > 0)
-            ChainRun(fat, (int)miniStreamStart, miniStreamSectors);
-
-        foreach (Entry entry in entries)
-        {
-            if (entry.IsRegularStream)
-                ChainRun(fat, (int)entry.StartSector, CeilDiv((int)entry.Size, sectorSize));
-        }
-
-        for (int i = 0; i < fatSectors; i++)
-            fat[fatStart + i] = CompoundFileHeader.FatSector;
-
-        for (int i = 0; i < difatSectors; i++)
-            fat[difatStart + i] = CompoundFileHeader.DifatSector;
-
-        return fat;
-    }
-
-    /// <summary>
-    /// Writes a sequential sector chain into the FAT, terminating with the end-of-chain marker.
-    /// </summary>
-    /// <param name="fat">The FAT being populated.</param>
-    /// <param name="start">The first sector of the run.</param>
-    /// <param name="count">The number of sectors in the run.</param>
-    private static void ChainRun(uint[] fat, int start, int count)
-    {
-        for (int i = 0; i < count; i++)
-            fat[start + i] = i == count - 1 ? CompoundFileHeader.EndOfChain : (uint)(start + i + 1);
-    }
-
-    /// <summary>
-    /// Builds the inline header DIFAT and any extended DIFAT sectors.
-    /// </summary>
-    /// <param name="fatStart">The index of the first FAT sector.</param>
-    /// <param name="fatSectors">The number of FAT sectors.</param>
-    /// <param name="difatStart">The index of the first DIFAT sector.</param>
-    /// <param name="difatSectors">The number of DIFAT sectors.</param>
-    /// <param name="entriesPerSector">The number of 32-bit entries per regular sector.</param>
-    /// <param name="difatSectorData">The little-endian content of the extended DIFAT sectors, if any.</param>
-    /// <returns>The 109-entry inline DIFAT for the header.</returns>
-    private static uint[] BuildDifat(int fatStart, int fatSectors, int difatStart, int difatSectors, int entriesPerSector, out uint[] difatSectorData)
-    {
-        uint[] inline = new uint[CompoundFileHeader.HeaderDifatCount];
-        int inlineCount = Math.Min(fatSectors, CompoundFileHeader.HeaderDifatCount);
-        for (int i = 0; i < CompoundFileHeader.HeaderDifatCount; i++)
-            inline[i] = i < inlineCount ? (uint)(fatStart + i) : CompoundFileHeader.FreeSector;
-
-        if (difatSectors == 0)
-        {
-            difatSectorData = [];
-            return inline;
-        }
-
-        int slotsPerSector = entriesPerSector - 1;
-        difatSectorData = new uint[difatSectors * entriesPerSector];
-        for (int i = 0; i < difatSectorData.Length; i++)
-            difatSectorData[i] = CompoundFileHeader.FreeSector;
-
-        int fatIndex = CompoundFileHeader.HeaderDifatCount;
-        for (int s = 0; s < difatSectors; s++)
-        {
-            int baseSlot = s * entriesPerSector;
-            for (int j = 0; j < slotsPerSector; j++)
-            {
-                difatSectorData[baseSlot + j] = fatIndex < fatSectors
-                    ? (uint)(fatStart + fatIndex)
-                    : CompoundFileHeader.FreeSector;
-                fatIndex++;
-            }
-
-            difatSectorData[baseSlot + slotsPerSector] = s == difatSectors - 1
-                ? CompoundFileHeader.EndOfChain
-                : (uint)(difatStart + s + 1);
-        }
-
-        return inline;
-    }
-
-    /// <summary>
-    /// Writes the 512-byte compound-file header into the file buffer.
-    /// </summary>
-    /// <param name="file">The file buffer.</param>
+    /// <param name="writer">The destination sector writer.</param>
     /// <param name="isVersion4">Whether the file uses the version-4 (4096-byte sector) layout.</param>
     /// <param name="fatSectors">The number of FAT sectors.</param>
     /// <param name="directoryStart">The index of the first directory sector.</param>
@@ -433,20 +315,21 @@ internal static class CompoundContainerLayout
     /// <param name="miniFatSectors">The number of mini-FAT sectors.</param>
     /// <param name="difatStart">The index of the first DIFAT sector.</param>
     /// <param name="difatSectors">The number of DIFAT sectors.</param>
-    /// <param name="inlineDifat">The 109-entry inline DIFAT.</param>
-    private static void WriteHeader(
-        byte[] file,
+    /// <param name="fatStart">The index of the first FAT sector.</param>
+    private static void EmitHeader(
+        SectorWriter writer,
         bool isVersion4,
-        int fatSectors,
-        int directoryStart,
-        int directorySectors,
+        long fatSectors,
+        long directoryStart,
+        long directorySectors,
         uint miniFatStart,
-        int miniFatSectors,
-        int difatStart,
-        int difatSectors,
-        uint[] inlineDifat)
+        long miniFatSectors,
+        long difatStart,
+        long difatSectors,
+        long fatStart)
     {
-        Span<byte> h = file.AsSpan(0, 512);
+        Span<byte> h = stackalloc byte[512];
+        h.Clear();
         CompoundFileHeader.Signature.CopyTo(h);
         BinaryPrimitives.WriteUInt16LittleEndian(h.Slice(24), MinorVersion);
         BinaryPrimitives.WriteUInt16LittleEndian(h.Slice(26), (ushort)(isVersion4 ? 4 : 3));
@@ -462,39 +345,216 @@ internal static class CompoundContainerLayout
         BinaryPrimitives.WriteUInt32LittleEndian(h.Slice(68), difatSectors > 0 ? (uint)difatStart : CompoundFileHeader.EndOfChain);
         BinaryPrimitives.WriteUInt32LittleEndian(h.Slice(72), (uint)difatSectors);
 
+        long inlineCount = Math.Min(fatSectors, CompoundFileHeader.HeaderDifatCount);
         for (int i = 0; i < CompoundFileHeader.HeaderDifatCount; i++)
-            BinaryPrimitives.WriteUInt32LittleEndian(h.Slice(76 + (i * 4)), inlineDifat[i]);
+        {
+            uint value = i < inlineCount ? (uint)(fatStart + i) : CompoundFileHeader.FreeSector;
+            BinaryPrimitives.WriteUInt32LittleEndian(h.Slice(76 + (i * 4)), value);
+        }
+
+        writer.WriteBytes(h);
+        writer.PadToSector();
     }
 
     /// <summary>
-    /// Encodes and writes the directory entries into their sectors.
+    /// Emits the directory sectors, encoding each entry and padding the final sector with zero.
     /// </summary>
-    /// <param name="file">The file buffer.</param>
+    /// <param name="writer">The destination sector writer.</param>
     /// <param name="entries">The directory entries, in stream-identifier order.</param>
-    /// <param name="directoryStart">The index of the first directory sector.</param>
-    /// <param name="sectorSize">The regular sector size, in bytes.</param>
-    private static void WriteDirectory(byte[] file, List<Entry> entries, int directoryStart, int sectorSize)
+    private static void EmitDirectory(SectorWriter writer, List<Entry> entries)
     {
-        int baseOffset = (directoryStart + 1) * sectorSize;
-        for (int i = 0; i < entries.Count; i++)
-            entries[i].Encode(file.AsSpan(baseOffset + (i * DirectoryEntrySize), DirectoryEntrySize));
+        Span<byte> record = stackalloc byte[DirectoryEntrySize];
+        foreach (Entry entry in entries)
+        {
+            record.Clear();
+            entry.Encode(record);
+            writer.WriteBytes(record);
+        }
+
+        writer.PadToSector();
     }
 
     /// <summary>
-    /// Writes a payload into a sector run, zero-padding to the sector boundary.
+    /// Emits the mini-FAT sectors, chaining each mini-stream member and padding with free markers.
     /// </summary>
-    /// <param name="file">The file buffer.</param>
-    /// <param name="data">The payload bytes.</param>
-    /// <param name="startSector">
-    /// The first sector of the run, or <see cref="CompoundFileHeader.EndOfChain" /> for no run.
-    /// </param>
-    /// <param name="sectorSize">The regular sector size, in bytes.</param>
-    private static void WriteSectorData(byte[] file, ReadOnlySpan<byte> data, uint startSector, int sectorSize)
+    /// <param name="writer">The destination sector writer.</param>
+    /// <param name="entries">The directory entries.</param>
+    /// <param name="totalMiniSectors">The total number of mini sectors.</param>
+    /// <param name="miniFatSectors">The number of mini-FAT sectors.</param>
+    /// <param name="entriesPerSector">The number of 32-bit entries per regular sector.</param>
+    private static void EmitMiniFat(SectorWriter writer, List<Entry> entries, int totalMiniSectors, long miniFatSectors, int entriesPerSector)
     {
-        if (data.Length == 0 || startSector == CompoundFileHeader.EndOfChain)
-            return;
+        foreach (Entry entry in entries)
+        {
+            if (entry.IsMiniStream)
+                WriteChain(writer, entry.StartSector, CeilDiv(entry.Size, MiniSectorSize));
+        }
 
-        data.CopyTo(file.AsSpan((int)((startSector + 1) * sectorSize)));
+        WriteFree(writer, (miniFatSectors * entriesPerSector) - totalMiniSectors);
+    }
+
+    /// <summary>
+    /// Emits the mini-stream content, padding each member to a mini-sector boundary.
+    /// </summary>
+    /// <param name="writer">The destination sector writer.</param>
+    /// <param name="entries">The directory entries.</param>
+    private static void EmitMiniStream(SectorWriter writer, List<Entry> entries)
+    {
+        foreach (Entry entry in entries)
+        {
+            if (!entry.IsMiniStream)
+                continue;
+
+            CopyContent(writer, entry);
+            writer.WriteZeros((CeilDiv(entry.Size, MiniSectorSize) * MiniSectorSize) - entry.Size);
+        }
+    }
+
+    /// <summary>
+    /// Emits the FAT sectors, chaining every sector run, marking the FAT and DIFAT sectors, and padding with free
+    /// markers.
+    /// </summary>
+    /// <param name="writer">The destination sector writer.</param>
+    /// <param name="entries">The directory entries.</param>
+    /// <param name="dataSectorCount">The number of non-FAT, non-DIFAT sectors.</param>
+    /// <param name="fatStart">The index of the first FAT sector.</param>
+    /// <param name="fatSectors">The number of FAT sectors.</param>
+    /// <param name="difatSectors">The number of DIFAT sectors.</param>
+    /// <param name="directoryStart">The index of the first directory sector.</param>
+    /// <param name="directorySectors">The number of directory sectors.</param>
+    /// <param name="miniFatStart">The index of the first mini-FAT sector.</param>
+    /// <param name="miniFatSectors">The number of mini-FAT sectors.</param>
+    /// <param name="miniStreamStart">The index of the first mini-stream sector.</param>
+    /// <param name="miniStreamSectors">The number of mini-stream sectors.</param>
+    /// <param name="sectorSize">The regular sector size, in bytes.</param>
+    /// <param name="entriesPerSector">The number of 32-bit entries per regular sector.</param>
+    private static void EmitFat(
+        SectorWriter writer,
+        List<Entry> entries,
+        long dataSectorCount,
+        long fatStart,
+        long fatSectors,
+        long difatSectors,
+        long directoryStart,
+        long directorySectors,
+        uint miniFatStart,
+        long miniFatSectors,
+        uint miniStreamStart,
+        long miniStreamSectors,
+        int sectorSize,
+        int entriesPerSector)
+    {
+        WriteChain(writer, (uint)directoryStart, directorySectors);
+        if (miniFatSectors > 0)
+            WriteChain(writer, miniFatStart, miniFatSectors);
+
+        if (miniStreamSectors > 0)
+            WriteChain(writer, miniStreamStart, miniStreamSectors);
+
+        foreach (Entry entry in entries)
+        {
+            if (entry.IsRegularStream)
+                WriteChain(writer, entry.StartSector, CeilDiv(entry.Size, sectorSize));
+        }
+
+        for (long i = 0; i < fatSectors; i++)
+            writer.WriteUInt32(CompoundFileHeader.FatSector);
+
+        for (long i = 0; i < difatSectors; i++)
+            writer.WriteUInt32(CompoundFileHeader.DifatSector);
+
+        long totalSectors = dataSectorCount + fatSectors + difatSectors;
+        WriteFree(writer, (fatSectors * entriesPerSector) - totalSectors);
+    }
+
+    /// <summary>
+    /// Emits the extended DIFAT sectors, each carrying FAT-sector indices and a chain pointer.
+    /// </summary>
+    /// <param name="writer">The destination sector writer.</param>
+    /// <param name="fatStart">The index of the first FAT sector.</param>
+    /// <param name="fatSectors">The number of FAT sectors.</param>
+    /// <param name="difatStart">The index of the first DIFAT sector.</param>
+    /// <param name="difatSectors">The number of DIFAT sectors.</param>
+    /// <param name="entriesPerSector">The number of 32-bit entries per regular sector.</param>
+    private static void EmitDifat(SectorWriter writer, long fatStart, long fatSectors, long difatStart, long difatSectors, int entriesPerSector)
+    {
+        int slotsPerSector = entriesPerSector - 1;
+        long fatIndex = CompoundFileHeader.HeaderDifatCount;
+        for (long s = 0; s < difatSectors; s++)
+        {
+            for (int j = 0; j < slotsPerSector; j++)
+            {
+                writer.WriteUInt32(fatIndex < fatSectors ? (uint)(fatStart + fatIndex) : CompoundFileHeader.FreeSector);
+                fatIndex++;
+            }
+
+            writer.WriteUInt32(s == difatSectors - 1 ? CompoundFileHeader.EndOfChain : (uint)(difatStart + s + 1));
+        }
+    }
+
+    /// <summary>
+    /// Writes a sequential sector chain to the FAT, terminating with the end-of-chain marker.
+    /// </summary>
+    /// <param name="writer">The destination sector writer.</param>
+    /// <param name="start">The first sector of the run.</param>
+    /// <param name="count">The number of sectors in the run.</param>
+    private static void WriteChain(SectorWriter writer, uint start, long count)
+    {
+        for (long i = 0; i < count; i++)
+            writer.WriteUInt32(i == count - 1 ? CompoundFileHeader.EndOfChain : (uint)(start + i + 1));
+    }
+
+    /// <summary>
+    /// Writes a run of free-sector markers.
+    /// </summary>
+    /// <param name="writer">The destination sector writer.</param>
+    /// <param name="count">The number of markers to write.</param>
+    private static void WriteFree(SectorWriter writer, long count)
+    {
+        for (long i = 0; i < count; i++)
+            writer.WriteUInt32(CompoundFileHeader.FreeSector);
+    }
+
+    /// <summary>
+    /// Copies a stream entry's payload to the writer, from memory or a deferred source.
+    /// </summary>
+    /// <param name="writer">The destination sector writer.</param>
+    /// <param name="entry">The stream entry to copy.</param>
+    /// <exception cref="CompoundFileSerializationException">
+    /// Thrown when a deferred source is shorter than its declared length.
+    /// </exception>
+    private static void CopyContent(SectorWriter writer, Entry entry)
+    {
+        CompoundStreamNode node = entry.StreamNode!;
+        if (!node.IsDeferred)
+        {
+            writer.WriteBytes(node.Content.Span);
+            return;
+        }
+
+        long remaining = entry.Size;
+        using Stream source = node.OpenContentStream();
+        byte[] buffer = ArrayPool<byte>.Shared.Rent(CopyBufferSize);
+        try
+        {
+            while (remaining > 0)
+            {
+                int toRead = (int)Math.Min(buffer.Length, remaining);
+                int read = source.Read(buffer, 0, toRead);
+                if (read <= 0)
+                {
+                    throw new CompoundFileSerializationException(
+                        string.Format(CultureInfo.CurrentCulture, CompoundResourceStrings.Op_Invalid_CompoundWriterStreamLength, node.Name, entry.Size));
+                }
+
+                writer.WriteBytes(buffer.AsSpan(0, read));
+                remaining -= read;
+            }
+        }
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(buffer);
+        }
     }
 
     /// <summary>
@@ -503,21 +563,100 @@ internal static class CompoundContainerLayout
     /// <param name="value">The dividend.</param>
     /// <param name="divisor">The divisor.</param>
     /// <returns>The ceiling of the division.</returns>
-    private static int CeilDiv(int value, int divisor) =>
+    private static long CeilDiv(long value, int divisor) =>
         value <= 0 ? 0 : (value + divisor - 1) / divisor;
 
     /// <summary>
-    /// Converts a 32-bit array to its little-endian byte form.
+    /// Buffers output one sector at a time and flushes whole sectors to a destination stream.
     /// </summary>
-    /// <param name="values">The values to convert.</param>
-    /// <returns>The little-endian bytes.</returns>
-    private static byte[] UIntsToBytes(uint[] values)
+    private sealed class SectorWriter
     {
-        byte[] bytes = new byte[values.Length * 4];
-        for (int i = 0; i < values.Length; i++)
-            BinaryPrimitives.WriteUInt32LittleEndian(bytes.AsSpan(i * 4), values[i]);
+        /// <summary>The destination stream.</summary>
+        private readonly Stream _destination;
 
-        return bytes;
+        /// <summary>The reusable single-sector buffer.</summary>
+        private readonly byte[] _buffer;
+
+        /// <summary>The number of bytes currently buffered in the active sector.</summary>
+        private int _position;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SectorWriter" /> class.
+        /// </summary>
+        /// <param name="destination">The destination stream.</param>
+        /// <param name="sectorSize">The sector size, in bytes.</param>
+        public SectorWriter(Stream destination, int sectorSize)
+        {
+            _destination = destination;
+            _buffer = new byte[sectorSize];
+        }
+
+        /// <summary>
+        /// Writes raw bytes, flushing whole sectors as they fill.
+        /// </summary>
+        /// <param name="data">The bytes to write.</param>
+        public void WriteBytes(ReadOnlySpan<byte> data)
+        {
+            while (!data.IsEmpty)
+            {
+                int n = Math.Min(_buffer.Length - _position, data.Length);
+                data.Slice(0, n).CopyTo(_buffer.AsSpan(_position));
+                _position += n;
+                data = data.Slice(n);
+                if (_position == _buffer.Length)
+                    FlushSector();
+            }
+        }
+
+        /// <summary>
+        /// Writes a little-endian 32-bit value. The caller must keep the position four-byte aligned.
+        /// </summary>
+        /// <param name="value">The value to write.</param>
+        public void WriteUInt32(uint value)
+        {
+            BinaryPrimitives.WriteUInt32LittleEndian(_buffer.AsSpan(_position), value);
+            _position += 4;
+            if (_position == _buffer.Length)
+                FlushSector();
+        }
+
+        /// <summary>
+        /// Writes a run of zero bytes, flushing whole sectors as they fill.
+        /// </summary>
+        /// <param name="count">The number of zero bytes to write.</param>
+        public void WriteZeros(long count)
+        {
+            while (count > 0)
+            {
+                int n = (int)Math.Min(_buffer.Length - _position, count);
+                _buffer.AsSpan(_position, n).Clear();
+                _position += n;
+                count -= n;
+                if (_position == _buffer.Length)
+                    FlushSector();
+            }
+        }
+
+        /// <summary>
+        /// Zero-fills the remainder of the active sector and flushes it, leaving the writer sector-aligned.
+        /// </summary>
+        public void PadToSector()
+        {
+            if (_position > 0)
+            {
+                _buffer.AsSpan(_position).Clear();
+                FlushSector();
+            }
+        }
+
+        /// <summary>
+        /// Writes the active sector buffer to the destination and resets the position.
+        /// </summary>
+        private void FlushSector()
+        {
+            _destination.Write(_buffer, 0, _buffer.Length);
+            _position = 0;
+        }
     }
 
     /// <summary>
@@ -525,6 +664,9 @@ internal static class CompoundContainerLayout
     /// </summary>
     private sealed class Entry
     {
+        /// <summary>The earliest instant representable as a Windows FILETIME.</summary>
+        private static readonly DateTime FileTimeEpoch = new(1601, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
         /// <summary>
         /// Gets or sets the entry name.
         /// </summary>
@@ -556,9 +698,9 @@ internal static class CompoundContainerLayout
         public long ModifiedFileTime { get; set; }
 
         /// <summary>
-        /// Gets or sets the payload for a stream entry.
+        /// Gets or sets the source stream node for a stream entry.
         /// </summary>
-        public ReadOnlyMemory<byte> Content { get; set; }
+        public CompoundStreamNode? StreamNode { get; set; }
 
         /// <summary>
         /// Gets or sets the payload size, in bytes.
@@ -615,8 +757,8 @@ internal static class CompoundContainerLayout
 
             if (node is CompoundStreamNode stream)
             {
-                entry.Content = stream.Content;
-                entry.Size = stream.Content.Length;
+                entry.StreamNode = stream;
+                entry.Size = stream.Length;
             }
 
             return entry;
@@ -651,13 +793,10 @@ internal static class CompoundContainerLayout
         /// <returns>The Windows FILETIME, or <c>0</c>.</returns>
         private static long ToFileTime(DateTimeOffset? value)
         {
-            if (value is not { } time || time.UtcDateTime < s_fileTimeEpoch)
+            if (value is not { } time || time.UtcDateTime < FileTimeEpoch)
                 return 0;
 
             return time.ToFileTime();
         }
-
-        /// <summary>The earliest instant representable as a Windows FILETIME.</summary>
-        private static readonly DateTime s_fileTimeEpoch = new(1601, 1, 1, 0, 0, 0, DateTimeKind.Utc);
     }
 }

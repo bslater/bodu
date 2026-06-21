@@ -25,9 +25,10 @@ public sealed partial class CompoundStorageNode
     public void Save(Stream destination, CompoundWriterOptions options = default)
     {
         ThrowHelper.ThrowIfNull(destination);
+        if (Parent is not null)
+            throw new CompoundFileSerializationException(CompoundResourceStrings.Op_Invalid_CompoundWriterSaveNotRoot);
 
-        byte[] bytes = SerializeRoot(options);
-        destination.Write(bytes, 0, bytes.Length);
+        CompoundContainerLayout.WriteTo(destination, this, options);
     }
 
     /// <summary>

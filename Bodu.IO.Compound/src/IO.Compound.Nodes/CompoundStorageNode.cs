@@ -142,6 +142,39 @@ public sealed partial class CompoundStorageNode
         return stream;
     }
 
+    /// <summary>
+    /// Adds a new deferred child stream whose payload is read on demand from a re-openable source.
+    /// </summary>
+    /// <param name="name">The stream name.</param>
+    /// <param name="openRead">A factory that opens a readable stream over the payload each time it is invoked.</param>
+    /// <param name="length">The payload length, in bytes.</param>
+    /// <returns>The created <see cref="CompoundStreamNode" />.</returns>
+    /// <exception cref="CompoundFileSerializationException">
+    /// Thrown when the name is invalid or already present.
+    /// </exception>
+    public CompoundStreamNode AddStream(string name, Func<Stream> openRead, long length)
+    {
+        CompoundStreamNode stream = CompoundStreamNode.Create(name, openRead, length);
+        AddCore(name, stream);
+        return stream;
+    }
+
+    /// <summary>
+    /// Adds a new deferred child stream whose payload is read on demand from a file.
+    /// </summary>
+    /// <param name="name">The stream name.</param>
+    /// <param name="path">The path of the file providing the payload.</param>
+    /// <returns>The created <see cref="CompoundStreamNode" />.</returns>
+    /// <exception cref="CompoundFileSerializationException">
+    /// Thrown when the name is invalid or already present.
+    /// </exception>
+    public CompoundStreamNode AddStreamFromFile(string name, string path)
+    {
+        CompoundStreamNode stream = CompoundStreamNode.CreateFromFile(name, path);
+        AddCore(name, stream);
+        return stream;
+    }
+
     /// <inheritdoc />
     /// <exception cref="CompoundFileSerializationException">
     /// Thrown when the name is invalid or already present.

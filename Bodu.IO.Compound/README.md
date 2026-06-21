@@ -47,7 +47,12 @@ if (file.TryGetSummaryInformation(out var summary))
   build or `Load` a tree of `CompoundStorageNode` / `CompoundStreamNode`, mutate it, then
   `Save` / `ToArray` to a conforming container (v3 or v4). `CompoundWriter` offers a
   low-level imperative alternative. Output is verified byte-for-byte and cross-checked
-  against the independent `olefile` parser.
+  against the independent `olefile` and OpenMcdf parsers.
+- **Bounded-memory streaming writes**: `Save(Stream)` emits one sector at a time and
+  large payloads can be sourced on demand via `CompoundStreamNode.CreateFromFile(name, path)`
+  or `Create(name, Func<Stream>, length)` (and the matching `AddStreamFromFile` /
+  `WriteStreamFromFile`), so multi-gigabyte containers serialize without being buffered whole
+  in memory.
 - Stable, message-independent failure classification through
   `CompoundFileFormatException.Category` (`CompoundFileError`) and a
   `CompoundFileSerializationException` for authoring errors.

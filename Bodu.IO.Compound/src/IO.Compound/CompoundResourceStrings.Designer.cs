@@ -230,5 +230,23 @@ namespace Bodu.IO.Compound {
                 return ResourceManager.GetString("Op_Invalid_CompoundPropertySetCodePage", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The stream source for '{0}' produced fewer bytes than its declared length of {1}..
+        /// </summary>
+        internal static string Op_Invalid_CompoundWriterStreamLength {
+            get {
+                return ResourceManager.GetString("Op_Invalid_CompoundWriterStreamLength", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The compound file is too large to serialize..
+        /// </summary>
+        internal static string Op_Invalid_CompoundWriterTooLarge {
+            get {
+                return ResourceManager.GetString("Op_Invalid_CompoundWriterTooLarge", resourceCulture);
+            }
+        }
     }
 }

@@ -130,6 +130,29 @@ public sealed class CompoundWriter
         _current = _open.Peek().AddStream(name, (ReadOnlyMemory<byte>)content.ToArray());
 
     /// <summary>
+    /// Writes a deferred stream into the current storage, sourcing its payload on demand during serialization.
+    /// </summary>
+    /// <param name="name">The stream name.</param>
+    /// <param name="openRead">A factory that opens a readable stream over the payload each time it is invoked.</param>
+    /// <param name="length">The payload length, in bytes.</param>
+    /// <exception cref="CompoundFileSerializationException">
+    /// Thrown when the name is invalid or already present.
+    /// </exception>
+    public void WriteStream(string name, Func<Stream> openRead, long length) =>
+        _current = _open.Peek().AddStream(name, openRead, length);
+
+    /// <summary>
+    /// Writes a deferred stream into the current storage, sourcing its payload on demand from a file.
+    /// </summary>
+    /// <param name="name">The stream name.</param>
+    /// <param name="path">The path of the file providing the payload.</param>
+    /// <exception cref="CompoundFileSerializationException">
+    /// Thrown when the name is invalid or already present.
+    /// </exception>
+    public void WriteStreamFromFile(string name, string path) =>
+        _current = _open.Peek().AddStreamFromFile(name, path);
+
+    /// <summary>
     /// Sets the class identifier of the most recently opened storage or written stream.
     /// </summary>
     /// <param name="classId">The class identifier to assign.</param>
@@ -166,11 +189,10 @@ public sealed class CompoundWriter
             return;
 
         _flushed = true;
-        byte[] bytes = CompoundContainerLayout.Write(_root, _options);
         if (_stream is not null)
-            _stream.Write(bytes, 0, bytes.Length);
+            CompoundContainerLayout.WriteTo(_stream, _root, _options);
         else
-            _buffer!.Write(bytes);
+            _buffer!.Write(CompoundContainerLayout.Write(_root, _options));
     }
 
     /// <summary>

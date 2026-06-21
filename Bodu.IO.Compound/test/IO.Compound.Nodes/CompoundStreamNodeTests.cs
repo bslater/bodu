@@ -53,6 +53,54 @@ public class CompoundStreamNodeTests
     }
 
     /// <summary>
+    /// Verifies that a deferred node reports its declared length without opening its source.
+    /// </summary>
+    [TestMethod]
+    public void Create_WhenDeferred_ShouldReportLengthWithoutOpening()
+    {
+        int opens = 0;
+        CompoundStreamNode node = CompoundStreamNode.Create("Data", () =>
+        {
+            opens++;
+            return new MemoryStream(new byte[] { 1, 2, 3 });
+        }, 3);
+
+        Assert.AreEqual(3, node.Length);
+        Assert.AreEqual(0, opens);
+    }
+
+    /// <summary>
+    /// Verifies that reading <see cref="CompoundStreamNode.Content" /> materializes a deferred node's source.
+    /// </summary>
+    [TestMethod]
+    public void Content_WhenDeferred_ShouldMaterializeSource()
+    {
+        CompoundStreamNode node = CompoundStreamNode.Create("Data", () => new MemoryStream(new byte[] { 4, 5, 6 }), 3);
+
+        CollectionAssert.AreEqual(new byte[] { 4, 5, 6 }, node.Content.ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundStreamNode.DeepClone" /> on a deferred node preserves the deferral.
+    /// </summary>
+    [TestMethod]
+    public void DeepClone_WhenDeferred_ShouldRemainDeferred()
+    {
+        int opens = 0;
+        CompoundStreamNode node = CompoundStreamNode.Create("Data", () =>
+        {
+            opens++;
+            return new MemoryStream(new byte[] { 7, 8 });
+        }, 2);
+
+        var clone = (CompoundStreamNode)node.DeepClone();
+
+        Assert.AreEqual(2, clone.Length);
+        Assert.AreEqual(0, opens);
+        CollectionAssert.AreEqual(new byte[] { 7, 8 }, clone.Content.ToArray());
+    }
+
+    /// <summary>
     /// Verifies that <see cref="CompoundStreamNode.DeepClone" /> copies the payload and metadata into an independent,
     /// detached node.
     /// </summary>

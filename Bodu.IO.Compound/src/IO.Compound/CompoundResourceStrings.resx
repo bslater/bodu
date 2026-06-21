@@ -115,4 +115,10 @@
   <data name="Op_Invalid_CompoundPropertySetCodePage" xml:space="preserve">
     <value>The property value of type '{0}' cannot be encoded into an OLE property set.</value>
   </data>
+  <data name="Op_Invalid_CompoundWriterStreamLength" xml:space="preserve">
+    <value>The stream source for '{0}' produced fewer bytes than its declared length of {1}.</value>
+  </data>
+  <data name="Op_Invalid_CompoundWriterTooLarge" xml:space="preserve">
+    <value>The compound file is too large to serialize.</value>
+  </data>
 </root>
