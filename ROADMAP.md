@@ -588,18 +588,11 @@ No project sets `IsAotCompatible` or `IsTrimmable` today. Target state:
 
 ### API-stability tiers
 
-Every published project should carry a single tier label in its
-README: **Stable**, **Preview**, or **Experimental**. Recommended
-starting labels:
-
-- *Stable*: Core, IO.Hashing, Text.Encoding, Text.Formats,
-  Text.Configuration, Extensions.Configuration.Text,
-  Security.Cryptography.
-- *Preview*: Globalization.Calendar (1.1.0 carries a breaking
-  parameterless-constructor change), Numerics (initial release),
-  Globalization.Calendar.Data.* (initial release),
-  Globalization.Calendar.DependencyInjection,
-  Globalization.Calendar.Builder.
+Every published project carries a single tier label in its README.
+All currently published packages are **Stable** — the public API
+surface is committed, with breaking changes reserved for a
+major-version bump. **Preview** and **Experimental** remain available
+as labels for any future package whose surface is still settling.
 
 ### Source generators
 
