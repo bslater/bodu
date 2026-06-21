@@ -17,6 +17,28 @@ namespace Bodu.IO.Compound;
 /// <see cref="CompoundStorage.TryOpenStream(string, out CompoundStreamEntry)" /> or
 /// <see cref="CompoundStorage.TryOpenStorage(string, out CompoundStorage)" /> instead.
 /// </remarks>
+/// <example>
+/// Catch the exception when a stream is expected to exist, or switch to the <c>Try</c> pattern when its absence is a
+/// normal outcome:
+/// <code language="csharp">
+///<![CDATA[
+/// try
+/// {
+///     CompoundStreamEntry entry = file.RootStorage.OpenStream("Workbook");
+/// }
+/// catch (CompoundStreamNotFoundException ex)
+/// {
+///     Console.WriteLine($"Missing stream: {ex.StreamName}");
+/// }
+///
+/// // Non-throwing alternative:
+/// if (file.RootStorage.TryOpenStream("Workbook", out CompoundStreamEntry? workbook))
+/// {
+///     // ...
+/// }
+///]]>
+/// </code>
+/// </example>
 public sealed class CompoundStreamNotFoundException
     : KeyNotFoundException
 {

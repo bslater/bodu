@@ -33,6 +33,25 @@ namespace Bodu.IO.Compound;
 /// <c>Commit</c>, and <c>Revert</c>) are reserved for a future read-write implementation.
 /// </para>
 /// </remarks>
+/// <example>
+/// The following example opens a compound file, walks its top-level entries, and reads one named stream. The instance
+/// is disposed by the <c>using</c> declaration, which also closes the source stream unless <c>leaveOpen</c> is set.
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.IO.Compound;
+///
+/// using CompoundFile file = CompoundFile.Open(File.OpenRead("book.xls"));
+/// foreach (CompoundEntryInfo info in file.RootStorage.EnumerateEntries())
+///     Console.WriteLine($"{info.Type}: {info.Name}");
+///
+/// if (file.RootStorage.TryOpenStream("Workbook", out CompoundStreamEntry? workbook))
+/// {
+///     using CompoundStream stream = workbook.Open();
+///     // ... read the BIFF records ...
+/// }
+///]]>
+/// </code>
+/// </example>
 public sealed class CompoundFile
     : IDisposable
 {
@@ -142,6 +161,21 @@ public sealed class CompoundFile
     /// <exception cref="CompoundFileFormatException">
     /// Thrown when the stream content is not a well-formed compound file.
     /// </exception>
+    /// <example>
+    /// The default opens the file fully buffered, so the source can be closed immediately after opening:
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// using CompoundFile file = CompoundFile.Open(File.OpenRead("book.xls"));
+    ///]]>
+    /// </code>
+    /// To bound memory for a large file, open it in streaming mode and keep the source open for the file's lifetime:
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// using FileStream source = File.OpenRead("large.msg");
+    /// using CompoundFile file = CompoundFile.Open(source, buffered: false);
+    ///]]>
+    /// </code>
+    /// </example>
     public static CompoundFile Open(Stream stream, CompoundFileMode mode = CompoundFileMode.Read, bool leaveOpen = false, bool buffered = true)
     {
         ThrowHelper.ThrowIfNull(stream);
@@ -172,6 +206,19 @@ public sealed class CompoundFile
     /// Thrown when <paramref name="stream" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="stream" /> is not seekable.</exception>
+    /// <example>
+    /// Probe a file cheaply before committing to a full open:
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// using FileStream source = File.OpenRead(path);
+    /// if (CompoundFile.IsCompoundFile(source))
+    /// {
+    ///     using CompoundFile file = CompoundFile.Open(source, leaveOpen: true);
+    ///     // ...
+    /// }
+    ///]]>
+    /// </code>
+    /// </example>
     public static bool IsCompoundFile(Stream stream)
     {
         ThrowHelper.ThrowIfNull(stream);

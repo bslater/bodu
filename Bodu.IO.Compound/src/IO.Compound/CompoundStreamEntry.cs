@@ -21,6 +21,22 @@ namespace Bodu.IO.Compound;
 /// A writable cursor (<c>OpenWrite</c>) is reserved for a future read-write implementation and is not yet declared.
 /// </para>
 /// </remarks>
+/// <example>
+/// The following example enumerates the streams under the root storage and reports the size of each, then reads one
+/// stream in full.
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.IO.Compound;
+///
+/// using CompoundFile file = CompoundFile.Open(File.OpenRead("message.msg"));
+/// foreach (CompoundStreamEntry entry in file.RootStorage.EnumerateStreams())
+///     Console.WriteLine($"{entry.Name}: {entry.Length} bytes");
+///
+/// CompoundStreamEntry body = file.RootStorage.OpenStream("__substg1.0_1000001F");
+/// ReadOnlyMemory<byte> bytes = body.ReadAllBytes();
+///]]>
+/// </code>
+/// </example>
 public sealed class CompoundStreamEntry
 {
     /// <summary>The owning compound file used to materialize the payload.</summary>
@@ -62,8 +78,22 @@ public sealed class CompoundStreamEntry
     /// Opens a read-only, seekable view over the stream payload.
     /// </summary>
     /// <returns>A <see cref="CompoundStream" /> positioned at the start of the payload.</returns>
+    /// <remarks>
+    /// Prefer this over <see cref="ReadAllBytes" /> when the payload is consumed incrementally or is large enough that
+    /// holding it whole in memory is undesirable; the returned cursor reads sectors on demand when its owning file was
+    /// opened in streaming mode. Dispose the returned <see cref="CompoundStream" /> when finished.
+    /// </remarks>
     /// <exception cref="ObjectDisposedException">Thrown when the owning file has been disposed.</exception>
     /// <exception cref="CompoundFileFormatException">Thrown when the stream's sector chain is malformed.</exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// using CompoundStream stream = entry.Open();
+    /// using var reader = new StreamReader(stream, Encoding.Unicode);
+    /// string text = reader.ReadToEnd();
+    ///]]>
+    /// </code>
+    /// </example>
     public CompoundStream Open() =>
         _file.OpenStream(_entry);
 
@@ -71,8 +101,21 @@ public sealed class CompoundStreamEntry
     /// Materializes the entire stream payload into a contiguous read-only buffer.
     /// </summary>
     /// <returns>A <see cref="ReadOnlyMemory{T}" /> spanning the materialized bytes.</returns>
+    /// <remarks>
+    /// This is a convenience over <see cref="Open" /> for small streams that are processed in one pass; it always reads
+    /// the whole payload into memory regardless of how the owning file was opened. Prefer <see cref="Open" /> for large
+    /// payloads.
+    /// </remarks>
     /// <exception cref="ObjectDisposedException">Thrown when the owning file has been disposed.</exception>
     /// <exception cref="CompoundFileFormatException">Thrown when the stream's sector chain is malformed.</exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// ReadOnlyMemory<byte> payload = entry.ReadAllBytes();
+    /// int magic = BinaryPrimitives.ReadInt32LittleEndian(payload.Span);
+    ///]]>
+    /// </code>
+    /// </example>
     public ReadOnlyMemory<byte> ReadAllBytes() =>
         _file.Materialize(_entry);
 }

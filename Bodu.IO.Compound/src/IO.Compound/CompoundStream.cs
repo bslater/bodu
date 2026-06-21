@@ -10,12 +10,47 @@ namespace Bodu.IO.Compound;
 /// Provides read-only, seekable access to the bytes of a single stream within a compound file.
 /// </summary>
 /// <remarks>
+/// <para>
+/// <see cref="CompoundStream" /> is a standard <see cref="Stream" /> cursor obtained from
+/// <see cref="CompoundStreamEntry.Open" />, so it composes with the BCL surfaces that consume a <see cref="Stream" />
+/// — <see cref="System.IO.StreamReader" />, <see cref="System.IO.BinaryReader" />, <see cref="Stream.CopyTo(Stream)" />,
+/// and the deserializers built on top of them.
+/// </para>
+/// <para>
 /// A stream opened from a buffered compound file is backed by an in-memory payload assembled at open time. A stream
 /// opened from a streaming compound file (see
 /// <see cref="CompoundFile.Open(System.IO.Stream, CompoundFileMode, bool, bool)" /> with <c>buffered: false</c>) reads
-/// its sectors on demand from the underlying source, so it never materializes the whole payload. The instance is
-/// read-only: <see cref="Write(byte[], int, int)" /> and <see cref="SetLength(long)" /> always throw.
+/// its sectors on demand from the underlying source, so it never materializes the whole payload. In the streaming case
+/// the owning <see cref="CompoundFile" /> and its source must remain open for the lifetime of the cursor.
+/// </para>
+/// <para>
+/// The instance is read-only: <see cref="CanWrite" /> is always <see langword="false" /> and both
+/// <see cref="Write(byte[], int, int)" /> and <see cref="SetLength(long)" /> always throw
+/// <see cref="NotSupportedException" />. Because reads against a streaming source advance a shared position, a single
+/// cursor is not safe for concurrent use; open one cursor per reader.
+/// </para>
 /// </remarks>
+/// <example>
+/// The following example opens a compound file, navigates to a named stream, and reads its leading bytes through the
+/// cursor.
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.IO.Compound;
+///
+/// using CompoundFile file = CompoundFile.Open(File.OpenRead("book.xls"));
+/// CompoundStreamEntry entry = file.RootStorage.OpenStream("Workbook");
+///
+/// using CompoundStream stream = entry.Open();
+/// byte[] signature = new byte[8];
+/// stream.ReadExactly(signature);
+///
+/// // Seek back to the start and hand the cursor to any Stream consumer.
+/// stream.Seek(0, SeekOrigin.Begin);
+/// using var reader = new BinaryReader(stream);
+/// ushort recordType = reader.ReadUInt16();
+///]]>
+/// </code>
+/// </example>
 public sealed class CompoundStream
     : Stream
 {
@@ -101,9 +136,19 @@ public sealed class CompoundStream
     /// </summary>
     /// <returns>A <see cref="ReadOnlyMemory{T}" /> spanning the payload bytes.</returns>
     /// <remarks>
-    /// For a streaming stream this reads the whole payload into memory; prefer chunked
-    /// <see cref="Read(byte[], int, int)" /> for large streams.
+    /// For a buffered stream this returns a view over the already-materialized payload without copying; for a streaming
+    /// stream it reads the whole payload into memory. The returned view does not advance or depend on
+    /// <see cref="Position" />. Prefer chunked <see cref="Read(byte[], int, int)" /> for large streaming payloads.
     /// </remarks>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// using CompoundStream stream = entry.Open();
+    /// ReadOnlyMemory<byte> payload = stream.AsMemory();
+    /// ushort recordType = BinaryPrimitives.ReadUInt16LittleEndian(payload.Span);
+    ///]]>
+    /// </code>
+    /// </example>
     public ReadOnlyMemory<byte> AsMemory() =>
         _buffer ?? (_length == 0 ? ReadOnlyMemory<byte>.Empty : _sectors!.ReadChain(_chain![0], _length));
 
