@@ -303,7 +303,9 @@ internal static class PropertySetReader
     /// <param name="data">The property-set bytes.</param>
     /// <param name="offset">The byte offset of the variant's inner type word.</param>
     /// <param name="encoding">The encoding used to decode ANSI strings.</param>
-    /// <returns>The decoded inner value and the number of bytes consumed, including the four-byte type prefix.</returns>
+    /// <returns>
+    /// The decoded inner value and the number of bytes consumed, including the four-byte type prefix.
+    /// </returns>
     private static (object? Value, int Consumed) ReadVariant(ReadOnlySpan<byte> data, int offset, Encoding encoding)
     {
         Ensure(data, offset, 4);

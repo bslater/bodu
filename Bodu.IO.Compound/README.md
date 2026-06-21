@@ -38,18 +38,44 @@ if (file.TryGetSummaryInformation(out var summary))
   resolution, with cycle and out-of-range detection.
 - A navigable storage hierarchy (`CompoundStorage` / `CompoundStreamEntry`) with child
   lookups scoped per storage — the managed counterpart of COM `IStorage` / `IStream`.
+- **Bounded-memory streaming reads**: `CompoundFile.Open(stream, buffered: false)` reads sectors on
+  demand from a seekable stream, and `CompoundStreamEntry.Open()` returns a lazy `CompoundStream` for
+  large streams, so a multi-gigabyte file can be read without buffering it whole. `CompoundStorageNode`
+  `.FromFile(file, lazy: true)` reads into deferred nodes for a fully streamed read → re-save copy.
 - Per-entry metadata via `CompoundEntryInfo` (the `STATSTG` analogue): class id, state
   bits, creation / modified time stamps, and red-black node color.
-- OLE property-set parsing (`Bodu.IO.Compound.PropertySets`): `OlePropertySet` /
-  `OlePropertyValue` (PROPVARIANT) plus the strongly-typed `SummaryInformation` and
-  `DocumentSummaryInformation` views, including user-defined custom properties.
+- OLE property-set parsing **and writing** (`Bodu.IO.Compound.PropertySets`): `OlePropertySet` /
+  `OlePropertyValue` (PROPVARIANT) plus the strongly-typed `SummaryInformation` /
+  `DocumentSummaryInformation` views and `…Builder` authors, including user-defined custom properties.
+- A mutable, JsonNode-style object model (`Bodu.IO.Compound.Nodes`) for **authoring**:
+  build or `Load` a tree of `CompoundStorageNode` / `CompoundStreamNode`, mutate it, then
+  `Save` / `ToArray` to a conforming container (v3 or v4). `CompoundWriter` offers a
+  low-level imperative alternative. Output is verified byte-for-byte and cross-checked
+  against the independent `olefile` and OpenMcdf parsers.
+- **Bounded-memory streaming writes**: `Save(Stream)` emits one sector at a time and
+  large payloads can be sourced on demand via `CompoundStreamNode.CreateFromFile(name, path)`
+  or `Create(name, Func<Stream>, length)` (and the matching `AddStreamFromFile` /
+  `WriteStreamFromFile`), so multi-gigabyte containers serialize without being buffered whole
+  in memory.
 - Stable, message-independent failure classification through
-  `CompoundFileFormatException.Category` (`CompoundFileError`).
+  `CompoundFileFormatException.Category` (`CompoundFileError`) and a
+  `CompoundFileSerializationException` for authoring errors.
 
-## Out of scope (for now)
+```csharp
+using Bodu.IO.Compound.Nodes;
+using Bodu.IO.Compound.PropertySets;
 
-Writing and mutation are designed for (see `CompoundFileMode`) but not yet implemented;
-`CompoundFile.Open` currently accepts only `CompoundFileMode.Read`. Encryption and
-damaged-file recovery are out of scope.
+var root = CompoundStorageNode.CreateRoot();
+root.AddStorage("Storage 1").AddStream("Stream 1", new byte[] { 1, 2, 3 });
+root.AddStream(SummaryInformation.StreamName,
+    new SummaryInformationBuilder { Title = "Report", Author = "Ada" }.ToArray());
+root.Save(stream);   // writes an OLE2 / CFB file
+```
+
+## Out of scope
+
+In-place transacted editing (the COM `IStorage`/`Commit` model), encryption, and
+damaged-file recovery are out of scope; authoring is done by building and saving a
+detached object model rather than mutating a file in place.
 
 Part of the [Bodu](https://github.com/bodu/bodu) utility library.

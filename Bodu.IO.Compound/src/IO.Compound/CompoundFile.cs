@@ -23,8 +23,10 @@ namespace Bodu.IO.Compound;
 /// <see cref="CompoundStreamEntry" /> leaves.
 /// </para>
 /// <para>
-/// The entire source is buffered into memory when the file is opened, so access after opening never touches the
-/// original source. Instances are read-only and safe to share across threads once opened.
+/// By default the entire source is buffered into memory when the file is opened, so access after opening never touches
+/// the original source, and instances are read-only and safe to share across threads. Opening with
+/// <c>buffered: false</c> instead reads sectors on demand from a seekable stream — bounding memory for large files — in
+/// which case the stream must stay open for the instance's lifetime and reads are serialized rather than parallel.
 /// </para>
 /// <para>
 /// Only <see cref="CompoundFileMode.Read" /> is supported by the current release. Creation and mutation (<c>Create</c>,
@@ -37,6 +39,9 @@ public sealed class CompoundFile
     /// <summary>The eight-byte length of the compound-file signature.</summary>
     private const int SignatureLength = 8;
 
+    /// <summary>The number of header bytes required to parse the header.</summary>
+    private const int HeaderLength = 512;
+
     /// <summary>The source stream retained only so it can be disposed according to the <c>leaveOpen</c> contract.</summary>
     private readonly Stream _source;
 
@@ -46,32 +51,45 @@ public sealed class CompoundFile
     /// <summary>The parsed header.</summary>
     private readonly CompoundFileHeader _header;
 
+    /// <summary>The random-access byte source backing the reader.</summary>
+    private readonly CompoundDataSource _dataSource;
+
     /// <summary>The sector reader used to materialize stream payloads.</summary>
     private readonly CompoundSectorReader _sectors;
 
     /// <summary>The parsed directory and storage hierarchy.</summary>
     private readonly CompoundDirectory _directory;
 
+    /// <summary>Whether stream payloads are read on demand rather than from a fully buffered file.</summary>
+    private readonly bool _streaming;
+
     /// <summary>Whether this instance has been disposed.</summary>
     private bool _disposed;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CompoundFile" /> class from buffered content.
+    /// Initializes a new instance of the <see cref="CompoundFile" /> class over a byte source.
     /// </summary>
     /// <param name="source">The source stream, retained for disposal.</param>
     /// <param name="leaveOpen">Whether to leave <paramref name="source" /> open on dispose.</param>
     /// <param name="mode">The requested access mode.</param>
-    /// <param name="data">The full buffered compound-file content.</param>
+    /// <param name="dataSource">The random-access byte source.</param>
+    /// <param name="streaming">Whether large stream payloads are read on demand.</param>
     /// <exception cref="CompoundFileFormatException">
     /// Thrown when the content is not a well-formed compound file.
     /// </exception>
-    private CompoundFile(Stream source, bool leaveOpen, CompoundFileMode mode, byte[] data)
+    private CompoundFile(Stream source, bool leaveOpen, CompoundFileMode mode, CompoundDataSource dataSource, bool streaming)
     {
         _source = source;
         _leaveOpen = leaveOpen;
         Mode = mode;
-        _header = CompoundFileHeader.Parse(data);
-        _sectors = new CompoundSectorReader(data, _header);
+        _dataSource = dataSource;
+        _streaming = streaming;
+
+        int headLength = (int)Math.Min(HeaderLength, dataSource.Length);
+        Span<byte> head = stackalloc byte[HeaderLength];
+        dataSource.Read(0, head.Slice(0, headLength));
+        _header = CompoundFileHeader.Parse(head.Slice(0, headLength));
+        _sectors = new CompoundSectorReader(dataSource, _header);
 
         byte[] directoryBytes = _sectors.ReadChainToEnd(_header.FirstDirectorySector);
         _directory = new CompoundDirectory(directoryBytes, _header);
@@ -86,7 +104,7 @@ public sealed class CompoundFile
     /// Gets the mode the compound file was opened with.
     /// </summary>
     /// <returns>
-    /// The <see cref="CompoundFileMode" /> supplied to <see cref="Open(Stream, CompoundFileMode, bool)" />.
+    /// The <see cref="CompoundFileMode" /> supplied to <see cref="Open(Stream, CompoundFileMode, bool, bool)" />.
     /// </returns>
     public CompoundFileMode Mode { get; }
 
@@ -105,9 +123,18 @@ public sealed class CompoundFile
     /// <see langword="true" /> to leave <paramref name="stream" /> open when the returned instance is disposed;
     /// otherwise <see langword="false" />.
     /// </param>
+    /// <param name="buffered">
+    /// <see langword="true" /> (the default) to read the whole file into memory at open time; <see langword="false" />
+    /// to read sectors on demand from the seekable <paramref name="stream" />, bounding memory for large files. When
+    /// <see langword="false" />, the stream must remain open and unmodified for the lifetime of the returned instance.
+    /// </param>
     /// <returns>An open <see cref="CompoundFile" />.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="stream" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="buffered" /> is <see langword="false" /> and <paramref name="stream" /> is not
+    /// seekable.
     /// </exception>
     /// <exception cref="NotSupportedException">
     /// Thrown when <paramref name="mode" /> is not <see cref="CompoundFileMode.Read" />.
@@ -115,7 +142,7 @@ public sealed class CompoundFile
     /// <exception cref="CompoundFileFormatException">
     /// Thrown when the stream content is not a well-formed compound file.
     /// </exception>
-    public static CompoundFile Open(Stream stream, CompoundFileMode mode = CompoundFileMode.Read, bool leaveOpen = false)
+    public static CompoundFile Open(Stream stream, CompoundFileMode mode = CompoundFileMode.Read, bool leaveOpen = false, bool buffered = true)
     {
         ThrowHelper.ThrowIfNull(stream);
         if (mode != CompoundFileMode.Read)
@@ -124,7 +151,13 @@ public sealed class CompoundFile
                 string.Format(CultureInfo.CurrentCulture, CompoundResourceStrings.Op_NotSupported_CompoundFileWriteMode, mode));
         }
 
-        return new CompoundFile(stream, leaveOpen, mode, ReadAllBytes(stream));
+        if (buffered)
+            return new CompoundFile(stream, leaveOpen, mode, new CompoundArrayDataSource(ReadAllBytes(stream)), streaming: false);
+
+        if (!stream.CanSeek)
+            throw new ArgumentException(CompoundResourceStrings.Arg_Invalid_CompoundStreamNotSeekable, nameof(stream));
+
+        return new CompoundFile(stream, leaveOpen, mode, new CompoundStreamDataSource(stream), streaming: true);
     }
 
     /// <summary>
@@ -226,8 +259,28 @@ public sealed class CompoundFile
             return;
 
         _disposed = true;
+        _dataSource.Dispose();
         if (!_leaveOpen)
             _source.Dispose();
+    }
+
+    /// <summary>
+    /// Opens a read cursor over a stream entry, returning a lazily-read view for large streams when the file is opened
+    /// in streaming mode and a fully-materialized view otherwise.
+    /// </summary>
+    /// <param name="entry">The stream entry to open.</param>
+    /// <returns>A <see cref="CompoundStream" /> positioned at the start of the payload.</returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the file has been disposed.</exception>
+    /// <exception cref="CompoundFileFormatException">Thrown when the stream's sector chain is malformed.</exception>
+    internal CompoundStream OpenStream(CompoundDirectoryEntry entry)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+
+        if (!_streaming || entry.Size < _header.MiniStreamCutoff)
+            return new CompoundStream(entry.Name, Materialize(entry));
+
+        uint[] chain = _sectors.GetSectorChain(entry.StartSector);
+        return new CompoundStream(entry.Name, _sectors, chain, entry.Size, _header.SectorSize);
     }
 
     /// <summary>

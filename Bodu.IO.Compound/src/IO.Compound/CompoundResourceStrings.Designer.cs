@@ -140,5 +140,113 @@ namespace Bodu.IO.Compound {
                 return ResourceManager.GetString("Arg_Invalid_CompoundStreamNotSeekable", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The compound node is not a storage..
+        /// </summary>
+        internal static string Op_Invalid_CompoundNodeNotStorage {
+            get {
+                return ResourceManager.GetString("Op_Invalid_CompoundNodeNotStorage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The compound node is not a stream..
+        /// </summary>
+        internal static string Op_Invalid_CompoundNodeNotStream {
+            get {
+                return ResourceManager.GetString("Op_Invalid_CompoundNodeNotStream", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The compound node already belongs to another storage....
+        /// </summary>
+        internal static string Op_Invalid_CompoundNodeAlreadyHasParent {
+            get {
+                return ResourceManager.GetString("Op_Invalid_CompoundNodeAlreadyHasParent", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The entry name must not be empty or white space..
+        /// </summary>
+        internal static string Arg_Invalid_CompoundNodeNameEmpty {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_CompoundNodeNameEmpty", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The entry name '{0}' exceeds the maximum length of 31 characters..
+        /// </summary>
+        internal static string Arg_Invalid_CompoundNodeNameTooLong {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_CompoundNodeNameTooLong", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The entry name '{0}' contains a character that is not permitted....
+        /// </summary>
+        internal static string Arg_Invalid_CompoundNodeNameInvalidCharacter {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_CompoundNodeNameInvalidCharacter", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The storage already contains a child named '{0}'..
+        /// </summary>
+        internal static string Op_Invalid_CompoundWriterDuplicateName {
+            get {
+                return ResourceManager.GetString("Op_Invalid_CompoundWriterDuplicateName", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The storage nesting depth exceeds the configured maximum of {0}..
+        /// </summary>
+        internal static string Op_Invalid_CompoundWriterMaxDepthExceeded {
+            get {
+                return ResourceManager.GetString("Op_Invalid_CompoundWriterMaxDepthExceeded", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Only a root storage (one with no parent) can be serialized..
+        /// </summary>
+        internal static string Op_Invalid_CompoundWriterSaveNotRoot {
+            get {
+                return ResourceManager.GetString("Op_Invalid_CompoundWriterSaveNotRoot", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The property value of type '{0}' cannot be encoded into an OLE property set..
+        /// </summary>
+        internal static string Op_Invalid_CompoundPropertySetCodePage {
+            get {
+                return ResourceManager.GetString("Op_Invalid_CompoundPropertySetCodePage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The stream source for '{0}' produced fewer bytes than its declared length of {1}..
+        /// </summary>
+        internal static string Op_Invalid_CompoundWriterStreamLength {
+            get {
+                return ResourceManager.GetString("Op_Invalid_CompoundWriterStreamLength", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The compound file is too large to serialize..
+        /// </summary>
+        internal static string Op_Invalid_CompoundWriterTooLarge {
+            get {
+                return ResourceManager.GetString("Op_Invalid_CompoundWriterTooLarge", resourceCulture);
+            }
+        }
     }
 }
