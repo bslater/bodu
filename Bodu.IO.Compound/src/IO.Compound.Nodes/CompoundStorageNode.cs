@@ -25,7 +25,7 @@ namespace Bodu.IO.Compound.Nodes;
 /// format). The serialization order of children is determined by the writer, not by insertion order.
 /// </para>
 /// </remarks>
-public sealed class CompoundStorageNode
+public sealed partial class CompoundStorageNode
     : CompoundNode, IDictionary<string, CompoundNode>
 {
     /// <summary>The conventional name of the root storage entry.</summary>
