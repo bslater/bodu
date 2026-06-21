@@ -28,21 +28,27 @@ public sealed partial class CompoundStorageNode
     }
 
     /// <summary>
-    /// Builds a detached, mutable object model from an open compound file.
+    /// Builds a mutable object model from an open compound file.
     /// </summary>
     /// <param name="file">The compound file to copy.</param>
+    /// <param name="lazy">
+    /// <see langword="false" /> (the default) to copy every stream payload into memory, producing a fully detached
+    /// model; <see langword="true" /> to build deferred stream nodes that read their payloads on demand from
+    /// <paramref name="file" />. When <see langword="true" /> the file must remain open for as long as the returned
+    /// nodes (or any clones) are read or serialized.
+    /// </param>
     /// <returns>A root <see cref="CompoundStorageNode" /> mirroring the file's contents.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="file" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="CompoundFileFormatException">Thrown when a stream's sector chain is malformed.</exception>
-    public static CompoundStorageNode FromFile(CompoundFile file)
+    public static CompoundStorageNode FromFile(CompoundFile file, bool lazy = false)
     {
         ThrowHelper.ThrowIfNull(file);
 
         CompoundStorageNode root = CreateRoot();
         CopyMetadata(root, file.RootStorage.Stat);
-        Populate(root, file.RootStorage);
+        Populate(root, file.RootStorage, lazy);
         return root;
     }
 
@@ -51,19 +57,23 @@ public sealed partial class CompoundStorageNode
     /// </summary>
     /// <param name="target">The mutable storage receiving the children.</param>
     /// <param name="source">The read-only storage to copy.</param>
-    private static void Populate(CompoundStorageNode target, CompoundStorage source)
+    /// <param name="lazy">Whether stream nodes defer reading their payloads from the source file.</param>
+    private static void Populate(CompoundStorageNode target, CompoundStorage source, bool lazy)
     {
         foreach (CompoundStreamEntry entry in source.EnumerateStreams())
         {
-            CompoundStreamNode node = target.AddStream(entry.Name, entry.ReadAllBytes());
-            CopyMetadata(node, entry.Stat);
+            CompoundStreamEntry stream = entry;
+            CompoundStreamNode node = lazy
+                ? target.AddStream(stream.Name, () => stream.Open(), stream.Length)
+                : target.AddStream(stream.Name, stream.ReadAllBytes());
+            CopyMetadata(node, stream.Stat);
         }
 
         foreach (CompoundStorage child in source.EnumerateStorages())
         {
             CompoundStorageNode node = target.AddStorage(child.Name);
             CopyMetadata(node, child.Stat);
-            Populate(node, child);
+            Populate(node, child, lazy);
         }
     }
 

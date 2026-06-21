@@ -19,8 +19,8 @@ namespace Bodu.IO.Compound;
 /// </remarks>
 internal sealed class CompoundSectorReader
 {
-    /// <summary>The full compound-file byte content.</summary>
-    private readonly byte[] _data;
+    /// <summary>The random-access source of compound-file bytes.</summary>
+    private readonly CompoundDataSource _source;
 
     /// <summary>The parsed header providing sector sizes and entry points.</summary>
     private readonly CompoundFileHeader _header;
@@ -37,17 +37,23 @@ internal sealed class CompoundSectorReader
     /// <summary>
     /// Initializes a new instance of the <see cref="CompoundSectorReader" /> class and builds the regular FAT.
     /// </summary>
-    /// <param name="data">The full compound-file byte content.</param>
+    /// <param name="source">The random-access source of compound-file bytes.</param>
     /// <param name="header">The parsed compound-file header.</param>
     /// <exception cref="CompoundFileFormatException">
     /// Thrown when the FAT cannot be assembled from the declared layout.
     /// </exception>
-    internal CompoundSectorReader(byte[] data, CompoundFileHeader header)
+    internal CompoundSectorReader(CompoundDataSource source, CompoundFileHeader header)
     {
-        _data = data;
+        _source = source;
         _header = header;
         _fat = BuildFat();
     }
+
+    /// <summary>
+    /// Gets the regular sector size, in bytes.
+    /// </summary>
+    /// <returns>The sector size.</returns>
+    internal int SectorSize => _header.SectorSize;
 
     /// <summary>
     /// Reads the contiguous payload of a regular-sector chain.
@@ -91,6 +97,7 @@ internal sealed class CompoundSectorReader
             return [];
 
         using MemoryStream buffer = new();
+        Span<byte> scratch = stackalloc byte[_header.SectorSize];
         uint sector = startSector;
         int guard = 0;
 
@@ -105,11 +112,65 @@ internal sealed class CompoundSectorReader
                 CompoundResourceStrings.Format_Invalid_CompoundSectorChain,
                 CompoundFileError.FatCycle);
 
-            buffer.Write(ReadSector(sector));
+            buffer.Write(ReadSector(sector, scratch));
             sector = _fat[sector];
         }
 
         return buffer.ToArray();
+    }
+
+    /// <summary>
+    /// Walks the regular FAT to collect the ordered sector identifiers of a chain.
+    /// </summary>
+    /// <param name="startSector">The first sector of the chain.</param>
+    /// <returns>The ordered sector identifiers; empty when the chain is empty.</returns>
+    /// <exception cref="CompoundFileFormatException">
+    /// Thrown when the chain is circular or references an out-of-range sector.
+    /// </exception>
+    internal uint[] GetSectorChain(uint startSector)
+    {
+        if (startSector == CompoundFileHeader.EndOfChain)
+            return [];
+
+        List<uint> chain = new();
+        uint sector = startSector;
+
+        while (sector != CompoundFileHeader.EndOfChain)
+        {
+            CompoundThrowHelper.ThrowFormatIf(
+                sector >= (uint)_fat.Length,
+                CompoundResourceStrings.Format_Invalid_CompoundSectorChain,
+                CompoundFileError.SectorOutOfRange);
+            CompoundThrowHelper.ThrowFormatIf(
+                chain.Count > _fat.Length,
+                CompoundResourceStrings.Format_Invalid_CompoundSectorChain,
+                CompoundFileError.FatCycle);
+
+            chain.Add(sector);
+            sector = _fat[sector];
+        }
+
+        return chain.ToArray();
+    }
+
+    /// <summary>
+    /// Reads a sub-range of a single regular sector into the destination.
+    /// </summary>
+    /// <param name="sector">The sector identifier.</param>
+    /// <param name="within">The byte offset within the sector at which to start.</param>
+    /// <param name="destination">
+    /// The buffer that receives the bytes; its length must not exceed the remaining sector bytes.
+    /// </param>
+    /// <exception cref="CompoundFileFormatException">Thrown when the range lies beyond the end of the data.</exception>
+    internal void ReadWithinSector(uint sector, int within, Span<byte> destination)
+    {
+        long offset = ((long)(sector + 1) * _header.SectorSize) + within;
+        CompoundThrowHelper.ThrowFormatIf(
+            offset + destination.Length > _source.Length,
+            CompoundResourceStrings.Format_Invalid_CompoundSectorChain,
+            CompoundFileError.SectorOutOfRange);
+
+        _source.Read(offset, destination);
     }
 
     /// <summary>
@@ -204,19 +265,22 @@ internal sealed class CompoundSectorReader
     /// Returns a span over the bytes of a single regular sector.
     /// </summary>
     /// <param name="sector">The sector identifier.</param>
+    /// <param name="scratch">
+    /// A buffer of at least one sector used by a streaming source; ignored by an in-memory source.
+    /// </param>
     /// <returns>A span over the sector's bytes.</returns>
     /// <exception cref="CompoundFileFormatException">
     /// Thrown when the sector lies beyond the end of the data.
     /// </exception>
-    private ReadOnlySpan<byte> ReadSector(uint sector)
+    private ReadOnlySpan<byte> ReadSector(uint sector, Span<byte> scratch)
     {
         long offset = (long)(sector + 1) * _header.SectorSize;
         CompoundThrowHelper.ThrowFormatIf(
-            offset + _header.SectorSize > _data.Length,
+            offset + _header.SectorSize > _source.Length,
             CompoundResourceStrings.Format_Invalid_CompoundSectorChain,
             CompoundFileError.SectorOutOfRange);
 
-        return _data.AsSpan((int)offset, _header.SectorSize);
+        return _source.GetSpan(offset, _header.SectorSize, scratch);
     }
 
     /// <summary>
@@ -237,12 +301,13 @@ internal sealed class CompoundSectorReader
         uint difatSector = _header.FirstDifatSector;
         int perSector = _header.EntriesPerSector;
         int guard = 0;
+        Span<byte> scratch = stackalloc byte[_header.SectorSize];
 
         while (difatSector != CompoundFileHeader.EndOfChain && difatSector != CompoundFileHeader.FreeSector)
         {
-            CompoundThrowHelper.ThrowFormatIf(guard++ > (_data.Length / _header.SectorSize) + 1, CompoundResourceStrings.Format_Invalid_CompoundDirectory, CompoundFileError.InvalidDifat);
+            CompoundThrowHelper.ThrowFormatIf(guard++ > (_source.Length / _header.SectorSize) + 1, CompoundResourceStrings.Format_Invalid_CompoundDirectory, CompoundFileError.InvalidDifat);
 
-            ReadOnlySpan<byte> sector = ReadSector(difatSector);
+            ReadOnlySpan<byte> sector = ReadSector(difatSector, scratch);
             for (int i = 0; i < perSector - 1; i++)
             {
                 uint id = BinaryPrimitives.ReadUInt32LittleEndian(sector.Slice(i * sizeof(uint)));
@@ -257,7 +322,7 @@ internal sealed class CompoundSectorReader
         int index = 0;
         foreach (uint fatSector in fatSectors)
         {
-            ReadOnlySpan<byte> sector = ReadSector(fatSector);
+            ReadOnlySpan<byte> sector = ReadSector(fatSector, scratch);
             for (int i = 0; i < perSector; i++)
                 fat[index++] = BinaryPrimitives.ReadUInt32LittleEndian(sector.Slice(i * sizeof(uint)));
         }

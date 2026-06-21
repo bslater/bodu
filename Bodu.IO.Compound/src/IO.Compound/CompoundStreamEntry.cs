@@ -65,7 +65,7 @@ public sealed class CompoundStreamEntry
     /// <exception cref="ObjectDisposedException">Thrown when the owning file has been disposed.</exception>
     /// <exception cref="CompoundFileFormatException">Thrown when the stream's sector chain is malformed.</exception>
     public CompoundStream Open() =>
-        new(_entry.Name, _file.Materialize(_entry));
+        _file.OpenStream(_entry);
 
     /// <summary>
     /// Materializes the entire stream payload into a contiguous read-only buffer.

@@ -38,6 +38,10 @@ if (file.TryGetSummaryInformation(out var summary))
   resolution, with cycle and out-of-range detection.
 - A navigable storage hierarchy (`CompoundStorage` / `CompoundStreamEntry`) with child
   lookups scoped per storage — the managed counterpart of COM `IStorage` / `IStream`.
+- **Bounded-memory streaming reads**: `CompoundFile.Open(stream, buffered: false)` reads sectors on
+  demand from a seekable stream, and `CompoundStreamEntry.Open()` returns a lazy `CompoundStream` for
+  large streams, so a multi-gigabyte file can be read without buffering it whole. `CompoundStorageNode`
+  `.FromFile(file, lazy: true)` reads into deferred nodes for a fully streamed read → re-save copy.
 - Per-entry metadata via `CompoundEntryInfo` (the `STATSTG` analogue): class id, state
   bits, creation / modified time stamps, and red-black node color.
 - OLE property-set parsing **and writing** (`Bodu.IO.Compound.PropertySets`): `OlePropertySet` /

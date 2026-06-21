@@ -14,8 +14,8 @@ namespace Bodu.IO.Compound;
 /// <para>
 /// Only <see cref="Read" /> is supported by the current release. The remaining members are reserved for a future
 /// read-write implementation and are rejected by
-/// <see cref="CompoundFile.Open(System.IO.Stream, CompoundFileMode, bool)" /> until that capability is delivered. They
-/// are declared now so the access model is stable across releases.
+/// <see cref="CompoundFile.Open(System.IO.Stream, CompoundFileMode, bool, bool)" /> until that capability is delivered.
+/// They are declared now so the access model is stable across releases.
 /// </para>
 /// </remarks>
 public enum CompoundFileMode
