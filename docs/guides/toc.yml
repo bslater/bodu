@@ -338,3 +338,16 @@
           href: financial/exchange-rate-caching.md
         - name: Dependency injection
           href: financial/dependency-injection.md
+- name: Binary Formats & I/O
+  href: topics/binary-formats.md
+  items:
+    - name: Bodu.IO.Compound
+      items:
+        - name: Overview
+          href: io-compound/index.md
+        - name: Reading compound files
+          href: io-compound/reading-compound-files.md
+        - name: Buffered vs streaming access
+          href: io-compound/streaming-and-buffering.md
+        - name: Reading property sets
+          href: io-compound/property-sets.md

@@ -45,7 +45,7 @@ namespace Bodu.IO.Compound;
 ///
 /// using CompoundFile file = CompoundFile.Open(File.OpenRead("book.xls"));
 /// foreach (CompoundEntryInfo info in file.RootStorage.EnumerateEntries())
-///     Console.WriteLine($"{info.Type}: {info.Name}");
+///     Console.WriteLine($"{info.EntryType}: {info.Name} ({info.Length} bytes)");
 ///
 /// if (file.RootStorage.TryOpenStream("Workbook", out CompoundStreamEntry? workbook))
 /// {
