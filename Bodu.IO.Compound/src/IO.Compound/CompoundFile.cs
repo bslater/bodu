@@ -13,8 +13,8 @@ using Bodu.IO.Compound.PropertySets;
 namespace Bodu.IO.Compound;
 
 /// <summary>
-/// Reads an OLE2 / Compound File Binary (CFB) container, exposing its storage hierarchy, the metadata of every entry,
-/// and the byte payload of each named stream.
+/// Represents an OLE2 / Compound File Binary (CFB) container opened over a path or stream, exposing its storage
+/// hierarchy, the metadata of every entry, and the byte payload of each named stream for reading or editing.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -28,16 +28,18 @@ namespace Bodu.IO.Compound;
 /// <see cref="CompoundStream" /> leaves.
 /// </para>
 /// <para>
-/// By default the entire source is buffered into memory when the file is opened, so access after opening never touches
-/// the original source, and instances are read-only and safe to share across threads. Opening with
+/// By default a read-only file buffers the entire source into memory when opened, so access after opening never touches
+/// the original source and the read-only instance is safe to share across threads. Opening read-only with
 /// <c>buffered: false</c> instead reads sectors on demand from a seekable stream — bounding memory for large files — in
 /// which case the stream must stay open for the instance's lifetime and reads are serialized rather than parallel.
 /// </para>
 /// <para>
 /// Opening with <see cref="FileAccess.Read" /> yields a read-only file.
 /// <see cref="Create(System.IO.Stream, bool, Bodu.IO.Compound.Builders.CompoundBuildOptions)" /> (or a creating
-/// <see cref="FileMode" />) yields a writable file whose edits are staged in memory and written to the destination only
-/// by <see cref="Commit" />; in-place update of an existing file is not yet supported.
+/// <see cref="FileMode" />) starts a new writable file, and <c>Open</c> with <see cref="FileAccess.ReadWrite" /> loads
+/// an existing file for editing. Edits are staged in memory and written to the destination only by
+/// <see cref="Commit" /> (which rewrites the whole container); <see cref="Revert" /> discards them. Mutating an
+/// existing file requires read access — write-only access is supported only for creating modes.
 /// </para>
 /// </remarks>
 /// <example>
@@ -91,6 +93,9 @@ public sealed class CompoundFile
 
     /// <summary>The mutable staging tree for a writable file, or <see langword="null" /> when read-only.</summary>
     private readonly CompoundStorageBuilder? _staging;
+
+    /// <summary>The baseline tree restored by <see cref="Revert" /> in update mode, or <see langword="null" /> otherwise.</summary>
+    private readonly CompoundStorageBuilder? _originalStaging;
 
     /// <summary>The destination written by <see cref="Commit" /> for a writable file, or <see langword="null" /> when read-only.</summary>
     private readonly Stream? _destination;
@@ -147,7 +152,10 @@ public sealed class CompoundFile
     /// <param name="access">The access level the file was opened with.</param>
     /// <param name="staging">The mutable staging tree that backs the file's hierarchy.</param>
     /// <param name="options">The build options applied when serializing the staging tree.</param>
-    private CompoundFile(Stream destination, bool leaveOpen, FileAccess access, CompoundStorageBuilder staging, CompoundBuildOptions options)
+    /// <param name="originalStaging">
+    /// The baseline tree restored by <see cref="Revert" /> in update mode, or <see langword="null" /> for create mode.
+    /// </param>
+    private CompoundFile(Stream destination, bool leaveOpen, FileAccess access, CompoundStorageBuilder staging, CompoundBuildOptions options, CompoundStorageBuilder? originalStaging)
     {
         _source = destination;
         _destination = destination;
@@ -155,6 +163,7 @@ public sealed class CompoundFile
         Access = access;
         _staging = staging;
         _buildOptions = options;
+        _originalStaging = originalStaging;
 
         // The read pipeline is unused in write mode; these fields are never dereferenced while staging.
         _dataSource = null!;
@@ -168,9 +177,7 @@ public sealed class CompoundFile
     /// <summary>
     /// Gets the access level the compound file was opened with.
     /// </summary>
-    /// <returns>
-    /// The <see cref="FileAccess" /> supplied at open time. The current release supports read access only.
-    /// </returns>
+    /// <returns>The <see cref="FileAccess" /> supplied at open time.</returns>
     public FileAccess Access { get; }
 
     /// <summary>
@@ -274,11 +281,15 @@ public sealed class CompoundFile
     /// </summary>
     /// <param name="stream">The stream containing the compound file, or the destination for a writable file.</param>
     /// <param name="mode">
-    /// The file mode. <see cref="FileMode.Open" /> with <see cref="FileAccess.Read" /> opens for reading;
-    /// <see cref="FileMode.Create" />, <see cref="FileMode.CreateNew" />, or <see cref="FileMode.OpenOrCreate" /> with
-    /// write access starts a new, empty writable file.
+    /// The file mode. <see cref="FileMode.Open" /> with <see cref="FileAccess.Read" /> opens for reading; a creating
+    /// mode (<see cref="FileMode.Create" />/<see cref="FileMode.CreateNew" />, or <see cref="FileMode.OpenOrCreate" />
+    /// over empty content) with write access starts a new file; <see cref="FileMode.Open" /> with
+    /// <see cref="FileAccess.ReadWrite" /> loads an existing file for editing.
     /// </param>
-    /// <param name="access">The access level. Write access requires a creating <paramref name="mode" />.</param>
+    /// <param name="access">
+    /// The access level. Mutating an existing file requires <see cref="FileAccess.ReadWrite" />; write-only access is
+    /// supported only for creating modes.
+    /// </param>
     /// <param name="leaveOpen">
     /// <see langword="true" /> to leave <paramref name="stream" /> open when the returned instance is disposed;
     /// otherwise <see langword="false" />.
@@ -313,19 +324,24 @@ public sealed class CompoundFile
 
         if ((access & FileAccess.Write) != 0)
         {
+            // Mutating an existing file requires read access too, because update loads a snapshot before writing.
+            bool hasRead = (access & FileAccess.Read) != 0;
+            bool hasExisting = stream.CanSeek && stream.Length > 0;
+
             switch (mode)
             {
                 case FileMode.Create:
                 case FileMode.CreateNew:
                     return CreateCore(stream, leaveOpen, access, default);
 
-                case FileMode.Open:
-                    return OpenUpdateCore(stream, leaveOpen, default);
+                case FileMode.Open when hasRead:
+                    return OpenUpdateCore(stream, leaveOpen, access, default);
 
-                case FileMode.OpenOrCreate:
-                    return stream.CanSeek && stream.Length > 0
-                        ? OpenUpdateCore(stream, leaveOpen, default)
-                        : CreateCore(stream, leaveOpen, access, default);
+                case FileMode.OpenOrCreate when !hasExisting:
+                    return CreateCore(stream, leaveOpen, access, default);
+
+                case FileMode.OpenOrCreate when hasRead:
+                    return OpenUpdateCore(stream, leaveOpen, access, default);
 
                 default:
                     break;
@@ -412,20 +428,21 @@ public sealed class CompoundFile
     /// <param name="options">The build options applied when serializing the staging tree.</param>
     /// <returns>A new writable <see cref="CompoundFile" />.</returns>
     private static CompoundFile CreateCore(Stream destination, bool leaveOpen, FileAccess access, CompoundBuildOptions options) =>
-        new(destination, leaveOpen, access, CompoundStorageBuilder.CreateRoot(), options);
+        new(destination, leaveOpen, access, CompoundStorageBuilder.CreateRoot(), options, originalStaging: null);
 
     /// <summary>
     /// Opens an existing compound file for update by loading it into a staging tree committed back to the same stream.
     /// </summary>
     /// <param name="destination">The seekable, writable stream holding the existing compound file.</param>
     /// <param name="leaveOpen">Whether to leave <paramref name="destination" /> open on dispose.</param>
+    /// <param name="access">The access level the file is opened with.</param>
     /// <param name="options">The build options applied when serializing the staging tree.</param>
     /// <returns>A writable <see cref="CompoundFile" /> seeded with the existing content.</returns>
     /// <exception cref="ArgumentException">Thrown when <paramref name="destination" /> is not seekable.</exception>
     /// <exception cref="CompoundFileFormatException">
     /// Thrown when the existing content is not a well-formed compound file.
     /// </exception>
-    private static CompoundFile OpenUpdateCore(Stream destination, bool leaveOpen, CompoundBuildOptions options)
+    private static CompoundFile OpenUpdateCore(Stream destination, bool leaveOpen, FileAccess access, CompoundBuildOptions options)
     {
         if (!destination.CanSeek)
             throw new ArgumentException(CompoundResourceStrings.Arg_Invalid_CompoundStreamNotSeekable, nameof(destination));
@@ -439,7 +456,9 @@ public sealed class CompoundFile
             staging = CompoundStorageBuilder.FromFile(reader);
         }
 
-        return new CompoundFile(destination, leaveOpen, FileAccess.ReadWrite, staging, options);
+        // Keep an independent baseline clone so Revert() can restore the loaded state in update mode.
+        var baseline = (CompoundStorageBuilder)staging.DeepClone();
+        return new CompoundFile(destination, leaveOpen, access, staging, options, baseline);
     }
 
     /// <summary>
@@ -736,8 +755,12 @@ public sealed class CompoundFile
         Commit();
 
     /// <summary>
-    /// Discards all staged edits, restoring the writable file to an empty root storage.
+    /// Discards all staged edits since the file was opened.
     /// </summary>
+    /// <remarks>
+    /// For a file opened in update mode this restores the contents loaded at open time; for a newly created file it
+    /// restores the empty root storage.
+    /// </remarks>
     /// <exception cref="InvalidOperationException">Thrown when the file is read-only.</exception>
     /// <exception cref="ObjectDisposedException">Thrown when the file has been disposed.</exception>
     public void Revert()
@@ -745,7 +768,11 @@ public sealed class CompoundFile
         ObjectDisposedException.ThrowIf(_disposed, this);
         RequireWritable();
 
-        _staging!.Clear();
+        if (_originalStaging is not null)
+            _staging!.ResetTo(_originalStaging);
+        else
+            _staging!.Clear();
+
         _dirty = false;
     }
 

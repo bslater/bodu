@@ -60,7 +60,7 @@ public partial class CompoundStorageBuilderSerializationTests
         using CompoundFile file = CompoundFile.Open(new MemoryStream(bytes));
         Assert.IsTrue(file.RootStorage.TryOpenStream("Data", out CompoundStream? entry));
         Assert.AreEqual(kat.Size, entry.Length);
-        CollectionAssert.AreEqual(payload, entry.ReadAllBytes().ToArray());
+        CollectionAssert.AreEqual(payload, entry.ReadAllBytes());
     }
 
     /// <summary>
@@ -79,7 +79,7 @@ public partial class CompoundStorageBuilderSerializationTests
         for (int i = 0; i < 100; i++)
         {
             Assert.IsTrue(file.RootStorage.TryOpenStream($"Stream{i:D3}", out CompoundStream? entry), $"Stream{i:D3}");
-            CollectionAssert.AreEqual(CreatePayload(i), entry.ReadAllBytes().ToArray(), $"Stream{i:D3}");
+            CollectionAssert.AreEqual(CreatePayload(i), entry.ReadAllBytes(), $"Stream{i:D3}");
         }
     }
 
@@ -103,7 +103,7 @@ public partial class CompoundStorageBuilderSerializationTests
             storage = storage.OpenStorage($"Level{depth}");
 
         Assert.IsTrue(storage.TryOpenStream("Leaf", out CompoundStream? leaf));
-        CollectionAssert.AreEqual(CreatePayload(200), leaf.ReadAllBytes().ToArray());
+        CollectionAssert.AreEqual(CreatePayload(200), leaf.ReadAllBytes());
     }
 
     /// <summary>

@@ -223,6 +223,15 @@ namespace Bodu.IO.Compound {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The stream '{0}' exceeds the 2 GB maximum size of a version-3 compound file; write a version-4 file instead..
+        /// </summary>
+        internal static string Op_Invalid_CompoundV3StreamTooLarge {
+            get {
+                return ResourceManager.GetString("Op_Invalid_CompoundV3StreamTooLarge", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The property value of type '{0}' cannot be encoded into an OLE property set..
         /// </summary>
         internal static string Op_Invalid_CompoundPropertySetCodePage {

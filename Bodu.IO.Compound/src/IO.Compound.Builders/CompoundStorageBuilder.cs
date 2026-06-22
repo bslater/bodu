@@ -321,6 +321,30 @@ public sealed partial class CompoundStorageBuilder
         _children.Clear();
     }
 
+    /// <summary>
+    /// Replaces this storage's metadata and children with deep copies of another storage tree's, in place.
+    /// </summary>
+    /// <param name="source">The storage tree whose contents replace this storage's.</param>
+    /// <remarks>
+    /// Preserves this storage's object identity (so existing references remain valid) while restoring it to a snapshot
+    /// of <paramref name="source" />. Used by <see cref="CompoundFile.Revert" /> to discard staged update-mode edits.
+    /// </remarks>
+    internal void ResetTo(CompoundStorageBuilder source)
+    {
+        Clear();
+        ClassId = source.ClassId;
+        CreationTime = source.CreationTime;
+        ModifiedTime = source.ModifiedTime;
+        StateBits = source.StateBits;
+
+        var snapshot = (CompoundStorageBuilder)source.DeepClone();
+        foreach (CompoundEntryBuilder child in snapshot._children.Values.ToList())
+        {
+            child.Parent = null;
+            AddCore(child.Name, child);
+        }
+    }
+
     /// <inheritdoc />
     bool ICollection<KeyValuePair<string, CompoundEntryBuilder>>.Contains(KeyValuePair<string, CompoundEntryBuilder> item) =>
         ((ICollection<KeyValuePair<string, CompoundEntryBuilder>>)_children).Contains(item);

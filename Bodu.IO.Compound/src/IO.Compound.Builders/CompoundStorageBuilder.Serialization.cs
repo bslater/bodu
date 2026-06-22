@@ -9,10 +9,8 @@ using Bodu.IO.Compound.Internal;
 
 namespace Bodu.IO.Compound.Builders;
 
-/// <content>
-/// Serialization and materialization members that turn a detached <see cref="CompoundStorageBuilder" /> snapshot tree
-/// into a compound-file container, and back.
-/// </content>
+/// <content> Serialization and materialization members that turn a detached <see cref="CompoundStorageBuilder" />
+/// snapshot tree into a compound-file container, and back. </content>
 public sealed partial class CompoundStorageBuilder
 {
     /// <summary>

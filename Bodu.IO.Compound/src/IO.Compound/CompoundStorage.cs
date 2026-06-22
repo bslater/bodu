@@ -331,10 +331,7 @@ public sealed class CompoundStorage
         ThrowHelper.ThrowIfNull(name);
 
         if (_node is not null)
-        {
-            stream = OpenStagedStream(name, mode, access);
-            return true;
-        }
+            return TryOpenStagedStream(name, mode, access, out stream);
 
         RequireReadOnly(mode, access);
         return TryOpenStream(name, out stream);
@@ -525,6 +522,39 @@ public sealed class CompoundStorage
     /// </exception>
     private CompoundStream OpenStagedStream(string name, FileMode mode, FileAccess access)
     {
+        if (TryOpenStagedStream(name, mode, access, out CompoundStream? stream))
+            return stream;
+
+        // Translate the recoverable-absence cases the Try-core reports as false into the documented exceptions.
+        _node!.TryGetStream(name, out CompoundStreamBuilder? existing);
+        if (mode == FileMode.CreateNew && existing is not null)
+        {
+            throw new IOException(
+                string.Format(CultureInfo.CurrentCulture, CompoundResourceStrings.Op_NotSupported_CompoundFileWriteMode, $"{mode}/{access}"));
+        }
+
+        throw CompoundStreamNotFoundException.ForName(name);
+    }
+
+    /// <summary>
+    /// Attempts to open a cursor over the named staging stream node, returning <see langword="false" /> for the
+    /// recoverable-absence cases (open-missing, create-new-exists) instead of throwing.
+    /// </summary>
+    /// <param name="name">The stream name.</param>
+    /// <param name="mode">The file mode applied to the stream.</param>
+    /// <param name="access">The requested access level.</param>
+    /// <param name="stream">
+    /// When this method returns <see langword="true" />, the opened cursor; otherwise <see langword="null" />.
+    /// </param>
+    /// <returns>
+    /// <see langword="true" /> when a cursor was opened or created; otherwise <see langword="false" />.
+    /// </returns>
+    /// <exception cref="NotSupportedException">
+    /// Thrown when <paramref name="mode" /> is not a supported file mode.
+    /// </exception>
+    private bool TryOpenStagedStream(string name, FileMode mode, FileAccess access, [MaybeNullWhen(false)] out CompoundStream stream)
+    {
+        stream = null;
         bool wantWrite = (access & FileAccess.Write) != 0;
         bool wantRead = (access & FileAccess.Read) != 0;
         _node!.TryGetStream(name, out CompoundStreamBuilder? existing);
@@ -532,9 +562,10 @@ public sealed class CompoundStorage
         if (!wantWrite)
         {
             if (existing is null)
-                throw CompoundStreamNotFoundException.ForName(name);
+                return false;
 
-            return new CompoundStream(ToEntryInfo(existing), existing.Content.ToArray(), this);
+            stream = new CompoundStream(ToEntryInfo(existing), existing.Content.ToArray(), this);
+            return true;
         }
 
         CompoundStreamBuilder target;
@@ -543,8 +574,7 @@ public sealed class CompoundStorage
         switch (mode)
         {
             case FileMode.CreateNew when existing is not null:
-                throw new IOException(
-                    string.Format(CultureInfo.CurrentCulture, CompoundResourceStrings.Op_NotSupported_CompoundFileWriteMode, $"{mode}/{access}"));
+                return false;
 
             case FileMode.CreateNew:
             case FileMode.Create:
@@ -553,7 +583,7 @@ public sealed class CompoundStorage
                 break;
 
             case FileMode.Open when existing is null:
-                throw CompoundStreamNotFoundException.ForName(name);
+                return false;
 
             case FileMode.Open:
                 target = existing;
@@ -581,7 +611,8 @@ public sealed class CompoundStorage
         if (append)
             cursor.Seek(0, SeekOrigin.End);
 
-        return cursor;
+        stream = cursor;
+        return true;
     }
 
     /// <summary>

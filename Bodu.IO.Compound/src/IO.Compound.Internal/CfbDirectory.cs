@@ -134,6 +134,13 @@ internal sealed class CfbDirectory
             // Version-3 files (512-byte sectors) store the size in the low 32 bits; the high DWORD must be ignored.
             long size = header.SectorSize == 512 ? (long)(rawSize & 0xFFFFFFFF) : (long)rawSize;
 
+            if (strict)
+            {
+                // MS-CFB §2.6.1: the color flag is 0 (red) or 1 (black), and a storage object's stream size is zero.
+                CompoundThrowHelper.ThrowFormatIf(record[67] > (byte)CompoundEntryColor.Black, CompoundResourceStrings.Format_Invalid_CompoundDirectory, CompoundFileError.InvalidDirectory);
+                CompoundThrowHelper.ThrowFormatIf(type == CompoundEntryType.Storage && size != 0, CompoundResourceStrings.Format_Invalid_CompoundDirectory, CompoundFileError.InvalidDirectory);
+            }
+
             entries[sid] = new CfbDirectoryEntry(
                 sid, name, type, color, left, right, child, classId, stateBits, creationFileTime, modifiedFileTime, startSector, size);
         }
@@ -158,12 +165,36 @@ internal sealed class CfbDirectory
             CfbDirectoryEntry storage = storages.Dequeue();
             CollectChildren(storage.ChildId, storage.Children, visited);
 
+            if (_level == CompoundValidationLevel.Strict)
+                ValidateSiblingOrder(storage.Children);
+
             foreach (int childSid in storage.Children)
             {
                 CfbDirectoryEntry child = _entries[childSid]!;
                 if (child.Type is CompoundEntryType.Storage or CompoundEntryType.RootStorage)
                     storages.Enqueue(child);
             }
+        }
+    }
+
+    /// <summary>
+    /// Verifies that a storage's in-order child sequence is strictly increasing under the compound-file name
+    /// relationship, rejecting unsorted siblings and duplicate names.
+    /// </summary>
+    /// <param name="children">The ordered child stream identifiers of a single storage.</param>
+    /// <exception cref="CompoundFileFormatException">
+    /// Thrown when the siblings are unsorted or contain a duplicate name.
+    /// </exception>
+    private void ValidateSiblingOrder(List<int> children)
+    {
+        for (int i = 1; i < children.Count; i++)
+        {
+            string previous = _entries[children[i - 1]]!.Name;
+            string current = _entries[children[i]]!.Name;
+            CompoundThrowHelper.ThrowFormatIf(
+                CompoundNameComparer.Instance.Compare(previous, current) >= 0,
+                CompoundResourceStrings.Format_Invalid_CompoundDirectoryTree,
+                CompoundFileError.InvalidDirectory);
         }
     }
 
