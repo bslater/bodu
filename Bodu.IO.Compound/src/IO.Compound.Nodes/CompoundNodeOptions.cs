@@ -10,9 +10,11 @@ namespace Bodu.IO.Compound.Nodes;
 /// Specifies options that control the behavior of the mutable compound-file object model.
 /// </summary>
 /// <remarks>
-/// The OLE2 / Compound File Binary format treats entry names case-insensitively, so the default name comparison is
-/// case-insensitive ordinal. Set <see cref="NameComparisonCaseSensitive" /> to <see langword="true" /> only when a
-/// case-sensitive in-memory model is explicitly required.
+/// The OLE2 / Compound File Binary format treats entry names case-insensitively, so by default the model keys names
+/// with the shared compound-file name relationship — the same comparison the reader and writer use, so an in-memory
+/// duplicate is detected exactly as the serialized container would collapse it. Set
+/// <see cref="NameComparisonCaseSensitive" /> to <see langword="true" /> only when a case-sensitive in-memory model is
+/// explicitly required.
 /// </remarks>
 public struct CompoundNodeOptions
 {
@@ -26,11 +28,12 @@ public struct CompoundNodeOptions
     public bool NameComparisonCaseSensitive { get; set; }
 
     /// <summary>
-    /// Gets the string comparer that implements the configured name comparison.
+    /// Gets the comparer that implements the configured name comparison.
     /// </summary>
     /// <returns>
-    /// An ordinal comparer that is case-sensitive or case-insensitive per <see cref="NameComparisonCaseSensitive" />.
+    /// An ordinal case-sensitive comparer when <see cref="NameComparisonCaseSensitive" /> is <see langword="true" />;
+    /// otherwise the shared <see cref="CompoundNameComparer" /> that matches the compound-file format.
     /// </returns>
-    internal readonly StringComparer NameComparer =>
-        NameComparisonCaseSensitive ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase;
+    internal readonly IEqualityComparer<string> NameComparer =>
+        NameComparisonCaseSensitive ? StringComparer.Ordinal : CompoundNameComparer.Instance;
 }

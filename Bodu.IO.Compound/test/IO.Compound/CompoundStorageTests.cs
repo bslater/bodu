@@ -78,6 +78,34 @@ public class CompoundStorageTests
     }
 
     /// <summary>
+    /// Verifies that child storage lookups match names case-insensitively, as the compound-file format defines.
+    /// </summary>
+    [TestMethod]
+    public void TryOpenStorage_WhenNameDiffersOnlyByCase_ShouldResolve()
+    {
+        using CompoundFile file = OpenNested();
+
+        Assert.IsTrue(file.RootStorage.TryOpenStorage("STORAGE 1", out CompoundStorage? storage));
+        Assert.IsNotNull(storage);
+        Assert.AreEqual("Storage 1", storage.Name);
+    }
+
+    /// <summary>
+    /// Verifies that child stream lookups match names case-insensitively, so a case-mismatched name still resolves.
+    /// </summary>
+    [TestMethod]
+    public void TryOpenStream_WhenNameDiffersOnlyByCase_ShouldResolve()
+    {
+        using CompoundFile file = OpenNested();
+
+        CompoundStorage storage1 = file.RootStorage.OpenStorage("Storage 1");
+
+        Assert.IsTrue(storage1.TryOpenStream("stream 1", out CompoundStreamEntry? stream));
+        Assert.IsNotNull(stream);
+        Assert.AreEqual("Stream 1", stream.Name);
+    }
+
+    /// <summary>
     /// Verifies that the root storage enumerates the expected top-level streams of an Excel workbook fixture.
     /// </summary>
     [TestMethod]

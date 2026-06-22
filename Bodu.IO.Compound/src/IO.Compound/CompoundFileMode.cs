@@ -11,12 +11,9 @@ namespace Bodu.IO.Compound;
 /// modified.
 /// </summary>
 /// <remarks>
-/// <para>
-/// Only <see cref="Read" /> is supported by the current release. The remaining members are reserved for a future
-/// read-write implementation and are rejected by
-/// <see cref="CompoundFile.Open(System.IO.Stream, CompoundFileMode, bool, bool)" /> until that capability is delivered.
-/// They are declared now so the access model is stable across releases.
-/// </para>
+/// The current release supports read-only access only, so <see cref="Read" /> is the single defined member. Read-write
+/// modes will be introduced alongside the write implementation rather than declared ahead of support, so that every
+/// member of this enumeration corresponds to a capability the library actually provides.
 /// </remarks>
 public enum CompoundFileMode
 {
@@ -24,19 +21,4 @@ public enum CompoundFileMode
     /// Opens the compound file for read-only access. The directory and stream contents cannot be modified.
     /// </summary>
     Read = 0,
-
-    /// <summary>
-    /// Reserved for opening an existing compound file for read and write access. Not yet supported.
-    /// </summary>
-    ReadWrite = 1,
-
-    /// <summary>
-    /// Reserved for creating a new compound file, overwriting any existing content. Not yet supported.
-    /// </summary>
-    Create = 2,
-
-    /// <summary>
-    /// Reserved for creating a new compound file and failing when one already exists. Not yet supported.
-    /// </summary>
-    CreateNew = 3,
 }

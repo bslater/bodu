@@ -15,13 +15,13 @@ namespace Bodu.IO.Compound;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <img src="../images/diagrams/io-compound-structure.svg" alt="A CompoundStorage is a named container of child storages and streams within a compound file, the managed counterpart of the COM IStorage interface. Navigation starts at RootStorage and descends through nested CompoundStorage containers to CompoundStreamEntry leaves. Lookups are scoped to a storage's direct children and matched with ordinal (case-sensitive) names."/>
+/// <img src="../images/diagrams/io-compound-structure.svg" alt="A CompoundStorage is a named container of child storages and streams within a compound file, the managed counterpart of the COM IStorage interface. Navigation starts at RootStorage and descends through nested CompoundStorage containers to CompoundStreamEntry leaves. Lookups are scoped to a storage's direct children and matched case-insensitively, as the compound-file format defines."/>
 /// </para>
 /// <para>
 /// This type is the managed counterpart of the COM <c>IStorage</c> interface. The root storage and every nested storage
 /// are represented by the same type; the root is distinguished by an <see cref="CompoundEntryType.RootStorage" /> value
-/// on its <see cref="Stat" />. All lookups are scoped to a storage's direct children and compared using ordinal
-/// (case-sensitive) equality, so streams that share a name under different storages remain distinct.
+/// on its <see cref="Stat" />. All lookups are scoped to a storage's direct children and compared case-insensitively
+/// using the compound-file name relationship, so streams that share a name under different storages remain distinct.
 /// </para>
 /// <para>
 /// Creation and mutation members (<c>CreateStorage</c>, <c>CreateStream</c>, <c>Delete</c>, <c>Rename</c>,
@@ -98,7 +98,7 @@ public sealed class CompoundStorage
     /// <summary>
     /// Opens the child storage with the specified name.
     /// </summary>
-    /// <param name="name">The storage name, compared using ordinal (case-sensitive) equality.</param>
+    /// <param name="name">The storage name, compared using the case-insensitive compound-file relationship.</param>
     /// <returns>The matching child <see cref="CompoundStorage" />.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="name" /> is <see langword="null" />.
@@ -114,7 +114,7 @@ public sealed class CompoundStorage
     /// <summary>
     /// Opens the child stream with the specified name.
     /// </summary>
-    /// <param name="name">The stream name, compared using ordinal (case-sensitive) equality.</param>
+    /// <param name="name">The stream name, compared using the case-insensitive compound-file relationship.</param>
     /// <returns>The matching child <see cref="CompoundStreamEntry" />.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="name" /> is <see langword="null" />.
@@ -130,7 +130,7 @@ public sealed class CompoundStorage
     /// <summary>
     /// Attempts to open the child storage with the specified name.
     /// </summary>
-    /// <param name="name">The storage name, compared using ordinal (case-sensitive) equality.</param>
+    /// <param name="name">The storage name, compared using the case-insensitive compound-file relationship.</param>
     /// <param name="storage">
     /// When this method returns <see langword="true" />, the matching child storage; otherwise <see langword="null" />.
     /// </param>
@@ -158,7 +158,7 @@ public sealed class CompoundStorage
     /// <summary>
     /// Attempts to open the child stream with the specified name.
     /// </summary>
-    /// <param name="name">The stream name, compared using ordinal (case-sensitive) equality.</param>
+    /// <param name="name">The stream name, compared using the case-insensitive compound-file relationship.</param>
     /// <param name="stream">
     /// When this method returns <see langword="true" />, the matching child stream; otherwise <see langword="null" />.
     /// </param>
@@ -229,14 +229,14 @@ public sealed class CompoundStorage
     /// <summary>
     /// Finds the direct child with the specified name and type.
     /// </summary>
-    /// <param name="name">The child name, compared using ordinal (case-sensitive) equality.</param>
+    /// <param name="name">The child name, compared using the case-insensitive compound-file relationship.</param>
     /// <param name="type">The required entry type.</param>
     /// <returns>The matching child entry, or <see langword="null" /> when none matches.</returns>
     private CompoundDirectoryEntry? FindChild(string name, CompoundEntryType type)
     {
         foreach (CompoundDirectoryEntry child in Children())
         {
-            if (child.Type == type && string.Equals(child.Name, name, StringComparison.Ordinal))
+            if (child.Type == type && CompoundNameComparer.Instance.Equals(child.Name, name))
                 return child;
         }
 

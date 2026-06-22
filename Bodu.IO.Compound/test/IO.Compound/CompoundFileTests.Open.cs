@@ -66,7 +66,7 @@ public partial class CompoundFileTests
 
         _ = Assert.ThrowsExactly<NotSupportedException>(() =>
         {
-            using var file = CompoundFile.Open(stream, CompoundFileMode.ReadWrite);
+            using var file = CompoundFile.Open(stream, (CompoundFileMode)0xFF);
         });
     }
 

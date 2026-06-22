@@ -194,7 +194,7 @@ internal static class CompoundContainerLayout
                 string.Format(CultureInfo.CurrentCulture, CompoundResourceStrings.Op_Invalid_CompoundWriterMaxDepthExceeded, maxDepth));
         }
 
-        children.Sort(static (a, b) => CompareNames(a.Name, b.Name));
+        children.Sort(static (a, b) => CompoundNameComparer.Instance.Compare(a.Name, b.Name));
 
         List<int> childSids = new(children.Count);
         foreach (CompoundNode child in children)
@@ -233,27 +233,6 @@ internal static class CompoundContainerLayout
         entries[sid].LeftSibling = BuildTree(entries, sids, lo, mid - 1);
         entries[sid].RightSibling = BuildTree(entries, sids, mid + 1, hi);
         return (uint)sid;
-    }
-
-    /// <summary>
-    /// Compares two entry names using the compound-file ordering: length first, then ordinal uppercase per code unit.
-    /// </summary>
-    /// <param name="a">The first name.</param>
-    /// <param name="b">The second name.</param>
-    /// <returns>A signed value describing the relative order of the names.</returns>
-    private static int CompareNames(string a, string b)
-    {
-        if (a.Length != b.Length)
-            return a.Length - b.Length;
-
-        for (int i = 0; i < a.Length; i++)
-        {
-            int diff = char.ToUpperInvariant(a[i]) - char.ToUpperInvariant(b[i]);
-            if (diff != 0)
-                return diff;
-        }
-
-        return 0;
     }
 
     /// <summary>
