@@ -192,10 +192,11 @@ provider on the [`IFinancialServiceBuilder`](xref:Bodu.Financial.IFinancialServi
 backed by a named `HttpClient` with the standard Polly resilience handler, and
 resolvable as both the dated and timeless surfaces. The `Add<Source>...` extension
 methods live in the `Bodu.Financial.ExchangeRates` namespace (`AddFinancialService`
-lives in `Microsoft.Extensions.DependencyInjection`), so both `using` directives bring
+lives in `Bodu.Financial`), so both `using` directives bring
 the chain into scope:
 
 ```csharp
+using Bodu.Financial;
 using Bodu.Financial.ExchangeRates;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -213,6 +214,7 @@ to serve repeated lookups without re-hitting the source. The source must be
 registered first — the cached registration resolves it, it does not build it:
 
 ```csharp
+using Bodu.Financial;
 using Bodu.Financial.ExchangeRates;
 using Microsoft.Extensions.DependencyInjection;
 

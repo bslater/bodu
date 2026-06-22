@@ -354,6 +354,7 @@ scope. Both resolve as the dated **and** timeless surfaces.
 A single cached provider:
 
 ```csharp
+using Bodu.Financial;
 using Bodu.Financial.ExchangeRates;
 using Microsoft.Extensions.DependencyInjection;
 
