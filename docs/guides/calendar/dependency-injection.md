@@ -18,7 +18,7 @@ The package depends on `Bodu.Globalization.Calendar` and `Microsoft.Extensions.D
 
 ## The registration surface
 
-Every extension method lives on <xref:Microsoft.Extensions.DependencyInjection.NotableDateServiceCollectionExtensions>, in the `Microsoft.Extensions.DependencyInjection` namespace, so they light up on `IServiceCollection` without an extra `using`.
+Every extension method lives on <xref:Bodu.Globalization.Calendar.NotableDateServiceCollectionExtensions>, in the `Bodu.Globalization.Calendar` namespace, so add `using Bodu.Globalization.Calendar;` to bring them into scope on `IServiceCollection`.
 
 | Method | Registers |
 |---|---|
@@ -112,5 +112,5 @@ The provider is also registered as <xref:Bodu.Globalization.Calendar.INotableDat
 - **[Building and extending the service](building-the-service.md)** — the collaborators (`NotableDateAlgorithmRegistry`, collision resolver, adjustment handlers, code-first providers) you can compose into the resource/service before registering it.
 - **[Calendar data packs](data-packs.md)** — composing an Americas / Asia-Pacific / Europe pack resource through `AddNotableDateService`.
 - **[Using NotableDateService](notable-dates.md)** — query patterns and working-day arithmetic.
-- **[Bodu.Globalization.Calendar.DependencyInjection API reference](xref:Microsoft.Extensions.DependencyInjection.NotableDateServiceCollectionExtensions)** — the registration surface.
+- **[Bodu.Globalization.Calendar.DependencyInjection API reference](xref:Bodu.Globalization.Calendar.NotableDateServiceCollectionExtensions)** — the registration surface.
 - **[Globalization & Calendars guides](../topics/globalization-and-calendars.md)** — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.

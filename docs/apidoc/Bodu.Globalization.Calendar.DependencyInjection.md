@@ -1,5 +1,5 @@
 ---
-uid: Microsoft.Extensions.DependencyInjection.NotableDateServiceCollectionExtensions
+uid: Bodu.Globalization.Calendar.NotableDateServiceCollectionExtensions
 ---
 
 # Bodu.Globalization.Calendar.DependencyInjection
@@ -10,7 +10,7 @@ uid: Microsoft.Extensions.DependencyInjection.NotableDateServiceCollectionExtens
 
 The package is intentionally thin: a resource is an immutable, already-validated value, so registration takes the resource (or a provider for it) directly. There is no options object and no fluent builder — the service's behaviour is carried by the resource's `<ResolutionPolicy>` and by the optional collaborators passed when the resource/service is built. Direct construction continues to work for consoles, libraries, and tests that prefer not to bring in `IServiceCollection`.
 
-The extension methods live in the `Microsoft.Extensions.DependencyInjection` namespace, so they light up on `IServiceCollection` without an extra `using`.
+The extension methods live in the `Bodu.Globalization.Calendar` namespace, so add `using Bodu.Globalization.Calendar;` to bring them into scope on `IServiceCollection`.
 
 ## Static documentation
 
@@ -18,7 +18,7 @@ The extension methods live in the `Microsoft.Extensions.DependencyInjection` nam
 
 ## Key types
 
-- <xref:Microsoft.Extensions.DependencyInjection.NotableDateServiceCollectionExtensions> — the registration surface:
+- <xref:Bodu.Globalization.Calendar.NotableDateServiceCollectionExtensions> — the registration surface:
   - `AddNotableDateService(IServiceCollection, NotableDateResource)` — register a singleton <xref:Bodu.Globalization.Calendar.INotableDateService> over an already-loaded resource.
   - `AddNotableDateService(IServiceCollection, Func<IServiceProvider, NotableDateResource>)` — the same, but the resource is produced from the container (e.g. loaded from configuration or a data pack resolved through DI).
   - `AddReloadableNotableDateService(IServiceCollection, NotableDateResource)` — register a singleton <xref:Bodu.Globalization.Calendar.ReloadableNotableDateService> together with a singleton <xref:Bodu.Globalization.Calendar.MutableNotableDateResourceProvider> (also exposed as <xref:Bodu.Globalization.Calendar.INotableDateResourceProvider>). Inject the mutable provider to call `Reload(...)` and the live service picks up the new resource.

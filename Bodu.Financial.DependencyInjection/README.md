@@ -8,12 +8,13 @@
 dotnet add package Bodu.Financial.DependencyInjection
 ```
 
-Targets `net8.0`. All types live in the `Bodu.Financial.DependencyInjection` namespace.
+Targets `net8.0`. The registration extension methods, the `IFinancialServiceBuilder` builder, and `FinancialOptions` live in the `Bodu.Financial` namespace.
 
 ## Registration
 
 ```csharp
-using Bodu.Financial.DependencyInjection;
+using Bodu.Financial;
+using Bodu.Financial.Serialization;
 
 services.AddFinancialService(configuration, sectionName: "Financial")
     .AddExchangeRateProvider<EcbRateProvider>()
