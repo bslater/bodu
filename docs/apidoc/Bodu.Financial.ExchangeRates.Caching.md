@@ -13,6 +13,10 @@ uid: Bodu.Financial.ExchangeRates.Caching
 
 The cache owns expiry: each provider has its own caching duration with a global default, the cache returns only fresh rows, and it prunes stale rows on write. Both single-date lookups and range lookups (`GetRatesAsync`) flow through the cache.
 
+Alongside the in-memory and TOML-file caches, two persistent backends now live in this same namespace: <xref:Bodu.Financial.ExchangeRates.Caching.SqliteExchangeRateCache> (a SQLite database) and <xref:Bodu.Financial.ExchangeRates.Caching.DistributedExchangeRateCache> (any `Microsoft.Extensions.Caching.Distributed.IDistributedCache`, including Redis). Both are behaviourally identical to the built-in caches — the same freshness, merge, coverage, and validation semantics, asserted against the same shared cache contract tests — so each drops in anywhere an `IExchangeRateCache` is expected, behind a <xref:Bodu.Financial.ExchangeRates.Caching.CachingExchangeRateProvider>.
+
+All dependency-injection registration lives in the `Microsoft.Extensions.DependencyInjection` namespace, so a single `using Microsoft.Extensions.DependencyInjection;` makes `AddCachedExchangeRateProvider`, `AddAggregatedExchangeRateProvider`, `AddSqliteRateCache`, `AddDistributedRateCache`, and `AddRedisRateCache` available. The SQLite and distributed backends ship their registration inside their own runtime packages; there are no separate `*.DependencyInjection` packages.
+
 ## Static documentation
 
 - **[Caching and aggregating exchange rates guide](~/guides/financial/exchange-rate-caching.md)** — the cache cascade, one-cache-per-provider read-through, the aggregator's strategies and per-pair routing, the on-disk TOML format, custom storage, and dependency injection.
@@ -26,6 +30,8 @@ The cache owns expiry: each provider has its own caching duration with a global 
 - <xref:Bodu.Financial.ExchangeRates.Caching.IFileExchangeRateCache>, <xref:Bodu.Financial.ExchangeRates.Caching.FileExchangeRateCacheBase`1> — the file-storage seam and its plumbing: per-provider subdirectory layout, file-name resolution, and best-effort IO. Extend the base for a new file format.
 - <xref:Bodu.Financial.ExchangeRates.Caching.TomlFileExchangeRateCache> — the sealed TOML leaf (`<directory>/<provider>/<from><to>.toml`; decimals quoted for lossless round-trips).
 - <xref:Bodu.Financial.ExchangeRates.Caching.InMemoryExchangeRateCache> — an in-memory cache reusing the same expiry mechanism; nothing is persisted.
+- <xref:Bodu.Financial.ExchangeRates.Caching.SqliteExchangeRateCache>, <xref:Bodu.Financial.ExchangeRates.Caching.SqliteExchangeRateCacheOptions> — a persistent SQLite-backed cache (one provider's rates and coverage windows in a SQLite database) and its options (bound `Provider`, `DatabaseFilePath`). Registered with `AddSqliteRateCache`.
+- <xref:Bodu.Financial.ExchangeRates.Caching.DistributedExchangeRateCache>, <xref:Bodu.Financial.ExchangeRates.Caching.DistributedExchangeRateCacheOptions> — a shared cache over any `IDistributedCache` (Redis-capable), so several application instances share one warm cache, and its options (bound `Provider`, key-prefix settings). Registered with `AddDistributedRateCache` or the Redis convenience `AddRedisRateCache`.
 - <xref:Bodu.Financial.ExchangeRates.Caching.NullExchangeRateCache> — the no-op cache (`NullExchangeRateCache.Create(provider)`), for when caching is disabled.
 - <xref:Bodu.Financial.ExchangeRates.Caching.ExchangeRateCacheOptions>, <xref:Bodu.Financial.ExchangeRates.Caching.FileExchangeRateCacheOptions> — the storage-agnostic options (bound `Provider`) and the file options (adds `CacheDirectory`).
 - <xref:Bodu.Financial.ExchangeRates.Caching.CachedExchangeRate> — one cached row: observation `Date`, `Rate`, and the `CachedAtUtc` instant that drives expiry.
@@ -78,4 +84,4 @@ IDatedExchangeRateProvider provider = new AggregatingExchangeRateProvider(
 ExchangeRateLookupResult today = provider.GetRate("AUD", "USD", new DateOnly(2024, 1, 3));
 ```
 
-For dependency-injection wiring, see [`Bodu.Financial.ExchangeRates.Caching.DependencyInjection`](Bodu.Financial.ExchangeRates.Caching.DependencyInjection.md) and the [caching guide](~/guides/financial/exchange-rate-caching.md).
+For dependency-injection wiring, add `using Microsoft.Extensions.DependencyInjection;` and call `AddCachedExchangeRateProvider`, `AddAggregatedExchangeRateProvider`, `AddSqliteRateCache`, `AddDistributedRateCache`, or `AddRedisRateCache`. See the [caching guide](~/guides/financial/exchange-rate-caching.md) for the full walkthrough.

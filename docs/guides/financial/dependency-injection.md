@@ -4,7 +4,7 @@ title: Financial dependency injection
 
 # Financial dependency injection
 
-The optional `Bodu.Financial.DependencyInjection` companion package wires the [`Bodu.Financial`](index.md) stack into a `Microsoft.Extensions.DependencyInjection` container. A single `AddFinancialService(...)` call registers the currency-lookup service and hands back a fluent <xref:Bodu.Financial.DependencyInjection.IFinancialServiceBuilder> on which you compose currency lookups, named monetary contexts, exchange-rate providers, and JSON converters.
+The optional `Bodu.Financial.DependencyInjection` companion package wires the [`Bodu.Financial`](index.md) stack into a `Microsoft.Extensions.DependencyInjection` container. A single `AddFinancialService(...)` call registers the currency-lookup service and hands back a fluent <xref:Bodu.Financial.IFinancialServiceBuilder> on which you compose currency lookups, named monetary contexts, exchange-rate providers, and JSON converters. The registration extension methods live in the `Microsoft.Extensions.DependencyInjection` namespace, so a single `using Microsoft.Extensions.DependencyInjection;` brings them into scope.
 
 If you are constructing the financial types by hand — in a console app or a test — keep using the `Bodu.Financial` constructors directly; this page is only relevant when you want the host to compose the stack for you.
 
@@ -18,16 +18,16 @@ The package depends on `Bodu.Financial` and `Microsoft.Extensions.DependencyInje
 
 ## The registration surface
 
-The entry point is <xref:Bodu.Financial.DependencyInjection.ServiceCollectionExtensions>, with two `AddFinancialService` overloads. Both register the default <xref:Bodu.Financial.ICurrency> lookup and return an <xref:Bodu.Financial.DependencyInjection.IFinancialServiceBuilder>.
+The entry point is the `AddFinancialService` `IServiceCollection` extension (in the `Microsoft.Extensions.DependencyInjection` namespace), with two overloads. Both register the default <xref:Bodu.Financial.ICurrency> lookup and return an <xref:Bodu.Financial.IFinancialServiceBuilder>.
 
 | Method | Registers |
 |---|---|
-| `AddFinancialService(IServiceCollection, IConfiguration?, string sectionName = "Financial")` | The currency lookup, and binds <xref:Bodu.Financial.DependencyInjection.FinancialOptions> from the named configuration section. |
+| `AddFinancialService(IServiceCollection, IConfiguration?, string sectionName = "Financial")` | The currency lookup, and binds <xref:Bodu.Financial.FinancialOptions> from the named configuration section. |
 | `AddFinancialService(IServiceCollection, Action<IFinancialServiceBuilder> configure)` | The same, with the builder configured imperatively by the delegate. |
 
 ## Composing the builder
 
-The chainable methods on <xref:Bodu.Financial.DependencyInjection.FinancialServiceBuilderExtensions> add the rest of the stack:
+The chainable `IFinancialServiceBuilder` extension methods (in the `Microsoft.Extensions.DependencyInjection` namespace) add the rest of the stack:
 
 | Builder method | Effect |
 |---|---|
@@ -38,7 +38,6 @@ The chainable methods on <xref:Bodu.Financial.DependencyInjection.FinancialServi
 | `AddFinancialJson(FinancialJsonPolicy policy = FinancialJsonPolicy.Strict)` | Registers the `System.Text.Json` converters under the chosen policy. |
 
 ```csharp
-using Bodu.Financial.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 
 builder.Services.AddFinancialService(configure: financial =>
@@ -106,13 +105,13 @@ services.AddFinancialService(financial =>
 });
 ```
 
-To group several providers behind one registration — prioritised fallback, averaging, or per-FX-pair routing — and add read-through caching, use the `Bodu.Financial.ExchangeRates.Caching.DependencyInjection` package's `AddAggregatedExchangeRateProvider(...)`, which registers an <xref:Bodu.Financial.ExchangeRates.Caching.AggregatingExchangeRateProvider> as the application's single <xref:Bodu.Financial.IDatedExchangeRateProvider>. `ExchangeRateLookupResult.Rate.Provider` records which source answered, so the audit trail survives the composition. See the [caching and aggregating guide](exchange-rate-caching.md#dependency-injection) for the full walkthrough.
+To group several providers behind one registration — prioritised fallback, averaging, or per-FX-pair routing — and add read-through caching, use `AddAggregatedExchangeRateProvider(...)` from the `Bodu.Financial.ExchangeRates.Caching` package (its DI registration ships in the package, in the `Microsoft.Extensions.DependencyInjection` namespace), which registers an <xref:Bodu.Financial.ExchangeRates.Caching.AggregatingExchangeRateProvider> as the application's single <xref:Bodu.Financial.IDatedExchangeRateProvider>. `ExchangeRateLookupResult.Rate.Provider` records which source answered, so the audit trail survives the composition. See the [caching and aggregating guide](exchange-rate-caching.md#dependency-injection) for the full walkthrough.
 
 Neither `AddFinancialService` overload registers an FX provider by default — an application that never crosses currencies pays nothing for the contract.
 
 ## Consuming the financial JSON options
 
-`AddFinancialJson(policy)` registers a configured `JsonSerializerOptions` as a keyed singleton under <xref:Bodu.Financial.DependencyInjection.FinancialServiceBuilderExtensions>`.JsonOptionsKey` (`"Financial"`), with the financial converters applied for the chosen <xref:Bodu.Financial.Serialization.FinancialJsonPolicy>:
+`AddFinancialJson(policy)` registers a configured `JsonSerializerOptions` as a keyed singleton under `FinancialServiceBuilderExtensions.JsonOptionsKey` (`"Financial"`), with the financial converters applied for the chosen <xref:Bodu.Financial.Serialization.FinancialJsonPolicy>:
 
 ```csharp
 JsonSerializerOptions financialJson =
@@ -124,7 +123,7 @@ string payload = JsonSerializer.Serialize(new Money<USD>(19.99m), financialJson)
 
 ## Binding options from configuration
 
-Passing an `IConfiguration` binds <xref:Bodu.Financial.DependencyInjection.FinancialOptions> — `JsonPolicy` and `UnknownCurrency` — from the named section (default `"Financial"`):
+Passing an `IConfiguration` binds <xref:Bodu.Financial.FinancialOptions> — `JsonPolicy` and `UnknownCurrency` — from the named section (default `"Financial"`):
 
 ```jsonc
 // appsettings.json
@@ -142,7 +141,7 @@ builder.Services.AddFinancialService(builder.Configuration);
 
 ## Activating static currency resolution
 
-`Bodu.Financial` exposes a static currency-resolution surface used by parsing and formatting. After the container is built, call <xref:Bodu.Financial.DependencyInjection.ServiceProviderExtensions> `UseCurrencyResolution` once so the resolved `ICurrencyLookup` backs that static surface:
+`Bodu.Financial` exposes a static currency-resolution surface used by parsing and formatting. After the container is built, call `UseCurrencyResolution` (an `IServiceProvider` extension in the `Microsoft.Extensions.DependencyInjection` namespace) once so the resolved `ICurrencyLookup` backs that static surface:
 
 ```csharp
 var app = builder.Build();
@@ -158,7 +157,6 @@ A complete wiring — host builder, financial registration, and a service that c
 ```csharp
 using Bodu.Financial;
 using Bodu.Financial.Currencies;
-using Bodu.Financial.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -233,5 +231,5 @@ Two registration details matter for tests:
 - [Bodu.Financial guides](index.md) — the member overview for this package.
 - [Numerics & Financial topic guides](../topics/numerics-and-financial.md) — every guide in the topic.
 - [Numerics & Financial topic overview](../../docs/topics/numerics-and-financial.md) — package boundaries and the decision table.
-- [`IFinancialServiceBuilder`](xref:Bodu.Financial.DependencyInjection.IFinancialServiceBuilder) · [`FinancialServiceBuilderExtensions`](xref:Bodu.Financial.DependencyInjection.FinancialServiceBuilderExtensions) · [`FinancialOptions`](xref:Bodu.Financial.DependencyInjection.FinancialOptions) · [`ServiceProviderExtensions`](xref:Bodu.Financial.DependencyInjection.ServiceProviderExtensions)
-- [Bodu.Financial.DependencyInjection API reference](xref:Bodu.Financial.DependencyInjection) — full namespace overview.
+- [`IFinancialServiceBuilder`](xref:Bodu.Financial.IFinancialServiceBuilder) · [`FinancialOptions`](xref:Bodu.Financial.FinancialOptions) — the builder and bound options (in `Bodu.Financial`).
+- [Bodu.Financial API reference](xref:Bodu.Financial) — full namespace overview; the `AddFinancialService` / builder / `UseCurrencyResolution` extension methods live in the `Microsoft.Extensions.DependencyInjection` namespace.

@@ -35,12 +35,12 @@ difference is the type you construct and its options.
 **Two construction styles.** The options-only constructor builds and **owns** an
 [`HttpClient`](xref:System.Net.Http.HttpClient); dispose the provider to release
 it. The constructor that takes an `HttpClient` uses the caller's client as-is and
-never disposes it — the form the dependency-injection package uses, backed by
+never disposes it — the form the dependency-injection registration uses, backed by
 `IHttpClientFactory`.
 
 ```csharp
 using Bodu.Financial;
-using Bodu.Financial.ExchangeRates.Rba;
+using Bodu.Financial.ExchangeRates;
 
 // The provider owns the HttpClient it builds from the options; dispose it to release the client.
 using var provider = new RbaExchangeRateProvider(new RbaExchangeRateOptions());
@@ -95,16 +95,16 @@ cache stores parsed, resolved rates in front of the provider.
 
 ## Reserve Bank of Australia (AUD)
 
-[`RbaExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.Rba.RbaExchangeRateProvider)
+[`RbaExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.RbaExchangeRateProvider)
 serves the RBA's published historical daily rates. The RBA splits its history into
 **eras**, each a published `.xls` workbook covering a span of dates; a range load
 fetches every era overlapping the request. Configure the eras, base URL, timeout,
 user agent, and disk cache through
-[`RbaExchangeRateOptions`](xref:Bodu.Financial.ExchangeRates.Rba.RbaExchangeRateOptions);
+[`RbaExchangeRateOptions`](xref:Bodu.Financial.ExchangeRates.RbaExchangeRateOptions);
 warm the store with `PreloadAsync`, `LoadEraAsync`, or `LoadRangeAsync`.
 
 ```csharp
-using Bodu.Financial.ExchangeRates.Rba;
+using Bodu.Financial.ExchangeRates;
 
 using var rba = new RbaExchangeRateProvider(new RbaExchangeRateOptions());
 await rba.LoadRangeAsync(new DateOnly(2023, 1, 1), new DateOnly(2026, 6, 30));
@@ -117,14 +117,14 @@ foreach (RbaSeriesInfo info in rba.GetAvailablePairs())
 
 ## European Central Bank (EUR)
 
-[`EcbExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.Ecb.EcbExchangeRateProvider)
+[`EcbExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.EcbExchangeRateProvider)
 serves the ECB euro foreign-exchange reference rates from the `eurofxref` XML feed.
 The feed carries the full published history, so one load covers every date it
 contains. Options are
-[`EcbExchangeRateOptions`](xref:Bodu.Financial.ExchangeRates.Ecb.EcbExchangeRateOptions).
+[`EcbExchangeRateOptions`](xref:Bodu.Financial.ExchangeRates.EcbExchangeRateOptions).
 
 ```csharp
-using Bodu.Financial.ExchangeRates.Ecb;
+using Bodu.Financial.ExchangeRates;
 
 using var ecb = new EcbExchangeRateProvider(new EcbExchangeRateOptions());
 await ecb.LoadRangeAsync(new DateOnly(2023, 1, 1), new DateOnly(2023, 12, 31));
@@ -135,14 +135,14 @@ ExchangeRateLookupResult inverse = ecb.GetRate("USD", "EUR", new DateOnly(2023, 
 
 ## Bank of England (GBP)
 
-[`BoeExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.Boe.BoeExchangeRateProvider)
+[`BoeExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.BoeExchangeRateProvider)
 serves the Bank of England daily spot rates, downloaded as CSV over a requested
 date **window**. A synchronous miss loads a window around the requested date;
 `LoadRangeAsync` warms an explicit range. Options are
-[`BoeExchangeRateOptions`](xref:Bodu.Financial.ExchangeRates.Boe.BoeExchangeRateOptions).
+[`BoeExchangeRateOptions`](xref:Bodu.Financial.ExchangeRates.BoeExchangeRateOptions).
 
 ```csharp
-using Bodu.Financial.ExchangeRates.Boe;
+using Bodu.Financial.ExchangeRates;
 
 using var boe = new BoeExchangeRateProvider(new BoeExchangeRateOptions());
 await boe.LoadRangeAsync(new DateOnly(2023, 1, 1), new DateOnly(2023, 12, 31));
@@ -152,14 +152,14 @@ ExchangeRateLookupResult gbp = boe.GetRate("GBP", "USD", new DateOnly(2023, 1, 3
 
 ## Yahoo Finance (any pair)
 
-[`YahooExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.Yahoo.YahooExchangeRateProvider)
+[`YahooExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.YahooExchangeRateProvider)
 fetches a Yahoo Finance chart per currency pair (the ticker `AUDUSD=X` for AUD/USD),
 so unlike the central-bank providers it serves arbitrary pairs rather than one base
 currency. Warm a pair over a window with `LoadPairAsync`. Options are
-[`YahooExchangeRateOptions`](xref:Bodu.Financial.ExchangeRates.Yahoo.YahooExchangeRateOptions).
+[`YahooExchangeRateOptions`](xref:Bodu.Financial.ExchangeRates.YahooExchangeRateOptions).
 
 ```csharp
-using Bodu.Financial.ExchangeRates.Yahoo;
+using Bodu.Financial.ExchangeRates;
 
 using var yahoo = new YahooExchangeRateProvider(new YahooExchangeRateOptions());
 await yahoo.LoadPairAsync("AUD", "USD", new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31));
@@ -169,14 +169,14 @@ ExchangeRateLookupResult aud = yahoo.GetRate("AUD", "USD", new DateOnly(2023, 1,
 
 ## OFX (any pair)
 
-[`OfxExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.Ofx.OfxExchangeRateProvider)
+[`OfxExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.OfxExchangeRateProvider)
 fetches the OFX (ofx.com) public spot-rate-history JSON service per currency pair,
 so like Yahoo it serves arbitrary pairs rather than one base currency. Warm a pair
 over a window with `LoadPairAsync`. Options are
-[`OfxExchangeRateOptions`](xref:Bodu.Financial.ExchangeRates.Ofx.OfxExchangeRateOptions).
+[`OfxExchangeRateOptions`](xref:Bodu.Financial.ExchangeRates.OfxExchangeRateOptions).
 
 ```csharp
-using Bodu.Financial.ExchangeRates.Ofx;
+using Bodu.Financial.ExchangeRates;
 
 using var ofx = new OfxExchangeRateProvider(new OfxExchangeRateOptions());
 await ofx.LoadPairAsync("USD", "AUD", new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31));
@@ -186,15 +186,16 @@ ExchangeRateLookupResult aud = ofx.GetRate("USD", "AUD", new DateOnly(2023, 1, 3
 
 ## Registering a provider with dependency injection
 
-Each provider has a companion `*.DependencyInjection` package whose extension method
-registers the provider on the [`IFinancialServiceBuilder`](xref:Bodu.Financial.DependencyInjection.IFinancialServiceBuilder),
+Each provider package ships its own DI registration — there is no separate
+`*.DependencyInjection` package. The `Add<Source>...` extension method registers the
+provider on the [`IFinancialServiceBuilder`](xref:Bodu.Financial.IFinancialServiceBuilder),
 backed by a named `HttpClient` with the standard Polly resilience handler, and
-resolvable as both the dated and timeless surfaces:
+resolvable as both the dated and timeless surfaces. The extension methods live in the
+`Microsoft.Extensions.DependencyInjection` namespace, so one `using` brings them all
+into scope:
 
 ```csharp
-using Bodu.Financial.DependencyInjection;
-using Bodu.Financial.ExchangeRates.Rba.DependencyInjection;
-using Bodu.Financial.ExchangeRates.Ecb.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 
 services.AddFinancialService()
         .AddRbaHistoricalRates(builder.Configuration)    // section Financial:Rba
@@ -210,7 +211,7 @@ to serve repeated lookups without re-hitting the source. The source must be
 registered first — the cached registration resolves it, it does not build it:
 
 ```csharp
-using Bodu.Financial.ExchangeRates.Caching.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 
 services.AddFinancialService()
         .AddRbaHistoricalRates()
@@ -239,8 +240,8 @@ fallback or averaging strategy, group them with the
 - [Caching and aggregating exchange rates](exchange-rate-caching.md) — adding a
   read-through cache and grouping providers.
 - [Exchange-rate types catalogue](exchange-types.md) — every FX type mapped to a scenario.
-- [`RbaExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.Rba.RbaExchangeRateProvider),
-  [`EcbExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.Ecb.EcbExchangeRateProvider),
-  [`BoeExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.Boe.BoeExchangeRateProvider),
-  [`YahooExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.Yahoo.YahooExchangeRateProvider),
-  [`OfxExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.Ofx.OfxExchangeRateProvider)
+- [`RbaExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.RbaExchangeRateProvider),
+  [`EcbExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.EcbExchangeRateProvider),
+  [`BoeExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.BoeExchangeRateProvider),
+  [`YahooExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.YahooExchangeRateProvider),
+  [`OfxExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.OfxExchangeRateProvider)
