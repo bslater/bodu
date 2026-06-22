@@ -10,7 +10,7 @@ using System.Globalization;
 using System.Text;
 using Bodu.IO.Compound.Builders;
 
-namespace Bodu.IO.Compound;
+namespace Bodu.IO.Compound.Internal;
 
 /// <summary>
 /// Serializes a mutable compound-file object model into the OLE2 / Compound File Binary byte layout.
@@ -89,9 +89,9 @@ internal static class CompoundContainerLayout
         long next = 0;
         long directoryStart = next;
         next += directorySectors;
-        uint miniFatStart = miniFatSectors > 0 ? (uint)next : CompoundFileHeader.EndOfChain;
+        uint miniFatStart = miniFatSectors > 0 ? (uint)next : CfbHeader.EndOfChain;
         next += miniFatSectors;
-        uint miniStreamStart = miniStreamSectors > 0 ? (uint)next : CompoundFileHeader.EndOfChain;
+        uint miniStreamStart = miniStreamSectors > 0 ? (uint)next : CfbHeader.EndOfChain;
         next += miniStreamSectors;
 
         foreach (Entry entry in entries)
@@ -115,7 +115,7 @@ internal static class CompoundContainerLayout
         long fatStart = dataSectorCount;
         long difatStart = dataSectorCount + fatSectors;
         long totalSectors = dataSectorCount + fatSectors + difatSectors;
-        if (totalSectors >= CompoundFileHeader.DifatSector)
+        if (totalSectors >= CfbHeader.DifatSector)
             throw new CompoundFileSerializationException(CompoundResourceStrings.Op_Invalid_CompoundBuilderTooLarge);
 
         var writer = new SectorWriter(destination, sectorSize);
@@ -220,13 +220,11 @@ internal static class CompoundContainerLayout
     /// <param name="sids">The sorted child stream identifiers.</param>
     /// <param name="lo">The inclusive lower bound.</param>
     /// <param name="hi">The inclusive upper bound.</param>
-    /// <returns>
-    /// The stream identifier of the subtree root, or <see cref="CompoundFileHeader.NoStream" /> when empty.
-    /// </returns>
+    /// <returns>The stream identifier of the subtree root, or <see cref="CfbHeader.NoStream" /> when empty.</returns>
     private static uint BuildTree(List<Entry> entries, List<int> sids, int lo, int hi)
     {
         if (lo > hi)
-            return CompoundFileHeader.NoStream;
+            return CfbHeader.NoStream;
 
         int mid = (lo + hi) / 2;
         int sid = sids[mid];
@@ -270,9 +268,9 @@ internal static class CompoundContainerLayout
         {
             long total = dataSectorCount + fatSectors + difatSectors;
             long newFat = CeilDiv(total, entriesPerSector);
-            long newDifat = newFat <= CompoundFileHeader.HeaderDifatCount
+            long newDifat = newFat <= CfbHeader.HeaderDifatCount
                 ? 0
-                : CeilDiv(newFat - CompoundFileHeader.HeaderDifatCount, entriesPerSector - 1);
+                : CeilDiv(newFat - CfbHeader.HeaderDifatCount, entriesPerSector - 1);
 
             if (newFat == fatSectors && newDifat == difatSectors)
                 return;
@@ -309,7 +307,7 @@ internal static class CompoundContainerLayout
     {
         Span<byte> h = stackalloc byte[512];
         h.Clear();
-        CompoundFileHeader.Signature.CopyTo(h);
+        CfbHeader.Signature.CopyTo(h);
         BinaryPrimitives.WriteUInt16LittleEndian(h.Slice(24), MinorVersion);
         BinaryPrimitives.WriteUInt16LittleEndian(h.Slice(26), (ushort)(isVersion4 ? 4 : 3));
         BinaryPrimitives.WriteUInt16LittleEndian(h.Slice(28), ByteOrderMarker);
@@ -319,15 +317,15 @@ internal static class CompoundContainerLayout
         BinaryPrimitives.WriteUInt32LittleEndian(h.Slice(44), (uint)fatSectors);
         BinaryPrimitives.WriteUInt32LittleEndian(h.Slice(48), (uint)directoryStart);
         BinaryPrimitives.WriteUInt32LittleEndian(h.Slice(56), MiniStreamCutoff);
-        BinaryPrimitives.WriteUInt32LittleEndian(h.Slice(60), miniFatSectors > 0 ? miniFatStart : CompoundFileHeader.EndOfChain);
+        BinaryPrimitives.WriteUInt32LittleEndian(h.Slice(60), miniFatSectors > 0 ? miniFatStart : CfbHeader.EndOfChain);
         BinaryPrimitives.WriteUInt32LittleEndian(h.Slice(64), (uint)miniFatSectors);
-        BinaryPrimitives.WriteUInt32LittleEndian(h.Slice(68), difatSectors > 0 ? (uint)difatStart : CompoundFileHeader.EndOfChain);
+        BinaryPrimitives.WriteUInt32LittleEndian(h.Slice(68), difatSectors > 0 ? (uint)difatStart : CfbHeader.EndOfChain);
         BinaryPrimitives.WriteUInt32LittleEndian(h.Slice(72), (uint)difatSectors);
 
-        long inlineCount = Math.Min(fatSectors, CompoundFileHeader.HeaderDifatCount);
-        for (int i = 0; i < CompoundFileHeader.HeaderDifatCount; i++)
+        long inlineCount = Math.Min(fatSectors, CfbHeader.HeaderDifatCount);
+        for (int i = 0; i < CfbHeader.HeaderDifatCount; i++)
         {
-            uint value = i < inlineCount ? (uint)(fatStart + i) : CompoundFileHeader.FreeSector;
+            uint value = i < inlineCount ? (uint)(fatStart + i) : CfbHeader.FreeSector;
             BinaryPrimitives.WriteUInt32LittleEndian(h.Slice(76 + (i * 4)), value);
         }
 
@@ -437,10 +435,10 @@ internal static class CompoundContainerLayout
         }
 
         for (long i = 0; i < fatSectors; i++)
-            writer.WriteUInt32(CompoundFileHeader.FatSector);
+            writer.WriteUInt32(CfbHeader.FatSector);
 
         for (long i = 0; i < difatSectors; i++)
-            writer.WriteUInt32(CompoundFileHeader.DifatSector);
+            writer.WriteUInt32(CfbHeader.DifatSector);
 
         long totalSectors = dataSectorCount + fatSectors + difatSectors;
         WriteFree(writer, (fatSectors * entriesPerSector) - totalSectors);
@@ -458,16 +456,16 @@ internal static class CompoundContainerLayout
     private static void EmitDifat(SectorWriter writer, long fatStart, long fatSectors, long difatStart, long difatSectors, int entriesPerSector)
     {
         int slotsPerSector = entriesPerSector - 1;
-        long fatIndex = CompoundFileHeader.HeaderDifatCount;
+        long fatIndex = CfbHeader.HeaderDifatCount;
         for (long s = 0; s < difatSectors; s++)
         {
             for (int j = 0; j < slotsPerSector; j++)
             {
-                writer.WriteUInt32(fatIndex < fatSectors ? (uint)(fatStart + fatIndex) : CompoundFileHeader.FreeSector);
+                writer.WriteUInt32(fatIndex < fatSectors ? (uint)(fatStart + fatIndex) : CfbHeader.FreeSector);
                 fatIndex++;
             }
 
-            writer.WriteUInt32(s == difatSectors - 1 ? CompoundFileHeader.EndOfChain : (uint)(difatStart + s + 1));
+            writer.WriteUInt32(s == difatSectors - 1 ? CfbHeader.EndOfChain : (uint)(difatStart + s + 1));
         }
     }
 
@@ -480,7 +478,7 @@ internal static class CompoundContainerLayout
     private static void WriteChain(SectorWriter writer, uint start, long count)
     {
         for (long i = 0; i < count; i++)
-            writer.WriteUInt32(i == count - 1 ? CompoundFileHeader.EndOfChain : (uint)(start + i + 1));
+            writer.WriteUInt32(i == count - 1 ? CfbHeader.EndOfChain : (uint)(start + i + 1));
     }
 
     /// <summary>
@@ -491,7 +489,7 @@ internal static class CompoundContainerLayout
     private static void WriteFree(SectorWriter writer, long count)
     {
         for (long i = 0; i < count; i++)
-            writer.WriteUInt32(CompoundFileHeader.FreeSector);
+            writer.WriteUInt32(CfbHeader.FreeSector);
     }
 
     /// <summary>
@@ -689,22 +687,22 @@ internal static class CompoundContainerLayout
         /// <summary>
         /// Gets or sets the starting sector or mini-sector identifier.
         /// </summary>
-        public uint StartSector { get; set; } = CompoundFileHeader.EndOfChain;
+        public uint StartSector { get; set; } = CfbHeader.EndOfChain;
 
         /// <summary>
         /// Gets or sets the left-sibling stream identifier.
         /// </summary>
-        public uint LeftSibling { get; set; } = CompoundFileHeader.NoStream;
+        public uint LeftSibling { get; set; } = CfbHeader.NoStream;
 
         /// <summary>
         /// Gets or sets the right-sibling stream identifier.
         /// </summary>
-        public uint RightSibling { get; set; } = CompoundFileHeader.NoStream;
+        public uint RightSibling { get; set; } = CfbHeader.NoStream;
 
         /// <summary>
         /// Gets or sets the child-tree root stream identifier.
         /// </summary>
-        public uint ChildId { get; set; } = CompoundFileHeader.NoStream;
+        public uint ChildId { get; set; } = CfbHeader.NoStream;
 
         /// <summary>
         /// Gets a value indicating whether the entry is a stream stored in the mini stream.

@@ -6,6 +6,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using Bodu.IO.Compound.Internal;
 using Bodu.IO.Compound.PropertySets;
 
 namespace Bodu.IO.Compound;
@@ -71,16 +72,16 @@ public sealed class CompoundFile
     private readonly bool _leaveOpen;
 
     /// <summary>The parsed header.</summary>
-    private readonly CompoundFileHeader _header;
+    private readonly CfbHeader _header;
 
     /// <summary>The random-access byte source backing the reader.</summary>
-    private readonly CompoundDataSource _dataSource;
+    private readonly CfbDataSource _dataSource;
 
     /// <summary>The sector reader used to materialize stream payloads.</summary>
-    private readonly CompoundSectorReader _sectors;
+    private readonly CfbSectorReader _sectors;
 
     /// <summary>The parsed directory and storage hierarchy.</summary>
-    private readonly CompoundDirectory _directory;
+    private readonly CfbDirectory _directory;
 
     /// <summary>Whether stream payloads are read on demand rather than from a fully buffered file.</summary>
     private readonly bool _streaming;
@@ -99,7 +100,7 @@ public sealed class CompoundFile
     /// <exception cref="CompoundFileFormatException">
     /// Thrown when the content is not a well-formed compound file.
     /// </exception>
-    private CompoundFile(Stream source, bool leaveOpen, CompoundFileMode mode, CompoundDataSource dataSource, bool streaming)
+    private CompoundFile(Stream source, bool leaveOpen, CompoundFileMode mode, CfbDataSource dataSource, bool streaming)
     {
         _source = source;
         _leaveOpen = leaveOpen;
@@ -110,11 +111,11 @@ public sealed class CompoundFile
         int headLength = (int)Math.Min(HeaderLength, dataSource.Length);
         Span<byte> head = stackalloc byte[HeaderLength];
         dataSource.Read(0, head.Slice(0, headLength));
-        _header = CompoundFileHeader.Parse(head.Slice(0, headLength));
-        _sectors = new CompoundSectorReader(dataSource, _header);
+        _header = CfbHeader.Parse(head.Slice(0, headLength));
+        _sectors = new CfbSectorReader(dataSource, _header);
 
         byte[] directoryBytes = _sectors.ReadChainToEnd(_header.FirstDirectorySector);
-        _directory = new CompoundDirectory(directoryBytes, _header);
+        _directory = new CfbDirectory(directoryBytes, _header);
 
         if (_directory.Root.Size > 0)
             _sectors.InitializeMiniStream(_directory.Root.StartSector, _directory.Root.Size);
@@ -189,12 +190,12 @@ public sealed class CompoundFile
         }
 
         if (buffered)
-            return new CompoundFile(stream, leaveOpen, mode, new CompoundArrayDataSource(ReadAllBytes(stream)), streaming: false);
+            return new CompoundFile(stream, leaveOpen, mode, new CfbArrayDataSource(ReadAllBytes(stream)), streaming: false);
 
         if (!stream.CanSeek)
             throw new ArgumentException(CompoundResourceStrings.Arg_Invalid_CompoundStreamNotSeekable, nameof(stream));
 
-        return new CompoundFile(stream, leaveOpen, mode, new CompoundStreamDataSource(stream), streaming: true);
+        return new CompoundFile(stream, leaveOpen, mode, new CfbStreamDataSource(stream), streaming: true);
     }
 
     /// <summary>
@@ -291,7 +292,7 @@ public sealed class CompoundFile
     /// <see langword="false" />.
     /// </returns>
     public static bool IsCompoundFile(ReadOnlySpan<byte> data) =>
-        data.Length >= SignatureLength && data.Slice(0, SignatureLength).SequenceEqual(CompoundFileHeader.Signature);
+        data.Length >= SignatureLength && data.Slice(0, SignatureLength).SequenceEqual(CfbHeader.Signature);
 
     /// <summary>
     /// Attempts to read the standard summary-information property set from the root storage.
@@ -363,7 +364,7 @@ public sealed class CompoundFile
     /// <returns>A <see cref="CompoundStream" /> positioned at the start of the payload.</returns>
     /// <exception cref="ObjectDisposedException">Thrown when the file has been disposed.</exception>
     /// <exception cref="CompoundFileFormatException">Thrown when the stream's sector chain is malformed.</exception>
-    internal CompoundStream OpenStream(CompoundDirectoryEntry entry)
+    internal CompoundStream OpenStream(CfbDirectoryEntry entry)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
 
@@ -379,17 +380,17 @@ public sealed class CompoundFile
     /// </summary>
     /// <param name="sid">The stream identifier to resolve.</param>
     /// <returns>The entry, or <see langword="null" /> when the slot is unallocated.</returns>
-    internal CompoundDirectoryEntry? GetEntry(int sid) =>
+    internal CfbDirectoryEntry? GetEntry(int sid) =>
         _directory.GetEntry(sid);
 
     /// <summary>
     /// Materializes the byte payload of a stream entry, choosing the mini-FAT or regular FAT based on its size.
     /// </summary>
     /// <param name="entry">The stream entry to materialize.</param>
-    /// <returns>The materialized payload, exactly <see cref="CompoundDirectoryEntry.Size" /> bytes long.</returns>
+    /// <returns>The materialized payload, exactly <see cref="CfbDirectoryEntry.Size" /> bytes long.</returns>
     /// <exception cref="ObjectDisposedException">Thrown when the file has been disposed.</exception>
     /// <exception cref="CompoundFileFormatException">Thrown when the stream's sector chain is malformed.</exception>
-    internal byte[] Materialize(CompoundDirectoryEntry entry)
+    internal byte[] Materialize(CfbDirectoryEntry entry)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
 

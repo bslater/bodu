@@ -1,12 +1,12 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CompoundSectorReader.cs" company="Bodu Pty. Ltd.">
+// <copyright file="CfbSectorReader.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Buffers.Binary;
 
-namespace Bodu.IO.Compound;
+namespace Bodu.IO.Compound.Internal;
 
 /// <summary>
 /// Resolves sector chains within a compound file, translating the regular FAT and the mini-FAT into contiguous stream
@@ -17,13 +17,13 @@ namespace Bodu.IO.Compound;
 /// <see cref="InitializeMiniStream(uint, long)" /> once the root storage entry has been located, because the mini
 /// stream is itself stored as the root entry's regular-sector chain.
 /// </remarks>
-internal sealed class CompoundSectorReader
+internal sealed class CfbSectorReader
 {
     /// <summary>The random-access source of compound-file bytes.</summary>
-    private readonly CompoundDataSource _source;
+    private readonly CfbDataSource _source;
 
     /// <summary>The parsed header providing sector sizes and entry points.</summary>
-    private readonly CompoundFileHeader _header;
+    private readonly CfbHeader _header;
 
     /// <summary>The materialized regular file-allocation table.</summary>
     private readonly uint[] _fat;
@@ -35,14 +35,14 @@ internal sealed class CompoundSectorReader
     private byte[]? _miniStream;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CompoundSectorReader" /> class and builds the regular FAT.
+    /// Initializes a new instance of the <see cref="CfbSectorReader" /> class and builds the regular FAT.
     /// </summary>
     /// <param name="source">The random-access source of compound-file bytes.</param>
     /// <param name="header">The parsed compound-file header.</param>
     /// <exception cref="CompoundFileFormatException">
     /// Thrown when the FAT cannot be assembled from the declared layout.
     /// </exception>
-    internal CompoundSectorReader(CompoundDataSource source, CompoundFileHeader header)
+    internal CfbSectorReader(CfbDataSource source, CfbHeader header)
     {
         _source = source;
         _header = header;
@@ -69,7 +69,7 @@ internal sealed class CompoundSectorReader
     /// </exception>
     internal byte[] ReadChain(uint startSector, long size)
     {
-        if (size <= 0 || startSector == CompoundFileHeader.EndOfChain)
+        if (size <= 0 || startSector == CfbHeader.EndOfChain)
             return [];
 
         byte[] chain = ReadChainToEnd(startSector);
@@ -93,7 +93,7 @@ internal sealed class CompoundSectorReader
     /// </exception>
     internal byte[] ReadChainToEnd(uint startSector)
     {
-        if (startSector == CompoundFileHeader.EndOfChain)
+        if (startSector == CfbHeader.EndOfChain)
             return [];
 
         using MemoryStream buffer = new();
@@ -101,7 +101,7 @@ internal sealed class CompoundSectorReader
         uint sector = startSector;
         int guard = 0;
 
-        while (sector != CompoundFileHeader.EndOfChain)
+        while (sector != CfbHeader.EndOfChain)
         {
             CompoundThrowHelper.ThrowFormatIf(
                 sector >= (uint)_fat.Length,
@@ -129,13 +129,13 @@ internal sealed class CompoundSectorReader
     /// </exception>
     internal uint[] GetSectorChain(uint startSector)
     {
-        if (startSector == CompoundFileHeader.EndOfChain)
+        if (startSector == CfbHeader.EndOfChain)
             return [];
 
         List<uint> chain = new();
         uint sector = startSector;
 
-        while (sector != CompoundFileHeader.EndOfChain)
+        while (sector != CfbHeader.EndOfChain)
         {
             CompoundThrowHelper.ThrowFormatIf(
                 sector >= (uint)_fat.Length,
@@ -208,7 +208,7 @@ internal sealed class CompoundSectorReader
     /// </exception>
     internal byte[] ReadMiniChain(uint startMiniSector, long size)
     {
-        if (size <= 0 || startMiniSector == CompoundFileHeader.EndOfChain)
+        if (size <= 0 || startMiniSector == CfbHeader.EndOfChain)
             return [];
 
         if (_miniFat is null || _miniStream is null)
@@ -218,7 +218,7 @@ internal sealed class CompoundSectorReader
         uint sector = startMiniSector;
         int guard = 0;
 
-        while (sector != CompoundFileHeader.EndOfChain)
+        while (sector != CfbHeader.EndOfChain)
         {
             CompoundThrowHelper.ThrowFormatIf(
                 sector >= (uint)_miniFat!.Length,
@@ -303,7 +303,7 @@ internal sealed class CompoundSectorReader
         int guard = 0;
         Span<byte> scratch = stackalloc byte[_header.SectorSize];
 
-        while (difatSector != CompoundFileHeader.EndOfChain && difatSector != CompoundFileHeader.FreeSector)
+        while (difatSector != CfbHeader.EndOfChain && difatSector != CfbHeader.FreeSector)
         {
             CompoundThrowHelper.ThrowFormatIf(guard++ > (_source.Length / _header.SectorSize) + 1, CompoundResourceStrings.Format_Invalid_CompoundDirectory, CompoundFileError.InvalidDifat);
 
@@ -338,8 +338,8 @@ internal sealed class CompoundSectorReader
     /// <see langword="true" /> when <paramref name="id" /> is a regular sector; otherwise <see langword="false" />.
     /// </returns>
     private static bool IsRegularSector(uint id) =>
-        id is not CompoundFileHeader.FreeSector
-            and not CompoundFileHeader.EndOfChain
-            and not CompoundFileHeader.FatSector
-            and not CompoundFileHeader.DifatSector;
+        id is not CfbHeader.FreeSector
+            and not CfbHeader.EndOfChain
+            and not CfbHeader.FatSector
+            and not CfbHeader.DifatSector;
 }

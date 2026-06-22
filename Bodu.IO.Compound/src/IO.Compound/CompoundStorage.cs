@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Diagnostics.CodeAnalysis;
+using Bodu.IO.Compound.Internal;
 using Bodu.IO.Compound.PropertySets;
 
 namespace Bodu.IO.Compound;
@@ -34,14 +35,14 @@ public sealed class CompoundStorage
     private readonly CompoundFile _file;
 
     /// <summary>The directory entry this storage wraps.</summary>
-    private readonly CompoundDirectoryEntry _entry;
+    private readonly CfbDirectoryEntry _entry;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CompoundStorage" /> class.
     /// </summary>
     /// <param name="file">The owning compound file.</param>
     /// <param name="entry">The directory entry the storage wraps.</param>
-    internal CompoundStorage(CompoundFile file, CompoundDirectoryEntry entry)
+    internal CompoundStorage(CompoundFile file, CfbDirectoryEntry entry)
     {
         _file = file;
         _entry = entry;
@@ -65,7 +66,7 @@ public sealed class CompoundStorage
     /// <returns>A sequence of <see cref="CompoundEntryInfo" /> for the child storages and streams.</returns>
     public IEnumerable<CompoundEntryInfo> EnumerateEntries()
     {
-        foreach (CompoundDirectoryEntry child in Children())
+        foreach (CfbDirectoryEntry child in Children())
             yield return child.ToEntryInfo();
     }
 
@@ -75,7 +76,7 @@ public sealed class CompoundStorage
     /// <returns>A sequence of child <see cref="CompoundStorage" /> objects.</returns>
     public IEnumerable<CompoundStorage> EnumerateStorages()
     {
-        foreach (CompoundDirectoryEntry child in Children())
+        foreach (CfbDirectoryEntry child in Children())
         {
             if (child.Type is CompoundEntryType.Storage or CompoundEntryType.RootStorage)
                 yield return new CompoundStorage(_file, child);
@@ -88,7 +89,7 @@ public sealed class CompoundStorage
     /// <returns>A sequence of child <see cref="CompoundStreamEntry" /> objects.</returns>
     public IEnumerable<CompoundStreamEntry> EnumerateStreams()
     {
-        foreach (CompoundDirectoryEntry child in Children())
+        foreach (CfbDirectoryEntry child in Children())
         {
             if (child.Type == CompoundEntryType.Stream)
                 yield return new CompoundStreamEntry(_file, child);
@@ -144,7 +145,7 @@ public sealed class CompoundStorage
     {
         ThrowHelper.ThrowIfNull(name);
 
-        CompoundDirectoryEntry? entry = FindChild(name, CompoundEntryType.Storage);
+        CfbDirectoryEntry? entry = FindChild(name, CompoundEntryType.Storage);
         if (entry is not null)
         {
             storage = new CompoundStorage(_file, entry);
@@ -172,7 +173,7 @@ public sealed class CompoundStorage
     {
         ThrowHelper.ThrowIfNull(name);
 
-        CompoundDirectoryEntry? entry = FindChild(name, CompoundEntryType.Stream);
+        CfbDirectoryEntry? entry = FindChild(name, CompoundEntryType.Stream);
         if (entry is not null)
         {
             stream = new CompoundStreamEntry(_file, entry);
@@ -216,11 +217,11 @@ public sealed class CompoundStorage
     /// Enumerates the resolved directory entries of this storage's direct children.
     /// </summary>
     /// <returns>A sequence of child directory entries, in directory order.</returns>
-    private IEnumerable<CompoundDirectoryEntry> Children()
+    private IEnumerable<CfbDirectoryEntry> Children()
     {
         foreach (int sid in _entry.Children)
         {
-            CompoundDirectoryEntry? child = _file.GetEntry(sid);
+            CfbDirectoryEntry? child = _file.GetEntry(sid);
             if (child is not null)
                 yield return child;
         }
@@ -232,9 +233,9 @@ public sealed class CompoundStorage
     /// <param name="name">The child name, compared using the case-insensitive compound-file relationship.</param>
     /// <param name="type">The required entry type.</param>
     /// <returns>The matching child entry, or <see langword="null" /> when none matches.</returns>
-    private CompoundDirectoryEntry? FindChild(string name, CompoundEntryType type)
+    private CfbDirectoryEntry? FindChild(string name, CompoundEntryType type)
     {
-        foreach (CompoundDirectoryEntry child in Children())
+        foreach (CfbDirectoryEntry child in Children())
         {
             if (child.Type == type && CompoundNameComparer.Instance.Equals(child.Name, name))
                 return child;

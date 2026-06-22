@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.IO.Compound.Internal;
+
 namespace Bodu.IO.Compound;
 
 /// <summary>
@@ -46,14 +48,14 @@ public sealed class CompoundStreamEntry
     private readonly CompoundFile _file;
 
     /// <summary>The directory entry this stream wraps.</summary>
-    private readonly CompoundDirectoryEntry _entry;
+    private readonly CfbDirectoryEntry _entry;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CompoundStreamEntry" /> class.
     /// </summary>
     /// <param name="file">The owning compound file.</param>
     /// <param name="entry">The directory entry the stream wraps.</param>
-    internal CompoundStreamEntry(CompoundFile file, CompoundDirectoryEntry entry)
+    internal CompoundStreamEntry(CompoundFile file, CfbDirectoryEntry entry)
     {
         _file = file;
         _entry = entry;

@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CompoundDirectory.cs" company="Bodu Pty. Ltd.">
+// <copyright file="CfbDirectory.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -7,7 +7,7 @@
 using System.Buffers.Binary;
 using System.Text;
 
-namespace Bodu.IO.Compound;
+namespace Bodu.IO.Compound.Internal;
 
 /// <summary>
 /// Parses the directory chain of a compound file and reconstructs the storage hierarchy from the red-black tree links
@@ -19,7 +19,7 @@ namespace Bodu.IO.Compound;
 /// type performs the flat parse and then walks the trees once, recording each entry's direct children, guarding against
 /// cyclic or out-of-range links.
 /// </remarks>
-internal sealed class CompoundDirectory
+internal sealed class CfbDirectory
 {
     /// <summary>The fixed size, in bytes, of a single directory entry.</summary>
     internal const int DirectoryEntrySize = 128;
@@ -28,18 +28,18 @@ internal sealed class CompoundDirectory
     private const int RootSid = 0;
 
     /// <summary>The parsed entries indexed by stream identifier; unallocated slots are <see langword="null" />.</summary>
-    private readonly CompoundDirectoryEntry?[] _entries;
+    private readonly CfbDirectoryEntry?[] _entries;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CompoundDirectory" /> class by parsing the directory bytes and
-    /// building the storage hierarchy.
+    /// Initializes a new instance of the <see cref="CfbDirectory" /> class by parsing the directory bytes and building
+    /// the storage hierarchy.
     /// </summary>
     /// <param name="directory">The full byte content of the directory chain.</param>
     /// <param name="header">The parsed compound-file header.</param>
     /// <exception cref="CompoundFileFormatException">
     /// Thrown when the directory is malformed, lacks a root storage, or contains cyclic or out-of-range tree links.
     /// </exception>
-    internal CompoundDirectory(byte[] directory, CompoundFileHeader header)
+    internal CfbDirectory(byte[] directory, CfbHeader header)
     {
         _entries = ParseEntries(directory, header);
 
@@ -56,7 +56,7 @@ internal sealed class CompoundDirectory
     /// Gets the root storage entry that anchors the directory hierarchy.
     /// </summary>
     /// <returns>The root storage entry.</returns>
-    internal CompoundDirectoryEntry Root { get; }
+    internal CfbDirectoryEntry Root { get; }
 
     /// <summary>
     /// Gets the entry with the specified stream identifier.
@@ -65,7 +65,7 @@ internal sealed class CompoundDirectory
     /// <returns>
     /// The entry at <paramref name="sid" />, or <see langword="null" /> when the slot is unallocated.
     /// </returns>
-    internal CompoundDirectoryEntry? GetEntry(int sid) =>
+    internal CfbDirectoryEntry? GetEntry(int sid) =>
         (uint)sid < (uint)_entries.Length ? _entries[sid] : null;
 
     /// <summary>
@@ -74,10 +74,10 @@ internal sealed class CompoundDirectory
     /// <param name="directory">The directory byte content.</param>
     /// <param name="header">The parsed compound-file header.</param>
     /// <returns>The parsed entries indexed by stream identifier.</returns>
-    private static CompoundDirectoryEntry?[] ParseEntries(byte[] directory, CompoundFileHeader header)
+    private static CfbDirectoryEntry?[] ParseEntries(byte[] directory, CfbHeader header)
     {
         int count = directory.Length / DirectoryEntrySize;
-        CompoundDirectoryEntry?[] entries = new CompoundDirectoryEntry?[count];
+        CfbDirectoryEntry?[] entries = new CfbDirectoryEntry?[count];
 
         for (int sid = 0; sid < count; sid++)
         {
@@ -112,7 +112,7 @@ internal sealed class CompoundDirectory
             // Version-3 files (512-byte sectors) store the size in the low 32 bits; the high DWORD must be ignored.
             long size = header.SectorSize == 512 ? (long)(rawSize & 0xFFFFFFFF) : (long)rawSize;
 
-            entries[sid] = new CompoundDirectoryEntry(
+            entries[sid] = new CfbDirectoryEntry(
                 sid, name, type, color, left, right, child, classId, stateBits, creationFileTime, modifiedFileTime, startSector, size);
         }
 
@@ -128,17 +128,17 @@ internal sealed class CompoundDirectory
     private void BuildChildren()
     {
         bool[] visited = new bool[_entries.Length];
-        Queue<CompoundDirectoryEntry> storages = new();
+        Queue<CfbDirectoryEntry> storages = new();
         storages.Enqueue(Root);
 
         while (storages.Count > 0)
         {
-            CompoundDirectoryEntry storage = storages.Dequeue();
+            CfbDirectoryEntry storage = storages.Dequeue();
             CollectChildren(storage.ChildId, storage.Children, visited);
 
             foreach (int childSid in storage.Children)
             {
-                CompoundDirectoryEntry child = _entries[childSid]!;
+                CfbDirectoryEntry child = _entries[childSid]!;
                 if (child.Type is CompoundEntryType.Storage or CompoundEntryType.RootStorage)
                     storages.Enqueue(child);
             }
@@ -149,9 +149,7 @@ internal sealed class CompoundDirectory
     /// Performs an in-order traversal of a child red-black tree, appending each node's stream identifier to
     /// <paramref name="children" /> in canonical order.
     /// </summary>
-    /// <param name="sid">
-    /// The stream identifier of the subtree root, or <see cref="CompoundFileHeader.NoStream" />.
-    /// </param>
+    /// <param name="sid">The stream identifier of the subtree root, or <see cref="CfbHeader.NoStream" />.</param>
     /// <param name="children">The list receiving the ordered child stream identifiers.</param>
     /// <param name="visited">Tracks visited stream identifiers to detect cycles and shared nodes.</param>
     /// <exception cref="CompoundFileFormatException">
@@ -159,7 +157,7 @@ internal sealed class CompoundDirectory
     /// </exception>
     private void CollectChildren(uint sid, List<int> children, bool[] visited)
     {
-        if (sid == CompoundFileHeader.NoStream)
+        if (sid == CfbHeader.NoStream)
             return;
 
         CompoundThrowHelper.ThrowFormatIf(
@@ -168,7 +166,7 @@ internal sealed class CompoundDirectory
             CompoundFileError.DirectoryCycle);
 
         visited[sid] = true;
-        CompoundDirectoryEntry entry = _entries[sid]!;
+        CfbDirectoryEntry entry = _entries[sid]!;
 
         CollectChildren(entry.LeftSiblingId, children, visited);
         children.Add((int)sid);

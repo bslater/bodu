@@ -1,10 +1,10 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CompoundDataSource.cs" company="Bodu Pty. Ltd.">
+// <copyright file="CfbDataSource.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.IO.Compound;
+namespace Bodu.IO.Compound.Internal;
 
 /// <summary>
 /// Provides random access to the raw bytes of a compound file, abstracting whether the content is held in memory or
@@ -15,7 +15,7 @@ namespace Bodu.IO.Compound;
 /// reads the requested range into a caller-supplied buffer. This lets the sector reader serve both a buffered file and
 /// a bounded-memory streaming file through one interface.
 /// </remarks>
-internal abstract class CompoundDataSource
+internal abstract class CfbDataSource
     : IDisposable
 {
     /// <summary>

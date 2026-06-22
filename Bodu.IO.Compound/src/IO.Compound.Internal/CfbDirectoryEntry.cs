@@ -1,40 +1,40 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CompoundDirectoryEntry.cs" company="Bodu Pty. Ltd.">
+// <copyright file="CfbDirectoryEntry.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.IO.Compound;
+namespace Bodu.IO.Compound.Internal;
 
 /// <summary>
 /// Represents a single parsed entry of a compound file's directory, retaining the red-black tree links and full
 /// metadata needed to reconstruct the storage hierarchy.
 /// </summary>
 /// <remarks>
-/// Instances are produced by <see cref="CompoundDirectory" /> while reading the directory chain. The type is internal
-/// and mutable so the directory builder can populate the resolved child list after parsing; the public surface exposes
-/// only the immutable <see cref="CompoundEntryInfo" /> projection returned by <see cref="ToEntryInfo" />.
+/// Instances are produced by <see cref="CfbDirectory" /> while reading the directory chain. The type is internal and
+/// mutable so the directory builder can populate the resolved child list after parsing; the public surface exposes only
+/// the immutable <see cref="CompoundEntryInfo" /> projection returned by <see cref="ToEntryInfo" />.
 /// </remarks>
-internal sealed class CompoundDirectoryEntry
+internal sealed class CfbDirectoryEntry
 {
     /// <summary>The largest Windows FILETIME that maps to a representable <see cref="DateTime" />.</summary>
     private static readonly long s_maxFileTime = DateTime.MaxValue.ToFileTimeUtc();
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CompoundDirectoryEntry" /> class.
+    /// Initializes a new instance of the <see cref="CfbDirectoryEntry" /> class.
     /// </summary>
     /// <param name="sid">The zero-based stream identifier (directory index) of the entry.</param>
     /// <param name="name">The entry name as stored in the directory.</param>
     /// <param name="type">The kind of object the entry describes.</param>
     /// <param name="color">The red-black tree node color of the entry.</param>
     /// <param name="leftSiblingId">
-    /// The stream identifier of the left sibling, or <see cref="CompoundFileHeader.NoStream" />.
+    /// The stream identifier of the left sibling, or <see cref="CfbHeader.NoStream" />.
     /// </param>
     /// <param name="rightSiblingId">
-    /// The stream identifier of the right sibling, or <see cref="CompoundFileHeader.NoStream" />.
+    /// The stream identifier of the right sibling, or <see cref="CfbHeader.NoStream" />.
     /// </param>
     /// <param name="childId">
-    /// The stream identifier of the child-tree root, or <see cref="CompoundFileHeader.NoStream" />.
+    /// The stream identifier of the child-tree root, or <see cref="CfbHeader.NoStream" />.
     /// </param>
     /// <param name="classId">The class identifier (CLSID) recorded for the entry.</param>
     /// <param name="stateBits">The user-defined state bits recorded for the entry.</param>
@@ -42,7 +42,7 @@ internal sealed class CompoundDirectoryEntry
     /// <param name="modifiedFileTime">The raw last-modified Windows FILETIME.</param>
     /// <param name="startSector">The first sector (or mini sector) of the entry's payload.</param>
     /// <param name="size">The payload size, in bytes.</param>
-    internal CompoundDirectoryEntry(
+    internal CfbDirectoryEntry(
         int sid,
         string name,
         CompoundEntryType type,
@@ -100,20 +100,20 @@ internal sealed class CompoundDirectoryEntry
     /// <summary>
     /// Gets the stream identifier of the left sibling in the parent's child tree.
     /// </summary>
-    /// <returns>The left-sibling identifier, or <see cref="CompoundFileHeader.NoStream" /> when absent.</returns>
+    /// <returns>The left-sibling identifier, or <see cref="CfbHeader.NoStream" /> when absent.</returns>
     internal uint LeftSiblingId { get; }
 
     /// <summary>
     /// Gets the stream identifier of the right sibling in the parent's child tree.
     /// </summary>
-    /// <returns>The right-sibling identifier, or <see cref="CompoundFileHeader.NoStream" /> when absent.</returns>
+    /// <returns>The right-sibling identifier, or <see cref="CfbHeader.NoStream" /> when absent.</returns>
     internal uint RightSiblingId { get; }
 
     /// <summary>
     /// Gets the stream identifier of the root of this entry's child tree.
     /// </summary>
     /// <returns>
-    /// The child-tree root identifier, or <see cref="CompoundFileHeader.NoStream" /> when the entry has no children.
+    /// The child-tree root identifier, or <see cref="CfbHeader.NoStream" /> when the entry has no children.
     /// </returns>
     internal uint ChildId { get; }
 

@@ -7,6 +7,7 @@
 using System.Buffers.Binary;
 using System.Text;
 using Bodu.IO.Compound.Builders;
+using Bodu.IO.Compound.Internal;
 using Bodu.Test;
 
 namespace Bodu.IO.Compound;
@@ -42,7 +43,7 @@ public class CompoundSynthesizedCorruptionTests
     {
         // A 5000-byte stream is a regular (non-mini) stream; inflating its size keeps it on the regular-chain path.
         byte[] bytes = BuildSingleStream("Big", 5000);
-        CompoundFileHeader header = CompoundFileHeader.Parse(bytes);
+        CfbHeader header = CfbHeader.Parse(bytes);
         int entry = FindEntryOffset(bytes, header, "Big");
 
         BinaryPrimitives.WriteUInt64LittleEndian(bytes.AsSpan(entry + SizeOffset), 200_000);
@@ -64,7 +65,7 @@ public class CompoundSynthesizedCorruptionTests
     {
         // A 100-byte stream is stored in the mini stream, so it is resolved through the mini-FAT.
         byte[] bytes = BuildSingleStream("Small", 100);
-        CompoundFileHeader header = CompoundFileHeader.Parse(bytes);
+        CfbHeader header = CfbHeader.Parse(bytes);
         int entry = FindEntryOffset(bytes, header, "Small");
 
         uint startMiniSector = BinaryPrimitives.ReadUInt32LittleEndian(bytes.AsSpan(entry + StartSectorOffset));
@@ -105,7 +106,7 @@ public class CompoundSynthesizedCorruptionTests
     /// <param name="name">The entry name to find.</param>
     /// <returns>The zero-based byte offset of the matching directory entry.</returns>
     /// <exception cref="InvalidOperationException">Thrown when the entry is not found.</exception>
-    private static int FindEntryOffset(byte[] bytes, CompoundFileHeader header, string name)
+    private static int FindEntryOffset(byte[] bytes, CfbHeader header, string name)
     {
         int dirOffset = (int)(((long)header.FirstDirectorySector + 1) * header.SectorSize);
         int perSector = header.SectorSize / DirectoryEntrySize;

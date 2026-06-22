@@ -1,10 +1,10 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CompoundFileHeader.cs" company="Bodu Pty. Ltd.">
+// <copyright file="CfbHeader.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.IO.Compound;
+namespace Bodu.IO.Compound.Internal;
 
 /// <summary>
 /// Represents the parsed 512-byte header of an OLE2 / Compound File Binary container and the sector-layout constants
@@ -15,7 +15,7 @@ namespace Bodu.IO.Compound;
 /// the location of the file-allocation table (FAT) via the double-indirect FAT (DIFAT), the first directory sector, and
 /// the mini-FAT chain. Field offsets follow the specification exactly.
 /// </remarks>
-internal sealed class CompoundFileHeader
+internal sealed class CfbHeader
 {
     /// <summary>The sentinel marking the end of a sector chain.</summary>
     internal const uint EndOfChain = 0xFFFFFFFE;
@@ -39,7 +39,7 @@ internal sealed class CompoundFileHeader
     internal static readonly byte[] Signature = [0xD0, 0xCF, 0x11, 0xE0, 0xA1, 0xB1, 0x1A, 0xE1];
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CompoundFileHeader" /> class.
+    /// Initializes a new instance of the <see cref="CfbHeader" /> class.
     /// </summary>
     /// <param name="sectorSize">The regular sector size, in bytes.</param>
     /// <param name="miniSectorSize">The mini sector size, in bytes.</param>
@@ -53,7 +53,7 @@ internal sealed class CompoundFileHeader
     /// </param>
     /// <param name="difatSectorCount">The number of sectors occupied by the DIFAT chain.</param>
     /// <param name="difat">The inline DIFAT entries from the header.</param>
-    private CompoundFileHeader(
+    private CfbHeader(
         int sectorSize,
         int miniSectorSize,
         uint miniStreamCutoff,
@@ -152,18 +152,18 @@ internal sealed class CompoundFileHeader
     /// Parses the compound-file header from the start of the supplied data.
     /// </summary>
     /// <param name="data">The full compound-file byte content; must be at least 512 bytes.</param>
-    /// <returns>The parsed <see cref="CompoundFileHeader" />.</returns>
+    /// <returns>The parsed <see cref="CfbHeader" />.</returns>
     /// <exception cref="CompoundFileFormatException">
     /// Thrown when the data is too short, the signature is invalid, or the header declares an unsupported layout.
     /// </exception>
-    internal static CompoundFileHeader Parse(ReadOnlySpan<byte> data)
+    internal static CfbHeader Parse(ReadOnlySpan<byte> data)
     {
         CompoundThrowHelper.ThrowFormatIf(data.Length < 512, CompoundResourceStrings.Format_Invalid_CompoundHeader, CompoundFileError.TruncatedFile);
 
         if (!data.Slice(0, Signature.Length).SequenceEqual(Signature))
             CompoundThrowHelper.ThrowFormat(CompoundResourceStrings.Format_Invalid_CompoundSignature, CompoundFileError.InvalidSignature);
 
-        CompoundBinaryReader reader = new(data);
+        CfbBinaryReader reader = new(data);
         reader.Seek(28);
         ushort byteOrder = reader.ReadUInt16();
         ushort sectorShift = reader.ReadUInt16();
@@ -187,7 +187,7 @@ internal sealed class CompoundFileHeader
         for (int i = 0; i < HeaderDifatCount; i++)
             difat[i] = reader.ReadUInt32();
 
-        return new CompoundFileHeader(
+        return new CfbHeader(
             1 << sectorShift,
             1 << miniSectorShift,
             miniStreamCutoff,

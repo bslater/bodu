@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Buffers;
+using Bodu.IO.Compound.Internal;
 
 namespace Bodu.IO.Compound.Builders;
 

@@ -1,12 +1,12 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CompoundBinaryReader.cs" company="Bodu Pty. Ltd.">
+// <copyright file="CfbBinaryReader.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Buffers.Binary;
 
-namespace Bodu.IO.Compound;
+namespace Bodu.IO.Compound.Internal;
 
 /// <summary>
 /// Provides a forward-only cursor that reads little-endian primitives from a byte span, used while parsing the
@@ -16,7 +16,7 @@ namespace Bodu.IO.Compound;
 /// The reader does not own or copy the underlying span; it advances an internal position as values are read and throws
 /// <see cref="CompoundFileFormatException" /> when a read would run past the end of the data.
 /// </remarks>
-internal ref struct CompoundBinaryReader
+internal ref struct CfbBinaryReader
 {
     /// <summary>The backing data the cursor reads from.</summary>
     private readonly ReadOnlySpan<byte> _data;
@@ -25,10 +25,10 @@ internal ref struct CompoundBinaryReader
     private int _position;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CompoundBinaryReader" /> struct over the supplied data.
+    /// Initializes a new instance of the <see cref="CfbBinaryReader" /> struct over the supplied data.
     /// </summary>
     /// <param name="data">The byte span to read from.</param>
-    public CompoundBinaryReader(ReadOnlySpan<byte> data)
+    public CfbBinaryReader(ReadOnlySpan<byte> data)
     {
         _data = data;
         _position = 0;

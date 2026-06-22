@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.IO.Compound.Internal;
+
 namespace Bodu.IO.Compound;
 
 /// <summary>
@@ -61,7 +63,7 @@ public sealed class CompoundStream
     private readonly byte[]? _buffer;
 
     /// <summary>The sector reader used for on-demand reads, or <see langword="null" /> when buffered.</summary>
-    private readonly CompoundSectorReader? _sectors;
+    private readonly CfbSectorReader? _sectors;
 
     /// <summary>The ordered sector chain for on-demand reads, or <see langword="null" /> when buffered.</summary>
     private readonly uint[]? _chain;
@@ -95,7 +97,7 @@ public sealed class CompoundStream
     /// <param name="chain">The ordered sector chain of the stream.</param>
     /// <param name="size">The declared payload length, in bytes.</param>
     /// <param name="sectorSize">The regular sector size, in bytes.</param>
-    internal CompoundStream(string name, CompoundSectorReader sectors, uint[] chain, long size, int sectorSize)
+    internal CompoundStream(string name, CfbSectorReader sectors, uint[] chain, long size, int sectorSize)
     {
         Name = name;
         _sectors = sectors;
