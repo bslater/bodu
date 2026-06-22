@@ -5,8 +5,8 @@
     <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
     <Title>Bodu — RBA Exchange Rates</Title>
-    <Description>Reserve Bank of Australia (RBA) historical exchange-rate provider for Bodu.Financial. Downloads and parses the RBA's published daily .xls files and serves them as Bodu.Financial.ExchangeRate values through IDatedExchangeRateProvider and IExchangeRateProvider, with an async range API and in-memory plus on-disk caching.</Description>
-    <PackageTags>$(PackageTags);financial;rba;exchange-rate;forex;fx;australia;aud</PackageTags>
+    <Description>Reserve Bank of Australia (RBA) historical exchange-rate provider for Bodu.Financial. Downloads and parses the RBA's published daily .xls files and serves them as Bodu.Financial.ExchangeRate values through IDatedExchangeRateProvider and IExchangeRateProvider, with an async range API and in-memory plus on-disk caching. Includes the dependency-injection registration extensions (AddRbaHistoricalRates) that register the provider as a singleton backed by a configured HttpClient and bind RbaExchangeRateOptions through Microsoft.Extensions.Options.</Description>
+    <PackageTags>$(PackageTags);financial;rba;exchange-rate;forex;fx;australia;aud;dependency-injection;options</PackageTags>
   </PropertyGroup>
 
   <!-- Grant the companion test project access to internal members. -->
@@ -18,23 +18,32 @@
 
   <!-- External package dependencies. -->
   <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.2" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="8.10.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
   </ItemGroup>
 
   <!-- Bodu project dependencies. -->
   <ItemGroup>
     <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
     <ProjectReference Include="..\..\Bodu.Financial\src\Bodu.Financial.csproj" />
+    <ProjectReference Include="..\..\Bodu.Financial.DependencyInjection\src\Bodu.Financial.DependencyInjection.csproj" />
+    <ProjectReference Include="..\..\Bodu.Financial.ExchangeRates.DependencyInjection\src\Bodu.Financial.ExchangeRates.DependencyInjection.csproj" />
     <ProjectReference Include="..\..\Bodu.Formats.Excel.Binary\src\Bodu.Formats.Excel.Binary.csproj" />
   </ItemGroup>
 
   <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
   <ItemGroup>
-    <EmbeddedResource Update="Financial.ExchangeRates.Rba\RbaResourceStrings.resx">
+    <EmbeddedResource Update="Financial.ExchangeRates\RbaResourceStrings.resx">
       <LastGenOutput>RbaResourceStrings.Designer.cs</LastGenOutput>
       <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
-    <Compile Update="Financial.ExchangeRates.Rba\RbaResourceStrings.Designer.cs">
+    <Compile Update="Financial.ExchangeRates\RbaResourceStrings.Designer.cs">
       <DependentUpon>RbaResourceStrings.resx</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
