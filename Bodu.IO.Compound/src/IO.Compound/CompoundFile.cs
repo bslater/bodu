@@ -263,12 +263,18 @@ public sealed class CompoundFile
     /// Thrown when <paramref name="stream" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="NotSupportedException">
-    /// Thrown when the combination of <paramref name="mode" /> and <paramref name="access" /> is not supported, such as
-    /// opening an existing file for in-place update.
+    /// Thrown when the combination of <paramref name="mode" /> and <paramref name="access" /> is not supported.
     /// </exception>
     /// <exception cref="CompoundFileFormatException">
     /// Thrown when the stream content is not a well-formed compound file.
     /// </exception>
+    /// <remarks>
+    /// Write access loads the existing content (for <see cref="FileMode.Open" /> and a non-empty
+    /// <see cref="FileMode.OpenOrCreate" />) or starts empty (for <see cref="FileMode.Create" />,
+    /// <see cref="FileMode.CreateNew" />, and an empty <see cref="FileMode.OpenOrCreate" />) into a staging tree. Edits
+    /// are written back to <paramref name="stream" /> — which must be writable and seekable — only by
+    /// <see cref="Commit" />, which rewrites the whole container.
+    /// </remarks>
     public static CompoundFile Open(Stream stream, FileMode mode, FileAccess access, bool leaveOpen = false, bool buffered = true)
     {
         ThrowHelper.ThrowIfNull(stream);
@@ -276,8 +282,26 @@ public sealed class CompoundFile
         if (mode == FileMode.Open && access == FileAccess.Read)
             return OpenReadCore(stream, leaveOpen, buffered);
 
-        if ((access & FileAccess.Write) != 0 && mode is FileMode.Create or FileMode.CreateNew or FileMode.OpenOrCreate)
-            return CreateCore(stream, leaveOpen, access, default);
+        if ((access & FileAccess.Write) != 0)
+        {
+            switch (mode)
+            {
+                case FileMode.Create:
+                case FileMode.CreateNew:
+                    return CreateCore(stream, leaveOpen, access, default);
+
+                case FileMode.Open:
+                    return OpenUpdateCore(stream, leaveOpen, default);
+
+                case FileMode.OpenOrCreate:
+                    return stream.CanSeek && stream.Length > 0
+                        ? OpenUpdateCore(stream, leaveOpen, default)
+                        : CreateCore(stream, leaveOpen, access, default);
+
+                default:
+                    break;
+            }
+        }
 
         throw new NotSupportedException(
             string.Format(CultureInfo.CurrentCulture, CompoundResourceStrings.Op_NotSupported_CompoundFileWriteMode, $"{mode}/{access}"));
@@ -360,6 +384,34 @@ public sealed class CompoundFile
     /// <returns>A new writable <see cref="CompoundFile" />.</returns>
     private static CompoundFile CreateCore(Stream destination, bool leaveOpen, FileAccess access, CompoundBuildOptions options) =>
         new(destination, leaveOpen, access, CompoundStorageBuilder.CreateRoot(), options);
+
+    /// <summary>
+    /// Opens an existing compound file for update by loading it into a staging tree committed back to the same stream.
+    /// </summary>
+    /// <param name="destination">The seekable, writable stream holding the existing compound file.</param>
+    /// <param name="leaveOpen">Whether to leave <paramref name="destination" /> open on dispose.</param>
+    /// <param name="options">The build options applied when serializing the staging tree.</param>
+    /// <returns>A writable <see cref="CompoundFile" /> seeded with the existing content.</returns>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="destination" /> is not seekable.</exception>
+    /// <exception cref="CompoundFileFormatException">
+    /// Thrown when the existing content is not a well-formed compound file.
+    /// </exception>
+    private static CompoundFile OpenUpdateCore(Stream destination, bool leaveOpen, CompoundBuildOptions options)
+    {
+        if (!destination.CanSeek)
+            throw new ArgumentException(CompoundResourceStrings.Arg_Invalid_CompoundStreamNotSeekable, nameof(destination));
+
+        destination.Position = 0;
+        byte[] snapshot = ReadAllBytes(destination);
+
+        CompoundStorageBuilder staging;
+        using (CompoundFile reader = Open(new MemoryStream(snapshot, writable: false)))
+        {
+            staging = CompoundFileBuilder.FromFile(reader).Root;
+        }
+
+        return new CompoundFile(destination, leaveOpen, FileAccess.ReadWrite, staging, options);
+    }
 
     /// <summary>
     /// Opens a read-only compound file over the supplied stream, choosing the buffered or streaming data source.

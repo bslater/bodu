@@ -244,4 +244,101 @@ public partial class CompoundFileTests
 
         Assert.AreEqual(0, destination.Length);
     }
+
+    /// <summary>
+    /// Verifies that opening an existing file for update loads its content and reports a writable, clean state.
+    /// </summary>
+    [TestMethod]
+    public void Open_WhenExistingFileOpenedForUpdate_ShouldLoadContent()
+    {
+        var destination = CreateContainer(("Existing", [7, 8, 9]));
+
+        destination.Position = 0;
+        using CompoundFile file = CompoundFile.Open(destination, FileMode.Open, FileAccess.ReadWrite, leaveOpen: true);
+
+        Assert.IsTrue(file.CanWrite);
+        Assert.IsFalse(file.IsDirty);
+        using CompoundStream existing = file.RootStorage.OpenStream("Existing");
+        CollectionAssert.AreEqual(new byte[] { 7, 8, 9 }, existing.ReadAllBytes().ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that adding a stream to an existing file, committing, and reopening preserves both the original and the
+    /// new stream.
+    /// </summary>
+    [TestMethod]
+    public void Commit_WhenExistingFileUpdated_ShouldPreserveAndAddStreams()
+    {
+        var destination = CreateContainer(("Original", [1, 1, 1]));
+
+        using (CompoundFile file = CompoundFile.Open(destination, FileMode.Open, FileAccess.ReadWrite, leaveOpen: true))
+        {
+            file.RootStorage.CreateStream("Added", new byte[] { 2, 2 });
+            file.Commit();
+        }
+
+        destination.Position = 0;
+        using CompoundFile reopened = CompoundFile.Open(destination);
+
+        using CompoundStream original = reopened.RootStorage.OpenStream("Original");
+        CollectionAssert.AreEqual(new byte[] { 1, 1, 1 }, original.ReadAllBytes().ToArray());
+        using CompoundStream added = reopened.RootStorage.OpenStream("Added");
+        CollectionAssert.AreEqual(new byte[] { 2, 2 }, added.ReadAllBytes().ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that overwriting an existing stream's content through update mode replaces it after commit.
+    /// </summary>
+    [TestMethod]
+    public void Commit_WhenExistingStreamOverwritten_ShouldReplaceContent()
+    {
+        var destination = CreateContainer(("Data", [1, 2, 3, 4]));
+
+        using (CompoundFile file = CompoundFile.Open(destination, FileMode.Open, FileAccess.ReadWrite, leaveOpen: true))
+        {
+            using (CompoundStream stream = file.RootStorage.OpenStream("Data", FileMode.Create, FileAccess.Write))
+                stream.Write([9, 9], 0, 2);
+
+            file.Commit();
+        }
+
+        destination.Position = 0;
+        using CompoundFile reopened = CompoundFile.Open(destination);
+        using CompoundStream read = reopened.RootStorage.OpenStream("Data");
+
+        CollectionAssert.AreEqual(new byte[] { 9, 9 }, read.ReadAllBytes().ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that an empty <see cref="System.IO.FileMode.OpenOrCreate" /> destination starts a new writable file.
+    /// </summary>
+    [TestMethod]
+    public void Open_WhenOpenOrCreateOnEmptyStream_ShouldStartEmptyWritableFile()
+    {
+        using var destination = new MemoryStream();
+
+        using CompoundFile file = CompoundFile.Open(destination, FileMode.OpenOrCreate, FileAccess.ReadWrite, leaveOpen: true);
+
+        Assert.IsTrue(file.CanWrite);
+        Assert.IsFalse(file.RootStorage.EnumerateEntries().Any());
+    }
+
+    /// <summary>
+    /// Creates an in-memory compound file containing the supplied root-level streams.
+    /// </summary>
+    /// <param name="streams">The name/content pairs to write to the root storage.</param>
+    /// <returns>A <see cref="MemoryStream" /> positioned at the end of the committed container.</returns>
+    private static MemoryStream CreateContainer(params (string Name, byte[] Content)[] streams)
+    {
+        var destination = new MemoryStream();
+        using (CompoundFile file = CompoundFile.Create(destination, leaveOpen: true))
+        {
+            foreach ((string name, byte[] content) in streams)
+                file.RootStorage.CreateStream(name, content);
+
+            file.Commit();
+        }
+
+        return destination;
+    }
 }

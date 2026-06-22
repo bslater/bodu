@@ -57,16 +57,16 @@ public partial class CompoundFileTests
     }
 
     /// <summary>
-    /// Verifies that requesting a write access level throws <see cref="NotSupportedException" />.
+    /// Verifies that requesting an unsupported file mode throws <see cref="NotSupportedException" />.
     /// </summary>
     [TestMethod]
-    public void Open_WhenAccessRequestsWrite_ShouldThrowNotSupportedException()
+    public void Open_WhenModeIsUnsupported_ShouldThrowNotSupportedException()
     {
         using MemoryStream stream = CompoundFixtures.OpenStream(CompoundFixtures.SampleCompound);
 
         _ = Assert.ThrowsExactly<NotSupportedException>(() =>
         {
-            using var file = CompoundFile.Open(stream, FileMode.Open, FileAccess.ReadWrite);
+            using var file = CompoundFile.Open(stream, FileMode.Append, FileAccess.Write);
         });
     }
 
