@@ -198,27 +198,18 @@ namespace Bodu.IO.Compound {
         /// <summary>
         ///   Looks up a localized string similar to The storage already contains a child named '{0}'..
         /// </summary>
-        internal static string Op_Invalid_CompoundWriterDuplicateName {
+        internal static string Op_Invalid_CompoundNodeDuplicateName {
             get {
-                return ResourceManager.GetString("Op_Invalid_CompoundWriterDuplicateName", resourceCulture);
+                return ResourceManager.GetString("Op_Invalid_CompoundNodeDuplicateName", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to The storage nesting depth exceeds the configured maximum of {0}..
         /// </summary>
-        internal static string Op_Invalid_CompoundWriterMaxDepthExceeded {
+        internal static string Op_Invalid_CompoundBuilderMaxDepthExceeded {
             get {
-                return ResourceManager.GetString("Op_Invalid_CompoundWriterMaxDepthExceeded", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Only a root storage (one with no parent) can be serialized..
-        /// </summary>
-        internal static string Op_Invalid_CompoundWriterSaveNotRoot {
-            get {
-                return ResourceManager.GetString("Op_Invalid_CompoundWriterSaveNotRoot", resourceCulture);
+                return ResourceManager.GetString("Op_Invalid_CompoundBuilderMaxDepthExceeded", resourceCulture);
             }
         }
 
@@ -234,18 +225,18 @@ namespace Bodu.IO.Compound {
         /// <summary>
         ///   Looks up a localized string similar to The stream source for '{0}' produced fewer bytes than its declared length of {1}..
         /// </summary>
-        internal static string Op_Invalid_CompoundWriterStreamLength {
+        internal static string Op_Invalid_CompoundBuilderStreamLength {
             get {
-                return ResourceManager.GetString("Op_Invalid_CompoundWriterStreamLength", resourceCulture);
+                return ResourceManager.GetString("Op_Invalid_CompoundBuilderStreamLength", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to The compound file is too large to serialize..
         /// </summary>
-        internal static string Op_Invalid_CompoundWriterTooLarge {
+        internal static string Op_Invalid_CompoundBuilderTooLarge {
             get {
-                return ResourceManager.GetString("Op_Invalid_CompoundWriterTooLarge", resourceCulture);
+                return ResourceManager.GetString("Op_Invalid_CompoundBuilderTooLarge", resourceCulture);
             }
         }
     }

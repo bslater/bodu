@@ -22,7 +22,7 @@ namespace Bodu.IO.Compound.Nodes;
 /// </para>
 /// <para>
 /// Names are compared per <see cref="CompoundNodeOptions" /> (case-insensitive by default, matching the compound-file
-/// format). The serialization order of children is determined by the writer, not by insertion order.
+/// format). The serialization order of children is determined by the builder, not by insertion order.
 /// </para>
 /// </remarks>
 public sealed partial class CompoundStorageNode
@@ -303,7 +303,7 @@ public sealed partial class CompoundStorageNode
         if (_children.ContainsKey(newName) && !_options.NameComparer.Equals(oldName, newName))
         {
             throw new CompoundFileSerializationException(
-                string.Format(CultureInfo.CurrentCulture, CompoundResourceStrings.Op_Invalid_CompoundWriterDuplicateName, newName));
+                string.Format(CultureInfo.CurrentCulture, CompoundResourceStrings.Op_Invalid_CompoundNodeDuplicateName, newName));
         }
 
         _ = _children.Remove(oldName);
@@ -368,7 +368,7 @@ public sealed partial class CompoundStorageNode
         if (_children.ContainsKey(name))
         {
             throw new CompoundFileSerializationException(
-                string.Format(CultureInfo.CurrentCulture, CompoundResourceStrings.Op_Invalid_CompoundWriterDuplicateName, name));
+                string.Format(CultureInfo.CurrentCulture, CompoundResourceStrings.Op_Invalid_CompoundNodeDuplicateName, name));
         }
 
         node.AssignParent(this);

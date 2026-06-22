@@ -116,7 +116,7 @@ internal static class CompoundContainerLayout
         long difatStart = dataSectorCount + fatSectors;
         long totalSectors = dataSectorCount + fatSectors + difatSectors;
         if (totalSectors >= CompoundFileHeader.DifatSector)
-            throw new CompoundFileSerializationException(CompoundResourceStrings.Op_Invalid_CompoundWriterTooLarge);
+            throw new CompoundFileSerializationException(CompoundResourceStrings.Op_Invalid_CompoundBuilderTooLarge);
 
         var writer = new SectorWriter(destination, sectorSize);
 
@@ -191,7 +191,7 @@ internal static class CompoundContainerLayout
         if (depth > maxDepth)
         {
             throw new CompoundFileSerializationException(
-                string.Format(CultureInfo.CurrentCulture, CompoundResourceStrings.Op_Invalid_CompoundWriterMaxDepthExceeded, maxDepth));
+                string.Format(CultureInfo.CurrentCulture, CompoundResourceStrings.Op_Invalid_CompoundBuilderMaxDepthExceeded, maxDepth));
         }
 
         children.Sort(static (a, b) => CompoundNameComparer.Instance.Compare(a.Name, b.Name));
@@ -523,7 +523,7 @@ internal static class CompoundContainerLayout
                 if (read <= 0)
                 {
                     throw new CompoundFileSerializationException(
-                        string.Format(CultureInfo.CurrentCulture, CompoundResourceStrings.Op_Invalid_CompoundWriterStreamLength, node.Name, entry.Size));
+                        string.Format(CultureInfo.CurrentCulture, CompoundResourceStrings.Op_Invalid_CompoundBuilderStreamLength, node.Name, entry.Size));
                 }
 
                 writer.WriteBytes(buffer.AsSpan(0, read));

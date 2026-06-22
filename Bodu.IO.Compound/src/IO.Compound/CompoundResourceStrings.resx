@@ -103,22 +103,19 @@
   <data name="Arg_Invalid_CompoundNodeNameInvalidCharacter" xml:space="preserve">
     <value>The entry name '{0}' contains a character that is not permitted in a compound file ('/', '\', ':', or '!').</value>
   </data>
-  <data name="Op_Invalid_CompoundWriterDuplicateName" xml:space="preserve">
+  <data name="Op_Invalid_CompoundNodeDuplicateName" xml:space="preserve">
     <value>The storage already contains a child named '{0}'.</value>
   </data>
-  <data name="Op_Invalid_CompoundWriterMaxDepthExceeded" xml:space="preserve">
+  <data name="Op_Invalid_CompoundBuilderMaxDepthExceeded" xml:space="preserve">
     <value>The storage nesting depth exceeds the configured maximum of {0}.</value>
-  </data>
-  <data name="Op_Invalid_CompoundWriterSaveNotRoot" xml:space="preserve">
-    <value>Only a root storage (one with no parent) can be serialized.</value>
   </data>
   <data name="Op_Invalid_CompoundPropertySetCodePage" xml:space="preserve">
     <value>The property value of type '{0}' cannot be encoded into an OLE property set.</value>
   </data>
-  <data name="Op_Invalid_CompoundWriterStreamLength" xml:space="preserve">
+  <data name="Op_Invalid_CompoundBuilderStreamLength" xml:space="preserve">
     <value>The stream source for '{0}' produced fewer bytes than its declared length of {1}.</value>
   </data>
-  <data name="Op_Invalid_CompoundWriterTooLarge" xml:space="preserve">
+  <data name="Op_Invalid_CompoundBuilderTooLarge" xml:space="preserve">
     <value>The compound file is too large to serialize.</value>
   </data>
 </root>

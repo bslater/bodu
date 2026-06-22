@@ -12,7 +12,7 @@ namespace Bodu.IO.Compound;
 /// container.
 /// </summary>
 /// <remarks>
-/// This exception reports authoring and write-time failures of the mutable object model and writer, as distinct from
+/// This exception reports authoring and write-time failures of the mutable object model and builder, as distinct from
 /// <see cref="CompoundFileFormatException" />, which reports structural failures encountered while reading.
 /// </remarks>
 public sealed class CompoundFileSerializationException

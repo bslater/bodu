@@ -11,7 +11,7 @@ namespace Bodu.IO.Compound.Nodes;
 /// </summary>
 /// <remarks>
 /// The OLE2 / Compound File Binary format treats entry names case-insensitively, so by default the model keys names
-/// with the shared compound-file name relationship — the same comparison the reader and writer use, so an in-memory
+/// with the shared compound-file name relationship — the same comparison the reader and builder use, so an in-memory
 /// duplicate is detected exactly as the serialized container would collapse it. Set
 /// <see cref="NameComparisonCaseSensitive" /> to <see langword="true" /> only when a case-sensitive in-memory model is
 /// explicitly required.

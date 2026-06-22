@@ -14,7 +14,7 @@ namespace Bodu.IO.Compound;
 /// <remarks>
 /// <para>
 /// The format treats entry names case-insensitively, so two names that differ only by case denote the same entry. This
-/// comparer is the single authority for that relationship and is shared by the reader's child lookups, the writer's
+/// comparer is the single authority for that relationship and is shared by the reader's child lookups, the builder's
 /// red-black directory ordering, and the mutable object model's name keying, ensuring a name that is written one way is
 /// found the same way when the container is read back.
 /// </para>
