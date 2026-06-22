@@ -14,8 +14,9 @@ namespace Bodu.IO.Compound;
 /// <remarks>
 /// Thrown by <see cref="CompoundStorage.OpenStream(string)" /> and <see cref="CompoundStorage.OpenStorage(string)" />.
 /// Callers that prefer a non-throwing lookup should use
-/// <see cref="CompoundStorage.TryOpenStream(string, out CompoundStreamEntry)" /> or
-/// <see cref="CompoundStorage.TryOpenStorage(string, out CompoundStorage)" /> instead.
+/// <see cref="CompoundStorage.TryOpenStream(string, out CompoundStream)" /> or
+/// <see cref="CompoundStorage.TryOpenStorage(string, out CompoundStorage)" /> instead. It derives from
+/// <see cref="CompoundFileException" />, the common base for all compound-file failures.
 /// </remarks>
 /// <example>
 /// Catch the exception when a stream is expected to exist, or switch to the <c>Try</c> pattern when its absence is a
@@ -24,7 +25,7 @@ namespace Bodu.IO.Compound;
 ///<![CDATA[
 /// try
 /// {
-///     CompoundStreamEntry entry = file.RootStorage.OpenStream("Workbook");
+///     CompoundStream entry = file.RootStorage.OpenStream("Workbook");
 /// }
 /// catch (CompoundStreamNotFoundException ex)
 /// {
@@ -32,7 +33,7 @@ namespace Bodu.IO.Compound;
 /// }
 ///
 /// // Non-throwing alternative:
-/// if (file.RootStorage.TryOpenStream("Workbook", out CompoundStreamEntry? workbook))
+/// if (file.RootStorage.TryOpenStream("Workbook", out CompoundStream? workbook))
 /// {
 ///     // ...
 /// }
@@ -40,7 +41,7 @@ namespace Bodu.IO.Compound;
 /// </code>
 /// </example>
 public sealed class CompoundStreamNotFoundException
-    : KeyNotFoundException
+    : CompoundFileException
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="CompoundStreamNotFoundException" /> class.

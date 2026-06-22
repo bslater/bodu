@@ -112,6 +112,20 @@ public sealed class DocumentSummaryInformationBuilder
         ToPropertySet().ToArray();
 
     /// <summary>
+    /// Builds the property set and writes its serialized byte form to the supplied stream.
+    /// </summary>
+    /// <param name="stream">The stream to write the document-summary-information bytes to.</param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="stream" /> is <see langword="null" />.
+    /// </exception>
+    public void WriteTo(Stream stream)
+    {
+        ThrowHelper.ThrowIfNull(stream);
+
+        ToPropertySet().WriteTo(stream);
+    }
+
+    /// <summary>
     /// Builds the user-defined section carrying the custom named properties.
     /// </summary>
     /// <returns>The user-defined <see cref="OlePropertySection" />.</returns>

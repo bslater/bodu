@@ -5,7 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.IO.Compound;
-using Bodu.IO.Compound.Nodes;
+using Bodu.IO.Compound.Builders;
 using Bodu.Test;
 
 namespace Bodu.IO.Compound.PropertySets;
@@ -40,16 +40,34 @@ public class SummaryInformationWriteTests
     }
 
     /// <summary>
+    /// Verifies that a summary-information set written to a stream reads back through the stream-first surface.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenWrittenToStream_ShouldRoundTripThroughStreamSurface()
+    {
+        var builder = new SummaryInformationBuilder { Title = "Streamed", Author = "Grace" };
+
+        using MemoryStream stream = new();
+        builder.WriteTo(stream);
+        stream.Position = 0;
+
+        SummaryInformation summary = SummaryInformation.Read(stream);
+
+        Assert.AreEqual("Streamed", summary.Title);
+        Assert.AreEqual("Grace", summary.Author);
+    }
+
+    /// <summary>
     /// Verifies that summary information embedded in a written compound file is read back by the reader.
     /// </summary>
     [TestMethod]
     public void Save_WhenSummaryInformationEmbedded_ShouldBeReadByCompoundFile()
     {
         var builder = new SummaryInformationBuilder { Title = "Report", Author = "Grace" };
-        CompoundStorageNode root = CompoundStorageNode.CreateRoot();
-        _ = root.AddStream(SummaryInformation.StreamName, builder.ToArray());
+        var compound = CompoundStorageBuilder.CreateRoot();
+        _ = compound.AddStream(SummaryInformation.StreamName, builder.ToArray());
 
-        using CompoundFile file = CompoundFile.Open(new MemoryStream(root.ToArray()));
+        using CompoundFile file = CompoundFile.Open(new MemoryStream(compound.ToArray()));
 
         Assert.IsTrue(file.TryGetSummaryInformation(out SummaryInformation? summary));
         Assert.AreEqual("Report", summary.Title);
@@ -66,10 +84,10 @@ public class SummaryInformationWriteTests
         var builder = new DocumentSummaryInformationBuilder { Company = "Bodu", SlideCount = 3 };
         builder.AddCustomProperty("Project", OlePropertyValue.Create("Apollo"));
 
-        CompoundStorageNode root = CompoundStorageNode.CreateRoot();
-        _ = root.AddStream(DocumentSummaryInformation.StreamName, builder.ToArray());
+        var compound = CompoundStorageBuilder.CreateRoot();
+        _ = compound.AddStream(DocumentSummaryInformation.StreamName, builder.ToArray());
 
-        using CompoundFile file = CompoundFile.Open(new MemoryStream(root.ToArray()));
+        using CompoundFile file = CompoundFile.Open(new MemoryStream(compound.ToArray()));
 
         Assert.IsTrue(file.TryGetDocumentSummaryInformation(out DocumentSummaryInformation? summary));
         Assert.AreEqual("Bodu", summary.Company);

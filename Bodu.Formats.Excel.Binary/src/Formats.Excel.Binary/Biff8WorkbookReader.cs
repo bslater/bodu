@@ -86,13 +86,14 @@ public sealed class Biff8WorkbookReader
         ThrowHelper.ThrowIfNull(stream);
 
         using var compound = CompoundFile.Open(stream);
-        if (!compound.RootStorage.TryOpenStream("Workbook", out CompoundStreamEntry? workbook) &&
+        if (!compound.RootStorage.TryOpenStream("Workbook", out CompoundStream? workbook) &&
             !compound.RootStorage.TryOpenStream("Book", out workbook))
         {
             throw new Biff8WorkbookStreamNotFoundException(ExcelBinaryResourceStrings.IO_KeyNotFound_Biff8Workbook);
         }
 
-        return new Biff8WorkbookReader(workbook!.ReadAllBytes());
+        using (workbook)
+            return new Biff8WorkbookReader(workbook!.ReadAllBytes());
     }
 
     /// <summary>

@@ -21,16 +21,15 @@ public partial class CompoundFileTests
     }
 
     /// <summary>
-    /// Verifies that materializing a stream after the file has been disposed throws
-    /// <see cref="ObjectDisposedException" />.
+    /// Verifies that opening a stream after the file has been disposed throws <see cref="ObjectDisposedException" />.
     /// </summary>
     [TestMethod]
     public void Dispose_WhenStreamOpenedAfterDispose_ShouldThrowObjectDisposedException()
     {
         CompoundFile file = OpenSample();
-        CompoundStreamEntry entry = file.RootStorage.EnumerateStreams().First();
+        string name = file.RootStorage.EnumerateStreams().First().Name;
         file.Dispose();
 
-        _ = Assert.ThrowsExactly<ObjectDisposedException>(() => entry.ReadAllBytes());
+        _ = Assert.ThrowsExactly<ObjectDisposedException>(() => file.RootStorage.OpenStream(name));
     }
 }

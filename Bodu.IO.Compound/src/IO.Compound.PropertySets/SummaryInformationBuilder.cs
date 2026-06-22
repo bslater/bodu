@@ -134,6 +134,20 @@ public sealed class SummaryInformationBuilder
         ToPropertySet().ToArray();
 
     /// <summary>
+    /// Builds the property set and writes its serialized byte form to the supplied stream.
+    /// </summary>
+    /// <param name="stream">The stream to write the summary-information bytes to.</param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="stream" /> is <see langword="null" />.
+    /// </exception>
+    public void WriteTo(Stream stream)
+    {
+        ThrowHelper.ThrowIfNull(stream);
+
+        ToPropertySet().WriteTo(stream);
+    }
+
+    /// <summary>
     /// Sets a string property when the value is present.
     /// </summary>
     /// <param name="section">The section to populate.</param>

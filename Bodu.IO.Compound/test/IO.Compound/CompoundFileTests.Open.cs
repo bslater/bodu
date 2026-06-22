@@ -57,28 +57,30 @@ public partial class CompoundFileTests
     }
 
     /// <summary>
-    /// Verifies that requesting an unsupported access mode throws <see cref="NotSupportedException" />.
+    /// Verifies that requesting an unsupported file mode throws <see cref="NotSupportedException" />.
     /// </summary>
     [TestMethod]
-    public void Open_WhenModeIsNotRead_ShouldThrowNotSupportedException()
+    public void Open_WhenModeIsUnsupported_ShouldThrowNotSupportedException()
     {
         using MemoryStream stream = CompoundFixtures.OpenStream(CompoundFixtures.SampleCompound);
 
         _ = Assert.ThrowsExactly<NotSupportedException>(() =>
         {
-            using var file = CompoundFile.Open(stream, CompoundFileMode.ReadWrite);
+            using var file = CompoundFile.Open(stream, FileMode.Append, FileAccess.Write);
         });
     }
 
     /// <summary>
-    /// Verifies that the opened file reports the mode it was opened with.
+    /// Verifies that the opened file reports read access and is not writable.
     /// </summary>
     [TestMethod]
-    public void Open_WhenModeIsRead_ShouldReportReadMode()
+    public void Open_WhenOpenedForRead_ShouldReportReadAccess()
     {
         using CompoundFile file = OpenSample();
 
-        Assert.AreEqual(CompoundFileMode.Read, file.Mode);
+        Assert.AreEqual(FileAccess.Read, file.Access);
+        Assert.IsTrue(file.CanRead);
+        Assert.IsFalse(file.CanWrite);
     }
 
     /// <summary>
@@ -95,5 +97,135 @@ public partial class CompoundFileTests
         }
 
         Assert.IsTrue(source.CanRead);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundFile.OpenRead(string)" /> opens a compound file from a path for reading.
+    /// </summary>
+    [TestMethod]
+    public void OpenRead_WhenPath_ShouldReadContainer()
+    {
+        string path = Path.Combine(Path.GetTempPath(), $"bodu-openread-{Guid.NewGuid():N}.cfb");
+        try
+        {
+            using (MemoryStream source = CompoundFixtures.OpenStream(CompoundFixtures.SampleCompound))
+                File.WriteAllBytes(path, source.ToArray());
+
+            using CompoundFile file = CompoundFile.OpenRead(path);
+
+            Assert.AreEqual(FileAccess.Read, file.Access);
+            Assert.IsTrue(file.RootStorage.EnumerateEntries().Any());
+        }
+        finally
+        {
+            File.Delete(path);
+        }
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundFile.OpenRead(string)" /> throws <see cref="ArgumentNullException" /> for a
+    /// <see langword="null" /> path.
+    /// </summary>
+    [TestMethod]
+    public void OpenRead_WhenPathIsNull_ShouldThrowArgumentNullException()
+    {
+        _ = Assert.ThrowsExactly<ArgumentNullException>(() => CompoundFile.OpenRead(null!));
+    }
+
+    /// <summary>
+    /// Verifies that the path-based <see cref="CompoundFile.Open(string, FileMode, FileAccess, FileShare)" /> opens an
+    /// existing file for reading.
+    /// </summary>
+    [TestMethod]
+    public void Open_WhenPathOpenedForRead_ShouldReadContainer()
+    {
+        string path = Path.Combine(Path.GetTempPath(), $"bodu-openpath-{Guid.NewGuid():N}.cfb");
+        try
+        {
+            using (MemoryStream source = CompoundFixtures.OpenStream(CompoundFixtures.SampleCompound))
+                File.WriteAllBytes(path, source.ToArray());
+
+            using CompoundFile file = CompoundFile.Open(path, FileMode.Open, FileAccess.Read);
+
+            Assert.AreEqual(FileAccess.Read, file.Access);
+            Assert.IsTrue(file.RootStorage.EnumerateEntries().Any());
+        }
+        finally
+        {
+            File.Delete(path);
+        }
+    }
+
+    /// <summary>
+    /// Verifies that the path-based <see cref="CompoundFile.Open(string, FileMode, FileAccess, FileShare)" /> creates a
+    /// new file, and that committed content is read back on reopen.
+    /// </summary>
+    [TestMethod]
+    public void Open_WhenPathCreatedForWrite_ShouldRoundTripThroughReopen()
+    {
+        string path = Path.Combine(Path.GetTempPath(), $"bodu-createpath-{Guid.NewGuid():N}.cfb");
+        byte[] payload = [1, 2, 3, 4, 5];
+        try
+        {
+            using (CompoundFile file = CompoundFile.Open(path, FileMode.Create, FileAccess.ReadWrite))
+            {
+                using (CompoundStream stream = file.RootStorage.CreateStream("Data"))
+                    stream.Write(payload, 0, payload.Length);
+
+                file.Commit();
+            }
+
+            using CompoundFile reopened = CompoundFile.Open(path, FileMode.Open, FileAccess.Read);
+            using CompoundStream read = reopened.RootStorage.OpenStream("Data");
+
+            CollectionAssert.AreEqual(payload, read.ReadAllBytes().ToArray());
+        }
+        finally
+        {
+            File.Delete(path);
+        }
+    }
+
+    /// <summary>
+    /// Verifies that the path-based <see cref="CompoundFile.Open(string, FileMode, FileAccess, FileShare)" /> updates an
+    /// existing file in place: a stream added under update mode survives commit and reopen.
+    /// </summary>
+    [TestMethod]
+    public void Open_WhenPathUpdatedForWrite_ShouldPersistEdits()
+    {
+        string path = Path.Combine(Path.GetTempPath(), $"bodu-updatepath-{Guid.NewGuid():N}.cfb");
+        try
+        {
+            using (CompoundFile file = CompoundFile.Open(path, FileMode.Create, FileAccess.ReadWrite))
+            {
+                file.RootStorage.CreateStream("Original", new byte[] { 9 });
+                file.Commit();
+            }
+
+            using (CompoundFile file = CompoundFile.Open(path, FileMode.Open, FileAccess.ReadWrite))
+            {
+                file.RootStorage.CreateStream("Added", new byte[] { 8 });
+                file.Commit();
+            }
+
+            using CompoundFile reopened = CompoundFile.Open(path, FileMode.Open, FileAccess.Read);
+            Assert.IsTrue(reopened.RootStorage.TryOpenStream("Original", out _));
+            Assert.IsTrue(reopened.RootStorage.TryOpenStream("Added", out _));
+        }
+        finally
+        {
+            File.Delete(path);
+        }
+    }
+
+    /// <summary>
+    /// Verifies that the path-based <see cref="CompoundFile.Open(string, FileMode, FileAccess, FileShare)" /> throws
+    /// <see cref="ArgumentNullException" /> for a <see langword="null" /> path.
+    /// </summary>
+    [TestMethod]
+    public void Open_WhenPathIsNull_ShouldThrowArgumentNullException()
+    {
+        _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
+            CompoundFile.Open((string)null!, FileMode.Open, FileAccess.Read));
     }
 }

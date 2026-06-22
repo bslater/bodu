@@ -12,10 +12,11 @@ namespace Bodu.IO.Compound;
 /// <remarks>
 /// This exception reports structural failures of the container itself — an invalid signature, a malformed header, a
 /// circular or out-of-range sector chain, or a corrupt directory — rather than any application-level format carried
-/// inside a stream. The <see cref="Category" /> classifies the failure in a message-independent way.
+/// inside a stream. The <see cref="Category" /> classifies the failure in a message-independent way. It derives from
+/// <see cref="CompoundFileException" />, the common base for all compound-file failures.
 /// </remarks>
 public sealed class CompoundFileFormatException
-    : FormatException
+    : CompoundFileException
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="CompoundFileFormatException" /> class.

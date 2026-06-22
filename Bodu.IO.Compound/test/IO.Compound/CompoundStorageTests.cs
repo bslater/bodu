@@ -44,7 +44,7 @@ public class CompoundStorageTests
         using CompoundFile file = OpenNested();
 
         CompoundStorage storage1 = file.RootStorage.OpenStorage("Storage 1");
-        List<CompoundStreamEntry> streams = storage1.EnumerateStreams().ToList();
+        List<CompoundEntryInfo> streams = storage1.EnumerateStreams().ToList();
 
         Assert.AreEqual(1, streams.Count);
         Assert.AreEqual("Stream 1", streams[0].Name);
@@ -60,7 +60,7 @@ public class CompoundStorageTests
         using CompoundFile file = OpenNested();
 
         Assert.IsFalse(file.RootStorage.TryOpenStream("Stream 1", out _));
-        Assert.IsTrue(file.RootStorage.OpenStorage("Storage 1").TryOpenStream("Stream 1", out CompoundStreamEntry? nested));
+        Assert.IsTrue(file.RootStorage.OpenStorage("Storage 1").TryOpenStream("Stream 1", out CompoundStream? nested));
         Assert.IsNotNull(nested);
         Assert.AreEqual("Stream 1", nested.Name);
     }
@@ -78,6 +78,34 @@ public class CompoundStorageTests
     }
 
     /// <summary>
+    /// Verifies that child storage lookups match names case-insensitively, as the compound-file format defines.
+    /// </summary>
+    [TestMethod]
+    public void TryOpenStorage_WhenNameDiffersOnlyByCase_ShouldResolve()
+    {
+        using CompoundFile file = OpenNested();
+
+        Assert.IsTrue(file.RootStorage.TryOpenStorage("STORAGE 1", out CompoundStorage? storage));
+        Assert.IsNotNull(storage);
+        Assert.AreEqual("Storage 1", storage.Name);
+    }
+
+    /// <summary>
+    /// Verifies that child stream lookups match names case-insensitively, so a case-mismatched name still resolves.
+    /// </summary>
+    [TestMethod]
+    public void TryOpenStream_WhenNameDiffersOnlyByCase_ShouldResolve()
+    {
+        using CompoundFile file = OpenNested();
+
+        CompoundStorage storage1 = file.RootStorage.OpenStorage("Storage 1");
+
+        Assert.IsTrue(storage1.TryOpenStream("stream 1", out CompoundStream? stream));
+        Assert.IsNotNull(stream);
+        Assert.AreEqual("Stream 1", stream.Name);
+    }
+
+    /// <summary>
     /// Verifies that the root storage enumerates the expected top-level streams of an Excel workbook fixture.
     /// </summary>
     [TestMethod]
@@ -85,7 +113,7 @@ public class CompoundStorageTests
     {
         using CompoundFile file = CompoundFile.Open(CompoundFixtures.OpenReference("valid/sample1.xls"));
 
-        Assert.IsTrue(file.RootStorage.TryOpenStream("Workbook", out CompoundStreamEntry? workbook));
+        Assert.IsTrue(file.RootStorage.TryOpenStream("Workbook", out CompoundStream? workbook));
         Assert.IsNotNull(workbook);
         Assert.IsTrue(workbook.Length > 0);
     }

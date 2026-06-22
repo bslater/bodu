@@ -37,6 +37,20 @@ public sealed class SummaryInformation
     }
 
     /// <summary>
+    /// Reads and parses a summary-information property set from a stream, consuming it to the end.
+    /// </summary>
+    /// <param name="stream">The stream containing the summary-information property-set bytes.</param>
+    /// <returns>A <see cref="SummaryInformation" /> view over the parsed property set.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="stream" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="CompoundFileFormatException">
+    /// Thrown when the data is not a well-formed property set.
+    /// </exception>
+    public static SummaryInformation Read(Stream stream) =>
+        new(OlePropertySet.Read(stream));
+
+    /// <summary>
     /// Gets the underlying parsed property set.
     /// </summary>
     /// <returns>The summary-information <see cref="OlePropertySet" />.</returns>
