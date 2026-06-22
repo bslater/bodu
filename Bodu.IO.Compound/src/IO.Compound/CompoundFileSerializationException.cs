@@ -13,10 +13,11 @@ namespace Bodu.IO.Compound;
 /// </summary>
 /// <remarks>
 /// This exception reports authoring and write-time failures of the mutable object model and builder, as distinct from
-/// <see cref="CompoundFileFormatException" />, which reports structural failures encountered while reading.
+/// <see cref="CompoundFileFormatException" />, which reports structural failures encountered while reading. It derives
+/// from <see cref="CompoundFileException" />, the common base for all compound-file failures.
 /// </remarks>
 public sealed class CompoundFileSerializationException
-    : Exception
+    : CompoundFileException
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="CompoundFileSerializationException" /> class.
