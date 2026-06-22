@@ -7,7 +7,7 @@
 namespace Bodu.IO.Compound.Builders;
 
 /// <summary>
-/// Specifies options that control how a <see cref="CompoundFileBuilder" /> serializes a compound file.
+/// Specifies options that control how a <see cref="CompoundStorageBuilder" /> tree serializes a compound file.
 /// </summary>
 /// <remarks>
 /// The default value (<see langword="default" />) selects version 3 (512-byte sectors) and the default maximum nesting

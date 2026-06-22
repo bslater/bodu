@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CompoundFileBuilder.cs" company="Bodu Pty. Ltd.">
+// <copyright file="CompoundStorageBuilder.Serialization.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -9,166 +9,113 @@ using Bodu.IO.Compound.Internal;
 
 namespace Bodu.IO.Compound.Builders;
 
-/// <summary>
-/// Authors an OLE2 / Compound File Binary container by accumulating a mutable storage/stream tree and serializing it on
-/// demand.
-/// </summary>
-/// <remarks>
-/// <para>
-/// Populate <see cref="Root" /> with child storages and streams using the <see cref="CompoundStorageBuilder" />
-/// authoring API, then emit the container with <see cref="WriteTo(Stream)" />, <see cref="Save(string)" />, or
-/// <see cref="ToArray" />.
-/// </para>
-/// <para>
-/// Because the compound-file layout is a whole-file property — the header, file-allocation table, mini-FAT, and
-/// directory all depend on the complete set of streams — the builder serializes the entire tree in a single pass each
-/// time an output method is called. The builder holds no destination and is not <see cref="IDisposable" />; stream
-/// payloads may be supplied eagerly or as deferred sources read only during serialization, so large streams need not be
-/// held in memory.
-/// </para>
-/// </remarks>
-/// <example>
-/// <code language="csharp">
-///<![CDATA[
-/// using Bodu.IO.Compound;
-///
-/// var builder = new CompoundFileBuilder();
-/// builder.Root.AddStream("Workbook", workbookBytes);
-/// builder.Root.AddStorage("Storage 1").AddStream("Nested", nestedBytes);
-/// builder.Save("book.xls");
-///]]>
-/// </code>
-/// </example>
-public sealed class CompoundFileBuilder
+/// <content>
+/// Serialization and materialization members that turn a detached <see cref="CompoundStorageBuilder" /> snapshot tree
+/// into a compound-file container, and back.
+/// </content>
+public sealed partial class CompoundStorageBuilder
 {
-    /// <summary>The options controlling the serialized layout.</summary>
-    private readonly CompoundBuildOptions _options;
-
     /// <summary>
-    /// Initializes a new instance of the <see cref="CompoundFileBuilder" /> class with an empty root storage.
-    /// </summary>
-    /// <param name="options">The options controlling the output layout.</param>
-    public CompoundFileBuilder(CompoundBuildOptions options = default)
-        : this(CompoundStorageBuilder.CreateRoot(), options)
-    {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="CompoundFileBuilder" /> class over an existing root storage.
-    /// </summary>
-    /// <param name="root">The root storage the builder serializes.</param>
-    /// <param name="options">The options controlling the output layout.</param>
-    private CompoundFileBuilder(CompoundStorageBuilder root, CompoundBuildOptions options)
-    {
-        Root = root;
-        _options = options;
-    }
-
-    /// <summary>
-    /// Gets the root storage that accumulates the authored hierarchy.
-    /// </summary>
-    /// <returns>The mutable root <see cref="CompoundStorageBuilder" /> to populate before serializing.</returns>
-    public CompoundStorageBuilder Root { get; }
-
-    /// <summary>
-    /// Creates a builder whose root storage mirrors the contents of a compound file read from a stream.
+    /// Creates a root storage tree that mirrors the contents of a compound file read from a stream.
     /// </summary>
     /// <param name="source">The stream containing the compound file; read from its current position to the end.</param>
-    /// <param name="options">The options controlling the output layout when the builder is later serialized.</param>
-    /// <returns>A <see cref="CompoundFileBuilder" /> whose <see cref="Root" /> mirrors the file's contents.</returns>
+    /// <returns>A root <see cref="CompoundStorageBuilder" /> that mirrors the file's contents.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="source" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="CompoundFileFormatException">
     /// Thrown when the stream is not a well-formed compound file.
     /// </exception>
-    public static CompoundFileBuilder Load(Stream source, CompoundBuildOptions options = default)
+    public static CompoundStorageBuilder Load(Stream source)
     {
         ThrowHelper.ThrowIfNull(source);
 
         using CompoundFile file = CompoundFile.Open(source, leaveOpen: true);
-        return FromFile(file, lazy: false, options);
+        return FromFile(file, lazy: false);
     }
 
     /// <summary>
-    /// Creates a builder whose root storage mirrors the contents of an open compound file.
+    /// Creates a root storage tree that mirrors the contents of an open compound file.
     /// </summary>
     /// <param name="file">The compound file to copy.</param>
     /// <param name="lazy">
     /// <see langword="false" /> (the default) to copy every stream payload into memory, producing a fully detached
-    /// builder; <see langword="true" /> to build deferred stream nodes that read their payloads on demand from
-    /// <paramref name="file" />. When <see langword="true" /> the file must remain open for as long as the builder (or
-    /// any clone of its nodes) is read or serialized.
+    /// tree; <see langword="true" /> to build deferred stream nodes that read their payloads on demand from
+    /// <paramref name="file" />. When <see langword="true" /> the file must remain open for as long as the tree (or any
+    /// clone of its nodes) is read or serialized.
     /// </param>
-    /// <param name="options">The options controlling the output layout when the builder is later serialized.</param>
-    /// <returns>A <see cref="CompoundFileBuilder" /> whose <see cref="Root" /> mirrors the file's contents.</returns>
+    /// <returns>A root <see cref="CompoundStorageBuilder" /> that mirrors the file's contents.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="file" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="CompoundFileFormatException">Thrown when a stream's sector chain is malformed.</exception>
-    public static CompoundFileBuilder FromFile(CompoundFile file, bool lazy = false, CompoundBuildOptions options = default)
+    public static CompoundStorageBuilder FromFile(CompoundFile file, bool lazy = false)
     {
         ThrowHelper.ThrowIfNull(file);
 
-        CompoundStorageBuilder root = CompoundStorageBuilder.CreateRoot();
+        CompoundStorageBuilder root = CreateRoot();
         CopyMetadata(root, file.RootStorage.Stat);
         Populate(root, file.RootStorage, lazy);
-        return new CompoundFileBuilder(root, options);
+        return root;
     }
 
     /// <summary>
-    /// Serializes the authored tree to the supplied stream.
+    /// Serializes this storage tree to the supplied stream.
     /// </summary>
     /// <param name="destination">The stream to write the compound file to.</param>
+    /// <param name="options">The options controlling the output layout.</param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="destination" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="CompoundFileSerializationException">Thrown when the tree cannot be represented.</exception>
-    public void WriteTo(Stream destination)
+    public void WriteTo(Stream destination, CompoundBuildOptions options = default)
     {
         ThrowHelper.ThrowIfNull(destination);
 
-        CompoundContainerLayout.WriteTo(destination, Root, _options);
+        CompoundContainerLayout.WriteTo(destination, this, options);
     }
 
     /// <summary>
-    /// Serializes the authored tree to the supplied buffer writer.
+    /// Serializes this storage tree to the supplied buffer writer.
     /// </summary>
     /// <param name="output">The buffer writer to write the compound file to.</param>
+    /// <param name="options">The options controlling the output layout.</param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="output" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="CompoundFileSerializationException">Thrown when the tree cannot be represented.</exception>
-    public void WriteTo(IBufferWriter<byte> output)
+    public void WriteTo(IBufferWriter<byte> output, CompoundBuildOptions options = default)
     {
         ThrowHelper.ThrowIfNull(output);
 
-        output.Write(CompoundContainerLayout.Write(Root, _options));
+        output.Write(CompoundContainerLayout.Write(this, options));
     }
 
     /// <summary>
-    /// Serializes the authored tree to a new file at the supplied path, overwriting any existing file.
+    /// Serializes this storage tree to a new file at the supplied path, overwriting any existing file.
     /// </summary>
     /// <param name="path">The path of the file to create.</param>
+    /// <param name="options">The options controlling the output layout.</param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="path" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="CompoundFileSerializationException">Thrown when the tree cannot be represented.</exception>
-    public void Save(string path)
+    public void Save(string path, CompoundBuildOptions options = default)
     {
         ThrowHelper.ThrowIfNull(path);
 
         using FileStream stream = File.Create(path);
-        WriteTo(stream);
+        WriteTo(stream, options);
     }
 
     /// <summary>
-    /// Serializes the authored tree to a compound-file byte array.
+    /// Serializes this storage tree to a compound-file byte array.
     /// </summary>
+    /// <param name="options">The options controlling the output layout.</param>
     /// <returns>The complete compound-file content.</returns>
     /// <exception cref="CompoundFileSerializationException">Thrown when the tree cannot be represented.</exception>
-    public byte[] ToArray() =>
-        CompoundContainerLayout.Write(Root, _options);
+    public byte[] ToArray(CompoundBuildOptions options = default) =>
+        CompoundContainerLayout.Write(this, options);
 
     /// <summary>
     /// Recursively copies the streams and child storages of a read-only storage into a mutable storage node.

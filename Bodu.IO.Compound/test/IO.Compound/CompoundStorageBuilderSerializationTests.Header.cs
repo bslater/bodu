@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CompoundFileBuilderTests.Header.cs" company="Bodu Pty. Ltd.">
+// <copyright file="CompoundStorageBuilderSerializationTests.Header.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -9,7 +9,7 @@ using Bodu.IO.Compound.Builders;
 
 namespace Bodu.IO.Compound;
 
-public partial class CompoundFileBuilderTests
+public partial class CompoundStorageBuilderSerializationTests
 {
     /// <summary>The compound-file signature bytes.</summary>
     private static readonly byte[] Signature = [0xD0, 0xCF, 0x11, 0xE0, 0xA1, 0xB1, 0x1A, 0xE1];
@@ -20,10 +20,10 @@ public partial class CompoundFileBuilderTests
     [TestMethod]
     public void ToArray_WhenVersion3_ShouldWriteExpectedHeaderAndAlignment()
     {
-        var builder = new CompoundFileBuilder(new CompoundBuildOptions { Version = CompoundFileVersion.V3 });
-        _ = builder.Root.AddStream("Data", new byte[] { 1, 2, 3 });
+        var builder = CompoundStorageBuilder.CreateRoot();
+        _ = builder.AddStream("Data", new byte[] { 1, 2, 3 });
 
-        byte[] bytes = builder.ToArray();
+        byte[] bytes = builder.ToArray(new CompoundBuildOptions { Version = CompoundFileVersion.V3 });
 
         CollectionAssert.AreEqual(Signature, bytes[..8]);
         Assert.AreEqual(3, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(26)));
@@ -40,10 +40,10 @@ public partial class CompoundFileBuilderTests
     [TestMethod]
     public void ToArray_WhenVersion4_ShouldWriteExpectedHeaderAndAlignment()
     {
-        var builder = new CompoundFileBuilder(new CompoundBuildOptions { Version = CompoundFileVersion.V4 });
-        _ = builder.Root.AddStream("Data", new byte[] { 1, 2, 3 });
+        var builder = CompoundStorageBuilder.CreateRoot();
+        _ = builder.AddStream("Data", new byte[] { 1, 2, 3 });
 
-        byte[] bytes = builder.ToArray();
+        byte[] bytes = builder.ToArray(new CompoundBuildOptions { Version = CompoundFileVersion.V4 });
 
         Assert.AreEqual(4, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(26)));
         Assert.AreEqual(12, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(30)));

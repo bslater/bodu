@@ -64,8 +64,8 @@ public class SummaryInformationWriteTests
     public void Save_WhenSummaryInformationEmbedded_ShouldBeReadByCompoundFile()
     {
         var builder = new SummaryInformationBuilder { Title = "Report", Author = "Grace" };
-        var compound = new CompoundFileBuilder();
-        _ = compound.Root.AddStream(SummaryInformation.StreamName, builder.ToArray());
+        var compound = CompoundStorageBuilder.CreateRoot();
+        _ = compound.AddStream(SummaryInformation.StreamName, builder.ToArray());
 
         using CompoundFile file = CompoundFile.Open(new MemoryStream(compound.ToArray()));
 
@@ -84,8 +84,8 @@ public class SummaryInformationWriteTests
         var builder = new DocumentSummaryInformationBuilder { Company = "Bodu", SlideCount = 3 };
         builder.AddCustomProperty("Project", OlePropertyValue.Create("Apollo"));
 
-        var compound = new CompoundFileBuilder();
-        _ = compound.Root.AddStream(DocumentSummaryInformation.StreamName, builder.ToArray());
+        var compound = CompoundStorageBuilder.CreateRoot();
+        _ = compound.AddStream(DocumentSummaryInformation.StreamName, builder.ToArray());
 
         using CompoundFile file = CompoundFile.Open(new MemoryStream(compound.ToArray()));
 

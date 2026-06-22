@@ -26,8 +26,8 @@ public class CompoundStreamTests
         for (int i = 0; i < payload.Length; i++)
             payload[i] = (byte)((i * 7) + 3);
 
-        var builder = new CompoundFileBuilder();
-        _ = builder.Root.AddStream("Data", payload);
+        var builder = CompoundStorageBuilder.CreateRoot();
+        _ = builder.AddStream("Data", payload);
         return builder.ToArray();
     }
 

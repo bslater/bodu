@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CompoundFileBuilderTests.Streaming.cs" company="Bodu Pty. Ltd.">
+// <copyright file="CompoundStorageBuilderSerializationTests.Streaming.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -9,7 +9,7 @@ using Bodu.Test;
 
 namespace Bodu.IO.Compound;
 
-public partial class CompoundFileBuilderTests
+public partial class CompoundStorageBuilderSerializationTests
 {
     /// <summary>
     /// Verifies that a file-backed deferred stream is serialized by streaming from disk and round-trips byte-for-byte.
@@ -25,8 +25,8 @@ public partial class CompoundFileBuilderTests
         {
             File.WriteAllBytes(sourcePath, payload);
 
-            var builder = new CompoundFileBuilder();
-            _ = builder.Root.AddStreamFromFile("Big", sourcePath);
+            var builder = CompoundStorageBuilder.CreateRoot();
+            _ = builder.AddStreamFromFile("Big", sourcePath);
             builder.Save(outputPath);
 
             using FileStream reopen = File.OpenRead(outputPath);
@@ -51,8 +51,8 @@ public partial class CompoundFileBuilderTests
         byte[] payload = CreatePayload(9000);
         int opens = 0;
 
-        var builder = new CompoundFileBuilder();
-        _ = builder.Root.AddStream("Data", () =>
+        var builder = CompoundStorageBuilder.CreateRoot();
+        _ = builder.AddStream("Data", () =>
         {
             opens++;
             return new MemoryStream(payload, writable: false);
@@ -83,11 +83,11 @@ public partial class CompoundFileBuilderTests
         byte[] streamed;
         using (MemoryStream destination = new())
         {
-            BuildMixedTree(options).WriteTo(destination);
+            BuildMixedTree().WriteTo(destination, options);
             streamed = destination.ToArray();
         }
 
-        byte[] array = BuildMixedTree(options).ToArray();
+        byte[] array = BuildMixedTree().ToArray(options);
 
         CollectionAssert.AreEqual(array, streamed);
     }
@@ -117,25 +117,24 @@ public partial class CompoundFileBuilderTests
     [TestMethod]
     public void ToArray_WhenDeferredSourceShorterThanDeclared_ShouldThrow()
     {
-        var builder = new CompoundFileBuilder();
-        _ = builder.Root.AddStream("Short", () => new MemoryStream(new byte[100]), 8000);
+        var builder = CompoundStorageBuilder.CreateRoot();
+        _ = builder.AddStream("Short", () => new MemoryStream(new byte[100]), 8000);
 
         _ = Assert.ThrowsExactly<CompoundFileSerializationException>(() => builder.ToArray());
     }
 
     /// <summary>
-    /// Builds a builder over a tree mixing an in-memory large stream, a deferred large stream, a mini stream, and an
-    /// empty deferred stream.
+    /// Builds a tree mixing an in-memory large stream, a deferred large stream, a mini stream, and an empty deferred
+    /// stream.
     /// </summary>
-    /// <param name="options">The options controlling the output layout.</param>
-    /// <returns>The populated builder.</returns>
-    private static CompoundFileBuilder BuildMixedTree(CompoundBuildOptions options = default)
+    /// <returns>The populated root storage tree.</returns>
+    private static CompoundStorageBuilder BuildMixedTree()
     {
-        var builder = new CompoundFileBuilder(options);
-        _ = builder.Root.AddStream("InlineBig", CreatePayload(6000));
-        _ = builder.Root.AddStream("DeferredBig", () => new MemoryStream(CreatePayload(7000)), 7000);
-        _ = builder.Root.AddStream("Mini", CreatePayload(10));
-        _ = builder.Root.AddStream("Empty", () => new MemoryStream(Array.Empty<byte>()), 0);
+        var builder = CompoundStorageBuilder.CreateRoot();
+        _ = builder.AddStream("InlineBig", CreatePayload(6000));
+        _ = builder.AddStream("DeferredBig", () => new MemoryStream(CreatePayload(7000)), 7000);
+        _ = builder.AddStream("Mini", CreatePayload(10));
+        _ = builder.AddStream("Empty", () => new MemoryStream(Array.Empty<byte>()), 0);
         return builder;
     }
 }

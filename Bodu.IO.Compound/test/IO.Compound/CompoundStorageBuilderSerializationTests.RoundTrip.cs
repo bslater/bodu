@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CompoundFileBuilderTests.RoundTrip.cs" company="Bodu Pty. Ltd.">
+// <copyright file="CompoundStorageBuilderSerializationTests.RoundTrip.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -17,14 +17,14 @@ namespace Bodu.IO.Compound;
 /// </summary>
 /// <param name="Version">The compound-file version to write.</param>
 /// <param name="Size">The stream size, in bytes.</param>
-public sealed record CompoundFileBuilderSizeKat(CompoundFileVersion Version, int Size)
+public sealed record CompoundStorageBuilderSizeKat(CompoundFileVersion Version, int Size)
     : IKat
 {
     /// <inheritdoc />
     public string Name => $"{Version} size={Size}";
 }
 
-public partial class CompoundFileBuilderTests
+public partial class CompoundStorageBuilderSerializationTests
 {
     /// <summary>
     /// Gets the size/version round-trip rows spanning the mini/regular boundary and multi-sector payloads.
@@ -36,7 +36,7 @@ public partial class CompoundFileBuilderTests
         foreach (CompoundFileVersion version in new[] { CompoundFileVersion.V3, CompoundFileVersion.V4 })
         {
             foreach (int size in sizes)
-                yield return [new CompoundFileBuilderSizeKat(version, size)];
+                yield return [new CompoundStorageBuilderSizeKat(version, size)];
         }
     }
 
@@ -49,13 +49,13 @@ public partial class CompoundFileBuilderTests
     [TestCategory(TestCategories.Regression)]
     [DynamicData(nameof(SizeRows), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void ToArray_WhenStreamOfSize_ShouldRoundTripExactly(CompoundFileBuilderSizeKat kat)
+    public void ToArray_WhenStreamOfSize_ShouldRoundTripExactly(CompoundStorageBuilderSizeKat kat)
     {
         byte[] payload = CreatePayload(kat.Size);
-        var builder = new CompoundFileBuilder(new CompoundBuildOptions { Version = kat.Version });
-        _ = builder.Root.AddStream("Data", payload);
+        var builder = CompoundStorageBuilder.CreateRoot();
+        _ = builder.AddStream("Data", payload);
 
-        byte[] bytes = builder.ToArray();
+        byte[] bytes = builder.ToArray(new CompoundBuildOptions { Version = kat.Version });
 
         using CompoundFile file = CompoundFile.Open(new MemoryStream(bytes));
         Assert.IsTrue(file.RootStorage.TryOpenStream("Data", out CompoundStream? entry));
@@ -70,9 +70,9 @@ public partial class CompoundFileBuilderTests
     [TestCategory(TestCategories.Regression)]
     public void ToArray_WhenManySiblings_ShouldRoundTripAllStreams()
     {
-        var builder = new CompoundFileBuilder();
+        var builder = CompoundStorageBuilder.CreateRoot();
         for (int i = 0; i < 100; i++)
-            _ = builder.Root.AddStream($"Stream{i:D3}", CreatePayload(i));
+            _ = builder.AddStream($"Stream{i:D3}", CreatePayload(i));
 
         using CompoundFile file = CompoundFile.Open(new MemoryStream(builder.ToArray()));
 
@@ -90,8 +90,8 @@ public partial class CompoundFileBuilderTests
     [TestCategory(TestCategories.Regression)]
     public void ToArray_WhenDeeplyNested_ShouldRoundTrip()
     {
-        var builder = new CompoundFileBuilder();
-        CompoundStorageBuilder current = builder.Root;
+        var builder = CompoundStorageBuilder.CreateRoot();
+        CompoundStorageBuilder current = builder;
         for (int depth = 0; depth < 8; depth++)
             current = current.AddStorage($"Level{depth}");
 

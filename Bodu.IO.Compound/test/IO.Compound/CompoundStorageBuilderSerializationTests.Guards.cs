@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CompoundFileBuilderTests.Guards.cs" company="Bodu Pty. Ltd.">
+// <copyright file="CompoundStorageBuilderSerializationTests.Guards.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -8,7 +8,7 @@ using Bodu.IO.Compound.Builders;
 
 namespace Bodu.IO.Compound;
 
-public partial class CompoundFileBuilderTests
+public partial class CompoundStorageBuilderSerializationTests
 {
     /// <summary>
     /// Verifies that exceeding the configured maximum nesting depth throws
@@ -17,9 +17,10 @@ public partial class CompoundFileBuilderTests
     [TestMethod]
     public void ToArray_WhenNestingExceedsMaxDepth_ShouldThrowCompoundFileSerializationException()
     {
-        var builder = new CompoundFileBuilder(new CompoundBuildOptions { MaxDepth = 2 });
-        _ = builder.Root.AddStorage("A").AddStorage("B").AddStorage("C");
+        var builder = CompoundStorageBuilder.CreateRoot();
+        _ = builder.AddStorage("A").AddStorage("B").AddStorage("C");
 
-        _ = Assert.ThrowsExactly<CompoundFileSerializationException>(() => builder.ToArray());
+        _ = Assert.ThrowsExactly<CompoundFileSerializationException>(
+            () => builder.ToArray(new CompoundBuildOptions { MaxDepth = 2 }));
     }
 }

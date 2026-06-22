@@ -12,7 +12,7 @@ using Bodu.Test.Kat;
 namespace Bodu.IO.Compound;
 
 /// <summary>
-/// Verifies that loading a real compound file into a <see cref="CompoundFileBuilder" />, re-serializing it, and reading
+/// Verifies that loading a real compound file into a <see cref="CompoundStorageBuilder" />, re-serializing it, and reading
 /// it back preserves every stream exactly (an idempotent round-trip).
 /// </summary>
 [TestClass]
@@ -29,9 +29,9 @@ public class CompoundReferenceRoundTripTests
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void Load_WhenReloadingValidFixture_ShouldPreserveStreamContent(CompoundReferenceFixtureKat kat)
     {
-        CompoundFileBuilder builder;
+        CompoundStorageBuilder builder;
         using (MemoryStream source = CompoundFixtures.OpenReference(kat.RelativePath))
-            builder = CompoundFileBuilder.Load(source);
+            builder = CompoundStorageBuilder.Load(source);
 
         byte[] rewritten = builder.ToArray();
 

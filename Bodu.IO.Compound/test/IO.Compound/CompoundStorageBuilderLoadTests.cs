@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CompoundFileBuilderLoadTests.cs" company="Bodu Pty. Ltd.">
+// <copyright file="CompoundStorageBuilderLoadTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -12,11 +12,11 @@ using Bodu.Test.Kat;
 namespace Bodu.IO.Compound;
 
 /// <summary>
-/// Verifies that <see cref="CompoundFileBuilder.Load(Stream, CompoundBuildOptions)" /> materializes a compound
+/// Verifies that <see cref="CompoundStorageBuilder.Load(Stream, CompoundBuildOptions)" /> materializes a compound
 /// file into an equivalent mutable object model.
 /// </summary>
 [TestClass]
-public class CompoundFileBuilderLoadTests
+public class CompoundStorageBuilderLoadTests
 {
     /// <summary>
     /// Verifies that loading a nested fixture reproduces its storage hierarchy and stream content.
@@ -27,7 +27,7 @@ public class CompoundFileBuilderLoadTests
     {
         using MemoryStream source = CompoundFixtures.OpenReference("valid/clean.dat");
 
-        CompoundStorageBuilder root = CompoundFileBuilder.Load(source).Root;
+        CompoundStorageBuilder root = CompoundStorageBuilder.Load(source);
 
         Assert.AreEqual(CompoundEntryType.RootStorage, root.EntryType);
         Assert.IsTrue(root.TryGetStorage("Storage 1", out CompoundStorageBuilder? storage));
@@ -47,7 +47,7 @@ public class CompoundFileBuilderLoadTests
     public void Load_WhenValidFixture_ShouldMatchReaderStreamHashes(CompoundReferenceFixtureKat kat)
     {
         using MemoryStream source = CompoundFixtures.OpenReference(kat.RelativePath);
-        CompoundStorageBuilder root = CompoundFileBuilder.Load(source).Root;
+        CompoundStorageBuilder root = CompoundStorageBuilder.Load(source);
 
         Dictionary<string, string> actual = new(StringComparer.Ordinal);
         Collect(root, string.Empty, actual);

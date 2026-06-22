@@ -93,8 +93,8 @@ public class CompoundSynthesizedCorruptionTests
         for (int i = 0; i < size; i++)
             payload[i] = (byte)((i * 31) + 7);
 
-        var builder = new CompoundFileBuilder();
-        _ = builder.Root.AddStream(name, payload);
+        var builder = CompoundStorageBuilder.CreateRoot();
+        _ = builder.AddStream(name, payload);
         return builder.ToArray();
     }
 

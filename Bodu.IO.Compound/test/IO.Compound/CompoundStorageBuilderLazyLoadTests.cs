@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CompoundFileBuilderLazyLoadTests.cs" company="Bodu Pty. Ltd.">
+// <copyright file="CompoundStorageBuilderLazyLoadTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -12,10 +12,10 @@ namespace Bodu.IO.Compound;
 
 /// <summary>
 /// Verifies the lazy (deferred) load path of
-/// <see cref="CompoundFileBuilder.FromFile(CompoundFile, bool, CompoundBuildOptions)" />.
+/// <see cref="CompoundStorageBuilder.FromFile(CompoundFile, bool, CompoundBuildOptions)" />.
 /// </summary>
 [TestClass]
-public class CompoundFileBuilderLazyLoadTests
+public class CompoundStorageBuilderLazyLoadTests
 {
     /// <summary>
     /// Verifies that a lazy load produces deferred stream nodes that report their length without materializing content.
@@ -26,7 +26,7 @@ public class CompoundFileBuilderLazyLoadTests
         using MemoryStream source = CompoundFixtures.OpenReference("valid/clean.dat");
         using CompoundFile file = CompoundFile.Open(source, buffered: false);
 
-        CompoundStorageBuilder root = CompoundFileBuilder.FromFile(file, lazy: true).Root;
+        CompoundStorageBuilder root = CompoundStorageBuilder.FromFile(file, lazy: true);
 
         bool sawStream = false;
         foreach (CompoundStreamBuilder stream in EnumerateStreams(root))
@@ -49,7 +49,7 @@ public class CompoundFileBuilderLazyLoadTests
 
         Dictionary<string, string> expected = HashStreams(file.RootStorage);
 
-        byte[] rewritten = CompoundFileBuilder.FromFile(file, lazy: true).ToArray();
+        byte[] rewritten = CompoundStorageBuilder.FromFile(file, lazy: true).ToArray();
 
         using CompoundFile reopened = CompoundFile.Open(new MemoryStream(rewritten));
         Dictionary<string, string> actual = HashStreams(reopened.RootStorage);
@@ -72,15 +72,15 @@ public class CompoundFileBuilderLazyLoadTests
         try
         {
             byte[] big = Payload(6 * 1024 * 1024);
-            var authored = new CompoundFileBuilder();
-            _ = authored.Root.AddStream("Big", big);
-            _ = authored.Root.AddStream("Small", Payload(20));
+            var authored = CompoundStorageBuilder.CreateRoot();
+            _ = authored.AddStream("Big", big);
+            _ = authored.AddStream("Small", Payload(20));
             authored.Save(inputPath);
 
             using (FileStream read = File.OpenRead(inputPath))
             using (CompoundFile file = CompoundFile.Open(read, buffered: false))
             {
-                CompoundFileBuilder lazy = CompoundFileBuilder.FromFile(file, lazy: true);
+                CompoundStorageBuilder lazy = CompoundStorageBuilder.FromFile(file, lazy: true);
                 lazy.Save(outputPath);
             }
 

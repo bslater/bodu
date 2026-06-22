@@ -436,7 +436,7 @@ public sealed class CompoundFile
         CompoundStorageBuilder staging;
         using (CompoundFile reader = Open(new MemoryStream(snapshot, writable: false)))
         {
-            staging = CompoundFileBuilder.FromFile(reader).Root;
+            staging = CompoundStorageBuilder.FromFile(reader);
         }
 
         return new CompoundFile(destination, leaveOpen, FileAccess.ReadWrite, staging, options);

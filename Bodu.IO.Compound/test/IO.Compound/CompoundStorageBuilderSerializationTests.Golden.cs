@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CompoundFileBuilderTests.Golden.cs" company="Bodu Pty. Ltd.">
+// <copyright file="CompoundStorageBuilderSerializationTests.Golden.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -10,7 +10,7 @@ using Bodu.Test.Kat;
 
 namespace Bodu.IO.Compound;
 
-public partial class CompoundFileBuilderTests
+public partial class CompoundStorageBuilderSerializationTests
 {
     /// <summary>
     /// Gets the golden byte-for-byte rows pairing a version with its committed reference file.
@@ -18,8 +18,8 @@ public partial class CompoundFileBuilderTests
     /// <returns>A sequence of single-element argument arrays wrapping the rows.</returns>
     public static IEnumerable<object[]> GoldenRows()
     {
-        yield return [new CompoundFileBuilderGoldenKat(CompoundFileVersion.V3, "golden-v3.cfb")];
-        yield return [new CompoundFileBuilderGoldenKat(CompoundFileVersion.V4, "golden-v4.cfb")];
+        yield return [new CompoundStorageBuilderGoldenKat(CompoundFileVersion.V3, "golden-v3.cfb")];
+        yield return [new CompoundStorageBuilderGoldenKat(CompoundFileVersion.V4, "golden-v4.cfb")];
     }
 
     /// <summary>
@@ -30,11 +30,11 @@ public partial class CompoundFileBuilderTests
     [TestMethod]
     [DynamicData(nameof(GoldenRows), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void ToArray_WhenCanonicalTree_ShouldMatchGoldenFileByteForByte(CompoundFileBuilderGoldenKat kat)
+    public void ToArray_WhenCanonicalTree_ShouldMatchGoldenFileByteForByte(CompoundStorageBuilderGoldenKat kat)
     {
         byte[] expected = CompoundFixtures.ReadWriterGolden(kat.FileName);
 
-        byte[] actual = BuildCanonical(new CompoundBuildOptions { Version = kat.Version }).ToArray();
+        byte[] actual = BuildCanonical().ToArray(new CompoundBuildOptions { Version = kat.Version });
 
         Assert.AreEqual(expected.Length, actual.Length, "length");
         CollectionAssert.AreEqual(expected, actual);
@@ -47,30 +47,29 @@ public partial class CompoundFileBuilderTests
     [TestMethod]
     [DynamicData(nameof(GoldenRows), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void Load_WhenReloadingGolden_ShouldBeByteStable(CompoundFileBuilderGoldenKat kat)
+    public void Load_WhenReloadingGolden_ShouldBeByteStable(CompoundStorageBuilderGoldenKat kat)
     {
         byte[] golden = CompoundFixtures.ReadWriterGolden(kat.FileName);
 
-        byte[] rewritten = CompoundFileBuilder
-            .Load(new MemoryStream(golden), new CompoundBuildOptions { Version = kat.Version })
-            .ToArray();
+        byte[] rewritten = CompoundStorageBuilder
+            .Load(new MemoryStream(golden))
+            .ToArray(new CompoundBuildOptions { Version = kat.Version });
 
         CollectionAssert.AreEqual(golden, rewritten);
     }
 
     /// <summary>
-    /// Builds a builder over the canonical, fully-deterministic tree used to generate the golden files.
+    /// Builds the canonical, fully-deterministic tree used to generate the golden files.
     /// </summary>
-    /// <param name="options">The options controlling the output layout.</param>
-    /// <returns>The populated builder.</returns>
-    private static CompoundFileBuilder BuildCanonical(CompoundBuildOptions options = default)
+    /// <returns>The populated root storage tree.</returns>
+    private static CompoundStorageBuilder BuildCanonical()
     {
-        var builder = new CompoundFileBuilder(options);
-        builder.Root.ClassId = new Guid("00020906-0000-0000-C000-000000000046");
-        CompoundStorageBuilder data = builder.Root.AddStorage("Data");
+        var builder = CompoundStorageBuilder.CreateRoot();
+        builder.ClassId = new Guid("00020906-0000-0000-C000-000000000046");
+        CompoundStorageBuilder data = builder.AddStorage("Data");
         _ = data.AddStream("Small", Canonical(100));
         _ = data.AddStream("Large", Canonical(5000));
-        _ = builder.Root.AddStream("Meta", Canonical(48));
+        _ = builder.AddStream("Meta", Canonical(48));
         return builder;
     }
 
@@ -94,7 +93,7 @@ public partial class CompoundFileBuilderTests
 /// </summary>
 /// <param name="Version">The compound-file version.</param>
 /// <param name="FileName">The golden fixture file name.</param>
-public sealed record CompoundFileBuilderGoldenKat(CompoundFileVersion Version, string FileName)
+public sealed record CompoundStorageBuilderGoldenKat(CompoundFileVersion Version, string FileName)
     : IKat
 {
     /// <inheritdoc />

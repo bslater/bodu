@@ -54,15 +54,15 @@ public class CompoundOleFileCrossValidationTests
             ["Storage 1/Nested"] = [9, 9, 9],
         };
 
-        var builder = new CompoundFileBuilder(new CompoundBuildOptions { Version = version });
-        _ = builder.Root.AddStream("Small", streams["Small"]);
-        _ = builder.Root.AddStream("Big", streams["Big"]);
-        _ = builder.Root.AddStorage("Storage 1").AddStream("Nested", streams["Storage 1/Nested"]);
+        var builder = CompoundStorageBuilder.CreateRoot();
+        _ = builder.AddStream("Small", streams["Small"]);
+        _ = builder.AddStream("Big", streams["Big"]);
+        _ = builder.AddStorage("Storage 1").AddStream("Nested", streams["Storage 1/Nested"]);
 
         string path = Path.Combine(Path.GetTempPath(), $"bodu-cfb-{Guid.NewGuid():N}.cfb");
         try
         {
-            builder.Save(path);
+            builder.Save(path, new CompoundBuildOptions { Version = version });
             Dictionary<string, string> reported = RunOleFile(path);
 
             foreach (KeyValuePair<string, byte[]> expected in streams)

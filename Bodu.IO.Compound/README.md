@@ -49,7 +49,7 @@ if (file.TryGetSummaryInformation(out var summary))
 - **Bounded-memory streaming reads**: `CompoundFile.Open(stream, buffered: false)` reads sectors on
   demand from a seekable stream, and `CompoundStorage.OpenStream(name)` returns a lazy `CompoundStream`
   for large streams, so a multi-gigabyte file can be read without buffering it whole.
-  `CompoundFileBuilder.FromFile(file, lazy: true)` reads into deferred nodes for a fully streamed read → re-save copy.
+  `CompoundStorageBuilder.FromFile(file, lazy: true)` reads into deferred nodes for a fully streamed read → re-save copy.
 - Tunable open behavior via `CompoundFileOptions` (`CompoundFile.Open(stream, options)`): a
   `CompoundReadStrategy` (`Buffered` / `Streaming` / `Auto` with a `MaxBufferedBytes` threshold) and a
   `CompoundValidationLevel` — `Strict` rejects malformed directory entries the default tolerates, the
@@ -61,12 +61,12 @@ if (file.TryGetSummaryInformation(out var summary))
 - OLE property-set parsing **and writing** (`Bodu.IO.Compound.PropertySets`): `OlePropertySet` /
   `OlePropertyValue` (PROPVARIANT) plus the strongly-typed `SummaryInformation` /
   `DocumentSummaryInformation` views and `…Builder` authors, including user-defined custom properties.
-- A single authoring surface, `CompoundFileBuilder`: populate its `Root` with a
-  JsonNode-style tree of `CompoundStorageBuilder` / `CompoundStreamBuilder` children (or
-  `CompoundFileBuilder.Load` an existing file into one), then `WriteTo` / `Save` / `ToArray`
+- A detached snapshot-authoring model, `CompoundStorageBuilder`: build a JsonNode-style tree of
+  `CompoundStorageBuilder` / `CompoundStreamBuilder` children with `CompoundStorageBuilder.CreateRoot()`
+  (or `CompoundStorageBuilder.Load` an existing file into one), then `WriteTo` / `Save` / `ToArray`
   to a conforming container (v3 or v4). Output is verified byte-for-byte and cross-checked
-  against the independent `olefile` and OpenMcdf parsers.
-- **Bounded-memory streaming writes**: `CompoundFileBuilder.WriteTo(Stream)` emits one sector
+  against the independent `olefile` and OpenMcdf parsers. (For live read/write use `CompoundFile`.)
+- **Bounded-memory streaming writes**: `CompoundStorageBuilder.WriteTo(Stream)` emits one sector
   at a time and large payloads can be sourced on demand via
   `CompoundStreamBuilder.CreateFromFile(name, path)` or `Create(name, Func<Stream>, length)` (and
   the matching `CompoundStorageBuilder.AddStreamFromFile`), so multi-gigabyte containers serialize
@@ -80,9 +80,9 @@ using Bodu.IO.Compound;
 using Bodu.IO.Compound.Builders;
 using Bodu.IO.Compound.PropertySets;
 
-var builder = new CompoundFileBuilder();
-builder.Root.AddStorage("Storage 1").AddStream("Stream 1", new byte[] { 1, 2, 3 });
-builder.Root.AddStream(SummaryInformation.StreamName,
+var builder = CompoundStorageBuilder.CreateRoot();
+builder.AddStorage("Storage 1").AddStream("Stream 1", new byte[] { 1, 2, 3 });
+builder.AddStream(SummaryInformation.StreamName,
     new SummaryInformationBuilder { Title = "Report", Author = "Ada" }.ToArray());
 builder.WriteTo(stream);   // writes an OLE2 / CFB file
 ```

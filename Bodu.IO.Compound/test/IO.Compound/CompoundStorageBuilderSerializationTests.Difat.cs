@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CompoundFileBuilderTests.Difat.cs" company="Bodu Pty. Ltd.">
+// <copyright file="CompoundStorageBuilderSerializationTests.Difat.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -10,7 +10,7 @@ using Bodu.Test;
 
 namespace Bodu.IO.Compound;
 
-public partial class CompoundFileBuilderTests
+public partial class CompoundStorageBuilderSerializationTests
 {
     /// <summary>
     /// Verifies that a container large enough to require more than the 109 inline FAT pointers — and therefore extended
@@ -26,10 +26,10 @@ public partial class CompoundFileBuilderTests
         new Random(1234).NextBytes(payload);
         string expected = Convert.ToHexString(SHA256.HashData(payload)).ToLowerInvariant();
 
-        var builder = new CompoundFileBuilder(new CompoundBuildOptions { Version = CompoundFileVersion.V3 });
-        _ = builder.Root.AddStream("Big", payload);
+        var builder = CompoundStorageBuilder.CreateRoot();
+        _ = builder.AddStream("Big", payload);
 
-        byte[] bytes = builder.ToArray();
+        byte[] bytes = builder.ToArray(new CompoundBuildOptions { Version = CompoundFileVersion.V3 });
 
         using CompoundFile file = CompoundFile.Open(new MemoryStream(bytes));
         Assert.IsTrue(file.RootStorage.TryOpenStream("Big", out CompoundStream? entry));
