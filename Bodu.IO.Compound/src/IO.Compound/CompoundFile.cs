@@ -482,6 +482,53 @@ public sealed class CompoundFile
     }
 
     /// <summary>
+    /// Opens the compound file at the specified path with BCL-style <see cref="FileMode" />, <see cref="FileAccess" />,
+    /// and <see cref="FileShare" /> semantics, mirroring <c>System.IO.Packaging.Package.Open</c>.
+    /// </summary>
+    /// <param name="path">The path of the compound file to open or create.</param>
+    /// <param name="mode">
+    /// The file mode. <see cref="FileMode.Open" /> with <see cref="FileAccess.Read" /> opens for reading; a creating
+    /// mode with write access starts a new file; <see cref="FileMode.Open" /> with write access loads the existing file
+    /// for update.
+    /// </param>
+    /// <param name="access">
+    /// The access level. Write access requires a creating or updating <paramref name="mode" />.
+    /// </param>
+    /// <param name="share">The sharing mode granted to other openers of the file.</param>
+    /// <returns>An open <see cref="CompoundFile" /> that owns and closes the underlying file when disposed.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="path" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="FileNotFoundException">
+    /// Thrown when <paramref name="mode" /> requires an existing file but none exists at <paramref name="path" />.
+    /// </exception>
+    /// <exception cref="NotSupportedException">
+    /// Thrown when the combination of <paramref name="mode" /> and <paramref name="access" /> is not supported.
+    /// </exception>
+    /// <exception cref="CompoundFileFormatException">
+    /// Thrown when the existing file content is not a well-formed compound file.
+    /// </exception>
+    /// <remarks>
+    /// For writable modes the staged edits are written back to the file only by <see cref="Commit" />; disposing
+    /// without committing leaves the file unchanged.
+    /// </remarks>
+    public static CompoundFile Open(string path, FileMode mode, FileAccess access, FileShare share = FileShare.Read)
+    {
+        ThrowHelper.ThrowIfNull(path);
+
+        FileStream stream = new(path, mode, access, share);
+        try
+        {
+            return Open(stream, mode, access, leaveOpen: false);
+        }
+        catch
+        {
+            stream.Dispose();
+            throw;
+        }
+    }
+
+    /// <summary>
     /// Determines whether the supplied stream begins with the compound-file (OLE2) signature without parsing the file.
     /// </summary>
     /// <param name="stream">A seekable stream to inspect; its position is restored before the method returns.</param>
