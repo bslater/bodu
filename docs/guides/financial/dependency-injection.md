@@ -105,7 +105,7 @@ services.AddFinancialService(financial =>
 });
 ```
 
-To group several providers behind one registration — prioritised fallback, averaging, or per-FX-pair routing — and add read-through caching, use `AddAggregatedExchangeRateProvider(...)` from the `Bodu.Financial.ExchangeRates.Caching` package (its DI registration ships in the package, in the `Microsoft.Extensions.DependencyInjection` namespace), which registers an <xref:Bodu.Financial.ExchangeRates.Caching.AggregatingExchangeRateProvider> as the application's single <xref:Bodu.Financial.IDatedExchangeRateProvider>. `ExchangeRateLookupResult.Rate.Provider` records which source answered, so the audit trail survives the composition. See the [caching and aggregating guide](exchange-rate-caching.md#dependency-injection) for the full walkthrough.
+To group several providers behind one registration — prioritised fallback, averaging, or per-FX-pair routing — and add read-through caching, use `AddAggregatedExchangeRateProvider(...)` from the `Bodu.Financial.ExchangeRates.Caching` package (its DI registration ships in the package, in the `Bodu.Financial.ExchangeRates` namespace), which registers an <xref:Bodu.Financial.ExchangeRates.Caching.AggregatingExchangeRateProvider> as the application's single <xref:Bodu.Financial.IDatedExchangeRateProvider>. `ExchangeRateLookupResult.Rate.Provider` records which source answered, so the audit trail survives the composition. See the [caching and aggregating guide](exchange-rate-caching.md#dependency-injection) for the full walkthrough.
 
 Neither `AddFinancialService` overload registers an FX provider by default — an application that never crosses currencies pays nothing for the contract.
 

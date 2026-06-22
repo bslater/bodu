@@ -84,8 +84,9 @@ fetches over HTTP with no provider-local disk cache. Use the generic
 
 ## Dependency injection
 
-See [`Bodu.Financial.ExchangeRates.Yahoo.DependencyInjection`](../Bodu.Financial.ExchangeRates.Yahoo.DependencyInjection)
-for `AddYahooExchangeRates` / `AddYahooExchangeRates`.
+The package ships its own `AddYahooExchangeRates` registration in the
+`Bodu.Financial.ExchangeRates` namespace — there is no separate `*.DependencyInjection`
+package.
 
 ## Logging
 

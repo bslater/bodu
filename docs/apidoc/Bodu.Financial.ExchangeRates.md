@@ -10,7 +10,7 @@ uid: Bodu.Financial.ExchangeRates
 
 The central-bank providers (BoE, ECB, RBA) publish a single base currency (GBP, EUR, AUD), so they support direct (`base→X`) and inverse (`X→base`) lookups but not cross pairs. The market providers (Yahoo, OFX) fetch a distinct series per currency pair, so they serve **arbitrary pairs**. Every provider is `IDisposable`: the options-only constructor builds and owns its `HttpClient`, while the constructor that accepts an `HttpClient` (the form the dependency-injection registration uses) leaves the client's lifetime to the caller. Downloaded responses are cached on disk by default.
 
-Each provider ships its own dependency-injection registration in the `Microsoft.Extensions.DependencyInjection` namespace, so a single `using Microsoft.Extensions.DependencyInjection;` makes the `Add<Source>...` extension methods available — `AddBoeReferenceRates`, `AddEcbReferenceRates`, `AddRbaHistoricalRates`, `AddYahooExchangeRates`, and `AddOfxExchangeRates`. There is no separate per-provider `*.DependencyInjection` package; the registration lives in the provider's own runtime package over the shared `AddWebExchangeRateProvider` machinery.
+Each provider ships its own dependency-injection registration in the `Bodu.Financial.ExchangeRates` namespace, so a single `using Bodu.Financial.ExchangeRates;` makes the `Add<Source>...` extension methods available — `AddBoeReferenceRates`, `AddEcbReferenceRates`, `AddRbaHistoricalRates`, `AddYahooExchangeRates`, and `AddOfxExchangeRates`. There is no separate per-provider `*.DependencyInjection` package; the registration lives in the provider's own runtime package over the shared `AddWebExchangeRateProvider` machinery.
 
 ## Static documentation
 
@@ -63,4 +63,4 @@ await ecb.LoadRangeAsync(new DateOnly(2023, 1, 1), new DateOnly(2023, 12, 31));
 ExchangeRateLookupResult usd = ecb.GetRate("EUR", "USD", new DateOnly(2023, 1, 3));
 ```
 
-To register a provider in the container, add `using Microsoft.Extensions.DependencyInjection;` and call the source's `Add<Source>...` method — for example `services.AddEcbReferenceRates();`. See the [providers guide](~/guides/financial/exchange-rate-providers.md) for construction, warming, dependency injection, and composing with the [caching and aggregating](~/guides/financial/exchange-rate-caching.md) layer.
+To register a provider in the container, add `using Bodu.Financial.ExchangeRates;` and call the source's `Add<Source>...` method — for example `services.AddEcbReferenceRates();`. See the [providers guide](~/guides/financial/exchange-rate-providers.md) for construction, warming, dependency injection, and composing with the [caching and aggregating](~/guides/financial/exchange-rate-caching.md) layer.

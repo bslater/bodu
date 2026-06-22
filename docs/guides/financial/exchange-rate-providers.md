@@ -190,11 +190,13 @@ Each provider package ships its own DI registration — there is no separate
 `*.DependencyInjection` package. The `Add<Source>...` extension method registers the
 provider on the [`IFinancialServiceBuilder`](xref:Bodu.Financial.IFinancialServiceBuilder),
 backed by a named `HttpClient` with the standard Polly resilience handler, and
-resolvable as both the dated and timeless surfaces. The extension methods live in the
-`Microsoft.Extensions.DependencyInjection` namespace, so one `using` brings them all
-into scope:
+resolvable as both the dated and timeless surfaces. The `Add<Source>...` extension
+methods live in the `Bodu.Financial.ExchangeRates` namespace (`AddFinancialService`
+lives in `Microsoft.Extensions.DependencyInjection`), so both `using` directives bring
+the chain into scope:
 
 ```csharp
+using Bodu.Financial.ExchangeRates;
 using Microsoft.Extensions.DependencyInjection;
 
 services.AddFinancialService()
@@ -211,6 +213,7 @@ to serve repeated lookups without re-hitting the source. The source must be
 registered first — the cached registration resolves it, it does not build it:
 
 ```csharp
+using Bodu.Financial.ExchangeRates;
 using Microsoft.Extensions.DependencyInjection;
 
 services.AddFinancialService()

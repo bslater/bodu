@@ -15,7 +15,7 @@ The cache owns expiry: each provider has its own caching duration with a global 
 
 Alongside the in-memory and TOML-file caches, two persistent backends now live in this same namespace: <xref:Bodu.Financial.ExchangeRates.Caching.SqliteExchangeRateCache> (a SQLite database) and <xref:Bodu.Financial.ExchangeRates.Caching.DistributedExchangeRateCache> (any `Microsoft.Extensions.Caching.Distributed.IDistributedCache`, including Redis). Both are behaviourally identical to the built-in caches — the same freshness, merge, coverage, and validation semantics, asserted against the same shared cache contract tests — so each drops in anywhere an `IExchangeRateCache` is expected, behind a <xref:Bodu.Financial.ExchangeRates.Caching.CachingExchangeRateProvider>.
 
-All dependency-injection registration lives in the `Microsoft.Extensions.DependencyInjection` namespace, so a single `using Microsoft.Extensions.DependencyInjection;` makes `AddCachedExchangeRateProvider`, `AddAggregatedExchangeRateProvider`, `AddSqliteRateCache`, `AddDistributedRateCache`, and `AddRedisRateCache` available. The SQLite and distributed backends ship their registration inside their own runtime packages; there are no separate `*.DependencyInjection` packages.
+All dependency-injection registration lives in the `Bodu.Financial.ExchangeRates` namespace, so a single `using Bodu.Financial.ExchangeRates;` makes `AddCachedExchangeRateProvider`, `AddAggregatedExchangeRateProvider`, `AddSqliteRateCache`, `AddDistributedRateCache`, and `AddRedisRateCache` available. The SQLite and distributed backends ship their registration inside their own runtime packages; there are no separate `*.DependencyInjection` packages.
 
 ## Static documentation
 
@@ -84,4 +84,4 @@ IDatedExchangeRateProvider provider = new AggregatingExchangeRateProvider(
 ExchangeRateLookupResult today = provider.GetRate("AUD", "USD", new DateOnly(2024, 1, 3));
 ```
 
-For dependency-injection wiring, add `using Microsoft.Extensions.DependencyInjection;` and call `AddCachedExchangeRateProvider`, `AddAggregatedExchangeRateProvider`, `AddSqliteRateCache`, `AddDistributedRateCache`, or `AddRedisRateCache`. See the [caching guide](~/guides/financial/exchange-rate-caching.md) for the full walkthrough.
+For dependency-injection wiring, add `using Bodu.Financial.ExchangeRates;` and call `AddCachedExchangeRateProvider`, `AddAggregatedExchangeRateProvider`, `AddSqliteRateCache`, `AddDistributedRateCache`, or `AddRedisRateCache`. See the [caching guide](~/guides/financial/exchange-rate-caching.md) for the full walkthrough.

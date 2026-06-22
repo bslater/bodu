@@ -49,7 +49,7 @@ foreach (BoeSeriesInfo info in provider.GetAvailablePairs())
   `Microsoft.Extensions.Options`. The provider's connection to the IADB is grouped under
   its `Endpoint` (`BoeEndpointOptions`) — base URL, query path, HTTP timeout, and
   user-agent — so the query can be pointed at a mirror or proxy without touching caching or
-  series configuration. See the `*.DependencyInjection` package for `AddBoeReferenceRates`.
+  series configuration. The package ships its own `AddBoeReferenceRates` registration in the `Bodu.Financial.ExchangeRates` namespace.
 
 ## HTTP client and lifetime
 
