@@ -6,6 +6,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using Bodu.IO.Compound.Builders;
 using Bodu.IO.Compound.Internal;
 using Bodu.IO.Compound.PropertySets;
 
@@ -33,8 +34,10 @@ namespace Bodu.IO.Compound;
 /// which case the stream must stay open for the instance's lifetime and reads are serialized rather than parallel.
 /// </para>
 /// <para>
-/// The current release supports read-only access (<see cref="FileAccess.Read" />). Creation and mutation (<c>Create</c>,
-/// <c>Commit</c>, and <c>Revert</c>) are reserved for a future read-write implementation.
+/// Opening with <see cref="FileAccess.Read" /> yields a read-only file.
+/// <see cref="Create(System.IO.Stream, bool, Bodu.IO.Compound.Builders.CompoundBuildOptions)" /> (or a creating
+/// <see cref="FileMode" />) yields a writable file whose edits are staged in memory and written to the destination only
+/// by <see cref="Commit" />; in-place update of an existing file is not yet supported.
 /// </para>
 /// </remarks>
 /// <example>
@@ -86,6 +89,18 @@ public sealed class CompoundFile
     /// <summary>Whether stream payloads are read on demand rather than from a fully buffered file.</summary>
     private readonly bool _streaming;
 
+    /// <summary>The mutable staging tree for a writable file, or <see langword="null" /> when read-only.</summary>
+    private readonly CompoundStorageBuilder? _staging;
+
+    /// <summary>The destination written by <see cref="Commit" /> for a writable file, or <see langword="null" /> when read-only.</summary>
+    private readonly Stream? _destination;
+
+    /// <summary>The build options applied when serializing the staging tree.</summary>
+    private readonly CompoundBuildOptions _buildOptions;
+
+    /// <summary>Whether the staging tree carries uncommitted edits.</summary>
+    private bool _dirty;
+
     /// <summary>Whether this instance has been disposed.</summary>
     private bool _disposed;
 
@@ -124,6 +139,32 @@ public sealed class CompoundFile
     }
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="CompoundFile" /> class as a writable file over a staging tree.
+    /// </summary>
+    /// <param name="destination">The destination written by <see cref="Commit" />.</param>
+    /// <param name="leaveOpen">Whether to leave <paramref name="destination" /> open on dispose.</param>
+    /// <param name="access">The access level the file was opened with.</param>
+    /// <param name="staging">The mutable staging tree that backs the file's hierarchy.</param>
+    /// <param name="options">The build options applied when serializing the staging tree.</param>
+    private CompoundFile(Stream destination, bool leaveOpen, FileAccess access, CompoundStorageBuilder staging, CompoundBuildOptions options)
+    {
+        _source = destination;
+        _destination = destination;
+        _leaveOpen = leaveOpen;
+        Access = access;
+        _staging = staging;
+        _buildOptions = options;
+
+        // The read pipeline is unused in write mode; these fields are never dereferenced while staging.
+        _dataSource = null!;
+        _header = null!;
+        _sectors = null!;
+        _directory = null!;
+
+        RootStorage = new CompoundStorage(this, staging);
+    }
+
+    /// <summary>
     /// Gets the access level the compound file was opened with.
     /// </summary>
     /// <returns>
@@ -146,6 +187,14 @@ public sealed class CompoundFile
     /// <see langword="true" /> when the file was opened with write access; otherwise <see langword="false" />.
     /// </returns>
     public bool CanWrite => (Access & FileAccess.Write) != 0;
+
+    /// <summary>
+    /// Gets a value indicating whether the file has staged edits that have not been committed.
+    /// </summary>
+    /// <returns>
+    /// <see langword="true" /> when a writable file has uncommitted changes; otherwise <see langword="false" />.
+    /// </returns>
+    public bool IsDirty => _dirty;
 
     /// <summary>
     /// Gets the root storage that anchors the compound file's directory hierarchy.
@@ -194,24 +243,28 @@ public sealed class CompoundFile
     /// Opens a compound file over the supplied stream with BCL-style <see cref="FileMode" /> and
     /// <see cref="FileAccess" /> semantics, mirroring <c>System.IO.Packaging.Package.Open</c>.
     /// </summary>
-    /// <param name="stream">The stream containing the compound file; read from its current position to the end.</param>
-    /// <param name="mode">The file mode; the current release supports <see cref="FileMode.Open" /> only.</param>
-    /// <param name="access">The access level; the current release supports <see cref="FileAccess.Read" /> only.</param>
+    /// <param name="stream">The stream containing the compound file, or the destination for a writable file.</param>
+    /// <param name="mode">
+    /// The file mode. <see cref="FileMode.Open" /> with <see cref="FileAccess.Read" /> opens for reading;
+    /// <see cref="FileMode.Create" />, <see cref="FileMode.CreateNew" />, or <see cref="FileMode.OpenOrCreate" /> with
+    /// write access starts a new, empty writable file.
+    /// </param>
+    /// <param name="access">The access level. Write access requires a creating <paramref name="mode" />.</param>
     /// <param name="leaveOpen">
     /// <see langword="true" /> to leave <paramref name="stream" /> open when the returned instance is disposed;
     /// otherwise <see langword="false" />.
     /// </param>
     /// <param name="buffered">
     /// <see langword="true" /> (the default) to read the whole file into memory at open time; <see langword="false" />
-    /// to read sectors on demand from the seekable <paramref name="stream" />.
+    /// to read sectors on demand from the seekable <paramref name="stream" />. Ignored for writable files.
     /// </param>
     /// <returns>An open <see cref="CompoundFile" />.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="stream" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="NotSupportedException">
-    /// Thrown when <paramref name="mode" /> or <paramref name="access" /> requests a write capability, which is not yet
-    /// supported.
+    /// Thrown when the combination of <paramref name="mode" /> and <paramref name="access" /> is not supported, such as
+    /// opening an existing file for in-place update.
     /// </exception>
     /// <exception cref="CompoundFileFormatException">
     /// Thrown when the stream content is not a well-formed compound file.
@@ -219,14 +272,94 @@ public sealed class CompoundFile
     public static CompoundFile Open(Stream stream, FileMode mode, FileAccess access, bool leaveOpen = false, bool buffered = true)
     {
         ThrowHelper.ThrowIfNull(stream);
-        if (mode != FileMode.Open || access != FileAccess.Read)
-        {
-            throw new NotSupportedException(
-                string.Format(CultureInfo.CurrentCulture, CompoundResourceStrings.Op_NotSupported_CompoundFileWriteMode, $"{mode}/{access}"));
-        }
 
-        return OpenReadCore(stream, leaveOpen, buffered);
+        if (mode == FileMode.Open && access == FileAccess.Read)
+            return OpenReadCore(stream, leaveOpen, buffered);
+
+        if ((access & FileAccess.Write) != 0 && mode is FileMode.Create or FileMode.CreateNew or FileMode.OpenOrCreate)
+            return CreateCore(stream, leaveOpen, access, default);
+
+        throw new NotSupportedException(
+            string.Format(CultureInfo.CurrentCulture, CompoundResourceStrings.Op_NotSupported_CompoundFileWriteMode, $"{mode}/{access}"));
     }
+
+    /// <summary>
+    /// Creates a new, empty writable compound file whose staged contents are written to the supplied destination by
+    /// <see cref="Commit" />.
+    /// </summary>
+    /// <param name="destination">The stream the committed compound file is written to.</param>
+    /// <param name="leaveOpen">
+    /// <see langword="true" /> to leave <paramref name="destination" /> open when the returned instance is disposed;
+    /// otherwise <see langword="false" />.
+    /// </param>
+    /// <param name="options">The build options applied when the staging tree is serialized.</param>
+    /// <returns>A new writable <see cref="CompoundFile" />.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="destination" /> is <see langword="null" />.
+    /// </exception>
+    /// <remarks>
+    /// Edits made through <see cref="RootStorage" /> are staged in memory; nothing is written to
+    /// <paramref name="destination" /> until <see cref="Commit" /> is called. Disposing the file without committing
+    /// discards the staged edits.
+    /// </remarks>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// using FileStream output = File.Create("book.xls");
+    /// using CompoundFile file = CompoundFile.Create(output);
+    /// using (CompoundStream stream = file.RootStorage.CreateStream("Workbook"))
+    ///     stream.Write(workbookBytes);
+    /// file.Commit();
+    ///]]>
+    /// </code>
+    /// </example>
+    public static CompoundFile Create(Stream destination, bool leaveOpen = false, CompoundBuildOptions options = default)
+    {
+        ThrowHelper.ThrowIfNull(destination);
+
+        return CreateCore(destination, leaveOpen, FileAccess.ReadWrite, options);
+    }
+
+    /// <summary>
+    /// Creates a new, empty writable compound file whose staged contents are written to the file at the specified path
+    /// by <see cref="Commit" />.
+    /// </summary>
+    /// <param name="path">The path of the file the committed compound file is written to.</param>
+    /// <param name="options">The build options applied when the staging tree is serialized.</param>
+    /// <returns>A new writable <see cref="CompoundFile" />.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="path" /> is <see langword="null" />.
+    /// </exception>
+    /// <remarks>
+    /// The returned instance owns the created file and closes it when disposed. Edits are staged in memory until
+    /// <see cref="Commit" /> is called; disposing without committing leaves the file empty.
+    /// </remarks>
+    public static CompoundFile Create(string path, CompoundBuildOptions options = default)
+    {
+        ThrowHelper.ThrowIfNull(path);
+
+        FileStream stream = File.Create(path);
+        try
+        {
+            return CreateCore(stream, leaveOpen: false, FileAccess.ReadWrite, options);
+        }
+        catch
+        {
+            stream.Dispose();
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Creates a writable compound file over an empty staging tree.
+    /// </summary>
+    /// <param name="destination">The destination the staging tree is committed to.</param>
+    /// <param name="leaveOpen">Whether to leave <paramref name="destination" /> open on dispose.</param>
+    /// <param name="access">The access level the file is opened with.</param>
+    /// <param name="options">The build options applied when serializing the staging tree.</param>
+    /// <returns>A new writable <see cref="CompoundFile" />.</returns>
+    private static CompoundFile CreateCore(Stream destination, bool leaveOpen, FileAccess access, CompoundBuildOptions options) =>
+        new(destination, leaveOpen, access, CompoundStorageBuilder.CreateRoot(), options);
 
     /// <summary>
     /// Opens a read-only compound file over the supplied stream, choosing the buffered or streaming data source.
@@ -401,6 +534,62 @@ public sealed class CompoundFile
         return false;
     }
 
+    /// <summary>
+    /// Writes the staged contents of a writable file to its destination, clearing the dirty state.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">Thrown when the file is read-only.</exception>
+    /// <exception cref="ObjectDisposedException">Thrown when the file has been disposed.</exception>
+    /// <exception cref="CompoundFileSerializationException">
+    /// Thrown when the staging tree cannot be represented.
+    /// </exception>
+    /// <remarks>
+    /// The destination is truncated and the whole container is rewritten from the staging tree. When the destination is
+    /// not seekable, the committed bytes are appended at the current position.
+    /// </remarks>
+    public void Commit()
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        RequireWritable();
+
+        if (_destination!.CanSeek)
+        {
+            _destination.Position = 0;
+            _destination.SetLength(0);
+        }
+
+        CompoundContainerLayout.WriteTo(_destination, _staging!, _buildOptions);
+        _destination.Flush();
+        _dirty = false;
+    }
+
+    /// <summary>
+    /// Writes the staged contents of a writable file to its destination, clearing the dirty state.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">Thrown when the file is read-only.</exception>
+    /// <exception cref="ObjectDisposedException">Thrown when the file has been disposed.</exception>
+    /// <exception cref="CompoundFileSerializationException">
+    /// Thrown when the staging tree cannot be represented.
+    /// </exception>
+    /// <remarks>
+    /// This is an alias for <see cref="Commit" />, named for parity with stream-style consumers.
+    /// </remarks>
+    public void Flush() =>
+        Commit();
+
+    /// <summary>
+    /// Discards all staged edits, restoring the writable file to an empty root storage.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">Thrown when the file is read-only.</exception>
+    /// <exception cref="ObjectDisposedException">Thrown when the file has been disposed.</exception>
+    public void Revert()
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        RequireWritable();
+
+        _staging!.Clear();
+        _dirty = false;
+    }
+
     /// <inheritdoc />
     public void Dispose()
     {
@@ -408,9 +597,27 @@ public sealed class CompoundFile
             return;
 
         _disposed = true;
-        _dataSource.Dispose();
+        if (_staging is null)
+            _dataSource.Dispose();
+
         if (!_leaveOpen)
             _source.Dispose();
+    }
+
+    /// <summary>
+    /// Marks the writable file as having uncommitted staged edits.
+    /// </summary>
+    internal void MarkDirty() =>
+        _dirty = true;
+
+    /// <summary>
+    /// Throws when this file is read-only.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">Thrown when the file is read-only.</exception>
+    private void RequireWritable()
+    {
+        if (_staging is null)
+            throw new InvalidOperationException(CompoundResourceStrings.Op_Invalid_CompoundFileReadOnly);
     }
 
     /// <summary>

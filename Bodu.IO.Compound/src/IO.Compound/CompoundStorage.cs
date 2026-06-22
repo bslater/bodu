@@ -6,6 +6,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using Bodu.IO.Compound.Builders;
 using Bodu.IO.Compound.Internal;
 using Bodu.IO.Compound.PropertySets;
 
@@ -26,8 +27,12 @@ namespace Bodu.IO.Compound;
 /// using the compound-file name relationship, so streams that share a name under different storages remain distinct.
 /// </para>
 /// <para>
-/// Creation and mutation members (<c>CreateStorage</c>, <c>CreateStream</c>, <c>Delete</c>, <c>Rename</c>,
-/// <c>Commit</c>, and <c>Revert</c>) are reserved for a future read-write implementation and are not yet declared.
+/// When the owning file is opened for writing (see
+/// <see cref="CompoundFile.Create(System.IO.Stream, bool, Bodu.IO.Compound.Builders.CompoundBuildOptions)" />), the
+/// mutation members (<see cref="CreateStorage(string)" />, <see cref="CreateStream(string)" />,
+/// <see cref="Delete(string)" />, and <see cref="Rename(string, string)" />) stage edits in memory; the destination is
+/// written only when <see cref="CompoundFile.Commit" /> is called. On a read-only storage those members throw
+/// <see cref="InvalidOperationException" />.
 /// </para>
 /// </remarks>
 public sealed class CompoundStorage
@@ -35,11 +40,14 @@ public sealed class CompoundStorage
     /// <summary>The owning compound file used to resolve children and materialize streams.</summary>
     private readonly CompoundFile _file;
 
-    /// <summary>The directory entry this storage wraps.</summary>
-    private readonly CfbDirectoryEntry _entry;
+    /// <summary>The directory entry this storage wraps for a read-only file, or <see langword="null" /> when writable.</summary>
+    private readonly CfbDirectoryEntry? _entry;
+
+    /// <summary>The staging node this storage wraps for a writable file, or <see langword="null" /> when read-only.</summary>
+    private readonly CompoundStorageBuilder? _node;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CompoundStorage" /> class.
+    /// Initializes a new instance of the <see cref="CompoundStorage" /> class over a parsed directory entry.
     /// </summary>
     /// <param name="file">The owning compound file.</param>
     /// <param name="entry">The directory entry the storage wraps.</param>
@@ -50,16 +58,33 @@ public sealed class CompoundStorage
     }
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="CompoundStorage" /> class over a writable staging node.
+    /// </summary>
+    /// <param name="file">The owning writable compound file.</param>
+    /// <param name="node">The staging storage node the storage wraps.</param>
+    internal CompoundStorage(CompoundFile file, CompoundStorageBuilder node)
+    {
+        _file = file;
+        _node = node;
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether this storage stages edits for a writable compound file.
+    /// </summary>
+    /// <returns><see langword="true" /> when the owning file is writable; otherwise <see langword="false" />.</returns>
+    public bool CanWrite => _node is not null;
+
+    /// <summary>
     /// Gets the name of the storage as stored in the directory.
     /// </summary>
     /// <returns>The storage name; the root storage carries the conventional name <c>Root Entry</c>.</returns>
-    public string Name => _entry.Name;
+    public string Name => _node?.Name ?? _entry!.Name;
 
     /// <summary>
     /// Gets the metadata snapshot for this storage.
     /// </summary>
     /// <returns>A <see cref="CompoundEntryInfo" /> describing the storage.</returns>
-    public CompoundEntryInfo Stat => _entry.ToEntryInfo();
+    public CompoundEntryInfo Stat => _node is not null ? ToEntryInfo(_node) : _entry!.ToEntryInfo();
 
     /// <summary>
     /// Enumerates the metadata of every direct child of this storage, in directory order.
@@ -67,6 +92,14 @@ public sealed class CompoundStorage
     /// <returns>A sequence of <see cref="CompoundEntryInfo" /> for the child storages and streams.</returns>
     public IEnumerable<CompoundEntryInfo> EnumerateEntries()
     {
+        if (_node is not null)
+        {
+            foreach (CompoundEntryBuilder child in _node.Values)
+                yield return ToEntryInfo(child);
+
+            yield break;
+        }
+
         foreach (CfbDirectoryEntry child in Children())
             yield return child.ToEntryInfo();
     }
@@ -77,6 +110,14 @@ public sealed class CompoundStorage
     /// <returns>A sequence of child <see cref="CompoundStorage" /> objects.</returns>
     public IEnumerable<CompoundStorage> EnumerateStorages()
     {
+        if (_node is not null)
+        {
+            foreach (CompoundStorageBuilder child in _node.EnumerateStorages())
+                yield return new CompoundStorage(_file, child);
+
+            yield break;
+        }
+
         foreach (CfbDirectoryEntry child in Children())
         {
             if (child.Type is CompoundEntryType.Storage or CompoundEntryType.RootStorage)
@@ -90,6 +131,14 @@ public sealed class CompoundStorage
     /// <returns>A sequence of <see cref="CompoundEntryInfo" /> for the child streams.</returns>
     public IEnumerable<CompoundEntryInfo> EnumerateStreams()
     {
+        if (_node is not null)
+        {
+            foreach (CompoundStreamBuilder child in _node.EnumerateStreams())
+                yield return ToEntryInfo(child);
+
+            yield break;
+        }
+
         foreach (CfbDirectoryEntry child in Children())
         {
             if (child.Type == CompoundEntryType.Stream)
@@ -136,25 +185,28 @@ public sealed class CompoundStorage
     /// <see cref="FileAccess" /> semantics, mirroring <c>System.IO.Packaging.PackagePart.GetStream</c>.
     /// </summary>
     /// <param name="name">The stream name, compared using the case-insensitive compound-file relationship.</param>
-    /// <param name="mode">The file mode; the current release supports <see cref="FileMode.Open" /> only.</param>
-    /// <param name="access">The access level; the current release supports <see cref="FileAccess.Read" /> only.</param>
+    /// <param name="mode">The file mode applied to the named stream.</param>
+    /// <param name="access">The access level; write access requires a writable compound file.</param>
     /// <returns>
-    /// A <see cref="CompoundStream" /> positioned at the start of the payload; dispose it when finished.
+    /// A <see cref="CompoundStream" /> positioned per <paramref name="mode" />; dispose it when finished.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="name" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="NotSupportedException">
-    /// Thrown when <paramref name="mode" /> or <paramref name="access" /> requests a write capability, which is not yet
-    /// supported.
+    /// Thrown when <paramref name="access" /> requests write access on a read-only compound file.
     /// </exception>
     /// <exception cref="CompoundStreamNotFoundException">
-    /// Thrown when no child stream with the given name exists.
+    /// Thrown when no child stream with the given name exists and <paramref name="mode" /> does not create one.
     /// </exception>
     public CompoundStream OpenStream(string name, FileMode mode, FileAccess access)
     {
-        RequireReadOnly(mode, access);
+        ThrowHelper.ThrowIfNull(name);
 
+        if (_node is not null)
+            return OpenStagedStream(name, mode, access);
+
+        RequireReadOnly(mode, access);
         return OpenStream(name);
     }
 
@@ -174,6 +226,18 @@ public sealed class CompoundStorage
     public bool TryOpenStorage(string name, [MaybeNullWhen(false)] out CompoundStorage storage)
     {
         ThrowHelper.ThrowIfNull(name);
+
+        if (_node is not null)
+        {
+            if (_node.TryGetStorage(name, out CompoundStorageBuilder? child))
+            {
+                storage = new CompoundStorage(_file, child);
+                return true;
+            }
+
+            storage = null;
+            return false;
+        }
 
         CfbDirectoryEntry? entry = FindChild(name, CompoundEntryType.Storage);
         if (entry is not null)
@@ -204,6 +268,18 @@ public sealed class CompoundStorage
     {
         ThrowHelper.ThrowIfNull(name);
 
+        if (_node is not null)
+        {
+            if (_node.TryGetStream(name, out CompoundStreamBuilder? child))
+            {
+                stream = new CompoundStream(ToEntryInfo(child), child.Content.ToArray());
+                return true;
+            }
+
+            stream = null;
+            return false;
+        }
+
         CfbDirectoryEntry? entry = FindChild(name, CompoundEntryType.Stream);
         if (entry is not null)
         {
@@ -220,27 +296,137 @@ public sealed class CompoundStorage
     /// <see cref="FileAccess" /> semantics.
     /// </summary>
     /// <param name="name">The stream name, compared using the case-insensitive compound-file relationship.</param>
-    /// <param name="mode">The file mode; the current release supports <see cref="FileMode.Open" /> only.</param>
-    /// <param name="access">The access level; the current release supports <see cref="FileAccess.Read" /> only.</param>
+    /// <param name="mode">The file mode applied to the named stream.</param>
+    /// <param name="access">The access level; write access requires a writable compound file.</param>
     /// <param name="stream">
     /// When this method returns <see langword="true" />, a <see cref="CompoundStream" /> over the matching child
     /// stream; otherwise <see langword="null" />.
     /// </param>
     /// <returns>
-    /// <see langword="true" /> when a matching child stream exists; otherwise <see langword="false" />.
+    /// <see langword="true" /> when a matching child stream exists or is created; otherwise <see langword="false" />.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="name" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="NotSupportedException">
-    /// Thrown when <paramref name="mode" /> or <paramref name="access" /> requests a write capability, which is not yet
-    /// supported.
+    /// Thrown when <paramref name="access" /> requests write access on a read-only compound file.
     /// </exception>
     public bool TryOpenStream(string name, FileMode mode, FileAccess access, [MaybeNullWhen(false)] out CompoundStream stream)
     {
-        RequireReadOnly(mode, access);
+        ThrowHelper.ThrowIfNull(name);
 
+        if (_node is not null)
+        {
+            stream = OpenStagedStream(name, mode, access);
+            return true;
+        }
+
+        RequireReadOnly(mode, access);
         return TryOpenStream(name, out stream);
+    }
+
+    /// <summary>
+    /// Creates a new child storage with the specified name and stages it for the next commit.
+    /// </summary>
+    /// <param name="name">The name of the storage to create.</param>
+    /// <returns>The newly created child <see cref="CompoundStorage" />.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="name" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">Thrown when the compound file is read-only.</exception>
+    /// <exception cref="ArgumentException">Thrown when a child with the same name already exists.</exception>
+    public CompoundStorage CreateStorage(string name)
+    {
+        ThrowHelper.ThrowIfNull(name);
+        RequireWritable();
+
+        CompoundStorageBuilder child = _node!.AddStorage(name);
+        _file.MarkDirty();
+        return new CompoundStorage(_file, child);
+    }
+
+    /// <summary>
+    /// Creates a new, empty child stream with the specified name and returns a writable cursor over it.
+    /// </summary>
+    /// <param name="name">The name of the stream to create.</param>
+    /// <returns>A writable <see cref="CompoundStream" /> positioned at the start; dispose it when finished.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="name" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">Thrown when the compound file is read-only.</exception>
+    public CompoundStream CreateStream(string name)
+    {
+        ThrowHelper.ThrowIfNull(name);
+        RequireWritable();
+
+        return OpenStream(name, FileMode.Create, FileAccess.ReadWrite);
+    }
+
+    /// <summary>
+    /// Creates a new child stream with the specified name and content and stages it for the next commit.
+    /// </summary>
+    /// <param name="name">The name of the stream to create.</param>
+    /// <param name="content">The payload to store in the stream.</param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="name" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">Thrown when the compound file is read-only.</exception>
+    /// <exception cref="ArgumentException">Thrown when a child with the same name already exists.</exception>
+    public void CreateStream(string name, ReadOnlyMemory<byte> content)
+    {
+        ThrowHelper.ThrowIfNull(name);
+        RequireWritable();
+
+        _node!.AddStream(name, content);
+        _file.MarkDirty();
+    }
+
+    /// <summary>
+    /// Removes the child storage or stream with the specified name from the staging tree.
+    /// </summary>
+    /// <param name="name">The name of the child to remove.</param>
+    /// <returns>
+    /// <see langword="true" /> when a matching child was removed; otherwise <see langword="false" />.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="name" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">Thrown when the compound file is read-only.</exception>
+    public bool Delete(string name)
+    {
+        ThrowHelper.ThrowIfNull(name);
+        RequireWritable();
+
+        bool removed = _node!.Remove(name);
+        if (removed)
+            _file.MarkDirty();
+
+        return removed;
+    }
+
+    /// <summary>
+    /// Renames the child storage or stream with the specified name.
+    /// </summary>
+    /// <param name="oldName">The current name of the child.</param>
+    /// <param name="newName">The new name for the child.</param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="oldName" /> or <paramref name="newName" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">Thrown when the compound file is read-only.</exception>
+    /// <exception cref="KeyNotFoundException">
+    /// Thrown when no child named <paramref name="oldName" /> exists.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when a child named <paramref name="newName" /> already exists.
+    /// </exception>
+    public void Rename(string oldName, string newName)
+    {
+        ThrowHelper.ThrowIfNull(oldName);
+        ThrowHelper.ThrowIfNull(newName);
+        RequireWritable();
+
+        _node!.Rename(oldName, newName);
+        _file.MarkDirty();
     }
 
     /// <summary>
@@ -293,12 +479,113 @@ public sealed class CompoundStorage
     }
 
     /// <summary>
+    /// Projects a staging entry node into an immutable <see cref="CompoundEntryInfo" /> snapshot.
+    /// </summary>
+    /// <param name="node">The staging node to project.</param>
+    /// <returns>A <see cref="CompoundEntryInfo" /> describing the node.</returns>
+    private static CompoundEntryInfo ToEntryInfo(CompoundEntryBuilder node) =>
+        new()
+        {
+            Name = node.Name,
+            EntryType = node.EntryType,
+            Length = node is CompoundStreamBuilder stream ? stream.Length : 0L,
+            ClassId = node.ClassId,
+            StateBits = node.StateBits,
+            CreationTime = node.CreationTime,
+            LastModifiedTime = node.ModifiedTime,
+        };
+
+    /// <summary>
+    /// Opens a cursor over the named staging stream node, applying the requested mode and access.
+    /// </summary>
+    /// <param name="name">The stream name.</param>
+    /// <param name="mode">The file mode applied to the stream.</param>
+    /// <param name="access">The requested access level.</param>
+    /// <returns>A <see cref="CompoundStream" /> over the staged stream.</returns>
+    /// <exception cref="CompoundStreamNotFoundException">
+    /// Thrown when the stream does not exist and <paramref name="mode" /> does not create one.
+    /// </exception>
+    /// <exception cref="IOException">
+    /// Thrown when <paramref name="mode" /> is <see cref="FileMode.CreateNew" /> and the stream already exists.
+    /// </exception>
+    private CompoundStream OpenStagedStream(string name, FileMode mode, FileAccess access)
+    {
+        bool wantWrite = (access & FileAccess.Write) != 0;
+        bool wantRead = (access & FileAccess.Read) != 0;
+        _node!.TryGetStream(name, out CompoundStreamBuilder? existing);
+
+        if (!wantWrite)
+        {
+            if (existing is null)
+                throw CompoundStreamNotFoundException.ForName(name);
+
+            return new CompoundStream(ToEntryInfo(existing), existing.Content.ToArray());
+        }
+
+        CompoundStreamBuilder target;
+        ReadOnlyMemory<byte> seed;
+        bool append = false;
+        switch (mode)
+        {
+            case FileMode.CreateNew when existing is not null:
+                throw new IOException(
+                    string.Format(CultureInfo.CurrentCulture, CompoundResourceStrings.Op_NotSupported_CompoundFileWriteMode, $"{mode}/{access}"));
+
+            case FileMode.CreateNew:
+            case FileMode.Create:
+                target = existing ?? _node.AddStream(name, ReadOnlyMemory<byte>.Empty);
+                seed = ReadOnlyMemory<byte>.Empty;
+                break;
+
+            case FileMode.Open when existing is null:
+                throw CompoundStreamNotFoundException.ForName(name);
+
+            case FileMode.Open:
+                target = existing;
+                seed = existing.Content;
+                break;
+
+            case FileMode.OpenOrCreate:
+                target = existing ?? _node.AddStream(name, ReadOnlyMemory<byte>.Empty);
+                seed = existing is null ? ReadOnlyMemory<byte>.Empty : existing.Content;
+                break;
+
+            case FileMode.Append:
+                target = existing ?? _node.AddStream(name, ReadOnlyMemory<byte>.Empty);
+                seed = existing is null ? ReadOnlyMemory<byte>.Empty : existing.Content;
+                append = true;
+                break;
+
+            default:
+                throw new NotSupportedException(
+                    string.Format(CultureInfo.CurrentCulture, CompoundResourceStrings.Op_NotSupported_CompoundFileWriteMode, $"{mode}/{access}"));
+        }
+
+        _file.MarkDirty();
+        var cursor = new CompoundStream(_file, target, seed, wantRead);
+        if (append)
+            cursor.Seek(0, SeekOrigin.End);
+
+        return cursor;
+    }
+
+    /// <summary>
+    /// Throws when this storage belongs to a read-only compound file.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">Thrown when the compound file is read-only.</exception>
+    private void RequireWritable()
+    {
+        if (_node is null)
+            throw new InvalidOperationException(CompoundResourceStrings.Op_Invalid_CompoundFileReadOnly);
+    }
+
+    /// <summary>
     /// Enumerates the resolved directory entries of this storage's direct children.
     /// </summary>
     /// <returns>A sequence of child directory entries, in directory order.</returns>
     private IEnumerable<CfbDirectoryEntry> Children()
     {
-        foreach (int sid in _entry.Children)
+        foreach (int sid in _entry!.Children)
         {
             CfbDirectoryEntry? child = _file.GetEntry(sid);
             if (child is not null)

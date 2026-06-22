@@ -124,11 +124,20 @@ namespace Bodu.IO.Compound {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The compound file access mode '{0}' is not supported; only Read is currently available..
+        ///   Looks up a localized string similar to The compound file mode and access combination '{0}' is not supported..
         /// </summary>
         internal static string Op_NotSupported_CompoundFileWriteMode {
             get {
                 return ResourceManager.GetString("Op_NotSupported_CompoundFileWriteMode", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The operation requires write access, but the compound file was opened read-only..
+        /// </summary>
+        internal static string Op_Invalid_CompoundFileReadOnly {
+            get {
+                return ResourceManager.GetString("Op_Invalid_CompoundFileReadOnly", resourceCulture);
             }
         }
 

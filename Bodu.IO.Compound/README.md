@@ -41,6 +41,11 @@ if (file.TryGetSummaryInformation(out var summary))
 - A navigable storage hierarchy (`CompoundStorage` / `CompoundStream`) with child lookups scoped per
   storage — the managed counterpart of COM `IStorage` / `IStream`. `CompoundFile.Open` /
   `CompoundStorage.OpenStream` accept BCL `FileMode` / `FileAccess`, mirroring `System.IO.Packaging`.
+- A unified, package-aligned write API: `CompoundFile.Create(stream)` (or `Create(path)`) returns a
+  writable file whose `RootStorage` exposes `CreateStorage` / `CreateStream` / `Delete` / `Rename` and a
+  writable `CompoundStream`. Edits are staged in memory and written to the destination only when
+  `Commit()` is called; `Revert()` discards them and disposing without committing leaves the
+  destination untouched.
 - **Bounded-memory streaming reads**: `CompoundFile.Open(stream, buffered: false)` reads sectors on
   demand from a seekable stream, and `CompoundStorage.OpenStream(name)` returns a lazy `CompoundStream`
   for large streams, so a multi-gigabyte file can be read without buffering it whole.
@@ -78,8 +83,9 @@ builder.WriteTo(stream);   // writes an OLE2 / CFB file
 
 ## Out of scope
 
-In-place transacted editing (the COM `IStorage`/`Commit` model), encryption, and
-damaged-file recovery are out of scope; authoring is done by building and saving a
-detached object model rather than mutating a file in place.
+Writing produces a new container: `CompoundFile.Create` plus `Commit()` rebuilds and serializes the
+whole file from a staged tree. In-place transacted editing of an *existing* file (open, mutate a few
+streams, and rewrite only the changed sectors — the COM `IStorage`/`Commit` model), encryption, and
+damaged-file recovery remain out of scope.
 
 Part of the [Bodu](https://github.com/bodu/bodu) utility library.
