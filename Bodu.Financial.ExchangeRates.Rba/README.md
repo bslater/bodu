@@ -44,8 +44,8 @@ foreach (RbaSeriesInfo info in provider.GetAvailablePairs())
 - **Caching.** Downloaded files are cached on disk (configurable); immutable historical
   eras are cached indefinitely and the open-ended current era refreshes on a TTL.
 - **Configuration.** `RbaExchangeRateOptions` carries working defaults and binds through
-  `Microsoft.Extensions.Options`; see the `*.DependencyInjection` package for
-  `AddRbaHistoricalRates`.
+  `Microsoft.Extensions.Options`. The package ships its own `AddRbaHistoricalRates`
+  registration in the `Bodu.Financial.ExchangeRates` namespace.
 
 ## HTTP client and lifetime
 

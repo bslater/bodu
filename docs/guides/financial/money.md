@@ -646,6 +646,9 @@ When you compose the library through dependency injection, register an
 the provider:
 
 ```csharp
+using Bodu.Financial;
+using Microsoft.Extensions.DependencyInjection;
+
 services.AddFinancialService(b => b.AddCurrencyLookup<MyCurrencyLookup>());
 // ...
 IServiceProvider provider = services.BuildServiceProvider();

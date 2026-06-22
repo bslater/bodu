@@ -28,7 +28,7 @@ A **rule document** is authored on the notable-date schema and loaded into an im
 | `Bodu.Globalization.Calendar.Plugins` | Trust-gated loading of external algorithm assemblies — `NotableDatePluginLoader`, `IPluginTrustPolicy`, and the deny-by-default trust policies. | [Building and extending the service — Plugin system](building-the-service.md#plugin-system) |
 | `Bodu.Extensions` | Working-day arithmetic over `DateOnly`, `DateTime`, and `DateTimeOffset` — `IsWorkingDay`, `NextWorkingDay`, `AddWorkingDays`, … | [Working-day arithmetic](working-days.md) |
 | `Bodu.Globalization.Calendar.Data` | Region-specific public-holiday resources shipped in the `Bodu.Globalization.Calendar.Americas`, `.Europe`, and `.AsiaPacific` companion packages. | [Calendar data packs](data-packs.md) |
-| `Microsoft.Extensions.DependencyInjection` | `IServiceCollection.AddNotableDateService(...)` / `AddReloadableNotableDateService(...)` from the DI companion package. | [Calendar dependency injection](dependency-injection.md) |
+| `Bodu.Globalization.Calendar` (DI) | `IServiceCollection.AddNotableDateService(...)` / `AddReloadableNotableDateService(...)` from the DI companion package. | [Calendar dependency injection](dependency-injection.md) |
 | `Bodu.Globalization.Calendar.Builder` | Fluent C# authoring of notable-date documents — `NotableDateDocumentBuilder`, XML / JSON serialization, and load/save. | [Authoring with the notable-date builder](notable-date-builder.md) |
 
 ## Guides

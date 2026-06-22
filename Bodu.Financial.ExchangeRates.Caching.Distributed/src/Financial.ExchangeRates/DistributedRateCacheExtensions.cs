@@ -10,10 +10,11 @@ using Bodu.Financial.ExchangeRates.Caching;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
-namespace Microsoft.Extensions.DependencyInjection;
+namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
 /// Provides the fluent registration of a distributed (Redis-capable) exchange-rate cache onto an

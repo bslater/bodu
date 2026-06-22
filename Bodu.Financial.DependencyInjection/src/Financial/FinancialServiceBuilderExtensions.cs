@@ -6,12 +6,12 @@
 
 using System.Text.Json;
 using Bodu;
-using Bodu.Financial;
 using Bodu.Financial.DependencyInjection;
 using Bodu.Financial.Serialization;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace Microsoft.Extensions.DependencyInjection;
+namespace Bodu.Financial;
 
 /// <summary>
 /// Provides the fluent registration surface for <see cref="IFinancialServiceBuilder" />: currency lookup, named

@@ -5,9 +5,9 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu;
-using Bodu.Financial;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Microsoft.Extensions.DependencyInjection;
+namespace Bodu.Financial;
 
 /// <summary>
 /// Provides the connector that promotes the container-registered <see cref="ICurrencyLookup" /> to the ambient

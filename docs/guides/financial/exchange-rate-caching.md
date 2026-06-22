@@ -234,7 +234,7 @@ directly, as the SQLite and distributed backends do.
 Two further `IExchangeRateCache` backends ship as separate packages and drop in the
 same way — construct one and hand it to a `CachingExchangeRateProvider`, or register
 it through the DI extension method that ships inside the backend's own package (in the
-`Microsoft.Extensions.DependencyInjection` namespace):
+`Bodu.Financial.ExchangeRates` namespace):
 
 - [`SqliteExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.SqliteExchangeRateCache)
   (`Bodu.Financial.ExchangeRates.Caching.Sqlite`) persists rates and coverage in a
@@ -348,12 +348,14 @@ Under dependency injection the same access is available through a keyed service
 The `Bodu.Financial.ExchangeRates.Caching` package ships its own DI registration
 (there is no separate `*.DependencyInjection` package); its extension methods register
 either shape on the `IFinancialServiceBuilder` and live in the
-`Microsoft.Extensions.DependencyInjection` namespace, so one `using` brings them into
+`Bodu.Financial.ExchangeRates` namespace, so one `using` brings them into
 scope. Both resolve as the dated **and** timeless surfaces.
 
 A single cached provider:
 
 ```csharp
+using Bodu.Financial;
+using Bodu.Financial.ExchangeRates;
 using Microsoft.Extensions.DependencyInjection;
 
 services.AddFinancialService()

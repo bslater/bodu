@@ -5,10 +5,10 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu;
-using Bodu.Globalization.Calendar;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace Microsoft.Extensions.DependencyInjection;
+namespace Bodu.Globalization.Calendar;
 
 /// <summary>
 /// Provides <see cref="IServiceCollection" /> extension methods for registering the Bodu notable-date service.

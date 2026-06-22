@@ -8,12 +8,12 @@
 dotnet add package Bodu.Globalization.Calendar.DependencyInjection
 ```
 
-Targets `net8.0`. Extension methods extend `IServiceCollection` in the `Microsoft.Extensions.DependencyInjection` namespace.
+Targets `net8.0`. Extension methods extend `IServiceCollection` in the `Bodu.Globalization.Calendar` namespace.
 
 ## Registration
 
 ```csharp
-using Microsoft.Extensions.DependencyInjection;
+using Bodu.Globalization.Calendar;
 
 services.AddNotableDateService(AmericasCalendarData.LoadResource("US"));
 // or build the resource lazily from the provider:

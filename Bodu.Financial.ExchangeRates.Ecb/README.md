@@ -50,7 +50,7 @@ foreach (EcbSeriesInfo info in provider.GetAvailablePairs())
   `Microsoft.Extensions.Options`. The provider's connection to the ECB is grouped under
   its `Endpoint` (`EcbEndpointOptions`) — base URL, HTTP timeout, and user-agent — so the
   feeds can be pointed at a mirror or proxy without touching caching or feed selection. See
-  the `*.DependencyInjection` package for `AddEcbReferenceRates`.
+  the package's own `AddEcbReferenceRates` registration in the `Bodu.Financial.ExchangeRates` namespace.
 
 ## HTTP client and lifetime
 

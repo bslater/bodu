@@ -8,11 +8,12 @@ using Bodu;
 using Bodu.Financial;
 using Bodu.Financial.ExchangeRates.Caching;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace Microsoft.Extensions.DependencyInjection;
+namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
 /// Provides fluent registration of caching and aggregating exchange-rate providers onto an

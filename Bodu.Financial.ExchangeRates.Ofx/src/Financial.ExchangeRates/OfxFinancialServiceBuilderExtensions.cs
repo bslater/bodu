@@ -1,36 +1,34 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="BoeFinancialServiceBuilderExtensions.cs" company="Bodu Pty. Ltd.">
+// <copyright file="OfxFinancialServiceBuilderExtensions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Financial;
-using Bodu.Financial.ExchangeRates;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Http.Resilience;
 using Microsoft.Extensions.Logging;
 
-namespace Microsoft.Extensions.DependencyInjection;
+namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// Provides the fluent registration of the Bank of England exchange-rate provider onto an
-/// <see cref="IFinancialServiceBuilder" />.
+/// Provides the fluent registration of the OFX exchange-rate provider onto an <see cref="IFinancialServiceBuilder" />.
 /// </summary>
-public static class BoeFinancialServiceBuilderExtensions
+public static class OfxFinancialServiceBuilderExtensions
 {
-    /// <summary>The name of the <see cref="HttpClient" /> configured for Bank of England downloads.</summary>
-    public const string HttpClientName = "Bodu.Financial.ExchangeRates.Boe";
+    /// <summary>The name of the <see cref="HttpClient" /> configured for OFX requests.</summary>
+    public const string HttpClientName = "Bodu.Financial.ExchangeRates.Ofx";
 
     /// <summary>
-    /// Registers the Bank of England exchange-rate provider, binding its options and configuring a named
-    /// <see cref="HttpClient" /> for downloads.
+    /// Registers the OFX exchange-rate provider, binding its options and configuring a named <see cref="HttpClient" />
+    /// for history requests.
     /// </summary>
     /// <param name="builder">The financial service builder.</param>
     /// <param name="configuration">
     /// An optional configuration root or section. When supplied, the section named <paramref name="sectionName" /> is
-    /// bound into <see cref="BoeExchangeRateOptions" />.
+    /// bound into <see cref="OfxExchangeRateOptions" />.
     /// </param>
-    /// <param name="sectionName">The configuration section name. Defaults to <c>Financial:Boe</c>.</param>
+    /// <param name="sectionName">The configuration section name. Defaults to <c>Financial:Ofx</c>.</param>
     /// <param name="configure">An optional callback applied after configuration binding.</param>
     /// <param name="configureResilience">
     /// An optional callback applied to the standard HTTP resilience options after the provider defaults have been set,
@@ -45,7 +43,7 @@ public static class BoeFinancialServiceBuilderExtensions
     /// </exception>
     /// <remarks>
     /// <para>
-    /// The provider is registered as a singleton so its in-memory store of loaded ranges is shared across resolutions;
+    /// The provider is registered as a singleton so its in-memory store of fetched pairs is shared across resolutions;
     /// it is backed by an <see cref="IHttpClientFactory" /> client so handler lifetime is managed by the factory. The
     /// provider is also exposed as <see cref="IDatedExchangeRateProvider" /> and <see cref="IExchangeRateProvider" />
     /// through idempotent registrations.
@@ -56,26 +54,23 @@ public static class BoeFinancialServiceBuilderExtensions
     /// and tunable through <paramref name="configureResilience" />. The handler sits in the message-handler pipeline
     /// below the provider's single-flight load coordinator, so a retry re-issues the one in-flight request rather than
     /// multiplying across coalesced callers. Because the resilience handler enforces its own per-attempt timeout driven
-    /// from <see cref="BoeEndpointOptions.HttpTimeout" />, the <see cref="HttpClient.Timeout" /> is set to
+    /// from <see cref="WebExchangeRateProviderOptions.HttpTimeout" />, the <see cref="HttpClient.Timeout" /> is set to
     /// <see cref="Timeout.InfiniteTimeSpan" /> so the two timeout mechanisms do not compete.
     /// </para>
     /// </remarks>
-    public static IFinancialServiceBuilder AddBoeReferenceRates(
+    public static IFinancialServiceBuilder AddOfxExchangeRates(
         this IFinancialServiceBuilder builder,
         IConfiguration? configuration = null,
-        string sectionName = "Financial:Boe",
-        Action<BoeExchangeRateOptions>? configure = null,
+        string sectionName = "Financial:Ofx",
+        Action<OfxExchangeRateOptions>? configure = null,
         Action<HttpStandardResilienceOptions>? configureResilience = null)
-        => builder.AddWebExchangeRateProvider<BoeExchangeRateProvider, BoeExchangeRateOptions>(
+        => builder.AddWebExchangeRateProvider<OfxExchangeRateProvider, OfxExchangeRateOptions>(
             HttpClientName,
             configuration,
             sectionName,
-            static opts => opts.TryValidate(out _),
-            "Bank of England exchange-rate options are invalid.",
-            static opts => opts.Endpoint.UserAgent,
-            static opts => opts.Endpoint.HttpTimeout,
+            "OFX exchange-rate options are invalid.",
             configure,
             configureResilience,
             static (client, opts, loggerFactory, timeProvider) =>
-                new BoeExchangeRateProvider(client, opts, loggerFactory?.CreateLogger<BoeExchangeRateProvider>(), timeProvider));
+                new OfxExchangeRateProvider(client, opts, loggerFactory?.CreateLogger<OfxExchangeRateProvider>(), timeProvider));
 }

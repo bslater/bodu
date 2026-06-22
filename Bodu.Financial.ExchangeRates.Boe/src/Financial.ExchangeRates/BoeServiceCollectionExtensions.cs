@@ -6,10 +6,10 @@
 
 using Bodu;
 using Bodu.Financial;
-using Bodu.Financial.ExchangeRates;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Microsoft.Extensions.DependencyInjection;
+namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
 /// Provides a one-call entry point that registers the core Bodu.Financial services together with the Bank of England

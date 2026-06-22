@@ -336,6 +336,7 @@ Money<AUD> typed = new Money<AUD>(125.50m);
 Mixing currencies on the typed form is a compile error; on the runtime form it throws. For service registration, the companion **Bodu.Financial.DependencyInjection** package wires currency lookup and monetary services into an `IServiceCollection`:
 
 ```csharp
+using Bodu.Financial;
 using Bodu.Financial.DependencyInjection;
 
 services.AddFinancialService();

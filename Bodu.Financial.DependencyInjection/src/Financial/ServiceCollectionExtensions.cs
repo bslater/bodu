@@ -6,14 +6,14 @@
 
 using System.Text.Json;
 using Bodu;
-using Bodu.Financial;
 using Bodu.Financial.DependencyInjection;
 using Bodu.Financial.Serialization;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
-namespace Microsoft.Extensions.DependencyInjection;
+namespace Bodu.Financial;
 
 /// <summary>
 /// Provides the <c>AddFinancialService</c> entry points that register the Bodu.Financial services into an

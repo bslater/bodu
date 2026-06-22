@@ -44,9 +44,12 @@ using var cache = new SqliteExchangeRateCache(options);
 IDatedExchangeRateProvider cached = new CachingExchangeRateProvider(rba, cache, new CachingExchangeRateOptions());
 ```
 
-Or, through dependency injection (see `Bodu.Financial.ExchangeRates.Caching.Sqlite.DependencyInjection`):
+Or, through dependency injection (the package ships its own `AddSqliteRateCache` registration in the `Bodu.Financial.ExchangeRates` namespace):
 
 ```csharp
+using Bodu.Financial;
+using Bodu.Financial.ExchangeRates;
+
 services.AddFinancialService()
         .AddSqliteRateCache("RBA", configure: o => o.DatabaseFilePath = "/var/cache/rba.db");
 ```

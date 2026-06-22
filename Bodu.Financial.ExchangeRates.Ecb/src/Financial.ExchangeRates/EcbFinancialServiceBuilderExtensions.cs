@@ -5,12 +5,11 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Financial;
-using Bodu.Financial.ExchangeRates;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Http.Resilience;
 using Microsoft.Extensions.Logging;
 
-namespace Microsoft.Extensions.DependencyInjection;
+namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
 /// Provides the fluent registration of the ECB euro reference-rate provider onto an

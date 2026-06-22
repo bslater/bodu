@@ -1,33 +1,33 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="YahooServiceCollectionExtensions.cs" company="Bodu Pty. Ltd.">
+// <copyright file="OfxServiceCollectionExtensions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu;
 using Bodu.Financial;
-using Bodu.Financial.ExchangeRates;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Microsoft.Extensions.DependencyInjection;
+namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// Provides a one-call entry point that registers the core Bodu.Financial services together with the Yahoo Finance
-/// exchange-rate provider.
+/// Provides a one-call entry point that registers the core Bodu.Financial services together with the OFX exchange-rate
+/// provider.
 /// </summary>
-public static class YahooServiceCollectionExtensions
+public static class OfxServiceCollectionExtensions
 {
     /// <summary>
-    /// Registers the core Bodu.Financial services and the Yahoo Finance exchange-rate provider.
+    /// Registers the core Bodu.Financial services and the OFX exchange-rate provider.
     /// </summary>
     /// <param name="services">The service collection to register into.</param>
     /// <param name="configuration">
     /// An optional configuration root. When supplied,
     /// <see cref="Bodu.Financial.FinancialOptions" /> is bound from the <c>Financial</c> section
-    /// and <see cref="YahooExchangeRateOptions" /> from <paramref name="sectionName" />.
+    /// and <see cref="OfxExchangeRateOptions" /> from <paramref name="sectionName" />.
     /// </param>
-    /// <param name="sectionName">The Yahoo configuration section name. Defaults to <c>Financial:Yahoo</c>.</param>
-    /// <param name="configure">An optional callback applied after Yahoo configuration binding.</param>
+    /// <param name="sectionName">The OFX configuration section name. Defaults to <c>Financial:Ofx</c>.</param>
+    /// <param name="configure">An optional callback applied after OFX configuration binding.</param>
     /// <returns>An <see cref="IFinancialServiceBuilder" /> for further composition.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="services" /> is <see langword="null" />.
@@ -35,16 +35,16 @@ public static class YahooServiceCollectionExtensions
     /// <exception cref="ArgumentException">
     /// Thrown when <paramref name="sectionName" /> is empty or white space.
     /// </exception>
-    public static IFinancialServiceBuilder AddYahooExchangeRates(
+    public static IFinancialServiceBuilder AddOfxExchangeRates(
         this IServiceCollection services,
         IConfiguration? configuration = null,
-        string sectionName = "Financial:Yahoo",
-        Action<YahooExchangeRateOptions>? configure = null)
+        string sectionName = "Financial:Ofx",
+        Action<OfxExchangeRateOptions>? configure = null)
     {
         ThrowHelper.ThrowIfNull(services);
 
         return services
             .AddFinancialService(configuration)
-            .AddYahooExchangeRates(configuration, sectionName, configure);
+            .AddOfxExchangeRates(configuration, sectionName, configure);
     }
 }

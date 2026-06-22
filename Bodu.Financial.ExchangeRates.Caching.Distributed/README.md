@@ -66,9 +66,12 @@ var cache = new DistributedExchangeRateCache(distributedCache, options);
 IDatedExchangeRateProvider cached = new CachingExchangeRateProvider(rba, cache, new CachingExchangeRateOptions());
 ```
 
-Or, through dependency injection (see `Bodu.Financial.ExchangeRates.Caching.Distributed.DependencyInjection`):
+Or, through dependency injection (the package ships its own `AddDistributedRateCache` / `AddRedisRateCache` registration in the `Bodu.Financial.ExchangeRates` namespace):
 
 ```csharp
+using Bodu.Financial;
+using Bodu.Financial.ExchangeRates;
+
 // Over an already-registered IDistributedCache:
 services.AddFinancialService()
         .AddDistributedRateCache("RBA");
