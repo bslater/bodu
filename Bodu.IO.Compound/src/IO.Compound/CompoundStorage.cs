@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using Bodu.IO.Compound.Internal;
 using Bodu.IO.Compound.PropertySets;
 
@@ -16,7 +17,7 @@ namespace Bodu.IO.Compound;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <img src="../images/diagrams/io-compound-structure.svg" alt="A CompoundStorage is a named container of child storages and streams within a compound file, the managed counterpart of the COM IStorage interface. Navigation starts at RootStorage and descends through nested CompoundStorage containers to CompoundStreamEntry leaves. Lookups are scoped to a storage's direct children and matched case-insensitively, as the compound-file format defines."/>
+/// <img src="../images/diagrams/io-compound-structure.svg" alt="A CompoundStorage is a named container of child storages and streams within a compound file, the managed counterpart of the COM IStorage interface. Navigation starts at RootStorage and descends through nested CompoundStorage containers to CompoundStream leaves. Lookups are scoped to a storage's direct children and matched case-insensitively, as the compound-file format defines."/>
 /// </para>
 /// <para>
 /// This type is the managed counterpart of the COM <c>IStorage</c> interface. The root storage and every nested storage
@@ -84,15 +85,15 @@ public sealed class CompoundStorage
     }
 
     /// <summary>
-    /// Enumerates the direct child streams of this storage, in directory order.
+    /// Enumerates the metadata of the direct child streams of this storage, in directory order.
     /// </summary>
-    /// <returns>A sequence of child <see cref="CompoundStreamEntry" /> objects.</returns>
-    public IEnumerable<CompoundStreamEntry> EnumerateStreams()
+    /// <returns>A sequence of <see cref="CompoundEntryInfo" /> for the child streams.</returns>
+    public IEnumerable<CompoundEntryInfo> EnumerateStreams()
     {
         foreach (CfbDirectoryEntry child in Children())
         {
             if (child.Type == CompoundEntryType.Stream)
-                yield return new CompoundStreamEntry(_file, child);
+                yield return child.ToEntryInfo();
         }
     }
 
@@ -113,20 +114,45 @@ public sealed class CompoundStorage
             : throw CompoundStreamNotFoundException.ForName(name);
 
     /// <summary>
-    /// Opens the child stream with the specified name.
+    /// Opens a read-only cursor over the child stream with the specified name.
     /// </summary>
     /// <param name="name">The stream name, compared using the case-insensitive compound-file relationship.</param>
-    /// <returns>The matching child <see cref="CompoundStreamEntry" />.</returns>
+    /// <returns>A <see cref="CompoundStream" /> positioned at the start of the payload; dispose it when finished.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="name" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="CompoundStreamNotFoundException">
     /// Thrown when no child stream with the given name exists.
     /// </exception>
-    public CompoundStreamEntry OpenStream(string name) =>
-        TryOpenStream(name, out CompoundStreamEntry? stream)
+    public CompoundStream OpenStream(string name) =>
+        TryOpenStream(name, out CompoundStream? stream)
             ? stream
             : throw CompoundStreamNotFoundException.ForName(name);
+
+    /// <summary>
+    /// Opens the child stream with the specified name using BCL-style <see cref="FileMode" /> and
+    /// <see cref="FileAccess" /> semantics, mirroring <c>System.IO.Packaging.PackagePart.GetStream</c>.
+    /// </summary>
+    /// <param name="name">The stream name, compared using the case-insensitive compound-file relationship.</param>
+    /// <param name="mode">The file mode; the current release supports <see cref="FileMode.Open" /> only.</param>
+    /// <param name="access">The access level; the current release supports <see cref="FileAccess.Read" /> only.</param>
+    /// <returns>A <see cref="CompoundStream" /> positioned at the start of the payload; dispose it when finished.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="name" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="NotSupportedException">
+    /// Thrown when <paramref name="mode" /> or <paramref name="access" /> requests a write capability, which is not yet
+    /// supported.
+    /// </exception>
+    /// <exception cref="CompoundStreamNotFoundException">
+    /// Thrown when no child stream with the given name exists.
+    /// </exception>
+    public CompoundStream OpenStream(string name, FileMode mode, FileAccess access)
+    {
+        RequireReadOnly(mode, access);
+
+        return OpenStream(name);
+    }
 
     /// <summary>
     /// Attempts to open the child storage with the specified name.
@@ -157,11 +183,12 @@ public sealed class CompoundStorage
     }
 
     /// <summary>
-    /// Attempts to open the child stream with the specified name.
+    /// Attempts to open a read-only cursor over the child stream with the specified name.
     /// </summary>
     /// <param name="name">The stream name, compared using the case-insensitive compound-file relationship.</param>
     /// <param name="stream">
-    /// When this method returns <see langword="true" />, the matching child stream; otherwise <see langword="null" />.
+    /// When this method returns <see langword="true" />, a <see cref="CompoundStream" /> over the matching child stream;
+    /// otherwise <see langword="null" />.
     /// </param>
     /// <returns>
     /// <see langword="true" /> when a matching child stream exists; otherwise <see langword="false" />.
@@ -169,19 +196,47 @@ public sealed class CompoundStorage
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="name" /> is <see langword="null" />.
     /// </exception>
-    public bool TryOpenStream(string name, [MaybeNullWhen(false)] out CompoundStreamEntry stream)
+    public bool TryOpenStream(string name, [MaybeNullWhen(false)] out CompoundStream stream)
     {
         ThrowHelper.ThrowIfNull(name);
 
         CfbDirectoryEntry? entry = FindChild(name, CompoundEntryType.Stream);
         if (entry is not null)
         {
-            stream = new CompoundStreamEntry(_file, entry);
+            stream = _file.OpenStream(entry);
             return true;
         }
 
         stream = null;
         return false;
+    }
+
+    /// <summary>
+    /// Attempts to open the child stream with the specified name using BCL-style <see cref="FileMode" /> and
+    /// <see cref="FileAccess" /> semantics.
+    /// </summary>
+    /// <param name="name">The stream name, compared using the case-insensitive compound-file relationship.</param>
+    /// <param name="mode">The file mode; the current release supports <see cref="FileMode.Open" /> only.</param>
+    /// <param name="access">The access level; the current release supports <see cref="FileAccess.Read" /> only.</param>
+    /// <param name="stream">
+    /// When this method returns <see langword="true" />, a <see cref="CompoundStream" /> over the matching child stream;
+    /// otherwise <see langword="null" />.
+    /// </param>
+    /// <returns>
+    /// <see langword="true" /> when a matching child stream exists; otherwise <see langword="false" />.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="name" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="NotSupportedException">
+    /// Thrown when <paramref name="mode" /> or <paramref name="access" /> requests a write capability, which is not yet
+    /// supported.
+    /// </exception>
+    public bool TryOpenStream(string name, FileMode mode, FileAccess access, [MaybeNullWhen(false)] out CompoundStream stream)
+    {
+        RequireReadOnly(mode, access);
+
+        return TryOpenStream(name, out stream);
     }
 
     /// <summary>
@@ -203,14 +258,34 @@ public sealed class CompoundStorage
     /// </exception>
     public bool TryOpenPropertySet(string name, [MaybeNullWhen(false)] out OlePropertySet propertySet)
     {
-        if (TryOpenStream(name, out CompoundStreamEntry? stream))
+        if (TryOpenStream(name, out CompoundStream? stream))
         {
-            propertySet = OlePropertySet.Parse(stream.ReadAllBytes());
+            using (stream)
+                propertySet = OlePropertySet.Parse(stream.ReadAllBytes());
             return true;
         }
 
         propertySet = null;
         return false;
+    }
+
+    /// <summary>
+    /// Validates that the requested mode and access describe a read-only open, the only capability the current release
+    /// supports.
+    /// </summary>
+    /// <param name="mode">The requested file mode.</param>
+    /// <param name="access">The requested access level.</param>
+    /// <exception cref="NotSupportedException">
+    /// Thrown when <paramref name="mode" /> is not <see cref="FileMode.Open" /> or <paramref name="access" /> is not
+    /// <see cref="FileAccess.Read" />.
+    /// </exception>
+    private static void RequireReadOnly(FileMode mode, FileAccess access)
+    {
+        if (mode != FileMode.Open || access != FileAccess.Read)
+        {
+            throw new NotSupportedException(
+                string.Format(CultureInfo.CurrentCulture, CompoundResourceStrings.Op_NotSupported_CompoundFileWriteMode, $"{mode}/{access}"));
+        }
     }
 
     /// <summary>

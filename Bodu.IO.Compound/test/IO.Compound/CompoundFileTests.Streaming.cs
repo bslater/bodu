@@ -48,23 +48,24 @@ public partial class CompoundFileTests
         using MemoryStream source = CompoundFixtures.OpenReference("valid/clean.dat");
         using CompoundFile file = CompoundFile.Open(source, buffered: false);
 
-        foreach (CompoundStreamEntry entry in EnumerateAllStreams(file.RootStorage))
+        foreach ((CompoundStorage storage, CompoundEntryInfo info) in EnumerateAllStreams(file.RootStorage))
         {
-            byte[] expected = entry.ReadAllBytes().ToArray();
+            using CompoundStream full = storage.OpenStream(info.Name);
+            byte[] expected = full.ReadAllBytes().ToArray();
 
-            using CompoundStream stream = entry.Open();
+            using CompoundStream stream = storage.OpenStream(info.Name);
             using MemoryStream sink = new();
             byte[] chunk = new byte[7];
             int read;
             while ((read = stream.Read(chunk, 0, chunk.Length)) > 0)
                 sink.Write(chunk, 0, read);
 
-            CollectionAssert.AreEqual(expected, sink.ToArray(), entry.Name);
+            CollectionAssert.AreEqual(expected, sink.ToArray(), info.Name);
 
             if (expected.Length > 1)
             {
                 _ = stream.Seek(expected.Length - 1, SeekOrigin.Begin);
-                Assert.AreEqual(expected[^1], (byte)stream.ReadByte(), entry.Name);
+                Assert.AreEqual(expected[^1], (byte)stream.ReadByte(), info.Name);
             }
         }
     }
@@ -109,10 +110,11 @@ public partial class CompoundFileTests
 
         static void Walk(CompoundStorage current, string prefix, Dictionary<string, string> map)
         {
-            foreach (CompoundStreamEntry entry in current.EnumerateStreams())
+            foreach (CompoundEntryInfo info in current.EnumerateStreams())
             {
-                string path = prefix.Length == 0 ? entry.Name : prefix + "/" + entry.Name;
-                map[path] = Convert.ToHexString(SHA256.HashData(entry.ReadAllBytes().Span)).ToLowerInvariant();
+                string path = prefix.Length == 0 ? info.Name : prefix + "/" + info.Name;
+                using CompoundStream stream = current.OpenStream(info.Name);
+                map[path] = Convert.ToHexString(SHA256.HashData(stream.ReadAllBytes().Span)).ToLowerInvariant();
             }
 
             foreach (CompoundStorage child in current.EnumerateStorages())
@@ -124,16 +126,16 @@ public partial class CompoundFileTests
     /// Enumerates every stream in a storage hierarchy.
     /// </summary>
     /// <param name="storage">The storage to walk.</param>
-    /// <returns>The streams in the hierarchy.</returns>
-    private static IEnumerable<CompoundStreamEntry> EnumerateAllStreams(CompoundStorage storage)
+    /// <returns>The owning storage and metadata of each stream in the hierarchy.</returns>
+    private static IEnumerable<(CompoundStorage Storage, CompoundEntryInfo Info)> EnumerateAllStreams(CompoundStorage storage)
     {
-        foreach (CompoundStreamEntry entry in storage.EnumerateStreams())
-            yield return entry;
+        foreach (CompoundEntryInfo info in storage.EnumerateStreams())
+            yield return (storage, info);
 
         foreach (CompoundStorage child in storage.EnumerateStorages())
         {
-            foreach (CompoundStreamEntry entry in EnumerateAllStreams(child))
-                yield return entry;
+            foreach ((CompoundStorage, CompoundEntryInfo) pair in EnumerateAllStreams(child))
+                yield return pair;
         }
     }
 

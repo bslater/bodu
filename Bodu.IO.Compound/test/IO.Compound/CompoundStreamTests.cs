@@ -42,7 +42,7 @@ public class CompoundStreamTests
     {
         byte[] bytes = BuildContainer(out byte[] payload);
         using CompoundFile file = CompoundFile.Open(new MemoryStream(bytes), buffered: buffered);
-        using CompoundStream stream = file.RootStorage.OpenStream("Data").Open();
+        using CompoundStream stream = file.RootStorage.OpenStream("Data");
 
         byte[] result = new byte[payload.Length];
         int offset = 0;
@@ -67,7 +67,7 @@ public class CompoundStreamTests
     {
         byte[] bytes = BuildContainer(out byte[] payload);
         using CompoundFile file = CompoundFile.Open(new MemoryStream(bytes), buffered: buffered);
-        using CompoundStream stream = file.RootStorage.OpenStream("Data").Open();
+        using CompoundStream stream = file.RootStorage.OpenStream("Data");
 
         byte[] result = new byte[payload.Length];
         int offset = 0;
@@ -91,7 +91,7 @@ public class CompoundStreamTests
     {
         byte[] bytes = BuildContainer(out _);
         using CompoundFile file = CompoundFile.Open(new MemoryStream(bytes));
-        using CompoundStream stream = file.RootStorage.OpenStream("Data").Open();
+        using CompoundStream stream = file.RootStorage.OpenStream("Data");
 
         using var cts = new CancellationTokenSource();
         cts.Cancel();
@@ -109,7 +109,7 @@ public class CompoundStreamTests
     {
         byte[] bytes = BuildContainer(out byte[] payload);
         using CompoundFile file = CompoundFile.Open(new MemoryStream(bytes));
-        using CompoundStream stream = file.RootStorage.OpenStream("Data").Open();
+        using CompoundStream stream = file.RootStorage.OpenStream("Data");
 
         stream.Position = payload.Length;
 

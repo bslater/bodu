@@ -13,18 +13,18 @@ namespace Bodu.IO.Compound;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <img src="../images/diagrams/io-compound-stream-access.svg" alt="CompoundStreamEntry.Open returns a CompoundStream, a read-only seekable Stream cursor whose CanWrite is false. When the owning CompoundFile was opened buffered (the default), the stream's whole payload is materialized into an in-memory byte array at open time and Read, Seek, and AsMemory work over that array. When the file was opened with buffered false, the cursor walks the stream's sector chain in the source on demand: each Read locates the sector for the current Position, copies only the bytes within that sector, and advances, so the full payload is never held in memory. AsMemory materializes the whole chain on request."/>
+/// <img src="../images/diagrams/io-compound-stream-access.svg" alt="CompoundStorage.OpenStream returns a CompoundStream, a read-only seekable Stream cursor whose CanWrite is false. When the owning CompoundFile was opened buffered (the default), the stream's whole payload is materialized into an in-memory byte array at open time and Read, Seek, and AsMemory work over that array. When the file was opened with buffered false, the cursor walks the stream's sector chain in the source on demand: each Read locates the sector for the current Position, copies only the bytes within that sector, and advances, so the full payload is never held in memory. AsMemory materializes the whole chain on request."/>
 /// </para>
 /// <para>
 /// <see cref="CompoundStream" /> is a standard <see cref="Stream" /> cursor obtained from
-/// <see cref="CompoundStreamEntry.Open" />, so it composes with the BCL surfaces that consume a <see cref="Stream" />
+/// <see cref="CompoundStorage.OpenStream(string)" />, so it composes with the BCL surfaces that consume a <see cref="Stream" />
 /// — <see cref="System.IO.StreamReader" />, <see cref="System.IO.BinaryReader" />, <see cref="Stream.CopyTo(Stream)" />,
 /// and the deserializers built on top of them.
 /// </para>
 /// <para>
 /// A stream opened from a buffered compound file is backed by an in-memory payload assembled at open time. A stream
 /// opened from a streaming compound file (see
-/// <see cref="CompoundFile.Open(System.IO.Stream, CompoundFileMode, bool, bool)" /> with <c>buffered: false</c>) reads
+/// <see cref="CompoundFile.Open(System.IO.Stream, bool, bool)" /> with <c>buffered: false</c>) reads
 /// its sectors on demand from the underlying source, so it never materializes the whole payload. In the streaming case
 /// the owning <see cref="CompoundFile" /> and its source must remain open for the lifetime of the cursor.
 /// </para>
@@ -43,9 +43,7 @@ namespace Bodu.IO.Compound;
 /// using Bodu.IO.Compound;
 ///
 /// using CompoundFile file = CompoundFile.Open(File.OpenRead("book.xls"));
-/// CompoundStreamEntry entry = file.RootStorage.OpenStream("Workbook");
-///
-/// using CompoundStream stream = entry.Open();
+/// using CompoundStream stream = file.RootStorage.OpenStream("Workbook");
 /// byte[] signature = new byte[8];
 /// stream.ReadExactly(signature);
 ///
@@ -74,17 +72,20 @@ public sealed class CompoundStream
     /// <summary>The regular sector size, in bytes, used for on-demand reads.</summary>
     private readonly int _sectorSize;
 
+    /// <summary>The metadata snapshot for the stream entry.</summary>
+    private readonly CompoundEntryInfo _info;
+
     /// <summary>The current read position within the payload.</summary>
     private long _position;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CompoundStream" /> class over a materialized payload.
     /// </summary>
-    /// <param name="name">The directory name of the stream.</param>
+    /// <param name="info">The metadata snapshot of the stream entry.</param>
     /// <param name="buffer">The materialized stream payload, already trimmed to the declared size.</param>
-    internal CompoundStream(string name, byte[] buffer)
+    internal CompoundStream(CompoundEntryInfo info, byte[] buffer)
     {
-        Name = name;
+        _info = info;
         _buffer = buffer;
         _length = buffer.Length;
     }
@@ -92,14 +93,14 @@ public sealed class CompoundStream
     /// <summary>
     /// Initializes a new instance of the <see cref="CompoundStream" /> class that reads its sectors on demand.
     /// </summary>
-    /// <param name="name">The directory name of the stream.</param>
+    /// <param name="info">The metadata snapshot of the stream entry.</param>
     /// <param name="sectors">The sector reader used to read sectors on demand.</param>
     /// <param name="chain">The ordered sector chain of the stream.</param>
     /// <param name="size">The declared payload length, in bytes.</param>
     /// <param name="sectorSize">The regular sector size, in bytes.</param>
-    internal CompoundStream(string name, CfbSectorReader sectors, uint[] chain, long size, int sectorSize)
+    internal CompoundStream(CompoundEntryInfo info, CfbSectorReader sectors, uint[] chain, long size, int sectorSize)
     {
-        Name = name;
+        _info = info;
         _sectors = sectors;
         _chain = chain;
         _length = size;
@@ -110,7 +111,13 @@ public sealed class CompoundStream
     /// Gets the directory name of the stream.
     /// </summary>
     /// <returns>The stream name as stored in the compound-file directory.</returns>
-    public string Name { get; }
+    public string Name => _info.Name;
+
+    /// <summary>
+    /// Gets the metadata snapshot for this stream entry.
+    /// </summary>
+    /// <returns>A <see cref="CompoundEntryInfo" /> describing the stream's name, size, class id, and timestamps.</returns>
+    public CompoundEntryInfo Stat => _info;
 
     /// <inheritdoc />
     public override bool CanRead => true;
@@ -156,6 +163,17 @@ public sealed class CompoundStream
     /// </example>
     public ReadOnlyMemory<byte> AsMemory() =>
         _buffer ?? (_length == 0 ? ReadOnlyMemory<byte>.Empty : _sectors!.ReadChain(_chain![0], _length));
+
+    /// <summary>
+    /// Materializes the entire stream payload into a contiguous read-only buffer, independent of the current position.
+    /// </summary>
+    /// <returns>A <see cref="ReadOnlyMemory{T}" /> spanning the whole payload.</returns>
+    /// <remarks>
+    /// A convenience equivalent to <see cref="AsMemory" /> for callers that consume the whole stream in one pass. For
+    /// large streaming payloads, prefer chunked <see cref="Read(Span{byte})" />.
+    /// </remarks>
+    public ReadOnlyMemory<byte> ReadAllBytes() =>
+        AsMemory();
 
     /// <inheritdoc />
     public override int Read(byte[] buffer, int offset, int count)

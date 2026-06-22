@@ -86,7 +86,7 @@ public class CompoundFileBuilderLazyLoadTests
 
             using FileStream verify = File.OpenRead(outputPath);
             using CompoundFile copy = CompoundFile.Open(verify, buffered: false);
-            Assert.IsTrue(copy.RootStorage.TryOpenStream("Big", out CompoundStreamEntry? bigEntry));
+            Assert.IsTrue(copy.RootStorage.TryOpenStream("Big", out CompoundStream? bigEntry));
             Assert.AreEqual(Hash(big), Hash(bigEntry.ReadAllBytes().Span));
         }
         finally
@@ -126,10 +126,11 @@ public class CompoundFileBuilderLazyLoadTests
 
         static void Walk(CompoundStorage current, string prefix, Dictionary<string, string> map)
         {
-            foreach (CompoundStreamEntry entry in current.EnumerateStreams())
+            foreach (CompoundEntryInfo info in current.EnumerateStreams())
             {
-                string path = prefix.Length == 0 ? entry.Name : prefix + "/" + entry.Name;
-                map[path] = Convert.ToHexString(SHA256.HashData(entry.ReadAllBytes().Span)).ToLowerInvariant();
+                string path = prefix.Length == 0 ? info.Name : prefix + "/" + info.Name;
+                using CompoundStream stream = current.OpenStream(info.Name);
+                map[path] = Convert.ToHexString(SHA256.HashData(stream.ReadAllBytes().Span)).ToLowerInvariant();
             }
 
             foreach (CompoundStorage child in current.EnumerateStorages())

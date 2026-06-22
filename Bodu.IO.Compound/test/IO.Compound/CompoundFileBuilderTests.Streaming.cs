@@ -31,7 +31,7 @@ public partial class CompoundFileBuilderTests
 
             using FileStream reopen = File.OpenRead(outputPath);
             using CompoundFile file = CompoundFile.Open(reopen);
-            Assert.IsTrue(file.RootStorage.TryOpenStream("Big", out CompoundStreamEntry? entry));
+            Assert.IsTrue(file.RootStorage.TryOpenStream("Big", out CompoundStream? entry));
             Assert.AreEqual(payload.Length, entry.Length);
             Assert.AreEqual(Hash(payload), Hash(entry.ReadAllBytes().Span));
         }
@@ -64,7 +64,7 @@ public partial class CompoundFileBuilderTests
 
         Assert.AreEqual(1, opens, "source not opened exactly once");
         using CompoundFile file = CompoundFile.Open(new MemoryStream(bytes));
-        Assert.IsTrue(file.RootStorage.TryOpenStream("Data", out CompoundStreamEntry? entry));
+        Assert.IsTrue(file.RootStorage.TryOpenStream("Data", out CompoundStream? entry));
         CollectionAssert.AreEqual(payload, entry.ReadAllBytes().ToArray());
     }
 
@@ -100,13 +100,13 @@ public partial class CompoundFileBuilderTests
     {
         using CompoundFile file = CompoundFile.Open(new MemoryStream(BuildMixedTree().ToArray()));
 
-        Assert.IsTrue(file.RootStorage.TryOpenStream("Mini", out CompoundStreamEntry? mini));
+        Assert.IsTrue(file.RootStorage.TryOpenStream("Mini", out CompoundStream? mini));
         Assert.AreEqual(10, mini.Length);
-        Assert.IsTrue(file.RootStorage.TryOpenStream("DeferredBig", out CompoundStreamEntry? big));
+        Assert.IsTrue(file.RootStorage.TryOpenStream("DeferredBig", out CompoundStream? big));
         Assert.AreEqual(Hash(CreatePayload(7000)), Hash(big.ReadAllBytes().Span));
-        Assert.IsTrue(file.RootStorage.TryOpenStream("InlineBig", out CompoundStreamEntry? inline));
+        Assert.IsTrue(file.RootStorage.TryOpenStream("InlineBig", out CompoundStream? inline));
         Assert.AreEqual(Hash(CreatePayload(6000)), Hash(inline.ReadAllBytes().Span));
-        Assert.IsTrue(file.RootStorage.TryOpenStream("Empty", out CompoundStreamEntry? empty));
+        Assert.IsTrue(file.RootStorage.TryOpenStream("Empty", out CompoundStream? empty));
         Assert.AreEqual(0, empty.Length);
     }
 

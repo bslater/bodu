@@ -58,7 +58,7 @@ public partial class CompoundFileBuilderTests
         byte[] bytes = builder.ToArray();
 
         using CompoundFile file = CompoundFile.Open(new MemoryStream(bytes));
-        Assert.IsTrue(file.RootStorage.TryOpenStream("Data", out CompoundStreamEntry? entry));
+        Assert.IsTrue(file.RootStorage.TryOpenStream("Data", out CompoundStream? entry));
         Assert.AreEqual(kat.Size, entry.Length);
         CollectionAssert.AreEqual(payload, entry.ReadAllBytes().ToArray());
     }
@@ -78,7 +78,7 @@ public partial class CompoundFileBuilderTests
 
         for (int i = 0; i < 100; i++)
         {
-            Assert.IsTrue(file.RootStorage.TryOpenStream($"Stream{i:D3}", out CompoundStreamEntry? entry), $"Stream{i:D3}");
+            Assert.IsTrue(file.RootStorage.TryOpenStream($"Stream{i:D3}", out CompoundStream? entry), $"Stream{i:D3}");
             CollectionAssert.AreEqual(CreatePayload(i), entry.ReadAllBytes().ToArray(), $"Stream{i:D3}");
         }
     }
@@ -102,7 +102,7 @@ public partial class CompoundFileBuilderTests
         for (int depth = 0; depth < 8; depth++)
             storage = storage.OpenStorage($"Level{depth}");
 
-        Assert.IsTrue(storage.TryOpenStream("Leaf", out CompoundStreamEntry? leaf));
+        Assert.IsTrue(storage.TryOpenStream("Leaf", out CompoundStream? leaf));
         CollectionAssert.AreEqual(CreatePayload(200), leaf.ReadAllBytes().ToArray());
     }
 

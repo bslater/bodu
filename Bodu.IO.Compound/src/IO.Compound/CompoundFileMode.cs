@@ -11,10 +11,11 @@ namespace Bodu.IO.Compound;
 /// modified.
 /// </summary>
 /// <remarks>
-/// The current release supports read-only access only, so <see cref="Read" /> is the single defined member. Read-write
-/// modes will be introduced alongside the write implementation rather than declared ahead of support, so that every
-/// member of this enumeration corresponds to a capability the library actually provides.
+/// This enumeration is superseded by the BCL <see cref="FileMode" /> and <see cref="FileAccess" /> types accepted by
+/// <see cref="CompoundFile.Open(System.IO.Stream, FileMode, FileAccess, bool, bool)" />, in line with
+/// <c>System.IO.Packaging.Package.Open</c>. It is retained only for source compatibility.
 /// </remarks>
+[Obsolete("Use System.IO.FileMode and System.IO.FileAccess with CompoundFile.Open(Stream, FileMode, FileAccess, ...).")]
 public enum CompoundFileMode
 {
     /// <summary>

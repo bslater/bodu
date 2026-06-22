@@ -15,7 +15,7 @@ namespace Bodu.IO.Compound.Builders;
 /// <remarks>
 /// <para>
 /// This is the authoring counterpart of the read-only navigation surface (<see cref="CompoundStorage" /> /
-/// <see cref="CompoundStreamEntry" />), shaped after the <c>JsonNode</c> family: build a tree of
+/// <see cref="CompoundStream" />), shaped after the <c>JsonNode</c> family: build a tree of
 /// <see cref="CompoundStorageBuilder" /> and <see cref="CompoundStreamBuilder" /> objects, then serialize it to a
 /// compound file. A node belongs to at most one parent storage at a time.
 /// </para>

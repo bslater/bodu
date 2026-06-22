@@ -19,10 +19,10 @@ using var file = CompoundFile.Open(stream);
 foreach (CompoundEntryInfo entry in file.RootStorage.EnumerateEntries())
     Console.WriteLine($"{entry.Name} ({entry.EntryType}, {entry.Length} bytes, clsid {entry.ClassId})");
 
-if (file.RootStorage.TryOpenStream("Workbook", out CompoundStreamEntry? workbook))
+if (file.RootStorage.TryOpenStream("Workbook", out CompoundStream? workbook))
 {
-    using CompoundStream stream = workbook.Open();
-    // read stream.AsMemory() or use it as a Stream
+    using (workbook)
+        ProcessWorkbook(workbook.ReadAllBytes()); // or use workbook as a Stream
 }
 
 // Read document metadata from the OLE property sets.
@@ -38,11 +38,12 @@ if (file.TryGetSummaryInformation(out var summary))
   span- and async-capable per-stream reads (`CompoundStream.Read(Span<byte>)` / `ReadAsync`).
 - Regular FAT traversal (including extended DIFAT sectors) and mini-FAT / mini-stream
   resolution, with cycle and out-of-range detection.
-- A navigable storage hierarchy (`CompoundStorage` / `CompoundStreamEntry`) with child
-  lookups scoped per storage — the managed counterpart of COM `IStorage` / `IStream`.
+- A navigable storage hierarchy (`CompoundStorage` / `CompoundStream`) with child lookups scoped per
+  storage — the managed counterpart of COM `IStorage` / `IStream`. `CompoundFile.Open` /
+  `CompoundStorage.OpenStream` accept BCL `FileMode` / `FileAccess`, mirroring `System.IO.Packaging`.
 - **Bounded-memory streaming reads**: `CompoundFile.Open(stream, buffered: false)` reads sectors on
-  demand from a seekable stream, and `CompoundStreamEntry.Open()` returns a lazy `CompoundStream` for
-  large streams, so a multi-gigabyte file can be read without buffering it whole.
+  demand from a seekable stream, and `CompoundStorage.OpenStream(name)` returns a lazy `CompoundStream`
+  for large streams, so a multi-gigabyte file can be read without buffering it whole.
   `CompoundFileBuilder.FromFile(file, lazy: true)` reads into deferred nodes for a fully streamed read → re-save copy.
 - Per-entry metadata via `CompoundEntryInfo` (the `STATSTG` analogue): class id, state
   bits, creation / modified time stamps, and red-black node color.

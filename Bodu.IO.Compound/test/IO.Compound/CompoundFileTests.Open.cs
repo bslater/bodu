@@ -57,28 +57,30 @@ public partial class CompoundFileTests
     }
 
     /// <summary>
-    /// Verifies that requesting an unsupported access mode throws <see cref="NotSupportedException" />.
+    /// Verifies that requesting a write access level throws <see cref="NotSupportedException" />.
     /// </summary>
     [TestMethod]
-    public void Open_WhenModeIsNotRead_ShouldThrowNotSupportedException()
+    public void Open_WhenAccessRequestsWrite_ShouldThrowNotSupportedException()
     {
         using MemoryStream stream = CompoundFixtures.OpenStream(CompoundFixtures.SampleCompound);
 
         _ = Assert.ThrowsExactly<NotSupportedException>(() =>
         {
-            using var file = CompoundFile.Open(stream, (CompoundFileMode)0xFF);
+            using var file = CompoundFile.Open(stream, FileMode.Open, FileAccess.ReadWrite);
         });
     }
 
     /// <summary>
-    /// Verifies that the opened file reports the mode it was opened with.
+    /// Verifies that the opened file reports read access and is not writable.
     /// </summary>
     [TestMethod]
-    public void Open_WhenModeIsRead_ShouldReportReadMode()
+    public void Open_WhenOpenedForRead_ShouldReportReadAccess()
     {
         using CompoundFile file = OpenSample();
 
-        Assert.AreEqual(CompoundFileMode.Read, file.Mode);
+        Assert.AreEqual(FileAccess.Read, file.Access);
+        Assert.IsTrue(file.CanRead);
+        Assert.IsFalse(file.CanWrite);
     }
 
     /// <summary>
@@ -111,7 +113,7 @@ public partial class CompoundFileTests
 
             using CompoundFile file = CompoundFile.OpenRead(path);
 
-            Assert.AreEqual(CompoundFileMode.Read, file.Mode);
+            Assert.AreEqual(FileAccess.Read, file.Access);
             Assert.IsTrue(file.RootStorage.EnumerateEntries().Any());
         }
         finally

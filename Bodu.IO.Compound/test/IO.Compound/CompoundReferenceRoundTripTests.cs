@@ -57,9 +57,10 @@ public class CompoundReferenceRoundTripTests
     /// <param name="hashes">The map receiving the entries.</param>
     private static void Collect(CompoundStorage storage, string prefix, Dictionary<string, string> hashes)
     {
-        foreach (CompoundStreamEntry stream in storage.EnumerateStreams())
+        foreach (CompoundEntryInfo info in storage.EnumerateStreams())
         {
-            string path = prefix.Length == 0 ? stream.Name : prefix + "/" + stream.Name;
+            string path = prefix.Length == 0 ? info.Name : prefix + "/" + info.Name;
+            using CompoundStream stream = storage.OpenStream(info.Name);
             hashes[path] = Convert.ToHexString(SHA256.HashData(stream.ReadAllBytes().Span)).ToLowerInvariant();
         }
 

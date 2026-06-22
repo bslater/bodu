@@ -25,7 +25,7 @@ public class OlePropertySetTests
     public void Read_WhenSummaryInformationStream_ShouldExposeFormatIdAndTitle()
     {
         using CompoundFile file = CompoundFile.Open(CompoundFixtures.OpenReference("valid/sample1.doc"));
-        CompoundStreamEntry entry = file.RootStorage.OpenStream(SummaryInformation.StreamName);
+        using CompoundStream entry = file.RootStorage.OpenStream(SummaryInformation.StreamName);
 
         OlePropertySet set = OlePropertySet.Read(entry);
 
@@ -50,13 +50,13 @@ public class OlePropertySetTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="OlePropertySet.Read(CompoundStreamEntry)" /> rejects a <see langword="null" /> entry.
+    /// Verifies that <see cref="OlePropertySet.Read(Stream)" /> rejects a <see langword="null" /> stream.
     /// </summary>
     [TestMethod]
-    public void Read_WhenEntryIsNull_ShouldThrowArgumentNullException()
+    public void Read_WhenStreamIsNull_ShouldThrowArgumentNullException()
     {
-        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() => OlePropertySet.Read((CompoundStreamEntry)null!));
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() => OlePropertySet.Read((Stream)null!));
 
-        Assert.AreEqual("entry", ex.ParamName);
+        Assert.AreEqual("stream", ex.ParamName);
     }
 }

@@ -86,7 +86,7 @@ public sealed class CompoundFileBuilder
     {
         ThrowHelper.ThrowIfNull(source);
 
-        using CompoundFile file = CompoundFile.Open(source, CompoundFileMode.Read, leaveOpen: true);
+        using CompoundFile file = CompoundFile.Open(source, leaveOpen: true);
         return FromFile(file, lazy: false, options);
     }
 
@@ -178,13 +178,21 @@ public sealed class CompoundFileBuilder
     /// <param name="lazy">Whether stream nodes defer reading their payloads from the source file.</param>
     private static void Populate(CompoundStorageBuilder target, CompoundStorage source, bool lazy)
     {
-        foreach (CompoundStreamEntry entry in source.EnumerateStreams())
+        foreach (CompoundEntryInfo info in source.EnumerateStreams())
         {
-            CompoundStreamEntry stream = entry;
-            CompoundStreamBuilder node = lazy
-                ? target.AddStream(stream.Name, () => stream.Open(), stream.Length)
-                : target.AddStream(stream.Name, stream.ReadAllBytes());
-            CopyMetadata(node, stream.Stat);
+            string name = info.Name;
+            CompoundStreamBuilder node;
+            if (lazy)
+            {
+                node = target.AddStream(name, () => source.OpenStream(name), info.Length);
+            }
+            else
+            {
+                using CompoundStream stream = source.OpenStream(name);
+                node = target.AddStream(name, stream.ReadAllBytes());
+            }
+
+            CopyMetadata(node, info);
         }
 
         foreach (CompoundStorage child in source.EnumerateStorages())

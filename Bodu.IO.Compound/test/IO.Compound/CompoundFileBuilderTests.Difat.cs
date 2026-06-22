@@ -32,7 +32,7 @@ public partial class CompoundFileBuilderTests
         byte[] bytes = builder.ToArray();
 
         using CompoundFile file = CompoundFile.Open(new MemoryStream(bytes));
-        Assert.IsTrue(file.RootStorage.TryOpenStream("Big", out CompoundStreamEntry? entry));
+        Assert.IsTrue(file.RootStorage.TryOpenStream("Big", out CompoundStream? entry));
         Assert.AreEqual(payload.Length, entry.Length);
         Assert.AreEqual(expected, Convert.ToHexString(SHA256.HashData(entry.ReadAllBytes().Span)).ToLowerInvariant());
     }

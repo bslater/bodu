@@ -182,22 +182,4 @@ public sealed class OlePropertySet
         stream.CopyTo(buffer);
         return Parse(buffer.GetBuffer().AsMemory(0, (int)buffer.Length));
     }
-
-    /// <summary>
-    /// Reads and parses an OLE property set from a compound-file stream entry.
-    /// </summary>
-    /// <param name="entry">The stream entry containing the property set.</param>
-    /// <returns>The parsed <see cref="OlePropertySet" />.</returns>
-    /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="entry" /> is <see langword="null" />.
-    /// </exception>
-    /// <exception cref="CompoundFileFormatException">
-    /// Thrown when the stream is not a well-formed property set.
-    /// </exception>
-    public static OlePropertySet Read(CompoundStreamEntry entry)
-    {
-        ThrowHelper.ThrowIfNull(entry);
-
-        return Parse(entry.ReadAllBytes());
-    }
 }

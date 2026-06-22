@@ -14,7 +14,7 @@ namespace Bodu.IO.Compound.Builders;
 /// </summary>
 /// <remarks>
 /// <para>
-/// This is the authoring counterpart of <see cref="CompoundStreamEntry" /> and the compound-file analogue of a
+/// This is the authoring counterpart of <see cref="CompoundStream" /> and the compound-file analogue of a
 /// <c>JsonValue</c> leaf.
 /// </para>
 /// <para>

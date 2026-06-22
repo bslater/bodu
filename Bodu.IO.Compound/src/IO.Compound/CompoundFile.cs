@@ -17,14 +17,14 @@ namespace Bodu.IO.Compound;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <img src="../images/diagrams/io-compound-structure.svg" alt="A compound file is a structured-storage envelope: one physical file that begins with the OLE2 signature D0 CF 11 E0 and holds a header, allocation tables (FAT and mini-FAT), a directory, and sectors. CompoundFile.Open parses that container and exposes a logical hierarchy. Navigation starts at RootStorage and descends through nested CompoundStorage containers to CompoundStreamEntry leaves; a CompoundStorage is the managed counterpart of the COM IStorage interface and a CompoundStreamEntry is the counterpart of IStream."/>
+/// <img src="../images/diagrams/io-compound-structure.svg" alt="A compound file is a structured-storage envelope: one physical file that begins with the OLE2 signature D0 CF 11 E0 and holds a header, allocation tables (FAT and mini-FAT), a directory, and sectors. CompoundFile.Open parses that container and exposes a logical hierarchy. Navigation starts at RootStorage and descends through nested CompoundStorage containers to CompoundStream leaves; a CompoundStorage is the managed counterpart of the COM IStorage interface and a CompoundStream is the counterpart of IStream."/>
 /// </para>
 /// <para>
 /// A compound file is a structured-storage envelope — effectively a small file system embedded in a single file — used
 /// by legacy Microsoft Office formats (<c>.xls</c>, <c>.doc</c>, <c>.ppt</c>, <c>.msg</c>) and other technologies. This
 /// type is the managed counterpart of the COM <c>StgOpenStorage</c> entry point: navigation begins at
 /// <see cref="RootStorage" /> and descends through nested <see cref="CompoundStorage" /> objects to the
-/// <see cref="CompoundStreamEntry" /> leaves.
+/// <see cref="CompoundStream" /> leaves.
 /// </para>
 /// <para>
 /// By default the entire source is buffered into memory when the file is opened, so access after opening never touches
@@ -33,8 +33,8 @@ namespace Bodu.IO.Compound;
 /// which case the stream must stay open for the instance's lifetime and reads are serialized rather than parallel.
 /// </para>
 /// <para>
-/// Only <see cref="CompoundFileMode.Read" /> is supported by the current release. Creation and mutation (<c>Create</c>,
-/// <c>Commit</c>, and <c>Revert</c>) are reserved for a future read-write implementation.
+/// The current release supports read-only access (<see cref="FileAccess.Read" />). Creation and mutation
+/// (<c>Create</c>, <c>Commit</c>, and <c>Revert</c>) are reserved for a future read-write implementation.
 /// </para>
 /// </remarks>
 /// <example>
@@ -48,10 +48,10 @@ namespace Bodu.IO.Compound;
 /// foreach (CompoundEntryInfo info in file.RootStorage.EnumerateEntries())
 ///     Console.WriteLine($"{info.EntryType}: {info.Name} ({info.Length} bytes)");
 ///
-/// if (file.RootStorage.TryOpenStream("Workbook", out CompoundStreamEntry? workbook))
+/// if (file.RootStorage.TryOpenStream("Workbook", out CompoundStream? workbook))
 /// {
-///     using CompoundStream stream = workbook.Open();
-///     // ... read the BIFF records ...
+///     using (workbook)
+///         // ... read the BIFF records from the workbook stream ...
 /// }
 ///]]>
 /// </code>
@@ -94,17 +94,17 @@ public sealed class CompoundFile
     /// </summary>
     /// <param name="source">The source stream, retained for disposal.</param>
     /// <param name="leaveOpen">Whether to leave <paramref name="source" /> open on dispose.</param>
-    /// <param name="mode">The requested access mode.</param>
+    /// <param name="access">The access level the file was opened with.</param>
     /// <param name="dataSource">The random-access byte source.</param>
     /// <param name="streaming">Whether large stream payloads are read on demand.</param>
     /// <exception cref="CompoundFileFormatException">
     /// Thrown when the content is not a well-formed compound file.
     /// </exception>
-    private CompoundFile(Stream source, bool leaveOpen, CompoundFileMode mode, CfbDataSource dataSource, bool streaming)
+    private CompoundFile(Stream source, bool leaveOpen, FileAccess access, CfbDataSource dataSource, bool streaming)
     {
         _source = source;
         _leaveOpen = leaveOpen;
-        Mode = mode;
+        Access = access;
         _dataSource = dataSource;
         _streaming = streaming;
 
@@ -124,12 +124,22 @@ public sealed class CompoundFile
     }
 
     /// <summary>
-    /// Gets the mode the compound file was opened with.
+    /// Gets the access level the compound file was opened with.
     /// </summary>
-    /// <returns>
-    /// The <see cref="CompoundFileMode" /> supplied to <see cref="Open(Stream, CompoundFileMode, bool, bool)" />.
-    /// </returns>
-    public CompoundFileMode Mode { get; }
+    /// <returns>The <see cref="FileAccess" /> supplied at open time. The current release supports read access only.</returns>
+    public FileAccess Access { get; }
+
+    /// <summary>
+    /// Gets a value indicating whether the compound file can be read.
+    /// </summary>
+    /// <returns><see langword="true" /> when the file was opened with read access; otherwise <see langword="false" />.</returns>
+    public bool CanRead => (Access & FileAccess.Read) != 0;
+
+    /// <summary>
+    /// Gets a value indicating whether the compound file can be written.
+    /// </summary>
+    /// <returns><see langword="true" /> when the file was opened with write access; otherwise <see langword="false" />.</returns>
+    public bool CanWrite => (Access & FileAccess.Write) != 0;
 
     /// <summary>
     /// Gets the root storage that anchors the compound file's directory hierarchy.
@@ -138,10 +148,10 @@ public sealed class CompoundFile
     public CompoundStorage RootStorage { get; }
 
     /// <summary>
-    /// Opens a compound file over the supplied stream, buffering its content into memory.
+    /// Opens an existing compound file over the supplied stream for read-only access, buffering its content into memory
+    /// by default.
     /// </summary>
     /// <param name="stream">The stream containing the compound file; read from its current position to the end.</param>
-    /// <param name="mode">The access mode; only <see cref="CompoundFileMode.Read" /> is currently supported.</param>
     /// <param name="leaveOpen">
     /// <see langword="true" /> to leave <paramref name="stream" /> open when the returned instance is disposed;
     /// otherwise <see langword="false" />.
@@ -151,7 +161,7 @@ public sealed class CompoundFile
     /// to read sectors on demand from the seekable <paramref name="stream" />, bounding memory for large files. When
     /// <see langword="false" />, the stream must remain open and unmodified for the lifetime of the returned instance.
     /// </param>
-    /// <returns>An open <see cref="CompoundFile" />.</returns>
+    /// <returns>An open, read-only <see cref="CompoundFile" />.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="stream" /> is <see langword="null" />.
     /// </exception>
@@ -159,43 +169,81 @@ public sealed class CompoundFile
     /// Thrown when <paramref name="buffered" /> is <see langword="false" /> and <paramref name="stream" /> is not
     /// seekable.
     /// </exception>
-    /// <exception cref="NotSupportedException">
-    /// Thrown when <paramref name="mode" /> is not <see cref="CompoundFileMode.Read" />.
-    /// </exception>
     /// <exception cref="CompoundFileFormatException">
     /// Thrown when the stream content is not a well-formed compound file.
     /// </exception>
     /// <example>
-    /// The default opens the file fully buffered, so the source can be closed immediately after opening:
     /// <code language="csharp">
     ///<![CDATA[
     /// using CompoundFile file = CompoundFile.Open(File.OpenRead("book.xls"));
-    ///]]>
-    /// </code>
-    /// To bound memory for a large file, open it in streaming mode and keep the source open for the file's lifetime:
-    /// <code language="csharp">
-    ///<![CDATA[
     /// using FileStream source = File.OpenRead("large.msg");
-    /// using CompoundFile file = CompoundFile.Open(source, buffered: false);
+    /// using CompoundFile streamed = CompoundFile.Open(source, buffered: false);
     ///]]>
     /// </code>
     /// </example>
-    public static CompoundFile Open(Stream stream, CompoundFileMode mode = CompoundFileMode.Read, bool leaveOpen = false, bool buffered = true)
+    public static CompoundFile Open(Stream stream, bool leaveOpen = false, bool buffered = true) =>
+        OpenReadCore(stream, leaveOpen, buffered);
+
+    /// <summary>
+    /// Opens a compound file over the supplied stream with BCL-style <see cref="FileMode" /> and <see cref="FileAccess" />
+    /// semantics, mirroring <c>System.IO.Packaging.Package.Open</c>.
+    /// </summary>
+    /// <param name="stream">The stream containing the compound file; read from its current position to the end.</param>
+    /// <param name="mode">The file mode; the current release supports <see cref="FileMode.Open" /> only.</param>
+    /// <param name="access">The access level; the current release supports <see cref="FileAccess.Read" /> only.</param>
+    /// <param name="leaveOpen">
+    /// <see langword="true" /> to leave <paramref name="stream" /> open when the returned instance is disposed;
+    /// otherwise <see langword="false" />.
+    /// </param>
+    /// <param name="buffered">
+    /// <see langword="true" /> (the default) to read the whole file into memory at open time; <see langword="false" />
+    /// to read sectors on demand from the seekable <paramref name="stream" />.
+    /// </param>
+    /// <returns>An open <see cref="CompoundFile" />.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="stream" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="NotSupportedException">
+    /// Thrown when <paramref name="mode" /> or <paramref name="access" /> requests a write capability, which is not yet
+    /// supported.
+    /// </exception>
+    /// <exception cref="CompoundFileFormatException">
+    /// Thrown when the stream content is not a well-formed compound file.
+    /// </exception>
+    public static CompoundFile Open(Stream stream, FileMode mode, FileAccess access, bool leaveOpen = false, bool buffered = true)
     {
         ThrowHelper.ThrowIfNull(stream);
-        if (mode != CompoundFileMode.Read)
+        if (mode != FileMode.Open || access != FileAccess.Read)
         {
             throw new NotSupportedException(
-                string.Format(CultureInfo.CurrentCulture, CompoundResourceStrings.Op_NotSupported_CompoundFileWriteMode, mode));
+                string.Format(CultureInfo.CurrentCulture, CompoundResourceStrings.Op_NotSupported_CompoundFileWriteMode, $"{mode}/{access}"));
         }
 
+        return OpenReadCore(stream, leaveOpen, buffered);
+    }
+
+    /// <summary>
+    /// Opens a read-only compound file over the supplied stream, choosing the buffered or streaming data source.
+    /// </summary>
+    /// <param name="stream">The stream containing the compound file.</param>
+    /// <param name="leaveOpen">Whether to leave <paramref name="stream" /> open when the instance is disposed.</param>
+    /// <param name="buffered">Whether to buffer the whole file into memory at open time.</param>
+    /// <returns>An open, read-only <see cref="CompoundFile" />.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="stream" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="buffered" /> is <see langword="false" /> and <paramref name="stream" /> is not seekable.
+    /// </exception>
+    private static CompoundFile OpenReadCore(Stream stream, bool leaveOpen, bool buffered)
+    {
+        ThrowHelper.ThrowIfNull(stream);
+
         if (buffered)
-            return new CompoundFile(stream, leaveOpen, mode, new CfbArrayDataSource(ReadAllBytes(stream)), streaming: false);
+            return new CompoundFile(stream, leaveOpen, FileAccess.Read, new CfbArrayDataSource(ReadAllBytes(stream)), streaming: false);
 
         if (!stream.CanSeek)
             throw new ArgumentException(CompoundResourceStrings.Arg_Invalid_CompoundStreamNotSeekable, nameof(stream));
 
-        return new CompoundFile(stream, leaveOpen, mode, new CfbStreamDataSource(stream), streaming: true);
+        return new CompoundFile(stream, leaveOpen, FileAccess.Read, new CfbStreamDataSource(stream), streaming: true);
     }
 
     /// <summary>
@@ -230,7 +278,7 @@ public sealed class CompoundFile
         FileStream stream = File.OpenRead(path);
         try
         {
-            return Open(stream, CompoundFileMode.Read, leaveOpen: false, buffered: true);
+            return OpenReadCore(stream, leaveOpen: false, buffered: true);
         }
         catch
         {
@@ -368,11 +416,12 @@ public sealed class CompoundFile
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
 
+        CompoundEntryInfo info = entry.ToEntryInfo();
         if (!_streaming || entry.Size < _header.MiniStreamCutoff)
-            return new CompoundStream(entry.Name, Materialize(entry));
+            return new CompoundStream(info, Materialize(entry));
 
         uint[] chain = _sectors.GetSectorChain(entry.StartSector);
-        return new CompoundStream(entry.Name, _sectors, chain, entry.Size, _header.SectorSize);
+        return new CompoundStream(info, _sectors, chain, entry.Size, _header.SectorSize);
     }
 
     /// <summary>

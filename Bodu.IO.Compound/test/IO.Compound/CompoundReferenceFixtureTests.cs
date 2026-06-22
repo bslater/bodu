@@ -57,15 +57,14 @@ public class CompoundReferenceFixtureTests
     public void OpenStream_WhenReferenceFixtureIsValid_ShouldMatchExpectedHashes(CompoundReferenceFixtureKat kat)
     {
         using CompoundFile file = CompoundFile.Open(CompoundFixtures.OpenReference(kat.RelativePath));
-        Dictionary<string, CompoundStreamEntry> streams = FlattenStreams(file.RootStorage);
+        Dictionary<string, string> streams = HashStreams(file.RootStorage);
 
         foreach (CompoundManifestEntry expected in kat.Entries)
         {
             if (expected.Sha256 is null)
                 continue;
 
-            Assert.IsTrue(streams.TryGetValue(expected.Path, out CompoundStreamEntry? entry), $"Missing stream: {expected.Path}");
-            string actualHash = Convert.ToHexString(SHA256.HashData(entry.ReadAllBytes().Span)).ToLowerInvariant();
+            Assert.IsTrue(streams.TryGetValue(expected.Path, out string? actualHash), $"Missing stream: {expected.Path}");
             Assert.AreEqual(expected.Sha256, actualHash, expected.Path);
         }
     }
@@ -80,8 +79,8 @@ public class CompoundReferenceFixtureTests
         Dictionary<string, CompoundEntryInfo> map = new(StringComparer.Ordinal);
         void Walk(CompoundStorage storage, string prefix)
         {
-            foreach (CompoundStreamEntry stream in storage.EnumerateStreams())
-                map[Combine(prefix, stream.Name)] = stream.Stat;
+            foreach (CompoundEntryInfo info in storage.EnumerateStreams())
+                map[Combine(prefix, info.Name)] = info;
 
             foreach (CompoundStorage child in storage.EnumerateStorages())
             {
@@ -96,17 +95,20 @@ public class CompoundReferenceFixtureTests
     }
 
     /// <summary>
-    /// Flattens a storage hierarchy into a path-keyed map of stream entries.
+    /// Hashes every stream in a storage hierarchy, keyed by storage-qualified path.
     /// </summary>
     /// <param name="root">The root storage to walk.</param>
-    /// <returns>A map from storage-qualified path to stream entry.</returns>
-    private static Dictionary<string, CompoundStreamEntry> FlattenStreams(CompoundStorage root)
+    /// <returns>A map from storage-qualified path to lowercase hexadecimal SHA-256.</returns>
+    private static Dictionary<string, string> HashStreams(CompoundStorage root)
     {
-        Dictionary<string, CompoundStreamEntry> map = new(StringComparer.Ordinal);
+        Dictionary<string, string> map = new(StringComparer.Ordinal);
         void Walk(CompoundStorage storage, string prefix)
         {
-            foreach (CompoundStreamEntry stream in storage.EnumerateStreams())
-                map[Combine(prefix, stream.Name)] = stream;
+            foreach (CompoundEntryInfo info in storage.EnumerateStreams())
+            {
+                using CompoundStream stream = storage.OpenStream(info.Name);
+                map[Combine(prefix, info.Name)] = Convert.ToHexString(SHA256.HashData(stream.ReadAllBytes().Span)).ToLowerInvariant();
+            }
 
             foreach (CompoundStorage child in storage.EnumerateStorages())
                 Walk(child, Combine(prefix, child.Name));
