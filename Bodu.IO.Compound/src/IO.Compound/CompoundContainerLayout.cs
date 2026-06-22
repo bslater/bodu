@@ -10,7 +10,7 @@ using System.Globalization;
 using System.Text;
 using Bodu.IO.Compound.Nodes;
 
-namespace Bodu.IO.Compound.Writer;
+namespace Bodu.IO.Compound;
 
 /// <summary>
 /// Serializes a mutable compound-file object model into the OLE2 / Compound File Binary byte layout.
@@ -55,7 +55,7 @@ internal static class CompoundContainerLayout
     /// <param name="options">The options controlling the output layout.</param>
     /// <returns>The complete compound-file content.</returns>
     /// <exception cref="CompoundFileSerializationException">Thrown when the model cannot be represented.</exception>
-    internal static byte[] Write(CompoundStorageNode root, CompoundWriterOptions options)
+    internal static byte[] Write(CompoundStorageNode root, CompoundFileBuilderOptions options)
     {
         using MemoryStream buffer = new();
         WriteTo(buffer, root, options);
@@ -69,7 +69,7 @@ internal static class CompoundContainerLayout
     /// <param name="root">The root storage to serialize.</param>
     /// <param name="options">The options controlling the output layout.</param>
     /// <exception cref="CompoundFileSerializationException">Thrown when the model cannot be represented.</exception>
-    internal static void WriteTo(Stream destination, CompoundStorageNode root, CompoundWriterOptions options)
+    internal static void WriteTo(Stream destination, CompoundStorageNode root, CompoundFileBuilderOptions options)
     {
         int sectorSize = options.SectorSize;
         int entriesPerSector = sectorSize / 4;

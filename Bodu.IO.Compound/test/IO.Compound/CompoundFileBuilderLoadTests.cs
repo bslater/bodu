@@ -1,21 +1,22 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CompoundStorageNodeTests.Load.cs" company="Bodu Pty. Ltd.">
+// <copyright file="CompoundFileBuilderLoadTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Security.Cryptography;
+using Bodu.IO.Compound.Nodes;
 using Bodu.Test;
 using Bodu.Test.Kat;
 
-namespace Bodu.IO.Compound.Nodes;
+namespace Bodu.IO.Compound;
 
 /// <summary>
-/// Verifies that <see cref="CompoundStorageNode.Load(Stream)" /> materializes a compound file into an equivalent mutable
-/// object model.
+/// Verifies that <see cref="CompoundFileBuilder.Load(Stream, CompoundFileBuilderOptions)" /> materializes a compound
+/// file into an equivalent mutable object model.
 /// </summary>
 [TestClass]
-public class CompoundStorageNodeLoadTests
+public class CompoundFileBuilderLoadTests
 {
     /// <summary>
     /// Verifies that loading a nested fixture reproduces its storage hierarchy and stream content.
@@ -26,7 +27,7 @@ public class CompoundStorageNodeLoadTests
     {
         using MemoryStream source = CompoundFixtures.OpenReference("valid/clean.dat");
 
-        CompoundStorageNode root = CompoundStorageNode.Load(source);
+        CompoundStorageNode root = CompoundFileBuilder.Load(source).Root;
 
         Assert.AreEqual(CompoundEntryType.RootStorage, root.EntryType);
         Assert.IsTrue(root.TryGetStorage("Storage 1", out CompoundStorageNode? storage));
@@ -46,7 +47,7 @@ public class CompoundStorageNodeLoadTests
     public void Load_WhenValidFixture_ShouldMatchReaderStreamHashes(CompoundReferenceFixtureKat kat)
     {
         using MemoryStream source = CompoundFixtures.OpenReference(kat.RelativePath);
-        CompoundStorageNode root = CompoundStorageNode.Load(source);
+        CompoundStorageNode root = CompoundFileBuilder.Load(source).Root;
 
         Dictionary<string, string> actual = new(StringComparer.Ordinal);
         Collect(root, string.Empty, actual);

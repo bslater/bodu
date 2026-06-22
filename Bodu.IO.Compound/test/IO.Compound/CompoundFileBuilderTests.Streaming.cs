@@ -1,16 +1,14 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CompoundWriterTests.Streaming.cs" company="Bodu Pty. Ltd.">
+// <copyright file="CompoundFileBuilderTests.Streaming.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Security.Cryptography;
-using Bodu.IO.Compound.Nodes;
 using Bodu.Test;
 
-namespace Bodu.IO.Compound.Writer;
+namespace Bodu.IO.Compound;
 
-public partial class CompoundWriterTests
+public partial class CompoundFileBuilderTests
 {
     /// <summary>
     /// Verifies that a file-backed deferred stream is serialized by streaming from disk and round-trips byte-for-byte.
@@ -26,10 +24,9 @@ public partial class CompoundWriterTests
         {
             File.WriteAllBytes(sourcePath, payload);
 
-            CompoundStorageNode root = CompoundStorageNode.CreateRoot();
-            _ = root.AddStreamFromFile("Big", sourcePath);
-            using (FileStream output = File.Create(outputPath))
-                root.Save(output);
+            var builder = new CompoundFileBuilder();
+            _ = builder.Root.AddStreamFromFile("Big", sourcePath);
+            builder.Save(outputPath);
 
             using FileStream reopen = File.OpenRead(outputPath);
             using CompoundFile file = CompoundFile.Open(reopen);
@@ -48,21 +45,21 @@ public partial class CompoundWriterTests
     /// Verifies that a deferred source is opened exactly once and only during serialization, and round-trips.
     /// </summary>
     [TestMethod]
-    public void Save_WhenStreamBackedByFactory_ShouldOpenOnceDuringSave()
+    public void ToArray_WhenStreamBackedByFactory_ShouldOpenOnceDuringSave()
     {
         byte[] payload = CreatePayload(9000);
         int opens = 0;
 
-        CompoundStorageNode root = CompoundStorageNode.CreateRoot();
-        _ = root.AddStream("Data", () =>
+        var builder = new CompoundFileBuilder();
+        _ = builder.Root.AddStream("Data", () =>
         {
             opens++;
             return new MemoryStream(payload, writable: false);
         }, payload.Length);
 
-        Assert.AreEqual(0, opens, "source opened before Save");
+        Assert.AreEqual(0, opens, "source opened before serialization");
 
-        byte[] bytes = root.ToArray();
+        byte[] bytes = builder.ToArray();
 
         Assert.AreEqual(1, opens, "source not opened exactly once");
         using CompoundFile file = CompoundFile.Open(new MemoryStream(bytes));
@@ -78,18 +75,18 @@ public partial class CompoundWriterTests
     [TestMethod]
     [DataRow(CompoundFileVersion.V3)]
     [DataRow(CompoundFileVersion.V4)]
-    public void Save_WhenMixedTree_ShouldMatchArrayPathByteForByte(CompoundFileVersion version)
+    public void WriteTo_WhenMixedTree_ShouldMatchArrayPathByteForByte(CompoundFileVersion version)
     {
-        var options = new CompoundWriterOptions { Version = version };
+        var options = new CompoundFileBuilderOptions { Version = version };
 
         byte[] streamed;
         using (MemoryStream destination = new())
         {
-            BuildMixedTree().Save(destination, options);
+            BuildMixedTree(options).WriteTo(destination);
             streamed = destination.ToArray();
         }
 
-        byte[] array = BuildMixedTree().ToArray(options);
+        byte[] array = BuildMixedTree(options).ToArray();
 
         CollectionAssert.AreEqual(array, streamed);
     }
@@ -98,7 +95,7 @@ public partial class CompoundWriterTests
     /// Verifies that a tree mixing in-memory, deferred, mini, and empty-deferred streams round-trips.
     /// </summary>
     [TestMethod]
-    public void Save_WhenMixedDeferredAndInline_ShouldRoundTrip()
+    public void ToArray_WhenMixedDeferredAndInline_ShouldRoundTrip()
     {
         using CompoundFile file = CompoundFile.Open(new MemoryStream(BuildMixedTree().ToArray()));
 
@@ -117,56 +114,27 @@ public partial class CompoundWriterTests
     /// <see cref="CompoundFileSerializationException" /> during serialization.
     /// </summary>
     [TestMethod]
-    public void Save_WhenDeferredSourceShorterThanDeclared_ShouldThrow()
+    public void ToArray_WhenDeferredSourceShorterThanDeclared_ShouldThrow()
     {
-        CompoundStorageNode root = CompoundStorageNode.CreateRoot();
-        _ = root.AddStream("Short", () => new MemoryStream(new byte[100]), 8000);
+        var builder = new CompoundFileBuilder();
+        _ = builder.Root.AddStream("Short", () => new MemoryStream(new byte[100]), 8000);
 
-        _ = Assert.ThrowsExactly<CompoundFileSerializationException>(() => root.ToArray());
+        _ = Assert.ThrowsExactly<CompoundFileSerializationException>(() => builder.ToArray());
     }
 
     /// <summary>
-    /// Verifies that the imperative writer can author deferred streams from a file and a factory.
+    /// Builds a builder over a tree mixing an in-memory large stream, a deferred large stream, a mini stream, and an
+    /// empty deferred stream.
     /// </summary>
-    [TestMethod]
-    public void CompoundWriter_WhenDeferredStreams_ShouldRoundTrip()
+    /// <param name="options">The options controlling the output layout.</param>
+    /// <returns>The populated builder.</returns>
+    private static CompoundFileBuilder BuildMixedTree(CompoundFileBuilderOptions options = default)
     {
-        byte[] payload = CreatePayload(5000);
-        string sourcePath = Path.Combine(Path.GetTempPath(), $"bodu-src-{Guid.NewGuid():N}.bin");
-        try
-        {
-            File.WriteAllBytes(sourcePath, payload);
-
-            using MemoryStream destination = new();
-            using (var writer = new CompoundWriter(destination))
-            {
-                writer.WriteStreamFromFile("FromFile", sourcePath);
-                writer.WriteStream("FromFactory", () => new MemoryStream(payload), payload.Length);
-            }
-
-            using CompoundFile file = CompoundFile.Open(new MemoryStream(destination.ToArray()));
-            Assert.IsTrue(file.RootStorage.TryOpenStream("FromFile", out CompoundStreamEntry? a));
-            Assert.IsTrue(file.RootStorage.TryOpenStream("FromFactory", out CompoundStreamEntry? b));
-            Assert.AreEqual(Hash(payload), Hash(a.ReadAllBytes().Span));
-            Assert.AreEqual(Hash(payload), Hash(b.ReadAllBytes().Span));
-        }
-        finally
-        {
-            File.Delete(sourcePath);
-        }
-    }
-
-    /// <summary>
-    /// Builds a tree mixing an in-memory large stream, a deferred large stream, a mini stream, and an empty deferred stream.
-    /// </summary>
-    /// <returns>The root storage.</returns>
-    private static CompoundStorageNode BuildMixedTree()
-    {
-        CompoundStorageNode root = CompoundStorageNode.CreateRoot();
-        _ = root.AddStream("InlineBig", CreatePayload(6000));
-        _ = root.AddStream("DeferredBig", () => new MemoryStream(CreatePayload(7000)), 7000);
-        _ = root.AddStream("Mini", CreatePayload(10));
-        _ = root.AddStream("Empty", () => new MemoryStream(Array.Empty<byte>()), 0);
-        return root;
+        var builder = new CompoundFileBuilder(options);
+        _ = builder.Root.AddStream("InlineBig", CreatePayload(6000));
+        _ = builder.Root.AddStream("DeferredBig", () => new MemoryStream(CreatePayload(7000)), 7000);
+        _ = builder.Root.AddStream("Mini", CreatePayload(10));
+        _ = builder.Root.AddStream("Empty", () => new MemoryStream(Array.Empty<byte>()), 0);
+        return builder;
     }
 }

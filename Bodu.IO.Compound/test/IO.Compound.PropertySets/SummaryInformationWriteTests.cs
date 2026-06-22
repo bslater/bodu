@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.IO.Compound;
-using Bodu.IO.Compound.Nodes;
 using Bodu.Test;
 
 namespace Bodu.IO.Compound.PropertySets;
@@ -46,10 +45,10 @@ public class SummaryInformationWriteTests
     public void Save_WhenSummaryInformationEmbedded_ShouldBeReadByCompoundFile()
     {
         var builder = new SummaryInformationBuilder { Title = "Report", Author = "Grace" };
-        CompoundStorageNode root = CompoundStorageNode.CreateRoot();
-        _ = root.AddStream(SummaryInformation.StreamName, builder.ToArray());
+        var compound = new CompoundFileBuilder();
+        _ = compound.Root.AddStream(SummaryInformation.StreamName, builder.ToArray());
 
-        using CompoundFile file = CompoundFile.Open(new MemoryStream(root.ToArray()));
+        using CompoundFile file = CompoundFile.Open(new MemoryStream(compound.ToArray()));
 
         Assert.IsTrue(file.TryGetSummaryInformation(out SummaryInformation? summary));
         Assert.AreEqual("Report", summary.Title);
@@ -66,10 +65,10 @@ public class SummaryInformationWriteTests
         var builder = new DocumentSummaryInformationBuilder { Company = "Bodu", SlideCount = 3 };
         builder.AddCustomProperty("Project", OlePropertyValue.Create("Apollo"));
 
-        CompoundStorageNode root = CompoundStorageNode.CreateRoot();
-        _ = root.AddStream(DocumentSummaryInformation.StreamName, builder.ToArray());
+        var compound = new CompoundFileBuilder();
+        _ = compound.Root.AddStream(DocumentSummaryInformation.StreamName, builder.ToArray());
 
-        using CompoundFile file = CompoundFile.Open(new MemoryStream(root.ToArray()));
+        using CompoundFile file = CompoundFile.Open(new MemoryStream(compound.ToArray()));
 
         Assert.IsTrue(file.TryGetDocumentSummaryInformation(out DocumentSummaryInformation? summary));
         Assert.AreEqual("Bodu", summary.Company);

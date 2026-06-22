@@ -18,7 +18,7 @@ namespace Bodu.IO.Compound.Nodes;
 /// <para>
 /// This is the authoring counterpart of <see cref="CompoundStorage" /> and the compound-file analogue of a
 /// <c>JsonObject</c>: children are keyed by name and a node belongs to at most one storage at a time. A storage with no
-/// parent is the root of a document and is the only node that can be serialized.
+/// parent is the root of a document; serialize a tree by passing its root to a <see cref="CompoundFileBuilder" />.
 /// </para>
 /// <para>
 /// Names are compared per <see cref="CompoundNodeOptions" /> (case-insensitive by default, matching the compound-file

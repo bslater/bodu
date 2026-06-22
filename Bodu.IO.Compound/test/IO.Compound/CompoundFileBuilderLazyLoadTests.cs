@@ -1,20 +1,21 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CompoundStorageNodeTests.Lazy.cs" company="Bodu Pty. Ltd.">
+// <copyright file="CompoundFileBuilderLazyLoadTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Security.Cryptography;
-using Bodu.IO.Compound.Writer;
+using Bodu.IO.Compound.Nodes;
 using Bodu.Test;
 
-namespace Bodu.IO.Compound.Nodes;
+namespace Bodu.IO.Compound;
 
 /// <summary>
-/// Verifies the lazy (deferred) load path of <see cref="CompoundStorageNode.FromFile(CompoundFile, bool)" />.
+/// Verifies the lazy (deferred) load path of
+/// <see cref="CompoundFileBuilder.FromFile(CompoundFile, bool, CompoundFileBuilderOptions)" />.
 /// </summary>
 [TestClass]
-public class CompoundStorageNodeLazyLoadTests
+public class CompoundFileBuilderLazyLoadTests
 {
     /// <summary>
     /// Verifies that a lazy load produces deferred stream nodes that report their length without materializing content.
@@ -25,7 +26,7 @@ public class CompoundStorageNodeLazyLoadTests
         using MemoryStream source = CompoundFixtures.OpenReference("valid/clean.dat");
         using CompoundFile file = CompoundFile.Open(source, buffered: false);
 
-        CompoundStorageNode root = CompoundStorageNode.FromFile(file, lazy: true);
+        CompoundStorageNode root = CompoundFileBuilder.FromFile(file, lazy: true).Root;
 
         bool sawStream = false;
         foreach (CompoundStreamNode stream in EnumerateStreams(root))
@@ -48,8 +49,7 @@ public class CompoundStorageNodeLazyLoadTests
 
         Dictionary<string, string> expected = HashStreams(file.RootStorage);
 
-        CompoundStorageNode root = CompoundStorageNode.FromFile(file, lazy: true);
-        byte[] rewritten = root.ToArray();
+        byte[] rewritten = CompoundFileBuilder.FromFile(file, lazy: true).ToArray();
 
         using CompoundFile reopened = CompoundFile.Open(new MemoryStream(rewritten));
         Dictionary<string, string> actual = HashStreams(reopened.RootStorage);
@@ -72,18 +72,16 @@ public class CompoundStorageNodeLazyLoadTests
         try
         {
             byte[] big = Payload(6 * 1024 * 1024);
-            CompoundStorageNode authored = CompoundStorageNode.CreateRoot();
-            _ = authored.AddStream("Big", big);
-            _ = authored.AddStream("Small", Payload(20));
-            using (FileStream create = File.Create(inputPath))
-                authored.Save(create);
+            var authored = new CompoundFileBuilder();
+            _ = authored.Root.AddStream("Big", big);
+            _ = authored.Root.AddStream("Small", Payload(20));
+            authored.Save(inputPath);
 
             using (FileStream read = File.OpenRead(inputPath))
             using (CompoundFile file = CompoundFile.Open(read, buffered: false))
             {
-                CompoundStorageNode lazy = CompoundStorageNode.FromFile(file, lazy: true);
-                using FileStream write = File.Create(outputPath);
-                lazy.Save(write);
+                CompoundFileBuilder lazy = CompoundFileBuilder.FromFile(file, lazy: true);
+                lazy.Save(outputPath);
             }
 
             using FileStream verify = File.OpenRead(outputPath);

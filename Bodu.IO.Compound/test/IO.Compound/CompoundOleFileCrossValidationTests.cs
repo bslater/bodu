@@ -6,13 +6,12 @@
 
 using System.Diagnostics;
 using System.Security.Cryptography;
-using Bodu.IO.Compound.Nodes;
 using Bodu.Test;
 
-namespace Bodu.IO.Compound.Writer;
+namespace Bodu.IO.Compound;
 
 /// <summary>
-/// Cross-validates writer output against the independent python <c>olefile</c> parser, proving the produced containers
+/// Cross-validates builder output against the independent python <c>olefile</c> parser, proving the produced containers
 /// are conformant beyond this library's own reader.
 /// </summary>
 /// <remarks>
@@ -54,15 +53,15 @@ public class CompoundOleFileCrossValidationTests
             ["Storage 1/Nested"] = [9, 9, 9],
         };
 
-        CompoundStorageNode root = CompoundStorageNode.CreateRoot();
-        _ = root.AddStream("Small", streams["Small"]);
-        _ = root.AddStream("Big", streams["Big"]);
-        _ = root.AddStorage("Storage 1").AddStream("Nested", streams["Storage 1/Nested"]);
+        var builder = new CompoundFileBuilder(new CompoundFileBuilderOptions { Version = version });
+        _ = builder.Root.AddStream("Small", streams["Small"]);
+        _ = builder.Root.AddStream("Big", streams["Big"]);
+        _ = builder.Root.AddStorage("Storage 1").AddStream("Nested", streams["Storage 1/Nested"]);
 
         string path = Path.Combine(Path.GetTempPath(), $"bodu-cfb-{Guid.NewGuid():N}.cfb");
         try
         {
-            File.WriteAllBytes(path, root.ToArray(new CompoundWriterOptions { Version = version }));
+            builder.Save(path);
             Dictionary<string, string> reported = RunOleFile(path);
 
             foreach (KeyValuePair<string, byte[]> expected in streams)

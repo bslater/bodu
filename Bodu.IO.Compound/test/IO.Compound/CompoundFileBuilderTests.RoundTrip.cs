@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CompoundWriterTests.RoundTrip.cs" company="Bodu Pty. Ltd.">
+// <copyright file="CompoundFileBuilderTests.RoundTrip.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -9,7 +9,7 @@ using Bodu.IO.Compound.Nodes;
 using Bodu.Test;
 using Bodu.Test.Kat;
 
-namespace Bodu.IO.Compound.Writer;
+namespace Bodu.IO.Compound;
 
 /// <summary>
 /// A known-answer row describing a single-stream round-trip at a given size and version, covering the mini-stream and
@@ -17,14 +17,14 @@ namespace Bodu.IO.Compound.Writer;
 /// </summary>
 /// <param name="Version">The compound-file version to write.</param>
 /// <param name="Size">The stream size, in bytes.</param>
-public sealed record CompoundWriterSizeKat(CompoundFileVersion Version, int Size)
+public sealed record CompoundFileBuilderSizeKat(CompoundFileVersion Version, int Size)
     : IKat
 {
     /// <inheritdoc />
     public string Name => $"{Version} size={Size}";
 }
 
-public partial class CompoundWriterTests
+public partial class CompoundFileBuilderTests
 {
     /// <summary>
     /// Gets the size/version round-trip rows spanning the mini/regular boundary and multi-sector payloads.
@@ -36,7 +36,7 @@ public partial class CompoundWriterTests
         foreach (CompoundFileVersion version in new[] { CompoundFileVersion.V3, CompoundFileVersion.V4 })
         {
             foreach (int size in sizes)
-                yield return [new CompoundWriterSizeKat(version, size)];
+                yield return [new CompoundFileBuilderSizeKat(version, size)];
         }
     }
 
@@ -49,13 +49,13 @@ public partial class CompoundWriterTests
     [TestCategory(TestCategories.Regression)]
     [DynamicData(nameof(SizeRows), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void Save_WhenStreamOfSize_ShouldRoundTripExactly(CompoundWriterSizeKat kat)
+    public void ToArray_WhenStreamOfSize_ShouldRoundTripExactly(CompoundFileBuilderSizeKat kat)
     {
         byte[] payload = CreatePayload(kat.Size);
-        CompoundStorageNode root = CompoundStorageNode.CreateRoot();
-        _ = root.AddStream("Data", payload);
+        var builder = new CompoundFileBuilder(new CompoundFileBuilderOptions { Version = kat.Version });
+        _ = builder.Root.AddStream("Data", payload);
 
-        byte[] bytes = root.ToArray(new CompoundWriterOptions { Version = kat.Version });
+        byte[] bytes = builder.ToArray();
 
         using CompoundFile file = CompoundFile.Open(new MemoryStream(bytes));
         Assert.IsTrue(file.RootStorage.TryOpenStream("Data", out CompoundStreamEntry? entry));
@@ -68,13 +68,13 @@ public partial class CompoundWriterTests
     /// </summary>
     [TestMethod]
     [TestCategory(TestCategories.Regression)]
-    public void Save_WhenManySiblings_ShouldRoundTripAllStreams()
+    public void ToArray_WhenManySiblings_ShouldRoundTripAllStreams()
     {
-        CompoundStorageNode root = CompoundStorageNode.CreateRoot();
+        var builder = new CompoundFileBuilder();
         for (int i = 0; i < 100; i++)
-            _ = root.AddStream($"Stream{i:D3}", CreatePayload(i));
+            _ = builder.Root.AddStream($"Stream{i:D3}", CreatePayload(i));
 
-        using CompoundFile file = CompoundFile.Open(new MemoryStream(root.ToArray()));
+        using CompoundFile file = CompoundFile.Open(new MemoryStream(builder.ToArray()));
 
         for (int i = 0; i < 100; i++)
         {
@@ -88,16 +88,16 @@ public partial class CompoundWriterTests
     /// </summary>
     [TestMethod]
     [TestCategory(TestCategories.Regression)]
-    public void Save_WhenDeeplyNested_ShouldRoundTrip()
+    public void ToArray_WhenDeeplyNested_ShouldRoundTrip()
     {
-        CompoundStorageNode root = CompoundStorageNode.CreateRoot();
-        CompoundStorageNode current = root;
+        var builder = new CompoundFileBuilder();
+        CompoundStorageNode current = builder.Root;
         for (int depth = 0; depth < 8; depth++)
             current = current.AddStorage($"Level{depth}");
 
         _ = current.AddStream("Leaf", CreatePayload(200));
 
-        using CompoundFile file = CompoundFile.Open(new MemoryStream(root.ToArray()));
+        using CompoundFile file = CompoundFile.Open(new MemoryStream(builder.ToArray()));
         CompoundStorage storage = file.RootStorage;
         for (int depth = 0; depth < 8; depth++)
             storage = storage.OpenStorage($"Level{depth}");

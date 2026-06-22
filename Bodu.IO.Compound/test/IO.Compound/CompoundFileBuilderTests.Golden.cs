@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CompoundWriterTests.Golden.cs" company="Bodu Pty. Ltd.">
+// <copyright file="CompoundFileBuilderTests.Golden.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -8,9 +8,9 @@ using Bodu.IO.Compound.Nodes;
 using Bodu.Test;
 using Bodu.Test.Kat;
 
-namespace Bodu.IO.Compound.Writer;
+namespace Bodu.IO.Compound;
 
-public partial class CompoundWriterTests
+public partial class CompoundFileBuilderTests
 {
     /// <summary>
     /// Gets the golden byte-for-byte rows pairing a version with its committed reference file.
@@ -18,8 +18,8 @@ public partial class CompoundWriterTests
     /// <returns>A sequence of single-element argument arrays wrapping the rows.</returns>
     public static IEnumerable<object[]> GoldenRows()
     {
-        yield return [new CompoundWriterGoldenKat(CompoundFileVersion.V3, "golden-v3.cfb")];
-        yield return [new CompoundWriterGoldenKat(CompoundFileVersion.V4, "golden-v4.cfb")];
+        yield return [new CompoundFileBuilderGoldenKat(CompoundFileVersion.V3, "golden-v3.cfb")];
+        yield return [new CompoundFileBuilderGoldenKat(CompoundFileVersion.V4, "golden-v4.cfb")];
     }
 
     /// <summary>
@@ -30,11 +30,11 @@ public partial class CompoundWriterTests
     [TestMethod]
     [DynamicData(nameof(GoldenRows), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void ToArray_WhenCanonicalTree_ShouldMatchGoldenFileByteForByte(CompoundWriterGoldenKat kat)
+    public void ToArray_WhenCanonicalTree_ShouldMatchGoldenFileByteForByte(CompoundFileBuilderGoldenKat kat)
     {
         byte[] expected = CompoundFixtures.ReadWriterGolden(kat.FileName);
 
-        byte[] actual = BuildCanonical().ToArray(new CompoundWriterOptions { Version = kat.Version });
+        byte[] actual = BuildCanonical(new CompoundFileBuilderOptions { Version = kat.Version }).ToArray();
 
         Assert.AreEqual(expected.Length, actual.Length, "length");
         CollectionAssert.AreEqual(expected, actual);
@@ -47,29 +47,31 @@ public partial class CompoundWriterTests
     [TestMethod]
     [DynamicData(nameof(GoldenRows), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void Save_WhenReloadingGolden_ShouldBeByteStable(CompoundWriterGoldenKat kat)
+    public void Load_WhenReloadingGolden_ShouldBeByteStable(CompoundFileBuilderGoldenKat kat)
     {
         byte[] golden = CompoundFixtures.ReadWriterGolden(kat.FileName);
 
-        byte[] rewritten = CompoundStorageNode.Load(new MemoryStream(golden))
-            .ToArray(new CompoundWriterOptions { Version = kat.Version });
+        byte[] rewritten = CompoundFileBuilder
+            .Load(new MemoryStream(golden), new CompoundFileBuilderOptions { Version = kat.Version })
+            .ToArray();
 
         CollectionAssert.AreEqual(golden, rewritten);
     }
 
     /// <summary>
-    /// Builds the canonical, fully-deterministic tree used to generate the golden files.
+    /// Builds a builder over the canonical, fully-deterministic tree used to generate the golden files.
     /// </summary>
-    /// <returns>The canonical root storage.</returns>
-    private static CompoundStorageNode BuildCanonical()
+    /// <param name="options">The options controlling the output layout.</param>
+    /// <returns>The populated builder.</returns>
+    private static CompoundFileBuilder BuildCanonical(CompoundFileBuilderOptions options = default)
     {
-        CompoundStorageNode root = CompoundStorageNode.CreateRoot();
-        root.ClassId = new Guid("00020906-0000-0000-C000-000000000046");
-        CompoundStorageNode data = root.AddStorage("Data");
+        var builder = new CompoundFileBuilder(options);
+        builder.Root.ClassId = new Guid("00020906-0000-0000-C000-000000000046");
+        CompoundStorageNode data = builder.Root.AddStorage("Data");
         _ = data.AddStream("Small", Canonical(100));
         _ = data.AddStream("Large", Canonical(5000));
-        _ = root.AddStream("Meta", Canonical(48));
-        return root;
+        _ = builder.Root.AddStream("Meta", Canonical(48));
+        return builder;
     }
 
     /// <summary>
@@ -88,11 +90,11 @@ public partial class CompoundWriterTests
 }
 
 /// <summary>
-/// A known-answer row pairing a writer version with its committed golden file name.
+/// A known-answer row pairing a builder version with its committed golden file name.
 /// </summary>
 /// <param name="Version">The compound-file version.</param>
 /// <param name="FileName">The golden fixture file name.</param>
-public sealed record CompoundWriterGoldenKat(CompoundFileVersion Version, string FileName)
+public sealed record CompoundFileBuilderGoldenKat(CompoundFileVersion Version, string FileName)
     : IKat
 {
     /// <inheritdoc />

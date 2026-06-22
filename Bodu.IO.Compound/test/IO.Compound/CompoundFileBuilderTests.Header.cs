@@ -1,15 +1,14 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CompoundWriterTests.Header.cs" company="Bodu Pty. Ltd.">
+// <copyright file="CompoundFileBuilderTests.Header.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Buffers.Binary;
-using Bodu.IO.Compound.Nodes;
 
-namespace Bodu.IO.Compound.Writer;
+namespace Bodu.IO.Compound;
 
-public partial class CompoundWriterTests
+public partial class CompoundFileBuilderTests
 {
     /// <summary>The compound-file signature bytes.</summary>
     private static readonly byte[] Signature = [0xD0, 0xCF, 0x11, 0xE0, 0xA1, 0xB1, 0x1A, 0xE1];
@@ -18,12 +17,12 @@ public partial class CompoundWriterTests
     /// Verifies that a version-3 file carries the expected header fields and is aligned to 512-byte sectors.
     /// </summary>
     [TestMethod]
-    public void Save_WhenVersion3_ShouldWriteExpectedHeaderAndAlignment()
+    public void ToArray_WhenVersion3_ShouldWriteExpectedHeaderAndAlignment()
     {
-        CompoundStorageNode root = CompoundStorageNode.CreateRoot();
-        _ = root.AddStream("Data", new byte[] { 1, 2, 3 });
+        var builder = new CompoundFileBuilder(new CompoundFileBuilderOptions { Version = CompoundFileVersion.V3 });
+        _ = builder.Root.AddStream("Data", new byte[] { 1, 2, 3 });
 
-        byte[] bytes = root.ToArray(new CompoundWriterOptions { Version = CompoundFileVersion.V3 });
+        byte[] bytes = builder.ToArray();
 
         CollectionAssert.AreEqual(Signature, bytes[..8]);
         Assert.AreEqual(3, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(26)));
@@ -38,12 +37,12 @@ public partial class CompoundWriterTests
     /// Verifies that a version-4 file uses 4096-byte sectors, records its directory sector count, and is 4096-aligned.
     /// </summary>
     [TestMethod]
-    public void Save_WhenVersion4_ShouldWriteExpectedHeaderAndAlignment()
+    public void ToArray_WhenVersion4_ShouldWriteExpectedHeaderAndAlignment()
     {
-        CompoundStorageNode root = CompoundStorageNode.CreateRoot();
-        _ = root.AddStream("Data", new byte[] { 1, 2, 3 });
+        var builder = new CompoundFileBuilder(new CompoundFileBuilderOptions { Version = CompoundFileVersion.V4 });
+        _ = builder.Root.AddStream("Data", new byte[] { 1, 2, 3 });
 
-        byte[] bytes = root.ToArray(new CompoundWriterOptions { Version = CompoundFileVersion.V4 });
+        byte[] bytes = builder.ToArray();
 
         Assert.AreEqual(4, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(26)));
         Assert.AreEqual(12, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(30)));

@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.IO.Compound.Writer;
+namespace Bodu.IO.Compound;
 
 /// <summary>
 /// Specifies the compound-file format version, which determines the sector size used when writing.

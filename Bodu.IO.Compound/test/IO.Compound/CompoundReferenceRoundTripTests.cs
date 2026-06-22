@@ -5,15 +5,14 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Security.Cryptography;
-using Bodu.IO.Compound.Nodes;
 using Bodu.Test;
 using Bodu.Test.Kat;
 
-namespace Bodu.IO.Compound.Writer;
+namespace Bodu.IO.Compound;
 
 /// <summary>
-/// Verifies that loading a real compound file into the object model, re-serializing it, and reading it back preserves
-/// every stream exactly (an idempotent round-trip).
+/// Verifies that loading a real compound file into a <see cref="CompoundFileBuilder" />, re-serializing it, and reading
+/// it back preserves every stream exactly (an idempotent round-trip).
 /// </summary>
 [TestClass]
 public class CompoundReferenceRoundTripTests
@@ -27,13 +26,13 @@ public class CompoundReferenceRoundTripTests
     [DynamicData(nameof(CompoundReferenceManifest.ValidFixtures), typeof(CompoundReferenceManifest),
         DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void Save_WhenReloadingValidFixture_ShouldPreserveStreamContent(CompoundReferenceFixtureKat kat)
+    public void Load_WhenReloadingValidFixture_ShouldPreserveStreamContent(CompoundReferenceFixtureKat kat)
     {
-        CompoundStorageNode root;
+        CompoundFileBuilder builder;
         using (MemoryStream source = CompoundFixtures.OpenReference(kat.RelativePath))
-            root = CompoundStorageNode.Load(source);
+            builder = CompoundFileBuilder.Load(source);
 
-        byte[] rewritten = root.ToArray();
+        byte[] rewritten = builder.ToArray();
 
         using CompoundFile file = CompoundFile.Open(new MemoryStream(rewritten));
         Dictionary<string, string> actual = new(StringComparer.Ordinal);
