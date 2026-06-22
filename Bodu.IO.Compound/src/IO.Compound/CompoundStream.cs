@@ -17,16 +17,16 @@ namespace Bodu.IO.Compound;
 /// </para>
 /// <para>
 /// <see cref="CompoundStream" /> is a standard <see cref="Stream" /> cursor obtained from
-/// <see cref="CompoundStorage.OpenStream(string)" />, so it composes with the BCL surfaces that consume a <see cref="Stream" />
-/// — <see cref="System.IO.StreamReader" />, <see cref="System.IO.BinaryReader" />, <see cref="Stream.CopyTo(Stream)" />,
-/// and the deserializers built on top of them.
+/// <see cref="CompoundStorage.OpenStream(string)" />, so it composes with the BCL surfaces that consume a
+/// <see cref="Stream" /> — <see cref="System.IO.StreamReader" />, <see cref="System.IO.BinaryReader" />,
+/// <see cref="Stream.CopyTo(Stream)" />, and the deserializers built on top of them.
 /// </para>
 /// <para>
 /// A stream opened from a buffered compound file is backed by an in-memory payload assembled at open time. A stream
-/// opened from a streaming compound file (see
-/// <see cref="CompoundFile.Open(System.IO.Stream, bool, bool)" /> with <c>buffered: false</c>) reads
-/// its sectors on demand from the underlying source, so it never materializes the whole payload. In the streaming case
-/// the owning <see cref="CompoundFile" /> and its source must remain open for the lifetime of the cursor.
+/// opened from a streaming compound file (see <see cref="CompoundFile.Open(System.IO.Stream, bool, bool)" /> with
+/// <c>buffered: false</c>) reads its sectors on demand from the underlying source, so it never materializes the whole
+/// payload. In the streaming case the owning <see cref="CompoundFile" /> and its source must remain open for the
+/// lifetime of the cursor.
 /// </para>
 /// <para>
 /// The instance is read-only: <see cref="CanWrite" /> is always <see langword="false" /> and both
@@ -116,7 +116,9 @@ public sealed class CompoundStream
     /// <summary>
     /// Gets the metadata snapshot for this stream entry.
     /// </summary>
-    /// <returns>A <see cref="CompoundEntryInfo" /> describing the stream's name, size, class id, and timestamps.</returns>
+    /// <returns>
+    /// A <see cref="CompoundEntryInfo" /> describing the stream's name, size, class id, and timestamps.
+    /// </returns>
     public CompoundEntryInfo Stat => _info;
 
     /// <inheritdoc />

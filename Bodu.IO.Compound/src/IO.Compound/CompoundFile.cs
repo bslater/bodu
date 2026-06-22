@@ -33,8 +33,8 @@ namespace Bodu.IO.Compound;
 /// which case the stream must stay open for the instance's lifetime and reads are serialized rather than parallel.
 /// </para>
 /// <para>
-/// The current release supports read-only access (<see cref="FileAccess.Read" />). Creation and mutation
-/// (<c>Create</c>, <c>Commit</c>, and <c>Revert</c>) are reserved for a future read-write implementation.
+/// The current release supports read-only access (<see cref="FileAccess.Read" />). Creation and mutation (<c>Create</c>,
+/// <c>Commit</c>, and <c>Revert</c>) are reserved for a future read-write implementation.
 /// </para>
 /// </remarks>
 /// <example>
@@ -126,19 +126,25 @@ public sealed class CompoundFile
     /// <summary>
     /// Gets the access level the compound file was opened with.
     /// </summary>
-    /// <returns>The <see cref="FileAccess" /> supplied at open time. The current release supports read access only.</returns>
+    /// <returns>
+    /// The <see cref="FileAccess" /> supplied at open time. The current release supports read access only.
+    /// </returns>
     public FileAccess Access { get; }
 
     /// <summary>
     /// Gets a value indicating whether the compound file can be read.
     /// </summary>
-    /// <returns><see langword="true" /> when the file was opened with read access; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the file was opened with read access; otherwise <see langword="false" />.
+    /// </returns>
     public bool CanRead => (Access & FileAccess.Read) != 0;
 
     /// <summary>
     /// Gets a value indicating whether the compound file can be written.
     /// </summary>
-    /// <returns><see langword="true" /> when the file was opened with write access; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the file was opened with write access; otherwise <see langword="false" />.
+    /// </returns>
     public bool CanWrite => (Access & FileAccess.Write) != 0;
 
     /// <summary>
@@ -185,8 +191,8 @@ public sealed class CompoundFile
         OpenReadCore(stream, leaveOpen, buffered);
 
     /// <summary>
-    /// Opens a compound file over the supplied stream with BCL-style <see cref="FileMode" /> and <see cref="FileAccess" />
-    /// semantics, mirroring <c>System.IO.Packaging.Package.Open</c>.
+    /// Opens a compound file over the supplied stream with BCL-style <see cref="FileMode" /> and
+    /// <see cref="FileAccess" /> semantics, mirroring <c>System.IO.Packaging.Package.Open</c>.
     /// </summary>
     /// <param name="stream">The stream containing the compound file; read from its current position to the end.</param>
     /// <param name="mode">The file mode; the current release supports <see cref="FileMode.Open" /> only.</param>
@@ -229,9 +235,12 @@ public sealed class CompoundFile
     /// <param name="leaveOpen">Whether to leave <paramref name="stream" /> open when the instance is disposed.</param>
     /// <param name="buffered">Whether to buffer the whole file into memory at open time.</param>
     /// <returns>An open, read-only <see cref="CompoundFile" />.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="stream" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="stream" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentException">
-    /// Thrown when <paramref name="buffered" /> is <see langword="false" /> and <paramref name="stream" /> is not seekable.
+    /// Thrown when <paramref name="buffered" /> is <see langword="false" /> and <paramref name="stream" /> is not
+    /// seekable.
     /// </exception>
     private static CompoundFile OpenReadCore(Stream stream, bool leaveOpen, bool buffered)
     {

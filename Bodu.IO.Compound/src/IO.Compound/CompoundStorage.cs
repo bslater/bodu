@@ -117,7 +117,9 @@ public sealed class CompoundStorage
     /// Opens a read-only cursor over the child stream with the specified name.
     /// </summary>
     /// <param name="name">The stream name, compared using the case-insensitive compound-file relationship.</param>
-    /// <returns>A <see cref="CompoundStream" /> positioned at the start of the payload; dispose it when finished.</returns>
+    /// <returns>
+    /// A <see cref="CompoundStream" /> positioned at the start of the payload; dispose it when finished.
+    /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="name" /> is <see langword="null" />.
     /// </exception>
@@ -136,7 +138,9 @@ public sealed class CompoundStorage
     /// <param name="name">The stream name, compared using the case-insensitive compound-file relationship.</param>
     /// <param name="mode">The file mode; the current release supports <see cref="FileMode.Open" /> only.</param>
     /// <param name="access">The access level; the current release supports <see cref="FileAccess.Read" /> only.</param>
-    /// <returns>A <see cref="CompoundStream" /> positioned at the start of the payload; dispose it when finished.</returns>
+    /// <returns>
+    /// A <see cref="CompoundStream" /> positioned at the start of the payload; dispose it when finished.
+    /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="name" /> is <see langword="null" />.
     /// </exception>
@@ -187,8 +191,8 @@ public sealed class CompoundStorage
     /// </summary>
     /// <param name="name">The stream name, compared using the case-insensitive compound-file relationship.</param>
     /// <param name="stream">
-    /// When this method returns <see langword="true" />, a <see cref="CompoundStream" /> over the matching child stream;
-    /// otherwise <see langword="null" />.
+    /// When this method returns <see langword="true" />, a <see cref="CompoundStream" /> over the matching child
+    /// stream; otherwise <see langword="null" />.
     /// </param>
     /// <returns>
     /// <see langword="true" /> when a matching child stream exists; otherwise <see langword="false" />.
@@ -219,8 +223,8 @@ public sealed class CompoundStorage
     /// <param name="mode">The file mode; the current release supports <see cref="FileMode.Open" /> only.</param>
     /// <param name="access">The access level; the current release supports <see cref="FileAccess.Read" /> only.</param>
     /// <param name="stream">
-    /// When this method returns <see langword="true" />, a <see cref="CompoundStream" /> over the matching child stream;
-    /// otherwise <see langword="null" />.
+    /// When this method returns <see langword="true" />, a <see cref="CompoundStream" /> over the matching child
+    /// stream; otherwise <see langword="null" />.
     /// </param>
     /// <returns>
     /// <see langword="true" /> when a matching child stream exists; otherwise <see langword="false" />.
