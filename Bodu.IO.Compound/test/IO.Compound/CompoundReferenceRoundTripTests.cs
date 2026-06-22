@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Security.Cryptography;
+using Bodu.IO.Compound.Builders;
 using Bodu.Test;
 using Bodu.Test.Kat;
 

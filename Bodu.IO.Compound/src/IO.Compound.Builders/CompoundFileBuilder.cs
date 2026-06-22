@@ -5,9 +5,8 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Buffers;
-using Bodu.IO.Compound.Nodes;
 
-namespace Bodu.IO.Compound;
+namespace Bodu.IO.Compound.Builders;
 
 /// <summary>
 /// Authors an OLE2 / Compound File Binary container by accumulating a mutable storage/stream tree and serializing it on
@@ -15,8 +14,8 @@ namespace Bodu.IO.Compound;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Populate <see cref="Root" /> with child storages and streams using the <see cref="CompoundStorageNode" /> authoring
-/// API, then emit the container with <see cref="WriteTo(Stream)" />, <see cref="Save(string)" />, or
+/// Populate <see cref="Root" /> with child storages and streams using the <see cref="CompoundStorageBuilder" />
+/// authoring API, then emit the container with <see cref="WriteTo(Stream)" />, <see cref="Save(string)" />, or
 /// <see cref="ToArray" />.
 /// </para>
 /// <para>
@@ -42,14 +41,14 @@ namespace Bodu.IO.Compound;
 public sealed class CompoundFileBuilder
 {
     /// <summary>The options controlling the serialized layout.</summary>
-    private readonly CompoundFileBuilderOptions _options;
+    private readonly CompoundBuildOptions _options;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CompoundFileBuilder" /> class with an empty root storage.
     /// </summary>
     /// <param name="options">The options controlling the output layout.</param>
-    public CompoundFileBuilder(CompoundFileBuilderOptions options = default)
-        : this(CompoundStorageNode.CreateRoot(), options)
+    public CompoundFileBuilder(CompoundBuildOptions options = default)
+        : this(CompoundStorageBuilder.CreateRoot(), options)
     {
     }
 
@@ -58,7 +57,7 @@ public sealed class CompoundFileBuilder
     /// </summary>
     /// <param name="root">The root storage the builder serializes.</param>
     /// <param name="options">The options controlling the output layout.</param>
-    private CompoundFileBuilder(CompoundStorageNode root, CompoundFileBuilderOptions options)
+    private CompoundFileBuilder(CompoundStorageBuilder root, CompoundBuildOptions options)
     {
         Root = root;
         _options = options;
@@ -67,8 +66,8 @@ public sealed class CompoundFileBuilder
     /// <summary>
     /// Gets the root storage that accumulates the authored hierarchy.
     /// </summary>
-    /// <returns>The mutable root <see cref="CompoundStorageNode" /> to populate before serializing.</returns>
-    public CompoundStorageNode Root { get; }
+    /// <returns>The mutable root <see cref="CompoundStorageBuilder" /> to populate before serializing.</returns>
+    public CompoundStorageBuilder Root { get; }
 
     /// <summary>
     /// Creates a builder whose root storage mirrors the contents of a compound file read from a stream.
@@ -82,7 +81,7 @@ public sealed class CompoundFileBuilder
     /// <exception cref="CompoundFileFormatException">
     /// Thrown when the stream is not a well-formed compound file.
     /// </exception>
-    public static CompoundFileBuilder Load(Stream source, CompoundFileBuilderOptions options = default)
+    public static CompoundFileBuilder Load(Stream source, CompoundBuildOptions options = default)
     {
         ThrowHelper.ThrowIfNull(source);
 
@@ -106,11 +105,11 @@ public sealed class CompoundFileBuilder
     /// Thrown when <paramref name="file" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="CompoundFileFormatException">Thrown when a stream's sector chain is malformed.</exception>
-    public static CompoundFileBuilder FromFile(CompoundFile file, bool lazy = false, CompoundFileBuilderOptions options = default)
+    public static CompoundFileBuilder FromFile(CompoundFile file, bool lazy = false, CompoundBuildOptions options = default)
     {
         ThrowHelper.ThrowIfNull(file);
 
-        CompoundStorageNode root = CompoundStorageNode.CreateRoot();
+        CompoundStorageBuilder root = CompoundStorageBuilder.CreateRoot();
         CopyMetadata(root, file.RootStorage.Stat);
         Populate(root, file.RootStorage, lazy);
         return new CompoundFileBuilder(root, options);
@@ -176,12 +175,12 @@ public sealed class CompoundFileBuilder
     /// <param name="target">The mutable storage receiving the children.</param>
     /// <param name="source">The read-only storage to copy.</param>
     /// <param name="lazy">Whether stream nodes defer reading their payloads from the source file.</param>
-    private static void Populate(CompoundStorageNode target, CompoundStorage source, bool lazy)
+    private static void Populate(CompoundStorageBuilder target, CompoundStorage source, bool lazy)
     {
         foreach (CompoundStreamEntry entry in source.EnumerateStreams())
         {
             CompoundStreamEntry stream = entry;
-            CompoundStreamNode node = lazy
+            CompoundStreamBuilder node = lazy
                 ? target.AddStream(stream.Name, () => stream.Open(), stream.Length)
                 : target.AddStream(stream.Name, stream.ReadAllBytes());
             CopyMetadata(node, stream.Stat);
@@ -189,7 +188,7 @@ public sealed class CompoundFileBuilder
 
         foreach (CompoundStorage child in source.EnumerateStorages())
         {
-            CompoundStorageNode node = target.AddStorage(child.Name);
+            CompoundStorageBuilder node = target.AddStorage(child.Name);
             CopyMetadata(node, child.Stat);
             Populate(node, child, lazy);
         }
@@ -200,7 +199,7 @@ public sealed class CompoundFileBuilder
     /// </summary>
     /// <param name="node">The node receiving the metadata.</param>
     /// <param name="stat">The source metadata snapshot.</param>
-    private static void CopyMetadata(CompoundNode node, CompoundEntryInfo stat)
+    private static void CopyMetadata(CompoundEntryBuilder node, CompoundEntryInfo stat)
     {
         node.ClassId = stat.ClassId;
         node.StateBits = stat.StateBits;

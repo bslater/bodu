@@ -144,63 +144,63 @@ namespace Bodu.IO.Compound {
         /// <summary>
         ///   Looks up a localized string similar to The compound node is not a storage..
         /// </summary>
-        internal static string Op_Invalid_CompoundNodeNotStorage {
+        internal static string Op_Invalid_CompoundEntryBuilderNotStorage {
             get {
-                return ResourceManager.GetString("Op_Invalid_CompoundNodeNotStorage", resourceCulture);
+                return ResourceManager.GetString("Op_Invalid_CompoundEntryBuilderNotStorage", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to The compound node is not a stream..
         /// </summary>
-        internal static string Op_Invalid_CompoundNodeNotStream {
+        internal static string Op_Invalid_CompoundEntryBuilderNotStream {
             get {
-                return ResourceManager.GetString("Op_Invalid_CompoundNodeNotStream", resourceCulture);
+                return ResourceManager.GetString("Op_Invalid_CompoundEntryBuilderNotStream", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to The compound node already belongs to another storage....
         /// </summary>
-        internal static string Op_Invalid_CompoundNodeAlreadyHasParent {
+        internal static string Op_Invalid_CompoundEntryBuilderAlreadyHasParent {
             get {
-                return ResourceManager.GetString("Op_Invalid_CompoundNodeAlreadyHasParent", resourceCulture);
+                return ResourceManager.GetString("Op_Invalid_CompoundEntryBuilderAlreadyHasParent", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to The entry name must not be empty or white space..
         /// </summary>
-        internal static string Arg_Invalid_CompoundNodeNameEmpty {
+        internal static string Arg_Invalid_CompoundEntryBuilderNameEmpty {
             get {
-                return ResourceManager.GetString("Arg_Invalid_CompoundNodeNameEmpty", resourceCulture);
+                return ResourceManager.GetString("Arg_Invalid_CompoundEntryBuilderNameEmpty", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to The entry name '{0}' exceeds the maximum length of 31 characters..
         /// </summary>
-        internal static string Arg_Invalid_CompoundNodeNameTooLong {
+        internal static string Arg_Invalid_CompoundEntryBuilderNameTooLong {
             get {
-                return ResourceManager.GetString("Arg_Invalid_CompoundNodeNameTooLong", resourceCulture);
+                return ResourceManager.GetString("Arg_Invalid_CompoundEntryBuilderNameTooLong", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to The entry name '{0}' contains a character that is not permitted....
         /// </summary>
-        internal static string Arg_Invalid_CompoundNodeNameInvalidCharacter {
+        internal static string Arg_Invalid_CompoundEntryBuilderNameInvalidCharacter {
             get {
-                return ResourceManager.GetString("Arg_Invalid_CompoundNodeNameInvalidCharacter", resourceCulture);
+                return ResourceManager.GetString("Arg_Invalid_CompoundEntryBuilderNameInvalidCharacter", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to The storage already contains a child named '{0}'..
         /// </summary>
-        internal static string Op_Invalid_CompoundNodeDuplicateName {
+        internal static string Op_Invalid_CompoundEntryBuilderDuplicateName {
             get {
-                return ResourceManager.GetString("Op_Invalid_CompoundNodeDuplicateName", resourceCulture);
+                return ResourceManager.GetString("Op_Invalid_CompoundEntryBuilderDuplicateName", resourceCulture);
             }
         }
 

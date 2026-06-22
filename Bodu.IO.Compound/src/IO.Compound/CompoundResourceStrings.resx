@@ -85,25 +85,25 @@
   <data name="Arg_Invalid_CompoundStreamNotSeekable" xml:space="preserve">
     <value>The stream must be seekable to test for a compound file signature.</value>
   </data>
-  <data name="Op_Invalid_CompoundNodeNotStorage" xml:space="preserve">
+  <data name="Op_Invalid_CompoundEntryBuilderNotStorage" xml:space="preserve">
     <value>The compound node is not a storage.</value>
   </data>
-  <data name="Op_Invalid_CompoundNodeNotStream" xml:space="preserve">
+  <data name="Op_Invalid_CompoundEntryBuilderNotStream" xml:space="preserve">
     <value>The compound node is not a stream.</value>
   </data>
-  <data name="Op_Invalid_CompoundNodeAlreadyHasParent" xml:space="preserve">
+  <data name="Op_Invalid_CompoundEntryBuilderAlreadyHasParent" xml:space="preserve">
     <value>The compound node already belongs to another storage; remove or clone it before adding it elsewhere.</value>
   </data>
-  <data name="Arg_Invalid_CompoundNodeNameEmpty" xml:space="preserve">
+  <data name="Arg_Invalid_CompoundEntryBuilderNameEmpty" xml:space="preserve">
     <value>The entry name must not be empty or white space.</value>
   </data>
-  <data name="Arg_Invalid_CompoundNodeNameTooLong" xml:space="preserve">
+  <data name="Arg_Invalid_CompoundEntryBuilderNameTooLong" xml:space="preserve">
     <value>The entry name '{0}' exceeds the maximum length of 31 characters.</value>
   </data>
-  <data name="Arg_Invalid_CompoundNodeNameInvalidCharacter" xml:space="preserve">
+  <data name="Arg_Invalid_CompoundEntryBuilderNameInvalidCharacter" xml:space="preserve">
     <value>The entry name '{0}' contains a character that is not permitted in a compound file ('/', '\', ':', or '!').</value>
   </data>
-  <data name="Op_Invalid_CompoundNodeDuplicateName" xml:space="preserve">
+  <data name="Op_Invalid_CompoundEntryBuilderDuplicateName" xml:space="preserve">
     <value>The storage already contains a child named '{0}'.</value>
   </data>
   <data name="Op_Invalid_CompoundBuilderMaxDepthExceeded" xml:space="preserve">

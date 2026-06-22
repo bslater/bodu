@@ -1,10 +1,10 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CompoundNodeOptions.cs" company="Bodu Pty. Ltd.">
+// <copyright file="CompoundStorageBuilderOptions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.IO.Compound.Nodes;
+namespace Bodu.IO.Compound.Builders;
 
 /// <summary>
 /// Specifies options that control the behavior of the mutable compound-file object model.
@@ -16,7 +16,7 @@ namespace Bodu.IO.Compound.Nodes;
 /// <see cref="NameComparisonCaseSensitive" /> to <see langword="true" /> only when a case-sensitive in-memory model is
 /// explicitly required.
 /// </remarks>
-public struct CompoundNodeOptions
+public struct CompoundStorageBuilderOptions
 {
     /// <summary>
     /// Gets or sets a value indicating whether child names are compared case-sensitively.

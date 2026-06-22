@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.IO.Compound.Builders;
 using Bodu.Test;
 
 namespace Bodu.IO.Compound;
@@ -77,7 +78,7 @@ public partial class CompoundFileBuilderTests
     [DataRow(CompoundFileVersion.V4)]
     public void WriteTo_WhenMixedTree_ShouldMatchArrayPathByteForByte(CompoundFileVersion version)
     {
-        var options = new CompoundFileBuilderOptions { Version = version };
+        var options = new CompoundBuildOptions { Version = version };
 
         byte[] streamed;
         using (MemoryStream destination = new())
@@ -128,7 +129,7 @@ public partial class CompoundFileBuilderTests
     /// </summary>
     /// <param name="options">The options controlling the output layout.</param>
     /// <returns>The populated builder.</returns>
-    private static CompoundFileBuilder BuildMixedTree(CompoundFileBuilderOptions options = default)
+    private static CompoundFileBuilder BuildMixedTree(CompoundBuildOptions options = default)
     {
         var builder = new CompoundFileBuilder(options);
         _ = builder.Root.AddStream("InlineBig", CreatePayload(6000));

@@ -5,14 +5,14 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Security.Cryptography;
-using Bodu.IO.Compound.Nodes;
+using Bodu.IO.Compound.Builders;
 using Bodu.Test;
 
 namespace Bodu.IO.Compound;
 
 /// <summary>
 /// Verifies the lazy (deferred) load path of
-/// <see cref="CompoundFileBuilder.FromFile(CompoundFile, bool, CompoundFileBuilderOptions)" />.
+/// <see cref="CompoundFileBuilder.FromFile(CompoundFile, bool, CompoundBuildOptions)" />.
 /// </summary>
 [TestClass]
 public class CompoundFileBuilderLazyLoadTests
@@ -26,10 +26,10 @@ public class CompoundFileBuilderLazyLoadTests
         using MemoryStream source = CompoundFixtures.OpenReference("valid/clean.dat");
         using CompoundFile file = CompoundFile.Open(source, buffered: false);
 
-        CompoundStorageNode root = CompoundFileBuilder.FromFile(file, lazy: true).Root;
+        CompoundStorageBuilder root = CompoundFileBuilder.FromFile(file, lazy: true).Root;
 
         bool sawStream = false;
-        foreach (CompoundStreamNode stream in EnumerateStreams(root))
+        foreach (CompoundStreamBuilder stream in EnumerateStreams(root))
         {
             sawStream = true;
             Assert.IsTrue(stream.IsDeferred, stream.Name);
@@ -101,14 +101,14 @@ public class CompoundFileBuilderLazyLoadTests
     /// </summary>
     /// <param name="storage">The storage to walk.</param>
     /// <returns>The stream nodes.</returns>
-    private static IEnumerable<CompoundStreamNode> EnumerateStreams(CompoundStorageNode storage)
+    private static IEnumerable<CompoundStreamBuilder> EnumerateStreams(CompoundStorageBuilder storage)
     {
-        foreach (CompoundStreamNode stream in storage.EnumerateStreams())
+        foreach (CompoundStreamBuilder stream in storage.EnumerateStreams())
             yield return stream;
 
-        foreach (CompoundStorageNode child in storage.EnumerateStorages())
+        foreach (CompoundStorageBuilder child in storage.EnumerateStorages())
         {
-            foreach (CompoundStreamNode stream in EnumerateStreams(child))
+            foreach (CompoundStreamBuilder stream in EnumerateStreams(child))
                 yield return stream;
         }
     }

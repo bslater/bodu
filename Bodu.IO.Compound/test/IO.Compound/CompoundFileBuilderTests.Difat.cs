@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Security.Cryptography;
+using Bodu.IO.Compound.Builders;
 using Bodu.Test;
 
 namespace Bodu.IO.Compound;
@@ -25,7 +26,7 @@ public partial class CompoundFileBuilderTests
         new Random(1234).NextBytes(payload);
         string expected = Convert.ToHexString(SHA256.HashData(payload)).ToLowerInvariant();
 
-        var builder = new CompoundFileBuilder(new CompoundFileBuilderOptions { Version = CompoundFileVersion.V3 });
+        var builder = new CompoundFileBuilder(new CompoundBuildOptions { Version = CompoundFileVersion.V3 });
         _ = builder.Root.AddStream("Big", payload);
 
         byte[] bytes = builder.ToArray();

@@ -5,7 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Security.Cryptography;
-using Bodu.IO.Compound.Nodes;
+using Bodu.IO.Compound.Builders;
 using Bodu.Test;
 using Bodu.Test.Kat;
 
@@ -52,7 +52,7 @@ public partial class CompoundFileBuilderTests
     public void ToArray_WhenStreamOfSize_ShouldRoundTripExactly(CompoundFileBuilderSizeKat kat)
     {
         byte[] payload = CreatePayload(kat.Size);
-        var builder = new CompoundFileBuilder(new CompoundFileBuilderOptions { Version = kat.Version });
+        var builder = new CompoundFileBuilder(new CompoundBuildOptions { Version = kat.Version });
         _ = builder.Root.AddStream("Data", payload);
 
         byte[] bytes = builder.ToArray();
@@ -91,7 +91,7 @@ public partial class CompoundFileBuilderTests
     public void ToArray_WhenDeeplyNested_ShouldRoundTrip()
     {
         var builder = new CompoundFileBuilder();
-        CompoundStorageNode current = builder.Root;
+        CompoundStorageBuilder current = builder.Root;
         for (int depth = 0; depth < 8; depth++)
             current = current.AddStorage($"Level{depth}");
 

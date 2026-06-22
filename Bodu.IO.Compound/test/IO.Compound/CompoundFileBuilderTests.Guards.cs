@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.IO.Compound.Builders;
+
 namespace Bodu.IO.Compound;
 
 public partial class CompoundFileBuilderTests
@@ -15,7 +17,7 @@ public partial class CompoundFileBuilderTests
     [TestMethod]
     public void ToArray_WhenNestingExceedsMaxDepth_ShouldThrowCompoundFileSerializationException()
     {
-        var builder = new CompoundFileBuilder(new CompoundFileBuilderOptions { MaxDepth = 2 });
+        var builder = new CompoundFileBuilder(new CompoundBuildOptions { MaxDepth = 2 });
         _ = builder.Root.AddStorage("A").AddStorage("B").AddStorage("C");
 
         _ = Assert.ThrowsExactly<CompoundFileSerializationException>(() => builder.ToArray());

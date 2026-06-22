@@ -50,14 +50,14 @@ if (file.TryGetSummaryInformation(out var summary))
   `OlePropertyValue` (PROPVARIANT) plus the strongly-typed `SummaryInformation` /
   `DocumentSummaryInformation` views and `…Builder` authors, including user-defined custom properties.
 - A single authoring surface, `CompoundFileBuilder`: populate its `Root` with a
-  JsonNode-style tree of `CompoundStorageNode` / `CompoundStreamNode` children (or
+  JsonNode-style tree of `CompoundStorageBuilder` / `CompoundStreamBuilder` children (or
   `CompoundFileBuilder.Load` an existing file into one), then `WriteTo` / `Save` / `ToArray`
   to a conforming container (v3 or v4). Output is verified byte-for-byte and cross-checked
   against the independent `olefile` and OpenMcdf parsers.
 - **Bounded-memory streaming writes**: `CompoundFileBuilder.WriteTo(Stream)` emits one sector
   at a time and large payloads can be sourced on demand via
-  `CompoundStreamNode.CreateFromFile(name, path)` or `Create(name, Func<Stream>, length)` (and
-  the matching `CompoundStorageNode.AddStreamFromFile`), so multi-gigabyte containers serialize
+  `CompoundStreamBuilder.CreateFromFile(name, path)` or `Create(name, Func<Stream>, length)` (and
+  the matching `CompoundStorageBuilder.AddStreamFromFile`), so multi-gigabyte containers serialize
   without being buffered whole in memory.
 - Stable, message-independent failure classification through
   `CompoundFileFormatException.Category` (`CompoundFileError`) and a
@@ -65,6 +65,7 @@ if (file.TryGetSummaryInformation(out var summary))
 
 ```csharp
 using Bodu.IO.Compound;
+using Bodu.IO.Compound.Builders;
 using Bodu.IO.Compound.PropertySets;
 
 var builder = new CompoundFileBuilder();

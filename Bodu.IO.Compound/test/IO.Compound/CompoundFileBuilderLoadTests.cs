@@ -5,14 +5,14 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Security.Cryptography;
-using Bodu.IO.Compound.Nodes;
+using Bodu.IO.Compound.Builders;
 using Bodu.Test;
 using Bodu.Test.Kat;
 
 namespace Bodu.IO.Compound;
 
 /// <summary>
-/// Verifies that <see cref="CompoundFileBuilder.Load(Stream, CompoundFileBuilderOptions)" /> materializes a compound
+/// Verifies that <see cref="CompoundFileBuilder.Load(Stream, CompoundBuildOptions)" /> materializes a compound
 /// file into an equivalent mutable object model.
 /// </summary>
 [TestClass]
@@ -27,10 +27,10 @@ public class CompoundFileBuilderLoadTests
     {
         using MemoryStream source = CompoundFixtures.OpenReference("valid/clean.dat");
 
-        CompoundStorageNode root = CompoundFileBuilder.Load(source).Root;
+        CompoundStorageBuilder root = CompoundFileBuilder.Load(source).Root;
 
         Assert.AreEqual(CompoundEntryType.RootStorage, root.EntryType);
-        Assert.IsTrue(root.TryGetStorage("Storage 1", out CompoundStorageNode? storage));
+        Assert.IsTrue(root.TryGetStorage("Storage 1", out CompoundStorageBuilder? storage));
         Assert.IsTrue(storage.TryGetStream("Stream 1", out _));
     }
 
@@ -47,7 +47,7 @@ public class CompoundFileBuilderLoadTests
     public void Load_WhenValidFixture_ShouldMatchReaderStreamHashes(CompoundReferenceFixtureKat kat)
     {
         using MemoryStream source = CompoundFixtures.OpenReference(kat.RelativePath);
-        CompoundStorageNode root = CompoundFileBuilder.Load(source).Root;
+        CompoundStorageBuilder root = CompoundFileBuilder.Load(source).Root;
 
         Dictionary<string, string> actual = new(StringComparer.Ordinal);
         Collect(root, string.Empty, actual);
@@ -68,15 +68,15 @@ public class CompoundFileBuilderLoadTests
     /// <param name="storage">The storage to walk.</param>
     /// <param name="prefix">The path prefix for the current storage.</param>
     /// <param name="hashes">The map receiving path-to-hash entries.</param>
-    private static void Collect(CompoundStorageNode storage, string prefix, Dictionary<string, string> hashes)
+    private static void Collect(CompoundStorageBuilder storage, string prefix, Dictionary<string, string> hashes)
     {
-        foreach (CompoundStreamNode stream in storage.EnumerateStreams())
+        foreach (CompoundStreamBuilder stream in storage.EnumerateStreams())
         {
             string path = prefix.Length == 0 ? stream.Name : prefix + "/" + stream.Name;
             hashes[path] = Convert.ToHexString(SHA256.HashData(stream.Content.Span)).ToLowerInvariant();
         }
 
-        foreach (CompoundStorageNode child in storage.EnumerateStorages())
+        foreach (CompoundStorageBuilder child in storage.EnumerateStorages())
             Collect(child, prefix.Length == 0 ? child.Name : prefix + "/" + child.Name, hashes);
     }
 }

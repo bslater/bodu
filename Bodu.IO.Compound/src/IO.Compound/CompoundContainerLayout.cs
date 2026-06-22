@@ -8,7 +8,7 @@ using System.Buffers;
 using System.Buffers.Binary;
 using System.Globalization;
 using System.Text;
-using Bodu.IO.Compound.Nodes;
+using Bodu.IO.Compound.Builders;
 
 namespace Bodu.IO.Compound;
 
@@ -55,7 +55,7 @@ internal static class CompoundContainerLayout
     /// <param name="options">The options controlling the output layout.</param>
     /// <returns>The complete compound-file content.</returns>
     /// <exception cref="CompoundFileSerializationException">Thrown when the model cannot be represented.</exception>
-    internal static byte[] Write(CompoundStorageNode root, CompoundFileBuilderOptions options)
+    internal static byte[] Write(CompoundStorageBuilder root, CompoundBuildOptions options)
     {
         using MemoryStream buffer = new();
         WriteTo(buffer, root, options);
@@ -69,7 +69,7 @@ internal static class CompoundContainerLayout
     /// <param name="root">The root storage to serialize.</param>
     /// <param name="options">The options controlling the output layout.</param>
     /// <exception cref="CompoundFileSerializationException">Thrown when the model cannot be represented.</exception>
-    internal static void WriteTo(Stream destination, CompoundStorageNode root, CompoundFileBuilderOptions options)
+    internal static void WriteTo(Stream destination, CompoundStorageBuilder root, CompoundBuildOptions options)
     {
         int sectorSize = options.SectorSize;
         int entriesPerSector = sectorSize / 4;
@@ -166,7 +166,7 @@ internal static class CompoundContainerLayout
     /// <param name="root">The root storage.</param>
     /// <param name="maxDepth">The maximum permitted nesting depth.</param>
     /// <returns>The entry list with the root at index 0.</returns>
-    private static List<Entry> Flatten(CompoundStorageNode root, int maxDepth)
+    private static List<Entry> Flatten(CompoundStorageBuilder root, int maxDepth)
     {
         List<Entry> entries = new() { Entry.FromNode(root, CompoundEntryType.RootStorage) };
         AssignChildren(root, 0, 1, maxDepth, entries);
@@ -182,9 +182,9 @@ internal static class CompoundContainerLayout
     /// <param name="maxDepth">The maximum permitted nesting depth.</param>
     /// <param name="entries">The entry list being populated.</param>
     /// <exception cref="CompoundFileSerializationException">Thrown when the nesting depth is exceeded.</exception>
-    private static void AssignChildren(CompoundStorageNode storage, int sid, int depth, int maxDepth, List<Entry> entries)
+    private static void AssignChildren(CompoundStorageBuilder storage, int sid, int depth, int maxDepth, List<Entry> entries)
     {
-        List<CompoundNode> children = storage.Values.ToList();
+        List<CompoundEntryBuilder> children = storage.Values.ToList();
         if (children.Count == 0)
             return;
 
@@ -197,9 +197,9 @@ internal static class CompoundContainerLayout
         children.Sort(static (a, b) => CompoundNameComparer.Instance.Compare(a.Name, b.Name));
 
         List<int> childSids = new(children.Count);
-        foreach (CompoundNode child in children)
+        foreach (CompoundEntryBuilder child in children)
         {
-            CompoundEntryType type = child is CompoundStorageNode ? CompoundEntryType.Storage : CompoundEntryType.Stream;
+            CompoundEntryType type = child is CompoundStorageBuilder ? CompoundEntryType.Storage : CompoundEntryType.Stream;
             entries.Add(Entry.FromNode(child, type));
             childSids.Add(entries.Count - 1);
         }
@@ -208,7 +208,7 @@ internal static class CompoundContainerLayout
 
         for (int i = 0; i < children.Count; i++)
         {
-            if (children[i] is CompoundStorageNode childStorage)
+            if (children[i] is CompoundStorageBuilder childStorage)
                 AssignChildren(childStorage, childSids[i], depth + 1, maxDepth, entries);
         }
     }
@@ -504,7 +504,7 @@ internal static class CompoundContainerLayout
     /// </exception>
     private static void CopyContent(SectorWriter writer, Entry entry)
     {
-        CompoundStreamNode node = entry.StreamNode!;
+        CompoundStreamBuilder node = entry.StreamNode!;
         if (!node.IsDeferred)
         {
             writer.WriteBytes(node.Content.Span);
@@ -679,7 +679,7 @@ internal static class CompoundContainerLayout
         /// <summary>
         /// Gets or sets the source stream node for a stream entry.
         /// </summary>
-        public CompoundStreamNode? StreamNode { get; set; }
+        public CompoundStreamBuilder? StreamNode { get; set; }
 
         /// <summary>
         /// Gets or sets the payload size, in bytes.
@@ -722,7 +722,7 @@ internal static class CompoundContainerLayout
         /// <param name="node">The source node.</param>
         /// <param name="type">The directory entry type to assign.</param>
         /// <returns>The build entry.</returns>
-        public static Entry FromNode(CompoundNode node, CompoundEntryType type)
+        public static Entry FromNode(CompoundEntryBuilder node, CompoundEntryType type)
         {
             var entry = new Entry
             {
@@ -734,7 +734,7 @@ internal static class CompoundContainerLayout
                 ModifiedFileTime = ToFileTime(node.ModifiedTime),
             };
 
-            if (node is CompoundStreamNode stream)
+            if (node is CompoundStreamBuilder stream)
             {
                 entry.StreamNode = stream;
                 entry.Size = stream.Length;

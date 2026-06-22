@@ -6,6 +6,7 @@
 
 using System.Diagnostics;
 using System.Security.Cryptography;
+using Bodu.IO.Compound.Builders;
 using Bodu.Test;
 
 namespace Bodu.IO.Compound;
@@ -53,7 +54,7 @@ public class CompoundOleFileCrossValidationTests
             ["Storage 1/Nested"] = [9, 9, 9],
         };
 
-        var builder = new CompoundFileBuilder(new CompoundFileBuilderOptions { Version = version });
+        var builder = new CompoundFileBuilder(new CompoundBuildOptions { Version = version });
         _ = builder.Root.AddStream("Small", streams["Small"]);
         _ = builder.Root.AddStream("Big", streams["Big"]);
         _ = builder.Root.AddStorage("Storage 1").AddStream("Nested", streams["Storage 1/Nested"]);

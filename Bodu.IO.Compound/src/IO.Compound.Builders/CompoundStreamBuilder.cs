@@ -1,12 +1,12 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CompoundStreamNode.cs" company="Bodu Pty. Ltd.">
+// <copyright file="CompoundStreamBuilder.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Text;
 
-namespace Bodu.IO.Compound.Nodes;
+namespace Bodu.IO.Compound.Builders;
 
 /// <summary>
 /// Represents a stream entry in a mutable compound-file object model — a named, file-like node carrying an opaque byte
@@ -24,8 +24,8 @@ namespace Bodu.IO.Compound.Nodes;
 /// materializes it.
 /// </para>
 /// </remarks>
-public sealed class CompoundStreamNode
-    : CompoundNode
+public sealed class CompoundStreamBuilder
+    : CompoundEntryBuilder
 {
     /// <summary>The in-memory payload, used when the node is not deferred.</summary>
     private ReadOnlyMemory<byte> _content;
@@ -37,23 +37,23 @@ public sealed class CompoundStreamNode
     private long _length;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CompoundStreamNode" /> class holding an in-memory payload.
+    /// Initializes a new instance of the <see cref="CompoundStreamBuilder" /> class holding an in-memory payload.
     /// </summary>
     /// <param name="name">The entry name.</param>
     /// <param name="content">The initial payload.</param>
-    private CompoundStreamNode(string name, ReadOnlyMemory<byte> content)
+    private CompoundStreamBuilder(string name, ReadOnlyMemory<byte> content)
     {
         Name = name;
         _content = content;
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CompoundStreamNode" /> class backed by a deferred source.
+    /// Initializes a new instance of the <see cref="CompoundStreamBuilder" /> class backed by a deferred source.
     /// </summary>
     /// <param name="name">The entry name.</param>
     /// <param name="open">The factory that opens the payload stream.</param>
     /// <param name="length">The declared payload length, in bytes.</param>
-    private CompoundStreamNode(string name, Func<Stream> open, long length)
+    private CompoundStreamBuilder(string name, Func<Stream> open, long length)
     {
         Name = name;
         _open = open;
@@ -108,15 +108,15 @@ public sealed class CompoundStreamNode
     /// </summary>
     /// <param name="name">The entry name.</param>
     /// <param name="content">The payload bytes.</param>
-    /// <returns>A new <see cref="CompoundStreamNode" />.</returns>
+    /// <returns>A new <see cref="CompoundStreamBuilder" />.</returns>
     /// <exception cref="CompoundFileSerializationException">
     /// Thrown when <paramref name="name" /> is invalid.
     /// </exception>
-    public static CompoundStreamNode Create(string name, ReadOnlyMemory<byte> content)
+    public static CompoundStreamBuilder Create(string name, ReadOnlyMemory<byte> content)
     {
         ValidateName(name);
 
-        return new CompoundStreamNode(name, content);
+        return new CompoundStreamBuilder(name, content);
     }
 
     /// <summary>
@@ -125,14 +125,14 @@ public sealed class CompoundStreamNode
     /// <param name="name">The entry name.</param>
     /// <param name="text">The text to encode.</param>
     /// <param name="encoding">The encoding to apply; defaults to UTF-8.</param>
-    /// <returns>A new <see cref="CompoundStreamNode" />.</returns>
+    /// <returns>A new <see cref="CompoundStreamBuilder" />.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="text" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="CompoundFileSerializationException">
     /// Thrown when <paramref name="name" /> is invalid.
     /// </exception>
-    public static CompoundStreamNode Create(string name, string text, Encoding? encoding = null)
+    public static CompoundStreamBuilder Create(string name, string text, Encoding? encoding = null)
     {
         ThrowHelper.ThrowIfNull(text);
 
@@ -144,14 +144,14 @@ public sealed class CompoundStreamNode
     /// </summary>
     /// <param name="name">The entry name.</param>
     /// <param name="source">The stream to read to its end.</param>
-    /// <returns>A new <see cref="CompoundStreamNode" />.</returns>
+    /// <returns>A new <see cref="CompoundStreamBuilder" />.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="source" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="CompoundFileSerializationException">
     /// Thrown when <paramref name="name" /> is invalid.
     /// </exception>
-    public static CompoundStreamNode Create(string name, Stream source)
+    public static CompoundStreamBuilder Create(string name, Stream source)
     {
         ThrowHelper.ThrowIfNull(source);
 
@@ -166,7 +166,7 @@ public sealed class CompoundStreamNode
     /// <param name="name">The entry name.</param>
     /// <param name="openRead">A factory that opens a readable stream over the payload each time it is invoked.</param>
     /// <param name="length">The payload length, in bytes.</param>
-    /// <returns>A new deferred <see cref="CompoundStreamNode" />.</returns>
+    /// <returns>A new deferred <see cref="CompoundStreamBuilder" />.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="openRead" /> is <see langword="null" />.
     /// </exception>
@@ -174,13 +174,13 @@ public sealed class CompoundStreamNode
     /// <exception cref="CompoundFileSerializationException">
     /// Thrown when <paramref name="name" /> is invalid.
     /// </exception>
-    public static CompoundStreamNode Create(string name, Func<Stream> openRead, long length)
+    public static CompoundStreamBuilder Create(string name, Func<Stream> openRead, long length)
     {
         ValidateName(name);
         ThrowHelper.ThrowIfNull(openRead);
         ThrowHelper.ThrowIfNegative(length);
 
-        return new CompoundStreamNode(name, openRead, length);
+        return new CompoundStreamBuilder(name, openRead, length);
     }
 
     /// <summary>
@@ -188,20 +188,20 @@ public sealed class CompoundStreamNode
     /// </summary>
     /// <param name="name">The entry name.</param>
     /// <param name="path">The path of the file providing the payload.</param>
-    /// <returns>A new deferred <see cref="CompoundStreamNode" />.</returns>
+    /// <returns>A new deferred <see cref="CompoundStreamBuilder" />.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="path" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="CompoundFileSerializationException">
     /// Thrown when <paramref name="name" /> is invalid.
     /// </exception>
-    public static CompoundStreamNode CreateFromFile(string name, string path)
+    public static CompoundStreamBuilder CreateFromFile(string name, string path)
     {
         ValidateName(name);
         ThrowHelper.ThrowIfNull(path);
 
         long length = new FileInfo(path).Length;
-        return new CompoundStreamNode(name, () => File.OpenRead(path), length);
+        return new CompoundStreamBuilder(name, () => File.OpenRead(path), length);
     }
 
     /// <summary>
@@ -227,11 +227,11 @@ public sealed class CompoundStreamNode
     }
 
     /// <inheritdoc />
-    public override CompoundNode DeepClone()
+    public override CompoundEntryBuilder DeepClone()
     {
-        CompoundStreamNode clone = _open is not null
-            ? new CompoundStreamNode(Name, _open, _length)
-            : new CompoundStreamNode(Name, _content.ToArray());
+        CompoundStreamBuilder clone = _open is not null
+            ? new CompoundStreamBuilder(Name, _open, _length)
+            : new CompoundStreamBuilder(Name, _content.ToArray());
 
         clone.ClassId = ClassId;
         clone.CreationTime = CreationTime;
@@ -246,7 +246,7 @@ public sealed class CompoundStreamNode
     /// <returns>A readable stream over the payload.</returns>
     /// <exception cref="InvalidOperationException">Thrown when the node is in-memory.</exception>
     internal Stream OpenContentStream() =>
-        _open?.Invoke() ?? throw new InvalidOperationException(CompoundResourceStrings.Op_Invalid_CompoundNodeNotStream);
+        _open?.Invoke() ?? throw new InvalidOperationException(CompoundResourceStrings.Op_Invalid_CompoundEntryBuilderNotStream);
 
     /// <summary>
     /// Reads a stream fully into memory, up to the declared length.

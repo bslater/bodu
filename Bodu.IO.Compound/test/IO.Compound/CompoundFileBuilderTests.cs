@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.IO.Compound.Nodes;
+using Bodu.IO.Compound.Builders;
 using Bodu.Test;
 
 namespace Bodu.IO.Compound;
@@ -24,7 +24,7 @@ public partial class CompoundFileBuilderTests
     {
         var builder = new CompoundFileBuilder();
         _ = builder.Root.AddStream("Workbook", new byte[] { 0x09, 0x08, 0x10, 0x00 });
-        CompoundStorageNode storage = builder.Root.AddStorage("Storage 1");
+        CompoundStorageBuilder storage = builder.Root.AddStorage("Storage 1");
         _ = storage.AddStream("Nested", new byte[] { 1, 2, 3 });
 
         byte[] bytes = builder.ToArray();

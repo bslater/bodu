@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Buffers.Binary;
+using Bodu.IO.Compound.Builders;
 
 namespace Bodu.IO.Compound;
 
@@ -19,7 +20,7 @@ public partial class CompoundFileBuilderTests
     [TestMethod]
     public void ToArray_WhenVersion3_ShouldWriteExpectedHeaderAndAlignment()
     {
-        var builder = new CompoundFileBuilder(new CompoundFileBuilderOptions { Version = CompoundFileVersion.V3 });
+        var builder = new CompoundFileBuilder(new CompoundBuildOptions { Version = CompoundFileVersion.V3 });
         _ = builder.Root.AddStream("Data", new byte[] { 1, 2, 3 });
 
         byte[] bytes = builder.ToArray();
@@ -39,7 +40,7 @@ public partial class CompoundFileBuilderTests
     [TestMethod]
     public void ToArray_WhenVersion4_ShouldWriteExpectedHeaderAndAlignment()
     {
-        var builder = new CompoundFileBuilder(new CompoundFileBuilderOptions { Version = CompoundFileVersion.V4 });
+        var builder = new CompoundFileBuilder(new CompoundBuildOptions { Version = CompoundFileVersion.V4 });
         _ = builder.Root.AddStream("Data", new byte[] { 1, 2, 3 });
 
         byte[] bytes = builder.ToArray();

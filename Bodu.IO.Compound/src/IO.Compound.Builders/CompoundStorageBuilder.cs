@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CompoundStorageNode.cs" company="Bodu Pty. Ltd.">
+// <copyright file="CompoundStorageBuilder.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -8,7 +8,7 @@ using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
-namespace Bodu.IO.Compound.Nodes;
+namespace Bodu.IO.Compound.Builders;
 
 /// <summary>
 /// Represents a storage entry in a mutable compound-file object model — a named container of child storages and
@@ -21,38 +21,38 @@ namespace Bodu.IO.Compound.Nodes;
 /// parent is the root of a document; serialize a tree by passing its root to a <see cref="CompoundFileBuilder" />.
 /// </para>
 /// <para>
-/// Names are compared per <see cref="CompoundNodeOptions" /> (case-insensitive by default, matching the compound-file
-/// format). The serialization order of children is determined by the builder, not by insertion order.
+/// Names are compared per <see cref="CompoundStorageBuilderOptions" /> (case-insensitive by default, matching the
+/// compound-file format). The serialization order of children is determined by the builder, not by insertion order.
 /// </para>
 /// </remarks>
-public sealed partial class CompoundStorageNode
-    : CompoundNode, IDictionary<string, CompoundNode>
+public sealed partial class CompoundStorageBuilder
+    : CompoundEntryBuilder, IDictionary<string, CompoundEntryBuilder>
 {
     /// <summary>The conventional name of the root storage entry.</summary>
     private const string RootEntryName = "Root Entry";
 
     /// <summary>The options controlling name comparison for this storage and its descendants.</summary>
-    private readonly CompoundNodeOptions _options;
+    private readonly CompoundStorageBuilderOptions _options;
 
     /// <summary>The child entries keyed by name.</summary>
-    private readonly Dictionary<string, CompoundNode> _children;
+    private readonly Dictionary<string, CompoundEntryBuilder> _children;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CompoundStorageNode" /> class with default options.
+    /// Initializes a new instance of the <see cref="CompoundStorageBuilder" /> class with default options.
     /// </summary>
-    public CompoundStorageNode()
+    public CompoundStorageBuilder()
         : this(default)
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CompoundStorageNode" /> class with the specified options.
+    /// Initializes a new instance of the <see cref="CompoundStorageBuilder" /> class with the specified options.
     /// </summary>
     /// <param name="options">The options controlling name comparison.</param>
-    public CompoundStorageNode(CompoundNodeOptions options)
+    public CompoundStorageBuilder(CompoundStorageBuilderOptions options)
     {
         _options = options;
-        _children = new Dictionary<string, CompoundNode>(options.NameComparer);
+        _children = new Dictionary<string, CompoundEntryBuilder>(options.NameComparer);
     }
 
     /// <inheritdoc />
@@ -63,18 +63,18 @@ public sealed partial class CompoundStorageNode
     public ICollection<string> Keys => _children.Keys;
 
     /// <inheritdoc />
-    public ICollection<CompoundNode> Values => _children.Values;
+    public ICollection<CompoundEntryBuilder> Values => _children.Values;
 
     /// <inheritdoc />
     public int Count => _children.Count;
 
     /// <inheritdoc />
-    bool ICollection<KeyValuePair<string, CompoundNode>>.IsReadOnly => false;
+    bool ICollection<KeyValuePair<string, CompoundEntryBuilder>>.IsReadOnly => false;
 
     /// <inheritdoc />
     /// <exception cref="ArgumentNullException">Thrown when the key or value is <see langword="null" />.</exception>
     /// <exception cref="CompoundFileSerializationException">Thrown when the name is invalid.</exception>
-    public CompoundNode this[string key]
+    public CompoundEntryBuilder this[string key]
     {
         get => _children[key];
         set
@@ -82,7 +82,7 @@ public sealed partial class CompoundStorageNode
             ThrowHelper.ThrowIfNull(value);
             ValidateName(key);
 
-            if (_children.TryGetValue(key, out CompoundNode? existing))
+            if (_children.TryGetValue(key, out CompoundEntryBuilder? existing))
             {
                 if (ReferenceEquals(existing, value))
                     return;
@@ -99,29 +99,29 @@ public sealed partial class CompoundStorageNode
     /// <summary>
     /// Creates a new, detached root storage node named <c>Root Entry</c>.
     /// </summary>
-    /// <returns>A root <see cref="CompoundStorageNode" /> ready for authoring.</returns>
-    public static CompoundStorageNode CreateRoot() =>
+    /// <returns>A root <see cref="CompoundStorageBuilder" /> ready for authoring.</returns>
+    public static CompoundStorageBuilder CreateRoot() =>
         new() { Name = RootEntryName };
 
     /// <summary>
     /// Creates a new, detached root storage node with the specified options.
     /// </summary>
     /// <param name="options">The options controlling name comparison.</param>
-    /// <returns>A root <see cref="CompoundStorageNode" /> ready for authoring.</returns>
-    public static CompoundStorageNode CreateRoot(CompoundNodeOptions options) =>
+    /// <returns>A root <see cref="CompoundStorageBuilder" /> ready for authoring.</returns>
+    public static CompoundStorageBuilder CreateRoot(CompoundStorageBuilderOptions options) =>
         new(options) { Name = RootEntryName };
 
     /// <summary>
     /// Adds a new child storage with the specified name.
     /// </summary>
     /// <param name="name">The storage name.</param>
-    /// <returns>The created <see cref="CompoundStorageNode" />.</returns>
+    /// <returns>The created <see cref="CompoundStorageBuilder" />.</returns>
     /// <exception cref="CompoundFileSerializationException">
     /// Thrown when the name is invalid or already present.
     /// </exception>
-    public CompoundStorageNode AddStorage(string name)
+    public CompoundStorageBuilder AddStorage(string name)
     {
-        var storage = new CompoundStorageNode(_options);
+        var storage = new CompoundStorageBuilder(_options);
         AddCore(name, storage);
         return storage;
     }
@@ -131,13 +131,13 @@ public sealed partial class CompoundStorageNode
     /// </summary>
     /// <param name="name">The stream name.</param>
     /// <param name="content">The payload bytes.</param>
-    /// <returns>The created <see cref="CompoundStreamNode" />.</returns>
+    /// <returns>The created <see cref="CompoundStreamBuilder" />.</returns>
     /// <exception cref="CompoundFileSerializationException">
     /// Thrown when the name is invalid or already present.
     /// </exception>
-    public CompoundStreamNode AddStream(string name, ReadOnlyMemory<byte> content)
+    public CompoundStreamBuilder AddStream(string name, ReadOnlyMemory<byte> content)
     {
-        CompoundStreamNode stream = CompoundStreamNode.Create(name, content);
+        CompoundStreamBuilder stream = CompoundStreamBuilder.Create(name, content);
         AddCore(name, stream);
         return stream;
     }
@@ -148,13 +148,13 @@ public sealed partial class CompoundStorageNode
     /// <param name="name">The stream name.</param>
     /// <param name="openRead">A factory that opens a readable stream over the payload each time it is invoked.</param>
     /// <param name="length">The payload length, in bytes.</param>
-    /// <returns>The created <see cref="CompoundStreamNode" />.</returns>
+    /// <returns>The created <see cref="CompoundStreamBuilder" />.</returns>
     /// <exception cref="CompoundFileSerializationException">
     /// Thrown when the name is invalid or already present.
     /// </exception>
-    public CompoundStreamNode AddStream(string name, Func<Stream> openRead, long length)
+    public CompoundStreamBuilder AddStream(string name, Func<Stream> openRead, long length)
     {
-        CompoundStreamNode stream = CompoundStreamNode.Create(name, openRead, length);
+        CompoundStreamBuilder stream = CompoundStreamBuilder.Create(name, openRead, length);
         AddCore(name, stream);
         return stream;
     }
@@ -164,13 +164,13 @@ public sealed partial class CompoundStorageNode
     /// </summary>
     /// <param name="name">The stream name.</param>
     /// <param name="path">The path of the file providing the payload.</param>
-    /// <returns>The created <see cref="CompoundStreamNode" />.</returns>
+    /// <returns>The created <see cref="CompoundStreamBuilder" />.</returns>
     /// <exception cref="CompoundFileSerializationException">
     /// Thrown when the name is invalid or already present.
     /// </exception>
-    public CompoundStreamNode AddStreamFromFile(string name, string path)
+    public CompoundStreamBuilder AddStreamFromFile(string name, string path)
     {
-        CompoundStreamNode stream = CompoundStreamNode.CreateFromFile(name, path);
+        CompoundStreamBuilder stream = CompoundStreamBuilder.CreateFromFile(name, path);
         AddCore(name, stream);
         return stream;
     }
@@ -179,7 +179,7 @@ public sealed partial class CompoundStorageNode
     /// <exception cref="CompoundFileSerializationException">
     /// Thrown when the name is invalid or already present.
     /// </exception>
-    public void Add(string key, CompoundNode value)
+    public void Add(string key, CompoundEntryBuilder value)
     {
         ThrowHelper.ThrowIfNull(value);
 
@@ -187,7 +187,7 @@ public sealed partial class CompoundStorageNode
     }
 
     /// <inheritdoc />
-    void ICollection<KeyValuePair<string, CompoundNode>>.Add(KeyValuePair<string, CompoundNode> item) =>
+    void ICollection<KeyValuePair<string, CompoundEntryBuilder>>.Add(KeyValuePair<string, CompoundEntryBuilder> item) =>
         Add(item.Key, item.Value);
 
     /// <inheritdoc />
@@ -205,7 +205,7 @@ public sealed partial class CompoundStorageNode
         _children.ContainsKey(name);
 
     /// <inheritdoc />
-    public bool TryGetValue(string key, [MaybeNullWhen(false)] out CompoundNode value) =>
+    public bool TryGetValue(string key, [MaybeNullWhen(false)] out CompoundEntryBuilder value) =>
         _children.TryGetValue(key, out value);
 
     /// <summary>
@@ -218,9 +218,9 @@ public sealed partial class CompoundStorageNode
     /// <returns>
     /// <see langword="true" /> when a child storage with the name exists; otherwise <see langword="false" />.
     /// </returns>
-    public bool TryGetStorage(string name, [MaybeNullWhen(false)] out CompoundStorageNode storage)
+    public bool TryGetStorage(string name, [MaybeNullWhen(false)] out CompoundStorageBuilder storage)
     {
-        if (_children.TryGetValue(name, out CompoundNode? node) && node is CompoundStorageNode found)
+        if (_children.TryGetValue(name, out CompoundEntryBuilder? node) && node is CompoundStorageBuilder found)
         {
             storage = found;
             return true;
@@ -240,9 +240,9 @@ public sealed partial class CompoundStorageNode
     /// <returns>
     /// <see langword="true" /> when a child stream with the name exists; otherwise <see langword="false" />.
     /// </returns>
-    public bool TryGetStream(string name, [MaybeNullWhen(false)] out CompoundStreamNode stream)
+    public bool TryGetStream(string name, [MaybeNullWhen(false)] out CompoundStreamBuilder stream)
     {
-        if (_children.TryGetValue(name, out CompoundNode? node) && node is CompoundStreamNode found)
+        if (_children.TryGetValue(name, out CompoundEntryBuilder? node) && node is CompoundStreamBuilder found)
         {
             stream = found;
             return true;
@@ -256,20 +256,20 @@ public sealed partial class CompoundStorageNode
     /// Enumerates the direct child storages of this storage.
     /// </summary>
     /// <returns>The child storages.</returns>
-    public IEnumerable<CompoundStorageNode> EnumerateStorages() =>
-        _children.Values.OfType<CompoundStorageNode>();
+    public IEnumerable<CompoundStorageBuilder> EnumerateStorages() =>
+        _children.Values.OfType<CompoundStorageBuilder>();
 
     /// <summary>
     /// Enumerates the direct child streams of this storage.
     /// </summary>
     /// <returns>The child streams.</returns>
-    public IEnumerable<CompoundStreamNode> EnumerateStreams() =>
-        _children.Values.OfType<CompoundStreamNode>();
+    public IEnumerable<CompoundStreamBuilder> EnumerateStreams() =>
+        _children.Values.OfType<CompoundStreamBuilder>();
 
     /// <inheritdoc />
     public bool Remove(string key)
     {
-        if (_children.TryGetValue(key, out CompoundNode? node))
+        if (_children.TryGetValue(key, out CompoundEntryBuilder? node))
         {
             node.Parent = null;
             return _children.Remove(key);
@@ -279,8 +279,8 @@ public sealed partial class CompoundStorageNode
     }
 
     /// <inheritdoc />
-    bool ICollection<KeyValuePair<string, CompoundNode>>.Remove(KeyValuePair<string, CompoundNode> item) =>
-        ((ICollection<KeyValuePair<string, CompoundNode>>)_children).Contains(item) && Remove(item.Key);
+    bool ICollection<KeyValuePair<string, CompoundEntryBuilder>>.Remove(KeyValuePair<string, CompoundEntryBuilder> item) =>
+        ((ICollection<KeyValuePair<string, CompoundEntryBuilder>>)_children).Contains(item) && Remove(item.Key);
 
     /// <summary>
     /// Renames a child entry.
@@ -294,7 +294,7 @@ public sealed partial class CompoundStorageNode
     public void Rename(string oldName, string newName)
     {
         ValidateName(newName);
-        if (!_children.TryGetValue(oldName, out CompoundNode? node))
+        if (!_children.TryGetValue(oldName, out CompoundEntryBuilder? node))
         {
             throw new CompoundFileSerializationException(
                 string.Format(CultureInfo.CurrentCulture, CompoundResourceStrings.IO_KeyNotFound_CompoundStream, oldName));
@@ -303,7 +303,7 @@ public sealed partial class CompoundStorageNode
         if (_children.ContainsKey(newName) && !_options.NameComparer.Equals(oldName, newName))
         {
             throw new CompoundFileSerializationException(
-                string.Format(CultureInfo.CurrentCulture, CompoundResourceStrings.Op_Invalid_CompoundNodeDuplicateName, newName));
+                string.Format(CultureInfo.CurrentCulture, CompoundResourceStrings.Op_Invalid_CompoundEntryBuilderDuplicateName, newName));
         }
 
         _ = _children.Remove(oldName);
@@ -314,22 +314,22 @@ public sealed partial class CompoundStorageNode
     /// <inheritdoc />
     public void Clear()
     {
-        foreach (CompoundNode node in _children.Values)
+        foreach (CompoundEntryBuilder node in _children.Values)
             node.Parent = null;
 
         _children.Clear();
     }
 
     /// <inheritdoc />
-    bool ICollection<KeyValuePair<string, CompoundNode>>.Contains(KeyValuePair<string, CompoundNode> item) =>
-        ((ICollection<KeyValuePair<string, CompoundNode>>)_children).Contains(item);
+    bool ICollection<KeyValuePair<string, CompoundEntryBuilder>>.Contains(KeyValuePair<string, CompoundEntryBuilder> item) =>
+        ((ICollection<KeyValuePair<string, CompoundEntryBuilder>>)_children).Contains(item);
 
     /// <inheritdoc />
-    void ICollection<KeyValuePair<string, CompoundNode>>.CopyTo(KeyValuePair<string, CompoundNode>[] array, int arrayIndex) =>
-        ((ICollection<KeyValuePair<string, CompoundNode>>)_children).CopyTo(array, arrayIndex);
+    void ICollection<KeyValuePair<string, CompoundEntryBuilder>>.CopyTo(KeyValuePair<string, CompoundEntryBuilder>[] array, int arrayIndex) =>
+        ((ICollection<KeyValuePair<string, CompoundEntryBuilder>>)_children).CopyTo(array, arrayIndex);
 
     /// <inheritdoc />
-    public IEnumerator<KeyValuePair<string, CompoundNode>> GetEnumerator() =>
+    public IEnumerator<KeyValuePair<string, CompoundEntryBuilder>> GetEnumerator() =>
         _children.GetEnumerator();
 
     /// <inheritdoc />
@@ -337,9 +337,9 @@ public sealed partial class CompoundStorageNode
         _children.GetEnumerator();
 
     /// <inheritdoc />
-    public override CompoundNode DeepClone()
+    public override CompoundEntryBuilder DeepClone()
     {
-        var clone = new CompoundStorageNode(_options)
+        var clone = new CompoundStorageBuilder(_options)
         {
             Name = Name,
             ClassId = ClassId,
@@ -348,7 +348,7 @@ public sealed partial class CompoundStorageNode
             StateBits = StateBits,
         };
 
-        foreach (KeyValuePair<string, CompoundNode> child in _children)
+        foreach (KeyValuePair<string, CompoundEntryBuilder> child in _children)
             clone.AddCore(child.Key, child.Value.DeepClone());
 
         return clone;
@@ -362,13 +362,13 @@ public sealed partial class CompoundStorageNode
     /// <exception cref="CompoundFileSerializationException">
     /// Thrown when the name is invalid or already present.
     /// </exception>
-    private void AddCore(string name, CompoundNode node)
+    private void AddCore(string name, CompoundEntryBuilder node)
     {
         ValidateName(name);
         if (_children.ContainsKey(name))
         {
             throw new CompoundFileSerializationException(
-                string.Format(CultureInfo.CurrentCulture, CompoundResourceStrings.Op_Invalid_CompoundNodeDuplicateName, name));
+                string.Format(CultureInfo.CurrentCulture, CompoundResourceStrings.Op_Invalid_CompoundEntryBuilderDuplicateName, name));
         }
 
         node.AssignParent(this);

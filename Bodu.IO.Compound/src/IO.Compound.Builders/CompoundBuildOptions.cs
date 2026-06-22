@@ -1,10 +1,10 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CompoundFileBuilderOptions.cs" company="Bodu Pty. Ltd.">
+// <copyright file="CompoundBuildOptions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.IO.Compound;
+namespace Bodu.IO.Compound.Builders;
 
 /// <summary>
 /// Specifies options that control how a <see cref="CompoundFileBuilder" /> serializes a compound file.
@@ -13,7 +13,7 @@ namespace Bodu.IO.Compound;
 /// The default value (<see langword="default" />) selects version 3 (512-byte sectors) and the default maximum nesting
 /// depth, producing the most widely compatible output.
 /// </remarks>
-public struct CompoundFileBuilderOptions
+public struct CompoundBuildOptions
 {
     /// <summary>The built-in maximum storage nesting depth applied when <see cref="MaxDepth" /> is zero.</summary>
     internal const int DefaultMaxDepth = 64;

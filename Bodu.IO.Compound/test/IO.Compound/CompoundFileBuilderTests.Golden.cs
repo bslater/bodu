@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.IO.Compound.Nodes;
+using Bodu.IO.Compound.Builders;
 using Bodu.Test;
 using Bodu.Test.Kat;
 
@@ -34,7 +34,7 @@ public partial class CompoundFileBuilderTests
     {
         byte[] expected = CompoundFixtures.ReadWriterGolden(kat.FileName);
 
-        byte[] actual = BuildCanonical(new CompoundFileBuilderOptions { Version = kat.Version }).ToArray();
+        byte[] actual = BuildCanonical(new CompoundBuildOptions { Version = kat.Version }).ToArray();
 
         Assert.AreEqual(expected.Length, actual.Length, "length");
         CollectionAssert.AreEqual(expected, actual);
@@ -52,7 +52,7 @@ public partial class CompoundFileBuilderTests
         byte[] golden = CompoundFixtures.ReadWriterGolden(kat.FileName);
 
         byte[] rewritten = CompoundFileBuilder
-            .Load(new MemoryStream(golden), new CompoundFileBuilderOptions { Version = kat.Version })
+            .Load(new MemoryStream(golden), new CompoundBuildOptions { Version = kat.Version })
             .ToArray();
 
         CollectionAssert.AreEqual(golden, rewritten);
@@ -63,11 +63,11 @@ public partial class CompoundFileBuilderTests
     /// </summary>
     /// <param name="options">The options controlling the output layout.</param>
     /// <returns>The populated builder.</returns>
-    private static CompoundFileBuilder BuildCanonical(CompoundFileBuilderOptions options = default)
+    private static CompoundFileBuilder BuildCanonical(CompoundBuildOptions options = default)
     {
         var builder = new CompoundFileBuilder(options);
         builder.Root.ClassId = new Guid("00020906-0000-0000-C000-000000000046");
-        CompoundStorageNode data = builder.Root.AddStorage("Data");
+        CompoundStorageBuilder data = builder.Root.AddStorage("Data");
         _ = data.AddStream("Small", Canonical(100));
         _ = data.AddStream("Large", Canonical(5000));
         _ = builder.Root.AddStream("Meta", Canonical(48));

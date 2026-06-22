@@ -1,12 +1,12 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CompoundNode.cs" company="Bodu Pty. Ltd.">
+// <copyright file="CompoundEntryBuilder.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
 
-namespace Bodu.IO.Compound.Nodes;
+namespace Bodu.IO.Compound.Builders;
 
 /// <summary>
 /// Represents a node in a mutable compound-file object model — either a storage (a named container) or a stream (a
@@ -16,23 +16,23 @@ namespace Bodu.IO.Compound.Nodes;
 /// <para>
 /// This is the authoring counterpart of the read-only navigation surface (<see cref="CompoundStorage" /> /
 /// <see cref="CompoundStreamEntry" />), shaped after the <c>JsonNode</c> family: build a tree of
-/// <see cref="CompoundStorageNode" /> and <see cref="CompoundStreamNode" /> objects, then serialize it to a compound
-/// file. A node belongs to at most one parent storage at a time.
+/// <see cref="CompoundStorageBuilder" /> and <see cref="CompoundStreamBuilder" /> objects, then serialize it to a
+/// compound file. A node belongs to at most one parent storage at a time.
 /// </para>
 /// <para>
 /// Unlike a JSON document, a compound file has no array or null concept — every entry is a named storage or stream — so
 /// the model has exactly two concrete node kinds.
 /// </para>
 /// </remarks>
-public abstract class CompoundNode
+public abstract class CompoundEntryBuilder
 {
     /// <summary>The maximum length, in UTF-16 code units, of a compound-file entry name.</summary>
     internal const int MaxNameLength = 31;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CompoundNode" /> class.
+    /// Initializes a new instance of the <see cref="CompoundEntryBuilder" /> class.
     /// </summary>
-    private protected CompoundNode()
+    private protected CompoundEntryBuilder()
     {
     }
 
@@ -45,18 +45,18 @@ public abstract class CompoundNode
     /// <summary>
     /// Gets the parent storage of this node, or <see langword="null" /> when the node is a detached root.
     /// </summary>
-    /// <returns>The parent <see cref="CompoundStorageNode" />, or <see langword="null" />.</returns>
-    public CompoundStorageNode? Parent { get; internal set; }
+    /// <returns>The parent <see cref="CompoundStorageBuilder" />, or <see langword="null" />.</returns>
+    public CompoundStorageBuilder? Parent { get; internal set; }
 
     /// <summary>
     /// Gets the topmost ancestor of this node.
     /// </summary>
     /// <returns>The root node reached by following <see cref="Parent" />; this node when it has no parent.</returns>
-    public CompoundNode Root
+    public CompoundEntryBuilder Root
     {
         get
         {
-            CompoundNode current = this;
+            CompoundEntryBuilder current = this;
             while (current.Parent is not null)
                 current = current.Parent;
 
@@ -95,38 +95,38 @@ public abstract class CompoundNode
     public abstract CompoundEntryType EntryType { get; }
 
     /// <summary>
-    /// Returns this node as a <see cref="CompoundStorageNode" />.
+    /// Returns this node as a <see cref="CompoundStorageBuilder" />.
     /// </summary>
-    /// <returns>This node cast to <see cref="CompoundStorageNode" />.</returns>
+    /// <returns>This node cast to <see cref="CompoundStorageBuilder" />.</returns>
     /// <exception cref="InvalidOperationException">Thrown when this node is not a storage.</exception>
-    public CompoundStorageNode AsStorage() =>
-        this as CompoundStorageNode
-            ?? throw new InvalidOperationException(CompoundResourceStrings.Op_Invalid_CompoundNodeNotStorage);
+    public CompoundStorageBuilder AsStorage() =>
+        this as CompoundStorageBuilder
+            ?? throw new InvalidOperationException(CompoundResourceStrings.Op_Invalid_CompoundEntryBuilderNotStorage);
 
     /// <summary>
-    /// Returns this node as a <see cref="CompoundStreamNode" />.
+    /// Returns this node as a <see cref="CompoundStreamBuilder" />.
     /// </summary>
-    /// <returns>This node cast to <see cref="CompoundStreamNode" />.</returns>
+    /// <returns>This node cast to <see cref="CompoundStreamBuilder" />.</returns>
     /// <exception cref="InvalidOperationException">Thrown when this node is not a stream.</exception>
-    public CompoundStreamNode AsStream() =>
-        this as CompoundStreamNode
-            ?? throw new InvalidOperationException(CompoundResourceStrings.Op_Invalid_CompoundNodeNotStream);
+    public CompoundStreamBuilder AsStream() =>
+        this as CompoundStreamBuilder
+            ?? throw new InvalidOperationException(CompoundResourceStrings.Op_Invalid_CompoundEntryBuilderNotStream);
 
     /// <summary>
     /// Creates a deep, detached copy of this node and its descendants.
     /// </summary>
     /// <returns>An independent copy with no parent.</returns>
-    public abstract CompoundNode DeepClone();
+    public abstract CompoundEntryBuilder DeepClone();
 
     /// <summary>
     /// Attaches this node to a parent storage, enforcing the single-parent invariant.
     /// </summary>
     /// <param name="parent">The storage taking ownership of this node.</param>
     /// <exception cref="InvalidOperationException">Thrown when this node already belongs to a storage.</exception>
-    internal void AssignParent(CompoundStorageNode parent)
+    internal void AssignParent(CompoundStorageBuilder parent)
     {
         if (Parent is not null)
-            throw new InvalidOperationException(CompoundResourceStrings.Op_Invalid_CompoundNodeAlreadyHasParent);
+            throw new InvalidOperationException(CompoundResourceStrings.Op_Invalid_CompoundEntryBuilderAlreadyHasParent);
 
         Parent = parent;
     }
@@ -148,12 +148,12 @@ public abstract class CompoundNode
         // Control-prefixed names (for example "SummaryInformation") are permitted, so only white space made
         // entirely of separators is rejected; an empty string is always rejected.
         if (name.Length == 0)
-            throw new CompoundFileSerializationException(CompoundResourceStrings.Arg_Invalid_CompoundNodeNameEmpty);
+            throw new CompoundFileSerializationException(CompoundResourceStrings.Arg_Invalid_CompoundEntryBuilderNameEmpty);
 
         if (name.Length > MaxNameLength)
         {
             throw new CompoundFileSerializationException(
-                string.Format(CultureInfo.CurrentCulture, CompoundResourceStrings.Arg_Invalid_CompoundNodeNameTooLong, name));
+                string.Format(CultureInfo.CurrentCulture, CompoundResourceStrings.Arg_Invalid_CompoundEntryBuilderNameTooLong, name));
         }
 
         foreach (char c in name)
@@ -161,7 +161,7 @@ public abstract class CompoundNode
             if (c is '/' or '\\' or ':' or '!')
             {
                 throw new CompoundFileSerializationException(
-                    string.Format(CultureInfo.CurrentCulture, CompoundResourceStrings.Arg_Invalid_CompoundNodeNameInvalidCharacter, name));
+                    string.Format(CultureInfo.CurrentCulture, CompoundResourceStrings.Arg_Invalid_CompoundEntryBuilderNameInvalidCharacter, name));
             }
         }
     }
