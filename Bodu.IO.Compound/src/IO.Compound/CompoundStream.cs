@@ -141,7 +141,7 @@ public sealed class CompoundStream
     /// <remarks>
     /// For a buffered stream this returns a view over the already-materialized payload without copying; for a streaming
     /// stream it reads the whole payload into memory. The returned view does not advance or depend on
-    /// <see cref="Position" />. Prefer chunked <see cref="Read(byte[], int, int)" /> for large streaming payloads.
+    /// <see cref="Position" />. Prefer chunked <see cref="Read(Span{byte})" /> for large streaming payloads.
     /// </remarks>
     /// <example>
     /// <code language="csharp">
@@ -161,14 +161,20 @@ public sealed class CompoundStream
         ThrowHelper.ThrowIfNull(buffer);
         ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(buffer, offset, count);
 
+        return Read(buffer.AsSpan(offset, count));
+    }
+
+    /// <inheritdoc />
+    public override int Read(Span<byte> buffer)
+    {
         long remaining = _length - _position;
         if (remaining <= 0)
             return 0;
 
-        int want = (int)Math.Min(count, remaining);
+        int want = (int)Math.Min(buffer.Length, remaining);
         if (_buffer is not null)
         {
-            Array.Copy(_buffer, (int)_position, buffer, offset, want);
+            _buffer.AsSpan((int)_position, want).CopyTo(buffer);
             _position += want;
             return want;
         }
@@ -179,14 +185,47 @@ public sealed class CompoundStream
             int sectorIndex = (int)(_position / _sectorSize);
             int within = (int)(_position % _sectorSize);
             int n = Math.Min(want, _sectorSize - within);
-            _sectors!.ReadWithinSector(_chain![sectorIndex], within, buffer.AsSpan(offset, n));
-            offset += n;
+            _sectors!.ReadWithinSector(_chain![sectorIndex], within, buffer.Slice(total, n));
             want -= n;
             total += n;
             _position += n;
         }
 
         return total;
+    }
+
+    /// <inheritdoc />
+    public override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
+    {
+        ThrowHelper.ThrowIfNull(buffer);
+        ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(buffer, offset, count);
+        if (cancellationToken.IsCancellationRequested)
+            return Task.FromCanceled<int>(cancellationToken);
+
+        try
+        {
+            return Task.FromResult(Read(buffer.AsSpan(offset, count)));
+        }
+        catch (Exception ex)
+        {
+            return Task.FromException<int>(ex);
+        }
+    }
+
+    /// <inheritdoc />
+    public override ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
+    {
+        if (cancellationToken.IsCancellationRequested)
+            return ValueTask.FromCanceled<int>(cancellationToken);
+
+        try
+        {
+            return new ValueTask<int>(Read(buffer.Span));
+        }
+        catch (Exception ex)
+        {
+            return ValueTask.FromException<int>(ex);
+        }
     }
 
     /// <inheritdoc />

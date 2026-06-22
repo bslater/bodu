@@ -34,6 +34,8 @@ if (file.TryGetSummaryInformation(out var summary))
 
 - Header, sector-size, and signature validation; `CompoundFile.IsCompoundFile` for a
   non-destructive signature probe.
+- Open from a `Stream` (`CompoundFile.Open`) or a path (`CompoundFile.OpenRead(path)`), with
+  span- and async-capable per-stream reads (`CompoundStream.Read(Span<byte>)` / `ReadAsync`).
 - Regular FAT traversal (including extended DIFAT sectors) and mini-FAT / mini-stream
   resolution, with cycle and out-of-range detection.
 - A navigable storage hierarchy (`CompoundStorage` / `CompoundStreamEntry`) with child

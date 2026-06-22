@@ -112,6 +112,20 @@ public sealed class OlePropertySet
     }
 
     /// <summary>
+    /// Serializes the property set to its OLE byte form, written to the supplied stream.
+    /// </summary>
+    /// <param name="stream">The stream to write the property-set bytes to.</param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="stream" /> is <see langword="null" />.
+    /// </exception>
+    public void WriteTo(Stream stream)
+    {
+        ThrowHelper.ThrowIfNull(stream);
+
+        stream.Write(PropertySetWriter.Write(this));
+    }
+
+    /// <summary>
     /// Attempts to get the value of a property from the first section.
     /// </summary>
     /// <param name="propertyId">The property identifier (PID).</param>
@@ -148,6 +162,26 @@ public sealed class OlePropertySet
     /// </exception>
     public static OlePropertySet Parse(ReadOnlyMemory<byte> data) =>
         PropertySetReader.Read(data.Span);
+
+    /// <summary>
+    /// Reads and parses an OLE property set from a stream, consuming it to the end.
+    /// </summary>
+    /// <param name="stream">The stream containing the property-set bytes.</param>
+    /// <returns>The parsed <see cref="OlePropertySet" />.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="stream" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="CompoundFileFormatException">
+    /// Thrown when the data is not a well-formed property set.
+    /// </exception>
+    public static OlePropertySet Read(Stream stream)
+    {
+        ThrowHelper.ThrowIfNull(stream);
+
+        using MemoryStream buffer = new();
+        stream.CopyTo(buffer);
+        return Parse(buffer.GetBuffer().AsMemory(0, (int)buffer.Length));
+    }
 
     /// <summary>
     /// Reads and parses an OLE property set from a compound-file stream entry.

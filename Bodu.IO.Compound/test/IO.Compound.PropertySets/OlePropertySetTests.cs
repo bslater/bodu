@@ -55,7 +55,7 @@ public class OlePropertySetTests
     [TestMethod]
     public void Read_WhenEntryIsNull_ShouldThrowArgumentNullException()
     {
-        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() => OlePropertySet.Read(null!));
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() => OlePropertySet.Read((CompoundStreamEntry)null!));
 
         Assert.AreEqual("entry", ex.ParamName);
     }

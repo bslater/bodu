@@ -96,4 +96,37 @@ public partial class CompoundFileTests
 
         Assert.IsTrue(source.CanRead);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundFile.OpenRead(string)" /> opens a compound file from a path for reading.
+    /// </summary>
+    [TestMethod]
+    public void OpenRead_WhenPath_ShouldReadContainer()
+    {
+        string path = Path.Combine(Path.GetTempPath(), $"bodu-openread-{Guid.NewGuid():N}.cfb");
+        try
+        {
+            using (MemoryStream source = CompoundFixtures.OpenStream(CompoundFixtures.SampleCompound))
+                File.WriteAllBytes(path, source.ToArray());
+
+            using CompoundFile file = CompoundFile.OpenRead(path);
+
+            Assert.AreEqual(CompoundFileMode.Read, file.Mode);
+            Assert.IsTrue(file.RootStorage.EnumerateEntries().Any());
+        }
+        finally
+        {
+            File.Delete(path);
+        }
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundFile.OpenRead(string)" /> throws <see cref="ArgumentNullException" /> for a
+    /// <see langword="null" /> path.
+    /// </summary>
+    [TestMethod]
+    public void OpenRead_WhenPathIsNull_ShouldThrowArgumentNullException()
+    {
+        _ = Assert.ThrowsExactly<ArgumentNullException>(() => CompoundFile.OpenRead(null!));
+    }
 }

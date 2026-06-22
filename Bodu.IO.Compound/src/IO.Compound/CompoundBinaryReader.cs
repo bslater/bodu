@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CompoundStreamReader.cs" company="Bodu Pty. Ltd.">
+// <copyright file="CompoundBinaryReader.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -16,7 +16,7 @@ namespace Bodu.IO.Compound;
 /// The reader does not own or copy the underlying span; it advances an internal position as values are read and throws
 /// <see cref="CompoundFileFormatException" /> when a read would run past the end of the data.
 /// </remarks>
-internal ref struct CompoundStreamReader
+internal ref struct CompoundBinaryReader
 {
     /// <summary>The backing data the cursor reads from.</summary>
     private readonly ReadOnlySpan<byte> _data;
@@ -25,10 +25,10 @@ internal ref struct CompoundStreamReader
     private int _position;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CompoundStreamReader" /> struct over the supplied data.
+    /// Initializes a new instance of the <see cref="CompoundBinaryReader" /> struct over the supplied data.
     /// </summary>
     /// <param name="data">The byte span to read from.</param>
-    public CompoundStreamReader(ReadOnlySpan<byte> data)
+    public CompoundBinaryReader(ReadOnlySpan<byte> data)
     {
         _data = data;
         _position = 0;

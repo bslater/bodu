@@ -163,7 +163,7 @@ internal sealed class CompoundFileHeader
         if (!data.Slice(0, Signature.Length).SequenceEqual(Signature))
             CompoundThrowHelper.ThrowFormat(CompoundResourceStrings.Format_Invalid_CompoundSignature, CompoundFileError.InvalidSignature);
 
-        CompoundStreamReader reader = new(data);
+        CompoundBinaryReader reader = new(data);
         reader.Seek(28);
         ushort byteOrder = reader.ReadUInt16();
         ushort sectorShift = reader.ReadUInt16();

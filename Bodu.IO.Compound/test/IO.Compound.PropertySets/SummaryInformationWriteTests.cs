@@ -39,6 +39,24 @@ public class SummaryInformationWriteTests
     }
 
     /// <summary>
+    /// Verifies that a summary-information set written to a stream reads back through the stream-first surface.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenWrittenToStream_ShouldRoundTripThroughStreamSurface()
+    {
+        var builder = new SummaryInformationBuilder { Title = "Streamed", Author = "Grace" };
+
+        using MemoryStream stream = new();
+        builder.WriteTo(stream);
+        stream.Position = 0;
+
+        SummaryInformation summary = SummaryInformation.Read(stream);
+
+        Assert.AreEqual("Streamed", summary.Title);
+        Assert.AreEqual("Grace", summary.Author);
+    }
+
+    /// <summary>
     /// Verifies that summary information embedded in a written compound file is read back by the reader.
     /// </summary>
     [TestMethod]

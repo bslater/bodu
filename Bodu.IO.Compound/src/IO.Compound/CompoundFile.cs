@@ -198,6 +198,47 @@ public sealed class CompoundFile
     }
 
     /// <summary>
+    /// Opens an existing compound file at the specified path for read-only access, buffering its content into memory.
+    /// </summary>
+    /// <param name="path">The path of the compound file to open.</param>
+    /// <returns>An open, read-only <see cref="CompoundFile" />.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="path" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="FileNotFoundException">Thrown when no file exists at <paramref name="path" />.</exception>
+    /// <exception cref="CompoundFileFormatException">
+    /// Thrown when the file content is not a well-formed compound file.
+    /// </exception>
+    /// <remarks>
+    /// The returned instance owns the opened file and closes it when disposed. The file is opened with
+    /// <see cref="FileShare.Read" />, so it does not lock out other readers.
+    /// </remarks>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// using CompoundFile file = CompoundFile.OpenRead("book.xls");
+    /// foreach (CompoundEntryInfo info in file.RootStorage.EnumerateEntries())
+    ///     Console.WriteLine($"{info.EntryType}: {info.Name}");
+    ///]]>
+    /// </code>
+    /// </example>
+    public static CompoundFile OpenRead(string path)
+    {
+        ThrowHelper.ThrowIfNull(path);
+
+        FileStream stream = File.OpenRead(path);
+        try
+        {
+            return Open(stream, CompoundFileMode.Read, leaveOpen: false, buffered: true);
+        }
+        catch
+        {
+            stream.Dispose();
+            throw;
+        }
+    }
+
+    /// <summary>
     /// Determines whether the supplied stream begins with the compound-file (OLE2) signature without parsing the file.
     /// </summary>
     /// <param name="stream">A seekable stream to inspect; its position is restored before the method returns.</param>
