@@ -112,10 +112,11 @@ public sealed class CompoundFile
     /// <param name="access">The access level the file was opened with.</param>
     /// <param name="dataSource">The random-access byte source.</param>
     /// <param name="streaming">Whether large stream payloads are read on demand.</param>
+    /// <param name="level">The validation level governing how recoverable inconsistencies are handled.</param>
     /// <exception cref="CompoundFileFormatException">
     /// Thrown when the content is not a well-formed compound file.
     /// </exception>
-    private CompoundFile(Stream source, bool leaveOpen, FileAccess access, CfbDataSource dataSource, bool streaming)
+    private CompoundFile(Stream source, bool leaveOpen, FileAccess access, CfbDataSource dataSource, bool streaming, CompoundValidationLevel level)
     {
         _source = source;
         _leaveOpen = leaveOpen;
@@ -127,10 +128,10 @@ public sealed class CompoundFile
         Span<byte> head = stackalloc byte[HeaderLength];
         dataSource.Read(0, head.Slice(0, headLength));
         _header = CfbHeader.Parse(head.Slice(0, headLength));
-        _sectors = new CfbSectorReader(dataSource, _header);
+        _sectors = new CfbSectorReader(dataSource, _header, level);
 
         byte[] directoryBytes = _sectors.ReadChainToEnd(_header.FirstDirectorySector);
-        _directory = new CfbDirectory(directoryBytes, _header);
+        _directory = new CfbDirectory(directoryBytes, _header, level);
 
         if (_directory.Root.Size > 0)
             _sectors.InitializeMiniStream(_directory.Root.StartSector, _directory.Root.Size);
@@ -236,8 +237,36 @@ public sealed class CompoundFile
     ///]]>
     /// </code>
     /// </example>
-    public static CompoundFile Open(Stream stream, bool leaveOpen = false, bool buffered = true) =>
-        OpenReadCore(stream, leaveOpen, buffered);
+    public static CompoundFile Open(Stream stream, bool leaveOpen = false, bool buffered = true)
+    {
+        ThrowHelper.ThrowIfNull(stream);
+
+        return OpenReadCore(stream, leaveOpen, BufferedOptions(buffered));
+    }
+
+    /// <summary>
+    /// Opens an existing compound file over the supplied stream for read-only access using the supplied options.
+    /// </summary>
+    /// <param name="stream">The stream containing the compound file; read from its current position to the end.</param>
+    /// <param name="options">The options controlling the read strategy and validation level.</param>
+    /// <param name="leaveOpen">
+    /// <see langword="true" /> to leave <paramref name="stream" /> open when the returned instance is disposed;
+    /// otherwise <see langword="false" />.
+    /// </param>
+    /// <returns>An open, read-only <see cref="CompoundFile" />.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="stream" /> or <paramref name="options" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="CompoundFileFormatException">
+    /// Thrown when the stream content is not a well-formed compound file.
+    /// </exception>
+    public static CompoundFile Open(Stream stream, CompoundFileOptions options, bool leaveOpen = false)
+    {
+        ThrowHelper.ThrowIfNull(stream);
+        ThrowHelper.ThrowIfNull(options);
+
+        return OpenReadCore(stream, leaveOpen, options);
+    }
 
     /// <summary>
     /// Opens a compound file over the supplied stream with BCL-style <see cref="FileMode" /> and
@@ -280,7 +309,7 @@ public sealed class CompoundFile
         ThrowHelper.ThrowIfNull(stream);
 
         if (mode == FileMode.Open && access == FileAccess.Read)
-            return OpenReadCore(stream, leaveOpen, buffered);
+            return OpenReadCore(stream, leaveOpen, BufferedOptions(buffered));
 
         if ((access & FileAccess.Write) != 0)
         {
@@ -418,27 +447,37 @@ public sealed class CompoundFile
     /// </summary>
     /// <param name="stream">The stream containing the compound file.</param>
     /// <param name="leaveOpen">Whether to leave <paramref name="stream" /> open when the instance is disposed.</param>
-    /// <param name="buffered">Whether to buffer the whole file into memory at open time.</param>
+    /// <param name="options">The options controlling the read strategy and validation level.</param>
     /// <returns>An open, read-only <see cref="CompoundFile" />.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="stream" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// Thrown when <paramref name="buffered" /> is <see langword="false" /> and <paramref name="stream" /> is not
-    /// seekable.
+    /// Thrown when the resolved strategy reads on demand and <paramref name="stream" /> is not seekable.
     /// </exception>
-    private static CompoundFile OpenReadCore(Stream stream, bool leaveOpen, bool buffered)
+    private static CompoundFile OpenReadCore(Stream stream, bool leaveOpen, CompoundFileOptions options)
     {
         ThrowHelper.ThrowIfNull(stream);
 
-        if (buffered)
-            return new CompoundFile(stream, leaveOpen, FileAccess.Read, new CfbArrayDataSource(ReadAllBytes(stream)), streaming: false);
+        CompoundValidationLevel level = options.ValidationLevel;
+        if (options.ShouldBuffer(stream))
+            return new CompoundFile(stream, leaveOpen, FileAccess.Read, new CfbArrayDataSource(ReadAllBytes(stream)), streaming: false, level);
 
         if (!stream.CanSeek)
             throw new ArgumentException(CompoundResourceStrings.Arg_Invalid_CompoundStreamNotSeekable, nameof(stream));
 
-        return new CompoundFile(stream, leaveOpen, FileAccess.Read, new CfbStreamDataSource(stream), streaming: true);
+        return new CompoundFile(stream, leaveOpen, FileAccess.Read, new CfbStreamDataSource(stream), streaming: true, level);
     }
+
+    /// <summary>
+    /// Builds read options from a <c>buffered</c> flag, preserving the default validation level.
+    /// </summary>
+    /// <param name="buffered">Whether to buffer the whole file into memory.</param>
+    /// <returns>The resolved <see cref="CompoundFileOptions" />.</returns>
+    private static CompoundFileOptions BufferedOptions(bool buffered) =>
+        buffered
+            ? CompoundFileOptions.Default
+            : new CompoundFileOptions { ReadStrategy = CompoundReadStrategy.Streaming };
 
     /// <summary>
     /// Opens an existing compound file at the specified path for read-only access, buffering its content into memory.
@@ -465,14 +504,35 @@ public sealed class CompoundFile
     ///]]>
     /// </code>
     /// </example>
-    public static CompoundFile OpenRead(string path)
+    public static CompoundFile OpenRead(string path) =>
+        OpenRead(path, CompoundFileOptions.Default);
+
+    /// <summary>
+    /// Opens an existing compound file at the specified path for read-only access using the supplied options.
+    /// </summary>
+    /// <param name="path">The path of the compound file to open.</param>
+    /// <param name="options">The options controlling the read strategy and validation level.</param>
+    /// <returns>An open, read-only <see cref="CompoundFile" />.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="path" /> or <paramref name="options" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="FileNotFoundException">Thrown when no file exists at <paramref name="path" />.</exception>
+    /// <exception cref="CompoundFileFormatException">
+    /// Thrown when the file content is not a well-formed compound file.
+    /// </exception>
+    /// <remarks>
+    /// The returned instance owns the opened file and closes it when disposed. The file is opened with
+    /// <see cref="FileShare.Read" />, so it does not lock out other readers.
+    /// </remarks>
+    public static CompoundFile OpenRead(string path, CompoundFileOptions options)
     {
         ThrowHelper.ThrowIfNull(path);
+        ThrowHelper.ThrowIfNull(options);
 
         FileStream stream = File.OpenRead(path);
         try
         {
-            return OpenReadCore(stream, leaveOpen: false, buffered: true);
+            return OpenReadCore(stream, leaveOpen: false, options);
         }
         catch
         {

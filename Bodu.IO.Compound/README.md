@@ -50,8 +50,14 @@ if (file.TryGetSummaryInformation(out var summary))
   demand from a seekable stream, and `CompoundStorage.OpenStream(name)` returns a lazy `CompoundStream`
   for large streams, so a multi-gigabyte file can be read without buffering it whole.
   `CompoundFileBuilder.FromFile(file, lazy: true)` reads into deferred nodes for a fully streamed read → re-save copy.
+- Tunable open behavior via `CompoundFileOptions` (`CompoundFile.Open(stream, options)`): a
+  `CompoundReadStrategy` (`Buffered` / `Streaming` / `Auto` with a `MaxBufferedBytes` threshold) and a
+  `CompoundValidationLevel` — `Strict` rejects malformed directory entries the default tolerates, the
+  default `Compatible` matches the historical behavior, and `Minimal` recovers from cyclic / out-of-range /
+  short sector chains by returning the bytes read so far.
 - Per-entry metadata via `CompoundEntryInfo` (the `STATSTG` analogue): class id, state
-  bits, creation / modified time stamps, and red-black node color.
+  bits, creation / modified time stamps, and red-black node color. `CompoundStream.Parent` /
+  `CompoundStorage.Parent` give upward navigation, and every exception derives from `CompoundFileException`.
 - OLE property-set parsing **and writing** (`Bodu.IO.Compound.PropertySets`): `OlePropertySet` /
   `OlePropertyValue` (PROPVARIANT) plus the strongly-typed `SummaryInformation` /
   `DocumentSummaryInformation` views and `…Builder` authors, including user-defined custom properties.

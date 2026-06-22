@@ -28,6 +28,9 @@ internal sealed class CfbSectorReader
     /// <summary>The materialized regular file-allocation table.</summary>
     private readonly uint[] _fat;
 
+    /// <summary>The validation level governing how recoverable chain anomalies are handled.</summary>
+    private readonly CompoundValidationLevel _level;
+
     /// <summary>The materialized mini-FAT, or <see langword="null" /> until <see cref="InitializeMiniStream(uint, long)" /> runs.</summary>
     private uint[]? _miniFat;
 
@@ -39,14 +42,40 @@ internal sealed class CfbSectorReader
     /// </summary>
     /// <param name="source">The random-access source of compound-file bytes.</param>
     /// <param name="header">The parsed compound-file header.</param>
+    /// <param name="level">The validation level governing recoverable chain anomalies.</param>
     /// <exception cref="CompoundFileFormatException">
     /// Thrown when the FAT cannot be assembled from the declared layout.
     /// </exception>
-    internal CfbSectorReader(CfbDataSource source, CfbHeader header)
+    internal CfbSectorReader(CfbDataSource source, CfbHeader header, CompoundValidationLevel level)
     {
         _source = source;
         _header = header;
+        _level = level;
         _fat = BuildFat();
+    }
+
+    /// <summary>
+    /// Evaluates a recoverable chain anomaly: returns <see langword="true" /> to stop walking at
+    /// <see cref="CompoundValidationLevel.Minimal" />, throws at stricter levels, and returns <see langword="false" />
+    /// when the condition does not hold.
+    /// </summary>
+    /// <param name="condition">The anomaly condition to test.</param>
+    /// <param name="category">The failure category reported when the anomaly is rejected.</param>
+    /// <returns><see langword="true" /> to stop the current chain walk; otherwise <see langword="false" />.</returns>
+    /// <exception cref="CompoundFileFormatException">
+    /// Thrown when <paramref name="condition" /> holds and the level is stricter than
+    /// <see cref="CompoundValidationLevel.Minimal" />.
+    /// </exception>
+    private bool StopOrThrow(bool condition, CompoundFileError category)
+    {
+        if (!condition)
+            return false;
+
+        if (_level == CompoundValidationLevel.Minimal)
+            return true;
+
+        CompoundThrowHelper.ThrowFormat(CompoundResourceStrings.Format_Invalid_CompoundSectorChain, category);
+        return true;
     }
 
     /// <summary>
@@ -73,13 +102,15 @@ internal sealed class CfbSectorReader
             return [];
 
         byte[] chain = ReadChainToEnd(startSector);
-        CompoundThrowHelper.ThrowFormatIf(chain.Length < size, CompoundResourceStrings.Format_Invalid_CompoundSectorChain, CompoundFileError.StreamChainTooShort);
+        if (chain.Length < size && !StopOrThrow(true, CompoundFileError.StreamChainTooShort))
+            return chain;
 
         if (chain.Length == size)
             return chain;
 
+        // Under a tolerant level a short chain is padded with zeros to the declared length.
         byte[] result = new byte[size];
-        Array.Copy(chain, result, size);
+        Array.Copy(chain, result, Math.Min(chain.Length, size));
         return result;
     }
 
@@ -103,14 +134,10 @@ internal sealed class CfbSectorReader
 
         while (sector != CfbHeader.EndOfChain)
         {
-            CompoundThrowHelper.ThrowFormatIf(
-                sector >= (uint)_fat.Length,
-                CompoundResourceStrings.Format_Invalid_CompoundSectorChain,
-                CompoundFileError.SectorOutOfRange);
-            CompoundThrowHelper.ThrowFormatIf(
-                guard++ > _fat.Length,
-                CompoundResourceStrings.Format_Invalid_CompoundSectorChain,
-                CompoundFileError.FatCycle);
+            if (StopOrThrow(sector >= (uint)_fat.Length, CompoundFileError.SectorOutOfRange))
+                break;
+            if (StopOrThrow(guard++ > _fat.Length, CompoundFileError.FatCycle))
+                break;
 
             buffer.Write(ReadSector(sector, scratch));
             sector = _fat[sector];
@@ -137,14 +164,10 @@ internal sealed class CfbSectorReader
 
         while (sector != CfbHeader.EndOfChain)
         {
-            CompoundThrowHelper.ThrowFormatIf(
-                sector >= (uint)_fat.Length,
-                CompoundResourceStrings.Format_Invalid_CompoundSectorChain,
-                CompoundFileError.SectorOutOfRange);
-            CompoundThrowHelper.ThrowFormatIf(
-                chain.Count > _fat.Length,
-                CompoundResourceStrings.Format_Invalid_CompoundSectorChain,
-                CompoundFileError.FatCycle);
+            if (StopOrThrow(sector >= (uint)_fat.Length, CompoundFileError.SectorOutOfRange))
+                break;
+            if (StopOrThrow(chain.Count > _fat.Length, CompoundFileError.FatCycle))
+                break;
 
             chain.Add(sector);
             sector = _fat[sector];
@@ -212,7 +235,10 @@ internal sealed class CfbSectorReader
             return [];
 
         if (_miniFat is null || _miniStream is null)
-            CompoundThrowHelper.ThrowFormat(CompoundResourceStrings.Format_Invalid_CompoundSectorChain, CompoundFileError.InvalidMiniFat);
+        {
+            if (StopOrThrow(true, CompoundFileError.InvalidMiniFat))
+                return new byte[size];
+        }
 
         using MemoryStream buffer = new();
         uint sector = startMiniSector;
@@ -220,20 +246,14 @@ internal sealed class CfbSectorReader
 
         while (sector != CfbHeader.EndOfChain)
         {
-            CompoundThrowHelper.ThrowFormatIf(
-                sector >= (uint)_miniFat!.Length,
-                CompoundResourceStrings.Format_Invalid_CompoundSectorChain,
-                CompoundFileError.SectorOutOfRange);
-            CompoundThrowHelper.ThrowFormatIf(
-                guard++ > _miniFat.Length,
-                CompoundResourceStrings.Format_Invalid_CompoundSectorChain,
-                CompoundFileError.InvalidMiniFat);
+            if (StopOrThrow(sector >= (uint)_miniFat!.Length, CompoundFileError.SectorOutOfRange))
+                break;
+            if (StopOrThrow(guard++ > _miniFat.Length, CompoundFileError.InvalidMiniFat))
+                break;
 
             int offset = (int)sector * _header.MiniSectorSize;
-            CompoundThrowHelper.ThrowFormatIf(
-                offset + _header.MiniSectorSize > _miniStream!.Length,
-                CompoundResourceStrings.Format_Invalid_CompoundSectorChain,
-                CompoundFileError.InvalidMiniFat);
+            if (StopOrThrow(offset + _header.MiniSectorSize > _miniStream!.Length, CompoundFileError.InvalidMiniFat))
+                break;
 
             buffer.Write(_miniStream.AsSpan(offset, _header.MiniSectorSize));
             sector = _miniFat[sector];
@@ -251,13 +271,14 @@ internal sealed class CfbSectorReader
     /// <exception cref="CompoundFileFormatException">
     /// Thrown when the chain produced fewer than <paramref name="size" /> bytes.
     /// </exception>
-    private static byte[] Trim(MemoryStream buffer, long size)
+    private byte[] Trim(MemoryStream buffer, long size)
     {
-        CompoundThrowHelper.ThrowFormatIf(buffer.Length < size, CompoundResourceStrings.Format_Invalid_CompoundSectorChain, CompoundFileError.StreamChainTooShort);
+        // Under a tolerant level a short chain is padded with zeros to the declared length.
+        _ = StopOrThrow(buffer.Length < size, CompoundFileError.StreamChainTooShort);
 
         byte[] result = new byte[size];
         buffer.Position = 0;
-        _ = buffer.Read(result, 0, (int)size);
+        _ = buffer.Read(result, 0, (int)Math.Min(size, buffer.Length));
         return result;
     }
 
@@ -305,7 +326,8 @@ internal sealed class CfbSectorReader
 
         while (difatSector != CfbHeader.EndOfChain && difatSector != CfbHeader.FreeSector)
         {
-            CompoundThrowHelper.ThrowFormatIf(guard++ > (_source.Length / _header.SectorSize) + 1, CompoundResourceStrings.Format_Invalid_CompoundDirectory, CompoundFileError.InvalidDifat);
+            if (StopOrThrow(guard++ > (_source.Length / _header.SectorSize) + 1, CompoundFileError.InvalidDifat))
+                break;
 
             ReadOnlySpan<byte> sector = ReadSector(difatSector, scratch);
             for (int i = 0; i < perSector - 1; i++)

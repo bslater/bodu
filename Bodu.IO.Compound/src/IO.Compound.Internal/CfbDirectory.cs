@@ -30,18 +30,23 @@ internal sealed class CfbDirectory
     /// <summary>The parsed entries indexed by stream identifier; unallocated slots are <see langword="null" />.</summary>
     private readonly CfbDirectoryEntry?[] _entries;
 
+    /// <summary>The validation level governing how malformed entries and cyclic links are handled.</summary>
+    private readonly CompoundValidationLevel _level;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="CfbDirectory" /> class by parsing the directory bytes and building
     /// the storage hierarchy.
     /// </summary>
     /// <param name="directory">The full byte content of the directory chain.</param>
     /// <param name="header">The parsed compound-file header.</param>
+    /// <param name="level">The validation level governing malformed entries and cyclic links.</param>
     /// <exception cref="CompoundFileFormatException">
     /// Thrown when the directory is malformed, lacks a root storage, or contains cyclic or out-of-range tree links.
     /// </exception>
-    internal CfbDirectory(byte[] directory, CfbHeader header)
+    internal CfbDirectory(byte[] directory, CfbHeader header, CompoundValidationLevel level)
     {
-        _entries = ParseEntries(directory, header);
+        _level = level;
+        _entries = ParseEntries(directory, header, level);
 
         CompoundThrowHelper.ThrowFormatIf(
             _entries.Length == 0 || _entries[RootSid] is not { Type: CompoundEntryType.RootStorage },
@@ -73,25 +78,42 @@ internal sealed class CfbDirectory
     /// </summary>
     /// <param name="directory">The directory byte content.</param>
     /// <param name="header">The parsed compound-file header.</param>
+    /// <param name="level">
+    /// The validation level; <see cref="CompoundValidationLevel.Strict" /> rejects malformed entries that other levels
+    /// skip.
+    /// </param>
     /// <returns>The parsed entries indexed by stream identifier.</returns>
-    private static CfbDirectoryEntry?[] ParseEntries(byte[] directory, CfbHeader header)
+    /// <exception cref="CompoundFileFormatException">
+    /// Thrown at <see cref="CompoundValidationLevel.Strict" /> when an entry has an invalid name length or entry type.
+    /// </exception>
+    private static CfbDirectoryEntry?[] ParseEntries(byte[] directory, CfbHeader header, CompoundValidationLevel level)
     {
         int count = directory.Length / DirectoryEntrySize;
         CfbDirectoryEntry?[] entries = new CfbDirectoryEntry?[count];
+        bool strict = level == CompoundValidationLevel.Strict;
 
         for (int sid = 0; sid < count; sid++)
         {
             ReadOnlySpan<byte> record = directory.AsSpan(sid * DirectoryEntrySize, DirectoryEntrySize);
 
             int nameLength = BinaryPrimitives.ReadUInt16LittleEndian(record.Slice(64));
-            if (nameLength is 0 or > 64)
+
+            // A zero name length marks an unused (free) directory slot, which is normal padding at every level.
+            if (nameLength == 0)
                 continue;
+
+            if (nameLength > 64)
+            {
+                CompoundThrowHelper.ThrowFormatIf(strict, CompoundResourceStrings.Format_Invalid_CompoundDirectory, CompoundFileError.InvalidDirectory);
+                continue;
+            }
 
             var type = (CompoundEntryType)record[66];
             if (type is not CompoundEntryType.Storage
                 and not CompoundEntryType.Stream
                 and not CompoundEntryType.RootStorage)
             {
+                CompoundThrowHelper.ThrowFormatIf(strict, CompoundResourceStrings.Format_Invalid_CompoundDirectory, CompoundFileError.InvalidDirectory);
                 continue;
             }
 
@@ -160,10 +182,14 @@ internal sealed class CfbDirectory
         if (sid == CfbHeader.NoStream)
             return;
 
-        CompoundThrowHelper.ThrowFormatIf(
-            sid >= (uint)_entries.Length || _entries[sid] is null || visited[sid],
-            CompoundResourceStrings.Format_Invalid_CompoundDirectoryTree,
-            CompoundFileError.DirectoryCycle);
+        if (sid >= (uint)_entries.Length || _entries[sid] is null || visited[sid])
+        {
+            // A tolerant level prunes the offending subtree instead of rejecting the whole directory.
+            if (_level == CompoundValidationLevel.Minimal)
+                return;
+
+            CompoundThrowHelper.ThrowFormat(CompoundResourceStrings.Format_Invalid_CompoundDirectoryTree, CompoundFileError.DirectoryCycle);
+        }
 
         visited[sid] = true;
         CfbDirectoryEntry entry = _entries[sid]!;
