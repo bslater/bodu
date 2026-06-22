@@ -121,10 +121,9 @@ The companion **`Bodu.Financial.DependencyInjection`** package — a separate, S
 dotnet add package Bodu.Financial.DependencyInjection
 ```
 
-The entry point is `AddFinancialService(...)` on <xref:Bodu.Financial.DependencyInjection.ServiceCollectionExtensions>. Both overloads register the default <xref:Bodu.Financial.ICurrency> lookup and return a fluent <xref:Bodu.Financial.DependencyInjection.IFinancialServiceBuilder> on which you compose the rest of the stack: a replacement currency lookup, named monetary contexts, timeless and dated exchange-rate providers, and the JSON converters under a chosen policy. Passing an `IConfiguration` additionally binds <xref:Bodu.Financial.DependencyInjection.FinancialOptions> (`JsonPolicy`, `UnknownCurrency`) from a configuration section (default `"Financial"`).
+The entry point is `AddFinancialService(...)`, an `IServiceCollection` extension method in the `Microsoft.Extensions.DependencyInjection` namespace. Both overloads register the default <xref:Bodu.Financial.ICurrency> lookup and return a fluent <xref:Bodu.Financial.IFinancialServiceBuilder> on which you compose the rest of the stack: a replacement currency lookup, named monetary contexts, timeless and dated exchange-rate providers, and the JSON converters under a chosen policy. Passing an `IConfiguration` additionally binds <xref:Bodu.Financial.FinancialOptions> (`JsonPolicy`, `UnknownCurrency`) from a configuration section (default `"Financial"`).
 
 ```csharp
-using Bodu.Financial.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 
 builder.Services.AddFinancialService(configure: financial =>

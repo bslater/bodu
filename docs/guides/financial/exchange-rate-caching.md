@@ -212,8 +212,8 @@ IReadOnlyList<CachedExchangeRate> fresh =
 A cache backend is any [`IExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.IExchangeRateCache)
 implementation. To back the cache with a store of your own, implement that interface
 directly — the shipped
-[`SqliteExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.Sqlite.SqliteExchangeRateCache)
-and [`DistributedExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.Distributed.DistributedExchangeRateCache)
+[`SqliteExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.SqliteExchangeRateCache)
+and [`DistributedExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.DistributedExchangeRateCache)
 are exactly that and serve as worked references. Delegate the freshness, validity,
 merge, and coverage rules to the shared, public
 [`ExchangeRateCacheRules`](xref:Bodu.Financial.ExchangeRates.Caching.ExchangeRateCacheRules)
@@ -233,13 +233,14 @@ directly, as the SQLite and distributed backends do.
 
 Two further `IExchangeRateCache` backends ship as separate packages and drop in the
 same way — construct one and hand it to a `CachingExchangeRateProvider`, or register
-it through its `*.DependencyInjection` companion:
+it through the DI extension method that ships inside the backend's own package (in the
+`Microsoft.Extensions.DependencyInjection` namespace):
 
-- [`SqliteExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.Sqlite.SqliteExchangeRateCache)
+- [`SqliteExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.SqliteExchangeRateCache)
   (`Bodu.Financial.ExchangeRates.Caching.Sqlite`) persists rates and coverage in a
   SQLite database — durable across restarts, with per-pair transactional writes.
   Register it with `AddSqliteRateCache("RBA", …)`.
-- [`DistributedExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.Distributed.DistributedExchangeRateCache)
+- [`DistributedExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.DistributedExchangeRateCache)
   (`Bodu.Financial.ExchangeRates.Caching.Distributed`) stores each pair as a JSON blob
   in any `IDistributedCache` (Redis, SQL Server, in-memory), so several processes share
   one warm cache. Register it with `AddDistributedRateCache("RBA")` or
@@ -264,8 +265,8 @@ The choice is one of reach and durability:
 | [`NullExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.NullExchangeRateCache) | tests / disabling the cache | any reuse | stores nothing; every lookup is a miss |
 | [`InMemoryExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.InMemoryExchangeRateCache) | a single, long-lived process | restarts; multiple processes | process-local; lost on restart |
 | [`TomlFileExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.TomlFileExchangeRateCache) | simple durable local cache | high multi-process write concurrency | atomic temp-and-move per file; best-effort |
-| [`SqliteExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.Sqlite.SqliteExchangeRateCache) | durable single-host cache | a cache shared across hosts | strongest shipped local option; one transaction per write |
-| [`DistributedExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.Distributed.DistributedExchangeRateCache) | a warm cache shared across processes/hosts | an authoritative multi-writer store | last-write-wins per pair across processes |
+| [`SqliteExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.SqliteExchangeRateCache) | durable single-host cache | a cache shared across hosts | strongest shipped local option; one transaction per write |
+| [`DistributedExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.DistributedExchangeRateCache) | a warm cache shared across processes/hosts | an authoritative multi-writer store | last-write-wins per pair across processes |
 
 ## Grouping providers with the aggregator
 
@@ -344,15 +345,16 @@ Under dependency injection the same access is available through a keyed service
 
 ## Dependency injection
 
-The companion package `Bodu.Financial.ExchangeRates.Caching.DependencyInjection`
-registers either shape on the `IFinancialServiceBuilder`. Both resolve as the
-dated **and** timeless surfaces.
+The `Bodu.Financial.ExchangeRates.Caching` package ships its own DI registration
+(there is no separate `*.DependencyInjection` package); its extension methods register
+either shape on the `IFinancialServiceBuilder` and live in the
+`Microsoft.Extensions.DependencyInjection` namespace, so one `using` brings them into
+scope. Both resolve as the dated **and** timeless surfaces.
 
 A single cached provider:
 
 ```csharp
-using Bodu.Financial.DependencyInjection;
-using Bodu.Financial.ExchangeRates.Caching.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 
 services.AddFinancialService()
         .AddRbaHistoricalRates()
