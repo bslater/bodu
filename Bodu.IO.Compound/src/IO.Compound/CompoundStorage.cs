@@ -46,15 +46,20 @@ public sealed class CompoundStorage
     /// <summary>The staging node this storage wraps for a writable file, or <see langword="null" /> when read-only.</summary>
     private readonly CompoundStorageBuilder? _node;
 
+    /// <summary>The parent storage, or <see langword="null" /> when this is the root storage.</summary>
+    private readonly CompoundStorage? _parent;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="CompoundStorage" /> class over a parsed directory entry.
     /// </summary>
     /// <param name="file">The owning compound file.</param>
     /// <param name="entry">The directory entry the storage wraps.</param>
-    internal CompoundStorage(CompoundFile file, CfbDirectoryEntry entry)
+    /// <param name="parent">The parent storage, or <see langword="null" /> for the root storage.</param>
+    internal CompoundStorage(CompoundFile file, CfbDirectoryEntry entry, CompoundStorage? parent)
     {
         _file = file;
         _entry = entry;
+        _parent = parent;
     }
 
     /// <summary>
@@ -62,10 +67,12 @@ public sealed class CompoundStorage
     /// </summary>
     /// <param name="file">The owning writable compound file.</param>
     /// <param name="node">The staging storage node the storage wraps.</param>
-    internal CompoundStorage(CompoundFile file, CompoundStorageBuilder node)
+    /// <param name="parent">The parent storage, or <see langword="null" /> for the root storage.</param>
+    internal CompoundStorage(CompoundFile file, CompoundStorageBuilder node, CompoundStorage? parent)
     {
         _file = file;
         _node = node;
+        _parent = parent;
     }
 
     /// <summary>
@@ -73,6 +80,14 @@ public sealed class CompoundStorage
     /// </summary>
     /// <returns><see langword="true" /> when the owning file is writable; otherwise <see langword="false" />.</returns>
     public bool CanWrite => _node is not null;
+
+    /// <summary>
+    /// Gets the parent storage that contains this storage.
+    /// </summary>
+    /// <returns>
+    /// The parent <see cref="CompoundStorage" />, or <see langword="null" /> when this is the root storage.
+    /// </returns>
+    public CompoundStorage? Parent => _parent;
 
     /// <summary>
     /// Gets the name of the storage as stored in the directory.
@@ -113,7 +128,7 @@ public sealed class CompoundStorage
         if (_node is not null)
         {
             foreach (CompoundStorageBuilder child in _node.EnumerateStorages())
-                yield return new CompoundStorage(_file, child);
+                yield return new CompoundStorage(_file, child, this);
 
             yield break;
         }
@@ -121,7 +136,7 @@ public sealed class CompoundStorage
         foreach (CfbDirectoryEntry child in Children())
         {
             if (child.Type is CompoundEntryType.Storage or CompoundEntryType.RootStorage)
-                yield return new CompoundStorage(_file, child);
+                yield return new CompoundStorage(_file, child, this);
         }
     }
 
@@ -231,7 +246,7 @@ public sealed class CompoundStorage
         {
             if (_node.TryGetStorage(name, out CompoundStorageBuilder? child))
             {
-                storage = new CompoundStorage(_file, child);
+                storage = new CompoundStorage(_file, child, this);
                 return true;
             }
 
@@ -242,7 +257,7 @@ public sealed class CompoundStorage
         CfbDirectoryEntry? entry = FindChild(name, CompoundEntryType.Storage);
         if (entry is not null)
         {
-            storage = new CompoundStorage(_file, entry);
+            storage = new CompoundStorage(_file, entry, this);
             return true;
         }
 
@@ -272,7 +287,7 @@ public sealed class CompoundStorage
         {
             if (_node.TryGetStream(name, out CompoundStreamBuilder? child))
             {
-                stream = new CompoundStream(ToEntryInfo(child), child.Content.ToArray());
+                stream = new CompoundStream(ToEntryInfo(child), child.Content.ToArray(), this);
                 return true;
             }
 
@@ -283,7 +298,7 @@ public sealed class CompoundStorage
         CfbDirectoryEntry? entry = FindChild(name, CompoundEntryType.Stream);
         if (entry is not null)
         {
-            stream = _file.OpenStream(entry);
+            stream = _file.OpenStream(entry, this);
             return true;
         }
 
@@ -342,7 +357,7 @@ public sealed class CompoundStorage
 
         CompoundStorageBuilder child = _node!.AddStorage(name);
         _file.MarkDirty();
-        return new CompoundStorage(_file, child);
+        return new CompoundStorage(_file, child, this);
     }
 
     /// <summary>
@@ -519,7 +534,7 @@ public sealed class CompoundStorage
             if (existing is null)
                 throw CompoundStreamNotFoundException.ForName(name);
 
-            return new CompoundStream(ToEntryInfo(existing), existing.Content.ToArray());
+            return new CompoundStream(ToEntryInfo(existing), existing.Content.ToArray(), this);
         }
 
         CompoundStreamBuilder target;
@@ -562,7 +577,7 @@ public sealed class CompoundStorage
         }
 
         _file.MarkDirty();
-        var cursor = new CompoundStream(_file, target, seed, wantRead);
+        var cursor = new CompoundStream(_file, target, seed, wantRead, this);
         if (append)
             cursor.Seek(0, SeekOrigin.End);
 

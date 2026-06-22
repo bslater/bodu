@@ -135,7 +135,7 @@ public sealed class CompoundFile
         if (_directory.Root.Size > 0)
             _sectors.InitializeMiniStream(_directory.Root.StartSector, _directory.Root.Size);
 
-        RootStorage = new CompoundStorage(this, _directory.Root);
+        RootStorage = new CompoundStorage(this, _directory.Root, null);
     }
 
     /// <summary>
@@ -161,7 +161,7 @@ public sealed class CompoundFile
         _sectors = null!;
         _directory = null!;
 
-        RootStorage = new CompoundStorage(this, staging);
+        RootStorage = new CompoundStorage(this, staging, null);
     }
 
     /// <summary>
@@ -724,19 +724,20 @@ public sealed class CompoundFile
     /// in streaming mode and a fully-materialized view otherwise.
     /// </summary>
     /// <param name="entry">The stream entry to open.</param>
+    /// <param name="parent">The storage that owns the returned cursor.</param>
     /// <returns>A <see cref="CompoundStream" /> positioned at the start of the payload.</returns>
     /// <exception cref="ObjectDisposedException">Thrown when the file has been disposed.</exception>
     /// <exception cref="CompoundFileFormatException">Thrown when the stream's sector chain is malformed.</exception>
-    internal CompoundStream OpenStream(CfbDirectoryEntry entry)
+    internal CompoundStream OpenStream(CfbDirectoryEntry entry, CompoundStorage parent)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
 
         CompoundEntryInfo info = entry.ToEntryInfo();
         if (!_streaming || entry.Size < _header.MiniStreamCutoff)
-            return new CompoundStream(info, Materialize(entry));
+            return new CompoundStream(info, Materialize(entry), parent);
 
         uint[] chain = _sectors.GetSectorChain(entry.StartSector);
-        return new CompoundStream(info, _sectors, chain, entry.Size, _header.SectorSize);
+        return new CompoundStream(info, _sectors, chain, entry.Size, _header.SectorSize, parent);
     }
 
     /// <summary>

@@ -95,6 +95,9 @@ public sealed class CompoundStream
     /// <summary>Whether a writable cursor also permits reading.</summary>
     private readonly bool _canRead;
 
+    /// <summary>The storage that owns this cursor, or <see langword="null" /> when none was supplied.</summary>
+    private readonly CompoundStorage? _parent;
+
     /// <summary>The current read position within a read cursor's payload.</summary>
     private long _position;
 
@@ -106,12 +109,14 @@ public sealed class CompoundStream
     /// </summary>
     /// <param name="info">The metadata snapshot of the stream entry.</param>
     /// <param name="buffer">The materialized stream payload, already trimmed to the declared size.</param>
-    internal CompoundStream(CompoundEntryInfo info, byte[] buffer)
+    /// <param name="parent">The storage that owns the cursor.</param>
+    internal CompoundStream(CompoundEntryInfo info, byte[] buffer, CompoundStorage? parent)
     {
         _info = info;
         _buffer = buffer;
         _length = buffer.Length;
         _canRead = true;
+        _parent = parent;
     }
 
     /// <summary>
@@ -122,7 +127,8 @@ public sealed class CompoundStream
     /// <param name="chain">The ordered sector chain of the stream.</param>
     /// <param name="size">The declared payload length, in bytes.</param>
     /// <param name="sectorSize">The regular sector size, in bytes.</param>
-    internal CompoundStream(CompoundEntryInfo info, CfbSectorReader sectors, uint[] chain, long size, int sectorSize)
+    /// <param name="parent">The storage that owns the cursor.</param>
+    internal CompoundStream(CompoundEntryInfo info, CfbSectorReader sectors, uint[] chain, long size, int sectorSize, CompoundStorage? parent)
     {
         _info = info;
         _sectors = sectors;
@@ -130,6 +136,7 @@ public sealed class CompoundStream
         _length = size;
         _sectorSize = sectorSize;
         _canRead = true;
+        _parent = parent;
     }
 
     /// <summary>
@@ -141,12 +148,14 @@ public sealed class CompoundStream
     /// The node's current payload used to seed the buffer; empty for a truncating open.
     /// </param>
     /// <param name="canRead">Whether the cursor also permits reading.</param>
-    internal CompoundStream(CompoundFile file, CompoundStreamBuilder node, ReadOnlyMemory<byte> initialContent, bool canRead)
+    /// <param name="parent">The storage that owns the cursor.</param>
+    internal CompoundStream(CompoundFile file, CompoundStreamBuilder node, ReadOnlyMemory<byte> initialContent, bool canRead, CompoundStorage parent)
     {
         _info = new CompoundEntryInfo { Name = node.Name, EntryType = CompoundEntryType.Stream };
         _file = file;
         _node = node;
         _canRead = canRead;
+        _parent = parent;
         _write = new MemoryStream();
         if (!initialContent.IsEmpty)
         {
@@ -160,6 +169,12 @@ public sealed class CompoundStream
     /// </summary>
     /// <returns>The stream name as stored in the compound-file directory.</returns>
     public string Name => _info.Name;
+
+    /// <summary>
+    /// Gets the storage that owns this stream cursor.
+    /// </summary>
+    /// <returns>The owning <see cref="CompoundStorage" />, or <see langword="null" /> when not available.</returns>
+    public CompoundStorage? Parent => _parent;
 
     /// <summary>
     /// Gets the metadata snapshot for this stream entry.
