@@ -324,6 +324,51 @@ public partial class CompoundFileTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="CompoundStream.WriteAsync(ReadOnlyMemory{byte}, System.Threading.CancellationToken)" />
+    /// and <see cref="CompoundStream.FlushAsync(System.Threading.CancellationToken)" /> round-trip through commit.
+    /// </summary>
+    [TestMethod]
+    public async Task WriteAsync_WhenContentWritten_ShouldRoundTripThroughReopen()
+    {
+        byte[] payload = [11, 22, 33, 44];
+        var destination = new MemoryStream();
+
+        using (CompoundFile file = CompoundFile.Create(destination, leaveOpen: true))
+        {
+            await using (CompoundStream stream = file.RootStorage.CreateStream("Async"))
+            {
+                await stream.WriteAsync(payload);
+                await stream.FlushAsync();
+            }
+
+            file.Commit();
+        }
+
+        destination.Position = 0;
+        using CompoundFile reopened = CompoundFile.Open(destination);
+        using CompoundStream read = reopened.RootStorage.OpenStream("Async");
+
+        CollectionAssert.AreEqual(payload, read.ReadAllBytes().ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundStream.WriteAsync(byte[], int, int, System.Threading.CancellationToken)" />
+    /// throws <see cref="NotSupportedException" /> on a read-only cursor.
+    /// </summary>
+    [TestMethod]
+    public async Task WriteAsync_WhenCursorIsReadOnly_ShouldThrowNotSupportedException()
+    {
+        using CompoundFile file = OpenSample();
+        string name = file.RootStorage.EnumerateStreams().First().Name;
+        using CompoundStream stream = file.RootStorage.OpenStream(name);
+
+        await Assert.ThrowsExactlyAsync<NotSupportedException>(async () =>
+        {
+            await stream.WriteAsync(new byte[] { 1 }, 0, 1);
+        });
+    }
+
+    /// <summary>
     /// Creates an in-memory compound file containing the supplied root-level streams.
     /// </summary>
     /// <param name="streams">The name/content pairs to write to the root storage.</param>

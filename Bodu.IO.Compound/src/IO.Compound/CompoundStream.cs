@@ -394,6 +394,61 @@ public sealed class CompoundStream
     }
 
     /// <inheritdoc />
+    /// <exception cref="NotSupportedException">Thrown when the cursor is read-only.</exception>
+    public override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
+    {
+        ThrowHelper.ThrowIfNull(buffer);
+        ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(buffer, offset, count);
+        if (cancellationToken.IsCancellationRequested)
+            return Task.FromCanceled(cancellationToken);
+
+        try
+        {
+            Write(buffer.AsSpan(offset, count));
+            return Task.CompletedTask;
+        }
+        catch (Exception ex)
+        {
+            return Task.FromException(ex);
+        }
+    }
+
+    /// <inheritdoc />
+    /// <exception cref="NotSupportedException">Thrown when the cursor is read-only.</exception>
+    public override ValueTask WriteAsync(ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken = default)
+    {
+        if (cancellationToken.IsCancellationRequested)
+            return ValueTask.FromCanceled(cancellationToken);
+
+        try
+        {
+            Write(buffer.Span);
+            return ValueTask.CompletedTask;
+        }
+        catch (Exception ex)
+        {
+            return ValueTask.FromException(ex);
+        }
+    }
+
+    /// <inheritdoc />
+    public override Task FlushAsync(CancellationToken cancellationToken)
+    {
+        if (cancellationToken.IsCancellationRequested)
+            return Task.FromCanceled(cancellationToken);
+
+        try
+        {
+            Flush();
+            return Task.CompletedTask;
+        }
+        catch (Exception ex)
+        {
+            return Task.FromException(ex);
+        }
+    }
+
+    /// <inheritdoc />
     protected override void Dispose(bool disposing)
     {
         if (!_disposed && disposing && _write is not null)
