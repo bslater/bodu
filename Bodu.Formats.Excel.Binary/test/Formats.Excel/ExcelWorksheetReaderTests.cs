@@ -4,15 +4,23 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Formats.Excel.Contracts;
+
 namespace Bodu.Formats.Excel;
 
 /// <summary>
 /// Verifies the behavior of <see cref="ExcelWorksheetReader" /> against synthetic BIFF8 cell records, exercising the
-/// value-record and malformed-record paths the real-world fixture does not contain.
+/// streaming decode surface of the shared cell-decode contract together with the reader's own enumeration, grouping,
+/// disposal, and malformed-record paths.
 /// </summary>
 [TestClass]
 public partial class ExcelWorksheetReaderTests
+    : ExcelCellDecodeContractTests
 {
+    /// <inheritdoc />
+    protected override IReadOnlyDictionary<(int Row, int Column), ExcelCell> DecodeCells(ExcelCellDecodeKat kat) =>
+        ReadGrid(kat.Records);
+
     /// <summary>
     /// Reads every cell from a synthetic worksheet substream into a position-keyed dictionary.
     /// </summary>

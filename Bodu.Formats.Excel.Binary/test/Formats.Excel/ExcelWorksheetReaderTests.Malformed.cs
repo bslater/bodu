@@ -4,95 +4,56 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Kat;
+
 namespace Bodu.Formats.Excel;
 
 public partial class ExcelWorksheetReaderTests
 {
     /// <summary>
-    /// Verifies that a truncated <c>NUMBER</c> record throws <see cref="ExcelBinaryFormatException" />.
+    /// Gets the malformed-record known-answer rows, each wrapped as a single-element <c>object[]</c> for
+    /// <c>[DynamicData]</c>.
     /// </summary>
-    [TestMethod]
-    public void TryReadCell_WhenNumberRecordTruncated_ShouldThrowFormatException()
+    /// <returns>A sequence of rows, each carrying one <see cref="MalformedRecordKat" />.</returns>
+    public static IEnumerable<object[]> MalformedRecords
     {
-        _ = Assert.ThrowsExactly<ExcelBinaryFormatException>(() =>
+        get
         {
-            _ = ReadGrid(Biff8TestWorkbook.Record(0x0203, new byte[8]));
-        });
+            foreach (MalformedRecordKat kat in MalformedCatalogue)
+                yield return [kat];
+        }
     }
 
-    /// <summary>
-    /// Verifies that a truncated <c>RK</c> record throws <see cref="ExcelBinaryFormatException" />.
-    /// </summary>
-    [TestMethod]
-    public void TryReadCell_WhenRkRecordTruncated_ShouldThrowFormatException()
-    {
-        _ = Assert.ThrowsExactly<ExcelBinaryFormatException>(() =>
-        {
-            _ = ReadGrid(Biff8TestWorkbook.Record(0x027E, new byte[6]));
-        });
-    }
+    /// <summary>The immutable catalogue of malformed-record rows.</summary>
+    private static IReadOnlyList<MalformedRecordKat> MalformedCatalogue { get; } =
+    [
+        new("truncated NUMBER record", [Biff8TestWorkbook.Record(0x0203, new byte[8])]),
+        new("truncated RK record", [Biff8TestWorkbook.Record(0x027E, new byte[6])]),
+        new("truncated LABELSST record", [Biff8TestWorkbook.Record(0x00FD, new byte[6])]),
+        new("truncated BOOLERR record", [Biff8TestWorkbook.Record(0x0205, new byte[4])]),
+        new("truncated FORMULA record", [Biff8TestWorkbook.Record(0x0006, new byte[8])]),
+
+        // 6 header bytes + 5 run bytes is not a whole number of (ixfe + rk) entries.
+        new("MULRK run not a whole number of entries", [Biff8TestWorkbook.Record(0x00BD, new byte[11])]),
+
+        // The reader's shared string table is empty, so index 0 is out of range.
+        new("LABELSST index out of range", [Biff8TestWorkbook.LabelSst(0, 0, 0)]),
+    ];
 
     /// <summary>
-    /// Verifies that a truncated <c>LABELSST</c> record throws <see cref="ExcelBinaryFormatException" />.
+    /// Verifies that a malformed cell record is rejected with <see cref="ExcelBinaryFormatException" />.
     /// </summary>
+    /// <param name="kat">The malformed-record row under test.</param>
     [TestMethod]
-    public void TryReadCell_WhenLabelSstRecordTruncated_ShouldThrowFormatException()
+    [DynamicData(
+        nameof(MalformedRecords),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void TryReadCell_WhenRecordMalformed_ShouldThrowFormatException(MalformedRecordKat kat)
     {
         _ = Assert.ThrowsExactly<ExcelBinaryFormatException>(() =>
         {
-            _ = ReadGrid(Biff8TestWorkbook.Record(0x00FD, new byte[6]));
-        });
-    }
-
-    /// <summary>
-    /// Verifies that a truncated <c>BOOLERR</c> record throws <see cref="ExcelBinaryFormatException" />.
-    /// </summary>
-    [TestMethod]
-    public void TryReadCell_WhenBoolErrRecordTruncated_ShouldThrowFormatException()
-    {
-        _ = Assert.ThrowsExactly<ExcelBinaryFormatException>(() =>
-        {
-            _ = ReadGrid(Biff8TestWorkbook.Record(0x0205, new byte[4]));
-        });
-    }
-
-    /// <summary>
-    /// Verifies that a truncated <c>FORMULA</c> record throws <see cref="ExcelBinaryFormatException" />.
-    /// </summary>
-    [TestMethod]
-    public void TryReadCell_WhenFormulaRecordTruncated_ShouldThrowFormatException()
-    {
-        _ = Assert.ThrowsExactly<ExcelBinaryFormatException>(() =>
-        {
-            _ = ReadGrid(Biff8TestWorkbook.Record(0x0006, new byte[8]));
-        });
-    }
-
-    /// <summary>
-    /// Verifies that a <c>MULRK</c> record whose cell run is not a whole number of entries throws
-    /// <see cref="ExcelBinaryFormatException" />.
-    /// </summary>
-    [TestMethod]
-    public void TryReadCell_WhenMulRkRunNotWhole_ShouldThrowFormatException()
-    {
-        _ = Assert.ThrowsExactly<ExcelBinaryFormatException>(() =>
-        {
-            // 6 header bytes + 5 run bytes is not a whole number of (ixfe + rk) entries.
-            _ = ReadGrid(Biff8TestWorkbook.Record(0x00BD, new byte[11]));
-        });
-    }
-
-    /// <summary>
-    /// Verifies that a <c>LABELSST</c> cell whose shared-string index is out of range throws
-    /// <see cref="ExcelBinaryFormatException" />.
-    /// </summary>
-    [TestMethod]
-    public void TryReadCell_WhenLabelSstIndexOutOfRange_ShouldThrowFormatException()
-    {
-        _ = Assert.ThrowsExactly<ExcelBinaryFormatException>(() =>
-        {
-            // The reader's shared string table is empty, so index 0 is out of range.
-            _ = ReadGrid(Biff8TestWorkbook.LabelSst(0, 0, 0));
+            _ = ReadGrid(kat.Records);
         });
     }
 

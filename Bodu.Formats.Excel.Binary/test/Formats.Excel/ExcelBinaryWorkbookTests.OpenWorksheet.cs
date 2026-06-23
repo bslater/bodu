@@ -1,10 +1,8 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="ExcelBinaryWorkbookTests.Cells.cs" company="Bodu Pty. Ltd.">
+// <copyright file="ExcelBinaryWorkbookTests.OpenWorksheet.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System.Linq;
 
 namespace Bodu.Formats.Excel;
 
@@ -75,6 +73,30 @@ public partial class ExcelBinaryWorkbookTests
     }
 
     /// <summary>
+    /// Verifies that a shared-string cell and an inline-label cell decode to their text values.
+    /// </summary>
+    [TestMethod]
+    public void OpenWorksheet_WhenSharedAndInlineStrings_ShouldDecodeBoth()
+    {
+        byte[][] body =
+        [
+            Biff8TestWorkbook.LabelSst(0, 0, 1),
+            Biff8TestWorkbook.Label(0, 1, "Inline"),
+            Biff8TestWorkbook.Number(1, 0, 3.5),
+        ];
+        using MemoryStream xls = Biff8TestWorkbook.BuildWorkbook(
+            [Biff8TestWorkbook.Sst("Alpha", "Beta")],
+            new Biff8TestWorkbook.SheetSpec("Sheet1", 0, 0, body));
+
+        using ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.OpenRead(xls);
+        Dictionary<(int Row, int Column), ExcelCell> grid = ReadCellGrid(workbook, "Sheet1");
+
+        Assert.AreEqual("Beta", grid[(0, 0)].StringValue);
+        Assert.AreEqual("Inline", grid[(0, 1)].StringValue);
+        Assert.AreEqual(3.5, grid[(1, 0)].NumberValue!.Value, 0.0);
+    }
+
+    /// <summary>
     /// Verifies that two worksheet readers from the same workbook can be read independently.
     /// </summary>
     [TestMethod]
@@ -89,6 +111,35 @@ public partial class ExcelBinaryWorkbookTests
         Assert.IsTrue(notes.TryReadCell(out _));
         Assert.AreEqual("Data", data.Worksheet.Name);
         Assert.AreEqual("Notes", notes.Worksheet.Name);
+    }
+
+    /// <summary>
+    /// Verifies that the serial-date column is flagged as date-formatted while the rate column is not.
+    /// </summary>
+    [TestMethod]
+    public void OpenWorksheet_WhenDataSheet_ShouldFlagDateFormattedColumn()
+    {
+        using ExcelBinaryWorkbook workbook = OpenSample();
+
+        Dictionary<(int Row, int Column), ExcelCell> grid = ReadCellGrid(workbook, "Data");
+
+        Assert.IsTrue(grid[(11, 0)].IsDateFormatted, "The first data column holds serial dates.");
+        Assert.IsFalse(grid[(11, 1)].IsDateFormatted, "The rate column holds plain numbers.");
+    }
+
+    /// <summary>
+    /// Verifies that disabling date-format detection leaves every numeric cell unflagged.
+    /// </summary>
+    [TestMethod]
+    public void OpenWorksheet_WhenDateDetectionDisabled_ShouldNotFlagDateColumn()
+    {
+        using ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.Open(
+            ExcelBinaryFixtures.OpenStream(ExcelBinaryFixtures.SampleBiff8),
+            new ExcelBinaryReaderOptions { DetectDateFormats = false });
+
+        Dictionary<(int Row, int Column), ExcelCell> grid = ReadCellGrid(workbook, "Data");
+
+        Assert.IsFalse(grid[(11, 0)].IsDateFormatted);
     }
 
     /// <summary>
