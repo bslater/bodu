@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Biff8WorkbookProperties.cs" company="Bodu Pty. Ltd.">
+// <copyright file="ExcelWorkbookProperties.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -9,15 +9,20 @@ using Bodu.IO.Compound.PropertySets;
 namespace Bodu.Formats.Excel.Binary;
 
 /// <summary>
-/// Exposes the document properties of a workbook, read from the compound file's summary-information property sets.
+/// Exposes the flattened document properties of a workbook, read from the compound file's summary-information property
+/// sets.
 /// </summary>
 /// <remarks>
 /// The values are sourced from the <c>SummaryInformation</c> and <c>DocumentSummaryInformation</c> streams. A workbook
 /// that omits a stream, or whose property set cannot be parsed, yields <see langword="null" /> for the affected members
-/// rather than failing the workbook read.
+/// rather than failing the workbook read. The lower-level property-set model is intentionally not exposed here; the
+/// Excel surface presents only the flattened document fields.
 /// </remarks>
-public sealed class Biff8WorkbookProperties
+public sealed class ExcelWorkbookProperties
 {
+    /// <summary>An empty property view used when neither property-set stream is present.</summary>
+    internal static readonly ExcelWorkbookProperties Empty = new(null, null);
+
     /// <summary>The parsed summary-information property set, when present.</summary>
     private readonly SummaryInformation? _summary;
 
@@ -25,7 +30,7 @@ public sealed class Biff8WorkbookProperties
     private readonly DocumentSummaryInformation? _document;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Biff8WorkbookProperties" /> class.
+    /// Initializes a new instance of the <see cref="ExcelWorkbookProperties" /> class.
     /// </summary>
     /// <param name="summary">
     /// The parsed summary-information property set, or <see langword="null" /> when absent.
@@ -33,7 +38,7 @@ public sealed class Biff8WorkbookProperties
     /// <param name="document">
     /// The parsed document-summary-information property set, or <see langword="null" /> when absent.
     /// </param>
-    internal Biff8WorkbookProperties(SummaryInformation? summary, DocumentSummaryInformation? document)
+    internal ExcelWorkbookProperties(SummaryInformation? summary, DocumentSummaryInformation? document)
     {
         _summary = summary;
         _document = document;
@@ -116,18 +121,4 @@ public sealed class Biff8WorkbookProperties
     /// </summary>
     /// <returns>The category, or <see langword="null" /> when not recorded.</returns>
     public string? Category => _document?.Category;
-
-    /// <summary>
-    /// Gets the underlying summary-information property set, when present.
-    /// </summary>
-    /// <returns>The parsed summary information, or <see langword="null" /> when the stream is absent.</returns>
-    public SummaryInformation? Summary => _summary;
-
-    /// <summary>
-    /// Gets the underlying document-summary-information property set, when present.
-    /// </summary>
-    /// <returns>
-    /// The parsed document summary information, or <see langword="null" /> when the stream is absent.
-    /// </returns>
-    public DocumentSummaryInformation? Document => _document;
 }

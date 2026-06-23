@@ -1,16 +1,16 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Biff8RecordType.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Formats.Excel.Binary;
+namespace Bodu.Formats.Excel.Binary.Biff8;
 
 /// <summary>
 /// Identifies the BIFF8 record types this reader recognizes. Values match the record identifiers defined by the Excel
 /// 97-2003 binary file format; any record whose identifier is not listed here is skipped during reading.
 /// </summary>
-public enum Biff8RecordType : ushort
+internal enum Biff8RecordType : ushort
 {
     /// <summary>
     /// Beginning-of-file record that opens a substream (the workbook globals or a sheet).
@@ -28,7 +28,7 @@ public enum Biff8RecordType : ushort
     Continue = 0x003C,
 
     /// <summary>
-    /// Bound-sheet record declaring a sheet's name, visibility, and substream position.
+    /// Bound-sheet record declaring a sheet's name, visibility, type, and substream position.
     /// </summary>
     BoundSheet = 0x0085,
 
@@ -76,6 +76,11 @@ public enum Biff8RecordType : ushort
     /// A cell whose value is an index into the shared string table.
     /// </summary>
     LabelSst = 0x00FD,
+
+    /// <summary>
+    /// A cell holding an inline (non-shared) string, used by some producers in place of <see cref="LabelSst" />.
+    /// </summary>
+    Label = 0x0204,
 
     /// <summary>
     /// A cell holding an IEEE 754 double-precision number.

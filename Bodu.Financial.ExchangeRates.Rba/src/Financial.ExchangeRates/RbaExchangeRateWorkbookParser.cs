@@ -58,7 +58,7 @@ internal static class RbaExchangeRateWorkbookParser
     /// <exception cref="ExchangeRateFormatException">
     /// Thrown when the workbook does not match the expected RBA layout.
     /// </exception>
-    internal static RbaExchangeRateTable Parse(Biff8WorkbookReader workbook, RbaExchangeRateOptions options)
+    internal static RbaExchangeRateTable Parse(ExcelBinaryWorkbook workbook, RbaExchangeRateOptions options)
     {
         ThrowHelper.ThrowIfNull(workbook);
         ThrowHelper.ThrowIfNull(options);
@@ -91,9 +91,9 @@ internal static class RbaExchangeRateWorkbookParser
     /// </summary>
     /// <param name="workbook">The workbook to inspect.</param>
     /// <returns><see langword="true" /> when a <c>Data</c> sheet exists; otherwise <see langword="false" />.</returns>
-    private static bool HasDataSheet(Biff8WorkbookReader workbook)
+    private static bool HasDataSheet(ExcelBinaryWorkbook workbook)
     {
-        foreach (Biff8SheetInfo sheet in workbook.Sheets)
+        foreach (ExcelWorksheetInfo sheet in workbook.Worksheets)
         {
             if (string.Equals(sheet.Name, DataSheetName, StringComparison.OrdinalIgnoreCase))
                 return true;
@@ -107,10 +107,11 @@ internal static class RbaExchangeRateWorkbookParser
     /// </summary>
     /// <param name="workbook">The workbook to read.</param>
     /// <returns>A dictionary mapping each populated cell's (row, column) to its value.</returns>
-    private static Dictionary<(int Row, int Column), ExcelCell> BuildGrid(Biff8WorkbookReader workbook)
+    private static Dictionary<(int Row, int Column), ExcelCell> BuildGrid(ExcelBinaryWorkbook workbook)
     {
         Dictionary<(int Row, int Column), ExcelCell> grid = new();
-        foreach (ExcelCell cell in workbook.ReadSheetCells(DataSheetName))
+        using ExcelWorksheetReader reader = workbook.OpenWorksheet(DataSheetName);
+        while (reader.TryReadCell(out ExcelCell cell))
             grid[(cell.RowIndex, cell.ColumnIndex)] = cell;
 
         return grid;

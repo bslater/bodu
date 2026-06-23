@@ -10,9 +10,9 @@ namespace Bodu.Formats.Excel.Binary;
 /// Provides a materialized, randomly addressable view over the populated cells of a single worksheet.
 /// </summary>
 /// <remarks>
-/// Unlike the streaming <see cref="Biff8WorkbookReader.ReadSheetCells(int)" /> surface, a worksheet buffers every
-/// populated cell once, exposing them by position through <see cref="TryGetCell(int, int, out ExcelCell)" /> and
-/// grouped into <see cref="Rows" />. Absent cells are omitted, so both surfaces are sparse.
+/// Unlike the forward-only <see cref="ExcelWorksheetReader" /> surface, a worksheet buffers every populated cell once,
+/// exposing them by position through <see cref="TryGetCell(int, int, out ExcelCell)" /> and grouped into
+/// <see cref="Rows" />. Absent cells are omitted, so both surfaces are sparse.
 /// </remarks>
 public sealed class ExcelWorksheet
 {
@@ -30,7 +30,7 @@ public sealed class ExcelWorksheet
     /// </summary>
     /// <param name="sheet">The worksheet descriptor.</param>
     /// <param name="cells">The populated cells, in any order.</param>
-    internal ExcelWorksheet(Biff8SheetInfo sheet, IEnumerable<ExcelCell> cells)
+    internal ExcelWorksheet(ExcelWorksheetInfo sheet, IEnumerable<ExcelCell> cells)
     {
         Name = sheet.Name;
         Index = sheet.Index;
@@ -64,7 +64,7 @@ public sealed class ExcelWorksheet
     /// Gets the used range declared by the worksheet's <c>DIMENSIONS</c> record.
     /// </summary>
     /// <returns>The declared used range.</returns>
-    public Biff8SheetDimensions Dimensions { get; }
+    public ExcelWorksheetDimensions Dimensions { get; }
 
     /// <summary>
     /// Gets the populated cells of the worksheet, in row-major order.

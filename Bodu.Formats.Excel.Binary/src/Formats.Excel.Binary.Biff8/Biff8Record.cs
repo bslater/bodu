@@ -4,20 +4,20 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Formats.Excel.Binary;
+namespace Bodu.Formats.Excel.Binary.Biff8;
 
 /// <summary>
-/// Represents a single BIFF record: a 16-bit type identifier and its payload, sliced from the workbook stream without
-/// copying.
+/// Represents a single BIFF record yielded by a <see cref="Biff8RecordCursor" />: its typed identifier and a payload
+/// slice over the underlying buffer, without copying.
 /// </summary>
-internal readonly struct Biff8Record
+internal readonly ref struct Biff8Record
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="Biff8Record" /> struct.
     /// </summary>
     /// <param name="id">The 16-bit record type identifier.</param>
     /// <param name="payload">The record payload, excluding the four-byte type-and-length header.</param>
-    internal Biff8Record(ushort id, ReadOnlyMemory<byte> payload)
+    internal Biff8Record(ushort id, ReadOnlySpan<byte> payload)
     {
         Id = id;
         Payload = payload;
@@ -32,8 +32,8 @@ internal readonly struct Biff8Record
     /// <summary>
     /// Gets the record payload, excluding the four-byte type-and-length header.
     /// </summary>
-    /// <returns>A slice of the workbook stream containing the record payload.</returns>
-    public ReadOnlyMemory<byte> Payload { get; }
+    /// <returns>A slice of the source buffer containing the record payload.</returns>
+    public ReadOnlySpan<byte> Payload { get; }
 
     /// <summary>
     /// Gets the record type identifier as a <see cref="Biff8RecordType" />.

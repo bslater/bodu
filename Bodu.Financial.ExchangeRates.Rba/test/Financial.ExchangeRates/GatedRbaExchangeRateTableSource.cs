@@ -67,7 +67,7 @@ internal sealed class GatedRbaExchangeRateTableSource
         await _gate.Task.ConfigureAwait(false);
 
         using MemoryStream stream = RbaFixtures.OpenStream(_fileName);
-        var workbook = Biff8WorkbookReader.Open(stream);
+        using ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.OpenRead(stream, leaveOpen: true);
         return RbaExchangeRateWorkbookParser.Parse(workbook, _options);
     }
 }

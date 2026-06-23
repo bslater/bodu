@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Biff8SheetDimensions.cs" company="Bodu Pty. Ltd.">
+// <copyright file="ExcelWorksheetDimensions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -20,16 +20,16 @@ namespace Bodu.Formats.Excel.Binary;
 /// A worksheet with no <c>DIMENSIONS</c> record yields the default value, whose counts are zero.
 /// </para>
 /// </remarks>
-public readonly record struct Biff8SheetDimensions
+public readonly record struct ExcelWorksheetDimensions
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="Biff8SheetDimensions" /> class.
+    /// Initializes a new instance of the <see cref="ExcelWorksheetDimensions" /> struct.
     /// </summary>
     /// <param name="firstRowIndex">The zero-based index of the first used row.</param>
     /// <param name="rowCount">The number of rows in the used range.</param>
     /// <param name="firstColumnIndex">The zero-based index of the first used column.</param>
     /// <param name="columnCount">The number of columns in the used range.</param>
-    internal Biff8SheetDimensions(int firstRowIndex, int rowCount, int firstColumnIndex, int columnCount)
+    internal ExcelWorksheetDimensions(int firstRowIndex, int rowCount, int firstColumnIndex, int columnCount)
     {
         FirstRowIndex = firstRowIndex;
         RowCount = rowCount;

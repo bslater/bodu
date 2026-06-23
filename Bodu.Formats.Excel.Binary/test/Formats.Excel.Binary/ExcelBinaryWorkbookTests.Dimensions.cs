@@ -1,12 +1,12 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Biff8WorkbookReaderTests.Dimensions.cs" company="Bodu Pty. Ltd.">
+// <copyright file="ExcelBinaryWorkbookTests.Dimensions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Formats.Excel.Binary;
 
-public partial class Biff8WorkbookReaderTests
+public partial class ExcelBinaryWorkbookTests
 {
     /// <summary>
     /// Verifies that the data sheet exposes the used range declared by its <c>DIMENSIONS</c> record.
@@ -14,9 +14,9 @@ public partial class Biff8WorkbookReaderTests
     [TestMethod]
     public void Dimensions_WhenDataSheet_ShouldReportDeclaredUsedRange()
     {
-        Biff8WorkbookReader reader = OpenSample();
+        using ExcelBinaryWorkbook workbook = OpenSample();
 
-        Biff8SheetDimensions dimensions = reader.Sheets[0].Dimensions;
+        ExcelWorksheetDimensions dimensions = workbook.Worksheets[0].Dimensions;
 
         Assert.AreEqual(0, dimensions.FirstRowIndex);
         Assert.AreEqual(2186, dimensions.RowCount);
@@ -30,9 +30,9 @@ public partial class Biff8WorkbookReaderTests
     [TestMethod]
     public void Dimensions_WhenNotesSheet_ShouldReportDeclaredUsedRange()
     {
-        Biff8WorkbookReader reader = OpenSample();
+        using ExcelBinaryWorkbook workbook = OpenSample();
 
-        Biff8SheetDimensions dimensions = reader.Sheets[1].Dimensions;
+        ExcelWorksheetDimensions dimensions = workbook.Worksheets[1].Dimensions;
 
         Assert.AreEqual(0, dimensions.FirstRowIndex);
         Assert.AreEqual(28, dimensions.RowCount);

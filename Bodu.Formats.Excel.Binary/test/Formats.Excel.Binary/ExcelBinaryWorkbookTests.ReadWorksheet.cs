@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Biff8WorkbookReaderTests.ReadWorksheet.cs" company="Bodu Pty. Ltd.">
+// <copyright file="ExcelBinaryWorkbookTests.ReadWorksheet.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace Bodu.Formats.Excel.Binary;
 
-public partial class Biff8WorkbookReaderTests
+public partial class ExcelBinaryWorkbookTests
 {
     /// <summary>
     /// Verifies that a materialized worksheet supports random access by position.
@@ -16,9 +16,9 @@ public partial class Biff8WorkbookReaderTests
     [TestMethod]
     public void ReadWorksheet_WhenByName_ShouldSupportRandomAccess()
     {
-        Biff8WorkbookReader reader = OpenSample();
+        using ExcelBinaryWorkbook workbook = OpenSample();
 
-        ExcelWorksheet sheet = reader.ReadWorksheet("Data");
+        ExcelWorksheet sheet = workbook.ReadWorksheet("Data");
 
         Assert.IsTrue(sheet.TryGetCell(10, 1, out ExcelCell seriesId));
         Assert.AreEqual("FXRUSD", seriesId.StringValue);
@@ -31,9 +31,9 @@ public partial class Biff8WorkbookReaderTests
     [TestMethod]
     public void ReadWorksheet_WhenByIndex_ShouldExposeSheetMetadata()
     {
-        Biff8WorkbookReader reader = OpenSample();
+        using ExcelBinaryWorkbook workbook = OpenSample();
 
-        ExcelWorksheet sheet = reader.ReadWorksheet(0);
+        ExcelWorksheet sheet = workbook.ReadWorksheet(0);
 
         Assert.AreEqual("Data", sheet.Name);
         Assert.AreEqual(0, sheet.Index);
@@ -46,9 +46,9 @@ public partial class Biff8WorkbookReaderTests
     [TestMethod]
     public void ReadWorksheet_WhenGroupingRows_ShouldOrderRowsAndCells()
     {
-        Biff8WorkbookReader reader = OpenSample();
+        using ExcelBinaryWorkbook workbook = OpenSample();
 
-        ExcelWorksheet sheet = reader.ReadWorksheet("Data");
+        ExcelWorksheet sheet = workbook.ReadWorksheet("Data");
         List<int> rowIndexes = sheet.Rows.Select(r => r.RowIndex).ToList();
 
         CollectionAssert.AreEqual(rowIndexes.OrderBy(r => r).ToList(), rowIndexes);
@@ -66,11 +66,11 @@ public partial class Biff8WorkbookReaderTests
     [TestMethod]
     public void ReadWorksheet_WhenNameMissing_ShouldThrowKeyNotFoundException()
     {
-        Biff8WorkbookReader reader = OpenSample();
+        using ExcelBinaryWorkbook workbook = OpenSample();
 
         _ = Assert.ThrowsExactly<KeyNotFoundException>(() =>
         {
-            _ = reader.ReadWorksheet("NoSuchSheet");
+            _ = workbook.ReadWorksheet("NoSuchSheet");
         });
     }
 
@@ -80,11 +80,11 @@ public partial class Biff8WorkbookReaderTests
     [TestMethod]
     public void ReadWorksheet_WhenIndexOutOfRange_ShouldThrowArgumentOutOfRangeException()
     {
-        Biff8WorkbookReader reader = OpenSample();
+        using ExcelBinaryWorkbook workbook = OpenSample();
 
         _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            _ = reader.ReadWorksheet(99);
+            _ = workbook.ReadWorksheet(99);
         });
     }
 }

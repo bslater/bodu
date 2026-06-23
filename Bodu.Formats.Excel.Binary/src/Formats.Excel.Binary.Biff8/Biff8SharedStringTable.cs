@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Biff8SharedStringTable.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -7,7 +7,7 @@
 using System.Buffers.Binary;
 using System.Text;
 
-namespace Bodu.Formats.Excel.Binary;
+namespace Bodu.Formats.Excel.Binary.Biff8;
 
 /// <summary>
 /// Decodes the BIFF8 shared string table (SST), the workbook-global pool of deduplicated text values that cell records
@@ -16,7 +16,8 @@ namespace Bodu.Formats.Excel.Binary;
 /// <remarks>
 /// A single string may straddle the boundary between the SST record and one or more following <c>CONTINUE</c> records.
 /// The split can fall between characters, and the compression flag (one byte indicating 8-bit or 16-bit characters) is
-/// repeated at the start of each continued segment. This decoder reconstructs strings across those boundaries.
+/// repeated at the start of each continued segment. This decoder reconstructs strings across those boundaries and
+/// rejects a table that is truncated or otherwise malformed with <see cref="ExcelBinaryFormatException" />.
 /// </remarks>
 internal static class Biff8SharedStringTable
 {
@@ -25,7 +26,7 @@ internal static class Biff8SharedStringTable
     /// </summary>
     /// <param name="blocks">The SST payload followed, in order, by the payloads of its continuation records.</param>
     /// <returns>The decoded unique strings, indexed as cells reference them.</returns>
-    /// <exception cref="Biff8FormatException">Thrown when the table is truncated or otherwise malformed.</exception>
+    /// <exception cref="ExcelBinaryFormatException">Thrown when the table is truncated or otherwise malformed.</exception>
     internal static string[] Parse(IReadOnlyList<ReadOnlyMemory<byte>> blocks)
     {
         if (blocks.Count == 0)
@@ -33,10 +34,19 @@ internal static class Biff8SharedStringTable
 
         ReadOnlySpan<byte> first = blocks[0].Span;
         if (first.Length < 8)
-            throw new Biff8FormatException(ExcelBinaryResourceStrings.Format_Invalid_Biff8SharedString);
+            throw Malformed();
 
         uint unique = BinaryPrimitives.ReadUInt32LittleEndian(first.Slice(4));
-        List<string> result = new();
+
+        // Guard against a hostile or corrupt count that would otherwise drive an unbounded allocation; the count cannot
+        // exceed the number of three-byte minimum string headers the available bytes could hold.
+        long totalBytes = 0;
+        for (int i = 0; i < blocks.Count; i++)
+            totalBytes += blocks[i].Length;
+        if (unique > totalBytes)
+            throw Malformed();
+
+        List<string> result = new((int)Math.Min(unique, 1024));
 
         int block = 0;
         int offset = 8;
@@ -44,10 +54,12 @@ internal static class Biff8SharedStringTable
         for (uint index = 0; index < unique; index++)
         {
             AdvancePastBlockEnd(blocks, ref block, ref offset);
+            if (block >= blocks.Count)
+                throw Malformed();
 
             ReadOnlySpan<byte> header = blocks[block].Span;
             if (offset + 3 > header.Length)
-                throw new Biff8FormatException(ExcelBinaryResourceStrings.Format_Invalid_Biff8SharedString);
+                throw Malformed();
 
             int charCount = BinaryPrimitives.ReadUInt16LittleEndian(header.Slice(offset));
             offset += 2;
@@ -60,6 +72,9 @@ internal static class Biff8SharedStringTable
             int richRunCount = 0;
             if (hasRichRuns)
             {
+                if (offset + 2 > header.Length)
+                    throw Malformed();
+
                 richRunCount = BinaryPrimitives.ReadUInt16LittleEndian(header.Slice(offset));
                 offset += 2;
             }
@@ -67,9 +82,15 @@ internal static class Biff8SharedStringTable
             int extendedSize = 0;
             if (hasExtended)
             {
+                if (offset + 4 > header.Length)
+                    throw Malformed();
+
                 extendedSize = (int)BinaryPrimitives.ReadUInt32LittleEndian(header.Slice(offset));
                 offset += 4;
             }
+
+            if (richRunCount < 0 || extendedSize < 0)
+                throw Malformed();
 
             result.Add(ReadCharacters(blocks, ref block, ref offset, charCount, (flags & 0x01) != 0));
             SkipBytes(blocks, ref block, ref offset, (richRunCount * 4) + extendedSize);
@@ -88,11 +109,14 @@ internal static class Biff8SharedStringTable
     /// <param name="charCount">The number of characters to read.</param>
     /// <param name="highByte">Whether the current segment uses 16-bit characters.</param>
     /// <returns>The decoded string.</returns>
-    /// <exception cref="Biff8FormatException">
+    /// <exception cref="ExcelBinaryFormatException">
     /// Thrown when the character data runs past the available blocks.
     /// </exception>
     private static string ReadCharacters(IReadOnlyList<ReadOnlyMemory<byte>> blocks, ref int block, ref int offset, int charCount, bool highByte)
     {
+        if (charCount < 0)
+            throw Malformed();
+
         StringBuilder builder = new(charCount);
         int remaining = charCount;
         bool high = highByte;
@@ -104,7 +128,7 @@ internal static class Biff8SharedStringTable
                 block++;
                 offset = 0;
                 if (block >= blocks.Count)
-                    throw new Biff8FormatException(ExcelBinaryResourceStrings.Format_Invalid_Biff8SharedString);
+                    throw Malformed();
 
                 high = (blocks[block].Span[offset] & 0x01) != 0;
                 offset++;
@@ -116,7 +140,7 @@ internal static class Biff8SharedStringTable
                 int available = (current.Length - offset) / 2;
                 int take = Math.Min(available, remaining);
                 if (take <= 0)
-                    throw new Biff8FormatException(ExcelBinaryResourceStrings.Format_Invalid_Biff8SharedString);
+                    throw Malformed();
 
                 builder.Append(Encoding.Unicode.GetString(current.Slice(offset, take * 2)));
                 offset += take * 2;
@@ -127,9 +151,8 @@ internal static class Biff8SharedStringTable
                 int available = current.Length - offset;
                 int take = Math.Min(available, remaining);
                 if (take <= 0)
-                    throw new Biff8FormatException(ExcelBinaryResourceStrings.Format_Invalid_Biff8SharedString);
+                    throw Malformed();
 
-                // Compressed segments encode one ISO-8859-1 code point per byte.
                 for (int i = 0; i < take; i++)
                     builder.Append((char)current[offset + i]);
 
@@ -148,18 +171,20 @@ internal static class Biff8SharedStringTable
     /// <param name="block">The current block index; advanced as boundaries are crossed.</param>
     /// <param name="offset">The current byte offset within the block; advanced as bytes are skipped.</param>
     /// <param name="count">The number of trailing bytes to skip.</param>
-    /// <exception cref="Biff8FormatException">Thrown when the trailing data runs past the available blocks.</exception>
+    /// <exception cref="ExcelBinaryFormatException">Thrown when the trailing data runs past the available blocks.</exception>
     private static void SkipBytes(IReadOnlyList<ReadOnlyMemory<byte>> blocks, ref int block, ref int offset, int count)
     {
         int remaining = count;
         while (remaining > 0)
         {
+            if (block >= blocks.Count)
+                throw Malformed();
+
             if (offset >= blocks[block].Length)
             {
                 block++;
                 offset = 0;
-                if (block >= blocks.Count)
-                    throw new Biff8FormatException(ExcelBinaryResourceStrings.Format_Invalid_Biff8SharedString);
+                continue;
             }
 
             int available = blocks[block].Length - offset;
@@ -183,4 +208,11 @@ internal static class Biff8SharedStringTable
             offset = 0;
         }
     }
+
+    /// <summary>
+    /// Creates the malformed shared-string-table exception.
+    /// </summary>
+    /// <returns>An <see cref="ExcelBinaryFormatException" /> describing the failure.</returns>
+    private static ExcelBinaryFormatException Malformed() =>
+        new(ExcelBinaryResourceStrings.Format_Invalid_Biff8SharedString);
 }

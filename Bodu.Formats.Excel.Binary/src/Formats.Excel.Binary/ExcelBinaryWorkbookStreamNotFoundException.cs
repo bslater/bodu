@@ -1,5 +1,5 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Biff8WorkbookStreamNotFoundException.cs" company="Bodu Pty. Ltd.">
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="ExcelBinaryWorkbookStreamNotFoundException.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -14,33 +14,33 @@ namespace Bodu.Formats.Excel.Binary;
 /// A compound file may be a valid OLE2 container yet not be a spreadsheet (for example, a Word document); in that case
 /// the expected workbook stream is absent and this exception is raised.
 /// </remarks>
-public sealed class Biff8WorkbookStreamNotFoundException
+public sealed class ExcelBinaryWorkbookStreamNotFoundException
     : KeyNotFoundException
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="Biff8WorkbookStreamNotFoundException" /> class.
+    /// Initializes a new instance of the <see cref="ExcelBinaryWorkbookStreamNotFoundException" /> class.
     /// </summary>
-    public Biff8WorkbookStreamNotFoundException()
+    public ExcelBinaryWorkbookStreamNotFoundException()
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Biff8WorkbookStreamNotFoundException" /> class with the specified
-    /// message.
+    /// Initializes a new instance of the <see cref="ExcelBinaryWorkbookStreamNotFoundException" /> class with the
+    /// specified message.
     /// </summary>
     /// <param name="message">A message that describes the lookup failure.</param>
-    public Biff8WorkbookStreamNotFoundException(string message)
+    public ExcelBinaryWorkbookStreamNotFoundException(string message)
         : base(message)
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Biff8WorkbookStreamNotFoundException" /> class with the specified
-    /// message and a reference to the underlying cause.
+    /// Initializes a new instance of the <see cref="ExcelBinaryWorkbookStreamNotFoundException" /> class with the
+    /// specified message and a reference to the underlying cause.
     /// </summary>
     /// <param name="message">A message that describes the lookup failure.</param>
     /// <param name="innerException">The exception that is the cause of this exception.</param>
-    public Biff8WorkbookStreamNotFoundException(string message, Exception innerException)
+    public ExcelBinaryWorkbookStreamNotFoundException(string message, Exception innerException)
         : base(message, innerException)
     {
     }

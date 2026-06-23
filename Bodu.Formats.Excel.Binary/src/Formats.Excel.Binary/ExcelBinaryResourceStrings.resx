@@ -67,6 +67,15 @@
   <data name="Format_Invalid_Biff8StringIndex" xml:space="preserve">
     <value>A cell references shared string {0}, which is outside the shared string table.</value>
   </data>
+  <data name="Format_Invalid_Biff8RecordPayload" xml:space="preserve">
+    <value>A '{0}' record is malformed or its payload is too short.</value>
+  </data>
+  <data name="Format_Invalid_Biff8TrailingBytes" xml:space="preserve">
+    <value>The workbook stream contains {0} trailing byte(s) after its final complete record.</value>
+  </data>
+  <data name="Format_Invalid_Biff8SubstreamType" xml:space="preserve">
+    <value>The substream begins with an unexpected beginning-of-file type (0x{0:X4}).</value>
+  </data>
   <data name="IO_KeyNotFound_Biff8Workbook" xml:space="preserve">
     <value>The compound file does not contain a 'Workbook' or 'Book' stream.</value>
   </data>

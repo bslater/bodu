@@ -88,6 +88,33 @@ namespace Bodu.Formats.Excel.Binary {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to A '{0}' record is malformed or its payload is too short..
+        /// </summary>
+        internal static string Format_Invalid_Biff8RecordPayload {
+            get {
+                return ResourceManager.GetString("Format_Invalid_Biff8RecordPayload", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The workbook stream contains {0} trailing byte(s) after its final complete record..
+        /// </summary>
+        internal static string Format_Invalid_Biff8TrailingBytes {
+            get {
+                return ResourceManager.GetString("Format_Invalid_Biff8TrailingBytes", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The substream begins with an unexpected beginning-of-file type (0x{0:X4})..
+        /// </summary>
+        internal static string Format_Invalid_Biff8SubstreamType {
+            get {
+                return ResourceManager.GetString("Format_Invalid_Biff8SubstreamType", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The compound file does not contain a 'Workbook' or 'Book' stream..
         /// </summary>
         internal static string IO_KeyNotFound_Biff8Workbook {
