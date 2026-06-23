@@ -45,6 +45,9 @@ public sealed class Biff8WorkbookReader
     /// <summary>The record-index ranges of each worksheet substream, parallel to <see cref="_sheets" />.</summary>
     private readonly List<(int Start, int EndExclusive)> _sheetRanges;
 
+    /// <summary>The workbook format table used to resolve each cell's number format.</summary>
+    private readonly Biff8FormatTable _formats;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="Biff8WorkbookReader" /> class from the workbook stream bytes.
     /// </summary>
@@ -62,6 +65,10 @@ public sealed class Biff8WorkbookReader
 
         _sharedStrings = ReadSharedStrings(_records, substreams);
         (_sheets, _sheetRanges) = ReadSheets(_records, substreams);
+        _formats = substreams.Count == 0
+            ? Biff8FormatTable.Empty
+            : Biff8FormatTable.Build(_records, substreams[0].Start, substreams[0].EndExclusive);
+        DateSystem = ReadDateSystem(_records, substreams);
         Properties = properties;
     }
 
@@ -78,6 +85,41 @@ public sealed class Biff8WorkbookReader
     /// The workbook properties; members are <see langword="null" /> when the corresponding property set is absent.
     /// </returns>
     public Biff8WorkbookProperties Properties { get; }
+
+    /// <summary>
+    /// Gets the date system the workbook uses to interpret serial date numbers.
+    /// </summary>
+    /// <returns>
+    /// The declared date system; <see cref="ExcelDateSystem.Excel1900" /> when the workbook declares none.
+    /// </returns>
+    public ExcelDateSystem DateSystem { get; }
+
+    /// <summary>
+    /// Gets the format code for a number-format index, including the well-known built-in formats.
+    /// </summary>
+    /// <param name="formatIndex">The number-format index, as carried by <see cref="ExcelCell.FormatIndex" />.</param>
+    /// <returns>The format code, or <see langword="null" /> when none is known for the index.</returns>
+    public string? GetNumberFormatCode(ushort formatIndex) =>
+        _formats.GetFormatCode(formatIndex);
+
+    /// <summary>
+    /// Converts a numeric cell to a <see cref="DateTime" /> using the workbook's date system.
+    /// </summary>
+    /// <param name="cell">The cell to convert.</param>
+    /// <returns>
+    /// The date and time represented by the cell's value, or <see langword="null" /> when the cell is not numeric.
+    /// </returns>
+    /// <remarks>
+    /// The conversion is applied to any numeric cell; inspect <see cref="ExcelCell.IsDateFormatted" /> first when only
+    /// date-formatted cells should be treated as dates.
+    /// </remarks>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the cell's value is outside the range of representable OLE Automation dates.
+    /// </exception>
+    public DateTime? GetDateTime(ExcelCell cell) =>
+        cell.Kind == ExcelCellKind.Number && cell.NumberValue.HasValue
+            ? ExcelSerialDate.ToDateTime(cell.NumberValue.Value, DateSystem)
+            : null;
 
     /// <summary>
     /// Opens a BIFF8 workbook over the supplied stream.
@@ -171,7 +213,7 @@ public sealed class Biff8WorkbookReader
             throw new ArgumentOutOfRangeException(nameof(sheetIndex));
 
         (int start, int endExclusive) = _sheetRanges[sheetIndex];
-        return Biff8WorksheetReader.ReadCells(_records, start, endExclusive, _sharedStrings);
+        return Biff8WorksheetReader.ReadCells(_records, start, endExclusive, _sharedStrings, _formats);
     }
 
     /// <summary>
@@ -250,6 +292,30 @@ public sealed class Biff8WorkbookReader
             throw new Biff8UnsupportedRecordException(
                 string.Format(CultureInfo.CurrentCulture, ExcelBinaryResourceStrings.Op_NotSupported_Biff8Version, version));
         }
+    }
+
+    /// <summary>
+    /// Reads the workbook's date system from the date-mode record in the globals substream.
+    /// </summary>
+    /// <param name="records">The ordered record list.</param>
+    /// <param name="substreams">The substream ranges; the first is the workbook globals.</param>
+    /// <returns>The declared date system, or <see cref="ExcelDateSystem.Excel1900" /> when none is declared.</returns>
+    private static ExcelDateSystem ReadDateSystem(List<Biff8Record> records, List<(int Start, int EndExclusive)> substreams)
+    {
+        if (substreams.Count == 0)
+            return ExcelDateSystem.Excel1900;
+
+        (int start, int endExclusive) = substreams[0];
+        for (int i = start; i < endExclusive; i++)
+        {
+            if (records[i].Type != Biff8RecordType.DateMode || records[i].Payload.Length < 2)
+                continue;
+
+            bool is1904 = BinaryPrimitives.ReadUInt16LittleEndian(records[i].Payload.Span) != 0;
+            return is1904 ? ExcelDateSystem.Excel1904 : ExcelDateSystem.Excel1900;
+        }
+
+        return ExcelDateSystem.Excel1900;
     }
 
     /// <summary>

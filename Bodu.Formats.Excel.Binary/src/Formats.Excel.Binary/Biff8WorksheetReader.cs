@@ -26,6 +26,7 @@ internal static class Biff8WorksheetReader
     /// <param name="start">The inclusive record index at which the worksheet substream begins.</param>
     /// <param name="endExclusive">The exclusive record index at which the worksheet substream ends.</param>
     /// <param name="sharedStrings">The workbook shared string table.</param>
+    /// <param name="formats">The workbook format table used to resolve each cell's number format.</param>
     /// <returns>The populated cells of the worksheet, in record order.</returns>
     /// <exception cref="Biff8FormatException">
     /// Thrown when a cell references a shared string outside the table or a record is malformed.
@@ -34,7 +35,8 @@ internal static class Biff8WorksheetReader
         IReadOnlyList<Biff8Record> records,
         int start,
         int endExclusive,
-        string[] sharedStrings)
+        string[] sharedStrings,
+        Biff8FormatTable formats)
     {
         for (int i = start; i < endExclusive; i++)
         {
@@ -42,28 +44,28 @@ internal static class Biff8WorksheetReader
             switch (record.Type)
             {
                 case Biff8RecordType.LabelSst:
-                    yield return ReadLabelSst(record.Payload.Span, sharedStrings);
+                    yield return ReadLabelSst(record.Payload.Span, sharedStrings, formats);
                     break;
 
                 case Biff8RecordType.Number:
-                    yield return ReadNumber(record.Payload.Span);
+                    yield return ReadNumber(record.Payload.Span, formats);
                     break;
 
                 case Biff8RecordType.Rk:
-                    yield return ReadRk(record.Payload.Span);
+                    yield return ReadRk(record.Payload.Span, formats);
                     break;
 
                 case Biff8RecordType.BoolErr:
-                    yield return ReadBoolErr(record.Payload.Span);
+                    yield return ReadBoolErr(record.Payload.Span, formats);
                     break;
 
                 case Biff8RecordType.MulRk:
-                    foreach (ExcelCell cell in ReadMulRk(record.Payload))
+                    foreach (ExcelCell cell in ReadMulRk(record.Payload, formats))
                         yield return cell;
                     break;
 
                 case Biff8RecordType.Formula:
-                    yield return ReadFormula(records, ref i, endExclusive);
+                    yield return ReadFormula(records, ref i, endExclusive, formats);
                     break;
 
                 default:
@@ -78,12 +80,14 @@ internal static class Biff8WorksheetReader
     /// </summary>
     /// <param name="payload">The record payload.</param>
     /// <param name="sharedStrings">The workbook shared string table.</param>
+    /// <param name="formats">The workbook format table.</param>
     /// <returns>The decoded text cell.</returns>
     /// <exception cref="Biff8FormatException">Thrown when the referenced string index is out of range.</exception>
-    private static ExcelCell ReadLabelSst(ReadOnlySpan<byte> payload, string[] sharedStrings)
+    private static ExcelCell ReadLabelSst(ReadOnlySpan<byte> payload, string[] sharedStrings, Biff8FormatTable formats)
     {
         int row = BinaryPrimitives.ReadUInt16LittleEndian(payload);
         int column = BinaryPrimitives.ReadUInt16LittleEndian(payload.Slice(2));
+        ushort xfIndex = BinaryPrimitives.ReadUInt16LittleEndian(payload.Slice(4));
         uint stringIndex = BinaryPrimitives.ReadUInt32LittleEndian(payload.Slice(6));
 
         if (stringIndex >= (uint)sharedStrings.Length)
@@ -92,60 +96,67 @@ internal static class Biff8WorksheetReader
                 string.Format(CultureInfo.CurrentCulture, ExcelBinaryResourceStrings.Format_Invalid_Biff8StringIndex, stringIndex));
         }
 
-        return ExcelCell.Text(row, column, sharedStrings[stringIndex]);
+        return ExcelCell.Text(row, column, sharedStrings[stringIndex], formats.GetFormatIndex(xfIndex));
     }
 
     /// <summary>
     /// Reads a <c>NUMBER</c> cell carrying an IEEE 754 double.
     /// </summary>
     /// <param name="payload">The record payload.</param>
+    /// <param name="formats">The workbook format table.</param>
     /// <returns>The decoded numeric cell.</returns>
-    private static ExcelCell ReadNumber(ReadOnlySpan<byte> payload)
+    private static ExcelCell ReadNumber(ReadOnlySpan<byte> payload, Biff8FormatTable formats)
     {
         int row = BinaryPrimitives.ReadUInt16LittleEndian(payload);
         int column = BinaryPrimitives.ReadUInt16LittleEndian(payload.Slice(2));
+        ushort xfIndex = BinaryPrimitives.ReadUInt16LittleEndian(payload.Slice(4));
         double value = BinaryPrimitives.ReadDoubleLittleEndian(payload.Slice(6));
 
-        return ExcelCell.Number(row, column, value);
+        return ExcelCell.Number(row, column, value, formats.GetFormatIndex(xfIndex), formats.IsDateFormatted(xfIndex));
     }
 
     /// <summary>
     /// Reads an <c>RK</c> cell carrying a single RK-encoded number.
     /// </summary>
     /// <param name="payload">The record payload.</param>
+    /// <param name="formats">The workbook format table.</param>
     /// <returns>The decoded numeric cell.</returns>
-    private static ExcelCell ReadRk(ReadOnlySpan<byte> payload)
+    private static ExcelCell ReadRk(ReadOnlySpan<byte> payload, Biff8FormatTable formats)
     {
         int row = BinaryPrimitives.ReadUInt16LittleEndian(payload);
         int column = BinaryPrimitives.ReadUInt16LittleEndian(payload.Slice(2));
+        ushort xfIndex = BinaryPrimitives.ReadUInt16LittleEndian(payload.Slice(4));
         uint rk = BinaryPrimitives.ReadUInt32LittleEndian(payload.Slice(6));
 
-        return ExcelCell.Number(row, column, DecodeRk(rk));
+        return ExcelCell.Number(row, column, DecodeRk(rk), formats.GetFormatIndex(xfIndex), formats.IsDateFormatted(xfIndex));
     }
 
     /// <summary>
     /// Reads a <c>BOOLERR</c> cell, which carries either a boolean or an error code.
     /// </summary>
     /// <param name="payload">The record payload.</param>
+    /// <param name="formats">The workbook format table.</param>
     /// <returns>A boolean cell, or an error cell when the value is an error code.</returns>
-    private static ExcelCell ReadBoolErr(ReadOnlySpan<byte> payload)
+    private static ExcelCell ReadBoolErr(ReadOnlySpan<byte> payload, Biff8FormatTable formats)
     {
         int row = BinaryPrimitives.ReadUInt16LittleEndian(payload);
         int column = BinaryPrimitives.ReadUInt16LittleEndian(payload.Slice(2));
+        ushort xfIndex = BinaryPrimitives.ReadUInt16LittleEndian(payload.Slice(4));
         byte value = payload[6];
         byte isError = payload[7];
 
         return isError != 0
-            ? ExcelCell.Error(row, column, (ExcelErrorCode)value)
-            : ExcelCell.Boolean(row, column, value != 0);
+            ? ExcelCell.Error(row, column, (ExcelErrorCode)value, formats.GetFormatIndex(xfIndex))
+            : ExcelCell.Boolean(row, column, value != 0, formats.GetFormatIndex(xfIndex));
     }
 
     /// <summary>
     /// Reads a <c>MULRK</c> record, expanding it into one numeric cell per contained RK value.
     /// </summary>
     /// <param name="payload">The record payload.</param>
+    /// <param name="formats">The workbook format table.</param>
     /// <returns>The decoded numeric cells, in column order.</returns>
-    private static ExcelCell[] ReadMulRk(ReadOnlyMemory<byte> payload)
+    private static ExcelCell[] ReadMulRk(ReadOnlyMemory<byte> payload, Biff8FormatTable formats)
     {
         ReadOnlySpan<byte> span = payload.Span;
         int row = BinaryPrimitives.ReadUInt16LittleEndian(span);
@@ -156,8 +167,9 @@ internal static class Biff8WorksheetReader
         var cells = new ExcelCell[count];
         for (int k = 0; k < count; k++)
         {
+            ushort xfIndex = BinaryPrimitives.ReadUInt16LittleEndian(span.Slice(4 + (k * 6)));
             uint rk = BinaryPrimitives.ReadUInt32LittleEndian(span.Slice(4 + (k * 6) + 2));
-            cells[k] = ExcelCell.Number(row, firstColumn + k, DecodeRk(rk));
+            cells[k] = ExcelCell.Number(row, firstColumn + k, DecodeRk(rk), formats.GetFormatIndex(xfIndex), formats.IsDateFormatted(xfIndex));
         }
 
         return cells;
@@ -172,6 +184,7 @@ internal static class Biff8WorksheetReader
     /// The index of the formula record; advanced past a trailing <c>STRING</c> record when the cached result is text.
     /// </param>
     /// <param name="endExclusive">The exclusive record index at which the worksheet substream ends.</param>
+    /// <param name="formats">The workbook format table.</param>
     /// <returns>The decoded cell carrying the cached result.</returns>
     /// <exception cref="Biff8FormatException">Thrown when the formula record is malformed.</exception>
     /// <remarks>
@@ -179,7 +192,7 @@ internal static class Biff8WorksheetReader
     /// a non-numeric result whose leading byte selects a string, boolean, error, or empty-string value. A string result
     /// is carried by the immediately following <c>STRING</c> record.
     /// </remarks>
-    private static ExcelCell ReadFormula(IReadOnlyList<Biff8Record> records, ref int index, int endExclusive)
+    private static ExcelCell ReadFormula(IReadOnlyList<Biff8Record> records, ref int index, int endExclusive, Biff8FormatTable formats)
     {
         ReadOnlySpan<byte> payload = records[index].Payload.Span;
         if (payload.Length < 14)
@@ -187,6 +200,8 @@ internal static class Biff8WorksheetReader
 
         int row = BinaryPrimitives.ReadUInt16LittleEndian(payload);
         int column = BinaryPrimitives.ReadUInt16LittleEndian(payload.Slice(2));
+        ushort xfIndex = BinaryPrimitives.ReadUInt16LittleEndian(payload.Slice(4));
+        ushort formatIndex = formats.GetFormatIndex(xfIndex);
         ReadOnlySpan<byte> result = payload.Slice(6, 8);
 
         // A trailing 0xFFFF marks a non-numeric cached result; the leading byte selects which kind.
@@ -194,16 +209,16 @@ internal static class Biff8WorksheetReader
         {
             return result[0] switch
             {
-                0 => ExcelCell.Text(row, column, ReadCachedString(records, ref index, endExclusive)),
-                1 => ExcelCell.Boolean(row, column, result[2] != 0),
-                2 => ExcelCell.Error(row, column, (ExcelErrorCode)result[2]),
+                0 => ExcelCell.Text(row, column, ReadCachedString(records, ref index, endExclusive), formatIndex),
+                1 => ExcelCell.Boolean(row, column, result[2] != 0, formatIndex),
+                2 => ExcelCell.Error(row, column, (ExcelErrorCode)result[2], formatIndex),
 
                 // 3 is an explicit empty string; any other marker is treated as one defensively.
-                _ => ExcelCell.Text(row, column, string.Empty),
+                _ => ExcelCell.Text(row, column, string.Empty, formatIndex),
             };
         }
 
-        return ExcelCell.Number(row, column, BinaryPrimitives.ReadDoubleLittleEndian(result));
+        return ExcelCell.Number(row, column, BinaryPrimitives.ReadDoubleLittleEndian(result), formatIndex, formats.IsDateFormatted(xfIndex));
     }
 
     /// <summary>

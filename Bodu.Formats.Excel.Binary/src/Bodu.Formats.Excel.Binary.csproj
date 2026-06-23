@@ -5,7 +5,7 @@
     <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
     <Title>Bodu — Excel Binary</Title>
-    <Description>A narrow, read-only reader for the Excel 97-2003 binary workbook format (BIFF8 / .xls). Exposes the raw cell values of a worksheet — strings, numbers, booleans, and errors, including the cached result of a formula cell — and each sheet's declared used range, without formula evaluation, styling, or any higher-level interpretation. Built on Bodu.IO.Compound.</Description>
+    <Description>A narrow, read-only reader for the Excel 97-2003 binary workbook format (BIFF8 / .xls). Exposes the raw cell values of a worksheet — strings, numbers, booleans, and errors, including the cached result of a formula cell — along with each cell's number format and date-format detection, the workbook date system, each sheet's declared used range, and the workbook document properties, without formula evaluation, styling, or any higher-level interpretation. Built on Bodu.IO.Compound.</Description>
     <PackageTags>$(PackageTags);xls;biff8;excel;spreadsheet;binary;reader</PackageTags>
   </PropertyGroup>
 

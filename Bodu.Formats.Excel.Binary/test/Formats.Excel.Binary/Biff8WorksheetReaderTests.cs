@@ -23,7 +23,7 @@ public partial class Biff8WorksheetReaderTests
     private static Dictionary<(int Row, int Column), ExcelCell> ReadGrid(params Biff8Record[] records)
     {
         Dictionary<(int Row, int Column), ExcelCell> grid = new();
-        foreach (ExcelCell cell in Biff8WorksheetReader.ReadCells(records, 0, records.Length, []))
+        foreach (ExcelCell cell in Biff8WorksheetReader.ReadCells(records, 0, records.Length, [], Biff8FormatTable.Empty))
             grid[(cell.RowIndex, cell.ColumnIndex)] = cell;
 
         return grid;

@@ -129,7 +129,7 @@ public partial class Biff8WorksheetReaderTests
 
         _ = Assert.ThrowsExactly<Biff8FormatException>(() =>
         {
-            _ = Biff8WorksheetReader.ReadCells([truncated], 0, 1, []).ToList();
+            _ = Biff8WorksheetReader.ReadCells([truncated], 0, 1, [], Biff8FormatTable.Empty).ToList();
         });
     }
 }

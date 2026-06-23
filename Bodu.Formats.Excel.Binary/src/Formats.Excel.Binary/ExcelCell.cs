@@ -26,7 +26,9 @@ public readonly record struct ExcelCell
     /// <param name="numberValue">The numeric value, when applicable.</param>
     /// <param name="booleanValue">The boolean value, when applicable.</param>
     /// <param name="errorValue">The error code, when applicable.</param>
-    private ExcelCell(int rowIndex, int columnIndex, ExcelCellKind kind, string? stringValue, double? numberValue, bool? booleanValue, ExcelErrorCode? errorValue)
+    /// <param name="formatIndex">The number-format index applied to the cell.</param>
+    /// <param name="isDateFormatted">Whether the cell is a number formatted as a date or time.</param>
+    private ExcelCell(int rowIndex, int columnIndex, ExcelCellKind kind, string? stringValue, double? numberValue, bool? booleanValue, ExcelErrorCode? errorValue, ushort formatIndex, bool isDateFormatted)
     {
         RowIndex = rowIndex;
         ColumnIndex = columnIndex;
@@ -35,6 +37,8 @@ public readonly record struct ExcelCell
         NumberValue = numberValue;
         BooleanValue = booleanValue;
         ErrorValue = errorValue;
+        FormatIndex = formatIndex;
+        IsDateFormatted = isDateFormatted;
     }
 
     /// <summary>
@@ -84,14 +88,36 @@ public readonly record struct ExcelCell
     public ExcelErrorCode? ErrorValue { get; }
 
     /// <summary>
+    /// Gets the number-format index applied to the cell.
+    /// </summary>
+    /// <returns>
+    /// The format index referenced by the cell's record; <c>0</c> (the General format) when no format is recorded.
+    /// </returns>
+    public ushort FormatIndex { get; }
+
+    /// <summary>
+    /// Gets a value indicating whether the cell is a number formatted as a date or time.
+    /// </summary>
+    /// <returns>
+    /// <see langword="true" /> when <see cref="Kind" /> is <see cref="ExcelCellKind.Number" /> and the cell's format is
+    /// a date or time format; otherwise <see langword="false" />.
+    /// </returns>
+    /// <remarks>
+    /// Use <see cref="ExcelSerialDate" /> with the workbook's date system to convert a date-formatted number to a
+    /// calendar value.
+    /// </remarks>
+    public bool IsDateFormatted { get; }
+
+    /// <summary>
     /// Creates a text cell.
     /// </summary>
     /// <param name="rowIndex">The zero-based row index.</param>
     /// <param name="columnIndex">The zero-based column index.</param>
     /// <param name="value">The text value.</param>
+    /// <param name="formatIndex">The number-format index applied to the cell.</param>
     /// <returns>An <see cref="ExcelCell" /> of kind <see cref="ExcelCellKind.String" />.</returns>
-    public static ExcelCell Text(int rowIndex, int columnIndex, string value) =>
-        new(rowIndex, columnIndex, ExcelCellKind.String, value, null, null, null);
+    public static ExcelCell Text(int rowIndex, int columnIndex, string value, ushort formatIndex = 0) =>
+        new(rowIndex, columnIndex, ExcelCellKind.String, value, null, null, null, formatIndex, false);
 
     /// <summary>
     /// Creates a numeric cell.
@@ -99,9 +125,11 @@ public readonly record struct ExcelCell
     /// <param name="rowIndex">The zero-based row index.</param>
     /// <param name="columnIndex">The zero-based column index.</param>
     /// <param name="value">The numeric value.</param>
+    /// <param name="formatIndex">The number-format index applied to the cell.</param>
+    /// <param name="isDateFormatted">Whether the cell's format renders the number as a date or time.</param>
     /// <returns>An <see cref="ExcelCell" /> of kind <see cref="ExcelCellKind.Number" />.</returns>
-    public static ExcelCell Number(int rowIndex, int columnIndex, double value) =>
-        new(rowIndex, columnIndex, ExcelCellKind.Number, null, value, null, null);
+    public static ExcelCell Number(int rowIndex, int columnIndex, double value, ushort formatIndex = 0, bool isDateFormatted = false) =>
+        new(rowIndex, columnIndex, ExcelCellKind.Number, null, value, null, null, formatIndex, isDateFormatted);
 
     /// <summary>
     /// Creates a boolean cell.
@@ -109,9 +137,10 @@ public readonly record struct ExcelCell
     /// <param name="rowIndex">The zero-based row index.</param>
     /// <param name="columnIndex">The zero-based column index.</param>
     /// <param name="value">The boolean value.</param>
+    /// <param name="formatIndex">The number-format index applied to the cell.</param>
     /// <returns>An <see cref="ExcelCell" /> of kind <see cref="ExcelCellKind.Boolean" />.</returns>
-    public static ExcelCell Boolean(int rowIndex, int columnIndex, bool value) =>
-        new(rowIndex, columnIndex, ExcelCellKind.Boolean, null, null, value, null);
+    public static ExcelCell Boolean(int rowIndex, int columnIndex, bool value, ushort formatIndex = 0) =>
+        new(rowIndex, columnIndex, ExcelCellKind.Boolean, null, null, value, null, formatIndex, false);
 
     /// <summary>
     /// Creates an error cell.
@@ -119,7 +148,8 @@ public readonly record struct ExcelCell
     /// <param name="rowIndex">The zero-based row index.</param>
     /// <param name="columnIndex">The zero-based column index.</param>
     /// <param name="errorCode">The spreadsheet error code.</param>
+    /// <param name="formatIndex">The number-format index applied to the cell.</param>
     /// <returns>An <see cref="ExcelCell" /> of kind <see cref="ExcelCellKind.Error" />.</returns>
-    public static ExcelCell Error(int rowIndex, int columnIndex, ExcelErrorCode errorCode) =>
-        new(rowIndex, columnIndex, ExcelCellKind.Error, null, null, null, errorCode);
+    public static ExcelCell Error(int rowIndex, int columnIndex, ExcelErrorCode errorCode, ushort formatIndex = 0) =>
+        new(rowIndex, columnIndex, ExcelCellKind.Error, null, null, null, errorCode, formatIndex, false);
 }

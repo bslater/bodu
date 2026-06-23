@@ -58,6 +58,21 @@ public enum Biff8RecordType : ushort
     Dimensions = 0x0200,
 
     /// <summary>
+    /// Extended-format (XF) record describing a cell or style format, including its number-format index.
+    /// </summary>
+    Xf = 0x00E0,
+
+    /// <summary>
+    /// Number-format record mapping a format index to its format code string.
+    /// </summary>
+    Format = 0x041E,
+
+    /// <summary>
+    /// Date-mode record declaring whether the workbook uses the 1900 or 1904 date system.
+    /// </summary>
+    DateMode = 0x0022,
+
+    /// <summary>
     /// A cell whose value is an index into the shared string table.
     /// </summary>
     LabelSst = 0x00FD,
