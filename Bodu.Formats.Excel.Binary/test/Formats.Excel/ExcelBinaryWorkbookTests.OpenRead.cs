@@ -1,10 +1,12 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="ExcelBinaryWorkbookTests.Open.cs" company="Bodu Pty. Ltd.">
+// <copyright file="ExcelBinaryWorkbookTests.OpenRead.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Buffers.Binary;
 using System.Linq;
+using Bodu.IO.Compound;
 using Bodu.Test;
 
 namespace Bodu.Formats.Excel;
@@ -118,5 +120,101 @@ public partial class ExcelBinaryWorkbookTests
             Assert.AreEqual(2, workbook.Worksheets.Count);
 
         _ = Assert.ThrowsExactly<ObjectDisposedException>(() => _ = source.Length);
+    }
+
+    /// <summary>
+    /// Verifies that a workbook whose globals contain a file-pass record is reported as encrypted.
+    /// </summary>
+    [TestMethod]
+    public void OpenRead_WhenFilePassPresent_ShouldThrowEncryptedWorkbookException()
+    {
+        using MemoryStream xls = Biff8TestWorkbook.BuildWorkbook(
+            [Biff8TestWorkbook.FilePass()],
+            new Biff8TestWorkbook.SheetSpec("Sheet1", 0, 0, [Biff8TestWorkbook.Dimensions(0, 1, 0, 1)]));
+
+        _ = Assert.ThrowsExactly<ExcelBinaryEncryptedWorkbookException>(() =>
+        {
+            _ = ExcelBinaryWorkbook.OpenRead(xls);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that the unencrypted sample workbook opens without being reported as encrypted.
+    /// </summary>
+    [TestMethod]
+    public void OpenRead_WhenSampleWorkbook_ShouldNotThrowEncryptedWorkbookException()
+    {
+        using ExcelBinaryWorkbook workbook = OpenSample();
+
+        Assert.IsNotNull(workbook);
+    }
+
+    /// <summary>
+    /// Verifies that a compatibility-save workbook carrying both <c>Book</c> and <c>Workbook</c> streams reads the
+    /// BIFF8 <c>Workbook</c> stream.
+    /// </summary>
+    [TestMethod]
+    public void OpenRead_WhenBothBookAndWorkbookStreams_ShouldReadWorkbookStream()
+    {
+        byte[] workbookBytes = Biff8TestWorkbook.BuildWorkbookStream(
+            [Biff8TestWorkbook.Sst("Only")],
+            new Biff8TestWorkbook.SheetSpec("Sheet1", 0, 0, [Biff8TestWorkbook.Dimensions(0, 1, 0, 1), Biff8TestWorkbook.LabelSst(0, 0, 0)]));
+
+        MemoryStream container = new();
+        using (CompoundFile file = CompoundFile.Create(container, leaveOpen: true))
+        {
+            file.RootStorage.CreateStream("Book", new byte[] { 0x09, 0x08, 0x00, 0x00 });
+            file.RootStorage.CreateStream("Workbook", workbookBytes);
+            file.Commit();
+        }
+
+        container.Position = 0;
+        using ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.OpenRead(container);
+        Dictionary<(int Row, int Column), ExcelCell> grid = ReadCellGrid(workbook, "Sheet1");
+
+        Assert.AreEqual("Only", grid[(0, 0)].StringValue);
+    }
+
+    /// <summary>
+    /// Verifies that a compound file without a workbook stream throws
+    /// <see cref="ExcelBinaryWorkbookStreamNotFoundException" />.
+    /// </summary>
+    [TestMethod]
+    public void OpenRead_WhenNoWorkbookStream_ShouldThrowWorkbookStreamNotFoundException()
+    {
+        MemoryStream container = new();
+        using (CompoundFile file = CompoundFile.Create(container, leaveOpen: true))
+        {
+            file.RootStorage.CreateStream("NotAWorkbook", new byte[] { 1, 2, 3, 4 });
+            file.Commit();
+        }
+
+        container.Position = 0;
+
+        _ = Assert.ThrowsExactly<ExcelBinaryWorkbookStreamNotFoundException>(() =>
+        {
+            _ = ExcelBinaryWorkbook.OpenRead(container);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a workbook whose globals declare a non-BIFF8 version throws
+    /// <see cref="ExcelBinaryUnsupportedException" />.
+    /// </summary>
+    [TestMethod]
+    public void OpenRead_WhenVersionNotBiff8_ShouldThrowUnsupportedException()
+    {
+        // Globals BOF declaring BIFF5 (0x0500), followed by EOF.
+        byte[] bofPayload = new byte[16];
+        BinaryPrimitives.WriteUInt16LittleEndian(bofPayload, 0x0500);
+        BinaryPrimitives.WriteUInt16LittleEndian(bofPayload.AsSpan(2), Biff8TestWorkbook.BofGlobals);
+
+        byte[] globals = [.. Biff8TestWorkbook.Record(0x0809, bofPayload), .. Biff8TestWorkbook.Eof()];
+        using MemoryStream xls = Biff8TestWorkbook.WrapInCompoundFile(globals, "Workbook");
+
+        _ = Assert.ThrowsExactly<ExcelBinaryUnsupportedException>(() =>
+        {
+            _ = ExcelBinaryWorkbook.OpenRead(xls);
+        });
     }
 }
