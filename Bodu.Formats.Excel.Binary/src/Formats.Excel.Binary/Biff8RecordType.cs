@@ -43,6 +43,11 @@ public enum Biff8RecordType : ushort
     String = 0x0207,
 
     /// <summary>
+    /// File-pass record marking a workbook whose contents are encrypted.
+    /// </summary>
+    FilePass = 0x002F,
+
+    /// <summary>
     /// Shared string table holding the workbook's deduplicated text values.
     /// </summary>
     Sst = 0x00FC,

@@ -113,5 +113,14 @@ namespace Bodu.Formats.Excel.Binary {
                 return ResourceManager.GetString("Op_NotSupported_Biff8Version", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The workbook is encrypted and cannot be read; decryption is not supported..
+        /// </summary>
+        internal static string Op_NotSupported_Biff8Encrypted {
+            get {
+                return ResourceManager.GetString("Op_NotSupported_Biff8Encrypted", resourceCulture);
+            }
+        }
     }
 }

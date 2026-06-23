@@ -8,6 +8,7 @@ using System.Buffers.Binary;
 using System.Globalization;
 using System.Text;
 using Bodu.IO.Compound;
+using Bodu.IO.Compound.PropertySets;
 
 namespace Bodu.Formats.Excel.Binary;
 
@@ -48,16 +49,20 @@ public sealed class Biff8WorkbookReader
     /// Initializes a new instance of the <see cref="Biff8WorkbookReader" /> class from the workbook stream bytes.
     /// </summary>
     /// <param name="workbook">The raw bytes of the compound file's workbook stream.</param>
+    /// <param name="properties">The workbook document properties read from the compound file's property sets.</param>
     /// <exception cref="Biff8FormatException">Thrown when the workbook stream is not valid BIFF.</exception>
     /// <exception cref="Biff8UnsupportedRecordException">Thrown when the workbook is not BIFF8.</exception>
-    private Biff8WorkbookReader(ReadOnlyMemory<byte> workbook)
+    /// <exception cref="Biff8EncryptedWorkbookException">Thrown when the workbook is encrypted.</exception>
+    private Biff8WorkbookReader(ReadOnlyMemory<byte> workbook, Biff8WorkbookProperties properties)
     {
         _records = new Biff8RecordReader(workbook).ReadAll();
         List<(int Start, int EndExclusive)> substreams = SplitSubstreams(_records);
         ValidateVersion(_records);
+        ValidateNotEncrypted(_records, substreams);
 
         _sharedStrings = ReadSharedStrings(_records, substreams);
         (_sheets, _sheetRanges) = ReadSheets(_records, substreams);
+        Properties = properties;
     }
 
     /// <summary>
@@ -65,6 +70,14 @@ public sealed class Biff8WorkbookReader
     /// </summary>
     /// <returns>A read-only list of <see cref="Biff8SheetInfo" /> describing each worksheet.</returns>
     public IReadOnlyList<Biff8SheetInfo> Sheets => _sheets;
+
+    /// <summary>
+    /// Gets the document properties of the workbook.
+    /// </summary>
+    /// <returns>
+    /// The workbook properties; members are <see langword="null" /> when the corresponding property set is absent.
+    /// </returns>
+    public Biff8WorkbookProperties Properties { get; }
 
     /// <summary>
     /// Opens a BIFF8 workbook over the supplied stream.
@@ -93,8 +106,54 @@ public sealed class Biff8WorkbookReader
             throw new Biff8WorkbookStreamNotFoundException(ExcelBinaryResourceStrings.IO_KeyNotFound_Biff8Workbook);
         }
 
+        Biff8WorkbookProperties properties = ReadProperties(compound);
         using (workbook)
-            return new Biff8WorkbookReader(workbook!.ReadAllBytes());
+            return new Biff8WorkbookReader(workbook!.ReadAllBytes(), properties);
+    }
+
+    /// <summary>
+    /// Reads the workbook's document-property sets from the compound file, tolerating their absence or corruption.
+    /// </summary>
+    /// <param name="compound">The open compound file.</param>
+    /// <returns>
+    /// The workbook properties; absent or unparsable property sets yield <see langword="null" /> members.
+    /// </returns>
+    private static Biff8WorkbookProperties ReadProperties(CompoundFile compound)
+    {
+        SummaryInformation? summary = TryReadSummary(compound, SummaryInformation.StreamName, SummaryInformation.Read);
+        DocumentSummaryInformation? document =
+            TryReadSummary(compound, DocumentSummaryInformation.StreamName, DocumentSummaryInformation.Read);
+
+        return new Biff8WorkbookProperties(summary, document);
+    }
+
+    /// <summary>
+    /// Reads and parses a property-set stream, returning <see langword="null" /> when the stream is absent or
+    /// malformed.
+    /// </summary>
+    /// <typeparam name="T">The property-set view type.</typeparam>
+    /// <param name="compound">The open compound file.</param>
+    /// <param name="streamName">The name of the property-set stream.</param>
+    /// <param name="parse">The parser that materializes the view from the stream.</param>
+    /// <returns>The parsed property set, or <see langword="null" /> when it is absent or cannot be parsed.</returns>
+    private static T? TryReadSummary<T>(CompoundFile compound, string streamName, Func<Stream, T> parse)
+        where T : class
+    {
+        if (!compound.RootStorage.TryOpenStream(streamName, out CompoundStream? stream))
+            return null;
+
+        using (stream)
+        {
+            try
+            {
+                // Property metadata is auxiliary; a malformed set must never prevent the workbook from loading.
+                return parse(stream!);
+            }
+            catch (CompoundFileFormatException)
+            {
+                return null;
+            }
+        }
     }
 
     /// <summary>
@@ -190,6 +249,27 @@ public sealed class Biff8WorkbookReader
         {
             throw new Biff8UnsupportedRecordException(
                 string.Format(CultureInfo.CurrentCulture, ExcelBinaryResourceStrings.Op_NotSupported_Biff8Version, version));
+        }
+    }
+
+    /// <summary>
+    /// Validates that the workbook is not encrypted by checking the globals substream for a file-pass record.
+    /// </summary>
+    /// <param name="records">The ordered record list.</param>
+    /// <param name="substreams">The substream ranges; the first is the workbook globals.</param>
+    /// <exception cref="Biff8EncryptedWorkbookException">
+    /// Thrown when the globals substream contains a file-pass record.
+    /// </exception>
+    internal static void ValidateNotEncrypted(List<Biff8Record> records, List<(int Start, int EndExclusive)> substreams)
+    {
+        if (substreams.Count == 0)
+            return;
+
+        (int start, int endExclusive) = substreams[0];
+        for (int i = start; i < endExclusive; i++)
+        {
+            if (records[i].Type == Biff8RecordType.FilePass)
+                throw new Biff8EncryptedWorkbookException(ExcelBinaryResourceStrings.Op_NotSupported_Biff8Encrypted);
         }
     }
 
