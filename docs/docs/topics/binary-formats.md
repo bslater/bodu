@@ -10,13 +10,13 @@ The **Binary Formats & I/O** topic covers read-only readers for legacy binary co
 
 The dependency runs one way: `Bodu.Formats.Excel.Binary` references `Bodu.IO.Compound` to reach the `Workbook` stream inside an `.xls` file, then interprets the BIFF8 record stream within it. The container reader has no knowledge of Excel — it is reused unchanged by the Reserve Bank of Australia exchange-rate provider, which parses the same `.xls` shape.
 
-![A compound file is a structured-storage envelope: a header, allocation tables, and a directory of sectors on the left, resolving via CompoundFile.Open into the logical RootStorage to CompoundStorage to CompoundStreamEntry hierarchy on the right.](../../images/diagrams/io-compound-structure.svg)
+![A compound file is a structured-storage envelope: a header, allocation tables, and a directory of sectors on the left, resolving via CompoundFile.Open into the logical RootStorage to CompoundStorage to CompoundStream hierarchy on the right.](../../images/diagrams/io-compound-structure.svg)
 
 ## The packages
 
 | Package | Status | What it provides | Docs |
 |---|---|---|---|
-| `Bodu.IO.Compound` | Stable | A read-only CFB container reader: the `CompoundFile` entry point, the `CompoundStorage` / `CompoundStreamEntry` hierarchy, the seekable `CompoundStream` cursor, and OLE property-set readers. | [Intro](../io-compound/index.md) · [Concepts](../io-compound/concepts.md) · [Get started](../io-compound/getting-started.md) |
+| `Bodu.IO.Compound` | Stable | A read-only CFB container reader: the `CompoundFile` entry point, the `CompoundStorage` / `CompoundStream` hierarchy, the seekable `CompoundStream` cursor, and OLE property-set readers. | [Intro](../io-compound/index.md) · [Concepts](../io-compound/concepts.md) · [Get started](../io-compound/getting-started.md) |
 | `Bodu.Formats.Excel.Binary` | Stable | A narrow, read-only BIFF8 (`.xls`) reader that surfaces raw worksheet cell values — strings, numbers, booleans, and errors — without formula evaluation, styling, or higher-level interpretation. | [API reference](xref:Bodu.Formats.Excel.Binary) |
 
 ## Why a layered reader
@@ -40,7 +40,7 @@ A consumer that only needs the container — to pull an embedded thumbnail, a pr
 
 ## Scope
 
-Both readers are **read-only** in the current release. `Bodu.IO.Compound` supports only <xref:Bodu.IO.Compound.CompoundFileMode.Read>; `Bodu.Formats.Excel.Binary` surfaces raw cell values without evaluating formulas, applying styles, or interpreting higher-level workbook structure.
+Both readers are **read-only** in the current release. `Bodu.IO.Compound` is read with `FileMode.Open` and `FileAccess.Read`; `Bodu.Formats.Excel.Binary` surfaces raw cell values without evaluating formulas, applying styles, or interpreting higher-level workbook structure.
 
 ## Install
 

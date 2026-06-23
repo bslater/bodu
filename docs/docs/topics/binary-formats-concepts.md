@@ -24,7 +24,7 @@ The Excel 97–2003 binary format (**BIFF8**) stores a worksheet as a flat seque
 
 ## Read-only
 
-Every reader in this topic is **read-only**. The container reader opens a file in <xref:Bodu.IO.Compound.CompoundFileMode.Read> only — there is no create, commit, or revert — and the Excel reader surfaces values without mutating anything. This keeps the surface small and the threading story simple: a buffered container is safe to share across threads.
+Every reader in this topic is **read-only**. The container reader opens a file for read access (`FileMode.Open` with `FileAccess.Read`) in these topics — and the Excel reader surfaces values without mutating anything. This keeps the surface small and the threading story simple: a buffered container is safe to share across threads.
 
 ## Where to go next
 

@@ -21,7 +21,7 @@ using Bodu.IO.Compound;
 
 using CompoundFile file = CompoundFile.Open(File.OpenRead("book.xls"));
 
-CompoundStreamEntry workbook = file.RootStorage.OpenStream("Workbook");
+CompoundStream workbook = file.RootStorage.OpenStream("Workbook");
 ReadOnlyMemory<byte> bytes = workbook.ReadAllBytes();
 ```
 
@@ -68,14 +68,13 @@ using Bodu.IO.Compound;
 using FileStream source = File.OpenRead("large.msg");
 using CompoundFile file = CompoundFile.Open(source, buffered: false);
 
-CompoundStreamEntry entry = file.RootStorage.OpenStream("__substg1.0_1000001F");
-using CompoundStream stream = entry.Open();
+using CompoundStream stream = file.RootStorage.OpenStream("__substg1.0_1000001F");
 using var reader = new StreamReader(stream, Encoding.Unicode);
 
 string text = reader.ReadToEnd();
 ```
 
-`Open()` returns a read-only, seekable `CompoundStream` you can hand to any `Stream` consumer. Under a streaming file it reads sectors on demand; under a buffered file it works over the in-memory payload.
+`OpenStream` returns a read-only, seekable `CompoundStream` you can hand to any `Stream` consumer. Under a streaming file it reads sectors on demand; under a buffered file it works over the in-memory payload.
 
 ## Read document metadata
 

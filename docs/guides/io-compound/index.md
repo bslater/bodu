@@ -12,19 +12,19 @@ If you are new to the library, start with the [introduction](../../docs/io-compo
 
 ## How the library works
 
-A compound file is effectively a small file system embedded in a single file. <xref:Bodu.IO.Compound.CompoundFile> is the managed counterpart of the COM `StgOpenStorage` entry point: navigation begins at `RootStorage` and descends through nested <xref:Bodu.IO.Compound.CompoundStorage> containers (the COM `IStorage`) to <xref:Bodu.IO.Compound.CompoundStreamEntry> leaves (the COM `IStream`). Opening a stream yields a <xref:Bodu.IO.Compound.CompoundStream> — a read-only, seekable <xref:System.IO.Stream> cursor over the bytes.
+A compound file is effectively a small file system embedded in a single file. <xref:Bodu.IO.Compound.CompoundFile> is the managed counterpart of the COM `StgOpenStorage` entry point: navigation begins at `RootStorage` and descends through nested <xref:Bodu.IO.Compound.CompoundStorage> containers (the COM `IStorage`) to <xref:Bodu.IO.Compound.CompoundStream> leaves (the COM `IStream`). A <xref:Bodu.IO.Compound.CompoundStream> is itself a read-only, seekable <xref:System.IO.Stream> cursor over the bytes.
 
-![A compound file is a structured-storage envelope: a header, allocation tables, and a directory of sectors on the left, resolving via CompoundFile.Open into the logical RootStorage to CompoundStorage to CompoundStreamEntry hierarchy on the right.](../../images/diagrams/io-compound-structure.svg)
+![A compound file is a structured-storage envelope: a header, allocation tables, and a directory of sectors on the left, resolving via CompoundFile.Open into the logical RootStorage to CompoundStorage to CompoundStream hierarchy on the right.](../../images/diagrams/io-compound-structure.svg)
 
 By default the whole source is buffered into memory at open time, so the file is read-only and safe to share across threads. Opening with `buffered: false` reads sectors on demand from a seekable stream instead, bounding memory for large files.
 
-> Only `CompoundFileMode.Read` is supported in this release. Creation and mutation (`Create`, `Commit`, `Revert`) are reserved for a future read-write implementation.
+> These guides cover the read path — opening with `FileMode.Open` and `FileAccess.Read`.
 
 ## Namespace map
 
 | Namespace | What lives here | Guides |
 |---|---|---|
-| <xref:Bodu.IO.Compound> | The `CompoundFile` reader, the `CompoundStorage` / `CompoundStreamEntry` hierarchy, the `CompoundStream` cursor, `CompoundEntryInfo` metadata, and the `CompoundFileFormatException` / `CompoundStreamNotFoundException` errors. | [Reading compound files](reading-compound-files.md) · [Buffered vs streaming access](streaming-and-buffering.md) |
+| <xref:Bodu.IO.Compound> | The `CompoundFile` reader, the `CompoundStorage` / `CompoundStream` hierarchy, the `CompoundStream` cursor, `CompoundEntryInfo` metadata, and the `CompoundFileFormatException` / `CompoundStreamNotFoundException` errors. | [Reading compound files](reading-compound-files.md) · [Buffered vs streaming access](streaming-and-buffering.md) |
 | <xref:Bodu.IO.Compound.PropertySets> | The OLE property-set readers — `SummaryInformation`, `DocumentSummaryInformation`, and the underlying `OlePropertySet`. | [Reading property sets](property-sets.md) |
 
 ## Guides

@@ -8,14 +8,13 @@ title: Bodu.IO.Compound — Introduction
 
 A compound file is effectively a small file system embedded in a single file. <xref:Bodu.IO.Compound.CompoundFile> is the managed counterpart of the COM `StgOpenStorage` entry point: navigation begins at the root storage and descends through nested storages to stream leaves.
 
-![A compound file is a structured-storage envelope: a header, allocation tables, and a directory of sectors on the left, resolving via CompoundFile.Open into the logical RootStorage to CompoundStorage to CompoundStreamEntry hierarchy on the right.](../../images/diagrams/io-compound-structure.svg)
+![A compound file is a structured-storage envelope: a header, allocation tables, and a directory of sectors on the left, resolving via CompoundFile.Open into the logical RootStorage to CompoundStorage to CompoundStream hierarchy on the right.](../../images/diagrams/io-compound-structure.svg)
 
 | Concept | Type | COM analogue | Role |
 |---|---|---|---|
 | **File** | <xref:Bodu.IO.Compound.CompoundFile> | `StgOpenStorage` | Opens the container and anchors the hierarchy at `RootStorage`. |
 | **Storage** | <xref:Bodu.IO.Compound.CompoundStorage> | `IStorage` | A named container of child storages and streams. |
-| **Stream entry** | <xref:Bodu.IO.Compound.CompoundStreamEntry> | `IStream` | A named, file-like leaf with an opaque byte payload. |
-| **Stream cursor** | <xref:Bodu.IO.Compound.CompoundStream> | — | A read-only, seekable <xref:System.IO.Stream> over a stream's bytes. |
+| **Stream** | <xref:Bodu.IO.Compound.CompoundStream> | `IStream` | A named, file-like leaf with an opaque byte payload; itself a read-only, seekable <xref:System.IO.Stream> cursor over those bytes. |
 
 ## Key concepts
 
@@ -31,7 +30,7 @@ For the full glossary, see [Core concepts](concepts.md).
 
 ## Scope and limitations
 
-- **Read-only.** Only <xref:Bodu.IO.Compound.CompoundFileMode.Read> is supported; creation and mutation (`Create`, `Commit`, `Revert`) are reserved for a future read-write implementation.
+- **Read-only.** Only read access (`FileMode.Open` with `FileAccess.Read`) is covered here; creation and mutation are out of scope for this introduction.
 - **No format interpretation.** The reader surfaces named streams and their bytes; understanding a `Workbook` or `WordDocument` stream is the caller's job. The narrow BIFF8 `.xls` reader in <xref:Bodu.Formats.Excel.Binary> is the worked example of a format reader layered on top.
 
 ## Worked example — open, navigate, read
@@ -52,7 +51,7 @@ using CompoundFile file = CompoundFile.Open(File.OpenRead("book.xls"));
 foreach (CompoundEntryInfo info in file.RootStorage.EnumerateEntries())
     Console.WriteLine($"{info.EntryType}: {info.Name} ({info.Length} bytes)");
 
-CompoundStreamEntry workbook = file.RootStorage.OpenStream("Workbook");
+CompoundStream workbook = file.RootStorage.OpenStream("Workbook");
 ReadOnlyMemory<byte> bytes = workbook.ReadAllBytes();
 ```
 
@@ -75,8 +74,7 @@ ReadOnlyMemory<byte> bytes = workbook.ReadAllBytes();
 |---|---|
 | <xref:Bodu.IO.Compound.CompoundFile> | Opens a CFB container and anchors the hierarchy; static `Open` / `IsCompoundFile` factories. |
 | <xref:Bodu.IO.Compound.CompoundStorage> | A storage node — enumerates children and resolves child storages and streams by name. |
-| <xref:Bodu.IO.Compound.CompoundStreamEntry> | A stream node — `Open` for a cursor, `ReadAllBytes` for the whole payload, `Stat` for metadata. |
-| <xref:Bodu.IO.Compound.CompoundStream> | A read-only, seekable `Stream` cursor over a stream's bytes; `AsMemory` for a whole-payload view. |
+| <xref:Bodu.IO.Compound.CompoundStream> | A stream node and read-only, seekable `Stream` cursor in one — `ReadAllBytes` for the whole payload, `AsMemory` for a whole-payload view, `Stat` for metadata. |
 | <xref:Bodu.IO.Compound.CompoundEntryInfo> | An immutable metadata snapshot — name, entry type, length, class id, timestamps. |
 | <xref:Bodu.IO.Compound.CompoundFileFormatException>, <xref:Bodu.IO.Compound.CompoundStreamNotFoundException> | Malformed-container and missing-entry errors. |
 
