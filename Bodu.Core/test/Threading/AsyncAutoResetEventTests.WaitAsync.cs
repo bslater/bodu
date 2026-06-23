@@ -33,13 +33,31 @@ public sealed partial class AsyncAutoResetEventTests
     }
 
     /// <summary>
-    /// Verifies that an already-canceled token cancels the wait even when a signal is pending, because the token is
-    /// observed first.
+    /// Verifies that a latched signal is consumed even when the token is already canceled, because success wins when
+    /// the wait can complete immediately.
     /// </summary>
     [TestMethod]
-    public async Task WaitAsync_WhenTokenAlreadyCanceled_ShouldCancel()
+    public void WaitAsync_WhenTokenAlreadyCanceledAndSignaled_ShouldConsumeSignal()
     {
         var sut = new AsyncAutoResetEvent(initialState: true);
+        using var cts = new CancellationTokenSource();
+        cts.Cancel();
+
+        var wait = sut.WaitAsync(cts.Token);
+
+        Assert.IsTrue(wait.IsCompletedSuccessfully);
+
+        // The signal was consumed, so a subsequent wait does not complete immediately.
+        Assert.IsFalse(sut.WaitAsync().IsCompleted);
+    }
+
+    /// <summary>
+    /// Verifies that an already-canceled token cancels the wait when no signal is latched.
+    /// </summary>
+    [TestMethod]
+    public async Task WaitAsync_WhenTokenAlreadyCanceledAndUnsignaled_ShouldCancel()
+    {
+        var sut = new AsyncAutoResetEvent(initialState: false);
         using var cts = new CancellationTokenSource();
         cts.Cancel();
 

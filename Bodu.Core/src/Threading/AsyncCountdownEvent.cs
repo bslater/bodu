@@ -24,6 +24,10 @@ namespace Bodu.Threading;
 /// thread that drives the count to zero. The type owns no operating-system handle and does not implement
 /// <see cref="IDisposable" />.
 /// </para>
+/// <para>
+/// Unlike <see cref="CountdownEvent" />, this type is <b>not resettable</b>: once the count reaches zero the event
+/// stays signaled and the count cannot be raised again. Create a new instance to count down a second time.
+/// </para>
 /// </remarks>
 [DebuggerDisplay("CurrentCount = {CurrentCount}")]
 public sealed class AsyncCountdownEvent
@@ -138,7 +142,7 @@ public sealed class AsyncCountdownEvent
     /// </summary>
     /// <param name="count">The amount by which to increase the count.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="count" /> is less than one.</exception>
-    /// <exception cref="InvalidOperationException">The event is already signaled (its count is zero).</exception>
+    /// <exception cref="InvalidOperationException">The event is already signaled (its count is zero), or increasing the count by <paramref name="count" /> would overflow <see cref="int.MaxValue" />.</exception>
     public void AddCount(int count)
     {
         if (!TryAddCount(count))
@@ -158,6 +162,7 @@ public sealed class AsyncCountdownEvent
     /// <param name="count">The amount by which to increase the count.</param>
     /// <returns><see langword="true" /> if the count was incremented; <see langword="false" /> if the event is already signaled.</returns>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="count" /> is less than one.</exception>
+    /// <exception cref="InvalidOperationException">Increasing the count by <paramref name="count" /> would overflow <see cref="int.MaxValue" />.</exception>
     public bool TryAddCount(int count)
     {
         ThrowHelper.ThrowIfZeroOrNegative(count);
@@ -166,6 +171,10 @@ public sealed class AsyncCountdownEvent
         {
             if (_count == 0)
                 return false;
+
+            // Reject before mutating so an overflowing request leaves the count unchanged.
+            if (count > int.MaxValue - _count)
+                throw new InvalidOperationException(ResourceStrings.Op_Invalid_CountdownCountOverflow);
 
             _count += count;
             return true;

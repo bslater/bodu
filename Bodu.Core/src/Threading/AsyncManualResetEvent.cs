@@ -24,6 +24,12 @@ namespace Bodu.Threading;
 /// <see cref="TaskCreationOptions.RunContinuationsAsynchronously" />, so the thread that calls <see cref="Set" />
 /// is never hijacked to run waiter continuations inline.
 /// </para>
+/// <para>
+/// Cancellation follows the package-wide rule: when the event is already set, <see cref="WaitAsync()" /> completes
+/// immediately even if the supplied token is already canceled. A <see cref="Set" /> that races with a
+/// <see cref="Reset" /> is observed consistently: a waiter that captured the completed task before the reset still
+/// completes, while a wait that begins after the reset observes the new unsignaled state.
+/// </para>
 /// </remarks>
 [DebuggerDisplay("IsSet = {IsSet}")]
 public sealed class AsyncManualResetEvent

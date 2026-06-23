@@ -27,7 +27,13 @@ namespace Bodu.Threading;
 /// When constructed from a synchronous <see cref="Func{TResult}" />, the factory is offloaded to the thread pool via
 /// <see cref="Task.Run{TResult}(Func{TResult})" /> so a blocking or CPU-bound factory does not run inline on the
 /// first awaiter. A factory that throws produces a faulted task that is cached; every awaiter then observes the same
-/// exception. There is no per-caller cancellation because the computation is shared.
+/// exception.
+/// </para>
+/// <para>
+/// The shared computation is not canceled by any single caller. Use <see cref="GetValueAsync(CancellationToken)" /> to
+/// abandon an individual wait without affecting the shared factory. A factory that attempts to obtain the value of the
+/// same instance while it is still being produced is detected and fails fast with
+/// <see cref="InvalidOperationException" /> rather than deadlocking.
 /// </para>
 /// </remarks>
 /// <example>
@@ -42,10 +48,11 @@ namespace Bodu.Threading;
 /// }
 ///]]>
 /// </example>
-[DebuggerDisplay("IsValueCreated = {IsValueCreated}")]
+[DebuggerDisplay("IsValueCreated = {IsValueCreated}, IsValueFactoryCompleted = {IsValueFactoryCompleted}")]
 public sealed class AsyncLazy<T>
 {
     private readonly Lazy<Task<T>> _instance;
+    private readonly AsyncLocal<bool> _factoryRunning = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AsyncLazy{T}" /> class that produces its value with a synchronous
@@ -61,7 +68,7 @@ public sealed class AsyncLazy<T>
     {
         ThrowHelper.ThrowIfNull(valueFactory);
 
-        _instance = new Lazy<Task<T>>(() => Task.Run(valueFactory), LazyThreadSafetyMode.ExecutionAndPublication);
+        _instance = new Lazy<Task<T>>(() => RunFactoryAsync(() => Task.Run(valueFactory)), LazyThreadSafetyMode.ExecutionAndPublication);
     }
 
     /// <summary>
@@ -78,37 +85,91 @@ public sealed class AsyncLazy<T>
     {
         ThrowHelper.ThrowIfNull(taskFactory);
 
-        _instance = new Lazy<Task<T>>(taskFactory, LazyThreadSafetyMode.ExecutionAndPublication);
+        _instance = new Lazy<Task<T>>(() => RunFactoryAsync(taskFactory), LazyThreadSafetyMode.ExecutionAndPublication);
     }
 
     /// <summary>
     /// Gets a value indicating whether the factory has been invoked.
     /// </summary>
     /// <value><see langword="true" /> if initialization has started; otherwise, <see langword="false" />.</value>
-    /// <returns><see langword="true" /> if the underlying value has been created; otherwise, <see langword="false" />.</returns>
+    /// <returns><see langword="true" /> if the underlying value task has been created; otherwise, <see langword="false" />.</returns>
     public bool IsValueCreated =>
         _instance.IsValueCreated;
+
+    /// <summary>
+    /// Gets a value indicating whether the factory has finished producing the value (successfully or with a fault).
+    /// </summary>
+    /// <value><see langword="true" /> if the value task has completed; otherwise, <see langword="false" />.</value>
+    /// <returns><see langword="true" /> if the factory has run to completion; otherwise, <see langword="false" />.</returns>
+    public bool IsValueFactoryCompleted =>
+        _instance.IsValueCreated && _instance.Value.IsCompleted;
 
     /// <summary>
     /// Gets the cached task that produces the value, invoking the factory on first access.
     /// </summary>
     /// <value>The shared <see cref="Task{TResult}" /> representing the lazily produced value.</value>
     /// <returns>The cached <see cref="Task{TResult}" /> for the lazily produced value.</returns>
+    /// <exception cref="InvalidOperationException">The value factory accessed the value of the same instance while it was being produced.</exception>
     public Task<T> Value =>
-        _instance.Value;
+        GetSharedTask();
 
     /// <summary>
     /// Gets an awaiter that resolves to the lazily produced value, enabling <c>await</c> on the instance directly.
     /// </summary>
     /// <returns>A <see cref="TaskAwaiter{TResult}" /> for the cached value task.</returns>
+    /// <exception cref="InvalidOperationException">The value factory accessed the value of the same instance while it was being produced.</exception>
     public TaskAwaiter<T> GetAwaiter() =>
-        _instance.Value.GetAwaiter();
+        GetSharedTask().GetAwaiter();
 
     /// <summary>
     /// Configures how the await on the lazily produced value is continued.
     /// </summary>
     /// <param name="continueOnCapturedContext"><see langword="true" /> to marshal the continuation back to the captured context; otherwise, <see langword="false" />.</param>
     /// <returns>A configured awaitable for the cached value task.</returns>
+    /// <exception cref="InvalidOperationException">The value factory accessed the value of the same instance while it was being produced.</exception>
     public ConfiguredTaskAwaitable<T> ConfigureAwait(bool continueOnCapturedContext) =>
-        _instance.Value.ConfigureAwait(continueOnCapturedContext);
+        GetSharedTask().ConfigureAwait(continueOnCapturedContext);
+
+    /// <summary>
+    /// Asynchronously gets the lazily produced value, abandoning only this caller's wait if the token is canceled.
+    /// </summary>
+    /// <param name="cancellationToken">A token used to cancel this caller's wait.</param>
+    /// <returns>A <see cref="Task{TResult}" /> that completes with the shared value.</returns>
+    /// <exception cref="OperationCanceledException"><paramref name="cancellationToken" /> was canceled before the value became available.</exception>
+    /// <exception cref="InvalidOperationException">The value factory accessed the value of the same instance while it was being produced.</exception>
+    /// <remarks>Cancellation cancels only the returned wait; the shared initialization continues for other callers.</remarks>
+    public Task<T> GetValueAsync(CancellationToken cancellationToken)
+    {
+        var task = GetSharedTask();
+        return task.IsCompleted || !cancellationToken.CanBeCanceled
+            ? task
+            : task.WaitAsync(cancellationToken);
+    }
+
+    /// <summary>
+    /// Returns the shared value task, rejecting reentrant access from the value factory of the same instance.
+    /// </summary>
+    /// <returns>The cached <see cref="Task{TResult}" /> for the lazily produced value.</returns>
+    /// <exception cref="InvalidOperationException">The value factory accessed the value of the same instance while it was being produced.</exception>
+    private Task<T> GetSharedTask()
+    {
+        if (_factoryRunning.Value)
+            throw new InvalidOperationException(ResourceStrings.Op_Invalid_AsyncLazyReentrant);
+
+        return _instance.Value;
+    }
+
+    /// <summary>
+    /// Runs the factory in an execution flow marked for reentrancy detection. The initial yield ensures the marker is
+    /// established off the triggering caller's context so it is observed only within the factory's own flow.
+    /// </summary>
+    /// <param name="factory">The delegate that begins producing the value.</param>
+    /// <returns>A <see cref="Task{TResult}" /> for the produced value.</returns>
+    private async Task<T> RunFactoryAsync(Func<Task<T>> factory)
+    {
+        await Task.Yield();
+
+        _factoryRunning.Value = true;
+        return await factory().ConfigureAwait(false);
+    }
 }

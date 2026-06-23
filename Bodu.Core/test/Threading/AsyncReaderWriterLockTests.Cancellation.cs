@@ -9,13 +9,31 @@ namespace Bodu.Threading;
 public sealed partial class AsyncReaderWriterLockTests
 {
     /// <summary>
-    /// Verifies that requesting read access with an already-canceled token cancels synchronously and leaves the lock
-    /// free for the next caller.
+    /// Verifies that immediately available read access is granted even when the token is already canceled, because
+    /// success wins when the acquisition can complete immediately.
     /// </summary>
     [TestMethod]
-    public async Task ReaderAsync_WhenTokenAlreadyCanceled_ShouldCancelSynchronously()
+    public void ReaderAsync_WhenTokenAlreadyCanceledAndFree_ShouldGrantAccess()
     {
         var sut = new AsyncReaderWriterLock();
+        using var cts = new CancellationTokenSource();
+        cts.Cancel();
+
+        var reader = sut.ReaderAsync(cts.Token);
+
+        Assert.IsTrue(reader.IsCompletedSuccessfully);
+        reader.Result.Dispose();
+    }
+
+    /// <summary>
+    /// Verifies that read access requested with an already-canceled token cancels synchronously when a writer is
+    /// active, and that the lock remains usable afterward.
+    /// </summary>
+    [TestMethod]
+    public async Task ReaderAsync_WhenTokenAlreadyCanceledAndWriterActive_ShouldCancelSynchronously()
+    {
+        var sut = new AsyncReaderWriterLock();
+        var writer = await sut.WriterAsync();
         using var cts = new CancellationTokenSource();
         cts.Cancel();
 
@@ -24,19 +42,38 @@ public sealed partial class AsyncReaderWriterLockTests
         Assert.IsTrue(reader.IsCanceled);
         await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () => await reader);
 
+        writer.Dispose();
         using (await sut.ReaderAsync())
         {
         }
     }
 
     /// <summary>
-    /// Verifies that requesting write access with an already-canceled token cancels synchronously and leaves the lock
-    /// free for the next caller.
+    /// Verifies that immediately available write access is granted even when the token is already canceled, because
+    /// success wins when the acquisition can complete immediately.
     /// </summary>
     [TestMethod]
-    public async Task WriterAsync_WhenTokenAlreadyCanceled_ShouldCancelSynchronously()
+    public void WriterAsync_WhenTokenAlreadyCanceledAndFree_ShouldGrantAccess()
     {
         var sut = new AsyncReaderWriterLock();
+        using var cts = new CancellationTokenSource();
+        cts.Cancel();
+
+        var writer = sut.WriterAsync(cts.Token);
+
+        Assert.IsTrue(writer.IsCompletedSuccessfully);
+        writer.Result.Dispose();
+    }
+
+    /// <summary>
+    /// Verifies that write access requested with an already-canceled token cancels synchronously when a writer is
+    /// active, and that the lock remains usable afterward.
+    /// </summary>
+    [TestMethod]
+    public async Task WriterAsync_WhenTokenAlreadyCanceledAndWriterActive_ShouldCancelSynchronously()
+    {
+        var sut = new AsyncReaderWriterLock();
+        var active = await sut.WriterAsync();
         using var cts = new CancellationTokenSource();
         cts.Cancel();
 
@@ -45,6 +82,7 @@ public sealed partial class AsyncReaderWriterLockTests
         Assert.IsTrue(writer.IsCanceled);
         await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () => await writer);
 
+        active.Dispose();
         using (await sut.WriterAsync())
         {
         }

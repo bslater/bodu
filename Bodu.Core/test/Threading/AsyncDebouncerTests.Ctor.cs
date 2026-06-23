@@ -43,11 +43,24 @@ public sealed partial class AsyncDebouncerTests
         {
             Interlocked.Increment(ref runs);
             return ValueTask.CompletedTask;
-        }, time);
+        }, timeProvider: time);
 
         sut.Invoke();
         time.Advance(TimeSpan.Zero);
 
         Assert.AreEqual(1, runs);
+    }
+
+    /// <summary>
+    /// Verifies that an undefined execution policy throws <see cref="ArgumentOutOfRangeException" /> naming
+    /// <c>executionPolicy</c>.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenExecutionPolicyUndefined_ShouldThrowForExecutionPolicy()
+    {
+        Assert.AreEqual(
+            "executionPolicy",
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(
+                () => new AsyncDebouncer(TimeSpan.FromSeconds(1), _ => ValueTask.CompletedTask, (AsyncDebouncerExecutionPolicy)999)).ParamName);
     }
 }

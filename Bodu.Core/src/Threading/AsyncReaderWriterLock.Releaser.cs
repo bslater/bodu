@@ -13,14 +13,16 @@ public sealed partial class AsyncReaderWriterLock
     /// read or write access it represents.
     /// </summary>
     /// <remarks>
-    /// The releaser is a lightweight value type returned by <see cref="ReaderAsync()" /> and <see cref="WriterAsync()" />.
-    /// It is intended to be consumed by a single <c>using</c> statement and disposed exactly once. Copying a releaser
-    /// and disposing more than one copy releases the access more than once and is undefined behavior, mirroring the
-    /// contract of the framework's value-type enumerators.
+    /// The releaser is a lightweight value type returned by <see cref="ReaderAsync()" /> and <see cref="WriterAsync()" />,
+    /// typically consumed by a single <c>using</c> statement. It is <b>idempotent</b>: disposing it more than once, or
+    /// disposing several copies of the same value, releases the underlying access exactly once. This prevents accidental
+    /// double-disposal from corrupting the reader count or granting overlapping access, at the cost of one small
+    /// allocation per acquisition for the shared idempotency guard.
     /// </remarks>
     public readonly struct Releaser : IDisposable
     {
         private readonly AsyncReaderWriterLock? _owner;
+        private readonly ReleaseGuard? _guard;
         private readonly bool _isWriter;
 
         /// <summary>
@@ -28,24 +30,43 @@ public sealed partial class AsyncReaderWriterLock
         /// </summary>
         /// <param name="owner">The lock that was acquired.</param>
         /// <param name="isWriter"><see langword="true" /> if the releaser represents write access; otherwise, <see langword="false" />.</param>
-        internal Releaser(AsyncReaderWriterLock owner, bool isWriter)
+        /// <param name="guard">The shared guard that ensures the access is released at most once.</param>
+        internal Releaser(AsyncReaderWriterLock owner, bool isWriter, ReleaseGuard guard)
         {
             _owner = owner;
             _isWriter = isWriter;
+            _guard = guard;
         }
 
         /// <summary>
-        /// Releases the read or write access represented by this releaser.
+        /// Releases the read or write access represented by this releaser. Subsequent calls, including calls on copies
+        /// of the same value, are no-ops.
         /// </summary>
         public void Dispose()
         {
-            if (_owner is null)
+            if (_owner is null || _guard is null || !_guard.TryRelease())
                 return;
 
             if (_isWriter)
                 _owner.ReleaseWriter();
             else
                 _owner.ReleaseReader();
+        }
+
+        /// <summary>
+        /// A one-shot guard shared by every copy of a <see cref="Releaser" /> value, used to release the underlying
+        /// access exactly once regardless of how many times the releaser is disposed.
+        /// </summary>
+        internal sealed class ReleaseGuard
+        {
+            private int _released;
+
+            /// <summary>
+            /// Atomically claims the single release permitted by this guard.
+            /// </summary>
+            /// <returns><see langword="true" /> for the first caller; <see langword="false" /> for every subsequent caller.</returns>
+            internal bool TryRelease() =>
+                Interlocked.Exchange(ref _released, 1) == 0;
         }
     }
 }

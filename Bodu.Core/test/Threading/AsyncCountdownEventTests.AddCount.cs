@@ -84,4 +84,30 @@ public sealed partial class AsyncCountdownEventTests
 
         Assert.IsFalse(sut.TryAddCount());
     }
+
+    /// <summary>
+    /// Verifies that an addition that would overflow the count throws <see cref="InvalidOperationException" /> and
+    /// leaves the count unchanged.
+    /// </summary>
+    [TestMethod]
+    public void TryAddCount_WhenWouldOverflow_ShouldThrowAndNotMutateState()
+    {
+        var sut = new AsyncCountdownEvent(int.MaxValue - 1);
+
+        Assert.ThrowsExactly<InvalidOperationException>(() => sut.TryAddCount(2));
+        Assert.AreEqual(int.MaxValue - 1, sut.CurrentCount);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="AsyncCountdownEvent.AddCount(int)" /> rejects an overflowing addition with
+    /// <see cref="InvalidOperationException" /> and leaves the count unchanged.
+    /// </summary>
+    [TestMethod]
+    public void AddCount_WhenWouldOverflow_ShouldThrowAndNotMutateState()
+    {
+        var sut = new AsyncCountdownEvent(int.MaxValue);
+
+        Assert.ThrowsExactly<InvalidOperationException>(() => sut.AddCount(1));
+        Assert.AreEqual(int.MaxValue, sut.CurrentCount);
+    }
 }

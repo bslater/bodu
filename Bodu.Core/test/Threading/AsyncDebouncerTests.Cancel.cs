@@ -20,7 +20,7 @@ public sealed partial class AsyncDebouncerTests
         {
             Interlocked.Increment(ref runs);
             return ValueTask.CompletedTask;
-        }, time);
+        }, timeProvider: time);
 
         sut.Invoke();
         sut.Cancel();
@@ -36,7 +36,7 @@ public sealed partial class AsyncDebouncerTests
     public void Cancel_WhenNothingPending_ShouldNotThrow()
     {
         var time = new FakeTimeProvider();
-        using var sut = new AsyncDebouncer(TimeSpan.FromMilliseconds(100), _ => ValueTask.CompletedTask, time);
+        using var sut = new AsyncDebouncer(TimeSpan.FromMilliseconds(100), _ => ValueTask.CompletedTask, timeProvider: time);
 
         sut.Cancel();
     }
@@ -68,7 +68,7 @@ public sealed partial class AsyncDebouncerTests
             {
                 ended.TrySetResult();
             }
-        }, time);
+        }, timeProvider: time);
 
         sut.Invoke();
         time.Advance(TimeSpan.FromMilliseconds(100));

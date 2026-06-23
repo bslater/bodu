@@ -516,8 +516,11 @@
   <data name="Op_Invalid_ArrayElementTypeUnresolved" xml:space="preserve">
     <value>Array element type could not be resolved.</value>
   </data>
-  <data name="Op_Invalid_AsyncLockDisposedWaiters" xml:space="preserve">
-    <value>The asynchronous lock was disposed while one or more callers were waiting.</value>
+  <data name="Op_Invalid_AsyncLazyReentrant" xml:space="preserve">
+    <value>The value factory attempted to access the value of the same AsyncLazy instance while it was being produced.</value>
+  </data>
+  <data name="Op_Invalid_AsyncPrimitiveDisposedWaiters" xml:space="preserve">
+    <value>The asynchronous primitive was disposed while one or more callers were waiting.</value>
   </data>
   <data name="Op_Invalid_AttributeValue" xml:space="preserve">
     <value>Invalid value '{0}' for attribute '{1}'.</value>
@@ -545,6 +548,9 @@
   </data>
   <data name="Op_Invalid_CountdownAlreadyZero" xml:space="preserve">
     <value>The countdown event has already reached zero and cannot be incremented.</value>
+  </data>
+  <data name="Op_Invalid_CountdownCountOverflow" xml:space="preserve">
+    <value>Increasing the countdown event count by the requested amount would overflow its maximum value.</value>
   </data>
   <data name="Op_Invalid_CountdownSignalBelowZero" xml:space="preserve">
     <value>The signal count exceeds the remaining count of the countdown event.</value>

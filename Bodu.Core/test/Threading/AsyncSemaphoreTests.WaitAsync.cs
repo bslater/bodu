@@ -39,11 +39,11 @@ public sealed partial class AsyncSemaphoreTests
     }
 
     /// <summary>
-    /// Verifies that an already-canceled token cancels the wait even when a permit is available, because the token is
-    /// observed before the permit is taken.
+    /// Verifies that an available permit is taken even when the token is already canceled, because success wins when
+    /// the wait can complete immediately.
     /// </summary>
     [TestMethod]
-    public async Task WaitAsync_WhenTokenAlreadyCanceled_ShouldCancelSynchronously()
+    public void WaitAsync_WhenTokenAlreadyCanceledAndPermitAvailable_ShouldTakePermit()
     {
         var sut = new AsyncSemaphore(1);
         using var cts = new CancellationTokenSource();
@@ -51,11 +51,26 @@ public sealed partial class AsyncSemaphoreTests
 
         var wait = sut.WaitAsync(cts.Token);
 
+        Assert.IsTrue(wait.IsCompletedSuccessfully);
+        Assert.AreEqual(0, sut.CurrentCount);
+    }
+
+    /// <summary>
+    /// Verifies that an already-canceled token cancels the wait when no permit is available, leaving the permit count
+    /// unchanged.
+    /// </summary>
+    [TestMethod]
+    public async Task WaitAsync_WhenTokenAlreadyCanceledAndNoPermit_ShouldCancelSynchronously()
+    {
+        var sut = new AsyncSemaphore(0);
+        using var cts = new CancellationTokenSource();
+        cts.Cancel();
+
+        var wait = sut.WaitAsync(cts.Token);
+
         Assert.IsTrue(wait.IsCanceled);
         await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () => await wait);
-
-        // The permit was not consumed by the canceled wait.
-        Assert.AreEqual(1, sut.CurrentCount);
+        Assert.AreEqual(0, sut.CurrentCount);
     }
 
     /// <summary>

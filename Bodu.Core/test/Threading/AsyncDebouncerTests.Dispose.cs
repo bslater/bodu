@@ -32,7 +32,7 @@ public sealed partial class AsyncDebouncerTests
         {
             Interlocked.Increment(ref runs);
             return ValueTask.CompletedTask;
-        }, time);
+        }, timeProvider: time);
 
         sut.Invoke();
         sut.Dispose();
@@ -68,7 +68,7 @@ public sealed partial class AsyncDebouncerTests
             {
                 ended.TrySetResult();
             }
-        }, time);
+        }, timeProvider: time);
 
         sut.Invoke();
         time.Advance(TimeSpan.FromMilliseconds(100));

@@ -1258,11 +1258,20 @@ namespace Bodu {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The asynchronous lock was disposed while one or more callers were waiting..
+        ///   Looks up a localized string similar to The value factory attempted to access the value of the same AsyncLazy instance while it was being produced..
         /// </summary>
-        internal static string Op_Invalid_AsyncLockDisposedWaiters {
+        internal static string Op_Invalid_AsyncLazyReentrant {
             get {
-                return ResourceManager.GetString("Op_Invalid_AsyncLockDisposedWaiters", resourceCulture);
+                return ResourceManager.GetString("Op_Invalid_AsyncLazyReentrant", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The asynchronous primitive was disposed while one or more callers were waiting..
+        /// </summary>
+        internal static string Op_Invalid_AsyncPrimitiveDisposedWaiters {
+            get {
+                return ResourceManager.GetString("Op_Invalid_AsyncPrimitiveDisposedWaiters", resourceCulture);
             }
         }
 
@@ -1344,6 +1353,15 @@ namespace Bodu {
         internal static string Op_Invalid_CountdownAlreadyZero {
             get {
                 return ResourceManager.GetString("Op_Invalid_CountdownAlreadyZero", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Increasing the countdown event count by the requested amount would overflow its maximum value..
+        /// </summary>
+        internal static string Op_Invalid_CountdownCountOverflow {
+            get {
+                return ResourceManager.GetString("Op_Invalid_CountdownCountOverflow", resourceCulture);
             }
         }
 

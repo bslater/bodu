@@ -21,7 +21,7 @@ public sealed partial class AsyncDebouncerTests
         {
             Interlocked.Increment(ref runs);
             return ValueTask.CompletedTask;
-        }, time);
+        }, timeProvider: time);
 
         sut.Invoke();
         Assert.AreEqual(0, runs);
@@ -43,7 +43,7 @@ public sealed partial class AsyncDebouncerTests
         {
             Interlocked.Increment(ref runs);
             return ValueTask.CompletedTask;
-        }, time);
+        }, timeProvider: time);
 
         sut.Invoke();
         time.Advance(TimeSpan.FromMilliseconds(50));
@@ -70,7 +70,7 @@ public sealed partial class AsyncDebouncerTests
         {
             Interlocked.Increment(ref runs);
             return ValueTask.CompletedTask;
-        }, time);
+        }, timeProvider: time);
 
         sut.Invoke();
         time.Advance(TimeSpan.FromMilliseconds(100));
