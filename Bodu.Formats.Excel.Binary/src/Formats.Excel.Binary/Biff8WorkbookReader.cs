@@ -241,6 +241,47 @@ public sealed class Biff8WorkbookReader
     }
 
     /// <summary>
+    /// Reads the worksheet at the specified index into a materialized, randomly addressable view.
+    /// </summary>
+    /// <param name="sheetIndex">The zero-based worksheet index.</param>
+    /// <returns>A materialized <see cref="ExcelWorksheet" /> buffering the worksheet's populated cells.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="sheetIndex" /> is out of range.
+    /// </exception>
+    /// <exception cref="Biff8FormatException">Thrown when a cell record is malformed.</exception>
+    public ExcelWorksheet ReadWorksheet(int sheetIndex)
+    {
+        if ((uint)sheetIndex >= (uint)_sheets.Count)
+            throw new ArgumentOutOfRangeException(nameof(sheetIndex));
+
+        return new ExcelWorksheet(_sheets[sheetIndex], ReadSheetCells(sheetIndex));
+    }
+
+    /// <summary>
+    /// Reads the worksheet with the specified name into a materialized, randomly addressable view.
+    /// </summary>
+    /// <param name="sheetName">The worksheet name, compared using ordinal equality.</param>
+    /// <returns>A materialized <see cref="ExcelWorksheet" /> buffering the worksheet's populated cells.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="sheetName" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="KeyNotFoundException">Thrown when no worksheet with the given name exists.</exception>
+    /// <exception cref="Biff8FormatException">Thrown when a cell record is malformed.</exception>
+    public ExcelWorksheet ReadWorksheet(string sheetName)
+    {
+        ThrowHelper.ThrowIfNull(sheetName);
+
+        for (int i = 0; i < _sheets.Count; i++)
+        {
+            if (string.Equals(_sheets[i].Name, sheetName, StringComparison.Ordinal))
+                return ReadWorksheet(i);
+        }
+
+        throw new KeyNotFoundException(
+            string.Format(CultureInfo.CurrentCulture, ExcelBinaryResourceStrings.IO_KeyNotFound_Biff8Sheet, sheetName));
+    }
+
+    /// <summary>
     /// Partitions the record list into substreams delimited by beginning-of-file and end-of-file records.
     /// </summary>
     /// <param name="records">The ordered record list.</param>
