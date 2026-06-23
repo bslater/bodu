@@ -71,7 +71,7 @@ Read-only readers for legacy binary container and document formats — a general
 | Package | What it provides | Target framework |
 |---|---|---|
 | **[Bodu.IO.Compound](io-compound/index.md)** | A read-only reader for the OLE2 / Compound File Binary (CFB) container — the structured-storage "file system in a file" behind legacy Office documents (`.xls`, `.doc`, `.ppt`, `.msg`). Navigates the `RootStorage` hierarchy, reads each named stream through a seekable `CompoundStream` cursor (buffered or on-demand), and parses the OLE summary-information property sets. | `net8.0` |
-| **[Bodu.Formats.Excel.Binary](xref:Bodu.Formats.Excel.Binary)** | A narrow, read-only BIFF8 (`.xls`) reader built on `Bodu.IO.Compound` that surfaces raw worksheet cell values — strings, numbers, booleans, and errors — without formula evaluation, styling, or higher-level interpretation. | `net8.0` |
+| **[Bodu.Formats.Excel.Binary](excel/index.md)** | A narrow, read-only BIFF8 (`.xls`) reader built on `Bodu.IO.Compound` that surfaces raw worksheet cell values — strings, numbers, booleans, and errors — without formula evaluation, styling, or higher-level interpretation. | `net8.0` |
 
 Each package is versioned and released independently — take the one you need and ignore the others. The only shared runtime dependency is `Bodu.Core`, whose `ThrowHelper` provides argument validation for `Bodu.IO.Hashing`, `Bodu.Security.Cryptography`, `Bodu.Text.Encoding`, `Bodu.Text.Formats`, `Bodu.Text.Configuration`, `Bodu.Extensions.Configuration.Text`, `Bodu.Text`, `Bodu.Numerics`, `Bodu.Financial`, and `Bodu.IO.Compound`. Beyond that, `Bodu.Text.Formats` references `Bodu.Text.Encoding`; `Bodu.Text.Configuration` builds on `Bodu.Text.Formats`; `Bodu.Extensions.Configuration.Text` builds on `Bodu.Text.Configuration` plus `Microsoft.Extensions.Configuration`; and `Bodu.Financial` builds on `Bodu.Numerics` for its `Fraction<BigInteger>` precision escape hatch; and `Bodu.Formats.Excel.Binary` builds on `Bodu.IO.Compound` to read BIFF8 `.xls` workbooks.
 
@@ -259,6 +259,17 @@ Each library has a dedicated introduction page that explains its namespaces, the
   </div>
 </div>
 
+<div class="bodu-card">
+  <h3><a href="excel/index.md">Bodu.Formats.Excel.Binary</a></h3>
+  <p>A narrow, read-only BIFF8 (<code>.xls</code>) reader built on <code>Bodu.IO.Compound</code> — surface raw worksheet cell values (strings, numbers, booleans, errors, and a formula's cached result) through a forward-only <code>ExcelWorksheetReader</code> or a randomly addressable <code>ExcelWorksheet</code>, with date-format detection and serial-date conversion, without formula evaluation or styling.</p>
+  <div class="bodu-card-links">
+    <a href="excel/index.md">Introduction</a>
+    <a href="excel/getting-started.md">Getting started</a>
+    <a href="../guides/excel/index.md">Guides</a>
+    <a href="xref:Bodu.Formats.Excel">API reference</a>
+  </div>
+</div>
+
 </div>
 
 ## Design principles
@@ -279,5 +290,5 @@ The solution uses **MSTest** with a partial-class test layout that mirrors the s
 - **Topic overviews:** [Core Foundations](topics/core-foundations.md) · [Hashing & Cryptography](topics/hashing-and-cryptography.md) · [Globalization & Calendars](topics/globalization-and-calendars.md) · [Text & Serialization](topics/text-and-serialization.md) · [Configuration](topics/configuration.md) · [Numerics & Financial](topics/numerics-and-financial.md) · [Binary Formats & I/O](topics/binary-formats.md).
 - **[Getting started](getting-started.md)** — prerequisites, install commands, and a one-minute sample from each library.
 - **[Package matrix](package-matrix.md)** — the authoritative package list with status, dependencies, and install commands.
-- **Library introductions:** [Bodu.Core](core/index.md) · [Bodu.IO.Hashing](io-hashing/index.md) · [Bodu.Security.Cryptography](cryptography/index.md) · [Bodu.Globalization.Calendar](calendar/index.md) · [Bodu.Text.Encoding](text-encoding/index.md) · [Bodu.Text.Formats](formats/index.md) · [Bodu.Text.Bencode](serialization/bencode.md) · [Bodu.Text.Toml](serialization/toml.md) · [Bodu.Text.Configuration](text-configuration/index.md) · [Bodu.Extensions.Configuration.Text](extensions-configuration-text/index.md) · [Bodu.Text](text/index.md) · [Bodu.Numerics](numerics/index.md) · [Bodu.Financial](financial/index.md) · [Bodu.IO.Compound](io-compound/index.md).
-- **API references:** [Bodu.Collections.Generic](xref:Bodu.Collections.Generic) · [Bodu.IO.Hashing](xref:Bodu.IO.Hashing) · [Bodu.Security.Cryptography](xref:Bodu.Security.Cryptography) · [Bodu.Globalization.Calendar](xref:Bodu.Globalization.Calendar) · [Bodu.Text](xref:Bodu.Text) · [Bodu.Numerics](xref:Bodu.Numerics) · [Bodu.Financial](xref:Bodu.Financial) · [Bodu.IO.Compound](xref:Bodu.IO.Compound).
+- **Library introductions:** [Bodu.Core](core/index.md) · [Bodu.IO.Hashing](io-hashing/index.md) · [Bodu.Security.Cryptography](cryptography/index.md) · [Bodu.Globalization.Calendar](calendar/index.md) · [Bodu.Text.Encoding](text-encoding/index.md) · [Bodu.Text.Formats](formats/index.md) · [Bodu.Text.Bencode](serialization/bencode.md) · [Bodu.Text.Toml](serialization/toml.md) · [Bodu.Text.Configuration](text-configuration/index.md) · [Bodu.Extensions.Configuration.Text](extensions-configuration-text/index.md) · [Bodu.Text](text/index.md) · [Bodu.Numerics](numerics/index.md) · [Bodu.Financial](financial/index.md) · [Bodu.IO.Compound](io-compound/index.md) · [Bodu.Formats.Excel.Binary](excel/index.md).
+- **API references:** [Bodu.Collections.Generic](xref:Bodu.Collections.Generic) · [Bodu.IO.Hashing](xref:Bodu.IO.Hashing) · [Bodu.Security.Cryptography](xref:Bodu.Security.Cryptography) · [Bodu.Globalization.Calendar](xref:Bodu.Globalization.Calendar) · [Bodu.Text](xref:Bodu.Text) · [Bodu.Numerics](xref:Bodu.Numerics) · [Bodu.Financial](xref:Bodu.Financial) · [Bodu.IO.Compound](xref:Bodu.IO.Compound) · [Bodu.Formats.Excel](xref:Bodu.Formats.Excel).

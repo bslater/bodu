@@ -31,7 +31,7 @@ For the full glossary, see [Core concepts](concepts.md).
 ## Scope and limitations
 
 - **Read-only.** Only read access (`FileMode.Open` with `FileAccess.Read`) is covered here; creation and mutation are out of scope for this introduction.
-- **No format interpretation.** The reader surfaces named streams and their bytes; understanding a `Workbook` or `WordDocument` stream is the caller's job. The narrow BIFF8 `.xls` reader in <xref:Bodu.Formats.Excel.Binary> is the worked example of a format reader layered on top.
+- **No format interpretation.** The reader surfaces named streams and their bytes; understanding a `Workbook` or `WordDocument` stream is the caller's job. The narrow BIFF8 `.xls` reader in [Bodu.Formats.Excel.Binary](../excel/index.md) is the worked example of a format reader layered on top.
 
 ## Worked example — open, navigate, read
 
@@ -93,4 +93,4 @@ ReadOnlyMemory<byte> bytes = workbook.ReadAllBytes();
 - **[Bodu.IO.Compound guides](../../guides/io-compound/index.md)** — reading files, buffered vs streaming access, and property sets.
 - **API reference** — [Bodu.IO.Compound](xref:Bodu.IO.Compound) · [Bodu.IO.Compound.PropertySets](xref:Bodu.IO.Compound.PropertySets).
 - **[Binary Formats & I/O topic overview](../topics/binary-formats.md)** — where the container reader sits beneath the format readers.
-- **For the BIFF8 `.xls` reader built on this package**, see [Bodu.Formats.Excel.Binary](xref:Bodu.Formats.Excel.Binary).
+- **For the BIFF8 `.xls` reader built on this package**, see [Bodu.Formats.Excel.Binary](../excel/index.md).

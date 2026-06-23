@@ -239,6 +239,17 @@ A family of focused primary libraries organized into **seven topics** — alongs
   </div>
 </div>
 
+<div class="bodu-card">
+  <img src="images/hero-excel.svg" alt="Bodu.Formats.Excel.Binary" />
+  <h3>Bodu.Formats.Excel.Binary</h3>
+  <p>A narrow, read-only BIFF8 (<code>.xls</code>) reader built on <code>Bodu.IO.Compound</code> that surfaces the raw cell values of each worksheet — strings, numbers, booleans, and errors, including a formula cell's cached result — with date-format detection, serial-date conversion, each sheet's declared used range, and the workbook document properties. Offers a forward-only streaming <code>ExcelWorksheetReader</code> and a randomly addressable <code>ExcelWorksheet</code>, without formula evaluation, styling, or higher-level interpretation.</p>
+  <div class="bodu-card-links">
+    <a href="docs/excel/index.md">Introduction</a>
+    <a href="guides/excel/index.md">Guides</a>
+    <a href="xref:Bodu.Formats.Excel">API reference</a>
+  </div>
+</div>
+
 </div>
 
 ## Install
