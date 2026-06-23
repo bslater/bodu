@@ -33,6 +33,16 @@ public enum Biff8RecordType : ushort
     BoundSheet = 0x0085,
 
     /// <summary>
+    /// A cell holding a formula, carrying the cached result of its last calculation.
+    /// </summary>
+    Formula = 0x0006,
+
+    /// <summary>
+    /// The cached string result of a preceding <see cref="Formula" /> cell.
+    /// </summary>
+    String = 0x0207,
+
+    /// <summary>
     /// Shared string table holding the workbook's deduplicated text values.
     /// </summary>
     Sst = 0x00FC,

@@ -19,8 +19,9 @@ namespace Bodu.Formats.Excel.Binary;
 /// <para>
 /// The reader opens the workbook stream from its compound-file container, decodes the shared string table, and surfaces
 /// each worksheet's populated cells through <see cref="ReadSheetCells(int)" /> and
-/// <see cref="ReadSheetCells(string)" />. It targets BIFF8 only and interprets nothing beyond raw cell values — there
-/// is no formula evaluation, styling, or date detection.
+/// <see cref="ReadSheetCells(string)" />. It targets BIFF8 only and interprets nothing beyond raw cell values — a
+/// formula cell surfaces the cached result of its last calculation, but there is no formula evaluation, styling, or
+/// date detection.
 /// </para>
 /// <para>
 /// The workbook content is buffered in memory when the reader is opened, so the source stream need not remain open.
@@ -259,11 +260,46 @@ public sealed class Biff8WorkbookReader
         int sheetCount = Math.Min(boundSheets.Count, substreams.Count - 1);
         for (int i = 0; i < sheetCount; i++)
         {
-            sheets.Add(new Biff8SheetInfo(boundSheets[i].Name, i, boundSheets[i].Visible));
+            (int sheetStart, int sheetEnd) = substreams[i + 1];
+            Biff8SheetDimensions dimensions = ReadDimensions(records, sheetStart, sheetEnd);
+
+            sheets.Add(new Biff8SheetInfo(boundSheets[i].Name, i, boundSheets[i].Visible, dimensions));
             ranges.Add(substreams[i + 1]);
         }
 
         return (sheets, ranges);
+    }
+
+    /// <summary>
+    /// Reads the used range from the first <c>DIMENSIONS</c> record of a worksheet substream.
+    /// </summary>
+    /// <param name="records">The ordered record list.</param>
+    /// <param name="start">The inclusive record index at which the worksheet substream begins.</param>
+    /// <param name="endExclusive">The exclusive record index at which the worksheet substream ends.</param>
+    /// <returns>
+    /// The declared used range, or the default value when the substream carries no <c>DIMENSIONS</c> record.
+    /// </returns>
+    private static Biff8SheetDimensions ReadDimensions(List<Biff8Record> records, int start, int endExclusive)
+    {
+        for (int i = start; i < endExclusive; i++)
+        {
+            if (records[i].Type != Biff8RecordType.Dimensions)
+                continue;
+
+            ReadOnlySpan<byte> payload = records[i].Payload.Span;
+            if (payload.Length < 12)
+                break;
+
+            // BIFF8 DIMENSIONS stores the last row and column as one-past-the-end (rwMac, colMac).
+            int firstRow = (int)BinaryPrimitives.ReadUInt32LittleEndian(payload);
+            int rowExtent = (int)BinaryPrimitives.ReadUInt32LittleEndian(payload.Slice(4));
+            int firstColumn = BinaryPrimitives.ReadUInt16LittleEndian(payload.Slice(8));
+            int columnExtent = BinaryPrimitives.ReadUInt16LittleEndian(payload.Slice(10));
+
+            return new Biff8SheetDimensions(firstRow, Math.Max(0, rowExtent - firstRow), firstColumn, Math.Max(0, columnExtent - firstColumn));
+        }
+
+        return default;
     }
 
     /// <summary>
