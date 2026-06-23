@@ -26,4 +26,56 @@ public partial class DateTimeExtensionsTests
         Assert.AreEqual(expected, actual);
     }
 
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.DaysInMonth(DateTime, System.Globalization.CultureInfo)" /> returns
+    /// the day count for the supplied culture's calendar.
+    /// </summary>
+    [TestMethod]
+    public void DaysInMonth_WhenCultureSupplied_ShouldReturnDaysInMonthForCulture()
+    {
+        var date = new DateTime(2024, 2, 15);
+
+        Assert.AreEqual(29, date.DaysInMonth(System.Globalization.CultureInfo.InvariantCulture));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.DaysInMonth(DateTime, System.Globalization.CultureInfo)" /> uses the
+    /// current culture when the culture is <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void DaysInMonth_WhenCultureIsNull_ShouldUseCurrentCulture()
+    {
+        var date = new DateTime(2023, 4, 10);
+
+        Assert.AreEqual(
+            DateTime.DaysInMonth(2023, 4),
+            date.DaysInMonth((System.Globalization.CultureInfo?)null));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.DaysInMonth(DateTime, System.Globalization.Calendar)" /> returns the
+    /// day count for the supplied calendar.
+    /// </summary>
+    [TestMethod]
+    public void DaysInMonth_WhenCalendarSupplied_ShouldReturnDaysInMonthForCalendar()
+    {
+        var date = new DateTime(2024, 2, 15);
+
+        Assert.AreEqual(29, date.DaysInMonth(new System.Globalization.GregorianCalendar()));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.DaysInMonth(DateTime, System.Globalization.Calendar)" /> uses the
+    /// current culture's calendar when the calendar is <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void DaysInMonth_WhenCalendarIsNull_ShouldUseCurrentCultureCalendar()
+    {
+        var date = new DateTime(2023, 4, 10);
+
+        Assert.AreEqual(
+            DateTime.DaysInMonth(2023, 4),
+            date.DaysInMonth((System.Globalization.Calendar?)null));
+    }
+
 }
