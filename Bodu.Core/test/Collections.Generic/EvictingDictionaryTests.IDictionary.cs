@@ -236,4 +236,42 @@ public partial class EvictingDictionaryTests
         CollectionAssert.AreEquivalent(genericValues.Cast<object>().ToList(), values.Cast<object>().ToList());
     }
 
+    /// <summary>
+    /// Verifies that <see cref="IDictionary.Contains(object)" /> returns <see langword="true" /> for a key that is
+    /// present.
+    /// </summary>
+    [TestMethod]
+    public void IDictionary_ContainsObject_WhenKeyExists_ShouldReturnTrue()
+    {
+        IDictionary dictionary = new EvictingDictionary<string, int>(3);
+        dictionary.Add("key", 99);
+
+        Assert.IsTrue(dictionary.Contains("key"));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="IDictionary.Contains(object)" /> returns <see langword="false" /> for a key that is
+    /// absent.
+    /// </summary>
+    [TestMethod]
+    public void IDictionary_ContainsObject_WhenKeyDoesNotExist_ShouldReturnFalse()
+    {
+        IDictionary dictionary = new EvictingDictionary<string, int>(3);
+
+        Assert.IsFalse(dictionary.Contains("missing"));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="IDictionary.Contains(object)" /> returns <see langword="false" /> when the key is of
+    /// the wrong type.
+    /// </summary>
+    [TestMethod]
+    public void IDictionary_ContainsObject_WhenKeyIsWrongType_ShouldReturnFalse()
+    {
+        IDictionary dictionary = new EvictingDictionary<string, int>(3);
+        dictionary.Add("exists", 1);
+
+        Assert.IsFalse(dictionary.Contains(123));
+    }
+
 }
