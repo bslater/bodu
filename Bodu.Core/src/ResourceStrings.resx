@@ -516,6 +516,9 @@
   <data name="Op_Invalid_ArrayElementTypeUnresolved" xml:space="preserve">
     <value>Array element type could not be resolved.</value>
   </data>
+  <data name="Op_Invalid_AsyncLockDisposedWaiters" xml:space="preserve">
+    <value>The asynchronous lock was disposed while one or more callers were waiting.</value>
+  </data>
   <data name="Op_Invalid_AttributeValue" xml:space="preserve">
     <value>Invalid value '{0}' for attribute '{1}'.</value>
   </data>
@@ -539,6 +542,12 @@
   </data>
   <data name="Op_Invalid_Conversion" xml:space="preserve">
     <value>Unable to convert type {0} to {1}.</value>
+  </data>
+  <data name="Op_Invalid_CountdownAlreadyZero" xml:space="preserve">
+    <value>The countdown event has already reached zero and cannot be incremented.</value>
+  </data>
+  <data name="Op_Invalid_CountdownSignalBelowZero" xml:space="preserve">
+    <value>The signal count exceeds the remaining count of the countdown event.</value>
   </data>
   <data name="Op_Invalid_DuplicateKey" xml:space="preserve">
     <value>An item with the key '{0}' has already been added.</value>
@@ -572,6 +581,9 @@
   </data>
   <data name="Op_Invalid_ReentrancyNotAllowed" xml:space="preserve">
     <value>Cannot modify the collection during a change notification event.</value>
+  </data>
+  <data name="Op_Invalid_SemaphoreReleaseExceedsMax" xml:space="preserve">
+    <value>The release count would cause the semaphore count to exceed its maximum.</value>
   </data>
   <data name="Op_Invalid_SequenceContainsInvalidElement" xml:space="preserve">
     <value>The sequence contains an invalid item.</value>
