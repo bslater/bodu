@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Formats.Excel.Binary;
+using Bodu.Formats.Excel;
 
 namespace Bodu.Financial.ExchangeRates;
 
@@ -49,7 +49,7 @@ internal sealed class RbaXlsExchangeRateTableSource
         byte[] bytes = await GetWorkbookBytesAsync(era, cancellationToken).ConfigureAwait(false);
 
         using MemoryStream stream = new(bytes, writable: false);
-        var workbook = Biff8WorkbookReader.Open(stream);
+        using ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.OpenRead(stream, leaveOpen: true);
         return RbaExchangeRateWorkbookParser.Parse(workbook, _options);
     }
 

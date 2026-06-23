@@ -8,15 +8,23 @@ caller's job.
 
 Built on [`Bodu.IO.Compound`](../Bodu.IO.Compound) for the underlying container.
 
+A workbook is opened as a disposable, read-only session that keeps the container open and
+reads each sheet on demand by seeking to the stream offset its bound-sheet record records,
+so a single sheet can be read without parsing the others and the whole workbook is never
+materialized. The primary surface is the forward-only `ExcelWorksheetReader`; a
+materialized, randomly addressable `ExcelWorksheet` is offered as a convenience.
+
 ```csharp
-using Bodu.Formats.Excel.Binary;
+using Bodu.Formats.Excel;
 
-Biff8WorkbookReader workbook = Biff8WorkbookReader.Open(stream);
+using ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.OpenRead(path);
 
-foreach (Biff8SheetInfo sheet in workbook.Sheets)
-    Console.WriteLine($"{sheet.Index}: {sheet.Name} (visible: {sheet.IsVisible})");
+foreach (ExcelWorksheetInfo sheet in workbook.Worksheets)
+    Console.WriteLine($"{sheet.Index}: {sheet.Name} ({sheet.Visibility}, {sheet.Type})");
 
-foreach (ExcelCell cell in workbook.ReadSheetCells("Data"))
+// Primary, low-allocation forward scan.
+using ExcelWorksheetReader reader = workbook.OpenWorksheet("Data");
+while (reader.TryReadCell(out ExcelCell cell))
 {
     switch (cell.Kind)
     {
@@ -26,15 +34,33 @@ foreach (ExcelCell cell in workbook.ReadSheetCells("Data"))
     }
 }
 
+// Convenience, materialized random access.
+ExcelWorksheet data = workbook.ReadWorksheet("Data");
+if (data.TryGetCell(11, 0, out ExcelCell rate)) { /* ... */ }
+
 // A caller that knows a column holds dates can convert a numeric cell:
-DateOnly date = ExcelSerialDate.FromSerialDate(cell.NumberValue!.Value);
+DateOnly date = ExcelSerialDate.FromSerialDate(rate.NumberValue!.Value);
+```
+
+For a numeric, time-series workload, `ExcelBinaryReaderOptions` can skip optional metadata
+work:
+
+```csharp
+using ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.Open(stream, new ExcelBinaryReaderOptions
+{
+    ReadDocumentProperties = false,
+    DetectDateFormats = false,
+});
 ```
 
 ## Records handled
 
-`BOF` / `EOF` (substream boundaries), `BOUNDSHEET` (sheet directory), `SST` (+ `CONTINUE`
-for split strings), `LABELSST`, `NUMBER`, `RK`, `MULRK`, `BOOLERR`, and `BLANK` /
-`MULBLANK` (skipped). Unrecognized records are skipped.
+`BOF` / `EOF` (substream boundaries), `BOUNDSHEET8` (sheet directory, with `lbPlyPos`
+offset, sheet type, and hidden state), `SST` (+ `CONTINUE` for split strings), `LABELSST`,
+`LABEL`, `NUMBER`, `RK`, `MULRK`, `BOOLERR`, `FORMULA` (cached result, with a trailing
+`STRING` record for a string result), `XF` / `FORMAT` (number formats), `DATEMODE`, and
+`DIMENSIONS`. `BLANK` / `MULBLANK` and unrecognized records are skipped. Malformed records
+fail with `ExcelBinaryFormatException`.
 
 ## Out of scope
 

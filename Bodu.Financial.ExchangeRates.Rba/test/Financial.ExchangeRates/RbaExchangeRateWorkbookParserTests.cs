@@ -6,7 +6,7 @@
 
 using System.Linq;
 using Bodu.Financial.Currencies;
-using Bodu.Formats.Excel.Binary;
+using Bodu.Formats.Excel;
 using Bodu.Test;
 
 namespace Bodu.Financial.ExchangeRates;
@@ -24,7 +24,7 @@ public partial class RbaExchangeRateWorkbookParserTests
     private static RbaExchangeRateTable ParseSample()
     {
         using MemoryStream stream = RbaFixtures.OpenStream(RbaFixtures.Sample);
-        var workbook = Biff8WorkbookReader.Open(stream);
+        using ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.OpenRead(stream, leaveOpen: true);
         return RbaExchangeRateWorkbookParser.Parse(workbook, new RbaExchangeRateOptions());
     }
 
