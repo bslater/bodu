@@ -34,6 +34,6 @@ public partial class CompoundStorageBuilderSerializationTests
         using CompoundFile file = CompoundFile.Open(new MemoryStream(bytes));
         Assert.IsTrue(file.RootStorage.TryOpenStream("Big", out CompoundStream? entry));
         Assert.AreEqual(payload.Length, entry.Length);
-        Assert.AreEqual(expected, Convert.ToHexString(SHA256.HashData(entry.ReadAllBytes().Span)).ToLowerInvariant());
+        Assert.AreEqual(expected, Convert.ToHexString(SHA256.HashData(entry.AsMemory().Span)).ToLowerInvariant());
     }
 }

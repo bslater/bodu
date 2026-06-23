@@ -87,7 +87,7 @@ public class CompoundStorageBuilderLazyLoadTests
             using FileStream verify = File.OpenRead(outputPath);
             using CompoundFile copy = CompoundFile.Open(verify, buffered: false);
             Assert.IsTrue(copy.RootStorage.TryOpenStream("Big", out CompoundStream? bigEntry));
-            Assert.AreEqual(Hash(big), Hash(bigEntry.ReadAllBytes().Span));
+            Assert.AreEqual(Hash(big), Hash(bigEntry.AsMemory().Span));
         }
         finally
         {
@@ -130,7 +130,7 @@ public class CompoundStorageBuilderLazyLoadTests
             {
                 string path = prefix.Length == 0 ? info.Name : prefix + "/" + info.Name;
                 using CompoundStream stream = current.OpenStream(info.Name);
-                map[path] = Convert.ToHexString(SHA256.HashData(stream.ReadAllBytes().Span)).ToLowerInvariant();
+                map[path] = Convert.ToHexString(SHA256.HashData(stream.AsMemory().Span)).ToLowerInvariant();
             }
 
             foreach (CompoundStorage child in current.EnumerateStorages())

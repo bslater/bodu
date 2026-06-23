@@ -178,7 +178,7 @@ public partial class CompoundFileTests
             using CompoundFile reopened = CompoundFile.Open(path, FileMode.Open, FileAccess.Read);
             using CompoundStream read = reopened.RootStorage.OpenStream("Data");
 
-            CollectionAssert.AreEqual(payload, read.ReadAllBytes().ToArray());
+            CollectionAssert.AreEqual(payload, read.ReadAllBytes());
         }
         finally
         {

@@ -186,29 +186,44 @@ public sealed class CompoundStream
         _write is null ? _info : _info with { Length = _write.Length };
 
     /// <inheritdoc />
-    public override bool CanRead => _write is null || _canRead;
+    public override bool CanRead => !_disposed && (_write is null || _canRead);
 
     /// <inheritdoc />
-    public override bool CanSeek => true;
+    public override bool CanSeek => !_disposed;
 
     /// <inheritdoc />
-    public override bool CanWrite => _write is not null;
+    public override bool CanWrite => !_disposed && _write is not null;
 
     /// <inheritdoc />
-    public override long Length => _write?.Length ?? _length;
+    /// <exception cref="ObjectDisposedException">Thrown when the cursor has been disposed.</exception>
+    public override long Length
+    {
+        get
+        {
+            ThrowIfDisposed();
+            return _write?.Length ?? _length;
+        }
+    }
 
     /// <inheritdoc />
     /// <exception cref="ArgumentOutOfRangeException">Thrown on set when the value is negative.</exception>
+    /// <exception cref="ObjectDisposedException">Thrown when the cursor has been disposed.</exception>
     public override long Position
     {
-        get => _write?.Position ?? _position;
+        get
+        {
+            ThrowIfDisposed();
+            return _write?.Position ?? _position;
+        }
+
         set
         {
+            ThrowIfDisposed();
             ThrowHelper.ThrowIfNegative(value);
             if (_write is not null)
                 _write.Position = value;
             else
-                _position = Math.Min(value, _length);
+                _position = value;
         }
     }
 
@@ -233,6 +248,7 @@ public sealed class CompoundStream
     /// </example>
     public ReadOnlyMemory<byte> AsMemory()
     {
+        ThrowIfDisposed();
         if (_write is not null)
             return _write.GetBuffer().AsMemory(0, (int)_write.Length);
 
@@ -240,15 +256,16 @@ public sealed class CompoundStream
     }
 
     /// <summary>
-    /// Materializes the entire stream payload into a contiguous read-only buffer, independent of the current position.
+    /// Copies the entire stream payload into a new byte array, independent of the current position.
     /// </summary>
-    /// <returns>A <see cref="ReadOnlyMemory{T}" /> spanning the whole payload.</returns>
+    /// <returns>A <see cref="byte" /> array containing the whole payload.</returns>
     /// <remarks>
-    /// A convenience equivalent to <see cref="AsMemory" /> for callers that consume the whole stream in one pass. For
-    /// large streaming payloads, prefer chunked <see cref="Read(Span{byte})" />.
+    /// Mirrors <c>File.ReadAllBytes</c> for callers that consume the whole stream in one pass. Prefer
+    /// <see cref="AsMemory" /> when a zero-copy view suffices, or chunked <see cref="Read(Span{byte})" /> for large
+    /// streaming payloads.
     /// </remarks>
-    public ReadOnlyMemory<byte> ReadAllBytes() =>
-        AsMemory();
+    public byte[] ReadAllBytes() =>
+        AsMemory().ToArray();
 
     /// <inheritdoc />
     public override int Read(byte[] buffer, int offset, int count)
@@ -261,8 +278,10 @@ public sealed class CompoundStream
 
     /// <inheritdoc />
     /// <exception cref="NotSupportedException">Thrown when the cursor is write-only.</exception>
+    /// <exception cref="ObjectDisposedException">Thrown when the cursor has been disposed.</exception>
     public override int Read(Span<byte> buffer)
     {
+        ThrowIfDisposed();
         if (_write is not null)
         {
             if (!_canRead)
@@ -333,8 +352,10 @@ public sealed class CompoundStream
     }
 
     /// <inheritdoc />
+    /// <exception cref="ObjectDisposedException">Thrown when the cursor has been disposed.</exception>
     public override long Seek(long offset, SeekOrigin origin)
     {
+        ThrowIfDisposed();
         if (_write is not null)
             return _write.Seek(offset, origin);
 
@@ -349,7 +370,8 @@ public sealed class CompoundStream
         if (target < 0)
             throw new IOException();
 
-        _position = Math.Min(target, _length);
+        // Seeking beyond the end is permitted (Stream contract); a subsequent read simply returns zero.
+        _position = target;
         return _position;
     }
 
@@ -358,16 +380,20 @@ public sealed class CompoundStream
     /// For a writable cursor this flushes the buffered bytes into the staging tree and marks the owning file dirty; the
     /// destination is written only by <see cref="CompoundFile.Commit" />. For a read-only cursor this is a no-op.
     /// </remarks>
+    /// <exception cref="ObjectDisposedException">Thrown when the cursor has been disposed.</exception>
     public override void Flush()
     {
+        ThrowIfDisposed();
         if (_write is not null)
             FlushToNode();
     }
 
     /// <inheritdoc />
     /// <exception cref="NotSupportedException">Thrown when the cursor is read-only.</exception>
+    /// <exception cref="ObjectDisposedException">Thrown when the cursor has been disposed.</exception>
     public override void SetLength(long value)
     {
+        ThrowIfDisposed();
         if (_write is null)
             throw new NotSupportedException();
 
@@ -385,8 +411,10 @@ public sealed class CompoundStream
 
     /// <inheritdoc />
     /// <exception cref="NotSupportedException">Thrown when the cursor is read-only.</exception>
+    /// <exception cref="ObjectDisposedException">Thrown when the cursor has been disposed.</exception>
     public override void Write(ReadOnlySpan<byte> buffer)
     {
+        ThrowIfDisposed();
         if (_write is null)
             throw new NotSupportedException();
 
@@ -469,4 +497,11 @@ public sealed class CompoundStream
         _node!.SetContent(_write!.GetBuffer().AsSpan(0, (int)_write.Length));
         _file!.MarkDirty();
     }
+
+    /// <summary>
+    /// Throws an <see cref="ObjectDisposedException" /> when this cursor has been disposed.
+    /// </summary>
+    /// <exception cref="ObjectDisposedException">Thrown when the cursor has been disposed.</exception>
+    private void ThrowIfDisposed() =>
+        ObjectDisposedException.ThrowIf(_disposed, this);
 }

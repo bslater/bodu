@@ -31,7 +31,7 @@ public partial class CompoundStorageBuilderSerializationTests
 
         using CompoundFile file = CompoundFile.Open(new MemoryStream(bytes));
         Assert.IsTrue(file.RootStorage.TryOpenStream("Workbook", out CompoundStream? workbook));
-        CollectionAssert.AreEqual(new byte[] { 0x09, 0x08, 0x10, 0x00 }, workbook.ReadAllBytes().ToArray());
+        CollectionAssert.AreEqual(new byte[] { 0x09, 0x08, 0x10, 0x00 }, workbook.ReadAllBytes());
         Assert.IsTrue(file.RootStorage.OpenStorage("Storage 1").TryOpenStream("Nested", out _));
     }
 

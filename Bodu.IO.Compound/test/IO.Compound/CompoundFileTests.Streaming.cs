@@ -51,7 +51,7 @@ public partial class CompoundFileTests
         foreach ((CompoundStorage storage, CompoundEntryInfo info) in EnumerateAllStreams(file.RootStorage))
         {
             using CompoundStream full = storage.OpenStream(info.Name);
-            byte[] expected = full.ReadAllBytes().ToArray();
+            byte[] expected = full.ReadAllBytes();
 
             using CompoundStream stream = storage.OpenStream(info.Name);
             using MemoryStream sink = new();
@@ -114,7 +114,7 @@ public partial class CompoundFileTests
             {
                 string path = prefix.Length == 0 ? info.Name : prefix + "/" + info.Name;
                 using CompoundStream stream = current.OpenStream(info.Name);
-                map[path] = Convert.ToHexString(SHA256.HashData(stream.ReadAllBytes().Span)).ToLowerInvariant();
+                map[path] = Convert.ToHexString(SHA256.HashData(stream.AsMemory().Span)).ToLowerInvariant();
             }
 
             foreach (CompoundStorage child in current.EnumerateStorages())

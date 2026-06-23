@@ -107,7 +107,7 @@ public class CompoundReferenceFixtureTests
             foreach (CompoundEntryInfo info in storage.EnumerateStreams())
             {
                 using CompoundStream stream = storage.OpenStream(info.Name);
-                map[Combine(prefix, info.Name)] = Convert.ToHexString(SHA256.HashData(stream.ReadAllBytes().Span)).ToLowerInvariant();
+                map[Combine(prefix, info.Name)] = Convert.ToHexString(SHA256.HashData(stream.AsMemory().Span)).ToLowerInvariant();
             }
 
             foreach (CompoundStorage child in storage.EnumerateStorages())

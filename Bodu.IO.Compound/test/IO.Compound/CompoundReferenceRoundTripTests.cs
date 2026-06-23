@@ -61,7 +61,7 @@ public class CompoundReferenceRoundTripTests
         {
             string path = prefix.Length == 0 ? info.Name : prefix + "/" + info.Name;
             using CompoundStream stream = storage.OpenStream(info.Name);
-            hashes[path] = Convert.ToHexString(SHA256.HashData(stream.ReadAllBytes().Span)).ToLowerInvariant();
+            hashes[path] = Convert.ToHexString(SHA256.HashData(stream.AsMemory().Span)).ToLowerInvariant();
         }
 
         foreach (CompoundStorage child in storage.EnumerateStorages())

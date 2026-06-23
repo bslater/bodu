@@ -33,7 +33,7 @@ public partial class CompoundStorageBuilderSerializationTests
             using CompoundFile file = CompoundFile.Open(reopen);
             Assert.IsTrue(file.RootStorage.TryOpenStream("Big", out CompoundStream? entry));
             Assert.AreEqual(payload.Length, entry.Length);
-            Assert.AreEqual(Hash(payload), Hash(entry.ReadAllBytes().Span));
+            Assert.AreEqual(Hash(payload), Hash(entry.AsMemory().Span));
         }
         finally
         {
@@ -65,7 +65,7 @@ public partial class CompoundStorageBuilderSerializationTests
         Assert.AreEqual(1, opens, "source not opened exactly once");
         using CompoundFile file = CompoundFile.Open(new MemoryStream(bytes));
         Assert.IsTrue(file.RootStorage.TryOpenStream("Data", out CompoundStream? entry));
-        CollectionAssert.AreEqual(payload, entry.ReadAllBytes().ToArray());
+        CollectionAssert.AreEqual(payload, entry.ReadAllBytes());
     }
 
     /// <summary>
@@ -103,9 +103,9 @@ public partial class CompoundStorageBuilderSerializationTests
         Assert.IsTrue(file.RootStorage.TryOpenStream("Mini", out CompoundStream? mini));
         Assert.AreEqual(10, mini.Length);
         Assert.IsTrue(file.RootStorage.TryOpenStream("DeferredBig", out CompoundStream? big));
-        Assert.AreEqual(Hash(CreatePayload(7000)), Hash(big.ReadAllBytes().Span));
+        Assert.AreEqual(Hash(CreatePayload(7000)), Hash(big.AsMemory().Span));
         Assert.IsTrue(file.RootStorage.TryOpenStream("InlineBig", out CompoundStream? inline));
-        Assert.AreEqual(Hash(CreatePayload(6000)), Hash(inline.ReadAllBytes().Span));
+        Assert.AreEqual(Hash(CreatePayload(6000)), Hash(inline.AsMemory().Span));
         Assert.IsTrue(file.RootStorage.TryOpenStream("Empty", out CompoundStream? empty));
         Assert.AreEqual(0, empty.Length);
     }

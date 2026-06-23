@@ -48,6 +48,9 @@ internal static class CompoundContainerLayout
     /// <summary>The buffer size, in bytes, used when copying a deferred stream payload.</summary>
     private const int CopyBufferSize = 81920;
 
+    /// <summary>The maximum stream size, in bytes, that a version-3 compound file can represent.</summary>
+    private const long MaxVersion3StreamSize = 0x80000000;
+
     /// <summary>
     /// Serializes the supplied root storage into a compound-file byte array.
     /// </summary>
@@ -77,6 +80,19 @@ internal static class CompoundContainerLayout
         bool isVersion4 = options.Version == CompoundFileVersion.V4;
 
         List<Entry> entries = Flatten(root, options.EffectiveMaxDepth);
+
+        // MS-CFB: a version-3 file stores stream sizes in the low 32 bits, so each stream must be <= 0x80000000.
+        if (!isVersion4)
+        {
+            foreach (Entry entry in entries)
+            {
+                if (entry.Type == CompoundEntryType.Stream && entry.Size > MaxVersion3StreamSize)
+                {
+                    throw new CompoundFileSerializationException(
+                        string.Format(CultureInfo.CurrentCulture, CompoundResourceStrings.Op_Invalid_CompoundV3StreamTooLarge, entry.Name));
+                }
+            }
+        }
 
         // Mini-stream geometry: assign each small stream its mini-sector start without materializing any bytes.
         int totalMiniSectors = AssignMiniStream(entries);
@@ -722,14 +738,18 @@ internal static class CompoundContainerLayout
         /// <returns>The build entry.</returns>
         public static Entry FromNode(CompoundEntryBuilder node, CompoundEntryType type)
         {
+            // MS-CFB §2.6.1: a stream object's CLSID and creation/modified times MUST be zero and its state bits
+            // SHOULD be zero; only storage and root-storage entries carry that metadata.
+            bool isStream = type == CompoundEntryType.Stream;
+
             var entry = new Entry
             {
                 Name = node.Name,
                 Type = type,
-                ClassId = node.ClassId,
-                StateBits = node.StateBits,
-                CreationFileTime = ToFileTime(node.CreationTime),
-                ModifiedFileTime = ToFileTime(node.ModifiedTime),
+                ClassId = isStream ? Guid.Empty : node.ClassId,
+                StateBits = isStream ? 0 : node.StateBits,
+                CreationFileTime = isStream ? 0 : ToFileTime(node.CreationTime),
+                ModifiedFileTime = isStream ? 0 : ToFileTime(node.ModifiedTime),
             };
 
             if (node is CompoundStreamBuilder stream)

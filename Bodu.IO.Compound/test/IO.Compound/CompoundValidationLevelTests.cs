@@ -83,7 +83,7 @@ public class CompoundValidationLevelTests
         var options = new CompoundFileOptions { ValidationLevel = CompoundValidationLevel.Minimal };
 
         using CompoundFile file = CompoundFile.Open(new MemoryStream(bytes), options);
-        byte[] payload = file.RootStorage.OpenStream("Big").ReadAllBytes().ToArray();
+        byte[] payload = file.RootStorage.OpenStream("Big").ReadAllBytes();
 
         Assert.AreEqual(200_000, payload.Length);
     }
@@ -99,9 +99,54 @@ public class CompoundValidationLevelTests
         var options = new CompoundFileOptions { ReadStrategy = CompoundReadStrategy.Auto, MaxBufferedBytes = 16 };
 
         using CompoundFile file = CompoundFile.Open(new MemoryStream(bytes), options);
-        byte[] payload = file.RootStorage.OpenStream("Doc").ReadAllBytes().ToArray();
+        byte[] payload = file.RootStorage.OpenStream("Doc").ReadAllBytes();
 
         Assert.AreEqual(4000, payload.Length);
+    }
+
+    /// <summary>
+    /// Verifies that an invalid red-black color flag is rejected at <see cref="CompoundValidationLevel.Strict" /> but
+    /// tolerated at the default level.
+    /// </summary>
+    [TestMethod]
+    public void Open_WhenColorFlagInvalid_ForStrict_ShouldThrowInvalidDirectory()
+    {
+        byte[] bytes = BuildSingleStream("Doc", 100);
+        CfbHeader header = CfbHeader.Parse(bytes);
+        int entry = FindEntryOffset(bytes, header, "Doc");
+        bytes[entry + 67] = 5; // color flag must be 0 (red) or 1 (black)
+
+        using (CompoundFile tolerated = CompoundFile.Open(new MemoryStream(bytes)))
+            Assert.IsTrue(tolerated.RootStorage.TryOpenStream("Doc", out _));
+
+        var options = new CompoundFileOptions { ValidationLevel = CompoundValidationLevel.Strict };
+        CompoundFileFormatException ex = Assert.ThrowsExactly<CompoundFileFormatException>(() =>
+        {
+            using var _ = CompoundFile.Open(new MemoryStream(bytes), options);
+        });
+
+        Assert.AreEqual(CompoundFileError.InvalidDirectory, ex.Category);
+    }
+
+    /// <summary>
+    /// Verifies that unsorted sibling entries are rejected at <see cref="CompoundValidationLevel.Strict" /> but
+    /// tolerated at the default level.
+    /// </summary>
+    [TestMethod]
+    public void Open_WhenSiblingsUnsorted_ForStrict_ShouldThrowInvalidDirectory()
+    {
+        byte[] bytes = BuildWithUnsortedSiblings();
+
+        using (CompoundFile tolerated = CompoundFile.Open(new MemoryStream(bytes)))
+            Assert.IsTrue(tolerated.RootStorage.EnumerateStreams().Any());
+
+        var options = new CompoundFileOptions { ValidationLevel = CompoundValidationLevel.Strict };
+        CompoundFileFormatException ex = Assert.ThrowsExactly<CompoundFileFormatException>(() =>
+        {
+            using var _ = CompoundFile.Open(new MemoryStream(bytes), options);
+        });
+
+        Assert.AreEqual(CompoundFileError.InvalidDirectory, ex.Category);
     }
 
     /// <summary>
@@ -119,6 +164,55 @@ public class CompoundValidationLevelTests
         var builder = CompoundStorageBuilder.CreateRoot();
         _ = builder.AddStream(name, payload);
         return builder.ToArray();
+    }
+
+    /// <summary>
+    /// Builds a two-stream container and swaps the names of its two stream entries so the directory's in-order child
+    /// sequence is no longer sorted.
+    /// </summary>
+    /// <returns>The serialized compound-file bytes.</returns>
+    private static byte[] BuildWithUnsortedSiblings()
+    {
+        var root = CompoundStorageBuilder.CreateRoot();
+        _ = root.AddStream("A", new byte[] { 1 });
+        _ = root.AddStream("B", new byte[] { 2 });
+        byte[] bytes = root.ToArray();
+
+        CfbHeader header = CfbHeader.Parse(bytes);
+        int a = FindEntryOffset(bytes, header, "A");
+        int b = FindEntryOffset(bytes, header, "B");
+
+        // Swap the single-character names in place: the tree structure stays, but the traversal order is now descending.
+        (bytes[a], bytes[b]) = (bytes[b], bytes[a]);
+        return bytes;
+    }
+
+    /// <summary>
+    /// Locates the byte offset of the directory entry with the specified name within the first directory sector.
+    /// </summary>
+    /// <param name="bytes">The compound-file bytes.</param>
+    /// <param name="header">The parsed header.</param>
+    /// <param name="name">The entry name to find.</param>
+    /// <returns>The zero-based byte offset of the matching directory entry.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when the entry is not found.</exception>
+    private static int FindEntryOffset(byte[] bytes, CfbHeader header, string name)
+    {
+        int dirOffset = (int)(((long)header.FirstDirectorySector + 1) * header.SectorSize);
+        int perSector = header.SectorSize / DirectoryEntrySize;
+
+        for (int i = 0; i < perSector; i++)
+        {
+            int entryOffset = dirOffset + (i * DirectoryEntrySize);
+            ushort nameLength = BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(entryOffset + NameLengthOffset));
+            if (nameLength is < 4 or > 64)
+                continue;
+
+            string entryName = System.Text.Encoding.Unicode.GetString(bytes, entryOffset, nameLength - 2);
+            if (entryName == name)
+                return entryOffset;
+        }
+
+        throw new InvalidOperationException($"Directory entry '{name}' was not found.");
     }
 
     /// <summary>
