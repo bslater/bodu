@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 380" role="img" aria-labelledby="icsa-t icsa-d">
   <title id="icsa-t">CompoundStream — buffered payload versus on-demand sector reads</title>
-  <desc id="icsa-d">CompoundStreamEntry.Open returns a CompoundStream, a read-only seekable Stream cursor whose CanWrite is false. When the owning CompoundFile was opened buffered (the default), the stream's whole payload is materialized into an in-memory byte array at open time, and Read, Seek, and AsMemory work over that array. When the file was opened with buffered false, the cursor instead walks the stream's sector chain in the source on demand: each Read locates the sector for the current Position, reads only the bytes within that sector, and advances, so the full payload is never held in memory. AsMemory materializes the whole chain on request.</desc>
+  <desc id="icsa-d">CompoundStorage.OpenStream returns a CompoundStream, a read-only seekable Stream cursor whose CanWrite is false. When the owning CompoundFile was opened buffered (the default), the stream's whole payload is materialized into an in-memory byte array at open time, and Read, Seek, and AsMemory work over that array. When the file was opened with buffered false, the cursor instead walks the stream's sector chain in the source on demand: each Read locates the sector for the current Position, reads only the bytes within that sector, and advances, so the full payload is never held in memory. AsMemory materializes the whole chain on request.</desc>
 
   <defs>
     <style>
@@ -36,7 +36,7 @@
     <rect class="icsa-hdr" width="800" height="46" rx="8"/>
     <rect class="icsa-hdr" y="38" width="800" height="8"/>
     <text class="icsa-ttl" x="16" y="22">CompoundStream — buffered payload vs on-demand sector reads</text>
-    <text class="icsa-mut" x="16" y="38">CompoundStreamEntry.Open() returns a read-only, seekable cursor — CanRead = true, CanSeek = true, CanWrite = false</text>
+    <text class="icsa-mut" x="16" y="38">CompoundStorage.OpenStream() returns a read-only, seekable cursor — CanRead = true, CanSeek = true, CanWrite = false</text>
 
     <!-- Cursor origin -->
     <g transform="translate(16 60)">

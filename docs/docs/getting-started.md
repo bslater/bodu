@@ -362,11 +362,11 @@ foreach (CompoundEntryInfo info in file.RootStorage.EnumerateEntries())
     Console.WriteLine($"{info.EntryType}: {info.Name} ({info.Length} bytes)");
 
 // Read a named stream's bytes.
-CompoundStreamEntry workbook = file.RootStorage.OpenStream("Workbook");
+CompoundStream workbook = file.RootStorage.OpenStream("Workbook");
 ReadOnlyMemory<byte> bytes = workbook.ReadAllBytes();
 ```
 
-Open with `buffered: false` to read sectors on demand for large files, and use `OpenStream(name).Open()` for a seekable `CompoundStream` cursor. The BIFF8 `.xls` reader **Bodu.Formats.Excel.Binary** is built on top of this container reader.
+Open with `buffered: false` to read sectors on demand for large files; `OpenStream(name)` returns a seekable `CompoundStream` cursor. The BIFF8 `.xls` reader **Bodu.Formats.Excel.Binary** is built on top of this container reader.
 
 → **[Introduction](io-compound/index.md)** · **[Getting started](io-compound/getting-started.md)** · **[Guides](../guides/io-compound/index.md)**
 

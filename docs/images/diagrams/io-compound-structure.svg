@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 380" role="img" aria-labelledby="ics-t ics-d">
   <title id="ics-t">Compound File Binary (CFB) — a file system inside one file</title>
-  <desc id="ics-d">A compound file is a structured-storage envelope: one physical file that begins with the OLE2 signature D0 CF 11 E0 and holds a header, allocation tables, and a directory of sectors. CompoundFile.Open parses that container and exposes a logical hierarchy. Navigation starts at RootStorage and descends through nested CompoundStorage containers to CompoundStreamEntry leaves. A CompoundStorage is the managed counterpart of the COM IStorage interface; a CompoundStreamEntry is the counterpart of IStream and carries the opaque byte payload.</desc>
+  <desc id="ics-d">A compound file is a structured-storage envelope: one physical file that begins with the OLE2 signature D0 CF 11 E0 and holds a header, allocation tables, and a directory of sectors. CompoundFile.Open parses that container and exposes a logical hierarchy. Navigation starts at RootStorage and descends through nested CompoundStorage containers to CompoundStream leaves. A CompoundStorage is the managed counterpart of the COM IStorage interface; a CompoundStream is the counterpart of IStream and carries the opaque byte payload.</desc>
 
   <defs>
     <style>
@@ -102,21 +102,21 @@
     <g transform="translate(444 200)">
       <rect class="ics-strm" width="148" height="32" rx="6"/>
       <text class="ics-mono" x="12" y="14" fill="#C4B5FD">Stream</text>
-      <text class="ics-mut" x="12" y="27">CompoundStreamEntry</text>
+      <text class="ics-mut" x="12" y="27">CompoundStream</text>
     </g>
 
     <!-- child: Stream Workbook -->
     <g transform="translate(392 240)">
       <rect class="ics-strm" width="200" height="36" rx="6"/>
       <text class="ics-mono" x="12" y="16" fill="#C4B5FD">"Workbook"</text>
-      <text class="ics-mut" x="12" y="30">CompoundStreamEntry · IStream</text>
+      <text class="ics-mut" x="12" y="30">CompoundStream · IStream</text>
     </g>
 
     <!-- child: Stream SummaryInformation -->
     <g transform="translate(392 296)">
       <rect class="ics-strm" width="200" height="36" rx="6"/>
       <text class="ics-mono" x="12" y="16" fill="#C4B5FD">"\x05SummaryInformation"</text>
-      <text class="ics-mut" x="12" y="30">CompoundStreamEntry · IStream</text>
+      <text class="ics-mut" x="12" y="30">CompoundStream · IStream</text>
     </g>
 
     <!-- ─────────────── Legend (far right) ─────────────── -->

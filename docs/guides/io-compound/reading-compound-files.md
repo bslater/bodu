@@ -15,7 +15,7 @@ using Bodu.IO.Compound;
 
 using CompoundFile file = CompoundFile.Open(File.OpenRead("book.xls"));
 
-CompoundStreamEntry workbook = file.RootStorage.OpenStream("Workbook");
+CompoundStream workbook = file.RootStorage.OpenStream("Workbook");
 ReadOnlyMemory<byte> bytes = workbook.ReadAllBytes();
 ```
 
@@ -68,7 +68,7 @@ Each <xref:Bodu.IO.Compound.CompoundStorage> exposes three enumerators over its 
 using Bodu.IO.Compound;
 
 if (file.RootStorage.TryOpenStorage("ObjectPool", out CompoundStorage? pool) &&
-    pool.TryOpenStream("Contents", out CompoundStreamEntry? contents))
+    pool.TryOpenStream("Contents", out CompoundStream? contents))
 {
     ReadOnlyMemory<byte> data = contents.ReadAllBytes();
     Process(data);
@@ -79,15 +79,15 @@ Prefer the `TryOpenStorage` / `TryOpenStream` pair when a missing entry is a nor
 
 ## Reading the bytes
 
-A stream entry gives you two ways to read its payload:
+The <xref:Bodu.IO.Compound.CompoundStream> returned by `OpenStream` gives you two ways to read its payload:
 
 | Member | Returns | Use when |
 |---|---|---|
 | `ReadAllBytes` | `ReadOnlyMemory<byte>` | The payload is small and consumed in one pass. |
-| `CompoundStreamEntry.Open` | <xref:Bodu.IO.Compound.CompoundStream> | The payload is large or read incrementally — a seekable `Stream` cursor you can hand to `BinaryReader`, `StreamReader`, or `CopyTo`. |
+| the stream itself | a seekable <xref:System.IO.Stream> | The payload is large or read incrementally — `CompoundStream` is a seekable `Stream` cursor you can hand to `BinaryReader`, `StreamReader`, or `CopyTo`. |
 
 ```csharp
-using CompoundStream stream = workbook.Open();
+using CompoundStream stream = file.RootStorage.OpenStream("Workbook");
 using var reader = new BinaryReader(stream);
 
 ushort recordType = reader.ReadUInt16();
@@ -102,7 +102,7 @@ See [Buffered vs streaming access](streaming-and-buffering.md) for how the curso
 |---|---|
 | <xref:System.ArgumentNullException> | The stream passed to `Open` is `null`. |
 | <xref:System.ArgumentException> | `buffered: false` was requested over a non-seekable stream, or `IsCompoundFile` was given a non-seekable stream. |
-| <xref:System.NotSupportedException> | A mode other than `CompoundFileMode.Read` was requested. |
+| <xref:System.NotSupportedException> | An unsupported `FileMode` / `FileAccess` combination was requested. |
 | <xref:Bodu.IO.Compound.CompoundFileFormatException> | The content is not a well-formed compound file, or a stream's sector chain is malformed. |
 | <xref:Bodu.IO.Compound.CompoundStreamNotFoundException> | `OpenStream` / `OpenStorage` named an entry that does not exist. |
 

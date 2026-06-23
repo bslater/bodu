@@ -6,7 +6,7 @@ title: Buffered vs streaming access
 
 <xref:Bodu.IO.Compound.CompoundFile> can hold a file two ways, chosen by the `buffered` flag on `CompoundFile.Open`. The choice affects memory, the source stream's lifetime, and the behaviour of the <xref:Bodu.IO.Compound.CompoundStream> cursor you open over a stream's bytes. This guide explains both modes and when to pick each.
 
-![CompoundStreamEntry.Open returns a read-only seekable CompoundStream. Under a buffered file the payload is materialized into an in-memory byte array at open time; under a streaming file the cursor walks the stream's sector chain on demand, reading only the bytes within the current sector and advancing.](../../images/diagrams/io-compound-stream-access.svg)
+![CompoundStorage.OpenStream returns a read-only seekable CompoundStream. Under a buffered file the payload is materialized into an in-memory byte array at open time; under a streaming file the cursor walks the stream's sector chain on demand, reading only the bytes within the current sector and advancing.](../../images/diagrams/io-compound-stream-access.svg)
 
 ## The two modes
 
@@ -32,10 +32,10 @@ The default suits the common case — a few-kilobyte `.xls` or `.msg` — where 
 
 ## The CompoundStream cursor
 
-`CompoundStreamEntry.Open` returns a `CompoundStream`, a standard read-only, seekable <xref:System.IO.Stream> — `CanRead` and `CanSeek` are `true`, `CanWrite` is `false`. Because it is a `Stream`, it composes with the BCL surfaces that consume one:
+`CompoundStorage.OpenStream` returns a `CompoundStream`, a standard read-only, seekable <xref:System.IO.Stream> — `CanRead` and `CanSeek` are `true`, `CanWrite` is `false`. Because it is a `Stream`, it composes with the BCL surfaces that consume one:
 
 ```csharp
-using CompoundStream stream = entry.Open();
+using CompoundStream stream = file.RootStorage.OpenStream("Workbook");
 
 // Hand it to any Stream consumer.
 using var reader = new StreamReader(stream, Encoding.Unicode);

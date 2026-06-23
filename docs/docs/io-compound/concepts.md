@@ -17,7 +17,7 @@ A **compound file** — also called OLE2 structured storage or Compound File Bin
 The container's directory is a tree of two node kinds:
 
 - A **storage** (<xref:Bodu.IO.Compound.CompoundStorage>, the COM `IStorage`) is a named container of child storages and streams — a folder.
-- A **stream** (<xref:Bodu.IO.Compound.CompoundStreamEntry>, the COM `IStream`) is a named, file-like leaf carrying an opaque byte payload — a file.
+- A **stream** (<xref:Bodu.IO.Compound.CompoundStream>, the COM `IStream`) is a named, file-like leaf carrying an opaque byte payload — a file.
 
 The single **root storage** (<xref:Bodu.IO.Compound.CompoundFile.RootStorage>) anchors the tree; it is distinguished by a <xref:Bodu.IO.Compound.CompoundEntryType.RootStorage> entry type and conventionally named `Root Entry`. Lookups are **scoped to direct children** and compared with **ordinal (case-sensitive)** equality, so two streams that share a name under different storages stay distinct.
 
