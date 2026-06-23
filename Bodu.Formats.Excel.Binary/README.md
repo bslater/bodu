@@ -15,7 +15,7 @@ materialized. The primary surface is the forward-only `ExcelWorksheetReader`; a
 materialized, randomly addressable `ExcelWorksheet` is offered as a convenience.
 
 ```csharp
-using Bodu.Formats.Excel.Binary;
+using Bodu.Formats.Excel;
 
 using ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.OpenRead(path);
 

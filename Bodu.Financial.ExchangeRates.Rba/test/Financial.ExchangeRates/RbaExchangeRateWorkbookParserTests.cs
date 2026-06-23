@@ -6,7 +6,7 @@
 
 using System.Linq;
 using Bodu.Financial.Currencies;
-using Bodu.Formats.Excel.Binary;
+using Bodu.Formats.Excel;
 using Bodu.Test;
 
 namespace Bodu.Financial.ExchangeRates;

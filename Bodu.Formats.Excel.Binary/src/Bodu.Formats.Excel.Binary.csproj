@@ -24,11 +24,11 @@
 
   <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
   <ItemGroup>
-    <EmbeddedResource Update="Formats.Excel.Binary\ExcelBinaryResourceStrings.resx">
+    <EmbeddedResource Update="Formats.Excel\ExcelBinaryResourceStrings.resx">
       <LastGenOutput>ExcelBinaryResourceStrings.Designer.cs</LastGenOutput>
       <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
-    <Compile Update="Formats.Excel.Binary\ExcelBinaryResourceStrings.Designer.cs">
+    <Compile Update="Formats.Excel\ExcelBinaryResourceStrings.Designer.cs">
       <DependentUpon>ExcelBinaryResourceStrings.resx</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

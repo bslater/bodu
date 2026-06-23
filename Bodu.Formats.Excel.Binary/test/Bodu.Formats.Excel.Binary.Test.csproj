@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Fixtures\*.xls">
-      <LogicalName>Bodu.Formats.Excel.Binary.Fixtures.%(Filename)%(Extension)</LogicalName>
+      <LogicalName>Bodu.Formats.Excel.Fixtures.%(Filename)%(Extension)</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
 

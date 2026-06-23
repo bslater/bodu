@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Formats.Excel.Binary;
+using Bodu.Formats.Excel;
 
 namespace Bodu.Financial.ExchangeRates;
 
