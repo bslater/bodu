@@ -76,4 +76,7 @@
   <data name="Op_NotSupported_Biff8Version" xml:space="preserve">
     <value>The workbook uses an unsupported BIFF version (0x{0:X4}); only BIFF8 is supported.</value>
   </data>
+  <data name="Op_NotSupported_Biff8Encrypted" xml:space="preserve">
+    <value>The workbook is encrypted and cannot be read; decryption is not supported.</value>
+  </data>
 </root>

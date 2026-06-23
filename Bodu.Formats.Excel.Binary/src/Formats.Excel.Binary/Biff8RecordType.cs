@@ -33,6 +33,21 @@ public enum Biff8RecordType : ushort
     BoundSheet = 0x0085,
 
     /// <summary>
+    /// A cell holding a formula, carrying the cached result of its last calculation.
+    /// </summary>
+    Formula = 0x0006,
+
+    /// <summary>
+    /// The cached string result of a preceding <see cref="Formula" /> cell.
+    /// </summary>
+    String = 0x0207,
+
+    /// <summary>
+    /// File-pass record marking a workbook whose contents are encrypted.
+    /// </summary>
+    FilePass = 0x002F,
+
+    /// <summary>
     /// Shared string table holding the workbook's deduplicated text values.
     /// </summary>
     Sst = 0x00FC,
@@ -41,6 +56,21 @@ public enum Biff8RecordType : ushort
     /// Worksheet dimensions record describing the used row and column extent.
     /// </summary>
     Dimensions = 0x0200,
+
+    /// <summary>
+    /// Extended-format (XF) record describing a cell or style format, including its number-format index.
+    /// </summary>
+    Xf = 0x00E0,
+
+    /// <summary>
+    /// Number-format record mapping a format index to its format code string.
+    /// </summary>
+    Format = 0x041E,
+
+    /// <summary>
+    /// Date-mode record declaring whether the workbook uses the 1900 or 1904 date system.
+    /// </summary>
+    DateMode = 0x0022,
 
     /// <summary>
     /// A cell whose value is an index into the shared string table.

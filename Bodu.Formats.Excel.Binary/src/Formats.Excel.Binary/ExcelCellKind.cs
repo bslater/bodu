@@ -34,7 +34,8 @@ public enum ExcelCellKind
     Boolean = 3,
 
     /// <summary>
-    /// The cell carries a spreadsheet error value (for example, <c>#DIV/0!</c>); no usable value is exposed.
+    /// The cell carries a spreadsheet error value (for example, <c>#DIV/0!</c>), available from
+    /// <see cref="ExcelCell.ErrorValue" />.
     /// </summary>
     Error = 4,
 }
