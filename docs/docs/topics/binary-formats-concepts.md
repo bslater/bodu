@@ -4,7 +4,7 @@ title: Binary Formats & I/O — Concepts
 
 # Binary Formats & I/O — Concepts
 
-The shared vocabulary for the [Binary Formats & I/O topic](binary-formats.md) — the terms that cross the boundary between [`Bodu.IO.Compound`](../io-compound/index.md) and [`Bodu.Formats.Excel.Binary`](xref:Bodu.Formats.Excel.Binary). Each member library has its own deeper concepts page (linked in the closing list); this page covers only what you need to navigate both at once.
+The shared vocabulary for the [Binary Formats & I/O topic](binary-formats.md) — the terms that cross the boundary between [`Bodu.IO.Compound`](../io-compound/index.md) and [`Bodu.Formats.Excel.Binary`](../excel/index.md). Each member library has its own deeper concepts page (linked in the closing list); this page covers only what you need to navigate both at once.
 
 ## Container vs format
 
@@ -30,4 +30,5 @@ Every reader in this topic is **read-only**. The container reader opens a file f
 
 - **[Binary Formats & I/O overview](binary-formats.md)** — the topic landing page and package selection.
 - **[Bodu.IO.Compound concepts](../io-compound/concepts.md)** — the full container vocabulary.
+- **[Bodu.Formats.Excel.Binary concepts](../excel/concepts.md)** — the BIFF8 record, workbook globals, and cell-kind vocabulary.
 - **[Bodu.IO.Compound introduction](../io-compound/index.md)** — the container reader's headline types.

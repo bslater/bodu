@@ -36,9 +36,33 @@ The CFB container reader — the storage hierarchy, the stream cursor, and the O
 
 </div>
 
-## Bodu.Formats.Excel.Binary
+## Bodu.Formats.Excel.Binary guides
 
-The BIFF8 `.xls` reader built on `Bodu.IO.Compound` surfaces raw worksheet cell values — strings, numbers, booleans, and errors — without formula evaluation, styling, or higher-level interpretation. It does not yet ship a dedicated guide; consult the [Bodu.Formats.Excel.Binary API reference](xref:Bodu.Formats.Excel.Binary) directly.
+The BIFF8 `.xls` reader built on `Bodu.IO.Compound` surfaces raw worksheet cell values — strings, numbers, booleans, and errors — without formula evaluation, styling, or higher-level interpretation.
+
+<div class="bodu-cards">
+
+<div class="bodu-card">
+  <h3><a href="../excel/index.md">Overview</a></h3>
+  <p>The full guide index for <code>Bodu.Formats.Excel.Binary</code> — the layered BIFF8-on-compound-file model, the namespace map, and which guide covers each concern.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="../excel/reading-workbooks.md">Reading workbooks</a></h3>
+  <p>Open an <code>.xls</code> from a path or stream, list the sheets and used ranges, control stream ownership and optional metadata work, and read document properties.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="../excel/cell-values-and-dates.md">Cell values and dates</a></h3>
+  <p>The <code>ExcelCell</code> kinds and value projections, a formula cell's cached result, date-format detection, serial-date conversion, and A1 references.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="../excel/worksheets-and-rows.md">Streaming vs materialized</a></h3>
+  <p>The forward-only <code>ExcelWorksheetReader</code> versus the randomly addressable <code>ExcelWorksheet</code> — when to reach for each, and how to bound allocation.</p>
+</div>
+
+</div>
 
 ## Start here
 
@@ -52,6 +76,6 @@ The BIFF8 `.xls` reader built on `Bodu.IO.Compound` surfaces raw worksheet cell 
 
 - **[Binary Formats & I/O overview](../../docs/topics/binary-formats.md)** — the topic landing page on the docs side.
 - **[Binary Formats & I/O concepts](../../docs/topics/binary-formats-concepts.md)** — the cross-package vocabulary.
-- **Member introductions:** [Bodu.IO.Compound](../../docs/io-compound/index.md).
-- **Guide index:** [Bodu.IO.Compound](../io-compound/index.md).
-- **API reference:** [Bodu.IO.Compound](xref:Bodu.IO.Compound) · [Bodu.Formats.Excel.Binary](xref:Bodu.Formats.Excel.Binary).
+- **Member introductions:** [Bodu.IO.Compound](../../docs/io-compound/index.md) · [Bodu.Formats.Excel.Binary](../../docs/excel/index.md).
+- **Guide index:** [Bodu.IO.Compound](../io-compound/index.md) · [Bodu.Formats.Excel.Binary](../excel/index.md).
+- **API reference:** [Bodu.IO.Compound](xref:Bodu.IO.Compound) · [Bodu.Formats.Excel](xref:Bodu.Formats.Excel).

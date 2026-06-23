@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 380" role="img" aria-labelledby="xls-t xls-d">
+  <title id="xls-t">BIFF8 (.xls) — a record stream read out of a compound file</title>
+  <desc id="xls-d">An Excel 97-2003 binary workbook is a BIFF8 record stream stored inside the Workbook stream of an OLE2 compound file. Bodu.IO.Compound supplies the Workbook stream's bytes; Bodu.Formats.Excel.Binary reads the BIFF8 records. ExcelBinaryWorkbook.OpenRead parses the workbook globals once — the date system, the shared string table, the number-format table, and the sheet directory — then reads each sheet on demand by seeking to its stream offset. A sheet is surfaced either through the forward-only ExcelWorksheetReader or the materialized, randomly addressable ExcelWorksheet, both yielding ExcelCell values classified as string, number, boolean, or error.</desc>
+
+  <defs>
+    <style>
+      .xb-bg   { fill: #0F172A; }
+      .xb-pan  { fill: #1E293B; stroke: #334155; stroke-width: 1; }
+      .xb-hdr  { fill: #111827; stroke: #334155; stroke-width: 1; }
+      .xb-ttl  { fill: #F8FAFC; font: 700 15px/1 "Segoe UI",Arial,sans-serif; }
+      .xb-form { fill: #94A3B8; font: italic 12px/1 "Cambria",Georgia,serif; }
+      .xb-lbl  { fill: #E2E8F0; font: 700 12px/1 "Segoe UI",Arial,sans-serif; }
+      .xb-sub  { fill: #CBD5E1; font: 400 11px/1 "Segoe UI",Arial,sans-serif; }
+      .xb-mut  { fill: #94A3B8; font: 400 10px/1 "Segoe UI",Arial,sans-serif; }
+      .xb-mono { fill: #5EEAD4; font: 700 12px/1 "Consolas",Menlo,monospace; }
+      .xb-byte { fill: #FBBF24; font: 700 11px/1 "Consolas",Menlo,monospace; }
+      .xb-strm { fill: #2A1B54; stroke: #A78BFA; stroke-width: 1.4; }
+      .xb-biff { fill: #0D3331; stroke: #2DD4BF; stroke-width: 1.4; }
+      .xb-glob { fill: #0F172A; stroke: #475569; stroke-width: 1; }
+      .xb-surf { fill: #1E3A5F; stroke: #60A5FA; stroke-width: 1.4; }
+      .xb-cell { fill: #0D3331; stroke: #10B981; stroke-width: 1.4; }
+      .xb-w    { stroke: #CBD5E1; stroke-width: 1.4; fill: none; }
+    </style>
+    <marker id="xb-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#CBD5E1"/>
+    </marker>
+  </defs>
+
+  <rect class="xb-bg" width="820" height="380"/>
+
+  <g transform="translate(10 10)">
+    <rect class="xb-pan" width="800" height="360" rx="8"/>
+    <rect class="xb-hdr" width="800" height="46" rx="8"/>
+    <rect class="xb-hdr" y="38" width="800" height="8"/>
+    <text class="xb-ttl" x="16" y="22">BIFF8 (.xls) — a record stream read out of a compound file</text>
+    <text class="xb-form" x="784" y="22" text-anchor="end">Excel 97-2003 · .xls</text>
+    <text class="xb-mut" x="16" y="38">ExcelBinaryWorkbook reads the BIFF8 records from the container's Workbook stream</text>
+
+    <!-- ─────────────── Container layer (left) ─────────────── -->
+    <text class="xb-lbl" x="28" y="78">Bodu.IO.Compound</text>
+    <g transform="translate(28 88)">
+      <rect class="xb-strm" width="170" height="92" rx="7"/>
+      <text class="xb-mono" x="14" y="24" fill="#C4B5FD">"Workbook"</text>
+      <text class="xb-mut" x="14" y="40">CompoundStream · IStream</text>
+      <text class="xb-byte" x="14" y="62">09 08 · 22 00 · FC 00</text>
+      <text class="xb-mut" x="14" y="78">opaque BIFF8 bytes</text>
+    </g>
+    <text class="xb-mut" x="28" y="196">supplies the stream's bytes</text>
+
+    <!-- arrow into the BIFF reader -->
+    <line class="xb-w" x1="200" y1="124" x2="244" y2="124" marker-end="url(#xb-a)"/>
+    <text class="xb-mono" x="222" y="114" text-anchor="middle" font-size="11">read</text>
+
+    <!-- ─────────────── Workbook globals (center) ─────────────── -->
+    <text class="xb-lbl" x="252" y="78">Workbook globals — parsed once</text>
+    <g transform="translate(252 88)">
+      <rect class="xb-biff" width="250" height="92" rx="7"/>
+      <g transform="translate(14 16)">
+        <rect class="xb-glob" width="106" height="30" rx="4"/>
+        <text class="xb-sub" x="10" y="14">DATEMODE</text>
+        <text class="xb-mut" x="10" y="26">1900 / 1904 system</text>
+        <rect class="xb-glob" x="116" y="0" width="106" height="30" rx="4"/>
+        <text class="xb-sub" x="126" y="14">SST</text>
+        <text class="xb-mut" x="126" y="26">shared strings</text>
+        <rect class="xb-glob" y="38" width="106" height="30" rx="4"/>
+        <text class="xb-sub" x="10" y="52">FORMAT / XF</text>
+        <text class="xb-mut" x="10" y="64">number formats</text>
+        <rect class="xb-glob" x="116" y="38" width="106" height="30" rx="4"/>
+        <text class="xb-sub" x="126" y="52">BOUNDSHEET</text>
+        <text class="xb-mut" x="126" y="64">sheet directory</text>
+      </g>
+    </g>
+    <text class="xb-mut" x="252" y="196">date system · strings · formats · sheet offsets</text>
+
+    <!-- ─────────────── Per-sheet read (lower band) ─────────────── -->
+    <text class="xb-lbl" x="28" y="228">Per-sheet substream — read on demand (seek to lbPlyPos)</text>
+    <g transform="translate(28 238)">
+      <rect class="xb-biff" width="220" height="100" rx="7"/>
+      <text class="xb-mono" x="14" y="24">Sheet substream</text>
+      <text class="xb-mut" x="14" y="40">BOF · DIMENSIONS · rows</text>
+      <g transform="translate(14 52)" font-family="'Consolas',Menlo,monospace">
+        <rect class="xb-glob" width="192" height="34" rx="4"/>
+        <text class="xb-byte" x="10" y="15" font-size="10">FD 00  7E 02  BD 00  06 00</text>
+        <text class="xb-mut" x="10" y="29">LABELSST · RK · MULRK · FORMULA</text>
+      </g>
+    </g>
+
+    <!-- arrow to surfaces -->
+    <line class="xb-w" x1="250" y1="288" x2="294" y2="288" marker-end="url(#xb-a)"/>
+    <text class="xb-mono" x="272" y="278" text-anchor="middle" font-size="11">decode</text>
+
+    <!-- two surfaces -->
+    <g transform="translate(302 244)">
+      <rect class="xb-surf" width="206" height="40" rx="6"/>
+      <text class="xb-mono" x="12" y="17" fill="#93C5FD">ExcelWorksheetReader</text>
+      <text class="xb-mut" x="12" y="32">forward-only · TryReadCell</text>
+    </g>
+    <g transform="translate(302 296)">
+      <rect class="xb-surf" width="206" height="40" rx="6"/>
+      <text class="xb-mono" x="12" y="17" fill="#93C5FD">ExcelWorksheet</text>
+      <text class="xb-mut" x="12" y="32">materialized · TryGetCell · Rows</text>
+    </g>
+
+    <!-- arrow to ExcelCell -->
+    <line class="xb-w" x1="510" y1="288" x2="540" y2="288" marker-end="url(#xb-a)"/>
+
+    <g transform="translate(548 244)">
+      <rect class="xb-cell" width="172" height="92" rx="7"/>
+      <text class="xb-mono" x="14" y="22" fill="#6EE7B7">ExcelCell</text>
+      <text class="xb-mut" x="14" y="38">RowIndex · ColumnIndex</text>
+      <g transform="translate(14 46)">
+        <text class="xb-sub" x="0" y="12">Kind →</text>
+        <text x="50" y="12" fill="#C4B5FD" font-family="Consolas,monospace" font-size="11" font-weight="700">String</text>
+        <text x="0" y="28" fill="#5EEAD4" font-family="Consolas,monospace" font-size="11" font-weight="700">Number</text>
+        <text x="62" y="28" fill="#FBBF24" font-family="Consolas,monospace" font-size="11" font-weight="700">Boolean</text>
+        <text x="0" y="44" fill="#F87171" font-family="Consolas,monospace" font-size="11" font-weight="700">Error</text>
+        <text x="48" y="44" fill="#94A3B8" font-size="10">(no styling)</text>
+      </g>
+    </g>
+
+    <!-- legend strip -->
+    <text class="xb-mut" x="548" y="200">Read-only · raw values · formula cached result · no evaluation</text>
+  </g>
+</svg>

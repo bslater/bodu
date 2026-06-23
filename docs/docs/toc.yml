@@ -148,3 +148,11 @@
           href: io-compound/concepts.md
         - name: Getting started
           href: io-compound/getting-started.md
+    - name: Bodu.Formats.Excel.Binary
+      items:
+        - name: Introduction
+          href: excel/index.md
+        - name: Core concepts
+          href: excel/concepts.md
+        - name: Getting started
+          href: excel/getting-started.md

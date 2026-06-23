@@ -351,3 +351,13 @@
           href: io-compound/streaming-and-buffering.md
         - name: Reading property sets
           href: io-compound/property-sets.md
+    - name: Bodu.Formats.Excel.Binary
+      items:
+        - name: Overview
+          href: excel/index.md
+        - name: Reading workbooks
+          href: excel/reading-workbooks.md
+        - name: Cell values and dates
+          href: excel/cell-values-and-dates.md
+        - name: Streaming vs materialized
+          href: excel/worksheets-and-rows.md

@@ -642,3 +642,33 @@ A read-only reader for the OLE2 / Compound File Binary (CFB) container — the s
 </div>
 
 [Bodu.IO.Compound API reference](xref:Bodu.IO.Compound)
+
+### Bodu.Formats.Excel.Binary
+
+A narrow, read-only BIFF8 (`.xls`) reader built on `Bodu.IO.Compound`. It surfaces the raw cell values of each worksheet — strings, numbers, booleans, and errors, including a formula cell's cached result — without formula evaluation, styling, or higher-level interpretation.
+
+<div class="bodu-cards">
+
+<div class="bodu-card">
+  <h3><a href="excel/index.md">Overview</a></h3>
+  <p>Namespace map (<code>Bodu.Formats.Excel</code>), the layered BIFF8-on-compound-file model, and where each guide fits.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="excel/reading-workbooks.md">Reading workbooks</a></h3>
+  <p>Open an <code>.xls</code> from a path or stream, list the sheets and used ranges, control ownership and optional work, and read document properties.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="excel/cell-values-and-dates.md">Cell values and dates</a></h3>
+  <p>The <code>ExcelCell</code> kinds and value projections, a formula's cached result, date-format detection, serial-date conversion, and A1 references.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="excel/worksheets-and-rows.md">Streaming vs materialized</a></h3>
+  <p>The forward-only <code>ExcelWorksheetReader</code> versus the randomly addressable <code>ExcelWorksheet</code> — when to reach for each, and how to bound allocation.</p>
+</div>
+
+</div>
+
+[Bodu.Formats.Excel API reference](xref:Bodu.Formats.Excel)

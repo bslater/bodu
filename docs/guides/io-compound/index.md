@@ -6,7 +6,7 @@ title: Bodu.IO.Compound guides
 
 Recipe-style walk-throughs for **Bodu.IO.Compound**, the read-only reader for the OLE2 / Compound File Binary (CFB) container format — the structured-storage envelope used by legacy Microsoft Office files (`.xls`, `.doc`, `.ppt`, `.msg`) and other technologies.
 
-The library has no application-format knowledge: it exposes the embedded storage hierarchy and the raw byte payload of each named stream, and leaves interpretation to the caller. The narrow BIFF8 `.xls` reader in <xref:Bodu.Formats.Excel.Binary> is built directly on top of it.
+The library has no application-format knowledge: it exposes the embedded storage hierarchy and the raw byte payload of each named stream, and leaves interpretation to the caller. The narrow BIFF8 `.xls` reader in [Bodu.Formats.Excel.Binary](../excel/index.md) is built directly on top of it.
 
 If you are new to the library, start with the [introduction](../../docs/io-compound/index.md), the [Core concepts](../../docs/io-compound/concepts.md) glossary, and the [getting-started page](../../docs/io-compound/getting-started.md). The guides below assume you know the vocabulary (compound file, storage, stream, sector chain, property set).
 
@@ -57,5 +57,5 @@ By default the whole source is buffered into memory at open time, so the file is
 ## Where to go next
 
 - [Bodu.IO.Compound API reference](xref:Bodu.IO.Compound) — every type and member.
-- [Bodu.Formats.Excel.Binary](xref:Bodu.Formats.Excel.Binary) — the BIFF8 `.xls` reader built on this package.
+- [Bodu.Formats.Excel.Binary](../excel/index.md) — the BIFF8 `.xls` reader built on this package.
 - [Package matrix](../../docs/package-matrix.md) — where Bodu.IO.Compound sits in the suite and its dependency stack.
