@@ -1256,7 +1256,16 @@ namespace Bodu {
                 return ResourceManager.GetString("Op_Invalid_ArrayElementTypeUnresolved", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to The asynchronous lock was disposed while one or more callers were waiting..
+        /// </summary>
+        internal static string Op_Invalid_AsyncLockDisposedWaiters {
+            get {
+                return ResourceManager.GetString("Op_Invalid_AsyncLockDisposedWaiters", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Invalid value &apos;{0}&apos; for attribute &apos;{1}&apos;..
         /// </summary>
@@ -1328,7 +1337,25 @@ namespace Bodu {
                 return ResourceManager.GetString("Op_Invalid_Conversion", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to The countdown event has already reached zero and cannot be incremented..
+        /// </summary>
+        internal static string Op_Invalid_CountdownAlreadyZero {
+            get {
+                return ResourceManager.GetString("Op_Invalid_CountdownAlreadyZero", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The signal count exceeds the remaining count of the countdown event..
+        /// </summary>
+        internal static string Op_Invalid_CountdownSignalBelowZero {
+            get {
+                return ResourceManager.GetString("Op_Invalid_CountdownSignalBelowZero", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to An item with the key &apos;{0}&apos; has already been added..
         /// </summary>
@@ -1427,7 +1454,16 @@ namespace Bodu {
                 return ResourceManager.GetString("Op_Invalid_ReentrancyNotAllowed", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to The release count would cause the semaphore count to exceed its maximum..
+        /// </summary>
+        internal static string Op_Invalid_SemaphoreReleaseExceedsMax {
+            get {
+                return ResourceManager.GetString("Op_Invalid_SemaphoreReleaseExceedsMax", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to The sequence contains an invalid item..
         /// </summary>
