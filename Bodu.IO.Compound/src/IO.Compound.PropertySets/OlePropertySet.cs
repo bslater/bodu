@@ -17,6 +17,23 @@ namespace Bodu.IO.Compound.PropertySets;
 /// An OLE property set is the serialized form stored in streams such as <c>\x05SummaryInformation</c>. It begins with a
 /// header that declares the class identifier and one or two sections, each identified by a format identifier (FMTID)
 /// and holding properties keyed by property identifier (PID).
+/// <example>
+/// The following example opens a property-set stream, parses it, and reads a property by its identifier.
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.IO.Compound;
+/// using Bodu.IO.Compound.PropertySets;
+///
+/// using CompoundFile file = CompoundFile.OpenRead("book.xls");
+/// using CompoundStream stream = file.RootStorage.OpenStream(SummaryInformation.StreamName);
+/// OlePropertySet set = OlePropertySet.Parse(stream.AsMemory());
+///
+/// // PID 4 is the author in the summary-information set.
+/// if (set.TryGetValue(propertyId: 4, out OlePropertyValue? author))
+///     Console.WriteLine(author.AsString());
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public sealed class OlePropertySet
 {
