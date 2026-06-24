@@ -29,6 +29,25 @@ namespace Bodu.Financial;
 /// Successful and failing lookups both allocate no managed memory beyond the <see cref="ExchangeRateLookupResult" /> on
 /// success.
 /// </para>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.Financial;
+///
+/// // Construct directly from a handful of observations (one provider per pair).
+/// var provider = new FixedDatedExchangeRateProvider(new[]
+/// {
+///     new ExchangeRate(CurrencyCode.USD, CurrencyCode.EUR, new DateOnly(2024, 3, 1), 0.92m, "ECB"),
+///     new ExchangeRate(CurrencyCode.USD, CurrencyCode.EUR, new DateOnly(2024, 3, 4), 0.93m, "ECB"),
+/// });
+///
+/// // Resolve the nearest rate within three days of a weekend date.
+/// ExchangeRateLookupResult result = provider.GetRate(
+///     "USD", "EUR", new DateOnly(2024, 3, 2), ExchangeRateLookupOptions.PreviousWithin(3));
+/// decimal rate = result.Rate.Rate;   // 0.92 (resolved from 2024-03-01)
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public sealed class FixedDatedExchangeRateProvider
     : IDatedExchangeRateProvider

@@ -28,6 +28,23 @@ namespace Bodu.Financial;
 /// remain source-compatible — only the shipped <c>Bodu.Financial.Currencies</c> tags override the defaults to surface
 /// country-specific cash rounding or historic-currency metadata.
 /// </para>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.Financial;
+/// using Bodu.Financial.Currencies;
+///
+/// // Metadata is read statically from the tag type - no instance is ever created.
+/// string code = USD.IsoCode;        // "USD"
+/// int minorUnits = USD.MinorUnits;  // 2
+/// int numeric = USD.NumericCode;    // 840
+///
+/// // The same members are reachable through a generic constraint.
+/// static string DescribeCurrency<TCurrency>() where TCurrency : ICurrency =>
+///     $"{TCurrency.IsoCode} ({TCurrency.MinorUnits} minor units)";
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public interface ICurrency
 {

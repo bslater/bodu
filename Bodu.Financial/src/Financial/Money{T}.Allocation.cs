@@ -27,6 +27,19 @@ public readonly partial struct Money<TCurrency>
     /// minor units than <paramref name="parts" />, trailing shares are zero (for example,
     /// <c>new Money&lt;USD&gt;(0.02m).Allocate(5)</c> returns <c>[0.01, 0.01, 0, 0, 0]</c>).
     /// </remarks>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// using Bodu.Financial;
+    /// using Bodu.Financial.Currencies;
+    ///
+    /// // Split a bill three ways without losing a cent.
+    /// Money<USD>[] shares = new Money<USD>(10m).Allocate(3);   // [3.34, 3.33, 3.33]
+    ///
+    /// Money<USD> total = shares[0] + shares[1] + shares[2];    // 10.00 USD (exact)
+    ///]]>
+    /// </code>
+    /// </example>
     public Money<TCurrency>[] Allocate(int parts)
     {
         ThrowHelper.ThrowIfLessThanOrEqual(parts, 0);

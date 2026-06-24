@@ -34,6 +34,37 @@ namespace Bodu.Financial;
 /// <see cref="AddObservations(IEnumerable{ExchangeRate}, DateTimeOffset?)" /> followed by
 /// <see cref="RebuildSnapshot" />, all under <see cref="SyncRoot" />.
 /// </para>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.Financial;
+///
+/// // A derived provider supplies only the feed-specific fetch and coverage check.
+/// sealed class MyFeedProvider : WebExchangeRateProvider
+/// {
+///     public MyFeedProvider(HttpClient client) : base(client, timeProvider: null) { }
+///
+///     protected override string ProviderId => "MyFeed";
+///     protected override bool AllowSynchronousNetworkAccess => false;
+///     protected override TimeSpan DefaultLookback => TimeSpan.FromDays(7);
+///
+///     protected override bool IsLoaded(ExchangeRatePair pair, DateOnly startDate, DateOnly endDate) =>
+///         false;   // real implementations track covered windows
+///
+///     protected override async ValueTask EnsureLoadedAsync(
+///         ExchangeRatePair pair, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken)
+///     {
+///         IEnumerable<ExchangeRate> fetched = await FetchFromFeedAsync(pair, startDate, endDate, cancellationToken);
+///         lock (SyncRoot)
+///         {
+///             AddObservations(fetched, DateTimeOffset.UtcNow);
+///             RebuildSnapshot();
+///         }
+///     }
+/// }
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public abstract class WebExchangeRateProvider
     : IDatedExchangeRateProvider, IExchangeRateProvider, IDisposable

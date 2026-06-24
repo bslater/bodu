@@ -19,6 +19,24 @@ namespace Bodu.Financial;
 /// that accept a nullable context treat <see langword="null" /> as <see cref="Default" />, preserving the historical
 /// banker's-rounding behaviour.
 /// </para>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.Financial;
+///
+/// // Start from the default and override only the policies you need.
+/// MonetaryContext retail = MonetaryContext.Default with
+/// {
+///     Rounding = new MidpointRoundingStrategy(MidpointRounding.AwayFromZero),
+///     Allocation = AllocationPolicy.LargestRemainder,
+/// };
+///
+/// // Apply it at a settlement boundary.
+/// var calc = new CalculatedMoney(2.125m, CurrencyCode.USD);
+/// Money settled = calc.RoundToMoney(retail);   // 2.13 USD (rounded away from zero)
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public sealed record MonetaryContext
 {

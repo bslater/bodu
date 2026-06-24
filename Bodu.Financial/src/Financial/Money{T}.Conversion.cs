@@ -76,6 +76,20 @@ public readonly partial struct Money<TCurrency>
     /// <exception cref="OverflowException">
     /// Thrown when <c>amount × exchangeRate</c> falls outside the range of <see cref="decimal" />.
     /// </exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// using Bodu.Financial;
+    /// using Bodu.Financial.Currencies;
+    ///
+    /// var usd = new Money<USD>(100m);
+    ///
+    /// // Rate is units of the target per single unit of the source currency.
+    /// Money<EUR> euros = usd.Convert<EUR>(0.92m);     // 92.00 EUR
+    /// Money<JPY> yen = usd.Convert<JPY>(157.0m);      // 15700 JPY (rounded to JPY's 0 minor units)
+    ///]]>
+    /// </code>
+    /// </example>
     public Money<TTarget> Convert<TTarget>(decimal exchangeRate, MidpointRounding rounding = MidpointRounding.ToEven)
         where TTarget : ICurrency
     {

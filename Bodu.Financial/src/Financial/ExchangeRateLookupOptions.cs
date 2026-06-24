@@ -21,6 +21,22 @@ namespace Bodu.Financial;
 /// <see cref="NextWithin(int)" />, <see cref="NearestWithin(int)" />) for the common configurations; construct an
 /// options instance directly only when a less common combination is required.
 /// </para>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.Financial;
+///
+/// // Require an exact-date hit (the default safe behaviour).
+/// var exact = ExchangeRateLookupOptions.Exact;
+///
+/// // Fall back to the most recent rate on or before the requested date, up to five days back.
+/// var previous = ExchangeRateLookupOptions.PreviousWithin(5);
+///
+/// // Pick the closest available date either side, within a week, preferring the earlier on ties.
+/// var nearest = ExchangeRateLookupOptions.NearestWithin(7);
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public sealed class ExchangeRateLookupOptions
 {

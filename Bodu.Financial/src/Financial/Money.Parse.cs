@@ -21,6 +21,21 @@ public readonly partial struct Money :
     /// <returns>The parsed value.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="s" /> is <see langword="null" />.</exception>
     /// <exception cref="FormatException">The input is not a valid <see cref="Money" /> representation.</exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// using System.Globalization;
+    /// using Bodu.Financial;
+    ///
+    /// // The ISO code may lead or trail the amount; it selects the runtime currency.
+    /// var a = Money.Parse("USD 19.99", CultureInfo.InvariantCulture);
+    /// var b = Money.Parse("19.99 USD", CultureInfo.InvariantCulture);   // equal to a
+    ///
+    /// // A bare amount has no currency and fails to parse.
+    /// bool ok = Money.TryParse("19.99", CultureInfo.InvariantCulture, out _);   // false
+    ///]]>
+    /// </code>
+    /// </example>
     public static Money Parse(string s, IFormatProvider? provider)
     {
         ThrowHelper.ThrowIfNull(s);

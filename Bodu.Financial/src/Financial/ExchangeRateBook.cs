@@ -25,6 +25,26 @@ namespace Bodu.Financial;
 /// Instances are safe to share across threads after construction because all read paths only touch the underlying
 /// frozen dictionary.
 /// </para>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.Financial;
+///
+/// var series = new ExchangeRateSeries(
+///     new ExchangeRatePair(CurrencyCode.USD, CurrencyCode.EUR),
+///     "ECB",
+///     new[] { (new DateOnly(2024, 3, 1), 0.92m), (new DateOnly(2024, 3, 4), 0.93m) });
+///
+/// var book = new ExchangeRateBook(new[] { series });
+///
+/// // Look the series back up by pair and provider.
+/// if (book.TryGetSeries(series.Pair, "ECB", out ExchangeRateSeries? found))
+/// {
+///     int count = found!.Count;   // 2
+/// }
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public sealed class ExchangeRateBook
 {

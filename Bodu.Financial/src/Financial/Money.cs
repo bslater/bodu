@@ -36,6 +36,26 @@ namespace Bodu.Financial;
 /// <see cref="Serialization.FinancialJsonSerializerOptionsExtensions.AddFinancialJsonConverters(System.Text.Json.JsonSerializerOptions, Serialization.FinancialJsonPolicy)" />
 /// .
 /// </para>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // Construct from an amount + ISO code; the amount is rounded to the currency's minor units on creation.
+/// var price = new Money(19.999m, CurrencyCode.USD);   // 20.00 USD (banker's rounding)
+/// var tax = new Money(1.60m, CurrencyCode.USD);
+///
+/// // Same-currency arithmetic and comparison.
+/// Money total = price + tax;                          // 21.60 USD
+/// bool isDearer = total > price;                      // true
+///
+/// // Scaling by a scalar re-rounds the product to the minor unit.
+/// Money tripled = price * 3m;                         // 60.00 USD
+///
+/// // Mixing currencies throws at runtime - use Money<TCurrency> for compile-time safety.
+/// var euros = new Money(5m, CurrencyCode.EUR);
+/// // _ = total + euros;                               // throws InvalidOperationException
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 [DebuggerDisplay("{ToString(),nq}")]
 [JsonConverter(typeof(MoneyJsonConverter))]

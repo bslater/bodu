@@ -14,6 +14,27 @@ namespace Bodu.Financial;
 /// from bid/ask, and so on. Consumers of <see cref="MoneyBag.ConvertTo{TTarget}(IExchangeRateProvider)" /> only need
 /// the abstract <see cref="GetRate(string, string)" /> contract.
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.Financial;
+///
+/// // A minimal static-table implementation of the rate source.
+/// sealed class FixedTable : IExchangeRateProvider
+/// {
+///     public decimal GetRate(string fromIsoCode, string toIsoCode) =>
+///         (fromIsoCode, toIsoCode) switch
+///         {
+///             ("USD", "EUR") => 0.92m,
+///             ("EUR", "USD") => 1.087m,
+///             _ => throw new KeyNotFoundException($"{fromIsoCode}->{toIsoCode}"),
+///         };
+/// }
+///
+/// decimal rate = new FixedTable().GetRate("USD", "EUR");   // 0.92
+///]]>
+/// </code>
+/// </example>
 public interface IExchangeRateProvider
 {
     /// <summary>
