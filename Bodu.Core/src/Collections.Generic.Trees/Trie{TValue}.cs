@@ -108,7 +108,7 @@ public sealed partial class Trie<TValue>
             ThrowHelper.ThrowIfNull(key);
 
             TrieNode<TValue>? node = TrieCore.Find(_root, key.AsSpan());
-            if (node is null || !node.IsTerminal)
+            if (node?.IsTerminal != true)
                 throw new KeyNotFoundException();
 
             return node.Value;
@@ -218,7 +218,7 @@ public sealed partial class Trie<TValue>
     public bool ContainsKey(ReadOnlySpan<char> key)
     {
         TrieNode<TValue>? node = TrieCore.Find(_root, key);
-        return node is not null && node.IsTerminal;
+        return node?.IsTerminal == true;
     }
 
     /// <summary>
@@ -243,7 +243,7 @@ public sealed partial class Trie<TValue>
     public bool TryGetValue(ReadOnlySpan<char> key, out TValue value)
     {
         TrieNode<TValue>? node = TrieCore.Find(_root, key);
-        if (node is not null && node.IsTerminal)
+        if (node?.IsTerminal == true)
         {
             value = node.Value;
             return true;

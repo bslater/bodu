@@ -46,7 +46,7 @@ public sealed partial class AsyncReaderWriterLock
         /// </summary>
         public void Dispose()
         {
-            if (_owner is null || _guard is null || !_guard.TryRelease())
+            if (_owner is null || _guard?.TryRelease() != true)
                 return;
 
             if (_isWriter)

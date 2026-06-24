@@ -132,7 +132,7 @@ public sealed partial class Trie
     public bool Contains(ReadOnlySpan<char> key)
     {
         TrieNode<bool>? node = TrieCore.Find(_root, key);
-        return node is not null && node.IsTerminal;
+        return node?.IsTerminal == true;
     }
 
     /// <summary>
