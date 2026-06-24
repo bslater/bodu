@@ -4,10 +4,11 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
 
-namespace Bodu.Collections.Generic.Graphs;
+namespace Bodu.Collections.Generic.Trees;
 
 /// <summary>
 /// Represents a node in a mutable n-ary tree. Each instance is simultaneously a node carrying a value and the root of
@@ -32,6 +33,7 @@ namespace Bodu.Collections.Generic.Graphs;
 public sealed partial class Tree<T>
 {
     private readonly List<Tree<T>> _children;
+    private readonly ReadOnlyCollection<Tree<T>> _childrenView;
     private Tree<T>? _parent;
 
     /// <summary>
@@ -42,6 +44,7 @@ public sealed partial class Tree<T>
     {
         Value = value;
         _children = new List<Tree<T>>();
+        _childrenView = new ReadOnlyCollection<Tree<T>>(_children);
     }
 
     /// <summary>
@@ -79,7 +82,12 @@ public sealed partial class Tree<T>
     /// </summary>
     /// <value>A read-only view of the node's children.</value>
     /// <returns>The node's children.</returns>
-    public IReadOnlyList<Tree<T>> Children => _children;
+    /// <remarks>
+    /// The returned collection is a live, read-only view over the node's children: it reflects subsequent
+    /// <see cref="AddChild(T)" /> and <see cref="RemoveChild" /> operations but cannot be mutated directly, preserving
+    /// the parent and acyclicity invariants the mutating members enforce.
+    /// </remarks>
+    public IReadOnlyList<Tree<T>> Children => _childrenView;
 
     /// <summary>
     /// Gets the number of immediate children.

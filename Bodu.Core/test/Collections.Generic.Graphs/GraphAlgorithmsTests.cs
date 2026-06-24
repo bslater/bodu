@@ -118,6 +118,56 @@ public sealed class GraphAlgorithmsTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="GraphAlgorithms.TryShortestPath{T}(IReadOnlyWeightedGraph{T, double}, T, T)" /> reports
+    /// reachability, distance, and path consistently with the scenario.
+    /// </summary>
+    /// <param name="kat">The scenario supplying the graph, endpoints, and expected result.</param>
+    [TestMethod]
+    [TestCategory("Regression")]
+    [DynamicData(
+        nameof(ShortestPathScenarios),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void TryShortestPath_WhenQueried_ShouldReportFoundDistanceAndPath(ShortestPathKat kat)
+    {
+        var graph = new Graph<string>(kat.Directed ? GraphKind.Directed : GraphKind.Undirected);
+        foreach (var (from, to, weight) in kat.Edges)
+            graph.AddEdge(from, to, weight);
+
+        var result = GraphAlgorithms.TryShortestPath(graph, kat.Source, kat.Target);
+
+        if (kat.ExpectedPath.Length == 0)
+        {
+            Assert.IsFalse(result.Found);
+            Assert.AreEqual(double.PositiveInfinity, result.Distance);
+            Assert.AreEqual(0, result.Path.Count);
+        }
+        else
+        {
+            Assert.IsTrue(result.Found);
+            Assert.AreEqual(kat.ExpectedDistance, result.Distance);
+            CollectionAssert.AreEqual(kat.ExpectedPath, result.Path.ToArray());
+        }
+    }
+
+    /// <summary>
+    /// Verifies that the traversal algorithms accept a graph through the <see cref="IReadOnlyGraph{TVertex}" />
+    /// abstraction rather than the concrete <see cref="Graph{T}" />.
+    /// </summary>
+    [TestMethod]
+    public void BreadthFirstSearch_WhenGraphPassedAsReadOnlyInterface_ShouldTraverse()
+    {
+        var graph = new Graph<int>(GraphKind.Directed);
+        graph.AddEdge(1, 2);
+        graph.AddEdge(2, 3);
+
+        IReadOnlyGraph<int> readOnly = graph;
+        var visited = GraphAlgorithms.BreadthFirstSearch(readOnly, 1).ToArray();
+
+        CollectionAssert.AreEqual(new[] { 1, 2, 3 }, visited);
+    }
+
+    /// <summary>
     /// Verifies that topological sorting respects edge direction on acyclic graphs and fails on cyclic graphs.
     /// </summary>
     /// <param name="kat">The scenario supplying the directed graph and its acyclicity.</param>

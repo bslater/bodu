@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Collections.Generic.Graphs;
+namespace Bodu.Collections.Generic.Trees;
 
 /// <summary>
 /// Contains unit tests for the <see cref="Tree{T}" /> type.
@@ -312,5 +312,35 @@ public sealed class TreeTests
         Assert.AreEqual(depth + 1, root.PreOrder().Count());
         Assert.AreEqual(depth, root.Height);
         Assert.AreEqual(depth, current.Depth);
+    }
+
+    /// <summary>
+    /// Verifies that the <see cref="Tree{T}.Children" /> view does not expose the mutable backing list and cannot be
+    /// downcast to it.
+    /// </summary>
+    [TestMethod]
+    public void Children_WhenExposed_ShouldNotBeMutableBackingList()
+    {
+        var root = new Tree<int>(0);
+        root.AddChild(1);
+
+        Assert.IsFalse(root.Children is List<Tree<int>>);
+        Assert.ThrowsExactly<NotSupportedException>(() => ((IList<Tree<int>>)root.Children).Add(new Tree<int>(2)));
+    }
+
+    /// <summary>
+    /// Verifies that the <see cref="Tree{T}.Children" /> view reflects children added and removed after it was read.
+    /// </summary>
+    [TestMethod]
+    public void Children_WhenChildrenChange_ShouldReflectLiveState()
+    {
+        var root = new Tree<int>(0);
+        var children = root.Children;
+
+        var child = root.AddChild(1);
+        Assert.AreEqual(1, children.Count);
+
+        root.RemoveChild(child);
+        Assert.AreEqual(0, children.Count);
     }
 }

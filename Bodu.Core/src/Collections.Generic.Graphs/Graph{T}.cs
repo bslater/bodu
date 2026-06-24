@@ -29,6 +29,7 @@ namespace Bodu.Collections.Generic.Graphs;
 [DebuggerDisplay("Vertices = {VertexCount}, Edges = {EdgeCount}, Directed = {IsDirected}")]
 [DebuggerTypeProxy(typeof(GraphDebugView<>))]
 public sealed partial class Graph<T>
+    : IReadOnlyWeightedGraph<T, double>
     where T : notnull
 {
     private readonly Dictionary<T, Dictionary<T, double>> _adjacency;

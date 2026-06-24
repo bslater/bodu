@@ -13,30 +13,56 @@ namespace Bodu.Extensions;
 public sealed class EnumsTests
 {
     /// <summary>
-    /// Verifies that <see cref="Enums.GetValues{TEnum}" /> returns the declared values and serves a cached array.
+    /// Verifies that <see cref="Enums.GetValues{TEnum}" /> returns the declared values as a fresh array on each call.
     /// </summary>
     [TestMethod]
     [TestCategory("Smoke")]
-    public void GetValues_WhenQueried_ShouldReturnCachedValues()
+    public void GetValues_WhenQueried_ShouldReturnDeclaredValues()
     {
         var first = Enums.GetValues<DescribedStatus>();
 
         CollectionAssert.AreEqual(
             new[] { DescribedStatus.Active, DescribedStatus.Pending, DescribedStatus.Plain, DescribedStatus.Cancelled },
             first);
-        Assert.AreSame(first, Enums.GetValues<DescribedStatus>());
+        Assert.AreNotSame(first, Enums.GetValues<DescribedStatus>());
     }
 
     /// <summary>
-    /// Verifies that <see cref="Enums.GetNames{TEnum}" /> returns the declared names and serves a cached array.
+    /// Verifies that mutating the array returned by <see cref="Enums.GetValues{TEnum}" /> does not affect subsequent calls.
     /// </summary>
     [TestMethod]
-    public void GetNames_WhenQueried_ShouldReturnCachedNames()
+    public void GetValues_WhenReturnedArrayMutated_ShouldNotAffectSubsequentCalls()
+    {
+        var values = Enums.GetValues<DescribedStatus>();
+        values[0] = (DescribedStatus)999;
+
+        CollectionAssert.AreEqual(
+            new[] { DescribedStatus.Active, DescribedStatus.Pending, DescribedStatus.Plain, DescribedStatus.Cancelled },
+            Enums.GetValues<DescribedStatus>());
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Enums.GetNames{TEnum}" /> returns the declared names as a fresh array on each call.
+    /// </summary>
+    [TestMethod]
+    public void GetNames_WhenQueried_ShouldReturnDeclaredNames()
     {
         var names = Enums.GetNames<DescribedStatus>();
 
         CollectionAssert.AreEqual(new[] { "Active", "Pending", "Plain", "Cancelled" }, names);
-        Assert.AreSame(names, Enums.GetNames<DescribedStatus>());
+        Assert.AreNotSame(names, Enums.GetNames<DescribedStatus>());
+    }
+
+    /// <summary>
+    /// Verifies that mutating the array returned by <see cref="Enums.GetNames{TEnum}" /> does not affect subsequent calls.
+    /// </summary>
+    [TestMethod]
+    public void GetNames_WhenReturnedArrayMutated_ShouldNotAffectSubsequentCalls()
+    {
+        var names = Enums.GetNames<DescribedStatus>();
+        names[0] = "Corrupted";
+
+        CollectionAssert.AreEqual(new[] { "Active", "Pending", "Plain", "Cancelled" }, Enums.GetNames<DescribedStatus>());
     }
 
     /// <summary>
@@ -77,5 +103,16 @@ public sealed class EnumsTests
         Assert.AreEqual(DescribedStatus.Pending, byDisplay);
 
         Assert.IsFalse(Enums.TryParseDescription<DescribedStatus>("unknown", out _));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Enums.TryParseDescription{TEnum}(string, out TEnum)" /> resolves a description shared by
+    /// two members to the first declaring value, deterministically.
+    /// </summary>
+    [TestMethod]
+    public void TryParseDescription_WhenDescriptionIsDuplicated_ShouldResolveFirstDeclaringValue()
+    {
+        Assert.IsTrue(Enums.TryParseDescription<DuplicateDescribed>("Shared", out var resolved));
+        Assert.AreEqual(DuplicateDescribed.First, resolved);
     }
 }

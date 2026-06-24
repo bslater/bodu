@@ -24,7 +24,7 @@ public static partial class GraphAlgorithms
     /// <param name="vertex">The vertex that must exist.</param>
     /// <param name="paramName">The name of the parameter that supplied the vertex.</param>
     /// <exception cref="ArgumentException"><paramref name="vertex" /> is not in the graph.</exception>
-    private static void EnsureVertex<T>(Graph<T> graph, T vertex, string paramName)
+    private static void EnsureVertex<T>(IReadOnlyGraph<T> graph, T vertex, string paramName)
         where T : notnull
     {
         if (!graph.ContainsVertex(vertex))

@@ -357,6 +357,9 @@
   <data name="Arg_OutOfRange_FiscalYearUndeterminable" xml:space="preserve">
     <value>Unable to determine the fiscal year for date '{0:yyyy-MM-dd}'.</value>
   </data>
+  <data name="Arg_OutOfRange_GraphWeightNotFinite" xml:space="preserve">
+    <value>The edge weight must be a finite, non-negative number.</value>
+  </data>
   <data name="Arg_OutOfRange_IndexValidRange" xml:space="preserve">
     <value>The index must be non-negative and less than the size of {0}.</value>
   </data>

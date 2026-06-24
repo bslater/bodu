@@ -6,7 +6,7 @@
 
 using Bodu.Test.Kat;
 
-namespace Bodu.Collections.Generic.Graphs;
+namespace Bodu.Collections.Generic.Trees;
 
 /// <summary>
 /// Represents a known-answer scenario for trie prefix queries: a set of keys to insert, a query prefix, and the keys
