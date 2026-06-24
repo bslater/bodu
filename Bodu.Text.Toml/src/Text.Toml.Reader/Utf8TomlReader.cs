@@ -36,6 +36,22 @@ namespace Bodu.Text.Toml.Reader;
 /// All positions — <see cref="TokenStartIndex" />, <see cref="ColumnNumber" />, and the positions carried by thrown
 /// <see cref="TomlFormatException" /> instances — are byte-true offsets into the UTF-8 source.
 /// </para>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // Lex "port = 8080" into a key token followed by an integer token.
+/// var reader = new Utf8TomlReader("port = 8080"u8);
+///
+/// while (reader.Read())
+/// {
+///     if (reader.TokenType == TomlTokenType.Key)
+///         Console.Write($"{reader.GetString()} = ");
+///     else if (reader.TokenType == TomlTokenType.Integer)
+///         Console.WriteLine(reader.GetInt64());
+/// }
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public ref partial struct Utf8TomlReader
 {

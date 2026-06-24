@@ -33,6 +33,28 @@ namespace Bodu.Text.Bencode.Reader;
 /// <see cref="BencodeReaderOptions.AllowUnsortedKeys" /> and <see cref="BencodeReaderOptions.AllowDuplicateKeys" />
 /// options relax those two rules independently; every other grammar rule remains enforced.
 /// </para>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // Read "d3:cowi42ee" -> dictionary { "cow": 42 }.
+/// ReadOnlySpan<byte> bytes = "d3:cowi42ee"u8;
+/// var reader = new Utf8BencodeReader(bytes);
+///
+/// while (reader.Read())
+/// {
+///     switch (reader.TokenType)
+///     {
+///         case BencodeTokenType.PropertyName:
+///             Console.Write($"{reader.GetString()} = ");
+///             break;
+///         case BencodeTokenType.Integer:
+///             Console.WriteLine(reader.GetInt64());
+///             break;
+///     }
+/// }
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public ref struct Utf8BencodeReader
 {
