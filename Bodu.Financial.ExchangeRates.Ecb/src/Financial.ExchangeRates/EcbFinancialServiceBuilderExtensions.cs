@@ -58,6 +58,21 @@ public static class EcbFinancialServiceBuilderExtensions
     /// from <see cref="EcbEndpointOptions.HttpTimeout" />, the <see cref="HttpClient.Timeout" /> is set to
     /// <see cref="Timeout.InfiniteTimeSpan" /> so the two timeout mechanisms do not compete.
     /// </para>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// IServiceCollection services = new ServiceCollection();
+    ///
+    /// services.AddFinancialService()
+    ///     .AddEcbReferenceRates(
+    ///         configure: opts => opts.EnableDiskCache = true,
+    ///         configureResilience: resilience => resilience.Retry.MaxRetryAttempts = 5);
+    ///
+    /// using ServiceProvider provider = services.BuildServiceProvider();
+    /// var rates = provider.GetRequiredService<IDatedExchangeRateProvider>();
+    ///]]>
+    /// </code>
+    /// </example>
     /// </remarks>
     public static IFinancialServiceBuilder AddEcbReferenceRates(
         this IFinancialServiceBuilder builder,

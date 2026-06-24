@@ -28,6 +28,19 @@ public static class ServiceProviderExtensions
     /// This is a composition-root operation: it mutates process-wide state via
     /// <see cref="CurrencyResolution.SetDefault(ICurrencyLookup)" />. Omitting the call leaves the registry-backed
     /// default in place, so existing applications behave identically without it.
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// IServiceProvider provider = services
+    ///     .AddFinancialService(b => b.AddCurrencyLookup<MyCurrencyLookup>())
+    ///     .Services
+    ///     .BuildServiceProvider();
+    ///
+    /// // Make the container's ICurrencyLookup back runtime Money construction and parsing.
+    /// provider.UseCurrencyResolution();
+    ///]]>
+    /// </code>
+    /// </example>
     /// </remarks>
     public static IServiceProvider UseCurrencyResolution(this IServiceProvider provider)
     {

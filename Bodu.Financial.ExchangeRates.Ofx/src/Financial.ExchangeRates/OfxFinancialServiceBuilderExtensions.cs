@@ -57,6 +57,21 @@ public static class OfxFinancialServiceBuilderExtensions
     /// from <see cref="WebExchangeRateProviderOptions.HttpTimeout" />, the <see cref="HttpClient.Timeout" /> is set to
     /// <see cref="Timeout.InfiniteTimeSpan" /> so the two timeout mechanisms do not compete.
     /// </para>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// // Compose the OFX provider onto an existing financial service builder, binding from
+    /// // configuration and relaxing the resilience timeout for a slow downstream link.
+    /// builder.AddOfxExchangeRates(
+    ///     configuration,
+    ///     configure: options => options.ReportingInterval = "daily",
+    ///     configureResilience: resilience =>
+    ///     {
+    ///         resilience.AttemptTimeout.Timeout = TimeSpan.FromSeconds(20);
+    ///     });
+    ///]]>
+    /// </code>
+    /// </example>
     /// </remarks>
     public static IFinancialServiceBuilder AddOfxExchangeRates(
         this IFinancialServiceBuilder builder,

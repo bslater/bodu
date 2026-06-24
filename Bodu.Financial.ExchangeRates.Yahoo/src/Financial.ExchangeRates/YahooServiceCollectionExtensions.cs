@@ -34,6 +34,22 @@ public static class YahooServiceCollectionExtensions
     /// <exception cref="ArgumentException">
     /// Thrown when <paramref name="sectionName" /> is empty or white space.
     /// </exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// IServiceCollection services = new ServiceCollection();
+    ///
+    /// services.AddYahooExchangeRates(configuration, configure: options =>
+    /// {
+    ///     options.UserAgent = "my-app/1.0";
+    ///     options.HttpTimeout = TimeSpan.FromSeconds(15);
+    /// });
+    ///
+    /// ServiceProvider provider = services.BuildServiceProvider();
+    /// var rates = provider.GetRequiredService<IDatedExchangeRateProvider>();
+    ///]]>
+    /// </code>
+    /// </example>
     public static IFinancialServiceBuilder AddYahooExchangeRates(
         this IServiceCollection services,
         IConfiguration? configuration = null,

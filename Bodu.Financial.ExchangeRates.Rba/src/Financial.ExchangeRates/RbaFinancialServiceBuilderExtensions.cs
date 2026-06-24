@@ -58,6 +58,20 @@ public static class RbaFinancialServiceBuilderExtensions
     /// from <see cref="RbaExchangeRateOptions.HttpTimeout" />, the <see cref="HttpClient.Timeout" /> is set to
     /// <see cref="Timeout.InfiniteTimeSpan" /> so the two timeout mechanisms do not compete.
     /// </para>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// services.AddFinancialService(configuration)
+    ///     .AddRbaHistoricalRates(
+    ///         configuration,
+    ///         configure: options => options.EnableDiskCache = true,
+    ///         configureResilience: resilience =>
+    ///         {
+    ///             resilience.Retry.MaxRetryAttempts = 2;
+    ///         });
+    ///]]>
+    /// </code>
+    /// </example>
     /// </remarks>
     public static IFinancialServiceBuilder AddRbaHistoricalRates(
         this IFinancialServiceBuilder builder,

@@ -34,6 +34,23 @@ public static class RbaServiceCollectionExtensions
     /// <exception cref="ArgumentException">
     /// Thrown when <paramref name="sectionName" /> is empty or white space.
     /// </exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// IServiceCollection services = new ServiceCollection();
+    ///
+    /// services.AddRbaHistoricalRates(configuration, configure: options =>
+    /// {
+    ///     options.EnableDiskCache = true;
+    ///     options.AllowSynchronousNetworkAccess = false;
+    /// });
+    ///
+    /// // Resolve the provider (or IExchangeRateProvider / IDatedExchangeRateProvider) from the container.
+    /// using ServiceProvider provider = services.BuildServiceProvider();
+    /// var rba = provider.GetRequiredService<RbaExchangeRateProvider>();
+    ///]]>
+    /// </code>
+    /// </example>
     public static IFinancialServiceBuilder AddRbaHistoricalRates(
         this IServiceCollection services,
         IConfiguration? configuration = null,

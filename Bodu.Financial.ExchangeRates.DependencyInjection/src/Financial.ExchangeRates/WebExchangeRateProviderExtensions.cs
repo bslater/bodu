@@ -78,6 +78,26 @@ public static class WebExchangeRateProviderExtensions
     /// <exception cref="ArgumentException">
     /// Thrown when <paramref name="sectionName" /> is empty or white space.
     /// </exception>
+    /// <remarks>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// // A provider package's own DI extension delegates to this overload.
+    /// public static IFinancialServiceBuilder AddAcmeRates(
+    ///     this IFinancialServiceBuilder builder, IConfiguration? configuration = null) =>
+    ///     builder.AddWebExchangeRateProvider<AcmeExchangeRateProvider, AcmeExchangeRateOptions>(
+    ///         httpClientName: "Acme",
+    ///         configuration: configuration,
+    ///         sectionName: "Financial:Acme",
+    ///         validationErrorMessage: "Acme exchange-rate options are invalid.",
+    ///         configure: null,
+    ///         configureResilience: null,
+    ///         factory: (client, opts, loggerFactory, timeProvider) =>
+    ///             new AcmeExchangeRateProvider(client, opts, loggerFactory, timeProvider));
+    ///]]>
+    /// </code>
+    /// </example>
+    /// </remarks>
     public static IFinancialServiceBuilder AddWebExchangeRateProvider<TProvider, TOptions>(
         this IFinancialServiceBuilder builder,
         string httpClientName,
