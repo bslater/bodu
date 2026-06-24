@@ -19,10 +19,19 @@ public sealed partial class Trie
     /// </remarks>
     public struct Enumerator : IEnumerator<string>
     {
+        /// <summary>The trie being enumerated, used to detect modification through its version counter.</summary>
         private readonly Trie _owner;
+
+        /// <summary>The owner's version captured when the enumerator was created, used for fail-fast checks.</summary>
         private readonly int _version;
+
+        /// <summary>The snapshot of keys captured when the enumerator was created.</summary>
         private readonly string[] _items;
+
+        /// <summary>The index of the current element, or <c>-1</c> before the first move.</summary>
         private int _index;
+
+        /// <summary>The key at the current position, or <see langword="null" /> when not on an element.</summary>
         private string? _current;
 
         /// <summary>

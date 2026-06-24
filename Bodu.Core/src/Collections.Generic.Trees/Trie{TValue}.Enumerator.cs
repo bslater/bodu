@@ -20,10 +20,19 @@ public sealed partial class Trie<TValue>
     /// </remarks>
     public struct Enumerator : IEnumerator<KeyValuePair<string, TValue>>
     {
+        /// <summary>The trie being enumerated, used to detect modification through its version counter.</summary>
         private readonly Trie<TValue> _owner;
+
+        /// <summary>The owner's version captured when the enumerator was created, used for fail-fast checks.</summary>
         private readonly int _version;
+
+        /// <summary>The snapshot of key/value pairs captured when the enumerator was created.</summary>
         private readonly KeyValuePair<string, TValue>[] _items;
+
+        /// <summary>The index of the current element, or <c>-1</c> before the first move.</summary>
         private int _index;
+
+        /// <summary>The key/value pair at the current position, or the default value when not on an element.</summary>
         private KeyValuePair<string, TValue> _current;
 
         /// <summary>

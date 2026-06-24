@@ -53,9 +53,16 @@ namespace Bodu.Threading;
 [DebuggerDisplay("Held = {_held}, Waiters = {WaiterCount}")]
 public sealed partial class AsyncLock : IDisposable
 {
+    /// <summary>The synchronization object guarding the waiter queue and lock state.</summary>
     private readonly object _gate = new();
+
+    /// <summary>The queue of pending acquirers, granted the lock in FIFO order as it is released.</summary>
     private readonly LinkedList<TaskCompletionSource<Releaser>> _waiters = new();
+
+    /// <summary>Indicates whether the lock is currently held.</summary>
     private bool _held;
+
+    /// <summary>Indicates whether the lock has been disposed.</summary>
     private bool _disposed;
 
     /// <summary>

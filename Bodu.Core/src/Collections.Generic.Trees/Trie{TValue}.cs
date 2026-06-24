@@ -32,8 +32,13 @@ namespace Bodu.Collections.Generic.Trees;
 public sealed partial class Trie<TValue>
     : IEnumerable<KeyValuePair<string, TValue>>, IReadOnlyCollection<KeyValuePair<string, TValue>>
 {
+    /// <summary>The root node of the trie; only its child edges are meaningful, not its value slot.</summary>
     private readonly TrieNode<TValue> _root = new();
+
+    /// <summary>The number of key/value pairs currently stored in the trie.</summary>
     private int _count;
+
+    /// <summary>A modification counter used to detect mutation during enumeration.</summary>
     private int _version;
 
     /// <summary>
@@ -83,7 +88,7 @@ public sealed partial class Trie<TValue>
     /// Gets the number of keys stored in the trie.
     /// </summary>
     /// <value>The number of stored keys.</value>
-    /// <returns>The number of stored keys.</returns>
+    /// <returns>The number of distinct keys currently held by the trie.</returns>
     public int Count => _count;
 
     /// <summary>
@@ -98,7 +103,7 @@ public sealed partial class Trie<TValue>
     /// </summary>
     /// <param name="key">The key whose value is retrieved or assigned.</param>
     /// <value>The value associated with <paramref name="key" />.</value>
-    /// <returns>The value associated with <paramref name="key" />.</returns>
+    /// <returns>The value currently mapped to <paramref name="key" />.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
     /// <exception cref="KeyNotFoundException">The key does not exist when read.</exception>
     public TValue this[string key]

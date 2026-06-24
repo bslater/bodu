@@ -28,8 +28,13 @@ namespace Bodu.Collections.Generic.Graphs;
 [DebuggerDisplay("Count = {Count}, Sets = {SetCount}")]
 public sealed class DisjointSet
 {
+    /// <summary>The parent index of each element, forming the union-find forest; a root references itself.</summary>
     private readonly int[] _parent;
+
+    /// <summary>The size of the subtree rooted at each element; meaningful only for root elements.</summary>
     private readonly int[] _size;
+
+    /// <summary>The number of distinct disjoint sets currently represented.</summary>
     private int _setCount;
 
     /// <summary>

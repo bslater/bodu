@@ -14,6 +14,7 @@ namespace Bodu.Collections.Generic.Trees;
 /// <typeparam name="TValue">The type of the values stored in the trie.</typeparam>
 internal sealed class TrieDebugView<TValue>
 {
+    /// <summary>The trie whose key/value pairs are surfaced in the debugger.</summary>
     private readonly Trie<TValue> _trie;
 
     /// <summary>

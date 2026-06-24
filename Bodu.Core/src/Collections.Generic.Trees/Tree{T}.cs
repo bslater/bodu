@@ -32,8 +32,13 @@ namespace Bodu.Collections.Generic.Trees;
 [DebuggerTypeProxy(typeof(TreeDebugView<>))]
 public sealed partial class Tree<T>
 {
+    /// <summary>The ordered list of immediate child nodes.</summary>
     private readonly List<Tree<T>> _children;
+
+    /// <summary>A cached read-only wrapper over <see cref="_children" /> returned by <see cref="Children" />.</summary>
     private readonly ReadOnlyCollection<Tree<T>> _childrenView;
+
+    /// <summary>The parent node, or <see langword="null" /> when this node is a root.</summary>
     private Tree<T>? _parent;
 
     /// <summary>
@@ -67,7 +72,7 @@ public sealed partial class Tree<T>
     /// Gets or sets the value stored at this node.
     /// </summary>
     /// <value>The node's value.</value>
-    /// <returns>The node's value.</returns>
+    /// <returns>The value currently stored at this node.</returns>
     public T Value { get; set; }
 
     /// <summary>
@@ -100,14 +105,14 @@ public sealed partial class Tree<T>
     /// Gets a value indicating whether this node has no parent.
     /// </summary>
     /// <value><see langword="true" /> if the node is a root; otherwise, <see langword="false" />.</value>
-    /// <returns><see langword="true" /> if the node is a root; otherwise, <see langword="false" />.</returns>
+    /// <returns><see langword="true" /> if this node has no parent; otherwise, <see langword="false" />.</returns>
     public bool IsRoot => _parent is null;
 
     /// <summary>
     /// Gets a value indicating whether this node has no children.
     /// </summary>
     /// <value><see langword="true" /> if the node is a leaf; otherwise, <see langword="false" />.</value>
-    /// <returns><see langword="true" /> if the node is a leaf; otherwise, <see langword="false" />.</returns>
+    /// <returns><see langword="true" /> if this node has no children; otherwise, <see langword="false" />.</returns>
     public bool IsLeaf => _children.Count == 0;
 
     /// <summary>

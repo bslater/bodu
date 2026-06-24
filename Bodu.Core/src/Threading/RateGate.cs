@@ -39,10 +39,19 @@ namespace Bodu.Threading;
 [DebuggerDisplay("Interval = {_interval}, TimeUntilNext = {TimeUntilNext}")]
 public sealed class RateGate
 {
+    /// <summary>The synchronization object guarding the last-timestamp and fired state.</summary>
     private readonly object _gate = new();
+
+    /// <summary>The minimum interval that must elapse between admitted invocations.</summary>
     private readonly TimeSpan _interval;
+
+    /// <summary>The time provider used to measure the interval between invocations.</summary>
     private readonly TimeProvider _timeProvider;
+
+    /// <summary>The timestamp of the most recently admitted invocation, in the time provider's ticks.</summary>
     private long _lastTimestamp;
+
+    /// <summary>Indicates whether at least one invocation has been admitted since construction.</summary>
     private bool _hasFired;
 
     /// <summary>

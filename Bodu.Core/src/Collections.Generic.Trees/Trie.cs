@@ -31,8 +31,13 @@ namespace Bodu.Collections.Generic.Trees;
 public sealed partial class Trie
     : IEnumerable<string>, IReadOnlyCollection<string>
 {
+    /// <summary>The root node of the trie; only its child edges are meaningful, not its presence flag.</summary>
     private readonly TrieNode<bool> _root = new();
+
+    /// <summary>The number of keys currently stored in the trie.</summary>
     private int _count;
+
+    /// <summary>A modification counter used to detect mutation during enumeration.</summary>
     private int _version;
 
     /// <summary>
@@ -81,7 +86,7 @@ public sealed partial class Trie
     /// Gets the number of keys stored in the trie.
     /// </summary>
     /// <value>The number of stored keys.</value>
-    /// <returns>The number of stored keys.</returns>
+    /// <returns>The number of distinct keys currently held by the trie.</returns>
     public int Count => _count;
 
     /// <summary>

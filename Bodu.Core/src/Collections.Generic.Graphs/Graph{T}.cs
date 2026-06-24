@@ -32,8 +32,13 @@ public sealed partial class Graph<T>
     : IReadOnlyWeightedGraph<T, double>
     where T : notnull
 {
+    /// <summary>The adjacency map: each vertex maps to its outgoing neighbors and their edge weights.</summary>
     private readonly Dictionary<T, Dictionary<T, double>> _adjacency;
+
+    /// <summary>Indicates whether the graph treats edges as directed or undirected.</summary>
     private readonly GraphKind _kind;
+
+    /// <summary>The number of edges in the graph, counting each undirected connection once.</summary>
     private int _edgeCount;
 
     /// <summary>
@@ -74,7 +79,7 @@ public sealed partial class Graph<T>
     /// Gets a value indicating whether edges are directed.
     /// </summary>
     /// <value><see langword="true" /> for a directed graph; otherwise, <see langword="false" />.</value>
-    /// <returns><see langword="true" /> for a directed graph; otherwise, <see langword="false" />.</returns>
+    /// <returns><see langword="true" /> if edges have a direction; otherwise, <see langword="false" />.</returns>
     public bool IsDirected => _kind == GraphKind.Directed;
 
     /// <summary>
