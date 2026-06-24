@@ -187,7 +187,7 @@ public sealed partial class AsyncSemaphore
     /// </exception>
     public ValueTask<Releaser> LockAsync(CancellationToken cancellationToken)
     {
-        var wait = WaitAsync(cancellationToken);
+        ValueTask wait = WaitAsync(cancellationToken);
         return wait.IsCompletedSuccessfully
             ? new ValueTask<Releaser>(new Releaser(this))
             : AwaitReleaserAsync(wait);
@@ -216,7 +216,7 @@ public sealed partial class AsyncSemaphore
 
         lock (_gate)
         {
-            var remaining = releaseCount;
+            int remaining = releaseCount;
 
             // Hand permits to queued waiters in FIFO order. A waiter whose task was already canceled is dropped
             // without consuming a permit.
@@ -253,7 +253,7 @@ public sealed partial class AsyncSemaphore
     {
         using (cancellationToken.Register(static state =>
         {
-            var (owner, waiter, token) = ((AsyncSemaphore Owner, LinkedListNode<TaskCompletionSource<bool>> Node, CancellationToken Token))state!;
+            (AsyncSemaphore? owner, LinkedListNode<TaskCompletionSource<bool>>? waiter, CancellationToken token) = ((AsyncSemaphore Owner, LinkedListNode<TaskCompletionSource<bool>> Node, CancellationToken Token))state!;
             owner.CancelWaiter(waiter, token);
         }, (this, node, cancellationToken)))
         {

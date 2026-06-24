@@ -235,7 +235,7 @@ public sealed partial class AsyncDebouncer : IDisposable
             active = new List<Run>(_active);
         }
 
-        foreach (var run in active)
+        foreach (Run run in active)
             run.Cts.Cancel();
     }
 
@@ -261,7 +261,7 @@ public sealed partial class AsyncDebouncer : IDisposable
         }
 
         timer?.Dispose();
-        foreach (var run in active)
+        foreach (Run run in active)
             run.Cts.Cancel();
     }
 
@@ -302,7 +302,7 @@ public sealed partial class AsyncDebouncer : IDisposable
                 break;
 
             case AsyncDebouncerExecutionPolicy.CancelAndRestart:
-                foreach (var run in _active)
+                foreach (Run run in _active)
                     run.Cts.Cancel();
                 StartRunCore();
                 break;

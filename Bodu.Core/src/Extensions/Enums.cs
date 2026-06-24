@@ -114,7 +114,7 @@ public static class Enums
     /// <returns>The resolved description text.</returns>
     internal static string GetDescription<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields)] TEnum>(TEnum value)
         where TEnum : struct, Enum =>
-        DescriptionCache<TEnum>.Descriptions.TryGetValue(value, out var description)
+        DescriptionCache<TEnum>.Descriptions.TryGetValue(value, out string? description)
             ? description
             : value.ToString();
 
@@ -127,7 +127,7 @@ public static class Enums
     /// <returns>The resolved display name.</returns>
     internal static string GetDisplayName<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields)] TEnum>(TEnum value)
         where TEnum : struct, Enum =>
-        DescriptionCache<TEnum>.DisplayNames.TryGetValue(value, out var name)
+        DescriptionCache<TEnum>.DisplayNames.TryGetValue(value, out string? name)
             ? name
             : value.ToString();
 
@@ -146,7 +146,7 @@ public static class Enums
     internal static bool TryGetDescription<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields)] TEnum>(TEnum value, out string description)
         where TEnum : struct, Enum
     {
-        if (DescriptionCache<TEnum>.Descriptions.TryGetValue(value, out var resolved))
+        if (DescriptionCache<TEnum>.Descriptions.TryGetValue(value, out string? resolved))
         {
             description = resolved;
             return true;
@@ -191,20 +191,20 @@ public static class Enums
         /// </summary>
         static DescriptionCache()
         {
-            var type = typeof(TEnum);
-            foreach (var value in Enum.GetValues<TEnum>())
+            Type type = typeof(TEnum);
+            foreach (TEnum value in Enum.GetValues<TEnum>())
             {
-                var name = value.ToString();
-                var field = type.GetField(name);
+                string name = value.ToString();
+                FieldInfo? field = type.GetField(name);
                 if (field is null)
                     continue;
 
-                var description = field.GetCustomAttribute<DescriptionAttribute>()?.Description;
-                var display = field.GetCustomAttribute<DisplayAttribute>();
-                var displayName = display?.GetName();
-                var displayShort = display?.GetShortName();
+                string? description = field.GetCustomAttribute<DescriptionAttribute>()?.Description;
+                DisplayAttribute? display = field.GetCustomAttribute<DisplayAttribute>();
+                string? displayName = display?.GetName();
+                string? displayShort = display?.GetShortName();
 
-                var resolvedDescription = description ?? displayName ?? displayShort;
+                string? resolvedDescription = description ?? displayName ?? displayShort;
                 if (resolvedDescription is not null)
                 {
                     Descriptions[value] = resolvedDescription;
@@ -212,7 +212,7 @@ public static class Enums
                         ByDescription[resolvedDescription] = value;
                 }
 
-                var resolvedDisplay = displayName ?? description;
+                string? resolvedDisplay = displayName ?? description;
                 if (resolvedDisplay is not null)
                     DisplayNames[value] = resolvedDisplay;
             }

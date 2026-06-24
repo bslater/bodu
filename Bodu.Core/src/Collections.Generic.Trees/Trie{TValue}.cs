@@ -75,7 +75,7 @@ public sealed partial class Trie<TValue>
     {
         ThrowHelper.ThrowIfNull(items);
 
-        foreach (var item in items)
+        foreach (KeyValuePair<string, TValue> item in items)
             Add(item.Key, item.Value);
     }
 
@@ -107,7 +107,7 @@ public sealed partial class Trie<TValue>
         {
             ThrowHelper.ThrowIfNull(key);
 
-            var node = TrieCore.Find(_root, key.AsSpan());
+            TrieNode<TValue>? node = TrieCore.Find(_root, key.AsSpan());
             if (node is null || !node.IsTerminal)
                 throw new KeyNotFoundException();
 
@@ -142,7 +142,7 @@ public sealed partial class Trie<TValue>
     /// <exception cref="ArgumentException">The key already exists.</exception>
     public void Add(ReadOnlySpan<char> key, TValue value)
     {
-        var node = TrieCore.GetOrAddNode(_root, key, Comparer);
+        TrieNode<TValue> node = TrieCore.GetOrAddNode(_root, key, Comparer);
         if (node.IsTerminal)
             throw new ArgumentException(ResourceStrings.Arg_Invalid_DuplicateDictionaryKey, nameof(key));
 
@@ -164,7 +164,7 @@ public sealed partial class Trie<TValue>
     {
         ThrowHelper.ThrowIfNull(key);
 
-        var node = TrieCore.GetOrAddNode(_root, key.AsSpan(), Comparer);
+        TrieNode<TValue> node = TrieCore.GetOrAddNode(_root, key.AsSpan(), Comparer);
         if (node.IsTerminal)
             return false;
 
@@ -186,7 +186,7 @@ public sealed partial class Trie<TValue>
     {
         ThrowHelper.ThrowIfNull(key);
 
-        var node = TrieCore.GetOrAddNode(_root, key.AsSpan(), Comparer);
+        TrieNode<TValue> node = TrieCore.GetOrAddNode(_root, key.AsSpan(), Comparer);
         if (!node.IsTerminal)
         {
             node.IsTerminal = true;
@@ -217,7 +217,7 @@ public sealed partial class Trie<TValue>
     /// <returns><see langword="true" /> if the key exists; otherwise, <see langword="false" />.</returns>
     public bool ContainsKey(ReadOnlySpan<char> key)
     {
-        var node = TrieCore.Find(_root, key);
+        TrieNode<TValue>? node = TrieCore.Find(_root, key);
         return node is not null && node.IsTerminal;
     }
 
@@ -242,7 +242,7 @@ public sealed partial class Trie<TValue>
     /// <returns><see langword="true" /> if the key was found; otherwise, <see langword="false" />.</returns>
     public bool TryGetValue(ReadOnlySpan<char> key, out TValue value)
     {
-        var node = TrieCore.Find(_root, key);
+        TrieNode<TValue>? node = TrieCore.Find(_root, key);
         if (node is not null && node.IsTerminal)
         {
             value = node.Value;
@@ -314,7 +314,7 @@ public sealed partial class Trie<TValue>
     {
         ThrowHelper.ThrowIfNull(prefix);
 
-        var start = TrieCore.Find(_root, prefix.AsSpan());
+        TrieNode<TValue>? start = TrieCore.Find(_root, prefix.AsSpan());
         return start is null
             ? []
             : EnumerateKeys(start);
@@ -330,7 +330,7 @@ public sealed partial class Trie<TValue>
     {
         ThrowHelper.ThrowIfNull(prefix);
 
-        var start = TrieCore.Find(_root, prefix.AsSpan());
+        TrieNode<TValue>? start = TrieCore.Find(_root, prefix.AsSpan());
         return start is null
             ? []
             : TrieCore.EnumerateItems(start);
@@ -370,8 +370,8 @@ public sealed partial class Trie<TValue>
     internal KeyValuePair<string, TValue>[] ToArrayInternal()
     {
         var result = new KeyValuePair<string, TValue>[_count];
-        var index = 0;
-        foreach (var item in TrieCore.EnumerateItems(_root))
+        int index = 0;
+        foreach (KeyValuePair<string, TValue> item in TrieCore.EnumerateItems(_root))
             result[index++] = item;
 
         return result;
@@ -384,7 +384,7 @@ public sealed partial class Trie<TValue>
     /// <returns>A lazy sequence of keys.</returns>
     private static IEnumerable<string> EnumerateKeys(TrieNode<TValue> start)
     {
-        foreach (var item in TrieCore.EnumerateItems(start))
+        foreach (KeyValuePair<string, TValue> item in TrieCore.EnumerateItems(start))
             yield return item.Key;
     }
 }

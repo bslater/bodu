@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="GraphDebugView{T}.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -37,9 +37,9 @@ internal sealed class GraphDebugView<T>
         get
         {
             var result = new List<string>();
-            foreach (var vertex in _graph.Vertices)
+            foreach (T vertex in _graph.Vertices)
             {
-                var edges = _graph.WeightedNeighbors(vertex).Select(e => $"{e.Neighbor}({e.Weight})");
+                IEnumerable<string> edges = _graph.WeightedNeighbors(vertex).Select(e => $"{e.Neighbor}({e.Weight})");
                 result.Add($"{vertex} -> [{string.Join(", ", edges)}]");
             }
 

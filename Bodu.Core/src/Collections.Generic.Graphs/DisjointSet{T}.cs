@@ -77,7 +77,7 @@ public sealed class DisjointSet<T>
     {
         ThrowHelper.ThrowIfNull(items);
 
-        foreach (var item in items)
+        foreach (T item in items)
             MakeSet(item);
     }
 
@@ -117,7 +117,7 @@ public sealed class DisjointSet<T>
         if (_indices.ContainsKey(item))
             return false;
 
-        var slot = _elements.Count;
+        int slot = _elements.Count;
         _indices.Add(item, slot);
         _elements.Add(item);
         _parent.Add(slot);
@@ -161,7 +161,7 @@ public sealed class DisjointSet<T>
     {
         ThrowHelper.ThrowIfNull(item);
 
-        if (!_indices.TryGetValue(item, out var slot))
+        if (!_indices.TryGetValue(item, out int slot))
             throw new ArgumentException(ResourceStrings.Arg_Invalid_ElementNotInSet, nameof(item));
 
         return _elements[FindRoot(slot)];
@@ -180,7 +180,7 @@ public sealed class DisjointSet<T>
     {
         ThrowHelper.ThrowIfNull(item);
 
-        if (_indices.TryGetValue(item, out var slot))
+        if (_indices.TryGetValue(item, out int slot))
         {
             representative = _elements[FindRoot(slot)];
             return true;
@@ -206,8 +206,8 @@ public sealed class DisjointSet<T>
         ThrowHelper.ThrowIfNull(a);
         ThrowHelper.ThrowIfNull(b);
 
-        var rootA = FindRoot(GetSlot(a, nameof(a)));
-        var rootB = FindRoot(GetSlot(b, nameof(b)));
+        int rootA = FindRoot(GetSlot(a, nameof(a)));
+        int rootB = FindRoot(GetSlot(b, nameof(b)));
         if (rootA == rootB)
             return false;
 
@@ -272,10 +272,10 @@ public sealed class DisjointSet<T>
     internal T[][] ToGroups()
     {
         var groups = new Dictionary<int, List<T>>();
-        for (var slot = 0; slot < _elements.Count; slot++)
+        for (int slot = 0; slot < _elements.Count; slot++)
         {
-            var root = FindRoot(slot);
-            if (!groups.TryGetValue(root, out var members))
+            int root = FindRoot(slot);
+            if (!groups.TryGetValue(root, out List<T>? members))
             {
                 members = new List<T>();
                 groups.Add(root, members);
@@ -285,8 +285,8 @@ public sealed class DisjointSet<T>
         }
 
         var result = new T[groups.Count][];
-        var index = 0;
-        foreach (var members in groups.Values)
+        int index = 0;
+        foreach (List<T> members in groups.Values)
             result[index++] = members.ToArray();
 
         return result;
@@ -301,7 +301,7 @@ public sealed class DisjointSet<T>
     /// <exception cref="ArgumentException"><paramref name="item" /> has not been added to the structure.</exception>
     private int GetSlot(T item, string paramName)
     {
-        if (!_indices.TryGetValue(item, out var slot))
+        if (!_indices.TryGetValue(item, out int slot))
             throw new ArgumentException(ResourceStrings.Arg_Invalid_ElementNotInSet, paramName);
 
         return slot;

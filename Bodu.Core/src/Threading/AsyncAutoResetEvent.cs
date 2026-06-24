@@ -147,7 +147,7 @@ public sealed class AsyncAutoResetEvent
     {
         using (cancellationToken.Register(static state =>
         {
-            var (owner, waiter, token) = ((AsyncAutoResetEvent Owner, LinkedListNode<TaskCompletionSource<bool>> Node, CancellationToken Token))state!;
+            (AsyncAutoResetEvent? owner, LinkedListNode<TaskCompletionSource<bool>>? waiter, CancellationToken token) = ((AsyncAutoResetEvent Owner, LinkedListNode<TaskCompletionSource<bool>> Node, CancellationToken Token))state!;
             owner.CancelWaiter(waiter, token);
         }, (this, node, cancellationToken)))
         {

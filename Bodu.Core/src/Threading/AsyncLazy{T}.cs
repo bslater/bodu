@@ -159,7 +159,7 @@ public sealed class AsyncLazy<T>
     /// </remarks>
     public Task<T> GetValueAsync(CancellationToken cancellationToken)
     {
-        var task = GetSharedTask();
+        Task<T> task = GetSharedTask();
         return task.IsCompleted || !cancellationToken.CanBeCanceled
             ? task
             : task.WaitAsync(cancellationToken);

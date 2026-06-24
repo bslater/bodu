@@ -44,7 +44,7 @@ public sealed class DisjointSet
 
         _parent = new int[count];
         _size = new int[count];
-        for (var i = 0; i < count; i++)
+        for (int i = 0; i < count; i++)
         {
             _parent[i] = i;
             _size[i] = 1;
@@ -102,8 +102,8 @@ public sealed class DisjointSet
     /// </exception>
     public bool Union(int a, int b)
     {
-        var rootA = Find(a);
-        var rootB = Find(b);
+        int rootA = Find(a);
+        int rootB = Find(b);
         if (rootA == rootB)
             return false;
 
@@ -147,7 +147,7 @@ public sealed class DisjointSet
     /// </summary>
     public void Reset()
     {
-        for (var i = 0; i < _parent.Length; i++)
+        for (int i = 0; i < _parent.Length; i++)
         {
             _parent[i] = i;
             _size[i] = 1;

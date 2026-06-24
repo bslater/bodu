@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="GraphAlgorithms.ConnectedComponents.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -25,17 +25,17 @@ public static partial class GraphAlgorithms
         ThrowHelper.ThrowIfNull(graph);
 
         var disjointSet = new DisjointSet<T>(graph.Vertices, graph.Comparer);
-        foreach (var vertex in graph.Vertices)
+        foreach (T vertex in graph.Vertices)
         {
-            foreach (var neighbor in graph.Neighbors(vertex))
+            foreach (T neighbor in graph.Neighbors(vertex))
                 disjointSet.Union(vertex, neighbor);
         }
 
         var groups = new Dictionary<T, List<T>>(graph.Comparer);
-        foreach (var vertex in graph.Vertices)
+        foreach (T vertex in graph.Vertices)
         {
-            var root = disjointSet.Find(vertex);
-            if (!groups.TryGetValue(root, out var members))
+            T root = disjointSet.Find(vertex);
+            if (!groups.TryGetValue(root, out List<T>? members))
             {
                 members = new List<T>();
                 groups.Add(root, members);
@@ -45,7 +45,7 @@ public static partial class GraphAlgorithms
         }
 
         var result = new List<IReadOnlyList<T>>(groups.Count);
-        foreach (var members in groups.Values)
+        foreach (List<T> members in groups.Values)
             result.Add(members);
 
         return result;

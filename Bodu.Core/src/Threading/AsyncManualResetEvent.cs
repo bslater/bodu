@@ -85,7 +85,7 @@ public sealed class AsyncManualResetEvent
     /// </remarks>
     public ValueTask WaitAsync(CancellationToken cancellationToken)
     {
-        var task = Volatile.Read(ref _source).Task;
+        Task<bool> task = Volatile.Read(ref _source).Task;
         if (task.IsCompletedSuccessfully)
             return ValueTask.CompletedTask;
 
@@ -108,7 +108,7 @@ public sealed class AsyncManualResetEvent
     {
         while (true)
         {
-            var current = Volatile.Read(ref _source);
+            TaskCompletionSource<bool> current = Volatile.Read(ref _source);
             if (!current.Task.IsCompleted)
                 return;
 

@@ -75,7 +75,7 @@ public sealed class RateGate
     {
         lock (_gate)
         {
-            var now = _timeProvider.GetTimestamp();
+            long now = _timeProvider.GetTimestamp();
             if (_hasFired && _timeProvider.GetElapsedTime(_lastTimestamp, now) < _interval)
                 return false;
 
@@ -101,7 +101,7 @@ public sealed class RateGate
                 if (!_hasFired)
                     return TimeSpan.Zero;
 
-                var remaining = _interval - _timeProvider.GetElapsedTime(_lastTimestamp);
+                TimeSpan remaining = _interval - _timeProvider.GetElapsedTime(_lastTimestamp);
                 return remaining > TimeSpan.Zero ? remaining : TimeSpan.Zero;
             }
         }

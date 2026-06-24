@@ -173,7 +173,7 @@ public sealed partial class AsyncLock : IDisposable
             _waiters.Clear();
         }
 
-        foreach (var tcs in toFault)
+        foreach (TaskCompletionSource<Releaser> tcs in toFault)
             tcs.TrySetException(new ObjectDisposedException(nameof(AsyncLock), ResourceStrings.Op_Invalid_AsyncPrimitiveDisposedWaiters));
     }
 
@@ -188,11 +188,11 @@ public sealed partial class AsyncLock : IDisposable
     {
         using (cancellationToken.Register(static state =>
         {
-            var (owner, waiter, token) = ((AsyncLock Owner, LinkedListNode<TaskCompletionSource<Releaser>> Node, CancellationToken Token))state!;
+            (AsyncLock? owner, LinkedListNode<TaskCompletionSource<Releaser>>? waiter, CancellationToken token) = ((AsyncLock Owner, LinkedListNode<TaskCompletionSource<Releaser>> Node, CancellationToken Token))state!;
             owner.CancelWaiter(waiter, token);
         }, (this, node, cancellationToken)))
         {
-            var releaser = await node.Value.Task.ConfigureAwait(false);
+            Releaser releaser = await node.Value.Task.ConfigureAwait(false);
 
             // If cancellation raced with the ownership transfer, honor the cancellation and return the lock.
             if (cancellationToken.IsCancellationRequested)

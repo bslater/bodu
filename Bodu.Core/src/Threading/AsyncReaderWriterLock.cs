@@ -217,7 +217,7 @@ public sealed partial class AsyncReaderWriterLock : IDisposable
             _waitingWriters.Clear();
         }
 
-        foreach (var tcs in toFault)
+        foreach (TaskCompletionSource<Releaser> tcs in toFault)
             tcs.TrySetException(new ObjectDisposedException(nameof(AsyncReaderWriterLock), ResourceStrings.Op_Invalid_AsyncPrimitiveDisposedWaiters));
     }
 
@@ -285,7 +285,7 @@ public sealed partial class AsyncReaderWriterLock : IDisposable
     /// </summary>
     private void GrantAllReaders()
     {
-        foreach (var tcs in _waitingReaders)
+        foreach (TaskCompletionSource<Releaser> tcs in _waitingReaders)
         {
             if (tcs.TrySetResult(CreateReleaser(isWriter: false)))
                 _readersActive++;
@@ -304,7 +304,7 @@ public sealed partial class AsyncReaderWriterLock : IDisposable
     {
         using (cancellationToken.Register(static state =>
         {
-            var (owner, waiter, token) = ((AsyncReaderWriterLock Owner, TaskCompletionSource<Releaser> Waiter, CancellationToken Token))state!;
+            (AsyncReaderWriterLock? owner, TaskCompletionSource<Releaser>? waiter, CancellationToken token) = ((AsyncReaderWriterLock Owner, TaskCompletionSource<Releaser> Waiter, CancellationToken Token))state!;
             owner.CancelReader(waiter, token);
         }, (this, tcs, cancellationToken)))
         {
@@ -322,7 +322,7 @@ public sealed partial class AsyncReaderWriterLock : IDisposable
     {
         using (cancellationToken.Register(static state =>
         {
-            var (owner, waiter, token) = ((AsyncReaderWriterLock Owner, LinkedListNode<TaskCompletionSource<Releaser>> Node, CancellationToken Token))state!;
+            (AsyncReaderWriterLock? owner, LinkedListNode<TaskCompletionSource<Releaser>>? waiter, CancellationToken token) = ((AsyncReaderWriterLock Owner, LinkedListNode<TaskCompletionSource<Releaser>> Node, CancellationToken Token))state!;
             owner.CancelWriter(waiter, token);
         }, (this, node, cancellationToken)))
         {
