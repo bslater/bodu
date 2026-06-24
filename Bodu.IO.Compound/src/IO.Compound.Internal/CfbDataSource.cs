@@ -21,7 +21,7 @@ internal abstract class CfbDataSource
     /// <summary>
     /// Gets the total length, in bytes, of the underlying content.
     /// </summary>
-    /// <returns>The content length.</returns>
+    /// <value>The content length.</value>
     public abstract long Length { get; }
 
     /// <summary>

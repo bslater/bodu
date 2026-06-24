@@ -61,20 +61,20 @@ public ref partial struct Utf8TomlWriter
     /// <summary>
     /// Gets the number of bytes committed to the destination so far.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// For a buffer-writer destination, the bytes delivered when the root table was closed; for a stream destination,
     /// the bytes written to the stream by <see cref="Flush" />.
-    /// </returns>
+    /// </value>
     public readonly long BytesCommitted => _byteCounts[0];
 
     /// <summary>
     /// Gets the number of rendered bytes buffered for a stream destination and not yet flushed.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The pending byte count. Always zero for a buffer-writer destination, where bytes are delivered as the root table
     /// closes; for a stream destination the count becomes non-zero when the document completes and returns to zero on
     /// <see cref="Flush" />.
-    /// </returns>
+    /// </value>
     public readonly long BytesPending => _byteCounts[1];
 
     /// <summary>

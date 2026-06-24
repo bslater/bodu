@@ -33,7 +33,7 @@ internal static class DefaultNotableDateAlgorithms
     /// <summary>
     /// Gets the pre-seeded registry of every built-in algorithm.
     /// </summary>
-    /// <returns>The built-in algorithm registry.</returns>
+    /// <value>The built-in algorithm registry.</value>
     public static INotableDateAlgorithmRegistry Registry =>
         s_registry;
 

@@ -23,32 +23,32 @@ public sealed record MultiCharCheckDigitAlgorithmSpecification
     /// <summary>
     /// Gets the expected <see cref="MultiCharCheckDigitAlgorithm.AlgorithmName" /> string.
     /// </summary>
-    /// <returns>The canonical algorithm name, e.g. <c>"ISO 7064 MOD 97-10"</c>.</returns>
+    /// <value>The canonical algorithm name, e.g. <c>"ISO 7064 MOD 97-10"</c>.</value>
     public required string AlgorithmName { get; init; }
 
     /// <summary>
     /// Gets the expected <see cref="MultiCharCheckDigitAlgorithm.CheckLength" /> value.
     /// </summary>
-    /// <returns>The number of trailing check characters the algorithm emits.</returns>
+    /// <value>The number of trailing check characters the algorithm emits.</value>
     public required int CheckLength { get; init; }
 
     /// <summary>
     /// Gets the check code expected for an empty body, or <see langword="null" /> to indicate that the algorithm throws
     /// on empty input.
     /// </summary>
-    /// <returns>A string of length <see cref="CheckLength" />, or <see langword="null" />.</returns>
+    /// <value>A string of length <see cref="CheckLength" />, or <see langword="null" />.</value>
     public string? EmptyCheckDigits { get; init; }
 
     /// <summary>
     /// Gets the expected <see cref="MultiCharCheckDigitAlgorithm.InputAlphabet" /> value.
     /// </summary>
-    /// <returns>The declared input alphabet for the algorithm under test.</returns>
+    /// <value>The declared input alphabet for the algorithm under test.</value>
     public required CheckDigitInputAlphabet InputAlphabet { get; init; }
 
     /// <summary>
     /// Gets the known-answer vectors to exercise.
     /// </summary>
-    /// <returns>A non-empty list of <see cref="MultiCharCheckDigitKnownAnswer" /> entries.</returns>
+    /// <value>A non-empty list of <see cref="MultiCharCheckDigitKnownAnswer" /> entries.</value>
     public required IReadOnlyList<MultiCharCheckDigitKnownAnswer> KnownAnswers { get; init; }
 
 }

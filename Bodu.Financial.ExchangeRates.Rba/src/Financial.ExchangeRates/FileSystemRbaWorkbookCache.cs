@@ -45,7 +45,7 @@ public sealed class FileSystemRbaWorkbookCache
     /// <summary>
     /// Gets the directory in which cached workbooks are stored.
     /// </summary>
-    /// <returns>The absolute or relative cache directory path.</returns>
+    /// <value>The absolute or relative cache directory path.</value>
     public string Directory => _directory;
 
     /// <inheritdoc />

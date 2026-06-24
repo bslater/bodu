@@ -144,19 +144,19 @@ public sealed partial class ConfigurationView
     /// <summary>
     /// Gets the underlying resolved dictionary as a read-only view.
     /// </summary>
-    /// <returns>The resolved values keyed by configuration key.</returns>
+    /// <value>The resolved values keyed by configuration key.</value>
     public IReadOnlyDictionary<string, string?> Values { get; }
 
     /// <summary>
     /// Gets the configuration keys present in the resolved view.
     /// </summary>
-    /// <returns>An enumerable of configuration keys.</returns>
+    /// <value>An enumerable of configuration keys.</value>
     public IEnumerable<string> Keys => Values.Keys;
 
     /// <summary>
     /// Gets the number of resolved keys.
     /// </summary>
-    /// <returns>The count of keys present in the resolved view.</returns>
+    /// <value>The count of keys present in the resolved view.</value>
     public int Count => Values.Count;
 
     /// <inheritdoc />
@@ -169,7 +169,7 @@ public sealed partial class ConfigurationView
     /// <summary>
     /// Gets the resolved-entry origin metadata for every key in the view.
     /// </summary>
-    /// <returns>Origin metadata per resolved key.</returns>
+    /// <value>Origin metadata per resolved key.</value>
     public IEnumerable<ConfigurationResolvedEntry> Entries =>
         _entries.Values;
 
@@ -212,7 +212,7 @@ public sealed partial class ConfigurationView
     /// <summary>
     /// Gets the values present in the resolved view. Satisfies <see cref="IReadOnlyDictionary{TKey, TValue}.Values" />.
     /// </summary>
-    /// <returns>An enumerable of the resolved values.</returns>
+    /// <value>An enumerable of the resolved values.</value>
     IEnumerable<string?> IReadOnlyDictionary<string, string?>.Values =>
         Values.Values;
 

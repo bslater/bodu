@@ -53,14 +53,14 @@ public partial class RbaRateKnownAnswerTests
     /// <summary>
     /// Gets the known-answer rows whose workbook fixture is embedded, as dynamic-data rows.
     /// </summary>
-    /// <returns>One object array per runnable known-answer row.</returns>
+    /// <value>One object array per runnable known-answer row.</value>
     public static IEnumerable<object[]> KnownAnswers =>
         s_allRows.Where(row => s_embeddedWorkbooks.Contains(row.SourceFileName)).Select(row => new object[] { row });
 
     /// <summary>
     /// Gets the distinct (workbook, currency) groups whose workbook fixture is embedded, as dynamic-data rows.
     /// </summary>
-    /// <returns>One object array of (source file, currency) per runnable group.</returns>
+    /// <value>One object array of (source file, currency) per runnable group.</value>
     public static IEnumerable<object[]> ClassificationGroups =>
         s_allRows
             .Where(row => s_embeddedWorkbooks.Contains(row.SourceFileName))

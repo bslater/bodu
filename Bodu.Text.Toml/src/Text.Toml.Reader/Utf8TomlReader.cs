@@ -249,26 +249,26 @@ public ref partial struct Utf8TomlReader
     /// <summary>
     /// Gets the number of bytes of the current block the reader has fully processed.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The byte count. Because the reader consumes input only in whole tokens, the caller carries the bytes from this
     /// offset onward into the next block's buffer when resuming.
-    /// </returns>
+    /// </value>
     public readonly long BytesConsumed => _pos;
 
     /// <summary>
     /// Gets the 1-based byte column at which the current token begins.
     /// </summary>
-    /// <returns>The token's source column, counted in bytes from the start of its line.</returns>
+    /// <value>The token's source column, counted in bytes from the start of its line.</value>
     public readonly int ColumnNumber => _tokenColumn;
 
     /// <summary>
     /// Gets the current bracket nesting depth: the number of arrays and inline tables open around the current token.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The depth, where zero is outside any value. A <see cref="TomlTokenType.StartArray" /> or
     /// <see cref="TomlTokenType.StartInlineTable" /> token reports the depth of its enclosing context, and the matching
     /// end token likewise.
-    /// </returns>
+    /// </value>
     /// <remarks>
     /// The depth counts only lexical bracket nesting. <c>[table]</c> and <c>[[array-of-tables]]</c> headers describe
     /// structural — not lexical — nesting, so they do not contribute; the normalized
@@ -288,7 +288,7 @@ public ref partial struct Utf8TomlReader
     /// <summary>
     /// Gets the resumable state to construct the next block's reader from.
     /// </summary>
-    /// <returns>The continuation state capturing the grammar context, line counter, and options.</returns>
+    /// <value>The continuation state capturing the grammar context, line counter, and options.</value>
     public readonly TomlReaderState CurrentState =>
         new(new TomlReaderOptions { SpecVersion = _specVersion, MaxDepth = _maxDepth })
         {
@@ -306,83 +306,83 @@ public ref partial struct Utf8TomlReader
     /// Gets a value indicating whether the current string token contains escape sequences or line-ending backslashes,
     /// so that <see cref="GetString" /> cannot return the raw bytes by direct transcoding.
     /// </summary>
-    /// <returns><see langword="true" /> when decoding must resolve escapes.</returns>
+    /// <value><see langword="true" /> when decoding must resolve escapes.</value>
     public readonly bool HasEscapes => _hasEscapes;
 
     /// <summary>
     /// Gets a value indicating whether the supplied bytes contain the final block of the document.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see langword="true" /> when running out of input mid-token is an error; <see langword="false" /> when
     /// <see cref="Read" /> instead returns <see langword="false" /> and the caller supplies more data.
-    /// </returns>
+    /// </value>
     public readonly bool IsFinalBlock => _isFinalBlock;
 
     /// <summary>
     /// Gets a value indicating whether the current <see cref="TomlTokenType.Key" /> token is the final segment of its
     /// dotted path.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see langword="true" /> when no further <see cref="TomlTokenType.Key" /> segment follows in the same header or
     /// key/value path.
-    /// </returns>
+    /// </value>
     public readonly bool IsFinalKeySegment => _isFinalKeySegment;
 
     /// <summary>
     /// Gets the 1-based line on which the current token begins.
     /// </summary>
-    /// <returns>The token's source line.</returns>
+    /// <value>The token's source line.</value>
     public readonly int LineNumber => _tokenLine;
 
     /// <summary>
     /// Gets the byte offset at which the current token begins, including any delimiters.
     /// </summary>
-    /// <returns>The zero-based byte offset of the token within the source.</returns>
+    /// <value>The zero-based byte offset of the token within the source.</value>
     public readonly int TokenStartIndex => _tokenStart;
 
     /// <summary>
     /// Gets the kind of the current token.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The current token kind, or <see cref="TomlTokenType.None" /> before the first or after the last token.
-    /// </returns>
+    /// </value>
     public readonly TomlTokenType TokenType => _tokenType;
 
     /// <summary>
     /// Gets the raw UTF-8 bytes of the current token's text content, excluding delimiters.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The content slice: the text inside a string's quotes (with a multi-line string's leading newline already
     /// trimmed), the characters of a bare key, the bytes after a comment's <c>#</c>, or the full token text of a scalar
     /// literal. Empty for structural tokens.
-    /// </returns>
+    /// </value>
     public readonly ReadOnlySpan<byte> ValueSpan => _source.Slice(_valueStart, _valueLength);
 
     /// <summary>
     /// Gets the byte offset into the source at which the current token's raw text content begins, inside any
     /// delimiters.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The content start offset, paired with <see cref="ValueLength" /> to slice the source on demand.
-    /// </returns>
+    /// </value>
     internal readonly int ValueStart => _valueStart;
 
     /// <summary>
     /// Gets the byte length of the current token's raw text content, excluding delimiters.
     /// </summary>
-    /// <returns>The content length, paired with <see cref="ValueStart" /> to slice the source on demand.</returns>
+    /// <value>The content length, paired with <see cref="ValueStart" /> to slice the source on demand.</value>
     internal readonly int ValueLength => _valueLength;
 
     /// <summary>
     /// Gets the byte at the cursor.
     /// </summary>
-    /// <returns>The current byte.</returns>
+    /// <value>The current byte.</value>
     private readonly byte Current => _source[_pos];
 
     /// <summary>
     /// Gets a value indicating whether the cursor is at the end of the source.
     /// </summary>
-    /// <returns><see langword="true" /> when no bytes remain.</returns>
+    /// <value><see langword="true" /> when no bytes remain.</value>
     private readonly bool Eof => _pos >= _source.Length;
 
     /// <summary>

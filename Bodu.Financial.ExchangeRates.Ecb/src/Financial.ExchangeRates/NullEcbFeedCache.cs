@@ -24,7 +24,7 @@ public sealed class NullEcbFeedCache
     /// <summary>
     /// Gets the shared instance of the no-op cache.
     /// </summary>
-    /// <returns>The singleton <see cref="NullEcbFeedCache" />.</returns>
+    /// <value>The singleton <see cref="NullEcbFeedCache" />.</value>
     public static NullEcbFeedCache Instance { get; } = new();
 
     /// <inheritdoc />

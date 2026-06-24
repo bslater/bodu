@@ -44,19 +44,19 @@ public sealed class OffsetFromRuleStrategy
     /// <summary>
     /// Gets the identifier of the referenced notable-date concept.
     /// </summary>
-    /// <returns>The referenced concept id.</returns>
+    /// <value>The referenced concept id.</value>
     public string NotableDateRef { get; }
 
     /// <summary>
     /// Gets the identifier of the referenced rule.
     /// </summary>
-    /// <returns>The referenced rule id, or <see langword="null" /> when the sole rule is used.</returns>
+    /// <value>The referenced rule id, or <see langword="null" /> when the sole rule is used.</value>
     public string? RuleRef { get; }
 
     /// <summary>
     /// Gets the signed number of days to offset from the referenced occurrence.
     /// </summary>
-    /// <returns>The day offset.</returns>
+    /// <value>The day offset.</value>
     public int OffsetDays { get; }
 
     /// <inheritdoc />

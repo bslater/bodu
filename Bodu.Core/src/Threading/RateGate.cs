@@ -91,7 +91,6 @@ public sealed class RateGate
     /// <value>
     /// <see cref="TimeSpan.Zero" /> when an invocation can be admitted immediately; otherwise, the remaining cool-down.
     /// </value>
-    /// <returns>The time remaining before the next invocation would be admitted.</returns>
     public TimeSpan TimeUntilNext
     {
         get

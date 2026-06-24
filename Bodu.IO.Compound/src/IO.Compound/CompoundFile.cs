@@ -177,37 +177,37 @@ public sealed class CompoundFile
     /// <summary>
     /// Gets the access level the compound file was opened with.
     /// </summary>
-    /// <returns>The <see cref="FileAccess" /> supplied at open time.</returns>
+    /// <value>The <see cref="FileAccess" /> supplied at open time.</value>
     public FileAccess Access { get; }
 
     /// <summary>
     /// Gets a value indicating whether the compound file can be read.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see langword="true" /> when the file was opened with read access; otherwise <see langword="false" />.
-    /// </returns>
+    /// </value>
     public bool CanRead => (Access & FileAccess.Read) != 0;
 
     /// <summary>
     /// Gets a value indicating whether the compound file can be written.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see langword="true" /> when the file was opened with write access; otherwise <see langword="false" />.
-    /// </returns>
+    /// </value>
     public bool CanWrite => (Access & FileAccess.Write) != 0;
 
     /// <summary>
     /// Gets a value indicating whether the file has staged edits that have not been committed.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see langword="true" /> when a writable file has uncommitted changes; otherwise <see langword="false" />.
-    /// </returns>
+    /// </value>
     public bool IsDirty => _dirty;
 
     /// <summary>
     /// Gets the root storage that anchors the compound file's directory hierarchy.
     /// </summary>
-    /// <returns>The root <see cref="CompoundStorage" />.</returns>
+    /// <value>The root <see cref="CompoundStorage" />.</value>
     public CompoundStorage RootStorage { get; }
 
     /// <summary>

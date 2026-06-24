@@ -45,23 +45,23 @@ public readonly record struct ExchangeRatePair
     /// <summary>
     /// Gets the source currency.
     /// </summary>
-    /// <returns>The currency an amount is converted from.</returns>
+    /// <value>The currency an amount is converted from.</value>
     public CurrencyCode From { get; }
 
     /// <summary>
     /// Gets the destination currency.
     /// </summary>
-    /// <returns>The currency an amount is converted to.</returns>
+    /// <value>The currency an amount is converted to.</value>
     public CurrencyCode To { get; }
 
     /// <summary>
     /// Gets a value indicating whether this instance carries two real currencies and can therefore be used safely as a
     /// directional key.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see langword="true" /> when both <see cref="From" /> and <see cref="To" /> are not
     /// <see cref="CurrencyCode.None" />; otherwise <see langword="false" />.
-    /// </returns>
+    /// </value>
     /// <remarks>
     /// Because <see cref="ExchangeRatePair" /> is a value type, <see langword="default" /><c>(ExchangeRatePair)</c>
     /// bypasses the validating constructor and leaves both currencies <see cref="CurrencyCode.None" />. Public

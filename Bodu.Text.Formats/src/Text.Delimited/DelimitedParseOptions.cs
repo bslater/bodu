@@ -54,14 +54,14 @@ public readonly struct DelimitedParseOptions
     /// <summary>
     /// Gets the character used to separate fields within a record. The default is <c>','</c>.
     /// </summary>
-    /// <returns>The field delimiter character.</returns>
+    /// <value>The field delimiter character.</value>
     public char Delimiter { get; init; } = ',';
 
     /// <summary>
     /// Gets the character used to quote fields that contain the delimiter, the quote character, or line breaks. Within
     /// a quoted field, two consecutive quote characters represent a single literal quote. The default is <c>'"'</c>.
     /// </summary>
-    /// <returns>The field-quoting character.</returns>
+    /// <value>The field-quoting character.</value>
     public char Quote { get; init; } = '"';
 
     /// <summary>
@@ -69,37 +69,37 @@ public readonly struct DelimitedParseOptions
     /// names. When <see langword="true" />, the header fields are exposed via <see cref="DelimitedDocument.Headers" />
     /// and fields in subsequent rows can be accessed by column name.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see langword="true" /> when the first row is a header; otherwise, <see langword="false" />. The default is
     /// <see langword="true" />.
-    /// </returns>
+    /// </value>
     public bool HasHeader { get; init; } = true;
 
     /// <summary>
     /// Gets a value indicating whether leading and trailing whitespace is trimmed from unquoted field values.
     /// Whitespace inside quoted fields is always preserved.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see langword="true" /> if unquoted fields are trimmed; otherwise, <see langword="false" />. The default is
     /// <see langword="false" />.
-    /// </returns>
+    /// </value>
     public bool TrimFields { get; init; } = false;
 
     /// <summary>
     /// Gets a value indicating whether lines whose first non-whitespace character is <see cref="CommentChar" /> are
     /// treated as comments and ignored.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see langword="true" /> if comment lines are recognised; otherwise, <see langword="false" />. The default is
     /// <see langword="false" />.
-    /// </returns>
+    /// </value>
     public bool AllowComments { get; init; } = false;
 
     /// <summary>
     /// Gets the character that marks the start of a comment line. Only relevant when <see cref="AllowComments" /> is
     /// <see langword="true" />. The default is <c>'#'</c>.
     /// </summary>
-    /// <returns>The comment-line start character.</returns>
+    /// <value>The comment-line start character.</value>
     public char CommentChar { get; init; } = '#';
 
     /// <summary>
@@ -114,7 +114,7 @@ public readonly struct DelimitedParseOptions
     /// is not enforced when <see cref="HasHeader" /> is <see langword="false" /> because there is no reference row.
     /// </para>
     /// </remarks>
-    /// <returns>The field-count enforcement policy.</returns>
+    /// <value>The field-count enforcement policy.</value>
     public DelimitedFieldCountBehavior FieldCountBehavior { get; init; } = DelimitedFieldCountBehavior.Strict;
 
     /// <summary>
@@ -128,7 +128,7 @@ public readonly struct DelimitedParseOptions
     /// retain the historical lenient behaviour of discarding the remainder of the offending record.
     /// </para>
     /// </remarks>
-    /// <returns>The malformed-record resolution policy.</returns>
+    /// <value>The malformed-record resolution policy.</value>
     public DelimitedMalformedRecordBehavior MalformedRecordBehavior { get; init; } = DelimitedMalformedRecordBehavior.Throw;
 
     /// <summary>
@@ -141,6 +141,6 @@ public readonly struct DelimitedParseOptions
     /// as a structural error. Only relevant when <see cref="HasHeader" /> is <see langword="true" />.
     /// </para>
     /// </remarks>
-    /// <returns>The duplicate-header resolution policy.</returns>
+    /// <value>The duplicate-header resolution policy.</value>
     public DelimitedDuplicateHeaderBehavior DuplicateHeaderBehavior { get; init; } = DelimitedDuplicateHeaderBehavior.Throw;
 }

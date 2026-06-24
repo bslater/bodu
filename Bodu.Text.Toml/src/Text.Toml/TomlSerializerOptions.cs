@@ -128,14 +128,13 @@ public sealed partial class TomlSerializerOptions
     /// <summary>
     /// Gets the list of user-registered converters, consulted in order before the built-in converters.
     /// </summary>
-    /// <returns>The mutable converter list while the options are mutable.</returns>
+    /// <value>The mutable converter list while the options are mutable.</value>
     public IList<TomlConverter> Converters => _converters;
 
     /// <summary>
     /// Gets or sets the policy that translates member names to their serialized dictionary-key form.
     /// </summary>
     /// <value>The naming policy, or <see langword="null" /> to use member names unchanged.</value>
-    /// <returns>The configured naming policy.</returns>
     /// <exception cref="InvalidOperationException">Thrown when the options are read-only.</exception>
     public TomlNamingPolicy? PropertyNamingPolicy
     {
@@ -155,7 +154,6 @@ public sealed partial class TomlSerializerOptions
     /// <see langword="false" /> for general options and <see langword="true" /> under
     /// <see cref="TomlSerializerDefaults.Web" />.
     /// </value>
-    /// <returns>Whether property-name matching ignores case.</returns>
     /// <exception cref="InvalidOperationException">Thrown when the options are read-only.</exception>
     public bool PropertyNameCaseInsensitive
     {
@@ -174,7 +172,6 @@ public sealed partial class TomlSerializerOptions
     /// <see langword="true" /> to serialize and deserialize public fields; otherwise <see langword="false" />. The
     /// default is <see langword="false" />.
     /// </value>
-    /// <returns>Whether public fields participate in serialization.</returns>
     /// <remarks>
     /// A public field annotated with <see cref="Serialization.TomlIncludeAttribute" /> participates regardless of this
     /// setting. Fields honor the property naming policy, name and order attributes, ignore conditions, and
@@ -197,7 +194,6 @@ public sealed partial class TomlSerializerOptions
     /// that does not carry its own <see cref="Serialization.TomlIgnoreAttribute" />.
     /// </summary>
     /// <value>The default ignore condition; <see cref="TomlIgnoreCondition.Never" /> by default.</value>
-    /// <returns>The configured default ignore condition.</returns>
     /// <remarks>
     /// Because TOML has no null token, a member whose value is <see langword="null" /> is omitted from the output
     /// regardless of this setting, so <see cref="TomlIgnoreCondition.Never" /> behaves like
@@ -228,7 +224,6 @@ public sealed partial class TomlSerializerOptions
     /// <see cref="Serialization.TomlUnmappedMemberHandlingAttribute" />.
     /// </summary>
     /// <value>The unmapped-member handling; <see cref="TomlUnmappedMemberHandling.Skip" /> by default.</value>
-    /// <returns>The configured unmapped-member handling.</returns>
     /// <remarks>
     /// A type that declares an extension-data member captures unmapped keys into that member, which takes precedence
     /// over this setting, so a key absorbed by extension data never triggers
@@ -256,7 +251,6 @@ public sealed partial class TomlSerializerOptions
     /// <value>
     /// The preferred object-creation handling; <see cref="TomlObjectCreationHandling.Replace" /> by default.
     /// </value>
-    /// <returns>The configured preferred object-creation handling.</returns>
     /// <remarks>
     /// <see cref="TomlObjectCreationHandling.Populate" /> applies only to collection and dictionary members whose
     /// existing value is non-<see langword="null" />; in every other case the serializer replaces the value.
@@ -279,7 +273,6 @@ public sealed partial class TomlSerializerOptions
     /// Gets or sets the maximum container nesting depth permitted while serializing or deserializing.
     /// </summary>
     /// <value>The maximum depth; <see cref="DefaultMaxDepth" /> when set to zero.</value>
-    /// <returns>The configured maximum depth.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when the value is negative.</exception>
     /// <exception cref="InvalidOperationException">Thrown when the options are read-only.</exception>
     /// <remarks>
@@ -317,7 +310,6 @@ public sealed partial class TomlSerializerOptions
     /// Gets or sets the TOML specification version whose grammar is accepted when deserializing.
     /// </summary>
     /// <value>The specification version; <see cref="TomlSpecVersion.V1_0" /> by default.</value>
-    /// <returns>The configured specification version.</returns>
     /// <remarks>
     /// The version affects only parsing; the writer always emits text that is valid under both supported versions.
     /// </remarks>
@@ -338,7 +330,6 @@ public sealed partial class TomlSerializerOptions
     /// Gets or sets the representation used when writing a <see cref="byte" /> array.
     /// </summary>
     /// <value>The byte-array handling; <see cref="TomlByteArrayHandling.IntegerArray" /> by default.</value>
-    /// <returns>The configured byte-array handling.</returns>
     /// <remarks>
     /// The setting controls only how a byte array is written; on read the serializer accepts both an array of integers
     /// and a Base64 basic string regardless of this value.
@@ -360,7 +351,6 @@ public sealed partial class TomlSerializerOptions
     /// Gets or sets the representation used when writing a <see cref="decimal" /> value.
     /// </summary>
     /// <value>The decimal handling; <see cref="TomlDecimalHandling.Float" /> by default.</value>
-    /// <returns>The configured decimal handling.</returns>
     /// <remarks>
     /// The setting controls only how a decimal is written; on read the serializer accepts a TOML float, integer, or
     /// string regardless of this value. <see cref="TomlDecimalHandling.Float" /> maps to TOML's native float form but
@@ -383,7 +373,7 @@ public sealed partial class TomlSerializerOptions
     /// <summary>
     /// Gets a value indicating whether the options have become read-only.
     /// </summary>
-    /// <returns><see langword="true" /> once the options have been used; otherwise <see langword="false" />.</returns>
+    /// <value><see langword="true" /> once the options have been used; otherwise <see langword="false" />.</value>
     public bool IsReadOnly => _frozenConverters is not null;
 
     /// <summary>

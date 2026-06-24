@@ -31,9 +31,9 @@ public abstract partial class CryptoTransformTests<TCryptoTransform>
     /// <see cref="ArgumentOutOfRangeException" />; BCL <see cref="System.Security.Cryptography.HashAlgorithm" />
     /// implementations throw the base <see cref="ArgumentException" />.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see langword="true" /> when the implementation throws <see cref="ArgumentOutOfRangeException" /> for a
     /// negative count; <see langword="false" /> when it throws <see cref="ArgumentException" />.
-    /// </returns>
+    /// </value>
     protected virtual bool NegativeInputCountThrowsOutOfRange => true;
 }

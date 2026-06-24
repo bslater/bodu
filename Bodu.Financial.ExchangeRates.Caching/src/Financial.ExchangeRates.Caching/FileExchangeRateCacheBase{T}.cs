@@ -68,16 +68,16 @@ public abstract class FileExchangeRateCacheBase<TOptions>
     /// Gets a value indicating whether a caught storage failure should degrade to a best-effort fallback rather than
     /// propagate. Used as the exception filter on the read and write catch blocks so a strict cache fails fast.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see langword="true" /> when <see cref="ExchangeRateCacheOptions.ThrowOnStorageFailure" /> is not set; otherwise
     /// <see langword="false" />, so the failure propagates.
-    /// </returns>
+    /// </value>
     private bool ShouldSwallowStorageFailure => !Options.ThrowOnStorageFailure;
 
     /// <summary>
     /// Gets the file extension, including the leading period, applied to cached rate files.
     /// </summary>
-    /// <returns>The file extension used by the serialization format, for example <c>.toml</c>.</returns>
+    /// <value>The file extension used by the serialization format, for example <c>.toml</c>.</value>
     protected abstract string FileExtension { get; }
 
     /// <inheritdoc />

@@ -66,26 +66,26 @@ public readonly struct SignatureValue
     /// <summary>
     /// Gets the wire encoding of the signature bytes.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The <see cref="SignatureFormat" /> recorded when the value was created; <see cref="SignatureFormat.Unknown" />
     /// for the default instance.
-    /// </returns>
+    /// </value>
     public SignatureFormat Format =>
         _format;
 
     /// <summary>
     /// Gets a value indicating whether the signature is empty.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see langword="true" /> if the signature contains no bytes; otherwise, <see langword="false" />.
-    /// </returns>
+    /// </value>
     public bool IsEmpty =>
         Length == 0;
 
     /// <summary>
     /// Gets the number of bytes in the signature.
     /// </summary>
-    /// <returns>The signature length in bytes, or <c>0</c> for the empty value.</returns>
+    /// <value>The signature length in bytes, or <c>0</c> for the empty value.</value>
     public int Length =>
         _value?.Length ?? 0;
 

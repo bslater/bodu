@@ -22,7 +22,7 @@ internal sealed class MutableTimeProvider
     /// <summary>
     /// Gets or sets the instant returned by <see cref="GetUtcNow" />.
     /// </summary>
-    /// <returns>The current instant.</returns>
+    /// <value>The current instant.</value>
     public DateTimeOffset UtcNow { get; set; }
 
     /// <summary>

@@ -58,38 +58,38 @@ public sealed class ExchangeRateLookupOptions
     /// <summary>
     /// Gets a configuration that requires an exact-date match, allowing inverse and same-currency identity fallbacks.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// An <see cref="ExchangeRateLookupOptions" /> with <see cref="ExchangeRateDateResolution.Exact" />.
-    /// </returns>
+    /// </value>
     public static ExchangeRateLookupOptions Exact => s_exact;
 
     /// <summary>
     /// Gets the fallback policy applied when no rate exists on the requested date.
     /// </summary>
-    /// <returns>The configured <see cref="ExchangeRateDateResolution" />.</returns>
+    /// <value>The configured <see cref="ExchangeRateDateResolution" />.</value>
     public ExchangeRateDateResolution DateResolution { get; }
 
     /// <summary>
     /// Gets the maximum permitted absolute distance, in days, between the requested date and the resolved date.
     /// </summary>
-    /// <returns>A non-negative tolerance in days.</returns>
+    /// <value>A non-negative tolerance in days.</value>
     public int ToleranceDays { get; }
 
     /// <summary>
     /// Gets a value indicating whether the lookup may fall back to the reverse-direction pair.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see langword="true" /> when the reverse-direction pair may be consulted and its rate inverted; otherwise
     /// <see langword="false" />.
-    /// </returns>
+    /// </value>
     public bool AllowInverse { get; }
 
     /// <summary>
     /// Gets a value indicating whether a same-currency lookup returns a synthetic identity rate of <c>1</c>.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see langword="true" /> when same-currency lookups return the identity rate; otherwise <see langword="false" />.
-    /// </returns>
+    /// </value>
     public bool AllowSameCurrencyIdentityRate { get; }
 
     /// <summary>

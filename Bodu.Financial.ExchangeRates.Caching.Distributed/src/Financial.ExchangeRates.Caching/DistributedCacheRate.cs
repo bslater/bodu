@@ -24,30 +24,30 @@ internal sealed class DistributedCacheRate
     /// <summary>
     /// Gets or sets the observation date of the rate, formatted as invariant <c>yyyy-MM-dd</c> text.
     /// </summary>
-    /// <returns>The observation date as invariant ISO text.</returns>
+    /// <value>The observation date as invariant ISO text.</value>
     public string Date { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets or sets the observed rate, formatted as an invariant decimal string so its precision and scale round-trip
     /// exactly.
     /// </summary>
-    /// <returns>The observed rate as invariant decimal text.</returns>
+    /// <value>The observed rate as invariant decimal text.</value>
     public string Rate { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets or sets the UTC instant at which the rate was written to the cache, formatted as invariant round-trip (
     /// <c>"O"</c>) text.
     /// </summary>
-    /// <returns>The caching instant as invariant round-trip text.</returns>
+    /// <value>The caching instant as invariant round-trip text.</value>
     public string CachedAtUtc { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets or sets the UTC instant the upstream data backing the rate was originally fetched, formatted as invariant
     /// round-trip (<c>"O"</c>) text, or <see langword="null" /> when the source did not supply it.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The upstream fetch instant as invariant round-trip text, or <see langword="null" /> when not tracked.
-    /// </returns>
+    /// </value>
     /// <remarks>
     /// Omitted from the serialized JSON when <see langword="null" /> so legacy-shaped blobs stay minimal; a blob
     /// written before this field existed therefore reads back as <see langword="null" />.

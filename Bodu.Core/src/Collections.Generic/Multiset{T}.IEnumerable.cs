@@ -83,7 +83,7 @@ public sealed partial class Multiset<T>
         /// <summary>
         /// Gets the element at the current position of the enumerator.
         /// </summary>
-        /// <returns>The element in the multiset at the current enumerator position.</returns>
+        /// <value>The element in the multiset at the current enumerator position.</value>
         /// <exception cref="InvalidOperationException">
         /// The enumerator is positioned before the first element or after the last element.
         /// </exception>

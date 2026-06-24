@@ -60,28 +60,28 @@ public sealed class OlePropertySection
     /// <summary>
     /// Gets the format identifier (FMTID) of the section.
     /// </summary>
-    /// <returns>The section's format identifier.</returns>
+    /// <value>The section's format identifier.</value>
     public Guid FormatId { get; }
 
     /// <summary>
     /// Gets the code page used to decode ANSI (<c>VT_LPSTR</c>) strings in the section.
     /// </summary>
-    /// <returns>The section code page; <c>1252</c> when none is declared.</returns>
+    /// <value>The section code page; <c>1252</c> when none is declared.</value>
     public int CodePage { get; }
 
     /// <summary>
     /// Gets the decoded properties keyed by property identifier.
     /// </summary>
-    /// <returns>A read-only dictionary of property identifier to value.</returns>
+    /// <value>A read-only dictionary of property identifier to value.</value>
     public IReadOnlyDictionary<int, OlePropertyValue> Properties => _properties;
 
     /// <summary>
     /// Gets the property-name dictionary mapping property identifiers to human-readable names.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// A read-only dictionary populated from the section's dictionary property; empty when the section declares no
     /// names.
-    /// </returns>
+    /// </value>
     public IReadOnlyDictionary<int, string> PropertyNames => _propertyNames;
 
     /// <summary>

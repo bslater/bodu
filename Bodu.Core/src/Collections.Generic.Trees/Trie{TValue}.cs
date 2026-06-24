@@ -83,14 +83,12 @@ public sealed partial class Trie<TValue>
     /// Gets the number of keys stored in the trie.
     /// </summary>
     /// <value>The number of stored keys.</value>
-    /// <returns>The number of stored keys.</returns>
     public int Count => _count;
 
     /// <summary>
     /// Gets the comparer used to match characters during key lookup.
     /// </summary>
     /// <value>The character comparer supplied at construction, or the default comparer.</value>
-    /// <returns>The character comparer in use.</returns>
     public IEqualityComparer<char> Comparer { get; }
 
     /// <summary>

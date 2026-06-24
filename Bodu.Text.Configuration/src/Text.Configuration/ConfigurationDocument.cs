@@ -332,12 +332,12 @@ public sealed class ConfigurationParseResult
     /// <summary>
     /// Gets the parsed document.
     /// </summary>
-    /// <returns>A populated <see cref="ConfigurationDocument" />.</returns>
+    /// <value>A populated <see cref="ConfigurationDocument" />.</value>
     public ConfigurationDocument Document { get; }
 
     /// <summary>
     /// Gets the diagnostics collected during the parse.
     /// </summary>
-    /// <returns>An immutable, possibly empty array of diagnostics.</returns>
+    /// <value>An immutable, possibly empty array of diagnostics.</value>
     public ImmutableArray<ConfigurationDiagnostic> Diagnostics { get; }
 }

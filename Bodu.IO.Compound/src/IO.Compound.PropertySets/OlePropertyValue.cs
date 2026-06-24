@@ -22,25 +22,25 @@ public sealed record OlePropertyValue
     /// <summary>
     /// Gets the scalar value type of this property.
     /// </summary>
-    /// <returns>The <see cref="OlePropertyType" /> describing the decoded value.</returns>
+    /// <value>The <see cref="OlePropertyType" /> describing the decoded value.</value>
     public OlePropertyType Type { get; init; }
 
     /// <summary>
     /// Gets a value indicating whether this property carries a vector (array) of values rather than a single scalar.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see langword="true" /> when <see cref="Value" /> is an <see cref="object" /> array; otherwise
     /// <see langword="false" />.
-    /// </returns>
+    /// </value>
     public bool IsVector { get; init; }
 
     /// <summary>
     /// Gets the decoded value.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The boxed CLR value for a scalar property, an <see cref="object" /> array for a vector property, or
     /// <see langword="null" /> for an empty or null value.
-    /// </returns>
+    /// </value>
     public object? Value { get; init; }
 
     /// <summary>

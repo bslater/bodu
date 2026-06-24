@@ -20,7 +20,6 @@ public sealed partial class Multiset<T>
     /// returns <see langword="false" />; <see cref="Multiset{T}" /> is not thread-safe.
     /// </summary>
     /// <value>Always <see langword="false" />.</value>
-    /// <returns><see langword="false" />.</returns>
     /// <remarks>
     /// External synchronization is the caller's responsibility.
     /// </remarks>
@@ -30,7 +29,6 @@ public sealed partial class Multiset<T>
     /// Gets a lazily-initialized object that can be used to synchronize access to the <see cref="Multiset{T}" />.
     /// </summary>
     /// <value>A non-null object suitable as a <see cref="Monitor" /> target.</value>
-    /// <returns>The synchronization root object.</returns>
     object ICollection.SyncRoot =>
         _syncRoot ?? Interlocked.CompareExchange(ref _syncRoot, new object(), null) ?? _syncRoot!;
 

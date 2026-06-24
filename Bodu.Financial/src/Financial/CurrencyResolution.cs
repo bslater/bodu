@@ -36,7 +36,7 @@ public static class CurrencyResolution
     /// <summary>
     /// Gets the currency lookup currently in effect: the active scoped override, or the process-wide default.
     /// </summary>
-    /// <returns>The effective <see cref="ICurrencyLookup" />.</returns>
+    /// <value>The effective <see cref="ICurrencyLookup" />.</value>
     public static ICurrencyLookup Current =>
         s_scoped.Value ?? s_default;
 

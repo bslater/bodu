@@ -410,9 +410,9 @@ This convention is the dotted-flat reading of `dotnet_style_namespace_match_fold
 - For optional parameters, describe their behavioural role rather than restating the default value unless the default has semantic meaning.
 
 **`<returns>`**
-- Add `<returns>` for every non-void member.
-- Describe the result in the context of the method's purpose, not merely the raw type.
-- **Properties must always include a `<returns>` element** describing what the property yields on read, in addition to any `<value>` element that clarifies semantics.
+- Add `<returns>` for every non-void **method** and **operator**, describing the return value.
+- Describe the result in the context of the member's purpose, not merely the raw type.
+- **Do not use `<returns>` on a property.** Per Microsoft's C# XML documentation guidance and the C# language specification, `<returns>` documents the return value of a *method declaration*; the value a property represents is documented with `<value>`. Use `<summary>` (and optionally `<value>`) on properties instead — never `<returns>`.
 
 **`<exception>`**
 - Document all exceptions the member can throw, including `ArgumentNullException`, `ArgumentException`, `ArgumentOutOfRangeException`, and `InvalidOperationException`.
@@ -431,7 +431,13 @@ This convention is the dotted-flat reading of `dotnet_style_namespace_match_fold
 - Prefer examples for public types or members where usage is not immediately obvious.
 
 **`<value>`**
-- Include `<value>` on properties where the semantics require clarification beyond the summary.
+- `<value>` is the property counterpart of a method's `<returns>`: it describes the value a property represents.
+- Include `<value>` on properties where the semantics require clarification beyond the summary. It is optional — a property whose summary already fully conveys its value needs only `<summary>`.
+- Never substitute `<returns>` for `<value>` on a property.
+
+**Property vs. method documentation summary**
+- **Properties:** `<summary>` and optionally `<value>`. Never `<returns>`.
+- **Methods / operators:** `<summary>` and `<returns>` (for non-void members).
 
 **`<inheritdoc />`**
 - Use `<inheritdoc />` where the implementation intentionally inherits interface or base member documentation and no further clarification is needed.

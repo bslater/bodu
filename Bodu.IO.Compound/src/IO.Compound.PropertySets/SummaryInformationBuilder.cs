@@ -19,85 +19,85 @@ public sealed class SummaryInformationBuilder
     /// <summary>
     /// Gets or sets the code page used to encode string properties.
     /// </summary>
-    /// <returns>The code page; <c>1252</c> by default.</returns>
+    /// <value>The code page; <c>1252</c> by default.</value>
     public int CodePage { get; set; } = 1252;
 
     /// <summary>
     /// Gets or sets the document title.
     /// </summary>
-    /// <returns>The title, or <see langword="null" /> when unset.</returns>
+    /// <value>The title, or <see langword="null" /> when unset.</value>
     public string? Title { get; set; }
 
     /// <summary>
     /// Gets or sets the document subject.
     /// </summary>
-    /// <returns>The subject, or <see langword="null" /> when unset.</returns>
+    /// <value>The subject, or <see langword="null" /> when unset.</value>
     public string? Subject { get; set; }
 
     /// <summary>
     /// Gets or sets the document author.
     /// </summary>
-    /// <returns>The author, or <see langword="null" /> when unset.</returns>
+    /// <value>The author, or <see langword="null" /> when unset.</value>
     public string? Author { get; set; }
 
     /// <summary>
     /// Gets or sets the document keywords.
     /// </summary>
-    /// <returns>The keywords, or <see langword="null" /> when unset.</returns>
+    /// <value>The keywords, or <see langword="null" /> when unset.</value>
     public string? Keywords { get; set; }
 
     /// <summary>
     /// Gets or sets the document comments.
     /// </summary>
-    /// <returns>The comments, or <see langword="null" /> when unset.</returns>
+    /// <value>The comments, or <see langword="null" /> when unset.</value>
     public string? Comments { get; set; }
 
     /// <summary>
     /// Gets or sets the name of the user who last saved the document.
     /// </summary>
-    /// <returns>The last author, or <see langword="null" /> when unset.</returns>
+    /// <value>The last author, or <see langword="null" /> when unset.</value>
     public string? LastAuthor { get; set; }
 
     /// <summary>
     /// Gets or sets the document revision number.
     /// </summary>
-    /// <returns>The revision number, or <see langword="null" /> when unset.</returns>
+    /// <value>The revision number, or <see langword="null" /> when unset.</value>
     public string? RevisionNumber { get; set; }
 
     /// <summary>
     /// Gets or sets the name of the application that created the document.
     /// </summary>
-    /// <returns>The application name, or <see langword="null" /> when unset.</returns>
+    /// <value>The application name, or <see langword="null" /> when unset.</value>
     public string? ApplicationName { get; set; }
 
     /// <summary>
     /// Gets or sets the time the document was created.
     /// </summary>
-    /// <returns>The creation time, or <see langword="null" /> when unset.</returns>
+    /// <value>The creation time, or <see langword="null" /> when unset.</value>
     public DateTimeOffset? CreateTime { get; set; }
 
     /// <summary>
     /// Gets or sets the time the document was last saved.
     /// </summary>
-    /// <returns>The last-saved time, or <see langword="null" /> when unset.</returns>
+    /// <value>The last-saved time, or <see langword="null" /> when unset.</value>
     public DateTimeOffset? LastSaveTime { get; set; }
 
     /// <summary>
     /// Gets or sets the page count.
     /// </summary>
-    /// <returns>The page count, or <see langword="null" /> when unset.</returns>
+    /// <value>The page count, or <see langword="null" /> when unset.</value>
     public int? PageCount { get; set; }
 
     /// <summary>
     /// Gets or sets the word count.
     /// </summary>
-    /// <returns>The word count, or <see langword="null" /> when unset.</returns>
+    /// <value>The word count, or <see langword="null" /> when unset.</value>
     public int? WordCount { get; set; }
 
     /// <summary>
     /// Gets or sets the character count.
     /// </summary>
-    /// <returns>The character count, or <see langword="null" /> when unset.</returns>
+    /// <value>The character count, or <see langword="null" /> when unset.</value>
     public int? CharacterCount { get; set; }
 
     /// <summary>

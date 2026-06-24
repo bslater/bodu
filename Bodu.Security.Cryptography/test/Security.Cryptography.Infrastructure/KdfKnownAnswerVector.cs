@@ -24,84 +24,84 @@ public sealed record KdfKnownAnswerVector
     /// <summary>
     /// Gets the human-readable name identifying the vector and its source.
     /// </summary>
-    /// <returns>The vector name.</returns>
+    /// <value>The vector name.</value>
     public required string Name { get; init; }
 
     /// <summary>
     /// Gets the Argon2 variant for an Argon2 vector (<c>"d"</c>, <c>"i"</c>, or <c>"id"</c>); ignored for scrypt.
     /// </summary>
-    /// <returns>The variant identifier.</returns>
+    /// <value>The variant identifier.</value>
     public string Variant { get; init; } = "id";
 
     /// <summary>
     /// Gets the password input.
     /// </summary>
-    /// <returns>The password bytes.</returns>
+    /// <value>The password bytes.</value>
     public required byte[] Password { get; init; }
 
     /// <summary>
     /// Gets the salt input.
     /// </summary>
-    /// <returns>The salt bytes.</returns>
+    /// <value>The salt bytes.</value>
     public required byte[] Salt { get; init; }
 
     /// <summary>
     /// Gets the optional Argon2 secret key, or <see langword="null" /> when none is used.
     /// </summary>
-    /// <returns>The secret bytes, or <see langword="null" />.</returns>
+    /// <value>The secret bytes, or <see langword="null" />.</value>
     public byte[]? Secret { get; init; }
 
     /// <summary>
     /// Gets the optional Argon2 associated data, or <see langword="null" /> when none is used.
     /// </summary>
-    /// <returns>The associated-data bytes, or <see langword="null" />.</returns>
+    /// <value>The associated-data bytes, or <see langword="null" />.</value>
     public byte[]? AssociatedData { get; init; }
 
     /// <summary>
     /// Gets the Argon2 memory cost, in kibibytes.
     /// </summary>
-    /// <returns>The memory cost.</returns>
+    /// <value>The memory cost.</value>
     public int Memory { get; init; }
 
     /// <summary>
     /// Gets the Argon2 iteration count.
     /// </summary>
-    /// <returns>The iteration count.</returns>
+    /// <value>The iteration count.</value>
     public int Iterations { get; init; }
 
     /// <summary>
     /// Gets the degree of parallelism (Argon2 <c>p</c> or scrypt <c>p</c>).
     /// </summary>
-    /// <returns>The parallelism.</returns>
+    /// <value>The parallelism.</value>
     public int Parallelism { get; init; }
 
     /// <summary>
     /// Gets the Argon2 version code.
     /// </summary>
-    /// <returns>The version code. The default is 0x13.</returns>
+    /// <value>The version code. The default is 0x13.</value>
     public int Version { get; init; } = 0x13;
 
     /// <summary>
     /// Gets the scrypt CPU/memory cost parameter <c>N</c>.
     /// </summary>
-    /// <returns>The cost parameter <c>N</c>.</returns>
+    /// <value>The cost parameter <c>N</c>.</value>
     public int CostN { get; init; }
 
     /// <summary>
     /// Gets the scrypt block-size parameter <c>r</c>.
     /// </summary>
-    /// <returns>The block-size parameter <c>r</c>.</returns>
+    /// <value>The block-size parameter <c>r</c>.</value>
     public int BlockSizeR { get; init; }
 
     /// <summary>
     /// Gets the requested output length, in bytes.
     /// </summary>
-    /// <returns>The output length.</returns>
+    /// <value>The output length.</value>
     public required int OutputLength { get; init; }
 
     /// <summary>
     /// Gets the expected derived bytes, as a lowercase hex string.
     /// </summary>
-    /// <returns>The expected output hex.</returns>
+    /// <value>The expected output hex.</value>
     public required string ExpectedHex { get; init; }
 }

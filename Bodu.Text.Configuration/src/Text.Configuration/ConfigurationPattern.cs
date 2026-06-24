@@ -90,7 +90,7 @@ public sealed partial class ConfigurationPattern
     /// <summary>
     /// Gets the source pattern as authored.
     /// </summary>
-    /// <returns>The original glob expression.</returns>
+    /// <value>The original glob expression.</value>
     public string Source { get; }
 
     /// <summary>

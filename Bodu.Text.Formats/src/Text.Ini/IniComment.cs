@@ -52,19 +52,19 @@ public readonly struct IniComment
     /// <summary>
     /// Gets the 1-based source line at which the comment appeared, or <c>0</c> when programmatically constructed.
     /// </summary>
-    /// <returns>A non-negative line number.</returns>
+    /// <value>A non-negative line number.</value>
     public int LineNumber { get; }
 
     /// <summary>
     /// Gets the prefix character that introduced this comment.
     /// </summary>
-    /// <returns>Either <c>'#'</c> or <c>';'</c>.</returns>
+    /// <value>Either <c>'#'</c> or <c>';'</c>.</value>
     public char Prefix { get; }
 
     /// <summary>
     /// Gets the comment text, excluding the prefix character.
     /// </summary>
-    /// <returns>A non-null string.</returns>
+    /// <value>A non-null string.</value>
     public string Text { get; }
 
     /// <summary>

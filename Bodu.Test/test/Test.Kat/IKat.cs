@@ -21,6 +21,6 @@ public interface IKat
     /// <summary>
     /// Gets the short, human-readable label that identifies this row in test output.
     /// </summary>
-    /// <returns>A non-empty descriptive label, for example <c>"int zero"</c> or <c>"RFC4648 empty"</c>.</returns>
+    /// <value>A non-empty descriptive label, for example <c>"int zero"</c> or <c>"RFC4648 empty"</c>.</value>
     string Name { get; }
 }

@@ -182,7 +182,7 @@ public partial class BencodeSerializerTests
         /// <summary>
         /// Gets or sets the integer value.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public int Value { get; set; }
     }
 
@@ -195,13 +195,13 @@ public partial class BencodeSerializerTests
         /// <summary>
         /// Gets or sets the first name, named by the active naming policy.
         /// </summary>
-        /// <returns>The first name.</returns>
+        /// <value>The first name.</value>
         public string FirstName { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the last name, named explicitly so the policy does not apply.
         /// </summary>
-        /// <returns>The last name.</returns>
+        /// <value>The last name.</value>
         [BencodePropertyName("surname")]
         public string LastName { get; set; } = string.Empty;
     }
@@ -214,14 +214,14 @@ public partial class BencodeSerializerTests
         /// <summary>
         /// Gets or sets the first value, keyed under the wire name <c>id</c>.
         /// </summary>
-        /// <returns>The first value.</returns>
+        /// <value>The first value.</value>
         [BencodePropertyName("id")]
         public int First { get; set; }
 
         /// <summary>
         /// Gets or sets the second value, also keyed under the wire name <c>id</c>.
         /// </summary>
-        /// <returns>The second value.</returns>
+        /// <value>The second value.</value>
         [BencodePropertyName("id")]
         public int Second { get; set; }
     }
@@ -234,14 +234,14 @@ public partial class BencodeSerializerTests
         /// <summary>
         /// Gets or sets the first value, keyed under the lower-case wire name <c>id</c>.
         /// </summary>
-        /// <returns>The first value.</returns>
+        /// <value>The first value.</value>
         [BencodePropertyName("id")]
         public int Lower { get; set; }
 
         /// <summary>
         /// Gets or sets the second value, keyed under the upper-case wire name <c>ID</c>.
         /// </summary>
-        /// <returns>The second value.</returns>
+        /// <value>The second value.</value>
         [BencodePropertyName("ID")]
         public int Upper { get; set; }
     }
@@ -254,7 +254,7 @@ public partial class BencodeSerializerTests
         /// <summary>
         /// Gets or sets the identifier, keyed under the wire name <c>id</c>.
         /// </summary>
-        /// <returns>The identifier.</returns>
+        /// <value>The identifier.</value>
         [BencodePropertyName("id")]
         public int Identifier { get; set; }
     }

@@ -75,54 +75,54 @@ public sealed class NotableDateRule
     /// <summary>
     /// Gets the stable identifier of the rule within its notable-date concept.
     /// </summary>
-    /// <returns>The rule id.</returns>
+    /// <value>The rule id.</value>
     public string Id { get; }
 
     /// <summary>
     /// Gets the selection priority of the rule.
     /// </summary>
-    /// <returns>The numeric priority.</returns>
+    /// <value>The numeric priority.</value>
     public int Priority { get; }
 
     /// <summary>
     /// Gets the category override of the rule.
     /// </summary>
-    /// <returns>The category, or <see langword="null" /> when the concept's category is inherited.</returns>
+    /// <value>The category, or <see langword="null" /> when the concept's category is inherited.</value>
     public NotableDateCategory? Category { get; }
 
     /// <summary>
     /// Gets the non-working-day override of the rule.
     /// </summary>
-    /// <returns>The flag, or <see langword="null" /> when the concept's default is inherited.</returns>
+    /// <value>The flag, or <see langword="null" /> when the concept's default is inherited.</value>
     public bool? NonWorking { get; }
 
     /// <summary>
     /// Gets the duration override of the rule.
     /// </summary>
-    /// <returns>The duration in days, or <see langword="null" /> when the concept's default is inherited.</returns>
+    /// <value>The duration in days, or <see langword="null" /> when the concept's default is inherited.</value>
     public int? DurationDays { get; }
 
     /// <summary>
     /// Gets the territory, calendar, and year applicability of the rule.
     /// </summary>
-    /// <returns>The <see cref="RuleApplicability" />.</returns>
+    /// <value>The <see cref="RuleApplicability" />.</value>
     public RuleApplicability Applicability { get; }
 
     /// <summary>
     /// Gets the single calculation strategy of the rule.
     /// </summary>
-    /// <returns>The <see cref="IDateCalculationStrategy" />.</returns>
+    /// <value>The <see cref="IDateCalculationStrategy" />.</value>
     public IDateCalculationStrategy Strategy { get; }
 
     /// <summary>
     /// Gets the identifiers of the adjustment policies applied to the rule.
     /// </summary>
-    /// <returns>The referenced policy ids; empty when the rule has no adjustments.</returns>
+    /// <value>The referenced policy ids; empty when the rule has no adjustments.</value>
     public IReadOnlyList<string> AdjustmentPolicyRefs { get; }
 
     /// <summary>
     /// Gets the rule-specific tags.
     /// </summary>
-    /// <returns>The tags; empty when the rule declares none.</returns>
+    /// <value>The tags; empty when the rule declares none.</value>
     public IReadOnlyList<string> Tags { get; }
 }

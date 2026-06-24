@@ -89,9 +89,9 @@ public sealed class CompoundStreamNotFoundException
     /// <summary>
     /// Gets the name of the stream that was requested but not found, when known.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The requested stream name, or <see langword="null" /> when this instance was created without one.
-    /// </returns>
+    /// </value>
     public string? StreamName { get; }
 
     /// <summary>

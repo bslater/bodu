@@ -48,7 +48,7 @@ public static class AmericasCalendarData
     /// <summary>
     /// Gets the country codes the Americas pack provides resources for.
     /// </summary>
-    /// <returns>The supported ISO 3166-1 alpha-2 country codes.</returns>
+    /// <value>The supported ISO 3166-1 alpha-2 country codes.</value>
     public static IReadOnlyList<string> SupportedCountries { get; } =
     [
         "AR", "BR", "CA", "CL", "CO", "MX", "PE", "US",

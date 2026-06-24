@@ -26,43 +26,43 @@ public sealed class DocumentSummaryInformationBuilder
     /// <summary>
     /// Gets or sets the code page used to encode string properties.
     /// </summary>
-    /// <returns>The code page; <c>1252</c> by default.</returns>
+    /// <value>The code page; <c>1252</c> by default.</value>
     public int CodePage { get; set; } = 1252;
 
     /// <summary>
     /// Gets or sets the document category.
     /// </summary>
-    /// <returns>The category, or <see langword="null" /> when unset.</returns>
+    /// <value>The category, or <see langword="null" /> when unset.</value>
     public string? Category { get; set; }
 
     /// <summary>
     /// Gets or sets the document manager.
     /// </summary>
-    /// <returns>The manager, or <see langword="null" /> when unset.</returns>
+    /// <value>The manager, or <see langword="null" /> when unset.</value>
     public string? Manager { get; set; }
 
     /// <summary>
     /// Gets or sets the document company.
     /// </summary>
-    /// <returns>The company, or <see langword="null" /> when unset.</returns>
+    /// <value>The company, or <see langword="null" /> when unset.</value>
     public string? Company { get; set; }
 
     /// <summary>
     /// Gets or sets the line count.
     /// </summary>
-    /// <returns>The line count, or <see langword="null" /> when unset.</returns>
+    /// <value>The line count, or <see langword="null" /> when unset.</value>
     public int? LineCount { get; set; }
 
     /// <summary>
     /// Gets or sets the paragraph count.
     /// </summary>
-    /// <returns>The paragraph count, or <see langword="null" /> when unset.</returns>
+    /// <value>The paragraph count, or <see langword="null" /> when unset.</value>
     public int? ParagraphCount { get; set; }
 
     /// <summary>
     /// Gets or sets the slide count.
     /// </summary>
-    /// <returns>The slide count, or <see langword="null" /> when unset.</returns>
+    /// <value>The slide count, or <see langword="null" /> when unset.</value>
     public int? SlideCount { get; set; }
 
     /// <summary>

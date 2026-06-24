@@ -82,7 +82,7 @@ public sealed class DelimitedWriter
     /// Gets the number of data rows written by <see cref="WriteRow" />. The header row written by
     /// <see cref="WriteHeader" /> is not counted.
     /// </summary>
-    /// <returns>The number of data rows written so far.</returns>
+    /// <value>The number of data rows written so far.</value>
     public int RowsWritten => _rowsWritten;
 
     /// <summary>

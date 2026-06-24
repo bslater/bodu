@@ -95,28 +95,28 @@ public abstract class TextFormatException
     /// Gets the 1-based line number at which the parse error was detected, or <c>0</c> when the error is not associated
     /// with a specific line.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// A positive integer identifying the source line, or <c>0</c> when the line is unknown or not applicable.
-    /// </returns>
+    /// </value>
     public int LineNumber { get; }
 
     /// <summary>
     /// Gets the 1-based column number within <see cref="LineNumber" /> at which the parse error was detected, or
     /// <c>0</c> when the error is not associated with a specific column.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// A positive integer identifying the column within the source line, or <c>0</c> when the column is unknown or not
     /// tracked by the format.
-    /// </returns>
+    /// </value>
     public int ColumnNumber { get; }
 
     /// <summary>
     /// Gets the 0-based offset from the start of the source at which the parse error was detected, or
     /// <see langword="null" /> when the parser cannot identify a specific offset.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// A non-negative integer identifying the source offset, or <see langword="null" /> when the offset is unknown or
     /// not applicable to the format.
-    /// </returns>
+    /// </value>
     public int? Offset { get; }
 }

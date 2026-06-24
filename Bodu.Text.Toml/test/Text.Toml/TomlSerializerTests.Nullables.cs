@@ -125,19 +125,19 @@ public partial class TomlSerializerTests
     private sealed class NullableValueModel
     {
         /// <summary>Gets or sets the nullable integer.</summary>
-        /// <returns>The integer, or <see langword="null" />.</returns>
+        /// <value>The integer, or <see langword="null" />.</value>
         public int? Number { get; set; }
 
         /// <summary>Gets or sets the nullable Boolean.</summary>
-        /// <returns>The Boolean, or <see langword="null" />.</returns>
+        /// <value>The Boolean, or <see langword="null" />.</value>
         public bool? Flag { get; set; }
 
         /// <summary>Gets or sets the nullable local date.</summary>
-        /// <returns>The date, or <see langword="null" />.</returns>
+        /// <value>The date, or <see langword="null" />.</value>
         public DateOnly? When { get; set; }
 
         /// <summary>Gets or sets the nullable floating-point ratio.</summary>
-        /// <returns>The ratio, or <see langword="null" />.</returns>
+        /// <value>The ratio, or <see langword="null" />.</value>
         public double? Ratio { get; set; }
     }
 
@@ -147,11 +147,11 @@ public partial class TomlSerializerTests
     private sealed class NullableReferenceModel
     {
         /// <summary>Gets or sets the present member.</summary>
-        /// <returns>The present value, or <see langword="null" />.</returns>
+        /// <value>The present value, or <see langword="null" />.</value>
         public string? Present { get; set; }
 
         /// <summary>Gets or sets the absent member.</summary>
-        /// <returns>The absent value, or <see langword="null" />.</returns>
+        /// <value>The absent value, or <see langword="null" />.</value>
         public string? Absent { get; set; }
     }
 }

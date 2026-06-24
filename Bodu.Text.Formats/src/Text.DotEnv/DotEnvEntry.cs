@@ -67,15 +67,15 @@ public sealed class DotEnvEntry
     /// <summary>
     /// Gets the key name of this entry.
     /// </summary>
-    /// <returns>The key string, validated against the <c>[A-Za-z_][A-Za-z0-9_]*</c> pattern.</returns>
+    /// <value>The key string, validated against the <c>[A-Za-z_][A-Za-z0-9_]*</c> pattern.</value>
     public string Key { get; }
 
     /// <summary>
     /// Gets the fully processed value of this entry.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The value string with surrounding quotes removed and escape sequences resolved. Never <see langword="null" />.
-    /// </returns>
+    /// </value>
     public string Value { get; }
 
     /// <summary>
@@ -88,7 +88,7 @@ public sealed class DotEnvEntry
     /// <c>PreserveComments = false</c>.
     /// </para>
     /// </remarks>
-    /// <returns>A non-null read-only list of <see cref="DotEnvComment" /> instances.</returns>
+    /// <value>A non-null read-only list of <see cref="DotEnvComment" /> instances.</value>
     public IReadOnlyList<DotEnvComment> LeadingComments { get; }
 
     /// <summary>

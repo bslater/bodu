@@ -42,42 +42,42 @@ internal sealed class ParsedNotableDateDocument
     /// <summary>
     /// Gets the parsed resource identifier.
     /// </summary>
-    /// <returns>The resource id.</returns>
+    /// <value>The resource id.</value>
     public string ResourceId { get; }
 
     /// <summary>
     /// Gets the parsed schema version.
     /// </summary>
-    /// <returns>The schema version string.</returns>
+    /// <value>The schema version string.</value>
     public string SchemaVersion { get; }
 
     /// <summary>
     /// Gets the parsed resolution policy.
     /// </summary>
-    /// <returns>The resolution policy.</returns>
+    /// <value>The resolution policy.</value>
     public ResolutionPolicy ResolutionPolicy { get; }
 
     /// <summary>
     /// Gets the parsed adjustment policies.
     /// </summary>
-    /// <returns>The adjustment policies.</returns>
+    /// <value>The adjustment policies.</value>
     public IReadOnlyList<AdjustmentPolicy> AdjustmentPolicies { get; }
 
     /// <summary>
     /// Gets the parsed notable-date concepts.
     /// </summary>
-    /// <returns>The notable-date concepts.</returns>
+    /// <value>The notable-date concepts.</value>
     public IReadOnlyList<NotableDateDefinition> NotableDates { get; }
 
     /// <summary>
     /// Gets the parsed override operations.
     /// </summary>
-    /// <returns>The override operations.</returns>
+    /// <value>The override operations.</value>
     public IReadOnlyList<NotableDateRuleOverride> Overrides { get; }
 
     /// <summary>
     /// Gets the parsed import directives.
     /// </summary>
-    /// <returns>The import directives.</returns>
+    /// <value>The import directives.</value>
     public IReadOnlyList<NotableDateImport> Imports { get; }
 }

@@ -37,7 +37,7 @@ internal sealed class CompoundNameComparer
     /// <summary>
     /// Gets the shared <see cref="CompoundNameComparer" /> instance.
     /// </summary>
-    /// <returns>The singleton comparer used for every compound-file name comparison.</returns>
+    /// <value>The singleton comparer used for every compound-file name comparison.</value>
     public static CompoundNameComparer Instance { get; } = new();
 
     /// <summary>

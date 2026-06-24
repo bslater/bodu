@@ -146,7 +146,7 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets the numeric value.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public int Value { get; }
     }
 
@@ -167,7 +167,7 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets the numeric value.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public int Value { get; }
     }
 
@@ -179,7 +179,7 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the code, written through the member-level integer converter.
         /// </summary>
-        /// <returns>The code.</returns>
+        /// <value>The code.</value>
         [TomlConverter(typeof(CodeIntegerConverter))]
         public Code Code { get; set; } = new(0);
     }
@@ -192,7 +192,7 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the code, written through the value's type-level converter.
         /// </summary>
-        /// <returns>The code.</returns>
+        /// <value>The code.</value>
         public Code Code { get; set; } = new(0);
     }
 
@@ -204,7 +204,7 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the code.
         /// </summary>
-        /// <returns>The code.</returns>
+        /// <value>The code.</value>
         public PlainCode Code { get; set; } = new(0);
     }
 
@@ -216,7 +216,7 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the number, written through the built-in integer converter.
         /// </summary>
-        /// <returns>The number.</returns>
+        /// <value>The number.</value>
         public int Number { get; set; }
     }
 

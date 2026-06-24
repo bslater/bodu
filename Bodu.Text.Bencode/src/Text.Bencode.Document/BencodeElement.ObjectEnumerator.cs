@@ -58,7 +58,7 @@ public readonly partial struct BencodeElement
         /// <summary>
         /// Gets the property at the enumerator's current position.
         /// </summary>
-        /// <returns>The current property.</returns>
+        /// <value>The current property.</value>
         public readonly BencodeProperty Current
         {
             get
@@ -71,7 +71,7 @@ public readonly partial struct BencodeElement
         /// <summary>
         /// Gets the property at the enumerator's current position.
         /// </summary>
-        /// <returns>The current property, boxed.</returns>
+        /// <value>The current property, boxed.</value>
         readonly object IEnumerator.Current =>
             Current;
 

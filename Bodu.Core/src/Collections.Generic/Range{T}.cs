@@ -59,13 +59,13 @@ public readonly struct Range<T>
     /// <summary>
     /// Gets the inclusive start of the range.
     /// </summary>
-    /// <returns>The inclusive lower bound of the range.</returns>
+    /// <value>The inclusive lower bound of the range.</value>
     public T StartInclusive { get; }
 
     /// <summary>
     /// Gets the exclusive end of the range.
     /// </summary>
-    /// <returns>The exclusive upper bound of the range.</returns>
+    /// <value>The exclusive upper bound of the range.</value>
     public T EndExclusive { get; }
 
     /// <summary>

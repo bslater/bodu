@@ -29,19 +29,19 @@ public sealed record Argon2Parameters
     /// <summary>
     /// Gets the amount of memory to fill, in kibibytes (the RFC 9106 parameter <c>m</c>).
     /// </summary>
-    /// <returns>The memory size in kibibytes.</returns>
+    /// <value>The memory size in kibibytes.</value>
     public required int MemoryKiB { get; init; }
 
     /// <summary>
     /// Gets the number of passes over memory (the RFC 9106 parameter <c>t</c>).
     /// </summary>
-    /// <returns>The iteration count.</returns>
+    /// <value>The iteration count.</value>
     public required int Iterations { get; init; }
 
     /// <summary>
     /// Gets the degree of parallelism — the number of independent lanes (the RFC 9106 parameter <c>p</c>).
     /// </summary>
-    /// <returns>The number of lanes.</returns>
+    /// <value>The number of lanes.</value>
     public required int Parallelism { get; init; }
 
     /// <summary>The minimum supported tag length, in bytes.</summary>
@@ -59,25 +59,25 @@ public sealed record Argon2Parameters
     /// <summary>
     /// Gets the length of the derived tag, in bytes (the RFC 9106 parameter <c>T</c>).
     /// </summary>
-    /// <returns>The tag length in bytes. The default is 32.</returns>
+    /// <value>The tag length in bytes. The default is 32.</value>
     public int TagLength { get; init; } = 32;
 
     /// <summary>
     /// Gets the Argon2 version code folded into the pre-hashing digest.
     /// </summary>
-    /// <returns>The version code; either 0x10 or 0x13. The default is 0x13.</returns>
+    /// <value>The version code; either 0x10 or 0x13. The default is 0x13.</value>
     public int Version { get; init; } = Version13;
 
     /// <summary>
     /// Gets the optional secret key <c>K</c> (a server-side pepper), or <see langword="null" /> when none is used.
     /// </summary>
-    /// <returns>The secret key bytes, or <see langword="null" />.</returns>
+    /// <value>The secret key bytes, or <see langword="null" />.</value>
     public byte[]? Secret { get; init; }
 
     /// <summary>
     /// Gets the optional associated data <c>X</c>, or <see langword="null" /> when none is used.
     /// </summary>
-    /// <returns>The associated data bytes, or <see langword="null" />.</returns>
+    /// <value>The associated data bytes, or <see langword="null" />.</value>
     public byte[]? AssociatedData { get; init; }
 
     /// <summary>

@@ -34,6 +34,5 @@ public sealed class BencodeIgnoreAttribute
     /// Gets or sets the condition under which the member is ignored.
     /// </summary>
     /// <value>The ignore condition; <see cref="BencodeIgnoreCondition.Always" /> by default.</value>
-    /// <returns>The configured ignore condition.</returns>
     public BencodeIgnoreCondition Condition { get; set; } = BencodeIgnoreCondition.Always;
 }

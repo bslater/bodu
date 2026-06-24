@@ -127,25 +127,25 @@ public sealed partial class OrderedSet<T>
     /// <summary>
     /// Gets the equality comparer used to compare elements.
     /// </summary>
-    /// <returns>The active equality comparer.</returns>
+    /// <value>The active equality comparer.</value>
     public IEqualityComparer<T> Comparer => _storage.Comparer;
 
     /// <summary>
     /// Gets the number of elements in the set.
     /// </summary>
-    /// <returns>The number of elements currently stored in the set.</returns>
+    /// <value>The number of elements currently stored in the set.</value>
     public int Count => _storage.Count;
 
     /// <summary>
     /// Gets the allocated element capacity.
     /// </summary>
-    /// <returns>The current allocated capacity of the underlying element storage.</returns>
+    /// <value>The current allocated capacity of the underlying element storage.</value>
     public int Capacity => _storage.Capacity;
 
     /// <summary>
     /// Gets a value indicating whether the set is read-only.
     /// </summary>
-    /// <returns>Always <see langword="false" />.</returns>
+    /// <value>Always <see langword="false" />.</value>
     public bool IsReadOnly => false;
 
     /// <summary>

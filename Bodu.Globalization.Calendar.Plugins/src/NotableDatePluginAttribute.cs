@@ -29,6 +29,6 @@ public sealed class NotableDatePluginAttribute
     /// <summary>
     /// Gets the type that implements <see cref="INotableDatePlugin" />.
     /// </summary>
-    /// <returns>The plugin entry-point type.</returns>
+    /// <value>The plugin entry-point type.</value>
     public Type PluginType { get; }
 }

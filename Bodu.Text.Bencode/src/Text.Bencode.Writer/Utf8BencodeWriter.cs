@@ -108,7 +108,7 @@ public ref struct Utf8BencodeWriter
     /// <summary>
     /// Gets the current container nesting depth.
     /// </summary>
-    /// <returns>The number of open containers, where zero means the writer is at the document root.</returns>
+    /// <value>The number of open containers, where zero means the writer is at the document root.</value>
     /// <remarks>
     /// A document is complete only when the depth has returned to zero: an unclosed dictionary's bytes never reach the
     /// destination, and an unclosed list leaves the output without its terminating <c>e</c>. Callers driving the writer
@@ -120,10 +120,10 @@ public ref struct Utf8BencodeWriter
     /// <summary>
     /// Gets the customizations the writer was created with.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The effective options, with <see cref="BencodeWriterOptions.MaxDepth" /> carrying the resolved value rather than
     /// a zero placeholder.
-    /// </returns>
+    /// </value>
     public readonly BencodeWriterOptions Options =>
         new()
         {
@@ -135,7 +135,7 @@ public ref struct Utf8BencodeWriter
     /// Gets the effective maximum container nesting depth this writer enforces, after clamping to
     /// <see cref="BencodeLimits.AbsoluteMaxDepth" />.
     /// </summary>
-    /// <returns>The effective maximum depth.</returns>
+    /// <value>The effective maximum depth.</value>
     internal readonly int EffectiveMaxDepth =>
         _maxDepth;
 
@@ -143,7 +143,7 @@ public ref struct Utf8BencodeWriter
     /// Gets the serializer write state attached to this writer, or <see langword="null" /> when the writer is used
     /// directly rather than by the serializer.
     /// </summary>
-    /// <returns>The attached <see cref="BencodeWriteStack" />, or <see langword="null" />.</returns>
+    /// <value>The attached <see cref="BencodeWriteStack" />, or <see langword="null" />.</value>
     internal readonly BencodeWriteStack? WriteStack =>
         _root.WriteStack;
 
@@ -761,14 +761,14 @@ public ref struct Utf8BencodeWriter
         /// <summary>
         /// Gets or sets a value indicating whether a root value has been started or completed.
         /// </summary>
-        /// <returns><see langword="true" /> once the document's root value has begun.</returns>
+        /// <value><see langword="true" /> once the document's root value has begun.</value>
         internal bool HasRootValue { get; set; }
 
         /// <summary>
         /// Gets or sets the serializer write state, when the writer is driven by the serializer; otherwise
         /// <see langword="null" />.
         /// </summary>
-        /// <returns>The attached write state, or <see langword="null" />.</returns>
+        /// <value>The attached write state, or <see langword="null" />.</value>
         internal BencodeWriteStack? WriteStack { get; set; }
     }
 
@@ -799,7 +799,7 @@ public ref struct Utf8BencodeWriter
         /// Gets the buffer that receives the list's bytes — the innermost enclosing dictionary's buffer, or the
         /// destination output when no dictionary is open above the list.
         /// </summary>
-        /// <returns>The list's content sink.</returns>
+        /// <value>The list's content sink.</value>
         internal IBufferWriter<byte> ContentSink { get; }
     }
 
@@ -822,32 +822,32 @@ public ref struct Utf8BencodeWriter
         /// <summary>
         /// Gets the buffer that receives the dictionary's emission when it closes.
         /// </summary>
-        /// <returns>The dictionary's destination sink.</returns>
+        /// <value>The dictionary's destination sink.</value>
         internal IBufferWriter<byte> Sink { get; }
 
         /// <summary>
         /// Gets the buffer holding the encoded bytes of every entry value, in write order.
         /// </summary>
-        /// <returns>The dictionary's value buffer.</returns>
+        /// <value>The dictionary's value buffer.</value>
         internal ArrayBufferWriter<byte> Buffer { get; } = new();
 
         /// <summary>
         /// Gets the completed entries, each pairing a raw key with the byte range its value occupies in
         /// <see cref="Buffer" />.
         /// </summary>
-        /// <returns>The completed entries.</returns>
+        /// <value>The completed entries.</value>
         internal List<DictionaryEntry> Entries { get; } = [];
 
         /// <summary>
         /// Gets or sets the raw bytes of the key awaiting its value.
         /// </summary>
-        /// <returns>The pending key, or <see langword="null" /> when none is pending.</returns>
+        /// <value>The pending key, or <see langword="null" /> when none is pending.</value>
         internal byte[]? PendingKey { get; set; }
 
         /// <summary>
         /// Gets or sets the offset within <see cref="Buffer" /> where the pending key's value begins.
         /// </summary>
-        /// <returns>The pending value's start offset.</returns>
+        /// <value>The pending value's start offset.</value>
         internal int PendingValueStart { get; set; }
     }
 
@@ -873,19 +873,19 @@ public ref struct Utf8BencodeWriter
         /// <summary>
         /// Gets the raw key bytes.
         /// </summary>
-        /// <returns>The key bytes.</returns>
+        /// <value>The key bytes.</value>
         internal byte[] Key { get; }
 
         /// <summary>
         /// Gets the value's start offset within the dictionary frame's buffer.
         /// </summary>
-        /// <returns>The value's start offset.</returns>
+        /// <value>The value's start offset.</value>
         internal int ValueStart { get; }
 
         /// <summary>
         /// Gets the value's byte length.
         /// </summary>
-        /// <returns>The value's byte length.</returns>
+        /// <value>The value's byte length.</value>
         internal int ValueLength { get; }
     }
 }

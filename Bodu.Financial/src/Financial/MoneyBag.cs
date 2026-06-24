@@ -105,25 +105,25 @@ public sealed partial class MoneyBag :
     /// <summary>
     /// Gets a value indicating whether this bag carries no balances.
     /// </summary>
-    /// <returns><see langword="true" /> when the bag is empty; otherwise <see langword="false" />.</returns>
+    /// <value><see langword="true" /> when the bag is empty; otherwise <see langword="false" />.</value>
     public bool IsEmpty =>
         _balances.Count == 0;
 
     /// <summary>
     /// Gets the number of distinct currencies carrying a non-zero balance.
     /// </summary>
-    /// <returns>The number of currency slots.</returns>
+    /// <value>The number of currency slots.</value>
     public int Count =>
         _balances.Count;
 
     /// <summary>
     /// Gets a read-only view of the balance map keyed by <see cref="CurrencyCode" />, in ISO-code lexicographic order.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The immutable balance map. Because the backing store is an
     /// <see cref="ImmutableSortedDictionary{TKey, TValue}" />, the view is genuinely read-only and is returned without
     /// allocating a wrapper.
-    /// </returns>
+    /// </value>
     public IReadOnlyDictionary<CurrencyCode, decimal> Balances =>
         _balances;
 

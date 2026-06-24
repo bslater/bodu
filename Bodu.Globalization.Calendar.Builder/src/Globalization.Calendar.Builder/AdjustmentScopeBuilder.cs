@@ -43,28 +43,28 @@ public sealed class AdjustmentScopeBuilder
     /// <summary>
     /// Gets the territory codes in scope.
     /// </summary>
-    /// <returns>The territory codes; empty when no territory restriction applies.</returns>
+    /// <value>The territory codes; empty when no territory restriction applies.</value>
     internal IReadOnlyList<string> Territories =>
         _territories;
 
     /// <summary>
     /// Gets the calendar systems in scope.
     /// </summary>
-    /// <returns>The calendar systems; empty when no calendar restriction applies.</returns>
+    /// <value>The calendar systems; empty when no calendar restriction applies.</value>
     internal IReadOnlyList<CalendarSystem> Calendars =>
         _calendars;
 
     /// <summary>
     /// Gets the categories in scope.
     /// </summary>
-    /// <returns>The categories; empty when no category restriction applies.</returns>
+    /// <value>The categories; empty when no category restriction applies.</value>
     internal IReadOnlyList<NotableDateCategory> Categories =>
         _categories;
 
     /// <summary>
     /// Gets the concept identifiers in scope.
     /// </summary>
-    /// <returns>The concept identifiers; empty when no concept restriction applies.</returns>
+    /// <value>The concept identifiers; empty when no concept restriction applies.</value>
     internal IReadOnlyList<string> NotableDateRefs =>
         _notableDateRefs;
 
@@ -78,35 +78,35 @@ public sealed class AdjustmentScopeBuilder
     /// <summary>
     /// Gets the explicit included years.
     /// </summary>
-    /// <returns>The included years; empty when no inclusion list applies.</returns>
+    /// <value>The included years; empty when no inclusion list applies.</value>
     internal IReadOnlyList<int> OnlyYears =>
         _onlyYears;
 
     /// <summary>
     /// Gets the explicit excluded years.
     /// </summary>
-    /// <returns>The excluded years; empty when no exclusion list applies.</returns>
+    /// <value>The excluded years; empty when no exclusion list applies.</value>
     internal IReadOnlyList<int> ExceptYears =>
         _exceptYears;
 
     /// <summary>
     /// Gets the inclusive lower year bound.
     /// </summary>
-    /// <returns>The lower bound, or <see langword="null" /> when unbounded.</returns>
+    /// <value>The lower bound, or <see langword="null" /> when unbounded.</value>
     internal int? FromYearValue { get; private set; }
 
     /// <summary>
     /// Gets the inclusive upper year bound.
     /// </summary>
-    /// <returns>The upper bound, or <see langword="null" /> when unbounded.</returns>
+    /// <value>The upper bound, or <see langword="null" /> when unbounded.</value>
     internal int? ToYearValue { get; private set; }
 
     /// <summary>
     /// Gets a value indicating whether the scope declares any restriction.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see langword="true" /> when at least one scope element or bound is set; otherwise, <see langword="false" />.
-    /// </returns>
+    /// </value>
     internal bool HasAnyValue =>
         _territories.Count > 0
         || _calendars.Count > 0

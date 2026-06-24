@@ -29,13 +29,13 @@ internal sealed class TreeDebugView<T>
     /// <summary>
     /// Gets the value stored at the node.
     /// </summary>
-    /// <returns>The node's value.</returns>
+    /// <value>The node's value.</value>
     public T Value => _node.Value;
 
     /// <summary>
     /// Gets the node's immediate children.
     /// </summary>
-    /// <returns>An array of the node's children.</returns>
+    /// <value>An array of the node's children.</value>
     [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
     public Tree<T>[] Children => _node.Children.ToArray();
 }

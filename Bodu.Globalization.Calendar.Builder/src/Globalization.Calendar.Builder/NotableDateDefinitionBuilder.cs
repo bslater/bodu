@@ -58,44 +58,44 @@ public sealed class NotableDateDefinitionBuilder
     /// <summary>
     /// Gets the stable identifier of the concept.
     /// </summary>
-    /// <returns>The concept identifier.</returns>
+    /// <value>The concept identifier.</value>
     internal string Id { get; }
 
     /// <summary>
     /// Gets the human-readable display name of the concept.
     /// </summary>
-    /// <returns>The display name.</returns>
+    /// <value>The display name.</value>
     internal string DisplayName { get; private set; }
 
     /// <summary>
     /// Gets the category of the concept.
     /// </summary>
-    /// <returns>The category.</returns>
+    /// <value>The category.</value>
     internal NotableDateCategory Category { get; private set; }
 
     /// <summary>
     /// Gets the default duration in days.
     /// </summary>
-    /// <returns>The default duration, or <see langword="null" /> when unset.</returns>
+    /// <value>The default duration, or <see langword="null" /> when unset.</value>
     internal int? DefaultDurationDays { get; private set; }
 
     /// <summary>
     /// Gets the default non-working flag.
     /// </summary>
-    /// <returns>The default flag, or <see langword="null" /> when unset.</returns>
+    /// <value>The default flag, or <see langword="null" /> when unset.</value>
     internal bool? DefaultNonWorkingDay { get; private set; }
 
     /// <summary>
     /// Gets the concept-level tags.
     /// </summary>
-    /// <returns>The tags; empty when none are configured.</returns>
+    /// <value>The tags; empty when none are configured.</value>
     internal IReadOnlyList<string> Tags =>
         _tags;
 
     /// <summary>
     /// Gets the rules belonging to the concept.
     /// </summary>
-    /// <returns>The rule builders, in declaration order.</returns>
+    /// <value>The rule builders, in declaration order.</value>
     internal IReadOnlyList<NotableDateRuleBuilder> Rules =>
         _rules;
 

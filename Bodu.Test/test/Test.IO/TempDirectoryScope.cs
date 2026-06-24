@@ -31,7 +31,7 @@ public sealed class TempDirectoryScope
     /// <summary>
     /// Gets the absolute path of the temporary directory.
     /// </summary>
-    /// <returns>The full path of the directory created for the scope.</returns>
+    /// <value>The full path of the directory created for the scope.</value>
     public string Path { get; }
 
     /// <summary>

@@ -21,7 +21,7 @@ public interface IFileExchangeRateCache
     /// <summary>
     /// Gets the directory in which cached rate files are stored.
     /// </summary>
-    /// <returns>The absolute or relative cache directory path.</returns>
+    /// <value>The absolute or relative cache directory path.</value>
     string CacheDirectory { get; }
 
     /// <summary>

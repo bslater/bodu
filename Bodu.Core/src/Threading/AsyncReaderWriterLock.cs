@@ -70,7 +70,6 @@ public sealed partial class AsyncReaderWriterLock : IDisposable
     /// Gets the number of callers currently queued waiting for read access.
     /// </summary>
     /// <value>The number of queued readers.</value>
-    /// <returns>The number of callers awaiting read access. Intended for diagnostics.</returns>
     internal int WaitingReaderCount
     {
         get
@@ -86,7 +85,6 @@ public sealed partial class AsyncReaderWriterLock : IDisposable
     /// Gets the number of callers currently queued waiting for write access.
     /// </summary>
     /// <value>The number of queued writers.</value>
-    /// <returns>The number of callers awaiting write access. Intended for diagnostics.</returns>
     internal int WaitingWriterCount
     {
         get

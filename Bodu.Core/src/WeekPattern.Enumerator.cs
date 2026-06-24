@@ -50,7 +50,7 @@ public readonly partial struct WeekPattern
         /// <summary>
         /// Gets the <see cref="DayOfWeek" /> at the current position of the enumerator.
         /// </summary>
-        /// <returns>The day yielded by the most recent successful <see cref="MoveNext" /> call.</returns>
+        /// <value>The day yielded by the most recent successful <see cref="MoveNext" /> call.</value>
         public readonly DayOfWeek Current => _current;
 
         /// <inheritdoc />

@@ -47,78 +47,78 @@ public sealed class ExcelWorkbookProperties
     /// <summary>
     /// Gets the document title.
     /// </summary>
-    /// <returns>The title, or <see langword="null" /> when not recorded.</returns>
+    /// <value>The title, or <see langword="null" /> when not recorded.</value>
     public string? Title => _summary?.Title;
 
     /// <summary>
     /// Gets the document subject.
     /// </summary>
-    /// <returns>The subject, or <see langword="null" /> when not recorded.</returns>
+    /// <value>The subject, or <see langword="null" /> when not recorded.</value>
     public string? Subject => _summary?.Subject;
 
     /// <summary>
     /// Gets the document author.
     /// </summary>
-    /// <returns>The author, or <see langword="null" /> when not recorded.</returns>
+    /// <value>The author, or <see langword="null" /> when not recorded.</value>
     public string? Author => _summary?.Author;
 
     /// <summary>
     /// Gets the document keywords.
     /// </summary>
-    /// <returns>The keywords, or <see langword="null" /> when not recorded.</returns>
+    /// <value>The keywords, or <see langword="null" /> when not recorded.</value>
     public string? Keywords => _summary?.Keywords;
 
     /// <summary>
     /// Gets the document comments.
     /// </summary>
-    /// <returns>The comments, or <see langword="null" /> when not recorded.</returns>
+    /// <value>The comments, or <see langword="null" /> when not recorded.</value>
     public string? Comments => _summary?.Comments;
 
     /// <summary>
     /// Gets the name of the user who last saved the workbook.
     /// </summary>
-    /// <returns>The last author, or <see langword="null" /> when not recorded.</returns>
+    /// <value>The last author, or <see langword="null" /> when not recorded.</value>
     public string? LastSavedBy => _summary?.LastAuthor;
 
     /// <summary>
     /// Gets the name of the application that created the workbook.
     /// </summary>
-    /// <returns>The application name, or <see langword="null" /> when not recorded.</returns>
+    /// <value>The application name, or <see langword="null" /> when not recorded.</value>
     public string? ApplicationName => _summary?.ApplicationName;
 
     /// <summary>
     /// Gets the time at which the workbook was created.
     /// </summary>
-    /// <returns>The creation time, or <see langword="null" /> when not recorded.</returns>
+    /// <value>The creation time, or <see langword="null" /> when not recorded.</value>
     public DateTimeOffset? Created => _summary?.CreateTime;
 
     /// <summary>
     /// Gets the time at which the workbook was last saved.
     /// </summary>
-    /// <returns>The last-saved time, or <see langword="null" /> when not recorded.</returns>
+    /// <value>The last-saved time, or <see langword="null" /> when not recorded.</value>
     public DateTimeOffset? LastSaved => _summary?.LastSaveTime;
 
     /// <summary>
     /// Gets the time at which the workbook was last printed.
     /// </summary>
-    /// <returns>The last-printed time, or <see langword="null" /> when not recorded.</returns>
+    /// <value>The last-printed time, or <see langword="null" /> when not recorded.</value>
     public DateTimeOffset? LastPrinted => _summary?.LastPrinted;
 
     /// <summary>
     /// Gets the company associated with the workbook.
     /// </summary>
-    /// <returns>The company, or <see langword="null" /> when not recorded.</returns>
+    /// <value>The company, or <see langword="null" /> when not recorded.</value>
     public string? Company => _document?.Company;
 
     /// <summary>
     /// Gets the manager associated with the workbook.
     /// </summary>
-    /// <returns>The manager, or <see langword="null" /> when not recorded.</returns>
+    /// <value>The manager, or <see langword="null" /> when not recorded.</value>
     public string? Manager => _document?.Manager;
 
     /// <summary>
     /// Gets the document category.
     /// </summary>
-    /// <returns>The category, or <see langword="null" /> when not recorded.</returns>
+    /// <value>The category, or <see langword="null" /> when not recorded.</value>
     public string? Category => _document?.Category;
 }

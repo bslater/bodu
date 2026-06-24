@@ -62,37 +62,37 @@ public readonly struct TerritoryCode
     /// <summary>
     /// Gets a value indicating whether this is the default (empty) code.
     /// </summary>
-    /// <returns><see langword="true" /> when no code is held; otherwise <see langword="false" />.</returns>
+    /// <value><see langword="true" /> when no code is held; otherwise <see langword="false" />.</value>
     public bool IsEmpty =>
         _country is null;
 
     /// <summary>
     /// Gets the country part of the code.
     /// </summary>
-    /// <returns>The uppercase two-letter country, or the empty string for the default value.</returns>
+    /// <value>The uppercase two-letter country, or the empty string for the default value.</value>
     public string Country =>
         _country ?? string.Empty;
 
     /// <summary>
     /// Gets the subdivision part of the code.
     /// </summary>
-    /// <returns>The uppercase subdivision, or <see langword="null" /> when the code is country-only.</returns>
+    /// <value>The uppercase subdivision, or <see langword="null" /> when the code is country-only.</value>
     public string? Subdivision { get; }
 
     /// <summary>
     /// Gets a value indicating whether the code names a subdivision rather than a bare country.
     /// </summary>
-    /// <returns><see langword="true" /> when a subdivision is present; otherwise <see langword="false" />.</returns>
+    /// <value><see langword="true" /> when a subdivision is present; otherwise <see langword="false" />.</value>
     public bool IsSubdivision =>
         Subdivision is not null;
 
     /// <summary>
     /// Gets the parent country code for a subdivision.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The country-only <see cref="TerritoryCode" /> for a subdivision, the same code when it is already country-only,
     /// or the default value when this code is empty.
-    /// </returns>
+    /// </value>
     public TerritoryCode Parent =>
         _country is null ? default : new TerritoryCode(_country, null);
 

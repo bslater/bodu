@@ -21,30 +21,30 @@ public struct CompoundBuildOptions
     /// <summary>
     /// Gets or sets the compound-file format version to write.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The target <see cref="CompoundFileVersion" />; <see cref="CompoundFileVersion.V3" /> when left at its default.
-    /// </returns>
+    /// </value>
     public CompoundFileVersion Version { get; set; }
 
     /// <summary>
     /// Gets or sets the maximum storage nesting depth permitted while writing.
     /// </summary>
-    /// <returns>The configured maximum depth, or <c>0</c> to use the built-in default.</returns>
+    /// <value>The configured maximum depth, or <c>0</c> to use the built-in default.</value>
     public int MaxDepth { get; set; }
 
     /// <summary>
     /// Gets the regular sector size, in bytes, implied by <see cref="Version" />.
     /// </summary>
-    /// <returns><c>4096</c> for version 4; otherwise <c>512</c>.</returns>
+    /// <value><c>4096</c> for version 4; otherwise <c>512</c>.</value>
     internal readonly int SectorSize =>
         Version == CompoundFileVersion.V4 ? 4096 : 512;
 
     /// <summary>
     /// Gets the effective maximum nesting depth, resolving the default when unset.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The configured <see cref="MaxDepth" /> when positive; otherwise <see cref="DefaultMaxDepth" />.
-    /// </returns>
+    /// </value>
     internal readonly int EffectiveMaxDepth =>
         MaxDepth > 0 ? MaxDepth : DefaultMaxDepth;
 }

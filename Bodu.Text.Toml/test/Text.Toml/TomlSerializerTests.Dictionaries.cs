@@ -450,7 +450,7 @@ public partial class TomlSerializerTests
     private sealed class DictionaryModel
     {
         /// <summary>Gets or sets the string-keyed integer dictionary.</summary>
-        /// <returns>The dictionary.</returns>
+        /// <value>The dictionary.</value>
         public Dictionary<string, int> Counts { get; set; } = [];
     }
 
@@ -460,7 +460,7 @@ public partial class TomlSerializerTests
     private sealed class IDictionaryModel
     {
         /// <summary>Gets or sets the string-keyed integer dictionary, typed as an interface.</summary>
-        /// <returns>The dictionary.</returns>
+        /// <value>The dictionary.</value>
         public IDictionary<string, int> Counts { get; set; } = new Dictionary<string, int>();
     }
 
@@ -470,7 +470,7 @@ public partial class TomlSerializerTests
     private sealed class SortedDictionaryModel
     {
         /// <summary>Gets or sets the sorted string-keyed integer dictionary.</summary>
-        /// <returns>The dictionary.</returns>
+        /// <value>The dictionary.</value>
         public SortedDictionary<string, int> Counts { get; set; } = [];
     }
 
@@ -480,7 +480,7 @@ public partial class TomlSerializerTests
     private sealed class NestedDictionaryModel
     {
         /// <summary>Gets or sets the nested dictionary of dictionaries.</summary>
-        /// <returns>The nested dictionary.</returns>
+        /// <value>The nested dictionary.</value>
         public Dictionary<string, Dictionary<string, int>> Groups { get; set; } = [];
     }
 
@@ -490,7 +490,7 @@ public partial class TomlSerializerTests
     private sealed class DictionaryOfListModel
     {
         /// <summary>Gets or sets the dictionary of integer lists.</summary>
-        /// <returns>The dictionary.</returns>
+        /// <value>The dictionary.</value>
         public Dictionary<string, List<int>> Groups { get; set; } = [];
     }
 
@@ -500,7 +500,7 @@ public partial class TomlSerializerTests
     private sealed class NullableValueDictionaryModel
     {
         /// <summary>Gets or sets the dictionary of nullable names.</summary>
-        /// <returns>The dictionary.</returns>
+        /// <value>The dictionary.</value>
         public Dictionary<string, string?> Names { get; set; } = [];
     }
 
@@ -510,7 +510,7 @@ public partial class TomlSerializerTests
     private sealed class IntKeyedDictionaryModel
     {
         /// <summary>Gets or sets the integer-keyed dictionary.</summary>
-        /// <returns>The dictionary.</returns>
+        /// <value>The dictionary.</value>
         public Dictionary<int, string> Lookup { get; set; } = [];
     }
 
@@ -520,7 +520,7 @@ public partial class TomlSerializerTests
     private sealed class CountByIdModel
     {
         /// <summary>Gets or sets the integer-keyed counts.</summary>
-        /// <returns>The dictionary.</returns>
+        /// <value>The dictionary.</value>
         public Dictionary<int, int> Counts { get; set; } = [];
     }
 
@@ -530,7 +530,7 @@ public partial class TomlSerializerTests
     private sealed class NestedIntKeyedDictionaryModel
     {
         /// <summary>Gets or sets the nested integer-keyed dictionary of dictionaries.</summary>
-        /// <returns>The nested dictionary.</returns>
+        /// <value>The nested dictionary.</value>
         public Dictionary<int, Dictionary<int, int>> Groups { get; set; } = [];
     }
 
@@ -541,7 +541,7 @@ public partial class TomlSerializerTests
     private sealed class DoubleKeyedDictionaryModel
     {
         /// <summary>Gets or sets the double-keyed dictionary.</summary>
-        /// <returns>The dictionary.</returns>
+        /// <value>The dictionary.</value>
         public Dictionary<double, string> Lookup { get; set; } = [];
     }
 }

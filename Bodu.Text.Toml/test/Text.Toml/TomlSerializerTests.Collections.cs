@@ -387,7 +387,7 @@ public partial class TomlSerializerTests
     private sealed class ListModel
     {
         /// <summary>Gets or sets the integer list.</summary>
-        /// <returns>The list.</returns>
+        /// <value>The list.</value>
         public List<int> Numbers { get; set; } = [];
     }
 
@@ -397,7 +397,7 @@ public partial class TomlSerializerTests
     private sealed class ArrayModel
     {
         /// <summary>Gets or sets the integer array.</summary>
-        /// <returns>The array.</returns>
+        /// <value>The array.</value>
         public int[] Numbers { get; set; } = [];
     }
 
@@ -407,7 +407,7 @@ public partial class TomlSerializerTests
     private sealed class NestedListModel
     {
         /// <summary>Gets or sets the matrix of integers.</summary>
-        /// <returns>The matrix.</returns>
+        /// <value>The matrix.</value>
         public List<List<int>> Matrix { get; set; } = [];
     }
 
@@ -417,7 +417,7 @@ public partial class TomlSerializerTests
     private sealed class StringListModel
     {
         /// <summary>Gets or sets the word list.</summary>
-        /// <returns>The list.</returns>
+        /// <value>The list.</value>
         public List<string> Words { get; set; } = [];
     }
 
@@ -427,7 +427,7 @@ public partial class TomlSerializerTests
     private sealed class BoolListModel
     {
         /// <summary>Gets or sets the flag list.</summary>
-        /// <returns>The list.</returns>
+        /// <value>The list.</value>
         public List<bool> Flags { get; set; } = [];
     }
 
@@ -437,7 +437,7 @@ public partial class TomlSerializerTests
     private sealed class NullableElementModel
     {
         /// <summary>Gets or sets the word list, possibly containing a <see langword="null" /> element.</summary>
-        /// <returns>The list.</returns>
+        /// <value>The list.</value>
         public List<string?> Words { get; set; } = [];
     }
 
@@ -447,7 +447,7 @@ public partial class TomlSerializerTests
     private sealed class HashSetModel
     {
         /// <summary>Gets or sets the integer set.</summary>
-        /// <returns>The set.</returns>
+        /// <value>The set.</value>
         public HashSet<int> Numbers { get; set; } = [];
     }
 
@@ -457,7 +457,7 @@ public partial class TomlSerializerTests
     private sealed class IListModel
     {
         /// <summary>Gets or sets the integer list, typed as an interface.</summary>
-        /// <returns>The list.</returns>
+        /// <value>The list.</value>
         public IList<int> Numbers { get; set; } = new List<int>();
     }
 
@@ -467,7 +467,7 @@ public partial class TomlSerializerTests
     private sealed class EnumerableModel
     {
         /// <summary>Gets or sets the integer sequence, typed as an interface.</summary>
-        /// <returns>The sequence.</returns>
+        /// <value>The sequence.</value>
         public IEnumerable<int> Numbers { get; set; } = new List<int>();
     }
 
@@ -477,7 +477,7 @@ public partial class TomlSerializerTests
     private sealed class CollectionModel
     {
         /// <summary>Gets or sets the integer collection, typed as an interface.</summary>
-        /// <returns>The collection.</returns>
+        /// <value>The collection.</value>
         public ICollection<int> Numbers { get; set; } = new List<int>();
     }
 
@@ -487,7 +487,7 @@ public partial class TomlSerializerTests
     private sealed class QueueModel
     {
         /// <summary>Gets or sets the integer queue.</summary>
-        /// <returns>The queue.</returns>
+        /// <value>The queue.</value>
         public Queue<int> Items { get; set; } = new();
     }
 
@@ -497,7 +497,7 @@ public partial class TomlSerializerTests
     private sealed class StackModel
     {
         /// <summary>Gets or sets the integer stack.</summary>
-        /// <returns>The stack.</returns>
+        /// <value>The stack.</value>
         public Stack<int> Items { get; set; } = new();
     }
 
@@ -507,7 +507,7 @@ public partial class TomlSerializerTests
     private sealed class ConcurrentQueueModel
     {
         /// <summary>Gets or sets the integer queue.</summary>
-        /// <returns>The queue.</returns>
+        /// <value>The queue.</value>
         public System.Collections.Concurrent.ConcurrentQueue<int> Items { get; set; } = new();
     }
 
@@ -517,7 +517,7 @@ public partial class TomlSerializerTests
     private sealed class ConcurrentStackModel
     {
         /// <summary>Gets or sets the integer stack.</summary>
-        /// <returns>The stack.</returns>
+        /// <value>The stack.</value>
         public System.Collections.Concurrent.ConcurrentStack<int> Items { get; set; } = new();
     }
 
@@ -527,7 +527,7 @@ public partial class TomlSerializerTests
     private sealed class ConcurrentBagModel
     {
         /// <summary>Gets or sets the integer bag.</summary>
-        /// <returns>The bag.</returns>
+        /// <value>The bag.</value>
         public System.Collections.Concurrent.ConcurrentBag<int> Items { get; set; } = new();
     }
 }

@@ -34,26 +34,26 @@ public interface ICurrency
     /// <summary>
     /// Gets the ISO 4217 three-letter alphabetic code that identifies the currency.
     /// </summary>
-    /// <returns>An uppercase three-letter currency code, such as <c>"USD"</c>, <c>"EUR"</c>, or <c>"JPY"</c>.</returns>
+    /// <value>An uppercase three-letter currency code, such as <c>"USD"</c>, <c>"EUR"</c>, or <c>"JPY"</c>.</value>
     static abstract string IsoCode { get; }
 
     /// <summary>
     /// Gets the number of fractional digits in the currency's minor unit — the precision
     /// <see cref="Money{TCurrency}" /> rounds to on construction and formats by default.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The non-negative number of decimal places the currency uses; typically two (for <c>USD</c>, <c>EUR</c>, etc.),
     /// zero (for <c>JPY</c>, <c>KRW</c>, <c>CLP</c>), or three (for <c>BHD</c>, <c>KWD</c>, <c>OMR</c>).
-    /// </returns>
+    /// </value>
     static abstract int MinorUnits { get; }
 
     /// <summary>
     /// Gets the ISO 4217 three-digit numeric code that identifies the currency.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The three-digit numeric code (for example, <c>840</c> for <c>USD</c>, <c>36</c> for <c>AUD</c>, <c>392</c> for
     /// <c>JPY</c>), or <c>0</c> when the currency is custom or the numeric code is unknown.
-    /// </returns>
+    /// </value>
     /// <remarks>
     /// The numeric code is the second public identifier defined by ISO 4217 and is widely used by payment formats
     /// (SWIFT MT messages, ISO 20022). The default of <c>0</c> keeps existing custom <see cref="ICurrency" />
@@ -65,12 +65,12 @@ public interface ICurrency
     /// <summary>
     /// Gets the smallest cash denomination of the currency, expressed in the major unit.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The cash-rounding increment in the major unit (for example, <c>0.05m</c> for CHF's five-rappen smallest
     /// circulating coin, <c>0.05m</c> for AUD / CAD cash totals since smallest coins were withdrawn, or <c>1m</c> for
     /// SEK / NOK / ISK), or <c>0m</c> when the currency does not require special cash rounding beyond its
     /// <see cref="MinorUnits" /> precision.
-    /// </returns>
+    /// </value>
     /// <remarks>
     /// The default of <c>0m</c> is interpreted by <see cref="Money{TCurrency}.RoundToCash(MidpointRounding)" /> as "no
     /// special cash rounding required", so the rounding becomes a no-op. Cash-rounding rules apply only to physical
@@ -81,10 +81,10 @@ public interface ICurrency
     /// <summary>
     /// Gets a value indicating whether the currency has been demonetized and is no longer in active circulation.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see langword="true" /> when the currency is a historic predecessor (for example, the Euro-zone national
     /// currencies replaced in 2002, or <c>ZWL</c> since its 2024 demonetization); otherwise <see langword="false" />.
-    /// </returns>
+    /// </value>
     /// <remarks>
     /// Historic currencies still participate fully in arithmetic and formatting so consumers can process legacy data;
     /// <see cref="IsHistoric" /> exists for filtering and reporting only.
@@ -94,27 +94,27 @@ public interface ICurrency
     /// <summary>
     /// Gets the date the currency was withdrawn from circulation, if known.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The demonetization date, or <see langword="null" /> when the currency is active or the date is unknown.
-    /// </returns>
+    /// </value>
     static virtual DateOnly? DemonetizedOn => null;
 
     /// <summary>
     /// Gets the ISO 4217 alphabetic code of the currency that replaced this one, when applicable.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The three-letter ISO code of the successor currency (for example, <c>"EUR"</c> for the Euro-zone predecessor
     /// currencies), or <see langword="null" /> when there is no defined successor.
-    /// </returns>
+    /// </value>
     static virtual string? SuccessorIsoCode => null;
 
     /// <summary>
     /// Gets the English-language name of the currency.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The currency's name in English, in singular form and Title Case (for example, <c>"United States Dollar"</c>,
     /// <c>"Euro"</c>, or <c>"Australian Dollar"</c>), or an empty string when no name is supplied.
-    /// </returns>
+    /// </value>
     /// <remarks>
     /// The English name is used by <see cref="Money{TCurrency}" /> formatting in the <c>L</c> specifier path (
     /// <c>"1,234.56 Australian Dollar"</c>) and is available through <see cref="CurrencyInfo.EnglishName" /> on the

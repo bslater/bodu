@@ -36,7 +36,7 @@ internal sealed class ConcurrentHashSetDebugView<T>
     /// <summary>
     /// Gets the elements currently observable in the <see cref="ConcurrentHashSet{T}" /> as an array.
     /// </summary>
-    /// <returns>A snapshot array of the set's elements.</returns>
+    /// <value>A snapshot array of the set's elements.</value>
     /// <remarks>
     /// The display root is hidden so the debugger expands directly into the element list.
     /// </remarks>

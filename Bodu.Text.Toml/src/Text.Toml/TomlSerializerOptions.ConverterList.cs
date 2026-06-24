@@ -35,15 +35,15 @@ public sealed partial class TomlSerializerOptions
         /// <summary>
         /// Gets the number of converters in the list.
         /// </summary>
-        /// <returns>The converter count.</returns>
+        /// <value>The converter count.</value>
         public int Count => _items.Count;
 
         /// <summary>
         /// Gets a value indicating whether the list rejects mutation.
         /// </summary>
-        /// <returns>
+        /// <value>
         /// <see langword="true" /> once the owning options are read-only; otherwise <see langword="false" />.
-        /// </returns>
+        /// </value>
         public bool IsReadOnly => _owner.IsReadOnly;
 
         /// <summary>

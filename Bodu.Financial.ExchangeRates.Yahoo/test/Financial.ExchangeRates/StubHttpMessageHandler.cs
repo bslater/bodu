@@ -29,13 +29,13 @@ internal sealed class StubHttpMessageHandler
     /// <summary>
     /// Gets the number of requests this handler has received.
     /// </summary>
-    /// <returns>The request count.</returns>
+    /// <value>The request count.</value>
     public int RequestCount { get; private set; }
 
     /// <summary>
     /// Gets the URI of the most recent request, or <see langword="null" /> when none has been received.
     /// </summary>
-    /// <returns>The last request URI.</returns>
+    /// <value>The last request URI.</value>
     public Uri? LastRequestUri { get; private set; }
 
     /// <inheritdoc />

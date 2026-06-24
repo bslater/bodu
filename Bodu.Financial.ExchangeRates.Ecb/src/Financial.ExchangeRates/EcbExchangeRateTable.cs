@@ -27,7 +27,7 @@ internal sealed class EcbExchangeRateTable
     /// <summary>
     /// Gets the parsed euro reference-rate observations.
     /// </summary>
-    /// <returns>A read-only list of dated, per-currency observations.</returns>
+    /// <value>A read-only list of dated, per-currency observations.</value>
     public IReadOnlyList<EcbExchangeRateObservation> Observations { get; }
 
     /// <summary>

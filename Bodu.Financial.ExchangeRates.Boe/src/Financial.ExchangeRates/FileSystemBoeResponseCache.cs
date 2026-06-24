@@ -46,7 +46,7 @@ public sealed class FileSystemBoeResponseCache
     /// <summary>
     /// Gets the directory in which cached responses are stored.
     /// </summary>
-    /// <returns>The absolute or relative cache directory path.</returns>
+    /// <value>The absolute or relative cache directory path.</value>
     public string Directory => _directory;
 
     /// <inheritdoc />

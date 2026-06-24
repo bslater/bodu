@@ -59,7 +59,7 @@ internal sealed class SlicedMemoryOwner<T> : IMemoryOwner<T>
     /// <summary>
     /// Gets the writable memory window narrowed to the length supplied at construction.
     /// </summary>
-    /// <returns>A <see cref="Memory{T}" /> of length <see cref="Memory" />.Length.</returns>
+    /// <value>A <see cref="Memory{T}" /> of length <see cref="Memory" />.Length.</value>
     /// <exception cref="ObjectDisposedException">Thrown when this owner has already been disposed.</exception>
     public Memory<T> Memory
     {

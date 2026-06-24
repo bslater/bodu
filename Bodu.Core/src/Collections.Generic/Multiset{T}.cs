@@ -153,34 +153,33 @@ public sealed partial class Multiset<T>
     /// <summary>
     /// Gets the equality comparer used to determine equality of elements in this <see cref="Multiset{T}" />.
     /// </summary>
-    /// <returns>The <see cref="IEqualityComparer{T}" /> instance used to compare elements.</returns>
+    /// <value>The <see cref="IEqualityComparer{T}" /> instance used to compare elements.</value>
     public IEqualityComparer<T> Comparer => _comparer;
 
     /// <summary>
     /// Gets the total number of elements in the <see cref="Multiset{T}" />, counting each duplicate occurrence
     /// separately.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The total element count including multiplicity. For the count of distinct elements, use
     /// <see cref="DistinctCount" />.
-    /// </returns>
+    /// </value>
     public int Count => _count;
 
     /// <summary>
     /// Gets the number of distinct elements in the <see cref="Multiset{T}" />, regardless of their individual
     /// occurrence counts.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The number of unique elements. A multiset containing <c>"a"</c> three times and <c>"b"</c> once has a
     /// <see cref="DistinctCount" /> of 2 and a <see cref="Count" /> of 4.
-    /// </returns>
+    /// </value>
     public int DistinctCount => _items.Count;
 
     /// <summary>
     /// Gets a value indicating whether the <see cref="Multiset{T}" /> is read-only.
     /// </summary>
     /// <value>Always <see langword="false" />; <see cref="Multiset{T}" /> is always mutable.</value>
-    /// <returns><see langword="false" />.</returns>
     bool ICollection<T>.IsReadOnly => false;
 
     /// <summary>

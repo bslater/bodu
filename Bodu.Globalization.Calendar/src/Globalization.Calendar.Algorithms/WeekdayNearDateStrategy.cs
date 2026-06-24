@@ -39,25 +39,25 @@ public sealed class WeekdayNearDateStrategy
     /// <summary>
     /// Gets the one-based anchor month.
     /// </summary>
-    /// <returns>The anchor month.</returns>
+    /// <value>The anchor month.</value>
     public int Month { get; }
 
     /// <summary>
     /// Gets the one-based anchor day.
     /// </summary>
-    /// <returns>The anchor day.</returns>
+    /// <value>The anchor day.</value>
     public int Day { get; }
 
     /// <summary>
     /// Gets the weekday to seek.
     /// </summary>
-    /// <returns>The target weekday.</returns>
+    /// <value>The target weekday.</value>
     public DayOfWeek DayOfWeek { get; }
 
     /// <summary>
     /// Gets the direction and inclusivity applied when seeking the weekday.
     /// </summary>
-    /// <returns>The configured <see cref="WeekdayProximity" />.</returns>
+    /// <value>The configured <see cref="WeekdayProximity" />.</value>
     public WeekdayProximity Direction { get; }
 
     /// <inheritdoc />

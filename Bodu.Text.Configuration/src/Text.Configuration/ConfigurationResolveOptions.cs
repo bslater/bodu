@@ -36,20 +36,20 @@ public sealed partial class ConfigurationResolveOptions
     /// <summary>
     /// Gets the behaviour profile this option bag represents.
     /// </summary>
-    /// <returns>The selected profile.</returns>
+    /// <value>The selected profile.</value>
     public ConfigurationProfile Profile { get; init; } = ConfigurationProfile.Bodu;
 
     /// <summary>
     /// Gets the optional path root used to evaluate anchored glob patterns. When <see langword="null" /> the document's
     /// load path is used; if neither is available, <see cref="MissingPathRootMode" /> controls behaviour.
     /// </summary>
-    /// <returns>The path root, or <see langword="null" />.</returns>
+    /// <value>The path root, or <see langword="null" />.</value>
     public string? PathRoot { get; init; }
 
     /// <summary>
     /// Gets how the resolver reacts to an absent <see cref="PathRoot" /> when the document was parsed from a string.
     /// </summary>
-    /// <returns>The selected mode.</returns>
+    /// <value>The selected mode.</value>
     public ConfigurationMissingPathRootMode MissingPathRootMode { get; init; } =
         ConfigurationMissingPathRootMode.UseEmptyRoot;
 
@@ -57,25 +57,25 @@ public sealed partial class ConfigurationResolveOptions
     /// Gets a value indicating whether preamble (global) properties contribute to resolution. Defaults to
     /// <see langword="true" /> for the Bodu profile and <see langword="false" /> for EditorConfig-compatible.
     /// </summary>
-    /// <returns><see langword="true" /> when preamble properties are honoured.</returns>
+    /// <value><see langword="true" /> when preamble properties are honoured.</value>
     public bool ApplyPreambleProperties { get; init; } = true;
 
     /// <summary>
     /// Gets the comparison used when matching target paths against section patterns.
     /// </summary>
-    /// <returns>The selected <see cref="StringComparison" />.</returns>
+    /// <value>The selected <see cref="StringComparison" />.</value>
     public StringComparison PathComparison { get; init; } = StringComparison.Ordinal;
 
     /// <summary>
     /// Gets the unset-value handling mode used by the resolver.
     /// </summary>
-    /// <returns>The selected unset-value mode.</returns>
+    /// <value>The selected unset-value mode.</value>
     public ConfigurationUnsetValueMode UnsetValueMode { get; init; } =
         ConfigurationUnsetValueMode.TreatAsLiteral;
 
     /// <summary>
     /// Gets the key options used when expanding raw keys into configuration keys for the resolved view.
     /// </summary>
-    /// <returns>The selected key options.</returns>
+    /// <value>The selected key options.</value>
     public ConfigurationKeyOptions KeyOptions { get; init; } = ConfigurationKeyOptions.Default;
 }

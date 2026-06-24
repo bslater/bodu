@@ -119,7 +119,6 @@ public abstract class TweakableSymmetricAlgorithm
     /// An array of <see cref="KeySizes" /> instances indicating the valid minimum, maximum, and step sizes supported
     /// for tweak values, all expressed in bits. Divide by 8 to obtain the equivalent byte lengths.
     /// </value>
-    /// <returns>The legal tweak sizes, in bits.</returns>
     /// <remarks>
     /// This property returns a cloned copy of the internal tweak size definitions to prevent external modification.
     /// Override this property in derived types to define custom tweak size support for a specific algorithm.
@@ -177,7 +176,6 @@ public abstract class TweakableSymmetricAlgorithm
     /// The tweak size, in bits. Must match one of the values defined in <see cref="LegalTweakSizes" />. Divide by 8 to
     /// obtain the equivalent byte length used when allocating the <see cref="Tweak" /> buffer.
     /// </value>
-    /// <returns>The tweak size in bits.</returns>
     /// <exception cref="CryptographicException">
     /// Thrown when the value does not match a valid tweak size defined in <see cref="LegalTweakSizes" />.
     /// </exception>

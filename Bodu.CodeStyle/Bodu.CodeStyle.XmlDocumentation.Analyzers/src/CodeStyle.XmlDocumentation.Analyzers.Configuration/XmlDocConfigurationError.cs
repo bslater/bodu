@@ -28,12 +28,12 @@ internal sealed class XmlDocConfigurationError
     /// <summary>
     /// Gets the location to attribute the error to.
     /// </summary>
-    /// <returns>The configuration file location.</returns>
+    /// <value>The configuration file location.</value>
     public Location Location { get; }
 
     /// <summary>
     /// Gets the human-readable description of the failure.
     /// </summary>
-    /// <returns>The error message.</returns>
+    /// <value>The error message.</value>
     public string Message { get; }
 }

@@ -62,55 +62,55 @@ public sealed class ExchangeRateRangeResult
     /// <summary>
     /// Gets the requested source-currency ISO code.
     /// </summary>
-    /// <returns>The source-currency ISO code.</returns>
+    /// <value>The source-currency ISO code.</value>
     public string FromIsoCode { get; }
 
     /// <summary>
     /// Gets the requested destination-currency ISO code.
     /// </summary>
-    /// <returns>The destination-currency ISO code.</returns>
+    /// <value>The destination-currency ISO code.</value>
     public string ToIsoCode { get; }
 
     /// <summary>
     /// Gets the inclusive start of the requested window.
     /// </summary>
-    /// <returns>The requested start date.</returns>
+    /// <value>The requested start date.</value>
     public DateOnly RequestedStartDate { get; }
 
     /// <summary>
     /// Gets the inclusive end of the requested window.
     /// </summary>
-    /// <returns>The requested end date.</returns>
+    /// <value>The requested end date.</value>
     public DateOnly RequestedEndDate { get; }
 
     /// <summary>
     /// Gets the observations within the window, ordered by date.
     /// </summary>
-    /// <returns>The rates in the range.</returns>
+    /// <value>The rates in the range.</value>
     public IReadOnlyList<ExchangeRate> Rates { get; }
 
     /// <summary>
     /// Gets the number of observations in the range.
     /// </summary>
-    /// <returns>The observation count.</returns>
+    /// <value>The observation count.</value>
     public int Count => Rates.Count;
 
     /// <summary>
     /// Gets a value indicating whether the range contains no observations.
     /// </summary>
-    /// <returns><see langword="true" /> when no observations are present; otherwise <see langword="false" />.</returns>
+    /// <value><see langword="true" /> when no observations are present; otherwise <see langword="false" />.</value>
     public bool IsEmpty => Rates.Count == 0;
 
     /// <summary>
     /// Gets the earliest observation date present in the range, or <see langword="null" /> when the range is empty.
     /// </summary>
-    /// <returns>The first observed date, or <see langword="null" />.</returns>
+    /// <value>The first observed date, or <see langword="null" />.</value>
     public DateOnly? FirstObservedDate => Rates.Count == 0 ? null : Rates[0].Date;
 
     /// <summary>
     /// Gets the latest observation date present in the range, or <see langword="null" /> when the range is empty.
     /// </summary>
-    /// <returns>The last observed date, or <see langword="null" />.</returns>
+    /// <value>The last observed date, or <see langword="null" />.</value>
     public DateOnly? LastObservedDate => Rates.Count == 0 ? null : Rates[Rates.Count - 1].Date;
 
     /// <summary>

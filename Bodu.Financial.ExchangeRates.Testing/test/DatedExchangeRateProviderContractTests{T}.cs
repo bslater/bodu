@@ -38,46 +38,46 @@ public abstract class DatedExchangeRateProviderContractTests<TProvider>
     /// <summary>
     /// Gets the currency pair the provider returned by <see cref="CreateProvider" /> has been seeded for.
     /// </summary>
-    /// <returns>The seeded currency pair.</returns>
+    /// <value>The seeded currency pair.</value>
     protected abstract ExchangeRatePair CanonicalPair { get; }
 
     /// <summary>
     /// Gets a date for which the seeded provider has a resolvable observation under <see cref="ExchangeRateLookupOptions.Exact" />.
     /// </summary>
-    /// <returns>A date that resolves for <see cref="CanonicalPair" />.</returns>
+    /// <value>A date that resolves for <see cref="CanonicalPair" />.</value>
     protected abstract DateOnly KnownDate { get; }
 
     /// <summary>
     /// Gets a date for which the seeded provider has no observation and that does not resolve under
     /// <see cref="ExchangeRateLookupOptions.Exact" /> in either direction.
     /// </summary>
-    /// <returns>A date that does not resolve for <see cref="CanonicalPair" />.</returns>
+    /// <value>A date that does not resolve for <see cref="CanonicalPair" />.</value>
     protected abstract DateOnly UnknownDate { get; }
 
     /// <summary>
     /// Gets the inclusive start of the range exercised by the range contract. Defaults to <see cref="KnownDate" />.
     /// </summary>
-    /// <returns>The inclusive start date of the contract range.</returns>
+    /// <value>The inclusive start date of the contract range.</value>
     protected virtual DateOnly RangeStart => KnownDate;
 
     /// <summary>
     /// Gets the inclusive end of the range exercised by the range contract. Defaults to <see cref="KnownDate" />.
     /// </summary>
-    /// <returns>The inclusive end date of the contract range.</returns>
+    /// <value>The inclusive end date of the contract range.</value>
     protected virtual DateOnly RangeEnd => KnownDate;
 
     /// <summary>
     /// Gets a value indicating whether the provider resolves a reverse-direction (inverse) lookup. Defaults to
     /// <see langword="true" />.
     /// </summary>
-    /// <returns><see langword="true" /> when inverse lookups are supported; otherwise <see langword="false" />.</returns>
+    /// <value><see langword="true" /> when inverse lookups are supported; otherwise <see langword="false" />.</value>
     protected virtual bool SupportsInverseLookup => true;
 
     /// <summary>
     /// Gets a value indicating whether the provider returns a synthetic identity rate for a same-currency lookup.
     /// Defaults to <see langword="true" />.
     /// </summary>
-    /// <returns><see langword="true" /> when same-currency identity rates are supported; otherwise <see langword="false" />.</returns>
+    /// <value><see langword="true" /> when same-currency identity rates are supported; otherwise <see langword="false" />.</value>
     protected virtual bool SupportsIdentityRate => true;
 
     /// <summary>
@@ -85,7 +85,7 @@ public abstract class DatedExchangeRateProviderContractTests<TProvider>
     /// after disposal. Defaults to <see langword="false" /> for providers that are not <see cref="IDisposable" /> or that
     /// intentionally keep serving an in-memory snapshot after disposal.
     /// </summary>
-    /// <returns><see langword="true" /> when disposed members throw; otherwise <see langword="false" />.</returns>
+    /// <value><see langword="true" /> when disposed members throw; otherwise <see langword="false" />.</value>
     protected virtual bool SupportsDisposalGuard => false;
 
     /// <summary>

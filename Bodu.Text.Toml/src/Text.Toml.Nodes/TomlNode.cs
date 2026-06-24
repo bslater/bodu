@@ -67,14 +67,12 @@ public abstract class TomlNode
     /// Gets the node that contains this node, or <see langword="null" /> when this node is the root of its tree.
     /// </summary>
     /// <value>The containing node, or <see langword="null" /> for a root node.</value>
-    /// <returns>The parent node, or <see langword="null" /> when this node has no parent.</returns>
     public TomlNode? Parent { get; internal set; }
 
     /// <summary>
     /// Gets the topmost node of the tree this node belongs to.
     /// </summary>
     /// <value>The root node reached by following <see cref="Parent" /> until it is <see langword="null" />.</value>
-    /// <returns>The root node, which is this node when it has no parent.</returns>
     public TomlNode Root
     {
         get

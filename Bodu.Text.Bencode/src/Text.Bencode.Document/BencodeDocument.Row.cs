@@ -61,61 +61,61 @@ public sealed partial class BencodeDocument
         /// <summary>
         /// Gets the kind of value this row represents.
         /// </summary>
-        /// <returns>The value kind.</returns>
+        /// <value>The value kind.</value>
         public BencodeValueKind Kind { get; }
 
         /// <summary>
         /// Gets the absolute byte offset of a byte string's content within the owning document's buffer.
         /// </summary>
-        /// <returns>The content offset for a <see cref="BencodeValueKind.ByteString" /> row; otherwise zero.</returns>
+        /// <value>The content offset for a <see cref="BencodeValueKind.ByteString" /> row; otherwise zero.</value>
         public int Location { get; }
 
         /// <summary>
         /// Gets the byte length of a byte string's content.
         /// </summary>
-        /// <returns>The content length for a <see cref="BencodeValueKind.ByteString" /> row; otherwise zero.</returns>
+        /// <value>The content length for a <see cref="BencodeValueKind.ByteString" /> row; otherwise zero.</value>
         public int Length { get; }
 
         /// <summary>
         /// Gets the decoded value of an integer. When <see cref="IntegerExceedsInt64" /> is set, the property holds the
         /// unchecked bit pattern of an unsigned value above <see cref="long.MaxValue" />.
         /// </summary>
-        /// <returns>The value for a <see cref="BencodeValueKind.Integer" /> row; otherwise zero.</returns>
+        /// <value>The value for a <see cref="BencodeValueKind.Integer" /> row; otherwise zero.</value>
         public long Integer { get; }
 
         /// <summary>
         /// Gets a value indicating whether the integer exceeds <see cref="long.MaxValue" /> and is therefore
         /// representable only as <see cref="ulong" />.
         /// </summary>
-        /// <returns><see langword="true" /> when <see cref="Integer" /> holds an unsigned bit pattern.</returns>
+        /// <value><see langword="true" /> when <see cref="Integer" /> holds an unsigned bit pattern.</value>
         public bool IntegerExceedsInt64 { get; }
 
         /// <summary>
         /// Gets the number of rows occupied by this value's subtree, including this row.
         /// </summary>
-        /// <returns>The subtree row count, which is always at least one.</returns>
+        /// <value>The subtree row count, which is always at least one.</value>
         public int NumberOfRows { get; }
 
         /// <summary>
         /// Gets the number of direct children this value contains.
         /// </summary>
-        /// <returns>
+        /// <value>
         /// The element count for a <see cref="BencodeValueKind.Array" /> row, the key/value pair count for a
         /// <see cref="BencodeValueKind.Object" /> row; otherwise zero.
-        /// </returns>
+        /// </value>
         public int ChildCount { get; }
 
         /// <summary>
         /// Gets the absolute byte offset of the value's complete encoded form within the owning document's buffer,
         /// including the framing tokens (the <c>i…e</c>, length prefix, or container delimiters).
         /// </summary>
-        /// <returns>The raw start offset.</returns>
+        /// <value>The raw start offset.</value>
         public int RawLocation { get; }
 
         /// <summary>
         /// Gets the byte length of the value's complete encoded form.
         /// </summary>
-        /// <returns>The raw byte length.</returns>
+        /// <value>The raw byte length.</value>
         public int RawLength { get; }
 
         /// <summary>

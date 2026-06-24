@@ -137,28 +137,28 @@ public sealed class DelimitedReader
     /// Gets the column names parsed from the header row. Populated after the first call to <see cref="Read" /> when
     /// <see cref="DelimitedParseOptions.HasHeader" /> is <see langword="true" />; otherwise, always an empty list.
     /// </summary>
-    /// <returns>The ordered list of header names, or an empty list when no header row is present.</returns>
+    /// <value>The ordered list of header names, or an empty list when no header row is present.</value>
     public IReadOnlyList<string> Headers => _headers;
 
     /// <summary>
     /// Gets the field values of the current data row. Valid only when the most recent call to <see cref="Read" />
     /// returned <see langword="true" />.
     /// </summary>
-    /// <returns>The field values in source order for the current row.</returns>
+    /// <value>The field values in source order for the current row.</value>
     public IReadOnlyList<string> Fields => _fields;
 
     /// <summary>
     /// Gets the 1-based line number of the position currently being processed in the underlying stream. Increments each
     /// time a line terminator is consumed.
     /// </summary>
-    /// <returns>The current line number, starting at 1.</returns>
+    /// <value>The current line number, starting at 1.</value>
     public int LineNumber => _lineNumber;
 
     /// <summary>
     /// Gets the number of data rows successfully returned by <see cref="Read" />. The header row, blank lines, and
     /// comment lines are not counted.
     /// </summary>
-    /// <returns>The number of data rows read so far.</returns>
+    /// <value>The number of data rows read so far.</value>
     public int RowNumber => _rowNumber;
 
     /// <summary>

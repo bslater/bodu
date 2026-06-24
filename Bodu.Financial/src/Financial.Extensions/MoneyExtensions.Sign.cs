@@ -15,7 +15,7 @@ public static partial class MoneyExtensions
         /// <summary>
         /// Gets the sign of this amount.
         /// </summary>
-        /// <returns><c>-1</c>, <c>0</c>, or <c>1</c>.</returns>
+        /// <value><c>-1</c>, <c>0</c>, or <c>1</c>.</value>
         public int Sign =>
             Math.Sign(value.Amount);
     }

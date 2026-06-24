@@ -81,6 +81,6 @@ public struct TomlReaderState
     /// <summary>
     /// Gets the reader options the state carries.
     /// </summary>
-    /// <returns>The options supplied when the state was created.</returns>
+    /// <value>The options supplied when the state was created.</value>
     public readonly TomlReaderOptions Options => _options;
 }

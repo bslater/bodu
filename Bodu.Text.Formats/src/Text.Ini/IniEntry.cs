@@ -104,36 +104,36 @@ public sealed class IniEntry
     /// <summary>
     /// Gets the key name of this entry.
     /// </summary>
-    /// <returns>The trimmed key string as it appeared in the source.</returns>
+    /// <value>The trimmed key string as it appeared in the source.</value>
     public string Key { get; }
 
     /// <summary>
     /// Gets the raw string value of this entry.
     /// </summary>
-    /// <returns>The entry value as supplied at construction. Never <see langword="null" />.</returns>
+    /// <value>The entry value as supplied at construction. Never <see langword="null" />.</value>
     public string Value { get; }
 
     /// <summary>
     /// Gets the 1-based source line number at which this entry was authored, or <c>0</c> when the entry was constructed
     /// programmatically rather than parsed.
     /// </summary>
-    /// <returns>A non-negative line number.</returns>
+    /// <value>A non-negative line number.</value>
     public int LineNumber { get; }
 
     /// <summary>
     /// Gets the comments authored on lines preceding this entry, in source order.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// A read-only view onto the section's mutable leading-comment list. The list is empty when no comments precede the
     /// entry or when <see cref="IniParseOptions.PreserveComments" /> was <see langword="false" />.
-    /// </returns>
+    /// </value>
     public IReadOnlyList<IniComment> LeadingComments => _leadingComments;
 
     /// <summary>
     /// Gets or sets the comment captured on the same line as this entry, or <see langword="null" /> when no inline
     /// comment is present.
     /// </summary>
-    /// <returns>The inline comment, or <see langword="null" />.</returns>
+    /// <value>The inline comment, or <see langword="null" />.</value>
     public IniComment? InlineComment { get; set; }
 
     /// <summary>

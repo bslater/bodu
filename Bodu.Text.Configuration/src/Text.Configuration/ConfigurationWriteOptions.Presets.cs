@@ -11,20 +11,20 @@ public sealed partial class ConfigurationWriteOptions
     /// <summary>
     /// Gets the canonical option set for the default Bodu profile.
     /// </summary>
-    /// <returns>A cached default options instance.</returns>
+    /// <value>A cached default options instance.</value>
     public static ConfigurationWriteOptions Bodu { get; } = For(ConfigurationProfile.Bodu);
 
     /// <summary>
     /// Gets the canonical option set for the EditorConfig-compatible profile: inline comments suppressed.
     /// </summary>
-    /// <returns>A cached EditorConfig-compatible options instance.</returns>
+    /// <value>A cached EditorConfig-compatible options instance.</value>
     public static ConfigurationWriteOptions EditorConfigCompatible { get; } =
         For(ConfigurationProfile.EditorConfigCompatible);
 
     /// <summary>
     /// Gets the canonical option set for normalized output: sorted properties, deterministic spacing.
     /// </summary>
-    /// <returns>A cached normalized options instance.</returns>
+    /// <value>A cached normalized options instance.</value>
     public static ConfigurationWriteOptions Normalized { get; } = For(ConfigurationProfile.Strict);
 
     /// <summary>

@@ -153,31 +153,31 @@ public ref struct TomlDocumentReader
     /// <summary>
     /// Gets the kind of the current token.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The current token kind, or <see cref="TomlTokenType.None" /> before the first or after the last token.
-    /// </returns>
+    /// </value>
     public readonly TomlTokenType TokenType => _tokenType;
 
     /// <summary>
     /// Gets the current container nesting depth.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The depth, where zero is the document root. A top-level table or array opens depth one; nested containers
     /// increase it further.
-    /// </returns>
+    /// </value>
     public readonly int CurrentDepth => _depth > 0 ? _depth - 1 : 0;
 
     /// <summary>
     /// Gets the flat row store the cursor walks.
     /// </summary>
-    /// <returns>The shared row store.</returns>
+    /// <value>The shared row store.</value>
     internal readonly List<TomlReaderRow> Rows => _rows;
 
     /// <summary>
     /// Gets the row index of the value the current token belongs to, so a subtree can be materialized over the shared
     /// store without copying.
     /// </summary>
-    /// <returns>The current value's row index, or <c>-1</c> before the first token.</returns>
+    /// <value>The current value's row index, or <c>-1</c> before the first token.</value>
     internal readonly int CurrentRowIndex => _currentRow;
 
     /// <summary>

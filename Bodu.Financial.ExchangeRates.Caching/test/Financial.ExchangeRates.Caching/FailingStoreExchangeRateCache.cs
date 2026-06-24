@@ -27,7 +27,7 @@ internal sealed class FailingStoreExchangeRateCache
     /// <summary>
     /// Gets the number of times <see cref="StoreFetchedRange" /> was invoked.
     /// </summary>
-    /// <returns>The invocation count.</returns>
+    /// <value>The invocation count.</value>
     public int StoreFetchedRangeCallCount { get; private set; }
 
     /// <inheritdoc />

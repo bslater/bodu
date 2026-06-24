@@ -79,56 +79,56 @@ public sealed class ResolutionPolicy
     /// <summary>
     /// Gets the policy applied when two rules resolve to the same identity.
     /// </summary>
-    /// <returns>The configured <see cref="DuplicatePolicy" />.</returns>
+    /// <value>The configured <see cref="DuplicatePolicy" />.</value>
     public DuplicatePolicy DuplicatePolicy { get; }
 
     /// <summary>
     /// Gets the policy applied when distinct notable dates resolve to the same day.
     /// </summary>
-    /// <returns>The configured same-day <see cref="CollisionPolicy" />.</returns>
+    /// <value>The configured same-day <see cref="CollisionPolicy" />.</value>
     public CollisionPolicy SameDayCollisionPolicy { get; }
 
     /// <summary>
     /// Gets the policy applied when distinct notable dates resolve to overlapping spans.
     /// </summary>
-    /// <returns>The configured span <see cref="CollisionPolicy" />.</returns>
+    /// <value>The configured span <see cref="CollisionPolicy" />.</value>
     public CollisionPolicy SpanCollisionPolicy { get; }
 
     /// <summary>
     /// Gets the direction in which numeric priority is interpreted.
     /// </summary>
-    /// <returns>The configured <see cref="PriorityDirection" />.</returns>
+    /// <value>The configured <see cref="PriorityDirection" />.</value>
     public PriorityDirection PriorityDirection { get; }
 
     /// <summary>
     /// Gets the occurrence that controls whether a resolved notable date is included by a range query.
     /// </summary>
-    /// <returns>The configured <see cref="ObservedDateRangePolicy" />.</returns>
+    /// <value>The configured <see cref="ObservedDateRangePolicy" />.</value>
     public ObservedDateRangePolicy ObservedDateRangePolicy { get; }
 
     /// <summary>
     /// Gets the working week that defines which weekdays are working days, and therefore which are weekend
     /// (non-working) days for weekend-sensitive triggers and working-day searches.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The configured working-week pattern; <see cref="WeekPattern.MondayToFriday" /> when the resource leaves it
     /// unspecified.
-    /// </returns>
+    /// </value>
     public WeekPattern WorkingWeek { get; }
 
     /// <summary>
     /// Gets the category precedence applied by <see cref="CollisionPolicy.CategoryPriority" />, highest-winning first.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The effective category precedence; every ranked category appears exactly once, with any categories an authored
     /// list omits appended in built-in order.
-    /// </returns>
+    /// </value>
     public IReadOnlyList<NotableDateCategory> CategoryPrecedence { get; }
 
     /// <summary>
     /// Gets a <see cref="ResolutionPolicy" /> populated with the recommended default values.
     /// </summary>
-    /// <returns>A shared default policy instance.</returns>
+    /// <value>A shared default policy instance.</value>
     public static ResolutionPolicy Default { get; } = new ResolutionPolicy();
 
     /// <summary>

@@ -22,19 +22,19 @@ public sealed class TomlConfigurationSource
     /// <summary>
     /// Gets or sets the stream containing UTF-8 TOML text. Takes precedence over <see cref="Path" /> when both are set.
     /// </summary>
-    /// <returns>The configured stream, or <see langword="null" /> when the source is file-backed.</returns>
+    /// <value>The configured stream, or <see langword="null" /> when the source is file-backed.</value>
     public Stream? Stream { get; set; }
 
     /// <summary>
     /// Gets or sets the path of the TOML file to read.
     /// </summary>
-    /// <returns>The configured file path, or <see langword="null" /> when the source is stream-backed.</returns>
+    /// <value>The configured file path, or <see langword="null" /> when the source is stream-backed.</value>
     public string? Path { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether a missing file at <see cref="Path" /> is permitted.
     /// </summary>
-    /// <returns><see langword="true" /> when the file may be absent; otherwise <see langword="false" />.</returns>
+    /// <value><see langword="true" /> when the file may be absent; otherwise <see langword="false" />.</value>
     public bool Optional { get; set; }
 
     /// <summary>

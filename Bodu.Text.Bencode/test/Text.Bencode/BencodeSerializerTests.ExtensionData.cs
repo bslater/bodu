@@ -187,13 +187,13 @@ public partial class BencodeSerializerTests
         /// <summary>
         /// Gets or sets the declared name member.
         /// </summary>
-        /// <returns>The name.</returns>
+        /// <value>The name.</value>
         public string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the extension-data member that captures unmatched keys.
         /// </summary>
-        /// <returns>The captured entries, or <see langword="null" /> when none were read.</returns>
+        /// <value>The captured entries, or <see langword="null" /> when none were read.</value>
         [BencodeExtensionData]
         public BencodeObject? Extra { get; set; }
     }
@@ -206,13 +206,13 @@ public partial class BencodeSerializerTests
         /// <summary>
         /// Gets or sets the declared name member.
         /// </summary>
-        /// <returns>The name.</returns>
+        /// <value>The name.</value>
         public string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the extension-data member that captures unmatched keys.
         /// </summary>
-        /// <returns>The captured entries, or <see langword="null" /> when none were read.</returns>
+        /// <value>The captured entries, or <see langword="null" /> when none were read.</value>
         [BencodeExtensionData]
         public IDictionary<string, BencodeNode?>? Extra { get; set; }
     }
@@ -225,13 +225,13 @@ public partial class BencodeSerializerTests
         /// <summary>
         /// Gets or sets the declared name member.
         /// </summary>
-        /// <returns>The name.</returns>
+        /// <value>The name.</value>
         public string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets the get-only extension-data member, populated in place with unmatched keys.
         /// </summary>
-        /// <returns>The captured entries.</returns>
+        /// <value>The captured entries.</value>
         [BencodeExtensionData]
         public IDictionary<string, BencodeNode?> Extra { get; } = new Dictionary<string, BencodeNode?>(StringComparer.Ordinal);
     }
@@ -244,14 +244,14 @@ public partial class BencodeSerializerTests
         /// <summary>
         /// Gets or sets the first extension-data member.
         /// </summary>
-        /// <returns>The first captured entries.</returns>
+        /// <value>The first captured entries.</value>
         [BencodeExtensionData]
         public BencodeObject? First { get; set; }
 
         /// <summary>
         /// Gets or sets the second extension-data member, which makes the type invalid.
         /// </summary>
-        /// <returns>The second captured entries.</returns>
+        /// <value>The second captured entries.</value>
         [BencodeExtensionData]
         public BencodeObject? Second { get; set; }
     }
@@ -264,7 +264,7 @@ public partial class BencodeSerializerTests
         /// <summary>
         /// Gets or sets the extension-data member declared with an unsupported value type.
         /// </summary>
-        /// <returns>The captured entries.</returns>
+        /// <value>The captured entries.</value>
         [BencodeExtensionData]
         public Dictionary<string, int>? Extra { get; set; }
     }

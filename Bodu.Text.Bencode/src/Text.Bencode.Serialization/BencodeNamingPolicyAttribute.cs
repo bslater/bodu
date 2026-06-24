@@ -51,7 +51,7 @@ public sealed class BencodeNamingPolicyAttribute
     /// Gets the naming policy applied to the annotated type's members, or <see langword="null" /> when the attribute
     /// specifies <see cref="BencodeKnownNamingPolicy.Unspecified" />.
     /// </summary>
-    /// <returns>The resolved naming policy, or <see langword="null" />.</returns>
+    /// <value>The resolved naming policy, or <see langword="null" />.</value>
     public BencodeNamingPolicy? NamingPolicy { get; }
 
     /// <summary>

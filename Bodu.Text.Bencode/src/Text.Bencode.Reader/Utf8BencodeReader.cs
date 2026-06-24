@@ -119,32 +119,32 @@ public ref struct Utf8BencodeReader
     /// <summary>
     /// Gets the number of bytes consumed so far.
     /// </summary>
-    /// <returns>The read position.</returns>
+    /// <value>The read position.</value>
     public readonly int BytesConsumed => _position;
 
     /// <summary>
     /// Gets the current container nesting depth.
     /// </summary>
-    /// <returns>The depth, where zero is the document root.</returns>
+    /// <value>The depth, where zero is the document root.</value>
     public readonly int CurrentDepth => _frames.Count;
 
     /// <summary>
     /// Gets the byte offset within the source where the current token begins. For a byte string or property name the
     /// offset addresses the length prefix, not the content.
     /// </summary>
-    /// <returns>The current token's start offset, or zero before the first token has been read.</returns>
+    /// <value>The current token's start offset, or zero before the first token has been read.</value>
     public readonly int TokenStartIndex => _tokenStart;
 
     /// <summary>
     /// Gets the kind of the current token.
     /// </summary>
-    /// <returns>The current token kind.</returns>
+    /// <value>The current token kind.</value>
     public readonly BencodeTokenType TokenType => _tokenType;
 
     /// <summary>
     /// Gets the raw content bytes of the current byte-string or property-name token.
     /// </summary>
-    /// <returns>The byte-string content.</returns>
+    /// <value>The byte-string content.</value>
     public readonly ReadOnlySpan<byte> ValueSpan => _data.Slice(_valueStart, _valueLength);
 
     /// <summary>
@@ -732,26 +732,26 @@ public ref struct Utf8BencodeReader
         /// <summary>
         /// Gets or sets a value indicating whether the next token in a dictionary is a key.
         /// </summary>
-        /// <returns><see langword="true" /> when a key is expected.</returns>
+        /// <value><see langword="true" /> when a key is expected.</value>
         internal bool ExpectKey { get; set; }
 
         /// <summary>
         /// Gets a value indicating whether the container is a dictionary.
         /// </summary>
-        /// <returns><see langword="true" /> for a dictionary; otherwise <see langword="false" />.</returns>
+        /// <value><see langword="true" /> for a dictionary; otherwise <see langword="false" />.</value>
         internal bool IsDict { get; }
 
         /// <summary>
         /// Gets or sets the length of the most recently read dictionary key.
         /// </summary>
-        /// <returns>The previous key's length.</returns>
+        /// <value>The previous key's length.</value>
         internal int PreviousKeyLength { get; set; }
 
         /// <summary>
         /// Gets or sets the start offset of the most recently read dictionary key, or <c> -1</c> when none has been
         /// read.
         /// </summary>
-        /// <returns>The previous key's start offset.</returns>
+        /// <value>The previous key's start offset.</value>
         internal int PreviousKeyStart { get; set; }
 
         /// <summary>

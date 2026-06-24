@@ -71,10 +71,10 @@ public sealed class SecretBytes
     /// <summary>
     /// Gets the number of bytes of secret material.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The buffer length in bytes. Remains readable after disposal, because the length of a secret is not itself
     /// secret.
-    /// </returns>
+    /// </value>
     public int Length =>
         _buffer.Length;
 

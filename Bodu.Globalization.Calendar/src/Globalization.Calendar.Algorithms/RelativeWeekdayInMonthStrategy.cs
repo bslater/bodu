@@ -43,31 +43,31 @@ public sealed class RelativeWeekdayInMonthStrategy
     /// <summary>
     /// Gets the one-based month of the anchor.
     /// </summary>
-    /// <returns>The anchor month.</returns>
+    /// <value>The anchor month.</value>
     public int Month { get; }
 
     /// <summary>
     /// Gets the anchor weekday.
     /// </summary>
-    /// <returns>The anchor weekday.</returns>
+    /// <value>The anchor weekday.</value>
     public DayOfWeek DayOfWeek { get; }
 
     /// <summary>
     /// Gets the occurrence of the anchor weekday in the month.
     /// </summary>
-    /// <returns>The anchor <see cref="WeekOrdinal" />.</returns>
+    /// <value>The anchor <see cref="WeekOrdinal" />.</value>
     public WeekOrdinal WeekOrdinal { get; }
 
     /// <summary>
     /// Gets the weekday to seek relative to the anchor.
     /// </summary>
-    /// <returns>The relative weekday.</returns>
+    /// <value>The relative weekday.</value>
     public DayOfWeek RelativeDayOfWeek { get; }
 
     /// <summary>
     /// Gets the direction and inclusivity applied when seeking the relative weekday.
     /// </summary>
-    /// <returns>The configured <see cref="WeekdayProximity" />.</returns>
+    /// <value>The configured <see cref="WeekdayProximity" />.</value>
     public WeekdayProximity Direction { get; }
 
     /// <inheritdoc />

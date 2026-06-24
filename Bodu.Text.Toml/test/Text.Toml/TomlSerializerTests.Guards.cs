@@ -168,7 +168,7 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the single integer member.
         /// </summary>
-        /// <returns>The stored integer value.</returns>
+        /// <value>The stored integer value.</value>
         public int Value { get; set; }
     }
 }

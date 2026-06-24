@@ -23,13 +23,13 @@ public partial class MoneyOfTCurrencyTests
         /// <summary>
         /// Gets a sentinel ISO code for the test-only currency tag.
         /// </summary>
-        /// <returns>The literal three-letter ISO code <c>"XXA"</c>.</returns>
+        /// <value>The literal three-letter ISO code <c>"XXA"</c>.</value>
         public static string IsoCode => "XXA";
 
         /// <summary>
         /// Gets a deliberately-invalid negative minor-unit precision.
         /// </summary>
-        /// <returns>The value <c>-1</c>.</returns>
+        /// <value>The value <c>-1</c>.</value>
         public static int MinorUnits => -1;
     }
 
@@ -42,13 +42,13 @@ public partial class MoneyOfTCurrencyTests
         /// <summary>
         /// Gets a sentinel ISO code for the test-only currency tag.
         /// </summary>
-        /// <returns>The literal three-letter ISO code <c>"XXB"</c>.</returns>
+        /// <value>The literal three-letter ISO code <c>"XXB"</c>.</value>
         public static string IsoCode => "XXB";
 
         /// <summary>
         /// Gets a deliberately-invalid minor-unit precision above the 28-digit decimal cap.
         /// </summary>
-        /// <returns>The value <c>29</c>.</returns>
+        /// <value>The value <c>29</c>.</value>
         public static int MinorUnits => 29;
     }
 
@@ -61,13 +61,13 @@ public partial class MoneyOfTCurrencyTests
         /// <summary>
         /// Gets a sentinel ISO code for the test-only currency tag.
         /// </summary>
-        /// <returns>The literal three-letter ISO code <c>"XXC"</c>.</returns>
+        /// <value>The literal three-letter ISO code <c>"XXC"</c>.</value>
         public static string IsoCode => "XXC";
 
         /// <summary>
         /// Gets <see cref="int.MaxValue" /> as the minor-unit precision — far beyond the decimal cap.
         /// </summary>
-        /// <returns>The value <see cref="int.MaxValue" />.</returns>
+        /// <value>The value <see cref="int.MaxValue" />.</value>
         public static int MinorUnits => int.MaxValue;
     }
 

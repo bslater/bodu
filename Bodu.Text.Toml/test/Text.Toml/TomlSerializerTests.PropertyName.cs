@@ -169,7 +169,7 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the integer value.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public int Value { get; set; }
     }
 
@@ -182,13 +182,13 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the first name, named by the active naming policy.
         /// </summary>
-        /// <returns>The first name.</returns>
+        /// <value>The first name.</value>
         public string FirstName { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the last name, named explicitly so the policy does not apply.
         /// </summary>
-        /// <returns>The last name.</returns>
+        /// <value>The last name.</value>
         [TomlPropertyName("surname")]
         public string LastName { get; set; } = string.Empty;
     }
@@ -201,7 +201,7 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the identifier, keyed under the wire name <c>id</c>.
         /// </summary>
-        /// <returns>The identifier.</returns>
+        /// <value>The identifier.</value>
         [TomlPropertyName("id")]
         public int Identifier { get; set; }
     }

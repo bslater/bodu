@@ -37,13 +37,13 @@ internal sealed class GatedYahooExchangeRateChartSource
     /// <summary>
     /// Gets the number of times <see cref="GetChartAsync" /> has been entered.
     /// </summary>
-    /// <returns>The fetch count, read atomically.</returns>
+    /// <value>The fetch count, read atomically.</value>
     public int CallCount => Volatile.Read(ref _callCount);
 
     /// <summary>
     /// Gets a task that completes once the first caller has entered the fetch.
     /// </summary>
-    /// <returns>The arrival task.</returns>
+    /// <value>The arrival task.</value>
     public Task Entered => _entered.Task;
 
     /// <summary>

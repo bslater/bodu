@@ -71,7 +71,7 @@ public sealed class ExcelWorksheetReader
     /// <summary>
     /// Gets the descriptor of the worksheet being read.
     /// </summary>
-    /// <returns>The worksheet's name, index, visibility, type, and declared used range.</returns>
+    /// <value>The worksheet's name, index, visibility, type, and declared used range.</value>
     public ExcelWorksheetInfo Worksheet { get; }
 
     /// <summary>

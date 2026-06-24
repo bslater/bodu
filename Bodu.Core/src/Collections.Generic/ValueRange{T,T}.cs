@@ -76,19 +76,19 @@ public readonly struct ValueRange<TKey, TValue>
     /// <summary>
     /// Gets the inclusive start of the range.
     /// </summary>
-    /// <returns>The inclusive lower bound of the range.</returns>
+    /// <value>The inclusive lower bound of the range.</value>
     public TKey StartInclusive { get; }
 
     /// <summary>
     /// Gets the exclusive end of the range.
     /// </summary>
-    /// <returns>The exclusive upper bound of the range.</returns>
+    /// <value>The exclusive upper bound of the range.</value>
     public TKey EndExclusive { get; }
 
     /// <summary>
     /// Gets the value associated with the range.
     /// </summary>
-    /// <returns>The value mapped to this range.</returns>
+    /// <value>The value mapped to this range.</value>
     public TValue Value { get; }
 
     /// <summary>

@@ -35,31 +35,31 @@ public abstract class BencodeNamingPolicy
     /// <summary>
     /// Gets a policy that converts a name to <c>camelCase</c> by lowercasing its first character.
     /// </summary>
-    /// <returns>The camel-case naming policy.</returns>
+    /// <value>The camel-case naming policy.</value>
     public static BencodeNamingPolicy CamelCase { get; } = new CamelCaseNamingPolicy();
 
     /// <summary>
     /// Gets a policy that converts a name to <c>snake_case</c> using lowercase letters.
     /// </summary>
-    /// <returns>The lowercase snake-case naming policy.</returns>
+    /// <value>The lowercase snake-case naming policy.</value>
     public static BencodeNamingPolicy SnakeCaseLower { get; } = new SeparatorNamingPolicy('_', toUpper: false);
 
     /// <summary>
     /// Gets a policy that converts a name to <c>SNAKE_CASE</c> using uppercase letters.
     /// </summary>
-    /// <returns>The uppercase snake-case naming policy.</returns>
+    /// <value>The uppercase snake-case naming policy.</value>
     public static BencodeNamingPolicy SnakeCaseUpper { get; } = new SeparatorNamingPolicy('_', toUpper: true);
 
     /// <summary>
     /// Gets a policy that converts a name to <c>kebab-case</c> using lowercase letters.
     /// </summary>
-    /// <returns>The lowercase kebab-case naming policy.</returns>
+    /// <value>The lowercase kebab-case naming policy.</value>
     public static BencodeNamingPolicy KebabCaseLower { get; } = new SeparatorNamingPolicy('-', toUpper: false);
 
     /// <summary>
     /// Gets a policy that converts a name to <c>KEBAB-CASE</c> using uppercase letters.
     /// </summary>
-    /// <returns>The uppercase kebab-case naming policy.</returns>
+    /// <value>The uppercase kebab-case naming policy.</value>
     public static BencodeNamingPolicy KebabCaseUpper { get; } = new SeparatorNamingPolicy('-', toUpper: true);
 
     /// <summary>

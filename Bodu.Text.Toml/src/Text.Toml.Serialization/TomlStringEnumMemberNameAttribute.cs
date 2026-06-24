@@ -58,6 +58,6 @@ public sealed class TomlStringEnumMemberNameAttribute
     /// <summary>
     /// Gets the string name used for the annotated enumeration member in serialized output.
     /// </summary>
-    /// <returns>The serialized member name.</returns>
+    /// <value>The serialized member name.</value>
     public string Name { get; }
 }

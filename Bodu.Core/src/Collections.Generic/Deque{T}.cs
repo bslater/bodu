@@ -235,7 +235,6 @@ public sealed class Deque<T>
     /// <see cref="InvalidOperationException" /> from <see cref="AddFirst(T)" /> and <see cref="AddLast(T)" /> and
     /// return <see langword="false" /> from their <c>Try*</c> variants once full.
     /// </value>
-    /// <returns>The current growth policy.</returns>
     /// <remarks>
     /// This property may be toggled at runtime to switch the deque between fixed and growable modes. Switching from
     /// <see langword="true" /> to <see langword="false" /> does not shrink the existing backing array; call

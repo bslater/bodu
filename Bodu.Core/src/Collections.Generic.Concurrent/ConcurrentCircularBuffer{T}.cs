@@ -214,7 +214,6 @@ public sealed partial class ConcurrentCircularBuffer<T>
     /// <see langword="true" /> to evict the oldest element when full; <see langword="false" /> to throw or return
     /// <see langword="false" /> from the producer-side methods.
     /// </value>
-    /// <returns>The current overwrite policy.</returns>
     /// <remarks>
     /// Toggling this property concurrently with an in-flight <see cref="Enqueue" /> or <see cref="TryEnqueue" /> is
     /// safe but may have a benign window where a producer that observed the previous value commits its behavior

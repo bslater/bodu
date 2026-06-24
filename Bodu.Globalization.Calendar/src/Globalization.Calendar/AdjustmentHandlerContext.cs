@@ -50,31 +50,31 @@ public sealed class AdjustmentHandlerContext
     /// <summary>
     /// Gets the calculated (actual) occurrence date the handler adjusts.
     /// </summary>
-    /// <returns>The calculated date.</returns>
+    /// <value>The calculated date.</value>
     public DateOnly BaseDate { get; }
 
     /// <summary>
     /// Gets the territory code the resolution was requested for.
     /// </summary>
-    /// <returns>The requested territory code.</returns>
+    /// <value>The requested territory code.</value>
     public string Territory { get; }
 
     /// <summary>
     /// Gets the adjustment policy whose custom action is firing.
     /// </summary>
-    /// <returns>The firing <see cref="AdjustmentPolicy" />.</returns>
+    /// <value>The firing <see cref="AdjustmentPolicy" />.</value>
     public AdjustmentPolicy Policy { get; }
 
     /// <summary>
     /// Gets the resolution context the handler can use to resolve referenced rules for the same year.
     /// </summary>
-    /// <returns>The <see cref="StrategyResolutionContext" />.</returns>
+    /// <value>The <see cref="StrategyResolutionContext" />.</value>
     public StrategyResolutionContext ResolutionContext { get; }
 
     /// <summary>
     /// Gets the author-supplied parameters declared by the policy.
     /// </summary>
-    /// <returns>The policy's <see cref="AdjustmentPolicy.HandlerParameters" />; empty when none are declared.</returns>
+    /// <value>The policy's <see cref="AdjustmentPolicy.HandlerParameters" />; empty when none are declared.</value>
     public IReadOnlyDictionary<string, string> Parameters =>
         Policy.HandlerParameters;
 

@@ -30,6 +30,5 @@ public sealed class CurrencyStatusAttribute : Attribute
     /// Gets the lifecycle status assigned to the annotated currency.
     /// </summary>
     /// <value>The <see cref="CurrencyStatus" /> carried by the annotated member.</value>
-    /// <returns>The lifecycle status of the annotated <see cref="CurrencyCode" /> member.</returns>
     public CurrencyStatus Status { get; }
 }

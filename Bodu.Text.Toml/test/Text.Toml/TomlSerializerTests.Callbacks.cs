@@ -139,7 +139,7 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the value.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public int Value { get; set; }
 
         /// <inheritdoc />
@@ -158,7 +158,7 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the value, overwritten by <see cref="OnSerializing" /> before the member is written.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public int Value { get; set; }
 
         /// <inheritdoc />
@@ -174,13 +174,13 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets the log that records the callback order.
         /// </summary>
-        /// <returns>The callback log.</returns>
+        /// <value>The callback log.</value>
         public List<string> Log { get; } = new();
 
         /// <summary>
         /// Gets or sets the value.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public int Value { get; set; }
 
         /// <inheritdoc />
@@ -199,13 +199,13 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the value read from the input.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public int Value { get; set; }
 
         /// <summary>
         /// Gets the value observed when <see cref="OnDeserializing" /> ran.
         /// </summary>
-        /// <returns>The observed value.</returns>
+        /// <value>The observed value.</value>
         public int ValueAtDeserializing { get; private set; }
 
         /// <inheritdoc />
@@ -221,13 +221,13 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the value read from the input.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public int Value { get; set; }
 
         /// <summary>
         /// Gets the value observed when <see cref="OnDeserialized" /> ran.
         /// </summary>
-        /// <returns>The observed value.</returns>
+        /// <value>The observed value.</value>
         public int ValueAtDeserialized { get; private set; }
 
         /// <inheritdoc />
@@ -252,13 +252,13 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets the value, supplied through the constructor.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public int Value { get; }
 
         /// <summary>
         /// Gets the value observed when <see cref="OnDeserializing" /> ran.
         /// </summary>
-        /// <returns>The observed value.</returns>
+        /// <value>The observed value.</value>
         public int ValueAtDeserializing { get; private set; }
 
         /// <inheritdoc />
@@ -295,13 +295,13 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets the log that records the deserialize callbacks.
         /// </summary>
-        /// <returns>The deserialize log.</returns>
+        /// <value>The deserialize log.</value>
         public List<string> Log { get; } = new();
 
         /// <summary>
         /// Gets or sets the value.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public int Value { get; set; }
 
         /// <inheritdoc />

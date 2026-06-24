@@ -21,9 +21,5 @@ public struct BencodeNodeOptions
     /// <value>
     /// <see langword="true" /> when property-name lookups ignore case; otherwise <see langword="false" />.
     /// </value>
-    /// <returns>
-    /// <see langword="true" /> when <see cref="BencodeObject" /> property-name lookups ignore case; otherwise
-    /// <see langword="false" />.
-    /// </returns>
     public bool PropertyNameCaseInsensitive { get; set; }
 }

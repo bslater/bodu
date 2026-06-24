@@ -103,7 +103,6 @@ public abstract class MLDsa
     /// <see langword="false" /> (the default) to mix 32 fresh random bytes into every signature per the FIPS 204 hedged
     /// variant; <see langword="true" /> to use the all-zero string, making signatures reproducible.
     /// </value>
-    /// <returns>The currently configured signing mode.</returns>
     public bool DeterministicSigning { get; set; }
 
     /// <summary>
@@ -112,9 +111,6 @@ public abstract class MLDsa
     /// <value>
     /// <see langword="true" /> when private key material is present; otherwise, <see langword="false" />.
     /// </value>
-    /// <returns>
-    /// <see langword="true" /> when the signing members and <see cref="ExportPrivateKey" /> are available.
-    /// </returns>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     public bool HasPrivateKey
     {
@@ -129,9 +125,6 @@ public abstract class MLDsa
     /// Gets a value indicating whether the instance currently holds a public key.
     /// </summary>
     /// <value><see langword="true" /> when public key material is present; otherwise, <see langword="false" />.</value>
-    /// <returns>
-    /// <see langword="true" /> when the verification members and <see cref="ExportPublicKey" /> are available.
-    /// </returns>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     public bool HasPublicKey
     {
@@ -143,9 +136,9 @@ public abstract class MLDsa
     }
 
     /// <inheritdoc />
-    /// <returns>
+    /// <value>
     /// <see langword="null" />, because ML-DSA is a signature algorithm and performs no key exchange.
-    /// </returns>
+    /// </value>
     public override string? KeyExchangeAlgorithm =>
         null;
 
@@ -153,7 +146,6 @@ public abstract class MLDsa
     /// Gets the size, in bytes, of the encoded private key.
     /// </summary>
     /// <value>2560, 4032, or 4896 depending on the parameter set.</value>
-    /// <returns>The private key size for this parameter set.</returns>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     public int PrivateKeySizeInBytes
     {
@@ -168,7 +160,6 @@ public abstract class MLDsa
     /// Gets the size, in bytes, of the encoded public key.
     /// </summary>
     /// <value>1312, 1952, or 2592 depending on the parameter set.</value>
-    /// <returns>The public key size for this parameter set.</returns>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     public int PublicKeySizeInBytes
     {
@@ -180,7 +171,7 @@ public abstract class MLDsa
     }
 
     /// <inheritdoc />
-    /// <returns>The string <c>"ML-DSA"</c>.</returns>
+    /// <value>The string <c>"ML-DSA"</c>.</value>
     public override string? SignatureAlgorithm =>
         "ML-DSA";
 
@@ -188,7 +179,6 @@ public abstract class MLDsa
     /// Gets the size, in bytes, of an encoded signature.
     /// </summary>
     /// <value>2420, 3309, or 4627 depending on the parameter set.</value>
-    /// <returns>The signature size for this parameter set.</returns>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     public int SignatureSizeInBytes
     {

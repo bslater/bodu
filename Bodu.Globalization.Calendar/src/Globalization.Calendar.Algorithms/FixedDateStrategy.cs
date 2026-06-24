@@ -73,37 +73,37 @@ public sealed class FixedDateStrategy
     /// <summary>
     /// Gets the one-based month of the occurrence within its calendar system.
     /// </summary>
-    /// <returns>The month, or <c>0</c> when a <see cref="MonthAlias" /> supplies it at resolution time.</returns>
+    /// <value>The month, or <c>0</c> when a <see cref="MonthAlias" /> supplies it at resolution time.</value>
     public int Month { get; }
 
     /// <summary>
     /// Gets the one-based day of the occurrence.
     /// </summary>
-    /// <returns>The day of the month.</returns>
+    /// <value>The day of the month.</value>
     public int Day { get; }
 
     /// <summary>
     /// Gets the calendar system the month and day are expressed in.
     /// </summary>
-    /// <returns>The configured <see cref="CalendarSystem" />.</returns>
+    /// <value>The configured <see cref="CalendarSystem" />.</value>
     public CalendarSystem Calendar { get; }
 
     /// <summary>
     /// Gets a value indicating whether overlapping calendar years are swept to locate the Gregorian occurrence.
     /// </summary>
-    /// <returns><see langword="true" /> when the occurrence is located by sweeping calendar years.</returns>
+    /// <value><see langword="true" /> when the occurrence is located by sweeping calendar years.</value>
     public bool SweepCalendarYears { get; }
 
     /// <summary>
     /// Gets a value indicating whether a conventional Chinese month index skips an intercalary leap month.
     /// </summary>
-    /// <returns><see langword="true" /> when a conventional month index steps over a leap month.</returns>
+    /// <value><see langword="true" /> when a conventional month index steps over a leap month.</value>
     public bool SkipLeapMonth { get; }
 
     /// <summary>
     /// Gets the Hebrew month alias whose number shifts in leap years.
     /// </summary>
-    /// <returns>The alias, or <see langword="null" /> when the month is given numerically.</returns>
+    /// <value>The alias, or <see langword="null" /> when the month is given numerically.</value>
     public string? MonthAlias { get; }
 
     /// <inheritdoc />

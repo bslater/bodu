@@ -64,29 +64,29 @@ public sealed class ConfigurationResolvedEntry
     /// <summary>
     /// Gets the canonical configuration key (colon-delimited).
     /// </summary>
-    /// <returns>The key as it appears in <see cref="ConfigurationView.Values" />.</returns>
+    /// <value>The key as it appears in <see cref="ConfigurationView.Values" />.</value>
     public string Key { get; }
 
     /// <summary>
     /// Gets the resolved value for <see cref="Key" />.
     /// </summary>
-    /// <returns>The value, or <see langword="null" /> when the source value was null.</returns>
+    /// <value>The value, or <see langword="null" /> when the source value was null.</value>
     public string? Value { get; }
 
     /// <summary>
     /// Gets the position in the source document that supplied the value.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The source location. Only the <see cref="ConfigurationSourceLocation.LineNumber" /> is reliably populated — line
     /// position and length are approximate and the document path is propagated only when the document was loaded from a
     /// file.
-    /// </returns>
+    /// </value>
     public ConfigurationSourceLocation SourceLocation { get; }
 
     /// <summary>
     /// Gets the pattern of the section that supplied the value, or <see langword="null" /> when the value came from the
     /// document preamble (global section).
     /// </summary>
-    /// <returns>The section pattern (e.g. <c>*.cs</c>), or <see langword="null" /> for preamble entries.</returns>
+    /// <value>The section pattern (e.g. <c>*.cs</c>), or <see langword="null" /> for preamble entries.</value>
     public string? SectionPattern { get; }
 }

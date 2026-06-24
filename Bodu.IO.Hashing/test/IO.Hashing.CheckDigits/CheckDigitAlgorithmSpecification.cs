@@ -28,19 +28,19 @@ public sealed record CheckDigitAlgorithmSpecification
     /// <summary>
     /// Gets the expected <see cref="CheckDigitAlgorithm.AlgorithmName" /> string.
     /// </summary>
-    /// <returns>The canonical algorithm name, e.g. <c>"Luhn"</c>.</returns>
+    /// <value>The canonical algorithm name, e.g. <c>"Luhn"</c>.</value>
     public required string AlgorithmName { get; init; }
 
     /// <summary>
     /// Gets the check digit expected for an empty body.
     /// </summary>
-    /// <returns>An ASCII character in the range <c>'0'</c> to <c>'9'</c>. Defaults to <c>'0'</c>.</returns>
+    /// <value>An ASCII character in the range <c>'0'</c> to <c>'9'</c>. Defaults to <c>'0'</c>.</value>
     public char EmptyCheckDigit { get; init; } = '0';
 
     /// <summary>
     /// Gets the known-answer vectors to exercise.
     /// </summary>
-    /// <returns>A non-empty list of <see cref="CheckDigitKnownAnswer" /> entries.</returns>
+    /// <value>A non-empty list of <see cref="CheckDigitKnownAnswer" /> entries.</value>
     public required IReadOnlyList<CheckDigitKnownAnswer> KnownAnswers { get; init; }
 
 }

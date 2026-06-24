@@ -58,7 +58,7 @@ public abstract class Argon2
     /// <summary>
     /// Gets the cost and auxiliary parameters bound to this instance.
     /// </summary>
-    /// <returns>The <see cref="Argon2Parameters" /> supplied at construction.</returns>
+    /// <value>The <see cref="Argon2Parameters" /> supplied at construction.</value>
     public Argon2Parameters Parameters { get; }
 
     /// <summary>

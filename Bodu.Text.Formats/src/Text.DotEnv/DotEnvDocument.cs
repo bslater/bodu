@@ -60,10 +60,10 @@ public sealed class DotEnvDocument
     /// <summary>
     /// Gets the ordered list of entries in this document.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// A read-only list of <see cref="DotEnvEntry" /> instances in source order, with duplicates resolved according to
     /// the <see cref="DuplicateKeyPolicy" /> that was active during parsing.
-    /// </returns>
+    /// </value>
     public IReadOnlyList<DotEnvEntry> Entries { get; }
 
     /// <summary>

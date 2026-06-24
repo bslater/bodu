@@ -202,11 +202,11 @@ public sealed partial class ConcurrentHashSet<T>
     /// <summary>
     /// Gets an approximate element count without acquiring any stripe lock.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The sum of the per-stripe element counters at the moment of the call. The result is correct when no other thread
     /// is concurrently mutating the set; under concurrent <see cref="Add" />/<see cref="Remove" /> the returned value
     /// may not reflect any single coherent point-in-time state.
-    /// </returns>
+    /// </value>
     /// <remarks>
     /// <para>
     /// Use this property when callers need a fast size estimate — for capacity hints, telemetry, or display — but can
@@ -241,14 +241,13 @@ public sealed partial class ConcurrentHashSet<T>
     /// <summary>
     /// Gets the equality comparer used to hash and compare elements.
     /// </summary>
-    /// <returns>The active equality comparer.</returns>
+    /// <value>The active equality comparer.</value>
     public IEqualityComparer<T> Comparer => _comparer;
 
     /// <summary>
     /// Gets the number of elements currently contained in the set.
     /// </summary>
     /// <value>The element count observed at the moment of the call.</value>
-    /// <returns>The number of elements in the set when the call was made.</returns>
     /// <remarks>
     /// Reading this property acquires every internal lock, yielding an exact point-in-time count. Under concurrency the
     /// returned value may already be stale by the time the caller inspects it.
@@ -274,9 +273,6 @@ public sealed partial class ConcurrentHashSet<T>
     /// Gets a value indicating whether the set is empty, observed as an exact point-in-time snapshot.
     /// </summary>
     /// <value><see langword="true" /> if the set contains no elements; otherwise, <see langword="false" />.</value>
-    /// <returns>
-    /// <see langword="true" /> if the set was empty when the call was made; otherwise, <see langword="false" />.
-    /// </returns>
     /// <remarks>
     /// <para>
     /// Reading this property acquires every internal lock, producing a coherent point-in-time view of the set's
@@ -319,13 +315,13 @@ public sealed partial class ConcurrentHashSet<T>
     /// computed without acquiring any stripe lock. The "Approximate" suffix matches <see cref="ApproximateCount" /> and
     /// signals that the answer may briefly disagree with reality under concurrent mutation.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see langword="true" /> when every per-stripe counter reads as zero at the moment of inspection; otherwise
     /// <see langword="false" />. As with <see cref="ApproximateCount" /> the answer is exact in the absence of
     /// concurrent mutation but may briefly disagree with reality under active <see cref="Add" />/<see cref="Remove" />
     /// traffic — for example, by returning <see langword="false" /> for a set that is empty by the time the caller
     /// inspects the result, or vice versa.
-    /// </returns>
+    /// </value>
     /// <remarks>
     /// Use this property as a fast emptiness probe in hot paths where occasional staleness is acceptable. Prefer
     /// <see cref="IsEmpty" /> when the answer must reflect a true point-in-time snapshot — for example, before tearing
@@ -351,14 +347,14 @@ public sealed partial class ConcurrentHashSet<T>
     /// Gets the number of buckets in the current internal table. Exposed to the test assembly so that table-sizing
     /// invariants can be asserted directly.
     /// </summary>
-    /// <returns>The length of the current bucket array.</returns>
+    /// <value>The length of the current bucket array.</value>
     internal int BucketCount => _tables._buckets.Length;
 
     /// <summary>
     /// Gets the number of stripe locks that guard the table. Exposed to the test assembly so that table-sizing
     /// invariants can be asserted directly.
     /// </summary>
-    /// <returns>The fixed number of stripe locks allocated at construction.</returns>
+    /// <value>The fixed number of stripe locks allocated at construction.</value>
     internal int LockCount => _locks.Length;
 
     /// <summary>
@@ -366,7 +362,7 @@ public sealed partial class ConcurrentHashSet<T>
     /// <see cref="Environment.ProcessorCount" /> and routes through <see cref="ClampDefaultConcurrencyLevel(int)" /> so
     /// the clamp logic can be exercised in isolation.
     /// </summary>
-    /// <returns>The clamped default lock striping level for newly created instances.</returns>
+    /// <value>The clamped default lock striping level for newly created instances.</value>
     private static int DefaultConcurrencyLevel =>
         ClampDefaultConcurrencyLevel(Environment.ProcessorCount);
 

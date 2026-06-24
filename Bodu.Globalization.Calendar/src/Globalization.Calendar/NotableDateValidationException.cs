@@ -84,6 +84,6 @@ public sealed class NotableDateValidationException
     /// <summary>
     /// Gets the diagnostics produced while loading the notable-date document.
     /// </summary>
-    /// <returns>The diagnostics; empty when none were supplied.</returns>
+    /// <value>The diagnostics; empty when none were supplied.</value>
     public IReadOnlyList<NotableDateValidationDiagnostic> Diagnostics { get; }
 }

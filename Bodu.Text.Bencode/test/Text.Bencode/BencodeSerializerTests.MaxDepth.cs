@@ -342,7 +342,7 @@ public partial class BencodeSerializerTests
         /// <summary>
         /// Gets or sets the nested child, omitted from the output when <see langword="null" />.
         /// </summary>
-        /// <returns>The child, or <see langword="null" />.</returns>
+        /// <value>The child, or <see langword="null" />.</value>
         public RecursiveModel? Child { get; set; }
     }
 }

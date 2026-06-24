@@ -26,6 +26,6 @@ public sealed class PluginMissingAttributeException
     /// <summary>
     /// Gets the name of the assembly missing the attribute.
     /// </summary>
-    /// <returns>The assembly name.</returns>
+    /// <value>The assembly name.</value>
     public string AssemblyName { get; }
 }

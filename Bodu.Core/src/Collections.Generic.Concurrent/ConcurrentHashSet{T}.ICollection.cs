@@ -18,7 +18,6 @@ public sealed partial class ConcurrentHashSet<T> :
     /// Always <see langword="false" />. <see cref="ConcurrentHashSet{T}" /> manages its own internal synchronization
     /// and does not expose a public lock object.
     /// </value>
-    /// <returns>Always <see langword="false" />.</returns>
     /// <remarks>
     /// Thread safety is achieved through internal lock striping. Callers should not attempt to coordinate access
     /// externally via <see cref="ICollection.SyncRoot" />, as that property is not supported.

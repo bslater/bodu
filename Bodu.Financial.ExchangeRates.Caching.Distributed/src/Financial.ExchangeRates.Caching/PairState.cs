@@ -36,7 +36,7 @@ internal readonly struct PairState
     /// Gets an empty state carrying no rows and no coverage windows, returned when a pair has nothing persisted or a
     /// read fails.
     /// </summary>
-    /// <returns>An empty <see cref="PairState" />.</returns>
+    /// <value>An empty <see cref="PairState" />.</value>
     public static PairState Empty { get; } = new(
         Array.Empty<CachedExchangeRate>(),
         Array.Empty<(DateOnly, DateOnly, DateTimeOffset)>());
@@ -44,7 +44,7 @@ internal readonly struct PairState
     /// <summary>
     /// Gets the cached rate rows for the pair.
     /// </summary>
-    /// <returns>The cached rate rows.</returns>
+    /// <value>The cached rate rows.</value>
     public IReadOnlyList<CachedExchangeRate> Entries { get; }
 
     /// <summary>

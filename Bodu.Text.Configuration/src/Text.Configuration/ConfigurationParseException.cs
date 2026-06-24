@@ -122,22 +122,22 @@ public sealed class ConfigurationParseException
     /// Gets the primary diagnostic that triggered this exception, or <see langword="null" /> if the exception was
     /// constructed without one.
     /// </summary>
-    /// <returns>The primary diagnostic, or <see langword="null" />.</returns>
+    /// <value>The primary diagnostic, or <see langword="null" />.</value>
     public ConfigurationDiagnostic? Diagnostic { get; }
 
     /// <summary>
     /// Gets the diagnostics gathered prior to the failure. Always returns a non-default array; may be empty.
     /// </summary>
-    /// <returns>An immutable, possibly empty list of diagnostics.</returns>
+    /// <value>An immutable, possibly empty list of diagnostics.</value>
     public ImmutableArray<ConfigurationDiagnostic> Diagnostics { get; }
 
     /// <summary>
     /// Gets the location in the source document that triggered the exception.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The associated <see cref="ConfigurationSourceLocation" />, or <see cref="ConfigurationSourceLocation.None" />
     /// when no primary diagnostic is available.
-    /// </returns>
+    /// </value>
     public ConfigurationSourceLocation Location =>
         Diagnostic?.Location ?? ConfigurationSourceLocation.None;
 

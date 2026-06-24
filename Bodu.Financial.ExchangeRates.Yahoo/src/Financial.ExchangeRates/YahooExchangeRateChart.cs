@@ -35,25 +35,25 @@ internal sealed class YahooExchangeRateChart
     /// <summary>
     /// Gets the resolved currency pair.
     /// </summary>
-    /// <returns>The requested <see cref="ExchangeRatePair" />.</returns>
+    /// <value>The requested <see cref="ExchangeRatePair" />.</value>
     public ExchangeRatePair Pair { get; }
 
     /// <summary>
     /// Gets the Yahoo Finance ticker symbol the chart was fetched under.
     /// </summary>
-    /// <returns>The ticker symbol, for example <c>AUDUSD=X</c>.</returns>
+    /// <value>The ticker symbol, for example <c>AUDUSD=X</c>.</value>
     public string Symbol { get; }
 
     /// <summary>
     /// Gets the quote-currency ISO code reported for the chart.
     /// </summary>
-    /// <returns>The three-letter ISO code of the quote currency.</returns>
+    /// <value>The three-letter ISO code of the quote currency.</value>
     public string QuoteIsoCode { get; }
 
     /// <summary>
     /// Gets the dated close observations.
     /// </summary>
-    /// <returns>A read-only list of observations, in ascending date order.</returns>
+    /// <value>A read-only list of observations, in ascending date order.</value>
     public IReadOnlyList<ExchangeRateObservation> Observations { get; }
 
     /// <summary>

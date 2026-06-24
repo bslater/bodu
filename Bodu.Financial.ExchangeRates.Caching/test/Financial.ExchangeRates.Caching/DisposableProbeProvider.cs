@@ -16,7 +16,7 @@ internal sealed class DisposableProbeProvider
     /// <summary>
     /// Gets the number of times <see cref="Dispose" /> has been called.
     /// </summary>
-    /// <returns>The dispose count.</returns>
+    /// <value>The dispose count.</value>
     public int DisposeCount { get; private set; }
 
     /// <summary>

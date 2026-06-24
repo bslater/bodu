@@ -18,7 +18,7 @@ public static partial class DateTimeExtensions
         /// <summary>
         /// Gets the ISO 8601 year associated with this date.
         /// </summary>
-        /// <returns>The ISO 8601 calendar year that contains the ISO week of this date.</returns>
+        /// <value>The ISO 8601 calendar year that contains the ISO week of this date.</value>
         /// <remarks>
         /// <para>
         /// The ISO 8601 year may differ from the calendar year of this date. A date near the start or end of a calendar

@@ -42,9 +42,9 @@ public sealed class ReverseComparer<T>
     /// <summary>
     /// Gets a shared instance that reverses <see cref="Comparer{T}.Default" />.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// A singleton <see cref="ReverseComparer{T}" /> over the default comparer for <typeparamref name="T" />.
-    /// </returns>
+    /// </value>
     public static ReverseComparer<T> Instance { get; } = new();
 
     /// <inheritdoc />

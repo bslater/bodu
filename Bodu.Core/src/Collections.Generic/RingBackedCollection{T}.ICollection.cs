@@ -33,7 +33,6 @@ public abstract partial class RingBackedCollection<T>
     /// Gets a lazily-initialized object that can be used to synchronize access to the collection.
     /// </summary>
     /// <value>A non-null object suitable as a <see cref="Monitor" /> target.</value>
-    /// <returns>The synchronization root.</returns>
     object ICollection.SyncRoot =>
         _syncRoot ?? Interlocked.CompareExchange(ref _syncRoot, new object(), null) ?? _syncRoot!;
 

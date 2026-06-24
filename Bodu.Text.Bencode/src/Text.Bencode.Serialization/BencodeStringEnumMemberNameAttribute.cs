@@ -58,6 +58,6 @@ public sealed class BencodeStringEnumMemberNameAttribute
     /// <summary>
     /// Gets the byte-string name used for the annotated enumeration member in serialized output.
     /// </summary>
-    /// <returns>The serialized member name.</returns>
+    /// <value>The serialized member name.</value>
     public string Name { get; }
 }

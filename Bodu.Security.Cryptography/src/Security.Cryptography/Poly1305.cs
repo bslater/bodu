@@ -133,10 +133,10 @@ public sealed class Poly1305
     /// <summary>
     /// Gets a value indicating whether this transform instance can be reused after a hash operation is completed.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see langword="false" /> for <see cref="Poly1305" />, which is a one-time authenticator that must not be reused
     /// with the same key.
-    /// </returns>
+    /// </value>
     /// <remarks>
     /// <para>
     /// <see cref="Poly1305" /> is a one-time message authentication code (MAC) algorithm. Reusing the same instance

@@ -30,7 +30,7 @@ internal sealed class GraphDebugView<T>
     /// <summary>
     /// Gets a snapshot of the graph's vertices, each paired with a textual list of its outgoing edges.
     /// </summary>
-    /// <returns>An array of vertex/adjacency strings captured at inspection time.</returns>
+    /// <value>An array of vertex/adjacency strings captured at inspection time.</value>
     [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
     public string[] Items
     {

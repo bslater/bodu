@@ -223,7 +223,7 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the public property, which the serializer always surfaces.
         /// </summary>
-        /// <returns>The property value.</returns>
+        /// <value>The property value.</value>
         public int Property { get; set; }
     }
 
@@ -267,7 +267,7 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the property written after the ordered field.
         /// </summary>
-        /// <returns>The property value.</returns>
+        /// <value>The property value.</value>
         public int Second { get; set; }
     }
 
@@ -357,13 +357,13 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the public property, which the serializer surfaces normally.
         /// </summary>
-        /// <returns>The property value.</returns>
+        /// <value>The property value.</value>
         public int Property { get; set; }
 
         /// <summary>
         /// Gets the value of the private field, exposed for test assertions only.
         /// </summary>
-        /// <returns>The hidden value.</returns>
+        /// <value>The hidden value.</value>
         [TomlIgnore]
         public int Hidden => _hidden;
     }

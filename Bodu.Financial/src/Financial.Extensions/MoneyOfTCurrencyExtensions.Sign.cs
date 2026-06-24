@@ -16,10 +16,10 @@ public static partial class MoneyOfTCurrencyExtensions
         /// <summary>
         /// Gets the sign of this instance.
         /// </summary>
-        /// <returns>
+        /// <value>
         /// <c>-1</c> when the amount is negative, <c>0</c> when the amount is zero, and <c>1</c> when the amount is
         /// positive.
-        /// </returns>
+        /// </value>
         public int Sign =>
             Math.Sign(value.Amount);
     }

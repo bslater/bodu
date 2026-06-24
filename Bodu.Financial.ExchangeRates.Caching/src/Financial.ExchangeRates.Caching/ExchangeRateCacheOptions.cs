@@ -22,7 +22,6 @@ public class ExchangeRateCacheOptions
     /// Gets or sets the name of the provider whose rates this cache stores.
     /// </summary>
     /// <value>The provider identifier the cache is bound to.</value>
-    /// <returns>The configured provider name.</returns>
     public string Provider { get; set; } = default!;
 
     /// <summary>
@@ -33,7 +32,6 @@ public class ExchangeRateCacheOptions
     /// <see langword="true" /> to rethrow the underlying storage failure; <see langword="false" /> (the default) to
     /// keep the best-effort behaviour the <see cref="IExchangeRateCache" /> contract describes.
     /// </value>
-    /// <returns>The configured strict-failure setting.</returns>
     /// <remarks>
     /// The default keeps a cache fault from breaking rate retrieval, which suits most consumers. Set it for a
     /// deployment that must not run with a silently broken cache: the underlying failure then propagates from the read
@@ -50,7 +48,6 @@ public class ExchangeRateCacheOptions
     /// <see langword="true" /> to probe the store at construction; <see langword="false" /> (the default) to skip the
     /// probe.
     /// </value>
-    /// <returns>The configured startup-validation setting.</returns>
     /// <remarks>
     /// The probe surfaces a misconfigured directory, an unopenable database, or an unreachable distributed cache at
     /// construction. The SQLite and distributed dependency-injection packages run this probe through their

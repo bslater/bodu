@@ -16,13 +16,13 @@ public sealed class ExchangeRateCacheFile
     /// <summary>
     /// Gets or sets the cached rate rows, serialized as a TOML array of tables.
     /// </summary>
-    /// <returns>The cached rate rows.</returns>
+    /// <value>The cached rate rows.</value>
     public List<ExchangeRateCacheEntry> Entries { get; set; } = new();
 
     /// <summary>
     /// Gets or sets the recorded coverage windows, serialized as a TOML array of tables.
     /// </summary>
-    /// <returns>The coverage windows recording which date ranges were fetched.</returns>
+    /// <value>The coverage windows recording which date ranges were fetched.</value>
     /// <remarks>
     /// A cache file written before coverage was tracked has no coverage array; it deserializes to an empty list so old
     /// caches keep working, with ranges simply refetched until coverage is recorded.

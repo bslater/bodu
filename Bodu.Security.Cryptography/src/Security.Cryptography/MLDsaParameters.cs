@@ -58,96 +58,96 @@ internal sealed class MLDsaParameters
     /// <summary>
     /// Gets the FIPS 204 parameter-set name, such as <c>"ML-DSA-65"</c>.
     /// </summary>
-    /// <returns>The parameter-set name.</returns>
+    /// <value>The parameter-set name.</value>
     internal string Name { get; }
 
     /// <summary>
     /// Gets the number of rows k of the matrix Â (and the length of t, s₂, and w).
     /// </summary>
-    /// <returns>4, 6, or 8.</returns>
+    /// <value>4, 6, or 8.</value>
     internal int K { get; }
 
     /// <summary>
     /// Gets the number of columns ℓ of the matrix Â (and the length of s₁, y, and z).
     /// </summary>
-    /// <returns>4, 5, or 7.</returns>
+    /// <value>4, 5, or 7.</value>
     internal int L { get; }
 
     /// <summary>
     /// Gets the secret-coefficient bound η.
     /// </summary>
-    /// <returns>2 or 4.</returns>
+    /// <value>2 or 4.</value>
     internal int Eta { get; }
 
     /// <summary>
     /// Gets the number of ±1 coefficients τ in the challenge polynomial.
     /// </summary>
-    /// <returns>39, 49, or 60.</returns>
+    /// <value>39, 49, or 60.</value>
     internal int Tau { get; }
 
     /// <summary>
     /// Gets the mask range γ₁; the response z must satisfy ‖z‖∞ &lt; γ₁ − β.
     /// </summary>
-    /// <returns>2¹⁷ or 2¹⁹.</returns>
+    /// <value>2¹⁷ or 2¹⁹.</value>
     internal int Gamma1 { get; }
 
     /// <summary>
     /// Gets the low-order rounding range γ₂; decomposition uses α = 2γ₂.
     /// </summary>
-    /// <returns>(q−1)/88 or (q−1)/32.</returns>
+    /// <value>(q−1)/88 or (q−1)/32.</value>
     internal int Gamma2 { get; }
 
     /// <summary>
     /// Gets the maximum total number of hint bits ω.
     /// </summary>
-    /// <returns>80, 55, or 75.</returns>
+    /// <value>80, 55, or 75.</value>
     internal int Omega { get; }
 
     /// <summary>
     /// Gets the collision-strength parameter λ in bits; the commitment hash c̃ is λ/4 bytes long.
     /// </summary>
-    /// <returns>128, 192, or 256.</returns>
+    /// <value>128, 192, or 256.</value>
     internal int Lambda { get; }
 
     /// <summary>
     /// Gets the rejection bound β = τ·η.
     /// </summary>
-    /// <returns>78, 196, or 120.</returns>
+    /// <value>78, 196, or 120.</value>
     internal int Beta { get; }
 
     /// <summary>
     /// Gets the bit width used to pack a secret coefficient: bitlen(2η).
     /// </summary>
-    /// <returns>3 when η = 2; 4 when η = 4.</returns>
+    /// <value>3 when η = 2; 4 when η = 4.</value>
     internal int EtaBits { get; }
 
     /// <summary>
     /// Gets the bit width used to pack a response coefficient: 1 + bitlen(γ₁ − 1).
     /// </summary>
-    /// <returns>18 or 20.</returns>
+    /// <value>18 or 20.</value>
     internal int Gamma1Bits { get; }
 
     /// <summary>
     /// Gets the bit width used to pack a w₁ coefficient: bitlen((q − 1)/(2γ₂) − 1).
     /// </summary>
-    /// <returns>6 when γ₂ = (q−1)/88; 4 when γ₂ = (q−1)/32.</returns>
+    /// <value>6 when γ₂ = (q−1)/88; 4 when γ₂ = (q−1)/32.</value>
     internal int W1Bits { get; }
 
     /// <summary>
     /// Gets the encoded public key size in bytes: 32 + 320k.
     /// </summary>
-    /// <returns>1312, 1952, or 2592.</returns>
+    /// <value>1312, 1952, or 2592.</value>
     internal int PublicKeySize { get; }
 
     /// <summary>
     /// Gets the encoded private key size in bytes.
     /// </summary>
-    /// <returns>2560, 4032, or 4896.</returns>
+    /// <value>2560, 4032, or 4896.</value>
     internal int PrivateKeySize { get; }
 
     /// <summary>
     /// Gets the encoded signature size in bytes.
     /// </summary>
-    /// <returns>2420, 3309, or 4627.</returns>
+    /// <value>2420, 3309, or 4627.</value>
     internal int SignatureSize { get; }
 }

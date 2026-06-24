@@ -41,7 +41,7 @@ internal sealed class TomlWriteStack
     /// Gets a value indicating whether a failure has been recorded, after which converters cooperatively stop work and
     /// unwind.
     /// </summary>
-    /// <returns><see langword="true" /> when a failure has been recorded; otherwise <see langword="false" />.</returns>
+    /// <value><see langword="true" /> when a failure has been recorded; otherwise <see langword="false" />.</value>
     internal bool HasFailure => _failure is not null;
 
     /// <summary>

@@ -58,7 +58,7 @@ public sealed partial class BencodeDocument
     /// <summary>
     /// Gets the root element of the document.
     /// </summary>
-    /// <returns>A <see cref="BencodeElement" /> positioned on the document's single root value.</returns>
+    /// <value>A <see cref="BencodeElement" /> positioned on the document's single root value.</value>
     public BencodeElement RootElement =>
         new(this, 0);
 

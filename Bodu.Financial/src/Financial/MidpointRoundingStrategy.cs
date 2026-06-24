@@ -34,7 +34,7 @@ public sealed class MidpointRoundingStrategy
     /// <summary>
     /// Gets the midpoint-rounding mode applied by this strategy.
     /// </summary>
-    /// <returns>The configured <see cref="MidpointRounding" /> mode.</returns>
+    /// <value>The configured <see cref="MidpointRounding" /> mode.</value>
     public MidpointRounding Mode =>
         _mode;
 
