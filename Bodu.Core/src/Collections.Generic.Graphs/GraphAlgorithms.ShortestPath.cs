@@ -20,7 +20,26 @@ public static partial class GraphAlgorithms
     /// <returns>The vertices of the shortest path from <paramref name="source" /> to <paramref name="target" /> inclusive, or an empty list when no path exists.</returns>
     /// <exception cref="ArgumentNullException">Any argument is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException"><paramref name="source" /> or <paramref name="target" /> is not in the graph.</exception>
-    public static IReadOnlyList<T> ShortestPath<T>(Graph<T> graph, T source, T target)
+    /// <remarks>This is a convenience wrapper over <see cref="TryShortestPath{T}(IReadOnlyWeightedGraph{T, double}, T, T)" />; use that overload when the path distance or a reachability flag is also needed.</remarks>
+    public static IReadOnlyList<T> ShortestPath<T>(IReadOnlyWeightedGraph<T, double> graph, T source, T target)
+        where T : notnull =>
+        TryShortestPath(graph, source, target).Path;
+
+    /// <summary>
+    /// Attempts to compute the shortest path between two vertices using Dijkstra's algorithm, reporting the path,
+    /// its total distance, and whether the target is reachable.
+    /// </summary>
+    /// <typeparam name="T">The vertex type.</typeparam>
+    /// <param name="graph">The graph to search.</param>
+    /// <param name="source">The starting vertex.</param>
+    /// <param name="target">The destination vertex.</param>
+    /// <returns>
+    /// A <see cref="ShortestPathResult{TVertex}" /> describing the path. When no path exists, the result is not found,
+    /// its distance is <see cref="double.PositiveInfinity" />, and its path is empty.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">Any argument is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentException"><paramref name="source" /> or <paramref name="target" /> is not in the graph.</exception>
+    public static ShortestPathResult<T> TryShortestPath<T>(IReadOnlyWeightedGraph<T, double> graph, T source, T target)
         where T : notnull
     {
         ThrowHelper.ThrowIfNull(graph);
@@ -30,11 +49,11 @@ public static partial class GraphAlgorithms
         EnsureVertex(graph, target, nameof(target));
 
         if (graph.Comparer.Equals(source, target))
-            return [source];
+            return new ShortestPathResult<T>(true, 0.0, [source]);
 
         var distances = Dijkstra(graph, source, out var predecessors);
-        if (!distances.ContainsKey(target))
-            return [];
+        if (!distances.TryGetValue(target, out var distance))
+            return new ShortestPathResult<T>(false, double.PositiveInfinity, []);
 
         var path = new List<T> { target };
         var current = target;
@@ -45,7 +64,7 @@ public static partial class GraphAlgorithms
         }
 
         path.Reverse();
-        return path;
+        return new ShortestPathResult<T>(true, distance, path);
     }
 
     /// <summary>
@@ -57,7 +76,7 @@ public static partial class GraphAlgorithms
     /// <returns>A map from each reachable vertex to its shortest distance from <paramref name="source" />. Unreachable vertices are omitted.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="graph" /> or <paramref name="source" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException"><paramref name="source" /> is not in the graph.</exception>
-    public static IReadOnlyDictionary<T, double> ShortestPathLengths<T>(Graph<T> graph, T source)
+    public static IReadOnlyDictionary<T, double> ShortestPathLengths<T>(IReadOnlyWeightedGraph<T, double> graph, T source)
         where T : notnull
     {
         ThrowHelper.ThrowIfNull(graph);
@@ -76,7 +95,7 @@ public static partial class GraphAlgorithms
     /// <param name="source">The starting vertex.</param>
     /// <param name="predecessors">When this method returns, contains the predecessor of each settled vertex.</param>
     /// <returns>A map from each reachable vertex to its shortest distance from <paramref name="source" />.</returns>
-    private static Dictionary<T, double> Dijkstra<T>(Graph<T> graph, T source, out Dictionary<T, T> predecessors)
+    private static Dictionary<T, double> Dijkstra<T>(IReadOnlyWeightedGraph<T, double> graph, T source, out Dictionary<T, T> predecessors)
         where T : notnull
     {
         var distances = new Dictionary<T, double>(graph.Comparer) { [source] = 0.0 };

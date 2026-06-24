@@ -19,7 +19,7 @@ public static partial class GraphAlgorithms
     /// <returns>The vertices in an order where every edge points from an earlier vertex to a later one.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="graph" /> is <see langword="null" />.</exception>
     /// <exception cref="InvalidOperationException">The graph is undirected, or it contains a cycle.</exception>
-    public static IReadOnlyList<T> TopologicalSort<T>(Graph<T> graph)
+    public static IReadOnlyList<T> TopologicalSort<T>(IReadOnlyGraph<T> graph)
         where T : notnull
     {
         if (!TryTopologicalSortCore(graph, out var order, out var offending))
@@ -37,7 +37,7 @@ public static partial class GraphAlgorithms
     /// <returns><see langword="true" /> if an ordering was produced; <see langword="false" /> if the graph contains a cycle.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="graph" /> is <see langword="null" />.</exception>
     /// <exception cref="InvalidOperationException">The graph is undirected.</exception>
-    public static bool TryTopologicalSort<T>(Graph<T> graph, out IReadOnlyList<T> order)
+    public static bool TryTopologicalSort<T>(IReadOnlyGraph<T> graph, out IReadOnlyList<T> order)
         where T : notnull
     {
         var ok = TryTopologicalSortCore(graph, out var result, out _);
@@ -55,7 +55,7 @@ public static partial class GraphAlgorithms
     /// <returns><see langword="true" /> if a full ordering was produced; otherwise, <see langword="false" />.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="graph" /> is <see langword="null" />.</exception>
     /// <exception cref="InvalidOperationException">The graph is undirected.</exception>
-    private static bool TryTopologicalSortCore<T>(Graph<T> graph, out IReadOnlyList<T> order, out T? offending)
+    private static bool TryTopologicalSortCore<T>(IReadOnlyGraph<T> graph, out IReadOnlyList<T> order, out T? offending)
         where T : notnull
     {
         ThrowHelper.ThrowIfNull(graph);

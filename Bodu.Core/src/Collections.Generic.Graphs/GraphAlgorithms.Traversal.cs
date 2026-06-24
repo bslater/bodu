@@ -19,7 +19,7 @@ public static partial class GraphAlgorithms
     /// <returns>A lazily evaluated sequence of reachable vertices, beginning with <paramref name="source" />.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="graph" /> or <paramref name="source" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException"><paramref name="source" /> is not in the graph.</exception>
-    public static IEnumerable<T> BreadthFirstSearch<T>(Graph<T> graph, T source)
+    public static IEnumerable<T> BreadthFirstSearch<T>(IReadOnlyGraph<T> graph, T source)
         where T : notnull
     {
         ThrowHelper.ThrowIfNull(graph);
@@ -38,7 +38,7 @@ public static partial class GraphAlgorithms
     /// <returns>A lazily evaluated sequence of reachable vertices, beginning with <paramref name="source" />.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="graph" /> or <paramref name="source" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException"><paramref name="source" /> is not in the graph.</exception>
-    public static IEnumerable<T> DepthFirstSearch<T>(Graph<T> graph, T source)
+    public static IEnumerable<T> DepthFirstSearch<T>(IReadOnlyGraph<T> graph, T source)
         where T : notnull
     {
         ThrowHelper.ThrowIfNull(graph);
@@ -55,7 +55,7 @@ public static partial class GraphAlgorithms
     /// <param name="graph">The graph to traverse.</param>
     /// <param name="source">The starting vertex.</param>
     /// <returns>A lazy breadth-first sequence.</returns>
-    private static IEnumerable<T> BreadthFirstIterator<T>(Graph<T> graph, T source)
+    private static IEnumerable<T> BreadthFirstIterator<T>(IReadOnlyGraph<T> graph, T source)
         where T : notnull
     {
         var visited = new HashSet<T>(graph.Comparer) { source };
@@ -82,7 +82,7 @@ public static partial class GraphAlgorithms
     /// <param name="graph">The graph to traverse.</param>
     /// <param name="source">The starting vertex.</param>
     /// <returns>A lazy depth-first sequence.</returns>
-    private static IEnumerable<T> DepthFirstIterator<T>(Graph<T> graph, T source)
+    private static IEnumerable<T> DepthFirstIterator<T>(IReadOnlyGraph<T> graph, T source)
         where T : notnull
     {
         var visited = new HashSet<T>(graph.Comparer);
