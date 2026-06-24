@@ -16,10 +16,10 @@ public static partial class MoneyOfTCurrencyExtensions
         /// <summary>
         /// Gets a value indicating whether this instance represents zero.
         /// </summary>
-        /// <returns>
+        /// <value>
         /// <see langword="true" /> when <see cref="Money{TCurrency}.Amount" /> is zero; otherwise
         /// <see langword="false" />.
-        /// </returns>
+        /// </value>
         public bool IsZero =>
             value.Amount == 0m;
     }

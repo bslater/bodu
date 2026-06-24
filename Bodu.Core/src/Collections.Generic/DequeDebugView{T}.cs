@@ -30,7 +30,7 @@ internal sealed class DequeDebugView<T>
     /// <summary>
     /// Gets the deque's elements as an array, ordered from head to tail.
     /// </summary>
-    /// <returns>An array of the deque's current elements.</returns>
+    /// <value>An array of the deque's current elements.</value>
     [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
     public T[] Items => [.. _deque];
 }

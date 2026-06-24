@@ -57,19 +57,19 @@ public sealed class TextConfigurationSource
     /// Gets or sets the path used to evaluate glob-anchored sections during resolution. Defaults to
     /// <see langword="null" />, in which case only non-anchored matches and preamble values apply.
     /// </summary>
-    /// <returns>The target path supplied to the resolver.</returns>
+    /// <value>The target path supplied to the resolver.</value>
     public string? TargetPath { get; set; }
 
     /// <summary>
     /// Gets or sets the parse options applied when the file is loaded.
     /// </summary>
-    /// <returns>The parse options, or <see langword="null" /> for the defaults.</returns>
+    /// <value>The parse options, or <see langword="null" /> for the defaults.</value>
     public ConfigurationParseOptions? ParseOptions { get; set; }
 
     /// <summary>
     /// Gets or sets the resolve options applied when projecting the document into the configuration view.
     /// </summary>
-    /// <returns>The resolve options, or <see langword="null" /> for the defaults.</returns>
+    /// <value>The resolve options, or <see langword="null" /> for the defaults.</value>
     public ConfigurationResolveOptions? ResolveOptions { get; set; }
 
     /// <inheritdoc />

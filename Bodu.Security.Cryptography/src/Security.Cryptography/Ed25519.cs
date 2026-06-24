@@ -112,10 +112,6 @@ public sealed class Ed25519
     /// <value>
     /// <see langword="true" /> when private key material is present; otherwise, <see langword="false" />.
     /// </value>
-    /// <returns>
-    /// <see langword="true" /> when <see cref="SignData(ReadOnlySpan{byte})" /> and <see cref="ExportPrivateKey" /> are
-    /// available.
-    /// </returns>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     public bool HasPrivateKey
     {
@@ -130,10 +126,6 @@ public sealed class Ed25519
     /// Gets a value indicating whether the instance currently holds a public key.
     /// </summary>
     /// <value><see langword="true" /> when public key material is present; otherwise, <see langword="false" />.</value>
-    /// <returns>
-    /// <see langword="true" /> when <see cref="VerifyData(ReadOnlySpan{byte}, ReadOnlySpan{byte})" /> and
-    /// <see cref="ExportPublicKey" /> are available.
-    /// </returns>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     public bool HasPublicKey
     {
@@ -145,14 +137,14 @@ public sealed class Ed25519
     }
 
     /// <inheritdoc />
-    /// <returns>
+    /// <value>
     /// <see langword="null" />, because Ed25519 is a signature algorithm and performs no key exchange.
-    /// </returns>
+    /// </value>
     public override string? KeyExchangeAlgorithm =>
         null;
 
     /// <inheritdoc />
-    /// <returns>The string <c>"Ed25519"</c>.</returns>
+    /// <value>The string <c>"Ed25519"</c>.</value>
     public override string? SignatureAlgorithm =>
         "Ed25519";
 

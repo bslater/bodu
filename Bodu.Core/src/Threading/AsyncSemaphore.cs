@@ -100,7 +100,6 @@ public sealed partial class AsyncSemaphore
     /// Gets the number of permits currently available.
     /// </summary>
     /// <value>The number of permits that can be taken without waiting.</value>
-    /// <returns>The number of permits currently available.</returns>
     public int CurrentCount
     {
         get
@@ -116,7 +115,6 @@ public sealed partial class AsyncSemaphore
     /// Gets the number of callers currently queued waiting for a permit.
     /// </summary>
     /// <value>The number of queued waiters.</value>
-    /// <returns>The number of callers awaiting a permit. Intended for diagnostics.</returns>
     internal int WaiterCount
     {
         get

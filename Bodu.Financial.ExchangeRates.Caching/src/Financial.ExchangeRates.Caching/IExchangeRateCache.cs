@@ -46,7 +46,7 @@ public interface IExchangeRateCache
     /// <summary>
     /// Gets the name of the provider this cache stores rates for.
     /// </summary>
-    /// <returns>The provider identifier the cache is bound to.</returns>
+    /// <value>The provider identifier the cache is bound to.</value>
     string Provider { get; }
 
     /// <summary>

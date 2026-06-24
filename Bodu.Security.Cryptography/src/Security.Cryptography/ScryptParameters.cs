@@ -21,19 +21,19 @@ public sealed record ScryptParameters
     /// <summary>
     /// Gets the CPU/memory cost parameter <c>N</c> — a power of two greater than one.
     /// </summary>
-    /// <returns>The cost parameter <c>N</c>.</returns>
+    /// <value>The cost parameter <c>N</c>.</value>
     public required int CostN { get; init; }
 
     /// <summary>
     /// Gets the block-size parameter <c>r</c>, which tunes memory usage relative to <see cref="CostN" />.
     /// </summary>
-    /// <returns>The block-size parameter <c>r</c>.</returns>
+    /// <value>The block-size parameter <c>r</c>.</value>
     public required int BlockSizeR { get; init; }
 
     /// <summary>
     /// Gets the parallelization parameter <c>p</c>.
     /// </summary>
-    /// <returns>The parallelization parameter <c>p</c>.</returns>
+    /// <value>The parallelization parameter <c>p</c>.</value>
     public required int Parallelization { get; init; }
 
     /// <summary>

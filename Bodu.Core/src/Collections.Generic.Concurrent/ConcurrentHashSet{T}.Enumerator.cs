@@ -57,13 +57,13 @@ public sealed partial class ConcurrentHashSet<T>
         /// <summary>
         /// Gets the element at the current position of the enumerator.
         /// </summary>
-        /// <returns>The element at the enumerator's current position.</returns>
+        /// <value>The element at the enumerator's current position.</value>
         public readonly T Current => _current;
 
         /// <summary>
         /// Gets the element at the current position of the enumerator.
         /// </summary>
-        /// <returns>The element at the enumerator's current position.</returns>
+        /// <value>The element at the enumerator's current position.</value>
         readonly object IEnumerator.Current => _current;
 
         /// <summary>

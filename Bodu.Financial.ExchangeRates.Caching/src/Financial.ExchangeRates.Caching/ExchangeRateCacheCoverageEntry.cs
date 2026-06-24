@@ -20,18 +20,18 @@ public sealed class ExchangeRateCacheCoverageEntry
     /// <summary>
     /// Gets or sets the inclusive first date of the fetched range.
     /// </summary>
-    /// <returns>The first date covered by the window.</returns>
+    /// <value>The first date covered by the window.</value>
     public DateOnly Start { get; set; }
 
     /// <summary>
     /// Gets or sets the inclusive last date of the fetched range.
     /// </summary>
-    /// <returns>The last date covered by the window.</returns>
+    /// <value>The last date covered by the window.</value>
     public DateOnly End { get; set; }
 
     /// <summary>
     /// Gets or sets the UTC instant at which the range was fetched and recorded as covered.
     /// </summary>
-    /// <returns>The instant the window was recorded.</returns>
+    /// <value>The instant the window was recorded.</value>
     public DateTimeOffset FetchedAtUtc { get; set; }
 }

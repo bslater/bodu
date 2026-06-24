@@ -20,7 +20,6 @@ public struct BencodeReaderOptions
     /// Gets or sets the maximum container nesting depth the reader will accept.
     /// </summary>
     /// <value>The maximum container nesting depth; <c>0</c> selects the default of 64.</value>
-    /// <returns>The maximum container nesting depth, where <c>0</c> selects the default of 64.</returns>
     /// <remarks>
     /// The effective depth is clamped to the hard ceiling <see cref="BencodeLimits.AbsoluteMaxDepth" />; a document
     /// nested past the effective limit throws <see cref="BencodeFormatException" /> rather than risking a
@@ -35,7 +34,6 @@ public struct BencodeReaderOptions
     /// <see langword="true" /> to accept unsorted keys; the default of <see langword="false" /> rejects them with
     /// <see cref="BencodeFormatException" />.
     /// </value>
-    /// <returns><see langword="true" /> when unsorted dictionary keys are accepted.</returns>
     /// <remarks>
     /// BEP 3 requires keys sorted by raw byte order, but documents produced by older encoders occasionally violate
     /// this. Unless <see cref="AllowDuplicateKeys" /> is also set, duplicate keys are still rejected.
@@ -49,7 +47,6 @@ public struct BencodeReaderOptions
     /// <see langword="true" /> to accept duplicate keys; the default of <see langword="false" /> rejects them with
     /// <see cref="BencodeFormatException" />.
     /// </value>
-    /// <returns><see langword="true" /> when duplicate dictionary keys are accepted.</returns>
     /// <remarks>
     /// The reader reports every entry it reads regardless of this option; which occurrence wins is decided by the
     /// consuming surface (the document model returns the first match from lookups, while the node tree and the

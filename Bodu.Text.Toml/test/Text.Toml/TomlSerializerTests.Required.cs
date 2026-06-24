@@ -157,7 +157,7 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the name, which must be present when reading.
         /// </summary>
-        /// <returns>The name.</returns>
+        /// <value>The name.</value>
         public required string Name { get; set; }
     }
 
@@ -169,7 +169,7 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the identifier, required and written under the wire name <c>id</c>.
         /// </summary>
-        /// <returns>The identifier.</returns>
+        /// <value>The identifier.</value>
         [TomlRequired]
         [TomlPropertyName("id")]
         public int Id { get; set; }
@@ -193,7 +193,7 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets the value.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public int Value { get; }
     }
 
@@ -214,7 +214,7 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets the value.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public int Value { get; }
     }
 
@@ -226,13 +226,13 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the first required member.
         /// </summary>
-        /// <returns>The first value.</returns>
+        /// <value>The first value.</value>
         public required string First { get; set; }
 
         /// <summary>
         /// Gets or sets the second required member.
         /// </summary>
-        /// <returns>The second value.</returns>
+        /// <value>The second value.</value>
         public required string Second { get; set; }
     }
 }

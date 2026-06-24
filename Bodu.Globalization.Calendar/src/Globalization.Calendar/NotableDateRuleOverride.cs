@@ -35,6 +35,6 @@ internal abstract class NotableDateRuleOverride
     /// <summary>
     /// Gets the identifier of the targeted notable-date concept.
     /// </summary>
-    /// <returns>The targeted notable-date id.</returns>
+    /// <value>The targeted notable-date id.</value>
     public string NotableDateRef { get; }
 }

@@ -15,10 +15,10 @@ public static partial class ExchangeRateLookupResultExtensions
         /// <summary>
         /// Gets a value indicating whether the resolved rate is observed on the requested date.
         /// </summary>
-        /// <returns>
+        /// <value>
         /// <see langword="true" /> when <see cref="ExchangeRateLookupResult.OffsetDays" /> is zero; otherwise
         /// <see langword="false" />.
-        /// </returns>
+        /// </value>
         public bool IsExactDate =>
             result.OffsetDays == 0;
     }

@@ -34,14 +34,14 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
     /// <summary>
     /// Gets the default key length, in bytes, for the algorithm under test.
     /// </summary>
-    /// <returns>The default key length in bytes.</returns>
+    /// <value>The default key length in bytes.</value>
     protected int KeyLengthBytes =>
         GetSpecification().DefaultKeySizeBits / 8;
 
     /// <summary>
     /// Gets the nonce length, in bytes, for the algorithm under test.
     /// </summary>
-    /// <returns>The nonce length in bytes.</returns>
+    /// <value>The nonce length in bytes.</value>
     protected int NonceLengthBytes =>
         GetSpecification().NonceSizeBits / 8;
 

@@ -29,13 +29,13 @@ internal sealed class BoeExchangeRateTable
     /// <summary>
     /// Gets the parsed daily spot observations.
     /// </summary>
-    /// <returns>A read-only list of dated, per-currency observations.</returns>
+    /// <value>A read-only list of dated, per-currency observations.</value>
     public IReadOnlyList<BoeExchangeRateObservation> Observations { get; }
 
     /// <summary>
     /// Gets the series metadata for the currencies present, keyed by quote ISO code.
     /// </summary>
-    /// <returns>A read-only map from quote ISO code to its series descriptor.</returns>
+    /// <value>A read-only map from quote ISO code to its series descriptor.</value>
     public IReadOnlyDictionary<string, BoeSeries> Series { get; }
 
     /// <summary>

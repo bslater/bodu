@@ -89,11 +89,11 @@ public sealed partial class TomlDocument
     /// <summary>
     /// Gets the root element of the document.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// A <see cref="TomlElement" /> positioned on the document's root value. For a document produced by
     /// <see cref="Parse(string)" /> or its overloads the root is always a table, so its
     /// <see cref="TomlElement.ValueKind" /> is <see cref="TomlValueKind.Table" />.
-    /// </returns>
+    /// </value>
     public TomlElement RootElement =>
         new(this, _rootIndex);
 

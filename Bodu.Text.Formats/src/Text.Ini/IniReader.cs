@@ -102,27 +102,27 @@ public sealed class IniReader
     /// Gets the name of the section that the current entry belongs to, or <see cref="string.Empty" /> for a global
     /// entry that precedes the first section header.
     /// </summary>
-    /// <returns>The current section name, or an empty string for the global section.</returns>
+    /// <value>The current section name, or an empty string for the global section.</value>
     public string Section => _section;
 
     /// <summary>
     /// Gets the key of the current entry. Valid only when the most recent call to <see cref="Read" /> or
     /// <see cref="ReadAsync" /> returned <see langword="true" />.
     /// </summary>
-    /// <returns>The current entry key.</returns>
+    /// <value>The current entry key.</value>
     public string Key => _key;
 
     /// <summary>
     /// Gets the value of the current entry. Valid only when the most recent call to <see cref="Read" /> or
     /// <see cref="ReadAsync" /> returned <see langword="true" />.
     /// </summary>
-    /// <returns>The current entry value, or an empty string for a key-only line.</returns>
+    /// <value>The current entry value, or an empty string for a key-only line.</value>
     public string Value => _value;
 
     /// <summary>
     /// Gets the 1-based line number of the line that produced the current entry. Increments as lines are consumed.
     /// </summary>
-    /// <returns>The current line number, starting at 1.</returns>
+    /// <value>The current line number, starting at 1.</value>
     public int LineNumber => _lineNumber;
 
     /// <summary>

@@ -39,7 +39,6 @@ public sealed class NotableDateServiceOptions
     /// <value>
     /// An <see cref="INotableDateAlgorithmRegistry" />, or <see langword="null" /> for built-in algorithms only.
     /// </value>
-    /// <returns>The configured registry, or <see langword="null" /> when only built-ins are available.</returns>
     public INotableDateAlgorithmRegistry? Algorithms { get; init; }
 
     /// <summary>
@@ -47,7 +46,6 @@ public sealed class NotableDateServiceOptions
     /// <see cref="CollisionPolicy.Custom" />.
     /// </summary>
     /// <value>An <see cref="INotableDateCollisionResolver" />, or <see langword="null" />.</value>
-    /// <returns>The configured resolver, or <see langword="null" /> when none is supplied.</returns>
     public INotableDateCollisionResolver? CollisionResolver { get; init; }
 
     /// <summary>
@@ -55,7 +53,6 @@ public sealed class NotableDateServiceOptions
     /// <see cref="AdjustmentAction.Custom" />.
     /// </summary>
     /// <value>An <see cref="IAdjustmentHandlerRegistry" />, or <see langword="null" />.</value>
-    /// <returns>The configured registry, or <see langword="null" /> when none is supplied.</returns>
     public IAdjustmentHandlerRegistry? Handlers { get; init; }
 
     /// <summary>
@@ -63,13 +60,11 @@ public sealed class NotableDateServiceOptions
     /// <see cref="AdjustmentTrigger.Custom" />.
     /// </summary>
     /// <value>An <see cref="IAdjustmentTriggerHandlerRegistry" />, or <see langword="null" />.</value>
-    /// <returns>The configured registry, or <see langword="null" /> when none is supplied.</returns>
     public IAdjustmentTriggerHandlerRegistry? TriggerHandlers { get; init; }
 
     /// <summary>
     /// Gets the code-first providers contributing finished occurrences alongside the resource's authored rules.
     /// </summary>
     /// <value>A sequence of <see cref="INotableDateProvider" />, or <see langword="null" /> for none.</value>
-    /// <returns>The configured providers, or <see langword="null" /> when none are registered.</returns>
     public IEnumerable<INotableDateProvider>? Providers { get; init; }
 }

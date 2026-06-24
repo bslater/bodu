@@ -221,20 +221,20 @@ public class BencodeBinderAlignmentTests
         /// <summary>
         /// Gets the ordered list of callback names the serializer has invoked.
         /// </summary>
-        /// <returns>The recorded callback names.</returns>
+        /// <value>The recorded callback names.</value>
         public List<string> Calls { get; } = new();
 
         /// <summary>
         /// Gets or sets the integer value carried by the model.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public int Value { get; set; }
 
         /// <summary>
         /// Gets the value observed at the moment <see cref="OnDeserializing" /> ran, used to prove the callback
         /// precedes member assignment.
         /// </summary>
-        /// <returns>The value observed during the deserializing callback.</returns>
+        /// <value>The value observed during the deserializing callback.</value>
         public int ValueAtDeserializing { get; private set; }
 
         /// <inheritdoc />
@@ -265,7 +265,7 @@ public class BencodeBinderAlignmentTests
         /// <summary>
         /// Gets or sets the integer value.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public int Value { get; set; }
     }
 
@@ -278,7 +278,7 @@ public class BencodeBinderAlignmentTests
         /// <summary>
         /// Gets or sets the integer value.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public int Value { get; set; }
     }
 
@@ -291,13 +291,13 @@ public class BencodeBinderAlignmentTests
         /// <summary>
         /// Gets or sets the integer value.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public int Value { get; set; }
 
         /// <summary>
         /// Gets or sets the captured entries that match no other member.
         /// </summary>
-        /// <returns>The captured entries.</returns>
+        /// <value>The captured entries.</value>
         [BencodeExtensionData]
         public Nodes.BencodeObject? Extra { get; set; }
     }
@@ -311,7 +311,7 @@ public class BencodeBinderAlignmentTests
         /// <summary>
         /// Gets the pre-seeded tag list that the serializer populates rather than replaces.
         /// </summary>
-        /// <returns>The tags.</returns>
+        /// <value>The tags.</value>
         [BencodeObjectCreationHandling(BencodeObjectCreationHandling.Populate)]
         public List<int> Tags { get; } = new() { 99 };
     }
@@ -325,7 +325,7 @@ public class BencodeBinderAlignmentTests
         /// <summary>
         /// Gets the pre-seeded tag list.
         /// </summary>
-        /// <returns>The tags.</returns>
+        /// <value>The tags.</value>
         public List<int> Tags { get; } = new() { 99 };
     }
 
@@ -338,7 +338,7 @@ public class BencodeBinderAlignmentTests
         /// <summary>
         /// Gets the pre-seeded map that the serializer merges into rather than replaces.
         /// </summary>
-        /// <returns>The map.</returns>
+        /// <value>The map.</value>
         [BencodeObjectCreationHandling(BencodeObjectCreationHandling.Populate)]
         public Dictionary<string, int> Map { get; } = new() { ["a"] = 1 };
     }
@@ -353,13 +353,13 @@ public class BencodeBinderAlignmentTests
         /// <summary>
         /// Gets or sets the first name.
         /// </summary>
-        /// <returns>The first name.</returns>
+        /// <value>The first name.</value>
         public string FirstName { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the last name.
         /// </summary>
-        /// <returns>The last name.</returns>
+        /// <value>The last name.</value>
         public string LastName { get; set; } = string.Empty;
     }
 
@@ -373,13 +373,13 @@ public class BencodeBinderAlignmentTests
         /// <summary>
         /// Gets or sets the first name, named by the type's camel-case policy.
         /// </summary>
-        /// <returns>The first name.</returns>
+        /// <value>The first name.</value>
         public string FirstName { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the last name, named explicitly so the policy does not apply.
         /// </summary>
-        /// <returns>The last name.</returns>
+        /// <value>The last name.</value>
         [BencodePropertyName("surname")]
         public string LastName { get; set; } = string.Empty;
     }

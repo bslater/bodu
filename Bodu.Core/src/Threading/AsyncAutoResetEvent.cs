@@ -65,7 +65,6 @@ public sealed class AsyncAutoResetEvent
     /// Gets the number of callers currently queued waiting for a signal.
     /// </summary>
     /// <value>The number of queued waiters.</value>
-    /// <returns>The number of callers awaiting a signal. Intended for diagnostics.</returns>
     internal int WaiterCount
     {
         get

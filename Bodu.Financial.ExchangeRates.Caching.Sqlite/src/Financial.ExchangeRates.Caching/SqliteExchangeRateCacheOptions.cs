@@ -35,7 +35,6 @@ public class SqliteExchangeRateCacheOptions
     /// The database file path, or <see langword="null" /> when a full <see cref="ConnectionString" /> is supplied
     /// instead.
     /// </value>
-    /// <returns>The configured database file path, or <see langword="null" /> when none is set.</returns>
     /// <remarks>
     /// When set without a <see cref="ConnectionString" />, the cache opens the file with default connection settings,
     /// creating the file and any missing schema on first use.
@@ -48,7 +47,6 @@ public class SqliteExchangeRateCacheOptions
     /// <value>
     /// The connection string, or <see langword="null" /> to derive one from <see cref="DatabaseFilePath" />.
     /// </value>
-    /// <returns>The configured connection string, or <see langword="null" /> when none is set.</returns>
     /// <remarks>
     /// <para>
     /// Takes precedence over <see cref="DatabaseFilePath" /> when both are supplied, allowing scenarios such as a

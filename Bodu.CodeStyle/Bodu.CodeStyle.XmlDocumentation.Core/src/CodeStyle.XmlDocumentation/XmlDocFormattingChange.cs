@@ -35,21 +35,21 @@ public sealed class XmlDocFormattingChange
     /// <summary>
     /// Gets the XML doc tag the change is attributed to, when applicable.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The tag name (without angle brackets) such as <c>"summary"</c> or <c>"param"</c>, or <see langword="null" />
     /// when the change applies outside any tag scope (line prefix, indent, prose between tags).
-    /// </returns>
+    /// </value>
     public string? TagName { get; }
 
     /// <summary>
     /// Gets the category of change applied by the formatter.
     /// </summary>
-    /// <returns>The change-kind enumeration value.</returns>
+    /// <value>The change-kind enumeration value.</value>
     public XmlDocFormatRangeKind Kind { get; }
 
     /// <summary>
     /// Gets a short, human-readable description of the change.
     /// </summary>
-    /// <returns>The change description in US English.</returns>
+    /// <value>The change description in US English.</value>
     public string Description { get; }
 }

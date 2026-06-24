@@ -456,7 +456,7 @@ public partial class BencodeSerializerTests
         /// <summary>
         /// Gets the concrete type the shape materializes to when read.
         /// </summary>
-        /// <returns>The expected concrete type.</returns>
+        /// <value>The expected concrete type.</value>
         public Type ExpectedConcreteType { get; }
 
         /// <summary>

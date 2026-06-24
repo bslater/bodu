@@ -67,27 +67,27 @@ public sealed class MonitoringBufferedBlockHashAlgorithm
     /// <summary>
     /// Gets a snapshot of the current residual byte count owned by the base class.
     /// </summary>
-    /// <returns>The number of bytes currently held in the residual buffer.</returns>
+    /// <value>The number of bytes currently held in the residual buffer.</value>
     public int ResidualBytesSnapshot => this._residualBytes;
 
     /// <summary>
     /// Gets a snapshot of the running byte total owned by the base class.
     /// </summary>
-    /// <returns>The total number of bytes consumed so far, as tracked by the base class.</returns>
+    /// <value>The total number of bytes consumed so far, as tracked by the base class.</value>
     public ulong TotalBytesSnapshot => this._totalBytes;
 
     /// <summary>
     /// Gets the block size that was supplied to the base constructor.
     /// </summary>
-    /// <returns>The configured block size, in bytes.</returns>
+    /// <value>The configured block size, in bytes.</value>
     public int ConfiguredBlockSize => this.BlockSize / 8;
 
     /// <summary>
     /// Gets a defensive copy of the residual buffer for test assertion purposes.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// A new byte array of length <see cref="ConfiguredBlockSize" /> containing the current residual bytes.
-    /// </returns>
+    /// </value>
     public byte[] ResidualBufferSnapshot => this._residualBlock.ToArray();
 
     /// <summary>

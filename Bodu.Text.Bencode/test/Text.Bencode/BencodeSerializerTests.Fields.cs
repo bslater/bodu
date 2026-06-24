@@ -211,7 +211,7 @@ public partial class BencodeSerializerTests
         /// <summary>
         /// Gets or sets the public property, which the serializer always surfaces.
         /// </summary>
-        /// <returns>The property value.</returns>
+        /// <value>The property value.</value>
         public int Property { get; set; }
     }
 
@@ -326,13 +326,13 @@ public partial class BencodeSerializerTests
         /// <summary>
         /// Gets or sets the public property, which the serializer surfaces normally.
         /// </summary>
-        /// <returns>The property value.</returns>
+        /// <value>The property value.</value>
         public int Property { get; set; }
 
         /// <summary>
         /// Gets the value of the private field, exposed for test assertions only.
         /// </summary>
-        /// <returns>The hidden value.</returns>
+        /// <value>The hidden value.</value>
         [BencodeIgnore]
         public int Hidden => _hidden;
     }

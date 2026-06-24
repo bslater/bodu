@@ -70,54 +70,54 @@ public sealed class RuleApplicability
     /// <summary>
     /// Gets the calendar system the rule's strategy is expressed in.
     /// </summary>
-    /// <returns>The configured <see cref="CalendarSystem" />.</returns>
+    /// <value>The configured <see cref="CalendarSystem" />.</value>
     public CalendarSystem Calendar { get; }
 
     /// <summary>
     /// Gets the first applicable Gregorian year.
     /// </summary>
-    /// <returns>The lower year bound, or <see langword="null" /> when unbounded.</returns>
+    /// <value>The lower year bound, or <see langword="null" /> when unbounded.</value>
     public int? FromYear { get; }
 
     /// <summary>
     /// Gets the last applicable Gregorian year.
     /// </summary>
-    /// <returns>The upper year bound, or <see langword="null" /> when unbounded.</returns>
+    /// <value>The upper year bound, or <see langword="null" /> when unbounded.</value>
     public int? ToYear { get; }
 
     /// <summary>
     /// Gets the explicit territories the rule applies to.
     /// </summary>
-    /// <returns>The territory codes; empty when the rule is global.</returns>
+    /// <value>The territory codes; empty when the rule is global.</value>
     public IReadOnlyList<string> Territories { get; }
 
     /// <summary>
     /// Gets the explicit inclusion years.
     /// </summary>
-    /// <returns>The years the rule is restricted to; empty when unrestricted.</returns>
+    /// <value>The years the rule is restricted to; empty when unrestricted.</value>
     public IReadOnlyList<int> OnlyYears { get; }
 
     /// <summary>
     /// Gets the explicit exclusion years.
     /// </summary>
-    /// <returns>The years the rule is suppressed for; empty when there are none.</returns>
+    /// <value>The years the rule is suppressed for; empty when there are none.</value>
     public IReadOnlyList<int> ExceptYears { get; }
 
     /// <summary>
     /// Gets the recurrence interval in years.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The cadence (for example <c>4</c> for every fourth year), or <see langword="null" /> for an annual rule.
-    /// </returns>
+    /// </value>
     public int? EveryYears { get; }
 
     /// <summary>
     /// Gets the anchor year the recurrence interval is measured from.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The anchor year, or <see langword="null" /> to anchor on <see cref="FromYear" /> (or year zero when also
     /// unbounded).
-    /// </returns>
+    /// </value>
     public int? AnchorYear { get; }
 
     /// <summary>

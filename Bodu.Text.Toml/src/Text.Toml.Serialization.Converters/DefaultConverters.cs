@@ -74,6 +74,6 @@ internal static class DefaultConverters
     /// <summary>
     /// Gets the built-in converters, in the order they are consulted during converter resolution.
     /// </summary>
-    /// <returns>The ordered built-in converters.</returns>
+    /// <value>The ordered built-in converters.</value>
     internal static IReadOnlyList<TomlConverter> Converters => s_builtIn;
 }

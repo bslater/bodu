@@ -177,14 +177,12 @@ public abstract partial class RingBackedCollection<T>
     /// Gets the maximum number of elements that the collection can currently hold without resizing the backing array.
     /// </summary>
     /// <value>The length of the underlying array.</value>
-    /// <returns>The capacity.</returns>
     public int Capacity => _array.Length;
 
     /// <summary>
     /// Gets a value indicating whether the collection contains no elements.
     /// </summary>
     /// <value><see langword="true" /> if <see cref="Count" /> is zero; otherwise, <see langword="false" />.</value>
-    /// <returns><see langword="true" /> when the collection is empty.</returns>
     public bool IsEmpty => _count == 0;
 
     /// <summary>
@@ -193,7 +191,6 @@ public abstract partial class RingBackedCollection<T>
     /// transient state that the next add resolves by resizing.
     /// </summary>
     /// <value><see langword="true" /> if <see cref="Count" /> equals <see cref="Capacity" />.</value>
-    /// <returns><see langword="true" /> when the collection is at capacity.</returns>
     public bool IsFull => _count == _array.Length;
 
     /// <summary>

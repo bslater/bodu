@@ -95,9 +95,6 @@ public sealed class AsyncLazy<T>
     /// Gets a value indicating whether the factory has been invoked.
     /// </summary>
     /// <value><see langword="true" /> if initialization has started; otherwise, <see langword="false" />.</value>
-    /// <returns>
-    /// <see langword="true" /> if the underlying value task has been created; otherwise, <see langword="false" />.
-    /// </returns>
     public bool IsValueCreated =>
         _instance.IsValueCreated;
 
@@ -105,9 +102,6 @@ public sealed class AsyncLazy<T>
     /// Gets a value indicating whether the factory has finished producing the value (successfully or with a fault).
     /// </summary>
     /// <value><see langword="true" /> if the value task has completed; otherwise, <see langword="false" />.</value>
-    /// <returns>
-    /// <see langword="true" /> if the factory has run to completion; otherwise, <see langword="false" />.
-    /// </returns>
     public bool IsValueFactoryCompleted =>
         _instance.IsValueCreated && _instance.Value.IsCompleted;
 
@@ -115,7 +109,6 @@ public sealed class AsyncLazy<T>
     /// Gets the cached task that produces the value, invoking the factory on first access.
     /// </summary>
     /// <value>The shared <see cref="Task{TResult}" /> representing the lazily produced value.</value>
-    /// <returns>The cached <see cref="Task{TResult}" /> for the lazily produced value.</returns>
     /// <exception cref="InvalidOperationException">
     /// The value factory accessed the value of the same instance while it was being produced.
     /// </exception>

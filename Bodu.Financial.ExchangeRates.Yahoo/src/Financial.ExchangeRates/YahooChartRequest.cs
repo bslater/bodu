@@ -30,24 +30,24 @@ internal sealed class YahooChartRequest
     /// <summary>
     /// Gets the currency pair the request resolves.
     /// </summary>
-    /// <returns>The requested <see cref="ExchangeRatePair" />.</returns>
+    /// <value>The requested <see cref="ExchangeRatePair" />.</value>
     public ExchangeRatePair Pair { get; }
 
     /// <summary>
     /// Gets the Yahoo Finance ticker symbol to fetch.
     /// </summary>
-    /// <returns>The ticker symbol, for example <c>AUDUSD=X</c>.</returns>
+    /// <value>The ticker symbol, for example <c>AUDUSD=X</c>.</value>
     public string Symbol { get; }
 
     /// <summary>
     /// Gets the inclusive start of the range to fetch.
     /// </summary>
-    /// <returns>The start date.</returns>
+    /// <value>The start date.</value>
     public DateOnly StartDate { get; }
 
     /// <summary>
     /// Gets the inclusive end of the range to fetch.
     /// </summary>
-    /// <returns>The end date.</returns>
+    /// <value>The end date.</value>
     public DateOnly EndDate { get; }
 }

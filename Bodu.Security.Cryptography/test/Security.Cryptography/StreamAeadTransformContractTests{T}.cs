@@ -22,7 +22,7 @@ public abstract class StreamAeadTransformContractTests<TAead>
     /// <summary>
     /// Gets a value indicating whether the construction under test authenticates associated data.
     /// </summary>
-    /// <returns><see langword="true" /> for the RFC 8439-framed AEADs; <see langword="false" /> for secretbox.</returns>
+    /// <value><see langword="true" /> for the RFC 8439-framed AEADs; <see langword="false" /> for secretbox.</value>
     protected virtual bool SupportsAssociatedData => true;
 
     /// <summary>

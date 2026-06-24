@@ -11,14 +11,14 @@ public readonly partial struct Money<TCurrency>
     /// <summary>
     /// Gets a <see cref="Money{TCurrency}" /> representing zero of <typeparamref name="TCurrency" />.
     /// </summary>
-    /// <returns>The zero monetary amount.</returns>
+    /// <value>The zero monetary amount.</value>
     public static Money<TCurrency> Zero =>
         default;
 
     /// <summary>
     /// Gets the ISO 4217 alphabetic code of <typeparamref name="TCurrency" />.
     /// </summary>
-    /// <returns>The currency code, such as <c>"USD"</c>.</returns>
+    /// <value>The currency code, such as <c>"USD"</c>.</value>
     /// <exception cref="InvalidOperationException">
     /// Thrown when <typeparamref name="TCurrency" /> reports invalid metadata.
     /// </exception>
@@ -28,7 +28,7 @@ public readonly partial struct Money<TCurrency>
     /// <summary>
     /// Gets the minor-unit precision of <typeparamref name="TCurrency" />.
     /// </summary>
-    /// <returns>The non-negative number of fractional digits the currency uses.</returns>
+    /// <value>The non-negative number of fractional digits the currency uses.</value>
     /// <exception cref="InvalidOperationException">
     /// Thrown when <typeparamref name="TCurrency" /> reports invalid metadata.
     /// </exception>
@@ -38,7 +38,7 @@ public readonly partial struct Money<TCurrency>
     /// <summary>
     /// Gets the rounded monetary amount in the major unit of <typeparamref name="TCurrency" />.
     /// </summary>
-    /// <returns>The amount stored by this instance, rounded to <see cref="MinorUnits" /> decimal places.</returns>
+    /// <value>The amount stored by this instance, rounded to <see cref="MinorUnits" /> decimal places.</value>
     public decimal Amount =>
         _amount;
 }

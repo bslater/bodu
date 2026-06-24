@@ -11,13 +11,13 @@ public sealed partial class ConfigurationResolveOptions
     /// <summary>
     /// Gets the canonical option set for the default Bodu profile.
     /// </summary>
-    /// <returns>A cached default options instance.</returns>
+    /// <value>A cached default options instance.</value>
     public static ConfigurationResolveOptions Bodu { get; } = For(ConfigurationProfile.Bodu);
 
     /// <summary>
     /// Gets the canonical option set for the EditorConfig-compatible profile.
     /// </summary>
-    /// <returns>A cached EditorConfig-compatible options instance.</returns>
+    /// <value>A cached EditorConfig-compatible options instance.</value>
     public static ConfigurationResolveOptions EditorConfigCompatible { get; } =
         For(ConfigurationProfile.EditorConfigCompatible);
 

@@ -76,7 +76,6 @@ public sealed partial class AsyncLock : IDisposable
     /// Gets the number of callers currently queued waiting to acquire the lock.
     /// </summary>
     /// <value>The number of queued waiters.</value>
-    /// <returns>The number of callers awaiting the lock. Intended for diagnostics.</returns>
     internal int WaiterCount
     {
         get

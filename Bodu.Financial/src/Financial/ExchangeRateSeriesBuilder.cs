@@ -70,20 +70,20 @@ public sealed class ExchangeRateSeriesBuilder
     /// <summary>
     /// Gets the currency pair this builder is editing.
     /// </summary>
-    /// <returns>The series pair.</returns>
+    /// <value>The series pair.</value>
     public ExchangeRatePair Pair { get; }
 
     /// <summary>
     /// Gets the identifier of the source the builder represents.
     /// </summary>
-    /// <returns>A non-empty provider identifier.</returns>
+    /// <value>A non-empty provider identifier.</value>
     public string Provider { get; }
 
     /// <summary>
     /// Gets or sets the UTC instant at which the load that produced this series downloaded its source data, or
     /// <see langword="null" /> when not tracked.
     /// </summary>
-    /// <returns>The fetch instant when known; otherwise <see langword="null" />.</returns>
+    /// <value>The fetch instant when known; otherwise <see langword="null" />.</value>
     /// <remarks>
     /// The value is carried verbatim onto the <see cref="ExchangeRateSeries" /> produced by <see cref="ToSeries" /> and
     /// from there onto every <see cref="ExchangeRate" /> the series materializes. Editing the observation buffer does
@@ -94,13 +94,13 @@ public sealed class ExchangeRateSeriesBuilder
     /// <summary>
     /// Gets the number of observations currently held.
     /// </summary>
-    /// <returns>A non-negative count.</returns>
+    /// <value>A non-negative count.</value>
     public int Count => _buffer.Count;
 
     /// <summary>
     /// Gets a value indicating whether the builder holds no observations.
     /// </summary>
-    /// <returns><see langword="true" /> if the builder is empty; otherwise <see langword="false" />.</returns>
+    /// <value><see langword="true" /> if the builder is empty; otherwise <see langword="false" />.</value>
     public bool IsEmpty => _buffer.IsEmpty;
 
     /// <summary>

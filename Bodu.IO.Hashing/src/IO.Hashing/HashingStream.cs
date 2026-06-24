@@ -86,41 +86,41 @@ public sealed class HashingStream
     /// <summary>
     /// Gets the algorithm that accumulates the bytes transferred through this stream.
     /// </summary>
-    /// <returns>The <see cref="NonCryptographicHashAlgorithm" /> supplied to the constructor.</returns>
+    /// <value>The <see cref="NonCryptographicHashAlgorithm" /> supplied to the constructor.</value>
     public NonCryptographicHashAlgorithm Algorithm =>
         _algorithm;
 
     /// <summary>
     /// Gets a value indicating whether the stream supports reading.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see langword="true" /> if this stream is not disposed and the inner stream supports reading; otherwise,
     /// <see langword="false" />.
-    /// </returns>
+    /// </value>
     public override bool CanRead =>
         !_disposed && _innerStream.CanRead;
 
     /// <summary>
     /// Gets a value indicating whether the stream supports seeking.
     /// </summary>
-    /// <returns>Always <see langword="false" />; repositioning would corrupt the digest.</returns>
+    /// <value>Always <see langword="false" />; repositioning would corrupt the digest.</value>
     public override bool CanSeek =>
         false;
 
     /// <summary>
     /// Gets a value indicating whether the stream supports writing.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see langword="true" /> if this stream is not disposed and the inner stream supports writing; otherwise,
     /// <see langword="false" />.
-    /// </returns>
+    /// </value>
     public override bool CanWrite =>
         !_disposed && _innerStream.CanWrite;
 
     /// <summary>
     /// Gets the length of the stream. Not supported.
     /// </summary>
-    /// <returns>This property always throws.</returns>
+    /// <value>This property always throws.</value>
     /// <exception cref="NotSupportedException">Always thrown; the stream does not support seeking.</exception>
     public override long Length =>
         throw new NotSupportedException(HashingResourceStrings.Op_NotSupported_HashingStreamNotSeekable);
@@ -128,7 +128,7 @@ public sealed class HashingStream
     /// <summary>
     /// Gets or sets the position within the stream. Not supported.
     /// </summary>
-    /// <returns>This property always throws.</returns>
+    /// <value>This property always throws.</value>
     /// <exception cref="NotSupportedException">Always thrown; the stream does not support seeking.</exception>
     public override long Position
     {

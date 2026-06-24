@@ -40,7 +40,7 @@ internal sealed class FixtureYahooExchangeRateChartSource
     /// <summary>
     /// Gets the number of charts this source has served.
     /// </summary>
-    /// <returns>The chart request count.</returns>
+    /// <value>The chart request count.</value>
     public int GetChartCallCount { get; private set; }
 
     /// <inheritdoc />

@@ -29,7 +29,7 @@ internal sealed class TrieDebugView
     /// <summary>
     /// Gets a snapshot of the trie's keys.
     /// </summary>
-    /// <returns>An array of the trie's keys captured at inspection time.</returns>
+    /// <value>An array of the trie's keys captured at inspection time.</value>
     [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
     public string[] Items => _trie.ToArrayInternal();
 }

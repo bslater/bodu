@@ -20,19 +20,19 @@ internal sealed class DistributedCacheCoverage
     /// <summary>
     /// Gets or sets the inclusive first date of the fetched range, formatted as invariant <c>yyyy-MM-dd</c> text.
     /// </summary>
-    /// <returns>The first date covered by the window, as invariant ISO text.</returns>
+    /// <value>The first date covered by the window, as invariant ISO text.</value>
     public string Start { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets or sets the inclusive last date of the fetched range, formatted as invariant <c>yyyy-MM-dd</c> text.
     /// </summary>
-    /// <returns>The last date covered by the window, as invariant ISO text.</returns>
+    /// <value>The last date covered by the window, as invariant ISO text.</value>
     public string End { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets or sets the UTC instant at which the range was fetched and recorded as covered, formatted as invariant
     /// round-trip (<c>"O"</c>) text.
     /// </summary>
-    /// <returns>The instant the window was recorded, as invariant round-trip text.</returns>
+    /// <value>The instant the window was recorded, as invariant round-trip text.</value>
     public string FetchedAtUtc { get; set; } = string.Empty;
 }

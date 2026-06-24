@@ -36,13 +36,13 @@ public sealed class ExchangeRateTableBuilder
     /// <summary>
     /// Gets the number of series currently tracked.
     /// </summary>
-    /// <returns>A non-negative series count.</returns>
+    /// <value>A non-negative series count.</value>
     public int Count => _series.Count;
 
     /// <summary>
     /// Gets the set of keys currently tracked.
     /// </summary>
-    /// <returns>An enumeration of <see cref="ExchangeRateSeriesKey" /> values in dictionary order.</returns>
+    /// <value>An enumeration of <see cref="ExchangeRateSeriesKey" /> values in dictionary order.</value>
     public IEnumerable<ExchangeRateSeriesKey> Keys => _series.Keys;
 
     /// <summary>

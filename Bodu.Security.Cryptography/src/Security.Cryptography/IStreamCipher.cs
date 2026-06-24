@@ -44,7 +44,6 @@ public interface IStreamCipher
     /// Gets the keystream block size, in bytes (for example, 64 bytes for ChaCha20).
     /// </summary>
     /// <value>The keystream block size, in bytes.</value>
-    /// <returns>The number of keystream bytes produced by a single block-function evaluation.</returns>
     /// <remarks>
     /// The block size is expressed in bytes — not bits — because stream ciphers operate on byte-granular keystream
     /// segments rather than the bit-oriented block sizes reported by <see cref="IBlockCipher.BlockSize" />.

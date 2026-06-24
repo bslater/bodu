@@ -55,25 +55,25 @@ public sealed class OlePropertySet
     /// <summary>
     /// Gets the format identifier (FMTID) of the first section.
     /// </summary>
-    /// <returns>The first section's format identifier.</returns>
+    /// <value>The first section's format identifier.</value>
     public Guid FormatId { get; }
 
     /// <summary>
     /// Gets the class identifier declared in the property-set header.
     /// </summary>
-    /// <returns>The property set's class identifier.</returns>
+    /// <value>The property set's class identifier.</value>
     public Guid ClassId { get; }
 
     /// <summary>
     /// Gets the code page of the first section.
     /// </summary>
-    /// <returns>The first section's code page; <c>1252</c> when none is declared.</returns>
+    /// <value>The first section's code page; <c>1252</c> when none is declared.</value>
     public int CodePage { get; }
 
     /// <summary>
     /// Gets the sections of the property set, in declared order.
     /// </summary>
-    /// <returns>A read-only list of <see cref="OlePropertySection" />.</returns>
+    /// <value>A read-only list of <see cref="OlePropertySection" />.</value>
     public IReadOnlyList<OlePropertySection> Sections => _sections;
 
     /// <summary>

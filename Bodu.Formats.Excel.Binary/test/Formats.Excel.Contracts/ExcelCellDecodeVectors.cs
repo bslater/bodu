@@ -24,7 +24,7 @@ internal static class ExcelCellDecodeVectors
     /// Gets the cell-decode known-answer rows, each wrapped as a single-element <c>object[]</c> for
     /// <c>[DynamicData]</c>.
     /// </summary>
-    /// <returns>A sequence of rows, each carrying one <see cref="ExcelCellDecodeKat" />.</returns>
+    /// <value>A sequence of rows, each carrying one <see cref="ExcelCellDecodeKat" />.</value>
     public static IEnumerable<object[]> Cells
     {
         get

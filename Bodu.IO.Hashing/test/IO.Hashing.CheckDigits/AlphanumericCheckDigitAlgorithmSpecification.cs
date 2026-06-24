@@ -30,32 +30,32 @@ public sealed record AlphanumericCheckDigitAlgorithmSpecification
     /// <summary>
     /// Gets the expected <see cref="AlphanumericCheckDigitAlgorithm.AlgorithmName" /> string.
     /// </summary>
-    /// <returns>The canonical algorithm name, e.g. <c>"ISBN-10"</c>.</returns>
+    /// <value>The canonical algorithm name, e.g. <c>"ISBN-10"</c>.</value>
     public required string AlgorithmName { get; init; }
 
     /// <summary>
     /// Gets the check character expected for an empty body, or <see langword="null" /> to indicate that the algorithm
     /// throws on empty input.
     /// </summary>
-    /// <returns>An ASCII character, or <see langword="null" />. Defaults to <c>'0'</c>.</returns>
+    /// <value>An ASCII character, or <see langword="null" />. Defaults to <c>'0'</c>.</value>
     public char? EmptyCheckDigit { get; init; } = '0';
 
     /// <summary>
     /// Gets the expected <see cref="AlphanumericCheckDigitAlgorithm.InputAlphabet" /> value.
     /// </summary>
-    /// <returns>The declared input alphabet for the algorithm under test.</returns>
+    /// <value>The declared input alphabet for the algorithm under test.</value>
     public required CheckDigitInputAlphabet InputAlphabet { get; init; }
 
     /// <summary>
     /// Gets the known-answer vectors to exercise.
     /// </summary>
-    /// <returns>A non-empty list of <see cref="CheckDigitKnownAnswer" /> entries.</returns>
+    /// <value>A non-empty list of <see cref="CheckDigitKnownAnswer" /> entries.</value>
     public required IReadOnlyList<CheckDigitKnownAnswer> KnownAnswers { get; init; }
 
     /// <summary>
     /// Gets the expected <see cref="AlphanumericCheckDigitAlgorithm.OutputAlphabet" /> value.
     /// </summary>
-    /// <returns>The declared output alphabet for the algorithm under test.</returns>
+    /// <value>The declared output alphabet for the algorithm under test.</value>
     public required CheckDigitOutputAlphabet OutputAlphabet { get; init; }
 
 }

@@ -65,19 +65,19 @@ public abstract class AlphanumericCheckDigitAlgorithm
     /// <summary>
     /// Gets the canonical name of the algorithm, suitable for diagnostic output and logging.
     /// </summary>
-    /// <returns>A short, stable identifier such as <c>"ISBN-10"</c>, <c>"ISIN"</c>, or <c>"SEDOL"</c>.</returns>
+    /// <value>A short, stable identifier such as <c>"ISBN-10"</c>, <c>"ISIN"</c>, or <c>"SEDOL"</c>.</value>
     public abstract string AlgorithmName { get; }
 
     /// <summary>
     /// Gets the subset of ASCII from which this algorithm accepts body characters.
     /// </summary>
-    /// <returns>The declared input alphabet.</returns>
+    /// <value>The declared input alphabet.</value>
     public abstract CheckDigitInputAlphabet InputAlphabet { get; }
 
     /// <summary>
     /// Gets the subset of ASCII from which this algorithm may emit its check character.
     /// </summary>
-    /// <returns>The declared output alphabet.</returns>
+    /// <value>The declared output alphabet.</value>
     public abstract CheckDigitOutputAlphabet OutputAlphabet { get; }
 
     /// <summary>

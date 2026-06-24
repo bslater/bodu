@@ -47,43 +47,43 @@ public sealed record StreamAeadKnownAnswerVector(
     /// <summary>
     /// Gets the decoded key bytes.
     /// </summary>
-    /// <returns>The key.</returns>
+    /// <value>The key.</value>
     public byte[] Key => Convert.FromHexString(KeyHex);
 
     /// <summary>
     /// Gets the decoded nonce bytes.
     /// </summary>
-    /// <returns>The nonce.</returns>
+    /// <value>The nonce.</value>
     public byte[] Nonce => Convert.FromHexString(NonceHex);
 
     /// <summary>
     /// Gets the decoded associated-data bytes.
     /// </summary>
-    /// <returns>The associated data; an empty array when the vector has no AAD.</returns>
+    /// <value>The associated data; an empty array when the vector has no AAD.</value>
     public byte[] AssociatedData => AadHex.Length == 0 ? [] : Convert.FromHexString(AadHex);
 
     /// <summary>
     /// Gets the decoded plaintext bytes.
     /// </summary>
-    /// <returns>The plaintext.</returns>
+    /// <value>The plaintext.</value>
     public byte[] Plaintext => Convert.FromHexString(PlaintextHex);
 
     /// <summary>
     /// Gets the decoded ciphertext bytes, excluding the tag.
     /// </summary>
-    /// <returns>The ciphertext.</returns>
+    /// <value>The ciphertext.</value>
     public byte[] Ciphertext => Convert.FromHexString(CiphertextHex);
 
     /// <summary>
     /// Gets the decoded authentication-tag bytes.
     /// </summary>
-    /// <returns>The tag.</returns>
+    /// <value>The tag.</value>
     public byte[] Tag => Convert.FromHexString(TagHex);
 
     /// <summary>
     /// Gets the ciphertext followed by the tag, matching the wire format emitted by the Bodu AEAD transforms.
     /// </summary>
-    /// <returns>The concatenation of <see cref="Ciphertext" /> and <see cref="Tag" />.</returns>
+    /// <value>The concatenation of <see cref="Ciphertext" /> and <see cref="Tag" />.</value>
     public byte[] CiphertextWithTag => [.. Ciphertext, .. Tag];
 
     /// <inheritdoc />

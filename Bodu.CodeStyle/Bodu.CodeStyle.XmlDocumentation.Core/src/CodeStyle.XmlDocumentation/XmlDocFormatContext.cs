@@ -37,18 +37,18 @@ public sealed class XmlDocFormatContext
     /// <summary>
     /// Gets the whitespace prefix that appears before each documentation line in the original source.
     /// </summary>
-    /// <returns>The base indent string captured from the source.</returns>
+    /// <value>The base indent string captured from the source.</value>
     public string BaseIndent { get; }
 
     /// <summary>
     /// Gets the line ending sequence that should be used for every emitted physical line.
     /// </summary>
-    /// <returns>The line ending sequence; typically <c>"\r\n"</c> or <c>"\n"</c>.</returns>
+    /// <value>The line ending sequence; typically <c>"\r\n"</c> or <c>"\n"</c>.</value>
     public string LineEnding { get; }
 
     /// <summary>
     /// Gets a hint identifying the kind of member that owns the documentation comment.
     /// </summary>
-    /// <returns>The member-kind hint reported by the caller.</returns>
+    /// <value>The member-kind hint reported by the caller.</value>
     public XmlDocMemberKindHint MemberKindHint { get; }
 }

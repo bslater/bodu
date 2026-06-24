@@ -46,25 +46,25 @@ internal sealed class Biff8WorkbookGlobals
     /// <summary>
     /// Gets the bound sheets declared by the workbook, in workbook order.
     /// </summary>
-    /// <returns>The sheet directory entries, each carrying its substream offset, type, and visibility.</returns>
+    /// <value>The sheet directory entries, each carrying its substream offset, type, and visibility.</value>
     public IReadOnlyList<Biff8SheetDirectoryEntry> Sheets { get; }
 
     /// <summary>
     /// Gets the decoded shared string table.
     /// </summary>
-    /// <returns>The workbook's deduplicated text values, indexed as cells reference them.</returns>
+    /// <value>The workbook's deduplicated text values, indexed as cells reference them.</value>
     public string[] SharedStrings { get; }
 
     /// <summary>
     /// Gets the workbook format table.
     /// </summary>
-    /// <returns>The table that resolves a cell's extended-format index to a number format.</returns>
+    /// <value>The table that resolves a cell's extended-format index to a number format.</value>
     public Biff8FormatTable Formats { get; }
 
     /// <summary>
     /// Gets the workbook's declared date system.
     /// </summary>
-    /// <returns>The date system, or <see cref="ExcelDateSystem.Excel1900" /> when none is declared.</returns>
+    /// <value>The date system, or <see cref="ExcelDateSystem.Excel1900" /> when none is declared.</value>
     public ExcelDateSystem DateSystem { get; }
 
     /// <summary>

@@ -125,7 +125,6 @@ public sealed partial class Whirlpool
     /// Gets or sets the published <see cref="WhirlpoolVersion" /> used to compute the hash value.
     /// </summary>
     /// <value>The Whirlpool revision selected for subsequent hashing operations.</value>
-    /// <returns>The currently configured Whirlpool revision.</returns>
     /// <remarks>
     /// <para>
     /// The revision must be assigned before any input has been consumed. Once

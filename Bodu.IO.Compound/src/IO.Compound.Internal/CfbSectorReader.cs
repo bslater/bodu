@@ -81,7 +81,7 @@ internal sealed class CfbSectorReader
     /// <summary>
     /// Gets the regular sector size, in bytes.
     /// </summary>
-    /// <returns>The sector size.</returns>
+    /// <value>The sector size.</value>
     internal int SectorSize => _header.SectorSize;
 
     /// <summary>

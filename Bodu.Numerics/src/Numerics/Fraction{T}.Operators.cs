@@ -13,14 +13,14 @@ public readonly partial struct Fraction<T>
     /// <summary>
     /// Gets the canonical numerator promoted to <see cref="BigInteger" /> precision.
     /// </summary>
-    /// <returns>The numerator as a <see cref="BigInteger" />.</returns>
+    /// <value>The numerator as a <see cref="BigInteger" />.</value>
     private BigInteger BigNumerator =>
         BigInteger.CreateChecked(Numerator);
 
     /// <summary>
     /// Gets the canonical denominator promoted to <see cref="BigInteger" /> precision.
     /// </summary>
-    /// <returns>The denominator as a <see cref="BigInteger" />.</returns>
+    /// <value>The denominator as a <see cref="BigInteger" />.</value>
     private BigInteger BigDenominator =>
         BigInteger.CreateChecked(Denominator);
 

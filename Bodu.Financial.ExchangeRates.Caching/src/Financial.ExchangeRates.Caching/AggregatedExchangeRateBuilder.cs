@@ -27,7 +27,7 @@ internal sealed class AggregatedExchangeRateBuilder
     /// <summary>
     /// Gets the accumulated named child factories, in insertion order.
     /// </summary>
-    /// <returns>The named child factories.</returns>
+    /// <value>The named child factories.</value>
     public IReadOnlyList<KeyValuePair<string, Func<IServiceProvider, IDatedExchangeRateProvider>>> Children => _children;
 
     /// <summary>
@@ -39,7 +39,7 @@ internal sealed class AggregatedExchangeRateBuilder
     /// <summary>
     /// Gets the configured default strategy.
     /// </summary>
-    /// <returns>The default strategy, or <see langword="null" /> when the aggregator default applies.</returns>
+    /// <value>The default strategy, or <see langword="null" /> when the aggregator default applies.</value>
     public IExchangeRateAggregationStrategy? DefaultStrategy => _defaultStrategy;
 
     /// <inheritdoc />

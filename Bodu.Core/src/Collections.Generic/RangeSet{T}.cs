@@ -103,19 +103,19 @@ public sealed partial class RangeSet<T>
     /// <summary>
     /// Gets the comparer used to order range endpoints.
     /// </summary>
-    /// <returns>The active endpoint comparer.</returns>
+    /// <value>The active endpoint comparer.</value>
     public IComparer<T> Comparer => _comparer;
 
     /// <summary>
     /// Gets the number of stored ranges.
     /// </summary>
-    /// <returns>The number of ranges currently stored in the set.</returns>
+    /// <value>The number of ranges currently stored in the set.</value>
     public int Count => _count;
 
     /// <summary>
     /// Gets the allocated range capacity.
     /// </summary>
-    /// <returns>The current allocated capacity of the underlying storage.</returns>
+    /// <value>The current allocated capacity of the underlying storage.</value>
     public int Capacity => _starts.Length;
 
     /// <summary>

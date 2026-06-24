@@ -74,37 +74,37 @@ public sealed class NotableDateResource
     /// <summary>
     /// Gets the stable identifier of the resource.
     /// </summary>
-    /// <returns>The resource id.</returns>
+    /// <value>The resource id.</value>
     public string ResourceId { get; }
 
     /// <summary>
     /// Gets the schema version declared by the resource.
     /// </summary>
-    /// <returns>The schema version string.</returns>
+    /// <value>The schema version string.</value>
     public string SchemaVersion { get; }
 
     /// <summary>
     /// Gets the resource-level resolution policy.
     /// </summary>
-    /// <returns>The <see cref="ResolutionPolicy" />.</returns>
+    /// <value>The <see cref="ResolutionPolicy" />.</value>
     public ResolutionPolicy ResolutionPolicy { get; }
 
     /// <summary>
     /// Gets the reusable adjustment policies declared by the resource.
     /// </summary>
-    /// <returns>The adjustment policies; empty when none are declared.</returns>
+    /// <value>The adjustment policies; empty when none are declared.</value>
     public IReadOnlyList<AdjustmentPolicy> AdjustmentPolicies { get; }
 
     /// <summary>
     /// Gets the notable-date concepts declared by the resource.
     /// </summary>
-    /// <returns>The notable-date concepts.</returns>
+    /// <value>The notable-date concepts.</value>
     public IReadOnlyList<NotableDateDefinition> NotableDates { get; }
 
     /// <summary>
     /// Gets the total number of rules across every notable-date concept in the resource.
     /// </summary>
-    /// <returns>The aggregate rule count.</returns>
+    /// <value>The aggregate rule count.</value>
     public int RuleCount =>
         NotableDates.Sum(d => d.Rules.Count);
 

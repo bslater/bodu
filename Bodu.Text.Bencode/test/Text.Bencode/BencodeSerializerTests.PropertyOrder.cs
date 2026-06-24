@@ -71,21 +71,21 @@ public partial class BencodeSerializerTests
         /// <summary>
         /// Gets or sets the value whose key sorts first but is ordered last.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         [Serialization.BencodePropertyOrder(10)]
         public int Alpha { get; set; }
 
         /// <summary>
         /// Gets or sets the value whose key and order both sit in the middle.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         [Serialization.BencodePropertyOrder(0)]
         public int Bravo { get; set; }
 
         /// <summary>
         /// Gets or sets the value whose key sorts last but is ordered first.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         [Serialization.BencodePropertyOrder(-10)]
         public int Charlie { get; set; }
     }
@@ -99,19 +99,19 @@ public partial class BencodeSerializerTests
         /// <summary>
         /// Gets or sets the value whose key sorts first.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public int Alpha { get; set; }
 
         /// <summary>
         /// Gets or sets the value whose key sorts in the middle.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public int Bravo { get; set; }
 
         /// <summary>
         /// Gets or sets the value whose key sorts last.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public int Charlie { get; set; }
     }
 }

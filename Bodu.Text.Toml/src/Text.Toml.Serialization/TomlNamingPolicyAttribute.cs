@@ -50,7 +50,7 @@ public sealed class TomlNamingPolicyAttribute
     /// Gets the naming policy applied to the annotated type's members, or <see langword="null" /> when the attribute
     /// specifies <see cref="TomlKnownNamingPolicy.Unspecified" />.
     /// </summary>
-    /// <returns>The resolved naming policy, or <see langword="null" />.</returns>
+    /// <value>The resolved naming policy, or <see langword="null" />.</value>
     public TomlNamingPolicy? NamingPolicy { get; }
 
     /// <summary>

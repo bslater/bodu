@@ -36,7 +36,7 @@ internal sealed class IndexedPriorityQueueDebugView<TElement, TPriority>
     /// <summary>
     /// Gets the queue's element-priority pairs sorted in dequeue (priority) order for display in the debugger.
     /// </summary>
-    /// <returns>An array of pairs ordered ascending by the queue's configured comparer.</returns>
+    /// <value>An array of pairs ordered ascending by the queue's configured comparer.</value>
     [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
     public KeyValuePair<TElement, TPriority>[] Items =>
         [.. _queue.OrderBy(pair => pair.Value, _queue.Comparer)];

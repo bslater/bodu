@@ -16,10 +16,10 @@ public static partial class DateOnlyExtensions
         /// Gets the <see cref="WeekOrdinal" /> represented by this date, indicating the ordinal occurrence of its
         /// <see cref="DateOnly.DayOfWeek" /> within the month.
         /// </summary>
-        /// <returns>
+        /// <value>
         /// A <see cref="WeekOrdinal" /> value indicating which occurrence of the weekday this date represents within
         /// its calendar month.
-        /// </returns>
+        /// </value>
         /// <remarks>
         /// <para>
         /// The result is calculated by counting how many full seven-day intervals have passed since the start of the

@@ -29,7 +29,7 @@ internal sealed class StubHttpMessageHandler
     /// <summary>
     /// Gets the number of requests this handler has received.
     /// </summary>
-    /// <returns>The request count.</returns>
+    /// <value>The request count.</value>
     public int RequestCount { get; private set; }
 
     /// <inheritdoc />

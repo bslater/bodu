@@ -62,14 +62,12 @@ public sealed class DisjointSet
     /// Gets the total number of elements tracked by the structure.
     /// </summary>
     /// <value>The number of elements, equal to the <c>count</c> supplied at construction.</value>
-    /// <returns>The total number of elements.</returns>
     public int Count => _parent.Length;
 
     /// <summary>
     /// Gets the number of disjoint sets currently represented.
     /// </summary>
     /// <value>The count of distinct subsets, starting at <see cref="Count" /> and decreasing by one per merge.</value>
-    /// <returns>The number of disjoint sets.</returns>
     public int SetCount => _setCount;
 
     /// <summary>

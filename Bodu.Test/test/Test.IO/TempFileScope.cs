@@ -34,13 +34,13 @@ public sealed class TempFileScope
     /// <summary>
     /// Gets the absolute path of the temporary file.
     /// </summary>
-    /// <returns>The full path of the file created for the scope.</returns>
+    /// <value>The full path of the file created for the scope.</value>
     public string Path { get; }
 
     /// <summary>
     /// Gets the directory that contains the temporary file.
     /// </summary>
-    /// <returns>The absolute path of the containing directory.</returns>
+    /// <value>The absolute path of the containing directory.</value>
     public string Directory => System.IO.Path.GetDirectoryName(Path)!;
 
     /// <inheritdoc />

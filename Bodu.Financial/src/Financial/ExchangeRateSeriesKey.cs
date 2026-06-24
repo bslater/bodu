@@ -42,12 +42,12 @@ public readonly record struct ExchangeRateSeriesKey
     /// <summary>
     /// Gets the currency pair the series describes.
     /// </summary>
-    /// <returns>The directional pair.</returns>
+    /// <value>The directional pair.</value>
     public ExchangeRatePair Pair { get; }
 
     /// <summary>
     /// Gets the non-empty identifier of the publishing source.
     /// </summary>
-    /// <returns>The provider identifier, compared ordinally.</returns>
+    /// <value>The provider identifier, compared ordinally.</value>
     public string Provider { get; }
 }

@@ -22,12 +22,12 @@ internal sealed class DistributedCacheEntry
     /// <summary>
     /// Gets or sets the cached rate rows for the pair.
     /// </summary>
-    /// <returns>The cached rate rows, never <see langword="null" /> after deserialization.</returns>
+    /// <value>The cached rate rows, never <see langword="null" /> after deserialization.</value>
     public List<DistributedCacheRate> Rates { get; set; } = new();
 
     /// <summary>
     /// Gets or sets the recorded coverage windows for the pair.
     /// </summary>
-    /// <returns>The coverage windows recording which date ranges were fetched.</returns>
+    /// <value>The coverage windows recording which date ranges were fetched.</value>
     public List<DistributedCacheCoverage> Coverage { get; set; } = new();
 }

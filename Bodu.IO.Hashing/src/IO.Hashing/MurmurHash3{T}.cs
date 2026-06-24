@@ -101,7 +101,7 @@ public abstract class MurmurHash3<T>
     /// <summary>
     /// Gets the 32-bit seed used to initialize the hash computation.
     /// </summary>
-    /// <returns>The seed value supplied at construction time, or zero if no seed was specified.</returns>
+    /// <value>The seed value supplied at construction time, or zero if no seed was specified.</value>
     public uint Seed { get; }
 
     /// <inheritdoc />

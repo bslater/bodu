@@ -94,21 +94,18 @@ public sealed class DisjointSet<T>
     /// Gets the total number of elements tracked by the structure.
     /// </summary>
     /// <value>The number of distinct elements added.</value>
-    /// <returns>The total number of elements.</returns>
     public int Count => _indices.Count;
 
     /// <summary>
     /// Gets the number of disjoint sets currently represented.
     /// </summary>
     /// <value>The count of distinct subsets.</value>
-    /// <returns>The number of disjoint sets.</returns>
     public int SetCount => _setCount;
 
     /// <summary>
     /// Gets the equality comparer used to determine element identity.
     /// </summary>
     /// <value>The comparer supplied at construction, or <see cref="EqualityComparer{T}.Default" />.</value>
-    /// <returns>The equality comparer in use.</returns>
     public IEqualityComparer<T> Comparer { get; }
 
     /// <summary>

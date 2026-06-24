@@ -943,7 +943,7 @@ public partial class TomlSerializerTests
     private sealed class ValueModel<T>
     {
         /// <summary>Gets or sets the boxed value.</summary>
-        /// <returns>The boxed value.</returns>
+        /// <value>The boxed value.</value>
         public T Value { get; set; } = default!;
     }
 

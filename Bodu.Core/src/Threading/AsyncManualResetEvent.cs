@@ -62,7 +62,6 @@ public sealed class AsyncManualResetEvent
     /// Gets a value indicating whether the event is currently signaled.
     /// </summary>
     /// <value><see langword="true" /> if the event is set; otherwise, <see langword="false" />.</value>
-    /// <returns><see langword="true" /> if the event is signaled; otherwise, <see langword="false" />.</returns>
     public bool IsSet =>
         Volatile.Read(ref _source).Task.IsCompletedSuccessfully;
 

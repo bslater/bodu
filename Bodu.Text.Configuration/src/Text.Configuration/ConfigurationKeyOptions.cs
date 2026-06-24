@@ -39,45 +39,45 @@ public sealed class ConfigurationKeyOptions
     /// Gets the default key options: <see cref="ConfigurationKeyMapping.DotToColon" /> mapping, case-insensitive
     /// comparison, and <c>.</c> / <c>:</c> separators recognised by parser input.
     /// </summary>
-    /// <returns>A cached default options instance.</returns>
+    /// <value>A cached default options instance.</value>
     public static ConfigurationKeyOptions Default { get; } = new ConfigurationKeyOptions();
 
     /// <summary>
     /// Gets the segment-separator characters recognised in a raw key when splitting into segments.
     /// </summary>
-    /// <returns>A non-empty set of separator characters. The default is <c>{ '.', ':' }</c>.</returns>
+    /// <value>A non-empty set of separator characters. The default is <c>{ '.', ':' }</c>.</value>
     public IReadOnlyList<char> SegmentSeparators { get; init; } = s_defaultSeparators;
 
     /// <summary>
     /// Gets the mapping that converts the raw key to a colon-delimited configuration key.
     /// </summary>
-    /// <returns>The selected <see cref="ConfigurationKeyMapping" /> value.</returns>
+    /// <value>The selected <see cref="ConfigurationKeyMapping" /> value.</value>
     public ConfigurationKeyMapping Mapping { get; init; } = ConfigurationKeyMapping.DotToColon;
 
     /// <summary>
     /// Gets a value indicating whether logical key comparison is case-sensitive.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see langword="true" /> when keys are compared with ordinal case sensitivity; otherwise,
     /// <see langword="false" />. The default is <see langword="false" />, mirroring
     /// <c>Microsoft.Extensions.Configuration</c>.
-    /// </returns>
+    /// </value>
     public bool CaseSensitive { get; init; }
 
     /// <summary>
     /// Gets a value indicating whether the parser permits empty segments in a raw key (for example <c>a..b</c>). The
     /// default rejects empty segments.
     /// </summary>
-    /// <returns><see langword="true" /> when empty segments are allowed; otherwise, <see langword="false" />.</returns>
+    /// <value><see langword="true" /> when empty segments are allowed; otherwise, <see langword="false" />.</value>
     public bool AllowEmptySegments { get; init; }
 
     /// <summary>
     /// Gets the <see cref="StringComparer" /> implied by <see cref="CaseSensitive" />.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see cref="StringComparer.Ordinal" /> when case-sensitive; otherwise,
     /// <see cref="StringComparer.OrdinalIgnoreCase" />.
-    /// </returns>
+    /// </value>
     public StringComparer KeyComparer =>
         CaseSensitive ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase;
 }

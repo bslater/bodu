@@ -59,14 +59,14 @@ public readonly struct AuthenticationTag
     /// <summary>
     /// Gets a value indicating whether the tag is empty.
     /// </summary>
-    /// <returns><see langword="true" /> if the tag contains no bytes; otherwise, <see langword="false" />.</returns>
+    /// <value><see langword="true" /> if the tag contains no bytes; otherwise, <see langword="false" />.</value>
     public bool IsEmpty =>
         Length == 0;
 
     /// <summary>
     /// Gets the number of bytes in the tag.
     /// </summary>
-    /// <returns>The tag length in bytes, or <c>0</c> for the empty value.</returns>
+    /// <value>The tag length in bytes, or <c>0</c> for the empty value.</value>
     public int Length =>
         _value?.Length ?? 0;
 

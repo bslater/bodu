@@ -65,7 +65,7 @@ public abstract class CheckDigitAlgorithm
     /// <summary>
     /// Gets the canonical name of the algorithm, suitable for diagnostic output and logging.
     /// </summary>
-    /// <returns>A short, stable identifier such as <c>"Luhn"</c>, <c>"Damm"</c>, or <c>"Verhoeff"</c>.</returns>
+    /// <value>A short, stable identifier such as <c>"Luhn"</c>, <c>"Damm"</c>, or <c>"Verhoeff"</c>.</value>
     public abstract string AlgorithmName { get; }
 
     /// <summary>

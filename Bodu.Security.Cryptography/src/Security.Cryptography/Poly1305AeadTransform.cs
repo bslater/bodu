@@ -87,22 +87,22 @@ public abstract class Poly1305AeadTransform
     /// <summary>
     /// Gets a value indicating whether this construction authenticates associated data.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see langword="true" /> for the RFC 8439-framed constructions; <see langword="false" /> for the secretbox
     /// construction, which has no associated-data input.
-    /// </returns>
+    /// </value>
     protected virtual bool SupportsAssociatedData => true;
 
     /// <summary>
     /// Gets the retained secret key.
     /// </summary>
-    /// <returns>A read-only view over the 32-byte key.</returns>
+    /// <value>A read-only view over the 32-byte key.</value>
     protected ReadOnlySpan<byte> Key => _key;
 
     /// <summary>
     /// Gets the retained nonce.
     /// </summary>
-    /// <returns>A read-only view over the 24-byte nonce.</returns>
+    /// <value>A read-only view over the 24-byte nonce.</value>
     protected ReadOnlySpan<byte> Nonce => _nonce;
 
     /// <inheritdoc />

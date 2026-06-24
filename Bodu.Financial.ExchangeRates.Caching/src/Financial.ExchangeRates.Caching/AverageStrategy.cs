@@ -62,7 +62,7 @@ public sealed class AverageStrategy
     /// <summary>
     /// Gets the provider label applied to each synthesized average rate.
     /// </summary>
-    /// <returns>The synthetic provider label.</returns>
+    /// <value>The synthetic provider label.</value>
     public string ProviderLabel => _providerLabel;
 
     /// <inheritdoc />

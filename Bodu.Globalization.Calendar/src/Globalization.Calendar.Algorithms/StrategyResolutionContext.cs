@@ -52,7 +52,7 @@ public sealed class StrategyResolutionContext
     /// <summary>
     /// Gets the custom algorithm registry consulted for keys the built-in catalogue does not recognize.
     /// </summary>
-    /// <returns>The registry, or <see langword="null" /> when only built-in algorithms are available.</returns>
+    /// <value>The registry, or <see langword="null" /> when only built-in algorithms are available.</value>
     public INotableDateAlgorithmRegistry? Algorithms { get; }
 
     /// <summary>

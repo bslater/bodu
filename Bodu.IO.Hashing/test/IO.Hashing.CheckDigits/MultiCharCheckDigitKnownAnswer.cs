@@ -20,18 +20,18 @@ public sealed record MultiCharCheckDigitKnownAnswer
     /// <summary>
     /// Gets the body characters (without the trailing check code) that the algorithm is expected to process.
     /// </summary>
-    /// <returns>A non-null string drawn from the algorithm's declared input alphabet.</returns>
+    /// <value>A non-null string drawn from the algorithm's declared input alphabet.</value>
     public required string Body { get; init; }
 
     /// <summary>
     /// Gets the expected check code produced by the algorithm for the <see cref="Body" />.
     /// </summary>
-    /// <returns>A string of ASCII decimal digits whose length matches the algorithm's <c>CheckLength</c>.</returns>
+    /// <value>A string of ASCII decimal digits whose length matches the algorithm's <c>CheckLength</c>.</value>
     public required string ExpectedCheck { get; init; }
     /// <summary>
     /// Gets a short descriptive name used in test output to identify the vector.
     /// </summary>
-    /// <returns>A non-empty descriptive label such as <c>"WikipediaIbanGB"</c>.</returns>
+    /// <value>A non-empty descriptive label such as <c>"WikipediaIbanGB"</c>.</value>
     public required string Name { get; init; }
 
 }

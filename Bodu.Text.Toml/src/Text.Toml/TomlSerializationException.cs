@@ -61,27 +61,27 @@ public sealed class TomlSerializationException
     /// <summary>
     /// Gets the byte offset into the source at which the error was detected, when available.
     /// </summary>
-    /// <returns>The byte offset, or <see langword="null" /> when the failure has no associated position.</returns>
+    /// <value>The byte offset, or <see langword="null" /> when the failure has no associated position.</value>
     public int? Offset { get; internal set; }
 
     /// <summary>
     /// Gets the 1-based line number in the source at which the error was detected, when available.
     /// </summary>
-    /// <returns>The line number, or <see langword="null" /> when the failure has no associated position.</returns>
+    /// <value>The line number, or <see langword="null" /> when the failure has no associated position.</value>
     public int? LineNumber { get; internal set; }
 
     /// <summary>
     /// Gets the 1-based column number, in UTF-8 bytes from the start of the line, at which the error was detected, when
     /// available.
     /// </summary>
-    /// <returns>The column number, or <see langword="null" /> when the failure has no associated position.</returns>
+    /// <value>The column number, or <see langword="null" /> when the failure has no associated position.</value>
     public int? ColumnNumber { get; internal set; }
 
     /// <summary>
     /// Gets the dotted path to the member whose binding failed, for example <c>server.endpoints[0].timeout</c>, when
     /// available.
     /// </summary>
-    /// <returns>The member path, or <see langword="null" /> when the failure is not associated with a member.</returns>
+    /// <value>The member path, or <see langword="null" /> when the failure is not associated with a member.</value>
     public string? Path { get; internal set; }
 
     /// <summary>

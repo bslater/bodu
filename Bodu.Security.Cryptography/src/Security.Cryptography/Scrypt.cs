@@ -62,7 +62,7 @@ public sealed class Scrypt
     /// <summary>
     /// Gets the cost parameters bound to this instance.
     /// </summary>
-    /// <returns>The <see cref="ScryptParameters" /> supplied at construction.</returns>
+    /// <value>The <see cref="ScryptParameters" /> supplied at construction.</value>
     public ScryptParameters Parameters { get; }
 
     /// <summary>

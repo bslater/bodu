@@ -172,13 +172,13 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the declared name member.
         /// </summary>
-        /// <returns>The name.</returns>
+        /// <value>The name.</value>
         public string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the extension-data member that captures unmatched keys.
         /// </summary>
-        /// <returns>The captured entries, or <see langword="null" /> when none were read.</returns>
+        /// <value>The captured entries, or <see langword="null" /> when none were read.</value>
         [TomlExtensionData]
         public TomlObject? Extra { get; set; }
     }
@@ -191,13 +191,13 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the declared name member.
         /// </summary>
-        /// <returns>The name.</returns>
+        /// <value>The name.</value>
         public string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the extension-data member that captures unmatched keys.
         /// </summary>
-        /// <returns>The captured entries, or <see langword="null" /> when none were read.</returns>
+        /// <value>The captured entries, or <see langword="null" /> when none were read.</value>
         [TomlExtensionData]
         public Dictionary<string, TomlNode?>? Extra { get; set; }
     }
@@ -210,13 +210,13 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the declared name member.
         /// </summary>
-        /// <returns>The name.</returns>
+        /// <value>The name.</value>
         public string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets the get-only extension-data member, populated in place with unmatched keys.
         /// </summary>
-        /// <returns>The captured entries.</returns>
+        /// <value>The captured entries.</value>
         [TomlExtensionData]
         public IDictionary<string, TomlNode?> Extra { get; } = new Dictionary<string, TomlNode?>(StringComparer.Ordinal);
     }
@@ -229,14 +229,14 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the first extension-data member.
         /// </summary>
-        /// <returns>The first captured entries.</returns>
+        /// <value>The first captured entries.</value>
         [TomlExtensionData]
         public TomlObject? First { get; set; }
 
         /// <summary>
         /// Gets or sets the second extension-data member, which makes the type invalid.
         /// </summary>
-        /// <returns>The second captured entries.</returns>
+        /// <value>The second captured entries.</value>
         [TomlExtensionData]
         public TomlObject? Second { get; set; }
     }
@@ -249,7 +249,7 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the extension-data member declared with an unsupported value type.
         /// </summary>
-        /// <returns>The captured entries.</returns>
+        /// <value>The captured entries.</value>
         [TomlExtensionData]
         public Dictionary<string, int>? Extra { get; set; }
     }

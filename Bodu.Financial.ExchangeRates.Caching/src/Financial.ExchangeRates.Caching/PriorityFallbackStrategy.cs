@@ -28,7 +28,7 @@ public sealed class PriorityFallbackStrategy
     /// <summary>
     /// Gets the shared stateless instance of the strategy.
     /// </summary>
-    /// <returns>The singleton <see cref="PriorityFallbackStrategy" />.</returns>
+    /// <value>The singleton <see cref="PriorityFallbackStrategy" />.</value>
     public static PriorityFallbackStrategy Instance { get; } = new();
 
     /// <inheritdoc />

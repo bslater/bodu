@@ -79,35 +79,30 @@ public sealed partial class Graph<T>
     /// Gets a value indicating whether edges are directed.
     /// </summary>
     /// <value><see langword="true" /> for a directed graph; otherwise, <see langword="false" />.</value>
-    /// <returns><see langword="true" /> if edges have a direction; otherwise, <see langword="false" />.</returns>
     public bool IsDirected => _kind == GraphKind.Directed;
 
     /// <summary>
     /// Gets the number of vertices in the graph.
     /// </summary>
     /// <value>The vertex count.</value>
-    /// <returns>The number of vertices.</returns>
     public int VertexCount => _adjacency.Count;
 
     /// <summary>
     /// Gets the number of edges in the graph. In an undirected graph each connection counts once.
     /// </summary>
     /// <value>The edge count.</value>
-    /// <returns>The number of edges.</returns>
     public int EdgeCount => _edgeCount;
 
     /// <summary>
     /// Gets the comparer used to determine vertex identity.
     /// </summary>
     /// <value>The comparer supplied at construction, or the default comparer.</value>
-    /// <returns>The vertex comparer in use.</returns>
     public IEqualityComparer<T> Comparer { get; }
 
     /// <summary>
     /// Gets the vertices of the graph.
     /// </summary>
     /// <value>A read-only collection of the graph's vertices.</value>
-    /// <returns>The graph's vertices.</returns>
     public IReadOnlyCollection<T> Vertices => _adjacency.Keys;
 
     /// <summary>

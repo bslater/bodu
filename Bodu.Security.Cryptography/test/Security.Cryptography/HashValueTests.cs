@@ -19,7 +19,7 @@ public sealed partial class HashValueTests
     /// Gets the well-formed hexadecimal vectors used by the parse and format tests: each row pairs hexadecimal text
     /// with the bytes it decodes to.
     /// </summary>
-    /// <returns>Rows of <see cref="ValidKat{TInput, TExpected}" /> wrapped for <see cref="DynamicDataAttribute" />.</returns>
+    /// <value>Rows of <see cref="ValidKat{TInput, TExpected}" /> wrapped for <see cref="DynamicDataAttribute" />.</value>
     public static IEnumerable<object[]> ValidHexVectors =>
         new[]
         {
@@ -37,7 +37,7 @@ public sealed partial class HashValueTests
     /// <summary>
     /// Gets the malformed hexadecimal vectors rejected by the parse tests.
     /// </summary>
-    /// <returns>Rows of <see cref="InvalidKat{TInput}" /> wrapped for <see cref="DynamicDataAttribute" />.</returns>
+    /// <value>Rows of <see cref="InvalidKat{TInput}" /> wrapped for <see cref="DynamicDataAttribute" />.</value>
     public static IEnumerable<object[]> InvalidHexVectors =>
         new[]
         {

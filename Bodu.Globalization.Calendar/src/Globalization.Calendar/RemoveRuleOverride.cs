@@ -31,6 +31,6 @@ internal sealed class RemoveRuleOverride
     /// <summary>
     /// Gets the identifier of the rule to remove.
     /// </summary>
-    /// <returns>The targeted rule id.</returns>
+    /// <value>The targeted rule id.</value>
     public string RuleRef { get; }
 }

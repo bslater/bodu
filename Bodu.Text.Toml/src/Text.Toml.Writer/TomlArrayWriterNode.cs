@@ -24,7 +24,7 @@ internal sealed class TomlArrayWriterNode
     /// <summary>
     /// Gets the elements of the array, in insertion order.
     /// </summary>
-    /// <returns>The ordered elements.</returns>
+    /// <value>The ordered elements.</value>
     internal IReadOnlyList<TomlWriterNode> Items => _items;
 
     /// <summary>

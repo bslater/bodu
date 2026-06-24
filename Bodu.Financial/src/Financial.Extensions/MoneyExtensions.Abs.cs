@@ -15,7 +15,7 @@ public static partial class MoneyExtensions
         /// <summary>
         /// Gets the absolute value of this amount.
         /// </summary>
-        /// <returns>A <see cref="Money" /> with the same ISO code and a non-negative amount.</returns>
+        /// <value>A <see cref="Money" /> with the same ISO code and a non-negative amount.</value>
         /// <exception cref="InvalidOperationException">
         /// This value is a default-initialised, currency-less <see cref="Money" />.
         /// </exception>

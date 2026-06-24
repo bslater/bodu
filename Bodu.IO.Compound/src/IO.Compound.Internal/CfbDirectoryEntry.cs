@@ -76,69 +76,69 @@ internal sealed class CfbDirectoryEntry
     /// <summary>
     /// Gets the zero-based stream identifier (directory index) of the entry.
     /// </summary>
-    /// <returns>The entry's stream identifier.</returns>
+    /// <value>The entry's stream identifier.</value>
     internal int Sid { get; }
 
     /// <summary>
     /// Gets the entry name as stored in the directory.
     /// </summary>
-    /// <returns>The directory name, with any control prefix preserved.</returns>
+    /// <value>The directory name, with any control prefix preserved.</value>
     internal string Name { get; }
 
     /// <summary>
     /// Gets the kind of object the entry describes.
     /// </summary>
-    /// <returns>The entry type.</returns>
+    /// <value>The entry type.</value>
     internal CompoundEntryType Type { get; }
 
     /// <summary>
     /// Gets the red-black tree node color of the entry.
     /// </summary>
-    /// <returns>The entry color.</returns>
+    /// <value>The entry color.</value>
     internal CompoundEntryColor Color { get; }
 
     /// <summary>
     /// Gets the stream identifier of the left sibling in the parent's child tree.
     /// </summary>
-    /// <returns>The left-sibling identifier, or <see cref="CfbHeader.NoStream" /> when absent.</returns>
+    /// <value>The left-sibling identifier, or <see cref="CfbHeader.NoStream" /> when absent.</value>
     internal uint LeftSiblingId { get; }
 
     /// <summary>
     /// Gets the stream identifier of the right sibling in the parent's child tree.
     /// </summary>
-    /// <returns>The right-sibling identifier, or <see cref="CfbHeader.NoStream" /> when absent.</returns>
+    /// <value>The right-sibling identifier, or <see cref="CfbHeader.NoStream" /> when absent.</value>
     internal uint RightSiblingId { get; }
 
     /// <summary>
     /// Gets the stream identifier of the root of this entry's child tree.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The child-tree root identifier, or <see cref="CfbHeader.NoStream" /> when the entry has no children.
-    /// </returns>
+    /// </value>
     internal uint ChildId { get; }
 
     /// <summary>
     /// Gets the class identifier (CLSID) recorded for the entry.
     /// </summary>
-    /// <returns>The entry's class identifier.</returns>
+    /// <value>The entry's class identifier.</value>
     internal Guid ClassId { get; }
 
     /// <summary>
     /// Gets the user-defined state bits recorded for the entry.
     /// </summary>
-    /// <returns>The raw state-bit flags.</returns>
+    /// <value>The raw state-bit flags.</value>
     internal int StateBits { get; }
 
     /// <summary>
     /// Gets the raw creation Windows FILETIME recorded for the entry.
     /// </summary>
-    /// <returns>The 100-nanosecond ticks since 1601-01-01 UTC, or <c>0</c> when none is recorded.</returns>
+    /// <value>The 100-nanosecond ticks since 1601-01-01 UTC, or <c>0</c> when none is recorded.</value>
     internal long CreationFileTime { get; }
 
     /// <summary>
     /// Gets the raw last-modified Windows FILETIME recorded for the entry.
     /// </summary>
-    /// <returns>The 100-nanosecond ticks since 1601-01-01 UTC, or <c>0</c> when none is recorded.</returns>
+    /// <value>The 100-nanosecond ticks since 1601-01-01 UTC, or <c>0</c> when none is recorded.</value>
     internal long ModifiedFileTime { get; }
 
     /// <summary>
@@ -146,19 +146,19 @@ internal sealed class CfbDirectoryEntry
     /// cutoff this indexes the mini-FAT; otherwise it indexes the regular FAT. For the root storage it is the first
     /// sector of the mini stream.
     /// </summary>
-    /// <returns>The starting sector or mini-sector identifier.</returns>
+    /// <value>The starting sector or mini-sector identifier.</value>
     internal uint StartSector { get; }
 
     /// <summary>
     /// Gets the payload size, in bytes.
     /// </summary>
-    /// <returns>The payload byte count for a stream entry; <c>0</c> for storage entries.</returns>
+    /// <value>The payload byte count for a stream entry; <c>0</c> for storage entries.</value>
     internal long Size { get; }
 
     /// <summary>
     /// Gets the resolved stream identifiers of this entry's direct children, in directory order.
     /// </summary>
-    /// <returns>A mutable list populated by the directory builder; empty for stream entries.</returns>
+    /// <value>A mutable list populated by the directory builder; empty for stream entries.</value>
     internal List<int> Children { get; }
 
     /// <summary>

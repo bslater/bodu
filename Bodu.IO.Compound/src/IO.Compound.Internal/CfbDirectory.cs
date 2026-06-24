@@ -60,7 +60,7 @@ internal sealed class CfbDirectory
     /// <summary>
     /// Gets the root storage entry that anchors the directory hierarchy.
     /// </summary>
-    /// <returns>The root storage entry.</returns>
+    /// <value>The root storage entry.</value>
     internal CfbDirectoryEntry Root { get; }
 
     /// <summary>

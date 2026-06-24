@@ -33,36 +33,36 @@ internal sealed class RbaExchangeRateSeries
     /// <summary>
     /// Gets the zero-based worksheet column index of the series.
     /// </summary>
-    /// <returns>The column index.</returns>
+    /// <value>The column index.</value>
     public int ColumnIndex { get; }
 
     /// <summary>
     /// Gets the RBA series identifier.
     /// </summary>
-    /// <returns>The RBA series mnemonic, or an empty string when absent.</returns>
+    /// <value>The RBA series mnemonic, or an empty string when absent.</value>
     public string SeriesId { get; }
 
     /// <summary>
     /// Gets the resolved quote-currency ISO code (after alias mapping).
     /// </summary>
-    /// <returns>The three-letter quote-currency ISO code.</returns>
+    /// <value>The three-letter quote-currency ISO code.</value>
     public string CurrencyCode { get; }
 
     /// <summary>
     /// Gets the RBA units label.
     /// </summary>
-    /// <returns>The units text, or an empty string when absent.</returns>
+    /// <value>The units text, or an empty string when absent.</value>
     public string Units { get; }
 
     /// <summary>
     /// Gets the RBA title.
     /// </summary>
-    /// <returns>The title text, or an empty string when absent.</returns>
+    /// <value>The title text, or an empty string when absent.</value>
     public string Title { get; }
 
     /// <summary>
     /// Gets the RBA description.
     /// </summary>
-    /// <returns>The description text, or an empty string when absent.</returns>
+    /// <value>The description text, or an empty string when absent.</value>
     public string Description { get; }
 }

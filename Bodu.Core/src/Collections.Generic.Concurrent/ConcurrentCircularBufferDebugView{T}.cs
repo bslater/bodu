@@ -36,7 +36,7 @@ internal sealed class ConcurrentCircularBufferDebugView<T>
     /// <summary>
     /// Gets the items currently observable in the <see cref="ConcurrentCircularBuffer{T}" /> as an array.
     /// </summary>
-    /// <returns>A snapshot array of buffer contents in head-to-tail logical order.</returns>
+    /// <value>A snapshot array of buffer contents in head-to-tail logical order.</value>
     /// <remarks>
     /// The display root is hidden so the debugger expands directly into the item list.
     /// </remarks>

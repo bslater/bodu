@@ -70,13 +70,13 @@ internal sealed class ExchangeRateSeriesBuffer
     /// <summary>
     /// Gets the number of live observations.
     /// </summary>
-    /// <returns>A non-negative count.</returns>
+    /// <value>A non-negative count.</value>
     public int Count { get; private set; }
 
     /// <summary>
     /// Gets a value indicating whether the buffer holds no observations.
     /// </summary>
-    /// <returns><see langword="true" /> if the buffer is empty; otherwise <see langword="false" />.</returns>
+    /// <value><see langword="true" /> if the buffer is empty; otherwise <see langword="false" />.</value>
     public bool IsEmpty => Count == 0;
 
     /// <summary>

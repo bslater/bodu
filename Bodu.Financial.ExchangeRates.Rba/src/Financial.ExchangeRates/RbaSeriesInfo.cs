@@ -36,32 +36,32 @@ public sealed class RbaSeriesInfo
     /// <summary>
     /// Gets the currency pair the series represents, always quoted against the Australian dollar.
     /// </summary>
-    /// <returns>The <see cref="ExchangeRatePair" /> from <c>AUD</c> to the quote currency.</returns>
+    /// <value>The <see cref="ExchangeRatePair" /> from <c>AUD</c> to the quote currency.</value>
     public ExchangeRatePair Pair { get; }
 
     /// <summary>
     /// Gets the quote-currency ISO code.
     /// </summary>
-    /// <returns>The three-letter ISO code of the quote currency.</returns>
+    /// <value>The three-letter ISO code of the quote currency.</value>
     public string QuoteIsoCode { get; }
 
     /// <summary>
     /// Gets the RBA series identifier.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The RBA series mnemonic (for example, <c>FXRUSD</c>), or an empty string when the workbook omits it.
-    /// </returns>
+    /// </value>
     public string SeriesId { get; }
 
     /// <summary>
     /// Gets the RBA description of the series.
     /// </summary>
-    /// <returns>The RBA description text, or an empty string when the workbook omits it.</returns>
+    /// <value>The RBA description text, or an empty string when the workbook omits it.</value>
     public string Description { get; }
 
     /// <summary>
     /// Gets the RBA units label of the series.
     /// </summary>
-    /// <returns>The RBA units text (typically the quote ISO code).</returns>
+    /// <value>The RBA units text (typically the quote ISO code).</value>
     public string Units { get; }
 }

@@ -417,11 +417,11 @@ public class TomlSerializerAlignmentTests
     private sealed class CountModel
     {
         /// <summary>Gets or sets the integer count.</summary>
-        /// <returns>The count.</returns>
+        /// <value>The count.</value>
         public int Count { get; set; }
 
         /// <summary>Gets or sets the label.</summary>
-        /// <returns>The label.</returns>
+        /// <value>The label.</value>
         public string Label { get; set; } = string.Empty;
     }
 
@@ -431,12 +431,12 @@ public class TomlSerializerAlignmentTests
     private sealed class RequiredMemberModel
     {
         /// <summary>Gets or sets the required name.</summary>
-        /// <returns>The name.</returns>
+        /// <value>The name.</value>
         [TomlRequired]
         public string Name { get; set; } = string.Empty;
 
         /// <summary>Gets or sets the optional value.</summary>
-        /// <returns>The optional value.</returns>
+        /// <value>The optional value.</value>
         public string Optional { get; set; } = string.Empty;
     }
 
@@ -458,7 +458,7 @@ public class TomlSerializerAlignmentTests
         }
 
         /// <summary>Gets the value, exposed through a non-public setter that <see cref="TomlIncludeAttribute" /> opts into.</summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         [TomlInclude]
         public int Value { get; private set; }
     }
@@ -470,11 +470,11 @@ public class TomlSerializerAlignmentTests
     private sealed class ExtensionDataModel
     {
         /// <summary>Gets or sets the name.</summary>
-        /// <returns>The name.</returns>
+        /// <value>The name.</value>
         public string Name { get; set; } = string.Empty;
 
         /// <summary>Gets or sets the captured entries that match no other member.</summary>
-        /// <returns>The captured entries.</returns>
+        /// <value>The captured entries.</value>
         [TomlExtensionData]
         public TomlObject? Extra { get; set; }
     }
@@ -486,15 +486,15 @@ public class TomlSerializerAlignmentTests
         : ITomlOnSerializing, ITomlOnSerialized, ITomlOnDeserializing, ITomlOnDeserialized
     {
         /// <summary>Gets the ordered list of callback names the serializer has invoked.</summary>
-        /// <returns>The recorded callback names.</returns>
+        /// <value>The recorded callback names.</value>
         public List<string> Calls { get; } = new();
 
         /// <summary>Gets or sets the integer value carried by the model.</summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public int Value { get; set; }
 
         /// <summary>Gets the value observed at the moment <see cref="OnDeserializing" /> ran.</summary>
-        /// <returns>The value observed during the deserializing callback.</returns>
+        /// <value>The value observed during the deserializing callback.</value>
         public int ValueAtDeserializing { get; private set; }
 
         /// <inheritdoc />
@@ -523,7 +523,7 @@ public class TomlSerializerAlignmentTests
     private sealed class PlainModel
     {
         /// <summary>Gets or sets the integer value.</summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public int Value { get; set; }
     }
 
@@ -534,7 +534,7 @@ public class TomlSerializerAlignmentTests
     private sealed class DisallowUnmappedModel
     {
         /// <summary>Gets or sets the integer value.</summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public int Value { get; set; }
     }
 
@@ -545,11 +545,11 @@ public class TomlSerializerAlignmentTests
     private sealed class DisallowWithExtensionDataModel
     {
         /// <summary>Gets or sets the integer value.</summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public int Value { get; set; }
 
         /// <summary>Gets or sets the captured entries that match no other member.</summary>
-        /// <returns>The captured entries.</returns>
+        /// <value>The captured entries.</value>
         [TomlExtensionData]
         public TomlObject? Extra { get; set; }
     }
@@ -561,7 +561,7 @@ public class TomlSerializerAlignmentTests
     private sealed class PopulateMemberModel
     {
         /// <summary>Gets the pre-seeded tag list that the serializer populates rather than replaces.</summary>
-        /// <returns>The tags.</returns>
+        /// <value>The tags.</value>
         [TomlObjectCreationHandling(TomlObjectCreationHandling.Populate)]
         public List<int> Tags { get; } = new() { 99 };
     }
@@ -573,7 +573,7 @@ public class TomlSerializerAlignmentTests
     private sealed class GetOnlyCollectionModel
     {
         /// <summary>Gets the pre-seeded tag list.</summary>
-        /// <returns>The tags.</returns>
+        /// <value>The tags.</value>
         public List<int> Tags { get; } = new() { 99 };
     }
 
@@ -584,11 +584,11 @@ public class TomlSerializerAlignmentTests
     private sealed class CamelCaseTypeModel
     {
         /// <summary>Gets or sets the first name.</summary>
-        /// <returns>The first name.</returns>
+        /// <value>The first name.</value>
         public string FirstName { get; set; } = string.Empty;
 
         /// <summary>Gets or sets the last name.</summary>
-        /// <returns>The last name.</returns>
+        /// <value>The last name.</value>
         public string LastName { get; set; } = string.Empty;
     }
 
@@ -626,7 +626,7 @@ public class TomlSerializerAlignmentTests
     private sealed class StatusModel
     {
         /// <summary>Gets or sets the status.</summary>
-        /// <returns>The status.</returns>
+        /// <value>The status.</value>
         public Status Status { get; set; }
     }
 
@@ -636,7 +636,7 @@ public class TomlSerializerAlignmentTests
     private sealed class RenamedStatusModel
     {
         /// <summary>Gets or sets the status.</summary>
-        /// <returns>The status.</returns>
+        /// <value>The status.</value>
         public RenamedStatus Status { get; set; }
     }
 
@@ -646,7 +646,7 @@ public class TomlSerializerAlignmentTests
     private sealed class NumberEnumModel
     {
         /// <summary>Gets or sets the status, serialized as a TOML integer.</summary>
-        /// <returns>The status.</returns>
+        /// <value>The status.</value>
         [TomlConverter(typeof(TomlNumberEnumConverter<Status>))]
         public Status Status { get; set; }
     }

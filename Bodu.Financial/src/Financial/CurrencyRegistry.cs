@@ -32,7 +32,7 @@ public static class CurrencyRegistry
     /// <summary>
     /// Gets every shipped currency.
     /// </summary>
-    /// <returns>A read-only enumeration of the registered <see cref="CurrencyInfo" /> entries.</returns>
+    /// <value>A read-only enumeration of the registered <see cref="CurrencyInfo" /> entries.</value>
     public static IReadOnlyCollection<CurrencyInfo> All => s_shipped.Values;
 
     /// <summary>

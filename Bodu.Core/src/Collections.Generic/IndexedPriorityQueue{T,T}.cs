@@ -229,25 +229,25 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
     /// <summary>
     /// Gets the total number of elements the internal data structure can hold without resizing.
     /// </summary>
-    /// <returns>The length of the internal heap array.</returns>
+    /// <value>The length of the internal heap array.</value>
     public int Capacity => _nodes.Length;
 
     /// <summary>
     /// Gets the priority comparer used by the queue to order elements.
     /// </summary>
-    /// <returns>The configured <see cref="IComparer{TPriority}" />.</returns>
+    /// <value>The configured <see cref="IComparer{TPriority}" />.</value>
     public IComparer<TPriority> Comparer => _comparer;
 
     /// <summary>
     /// Gets the number of elements contained in the queue.
     /// </summary>
-    /// <returns>The current element count.</returns>
+    /// <value>The current element count.</value>
     public int Count => _size;
 
     /// <summary>
     /// Gets the element equality comparer used by the queue to identify elements.
     /// </summary>
-    /// <returns>The configured <see cref="IEqualityComparer{TElement}" />.</returns>
+    /// <value>The configured <see cref="IEqualityComparer{TElement}" />.</value>
     public IEqualityComparer<TElement> ElementComparer => _index.Comparer;
 
     /// <summary>

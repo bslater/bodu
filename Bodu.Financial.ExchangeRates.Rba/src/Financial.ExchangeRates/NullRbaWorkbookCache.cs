@@ -24,7 +24,7 @@ public sealed class NullRbaWorkbookCache
     /// <summary>
     /// Gets the shared instance of the no-op cache.
     /// </summary>
-    /// <returns>The singleton <see cref="NullRbaWorkbookCache" />.</returns>
+    /// <value>The singleton <see cref="NullRbaWorkbookCache" />.</value>
     public static NullRbaWorkbookCache Instance { get; } = new();
 
     /// <inheritdoc />

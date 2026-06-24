@@ -16,14 +16,14 @@ public sealed partial class ConfigurationParseOptions
     /// <see cref="DuplicateKeyPolicy.LastWins" /> duplicates, <see cref="IniDuplicateSectionBehavior.Preserve" />
     /// sections, and throw-on-error diagnostics.
     /// </summary>
-    /// <returns>A cached default options instance.</returns>
+    /// <value>A cached default options instance.</value>
     public static ConfigurationParseOptions Bodu { get; } = For(ConfigurationProfile.Bodu);
 
     /// <summary>
     /// Gets the canonical option set for the EditorConfig-compatible profile: inline comments disabled, duplicates
     /// last-wins, preserve duplicate sections, and throw-on-error diagnostics.
     /// </summary>
-    /// <returns>A cached EditorConfig-compatible options instance.</returns>
+    /// <value>A cached EditorConfig-compatible options instance.</value>
     public static ConfigurationParseOptions EditorConfigCompatible { get; } =
         For(ConfigurationProfile.EditorConfigCompatible);
 
@@ -31,14 +31,14 @@ public sealed partial class ConfigurationParseOptions
     /// Gets the canonical option set for strict, deterministic parsing intended for generated files: inline comments
     /// disabled, duplicate keys rejected, duplicate sections rejected, throw-on-error.
     /// </summary>
-    /// <returns>A cached strict options instance.</returns>
+    /// <value>A cached strict options instance.</value>
     public static ConfigurationParseOptions Strict { get; } = For(ConfigurationProfile.Strict);
 
     /// <summary>
     /// Gets the canonical option set for permissive parsing of user-authored files: inline comments enabled, duplicates
     /// last-wins, preserve duplicate sections, and collect-on-error diagnostics.
     /// </summary>
-    /// <returns>A cached relaxed options instance.</returns>
+    /// <value>A cached relaxed options instance.</value>
     public static ConfigurationParseOptions Relaxed { get; } = For(ConfigurationProfile.Relaxed);
 
     /// <summary>

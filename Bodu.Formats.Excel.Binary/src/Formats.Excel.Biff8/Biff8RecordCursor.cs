@@ -39,7 +39,7 @@ internal ref struct Biff8RecordCursor
     /// <summary>
     /// Gets the current read position within the buffer, in bytes from its start.
     /// </summary>
-    /// <returns>The byte offset of the next record header.</returns>
+    /// <value>The byte offset of the next record header.</value>
     public readonly int Position => _position;
 
     /// <summary>

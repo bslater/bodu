@@ -130,7 +130,7 @@ public partial class BencodeSerializerTests
         /// <summary>
         /// Gets or sets the integer value.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public int Value { get; set; }
     }
 
@@ -142,7 +142,7 @@ public partial class BencodeSerializerTests
         /// <summary>
         /// Gets the integer value, assignable only through an object initializer or the init-only setter.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public int Value { get; init; }
     }
 
@@ -170,7 +170,7 @@ public partial class BencodeSerializerTests
         /// <summary>
         /// Gets the integer value, exposed through a public getter with no setter.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public int Value { get; }
     }
 
@@ -198,7 +198,7 @@ public partial class BencodeSerializerTests
         /// <summary>
         /// Gets the integer value, exposed through a public getter and a private setter.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public int Value { get; private set; }
     }
 
@@ -227,7 +227,7 @@ public partial class BencodeSerializerTests
         /// Gets the integer value, opted into serialization through its private setter by
         /// <see cref="BencodeIncludeAttribute" />.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         [BencodeInclude]
         public int Value { get; private set; }
     }

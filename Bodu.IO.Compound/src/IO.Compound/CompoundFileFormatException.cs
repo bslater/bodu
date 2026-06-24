@@ -60,9 +60,9 @@ public sealed class CompoundFileFormatException
     /// <summary>
     /// Gets the category that classifies the structural failure.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The <see cref="CompoundFileError" /> describing the failure; <see cref="CompoundFileError.Unknown" /> when
     /// unspecified.
-    /// </returns>
+    /// </value>
     public CompoundFileError Category { get; }
 }

@@ -72,21 +72,18 @@ public sealed partial class Tree<T>
     /// Gets or sets the value stored at this node.
     /// </summary>
     /// <value>The node's value.</value>
-    /// <returns>The value currently stored at this node.</returns>
     public T Value { get; set; }
 
     /// <summary>
     /// Gets the parent node, or <see langword="null" /> when this node is a root.
     /// </summary>
     /// <value>The parent node, or <see langword="null" />.</value>
-    /// <returns>The parent node, or <see langword="null" /> when this node is a root.</returns>
     public Tree<T>? Parent => _parent;
 
     /// <summary>
     /// Gets the ordered list of child nodes.
     /// </summary>
     /// <value>A read-only view of the node's children.</value>
-    /// <returns>The node's children.</returns>
     /// <remarks>
     /// The returned collection is a live, read-only view over the node's children: it reflects subsequent
     /// <see cref="AddChild(T)" /> and <see cref="RemoveChild" /> operations but cannot be mutated directly, preserving
@@ -98,28 +95,24 @@ public sealed partial class Tree<T>
     /// Gets the number of immediate children.
     /// </summary>
     /// <value>The child count.</value>
-    /// <returns>The number of immediate children.</returns>
     public int ChildCount => _children.Count;
 
     /// <summary>
     /// Gets a value indicating whether this node has no parent.
     /// </summary>
     /// <value><see langword="true" /> if the node is a root; otherwise, <see langword="false" />.</value>
-    /// <returns><see langword="true" /> if this node has no parent; otherwise, <see langword="false" />.</returns>
     public bool IsRoot => _parent is null;
 
     /// <summary>
     /// Gets a value indicating whether this node has no children.
     /// </summary>
     /// <value><see langword="true" /> if the node is a leaf; otherwise, <see langword="false" />.</value>
-    /// <returns><see langword="true" /> if this node has no children; otherwise, <see langword="false" />.</returns>
     public bool IsLeaf => _children.Count == 0;
 
     /// <summary>
     /// Gets the depth of this node, measured as the number of edges from the root.
     /// </summary>
     /// <value>Zero for a root node, increasing by one per level.</value>
-    /// <returns>The number of edges between this node and the root.</returns>
     public int Depth
     {
         get
@@ -137,7 +130,6 @@ public sealed partial class Tree<T>
     /// descendant leaf.
     /// </summary>
     /// <value>Zero for a leaf node.</value>
-    /// <returns>The length of the longest downward path to a leaf.</returns>
     public int Height
     {
         get

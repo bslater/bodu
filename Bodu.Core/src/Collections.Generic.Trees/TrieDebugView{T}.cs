@@ -30,7 +30,7 @@ internal sealed class TrieDebugView<TValue>
     /// <summary>
     /// Gets a snapshot of the trie's key/value pairs.
     /// </summary>
-    /// <returns>An array of the trie's entries captured at inspection time.</returns>
+    /// <value>An array of the trie's entries captured at inspection time.</value>
     [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
     public KeyValuePair<string, TValue>[] Items => _trie.ToArrayInternal();
 }

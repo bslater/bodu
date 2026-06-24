@@ -45,7 +45,7 @@ public readonly partial struct TomlElement
     /// <summary>
     /// Gets the kind of this element.
     /// </summary>
-    /// <returns>The value kind.</returns>
+    /// <value>The value kind.</value>
     /// <exception cref="ObjectDisposedException">Thrown when the owning document has been disposed.</exception>
     public TomlValueKind ValueKind =>
         _document.GetKind(_index);

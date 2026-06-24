@@ -22,6 +22,6 @@ public interface INotableDateResourceProvider
     /// <summary>
     /// Gets the resource currently in effect.
     /// </summary>
-    /// <returns>The current <see cref="NotableDateResource" />.</returns>
+    /// <value>The current <see cref="NotableDateResource" />.</value>
     NotableDateResource Current { get; }
 }

@@ -60,7 +60,6 @@ public sealed class AsyncCountdownEvent
     /// Gets the number of remaining signals required to set the event.
     /// </summary>
     /// <value>The current count.</value>
-    /// <returns>The number of signals still required before the event becomes signaled.</returns>
     public int CurrentCount
     {
         get
@@ -76,7 +75,6 @@ public sealed class AsyncCountdownEvent
     /// Gets a value indicating whether the event is signaled (its count has reached zero).
     /// </summary>
     /// <value><see langword="true" /> if the count is zero; otherwise, <see langword="false" />.</value>
-    /// <returns><see langword="true" /> if the event has been signaled; otherwise, <see langword="false" />.</returns>
     public bool IsSet
     {
         get

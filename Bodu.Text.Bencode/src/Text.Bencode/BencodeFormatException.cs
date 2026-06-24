@@ -82,6 +82,6 @@ public sealed class BencodeFormatException
     /// <summary>
     /// Gets the zero-based byte offset at which the parse error was detected, when available.
     /// </summary>
-    /// <returns>The byte offset, or <see langword="null" /> when no position is associated with the error.</returns>
+    /// <value>The byte offset, or <see langword="null" /> when no position is associated with the error.</value>
     public int? Offset { get; }
 }

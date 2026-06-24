@@ -161,7 +161,6 @@ public abstract partial class Skein<T>
     /// non-empty array triggers a preliminary <c>KEY</c> UBI phase whenever the algorithm is initialized. Both the
     /// getter and the setter operate on defensive copies so external callers cannot mutate the internal key.
     /// </value>
-    /// <returns>A defensive copy of the current key, or an empty array if no key has been configured.</returns>
     /// <remarks>
     /// <para>
     /// Unlike <see cref="SipHash{T}" />, Skein does not require a fixed key length: any byte sequence from zero up to
@@ -212,7 +211,7 @@ public abstract partial class Skein<T>
     /// <summary>
     /// Gets the fully qualified algorithm name, including the state size and the configured output size.
     /// </summary>
-    /// <returns>A string of the form <c>"Skein-<i>s</i>-<i>h</i>"</c> — e.g. <c>"Skein-512-256"</c>.</returns>
+    /// <value>A string of the form <c>"Skein-<i>s</i>-<i>h</i>"</c> — e.g. <c>"Skein-512-256"</c>.</value>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     public override string AlgorithmName
     {

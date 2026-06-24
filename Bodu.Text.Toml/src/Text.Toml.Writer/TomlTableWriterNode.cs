@@ -29,7 +29,7 @@ internal sealed class TomlTableWriterNode
     /// <summary>
     /// Gets the key/value pairs of the table, in insertion order.
     /// </summary>
-    /// <returns>The ordered key/value pairs.</returns>
+    /// <value>The ordered key/value pairs.</value>
     internal IReadOnlyList<KeyValuePair<string, TomlWriterNode>> Items => _items;
 
     /// <summary>

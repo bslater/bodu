@@ -27,37 +27,37 @@ public sealed class ImportUseBuilder
     /// <summary>
     /// Gets the identifier of the imported concept.
     /// </summary>
-    /// <returns>The imported concept identifier.</returns>
+    /// <value>The imported concept identifier.</value>
     internal string NotableDateRef { get; }
 
     /// <summary>
     /// Gets the local alias.
     /// </summary>
-    /// <returns>The alias, or <see langword="null" /> when the imported identifier is retained.</returns>
+    /// <value>The alias, or <see langword="null" /> when the imported identifier is retained.</value>
     internal string? Alias { get; private set; }
 
     /// <summary>
     /// Gets the territory scope.
     /// </summary>
-    /// <returns>The territory code, or <see langword="null" /> when unset.</returns>
+    /// <value>The territory code, or <see langword="null" /> when unset.</value>
     internal string? Territory { get; private set; }
 
     /// <summary>
     /// Gets the category override.
     /// </summary>
-    /// <returns>The category, or <see langword="null" /> when the imported category is retained.</returns>
+    /// <value>The category, or <see langword="null" /> when the imported category is retained.</value>
     internal NotableDateCategory? Category { get; private set; }
 
     /// <summary>
     /// Gets the non-working override.
     /// </summary>
-    /// <returns>The flag, or <see langword="null" /> when unset.</returns>
+    /// <value>The flag, or <see langword="null" /> when unset.</value>
     internal bool? NonWorking { get; private set; }
 
     /// <summary>
     /// Gets the adjustment policy identifiers applied to the imported concept.
     /// </summary>
-    /// <returns>The policy identifiers; empty when none are configured.</returns>
+    /// <value>The policy identifiers; empty when none are configured.</value>
     internal IReadOnlyList<string> Adjustments =>
         _adjustments;
 

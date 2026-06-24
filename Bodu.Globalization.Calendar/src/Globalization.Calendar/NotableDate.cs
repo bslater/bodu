@@ -47,24 +47,24 @@ public sealed record NotableDate(
     /// <summary>
     /// Gets the identifier of the notable-date concept that produced the occurrence.
     /// </summary>
-    /// <returns>The notable-date id from <see cref="Identity" />.</returns>
+    /// <value>The notable-date id from <see cref="Identity" />.</value>
     public string NotableDateId =>
         Identity.NotableDateId;
 
     /// <summary>
     /// Gets the identifier of the rule that produced the occurrence.
     /// </summary>
-    /// <returns>The rule id from <see cref="Identity" />.</returns>
+    /// <value>The rule id from <see cref="Identity" />.</value>
     public string RuleId =>
         Identity.RuleId;
 
     /// <summary>
     /// Gets the last day the occurrence spans.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The inclusive end date, equal to <see cref="Date" /> for a single-day occurrence and
     /// <c><see cref="Date" /> + <see cref="DurationDays" /> - 1</c> for a multi-day span.
-    /// </returns>
+    /// </value>
     public DateOnly EndDate =>
         Date.AddDays(Math.Max(1, DurationDays) - 1);
 }

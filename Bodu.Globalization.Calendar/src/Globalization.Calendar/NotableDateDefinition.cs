@@ -60,45 +60,45 @@ public sealed class NotableDateDefinition
     /// <summary>
     /// Gets the stable identifier of the concept.
     /// </summary>
-    /// <returns>The concept id.</returns>
+    /// <value>The concept id.</value>
     public string Id { get; }
 
     /// <summary>
     /// Gets the human-readable name of the concept.
     /// </summary>
-    /// <returns>The display name.</returns>
+    /// <value>The display name.</value>
     public string DisplayName { get; }
 
     /// <summary>
     /// Gets the default category inherited by child rules.
     /// </summary>
-    /// <returns>The concept's <see cref="NotableDateCategory" />.</returns>
+    /// <value>The concept's <see cref="NotableDateCategory" />.</value>
     public NotableDateCategory Category { get; }
 
     /// <summary>
     /// Gets a value indicating whether child rules default to a non-working day.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see langword="true" /> when child rules default to a non-working day; otherwise <see langword="false" />.
-    /// </returns>
+    /// </value>
     public bool DefaultNonWorkingDay { get; }
 
     /// <summary>
     /// Gets the default duration in days inherited by child rules.
     /// </summary>
-    /// <returns>The default duration.</returns>
+    /// <value>The default duration.</value>
     public int DefaultDurationDays { get; }
 
     /// <summary>
     /// Gets the tags inherited by child rules unless overridden.
     /// </summary>
-    /// <returns>The concept tags; empty when none are declared.</returns>
+    /// <value>The concept tags; empty when none are declared.</value>
     public IReadOnlyList<string> Tags { get; }
 
     /// <summary>
     /// Gets the calculation rules belonging to the concept.
     /// </summary>
-    /// <returns>The rules; may be empty after override removal.</returns>
+    /// <value>The rules; may be empty after override removal.</value>
     public IReadOnlyList<NotableDateRule> Rules { get; }
 
     /// <summary>

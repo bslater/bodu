@@ -15,10 +15,10 @@ public static partial class DateTimeExtensions
         /// <summary>
         /// Gets a value indicating whether this date falls on the first day of its calendar month.
         /// </summary>
-        /// <returns>
+        /// <value>
         /// <see langword="true" /> if this date represents the first day of its month; otherwise,
         /// <see langword="false" />.
-        /// </returns>
+        /// </value>
         /// <remarks>
         /// <para>
         /// This evaluates whether the <see cref="DateTime.Day" /> component is equal to <c>1</c>.

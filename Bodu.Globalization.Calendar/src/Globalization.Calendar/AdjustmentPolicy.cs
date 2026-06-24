@@ -144,144 +144,144 @@ public sealed class AdjustmentPolicy
     /// <summary>
     /// Gets the stable identifier of the policy.
     /// </summary>
-    /// <returns>The policy id.</returns>
+    /// <value>The policy id.</value>
     public string Id { get; }
 
     /// <summary>
     /// Gets the selection priority of the policy.
     /// </summary>
-    /// <returns>The numeric priority.</returns>
+    /// <value>The numeric priority.</value>
     public int Priority { get; }
 
     /// <summary>
     /// Gets the scope that limits where the policy applies.
     /// </summary>
-    /// <returns>The <see cref="AdjustmentScope" />.</returns>
+    /// <value>The <see cref="AdjustmentScope" />.</value>
     public AdjustmentScope Scope { get; }
 
     /// <summary>
     /// Gets the condition under which the policy fires.
     /// </summary>
-    /// <returns>The <see cref="AdjustmentTrigger" />.</returns>
+    /// <value>The <see cref="AdjustmentTrigger" />.</value>
     public AdjustmentTrigger Trigger { get; }
 
     /// <summary>
     /// Gets the weekdays the <see cref="AdjustmentTrigger.IfDayOfWeek" /> trigger reacts to.
     /// </summary>
-    /// <returns>The configured weekdays; empty when the trigger does not use weekdays.</returns>
+    /// <value>The configured weekdays; empty when the trigger does not use weekdays.</value>
     public IReadOnlyList<DayOfWeek> TriggerWeekdays { get; }
 
     /// <summary>
     /// Gets the transformation applied when the policy fires.
     /// </summary>
-    /// <returns>The <see cref="AdjustmentAction" />.</returns>
+    /// <value>The <see cref="AdjustmentAction" />.</value>
     public AdjustmentAction Action { get; }
 
     /// <summary>
     /// Gets the target weekday for weekday-seeking actions.
     /// </summary>
-    /// <returns>The target weekday, or <see langword="null" /> when the action does not seek a weekday.</returns>
+    /// <value>The target weekday, or <see langword="null" /> when the action does not seek a weekday.</value>
     public DayOfWeek? ActionWeekday { get; }
 
     /// <summary>
     /// Gets the day delta applied by <see cref="AdjustmentAction.AddDays" />.
     /// </summary>
-    /// <returns>The signed number of days.</returns>
+    /// <value>The signed number of days.</value>
     public int ActionDays { get; }
 
     /// <summary>
     /// Gets the maximum number of days a working-day search may scan.
     /// </summary>
-    /// <returns>The configured search bound, or <see langword="null" /> when the default applies.</returns>
+    /// <value>The configured search bound, or <see langword="null" /> when the default applies.</value>
     public int? MaxSearchDays { get; }
 
     /// <summary>
     /// Gets a value indicating whether a working-day search skips weekends.
     /// </summary>
-    /// <returns><see langword="true" /> when weekends are skipped; otherwise <see langword="false" />.</returns>
+    /// <value><see langword="true" /> when weekends are skipped; otherwise <see langword="false" />.</value>
     public bool SkipWeekends { get; }
 
     /// <summary>
     /// Gets a value indicating whether a working-day search skips days already claimed by other non-working
     /// occurrences.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see langword="true" /> when occupied non-working days are skipped; otherwise <see langword="false" />.
-    /// </returns>
+    /// </value>
     public bool SkipNonWorkingDates { get; }
 
     /// <summary>
     /// Gets the emission mode applied when the policy fires.
     /// </summary>
-    /// <returns>The <see cref="EmissionMode" />.</returns>
+    /// <value>The <see cref="EmissionMode" />.</value>
     public EmissionMode Emission { get; }
 
     /// <summary>
     /// Gets the reason recorded against an observed occurrence.
     /// </summary>
-    /// <returns>The reason text, or <see langword="null" /> when none is configured.</returns>
+    /// <value>The reason text, or <see langword="null" /> when none is configured.</value>
     public string? Reason { get; }
 
     /// <summary>
     /// Gets the non-working-day flag applied to the observed occurrence.
     /// </summary>
-    /// <returns>The flag, or <see langword="null" /> when the rule's default applies.</returns>
+    /// <value>The flag, or <see langword="null" /> when the rule's default applies.</value>
     public bool? NonWorking { get; }
 
     /// <summary>
     /// Gets the comparison month for the fixed-date triggers.
     /// </summary>
-    /// <returns>The one-based month, or <see langword="null" /> when unused.</returns>
+    /// <value>The one-based month, or <see langword="null" /> when unused.</value>
     public int? TriggerMonth { get; }
 
     /// <summary>
     /// Gets the comparison day for the fixed-date triggers.
     /// </summary>
-    /// <returns>The one-based day, or <see langword="null" /> when unused.</returns>
+    /// <value>The one-based day, or <see langword="null" /> when unused.</value>
     public int? TriggerDay { get; }
 
     /// <summary>
     /// Gets the week ordinal for <see cref="AdjustmentTrigger.IfNthOccurrenceInMonth" />.
     /// </summary>
-    /// <returns>The configured ordinal, or <see langword="null" /> when unused.</returns>
+    /// <value>The configured ordinal, or <see langword="null" /> when unused.</value>
     public WeekOrdinal? TriggerWeekOrdinal { get; }
 
     /// <summary>
     /// Gets the referenced concept whose occurrence supplies the observed date for
     /// <see cref="AdjustmentAction.ReplaceWithRule" />.
     /// </summary>
-    /// <returns>The referenced concept identifier, or <see langword="null" /> when unused.</returns>
+    /// <value>The referenced concept identifier, or <see langword="null" /> when unused.</value>
     public string? ActionNotableDateRef { get; }
 
     /// <summary>
     /// Gets the referenced rule whose occurrence supplies the observed date for
     /// <see cref="AdjustmentAction.ReplaceWithRule" />.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The referenced rule identifier, or <see langword="null" /> to use the referenced concept's sole rule.
-    /// </returns>
+    /// </value>
     public string? ActionRuleRef { get; }
 
     /// <summary>
     /// Gets the handler key that binds <see cref="AdjustmentAction.Custom" /> to a registered
     /// <see cref="IAdjustmentHandler" />.
     /// </summary>
-    /// <returns>The handler key, or <see langword="null" /> when unused.</returns>
+    /// <value>The handler key, or <see langword="null" /> when unused.</value>
     public string? ActionHandlerKey { get; }
 
     /// <summary>
     /// Gets the handler key that binds <see cref="AdjustmentTrigger.Custom" /> to a registered
     /// <see cref="IAdjustmentTriggerHandler" />.
     /// </summary>
-    /// <returns>The handler key, or <see langword="null" /> when unused.</returns>
+    /// <value>The handler key, or <see langword="null" /> when unused.</value>
     public string? TriggerHandlerKey { get; }
 
     /// <summary>
     /// Gets the author-supplied parameters passed to custom trigger and action handlers.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The parameter map; empty when the policy declares none. The engine treats the values as opaque.
-    /// </returns>
+    /// </value>
     public IReadOnlyDictionary<string, string> HandlerParameters { get; }
 
     /// <summary>

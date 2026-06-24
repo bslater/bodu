@@ -33,7 +33,6 @@ public interface IAeadTransform
     /// Gets the authentication-tag size, in bits.
     /// </summary>
     /// <value>The authentication-tag size, in bits.</value>
-    /// <returns>The tag size in bits; divide by 8 for the byte length appended to the ciphertext.</returns>
     int TagSize { get; }
 
     /// <summary>

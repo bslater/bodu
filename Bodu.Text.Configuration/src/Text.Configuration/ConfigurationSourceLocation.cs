@@ -74,32 +74,32 @@ public readonly struct ConfigurationSourceLocation
     /// <summary>
     /// Gets a location that represents an unknown position.
     /// </summary>
-    /// <returns>An empty location whose numeric fields are all zero.</returns>
+    /// <value>An empty location whose numeric fields are all zero.</value>
     public static ConfigurationSourceLocation None => default;
 
     /// <summary>
     /// Gets the length of the span, measured in characters within the same line.
     /// </summary>
-    /// <returns>A non-negative count; zero indicates a point location.</returns>
+    /// <value>A non-negative count; zero indicates a point location.</value>
     public int Length { get; }
 
     /// <summary>
     /// Gets the 1-based line number that identifies the line in the source document.
     /// </summary>
-    /// <returns>A positive line number, or zero when the location is unknown.</returns>
+    /// <value>A positive line number, or zero when the location is unknown.</value>
     public int LineNumber { get; }
 
     /// <summary>
     /// Gets the 1-based column within <see cref="LineNumber" /> at which the span starts.
     /// </summary>
-    /// <returns>A positive column number, or zero when the column is unknown.</returns>
+    /// <value>A positive column number, or zero when the column is unknown.</value>
     public int LinePosition { get; }
 
     /// <summary>
     /// Gets the source file path that produced this location, or <see langword="null" /> when the document was parsed
     /// from an in-memory string.
     /// </summary>
-    /// <returns>The optional source path.</returns>
+    /// <value>The optional source path.</value>
     public string? Path { get; }
 
     /// <summary>

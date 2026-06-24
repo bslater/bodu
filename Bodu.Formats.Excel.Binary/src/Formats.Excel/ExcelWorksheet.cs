@@ -51,31 +51,31 @@ public sealed class ExcelWorksheet
     /// <summary>
     /// Gets the worksheet name.
     /// </summary>
-    /// <returns>The sheet name as declared in the workbook globals.</returns>
+    /// <value>The sheet name as declared in the workbook globals.</value>
     public string Name { get; }
 
     /// <summary>
     /// Gets the zero-based position of the worksheet within the workbook.
     /// </summary>
-    /// <returns>The sheet index in workbook order.</returns>
+    /// <value>The sheet index in workbook order.</value>
     public int Index { get; }
 
     /// <summary>
     /// Gets the used range declared by the worksheet's <c>DIMENSIONS</c> record.
     /// </summary>
-    /// <returns>The declared used range.</returns>
+    /// <value>The declared used range.</value>
     public ExcelWorksheetDimensions Dimensions { get; }
 
     /// <summary>
     /// Gets the populated cells of the worksheet, in row-major order.
     /// </summary>
-    /// <returns>A read-only list of every populated cell, ordered by row then column.</returns>
+    /// <value>A read-only list of every populated cell, ordered by row then column.</value>
     public IReadOnlyList<ExcelCell> Cells => _cells;
 
     /// <summary>
     /// Gets the populated rows of the worksheet, in ascending row order.
     /// </summary>
-    /// <returns>A read-only list of the worksheet's populated rows.</returns>
+    /// <value>A read-only list of the worksheet's populated rows.</value>
     public IReadOnlyList<ExcelRow> Rows => _rows;
 
     /// <summary>

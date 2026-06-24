@@ -158,7 +158,7 @@ public sealed partial class TomlTestCorpusTests
     /// <summary>
     /// Gets the version manifest file names that classify the corpus into the v1.0.0 and v1.1.0 profiles.
     /// </summary>
-    /// <returns>The manifest file names.</returns>
+    /// <value>The manifest file names.</value>
     private static string[] ManifestFileNames =>
         ["files-toml-1.0.0", "files-toml-1.1.0"];
 
@@ -166,7 +166,7 @@ public sealed partial class TomlTestCorpusTests
     /// Gets the corpus subdirectories that hold case files, used to scope the completeness sweep to vendored cases and
     /// exclude top-level files such as the licence and provenance.
     /// </summary>
-    /// <returns>The case subdirectory names.</returns>
+    /// <value>The case subdirectory names.</value>
     private static string[] CaseDirectoryNames =>
         ["valid", "invalid"];
 

@@ -29,7 +29,7 @@ public sealed class DateRangeCoverage
     /// <summary>
     /// Gets a value indicating whether no range has been recorded.
     /// </summary>
-    /// <returns><see langword="true" /> when no interval has been added; otherwise <see langword="false" />.</returns>
+    /// <value><see langword="true" /> when no interval has been added; otherwise <see langword="false" />.</value>
     public bool IsEmpty => _intervals.Count == 0;
 
     /// <summary>

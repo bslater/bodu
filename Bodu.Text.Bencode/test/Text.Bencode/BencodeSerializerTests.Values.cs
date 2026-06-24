@@ -552,7 +552,7 @@ public partial class BencodeSerializerTests
         /// <summary>
         /// Gets or sets the string value.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public string Value { get; set; } = string.Empty;
     }
 
@@ -564,7 +564,7 @@ public partial class BencodeSerializerTests
         /// <summary>
         /// Gets or sets the byte-array value.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public byte[] Value { get; set; } = [];
     }
 
@@ -576,7 +576,7 @@ public partial class BencodeSerializerTests
         /// <summary>
         /// Gets or sets the value.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public sbyte Value { get; set; }
     }
 
@@ -588,7 +588,7 @@ public partial class BencodeSerializerTests
         /// <summary>
         /// Gets or sets the value.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public byte Value { get; set; }
     }
 
@@ -600,7 +600,7 @@ public partial class BencodeSerializerTests
         /// <summary>
         /// Gets or sets the value.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public short Value { get; set; }
     }
 
@@ -612,7 +612,7 @@ public partial class BencodeSerializerTests
         /// <summary>
         /// Gets or sets the value.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public ushort Value { get; set; }
     }
 
@@ -624,7 +624,7 @@ public partial class BencodeSerializerTests
         /// <summary>
         /// Gets or sets the value.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public int Value { get; set; }
     }
 
@@ -636,7 +636,7 @@ public partial class BencodeSerializerTests
         /// <summary>
         /// Gets or sets the value.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public uint Value { get; set; }
     }
 
@@ -648,7 +648,7 @@ public partial class BencodeSerializerTests
         /// <summary>
         /// Gets or sets the value.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public long Value { get; set; }
     }
 
@@ -660,7 +660,7 @@ public partial class BencodeSerializerTests
         /// <summary>
         /// Gets or sets the value.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public ulong Value { get; set; }
     }
 
@@ -672,7 +672,7 @@ public partial class BencodeSerializerTests
         /// <summary>
         /// Gets or sets the ratio.
         /// </summary>
-        /// <returns>The ratio.</returns>
+        /// <value>The ratio.</value>
         public double Ratio { get; set; }
     }
 
@@ -684,7 +684,7 @@ public partial class BencodeSerializerTests
         /// <summary>
         /// Gets or sets the color.
         /// </summary>
-        /// <returns>The color.</returns>
+        /// <value>The color.</value>
         public Color Color { get; set; }
     }
 
@@ -696,7 +696,7 @@ public partial class BencodeSerializerTests
         /// <summary>
         /// Gets or sets the permissions.
         /// </summary>
-        /// <returns>The permissions.</returns>
+        /// <value>The permissions.</value>
         public Permissions Permissions { get; set; }
     }
 
@@ -806,7 +806,7 @@ public partial class BencodeSerializerTests
         /// <summary>
         /// Gets or sets the value.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public T? Value { get; set; }
     }
 }

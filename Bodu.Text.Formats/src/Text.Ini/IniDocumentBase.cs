@@ -124,19 +124,19 @@ public abstract class IniDocumentBase
     /// Gets the global section, which contains any key/value entries that appeared before the first named section
     /// header.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// An <see cref="IniSection" /> whose <see cref="IniSection.Name" /> is the empty string. Never
     /// <see langword="null" />; its <see cref="IniSection.Entries" /> list is empty when the source contained no
     /// pre-section keys.
-    /// </returns>
+    /// </value>
     public IniSection GlobalSection { get; }
 
     /// <summary>
     /// Gets the named sections in the order they first appeared in the source.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// A read-only list of <see cref="IniSection" /> instances. Does not include <see cref="GlobalSection" />.
-    /// </returns>
+    /// </value>
     public IReadOnlyList<IniSection> Sections { get; }
 
     /// <summary>

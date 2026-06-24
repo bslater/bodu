@@ -183,7 +183,6 @@ public abstract class AsconXof<T>
     /// Gets the canonical algorithm name for this XOF variant as defined in NIST SP 800-232.
     /// </summary>
     /// <value>A string such as <c>"ASCON-XOF128"</c> or <c>"ASCON-CXOF128"</c>.</value>
-    /// <returns>The algorithm identifier string supplied at construction.</returns>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     public string AlgorithmName
     {

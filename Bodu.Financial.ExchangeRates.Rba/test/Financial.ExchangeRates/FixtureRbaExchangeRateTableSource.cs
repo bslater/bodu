@@ -34,7 +34,7 @@ internal sealed class FixtureRbaExchangeRateTableSource
     /// <summary>
     /// Gets the number of times <see cref="GetTableAsync" /> has been invoked.
     /// </summary>
-    /// <returns>The invocation count.</returns>
+    /// <value>The invocation count.</value>
     public int GetTableCallCount { get; private set; }
 
     /// <inheritdoc />

@@ -149,7 +149,6 @@ public sealed partial class Blake2b
     /// Gets or sets the size, in bits, of the final computed hash output.
     /// </summary>
     /// <value>The output size in bits; must be one of 128, 160, 192, 224, 256, 384, or 512.</value>
-    /// <returns>The currently configured output size in bits.</returns>
     /// <remarks>
     /// The full BLAKE2b compression is always run using all 512 bits of internal state. Shorter output lengths are
     /// produced by truncating the serialized state after finalization. The property may only be changed before hashing

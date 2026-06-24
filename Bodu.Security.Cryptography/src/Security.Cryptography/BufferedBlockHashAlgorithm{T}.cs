@@ -114,7 +114,7 @@ public abstract class BufferedBlockHashAlgorithm<T>
     /// (for example, <c>"Tiger/192"</c>, <c>"Skein-512-256"</c>, <c>"BLAKE2b-512"</c>, <c>"ASCON-HASH256"</c>,
     /// <c>"SipHash-2-4-64"</c>).
     /// </summary>
-    /// <returns>A string identifying the algorithm and its current configuration.</returns>
+    /// <value>A string identifying the algorithm and its current configuration.</value>
     /// <remarks>
     /// Derived classes implement this property to expose a stable, consumer-facing identifier suitable for logging,
     /// telemetry, registry keys, or interop with hash-name catalogues. Implementations should be pure and
@@ -286,7 +286,7 @@ public abstract class BufferedBlockHashAlgorithm<T>
     /// Gets a value indicating whether this instance has been disposed. Read-only and updated exactly once by
     /// <see cref="Dispose(bool)" /> after the residual buffer and counters have been cleared.
     /// </summary>
-    /// <returns><see langword="true" /> once disposal has begun; otherwise <see langword="false" />.</returns>
+    /// <value><see langword="true" /> once disposal has begun; otherwise <see langword="false" />.</value>
     /// <remarks>
     /// Derived classes follow the canonical dispose pattern — guard the body of their own <see cref="Dispose(bool)" />
     /// override with <c>if (IsDisposed) return;</c>, clear their own state when <c>disposing</c> is

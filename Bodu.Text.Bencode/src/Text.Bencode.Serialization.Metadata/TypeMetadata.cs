@@ -69,20 +69,20 @@ internal sealed class TypeMetadata
     /// <summary>
     /// Gets the described type.
     /// </summary>
-    /// <returns>The type.</returns>
+    /// <value>The type.</value>
     internal Type Type { get; }
 
     /// <summary>
     /// Gets the serializable members, in write order.
     /// </summary>
-    /// <returns>The ordered members.</returns>
+    /// <value>The ordered members.</value>
     internal IReadOnlyList<PropertyMetadata> Properties => _properties;
 
     /// <summary>
     /// Gets the member that captures dictionary entries with no matching property, or <see langword="null" /> when the
     /// type declares none.
     /// </summary>
-    /// <returns>The extension-data member, or <see langword="null" />.</returns>
+    /// <value>The extension-data member, or <see langword="null" />.</value>
     internal PropertyMetadata? ExtensionData { get; }
 
     /// <summary>
@@ -90,7 +90,7 @@ internal sealed class TypeMetadata
     /// <see cref="BencodeUnmappedMemberHandlingAttribute" /> on the type, or <see langword="null" /> when the type
     /// declares none.
     /// </summary>
-    /// <returns>The type-level unmapped-member handling, or <see langword="null" />.</returns>
+    /// <value>The type-level unmapped-member handling, or <see langword="null" />.</value>
     internal BencodeUnmappedMemberHandling? UnmappedMemberHandling { get; init; }
 
     /// <summary>
@@ -98,29 +98,29 @@ internal sealed class TypeMetadata
     /// <see cref="BencodeObjectCreationHandlingAttribute" /> on the type, or <see langword="null" /> when the type
     /// declares none.
     /// </summary>
-    /// <returns>The type-level object-creation handling, or <see langword="null" />.</returns>
+    /// <value>The type-level object-creation handling, or <see langword="null" />.</value>
     internal BencodeObjectCreationHandling? CreationHandling { get; init; }
 
     /// <summary>
     /// Gets a value indicating whether the type is constructed through a parameterized constructor.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see langword="true" /> when a parameterized constructor is used; otherwise <see langword="false" />.
-    /// </returns>
+    /// </value>
     internal bool UsesParameterizedConstructor => _constructor is not null && _constructorParameters.Length > 0;
 
     /// <summary>
     /// Gets the number of parameters of the deserialization constructor.
     /// </summary>
-    /// <returns>The constructor parameter count, or zero when a parameterless construction is used.</returns>
+    /// <value>The constructor parameter count, or zero when a parameterless construction is used.</value>
     internal int ConstructorParameterCount => _constructorParameters.Length;
 
     /// <summary>
     /// Gets a value indicating whether the type can be instantiated during deserialization.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see langword="true" /> when a construction plan is available; otherwise <see langword="false" />.
-    /// </returns>
+    /// </value>
     internal bool CanConstruct => _constructor is not null || Type.IsValueType || HasParameterlessConstructor();
 
     /// <summary>

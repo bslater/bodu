@@ -51,6 +51,6 @@ public sealed class TomlConverterAttribute
     /// <summary>
     /// Gets the converter type to use.
     /// </summary>
-    /// <returns>The converter type.</returns>
+    /// <value>The converter type.</value>
     public Type ConverterType { get; }
 }

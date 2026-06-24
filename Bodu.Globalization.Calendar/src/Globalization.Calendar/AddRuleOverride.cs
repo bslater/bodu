@@ -31,6 +31,6 @@ internal sealed class AddRuleOverride
     /// <summary>
     /// Gets the rule to add.
     /// </summary>
-    /// <returns>The new rule.</returns>
+    /// <value>The new rule.</value>
     public NotableDateRule Rule { get; }
 }

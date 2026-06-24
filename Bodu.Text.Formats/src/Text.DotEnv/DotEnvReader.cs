@@ -118,20 +118,20 @@ public sealed class DotEnvReader
     /// Gets the key of the current entry. Valid only when the most recent call to <see cref="Read" /> or
     /// <see cref="ReadAsync" /> returned <see langword="true" />.
     /// </summary>
-    /// <returns>The current entry key.</returns>
+    /// <value>The current entry key.</value>
     public string Key => _key;
 
     /// <summary>
     /// Gets the value of the current entry. Valid only when the most recent call to <see cref="Read" /> or
     /// <see cref="ReadAsync" /> returned <see langword="true" />.
     /// </summary>
-    /// <returns>The current entry value, with quotes stripped and escape sequences resolved.</returns>
+    /// <value>The current entry value, with quotes stripped and escape sequences resolved.</value>
     public string Value => _value;
 
     /// <summary>
     /// Gets the 1-based line number on which the current entry's key appears.
     /// </summary>
-    /// <returns>The current entry's line number, starting at 1.</returns>
+    /// <value>The current entry's line number, starting at 1.</value>
     public int LineNumber => _lineNumber;
 
     /// <summary>

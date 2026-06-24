@@ -82,20 +82,20 @@ public sealed class TomlFormatException
     /// <summary>
     /// Gets the 1-based line number at which the parse error was detected, when available.
     /// </summary>
-    /// <returns>The line number, or <see langword="null" /> when no line is associated with the error.</returns>
+    /// <value>The line number, or <see langword="null" /> when no line is associated with the error.</value>
     public int? LineNumber { get; }
 
     /// <summary>
     /// Gets the 1-based column number within the line at which the parse error was detected, when available.
     /// </summary>
-    /// <returns>The column number, or <see langword="null" /> when no column is associated with the error.</returns>
+    /// <value>The column number, or <see langword="null" /> when no column is associated with the error.</value>
     public int? ColumnNumber { get; }
 
     /// <summary>
     /// Gets the zero-based byte offset from the start of the UTF-8 source at which the parse error was detected, when
     /// available.
     /// </summary>
-    /// <returns>The byte offset, or <see langword="null" /> when no position is associated with the error.</returns>
+    /// <value>The byte offset, or <see langword="null" /> when no position is associated with the error.</value>
     /// <remarks>
     /// The offset and <see cref="ColumnNumber" /> count UTF-8 bytes of the source document, not decoded characters; for
     /// ASCII-only documents the two coincide.

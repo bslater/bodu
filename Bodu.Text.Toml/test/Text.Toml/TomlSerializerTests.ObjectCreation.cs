@@ -163,7 +163,7 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the list, seeded with the element <c>1</c>.
         /// </summary>
-        /// <returns>The list.</returns>
+        /// <value>The list.</value>
         public List<int> Items { get; set; } = new() { 1 };
     }
 
@@ -175,7 +175,7 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets the get-only list, seeded with the element <c>1</c>.
         /// </summary>
-        /// <returns>The list.</returns>
+        /// <value>The list.</value>
         public List<int> Items { get; } = new() { 1 };
     }
 
@@ -187,7 +187,7 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the list, merged into on read by its Populate attribute.
         /// </summary>
-        /// <returns>The list.</returns>
+        /// <value>The list.</value>
         [TomlObjectCreationHandling(TomlObjectCreationHandling.Populate)]
         public List<int> Items { get; set; } = new() { 1 };
     }
@@ -200,7 +200,7 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the list, replaced on read by its Replace attribute.
         /// </summary>
-        /// <returns>The list.</returns>
+        /// <value>The list.</value>
         [TomlObjectCreationHandling(TomlObjectCreationHandling.Replace)]
         public List<int> Items { get; set; } = new() { 1 };
     }
@@ -214,7 +214,7 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the list, merged into on read by the type-level Populate attribute.
         /// </summary>
-        /// <returns>The list.</returns>
+        /// <value>The list.</value>
         public List<int> Items { get; set; } = new() { 1 };
     }
 
@@ -228,7 +228,7 @@ public partial class TomlSerializerTests
         /// Gets or sets the list, replaced on read because its member-level attribute overrides the type-level
         /// Populate.
         /// </summary>
-        /// <returns>The list.</returns>
+        /// <value>The list.</value>
         [TomlObjectCreationHandling(TomlObjectCreationHandling.Replace)]
         public List<int> Items { get; set; } = new() { 1 };
     }
@@ -241,7 +241,7 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the dictionary, seeded with the entry <c>a = 1</c>.
         /// </summary>
-        /// <returns>The dictionary.</returns>
+        /// <value>The dictionary.</value>
         public Dictionary<string, int> Counts { get; set; } = new() { ["a"] = 1 };
     }
 
@@ -253,7 +253,7 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the list, which begins <see langword="null" /> so Populate cannot apply.
         /// </summary>
-        /// <returns>The list, or <see langword="null" />.</returns>
+        /// <value>The list, or <see langword="null" />.</value>
         public List<int>? Items { get; set; }
     }
 }

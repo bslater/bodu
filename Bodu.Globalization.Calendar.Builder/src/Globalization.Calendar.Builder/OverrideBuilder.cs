@@ -25,7 +25,7 @@ public sealed class OverrideBuilder
     /// <summary>
     /// Gets the override operations.
     /// </summary>
-    /// <returns>The override entries, in declaration order.</returns>
+    /// <value>The override entries, in declaration order.</value>
     internal IReadOnlyList<OverrideEntry> Entries =>
         _entries;
 

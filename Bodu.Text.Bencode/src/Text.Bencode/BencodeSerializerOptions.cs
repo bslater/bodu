@@ -122,14 +122,13 @@ public sealed class BencodeSerializerOptions
     /// <summary>
     /// Gets the list of user-registered converters, consulted in order before the built-in converters.
     /// </summary>
-    /// <returns>The mutable converter list while the options are mutable.</returns>
+    /// <value>The mutable converter list while the options are mutable.</value>
     public IList<BencodeConverter> Converters => _converters;
 
     /// <summary>
     /// Gets or sets the policy that translates member names to their serialized dictionary-key form.
     /// </summary>
     /// <value>The naming policy, or <see langword="null" /> to use member names unchanged.</value>
-    /// <returns>The configured naming policy.</returns>
     /// <exception cref="InvalidOperationException">Thrown when the options are read-only.</exception>
     public BencodeNamingPolicy? PropertyNamingPolicy
     {
@@ -148,7 +147,6 @@ public sealed class BencodeSerializerOptions
     /// <see langword="true" /> to match case-insensitively; otherwise <see langword="false" />. The default is
     /// <see langword="true" />.
     /// </value>
-    /// <returns>Whether property-name matching ignores case.</returns>
     /// <remarks>
     /// The default is deliberately lenient: Bencode wire keys are raw bytes with no prescribed casing convention, so
     /// reads tolerate casing variation by default. The option affects reading only; written keys always use the
@@ -173,7 +171,6 @@ public sealed class BencodeSerializerOptions
     /// <see langword="true" /> to accept unsorted keys; otherwise <see langword="false" />. The default is
     /// <see langword="false" />, rejecting unsorted keys with <see cref="BencodeFormatException" />.
     /// </value>
-    /// <returns>Whether unsorted dictionary keys are accepted when reading.</returns>
     /// <remarks>
     /// BEP 3 requires keys sorted by raw byte order, but documents produced by older encoders occasionally violate
     /// this. The option affects reading only; output is always written in canonical key order.
@@ -197,7 +194,6 @@ public sealed class BencodeSerializerOptions
     /// <see langword="true" /> to accept duplicate keys; otherwise <see langword="false" />. The default is
     /// <see langword="false" />, rejecting duplicate keys with <see cref="BencodeFormatException" />.
     /// </value>
-    /// <returns>Whether duplicate dictionary keys are accepted when reading.</returns>
     /// <remarks>
     /// When enabled, repeated keys bind last-wins: the final occurrence of a key determines the member or dictionary
     /// entry value. The option affects reading only; the writer always rejects duplicate keys because canonical Bencode
@@ -221,7 +217,6 @@ public sealed class BencodeSerializerOptions
     /// <see langword="true" /> to serialize and deserialize public fields; otherwise <see langword="false" />. The
     /// default is <see langword="false" />.
     /// </value>
-    /// <returns>Whether public fields participate in serialization.</returns>
     /// <remarks>
     /// A public field annotated with <see cref="Serialization.BencodeIncludeAttribute" /> participates regardless of
     /// this setting. Fields honor the property naming policy, name and order attributes, ignore conditions, and
@@ -244,7 +239,6 @@ public sealed class BencodeSerializerOptions
     /// that does not carry its own <see cref="Serialization.BencodeIgnoreAttribute" />.
     /// </summary>
     /// <value>The default ignore condition; <see cref="BencodeIgnoreCondition.Never" /> by default.</value>
-    /// <returns>The configured default ignore condition.</returns>
     /// <remarks>
     /// Because Bencode has no null token, a member whose value is <see langword="null" /> is omitted from the output
     /// regardless of this setting, so <see cref="BencodeIgnoreCondition.Never" /> behaves like
@@ -275,7 +269,6 @@ public sealed class BencodeSerializerOptions
     /// <see cref="Serialization.BencodeUnmappedMemberHandlingAttribute" />.
     /// </summary>
     /// <value>The unmapped-member handling; <see cref="BencodeUnmappedMemberHandling.Skip" /> by default.</value>
-    /// <returns>The configured unmapped-member handling.</returns>
     /// <remarks>
     /// A type that declares an extension-data member captures unmapped keys into that member, which takes precedence
     /// over this setting, so a key absorbed by extension data never triggers
@@ -303,7 +296,6 @@ public sealed class BencodeSerializerOptions
     /// <value>
     /// The preferred object-creation handling; <see cref="BencodeObjectCreationHandling.Replace" /> by default.
     /// </value>
-    /// <returns>The configured preferred object-creation handling.</returns>
     /// <remarks>
     /// <see cref="BencodeObjectCreationHandling.Populate" /> applies only to collection and dictionary members whose
     /// existing value is non-<see langword="null" />; in every other case the serializer replaces the value.
@@ -326,7 +318,6 @@ public sealed class BencodeSerializerOptions
     /// Gets or sets the maximum container nesting depth permitted while serializing or deserializing.
     /// </summary>
     /// <value>The maximum depth; <see cref="DefaultMaxDepth" /> when set to zero.</value>
-    /// <returns>The configured maximum depth.</returns>
     /// <remarks>
     /// <para>
     /// The limit bounds how deeply lists and dictionaries may nest. It is reached when serializing an object graph — or
@@ -360,7 +351,7 @@ public sealed class BencodeSerializerOptions
     /// <summary>
     /// Gets a value indicating whether the options have become read-only.
     /// </summary>
-    /// <returns><see langword="true" /> once the options have been used; otherwise <see langword="false" />.</returns>
+    /// <value><see langword="true" /> once the options have been used; otherwise <see langword="false" />.</value>
     public bool IsReadOnly => _frozenConverters is not null;
 
     /// <summary>

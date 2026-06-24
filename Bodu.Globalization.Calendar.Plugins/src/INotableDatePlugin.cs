@@ -25,12 +25,12 @@ public interface INotableDatePlugin
     /// <summary>
     /// Gets the human-readable name of the plugin, used by hosts for diagnostics and logging.
     /// </summary>
-    /// <returns>The plugin name.</returns>
+    /// <value>The plugin name.</value>
     string Name { get; }
 
     /// <summary>
     /// Gets the version of the plugin, used by hosts for diagnostics and compatibility reporting.
     /// </summary>
-    /// <returns>The plugin version.</returns>
+    /// <value>The plugin version.</value>
     Version Version { get; }
 }

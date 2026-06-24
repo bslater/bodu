@@ -152,7 +152,7 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the date-time under test.
         /// </summary>
-        /// <returns>The date-time value.</returns>
+        /// <value>The date-time value.</value>
         public DateTime Stamp { get; set; }
     }
 
@@ -164,7 +164,7 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the date-time offset under test.
         /// </summary>
-        /// <returns>The date-time offset value.</returns>
+        /// <value>The date-time offset value.</value>
         public DateTimeOffset Stamp { get; set; }
     }
 
@@ -176,13 +176,13 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the minimum value member.
         /// </summary>
-        /// <returns>The minimum value.</returns>
+        /// <value>The minimum value.</value>
         public long Minimum { get; set; }
 
         /// <summary>
         /// Gets or sets the maximum value member.
         /// </summary>
-        /// <returns>The maximum value.</returns>
+        /// <value>The maximum value.</value>
         public long Maximum { get; set; }
     }
 
@@ -194,37 +194,37 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the positive-infinity member.
         /// </summary>
-        /// <returns>The positive-infinity value.</returns>
+        /// <value>The positive-infinity value.</value>
         public double PositiveInfinity { get; set; }
 
         /// <summary>
         /// Gets or sets the negative-infinity member.
         /// </summary>
-        /// <returns>The negative-infinity value.</returns>
+        /// <value>The negative-infinity value.</value>
         public double NegativeInfinity { get; set; }
 
         /// <summary>
         /// Gets or sets the not-a-number member.
         /// </summary>
-        /// <returns>The NaN value.</returns>
+        /// <value>The NaN value.</value>
         public double NotANumber { get; set; }
 
         /// <summary>
         /// Gets or sets the smallest-positive-subnormal member.
         /// </summary>
-        /// <returns>The epsilon value.</returns>
+        /// <value>The epsilon value.</value>
         public double Epsilon { get; set; }
 
         /// <summary>
         /// Gets or sets the near-maximum-magnitude member.
         /// </summary>
-        /// <returns>The large value.</returns>
+        /// <value>The large value.</value>
         public double Large { get; set; }
 
         /// <summary>
         /// Gets or sets the negative-zero member.
         /// </summary>
-        /// <returns>The negative-zero value.</returns>
+        /// <value>The negative-zero value.</value>
         public double NegativeZero { get; set; }
     }
 
@@ -236,14 +236,14 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the first member mapped to the shared wire name.
         /// </summary>
-        /// <returns>The first value.</returns>
+        /// <value>The first value.</value>
         [TomlPropertyName("shared")]
         public int First { get; set; }
 
         /// <summary>
         /// Gets or sets the second member mapped to the shared wire name.
         /// </summary>
-        /// <returns>The second value.</returns>
+        /// <value>The second value.</value>
         [TomlPropertyName("shared")]
         public int Second { get; set; }
     }
@@ -256,13 +256,13 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the declared name member.
         /// </summary>
-        /// <returns>The name.</returns>
+        /// <value>The name.</value>
         public string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the extension-data member.
         /// </summary>
-        /// <returns>The overflow entries, or <see langword="null" /> when none exist.</returns>
+        /// <value>The overflow entries, or <see langword="null" /> when none exist.</value>
         [TomlExtensionData]
         public Dictionary<string, TomlNode?>? Extra { get; set; }
     }

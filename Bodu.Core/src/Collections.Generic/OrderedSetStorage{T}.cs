@@ -81,19 +81,19 @@ internal sealed class OrderedSetStorage<T>
     /// <summary>
     /// Gets the equality comparer used to compare elements.
     /// </summary>
-    /// <returns>The active equality comparer.</returns>
+    /// <value>The active equality comparer.</value>
     internal IEqualityComparer<T> Comparer => _comparer;
 
     /// <summary>
     /// Gets the number of elements currently stored.
     /// </summary>
-    /// <returns>The number of elements currently stored.</returns>
+    /// <value>The number of elements currently stored.</value>
     internal int Count => _count;
 
     /// <summary>
     /// Gets the allocated element capacity.
     /// </summary>
-    /// <returns>The current allocated capacity of the underlying element storage.</returns>
+    /// <value>The current allocated capacity of the underlying element storage.</value>
     internal int Capacity => _items.Length;
 
     /// <summary>

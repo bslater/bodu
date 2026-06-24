@@ -29,12 +29,12 @@ public sealed class EcbSeriesInfo
     /// <summary>
     /// Gets the currency pair the series represents, always quoted against the euro.
     /// </summary>
-    /// <returns>The <see cref="ExchangeRatePair" /> from <c>EUR</c> to the quote currency.</returns>
+    /// <value>The <see cref="ExchangeRatePair" /> from <c>EUR</c> to the quote currency.</value>
     public ExchangeRatePair Pair { get; }
 
     /// <summary>
     /// Gets the quote-currency ISO code.
     /// </summary>
-    /// <returns>The three-letter ISO code of the quote currency.</returns>
+    /// <value>The three-letter ISO code of the quote currency.</value>
     public string QuoteIsoCode { get; }
 }

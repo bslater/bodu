@@ -318,7 +318,7 @@ public sealed class Camellia
     /// <summary>
     /// Gets the configured key size expressed in bytes.
     /// </summary>
-    /// <returns>The key size in bytes.</returns>
+    /// <value>The key size in bytes.</value>
     private int KeySizeBytes => KeySizeValue / 8;
 
     /// <summary>

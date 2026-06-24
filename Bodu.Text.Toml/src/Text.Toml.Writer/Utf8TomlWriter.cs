@@ -151,14 +151,14 @@ public ref partial struct Utf8TomlWriter
     /// Gets the serializer write state attached to this writer, or <see langword="null" /> when the writer is used
     /// directly rather than by the serializer.
     /// </summary>
-    /// <returns>The attached <see cref="TomlWriteStack" />, or <see langword="null" />.</returns>
+    /// <value>The attached <see cref="TomlWriteStack" />, or <see langword="null" />.</value>
     internal readonly TomlWriteStack? WriteStack =>
         _writeStack[0];
 
     /// <summary>
     /// Gets the current container nesting depth — the number of open tables and arrays.
     /// </summary>
-    /// <returns>The number of containers currently open.</returns>
+    /// <value>The number of containers currently open.</value>
     internal readonly int Depth =>
         _frames.Count;
 
@@ -166,7 +166,7 @@ public ref partial struct Utf8TomlWriter
     /// Gets the effective maximum container nesting depth this writer enforces, after clamping to
     /// <see cref="TomlLimits.AbsoluteMaxDepth" />.
     /// </summary>
-    /// <returns>The effective maximum depth.</returns>
+    /// <value>The effective maximum depth.</value>
     internal readonly int EffectiveMaxDepth =>
         _maxDepth;
 
@@ -471,13 +471,13 @@ public ref partial struct Utf8TomlWriter
         /// <summary>
         /// Gets the table being built.
         /// </summary>
-        /// <returns>The table.</returns>
+        /// <value>The table.</value>
         internal TomlTableWriterNode Table { get; } = new();
 
         /// <summary>
         /// Gets or sets the key awaiting its value.
         /// </summary>
-        /// <returns>The pending key, or <see langword="null" /> when none is pending.</returns>
+        /// <value>The pending key, or <see langword="null" /> when none is pending.</value>
         internal string? PendingKey { get; set; }
 
         /// <inheritdoc />
@@ -503,7 +503,7 @@ public ref partial struct Utf8TomlWriter
         /// <summary>
         /// Gets the array being built.
         /// </summary>
-        /// <returns>The array.</returns>
+        /// <value>The array.</value>
         internal TomlArrayWriterNode Array { get; } = new();
 
         /// <inheritdoc />

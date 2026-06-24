@@ -167,21 +167,21 @@ public sealed class CompoundStream
     /// <summary>
     /// Gets the directory name of the stream.
     /// </summary>
-    /// <returns>The stream name as stored in the compound-file directory.</returns>
+    /// <value>The stream name as stored in the compound-file directory.</value>
     public string Name => _info.Name;
 
     /// <summary>
     /// Gets the storage that owns this stream cursor.
     /// </summary>
-    /// <returns>The owning <see cref="CompoundStorage" />, or <see langword="null" /> when not available.</returns>
+    /// <value>The owning <see cref="CompoundStorage" />, or <see langword="null" /> when not available.</value>
     public CompoundStorage? Parent => _parent;
 
     /// <summary>
     /// Gets the metadata snapshot for this stream entry.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// A <see cref="CompoundEntryInfo" /> describing the stream's name, size, class id, and timestamps.
-    /// </returns>
+    /// </value>
     public CompoundEntryInfo Stat =>
         _write is null ? _info : _info with { Length = _write.Length };
 

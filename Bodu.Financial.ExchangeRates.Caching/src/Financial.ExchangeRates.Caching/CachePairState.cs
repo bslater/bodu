@@ -43,18 +43,18 @@ internal sealed class CachePairState
     /// <summary>
     /// Gets the shared empty state, carrying no rate rows and no coverage windows.
     /// </summary>
-    /// <returns>An immutable state with empty <see cref="Entries" /> and <see cref="Coverage" />.</returns>
+    /// <value>An immutable state with empty <see cref="Entries" /> and <see cref="Coverage" />.</value>
     public static CachePairState Empty => s_empty;
 
     /// <summary>
     /// Gets the cached rate rows for the pair.
     /// </summary>
-    /// <returns>The cached rate rows, possibly empty.</returns>
+    /// <value>The cached rate rows, possibly empty.</value>
     public IReadOnlyList<CachedExchangeRate> Entries { get; }
 
     /// <summary>
     /// Gets the coverage windows recording which date ranges were fetched for the pair.
     /// </summary>
-    /// <returns>The coverage windows, possibly empty.</returns>
+    /// <value>The coverage windows, possibly empty.</value>
     public IReadOnlyList<CoverageWindow> Coverage { get; }
 }

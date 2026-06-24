@@ -15,10 +15,10 @@ public static partial class ExchangeRateLookupResultExtensions
         /// <summary>
         /// Gets a value indicating whether the resolved observation post-dates the requested date.
         /// </summary>
-        /// <returns>
+        /// <value>
         /// <see langword="true" /> when the resolved observation falls strictly after
         /// <see cref="ExchangeRateLookupResult.RequestedDate" />; otherwise <see langword="false" />.
-        /// </returns>
+        /// </value>
         public bool IsFutureDate =>
             result.Rate.Date.DayNumber - result.RequestedDate.DayNumber > 0;
     }

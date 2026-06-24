@@ -71,14 +71,14 @@ internal struct Curve25519FieldElement
     /// <summary>
     /// Gets the multiplicative identity (1) of the field.
     /// </summary>
-    /// <returns>A field element whose value is one.</returns>
+    /// <value>A field element whose value is one.</value>
     internal static Curve25519FieldElement One =>
         new(1, 0, 0, 0, 0);
 
     /// <summary>
     /// Gets the additive identity (0) of the field.
     /// </summary>
-    /// <returns>A field element whose value is zero.</returns>
+    /// <value>A field element whose value is zero.</value>
     internal static Curve25519FieldElement Zero =>
         default;
 

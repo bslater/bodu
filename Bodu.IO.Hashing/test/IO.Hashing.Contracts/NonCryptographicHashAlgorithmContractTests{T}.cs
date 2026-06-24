@@ -42,14 +42,14 @@ public abstract class NonCryptographicHashAlgorithmContractTests<TAlgorithm>
     /// <summary>
     /// Returns the one-shot known-answer vectors that the algorithm must reproduce.
     /// </summary>
-    /// <returns>An ordered list of one-shot vectors.</returns>
+    /// <value>An ordered list of one-shot vectors.</value>
     protected abstract IReadOnlyList<HashKat> KnownAnswers { get; }
 
     /// <summary>
     /// Returns the streaming-parity vectors that the algorithm must reproduce when the same input is
     /// supplied through multiple <c>Append</c> calls in the specified segment sizes.
     /// </summary>
-    /// <returns>An ordered list of streaming vectors.</returns>
+    /// <value>An ordered list of streaming vectors.</value>
     protected abstract IReadOnlyList<HashStreamingKat> StreamingCases { get; }
 
     /// <summary>
@@ -57,7 +57,7 @@ public abstract class NonCryptographicHashAlgorithmContractTests<TAlgorithm>
     /// override when they want to assert against the canonical empty-input value documented by the
     /// algorithm specification.
     /// </summary>
-    /// <returns>The hex-encoded empty-input digest, or <see langword="null" /> to skip the empty-input check.</returns>
+    /// <value>The hex-encoded empty-input digest, or <see langword="null" /> to skip the empty-input check.</value>
     protected virtual string? EmptyInputExpectedHex => null;
 
     /// <summary>

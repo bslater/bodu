@@ -41,18 +41,18 @@ public sealed record CheckDigitKnownAnswer
     /// <summary>
     /// Gets the body digits (without the check digit) that the algorithm is expected to process.
     /// </summary>
-    /// <returns>A string consisting exclusively of ASCII decimal digits <c>'0'</c> to <c>'9'</c>.</returns>
+    /// <value>A string consisting exclusively of ASCII decimal digits <c>'0'</c> to <c>'9'</c>.</value>
     public required string Body { get; init; }
 
     /// <summary>
     /// Gets the expected check digit produced by the algorithm for the <see cref="Body" />.
     /// </summary>
-    /// <returns>An ASCII character in the range <c>'0'</c> to <c>'9'</c>.</returns>
+    /// <value>An ASCII character in the range <c>'0'</c> to <c>'9'</c>.</value>
     public required char ExpectedCheck { get; init; }
     /// <summary>
     /// Gets a short descriptive name used in test output to identify the vector.
     /// </summary>
-    /// <returns>A non-empty descriptive label such as <c>"WikipediaExample"</c>.</returns>
+    /// <value>A non-empty descriptive label such as <c>"WikipediaExample"</c>.</value>
     public required string Name { get; init; }
 
 }

@@ -48,19 +48,19 @@ internal sealed class ExchangeRateSeriesStorage
     /// <summary>
     /// Gets the number of observations stored.
     /// </summary>
-    /// <returns>A positive count.</returns>
+    /// <value>A positive count.</value>
     public int Count => _dayNumbers.Length;
 
     /// <summary>
     /// Gets the calendar date of the first (earliest) observation.
     /// </summary>
-    /// <returns>The earliest observation date.</returns>
+    /// <value>The earliest observation date.</value>
     public DateOnly FirstDate => DateOnly.FromDayNumber(_dayNumbers[0]);
 
     /// <summary>
     /// Gets the calendar date of the last (latest) observation.
     /// </summary>
-    /// <returns>The latest observation date.</returns>
+    /// <value>The latest observation date.</value>
     public DateOnly LastDate => DateOnly.FromDayNumber(_dayNumbers[_dayNumbers.Length - 1]);
 
     /// <summary>

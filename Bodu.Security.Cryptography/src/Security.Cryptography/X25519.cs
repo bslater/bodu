@@ -116,14 +116,14 @@ public sealed class X25519
         new();
 
     /// <inheritdoc />
-    /// <returns>The string <c>"X25519"</c>.</returns>
+    /// <value>The string <c>"X25519"</c>.</value>
     public override string? KeyExchangeAlgorithm =>
         "X25519";
 
     /// <inheritdoc />
-    /// <returns>
+    /// <value>
     /// <see langword="null" />, because X25519 is a key agreement algorithm and produces no signatures.
-    /// </returns>
+    /// </value>
     public override string? SignatureAlgorithm =>
         null;
 
@@ -133,10 +133,6 @@ public sealed class X25519
     /// <value>
     /// <see langword="true" /> when private key material is present; otherwise, <see langword="false" />.
     /// </value>
-    /// <returns>
-    /// <see langword="true" /> when <see cref="DeriveSharedSecret(ReadOnlySpan{byte})" /> and
-    /// <see cref="ExportPrivateKey" /> are available.
-    /// </returns>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     public bool HasPrivateKey
     {
@@ -151,7 +147,6 @@ public sealed class X25519
     /// Gets a value indicating whether the instance currently holds a public key.
     /// </summary>
     /// <value><see langword="true" /> when public key material is present; otherwise, <see langword="false" />.</value>
-    /// <returns><see langword="true" /> when <see cref="ExportPublicKey" /> is available.</returns>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     public bool HasPublicKey
     {

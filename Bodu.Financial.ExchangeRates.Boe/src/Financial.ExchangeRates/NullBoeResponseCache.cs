@@ -24,7 +24,7 @@ public sealed class NullBoeResponseCache
     /// <summary>
     /// Gets the shared instance of the no-op cache.
     /// </summary>
-    /// <returns>The singleton <see cref="NullBoeResponseCache" />.</returns>
+    /// <value>The singleton <see cref="NullBoeResponseCache" />.</value>
     public static NullBoeResponseCache Instance { get; } = new();
 
     /// <inheritdoc />

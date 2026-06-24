@@ -58,7 +58,7 @@ public sealed class TextConfigurationProvider
     /// <summary>
     /// Gets the typed source that backs this provider.
     /// </summary>
-    /// <returns>The originating <see cref="TextConfigurationSource" />.</returns>
+    /// <value>The originating <see cref="TextConfigurationSource" />.</value>
     public TextConfigurationSource TextSource { get; }
 
     /// <inheritdoc />

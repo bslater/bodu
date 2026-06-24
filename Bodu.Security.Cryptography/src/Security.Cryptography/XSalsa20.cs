@@ -88,7 +88,6 @@ public sealed class XSalsa20
     /// Gets or sets the initial 64-bit block counter used when generating the keystream.
     /// </summary>
     /// <value>The starting block-counter value. The default is 0.</value>
-    /// <returns>The block-counter value applied to the first keystream block.</returns>
     /// <remarks>
     /// libsodium's <c>crypto_stream_xsalsa20</c> starts the counter at 0. Set this before creating an encryptor or
     /// decryptor when matching an external counter convention.

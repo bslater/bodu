@@ -112,25 +112,25 @@ internal struct TomlReaderRow
     /// <summary>
     /// Gets the source byte offset at which this string scalar's content begins, inside its delimiters.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The content start offset, paired with <see cref="StringContentLength" /> to slice the retained source.
-    /// </returns>
+    /// </value>
     public readonly int StringContentStart =>
         (int)(ScalarBits >> 32);
 
     /// <summary>
     /// Gets the byte length of this string scalar's content.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The content length, paired with <see cref="StringContentStart" /> to slice the retained source.
-    /// </returns>
+    /// </value>
     public readonly int StringContentLength =>
         (int)((uint)ScalarBits & LengthMask);
 
     /// <summary>
     /// Gets a value indicating whether this string scalar's content carries escapes that decoding must resolve.
     /// </summary>
-    /// <returns><see langword="true" /> when the content must be unescaped rather than transcoded directly.</returns>
+    /// <value><see langword="true" /> when the content must be unescaped rather than transcoded directly.</value>
     public readonly bool StringHasEscapes =>
         ((uint)ScalarBits & EscapeFlag) != 0;
 

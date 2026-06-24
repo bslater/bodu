@@ -102,7 +102,6 @@ public abstract partial class AsconHash<T>
     /// Gets the canonical algorithm name for this hash function variant as defined in NIST SP 800-232.
     /// </summary>
     /// <value>A string such as <c>"ASCON-HASH256"</c> or <c>"ASCON-HASHA256"</c> identifying the variant.</value>
-    /// <returns>The algorithm identifier string supplied at construction.</returns>
     /// <exception cref="ObjectDisposedException">The algorithm instance has been disposed.</exception>
     public override string AlgorithmName
     {

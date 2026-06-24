@@ -61,21 +61,21 @@ public abstract class MultiCharCheckDigitAlgorithm
     /// <summary>
     /// Gets the canonical name of the algorithm, suitable for diagnostic output and logging.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// A short, stable identifier such as <c>"ISO 7064 MOD 97-10"</c>, <c>"IBAN"</c>, or <c>"LEI"</c>.
-    /// </returns>
+    /// </value>
     public abstract string AlgorithmName { get; }
 
     /// <summary>
     /// Gets the fixed number of decimal-digit characters emitted as the trailing check code.
     /// </summary>
-    /// <returns>A positive integer; for example, <c>2</c> for ISO 7064 MOD 97-10.</returns>
+    /// <value>A positive integer; for example, <c>2</c> for ISO 7064 MOD 97-10.</value>
     public abstract int CheckLength { get; }
 
     /// <summary>
     /// Gets the subset of ASCII from which this algorithm accepts body characters.
     /// </summary>
-    /// <returns>The declared input alphabet.</returns>
+    /// <value>The declared input alphabet.</value>
     public abstract CheckDigitInputAlphabet InputAlphabet { get; }
 
     /// <summary>

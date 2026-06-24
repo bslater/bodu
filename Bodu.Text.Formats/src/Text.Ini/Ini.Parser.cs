@@ -307,25 +307,25 @@ public static partial class Ini
             /// <summary>
             /// Gets the name of the section being accumulated.
             /// </summary>
-            /// <returns>The section name.</returns>
+            /// <value>The section name.</value>
             internal string Name { get; }
 
             /// <summary>
             /// Gets the ordered list of entries collected for the section.
             /// </summary>
-            /// <returns>The mutable, source-ordered entry list.</returns>
+            /// <value>The mutable, source-ordered entry list.</value>
             internal List<IniEntry> Entries { get; }
 
             /// <summary>
             /// Gets the case-resolved key lookup for the section's entries.
             /// </summary>
-            /// <returns>The key-to-entry lookup dictionary.</returns>
+            /// <value>The key-to-entry lookup dictionary.</value>
             internal Dictionary<string, IniEntry> Lookup { get; }
 
             /// <summary>
             /// Gets or sets the comments that precede the section header.
             /// </summary>
-            /// <returns>The leading comments associated with the section.</returns>
+            /// <value>The leading comments associated with the section.</value>
             internal IniComment[] LeadingComments { get; set; }
         }
 

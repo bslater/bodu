@@ -122,7 +122,6 @@ public sealed partial class AsyncDebouncer : IDisposable
     /// Gets the execution policy that governs overlapping runs.
     /// </summary>
     /// <value>The configured <see cref="AsyncDebouncerExecutionPolicy" />.</value>
-    /// <returns>The policy applied when a run becomes due while a callback is in flight.</returns>
     public AsyncDebouncerExecutionPolicy ExecutionPolicy =>
         _policy;
 
@@ -130,7 +129,6 @@ public sealed partial class AsyncDebouncer : IDisposable
     /// Gets the most recently started callback task, if one has been started.
     /// </summary>
     /// <value>The latest callback <see cref="Task" />, or <see langword="null" /> when none has started.</value>
-    /// <returns>The latest callback task, or <see langword="null" /> when no callback has been started.</returns>
     public Task? CurrentExecution
     {
         get
@@ -146,7 +144,6 @@ public sealed partial class AsyncDebouncer : IDisposable
     /// Gets the number of callback invocations currently in flight.
     /// </summary>
     /// <value>The number of running callbacks.</value>
-    /// <returns>The number of in-flight callbacks. Intended for diagnostics.</returns>
     internal int ActiveCount
     {
         get

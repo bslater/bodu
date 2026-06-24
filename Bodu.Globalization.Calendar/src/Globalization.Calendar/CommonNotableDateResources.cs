@@ -39,9 +39,9 @@ public static class CommonNotableDateResources
     /// Gets a resolver delegate that maps a common-catalogue name to its embedded XML content, suitable for passing to
     /// the import-aware <see cref="NotableDateResourceLoader" /> overloads.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// A resolver over the embedded common catalogues that returns <see langword="null" /> for unknown names.
-    /// </returns>
+    /// </value>
     public static Func<string, string?> Resolver { get; } = Resolve;
 
     /// <summary>

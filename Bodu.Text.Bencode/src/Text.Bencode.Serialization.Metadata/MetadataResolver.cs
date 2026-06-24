@@ -306,74 +306,74 @@ internal static class MetadataResolver
         /// <summary>
         /// Gets the reflected property or field.
         /// </summary>
-        /// <returns>The member.</returns>
+        /// <value>The member.</value>
         internal MemberInfo Member { get; }
 
         /// <summary>
         /// Gets the resolved wire name.
         /// </summary>
-        /// <returns>The wire name.</returns>
+        /// <value>The wire name.</value>
         internal string WireName { get; }
 
         /// <summary>
         /// Gets the resolved converter.
         /// </summary>
-        /// <returns>The converter.</returns>
+        /// <value>The converter.</value>
         internal BencodeConverter Converter { get; }
 
         /// <summary>
         /// Gets the conditional-ignore setting, or <see langword="null" />.
         /// </summary>
-        /// <returns>The conditional-ignore setting.</returns>
+        /// <value>The conditional-ignore setting.</value>
         internal BencodeIgnoreCondition? ConditionalIgnore { get; }
 
         /// <summary>
         /// Gets the member-level object-creation handling, or <see langword="null" />.
         /// </summary>
-        /// <returns>The member-level object-creation handling.</returns>
+        /// <value>The member-level object-creation handling.</value>
         internal BencodeObjectCreationHandling? CreationHandling { get; }
 
         /// <summary>
         /// Gets the write order.
         /// </summary>
-        /// <returns>The order.</returns>
+        /// <value>The order.</value>
         internal int Order { get; }
 
         /// <summary>
         /// Gets a value indicating whether the member is marked <see langword="required" />.
         /// </summary>
-        /// <returns><see langword="true" /> when required by attribute.</returns>
+        /// <value><see langword="true" /> when required by attribute.</value>
         internal bool RequiredByAttribute { get; }
 
         /// <summary>
         /// Gets a value indicating whether the member is opted into binding through non-public accessors by
         /// <see cref="BencodeIncludeAttribute" />.
         /// </summary>
-        /// <returns><see langword="true" /> when opted in.</returns>
+        /// <value><see langword="true" /> when opted in.</value>
         internal bool Included { get; }
 
         /// <summary>
         /// Gets the declaration order index.
         /// </summary>
-        /// <returns>The declaration index.</returns>
+        /// <value>The declaration index.</value>
         internal int DeclarationIndex { get; }
 
         /// <summary>
         /// Gets or sets the bound constructor parameter index, or -1.
         /// </summary>
-        /// <returns>The constructor parameter index.</returns>
+        /// <value>The constructor parameter index.</value>
         internal int ConstructorParameterIndex { get; set; }
 
         /// <summary>
         /// Gets or sets the default value supplied when the member binds to an absent constructor parameter.
         /// </summary>
-        /// <returns>The default value.</returns>
+        /// <value>The default value.</value>
         internal object? DefaultValue { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the member's constructor parameter has no default.
         /// </summary>
-        /// <returns><see langword="true" /> when required by the constructor.</returns>
+        /// <value><see langword="true" /> when required by the constructor.</value>
         internal bool RequiredByConstructor { get; set; }
 
         /// <summary>

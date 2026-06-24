@@ -24,28 +24,28 @@ public sealed class ExcelBinaryReaderOptions
     /// <summary>
     /// Gets a value indicating whether a caller-supplied stream is left open when the workbook is disposed.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see langword="true" /> to leave the source stream open; <see langword="false" /> to dispose it with the
     /// workbook. The default is <see langword="false" />.
-    /// </returns>
+    /// </value>
     public bool LeaveOpen { get; init; }
 
     /// <summary>
     /// Gets a value indicating whether the workbook's document-property sets are read when opening.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see langword="true" /> to read the summary-information property sets; <see langword="false" /> to skip them and
     /// surface an empty <see cref="ExcelWorkbookProperties" />. The default is <see langword="true" />.
-    /// </returns>
+    /// </value>
     public bool ReadDocumentProperties { get; init; } = true;
 
     /// <summary>
     /// Gets a value indicating whether the number format of each numeric cell is inspected to detect date formatting.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see langword="true" /> to classify date-formatted numbers; <see langword="false" /> to skip the classification,
     /// leaving <see cref="ExcelCell.IsDateFormatted" /> always <see langword="false" />. The default is
     /// <see langword="true" />.
-    /// </returns>
+    /// </value>
     public bool DetectDateFormats { get; init; } = true;
 }

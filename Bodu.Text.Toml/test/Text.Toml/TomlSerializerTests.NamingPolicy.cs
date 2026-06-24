@@ -162,7 +162,7 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the two-word member whose key is rewritten by the active naming policy.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public string FirstName { get; set; } = string.Empty;
     }
 
@@ -175,7 +175,7 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the two-word member named by the type's snake-case policy.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public string FirstName { get; set; } = string.Empty;
     }
 
@@ -189,7 +189,7 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the two-word member, named by the options-level policy when one is set.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public string FirstName { get; set; } = string.Empty;
     }
 }

@@ -124,13 +124,13 @@ public partial class BencodeSerializerTests
         /// <summary>
         /// Gets or sets the nullable count, mapped to a Bencode integer when present.
         /// </summary>
-        /// <returns>The count, or <see langword="null" />.</returns>
+        /// <value>The count, or <see langword="null" />.</value>
         public int? Count { get; set; }
 
         /// <summary>
         /// Gets or sets the nullable color flag, mapped to a member-name byte string when present.
         /// </summary>
-        /// <returns>The color flag, or <see langword="null" />.</returns>
+        /// <value>The color flag, or <see langword="null" />.</value>
         public Color? Flag { get; set; }
     }
 
@@ -142,7 +142,7 @@ public partial class BencodeSerializerTests
         /// <summary>
         /// Gets or sets the nullable color.
         /// </summary>
-        /// <returns>The color, or <see langword="null" />.</returns>
+        /// <value>The color, or <see langword="null" />.</value>
         public Color? Color { get; set; }
     }
 
@@ -154,7 +154,7 @@ public partial class BencodeSerializerTests
         /// <summary>
         /// Gets or sets the nullable flag.
         /// </summary>
-        /// <returns>The flag, or <see langword="null" />.</returns>
+        /// <value>The flag, or <see langword="null" />.</value>
         public bool? Flag { get; set; }
     }
 }

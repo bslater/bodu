@@ -95,14 +95,14 @@ public abstract class MLKem
     }
 
     /// <inheritdoc />
-    /// <returns>The string <c>"ML-KEM"</c>.</returns>
+    /// <value>The string <c>"ML-KEM"</c>.</value>
     public override string? KeyExchangeAlgorithm =>
         "ML-KEM";
 
     /// <inheritdoc />
-    /// <returns>
+    /// <value>
     /// <see langword="null" />, because ML-KEM is a key-encapsulation mechanism and produces no signatures.
-    /// </returns>
+    /// </value>
     public override string? SignatureAlgorithm =>
         null;
 
@@ -110,7 +110,6 @@ public abstract class MLKem
     /// Gets the size, in bytes, of the encoded encapsulation (public) key.
     /// </summary>
     /// <value>800, 1184, or 1568 depending on the parameter set.</value>
-    /// <returns>The encapsulation key size for this parameter set.</returns>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     public int EncapsulationKeySizeInBytes
     {
@@ -125,7 +124,6 @@ public abstract class MLKem
     /// Gets the size, in bytes, of the encoded decapsulation (private) key.
     /// </summary>
     /// <value>1632, 2400, or 3168 depending on the parameter set.</value>
-    /// <returns>The decapsulation key size for this parameter set.</returns>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     public int DecapsulationKeySizeInBytes
     {
@@ -140,7 +138,6 @@ public abstract class MLKem
     /// Gets the size, in bytes, of the ciphertext produced by encapsulation.
     /// </summary>
     /// <value>768, 1088, or 1568 depending on the parameter set.</value>
-    /// <returns>The ciphertext size for this parameter set.</returns>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     public int CiphertextSizeInBytes
     {
@@ -157,10 +154,6 @@ public abstract class MLKem
     /// <value>
     /// <see langword="true" /> when decapsulation key material is present; otherwise, <see langword="false" />.
     /// </value>
-    /// <returns>
-    /// <see langword="true" /> when <see cref="Decapsulate(ReadOnlySpan{byte})" /> and
-    /// <see cref="ExportDecapsulationKey" /> are available.
-    /// </returns>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     public bool HasDecapsulationKey
     {
@@ -177,10 +170,6 @@ public abstract class MLKem
     /// <value>
     /// <see langword="true" /> when encapsulation key material is present; otherwise, <see langword="false" />.
     /// </value>
-    /// <returns>
-    /// <see langword="true" /> when <see cref="Encapsulate()" /> and <see cref="ExportEncapsulationKey" /> are
-    /// available.
-    /// </returns>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     public bool HasEncapsulationKey
     {

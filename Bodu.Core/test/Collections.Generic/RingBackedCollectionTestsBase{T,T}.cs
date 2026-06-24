@@ -48,14 +48,14 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     /// insertions once <c>Count == Capacity</c>. Fixed-capacity collections set this to <see langword="true"/>;
     /// growable ones (<see cref="Deque{T}"/>) set it to <see langword="false"/>.
     /// </summary>
-    /// <returns><see langword="true"/> for fixed-capacity collections; <see langword="false"/> when adds auto-grow.</returns>
+    /// <value><see langword="true"/> for fixed-capacity collections; <see langword="false"/> when adds auto-grow.</value>
     protected virtual bool IsFixedCapacity => true;
 
     /// <summary>
     /// Gets a value indicating whether <see cref="GetCapacity(TCollection)"/> is guaranteed to return exactly
     /// the value passed to <see cref="CreateCollection(int)"/>. Growable collections may report a larger value.
     /// </summary>
-    /// <returns><see langword="true"/> when capacity is exactly preserved.</returns>
+    /// <value><see langword="true"/> when capacity is exactly preserved.</value>
     protected virtual bool ReportsExactCapacity => IsFixedCapacity;
 
     /// <summary>Adds an item at the tail end of the collection.</summary>

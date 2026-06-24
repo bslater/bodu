@@ -16,7 +16,7 @@ public static partial class MoneyOfTCurrencyExtensions
         /// <summary>
         /// Gets the absolute value of this instance.
         /// </summary>
-        /// <returns>A <see cref="Money{TCurrency}" /> whose amount is <c>|Amount|</c>.</returns>
+        /// <value>A <see cref="Money{TCurrency}" /> whose amount is <c>|Amount|</c>.</value>
         public Money<TCurrency> Abs =>
             value.Amount < 0m ? -value : value;
     }

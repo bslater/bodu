@@ -16,10 +16,10 @@ public static partial class MoneyOfTCurrencyExtensions
         /// <summary>
         /// Gets a value indicating whether this instance is strictly greater than zero.
         /// </summary>
-        /// <returns>
+        /// <value>
         /// <see langword="true" /> when <see cref="Money{TCurrency}.Amount" /> is positive; <see langword="false" />
         /// when it is zero or negative.
-        /// </returns>
+        /// </value>
         public bool IsPositive =>
             value.Amount > 0m;
     }

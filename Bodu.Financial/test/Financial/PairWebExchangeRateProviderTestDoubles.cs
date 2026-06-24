@@ -64,7 +64,7 @@ internal sealed class StubPairSource
     /// <summary>
     /// Gets the number of times <see cref="GetPairAsync" /> has been invoked.
     /// </summary>
-    /// <returns>The invocation count.</returns>
+    /// <value>The invocation count.</value>
     public int CallCount { get; private set; }
 
     /// <inheritdoc />

@@ -75,32 +75,32 @@ internal sealed class PropertyMetadata
     /// <summary>
     /// Gets the CLR name of the member.
     /// </summary>
-    /// <returns>The declared member name.</returns>
+    /// <value>The declared member name.</value>
     internal string ClrName => _property?.Name ?? _field!.Name;
 
     /// <summary>
     /// Gets the declared type of the member.
     /// </summary>
-    /// <returns>The member type.</returns>
+    /// <value>The member type.</value>
     internal Type PropertyType => _property?.PropertyType ?? _field!.FieldType;
 
     /// <summary>
     /// Gets the name used for the member in serialized output.
     /// </summary>
-    /// <returns>The wire name.</returns>
+    /// <value>The wire name.</value>
     internal string WireName { get; }
 
     /// <summary>
     /// Gets the converter that handles the member value.
     /// </summary>
-    /// <returns>The member converter.</returns>
+    /// <value>The member converter.</value>
     internal BencodeConverter Converter { get; }
 
     /// <summary>
     /// Gets the condition under which the member is omitted on write, or <see langword="null" /> when it is always
     /// written.
     /// </summary>
-    /// <returns>The conditional-ignore setting, or <see langword="null" />.</returns>
+    /// <value>The conditional-ignore setting, or <see langword="null" />.</value>
     internal BencodeIgnoreCondition? ConditionalIgnore { get; }
 
     /// <summary>
@@ -108,50 +108,50 @@ internal sealed class PropertyMetadata
     /// <see cref="BencodeObjectCreationHandlingAttribute" /> on the member, or <see langword="null" /> when the member
     /// declares none.
     /// </summary>
-    /// <returns>The member-level object-creation handling, or <see langword="null" />.</returns>
+    /// <value>The member-level object-creation handling, or <see langword="null" />.</value>
     internal BencodeObjectCreationHandling? CreationHandling { get; init; }
 
     /// <summary>
     /// Gets the relative write order of the member.
     /// </summary>
-    /// <returns>The order value.</returns>
+    /// <value>The order value.</value>
     internal int Order { get; }
 
     /// <summary>
     /// Gets the index of the constructor parameter the member binds to, or -1 when the member is set through its
     /// setter.
     /// </summary>
-    /// <returns>The constructor parameter index, or -1.</returns>
+    /// <value>The constructor parameter index, or -1.</value>
     internal int ConstructorParameterIndex { get; }
 
     /// <summary>
     /// Gets a value indicating whether the member must be present in the input.
     /// </summary>
-    /// <returns><see langword="true" /> when the member is required; otherwise <see langword="false" />.</returns>
+    /// <value><see langword="true" /> when the member is required; otherwise <see langword="false" />.</value>
     internal bool IsRequired { get; }
 
     /// <summary>
     /// Gets the default value supplied for the member's constructor parameter when the member is absent from the input.
     /// </summary>
-    /// <returns>The default value, or <see langword="null" />.</returns>
+    /// <value>The default value, or <see langword="null" />.</value>
     internal object? DefaultValue { get; }
 
     /// <summary>
     /// Gets the default value of the member's type, used to evaluate
     /// <see cref="BencodeIgnoreCondition.WhenWritingDefault" />.
     /// </summary>
-    /// <returns>The boxed default value of the member type; <see langword="null" /> for reference types.</returns>
+    /// <value>The boxed default value of the member type; <see langword="null" /> for reference types.</value>
     internal object? DefaultTypeValue { get; }
 
     /// <summary>
     /// Gets a value indicating whether the member can be assigned during deserialization.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// For a property, <see langword="true" /> when it has a public setter (which includes an init-only setter) or a
     /// non-public setter opted in by <see cref="BencodeIncludeAttribute" />; a property exposed only through a
     /// non-public setter is therefore not assigned on read unless it carries that attribute. For a field,
     /// <see langword="true" /> unless the field is <see langword="readonly" />.
-    /// </returns>
+    /// </value>
     internal bool CanSet =>
         _property is not null
             ? _property.SetMethod is not null && (_property.SetMethod.IsPublic || _included)

@@ -195,13 +195,13 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the server-name member.
         /// </summary>
-        /// <returns>The server name.</returns>
+        /// <value>The server name.</value>
         public string ServerName { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the maximum-connections member.
         /// </summary>
-        /// <returns>The maximum number of connections.</returns>
+        /// <value>The maximum number of connections.</value>
         public int MaxConnections { get; set; }
     }
 
@@ -213,13 +213,13 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the present member.
         /// </summary>
-        /// <returns>The present value.</returns>
+        /// <value>The present value.</value>
         public string? Present { get; set; }
 
         /// <summary>
         /// Gets or sets the absent member.
         /// </summary>
-        /// <returns>The absent value, or <see langword="null" />.</returns>
+        /// <value>The absent value, or <see langword="null" />.</value>
         public string? Absent { get; set; }
     }
 
@@ -231,7 +231,7 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the value member, whose wire name is fixed by attribute.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         [TomlPropertyName("explicit_name")]
         [JsonPropertyName("explicit_name")]
         public int Value { get; set; }
