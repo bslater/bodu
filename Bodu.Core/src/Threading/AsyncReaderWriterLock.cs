@@ -52,11 +52,22 @@ namespace Bodu.Threading;
 [DebuggerDisplay("Readers = {_readersActive}, WriterActive = {_writerActive}, WaitingReaders = {WaitingReaderCount}, WaitingWriters = {WaitingWriterCount}")]
 public sealed partial class AsyncReaderWriterLock : IDisposable
 {
+    /// <summary>The synchronization object guarding all mutable lock state.</summary>
     private readonly object _gate = new();
+
+    /// <summary>The readers waiting to acquire shared access, released together when no writer is active.</summary>
     private readonly List<TaskCompletionSource<Releaser>> _waitingReaders = new();
+
+    /// <summary>The writers waiting to acquire exclusive access, granted in first-in, first-out order.</summary>
     private readonly LinkedList<TaskCompletionSource<Releaser>> _waitingWriters = new();
+
+    /// <summary>The number of readers currently holding shared access.</summary>
     private int _readersActive;
+
+    /// <summary>Indicates whether a writer currently holds exclusive access.</summary>
     private bool _writerActive;
+
+    /// <summary>Indicates whether the lock has been disposed.</summary>
     private bool _disposed;
 
     /// <summary>

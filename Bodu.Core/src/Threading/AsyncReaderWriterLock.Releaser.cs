@@ -21,8 +21,13 @@ public sealed partial class AsyncReaderWriterLock
     /// </remarks>
     public readonly struct Releaser : IDisposable
     {
+        /// <summary>The lock to release on disposal, or <see langword="null" /> for a default releaser.</summary>
         private readonly AsyncReaderWriterLock? _owner;
+
+        /// <summary>The shared guard ensuring the access is released at most once across releaser copies.</summary>
         private readonly ReleaseGuard? _guard;
+
+        /// <summary>Indicates whether this releaser represents write access rather than read access.</summary>
         private readonly bool _isWriter;
 
         /// <summary>
@@ -61,6 +66,7 @@ public sealed partial class AsyncReaderWriterLock
         /// </summary>
         internal sealed class ReleaseGuard
         {
+            /// <summary>The release state: <c>0</c> while held, <c>1</c> once released.</summary>
             private int _released;
 
             /// <summary>

@@ -33,8 +33,13 @@ namespace Bodu.Threading;
 [DebuggerDisplay("Signaled = {_signaled}, Waiters = {WaiterCount}")]
 public sealed class AsyncAutoResetEvent
 {
+    /// <summary>The synchronization object guarding <see cref="_waiters" /> and <see cref="_signaled" />.</summary>
     private readonly object _gate = new();
+
+    /// <summary>The queue of pending waiters, completed in first-in, first-out order as signals arrive.</summary>
     private readonly LinkedList<TaskCompletionSource<bool>> _waiters = new();
+
+    /// <summary>Indicates whether a signal is latched and available for the next waiter to consume.</summary>
     private bool _signaled;
 
     /// <summary>

@@ -15,6 +15,7 @@ namespace Bodu.Collections.Generic.Graphs;
 internal sealed class GraphDebugView<T>
     where T : notnull
 {
+    /// <summary>The graph whose vertices and edges are surfaced in the debugger.</summary>
     private readonly Graph<T> _graph;
 
     /// <summary>

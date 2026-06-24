@@ -32,10 +32,19 @@ namespace Bodu.Collections.Generic.Graphs;
 public sealed class DisjointSet<T>
     where T : notnull
 {
+    /// <summary>Maps each added element to its dense slot index in the backing lists.</summary>
     private readonly Dictionary<T, int> _indices;
+
+    /// <summary>The elements in slot order, indexed by the dense slot assigned at insertion.</summary>
     private readonly List<T> _elements;
+
+    /// <summary>The parent slot of each element, forming the union-find forest; a root references itself.</summary>
     private readonly List<int> _parent;
+
+    /// <summary>The size of the subtree rooted at each slot; meaningful only for root slots.</summary>
     private readonly List<int> _size;
+
+    /// <summary>The number of distinct disjoint sets currently represented.</summary>
     private int _setCount;
 
     /// <summary>

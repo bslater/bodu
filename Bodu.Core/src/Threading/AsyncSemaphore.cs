@@ -53,9 +53,16 @@ namespace Bodu.Threading;
 [DebuggerDisplay("CurrentCount = {CurrentCount}, MaxCount = {_maxCount}, Waiters = {WaiterCount}")]
 public sealed partial class AsyncSemaphore
 {
+    /// <summary>The synchronization object guarding the waiter queue and permit count.</summary>
     private readonly object _gate = new();
+
+    /// <summary>The queue of pending waiters, granted permits in FIFO order as they are released.</summary>
     private readonly LinkedList<TaskCompletionSource<bool>> _waiters = new();
+
+    /// <summary>The maximum permit count, or <see cref="int.MaxValue" /> when no upper bound was specified.</summary>
     private readonly int _maxCount;
+
+    /// <summary>The number of permits currently available.</summary>
     private int _currentCount;
 
     /// <summary>

@@ -19,6 +19,7 @@ public sealed partial class AsyncLock
     /// </remarks>
     public readonly struct Releaser : IDisposable
     {
+        /// <summary>The lock to release on disposal, or <see langword="null" /> for a default releaser.</summary>
         private readonly AsyncLock? _owner;
 
         /// <summary>

@@ -13,6 +13,7 @@ namespace Bodu.Collections.Generic.Trees;
 /// </summary>
 internal sealed class TrieDebugView
 {
+    /// <summary>The trie whose keys are surfaced in the debugger.</summary>
     private readonly Trie _trie;
 
     /// <summary>
