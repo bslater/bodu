@@ -68,6 +68,16 @@ public readonly partial struct Interval<T>
     /// </list>
     /// </remarks>
     /// <returns><see langword="true" /> when the interval is empty; otherwise <see langword="false" />.</returns>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// Interval<int>.Closed(1, 5).IsEmpty;     // False — [1, 5] holds values
+    /// Interval<int>.Open(5, 5).IsEmpty;       // True  — (5, 5) admits no value
+    /// Interval<int>.Closed(5, 1).IsEmpty;     // True  — inverted bounds
+    /// Interval<int>.Closed(5, 5).IsEmpty;     // False — the single point 5
+    ///]]>
+    /// </code>
+    /// </example>
     public bool IsEmpty =>
         _lower > _upper || (_lower == _upper && (!LowerInclusive || !UpperInclusive));
 

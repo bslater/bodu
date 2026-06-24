@@ -61,6 +61,18 @@ public readonly partial struct Fraction<T> :
     /// <param name="formatProvider">The culture used to render the numeric components.</param>
     /// <returns>The value formatted according to <paramref name="format" />.</returns>
     /// <exception cref="FormatException">Thrown if <paramref name="format" /> is not a supported specifier.</exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// var value = Fraction<int>.Parse("7/4");
+    ///
+    /// string general = value.ToString();          // "7/4"  (default, equivalent to "G")
+    /// string mixed = value.ToString("M");         // "1 3/4"
+    /// string unicode = value.ToString("U");       // "1¾"
+    /// string percent = value.ToString("P");       // "175%"
+    ///]]>
+    /// </code>
+    /// </example>
     public string ToString(string? format, IFormatProvider? formatProvider) =>
         Format(format, formatProvider);
 

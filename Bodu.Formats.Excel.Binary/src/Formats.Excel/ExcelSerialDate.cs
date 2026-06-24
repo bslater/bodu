@@ -55,6 +55,16 @@ public static class ExcelSerialDate
     /// <exception cref="ArgumentException">
     /// Thrown when <paramref name="serial" /> is outside the range of representable OLE Automation dates.
     /// </exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// using Bodu.Formats.Excel;
+    ///
+    /// // Serial 25569 is 1970-01-01 in the default 1900 date system.
+    /// DateTime epoch = ExcelSerialDate.ToDateTime(25569);
+    ///]]>
+    /// </code>
+    /// </example>
     public static DateTime ToDateTime(double serial) =>
         ToDateTime(serial, ExcelDateSystem.Excel1900);
 
@@ -68,6 +78,22 @@ public static class ExcelSerialDate
     /// <exception cref="ArgumentException">
     /// Thrown when <paramref name="serial" /> is outside the range of representable OLE Automation dates.
     /// </exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// using Bodu.Formats.Excel;
+    ///
+    /// // Convert a date-formatted numeric cell using the workbook's own date system.
+    /// using var workbook = ExcelBinaryWorkbook.OpenRead("report.xls");
+    /// using ExcelWorksheetReader reader = workbook.OpenWorksheet(0);
+    /// while (reader.TryReadCell(out ExcelCell cell))
+    /// {
+    ///     if (cell.IsDateFormatted && cell.NumberValue is double serial)
+    ///         Console.WriteLine(ExcelSerialDate.ToDateTime(serial, workbook.DateSystem));
+    /// }
+    ///]]>
+    /// </code>
+    /// </example>
     public static DateTime ToDateTime(double serial, ExcelDateSystem dateSystem) =>
         DateTime.FromOADate(dateSystem == ExcelDateSystem.Excel1904 ? serial + Excel1904Offset : serial);
 }

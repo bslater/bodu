@@ -13,6 +13,25 @@ namespace Bodu.Formats.Excel;
 /// Unlike the forward-only <see cref="ExcelWorksheetReader" /> surface, a worksheet buffers every populated cell once,
 /// exposing them by position through <see cref="TryGetCell(int, int, out ExcelCell)" /> and grouped into
 /// <see cref="Rows" />. Absent cells are omitted, so both surfaces are sparse.
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.Formats.Excel;
+///
+/// using var workbook = ExcelBinaryWorkbook.OpenRead("report.xls");
+/// ExcelWorksheet sheet = workbook.ReadWorksheet(0);
+///
+/// // Random access by position.
+/// if (sheet.TryGetCell(0, 0, out ExcelCell header))
+///     Console.WriteLine($"A1 = {header.StringValue}");
+///
+/// // Iterate the populated rows and their cells.
+/// foreach (ExcelRow row in sheet.Rows)
+///     foreach (ExcelCell cell in row.Cells)
+///         Console.WriteLine($"R{cell.RowIndex} C{cell.ColumnIndex}: {cell.Kind}");
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public sealed class ExcelWorksheet
 {

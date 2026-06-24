@@ -33,6 +33,20 @@ public readonly partial struct Fraction<T>
     /// <exception cref="OverflowException">
     /// Thrown if the canonical result does not fit <typeparamref name="T" />.
     /// </exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// var a = Fraction<int>.Parse("1/2");
+    /// var b = Fraction<int>.Parse("1/3");
+    ///
+    /// var sum = a + b;                 // 5/6
+    /// var difference = a - b;          // 1/6
+    /// var product = a * b;             // 1/6
+    /// var quotient = a / b;            // 3/2
+    /// bool greater = a > b;            // true
+    ///]]>
+    /// </code>
+    /// </example>
     public static Fraction<T> operator +(Fraction<T> left, Fraction<T> right)
     {
         return FromBigInteger(

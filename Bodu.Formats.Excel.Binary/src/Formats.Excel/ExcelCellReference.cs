@@ -16,6 +16,18 @@ namespace Bodu.Formats.Excel;
 /// The notation names a column by a bijective base-26 sequence of letters (<c>A</c>..<c>Z</c>, <c>AA</c>..<c>AZ</c>,
 /// and so on) followed by a one-based row number. The conversions are culture-independent and accept upper- or
 /// lower-case column letters when parsing.
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.Formats.Excel;
+///
+/// string reference = ExcelCellReference.ToA1(rowIndex: 9, columnIndex: 27); // "AB10"
+///
+/// if (ExcelCellReference.TryParseA1("AB10", out int row, out int column))
+///     Console.WriteLine($"row {row}, column {column}"); // row 9, column 27
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public static class ExcelCellReference
 {
@@ -53,6 +65,15 @@ public static class ExcelCellReference
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="rowIndex" /> or <paramref name="columnIndex" /> is negative.
     /// </exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// using Bodu.Formats.Excel;
+    ///
+    /// string a1 = ExcelCellReference.ToA1(rowIndex: 0, columnIndex: 0); // "A1"
+    ///]]>
+    /// </code>
+    /// </example>
     public static string ToA1(int rowIndex, int columnIndex)
     {
         ThrowHelper.ThrowIfLessThan(rowIndex, 0);
