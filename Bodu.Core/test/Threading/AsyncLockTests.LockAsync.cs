@@ -70,12 +70,30 @@ public sealed partial class AsyncLockTests
     }
 
     /// <summary>
-    /// Verifies that requesting the lock with an already-canceled token throws <see cref="TaskCanceledException" />.
+    /// Verifies that a free lock is acquired even when the token is already canceled, because success wins when the
+    /// acquisition can complete immediately.
     /// </summary>
     [TestMethod]
-    public async Task LockAsync_WhenTokenAlreadyCanceled_ShouldThrowOperationCanceled()
+    public void LockAsync_WhenTokenAlreadyCanceledAndFree_ShouldAcquire()
     {
         var sut = new AsyncLock();
+        using var cts = new CancellationTokenSource();
+        cts.Cancel();
+
+        var acquire = sut.LockAsync(cts.Token);
+
+        Assert.IsTrue(acquire.IsCompletedSuccessfully);
+        acquire.Result.Dispose();
+    }
+
+    /// <summary>
+    /// Verifies that requesting a held lock with an already-canceled token throws <see cref="TaskCanceledException" />.
+    /// </summary>
+    [TestMethod]
+    public async Task LockAsync_WhenTokenAlreadyCanceledAndHeld_ShouldThrowTaskCanceled()
+    {
+        var sut = new AsyncLock();
+        using var held = await sut.LockAsync();
         using var cts = new CancellationTokenSource();
         cts.Cancel();
 
@@ -101,7 +119,7 @@ public sealed partial class AsyncLockTests
 
         cts.Cancel();
 
-        await Assert.ThrowsExactlyAsync<OperationCanceledException>(async () => await pending);
+        await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () => await pending);
     }
 
     /// <summary>
@@ -117,7 +135,7 @@ public sealed partial class AsyncLockTests
         var canceled = sut.LockAsync(cts.Token);
 
         cts.Cancel();
-        await Assert.ThrowsExactlyAsync<OperationCanceledException>(async () => await canceled);
+        await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () => await canceled);
 
         held.Dispose();
 

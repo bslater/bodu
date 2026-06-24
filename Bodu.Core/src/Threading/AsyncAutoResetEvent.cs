@@ -25,8 +25,12 @@ namespace Bodu.Threading;
 /// runs a waiter's continuation inline. The type owns no operating-system handle and does not implement
 /// <see cref="IDisposable" />.
 /// </para>
+/// <para>
+/// Cancellation follows the package-wide rule: a signal that is already latched is consumed even when the supplied
+/// token is already canceled. A token only cancels a wait that cannot complete immediately.
+/// </para>
 /// </remarks>
-[DebuggerDisplay("Signaled = {_signaled}")]
+[DebuggerDisplay("Signaled = {_signaled}, Waiters = {WaiterCount}")]
 public sealed class AsyncAutoResetEvent
 {
     private readonly object _gate = new();
@@ -51,6 +55,22 @@ public sealed class AsyncAutoResetEvent
     }
 
     /// <summary>
+    /// Gets the number of callers currently queued waiting for a signal.
+    /// </summary>
+    /// <value>The number of queued waiters.</value>
+    /// <returns>The number of callers awaiting a signal. Intended for diagnostics.</returns>
+    internal int WaiterCount
+    {
+        get
+        {
+            lock (_gate)
+            {
+                return _waiters.Count;
+            }
+        }
+    }
+
+    /// <summary>
     /// Asynchronously waits for the event to be signaled, consuming the signal.
     /// </summary>
     /// <returns>A <see cref="ValueTask" /> that completes when this caller receives the signal.</returns>
@@ -65,20 +85,25 @@ public sealed class AsyncAutoResetEvent
     /// <param name="cancellationToken">A token used to cancel the pending wait.</param>
     /// <returns>A <see cref="ValueTask" /> that completes when this caller receives the signal.</returns>
     /// <exception cref="OperationCanceledException"><paramref name="cancellationToken" /> was canceled before the signal was received.</exception>
-    /// <remarks>The returned <see cref="ValueTask" /> must be awaited exactly once. Cancellation removes only the calling waiter from the queue.</remarks>
+    /// <remarks>
+    /// The returned <see cref="ValueTask" /> must be awaited exactly once. A latched signal is consumed even when
+    /// <paramref name="cancellationToken" /> is already canceled; the token only cancels a wait that must queue, and
+    /// cancellation removes only the calling waiter from the queue.
+    /// </remarks>
     public ValueTask WaitAsync(CancellationToken cancellationToken)
     {
-        if (cancellationToken.IsCancellationRequested)
-            return ValueTask.FromCanceled(cancellationToken);
-
         LinkedListNode<TaskCompletionSource<bool>> node;
         lock (_gate)
         {
+            // Success wins: a latched signal is consumed before an already-canceled token is honored.
             if (_signaled)
             {
                 _signaled = false;
                 return ValueTask.CompletedTask;
             }
+
+            if (cancellationToken.IsCancellationRequested)
+                return ValueTask.FromCanceled(cancellationToken);
 
             node = _waiters.AddLast(new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously));
         }
@@ -116,9 +141,9 @@ public sealed class AsyncAutoResetEvent
     {
         using (cancellationToken.Register(static state =>
         {
-            var (owner, waiter) = ((AsyncAutoResetEvent Owner, LinkedListNode<TaskCompletionSource<bool>> Node))state!;
-            owner.CancelWaiter(waiter);
-        }, (this, node)))
+            var (owner, waiter, token) = ((AsyncAutoResetEvent Owner, LinkedListNode<TaskCompletionSource<bool>> Node, CancellationToken Token))state!;
+            owner.CancelWaiter(waiter, token);
+        }, (this, node, cancellationToken)))
         {
             await node.Value.Task.ConfigureAwait(false);
         }
@@ -128,7 +153,8 @@ public sealed class AsyncAutoResetEvent
     /// Removes a canceled waiter from the queue and transitions its task to the canceled state.
     /// </summary>
     /// <param name="node">The waiter to cancel.</param>
-    private void CancelWaiter(LinkedListNode<TaskCompletionSource<bool>> node)
+    /// <param name="cancellationToken">The token whose cancellation triggered the removal.</param>
+    private void CancelWaiter(LinkedListNode<TaskCompletionSource<bool>> node, CancellationToken cancellationToken)
     {
         lock (_gate)
         {
@@ -136,6 +162,6 @@ public sealed class AsyncAutoResetEvent
                 _waiters.Remove(node);
         }
 
-        node.Value.TrySetCanceled();
+        node.Value.TrySetCanceled(cancellationToken);
     }
 }

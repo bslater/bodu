@@ -1,12 +1,12 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="AsyncThrottlerTests.Ctor.cs" company="Bodu Pty. Ltd.">
+// <copyright file="RateGateTests.Ctor.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Threading;
 
-public sealed partial class AsyncThrottlerTests
+public sealed partial class RateGateTests
 {
     /// <summary>
     /// Verifies that a zero interval throws <see cref="ArgumentOutOfRangeException" /> naming <c>interval</c>.
@@ -16,7 +16,7 @@ public sealed partial class AsyncThrottlerTests
     {
         Assert.AreEqual(
             "interval",
-            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new AsyncThrottler(TimeSpan.Zero)).ParamName);
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new RateGate(TimeSpan.Zero)).ParamName);
     }
 
     /// <summary>
@@ -27,6 +27,6 @@ public sealed partial class AsyncThrottlerTests
     {
         Assert.AreEqual(
             "interval",
-            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new AsyncThrottler(TimeSpan.FromTicks(-1))).ParamName);
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new RateGate(TimeSpan.FromTicks(-1))).ParamName);
     }
 }

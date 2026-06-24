@@ -26,6 +26,15 @@ namespace Bodu.Threading;
 /// is never hijacked to run a waiter's continuation inline. The type owns no operating-system handle and therefore
 /// does not implement <see cref="IDisposable" />.
 /// </para>
+/// <para>
+/// Cancellation follows the package-wide rule: an available permit is taken even when the supplied token is already
+/// canceled. A token only cancels a wait that must queue.
+/// </para>
+/// <para>
+/// <see cref="Release(int)" /> first hands permits directly to queued waiters in FIFO order and only stores the
+/// remainder as available permits. Permits transferred to waiters never appear in <see cref="CurrentCount" />, and the
+/// configured maximum applies only to the stored available count after queued waiters have been satisfied.
+/// </para>
 /// </remarks>
 /// <example>
 ///<![CDATA[
@@ -41,7 +50,7 @@ namespace Bodu.Threading;
 /// }
 ///]]>
 /// </example>
-[DebuggerDisplay("CurrentCount = {CurrentCount}")]
+[DebuggerDisplay("CurrentCount = {CurrentCount}, MaxCount = {_maxCount}, Waiters = {WaiterCount}")]
 public sealed partial class AsyncSemaphore
 {
     private readonly object _gate = new();
@@ -97,6 +106,22 @@ public sealed partial class AsyncSemaphore
     }
 
     /// <summary>
+    /// Gets the number of callers currently queued waiting for a permit.
+    /// </summary>
+    /// <value>The number of queued waiters.</value>
+    /// <returns>The number of callers awaiting a permit. Intended for diagnostics.</returns>
+    internal int WaiterCount
+    {
+        get
+        {
+            lock (_gate)
+            {
+                return _waiters.Count;
+            }
+        }
+    }
+
+    /// <summary>
     /// Asynchronously waits to take a permit.
     /// </summary>
     /// <returns>A <see cref="ValueTask" /> that completes when a permit has been taken.</returns>
@@ -110,20 +135,25 @@ public sealed partial class AsyncSemaphore
     /// <param name="cancellationToken">A token used to cancel the pending wait.</param>
     /// <returns>A <see cref="ValueTask" /> that completes when a permit has been taken.</returns>
     /// <exception cref="OperationCanceledException"><paramref name="cancellationToken" /> was canceled before a permit was taken.</exception>
-    /// <remarks>The returned <see cref="ValueTask" /> must be awaited exactly once. Cancellation removes only the calling waiter from the queue.</remarks>
+    /// <remarks>
+    /// The returned <see cref="ValueTask" /> must be awaited exactly once. An available permit is taken even when
+    /// <paramref name="cancellationToken" /> is already canceled; the token only cancels a wait that must queue, and
+    /// cancellation removes only the calling waiter from the queue.
+    /// </remarks>
     public ValueTask WaitAsync(CancellationToken cancellationToken)
     {
-        if (cancellationToken.IsCancellationRequested)
-            return ValueTask.FromCanceled(cancellationToken);
-
         LinkedListNode<TaskCompletionSource<bool>> node;
         lock (_gate)
         {
+            // Success wins: an available permit is taken before an already-canceled token is honored.
             if (_currentCount > 0)
             {
                 _currentCount--;
                 return ValueTask.CompletedTask;
             }
+
+            if (cancellationToken.IsCancellationRequested)
+                return ValueTask.FromCanceled(cancellationToken);
 
             node = _waiters.AddLast(new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously));
         }
@@ -209,9 +239,9 @@ public sealed partial class AsyncSemaphore
     {
         using (cancellationToken.Register(static state =>
         {
-            var (owner, waiter) = ((AsyncSemaphore Owner, LinkedListNode<TaskCompletionSource<bool>> Node))state!;
-            owner.CancelWaiter(waiter);
-        }, (this, node)))
+            var (owner, waiter, token) = ((AsyncSemaphore Owner, LinkedListNode<TaskCompletionSource<bool>> Node, CancellationToken Token))state!;
+            owner.CancelWaiter(waiter, token);
+        }, (this, node, cancellationToken)))
         {
             await node.Value.Task.ConfigureAwait(false);
         }
@@ -232,7 +262,8 @@ public sealed partial class AsyncSemaphore
     /// Removes a canceled waiter from the queue and transitions its task to the canceled state.
     /// </summary>
     /// <param name="node">The waiter to cancel.</param>
-    private void CancelWaiter(LinkedListNode<TaskCompletionSource<bool>> node)
+    /// <param name="cancellationToken">The token whose cancellation triggered the removal.</param>
+    private void CancelWaiter(LinkedListNode<TaskCompletionSource<bool>> node, CancellationToken cancellationToken)
     {
         lock (_gate)
         {
@@ -240,6 +271,6 @@ public sealed partial class AsyncSemaphore
                 _waiters.Remove(node);
         }
 
-        node.Value.TrySetCanceled();
+        node.Value.TrySetCanceled(cancellationToken);
     }
 }

@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="AsyncThrottlerTests.cs" company="Bodu Pty. Ltd.">
+// <copyright file="RateGateTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -7,9 +7,9 @@
 namespace Bodu.Threading;
 
 /// <summary>
-/// Contains unit tests for the <see cref="AsyncThrottler" /> type.
+/// Contains unit tests for the <see cref="RateGate" /> type.
 /// </summary>
 [TestClass]
-public sealed partial class AsyncThrottlerTests
+public sealed partial class RateGateTests
 {
 }

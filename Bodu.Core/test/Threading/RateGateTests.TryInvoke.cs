@@ -1,12 +1,12 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="AsyncThrottlerTests.TryInvoke.cs" company="Bodu Pty. Ltd.">
+// <copyright file="RateGateTests.TryInvoke.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Threading;
 
-public sealed partial class AsyncThrottlerTests
+public sealed partial class RateGateTests
 {
     /// <summary>
     /// Verifies that the first invocation is admitted and a second within the interval is denied.
@@ -16,7 +16,7 @@ public sealed partial class AsyncThrottlerTests
     public void TryInvoke_WhenWithinInterval_ShouldAdmitFirstAndDenySecond()
     {
         var time = new FakeTimeProvider();
-        var sut = new AsyncThrottler(TimeSpan.FromSeconds(1), time);
+        var sut = new RateGate(TimeSpan.FromSeconds(1), time);
 
         Assert.IsTrue(sut.TryInvoke());
         Assert.IsFalse(sut.TryInvoke());
@@ -29,7 +29,7 @@ public sealed partial class AsyncThrottlerTests
     public void TryInvoke_WhenIntervalElapsed_ShouldAdmitAgain()
     {
         var time = new FakeTimeProvider();
-        var sut = new AsyncThrottler(TimeSpan.FromSeconds(1), time);
+        var sut = new RateGate(TimeSpan.FromSeconds(1), time);
 
         Assert.IsTrue(sut.TryInvoke());
 
@@ -52,7 +52,7 @@ public sealed partial class AsyncThrottlerTests
     public void TryInvoke_WhenTimeAdvances_ShouldAdmitOnlyAfterInterval(int advanceMilliseconds, bool expectedAdmitted)
     {
         var time = new FakeTimeProvider();
-        var sut = new AsyncThrottler(TimeSpan.FromSeconds(1), time);
+        var sut = new RateGate(TimeSpan.FromSeconds(1), time);
 
         Assert.IsTrue(sut.TryInvoke());
         time.Advance(TimeSpan.FromMilliseconds(advanceMilliseconds));
@@ -67,7 +67,7 @@ public sealed partial class AsyncThrottlerTests
     [TestMethod]
     public void TryInvoke_WhenNoTimeProviderSupplied_ShouldAdmitFirstInvocation()
     {
-        var sut = new AsyncThrottler(TimeSpan.FromSeconds(30));
+        var sut = new RateGate(TimeSpan.FromSeconds(30));
 
         Assert.IsTrue(sut.TryInvoke());
         Assert.IsFalse(sut.TryInvoke());

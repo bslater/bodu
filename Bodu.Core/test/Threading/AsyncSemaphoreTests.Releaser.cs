@@ -34,4 +34,21 @@ public sealed partial class AsyncSemaphoreTests
 
         Assert.AreEqual(1, sut.CurrentCount);
     }
+
+    /// <summary>
+    /// Verifies the documented misuse contract: disposing a copy of a releaser returns the permit a second time, and
+    /// when that would exceed the maximum it throws <see cref="InvalidOperationException" />.
+    /// </summary>
+    [TestMethod]
+    public async Task Releaser_WhenCopyDisposedBeyondMax_ShouldThrowInvalidOperationException()
+    {
+        var sut = new AsyncSemaphore(1, 1);
+
+        var releaser = await sut.LockAsync();
+        var copy = releaser;
+
+        releaser.Dispose();
+
+        Assert.ThrowsExactly<InvalidOperationException>(() => copy.Dispose());
+    }
 }

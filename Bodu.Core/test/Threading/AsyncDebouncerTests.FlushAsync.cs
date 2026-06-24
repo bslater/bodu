@@ -20,7 +20,7 @@ public sealed partial class AsyncDebouncerTests
         {
             Interlocked.Increment(ref runs);
             return ValueTask.CompletedTask;
-        }, time);
+        }, timeProvider: time);
 
         sut.Invoke();
         await sut.FlushAsync();
@@ -40,7 +40,7 @@ public sealed partial class AsyncDebouncerTests
         {
             Interlocked.Increment(ref runs);
             return ValueTask.CompletedTask;
-        }, time);
+        }, timeProvider: time);
 
         var flush = sut.FlushAsync();
 
@@ -60,7 +60,7 @@ public sealed partial class AsyncDebouncerTests
         {
             Interlocked.Increment(ref runs);
             return ValueTask.CompletedTask;
-        }, time);
+        }, timeProvider: time);
 
         sut.Invoke();
         await sut.FlushAsync();
@@ -82,5 +82,36 @@ public sealed partial class AsyncDebouncerTests
         {
             _ = sut.FlushAsync();
         });
+    }
+
+    /// <summary>
+    /// Verifies that flushing while a callback is already in flight awaits that callback before completing.
+    /// </summary>
+    [TestMethod]
+    public async Task FlushAsync_WhenCallbackInFlight_ShouldAwaitInFlightWork()
+    {
+        var time = new FakeTimeProvider();
+        var gate = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var completed = false;
+        using var sut = new AsyncDebouncer(
+            TimeSpan.FromMilliseconds(100),
+            async _ =>
+            {
+                await gate.Task;
+                completed = true;
+            },
+            AsyncDebouncerExecutionPolicy.QueueOneTrailingRun,
+            time);
+
+        sut.Invoke();
+        time.Advance(TimeSpan.FromMilliseconds(100));
+
+        var flush = sut.FlushAsync();
+        Assert.IsFalse(flush.IsCompleted, "Flush should await the in-flight callback.");
+
+        gate.SetResult();
+        await flush;
+
+        Assert.IsTrue(completed);
     }
 }

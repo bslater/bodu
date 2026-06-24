@@ -20,18 +20,36 @@ namespace Bodu.Threading;
 /// <c>using</c> statement.
 /// </para>
 /// <para>
-/// The lock is <b>writer-preferring</b>: while a writer is active or queued, newly arriving readers wait, which
-/// prevents a steady stream of readers from starving a pending writer. Queued writers are granted in strict FIFO
-/// order; when a writer releases and no writer is queued, all waiting readers are admitted together.
+/// <b>Fairness.</b> The lock is <b>writer-preferring</b>: while a writer is active or queued, newly arriving readers
+/// wait, and queued writers are granted in strict FIFO order. When a writer releases and no writer is queued, all
+/// waiting readers are admitted together (batch admission). This prevents writer starvation, but a sustained stream of
+/// writers can starve readers; choose this lock only when that trade-off is acceptable.
 /// </para>
 /// <para>
-/// The lock is <b>not reentrant</b>. All waiter completion sources use
+/// <b>Reentrancy and upgrade.</b> The lock is <b>not reentrant</b> and provides <b>no upgradeable read mode</b>. A
+/// caller must never acquire write access while already holding read access (or vice versa) on the same flow: doing so
+/// deadlocks, because the second acquisition waits for access the same flow already holds. To transition from reading
+/// to writing, release the read access first, then acquire the write access and re-validate state, accepting that the
+/// gap is not atomic.
+/// </para>
+/// <para>
+/// <b>Cancellation.</b> Following the package-wide rule, access that can be granted immediately is granted even when
+/// the supplied token is already canceled; the token only cancels an acquisition that must queue, and cancellation
+/// removes only the calling waiter.
+/// </para>
+/// <para>
+/// <b>Continuations and disposal.</b> All waiter completion sources use
 /// <see cref="TaskCreationOptions.RunContinuationsAsynchronously" />, so releasing threads never run waiter
 /// continuations inline while holding the internal gate. Disposing the lock faults any still-waiting acquisition with
-/// <see cref="ObjectDisposedException" />.
+/// <see cref="ObjectDisposedException" />; dispose only when no acquisitions are expected to be granted afterwards.
+/// </para>
+/// <para>
+/// <b>Releaser ownership.</b> Each <see cref="Releaser" /> is idempotent: disposing it more than once (including copies
+/// of the same value) releases the access exactly once, so accidental double-disposal cannot corrupt the reader count
+/// or grant overlapping access.
 /// </para>
 /// </remarks>
-[DebuggerDisplay("Readers = {_readersActive}, WriterActive = {_writerActive}")]
+[DebuggerDisplay("Readers = {_readersActive}, WriterActive = {_writerActive}, WaitingReaders = {WaitingReaderCount}, WaitingWriters = {WaitingWriterCount}")]
 public sealed partial class AsyncReaderWriterLock : IDisposable
 {
     private readonly object _gate = new();
@@ -49,6 +67,38 @@ public sealed partial class AsyncReaderWriterLock : IDisposable
     }
 
     /// <summary>
+    /// Gets the number of callers currently queued waiting for read access.
+    /// </summary>
+    /// <value>The number of queued readers.</value>
+    /// <returns>The number of callers awaiting read access. Intended for diagnostics.</returns>
+    internal int WaitingReaderCount
+    {
+        get
+        {
+            lock (_gate)
+            {
+                return _waitingReaders.Count;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets the number of callers currently queued waiting for write access.
+    /// </summary>
+    /// <value>The number of queued writers.</value>
+    /// <returns>The number of callers awaiting write access. Intended for diagnostics.</returns>
+    internal int WaitingWriterCount
+    {
+        get
+        {
+            lock (_gate)
+            {
+                return _waitingWriters.Count;
+            }
+        }
+    }
+
+    /// <summary>
     /// Asynchronously acquires shared (read) access.
     /// </summary>
     /// <returns>A <see cref="ValueTask{TResult}" /> yielding a <see cref="Releaser" /> whose disposal releases read access.</returns>
@@ -63,22 +113,27 @@ public sealed partial class AsyncReaderWriterLock : IDisposable
     /// <returns>A <see cref="ValueTask{TResult}" /> yielding a <see cref="Releaser" /> whose disposal releases read access.</returns>
     /// <exception cref="ObjectDisposedException">The lock has been disposed.</exception>
     /// <exception cref="OperationCanceledException"><paramref name="cancellationToken" /> was canceled before access was acquired.</exception>
-    /// <remarks>The returned <see cref="ValueTask{TResult}" /> must be awaited exactly once.</remarks>
+    /// <remarks>
+    /// The returned <see cref="ValueTask{TResult}" /> must be awaited exactly once. Read access that can be granted
+    /// immediately is granted even when <paramref name="cancellationToken" /> is already canceled; the token only
+    /// cancels an acquisition that must queue.
+    /// </remarks>
     public ValueTask<Releaser> ReaderAsync(CancellationToken cancellationToken)
     {
-        if (cancellationToken.IsCancellationRequested)
-            return ValueTask.FromCanceled<Releaser>(cancellationToken);
-
         TaskCompletionSource<Releaser> tcs;
         lock (_gate)
         {
             ObjectDisposedException.ThrowIf(_disposed, this);
 
+            // Success wins: immediately available read access is granted before an already-canceled token is honored.
             if (!_writerActive && _waitingWriters.Count == 0)
             {
                 _readersActive++;
-                return new ValueTask<Releaser>(new Releaser(this, isWriter: false));
+                return new ValueTask<Releaser>(CreateReleaser(isWriter: false));
             }
+
+            if (cancellationToken.IsCancellationRequested)
+                return ValueTask.FromCanceled<Releaser>(cancellationToken);
 
             tcs = new TaskCompletionSource<Releaser>(TaskCreationOptions.RunContinuationsAsynchronously);
             _waitingReaders.Add(tcs);
@@ -102,22 +157,27 @@ public sealed partial class AsyncReaderWriterLock : IDisposable
     /// <returns>A <see cref="ValueTask{TResult}" /> yielding a <see cref="Releaser" /> whose disposal releases write access.</returns>
     /// <exception cref="ObjectDisposedException">The lock has been disposed.</exception>
     /// <exception cref="OperationCanceledException"><paramref name="cancellationToken" /> was canceled before access was acquired.</exception>
-    /// <remarks>The returned <see cref="ValueTask{TResult}" /> must be awaited exactly once.</remarks>
+    /// <remarks>
+    /// The returned <see cref="ValueTask{TResult}" /> must be awaited exactly once. Write access that can be granted
+    /// immediately is granted even when <paramref name="cancellationToken" /> is already canceled; the token only
+    /// cancels an acquisition that must queue.
+    /// </remarks>
     public ValueTask<Releaser> WriterAsync(CancellationToken cancellationToken)
     {
-        if (cancellationToken.IsCancellationRequested)
-            return ValueTask.FromCanceled<Releaser>(cancellationToken);
-
         LinkedListNode<TaskCompletionSource<Releaser>> node;
         lock (_gate)
         {
             ObjectDisposedException.ThrowIf(_disposed, this);
 
+            // Success wins: immediately available write access is granted before an already-canceled token is honored.
             if (!_writerActive && _readersActive == 0 && _waitingWriters.Count == 0)
             {
                 _writerActive = true;
-                return new ValueTask<Releaser>(new Releaser(this, isWriter: true));
+                return new ValueTask<Releaser>(CreateReleaser(isWriter: true));
             }
+
+            if (cancellationToken.IsCancellationRequested)
+                return ValueTask.FromCanceled<Releaser>(cancellationToken);
 
             node = _waitingWriters.AddLast(new TaskCompletionSource<Releaser>(TaskCreationOptions.RunContinuationsAsynchronously));
         }
@@ -145,8 +205,17 @@ public sealed partial class AsyncReaderWriterLock : IDisposable
         }
 
         foreach (var tcs in toFault)
-            tcs.TrySetException(new ObjectDisposedException(nameof(AsyncReaderWriterLock), ResourceStrings.Op_Invalid_AsyncLockDisposedWaiters));
+            tcs.TrySetException(new ObjectDisposedException(nameof(AsyncReaderWriterLock), ResourceStrings.Op_Invalid_AsyncPrimitiveDisposedWaiters));
     }
+
+    /// <summary>
+    /// Creates a releaser bound to this lock with a fresh idempotency guard so that disposing the releaser, or any
+    /// copy of it, releases the access exactly once.
+    /// </summary>
+    /// <param name="isWriter"><see langword="true" /> for a write releaser; otherwise, <see langword="false" />.</param>
+    /// <returns>A <see cref="Releaser" /> for the granted access.</returns>
+    private Releaser CreateReleaser(bool isWriter) =>
+        new(this, isWriter, new Releaser.ReleaseGuard());
 
     /// <summary>
     /// Releases shared (read) access held by one reader. Invoked by <see cref="Releaser.Dispose" />.
@@ -186,7 +255,7 @@ public sealed partial class AsyncReaderWriterLock : IDisposable
         while (_waitingWriters.First is { } first)
         {
             _waitingWriters.RemoveFirst();
-            if (first.Value.TrySetResult(new Releaser(this, isWriter: true)))
+            if (first.Value.TrySetResult(CreateReleaser(isWriter: true)))
             {
                 _writerActive = true;
                 return true;
@@ -203,7 +272,7 @@ public sealed partial class AsyncReaderWriterLock : IDisposable
     {
         foreach (var tcs in _waitingReaders)
         {
-            if (tcs.TrySetResult(new Releaser(this, isWriter: false)))
+            if (tcs.TrySetResult(CreateReleaser(isWriter: false)))
                 _readersActive++;
         }
 
@@ -220,9 +289,9 @@ public sealed partial class AsyncReaderWriterLock : IDisposable
     {
         using (cancellationToken.Register(static state =>
         {
-            var (owner, waiter) = ((AsyncReaderWriterLock Owner, TaskCompletionSource<Releaser> Waiter))state!;
-            owner.CancelReader(waiter);
-        }, (this, tcs)))
+            var (owner, waiter, token) = ((AsyncReaderWriterLock Owner, TaskCompletionSource<Releaser> Waiter, CancellationToken Token))state!;
+            owner.CancelReader(waiter, token);
+        }, (this, tcs, cancellationToken)))
         {
             return await tcs.Task.ConfigureAwait(false);
         }
@@ -238,9 +307,9 @@ public sealed partial class AsyncReaderWriterLock : IDisposable
     {
         using (cancellationToken.Register(static state =>
         {
-            var (owner, waiter) = ((AsyncReaderWriterLock Owner, LinkedListNode<TaskCompletionSource<Releaser>> Node))state!;
-            owner.CancelWriter(waiter);
-        }, (this, node)))
+            var (owner, waiter, token) = ((AsyncReaderWriterLock Owner, LinkedListNode<TaskCompletionSource<Releaser>> Node, CancellationToken Token))state!;
+            owner.CancelWriter(waiter, token);
+        }, (this, node, cancellationToken)))
         {
             return await node.Value.Task.ConfigureAwait(false);
         }
@@ -250,14 +319,15 @@ public sealed partial class AsyncReaderWriterLock : IDisposable
     /// Removes a canceled reader from the wait list and transitions its task to the canceled state.
     /// </summary>
     /// <param name="tcs">The reader to cancel.</param>
-    private void CancelReader(TaskCompletionSource<Releaser> tcs)
+    /// <param name="cancellationToken">The token whose cancellation triggered the removal.</param>
+    private void CancelReader(TaskCompletionSource<Releaser> tcs, CancellationToken cancellationToken)
     {
         lock (_gate)
         {
             _waitingReaders.Remove(tcs);
         }
 
-        tcs.TrySetCanceled();
+        tcs.TrySetCanceled(cancellationToken);
     }
 
     /// <summary>
@@ -265,7 +335,8 @@ public sealed partial class AsyncReaderWriterLock : IDisposable
     /// writer leaves the lock idle, the next acquisition is granted.
     /// </summary>
     /// <param name="node">The writer to cancel.</param>
-    private void CancelWriter(LinkedListNode<TaskCompletionSource<Releaser>> node)
+    /// <param name="cancellationToken">The token whose cancellation triggered the removal.</param>
+    private void CancelWriter(LinkedListNode<TaskCompletionSource<Releaser>> node, CancellationToken cancellationToken)
     {
         lock (_gate)
         {
@@ -278,6 +349,6 @@ public sealed partial class AsyncReaderWriterLock : IDisposable
                 GrantAllReaders();
         }
 
-        node.Value.TrySetCanceled();
+        node.Value.TrySetCanceled(cancellationToken);
     }
 }
