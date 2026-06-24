@@ -26,7 +26,9 @@ internal static class Biff8SharedStringTable
     /// </summary>
     /// <param name="blocks">The SST payload followed, in order, by the payloads of its continuation records.</param>
     /// <returns>The decoded unique strings, indexed as cells reference them.</returns>
-    /// <exception cref="ExcelBinaryFormatException">Thrown when the table is truncated or otherwise malformed.</exception>
+    /// <exception cref="ExcelBinaryFormatException">
+    /// Thrown when the table is truncated or otherwise malformed.
+    /// </exception>
     internal static string[] Parse(IReadOnlyList<ReadOnlyMemory<byte>> blocks)
     {
         if (blocks.Count == 0)
@@ -171,7 +173,9 @@ internal static class Biff8SharedStringTable
     /// <param name="block">The current block index; advanced as boundaries are crossed.</param>
     /// <param name="offset">The current byte offset within the block; advanced as bytes are skipped.</param>
     /// <param name="count">The number of trailing bytes to skip.</param>
-    /// <exception cref="ExcelBinaryFormatException">Thrown when the trailing data runs past the available blocks.</exception>
+    /// <exception cref="ExcelBinaryFormatException">
+    /// Thrown when the trailing data runs past the available blocks.
+    /// </exception>
     private static void SkipBytes(IReadOnlyList<ReadOnlyMemory<byte>> blocks, ref int block, ref int offset, int count)
     {
         int remaining = count;

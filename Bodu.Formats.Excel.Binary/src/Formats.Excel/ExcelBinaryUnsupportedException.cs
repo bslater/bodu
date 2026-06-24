@@ -34,8 +34,8 @@ public sealed class ExcelBinaryUnsupportedException
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ExcelBinaryUnsupportedException" /> class with the specified message
-    /// and a reference to the underlying cause.
+    /// Initializes a new instance of the <see cref="ExcelBinaryUnsupportedException" /> class with the specified
+    /// message and a reference to the underlying cause.
     /// </summary>
     /// <param name="message">A message that describes the unsupported feature.</param>
     /// <param name="innerException">The exception that is the cause of this exception.</param>

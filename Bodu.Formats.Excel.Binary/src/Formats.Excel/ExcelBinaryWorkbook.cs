@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExcelBinaryWorkbook.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -24,8 +24,8 @@ namespace Bodu.Formats.Excel;
 /// </para>
 /// <para>
 /// The primary, high-throughput surface is the forward-only <see cref="ExcelWorksheetReader" /> returned by
-/// <see cref="OpenWorksheet(int)" />. A materialized, randomly addressable <see cref="ExcelWorksheet" /> is offered as a
-/// convenience through <see cref="ReadWorksheet(int)" />.
+/// <see cref="OpenWorksheet(int)" />. A materialized, randomly addressable <see cref="ExcelWorksheet" /> is offered as
+/// a convenience through <see cref="ReadWorksheet(int)" />.
 /// </para>
 /// <para>
 /// The session owns the underlying container and, unless the caller opts to leave it open, the source stream; dispose
@@ -86,8 +86,8 @@ public sealed class ExcelBinaryWorkbook
     /// Gets the document properties of the workbook.
     /// </summary>
     /// <returns>
-    /// The workbook properties; members are <see langword="null" /> when the corresponding property set is absent or was
-    /// not read.
+    /// The workbook properties; members are <see langword="null" /> when the corresponding property set is absent or
+    /// was not read.
     /// </returns>
     public ExcelWorkbookProperties Properties { get; }
 
@@ -104,7 +104,9 @@ public sealed class ExcelBinaryWorkbook
     /// </summary>
     /// <param name="path">The path of the <c>.xls</c> file.</param>
     /// <returns>An open <see cref="ExcelBinaryWorkbook" />.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="path" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="path" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="CompoundFileFormatException">Thrown when the file is not a valid compound file.</exception>
     /// <exception cref="ExcelBinaryWorkbookStreamNotFoundException">
     /// Thrown when the compound file has no workbook stream.
@@ -146,7 +148,9 @@ public sealed class ExcelBinaryWorkbook
     /// </summary>
     /// <param name="file">The <c>.xls</c> file to open.</param>
     /// <returns>An open <see cref="ExcelBinaryWorkbook" />.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="file" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="file" /> is <see langword="null" />.
+    /// </exception>
     public static ExcelBinaryWorkbook OpenRead(FileInfo file)
     {
         ThrowHelper.ThrowIfNull(file);
@@ -163,7 +167,9 @@ public sealed class ExcelBinaryWorkbook
     /// <see langword="false" />.
     /// </param>
     /// <returns>An open <see cref="ExcelBinaryWorkbook" />.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="stream" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="stream" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="CompoundFileFormatException">Thrown when the stream is not a valid compound file.</exception>
     /// <exception cref="ExcelBinaryWorkbookStreamNotFoundException">
     /// Thrown when the compound file has no workbook stream.
@@ -215,7 +221,9 @@ public sealed class ExcelBinaryWorkbook
     /// </summary>
     /// <param name="worksheetName">The sheet name, compared using ordinal equality.</param>
     /// <returns>A forward-only <see cref="ExcelWorksheetReader" /> over the sheet's value records.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="worksheetName" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="worksheetName" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="KeyNotFoundException">Thrown when no sheet with the given name exists.</exception>
     /// <exception cref="ObjectDisposedException">Thrown when the workbook has been disposed.</exception>
     public ExcelWorksheetReader OpenWorksheet(string worksheetName) =>
@@ -242,7 +250,9 @@ public sealed class ExcelBinaryWorkbook
     /// </summary>
     /// <param name="worksheetName">The sheet name, compared using ordinal equality.</param>
     /// <returns>A materialized <see cref="ExcelWorksheet" /> buffering the sheet's populated cells.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="worksheetName" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="worksheetName" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="KeyNotFoundException">Thrown when no sheet with the given name exists.</exception>
     /// <exception cref="ObjectDisposedException">Thrown when the workbook has been disposed.</exception>
     public ExcelWorksheet ReadWorksheet(string worksheetName) =>
@@ -402,7 +412,8 @@ public sealed class ExcelBinaryWorkbook
     }
 
     /// <summary>
-    /// Reads and parses a property-set stream, returning <see langword="null" /> when the stream is absent or malformed.
+    /// Reads and parses a property-set stream, returning <see langword="null" /> when the stream is absent or
+    /// malformed.
     /// </summary>
     /// <typeparam name="T">The property-set view type.</typeparam>
     /// <param name="compound">The open compound file.</param>
@@ -448,7 +459,9 @@ public sealed class ExcelBinaryWorkbook
     /// </summary>
     /// <param name="worksheetName">The sheet name, compared using ordinal equality.</param>
     /// <returns>The zero-based index of the matching sheet.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="worksheetName" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="worksheetName" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="KeyNotFoundException">Thrown when no sheet with the given name exists.</exception>
     private int IndexOf(string worksheetName)
     {

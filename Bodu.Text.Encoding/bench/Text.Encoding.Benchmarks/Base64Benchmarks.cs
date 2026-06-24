@@ -9,8 +9,8 @@ using BenchmarkDotNet.Attributes;
 namespace Bodu.Text.Encoding.Benchmarks;
 
 /// <summary>
-/// Measures the throughput of <see cref="Base64" /> encode and decode at sizes that span the small-input
-/// stackalloc threshold up to multi-megabyte payloads.
+/// Measures the throughput of <see cref="Base64" /> encode and decode at sizes that span the small-input stackalloc
+/// threshold up to multi-megabyte payloads.
 /// </summary>
 [MemoryDiagnoser]
 public class Base64Benchmarks

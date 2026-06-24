@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsyncDebouncer.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -9,14 +9,14 @@ using System.Diagnostics;
 namespace Bodu.Threading;
 
 /// <summary>
-/// Coalesces a rapid burst of triggers into a single asynchronous invocation that runs once a quiet period has
-/// elapsed since the most recent trigger.
+/// Coalesces a rapid burst of triggers into a single asynchronous invocation that runs once a quiet period has elapsed
+/// since the most recent trigger.
 /// </summary>
 /// <remarks>
 /// <para>
-/// Each call to <see cref="Invoke" /> (re)starts a quiet timer of the configured delay. The callback runs only when
-/// the timer elapses with no intervening <see cref="Invoke" />, so a flurry of triggers results in a single
-/// execution. <see cref="FlushAsync" /> runs a pending invocation immediately and awaits any work in flight, and
+/// Each call to <see cref="Invoke" /> (re)starts a quiet timer of the configured delay. The callback runs only when the
+/// timer elapses with no intervening <see cref="Invoke" />, so a flurry of triggers results in a single execution.
+/// <see cref="FlushAsync" /> runs a pending invocation immediately and awaits any work in flight, and
 /// <see cref="Cancel" /> discards a pending invocation and cancels any in-flight callback.
 /// </para>
 /// <para>
@@ -64,10 +64,17 @@ public sealed partial class AsyncDebouncer : IDisposable
     /// </summary>
     /// <param name="delay">The quiet period that must elapse after the last trigger before the callback runs.</param>
     /// <param name="callback">The asynchronous callback invoked when the quiet period elapses.</param>
-    /// <param name="executionPolicy">The policy governing behavior when a run becomes due while a callback is in flight.</param>
-    /// <param name="timeProvider">The time provider used to schedule the delay, or <see langword="null" /> to use <see cref="TimeProvider.System" />.</param>
+    /// <param name="executionPolicy">
+    /// The policy governing behavior when a run becomes due while a callback is in flight.
+    /// </param>
+    /// <param name="timeProvider">
+    /// The time provider used to schedule the delay, or <see langword="null" /> to use
+    /// <see cref="TimeProvider.System" />.
+    /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="callback" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="delay" /> is negative, or <paramref name="executionPolicy" /> is not a defined value.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="delay" /> is negative, or <paramref name="executionPolicy" /> is not a defined value.
+    /// </exception>
     public AsyncDebouncer(
         TimeSpan delay,
         Func<CancellationToken, ValueTask> callback,
@@ -87,7 +94,9 @@ public sealed partial class AsyncDebouncer : IDisposable
     /// <summary>
     /// Occurs when a callback invocation faults with an exception other than its own cancellation.
     /// </summary>
-    /// <remarks>The handler runs outside the debouncer's internal gate on the thread that observed the failure.</remarks>
+    /// <remarks>
+    /// The handler runs outside the debouncer's internal gate on the thread that observed the failure.
+    /// </remarks>
     public event EventHandler<Exception>? CallbackFailed;
 
     /// <summary>
@@ -152,10 +161,16 @@ public sealed partial class AsyncDebouncer : IDisposable
     /// Runs a pending invocation immediately, bypassing the remaining quiet period, and awaits any callback work in
     /// flight.
     /// </summary>
-    /// <param name="cancellationToken">A token used to cancel only this caller's wait for the in-flight work to drain.</param>
-    /// <returns>A <see cref="ValueTask" /> that completes when the triggered and in-flight callbacks have completed.</returns>
+    /// <param name="cancellationToken">
+    /// A token used to cancel only this caller's wait for the in-flight work to drain.
+    /// </param>
+    /// <returns>
+    /// A <see cref="ValueTask" /> that completes when the triggered and in-flight callbacks have completed.
+    /// </returns>
     /// <exception cref="ObjectDisposedException">The debouncer has been disposed.</exception>
-    /// <exception cref="OperationCanceledException"><paramref name="cancellationToken" /> was canceled before the work drained.</exception>
+    /// <exception cref="OperationCanceledException">
+    /// <paramref name="cancellationToken" /> was canceled before the work drained.
+    /// </exception>
     public ValueTask FlushAsync(CancellationToken cancellationToken = default)
     {
         lock (_gate)
@@ -179,7 +194,9 @@ public sealed partial class AsyncDebouncer : IDisposable
     /// </summary>
     /// <param name="cancellationToken">A token used to cancel only this caller's wait.</param>
     /// <returns>A <see cref="ValueTask" /> that completes when no callback work remains in flight.</returns>
-    /// <exception cref="OperationCanceledException"><paramref name="cancellationToken" /> was canceled before the work drained.</exception>
+    /// <exception cref="OperationCanceledException">
+    /// <paramref name="cancellationToken" /> was canceled before the work drained.
+    /// </exception>
     public async ValueTask DrainAsync(CancellationToken cancellationToken = default)
     {
         while (true)

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IReadOnlyWeightedGraph{T,T}.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -39,7 +39,9 @@ public interface IReadOnlyWeightedGraph<TVertex, TWeight> : IReadOnlyGraph<TVert
     /// </summary>
     /// <param name="from">The source vertex.</param>
     /// <param name="to">The destination vertex.</param>
-    /// <param name="weight">When this method returns, contains the edge weight if the edge exists; otherwise, the default value.</param>
+    /// <param name="weight">
+    /// When this method returns, contains the edge weight if the edge exists; otherwise, the default value.
+    /// </param>
     /// <returns><see langword="true" /> if the edge exists; otherwise, <see langword="false" />.</returns>
     bool TryGetEdgeWeight(TVertex from, TVertex to, out TWeight weight);
 }

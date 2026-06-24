@@ -75,7 +75,8 @@ internal static class Biff8DimensionsReader
     }
 
     /// <summary>
-    /// Determines whether a record identifier begins the worksheet body, after which no <c>DIMENSIONS</c> record appears.
+    /// Determines whether a record identifier begins the worksheet body, after which no <c>DIMENSIONS</c> record
+    /// appears.
     /// </summary>
     /// <param name="id">The record identifier.</param>
     /// <returns><see langword="true" /> when the record is a row or value-bearing cell record.</returns>
@@ -96,7 +97,9 @@ internal static class Biff8DimensionsReader
     /// </summary>
     /// <param name="stream">The source stream.</param>
     /// <param name="destination">The buffer to fill.</param>
-    /// <returns><see langword="true" /> when the buffer was filled; <see langword="false" /> at the end of the stream.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the buffer was filled; <see langword="false" /> at the end of the stream.
+    /// </returns>
     private static bool TryReadFull(Stream stream, Span<byte> destination)
     {
         int total = 0;

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExcelWorksheetInfo.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -11,8 +11,8 @@ namespace Bodu.Formats.Excel;
 /// </summary>
 /// <remarks>
 /// An instance is produced from the workbook's bound-sheet record and the <c>DIMENSIONS</c> record of the sheet's
-/// substream. Sheets of every <see cref="ExcelSheetType" /> are described; only a <see cref="ExcelSheetType.Worksheet" />
-/// yields cells when opened.
+/// substream. Sheets of every <see cref="ExcelSheetType" /> are described; only a
+/// <see cref="ExcelSheetType.Worksheet" /> yields cells when opened.
 /// </remarks>
 public sealed class ExcelWorksheetInfo
 {
@@ -61,8 +61,8 @@ public sealed class ExcelWorksheetInfo
     /// Gets a value indicating whether the sheet is visible.
     /// </summary>
     /// <returns>
-    /// <see langword="true" /> when <see cref="Visibility" /> is <see cref="ExcelSheetVisibility.Visible" />;
-    /// otherwise <see langword="false" />.
+    /// <see langword="true" /> when <see cref="Visibility" /> is <see cref="ExcelSheetVisibility.Visible" />; otherwise
+    /// <see langword="false" />.
     /// </returns>
     public bool IsVisible => Visibility == ExcelSheetVisibility.Visible;
 

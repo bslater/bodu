@@ -45,7 +45,9 @@ public sealed partial class Trie
         readonly object IEnumerator.Current => _current!;
 
         /// <inheritdoc />
-        /// <exception cref="InvalidOperationException">The trie was modified after the enumerator was created.</exception>
+        /// <exception cref="InvalidOperationException">
+        /// The trie was modified after the enumerator was created.
+        /// </exception>
         public bool MoveNext()
         {
             if (_version != _owner._version)
@@ -63,7 +65,9 @@ public sealed partial class Trie
         }
 
         /// <inheritdoc />
-        /// <exception cref="InvalidOperationException">The trie was modified after the enumerator was created.</exception>
+        /// <exception cref="InvalidOperationException">
+        /// The trie was modified after the enumerator was created.
+        /// </exception>
         public void Reset()
         {
             if (_version != _owner._version)

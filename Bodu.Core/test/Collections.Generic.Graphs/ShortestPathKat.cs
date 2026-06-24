@@ -9,8 +9,8 @@ using Bodu.Test.Kat;
 namespace Bodu.Collections.Generic.Graphs;
 
 /// <summary>
-/// Represents a known-answer scenario for shortest-path queries: an edge list, directedness, a source and target,
-/// and the expected path and distance. An empty <see cref="ExpectedPath" /> denotes that no path exists.
+/// Represents a known-answer scenario for shortest-path queries: an edge list, directedness, a source and target, and
+/// the expected path and distance. An empty <see cref="ExpectedPath" /> denotes that no path exists.
 /// </summary>
 /// <param name="Name">The human-readable scenario name surfaced on test failure.</param>
 /// <param name="Edges">The weighted edges as (from, to, weight) triples.</param>

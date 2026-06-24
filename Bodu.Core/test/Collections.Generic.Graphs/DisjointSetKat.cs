@@ -9,8 +9,8 @@ using Bodu.Test.Kat;
 namespace Bodu.Collections.Generic.Graphs;
 
 /// <summary>
-/// Represents a known-answer scenario for <see cref="DisjointSet" />: an element count, a sequence of union
-/// operations, the expected resulting set count, and a connectivity matrix to assert.
+/// Represents a known-answer scenario for <see cref="DisjointSet" />: an element count, a sequence of union operations,
+/// the expected resulting set count, and a connectivity matrix to assert.
 /// </summary>
 /// <param name="Name">The human-readable scenario name surfaced on test failure.</param>
 /// <param name="Count">The number of elements the disjoint set is constructed with.</param>

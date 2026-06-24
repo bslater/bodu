@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Trie{TValue}.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -16,15 +16,15 @@ namespace Bodu.Collections.Generic.Trees;
 /// <typeparam name="TValue">The type of the values associated with each key.</typeparam>
 /// <remarks>
 /// <para>
-/// A <see cref="Trie{TValue}" /> stores keys as paths of characters, so operations cost time proportional to the
-/// length of the key rather than to the number of stored keys, and it answers prefix questions (<see cref="StartsWith(string)" />,
+/// A <see cref="Trie{TValue}" /> stores keys as paths of characters, so operations cost time proportional to the length
+/// of the key rather than to the number of stored keys, and it answers prefix questions (<see cref="StartsWith(string)" />,
 /// <see cref="KeysWithPrefix(string)" />) without scanning unrelated keys. Character transitions are keyed by the
 /// <see cref="IEqualityComparer{Char}" /> supplied at construction, allowing ordinal or case-insensitive matching.
 /// </para>
 /// <para>
 /// The empty string is a valid key. Enumeration order — whether through <see cref="GetEnumerator" />,
-/// <see cref="KeysWithPrefix(string)" />, or <see cref="ItemsWithPrefix(string)" /> — is unspecified in this
-/// version. The trie is not thread-safe for concurrent mutation.
+/// <see cref="KeysWithPrefix(string)" />, or <see cref="ItemsWithPrefix(string)" /> — is unspecified in this version.
+/// The trie is not thread-safe for concurrent mutation.
 /// </para>
 /// </remarks>
 [DebuggerDisplay("Count = {Count}")]
@@ -49,7 +49,10 @@ public sealed partial class Trie<TValue>
     /// Initializes a new instance of the <see cref="Trie{TValue}" /> class that is empty and uses the specified
     /// character comparer.
     /// </summary>
-    /// <param name="charComparer">The comparer used to match characters, or <see langword="null" /> to use <see cref="EqualityComparer{Char}.Default" />.</param>
+    /// <param name="charComparer">
+    /// The comparer used to match characters, or <see langword="null" /> to use
+    /// <see cref="EqualityComparer{Char}.Default" />.
+    /// </param>
     public Trie(IEqualityComparer<char>? charComparer)
     {
         Comparer = charComparer ?? EqualityComparer<char>.Default;
@@ -59,8 +62,13 @@ public sealed partial class Trie<TValue>
     /// Initializes a new instance of the <see cref="Trie{TValue}" /> class containing the specified key/value pairs.
     /// </summary>
     /// <param name="items">The key/value pairs to add.</param>
-    /// <param name="charComparer">The comparer used to match characters, or <see langword="null" /> to use <see cref="EqualityComparer{Char}.Default" />.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="items" /> is <see langword="null" />, or a key is <see langword="null" />.</exception>
+    /// <param name="charComparer">
+    /// The comparer used to match characters, or <see langword="null" /> to use
+    /// <see cref="EqualityComparer{Char}.Default" />.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="items" /> is <see langword="null" />, or a key is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentException">A duplicate key is supplied.</exception>
     public Trie(IEnumerable<KeyValuePair<string, TValue>> items, IEqualityComparer<char>? charComparer = null)
         : this(charComparer)
@@ -249,7 +257,10 @@ public sealed partial class Trie<TValue>
     /// Determines whether any key in the trie begins with the specified prefix.
     /// </summary>
     /// <param name="prefix">The prefix to test.</param>
-    /// <returns><see langword="true" /> if at least one key begins with <paramref name="prefix" />; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if at least one key begins with <paramref name="prefix" />; otherwise,
+    /// <see langword="false" />.
+    /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="prefix" /> is <see langword="null" />.</exception>
     public bool StartsWith(string prefix)
     {
@@ -261,7 +272,10 @@ public sealed partial class Trie<TValue>
     /// Determines whether any key in the trie begins with the specified prefix.
     /// </summary>
     /// <param name="prefix">The prefix to test.</param>
-    /// <returns><see langword="true" /> if at least one key begins with <paramref name="prefix" />; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if at least one key begins with <paramref name="prefix" />; otherwise,
+    /// <see langword="false" />.
+    /// </returns>
     public bool StartsWith(ReadOnlySpan<char> prefix)
     {
         if (prefix.IsEmpty)
@@ -274,7 +288,9 @@ public sealed partial class Trie<TValue>
     /// Removes the specified key from the trie.
     /// </summary>
     /// <param name="key">The key to remove.</param>
-    /// <returns><see langword="true" /> if the key was found and removed; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if the key was found and removed; otherwise, <see langword="false" />.
+    /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
     public bool Remove(string key)
     {

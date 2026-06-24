@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="GraphAlgorithms.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -11,8 +11,8 @@ namespace Bodu.Collections.Generic.Graphs;
 /// </summary>
 /// <remarks>
 /// The algorithms reuse the library's existing primitives — <see cref="Deque{T}" /> for breadth-first frontiers and
-/// <see cref="IndexedPriorityQueue{TElement, TPriority}" /> for Dijkstra relaxation — and evaluate iteratively so
-/// they do not overflow the stack on large or deep graphs.
+/// <see cref="IndexedPriorityQueue{TElement, TPriority}" /> for Dijkstra relaxation — and evaluate iteratively so they
+/// do not overflow the stack on large or deep graphs.
 /// </remarks>
 public static partial class GraphAlgorithms
 {

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Graph{T}.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -15,10 +15,10 @@ namespace Bodu.Collections.Generic.Graphs;
 /// <typeparam name="T">The type of the vertices. Must be non-nullable.</typeparam>
 /// <remarks>
 /// <para>
-/// Edge directedness is fixed at construction by <see cref="GraphKind" />. In an undirected graph each edge is
-/// stored symmetrically, so a single <see cref="AddEdge(T, T)" /> makes the two vertices mutual neighbors. Edges
-/// carry a non-negative <see cref="double" /> weight that defaults to <c>1.0</c>; algorithms that ignore weight treat
-/// the graph as unweighted.
+/// Edge directedness is fixed at construction by <see cref="GraphKind" />. In an undirected graph each edge is stored
+/// symmetrically, so a single <see cref="AddEdge(T, T)" /> makes the two vertices mutual neighbors. Edges carry a
+/// non-negative <see cref="double" /> weight that defaults to <c>1.0</c>; algorithms that ignore weight treat the graph
+/// as unweighted.
 /// </para>
 /// <para>
 /// Vertices referenced by <see cref="AddEdge(T, T)" /> are created automatically if absent. Vertex identity is
@@ -37,8 +37,8 @@ public sealed partial class Graph<T>
     private int _edgeCount;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Graph{T}" /> class as an undirected graph using the default
-    /// vertex comparer.
+    /// Initializes a new instance of the <see cref="Graph{T}" /> class as an undirected graph using the default vertex
+    /// comparer.
     /// </summary>
     public Graph()
         : this(GraphKind.Undirected, null)
@@ -60,7 +60,9 @@ public sealed partial class Graph<T>
     /// comparer.
     /// </summary>
     /// <param name="kind">Whether the graph is directed or undirected.</param>
-    /// <param name="comparer">The comparer used to determine vertex identity, or <see langword="null" /> to use the default comparer.</param>
+    /// <param name="comparer">
+    /// The comparer used to determine vertex identity, or <see langword="null" /> to use the default comparer.
+    /// </param>
     public Graph(GraphKind kind, IEqualityComparer<T>? comparer)
     {
         _kind = kind;
@@ -107,7 +109,9 @@ public sealed partial class Graph<T>
     /// Adds a vertex to the graph.
     /// </summary>
     /// <param name="vertex">The vertex to add.</param>
-    /// <returns><see langword="true" /> if the vertex was added; <see langword="false" /> if it already existed.</returns>
+    /// <returns>
+    /// <see langword="true" /> if the vertex was added; <see langword="false" /> if it already existed.
+    /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="vertex" /> is <see langword="null" />.</exception>
     public bool AddVertex(T vertex)
     {
@@ -136,7 +140,9 @@ public sealed partial class Graph<T>
     /// Removes a vertex and every edge incident to it.
     /// </summary>
     /// <param name="vertex">The vertex to remove.</param>
-    /// <returns><see langword="true" /> if the vertex was found and removed; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if the vertex was found and removed; otherwise, <see langword="false" />.
+    /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="vertex" /> is <see langword="null" />.</exception>
     public bool RemoveVertex(T vertex)
     {

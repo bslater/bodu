@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Biff8WorkbookGlobals.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -162,8 +162,12 @@ internal sealed class Biff8WorkbookGlobals
     /// Validates that the leading beginning-of-file record declares an unencrypted BIFF8 workbook globals substream.
     /// </summary>
     /// <param name="payload">The BOF record payload.</param>
-    /// <exception cref="ExcelBinaryFormatException">Thrown when the BOF record is malformed or not a globals substream.</exception>
-    /// <exception cref="ExcelBinaryUnsupportedException">Thrown when the declared BIFF version is not BIFF8.</exception>
+    /// <exception cref="ExcelBinaryFormatException">
+    /// Thrown when the BOF record is malformed or not a globals substream.
+    /// </exception>
+    /// <exception cref="ExcelBinaryUnsupportedException">
+    /// Thrown when the declared BIFF version is not BIFF8.
+    /// </exception>
     private static void ValidateGlobalsBof(ReadOnlySpan<byte> payload)
     {
         ushort version = Biff8Payload.ReadUInt16(payload, 0, Biff8RecordType.Bof);
@@ -233,7 +237,9 @@ internal sealed class Biff8WorkbookGlobals
     /// </summary>
     /// <param name="globals">The globals substream bytes.</param>
     /// <param name="records">The indexed records of the globals substream.</param>
-    /// <param name="index">The index of the SST record; advanced past the consumed continuation records on return.</param>
+    /// <param name="index">
+    /// The index of the SST record; advanced past the consumed continuation records on return.
+    /// </param>
     /// <returns>The decoded shared strings.</returns>
     private static string[] ReadSharedStrings(
         byte[] globals,

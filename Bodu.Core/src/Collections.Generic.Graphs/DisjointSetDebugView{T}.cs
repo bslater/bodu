@@ -9,8 +9,8 @@ using System.Diagnostics;
 namespace Bodu.Collections.Generic.Graphs;
 
 /// <summary>
-/// Provides a debugger-friendly view of a <see cref="DisjointSet{T}" />, rendering its current partition as a list
-/// of subsets.
+/// Provides a debugger-friendly view of a <see cref="DisjointSet{T}" />, rendering its current partition as a list of
+/// subsets.
 /// </summary>
 /// <typeparam name="T">The type of the elements stored in the disjoint set.</typeparam>
 internal sealed class DisjointSetDebugView<T>

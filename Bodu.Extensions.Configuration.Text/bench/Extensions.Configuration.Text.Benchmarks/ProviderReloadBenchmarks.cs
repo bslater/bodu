@@ -12,8 +12,8 @@ using Microsoft.Extensions.Configuration;
 namespace Bodu.Extensions.Configuration.Text.Benchmarks;
 
 /// <summary>
-/// Measures the cost of <see cref="IConfigurationRoot.Reload" /> on a Bodu-text-backed configuration,
-/// approximating the work the change-token plumbing would trigger when the underlying file changes.
+/// Measures the cost of <see cref="IConfigurationRoot.Reload" /> on a Bodu-text-backed configuration, approximating the
+/// work the change-token plumbing would trigger when the underlying file changes.
 /// </summary>
 [MemoryDiagnoser]
 public class ProviderReloadBenchmarks
@@ -28,8 +28,8 @@ public class ProviderReloadBenchmarks
     public int SectionCount { get; set; }
 
     /// <summary>
-    /// Builds the synthetic document on disk and constructs the configuration root once so reload benchmarks
-    /// measure reload cost only.
+    /// Builds the synthetic document on disk and constructs the configuration root once so reload benchmarks measure
+    /// reload cost only.
     /// </summary>
     [GlobalSetup]
     public void Setup()
@@ -63,8 +63,8 @@ public class ProviderReloadBenchmarks
     }
 
     /// <summary>
-    /// Benchmarks the cost of an explicit <see cref="IConfigurationRoot.Reload" /> call, which re-reads and
-    /// re-resolves the underlying file without rebuilding the entire <see cref="IConfigurationBuilder" />.
+    /// Benchmarks the cost of an explicit <see cref="IConfigurationRoot.Reload" /> call, which re-reads and re-resolves
+    /// the underlying file without rebuilding the entire <see cref="IConfigurationBuilder" />.
     /// </summary>
     [Benchmark]
     public void Reload() =>

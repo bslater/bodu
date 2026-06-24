@@ -98,8 +98,8 @@ public class ExchangeRateSeriesBenchmarks
         _sortedDict.TryGetValue(_hitDate, out decimal rate) ? rate : 0m;
 
     /// <summary>
-    /// Benchmarks an exact-date lookup over a flat array-of-structs using <see cref="System.Array.BinarySearch{T}(T[], T)" />
-    /// with a struct comparer.
+    /// Benchmarks an exact-date lookup over a flat array-of-structs using
+    /// <see cref="System.Array.BinarySearch{T}(T[], T)" /> with a struct comparer.
     /// </summary>
     /// <returns>The resolved rate value.</returns>
     [Benchmark]

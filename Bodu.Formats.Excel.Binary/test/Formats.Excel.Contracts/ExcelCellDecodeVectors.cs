@@ -9,8 +9,8 @@ using System.Buffers.Binary;
 namespace Bodu.Formats.Excel.Contracts;
 
 /// <summary>
-/// Supplies the shared catalogue of <see cref="ExcelCellDecodeKat" /> rows that <see cref="ExcelCellDecodeContractTests" />
-/// drives through every cell-decode surface.
+/// Supplies the shared catalogue of <see cref="ExcelCellDecodeKat" /> rows that
+/// <see cref="ExcelCellDecodeContractTests" /> drives through every cell-decode surface.
 /// </summary>
 /// <remarks>
 /// The records are built with <see cref="Biff8TestWorkbook" /> and exercise the value-bearing record types — inline
@@ -21,7 +21,8 @@ namespace Bodu.Formats.Excel.Contracts;
 internal static class ExcelCellDecodeVectors
 {
     /// <summary>
-    /// Gets the cell-decode known-answer rows, each wrapped as a single-element <c>object[]</c> for <c>[DynamicData]</c>.
+    /// Gets the cell-decode known-answer rows, each wrapped as a single-element <c>object[]</c> for
+    /// <c>[DynamicData]</c>.
     /// </summary>
     /// <returns>A sequence of rows, each carrying one <see cref="ExcelCellDecodeKat" />.</returns>
     public static IEnumerable<object[]> Cells
@@ -33,7 +34,9 @@ internal static class ExcelCellDecodeVectors
         }
     }
 
-    /// <summary>The immutable catalogue of decode known-answer rows.</summary>
+    /// <summary>
+    /// The immutable catalogue of decode known-answer rows.
+    /// </summary>
     private static IReadOnlyList<ExcelCellDecodeKat> Catalogue { get; } = Build();
 
     /// <summary>

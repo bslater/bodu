@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsyncCountdownEvent.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -16,12 +16,12 @@ namespace Bodu.Threading;
 /// <para>
 /// <see cref="AsyncCountdownEvent" /> is the asynchronous analogue of <see cref="CountdownEvent" />. It starts with a
 /// positive count; each <see cref="Signal()" /> decrements the count, and when the count reaches zero every caller
-/// awaiting <see cref="WaitAsync()" /> is released. The count may be raised again with <see cref="AddCount()" />
-/// while it is still above zero.
+/// awaiting <see cref="WaitAsync()" /> is released. The count may be raised again with <see cref="AddCount()" /> while
+/// it is still above zero.
 /// </para>
 /// <para>
-/// The releasing gate is an inner <see cref="AsyncManualResetEvent" />, so continuations never run inline on the
-/// thread that drives the count to zero. The type owns no operating-system handle and does not implement
+/// The releasing gate is an inner <see cref="AsyncManualResetEvent" />, so continuations never run inline on the thread
+/// that drives the count to zero. The type owns no operating-system handle and does not implement
 /// <see cref="IDisposable" />.
 /// </para>
 /// <para>
@@ -39,7 +39,9 @@ public sealed class AsyncCountdownEvent
     /// <summary>
     /// Initializes a new instance of the <see cref="AsyncCountdownEvent" /> class with the specified initial count.
     /// </summary>
-    /// <param name="initialCount">The number of signals required to set the event. A value of zero creates an already-signaled event.</param>
+    /// <param name="initialCount">
+    /// The number of signals required to set the event. A value of zero creates an already-signaled event.
+    /// </param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="initialCount" /> is negative.</exception>
     public AsyncCountdownEvent(int initialCount)
     {
@@ -93,14 +95,18 @@ public sealed class AsyncCountdownEvent
     /// </summary>
     /// <param name="cancellationToken">A token used to cancel the wait.</param>
     /// <returns>A <see cref="ValueTask" /> that completes when the event is signaled.</returns>
-    /// <exception cref="OperationCanceledException"><paramref name="cancellationToken" /> was canceled before the event was signaled.</exception>
+    /// <exception cref="OperationCanceledException">
+    /// <paramref name="cancellationToken" /> was canceled before the event was signaled.
+    /// </exception>
     public ValueTask WaitAsync(CancellationToken cancellationToken) =>
         _gateEvent.WaitAsync(cancellationToken);
 
     /// <summary>
     /// Registers a single signal, decrementing the count.
     /// </summary>
-    /// <returns><see langword="true" /> if the signal caused the count to reach zero; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if the signal caused the count to reach zero; otherwise, <see langword="false" />.
+    /// </returns>
     /// <exception cref="InvalidOperationException">The event is already signaled (its count is zero).</exception>
     public bool Signal() =>
         Signal(1);
@@ -109,9 +115,13 @@ public sealed class AsyncCountdownEvent
     /// Registers the specified number of signals, decrementing the count.
     /// </summary>
     /// <param name="signalCount">The number of signals to register.</param>
-    /// <returns><see langword="true" /> if the signals caused the count to reach zero; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if the signals caused the count to reach zero; otherwise, <see langword="false" />.
+    /// </returns>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="signalCount" /> is less than one.</exception>
-    /// <exception cref="InvalidOperationException"><paramref name="signalCount" /> is greater than the remaining count.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// <paramref name="signalCount" /> is greater than the remaining count.
+    /// </exception>
     public bool Signal(int signalCount)
     {
         ThrowHelper.ThrowIfZeroOrNegative(signalCount);
@@ -142,7 +152,10 @@ public sealed class AsyncCountdownEvent
     /// </summary>
     /// <param name="count">The amount by which to increase the count.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="count" /> is less than one.</exception>
-    /// <exception cref="InvalidOperationException">The event is already signaled (its count is zero), or increasing the count by <paramref name="count" /> would overflow <see cref="int.MaxValue" />.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// The event is already signaled (its count is zero), or increasing the count by <paramref name="count" /> would
+    /// overflow <see cref="int.MaxValue" />.
+    /// </exception>
     public void AddCount(int count)
     {
         if (!TryAddCount(count))
@@ -152,7 +165,9 @@ public sealed class AsyncCountdownEvent
     /// <summary>
     /// Attempts to increment the count by one.
     /// </summary>
-    /// <returns><see langword="true" /> if the count was incremented; <see langword="false" /> if the event is already signaled.</returns>
+    /// <returns>
+    /// <see langword="true" /> if the count was incremented; <see langword="false" /> if the event is already signaled.
+    /// </returns>
     public bool TryAddCount() =>
         TryAddCount(1);
 
@@ -160,9 +175,13 @@ public sealed class AsyncCountdownEvent
     /// Attempts to increment the count by the specified amount.
     /// </summary>
     /// <param name="count">The amount by which to increase the count.</param>
-    /// <returns><see langword="true" /> if the count was incremented; <see langword="false" /> if the event is already signaled.</returns>
+    /// <returns>
+    /// <see langword="true" /> if the count was incremented; <see langword="false" /> if the event is already signaled.
+    /// </returns>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="count" /> is less than one.</exception>
-    /// <exception cref="InvalidOperationException">Increasing the count by <paramref name="count" /> would overflow <see cref="int.MaxValue" />.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// Increasing the count by <paramref name="count" /> would overflow <see cref="int.MaxValue" />.
+    /// </exception>
     public bool TryAddCount(int count)
     {
         ThrowHelper.ThrowIfZeroOrNegative(count);

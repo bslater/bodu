@@ -17,7 +17,9 @@ public static partial class GraphAlgorithms
     /// <param name="graph">The graph to traverse.</param>
     /// <param name="source">The vertex at which traversal starts.</param>
     /// <returns>A lazily evaluated sequence of reachable vertices, beginning with <paramref name="source" />.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="graph" /> or <paramref name="source" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="graph" /> or <paramref name="source" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentException"><paramref name="source" /> is not in the graph.</exception>
     public static IEnumerable<T> BreadthFirstSearch<T>(IReadOnlyGraph<T> graph, T source)
         where T : notnull
@@ -36,7 +38,9 @@ public static partial class GraphAlgorithms
     /// <param name="graph">The graph to traverse.</param>
     /// <param name="source">The vertex at which traversal starts.</param>
     /// <returns>A lazily evaluated sequence of reachable vertices, beginning with <paramref name="source" />.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="graph" /> or <paramref name="source" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="graph" /> or <paramref name="source" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentException"><paramref name="source" /> is not in the graph.</exception>
     public static IEnumerable<T> DepthFirstSearch<T>(IReadOnlyGraph<T> graph, T source)
         where T : notnull

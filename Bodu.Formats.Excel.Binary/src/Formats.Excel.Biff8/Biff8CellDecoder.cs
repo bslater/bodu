@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Biff8CellDecoder.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -170,8 +170,8 @@ internal static class Biff8CellDecoder
     /// <returns>The decoded cell carrying the cached result.</returns>
     /// <exception cref="ExcelBinaryFormatException">Thrown when the formula record is malformed.</exception>
     /// <remarks>
-    /// The eight-byte cached result is an IEEE 754 double unless its trailing two bytes are <c>0xFFFF</c>, which marks a
-    /// non-numeric result whose leading byte selects a string, boolean, error, or empty-string value.
+    /// The eight-byte cached result is an IEEE 754 double unless its trailing two bytes are <c>0xFFFF</c>, which marks
+    /// a non-numeric result whose leading byte selects a string, boolean, error, or empty-string value.
     /// </remarks>
     public static ExcelCell ReadFormula(ReadOnlySpan<byte> payload, Biff8FormatTable formats, out bool expectsString)
     {

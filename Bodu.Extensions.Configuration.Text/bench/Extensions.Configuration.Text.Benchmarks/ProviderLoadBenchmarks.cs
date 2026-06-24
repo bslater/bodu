@@ -12,9 +12,8 @@ using Microsoft.Extensions.Configuration;
 namespace Bodu.Extensions.Configuration.Text.Benchmarks;
 
 /// <summary>
-/// Measures cold-build cost of <see cref="ConfigurationBuilder" /> when the configuration source is a Bodu
-/// text configuration. Covers both file-backed and stream-backed sources across small/medium/large
-/// documents.
+/// Measures cold-build cost of <see cref="ConfigurationBuilder" /> when the configuration source is a Bodu text
+/// configuration. Covers both file-backed and stream-backed sources across small/medium/large documents.
 /// </summary>
 [MemoryDiagnoser]
 public class ProviderLoadBenchmarks
@@ -71,8 +70,8 @@ public class ProviderLoadBenchmarks
             .Build();
 
     /// <summary>
-    /// Benchmarks building a configuration from an in-memory stream, isolating parse and resolve from any
-    /// filesystem cost.
+    /// Benchmarks building a configuration from an in-memory stream, isolating parse and resolve from any filesystem
+    /// cost.
     /// </summary>
     /// <returns>The built configuration root.</returns>
     [Benchmark]
@@ -85,8 +84,8 @@ public class ProviderLoadBenchmarks
     }
 
     /// <summary>
-    /// Benchmarks building a configuration with <c>targetPath: null</c>, which yields only the preamble — a
-    /// useful baseline for how much of the build cost is glob resolution versus everything else.
+    /// Benchmarks building a configuration with <c>targetPath: null</c>, which yields only the preamble — a useful
+    /// baseline for how much of the build cost is glob resolution versus everything else.
     /// </summary>
     /// <returns>The built configuration root.</returns>
     [Benchmark]

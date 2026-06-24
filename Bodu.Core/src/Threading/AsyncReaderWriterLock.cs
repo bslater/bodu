@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsyncReaderWriterLock.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -9,15 +9,15 @@ using System.Diagnostics;
 namespace Bodu.Threading;
 
 /// <summary>
-/// Provides an asynchronous, writer-preferring reader/writer lock whose acquisitions can be awaited without blocking
-/// a thread.
+/// Provides an asynchronous, writer-preferring reader/writer lock whose acquisitions can be awaited without blocking a
+/// thread.
 /// </summary>
 /// <remarks>
 /// <para>
 /// <see cref="AsyncReaderWriterLock" /> permits any number of concurrent readers or a single exclusive writer. Read
-/// access is acquired with <see cref="ReaderAsync()" /> and write access with <see cref="WriterAsync()" />; both
-/// return a <see cref="Releaser" /> whose disposal releases the corresponding access, typically scoped with a
-/// <c>using</c> statement.
+/// access is acquired with <see cref="ReaderAsync()" /> and write access with <see cref="WriterAsync()" />; both return
+/// a <see cref="Releaser" /> whose disposal releases the corresponding access, typically scoped with a <c>using</c>
+/// statement.
 /// </para>
 /// <para>
 /// <b>Fairness.</b> The lock is <b>writer-preferring</b>: while a writer is active or queued, newly arriving readers
@@ -101,7 +101,9 @@ public sealed partial class AsyncReaderWriterLock : IDisposable
     /// <summary>
     /// Asynchronously acquires shared (read) access.
     /// </summary>
-    /// <returns>A <see cref="ValueTask{TResult}" /> yielding a <see cref="Releaser" /> whose disposal releases read access.</returns>
+    /// <returns>
+    /// A <see cref="ValueTask{TResult}" /> yielding a <see cref="Releaser" /> whose disposal releases read access.
+    /// </returns>
     /// <exception cref="ObjectDisposedException">The lock has been disposed.</exception>
     public ValueTask<Releaser> ReaderAsync() =>
         ReaderAsync(CancellationToken.None);
@@ -110,9 +112,13 @@ public sealed partial class AsyncReaderWriterLock : IDisposable
     /// Asynchronously acquires shared (read) access, observing a cancellation request while waiting.
     /// </summary>
     /// <param name="cancellationToken">A token used to cancel the pending acquisition.</param>
-    /// <returns>A <see cref="ValueTask{TResult}" /> yielding a <see cref="Releaser" /> whose disposal releases read access.</returns>
+    /// <returns>
+    /// A <see cref="ValueTask{TResult}" /> yielding a <see cref="Releaser" /> whose disposal releases read access.
+    /// </returns>
     /// <exception cref="ObjectDisposedException">The lock has been disposed.</exception>
-    /// <exception cref="OperationCanceledException"><paramref name="cancellationToken" /> was canceled before access was acquired.</exception>
+    /// <exception cref="OperationCanceledException">
+    /// <paramref name="cancellationToken" /> was canceled before access was acquired.
+    /// </exception>
     /// <remarks>
     /// The returned <see cref="ValueTask{TResult}" /> must be awaited exactly once. Read access that can be granted
     /// immediately is granted even when <paramref name="cancellationToken" /> is already canceled; the token only
@@ -145,7 +151,9 @@ public sealed partial class AsyncReaderWriterLock : IDisposable
     /// <summary>
     /// Asynchronously acquires exclusive (write) access.
     /// </summary>
-    /// <returns>A <see cref="ValueTask{TResult}" /> yielding a <see cref="Releaser" /> whose disposal releases write access.</returns>
+    /// <returns>
+    /// A <see cref="ValueTask{TResult}" /> yielding a <see cref="Releaser" /> whose disposal releases write access.
+    /// </returns>
     /// <exception cref="ObjectDisposedException">The lock has been disposed.</exception>
     public ValueTask<Releaser> WriterAsync() =>
         WriterAsync(CancellationToken.None);
@@ -154,9 +162,13 @@ public sealed partial class AsyncReaderWriterLock : IDisposable
     /// Asynchronously acquires exclusive (write) access, observing a cancellation request while waiting.
     /// </summary>
     /// <param name="cancellationToken">A token used to cancel the pending acquisition.</param>
-    /// <returns>A <see cref="ValueTask{TResult}" /> yielding a <see cref="Releaser" /> whose disposal releases write access.</returns>
+    /// <returns>
+    /// A <see cref="ValueTask{TResult}" /> yielding a <see cref="Releaser" /> whose disposal releases write access.
+    /// </returns>
     /// <exception cref="ObjectDisposedException">The lock has been disposed.</exception>
-    /// <exception cref="OperationCanceledException"><paramref name="cancellationToken" /> was canceled before access was acquired.</exception>
+    /// <exception cref="OperationCanceledException">
+    /// <paramref name="cancellationToken" /> was canceled before access was acquired.
+    /// </exception>
     /// <remarks>
     /// The returned <see cref="ValueTask{TResult}" /> must be awaited exactly once. Write access that can be granted
     /// immediately is granted even when <paramref name="cancellationToken" /> is already canceled; the token only
@@ -186,7 +198,8 @@ public sealed partial class AsyncReaderWriterLock : IDisposable
     }
 
     /// <summary>
-    /// Releases the resources used by the lock. Any callers still waiting observe an <see cref="ObjectDisposedException" />.
+    /// Releases the resources used by the lock. Any callers still waiting observe an
+    /// <see cref="ObjectDisposedException" />.
     /// </summary>
     public void Dispose()
     {
@@ -209,10 +222,12 @@ public sealed partial class AsyncReaderWriterLock : IDisposable
     }
 
     /// <summary>
-    /// Creates a releaser bound to this lock with a fresh idempotency guard so that disposing the releaser, or any
-    /// copy of it, releases the access exactly once.
+    /// Creates a releaser bound to this lock with a fresh idempotency guard so that disposing the releaser, or any copy
+    /// of it, releases the access exactly once.
     /// </summary>
-    /// <param name="isWriter"><see langword="true" /> for a write releaser; otherwise, <see langword="false" />.</param>
+    /// <param name="isWriter">
+    /// <see langword="true" /> for a write releaser; otherwise, <see langword="false" />.
+    /// </param>
     /// <returns>A <see cref="Releaser" /> for the granted access.</returns>
     private Releaser CreateReleaser(bool isWriter) =>
         new(this, isWriter, new Releaser.ReleaseGuard());
@@ -246,8 +261,8 @@ public sealed partial class AsyncReaderWriterLock : IDisposable
     }
 
     /// <summary>
-    /// Grants the next queued writer, if one exists, skipping any whose task was already canceled. Must be called
-    /// while holding <see cref="_gate" />.
+    /// Grants the next queued writer, if one exists, skipping any whose task was already canceled. Must be called while
+    /// holding <see cref="_gate" />.
     /// </summary>
     /// <returns><see langword="true" /> if a writer was granted; otherwise, <see langword="false" />.</returns>
     private bool GrantNextWriter()
@@ -331,8 +346,8 @@ public sealed partial class AsyncReaderWriterLock : IDisposable
     }
 
     /// <summary>
-    /// Removes a canceled writer from the queue and transitions its task to the canceled state. If removing the
-    /// writer leaves the lock idle, the next acquisition is granted.
+    /// Removes a canceled writer from the queue and transitions its task to the canceled state. If removing the writer
+    /// leaves the lock idle, the next acquisition is granted.
     /// </summary>
     /// <param name="node">The writer to cancel.</param>
     /// <param name="cancellationToken">The token whose cancellation triggered the removal.</param>

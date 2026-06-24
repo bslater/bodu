@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExcelWorksheetReader.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -18,8 +18,8 @@ namespace Bodu.Formats.Excel;
 /// This is the high-throughput surface: the worksheet's substream is read once into a buffer, and cells are decoded on
 /// demand through <see cref="TryReadCell(out ExcelCell)" /> without building an intermediate record list or a
 /// position-keyed map. Only value-bearing records are surfaced (text, number, boolean, and error cells, including the
-/// cached result of a formula cell); blank cells and uninterpreted records are skipped, so the sequence is sparse and in
-/// record order.
+/// cached result of a formula cell); blank cells and uninterpreted records are skipped, so the sequence is sparse and
+/// in record order.
 /// </para>
 /// <para>
 /// For random access by position, materialize the worksheet instead with
@@ -225,8 +225,12 @@ public sealed class ExcelWorksheetReader
     /// <param name="type">When this method returns, the record's type.</param>
     /// <param name="payloadStart">When this method returns, the byte offset of the record's payload.</param>
     /// <param name="payloadLength">When this method returns, the length of the record's payload.</param>
-    /// <returns><see langword="true" /> when a record was read; <see langword="false" /> at the end of the substream.</returns>
-    /// <exception cref="ExcelBinaryFormatException">Thrown when a record header or payload runs past the substream.</exception>
+    /// <returns>
+    /// <see langword="true" /> when a record was read; <see langword="false" /> at the end of the substream.
+    /// </returns>
+    /// <exception cref="ExcelBinaryFormatException">
+    /// Thrown when a record header or payload runs past the substream.
+    /// </exception>
     private bool TryStep(out Biff8RecordType type, out int payloadStart, out int payloadLength)
     {
         int remaining = _data.Length - _position;

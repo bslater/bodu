@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EnumExtensions.GetDescription.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -17,7 +17,10 @@ public static partial class EnumExtensions
     /// </summary>
     /// <typeparam name="TEnum">The enumeration type.</typeparam>
     /// <param name="value">The value to describe.</param>
-    /// <returns>The value's <see cref="DescriptionAttribute" /> text, or its <see cref="DisplayAttribute" /> name or short name, falling back to the value's name.</returns>
+    /// <returns>
+    /// The value's <see cref="DescriptionAttribute" /> text, or its <see cref="DisplayAttribute" /> name or short name,
+    /// falling back to the value's name.
+    /// </returns>
     /// <remarks>
     /// Only values that map to a single declared enumeration field carry a description. A composite <c>[Flags]</c>
     /// value with no declared field of its own (for example <c>Read | Write</c>) is not a declared field, so it falls
@@ -32,8 +35,13 @@ public static partial class EnumExtensions
     /// </summary>
     /// <typeparam name="TEnum">The enumeration type.</typeparam>
     /// <param name="value">The value to describe.</param>
-    /// <param name="description">When this method returns, contains the explicit description if one is declared; otherwise, the value's name.</param>
-    /// <returns><see langword="true" /> if an explicit description or display attribute was declared; otherwise, <see langword="false" />.</returns>
+    /// <param name="description">
+    /// When this method returns, contains the explicit description if one is declared; otherwise, the value's name.
+    /// </param>
+    /// <returns>
+    /// <see langword="true" /> if an explicit description or display attribute was declared; otherwise,
+    /// <see langword="false" />.
+    /// </returns>
     public static bool TryGetDescription<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields)] TEnum>(this TEnum value, out string description)
         where TEnum : struct, Enum =>
         Enums.TryGetDescription(value, out description);

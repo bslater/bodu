@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Memoizer.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -16,8 +16,8 @@ namespace Bodu.Functional;
 /// <para>
 /// Results are cached in a <see cref="ConcurrentDictionary{TKey, TValue}" />. Only successful results are stored: if
 /// the underlying function throws, nothing is cached and the next call retries. A <see langword="null" /> result is a
-/// valid cached value. For sequential use the function runs exactly once per distinct argument; under concurrent
-/// first access for the same argument the function may run more than once, but only one result is published.
+/// valid cached value. For sequential use the function runs exactly once per distinct argument; under concurrent first
+/// access for the same argument the function may run more than once, but only one result is published.
 /// </para>
 /// <para>
 /// Arguments are constrained to non-nullable types because they are used as dictionary keys. Memoizing a recursive
@@ -44,7 +44,9 @@ public static class Memoizer
     /// <typeparam name="TArg">The argument type.</typeparam>
     /// <typeparam name="TResult">The result type.</typeparam>
     /// <param name="func">The function to memoize.</param>
-    /// <param name="comparer">The comparer used to compare arguments, or <see langword="null" /> to use the default comparer.</param>
+    /// <param name="comparer">
+    /// The comparer used to compare arguments, or <see langword="null" /> to use the default comparer.
+    /// </param>
     /// <returns>A memoizing wrapper around <paramref name="func" />.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="func" /> is <see langword="null" />.</exception>
     public static Func<TArg, TResult> Memoize<TArg, TResult>(Func<TArg, TResult> func, IEqualityComparer<TArg>? comparer)

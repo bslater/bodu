@@ -9,8 +9,8 @@ using BenchmarkDotNet.Attributes;
 namespace Bodu.Text.Configuration.Benchmarks;
 
 /// <summary>
-/// Measures the cost of compiling EditorConfig-style glob patterns of varying complexity, including the
-/// effect of the process-wide compile cache.
+/// Measures the cost of compiling EditorConfig-style glob patterns of varying complexity, including the effect of the
+/// process-wide compile cache.
 /// </summary>
 [MemoryDiagnoser]
 public class PatternCompileBenchmarks
@@ -36,8 +36,8 @@ public class PatternCompileBenchmarks
         ConfigurationPattern.Compile(ModeratePattern);
 
     /// <summary>
-    /// Benchmarks compilation of a pattern combining nested alternation, character class, and a 50-element
-    /// numeric range.
+    /// Benchmarks compilation of a pattern combining nested alternation, character class, and a 50-element numeric
+    /// range.
     /// </summary>
     /// <returns>The compiled pattern.</returns>
     [Benchmark]
@@ -45,8 +45,8 @@ public class PatternCompileBenchmarks
         ConfigurationPattern.Compile(ComplexPattern);
 
     /// <summary>
-    /// Benchmarks a cache hit: the same pattern compiled in the prior iteration is served from the
-    /// process-wide compile cache rather than re-translated.
+    /// Benchmarks a cache hit: the same pattern compiled in the prior iteration is served from the process-wide compile
+    /// cache rather than re-translated.
     /// </summary>
     /// <returns>The compiled pattern.</returns>
     [Benchmark]

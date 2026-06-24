@@ -11,8 +11,8 @@ using Bodu.Text.Ini;
 namespace Bodu.Text.Configuration.Benchmarks;
 
 /// <summary>
-/// Measures throughput of <see cref="ConfigurationExtensions.Resolve(IniDocumentBase, string?)" /> when applied
-/// to documents with progressively more sections, exercising the compiled-pattern cache that
+/// Measures throughput of <see cref="ConfigurationExtensions.Resolve(IniDocumentBase, string?)" /> when applied to
+/// documents with progressively more sections, exercising the compiled-pattern cache that
 /// <see cref="ConfigurationPattern" /> maintains.
 /// </summary>
 [MemoryDiagnoser]
@@ -48,8 +48,8 @@ public class ResolverBenchmarks
     }
 
     /// <summary>
-    /// Benchmarks resolution against a target path that matches a single section near the middle of the
-    /// document. The compiled-pattern cache is warm after the first call.
+    /// Benchmarks resolution against a target path that matches a single section near the middle of the document. The
+    /// compiled-pattern cache is warm after the first call.
     /// </summary>
     /// <returns>The resolved configuration view.</returns>
     [Benchmark(Baseline = true)]
@@ -57,8 +57,8 @@ public class ResolverBenchmarks
         _document.Resolve(_targetPath);
 
     /// <summary>
-    /// Benchmarks resolution against a target path that matches no section in the document, forcing every
-    /// section pattern to be compared.
+    /// Benchmarks resolution against a target path that matches no section in the document, forcing every section
+    /// pattern to be compared.
     /// </summary>
     /// <returns>The resolved configuration view (containing only preamble values).</returns>
     [Benchmark]

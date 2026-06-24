@@ -61,8 +61,8 @@ public class OptionsBindingBenchmarks
     }
 
     /// <summary>
-    /// Benchmarks resolving <see cref="IOptions{TOptions}" /> against a pre-built service provider, isolating
-    /// the steady-state cost of options access from one-time wiring.
+    /// Benchmarks resolving <see cref="IOptions{TOptions}" /> against a pre-built service provider, isolating the
+    /// steady-state cost of options access from one-time wiring.
     /// </summary>
     /// <returns>The resolved options value.</returns>
     [Benchmark]
@@ -79,20 +79,28 @@ public class OptionsBindingBenchmarks
 }
 
 /// <summary>
-/// POCO used by <see cref="OptionsBindingBenchmarks" /> to exercise the configuration-binder path under a
-/// realistic small set of properties.
+/// POCO used by <see cref="OptionsBindingBenchmarks" /> to exercise the configuration-binder path under a realistic
+/// small set of properties.
 /// </summary>
 public sealed class LoggingOptions
 {
-    /// <summary>Gets or sets the configured log level.</summary>
+    /// <summary>
+    /// Gets or sets the configured log level.
+    /// </summary>
     public string? Level { get; set; }
 
-    /// <summary>Gets or sets the configured logging provider name.</summary>
+    /// <summary>
+    /// Gets or sets the configured logging provider name.
+    /// </summary>
     public string? Provider { get; set; }
 
-    /// <summary>Gets or sets a value indicating whether scopes are included in log output.</summary>
+    /// <summary>
+    /// Gets or sets a value indicating whether scopes are included in log output.
+    /// </summary>
     public bool Scopes { get; set; }
 
-    /// <summary>Gets or sets the configured flush interval, in seconds.</summary>
+    /// <summary>
+    /// Gets or sets the configured flush interval, in seconds.
+    /// </summary>
     public int Interval { get; set; }
 }

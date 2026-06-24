@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsyncLock.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -9,13 +9,13 @@ using System.Diagnostics;
 namespace Bodu.Threading;
 
 /// <summary>
-/// Provides an asynchronous, non-reentrant mutual-exclusion primitive whose acquisition can be awaited without
-/// blocking a thread.
+/// Provides an asynchronous, non-reentrant mutual-exclusion primitive whose acquisition can be awaited without blocking
+/// a thread.
 /// </summary>
 /// <remarks>
 /// <para>
-/// <see cref="AsyncLock" /> is the asynchronous analogue of the C# <c>lock</c> statement. Because a held lock may
-/// need to span an <c>await</c>, the lock is acquired with <see cref="LockAsync()" /> and released by disposing the
+/// <see cref="AsyncLock" /> is the asynchronous analogue of the C# <c>lock</c> statement. Because a held lock may need
+/// to span an <c>await</c>, the lock is acquired with <see cref="LockAsync()" /> and released by disposing the
 /// <see cref="Releaser" /> it returns, typically with a <c>using</c> statement.
 /// </para>
 /// <para>
@@ -26,9 +26,9 @@ namespace Bodu.Threading;
 /// continuation inline while holding the internal gate.
 /// </para>
 /// <para>
-/// The lock is <b>not reentrant</b>: a caller that already holds the lock and attempts to acquire it again on the
-/// same logical flow will deadlock. Following the package-wide rule, a free lock is acquired even when the supplied
-/// token is already canceled; the token only cancels an acquisition that must queue.
+/// The lock is <b>not reentrant</b>: a caller that already holds the lock and attempts to acquire it again on the same
+/// logical flow will deadlock. Following the package-wide rule, a free lock is acquired even when the supplied token is
+/// already canceled; the token only cancels an acquisition that must queue.
 /// </para>
 /// <para>
 /// <see cref="Dispose" /> faults every still-waiting acquisition with <see cref="ObjectDisposedException" /> and
@@ -89,7 +89,9 @@ public sealed partial class AsyncLock : IDisposable
     /// whose disposal releases the lock.
     /// </returns>
     /// <exception cref="ObjectDisposedException">The lock has been disposed.</exception>
-    /// <remarks>The returned <see cref="ValueTask{TResult}" /> must be awaited exactly once.</remarks>
+    /// <remarks>
+    /// The returned <see cref="ValueTask{TResult}" /> must be awaited exactly once.
+    /// </remarks>
     public ValueTask<Releaser> LockAsync() =>
         LockAsync(CancellationToken.None);
 
@@ -102,7 +104,9 @@ public sealed partial class AsyncLock : IDisposable
     /// whose disposal releases the lock.
     /// </returns>
     /// <exception cref="ObjectDisposedException">The lock has been disposed.</exception>
-    /// <exception cref="OperationCanceledException"><paramref name="cancellationToken" /> was canceled before the lock was acquired.</exception>
+    /// <exception cref="OperationCanceledException">
+    /// <paramref name="cancellationToken" /> was canceled before the lock was acquired.
+    /// </exception>
     /// <remarks>
     /// The returned <see cref="ValueTask{TResult}" /> must be awaited exactly once. If the lock is free the result is
     /// produced synchronously and no allocation occurs, even when <paramref name="cancellationToken" /> is already
@@ -152,7 +156,8 @@ public sealed partial class AsyncLock : IDisposable
     }
 
     /// <summary>
-    /// Releases the resources used by the lock. Any callers still waiting observe an <see cref="ObjectDisposedException" />.
+    /// Releases the resources used by the lock. Any callers still waiting observe an
+    /// <see cref="ObjectDisposedException" />.
     /// </summary>
     public void Dispose()
     {

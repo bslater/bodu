@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DisjointSet{T}.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -16,13 +16,13 @@ namespace Bodu.Collections.Generic.Graphs;
 /// <remarks>
 /// <para>
 /// Elements are introduced with <see cref="MakeSet(T)" /> (or its alias <see cref="Add(T)" />), each starting in its
-/// own singleton set. <see cref="Union(T, T)" /> merges the subsets containing two elements, and
-/// <see cref="Find(T)" /> returns the canonical representative of an element's subset. Two elements are connected
-/// exactly when they share a representative.
+/// own singleton set. <see cref="Union(T, T)" /> merges the subsets containing two elements, and <see cref="Find(T)" />
+/// returns the canonical representative of an element's subset. Two elements are connected exactly when they share a
+/// representative.
 /// </para>
 /// <para>
-/// The implementation combines <b>path-halving</b> compression with <b>union by size</b>, giving an amortized cost
-/// per operation of O(α(n)), where α is the inverse Ackermann function (effectively constant). Element identity is
+/// The implementation combines <b>path-halving</b> compression with <b>union by size</b>, giving an amortized cost per
+/// operation of O(α(n)), where α is the inverse Ackermann function (effectively constant). Element identity is
 /// determined by the <see cref="IEqualityComparer{T}" /> supplied at construction, or
 /// <see cref="EqualityComparer{T}.Default" /> when none is supplied.
 /// </para>
@@ -51,7 +51,9 @@ public sealed class DisjointSet<T>
     /// Initializes a new instance of the <see cref="DisjointSet{T}" /> class that is empty and uses the specified
     /// equality comparer.
     /// </summary>
-    /// <param name="comparer">The comparer used to determine element identity, or <see langword="null" /> to use the default comparer.</param>
+    /// <param name="comparer">
+    /// The comparer used to determine element identity, or <see langword="null" /> to use the default comparer.
+    /// </param>
     public DisjointSet(IEqualityComparer<T>? comparer)
     {
         Comparer = comparer ?? EqualityComparer<T>.Default;
@@ -62,11 +64,13 @@ public sealed class DisjointSet<T>
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="DisjointSet{T}" /> class containing the specified elements, each
-    /// in its own singleton set.
+    /// Initializes a new instance of the <see cref="DisjointSet{T}" /> class containing the specified elements, each in
+    /// its own singleton set.
     /// </summary>
     /// <param name="items">The elements to add.</param>
-    /// <param name="comparer">The comparer used to determine element identity, or <see langword="null" /> to use the default comparer.</param>
+    /// <param name="comparer">
+    /// The comparer used to determine element identity, or <see langword="null" /> to use the default comparer.
+    /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="items" /> is <see langword="null" />.</exception>
     public DisjointSet(IEnumerable<T> items, IEqualityComparer<T>? comparer = null)
         : this(comparer)
@@ -102,7 +106,9 @@ public sealed class DisjointSet<T>
     /// Adds the specified element as a new singleton set.
     /// </summary>
     /// <param name="item">The element to add.</param>
-    /// <returns><see langword="true" /> if the element was added; <see langword="false" /> if it was already present.</returns>
+    /// <returns>
+    /// <see langword="true" /> if the element was added; <see langword="false" /> if it was already present.
+    /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="item" /> is <see langword="null" />.</exception>
     public bool MakeSet(T item)
     {
@@ -124,7 +130,9 @@ public sealed class DisjointSet<T>
     /// Adds the specified element as a new singleton set. This is an alias for <see cref="MakeSet(T)" />.
     /// </summary>
     /// <param name="item">The element to add.</param>
-    /// <returns><see langword="true" /> if the element was added; <see langword="false" /> if it was already present.</returns>
+    /// <returns>
+    /// <see langword="true" /> if the element was added; <see langword="false" /> if it was already present.
+    /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="item" /> is <see langword="null" />.</exception>
     public bool Add(T item) =>
         MakeSet(item);
@@ -163,7 +171,9 @@ public sealed class DisjointSet<T>
     /// Attempts to return the canonical representative of the set containing the specified element.
     /// </summary>
     /// <param name="item">The element whose representative is requested.</param>
-    /// <param name="representative">When this method returns, contains the representative element, if found; otherwise, the default value.</param>
+    /// <param name="representative">
+    /// When this method returns, contains the representative element, if found; otherwise, the default value.
+    /// </param>
     /// <returns><see langword="true" /> if the element was found; otherwise, <see langword="false" />.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="item" /> is <see langword="null" />.</exception>
     public bool TryFind(T item, out T representative)
@@ -185,7 +195,10 @@ public sealed class DisjointSet<T>
     /// </summary>
     /// <param name="a">The first element.</param>
     /// <param name="b">The second element.</param>
-    /// <returns><see langword="true" /> if the elements were in different subsets and a merge occurred; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if the elements were in different subsets and a merge occurred; otherwise,
+    /// <see langword="false" />.
+    /// </returns>
     /// <exception cref="ArgumentNullException">Either element is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException">Either element has not been added to the structure.</exception>
     public bool Union(T a, T b)
@@ -212,7 +225,9 @@ public sealed class DisjointSet<T>
     /// </summary>
     /// <param name="a">The first element.</param>
     /// <param name="b">The second element.</param>
-    /// <returns><see langword="true" /> if both elements share a representative; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if both elements share a representative; otherwise, <see langword="false" />.
+    /// </returns>
     /// <exception cref="ArgumentNullException">Either element is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException">Either element has not been added to the structure.</exception>
     public bool AreConnected(T a, T b)

@@ -12,11 +12,15 @@ namespace Bodu.Extensions;
 /// </summary>
 public enum DuplicateDescribed
 {
-    /// <summary>The first member declaring the shared description.</summary>
+    /// <summary>
+    /// The first member declaring the shared description.
+    /// </summary>
     [System.ComponentModel.Description("Shared")]
     First = 0,
 
-    /// <summary>The second member declaring the shared description.</summary>
+    /// <summary>
+    /// The second member declaring the shared description.
+    /// </summary>
     [System.ComponentModel.Description("Shared")]
     Second = 1,
 }

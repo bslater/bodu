@@ -7,8 +7,8 @@
 namespace Bodu.Collections.Generic.Trees;
 
 /// <summary>
-/// Provides a case-insensitive equality comparer for characters, used to exercise culture-insensitive trie matching
-/// in tests.
+/// Provides a case-insensitive equality comparer for characters, used to exercise culture-insensitive trie matching in
+/// tests.
 /// </summary>
 internal sealed class CaseInsensitiveCharComparer : IEqualityComparer<char>
 {

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Enums.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -12,8 +12,8 @@ using System.Reflection;
 namespace Bodu.Extensions;
 
 /// <summary>
-/// Provides type-level helpers for enumerations: cached value and name lookups, parsing, and resolution of values
-/// from their <see cref="DescriptionAttribute" /> or <see cref="DisplayAttribute" /> text.
+/// Provides type-level helpers for enumerations: cached value and name lookups, parsing, and resolution of values from
+/// their <see cref="DescriptionAttribute" /> or <see cref="DisplayAttribute" /> text.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -59,7 +59,9 @@ public static class Enums
     /// </summary>
     /// <typeparam name="TEnum">The enumeration type.</typeparam>
     /// <param name="text">The text to parse.</param>
-    /// <param name="value">When this method returns, contains the parsed value, or the default value on failure.</param>
+    /// <param name="value">
+    /// When this method returns, contains the parsed value, or the default value on failure.
+    /// </param>
     /// <returns><see langword="true" /> if parsing succeeded; otherwise, <see langword="false" />.</returns>
     public static bool TryParse<TEnum>(string? text, out TEnum value)
         where TEnum : struct, Enum =>
@@ -71,7 +73,9 @@ public static class Enums
     /// <typeparam name="TEnum">The enumeration type.</typeparam>
     /// <param name="text">The text to parse.</param>
     /// <param name="ignoreCase"><see langword="true" /> to ignore case; otherwise, <see langword="false" />.</param>
-    /// <param name="value">When this method returns, contains the parsed value, or the default value on failure.</param>
+    /// <param name="value">
+    /// When this method returns, contains the parsed value, or the default value on failure.
+    /// </param>
     /// <returns><see langword="true" /> if parsing succeeded; otherwise, <see langword="false" />.</returns>
     public static bool TryParse<TEnum>(string? text, bool ignoreCase, out TEnum value)
         where TEnum : struct, Enum =>
@@ -83,11 +87,13 @@ public static class Enums
     /// </summary>
     /// <typeparam name="TEnum">The enumeration type.</typeparam>
     /// <param name="text">The description or display text to resolve.</param>
-    /// <param name="value">When this method returns, contains the matching value, or the default value on failure.</param>
+    /// <param name="value">
+    /// When this method returns, contains the matching value, or the default value on failure.
+    /// </param>
     /// <returns><see langword="true" /> if a matching value was found; otherwise, <see langword="false" />.</returns>
     /// <remarks>
-    /// Matching is ordinal. When more than one value declares the same description or display text, the first
-    /// declaring value in ascending underlying-value order wins; the lookup is therefore deterministic.
+    /// Matching is ordinal. When more than one value declares the same description or display text, the first declaring
+    /// value in ascending underlying-value order wins; the lookup is therefore deterministic.
     /// </remarks>
     public static bool TryParseDescription<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields)] TEnum>(string? text, out TEnum value)
         where TEnum : struct, Enum
@@ -113,8 +119,8 @@ public static class Enums
             : value.ToString();
 
     /// <summary>
-    /// Resolves the display name for the specified value, preferring its <see cref="DisplayAttribute" /> name, then
-    /// its <see cref="DescriptionAttribute" /> text, and falling back to the value's name.
+    /// Resolves the display name for the specified value, preferring its <see cref="DisplayAttribute" /> name, then its
+    /// <see cref="DescriptionAttribute" /> text, and falling back to the value's name.
     /// </summary>
     /// <typeparam name="TEnum">The enumeration type.</typeparam>
     /// <param name="value">The value to name.</param>
@@ -130,8 +136,13 @@ public static class Enums
     /// </summary>
     /// <typeparam name="TEnum">The enumeration type.</typeparam>
     /// <param name="value">The value to describe.</param>
-    /// <param name="description">When this method returns, contains the explicit description if one is declared; otherwise, the value's name.</param>
-    /// <returns><see langword="true" /> if an explicit description or display attribute was found; otherwise, <see langword="false" />.</returns>
+    /// <param name="description">
+    /// When this method returns, contains the explicit description if one is declared; otherwise, the value's name.
+    /// </param>
+    /// <returns>
+    /// <see langword="true" /> if an explicit description or display attribute was found; otherwise,
+    /// <see langword="false" />.
+    /// </returns>
     internal static bool TryGetDescription<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields)] TEnum>(TEnum value, out string description)
         where TEnum : struct, Enum
     {

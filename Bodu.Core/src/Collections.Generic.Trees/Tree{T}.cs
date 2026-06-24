@@ -171,7 +171,9 @@ public sealed partial class Tree<T>
     /// </summary>
     /// <param name="child">The subtree to attach.</param>
     /// <exception cref="ArgumentNullException"><paramref name="child" /> is <see langword="null" />.</exception>
-    /// <exception cref="InvalidOperationException"><paramref name="child" /> already has a parent, or attaching it would create a cycle.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// <paramref name="child" /> already has a parent, or attaching it would create a cycle.
+    /// </exception>
     public void AddChild(Tree<T> child)
     {
         ThrowHelper.ThrowIfNull(child);
@@ -193,7 +195,9 @@ public sealed partial class Tree<T>
     /// Detaches the specified child from this node.
     /// </summary>
     /// <param name="child">The child to detach.</param>
-    /// <returns><see langword="true" /> if the child was found and detached; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if the child was found and detached; otherwise, <see langword="false" />.
+    /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="child" /> is <see langword="null" />.</exception>
     public bool RemoveChild(Tree<T> child)
     {
@@ -209,7 +213,9 @@ public sealed partial class Tree<T>
     /// <summary>
     /// Detaches this node from its parent.
     /// </summary>
-    /// <returns><see langword="true" /> if the node was detached; <see langword="false" /> if it was already a root.</returns>
+    /// <returns>
+    /// <see langword="true" /> if the node was detached; <see langword="false" /> if it was already a root.
+    /// </returns>
     public bool Remove()
     {
         if (_parent is null)

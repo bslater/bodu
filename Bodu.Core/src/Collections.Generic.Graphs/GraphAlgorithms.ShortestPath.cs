@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="GraphAlgorithms.ShortestPath.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -17,17 +17,25 @@ public static partial class GraphAlgorithms
     /// <param name="graph">The graph to search.</param>
     /// <param name="source">The starting vertex.</param>
     /// <param name="target">The destination vertex.</param>
-    /// <returns>The vertices of the shortest path from <paramref name="source" /> to <paramref name="target" /> inclusive, or an empty list when no path exists.</returns>
+    /// <returns>
+    /// The vertices of the shortest path from <paramref name="source" /> to <paramref name="target" /> inclusive, or an
+    /// empty list when no path exists.
+    /// </returns>
     /// <exception cref="ArgumentNullException">Any argument is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentException"><paramref name="source" /> or <paramref name="target" /> is not in the graph.</exception>
-    /// <remarks>This is a convenience wrapper over <see cref="TryShortestPath{T}(IReadOnlyWeightedGraph{T, double}, T, T)" />; use that overload when the path distance or a reachability flag is also needed.</remarks>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="source" /> or <paramref name="target" /> is not in the graph.
+    /// </exception>
+    /// <remarks>
+    /// This is a convenience wrapper over <see cref="TryShortestPath{T}(IReadOnlyWeightedGraph{T, double}, T, T)" />;
+    /// use that overload when the path distance or a reachability flag is also needed.
+    /// </remarks>
     public static IReadOnlyList<T> ShortestPath<T>(IReadOnlyWeightedGraph<T, double> graph, T source, T target)
         where T : notnull =>
         TryShortestPath(graph, source, target).Path;
 
     /// <summary>
-    /// Attempts to compute the shortest path between two vertices using Dijkstra's algorithm, reporting the path,
-    /// its total distance, and whether the target is reachable.
+    /// Attempts to compute the shortest path between two vertices using Dijkstra's algorithm, reporting the path, its
+    /// total distance, and whether the target is reachable.
     /// </summary>
     /// <typeparam name="T">The vertex type.</typeparam>
     /// <param name="graph">The graph to search.</param>
@@ -38,7 +46,9 @@ public static partial class GraphAlgorithms
     /// its distance is <see cref="double.PositiveInfinity" />, and its path is empty.
     /// </returns>
     /// <exception cref="ArgumentNullException">Any argument is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentException"><paramref name="source" /> or <paramref name="target" /> is not in the graph.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="source" /> or <paramref name="target" /> is not in the graph.
+    /// </exception>
     public static ShortestPathResult<T> TryShortestPath<T>(IReadOnlyWeightedGraph<T, double> graph, T source, T target)
         where T : notnull
     {
@@ -73,8 +83,13 @@ public static partial class GraphAlgorithms
     /// <typeparam name="T">The vertex type.</typeparam>
     /// <param name="graph">The graph to search.</param>
     /// <param name="source">The starting vertex.</param>
-    /// <returns>A map from each reachable vertex to its shortest distance from <paramref name="source" />. Unreachable vertices are omitted.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="graph" /> or <paramref name="source" /> is <see langword="null" />.</exception>
+    /// <returns>
+    /// A map from each reachable vertex to its shortest distance from <paramref name="source" />. Unreachable vertices
+    /// are omitted.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="graph" /> or <paramref name="source" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentException"><paramref name="source" /> is not in the graph.</exception>
     public static IReadOnlyDictionary<T, double> ShortestPathLengths<T>(IReadOnlyWeightedGraph<T, double> graph, T source)
         where T : notnull

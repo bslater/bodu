@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsyncManualResetEvent.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -9,20 +9,20 @@ using System.Diagnostics;
 namespace Bodu.Threading;
 
 /// <summary>
-/// Provides an asynchronous, manually reset signaling primitive: once set, every current and future waiter is
-/// released until the event is explicitly reset.
+/// Provides an asynchronous, manually reset signaling primitive: once set, every current and future waiter is released
+/// until the event is explicitly reset.
 /// </summary>
 /// <remarks>
 /// <para>
 /// <see cref="AsyncManualResetEvent" /> is the asynchronous analogue of <see cref="ManualResetEventSlim" />. Callers
-/// await <see cref="WaitAsync()" />; a call to <see cref="Set" /> completes all outstanding waits and leaves the
-/// event signaled so that subsequent waits complete immediately. <see cref="Reset" /> returns the event to the
-/// unsignaled state.
+/// await <see cref="WaitAsync()" />; a call to <see cref="Set" /> completes all outstanding waits and leaves the event
+/// signaled so that subsequent waits complete immediately. <see cref="Reset" /> returns the event to the unsignaled
+/// state.
 /// </para>
 /// <para>
 /// The event is backed by a single shared <see cref="TaskCompletionSource{TResult}" /> created with
-/// <see cref="TaskCreationOptions.RunContinuationsAsynchronously" />, so the thread that calls <see cref="Set" />
-/// is never hijacked to run waiter continuations inline.
+/// <see cref="TaskCreationOptions.RunContinuationsAsynchronously" />, so the thread that calls <see cref="Set" /> is
+/// never hijacked to run waiter continuations inline.
 /// </para>
 /// <para>
 /// Cancellation follows the package-wide rule: when the event is already set, <see cref="WaitAsync()" /> completes
@@ -47,7 +47,9 @@ public sealed class AsyncManualResetEvent
     /// <summary>
     /// Initializes a new instance of the <see cref="AsyncManualResetEvent" /> class.
     /// </summary>
-    /// <param name="initialState"><see langword="true" /> to create the event in the signaled state; otherwise, <see langword="false" />.</param>
+    /// <param name="initialState">
+    /// <see langword="true" /> to create the event in the signaled state; otherwise, <see langword="false" />.
+    /// </param>
     public AsyncManualResetEvent(bool initialState)
     {
         _source = CreateSource();
@@ -75,8 +77,12 @@ public sealed class AsyncManualResetEvent
     /// </summary>
     /// <param name="cancellationToken">A token used to cancel the wait.</param>
     /// <returns>A <see cref="ValueTask" /> that completes when the event is set.</returns>
-    /// <exception cref="OperationCanceledException"><paramref name="cancellationToken" /> was canceled before the event was set.</exception>
-    /// <remarks>Cancellation affects only the calling waiter; other waiters on the same event are unaffected.</remarks>
+    /// <exception cref="OperationCanceledException">
+    /// <paramref name="cancellationToken" /> was canceled before the event was set.
+    /// </exception>
+    /// <remarks>
+    /// Cancellation affects only the calling waiter; other waiters on the same event are unaffected.
+    /// </remarks>
     public ValueTask WaitAsync(CancellationToken cancellationToken)
     {
         var task = Volatile.Read(ref _source).Task;

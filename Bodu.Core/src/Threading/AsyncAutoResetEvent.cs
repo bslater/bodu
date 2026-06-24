@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsyncAutoResetEvent.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -9,15 +9,15 @@ using System.Diagnostics;
 namespace Bodu.Threading;
 
 /// <summary>
-/// Provides an asynchronous auto-reset signaling primitive: each call to <see cref="Set" /> releases exactly one
-/// waiter and then automatically returns to the unsignaled state.
+/// Provides an asynchronous auto-reset signaling primitive: each call to <see cref="Set" /> releases exactly one waiter
+/// and then automatically returns to the unsignaled state.
 /// </summary>
 /// <remarks>
 /// <para>
 /// <see cref="AsyncAutoResetEvent" /> is the asynchronous analogue of <see cref="AutoResetEvent" />. When a waiter is
-/// queued, <see cref="Set" /> releases the longest-waiting caller (strict FIFO) and consumes the signal. When no
-/// waiter is queued, the signal is latched so that the next <see cref="WaitAsync()" /> completes immediately; the
-/// event holds at most one pending signal.
+/// queued, <see cref="Set" /> releases the longest-waiting caller (strict FIFO) and consumes the signal. When no waiter
+/// is queued, the signal is latched so that the next <see cref="WaitAsync()" /> completes immediately; the event holds
+/// at most one pending signal.
 /// </para>
 /// <para>
 /// Waiters are tracked in a FIFO queue of <see cref="TaskCompletionSource{TResult}" /> instances created with
@@ -48,7 +48,9 @@ public sealed class AsyncAutoResetEvent
     /// <summary>
     /// Initializes a new instance of the <see cref="AsyncAutoResetEvent" /> class.
     /// </summary>
-    /// <param name="initialState"><see langword="true" /> to create the event with a pending signal; otherwise, <see langword="false" />.</param>
+    /// <param name="initialState">
+    /// <see langword="true" /> to create the event with a pending signal; otherwise, <see langword="false" />.
+    /// </param>
     public AsyncAutoResetEvent(bool initialState)
     {
         _signaled = initialState;
@@ -74,7 +76,9 @@ public sealed class AsyncAutoResetEvent
     /// Asynchronously waits for the event to be signaled, consuming the signal.
     /// </summary>
     /// <returns>A <see cref="ValueTask" /> that completes when this caller receives the signal.</returns>
-    /// <remarks>The returned <see cref="ValueTask" /> must be awaited exactly once.</remarks>
+    /// <remarks>
+    /// The returned <see cref="ValueTask" /> must be awaited exactly once.
+    /// </remarks>
     public ValueTask WaitAsync() =>
         WaitAsync(CancellationToken.None);
 
@@ -84,7 +88,9 @@ public sealed class AsyncAutoResetEvent
     /// </summary>
     /// <param name="cancellationToken">A token used to cancel the pending wait.</param>
     /// <returns>A <see cref="ValueTask" /> that completes when this caller receives the signal.</returns>
-    /// <exception cref="OperationCanceledException"><paramref name="cancellationToken" /> was canceled before the signal was received.</exception>
+    /// <exception cref="OperationCanceledException">
+    /// <paramref name="cancellationToken" /> was canceled before the signal was received.
+    /// </exception>
     /// <remarks>
     /// The returned <see cref="ValueTask" /> must be awaited exactly once. A latched signal is consumed even when
     /// <paramref name="cancellationToken" /> is already canceled; the token only cancels a wait that must queue, and

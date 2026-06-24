@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExcelBinaryReaderOptions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -13,8 +13,8 @@ namespace Bodu.Formats.Excel;
 /// <remarks>
 /// The defaults read the full metadata surface (document properties and date-format detection) and dispose a
 /// caller-supplied stream with the workbook. For a numeric, time-series workload — where only row, column, and numeric
-/// value matter — clearing <see cref="ReadDocumentProperties" /> and <see cref="DetectDateFormats" /> skips the property
-/// sets and number-format interpretation.
+/// value matter — clearing <see cref="ReadDocumentProperties" /> and <see cref="DetectDateFormats" /> skips the
+/// property sets and number-format interpretation.
 /// </remarks>
 public sealed class ExcelBinaryReaderOptions
 {

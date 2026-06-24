@@ -11,8 +11,8 @@ namespace Bodu.Collections.Generic.Trees;
 public sealed partial class Trie<TValue>
 {
     /// <summary>
-    /// Enumerates the key/value pairs of a <see cref="Trie{TValue}" /> over a snapshot captured when the enumerator
-    /// is created.
+    /// Enumerates the key/value pairs of a <see cref="Trie{TValue}" /> over a snapshot captured when the enumerator is
+    /// created.
     /// </summary>
     /// <remarks>
     /// The enumerator is fail-fast: if the trie is modified after the enumerator is created, the next call to
@@ -46,7 +46,9 @@ public sealed partial class Trie<TValue>
         readonly object IEnumerator.Current => _current;
 
         /// <inheritdoc />
-        /// <exception cref="InvalidOperationException">The trie was modified after the enumerator was created.</exception>
+        /// <exception cref="InvalidOperationException">
+        /// The trie was modified after the enumerator was created.
+        /// </exception>
         public bool MoveNext()
         {
             if (_version != _owner._version)
@@ -64,7 +66,9 @@ public sealed partial class Trie<TValue>
         }
 
         /// <inheritdoc />
-        /// <exception cref="InvalidOperationException">The trie was modified after the enumerator was created.</exception>
+        /// <exception cref="InvalidOperationException">
+        /// The trie was modified after the enumerator was created.
+        /// </exception>
         public void Reset()
         {
             if (_version != _owner._version)

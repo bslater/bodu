@@ -17,7 +17,10 @@ public static partial class EnumExtensions
     /// </summary>
     /// <typeparam name="TEnum">The enumeration type.</typeparam>
     /// <param name="value">The value to name.</param>
-    /// <returns>The value's <see cref="DisplayAttribute" /> name, or its <see cref="DescriptionAttribute" /> text, falling back to the value's name.</returns>
+    /// <returns>
+    /// The value's <see cref="DisplayAttribute" /> name, or its <see cref="DescriptionAttribute" /> text, falling back
+    /// to the value's name.
+    /// </returns>
     /// <remarks>
     /// Only values that map to a single declared enumeration field carry a display name. A composite <c>[Flags]</c>
     /// value with no declared field of its own (for example <c>Read | Write</c>) is not a declared field, so it falls

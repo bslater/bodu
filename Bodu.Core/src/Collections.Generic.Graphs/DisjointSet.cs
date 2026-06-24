@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DisjointSet.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -9,20 +9,19 @@ using System.Diagnostics;
 namespace Bodu.Collections.Generic.Graphs;
 
 /// <summary>
-/// Provides a fixed-size, integer-indexed disjoint-set (union-find) structure that tracks a partition of the
-/// contiguous range <c>[0, count)</c> into disjoint subsets and supports near-constant-time union and connectivity
-/// queries.
+/// Provides a fixed-size, integer-indexed disjoint-set (union-find) structure that tracks a partition of the contiguous
+/// range <c>[0, count)</c> into disjoint subsets and supports near-constant-time union and connectivity queries.
 /// </summary>
 /// <remarks>
 /// <para>
 /// Each integer in <c>[0, <see cref="Count" />)</c> begins in its own singleton set. <see cref="Union(int, int)" />
-/// merges the subsets containing two elements, and <see cref="Find(int)" /> returns the canonical representative of
-/// an element's subset. Two elements are in the same subset exactly when they share a representative.
+/// merges the subsets containing two elements, and <see cref="Find(int)" /> returns the canonical representative of an
+/// element's subset. Two elements are in the same subset exactly when they share a representative.
 /// </para>
 /// <para>
-/// The implementation combines <b>path-halving</b> compression with <b>union by size</b>, giving an amortized cost
-/// per operation of O(α(n)), where α is the inverse Ackermann function (effectively constant). This integer variant
-/// is the allocation-light form used internally by graph algorithms over dense vertex indices; see
+/// The implementation combines <b>path-halving</b> compression with <b>union by size</b>, giving an amortized cost per
+/// operation of O(α(n)), where α is the inverse Ackermann function (effectively constant). This integer variant is the
+/// allocation-light form used internally by graph algorithms over dense vertex indices; see
 /// <see cref="DisjointSet{T}" /> for an element-keyed equivalent.
 /// </para>
 /// </remarks>
@@ -73,7 +72,9 @@ public sealed class DisjointSet
     /// </summary>
     /// <param name="x">The element whose representative is requested.</param>
     /// <returns>The representative element of the subset containing <paramref name="x" />.</returns>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="x" /> is negative or not less than <see cref="Count" />.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="x" /> is negative or not less than <see cref="Count" />.
+    /// </exception>
     public int Find(int x)
     {
         ValidateElement(x);
@@ -92,8 +93,13 @@ public sealed class DisjointSet
     /// </summary>
     /// <param name="a">The first element.</param>
     /// <param name="b">The second element.</param>
-    /// <returns><see langword="true" /> if the elements were in different subsets and a merge occurred; otherwise, <see langword="false" />.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">Either element is negative or not less than <see cref="Count" />.</exception>
+    /// <returns>
+    /// <see langword="true" /> if the elements were in different subsets and a merge occurred; otherwise,
+    /// <see langword="false" />.
+    /// </returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Either element is negative or not less than <see cref="Count" />.
+    /// </exception>
     public bool Union(int a, int b)
     {
         var rootA = Find(a);
@@ -116,8 +122,12 @@ public sealed class DisjointSet
     /// </summary>
     /// <param name="a">The first element.</param>
     /// <param name="b">The second element.</param>
-    /// <returns><see langword="true" /> if both elements share a representative; otherwise, <see langword="false" />.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">Either element is negative or not less than <see cref="Count" />.</exception>
+    /// <returns>
+    /// <see langword="true" /> if both elements share a representative; otherwise, <see langword="false" />.
+    /// </returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Either element is negative or not less than <see cref="Count" />.
+    /// </exception>
     public bool AreConnected(int a, int b) =>
         Find(a) == Find(b);
 
@@ -126,7 +136,9 @@ public sealed class DisjointSet
     /// </summary>
     /// <param name="x">The element whose subset size is requested.</param>
     /// <returns>The number of elements in the subset containing <paramref name="x" />.</returns>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="x" /> is negative or not less than <see cref="Count" />.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="x" /> is negative or not less than <see cref="Count" />.
+    /// </exception>
     public int SizeOf(int x) =>
         _size[Find(x)];
 
@@ -148,7 +160,9 @@ public sealed class DisjointSet
     /// Validates that an element index is within the range <c>[0, Count)</c>.
     /// </summary>
     /// <param name="x">The element index to validate.</param>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="x" /> is negative or not less than <see cref="Count" />.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="x" /> is negative or not less than <see cref="Count" />.
+    /// </exception>
     private void ValidateElement(int x)
     {
         ThrowHelper.ThrowIfNegative(x, nameof(x));

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CompoundMalformedFixtures.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -13,8 +13,8 @@ namespace Bodu.IO.Compound;
 /// </summary>
 /// <param name="RelativePath">The corpus-relative fixture path, for example <c>invalid/invalid_magic.dat</c>.</param>
 /// <param name="Category">
-/// The expected <see cref="CompoundFileError" /> when the reader rejects the fixture, or <see langword="null" /> when the
-/// reader tolerates the defect and opens the fixture.
+/// The expected <see cref="CompoundFileError" /> when the reader rejects the fixture, or <see langword="null" /> when
+/// the reader tolerates the defect and opens the fixture.
 /// </param>
 public sealed record CompoundMalformedKat(string RelativePath, CompoundFileError? Category)
     : IKat

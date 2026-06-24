@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsyncReaderWriterLock.Releaser.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -9,15 +9,15 @@ namespace Bodu.Threading;
 public sealed partial class AsyncReaderWriterLock
 {
     /// <summary>
-    /// Represents acquired access to an <see cref="AsyncReaderWriterLock" />. Disposing the releaser releases the
-    /// read or write access it represents.
+    /// Represents acquired access to an <see cref="AsyncReaderWriterLock" />. Disposing the releaser releases the read
+    /// or write access it represents.
     /// </summary>
     /// <remarks>
-    /// The releaser is a lightweight value type returned by <see cref="ReaderAsync()" /> and <see cref="WriterAsync()" />,
-    /// typically consumed by a single <c>using</c> statement. It is <b>idempotent</b>: disposing it more than once, or
-    /// disposing several copies of the same value, releases the underlying access exactly once. This prevents accidental
-    /// double-disposal from corrupting the reader count or granting overlapping access, at the cost of one small
-    /// allocation per acquisition for the shared idempotency guard.
+    /// The releaser is a lightweight value type returned by <see cref="ReaderAsync()" /> and
+    /// <see cref="WriterAsync()" />, typically consumed by a single <c>using</c> statement. It is <b>idempotent</b>:
+    /// disposing it more than once, or disposing several copies of the same value, releases the underlying access
+    /// exactly once. This prevents accidental double-disposal from corrupting the reader count or granting overlapping
+    /// access, at the cost of one small allocation per acquisition for the shared idempotency guard.
     /// </remarks>
     public readonly struct Releaser : IDisposable
     {
@@ -29,7 +29,9 @@ public sealed partial class AsyncReaderWriterLock
         /// Initializes a new instance of the <see cref="Releaser" /> struct bound to the specified owner.
         /// </summary>
         /// <param name="owner">The lock that was acquired.</param>
-        /// <param name="isWriter"><see langword="true" /> if the releaser represents write access; otherwise, <see langword="false" />.</param>
+        /// <param name="isWriter">
+        /// <see langword="true" /> if the releaser represents write access; otherwise, <see langword="false" />.
+        /// </param>
         /// <param name="guard">The shared guard that ensures the access is released at most once.</param>
         internal Releaser(AsyncReaderWriterLock owner, bool isWriter, ReleaseGuard guard)
         {
@@ -64,7 +66,9 @@ public sealed partial class AsyncReaderWriterLock
             /// <summary>
             /// Atomically claims the single release permitted by this guard.
             /// </summary>
-            /// <returns><see langword="true" /> for the first caller; <see langword="false" /> for every subsequent caller.</returns>
+            /// <returns>
+            /// <see langword="true" /> for the first caller; <see langword="false" /> for every subsequent caller.
+            /// </returns>
             internal bool TryRelease() =>
                 Interlocked.Exchange(ref _released, 1) == 0;
         }

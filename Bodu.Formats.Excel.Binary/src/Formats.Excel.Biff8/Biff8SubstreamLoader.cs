@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Biff8SubstreamLoader.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -14,8 +14,8 @@ namespace Bodu.Formats.Excel.Biff8;
 /// </summary>
 /// <remarks>
 /// Reading a bounded substream keeps memory proportional to one sheet (or the workbook globals) rather than the whole
-/// workbook. The caller positions the source stream at the substream's start (for a sheet, the <c>lbPlyPos</c> offset of
-/// its bound-sheet record) before calling <see cref="ReadSubstream(System.IO.Stream)" />.
+/// workbook. The caller positions the source stream at the substream's start (for a sheet, the <c>lbPlyPos</c> offset
+/// of its bound-sheet record) before calling <see cref="ReadSubstream(System.IO.Stream)" />.
 /// </remarks>
 internal static class Biff8SubstreamLoader
 {
@@ -53,7 +53,9 @@ internal static class Biff8SubstreamLoader
     /// </summary>
     /// <param name="stream">The source stream.</param>
     /// <param name="destination">The buffer to fill.</param>
-    /// <exception cref="ExcelBinaryFormatException">Thrown when the stream ends before the buffer is filled.</exception>
+    /// <exception cref="ExcelBinaryFormatException">
+    /// Thrown when the stream ends before the buffer is filled.
+    /// </exception>
     private static void ReadExactly(Stream stream, Span<byte> destination)
     {
         int total = 0;
@@ -68,12 +70,15 @@ internal static class Biff8SubstreamLoader
     }
 
     /// <summary>
-    /// Copies exactly <paramref name="count" /> bytes from the stream into the buffer, failing if the stream ends first.
+    /// Copies exactly <paramref name="count" /> bytes from the stream into the buffer, failing if the stream ends
+    /// first.
     /// </summary>
     /// <param name="stream">The source stream.</param>
     /// <param name="buffer">The destination buffer.</param>
     /// <param name="count">The number of bytes to copy.</param>
-    /// <exception cref="ExcelBinaryFormatException">Thrown when the stream ends before the bytes are copied.</exception>
+    /// <exception cref="ExcelBinaryFormatException">
+    /// Thrown when the stream ends before the bytes are copied.
+    /// </exception>
     private static void CopyExactly(Stream stream, MemoryStream buffer, int count)
     {
         if (count == 0)

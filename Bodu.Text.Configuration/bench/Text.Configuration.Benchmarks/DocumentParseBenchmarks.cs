@@ -10,8 +10,8 @@ using BenchmarkDotNet.Attributes;
 namespace Bodu.Text.Configuration.Benchmarks;
 
 /// <summary>
-/// Measures throughput of <see cref="ConfigurationDocument.Parse(string)" /> across document sizes that span
-/// a single-section <c>.editorconfig</c> through to multi-thousand-section synthetic documents.
+/// Measures throughput of <see cref="ConfigurationDocument.Parse(string)" /> across document sizes that span a
+/// single-section <c>.editorconfig</c> through to multi-thousand-section synthetic documents.
 /// </summary>
 [MemoryDiagnoser]
 public class DocumentParseBenchmarks
@@ -56,8 +56,8 @@ public class DocumentParseBenchmarks
         ConfigurationDocument.Parse(_source);
 
     /// <summary>
-    /// Benchmarks parsing under the EditorConfig-compatible profile, which selects strict header parsing and
-    /// disables inline comments.
+    /// Benchmarks parsing under the EditorConfig-compatible profile, which selects strict header parsing and disables
+    /// inline comments.
     /// </summary>
     /// <returns>The parsed document.</returns>
     [Benchmark]
@@ -65,8 +65,8 @@ public class DocumentParseBenchmarks
         ConfigurationDocument.Parse(_source, ConfigurationParseOptions.EditorConfigCompatible);
 
     /// <summary>
-    /// Benchmarks parsing with collect-diagnostics mode, which incurs additional list allocation and
-    /// diagnostic-object overhead even on clean input.
+    /// Benchmarks parsing with collect-diagnostics mode, which incurs additional list allocation and diagnostic-object
+    /// overhead even on clean input.
     /// </summary>
     /// <returns>The parse result including diagnostic collection.</returns>
     [Benchmark]

@@ -26,7 +26,10 @@ public sealed partial class Graph<T>
     /// <param name="to">The destination vertex.</param>
     /// <param name="weight">The finite, non-negative edge weight.</param>
     /// <exception cref="ArgumentNullException">Either vertex is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="weight" /> is not a finite, non-negative number (it is <see cref="double.NaN" />, infinite, or negative).</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="weight" /> is not a finite, non-negative number (it is <see cref="double.NaN" />, infinite, or
+    /// negative).
+    /// </exception>
     public void AddEdge(T from, T to, double weight)
     {
         ThrowHelper.ThrowIfNull(from);
@@ -50,9 +53,14 @@ public sealed partial class Graph<T>
     /// <param name="from">The source vertex.</param>
     /// <param name="to">The destination vertex.</param>
     /// <param name="weight">The finite, non-negative edge weight.</param>
-    /// <returns><see langword="true" /> if the edge was added; <see langword="false" /> if it already existed.</returns>
+    /// <returns>
+    /// <see langword="true" /> if the edge was added; <see langword="false" /> if it already existed.
+    /// </returns>
     /// <exception cref="ArgumentNullException">Either vertex is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="weight" /> is not a finite, non-negative number (it is <see cref="double.NaN" />, infinite, or negative).</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="weight" /> is not a finite, non-negative number (it is <see cref="double.NaN" />, infinite, or
+    /// negative).
+    /// </exception>
     public bool TryAddEdge(T from, T to, double weight = 1.0)
     {
         ThrowHelper.ThrowIfNull(from);
@@ -71,7 +79,9 @@ public sealed partial class Graph<T>
     /// </summary>
     /// <param name="from">The source vertex.</param>
     /// <param name="to">The destination vertex.</param>
-    /// <returns><see langword="true" /> if the edge existed and was removed; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if the edge existed and was removed; otherwise, <see langword="false" />.
+    /// </returns>
     /// <exception cref="ArgumentNullException">Either vertex is <see langword="null" />.</exception>
     public bool RemoveEdge(T from, T to)
     {
@@ -170,7 +180,9 @@ public sealed partial class Graph<T>
     /// <param name="from">The source vertex, which must already exist.</param>
     /// <param name="to">The destination vertex.</param>
     /// <param name="weight">The edge weight.</param>
-    /// <returns><see langword="true" /> if the edge was created; <see langword="false" /> if an existing edge was updated.</returns>
+    /// <returns>
+    /// <see langword="true" /> if the edge was created; <see langword="false" /> if an existing edge was updated.
+    /// </returns>
     private bool AddDirectedEdge(T from, T to, double weight)
     {
         var edges = _adjacency[from];
@@ -189,7 +201,9 @@ public sealed partial class Graph<T>
     /// </summary>
     /// <param name="from">The source vertex.</param>
     /// <param name="to">The destination vertex.</param>
-    /// <returns><see langword="true" /> if the edge existed and was removed; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if the edge existed and was removed; otherwise, <see langword="false" />.
+    /// </returns>
     private bool RemoveDirectedEdge(T from, T to) =>
         _adjacency.TryGetValue(from, out var edges) && edges.Remove(to);
 

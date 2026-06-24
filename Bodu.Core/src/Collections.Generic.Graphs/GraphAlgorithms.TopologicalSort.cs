@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="GraphAlgorithms.TopologicalSort.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -33,8 +33,12 @@ public static partial class GraphAlgorithms
     /// </summary>
     /// <typeparam name="T">The vertex type.</typeparam>
     /// <param name="graph">The directed graph to order.</param>
-    /// <param name="order">When this method returns, contains the topological ordering, or an empty list if the graph contains a cycle.</param>
-    /// <returns><see langword="true" /> if an ordering was produced; <see langword="false" /> if the graph contains a cycle.</returns>
+    /// <param name="order">
+    /// When this method returns, contains the topological ordering, or an empty list if the graph contains a cycle.
+    /// </param>
+    /// <returns>
+    /// <see langword="true" /> if an ordering was produced; <see langword="false" /> if the graph contains a cycle.
+    /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="graph" /> is <see langword="null" />.</exception>
     /// <exception cref="InvalidOperationException">The graph is undirected.</exception>
     public static bool TryTopologicalSort<T>(IReadOnlyGraph<T> graph, out IReadOnlyList<T> order)

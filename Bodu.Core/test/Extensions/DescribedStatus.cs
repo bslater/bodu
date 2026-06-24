@@ -14,18 +14,26 @@ namespace Bodu.Extensions;
 /// </summary>
 public enum DescribedStatus
 {
-    /// <summary>Carries a <see cref="System.ComponentModel.DescriptionAttribute" /> only.</summary>
+    /// <summary>
+    /// Carries a <see cref="System.ComponentModel.DescriptionAttribute" /> only.
+    /// </summary>
     [System.ComponentModel.Description("Is Active")]
     Active,
 
-    /// <summary>Carries a <see cref="DisplayAttribute" /> name only.</summary>
+    /// <summary>
+    /// Carries a <see cref="DisplayAttribute" /> name only.
+    /// </summary>
     [Display(Name = "Pend")]
     Pending,
 
-    /// <summary>Carries no attributes and falls back to its name.</summary>
+    /// <summary>
+    /// Carries no attributes and falls back to its name.
+    /// </summary>
     Plain,
 
-    /// <summary>Carries a <see cref="DisplayAttribute" /> short name only.</summary>
+    /// <summary>
+    /// Carries a <see cref="DisplayAttribute" /> short name only.
+    /// </summary>
     [Display(ShortName = "Cx")]
     Cancelled,
 }

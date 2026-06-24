@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsyncSemaphore.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -14,17 +14,17 @@ namespace Bodu.Threading;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <see cref="AsyncSemaphore" /> is a queue-based asynchronous analogue of <see cref="SemaphoreSlim" />. Callers
-/// await <see cref="WaitAsync()" /> to consume a permit and call <see cref="Release()" /> to return one. The
-/// convenience method <see cref="LockAsync()" /> pairs a wait with a disposable <see cref="Releaser" /> so a permit
-/// can be scoped with a <c>using</c> statement.
+/// <see cref="AsyncSemaphore" /> is a queue-based asynchronous analogue of <see cref="SemaphoreSlim" />. Callers await
+/// <see cref="WaitAsync()" /> to consume a permit and call <see cref="Release()" /> to return one. The convenience
+/// method <see cref="LockAsync()" /> pairs a wait with a disposable <see cref="Releaser" /> so a permit can be scoped
+/// with a <c>using</c> statement.
 /// </para>
 /// <para>
-/// Unlike <see cref="SemaphoreSlim" />, waiters are released in <b>strict FIFO order</b>: the longest-waiting caller
-/// is always satisfied first. Each waiter is represented by a <see cref="TaskCompletionSource{TResult}" /> created
-/// with <see cref="TaskCreationOptions.RunContinuationsAsynchronously" />, so a thread calling <see cref="Release()" />
-/// is never hijacked to run a waiter's continuation inline. The type owns no operating-system handle and therefore
-/// does not implement <see cref="IDisposable" />.
+/// Unlike <see cref="SemaphoreSlim" />, waiters are released in <b>strict FIFO order</b>: the longest-waiting caller is
+/// always satisfied first. Each waiter is represented by a <see cref="TaskCompletionSource{TResult}" /> created with
+/// <see cref="TaskCreationOptions.RunContinuationsAsynchronously" />, so a thread calling <see cref="Release()" /> is
+/// never hijacked to run a waiter's continuation inline. The type owns no operating-system handle and therefore does
+/// not implement <see cref="IDisposable" />.
 /// </para>
 /// <para>
 /// Cancellation follows the package-wide rule: an available permit is taken even when the supplied token is already
@@ -125,7 +125,9 @@ public sealed partial class AsyncSemaphore
     /// Asynchronously waits to take a permit.
     /// </summary>
     /// <returns>A <see cref="ValueTask" /> that completes when a permit has been taken.</returns>
-    /// <remarks>The returned <see cref="ValueTask" /> must be awaited exactly once.</remarks>
+    /// <remarks>
+    /// The returned <see cref="ValueTask" /> must be awaited exactly once.
+    /// </remarks>
     public ValueTask WaitAsync() =>
         WaitAsync(CancellationToken.None);
 
@@ -134,7 +136,9 @@ public sealed partial class AsyncSemaphore
     /// </summary>
     /// <param name="cancellationToken">A token used to cancel the pending wait.</param>
     /// <returns>A <see cref="ValueTask" /> that completes when a permit has been taken.</returns>
-    /// <exception cref="OperationCanceledException"><paramref name="cancellationToken" /> was canceled before a permit was taken.</exception>
+    /// <exception cref="OperationCanceledException">
+    /// <paramref name="cancellationToken" /> was canceled before a permit was taken.
+    /// </exception>
     /// <remarks>
     /// The returned <see cref="ValueTask" /> must be awaited exactly once. An available permit is taken even when
     /// <paramref name="cancellationToken" /> is already canceled; the token only cancels a wait that must queue, and
@@ -164,7 +168,9 @@ public sealed partial class AsyncSemaphore
     /// <summary>
     /// Asynchronously takes a permit and returns a disposable releaser that returns it when disposed.
     /// </summary>
-    /// <returns>A <see cref="ValueTask{TResult}" /> yielding a <see cref="Releaser" /> whose disposal returns the permit.</returns>
+    /// <returns>
+    /// A <see cref="ValueTask{TResult}" /> yielding a <see cref="Releaser" /> whose disposal returns the permit.
+    /// </returns>
     public ValueTask<Releaser> LockAsync() =>
         LockAsync(CancellationToken.None);
 
@@ -173,8 +179,12 @@ public sealed partial class AsyncSemaphore
     /// cancellation request while waiting.
     /// </summary>
     /// <param name="cancellationToken">A token used to cancel the pending wait.</param>
-    /// <returns>A <see cref="ValueTask{TResult}" /> yielding a <see cref="Releaser" /> whose disposal returns the permit.</returns>
-    /// <exception cref="OperationCanceledException"><paramref name="cancellationToken" /> was canceled before a permit was taken.</exception>
+    /// <returns>
+    /// A <see cref="ValueTask{TResult}" /> yielding a <see cref="Releaser" /> whose disposal returns the permit.
+    /// </returns>
+    /// <exception cref="OperationCanceledException">
+    /// <paramref name="cancellationToken" /> was canceled before a permit was taken.
+    /// </exception>
     public ValueTask<Releaser> LockAsync(CancellationToken cancellationToken)
     {
         var wait = WaitAsync(cancellationToken);
@@ -186,7 +196,9 @@ public sealed partial class AsyncSemaphore
     /// <summary>
     /// Returns a single permit to the semaphore, releasing the next waiter if one is queued.
     /// </summary>
-    /// <exception cref="InvalidOperationException">Releasing would raise the permit count above the configured maximum.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// Releasing would raise the permit count above the configured maximum.
+    /// </exception>
     public void Release() =>
         Release(1);
 
@@ -195,7 +207,9 @@ public sealed partial class AsyncSemaphore
     /// </summary>
     /// <param name="releaseCount">The number of permits to return.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="releaseCount" /> is less than one.</exception>
-    /// <exception cref="InvalidOperationException">Releasing would raise the permit count above the configured maximum.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// Releasing would raise the permit count above the configured maximum.
+    /// </exception>
     public void Release(int releaseCount)
     {
         ThrowHelper.ThrowIfZeroOrNegative(releaseCount);

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Biff8RecordCursor.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -14,9 +14,9 @@ namespace Bodu.Formats.Excel.Biff8;
 /// </summary>
 /// <remarks>
 /// Each record is encoded as a two-byte little-endian type, a two-byte little-endian payload length, and the payload.
-/// The cursor never copies payloads; each <see cref="Biff8Record.Payload" /> is a slice of the supplied buffer. A record
-/// whose declared length runs past the end of the buffer, or a trailing fragment too short to form a record header, is
-/// rejected as malformed.
+/// The cursor never copies payloads; each <see cref="Biff8Record.Payload" /> is a slice of the supplied buffer. A
+/// record whose declared length runs past the end of the buffer, or a trailing fragment too short to form a record
+/// header, is rejected as malformed.
 /// </remarks>
 internal ref struct Biff8RecordCursor
 {
@@ -46,7 +46,9 @@ internal ref struct Biff8RecordCursor
     /// Attempts to read the next record from the buffer.
     /// </summary>
     /// <param name="record">When this method returns, the record that was read when one is available.</param>
-    /// <returns><see langword="true" /> when a record was read; <see langword="false" /> at the clean end of the buffer.</returns>
+    /// <returns>
+    /// <see langword="true" /> when a record was read; <see langword="false" /> at the clean end of the buffer.
+    /// </returns>
     /// <exception cref="ExcelBinaryFormatException">
     /// Thrown when a record declares a length that runs past the end of the buffer, or a trailing fragment of one to
     /// three bytes is too short to form a record header.
