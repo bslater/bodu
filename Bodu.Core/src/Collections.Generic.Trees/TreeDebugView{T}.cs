@@ -6,7 +6,7 @@
 
 using System.Diagnostics;
 
-namespace Bodu.Collections.Generic.Graphs;
+namespace Bodu.Collections.Generic.Trees;
 
 /// <summary>
 /// Provides a debugger-friendly view of a <see cref="Tree{T}" /> node, surfacing its value and immediate children.

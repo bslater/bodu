@@ -6,7 +6,7 @@
 
 using System.Collections;
 
-namespace Bodu.Collections.Generic.Graphs;
+namespace Bodu.Collections.Generic.Trees;
 
 public sealed partial class Trie<TValue>
 {

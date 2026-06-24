@@ -8,7 +8,7 @@ using System.Collections;
 using System.Diagnostics;
 using Bodu.Collections.Generic.Internal;
 
-namespace Bodu.Collections.Generic.Graphs;
+namespace Bodu.Collections.Generic.Trees;
 
 /// <summary>
 /// Represents a prefix tree (trie) that maps string keys to values and supports efficient prefix queries.

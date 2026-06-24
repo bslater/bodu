@@ -6,7 +6,7 @@
 
 using Bodu.Test.Kat;
 
-namespace Bodu.Collections.Generic.Graphs;
+namespace Bodu.Collections.Generic.Trees;
 
 /// <summary>
 /// Contains unit tests for the <see cref="Trie" /> (string set) type.

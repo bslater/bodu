@@ -8,7 +8,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
 
-namespace Bodu.Collections.Generic.Graphs;
+namespace Bodu.Collections.Generic.Trees;
 
 /// <summary>
 /// Represents a node in a mutable n-ary tree. Each instance is simultaneously a node carrying a value and the root of
