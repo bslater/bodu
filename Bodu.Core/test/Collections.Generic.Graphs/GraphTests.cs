@@ -225,4 +225,54 @@ public sealed class GraphTests
         Assert.AreEqual(0, sut.VertexCount);
         Assert.AreEqual(0, sut.EdgeCount);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Graph{T}.AddEdge(T, T, double)" /> rejects a weight that is not finite and non-negative.
+    /// </summary>
+    /// <param name="weight">The invalid weight under test.</param>
+    [TestMethod]
+    [DataRow(double.NaN)]
+    [DataRow(double.PositiveInfinity)]
+    [DataRow(double.NegativeInfinity)]
+    [DataRow(-1.0)]
+    public void AddEdge_WhenWeightIsNotFiniteNonNegative_ShouldThrowForWeight(double weight)
+    {
+        var sut = new Graph<int>();
+
+        Assert.AreEqual(
+            "weight",
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => sut.AddEdge(1, 2, weight)).ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Graph{T}.TryAddEdge(T, T, double)" /> rejects a weight that is not finite and non-negative.
+    /// </summary>
+    /// <param name="weight">The invalid weight under test.</param>
+    [TestMethod]
+    [DataRow(double.NaN)]
+    [DataRow(double.PositiveInfinity)]
+    [DataRow(double.NegativeInfinity)]
+    [DataRow(-1.0)]
+    public void TryAddEdge_WhenWeightIsNotFiniteNonNegative_ShouldThrowForWeight(double weight)
+    {
+        var sut = new Graph<int>();
+
+        Assert.AreEqual(
+            "weight",
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => sut.TryAddEdge(1, 2, weight)).ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Graph{T}.AddEdge(T, T, double)" /> accepts a zero weight.
+    /// </summary>
+    [TestMethod]
+    public void AddEdge_WhenWeightIsZero_ShouldSucceed()
+    {
+        var sut = new Graph<int>();
+
+        sut.AddEdge(1, 2, 0.0);
+
+        Assert.IsTrue(sut.TryGetEdgeWeight(1, 2, out var weight));
+        Assert.AreEqual(0.0, weight);
+    }
 }

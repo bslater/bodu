@@ -18,6 +18,11 @@ public static partial class EnumExtensions
     /// <typeparam name="TEnum">The enumeration type.</typeparam>
     /// <param name="value">The value to describe.</param>
     /// <returns>The value's <see cref="DescriptionAttribute" /> text, or its <see cref="DisplayAttribute" /> name or short name, falling back to the value's name.</returns>
+    /// <remarks>
+    /// Only values that map to a single declared enumeration field carry a description. A composite <c>[Flags]</c>
+    /// value with no declared field of its own (for example <c>Read | Write</c>) is not a declared field, so it falls
+    /// back to <see cref="object.ToString" />.
+    /// </remarks>
     public static string GetDescription<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields)] TEnum>(this TEnum value)
         where TEnum : struct, Enum =>
         Enums.GetDescription(value);

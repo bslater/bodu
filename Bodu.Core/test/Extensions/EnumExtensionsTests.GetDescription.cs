@@ -50,4 +50,30 @@ public partial class EnumExtensionsTests
         Assert.IsFalse(DescribedStatus.Plain.TryGetDescription(out var fallback));
         Assert.AreEqual("Plain", fallback);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="EnumExtensions.GetDescription{TEnum}(TEnum)" /> resolves a declared single or composite
+    /// flag but falls back to <see cref="object.ToString" /> for an undeclared composite combination.
+    /// </summary>
+    [TestMethod]
+    public void GetDescription_WhenFlagsValue_ShouldResolveDeclaredAndFallBackForComposite()
+    {
+        Assert.AreEqual("Can Read", DescribedFlags.Read.GetDescription());
+        Assert.AreEqual("Everything", DescribedFlags.All.GetDescription());
+
+        var composite = DescribedFlags.Read | DescribedFlags.Write;
+        Assert.AreEqual(composite.ToString(), composite.GetDescription());
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="EnumExtensions.GetDisplayName{TEnum}(TEnum)" /> falls back to <see cref="object.ToString" />
+    /// for an undeclared composite <c>[Flags]</c> combination.
+    /// </summary>
+    [TestMethod]
+    public void GetDisplayName_WhenUndeclaredCompositeFlags_ShouldFallBackToToString()
+    {
+        var composite = DescribedFlags.Read | DescribedFlags.Execute;
+
+        Assert.AreEqual(composite.ToString(), composite.GetDisplayName());
+    }
 }

@@ -24,14 +24,14 @@ public sealed partial class Graph<T>
     /// </summary>
     /// <param name="from">The source vertex.</param>
     /// <param name="to">The destination vertex.</param>
-    /// <param name="weight">The non-negative edge weight.</param>
+    /// <param name="weight">The finite, non-negative edge weight.</param>
     /// <exception cref="ArgumentNullException">Either vertex is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="weight" /> is negative.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="weight" /> is not a finite, non-negative number (it is <see cref="double.NaN" />, infinite, or negative).</exception>
     public void AddEdge(T from, T to, double weight)
     {
         ThrowHelper.ThrowIfNull(from);
         ThrowHelper.ThrowIfNull(to);
-        ThrowHelper.ThrowIfNegative(weight);
+        ValidateWeight(weight);
 
         AddVertex(from);
         AddVertex(to);
@@ -49,15 +49,15 @@ public sealed partial class Graph<T>
     /// </summary>
     /// <param name="from">The source vertex.</param>
     /// <param name="to">The destination vertex.</param>
-    /// <param name="weight">The non-negative edge weight.</param>
+    /// <param name="weight">The finite, non-negative edge weight.</param>
     /// <returns><see langword="true" /> if the edge was added; <see langword="false" /> if it already existed.</returns>
     /// <exception cref="ArgumentNullException">Either vertex is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="weight" /> is negative.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="weight" /> is not a finite, non-negative number (it is <see cref="double.NaN" />, infinite, or negative).</exception>
     public bool TryAddEdge(T from, T to, double weight = 1.0)
     {
         ThrowHelper.ThrowIfNull(from);
         ThrowHelper.ThrowIfNull(to);
-        ThrowHelper.ThrowIfNegative(weight);
+        ValidateWeight(weight);
 
         if (_adjacency.TryGetValue(from, out var existing) && existing.ContainsKey(to))
             return false;
@@ -202,5 +202,18 @@ public sealed partial class Graph<T>
     {
         foreach (var edge in edges)
             yield return (edge.Key, edge.Value);
+    }
+
+    /// <summary>
+    /// Validates that an edge weight is a finite, non-negative number.
+    /// </summary>
+    /// <param name="weight">The weight to validate.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="weight" /> is <see cref="double.NaN" />, infinite, or negative.
+    /// </exception>
+    private static void ValidateWeight(double weight)
+    {
+        if (!double.IsFinite(weight) || weight < 0.0)
+            throw new ArgumentOutOfRangeException(nameof(weight), ResourceStrings.Arg_OutOfRange_GraphWeightNotFinite);
     }
 }

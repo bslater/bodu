@@ -27,22 +27,32 @@ namespace Bodu.Extensions;
 public static class Enums
 {
     /// <summary>
-    /// Returns the cached array of values declared by the specified enumeration.
+    /// Returns the values declared by the specified enumeration.
     /// </summary>
     /// <typeparam name="TEnum">The enumeration type.</typeparam>
-    /// <returns>The values declared by <typeparamref name="TEnum" />.</returns>
+    /// <returns>A fresh array of the values declared by <typeparamref name="TEnum" />.</returns>
+    /// <remarks>
+    /// A new array is returned on every call so callers may mutate the result without affecting the internal cache or
+    /// other callers, matching the behavior of <see cref="Enum.GetValues{TEnum}" />. The underlying reflection result
+    /// is cached, so repeated calls only pay the cost of a single array copy.
+    /// </remarks>
     public static TEnum[] GetValues<TEnum>()
         where TEnum : struct, Enum =>
-        ValuesCache<TEnum>.Values;
+        (TEnum[])ValuesCache<TEnum>.Values.Clone();
 
     /// <summary>
-    /// Returns the cached array of names declared by the specified enumeration.
+    /// Returns the names declared by the specified enumeration.
     /// </summary>
     /// <typeparam name="TEnum">The enumeration type.</typeparam>
-    /// <returns>The names declared by <typeparamref name="TEnum" />.</returns>
+    /// <returns>A fresh array of the names declared by <typeparamref name="TEnum" />.</returns>
+    /// <remarks>
+    /// A new array is returned on every call so callers may mutate the result without affecting the internal cache or
+    /// other callers, matching the behavior of <see cref="Enum.GetNames{TEnum}" />. The underlying reflection result is
+    /// cached, so repeated calls only pay the cost of a single array copy.
+    /// </remarks>
     public static string[] GetNames<TEnum>()
         where TEnum : struct, Enum =>
-        ValuesCache<TEnum>.Names;
+        (string[])ValuesCache<TEnum>.Names.Clone();
 
     /// <summary>
     /// Attempts to parse the specified text into a value of the enumeration.
@@ -75,6 +85,10 @@ public static class Enums
     /// <param name="text">The description or display text to resolve.</param>
     /// <param name="value">When this method returns, contains the matching value, or the default value on failure.</param>
     /// <returns><see langword="true" /> if a matching value was found; otherwise, <see langword="false" />.</returns>
+    /// <remarks>
+    /// Matching is ordinal. When more than one value declares the same description or display text, the first
+    /// declaring value in ascending underlying-value order wins; the lookup is therefore deterministic.
+    /// </remarks>
     public static bool TryParseDescription<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields)] TEnum>(string? text, out TEnum value)
         where TEnum : struct, Enum
     {

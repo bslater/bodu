@@ -779,7 +779,16 @@ namespace Bodu {
                 return ResourceManager.GetString("Arg_OutOfRange_FiscalYearUndeterminable", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to The edge weight must be a finite, non-negative number..
+        /// </summary>
+        internal static string Arg_OutOfRange_GraphWeightNotFinite {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_GraphWeightNotFinite", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to The index must be non-negative and less than the size of {0}..
         /// </summary>
