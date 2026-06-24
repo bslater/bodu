@@ -1,0 +1,53 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="GraphAlgorithms.ConnectedComponents.cs" company="Bodu Pty. Ltd.">
+// Copyright (c) Bodu Pty. Ltd. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+namespace Bodu.Collections.Generic.Graphs;
+
+public static partial class GraphAlgorithms
+{
+    /// <summary>
+    /// Groups the vertices of the graph into connected components, treating every edge as undirected.
+    /// </summary>
+    /// <typeparam name="T">The vertex type.</typeparam>
+    /// <param name="graph">The graph to partition.</param>
+    /// <returns>A list of components, each containing the vertices that are mutually reachable.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="graph" /> is <see langword="null" />.</exception>
+    /// <remarks>
+    /// For a directed graph this yields the weakly connected components — vertices are grouped without regard to edge
+    /// direction. The partition is computed with a <see cref="DisjointSet{T}" /> over the graph's edges.
+    /// </remarks>
+    public static IReadOnlyList<IReadOnlyList<T>> ConnectedComponents<T>(Graph<T> graph)
+        where T : notnull
+    {
+        ThrowHelper.ThrowIfNull(graph);
+
+        var disjointSet = new DisjointSet<T>(graph.Vertices, graph.Comparer);
+        foreach (var vertex in graph.Vertices)
+        {
+            foreach (var neighbor in graph.Neighbors(vertex))
+                disjointSet.Union(vertex, neighbor);
+        }
+
+        var groups = new Dictionary<T, List<T>>(graph.Comparer);
+        foreach (var vertex in graph.Vertices)
+        {
+            var root = disjointSet.Find(vertex);
+            if (!groups.TryGetValue(root, out var members))
+            {
+                members = new List<T>();
+                groups.Add(root, members);
+            }
+
+            members.Add(vertex);
+        }
+
+        var result = new List<IReadOnlyList<T>>(groups.Count);
+        foreach (var members in groups.Values)
+            result.Add(members);
+
+        return result;
+    }
+}

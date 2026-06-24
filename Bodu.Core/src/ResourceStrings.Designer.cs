@@ -266,7 +266,16 @@ namespace Bodu {
                 return ResourceManager.GetString("Arg_Invalid_DuplicateSetValue", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to The specified element is not a member of any set..
+        /// </summary>
+        internal static string Arg_Invalid_ElementNotInSet {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_ElementNotInSet", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to The collection cannot contain empty elements..
         /// </summary>
@@ -662,7 +671,16 @@ namespace Bodu {
                 return ResourceManager.GetString("Arg_Invalid_ValuesNotEqual", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to The specified vertex does not exist in the graph..
+        /// </summary>
+        internal static string Arg_Invalid_VertexNotInGraph {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_VertexNotInGraph", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Constructor supports only the &apos;{0}&apos; or &apos;{1}&apos; actions..
         /// </summary>
@@ -1409,7 +1427,16 @@ namespace Bodu {
                 return ResourceManager.GetString("Op_Invalid_FactoryReturnedNull", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to The operation requires a directed graph..
+        /// </summary>
+        internal static string Op_Invalid_GraphNotDirected {
+            get {
+                return ResourceManager.GetString("Op_Invalid_GraphNotDirected", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to The MemoryStream does not expose its underlying buffer..
         /// </summary>
@@ -1436,7 +1463,16 @@ namespace Bodu {
                 return ResourceManager.GetString("Op_Invalid_NoInputData", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to The node is already attached to a parent and must be detached before it can be added elsewhere..
+        /// </summary>
+        internal static string Op_Invalid_NodeAlreadyHasParent {
+            get {
+                return ResourceManager.GetString("Op_Invalid_NodeAlreadyHasParent", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to The instance has not been initialized..
         /// </summary>

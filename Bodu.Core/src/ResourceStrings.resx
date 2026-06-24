@@ -186,6 +186,9 @@
   <data name="Arg_Invalid_DuplicateSetValue" xml:space="preserve">
     <value>The set already contains the specified value.</value>
   </data>
+  <data name="Arg_Invalid_ElementNotInSet" xml:space="preserve">
+    <value>The specified element is not a member of any set.</value>
+  </data>
   <data name="Arg_Invalid_EmptyCollectionElement" xml:space="preserve">
     <value>The collection cannot contain empty elements.</value>
   </data>
@@ -317,6 +320,9 @@
   </data>
   <data name="Arg_Invalid_ValuesNotEqual" xml:space="preserve">
     <value>The value must equal {0}.</value>
+  </data>
+  <data name="Arg_Invalid_VertexNotInGraph" xml:space="preserve">
+    <value>The specified vertex does not exist in the graph.</value>
   </data>
   <data name="Arg_Invalid_WrongAction2ForCtor" xml:space="preserve">
     <value>Constructor supports only the '{0}' or '{1}' actions.</value>
@@ -567,6 +573,9 @@
   <data name="Op_Invalid_FactoryReturnedNull" xml:space="preserve">
     <value>The factory returned null for type '{0}'.</value>
   </data>
+  <data name="Op_Invalid_GraphNotDirected" xml:space="preserve">
+    <value>The operation requires a directed graph.</value>
+  </data>
   <data name="Op_Invalid_MemoryStreamBufferInaccessible" xml:space="preserve">
     <value>The MemoryStream does not expose its underlying buffer.</value>
   </data>
@@ -575,6 +584,9 @@
   </data>
   <data name="Op_Invalid_NoInputData" xml:space="preserve">
     <value>No input data was provided.</value>
+  </data>
+  <data name="Op_Invalid_NodeAlreadyHasParent" xml:space="preserve">
+    <value>The node is already attached to a parent and must be detached before it can be added elsewhere.</value>
   </data>
   <data name="Op_Invalid_NotInitialized" xml:space="preserve">
     <value>The instance has not been initialized.</value>
