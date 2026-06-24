@@ -19,6 +19,17 @@ public static partial class NotableDateOnlyExtensions
     /// <exception cref="ArgumentNullException">
     /// <paramref name="service" /> or <paramref name="territory" /> is <see langword="null" />.
     /// </exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// INotableDateService service = AmericasCalendarData.CreateService("US");
+    ///
+    /// IReadOnlyList<NotableDate> occurrences = new DateOnly(2026, 12, 25).GetNotableDates(service, "US");
+    /// foreach (NotableDate notable in occurrences)
+    ///     Console.WriteLine(notable.DisplayName);
+    ///]]>
+    /// </code>
+    /// </example>
     public static IReadOnlyList<NotableDate> GetNotableDates(this DateOnly date, INotableDateService service, string territory, NotableDateFilter? filter = null)
     {
         ThrowHelper.ThrowIfNull(service);

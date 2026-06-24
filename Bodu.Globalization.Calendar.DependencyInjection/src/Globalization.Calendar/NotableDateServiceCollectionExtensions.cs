@@ -93,6 +93,19 @@ public static class NotableDateServiceCollectionExtensions
     /// <see cref="INotableDateResourceProvider" />; injecting the former lets a caller reload the resource, after which
     /// the resolved <see cref="INotableDateService" /> reflects the new data on its next query.
     /// </para>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// // Register a reloadable service with an initial resource.
+    /// builder.Services.AddReloadableNotableDateService(AmericasCalendarData.LoadResource("US"));
+    ///
+    /// // Later, swap in fresh data without restarting the host. Subsequent queries see the new resource.
+    /// MutableNotableDateResourceProvider provider =
+    ///     app.Services.GetRequiredService<MutableNotableDateResourceProvider>();
+    /// provider.Reload(AmericasCalendarData.LoadResource("CA"));
+    ///]]>
+    /// </code>
+    /// </example>
     /// </remarks>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="services" /> or <paramref name="initialResource" /> is <see langword="null" />.

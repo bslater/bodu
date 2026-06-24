@@ -21,6 +21,15 @@ public static partial class NotableDateOnlyExtensions
     /// <exception cref="ArgumentNullException">
     /// <paramref name="service" /> or <paramref name="territory" /> is <see langword="null" />.
     /// </exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// INotableDateService service = AmericasCalendarData.CreateService("US");
+    ///
+    /// bool isHoliday = new DateOnly(2026, 7, 4).IsNotableDate(service, "US"); // true (Independence Day)
+    ///]]>
+    /// </code>
+    /// </example>
     public static bool IsNotableDate(this DateOnly date, INotableDateService service, string territory, NotableDateFilter? filter = null) =>
         date.GetNotableDates(service, territory, filter).Count > 0;
 }

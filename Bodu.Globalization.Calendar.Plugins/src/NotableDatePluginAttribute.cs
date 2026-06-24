@@ -10,6 +10,18 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// Declares, at assembly level, the entry-point type the plugin loader activates to obtain the assembly's
 /// <see cref="INotableDatePlugin" />.
 /// </summary>
+/// <remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // Declared once at assembly level (for example in the plugin project's AssemblyInfo.cs or any source file).
+/// [assembly: NotableDatePlugin(typeof(ContosoCalendarPlugin))]
+///
+/// // NotableDatePluginLoader reads this attribute to locate and activate the entry-point type.
+///]]>
+/// </code>
+/// </example>
+/// </remarks>
 [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = false)]
 public sealed class NotableDatePluginAttribute
     : Attribute

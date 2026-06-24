@@ -21,6 +21,18 @@ public static partial class NotableDateOnlyExtensions
     /// <exception cref="ArgumentNullException">
     /// <paramref name="service" /> or <paramref name="territory" /> is <see langword="null" />.
     /// </exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// INotableDateService service = AmericasCalendarData.CreateService("US");
+    ///
+    /// // The next public holiday after today.
+    /// NotableDate? upcoming = DateOnly.FromDateTime(DateTime.Today).NextNotableDate(service, "US");
+    /// if (upcoming is not null)
+    ///     Console.WriteLine($"{upcoming.DisplayName} on {upcoming.Date}");
+    ///]]>
+    /// </code>
+    /// </example>
     public static NotableDate? NextNotableDate(this DateOnly date, INotableDateService service, string territory, NotableDateFilter? filter = null)
     {
         ThrowHelper.ThrowIfNull(service);

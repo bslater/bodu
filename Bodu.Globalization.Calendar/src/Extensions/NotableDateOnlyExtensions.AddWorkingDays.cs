@@ -22,6 +22,17 @@ public static partial class NotableDateOnlyExtensions
     /// <exception cref="ArgumentNullException">
     /// <paramref name="service" /> or <paramref name="territory" /> is <see langword="null" />.
     /// </exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// INotableDateService service = AmericasCalendarData.CreateService("US");
+    ///
+    /// // A T+2 settlement date that skips weekends and US holidays.
+    /// DateOnly trade = new(2026, 7, 2);
+    /// DateOnly settles = trade.AddWorkingDays(2, service, "US"); // jumps past July 4th observance
+    ///]]>
+    /// </code>
+    /// </example>
     public static DateOnly AddWorkingDays(this DateOnly date, int count, INotableDateService service, string territory, WeekPattern? workingWeek = null)
     {
         ThrowHelper.ThrowIfNull(service);

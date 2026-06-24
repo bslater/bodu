@@ -19,6 +19,16 @@ public static partial class NotableDateOnlyExtensions
     /// <exception cref="ArgumentNullException">
     /// <paramref name="service" /> or <paramref name="territory" /> is <see langword="null" />.
     /// </exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// INotableDateService service = AmericasCalendarData.CreateService("US");
+    ///
+    /// // The first business day after a holiday weekend.
+    /// DateOnly resume = new DateOnly(2026, 7, 3).NextWorkingDay(service, "US");
+    ///]]>
+    /// </code>
+    /// </example>
     public static DateOnly NextWorkingDay(this DateOnly date, INotableDateService service, string territory, WeekPattern? workingWeek = null) =>
         Step(date, 1, service, territory, workingWeek);
 }
