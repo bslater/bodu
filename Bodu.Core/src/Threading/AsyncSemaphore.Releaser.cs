@@ -19,6 +19,7 @@ public sealed partial class AsyncSemaphore
     /// </remarks>
     public readonly struct Releaser : IDisposable
     {
+        /// <summary>The semaphore that issued the permit, or <see langword="null" /> for a default releaser.</summary>
         private readonly AsyncSemaphore? _owner;
 
         /// <summary>

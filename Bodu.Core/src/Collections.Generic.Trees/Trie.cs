@@ -31,8 +31,13 @@ namespace Bodu.Collections.Generic.Trees;
 public sealed partial class Trie
     : IEnumerable<string>, IReadOnlyCollection<string>
 {
+    /// <summary>The root node of the trie; only its child edges are meaningful, not its presence flag.</summary>
     private readonly TrieNode<bool> _root = new();
+
+    /// <summary>The number of keys currently stored in the trie.</summary>
     private int _count;
+
+    /// <summary>A modification counter used to detect mutation during enumeration.</summary>
     private int _version;
 
     /// <summary>
@@ -73,7 +78,7 @@ public sealed partial class Trie
     {
         ThrowHelper.ThrowIfNull(keys);
 
-        foreach (var key in keys)
+        foreach (string key in keys)
             Add(key);
     }
 
@@ -99,7 +104,7 @@ public sealed partial class Trie
     {
         ThrowHelper.ThrowIfNull(key);
 
-        var node = TrieCore.GetOrAddNode(_root, key.AsSpan(), Comparer);
+        TrieNode<bool> node = TrieCore.GetOrAddNode(_root, key.AsSpan(), Comparer);
         if (node.IsTerminal)
             return false;
 
@@ -129,8 +134,8 @@ public sealed partial class Trie
     /// <returns><see langword="true" /> if the key exists; otherwise, <see langword="false" />.</returns>
     public bool Contains(ReadOnlySpan<char> key)
     {
-        var node = TrieCore.Find(_root, key);
-        return node is not null && node.IsTerminal;
+        TrieNode<bool>? node = TrieCore.Find(_root, key);
+        return node?.IsTerminal == true;
     }
 
     /// <summary>
@@ -194,7 +199,7 @@ public sealed partial class Trie
     {
         ThrowHelper.ThrowIfNull(prefix);
 
-        var start = TrieCore.Find(_root, prefix.AsSpan());
+        TrieNode<bool>? start = TrieCore.Find(_root, prefix.AsSpan());
         return start is null
             ? []
             : EnumerateKeys(start);
@@ -232,9 +237,9 @@ public sealed partial class Trie
     /// <returns>An array containing every key currently stored.</returns>
     internal string[] ToArrayInternal()
     {
-        var result = new string[_count];
-        var index = 0;
-        foreach (var item in TrieCore.EnumerateItems(_root))
+        string[] result = new string[_count];
+        int index = 0;
+        foreach (KeyValuePair<string, bool> item in TrieCore.EnumerateItems(_root))
             result[index++] = item.Key;
 
         return result;
@@ -247,7 +252,7 @@ public sealed partial class Trie
     /// <returns>A lazy sequence of keys.</returns>
     private static IEnumerable<string> EnumerateKeys(TrieNode<bool> start)
     {
-        foreach (var item in TrieCore.EnumerateItems(start))
+        foreach (KeyValuePair<string, bool> item in TrieCore.EnumerateItems(start))
             yield return item.Key;
     }
 }

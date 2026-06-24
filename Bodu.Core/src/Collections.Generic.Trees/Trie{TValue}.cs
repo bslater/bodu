@@ -32,8 +32,13 @@ namespace Bodu.Collections.Generic.Trees;
 public sealed partial class Trie<TValue>
     : IEnumerable<KeyValuePair<string, TValue>>, IReadOnlyCollection<KeyValuePair<string, TValue>>
 {
+    /// <summary>The root node of the trie; only its child edges are meaningful, not its value slot.</summary>
     private readonly TrieNode<TValue> _root = new();
+
+    /// <summary>The number of key/value pairs currently stored in the trie.</summary>
     private int _count;
+
+    /// <summary>A modification counter used to detect mutation during enumeration.</summary>
     private int _version;
 
     /// <summary>
@@ -75,7 +80,7 @@ public sealed partial class Trie<TValue>
     {
         ThrowHelper.ThrowIfNull(items);
 
-        foreach (var item in items)
+        foreach (KeyValuePair<string, TValue> item in items)
             Add(item.Key, item.Value);
     }
 
@@ -96,7 +101,7 @@ public sealed partial class Trie<TValue>
     /// </summary>
     /// <param name="key">The key whose value is retrieved or assigned.</param>
     /// <value>The value associated with <paramref name="key" />.</value>
-    /// <returns>The value associated with <paramref name="key" />.</returns>
+    /// <returns>The value currently mapped to <paramref name="key" />.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
     /// <exception cref="KeyNotFoundException">The key does not exist when read.</exception>
     public TValue this[string key]
@@ -105,8 +110,8 @@ public sealed partial class Trie<TValue>
         {
             ThrowHelper.ThrowIfNull(key);
 
-            var node = TrieCore.Find(_root, key.AsSpan());
-            if (node is null || !node.IsTerminal)
+            TrieNode<TValue>? node = TrieCore.Find(_root, key.AsSpan());
+            if (node?.IsTerminal != true)
                 throw new KeyNotFoundException();
 
             return node.Value;
@@ -140,7 +145,7 @@ public sealed partial class Trie<TValue>
     /// <exception cref="ArgumentException">The key already exists.</exception>
     public void Add(ReadOnlySpan<char> key, TValue value)
     {
-        var node = TrieCore.GetOrAddNode(_root, key, Comparer);
+        TrieNode<TValue> node = TrieCore.GetOrAddNode(_root, key, Comparer);
         if (node.IsTerminal)
             throw new ArgumentException(ResourceStrings.Arg_Invalid_DuplicateDictionaryKey, nameof(key));
 
@@ -162,7 +167,7 @@ public sealed partial class Trie<TValue>
     {
         ThrowHelper.ThrowIfNull(key);
 
-        var node = TrieCore.GetOrAddNode(_root, key.AsSpan(), Comparer);
+        TrieNode<TValue> node = TrieCore.GetOrAddNode(_root, key.AsSpan(), Comparer);
         if (node.IsTerminal)
             return false;
 
@@ -184,7 +189,7 @@ public sealed partial class Trie<TValue>
     {
         ThrowHelper.ThrowIfNull(key);
 
-        var node = TrieCore.GetOrAddNode(_root, key.AsSpan(), Comparer);
+        TrieNode<TValue> node = TrieCore.GetOrAddNode(_root, key.AsSpan(), Comparer);
         if (!node.IsTerminal)
         {
             node.IsTerminal = true;
@@ -215,8 +220,8 @@ public sealed partial class Trie<TValue>
     /// <returns><see langword="true" /> if the key exists; otherwise, <see langword="false" />.</returns>
     public bool ContainsKey(ReadOnlySpan<char> key)
     {
-        var node = TrieCore.Find(_root, key);
-        return node is not null && node.IsTerminal;
+        TrieNode<TValue>? node = TrieCore.Find(_root, key);
+        return node?.IsTerminal == true;
     }
 
     /// <summary>
@@ -240,8 +245,8 @@ public sealed partial class Trie<TValue>
     /// <returns><see langword="true" /> if the key was found; otherwise, <see langword="false" />.</returns>
     public bool TryGetValue(ReadOnlySpan<char> key, out TValue value)
     {
-        var node = TrieCore.Find(_root, key);
-        if (node is not null && node.IsTerminal)
+        TrieNode<TValue>? node = TrieCore.Find(_root, key);
+        if (node?.IsTerminal == true)
         {
             value = node.Value;
             return true;
@@ -312,7 +317,7 @@ public sealed partial class Trie<TValue>
     {
         ThrowHelper.ThrowIfNull(prefix);
 
-        var start = TrieCore.Find(_root, prefix.AsSpan());
+        TrieNode<TValue>? start = TrieCore.Find(_root, prefix.AsSpan());
         return start is null
             ? []
             : EnumerateKeys(start);
@@ -328,7 +333,7 @@ public sealed partial class Trie<TValue>
     {
         ThrowHelper.ThrowIfNull(prefix);
 
-        var start = TrieCore.Find(_root, prefix.AsSpan());
+        TrieNode<TValue>? start = TrieCore.Find(_root, prefix.AsSpan());
         return start is null
             ? []
             : TrieCore.EnumerateItems(start);
@@ -368,8 +373,8 @@ public sealed partial class Trie<TValue>
     internal KeyValuePair<string, TValue>[] ToArrayInternal()
     {
         var result = new KeyValuePair<string, TValue>[_count];
-        var index = 0;
-        foreach (var item in TrieCore.EnumerateItems(_root))
+        int index = 0;
+        foreach (KeyValuePair<string, TValue> item in TrieCore.EnumerateItems(_root))
             result[index++] = item;
 
         return result;
@@ -382,7 +387,7 @@ public sealed partial class Trie<TValue>
     /// <returns>A lazy sequence of keys.</returns>
     private static IEnumerable<string> EnumerateKeys(TrieNode<TValue> start)
     {
-        foreach (var item in TrieCore.EnumerateItems(start))
+        foreach (KeyValuePair<string, TValue> item in TrieCore.EnumerateItems(start))
             yield return item.Key;
     }
 }

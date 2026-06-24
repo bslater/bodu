@@ -51,7 +51,10 @@ namespace Bodu.Threading;
 [DebuggerDisplay("IsValueCreated = {IsValueCreated}, IsValueFactoryCompleted = {IsValueFactoryCompleted}")]
 public sealed class AsyncLazy<T>
 {
+    /// <summary>The lazily initialized task that produces the value exactly once on first access.</summary>
     private readonly Lazy<Task<T>> _instance;
+
+    /// <summary>Tracks whether the value factory is currently running, to detect reentrant access.</summary>
     private readonly AsyncLocal<bool> _factoryRunning = new();
 
     /// <summary>
@@ -152,7 +155,7 @@ public sealed class AsyncLazy<T>
     /// </remarks>
     public Task<T> GetValueAsync(CancellationToken cancellationToken)
     {
-        var task = GetSharedTask();
+        Task<T> task = GetSharedTask();
         return task.IsCompleted || !cancellationToken.CanBeCanceled
             ? task
             : task.WaitAsync(cancellationToken);

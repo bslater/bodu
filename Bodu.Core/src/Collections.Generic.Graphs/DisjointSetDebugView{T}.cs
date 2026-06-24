@@ -16,6 +16,7 @@ namespace Bodu.Collections.Generic.Graphs;
 internal sealed class DisjointSetDebugView<T>
     where T : notnull
 {
+    /// <summary>The disjoint set whose partition is surfaced in the debugger.</summary>
     private readonly DisjointSet<T> _set;
 
     /// <summary>

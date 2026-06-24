@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Tree{T}.Traversal.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -19,10 +19,10 @@ public sealed partial class Tree<T>
         stack.Push(this);
         while (stack.Count > 0)
         {
-            var node = stack.Pop();
+            Tree<T> node = stack.Pop();
             yield return node;
 
-            for (var i = node._children.Count - 1; i >= 0; i--)
+            for (int i = node._children.Count - 1; i >= 0; i--)
                 stack.Push(node._children[i]);
         }
     }
@@ -39,10 +39,10 @@ public sealed partial class Tree<T>
         stack.Push(this);
         while (stack.Count > 0)
         {
-            var node = stack.Pop();
+            Tree<T> node = stack.Pop();
             output.Push(node);
 
-            foreach (var child in node._children)
+            foreach (Tree<T> child in node._children)
                 stack.Push(child);
         }
 
@@ -60,10 +60,10 @@ public sealed partial class Tree<T>
         queue.AddLast(this);
         while (queue.Count > 0)
         {
-            var node = queue.RemoveFirst();
+            Tree<T> node = queue.RemoveFirst();
             yield return node;
 
-            foreach (var child in node._children)
+            foreach (Tree<T> child in node._children)
                 queue.AddLast(child);
         }
     }
@@ -75,15 +75,15 @@ public sealed partial class Tree<T>
     public IEnumerable<Tree<T>> Descendants()
     {
         var stack = new Stack<Tree<T>>();
-        for (var i = _children.Count - 1; i >= 0; i--)
+        for (int i = _children.Count - 1; i >= 0; i--)
             stack.Push(_children[i]);
 
         while (stack.Count > 0)
         {
-            var node = stack.Pop();
+            Tree<T> node = stack.Pop();
             yield return node;
 
-            for (var i = node._children.Count - 1; i >= 0; i--)
+            for (int i = node._children.Count - 1; i >= 0; i--)
                 stack.Push(node._children[i]);
         }
     }
@@ -94,7 +94,7 @@ public sealed partial class Tree<T>
     /// <returns>A lazily evaluated sequence of ancestor nodes.</returns>
     public IEnumerable<Tree<T>> Ancestors()
     {
-        for (var node = _parent; node is not null; node = node.Parent)
+        for (Tree<T>? node = _parent; node is not null; node = node.Parent)
             yield return node;
     }
 
@@ -104,7 +104,7 @@ public sealed partial class Tree<T>
     /// <returns>A lazily evaluated sequence of leaf nodes.</returns>
     public IEnumerable<Tree<T>> Leaves()
     {
-        foreach (var node in PreOrder())
+        foreach (Tree<T> node in PreOrder())
         {
             if (node.IsLeaf)
                 yield return node;
@@ -117,7 +117,7 @@ public sealed partial class Tree<T>
     /// <returns>The topmost ancestor, or this node when it is already a root.</returns>
     public Tree<T> Root()
     {
-        var node = this;
+        Tree<T> node = this;
         while (node._parent is not null)
             node = node._parent;
 

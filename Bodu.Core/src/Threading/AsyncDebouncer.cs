@@ -48,15 +48,34 @@ namespace Bodu.Threading;
 [DebuggerDisplay("Delay = {_delay}, Policy = {ExecutionPolicy}, Pending = {_pending}, Active = {ActiveCount}")]
 public sealed partial class AsyncDebouncer : IDisposable
 {
+    /// <summary>The synchronization object guarding all mutable scheduling state.</summary>
     private readonly object _gate = new();
+
+    /// <summary>The quiet period that must elapse after the last trigger before the callback runs.</summary>
     private readonly TimeSpan _delay;
+
+    /// <summary>The asynchronous callback invoked when the quiet period elapses.</summary>
     private readonly Func<CancellationToken, ValueTask> _callback;
+
+    /// <summary>The time provider used to schedule the debounce delay.</summary>
     private readonly TimeProvider _timeProvider;
+
+    /// <summary>The policy governing behavior when a run becomes due while a callback is in flight.</summary>
     private readonly AsyncDebouncerExecutionPolicy _policy;
+
+    /// <summary>The set of callback runs currently in flight.</summary>
     private readonly List<Run> _active = new();
+
+    /// <summary>The active delay timer, or <see langword="null" /> when no run is scheduled.</summary>
     private ITimer? _timer;
+
+    /// <summary>Indicates whether a run is currently scheduled and awaiting the quiet period.</summary>
     private bool _pending;
+
+    /// <summary>Indicates whether a trailing run has been queued to follow the in-flight callback.</summary>
     private bool _trailingPending;
+
+    /// <summary>Indicates whether the debouncer has been disposed.</summary>
     private bool _disposed;
 
     /// <summary>
@@ -232,7 +251,7 @@ public sealed partial class AsyncDebouncer : IDisposable
             active = new List<Run>(_active);
         }
 
-        foreach (var run in active)
+        foreach (Run run in active)
             run.Cts.Cancel();
     }
 
@@ -258,7 +277,7 @@ public sealed partial class AsyncDebouncer : IDisposable
         }
 
         timer?.Dispose();
-        foreach (var run in active)
+        foreach (Run run in active)
             run.Cts.Cancel();
     }
 
@@ -299,7 +318,7 @@ public sealed partial class AsyncDebouncer : IDisposable
                 break;
 
             case AsyncDebouncerExecutionPolicy.CancelAndRestart:
-                foreach (var run in _active)
+                foreach (Run run in _active)
                     run.Cts.Cancel();
                 StartRunCore();
                 break;

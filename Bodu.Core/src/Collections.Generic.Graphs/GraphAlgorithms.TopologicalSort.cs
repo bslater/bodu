@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
-using Bodu.Collections.Generic;
 
 namespace Bodu.Collections.Generic.Graphs;
 
@@ -22,7 +21,7 @@ public static partial class GraphAlgorithms
     public static IReadOnlyList<T> TopologicalSort<T>(IReadOnlyGraph<T> graph)
         where T : notnull
     {
-        if (!TryTopologicalSortCore(graph, out var order, out var offending))
+        if (!TryTopologicalSortCore(graph, out IReadOnlyList<T>? order, out T? offending))
             throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, ResourceStrings.Op_Invalid_CircularDependency, offending));
 
         return order;
@@ -44,7 +43,7 @@ public static partial class GraphAlgorithms
     public static bool TryTopologicalSort<T>(IReadOnlyGraph<T> graph, out IReadOnlyList<T> order)
         where T : notnull
     {
-        var ok = TryTopologicalSortCore(graph, out var result, out _);
+        bool ok = TryTopologicalSortCore(graph, out IReadOnlyList<T>? result, out _);
         order = result;
         return ok;
     }
@@ -68,17 +67,17 @@ public static partial class GraphAlgorithms
             throw new InvalidOperationException(ResourceStrings.Op_Invalid_GraphNotDirected);
 
         var inDegree = new Dictionary<T, int>(graph.Comparer);
-        foreach (var vertex in graph.Vertices)
+        foreach (T vertex in graph.Vertices)
             inDegree[vertex] = 0;
 
-        foreach (var vertex in graph.Vertices)
+        foreach (T vertex in graph.Vertices)
         {
-            foreach (var neighbor in graph.Neighbors(vertex))
+            foreach (T neighbor in graph.Neighbors(vertex))
                 inDegree[neighbor]++;
         }
 
         var ready = new Deque<T>();
-        foreach (var entry in inDegree)
+        foreach (KeyValuePair<T, int> entry in inDegree)
         {
             if (entry.Value == 0)
                 ready.AddLast(entry.Key);
@@ -87,10 +86,10 @@ public static partial class GraphAlgorithms
         var result = new List<T>(graph.VertexCount);
         while (ready.Count > 0)
         {
-            var current = ready.RemoveFirst();
+            T current = ready.RemoveFirst();
             result.Add(current);
 
-            foreach (var neighbor in graph.Neighbors(current))
+            foreach (T neighbor in graph.Neighbors(current))
             {
                 if (--inDegree[neighbor] == 0)
                     ready.AddLast(neighbor);
@@ -100,7 +99,7 @@ public static partial class GraphAlgorithms
         if (result.Count != graph.VertexCount)
         {
             offending = default;
-            foreach (var entry in inDegree)
+            foreach (KeyValuePair<T, int> entry in inDegree)
             {
                 if (entry.Value > 0)
                 {

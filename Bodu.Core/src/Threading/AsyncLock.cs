@@ -53,9 +53,16 @@ namespace Bodu.Threading;
 [DebuggerDisplay("Held = {_held}, Waiters = {WaiterCount}")]
 public sealed partial class AsyncLock : IDisposable
 {
+    /// <summary>The synchronization object guarding the waiter queue and lock state.</summary>
     private readonly object _gate = new();
+
+    /// <summary>The queue of pending acquirers, granted the lock in FIFO order as it is released.</summary>
     private readonly LinkedList<TaskCompletionSource<Releaser>> _waiters = new();
+
+    /// <summary>Indicates whether the lock is currently held.</summary>
     private bool _held;
+
+    /// <summary>Indicates whether the lock has been disposed.</summary>
     private bool _disposed;
 
     /// <summary>
@@ -172,7 +179,7 @@ public sealed partial class AsyncLock : IDisposable
             _waiters.Clear();
         }
 
-        foreach (var tcs in toFault)
+        foreach (TaskCompletionSource<Releaser> tcs in toFault)
             tcs.TrySetException(new ObjectDisposedException(nameof(AsyncLock), ResourceStrings.Op_Invalid_AsyncPrimitiveDisposedWaiters));
     }
 
@@ -187,11 +194,11 @@ public sealed partial class AsyncLock : IDisposable
     {
         using (cancellationToken.Register(static state =>
         {
-            var (owner, waiter, token) = ((AsyncLock Owner, LinkedListNode<TaskCompletionSource<Releaser>> Node, CancellationToken Token))state!;
+            (AsyncLock? owner, LinkedListNode<TaskCompletionSource<Releaser>>? waiter, CancellationToken token) = ((AsyncLock Owner, LinkedListNode<TaskCompletionSource<Releaser>> Node, CancellationToken Token))state!;
             owner.CancelWaiter(waiter, token);
         }, (this, node, cancellationToken)))
         {
-            var releaser = await node.Value.Task.ConfigureAwait(false);
+            Releaser releaser = await node.Value.Task.ConfigureAwait(false);
 
             // If cancellation raced with the ownership transfer, honor the cancellation and return the lock.
             if (cancellationToken.IsCancellationRequested)

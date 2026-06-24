@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Tree{T}.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -32,8 +32,13 @@ namespace Bodu.Collections.Generic.Trees;
 [DebuggerTypeProxy(typeof(TreeDebugView<>))]
 public sealed partial class Tree<T>
 {
+    /// <summary>The ordered list of immediate child nodes.</summary>
     private readonly List<Tree<T>> _children;
+
+    /// <summary>A cached read-only wrapper over <see cref="_children" /> returned by <see cref="Children" />.</summary>
     private readonly ReadOnlyCollection<Tree<T>> _childrenView;
+
+    /// <summary>The parent node, or <see langword="null" /> when this node is a root.</summary>
     private Tree<T>? _parent;
 
     /// <summary>
@@ -59,7 +64,7 @@ public sealed partial class Tree<T>
     {
         ThrowHelper.ThrowIfNull(childValues);
 
-        foreach (var childValue in childValues)
+        foreach (T? childValue in childValues)
             AddChild(childValue);
     }
 
@@ -112,8 +117,8 @@ public sealed partial class Tree<T>
     {
         get
         {
-            var depth = 0;
-            for (var node = _parent; node is not null; node = node._parent)
+            int depth = 0;
+            for (Tree<T>? node = _parent; node is not null; node = node._parent)
                 depth++;
 
             return depth;
@@ -129,16 +134,16 @@ public sealed partial class Tree<T>
     {
         get
         {
-            var height = 0;
+            int height = 0;
             var stack = new Stack<(Tree<T> Node, int Depth)>();
             stack.Push((this, 0));
             while (stack.Count > 0)
             {
-                var (node, depth) = stack.Pop();
+                (Tree<T>? node, int depth) = stack.Pop();
                 if (depth > height)
                     height = depth;
 
-                foreach (var child in node._children)
+                foreach (Tree<T> child in node._children)
                     stack.Push((child, depth + 1));
             }
 
@@ -173,7 +178,7 @@ public sealed partial class Tree<T>
         if (child._parent is not null)
             throw new InvalidOperationException(ResourceStrings.Op_Invalid_NodeAlreadyHasParent);
 
-        for (var node = this; node is not null; node = node._parent)
+        for (Tree<T>? node = this; node is not null; node = node._parent)
         {
             if (ReferenceEquals(node, child))
                 throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, ResourceStrings.Op_Invalid_CircularReference, child.Value));
@@ -223,7 +228,7 @@ public sealed partial class Tree<T>
     /// </summary>
     public void Clear()
     {
-        foreach (var child in _children)
+        foreach (Tree<T> child in _children)
             child._parent = null;
 
         _children.Clear();

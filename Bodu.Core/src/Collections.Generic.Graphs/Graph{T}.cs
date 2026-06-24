@@ -32,8 +32,13 @@ public sealed partial class Graph<T>
     : IReadOnlyWeightedGraph<T, double>
     where T : notnull
 {
+    /// <summary>The adjacency map: each vertex maps to its outgoing neighbors and their edge weights.</summary>
     private readonly Dictionary<T, Dictionary<T, double>> _adjacency;
+
+    /// <summary>Indicates whether the graph treats edges as directed or undirected.</summary>
     private readonly GraphKind _kind;
+
+    /// <summary>The number of edges in the graph, counting each undirected connection once.</summary>
     private int _edgeCount;
 
     /// <summary>
@@ -143,17 +148,17 @@ public sealed partial class Graph<T>
     {
         ThrowHelper.ThrowIfNull(vertex);
 
-        if (!_adjacency.TryGetValue(vertex, out var outgoing))
+        if (!_adjacency.TryGetValue(vertex, out Dictionary<T, double>? outgoing))
             return false;
 
         // Remove the vertex's own edges (and, when undirected, the mirrored back edges).
-        foreach (var neighbor in outgoing.Keys.ToArray())
+        foreach (T? neighbor in outgoing.Keys.ToArray())
             RemoveEdge(vertex, neighbor);
 
         // In a directed graph, incoming edges from other vertices remain and must be removed explicitly.
         if (IsDirected)
         {
-            foreach (var source in _adjacency.Keys.ToArray())
+            foreach (T? source in _adjacency.Keys.ToArray())
             {
                 if (!Comparer.Equals(source, vertex) && RemoveDirectedEdge(source, vertex))
                     _edgeCount--;
@@ -182,7 +187,7 @@ public sealed partial class Graph<T>
     /// <exception cref="ArgumentException"><paramref name="vertex" /> is not in the graph.</exception>
     private Dictionary<T, double> RequireVertex(T vertex, string paramName)
     {
-        if (!_adjacency.TryGetValue(vertex, out var edges))
+        if (!_adjacency.TryGetValue(vertex, out Dictionary<T, double>? edges))
             throw new ArgumentException(ResourceStrings.Arg_Invalid_VertexNotInGraph, paramName);
 
         return edges;

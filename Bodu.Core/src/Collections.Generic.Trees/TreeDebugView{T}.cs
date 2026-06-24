@@ -14,6 +14,7 @@ namespace Bodu.Collections.Generic.Trees;
 /// <typeparam name="T">The type of the values stored in the tree.</typeparam>
 internal sealed class TreeDebugView<T>
 {
+    /// <summary>The tree node whose value and children are surfaced in the debugger.</summary>
     private readonly Tree<T> _node;
 
     /// <summary>

@@ -32,8 +32,13 @@ namespace Bodu.Threading;
 [DebuggerDisplay("CurrentCount = {CurrentCount}")]
 public sealed class AsyncCountdownEvent
 {
+    /// <summary>The synchronization object guarding <see cref="_count" />.</summary>
     private readonly object _gate = new();
+
+    /// <summary>The underlying manual-reset event that is set once the count reaches zero.</summary>
     private readonly AsyncManualResetEvent _gateEvent;
+
+    /// <summary>The number of remaining signals required before the event becomes set.</summary>
     private int _count;
 
     /// <summary>

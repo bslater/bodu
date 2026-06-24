@@ -34,7 +34,7 @@ public static partial class StringExtensions
 
         if (count == 0 || value.Length == 0) return value;
 
-        string prefix = new string(indentChar, count);
+        string prefix = new(indentChar, count);
         StringBuilder builder = new(value.Length + (count * 4));
         bool atLineStart = true;
         for (int i = 0; i < value.Length; i++)
