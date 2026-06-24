@@ -86,7 +86,69 @@ method-level examples to the partial member files.
 | `Interval<T>` factories/helpers/set-ops | method | covered by type | Already carried examples. |
 | Numerics.Serialization, throw helpers | various | trivial | Out of consumer scope. |
 
-_Bodu.Financial and remaining libraries: rows appended as each pass completes._
+### Bodu.Financial
+
+| Type / Member | Kind | Decision | Notes |
+|---|---|---|---|
+| `Money` | type | example added (type) | Construct, same-currency arithmetic/comparison, scalar scaling, cross-currency throws. |
+| `Money.Parse` | method | example added (method) | ISO prefix/suffix; bare amount rejected. |
+| `Money<TCurrency>` | type | example added (type) | Compile-time currency tag; arithmetic + `Convert`. |
+| `Money<TCurrency>.TryParse`, `ToString(format)`, `Convert<TTarget>`, `Multiply(.., rounding)`, `Allocate` | method | example added (method) | Parse/format/convert/penny-split. |
+| `MoneyBag` | type | example added (type) | Add/Combine/GetBalance multi-currency aggregation. |
+| `CalculatedMoney` (`RoundToMoney`) | type | example added (type) | Deferred-rounding chain. |
+| `ICurrency` | type | example added (type) | Read static currency metadata from a tag. |
+| `MonetaryContext` | type | example added (type) | `with`-record configuration + settlement. |
+| `ExchangeRate`, `ExchangeRateBook`, `ExchangeRateSeries`, `FixedDatedExchangeRateProvider`, `ExchangeRateLookupOptions`, `IDatedExchangeRateProvider`, `IExchangeRateProvider`, `WebExchangeRateProvider` | type | example added (type) | Full exchange-rate flow incl. provider subclass skeleton. |
+| `CurrencyCode` | enum | trivial | Plain enum, no helper methods. |
+| `AllocationPolicy`, `MoneyParseMode`, `ScalePolicy`, … | enum | trivial | Enums. |
+| Per-currency tag types (`USD`, `EUR`, … ~180) | type | trivial | Auto-generated, data-only. |
+| Exception types, JSON converters, internal helpers, result DTO structs | various | trivial | Plumbing. |
+
+### Bodu.Financial.DependencyInjection + ExchangeRates.{Boe,Ecb,Rba,Yahoo,Ofx,DI,Caching,Caching.Sqlite,Caching.Distributed}
+
+| Type / Member | Kind | Decision | Notes |
+|---|---|---|---|
+| `AddFinancialService(Action<…>)`, `FinancialServiceBuilderExtensions`, `UseCurrencyResolution` | DI method/type | example added | Builder-lambda registration. |
+| `AddWebExchangeRateProvider` | DI method | example added | Generic provider machinery. |
+| `AddBoeReferenceRates`, `AddEcbReferenceRates`, `AddRbaHistoricalRates`, `AddYahooExchangeRates`, `AddOfxExchangeRates` (both overloads each) | DI method | example added | Per-source registration. |
+| `IAggregatedExchangeRateBuilder` | type | example added | AddCachedChild/MapPair/UseDefaultStrategy. |
+| `AddCachedExchangeRateProvider`, `AddAggregatedExchangeRateProvider`, `AddSqliteRateCache`, `AddDistributedRateCache`, `AddRedisRateCache`; `CachingExchangeRateProvider`, `AggregatingExchangeRateProvider`, `SqliteExchangeRateCache`, `DistributedExchangeRateCache`; provider classes | type/method | covered by type | Already carried examples. |
+| Strategy classes, `IExchangeRateCache`, options/DTO records, exceptions, internal parsers | various | trivial | Secondary; usage shown via DI examples. |
+
+### Bodu.Globalization.Calendar (+ Builder, DependencyInjection, Plugins, Data)
+
+| Type / Member | Kind | Decision | Notes |
+|---|---|---|---|
+| `NotableDateResource`, `CommonNotableDateResources` | type | example added (type) | Load/resolve resources. |
+| `NotableDateOnlyExtensions` (IsWorkingDay, AddWorkingDays, WorkingDaysBetween, NextWorkingDay, SnapToWorkingDay, IsNotableDate, GetNotableDates[InMonth/InYear], NextNotableDate, EnumerateWorkingDays) | method | example added (method) | Working-day / notable-date surface. |
+| `NotableDateDocumentBuilder` (FromXml/FromJson/Save) | method | example added (method) | Authoring round-trip. |
+| `AddReloadableNotableDateService` | DI method | example added | Reloadable registration. |
+| `NotableDatePluginAttribute` | type | example added (type) | Assembly-level plugin declaration. |
+| `NotableDateService`/`INotableDateService`, `NotableDateResourceLoader`, `ReloadableNotableDateService`, extension root classes, `<Region>CalendarData` factories, `NotableDatePluginLoader`, `AddNotableDateService`, plugin interfaces | type | covered by type | Already carried examples. |
+| DateTime/DateTimeOffset/Fiscal extension method partials (~45) | method | covered by type | Mirror the DateOnly surface; root type-level examples cover them. |
+| Rule-model records/enums, exception types, internal strategies, trust policy DTOs | various | trivial | Data/secondary. |
+
+### Bodu.Text.Configuration + Bodu.Extensions.Configuration.Text
+
+| Type / Member | Kind | Decision | Notes |
+|---|---|---|---|
+| `ConfigurationView.GetValue<T>`, `GetEnum<TEnum>` | method | example added (method) | Typed getters. |
+| `ConfigurationParseOptions` | type | example added (type) | Strict profile + diagnostics. |
+| `ConfigurationDocument`, `ConfigurationProfile`, `ConfigurationView` | type | covered by type | Already carried examples. |
+| `TextConfigurationExtensions`, `TomlConfigurationExtensions`, `ConfigurationOptionsExtensions`, sources/providers | type | covered by type | Already carried examples. |
+| `ConfigurationWriteOptions` | type | trivial | Options bag; usage shown via Save examples. |
+
+### Strong libraries — assessment pass (already well covered)
+
+| Library | Decision | Notes |
+|---|---|---|
+| Bodu.Core | covered | Primary collections/buffers/WeekPattern already have type-level examples. |
+| Bodu.IO.Hashing | covered | Fletcher/Crc/check-digit families already exampled. |
+| Bodu.Security.Cryptography | covered | Every concrete cipher/AEAD/hash/asymmetric type exampled; abstract bases by design. |
+| Bodu.Text.Encoding | covered | Base16/32/58/64/85 exampled. |
+| Bodu.Text.Formats | covered | Delimited/DotEnv/Ini facades + reader/writer exampled. |
+| Bodu.Text.Bencode | example added | Added Utf8BencodeReader/Writer, BencodeNode, BencodeDocument; serializer already exampled. |
+| Bodu.Text.Toml | example added | Added Utf8TomlReader; writer/serializer/node/document already exampled. |
 
 ---
 
