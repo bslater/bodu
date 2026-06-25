@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExcelWorksheetTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -75,8 +75,8 @@ public class ExcelWorksheetTests
         List<int> rowIndexes = sheet.Rows.Select(r => r.RowIndex).ToList();
 
         CollectionAssert.AreEqual(new[] { 0, 2 }, rowIndexes);
-        Assert.AreEqual(2, sheet.Rows[0].Cells.Count);
-        Assert.AreEqual(1, sheet.Rows[1].Cells.Count);
+        Assert.HasCount(2, sheet.Rows[0].Cells);
+        Assert.HasCount(1, sheet.Rows[1].Cells);
     }
 
     /// <summary>

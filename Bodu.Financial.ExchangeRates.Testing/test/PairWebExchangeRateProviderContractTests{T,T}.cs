@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="PairWebExchangeRateProviderContractTests{T,T}.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -43,7 +43,7 @@ public abstract class PairWebExchangeRateProviderContractTests<TProvider, TSerie
 
         ExchangeRateLookupResult result = provider.GetRate(from, to, KnownDate, ExchangeRateLookupOptions.Exact);
 
-        Assert.IsTrue(result.Rate.Rate > 0m, "the warmed known date resolves to a positive rate");
+        Assert.IsGreaterThan(0m, result.Rate.Rate, "the warmed known date resolves to a positive rate");
     }
 
     /// <summary>
@@ -62,7 +62,7 @@ public abstract class PairWebExchangeRateProviderContractTests<TProvider, TSerie
 
         ExchangeRateLookupResult result = provider.GetRate(from, to, KnownDate, ExchangeRateLookupOptions.Exact);
 
-        Assert.IsTrue(result.Rate.Rate > 0m);
+        Assert.IsGreaterThan(0m, result.Rate.Rate);
     }
 
     /// <summary>
@@ -74,10 +74,10 @@ public abstract class PairWebExchangeRateProviderContractTests<TProvider, TSerie
     {
         TProvider provider = CreateProvider();
 
-        Assert.AreEqual(0, provider.GetAvailablePairs().Count, "a cold provider reports no series");
+        Assert.IsEmpty(provider.GetAvailablePairs(), "a cold provider reports no series");
 
         await provider.LoadPairAsync(CanonicalPair.From.ToString(), CanonicalPair.To.ToString(), RangeStart, RangeEnd);
 
-        Assert.IsTrue(provider.GetAvailablePairs().Count >= 1, "the warmed pair is discoverable");
+        Assert.IsGreaterThanOrEqualTo(1, provider.GetAvailablePairs().Count, "the warmed pair is discoverable");
     }
 }

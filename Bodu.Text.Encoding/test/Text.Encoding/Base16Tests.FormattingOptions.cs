@@ -41,7 +41,7 @@ public sealed partial class Base16Tests
             bytes,
             BaseFormattingOptions.InsertLineBreaks | BaseFormattingOptions.InsertSpacing);
 
-        Assert.IsTrue(actual.Contains("\r\n"), "Output should contain a line-break sequence.");
+        Assert.Contains("\r\n", actual, "Output should contain a line-break sequence.");
         Assert.IsTrue(actual.Contains(' '), "Output should contain space-separated byte pairs.");
     }
 

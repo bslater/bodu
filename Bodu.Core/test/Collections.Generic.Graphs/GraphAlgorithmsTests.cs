@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="GraphAlgorithmsTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -140,7 +140,7 @@ public sealed class GraphAlgorithmsTests
         {
             Assert.IsFalse(result.Found);
             Assert.AreEqual(double.PositiveInfinity, result.Distance);
-            Assert.AreEqual(0, result.Path.Count);
+            Assert.IsEmpty(result.Path);
         }
         else
         {
@@ -188,11 +188,11 @@ public sealed class GraphAlgorithmsTests
         if (kat.IsAcyclic)
         {
             Assert.IsTrue(GraphAlgorithms.TryTopologicalSort(graph, out var order));
-            Assert.AreEqual(graph.VertexCount, order.Count);
+            Assert.HasCount(graph.VertexCount, order);
 
             var position = order.Select((v, i) => (v, i)).ToDictionary(p => p.v, p => p.i);
             foreach (var (from, to) in kat.Edges)
-                Assert.IsTrue(position[from] < position[to], $"Edge {from}->{to} violates ordering");
+                Assert.IsLessThan(position[to], position[from], $"Edge {from}->{to} violates ordering");
         }
         else
         {
@@ -230,7 +230,7 @@ public sealed class GraphAlgorithmsTests
             .OrderBy(c => c[0])
             .ToArray();
 
-        Assert.AreEqual(3, components.Length);
+        Assert.HasCount(3, components);
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, components[0]);
         CollectionAssert.AreEqual(new[] { 10, 11 }, components[1]);
         CollectionAssert.AreEqual(new[] { 20 }, components[2]);
@@ -259,6 +259,6 @@ public sealed class GraphAlgorithmsTests
         for (var i = 1; i < n; i++)
             graph.AddEdge(i - 1, i);
 
-        Assert.AreEqual(n, GraphAlgorithms.DepthFirstSearch(graph, 0).Count());
+        Assert.HasCount(n, GraphAlgorithms.DepthFirstSearch(graph, 0));
     }
 }

@@ -20,9 +20,7 @@ public readonly partial struct Fraction<T>
     /// <summary>
     /// Gets a value indicating whether this rational value is an exact integer.
     /// </summary>
-    /// <value>
-    /// <see langword="true" /> if the canonical denominator is one; otherwise, <see langword="false" />.
-    /// </value>
+    /// <value><see langword="true" /> if the canonical denominator is one; otherwise, <see langword="false" />.</value>
     public bool IsInteger =>
         Denominator == T.One;
 
@@ -55,18 +53,14 @@ public readonly partial struct Fraction<T>
     /// <summary>
     /// Gets a value indicating whether this rational value is positive.
     /// </summary>
-    /// <value>
-    /// <see langword="true" /> if this value is greater than zero; otherwise, <see langword="false" />.
-    /// </value>
+    /// <value><see langword="true" /> if this value is greater than zero; otherwise, <see langword="false" />.</value>
     public bool IsPositive =>
         !T.IsZero(Numerator) && !T.IsNegative(Numerator);
 
     /// <summary>
     /// Gets a value indicating whether this rational value is a whole number.
     /// </summary>
-    /// <value>
-    /// <see langword="true" /> if the canonical denominator is one; otherwise, <see langword="false" />.
-    /// </value>
+    /// <value><see langword="true" /> if the canonical denominator is one; otherwise, <see langword="false" />.</value>
     /// <remarks>
     /// This property is an alias for <see cref="IsInteger" />.
     /// </remarks>

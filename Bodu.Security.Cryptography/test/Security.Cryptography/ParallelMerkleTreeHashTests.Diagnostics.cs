@@ -44,8 +44,8 @@ public partial class ParallelMerkleTreeHashTests
         IReadOnlyList<MerkleTreeDiagnosticNode> leaves = diagnostics.GetLevel(0);
         var internals = diagnostics.GetAllNodes().Where(n => !n.IsLeaf).ToList();
 
-        Assert.AreEqual(2, leaves.Count, "Expected two leaf nodes.");
-        Assert.AreEqual(1, internals.Count, "Expected one internal node.");
+        Assert.HasCount(2, leaves, "Expected two leaf nodes.");
+        Assert.HasCount(1, internals, "Expected one internal node.");
     }
 
     /// <summary>
@@ -61,7 +61,7 @@ public partial class ParallelMerkleTreeHashTests
         foreach (MerkleTreeDiagnosticNode leaf in diagnostics.GetLevel(0))
         {
             Assert.IsTrue(leaf.IsLeaf, $"Node [{leaf.Level}:{leaf.Index}] is not marked as a leaf.");
-            Assert.AreEqual(0, leaf.ChildHashes.Count,
+            Assert.IsEmpty(leaf.ChildHashes,
                 $"Leaf [{leaf.Level}:{leaf.Index}] must have no child hashes.");
         }
     }
@@ -79,7 +79,7 @@ public partial class ParallelMerkleTreeHashTests
 
         MerkleTreeDiagnosticNode node = diagnostics.GetAllNodes().Single(n => !n.IsLeaf);
         Assert.IsFalse(node.IsLeaf);
-        Assert.AreEqual(2, node.ChildHashes.Count);
+        Assert.HasCount(2, node.ChildHashes);
     }
 
     /// <summary>
@@ -141,7 +141,7 @@ public partial class ParallelMerkleTreeHashTests
         using var hasher = new ParallelMerkleTreeHash(Factory, blockSize: 4, fanOut: 2);
         hasher.ComputeHash(MakeData(8), diagnostics);
 
-        Assert.AreEqual(0, diagnostics.GetLevel(99).Count);
+        Assert.IsEmpty(diagnostics.GetLevel(99));
     }
 
     /// <summary>
@@ -154,7 +154,7 @@ public partial class ParallelMerkleTreeHashTests
         using var hasher = new ParallelMerkleTreeHash(Factory, blockSize: 4, fanOut: 2);
         hasher.ComputeHash(MakeData(8)); // no diagnostics argument
 
-        Assert.AreEqual(0, detached.GetAllNodes().Count,
+        Assert.IsEmpty(detached.GetAllNodes(),
             "A detached diagnostics instance must record nothing.");
     }
 
@@ -176,7 +176,7 @@ public partial class ParallelMerkleTreeHashTests
         var leaves = diagnostics.GetLevel(0).ToList();
         MerkleTreeDiagnosticNode internal_ = diagnostics.GetAllNodes().Single(n => !n.IsLeaf);
 
-        Assert.AreEqual(leaves.Count, internal_.ChildHashes.Count);
+        Assert.HasCount(leaves.Count, internal_.ChildHashes);
         for (int i = 0; i < leaves.Count; i++)
             CollectionAssert.AreEqual(leaves[i].Hash, internal_.ChildHashes[i],
                 $"Child hash {i} does not match leaf {i}.");
@@ -200,7 +200,7 @@ public partial class ParallelMerkleTreeHashTests
         bool valid = diagnostics.Validate(Factory, out IReadOnlyList<string>? errors);
 
         Assert.IsTrue(valid, "Validate must return true for a correctly computed tree.");
-        Assert.AreEqual(0, errors.Count, "Validate must produce no errors for a correctly computed tree.");
+        Assert.IsEmpty(errors, "Validate must produce no errors for a correctly computed tree.");
     }
 
     /// <summary>
@@ -237,7 +237,7 @@ public partial class ParallelMerkleTreeHashTests
 
         bool valid = diagnostics.Validate(Factory, out IReadOnlyList<string>? errors);
         Assert.IsFalse(valid, "Validate must return false when a node hash is corrupted.");
-        Assert.IsTrue(errors.Count > 0, "Validate must report at least one error.");
+        Assert.IsNotEmpty(errors, "Validate must report at least one error.");
     }
 
     /// <summary>
@@ -291,7 +291,7 @@ public partial class ParallelMerkleTreeHashTests
         diagnostics.WriteTo(writer);
 
         string output = writer.ToString();
-        Assert.IsTrue(output.Length > 0, "WriteTo should produce non-empty output.");
+        Assert.IsGreaterThan(0, output.Length, "WriteTo should produce non-empty output.");
         StringAssert.Contains(output, Convert.ToHexString(root),
             "WriteTo output should include the root hash.");
     }
@@ -379,9 +379,9 @@ public partial class ParallelMerkleTreeHashTests
         hasher.ComputeHash(data, diag2);
         hasher.ComputeHash(data, diag3);
 
-        Assert.AreEqual(3, diag1.GetAllNodes().Count, "diag1 must hold exactly 3 nodes.");
-        Assert.AreEqual(3, diag2.GetAllNodes().Count, "diag2 must hold exactly 3 nodes.");
-        Assert.AreEqual(3, diag3.GetAllNodes().Count, "diag3 must hold exactly 3 nodes.");
+        Assert.HasCount(3, diag1.GetAllNodes(), "diag1 must hold exactly 3 nodes.");
+        Assert.HasCount(3, diag2.GetAllNodes(), "diag2 must hold exactly 3 nodes.");
+        Assert.HasCount(3, diag3.GetAllNodes(), "diag3 must hold exactly 3 nodes.");
     }
 
     /// <summary>

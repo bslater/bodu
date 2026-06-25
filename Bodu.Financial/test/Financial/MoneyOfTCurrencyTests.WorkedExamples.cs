@@ -384,7 +384,7 @@ public partial class MoneyOfTCurrencyTests
     {
         Money<USD>[] shares = Money<USD>.Zero.Allocate(parts);
 
-        Assert.AreEqual(parts, shares.Length);
+        Assert.HasCount(parts, shares);
         foreach (Money<USD> share in shares)
             Assert.AreEqual(Money<USD>.Zero, share);
     }
@@ -404,7 +404,7 @@ public partial class MoneyOfTCurrencyTests
 
         Money<USD>[] shares = original.Allocate(1);
 
-        Assert.AreEqual(1, shares.Length);
+        Assert.HasCount(1, shares);
         Assert.AreEqual(original, shares[0]);
     }
 

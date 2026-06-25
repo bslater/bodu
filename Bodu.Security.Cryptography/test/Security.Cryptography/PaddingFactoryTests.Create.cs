@@ -21,7 +21,7 @@ public partial class PaddingFactoryTests
         {
             PaddingFactory.Create((PaddingMode)999);
         });
-        Assert.IsFalse(ex.Message.Contains("this."), "Exception message must not contain 'this.' artifact.");
+        Assert.DoesNotContain("this.", ex.Message, "Exception message must not contain 'this.' artifact.");
     }
 
     /// <summary>
@@ -35,7 +35,7 @@ public partial class PaddingFactoryTests
         {
             PaddingFactory.Create((Cryptography.PaddingModeKind)999);
         }));
-        Assert.IsFalse(ex.Message.Contains("this."), "Exception message must not contain 'this.' artifact.");
+        Assert.DoesNotContain("this.", ex.Message, "Exception message must not contain 'this.' artifact.");
     }
 
     /// <summary>

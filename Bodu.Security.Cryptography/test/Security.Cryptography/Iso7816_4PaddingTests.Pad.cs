@@ -20,7 +20,7 @@ public sealed partial class Iso7816_4PaddingTests
 
         byte[] padded = padding.Pad(plaintext, BlockSizeBits);
 
-        Assert.AreEqual(BlockSize, padded.Length);
+        Assert.HasCount(BlockSize, padded);
         Assert.AreEqual((byte)0x80, padded[plaintext.Length], "First pad byte must be 0x80.");
 
         for (int i = plaintext.Length + 1; i < padded.Length; i++)
@@ -40,7 +40,7 @@ public sealed partial class Iso7816_4PaddingTests
 
         byte[] padded = padding.Pad(plaintext, BlockSizeBits);
 
-        Assert.AreEqual(plaintext.Length + BlockSize, padded.Length);
+        Assert.HasCount(plaintext.Length + BlockSize, padded);
         Assert.AreEqual((byte)0x80, padded[plaintext.Length], "Terminator must sit at the start of the appended block.");
 
         for (int i = plaintext.Length + 1; i < padded.Length; i++)

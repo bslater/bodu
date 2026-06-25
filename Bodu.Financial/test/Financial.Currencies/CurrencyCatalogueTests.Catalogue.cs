@@ -24,6 +24,6 @@ public partial class CurrencyCatalogueTests
                 && typeof(ICurrency).IsAssignableFrom(t))
             .Count();
 
-        Assert.IsTrue(count >= 180, $"Expected at least 180 currency tag types, found {count}.");
+        Assert.IsGreaterThanOrEqualTo(180, count, $"Expected at least 180 currency tag types, found {count}.");
     }
 }

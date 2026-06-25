@@ -163,8 +163,8 @@ public partial class Poly1305Tests
 
         byte[] secondTag = poly.ComputeHash(message);
 
-        Assert.AreEqual(16, firstTag.Length);
-        Assert.AreEqual(16, secondTag.Length);
+        Assert.HasCount(16, firstTag);
+        Assert.HasCount(16, secondTag);
         CollectionAssert.AreNotEqual(firstTag, secondTag,
             "Re-keying with a different one-time key must change the produced tag.");
     }

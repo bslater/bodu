@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CalendarAlgorithmEdgeTests.FixedDateStrategy.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -22,6 +22,6 @@ public partial class CalendarAlgorithmEdgeTests
         var strategy = new FixedDateStrategy(1, 1);
 
         Assert.IsNull(strategy.Calculate(0, context));
-        Assert.AreEqual(0, strategy.CalculateAll(0, context).Count);
+        Assert.IsEmpty(strategy.CalculateAll(0, context));
     }
 }

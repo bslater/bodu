@@ -21,9 +21,9 @@ public partial class ExchangeRateSeriesStorageTests
 
         ExchangeRateObservation[] observations = storage.Enumerate().ToArray();
 
-        Assert.AreEqual(3, observations.Length);
-        Assert.IsTrue(observations[0].Date < observations[1].Date);
-        Assert.IsTrue(observations[1].Date < observations[2].Date);
+        Assert.HasCount(3, observations);
+        Assert.IsLessThan(observations[1].Date, observations[0].Date);
+        Assert.IsLessThan(observations[2].Date, observations[1].Date);
     }
 
     /// <summary>

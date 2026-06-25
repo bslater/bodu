@@ -49,7 +49,7 @@ public sealed class BufferedBlockHashAlgorithmTests
         using var sut = new MonitoringBufferedBlockHashAlgorithm(16);
 
         Assert.AreEqual(16, sut.ConfiguredBlockSize);
-        Assert.AreEqual(16, sut.ResidualBufferSnapshot.Length);
+        Assert.HasCount(16, sut.ResidualBufferSnapshot);
         Assert.AreEqual(0, sut.ResidualBytesSnapshot);
         Assert.AreEqual(0UL, sut.TotalBytesSnapshot);
     }
@@ -115,7 +115,7 @@ public sealed class BufferedBlockHashAlgorithmTests
         sut.Dispose();
 
         Assert.AreEqual(1, sut.OnDisposeCallCount);
-        Assert.IsTrue(sut.LastDisposeFlag == true);
+        Assert.AreEqual(true, sut.LastDisposeFlag);
     }
 
     /// <summary>

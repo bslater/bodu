@@ -29,7 +29,7 @@ public partial class TomlSerializerTests
         Assert.AreEqual("[Counts]\nz = 1\na = 2\nm = 3\n", text);
 
         DictionaryModel roundTripped = TomlSerializer.Deserialize<DictionaryModel>(text);
-        Assert.AreEqual(3, roundTripped.Counts.Count);
+        Assert.HasCount(3, roundTripped.Counts);
         Assert.AreEqual(1, roundTripped.Counts["z"]);
         Assert.AreEqual(2, roundTripped.Counts["a"]);
         Assert.AreEqual(3, roundTripped.Counts["m"]);
@@ -108,7 +108,7 @@ public partial class TomlSerializerTests
 
         DictionaryModel roundTripped = TomlSerializer.Deserialize<DictionaryModel>(text);
         Assert.IsNotNull(roundTripped.Counts);
-        Assert.AreEqual(0, roundTripped.Counts.Count);
+        Assert.IsEmpty(roundTripped.Counts);
     }
 
     /// <summary>

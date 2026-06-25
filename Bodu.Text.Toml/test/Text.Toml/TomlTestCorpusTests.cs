@@ -246,7 +246,7 @@ public sealed partial class TomlTestCorpusTests
                 AssertMatches(property.Value, child!, $"{path}.{property.Name}");
             }
 
-            Assert.AreEqual(expectedCount, table.Count, $"{path}: key count.");
+            Assert.HasCount(expectedCount, table, $"{path}: key count.");
             return;
         }
 
@@ -255,7 +255,7 @@ public sealed partial class TomlTestCorpusTests
             Assert.IsInstanceOfType<List<object>>(actual, $"{path}: expected an array.");
             var list = (List<object>)actual;
 
-            Assert.AreEqual(expected.GetArrayLength(), list.Count, $"{path}: array length.");
+            Assert.HasCount(expected.GetArrayLength(), list, $"{path}: array length.");
             int index = 0;
             foreach (JsonElement element in expected.EnumerateArray())
             {

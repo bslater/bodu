@@ -39,7 +39,7 @@ public sealed class BclAliasCoverageTests
     {
         byte[] decoded = Base16.FromHexString(ReadOnlySpan<byte>.Empty);
 
-        Assert.AreEqual(0, decoded.Length);
+        Assert.IsEmpty(decoded);
     }
 
     /// <summary>
@@ -137,7 +137,7 @@ public sealed class BclAliasCoverageTests
     {
         byte[] decoded = Base32.FromBase32String(ReadOnlySpan<byte>.Empty);
 
-        Assert.AreEqual(0, decoded.Length);
+        Assert.IsEmpty(decoded);
     }
 
     /// <summary>
@@ -188,7 +188,7 @@ public sealed class BclAliasCoverageTests
     {
         byte[] decoded = Base58.FromBase58String(ReadOnlySpan<byte>.Empty);
 
-        Assert.AreEqual(0, decoded.Length);
+        Assert.IsEmpty(decoded);
     }
 
     /// <summary>
@@ -257,7 +257,7 @@ public sealed class BclAliasCoverageTests
     {
         byte[] decoded = Base64.FromBase64String(ReadOnlySpan<byte>.Empty);
 
-        Assert.AreEqual(0, decoded.Length);
+        Assert.IsEmpty(decoded);
     }
 
     /// <summary>
@@ -320,7 +320,7 @@ public sealed class BclAliasCoverageTests
     {
         byte[] decoded = Base85.FromBase85String(ReadOnlySpan<byte>.Empty);
 
-        Assert.AreEqual(0, decoded.Length);
+        Assert.IsEmpty(decoded);
     }
 
     /// <summary>

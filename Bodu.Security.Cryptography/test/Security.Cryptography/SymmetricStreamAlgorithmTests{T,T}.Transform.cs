@@ -216,7 +216,7 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
 
         byte[] result = e.TransformFinalBlock([], 0, 0);
 
-        Assert.AreEqual(0, result.Length);
+        Assert.IsEmpty(result);
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
             _ = e.TransformBlock([], 0, 0, [], 0);

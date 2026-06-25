@@ -30,8 +30,8 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
 
         foreach (KeySizes keySize in keySizes)
         {
-            Assert.IsTrue(keySize.MinSize <= keySize.MaxSize, "MinSize must be less than or equal to MaxSize.");
-            Assert.IsTrue(keySize.SkipSize >= 0, "SkipSize must be greater than or equal to zero.");
+            Assert.IsLessThanOrEqualTo(keySize.MaxSize, keySize.MinSize, "MinSize must be less than or equal to MaxSize.");
+            Assert.IsGreaterThanOrEqualTo(0, keySize.SkipSize, "SkipSize must be greater than or equal to zero.");
         }
     }
 

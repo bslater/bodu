@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateTimeExtensionsCoverageTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -53,7 +53,7 @@ public class NotableDateTimeExtensionsCoverageTests
         Assert.AreNotEqual(holiday.Date, holiday.SnapToWorkingDay(service, "XX").Date);
         Assert.AreNotEqual(holiday.Date, holiday.SnapToWorkingDayBackward(service, "XX").Date);
         Assert.AreNotEqual(holiday.Date, holiday.SnapToNearestWorkingDay(service, "XX").Date);
-        Assert.IsTrue(holiday.WorkingDaysBetween(later, service, "XX") > 0);
+        Assert.IsGreaterThan(0, holiday.WorkingDaysBetween(later, service, "XX"));
     }
 
     /// <summary>
@@ -78,6 +78,6 @@ public class NotableDateTimeExtensionsCoverageTests
         Assert.AreNotEqual(holiday.Date, holiday.SnapToWorkingDay(service, "XX").Date);
         Assert.AreNotEqual(holiday.Date, holiday.SnapToWorkingDayBackward(service, "XX").Date);
         Assert.AreNotEqual(holiday.Date, holiday.SnapToNearestWorkingDay(service, "XX").Date);
-        Assert.IsTrue(holiday.WorkingDaysBetween(later, service, "XX") > 0);
+        Assert.IsGreaterThan(0, holiday.WorkingDaysBetween(later, service, "XX"));
     }
 }

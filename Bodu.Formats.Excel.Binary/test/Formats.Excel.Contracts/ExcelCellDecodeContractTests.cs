@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExcelCellDecodeContractTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -42,7 +42,7 @@ public abstract class ExcelCellDecodeContractTests
     {
         IReadOnlyDictionary<(int Row, int Column), ExcelCell> actual = DecodeCells(kat);
 
-        Assert.AreEqual(kat.Expected.Count, actual.Count, $"KAT '{kat.Name}': unexpected cell count.");
+        Assert.HasCount(kat.Expected.Count, actual, $"KAT '{kat.Name}': unexpected cell count.");
         foreach (ExcelExpectedCell expected in kat.Expected)
         {
             Assert.IsTrue(

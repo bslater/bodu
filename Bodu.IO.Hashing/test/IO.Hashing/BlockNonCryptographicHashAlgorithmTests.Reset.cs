@@ -24,7 +24,7 @@ public partial class BlockNonCryptographicHashAlgorithmTests
         // bytes only (no carry-over from the discarded residual).
         hasher.Append(new byte[] { 0xAA, 0xBB, 0xCC, 0xDD });
 
-        Assert.AreEqual(1, hasher.Blocks.Count);
+        Assert.HasCount(1, hasher.Blocks);
         CollectionAssert.AreEqual(new byte[] { 0xAA, 0xBB, 0xCC, 0xDD }, hasher.Blocks[0]);
     }
 

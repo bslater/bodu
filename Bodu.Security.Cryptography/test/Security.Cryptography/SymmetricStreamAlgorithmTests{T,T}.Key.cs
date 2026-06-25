@@ -19,7 +19,7 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
     {
         using TAlgorithm cipher = CreateAlgorithm();
 
-        Assert.AreEqual(KeyLengthBytes, cipher.Key.Length);
+        Assert.HasCount(KeyLengthBytes, cipher.Key);
     }
 
     /// <summary>

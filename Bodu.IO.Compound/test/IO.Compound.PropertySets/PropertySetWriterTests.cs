@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="PropertySetWriterTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -87,7 +87,7 @@ public class PropertySetWriterTests
     /// </summary>
     [TestMethod]
     public void Write_WhenBoolean_ShouldRoundTrip() =>
-        Assert.AreEqual(true, RoundTrip(OlePropertyValue.Create(true)).AsBoolean());
+        Assert.IsTrue(RoundTrip(OlePropertyValue.Create(true)).AsBoolean());
 
     /// <summary>
     /// Verifies that a FILETIME round-trips as a point in time.

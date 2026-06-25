@@ -152,7 +152,7 @@ public sealed class CamelliaBlockCipher
     public CamelliaBlockCipher(ReadOnlySpan<byte> key)
     {
         int keyBits = key.Length * 8;
-        if (keyBits is not (Key128SizeBits or Key192SizeBits or Key256SizeBits))
+        if (keyBits is not(Key128SizeBits or Key192SizeBits or Key256SizeBits))
         {
             throw new ArgumentException(
                 CryptoResourceStrings.Arg_Invalid_CamelliaKeyLength,

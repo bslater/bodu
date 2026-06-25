@@ -160,7 +160,7 @@ public sealed class IniEntryTests
 
         entry.AddLeadingComment(new IniComment('#', " note"));
 
-        Assert.AreEqual(1, entry.LeadingComments.Count);
+        Assert.HasCount(1, entry.LeadingComments);
     }
 
     /// <summary>
@@ -174,7 +174,7 @@ public sealed class IniEntryTests
 
         entry.SetLeadingComments([new IniComment(';', " a"), new IniComment('#', " b")]);
 
-        Assert.AreEqual(2, entry.LeadingComments.Count);
+        Assert.HasCount(2, entry.LeadingComments);
     }
 
     /// <summary>
@@ -202,6 +202,6 @@ public sealed class IniEntryTests
 
         entry.ClearLeadingComments();
 
-        Assert.AreEqual(0, entry.LeadingComments.Count);
+        Assert.IsEmpty(entry.LeadingComments);
     }
 }

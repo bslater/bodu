@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CompoundStreamAccessTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -37,7 +37,7 @@ public class CompoundStreamAccessTests
             Assert.IsTrue(stream.CanSeek);
             Assert.IsFalse(stream.CanWrite);
             Assert.AreEqual(stream.Stat.Length, stream.Length);
-            Assert.IsTrue(stream.Length > 0);
+            Assert.IsGreaterThan(0, stream.Length);
         }
     }
 

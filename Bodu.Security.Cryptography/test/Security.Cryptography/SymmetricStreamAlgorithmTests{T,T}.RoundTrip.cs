@@ -45,8 +45,8 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
         cipher.GenerateKey();
         cipher.GenerateNonce();
 
-        Assert.AreEqual(KeyLengthBytes, cipher.Key.Length);
-        Assert.AreEqual(NonceLengthBytes, cipher.Nonce.Length);
+        Assert.HasCount(KeyLengthBytes, cipher.Key);
+        Assert.HasCount(NonceLengthBytes, cipher.Nonce);
 
         byte[] plaintext = CreatePayload(200);
 
@@ -76,13 +76,13 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
         using (ICryptoTransform e = encryptor.CreateEncryptor(key, nonce))
             ciphertext = e.TransformFinalBlock([], 0, 0);
 
-        Assert.AreEqual(0, ciphertext.Length);
+        Assert.IsEmpty(ciphertext);
 
         byte[] recovered;
         using (TAlgorithm decryptor = CreateAlgorithm())
         using (ICryptoTransform d = decryptor.CreateDecryptor(key, nonce))
             recovered = d.TransformFinalBlock(ciphertext, 0, ciphertext.Length);
 
-        Assert.AreEqual(0, recovered.Length);
+        Assert.IsEmpty(recovered);
     }
 }

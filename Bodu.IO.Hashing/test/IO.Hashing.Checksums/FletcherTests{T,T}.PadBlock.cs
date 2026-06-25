@@ -27,7 +27,7 @@ public abstract partial class FletcherTests<TTest, TAlgorithm>
 
         byte[] padded = fletcher.PadBlockExposed(residual, messageLength: 1);
 
-        Assert.AreEqual(1, padded.Length); // Fletcher is processed byte-wise.
+        Assert.HasCount(1, padded); // Fletcher is processed byte-wise.
         Assert.AreEqual(0xAA, padded[0]);
     }
     /// <summary>
@@ -46,7 +46,7 @@ public abstract partial class FletcherTests<TTest, TAlgorithm>
 
         byte[] hash = fletcher.GetCurrentHash();
 
-        Assert.AreEqual(4, hash.Length);
+        Assert.HasCount(4, hash);
     }
 
     /// <summary>

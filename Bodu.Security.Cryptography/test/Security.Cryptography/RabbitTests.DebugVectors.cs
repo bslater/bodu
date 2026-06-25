@@ -87,7 +87,7 @@ public sealed partial class RabbitTests
     private static void AssertCheckpoints(
         StateCheckpoint[] expected, IReadOnlyList<RabbitStreamCipher.StateCheckpoint> actual)
     {
-        Assert.AreEqual(expected.Length, actual.Count, "Unexpected number of inner-state checkpoints.");
+        Assert.HasCount(expected.Length, actual, "Unexpected number of inner-state checkpoints.");
 
         for (int i = 0; i < expected.Length; i++)
         {

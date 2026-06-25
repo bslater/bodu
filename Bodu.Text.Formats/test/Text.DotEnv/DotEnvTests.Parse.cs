@@ -18,7 +18,7 @@ public sealed partial class DotEnvTests
     {
         DotEnvDocument doc = DotEnv.Parse(string.Empty);
 
-        Assert.AreEqual(0, doc.Entries.Count);
+        Assert.IsEmpty(doc.Entries);
     }
 
     /// <summary>
@@ -30,7 +30,7 @@ public sealed partial class DotEnvTests
     {
         DotEnvDocument doc = DotEnv.Parse("# this is a comment\nKEY=value");
 
-        Assert.AreEqual(1, doc.Entries.Count);
+        Assert.HasCount(1, doc.Entries);
         Assert.AreEqual("value", doc["KEY"]);
     }
 
@@ -42,7 +42,7 @@ public sealed partial class DotEnvTests
     {
         DotEnvDocument doc = DotEnv.Parse("\n\nKEY=value\n\n");
 
-        Assert.AreEqual(1, doc.Entries.Count);
+        Assert.HasCount(1, doc.Entries);
         Assert.AreEqual("value", doc["KEY"]);
     }
 
@@ -222,7 +222,7 @@ public sealed partial class DotEnvTests
     {
         DotEnvDocument doc = DotEnv.Parse("HOST=localhost\nPORT=8080\nDEBUG=True");
 
-        Assert.AreEqual(3, doc.Entries.Count);
+        Assert.HasCount(3, doc.Entries);
         Assert.AreEqual("localhost", doc["HOST"]);
         Assert.AreEqual("8080", doc["PORT"]);
         Assert.AreEqual("True", doc["DEBUG"]);

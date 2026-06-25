@@ -312,7 +312,7 @@ public sealed partial class Base16Tests
     {
         byte[] actual = Base16.EncodeToUtf8([]);
 
-        Assert.AreEqual(0, actual.Length);
+        Assert.IsEmpty(actual);
     }
 
     /// <summary>

@@ -84,7 +84,7 @@ public sealed partial class TomlFileExchangeRateCacheTests
         cache.Store(Pair, new[] { stored }, Duration, cachedAt);
         IReadOnlyList<CachedExchangeRate> read = cache.GetRates(Pair, Duration, cachedAt);
 
-        Assert.AreEqual(1, read.Count);
+        Assert.HasCount(1, read);
         Assert.AreEqual(stored.Date, read[0].Date);
         Assert.AreEqual(stored.Rate, read[0].Rate);
         Assert.AreEqual(stored.CachedAtUtc, read[0].CachedAtUtc);

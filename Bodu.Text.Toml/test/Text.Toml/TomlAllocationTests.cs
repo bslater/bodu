@@ -59,8 +59,8 @@ public sealed class TomlAllocationTests
         int count = TokenizeSpan(bytes);
         long allocated = GC.GetAllocatedBytesForCurrentThread() - before;
 
-        Assert.IsTrue(count > SampleLineCount, "The reader produced too few tokens to be a meaningful measurement.");
-        Assert.IsTrue(allocated < 512, $"Tokenizing a {bytes.Length}-byte contiguous document allocated {allocated} bytes; the lexical reader should not allocate per token.");
+        Assert.IsGreaterThan(SampleLineCount, count, "The reader produced too few tokens to be a meaningful measurement.");
+        Assert.IsLessThan(512, allocated, $"Tokenizing a {bytes.Length}-byte contiguous document allocated {allocated} bytes; the lexical reader should not allocate per token.");
     }
 
     /// <summary>
@@ -79,8 +79,8 @@ public sealed class TomlAllocationTests
         _ = TokenizeSequence(sequence);
         long allocated = GC.GetAllocatedBytesForCurrentThread() - before;
 
-        Assert.IsTrue(allocated >= bytes.Length, $"A multi-segment sequence of {bytes.Length} bytes allocated only {allocated} bytes; a contiguous copy of the input was expected.");
-        Assert.IsTrue(allocated < bytes.Length * 4L, $"Tokenizing the multi-segment sequence allocated {allocated} bytes, more than the single contiguous copy expected.");
+        Assert.IsGreaterThanOrEqualTo(bytes.Length, allocated, $"A multi-segment sequence of {bytes.Length} bytes allocated only {allocated} bytes; a contiguous copy of the input was expected.");
+        Assert.IsLessThan(bytes.Length * 4L, allocated, $"Tokenizing the multi-segment sequence allocated {allocated} bytes, more than the single contiguous copy expected.");
     }
 
     /// <summary>
@@ -139,7 +139,7 @@ public sealed class TomlAllocationTests
         _ = SumByLookup(document, keys);
         long allocated = GC.GetAllocatedBytesForCurrentThread() - before;
 
-        Assert.IsTrue(allocated < 512, $"Looking up {keys.Length} properties allocated {allocated} bytes; element views should not allocate on read.");
+        Assert.IsLessThan(512, allocated, $"Looking up {keys.Length} properties allocated {allocated} bytes; element views should not allocate on read.");
     }
 
     /// <summary>
@@ -213,7 +213,7 @@ public sealed class TomlAllocationTests
     private static void AssertWithinBaseline(long allocated, int inputLength, int multiple)
     {
         long limit = (long)inputLength * multiple;
-        Assert.IsTrue(allocated < limit, $"The operation allocated {allocated} bytes for a {inputLength}-byte input, exceeding the recorded baseline of {limit} bytes ({multiple}x).");
+        Assert.IsLessThan(limit, allocated, $"The operation allocated {allocated} bytes for a {inputLength}-byte input, exceeding the recorded baseline of {limit} bytes ({multiple}x).");
     }
 
     /// <summary>

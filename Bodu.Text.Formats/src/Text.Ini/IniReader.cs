@@ -251,7 +251,7 @@ public sealed class IniReader
         else
         {
             _key = line[..sepIdx].TrimEnd().ToString();
-            _value = line[(sepIdx + 1)..].TrimStart().ToString();
+            _value = line[(sepIdx + 1) ..].TrimStart().ToString();
         }
 
         if (_key.Length == 0)

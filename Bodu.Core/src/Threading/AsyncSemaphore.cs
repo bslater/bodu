@@ -270,7 +270,8 @@ public sealed partial class AsyncSemaphore
     /// <returns>A <see cref="ValueTask" /> that completes when the permit is taken.</returns>
     private async ValueTask AwaitWaiterAsync(LinkedListNode<TaskCompletionSource<bool>> node, CancellationToken cancellationToken)
     {
-        using (cancellationToken.Register(static state =>
+        using (cancellationToken.Register(
+            static state =>
         {
             (AsyncSemaphore? owner, LinkedListNode<TaskCompletionSource<bool>>? waiter, CancellationToken token) = ((AsyncSemaphore Owner, LinkedListNode<TaskCompletionSource<bool>> Node, CancellationToken Token))state!;
             owner.CancelWaiter(waiter, token);

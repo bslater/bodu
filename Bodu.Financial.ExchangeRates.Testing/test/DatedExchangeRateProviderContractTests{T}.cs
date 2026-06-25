@@ -227,7 +227,7 @@ public abstract class DatedExchangeRateProviderContractTests<TProvider>
         decimal inverse = provider.GetRate(to, from, KnownDate, ExchangeRateLookupOptions.Exact).Rate.Rate;
 
         Assert.IsTrue(direct > 0m && inverse > 0m, "both directions resolve to a positive rate");
-        Assert.IsTrue(Math.Abs((direct * inverse) - 1m) < 0.0001m, $"product {direct * inverse} should be ~1");
+        Assert.IsLessThan(0.0001m, Math.Abs((direct * inverse) - 1m), $"product {direct * inverse} should be ~1");
     }
 
     /// <summary>

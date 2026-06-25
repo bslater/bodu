@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CompoundStream.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -179,9 +179,7 @@ public sealed class CompoundStream
     /// <summary>
     /// Gets the metadata snapshot for this stream entry.
     /// </summary>
-    /// <value>
-    /// A <see cref="CompoundEntryInfo" /> describing the stream's name, size, class id, and timestamps.
-    /// </value>
+    /// <value>A <see cref="CompoundEntryInfo" /> describing the stream's name, size, class id, and timestamps.</value>
     public CompoundEntryInfo Stat =>
         _write is null ? _info : _info with { Length = _write.Length };
 

@@ -33,12 +33,12 @@ public sealed partial class Iso10126PaddingTests
 
         byte[] cipherText = EncryptThroughCryptoStream(algorithm, []);
 
-        Assert.AreEqual(blockBytes, cipherText.Length,
+        Assert.HasCount(blockBytes, cipherText,
             $"Empty plaintext under ISO10126 on {algorithmType.Name} should produce exactly one block of padded ciphertext.");
 
         byte[] recovered = DecryptThroughCryptoStream(algorithm, cipherText);
 
-        Assert.AreEqual(0, recovered.Length,
+        Assert.IsEmpty(recovered,
             $"Decrypting one ISO10126-padded block of empty plaintext on {algorithmType.Name} should recover an empty array.");
     }
 
@@ -58,7 +58,7 @@ public sealed partial class Iso10126PaddingTests
 
         byte[] cipherText = EncryptThroughCryptoStream(algorithm, plaintext);
 
-        Assert.AreEqual(plaintext.Length + blockBytes, cipherText.Length,
+        Assert.HasCount(plaintext.Length + blockBytes, cipherText,
             $"Block-aligned plaintext under ISO10126 on {algorithmType.Name} should produce ciphertext one block longer than the plaintext.");
 
         byte[] recovered = DecryptThroughCryptoStream(algorithm, cipherText);
@@ -86,7 +86,7 @@ public sealed partial class Iso10126PaddingTests
 
         Assert.AreEqual(0, cipherText.Length % blockBytes,
             $"ISO10126 ciphertext on {algorithmType.Name} must be block-aligned.");
-        Assert.IsTrue(cipherText.Length > plaintext.Length,
+        Assert.IsGreaterThan(plaintext.Length, cipherText.Length,
             $"Residual plaintext under ISO10126 on {algorithmType.Name} should grow to the next block boundary.");
 
         byte[] recovered = DecryptThroughCryptoStream(algorithm, cipherText);

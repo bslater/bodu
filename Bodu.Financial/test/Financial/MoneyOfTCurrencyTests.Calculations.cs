@@ -196,7 +196,7 @@ public partial class MoneyOfTCurrencyTests
     {
         Money<USD>[] shares = new Money<USD>((decimal)amount).Allocate(parts);
 
-        Assert.AreEqual(expectedShares.Length, shares.Length);
+        Assert.HasCount(expectedShares.Length, shares);
         for (int i = 0; i < expectedShares.Length; i++)
         {
             Assert.AreEqual(new Money<USD>((decimal)expectedShares[i]), shares[i], $"Share index {i}");
@@ -243,7 +243,7 @@ public partial class MoneyOfTCurrencyTests
 
         Money<USD>[] shares = new Money<USD>((decimal)amount).Allocate(ratioDecimals);
 
-        Assert.AreEqual(expectedShares.Length, shares.Length);
+        Assert.HasCount(expectedShares.Length, shares);
         Money<USD> sum = Money<USD>.Zero;
         for (int i = 0; i < expectedShares.Length; i++)
         {
@@ -487,7 +487,7 @@ public partial class MoneyOfTCurrencyTests
         Money<USD> abs = money.Abs;
         Money<USD> absAgain = abs.Abs;
 
-        Assert.IsTrue(abs.Amount >= 0m);
+        Assert.IsGreaterThanOrEqualTo(0m, abs.Amount);
         Assert.AreEqual(abs, absAgain);
         Assert.AreEqual(Math.Abs((decimal)amount), abs.Amount);
     }
@@ -515,7 +515,7 @@ public partial class MoneyOfTCurrencyTests
 
         // 100 × 1.01^13 = 113.80932... → 113.81; chained version may drift by a cent.
         Assert.AreEqual(new Money<USD>(113.81m), oneShot);
-        Assert.IsTrue(Math.Abs(chained.Amount - oneShot.Amount) <= 0.02m, $"Chained={chained.Amount} OneShot={oneShot.Amount}");
+        Assert.IsLessThanOrEqualTo(0.02m, Math.Abs(chained.Amount - oneShot.Amount), $"Chained={chained.Amount} OneShot={oneShot.Amount}");
     }
 
     /// <summary>

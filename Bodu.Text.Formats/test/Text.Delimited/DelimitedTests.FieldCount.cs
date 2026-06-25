@@ -54,7 +54,7 @@ public sealed partial class DelimitedTests
 
         DelimitedDocument doc = Delimited.Parse("A,B,C\n1,2\n3,4,5,6", options);
 
-        Assert.AreEqual(2, doc.Rows.Count);
+        Assert.HasCount(2, doc.Rows);
         Assert.AreEqual(2, doc.Rows[0].Count);
         Assert.AreEqual(4, doc.Rows[1].Count);
     }
@@ -82,7 +82,7 @@ public sealed partial class DelimitedTests
 
         DelimitedDocument doc = Delimited.Parse("1,2\n3,4,5", options);
 
-        Assert.AreEqual(2, doc.Rows.Count);
+        Assert.HasCount(2, doc.Rows);
         Assert.AreEqual(2, doc.Rows[0].Count);
         Assert.AreEqual(3, doc.Rows[1].Count);
     }

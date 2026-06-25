@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExcelWorksheetReaderTests.ReadRows.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -23,10 +23,10 @@ public partial class ExcelWorksheetReaderTests
 
         List<ExcelRow> rows = reader.ReadRows().ToList();
 
-        Assert.AreEqual(2, rows.Count);
+        Assert.HasCount(2, rows);
         Assert.AreEqual(0, rows[0].RowIndex);
-        Assert.AreEqual(2, rows[0].Cells.Count);
+        Assert.HasCount(2, rows[0].Cells);
         Assert.AreEqual(1, rows[1].RowIndex);
-        Assert.AreEqual(1, rows[1].Cells.Count);
+        Assert.HasCount(1, rows[1].Cells);
     }
 }

@@ -74,9 +74,7 @@ public sealed class ExchangeRateLookupOptions
     /// <summary>
     /// Gets a configuration that requires an exact-date match, allowing inverse and same-currency identity fallbacks.
     /// </summary>
-    /// <value>
-    /// An <see cref="ExchangeRateLookupOptions" /> with <see cref="ExchangeRateDateResolution.Exact" />.
-    /// </value>
+    /// <value>An <see cref="ExchangeRateLookupOptions" /> with <see cref="ExchangeRateDateResolution.Exact" />.</value>
     public static ExchangeRateLookupOptions Exact => s_exact;
 
     /// <summary>

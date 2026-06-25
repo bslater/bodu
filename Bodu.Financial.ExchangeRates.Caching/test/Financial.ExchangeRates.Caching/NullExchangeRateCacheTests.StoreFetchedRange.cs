@@ -72,7 +72,7 @@ public sealed partial class NullExchangeRateCacheTests
             now);
 
         Assert.AreEqual(ExchangeRateCacheWriteStatus.Skipped, status);
-        Assert.AreEqual(0, cache.GetRates(pair, TimeSpan.FromHours(24), now).Count);
+        Assert.IsEmpty(cache.GetRates(pair, TimeSpan.FromHours(24), now));
         Assert.IsTrue(cache.GetCoverage(pair, TimeSpan.FromHours(24), now).IsEmpty);
     }
 }

@@ -22,6 +22,6 @@ public sealed partial class NullExchangeRateCacheTests
 
         cache.Store(pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5m, now) }, TimeSpan.FromHours(24), now);
 
-        Assert.AreEqual(0, cache.GetRates(pair, TimeSpan.FromHours(24), now).Count);
+        Assert.IsEmpty(cache.GetRates(pair, TimeSpan.FromHours(24), now));
     }
 }

@@ -40,7 +40,7 @@ public partial class Blake3Tests
         // after Dispose because the reference itself is stable across disposal.
         uint[] stackBuffer = (uint[])cvStackField.GetValue(hasher)!;
         int depthBeforeDispose = (int)cvStackDepthField.GetValue(hasher)!;
-        Assert.IsTrue(depthBeforeDispose > 0, "Precondition: hashing 2049 bytes should push at least one chunk CV.");
+        Assert.IsGreaterThan(0, depthBeforeDispose, "Precondition: hashing 2049 bytes should push at least one chunk CV.");
         Assert.IsTrue(Array.Exists(stackBuffer, v => v != 0),
             "Precondition: stack buffer should hold non-zero chaining values before Dispose.");
 

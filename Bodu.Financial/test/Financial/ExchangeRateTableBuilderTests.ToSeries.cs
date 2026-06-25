@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateTableBuilderTests.ToSeries.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -18,7 +18,7 @@ public partial class ExchangeRateTableBuilderTests
 
         IReadOnlyList<ExchangeRateSeries> snapshots = table.ToSeries();
 
-        Assert.AreEqual(0, snapshots.Count);
+        Assert.IsEmpty(snapshots);
     }
 
     /// <summary>
@@ -33,7 +33,7 @@ public partial class ExchangeRateTableBuilderTests
 
         IReadOnlyList<ExchangeRateSeries> snapshots = table.ToSeries();
 
-        Assert.AreEqual(2, snapshots.Count);
+        Assert.HasCount(2, snapshots);
     }
 
     /// <summary>
@@ -48,7 +48,7 @@ public partial class ExchangeRateTableBuilderTests
 
         IReadOnlyList<ExchangeRateSeries> snapshots = table.ToSeries();
 
-        Assert.AreEqual(1, snapshots.Count);
+        Assert.HasCount(1, snapshots);
         Assert.AreEqual(s_usdAud, snapshots[0].Pair);
     }
 }

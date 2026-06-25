@@ -56,7 +56,7 @@ public partial class SymmetricAlgorithmExtensionTests
         byte[] cipherText = algorithm.Encrypt(plainText);
 
         Assert.IsNotNull(cipherText);
-        Assert.IsTrue(cipherText.Length > 0);
+        Assert.IsNotEmpty(cipherText);
     }
 
     /// <summary>
@@ -234,7 +234,7 @@ public partial class SymmetricAlgorithmExtensionTests
         byte[] cipherText = algorithm.Encrypt(input);
 
         Assert.IsNotNull(cipherText);
-        Assert.IsTrue(cipherText.Length > 0);
+        Assert.IsNotEmpty(cipherText);
     }
 
     /// <summary>

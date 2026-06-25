@@ -33,8 +33,8 @@ public sealed class InMemoryExchangeRateCacheTests
         IReadOnlyList<CachedExchangeRate> fresh = cache.GetRates(Pair, TimeSpan.FromHours(1), now);
         IReadOnlyList<CachedExchangeRate> expired = cache.GetRates(Pair, TimeSpan.FromHours(1), now + TimeSpan.FromHours(2));
 
-        Assert.AreEqual(1, fresh.Count);
-        Assert.AreEqual(0, expired.Count);
+        Assert.HasCount(1, fresh);
+        Assert.IsEmpty(expired);
     }
 
     /// <summary>
@@ -48,6 +48,6 @@ public sealed class InMemoryExchangeRateCacheTests
 
         InMemoryExchangeRateCache other = new("RBA");
 
-        Assert.AreEqual(0, other.GetRates(Pair, TimeSpan.FromHours(1), now).Count);
+        Assert.IsEmpty(other.GetRates(Pair, TimeSpan.FromHours(1), now));
     }
 }

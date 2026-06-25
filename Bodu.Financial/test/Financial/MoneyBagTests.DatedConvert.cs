@@ -157,7 +157,7 @@ public partial class MoneyBagTests
             s_asOf,
             ExchangeRateLookupOptions.Exact);
 
-        Assert.AreEqual(2, audit.Lines.Count);
+        Assert.HasCount(2, audit.Lines);
         // Total: 100 × 1.10 + 10000 × 0.0067 = 110 + 67 = 177
         Assert.AreEqual(new Money<USD>(177m), audit.Total);
 

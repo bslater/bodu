@@ -34,7 +34,7 @@ public sealed partial class DotEnvTests
 
         Assert.IsTrue(result);
         Assert.IsNotNull(document);
-        Assert.AreEqual(0, document.Entries.Count);
+        Assert.IsEmpty(document.Entries);
     }
 
     /// <summary>

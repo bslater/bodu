@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EcbExchangeRateXmlParserTests.Parse.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -20,7 +20,7 @@ public partial class EcbExchangeRateXmlParserTests
     {
         EcbExchangeRateTable table = ParseSample();
 
-        Assert.AreEqual(6, table.Observations.Count);
+        Assert.HasCount(6, table.Observations);
     }
 
     /// <summary>
@@ -50,7 +50,7 @@ public partial class EcbExchangeRateXmlParserTests
 
         EcbExchangeRateTable table = Parse(xml);
 
-        Assert.AreEqual(1, table.Observations.Count);
+        Assert.HasCount(1, table.Observations);
         Assert.AreEqual("JPY", table.Observations[0].CurrencyCode);
     }
 
@@ -68,7 +68,7 @@ public partial class EcbExchangeRateXmlParserTests
 
         EcbExchangeRateTable table = EcbExchangeRateXmlParser.Parse(ToStream(xml), options);
 
-        Assert.AreEqual(1, table.Observations.Count);
+        Assert.HasCount(1, table.Observations);
         Assert.AreEqual("XDR", table.Observations[0].CurrencyCode);
     }
 

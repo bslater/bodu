@@ -201,7 +201,7 @@ public abstract class WebExchangeRateProvider
     }
 
     /// <inheritdoc />
-    public async ValueTask<ExchangeRateLookupResult> GetRateAsync(
+    public ValueTask<ExchangeRateLookupResult> GetRateAsync(
         string fromIsoCode,
         string toIsoCode,
         ExchangeRateLookupOptions? options = null,
@@ -210,12 +210,12 @@ public abstract class WebExchangeRateProvider
         ObjectDisposedException.ThrowIf(_disposed, this);
 
         var today = DateOnly.FromDateTime(_timeProvider.GetUtcNow().UtcDateTime);
-        return await GetRateAsync(
+        return GetRateAsync(
             fromIsoCode,
             toIsoCode,
             today,
             options ?? ExchangeRateLookupOptions.PreviousWithin(LatestRateToleranceDays),
-            cancellationToken).ConfigureAwait(false);
+            cancellationToken);
     }
 
     /// <inheritdoc />

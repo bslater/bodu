@@ -21,9 +21,9 @@ public partial class EvictingDictionary<TKey, TValue>
     /// <see cref="NotSupportedException" />.
     /// </remarks>
     public sealed class KeyCollection
-        : ICollection<TKey>
-        , IReadOnlyCollection<TKey>
-        , ICollection
+        : ICollection<TKey>,
+        IReadOnlyCollection<TKey>,
+        ICollection
     {
         /// <summary>The dictionary whose keys this collection exposes.</summary>
         private readonly EvictingDictionary<TKey, TValue> _dictionary;

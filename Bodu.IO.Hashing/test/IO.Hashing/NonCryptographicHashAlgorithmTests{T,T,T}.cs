@@ -333,7 +333,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
         int maxLength = coverage + 1;
         int expectedEntryCount = maxLength + 1;
 
-        Assert.AreEqual(expectedEntryCount, expectedHashes.Length,
+        Assert.HasCount(expectedEntryCount, expectedHashes,
             $"Expected {expectedEntryCount} algorithm entries for variant '{variant}' " +
             $"covering input lengths 0 through {maxLength} " +
             $"(HashLengthInBytes={specification.HashLengthInBytes}, coverage={coverage}), " +
@@ -380,7 +380,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
         int maxLength = coverage + 1;
         int expectedEntryCount = maxLength + 1;
 
-        Assert.AreEqual(expectedEntryCount, expectedHashes.Length,
+        Assert.HasCount(expectedEntryCount, expectedHashes,
             $"Expected {expectedEntryCount} algorithm entries for variant '{variant}' " +
             $"covering input lengths 0 through {maxLength} " +
             $"(HashLengthInBytes={specification.HashLengthInBytes}, coverage={coverage}), " +

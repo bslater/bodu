@@ -44,7 +44,7 @@ public sealed partial class Base58Tests
 
         string actual = Base58.Encode(bytes);
 
-        Assert.AreEqual(leadingZeroCount, actual.TakeWhile(c => c == '1').Count(),
+        Assert.HasCount(leadingZeroCount, actual.TakeWhile(c => c == '1'),
             $"Encoded form should start with {leadingZeroCount} '1' characters.");
         Assert.AreEqual('2', actual[leadingZeroCount], "Trailing data byte 0x01 should encode as '2'.");
     }
@@ -61,7 +61,7 @@ public sealed partial class Base58Tests
         byte[] decoded = Base58.Decode(encoded);
 
         Assert.AreEqual("11111", encoded);
-        Assert.AreEqual(5, decoded.Length);
+        Assert.HasCount(5, decoded);
         CollectionAssert.AreEqual(original, decoded);
     }
 

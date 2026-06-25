@@ -160,10 +160,10 @@ public partial class ExchangeRateSeriesTests
 
         ExchangeRateObservation[] observations = series.GetObservations().ToArray();
 
-        Assert.AreEqual(3, observations.Length);
+        Assert.HasCount(3, observations);
         for (int i = 1; i < observations.Length; i++)
         {
-            Assert.IsTrue(observations[i - 1].Date < observations[i].Date);
+            Assert.IsLessThan(observations[i].Date, observations[i - 1].Date);
         }
     }
 

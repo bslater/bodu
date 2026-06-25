@@ -94,7 +94,7 @@ public sealed partial class GcmModeTransformTests
 
         // Reaching here proves the guard does not over-reject; the wrap-rejection contract is exercised by
         // the two-block test above.
-        Assert.AreEqual(BlockSizeBytes + (transform.TagSize / 8), output.Length);
+        Assert.HasCount(BlockSizeBytes + (transform.TagSize / 8), output);
     }
 
     /// <summary>

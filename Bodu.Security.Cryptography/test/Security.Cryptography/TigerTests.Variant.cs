@@ -27,8 +27,8 @@ public partial class TigerTests
         byte[] result = algorithm.ComputeHash(input);
 
         Assert.IsNotNull(result, $"Result should not be null for table variant {variant}.");
-        Assert.AreEqual(algorithm.HashSize / 8, result.Length, $"Hash length should match expected size for variant {variant}.");
-        Assert.IsTrue(result.Any(b => b != 0), $"Hash result should not be all zeros for variant {variant}.");
+        Assert.HasCount(algorithm.HashSize / 8, result, $"Hash length should match expected size for variant {variant}.");
+        Assert.Contains(b => b != 0, result, $"Hash result should not be all zeros for variant {variant}.");
     }
 
     /// <summary>

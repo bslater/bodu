@@ -80,7 +80,7 @@ public sealed partial class EncodingExtensionsTests
     {
         byte[] result = ReadOnlySpan<char>.Empty.ToBytes(System.Text.Encoding.UTF8);
 
-        Assert.AreEqual(0, result.Length);
+        Assert.IsEmpty(result);
         Assert.AreSame([], result);
     }
 

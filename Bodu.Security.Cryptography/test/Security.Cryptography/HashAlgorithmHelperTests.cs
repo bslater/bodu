@@ -156,7 +156,7 @@ public sealed class HashAlgorithmHelperTests
 
         _ = HashAlgorithmHelper.HashData(factory, []);
 
-        Assert.IsTrue(probe.DisposedCount > 0,
+        Assert.IsGreaterThan(0, probe.DisposedCount,
             "HashAlgorithmHelper.HashData should dispose the algorithm it constructs.");
     }
 

@@ -82,7 +82,7 @@ public partial class Base64Tests
     {
         byte[] bytes = Base64.FromBase64String("TQ=="u8);
 
-        Assert.AreEqual(1, bytes.Length);
+        Assert.HasCount(1, bytes);
     }
 
     /// <summary>

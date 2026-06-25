@@ -20,7 +20,7 @@ public sealed partial class DelimitedTests
 
         Assert.IsTrue(result);
         Assert.IsNotNull(document);
-        Assert.AreEqual(1, document.Rows.Count);
+        Assert.HasCount(1, document.Rows);
     }
 
     /// <summary>
@@ -34,7 +34,7 @@ public sealed partial class DelimitedTests
 
         Assert.IsTrue(result);
         Assert.IsNotNull(document);
-        Assert.AreEqual(0, document.Rows.Count);
+        Assert.IsEmpty(document.Rows);
     }
 
     /// <summary>

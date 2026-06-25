@@ -139,6 +139,6 @@ public partial class CurrencyRegistryTests
     {
         IReadOnlyCollection<CurrencyInfo> all = CurrencyRegistry.All;
 
-        Assert.IsTrue(all.Count >= 180, $"Expected ≥180 currencies, found {all.Count}.");
+        Assert.IsGreaterThanOrEqualTo(180, all.Count, $"Expected ≥180 currencies, found {all.Count}.");
     }
 }

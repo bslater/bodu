@@ -81,7 +81,7 @@ public partial class ParallelMerkleTreeHashTests
 
         Assert.IsTrue(completed,
             $"Not all tasks completed within {StressDeadlockTimeoutMs} ms — possible deadlock.");
-        Assert.AreEqual(0, errors.Count,
+        Assert.IsEmpty(errors,
             $"One or more concurrent instances produced incorrect results:\n" +
             string.Join("\n", errors));
     }
@@ -129,8 +129,8 @@ public partial class ParallelMerkleTreeHashTests
         TestContext.WriteLine($"Completed={completed}, Results={results.Count}, Errors={errors.Count}");
 
         Assert.IsTrue(completed, "Tasks did not complete — possible deadlock.");
-        Assert.AreEqual(0, errors.Count, string.Join("\n", errors));
-        Assert.AreEqual(parallelism, results.Count, "Not all instances returned a result.");
+        Assert.IsEmpty(errors, string.Join("\n", errors));
+        Assert.HasCount(parallelism, results, "Not all instances returned a result.");
 
         // Cross-validate each instance's result against the hand-computed reference.
         for (int i = 0; i < parallelism; i++)
@@ -283,7 +283,7 @@ public partial class ParallelMerkleTreeHashTests
             $"Large-input stress: parallelism={parallelism}, dataLength={dataLength}, Errors={errors.Count}");
 
         Assert.IsTrue(completed, "Large-input stress did not complete — possible deadlock.");
-        Assert.AreEqual(0, errors.Count, string.Join("\n", errors));
+        Assert.IsEmpty(errors, string.Join("\n", errors));
     }
 
     // ═══════════════════════════════════════════════════════════════════════════════════════════
@@ -331,8 +331,8 @@ public partial class ParallelMerkleTreeHashTests
             .ContinueWith(t => !t.IsFaulted && !t.IsCanceled);
 
         Assert.IsTrue(completed, "Tasks did not complete — possible deadlock.");
-        Assert.AreEqual(0, errors.Count, string.Join("\n", errors));
-        Assert.AreEqual(parallelism, diagnosticsList.Count, "Not all diagnostics instances were recorded.");
+        Assert.IsEmpty(errors, string.Join("\n", errors));
+        Assert.HasCount(parallelism, diagnosticsList, "Not all diagnostics instances were recorded.");
 
         foreach (MerkleTreeDiagnostics diag in diagnosticsList)
         {

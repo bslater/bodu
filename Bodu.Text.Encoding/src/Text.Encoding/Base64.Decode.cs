@@ -260,7 +260,7 @@ public static partial class Base64
 
             // Per RFC 4648 §4 and §5 the alphabets are disjoint with respect to '+/' and '-_'. Reject characters that
             // belong to the opposite variant before forwarding the normalised scratch buffer to the BCL decoder.
-            bool isLetterOrDigit = c is (>= 'A' and <= 'Z') or (>= 'a' and <= 'z') or (>= '0' and <= '9');
+            bool isLetterOrDigit = c is(>= 'A' and <= 'Z') or(>= 'a' and <= 'z') or(>= '0' and <= '9');
             char mapped;
             if (urlSafe)
             {

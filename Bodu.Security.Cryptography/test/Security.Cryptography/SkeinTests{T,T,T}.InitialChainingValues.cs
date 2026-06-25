@@ -46,9 +46,9 @@ public abstract partial class SkeinTests<TTest, TAlgorithm, TVariant>
 
         ulong[] actual = algorithm.GetInitialChainingValueWords();
 
-        Assert.AreEqual(
+        Assert.HasCount(
             expected.Count,
-            actual.Length,
+            actual,
             $"[{variant}] IV word count mismatch (expected {expected.Count}, got {actual.Length}).");
 
         for (int i = 0; i < expected.Count; i++)

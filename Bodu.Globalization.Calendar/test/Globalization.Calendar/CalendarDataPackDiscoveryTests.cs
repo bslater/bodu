@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CalendarDataPackDiscoveryTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -49,12 +49,12 @@ public sealed class CalendarDataPackDiscoveryTests
     {
         IReadOnlyList<string> countries = pack.GetSupportedCountries();
 
-        Assert.IsTrue(countries.Count > 0, $"{pack.Region} pack exposed no supported countries");
+        Assert.IsNotEmpty(countries, $"{pack.Region} pack exposed no supported countries");
 
         string firstCountry = countries[0];
         IReadOnlyList<NotableDate> holidays = ResolveYear(pack, firstCountry, 2024);
 
-        Assert.IsTrue(holidays.Count > 0, $"{pack.Region}/{firstCountry} resolved no holidays for 2024");
+        Assert.IsNotEmpty(holidays, $"{pack.Region}/{firstCountry} resolved no holidays for 2024");
     }
 
     /// <summary>
@@ -74,7 +74,7 @@ public sealed class CalendarDataPackDiscoveryTests
         {
             IReadOnlyList<NotableDate> holidays = ResolveYear(pack, country, 2024);
 
-            Assert.IsTrue(holidays.Count > 0, $"{pack.Region}/{country} resolved no holidays for 2024");
+            Assert.IsNotEmpty(holidays, $"{pack.Region}/{country} resolved no holidays for 2024");
         }
     }
 

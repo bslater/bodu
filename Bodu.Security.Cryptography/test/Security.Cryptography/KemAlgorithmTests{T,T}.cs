@@ -60,8 +60,8 @@ public abstract class KemAlgorithmTests<TTest, TAlgorithm>
         (byte[]? ciphertext, byte[]? senderSecret) = Encapsulate(sender);
         byte[] receiverSecret = Decapsulate(receiver, ciphertext);
 
-        Assert.AreEqual(CiphertextSizeBytes, ciphertext.Length);
-        Assert.AreEqual(SharedSecretSizeBytes, senderSecret.Length);
+        Assert.HasCount(CiphertextSizeBytes, ciphertext);
+        Assert.HasCount(SharedSecretSizeBytes, senderSecret);
         CollectionAssert.AreEqual(senderSecret, receiverSecret);
     }
 
@@ -80,7 +80,7 @@ public abstract class KemAlgorithmTests<TTest, TAlgorithm>
         ciphertext[0] ^= 0x01;
         byte[] rejected = Decapsulate(receiver, ciphertext);
 
-        Assert.AreEqual(SharedSecretSizeBytes, rejected.Length);
+        Assert.HasCount(SharedSecretSizeBytes, rejected);
         CollectionAssert.AreNotEqual(senderSecret, rejected);
         CollectionAssert.AreEqual(rejected, Decapsulate(receiver, ciphertext));
     }

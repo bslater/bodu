@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CachingExchangeRateProviderTests.InverseRange.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -36,7 +36,7 @@ public sealed partial class CachingExchangeRateProviderTests
 
         // The request was satisfied from the inverse coverage, so the inner provider was never consulted.
         Assert.AreEqual(0, inner.GetRatesAsyncCallCount);
-        Assert.AreEqual(2, rates.Count);
+        Assert.HasCount(2, rates);
 
         Assert.AreEqual(CurrencyCode.AUD, rates[0].From);
         Assert.AreEqual(CurrencyCode.USD, rates[0].To);
@@ -92,7 +92,7 @@ public sealed partial class CachingExchangeRateProviderTests
 
         // Inverse serving is off, so the direct miss refetches from the inner rather than inverting cached USD/AUD rows.
         Assert.AreEqual(1, inner.GetRatesAsyncCallCount);
-        Assert.AreEqual(1, rates.Count);
+        Assert.HasCount(1, rates);
         Assert.AreEqual(0.5m, rates[0].Rate);
         Assert.IsFalse(rates[0].IsInverted);
     }

@@ -19,7 +19,7 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
     {
         using TAlgorithm cipher = CreateAlgorithm();
 
-        Assert.AreEqual(NonceLengthBytes, cipher.Nonce.Length);
+        Assert.HasCount(NonceLengthBytes, cipher.Nonce);
     }
 
     /// <summary>

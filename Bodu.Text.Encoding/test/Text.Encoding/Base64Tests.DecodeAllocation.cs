@@ -27,7 +27,7 @@ public sealed partial class Base64Tests
     {
         byte[] decoded = Base64.Decode(input.AsSpan());
 
-        Assert.AreEqual(expectedLength, decoded.Length);
+        Assert.HasCount(expectedLength, decoded);
     }
 
     /// <summary>
@@ -40,6 +40,6 @@ public sealed partial class Base64Tests
     {
         byte[] decoded = Base64.Decode("AQ".AsSpan(), Base64Variant.UrlSafe);
 
-        Assert.AreEqual(1, decoded.Length);
+        Assert.HasCount(1, decoded);
     }
 }

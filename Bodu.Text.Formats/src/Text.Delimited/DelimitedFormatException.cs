@@ -76,4 +76,12 @@ public sealed class DelimitedFormatException
         : base(message, lineNumber)
     {
     }
+
+    private DelimitedFormatException(string message, int lineNumber, int? offset = null) : base(message, lineNumber, offset)
+    {
+    }
+
+    private DelimitedFormatException(string message, int lineNumber, int columnNumber, int? offset) : base(message, lineNumber, columnNumber, offset)
+    {
+    }
 }

@@ -107,7 +107,7 @@ public sealed class AeadBlockCipherModeTransformExtensionsTests
 
         byte[] result = transform.Encrypt(Plaintext, (ReadOnlySpan<byte>)AssociatedData);
 
-        Assert.AreEqual(expectedLength, result.Length,
+        Assert.HasCount(expectedLength, result,
             "Encrypt wrapper must return a buffer of length plaintext.Length + TagSize.");
     }
 
@@ -124,7 +124,7 @@ public sealed class AeadBlockCipherModeTransformExtensionsTests
         using IAeadBlockCipherModeTransform decTransform = NewTransform();
         byte[] recovered = decTransform.Decrypt(ciphertextWithTag, (ReadOnlySpan<byte>)AssociatedData);
 
-        Assert.AreEqual(Plaintext.Length, recovered.Length,
+        Assert.HasCount(Plaintext.Length, recovered,
             "Decrypt wrapper must return a buffer of length ciphertextWithTag.Length - TagSize.");
     }
 

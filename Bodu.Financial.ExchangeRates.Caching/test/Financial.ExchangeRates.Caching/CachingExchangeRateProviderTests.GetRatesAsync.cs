@@ -25,7 +25,7 @@ public sealed partial class CachingExchangeRateProviderTests
 
         IReadOnlyList<ExchangeRate> rates = [.. await sut.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 6))];
 
-        Assert.AreEqual(2, rates.Count);
+        Assert.HasCount(2, rates);
         Assert.AreEqual(0.5m, rates[0].Rate);
         Assert.AreEqual(0, inner.GetRatesAsyncCallCount);
     }
@@ -45,8 +45,8 @@ public sealed partial class CachingExchangeRateProviderTests
         IReadOnlyList<ExchangeRate> first = [.. await sut.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 6))];
         IReadOnlyList<ExchangeRate> second = [.. await sut.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 6))];
 
-        Assert.AreEqual(2, first.Count);
-        Assert.AreEqual(2, second.Count);
+        Assert.HasCount(2, first);
+        Assert.HasCount(2, second);
         Assert.AreEqual(1, inner.GetRatesAsyncCallCount);
     }
 
@@ -64,7 +64,7 @@ public sealed partial class CachingExchangeRateProviderTests
 
         IReadOnlyList<ExchangeRate> rates = [.. await sut.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 10))];
 
-        Assert.AreEqual(2, rates.Count);
+        Assert.HasCount(2, rates);
         Assert.AreEqual(1, inner.GetRatesAsyncCallCount);
     }
 
@@ -83,7 +83,7 @@ public sealed partial class CachingExchangeRateProviderTests
         _clock.Advance(Duration + TimeSpan.FromHours(1));
         IReadOnlyList<ExchangeRate> rates = [.. await sut.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 6))];
 
-        Assert.AreEqual(2, rates.Count);
+        Assert.HasCount(2, rates);
         Assert.AreEqual(1, inner.GetRatesAsyncCallCount);
     }
 

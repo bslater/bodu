@@ -193,7 +193,8 @@ public sealed partial class AsyncLock
     /// <returns>A <see cref="Releaser" /> whose disposal releases the lock.</returns>
     private async ValueTask<Releaser> AwaitAcquireAsync(LinkedListNode<TaskCompletionSource<Releaser>> node, CancellationToken cancellationToken)
     {
-        using (cancellationToken.Register(static state =>
+        using (cancellationToken.Register(
+            static state =>
         {
             (AsyncLock? owner, LinkedListNode<TaskCompletionSource<Releaser>>? waiter, CancellationToken token) = ((AsyncLock Owner, LinkedListNode<TaskCompletionSource<Releaser>> Node, CancellationToken Token))state!;
             owner.CancelWaiter(waiter, token);

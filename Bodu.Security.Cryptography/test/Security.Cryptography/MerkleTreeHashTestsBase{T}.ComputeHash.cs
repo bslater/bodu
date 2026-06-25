@@ -167,7 +167,7 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
         byte[] result = ComputeHash(hasher, MakeData(8).AsSpan());
 
         Assert.IsNotNull(result);
-        Assert.AreEqual(4, result.Length); // MonitoringHashAlgorithm: sizeof(uint)
+        Assert.HasCount(4, result); // MonitoringHashAlgorithm: sizeof(uint)
     }
 
     /// <summary>

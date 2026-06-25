@@ -24,7 +24,7 @@ public sealed class IniExtensionsTests
         IniDocument fromExtension = CanonicalSource.AsSpan().ParseIni();
         IniDocument fromStatic = Ini.Parse(CanonicalSource);
 
-        Assert.AreEqual(fromStatic.Sections.Count, fromExtension.Sections.Count);
+        Assert.HasCount(fromStatic.Sections.Count, fromExtension.Sections);
         Assert.AreEqual(fromStatic.GetSection("database")!["host"], fromExtension.GetSection("database")!["host"]);
         Assert.AreEqual(fromStatic.GetSection("database")!["port"], fromExtension.GetSection("database")!["port"]);
     }
@@ -53,7 +53,7 @@ public sealed class IniExtensionsTests
         IniDocument fromExtension = CanonicalSource.ParseIni(options);
         IniDocument fromStatic = Ini.Parse(CanonicalSource, options);
 
-        Assert.AreEqual(fromStatic.Sections.Count, fromExtension.Sections.Count);
+        Assert.HasCount(fromStatic.Sections.Count, fromExtension.Sections);
     }
 
     /// <summary>

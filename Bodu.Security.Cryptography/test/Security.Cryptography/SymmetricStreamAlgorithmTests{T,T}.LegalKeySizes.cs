@@ -61,8 +61,8 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
 
         foreach (KeySizes keySize in cipher.LegalKeySizes)
         {
-            Assert.IsTrue(keySize.MinSize <= keySize.MaxSize, "MinSize must be less than or equal to MaxSize.");
-            Assert.IsTrue(keySize.SkipSize >= 0, "SkipSize must be greater than or equal to zero.");
+            Assert.IsLessThanOrEqualTo(keySize.MaxSize, keySize.MinSize, "MinSize must be less than or equal to MaxSize.");
+            Assert.IsGreaterThanOrEqualTo(0, keySize.SkipSize, "SkipSize must be greater than or equal to zero.");
         }
     }
 

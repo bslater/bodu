@@ -62,8 +62,8 @@ public sealed class BinaryEncodingsCoverageTests
 
         Assert.AreEqual(Base85.Encode(Payload), encoded);
         Assert.IsTrue(encoding.IsValid(encoded.AsSpan()));
-        Assert.IsTrue(encoding.GetMaxEncodedLength(Payload.Length) >= encoded.Length);
-        Assert.IsTrue(encoding.GetMaxDecodedLength(encoded.Length) >= Payload.Length);
+        Assert.IsGreaterThanOrEqualTo(encoded.Length, encoding.GetMaxEncodedLength(Payload.Length));
+        Assert.IsGreaterThanOrEqualTo(Payload.Length, encoding.GetMaxDecodedLength(encoded.Length));
 
         char[] charBuffer = new char[encoding.GetMaxEncodedLength(Payload.Length)];
         Assert.IsTrue(encoding.TryEncode(Payload, charBuffer, out int charsWritten));
@@ -89,8 +89,8 @@ public sealed class BinaryEncodingsCoverageTests
         Assert.AreEqual(Base16.Encode(Payload), encoded);
         CollectionAssert.AreEqual(Payload, decoded);
         Assert.IsTrue(encoding.IsValid(encoded.AsSpan()));
-        Assert.IsTrue(encoding.GetMaxEncodedLength(Payload.Length) >= encoded.Length);
-        Assert.IsTrue(encoding.GetMaxDecodedLength(encoded.Length) >= decoded.Length);
+        Assert.IsGreaterThanOrEqualTo(encoded.Length, encoding.GetMaxEncodedLength(Payload.Length));
+        Assert.IsGreaterThanOrEqualTo(decoded.Length, encoding.GetMaxDecodedLength(encoded.Length));
 
         char[] charBuffer = new char[encoding.GetMaxEncodedLength(Payload.Length)];
         Assert.IsTrue(encoding.TryEncode(Payload, charBuffer, out int charsWritten));
@@ -114,8 +114,8 @@ public sealed class BinaryEncodingsCoverageTests
 
         Assert.AreEqual(Base16.Encode(Payload, BaseFormattingOptions.UpperCase), encoded);
         Assert.IsTrue(encoding.IsValid(encoded.AsSpan()));
-        Assert.IsTrue(encoding.GetMaxEncodedLength(Payload.Length) >= encoded.Length);
-        Assert.IsTrue(encoding.GetMaxDecodedLength(encoded.Length) >= Payload.Length);
+        Assert.IsGreaterThanOrEqualTo(encoded.Length, encoding.GetMaxEncodedLength(Payload.Length));
+        Assert.IsGreaterThanOrEqualTo(Payload.Length, encoding.GetMaxDecodedLength(encoded.Length));
 
         char[] charBuffer = new char[encoding.GetMaxEncodedLength(Payload.Length)];
         Assert.IsTrue(encoding.TryEncode(Payload, charBuffer, out int charsWritten));
@@ -139,8 +139,8 @@ public sealed class BinaryEncodingsCoverageTests
 
         Assert.AreEqual(Base32.Encode(Payload), encoded);
         Assert.IsTrue(encoding.IsValid(encoded.AsSpan()));
-        Assert.IsTrue(encoding.GetMaxEncodedLength(Payload.Length) >= encoded.Length);
-        Assert.IsTrue(encoding.GetMaxDecodedLength(encoded.Length) >= Payload.Length);
+        Assert.IsGreaterThanOrEqualTo(encoded.Length, encoding.GetMaxEncodedLength(Payload.Length));
+        Assert.IsGreaterThanOrEqualTo(Payload.Length, encoding.GetMaxDecodedLength(encoded.Length));
 
         char[] charBuffer = new char[encoding.GetMaxEncodedLength(Payload.Length)];
         Assert.IsTrue(encoding.TryEncode(Payload, charBuffer, out int charsWritten));
@@ -164,8 +164,8 @@ public sealed class BinaryEncodingsCoverageTests
 
         Assert.AreEqual(Base58.Encode(Payload), encoded);
         Assert.IsTrue(encoding.IsValid(encoded.AsSpan()));
-        Assert.IsTrue(encoding.GetMaxEncodedLength(Payload.Length) >= encoded.Length);
-        Assert.IsTrue(encoding.GetMaxDecodedLength(encoded.Length) >= Payload.Length);
+        Assert.IsGreaterThanOrEqualTo(encoded.Length, encoding.GetMaxEncodedLength(Payload.Length));
+        Assert.IsGreaterThanOrEqualTo(Payload.Length, encoding.GetMaxDecodedLength(encoded.Length));
 
         char[] charBuffer = new char[encoding.GetMaxEncodedLength(Payload.Length)];
         Assert.IsTrue(encoding.TryEncode(Payload, charBuffer, out int charsWritten));
@@ -188,8 +188,8 @@ public sealed class BinaryEncodingsCoverageTests
 
         Assert.AreEqual(Base64.Encode(Payload), encoded);
         Assert.IsTrue(encoding.IsValid(encoded.AsSpan()));
-        Assert.IsTrue(encoding.GetMaxEncodedLength(Payload.Length) >= encoded.Length);
-        Assert.IsTrue(encoding.GetMaxDecodedLength(encoded.Length) >= Payload.Length);
+        Assert.IsGreaterThanOrEqualTo(encoded.Length, encoding.GetMaxEncodedLength(Payload.Length));
+        Assert.IsGreaterThanOrEqualTo(Payload.Length, encoding.GetMaxDecodedLength(encoded.Length));
 
         char[] charBuffer = new char[encoding.GetMaxEncodedLength(Payload.Length)];
         Assert.IsTrue(encoding.TryEncode(Payload, charBuffer, out int charsWritten));

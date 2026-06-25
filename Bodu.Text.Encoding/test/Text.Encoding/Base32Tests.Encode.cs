@@ -117,7 +117,7 @@ public sealed partial class Base32Tests
         string actual = Base32.Encode(bytes, Base32Variant.Standard, BaseFormattingOptions.InsertLineBreaks);
         string[] lines = actual.Split("\r\n");
 
-        Assert.IsTrue(lines.Length > 1, "Output should contain at least one line break.");
+        Assert.IsGreaterThan(1, lines.Length, "Output should contain at least one line break.");
         Assert.AreEqual(64, lines[0].Length);
     }
 

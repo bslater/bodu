@@ -120,7 +120,7 @@ public partial class AsconCxof128Tests
         byte[] outputCustomized = customized.GetHash(32);
 
         Assert.IsNotNull(outputUncustomized);
-        Assert.AreEqual(32, outputUncustomized.Length);
+        Assert.HasCount(32, outputUncustomized);
         CollectionAssert.AreNotEqual(outputUncustomized, outputCustomized,
             "Un-customised and customised instances must produce different outputs.");
     }

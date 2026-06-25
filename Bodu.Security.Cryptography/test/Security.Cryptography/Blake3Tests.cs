@@ -310,7 +310,7 @@ public partial class Blake3Tests
         using Blake3 sut = new();
         byte[] hash = sut.ComputeHash(System.Text.Encoding.ASCII.GetBytes("hello BLAKE3"));
 
-        Assert.AreEqual(32, hash.Length, "BLAKE3 must always produce a 32-byte (256-bit) digest.");
+        Assert.HasCount(32, hash, "BLAKE3 must always produce a 32-byte (256-bit) digest.");
     }
 
     /// <summary>

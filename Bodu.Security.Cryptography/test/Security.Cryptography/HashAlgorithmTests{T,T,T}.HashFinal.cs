@@ -29,9 +29,9 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
             return;
         }
 
-        Assert.IsFalse(fragment.Contains("this."), $"Expected message fragment must not contain 'this.'. Actual: '{fragment}'");
-        Assert.IsFalse(fragment.Contains(" t "), $"Expected message fragment must not contain stray ' t '. Actual: '{fragment}'");
-        Assert.IsTrue(fragment.Length > 0, "Expected message fragment must not be empty.");
+        Assert.DoesNotContain("this.", fragment, $"Expected message fragment must not contain 'this.'. Actual: '{fragment}'");
+        Assert.DoesNotContain(" t ", fragment, $"Expected message fragment must not contain stray ' t '. Actual: '{fragment}'");
+        Assert.IsGreaterThan(0, fragment.Length, "Expected message fragment must not be empty.");
     }
 
     /// <summary>

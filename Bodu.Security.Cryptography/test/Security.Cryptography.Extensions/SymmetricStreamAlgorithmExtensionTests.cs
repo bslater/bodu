@@ -120,7 +120,7 @@ public sealed class SymmetricStreamAlgorithmExtensionTests
         using (ChaCha20 cipher = CreateCipher())
             viaCopy = cipher.Encrypt(plaintext.AsSpan(offset, count).ToArray());
 
-        Assert.AreEqual(count, viaSlice.Length);
+        Assert.HasCount(count, viaSlice);
         CollectionAssert.AreEqual(viaCopy, viaSlice);
     }
 

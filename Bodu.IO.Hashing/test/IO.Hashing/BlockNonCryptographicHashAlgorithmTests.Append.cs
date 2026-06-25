@@ -20,7 +20,7 @@ public partial class BlockNonCryptographicHashAlgorithmTests
         hasher.Append(new byte[] { 0x01 });
         hasher.Append(new byte[] { 0x02 });
 
-        Assert.AreEqual(0, hasher.Blocks.Count);
+        Assert.IsEmpty(hasher.Blocks);
     }
 
     /// <summary>
@@ -39,7 +39,7 @@ public partial class BlockNonCryptographicHashAlgorithmTests
         ];
         hasher.Append(input);
 
-        Assert.AreEqual(3, hasher.Blocks.Count);
+        Assert.HasCount(3, hasher.Blocks);
         CollectionAssert.AreEqual(new byte[] { 0x01, 0x02, 0x03, 0x04 }, hasher.Blocks[0]);
         CollectionAssert.AreEqual(new byte[] { 0x05, 0x06, 0x07, 0x08 }, hasher.Blocks[1]);
         CollectionAssert.AreEqual(new byte[] { 0x09, 0x0A, 0x0B, 0x0C }, hasher.Blocks[2]);
@@ -55,7 +55,7 @@ public partial class BlockNonCryptographicHashAlgorithmTests
         hasher.Append(new byte[] { 0x01, 0x02 });              // residual = 2 bytes
         hasher.Append(new byte[] { 0x03, 0x04 });              // fills the block exactly
 
-        Assert.AreEqual(1, hasher.Blocks.Count);
+        Assert.HasCount(1, hasher.Blocks);
         CollectionAssert.AreEqual(new byte[] { 0x01, 0x02, 0x03, 0x04 }, hasher.Blocks[0]);
     }
 

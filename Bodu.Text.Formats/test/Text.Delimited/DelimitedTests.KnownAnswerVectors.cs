@@ -27,7 +27,7 @@ public sealed partial class DelimitedTests
         DelimitedDocument doc = Delimited.Parse(vector.Input, options);
 
         CollectionAssert.AreEqual(vector.ExpectedHeaders, doc.Headers.ToArray());
-        Assert.AreEqual(vector.ExpectedRows.Length, doc.Rows.Count);
+        Assert.HasCount(vector.ExpectedRows.Length, doc.Rows);
 
         for (int r = 0; r < vector.ExpectedRows.Length; r++)
         {
@@ -60,7 +60,7 @@ public sealed partial class DelimitedTests
         DelimitedDocument roundTripped = Delimited.Parse(formatted, options);
 
         CollectionAssert.AreEqual(vector.ExpectedHeaders, roundTripped.Headers.ToArray());
-        Assert.AreEqual(vector.ExpectedRows.Length, roundTripped.Rows.Count);
+        Assert.HasCount(vector.ExpectedRows.Length, roundTripped.Rows);
 
         for (int r = 0; r < vector.ExpectedRows.Length; r++)
         {

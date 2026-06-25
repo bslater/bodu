@@ -40,7 +40,7 @@ public partial class AsconXof128Tests
 
         byte[] output = sut.GetHash(64);
 
-        Assert.AreEqual(64, output.Length);
+        Assert.HasCount(64, output);
     }
 
     /// <summary>
@@ -107,7 +107,7 @@ public partial class AsconXof128Tests
         // After reset, absorption must succeed without throwing.
         sut.Absorb([0x01]);
         byte[] output = sut.GetHash(32);
-        Assert.AreEqual(32, output.Length);
+        Assert.HasCount(32, output);
     }
 
     // ── Dispose ───────────────────────────────────────────────────────────────────────────────

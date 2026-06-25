@@ -368,7 +368,7 @@ public static partial class Ini
             else
             {
                 key = line[..sepIdx].TrimEnd().ToString();
-                value = line[(sepIdx + 1)..].TrimStart().ToString();
+                value = line[(sepIdx + 1) ..].TrimStart().ToString();
             }
 
             if (key.Length == 0)
@@ -427,7 +427,7 @@ public static partial class Ini
                 if (c == '\n')
                 {
                     line = source[..i];
-                    _remaining = source[(i + 1)..];
+                    _remaining = source[(i + 1) ..];
                     return true;
                 }
 
@@ -438,8 +438,8 @@ public static partial class Ini
 
                     // Consume LF following CR to handle \r\n as a single line ending.
                     _remaining = next < source.Length && source[next] == '\n'
-                        ? source[(next + 1)..]
-                        : source[(i + 1)..];
+                        ? source[(next + 1) ..]
+                        : source[(i + 1) ..];
 
                     return true;
                 }

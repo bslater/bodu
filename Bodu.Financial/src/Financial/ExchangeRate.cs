@@ -47,6 +47,7 @@ public readonly record struct ExchangeRate
     private readonly DateTimeOffset? _fetchedAtUtc;
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="ExchangeRate"/> class.
     /// Initializes a new instance of the <see cref="ExchangeRate" /> struct.
     /// </summary>
     /// <param name="from">The source currency.</param>
@@ -82,6 +83,7 @@ public readonly record struct ExchangeRate
     }
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="ExchangeRate"/> class.
     /// Initializes a new instance of the <see cref="ExchangeRate" /> struct from fully resolved field values, including
     /// the underlying observed rate.
     /// </summary>

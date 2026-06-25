@@ -52,7 +52,7 @@ public sealed partial class Base64Tests
         Assert.AreEqual("Zm9v", actual);
 
         string actualPadded = Base64.Encode(Ascii("foob"), Base64Variant.Mime);
-        Assert.IsTrue(actualPadded.EndsWith("=="), "MIME output should retain padding for non-aligned inputs.");
+        Assert.EndsWith("==", actualPadded, "MIME output should retain padding for non-aligned inputs.");
     }
 
     /// <summary>

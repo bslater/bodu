@@ -27,7 +27,7 @@ public partial class PearsonTests
         algorithm.Append(Encoding.ASCII.GetBytes("abc"));
 
         byte[] result = algorithm.GetCurrentHash();
-        Assert.AreEqual(bits / 8, result.Length);
+        Assert.HasCount(bits / 8, result);
     }
 
 }

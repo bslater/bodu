@@ -48,7 +48,7 @@ public abstract class Adler32Base
     /// <inheritdoc />
     protected override void GetCurrentHashCore(Span<byte> destination)
     {
-        uint hash = (PartB << 16) | PartA;
+        uint hash = (partB << 16) | partA;
         BinaryPrimitives.WriteUInt32BigEndian(destination, hash);
     }
 }

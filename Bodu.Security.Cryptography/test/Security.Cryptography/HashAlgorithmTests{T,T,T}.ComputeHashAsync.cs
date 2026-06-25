@@ -30,7 +30,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
         byte[] result = await algorithm.ComputeHashAsync(stream);
 
         Assert.IsNotNull(result);
-        Assert.AreEqual(algorithm.HashSize / 8, result.Length);
+        Assert.HasCount(algorithm.HashSize / 8, result);
     }
 
     /// <summary>
@@ -210,7 +210,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
         Assert.AreEqual(length, monitoredStream.Reads.Sum(r => r.Count), "Total bytes read should match stream length.");
 
         // Confirm that the algorithm read in multiple chunks (not one large buffer)
-        Assert.IsTrue(monitoredStream.Reads.Count > 1, "Expected multiple read operations.");
+        Assert.IsGreaterThan(1, monitoredStream.Reads.Count, "Expected multiple read operations.");
 
         // Output captured read info for debugging/analysis
         Trace.WriteLine($"Read Count: {monitoredStream.Reads.Count}");

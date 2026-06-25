@@ -22,7 +22,7 @@ public abstract partial class KeyedDeferredFinalBlockHashAlgorithmTests<TTest, T
         byte[] key = sut.Key;
 
         Assert.IsNotNull(key);
-        Assert.AreEqual(0, key.Length);
+        Assert.IsEmpty(key);
     }
 
     /// <summary>
@@ -121,7 +121,7 @@ public abstract partial class KeyedDeferredFinalBlockHashAlgorithmTests<TTest, T
 
         sut.Key = [];
 
-        Assert.AreEqual(0, sut.Key.Length);
+        Assert.IsEmpty(sut.Key);
     }
 
     /// <summary>

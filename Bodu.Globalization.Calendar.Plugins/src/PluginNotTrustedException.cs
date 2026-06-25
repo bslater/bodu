@@ -25,6 +25,18 @@ public sealed class PluginNotTrustedException
         Reason = reason;
     }
 
+    public PluginNotTrustedException(string message) : base(message)
+    {
+    }
+
+    public PluginNotTrustedException(string message, Exception innerException) : base(message, innerException)
+    {
+    }
+
+    public PluginNotTrustedException() : base()
+    {
+    }
+
     /// <summary>
     /// Gets the name of the rejected assembly.
     /// </summary>

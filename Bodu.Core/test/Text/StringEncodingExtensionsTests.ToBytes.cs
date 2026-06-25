@@ -33,7 +33,7 @@ public sealed partial class StringEncodingExtensionsTests
     {
         byte[] actual = string.Empty.ToBytes(System.Text.Encoding.UTF8);
 
-        Assert.AreEqual(0, actual.Length);
+        Assert.IsEmpty(actual);
     }
 
     /// <summary>

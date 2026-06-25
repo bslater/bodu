@@ -22,7 +22,7 @@ public partial class CryptoHelpersTests
         ArraySegment<byte> segment = CryptographyHelper.GetBufferOrThrowIfInaccessible(stream);
 
         Assert.IsNotNull(segment.Array);
-        Assert.AreEqual(2, segment.Count);
+        Assert.HasCount(2, segment);
         Assert.AreEqual(0x01, segment.Array[segment.Offset]);
         Assert.AreEqual(0x02, segment.Array[segment.Offset + 1]);
     }
@@ -38,7 +38,7 @@ public partial class CryptoHelpersTests
 
         ArraySegment<byte> segment = CryptographyHelper.GetBufferOrThrowIfInaccessible(stream);
 
-        Assert.AreEqual(0, segment.Count);
+        Assert.IsEmpty(segment);
     }
 
     /// <summary>

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="PriorityFallbackStrategyTests.AggregateRangeAsync.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -22,7 +22,7 @@ public sealed partial class PriorityFallbackStrategyTests
 
         IReadOnlyList<ExchangeRate> rates = await PriorityFallbackStrategy.Instance.AggregateRangeAsync("USD", "AUD", D1, D1, candidates, default);
 
-        Assert.AreEqual(1, rates.Count);
+        Assert.HasCount(1, rates);
         Assert.AreEqual("Second", rates[0].Provider);
     }
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ReloadableNotableDateServiceTests.Logging.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -25,7 +25,7 @@ public sealed partial class ReloadableNotableDateServiceTests
 
         provider.Reload(NotableDateResourceLoader.Load(FebruaryXml));
 
-        Assert.IsTrue(logger.Entries.Any(e => e.Level == LogLevel.Information && e.EventId.Id == 3003));
+        Assert.Contains(e => e.Level == LogLevel.Information && e.EventId.Id == 3003, logger.Entries);
     }
 
     /// <summary>
@@ -42,7 +42,7 @@ public sealed partial class ReloadableNotableDateServiceTests
         provider.Reload(NotableDateResourceLoader.Load(FebruaryXml));
         _ = service.Resolve(Year2025, "XX");
 
-        Assert.IsTrue(logger.Entries.Any(e => e.Level == LogLevel.Debug && e.EventId.Id == 3004));
+        Assert.Contains(e => e.Level == LogLevel.Debug && e.EventId.Id == 3004, logger.Entries);
     }
 
     /// <summary>

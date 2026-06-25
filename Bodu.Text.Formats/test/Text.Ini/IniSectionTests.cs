@@ -371,7 +371,7 @@ public sealed class IniSectionTests
 
         section.ClearEntries();
 
-        Assert.AreEqual(0, section.Entries.Count);
+        Assert.IsEmpty(section.Entries);
     }
 
     /// <summary>
@@ -385,6 +385,6 @@ public sealed class IniSectionTests
 
         section.ClearLeadingComments();
 
-        Assert.AreEqual(0, section.LeadingComments.Count);
+        Assert.IsEmpty(section.LeadingComments);
     }
 }

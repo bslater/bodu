@@ -58,7 +58,7 @@ internal static partial class MLKemEngine
         Span<byte> dkPke = decapsulationKey[..pkeSecretSize];
         Span<byte> ekCopy = decapsulationKey.Slice(pkeSecretSize, parameters.EncapsulationKeySize);
         Span<byte> ekHash = decapsulationKey.Slice(pkeSecretSize + parameters.EncapsulationKeySize, 32);
-        Span<byte> zCopy = decapsulationKey[(pkeSecretSize + parameters.EncapsulationKeySize + 32)..];
+        Span<byte> zCopy = decapsulationKey[(pkeSecretSize + parameters.EncapsulationKeySize + 32) ..];
 
         PkeKeyGen(parameters, d, encapsulationKey, dkPke);
         encapsulationKey.CopyTo(ekCopy);
@@ -128,7 +128,7 @@ internal static partial class MLKemEngine
         ReadOnlySpan<byte> dkPke = decapsulationKey[..pkeSecretSize];
         ReadOnlySpan<byte> ek = decapsulationKey.Slice(pkeSecretSize, parameters.EncapsulationKeySize);
         ReadOnlySpan<byte> ekHash = decapsulationKey.Slice(pkeSecretSize + parameters.EncapsulationKeySize, 32);
-        ReadOnlySpan<byte> z = decapsulationKey[(pkeSecretSize + parameters.EncapsulationKeySize + 32)..];
+        ReadOnlySpan<byte> z = decapsulationKey[(pkeSecretSize + parameters.EncapsulationKeySize + 32) ..];
 
         Span<byte> mPrime = stackalloc byte[32];
         PkeDecrypt(parameters, dkPke, ciphertext, mPrime);
@@ -260,7 +260,7 @@ internal static partial class MLKemEngine
             ByteEncode(12, sHat[i], dkPke.Slice(i * 384, 384));
         }
 
-        rho.CopyTo(ekPke[(384 * k)..]);
+        rho.CopyTo(ekPke[(384 * k) ..]);
 
         CryptographyHelper.Clear(rhoSigma);
         foreach (int[] poly in sHat)
@@ -284,7 +284,7 @@ internal static partial class MLKemEngine
         Span<byte> ciphertext)
     {
         int k = parameters.K;
-        ReadOnlySpan<byte> rho = ekPke[(384 * k)..];
+        ReadOnlySpan<byte> rho = ekPke[(384 * k) ..];
 
         // ŷ[i] = NTT(y[i]) with y[i] ← CBD_η₁(PRF(r, i)).
         int[][] yHat = new int[k][];
@@ -337,7 +337,7 @@ internal static partial class MLKemEngine
         for (int i = 0; i < N; i++)
             v[i] = (v[i] + Decompress(1, message[i])) % Q;
 
-        CompressEncode(parameters.Dv, v, ciphertext[(k * 32 * parameters.Du)..]);
+        CompressEncode(parameters.Dv, v, ciphertext[(k * 32 * parameters.Du) ..]);
 
         foreach (int[] poly in yHat)
             CryptographyHelper.Clear(poly);
@@ -379,7 +379,7 @@ internal static partial class MLKemEngine
         InvNtt(w);
 
         int[] v = new int[N];
-        DecodeDecompress(parameters.Dv, ciphertext[(k * 32 * parameters.Du)..], v);
+        DecodeDecompress(parameters.Dv, ciphertext[(k * 32 * parameters.Du) ..], v);
 
         int[] message = new int[N];
         for (int i = 0; i < N; i++)

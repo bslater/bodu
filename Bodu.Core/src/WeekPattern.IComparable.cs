@@ -9,9 +9,9 @@ using System.Globalization;
 namespace Bodu;
 
 public partial struct WeekPattern
-    : System.IComparable<WeekPattern>
-    , System.IComparable<byte>
-    , System.IComparable
+    : System.IComparable<WeekPattern>,
+    System.IComparable<byte>,
+    System.IComparable
 {
     /// <summary>
     /// Compares this instance to a specified object and returns an indication of their relative values.

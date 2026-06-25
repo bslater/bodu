@@ -26,10 +26,10 @@ public sealed partial class DistributedRateCacheExtensionsTests
         // AddStackExchangeRedisCache registers IDistributedCache; the builder registers IExchangeRateCache (default and
         // keyed) and the concrete cache. Assert the descriptors exist without resolving the Redis cache (which would
         // attempt a connection).
-        Assert.IsTrue(services.Any(d => d.ServiceType == typeof(IDistributedCache)));
-        Assert.IsTrue(services.Any(d => d.ServiceType == typeof(IExchangeRateCache) && d.ServiceKey is null));
-        Assert.IsTrue(services.Any(d => d.ServiceType == typeof(IExchangeRateCache) && Equals(d.ServiceKey, "RBA")));
-        Assert.IsTrue(services.Any(d => d.ServiceType == typeof(DistributedExchangeRateCache)));
+        Assert.Contains(d => d.ServiceType == typeof(IDistributedCache), services);
+        Assert.Contains(d => d.ServiceType == typeof(IExchangeRateCache) && d.ServiceKey is null, services);
+        Assert.Contains(d => d.ServiceType == typeof(IExchangeRateCache) && Equals(d.ServiceKey, "RBA"), services);
+        Assert.Contains(d => d.ServiceType == typeof(DistributedExchangeRateCache), services);
     }
 
     /// <summary>

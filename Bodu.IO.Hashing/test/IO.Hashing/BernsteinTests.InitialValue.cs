@@ -104,7 +104,7 @@ public partial class BernsteinTests
         algorithm.Append(NonCryptographicHashSharedInputs.Abc);
 
         byte[] digest = algorithm.GetCurrentHash();
-        Assert.AreEqual(4, digest.Length);
+        Assert.HasCount(4, digest);
     }
 
 }

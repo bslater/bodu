@@ -15,7 +15,7 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
     public void InputBlockSize_ShouldBeGreaterThanZero()
     {
         using TCryptoTransform transform = CreateAlgorithm();
-        Assert.IsTrue(transform.InputBlockSize > 0);
+        Assert.IsGreaterThan(0, transform.InputBlockSize);
     }
 
     /// <summary>

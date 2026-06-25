@@ -322,7 +322,7 @@ public static partial class DotEnv
                 if (c == '\'')
                 {
                     string value = new string(_remaining[..i]);
-                    _remaining = _remaining[(i + 1)..];
+                    _remaining = _remaining[(i + 1) ..];
                     return value;
                 }
 

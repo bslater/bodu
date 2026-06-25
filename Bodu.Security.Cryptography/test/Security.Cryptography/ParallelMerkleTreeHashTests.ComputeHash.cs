@@ -42,9 +42,9 @@ public partial class ParallelMerkleTreeHashTests
         hasher.ComputeHash(data, diag1);
         hasher.ComputeHash(data, diag2);
 
-        Assert.AreEqual(3, diag1.GetAllNodes().Count,
+        Assert.HasCount(3, diag1.GetAllNodes(),
             "First diagnostics should contain 2 leaves + 1 internal = 3 nodes.");
-        Assert.AreEqual(3, diag2.GetAllNodes().Count,
+        Assert.HasCount(3, diag2.GetAllNodes(),
             "Second diagnostics should contain 3 nodes, not 6 — call state must not accumulate.");
     }
 
@@ -64,7 +64,7 @@ public partial class ParallelMerkleTreeHashTests
         var diag = new MerkleTreeDiagnostics();
         hasher.ComputeHash(data, diag); // diagnostics attached
 
-        Assert.AreEqual(3, diag.GetAllNodes().Count,
+        Assert.HasCount(3, diag.GetAllNodes(),
             "Diagnostics should contain only the second call's 3 nodes.");
     }
 
@@ -96,9 +96,9 @@ public partial class ParallelMerkleTreeHashTests
         hasher.ComputeHash(MakeData(64));
 
         var list = instances.ToList();
-        Assert.AreEqual(
+        Assert.HasCount(
             list.Count,
-            list.Distinct(System.Collections.Generic.ReferenceEqualityComparer.Instance).Count(),
+            list.Distinct(System.Collections.Generic.ReferenceEqualityComparer.Instance),
             "Factory returned a shared instance — concurrent level workers must receive distinct objects.");
     }
 }

@@ -104,7 +104,7 @@ public abstract partial class BlockCipherModeTests<TMode>
         // second block is non-zero even for an all-zero plaintext and an identity cipher). The purpose of
         // this test is to verify that Transform completes without throwing and produces the expected number
         // of output bytes; mode-specific output shapes are asserted by the per-mode test partials.
-        Assert.AreEqual(input.Length, output.Length);
+        Assert.HasCount(input.Length, output);
     }
 
     /// <summary>
@@ -122,7 +122,7 @@ public abstract partial class BlockCipherModeTests<TMode>
 
         transform.Transform(input, output, encrypt: true);
 
-        Assert.IsTrue(output.Any(b => b != 0));
+        Assert.Contains(b => b != 0, output);
     }
 
     /// <summary>
@@ -149,7 +149,7 @@ public abstract partial class BlockCipherModeTests<TMode>
         // length. A stronger "all bytes non-zero" assertion is unsafe because OFB with an involutive test
         // cipher collapses to zero on alternating blocks; mode-specific byte-level assertions belong in
         // the per-mode test partials.
-        Assert.AreEqual(input.Length, output.Length);
+        Assert.HasCount(input.Length, output);
     }
 
     /// <summary>
@@ -169,7 +169,7 @@ public abstract partial class BlockCipherModeTests<TMode>
 
         transform.Transform(input, output, encrypt: true);
 
-        Assert.IsTrue(output.Any(b => b != 0));
+        Assert.Contains(b => b != 0, output);
     }
 
     /// <summary>
@@ -187,7 +187,7 @@ public abstract partial class BlockCipherModeTests<TMode>
 
         transform.Transform(input, output, encrypt: true);
 
-        Assert.IsTrue(output.Any(b => b != 0));
+        Assert.Contains(b => b != 0, output);
     }
 
     /// <summary>
@@ -217,7 +217,7 @@ public abstract partial class BlockCipherModeTests<TMode>
 
         transform.Transform(input, output, encrypt: true);
 
-        Assert.IsTrue(cipher.EncryptInputs.Count >= 2,
+        Assert.IsGreaterThanOrEqualTo(2, cipher.EncryptInputs.Count,
             $"Expected the underlying cipher to be invoked at least twice for a two-block input; " +
             $"got {cipher.EncryptInputs.Count} call(s).");
 
@@ -243,7 +243,7 @@ public abstract partial class BlockCipherModeTests<TMode>
 
         transform.Transform(input, output, encrypt: true);
 
-        Assert.IsTrue(output.Any(b => b != 0));
+        Assert.Contains(b => b != 0, output);
     }
 
     /// <summary>

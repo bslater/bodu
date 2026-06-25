@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CachingExchangeRateProviderTests.Logging.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -28,7 +28,7 @@ public sealed partial class CachingExchangeRateProviderTests
 
         _ = sut.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact);
 
-        Assert.IsTrue(logger.Entries.Any(e => e.Level == LogLevel.Trace && e.EventId.Id == 4502));
+        Assert.Contains(e => e.Level == LogLevel.Trace && e.EventId.Id == 4502, logger.Entries);
     }
 
     /// <summary>
@@ -43,7 +43,7 @@ public sealed partial class CachingExchangeRateProviderTests
 
         _ = sut.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact);
 
-        Assert.IsTrue(logger.Entries.Any(e => e.Level == LogLevel.Trace && e.EventId.Id == 4501));
+        Assert.Contains(e => e.Level == LogLevel.Trace && e.EventId.Id == 4501, logger.Entries);
     }
 
     /// <summary>
@@ -60,8 +60,8 @@ public sealed partial class CachingExchangeRateProviderTests
 
         _ = sut.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact);
 
-        Assert.IsTrue(logger.Entries.Any(e => e.Level == LogLevel.Information && e.EventId.Id == 4501));
-        Assert.IsFalse(logger.Entries.Any(e => e.Level == LogLevel.Trace && e.EventId.Id == 4501));
+        Assert.Contains(e => e.Level == LogLevel.Information && e.EventId.Id == 4501, logger.Entries);
+        Assert.DoesNotContain(e => e.Level == LogLevel.Trace && e.EventId.Id == 4501, logger.Entries);
     }
 
     /// <summary>

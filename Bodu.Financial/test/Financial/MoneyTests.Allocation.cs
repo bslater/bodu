@@ -19,7 +19,7 @@ public partial class MoneyTests
     {
         Money[] shares = Money.From(0.10m, CurrencyCode.USD).Allocate(3);
 
-        Assert.AreEqual(3, shares.Length);
+        Assert.HasCount(3, shares);
         Assert.AreEqual(Money.From(0.04m, CurrencyCode.USD), shares[0]);
         Assert.AreEqual(Money.From(0.03m, CurrencyCode.USD), shares[1]);
         Assert.AreEqual(Money.From(0.03m, CurrencyCode.USD), shares[2]);
@@ -131,7 +131,7 @@ public partial class MoneyTests
         {
             sum += shares[i];
             decimal exact = original.Amount * ratios[i] / totalWeight;
-            Assert.IsTrue(Math.Abs(shares[i].Amount - exact) <= 0.01m);
+            Assert.IsLessThanOrEqualTo(0.01m, Math.Abs(shares[i].Amount - exact));
         }
 
         Assert.AreEqual(original, sum);
@@ -149,7 +149,7 @@ public partial class MoneyTests
 
         Money[] shares = huge.Allocate([1m, 1m]);
 
-        Assert.AreEqual(2, shares.Length);
+        Assert.HasCount(2, shares);
         Assert.AreEqual(Money.From(50_000_000_000_000_000m, CurrencyCode.USD), shares[0]);
         Assert.AreEqual(Money.From(50_000_000_000_000_000m, CurrencyCode.USD), shares[1]);
         Assert.AreEqual(huge, shares[0] + shares[1]);

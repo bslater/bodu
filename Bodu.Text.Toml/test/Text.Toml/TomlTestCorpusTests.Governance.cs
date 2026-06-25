@@ -53,7 +53,7 @@ public sealed partial class TomlTestCorpusTests
                     continue;
 
                 string relative = Path.GetRelativePath(CorpusRoot, file).Replace('\\', '/');
-                Assert.IsTrue(listed.Contains(relative), $"The corpus file '{relative}' is not listed in any version manifest.");
+                Assert.Contains(relative, listed, $"The corpus file '{relative}' is not listed in any version manifest.");
             }
         }
     }
@@ -69,7 +69,7 @@ public sealed partial class TomlTestCorpusTests
             .Where(static entry => entry.StartsWith("valid/", StringComparison.Ordinal) && entry.EndsWith(".toml", StringComparison.Ordinal))
             .ToList();
 
-        Assert.AreNotEqual(0, validCases.Count, "No valid cases were found in the version manifests.");
+        Assert.IsNotEmpty(validCases, "No valid cases were found in the version manifests.");
         foreach (string? entry in validCases)
         {
             string expectation = Path.Combine(CorpusRoot, Path.ChangeExtension(entry, ".json"));
@@ -89,7 +89,7 @@ public sealed partial class TomlTestCorpusTests
         foreach (string skipped in SkippedCases.Keys)
         {
             Assert.IsTrue(File.Exists(Path.Combine(CorpusRoot, skipped)), $"Skipped case '{skipped}' does not exist in the vendored corpus.");
-            Assert.IsTrue(listed.Contains(skipped), $"Skipped case '{skipped}' is not listed in any version manifest.");
+            Assert.Contains(skipped, listed, $"Skipped case '{skipped}' is not listed in any version manifest.");
         }
     }
 

@@ -137,7 +137,7 @@ public abstract class FileExchangeRateCacheBase<TOptions>
                 return true;
             }
 
-            Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+            Directory.CreateDirectory(Path.GetDirectoryName(path) !);
 
             string text = Serialize(state);
             WriteAtomic(path, text);

@@ -83,7 +83,7 @@ public partial class CrcStandardTests
 
         HashSet<CrcStandard> set = new() { a };
         Assert.IsFalse(set.Add(b));
-        Assert.AreEqual(1, set.Count);
+        Assert.HasCount(1, set);
     }
 
     /// <summary>

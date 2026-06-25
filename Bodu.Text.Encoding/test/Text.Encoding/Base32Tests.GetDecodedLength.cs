@@ -76,7 +76,7 @@ public sealed partial class Base32Tests
         int crockford = Base32.GetEncodedLength(6, Base32Variant.Crockford);
 
         Assert.AreEqual(16, standard);
-        Assert.IsTrue(crockford < standard, "Crockford output (no padding) should be shorter than Standard (padded).");
+        Assert.IsLessThan(standard, crockford, "Crockford output (no padding) should be shorter than Standard (padded).");
     }
 
     /// <summary>

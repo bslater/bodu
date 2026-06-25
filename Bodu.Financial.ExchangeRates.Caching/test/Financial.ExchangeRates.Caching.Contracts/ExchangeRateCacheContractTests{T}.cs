@@ -58,7 +58,7 @@ public abstract class ExchangeRateCacheContractTests<TCache>
 
         IReadOnlyList<CachedExchangeRate> result = cache.GetRates(Pair, Duration, DateTimeOffset.UtcNow);
 
-        Assert.AreEqual(0, result.Count);
+        Assert.IsEmpty(result);
     }
 
     /// <summary>
@@ -73,7 +73,7 @@ public abstract class ExchangeRateCacheContractTests<TCache>
 
         IReadOnlyList<CachedExchangeRate> result = cache.GetRates(Pair, Duration, now);
 
-        Assert.AreEqual(1, result.Count);
+        Assert.HasCount(1, result);
         Assert.AreEqual(0.5000m, result[0].Rate);
     }
 
@@ -89,7 +89,7 @@ public abstract class ExchangeRateCacheContractTests<TCache>
 
         IReadOnlyList<CachedExchangeRate> result = cache.GetRates(Pair, Duration, DateTimeOffset.UtcNow);
 
-        Assert.AreEqual(0, result.Count);
+        Assert.IsEmpty(result);
     }
 
     /// <summary>
@@ -105,7 +105,7 @@ public abstract class ExchangeRateCacheContractTests<TCache>
 
         IReadOnlyList<CachedExchangeRate> result = cache.GetRates(Pair, Duration, asOf);
 
-        Assert.AreEqual(0, result.Count);
+        Assert.IsEmpty(result);
     }
 
     /// <summary>
@@ -124,7 +124,7 @@ public abstract class ExchangeRateCacheContractTests<TCache>
 
         IReadOnlyList<CachedExchangeRate> result = cache.GetRates(Pair, Duration, newer);
 
-        Assert.AreEqual(1, result.Count);
+        Assert.HasCount(1, result);
         Assert.AreEqual(0.6000m, result[0].Rate);
     }
 
@@ -142,7 +142,7 @@ public abstract class ExchangeRateCacheContractTests<TCache>
 
         IReadOnlyList<CachedExchangeRate> result = cache.GetRates(Pair, Duration, now);
 
-        Assert.AreEqual(2, result.Count);
+        Assert.HasCount(2, result);
         Assert.AreEqual(new DateOnly(2023, 1, 3), result[0].Date);
         Assert.AreEqual(new DateOnly(2023, 1, 6), result[1].Date);
     }
@@ -162,7 +162,7 @@ public abstract class ExchangeRateCacheContractTests<TCache>
 
         IReadOnlyList<CachedExchangeRate> result = cache.GetRates(Pair, Duration, now);
 
-        Assert.AreEqual(1, result.Count);
+        Assert.HasCount(1, result);
         Assert.AreEqual(new DateOnly(2023, 1, 6), result[0].Date);
     }
 
@@ -179,7 +179,7 @@ public abstract class ExchangeRateCacheContractTests<TCache>
         cache.Store(Pair, Array.Empty<CachedExchangeRate>(), Duration, now);
 
         IReadOnlyList<CachedExchangeRate> result = cache.GetRates(Pair, Duration, now);
-        Assert.AreEqual(1, result.Count);
+        Assert.HasCount(1, result);
     }
 
     /// <summary>
@@ -194,7 +194,7 @@ public abstract class ExchangeRateCacheContractTests<TCache>
 
         IReadOnlyList<CachedExchangeRate> other = cache.GetRates(new ExchangeRatePair(CurrencyCode.EUR, CurrencyCode.USD), Duration, now);
 
-        Assert.AreEqual(0, other.Count);
+        Assert.IsEmpty(other);
     }
 
     /// <summary>
@@ -307,7 +307,7 @@ public abstract class ExchangeRateCacheContractTests<TCache>
         cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, now) }, Duration, now);
 
         Assert.IsTrue(cache.GetCoverage(Pair, Duration, now).Contains(new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 10)));
-        Assert.AreEqual(1, cache.GetRates(Pair, Duration, now).Count);
+        Assert.HasCount(1, cache.GetRates(Pair, Duration, now));
     }
 
     /// <summary>
@@ -324,7 +324,7 @@ public abstract class ExchangeRateCacheContractTests<TCache>
         cache.RecordCoverage(Pair, new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 10), Duration, now);
 
         IReadOnlyList<CachedExchangeRate> rows = cache.GetRates(Pair, Duration, now);
-        Assert.AreEqual(1, rows.Count);
+        Assert.HasCount(1, rows);
         Assert.AreEqual(0.5000m, rows[0].Rate);
         Assert.IsTrue(cache.GetCoverage(Pair, Duration, now).Contains(new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 10)));
     }
@@ -340,7 +340,7 @@ public abstract class ExchangeRateCacheContractTests<TCache>
 
         cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0m, now) }, Duration, now);
 
-        Assert.AreEqual(0, cache.GetRates(Pair, Duration, now).Count);
+        Assert.IsEmpty(cache.GetRates(Pair, Duration, now));
     }
 
     /// <summary>
@@ -354,7 +354,7 @@ public abstract class ExchangeRateCacheContractTests<TCache>
 
         cache.Store(Pair, new[] { new CachedExchangeRate(default, 0.5000m, now) }, Duration, now);
 
-        Assert.AreEqual(0, cache.GetRates(Pair, Duration, now).Count);
+        Assert.IsEmpty(cache.GetRates(Pair, Duration, now));
     }
 
     /// <summary>
@@ -377,7 +377,7 @@ public abstract class ExchangeRateCacheContractTests<TCache>
             now);
 
         IReadOnlyList<CachedExchangeRate> rows = cache.GetRates(Pair, Duration, now);
-        Assert.AreEqual(1, rows.Count);
+        Assert.HasCount(1, rows);
         Assert.AreEqual(new DateOnly(2023, 1, 3), rows[0].Date);
     }
 
@@ -404,7 +404,7 @@ public abstract class ExchangeRateCacheContractTests<TCache>
             now);
 
         Assert.AreEqual(ExchangeRateCacheWriteStatus.Stored, status);
-        Assert.AreEqual(2, cache.GetRates(Pair, Duration, now).Count);
+        Assert.HasCount(2, cache.GetRates(Pair, Duration, now));
         Assert.IsTrue(cache.GetCoverage(Pair, Duration, now).Contains(new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 6)));
     }
 
@@ -427,7 +427,7 @@ public abstract class ExchangeRateCacheContractTests<TCache>
             now);
 
         Assert.AreEqual(ExchangeRateCacheWriteStatus.Stored, status);
-        Assert.AreEqual(0, cache.GetRates(Pair, Duration, now).Count);
+        Assert.IsEmpty(cache.GetRates(Pair, Duration, now));
 
         // The empty-but-fetched window is covered: a range query over it is a hit, distinguishable from a miss because
         // the coverage contains the window even though no row exists.
@@ -460,7 +460,7 @@ public abstract class ExchangeRateCacheContractTests<TCache>
             now);
 
         IReadOnlyList<CachedExchangeRate> rows = cache.GetRates(Pair, Duration, now);
-        Assert.AreEqual(2, rows.Count);
+        Assert.HasCount(2, rows);
         Assert.AreEqual(new DateOnly(2023, 1, 3), rows[0].Date);
         Assert.AreEqual(new DateOnly(2023, 1, 10), rows[1].Date);
 
@@ -494,7 +494,7 @@ public abstract class ExchangeRateCacheContractTests<TCache>
         Assert.AreEqual(ExchangeRateCacheWriteStatus.Stored, status);
 
         IReadOnlyList<CachedExchangeRate> rows = cache.GetRates(Pair, Duration, now);
-        Assert.AreEqual(1, rows.Count);
+        Assert.HasCount(1, rows);
         Assert.AreEqual(new DateOnly(2023, 1, 3), rows[0].Date);
         Assert.IsTrue(cache.GetCoverage(Pair, Duration, now).Contains(new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 4)));
     }
@@ -547,7 +547,7 @@ public abstract class ExchangeRateCacheContractTests<TCache>
 
         await Task.WhenAll(writes);
 
-        Assert.AreEqual(Windows, cache.GetRates(Pair, Duration, now).Count);
+        Assert.HasCount(Windows, cache.GetRates(Pair, Duration, now));
 
         DateRangeCoverage coverage = cache.GetCoverage(Pair, Duration, now);
         for (int i = 0; i < Windows; i++)
@@ -571,7 +571,7 @@ public abstract class ExchangeRateCacheContractTests<TCache>
         cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, now, observedAt) }, Duration, now);
 
         IReadOnlyList<CachedExchangeRate> rows = cache.GetRates(Pair, Duration, now);
-        Assert.AreEqual(1, rows.Count);
+        Assert.HasCount(1, rows);
         Assert.AreEqual(observedAt, rows[0].ObservedAtUtc);
         Assert.AreEqual(observedAt.Offset, rows[0].ObservedAtUtc!.Value.Offset);
     }
@@ -589,7 +589,7 @@ public abstract class ExchangeRateCacheContractTests<TCache>
         cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, now) }, Duration, now);
 
         IReadOnlyList<CachedExchangeRate> rows = cache.GetRates(Pair, Duration, now);
-        Assert.AreEqual(1, rows.Count);
+        Assert.HasCount(1, rows);
         Assert.IsNull(rows[0].ObservedAtUtc);
     }
 
@@ -611,7 +611,7 @@ public abstract class ExchangeRateCacheContractTests<TCache>
         cache.Store(Pair, new[] { new CachedExchangeRate(date, 0.6000m, newer, observedNew) }, Duration, newer);
 
         IReadOnlyList<CachedExchangeRate> rows = cache.GetRates(Pair, Duration, newer);
-        Assert.AreEqual(1, rows.Count);
+        Assert.HasCount(1, rows);
         Assert.AreEqual(0.6000m, rows[0].Rate);
         Assert.AreEqual(observedNew, rows[0].ObservedAtUtc);
     }

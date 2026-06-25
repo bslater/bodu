@@ -45,7 +45,7 @@ public class CurrencyCatalogueTests
     {
         var types = CurrencyTagTypes().ToList();
 
-        Assert.IsTrue(types.Count >= 180, $"Expected the full ISO 4217 catalogue; found only {types.Count} tag types.");
+        Assert.IsGreaterThanOrEqualTo(180, types.Count, $"Expected the full ISO 4217 catalogue; found only {types.Count} tag types.");
 
         foreach (Type type in types)
         {
@@ -100,7 +100,7 @@ public class CurrencyCatalogueTests
     {
         foreach (Type type in CurrencyTagTypes())
         {
-            Assert.AreEqual(0, type.GetConstructors(BindingFlags.Public | BindingFlags.Instance).Length, $"{type.Name}: must not expose a public constructor.");
+            Assert.IsEmpty(type.GetConstructors(BindingFlags.Public | BindingFlags.Instance), $"{type.Name}: must not expose a public constructor.");
 
             ConstructorInfo? constructor = type.GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, binder: null, Type.EmptyTypes, modifiers: null);
             Assert.IsNotNull(constructor, $"{type.Name}: expected a non-public parameterless constructor.");

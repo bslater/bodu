@@ -358,7 +358,7 @@ public partial class ParallelMerkleTreeHashTests
         using var hasher = new ParallelMerkleTreeHash(factory, blockSize: 4, fanOut: 2);
         hasher.ComputeHash(MakeData(8));
 
-        Assert.AreEqual(1, internalBytesObserved.Count,
+        Assert.HasCount(1, internalBytesObserved,
             "Exactly one internal hasher should have been created.");
         Assert.AreEqual(expectedBytes, internalBytesObserved.ToArray()[0],
             "The internal hasher must process 2 × 4 = 8 bytes (two child hashes).");
@@ -394,7 +394,7 @@ public partial class ParallelMerkleTreeHashTests
         sorted.Sort();
 
         // Expected: one internal with 4 bytes (single-child), two with 8 bytes (two children).
-        Assert.AreEqual(3, sorted.Count, "Expected three internal node hashers.");
+        Assert.HasCount(3, sorted, "Expected three internal node hashers.");
         Assert.AreEqual(hashOutputSize, sorted[0], "Smallest internal should be 4 bytes (single-child remainder).");
         Assert.AreEqual(2 * hashOutputSize, sorted[1], "Second internal should be 8 bytes (two children).");
         Assert.AreEqual(2 * hashOutputSize, sorted[2], "Third internal should be 8 bytes (two children).");
@@ -430,7 +430,7 @@ public partial class ParallelMerkleTreeHashTests
         using var hasher = new ParallelMerkleTreeHash(factory, blockSize: 4, fanOut: fanOut);
         hasher.ComputeHash(MakeData(dataLength));
 
-        Assert.AreEqual(1, hashCoreCounts.Count,
+        Assert.HasCount(1, hashCoreCounts,
             $"Expected exactly one internal node for fanOut={fanOut} exact leaves.");
         Assert.AreEqual(fanOut, hashCoreCounts.ToArray()[0],
             $"Internal hasher must call HashCore exactly {fanOut} times (once per child).");
@@ -550,8 +550,8 @@ public partial class ParallelMerkleTreeHashTests
         byte[] root = hasher.ComputeHash(data);
 
         // Structural assertions.
-        Assert.AreEqual(2, capturedLeafHashes.Count, "Expected two leaf hashers.");
-        Assert.AreEqual(1, capturedInternalSums.Count, "Expected one internal node hasher.");
+        Assert.HasCount(2, capturedLeafHashes, "Expected two leaf hashers.");
+        Assert.HasCount(1, capturedInternalSums, "Expected one internal node hasher.");
 
         // The root hash must equal the hand-computed expected value.
         byte[] expected = BitConverter.GetBytes((uint)36);

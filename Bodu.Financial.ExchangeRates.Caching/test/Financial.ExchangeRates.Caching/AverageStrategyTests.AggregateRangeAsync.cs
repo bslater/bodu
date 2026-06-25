@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AverageStrategyTests.AggregateRangeAsync.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -24,7 +24,7 @@ public sealed partial class AverageStrategyTests
         IReadOnlyList<ExchangeRate> rates =
             await new AverageStrategy().AggregateRangeAsync("AUD", "USD", new DateOnly(2024, 1, 1), new DateOnly(2024, 1, 3), candidates, default);
 
-        Assert.AreEqual(1, rates.Count);
+        Assert.HasCount(1, rates);
         Assert.AreEqual(new DateOnly(2024, 1, 2), rates[0].Date);
         Assert.AreEqual(0.53m, rates[0].Rate);
     }

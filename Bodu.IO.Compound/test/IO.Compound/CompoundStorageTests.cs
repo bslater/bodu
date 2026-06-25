@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CompoundStorageTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -31,7 +31,7 @@ public class CompoundStorageTests
 
         List<CompoundStorage> storages = file.RootStorage.EnumerateStorages().ToList();
 
-        Assert.AreEqual(1, storages.Count);
+        Assert.HasCount(1, storages);
         Assert.AreEqual("Storage 1", storages[0].Name);
     }
 
@@ -46,7 +46,7 @@ public class CompoundStorageTests
         CompoundStorage storage1 = file.RootStorage.OpenStorage("Storage 1");
         List<CompoundEntryInfo> streams = storage1.EnumerateStreams().ToList();
 
-        Assert.AreEqual(1, streams.Count);
+        Assert.HasCount(1, streams);
         Assert.AreEqual("Stream 1", streams[0].Name);
     }
 
@@ -115,7 +115,7 @@ public class CompoundStorageTests
 
         Assert.IsTrue(file.RootStorage.TryOpenStream("Workbook", out CompoundStream? workbook));
         Assert.IsNotNull(workbook);
-        Assert.IsTrue(workbook.Length > 0);
+        Assert.IsGreaterThan(0, workbook.Length);
     }
 
     /// <summary>

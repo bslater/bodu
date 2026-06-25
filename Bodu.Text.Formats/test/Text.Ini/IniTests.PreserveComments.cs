@@ -26,9 +26,9 @@ public sealed partial class IniTests
 
         IniDocument doc = Ini.Parse(source);
 
-        Assert.AreEqual(1, doc.GlobalSection.Entries.Count);
+        Assert.HasCount(1, doc.GlobalSection.Entries);
         IniEntry entry = doc.GlobalSection.Entries[0];
-        Assert.AreEqual(2, entry.LeadingComments.Count);
+        Assert.HasCount(2, entry.LeadingComments);
         Assert.AreEqual('#', entry.LeadingComments[0].Prefix);
         Assert.AreEqual(';', entry.LeadingComments[1].Prefix);
     }
@@ -44,8 +44,8 @@ public sealed partial class IniTests
 
         IniDocument doc = Ini.Parse(source);
 
-        Assert.AreEqual(1, doc.Sections.Count);
-        Assert.AreEqual(1, doc.Sections[0].LeadingComments.Count);
+        Assert.HasCount(1, doc.Sections);
+        Assert.HasCount(1, doc.Sections[0].LeadingComments);
         Assert.AreEqual(" applies to server", doc.Sections[0].LeadingComments[0].Text);
     }
 
@@ -60,8 +60,8 @@ public sealed partial class IniTests
 
         IniDocument doc = Ini.Parse(source, new IniParseOptions { PreserveComments = false });
 
-        Assert.AreEqual(0, doc.Sections[0].LeadingComments.Count);
-        Assert.AreEqual(0, doc.Sections[0].Entries[0].LeadingComments.Count);
+        Assert.IsEmpty(doc.Sections[0].LeadingComments);
+        Assert.IsEmpty(doc.Sections[0].Entries[0].LeadingComments);
     }
 
     /// <summary>

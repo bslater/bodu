@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EcbExchangeRateProviderTests.GetRatesAsync.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -22,7 +22,7 @@ public partial class EcbExchangeRateProviderTests
         IReadOnlyList<ExchangeRate> rates =
             [.. await provider.GetRatesAsync("EUR", "JPY", new DateOnly(2023, 1, 1), new DateOnly(2023, 12, 31))];
 
-        Assert.AreEqual(2, rates.Count);
+        Assert.HasCount(2, rates);
         Assert.AreEqual(new DateOnly(2023, 1, 3), rates[0].Date);
         Assert.AreEqual(140.06m, rates[0].Rate);
         Assert.AreEqual(new DateOnly(2023, 1, 4), rates[1].Date);
@@ -40,7 +40,7 @@ public partial class EcbExchangeRateProviderTests
         IReadOnlyList<ExchangeRate> rates =
             [.. await provider.GetRatesAsync("JPY", "EUR", new DateOnly(2023, 1, 1), new DateOnly(2023, 12, 31))];
 
-        Assert.AreEqual(2, rates.Count);
+        Assert.HasCount(2, rates);
         Assert.IsTrue(rates[0].IsInverted);
         Assert.AreEqual(1m / 140.06m, rates[0].Rate, 1e-12m);
     }

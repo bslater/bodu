@@ -33,7 +33,7 @@ public sealed partial class CachingExchangeRateProviderTests
         IReadOnlyList<ExchangeRate> rates = [.. await sut.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 6))];
 
         Assert.AreEqual(1, inner.GetRatesAsyncCallCount);
-        Assert.AreEqual(3, rates.Count);
+        Assert.HasCount(3, rates);
     }
 
     /// <summary>
@@ -54,7 +54,7 @@ public sealed partial class CachingExchangeRateProviderTests
         IReadOnlyList<ExchangeRate> sub = [.. await sut.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 4), new DateOnly(2023, 1, 5))];
 
         Assert.AreEqual(1, inner.GetRatesAsyncCallCount);
-        Assert.AreEqual(2, sub.Count);
+        Assert.HasCount(2, sub);
         Assert.AreEqual(new DateOnly(2023, 1, 4), sub[0].Date);
         Assert.AreEqual(new DateOnly(2023, 1, 5), sub[1].Date);
     }
@@ -92,8 +92,8 @@ public sealed partial class CachingExchangeRateProviderTests
         IReadOnlyList<ExchangeRate> first = await sut.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 6));
         IReadOnlyList<ExchangeRate> second = await sut.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 6));
 
-        Assert.AreEqual(0, first.Count);
-        Assert.AreEqual(0, second.Count);
+        Assert.IsEmpty(first);
+        Assert.IsEmpty(second);
 
         // The empty window was recorded as covered on the first call, so the second call is a cache hit returning an
         // empty list rather than a second fetch.
@@ -120,8 +120,8 @@ public sealed partial class CachingExchangeRateProviderTests
         IReadOnlyList<ExchangeRate> first = await sut.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 6));
         IReadOnlyList<ExchangeRate> second = await sut.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 6));
 
-        Assert.AreEqual(2, first.Count);
-        Assert.AreEqual(2, second.Count);
+        Assert.HasCount(2, first);
+        Assert.HasCount(2, second);
 
         // Neither call was served from a false hit: both reached the inner provider because coverage was never recorded.
         Assert.AreEqual(2, inner.GetRatesAsyncCallCount);

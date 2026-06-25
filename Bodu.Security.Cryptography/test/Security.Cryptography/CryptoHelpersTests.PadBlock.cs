@@ -139,7 +139,7 @@ public partial class CryptoHelpersTests
         int expectedLength = expectedHex.Length / 2;
         byte[] result = CryptographyHelper.PadBlock(padding, blockSizeBytes * 8, input, 0, input.Length);
 
-        Assert.AreEqual(expectedLength, result.Length);
+        Assert.HasCount(expectedLength, result);
     }
 
     /// <summary>

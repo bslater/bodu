@@ -33,11 +33,13 @@ namespace Bodu.Security.Cryptography;
 /// </remarks>
 /// <example>
 /// <code language="csharp">
+///<![CDATA[
 /// using var algo = new SimpleReversingSymmetricAlgorithm(); algo.GenerateKey(); algo.GenerateIV(); var encryptor =
 /// (SimpleReversingCryptoTransform)algo.CreateEncryptor(); byte[] ciphertext; using (var ms = new MemoryStream()) using
 /// (var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write)) { cs.Write(plaintext); cs.FlushFinalBlock();
 /// ciphertext = ms.ToArray(); } Inspect diagnostics after the operation. Assert.AreEqual(expectedBlockCount,
 /// encryptor.Diagnostics.EncryptLog.Count);
+///]]>
 /// </code>
 /// </example>
 public sealed class SimpleReversingSymmetricAlgorithm

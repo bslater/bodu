@@ -31,7 +31,7 @@ public sealed partial class DelimitedReaderTests
                 async.Add(r.Fields.ToArray());
         }
 
-        Assert.AreEqual(sync.Count, async.Count);
+        Assert.HasCount(sync.Count, async);
         for (int i = 0; i < sync.Count; i++)
             CollectionAssert.AreEqual(sync[i], async[i]);
     }

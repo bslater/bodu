@@ -20,16 +20,16 @@ public partial class BlockNonCryptographicHashAlgorithmTests
     {
         PaddingBlockHasher hasher = new();
         hasher.Append(new byte[] { 0x11, 0x22 });  // residual = 2 bytes — no blocks emitted yet
-        Assert.AreEqual(0, hasher.Blocks.Count);
+        Assert.IsEmpty(hasher.Blocks);
 
         _ = hasher.GetCurrentHash();
 
         // PadBlock returns two blocks of four bytes each; the padded payload must be sliced into exactly two
         // ProcessBlock calls on the cloned instance. Blocks is shared with the clone so the outer instance
         // witnesses the invocations.
-        Assert.AreEqual(2, hasher.Blocks.Count);
+        Assert.HasCount(2, hasher.Blocks);
         CollectionAssert.AreEqual(new byte[] { 0x11, 0x22, 0x00, 0x00 }, hasher.Blocks[0]);
-        Assert.AreEqual(4, hasher.Blocks[1].Length);
+        Assert.HasCount(4, hasher.Blocks[1]);
     }
 
     /// <summary>
@@ -49,7 +49,7 @@ public partial class BlockNonCryptographicHashAlgorithmTests
         byte[] digest = hasher.GetCurrentHash();
 
         Assert.IsNotNull(digest);
-        Assert.AreEqual(4, digest.Length);
+        Assert.HasCount(4, digest);
     }
 
 }

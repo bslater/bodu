@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NonceTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -24,7 +24,7 @@ public sealed partial class NonceTests
         Assert.AreEqual(0, nonce.Length);
         Assert.IsTrue(nonce.IsEmpty);
         Assert.IsTrue(nonce.AsSpan().IsEmpty);
-        Assert.AreEqual(0, nonce.ToArray().Length);
+        Assert.IsEmpty(nonce.ToArray());
         Assert.AreEqual(string.Empty, nonce.ToString());
     }
 

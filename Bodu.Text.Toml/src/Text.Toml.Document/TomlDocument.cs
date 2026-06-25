@@ -471,7 +471,7 @@ public sealed partial class TomlDocument
     /// </summary>
     /// <param name="row">The row to classify.</param>
     /// <returns>The value kind.</returns>
-    private static TomlValueKind ToValueKind(in TomlReaderRow row) =>
+    private static TomlValueKind ToValueKind(TomlReaderRow row) =>
         row.Kind switch
         {
             TomlReaderNodeKind.Table => TomlValueKind.Table,

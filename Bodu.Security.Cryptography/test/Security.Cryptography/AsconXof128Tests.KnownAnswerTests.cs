@@ -43,7 +43,7 @@ public partial class AsconXof128Tests
 
         byte[] actual = AsconXof128.HashData(message, outputLength);
 
-        Assert.AreEqual(outputLength, actual.Length,
+        Assert.HasCount(outputLength, actual,
             $"HashData({inputLength}, {outputLength}) must return exactly {outputLength} bytes.");
     }
 

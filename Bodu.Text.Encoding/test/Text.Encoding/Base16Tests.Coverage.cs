@@ -54,7 +54,7 @@ public partial class Base16Tests
     [TestMethod]
     public void EncodeToUtf8_WhenSourceEmpty_ShouldReturnEmpty()
     {
-        Assert.AreEqual(0, Base16.EncodeToUtf8(ReadOnlySpan<byte>.Empty).Length);
+        Assert.IsEmpty(Base16.EncodeToUtf8(ReadOnlySpan<byte>.Empty));
     }
 
     /// <summary>
@@ -136,6 +136,6 @@ public partial class Base16Tests
     [TestMethod]
     public void EncodeToUtf8_WithVariant_WhenSourceEmpty_ShouldReturnEmpty()
     {
-        Assert.AreEqual(0, Base16.EncodeToUtf8(ReadOnlySpan<byte>.Empty, Base16Variant.Upper).Length);
+        Assert.IsEmpty(Base16.EncodeToUtf8(ReadOnlySpan<byte>.Empty, Base16Variant.Upper));
     }
 }

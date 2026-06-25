@@ -111,7 +111,7 @@ public sealed class RemainingGapCoverageTests
     {
         byte[] result = Base32.EncodeToUtf8([]);
 
-        Assert.AreEqual(0, result.Length);
+        Assert.IsEmpty(result);
     }
 
     /// <summary>
@@ -188,7 +188,7 @@ public sealed class RemainingGapCoverageTests
     {
         byte[] result = Base58.EncodeToUtf8([]);
 
-        Assert.AreEqual(0, result.Length);
+        Assert.IsEmpty(result);
     }
 
     /// <summary>
@@ -205,7 +205,7 @@ public sealed class RemainingGapCoverageTests
     public void Base58_GetMaxEncodedLength_ShouldHandleZeroAndPositive()
     {
         Assert.AreEqual(0, Base58.GetMaxEncodedLength(0));
-        Assert.IsTrue(Base58.GetMaxEncodedLength(1) > 0);
+        Assert.IsGreaterThan(0, Base58.GetMaxEncodedLength(1));
     }
 
     /// <summary>
@@ -268,7 +268,7 @@ public sealed class RemainingGapCoverageTests
     public void Base58Check_GetMaxDecodedLength_ShouldHandleShortAndLongInputs()
     {
         Assert.AreEqual(0, Base58Check.GetMaxDecodedLength(0));
-        Assert.IsTrue(Base58Check.GetMaxDecodedLength(40) > 0);
+        Assert.IsGreaterThan(0, Base58Check.GetMaxDecodedLength(40));
     }
 
     /// <summary>
@@ -368,7 +368,7 @@ public sealed class RemainingGapCoverageTests
     {
         byte[] result = Base64.EncodeToUtf8([]);
 
-        Assert.AreEqual(0, result.Length);
+        Assert.IsEmpty(result);
     }
 
     /// <summary>
@@ -433,7 +433,7 @@ public sealed class RemainingGapCoverageTests
     [TestMethod]
     public void Base85_EncodeToUtf8_WhenEmpty_ShouldReturnEmptyArray()
     {
-        Assert.AreEqual(0, Base85.EncodeToUtf8([]).Length);
+        Assert.IsEmpty(Base85.EncodeToUtf8([]));
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {

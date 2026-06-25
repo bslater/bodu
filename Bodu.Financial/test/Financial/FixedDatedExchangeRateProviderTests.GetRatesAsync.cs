@@ -26,7 +26,7 @@ public partial class FixedDatedExchangeRateProviderTests
         IReadOnlyList<ExchangeRate> rates =
             [.. await table.GetRatesAsync("USD", "AUD", new DateOnly(2024, 1, 3), new DateOnly(2024, 1, 6))];
 
-        Assert.AreEqual(2, rates.Count);
+        Assert.HasCount(2, rates);
         Assert.AreEqual(new DateOnly(2024, 1, 3), rates[0].Date);
         Assert.AreEqual(new DateOnly(2024, 1, 6), rates[1].Date);
     }
@@ -42,7 +42,7 @@ public partial class FixedDatedExchangeRateProviderTests
         IReadOnlyList<ExchangeRate> rates =
             [.. await table.GetRatesAsync("EUR", "JPY", new DateOnly(2024, 1, 1), new DateOnly(2024, 1, 31))];
 
-        Assert.AreEqual(0, rates.Count);
+        Assert.IsEmpty(rates);
     }
 
     /// <summary>

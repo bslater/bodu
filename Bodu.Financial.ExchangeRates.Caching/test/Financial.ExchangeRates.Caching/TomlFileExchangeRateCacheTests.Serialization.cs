@@ -30,7 +30,7 @@ public sealed partial class TomlFileExchangeRateCacheTests
         cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), precise, now) }, Duration, now);
         IReadOnlyList<CachedExchangeRate> read = cache.GetRates(Pair, Duration, now);
 
-        Assert.AreEqual(1, read.Count);
+        Assert.HasCount(1, read);
         Assert.AreEqual(precise, read[0].Rate);
     }
 
@@ -78,7 +78,7 @@ public sealed partial class TomlFileExchangeRateCacheTests
 
         IReadOnlyList<CachedExchangeRate> read = cache.GetRates(Pair, Duration, DateTimeOffset.UtcNow);
 
-        Assert.AreEqual(0, read.Count);
+        Assert.IsEmpty(read);
     }
 
     /// <summary>
@@ -94,7 +94,7 @@ public sealed partial class TomlFileExchangeRateCacheTests
         TomlFileExchangeRateCache reopened = new(new FileExchangeRateCacheOptions { Provider = Provider, CacheDirectory = _directory });
         IReadOnlyList<CachedExchangeRate> read = reopened.GetRates(Pair, Duration, now);
 
-        Assert.AreEqual(1, read.Count);
+        Assert.HasCount(1, read);
         Assert.AreEqual(0.5m, read[0].Rate);
     }
 
@@ -130,7 +130,7 @@ public sealed partial class TomlFileExchangeRateCacheTests
 
         TomlFileExchangeRateCache reopened = new(new FileExchangeRateCacheOptions { Provider = Provider, CacheDirectory = _directory });
 
-        Assert.AreEqual(1, reopened.GetRates(Pair, Duration, now).Count);
+        Assert.HasCount(1, reopened.GetRates(Pair, Duration, now));
         Assert.IsTrue(reopened.GetCoverage(Pair, Duration, now).Contains(new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 6)));
     }
 
@@ -153,7 +153,7 @@ public sealed partial class TomlFileExchangeRateCacheTests
 
         IReadOnlyList<CachedExchangeRate> read = cache.GetRates(Pair, Duration, now);
 
-        Assert.AreEqual(1, read.Count);
+        Assert.HasCount(1, read);
         Assert.AreEqual(0.5000m, read[0].Rate);
         Assert.IsTrue(cache.GetCoverage(Pair, Duration, now).IsEmpty);
     }
@@ -178,7 +178,7 @@ public sealed partial class TomlFileExchangeRateCacheTests
 
         IReadOnlyList<CachedExchangeRate> read = cache.GetRates(Pair, Duration, now);
 
-        Assert.AreEqual(1, read.Count);
+        Assert.HasCount(1, read);
         Assert.AreEqual(0.5000m, read[0].Rate);
         Assert.IsNull(read[0].ObservedAtUtc);
     }
@@ -197,7 +197,7 @@ public sealed partial class TomlFileExchangeRateCacheTests
         TomlFileExchangeRateCache reopened = new(new FileExchangeRateCacheOptions { Provider = Provider, CacheDirectory = _directory });
         IReadOnlyList<CachedExchangeRate> read = reopened.GetRates(Pair, Duration, now);
 
-        Assert.AreEqual(1, read.Count);
+        Assert.HasCount(1, read);
         Assert.AreEqual(observedAt, read[0].ObservedAtUtc);
         Assert.AreEqual(observedAt.Offset, read[0].ObservedAtUtc!.Value.Offset);
     }

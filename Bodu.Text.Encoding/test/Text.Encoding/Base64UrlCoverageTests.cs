@@ -52,7 +52,7 @@ public sealed class Base64UrlCoverageTests
     {
         byte[] decoded = Base64Url.Decode(ReadOnlySpan<byte>.Empty);
 
-        Assert.AreEqual(0, decoded.Length);
+        Assert.IsEmpty(decoded);
     }
 
     /// <summary>

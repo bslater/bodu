@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateRangeCoverageTests.Add.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -35,7 +35,7 @@ public partial class DateRangeCoverageTests
         coverage.Add(On(2), On(6));
 
         IReadOnlyList<(DateOnly Start, DateOnly End)> intervals = coverage.Intervals;
-        Assert.AreEqual(1, intervals.Count);
+        Assert.HasCount(1, intervals);
         Assert.AreEqual((On(2), On(6)), intervals[0]);
     }
 
@@ -51,7 +51,7 @@ public partial class DateRangeCoverageTests
         coverage.Add(On(3), On(8));
 
         IReadOnlyList<(DateOnly Start, DateOnly End)> intervals = coverage.Intervals;
-        Assert.AreEqual(1, intervals.Count);
+        Assert.HasCount(1, intervals);
         Assert.AreEqual((On(1), On(8)), intervals[0]);
     }
 
@@ -67,7 +67,7 @@ public partial class DateRangeCoverageTests
         coverage.Add(On(4), On(6));
 
         IReadOnlyList<(DateOnly Start, DateOnly End)> intervals = coverage.Intervals;
-        Assert.AreEqual(1, intervals.Count);
+        Assert.HasCount(1, intervals);
         Assert.AreEqual((On(1), On(6)), intervals[0]);
     }
 
@@ -83,7 +83,7 @@ public partial class DateRangeCoverageTests
         coverage.Add(On(5), On(7));
 
         IReadOnlyList<(DateOnly Start, DateOnly End)> intervals = coverage.Intervals;
-        Assert.AreEqual(2, intervals.Count);
+        Assert.HasCount(2, intervals);
         Assert.AreEqual((On(1), On(3)), intervals[0]);
         Assert.AreEqual((On(5), On(7)), intervals[1]);
     }
@@ -101,7 +101,7 @@ public partial class DateRangeCoverageTests
         coverage.Add(On(2), On(8));
 
         IReadOnlyList<(DateOnly Start, DateOnly End)> intervals = coverage.Intervals;
-        Assert.AreEqual(1, intervals.Count);
+        Assert.HasCount(1, intervals);
         Assert.AreEqual((On(1), On(9)), intervals[0]);
     }
 
@@ -117,7 +117,7 @@ public partial class DateRangeCoverageTests
         coverage.Add(On(3), On(5));
 
         IReadOnlyList<(DateOnly Start, DateOnly End)> intervals = coverage.Intervals;
-        Assert.AreEqual(1, intervals.Count);
+        Assert.HasCount(1, intervals);
         Assert.AreEqual((On(1), On(10)), intervals[0]);
     }
 }

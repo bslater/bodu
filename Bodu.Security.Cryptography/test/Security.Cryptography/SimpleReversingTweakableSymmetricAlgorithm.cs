@@ -45,12 +45,14 @@ namespace Bodu.Security.Cryptography;
 /// </remarks>
 /// <example>
 /// <code language="csharp">
+///<![CDATA[
 /// using var algo = new SimpleReversingTweakableSymmetricAlgorithm(); algo.GenerateKey(); algo.GenerateIV();
 /// algo.GenerateTweak(); var encryptor = (SimpleReversingCryptoTransform)algo.CreateEncryptor(); byte[] ciphertext =
 /// encryptor.TransformFinalBlock(plaintext, 0, plaintext.Length); var decryptor =
 /// (SimpleReversingCryptoTransform)algo.CreateDecryptor(); byte[] recovered = decryptor.TransformFinalBlock(ciphertext,
 /// 0, ciphertext.Length); Assert.AreEqual(1, encryptor.Diagnostics.EncryptLog.Count); Assert.AreEqual(1,
 /// decryptor.Diagnostics.DecryptLog.Count);
+///]]>
 /// </code>
 /// </example>
 public sealed class SimpleReversingTweakableSymmetricAlgorithm

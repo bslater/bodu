@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EcbExchangeRateXmlParserTests.GetSeriesInfo.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -21,7 +21,7 @@ public partial class EcbExchangeRateXmlParserTests
 
         var pairs = table.GetSeriesInfo().Select(s => s.Pair).ToList();
 
-        Assert.AreEqual(3, pairs.Count);
+        Assert.HasCount(3, pairs);
         CollectionAssert.Contains(pairs, new ExchangeRatePair(CurrencyCode.EUR, CurrencyCode.USD));
         CollectionAssert.Contains(pairs, new ExchangeRatePair(CurrencyCode.EUR, CurrencyCode.JPY));
         CollectionAssert.Contains(pairs, new ExchangeRatePair(CurrencyCode.EUR, CurrencyCode.GBP));

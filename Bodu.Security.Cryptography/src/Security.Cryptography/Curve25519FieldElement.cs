@@ -89,7 +89,7 @@ internal struct Curve25519FieldElement
     /// <param name="right">The second addend. Limbs must be below 2^53.</param>
     /// <returns>The sum with limbs below 2^54.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static Curve25519FieldElement Add(in Curve25519FieldElement left, in Curve25519FieldElement right) =>
+    internal static Curve25519FieldElement Add(Curve25519FieldElement left, Curve25519FieldElement right) =>
         new(left.L0 + right.L0, left.L1 + right.L1, left.L2 + right.L2, left.L3 + right.L3, left.L4 + right.L4);
 
     /// <summary>
@@ -100,7 +100,7 @@ internal struct Curve25519FieldElement
     /// <param name="source">The element conditionally copied.</param>
     /// <param name="condition">The move condition. Must be exactly 0 or 1.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static void ConditionalMove(ref Curve25519FieldElement destination, in Curve25519FieldElement source, ulong condition)
+    internal static void ConditionalMove(ref Curve25519FieldElement destination, Curve25519FieldElement source, ulong condition)
     {
         ulong mask = 0UL - condition;
 
@@ -175,7 +175,7 @@ internal struct Curve25519FieldElement
     /// Uses the standard 254-squaring addition chain for 2^255 − 21 from the ref10 implementation. The exponent is
     /// fixed, so the operation is constant-time regardless of the element value.
     /// </remarks>
-    internal static Curve25519FieldElement Invert(in Curve25519FieldElement value)
+    internal static Curve25519FieldElement Invert(Curve25519FieldElement value)
     {
         Curve25519FieldElement z = value;
 
@@ -240,7 +240,7 @@ internal struct Curve25519FieldElement
     /// Partial products are accumulated in <see cref="UInt128" />, which cannot overflow for the permitted operand
     /// bounds.
     /// </remarks>
-    internal static Curve25519FieldElement Multiply(in Curve25519FieldElement left, in Curve25519FieldElement right)
+    internal static Curve25519FieldElement Multiply(Curve25519FieldElement left, Curve25519FieldElement right)
     {
         ulong f0 = left.L0, f1 = left.L1, f2 = left.L2, f3 = left.L3, f4 = left.L4;
         ulong g0 = right.L0, g1 = right.L1, g2 = right.L2, g3 = right.L3, g4 = right.L4;
@@ -264,7 +264,7 @@ internal struct Curve25519FieldElement
     /// <param name="value">The element to scale. Limbs must be below 2^54.</param>
     /// <param name="factor">The small constant factor, such as the curve constant 121665.</param>
     /// <returns>The scaled element with all limbs below 2^52.</returns>
-    internal static Curve25519FieldElement MultiplySmall(in Curve25519FieldElement value, uint factor)
+    internal static Curve25519FieldElement MultiplySmall(Curve25519FieldElement value, uint factor)
     {
         UInt128 t0 = (UInt128)value.L0 * factor;
         UInt128 t1 = (UInt128)value.L1 * factor;
@@ -284,7 +284,7 @@ internal struct Curve25519FieldElement
     /// <remarks>
     /// Uses the fixed ref10 addition chain; the operation is constant-time regardless of the element value.
     /// </remarks>
-    internal static Curve25519FieldElement Pow22523(in Curve25519FieldElement value)
+    internal static Curve25519FieldElement Pow22523(Curve25519FieldElement value)
     {
         Curve25519FieldElement z = value;
 
@@ -347,7 +347,7 @@ internal struct Curve25519FieldElement
     /// subtraction, whose operand bound (limbs below 2^53) a chained loose value would otherwise violate.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static Curve25519FieldElement Reduce(in Curve25519FieldElement value) =>
+    internal static Curve25519FieldElement Reduce(Curve25519FieldElement value) =>
         CarryReduce(value.L0, value.L1, value.L2, value.L3, value.L4);
 
     /// <summary>
@@ -356,7 +356,7 @@ internal struct Curve25519FieldElement
     /// <param name="value">The element to square. Limbs must be below 2^54.</param>
     /// <returns>The square with all limbs below 2^52.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static Curve25519FieldElement Square(in Curve25519FieldElement value) =>
+    internal static Curve25519FieldElement Square(Curve25519FieldElement value) =>
         Multiply(value, value);
 
     /// <summary>
@@ -367,7 +367,7 @@ internal struct Curve25519FieldElement
     /// <param name="right">The subtrahend. Limbs must be below 2^53.</param>
     /// <returns>The difference with limbs below 2^54.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static Curve25519FieldElement Subtract(in Curve25519FieldElement left, in Curve25519FieldElement right)
+    internal static Curve25519FieldElement Subtract(Curve25519FieldElement left, Curve25519FieldElement right)
     {
         // 4p in radix 2^51: (2^53 - 76, 2^53 - 4, 2^53 - 4, 2^53 - 4, 2^53 - 4). Adding it keeps each limb
         // non-negative for any subtrahend limb below 2^53, so the subtraction never borrows.

@@ -19,8 +19,8 @@ public sealed partial class IniTests
         IniDocument doc = Ini.Parse(string.Empty);
 
         Assert.IsNotNull(doc.GlobalSection);
-        Assert.AreEqual(0, doc.GlobalSection.Entries.Count);
-        Assert.AreEqual(0, doc.Sections.Count);
+        Assert.IsEmpty(doc.GlobalSection.Entries);
+        Assert.IsEmpty(doc.Sections);
     }
 
     /// <summary>
@@ -32,8 +32,8 @@ public sealed partial class IniTests
     {
         IniDocument doc = Ini.Parse("   \n\t\n  ");
 
-        Assert.AreEqual(0, doc.GlobalSection.Entries.Count);
-        Assert.AreEqual(0, doc.Sections.Count);
+        Assert.IsEmpty(doc.GlobalSection.Entries);
+        Assert.IsEmpty(doc.Sections);
     }
 
     /// <summary>
@@ -45,7 +45,7 @@ public sealed partial class IniTests
     {
         IniDocument doc = Ini.Parse("; this is a comment\nkey=value");
 
-        Assert.AreEqual(1, doc.GlobalSection.Entries.Count);
+        Assert.HasCount(1, doc.GlobalSection.Entries);
         Assert.AreEqual("key", doc.GlobalSection.Entries[0].Key);
     }
 
@@ -58,7 +58,7 @@ public sealed partial class IniTests
     {
         IniDocument doc = Ini.Parse("# this is a comment\nkey=value");
 
-        Assert.AreEqual(1, doc.GlobalSection.Entries.Count);
+        Assert.HasCount(1, doc.GlobalSection.Entries);
         Assert.AreEqual("key", doc.GlobalSection.Entries[0].Key);
     }
 
@@ -173,7 +173,7 @@ public sealed partial class IniTests
 
         IniDocument doc = Ini.Parse(source);
 
-        Assert.AreEqual(3, doc.Sections.Count);
+        Assert.HasCount(3, doc.Sections);
         Assert.AreEqual("a", doc.Sections[0].Name);
         Assert.AreEqual("b", doc.Sections[1].Name);
         Assert.AreEqual("c", doc.Sections[2].Name);

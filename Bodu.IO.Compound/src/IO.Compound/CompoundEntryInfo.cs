@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CompoundEntryInfo.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -41,9 +41,7 @@ public sealed record CompoundEntryInfo
     /// <summary>
     /// Gets the payload size, in bytes.
     /// </summary>
-    /// <value>
-    /// The number of payload bytes for a stream entry; <c>0</c> for storage and root-storage entries.
-    /// </value>
+    /// <value>The number of payload bytes for a stream entry; <c>0</c> for storage and root-storage entries.</value>
     public long Length { get; init; }
 
     /// <summary>

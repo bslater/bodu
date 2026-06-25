@@ -20,7 +20,7 @@ public sealed partial class DelimitedReaderTests
         bool result = reader.Read();
 
         Assert.IsFalse(result);
-        Assert.AreEqual(0, reader.Headers.Count);
+        Assert.IsEmpty(reader.Headers);
     }
 
     /// <summary>
@@ -88,7 +88,7 @@ public sealed partial class DelimitedReaderTests
         string input = "1,2\r\n3,4";
         using DelimitedReader reader = new(new StringReader(input), new DelimitedParseOptions { HasHeader = false });
 
-        Assert.AreEqual(0, reader.Headers.Count);
+        Assert.IsEmpty(reader.Headers);
 
         Assert.IsTrue(reader.Read());
         Assert.AreEqual("1", reader.Fields[0]);
@@ -109,7 +109,7 @@ public sealed partial class DelimitedReaderTests
         using DelimitedReader reader = new(new StringReader("city\r\n\"New York, NY\""));
 
         Assert.IsTrue(reader.Read());
-        Assert.AreEqual(1, reader.Fields.Count);
+        Assert.HasCount(1, reader.Fields);
         Assert.AreEqual("New York, NY", reader.Fields[0]);
     }
 

@@ -29,7 +29,7 @@ public sealed partial class SqliteExchangeRateCacheTests
         SqliteExchangeRateCache reader = CreateFileCache(path);
         IReadOnlyList<CachedExchangeRate> rows = reader.GetRates(Pair, Duration, now);
 
-        Assert.AreEqual(1, rows.Count);
+        Assert.HasCount(1, rows);
         Assert.AreEqual(rate, rows[0].Rate);
     }
 
@@ -72,7 +72,7 @@ public sealed partial class SqliteExchangeRateCacheTests
         SqliteExchangeRateCache reader = CreateFileCache(path);
         IReadOnlyList<CachedExchangeRate> rows = reader.GetRates(Pair, TimeSpan.FromDays(36500), now);
 
-        Assert.AreEqual(1, rows.Count);
+        Assert.HasCount(1, rows);
         Assert.AreEqual(date, rows[0].Date);
     }
 

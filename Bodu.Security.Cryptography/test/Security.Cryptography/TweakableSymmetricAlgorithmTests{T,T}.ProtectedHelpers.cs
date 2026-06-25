@@ -29,7 +29,7 @@ public sealed class TweakableSymmetricAlgorithmProtectedHelperTests
         KeySizes[] result = algorithm.LegalTweakSizes;
 
         Assert.IsNotNull(result);
-        Assert.AreEqual(0, result.Length);
+        Assert.IsEmpty(result);
     }
 
     /// <summary>
@@ -48,7 +48,7 @@ public sealed class TweakableSymmetricAlgorithmProtectedHelperTests
         KeySizes[] second = algorithm.LegalTweakSizes;
 
         Assert.AreNotSame(first, second);
-        Assert.AreEqual(1, first.Length);
+        Assert.HasCount(1, first);
         Assert.AreEqual(128, first[0].MinSize);
     }
 

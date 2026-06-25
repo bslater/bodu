@@ -21,8 +21,8 @@ public sealed partial class DelimitedTests
     {
         DelimitedDocument doc = Delimited.Parse("col\nvalue");
 
-        Assert.AreEqual(1, doc.Headers.Count);
-        Assert.AreEqual(1, doc.Rows.Count);
+        Assert.HasCount(1, doc.Headers);
+        Assert.HasCount(1, doc.Rows);
         Assert.AreEqual("col", doc.Headers[0]);
         Assert.AreEqual("value", doc.Rows[0]["col"]);
     }
@@ -38,8 +38,8 @@ public sealed partial class DelimitedTests
 
         DelimitedDocument doc = Delimited.Parse("1,2\n3,4", options);
 
-        Assert.AreEqual(0, doc.Headers.Count);
-        Assert.AreEqual(2, doc.Rows.Count);
+        Assert.IsEmpty(doc.Headers);
+        Assert.HasCount(2, doc.Rows);
     }
 
     // ----------------------------------------------- Delimiter --------------------------------------------------
@@ -129,7 +129,7 @@ public sealed partial class DelimitedTests
 
         DelimitedDocument doc = Delimited.Parse("col\n# this is a comment\nvalue", options);
 
-        Assert.AreEqual(1, doc.Rows.Count);
+        Assert.HasCount(1, doc.Rows);
         Assert.AreEqual("value", doc.Rows[0]["col"]);
     }
 
@@ -142,7 +142,7 @@ public sealed partial class DelimitedTests
     {
         DelimitedDocument doc = Delimited.Parse("col\n#notacomment", DelimitedParseOptions.Default);
 
-        Assert.AreEqual(1, doc.Rows.Count);
+        Assert.HasCount(1, doc.Rows);
         Assert.AreEqual("#notacomment", doc.Rows[0]["col"]);
     }
 
@@ -157,7 +157,7 @@ public sealed partial class DelimitedTests
 
         DelimitedDocument doc = Delimited.Parse("col\n; skip this\nvalue", options);
 
-        Assert.AreEqual(1, doc.Rows.Count);
+        Assert.HasCount(1, doc.Rows);
         Assert.AreEqual("value", doc.Rows[0]["col"]);
     }
 

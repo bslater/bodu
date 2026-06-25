@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="OlePropertySetTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -30,7 +30,7 @@ public class OlePropertySetTests
         OlePropertySet set = OlePropertySet.Read(entry);
 
         Assert.AreEqual(SummaryInformationFormatId, set.FormatId);
-        Assert.IsTrue(set.Sections.Count >= 1);
+        Assert.IsGreaterThanOrEqualTo(1, set.Sections.Count);
         Assert.AreEqual("Sample document created with MS Word", set[2]?.AsString());
     }
 

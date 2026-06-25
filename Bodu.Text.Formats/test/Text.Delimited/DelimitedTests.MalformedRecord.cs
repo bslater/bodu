@@ -39,7 +39,7 @@ public sealed partial class DelimitedTests
 
         DelimitedDocument doc = Delimited.Parse("\"a\"x,b", options);
 
-        Assert.AreEqual(1, doc.Rows.Count);
+        Assert.HasCount(1, doc.Rows);
         Assert.AreEqual(1, doc.Rows[0].Count);
         Assert.AreEqual("a", doc.Rows[0][0]);
     }

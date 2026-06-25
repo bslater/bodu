@@ -187,7 +187,7 @@ public static class Enums
         public static readonly Dictionary<string, TEnum> ByDescription = new(StringComparer.Ordinal);
 
         /// <summary>
-        /// Initializes static members of the <see cref="DescriptionCache{TEnum}" /> class by reflecting over the
+        /// Initializes static members of the <see cref="DescriptionCache{TEnum}" /> class class by reflecting over the
         /// enumeration's fields.
         /// </summary>
         static DescriptionCache()

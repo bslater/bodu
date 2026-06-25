@@ -106,7 +106,7 @@ public sealed partial class DelimitedTests
         string formatted = Delimited.Format(original);
         DelimitedDocument roundTripped = Delimited.Parse(formatted);
 
-        Assert.AreEqual(2, roundTripped.Rows.Count);
+        Assert.HasCount(2, roundTripped.Rows);
         Assert.AreEqual("Alice", roundTripped.Rows[0]["name"]);
         Assert.AreEqual("30", roundTripped.Rows[0]["age"]);
         Assert.AreEqual("London", roundTripped.Rows[1]["city"]);

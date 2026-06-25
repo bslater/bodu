@@ -18,8 +18,8 @@ public sealed partial class DelimitedTests
     {
         DelimitedDocument doc = Delimited.Parse(string.Empty);
 
-        Assert.AreEqual(0, doc.Headers.Count);
-        Assert.AreEqual(0, doc.Rows.Count);
+        Assert.IsEmpty(doc.Headers);
+        Assert.IsEmpty(doc.Rows);
     }
 
     /// <summary>
@@ -31,8 +31,8 @@ public sealed partial class DelimitedTests
     {
         DelimitedDocument doc = Delimited.Parse("name,age\nAlice,30");
 
-        Assert.AreEqual(2, doc.Headers.Count);
-        Assert.AreEqual(1, doc.Rows.Count);
+        Assert.HasCount(2, doc.Headers);
+        Assert.HasCount(1, doc.Rows);
         Assert.AreEqual("Alice", doc.Rows[0]["name"]);
         Assert.AreEqual("30", doc.Rows[0]["age"]);
     }
@@ -93,7 +93,7 @@ public sealed partial class DelimitedTests
     {
         DelimitedDocument doc = Delimited.Parse("a,b\r\n1,2\r\n3,4");
 
-        Assert.AreEqual(2, doc.Rows.Count);
+        Assert.HasCount(2, doc.Rows);
         Assert.AreEqual("1", doc.Rows[0]["a"]);
         Assert.AreEqual("3", doc.Rows[1]["a"]);
     }
@@ -106,7 +106,7 @@ public sealed partial class DelimitedTests
     {
         DelimitedDocument doc = Delimited.Parse("name\n\nAlice\n\nBob");
 
-        Assert.AreEqual(2, doc.Rows.Count);
+        Assert.HasCount(2, doc.Rows);
     }
 
     /// <summary>
@@ -117,7 +117,7 @@ public sealed partial class DelimitedTests
     {
         DelimitedDocument doc = Delimited.Parse("x\n1\n2\n3");
 
-        Assert.AreEqual(3, doc.Rows.Count);
+        Assert.HasCount(3, doc.Rows);
         Assert.AreEqual("1", doc.Rows[0]["x"]);
         Assert.AreEqual("2", doc.Rows[1]["x"]);
         Assert.AreEqual("3", doc.Rows[2]["x"]);
@@ -143,7 +143,7 @@ public sealed partial class DelimitedTests
     {
         DelimitedDocument doc = Delimited.Parse("a\n1");
 
-        Assert.AreEqual(1, doc.Rows.Count);
+        Assert.HasCount(1, doc.Rows);
         Assert.AreEqual("1", doc.Rows[0]["a"]);
     }
 

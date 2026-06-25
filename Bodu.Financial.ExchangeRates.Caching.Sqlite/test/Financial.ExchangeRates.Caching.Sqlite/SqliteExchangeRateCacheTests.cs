@@ -82,7 +82,7 @@ public sealed partial class SqliteExchangeRateCacheTests
         cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, now) }, Duration, now);
         IReadOnlyList<CachedExchangeRate> rows = cache.GetRates(Pair, Duration, now);
 
-        Assert.AreEqual(1, rows.Count);
+        Assert.HasCount(1, rows);
         Assert.AreEqual(0.5000m, rows[0].Rate);
     }
 
@@ -97,7 +97,7 @@ public sealed partial class SqliteExchangeRateCacheTests
         // A read against the freshly created (empty) schema must succeed and report nothing.
         IReadOnlyList<CachedExchangeRate> rows = cache.GetRates(Pair, Duration, DateTimeOffset.UtcNow);
 
-        Assert.AreEqual(0, rows.Count);
+        Assert.IsEmpty(rows);
     }
 
     /// <summary>

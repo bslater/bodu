@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DelimitedReaderTests.Coverage.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -69,7 +69,7 @@ public partial class DelimitedReaderTests
     {
         List<string[]> rows = StreamRows("\n\n", new DelimitedParseOptions { HasHeader = false });
 
-        Assert.AreEqual(0, rows.Count);
+        Assert.IsEmpty(rows);
     }
 
     /// <summary>
@@ -115,6 +115,6 @@ public partial class DelimitedReaderTests
         List<string[]> rows = StreamRows("a\n# trailing comment", new DelimitedParseOptions { HasHeader = false, AllowComments = true });
 
         CollectionAssert.AreEqual(new[] { "a" }, rows[0]);
-        Assert.AreEqual(1, rows.Count);
+        Assert.HasCount(1, rows);
     }
 }

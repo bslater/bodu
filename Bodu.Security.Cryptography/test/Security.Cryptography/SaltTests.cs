@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SaltTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -24,7 +24,7 @@ public sealed partial class SaltTests
         Assert.AreEqual(0, salt.Length);
         Assert.IsTrue(salt.IsEmpty);
         Assert.IsTrue(salt.AsSpan().IsEmpty);
-        Assert.AreEqual(0, salt.ToArray().Length);
+        Assert.IsEmpty(salt.ToArray());
         Assert.AreEqual(string.Empty, salt.ToString());
     }
 

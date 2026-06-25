@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CompoundEntryInfoTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -37,7 +37,7 @@ public class CompoundEntryInfoTests
         CompoundEntryInfo info = file.RootStorage.OpenStream("Workbook").Stat;
 
         Assert.AreEqual(CompoundEntryType.Stream, info.EntryType);
-        Assert.IsTrue(info.Length > 0);
+        Assert.IsGreaterThan(0, info.Length);
         Assert.AreEqual(Guid.Empty, info.ClassId);
     }
 

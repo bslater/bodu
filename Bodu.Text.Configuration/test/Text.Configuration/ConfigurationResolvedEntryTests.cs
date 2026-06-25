@@ -166,9 +166,9 @@ format.indent.size = 4
         foreach (ConfigurationResolvedEntry entry in view.Entries)
             keys.Add(entry.Key);
 
-        Assert.AreEqual(view.Count, keys.Count);
-        Assert.IsTrue(keys.Contains("service:name"));
-        Assert.IsTrue(keys.Contains("format:indent:size"));
+        Assert.HasCount(view.Count, keys);
+        Assert.Contains("service:name", keys);
+        Assert.Contains("format:indent:size", keys);
     }
 
     /// <summary>

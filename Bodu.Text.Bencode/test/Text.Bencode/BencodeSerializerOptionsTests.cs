@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeSerializerOptionsTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -92,7 +92,7 @@ public class BencodeSerializerOptionsTests
 
         options.Converters.Add(null!);
 
-        Assert.AreEqual(1, options.Converters.Count);
+        Assert.HasCount(1, options.Converters);
         Assert.IsNull(options.Converters[0]);
     }
 }

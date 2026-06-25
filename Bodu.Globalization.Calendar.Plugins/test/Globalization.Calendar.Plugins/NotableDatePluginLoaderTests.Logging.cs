@@ -24,7 +24,7 @@ public sealed partial class NotableDatePluginLoaderTests
 
         _ = NotableDatePluginLoader.LoadFrom(TestAssembly, new AllowAllPluginTrustPolicy(), logger);
 
-        Assert.IsTrue(logger.Entries.Any(e => e.Level == LogLevel.Information && e.EventId.Id == 2003));
+        Assert.Contains(e => e.Level == LogLevel.Information && e.EventId.Id == 2003, logger.Entries);
     }
 
     /// <summary>
@@ -42,7 +42,7 @@ public sealed partial class NotableDatePluginLoaderTests
             _ = NotableDatePluginLoader.LoadFrom(TestAssembly, policy, logger);
         });
 
-        Assert.IsTrue(logger.Entries.Any(e => e.Level == LogLevel.Warning && e.EventId.Id == 2001));
+        Assert.Contains(e => e.Level == LogLevel.Warning && e.EventId.Id == 2001, logger.Entries);
     }
 
     /// <summary>
@@ -58,7 +58,7 @@ public sealed partial class NotableDatePluginLoaderTests
         int count = NotableDatePluginLoader.RegisterAlgorithms(plugin, registry, logger);
 
         Assert.AreEqual(1, count);
-        Assert.IsTrue(logger.Entries.Any(e => e.Level == LogLevel.Information && e.EventId.Id == 2004));
+        Assert.Contains(e => e.Level == LogLevel.Information && e.EventId.Id == 2004, logger.Entries);
     }
 
     /// <summary>

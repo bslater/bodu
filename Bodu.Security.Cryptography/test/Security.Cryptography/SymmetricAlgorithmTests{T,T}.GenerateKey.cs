@@ -21,7 +21,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
         algorithm.KeySize = size;
         algorithm.GenerateKey();
 
-        Assert.AreEqual(size / 8, algorithm.Key.Length);
+        Assert.HasCount(size / 8, algorithm.Key);
     }
 
     /// <summary>

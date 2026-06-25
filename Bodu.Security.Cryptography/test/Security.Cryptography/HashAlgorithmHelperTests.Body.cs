@@ -60,7 +60,7 @@ public sealed class HashAlgorithmHelperBodyTests
 
         byte[] result = HashAlgorithmHelper.HashData(factory, [1, 2, 3]);
 
-        Assert.AreEqual(ShortHashAlgorithm.ActualBytes, result.Length);
+        Assert.HasCount(ShortHashAlgorithm.ActualBytes, result);
     }
 
     /// <summary>

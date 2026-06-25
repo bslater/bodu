@@ -19,8 +19,8 @@ public sealed partial class IniTests
 
         IniDocument doc = Ini.Parse(source);
 
-        Assert.AreEqual(1, doc.Sections.Count);
-        Assert.AreEqual(3, doc.Sections[0].Entries.Count);
+        Assert.HasCount(1, doc.Sections);
+        Assert.HasCount(3, doc.Sections[0].Entries);
     }
 
     /// <summary>
@@ -35,8 +35,8 @@ public sealed partial class IniTests
         IniDocument merged = Ini.Parse(source, new IniParseOptions { DuplicateSectionBehavior = IniDuplicateSectionBehavior.Merge });
         IniDocument mergedAll = Ini.Parse(source, new IniParseOptions { DuplicateSectionBehavior = IniDuplicateSectionBehavior.MergeAll });
 
-        Assert.AreEqual(merged.Sections.Count, mergedAll.Sections.Count);
-        Assert.AreEqual(merged.Sections[0].Entries.Count, mergedAll.Sections[0].Entries.Count);
+        Assert.HasCount(merged.Sections.Count, mergedAll.Sections);
+        Assert.HasCount(merged.Sections[0].Entries.Count, mergedAll.Sections[0].Entries);
     }
 
     /// <summary>
@@ -50,9 +50,9 @@ public sealed partial class IniTests
 
         IniDocument doc = Ini.Parse(source, new IniParseOptions { DuplicateSectionBehavior = IniDuplicateSectionBehavior.Preserve });
 
-        Assert.AreEqual(2, doc.Sections.Count);
-        Assert.AreEqual(1, doc.Sections[0].Entries.Count);
-        Assert.AreEqual(1, doc.Sections[1].Entries.Count);
+        Assert.HasCount(2, doc.Sections);
+        Assert.HasCount(1, doc.Sections[0].Entries);
+        Assert.HasCount(1, doc.Sections[1].Entries);
     }
 
     /// <summary>
@@ -67,11 +67,11 @@ public sealed partial class IniTests
         IniDocument doc = Ini.Parse(source, new IniParseOptions { DuplicateSectionBehavior = IniDuplicateSectionBehavior.MergeAdjacent });
 
         // First two [s] are merged (adjacent), [other] separates them from the third [s] which stays standalone.
-        Assert.AreEqual(3, doc.Sections.Count);
+        Assert.HasCount(3, doc.Sections);
         Assert.AreEqual("s", doc.Sections[0].Name);
-        Assert.AreEqual(2, doc.Sections[0].Entries.Count);
+        Assert.HasCount(2, doc.Sections[0].Entries);
         Assert.AreEqual("other", doc.Sections[1].Name);
         Assert.AreEqual("s", doc.Sections[2].Name);
-        Assert.AreEqual(1, doc.Sections[2].Entries.Count);
+        Assert.HasCount(1, doc.Sections[2].Entries);
     }
 }

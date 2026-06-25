@@ -55,7 +55,7 @@ public abstract class SignatureAlgorithmTests<TTest, TAlgorithm>
         byte[] message = new byte[] { 1, 2, 3, 4, 5 };
 
         byte[] signature = SignData(signer, message);
-        Assert.AreEqual(SignatureSizeBytes, signature.Length);
+        Assert.HasCount(SignatureSizeBytes, signature);
         Assert.IsTrue(VerifyData(signer, message, signature));
 
         byte[] emptySignature = SignData(signer, Array.Empty<byte>());

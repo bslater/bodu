@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="PairWebExchangeRateProviderTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -59,7 +59,7 @@ public class PairWebExchangeRateProviderTests
         StubPairSource source = new(new ExchangeRateObservation(Known, 0.6828m));
         TestPairWebExchangeRateProvider provider = new(source, new TestWebExchangeRateProviderOptions());
 
-        Assert.AreEqual(0, provider.GetAvailablePairs().Count);
+        Assert.IsEmpty(provider.GetAvailablePairs());
 
         await provider.LoadPairAsync("AUD", "USD", RangeStart, RangeEnd);
 

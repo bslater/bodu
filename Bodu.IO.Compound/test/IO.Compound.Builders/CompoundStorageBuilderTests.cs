@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CompoundStorageBuilderTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -166,8 +166,8 @@ public class CompoundStorageBuilderTests
         _ = root.AddStream("a", new byte[] { 1 });
         _ = root.AddStream("b", new byte[] { 2 });
 
-        Assert.AreEqual(1, root.EnumerateStorages().Count());
-        Assert.AreEqual(2, root.EnumerateStreams().Count());
+        Assert.HasCount(1, root.EnumerateStorages());
+        Assert.HasCount(2, root.EnumerateStreams());
     }
 
     /// <summary>

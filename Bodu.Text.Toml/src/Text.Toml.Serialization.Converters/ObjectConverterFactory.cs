@@ -43,6 +43,6 @@ internal sealed class ObjectConverterFactory
         ThrowHelper.ThrowIfNull(typeToConvert);
 
         Type converterType = typeof(ObjectConverter<>).MakeGenericType(typeToConvert);
-        return (TomlConverter)Activator.CreateInstance(converterType)!;
+        return (TomlConverter)Activator.CreateInstance(converterType) !;
     }
 }

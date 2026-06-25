@@ -112,9 +112,7 @@ public readonly partial struct Interval<T>
     /// For empty intervals, the length is <see cref="INumberBase{TSelf}.Zero" />.
     /// </para>
     /// </remarks>
-    /// <value>
-    /// The non-negative length of the interval, or <see cref="INumberBase{TSelf}.Zero" /> when empty.
-    /// </value>
+    /// <value>The non-negative length of the interval, or <see cref="INumberBase{TSelf}.Zero" /> when empty.</value>
     public T Length =>
         IsEmpty ? T.Zero : _upper - _lower;
 }

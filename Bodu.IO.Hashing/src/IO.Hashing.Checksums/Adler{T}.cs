@@ -61,10 +61,10 @@ public abstract class Adler<T>
     where T : unmanaged, INumber<T>
 {
     /// <summary>The A accumulator, initialized to one and updated with each input byte.</summary>
-    protected T PartA;
+    protected T partA;
 
-    /// <summary>The B accumulator, which holds the running sum of <see cref="PartA" /> across all processed bytes.</summary>
-    protected T PartB;
+    /// <summary>The B accumulator, which holds the running sum of <see cref="partA" /> across all processed bytes.</summary>
+    protected T partB;
 
     /// <summary>The modulus applied to both accumulators after each reduction step.</summary>
     private readonly T _modulo;
@@ -78,8 +78,8 @@ public abstract class Adler<T>
         : base(hashLengthInBytes)
     {
         _modulo = modulo;
-        PartA = T.One;
-        PartB = T.Zero;
+        partA = T.One;
+        partB = T.Zero;
     }
 
     /// <inheritdoc />
@@ -88,8 +88,8 @@ public abstract class Adler<T>
         const int NMAX = 5552;
         int length = source.Length;
         int index = 0;
-        T pA = PartA;
-        T pB = PartB;
+        T pA = partA;
+        T pB = partB;
 
         if (Vector.IsHardwareAccelerated && length >= 512)
         {
@@ -157,14 +157,14 @@ public abstract class Adler<T>
         // The SIMD branch already reduces per chunk; the scalar fallback only reduces at NMAX hits,
         // so without this a sub-NMAX Append (e.g. per-byte) would leave PartA/PartB unreduced and
         // GetCurrentHashCore would emit a non-canonical digest.
-        PartA = pA % _modulo;
-        PartB = pB % _modulo;
+        partA = pA % _modulo;
+        partB = pB % _modulo;
     }
 
     /// <inheritdoc />
     public override void Reset()
     {
-        PartA = T.One;
-        PartB = T.Zero;
+        partA = T.One;
+        partB = T.Zero;
     }
 }

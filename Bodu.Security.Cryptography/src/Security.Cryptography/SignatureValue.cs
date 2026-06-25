@@ -76,9 +76,7 @@ public readonly struct SignatureValue
     /// <summary>
     /// Gets a value indicating whether the signature is empty.
     /// </summary>
-    /// <value>
-    /// <see langword="true" /> if the signature contains no bytes; otherwise, <see langword="false" />.
-    /// </value>
+    /// <value><see langword="true" /> if the signature contains no bytes; otherwise, <see langword="false" />.</value>
     public bool IsEmpty =>
         Length == 0;
 

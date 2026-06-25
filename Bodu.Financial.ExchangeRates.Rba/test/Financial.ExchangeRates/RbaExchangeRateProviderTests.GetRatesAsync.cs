@@ -21,7 +21,7 @@ public partial class RbaExchangeRateProviderTests
         IReadOnlyList<ExchangeRate> rates =
             [.. await provider.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 31))];
 
-        Assert.IsTrue(rates.Count > 0);
+        Assert.IsNotEmpty(rates);
         Assert.IsTrue(rates.All(r => r.Date >= new DateOnly(2023, 1, 3) && r.Date <= new DateOnly(2023, 1, 31)));
         Assert.IsTrue(rates.SequenceEqual(rates.OrderBy(r => r.Date)));
         Assert.AreEqual(new DateOnly(2023, 1, 3), rates[0].Date);
@@ -39,7 +39,7 @@ public partial class RbaExchangeRateProviderTests
         IReadOnlyList<ExchangeRate> rates =
             [.. await provider.GetRatesAsync("USD", "AUD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 3))];
 
-        Assert.AreEqual(1, rates.Count);
+        Assert.HasCount(1, rates);
         Assert.IsTrue(rates[0].IsInverted);
         Assert.AreEqual(1m / 0.6828m, rates[0].Rate, 1e-12m);
     }

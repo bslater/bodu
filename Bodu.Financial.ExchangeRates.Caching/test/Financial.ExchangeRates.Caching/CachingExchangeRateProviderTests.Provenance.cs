@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CachingExchangeRateProviderTests.Provenance.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -125,7 +125,7 @@ public sealed partial class CachingExchangeRateProviderTests
 
         _ = sut.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact);
 
-        Assert.IsFalse(logger.Entries.Any(e => e.EventId.Id == ProvenanceEventId));
-        Assert.IsTrue(logger.Entries.Any(e => e.Level == LogLevel.Trace && e.EventId.Id == 4501));
+        Assert.DoesNotContain(e => e.EventId.Id == ProvenanceEventId, logger.Entries);
+        Assert.Contains(e => e.Level == LogLevel.Trace && e.EventId.Id == 4501, logger.Entries);
     }
 }

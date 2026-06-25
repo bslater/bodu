@@ -53,7 +53,7 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
 
         byte[] cipherText = transform.TransformFinalBlock(inputBuffer, 0, inputBuffer.Length);
 
-        Assert.AreEqual(transform.InputBlockSize, cipherText.Length,
+        Assert.HasCount(transform.InputBlockSize, cipherText,
             "PKCS7-padded partial-block input must produce exactly one block of ciphertext.");
     }
 

@@ -65,7 +65,7 @@ public partial class TextConfigurationBridgeKatRunnerTests
                 })
                 .Build();
 
-            Assert.AreEqual(0, kat.ExpectedValues.Count, $"{kat.Id}: optional missing file expected no values.");
+            Assert.IsEmpty(kat.ExpectedValues, $"{kat.Id}: optional missing file expected no values.");
             return;
         }
 

@@ -49,8 +49,8 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
 
         foreach (KeySizes blockSize in blockSizes)
         {
-            Assert.IsTrue(blockSize.MinSize <= blockSize.MaxSize, "MinSize must be less than or equal to MaxSize.");
-            Assert.IsTrue(blockSize.SkipSize >= 0, "SkipSize must be greater than or equal to zero.");
+            Assert.IsLessThanOrEqualTo(blockSize.MaxSize, blockSize.MinSize, "MinSize must be less than or equal to MaxSize.");
+            Assert.IsGreaterThanOrEqualTo(0, blockSize.SkipSize, "SkipSize must be greater than or equal to zero.");
         }
     }
 

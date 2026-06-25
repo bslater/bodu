@@ -26,7 +26,7 @@ public sealed partial class DotEnvTests
 
         DotEnvDocument doc = DotEnv.Parse(vector.Input, options);
 
-        Assert.AreEqual(vector.ExpectedEntries.Length, doc.Entries.Count,
+        Assert.HasCount(vector.ExpectedEntries.Length, doc.Entries,
             $"Entry count mismatch for vector: {vector.Description}");
 
         for (int i = 0; i < vector.ExpectedEntries.Length; i++)
@@ -57,7 +57,7 @@ public sealed partial class DotEnvTests
         string formatted = DotEnv.Format(original);
         DotEnvDocument roundTripped = DotEnv.Parse(formatted, options);
 
-        Assert.AreEqual(vector.ExpectedEntries.Length, roundTripped.Entries.Count,
+        Assert.HasCount(vector.ExpectedEntries.Length, roundTripped.Entries,
             $"Round-trip entry count mismatch for vector: {vector.Description}");
 
         for (int i = 0; i < vector.ExpectedEntries.Length; i++)

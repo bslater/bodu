@@ -32,12 +32,12 @@ public sealed partial class ZeroPaddingTests
 
         byte[] cipherText = EncryptThroughCryptoStream(algorithm, []);
 
-        Assert.AreEqual(0, cipherText.Length,
+        Assert.IsEmpty(cipherText,
             $"Empty plaintext under Zeros on {algorithmType.Name} should produce an empty ciphertext (no padding added).");
 
         byte[] recovered = DecryptThroughCryptoStream(algorithm, cipherText);
 
-        Assert.AreEqual(0, recovered.Length,
+        Assert.IsEmpty(recovered,
             $"Decrypting empty ciphertext under Zeros on {algorithmType.Name} should recover an empty array.");
     }
 
@@ -57,7 +57,7 @@ public sealed partial class ZeroPaddingTests
 
         byte[] cipherText = EncryptThroughCryptoStream(algorithm, plaintext);
 
-        Assert.AreEqual(plaintext.Length, cipherText.Length,
+        Assert.HasCount(plaintext.Length, cipherText,
             $"Block-aligned plaintext under Zeros on {algorithmType.Name} should produce ciphertext of the same length.");
 
         byte[] recovered = DecryptThroughCryptoStream(algorithm, cipherText);
@@ -87,7 +87,7 @@ public sealed partial class ZeroPaddingTests
 
         Assert.AreEqual(0, cipherText.Length % blockBytes,
             $"Zeros-padded ciphertext on {algorithmType.Name} must be block-aligned.");
-        Assert.IsTrue(recovered.Length >= plaintext.Length,
+        Assert.IsGreaterThanOrEqualTo(plaintext.Length, recovered.Length,
             $"Zeros-padded recovered output on {algorithmType.Name} must be at least as long as the original plaintext.");
         CollectionAssert.AreEqual(
             plaintext,

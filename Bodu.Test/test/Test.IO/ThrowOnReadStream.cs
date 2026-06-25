@@ -45,9 +45,7 @@ public sealed class ThrowOnReadStream
     /// <summary>
     /// Gets a value indicating whether a read operation was attempted.
     /// </summary>
-    /// <value>
-    /// <see langword="true" /> if any read overload was invoked; otherwise, <see langword="false" />.
-    /// </value>
+    /// <value><see langword="true" /> if any read overload was invoked; otherwise, <see langword="false" />.</value>
     public bool WasRead { get; private set; }
 
     /// <inheritdoc />

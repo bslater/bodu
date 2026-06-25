@@ -20,7 +20,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
         int size = algorithm.BlockSize;
         algorithm.GenerateIV();
 
-        Assert.AreEqual(size / 8, algorithm.IV.Length);
+        Assert.HasCount(size / 8, algorithm.IV);
     }
 
     /// <summary>

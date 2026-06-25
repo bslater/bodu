@@ -123,7 +123,7 @@ public partial class TomlSerializerTests
         Assert.AreEqual(1, model.Counts["a"]);
         Assert.AreEqual(9, model.Counts["b"]);
         Assert.AreEqual(3, model.Counts["c"]);
-        Assert.AreEqual(3, model.Counts.Count);
+        Assert.HasCount(3, model.Counts);
     }
 
     /// <summary>

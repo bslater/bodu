@@ -53,7 +53,7 @@ public sealed class DotEnvExtensionsTests
         DotEnvDocument fromExtension = CanonicalSource.ParseDotEnv(options);
         DotEnvDocument fromStatic = DotEnv.Parse(CanonicalSource, options);
 
-        Assert.AreEqual(fromStatic.Entries.Count, fromExtension.Entries.Count);
+        Assert.HasCount(fromStatic.Entries.Count, fromExtension.Entries);
     }
 
     /// <summary>

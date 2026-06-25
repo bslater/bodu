@@ -65,7 +65,7 @@ public partial class BencodeSerializerTests
 
         Assert.AreEqual("n", model.Name);
         Assert.IsNotNull(model.Extra);
-        Assert.AreEqual(1, model.Extra.Count);
+        Assert.HasCount(1, model.Extra);
         Assert.IsTrue(model.Extra.ContainsKey("extra"));
     }
 
@@ -81,7 +81,7 @@ public partial class BencodeSerializerTests
         GetOnlyDictionaryExtensionDataModel model = BencodeSerializer.Deserialize<GetOnlyDictionaryExtensionDataModel>(bytes);
 
         Assert.AreEqual("n", model.Name);
-        Assert.AreEqual(1, model.Extra.Count);
+        Assert.HasCount(1, model.Extra);
         Assert.IsTrue(model.Extra.ContainsKey("extra"));
     }
 

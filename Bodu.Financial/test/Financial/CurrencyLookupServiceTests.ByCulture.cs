@@ -23,7 +23,7 @@ public partial class CurrencyLookupServiceTests
 
         IReadOnlyList<CurrencyInfo> currencies = lookup.ByCulture(new CultureInfo("en-US"));
 
-        Assert.IsTrue(currencies.Any(c => c.IsoCode == "USD"));
+        Assert.Contains(c => c.IsoCode == "USD", currencies);
     }
 
     /// <summary>
@@ -35,6 +35,6 @@ public partial class CurrencyLookupServiceTests
     {
         ICurrencyLookup lookup = new CurrencyLookupService();
 
-        Assert.AreEqual(0, lookup.ByCulture(new CultureInfo("en")).Count);
+        Assert.IsEmpty(lookup.ByCulture(new CultureInfo("en")));
     }
 }

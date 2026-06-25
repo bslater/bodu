@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="OlePropertyValueTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -83,6 +83,6 @@ public class OlePropertyValueTests
         OlePropertyValue value = new() { Type = OlePropertyType.AnsiString, IsVector = true, Value = new object?[] { "a", "b" } };
 
         Assert.IsTrue(value.IsVector);
-        Assert.AreEqual(2, ((object?[])value.Value!).Length);
+        Assert.HasCount(2, (object?[])value.Value!);
     }
 }

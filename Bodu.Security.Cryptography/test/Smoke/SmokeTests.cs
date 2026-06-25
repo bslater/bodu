@@ -80,7 +80,7 @@ public sealed class SmokeTests
         using Bodu.Security.Cryptography.Tiger tiger = new();
         byte[] digest = tiger.ComputeHash(Encoding.ASCII.GetBytes("smoke"));
 
-        Assert.AreEqual(24, digest.Length);
+        Assert.HasCount(24, digest);
     }
 
     /// <summary>
@@ -96,7 +96,7 @@ public sealed class SmokeTests
         using Bodu.Security.Cryptography.SipHash64 hash = new() { Key = key };
         byte[] digest = hash.ComputeHash(Encoding.ASCII.GetBytes("smoke"));
 
-        Assert.AreEqual(8, digest.Length);
+        Assert.HasCount(8, digest);
     }
 
     /// <summary>

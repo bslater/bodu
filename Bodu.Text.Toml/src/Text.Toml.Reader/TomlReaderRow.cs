@@ -121,9 +121,7 @@ internal struct TomlReaderRow
     /// <summary>
     /// Gets the byte length of this string scalar's content.
     /// </summary>
-    /// <value>
-    /// The content length, paired with <see cref="StringContentStart" /> to slice the retained source.
-    /// </value>
+    /// <value>The content length, paired with <see cref="StringContentStart" /> to slice the retained source.</value>
     public readonly int StringContentLength =>
         (int)((uint)ScalarBits & LengthMask);
 

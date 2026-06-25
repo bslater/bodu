@@ -42,9 +42,9 @@ public partial class ConfigurationDocumentTests
         var doc = ConfigurationDocument.Parse(builder.ToString());
         stopwatch.Stop();
 
-        Assert.AreEqual(sectionCount, doc.Sections.Count);
-        Assert.IsTrue(
-            stopwatch.Elapsed < TimeSpan.FromSeconds(10),
+        Assert.HasCount(sectionCount, doc.Sections);
+        Assert.IsLessThan(
+            TimeSpan.FromSeconds(10), stopwatch.Elapsed,
             $"Parsing {sectionCount} sections took {stopwatch.Elapsed.TotalSeconds:F2}s — expected sub-10s. " +
             "A quadratic regression in duplicate detection is the likely cause.");
     }
@@ -68,9 +68,9 @@ public partial class ConfigurationDocumentTests
         var doc = ConfigurationDocument.Parse(builder.ToString());
         stopwatch.Stop();
 
-        Assert.AreEqual(entryCount, doc.Sections[0].Entries.Count);
-        Assert.IsTrue(
-            stopwatch.Elapsed < TimeSpan.FromSeconds(10),
+        Assert.HasCount(entryCount, doc.Sections[0].Entries);
+        Assert.IsLessThan(
+            TimeSpan.FromSeconds(10), stopwatch.Elapsed,
             $"Parsing {entryCount} entries in one section took {stopwatch.Elapsed.TotalSeconds:F2}s — expected sub-10s.");
     }
 }

@@ -63,7 +63,7 @@ public class TorrentFixtureTests
 
         Assert.AreEqual(data.Length, reader.BytesConsumed);
         Assert.IsNotNull(pieces);
-        Assert.AreEqual(40, pieces.Length); // two SHA-1 digests
+        Assert.HasCount(40, pieces); // two SHA-1 digests
     }
 
     /// <summary>
@@ -85,7 +85,7 @@ public class TorrentFixtureTests
         Assert.AreEqual("sample.bin", info.GetProperty("name").GetString());
         Assert.AreEqual(16384L, info.GetProperty("piece length").GetInt64());
         Assert.AreEqual(32768L, info.GetProperty("length").GetInt64());
-        Assert.AreEqual(40, info.GetProperty("pieces").GetBytes().Length);
+        Assert.HasCount(40, info.GetProperty("pieces").GetBytes());
 
         string infoHash = Convert.ToHexString(SHA1.HashData(info.GetRawBytes())).ToLowerInvariant();
         Assert.AreEqual(ExpectedInfoHash, infoHash);
@@ -125,7 +125,7 @@ public class TorrentFixtureTests
         Assert.AreEqual("sample.bin", torrent.Info.Name);
         Assert.AreEqual(16384L, torrent.Info.PieceLength);
         Assert.AreEqual(32768L, torrent.Info.Length);
-        Assert.AreEqual(40, torrent.Info.Pieces.Length);
+        Assert.HasCount(40, torrent.Info.Pieces);
 
         CollectionAssert.AreEqual(data, BencodeSerializer.Serialize(torrent));
     }

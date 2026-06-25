@@ -25,7 +25,7 @@ public partial class AsconCxof128Tests
         sut.Customize([0x03]);
         sut.Absorb([0x04]);
         byte[] output = sut.GetHash(32);
-        Assert.AreEqual(32, output.Length);
+        Assert.HasCount(32, output);
     }
 
     /// <summary>

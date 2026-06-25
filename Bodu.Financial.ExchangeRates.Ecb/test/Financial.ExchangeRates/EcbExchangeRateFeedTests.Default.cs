@@ -16,7 +16,7 @@ public partial class EcbExchangeRateFeedTests
     {
         IReadOnlyList<EcbExchangeRateFeed> feeds = EcbExchangeRateFeed.Default;
 
-        Assert.AreEqual(2, feeds.Count);
+        Assert.HasCount(2, feeds);
         Assert.AreEqual(90, feeds[0].LookbackDays);
         Assert.IsTrue(feeds[1].IsFullHistory);
     }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExcelBinaryWorkbookTests.Worksheets.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -42,7 +42,7 @@ public partial class ExcelBinaryWorkbookTests
     {
         using ExcelBinaryWorkbook workbook = OpenSample();
 
-        Assert.AreEqual(2, workbook.Worksheets.Count);
+        Assert.HasCount(2, workbook.Worksheets);
         Assert.AreEqual(0, workbook.Worksheets[0].Index);
         Assert.AreEqual(1, workbook.Worksheets[1].Index);
     }

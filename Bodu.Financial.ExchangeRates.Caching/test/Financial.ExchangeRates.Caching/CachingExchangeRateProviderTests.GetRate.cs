@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CachingExchangeRateProviderTests.GetRate.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -40,7 +40,7 @@ public sealed partial class CachingExchangeRateProviderTests
         _ = sut.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact);
 
         IReadOnlyList<CachedExchangeRate> cached = _cache.GetRates(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), Duration, _clock.GetUtcNow());
-        Assert.AreEqual(1, cached.Count);
+        Assert.HasCount(1, cached);
         Assert.AreEqual(0.5m, cached[0].Rate);
         Assert.AreEqual(1, inner.TotalCallCount);
     }

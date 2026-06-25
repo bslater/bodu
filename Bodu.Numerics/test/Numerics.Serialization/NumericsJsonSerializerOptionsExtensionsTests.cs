@@ -25,9 +25,9 @@ public class NumericsJsonSerializerOptionsExtensionsTests
 
         options.AddNumericsJsonConverters();
 
-        Assert.AreEqual(2, options.Converters.Count);
-        Assert.IsTrue(options.Converters.Any(c => c is FractionJsonConverterFactory));
-        Assert.IsTrue(options.Converters.Any(c => c is IntervalJsonConverterFactory));
+        Assert.HasCount(2, options.Converters);
+        Assert.Contains(c => c is FractionJsonConverterFactory, options.Converters);
+        Assert.Contains(c => c is IntervalJsonConverterFactory, options.Converters);
     }
 
     /// <summary>

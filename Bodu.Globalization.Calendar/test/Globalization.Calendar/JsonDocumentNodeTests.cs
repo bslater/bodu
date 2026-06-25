@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="JsonDocumentNodeTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -49,9 +49,9 @@ public class JsonDocumentNodeTests
 
         IReadOnlyList<(string Key, string Value)> pairs = node.KeyValueList("Parameters", "Parameter", "name", "value", "params");
 
-        Assert.AreEqual(2, pairs.Count);
-        Assert.IsTrue(pairs.Any(p => p is { Key: "k1", Value: "v1" }));
-        Assert.IsTrue(pairs.Any(p => p is { Key: "k2", Value: "2" }));
+        Assert.HasCount(2, pairs);
+        Assert.Contains(p => p is { Key: "k1", Value: "v1" }, pairs);
+        Assert.Contains(p => p is { Key: "k2", Value: "2" }, pairs);
     }
 
     /// <summary>
@@ -62,7 +62,7 @@ public class JsonDocumentNodeTests
     {
         JsonDocumentNode node = Node("""{"params":[1,2]}""");
 
-        Assert.AreEqual(0, node.KeyValueList("Parameters", "Parameter", "name", "value", "params").Count);
-        Assert.AreEqual(0, node.KeyValueList("Parameters", "Parameter", "name", "value", "absent").Count);
+        Assert.IsEmpty(node.KeyValueList("Parameters", "Parameter", "name", "value", "params"));
+        Assert.IsEmpty(node.KeyValueList("Parameters", "Parameter", "name", "value", "absent"));
     }
 }

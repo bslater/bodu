@@ -155,7 +155,7 @@ public sealed partial class Base32Tests
     {
         byte[] actual = Base32.EncodeToUtf8([]);
 
-        Assert.AreEqual(0, actual.Length);
+        Assert.IsEmpty(actual);
     }
 
     /// <summary>

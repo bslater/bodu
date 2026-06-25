@@ -22,7 +22,7 @@ public partial class CryptoHelpersTests
 
         byte[] result = CryptographyHelper.PadBlock(PaddingModeKind.ISO7816_4, 64, input, 0, input.Length);
 
-        Assert.AreEqual(8, result.Length);
+        Assert.HasCount(8, result);
         Assert.AreEqual(0x10, result[0]);
         Assert.AreEqual(0x20, result[1]);
         Assert.AreEqual(0x30, result[2]);

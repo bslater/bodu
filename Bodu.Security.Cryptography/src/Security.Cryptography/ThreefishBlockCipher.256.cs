@@ -97,18 +97,39 @@ public sealed partial class Threefish256Cipher
 
     /// <summary>The spec-defined Threefish-256 rotation constants for rounds 4 through 7.</summary>
     private const int R4 = 23;
+
     /// <summary>The spec-defined Threefish-256 rotation constants for rounds 4 through 7.</summary>
     private const int R5 = 40;
+
     /// <summary>The spec-defined Threefish-256 rotation constants for rounds 4 through 7.</summary>
     private const int R6 = 5;
+
     /// <summary>The spec-defined Threefish-256 rotation constants for rounds 4 through 7.</summary>
     private const int R7 = 37;
 
     /// <summary>The spec-defined Threefish-256 rotation constants for rounds 8 through 11.</summary>
-    private const int R8 = 25, R9 = 33, R10 = 46, R11 = 12;
+    private const int R8 = 25;
+
+    /// <summary>The spec-defined Threefish-256 rotation constants for rounds 8 through 11.</summary>
+    private const int R9 = 33;
+
+    /// <summary>The spec-defined Threefish-256 rotation constants for rounds 8 through 11.</summary>
+    private const int R10 = 46;
+
+    /// <summary>The spec-defined Threefish-256 rotation constants for rounds 8 through 11.</summary>
+    private const int R11 = 12;
 
     /// <summary>The spec-defined Threefish-256 rotation constants for rounds 12 through 15.</summary>
-    private const int R12 = 58, R13 = 22, R14 = 32, R15 = 32;
+    private const int R12 = 58;
+
+    /// <summary>The spec-defined Threefish-256 rotation constants for rounds 12 through 15.</summary>
+    private const int R13 = 22;
+
+    /// <summary>The spec-defined Threefish-256 rotation constants for rounds 12 through 15.</summary>
+    private const int R14 = 32;
+
+    /// <summary>The spec-defined Threefish-256 rotation constants for rounds 12 through 15.</summary>
+    private const int R15 = 32;
 
     /// <summary>The 16 Threefish-256 rotation constants in round order, exposed through <see cref="RotationSchedule" />.</summary>
     private static readonly int[] s_rotationSchedule =

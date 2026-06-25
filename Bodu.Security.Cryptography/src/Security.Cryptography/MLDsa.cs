@@ -136,9 +136,7 @@ public abstract class MLDsa
     }
 
     /// <inheritdoc />
-    /// <value>
-    /// <see langword="null" />, because ML-DSA is a signature algorithm and performs no key exchange.
-    /// </value>
+    /// <value><see langword="null" />, because ML-DSA is a signature algorithm and performs no key exchange.</value>
     public override string? KeyExchangeAlgorithm =>
         null;
 

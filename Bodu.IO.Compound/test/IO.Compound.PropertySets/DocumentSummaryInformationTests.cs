@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DocumentSummaryInformationTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -58,6 +58,6 @@ public class DocumentSummaryInformationTests
         DocumentSummaryInformation summary = Read("valid/sample2.doc");
 
         Assert.AreEqual("Sun Microsystems", summary.Company);
-        Assert.IsTrue(summary.CustomProperties.Count >= 1);
+        Assert.IsGreaterThanOrEqualTo(1, summary.CustomProperties.Count);
     }
 }

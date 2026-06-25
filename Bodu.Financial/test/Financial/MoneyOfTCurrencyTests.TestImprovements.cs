@@ -178,7 +178,7 @@ public partial class MoneyOfTCurrencyTests
 
         Money<USD>[] shares = huge.Allocate(2);
 
-        Assert.AreEqual(2, shares.Length);
+        Assert.HasCount(2, shares);
         Assert.AreEqual(shares[0], shares[1]);
         Assert.AreEqual(huge, shares[0] + shares[1]);
     }

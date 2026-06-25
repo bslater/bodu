@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IniTests.MergeComments.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -19,7 +19,7 @@ public partial class IniTests
 
         IniSection section = doc.GetSection("s")!;
 
-        Assert.AreEqual(2, section.Entries.Count);
-        Assert.AreEqual(1, section.LeadingComments.Count);
+        Assert.HasCount(2, section.Entries);
+        Assert.HasCount(1, section.LeadingComments);
     }
 }

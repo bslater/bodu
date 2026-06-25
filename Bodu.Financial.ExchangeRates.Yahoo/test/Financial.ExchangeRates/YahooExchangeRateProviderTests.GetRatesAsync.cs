@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YahooExchangeRateProviderTests.GetRatesAsync.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -20,13 +20,13 @@ public partial class YahooExchangeRateProviderTests
         IReadOnlyList<ExchangeRate> rates =
             [.. await provider.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31))];
 
-        Assert.AreEqual(3, rates.Count);
+        Assert.HasCount(3, rates);
         Assert.IsTrue(rates.SequenceEqual(rates.OrderBy(r => r.Date)));
         Assert.AreEqual(new DateOnly(2023, 1, 3), rates[0].Date);
         Assert.AreEqual(0.6828m, rates[0].Rate);
         Assert.AreEqual(new DateOnly(2023, 1, 6), rates[2].Date);
         Assert.AreEqual(0.6855m, rates[2].Rate);
-        Assert.IsFalse(rates.Any(r => r.Date == new DateOnly(2023, 1, 5)));
+        Assert.DoesNotContain(r => r.Date == new DateOnly(2023, 1, 5), rates);
     }
 
     /// <summary>
@@ -41,7 +41,7 @@ public partial class YahooExchangeRateProviderTests
         IReadOnlyList<ExchangeRate> rates =
             [.. await provider.GetRatesAsync("USD", "AUD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 3))];
 
-        Assert.AreEqual(1, rates.Count);
+        Assert.HasCount(1, rates);
         Assert.IsTrue(rates[0].IsInverted);
         Assert.AreEqual(1m / 0.6828m, rates[0].Rate, 1e-12m);
     }

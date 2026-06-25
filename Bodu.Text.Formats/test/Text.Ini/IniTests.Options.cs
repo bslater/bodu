@@ -36,7 +36,7 @@ public sealed partial class IniTests
 
         IniDocument doc = Ini.Parse("[s]\nkey=first\nkey=second", options);
 
-        Assert.AreEqual(1, doc.GetSection("s")!.Entries.Count);
+        Assert.HasCount(1, doc.GetSection("s")!.Entries);
     }
 
     /// <summary>
@@ -64,7 +64,7 @@ public sealed partial class IniTests
 
         IniDocument doc = Ini.Parse("[s]\nkey=first\nkey=second", options);
 
-        Assert.AreEqual(1, doc.GetSection("s")!.Entries.Count);
+        Assert.HasCount(1, doc.GetSection("s")!.Entries);
     }
 
     // --------------------------------------- DuplicateSectionBehavior -------------------------------------------
@@ -93,7 +93,7 @@ public sealed partial class IniTests
     {
         IniDocument doc = Ini.Parse("[s]\na=1\n[s]\nb=2");
 
-        Assert.AreEqual(1, doc.Sections.Count);
+        Assert.HasCount(1, doc.Sections);
     }
 
     /// <summary>
@@ -127,7 +127,7 @@ public sealed partial class IniTests
 
         IniDocument doc = Ini.Parse("[s]\nKey=first\nKEY=second", options);
 
-        Assert.AreEqual(1, doc.GetSection("s")!.Entries.Count);
+        Assert.HasCount(1, doc.GetSection("s")!.Entries);
         Assert.AreEqual("first", doc.GetSection("s")!["key"]);
     }
 
@@ -142,7 +142,7 @@ public sealed partial class IniTests
 
         IniDocument doc = Ini.Parse("[s]\nKey=first\nKEY=second", options);
 
-        Assert.AreEqual(2, doc.GetSection("s")!.Entries.Count);
+        Assert.HasCount(2, doc.GetSection("s")!.Entries);
         Assert.AreEqual("first", doc.GetSection("s")!["Key"]);
         Assert.AreEqual("second", doc.GetSection("s")!["KEY"]);
     }
@@ -158,7 +158,7 @@ public sealed partial class IniTests
     {
         IniDocument doc = Ini.Parse("[Section]\na=1\n[SECTION]\nb=2");
 
-        Assert.AreEqual(1, doc.Sections.Count);
+        Assert.HasCount(1, doc.Sections);
         IniSection? section = doc.GetSection("section");
         Assert.IsNotNull(section);
         Assert.AreEqual("1", section["a"]);
@@ -176,7 +176,7 @@ public sealed partial class IniTests
 
         IniDocument doc = Ini.Parse("[Section]\na=1\n[SECTION]\nb=2", options);
 
-        Assert.AreEqual(2, doc.Sections.Count);
+        Assert.HasCount(2, doc.Sections);
         Assert.IsNotNull(doc.GetSection("Section"));
         Assert.IsNotNull(doc.GetSection("SECTION"));
     }

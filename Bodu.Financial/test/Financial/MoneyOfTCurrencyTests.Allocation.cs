@@ -19,7 +19,7 @@ public partial class MoneyOfTCurrencyTests
     {
         Money<USD>[] shares = new Money<USD>(0.10m).Allocate(3);
 
-        Assert.AreEqual(3, shares.Length);
+        Assert.HasCount(3, shares);
         Assert.AreEqual(new Money<USD>(0.04m), shares[0]);
         Assert.AreEqual(new Money<USD>(0.03m), shares[1]);
         Assert.AreEqual(new Money<USD>(0.03m), shares[2]);

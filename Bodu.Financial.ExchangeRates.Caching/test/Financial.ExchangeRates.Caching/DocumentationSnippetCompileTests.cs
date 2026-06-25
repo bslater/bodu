@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DocumentationSnippetCompileTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -63,7 +63,7 @@ public sealed class DocumentationSnippetCompileTests
             }
         }
 
-        Assert.IsTrue(marked > 0, $"No '{CompileSentinel}' snippets were found under {guidesDirectory}; the compile guard is not wired to any example.");
+        Assert.IsGreaterThan(0, marked, $"No '{CompileSentinel}' snippets were found under {guidesDirectory}; the compile guard is not wired to any example.");
         Assert.AreEqual(0, failures.Length, $"Documentation snippets failed to compile:{Environment.NewLine}{failures}");
     }
 

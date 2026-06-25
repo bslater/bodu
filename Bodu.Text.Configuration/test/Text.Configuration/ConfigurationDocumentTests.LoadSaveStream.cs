@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConfigurationDocumentTests.LoadSaveStream.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -34,7 +34,7 @@ public partial class ConfigurationDocumentTests
 
         ConfigurationDocument.Save(document, stream, options: null, leaveOpen: true);
 
-        Assert.IsTrue(stream.Length > 0);
+        Assert.IsGreaterThan(0, stream.Length);
         Assert.IsTrue(stream.CanWrite);
     }
 }

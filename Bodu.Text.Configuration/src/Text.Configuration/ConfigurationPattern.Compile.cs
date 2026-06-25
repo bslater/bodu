@@ -366,7 +366,7 @@ public sealed partial class ConfigurationPattern
             return false;
 
         string leftText = body[..dot];
-        string rightText = body[(dot + 2)..];
+        string rightText = body[(dot + 2) ..];
 
         if (!long.TryParse(leftText, NumberStyles.Integer, CultureInfo.InvariantCulture, out long left)
             || !long.TryParse(rightText, NumberStyles.Integer, CultureInfo.InvariantCulture, out long right))

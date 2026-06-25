@@ -60,7 +60,7 @@ public sealed class Base64UrlTests_PaddingVectors
     {
         byte[] decoded = Base64Url.Decode("A-B_");
 
-        Assert.AreEqual(3, decoded.Length);
+        Assert.HasCount(3, decoded);
     }
 
     /// <summary>

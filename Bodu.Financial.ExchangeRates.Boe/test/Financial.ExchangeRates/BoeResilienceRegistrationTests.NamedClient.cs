@@ -36,7 +36,7 @@ public partial class BoeResilienceRegistrationTests
         using HttpResponseMessage response = await client.GetAsync(new Uri("https://boe.test/series"));
 
         Assert.IsTrue(response.IsSuccessStatusCode);
-        Assert.IsTrue(handler.RequestCount > 1, $"Expected more than one request, observed {handler.RequestCount}.");
+        Assert.IsGreaterThan(1, handler.RequestCount, $"Expected more than one request, observed {handler.RequestCount}.");
         Assert.AreEqual(3, handler.RequestCount);
     }
 

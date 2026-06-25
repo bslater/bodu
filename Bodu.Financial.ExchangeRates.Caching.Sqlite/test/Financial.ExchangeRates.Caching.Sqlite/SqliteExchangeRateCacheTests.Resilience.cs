@@ -39,7 +39,7 @@ public sealed partial class SqliteExchangeRateCacheTests
 
         IReadOnlyList<CachedExchangeRate> rows = cache.GetRates(Pair, Duration, DateTimeOffset.UtcNow);
 
-        Assert.AreEqual(0, rows.Count);
+        Assert.IsEmpty(rows);
     }
 
     /// <summary>
@@ -73,7 +73,7 @@ public sealed partial class SqliteExchangeRateCacheTests
         // The store must not throw, and the subsequent read must still report nothing.
         cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, now) }, Duration, now);
 
-        Assert.AreEqual(0, cache.GetRates(Pair, Duration, now).Count);
+        Assert.IsEmpty(cache.GetRates(Pair, Duration, now));
     }
 
     /// <summary>

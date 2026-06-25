@@ -19,7 +19,7 @@ public partial class ConfigurationViewTests
         var doc = ConfigurationDocument.Parse("[*]\nindent = 4\nstyle = space\n");
         IReadOnlyDictionary<string, string?> view = doc.Resolve("any.cs");
 
-        Assert.AreEqual(2, view.Count);
+        Assert.HasCount(2, view);
         CollectionAssert.AreEquivalent(new[] { "indent", "style" }, view.Keys.ToArray());
         CollectionAssert.AreEquivalent(new string?[] { "4", "space" }, view.Values.ToArray());
     }

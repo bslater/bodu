@@ -26,7 +26,7 @@ public partial class CityHash32Tests
             algorithm.Append(input);
             byte[] hash = algorithm.GetCurrentHash();
 
-            Assert.IsTrue(hash.Any(b => b != 0),
+            Assert.Contains(b => b != 0, hash,
                 $"Path for length {len} must not produce an all-zero hash for varied input.");
 
             hashes.Add(hash);

@@ -17,7 +17,7 @@ public sealed partial class Base16Tests
     {
         byte[] actual = Base16.Decode([]);
 
-        Assert.AreEqual(0, actual.Length);
+        Assert.IsEmpty(actual);
     }
 
     /// <summary>
@@ -28,7 +28,7 @@ public sealed partial class Base16Tests
     {
         byte[] actual = Base16.Decode(string.Empty);
 
-        Assert.AreEqual(0, actual.Length);
+        Assert.IsEmpty(actual);
     }
 
     /// <summary>

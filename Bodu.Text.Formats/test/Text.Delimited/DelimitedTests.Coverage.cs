@@ -19,7 +19,7 @@ public partial class DelimitedTests
 
         DelimitedDocument doc = Delimited.Parse("a,a,b\n1,2,3", options);
 
-        Assert.AreEqual(3, doc.Headers.Count);
+        Assert.HasCount(3, doc.Headers);
     }
 
     /// <summary>

@@ -200,7 +200,7 @@ public static partial class Base64
     /// <exception cref="ArgumentOutOfRangeException">Thrown when the variant is undefined.</exception>
     private static void EnsureValidVariant(Base64Variant variant)
     {
-        if (variant is not (Base64Variant.Standard or Base64Variant.UrlSafe or Base64Variant.Mime))
+        if (variant is not(Base64Variant.Standard or Base64Variant.UrlSafe or Base64Variant.Mime))
             throw new ArgumentOutOfRangeException(nameof(variant), variant, EncodingResourceStrings.Arg_OutOfRange_Base64Variant);
     }
 
@@ -212,7 +212,7 @@ public static partial class Base64
     /// <returns><see langword="true" /> when the character is a valid data symbol.</returns>
     private static bool IsAlphabetCharacter(char value, Base64Variant variant)
     {
-        bool isLetter = value is (>= 'A' and <= 'Z') or (>= 'a' and <= 'z');
+        bool isLetter = value is(>= 'A' and <= 'Z') or(>= 'a' and <= 'z');
         bool isDigit = value is >= '0' and <= '9';
         return isLetter || isDigit || (variant == Base64Variant.UrlSafe
             ? value is '-' or '_'

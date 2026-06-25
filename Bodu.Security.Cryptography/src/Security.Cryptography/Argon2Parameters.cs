@@ -119,7 +119,7 @@ public sealed record Argon2Parameters
                 string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Arg_OutOfRange_Argon2Memory, minMemory));
         }
 
-        if (Version is not (Version10 or Version13))
+        if (Version is not(Version10 or Version13))
         {
             throw new ArgumentException(
                 string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Arg_Invalid_Argon2Version, Version.ToString("X2", CultureInfo.InvariantCulture)),

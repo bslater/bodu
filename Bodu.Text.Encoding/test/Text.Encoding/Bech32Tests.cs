@@ -48,7 +48,7 @@ public sealed partial class Bech32Tests
         Bech32.Decode(source, out string? hrp, out byte[]? data, out Bech32Encoding encoding);
 
         Assert.AreEqual(expectedHrp, hrp);
-        Assert.AreEqual(0, data.Length);
+        Assert.IsEmpty(data);
         Assert.AreEqual(expectedEncoding, encoding);
     }
 
@@ -64,7 +64,7 @@ public sealed partial class Bech32Tests
         Bech32.Decode(Vector, out string? hrp, out byte[]? data, out Bech32Encoding encoding);
 
         Assert.AreEqual("an83characterlonghumanreadablepartthatcontainsthenumber1andtheexcludedcharactersbio", hrp);
-        Assert.AreEqual(0, data.Length);
+        Assert.IsEmpty(data);
         Assert.AreEqual(Bech32Encoding.Bech32, encoding);
     }
 

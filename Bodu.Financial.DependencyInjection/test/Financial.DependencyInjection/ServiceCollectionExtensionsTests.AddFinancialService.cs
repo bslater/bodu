@@ -107,7 +107,7 @@ public sealed partial class ServiceCollectionExtensionsTests
         services.AddFinancialService();
         services.AddFinancialService();
 
-        Assert.AreEqual(1, services.Count(d => d.ServiceType == typeof(ICurrencyLookup)));
+        Assert.ContainsSingle(d => d.ServiceType == typeof(ICurrencyLookup), services);
     }
 
     /// <summary>

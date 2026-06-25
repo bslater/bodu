@@ -56,7 +56,7 @@ public partial class ParallelMerkleTreeHashTests
             $"Hashed {kilobytes} KB in {sw.ElapsedMilliseconds} ms " +
             $"(blockSize={blockSize}, fanOut={fanOut})");
 
-        Assert.IsTrue(sw.ElapsedMilliseconds < SingleOperationTimeoutMs,
+        Assert.IsLessThan(SingleOperationTimeoutMs, sw.ElapsedMilliseconds,
             $"ComputeHash exceeded timeout: {sw.ElapsedMilliseconds} ms");
         CollectionAssert.AreEqual(expected, actual, "Result incorrect under performance load.");
     }
@@ -84,7 +84,7 @@ public partial class ParallelMerkleTreeHashTests
             $"ComputeHashAsync: {kilobytes} KB in {sw.ElapsedMilliseconds} ms " +
             $"(blockSize={blockSize}, fanOut={fanOut})");
 
-        Assert.IsTrue(sw.ElapsedMilliseconds < SingleOperationTimeoutMs,
+        Assert.IsLessThan(SingleOperationTimeoutMs, sw.ElapsedMilliseconds,
             $"ComputeHashAsync exceeded timeout: {sw.ElapsedMilliseconds} ms");
         CollectionAssert.AreEqual(expected, actual, "Result incorrect under async performance load.");
     }
@@ -123,7 +123,7 @@ public partial class ParallelMerkleTreeHashTests
             $"{iterations} sequential instances in {sw.ElapsedMilliseconds} ms " +
             $"(blockSize={blockSize}, fanOut={fanOut}, dataLength={dataLength})");
 
-        Assert.IsTrue(sw.ElapsedMilliseconds < SingleOperationTimeoutMs * 2,
+        Assert.IsLessThan(SingleOperationTimeoutMs * 2, sw.ElapsedMilliseconds,
             $"Sequential instance loop exceeded timeout: {sw.ElapsedMilliseconds} ms");
     }
 
@@ -165,7 +165,7 @@ public partial class ParallelMerkleTreeHashTests
             $"{parallelism} parallel instances in {sw.ElapsedMilliseconds} ms " +
             $"(blockSize={blockSize}, fanOut={fanOut}, dataLength={dataLength})");
 
-        Assert.IsTrue(sw.ElapsedMilliseconds < SingleOperationTimeoutMs,
+        Assert.IsLessThan(SingleOperationTimeoutMs, sw.ElapsedMilliseconds,
             $"Parallel instance race exceeded timeout: {sw.ElapsedMilliseconds} ms");
 
         for (int i = 0; i < results.Length; i++)
@@ -203,7 +203,7 @@ public partial class ParallelMerkleTreeHashTests
         TestContext.WriteLine($"fanOut={fanOut}: {sw.ElapsedMilliseconds} ms");
 
         CollectionAssert.AreEqual(expected, actual, $"fanOut={fanOut} produced incorrect result.");
-        Assert.IsTrue(sw.ElapsedMilliseconds < SingleOperationTimeoutMs,
+        Assert.IsLessThan(SingleOperationTimeoutMs, sw.ElapsedMilliseconds,
             $"fanOut={fanOut} exceeded timeout.");
     }
 }

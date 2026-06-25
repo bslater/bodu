@@ -52,7 +52,7 @@ public partial class ExchangeRateSeriesBufferTests
         buffer.Add(1010, 1.5m, RateParam, DateParam);
 
         ExchangeRateObservation[] observations = snapshot.Enumerate().ToArray();
-        Assert.AreEqual(1, observations.Length);
+        Assert.HasCount(1, observations);
         Assert.AreEqual(1.4m, observations[0].Rate);
     }
 
@@ -113,9 +113,9 @@ public partial class ExchangeRateSeriesBufferTests
 
         ExchangeRateObservation[] observations = buffer.Enumerate().ToArray();
 
-        Assert.AreEqual(3, observations.Length);
-        Assert.IsTrue(observations[0].Date < observations[1].Date);
-        Assert.IsTrue(observations[1].Date < observations[2].Date);
+        Assert.HasCount(3, observations);
+        Assert.IsLessThan(observations[1].Date, observations[0].Date);
+        Assert.IsLessThan(observations[2].Date, observations[1].Date);
     }
 
     /// <summary>

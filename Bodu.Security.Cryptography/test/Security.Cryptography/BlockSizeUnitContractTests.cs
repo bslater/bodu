@@ -48,7 +48,7 @@ public sealed class BlockSizeUnitContractTests
 
         Assert.AreEqual(expectedBlockSizeBits, cipher.BlockSize, $"{name}: IBlockCipher.BlockSize must report bits.");
         Assert.AreEqual(0, cipher.BlockSize % 8, $"{name}: IBlockCipher.BlockSize must be a multiple of 8.");
-        Assert.IsTrue(cipher.BlockSize >= 64, $"{name}: BlockSize implausibly small for a block cipher.");
+        Assert.IsGreaterThanOrEqualTo(64, cipher.BlockSize, $"{name}: BlockSize implausibly small for a block cipher.");
     }
 
     /// <summary>

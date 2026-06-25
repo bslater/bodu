@@ -27,7 +27,7 @@ public partial class Base32Tests
     [TestMethod]
     public void EncodeToUtf8_WhenSourceEmpty_ShouldReturnEmpty()
     {
-        Assert.AreEqual(0, Base32.EncodeToUtf8(ReadOnlySpan<byte>.Empty).Length);
+        Assert.IsEmpty(Base32.EncodeToUtf8(ReadOnlySpan<byte>.Empty));
     }
 
     /// <summary>
@@ -84,7 +84,7 @@ public partial class Base32Tests
 
         int written = Base32.EncodeToUtf8("foob"u8, writer);
 
-        Assert.IsTrue(written > 0);
+        Assert.IsGreaterThan(0, written);
         Assert.AreEqual(written, writer.WrittenCount);
     }
 
@@ -141,7 +141,7 @@ public partial class Base32Tests
 
         byte[] decoded = Base32.FromBase32String(encoded);
 
-        Assert.AreEqual(5, decoded.Length);
+        Assert.HasCount(5, decoded);
     }
 
     /// <summary>

@@ -266,7 +266,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
 
         _ = algorithm.ComputeHash(s_sampleData);
 
-        Assert.IsTrue(algorithm.ResetCallCount > before);
+        Assert.IsGreaterThan(before, algorithm.ResetCallCount);
     }
 
     /// <summary>

@@ -28,7 +28,7 @@ public sealed class DeferredFinalBlockHashAlgorithmTests
 
         _ = sut.ComputeHash([]);
 
-        Assert.AreEqual(1, sut.ProcessBlockInvocations.Count);
+        Assert.HasCount(1, sut.ProcessBlockInvocations);
         Assert.IsTrue(sut.ProcessBlockInvocations[0].IsFinal);
         Assert.AreEqual(0UL, sut.ProcessBlockInvocations[0].Counter);
     }
@@ -44,7 +44,7 @@ public sealed class DeferredFinalBlockHashAlgorithmTests
 
         _ = sut.ComputeHash(SequentialBytes(BlockSize));
 
-        Assert.AreEqual(1, sut.ProcessBlockInvocations.Count);
+        Assert.HasCount(1, sut.ProcessBlockInvocations);
         Assert.IsTrue(sut.ProcessBlockInvocations[0].IsFinal);
         Assert.AreEqual((ulong)BlockSize, sut.ProcessBlockInvocations[0].Counter);
     }
@@ -61,7 +61,7 @@ public sealed class DeferredFinalBlockHashAlgorithmTests
 
         _ = sut.ComputeHash(SequentialBytes(BlockSize + 1));
 
-        Assert.AreEqual(2, sut.ProcessBlockInvocations.Count);
+        Assert.HasCount(2, sut.ProcessBlockInvocations);
 
         Assert.IsFalse(sut.ProcessBlockInvocations[0].IsFinal);
         Assert.AreEqual((ulong)BlockSize, sut.ProcessBlockInvocations[0].Counter);
@@ -81,7 +81,7 @@ public sealed class DeferredFinalBlockHashAlgorithmTests
 
         _ = sut.ComputeHash(SequentialBytes(2 * BlockSize));
 
-        Assert.AreEqual(2, sut.ProcessBlockInvocations.Count);
+        Assert.HasCount(2, sut.ProcessBlockInvocations);
 
         Assert.IsFalse(sut.ProcessBlockInvocations[0].IsFinal);
         Assert.AreEqual((ulong)BlockSize, sut.ProcessBlockInvocations[0].Counter);
@@ -101,7 +101,7 @@ public sealed class DeferredFinalBlockHashAlgorithmTests
 
         _ = sut.ComputeHash(SequentialBytes((2 * BlockSize) + 1));
 
-        Assert.AreEqual(3, sut.ProcessBlockInvocations.Count);
+        Assert.HasCount(3, sut.ProcessBlockInvocations);
 
         Assert.IsFalse(sut.ProcessBlockInvocations[0].IsFinal);
         Assert.AreEqual((ulong)BlockSize, sut.ProcessBlockInvocations[0].Counter);
@@ -125,7 +125,7 @@ public sealed class DeferredFinalBlockHashAlgorithmTests
 
         _ = sut.ComputeHash(input);
 
-        Assert.AreEqual(1, sut.ProcessBlockInvocations.Count);
+        Assert.HasCount(1, sut.ProcessBlockInvocations);
 
         (byte[]? block, ulong counter, bool isFinal) = sut.ProcessBlockInvocations[0];
         Assert.IsTrue(isFinal);
@@ -156,7 +156,7 @@ public sealed class DeferredFinalBlockHashAlgorithmTests
         _ = sut.ComputeHash(input);
         (byte[] Block, ulong Counter, bool IsFinal)[] secondRun = sut.ProcessBlockInvocations.ToArray();
 
-        Assert.AreEqual(firstRun.Length, secondRun.Length);
+        Assert.HasCount(firstRun.Length, secondRun);
         for (int i = 0; i < firstRun.Length; i++)
         {
             Assert.AreEqual(firstRun[i].Counter, secondRun[i].Counter, $"Counter mismatch at invocation {i}.");

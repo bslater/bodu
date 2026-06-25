@@ -117,11 +117,11 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
 
         byte[] hash = algorithm.ComputeHash([]);
 
-        Assert.AreNotEqual(0, hash.Length, "The computed digest should not be empty.");
+        Assert.IsNotEmpty(hash, "The computed digest should not be empty.");
 
-        Assert.AreEqual(
+        Assert.HasCount(
             hashSize.Value / 8,
-            hash.Length,
+            hash,
             $"Expected {hashSize.Value / 8} bytes for {hashSize.Value}-bit output.");
     }
 
@@ -272,7 +272,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
         // This will throw naturally if there's an overflow or other error
         byte[] result = algorithm.ComputeHash(data);
 
-        Assert.AreEqual(algorithm.HashSize / 8, result.Length);
+        Assert.HasCount(algorithm.HashSize / 8, result);
     }
 
     /// <summary>
@@ -372,9 +372,9 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
         foreach (int len in new[] { 0, 1, 4, 5, 12, 13, 24, 25, 100 })
         {
             byte[] hash = algorithm.ComputeHash(new byte[len]);
-            Assert.AreEqual(
+            Assert.HasCount(
                 expectedBytes,
-                hash.Length,
+                hash,
                 $"Expected {expectedBytes}-byte output (HashSize={algorithm.HashSize}) for input length {len}.");
         }
     }
@@ -397,8 +397,8 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
             byte[] input = Enumerable.Range(1, len).Select(i => (byte)(i * 7)).ToArray();
             byte[] hash = algorithm.ComputeHash(input);
 
-            Assert.IsTrue(
-                hash.Any(b => b != 0),
+            Assert.Contains(
+                b => b != 0, hash,
                 $"[{variant}] Length {len}: must not produce an all-zero hash for varied input.");
 
             hashes.Add(hash);
@@ -436,14 +436,14 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
 
         byte[] hash = algorithm.ComputeHash(input);
 
-        Assert.AreEqual(
+        Assert.HasCount(
             outputBytes,
-            hash.Length,
+            hash,
             $"[{variant}] Expected {outputBytes}-byte output for long input.");
 
         int nonZeroCount = hash.Count(b => b != 0);
-        Assert.IsTrue(
-            nonZeroCount >= threshold,
+        Assert.IsGreaterThanOrEqualTo(
+            threshold, nonZeroCount,
             $"[{variant}] Expected at least {threshold} of {outputBytes} output bytes to be non-zero; got {nonZeroCount}.");
     }
 

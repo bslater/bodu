@@ -23,6 +23,7 @@ namespace Bodu.Formats.Excel;
 public readonly record struct ExcelWorksheetDimensions
 {
     /// <summary>
+    /// Initializes a new instance of the <see cref="ExcelWorksheetDimensions"/> class.
     /// Initializes a new instance of the <see cref="ExcelWorksheetDimensions" /> struct.
     /// </summary>
     /// <param name="firstRowIndex">The zero-based index of the first used row.</param>

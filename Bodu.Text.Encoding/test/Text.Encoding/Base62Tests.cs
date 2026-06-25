@@ -64,7 +64,7 @@ public sealed partial class Base62Tests
     public void EncodeDecode_WhenEmpty_ShouldReturnEmpty()
     {
         Assert.AreEqual(string.Empty, Base62.Encode(Array.Empty<byte>()));
-        Assert.AreEqual(0, Base62.Decode(string.Empty).Length);
+        Assert.IsEmpty(Base62.Decode(string.Empty));
     }
 
     /// <summary>

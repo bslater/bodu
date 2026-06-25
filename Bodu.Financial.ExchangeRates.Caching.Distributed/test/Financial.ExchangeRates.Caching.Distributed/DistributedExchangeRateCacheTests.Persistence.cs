@@ -32,7 +32,7 @@ public sealed partial class DistributedExchangeRateCacheTests
         DistributedExchangeRateCache reader = CreateCache(backingStore);
         IReadOnlyList<CachedExchangeRate> rows = reader.GetRates(Pair, Duration, now);
 
-        Assert.AreEqual(1, rows.Count);
+        Assert.HasCount(1, rows);
         Assert.AreEqual(new DateOnly(2023, 1, 3), rows[0].Date);
         Assert.AreEqual(0.5000m, rows[0].Rate);
     }
@@ -71,7 +71,7 @@ public sealed partial class DistributedExchangeRateCacheTests
 
         DistributedExchangeRateCache reader = CreateCache(backingStore);
 
-        Assert.AreEqual(1, reader.GetRates(Pair, Duration, now).Count);
+        Assert.HasCount(1, reader.GetRates(Pair, Duration, now));
         Assert.IsTrue(reader.GetCoverage(Pair, Duration, now).Contains(new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 10)));
     }
 
@@ -151,7 +151,7 @@ public sealed partial class DistributedExchangeRateCacheTests
 
         IReadOnlyList<CachedExchangeRate> rows = cache.GetRates(Pair, Duration, now);
 
-        Assert.AreEqual(1, rows.Count);
+        Assert.HasCount(1, rows);
         Assert.AreEqual(0.5000m, rows[0].Rate);
         Assert.IsNull(rows[0].ObservedAtUtc);
     }

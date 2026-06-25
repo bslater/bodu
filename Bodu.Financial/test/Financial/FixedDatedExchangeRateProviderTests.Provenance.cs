@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FixedDatedExchangeRateProviderTests.Provenance.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -69,7 +69,7 @@ public partial class FixedDatedExchangeRateProviderTests
 
         IReadOnlyList<ExchangeRate> rates = await table.GetRatesAsync("USD", "AUD", new DateOnly(2024, 1, 1), new DateOnly(2024, 1, 31));
 
-        Assert.AreEqual(2, rates.Count);
+        Assert.HasCount(2, rates);
         Assert.IsTrue(rates.All(r => r.FetchedAtUtc == s_fetchedAt));
     }
 

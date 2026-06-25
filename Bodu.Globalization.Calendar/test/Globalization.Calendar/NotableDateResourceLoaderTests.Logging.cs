@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateResourceLoaderTests.Logging.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -53,7 +53,7 @@ public sealed partial class NotableDateResourceLoaderTests
 
         _ = NotableDateResourceLoader.Load(ValidLoggingXml, logger);
 
-        Assert.IsTrue(logger.Entries.Any(e => e.Level == LogLevel.Debug && e.EventId.Id == 3001));
+        Assert.Contains(e => e.Level == LogLevel.Debug && e.EventId.Id == 3001, logger.Entries);
     }
 
     /// <summary>
@@ -69,7 +69,7 @@ public sealed partial class NotableDateResourceLoaderTests
             _ = NotableDateResourceLoader.Load(UnresolvableImportXml, logger);
         });
 
-        Assert.IsTrue(logger.Entries.Any(e => e.Level == LogLevel.Warning && e.EventId.Id == 3002));
+        Assert.Contains(e => e.Level == LogLevel.Warning && e.EventId.Id == 3002, logger.Entries);
     }
 
     /// <summary>

@@ -110,7 +110,7 @@ internal sealed partial class ConfigurationReader
         // Full-line comment: capture and defer until we see the next section or property.
         if (first is '#' or ';')
         {
-            string commentText = line[(firstNonWs + 1)..];
+            string commentText = line[(firstNonWs + 1) ..];
             _pendingLeadingComments.Add(new IniComment(first, commentText, lineNumber));
             return currentSection;
         }
@@ -309,7 +309,7 @@ internal sealed partial class ConfigurationReader
         }
 
         string keyText = line[firstNonWs..equalsIndex];
-        string valueText = line[(equalsIndex + 1)..];
+        string valueText = line[(equalsIndex + 1) ..];
 
         if (_options.TrimKeysAndValues)
         {

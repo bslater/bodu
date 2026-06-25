@@ -53,7 +53,7 @@ public sealed partial class EncodingExtensionsTests
             out int bytesWrittenFirst);
 
         Assert.AreEqual(OperationStatus.DestinationTooSmall, first);
-        Assert.IsTrue(bytesWrittenFirst > 0);
+        Assert.IsGreaterThan(0, bytesWrittenFirst);
 
         byte[] secondChunk = new byte[total];
         OperationStatus second = encoder.EncodeChunk(
@@ -127,7 +127,7 @@ public sealed partial class EncodingExtensionsTests
             out int charsWrittenFirst);
 
         Assert.AreEqual(OperationStatus.DestinationTooSmall, first);
-        Assert.IsTrue(charsWrittenFirst > 0);
+        Assert.IsGreaterThan(0, charsWrittenFirst);
 
         char[] secondChunk = new char[MultiByteText.Length];
         OperationStatus second = decoder.DecodeChunk(
@@ -168,7 +168,7 @@ public sealed partial class EncodingExtensionsTests
     {
         System.Text.Decoder decoder = System.Text.Encoding.UTF8.GetDecoder();
         byte[] fullBytes = System.Text.Encoding.UTF8.GetBytes("é");
-        Assert.AreEqual(2, fullBytes.Length);
+        Assert.HasCount(2, fullBytes);
         byte[] firstHalf = new byte[] { fullBytes[0] };
         byte[] secondHalf = new byte[] { fullBytes[1] };
         char[] destination = new char[4];

@@ -78,8 +78,8 @@ public partial class MoneyOfTCurrencyTests
         var small = new Money<USD>(1m);
         var large = new Money<USD>(2m);
 
-        Assert.IsTrue(small.CompareTo(large) < 0);
-        Assert.IsTrue(large.CompareTo(small) > 0);
+        Assert.IsLessThan(0, small.CompareTo(large));
+        Assert.IsGreaterThan(0, large.CompareTo(small));
         Assert.AreEqual(0, small.CompareTo(new Money<USD>(1m)));
     }
 

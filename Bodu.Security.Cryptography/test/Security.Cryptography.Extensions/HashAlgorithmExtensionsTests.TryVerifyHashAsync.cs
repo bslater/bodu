@@ -231,7 +231,7 @@ public partial class HashAlgorithmExtensionsTests
 
         Assert.IsTrue(result,
             "TryVerifyHashAsync must return true when the stream content matches the expected hash.");
-        Assert.IsTrue(monitored.Reads.Count > 0,
+        Assert.IsNotEmpty(monitored.Reads,
             "TryVerifyHashAsync must actually read from the stream — it must not short-circuit.");
     }
 

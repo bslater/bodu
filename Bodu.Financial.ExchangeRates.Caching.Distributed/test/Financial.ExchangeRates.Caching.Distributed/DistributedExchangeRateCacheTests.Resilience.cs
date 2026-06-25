@@ -26,7 +26,7 @@ public sealed partial class DistributedExchangeRateCacheTests
 
         IReadOnlyList<CachedExchangeRate> rows = cache.GetRates(Pair, Duration, DateTimeOffset.UtcNow);
 
-        Assert.AreEqual(0, rows.Count);
+        Assert.IsEmpty(rows);
     }
 
     /// <summary>
@@ -54,7 +54,7 @@ public sealed partial class DistributedExchangeRateCacheTests
         // The store must not throw, and a subsequent read (also against the failing store) must report nothing.
         cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, now) }, Duration, now);
 
-        Assert.AreEqual(0, cache.GetRates(Pair, Duration, now).Count);
+        Assert.IsEmpty(cache.GetRates(Pair, Duration, now));
     }
 
     /// <summary>
@@ -102,7 +102,7 @@ public sealed partial class DistributedExchangeRateCacheTests
 
         IReadOnlyList<CachedExchangeRate> rows = cache.GetRates(Pair, Duration, DateTimeOffset.UtcNow);
 
-        Assert.AreEqual(0, rows.Count);
+        Assert.IsEmpty(rows);
     }
 
     /// <summary>
@@ -126,7 +126,7 @@ public sealed partial class DistributedExchangeRateCacheTests
 
         IReadOnlyList<CachedExchangeRate> rows = cache.GetRates(Pair, Duration, now);
 
-        Assert.AreEqual(1, rows.Count);
+        Assert.HasCount(1, rows);
         Assert.AreEqual(new DateOnly(2023, 1, 3), rows[0].Date);
         Assert.AreEqual(0.6000m, rows[0].Rate);
     }

@@ -21,7 +21,7 @@ public partial class CryptoHelpersTests
     public void GetRandomBytesExcluding_WhenValidInput_ShouldReturnArrayWithoutForbiddenByte()
     {
         byte[] result = CryptographyHelper.GetRandomBytesExcluding(0xAA, 64);
-        Assert.AreEqual(64, result.Length);
+        Assert.HasCount(64, result);
         CollectionAssert.DoesNotContain(result, (byte)0xAA);
     }
 }

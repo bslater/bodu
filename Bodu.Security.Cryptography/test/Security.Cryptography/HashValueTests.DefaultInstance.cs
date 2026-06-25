@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HashValueTests.DefaultInstance.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -20,7 +20,7 @@ public sealed partial class HashValueTests
         Assert.AreEqual(0, hash.Length);
         Assert.IsTrue(hash.IsEmpty);
         Assert.IsTrue(hash.AsSpan().IsEmpty);
-        Assert.AreEqual(0, hash.ToArray().Length);
+        Assert.IsEmpty(hash.ToArray());
         Assert.AreEqual(string.Empty, hash.ToHexString());
         Assert.AreEqual(string.Empty, hash.ToBase64String());
         Assert.AreEqual(string.Empty, hash.ToString());

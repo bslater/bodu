@@ -33,6 +33,6 @@ public static partial class StringExtensions
         ThrowHelper.ThrowIfNull(marker);
 
         int index = value.LastIndexOf(marker, comparison);
-        return index < 0 ? null : value[(index + marker.Length)..];
+        return index < 0 ? null : value[(index + marker.Length) ..];
     }
 }

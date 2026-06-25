@@ -21,7 +21,7 @@ public partial class CryptoHelpersTests
     public void GetRandomNonZeroBytes_WhenValidLength_ShouldReturnArrayWithOnlyNonZeroBytes()
     {
         byte[] result = CryptographyHelper.GetRandomNonZeroBytes(32);
-        Assert.AreEqual(32, result.Length);
+        Assert.HasCount(32, result);
         CollectionAssert.DoesNotContain(result, (byte)0);
     }
 }

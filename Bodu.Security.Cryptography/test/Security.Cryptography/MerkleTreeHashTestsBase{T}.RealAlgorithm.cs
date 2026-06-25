@@ -97,7 +97,7 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
         using THasher hasher = Construct(Sha256Factory, DefaultBlockSize, DefaultFanOut);
         byte[] result = ComputeHash(hasher, MakeData(64));
 
-        Assert.AreEqual(32, result.Length,
+        Assert.HasCount(32, result,
             "SHA-256 root must be 32 bytes; implementation may be assuming MonitoringHashAlgorithm's 4-byte size.");
     }
 

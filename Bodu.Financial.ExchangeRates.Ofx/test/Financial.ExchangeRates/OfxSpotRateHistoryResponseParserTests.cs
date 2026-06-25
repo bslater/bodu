@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="OfxSpotRateHistoryResponseParserTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -38,7 +38,7 @@ public class OfxSpotRateHistoryResponseParserTests
 
         PairRateData<OfxSeriesInfo> data = OfxSpotRateHistoryResponseParser.Parse(json, Request(new(2023, 1, 1), new(2023, 1, 31)), Options);
 
-        Assert.AreEqual(2, data.Observations.Count);
+        Assert.HasCount(2, data.Observations);
         Assert.AreEqual(new DateOnly(2023, 1, 2), data.Observations[0].Date);
         Assert.AreEqual(0.6800m, data.Observations[0].Rate);
         Assert.AreEqual(new DateOnly(2023, 1, 3), data.Observations[1].Date);
@@ -58,7 +58,7 @@ public class OfxSpotRateHistoryResponseParserTests
 
         PairRateData<OfxSeriesInfo> data = OfxSpotRateHistoryResponseParser.Parse(json, Request(new(2023, 1, 1), new(2023, 1, 31)), Options);
 
-        Assert.AreEqual(1, data.Observations.Count);
+        Assert.HasCount(1, data.Observations);
         Assert.AreEqual(0.6828m, data.Observations[0].Rate);
     }
 
@@ -109,7 +109,7 @@ public class OfxSpotRateHistoryResponseParserTests
 
         PairRateData<OfxSeriesInfo> data = OfxSpotRateHistoryResponseParser.Parse(json, Request(new(2023, 1, 1), new(2023, 1, 31)), Options);
 
-        Assert.AreEqual(1, data.Observations.Count);
+        Assert.HasCount(1, data.Observations);
         Assert.AreEqual(new DateOnly(2023, 1, 4), data.Observations[0].Date);
         Assert.AreEqual(0.6850m, data.Observations[0].Rate);
     }

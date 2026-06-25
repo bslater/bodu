@@ -55,7 +55,7 @@ public sealed partial class DelimitedReaderTests
     public void Ctor_WhenBufferSizeIsOne_ShouldSucceed()
     {
         using DelimitedReader reader = new(TextReader.Null, DelimitedParseOptions.Default, 1);
-        Assert.AreEqual(0, reader.Headers.Count);
+        Assert.IsEmpty(reader.Headers);
         Assert.AreEqual(0, reader.RowNumber);
     }
 }

@@ -85,9 +85,9 @@ public abstract partial class BlockHashAlgorithmTests<TTest, TAlgorithm, TVarian
             byte[] hash = algorithm.ComputeHash(input);
 
             Assert.IsNotNull(hash, $"Hash for unaligned input length {length} must not be null.");
-            Assert.AreEqual(
+            Assert.HasCount(
                 expectedLength,
-                hash.Length,
+                hash,
                 $"Hash length for unaligned input length {length} did not match HashSize.");
         }
     }

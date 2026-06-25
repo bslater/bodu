@@ -34,8 +34,8 @@ public partial class PearsonTests
         Pearson algorithm = new(8, variant);
         byte[] table = algorithm.Table;
 
-        Assert.AreEqual(256, table.Length);
-        Assert.AreEqual(256, table.Distinct().Count());
+        Assert.HasCount(256, table);
+        Assert.HasCount(256, table.Distinct());
     }
 
 }

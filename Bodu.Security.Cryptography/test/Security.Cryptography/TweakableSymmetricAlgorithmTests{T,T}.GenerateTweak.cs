@@ -19,7 +19,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
         algorithm.TweakSize = size;
         algorithm.GenerateTweak();
 
-        Assert.AreEqual(size / 8, algorithm.Tweak.Length);
+        Assert.HasCount(size / 8, algorithm.Tweak);
     }
 
     /// <summary>

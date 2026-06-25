@@ -113,7 +113,7 @@ public sealed class MoneyOfTCurrencyJsonConverter<TCurrency>
                     typeof(TCurrency).Name));
         }
 
-        string text = reader.GetString()!;
+        string text = reader.GetString() !;
         return !Money<TCurrency>.TryParse(text.AsSpan(), CultureInfo.InvariantCulture, out Money<TCurrency> result)
             ? throw new JsonException(
                 string.Format(
@@ -151,7 +151,7 @@ public sealed class MoneyOfTCurrencyJsonConverter<TCurrency>
             if (reader.TokenType != JsonTokenType.PropertyName)
                 throw new JsonException(FinancialResourceStrings.Json_Invalid_ExpectedPropertyName);
 
-            string propertyName = reader.GetString()!;
+            string propertyName = reader.GetString() !;
             if (!reader.Read())
                 throw new JsonException(FinancialResourceStrings.Json_Invalid_UnexpectedEnd);
 

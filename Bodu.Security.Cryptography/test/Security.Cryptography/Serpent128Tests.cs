@@ -203,7 +203,7 @@ public sealed class Serpent128Tests
 
         algorithm.GenerateIV();
 
-        Assert.AreEqual(16, algorithm.IV.Length);
+        Assert.HasCount(16, algorithm.IV);
     }
 
     /// <summary>
@@ -216,6 +216,6 @@ public sealed class Serpent128Tests
 
         algorithm.GenerateKey();
 
-        Assert.AreEqual(algorithm.KeySize / 8, algorithm.Key.Length);
+        Assert.HasCount(algorithm.KeySize / 8, algorithm.Key);
     }
 }

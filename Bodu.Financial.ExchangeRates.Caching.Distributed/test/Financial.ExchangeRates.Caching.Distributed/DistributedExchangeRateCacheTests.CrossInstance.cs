@@ -47,7 +47,7 @@ public sealed partial class DistributedExchangeRateCacheTests
         IReadOnlyList<CachedExchangeRate> rows = cacheB.GetRates(Pair, Duration, now);
         DateRangeCoverage coverage = cacheB.GetCoverage(Pair, Duration, now);
 
-        Assert.AreEqual(1, rows.Count, "exactly one merged row survives, never a torn or duplicated set");
+        Assert.HasCount(1, rows, "exactly one merged row survives, never a torn or duplicated set");
         Assert.IsTrue(rows[0].Rate == 0.5000m || rows[0].Rate == 0.6000m, "the surviving rate is one writer's, not a mix");
         Assert.IsTrue(coverage.Contains(date, date), "coverage is present with its row, never recorded without it");
     }

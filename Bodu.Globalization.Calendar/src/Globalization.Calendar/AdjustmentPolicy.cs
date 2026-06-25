@@ -279,9 +279,7 @@ public sealed class AdjustmentPolicy
     /// <summary>
     /// Gets the author-supplied parameters passed to custom trigger and action handlers.
     /// </summary>
-    /// <value>
-    /// The parameter map; empty when the policy declares none. The engine treats the values as opaque.
-    /// </value>
+    /// <value>The parameter map; empty when the policy declares none. The engine treats the values as opaque.</value>
     public IReadOnlyDictionary<string, string> HandlerParameters { get; }
 
     /// <summary>

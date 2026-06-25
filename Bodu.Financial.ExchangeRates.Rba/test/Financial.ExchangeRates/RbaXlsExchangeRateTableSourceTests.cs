@@ -29,7 +29,7 @@ public class RbaXlsExchangeRateTableSourceTests
 
         RbaExchangeRateTable table = await source.GetTableAsync(s_immutableEra);
 
-        Assert.IsTrue(table.Series.Any(s => s.CurrencyCode == "USD"));
+        Assert.Contains(s => s.CurrencyCode == "USD", table.Series);
         Assert.AreEqual(1, handler.RequestCount);
     }
 

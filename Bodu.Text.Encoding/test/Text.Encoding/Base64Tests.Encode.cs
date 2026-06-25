@@ -75,7 +75,7 @@ public sealed partial class Base64Tests
         string actual = Base64.Encode(bytes, Base64Variant.Mime);
         string[] lines = actual.Split("\r\n");
 
-        Assert.IsTrue(lines.Length > 1, "MIME output should contain at least one line break.");
+        Assert.IsGreaterThan(1, lines.Length, "MIME output should contain at least one line break.");
         Assert.AreEqual(76, lines[0].Length);
     }
 

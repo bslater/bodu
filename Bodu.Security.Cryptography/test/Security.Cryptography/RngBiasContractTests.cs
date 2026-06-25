@@ -61,7 +61,7 @@ public sealed class RngBiasContractTests
                 forbiddenTokens.Add(m.MetadataToken);
         }
 
-        Assert.IsTrue(forbiddenTokens.Count > 0, "Expected CryptographyHelper to expose at least one non-zero RNG helper.");
+        Assert.IsNotEmpty(forbiddenTokens, "Expected CryptographyHelper to expose at least one non-zero RNG helper.");
 
         var violations = new List<string>();
 

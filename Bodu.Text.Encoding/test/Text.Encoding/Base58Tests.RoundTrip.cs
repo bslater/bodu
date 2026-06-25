@@ -68,7 +68,7 @@ public sealed partial class Base58Tests
             string encoded = Base58.Encode(original);
             byte[] decoded = Base58.Decode(encoded);
 
-            Assert.AreEqual(len, decoded.Length, $"Length mismatch for {len} zero bytes.");
+            Assert.HasCount(len, decoded, $"Length mismatch for {len} zero bytes.");
             CollectionAssert.AreEqual(original, decoded);
         }
     }

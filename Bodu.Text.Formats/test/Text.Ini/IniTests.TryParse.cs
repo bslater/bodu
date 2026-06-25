@@ -34,7 +34,7 @@ public sealed partial class IniTests
 
         Assert.IsTrue(result);
         Assert.IsNotNull(document);
-        Assert.AreEqual(0, document.Sections.Count);
+        Assert.IsEmpty(document.Sections);
     }
 
     /// <summary>

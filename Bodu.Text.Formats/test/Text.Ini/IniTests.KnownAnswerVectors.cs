@@ -23,7 +23,7 @@ public sealed partial class IniTests
     {
         IniDocument doc = Ini.Parse(vector.Input, vector.Options ?? IniParseOptions.Default);
 
-        Assert.AreEqual(vector.GlobalEntries.Length, doc.GlobalSection.Entries.Count,
+        Assert.HasCount(vector.GlobalEntries.Length, doc.GlobalSection.Entries,
             $"Global entry count mismatch for vector: {vector.Description}");
 
         for (int i = 0; i < vector.GlobalEntries.Length; i++)
@@ -34,7 +34,7 @@ public sealed partial class IniTests
                 $"Global entry [{i}] value mismatch for vector: {vector.Description}");
         }
 
-        Assert.AreEqual(vector.Sections.Length, doc.Sections.Count,
+        Assert.HasCount(vector.Sections.Length, doc.Sections,
             $"Section count mismatch for vector: {vector.Description}");
 
         for (int s = 0; s < vector.Sections.Length; s++)
@@ -45,7 +45,7 @@ public sealed partial class IniTests
             Assert.AreEqual(sectionName, actualSection.Name,
                 $"Section [{s}] name mismatch for vector: {vector.Description}");
 
-            Assert.AreEqual(sectionEntries.Length, actualSection.Entries.Count,
+            Assert.HasCount(sectionEntries.Length, actualSection.Entries,
                 $"Section [{s}] entry count mismatch for vector: {vector.Description}");
 
             for (int i = 0; i < sectionEntries.Length; i++)
@@ -74,7 +74,7 @@ public sealed partial class IniTests
         string formatted = Ini.Format(original);
         IniDocument roundTripped = Ini.Parse(formatted, vector.Options ?? IniParseOptions.Default);
 
-        Assert.AreEqual(vector.GlobalEntries.Length, roundTripped.GlobalSection.Entries.Count,
+        Assert.HasCount(vector.GlobalEntries.Length, roundTripped.GlobalSection.Entries,
             $"Round-trip global entry count mismatch for vector: {vector.Description}");
 
         for (int i = 0; i < vector.GlobalEntries.Length; i++)
@@ -85,7 +85,7 @@ public sealed partial class IniTests
                 $"Round-trip global entry [{i}] value mismatch for vector: {vector.Description}");
         }
 
-        Assert.AreEqual(vector.Sections.Length, roundTripped.Sections.Count,
+        Assert.HasCount(vector.Sections.Length, roundTripped.Sections,
             $"Round-trip section count mismatch for vector: {vector.Description}");
 
         for (int s = 0; s < vector.Sections.Length; s++)
@@ -96,7 +96,7 @@ public sealed partial class IniTests
             Assert.AreEqual(sectionName, actualSection.Name,
                 $"Round-trip section [{s}] name mismatch for vector: {vector.Description}");
 
-            Assert.AreEqual(sectionEntries.Length, actualSection.Entries.Count,
+            Assert.HasCount(sectionEntries.Length, actualSection.Entries,
                 $"Round-trip section [{s}] entry count mismatch for vector: {vector.Description}");
 
             for (int i = 0; i < sectionEntries.Length; i++)

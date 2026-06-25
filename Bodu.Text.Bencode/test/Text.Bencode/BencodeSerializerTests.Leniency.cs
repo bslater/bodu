@@ -67,7 +67,7 @@ public partial class BencodeSerializerTests
             data,
             new BencodeSerializerOptions { AllowDuplicateKeys = true });
 
-        Assert.AreEqual(1, map.Count);
+        Assert.HasCount(1, map);
         Assert.AreEqual(2L, map["a"]);
     }
 

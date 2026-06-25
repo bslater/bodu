@@ -36,7 +36,7 @@ public partial class EcbResilienceRegistrationTests
         using HttpResponseMessage response = await client.GetAsync(new Uri("https://ecb.test/feed"));
 
         Assert.IsTrue(response.IsSuccessStatusCode);
-        Assert.IsTrue(handler.RequestCount > 1, $"Expected more than one request, observed {handler.RequestCount}.");
+        Assert.IsGreaterThan(1, handler.RequestCount, $"Expected more than one request, observed {handler.RequestCount}.");
         Assert.AreEqual(3, handler.RequestCount);
     }
 

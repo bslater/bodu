@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlSerializerOptionsTests.Converters.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -158,14 +158,14 @@ public partial class TomlSerializerOptionsTests
         options.Converters.Add(converter);
         options.MakeReadOnly();
 
-        Assert.AreEqual(1, options.Converters.Count);
+        Assert.HasCount(1, options.Converters);
         Assert.AreSame(converter, options.Converters[0]);
-        Assert.IsTrue(options.Converters.Contains(converter));
+        Assert.Contains(converter, options.Converters);
 
         var enumerated = new List<TomlConverter>();
         foreach (TomlConverter item in options.Converters)
             enumerated.Add(item);
 
-        Assert.AreEqual(1, enumerated.Count);
+        Assert.HasCount(1, enumerated);
     }
 }

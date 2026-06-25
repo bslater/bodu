@@ -25,7 +25,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
 
         byte[] digest = algorithm.GetCurrentHash();
 
-        Assert.AreEqual(algorithm.HashLengthInBytes, digest.Length);
+        Assert.HasCount(algorithm.HashLengthInBytes, digest);
     }
     /// <summary>
     /// Verifies that <see cref="NonCryptographicHashAlgorithm.HashLengthInBytes" /> matches the specification

@@ -49,7 +49,7 @@ public sealed partial class DistributedExchangeRateCacheTests
         cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, now) }, Duration, now);
         IReadOnlyList<CachedExchangeRate> rows = cache.GetRates(Pair, Duration, now);
 
-        Assert.AreEqual(1, rows.Count);
+        Assert.HasCount(1, rows);
         Assert.AreEqual(0.5000m, rows[0].Rate);
     }
 

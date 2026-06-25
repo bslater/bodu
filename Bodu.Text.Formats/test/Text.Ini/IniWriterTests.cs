@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IniWriterTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -28,7 +28,7 @@ public sealed class IniWriterTests
 
         IniDocument document = Ini.Parse(sw.ToString());
 
-        Assert.AreEqual(1, document.Sections.Count);
+        Assert.HasCount(1, document.Sections);
         IniSection db = document.GetSection("database")!;
         Assert.AreEqual("localhost", db["host"]);
         Assert.AreEqual("5432", db["port"]);

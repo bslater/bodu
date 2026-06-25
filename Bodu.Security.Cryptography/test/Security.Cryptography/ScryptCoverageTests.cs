@@ -26,7 +26,7 @@ public sealed class ScryptCoverageTests
 
         new Scrypt(2, 1, 1).DeriveKey(Password, Salt, destination);
 
-        Assert.IsTrue(destination.ToArray().Any(b => b != 0));
+        Assert.Contains(b => b != 0, destination.ToArray());
     }
 
     /// <summary>
@@ -50,7 +50,7 @@ public sealed class ScryptCoverageTests
 
         Scrypt.DeriveKey(Password, Salt, 2, 1, 1, destination);
 
-        Assert.IsTrue(destination.ToArray().Any(b => b != 0));
+        Assert.Contains(b => b != 0, destination.ToArray());
     }
 
     /// <summary>

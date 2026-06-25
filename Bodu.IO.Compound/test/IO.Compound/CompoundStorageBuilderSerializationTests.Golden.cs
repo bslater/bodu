@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CompoundStorageBuilderSerializationTests.Golden.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -36,7 +36,7 @@ public partial class CompoundStorageBuilderSerializationTests
 
         byte[] actual = BuildCanonical().ToArray(new CompoundBuildOptions { Version = kat.Version });
 
-        Assert.AreEqual(expected.Length, actual.Length, "length");
+        Assert.HasCount(expected.Length, actual, "length");
         CollectionAssert.AreEqual(expected, actual);
     }
 

@@ -23,7 +23,7 @@ public partial class ConfigurationKeyTests
     {
         var key = ConfigurationKey.Parse(@"service\.name");
 
-        Assert.AreEqual(2, key.Segments.Length);
+        Assert.HasCount(2, key.Segments);
         Assert.AreEqual(@"service\", key.Segments[0]);
         Assert.AreEqual("name", key.Segments[1]);
     }
@@ -36,7 +36,7 @@ public partial class ConfigurationKeyTests
     {
         var key = ConfigurationKey.Parse(@"service\:name");
 
-        Assert.AreEqual(2, key.Segments.Length);
+        Assert.HasCount(2, key.Segments);
         Assert.AreEqual(@"service\", key.Segments[0]);
         Assert.AreEqual("name", key.Segments[1]);
     }
@@ -75,7 +75,7 @@ public partial class ConfigurationKeyTests
         var key = ConfigurationKey.Parse("logging.level:default");
 
         Assert.AreEqual("logging:level:default", key.Path);
-        Assert.AreEqual(3, key.Segments.Length);
+        Assert.HasCount(3, key.Segments);
     }
 
     /// <summary>
@@ -89,7 +89,7 @@ public partial class ConfigurationKeyTests
         var key = ConfigurationKey.Parse("items.0");
 
         Assert.AreEqual("items:0", key.Path);
-        Assert.AreEqual(2, key.Segments.Length);
+        Assert.HasCount(2, key.Segments);
         Assert.AreEqual("0", key.Segments[1]);
     }
 
@@ -105,7 +105,7 @@ public partial class ConfigurationKeyTests
 
         var key = ConfigurationKey.Parse("service:name.value", options);
 
-        Assert.AreEqual(2, key.Segments.Length);
+        Assert.HasCount(2, key.Segments);
         Assert.AreEqual("service:name", key.Segments[0]);
         Assert.AreEqual("value", key.Segments[1]);
     }

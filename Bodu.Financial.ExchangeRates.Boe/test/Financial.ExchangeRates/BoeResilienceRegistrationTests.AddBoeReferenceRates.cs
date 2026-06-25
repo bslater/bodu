@@ -28,7 +28,7 @@ public partial class BoeResilienceRegistrationTests
             .Get(ResilienceOptionsName);
 
         Assert.AreEqual(TimeSpan.FromSeconds(7), options.AttemptTimeout.Timeout);
-        Assert.IsTrue(options.TotalRequestTimeout.Timeout > options.AttemptTimeout.Timeout);
-        Assert.IsTrue(options.CircuitBreaker.SamplingDuration >= options.AttemptTimeout.Timeout * 2);
+        Assert.IsGreaterThan(options.AttemptTimeout.Timeout, options.TotalRequestTimeout.Timeout);
+        Assert.IsGreaterThanOrEqualTo(options.AttemptTimeout.Timeout * 2, options.CircuitBreaker.SamplingDuration);
     }
 }

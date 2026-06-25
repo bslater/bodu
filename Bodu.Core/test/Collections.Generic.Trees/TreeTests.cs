@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TreeTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -309,7 +309,7 @@ public sealed class TreeTests
         for (var i = 1; i <= depth; i++)
             current = current.AddChild(i);
 
-        Assert.AreEqual(depth + 1, root.PreOrder().Count());
+        Assert.HasCount(depth + 1, root.PreOrder());
         Assert.AreEqual(depth, root.Height);
         Assert.AreEqual(depth, current.Depth);
     }
@@ -338,9 +338,9 @@ public sealed class TreeTests
         var children = root.Children;
 
         var child = root.AddChild(1);
-        Assert.AreEqual(1, children.Count);
+        Assert.HasCount(1, children);
 
         root.RemoveChild(child);
-        Assert.AreEqual(0, children.Count);
+        Assert.IsEmpty(children);
     }
 }

@@ -71,7 +71,7 @@ public partial class ParallelMerkleTreeHashTests
         using var hasher = new ParallelMerkleTreeHash(Factory, DefaultBlockSize, DefaultFanOut);
         byte[] result = await hasher.ComputeHashAsync(new MemoryStream(MakeData(8)));
         Assert.IsNotNull(result);
-        Assert.AreEqual(4, result.Length); // MonitoringHashAlgorithm: sizeof(uint)
+        Assert.HasCount(4, result); // MonitoringHashAlgorithm: sizeof(uint)
     }
 
     // ═══════════════════════════════════════════════════════════════════════════════════════════

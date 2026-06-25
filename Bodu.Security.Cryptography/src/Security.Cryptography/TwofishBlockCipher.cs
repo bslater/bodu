@@ -128,7 +128,7 @@ public sealed class TwofishBlockCipher
     /// <exception cref="ArgumentException"><paramref name="key" /> is not 16, 24, or 32 bytes in length.</exception>
     public TwofishBlockCipher(ReadOnlySpan<byte> key)
     {
-        if (key.Length is not (16 or 24 or 32))
+        if (key.Length is not(16 or 24 or 32))
         {
             throw new ArgumentException(
                 CryptoResourceStrings.Arg_Invalid_TwofishKeyLength,
@@ -302,8 +302,8 @@ public sealed class TwofishBlockCipher
         // Split each 64-bit key word Mi into even and odd 32-bit words Me[i] and Mo[i].
         for (int i = 0; i < keyWords; i++)
         {
-            me[i] = BinaryPrimitives.ReadUInt32LittleEndian(key[(8 * i)..]);
-            mo[i] = BinaryPrimitives.ReadUInt32LittleEndian(key[((8 * i) + 4)..]);
+            me[i] = BinaryPrimitives.ReadUInt32LittleEndian(key[(8 * i) ..]);
+            mo[i] = BinaryPrimitives.ReadUInt32LittleEndian(key[((8 * i) + 4) ..]);
         }
 
         // Apply the RS matrix to each 64-bit key word to produce the S-box key words.

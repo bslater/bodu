@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TrieGenericTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -109,7 +109,7 @@ public sealed class TrieGenericTests
 
         var matches = sut.ItemsWithPrefix("car").ToDictionary(p => p.Key, p => p.Value);
 
-        Assert.AreEqual(2, matches.Count);
+        Assert.HasCount(2, matches);
         Assert.AreEqual(1, matches["car"]);
         Assert.AreEqual(2, matches["card"]);
     }

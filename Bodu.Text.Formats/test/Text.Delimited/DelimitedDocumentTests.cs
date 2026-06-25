@@ -23,7 +23,7 @@ public sealed class DelimitedDocumentTests
     {
         DelimitedDocument doc = Delimited.Parse(string.Empty);
 
-        Assert.AreEqual(0, doc.Headers.Count);
+        Assert.IsEmpty(doc.Headers);
     }
 
     /// <summary>
@@ -49,7 +49,7 @@ public sealed class DelimitedDocumentTests
 
         DelimitedDocument doc = Delimited.Parse("Alice,30,Paris", options);
 
-        Assert.AreEqual(0, doc.Headers.Count);
+        Assert.IsEmpty(doc.Headers);
     }
 
     // -------------------------------------------------- Rows ----------------------------------------------------
@@ -62,7 +62,7 @@ public sealed class DelimitedDocumentTests
     {
         DelimitedDocument doc = Delimited.Parse(string.Empty);
 
-        Assert.AreEqual(0, doc.Rows.Count);
+        Assert.IsEmpty(doc.Rows);
     }
 
     /// <summary>
@@ -73,7 +73,7 @@ public sealed class DelimitedDocumentTests
     {
         DelimitedDocument doc = Delimited.Parse("name,age\nAlice,30\nBob,25");
 
-        Assert.AreEqual(2, doc.Rows.Count);
+        Assert.HasCount(2, doc.Rows);
     }
 
     /// <summary>

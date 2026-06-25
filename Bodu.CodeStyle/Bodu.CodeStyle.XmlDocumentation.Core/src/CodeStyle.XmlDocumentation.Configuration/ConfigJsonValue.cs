@@ -1,6 +1,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConfigJsonValue.cs" company="Bodu Pty. Ltd.">
-//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
+// Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -51,7 +51,7 @@ internal sealed class ConfigJsonValue
     /// <value>The item list, or <see langword="null" /> for non-array values.</value>
     public IReadOnlyList<ConfigJsonValue>? Items { get; }
 
-    /// <summary>Gets the boolean content when <see cref="Kind" /> is <see cref="ConfigJsonValueKind.Boolean" />.</summary>
+    /// <summary>Gets a value indicating whether gets the boolean content when <see cref="Kind" /> is <see cref="ConfigJsonValueKind.Boolean" />.</summary>
     /// <value>The boolean content; <see langword="false" /> for non-boolean values.</value>
     public bool BooleanValue => this._boolean;
 

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoeExchangeRateCsvParserTests.Parse.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -20,7 +20,7 @@ public partial class BoeExchangeRateCsvParserTests
     {
         BoeExchangeRateTable table = ParseSample();
 
-        Assert.AreEqual(6, table.Observations.Count);
+        Assert.HasCount(6, table.Observations);
     }
 
     /// <summary>
@@ -49,7 +49,7 @@ public partial class BoeExchangeRateCsvParserTests
 
         BoeExchangeRateTable table = BoeExchangeRateCsvParser.Parse(csv, new BoeExchangeRateOptions());
 
-        Assert.AreEqual(1, table.Observations.Count);
+        Assert.HasCount(1, table.Observations);
         Assert.AreEqual("JPY", table.Observations[0].CurrencyCode);
     }
 
@@ -65,7 +65,7 @@ public partial class BoeExchangeRateCsvParserTests
 
         BoeExchangeRateTable table = BoeExchangeRateCsvParser.Parse(csv, new BoeExchangeRateOptions());
 
-        Assert.AreEqual(1, table.Observations.Count);
+        Assert.HasCount(1, table.Observations);
         Assert.AreEqual("USD", table.Observations[0].CurrencyCode);
     }
 

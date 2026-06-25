@@ -62,6 +62,6 @@ internal sealed class ObjectConverterFactory
         ThrowHelper.ThrowIfNull(typeToConvert);
 
         Type converterType = typeof(ObjectConverter<>).MakeGenericType(typeToConvert);
-        return (BencodeConverter)Activator.CreateInstance(converterType)!;
+        return (BencodeConverter)Activator.CreateInstance(converterType) !;
     }
 }

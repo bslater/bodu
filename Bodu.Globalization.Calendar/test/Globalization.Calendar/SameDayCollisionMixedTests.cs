@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SameDayCollisionMixedTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -45,8 +45,8 @@ public class SameDayCollisionMixedTests
         IReadOnlyList<NotableDate> results = service.Resolve(
             new DateRange(new DateOnly(2025, 1, 1), new DateOnly(2025, 1, 7)), "XX");
 
-        Assert.IsTrue(results.Any(r => r.NotableDateId == "c"), "Lone occurrence should be kept.");
-        Assert.IsTrue(results.Any(r => r.NotableDateId == "a"), "Higher-priority collision winner should be kept.");
-        Assert.IsFalse(results.Any(r => r.NotableDateId == "b"), "Lower-priority collision loser should be dropped.");
+        Assert.Contains(r => r.NotableDateId == "c", results, "Lone occurrence should be kept.");
+        Assert.Contains(r => r.NotableDateId == "a", results, "Higher-priority collision winner should be kept.");
+        Assert.DoesNotContain(r => r.NotableDateId == "b", results, "Lower-priority collision loser should be dropped.");
     }
 }

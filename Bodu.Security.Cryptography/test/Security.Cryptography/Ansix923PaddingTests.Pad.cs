@@ -21,7 +21,7 @@ public sealed partial class Ansix923PaddingTests
 
         byte[] padded = padding.Pad(plaintext, BlockSizeBits);
 
-        Assert.AreEqual(BlockSize, padded.Length);
+        Assert.HasCount(BlockSize, padded);
         Assert.AreEqual((byte)5, padded[padded.Length - 1]);
 
         for (int i = plaintext.Length; i < padded.Length - 1; i++)

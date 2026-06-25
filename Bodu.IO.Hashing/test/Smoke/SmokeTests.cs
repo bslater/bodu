@@ -28,7 +28,7 @@ public sealed class SmokeTests
         adler.Append(Encoding.ASCII.GetBytes("Wikipedia"));
         byte[] digest = adler.GetCurrentHash();
 
-        Assert.AreEqual(4, digest.Length);
+        Assert.HasCount(4, digest);
     }
     /// <summary>
     /// Verifies that <see cref="Crc.ComputeHash(System.ReadOnlySpan{byte})" /> reproduces the published
@@ -40,7 +40,7 @@ public sealed class SmokeTests
         Crc crc = new(CrcStandard.Get(CrcStandards.CRC32_ISOHDLC));
         byte[] digest = crc.ComputeHash(Encoding.ASCII.GetBytes("123456789"));
 
-        Assert.AreEqual(4, digest.Length);
+        Assert.HasCount(4, digest);
         uint actual = (uint)digest[0] | ((uint)digest[1] << 8) | ((uint)digest[2] << 16) | ((uint)digest[3] << 24);
         Assert.AreEqual(0xCBF43926u, actual);
     }
@@ -55,7 +55,7 @@ public sealed class SmokeTests
         fletcher.Append(Encoding.ASCII.GetBytes("abcde"));
         byte[] digest = fletcher.GetCurrentHash();
 
-        Assert.AreEqual(2, digest.Length);
+        Assert.HasCount(2, digest);
         Assert.IsTrue(digest[0] != 0 || digest[1] != 0, "Non-empty input should produce a non-zero Fletcher-16 digest.");
     }
 
@@ -69,7 +69,7 @@ public sealed class SmokeTests
         fletcher.Append(Encoding.ASCII.GetBytes("abcdefgh"));
         byte[] digest = fletcher.GetCurrentHash();
 
-        Assert.AreEqual(4, digest.Length);
+        Assert.HasCount(4, digest);
     }
 
 }

@@ -72,7 +72,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
             recovered = decryptor.TransformFinalBlock(ciphertext, 0, ciphertext.Length);
         }
 
-        Assert.AreEqual(0, recovered.Length);
+        Assert.IsEmpty(recovered);
     }
 
     /// <summary>

@@ -58,10 +58,10 @@ internal partial struct Ed25519Point
     /// <param name="z">The Z coordinate.</param>
     /// <param name="t">The extended coordinate T = XY/Z.</param>
     private Ed25519Point(
-        in Curve25519FieldElement x,
-        in Curve25519FieldElement y,
-        in Curve25519FieldElement z,
-        in Curve25519FieldElement t)
+        Curve25519FieldElement x,
+        Curve25519FieldElement y,
+        Curve25519FieldElement z,
+        Curve25519FieldElement t)
     {
         _x = x;
         _y = y;
@@ -157,7 +157,7 @@ internal partial struct Ed25519Point
     /// </summary>
     /// <param name="other">The point to add.</param>
     /// <returns>The sum of the two points.</returns>
-    internal readonly Ed25519Point Add(in Ed25519Point other)
+    internal readonly Ed25519Point Add(Ed25519Point other)
     {
         var a = Curve25519FieldElement.Multiply(
             Curve25519FieldElement.Subtract(_y, _x),
@@ -231,7 +231,7 @@ internal partial struct Ed25519Point
     /// <returns>
     /// <see langword="true" /> when the elements are congruent modulo p; otherwise, <see langword="false" />.
     /// </returns>
-    private static bool AreEqual(in Curve25519FieldElement left, in Curve25519FieldElement right)
+    private static bool AreEqual(Curve25519FieldElement left, Curve25519FieldElement right)
     {
         Span<byte> leftBytes = stackalloc byte[EncodedSizeInBytes];
         Span<byte> rightBytes = stackalloc byte[EncodedSizeInBytes];

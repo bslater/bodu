@@ -26,8 +26,8 @@ public partial class ExchangeRateBookTests
 
         var providers = book.GetSeries(s_usdAud).Select(s => s.Provider).ToHashSet();
 
-        Assert.AreEqual(2, providers.Count);
-        Assert.IsTrue(providers.Contains("RBA"));
-        Assert.IsTrue(providers.Contains("ECB"));
+        Assert.HasCount(2, providers);
+        Assert.Contains("RBA", providers);
+        Assert.Contains("ECB", providers);
     }
 }

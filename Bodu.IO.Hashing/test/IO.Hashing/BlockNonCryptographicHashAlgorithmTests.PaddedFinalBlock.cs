@@ -40,7 +40,7 @@ public partial class BlockNonCryptographicHashAlgorithmTests
         byte[] hash = hasher.GetCurrentHash();
 
         Assert.IsNotNull(hash);
-        Assert.AreEqual(4, hash.Length);
+        Assert.HasCount(4, hash);
     }
 
     /// <summary>

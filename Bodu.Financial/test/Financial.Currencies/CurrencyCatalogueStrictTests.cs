@@ -43,7 +43,7 @@ public class CurrencyCatalogueStrictTests
         Assert.IsTrue(typeof(ICurrency).IsAssignableFrom(type), $"{entry.Iso} must implement ICurrency.");
 
         ConstructorInfo[] publicCtors = type.GetConstructors(BindingFlags.Public | BindingFlags.Instance);
-        Assert.AreEqual(0, publicCtors.Length, $"{entry.Iso} must not expose a public constructor (tag types are non-instantiable).");
+        Assert.IsEmpty(publicCtors, $"{entry.Iso} must not expose a public constructor (tag types are non-instantiable).");
 
         // Read metadata through Money<TCurrency> so default-implemented interface members (e.g. virtual
         // CashRoundingIncrement → 0m) resolve via the validator rather than falling through to a null property
@@ -94,7 +94,7 @@ public class CurrencyCatalogueStrictTests
                 unexpected.Add(code);
         }
 
-        Assert.AreEqual(0, unexpected.Count, $"Unexpected catalogue types: {string.Join(", ", unexpected)}");
+        Assert.IsEmpty(unexpected, $"Unexpected catalogue types: {string.Join(", ", unexpected)}");
     }
 
     /// <summary>
@@ -126,7 +126,7 @@ public class CurrencyCatalogueStrictTests
         }
 
         IEnumerable<KeyValuePair<string, int>> duplicates = counts.Where(kvp => kvp.Value > 1);
-        Assert.IsFalse(duplicates.Any(), $"Duplicate ISO codes: {string.Join(", ", duplicates.Select(kvp => $"{kvp.Key} x{kvp.Value}"))}");
+        Assert.IsEmpty(duplicates, $"Duplicate ISO codes: {string.Join(", ", duplicates.Select(kvp => $"{kvp.Key} x{kvp.Value}"))}");
     }
 
     /// <summary>

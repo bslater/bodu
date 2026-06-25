@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RbaEraTests.Default.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -14,6 +14,6 @@ public partial class RbaEraTests
     [TestMethod]
     public void Default_ShouldContainElevenEras()
     {
-        Assert.AreEqual(11, RbaEra.Default.Count);
+        Assert.HasCount(11, RbaEra.Default);
     }
 }

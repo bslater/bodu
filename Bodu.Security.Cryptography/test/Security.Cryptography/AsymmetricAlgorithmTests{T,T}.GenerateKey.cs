@@ -20,8 +20,8 @@ public abstract partial class AsymmetricAlgorithmTests<TTest, TAlgorithm>
 
         Assert.IsTrue(HasPrivateKey(algorithm));
         Assert.IsTrue(HasPublicKey(algorithm));
-        Assert.AreEqual(spec.PrivateKeySizeBytes, ExportPrivateKey(algorithm).Length);
-        Assert.AreEqual(spec.PublicKeySizeBytes, ExportPublicKey(algorithm).Length);
+        Assert.HasCount(spec.PrivateKeySizeBytes, ExportPrivateKey(algorithm));
+        Assert.HasCount(spec.PublicKeySizeBytes, ExportPublicKey(algorithm));
     }
 
     /// <summary>

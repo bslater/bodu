@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CompoundFileTests.Write.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -153,7 +153,7 @@ public partial class CompoundFileTests
         file.Revert();
 
         Assert.IsFalse(file.IsDirty);
-        Assert.IsFalse(file.RootStorage.EnumerateStreams().Any());
+        Assert.IsEmpty(file.RootStorage.EnumerateStreams());
     }
 
     /// <summary>
@@ -320,7 +320,7 @@ public partial class CompoundFileTests
         using CompoundFile file = CompoundFile.Open(destination, FileMode.OpenOrCreate, FileAccess.ReadWrite, leaveOpen: true);
 
         Assert.IsTrue(file.CanWrite);
-        Assert.IsFalse(file.RootStorage.EnumerateEntries().Any());
+        Assert.IsEmpty(file.RootStorage.EnumerateEntries());
     }
 
     /// <summary>

@@ -31,7 +31,7 @@ public partial class ExchangeRateTableBuilderTests
         IReadOnlyList<ExchangeRateSeries> snapshots = table.ToSeries();
 
         Assert.AreEqual(2, table.Count);
-        Assert.AreEqual(2, snapshots.Count);
+        Assert.HasCount(2, snapshots);
     }
 
     /// <summary>
@@ -132,7 +132,7 @@ public partial class ExchangeRateTableBuilderTests
 
         ExchangeRateSeriesKey[] keys = table.Keys.ToArray();
 
-        Assert.AreEqual(2, keys.Length);
+        Assert.HasCount(2, keys);
         CollectionAssert.Contains(keys, new ExchangeRateSeriesKey(s_usdAud, "RBA"));
         CollectionAssert.Contains(keys, new ExchangeRateSeriesKey(s_usdJpy, "BoJ"));
     }

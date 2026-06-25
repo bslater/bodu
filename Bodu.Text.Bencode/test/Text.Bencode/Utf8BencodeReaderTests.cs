@@ -84,7 +84,7 @@ public partial class Utf8BencodeReaderTests
         Assert.AreEqual(BencodeTokenType.ByteString, reader.TokenType);
         Assert.AreEqual(0, reader.ValueSpan.Length);
         Assert.AreEqual(string.Empty, reader.GetString());
-        Assert.AreEqual(0, reader.GetBytes().Length);
+        Assert.IsEmpty(reader.GetBytes());
         Assert.AreEqual(2, reader.BytesConsumed);
         Assert.IsFalse(reader.Read());
     }

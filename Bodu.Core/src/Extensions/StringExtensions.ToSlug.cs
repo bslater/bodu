@@ -117,6 +117,6 @@ public static partial class StringExtensions
         while (cut > 0 && slug[cut - 1] != separator) cut--;
 
         // Drop the trailing separator; when no boundary was found, fall back to a hard cut.
-        return cut > 0 ? slug[..(cut - 1)] : slug[..maxLength];
+        return cut > 0 ? slug[.. (cut - 1)] : slug[..maxLength];
     }
 }

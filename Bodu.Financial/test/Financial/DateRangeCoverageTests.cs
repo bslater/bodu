@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateRangeCoverageTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -65,7 +65,7 @@ public partial class DateRangeCoverageTests
 
         IReadOnlyList<(DateOnly Start, DateOnly End)> intervals = coverage.Intervals;
 
-        Assert.AreEqual(2, intervals.Count);
+        Assert.HasCount(2, intervals);
         Assert.AreEqual((On(1), On(3)), intervals[0]);
         Assert.AreEqual((On(5), On(7)), intervals[1]);
     }

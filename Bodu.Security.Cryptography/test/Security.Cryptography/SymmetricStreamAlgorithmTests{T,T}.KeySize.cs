@@ -80,6 +80,6 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
 
         cipher.KeySize = keySizeBits;
 
-        Assert.AreEqual(keySizeBits / 8, cipher.Key.Length);
+        Assert.HasCount(keySizeBits / 8, cipher.Key);
     }
 }

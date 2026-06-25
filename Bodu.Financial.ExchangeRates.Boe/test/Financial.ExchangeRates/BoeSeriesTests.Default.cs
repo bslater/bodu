@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoeSeriesTests.Default.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -29,7 +29,7 @@ public partial class BoeSeriesTests
     {
         var currencies = BoeSeries.Default.Select(s => s.QuoteIsoCode).ToList();
 
-        Assert.IsTrue(currencies.Count > 0);
-        Assert.AreEqual(currencies.Count, currencies.Distinct().Count());
+        Assert.IsNotEmpty(currencies);
+        Assert.HasCount(currencies.Count, currencies.Distinct());
     }
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CompoundMalformedFixtureTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -54,7 +54,7 @@ public class CompoundMalformedFixtureTests
 
         int count = Enumerate(file.RootStorage);
 
-        Assert.IsTrue(count >= 0);
+        Assert.IsGreaterThanOrEqualTo(0, count);
     }
 
     /// <summary>

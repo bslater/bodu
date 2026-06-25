@@ -85,7 +85,7 @@ public abstract class StreamAeadTransformContractTests<TAead>
         byte[] plaintext = Pattern(length);
         byte[] sealed_ = Seal(plaintext);
 
-        Assert.AreEqual(length + 16, sealed_.Length);
+        Assert.HasCount(length + 16, sealed_);
         CollectionAssert.AreEqual(plaintext, Open(sealed_));
     }
 

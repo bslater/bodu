@@ -39,7 +39,7 @@ public abstract partial class AsymmetricAlgorithmTests<TTest, TAlgorithm>
 
         KeySizes[] sizes = algorithm.LegalKeySizes;
 
-        Assert.AreEqual(1, sizes.Length);
+        Assert.HasCount(1, sizes);
         Assert.AreEqual(spec.KeySizeDesignator, sizes[0].MinSize);
         Assert.AreEqual(spec.KeySizeDesignator, sizes[0].MaxSize);
         Assert.AreEqual(0, sizes[0].SkipSize);

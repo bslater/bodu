@@ -58,8 +58,6 @@ public sealed class ExchangeRatePairRoute
     /// <summary>
     /// Gets the strategy used to combine the routed providers, if overridden.
     /// </summary>
-    /// <value>
-    /// The route-specific strategy, or <see langword="null" /> to use the aggregator's default strategy.
-    /// </value>
+    /// <value>The route-specific strategy, or <see langword="null" /> to use the aggregator's default strategy.</value>
     public IExchangeRateAggregationStrategy? Strategy { get; }
 }

@@ -134,7 +134,7 @@ public sealed partial class Base64Tests
     {
         byte[] actual = Base64.EncodeToUtf8([]);
 
-        Assert.AreEqual(0, actual.Length);
+        Assert.IsEmpty(actual);
     }
 
     /// <summary>

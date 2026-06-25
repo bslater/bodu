@@ -32,7 +32,7 @@ public class YahooChartResponseParserTests
 
         YahooExchangeRateChart chart = YahooChartResponseParser.Parse(json, CreateRequest(), new YahooExchangeRateOptions());
 
-        Assert.AreEqual(3, chart.Observations.Count);
+        Assert.HasCount(3, chart.Observations);
         Assert.AreEqual("USD", chart.QuoteIsoCode);
         Assert.AreEqual(new DateOnly(2023, 1, 3), chart.Observations[0].Date);
         Assert.AreEqual(0.6828m, chart.Observations[0].Rate);

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExcelBinaryWorkbookTests.OpenRead.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -84,7 +84,7 @@ public partial class ExcelBinaryWorkbookTests
         try
         {
             using ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.OpenRead(path);
-            Assert.AreEqual(2, workbook.Worksheets.Count);
+            Assert.HasCount(2, workbook.Worksheets);
         }
         finally
         {
@@ -101,10 +101,10 @@ public partial class ExcelBinaryWorkbookTests
         MemoryStream source = ExcelBinaryFixtures.OpenStream(ExcelBinaryFixtures.SampleBiff8);
 
         using (ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.OpenRead(source, leaveOpen: true))
-            Assert.AreEqual(2, workbook.Worksheets.Count);
+            Assert.HasCount(2, workbook.Worksheets);
 
         // A disposed MemoryStream throws on access; reading the length confirms it is still open.
-        Assert.IsTrue(source.Length > 0);
+        Assert.IsGreaterThan(0, source.Length);
         source.Dispose();
     }
 
@@ -117,7 +117,7 @@ public partial class ExcelBinaryWorkbookTests
         MemoryStream source = ExcelBinaryFixtures.OpenStream(ExcelBinaryFixtures.SampleBiff8);
 
         using (ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.OpenRead(source))
-            Assert.AreEqual(2, workbook.Worksheets.Count);
+            Assert.HasCount(2, workbook.Worksheets);
 
         _ = Assert.ThrowsExactly<ObjectDisposedException>(() => _ = source.Length);
     }

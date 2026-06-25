@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AggregatingExchangeRateProviderTests.Logging.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -23,7 +23,7 @@ public sealed partial class AggregatingExchangeRateProviderTests
 
         agg.TryGetRate("USD", "AUD", D1, ExchangeRateLookupOptions.Exact, out _);
 
-        Assert.IsTrue(logger.Entries.Any(e => e.EventId.Id == 4511));
+        Assert.Contains(e => e.EventId.Id == 4511, logger.Entries);
     }
 
     /// <summary>
@@ -37,6 +37,6 @@ public sealed partial class AggregatingExchangeRateProviderTests
 
         agg.TryGetRate("USD", "AUD", D1, ExchangeRateLookupOptions.Exact, out _);
 
-        Assert.IsTrue(logger.Entries.Any(e => e.EventId.Id == 4512));
+        Assert.Contains(e => e.EventId.Id == 4512, logger.Entries);
     }
 }

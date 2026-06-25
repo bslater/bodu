@@ -122,7 +122,7 @@ public partial class CrcLookupTableBuilderTests
 
         foreach (ulong value in table)
         {
-            Assert.IsTrue(value <= ulong.MaxValue, "Value should not exceed 64 bits.");
+            Assert.IsLessThanOrEqualTo(ulong.MaxValue, value, "Value should not exceed 64 bits.");
         }
     }
 
@@ -173,7 +173,7 @@ public partial class CrcLookupTableBuilderTests
     {
         ulong[] table = CrcLookupTableBuilder.BuildLookupTable(size, 0x1UL, reflectIn: true);
 
-        Assert.AreEqual(2, table.Length);
+        Assert.HasCount(2, table);
 
         ulong mask = ulong.MaxValue >> (64 - size);
         foreach (ulong entry in table)
@@ -209,7 +209,7 @@ public partial class CrcLookupTableBuilderTests
     {
         ulong[] table = CrcLookupTableBuilder.BuildLookupTable(size, 0x1UL, false);
 
-        Assert.AreEqual(expected, table.Length);
+        Assert.HasCount(expected, table);
     }
 
     /// <summary>
@@ -223,7 +223,7 @@ public partial class CrcLookupTableBuilderTests
     {
         ulong[] table = CrcLookupTableBuilder.BuildLookupTable(8, 0x07UL, reflectIn: false);
 
-        Assert.AreEqual(256, table.Length);
+        Assert.HasCount(256, table);
         Assert.AreEqual(0x00UL, table[0x00]);
         Assert.AreEqual(0x07UL, table[0x01]);
         Assert.AreEqual(0x0EUL, table[0x02]);

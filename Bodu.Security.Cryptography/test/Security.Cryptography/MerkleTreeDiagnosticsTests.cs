@@ -27,10 +27,10 @@ public sealed class MerkleTreeDiagnosticsTests
     {
         var diagnostics = new MerkleTreeDiagnostics();
 
-        Assert.AreEqual(0, diagnostics.GetAllNodes().Count);
+        Assert.IsEmpty(diagnostics.GetAllNodes());
         Assert.AreEqual(0, diagnostics.GetLevelCount());
         Assert.IsNull(diagnostics.Root);
-        Assert.AreEqual(0, diagnostics.GetLevel(0).Count);
+        Assert.IsEmpty(diagnostics.GetLevel(0));
     }
 
     /// <summary>
@@ -46,7 +46,7 @@ public sealed class MerkleTreeDiagnosticsTests
         diagnostics.RecordLeaf(index: 0, hash: leafHash);
 
         Assert.AreEqual(1, diagnostics.GetLevelCount());
-        Assert.AreEqual(1, diagnostics.GetAllNodes().Count);
+        Assert.HasCount(1, diagnostics.GetAllNodes());
         Assert.IsNotNull(diagnostics.Root);
         Assert.AreEqual(0, diagnostics.Root!.Level);
         Assert.AreEqual(0, diagnostics.Root.Index);
@@ -115,11 +115,11 @@ public sealed class MerkleTreeDiagnosticsTests
         IReadOnlyList<MerkleTreeDiagnosticNode> level1 = diagnostics.GetLevel(1);
         IReadOnlyList<MerkleTreeDiagnosticNode> level2 = diagnostics.GetLevel(2);
 
-        Assert.AreEqual(2, level0.Count);
+        Assert.HasCount(2, level0);
         Assert.AreEqual(0, level0[0].Index);
         Assert.AreEqual(1, level0[1].Index);
-        Assert.AreEqual(1, level1.Count);
-        Assert.AreEqual(0, level2.Count, "Levels above the highest recorded should be empty.");
+        Assert.HasCount(1, level1);
+        Assert.IsEmpty(level2, "Levels above the highest recorded should be empty.");
     }
 
     /// <summary>
@@ -160,7 +160,7 @@ public sealed class MerkleTreeDiagnosticsTests
         bool ok = diagnostics.Validate(SHA256.Create, out IReadOnlyList<string>? errors);
 
         Assert.IsTrue(ok, $"Validate should pass — got errors: {string.Join(", ", errors)}");
-        Assert.AreEqual(0, errors.Count);
+        Assert.IsEmpty(errors);
     }
 
     /// <summary>
@@ -183,7 +183,7 @@ public sealed class MerkleTreeDiagnosticsTests
         bool ok = diagnostics.Validate(SHA256.Create, out IReadOnlyList<string>? errors);
 
         Assert.IsFalse(ok);
-        Assert.AreEqual(1, errors.Count);
+        Assert.HasCount(1, errors);
         Assert.IsTrue(errors[0].Contains("[1:0]", StringComparison.Ordinal),
             $"Validation error should reference the offending node by [level:index]; got '{errors[0]}'.");
     }
@@ -202,7 +202,7 @@ public sealed class MerkleTreeDiagnosticsTests
         bool ok = diagnostics.Validate(SHA256.Create, out IReadOnlyList<string>? errors);
 
         Assert.IsTrue(ok);
-        Assert.AreEqual(0, errors.Count);
+        Assert.IsEmpty(errors);
     }
 
     /// <summary>

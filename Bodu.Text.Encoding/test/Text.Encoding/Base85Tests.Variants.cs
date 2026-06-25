@@ -21,7 +21,7 @@ public sealed partial class Base85Tests
         byte[] decoded = Base85.Decode("zzzzz", Base85Variant.Z85);
 
         // 5 z chars in Z85 = 5 digit-35 values, decode to a non-trivial 4-byte sequence (not zeros).
-        Assert.AreEqual(4, decoded.Length);
+        Assert.HasCount(4, decoded);
         Assert.IsFalse(decoded.All(b => b == 0), "Z85 'z' is digit 35, not an all-zero shortcut.");
     }
 
@@ -39,7 +39,7 @@ public sealed partial class Base85Tests
 
         Assert.AreEqual("zz", ascii85);
         Assert.AreEqual(10, z85.Length);
-        Assert.IsFalse(z85.Contains("zz"), "Z85 should not condense all-zero groups.");
+        Assert.DoesNotContain("zz", z85, "Z85 should not condense all-zero groups.");
     }
     /// <summary>
     /// Verifies that the Ascii85 and Z85 variants produce different encoded strings for the same input.

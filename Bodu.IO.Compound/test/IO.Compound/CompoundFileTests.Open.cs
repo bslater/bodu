@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CompoundFileTests.Open.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -93,7 +93,7 @@ public partial class CompoundFileTests
 
         using (var file = CompoundFile.Open(source, leaveOpen: true))
         {
-            Assert.IsTrue(file.RootStorage.EnumerateEntries().Any());
+            Assert.IsNotEmpty(file.RootStorage.EnumerateEntries());
         }
 
         Assert.IsTrue(source.CanRead);
@@ -114,7 +114,7 @@ public partial class CompoundFileTests
             using CompoundFile file = CompoundFile.OpenRead(path);
 
             Assert.AreEqual(FileAccess.Read, file.Access);
-            Assert.IsTrue(file.RootStorage.EnumerateEntries().Any());
+            Assert.IsNotEmpty(file.RootStorage.EnumerateEntries());
         }
         finally
         {
@@ -148,7 +148,7 @@ public partial class CompoundFileTests
             using CompoundFile file = CompoundFile.Open(path, FileMode.Open, FileAccess.Read);
 
             Assert.AreEqual(FileAccess.Read, file.Access);
-            Assert.IsTrue(file.RootStorage.EnumerateEntries().Any());
+            Assert.IsNotEmpty(file.RootStorage.EnumerateEntries());
         }
         finally
         {

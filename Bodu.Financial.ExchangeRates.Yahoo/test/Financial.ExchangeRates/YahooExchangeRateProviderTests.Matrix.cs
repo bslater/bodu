@@ -37,7 +37,7 @@ public partial class YahooExchangeRateProviderTests
         ExchangeRateLookupResult async = await provider.GetRateAsync("AUD", "USD");
 
         Assert.AreEqual(sync.Rate.Rate, async.Rate.Rate);
-        Assert.IsTrue(sync.Rate.Rate > 0m);
+        Assert.IsGreaterThan(0m, sync.Rate.Rate);
         Assert.AreEqual(YahooExchangeRateProvider.ProviderName, sync.Rate.Provider);
     }
 
@@ -66,8 +66,8 @@ public partial class YahooExchangeRateProviderTests
 
         List<ExchangeRate> rates = [.. provider.GetRates("AUD", "USD", new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31))];
 
-        Assert.IsTrue(rates.Count > 0);
+        Assert.IsNotEmpty(rates);
         for (int i = 1; i < rates.Count; i++)
-            Assert.IsTrue(rates[i - 1].Date <= rates[i].Date);
+            Assert.IsLessThanOrEqualTo(rates[i].Date, rates[i - 1].Date);
     }
 }

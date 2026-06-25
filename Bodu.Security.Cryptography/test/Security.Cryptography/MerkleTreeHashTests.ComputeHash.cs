@@ -42,7 +42,7 @@ public partial class MerkleTreeHashTests
         byte[] result = hasher.ComputeHash(stream);
 
         Assert.IsNotNull(result);
-        Assert.AreEqual(4, result.Length); // MonitoringHashAlgorithm: sizeof(uint)
+        Assert.HasCount(4, result); // MonitoringHashAlgorithm: sizeof(uint)
     }
 
     // ─── Equivalence with in-memory overloads ─────────────────────────────────────────────────

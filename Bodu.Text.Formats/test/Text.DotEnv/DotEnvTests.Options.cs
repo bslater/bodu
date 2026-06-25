@@ -36,7 +36,7 @@ public sealed partial class DotEnvTests
 
         DotEnvDocument doc = DotEnv.Parse("KEY=first\nKEY=second", options);
 
-        Assert.AreEqual(1, doc.Entries.Count);
+        Assert.HasCount(1, doc.Entries);
     }
 
     /// <summary>
@@ -64,7 +64,7 @@ public sealed partial class DotEnvTests
 
         DotEnvDocument doc = DotEnv.Parse("KEY=first\nKEY=second", options);
 
-        Assert.AreEqual(1, doc.Entries.Count);
+        Assert.HasCount(1, doc.Entries);
     }
 
     // ------------------------------------------ AllowExportPrefix -----------------------------------------------

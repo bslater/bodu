@@ -92,7 +92,7 @@ public partial class HashAlgorithmExtensionsTests
         bool result = await algorithm.VerifyHashAsync(monitored, "ZZZZ");
 
         Assert.IsFalse(result);
-        Assert.AreEqual(0, monitored.Reads.Count);
+        Assert.IsEmpty(monitored.Reads);
     }
 
     // ─── Stream-shape coverage ────────────────────────────────────────────────────────────────
@@ -219,7 +219,7 @@ public partial class HashAlgorithmExtensionsTests
         bool result = await algorithm.VerifyHashAsync(monitored, expected);
 
         Assert.IsTrue(result);
-        Assert.IsTrue(monitored.Reads.Count > 0);
+        Assert.IsNotEmpty(monitored.Reads);
     }
 
     // ─── Error propagation ────────────────────────────────────────────────────────────────────

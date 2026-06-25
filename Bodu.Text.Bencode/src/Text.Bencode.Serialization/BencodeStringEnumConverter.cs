@@ -73,6 +73,6 @@ public sealed class BencodeStringEnumConverter
         ThrowHelper.ThrowIfNull(typeToConvert);
 
         Type converterType = typeof(EnumConverter<>).MakeGenericType(typeToConvert);
-        return (BencodeConverter)Activator.CreateInstance(converterType, new object?[] { _namingPolicy, _allowIntegerValues })!;
+        return (BencodeConverter)Activator.CreateInstance(converterType, new object?[] { _namingPolicy, _allowIntegerValues }) !;
     }
 }

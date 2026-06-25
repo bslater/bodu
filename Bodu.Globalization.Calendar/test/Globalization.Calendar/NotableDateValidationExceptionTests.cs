@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateValidationExceptionTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -22,7 +22,7 @@ public class NotableDateValidationExceptionTests
         var exception = new NotableDateValidationException();
 
         Assert.IsNotNull(exception.Diagnostics);
-        Assert.AreEqual(0, exception.Diagnostics.Count);
+        Assert.IsEmpty(exception.Diagnostics);
     }
 
     /// <summary>
@@ -34,7 +34,7 @@ public class NotableDateValidationExceptionTests
         var exception = new NotableDateValidationException("invalid document");
 
         Assert.AreEqual("invalid document", exception.Message);
-        Assert.AreEqual(0, exception.Diagnostics.Count);
+        Assert.IsEmpty(exception.Diagnostics);
     }
 
     /// <summary>
@@ -49,6 +49,6 @@ public class NotableDateValidationExceptionTests
 
         Assert.AreEqual("invalid document", exception.Message);
         Assert.AreSame(inner, exception.InnerException);
-        Assert.AreEqual(0, exception.Diagnostics.Count);
+        Assert.IsEmpty(exception.Diagnostics);
     }
 }

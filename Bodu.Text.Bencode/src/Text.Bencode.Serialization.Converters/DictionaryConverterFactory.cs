@@ -54,7 +54,7 @@ internal sealed class DictionaryConverterFactory
         _ = TryGetInfo(typeToConvert, out Type? keyType, out Type? valueType, out DictionaryKeyKind keyKind, out bool concrete);
         BencodeConverter valueConverter = options.GetConverter(valueType!);
         Type converterType = typeof(DictionaryConverter<,,>).MakeGenericType(typeToConvert, keyType!, valueType!);
-        return (BencodeConverter)Activator.CreateInstance(converterType, valueConverter, keyKind, concrete)!;
+        return (BencodeConverter)Activator.CreateInstance(converterType, valueConverter, keyKind, concrete) !;
     }
 
     /// <summary>

@@ -44,7 +44,7 @@ public abstract class CalendarDataTestsBase
         {
             IReadOnlyList<NotableDate> holidays = ResolveYear(country, 2024);
 
-            Assert.IsTrue(holidays.Count > 0, $"{country} resolved no holidays for 2024");
+            Assert.IsNotEmpty(holidays, $"{country} resolved no holidays for 2024");
         }
     }
 
@@ -90,8 +90,8 @@ public abstract class CalendarDataTestsBase
     {
         int deltaDays = Math.Abs(actual.DayNumber - expected.DayNumber);
 
-        Assert.IsTrue(
-            deltaDays <= toleranceDays,
+        Assert.IsLessThanOrEqualTo(
+            toleranceDays, deltaDays,
             $"{context}: resolved {actual}, expected within {toleranceDays} days of {expected}");
     }
 }

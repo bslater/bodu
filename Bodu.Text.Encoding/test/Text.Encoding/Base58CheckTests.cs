@@ -103,7 +103,7 @@ public sealed class Base58CheckTests
         int upper = Base58Check.GetMaxEncodedLength(payload.Length);
         string encoded = Base58Check.Encode(payload);
 
-        Assert.IsTrue(encoded.Length <= upper);
+        Assert.IsLessThanOrEqualTo(upper, encoded.Length);
     }
 
     /// <summary>
@@ -144,7 +144,7 @@ public sealed class Base58CheckTests
         string encoded = Base58Check.Encode([]);
         byte[] decoded = Base58Check.Decode(encoded.AsSpan());
 
-        Assert.AreEqual(0, decoded.Length);
+        Assert.IsEmpty(decoded);
     }
 
     /// <summary>

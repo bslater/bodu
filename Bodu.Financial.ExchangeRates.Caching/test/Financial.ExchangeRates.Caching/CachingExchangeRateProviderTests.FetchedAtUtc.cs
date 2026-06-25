@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CachingExchangeRateProviderTests.FetchedAtUtc.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -98,7 +98,7 @@ public sealed partial class CachingExchangeRateProviderTests
 
         IReadOnlyList<ExchangeRate> rates = await sut.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 6));
 
-        Assert.AreEqual(2, rates.Count);
+        Assert.HasCount(2, rates);
         Assert.IsTrue(rates.All(r => r.FetchedAtUtc == FetchedAt), "every refetched rate should carry the inner fetch instant");
     }
 
@@ -117,7 +117,7 @@ public sealed partial class CachingExchangeRateProviderTests
         _clock.Advance(TimeSpan.FromHours(2));
         IReadOnlyList<ExchangeRate> hit = await sut.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 6));
 
-        Assert.AreEqual(2, hit.Count);
+        Assert.HasCount(2, hit);
         Assert.IsTrue(hit.All(r => r.FetchedAtUtc == FetchedAt), "every cached rate should restore the inner fetch instant");
         Assert.IsTrue(hit.All(r => r.FetchedAtUtc != Now), "the cache-write instant must not leak onto the served rate");
     }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base45Tests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -68,6 +68,6 @@ public sealed partial class Base45Tests
     [TestMethod]
     public void Decode_WhenEmpty_ShouldReturnEmptyArray()
     {
-        Assert.AreEqual(0, Base45.Decode(string.Empty).Length);
+        Assert.IsEmpty(Base45.Decode(string.Empty));
     }
 }

@@ -180,7 +180,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
         byte[] first = algorithm.Key;
         byte[] second = algorithm.Key;
 
-        Assert.AreEqual(first.Length, second.Length);
+        Assert.HasCount(first.Length, second);
         Assert.AreEqual(Convert.ToHexString(first), Convert.ToHexString(second));
         Assert.AreNotSame(first, second);
     }

@@ -154,7 +154,7 @@ public sealed partial class Base16Tests
         string actual = Base16.Encode(bytes.AsSpan(), BaseFormattingOptions.InsertLineBreaks);
 
         string[] lines = actual.Split("\r\n");
-        Assert.IsTrue(lines.Length > 1, "Output should contain at least one line break.");
+        Assert.IsGreaterThan(1, lines.Length, "Output should contain at least one line break.");
         Assert.AreEqual(64, lines[0].Length);
     }
 

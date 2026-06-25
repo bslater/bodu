@@ -61,7 +61,7 @@ public partial class BencodeSerializerTests
         Assert.AreEqual("de", Encoding.Latin1.GetString(bytes));
 
         Dictionary<string, int> roundTripped = BencodeSerializer.Deserialize<Dictionary<string, int>>(bytes);
-        Assert.AreEqual(0, roundTripped.Count);
+        Assert.IsEmpty(roundTripped);
     }
 
     /// <summary>
@@ -159,7 +159,7 @@ public partial class BencodeSerializerTests
         var entries = ((IEnumerable<KeyValuePair<string, int>>)roundTripped)
             .OrderBy(e => e.Key, StringComparer.Ordinal)
             .ToList();
-        Assert.AreEqual(2, entries.Count);
+        Assert.HasCount(2, entries);
         Assert.AreEqual("a", entries[0].Key);
         Assert.AreEqual(1, entries[0].Value);
         Assert.AreEqual("b", entries[1].Key);

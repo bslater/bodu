@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CompoundValidationLevelTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -85,7 +85,7 @@ public class CompoundValidationLevelTests
         using CompoundFile file = CompoundFile.Open(new MemoryStream(bytes), options);
         byte[] payload = file.RootStorage.OpenStream("Big").ReadAllBytes();
 
-        Assert.AreEqual(200_000, payload.Length);
+        Assert.HasCount(200_000, payload);
     }
 
     /// <summary>
@@ -101,7 +101,7 @@ public class CompoundValidationLevelTests
         using CompoundFile file = CompoundFile.Open(new MemoryStream(bytes), options);
         byte[] payload = file.RootStorage.OpenStream("Doc").ReadAllBytes();
 
-        Assert.AreEqual(4000, payload.Length);
+        Assert.HasCount(4000, payload);
     }
 
     /// <summary>
@@ -138,7 +138,7 @@ public class CompoundValidationLevelTests
         byte[] bytes = BuildWithUnsortedSiblings();
 
         using (CompoundFile tolerated = CompoundFile.Open(new MemoryStream(bytes)))
-            Assert.IsTrue(tolerated.RootStorage.EnumerateStreams().Any());
+            Assert.IsNotEmpty(tolerated.RootStorage.EnumerateStreams());
 
         var options = new CompoundFileOptions { ValidationLevel = CompoundValidationLevel.Strict };
         CompoundFileFormatException ex = Assert.ThrowsExactly<CompoundFileFormatException>(() =>

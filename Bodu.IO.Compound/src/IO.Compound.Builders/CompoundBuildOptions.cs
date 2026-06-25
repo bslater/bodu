@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CompoundBuildOptions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -42,9 +42,7 @@ public struct CompoundBuildOptions
     /// <summary>
     /// Gets the effective maximum nesting depth, resolving the default when unset.
     /// </summary>
-    /// <value>
-    /// The configured <see cref="MaxDepth" /> when positive; otherwise <see cref="DefaultMaxDepth" />.
-    /// </value>
+    /// <value>The configured <see cref="MaxDepth" /> when positive; otherwise <see cref="DefaultMaxDepth" />.</value>
     internal readonly int EffectiveMaxDepth =>
         MaxDepth > 0 ? MaxDepth : DefaultMaxDepth;
 }

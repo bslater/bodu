@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IniReaderTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -91,7 +91,7 @@ public sealed class IniReaderTests
         while (await reader.ReadAsync())
             rows.Add((reader.Section, reader.Key, reader.Value));
 
-        Assert.AreEqual(4, rows.Count);
+        Assert.HasCount(4, rows);
         Assert.AreEqual(("database", "host", "localhost"), rows[1]);
     }
 

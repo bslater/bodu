@@ -24,8 +24,8 @@ public partial class CurrencyLookupServiceTests
         Assert.IsFalse(lookup.TryByCurrencyCode((CurrencyCode)(-1), out _));
         Assert.IsFalse(lookup.TryByNumericCode(99999, out _));
         Assert.IsFalse(lookup.TryBySymbol("☃", out IReadOnlyList<CurrencyInfo> bySymbol));
-        Assert.AreEqual(0, bySymbol.Count);
+        Assert.IsEmpty(bySymbol);
         Assert.IsFalse(lookup.TryByRegion("ZZ", out IReadOnlyList<CurrencyInfo> byRegion));
-        Assert.AreEqual(0, byRegion.Count);
+        Assert.IsEmpty(byRegion);
     }
 }

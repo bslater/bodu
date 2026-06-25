@@ -38,12 +38,12 @@ public sealed partial class Pkcs7PaddingTests
 
         byte[] cipherText = algorithm.Encrypt([]);
 
-        Assert.AreEqual(blockBytes, cipherText.Length,
+        Assert.HasCount(blockBytes, cipherText,
             $"PKCS7-padded empty input on {algorithmType.Name} should produce exactly one block of ciphertext.");
 
         byte[] recovered = algorithm.Decrypt(cipherText);
 
-        Assert.AreEqual(0, recovered.Length,
+        Assert.IsEmpty(recovered,
             $"Decrypting one PKCS7-padded block of empty plaintext on {algorithmType.Name} should produce an empty array.");
     }
 
@@ -65,7 +65,7 @@ public sealed partial class Pkcs7PaddingTests
         using ICryptoTransform transform = algorithm.CreateEncryptor();
         byte[] result = transform.TransformFinalBlock([], 0, 0);
 
-        Assert.AreEqual(blockBytes, result.Length,
+        Assert.HasCount(blockBytes, result,
             $"TransformFinalBlock with zero-length input under PKCS7 on {algorithmType.Name} " +
             "should produce one block of padded ciphertext.");
     }
@@ -141,7 +141,7 @@ public sealed partial class Pkcs7PaddingTests
 
         byte[] cipherText = EncryptThroughCryptoStream(algorithm, plaintext);
 
-        Assert.AreEqual(plaintext.Length + blockBytes, cipherText.Length,
+        Assert.HasCount(plaintext.Length + blockBytes, cipherText,
             $"Block-aligned plaintext under PKCS7 on {algorithmType.Name} should produce ciphertext one block longer than the plaintext.");
 
         byte[] recovered = DecryptThroughCryptoStream(algorithm, cipherText);
@@ -168,7 +168,7 @@ public sealed partial class Pkcs7PaddingTests
 
         Assert.AreEqual(0, cipherText.Length % blockBytes,
             $"PKCS7 ciphertext on {algorithmType.Name} must be block-aligned.");
-        Assert.IsTrue(cipherText.Length > plaintext.Length,
+        Assert.IsGreaterThan(plaintext.Length, cipherText.Length,
             $"Residual plaintext under PKCS7 on {algorithmType.Name} should grow to the next block boundary.");
 
         byte[] recovered = DecryptThroughCryptoStream(algorithm, cipherText);

@@ -141,7 +141,7 @@ public partial class TomlDocumentTests
         using var document = TomlDocument.Parse(string.Empty);
 
         Assert.AreEqual(TomlValueKind.Table, document.RootElement.ValueKind);
-        Assert.AreEqual(0, document.RootElement.EnumerateObject().Count());
+        Assert.IsEmpty(document.RootElement.EnumerateObject());
     }
 
     /// <summary>
@@ -153,7 +153,7 @@ public partial class TomlDocumentTests
         using var document = TomlDocument.Parse("# only a comment\n");
 
         Assert.AreEqual(TomlValueKind.Table, document.RootElement.ValueKind);
-        Assert.AreEqual(0, document.RootElement.EnumerateObject().Count());
+        Assert.IsEmpty(document.RootElement.EnumerateObject());
     }
 
     /// <summary>

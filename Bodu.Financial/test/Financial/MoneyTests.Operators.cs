@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyTests.Operators.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -129,7 +129,7 @@ public partial class MoneyTests
 
         Assert.AreEqual(1, value.CompareTo((object?)null));
         Assert.AreEqual(0, value.CompareTo((object)new Money(1m, CurrencyCode.USD)));
-        Assert.IsTrue(value.CompareTo((object)new Money(2m, CurrencyCode.USD)) < 0);
+        Assert.IsLessThan(0, value.CompareTo((object)new Money(2m, CurrencyCode.USD)));
         Assert.ThrowsExactly<ArgumentException>(() => _ = value.CompareTo((object)"not money"));
     }
 

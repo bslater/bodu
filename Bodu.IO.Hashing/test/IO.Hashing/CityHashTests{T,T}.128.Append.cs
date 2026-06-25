@@ -51,8 +51,8 @@ public partial class CityHash128Tests
         algorithm.Append(input);
         byte[] digest = algorithm.GetCurrentHash();
 
-        Assert.AreEqual(16, digest.Length);
-        Assert.IsTrue(digest.Any(b => b != 0));
+        Assert.HasCount(16, digest);
+        Assert.Contains(b => b != 0, digest);
     }
 
     /// <summary>
@@ -96,8 +96,8 @@ public partial class CityHash128Tests
         algorithm.Append(input);
         byte[] digest = algorithm.GetCurrentHash();
 
-        Assert.AreEqual(16, digest.Length);
-        Assert.IsTrue(digest.Any(b => b != 0), "Short varied input should not produce an all-zero digest.");
+        Assert.HasCount(16, digest);
+        Assert.Contains(b => b != 0, digest, "Short varied input should not produce an all-zero digest.");
     }
 
 }

@@ -181,7 +181,7 @@ public partial class MoneyBagTests
 
         var codes = bag.Select(v => v.Code.ToString()).ToList();
 
-        Assert.AreEqual(4, codes.Count);
+        Assert.HasCount(4, codes);
         Assert.AreEqual("AUD", codes[0]);
         Assert.AreEqual("EUR", codes[1]);
         Assert.AreEqual("JPY", codes[2]);
@@ -369,7 +369,7 @@ public partial class MoneyBagTests
         foreach (object? item in bag)
             items.Add(item);
 
-        Assert.AreEqual(1, items.Count);
+        Assert.HasCount(1, items);
         Assert.AreEqual(new Money(1m, CurrencyCode.USD), (Money)items[0]);
     }
 

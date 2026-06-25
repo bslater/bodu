@@ -13,9 +13,7 @@ public readonly partial struct Interval<T>
     /// <see cref="IEquatable{T}.Equals(T)" /> to every other empty <see cref="Interval{T}" /> over the same
     /// <typeparamref name="T" />.
     /// </summary>
-    /// <value>
-    /// An <see cref="Interval{T}" /> whose <see cref="IsEmpty" /> property is <see langword="true" />.
-    /// </value>
+    /// <value>An <see cref="Interval{T}" /> whose <see cref="IsEmpty" /> property is <see langword="true" />.</value>
     /// <remarks>
     /// <para>
     /// Use <see cref="Empty" /> as the neutral element of the interval set algebra: <see cref="Intersect" /> returns it

@@ -22,7 +22,7 @@ public sealed partial class IniTests
         string text = Ini.Format(doc);
 
         StringAssert.Contains(text, "key = new");
-        Assert.IsFalse(text.Contains("key = old"));
+        Assert.DoesNotContain("key = old", text);
         StringAssert.Contains(text, "# note");
     }
 
@@ -40,7 +40,7 @@ public sealed partial class IniTests
         section.SetEntry("b", "2");
         section.SetEntry("a", "1-updated");
 
-        Assert.AreEqual(2, section.Entries.Count);
+        Assert.HasCount(2, section.Entries);
         Assert.AreEqual("1-updated", section["a"]);
         Assert.AreEqual("2", section["b"]);
     }
@@ -56,7 +56,7 @@ public sealed partial class IniTests
         bool removed = doc.Sections[0].RemoveEntry("a");
 
         Assert.IsTrue(removed);
-        Assert.AreEqual(1, doc.Sections[0].Entries.Count);
+        Assert.HasCount(1, doc.Sections[0].Entries);
         Assert.IsNull(doc.Sections[0]["a"]);
     }
 
@@ -73,10 +73,10 @@ public sealed partial class IniTests
         IniSection second = doc.GetOrAddSection("server");
 
         Assert.AreSame(first, second);
-        Assert.AreEqual(1, doc.Sections.Count);
+        Assert.HasCount(1, doc.Sections);
 
         IniSection other = doc.GetOrAddSection("client");
-        Assert.AreEqual(2, doc.Sections.Count);
+        Assert.HasCount(2, doc.Sections);
         Assert.AreNotSame(first, other);
     }
 
@@ -94,10 +94,8 @@ public sealed partial class IniTests
 
         StringAssert.Contains(text, "# top of file");
         StringAssert.Contains(text, "# before host");
-        Assert.IsTrue(text.IndexOf("# top of file", StringComparison.Ordinal)
-            < text.IndexOf("[server]", StringComparison.Ordinal));
-        Assert.IsTrue(text.IndexOf("# before host", StringComparison.Ordinal)
-            < text.IndexOf("host = localhost", StringComparison.Ordinal));
+        Assert.IsLessThan(text.IndexOf("[server]", StringComparison.Ordinal), text.IndexOf("# top of file", StringComparison.Ordinal));
+        Assert.IsLessThan(text.IndexOf("host = localhost", StringComparison.Ordinal), text.IndexOf("# before host", StringComparison.Ordinal));
     }
 
     /// <summary>
@@ -135,6 +133,6 @@ public sealed partial class IniTests
 
         Assert.AreEqual("localhost", reparsed.Sections[0]["host"]);
         Assert.AreEqual("8080", reparsed.Sections[0]["port"]);
-        Assert.AreEqual(1, reparsed.Sections[0].LeadingComments.Count);
+        Assert.HasCount(1, reparsed.Sections[0].LeadingComments);
     }
 }

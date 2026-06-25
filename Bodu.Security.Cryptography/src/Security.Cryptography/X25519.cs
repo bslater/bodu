@@ -121,9 +121,7 @@ public sealed class X25519
         "X25519";
 
     /// <inheritdoc />
-    /// <value>
-    /// <see langword="null" />, because X25519 is a key agreement algorithm and produces no signatures.
-    /// </value>
+    /// <value><see langword="null" />, because X25519 is a key agreement algorithm and produces no signatures.</value>
     public override string? SignatureAlgorithm =>
         null;
 

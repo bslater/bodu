@@ -64,7 +64,7 @@ public sealed partial class Bech32Tests
     public void Decode_WhenLongerThanMaximum_ShouldThrowFormatException()
     {
         string tooLong = "an84characterslonghumanreadablepartthatcontainsthenumber1andtheexcludedcharactersbio1569pvx";
-        Assert.IsTrue(tooLong.Length > 90);
+        Assert.IsGreaterThan(90, tooLong.Length);
 
         Assert.ThrowsExactly<FormatException>(() =>
         {

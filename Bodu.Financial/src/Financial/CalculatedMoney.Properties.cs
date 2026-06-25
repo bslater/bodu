@@ -29,9 +29,7 @@ public readonly partial struct CalculatedMoney
     /// <summary>
     /// Gets the ISO 4217 alphabetic code identifying the currency, or an empty string for a default-initialised value.
     /// </summary>
-    /// <value>
-    /// The currency's ISO code, used by the settlement and diagnostic paths that need its string form.
-    /// </value>
+    /// <value>The currency's ISO code, used by the settlement and diagnostic paths that need its string form.</value>
     internal string IsoCodeOrEmpty =>
         _code == CurrencyCode.None ? string.Empty : _code.ToString();
 

@@ -60,7 +60,7 @@ public partial class TomlSerializerTests
 
         Assert.AreEqual("n", model.Name);
         Assert.IsNotNull(model.Extra);
-        Assert.AreEqual(1, model.Extra.Count);
+        Assert.HasCount(1, model.Extra);
         Assert.IsTrue(model.Extra.ContainsKey("extra"));
     }
 
@@ -74,7 +74,7 @@ public partial class TomlSerializerTests
         GetOnlyDictionaryExtensionDataModel model = TomlSerializer.Deserialize<GetOnlyDictionaryExtensionDataModel>("Name = \"n\"\nextra = 7\n");
 
         Assert.AreEqual("n", model.Name);
-        Assert.AreEqual(1, model.Extra.Count);
+        Assert.HasCount(1, model.Extra);
         Assert.IsTrue(model.Extra.ContainsKey("extra"));
     }
 

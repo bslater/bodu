@@ -71,7 +71,7 @@ public sealed partial class AggregatingExchangeRateProviderTests
 
         IReadOnlyList<ExchangeRate> rates = [.. await agg.GetRatesAsync("USD", "AUD", D1, D1)];
 
-        Assert.AreEqual(1, rates.Count);
+        Assert.HasCount(1, rates);
         Assert.AreEqual("Second", rates[0].Provider);
     }
 
@@ -85,6 +85,6 @@ public sealed partial class AggregatingExchangeRateProviderTests
 
         IReadOnlyList<ExchangeRate> rates = [.. await agg.GetRatesAsync("USD", "AUD", D1, D1)];
 
-        Assert.AreEqual(0, rates.Count);
+        Assert.IsEmpty(rates);
     }
 }

@@ -23,7 +23,7 @@ internal partial struct Ed25519Point
     /// operation sequence and memory access pattern are independent of the scalar value. The completeness of the
     /// unified addition formula makes the identity-accumulator start safe without special cases.
     /// </remarks>
-    internal static Ed25519Point ScalarMult(in Ed25519Point point, ReadOnlySpan<byte> scalar)
+    internal static Ed25519Point ScalarMult(Ed25519Point point, ReadOnlySpan<byte> scalar)
     {
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(scalar, 32);
 
@@ -58,7 +58,7 @@ internal partial struct Ed25519Point
     /// <param name="destination">The point conditionally overwritten.</param>
     /// <param name="source">The point conditionally copied.</param>
     /// <param name="condition">The move condition. Must be exactly 0 or 1.</param>
-    private static void ConditionalMove(ref Ed25519Point destination, in Ed25519Point source, ulong condition)
+    private static void ConditionalMove(ref Ed25519Point destination, Ed25519Point source, ulong condition)
     {
         Curve25519FieldElement.ConditionalMove(ref destination._x, source._x, condition);
         Curve25519FieldElement.ConditionalMove(ref destination._y, source._y, condition);

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FractionTests.Factory.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -53,6 +53,6 @@ public partial class FractionTests
         Assert.IsTrue(Fraction<int>.TryFromBigInteger(BigInteger.One, BigInteger.MinusOne * 2, out Fraction<int> result));
 
         Assert.AreEqual(new Fraction<int>(-1, 2), result);
-        Assert.IsTrue(result.Denominator > 0);
+        Assert.IsGreaterThan(0, result.Denominator);
     }
 }

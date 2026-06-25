@@ -437,7 +437,7 @@ public sealed class AmericasCalendarDataTests
     {
         DateRange year = new(new DateOnly(2024, 1, 1), new DateOnly(2024, 12, 31));
 
-        Assert.AreEqual(1, AmericasCalendarData.CreateService("BR-SP").Resolve(year, "BR-SP").Count(r => r.NotableDateId == "constitutionalist-revolution"));
+        Assert.ContainsSingle(r => r.NotableDateId == "constitutionalist-revolution", AmericasCalendarData.CreateService("BR-SP").Resolve(year, "BR-SP"));
     }
 
     /// <summary>

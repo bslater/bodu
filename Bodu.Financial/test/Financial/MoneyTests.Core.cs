@@ -317,8 +317,8 @@ public partial class MoneyTests
         var small = new Money(1m, CurrencyCode.USD);
         var large = new Money(2m, CurrencyCode.USD);
 
-        Assert.IsTrue(small.CompareTo(large) < 0);
-        Assert.IsTrue(large.CompareTo(small) > 0);
+        Assert.IsLessThan(0, small.CompareTo(large));
+        Assert.IsGreaterThan(0, large.CompareTo(small));
         Assert.AreEqual(0, small.CompareTo(new Money(1m, CurrencyCode.USD)));
     }
 
@@ -449,7 +449,7 @@ public partial class MoneyTests
     {
         Money[] shares = new Money(0.10m, CurrencyCode.USD).Allocate(3);
 
-        Assert.AreEqual(3, shares.Length);
+        Assert.HasCount(3, shares);
         Assert.AreEqual(new Money(0.04m, CurrencyCode.USD), shares[0]);
         Assert.AreEqual(new Money(0.03m, CurrencyCode.USD), shares[1]);
         Assert.AreEqual(new Money(0.03m, CurrencyCode.USD), shares[2]);

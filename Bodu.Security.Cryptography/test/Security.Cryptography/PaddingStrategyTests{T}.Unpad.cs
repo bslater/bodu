@@ -38,8 +38,8 @@ public abstract partial class PaddingStrategyTests<TPadding>
         padded[firstPaddingByteIndex] ^= 0xFF;
 
         CryptographicException ex = Assert.ThrowsExactly<CryptographicException>(() => padding.Unpad(padded, BlockSizeBits));
-        Assert.IsFalse(ex.Message.Contains("this."), "Exception message must not contain 'this.' artifact.");
-        Assert.IsFalse(ex.Message.Contains(" t "), "Exception message must not contain stray ' t ' sequence.");
+        Assert.DoesNotContain("this.", ex.Message, "Exception message must not contain 'this.' artifact.");
+        Assert.DoesNotContain(" t ", ex.Message, "Exception message must not contain stray ' t ' sequence.");
     }
 
     /// <summary>

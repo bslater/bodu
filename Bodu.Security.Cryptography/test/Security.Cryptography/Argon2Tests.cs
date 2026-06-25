@@ -221,7 +221,7 @@ public class Argon2Tests
             Repeat(0x02, 16),
             new Argon2Parameters { MemoryKiB = 64, Iterations = 1, Parallelism = 1, TagLength = 32 });
 
-        Assert.AreEqual(32, tag.Length);
+        Assert.HasCount(32, tag);
     }
 
     /// <summary>

@@ -155,7 +155,7 @@ public class ConfigurationReaderInlineCommentTests
 
         IniEntry entry = doc.Sections[0].Entries[0];
         Assert.AreEqual("value", entry.Value);
-        Assert.AreEqual(1, entry.LeadingComments.Count);
+        Assert.HasCount(1, entry.LeadingComments);
     }
 
     /// <summary>

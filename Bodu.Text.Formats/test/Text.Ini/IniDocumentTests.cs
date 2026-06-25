@@ -25,7 +25,7 @@ public sealed class IniDocumentTests
         IniDocument doc = Ini.Parse("[section]\nkey=value");
 
         Assert.IsNotNull(doc.GlobalSection);
-        Assert.AreEqual(0, doc.GlobalSection.Entries.Count);
+        Assert.IsEmpty(doc.GlobalSection.Entries);
     }
 
     /// <summary>
@@ -37,7 +37,7 @@ public sealed class IniDocumentTests
     {
         IniDocument doc = Ini.Parse("global_key=global_value\n[section]\nkey=value");
 
-        Assert.AreEqual(1, doc.GlobalSection.Entries.Count);
+        Assert.HasCount(1, doc.GlobalSection.Entries);
         Assert.AreEqual("global_key", doc.GlobalSection.Entries[0].Key);
     }
 
@@ -51,7 +51,7 @@ public sealed class IniDocumentTests
     {
         IniDocument doc = Ini.Parse("key=value");
 
-        Assert.AreEqual(0, doc.Sections.Count);
+        Assert.IsEmpty(doc.Sections);
     }
 
     /// <summary>
@@ -253,7 +253,7 @@ public sealed class IniDocumentTests
 
         doc.AddSection(new IniSection("db", Array.Empty<IniEntry>()));
 
-        Assert.AreEqual(1, doc.Sections.Count);
+        Assert.HasCount(1, doc.Sections);
     }
 
     /// <summary>
@@ -280,7 +280,7 @@ public sealed class IniDocumentTests
         doc.AddSection(new IniSection("db", Array.Empty<IniEntry>()));
 
         Assert.IsTrue(doc.RemoveSection("db"));
-        Assert.AreEqual(0, doc.Sections.Count);
+        Assert.IsEmpty(doc.Sections);
     }
 
     /// <summary>

@@ -211,7 +211,7 @@ public sealed class DotEnvDocumentTests
     {
         DotEnvDocument doc = DotEnv.Parse(string.Empty);
 
-        Assert.AreEqual(0, doc.Entries.Count);
+        Assert.IsEmpty(doc.Entries);
     }
 
     /// <summary>

@@ -1,6 +1,6 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XmlDocFormatCodeFixProvider.cs" company="Bodu Pty. Ltd.">
-//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
+// Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -97,7 +97,6 @@ public sealed class XmlDocFormatCodeFixProvider : CodeFixProvider
             // configuration. Replacing the trivia at its source position preserves correctness under all
             // configurations, including when a `#if`/`#elif`/`#else`/`#endif` block selects between
             // alternative declarations of the same member.
-
             context.RegisterCodeFix(
                 CodeAction.Create(
                     title: ActionTitle,

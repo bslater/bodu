@@ -98,6 +98,6 @@ public abstract partial class SkeinTests<TTest, TAlgorithm, TVariant>
             second = mac.ComputeHash(input);
 
         CollectionAssert.AreEqual(first, second);
-        Assert.AreEqual(reference.HashSize / 8, first.Length);
+        Assert.HasCount(reference.HashSize / 8, first);
     }
 }

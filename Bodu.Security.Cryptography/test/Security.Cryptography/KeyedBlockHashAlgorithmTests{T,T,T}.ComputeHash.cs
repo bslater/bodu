@@ -238,9 +238,9 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
             hashesByLength.Add(length, Convert.ToHexString(hash));
         }
 
-        Assert.AreEqual(
+        Assert.HasCount(
             hashesByLength.Count,
-            hashesByLength.Values.Distinct(StringComparer.Ordinal).Count(),
+            hashesByLength.Values.Distinct(StringComparer.Ordinal),
             $"[{variant}] Representative valid key lengths should produce distinct digests.");
     }
 }

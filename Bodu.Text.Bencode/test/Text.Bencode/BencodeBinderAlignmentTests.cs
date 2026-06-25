@@ -180,7 +180,7 @@ public class BencodeBinderAlignmentTests
 
         PopulateDictionaryModel model = BencodeSerializer.Deserialize<PopulateDictionaryModel>(bytes);
 
-        Assert.AreEqual(2, model.Map.Count);
+        Assert.HasCount(2, model.Map);
         Assert.AreEqual(1L, model.Map["a"]);
         Assert.AreEqual(2L, model.Map["b"]);
     }

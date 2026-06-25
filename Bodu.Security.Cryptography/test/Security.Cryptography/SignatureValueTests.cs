@@ -26,7 +26,7 @@ public sealed partial class SignatureValueTests
         Assert.AreEqual(0, signature.Length);
         Assert.IsTrue(signature.IsEmpty);
         Assert.IsTrue(signature.AsSpan().IsEmpty);
-        Assert.AreEqual(0, signature.ToArray().Length);
+        Assert.IsEmpty(signature.ToArray());
         Assert.AreEqual(string.Empty, signature.ToHexString());
         Assert.AreEqual(string.Empty, signature.ToBase64String());
         Assert.AreEqual(string.Empty, signature.ToString());

@@ -31,12 +31,12 @@ public sealed partial class NoPaddingTests
 
         byte[] cipherText = EncryptThroughCryptoStream(algorithm, []);
 
-        Assert.AreEqual(0, cipherText.Length,
+        Assert.IsEmpty(cipherText,
             $"Empty plaintext under None on {algorithmType.Name} should produce an empty ciphertext (no padding added).");
 
         byte[] recovered = DecryptThroughCryptoStream(algorithm, cipherText);
 
-        Assert.AreEqual(0, recovered.Length,
+        Assert.IsEmpty(recovered,
             $"Decrypting empty ciphertext under None on {algorithmType.Name} should recover an empty array.");
     }
 
@@ -56,7 +56,7 @@ public sealed partial class NoPaddingTests
 
         byte[] cipherText = EncryptThroughCryptoStream(algorithm, plaintext);
 
-        Assert.AreEqual(plaintext.Length, cipherText.Length,
+        Assert.HasCount(plaintext.Length, cipherText,
             $"Block-aligned plaintext under None on {algorithmType.Name} should produce ciphertext of the same length.");
 
         byte[] recovered = DecryptThroughCryptoStream(algorithm, cipherText);

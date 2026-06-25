@@ -25,7 +25,7 @@ public sealed class ShakeRemainderTests
         using Shake shake = new(outputBits: 160, securityLevel: 128);
         byte[] hash = shake.ComputeHash(input);
 
-        Assert.AreEqual(20, hash.Length);
-        Assert.IsTrue(hash.Any(b => b != 0));
+        Assert.HasCount(20, hash);
+        Assert.Contains(b => b != 0, hash);
     }
 }

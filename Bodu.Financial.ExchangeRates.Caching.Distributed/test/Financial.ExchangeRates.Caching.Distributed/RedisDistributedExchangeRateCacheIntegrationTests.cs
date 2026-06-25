@@ -64,7 +64,7 @@ public sealed class RedisDistributedExchangeRateCacheIntegrationTests
             Assert.AreEqual(ExchangeRateCacheWriteStatus.Stored, status);
 
             IReadOnlyList<CachedExchangeRate> rows = cache.GetRates(Pair, Duration, now);
-            Assert.AreEqual(1, rows.Count);
+            Assert.HasCount(1, rows);
             Assert.AreEqual(0.5m, rows[0].Rate);
             Assert.IsTrue(cache.GetCoverage(Pair, Duration, now).Contains(date, date));
         }
@@ -111,7 +111,7 @@ public sealed class RedisDistributedExchangeRateCacheIntegrationTests
             await Task.WhenAll(writes);
 
             IReadOnlyList<CachedExchangeRate> rows = cacheB.GetRates(Pair, Duration, now);
-            Assert.AreEqual(1, rows.Count, "exactly one merged row survives, never a torn or duplicated set");
+            Assert.HasCount(1, rows, "exactly one merged row survives, never a torn or duplicated set");
             Assert.IsTrue(rows[0].Rate == 0.5000m || rows[0].Rate == 0.6000m, "the surviving rate is one writer's, not a mix");
             Assert.IsTrue(cacheB.GetCoverage(Pair, Duration, now).Contains(date, date), "coverage is present with its row, never recorded without it");
         }

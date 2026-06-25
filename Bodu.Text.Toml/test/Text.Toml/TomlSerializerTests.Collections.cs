@@ -61,7 +61,7 @@ public partial class TomlSerializerTests
         Assert.AreEqual("Numbers = []\n", text);
 
         ListModel roundTripped = TomlSerializer.Deserialize<ListModel>(text);
-        Assert.AreEqual(0, roundTripped.Numbers.Count);
+        Assert.IsEmpty(roundTripped.Numbers);
     }
 
     /// <summary>
@@ -77,7 +77,7 @@ public partial class TomlSerializerTests
         Assert.AreEqual("Matrix = [[1, 2], [3]]\n", text);
 
         NestedListModel roundTripped = TomlSerializer.Deserialize<NestedListModel>(text);
-        Assert.AreEqual(2, roundTripped.Matrix.Count);
+        Assert.HasCount(2, roundTripped.Matrix);
         CollectionAssert.AreEqual(new[] { 1, 2 }, roundTripped.Matrix[0]);
         CollectionAssert.AreEqual(new[] { 3 }, roundTripped.Matrix[1]);
     }
@@ -143,7 +143,7 @@ public partial class TomlSerializerTests
 
         HashSetModel roundTripped = TomlSerializer.Deserialize<HashSetModel>(text);
         Assert.IsInstanceOfType<HashSet<int>>(roundTripped.Numbers);
-        Assert.IsTrue(roundTripped.Numbers.Contains(5));
+        Assert.Contains(5, roundTripped.Numbers);
     }
 
     /// <summary>
@@ -288,7 +288,7 @@ public partial class TomlSerializerTests
     {
         StackModel model = TomlSerializer.Deserialize<StackModel>("Items = [1, 2, 3]\n");
 
-        Assert.AreEqual(3, model.Items.Count);
+        Assert.HasCount(3, model.Items);
         Assert.AreEqual(3, model.Items.Pop());
         Assert.AreEqual(2, model.Items.Pop());
         Assert.AreEqual(1, model.Items.Pop());

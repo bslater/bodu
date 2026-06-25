@@ -22,7 +22,7 @@ public sealed partial class Base32Tests
         });
 
         byte[] crockfordResult = Base32.Decode("01234567", Base32Variant.Crockford);
-        Assert.AreEqual(5, crockfordResult.Length);
+        Assert.HasCount(5, crockfordResult);
     }
 
     /// <summary>

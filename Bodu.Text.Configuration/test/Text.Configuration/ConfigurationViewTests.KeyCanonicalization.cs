@@ -56,7 +56,7 @@ public partial class ConfigurationViewTests
         ConfigurationView view = ResolveWithMapping("[*]\nformat.indent.size = 4\n", ConfigurationKeyMapping.Identity);
 
         // Stored canonical key keeps the dotted form under identity mapping.
-        Assert.IsTrue(view.Keys.Contains("format.indent.size"));
+        Assert.Contains("format.indent.size", view.Keys);
 
         Assert.AreEqual("4", view["format.indent.size"]);
         Assert.AreEqual("4", view["format:indent:size"]);

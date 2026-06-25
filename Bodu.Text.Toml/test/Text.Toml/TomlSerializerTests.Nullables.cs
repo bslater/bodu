@@ -37,7 +37,7 @@ public partial class TomlSerializerTests
         NullableValueModel roundTripped = TomlSerializer.Deserialize<NullableValueModel>(TomlSerializer.Serialize(original));
 
         Assert.AreEqual(42, roundTripped.Number);
-        Assert.AreEqual(false, roundTripped.Flag);
+        Assert.IsFalse(roundTripped.Flag);
         Assert.AreEqual(new DateOnly(2026, 1, 1), roundTripped.When);
     }
 
@@ -86,7 +86,7 @@ public partial class TomlSerializerTests
         NullableValueModel model = TomlSerializer.Deserialize<NullableValueModel>("Number = 1\nFlag = true\nWhen = 2026-12-31\n");
 
         Assert.AreEqual(1, model.Number);
-        Assert.AreEqual(true, model.Flag);
+        Assert.IsTrue(model.Flag);
         Assert.AreEqual(new DateOnly(2026, 12, 31), model.When);
     }
 

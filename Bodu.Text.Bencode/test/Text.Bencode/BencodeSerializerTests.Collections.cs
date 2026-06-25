@@ -49,7 +49,7 @@ public partial class BencodeSerializerTests
         Assert.AreEqual("le", Encoding.Latin1.GetString(bytes));
 
         List<int> roundTripped = BencodeSerializer.Deserialize<List<int>>(bytes);
-        Assert.AreEqual(0, roundTripped.Count);
+        Assert.IsEmpty(roundTripped);
     }
 
     /// <summary>
@@ -81,7 +81,7 @@ public partial class BencodeSerializerTests
         CollectionAssert.AreEqual(expected, bytes);
 
         List<byte[]> roundTripped = BencodeSerializer.Deserialize<List<byte[]>>(bytes);
-        Assert.AreEqual(2, roundTripped.Count);
+        Assert.HasCount(2, roundTripped);
         CollectionAssert.AreEqual(value[0], roundTripped[0]);
         CollectionAssert.AreEqual(value[1], roundTripped[1]);
     }
@@ -118,7 +118,7 @@ public partial class BencodeSerializerTests
         Assert.AreEqual("ld2:Idi1e5:Label1:aed2:Idi2e5:Label1:bee", Encoding.Latin1.GetString(bytes));
 
         List<Item> roundTripped = BencodeSerializer.Deserialize<List<Item>>(bytes);
-        Assert.AreEqual(2, roundTripped.Count);
+        Assert.HasCount(2, roundTripped);
         Assert.AreEqual(1, roundTripped[0].Id);
         Assert.AreEqual("a", roundTripped[0].Label);
         Assert.AreEqual(2, roundTripped[1].Id);
@@ -138,7 +138,7 @@ public partial class BencodeSerializerTests
         Assert.AreEqual("lli1ei2eeli3eee", Encoding.Latin1.GetString(bytes));
 
         List<List<int>> roundTripped = BencodeSerializer.Deserialize<List<List<int>>>(bytes);
-        Assert.AreEqual(2, roundTripped.Count);
+        Assert.HasCount(2, roundTripped);
         CollectionAssert.AreEqual(value[0], roundTripped[0]);
         CollectionAssert.AreEqual(value[1], roundTripped[1]);
     }
@@ -271,7 +271,7 @@ public partial class BencodeSerializerTests
 
         Stack<int> stack = BencodeSerializer.Deserialize<Stack<int>>(bytes);
 
-        Assert.AreEqual(3, stack.Count);
+        Assert.HasCount(3, stack);
         Assert.AreEqual(3, stack.Pop());
         Assert.AreEqual(2, stack.Pop());
         Assert.AreEqual(1, stack.Pop());

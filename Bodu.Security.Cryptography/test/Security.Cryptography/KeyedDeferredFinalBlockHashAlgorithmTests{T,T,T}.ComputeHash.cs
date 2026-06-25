@@ -131,7 +131,7 @@ public abstract partial class KeyedDeferredFinalBlockHashAlgorithmTests<TTest, T
         byte[] digest = sut.ComputeHash([]);
 
         Assert.IsNotNull(digest);
-        Assert.AreEqual(sut.HashSize / 8, digest.Length);
+        Assert.HasCount(sut.HashSize / 8, digest);
     }
 
     /// <summary>

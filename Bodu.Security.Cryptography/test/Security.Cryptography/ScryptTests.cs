@@ -153,7 +153,7 @@ public class ScryptTests
     {
         byte[] derived = Scrypt.DeriveKey(Ascii("password"), Ascii("salt"), 1024, 8, 1, 32);
 
-        Assert.AreEqual(32, derived.Length);
+        Assert.HasCount(32, derived);
     }
 
     /// <summary>

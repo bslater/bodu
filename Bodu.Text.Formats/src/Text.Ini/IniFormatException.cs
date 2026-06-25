@@ -76,4 +76,12 @@ public sealed class IniFormatException
         : base(message, lineNumber)
     {
     }
+
+    private IniFormatException(string message, int lineNumber, int? offset = null) : base(message, lineNumber, offset)
+    {
+    }
+
+    private IniFormatException(string message, int lineNumber, int columnNumber, int? offset) : base(message, lineNumber, columnNumber, offset)
+    {
+    }
 }

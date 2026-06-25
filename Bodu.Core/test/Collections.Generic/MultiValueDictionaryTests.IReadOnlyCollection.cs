@@ -39,7 +39,7 @@ public partial class MultiValueDictionaryTests
 
         IReadOnlyCollection<KeyValuePair<string, IReadOnlyList<int>>> collection = mvd;
 
-        Assert.AreEqual(2, collection.Count);
+        Assert.HasCount(2, collection);
     }
 
 }

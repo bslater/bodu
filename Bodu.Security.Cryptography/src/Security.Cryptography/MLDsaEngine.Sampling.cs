@@ -126,7 +126,7 @@ internal static partial class MLDsaEngine
         nonceBytes[1] = (byte)(nonce >> 8);
 
         Span<byte> packed = stackalloc byte[32 * 20];
-        Span<byte> stream = packed[..(32 * parameters.Gamma1Bits)];
+        Span<byte> stream = packed[.. (32 * parameters.Gamma1Bits)];
         KeccakSponge.Shake256(rhoDoublePrime, nonceBytes, stream);
 
         BitUnpackSigned(parameters.Gamma1Bits, parameters.Gamma1, stream, destination);

@@ -71,6 +71,7 @@ public sealed partial class Threefish1024Cipher
     /// schedule.
     /// </remarks>
     private const int R0 = 24;
+
     /// <summary>Threefish-1024 word-rotation constants <c>R0</c>–<c>R3</c> used by the mix function.</summary>
     /// <remarks>
     /// The spec-defined rotation constants for Threefish-1024 are declared as named <c>const int</c>s so the JIT can
@@ -79,6 +80,7 @@ public sealed partial class Threefish1024Cipher
     /// schedule.
     /// </remarks>
     private const int R1 = 13;
+
     /// <summary>Threefish-1024 word-rotation constants <c>R0</c>–<c>R3</c> used by the mix function.</summary>
     /// <remarks>
     /// The spec-defined rotation constants for Threefish-1024 are declared as named <c>const int</c>s so the JIT can
@@ -87,6 +89,7 @@ public sealed partial class Threefish1024Cipher
     /// schedule.
     /// </remarks>
     private const int R2 = 8;
+
     /// <summary>Threefish-1024 word-rotation constants <c>R0</c>–<c>R3</c> used by the mix function.</summary>
     /// <remarks>
     /// The spec-defined rotation constants for Threefish-1024 are declared as named <c>const int</c>s so the JIT can
@@ -109,7 +112,16 @@ public sealed partial class Threefish1024Cipher
     private const int R7 = 37;
 
     /// <summary>Threefish-1024 word-rotation constants <c>R8</c>–<c>R11</c> used by the mix function.</summary>
-    private const int R8 = 38, R9 = 19, R10 = 10, R11 = 55;
+    private const int R8 = 38;
+
+    /// <summary>Threefish-1024 word-rotation constants <c>R8</c>–<c>R11</c> used by the mix function.</summary>
+    private const int R9 = 19;
+
+    /// <summary>Threefish-1024 word-rotation constants <c>R8</c>–<c>R11</c> used by the mix function.</summary>
+    private const int R10 = 10;
+
+    /// <summary>Threefish-1024 word-rotation constants <c>R8</c>–<c>R11</c> used by the mix function.</summary>
+    private const int R11 = 55;
 
     /// <summary>Threefish-1024 word-rotation constants <c>R12</c>–<c>R15</c> used by the mix function.</summary>
     private const int R12 = 49, R13 = 18, R14 = 23, R15 = 52;

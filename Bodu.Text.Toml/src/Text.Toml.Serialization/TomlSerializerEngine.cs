@@ -71,6 +71,6 @@ internal static class TomlSerializerEngine
         if (!reader.Read())
             throw new TomlSerializationException(string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Op_Invalid_UnexpectedEndOfInput, typeof(T)));
 
-        return (T)converter.ReadAsObject(ref reader, typeof(T), options)!;
+        return (T)converter.ReadAsObject(ref reader, typeof(T), options) !;
     }
 }

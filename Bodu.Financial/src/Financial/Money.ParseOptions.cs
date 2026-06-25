@@ -188,7 +188,7 @@ public readonly partial struct Money
     /// <param name="c">The character to test.</param>
     /// <returns><see langword="true" /> when <paramref name="c" /> is in [A-Za-z].</returns>
     private static bool IsAsciiLetter(char c) =>
-        c is (>= 'A' and <= 'Z') or (>= 'a' and <= 'z');
+        c is(>= 'A' and <= 'Z') or(>= 'a' and <= 'z');
 
     /// <summary>
     /// Determines whether a character can form part of a currency symbol (neither digit, letter, nor white space).
@@ -196,5 +196,5 @@ public readonly partial struct Money
     /// <param name="c">The character to test.</param>
     /// <returns><see langword="true" /> when <paramref name="c" /> is a symbol character.</returns>
     private static bool IsSymbolChar(char c) =>
-        !char.IsDigit(c) && !char.IsWhiteSpace(c) && c is not ('-' or '+' or '.' or ',' or '(' or ')');
+        !char.IsDigit(c) && !char.IsWhiteSpace(c) && c is not('-' or '+' or '.' or ',' or '(' or ')');
 }

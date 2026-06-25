@@ -443,7 +443,7 @@ public sealed partial class Blake3
         uint[] words = new uint[16];
 
         for (int i = 0; i < 16; i++)
-            words[i] = BinaryPrimitives.ReadUInt32LittleEndian(padded[(i * 4)..]);
+            words[i] = BinaryPrimitives.ReadUInt32LittleEndian(padded[(i * 4) ..]);
 
         return words;
     }

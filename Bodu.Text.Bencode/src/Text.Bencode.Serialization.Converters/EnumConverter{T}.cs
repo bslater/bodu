@@ -63,7 +63,7 @@ internal sealed class EnumConverter<T>
             string name = field.GetCustomAttribute<BencodeStringEnumMemberNameAttribute>()?.Name
                 ?? namingPolicy?.ConvertName(field.Name)
                 ?? field.Name;
-            var value = (T)field.GetValue(null)!;
+            var value = (T)field.GetValue(null) !;
 
             _nameToValue[name] = value;
             if (!_valueToName.ContainsKey(value))

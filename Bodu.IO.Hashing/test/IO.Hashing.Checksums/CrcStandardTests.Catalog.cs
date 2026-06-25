@@ -19,7 +19,7 @@ public partial class CrcStandardTests
         IReadOnlyList<CrcStandard> all = CrcStandard.All;
 
         Assert.IsNotNull(all);
-        Assert.AreEqual(Enum.GetValues<CrcStandards>().Length, all.Count);
+        Assert.HasCount(Enum.GetValues<CrcStandards>().Length, all);
     }
 
     /// <summary>

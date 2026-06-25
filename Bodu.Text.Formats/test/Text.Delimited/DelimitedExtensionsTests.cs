@@ -24,8 +24,8 @@ public sealed class DelimitedExtensionsTests
         DelimitedDocument fromExtension = CanonicalSource.AsSpan().ParseDelimited();
         DelimitedDocument fromStatic = Delimited.Parse(CanonicalSource);
 
-        Assert.AreEqual(fromStatic.Rows.Count, fromExtension.Rows.Count);
-        Assert.AreEqual(fromStatic.Headers.Count, fromExtension.Headers.Count);
+        Assert.HasCount(fromStatic.Rows.Count, fromExtension.Rows);
+        Assert.HasCount(fromStatic.Headers.Count, fromExtension.Headers);
     }
 
     /// <summary>
@@ -38,7 +38,7 @@ public sealed class DelimitedExtensionsTests
         DelimitedDocument fromExtension = CanonicalSource.ParseDelimited();
         DelimitedDocument fromStatic = Delimited.Parse(CanonicalSource);
 
-        Assert.AreEqual(fromStatic.Rows.Count, fromExtension.Rows.Count);
+        Assert.HasCount(fromStatic.Rows.Count, fromExtension.Rows);
     }
 
     /// <summary>
@@ -54,7 +54,7 @@ public sealed class DelimitedExtensionsTests
         DelimitedDocument fromExtension = tsv.ParseDelimited(options);
         DelimitedDocument fromStatic = Delimited.Parse(tsv, options);
 
-        Assert.AreEqual(fromStatic.Rows.Count, fromExtension.Rows.Count);
+        Assert.HasCount(fromStatic.Rows.Count, fromExtension.Rows);
     }
 
     /// <summary>
@@ -68,7 +68,7 @@ public sealed class DelimitedExtensionsTests
 
         Assert.IsTrue(success);
         Assert.IsNotNull(document);
-        Assert.AreEqual(2, document.Rows.Count);
+        Assert.HasCount(2, document.Rows);
     }
 
     /// <summary>
@@ -83,7 +83,7 @@ public sealed class DelimitedExtensionsTests
         bool staticSuccess = Delimited.TryParse(CanonicalSource, out DelimitedDocument? staticDocument);
 
         Assert.AreEqual(staticSuccess, extSuccess);
-        Assert.AreEqual(staticDocument!.Rows.Count, extDocument!.Rows.Count);
+        Assert.HasCount(staticDocument!.Rows.Count, extDocument!.Rows);
     }
 
     /// <summary>
@@ -128,8 +128,8 @@ public sealed class DelimitedExtensionsTests
         string emitted = first.FormatDelimited();
         DelimitedDocument second = emitted.ParseDelimited();
 
-        Assert.AreEqual(first.Rows.Count, second.Rows.Count);
-        Assert.AreEqual(first.Headers.Count, second.Headers.Count);
+        Assert.HasCount(first.Rows.Count, second.Rows);
+        Assert.HasCount(first.Headers.Count, second.Headers);
     }
 
     /// <summary>
@@ -154,7 +154,7 @@ public sealed class DelimitedExtensionsTests
     {
         DelimitedDocument doc = CanonicalSource.AsSpan().ParseDelimited(DelimitedParseOptions.Default);
 
-        Assert.AreEqual(2, doc.Rows.Count);
+        Assert.HasCount(2, doc.Rows);
     }
 
     /// <summary>

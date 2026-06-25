@@ -41,8 +41,8 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
         algorithm.GenerateTweak();
 
         byte[] tweak = algorithm.Tweak;
-        Assert.AreEqual(size / 8, tweak.Length);
-        Assert.IsTrue(tweak.Any(b => b != 0), "Generated tweak should not be all zero.");
+        Assert.HasCount(size / 8, tweak);
+        Assert.Contains(b => b != 0, tweak, "Generated tweak should not be all zero.");
     }
 
     /// <summary>
@@ -70,8 +70,8 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
         using TAlgorithm algorithm = CreateAlgorithm();
 
         byte[] tweak = algorithm.Tweak;
-        Assert.AreEqual(algorithm.TweakSize / 8, tweak.Length);
-        Assert.IsTrue(tweak.Any(b => b != 0), "Generated tweak should not be all zero.");
+        Assert.HasCount(algorithm.TweakSize / 8, tweak);
+        Assert.Contains(b => b != 0, tweak, "Generated tweak should not be all zero.");
     }
 
     /// <summary>
@@ -143,9 +143,9 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
         });
 
         Assert.IsFalse(string.IsNullOrEmpty(ex.Message), "Expected non-empty exception message.");
-        Assert.IsFalse(ex.Message.Contains("TweakSchedule"),
+        Assert.DoesNotContain("TweakSchedule", ex.Message,
             "Exception message must not reference the unrelated 'TweakSchedule' symbol.");
-        Assert.IsFalse(ex.Message.Contains("this."),
+        Assert.DoesNotContain("this.", ex.Message,
             "Exception message must not contain stray 'this.' refactor artefacts.");
     }
 

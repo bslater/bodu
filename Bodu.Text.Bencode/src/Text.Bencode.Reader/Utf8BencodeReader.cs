@@ -182,7 +182,7 @@ public ref struct Utf8BencodeReader
     /// </exception>
     public readonly int CopyString(Span<byte> destination)
     {
-        if (_tokenType is not (BencodeTokenType.ByteString or BencodeTokenType.PropertyName))
+        if (_tokenType is not(BencodeTokenType.ByteString or BencodeTokenType.PropertyName))
             throw new InvalidOperationException();
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(destination, _valueLength);
 
@@ -207,7 +207,7 @@ public ref struct Utf8BencodeReader
     /// </remarks>
     public readonly int CopyString(Span<char> destination)
     {
-        if (_tokenType is not (BencodeTokenType.ByteString or BencodeTokenType.PropertyName))
+        if (_tokenType is not(BencodeTokenType.ByteString or BencodeTokenType.PropertyName))
             throw new InvalidOperationException();
 
         int charCount = Encoding.UTF8.GetCharCount(ValueSpan);
@@ -402,7 +402,7 @@ public ref struct Utf8BencodeReader
         if (_tokenType == BencodeTokenType.PropertyName)
             _ = Read();
 
-        if (_tokenType is not (BencodeTokenType.StartList or BencodeTokenType.StartDictionary))
+        if (_tokenType is not(BencodeTokenType.StartList or BencodeTokenType.StartDictionary))
             return;
 
         int depth = _frames.Count;
@@ -533,7 +533,7 @@ public ref struct Utf8BencodeReader
     /// </exception>
     public readonly bool ValueTextEquals(ReadOnlySpan<char> text)
     {
-        if (_tokenType is not (BencodeTokenType.ByteString or BencodeTokenType.PropertyName))
+        if (_tokenType is not(BencodeTokenType.ByteString or BencodeTokenType.PropertyName))
             throw new InvalidOperationException();
 
         int byteCount = Encoding.UTF8.GetByteCount(text);

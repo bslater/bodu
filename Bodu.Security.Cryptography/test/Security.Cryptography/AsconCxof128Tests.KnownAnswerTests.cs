@@ -52,7 +52,7 @@ public partial class AsconCxof128Tests
         cxof.Absorb(message);
         byte[] actual = cxof.GetHash(outputLength);
 
-        Assert.AreEqual(outputLength, actual.Length,
+        Assert.HasCount(outputLength, actual,
             $"GetHash must return {outputLength} bytes for customize={customizationLength}, message={messageLength}.");
     }
 

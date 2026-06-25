@@ -36,8 +36,8 @@ public sealed partial class TwofishTests
             using ICryptoTransform _ = algorithm.CreateEncryptor(algorithm.Key, badIv);
         });
 
-        Assert.IsTrue(
-            ex.Message.Contains(expectedBitLength.ToString()),
+        Assert.Contains(
+            expectedBitLength.ToString(), ex.Message,
             $"Expected IV bit-length {expectedBitLength} in message but got: {ex.Message}");
     }
 
@@ -66,8 +66,8 @@ public sealed partial class TwofishTests
             using ICryptoTransform _ = algorithm.CreateDecryptor(algorithm.Key, badIv);
         });
 
-        Assert.IsTrue(
-            ex.Message.Contains(expectedBitLength.ToString()),
+        Assert.Contains(
+            expectedBitLength.ToString(), ex.Message,
             $"Expected IV bit-length {expectedBitLength} in message but got: {ex.Message}");
     }
 

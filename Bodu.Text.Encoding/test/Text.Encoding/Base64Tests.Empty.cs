@@ -21,7 +21,7 @@ public sealed partial class Base64Tests
     {
         byte[] actual = Base64.Decode(string.Empty, variant);
 
-        Assert.AreEqual(0, actual.Length);
+        Assert.IsEmpty(actual);
     }
     /// <summary>
     /// Verifies that encoding an empty byte array returns <see cref="string.Empty" /> for every variant.

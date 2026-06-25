@@ -52,7 +52,7 @@ public partial class RbaExchangeRateWorkbookParserTests
         RbaExchangeRateTable table = ParseSample();
 
         Assert.IsTrue(table.Series.All(s => s.CurrencyCode.Length == 3));
-        Assert.IsFalse(table.Series.Any(s => s.SeriesId == "FXRTWI"));
+        Assert.DoesNotContain(s => s.SeriesId == "FXRTWI", table.Series);
     }
 
     /// <summary>
@@ -105,7 +105,7 @@ public partial class RbaExchangeRateWorkbookParserTests
         var firstRow = new DateOnly(2023, 1, 3);
         var rates = ParseSample().EnumerateRates().ToList();
 
-        Assert.IsTrue(rates.Any(r => r.To == CurrencyCode.USD && r.Date == firstRow));
-        Assert.IsFalse(rates.Any(r => r.To == CurrencyCode.AED && r.Date == firstRow));
+        Assert.Contains(r => r.To == CurrencyCode.USD && r.Date == firstRow, rates);
+        Assert.DoesNotContain(r => r.To == CurrencyCode.AED && r.Date == firstRow, rates);
     }
 }

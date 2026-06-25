@@ -50,7 +50,7 @@ public sealed partial class Base85Tests
         int worstCase = Base85.GetMaxEncodedLength(zeros.Length, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
         int actualLength = Base85.GetEncodedLength(zeros, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
 
-        Assert.IsTrue(actualLength < worstCase, "Test premise: shortcut output must be shorter than worst case.");
+        Assert.IsLessThan(worstCase, actualLength, "Test premise: shortcut output must be shorter than worst case.");
 
         char[] destination = new char[actualLength];
 

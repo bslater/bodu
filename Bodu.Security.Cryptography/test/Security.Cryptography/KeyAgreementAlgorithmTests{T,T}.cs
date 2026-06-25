@@ -47,7 +47,7 @@ public abstract class KeyAgreementAlgorithmTests<TTest, TAlgorithm>
         byte[] aliceShared = DeriveSharedSecret(alice, ExportPublicKey(bob));
         byte[] bobShared = DeriveSharedSecret(bob, ExportPublicKey(alice));
 
-        Assert.AreEqual(SharedSecretSizeBytes, aliceShared.Length);
+        Assert.HasCount(SharedSecretSizeBytes, aliceShared);
         CollectionAssert.AreEqual(aliceShared, bobShared);
     }
 

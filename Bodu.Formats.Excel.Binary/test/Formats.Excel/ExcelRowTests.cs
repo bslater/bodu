@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExcelRowTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -23,7 +23,7 @@ public class ExcelRowTests
         ExcelRow row = new(7, cells);
 
         Assert.AreEqual(7, row.RowIndex);
-        Assert.AreEqual(2, row.Cells.Count);
+        Assert.HasCount(2, row.Cells);
         Assert.AreEqual(0, row.Cells[0].ColumnIndex);
         Assert.AreEqual(1, row.Cells[1].ColumnIndex);
     }
@@ -36,6 +36,6 @@ public class ExcelRowTests
     {
         ExcelRow row = new(0, []);
 
-        Assert.AreEqual(0, row.Cells.Count);
+        Assert.IsEmpty(row.Cells);
     }
 }

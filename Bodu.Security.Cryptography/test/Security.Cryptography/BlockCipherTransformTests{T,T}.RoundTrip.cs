@@ -81,7 +81,7 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
             recovered = decryptor.TransformFinalBlock(ciphertext, 0, ciphertext.Length);
         }
 
-        Assert.AreEqual(0, recovered.Length);
+        Assert.IsEmpty(recovered);
     }
 
     /// <summary>

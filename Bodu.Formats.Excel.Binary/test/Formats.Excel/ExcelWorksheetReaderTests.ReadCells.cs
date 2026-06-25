@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExcelWorksheetReaderTests.ReadCells.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -34,6 +34,6 @@ public partial class ExcelWorksheetReaderTests
     {
         using ExcelWorksheetReader reader = Biff8TestWorkbook.OpenWorksheetReader();
 
-        Assert.AreEqual(0, reader.ReadCells().Count());
+        Assert.IsEmpty(reader.ReadCells());
     }
 }

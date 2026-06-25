@@ -20,8 +20,8 @@ public partial class CurrencyInfoTests
         Assert.AreEqual("", info.Symbol);
         Assert.AreEqual("", info.InternationalSymbol);
         Assert.AreEqual("", info.NativeName);
-        Assert.AreEqual(0, info.RegionCodes.Count);
-        Assert.AreEqual(0, info.AlternativeSymbols.Count);
+        Assert.IsEmpty(info.RegionCodes);
+        Assert.IsEmpty(info.AlternativeSymbols);
     }
 
     /// <summary>

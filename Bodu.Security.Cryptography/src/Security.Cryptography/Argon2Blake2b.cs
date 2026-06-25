@@ -153,7 +153,7 @@ internal static class Argon2Blake2b
         }
 
         // V_{r+1} = H^(T - 32*r)(V_r), sized to the remaining output bytes.
-        Hash(v, output[(r * 32)..]);
+        Hash(v, output[(r * 32) ..]);
         CryptographyHelper.Clear(v);
     }
 

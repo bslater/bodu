@@ -23,6 +23,18 @@ public sealed class PluginMissingAttributeException
         AssemblyName = assemblyName;
     }
 
+    public PluginMissingAttributeException(string message) : base(message)
+    {
+    }
+
+    public PluginMissingAttributeException(string message, Exception innerException) : base(message, innerException)
+    {
+    }
+
+    public PluginMissingAttributeException() : base()
+    {
+    }
+
     /// <summary>
     /// Gets the name of the assembly missing the attribute.
     /// </summary>

@@ -33,7 +33,7 @@ public sealed class SmokeTests
         string formatted = Delimited.Format(original);
         DelimitedDocument roundTripped = Delimited.Parse(formatted);
 
-        Assert.AreEqual(2, roundTripped.Rows.Count);
+        Assert.HasCount(2, roundTripped.Rows);
         Assert.AreEqual("Alice", roundTripped.Rows[0]["name"]);
         Assert.AreEqual("25", roundTripped.Rows[1]["age"]);
         Assert.AreEqual("London", roundTripped.Rows[1]["city"]);

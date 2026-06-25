@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AuthenticationTagTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -24,7 +24,7 @@ public sealed partial class AuthenticationTagTests
         Assert.AreEqual(0, tag.Length);
         Assert.IsTrue(tag.IsEmpty);
         Assert.IsTrue(tag.AsSpan().IsEmpty);
-        Assert.AreEqual(0, tag.ToArray().Length);
+        Assert.IsEmpty(tag.ToArray());
         Assert.AreEqual(string.Empty, tag.ToString());
     }
 

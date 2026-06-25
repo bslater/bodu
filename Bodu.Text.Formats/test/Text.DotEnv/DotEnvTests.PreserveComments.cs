@@ -21,7 +21,7 @@ public sealed partial class DotEnvTests
             "API_KEY=secret\n");
 
         DotEnvEntry entry = doc.Entries[0];
-        Assert.AreEqual(1, entry.LeadingComments.Count);
+        Assert.HasCount(1, entry.LeadingComments);
         Assert.AreEqual(" API key for production", entry.LeadingComments[0].Text);
         Assert.AreEqual('#', entry.LeadingComments[0].Prefix);
     }
@@ -58,7 +58,7 @@ public sealed partial class DotEnvTests
             "API_KEY=secret\n",
             options);
 
-        Assert.AreEqual(0, doc.Entries[0].LeadingComments.Count);
+        Assert.IsEmpty(doc.Entries[0].LeadingComments);
     }
 
     /// <summary>

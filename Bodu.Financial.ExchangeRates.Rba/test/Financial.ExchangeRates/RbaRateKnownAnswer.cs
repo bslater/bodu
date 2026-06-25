@@ -71,9 +71,7 @@ public sealed record RbaRateKnownAnswer
     /// <summary>
     /// Gets the RBA units label of the quote currency.
     /// </summary>
-    /// <value>
-    /// The RBA currency label, resolved to an ISO code through the provider's alias map at lookup time.
-    /// </value>
+    /// <value>The RBA currency label, resolved to an ISO code through the provider's alias map at lookup time.</value>
     public string Currency { get; }
 
     /// <summary>
