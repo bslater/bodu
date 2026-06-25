@@ -273,6 +273,11 @@ internal sealed partial class YamlParser
     private bool ScanSimpleKeyHasColon()
     {
         var c = Peek();
+
+        // An explicit key indicator '?' introduces a mapping entry even without a colon on the same line.
+        if (c == (byte)'?' && IsBlankOrBreakOrEnd(PeekAt(1)))
+            return true;
+
         if (c == (byte)'"' || c == (byte)'\'')
         {
             if (!SkipQuotedOnLine(c))
