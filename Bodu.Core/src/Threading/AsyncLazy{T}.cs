@@ -180,7 +180,12 @@ public sealed class AsyncLazy<T>
         if (_factoryRunning.Value)
             throw new InvalidOperationException(ResourceStrings.Op_Invalid_AsyncLazyReentrant);
 
+        // Returning the cached shared initialization task is the entire purpose of AsyncLazy<T>; the task is owned by
+        // this instance and the type uses no JoinableTaskFactory, so the foreign-task deadlock VSTHRD003 guards against
+        // cannot arise.
+#pragma warning disable VSTHRD003 // Avoid awaiting foreign Tasks
         return _instance.Value;
+#pragma warning restore VSTHRD003
     }
 
     /// <summary>

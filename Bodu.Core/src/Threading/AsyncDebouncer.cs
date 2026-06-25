@@ -229,7 +229,12 @@ public sealed partial class AsyncDebouncer : IDisposable
                 if (_disposed)
                     return;
 
+                // These are the in-flight callback run tasks owned by this debouncer, drained via Task.WhenAll below;
+                // they are not work scheduled elsewhere and the type uses no JoinableTaskFactory, so the foreign-task
+                // deadlock VSTHRD003 guards against cannot arise.
+#pragma warning disable VSTHRD003 // Avoid awaiting foreign Tasks
                 tasks = _active.Where(r => r.Task is not null).Select(r => r.Task!).ToArray();
+#pragma warning restore VSTHRD003
                 if (tasks.Length == 0)
                     return;
             }

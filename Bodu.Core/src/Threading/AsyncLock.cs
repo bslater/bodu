@@ -198,7 +198,11 @@ public sealed partial class AsyncLock : IDisposable
             owner.CancelWaiter(waiter, token);
         }, (this, node, cancellationToken)))
         {
+            // The waiter's task is completed by Release/Dispose on this same lock, not work scheduled elsewhere, and the
+            // type uses no JoinableTaskFactory, so the foreign-task deadlock VSTHRD003 guards against cannot arise.
+#pragma warning disable VSTHRD003 // Avoid awaiting foreign Tasks
             Releaser releaser = await node.Value.Task.ConfigureAwait(false);
+#pragma warning restore VSTHRD003
 
             // If cancellation raced with the ownership transfer, honor the cancellation and return the lock.
             if (cancellationToken.IsCancellationRequested)
