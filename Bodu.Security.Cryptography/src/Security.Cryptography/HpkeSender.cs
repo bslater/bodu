@@ -21,6 +21,10 @@ namespace Bodu.Security.Cryptography;
 /// same order. Dispose the instance to zero the derived key material.
 /// </para>
 /// <para>For one-off encryption of a single message, prefer the single-shot <see cref="Hpke" /> façade.</para>
+/// <para>
+/// Like the rest of the library, this implementation offers best-effort side-channel resistance and has not been
+/// independently audited.
+/// </para>
 /// </remarks>
 public sealed class HpkeSender : IDisposable
 {

@@ -49,8 +49,11 @@ These types expose **only** the raw byte encodings defined by their specificatio
 | A quantum-resistant key encapsulation (KEM) | ML-KEM (`MLKem512/768/1024`) | [ML-KEM post-quantum key encapsulation](ml-kem.md) |
 | Quantum-resistant signatures | ML-DSA (`MLDsa44/65/87`) | [ML-DSA post-quantum signatures](ml-dsa.md) |
 | Long-lived confidentiality against future quantum attack | X25519 **and** ML-KEM, combined | [hybrid note](ml-kem.md#hybrid-with-x25519) |
+| Encrypt a message *to* a public key (hybrid PKE) | <xref:Bodu.Security.Cryptography.Hpke> over X25519 | [Hybrid public key encryption with HPKE](hpke.md) |
 
 A KEM (ML-KEM) is the post-quantum stand-in for Diffie-Hellman key agreement: instead of both parties contributing a public key to derive a shared secret, one party encapsulates a fresh secret *to* the other's public key. Use it where you would otherwise have used X25519 to bootstrap a symmetric session.
+
+These types are the building blocks, not a complete encryption scheme. To encrypt a payload directly to a recipient's public key, <xref:Bodu.Security.Cryptography.Hpke> (RFC 9180) composes the X25519 KEM, [HKDF](hkdf.md), and an AEAD into the standardized Hybrid Public Key Encryption construction — prefer it over assembling key agreement, key derivation, and a cipher by hand. See [Hybrid public key encryption with HPKE](hpke.md).
 
 ## Disposal and lifecycle
 

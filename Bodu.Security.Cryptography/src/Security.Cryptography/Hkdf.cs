@@ -26,7 +26,13 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// The surface mirrors the BCL's <see cref="System.Security.Cryptography.HKDF" /> so the two are interchangeable. The
 /// supported hash algorithms are <see cref="HashAlgorithmName.SHA1" />, <see cref="HashAlgorithmName.SHA256" />,
-/// <see cref="HashAlgorithmName.SHA384" />, and <see cref="HashAlgorithmName.SHA512" />.
+/// <see cref="HashAlgorithmName.SHA384" />, and <see cref="HashAlgorithmName.SHA512" />. Prefer the platform
+/// <see cref="System.Security.Cryptography.HKDF" /> where it covers your need; this type exists to give the rest of
+/// the library a self-contained HKDF surface (for example, the HPKE labeled KDF).
+/// </para>
+/// <para>
+/// Like the rest of the library, this implementation offers best-effort side-channel resistance and has not been
+/// independently audited.
 /// </para>
 /// </remarks>
 /// <example>

@@ -168,6 +168,11 @@ The library also exposes `Whirlpool`, `Blake2b`, `Blake2s`, `Blake3`, `Skein256`
 <div class="bodu-cards">
 
 <div class="bodu-card">
+  <h3><a href="hkdf.md">Using HKDF</a></h3>
+  <p><code>Hkdf</code> (RFC 5869) — extract-and-expand key derivation for high-entropy inputs such as a shared secret or KEM output.</p>
+</div>
+
+<div class="bodu-card">
   <h3><a href="argon2.md">Using Argon2</a></h3>
   <p><code>Argon2id</code> / <code>Argon2i</code> / <code>Argon2d</code> (RFC 9106) — memory-hard password hashing and key derivation, with PHC encoded-hash <code>Hash</code> / <code>Verify</code>.</p>
 </div>
@@ -206,6 +211,11 @@ The library also exposes `Whirlpool`, `Blake2b`, `Blake2s`, `Blake3`, `Skein256`
 <div class="bodu-card">
   <h3><a href="ml-dsa.md">ML-DSA post-quantum signatures</a></h3>
   <p><code>MLDsa44</code> / <code>MLDsa65</code> / <code>MLDsa87</code> (FIPS 204) — lattice-based digital signatures resistant to quantum attack.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="hpke.md">Hybrid public key encryption with HPKE</a></h3>
+  <p><code>Hpke</code> (RFC 9180) — encrypt to a public key by composing the X25519 KEM, HKDF, and an AEAD; single-shot and session APIs across all four modes.</p>
 </div>
 
 </div>

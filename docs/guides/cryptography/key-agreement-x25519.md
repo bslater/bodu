@@ -76,7 +76,7 @@ restored.ImportPrivateKey(storedPrivate);          // public key is re-derived
 
 ## Derive the secret, then run a KDF — do not use it directly
 
-The shared secret is a **raw curve point coordinate**, not uniform key material. Never use it directly as an AES or ChaCha20 key. Pass it through a key derivation function (KDF) — such as HKDF, or <xref:Bodu.Security.Cryptography.Blake2b> in keyed mode, or a memory-hard KDF like [Argon2](argon2.md) — to produce a uniformly random, context-bound symmetric key.
+The shared secret is a **raw curve point coordinate**, not uniform key material. Never use it directly as an AES or ChaCha20 key. Pass it through a key derivation function (KDF) — such as [HKDF](hkdf.md), or <xref:Bodu.Security.Cryptography.Blake2b> in keyed mode, or a memory-hard KDF like [Argon2](argon2.md) — to produce a uniformly random, context-bound symmetric key.
 
 A salt and an application-specific `info` / context string bind the derived key to its purpose and prevent the same secret from yielding the same key in two unrelated contexts.
 

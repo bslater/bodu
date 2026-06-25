@@ -24,6 +24,10 @@ namespace Bodu.Security.Cryptography;
 /// Recipient and sender private keys are supplied as <see cref="X25519" /> instances so the caller controls their
 /// lifetime; public keys are passed as raw 32-byte spans, which is their on-the-wire form.
 /// </para>
+/// <para>
+/// Like the rest of the library, this implementation offers best-effort side-channel resistance and has not been
+/// independently audited.
+/// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">
