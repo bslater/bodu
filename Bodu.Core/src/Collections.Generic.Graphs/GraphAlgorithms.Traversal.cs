@@ -21,6 +21,17 @@ public static partial class GraphAlgorithms
     /// <paramref name="graph" /> or <paramref name="source" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException"><paramref name="source" /> is not in the graph.</exception>
+    /// <example>
+    ///<![CDATA[
+    /// var graph = new Graph<int>(GraphKind.Directed);
+    /// graph.AddEdge(1, 2);
+    /// graph.AddEdge(1, 3);
+    /// graph.AddEdge(2, 4);
+    ///
+    /// // Breadth-first visits the source, then its neighbors, then theirs: 1, 2, 3, 4.
+    /// var order = GraphAlgorithms.BreadthFirstSearch(graph, 1).ToList();
+    ///]]>
+    /// </example>
     public static IEnumerable<T> BreadthFirstSearch<T>(IReadOnlyGraph<T> graph, T source)
         where T : notnull
     {
@@ -42,6 +53,17 @@ public static partial class GraphAlgorithms
     /// <paramref name="graph" /> or <paramref name="source" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException"><paramref name="source" /> is not in the graph.</exception>
+    /// <example>
+    ///<![CDATA[
+    /// var graph = new Graph<int>(GraphKind.Directed);
+    /// graph.AddEdge(1, 2);
+    /// graph.AddEdge(1, 3);
+    /// graph.AddEdge(2, 4);
+    ///
+    /// // Depth-first dives down one branch before backtracking, e.g. 1, 3, 2, 4.
+    /// var order = GraphAlgorithms.DepthFirstSearch(graph, 1).ToList();
+    ///]]>
+    /// </example>
     public static IEnumerable<T> DepthFirstSearch<T>(IReadOnlyGraph<T> graph, T source)
         where T : notnull
     {

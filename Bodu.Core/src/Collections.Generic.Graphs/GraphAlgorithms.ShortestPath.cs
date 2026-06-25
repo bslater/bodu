@@ -29,6 +29,17 @@ public static partial class GraphAlgorithms
     /// This is a convenience wrapper over <see cref="TryShortestPath{T}(IReadOnlyWeightedGraph{T, double}, T, T)" />;
     /// use that overload when the path distance or a reachability flag is also needed.
     /// </remarks>
+    /// <example>
+    ///<![CDATA[
+    /// var graph = new Graph<string>(GraphKind.Directed);
+    /// graph.AddEdge("A", "B", 1);
+    /// graph.AddEdge("B", "C", 2);
+    /// graph.AddEdge("A", "C", 5);
+    ///
+    /// // Cheapest route A -> B -> C (total 3) beats the direct A -> C (5).
+    /// var path = GraphAlgorithms.ShortestPath(graph, "A", "C"); // [A, B, C]
+    ///]]>
+    /// </example>
     public static IReadOnlyList<T> ShortestPath<T>(IReadOnlyWeightedGraph<T, double> graph, T source, T target)
         where T : notnull =>
         TryShortestPath(graph, source, target).Path;
@@ -49,6 +60,16 @@ public static partial class GraphAlgorithms
     /// <exception cref="ArgumentException">
     /// <paramref name="source" /> or <paramref name="target" /> is not in the graph.
     /// </exception>
+    /// <example>
+    ///<![CDATA[
+    /// var graph = new Graph<string>(GraphKind.Directed);
+    /// graph.AddEdge("A", "B", 1);
+    /// graph.AddVertex("Z");   // present but unreachable from A
+    ///
+    /// ShortestPathResult<string> result = GraphAlgorithms.TryShortestPath(graph, "A", "Z");
+    /// // result.Found is false, result.Distance is double.PositiveInfinity, result.Path is empty
+    ///]]>
+    /// </example>
     public static ShortestPathResult<T> TryShortestPath<T>(IReadOnlyWeightedGraph<T, double> graph, T source, T target)
         where T : notnull
     {
@@ -91,6 +112,16 @@ public static partial class GraphAlgorithms
     /// <paramref name="graph" /> or <paramref name="source" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException"><paramref name="source" /> is not in the graph.</exception>
+    /// <example>
+    ///<![CDATA[
+    /// var graph = new Graph<string>(GraphKind.Directed);
+    /// graph.AddEdge("A", "B", 1);
+    /// graph.AddEdge("B", "C", 2);
+    ///
+    /// // Distance from A to every reachable vertex: { A: 0, B: 1, C: 3 }.
+    /// IReadOnlyDictionary<string, double> distances = GraphAlgorithms.ShortestPathLengths(graph, "A");
+    ///]]>
+    /// </example>
     public static IReadOnlyDictionary<T, double> ShortestPathLengths<T>(IReadOnlyWeightedGraph<T, double> graph, T source)
         where T : notnull
     {
