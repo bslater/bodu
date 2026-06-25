@@ -1,15 +1,15 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="LinkedDictionaryTests.CopyTo.cs" company="Bodu Pty. Ltd.">
+// <copyright file="SequencedDictionaryTests.CopyTo.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Collections.Generic;
 
-public partial class LinkedDictionaryTests
+public partial class SequencedDictionaryTests
 {
     /// <summary>
-    /// Verifies that <see cref="LinkedDictionary{TKey, TValue}.CopyTo" /> copies entries into the array in iteration order.
+    /// Verifies that <see cref="SequencedDictionary{TKey, TValue}.CopyTo" /> copies entries into the array in iteration order.
     /// </summary>
     [TestMethod]
     public void CopyTo_WhenArrayIsLargeEnough_ShouldCopyEntriesInOrder()
@@ -30,7 +30,7 @@ public partial class LinkedDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="LinkedDictionary{TKey, TValue}.CopyTo" /> honors a non-zero starting index.
+    /// Verifies that <see cref="SequencedDictionary{TKey, TValue}.CopyTo" /> honors a non-zero starting index.
     /// </summary>
     [TestMethod]
     public void CopyTo_WhenArrayIndexIsNonZero_ShouldCopyFromIndex()
@@ -45,7 +45,7 @@ public partial class LinkedDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="LinkedDictionary{TKey, TValue}.CopyTo" /> throws when the destination array is <see langword="null" />.
+    /// Verifies that <see cref="SequencedDictionary{TKey, TValue}.CopyTo" /> throws when the destination array is <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void CopyTo_WhenArrayIsNull_ShouldThrowExactly()
@@ -59,7 +59,7 @@ public partial class LinkedDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="LinkedDictionary{TKey, TValue}.CopyTo" /> throws when the array is too small for the entries.
+    /// Verifies that <see cref="SequencedDictionary{TKey, TValue}.CopyTo" /> throws when the array is too small for the entries.
     /// </summary>
     [TestMethod]
     public void CopyTo_WhenArrayTooSmall_ShouldThrowExactly()

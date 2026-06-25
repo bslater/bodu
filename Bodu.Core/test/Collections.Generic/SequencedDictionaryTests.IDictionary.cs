@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="LinkedDictionaryTests.IDictionary.cs" company="Bodu Pty. Ltd.">
+// <copyright file="SequencedDictionaryTests.IDictionary.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -8,7 +8,7 @@ using System.Collections;
 
 namespace Bodu.Collections.Generic;
 
-public partial class LinkedDictionaryTests
+public partial class SequencedDictionaryTests
 {
     /// <summary>
     /// Verifies that the non-generic <see cref="IDictionary" /> enumerator yields entries in iteration order.
@@ -32,7 +32,7 @@ public partial class LinkedDictionaryTests
     [TestMethod]
     public void IDictionary_WhenAddCalled_ShouldAppendEntry()
     {
-        IDictionary dictionary = new LinkedDictionary<string, int>();
+        IDictionary dictionary = new SequencedDictionary<string, int>();
 
         dictionary.Add("a", 1);
 
@@ -46,7 +46,7 @@ public partial class LinkedDictionaryTests
     [TestMethod]
     public void IDictionary_WhenKeyOfWrongType_ShouldThrowExactly()
     {
-        IDictionary dictionary = new LinkedDictionary<string, int>();
+        IDictionary dictionary = new SequencedDictionary<string, int>();
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {

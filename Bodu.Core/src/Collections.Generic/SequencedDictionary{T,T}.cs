@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="LinkedDictionary{T,T}.cs" company="Bodu Pty. Ltd.">
+// <copyright file="SequencedDictionary{T,T}.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -16,7 +16,7 @@ namespace Bodu.Collections.Generic;
 /// <typeparam name="TValue">Specifies the type of values in the dictionary.</typeparam>
 /// <remarks>
 /// <para>
-/// <see cref="LinkedDictionary{TKey, TValue}" /> is the .NET analogue of Java's <c>LinkedHashMap</c>: a hash-based
+/// <see cref="SequencedDictionary{TKey, TValue}" /> is the .NET analogue of Java's <c>LinkedHashMap</c>: a hash-based
 /// dictionary that additionally maintains a doubly linked list across its entries so that enumeration follows a stable,
 /// predictable order. Unlike an index-based ordered dictionary, it does not expose positional insertion or reordering —
 /// it only preserves a traversal order and adds end-access operations.
@@ -51,14 +51,14 @@ namespace Bodu.Collections.Generic;
 /// <see cref="System.Collections.Generic.IEqualityComparer{T}" />.
 /// </para>
 /// <para>
-/// <see cref="LinkedDictionary{TKey, TValue}" /> is not thread-safe. In access-order mode reads mutate the iteration
+/// <see cref="SequencedDictionary{TKey, TValue}" /> is not thread-safe. In access-order mode reads mutate the iteration
 /// order, so concurrent reads and writes require external synchronization.
 /// </para>
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
 /// // Insertion-order dictionary: enumeration follows the order keys were added.
-/// var ordered = new LinkedDictionary<string, int>();
+/// var ordered = new SequencedDictionary<string, int>();
 /// ordered.Add("A", 1);
 /// ordered.Add("B", 2);
 /// ordered.Add("C", 3);
@@ -67,7 +67,7 @@ namespace Bodu.Collections.Generic;
 ///     Console.WriteLine($"{kvp.Key} = {kvp.Value}"); // A, B, C
 ///
 /// // Access-order dictionary: a lookup moves the entry to the end.
-/// var lru = new LinkedDictionary<string, int>(accessOrder: true);
+/// var lru = new SequencedDictionary<string, int>(accessOrder: true);
 /// lru.Add("A", 1);
 /// lru.Add("B", 2);
 /// _ = lru["A"];           // "A" is now most-recently-used.
@@ -77,8 +77,8 @@ namespace Bodu.Collections.Generic;
 /// </example>
 /// </remarks>
 [DebuggerDisplay("Count: {Count}, AccessOrder: {_accessOrder}")]
-[DebuggerTypeProxy(typeof(LinkedDictionaryDebugView<,>))]
-public partial class LinkedDictionary<TKey, TValue>
+[DebuggerTypeProxy(typeof(SequencedDictionaryDebugView<,>))]
+public partial class SequencedDictionary<TKey, TValue>
     where TKey : notnull
 {
     /// <summary>The equality comparer used for key identity and hash-table lookup.</summary>
@@ -107,34 +107,34 @@ public partial class LinkedDictionary<TKey, TValue>
     private int _version;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="LinkedDictionary{TKey, TValue}" /> class that is empty, uses
+    /// Initializes a new instance of the <see cref="SequencedDictionary{TKey, TValue}" /> class that is empty, uses
     /// insertion ordering, and uses the default key comparer.
     /// </summary>
-    public LinkedDictionary()
+    public SequencedDictionary()
         : this(0, false, null) { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="LinkedDictionary{TKey, TValue}" /> class that is empty, uses the
+    /// Initializes a new instance of the <see cref="SequencedDictionary{TKey, TValue}" /> class that is empty, uses the
     /// specified ordering mode, and uses the default key comparer.
     /// </summary>
     /// <param name="accessOrder">
     /// <see langword="true" /> to move an entry to the end of the iteration order whenever it is read or its value is
     /// updated through the indexer; <see langword="false" /> to preserve insertion order.
     /// </param>
-    public LinkedDictionary(bool accessOrder)
+    public SequencedDictionary(bool accessOrder)
         : this(0, accessOrder, null) { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="LinkedDictionary{TKey, TValue}" /> class that is empty, uses
+    /// Initializes a new instance of the <see cref="SequencedDictionary{TKey, TValue}" /> class that is empty, uses
     /// insertion ordering, and has the specified initial capacity.
     /// </summary>
     /// <param name="capacity">The initial number of entries the internal hash table can hold without resizing.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is less than zero.</exception>
-    public LinkedDictionary(int capacity)
+    public SequencedDictionary(int capacity)
         : this(capacity, false, null) { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="LinkedDictionary{TKey, TValue}" /> class that is empty, uses the
+    /// Initializes a new instance of the <see cref="SequencedDictionary{TKey, TValue}" /> class that is empty, uses the
     /// specified ordering mode, and has the specified initial capacity.
     /// </summary>
     /// <param name="capacity">The initial number of entries the internal hash table can hold without resizing.</param>
@@ -143,21 +143,21 @@ public partial class LinkedDictionary<TKey, TValue>
     /// updated through the indexer; <see langword="false" /> to preserve insertion order.
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is less than zero.</exception>
-    public LinkedDictionary(int capacity, bool accessOrder)
+    public SequencedDictionary(int capacity, bool accessOrder)
         : this(capacity, accessOrder, null) { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="LinkedDictionary{TKey, TValue}" /> class that is empty, uses
+    /// Initializes a new instance of the <see cref="SequencedDictionary{TKey, TValue}" /> class that is empty, uses
     /// insertion ordering, and uses the specified key comparer.
     /// </summary>
     /// <param name="comparer">
     /// The equality comparer to use for keys, or <see langword="null" /> to use the default comparer.
     /// </param>
-    public LinkedDictionary(IEqualityComparer<TKey>? comparer)
+    public SequencedDictionary(IEqualityComparer<TKey>? comparer)
         : this(0, false, comparer) { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="LinkedDictionary{TKey, TValue}" /> class that is empty, uses
+    /// Initializes a new instance of the <see cref="SequencedDictionary{TKey, TValue}" /> class that is empty, uses
     /// insertion ordering, and has the specified initial capacity and key comparer.
     /// </summary>
     /// <param name="capacity">The initial number of entries the internal hash table can hold without resizing.</param>
@@ -165,11 +165,11 @@ public partial class LinkedDictionary<TKey, TValue>
     /// The equality comparer to use for keys, or <see langword="null" /> to use the default comparer.
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is less than zero.</exception>
-    public LinkedDictionary(int capacity, IEqualityComparer<TKey>? comparer)
+    public SequencedDictionary(int capacity, IEqualityComparer<TKey>? comparer)
         : this(capacity, false, comparer) { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="LinkedDictionary{TKey, TValue}" /> class that is empty and has the
+    /// Initializes a new instance of the <see cref="SequencedDictionary{TKey, TValue}" /> class that is empty and has the
     /// specified initial capacity, ordering mode, and key comparer.
     /// </summary>
     /// <param name="capacity">The initial number of entries the internal hash table can hold without resizing.</param>
@@ -181,7 +181,7 @@ public partial class LinkedDictionary<TKey, TValue>
     /// The equality comparer to use for keys, or <see langword="null" /> to use the default comparer.
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is less than zero.</exception>
-    public LinkedDictionary(int capacity, bool accessOrder, IEqualityComparer<TKey>? comparer)
+    public SequencedDictionary(int capacity, bool accessOrder, IEqualityComparer<TKey>? comparer)
     {
         ThrowHelper.ThrowIfLessThan(capacity, 0);
 
@@ -194,17 +194,17 @@ public partial class LinkedDictionary<TKey, TValue>
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="LinkedDictionary{TKey, TValue}" /> class with elements copied from
+    /// Initializes a new instance of the <see cref="SequencedDictionary{TKey, TValue}" /> class with elements copied from
     /// the specified sequence, using insertion ordering and the default key comparer.
     /// </summary>
     /// <param name="collection">The sequence of key/value pairs to copy. Must not be <see langword="null" />.</param>
     /// <exception cref="ArgumentNullException"><paramref name="collection" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException"><paramref name="collection" /> contains one or more duplicate keys.</exception>
-    public LinkedDictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection)
+    public SequencedDictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection)
         : this(collection, false, null) { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="LinkedDictionary{TKey, TValue}" /> class with elements copied from
+    /// Initializes a new instance of the <see cref="SequencedDictionary{TKey, TValue}" /> class with elements copied from
     /// the specified sequence, using insertion ordering and the specified key comparer.
     /// </summary>
     /// <param name="collection">The sequence of key/value pairs to copy. Must not be <see langword="null" />.</param>
@@ -213,11 +213,11 @@ public partial class LinkedDictionary<TKey, TValue>
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="collection" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException"><paramref name="collection" /> contains one or more duplicate keys.</exception>
-    public LinkedDictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection, IEqualityComparer<TKey>? comparer)
+    public SequencedDictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection, IEqualityComparer<TKey>? comparer)
         : this(collection, false, comparer) { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="LinkedDictionary{TKey, TValue}" /> class with elements copied from
+    /// Initializes a new instance of the <see cref="SequencedDictionary{TKey, TValue}" /> class with elements copied from
     /// the specified sequence, using the specified ordering mode and key comparer.
     /// </summary>
     /// <param name="collection">The sequence of key/value pairs to copy. Must not be <see langword="null" />.</param>
@@ -230,7 +230,7 @@ public partial class LinkedDictionary<TKey, TValue>
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="collection" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException"><paramref name="collection" /> contains one or more duplicate keys.</exception>
-    public LinkedDictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection, bool accessOrder, IEqualityComparer<TKey>? comparer)
+    public SequencedDictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection, bool accessOrder, IEqualityComparer<TKey>? comparer)
         : this(0, accessOrder, comparer)
     {
         ThrowHelper.ThrowIfNull(collection);

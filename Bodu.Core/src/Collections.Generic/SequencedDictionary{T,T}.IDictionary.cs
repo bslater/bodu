@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="LinkedDictionary{T,T}.IDictionary.cs" company="Bodu Pty. Ltd.">
+// <copyright file="SequencedDictionary{T,T}.IDictionary.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -9,7 +9,7 @@ using System.Globalization;
 
 namespace Bodu.Collections.Generic;
 
-public partial class LinkedDictionary<TKey, TValue> :
+public partial class SequencedDictionary<TKey, TValue> :
     System.Collections.Generic.IDictionary<TKey, TValue>,
     System.Collections.Generic.IReadOnlyDictionary<TKey, TValue>,
     System.Collections.IDictionary

@@ -1,15 +1,15 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="LinkedDictionaryTests.Clear.cs" company="Bodu Pty. Ltd.">
+// <copyright file="SequencedDictionaryTests.Clear.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Collections.Generic;
 
-public partial class LinkedDictionaryTests
+public partial class SequencedDictionaryTests
 {
     /// <summary>
-    /// Verifies that <see cref="LinkedDictionary{TKey, TValue}.Clear" /> removes all entries and resets the count.
+    /// Verifies that <see cref="SequencedDictionary{TKey, TValue}.Clear" /> removes all entries and resets the count.
     /// </summary>
     [TestMethod]
     public void Clear_WhenPopulated_ShouldRemoveAllEntries()

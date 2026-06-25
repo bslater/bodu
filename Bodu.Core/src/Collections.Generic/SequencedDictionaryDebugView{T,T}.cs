@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="LinkedDictionaryDebugView{T,T}.cs" company="Bodu Pty. Ltd.">
+// <copyright file="SequencedDictionaryDebugView{T,T}.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -9,7 +9,7 @@ using System.Diagnostics;
 namespace Bodu.Collections.Generic;
 
 /// <summary>
-/// Provides a debugger view for <see cref="LinkedDictionary{TKey, TValue}" /> that displays the dictionary's key/value
+/// Provides a debugger view for <see cref="SequencedDictionary{TKey, TValue}" /> that displays the dictionary's key/value
 /// pairs, in iteration order, directly in the debugger.
 /// </summary>
 /// <typeparam name="TKey">The type of keys in the dictionary.</typeparam>
@@ -18,19 +18,19 @@ namespace Bodu.Collections.Generic;
 /// This type is intended to be used as a debugger proxy (e.g., via <c>[DebuggerTypeProxy]</c>) so that the dictionary's
 /// contents appear as a flat list in the watch/locals window.
 /// </remarks>
-internal sealed class LinkedDictionaryDebugView<TKey, TValue>
+internal sealed class SequencedDictionaryDebugView<TKey, TValue>
     where TKey : notnull
 {
     /// <summary>The dictionary whose contents are surfaced to the debugger.</summary>
-    private readonly LinkedDictionary<TKey, TValue> _dictionary;
+    private readonly SequencedDictionary<TKey, TValue> _dictionary;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="LinkedDictionaryDebugView{TKey, TValue}" /> class for the specified
+    /// Initializes a new instance of the <see cref="SequencedDictionaryDebugView{TKey, TValue}" /> class for the specified
     /// <paramref name="dictionary" />.
     /// </summary>
     /// <param name="dictionary">The dictionary to expose in the debugger view.</param>
     /// <exception cref="ArgumentNullException"><paramref name="dictionary" /> is <see langword="null" />.</exception>
-    public LinkedDictionaryDebugView(LinkedDictionary<TKey, TValue> dictionary)
+    public SequencedDictionaryDebugView(SequencedDictionary<TKey, TValue> dictionary)
     {
         ThrowHelper.ThrowIfNull(dictionary);
         _dictionary = dictionary;

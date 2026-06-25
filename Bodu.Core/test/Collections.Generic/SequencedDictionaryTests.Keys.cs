@@ -1,15 +1,15 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="LinkedDictionaryTests.Keys.cs" company="Bodu Pty. Ltd.">
+// <copyright file="SequencedDictionaryTests.Keys.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Collections.Generic;
 
-public partial class LinkedDictionaryTests
+public partial class SequencedDictionaryTests
 {
     /// <summary>
-    /// Verifies that <see cref="LinkedDictionary{TKey, TValue}.Keys" /> enumerates keys in iteration order.
+    /// Verifies that <see cref="SequencedDictionary{TKey, TValue}.Keys" /> enumerates keys in iteration order.
     /// </summary>
     [TestMethod]
     public void Keys_WhenEnumerated_ShouldYieldKeysInOrder()
@@ -20,7 +20,7 @@ public partial class LinkedDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="LinkedDictionary{TKey, TValue}.Keys" /> returns the same cached instance on repeated reads.
+    /// Verifies that <see cref="SequencedDictionary{TKey, TValue}.Keys" /> returns the same cached instance on repeated reads.
     /// </summary>
     [TestMethod]
     public void Keys_WhenAccessedRepeatedly_ShouldReturnCachedInstance()

@@ -1,12 +1,12 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="LinkedDictionaryTests.Remove.cs" company="Bodu Pty. Ltd.">
+// <copyright file="SequencedDictionaryTests.Remove.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Collections.Generic;
 
-public partial class LinkedDictionaryTests
+public partial class SequencedDictionaryTests
 {
     /// <summary>
     /// Verifies that removing an existing key removes it from both the store and the iteration order, and returns <see langword="true" />.

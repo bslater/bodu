@@ -1,12 +1,12 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="LinkedDictionaryTests.Ordering.cs" company="Bodu Pty. Ltd.">
+// <copyright file="SequencedDictionaryTests.Ordering.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Collections.Generic;
 
-public partial class LinkedDictionaryTests
+public partial class SequencedDictionaryTests
 {
     /// <summary>
     /// Verifies that, in insertion-order mode, enumeration order remains stable across value updates and reads.
@@ -29,7 +29,7 @@ public partial class LinkedDictionaryTests
     [TestMethod]
     public void Ordering_WhenAccessOrderAndKeyRead_ShouldMoveEntryToEnd()
     {
-        var dictionary = new LinkedDictionary<string, int>(accessOrder: true)
+        var dictionary = new SequencedDictionary<string, int>(accessOrder: true)
         {
             ["a"] = 1,
             ["b"] = 2,
@@ -47,7 +47,7 @@ public partial class LinkedDictionaryTests
     [TestMethod]
     public void Ordering_WhenAccessOrderAndValueUpdated_ShouldMoveEntryToEnd()
     {
-        var dictionary = new LinkedDictionary<string, int>(accessOrder: true)
+        var dictionary = new SequencedDictionary<string, int>(accessOrder: true)
         {
             ["a"] = 1,
             ["b"] = 2,
@@ -65,7 +65,7 @@ public partial class LinkedDictionaryTests
     [TestMethod]
     public void Ordering_WhenAccessOrderAndTailRead_ShouldLeaveOrderUnchanged()
     {
-        var dictionary = new LinkedDictionary<string, int>(accessOrder: true)
+        var dictionary = new SequencedDictionary<string, int>(accessOrder: true)
         {
             ["a"] = 1,
             ["b"] = 2,
@@ -83,7 +83,7 @@ public partial class LinkedDictionaryTests
     [TestMethod]
     public void Ordering_WhenAccessOrderUsedAsLruCache_ShouldExposeLeastRecentlyUsedAsFirst()
     {
-        var dictionary = new LinkedDictionary<string, int>(accessOrder: true)
+        var dictionary = new SequencedDictionary<string, int>(accessOrder: true)
         {
             ["a"] = 1,
             ["b"] = 2,

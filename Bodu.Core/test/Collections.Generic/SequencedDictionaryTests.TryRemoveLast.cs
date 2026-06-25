@@ -1,15 +1,15 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="LinkedDictionaryTests.TryRemoveLast.cs" company="Bodu Pty. Ltd.">
+// <copyright file="SequencedDictionaryTests.TryRemoveLast.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Collections.Generic;
 
-public partial class LinkedDictionaryTests
+public partial class SequencedDictionaryTests
 {
     /// <summary>
-    /// Verifies that <see cref="LinkedDictionary{TKey, TValue}.TryRemoveLast" /> removes and returns the tail entry.
+    /// Verifies that <see cref="SequencedDictionary{TKey, TValue}.TryRemoveLast" /> removes and returns the tail entry.
     /// </summary>
     [TestMethod]
     public void TryRemoveLast_WhenPopulated_ShouldRemoveAndReturnTailEntry()
@@ -25,12 +25,12 @@ public partial class LinkedDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="LinkedDictionary{TKey, TValue}.TryRemoveLast" /> returns <see langword="false" /> when the dictionary is empty.
+    /// Verifies that <see cref="SequencedDictionary{TKey, TValue}.TryRemoveLast" /> returns <see langword="false" /> when the dictionary is empty.
     /// </summary>
     [TestMethod]
     public void TryRemoveLast_WhenEmpty_ShouldReturnFalse()
     {
-        var dictionary = new LinkedDictionary<string, int>();
+        var dictionary = new SequencedDictionary<string, int>();
 
         bool removed = dictionary.TryRemoveLast(out KeyValuePair<string, int> entry);
 

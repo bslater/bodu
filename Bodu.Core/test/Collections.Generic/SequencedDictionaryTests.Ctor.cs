@@ -1,12 +1,12 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="LinkedDictionaryTests.Ctor.cs" company="Bodu Pty. Ltd.">
+// <copyright file="SequencedDictionaryTests.Ctor.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Collections.Generic;
 
-public partial class LinkedDictionaryTests
+public partial class SequencedDictionaryTests
 {
     /// <summary>
     /// Verifies that the parameterless constructor creates an empty, insertion-order dictionary.
@@ -14,7 +14,7 @@ public partial class LinkedDictionaryTests
     [TestMethod]
     public void Ctor_WhenParameterless_ShouldCreateEmptyInsertionOrderDictionary()
     {
-        var dictionary = new LinkedDictionary<string, int>();
+        var dictionary = new SequencedDictionary<string, int>();
 
         Assert.AreEqual(0, dictionary.Count);
         Assert.IsFalse(dictionary.AccessOrder);
@@ -28,7 +28,7 @@ public partial class LinkedDictionaryTests
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            _ = new LinkedDictionary<string, int>(-1);
+            _ = new SequencedDictionary<string, int>(-1);
         });
     }
 
@@ -38,18 +38,18 @@ public partial class LinkedDictionaryTests
     [TestMethod]
     public void Ctor_WhenCapacityIsZero_ShouldCreateEmptyDictionary()
     {
-        var dictionary = new LinkedDictionary<string, int>(0);
+        var dictionary = new SequencedDictionary<string, int>(0);
 
         Assert.AreEqual(0, dictionary.Count);
     }
 
     /// <summary>
-    /// Verifies that the access-order constructor flag is reflected by the <see cref="LinkedDictionary{TKey, TValue}.AccessOrder" /> property.
+    /// Verifies that the access-order constructor flag is reflected by the <see cref="SequencedDictionary{TKey, TValue}.AccessOrder" /> property.
     /// </summary>
     [TestMethod]
     public void Ctor_WhenAccessOrderRequested_ShouldReportAccessOrder()
     {
-        var dictionary = new LinkedDictionary<string, int>(accessOrder: true);
+        var dictionary = new SequencedDictionary<string, int>(accessOrder: true);
 
         Assert.IsTrue(dictionary.AccessOrder);
     }
@@ -60,7 +60,7 @@ public partial class LinkedDictionaryTests
     [TestMethod]
     public void Ctor_WhenComparerIsNull_ShouldUseDefaultComparer()
     {
-        var dictionary = new LinkedDictionary<string, int>(comparer: null);
+        var dictionary = new SequencedDictionary<string, int>(comparer: null);
         dictionary.Add("KEY", 123);
 
         Assert.IsFalse(dictionary.ContainsKey("key"));
@@ -73,7 +73,7 @@ public partial class LinkedDictionaryTests
     [TestMethod]
     public void Ctor_WhenComparerIsProvided_ShouldUseComparer()
     {
-        var dictionary = new LinkedDictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+        var dictionary = new SequencedDictionary<string, int>(StringComparer.OrdinalIgnoreCase);
         dictionary.Add("KEY", 123);
 
         Assert.IsTrue(dictionary.ContainsKey("key"));
@@ -93,7 +93,7 @@ public partial class LinkedDictionaryTests
             new KeyValuePair<string, int>("c", 3),
         };
 
-        var dictionary = new LinkedDictionary<string, int>(source);
+        var dictionary = new SequencedDictionary<string, int>(source);
 
         CollectionAssert.AreEqual(new[] { "a", "b", "c" }, dictionary.Keys.ToArray());
     }
@@ -106,7 +106,7 @@ public partial class LinkedDictionaryTests
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = new LinkedDictionary<string, int>((IEnumerable<KeyValuePair<string, int>>)null!);
+            _ = new SequencedDictionary<string, int>((IEnumerable<KeyValuePair<string, int>>)null!);
         });
     }
 
@@ -124,7 +124,7 @@ public partial class LinkedDictionaryTests
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            _ = new LinkedDictionary<string, int>(source);
+            _ = new SequencedDictionary<string, int>(source);
         });
     }
 }

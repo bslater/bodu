@@ -1,12 +1,12 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="LinkedDictionary{T,T}.Entry.cs" company="Bodu Pty. Ltd.">
+// <copyright file="SequencedDictionary{T,T}.Entry.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Collections.Generic;
 
-public partial class LinkedDictionary<TKey, TValue>
+public partial class SequencedDictionary<TKey, TValue>
 {
     /// <summary>
     /// Represents a stored entry, pairing the value with the ordering node that records the entry's position in the

@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="LinkedDictionary{T,T}.ValueCollection.cs" company="Bodu Pty. Ltd.">
+// <copyright file="SequencedDictionary{T,T}.KeyCollection.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -8,11 +8,11 @@ using System.Collections;
 
 namespace Bodu.Collections.Generic;
 
-public partial class LinkedDictionary<TKey, TValue>
+public partial class SequencedDictionary<TKey, TValue>
 {
     /// <summary>
-    /// Represents a live, order-preserving view of the values contained in a
-    /// <see cref="LinkedDictionary{TKey, TValue}" />.
+    /// Represents a live, order-preserving view of the keys contained in a
+    /// <see cref="SequencedDictionary{TKey, TValue}" />.
     /// </summary>
     /// <remarks>
     /// The collection reflects subsequent mutations to the underlying dictionary. Enumeration follows the dictionary's
@@ -20,24 +20,24 @@ public partial class LinkedDictionary<TKey, TValue>
     /// <see cref="ICollection{T}.Clear" />, and <see cref="ICollection{T}.Remove" /> throw
     /// <see cref="NotSupportedException" />.
     /// </remarks>
-    public sealed class ValueCollection
-        : ICollection<TValue>
-        , IReadOnlyCollection<TValue>
+    public sealed class KeyCollection
+        : ICollection<TKey>
+        , IReadOnlyCollection<TKey>
         , ICollection
     {
-        /// <summary>The dictionary whose values this collection exposes.</summary>
-        private readonly LinkedDictionary<TKey, TValue> _dictionary;
+        /// <summary>The dictionary whose keys this collection exposes.</summary>
+        private readonly SequencedDictionary<TKey, TValue> _dictionary;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ValueCollection" /> class bound to the specified dictionary.
+        /// Initializes a new instance of the <see cref="KeyCollection" /> class bound to the specified dictionary.
         /// </summary>
         /// <param name="dictionary">
-        /// The dictionary whose values this collection exposes. Must not be <see langword="null" />.
+        /// The dictionary whose keys this collection exposes. Must not be <see langword="null" />.
         /// </param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dictionary" /> is <see langword="null" />.
         /// </exception>
-        internal ValueCollection(LinkedDictionary<TKey, TValue> dictionary)
+        internal KeyCollection(SequencedDictionary<TKey, TValue> dictionary)
         {
             ThrowHelper.ThrowIfNull(dictionary);
 
@@ -48,7 +48,7 @@ public partial class LinkedDictionary<TKey, TValue>
         public int Count => _dictionary._store.Count;
 
         /// <inheritdoc />
-        bool ICollection<TValue>.IsReadOnly => true;
+        bool ICollection<TKey>.IsReadOnly => true;
 
         /// <inheritdoc />
         bool ICollection.IsSynchronized => false;
@@ -57,35 +57,24 @@ public partial class LinkedDictionary<TKey, TValue>
         object ICollection.SyncRoot => ((ICollection)_dictionary).SyncRoot;
 
         /// <inheritdoc />
-        public bool Contains(TValue item)
-        {
-            EqualityComparer<TValue> comparer = EqualityComparer<TValue>.Default;
-
-            foreach (KeyValuePair<TKey, TValue> kvp in _dictionary.GetOrderedItems())
-            {
-                if (comparer.Equals(kvp.Value, item))
-                    return true;
-            }
-
-            return false;
-        }
+        public bool Contains(TKey item) => _dictionary.ContainsKey(item);
 
         /// <inheritdoc />
-        public void CopyTo(TValue[] array, int arrayIndex)
+        public void CopyTo(TKey[] array, int arrayIndex)
         {
             ThrowHelper.ThrowIfNull(array);
             ThrowHelper.ThrowIfLessThan(arrayIndex, 0);
             ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(array, arrayIndex, Count);
 
             foreach (KeyValuePair<TKey, TValue> kvp in _dictionary.GetOrderedItems())
-                array[arrayIndex++] = kvp.Value;
+                array[arrayIndex++] = kvp.Key;
         }
 
         /// <inheritdoc />
-        public IEnumerator<TValue> GetEnumerator()
+        public IEnumerator<TKey> GetEnumerator()
         {
             foreach (KeyValuePair<TKey, TValue> kvp in _dictionary.GetOrderedItems())
-                yield return kvp.Value;
+                yield return kvp.Key;
         }
 
         /// <inheritdoc />
@@ -101,28 +90,28 @@ public partial class LinkedDictionary<TKey, TValue>
             ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(array, index, Count);
 
             foreach (KeyValuePair<TKey, TValue> kvp in _dictionary.GetOrderedItems())
-                array.SetValue(kvp.Value, index++);
+                array.SetValue(kvp.Key, index++);
         }
 
         /// <inheritdoc />
         /// <exception cref="NotSupportedException">
-        /// Values cannot be added directly; modify the owning dictionary instead.
+        /// Keys cannot be added directly; modify the owning dictionary instead.
         /// </exception>
-        void ICollection<TValue>.Add(TValue item) =>
-            throw new NotSupportedException(ResourceStrings.Op_NotSupported_DictionaryValuesMutation);
+        void ICollection<TKey>.Add(TKey item) =>
+            throw new NotSupportedException(ResourceStrings.Op_NotSupported_DictionaryKeysMutation);
 
         /// <inheritdoc />
         /// <exception cref="NotSupportedException">
-        /// Values cannot be cleared directly; call <see cref="LinkedDictionary{TKey, TValue}.Clear" /> instead.
+        /// Keys cannot be cleared directly; call <see cref="SequencedDictionary{TKey, TValue}.Clear" /> instead.
         /// </exception>
-        void ICollection<TValue>.Clear() =>
-            throw new NotSupportedException(ResourceStrings.Op_NotSupported_DictionaryValuesMutation);
+        void ICollection<TKey>.Clear() =>
+            throw new NotSupportedException(ResourceStrings.Op_NotSupported_DictionaryKeysMutation);
 
         /// <inheritdoc />
         /// <exception cref="NotSupportedException">
-        /// Values cannot be removed directly; modify the owning dictionary instead.
+        /// Keys cannot be removed directly; call <see cref="SequencedDictionary{TKey, TValue}.Remove(TKey)" /> instead.
         /// </exception>
-        bool ICollection<TValue>.Remove(TValue item) =>
-            throw new NotSupportedException(ResourceStrings.Op_NotSupported_DictionaryValuesMutation);
+        bool ICollection<TKey>.Remove(TKey item) =>
+            throw new NotSupportedException(ResourceStrings.Op_NotSupported_DictionaryKeysMutation);
     }
 }

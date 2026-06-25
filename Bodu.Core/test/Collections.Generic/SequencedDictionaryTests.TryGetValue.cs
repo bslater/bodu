@@ -1,15 +1,15 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="LinkedDictionaryTests.TryGetValue.cs" company="Bodu Pty. Ltd.">
+// <copyright file="SequencedDictionaryTests.TryGetValue.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Collections.Generic;
 
-public partial class LinkedDictionaryTests
+public partial class SequencedDictionaryTests
 {
     /// <summary>
-    /// Verifies that <see cref="LinkedDictionary{TKey, TValue}.TryGetValue" /> returns the value and <see langword="true" /> for an existing key.
+    /// Verifies that <see cref="SequencedDictionary{TKey, TValue}.TryGetValue" /> returns the value and <see langword="true" /> for an existing key.
     /// </summary>
     [TestMethod]
     public void TryGetValue_WhenKeyExists_ShouldReturnTrueAndValue()
@@ -23,7 +23,7 @@ public partial class LinkedDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="LinkedDictionary{TKey, TValue}.TryGetValue" /> returns <see langword="false" /> and the default value for a missing key.
+    /// Verifies that <see cref="SequencedDictionary{TKey, TValue}.TryGetValue" /> returns <see langword="false" /> and the default value for a missing key.
     /// </summary>
     [TestMethod]
     public void TryGetValue_WhenKeyMissing_ShouldReturnFalseAndDefault()

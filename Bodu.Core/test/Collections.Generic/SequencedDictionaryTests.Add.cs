@@ -1,12 +1,12 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="LinkedDictionaryTests.Add.cs" company="Bodu Pty. Ltd.">
+// <copyright file="SequencedDictionaryTests.Add.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Collections.Generic;
 
-public partial class LinkedDictionaryTests
+public partial class SequencedDictionaryTests
 {
     /// <summary>
     /// Verifies that adding a new key appends the entry to the end of the iteration order.
@@ -22,7 +22,7 @@ public partial class LinkedDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="LinkedDictionary{TKey, TValue}.Add(TKey, TValue)" /> throws when the key already exists.
+    /// Verifies that <see cref="SequencedDictionary{TKey, TValue}.Add(TKey, TValue)" /> throws when the key already exists.
     /// </summary>
     [TestMethod]
     public void Add_WhenKeyAlreadyExists_ShouldThrowExactly()
@@ -36,12 +36,12 @@ public partial class LinkedDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="LinkedDictionary{TKey, TValue}.Add(TKey, TValue)" /> throws when the key is <see langword="null" />.
+    /// Verifies that <see cref="SequencedDictionary{TKey, TValue}.Add(TKey, TValue)" /> throws when the key is <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void Add_WhenKeyIsNull_ShouldThrowExactly()
     {
-        var dictionary = new LinkedDictionary<string, int>();
+        var dictionary = new SequencedDictionary<string, int>();
 
         var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -57,7 +57,7 @@ public partial class LinkedDictionaryTests
     [TestMethod]
     public void Add_WhenPairAdded_ShouldIncrementCount()
     {
-        var dictionary = new LinkedDictionary<string, int>();
+        var dictionary = new SequencedDictionary<string, int>();
 
         dictionary.Add(new KeyValuePair<string, int>("a", 1));
 

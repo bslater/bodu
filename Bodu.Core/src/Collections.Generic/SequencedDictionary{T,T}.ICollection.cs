@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="LinkedDictionary{T,T}.ICollection.cs" company="Bodu Pty. Ltd.">
+// <copyright file="SequencedDictionary{T,T}.ICollection.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -8,7 +8,7 @@ using System.Collections;
 
 namespace Bodu.Collections.Generic;
 
-public partial class LinkedDictionary<TKey, TValue> :
+public partial class SequencedDictionary<TKey, TValue> :
     System.Collections.ICollection
 {
     /// <summary>The lazily allocated object returned by <see cref="ICollection.SyncRoot" />.</summary>

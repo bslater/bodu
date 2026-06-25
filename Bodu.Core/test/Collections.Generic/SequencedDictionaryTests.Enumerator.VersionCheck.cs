@@ -1,12 +1,12 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="LinkedDictionaryTests.Enumerator.VersionCheck.cs" company="Bodu Pty. Ltd.">
+// <copyright file="SequencedDictionaryTests.Enumerator.VersionCheck.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Collections.Generic;
 
-public partial class LinkedDictionaryTests
+public partial class SequencedDictionaryTests
 {
     /// <summary>
     /// Verifies that mutating the dictionary during enumeration invalidates the enumerator.
@@ -29,7 +29,7 @@ public partial class LinkedDictionaryTests
     [TestMethod]
     public void Enumerator_WhenAccessOrderReadDuringEnumeration_ShouldThrowExactly()
     {
-        var dictionary = new LinkedDictionary<string, int>(accessOrder: true)
+        var dictionary = new SequencedDictionary<string, int>(accessOrder: true)
         {
             ["a"] = 1,
             ["b"] = 2,
