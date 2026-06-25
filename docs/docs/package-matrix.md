@@ -20,6 +20,7 @@ For the high-level shape of each library, follow the **Intro** link in the table
 | **Text formats** | `Bodu.Text.Formats` | Stable | `Bodu.Core` | [Bodu.Text.Formats](formats/index.md) | [Get started](formats/getting-started.md) |
 | **TOML serializer** | `Bodu.Text.Toml` | Stable | `Bodu.Core` | [Bodu serializers](serialization/index.md) | [Get started](serialization/getting-started.md) |
 | **Bencode serializer** | `Bodu.Text.Bencode` | Stable | `Bodu.Core` | [Bodu serializers](serialization/index.md) | [Get started](serialization/getting-started.md) |
+| **YAML serializer** | `Bodu.Text.Yaml` | Preview | `Bodu.Core` | [Bodu serializers](serialization/index.md) | [Get started](serialization/getting-started.md) |
 | **Text configuration** | `Bodu.Text.Configuration` | Stable | `Bodu.Core`, `Bodu.Text.Formats` | [Bodu.Text.Configuration](text-configuration/index.md) | [Get started](text-configuration/getting-started.md) |
 | **Configuration bridge** | `Bodu.Extensions.Configuration.Text` | Stable | `Bodu.Text.Configuration`, `Microsoft.Extensions.Configuration` | [Bodu.Extensions.Configuration.Text](extensions-configuration-text/index.md) | [Get started](extensions-configuration-text/getting-started.md) |
 | **Numerics** | `Bodu.Numerics` | Stable | `Bodu.Core` | [Bodu.Numerics](numerics/index.md) | [Get started](numerics/getting-started.md) |
@@ -73,6 +74,7 @@ See the [Calendar introduction](calendar/index.md) for how the companion package
 | Status | What it commits to |
 |---|---|
 | **Stable** | The public API surface is committed. Breaking changes are reserved for a major-version bump; additive changes ship in minor versions; bug fixes in patch versions. |
+| **Preview** | The package is published for early evaluation. The public API surface is still taking shape and may change between releases without a major-version bump. |
 
 ## Install commands
 
@@ -88,6 +90,7 @@ dotnet add package Bodu.Text.Encoding
 dotnet add package Bodu.Text.Formats
 dotnet add package Bodu.Text.Toml
 dotnet add package Bodu.Text.Bencode
+dotnet add package Bodu.Text.Yaml
 dotnet add package Bodu.Text.Configuration
 dotnet add package Bodu.Extensions.Configuration.Text
 dotnet add package Bodu.Numerics
