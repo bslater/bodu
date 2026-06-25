@@ -37,6 +37,7 @@ namespace Bodu.Text.Delimited;
 /// </list>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Parse a CSV document with a header row (the default).
 /// DelimitedDocument doc = Delimited.Parse("""
@@ -55,6 +56,7 @@ namespace Bodu.Text.Delimited;
 ///     HasHeader  = false,
 /// });
 ///]]>
+/// </code>
 /// </example>
 public static partial class Delimited
 {

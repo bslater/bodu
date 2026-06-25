@@ -38,6 +38,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// applications.</note>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Use a concrete derivative through the abstract surface — IBAN emits a two-digit check.
 /// MultiCharCheckDigitAlgorithm algo = new Iban();
@@ -46,6 +47,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// Span<char> check = stackalloc char[algo.CheckLength];
 /// algo.GetCurrentCheckDigits(check);                   // "82"
 ///]]>
+/// </code>
 /// </example>
 /// <seealso cref="CheckDigitAlgorithm" /> <seealso cref="AlphanumericCheckDigitAlgorithm" />
 /// <seealso cref="System.IO.Hashing.NonCryptographicHashAlgorithm" />

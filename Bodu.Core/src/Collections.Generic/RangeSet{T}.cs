@@ -26,6 +26,7 @@ namespace Bodu.Collections.Generic;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Track disjoint blocks of allocated row IDs. Adjacent and overlapping inserts merge automatically.
 /// var allocated = new RangeSet<int>();
@@ -37,6 +38,7 @@ namespace Bodu.Collections.Generic;
 /// Console.WriteLine(allocated.Contains(15));   // true
 /// allocated.Remove(10, 20);                    // splits into [0, 10) and [20, 30)
 ///]]>
+/// </code>
 /// </example>
 [DebuggerDisplay("Count = {Count}")]
 [Serializable]

@@ -52,6 +52,7 @@ namespace Bodu.Security.Cryptography;
 /// </list>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Direct single-block use. For most workloads prefer the Camellia SymmetricAlgorithm wrapper.
 /// byte[] key = new byte[16];   // 128, 192, or 256 bits
@@ -67,6 +68,7 @@ namespace Bodu.Security.Cryptography;
 /// cipher.Decrypt(ciphertext, roundtrip);
 /// // roundtrip equals plaintext
 ///]]>
+/// </code>
 /// </example>
 /// <seealso href="https://www.rfc-editor.org/rfc/rfc3713">RFC 3713 — A Description of the Camellia Encryption Algorithm
 /// </seealso> <seealso cref="Camellia"/>

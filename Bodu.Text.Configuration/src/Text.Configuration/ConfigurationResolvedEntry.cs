@@ -23,6 +23,7 @@ namespace Bodu.Text.Configuration;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// ConfigurationView view = doc.Resolve("src/Foo.cs");
 /// ConfigurationResolvedEntry? entry = view.GetEntry("format:indent:size");
@@ -33,6 +34,7 @@ namespace Bodu.Text.Configuration;
 ///     Console.WriteLine($"  at: {entry.SourceLocation}");
 /// }
 ///]]>
+/// </code>
 /// </example>
 public sealed class ConfigurationResolvedEntry
 {

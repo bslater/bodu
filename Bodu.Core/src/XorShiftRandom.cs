@@ -36,6 +36,7 @@ namespace Bodu;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Reproducible shuffle and sample in a test.
 /// var rng = new XorShiftRandom(seed: 1234);
@@ -45,6 +46,7 @@ namespace Bodu;
 /// var bag = new[] { "A", "B", "C", "D" };
 /// ShuffleHelpers.Shuffle(bag, rng);
 ///]]>
+/// </code>
 /// </example>
 public sealed class XorShiftRandom
     : System.Random,

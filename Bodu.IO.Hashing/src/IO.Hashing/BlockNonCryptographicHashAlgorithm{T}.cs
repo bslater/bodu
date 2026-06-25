@@ -97,6 +97,7 @@ namespace Bodu.IO.Hashing;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Sketch of a derived block hash. The base class drives buffering and snapshotting; the
 /// // derived type only expresses how a single block mutates the accumulator.
@@ -130,6 +131,7 @@ namespace Bodu.IO.Hashing;
 ///     }
 /// }
 ///]]>
+/// </code>
 /// </example>
 /// <seealso cref="System.IO.Hashing.NonCryptographicHashAlgorithm"/> <seealso cref="IResumableHashAlgorithm"/>
 /// <seealso cref="Bodu.IO.Hashing.CheckDigits.CheckDigitAlgorithm"/>

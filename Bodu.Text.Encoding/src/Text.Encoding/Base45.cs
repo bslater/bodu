@@ -29,6 +29,7 @@ namespace Bodu.Text.Encoding;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Encode an arbitrary byte payload for inclusion in a QR code.
 /// byte[] data = { 0x41, 0x42 };
@@ -37,6 +38,7 @@ namespace Bodu.Text.Encoding;
 /// // Round-trip.
 /// byte[] roundtrip = Base45.Decode(encoded);      // { 0x41, 0x42 }
 ///]]>
+/// </code>
 /// </example>
 public static partial class Base45
 {

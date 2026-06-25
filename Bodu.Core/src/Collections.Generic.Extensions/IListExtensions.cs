@@ -31,6 +31,7 @@ namespace Bodu.Collections.Generic.Extensions;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// IList<string> items = new List<string> { "alpha", "beta", "gamma", "beta" };
 ///
@@ -44,6 +45,7 @@ namespace Bodu.Collections.Generic.Extensions;
 /// // Bulk replacement with a count of changes.
 /// int replaced = items.ReplaceAll(oldItem: "beta", newItem: "BETA"); // 2
 ///]]>
+/// </code>
 /// </example>
 public static partial class IListExtensions
 { }

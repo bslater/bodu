@@ -37,6 +37,7 @@ namespace Bodu.Text;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Read a file's leading bytes and decode using the detected encoding, falling back to UTF-8.
 /// byte[] bytes = File.ReadAllBytes(path);
@@ -48,6 +49,7 @@ namespace Bodu.Text;
 ///
 /// string text = encoding.GetStringSkippingPreamble(bytes);
 ///]]>
+/// </code>
 /// </example>
 public static class EncodingDetection
 {

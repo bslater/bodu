@@ -41,6 +41,7 @@ namespace Bodu.Text.Ini;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Parse a document and read a typed value out of a known section.
 /// IniDocument doc = Ini.Parse("""
@@ -59,6 +60,7 @@ namespace Bodu.Text.Ini;
 /// // Dialect override: case-sensitive section names.
 /// IniDocument strict = Ini.Parse(source, new IniParseOptions { CaseSensitiveSections = true });
 ///]]>
+/// </code>
 /// </example>
 public static partial class Ini
 {

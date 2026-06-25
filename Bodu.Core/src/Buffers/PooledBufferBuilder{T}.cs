@@ -26,6 +26,7 @@ namespace Bodu.Buffers;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Accumulate a result of unknown length without per-item array doubling.
 /// using var builder = new PooledBufferBuilder<int>(initialCapacity: 256);
@@ -37,6 +38,7 @@ namespace Bodu.Buffers;
 /// Console.WriteLine($"Buffered {builder.WrittenCount} values from a pooled buffer of {builder.Capacity}.");
 /// // The rented array is returned to ArrayPool<int>.Shared when 'builder' is disposed.
 ///]]>
+/// </code>
 /// </example>
 public sealed class PooledBufferBuilder<T> :
     System.IDisposable,

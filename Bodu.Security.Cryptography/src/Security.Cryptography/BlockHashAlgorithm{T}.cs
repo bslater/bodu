@@ -56,6 +56,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Consume through a concrete derivative — the base class drives buffering and finalization.
 /// using HashAlgorithm hash = new Tiger();      // 512-bit block, 192-bit digest
@@ -68,6 +69,7 @@ namespace Bodu.Security.Cryptography;
 /// streaming.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
 /// byte[] result = streaming.Hash!;
 ///]]>
+/// </code>
 /// </example>
 /// <seealso cref="BufferedBlockHashAlgorithm{T}"/> <seealso cref="DeferredFinalBlockHashAlgorithm{T}"/>
 /// <seealso cref="KeyedBlockHashAlgorithm{T}"/> <seealso cref="KeyedDeferredFinalBlockHashAlgorithm{T}"/>

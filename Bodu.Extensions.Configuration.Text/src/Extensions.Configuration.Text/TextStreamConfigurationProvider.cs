@@ -27,6 +27,7 @@ namespace Bodu.Extensions.Configuration.Text;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Diagnostic introspection: locate the Bodu stream provider after the configuration root has been built.
 /// IConfigurationRoot root = builder.Build();
@@ -39,6 +40,7 @@ namespace Bodu.Extensions.Configuration.Text;
 ///     Console.WriteLine($"Target path: {bodu.TextSource.TargetPath ?? "<none>"}");
 /// }
 ///]]>
+/// </code>
 /// </example>
 public sealed class TextStreamConfigurationProvider
     : StreamConfigurationProvider

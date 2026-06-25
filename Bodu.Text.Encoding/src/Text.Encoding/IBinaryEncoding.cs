@@ -24,6 +24,7 @@ namespace Bodu.Text.Encoding;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Pick an encoding at runtime from configuration.
 /// string             configured = appConfig["encoding"];                     // e.g. "base64-urlsafe"
@@ -35,6 +36,7 @@ namespace Bodu.Text.Encoding;
 ///
 /// Console.WriteLine($"{encoding.Name}: {encoding.Description}");
 ///]]>
+/// </code>
 /// </example>
 public interface IBinaryEncoding
 {

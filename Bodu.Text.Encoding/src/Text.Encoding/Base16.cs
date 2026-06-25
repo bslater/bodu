@@ -25,6 +25,7 @@ namespace Bodu.Text.Encoding;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// byte[] data = { 0xDE, 0xAD, 0xBE, 0xEF };
 ///
@@ -40,6 +41,7 @@ namespace Bodu.Text.Encoding;
 /// byte[] roundtrip = Base16.Decode(pretty,
 ///     BaseFormatStyles.AllowPrefix | BaseFormatStyles.IgnoreWhitespace);
 ///]]>
+/// </code>
 /// </example>
 public static partial class Base16
 {

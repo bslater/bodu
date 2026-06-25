@@ -29,6 +29,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Single-call computation against the 8-digit body.
 /// char check = AbaRoutingNumber.Compute("01100001");   // '5'
@@ -41,6 +42,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// algo.Append("01100001");
 /// char d = algo.GetCurrentCheckDigit();                // '5'
 ///]]>
+/// </code>
 /// </example>
 public sealed class AbaRoutingNumber
     : CheckDigitAlgorithm

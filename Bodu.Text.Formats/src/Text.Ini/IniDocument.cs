@@ -21,6 +21,7 @@ namespace Bodu.Text.Ini;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// IniDocument doc = Ini.Parse(text);
 ///
@@ -35,6 +36,7 @@ namespace Bodu.Text.Ini;
 /// if (doc.TryGetSection("database", out IniSection? db))
 ///     Console.WriteLine(db!["host"]);
 ///]]>
+/// </code>
 /// </example>
 public sealed class IniDocument
     : IniDocumentBase

@@ -23,6 +23,7 @@ namespace Bodu.Text.Encoding;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Pre-bound singleton — no allocation per call.
 /// IBinaryEncoding hex    = BinaryEncodings.Base16Upper;
@@ -36,6 +37,7 @@ namespace Bodu.Text.Encoding;
 /// IBinaryEncoding fromConfig = BinaryEncodings.Get(appConfig["encoding"] ?? "base64");
 /// IBinaryEncoding fromAlias  = BinaryEncodings.Get("hex");           // same as Base16Lower
 ///]]>
+/// </code>
 /// </example>
 public static class BinaryEncodings
 {

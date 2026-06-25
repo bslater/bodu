@@ -28,6 +28,7 @@ namespace Bodu.Text.Configuration;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Default mapping — split on '.' and ':', case-insensitive comparison.
 /// var k1 = new ConfigurationKey("Logging.Level.Default");
@@ -42,6 +43,7 @@ namespace Bodu.Text.Configuration;
 /// var k4   = new ConfigurationKey("foo:bar", opts);
 /// Console.WriteLine(k3 == k4);              // False
 ///]]>
+/// </code>
 /// </example>
 [DebuggerDisplay("{RawKey,nq} -> {Path,nq}")]
 public readonly partial struct ConfigurationKey

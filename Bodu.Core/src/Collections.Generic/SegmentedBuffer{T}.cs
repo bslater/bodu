@@ -30,6 +30,7 @@ namespace Bodu.Collections.Generic;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Buffer a streamed sequence whose length is unknown, then random-access it by index.
 /// var buffer = new SegmentedBuffer<int>(segmentSize: 512);
@@ -40,6 +41,7 @@ namespace Bodu.Collections.Generic;
 /// int first = buffer[0];
 /// int last  = buffer[buffer.Count - 1];
 ///]]>
+/// </code>
 /// </example>
 public sealed class SegmentedBuffer<T> :
     System.Collections.Generic.IEnumerable<T>

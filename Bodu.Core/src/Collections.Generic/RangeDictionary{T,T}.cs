@@ -28,6 +28,7 @@ namespace Bodu.Collections.Generic;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Tax-bracket lookup: ranges are half-open and must not overlap.
 /// var brackets = new RangeDictionary<decimal, decimal>
@@ -43,6 +44,7 @@ namespace Bodu.Collections.Generic;
 /// // Adjacent ranges are allowed; an overlapping insertion throws ArgumentException.
 /// brackets.Add(135_000m, 190_000m, 0.37m);
 ///]]>
+/// </code>
 /// </example>
 [DebuggerDisplay("Count = {Count}")]
 [Serializable]

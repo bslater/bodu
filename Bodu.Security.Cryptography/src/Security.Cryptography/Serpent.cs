@@ -29,6 +29,7 @@ namespace Bodu.Security.Cryptography;
 /// <see cref="Serpent128" />. </note>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Use a concrete wide-block variant — Serpent-256 over a CTR mode.
 /// using TweakableSymmetricAlgorithm alg = new Serpent256();
@@ -45,6 +46,7 @@ namespace Bodu.Security.Cryptography;
 /// // For standard, externally vetted Serpent use Serpent128 instead — the wide-block variants
 /// // are experimental and not interoperable with reference Serpent implementations.
 ///]]>
+/// </code>
 /// </example>
 public abstract class Serpent
     : TweakableSymmetricAlgorithm

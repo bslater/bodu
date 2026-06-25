@@ -27,6 +27,7 @@ namespace Bodu.Text.Delimited;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// foreach (DelimitedRow row in doc.Rows)
 /// {
@@ -41,6 +42,7 @@ namespace Bodu.Text.Delimited;
 ///     double price = row.GetDouble("price", fallback: 0.0);
 /// }
 ///]]>
+/// </code>
 /// </example>
 public sealed class DelimitedRow
 {

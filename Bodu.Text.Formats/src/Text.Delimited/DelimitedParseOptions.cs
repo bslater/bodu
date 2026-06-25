@@ -23,6 +23,7 @@ namespace Bodu.Text.Delimited;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Strict RFC 4180 CSV with a header row.
 /// DelimitedDocument csv = Delimited.Parse(text);
@@ -36,6 +37,7 @@ namespace Bodu.Text.Delimited;
 /// };
 /// DelimitedDocument data = Delimited.Parse(text, tsv);
 ///]]>
+/// </code>
 /// </example>
 public readonly struct DelimitedParseOptions
 {

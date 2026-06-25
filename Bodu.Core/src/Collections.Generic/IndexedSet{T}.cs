@@ -30,6 +30,7 @@ namespace Bodu.Collections.Generic;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Build a deduplicated playlist that can still be reordered by index.
 /// var playlist = new IndexedSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -45,6 +46,7 @@ namespace Bodu.Collections.Generic;
 /// int chorusIndex = playlist.IndexOf("Chorus"); // O(1) lookup via the hash index
 /// string second   = playlist[1];                // O(1) positional read
 ///]]>
+/// </code>
 /// </example>
 [DebuggerDisplay("Count = {Count}")]
 [DebuggerTypeProxy(typeof(OrderedSetStorageDebugView<>))]

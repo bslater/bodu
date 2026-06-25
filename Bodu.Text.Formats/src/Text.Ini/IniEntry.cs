@@ -27,6 +27,7 @@ namespace Bodu.Text.Ini;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Build a section programmatically and format it back to text.
 /// var doc = new IniDocument();
@@ -40,6 +41,7 @@ namespace Bodu.Text.Ini;
 ///
 /// string text = Ini.Format(doc);
 ///]]>
+/// </code>
 /// </example>
 public sealed class IniEntry
 {

@@ -50,6 +50,7 @@ namespace Bodu.Collections.Generic.Concurrent;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// var seen = new ConcurrentHashSet<string>(StringComparer.OrdinalIgnoreCase);
 ///
@@ -61,6 +62,7 @@ namespace Bodu.Collections.Generic.Concurrent;
 ///
 /// Console.WriteLine(seen.Count);
 ///]]>
+/// </code>
 /// </example>
 [DebuggerDisplay("Count = {Count}")]
 [DebuggerTypeProxy(typeof(ConcurrentHashSetDebugView<>))]

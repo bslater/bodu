@@ -24,6 +24,7 @@ namespace Bodu.Text.Ini;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// try
 /// {
@@ -34,6 +35,7 @@ namespace Bodu.Text.Ini;
 ///     Console.Error.WriteLine($"Line {ex.LineNumber}: {ex.Message}");
 /// }
 ///]]>
+/// </code>
 /// </example>
 public sealed class IniFormatException
     : TextFormatException

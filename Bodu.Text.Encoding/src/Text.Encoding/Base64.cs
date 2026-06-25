@@ -27,6 +27,7 @@ namespace Bodu.Text.Encoding;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// byte[] data = "hello"u8.ToArray();
 ///
@@ -42,6 +43,7 @@ namespace Bodu.Text.Encoding;
 /// // Round-trip.
 /// byte[] roundtrip = Base64.Decode(standard);
 ///]]>
+/// </code>
 /// </example>
 public static partial class Base64
 {

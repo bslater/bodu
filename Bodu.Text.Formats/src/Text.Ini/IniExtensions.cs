@@ -20,6 +20,7 @@ namespace Bodu.Text.Ini;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Parse and round-trip via the receiver-typed extensions.
 /// IniDocument doc = "[database]\nhost=localhost".ParseIni();
@@ -28,6 +29,7 @@ namespace Bodu.Text.Ini;
 /// // Non-throwing variant.
 /// if (source.ParseIni() is { Sections.Count: > 0 } parsed) { /* ... */ }
 ///]]>
+/// </code>
 /// </example>
 public static class IniExtensions
 {

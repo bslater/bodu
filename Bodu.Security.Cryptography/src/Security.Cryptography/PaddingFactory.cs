@@ -28,6 +28,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // BCL-standard padding mode — covers PKCS7, Zeros, None, ANSI X.923, ISO 10126.
 /// IPaddingStrategy pkcs7 = PaddingFactory.Create(PaddingMode.PKCS7);
@@ -42,6 +43,7 @@ namespace Bodu.Security.Cryptography;
 /// // if the padding is malformed.
 /// byte[] stripped = pkcs7.Unpad(decrypted, blockSizeBits: 128);
 ///]]>
+/// </code>
 /// </example>
 /// <seealso href="../guides/cryptography/padding.html">Padding guide — PKCS7, Zeros, None, ANSI X.923, ISO 10126 and
 /// ISO/IEC 7816-4 with worked examples</seealso>

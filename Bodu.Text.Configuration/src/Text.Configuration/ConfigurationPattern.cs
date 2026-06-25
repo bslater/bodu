@@ -53,6 +53,7 @@ namespace Bodu.Text.Configuration;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Compile once, match many times.
 /// ConfigurationPattern csFiles = ConfigurationPattern.Compile("**/*.cs");
@@ -63,6 +64,7 @@ namespace Bodu.Text.Configuration;
 /// ConfigurationPattern markup = ConfigurationPattern.Compile("**/*.{md,mdx,txt}");
 /// ConfigurationPattern logs   = ConfigurationPattern.Compile("logs/run-{1..99}.log");
 ///]]>
+/// </code>
 /// </example>
 public sealed partial class ConfigurationPattern
 {

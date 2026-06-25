@@ -30,6 +30,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Apple Inc. — country code US, body "US037833100".
 /// char check = Isin.Compute("US037833100");   // '5'
@@ -42,6 +43,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// algo.Append("US037833100");
 /// char d = algo.GetCurrentCheckDigit();       // '5'
 ///]]>
+/// </code>
 /// </example>
 public sealed class Isin
     : AlphanumericCheckDigitAlgorithm

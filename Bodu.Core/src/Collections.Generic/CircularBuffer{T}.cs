@@ -73,6 +73,7 @@ namespace Bodu.Collections.Generic;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Sliding window of the three most recent samples — overwrite-on-full is the default.
 /// var window = new CircularBuffer<int>(capacity: 3);
@@ -88,6 +89,7 @@ namespace Bodu.Collections.Generic;
 /// bounded.Enqueue(20);
 /// bool added = bounded.TryEnqueue(30); // false — buffer is full
 ///]]>
+/// </code>
 /// </example>
 [DebuggerDisplay("Count = {Count}")]
 [DebuggerTypeProxy(typeof(CircularBufferDebugView<>))]

@@ -70,6 +70,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Consume through a concrete derivative — produce a 32-byte digest from "hello".
 /// using var xof = new AsconXof128();
@@ -87,6 +88,7 @@ namespace Bodu.Security.Cryptography;
 /// xof.Absorb("world"u8);
 /// xof.Squeeze(digest);
 ///]]>
+/// </code>
 /// </example>
 /// <seealso cref="AsconXof128"/> <seealso cref="AsconCxof128"/> <seealso cref="AsconHash{T}"/>
 /// <seealso href="https://doi.org/10.6028/NIST.SP.800-232">NIST SP 800-232 (ASCON)</seealso>

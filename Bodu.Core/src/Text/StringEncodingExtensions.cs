@@ -22,6 +22,7 @@ namespace Bodu.Text;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Fluent encoding of a string variable.
 /// byte[] utf8       = "héllo".ToUtf8Bytes();
@@ -34,6 +35,7 @@ namespace Bodu.Text;
 /// // Pipeline integration.
 /// "key=value\n".WriteUtf8To(pipeWriter);
 ///]]>
+/// </code>
 /// </example>
 public static partial class StringEncodingExtensions
 {

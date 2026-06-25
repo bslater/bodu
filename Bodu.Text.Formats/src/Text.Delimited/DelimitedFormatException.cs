@@ -23,6 +23,7 @@ namespace Bodu.Text.Delimited;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// try
 /// {
@@ -33,6 +34,7 @@ namespace Bodu.Text.Delimited;
 ///     Console.Error.WriteLine($"Line {ex.LineNumber}: {ex.Message}");
 /// }
 ///]]>
+/// </code>
 /// </example>
 public sealed class DelimitedFormatException
     : TextFormatException

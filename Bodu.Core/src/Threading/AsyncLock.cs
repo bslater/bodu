@@ -37,6 +37,7 @@ namespace Bodu.Threading;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// private readonly AsyncLock _mutex = new();
 ///
@@ -49,6 +50,7 @@ namespace Bodu.Threading;
 ///     }
 /// }
 ///]]>
+/// </code>
 /// </example>
 [DebuggerDisplay("Held = {_held}, Waiters = {WaiterCount}")]
 public sealed partial class AsyncLock

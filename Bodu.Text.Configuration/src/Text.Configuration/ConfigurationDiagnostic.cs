@@ -26,6 +26,7 @@ namespace Bodu.Text.Configuration;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Surface every diagnostic the reader produced and tag any errors for caller attention.
 /// foreach (ConfigurationDiagnostic d in result.Diagnostics)
@@ -42,6 +43,7 @@ namespace Bodu.Text.Configuration;
 ///     "Key 'format:legacy' is no longer recognized.",
 ///     new ConfigurationSourceLocation(lineNumber: 7, linePosition: 1, length: 14));
 ///]]>
+/// </code>
 /// </example>
 [DebuggerDisplay("{Severity}: {Code} {Message,nq}")]
 public sealed class ConfigurationDiagnostic

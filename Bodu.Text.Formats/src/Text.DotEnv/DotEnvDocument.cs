@@ -22,6 +22,7 @@ namespace Bodu.Text.DotEnv;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// DotEnvDocument doc = DotEnv.Parse(text);
 ///
@@ -36,6 +37,7 @@ namespace Bodu.Text.DotEnv;
 /// foreach (DotEnvEntry entry in doc.Entries)
 ///     Console.WriteLine($"{entry.Key}={entry.Value}");
 ///]]>
+/// </code>
 /// </example>
 public sealed class DotEnvDocument
 {

@@ -33,6 +33,7 @@ namespace Bodu.Xml.Linq;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// XDocument doc = XDocument.Parse(
 ///     "<library xmlns='urn:books'><book><title>Foundation</title></book></library>");
@@ -44,6 +45,7 @@ namespace Bodu.Xml.Linq;
 /// XElement? title = ns.Element(book!,     "title");
 /// Console.WriteLine(title?.Value); // Foundation
 ///]]>
+/// </code>
 /// </example>
 public sealed class XmlNamespaceResolver
 {

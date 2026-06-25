@@ -37,6 +37,7 @@ namespace Bodu.Threading;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// private readonly AsyncLazy<Config> _config =
 ///     new(async () => await LoadConfigAsync());
@@ -47,6 +48,7 @@ namespace Bodu.Threading;
 ///     return config.TimeoutSeconds;
 /// }
 ///]]>
+/// </code>
 /// </example>
 [DebuggerDisplay("IsValueCreated = {IsValueCreated}, IsValueFactoryCompleted = {IsValueFactoryCompleted}")]
 public sealed class AsyncLazy<T>
@@ -154,11 +156,13 @@ public sealed class AsyncLazy<T>
     /// Cancellation cancels only the returned wait; the shared initialization continues for other callers.
     /// </remarks>
     /// <example>
+    /// <code language="csharp">
     ///<![CDATA[
     /// // Abandon only this caller's wait on timeout; the shared factory keeps running for others.
     /// using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
     /// Config config = await lazy.GetValueAsync(cts.Token);
     ///]]>
+    /// </code>
     /// </example>
     public Task<T> GetValueAsync(CancellationToken cancellationToken)
     {

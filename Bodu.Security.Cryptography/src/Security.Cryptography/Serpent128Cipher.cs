@@ -32,6 +32,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Direct single-block use. For most workloads prefer the Serpent128 SymmetricAlgorithm wrapper.
 /// byte[] key = new byte[32];   // 128, 192, or 256 bits — Serpent pads shorter keys to 256
@@ -47,6 +48,7 @@ namespace Bodu.Security.Cryptography;
 /// cipher.Decrypt(ciphertext, roundtrip);
 /// // roundtrip equals plaintext
 ///]]>
+/// </code>
 /// </example>
 /// <seealso cref="Serpent128"/>
 public sealed class Serpent128Cipher

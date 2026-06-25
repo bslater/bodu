@@ -29,6 +29,7 @@ namespace Bodu.Extensions.Configuration.Text;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Test-time configuration from an in-memory string.
 /// const string ConfigText = """
@@ -52,6 +53,7 @@ namespace Bodu.Extensions.Configuration.Text;
 /// Console.WriteLine(root["Logging:Level"]);          // "Debug"
 /// Console.WriteLine(root["format:indent:size"]);     // "4"
 ///]]>
+/// </code>
 /// </example>
 public sealed class TextStreamConfigurationSource
     : StreamConfigurationSource

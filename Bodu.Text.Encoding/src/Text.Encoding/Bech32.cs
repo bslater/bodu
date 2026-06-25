@@ -28,6 +28,7 @@ namespace Bodu.Text.Encoding;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Encode 5-bit data groups under a human-readable prefix.
 /// byte[] data = { 0x00, 0x01, 0x02 };                 // already 5-bit values
@@ -36,6 +37,7 @@ namespace Bodu.Text.Encoding;
 /// // Decode and recover the parts.
 /// Bech32.Decode(encoded, out string hrp, out byte[] groups, out Bech32Encoding scheme);
 ///]]>
+/// </code>
 /// </example>
 public static partial class Bech32
 {

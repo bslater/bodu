@@ -31,6 +31,7 @@ namespace Bodu.Extensions;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// int? a = 5;
 /// int? b = null;
@@ -42,6 +43,7 @@ namespace Bodu.Extensions;
 /// // Custom comparer for reverse-ordered strings.
 /// string? winner = ComparableHelper.Max("alpha", "beta", StringComparer.OrdinalIgnoreCase); // "beta"
 ///]]>
+/// </code>
 /// </example>
 public static partial class ComparableHelper
 {

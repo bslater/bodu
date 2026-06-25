@@ -29,11 +29,13 @@ namespace Bodu.Text.Encoding;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// byte[] data = { 0x00, 0xDE, 0xAD, 0xBE, 0xEF };
 /// string encoded = Base62.Encode(data);          // leading zero byte -> leading '0'
 /// byte[] roundtrip = Base62.Decode(encoded);
 ///]]>
+/// </code>
 /// </example>
 public static partial class Base62
 {

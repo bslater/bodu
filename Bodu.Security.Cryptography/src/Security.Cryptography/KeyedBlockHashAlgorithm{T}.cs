@@ -38,6 +38,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Consume through a concrete keyed derivative — Poly1305 needs a 32-byte one-time key.
 /// byte[] key = new byte[32];
@@ -53,6 +54,7 @@ namespace Bodu.Security.Cryptography;
 /// using var siphash = new SipHash64 { Key = sipKey };
 /// byte[] fingerprint = siphash.ComputeHash("hello"u8.ToArray());
 ///]]>
+/// </code>
 /// </example>
 /// <seealso cref="BlockHashAlgorithm{T}"/> <seealso cref="KeyedDeferredFinalBlockHashAlgorithm{T}"/>
 public abstract class KeyedBlockHashAlgorithm<T>

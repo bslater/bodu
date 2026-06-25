@@ -26,6 +26,7 @@ namespace Bodu.Text.Configuration;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// try
 /// {
@@ -41,6 +42,7 @@ namespace Bodu.Text.Configuration;
 ///         Console.WriteLine($"  {d}");
 /// }
 ///]]>
+/// </code>
 /// </example>
 [Serializable]
 public sealed class ConfigurationParseException

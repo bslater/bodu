@@ -27,6 +27,7 @@ namespace Bodu.Text.Bencode;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// try
 /// {
@@ -37,6 +38,7 @@ namespace Bodu.Text.Bencode;
 ///     Console.Error.WriteLine($"Malformed bencode at byte {ex.Offset}: {ex.Message}");
 /// }
 ///]]>
+/// </code>
 /// </example>
 public sealed class BencodeFormatException
     : FormatException

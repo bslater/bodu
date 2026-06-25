@@ -200,6 +200,7 @@ public static partial class EncodingExtensions
     /// <paramref name="chars" /> contains a code point that cannot be represented.
     /// </exception>
     /// <example>
+    /// <code language="csharp">
     ///<![CDATA[
     /// // Encode into a pooled buffer, hand the written span to a downstream consumer, then dispose to
     /// // return the rented array.
@@ -208,6 +209,7 @@ public static partial class EncodingExtensions
     /// downstream.Process(bytes);
     /// // Disposed at the end of the using scope — the underlying byte[] returns to ArrayPool<byte>.Shared.
     ///]]>
+    /// </code>
     /// </example>
     public static PooledBufferBuilder<byte> GetBytesPooled(
         this System.Text.Encoding encoding,

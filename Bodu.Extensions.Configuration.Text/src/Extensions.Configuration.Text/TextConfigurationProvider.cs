@@ -26,6 +26,7 @@ namespace Bodu.Extensions.Configuration.Text;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Diagnostic introspection: locate the Bodu provider after the configuration root has been built.
 /// IConfigurationRoot root = builder.Build();
@@ -39,6 +40,7 @@ namespace Bodu.Extensions.Configuration.Text;
 ///     Console.WriteLine($"Reload on change: {bodu.TextSource.ReloadOnChange}");
 /// }
 ///]]>
+/// </code>
 /// </example>
 public sealed class TextConfigurationProvider
     : FileConfigurationProvider

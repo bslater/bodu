@@ -31,11 +31,13 @@ namespace Bodu;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Substitute a deterministic generator in tests.
 /// IRandomGenerator rng = new XorShiftRandom(seed: 42);
 /// int dieRoll = rng.Next(6) + 1; // value in [1, 6]
 ///]]>
+/// </code>
 /// </example>
 public interface IRandomGenerator
 {

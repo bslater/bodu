@@ -30,6 +30,7 @@ namespace Bodu.Collections.Generic;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Deterministic shuffle of an array — useful for tests and reproducible demos.
 /// var deck = Enumerable.Range(1, 52).ToArray();
@@ -40,6 +41,7 @@ namespace Bodu.Collections.Generic;
 /// foreach (int card in ShuffleHelpers.ShuffleAndYield(deck, rng, count: 5))
 ///     Console.WriteLine(card);
 ///]]>
+/// </code>
 /// </example>
 public static partial class ShuffleHelpers
 { }

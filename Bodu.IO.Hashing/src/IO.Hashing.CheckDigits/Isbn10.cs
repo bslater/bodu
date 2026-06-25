@@ -26,6 +26,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Two contrasting bodies — the second exercises the 'X' sentinel.
 /// char check    = Isbn10.Compute("030640615");   // '2'
@@ -39,6 +40,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// algo.Append("030640615");
 /// char d = algo.GetCurrentCheckDigit();          // '2'
 ///]]>
+/// </code>
 /// </example>
 public sealed class Isbn10
     : AlphanumericCheckDigitAlgorithm

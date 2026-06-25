@@ -30,6 +30,7 @@ namespace Bodu.Collections.Generic;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // De-duplicate a stream of tags while keeping the order in which each was first seen.
 /// var tags = new OrderedSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -45,6 +46,7 @@ namespace Bodu.Collections.Generic;
 /// var diff = new OrderedSet<string>(tags);
 /// diff.ExceptWith(new[] { "beta" });
 ///]]>
+/// </code>
 /// </example>
 [DebuggerDisplay("Count = {Count}")]
 [DebuggerTypeProxy(typeof(OrderedSetStorageDebugView<>))]

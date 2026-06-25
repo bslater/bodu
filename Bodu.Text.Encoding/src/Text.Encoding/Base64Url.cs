@@ -19,6 +19,7 @@ namespace Bodu.Text.Encoding;
 /// forms produce identical output.
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Encode a JWT segment — URL-safe alphabet, no padding.
 /// byte[] header   = "{\"alg\":\"HS256\",\"typ\":\"JWT\"}"u8.ToArray();
@@ -28,6 +29,7 @@ namespace Bodu.Text.Encoding;
 /// byte[] roundtrip = Base64Url.Decode(segment);
 /// byte[] padded    = Base64Url.Decode("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9==");
 ///]]>
+/// </code>
 /// </example>
 public static class Base64Url
 {

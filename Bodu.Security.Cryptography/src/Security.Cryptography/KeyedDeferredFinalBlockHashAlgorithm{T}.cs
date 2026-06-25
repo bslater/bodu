@@ -44,6 +44,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // BLAKE2b in keyed MAC mode — the key is optional and may be up to MaximumKeySize bits.
 /// byte[] key = new byte[32];
@@ -56,6 +57,7 @@ namespace Bodu.Security.Cryptography;
 /// using var digest = new Blake2b();
 /// byte[] hash = digest.ComputeHash("message"u8.ToArray());
 ///]]>
+/// </code>
 /// </example>
 /// <seealso cref="DeferredFinalBlockHashAlgorithm{T}"/> <seealso cref="KeyedBlockHashAlgorithm{T}"/>
 public abstract class KeyedDeferredFinalBlockHashAlgorithm<T>

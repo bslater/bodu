@@ -26,6 +26,7 @@ namespace Bodu.Text.Encoding;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// byte[] data = "hello"u8.ToArray();
 ///
@@ -43,6 +44,7 @@ namespace Bodu.Text.Encoding;
 /// string encoded = data.Encode(chosen);
 /// byte[] decoded = encoded.Decode(chosen);
 ///]]>
+/// </code>
 /// </example>
 public static class BinaryEncodingExtensions
 {

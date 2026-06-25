@@ -32,6 +32,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Wrap a delegate via the static helper — the call site reads more naturally than the
 /// // constructor and avoids the trailing generic-type repetition.
@@ -48,6 +49,7 @@ namespace Bodu.Security.Cryptography;
 ///     HashingVariant = TigerHashingVariant.Tiger2,
 /// });
 ///]]>
+/// </code>
 /// </example>
 /// <seealso cref="IHashAlgorithmFactory{T}"/> <seealso cref="HashAlgorithmFactory"/>
 /// <seealso cref="HashAlgorithmHelper"/>
