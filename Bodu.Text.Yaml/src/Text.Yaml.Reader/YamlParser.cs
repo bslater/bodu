@@ -24,12 +24,14 @@ internal sealed partial class YamlParser
     private readonly YamlSpecVersion _version;
     private readonly int _maxDepth;
     private readonly YamlDuplicateKeyBehavior _duplicateKeyBehavior;
+    private readonly YamlMergeKeyBehavior _mergeKeyBehavior;
     private List<YamlReaderRow> _rows = [];
 
     private int _pos;
     private int _line;
     private int _lineStart;
     private int _depth;
+    private Dictionary<string, string>? _tagHandles;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="YamlParser" /> class over the specified source.
@@ -39,13 +41,21 @@ internal sealed partial class YamlParser
     /// <param name="version">The specification version whose resolution rules apply.</param>
     /// <param name="maxDepth">The maximum container nesting depth permitted.</param>
     /// <param name="duplicateKeyBehavior">The policy applied to duplicate mapping keys.</param>
-    internal YamlParser(byte[] source, int length, YamlSpecVersion version, int maxDepth, YamlDuplicateKeyBehavior duplicateKeyBehavior = YamlDuplicateKeyBehavior.Throw)
+    /// <param name="mergeKeyBehavior">The policy applied to the merge key.</param>
+    internal YamlParser(
+        byte[] source,
+        int length,
+        YamlSpecVersion version,
+        int maxDepth,
+        YamlDuplicateKeyBehavior duplicateKeyBehavior = YamlDuplicateKeyBehavior.Throw,
+        YamlMergeKeyBehavior mergeKeyBehavior = YamlMergeKeyBehavior.Expand)
     {
         _source = source;
         _length = length;
         _version = version;
         _maxDepth = maxDepth;
         _duplicateKeyBehavior = duplicateKeyBehavior;
+        _mergeKeyBehavior = mergeKeyBehavior;
     }
 
     /// <summary>

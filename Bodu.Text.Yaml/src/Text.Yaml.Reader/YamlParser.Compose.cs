@@ -20,8 +20,55 @@ internal sealed partial class YamlParser
     private void Compose()
     {
         ResolveAliases();
+        DetectAliasCycles();
         CoerceTags();
         ExpandMergeKeys();
+    }
+
+    /// <summary>
+    /// Walks the resolved node graph and rejects any alias cycle, which the tree profile cannot represent and which
+    /// would otherwise cause unbounded recursion during traversal or binding.
+    /// </summary>
+    /// <exception cref="YamlFormatException">An alias forms a cycle.</exception>
+    private void DetectAliasCycles()
+    {
+        if (_rows.Count == 0)
+            return;
+
+        var state = new AliasVisitState[_rows.Count];
+        VisitForCycle(0, state);
+    }
+
+    /// <summary>
+    /// Performs a depth-first visit of a node, resolving aliases and flagging a back edge to a node still on the
+    /// traversal stack as a cycle.
+    /// </summary>
+    /// <param name="index">The row index to visit.</param>
+    /// <param name="state">The per-row visit state.</param>
+    /// <exception cref="YamlFormatException">A cycle is detected.</exception>
+    private void VisitForCycle(int index, AliasVisitState[] state)
+    {
+        var resolved = Resolve(index);
+        if (state[resolved] == AliasVisitState.Visiting)
+        {
+            var anchor = _rows[resolved].Anchor ?? string.Empty;
+            throw new YamlFormatException(string.Format(
+                CultureInfo.CurrentCulture, YamlResourceStrings.Format_Invalid_YamlCyclicAlias, anchor));
+        }
+
+        if (state[resolved] == AliasVisitState.Visited)
+            return;
+
+        state[resolved] = AliasVisitState.Visiting;
+
+        var child = _rows[resolved].FirstChild;
+        while (child >= 0)
+        {
+            VisitForCycle(child, state);
+            child = _rows[child].NextSibling;
+        }
+
+        state[resolved] = AliasVisitState.Visited;
     }
 
     /// <summary>
@@ -59,6 +106,9 @@ internal sealed partial class YamlParser
     /// </summary>
     private void ExpandMergeKeys()
     {
+        if (_mergeKeyBehavior != YamlMergeKeyBehavior.Expand)
+            return;
+
         var count = _rows.Count;
         for (var i = 0; i < count; i++)
         {
@@ -207,7 +257,7 @@ internal sealed partial class YamlParser
             if (r.Kind != YamlReaderNodeKind.Scalar || r.Tag is null)
                 continue;
 
-            var tag = NormalizeCoreTag(r.Tag);
+            var tag = NormalizeCoreTag(ExpandTagHandle(r.Tag));
             if (tag is null)
                 continue;
 
@@ -285,6 +335,45 @@ internal sealed partial class YamlParser
     };
 
     /// <summary>
+    /// Expands a tag's handle to its full prefix using the active <c>%TAG</c> directive table, resolving secondary
+    /// (<c>!!</c>) and named (<c>!name!</c>) handles. Verbatim and already-resolved tags pass through unchanged.
+    /// </summary>
+    /// <param name="tag">The captured tag text.</param>
+    /// <returns>The tag with its handle expanded, when applicable.</returns>
+    private string ExpandTagHandle(string tag)
+    {
+        if (tag.Length == 0 || tag[0] != '!' || tag.StartsWith("!<", StringComparison.Ordinal))
+            return tag;
+
+        if (tag.StartsWith("!!", StringComparison.Ordinal))
+            return ResolveHandlePrefix("!!", "tag:yaml.org,2002:") + tag[2..];
+
+        var secondBang = tag.IndexOf('!', 1);
+        if (secondBang > 0)
+        {
+            var handle = tag[..(secondBang + 1)];
+            if (_tagHandles is not null && _tagHandles.TryGetValue(handle, out var prefix))
+                return prefix + tag[(secondBang + 1)..];
+
+            return tag;
+        }
+
+        if (_tagHandles is not null && _tagHandles.TryGetValue("!", out var primaryPrefix))
+            return primaryPrefix + tag[1..];
+
+        return tag;
+    }
+
+    /// <summary>
+    /// Resolves a handle to its prefix from the active <c>%TAG</c> table, falling back to a default prefix.
+    /// </summary>
+    /// <param name="handle">The handle to resolve.</param>
+    /// <param name="fallback">The default prefix when the handle is not redefined.</param>
+    /// <returns>The resolved prefix.</returns>
+    private string ResolveHandlePrefix(string handle, string fallback) =>
+        _tagHandles is not null && _tagHandles.TryGetValue(handle, out var prefix) ? prefix : fallback;
+
+    /// <summary>
     /// Normalizes a tag to its core-schema short name when it is a recognized core tag.
     /// </summary>
     /// <param name="tag">The captured tag text.</param>
@@ -313,5 +402,20 @@ internal sealed partial class YamlParser
     {
         var r = _rows[index];
         return r.Kind == YamlReaderNodeKind.Alias && r.AliasTarget >= 0 ? r.AliasTarget : index;
+    }
+
+    /// <summary>
+    /// Tracks a node's state during the cycle-detection depth-first walk.
+    /// </summary>
+    private enum AliasVisitState
+    {
+        /// <summary>The node has not yet been visited.</summary>
+        Unvisited = 0,
+
+        /// <summary>The node is currently on the traversal stack.</summary>
+        Visiting = 1,
+
+        /// <summary>The node and its descendants have been fully visited.</summary>
+        Visited = 2,
     }
 }

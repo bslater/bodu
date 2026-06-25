@@ -279,21 +279,21 @@ internal sealed partial class YamlParser
     }
 
     /// <summary>
-    /// Skips leading <c>%YAML</c>/<c>%TAG</c> directive lines and a single leading <c>---</c> document-start marker.
+    /// Validates and applies the document's <c>%YAML</c>/<c>%TAG</c> directives, then consumes a single leading
+    /// <c>---</c> document-start marker.
     /// </summary>
+    /// <exception cref="YamlFormatException">A directive is malformed or repeated.</exception>
     private void SkipDirectivesAndDocumentStart()
     {
+        _tagHandles = null;
+        var yamlDirectiveSeen = false;
+
         while (true)
         {
             SkipBlankCommentLines();
             if (!AtEnd && CurrentColumn() == 0 && Peek() == (byte)'%')
             {
-                while (!IsBreakOrEnd(Peek()))
-                    _pos++;
-
-                if (!AtEnd)
-                    Advance();
-
+                ProcessDirective(ref yamlDirectiveSeen);
                 continue;
             }
 
@@ -307,6 +307,93 @@ internal sealed partial class YamlParser
             Advance();
             Advance();
         }
+    }
+
+    /// <summary>
+    /// Parses and validates a single directive line beginning at the cursor, applying <c>%TAG</c> handles and checking
+    /// <c>%YAML</c> version constraints. Unknown (reserved) directives are ignored per the specification.
+    /// </summary>
+    /// <param name="yamlDirectiveSeen">
+    /// Tracks whether a <c>%YAML</c> directive has already appeared in the current document.
+    /// </param>
+    /// <exception cref="YamlFormatException">The directive is malformed or repeated.</exception>
+    private void ProcessDirective(ref bool yamlDirectiveSeen)
+    {
+        var lineStart = _pos;
+        Advance(); // '%'
+
+        var nameStart = _pos;
+        while (!IsBlankOrBreakOrEnd(Peek()))
+            _pos++;
+
+        var name = Utf8(nameStart, _pos - nameStart);
+
+        if (name == "YAML")
+        {
+            if (yamlDirectiveSeen)
+                throw ErrorAt(lineStart, YamlResourceStrings.Format_Invalid_YamlInvalidDirective);
+
+            yamlDirectiveSeen = true;
+            var version = ReadDirectiveParameter();
+            if (version is not ("1.1" or "1.2"))
+                throw ErrorAt(lineStart, YamlResourceStrings.Format_Invalid_YamlInvalidDirective);
+        }
+        else if (name == "TAG")
+        {
+            var handle = ReadDirectiveParameter();
+            var prefix = ReadDirectiveParameter();
+            if (!IsValidTagHandle(handle) || prefix.Length == 0)
+                throw ErrorAt(lineStart, YamlResourceStrings.Format_Invalid_YamlInvalidDirective);
+
+            _tagHandles ??= new Dictionary<string, string>(StringComparer.Ordinal);
+            if (!_tagHandles.TryAdd(handle, prefix))
+                throw ErrorAt(lineStart, YamlResourceStrings.Format_Invalid_YamlInvalidDirective);
+        }
+
+        // Consume the remainder of the directive line.
+        while (!IsBreakOrEnd(Peek()))
+            _pos++;
+
+        if (!AtEnd)
+            Advance();
+    }
+
+    /// <summary>
+    /// Reads the next whitespace-delimited parameter token on the current directive line.
+    /// </summary>
+    /// <returns>The parameter text, or the empty string when none remains on the line.</returns>
+    private string ReadDirectiveParameter()
+    {
+        SkipSpaces();
+        var start = _pos;
+        while (!IsBlankOrBreakOrEnd(Peek()))
+            _pos++;
+
+        return Utf8(start, _pos - start);
+    }
+
+    /// <summary>
+    /// Determines whether a tag handle is one of the three valid forms: the primary (<c>!</c>), secondary (<c>!!</c>),
+    /// or a named handle (<c>!name!</c>).
+    /// </summary>
+    /// <param name="handle">The handle text.</param>
+    /// <returns><see langword="true" /> when the handle is well-formed.</returns>
+    private static bool IsValidTagHandle(string handle)
+    {
+        if (handle is "!" or "!!")
+            return true;
+
+        if (handle.Length < 3 || handle[0] != '!' || handle[^1] != '!')
+            return false;
+
+        for (var i = 1; i < handle.Length - 1; i++)
+        {
+            var c = handle[i];
+            if (!char.IsLetterOrDigit(c) && c != '-')
+                return false;
+        }
+
+        return true;
     }
 
     /// <summary>
