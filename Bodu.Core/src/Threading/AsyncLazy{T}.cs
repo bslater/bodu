@@ -113,7 +113,7 @@ public sealed class AsyncLazy<T>
     /// The value factory accessed the value of the same instance while it was being produced.
     /// </exception>
     public Task<T> Value =>
-        GetSharedTask();
+        GetSharedTaskAsync();
 
     /// <summary>
     /// Gets an awaiter that resolves to the lazily produced value, enabling <c>await</c> on the instance directly.
@@ -123,7 +123,7 @@ public sealed class AsyncLazy<T>
     /// The value factory accessed the value of the same instance while it was being produced.
     /// </exception>
     public TaskAwaiter<T> GetAwaiter() =>
-        GetSharedTask().GetAwaiter();
+        GetSharedTaskAsync().GetAwaiter();
 
     /// <summary>
     /// Configures how the await on the lazily produced value is continued.
@@ -137,7 +137,7 @@ public sealed class AsyncLazy<T>
     /// The value factory accessed the value of the same instance while it was being produced.
     /// </exception>
     public ConfiguredTaskAwaitable<T> ConfigureAwait(bool continueOnCapturedContext) =>
-        GetSharedTask().ConfigureAwait(continueOnCapturedContext);
+        GetSharedTaskAsync().ConfigureAwait(continueOnCapturedContext);
 
     /// <summary>
     /// Asynchronously gets the lazily produced value, abandoning only this caller's wait if the token is canceled.
@@ -162,7 +162,7 @@ public sealed class AsyncLazy<T>
     /// </example>
     public Task<T> GetValueAsync(CancellationToken cancellationToken)
     {
-        Task<T> task = GetSharedTask();
+        Task<T> task = GetSharedTaskAsync();
         return task.IsCompleted || !cancellationToken.CanBeCanceled
             ? task
             : task.WaitAsync(cancellationToken);
@@ -175,7 +175,7 @@ public sealed class AsyncLazy<T>
     /// <exception cref="InvalidOperationException">
     /// The value factory accessed the value of the same instance while it was being produced.
     /// </exception>
-    private Task<T> GetSharedTask()
+    private Task<T> GetSharedTaskAsync()
     {
         if (_factoryRunning.Value)
             throw new InvalidOperationException(ResourceStrings.Op_Invalid_AsyncLazyReentrant);
