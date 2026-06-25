@@ -1,0 +1,263 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="YamlParser.Flow.cs" company="Bodu Pty. Ltd.">
+// Copyright (c) Bodu Pty. Ltd. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+namespace Bodu.Text.Yaml.Reader;
+
+/// <summary>
+/// Flow-context parsing for the YAML parser: flow sequences (<c>[...]</c>), flow mappings (<c>{...}</c>), and flow
+/// scalars, all of which may span lines and contain interleaved comments.
+/// </summary>
+internal sealed partial class YamlParser
+{
+    /// <summary>
+    /// Parses a flow node, dispatching to a flow sequence, flow mapping, alias, or flow scalar.
+    /// </summary>
+    /// <returns>The row index of the parsed node.</returns>
+    private int ParseFlowNode()
+    {
+        SkipFlowWhitespace();
+        var anchor = TryReadAnchorAndTag(out var tag);
+        SkipFlowWhitespace();
+
+        var c = Peek();
+        int row;
+        if (c == (byte)'[')
+            row = ParseFlowSequence();
+        else if (c == (byte)'{')
+            row = ParseFlowMapping();
+        else if (c == (byte)'*')
+            row = ParseAlias();
+        else
+            row = ParseFlowScalar();
+
+        ApplyProperties(row, anchor, tag);
+        return row;
+    }
+
+    /// <summary>
+    /// Parses a flow sequence, supporting plain elements and implicit single-pair mapping entries.
+    /// </summary>
+    /// <returns>The row index of the sequence.</returns>
+    private int ParseFlowSequence()
+    {
+        var sequence = NewContainer(YamlReaderNodeKind.Sequence, _pos, null, null);
+        Advance(); // '['
+        SkipFlowWhitespace();
+
+        if (Peek() == (byte)']')
+        {
+            Advance();
+            return sequence;
+        }
+
+        while (true)
+        {
+            var element = ParseFlowNode();
+            SkipFlowWhitespace();
+
+            // An implicit single-pair mapping element: `key: value` inside the sequence.
+            if (Peek() == (byte)':' && IsFlowColonStop(PeekAt(1)))
+            {
+                Advance();
+                SkipFlowWhitespace();
+                var pair = NewContainer(YamlReaderNodeKind.Mapping, _rows[element].Offset, null, null);
+                var key = KeyTextOf(element);
+                int value;
+                if (Peek() is (byte)',' or (byte)']')
+                    value = NewScalar(YamlValueKind.Null, 0, YamlScalarStyle.Plain, _pos, null, null);
+                else
+                    value = ParseFlowNode();
+
+                var v = _rows[value];
+                v.Key = key;
+                _rows[value] = v;
+                AppendChild(pair, value);
+                element = pair;
+                SkipFlowWhitespace();
+            }
+
+            AppendChild(sequence, element);
+
+            var c = Peek();
+            if (c == (byte)',')
+            {
+                Advance();
+                SkipFlowWhitespace();
+                if (Peek() == (byte)']')
+                {
+                    Advance();
+                    break;
+                }
+
+                continue;
+            }
+
+            if (c == (byte)']')
+            {
+                Advance();
+                break;
+            }
+
+            throw Error(YamlResourceStrings.Format_Invalid_YamlInvalidFlow);
+        }
+
+        return sequence;
+    }
+
+    /// <summary>
+    /// Parses a flow mapping of comma-separated key/value entries.
+    /// </summary>
+    /// <returns>The row index of the mapping.</returns>
+    private int ParseFlowMapping()
+    {
+        var mapping = NewContainer(YamlReaderNodeKind.Mapping, _pos, null, null);
+        Advance(); // '{'
+        SkipFlowWhitespace();
+
+        if (Peek() == (byte)'}')
+        {
+            Advance();
+            return mapping;
+        }
+
+        while (true)
+        {
+            if (Peek() == (byte)'?')
+            {
+                Advance();
+                SkipFlowWhitespace();
+            }
+
+            var keyNode = ParseFlowNode();
+            var key = KeyTextOf(keyNode);
+            SkipFlowWhitespace();
+
+            int value;
+            if (Peek() == (byte)':')
+            {
+                Advance();
+                SkipFlowWhitespace();
+                value = Peek() is (byte)',' or (byte)'}'
+                    ? NewScalar(YamlValueKind.Null, 0, YamlScalarStyle.Plain, _pos, null, null)
+                    : ParseFlowNode();
+            }
+            else
+            {
+                value = NewScalar(YamlValueKind.Null, 0, YamlScalarStyle.Plain, _pos, null, null);
+            }
+
+            var v = _rows[value];
+            v.Key = key;
+            _rows[value] = v;
+            AppendChild(mapping, value);
+
+            SkipFlowWhitespace();
+            var c = Peek();
+            if (c == (byte)',')
+            {
+                Advance();
+                SkipFlowWhitespace();
+                if (Peek() == (byte)'}')
+                {
+                    Advance();
+                    break;
+                }
+
+                continue;
+            }
+
+            if (c == (byte)'}')
+            {
+                Advance();
+                break;
+            }
+
+            throw Error(YamlResourceStrings.Format_Invalid_YamlInvalidFlow);
+        }
+
+        return mapping;
+    }
+
+    /// <summary>
+    /// Parses a flow scalar: a quoted scalar or a restricted single-line plain scalar.
+    /// </summary>
+    /// <returns>The row index of the scalar.</returns>
+    private int ParseFlowScalar()
+    {
+        var offset = _pos;
+        var c = Peek();
+        if (c == (byte)'"')
+            return NewString(ReadDoubleQuoted(), YamlScalarStyle.DoubleQuoted, offset, null, null);
+
+        if (c == (byte)'\'')
+            return NewString(ReadSingleQuoted(), YamlScalarStyle.SingleQuoted, offset, null, null);
+
+        var start = _pos;
+        var end = _pos;
+        while (!IsBreakOrEnd(Peek()))
+        {
+            var b = Peek();
+            if (b is (byte)',' or (byte)'[' or (byte)']' or (byte)'{' or (byte)'}')
+                break;
+
+            if (b == (byte)':' && IsFlowColonStop(PeekAt(1)))
+                break;
+
+            if (b == (byte)' ' && PeekAt(1) == (byte)'#')
+                break;
+
+            _pos++;
+            if (_source[_pos - 1] is not ((byte)' ' or (byte)'\t'))
+                end = _pos;
+        }
+
+        ReadOnlySpan<byte> span = _source.AsSpan(start, end - start);
+        var kind = YamlScalarResolver.Resolve(span, _version, out var bits);
+        return kind != YamlValueKind.String
+            ? NewScalar(kind, bits, YamlScalarStyle.Plain, offset, null, null)
+            : NewString(Utf8(start, end - start), YamlScalarStyle.Plain, offset, null, null);
+    }
+
+    /// <summary>
+    /// Determines whether a byte following a colon terminates a plain scalar in flow context.
+    /// </summary>
+    /// <param name="b">The byte after the colon.</param>
+    /// <returns><see langword="true" /> when the colon acts as a value indicator.</returns>
+    private static bool IsFlowColonStop(byte b) =>
+        IsBlankOrBreakOrEnd(b) || b is (byte)',' or (byte)'[' or (byte)']' or (byte)'{' or (byte)'}';
+
+    /// <summary>
+    /// Advances over spaces, tabs, line breaks, and comments between flow tokens.
+    /// </summary>
+    private void SkipFlowWhitespace()
+    {
+        while (!AtEnd)
+        {
+            var b = Peek();
+            if (b is (byte)' ' or (byte)'\t')
+            {
+                _pos++;
+                continue;
+            }
+
+            if (b is (byte)'\n' or (byte)'\r')
+            {
+                Advance();
+                continue;
+            }
+
+            if (b == (byte)'#')
+            {
+                while (!IsBreakOrEnd(Peek()))
+                    _pos++;
+
+                continue;
+            }
+
+            break;
+        }
+    }
+}
