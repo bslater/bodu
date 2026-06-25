@@ -9,10 +9,10 @@ using System.Text;
 
 namespace Bodu.Financial;
 
-public readonly partial struct Money :
-    IFormattable,
-    ISpanFormattable,
-    IUtf8SpanFormattable
+public readonly partial struct Money
+    : IFormattable
+    , ISpanFormattable
+    , IUtf8SpanFormattable
 {
     /// <summary>
     /// Returns the default string representation: ISO code followed by the amount at the currency's minor-unit

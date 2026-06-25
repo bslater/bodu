@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CompoundFileTests.IsCompoundFile.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -80,7 +80,8 @@ public partial class CompoundFileTests
     /// <summary>
     /// A minimal non-seekable wrapper used to exercise the seekability guard.
     /// </summary>
-    private sealed class NonSeekableStream : MemoryStream
+    private sealed class NonSeekableStream
+        : MemoryStream
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="NonSeekableStream" /> class over the supplied bytes.

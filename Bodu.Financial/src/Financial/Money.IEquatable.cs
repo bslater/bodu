@@ -8,10 +8,10 @@ using System.Globalization;
 
 namespace Bodu.Financial;
 
-public readonly partial struct Money :
-    IEquatable<Money>,
-    IComparable<Money>,
-    IComparable
+public readonly partial struct Money
+    : IEquatable<Money>
+    , IComparable<Money>
+    , IComparable
 {
     /// <summary>
     /// Determines whether two instances are equal in both currency and amount.

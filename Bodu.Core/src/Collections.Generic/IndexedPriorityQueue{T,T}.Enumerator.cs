@@ -35,8 +35,8 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
     /// </para>
     /// </remarks>
     [Serializable]
-    public struct Enumerator :
-        IEnumerator<KeyValuePair<TElement, TPriority>>
+    public struct Enumerator
+        : IEnumerator<KeyValuePair<TElement, TPriority>>
     {
         /// <summary>The queue being enumerated.</summary>
         private readonly IndexedPriorityQueue<TElement, TPriority> _queue;

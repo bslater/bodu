@@ -22,8 +22,8 @@ public abstract partial class RingBackedCollection<T>
     /// </para>
     /// </remarks>
     [Serializable]
-    public struct Enumerator :
-        System.Collections.Generic.IEnumerator<T>
+    public struct Enumerator
+        : System.Collections.Generic.IEnumerator<T>
     {
         /// <summary>The collection whose elements this enumerator iterates over.</summary>
         private readonly RingBackedCollection<T> _collection;

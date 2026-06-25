@@ -9,9 +9,9 @@ using Bodu.Financial.Currencies;
 
 namespace Bodu.Financial;
 
-public readonly partial struct Money :
-    IParsable<Money>,
-    ISpanParsable<Money>
+public readonly partial struct Money
+    : IParsable<Money>
+    , ISpanParsable<Money>
 {
     /// <summary>
     /// Parses a <see cref="Money" /> from <c>"&lt;ISO&gt; &lt;amount&gt;"</c> or <c>"&lt;amount&gt; &lt;ISO&gt;"</c>.

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsyncSemaphore.Releaser.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -17,7 +17,8 @@ public sealed partial class AsyncSemaphore
     /// copy returns more than one permit, which raises the permit count and may throw from <see cref="Release()" />;
     /// this is undefined behavior, mirroring the contract of the framework's value-type enumerators.
     /// </remarks>
-    public readonly struct Releaser : IDisposable
+    public readonly struct Releaser
+        : IDisposable
     {
         /// <summary>The semaphore that issued the permit, or <see langword="null" /> for a default releaser.</summary>
         private readonly AsyncSemaphore? _owner;

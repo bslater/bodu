@@ -180,8 +180,8 @@ public static partial class IEnumerableExtensions
         /// <summary>
         /// Enumerator that reads items from the cached buffer or populates new items from the source.
         /// </summary>
-        private sealed class Enumerator :
-           System.Collections.Generic.IEnumerator<T>
+        private sealed class Enumerator
+            : System.Collections.Generic.IEnumerator<T>
         {
             /// <summary>The parent <see cref="CacheEnumerable{T}" /> whose cache this enumerator reads.</summary>
             private readonly CacheEnumerable<T> _parent;

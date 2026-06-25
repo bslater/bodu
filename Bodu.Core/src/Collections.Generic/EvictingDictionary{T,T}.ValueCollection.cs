@@ -20,10 +20,10 @@ public partial class EvictingDictionary<TKey, TValue>
     /// <see cref="ICollection{T}.Clear" />, and <see cref="ICollection{T}.Remove" /> throw
     /// <see cref="NotSupportedException" />.
     /// </remarks>
-    public sealed class ValueCollection :
-        ICollection<TValue>,
-        IReadOnlyCollection<TValue>,
-        ICollection
+    public sealed class ValueCollection
+        : ICollection<TValue>
+        , IReadOnlyCollection<TValue>
+        , ICollection
     {
         /// <summary>The dictionary whose values this collection exposes.</summary>
         private readonly EvictingDictionary<TKey, TValue> _dictionary;

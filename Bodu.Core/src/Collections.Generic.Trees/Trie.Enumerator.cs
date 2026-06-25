@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Trie.Enumerator.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -17,7 +17,8 @@ public sealed partial class Trie
     /// The enumerator is fail-fast: if the trie is modified after the enumerator is created, the next call to
     /// <see cref="MoveNext" /> or <see cref="Reset" /> throws <see cref="InvalidOperationException" />.
     /// </remarks>
-    public struct Enumerator : IEnumerator<string>
+    public struct Enumerator
+        : IEnumerator<string>
     {
         /// <summary>The trie being enumerated, used to detect modification through its version counter.</summary>
         private readonly Trie _owner;

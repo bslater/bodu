@@ -23,8 +23,8 @@ public partial class EvictingDictionary<TKey, TValue>
     /// enumerating invalidates the enumerator.
     /// </para>
     /// </remarks>
-    public struct DictionaryEnumerator :
-       System.Collections.IDictionaryEnumerator
+    public struct DictionaryEnumerator
+        : System.Collections.IDictionaryEnumerator
     {
         /// <summary>The dictionary whose entries this enumerator iterates over.</summary>
         private readonly EvictingDictionary<TKey, TValue> _dictionary;

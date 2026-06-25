@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FakeTimeProvider.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -10,7 +10,8 @@ namespace Bodu.Threading;
 /// Provides a deterministic, manually advanced <see cref="TimeProvider" /> for time-dependent tests. Time only
 /// progresses when <see cref="Advance(TimeSpan)" /> is called, at which point any due single-shot timers fire.
 /// </summary>
-internal sealed class FakeTimeProvider : TimeProvider
+internal sealed class FakeTimeProvider
+    : TimeProvider
 {
     private readonly object _gate = new();
     private readonly List<FakeTimer> _timers = new();
@@ -86,7 +87,8 @@ internal sealed class FakeTimeProvider : TimeProvider
     /// <summary>
     /// A single-shot timer scheduled against a <see cref="FakeTimeProvider" />.
     /// </summary>
-    private sealed class FakeTimer : ITimer
+    private sealed class FakeTimer
+        : ITimer
     {
         private readonly FakeTimeProvider _provider;
         private readonly TimerCallback _callback;

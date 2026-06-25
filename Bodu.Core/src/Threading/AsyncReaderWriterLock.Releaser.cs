@@ -19,7 +19,8 @@ public sealed partial class AsyncReaderWriterLock
     /// exactly once. This prevents accidental double-disposal from corrupting the reader count or granting overlapping
     /// access, at the cost of one small allocation per acquisition for the shared idempotency guard.
     /// </remarks>
-    public readonly struct Releaser : IDisposable
+    public readonly struct Releaser
+        : IDisposable
     {
         /// <summary>The lock to release on disposal, or <see langword="null" /> for a default releaser.</summary>
         private readonly AsyncReaderWriterLock? _owner;

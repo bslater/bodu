@@ -14,8 +14,8 @@ namespace Bodu.Collections.Generic.Extensions;
 /// <see cref="IRandomGenerator" /> abstraction, enabling straightforward substitution for testing or alternative
 /// generators.
 /// </remarks>
-public sealed class SystemRandomAdapter :
-    IRandomGenerator
+public sealed class SystemRandomAdapter
+    : IRandomGenerator
 {
     /// <summary>The wrapped <see cref="System.Random" /> instance to which generation calls are delegated.</summary>
     private readonly Random _random;

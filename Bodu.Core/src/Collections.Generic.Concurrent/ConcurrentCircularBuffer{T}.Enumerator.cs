@@ -28,8 +28,8 @@ public sealed partial class ConcurrentCircularBuffer<T> :
     /// </para>
     /// </remarks>
     [Serializable]
-    public struct Enumerator :
-       System.Collections.Generic.IEnumerator<T>
+    public struct Enumerator
+        : System.Collections.Generic.IEnumerator<T>
     {
         /// <summary>The eagerly captured copy of the buffer's elements that this enumerator iterates over.</summary>
         private readonly T[] _snapshot;

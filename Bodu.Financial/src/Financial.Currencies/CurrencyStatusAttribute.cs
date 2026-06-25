@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CurrencyStatusAttribute.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -15,7 +15,8 @@ namespace Bodu.Financial.Currencies;
 /// initialization.
 /// </remarks>
 [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = false)]
-public sealed class CurrencyStatusAttribute : Attribute
+public sealed class CurrencyStatusAttribute
+    : Attribute
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="CurrencyStatusAttribute" /> class.

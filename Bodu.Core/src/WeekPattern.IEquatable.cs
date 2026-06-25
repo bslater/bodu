@@ -6,9 +6,9 @@
 
 namespace Bodu;
 
-public partial struct WeekPattern :
-    System.IEquatable<WeekPattern>,
-    System.IEquatable<byte>
+public partial struct WeekPattern
+    : System.IEquatable<WeekPattern>
+    , System.IEquatable<byte>
 {
     /// <summary>
     /// Determines whether the specified object is equal to the current <see cref="WeekPattern" />.
