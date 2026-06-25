@@ -36,48 +36,48 @@ public sealed partial class ConfigurationWriteOptions
     /// <summary>
     /// Gets the behaviour profile this option bag represents.
     /// </summary>
-    /// <returns>The selected profile.</returns>
+    /// <value>The selected profile.</value>
     public ConfigurationProfile Profile { get; init; } = ConfigurationProfile.Bodu;
 
     /// <summary>
     /// Gets the encoding used when writing to a byte stream or file. The default is UTF-8 without BOM.
     /// </summary>
-    /// <returns>The output encoding.</returns>
+    /// <value>The output encoding.</value>
     public Encoding Encoding { get; init; } = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
 
     /// <summary>
     /// Gets the line-ending sequence to emit between lines.
     /// </summary>
-    /// <returns>The line terminator string.</returns>
+    /// <value>The line terminator string.</value>
     public string NewLine { get; init; } = "\n";
 
     /// <summary>
     /// Gets the string used to separate keys and values (typically <c> = </c>).
     /// </summary>
-    /// <returns>The separator string.</returns>
+    /// <value>The separator string.</value>
     public string KeyValueSeparator { get; init; } = " = ";
 
     /// <summary>
     /// Gets the comment prefix character used when emitting new comments.
     /// </summary>
-    /// <returns>The comment prefix.</returns>
+    /// <value>The comment prefix.</value>
     public char CommentPrefix { get; init; } = '#';
 
     /// <summary>
     /// Gets a value indicating whether existing leading comments should be preserved in the output.
     /// </summary>
-    /// <returns><see langword="true" /> when comments are preserved.</returns>
+    /// <value><see langword="true" /> when comments are preserved.</value>
     public bool PreserveComments { get; init; } = true;
 
     /// <summary>
     /// Gets a value indicating whether inline comments should be emitted on property lines.
     /// </summary>
-    /// <returns><see langword="true" /> when inline comments are emitted.</returns>
+    /// <value><see langword="true" /> when inline comments are emitted.</value>
     public bool WriteInlineComments { get; init; } = true;
 
     /// <summary>
     /// Gets a value indicating whether a blank line is inserted between sections.
     /// </summary>
-    /// <returns><see langword="true" /> to insert a blank line.</returns>
+    /// <value><see langword="true" /> to insert a blank line.</value>
     public bool InsertBlankLineBetweenSections { get; init; } = true;
 }

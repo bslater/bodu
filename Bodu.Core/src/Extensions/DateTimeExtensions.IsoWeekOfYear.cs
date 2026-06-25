@@ -17,9 +17,9 @@ public static partial class DateTimeExtensions
         /// <summary>
         /// Gets the ISO 8601 week number for this date.
         /// </summary>
-        /// <returns>
+        /// <value>
         /// An integer in the range 1 – 53 representing the ISO 8601 week number that contains this date.
-        /// </returns>
+        /// </value>
         /// <remarks>
         /// <para>
         /// This follows the ISO 8601 standard for week numbering, where:

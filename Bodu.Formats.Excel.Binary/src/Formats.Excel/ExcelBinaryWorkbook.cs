@@ -96,24 +96,24 @@ public sealed class ExcelBinaryWorkbook
     /// <summary>
     /// Gets the sheets contained in the workbook, in workbook order.
     /// </summary>
-    /// <returns>A read-only list of <see cref="ExcelWorksheetInfo" /> describing each sheet.</returns>
+    /// <value>A read-only list of <see cref="ExcelWorksheetInfo" /> describing each sheet.</value>
     public IReadOnlyList<ExcelWorksheetInfo> Worksheets => _worksheets;
 
     /// <summary>
     /// Gets the document properties of the workbook.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The workbook properties; members are <see langword="null" /> when the corresponding property set is absent or
     /// was not read.
-    /// </returns>
+    /// </value>
     public ExcelWorkbookProperties Properties { get; }
 
     /// <summary>
     /// Gets the date system the workbook uses to interpret serial date numbers.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The declared date system; <see cref="ExcelDateSystem.Excel1900" /> when the workbook declares none.
-    /// </returns>
+    /// </value>
     public ExcelDateSystem DateSystem => _globals.DateSystem;
 
     /// <summary>

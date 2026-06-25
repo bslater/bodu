@@ -186,53 +186,53 @@ public readonly record struct ExchangeRate
     /// <summary>
     /// Gets the source currency.
     /// </summary>
-    /// <returns>The currency an amount is converted from.</returns>
+    /// <value>The currency an amount is converted from.</value>
     public CurrencyCode From { get; }
 
     /// <summary>
     /// Gets the destination currency.
     /// </summary>
-    /// <returns>The currency an amount is converted to.</returns>
+    /// <value>The currency an amount is converted to.</value>
     public CurrencyCode To { get; }
 
     /// <summary>
     /// Gets the directional currency pair this rate quotes.
     /// </summary>
-    /// <returns>An <see cref="ExchangeRatePair" /> of <see cref="From" /> and <see cref="To" />.</returns>
+    /// <value>An <see cref="ExchangeRatePair" /> of <see cref="From" /> and <see cref="To" />.</value>
     public ExchangeRatePair Pair => new(From, To);
 
     /// <summary>
     /// Gets the calendar date on which the rate was observed.
     /// </summary>
-    /// <returns>The observation date.</returns>
+    /// <value>The observation date.</value>
     public DateOnly Date { get; }
 
     /// <summary>
     /// Gets the multiplier that converts an amount in <see cref="From" /> to <see cref="To" />.
     /// </summary>
-    /// <returns>A strictly positive multiplier.</returns>
+    /// <value>A strictly positive multiplier.</value>
     public decimal Rate { get; }
 
     /// <summary>
     /// Gets the non-empty identifier of the publishing source.
     /// </summary>
-    /// <returns>The provider identifier.</returns>
+    /// <value>The provider identifier.</value>
     public string Provider { get; }
 
     /// <summary>
     /// Gets a value indicating whether this rate was derived from the reverse pair.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see langword="true" /> when <see cref="Rate" /> is the reciprocal of an originally published reverse-direction
     /// rate; otherwise <see langword="false" />.
-    /// </returns>
+    /// </value>
     public bool IsInverted { get; }
 
     /// <summary>
     /// Gets the UTC instant at which the upstream data backing this rate was originally fetched, or
     /// <see langword="null" /> when not tracked.
     /// </summary>
-    /// <returns>The fetch instant when known; otherwise <see langword="null" />.</returns>
+    /// <value>The fetch instant when known; otherwise <see langword="null" />.</value>
     /// <remarks>
     /// The value is provenance metadata describing when the load that produced this rate downloaded its source data. It
     /// is excluded from <see cref="Equals(ExchangeRate)" /> and <see cref="GetHashCode" />, so two rates that differ
@@ -244,7 +244,7 @@ public readonly record struct ExchangeRate
     /// Gets the underlying observed rate used for precise conversion. Equals <see cref="Rate" /> for a non-inverted
     /// rate; for an inverted rate it is the original reverse-pair rate.
     /// </summary>
-    /// <returns>The observed rate.</returns>
+    /// <value>The observed rate.</value>
     internal decimal ObservedRate => _observedRate;
 
     /// <summary>

@@ -66,6 +66,6 @@ public sealed class PluginActivationException
     /// <summary>
     /// Gets the plugin type that could not be activated.
     /// </summary>
-    /// <returns>The plugin type, or <see langword="null" /> when not known.</returns>
+    /// <value>The plugin type, or <see langword="null" /> when not known.</value>
     public Type? PluginType { get; }
 }

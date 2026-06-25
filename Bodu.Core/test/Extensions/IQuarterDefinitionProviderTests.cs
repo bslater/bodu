@@ -17,7 +17,7 @@ public sealed class IQuarterDefinitionProviderTests
     /// Gets a provider that relies on the default <c>GetFiscalYear</c> implementations. Its quarter grid fixes the
     /// fiscal year to the window 1 December 2023 – 30 November 2024 regardless of the candidate year.
     /// </summary>
-    /// <returns>A provider using the interface defaults.</returns>
+    /// <value>A provider using the interface defaults.</value>
     private static IQuarterDefinitionProvider Provider =>
         new DateTimeExtensionsTests.ValidQuarterProvider();
 

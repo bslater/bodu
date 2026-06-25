@@ -88,40 +88,40 @@ public readonly record struct ExchangeRate<TBase, TQuote>
     /// <summary>
     /// Gets the multiplier that converts a <typeparamref name="TBase" /> amount to <typeparamref name="TQuote" />.
     /// </summary>
-    /// <returns>A strictly positive multiplier.</returns>
+    /// <value>A strictly positive multiplier.</value>
     public decimal Rate { get; }
 
     /// <summary>
     /// Gets the calendar date on which the rate was observed.
     /// </summary>
-    /// <returns>The observation date.</returns>
+    /// <value>The observation date.</value>
     public DateOnly Date { get; }
 
     /// <summary>
     /// Gets the non-empty identifier of the publishing source.
     /// </summary>
-    /// <returns>The provider identifier.</returns>
+    /// <value>The provider identifier.</value>
     public string Provider { get; }
 
     /// <summary>
     /// Gets a value indicating whether this rate was derived from the reverse pair.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see langword="true" /> when <see cref="Rate" /> is the reciprocal of an originally published reverse-direction
     /// rate; otherwise <see langword="false" />.
-    /// </returns>
+    /// </value>
     public bool IsInverted { get; }
 
     /// <summary>
     /// Gets the ISO 4217 alphabetic code of the source currency, derived from <typeparamref name="TBase" />.
     /// </summary>
-    /// <returns>The three-character uppercase ASCII source-currency code.</returns>
+    /// <value>The three-character uppercase ASCII source-currency code.</value>
     public string FromIsoCode => CurrencyMetadata<TBase>.Value.IsoCode;
 
     /// <summary>
     /// Gets the ISO 4217 alphabetic code of the destination currency, derived from <typeparamref name="TQuote" />.
     /// </summary>
-    /// <returns>The three-character uppercase ASCII destination-currency code.</returns>
+    /// <value>The three-character uppercase ASCII destination-currency code.</value>
     public string ToIsoCode => CurrencyMetadata<TQuote>.Value.IsoCode;
 
     /// <summary>

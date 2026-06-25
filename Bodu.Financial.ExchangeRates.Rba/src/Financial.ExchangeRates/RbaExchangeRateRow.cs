@@ -29,12 +29,12 @@ internal sealed class RbaExchangeRateRow
     /// <summary>
     /// Gets the observation date.
     /// </summary>
-    /// <returns>The calendar date of the observations.</returns>
+    /// <value>The calendar date of the observations.</value>
     public DateOnly Date { get; }
 
     /// <summary>
     /// Gets the per-series rate values, positionally aligned to the owning table's series.
     /// </summary>
-    /// <returns>A read-only list of nullable decimals; a <see langword="null" /> entry denotes a blank cell.</returns>
+    /// <value>A read-only list of nullable decimals; a <see langword="null" /> entry denotes a blank cell.</value>
     public IReadOnlyList<decimal?> Values { get; }
 }

@@ -43,7 +43,7 @@ public sealed class AlgorithmDateStrategy
     /// <summary>
     /// Gets the algorithm key identifying the computation.
     /// </summary>
-    /// <returns>The algorithm key.</returns>
+    /// <value>The algorithm key.</value>
     public string Key { get; }
 
     /// <summary>

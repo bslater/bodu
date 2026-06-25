@@ -42,25 +42,25 @@ public sealed class BoeSeries
     /// <summary>
     /// Gets the quote-currency ISO code.
     /// </summary>
-    /// <returns>The three-letter ISO code of the quote currency.</returns>
+    /// <value>The three-letter ISO code of the quote currency.</value>
     public string QuoteIsoCode { get; }
 
     /// <summary>
     /// Gets the IADB series code that publishes the currency's daily spot rate.
     /// </summary>
-    /// <returns>The series code (for example, <c>XUDLUSS</c>).</returns>
+    /// <value>The series code (for example, <c>XUDLUSS</c>).</value>
     public string SeriesCode { get; }
 
     /// <summary>
     /// Gets a short human-readable description of the series.
     /// </summary>
-    /// <returns>The series description.</returns>
+    /// <value>The series description.</value>
     public string Description { get; }
 
     /// <summary>
     /// Gets the default catalogue of Bank of England daily spot series, each quoting a currency against the pound.
     /// </summary>
-    /// <returns>The ordered, immutable default series catalogue.</returns>
+    /// <value>The ordered, immutable default series catalogue.</value>
     public static IReadOnlyList<BoeSeries> Default { get; } =
     [
         new("USD", "XUDLUSS", "US dollar into Sterling"),

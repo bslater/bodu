@@ -31,7 +31,6 @@ public struct TomlWriterOptions
     /// Gets or sets the version of the TOML specification associated with the writer.
     /// </summary>
     /// <value>The target specification version; the default is <see cref="TomlSpecVersion.V1_0" />.</value>
-    /// <returns>The target specification version.</returns>
     /// <remarks>
     /// The property has no effect: the writer emits normalized output that is valid under both TOML v1.0.0 and v1.1.0
     /// regardless of the value. It is obsolete and will be removed in a future release.
@@ -46,6 +45,5 @@ public struct TomlWriterOptions
     /// The maximum container nesting depth; <c>0</c> selects the default of 64, clamped to
     /// <see cref="TomlLimits.AbsoluteMaxDepth" />.
     /// </value>
-    /// <returns>The maximum container nesting depth, where <c>0</c> selects the default of 64.</returns>
     public int MaxDepth { get; set; }
 }

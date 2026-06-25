@@ -28,12 +28,12 @@ public sealed class PluginNotTrustedException
     /// <summary>
     /// Gets the name of the rejected assembly.
     /// </summary>
-    /// <returns>The assembly name.</returns>
+    /// <value>The assembly name.</value>
     public string AssemblyName { get; }
 
     /// <summary>
     /// Gets the reason the assembly was rejected.
     /// </summary>
-    /// <returns>The rejection reason, or <see langword="null" /> when none was supplied.</returns>
+    /// <value>The rejection reason, or <see langword="null" /> when none was supplied.</value>
     public string? Reason { get; }
 }

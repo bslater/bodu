@@ -118,35 +118,35 @@ public abstract class WebExchangeRateProvider
     /// <summary>
     /// Gets the provider identifier stamped on every rate this provider produces.
     /// </summary>
-    /// <returns>The provider identifier.</returns>
+    /// <value>The provider identifier.</value>
     protected abstract string ProviderId { get; }
 
     /// <summary>
     /// Gets a value indicating whether a synchronous lookup may block to fetch a missing window on demand.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see langword="true" /> when synchronous getters may block on the network; otherwise <see langword="false" />.
-    /// </returns>
+    /// </value>
     protected abstract bool AllowSynchronousNetworkAccess { get; }
 
     /// <summary>
     /// Gets the look-back window used when a single-rate lookup must fetch on demand; the provider fetches the window
     /// ending on the requested date and spanning this duration.
     /// </summary>
-    /// <returns>The look-back window.</returns>
+    /// <value>The look-back window.</value>
     protected abstract TimeSpan DefaultLookback { get; }
 
     /// <summary>
     /// Gets the synchronization object guarding the accumulator and snapshot; derived types lock on it while checking
     /// coverage and accumulating a fetch so the fetch publishes atomically.
     /// </summary>
-    /// <returns>The synchronization object.</returns>
+    /// <value>The synchronization object.</value>
     protected object SyncRoot => _gate;
 
     /// <summary>
     /// Gets the time source used to resolve the current instant.
     /// </summary>
-    /// <returns>The time provider.</returns>
+    /// <value>The time provider.</value>
     protected TimeProvider TimeProvider => _timeProvider;
 
     /// <inheritdoc />

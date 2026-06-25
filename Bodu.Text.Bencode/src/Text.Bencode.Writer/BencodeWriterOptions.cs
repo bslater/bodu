@@ -19,7 +19,6 @@ public struct BencodeWriterOptions
     /// Gets or sets the maximum container nesting depth the writer will permit.
     /// </summary>
     /// <value>The maximum container nesting depth; <c>0</c> selects the default of 64.</value>
-    /// <returns>The maximum container nesting depth, where <c>0</c> selects the default of 64.</returns>
     /// <remarks>
     /// The effective depth is clamped to the hard ceiling <see cref="BencodeLimits.AbsoluteMaxDepth" />; a larger value
     /// has no effect beyond it. Opening a list or dictionary nested past the effective limit throws
@@ -35,7 +34,6 @@ public struct BencodeWriterOptions
     /// <see langword="true" /> to permit multiple root values; the default of <see langword="false" /> rejects a second
     /// root value with <see cref="InvalidOperationException" />.
     /// </value>
-    /// <returns><see langword="true" /> when multiple root values are permitted.</returns>
     /// <remarks>
     /// A BEP 3 document is a single value, and the reader rejects trailing bytes after the root, so output produced
     /// with this option set cannot be re-read as one document. Enable it only for protocol framings that concatenate

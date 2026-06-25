@@ -24,6 +24,6 @@ public sealed class NonReadableStream
     : System.IO.MemoryStream
 {
     /// <inheritdoc />
-    /// <returns>Always <see langword="false" />.</returns>
+    /// <value>Always <see langword="false" />.</value>
     public override bool CanRead => false;
 }

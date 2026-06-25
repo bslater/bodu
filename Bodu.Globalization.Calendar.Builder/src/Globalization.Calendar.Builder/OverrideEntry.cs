@@ -32,25 +32,25 @@ internal sealed class OverrideEntry
     /// <summary>
     /// Gets the kind of override operation.
     /// </summary>
-    /// <returns>The override operation kind.</returns>
+    /// <value>The override operation kind.</value>
     internal OverrideOperation Operation { get; }
 
     /// <summary>
     /// Gets the identifier of the targeted concept.
     /// </summary>
-    /// <returns>The concept identifier.</returns>
+    /// <value>The concept identifier.</value>
     internal string NotableDateRef { get; }
 
     /// <summary>
     /// Gets the identifier of the targeted rule.
     /// </summary>
-    /// <returns>The rule identifier, or <see langword="null" /> for an add operation.</returns>
+    /// <value>The rule identifier, or <see langword="null" /> for an add operation.</value>
     internal string? RuleRef { get; }
 
     /// <summary>
     /// Gets the configured rule builder for add and patch operations.
     /// </summary>
-    /// <returns>The rule builder, or <see langword="null" /> for a remove operation.</returns>
+    /// <value>The rule builder, or <see langword="null" /> for a remove operation.</value>
     internal NotableDateRuleBuilder? Rule { get; }
 
     /// <summary>

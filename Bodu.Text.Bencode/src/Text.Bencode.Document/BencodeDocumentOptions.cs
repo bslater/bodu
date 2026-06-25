@@ -20,7 +20,6 @@ public struct BencodeDocumentOptions
     /// Gets or sets the maximum container nesting depth the parser will accept.
     /// </summary>
     /// <value>The maximum container nesting depth; <c>0</c> selects the default of 64.</value>
-    /// <returns>The maximum container nesting depth, where <c>0</c> selects the default of 64.</returns>
     /// <remarks>
     /// The effective depth is clamped to the hard ceiling <see cref="BencodeLimits.AbsoluteMaxDepth" />; a document
     /// nested past the effective limit throws <see cref="BencodeFormatException" /> rather than risking a
@@ -35,7 +34,6 @@ public struct BencodeDocumentOptions
     /// <see langword="true" /> to accept unsorted keys; the default of <see langword="false" /> rejects them with
     /// <see cref="BencodeFormatException" />.
     /// </value>
-    /// <returns><see langword="true" /> when unsorted dictionary keys are accepted.</returns>
     /// <remarks>
     /// Object properties are exposed in stored order regardless of this option; lookups compare raw key bytes, so an
     /// unsorted document resolves properties identically to a canonical one.
@@ -49,7 +47,6 @@ public struct BencodeDocumentOptions
     /// <see langword="true" /> to accept duplicate keys; the default of <see langword="false" /> rejects them with
     /// <see cref="BencodeFormatException" />.
     /// </value>
-    /// <returns><see langword="true" /> when duplicate dictionary keys are accepted.</returns>
     /// <remarks>
     /// Every entry of a duplicated key is retained and visible through object enumeration; name lookups such as
     /// <see cref="BencodeElement.GetProperty(string)" /> return the first match in document order.

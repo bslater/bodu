@@ -64,13 +64,13 @@ public sealed class DelimitedRow
     /// <summary>
     /// Gets the ordered, unmodified field values for this row.
     /// </summary>
-    /// <returns>A read-only list of string field values in source order.</returns>
+    /// <value>A read-only list of string field values in source order.</value>
     public IReadOnlyList<string> Fields { get; }
 
     /// <summary>
     /// Gets the number of fields in this row.
     /// </summary>
-    /// <returns>The number of fields.</returns>
+    /// <value>The number of fields.</value>
     public int Count => Fields.Count;
 
     /// <summary>

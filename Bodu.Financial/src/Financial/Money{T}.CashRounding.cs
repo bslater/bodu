@@ -11,10 +11,10 @@ public readonly partial struct Money<TCurrency>
     /// <summary>
     /// Gets the smallest cash denomination of <typeparamref name="TCurrency" />, expressed in the major unit.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The cash-rounding increment in the major unit (for example, <c>0.05m</c> for CHF), or <c>0m</c> when the
     /// currency does not require special cash rounding beyond its <see cref="MinorUnits" /> precision.
-    /// </returns>
+    /// </value>
     /// <remarks>
     /// A return value of <c>0m</c> indicates that cash totals use the same precision as electronic totals, and
     /// <see cref="RoundToCash(MidpointRounding)" /> is a no-op for the currency.
@@ -67,18 +67,18 @@ public readonly partial struct Money<TCurrency>
     /// <summary>
     /// Gets a value indicating whether <typeparamref name="TCurrency" /> has been demonetized.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see langword="true" /> when the currency is a historic predecessor; otherwise <see langword="false" />.
-    /// </returns>
+    /// </value>
     public static bool IsHistoric =>
         CurrencyMetadata<TCurrency>.Value.IsHistoric;
 
     /// <summary>
     /// Gets the date <typeparamref name="TCurrency" /> was withdrawn from circulation, if known.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The demonetization date, or <see langword="null" /> when the currency is active or the date is unknown.
-    /// </returns>
+    /// </value>
     public static DateOnly? DemonetizedOn =>
         CurrencyMetadata<TCurrency>.Value.DemonetizedOn;
 
@@ -86,10 +86,10 @@ public readonly partial struct Money<TCurrency>
     /// Gets the ISO 4217 alphabetic code of the currency that replaced <typeparamref name="TCurrency" />, when
     /// applicable.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The three-letter ISO code of the successor currency, or <see langword="null" /> when there is no defined
     /// successor.
-    /// </returns>
+    /// </value>
     public static string? SuccessorIsoCode =>
         CurrencyMetadata<TCurrency>.Value.SuccessorIsoCode;
 }

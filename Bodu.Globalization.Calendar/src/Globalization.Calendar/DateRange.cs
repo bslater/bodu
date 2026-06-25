@@ -37,16 +37,16 @@ public readonly record struct DateRange(DateOnly StartDate, DateOnly EndDate)
     /// <summary>
     /// Gets a value indicating whether the range is well-formed, with a start no later than its end.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see langword="true" /> when the start is on or before the end; otherwise <see langword="false" />.
-    /// </returns>
+    /// </value>
     public bool IsValid =>
         StartDate <= EndDate;
 
     /// <summary>
     /// Gets the number of days the range spans, inclusive of both endpoints.
     /// </summary>
-    /// <returns>The inclusive day count, or zero when the range is not well-formed.</returns>
+    /// <value>The inclusive day count, or zero when the range is not well-formed.</value>
     public int DayCount =>
         IsValid ? (EndDate.DayNumber - StartDate.DayNumber) + 1 : 0;
 

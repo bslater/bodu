@@ -133,7 +133,7 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the name.
         /// </summary>
-        /// <returns>The name.</returns>
+        /// <value>The name.</value>
         public string Name { get; set; } = string.Empty;
     }
 
@@ -146,7 +146,7 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the name.
         /// </summary>
-        /// <returns>The name.</returns>
+        /// <value>The name.</value>
         public string Name { get; set; } = string.Empty;
     }
 
@@ -160,7 +160,7 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the name.
         /// </summary>
-        /// <returns>The name.</returns>
+        /// <value>The name.</value>
         public string Name { get; set; } = string.Empty;
     }
 }

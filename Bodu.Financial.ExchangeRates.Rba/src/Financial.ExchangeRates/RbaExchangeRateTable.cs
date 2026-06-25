@@ -31,13 +31,13 @@ internal sealed class RbaExchangeRateTable
     /// <summary>
     /// Gets the discovered currency series, in column order.
     /// </summary>
-    /// <returns>A read-only list of series descriptors.</returns>
+    /// <value>A read-only list of series descriptors.</value>
     public IReadOnlyList<RbaExchangeRateSeries> Series { get; }
 
     /// <summary>
     /// Gets the dated rows of rate values.
     /// </summary>
-    /// <returns>A read-only list of rows, each positionally aligned to <see cref="Series" />.</returns>
+    /// <value>A read-only list of rows, each positionally aligned to <see cref="Series" />.</value>
     public IReadOnlyList<RbaExchangeRateRow> Rows { get; }
 
     /// <summary>

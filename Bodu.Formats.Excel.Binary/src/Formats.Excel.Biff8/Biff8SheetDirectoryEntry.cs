@@ -35,24 +35,24 @@ internal readonly struct Biff8SheetDirectoryEntry
     /// <summary>
     /// Gets the byte offset of the sheet's substream within the workbook stream.
     /// </summary>
-    /// <returns>The <c>lbPlyPos</c> value of the bound-sheet record.</returns>
+    /// <value>The <c>lbPlyPos</c> value of the bound-sheet record.</value>
     public long StreamOffset { get; }
 
     /// <summary>
     /// Gets the sheet's declared type.
     /// </summary>
-    /// <returns>The kind of substream the bound-sheet record points to.</returns>
+    /// <value>The kind of substream the bound-sheet record points to.</value>
     public ExcelSheetType Type { get; }
 
     /// <summary>
     /// Gets the sheet's declared visibility.
     /// </summary>
-    /// <returns>The visibility recorded by the bound-sheet record.</returns>
+    /// <value>The visibility recorded by the bound-sheet record.</value>
     public ExcelSheetVisibility Visibility { get; }
 
     /// <summary>
     /// Gets the sheet name.
     /// </summary>
-    /// <returns>The decoded sheet name.</returns>
+    /// <value>The decoded sheet name.</value>
     public string Name { get; }
 }

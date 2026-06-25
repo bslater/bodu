@@ -95,7 +95,7 @@ public abstract class KeyedDeferredFinalBlockHashAlgorithm<T>
     /// Gets the maximum accepted key size, in bits, for this algorithm instance. Divide by 8 to obtain the equivalent
     /// byte length used when allocating or validating <see cref="Key" />.
     /// </summary>
-    /// <returns>The maximum number of bits accepted as a secret key.</returns>
+    /// <value>The maximum number of bits accepted as a secret key.</value>
     /// <exception cref="ObjectDisposedException">The algorithm instance has been disposed.</exception>
     public int MaximumKeySize
     {
@@ -113,7 +113,6 @@ public abstract class KeyedDeferredFinalBlockHashAlgorithm<T>
     /// A byte array of 1 to <see cref="MaximumKeySize" /> / 8 bytes that enables keyed MAC mode, or an empty array when
     /// operating in the unkeyed digest profile. Both the getter and the setter operate on defensive copies.
     /// </value>
-    /// <returns>A defensive copy of the current key, or an empty array if no key has been configured.</returns>
     /// <remarks>
     /// <para>
     /// When the key is non-empty, the instance operates in the keyed MAC mode defined in RFC 7693 Section 2.8. The key

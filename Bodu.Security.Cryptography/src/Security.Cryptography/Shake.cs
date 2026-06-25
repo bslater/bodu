@@ -201,7 +201,6 @@ public sealed class Shake
     /// Gets the security level, in bits, of the SHAKE variant in use.
     /// </summary>
     /// <value>Either 128 (SHAKE128) or 256 (SHAKE256).</value>
-    /// <returns>The security level selected at construction time.</returns>
     public int SecurityLevel
     {
         get
@@ -215,7 +214,6 @@ public sealed class Shake
     /// Gets or sets the size, in bits, of the final computed hash output.
     /// </summary>
     /// <value>The current output size in bits. Must be a positive multiple of 8.</value>
-    /// <returns>The currently configured output size in bits.</returns>
     /// <remarks>
     /// Because SHAKE is an XOF, the output length may be changed freely between computations. The security level (and
     /// therefore the rate) is fixed at construction time and cannot be altered. Changing this property after input has

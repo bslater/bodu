@@ -98,28 +98,28 @@ public readonly partial struct ConfigurationKey
     /// <summary>
     /// Gets a value indicating whether equality and hashing for this key are case-sensitive.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see langword="true" /> when ordinal case-sensitive comparison is used; otherwise, <see langword="false" /> for
     /// ordinal-ignore-case.
-    /// </returns>
+    /// </value>
     public bool CaseSensitive { get; }
 
     /// <summary>
     /// Gets the canonical colon-delimited logical key path derived from <see cref="Segments" />.
     /// </summary>
-    /// <returns>The configuration key in colon-delimited form, or the empty string for a default instance.</returns>
+    /// <value>The configuration key in colon-delimited form, or the empty string for a default instance.</value>
     public string Path => _path ?? string.Empty;
 
     /// <summary>
     /// Gets the raw key string exactly as it appeared in the source document.
     /// </summary>
-    /// <returns>The original key text, or the empty string for a default instance.</returns>
+    /// <value>The original key text, or the empty string for a default instance.</value>
     public string RawKey => _rawKey ?? string.Empty;
 
     /// <summary>
     /// Gets the segments produced by splitting <see cref="RawKey" /> on the configured separators.
     /// </summary>
-    /// <returns>An immutable array of segment strings.</returns>
+    /// <value>An immutable array of segment strings.</value>
     public ImmutableArray<string> Segments => _segments.IsDefault ? [] : _segments;
 
     /// <summary>

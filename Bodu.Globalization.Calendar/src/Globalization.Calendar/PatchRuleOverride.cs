@@ -69,54 +69,54 @@ internal sealed class PatchRuleOverride
     /// <summary>
     /// Gets the identifier of the rule to patch.
     /// </summary>
-    /// <returns>The targeted rule id.</returns>
+    /// <value>The targeted rule id.</value>
     public string RuleRef { get; }
 
     /// <summary>
     /// Gets the replacement priority.
     /// </summary>
-    /// <returns>The priority, or <see langword="null" /> to leave unchanged.</returns>
+    /// <value>The priority, or <see langword="null" /> to leave unchanged.</value>
     public int? Priority { get; }
 
     /// <summary>
     /// Gets the replacement category.
     /// </summary>
-    /// <returns>The category, or <see langword="null" /> to leave unchanged.</returns>
+    /// <value>The category, or <see langword="null" /> to leave unchanged.</value>
     public NotableDateCategory? Category { get; }
 
     /// <summary>
     /// Gets the replacement non-working-day flag.
     /// </summary>
-    /// <returns>The flag, or <see langword="null" /> to leave unchanged.</returns>
+    /// <value>The flag, or <see langword="null" /> to leave unchanged.</value>
     public bool? NonWorking { get; }
 
     /// <summary>
     /// Gets the replacement duration.
     /// </summary>
-    /// <returns>The duration, or <see langword="null" /> to leave unchanged.</returns>
+    /// <value>The duration, or <see langword="null" /> to leave unchanged.</value>
     public int? DurationDays { get; }
 
     /// <summary>
     /// Gets the replacement applicability.
     /// </summary>
-    /// <returns>The applicability, or <see langword="null" /> to leave unchanged.</returns>
+    /// <value>The applicability, or <see langword="null" /> to leave unchanged.</value>
     public RuleApplicability? Applicability { get; }
 
     /// <summary>
     /// Gets the replacement strategy.
     /// </summary>
-    /// <returns>The strategy, or <see langword="null" /> to leave unchanged.</returns>
+    /// <value>The strategy, or <see langword="null" /> to leave unchanged.</value>
     public IDateCalculationStrategy? Strategy { get; }
 
     /// <summary>
     /// Gets the replacement adjustment references.
     /// </summary>
-    /// <returns>The references, or <see langword="null" /> to leave unchanged.</returns>
+    /// <value>The references, or <see langword="null" /> to leave unchanged.</value>
     public IReadOnlyList<string>? AdjustmentPolicyRefs { get; }
 
     /// <summary>
     /// Gets the replacement tags.
     /// </summary>
-    /// <returns>The tags, or <see langword="null" /> to leave unchanged.</returns>
+    /// <value>The tags, or <see langword="null" /> to leave unchanged.</value>
     public IReadOnlyList<string>? Tags { get; }
 }

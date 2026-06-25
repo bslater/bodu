@@ -53,33 +53,33 @@ public sealed record RbaRateKnownAnswer
     /// <summary>
     /// Gets the RBA workbook file the value was read from.
     /// </summary>
-    /// <returns>The source workbook file name, for example <c>2023-current.xls</c>.</returns>
+    /// <value>The source workbook file name, for example <c>2023-current.xls</c>.</value>
     public string SourceFileName { get; }
 
     /// <summary>
     /// Gets the reason the row was selected for its workbook.
     /// </summary>
-    /// <returns>One of <c>First</c>, <c>Last</c>, <c>Min</c>, <c>Max</c>, or <c>Median</c>.</returns>
+    /// <value>One of <c>First</c>, <c>Last</c>, <c>Min</c>, <c>Max</c>, or <c>Median</c>.</value>
     public string Type { get; }
 
     /// <summary>
     /// Gets the observation date.
     /// </summary>
-    /// <returns>The calendar date of the published rate.</returns>
+    /// <value>The calendar date of the published rate.</value>
     public DateOnly Date { get; }
 
     /// <summary>
     /// Gets the RBA units label of the quote currency.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The RBA currency label, resolved to an ISO code through the provider's alias map at lookup time.
-    /// </returns>
+    /// </value>
     public string Currency { get; }
 
     /// <summary>
     /// Gets the published rate of one Australian dollar in the quote currency.
     /// </summary>
-    /// <returns>The expected exchange rate.</returns>
+    /// <value>The expected exchange rate.</value>
     [JsonPropertyName("Rate")]
     public decimal ExpectedRate { get; }
 

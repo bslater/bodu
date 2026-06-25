@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Collections.Generic;
-
 namespace Bodu.Collections.Generic.Graphs;
 
 public static partial class GraphAlgorithms
@@ -82,12 +80,12 @@ public static partial class GraphAlgorithms
         if (graph.Comparer.Equals(source, target))
             return new ShortestPathResult<T>(true, 0.0, [source]);
 
-        var distances = Dijkstra(graph, source, out var predecessors);
-        if (!distances.TryGetValue(target, out var distance))
+        Dictionary<T, double> distances = Dijkstra(graph, source, out Dictionary<T, T>? predecessors);
+        if (!distances.TryGetValue(target, out double distance))
             return new ShortestPathResult<T>(false, double.PositiveInfinity, []);
 
         var path = new List<T> { target };
-        var current = target;
+        T current = target;
         while (!graph.Comparer.Equals(current, source))
         {
             current = predecessors[current];
@@ -150,15 +148,15 @@ public static partial class GraphAlgorithms
         var frontier = new IndexedPriorityQueue<T, double>(0, null, graph.Comparer);
         frontier.EnqueueOrUpdate(source, 0.0);
 
-        while (frontier.TryDequeue(out var current, out var distance))
+        while (frontier.TryDequeue(out T? current, out double distance))
         {
             if (distance > distances[current])
                 continue;
 
-            foreach (var (neighbor, weight) in graph.WeightedNeighbors(current))
+            foreach ((T? neighbor, double weight) in graph.WeightedNeighbors(current))
             {
-                var candidate = distance + weight;
-                if (!distances.TryGetValue(neighbor, out var existing) || candidate < existing)
+                double candidate = distance + weight;
+                if (!distances.TryGetValue(neighbor, out double existing) || candidate < existing)
                 {
                     distances[neighbor] = candidate;
                     predecessors[neighbor] = current;

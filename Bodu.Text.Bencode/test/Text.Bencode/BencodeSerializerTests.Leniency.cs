@@ -91,11 +91,11 @@ public partial class BencodeSerializerTests
     private sealed class LenientModel
     {
         /// <summary>Gets or sets the identifier.</summary>
-        /// <returns>The identifier.</returns>
+        /// <value>The identifier.</value>
         public int Id { get; set; }
 
         /// <summary>Gets or sets the label.</summary>
-        /// <returns>The label.</returns>
+        /// <value>The label.</value>
         public string Label { get; set; } = string.Empty;
     }
 }

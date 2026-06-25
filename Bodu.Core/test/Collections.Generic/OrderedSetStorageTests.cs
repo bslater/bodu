@@ -80,7 +80,7 @@ public partial class OrderedSetStorageTests
         /// <summary>
         /// Gets the diagnostic label.
         /// </summary>
-        /// <returns>The diagnostic label.</returns>
+        /// <value>The diagnostic label.</value>
         public string Label { get; }
 
         /// <inheritdoc />

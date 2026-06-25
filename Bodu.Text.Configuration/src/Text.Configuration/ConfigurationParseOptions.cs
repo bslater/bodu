@@ -56,27 +56,27 @@ public sealed partial class ConfigurationParseOptions
     /// <summary>
     /// Gets the behaviour profile this option bag represents. The default is <see cref="ConfigurationProfile.Bodu" />.
     /// </summary>
-    /// <returns>The selected profile.</returns>
+    /// <value>The selected profile.</value>
     public ConfigurationProfile Profile { get; init; } = ConfigurationProfile.Bodu;
 
     /// <summary>
     /// Gets the inline comment handling mode used by the reader.
     /// </summary>
-    /// <returns>The selected inline comment mode.</returns>
+    /// <value>The selected inline comment mode.</value>
     public ConfigurationInlineCommentMode InlineCommentMode { get; init; } =
         ConfigurationInlineCommentMode.WhitespaceIntroduced;
 
     /// <summary>
     /// Gets the duplicate key handling mode used by the reader.
     /// </summary>
-    /// <returns>The selected duplicate key mode.</returns>
+    /// <value>The selected duplicate key mode.</value>
     public DuplicateKeyPolicy DuplicateKeyMode { get; init; } =
         DuplicateKeyPolicy.LastWins;
 
     /// <summary>
     /// Gets the duplicate section handling mode used by the reader.
     /// </summary>
-    /// <returns>The selected duplicate section mode.</returns>
+    /// <value>The selected duplicate section mode.</value>
     public IniDuplicateSectionBehavior DuplicateSectionMode { get; init; } =
         IniDuplicateSectionBehavior.Preserve;
 
@@ -86,7 +86,7 @@ public sealed partial class ConfigurationParseOptions
     /// historical Bodu profile; the EditorConfig-compatible and strict presets use
     /// <see cref="ConfigurationSectionHeaderMode.Strict" /> instead.
     /// </summary>
-    /// <returns>The selected section-header mode.</returns>
+    /// <value>The selected section-header mode.</value>
     public ConfigurationSectionHeaderMode SectionHeaderMode { get; init; } =
         ConfigurationSectionHeaderMode.Lenient;
 
@@ -94,51 +94,51 @@ public sealed partial class ConfigurationParseOptions
     /// Gets the diagnostic routing mode that controls whether recoverable errors throw, are collected on the document,
     /// or are silently ignored.
     /// </summary>
-    /// <returns>The selected diagnostic mode.</returns>
+    /// <value>The selected diagnostic mode.</value>
     public ConfigurationDiagnosticMode DiagnosticMode { get; init; } =
         ConfigurationDiagnosticMode.Throw;
 
     /// <summary>
     /// Gets the maximum permitted length of an individual line, in characters.
     /// </summary>
-    /// <returns>A positive line-length cap.</returns>
+    /// <value>A positive line-length cap.</value>
     public int MaxLineLength { get; init; } = 8192;
 
     /// <summary>
     /// Gets the maximum permitted length of an individual key, in characters.
     /// </summary>
-    /// <returns>A positive key-length cap.</returns>
+    /// <value>A positive key-length cap.</value>
     public int MaxKeyLength { get; init; } = 1024;
 
     /// <summary>
     /// Gets the key options used to split raw keys into segments and map them to the configuration key shape.
     /// </summary>
-    /// <returns>The selected key options.</returns>
+    /// <value>The selected key options.</value>
     public ConfigurationKeyOptions KeyOptions { get; init; } = ConfigurationKeyOptions.Default;
 
     /// <summary>
     /// Gets a value indicating whether keys and values should be trimmed of leading and trailing whitespace.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see langword="true" /> when the parser trims; otherwise, <see langword="false" />. The default is
     /// <see langword="true" />, matching EditorConfig.
-    /// </returns>
+    /// </value>
     public bool TrimKeysAndValues { get; init; } = true;
 
     /// <summary>
     /// Gets a value indicating whether key-only properties (lines with no <c>=</c>) are permitted.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see langword="true" /> when key-only lines are permitted; otherwise, <see langword="false" />. The default is
     /// <see langword="false" />.
-    /// </returns>
+    /// </value>
     public bool AllowKeyOnlyProperties { get; init; }
 
     /// <summary>
     /// Gets the encoding to assume when loading a configuration document from a byte stream without a byte order mark.
     /// The default is <see cref="Encoding.UTF8" />.
     /// </summary>
-    /// <returns>The default encoding.</returns>
+    /// <value>The default encoding.</value>
     public Encoding DefaultEncoding { get; init; } = Encoding.UTF8;
 
     /// <summary>

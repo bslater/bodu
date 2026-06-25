@@ -32,12 +32,12 @@ internal sealed class TomlScalarWriterNode
     /// <summary>
     /// Gets the token type that classifies the scalar and selects its TOML formatting.
     /// </summary>
-    /// <returns>The scalar's token type.</returns>
+    /// <value>The scalar's token type.</value>
     internal TomlTokenType TokenType { get; }
 
     /// <summary>
     /// Gets the decoded CLR value of the scalar.
     /// </summary>
-    /// <returns>The boxed scalar value.</returns>
+    /// <value>The boxed scalar value.</value>
     internal object Value { get; }
 }

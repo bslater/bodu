@@ -36,42 +36,42 @@ public sealed class ExcelWorksheetInfo
     /// <summary>
     /// Gets the sheet name.
     /// </summary>
-    /// <returns>The sheet name as declared in the workbook globals.</returns>
+    /// <value>The sheet name as declared in the workbook globals.</value>
     public string Name { get; }
 
     /// <summary>
     /// Gets the zero-based position of the sheet within the workbook.
     /// </summary>
-    /// <returns>The sheet index in workbook order.</returns>
+    /// <value>The sheet index in workbook order.</value>
     public int Index { get; }
 
     /// <summary>
     /// Gets the sheet's declared visibility.
     /// </summary>
-    /// <returns>The visibility recorded by the sheet's bound-sheet record.</returns>
+    /// <value>The visibility recorded by the sheet's bound-sheet record.</value>
     public ExcelSheetVisibility Visibility { get; }
 
     /// <summary>
     /// Gets the sheet's declared type.
     /// </summary>
-    /// <returns>The kind of substream the sheet's bound-sheet record points to.</returns>
+    /// <value>The kind of substream the sheet's bound-sheet record points to.</value>
     public ExcelSheetType Type { get; }
 
     /// <summary>
     /// Gets a value indicating whether the sheet is visible.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see langword="true" /> when <see cref="Visibility" /> is <see cref="ExcelSheetVisibility.Visible" />; otherwise
     /// <see langword="false" />.
-    /// </returns>
+    /// </value>
     public bool IsVisible => Visibility == ExcelSheetVisibility.Visible;
 
     /// <summary>
     /// Gets the used range of the sheet, as declared by its <c>DIMENSIONS</c> record.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The half-open span of rows and columns that bounds the populated cells; the default value (zero counts) when the
     /// sheet declares no <c>DIMENSIONS</c> record.
-    /// </returns>
+    /// </value>
     public ExcelWorksheetDimensions Dimensions { get; }
 }

@@ -93,7 +93,6 @@ public sealed class ChaCha20
     /// Gets or sets the initial 32-bit block counter used when generating the keystream.
     /// </summary>
     /// <value>The starting block-counter value. The default is 0.</value>
-    /// <returns>The block-counter value applied to the first keystream block.</returns>
     /// <remarks>
     /// RFC 8439 keystream examples start the counter at 0 or 1 depending on the construction; libsodium's raw
     /// <c>crypto_stream_chacha20_ietf</c> starts at 0. Set this before creating an encryptor or decryptor when matching

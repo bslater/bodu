@@ -26,21 +26,21 @@ internal readonly ref struct Biff8Record
     /// <summary>
     /// Gets the 16-bit record type identifier.
     /// </summary>
-    /// <returns>The raw record identifier.</returns>
+    /// <value>The raw record identifier.</value>
     public ushort Id { get; }
 
     /// <summary>
     /// Gets the record payload, excluding the four-byte type-and-length header.
     /// </summary>
-    /// <returns>A slice of the source buffer containing the record payload.</returns>
+    /// <value>A slice of the source buffer containing the record payload.</value>
     public ReadOnlySpan<byte> Payload { get; }
 
     /// <summary>
     /// Gets the record type identifier as a <see cref="Biff8RecordType" />.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The typed record identifier. The value may not correspond to a defined <see cref="Biff8RecordType" /> member
     /// when the record is one this reader does not recognize.
-    /// </returns>
+    /// </value>
     public Biff8RecordType Type => (Biff8RecordType)Id;
 }

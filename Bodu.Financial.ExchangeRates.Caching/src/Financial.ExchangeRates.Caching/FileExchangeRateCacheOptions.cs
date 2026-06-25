@@ -24,6 +24,5 @@ public class FileExchangeRateCacheOptions
     /// The cache directory, or <see langword="null" /> to use a <c>bodu-exchange-rates</c> folder under the system
     /// temporary path.
     /// </value>
-    /// <returns>The configured cache directory, or <see langword="null" /> to use the default.</returns>
     public string? CacheDirectory { get; set; }
 }

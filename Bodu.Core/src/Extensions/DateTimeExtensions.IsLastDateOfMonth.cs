@@ -15,10 +15,10 @@ public static partial class DateTimeExtensions
         /// <summary>
         /// Gets a value indicating whether this date falls on the last day of its calendar month.
         /// </summary>
-        /// <returns>
+        /// <value>
         /// <see langword="true" /> if this date represents the last day of its month; otherwise,
         /// <see langword="false" />.
-        /// </returns>
+        /// </value>
         /// <remarks>
         /// <para>
         /// This compares the <see cref="DateTime.Day" /> component to the total number of days in the same month and

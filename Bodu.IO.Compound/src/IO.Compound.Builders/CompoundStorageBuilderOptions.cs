@@ -21,19 +21,19 @@ public struct CompoundStorageBuilderOptions
     /// <summary>
     /// Gets or sets a value indicating whether child names are compared case-sensitively.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see langword="true" /> to compare names with ordinal case sensitivity; <see langword="false" /> (the default)
     /// to compare them case-insensitively, matching the compound-file format.
-    /// </returns>
+    /// </value>
     public bool NameComparisonCaseSensitive { get; set; }
 
     /// <summary>
     /// Gets the comparer that implements the configured name comparison.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// An ordinal case-sensitive comparer when <see cref="NameComparisonCaseSensitive" /> is <see langword="true" />;
     /// otherwise the shared <see cref="CompoundNameComparer" /> that matches the compound-file format.
-    /// </returns>
+    /// </value>
     internal readonly IEqualityComparer<string> NameComparer =>
         NameComparisonCaseSensitive ? StringComparer.Ordinal : CompoundNameComparer.Instance;
 }

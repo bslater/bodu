@@ -34,19 +34,19 @@ public sealed class XmlDocFormatResult
     /// <summary>
     /// Gets a value indicating whether the formatter produced output that differs from its input.
     /// </summary>
-    /// <returns><see langword="true" /> when the formatted text differs from the input; otherwise <see langword="false" />.</returns>
+    /// <value><see langword="true" /> when the formatted text differs from the input; otherwise <see langword="false" />.</value>
     public bool Changed { get; }
 
     /// <summary>
     /// Gets the formatted documentation comment text, including the documentation prefix and base indent on
     /// every line.
     /// </summary>
-    /// <returns>The complete formatted trivia text.</returns>
+    /// <value>The complete formatted trivia text.</value>
     public string FormattedText { get; }
 
     /// <summary>
     /// Gets the ordered list of changes applied by the formatter.
     /// </summary>
-    /// <returns>The immutable array of formatting changes; empty when <see cref="Changed" /> is <see langword="false" />.</returns>
+    /// <value>The immutable array of formatting changes; empty when <see cref="Changed" /> is <see langword="false" />.</value>
     public ImmutableArray<XmlDocFormattingChange> Changes { get; }
 }

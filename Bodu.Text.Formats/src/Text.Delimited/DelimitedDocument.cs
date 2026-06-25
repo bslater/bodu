@@ -52,25 +52,25 @@ public sealed class DelimitedDocument
     /// Gets the column header names from the first record, or an empty list when the document was parsed without a
     /// header row.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// A read-only list of header strings in source order. Empty when <see cref="DelimitedParseOptions.HasHeader" />
     /// was <see langword="false" />.
-    /// </returns>
+    /// </value>
     public IReadOnlyList<string> Headers { get; }
 
     /// <summary>
     /// Gets the data rows in source order.
     /// </summary>
-    /// <returns>A read-only list of <see cref="DelimitedRow" /> instances.</returns>
+    /// <value>A read-only list of <see cref="DelimitedRow" /> instances.</value>
     public IReadOnlyList<DelimitedRow> Rows { get; }
 
     /// <summary>
     /// Gets the canonical field count for this document.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The number of fields in the header row when <see cref="DelimitedParseOptions.HasHeader" /> was
     /// <see langword="true" />; otherwise, the field count of the first data row, or <c>0</c> when the document is
     /// empty.
-    /// </returns>
+    /// </value>
     public int FieldCount { get; }
 }

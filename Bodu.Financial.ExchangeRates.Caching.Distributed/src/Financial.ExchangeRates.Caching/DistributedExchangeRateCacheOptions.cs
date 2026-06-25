@@ -33,7 +33,6 @@ public class DistributedExchangeRateCacheOptions
     /// Gets or sets the prefix prepended to every cache key the cache writes.
     /// </summary>
     /// <value>The key prefix, or <see langword="null" /> to write keys without a prefix.</value>
-    /// <returns>The configured key prefix, or <see langword="null" /> when none is set.</returns>
     /// <remarks>
     /// <para>
     /// A prefix namespaces the cache's entries within a shared distributed store so that several applications, or

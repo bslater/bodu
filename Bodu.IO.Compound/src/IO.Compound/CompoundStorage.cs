@@ -100,27 +100,27 @@ public sealed class CompoundStorage
     /// <summary>
     /// Gets a value indicating whether this storage stages edits for a writable compound file.
     /// </summary>
-    /// <returns><see langword="true" /> when the owning file is writable; otherwise <see langword="false" />.</returns>
+    /// <value><see langword="true" /> when the owning file is writable; otherwise <see langword="false" />.</value>
     public bool CanWrite => _node is not null;
 
     /// <summary>
     /// Gets the parent storage that contains this storage.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The parent <see cref="CompoundStorage" />, or <see langword="null" /> when this is the root storage.
-    /// </returns>
+    /// </value>
     public CompoundStorage? Parent => _parent;
 
     /// <summary>
     /// Gets the name of the storage as stored in the directory.
     /// </summary>
-    /// <returns>The storage name; the root storage carries the conventional name <c>Root Entry</c>.</returns>
+    /// <value>The storage name; the root storage carries the conventional name <c>Root Entry</c>.</value>
     public string Name => _node?.Name ?? _entry!.Name;
 
     /// <summary>
     /// Gets the metadata snapshot for this storage.
     /// </summary>
-    /// <returns>A <see cref="CompoundEntryInfo" /> describing the storage.</returns>
+    /// <value>A <see cref="CompoundEntryInfo" /> describing the storage.</value>
     public CompoundEntryInfo Stat => _node is not null ? ToEntryInfo(_node) : _entry!.ToEntryInfo();
 
     /// <summary>

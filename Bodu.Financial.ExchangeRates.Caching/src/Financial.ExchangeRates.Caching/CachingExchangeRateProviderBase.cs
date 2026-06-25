@@ -117,7 +117,7 @@ public abstract class CachingExchangeRateProviderBase
     /// <summary>
     /// Gets the inner provider consulted on a cache miss.
     /// </summary>
-    /// <returns>The wrapped inner provider.</returns>
+    /// <value>The wrapped inner provider.</value>
     protected abstract IDatedExchangeRateProvider Inner { get; }
 
     /// <inheritdoc />
@@ -377,9 +377,9 @@ public abstract class CachingExchangeRateProviderBase
     /// from a complete inverse-pair coverage by reciprocating each rate, governed by the provider's default lookup
     /// options.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see langword="true" /> when inverse range serving is permitted; otherwise <see langword="false" />.
-    /// </returns>
+    /// </value>
     private bool AllowInverseRangeServe => _options.DefaultLookupOptions.AllowInverse;
 
     /// <summary>

@@ -40,7 +40,7 @@ internal sealed class FixtureOfxExchangeRateSource
     /// <summary>
     /// Gets the number of pairs this source has served.
     /// </summary>
-    /// <returns>The pair request count.</returns>
+    /// <value>The pair request count.</value>
     public int GetPairCallCount { get; private set; }
 
     /// <inheritdoc />

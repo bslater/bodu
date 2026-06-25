@@ -72,9 +72,9 @@ public sealed class PooledBufferBuilder<T> :
     /// <summary>
     /// Gets a value indicating whether no elements have been written to the buffer.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see langword="true" /> if <see cref="WrittenCount" /> is zero; otherwise <see langword="false" />.
-    /// </returns>
+    /// </value>
     /// <exception cref="ObjectDisposedException">Thrown if the instance has been disposed.</exception>
     public bool IsEmpty
     {
@@ -88,7 +88,7 @@ public sealed class PooledBufferBuilder<T> :
     /// <summary>
     /// Gets the number of elements that have been written to the buffer.
     /// </summary>
-    /// <returns>The count of elements appended and not yet discarded by <see cref="Reset" />.</returns>
+    /// <value>The count of elements appended and not yet discarded by <see cref="Reset" />.</value>
     /// <exception cref="ObjectDisposedException">Thrown if the instance has been disposed.</exception>
     public int WrittenCount
     {
@@ -102,11 +102,11 @@ public sealed class PooledBufferBuilder<T> :
     /// <summary>
     /// Gets the current capacity of the internal buffer.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The length of the underlying rented array. This value is always greater than or equal to
     /// <see cref="WrittenCount" /> and may be larger than the capacity requested at construction due to
     /// <see cref="ArrayPool{T}" /> rounding behavior.
-    /// </returns>
+    /// </value>
     /// <exception cref="ObjectDisposedException">Thrown if the instance has been disposed.</exception>
     public int Capacity
     {
@@ -120,10 +120,10 @@ public sealed class PooledBufferBuilder<T> :
     /// <summary>
     /// Gets the number of elements that can be written to the buffer before the next growth.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The number of remaining slots in the current rented array — equivalent to <see cref="Capacity" /> minus
     /// <see cref="WrittenCount" />.
-    /// </returns>
+    /// </value>
     /// <exception cref="ObjectDisposedException">Thrown if the instance has been disposed.</exception>
     public int FreeCapacity
     {
@@ -137,9 +137,9 @@ public sealed class PooledBufferBuilder<T> :
     /// <summary>
     /// Gets a <see cref="ReadOnlyMemory{T}" /> representing the elements written to the buffer.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// A <see cref="ReadOnlyMemory{T}" /> containing exactly the first <see cref="WrittenCount" /> buffered elements.
-    /// </returns>
+    /// </value>
     /// <exception cref="ObjectDisposedException">Thrown if the instance has been disposed.</exception>
     public ReadOnlyMemory<T> WrittenMemory
     {
@@ -153,9 +153,9 @@ public sealed class PooledBufferBuilder<T> :
     /// <summary>
     /// Gets a <see cref="ReadOnlySpan{T}" /> representing the elements written to the buffer.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// A <see cref="ReadOnlySpan{T}" /> containing exactly the first <see cref="WrittenCount" /> buffered elements.
-    /// </returns>
+    /// </value>
     /// <exception cref="ObjectDisposedException">Thrown if the instance has been disposed.</exception>
     public ReadOnlySpan<T> WrittenSpan
     {
@@ -170,7 +170,7 @@ public sealed class PooledBufferBuilder<T> :
     /// Gets the written region of the buffer as a <see cref="Memory{T}" />, as required by
     /// <see cref="System.Buffers.IMemoryOwner{T}" />.
     /// </summary>
-    /// <returns>A <see cref="Memory{T}" /> covering exactly the first <see cref="WrittenCount" /> elements.</returns>
+    /// <value>A <see cref="Memory{T}" /> covering exactly the first <see cref="WrittenCount" /> elements.</value>
     /// <exception cref="ObjectDisposedException">Thrown if the instance has been disposed.</exception>
     Memory<T> IMemoryOwner<T>.Memory
     {

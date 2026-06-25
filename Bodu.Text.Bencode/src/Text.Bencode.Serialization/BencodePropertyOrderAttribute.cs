@@ -49,6 +49,6 @@ public sealed class BencodePropertyOrderAttribute
     /// <summary>
     /// Gets the relative write order of the member.
     /// </summary>
-    /// <returns>The order value; members are written in ascending order.</returns>
+    /// <value>The order value; members are written in ascending order.</value>
     public int Order { get; }
 }

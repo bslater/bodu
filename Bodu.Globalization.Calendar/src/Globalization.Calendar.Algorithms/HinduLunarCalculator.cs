@@ -65,7 +65,7 @@ internal static class HinduLunarCalculator
     /// <summary>
     /// Gets the algorithm keys of every recognized Hindu lunisolar festival.
     /// </summary>
-    /// <returns>The recognized festival keys.</returns>
+    /// <value>The recognized festival keys.</value>
     public static IReadOnlyCollection<string> FestivalKeys =>
         s_festivals.Keys;
 

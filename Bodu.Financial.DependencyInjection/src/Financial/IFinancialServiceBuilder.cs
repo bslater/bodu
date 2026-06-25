@@ -18,6 +18,6 @@ public interface IFinancialServiceBuilder
     /// <summary>
     /// Gets the <see cref="IServiceCollection" /> that the builder is composing into.
     /// </summary>
-    /// <returns>The underlying service collection.</returns>
+    /// <value>The underlying service collection.</value>
     IServiceCollection Services { get; }
 }

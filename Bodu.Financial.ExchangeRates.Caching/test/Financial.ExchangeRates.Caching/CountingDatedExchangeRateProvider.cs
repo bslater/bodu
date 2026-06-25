@@ -26,25 +26,25 @@ internal sealed class CountingDatedExchangeRateProvider
     /// <summary>
     /// Gets the number of times <see cref="GetRate" /> has been invoked.
     /// </summary>
-    /// <returns>The invocation count.</returns>
+    /// <value>The invocation count.</value>
     public int GetRateCallCount { get; private set; }
 
     /// <summary>
     /// Gets the number of times <see cref="TryGetRate" /> has been invoked.
     /// </summary>
-    /// <returns>The invocation count.</returns>
+    /// <value>The invocation count.</value>
     public int TryGetRateCallCount { get; private set; }
 
     /// <summary>
     /// Gets the number of times <see cref="GetRatesAsync" /> has been invoked.
     /// </summary>
-    /// <returns>The invocation count.</returns>
+    /// <value>The invocation count.</value>
     public int GetRatesAsyncCallCount { get; private set; }
 
     /// <summary>
     /// Gets the total number of inner lookups across the single-date methods.
     /// </summary>
-    /// <returns>The combined invocation count.</returns>
+    /// <value>The combined invocation count.</value>
     public int TotalCallCount => GetRateCallCount + TryGetRateCallCount;
 
     /// <inheritdoc />

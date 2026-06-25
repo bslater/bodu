@@ -50,6 +50,6 @@ public sealed class BencodeObjectCreationHandlingAttribute
     /// <summary>
     /// Gets the object-creation handling applied to the annotated type or member.
     /// </summary>
-    /// <returns>The object-creation handling.</returns>
+    /// <value>The object-creation handling.</value>
     public BencodeObjectCreationHandling Handling { get; }
 }

@@ -53,8 +53,13 @@ namespace Bodu.Threading;
 [DebuggerDisplay("Signaled = {_signaled}, Waiters = {WaiterCount}")]
 public sealed class AsyncAutoResetEvent
 {
+    /// <summary>The synchronization object guarding <see cref="_waiters" /> and <see cref="_signaled" />.</summary>
     private readonly object _gate = new();
+
+    /// <summary>The queue of pending waiters, completed in first-in, first-out order as signals arrive.</summary>
     private readonly LinkedList<TaskCompletionSource<bool>> _waiters = new();
+
+    /// <summary>Indicates whether a signal is latched and available for the next waiter to consume.</summary>
     private bool _signaled;
 
     /// <summary>
@@ -80,7 +85,6 @@ public sealed class AsyncAutoResetEvent
     /// Gets the number of callers currently queued waiting for a signal.
     /// </summary>
     /// <value>The number of queued waiters.</value>
-    /// <returns>The number of callers awaiting a signal. Intended for diagnostics.</returns>
     internal int WaiterCount
     {
         get
@@ -167,7 +171,7 @@ public sealed class AsyncAutoResetEvent
     {
         using (cancellationToken.Register(static state =>
         {
-            var (owner, waiter, token) = ((AsyncAutoResetEvent Owner, LinkedListNode<TaskCompletionSource<bool>> Node, CancellationToken Token))state!;
+            (AsyncAutoResetEvent? owner, LinkedListNode<TaskCompletionSource<bool>>? waiter, CancellationToken token) = ((AsyncAutoResetEvent Owner, LinkedListNode<TaskCompletionSource<bool>> Node, CancellationToken Token))state!;
             owner.CancelWaiter(waiter, token);
         }, (this, node, cancellationToken)))
         {

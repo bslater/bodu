@@ -154,20 +154,20 @@ public sealed class ExchangeRateSeries
     /// <summary>
     /// Gets the currency pair this series describes.
     /// </summary>
-    /// <returns>The series pair.</returns>
+    /// <value>The series pair.</value>
     public ExchangeRatePair Pair { get; }
 
     /// <summary>
     /// Gets the identifier of the source that published the rates in this series.
     /// </summary>
-    /// <returns>A non-empty provider identifier.</returns>
+    /// <value>A non-empty provider identifier.</value>
     public string Provider { get; }
 
     /// <summary>
     /// Gets the UTC instant at which the load that produced this series downloaded its source data, or
     /// <see langword="null" /> when not tracked.
     /// </summary>
-    /// <returns>The fetch instant when known; otherwise <see langword="null" />.</returns>
+    /// <value>The fetch instant when known; otherwise <see langword="null" />.</value>
     /// <remarks>
     /// The fetch instant is recorded at the series grain and stamped onto every <see cref="ExchangeRate" /> the series
     /// materializes, so downstream audit consumers can attribute a served rate to the moment its backing data was
@@ -178,7 +178,7 @@ public sealed class ExchangeRateSeries
     /// <summary>
     /// Gets the number of observations stored in this series.
     /// </summary>
-    /// <returns>A non-negative count equal to the number of rate entries supplied at construction.</returns>
+    /// <value>A non-negative count equal to the number of rate entries supplied at construction.</value>
     public int Count => _storage.Count;
 
     /// <summary>

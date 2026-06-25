@@ -170,17 +170,17 @@ public sealed partial class Blake3
     /// <summary>
     /// Gets a value indicating whether this transform instance can be reused after a hash operation is completed.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see langword="true" />; <see cref="Blake3" /> resets its state automatically and may be reused across multiple
     /// <c>ComputeHash</c> calls.
-    /// </returns>
+    /// </value>
     public override bool CanReuseTransform => true;
 
     /// <summary>
     /// Gets a value indicating whether multiple blocks may be transformed in a single
     /// <see cref="HashAlgorithm.TransformBlock" /> call.
     /// </summary>
-    /// <returns><see langword="true" />; the implementation accumulates arbitrary-length input internally.</returns>
+    /// <value><see langword="true" />; the implementation accumulates arbitrary-length input internally.</value>
     public override bool CanTransformMultipleBlocks => true;
 
     /// <inheritdoc />

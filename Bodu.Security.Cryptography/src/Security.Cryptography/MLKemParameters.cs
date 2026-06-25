@@ -47,55 +47,55 @@ internal sealed class MLKemParameters
     /// <summary>
     /// Gets the FIPS 203 parameter-set name, such as <c>"ML-KEM-768"</c>.
     /// </summary>
-    /// <returns>The parameter-set name.</returns>
+    /// <value>The parameter-set name.</value>
     internal string Name { get; }
 
     /// <summary>
     /// Gets the module rank k — the dimension of the matrix Â and of the secret and noise vectors.
     /// </summary>
-    /// <returns>2, 3, or 4.</returns>
+    /// <value>2, 3, or 4.</value>
     internal int K { get; }
 
     /// <summary>
     /// Gets the centered-binomial-distribution parameter η₁ used for the key-generation secret and error vectors and
     /// the encryption secret vector.
     /// </summary>
-    /// <returns>3 for ML-KEM-512; otherwise 2.</returns>
+    /// <value>3 for ML-KEM-512; otherwise 2.</value>
     internal int Eta1 { get; }
 
     /// <summary>
     /// Gets the centered-binomial-distribution parameter η₂ used for the encryption error terms.
     /// </summary>
-    /// <returns>Always 2 for the standardized parameter sets.</returns>
+    /// <value>Always 2 for the standardized parameter sets.</value>
     internal int Eta2 { get; }
 
     /// <summary>
     /// Gets the compression bit width dᵤ applied to the ciphertext vector component u.
     /// </summary>
-    /// <returns>10 or 11.</returns>
+    /// <value>10 or 11.</value>
     internal int Du { get; }
 
     /// <summary>
     /// Gets the compression bit width dᵥ applied to the ciphertext scalar component v.
     /// </summary>
-    /// <returns>4 or 5.</returns>
+    /// <value>4 or 5.</value>
     internal int Dv { get; }
 
     /// <summary>
     /// Gets the encapsulation (public) key size in bytes: 384k + 32.
     /// </summary>
-    /// <returns>800, 1184, or 1568.</returns>
+    /// <value>800, 1184, or 1568.</value>
     internal int EncapsulationKeySize { get; }
 
     /// <summary>
     /// Gets the decapsulation (private) key size in bytes: 768k + 96.
     /// </summary>
-    /// <returns>1632, 2400, or 3168.</returns>
+    /// <value>1632, 2400, or 3168.</value>
     internal int DecapsulationKeySize { get; }
 
     /// <summary>
     /// Gets the ciphertext size in bytes: 32(dᵤk + dᵥ).
     /// </summary>
-    /// <returns>768, 1088, or 1568.</returns>
+    /// <value>768, 1088, or 1568.</value>
     internal int CiphertextSize { get; }
 }

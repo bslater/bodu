@@ -53,9 +53,16 @@ namespace Bodu.Threading;
 [DebuggerDisplay("CurrentCount = {CurrentCount}, MaxCount = {_maxCount}, Waiters = {WaiterCount}")]
 public sealed partial class AsyncSemaphore
 {
+    /// <summary>The synchronization object guarding the waiter queue and permit count.</summary>
     private readonly object _gate = new();
+
+    /// <summary>The queue of pending waiters, granted permits in FIFO order as they are released.</summary>
     private readonly LinkedList<TaskCompletionSource<bool>> _waiters = new();
+
+    /// <summary>The maximum permit count, or <see cref="int.MaxValue" /> when no upper bound was specified.</summary>
     private readonly int _maxCount;
+
+    /// <summary>The number of permits currently available.</summary>
     private int _currentCount;
 
     /// <summary>
@@ -93,7 +100,6 @@ public sealed partial class AsyncSemaphore
     /// Gets the number of permits currently available.
     /// </summary>
     /// <value>The number of permits that can be taken without waiting.</value>
-    /// <returns>The number of permits currently available.</returns>
     public int CurrentCount
     {
         get
@@ -109,7 +115,6 @@ public sealed partial class AsyncSemaphore
     /// Gets the number of callers currently queued waiting for a permit.
     /// </summary>
     /// <value>The number of queued waiters.</value>
-    /// <returns>The number of callers awaiting a permit. Intended for diagnostics.</returns>
     internal int WaiterCount
     {
         get
@@ -201,7 +206,7 @@ public sealed partial class AsyncSemaphore
     /// </exception>
     public ValueTask<Releaser> LockAsync(CancellationToken cancellationToken)
     {
-        var wait = WaitAsync(cancellationToken);
+        ValueTask wait = WaitAsync(cancellationToken);
         return wait.IsCompletedSuccessfully
             ? new ValueTask<Releaser>(new Releaser(this))
             : AwaitReleaserAsync(wait);
@@ -230,7 +235,7 @@ public sealed partial class AsyncSemaphore
 
         lock (_gate)
         {
-            var remaining = releaseCount;
+            int remaining = releaseCount;
 
             // Hand permits to queued waiters in FIFO order. A waiter whose task was already canceled is dropped
             // without consuming a permit.
@@ -267,7 +272,7 @@ public sealed partial class AsyncSemaphore
     {
         using (cancellationToken.Register(static state =>
         {
-            var (owner, waiter, token) = ((AsyncSemaphore Owner, LinkedListNode<TaskCompletionSource<bool>> Node, CancellationToken Token))state!;
+            (AsyncSemaphore? owner, LinkedListNode<TaskCompletionSource<bool>>? waiter, CancellationToken token) = ((AsyncSemaphore Owner, LinkedListNode<TaskCompletionSource<bool>> Node, CancellationToken Token))state!;
             owner.CancelWaiter(waiter, token);
         }, (this, node, cancellationToken)))
         {

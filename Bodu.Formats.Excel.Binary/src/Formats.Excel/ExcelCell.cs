@@ -44,64 +44,64 @@ public readonly record struct ExcelCell
     /// <summary>
     /// Gets the zero-based row index of the cell.
     /// </summary>
-    /// <returns>The row index.</returns>
+    /// <value>The row index.</value>
     public int RowIndex { get; }
 
     /// <summary>
     /// Gets the zero-based column index of the cell.
     /// </summary>
-    /// <returns>The column index.</returns>
+    /// <value>The column index.</value>
     public int ColumnIndex { get; }
 
     /// <summary>
     /// Gets the classification of the cell's value.
     /// </summary>
-    /// <returns>The cell kind.</returns>
+    /// <value>The cell kind.</value>
     public ExcelCellKind Kind { get; }
 
     /// <summary>
     /// Gets the text value when <see cref="Kind" /> is <see cref="ExcelCellKind.String" />; otherwise
     /// <see langword="null" />.
     /// </summary>
-    /// <returns>The text value, or <see langword="null" />.</returns>
+    /// <value>The text value, or <see langword="null" />.</value>
     public string? StringValue { get; }
 
     /// <summary>
     /// Gets the numeric value when <see cref="Kind" /> is <see cref="ExcelCellKind.Number" />; otherwise
     /// <see langword="null" />.
     /// </summary>
-    /// <returns>The numeric value, or <see langword="null" />.</returns>
+    /// <value>The numeric value, or <see langword="null" />.</value>
     public double? NumberValue { get; }
 
     /// <summary>
     /// Gets the boolean value when <see cref="Kind" /> is <see cref="ExcelCellKind.Boolean" />; otherwise
     /// <see langword="null" />.
     /// </summary>
-    /// <returns>The boolean value, or <see langword="null" />.</returns>
+    /// <value>The boolean value, or <see langword="null" />.</value>
     public bool? BooleanValue { get; }
 
     /// <summary>
     /// Gets the error code when <see cref="Kind" /> is <see cref="ExcelCellKind.Error" />; otherwise
     /// <see langword="null" />.
     /// </summary>
-    /// <returns>The spreadsheet error code, or <see langword="null" />.</returns>
+    /// <value>The spreadsheet error code, or <see langword="null" />.</value>
     public ExcelErrorCode? ErrorValue { get; }
 
     /// <summary>
     /// Gets the number-format index applied to the cell.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The format index referenced by the cell's record; <c>0</c> (the General format) when no format is recorded.
-    /// </returns>
+    /// </value>
     public ushort FormatIndex { get; }
 
     /// <summary>
     /// Gets a value indicating whether the cell is a number formatted as a date or time.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see langword="true" /> when <see cref="Kind" /> is <see cref="ExcelCellKind.Number" /> and the cell's format is
     /// a date or time format; otherwise <see langword="false" />.
-    /// </returns>
+    /// </value>
     /// <remarks>
     /// Use <see cref="ExcelSerialDate" /> with the workbook's date system to convert a date-formatted number to a
     /// calendar value.

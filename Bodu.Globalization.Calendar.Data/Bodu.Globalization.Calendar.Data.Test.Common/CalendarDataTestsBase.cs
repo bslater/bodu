@@ -22,7 +22,7 @@ public abstract class CalendarDataTestsBase
     /// <summary>
     /// Gets the ISO 3166 country codes that the region under test supports.
     /// </summary>
-    /// <returns>The supported country codes exposed by the region's data factory.</returns>
+    /// <value>The supported country codes exposed by the region's data factory.</value>
     protected abstract IReadOnlyList<string> SupportedCountries { get; }
 
     /// <summary>

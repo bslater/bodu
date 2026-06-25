@@ -13,7 +13,6 @@ public sealed partial class ConcurrentHashSet<T> :
     /// Gets a value indicating whether the set is read-only.
     /// </summary>
     /// <value>Always <see langword="false" />.</value>
-    /// <returns>Always <see langword="false" />; a <see cref="ConcurrentHashSet{T}" /> is always mutable.</returns>
     public bool IsReadOnly => false;
 
     /// <summary>

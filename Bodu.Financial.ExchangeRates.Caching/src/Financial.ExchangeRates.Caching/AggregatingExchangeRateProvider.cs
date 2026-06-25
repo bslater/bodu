@@ -148,7 +148,7 @@ public sealed class AggregatingExchangeRateProvider
     /// <summary>
     /// Gets the names of the grouped children.
     /// </summary>
-    /// <returns>The child names, in no particular order.</returns>
+    /// <value>The child names, in no particular order.</value>
     public IReadOnlyCollection<string> ProviderNames => _byName.Keys;
 
     /// <summary>

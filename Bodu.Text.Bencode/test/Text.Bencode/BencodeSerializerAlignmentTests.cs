@@ -210,13 +210,13 @@ public class BencodeSerializerAlignmentTests
         /// <summary>
         /// Gets or sets the integer count.
         /// </summary>
-        /// <returns>The count.</returns>
+        /// <value>The count.</value>
         public int Count { get; set; }
 
         /// <summary>
         /// Gets or sets the label.
         /// </summary>
-        /// <returns>The label.</returns>
+        /// <value>The label.</value>
         public string Label { get; set; } = string.Empty;
     }
 
@@ -228,14 +228,14 @@ public class BencodeSerializerAlignmentTests
         /// <summary>
         /// Gets or sets the required name.
         /// </summary>
-        /// <returns>The name.</returns>
+        /// <value>The name.</value>
         [BencodeRequired]
         public string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the optional value.
         /// </summary>
-        /// <returns>The optional value.</returns>
+        /// <value>The optional value.</value>
         public string Optional { get; set; } = string.Empty;
     }
 
@@ -264,7 +264,7 @@ public class BencodeSerializerAlignmentTests
         /// <summary>
         /// Gets the value, exposed through a non-public setter that <see cref="BencodeIncludeAttribute" /> opts into.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         [BencodeInclude]
         public int Value { get; private set; }
     }
@@ -278,13 +278,13 @@ public class BencodeSerializerAlignmentTests
         /// <summary>
         /// Gets or sets the name.
         /// </summary>
-        /// <returns>The name.</returns>
+        /// <value>The name.</value>
         public string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the captured entries that match no other member.
         /// </summary>
-        /// <returns>The captured entries.</returns>
+        /// <value>The captured entries.</value>
         [BencodeExtensionData]
         public BencodeObject? Extra { get; set; }
     }

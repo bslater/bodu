@@ -66,6 +66,6 @@ public sealed class BencodeSerializationException
     /// <summary>
     /// Gets the byte offset into the source at which the error was detected, when available.
     /// </summary>
-    /// <returns>The byte offset, or <see langword="null" /> when the failure has no associated position.</returns>
+    /// <value>The byte offset, or <see langword="null" /> when the failure has no associated position.</value>
     public int? BytesOffset { get; }
 }

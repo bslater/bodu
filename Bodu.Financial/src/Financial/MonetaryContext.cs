@@ -44,44 +44,43 @@ public sealed record MonetaryContext
     /// Gets the shared default context: banker's rounding to the currency's minor units, no cash rounding,
     /// largest-remainder allocation, and rounding conversions at the target scale.
     /// </summary>
-    /// <returns>The default <see cref="MonetaryContext" />.</returns>
+    /// <value>The default <see cref="MonetaryContext" />.</value>
     public static MonetaryContext Default { get; } = new();
 
     /// <summary>
     /// Gets the rounding strategy applied when reducing a computed amount to the resolved scale.
     /// </summary>
     /// <value>The rounding strategy; never <see langword="null" />.</value>
-    /// <returns>The configured <see cref="IRoundingStrategy" />.</returns>
     public IRoundingStrategy Rounding { get; init; } = MidpointRoundingStrategy.ToEven;
 
     /// <summary>
     /// Gets the policy that determines the fractional-digit scale results are rounded to.
     /// </summary>
-    /// <returns>The configured <see cref="ScalePolicy" />.</returns>
+    /// <value>The configured <see cref="ScalePolicy" />.</value>
     public ScalePolicy ScalePolicy { get; init; } = ScalePolicy.CurrencyMinorUnits;
 
     /// <summary>
     /// Gets the explicit scale used when <see cref="ScalePolicy" /> is <see cref="ScalePolicy.Custom" />.
     /// </summary>
-    /// <returns>The custom scale, or <see langword="null" /> when not applicable.</returns>
+    /// <value>The custom scale, or <see langword="null" /> when not applicable.</value>
     public int? CustomScale { get; init; }
 
     /// <summary>
     /// Gets the cash-rounding policy applied to results.
     /// </summary>
-    /// <returns>The configured <see cref="CashRoundingPolicy" />.</returns>
+    /// <value>The configured <see cref="CashRoundingPolicy" />.</value>
     public CashRoundingPolicy CashRounding { get; init; } = CashRoundingPolicy.None;
 
     /// <summary>
     /// Gets the allocation policy used when distributing an amount across shares.
     /// </summary>
-    /// <returns>The configured <see cref="AllocationPolicy" />.</returns>
+    /// <value>The configured <see cref="AllocationPolicy" />.</value>
     public AllocationPolicy Allocation { get; init; } = AllocationPolicy.LargestRemainder;
 
     /// <summary>
     /// Gets the policy that determines when a currency conversion is rounded.
     /// </summary>
-    /// <returns>The configured <see cref="ConversionRoundingPolicy" />.</returns>
+    /// <value>The configured <see cref="ConversionRoundingPolicy" />.</value>
     public ConversionRoundingPolicy ConversionRounding { get; init; } = ConversionRoundingPolicy.RoundAtTarget;
 
     /// <summary>

@@ -34,25 +34,25 @@ internal sealed class XmlDocToken
     /// <summary>
     /// Gets the kind of this token.
     /// </summary>
-    /// <returns>The token kind.</returns>
+    /// <value>The token kind.</value>
     public XmlDocTokenKind Kind { get; }
 
     /// <summary>
     /// Gets the verbatim text the token represents.
     /// </summary>
-    /// <returns>The raw text of the token.</returns>
+    /// <value>The raw text of the token.</value>
     public string RawText { get; }
 
     /// <summary>
     /// Gets the tag name associated with this token when it is a block or inline XML token.
     /// </summary>
-    /// <returns>The tag name, or <see langword="null" /> when the token does not represent an XML element.</returns>
+    /// <value>The tag name, or <see langword="null" /> when the token does not represent an XML element.</value>
     public string? TagName { get; }
 
     /// <summary>
     /// Gets a value indicating whether an inline token was emitted in self-closing form.
     /// </summary>
-    /// <returns><see langword="true" /> when the source used the <c>&lt;tag /&gt;</c> form; otherwise <see langword="false" />.</returns>
+    /// <value><see langword="true" /> when the source used the <c>&lt;tag /&gt;</c> form; otherwise <see langword="false" />.</value>
     public bool IsSelfClosing { get; }
 
     /// <summary>

@@ -27,21 +27,21 @@ public sealed record MultiCharCheckDigitIsValidKnownAnswer
     /// <summary>
     /// Gets the verdict the algorithm's <c>IsValid</c> helper is expected to return for <see cref="Value" />.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see langword="true" /> if the sequence is valid under the algorithm; otherwise, <see langword="false" />.
-    /// </returns>
+    /// </value>
     public required bool ExpectedIsValid { get; init; }
     /// <summary>
     /// Gets a short descriptive name used in test output to identify the vector.
     /// </summary>
-    /// <returns>A non-empty descriptive label such as <c>"WikipediaGB"</c> or <c>"CheckDigitsTampered"</c>.</returns>
+    /// <value>A non-empty descriptive label such as <c>"WikipediaGB"</c> or <c>"CheckDigitsTampered"</c>.</value>
     public required string Name { get; init; }
 
     /// <summary>
     /// Gets the complete sequence — body and check characters in their canonical form — passed to the algorithm's
     /// <c>IsValid</c> static helper.
     /// </summary>
-    /// <returns>A non-null string drawn from the algorithm's declared input alphabet.</returns>
+    /// <value>A non-null string drawn from the algorithm's declared input alphabet.</value>
     public required string Value { get; init; }
 
 }

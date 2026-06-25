@@ -55,17 +55,12 @@ public sealed class WordCasingOptions
     /// <summary>
     /// Gets a shared <see cref="WordCasingOptions" /> instance whose every property holds its default value.
     /// </summary>
-    /// <returns>The shared default-configured options instance.</returns>
     /// <value>An immutable, reusable options object suitable as the implicit default for every overload.</value>
     public static WordCasingOptions Default => s_default;
 
     /// <summary>
     /// Gets the known acronyms recognised during tokenisation and casing.
     /// </summary>
-    /// <returns>
-    /// The acronym catalogue. Each entry supplies the canonical spelling emitted when an input chunk matches the entry
-    /// case-insensitively (for example <c>IPv6</c>, <c>OAuth</c>, <c>JSON</c>).
-    /// </returns>
     /// <value>
     /// Defaults to a built-in list of 38 common technology acronyms. Supply a custom collection to extend or replace
     /// the catalogue.
@@ -75,7 +70,6 @@ public sealed class WordCasingOptions
     /// <summary>
     /// Gets the minor (connective) words eligible for down-casing in title case.
     /// </summary>
-    /// <returns>The connective-word list, such as <c>a</c>, <c>the</c>, <c>of</c>, and <c>and</c>.</returns>
     /// <value>
     /// Defaults to a built-in list of 21 English connective words. Only consulted when
     /// <see cref="LowerCaseMinorWords" /> is <see langword="true" />.
@@ -85,7 +79,6 @@ public sealed class WordCasingOptions
     /// <summary>
     /// Gets the culture used for all case conversions.
     /// </summary>
-    /// <returns>The culture whose casing rules upper-case and lower-case individual characters.</returns>
     /// <value>
     /// Defaults to <see cref="CultureInfo.InvariantCulture" />. Supply a specific culture (for example <c>tr-TR</c>)
     /// when locale-sensitive casing is required.
@@ -95,10 +88,6 @@ public sealed class WordCasingOptions
     /// <summary>
     /// Gets a value indicating whether all-uppercase tokens and known acronyms keep their acronym spelling.
     /// </summary>
-    /// <returns>
-    /// <see langword="true" /> when acronyms are preserved verbatim in title and sentence case; otherwise
-    /// <see langword="false" />.
-    /// </returns>
     /// <value>Defaults to <see langword="true" />.</value>
     public bool PreserveAcronyms { get; init; } = true;
 
@@ -106,20 +95,12 @@ public sealed class WordCasingOptions
     /// Gets a value indicating whether mixed-case tokens such as <c>OAuth</c>, <c>iPhone</c>, and <c>eBay</c> survive
     /// casing changes verbatim.
     /// </summary>
-    /// <returns>
-    /// <see langword="true" /> when recognised mixed-case tokens are emitted unchanged; otherwise
-    /// <see langword="false" />.
-    /// </returns>
     /// <value>Defaults to <see langword="true" />.</value>
     public bool PreserveMixedCaseWords { get; init; } = true;
 
     /// <summary>
     /// Gets a value indicating whether interior minor words are down-cased in title case.
     /// </summary>
-    /// <returns>
-    /// <see langword="true" /> when minor words that are neither first nor last are lower-cased in title case;
-    /// otherwise <see langword="false" />.
-    /// </returns>
     /// <value>
     /// Defaults to <see langword="false" />. Affects only
     /// <see cref="StringExtensions.ToTitleCase(string, WordCasingOptions)" />.

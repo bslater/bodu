@@ -13,34 +13,34 @@ public readonly partial struct Interval<T>
     /// <summary>
     /// Gets the lower endpoint of the interval.
     /// </summary>
-    /// <returns>The lower endpoint passed to the constructor or factory method.</returns>
+    /// <value>The lower endpoint passed to the constructor or factory method.</value>
     public T Lower =>
         _lower;
 
     /// <summary>
     /// Gets the upper endpoint of the interval.
     /// </summary>
-    /// <returns>The upper endpoint passed to the constructor or factory method.</returns>
+    /// <value>The upper endpoint passed to the constructor or factory method.</value>
     public T Upper =>
         _upper;
 
     /// <summary>
     /// Gets a value indicating whether the lower endpoint is part of the interval.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see langword="true" /> when the interval is closed on the lower side (i.e. <c>[Lower, ...</c>);
     /// <see langword="false" /> when open (i.e. <c>(Lower, ...</c>).
-    /// </returns>
+    /// </value>
     public bool LowerInclusive =>
         (_flags & 1) != 0;
 
     /// <summary>
     /// Gets a value indicating whether the upper endpoint is part of the interval.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see langword="true" /> when the interval is closed on the upper side (i.e. <c>..., Upper]</c>);
     /// <see langword="false" /> when open (i.e. <c>..., Upper)</c>).
-    /// </returns>
+    /// </value>
     public bool UpperInclusive =>
         (_flags & 2) != 0;
 
@@ -67,7 +67,7 @@ public readonly partial struct Interval<T>
     /// </item>
     /// </list>
     /// </remarks>
-    /// <returns><see langword="true" /> when the interval is empty; otherwise <see langword="false" />.</returns>
+    /// <value><see langword="true" /> when the interval is empty; otherwise <see langword="false" />.</value>
     /// <example>
     /// <code language="csharp">
     ///<![CDATA[
@@ -85,11 +85,11 @@ public readonly partial struct Interval<T>
     /// Gets a value indicating whether the interval represents a single point — a closed-closed interval whose lower
     /// and upper endpoints are equal.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see langword="true" /> when <see cref="Lower" /> equals <see cref="Upper" /> and both
     /// <see cref="LowerInclusive" /> and <see cref="UpperInclusive" /> are <see langword="true" />; otherwise
     /// <see langword="false" />.
-    /// </returns>
+    /// </value>
     public bool IsDegenerate =>
         _lower == _upper && LowerInclusive && UpperInclusive;
 
@@ -112,9 +112,9 @@ public readonly partial struct Interval<T>
     /// For empty intervals, the length is <see cref="INumberBase{TSelf}.Zero" />.
     /// </para>
     /// </remarks>
-    /// <returns>
+    /// <value>
     /// The non-negative length of the interval, or <see cref="INumberBase{TSelf}.Zero" /> when empty.
-    /// </returns>
+    /// </value>
     public T Length =>
         IsEmpty ? T.Zero : _upper - _lower;
 }

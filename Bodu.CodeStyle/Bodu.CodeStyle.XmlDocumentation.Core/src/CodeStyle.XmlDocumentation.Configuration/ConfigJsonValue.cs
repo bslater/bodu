@@ -36,23 +36,23 @@ internal sealed class ConfigJsonValue
     }
 
     /// <summary>Gets the kind of this value.</summary>
-    /// <returns>The value kind.</returns>
+    /// <value>The value kind.</value>
     public ConfigJsonValueKind Kind { get; }
 
     /// <summary>Gets the string content when <see cref="Kind" /> is <see cref="ConfigJsonValueKind.String" />.</summary>
-    /// <returns>The string content, or <see langword="null" /> for non-string values.</returns>
+    /// <value>The string content, or <see langword="null" /> for non-string values.</value>
     public string? StringValue { get; }
 
     /// <summary>Gets the object members when <see cref="Kind" /> is <see cref="ConfigJsonValueKind.Object" />.</summary>
-    /// <returns>The member map, or <see langword="null" /> for non-object values.</returns>
+    /// <value>The member map, or <see langword="null" /> for non-object values.</value>
     public IReadOnlyDictionary<string, ConfigJsonValue>? Members { get; }
 
     /// <summary>Gets the array items when <see cref="Kind" /> is <see cref="ConfigJsonValueKind.Array" />.</summary>
-    /// <returns>The item list, or <see langword="null" /> for non-array values.</returns>
+    /// <value>The item list, or <see langword="null" /> for non-array values.</value>
     public IReadOnlyList<ConfigJsonValue>? Items { get; }
 
     /// <summary>Gets the boolean content when <see cref="Kind" /> is <see cref="ConfigJsonValueKind.Boolean" />.</summary>
-    /// <returns>The boolean content; <see langword="false" /> for non-boolean values.</returns>
+    /// <value>The boolean content; <see langword="false" /> for non-boolean values.</value>
     public bool BooleanValue => this._boolean;
 
     /// <summary>Creates an object value.</summary>

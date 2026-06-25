@@ -67,116 +67,116 @@ public sealed class NotableDateRuleBuilder
     /// <summary>
     /// Gets the stable identifier of the rule.
     /// </summary>
-    /// <returns>The rule identifier.</returns>
+    /// <value>The rule identifier.</value>
     internal string Id { get; }
 
     /// <summary>
     /// Gets the configured selection priority.
     /// </summary>
-    /// <returns>The priority, or <see langword="null" /> when unset.</returns>
+    /// <value>The priority, or <see langword="null" /> when unset.</value>
     internal int? Priority { get; private set; }
 
     /// <summary>
     /// Gets the configured category override.
     /// </summary>
-    /// <returns>The category, or <see langword="null" /> when inherited.</returns>
+    /// <value>The category, or <see langword="null" /> when inherited.</value>
     internal NotableDateCategory? Category { get; private set; }
 
     /// <summary>
     /// Gets the configured non-working override.
     /// </summary>
-    /// <returns>The flag, or <see langword="null" /> when inherited.</returns>
+    /// <value>The flag, or <see langword="null" /> when inherited.</value>
     internal bool? NonWorking { get; private set; }
 
     /// <summary>
     /// Gets the configured duration override.
     /// </summary>
-    /// <returns>The duration in days, or <see langword="null" /> when inherited.</returns>
+    /// <value>The duration in days, or <see langword="null" /> when inherited.</value>
     internal int? DurationDays { get; private set; }
 
     /// <summary>
     /// Gets the configured authoring comment.
     /// </summary>
-    /// <returns>The comment, or <see langword="null" /> when unset.</returns>
+    /// <value>The comment, or <see langword="null" /> when unset.</value>
     internal string? Comment { get; private set; }
 
     /// <summary>
     /// Gets the configured applicability calendar system.
     /// </summary>
-    /// <returns>The calendar system, or <see langword="null" /> when the Gregorian default applies.</returns>
+    /// <value>The calendar system, or <see langword="null" /> when the Gregorian default applies.</value>
     internal CalendarSystem? Calendar { get; private set; }
 
     /// <summary>
     /// Gets the inclusive lower year bound.
     /// </summary>
-    /// <returns>The lower bound, or <see langword="null" /> when unbounded.</returns>
+    /// <value>The lower bound, or <see langword="null" /> when unbounded.</value>
     internal int? FromYearValue { get; private set; }
 
     /// <summary>
     /// Gets the inclusive upper year bound.
     /// </summary>
-    /// <returns>The upper bound, or <see langword="null" /> when unbounded.</returns>
+    /// <value>The upper bound, or <see langword="null" /> when unbounded.</value>
     internal int? ToYearValue { get; private set; }
 
     /// <summary>
     /// Gets the recurrence interval in years.
     /// </summary>
-    /// <returns>The interval, or <see langword="null" /> when the rule applies every year.</returns>
+    /// <value>The interval, or <see langword="null" /> when the rule applies every year.</value>
     internal int? EveryYearsValue { get; private set; }
 
     /// <summary>
     /// Gets the anchor year for interval recurrence.
     /// </summary>
-    /// <returns>The anchor year, or <see langword="null" /> when unset.</returns>
+    /// <value>The anchor year, or <see langword="null" /> when unset.</value>
     internal int? AnchorYearValue { get; private set; }
 
     /// <summary>
     /// Gets the territory codes scoping the rule.
     /// </summary>
-    /// <returns>The territory codes; empty when the rule applies to all territories.</returns>
+    /// <value>The territory codes; empty when the rule applies to all territories.</value>
     internal IReadOnlyList<string> Territories =>
         _territories;
 
     /// <summary>
     /// Gets the exclusive list of years for which the rule applies.
     /// </summary>
-    /// <returns>The years; empty when no exclusive list is set.</returns>
+    /// <value>The years; empty when no exclusive list is set.</value>
     internal IReadOnlyList<int> OnlyYearsValues =>
         _onlyYears;
 
     /// <summary>
     /// Gets the years for which the rule is suppressed.
     /// </summary>
-    /// <returns>The years; empty when no exception list is set.</returns>
+    /// <value>The years; empty when no exception list is set.</value>
     internal IReadOnlyList<int> ExceptYearsValues =>
         _exceptYears;
 
     /// <summary>
     /// Gets the rule-specific tags.
     /// </summary>
-    /// <returns>The tags; empty when none are configured.</returns>
+    /// <value>The tags; empty when none are configured.</value>
     internal IReadOnlyList<string> Tags =>
         _tags;
 
     /// <summary>
     /// Gets the adjustment policy identifiers applied to the rule.
     /// </summary>
-    /// <returns>The policy identifiers; empty when none are configured.</returns>
+    /// <value>The policy identifiers; empty when none are configured.</value>
     internal IReadOnlyList<string> Adjustments =>
         _adjustments;
 
     /// <summary>
     /// Gets the single strategy element in the document namespace.
     /// </summary>
-    /// <returns>The strategy element, or <see langword="null" /> when no strategy is set.</returns>
+    /// <value>The strategy element, or <see langword="null" /> when no strategy is set.</value>
     internal XElement? Strategy { get; private set; }
 
     /// <summary>
     /// Gets a value indicating whether the applicability scope declares any values.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see langword="true" /> when at least one applicability value is set; otherwise, <see langword="false" />.
-    /// </returns>
+    /// </value>
     internal bool HasApplicability =>
         Calendar is not null
         || FromYearValue is not null

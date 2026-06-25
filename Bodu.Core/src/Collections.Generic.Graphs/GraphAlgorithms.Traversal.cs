@@ -1,10 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="GraphAlgorithms.Traversal.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using Bodu.Collections.Generic;
 
 namespace Bodu.Collections.Generic.Graphs;
 
@@ -90,10 +88,10 @@ public static partial class GraphAlgorithms
 
         while (frontier.Count > 0)
         {
-            var current = frontier.RemoveFirst();
+            T current = frontier.RemoveFirst();
             yield return current;
 
-            foreach (var neighbor in graph.Neighbors(current))
+            foreach (T neighbor in graph.Neighbors(current))
             {
                 if (visited.Add(neighbor))
                     frontier.AddLast(neighbor);
@@ -117,13 +115,13 @@ public static partial class GraphAlgorithms
 
         while (stack.Count > 0)
         {
-            var current = stack.Pop();
+            T current = stack.Pop();
             if (!visited.Add(current))
                 continue;
 
             yield return current;
 
-            foreach (var neighbor in graph.Neighbors(current))
+            foreach (T neighbor in graph.Neighbors(current))
             {
                 if (!visited.Contains(neighbor))
                     stack.Push(neighbor);

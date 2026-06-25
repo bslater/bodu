@@ -73,11 +73,22 @@ namespace Bodu.Threading;
 [DebuggerDisplay("Readers = {_readersActive}, WriterActive = {_writerActive}, WaitingReaders = {WaitingReaderCount}, WaitingWriters = {WaitingWriterCount}")]
 public sealed partial class AsyncReaderWriterLock : IDisposable
 {
+    /// <summary>The synchronization object guarding all mutable lock state.</summary>
     private readonly object _gate = new();
+
+    /// <summary>The readers waiting to acquire shared access, released together when no writer is active.</summary>
     private readonly List<TaskCompletionSource<Releaser>> _waitingReaders = new();
+
+    /// <summary>The writers waiting to acquire exclusive access, granted in first-in, first-out order.</summary>
     private readonly LinkedList<TaskCompletionSource<Releaser>> _waitingWriters = new();
+
+    /// <summary>The number of readers currently holding shared access.</summary>
     private int _readersActive;
+
+    /// <summary>Indicates whether a writer currently holds exclusive access.</summary>
     private bool _writerActive;
+
+    /// <summary>Indicates whether the lock has been disposed.</summary>
     private bool _disposed;
 
     /// <summary>
@@ -91,7 +102,6 @@ public sealed partial class AsyncReaderWriterLock : IDisposable
     /// Gets the number of callers currently queued waiting for read access.
     /// </summary>
     /// <value>The number of queued readers.</value>
-    /// <returns>The number of callers awaiting read access. Intended for diagnostics.</returns>
     internal int WaitingReaderCount
     {
         get
@@ -107,7 +117,6 @@ public sealed partial class AsyncReaderWriterLock : IDisposable
     /// Gets the number of callers currently queued waiting for write access.
     /// </summary>
     /// <value>The number of queued writers.</value>
-    /// <returns>The number of callers awaiting write access. Intended for diagnostics.</returns>
     internal int WaitingWriterCount
     {
         get
@@ -238,7 +247,7 @@ public sealed partial class AsyncReaderWriterLock : IDisposable
             _waitingWriters.Clear();
         }
 
-        foreach (var tcs in toFault)
+        foreach (TaskCompletionSource<Releaser> tcs in toFault)
             tcs.TrySetException(new ObjectDisposedException(nameof(AsyncReaderWriterLock), ResourceStrings.Op_Invalid_AsyncPrimitiveDisposedWaiters));
     }
 
@@ -306,7 +315,7 @@ public sealed partial class AsyncReaderWriterLock : IDisposable
     /// </summary>
     private void GrantAllReaders()
     {
-        foreach (var tcs in _waitingReaders)
+        foreach (TaskCompletionSource<Releaser> tcs in _waitingReaders)
         {
             if (tcs.TrySetResult(CreateReleaser(isWriter: false)))
                 _readersActive++;
@@ -325,7 +334,7 @@ public sealed partial class AsyncReaderWriterLock : IDisposable
     {
         using (cancellationToken.Register(static state =>
         {
-            var (owner, waiter, token) = ((AsyncReaderWriterLock Owner, TaskCompletionSource<Releaser> Waiter, CancellationToken Token))state!;
+            (AsyncReaderWriterLock? owner, TaskCompletionSource<Releaser>? waiter, CancellationToken token) = ((AsyncReaderWriterLock Owner, TaskCompletionSource<Releaser> Waiter, CancellationToken Token))state!;
             owner.CancelReader(waiter, token);
         }, (this, tcs, cancellationToken)))
         {
@@ -343,7 +352,7 @@ public sealed partial class AsyncReaderWriterLock : IDisposable
     {
         using (cancellationToken.Register(static state =>
         {
-            var (owner, waiter, token) = ((AsyncReaderWriterLock Owner, LinkedListNode<TaskCompletionSource<Releaser>> Node, CancellationToken Token))state!;
+            (AsyncReaderWriterLock? owner, LinkedListNode<TaskCompletionSource<Releaser>>? waiter, CancellationToken token) = ((AsyncReaderWriterLock Owner, LinkedListNode<TaskCompletionSource<Releaser>> Node, CancellationToken Token))state!;
             owner.CancelWriter(waiter, token);
         }, (this, node, cancellationToken)))
         {

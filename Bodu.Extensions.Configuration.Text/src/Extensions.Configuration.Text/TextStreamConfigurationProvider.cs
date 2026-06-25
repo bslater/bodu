@@ -60,7 +60,7 @@ public sealed class TextStreamConfigurationProvider
     /// <summary>
     /// Gets the typed source that backs this provider.
     /// </summary>
-    /// <returns>The originating <see cref="TextStreamConfigurationSource" />.</returns>
+    /// <value>The originating <see cref="TextStreamConfigurationSource" />.</value>
     public TextStreamConfigurationSource TextSource { get; }
 
     /// <inheritdoc />

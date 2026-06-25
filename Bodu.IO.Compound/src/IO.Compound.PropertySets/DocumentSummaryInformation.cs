@@ -72,94 +72,94 @@ public sealed class DocumentSummaryInformation
     /// <summary>
     /// Gets the underlying parsed property set.
     /// </summary>
-    /// <returns>The document-summary-information <see cref="OlePropertySet" />.</returns>
+    /// <value>The document-summary-information <see cref="OlePropertySet" />.</value>
     public OlePropertySet PropertySet => _propertySet;
 
     /// <summary>
     /// Gets the document category.
     /// </summary>
-    /// <returns>The category, or <see langword="null" /> when absent.</returns>
+    /// <value>The category, or <see langword="null" /> when absent.</value>
     public string? Category => _propertySet[2]?.AsString();
 
     /// <summary>
     /// Gets the presentation target format.
     /// </summary>
-    /// <returns>The presentation target, or <see langword="null" /> when absent.</returns>
+    /// <value>The presentation target, or <see langword="null" /> when absent.</value>
     public string? PresentationTarget => _propertySet[3]?.AsString();
 
     /// <summary>
     /// Gets the document size in bytes.
     /// </summary>
-    /// <returns>The byte count, or <see langword="null" /> when absent.</returns>
+    /// <value>The byte count, or <see langword="null" /> when absent.</value>
     public int? Bytes => _propertySet[4]?.AsInt32();
 
     /// <summary>
     /// Gets the line count.
     /// </summary>
-    /// <returns>The line count, or <see langword="null" /> when absent.</returns>
+    /// <value>The line count, or <see langword="null" /> when absent.</value>
     public int? LineCount => _propertySet[5]?.AsInt32();
 
     /// <summary>
     /// Gets the paragraph count.
     /// </summary>
-    /// <returns>The paragraph count, or <see langword="null" /> when absent.</returns>
+    /// <value>The paragraph count, or <see langword="null" /> when absent.</value>
     public int? ParagraphCount => _propertySet[6]?.AsInt32();
 
     /// <summary>
     /// Gets the slide count.
     /// </summary>
-    /// <returns>The slide count, or <see langword="null" /> when absent.</returns>
+    /// <value>The slide count, or <see langword="null" /> when absent.</value>
     public int? SlideCount => _propertySet[7]?.AsInt32();
 
     /// <summary>
     /// Gets the note count.
     /// </summary>
-    /// <returns>The note count, or <see langword="null" /> when absent.</returns>
+    /// <value>The note count, or <see langword="null" /> when absent.</value>
     public int? NoteCount => _propertySet[8]?.AsInt32();
 
     /// <summary>
     /// Gets the hidden-slide count.
     /// </summary>
-    /// <returns>The hidden-slide count, or <see langword="null" /> when absent.</returns>
+    /// <value>The hidden-slide count, or <see langword="null" /> when absent.</value>
     public int? HiddenCount => _propertySet[9]?.AsInt32();
 
     /// <summary>
     /// Gets the multimedia-clip count.
     /// </summary>
-    /// <returns>The multimedia-clip count, or <see langword="null" /> when absent.</returns>
+    /// <value>The multimedia-clip count, or <see langword="null" /> when absent.</value>
     public int? MultimediaClipCount => _propertySet[10]?.AsInt32();
 
     /// <summary>
     /// Gets a value indicating whether the document is scaled to crop.
     /// </summary>
-    /// <returns>The scale-crop flag, or <see langword="null" /> when absent.</returns>
+    /// <value>The scale-crop flag, or <see langword="null" /> when absent.</value>
     public bool? ScaleCrop => _propertySet[11]?.AsBoolean();
 
     /// <summary>
     /// Gets the document manager.
     /// </summary>
-    /// <returns>The manager, or <see langword="null" /> when absent.</returns>
+    /// <value>The manager, or <see langword="null" /> when absent.</value>
     public string? Manager => _propertySet[14]?.AsString();
 
     /// <summary>
     /// Gets the document company.
     /// </summary>
-    /// <returns>The company, or <see langword="null" /> when absent.</returns>
+    /// <value>The company, or <see langword="null" /> when absent.</value>
     public string? Company => _propertySet[15]?.AsString();
 
     /// <summary>
     /// Gets a value indicating whether the document's links are up to date.
     /// </summary>
-    /// <returns>The links-up-to-date flag, or <see langword="null" /> when absent.</returns>
+    /// <value>The links-up-to-date flag, or <see langword="null" /> when absent.</value>
     public bool? LinksUpToDate => _propertySet[16]?.AsBoolean();
 
     /// <summary>
     /// Gets the user-defined custom properties, keyed by their human-readable names.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// A dictionary of custom property name to value drawn from the user-defined section; empty when the property set
     /// has no user-defined section.
-    /// </returns>
+    /// </value>
     public IReadOnlyDictionary<string, OlePropertyValue> CustomProperties
     {
         get

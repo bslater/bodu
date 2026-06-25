@@ -52,14 +52,14 @@ public sealed class ExchangeRatePairRoute
     /// <summary>
     /// Gets the ordered child provider names consulted for the routed pair.
     /// </summary>
-    /// <returns>The ordered provider names.</returns>
+    /// <value>The ordered provider names.</value>
     public IReadOnlyList<string> ProviderOrder { get; }
 
     /// <summary>
     /// Gets the strategy used to combine the routed providers, if overridden.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The route-specific strategy, or <see langword="null" /> to use the aggregator's default strategy.
-    /// </returns>
+    /// </value>
     public IExchangeRateAggregationStrategy? Strategy { get; }
 }

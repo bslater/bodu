@@ -37,13 +37,13 @@ internal ref struct CfbBinaryReader
     /// <summary>
     /// Gets the current read offset, in bytes, from the start of the data.
     /// </summary>
-    /// <returns>The current zero-based position.</returns>
+    /// <value>The current zero-based position.</value>
     public readonly int Position => _position;
 
     /// <summary>
     /// Gets the total number of bytes available to the reader.
     /// </summary>
-    /// <returns>The length of the backing data.</returns>
+    /// <value>The length of the backing data.</value>
     public readonly int Length => _data.Length;
 
     /// <summary>

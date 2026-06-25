@@ -136,27 +136,27 @@ public class TorrentFixtureTests
     private sealed class TorrentModel
     {
         /// <summary>Gets or sets the tracker announce URL.</summary>
-        /// <returns>The announce URL.</returns>
+        /// <value>The announce URL.</value>
         [BencodePropertyName("announce")]
         public string Announce { get; set; } = string.Empty;
 
         /// <summary>Gets or sets the free-form comment.</summary>
-        /// <returns>The comment.</returns>
+        /// <value>The comment.</value>
         [BencodePropertyName("comment")]
         public string Comment { get; set; } = string.Empty;
 
         /// <summary>Gets or sets the creator label.</summary>
-        /// <returns>The creator label.</returns>
+        /// <value>The creator label.</value>
         [BencodePropertyName("created by")]
         public string CreatedBy { get; set; } = string.Empty;
 
         /// <summary>Gets or sets the creation time as a Unix timestamp.</summary>
-        /// <returns>The creation timestamp.</returns>
+        /// <value>The creation timestamp.</value>
         [BencodePropertyName("creation date")]
         public long CreationDate { get; set; }
 
         /// <summary>Gets or sets the info dictionary.</summary>
-        /// <returns>The info dictionary.</returns>
+        /// <value>The info dictionary.</value>
         [BencodePropertyName("info")]
         public TorrentInfoModel? Info { get; set; }
     }
@@ -167,22 +167,22 @@ public class TorrentFixtureTests
     private sealed class TorrentInfoModel
     {
         /// <summary>Gets or sets the total content length in bytes.</summary>
-        /// <returns>The content length.</returns>
+        /// <value>The content length.</value>
         [BencodePropertyName("length")]
         public long Length { get; set; }
 
         /// <summary>Gets or sets the suggested file name.</summary>
-        /// <returns>The file name.</returns>
+        /// <value>The file name.</value>
         [BencodePropertyName("name")]
         public string Name { get; set; } = string.Empty;
 
         /// <summary>Gets or sets the piece size in bytes.</summary>
-        /// <returns>The piece size.</returns>
+        /// <value>The piece size.</value>
         [BencodePropertyName("piece length")]
         public long PieceLength { get; set; }
 
         /// <summary>Gets or sets the concatenated SHA-1 piece digests, which are binary rather than text.</summary>
-        /// <returns>The piece digests.</returns>
+        /// <value>The piece digests.</value>
         [BencodePropertyName("pieces")]
         public byte[] Pieces { get; set; } = [];
     }

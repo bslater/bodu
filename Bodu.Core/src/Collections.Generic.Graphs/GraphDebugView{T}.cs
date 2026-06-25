@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="GraphDebugView{T}.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -15,6 +15,7 @@ namespace Bodu.Collections.Generic.Graphs;
 internal sealed class GraphDebugView<T>
     where T : notnull
 {
+    /// <summary>The graph whose vertices and edges are surfaced in the debugger.</summary>
     private readonly Graph<T> _graph;
 
     /// <summary>
@@ -30,16 +31,16 @@ internal sealed class GraphDebugView<T>
     /// <summary>
     /// Gets a snapshot of the graph's vertices, each paired with a textual list of its outgoing edges.
     /// </summary>
-    /// <returns>An array of vertex/adjacency strings captured at inspection time.</returns>
+    /// <value>An array of vertex/adjacency strings captured at inspection time.</value>
     [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
     public string[] Items
     {
         get
         {
             var result = new List<string>();
-            foreach (var vertex in _graph.Vertices)
+            foreach (T vertex in _graph.Vertices)
             {
-                var edges = _graph.WeightedNeighbors(vertex).Select(e => $"{e.Neighbor}({e.Weight})");
+                IEnumerable<string> edges = _graph.WeightedNeighbors(vertex).Select(e => $"{e.Neighbor}({e.Weight})");
                 result.Add($"{vertex} -> [{string.Join(", ", edges)}]");
             }
 

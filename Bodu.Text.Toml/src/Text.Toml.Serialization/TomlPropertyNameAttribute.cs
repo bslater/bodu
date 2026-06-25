@@ -44,6 +44,6 @@ public sealed class TomlPropertyNameAttribute
     /// <summary>
     /// Gets the name used for the member in serialized output.
     /// </summary>
-    /// <returns>The serialized member name.</returns>
+    /// <value>The serialized member name.</value>
     public string Name { get; }
 }

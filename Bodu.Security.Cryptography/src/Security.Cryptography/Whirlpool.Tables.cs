@@ -93,14 +93,14 @@ public sealed partial class Whirlpool
         /// <summary>
         /// Gets the flat 8 × 256 multiplication table consumed by the round function.
         /// </summary>
-        /// <returns>The shared multiplication table for the variant.</returns>
+        /// <value>The shared multiplication table for the variant.</value>
         public ulong[] Multiplication { get; }
 
         /// <summary>
         /// Gets the ten round keys driving the <c>W</c> key schedule. Each entry has the round constant in index 0 and
         /// zeros elsewhere.
         /// </summary>
-        /// <returns>The shared round-key schedule for the variant.</returns>
+        /// <value>The shared round-key schedule for the variant.</value>
         public ulong[][] RoundKeys { get; }
     }
 }

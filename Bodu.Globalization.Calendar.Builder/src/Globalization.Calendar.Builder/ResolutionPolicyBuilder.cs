@@ -24,43 +24,43 @@ public sealed class ResolutionPolicyBuilder
     /// <summary>
     /// Gets the configured duplicate-resolution policy.
     /// </summary>
-    /// <returns>The duplicate policy, or <see langword="null" /> when unset.</returns>
+    /// <value>The duplicate policy, or <see langword="null" /> when unset.</value>
     internal DuplicatePolicy? DuplicatePolicy { get; private set; }
 
     /// <summary>
     /// Gets the configured same-day collision policy.
     /// </summary>
-    /// <returns>The same-day collision policy, or <see langword="null" /> when unset.</returns>
+    /// <value>The same-day collision policy, or <see langword="null" /> when unset.</value>
     internal CollisionPolicy? SameDayCollisionPolicy { get; private set; }
 
     /// <summary>
     /// Gets the configured span collision policy.
     /// </summary>
-    /// <returns>The span collision policy, or <see langword="null" /> when unset.</returns>
+    /// <value>The span collision policy, or <see langword="null" /> when unset.</value>
     internal CollisionPolicy? SpanCollisionPolicy { get; private set; }
 
     /// <summary>
     /// Gets the configured priority direction.
     /// </summary>
-    /// <returns>The priority direction, or <see langword="null" /> when unset.</returns>
+    /// <value>The priority direction, or <see langword="null" /> when unset.</value>
     internal PriorityDirection? PriorityDirection { get; private set; }
 
     /// <summary>
     /// Gets the configured observed-date range policy.
     /// </summary>
-    /// <returns>The observed-date range policy, or <see langword="null" /> when unset.</returns>
+    /// <value>The observed-date range policy, or <see langword="null" /> when unset.</value>
     internal ObservedDateRangePolicy? ObservedDateRangePolicy { get; private set; }
 
     /// <summary>
     /// Gets the configured working week.
     /// </summary>
-    /// <returns>The working-week pattern, or <see langword="null" /> when unset.</returns>
+    /// <value>The working-week pattern, or <see langword="null" /> when unset.</value>
     internal WeekPattern? WorkingWeek { get; private set; }
 
     /// <summary>
     /// Gets the configured category precedence, highest-winning first.
     /// </summary>
-    /// <returns>The category precedence, or <see langword="null" /> when unset.</returns>
+    /// <value>The category precedence, or <see langword="null" /> when unset.</value>
     internal IReadOnlyList<NotableDateCategory>? CategoryPrecedence { get; private set; }
 
     /// <summary>

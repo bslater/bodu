@@ -69,7 +69,7 @@ public abstract class ExchangeRateCacheBase<TOptions>
     /// <summary>
     /// Gets the validated options the cache was constructed with.
     /// </summary>
-    /// <returns>The cache options.</returns>
+    /// <value>The cache options.</value>
     protected TOptions Options => _options;
 
     /// <inheritdoc />

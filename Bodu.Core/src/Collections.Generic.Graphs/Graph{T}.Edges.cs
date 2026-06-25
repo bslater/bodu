@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Graph{T}.Edges.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -39,7 +39,7 @@ public sealed partial class Graph<T>
         AddVertex(from);
         AddVertex(to);
 
-        var added = AddDirectedEdge(from, to, weight);
+        bool added = AddDirectedEdge(from, to, weight);
         if (!IsDirected && !Comparer.Equals(from, to))
             AddDirectedEdge(to, from, weight);
 
@@ -67,7 +67,7 @@ public sealed partial class Graph<T>
         ThrowHelper.ThrowIfNull(to);
         ValidateWeight(weight);
 
-        if (_adjacency.TryGetValue(from, out var existing) && existing.ContainsKey(to))
+        if (_adjacency.TryGetValue(from, out Dictionary<T, double>? existing) && existing.ContainsKey(to))
             return false;
 
         AddEdge(from, to, weight);
@@ -88,7 +88,7 @@ public sealed partial class Graph<T>
         ThrowHelper.ThrowIfNull(from);
         ThrowHelper.ThrowIfNull(to);
 
-        var removed = RemoveDirectedEdge(from, to);
+        bool removed = RemoveDirectedEdge(from, to);
         if (!IsDirected && !Comparer.Equals(from, to))
             RemoveDirectedEdge(to, from);
 
@@ -110,7 +110,7 @@ public sealed partial class Graph<T>
         ThrowHelper.ThrowIfNull(from);
         ThrowHelper.ThrowIfNull(to);
 
-        return _adjacency.TryGetValue(from, out var edges) && edges.ContainsKey(to);
+        return _adjacency.TryGetValue(from, out Dictionary<T, double>? edges) && edges.ContainsKey(to);
     }
 
     /// <summary>
@@ -126,7 +126,7 @@ public sealed partial class Graph<T>
         ThrowHelper.ThrowIfNull(from);
         ThrowHelper.ThrowIfNull(to);
 
-        if (_adjacency.TryGetValue(from, out var edges) && edges.TryGetValue(to, out weight))
+        if (_adjacency.TryGetValue(from, out Dictionary<T, double>? edges) && edges.TryGetValue(to, out weight))
             return true;
 
         weight = 0.0;
@@ -157,7 +157,7 @@ public sealed partial class Graph<T>
     {
         ThrowHelper.ThrowIfNull(vertex);
 
-        var edges = RequireVertex(vertex, nameof(vertex));
+        Dictionary<T, double> edges = RequireVertex(vertex, nameof(vertex));
         return EnumerateWeighted(edges);
     }
 
@@ -185,7 +185,7 @@ public sealed partial class Graph<T>
     /// </returns>
     private bool AddDirectedEdge(T from, T to, double weight)
     {
-        var edges = _adjacency[from];
+        Dictionary<T, double> edges = _adjacency[from];
         if (edges.ContainsKey(to))
         {
             edges[to] = weight;
@@ -205,7 +205,7 @@ public sealed partial class Graph<T>
     /// <see langword="true" /> if the edge existed and was removed; otherwise, <see langword="false" />.
     /// </returns>
     private bool RemoveDirectedEdge(T from, T to) =>
-        _adjacency.TryGetValue(from, out var edges) && edges.Remove(to);
+        _adjacency.TryGetValue(from, out Dictionary<T, double>? edges) && edges.Remove(to);
 
     /// <summary>
     /// Projects an adjacency map onto neighbor/weight tuples.
@@ -214,7 +214,7 @@ public sealed partial class Graph<T>
     /// <returns>A sequence of neighbor/weight tuples.</returns>
     private static IEnumerable<(T Neighbor, double Weight)> EnumerateWeighted(Dictionary<T, double> edges)
     {
-        foreach (var edge in edges)
+        foreach (KeyValuePair<T, double> edge in edges)
             yield return (edge.Key, edge.Value);
     }
 

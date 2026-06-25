@@ -16,6 +16,7 @@ namespace Bodu.Collections.Generic.Graphs;
 internal sealed class DisjointSetDebugView<T>
     where T : notnull
 {
+    /// <summary>The disjoint set whose partition is surfaced in the debugger.</summary>
     private readonly DisjointSet<T> _set;
 
     /// <summary>
@@ -31,7 +32,7 @@ internal sealed class DisjointSetDebugView<T>
     /// <summary>
     /// Gets a snapshot of the partition, where each entry is the array of elements in one subset.
     /// </summary>
-    /// <returns>An array of subsets captured at the time of inspection.</returns>
+    /// <value>An array of subsets captured at the time of inspection.</value>
     [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
     public T[][] Items => _set.ToGroups();
 }

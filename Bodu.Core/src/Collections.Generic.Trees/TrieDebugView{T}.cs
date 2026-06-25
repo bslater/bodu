@@ -14,6 +14,7 @@ namespace Bodu.Collections.Generic.Trees;
 /// <typeparam name="TValue">The type of the values stored in the trie.</typeparam>
 internal sealed class TrieDebugView<TValue>
 {
+    /// <summary>The trie whose key/value pairs are surfaced in the debugger.</summary>
     private readonly Trie<TValue> _trie;
 
     /// <summary>
@@ -29,7 +30,7 @@ internal sealed class TrieDebugView<TValue>
     /// <summary>
     /// Gets a snapshot of the trie's key/value pairs.
     /// </summary>
-    /// <returns>An array of the trie's entries captured at inspection time.</returns>
+    /// <value>An array of the trie's entries captured at inspection time.</value>
     [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
     public KeyValuePair<string, TValue>[] Items => _trie.ToArrayInternal();
 }

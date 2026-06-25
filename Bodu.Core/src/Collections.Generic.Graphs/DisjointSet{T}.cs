@@ -45,10 +45,19 @@ namespace Bodu.Collections.Generic.Graphs;
 public sealed class DisjointSet<T>
     where T : notnull
 {
+    /// <summary>Maps each added element to its dense slot index in the backing lists.</summary>
     private readonly Dictionary<T, int> _indices;
+
+    /// <summary>The elements in slot order, indexed by the dense slot assigned at insertion.</summary>
     private readonly List<T> _elements;
+
+    /// <summary>The parent slot of each element, forming the union-find forest; a root references itself.</summary>
     private readonly List<int> _parent;
+
+    /// <summary>The size of the subtree rooted at each slot; meaningful only for root slots.</summary>
     private readonly List<int> _size;
+
+    /// <summary>The number of distinct disjoint sets currently represented.</summary>
     private int _setCount;
 
     /// <summary>
@@ -90,7 +99,7 @@ public sealed class DisjointSet<T>
     {
         ThrowHelper.ThrowIfNull(items);
 
-        foreach (var item in items)
+        foreach (T item in items)
             MakeSet(item);
     }
 
@@ -98,21 +107,18 @@ public sealed class DisjointSet<T>
     /// Gets the total number of elements tracked by the structure.
     /// </summary>
     /// <value>The number of distinct elements added.</value>
-    /// <returns>The total number of elements.</returns>
     public int Count => _indices.Count;
 
     /// <summary>
     /// Gets the number of disjoint sets currently represented.
     /// </summary>
     /// <value>The count of distinct subsets.</value>
-    /// <returns>The number of disjoint sets.</returns>
     public int SetCount => _setCount;
 
     /// <summary>
     /// Gets the equality comparer used to determine element identity.
     /// </summary>
     /// <value>The comparer supplied at construction, or <see cref="EqualityComparer{T}.Default" />.</value>
-    /// <returns>The equality comparer in use.</returns>
     public IEqualityComparer<T> Comparer { get; }
 
     /// <summary>
@@ -130,7 +136,7 @@ public sealed class DisjointSet<T>
         if (_indices.ContainsKey(item))
             return false;
 
-        var slot = _elements.Count;
+        int slot = _elements.Count;
         _indices.Add(item, slot);
         _elements.Add(item);
         _parent.Add(slot);
@@ -174,7 +180,7 @@ public sealed class DisjointSet<T>
     {
         ThrowHelper.ThrowIfNull(item);
 
-        if (!_indices.TryGetValue(item, out var slot))
+        if (!_indices.TryGetValue(item, out int slot))
             throw new ArgumentException(ResourceStrings.Arg_Invalid_ElementNotInSet, nameof(item));
 
         return _elements[FindRoot(slot)];
@@ -193,7 +199,7 @@ public sealed class DisjointSet<T>
     {
         ThrowHelper.ThrowIfNull(item);
 
-        if (_indices.TryGetValue(item, out var slot))
+        if (_indices.TryGetValue(item, out int slot))
         {
             representative = _elements[FindRoot(slot)];
             return true;
@@ -219,8 +225,8 @@ public sealed class DisjointSet<T>
         ThrowHelper.ThrowIfNull(a);
         ThrowHelper.ThrowIfNull(b);
 
-        var rootA = FindRoot(GetSlot(a, nameof(a)));
-        var rootB = FindRoot(GetSlot(b, nameof(b)));
+        int rootA = FindRoot(GetSlot(a, nameof(a)));
+        int rootB = FindRoot(GetSlot(b, nameof(b)));
         if (rootA == rootB)
             return false;
 
@@ -285,10 +291,10 @@ public sealed class DisjointSet<T>
     internal T[][] ToGroups()
     {
         var groups = new Dictionary<int, List<T>>();
-        for (var slot = 0; slot < _elements.Count; slot++)
+        for (int slot = 0; slot < _elements.Count; slot++)
         {
-            var root = FindRoot(slot);
-            if (!groups.TryGetValue(root, out var members))
+            int root = FindRoot(slot);
+            if (!groups.TryGetValue(root, out List<T>? members))
             {
                 members = new List<T>();
                 groups.Add(root, members);
@@ -298,8 +304,8 @@ public sealed class DisjointSet<T>
         }
 
         var result = new T[groups.Count][];
-        var index = 0;
-        foreach (var members in groups.Values)
+        int index = 0;
+        foreach (List<T> members in groups.Values)
             result[index++] = members.ToArray();
 
         return result;
@@ -314,7 +320,7 @@ public sealed class DisjointSet<T>
     /// <exception cref="ArgumentException"><paramref name="item" /> has not been added to the structure.</exception>
     private int GetSlot(T item, string paramName)
     {
-        if (!_indices.TryGetValue(item, out var slot))
+        if (!_indices.TryGetValue(item, out int slot))
             throw new ArgumentException(ResourceStrings.Arg_Invalid_ElementNotInSet, paramName);
 
         return slot;

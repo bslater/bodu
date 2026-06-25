@@ -161,7 +161,7 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the nested object.
         /// </summary>
-        /// <returns>The nested object, or <see langword="null" />.</returns>
+        /// <value>The nested object, or <see langword="null" />.</value>
         public DiagnosticsInner? Inner { get; set; }
     }
 
@@ -173,7 +173,7 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the integer value.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public int Value { get; set; }
     }
 
@@ -185,7 +185,7 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the integer values.
         /// </summary>
-        /// <returns>The values, or <see langword="null" />.</returns>
+        /// <value>The values, or <see langword="null" />.</value>
         public List<int>? Values { get; set; }
     }
 
@@ -197,13 +197,13 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the child node.
         /// </summary>
-        /// <returns>The child, or <see langword="null" />.</returns>
+        /// <value>The child, or <see langword="null" />.</value>
         public TreeNode? Child { get; set; }
 
         /// <summary>
         /// Gets or sets the parent node.
         /// </summary>
-        /// <returns>The parent, or <see langword="null" />.</returns>
+        /// <value>The parent, or <see langword="null" />.</value>
         public TreeNode? Parent { get; set; }
     }
 }

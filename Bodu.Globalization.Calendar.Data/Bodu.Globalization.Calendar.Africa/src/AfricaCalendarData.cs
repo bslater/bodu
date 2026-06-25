@@ -46,7 +46,7 @@ public static class AfricaCalendarData
     /// <summary>
     /// Gets the country codes the Africa pack provides resources for.
     /// </summary>
-    /// <returns>The supported ISO 3166-1 alpha-2 country codes.</returns>
+    /// <value>The supported ISO 3166-1 alpha-2 country codes.</value>
     public static IReadOnlyList<string> SupportedCountries { get; } = ["EG", "ET", "GH", "KE", "MA", "NG", "ZA"];
 
     /// <summary>

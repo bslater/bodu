@@ -104,21 +104,21 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the value declared first but ordered last.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         [TomlPropertyOrder(10)]
         public int Alpha { get; set; }
 
         /// <summary>
         /// Gets or sets the value declared and ordered in the middle.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         [TomlPropertyOrder(0)]
         public int Bravo { get; set; }
 
         /// <summary>
         /// Gets or sets the value declared last but ordered first.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         [TomlPropertyOrder(-10)]
         public int Charlie { get; set; }
     }
@@ -132,19 +132,19 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the first declared value.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public int Alpha { get; set; }
 
         /// <summary>
         /// Gets or sets the second declared value.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public int Bravo { get; set; }
 
         /// <summary>
         /// Gets or sets the third declared value.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public int Charlie { get; set; }
     }
 
@@ -157,19 +157,19 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the first default-ordered value.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public int First { get; set; }
 
         /// <summary>
         /// Gets or sets the second default-ordered value.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public int Second { get; set; }
 
         /// <summary>
         /// Gets or sets the value promoted ahead of its siblings by a negative order.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         [TomlPropertyOrder(-1)]
         public int Promoted { get; set; }
     }
@@ -183,20 +183,20 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the value demoted behind its siblings by a positive order.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         [TomlPropertyOrder(1)]
         public int Demoted { get; set; }
 
         /// <summary>
         /// Gets or sets the first default-ordered value.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public int First { get; set; }
 
         /// <summary>
         /// Gets or sets the second default-ordered value.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public int Second { get; set; }
     }
 
@@ -209,27 +209,27 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the first member of the order-1 partition.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         [TomlPropertyOrder(1)]
         public int A { get; set; }
 
         /// <summary>
         /// Gets or sets the first member of the default partition.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public int B { get; set; }
 
         /// <summary>
         /// Gets or sets the second member of the order-1 partition.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         [TomlPropertyOrder(1)]
         public int C { get; set; }
 
         /// <summary>
         /// Gets or sets the second member of the default partition.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public int D { get; set; }
     }
 }

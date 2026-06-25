@@ -80,72 +80,72 @@ internal sealed class CfbHeader
     /// <summary>
     /// Gets the regular sector size, in bytes (512 for version 3, 4096 for version 4).
     /// </summary>
-    /// <returns>The regular sector size.</returns>
+    /// <value>The regular sector size.</value>
     internal int SectorSize { get; }
 
     /// <summary>
     /// Gets the mini sector size, in bytes (typically 64).
     /// </summary>
-    /// <returns>The mini sector size.</returns>
+    /// <value>The mini sector size.</value>
     internal int MiniSectorSize { get; }
 
     /// <summary>
     /// Gets the maximum stream size, in bytes, that is stored within the mini stream rather than the FAT.
     /// </summary>
-    /// <returns>The mini-stream cutoff (typically 4096).</returns>
+    /// <value>The mini-stream cutoff (typically 4096).</value>
     internal uint MiniStreamCutoff { get; }
 
     /// <summary>
     /// Gets the number of sectors occupied by the FAT.
     /// </summary>
-    /// <returns>The FAT sector count.</returns>
+    /// <value>The FAT sector count.</value>
     internal uint FatSectorCount { get; }
 
     /// <summary>
     /// Gets the first sector of the directory chain.
     /// </summary>
-    /// <returns>The first directory sector identifier.</returns>
+    /// <value>The first directory sector identifier.</value>
     internal uint FirstDirectorySector { get; }
 
     /// <summary>
     /// Gets the first sector of the mini-FAT chain.
     /// </summary>
-    /// <returns>The first mini-FAT sector identifier, or <see cref="EndOfChain" /> when there is no mini-FAT.</returns>
+    /// <value>The first mini-FAT sector identifier, or <see cref="EndOfChain" /> when there is no mini-FAT.</value>
     internal uint FirstMiniFatSector { get; }
 
     /// <summary>
     /// Gets the number of sectors occupied by the mini-FAT.
     /// </summary>
-    /// <returns>The mini-FAT sector count.</returns>
+    /// <value>The mini-FAT sector count.</value>
     internal uint MiniFatSectorCount { get; }
 
     /// <summary>
     /// Gets the first sector of the DIFAT chain.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The first DIFAT sector identifier, or <see cref="EndOfChain" /> when the DIFAT fits in the header.
-    /// </returns>
+    /// </value>
     internal uint FirstDifatSector { get; }
 
     /// <summary>
     /// Gets the number of sectors occupied by the DIFAT chain.
     /// </summary>
-    /// <returns>The DIFAT sector count.</returns>
+    /// <value>The DIFAT sector count.</value>
     internal uint DifatSectorCount { get; }
 
     /// <summary>
     /// Gets the inline DIFAT entries stored in the header.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// An array of <see cref="HeaderDifatCount" /> sector identifiers, each pointing at a FAT sector or set to
     /// <see cref="FreeSector" />.
-    /// </returns>
+    /// </value>
     internal uint[] Difat { get; }
 
     /// <summary>
     /// Gets the number of 32-bit entries that fit in a single regular sector.
     /// </summary>
-    /// <returns>The count of <see cref="uint" /> slots per sector.</returns>
+    /// <value>The count of <see cref="uint" /> slots per sector.</value>
     internal int EntriesPerSector => SectorSize / sizeof(uint);
 
     /// <summary>

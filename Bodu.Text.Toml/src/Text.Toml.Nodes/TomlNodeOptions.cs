@@ -21,9 +21,5 @@ public struct TomlNodeOptions
     /// <value>
     /// <see langword="true" /> when property-name lookups ignore case; otherwise <see langword="false" />.
     /// </value>
-    /// <returns>
-    /// <see langword="true" /> when <see cref="TomlObject" /> property-name lookups ignore case; otherwise
-    /// <see langword="false" />.
-    /// </returns>
     public bool PropertyNameCaseInsensitive { get; set; }
 }

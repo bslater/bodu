@@ -38,31 +38,31 @@ public sealed class RbaEra
     /// <summary>
     /// Gets the era label (for example, <c>2023-current</c>).
     /// </summary>
-    /// <returns>The era label.</returns>
+    /// <value>The era label.</value>
     public string Label { get; }
 
     /// <summary>
     /// Gets the file name of the era's workbook, relative to the provider's base URL.
     /// </summary>
-    /// <returns>The workbook file name, formed by appending <c>.xls</c> to <see cref="Label" />.</returns>
+    /// <value>The workbook file name, formed by appending <c>.xls</c> to <see cref="Label" />.</value>
     public string FileName => Label + ".xls";
 
     /// <summary>
     /// Gets the first calendar date the era covers.
     /// </summary>
-    /// <returns>The inclusive start date.</returns>
+    /// <value>The inclusive start date.</value>
     public DateOnly Start { get; }
 
     /// <summary>
     /// Gets the last calendar date the era covers, or <see langword="null" /> when the era is open-ended.
     /// </summary>
-    /// <returns>The inclusive end date, or <see langword="null" /> for the open-ended current era.</returns>
+    /// <value>The inclusive end date, or <see langword="null" /> for the open-ended current era.</value>
     public DateOnly? End { get; }
 
     /// <summary>
     /// Gets the default catalogue of RBA historical daily exchange-rate eras, from 1983 to the current file.
     /// </summary>
-    /// <returns>The ordered, immutable default era catalogue.</returns>
+    /// <value>The ordered, immutable default era catalogue.</value>
     public static IReadOnlyList<RbaEra> Default { get; } =
     [
         new("1983-1986", new DateOnly(1983, 1, 1), new DateOnly(1986, 12, 31)),

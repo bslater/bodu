@@ -55,140 +55,140 @@ public sealed class AdjustmentPolicyBuilder
     /// <summary>
     /// Gets the stable identifier of the policy.
     /// </summary>
-    /// <returns>The policy identifier.</returns>
+    /// <value>The policy identifier.</value>
     internal string Id { get; }
 
     /// <summary>
     /// Gets the configured priority.
     /// </summary>
-    /// <returns>The priority, or <see langword="null" /> when unset.</returns>
+    /// <value>The priority, or <see langword="null" /> when unset.</value>
     internal int? Priority { get; private set; }
 
     /// <summary>
     /// Gets the configured description.
     /// </summary>
-    /// <returns>The description, or <see langword="null" /> when unset.</returns>
+    /// <value>The description, or <see langword="null" /> when unset.</value>
     internal string? Description { get; private set; }
 
     /// <summary>
     /// Gets the configured scope.
     /// </summary>
-    /// <returns>The scope builder, or <see langword="null" /> when the policy applies globally.</returns>
+    /// <value>The scope builder, or <see langword="null" /> when the policy applies globally.</value>
     internal AdjustmentScopeBuilder? Scope { get; private set; }
 
     /// <summary>
     /// Gets the configured trigger type.
     /// </summary>
-    /// <returns>The trigger type, or <see langword="null" /> when unset.</returns>
+    /// <value>The trigger type, or <see langword="null" /> when unset.</value>
     internal AdjustmentTrigger? TriggerType { get; private set; }
 
     /// <summary>
     /// Gets the weekdays attached to the trigger.
     /// </summary>
-    /// <returns>The weekdays; empty when none are configured.</returns>
+    /// <value>The weekdays; empty when none are configured.</value>
     internal IReadOnlyList<DayOfWeek> TriggerWeekdays =>
         _triggerWeekdays;
 
     /// <summary>
     /// Gets the trigger comparison month.
     /// </summary>
-    /// <returns>The month, or <see langword="null" /> when unset.</returns>
+    /// <value>The month, or <see langword="null" /> when unset.</value>
     internal int? TriggerMonth { get; private set; }
 
     /// <summary>
     /// Gets the trigger comparison day.
     /// </summary>
-    /// <returns>The day, or <see langword="null" /> when unset.</returns>
+    /// <value>The day, or <see langword="null" /> when unset.</value>
     internal int? TriggerDay { get; private set; }
 
     /// <summary>
     /// Gets the trigger week ordinal.
     /// </summary>
-    /// <returns>The week ordinal, or <see langword="null" /> when unset.</returns>
+    /// <value>The week ordinal, or <see langword="null" /> when unset.</value>
     internal WeekOrdinal? TriggerWeekOrdinal { get; private set; }
 
     /// <summary>
     /// Gets the trigger custom-handler key.
     /// </summary>
-    /// <returns>The handler key, or <see langword="null" /> when unset.</returns>
+    /// <value>The handler key, or <see langword="null" /> when unset.</value>
     internal string? TriggerHandlerKey { get; private set; }
 
     /// <summary>
     /// Gets the configured action type.
     /// </summary>
-    /// <returns>The action type, or <see langword="null" /> when unset.</returns>
+    /// <value>The action type, or <see langword="null" /> when unset.</value>
     internal AdjustmentAction? ActionType { get; private set; }
 
     /// <summary>
     /// Gets the action day offset.
     /// </summary>
-    /// <returns>The day offset, or <see langword="null" /> when unset.</returns>
+    /// <value>The day offset, or <see langword="null" /> when unset.</value>
     internal int? ActionDays { get; private set; }
 
     /// <summary>
     /// Gets the action target weekday.
     /// </summary>
-    /// <returns>The weekday, or <see langword="null" /> when unset.</returns>
+    /// <value>The weekday, or <see langword="null" /> when unset.</value>
     internal DayOfWeek? ActionDayOfWeek { get; private set; }
 
     /// <summary>
     /// Gets the maximum search horizon in days.
     /// </summary>
-    /// <returns>The horizon, or <see langword="null" /> when unset.</returns>
+    /// <value>The horizon, or <see langword="null" /> when unset.</value>
     internal int? ActionMaxSearchDays { get; private set; }
 
     /// <summary>
     /// Gets the action skip-weekends flag.
     /// </summary>
-    /// <returns>The flag, or <see langword="null" /> when unset.</returns>
+    /// <value>The flag, or <see langword="null" /> when unset.</value>
     internal bool? ActionSkipWeekends { get; private set; }
 
     /// <summary>
     /// Gets the action skip-non-working-dates flag.
     /// </summary>
-    /// <returns>The flag, or <see langword="null" /> when unset.</returns>
+    /// <value>The flag, or <see langword="null" /> when unset.</value>
     internal bool? ActionSkipNonWorkingDates { get; private set; }
 
     /// <summary>
     /// Gets the replacement concept reference for a replace action.
     /// </summary>
-    /// <returns>The concept reference, or <see langword="null" /> when unset.</returns>
+    /// <value>The concept reference, or <see langword="null" /> when unset.</value>
     internal string? ActionNotableDateRef { get; private set; }
 
     /// <summary>
     /// Gets the replacement rule reference for a replace action.
     /// </summary>
-    /// <returns>The rule reference, or <see langword="null" /> when unset.</returns>
+    /// <value>The rule reference, or <see langword="null" /> when unset.</value>
     internal string? ActionRuleRef { get; private set; }
 
     /// <summary>
     /// Gets the action custom-handler key.
     /// </summary>
-    /// <returns>The handler key, or <see langword="null" /> when unset.</returns>
+    /// <value>The handler key, or <see langword="null" /> when unset.</value>
     internal string? ActionHandlerKey { get; private set; }
 
     /// <summary>
     /// Gets the configured emission mode.
     /// </summary>
-    /// <returns>The emission mode, or <see langword="null" /> when unset.</returns>
+    /// <value>The emission mode, or <see langword="null" /> when unset.</value>
     internal EmissionMode? EmissionModeValue { get; private set; }
 
     /// <summary>
     /// Gets the emission reason.
     /// </summary>
-    /// <returns>The reason, or <see langword="null" /> when unset.</returns>
+    /// <value>The reason, or <see langword="null" /> when unset.</value>
     internal string? EmissionReason { get; private set; }
 
     /// <summary>
     /// Gets the emission non-working flag.
     /// </summary>
-    /// <returns>The flag, or <see langword="null" /> when unset.</returns>
+    /// <value>The flag, or <see langword="null" /> when unset.</value>
     internal bool? EmissionNonWorking { get; private set; }
 
     /// <summary>
     /// Gets the custom handler parameters.
     /// </summary>
-    /// <returns>The parameter map; empty when none are configured.</returns>
+    /// <value>The parameter map; empty when none are configured.</value>
     internal IReadOnlyDictionary<string, string> Parameters =>
         _parameters;
 

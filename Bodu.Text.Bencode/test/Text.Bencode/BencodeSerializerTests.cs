@@ -181,43 +181,43 @@ public partial class BencodeSerializerTests
         /// <summary>
         /// Gets or sets the byte-string-mapped name.
         /// </summary>
-        /// <returns>The name.</returns>
+        /// <value>The name.</value>
         public string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the 32-bit integer count.
         /// </summary>
-        /// <returns>The count.</returns>
+        /// <value>The count.</value>
         public int Count { get; set; }
 
         /// <summary>
         /// Gets or sets the 64-bit integer length.
         /// </summary>
-        /// <returns>The length.</returns>
+        /// <value>The length.</value>
         public long Length { get; set; }
 
         /// <summary>
         /// Gets or sets the raw byte-string payload.
         /// </summary>
-        /// <returns>The payload bytes.</returns>
+        /// <value>The payload bytes.</value>
         public byte[] Payload { get; set; } = [];
 
         /// <summary>
         /// Gets or sets the list of integers.
         /// </summary>
-        /// <returns>The integer list.</returns>
+        /// <value>The integer list.</value>
         public List<int> Numbers { get; set; } = [];
 
         /// <summary>
         /// Gets or sets the nested model.
         /// </summary>
-        /// <returns>The nested model.</returns>
+        /// <value>The nested model.</value>
         public NestedModel Nested { get; set; } = new();
 
         /// <summary>
         /// Gets or sets the string-keyed integer dictionary.
         /// </summary>
-        /// <returns>The dictionary.</returns>
+        /// <value>The dictionary.</value>
         public Dictionary<string, int> Counts { get; set; } = [];
     }
 
@@ -229,7 +229,7 @@ public partial class BencodeSerializerTests
         /// <summary>
         /// Gets or sets the title.
         /// </summary>
-        /// <returns>The title.</returns>
+        /// <value>The title.</value>
         public string Title { get; set; } = string.Empty;
     }
 
@@ -241,19 +241,19 @@ public partial class BencodeSerializerTests
         /// <summary>
         /// Gets or sets the value whose key sorts last.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public string Zebra { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the value whose key sorts first.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public string Apple { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the value whose key sorts in the middle.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public string Mango { get; set; } = string.Empty;
     }
 
@@ -265,7 +265,7 @@ public partial class BencodeSerializerTests
         /// <summary>
         /// Gets or sets the identifier, written under the wire name <c>id</c>.
         /// </summary>
-        /// <returns>The identifier.</returns>
+        /// <value>The identifier.</value>
         [BencodePropertyName("id")]
         public int Identifier { get; set; }
     }
@@ -278,13 +278,13 @@ public partial class BencodeSerializerTests
         /// <summary>
         /// Gets or sets the member retained in the output.
         /// </summary>
-        /// <returns>The retained value.</returns>
+        /// <value>The retained value.</value>
         public string Kept { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the member excluded from the output.
         /// </summary>
-        /// <returns>The excluded value.</returns>
+        /// <value>The excluded value.</value>
         [BencodeIgnore]
         public string Skipped { get; set; } = string.Empty;
     }
@@ -297,13 +297,13 @@ public partial class BencodeSerializerTests
         /// <summary>
         /// Gets or sets the enabled flag.
         /// </summary>
-        /// <returns>The enabled flag.</returns>
+        /// <value>The enabled flag.</value>
         public bool Enabled { get; set; }
 
         /// <summary>
         /// Gets or sets the disabled flag.
         /// </summary>
-        /// <returns>The disabled flag.</returns>
+        /// <value>The disabled flag.</value>
         public bool Disabled { get; set; }
     }
 
@@ -315,7 +315,7 @@ public partial class BencodeSerializerTests
         /// <summary>
         /// Gets or sets the floating-point ratio, for which no built-in converter exists.
         /// </summary>
-        /// <returns>The ratio.</returns>
+        /// <value>The ratio.</value>
         public double Ratio { get; set; }
     }
 
@@ -327,13 +327,13 @@ public partial class BencodeSerializerTests
         /// <summary>
         /// Gets or sets the present member.
         /// </summary>
-        /// <returns>The present value.</returns>
+        /// <value>The present value.</value>
         public string? Present { get; set; }
 
         /// <summary>
         /// Gets or sets the absent member, omitted when <see langword="null" />.
         /// </summary>
-        /// <returns>The absent value, or <see langword="null" />.</returns>
+        /// <value>The absent value, or <see langword="null" />.</value>
         public string? Absent { get; set; }
     }
 

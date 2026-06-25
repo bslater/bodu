@@ -186,13 +186,13 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets the name.
         /// </summary>
-        /// <returns>The name.</returns>
+        /// <value>The name.</value>
         public string Name { get; }
 
         /// <summary>
         /// Gets the age.
         /// </summary>
-        /// <returns>The age.</returns>
+        /// <value>The age.</value>
         public int Age { get; }
     }
 
@@ -214,7 +214,7 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets the value.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public int Value { get; }
     }
 
@@ -236,7 +236,7 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets the identifier, written under the wire name <c>id</c>.
         /// </summary>
-        /// <returns>The identifier.</returns>
+        /// <value>The identifier.</value>
         [TomlPropertyName("id")]
         public int Identifier { get; }
     }
@@ -258,7 +258,7 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets the first name.
         /// </summary>
-        /// <returns>The first name.</returns>
+        /// <value>The first name.</value>
         public string FirstName { get; }
     }
 
@@ -298,13 +298,13 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the value.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public int A { get; set; }
 
         /// <summary>
         /// Gets the label of the constructor that ran.
         /// </summary>
-        /// <returns>The constructor label.</returns>
+        /// <value>The constructor label.</value>
         public string SelectedConstructor { get; }
     }
 
@@ -337,19 +337,19 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the first value.
         /// </summary>
-        /// <returns>The first value.</returns>
+        /// <value>The first value.</value>
         public int A { get; set; }
 
         /// <summary>
         /// Gets or sets the second value.
         /// </summary>
-        /// <returns>The second value.</returns>
+        /// <value>The second value.</value>
         public int B { get; set; }
 
         /// <summary>
         /// Gets the label of the constructor that ran.
         /// </summary>
-        /// <returns>The constructor label.</returns>
+        /// <value>The constructor label.</value>
         public string SelectedConstructor { get; }
     }
 
@@ -384,19 +384,19 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets the first value.
         /// </summary>
-        /// <returns>The first value.</returns>
+        /// <value>The first value.</value>
         public int A { get; }
 
         /// <summary>
         /// Gets the second value.
         /// </summary>
-        /// <returns>The second value.</returns>
+        /// <value>The second value.</value>
         public int B { get; }
 
         /// <summary>
         /// Gets the parameter count of the constructor that ran.
         /// </summary>
-        /// <returns>The parameter count.</returns>
+        /// <value>The parameter count.</value>
         public int ParameterCount { get; }
     }
 
@@ -420,13 +420,13 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets the name.
         /// </summary>
-        /// <returns>The name.</returns>
+        /// <value>The name.</value>
         public string Name { get; }
 
         /// <summary>
         /// Gets the age.
         /// </summary>
-        /// <returns>The age.</returns>
+        /// <value>The age.</value>
         public int Age { get; }
     }
 
@@ -448,19 +448,19 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets the name, bound through the constructor.
         /// </summary>
-        /// <returns>The name.</returns>
+        /// <value>The name.</value>
         public string Name { get; }
 
         /// <summary>
         /// Gets or sets the notes, set through the setter after construction.
         /// </summary>
-        /// <returns>The notes.</returns>
+        /// <value>The notes.</value>
         public string Notes { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the status, set through the setter after construction.
         /// </summary>
-        /// <returns>The status.</returns>
+        /// <value>The status.</value>
         public int Status { get; set; }
     }
 }

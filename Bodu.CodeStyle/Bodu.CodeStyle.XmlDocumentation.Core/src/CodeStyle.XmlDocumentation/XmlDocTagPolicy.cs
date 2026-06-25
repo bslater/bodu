@@ -15,7 +15,7 @@ public sealed class XmlDocTagPolicy
     /// <summary>
     /// Gets the default policy applied when a tag has no explicit override.
     /// </summary>
-    /// <returns>A singleton default policy with all overrides unset.</returns>
+    /// <value>A singleton default policy with all overrides unset.</value>
     public static XmlDocTagPolicy Default { get; } = new XmlDocTagPolicy(
         XmlDocTagLayout.Auto,
         maxSingleLineLength: null,
@@ -44,25 +44,25 @@ public sealed class XmlDocTagPolicy
     /// <summary>
     /// Gets the preferred layout for the tag.
     /// </summary>
-    /// <returns>The configured layout choice.</returns>
+    /// <value>The configured layout choice.</value>
     public XmlDocTagLayout Layout { get; }
 
     /// <summary>
     /// Gets the maximum length, in characters, that allows the tag to remain on a single line.
     /// </summary>
-    /// <returns>The override length when configured; otherwise <see langword="null" />.</returns>
+    /// <value>The override length when configured; otherwise <see langword="null" />.</value>
     public int? MaxSingleLineLength { get; }
 
     /// <summary>
     /// Gets a value indicating whether line breaks may appear inside the tag content.
     /// </summary>
-    /// <returns><see langword="true" /> when wrapping is permitted; <see langword="false" /> when forbidden; <see langword="null" /> when not overridden.</returns>
+    /// <value><see langword="true" /> when wrapping is permitted; <see langword="false" /> when forbidden; <see langword="null" /> when not overridden.</value>
     public bool? AllowLineBreakInside { get; }
 
     /// <summary>
     /// Gets a value indicating whether a single space should appear before the closing <c>/&gt;</c> of a
     /// self-closing form.
     /// </summary>
-    /// <returns><see langword="true" /> to emit the space; <see langword="false" /> to suppress it; <see langword="null" /> to preserve as-written.</returns>
+    /// <value><see langword="true" /> to emit the space; <see langword="false" /> to suppress it; <see langword="null" /> to preserve as-written.</value>
     public bool? SelfClosingTrailingSpace { get; }
 }

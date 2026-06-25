@@ -63,7 +63,7 @@ public sealed class CompoundStreamBuilder
     /// <summary>
     /// Gets or sets the byte payload of the stream.
     /// </summary>
-    /// <returns>The stream's content.</returns>
+    /// <value>The stream's content.</value>
     /// <remarks>
     /// Reading this property on a deferred node opens and reads its source fully into memory; thereafter the node is
     /// in-memory. Setting the property replaces the payload and makes the node in-memory.
@@ -91,7 +91,7 @@ public sealed class CompoundStreamBuilder
     /// <summary>
     /// Gets the length, in bytes, of the stream payload.
     /// </summary>
-    /// <returns>The payload length; reported without opening a deferred source.</returns>
+    /// <value>The payload length; reported without opening a deferred source.</value>
     public long Length => _open is null ? _content.Length : _length;
 
     /// <inheritdoc />
@@ -100,7 +100,7 @@ public sealed class CompoundStreamBuilder
     /// <summary>
     /// Gets a value indicating whether the node is backed by a deferred source rather than in-memory bytes.
     /// </summary>
-    /// <returns><see langword="true" /> when the node is deferred; otherwise <see langword="false" />.</returns>
+    /// <value><see langword="true" /> when the node is deferred; otherwise <see langword="false" />.</value>
     internal bool IsDeferred => _open is not null;
 
     /// <summary>

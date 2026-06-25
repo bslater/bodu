@@ -156,21 +156,21 @@ public readonly partial struct Fraction<T>
     /// <summary>
     /// Gets a <see cref="Fraction{T}" /> representing the value zero.
     /// </summary>
-    /// <returns>The rational value <c>0/1</c>.</returns>
+    /// <value>The rational value <c>0/1</c>.</value>
     public static Fraction<T> Zero =>
         new(T.Zero, T.One, canonical: true);
 
     /// <summary>
     /// Gets a <see cref="Fraction{T}" /> representing the value one.
     /// </summary>
-    /// <returns>The rational value <c>1/1</c>.</returns>
+    /// <value>The rational value <c>1/1</c>.</value>
     public static Fraction<T> One =>
         new(T.One, T.One, canonical: true);
 
     /// <summary>
     /// Gets a <see cref="Fraction{T}" /> representing the value negative one.
     /// </summary>
-    /// <returns>The rational value <c>-1/1</c>.</returns>
+    /// <value>The rational value <c>-1/1</c>.</value>
     /// <exception cref="OverflowException">
     /// Thrown if <typeparamref name="T" /> is an unsigned type and cannot represent <c>-1</c>.
     /// </exception>
@@ -180,7 +180,7 @@ public readonly partial struct Fraction<T>
     /// <summary>
     /// Gets the smallest finite value a <see cref="Fraction{T}" /> backed by <typeparamref name="T" /> can represent.
     /// </summary>
-    /// <returns>The rational value <c>T.MinValue/1</c>.</returns>
+    /// <value>The rational value <c>T.MinValue/1</c>.</value>
     /// <exception cref="NotSupportedException">
     /// Thrown if <typeparamref name="T" /> is an unbounded integer type, such as <see cref="BigInteger" />.
     /// </exception>
@@ -197,7 +197,7 @@ public readonly partial struct Fraction<T>
     /// <summary>
     /// Gets the largest finite value a <see cref="Fraction{T}" /> backed by <typeparamref name="T" /> can represent.
     /// </summary>
-    /// <returns>The rational value <c>T.MaxValue/1</c>.</returns>
+    /// <value>The rational value <c>T.MaxValue/1</c>.</value>
     /// <exception cref="NotSupportedException">
     /// Thrown if <typeparamref name="T" /> is an unbounded integer type, such as <see cref="BigInteger" />.
     /// </exception>
@@ -214,13 +214,12 @@ public readonly partial struct Fraction<T>
     /// <summary>
     /// Gets the numerator of the rational value in canonical form.
     /// </summary>
-    /// <returns>The signed numerator.</returns>
+    /// <value>The signed numerator.</value>
     public T Numerator { get; }
 
     /// <summary>
     /// Gets the denominator of the rational value in canonical form.
     /// </summary>
-    /// <returns>The strictly positive denominator.</returns>
     /// <value>
     /// A value of one is reported for a default-initialized instance so that <c>default(Fraction&lt;T&gt;)</c> behaves
     /// as the rational value zero.
@@ -231,9 +230,9 @@ public readonly partial struct Fraction<T>
     /// <summary>
     /// Gets the sign of the rational value.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <c>-1</c> if the value is negative, <c>0</c> if the value is zero, and <c>1</c> if the value is positive.
-    /// </returns>
+    /// </value>
     public int Sign =>
         T.IsZero(Numerator) ? 0 : (T.IsNegative(Numerator) ? -1 : 1);
 

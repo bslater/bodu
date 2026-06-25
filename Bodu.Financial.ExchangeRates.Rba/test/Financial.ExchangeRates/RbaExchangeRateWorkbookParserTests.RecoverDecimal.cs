@@ -20,7 +20,7 @@ public partial class RbaExchangeRateWorkbookParserTests
     /// with the decimal RBA published for it. The rows span sub-unit and large magnitudes, two to eight decimal places,
     /// and stored values that sit one unit in the last place from the published figure.
     /// </summary>
-    /// <returns>One object array per known-answer row.</returns>
+    /// <value>One object array per known-answer row.</value>
     public static IEnumerable<object[]> RecoverDecimalCases =>
         new[]
         {

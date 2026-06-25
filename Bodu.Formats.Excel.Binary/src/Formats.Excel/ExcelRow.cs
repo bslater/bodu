@@ -30,12 +30,12 @@ public sealed class ExcelRow
     /// <summary>
     /// Gets the zero-based row index.
     /// </summary>
-    /// <returns>The row index within the worksheet.</returns>
+    /// <value>The row index within the worksheet.</value>
     public int RowIndex { get; }
 
     /// <summary>
     /// Gets the populated cells of the row, in ascending column order.
     /// </summary>
-    /// <returns>A read-only list of the row's populated cells.</returns>
+    /// <value>A read-only list of the row's populated cells.</value>
     public IReadOnlyList<ExcelCell> Cells { get; }
 }

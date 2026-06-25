@@ -50,6 +50,6 @@ public sealed class TomlUnmappedMemberHandlingAttribute
     /// <summary>
     /// Gets the handling applied to unmapped keys for the annotated type.
     /// </summary>
-    /// <returns>The unmapped-member handling.</returns>
+    /// <value>The unmapped-member handling.</value>
     public TomlUnmappedMemberHandling UnmappedMemberHandling { get; }
 }

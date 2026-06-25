@@ -124,7 +124,7 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets or sets the integer value.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public int Value { get; set; }
     }
 
@@ -136,7 +136,7 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets the integer value, assignable only through an object initializer or the init-only setter.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public int Value { get; init; }
     }
 
@@ -164,7 +164,7 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets the integer value, exposed through a public getter with no setter.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public int Value { get; }
     }
 
@@ -192,7 +192,7 @@ public partial class TomlSerializerTests
         /// <summary>
         /// Gets the integer value, exposed through a public getter and a private setter.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         public int Value { get; private set; }
     }
 
@@ -221,7 +221,7 @@ public partial class TomlSerializerTests
         /// Gets the integer value, opted into serialization through its private setter by
         /// <see cref="TomlIncludeAttribute" />.
         /// </summary>
-        /// <returns>The value.</returns>
+        /// <value>The value.</value>
         [TomlInclude]
         public int Value { get; private set; }
     }

@@ -303,7 +303,7 @@ public sealed class CubeHash
     /// The hash size determines the length of the digest returned by the algorithm. Valid values are 224, 256, 384, and
     /// 512 bits.
     /// </remarks>
-    /// <returns>The hash output size in bits.</returns>
+    /// <value>The hash output size in bits.</value>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Value is not one of the permitted sizes (224, 256, 384, 512).
     /// </exception>

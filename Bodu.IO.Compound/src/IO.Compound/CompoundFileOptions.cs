@@ -21,33 +21,30 @@ public sealed class CompoundFileOptions
     /// <summary>
     /// Gets a shared <see cref="CompoundFileOptions" /> instance carrying the default values.
     /// </summary>
-    /// <returns>The default options.</returns>
+    /// <value>The default options.</value>
     public static CompoundFileOptions Default { get; } = new();
 
     /// <summary>
     /// Gets or sets the strategy used to source the file's bytes.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The configured <see cref="CompoundReadStrategy" />; <see cref="CompoundReadStrategy.Buffered" /> by default.
-    /// </returns>
+    /// </value>
     public CompoundReadStrategy ReadStrategy { get; set; } = CompoundReadStrategy.Buffered;
 
     /// <summary>
     /// Gets or sets the size threshold, in bytes, above which a seekable source is read on demand.
     /// </summary>
-    /// <returns>
-    /// The threshold applied when <see cref="ReadStrategy" /> is <see cref="CompoundReadStrategy.Auto" />.
-    /// </returns>
     /// <value>Only consulted when <see cref="ReadStrategy" /> is <see cref="CompoundReadStrategy.Auto" />.</value>
     public long MaxBufferedBytes { get; set; } = DefaultMaxBufferedBytes;
 
     /// <summary>
     /// Gets or sets how strictly the container's structure is validated.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The configured <see cref="CompoundValidationLevel" />; <see cref="CompoundValidationLevel.Compatible" /> by
     /// default.
-    /// </returns>
+    /// </value>
     public CompoundValidationLevel ValidationLevel { get; set; } = CompoundValidationLevel.Compatible;
 
     /// <summary>

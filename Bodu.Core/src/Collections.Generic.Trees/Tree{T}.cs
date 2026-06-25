@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Tree{T}.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -32,8 +32,13 @@ namespace Bodu.Collections.Generic.Trees;
 [DebuggerTypeProxy(typeof(TreeDebugView<>))]
 public sealed partial class Tree<T>
 {
+    /// <summary>The ordered list of immediate child nodes.</summary>
     private readonly List<Tree<T>> _children;
+
+    /// <summary>A cached read-only wrapper over <see cref="_children" /> returned by <see cref="Children" />.</summary>
     private readonly ReadOnlyCollection<Tree<T>> _childrenView;
+
+    /// <summary>The parent node, or <see langword="null" /> when this node is a root.</summary>
     private Tree<T>? _parent;
 
     /// <summary>
@@ -59,7 +64,7 @@ public sealed partial class Tree<T>
     {
         ThrowHelper.ThrowIfNull(childValues);
 
-        foreach (var childValue in childValues)
+        foreach (T? childValue in childValues)
             AddChild(childValue);
     }
 
@@ -67,21 +72,18 @@ public sealed partial class Tree<T>
     /// Gets or sets the value stored at this node.
     /// </summary>
     /// <value>The node's value.</value>
-    /// <returns>The node's value.</returns>
     public T Value { get; set; }
 
     /// <summary>
     /// Gets the parent node, or <see langword="null" /> when this node is a root.
     /// </summary>
     /// <value>The parent node, or <see langword="null" />.</value>
-    /// <returns>The parent node, or <see langword="null" /> when this node is a root.</returns>
     public Tree<T>? Parent => _parent;
 
     /// <summary>
     /// Gets the ordered list of child nodes.
     /// </summary>
     /// <value>A read-only view of the node's children.</value>
-    /// <returns>The node's children.</returns>
     /// <remarks>
     /// The returned collection is a live, read-only view over the node's children: it reflects subsequent
     /// <see cref="AddChild(T)" /> and <see cref="RemoveChild" /> operations but cannot be mutated directly, preserving
@@ -93,34 +95,30 @@ public sealed partial class Tree<T>
     /// Gets the number of immediate children.
     /// </summary>
     /// <value>The child count.</value>
-    /// <returns>The number of immediate children.</returns>
     public int ChildCount => _children.Count;
 
     /// <summary>
     /// Gets a value indicating whether this node has no parent.
     /// </summary>
     /// <value><see langword="true" /> if the node is a root; otherwise, <see langword="false" />.</value>
-    /// <returns><see langword="true" /> if the node is a root; otherwise, <see langword="false" />.</returns>
     public bool IsRoot => _parent is null;
 
     /// <summary>
     /// Gets a value indicating whether this node has no children.
     /// </summary>
     /// <value><see langword="true" /> if the node is a leaf; otherwise, <see langword="false" />.</value>
-    /// <returns><see langword="true" /> if the node is a leaf; otherwise, <see langword="false" />.</returns>
     public bool IsLeaf => _children.Count == 0;
 
     /// <summary>
     /// Gets the depth of this node, measured as the number of edges from the root.
     /// </summary>
     /// <value>Zero for a root node, increasing by one per level.</value>
-    /// <returns>The number of edges between this node and the root.</returns>
     public int Depth
     {
         get
         {
-            var depth = 0;
-            for (var node = _parent; node is not null; node = node._parent)
+            int depth = 0;
+            for (Tree<T>? node = _parent; node is not null; node = node._parent)
                 depth++;
 
             return depth;
@@ -132,21 +130,20 @@ public sealed partial class Tree<T>
     /// descendant leaf.
     /// </summary>
     /// <value>Zero for a leaf node.</value>
-    /// <returns>The length of the longest downward path to a leaf.</returns>
     public int Height
     {
         get
         {
-            var height = 0;
+            int height = 0;
             var stack = new Stack<(Tree<T> Node, int Depth)>();
             stack.Push((this, 0));
             while (stack.Count > 0)
             {
-                var (node, depth) = stack.Pop();
+                (Tree<T>? node, int depth) = stack.Pop();
                 if (depth > height)
                     height = depth;
 
-                foreach (var child in node._children)
+                foreach (Tree<T> child in node._children)
                     stack.Push((child, depth + 1));
             }
 
@@ -181,7 +178,7 @@ public sealed partial class Tree<T>
         if (child._parent is not null)
             throw new InvalidOperationException(ResourceStrings.Op_Invalid_NodeAlreadyHasParent);
 
-        for (var node = this; node is not null; node = node._parent)
+        for (Tree<T>? node = this; node is not null; node = node._parent)
         {
             if (ReferenceEquals(node, child))
                 throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, ResourceStrings.Op_Invalid_CircularReference, child.Value));
@@ -231,7 +228,7 @@ public sealed partial class Tree<T>
     /// </summary>
     public void Clear()
     {
-        foreach (var child in _children)
+        foreach (Tree<T> child in _children)
             child._parent = null;
 
         _children.Clear();

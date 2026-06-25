@@ -39,19 +39,19 @@ public abstract class CompoundEntryBuilder
     /// <summary>
     /// Gets the name of the entry as it appears in its parent storage.
     /// </summary>
-    /// <returns>The entry name; the key under which the parent storage holds this node.</returns>
+    /// <value>The entry name; the key under which the parent storage holds this node.</value>
     public string Name { get; internal set; } = string.Empty;
 
     /// <summary>
     /// Gets the parent storage of this node, or <see langword="null" /> when the node is a detached root.
     /// </summary>
-    /// <returns>The parent <see cref="CompoundStorageBuilder" />, or <see langword="null" />.</returns>
+    /// <value>The parent <see cref="CompoundStorageBuilder" />, or <see langword="null" />.</value>
     public CompoundStorageBuilder? Parent { get; internal set; }
 
     /// <summary>
     /// Gets the topmost ancestor of this node.
     /// </summary>
-    /// <returns>The root node reached by following <see cref="Parent" />; this node when it has no parent.</returns>
+    /// <value>The root node reached by following <see cref="Parent" />; this node when it has no parent.</value>
     public CompoundEntryBuilder Root
     {
         get
@@ -67,31 +67,31 @@ public abstract class CompoundEntryBuilder
     /// <summary>
     /// Gets or sets the class identifier (CLSID) associated with the entry.
     /// </summary>
-    /// <returns>The entry's class identifier; <see cref="Guid.Empty" /> when none is assigned.</returns>
+    /// <value>The entry's class identifier; <see cref="Guid.Empty" /> when none is assigned.</value>
     public Guid ClassId { get; set; }
 
     /// <summary>
     /// Gets or sets the creation time recorded for the entry.
     /// </summary>
-    /// <returns>The creation time, or <see langword="null" /> when none is recorded.</returns>
+    /// <value>The creation time, or <see langword="null" /> when none is recorded.</value>
     public DateTimeOffset? CreationTime { get; set; }
 
     /// <summary>
     /// Gets or sets the last-modified time recorded for the entry.
     /// </summary>
-    /// <returns>The last-modified time, or <see langword="null" /> when none is recorded.</returns>
+    /// <value>The last-modified time, or <see langword="null" /> when none is recorded.</value>
     public DateTimeOffset? ModifiedTime { get; set; }
 
     /// <summary>
     /// Gets or sets the user-defined state bits recorded for the entry.
     /// </summary>
-    /// <returns>The raw state-bit flags.</returns>
+    /// <value>The raw state-bit flags.</value>
     public int StateBits { get; set; }
 
     /// <summary>
     /// Gets the kind of entry this node represents.
     /// </summary>
-    /// <returns>The <see cref="CompoundEntryType" /> of the node.</returns>
+    /// <value>The <see cref="CompoundEntryType" /> of the node.</value>
     public abstract CompoundEntryType EntryType { get; }
 
     /// <summary>

@@ -34,19 +34,19 @@ public sealed class DayOfWeekInMonthStrategy
     /// <summary>
     /// Gets the one-based month of the occurrence.
     /// </summary>
-    /// <returns>The month, where 1 is January and 12 is December.</returns>
+    /// <value>The month, where 1 is January and 12 is December.</value>
     public int Month { get; }
 
     /// <summary>
     /// Gets the weekday to select.
     /// </summary>
-    /// <returns>The target weekday.</returns>
+    /// <value>The target weekday.</value>
     public DayOfWeek DayOfWeek { get; }
 
     /// <summary>
     /// Gets the occurrence of the weekday to select.
     /// </summary>
-    /// <returns>The target <see cref="WeekOrdinal" />.</returns>
+    /// <value>The target <see cref="WeekOrdinal" />.</value>
     public WeekOrdinal WeekOrdinal { get; }
 
     /// <inheritdoc />

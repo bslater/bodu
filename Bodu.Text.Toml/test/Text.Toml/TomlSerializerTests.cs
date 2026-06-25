@@ -290,51 +290,51 @@ public partial class TomlSerializerTests
     private sealed class RichModel
     {
         /// <summary>Gets or sets the string name.</summary>
-        /// <returns>The name.</returns>
+        /// <value>The name.</value>
         public string Name { get; set; } = string.Empty;
 
         /// <summary>Gets or sets the 32-bit integer count.</summary>
-        /// <returns>The count.</returns>
+        /// <value>The count.</value>
         public int Count { get; set; }
 
         /// <summary>Gets or sets the 64-bit integer length.</summary>
-        /// <returns>The length.</returns>
+        /// <value>The length.</value>
         public long Length { get; set; }
 
         /// <summary>Gets or sets the floating-point ratio.</summary>
-        /// <returns>The ratio.</returns>
+        /// <value>The ratio.</value>
         public double Ratio { get; set; }
 
         /// <summary>Gets or sets the Boolean flag.</summary>
-        /// <returns>The flag.</returns>
+        /// <value>The flag.</value>
         public bool Enabled { get; set; }
 
         /// <summary>Gets or sets the offset date-time.</summary>
-        /// <returns>The instant.</returns>
+        /// <value>The instant.</value>
         public DateTimeOffset Instant { get; set; }
 
         /// <summary>Gets or sets the local date-time.</summary>
-        /// <returns>The local date-time.</returns>
+        /// <value>The local date-time.</value>
         public DateTime Local { get; set; }
 
         /// <summary>Gets or sets the local date.</summary>
-        /// <returns>The day.</returns>
+        /// <value>The day.</value>
         public DateOnly Day { get; set; }
 
         /// <summary>Gets or sets the local time.</summary>
-        /// <returns>The time.</returns>
+        /// <value>The time.</value>
         public TimeOnly Time { get; set; }
 
         /// <summary>Gets or sets the list of integers.</summary>
-        /// <returns>The integer list.</returns>
+        /// <value>The integer list.</value>
         public List<int> Numbers { get; set; } = [];
 
         /// <summary>Gets or sets the nested model.</summary>
-        /// <returns>The nested model.</returns>
+        /// <value>The nested model.</value>
         public NestedModel Nested { get; set; } = new();
 
         /// <summary>Gets or sets the string-keyed integer dictionary.</summary>
-        /// <returns>The dictionary.</returns>
+        /// <value>The dictionary.</value>
         public Dictionary<string, int> Counts { get; set; } = [];
     }
 
@@ -344,7 +344,7 @@ public partial class TomlSerializerTests
     private sealed class NestedModel
     {
         /// <summary>Gets or sets the title.</summary>
-        /// <returns>The title.</returns>
+        /// <value>The title.</value>
         public string Title { get; set; } = string.Empty;
     }
 
@@ -354,15 +354,15 @@ public partial class TomlSerializerTests
     private sealed class SmallModel
     {
         /// <summary>Gets or sets the name.</summary>
-        /// <returns>The name.</returns>
+        /// <value>The name.</value>
         public string Name { get; set; } = string.Empty;
 
         /// <summary>Gets or sets the port.</summary>
-        /// <returns>The port.</returns>
+        /// <value>The port.</value>
         public int Port { get; set; }
 
         /// <summary>Gets or sets the nested model.</summary>
-        /// <returns>The nested model.</returns>
+        /// <value>The nested model.</value>
         public NestedModel Nested { get; set; } = new();
     }
 
@@ -372,11 +372,11 @@ public partial class TomlSerializerTests
     private sealed class PascalModel
     {
         /// <summary>Gets or sets the first name.</summary>
-        /// <returns>The first name.</returns>
+        /// <value>The first name.</value>
         public string FirstName { get; set; } = string.Empty;
 
         /// <summary>Gets or sets the last name.</summary>
-        /// <returns>The last name.</returns>
+        /// <value>The last name.</value>
         public string LastName { get; set; } = string.Empty;
     }
 
@@ -386,7 +386,7 @@ public partial class TomlSerializerTests
     private sealed class RenamedModel
     {
         /// <summary>Gets or sets the identifier, written under the wire name <c>id</c>.</summary>
-        /// <returns>The identifier.</returns>
+        /// <value>The identifier.</value>
         [TomlPropertyName("id")]
         public int Identifier { get; set; }
     }
@@ -397,11 +397,11 @@ public partial class TomlSerializerTests
     private sealed class IgnoredModel
     {
         /// <summary>Gets or sets the member retained in the output.</summary>
-        /// <returns>The retained value.</returns>
+        /// <value>The retained value.</value>
         public string Kept { get; set; } = string.Empty;
 
         /// <summary>Gets or sets the member excluded from the output.</summary>
-        /// <returns>The excluded value.</returns>
+        /// <value>The excluded value.</value>
         [TomlIgnore]
         public string Skipped { get; set; } = string.Empty;
     }
@@ -412,7 +412,7 @@ public partial class TomlSerializerTests
     private sealed class PriceModel
     {
         /// <summary>Gets or sets the price amount.</summary>
-        /// <returns>The amount.</returns>
+        /// <value>The amount.</value>
         public decimal Amount { get; set; }
     }
 
@@ -422,7 +422,7 @@ public partial class TomlSerializerTests
     private sealed class PayloadModel
     {
         /// <summary>Gets or sets the payload bytes.</summary>
-        /// <returns>The payload.</returns>
+        /// <value>The payload.</value>
         public byte[] Payload { get; set; } = [];
     }
 
@@ -432,7 +432,7 @@ public partial class TomlSerializerTests
     private sealed class TimestampModel
     {
         /// <summary>Gets or sets the timestamp.</summary>
-        /// <returns>The timestamp.</returns>
+        /// <value>The timestamp.</value>
         public DateTime When { get; set; }
     }
 
@@ -442,11 +442,11 @@ public partial class TomlSerializerTests
     private sealed class NullableMemberModel
     {
         /// <summary>Gets or sets the present member.</summary>
-        /// <returns>The present value.</returns>
+        /// <value>The present value.</value>
         public string? Present { get; set; }
 
         /// <summary>Gets or sets the absent member, omitted when <see langword="null" />.</summary>
-        /// <returns>The absent value, or <see langword="null" />.</returns>
+        /// <value>The absent value, or <see langword="null" />.</value>
         public string? Absent { get; set; }
     }
 

@@ -127,10 +127,10 @@ public sealed class DistributedExchangeRateCache
     /// fallback rather than propagate. Used as the exception filter on the read and write paths so a strict cache fails
     /// fast.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see langword="true" /> when <see cref="ExchangeRateCacheOptions.ThrowOnStorageFailure" /> is not set; otherwise
     /// <see langword="false" />, so the failure propagates.
-    /// </returns>
+    /// </value>
     private bool ShouldSwallowStorageFailure => !_options.ThrowOnStorageFailure;
 
     /// <inheritdoc />

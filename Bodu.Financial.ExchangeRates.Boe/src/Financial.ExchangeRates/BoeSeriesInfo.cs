@@ -34,24 +34,24 @@ public sealed class BoeSeriesInfo
     /// <summary>
     /// Gets the currency pair the series represents, always quoted against the pound sterling.
     /// </summary>
-    /// <returns>The <see cref="ExchangeRatePair" /> from <c>GBP</c> to the quote currency.</returns>
+    /// <value>The <see cref="ExchangeRatePair" /> from <c>GBP</c> to the quote currency.</value>
     public ExchangeRatePair Pair { get; }
 
     /// <summary>
     /// Gets the quote-currency ISO code.
     /// </summary>
-    /// <returns>The three-letter ISO code of the quote currency.</returns>
+    /// <value>The three-letter ISO code of the quote currency.</value>
     public string QuoteIsoCode { get; }
 
     /// <summary>
     /// Gets the IADB series code.
     /// </summary>
-    /// <returns>The series code (for example, <c>XUDLUSS</c>).</returns>
+    /// <value>The series code (for example, <c>XUDLUSS</c>).</value>
     public string SeriesCode { get; }
 
     /// <summary>
     /// Gets the series description.
     /// </summary>
-    /// <returns>The series description text.</returns>
+    /// <value>The series description text.</value>
     public string Description { get; }
 }

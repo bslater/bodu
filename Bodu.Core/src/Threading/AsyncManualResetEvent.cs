@@ -51,6 +51,7 @@ namespace Bodu.Threading;
 [DebuggerDisplay("IsSet = {IsSet}")]
 public sealed class AsyncManualResetEvent
 {
+    /// <summary>The completion source whose task represents the signaled state; replaced on each reset.</summary>
     private TaskCompletionSource<bool> _source;
 
     /// <summary>
@@ -78,7 +79,6 @@ public sealed class AsyncManualResetEvent
     /// Gets a value indicating whether the event is currently signaled.
     /// </summary>
     /// <value><see langword="true" /> if the event is set; otherwise, <see langword="false" />.</value>
-    /// <returns><see langword="true" /> if the event is set; otherwise, <see langword="false" />.</returns>
     public bool IsSet =>
         Volatile.Read(ref _source).Task.IsCompletedSuccessfully;
 
@@ -102,7 +102,7 @@ public sealed class AsyncManualResetEvent
     /// </remarks>
     public ValueTask WaitAsync(CancellationToken cancellationToken)
     {
-        var task = Volatile.Read(ref _source).Task;
+        Task<bool> task = Volatile.Read(ref _source).Task;
         if (task.IsCompletedSuccessfully)
             return ValueTask.CompletedTask;
 
@@ -125,7 +125,7 @@ public sealed class AsyncManualResetEvent
     {
         while (true)
         {
-            var current = Volatile.Read(ref _source);
+            TaskCompletionSource<bool> current = Volatile.Read(ref _source);
             if (!current.Task.IsCompleted)
                 return;
 

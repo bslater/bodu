@@ -14,7 +14,7 @@ public partial class ExcelWorksheetReaderTests
     /// Gets the malformed-record known-answer rows, each wrapped as a single-element <c>object[]</c> for
     /// <c>[DynamicData]</c>.
     /// </summary>
-    /// <returns>A sequence of rows, each carrying one <see cref="MalformedRecordKat" />.</returns>
+    /// <value>A sequence of rows, each carrying one <see cref="MalformedRecordKat" />.</value>
     public static IEnumerable<object[]> MalformedRecords
     {
         get

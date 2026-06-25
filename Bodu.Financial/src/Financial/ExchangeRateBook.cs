@@ -90,13 +90,13 @@ public sealed class ExchangeRateBook
     /// <summary>
     /// Gets the number of (pair, provider) series held by the book.
     /// </summary>
-    /// <returns>A non-negative series count.</returns>
+    /// <value>A non-negative series count.</value>
     public int Count => _series.Count;
 
     /// <summary>
     /// Gets the set of keys currently held.
     /// </summary>
-    /// <returns>The keys exposed by the underlying frozen dictionary.</returns>
+    /// <value>The keys exposed by the underlying frozen dictionary.</value>
     public IReadOnlyCollection<ExchangeRateSeriesKey> Keys => _series.Keys;
 
     /// <summary>

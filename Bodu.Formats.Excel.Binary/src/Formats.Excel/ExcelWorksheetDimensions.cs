@@ -40,24 +40,24 @@ public readonly record struct ExcelWorksheetDimensions
     /// <summary>
     /// Gets the zero-based index of the first used row.
     /// </summary>
-    /// <returns>The first row index of the used range.</returns>
+    /// <value>The first row index of the used range.</value>
     public int FirstRowIndex { get; }
 
     /// <summary>
     /// Gets the number of rows in the used range.
     /// </summary>
-    /// <returns>The count of rows spanned by the used range.</returns>
+    /// <value>The count of rows spanned by the used range.</value>
     public int RowCount { get; }
 
     /// <summary>
     /// Gets the zero-based index of the first used column.
     /// </summary>
-    /// <returns>The first column index of the used range.</returns>
+    /// <value>The first column index of the used range.</value>
     public int FirstColumnIndex { get; }
 
     /// <summary>
     /// Gets the number of columns in the used range.
     /// </summary>
-    /// <returns>The count of columns spanned by the used range.</returns>
+    /// <value>The count of columns spanned by the used range.</value>
     public int ColumnCount { get; }
 }

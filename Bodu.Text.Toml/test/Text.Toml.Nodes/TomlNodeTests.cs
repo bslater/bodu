@@ -500,11 +500,11 @@ public partial class TomlNodeTests
     private sealed class ExtensionDataModel
     {
         /// <summary>Gets or sets the name.</summary>
-        /// <returns>The name.</returns>
+        /// <value>The name.</value>
         public string Name { get; set; } = string.Empty;
 
         /// <summary>Gets or sets the captured entries that match no other member.</summary>
-        /// <returns>The captured entries.</returns>
+        /// <value>The captured entries.</value>
         [TomlExtensionData]
         public TomlObject? Extra { get; set; }
     }

@@ -39,10 +39,19 @@ namespace Bodu.Threading;
 [DebuggerDisplay("Interval = {_interval}, TimeUntilNext = {TimeUntilNext}")]
 public sealed class RateGate
 {
+    /// <summary>The synchronization object guarding the last-timestamp and fired state.</summary>
     private readonly object _gate = new();
+
+    /// <summary>The minimum interval that must elapse between admitted invocations.</summary>
     private readonly TimeSpan _interval;
+
+    /// <summary>The time provider used to measure the interval between invocations.</summary>
     private readonly TimeProvider _timeProvider;
+
+    /// <summary>The timestamp of the most recently admitted invocation, in the time provider's ticks.</summary>
     private long _lastTimestamp;
+
+    /// <summary>Indicates whether at least one invocation has been admitted since construction.</summary>
     private bool _hasFired;
 
     /// <summary>
@@ -75,7 +84,7 @@ public sealed class RateGate
     {
         lock (_gate)
         {
-            var now = _timeProvider.GetTimestamp();
+            long now = _timeProvider.GetTimestamp();
             if (_hasFired && _timeProvider.GetElapsedTime(_lastTimestamp, now) < _interval)
                 return false;
 
@@ -91,7 +100,6 @@ public sealed class RateGate
     /// <value>
     /// <see cref="TimeSpan.Zero" /> when an invocation can be admitted immediately; otherwise, the remaining cool-down.
     /// </value>
-    /// <returns>The time remaining before the next invocation would be admitted.</returns>
     public TimeSpan TimeUntilNext
     {
         get
@@ -101,7 +109,7 @@ public sealed class RateGate
                 if (!_hasFired)
                     return TimeSpan.Zero;
 
-                var remaining = _interval - _timeProvider.GetElapsedTime(_lastTimestamp);
+                TimeSpan remaining = _interval - _timeProvider.GetElapsedTime(_lastTimestamp);
                 return remaining > TimeSpan.Zero ? remaining : TimeSpan.Zero;
             }
         }

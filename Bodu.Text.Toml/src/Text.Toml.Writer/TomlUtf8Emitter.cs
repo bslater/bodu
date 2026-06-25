@@ -48,13 +48,13 @@ internal ref struct TomlUtf8Emitter
     /// Gets a value indicating whether any byte has been emitted, used to decide blank-line separation before a section
     /// header.
     /// </summary>
-    /// <returns><see langword="true" /> once any byte has been written.</returns>
+    /// <value><see langword="true" /> once any byte has been written.</value>
     internal readonly bool HasContent => _hasContent;
 
     /// <summary>
     /// Gets the total number of bytes emitted, for the writer's committed/pending accounting.
     /// </summary>
-    /// <returns>The byte count.</returns>
+    /// <value>The byte count.</value>
     internal readonly long BytesWritten => _bytesWritten;
 
     /// <summary>

@@ -31,7 +31,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// negative <c>inputCount</c>. BCL <see cref="HashAlgorithm" /> throws the base
     /// <see cref="ArgumentException" /> instead.
     /// </summary>
-    /// <returns><see langword="false" /> for BCL <see cref="HashAlgorithm" /> implementations.</returns>
+    /// <value><see langword="false" /> for BCL <see cref="HashAlgorithm" /> implementations.</value>
     protected override bool NegativeInputCountThrowsOutOfRange => false;
 
     /// <summary>

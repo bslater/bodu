@@ -16,10 +16,10 @@ public static partial class ExchangeRateLookupResultExtensions
         /// Gets the signed difference, in days, from <see cref="ExchangeRateLookupResult.RequestedDate" /> to the
         /// resolved observation date.
         /// </summary>
-        /// <returns>
+        /// <value>
         /// A negative value when the resolved observation predates the request (PreviousOnOrBefore fallback), a
         /// positive value when it post-dates the request (NextOnOrAfter fallback), or zero for an exact match.
-        /// </returns>
+        /// </value>
         /// <remarks>
         /// <para>
         /// Accounting and tax workflows typically distinguish between historical and forward-looking fallbacks; this

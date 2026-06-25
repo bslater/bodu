@@ -84,50 +84,50 @@ public sealed class XmlDocFormatOptions
     /// <summary>
     /// Gets the maximum physical line length, including the documentation prefix and base indent.
     /// </summary>
-    /// <returns>The configured maximum line length in characters.</returns>
+    /// <value>The configured maximum line length in characters.</value>
     public int MaxLineLength { get; }
 
     /// <summary>
     /// Gets the prefix emitted at the start of every documentation line.
     /// </summary>
-    /// <returns>The configured documentation prefix; typically <c>"/// "</c>.</returns>
+    /// <value>The configured documentation prefix; typically <c>"/// "</c>.</value>
     public string DocumentationPrefix { get; }
 
     /// <summary>
     /// Gets the indent unit used for content beneath block tags.
     /// </summary>
-    /// <returns>The configured indent text; typically four spaces.</returns>
+    /// <value>The configured indent text; typically four spaces.</value>
     public string IndentText { get; }
 
     /// <summary>
     /// Gets a value indicating whether sequences of prose whitespace are collapsed to a single space.
     /// </summary>
-    /// <returns><see langword="true" /> when prose whitespace is collapsed; otherwise <see langword="false" />.</returns>
+    /// <value><see langword="true" /> when prose whitespace is collapsed; otherwise <see langword="false" />.</value>
     public bool CollapseProseWhitespace { get; }
 
     /// <summary>
     /// Gets a value indicating whether existing blank documentation lines are preserved.
     /// </summary>
-    /// <returns><see langword="true" /> when blank lines inside the comment are preserved; otherwise <see langword="false" />.</returns>
+    /// <value><see langword="true" /> when blank lines inside the comment are preserved; otherwise <see langword="false" />.</value>
     public bool PreserveBlankLines { get; }
 
     /// <summary>
     /// Gets a value indicating whether attribute spacing inside XML tags is preserved verbatim.
     /// </summary>
-    /// <returns><see langword="true" /> when attribute formatting is preserved; otherwise <see langword="false" />.</returns>
+    /// <value><see langword="true" /> when attribute formatting is preserved; otherwise <see langword="false" />.</value>
     public bool PreserveXmlTagAttributes { get; }
 
     /// <summary>
     /// Gets a value indicating whether <c>cref</c> attribute values are preserved verbatim.
     /// </summary>
-    /// <returns><see langword="true" /> when <c>cref</c> text is preserved; otherwise <see langword="false" />.</returns>
+    /// <value><see langword="true" /> when <c>cref</c> text is preserved; otherwise <see langword="false" />.</value>
     public bool PreserveCrefText { get; }
 
     /// <summary>
     /// Gets a value indicating whether a field's single-line <c>&lt;summary&gt;</c> is kept on one line even when
     /// its content overflows the line budget.
     /// </summary>
-    /// <returns><see langword="true" /> when a field summary is never wrapped; otherwise <see langword="false" />.</returns>
+    /// <value><see langword="true" /> when a field summary is never wrapped; otherwise <see langword="false" />.</value>
     /// <remarks>
     /// When enabled, a field's <c>&lt;summary&gt;</c> is treated as single-line content whose wrapping is
     /// forbidden, so it stays on one physical line regardless of length rather than expanding to the multiline
@@ -138,37 +138,37 @@ public sealed class XmlDocFormatOptions
     /// <summary>
     /// Gets the set of element names treated as block tags.
     /// </summary>
-    /// <returns>The immutable set of block tag names.</returns>
+    /// <value>The immutable set of block tag names.</value>
     public ImmutableHashSet<string> BlockTags { get; }
 
     /// <summary>
     /// Gets the set of element names treated as inline-atomic tags.
     /// </summary>
-    /// <returns>The immutable set of inline tag names.</returns>
+    /// <value>The immutable set of inline tag names.</value>
     public ImmutableHashSet<string> InlineTags { get; }
 
     /// <summary>
     /// Gets the set of element names that must always emit on their own lines.
     /// </summary>
-    /// <returns>The immutable set of force-multiline tag names.</returns>
+    /// <value>The immutable set of force-multiline tag names.</value>
     public ImmutableHashSet<string> ForceMultilineTags { get; }
 
     /// <summary>
     /// Gets the set of element names that may stay single-line when short enough.
     /// </summary>
-    /// <returns>The immutable set of single-line-when-short tag names.</returns>
+    /// <value>The immutable set of single-line-when-short tag names.</value>
     public ImmutableHashSet<string> SingleLineWhenShortTags { get; }
 
     /// <summary>
     /// Gets the set of element names whose content must never wrap.
     /// </summary>
-    /// <returns>The immutable set of never-split tag names.</returns>
+    /// <value>The immutable set of never-split tag names.</value>
     public ImmutableHashSet<string> NeverSplitTagContent { get; }
 
     /// <summary>
     /// Gets the per-tag fine-grained policy overrides keyed by element name.
     /// </summary>
-    /// <returns>The immutable dictionary of per-tag policies.</returns>
+    /// <value>The immutable dictionary of per-tag policies.</value>
     public ImmutableDictionary<string, XmlDocTagPolicy> TagPolicies { get; }
 
     /// <summary>

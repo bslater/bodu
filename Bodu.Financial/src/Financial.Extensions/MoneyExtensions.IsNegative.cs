@@ -15,7 +15,7 @@ public static partial class MoneyExtensions
         /// <summary>
         /// Gets a value indicating whether this amount is strictly less than zero.
         /// </summary>
-        /// <returns><see langword="true" /> when negative; otherwise <see langword="false" />.</returns>
+        /// <value><see langword="true" /> when negative; otherwise <see langword="false" />.</value>
         public bool IsNegative =>
             value.Amount < 0m;
     }

@@ -28,9 +28,6 @@ public struct TomlReaderOptions
     /// Gets or sets the version of the TOML specification the reader enforces.
     /// </summary>
     /// <value>The specification version applied during parsing.</value>
-    /// <returns>
-    /// The <see cref="TomlSpecVersion" /> the reader enforces; <see cref="TomlSpecVersion.V1_0" /> by default.
-    /// </returns>
     public TomlSpecVersion SpecVersion { get; set; }
 
     /// <summary>
@@ -40,6 +37,5 @@ public struct TomlReaderOptions
     /// The maximum nesting depth; <c>0</c> selects the default of 64, clamped to
     /// <see cref="TomlLimits.AbsoluteMaxDepth" />.
     /// </value>
-    /// <returns>The maximum nesting depth, where <c>0</c> selects the default of 64.</returns>
     public int MaxDepth { get; set; }
 }

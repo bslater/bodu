@@ -433,7 +433,7 @@ public class BencodeEnumConverterTests
         /// <summary>
         /// Gets or sets the status.
         /// </summary>
-        /// <returns>The status.</returns>
+        /// <value>The status.</value>
         public Status Status { get; set; }
     }
 
@@ -445,7 +445,7 @@ public class BencodeEnumConverterTests
         /// <summary>
         /// Gets or sets the status.
         /// </summary>
-        /// <returns>The status.</returns>
+        /// <value>The status.</value>
         public RenamedStatus Status { get; set; }
     }
 
@@ -457,7 +457,7 @@ public class BencodeEnumConverterTests
         /// <summary>
         /// Gets or sets the status, serialized as a Bencode integer.
         /// </summary>
-        /// <returns>The status.</returns>
+        /// <value>The status.</value>
         [BencodeConverter(typeof(BencodeNumberEnumConverter<Status>))]
         public Status Status { get; set; }
     }
@@ -470,7 +470,7 @@ public class BencodeEnumConverterTests
         /// <summary>
         /// Gets or sets the status, serialized as its member-name byte string.
         /// </summary>
-        /// <returns>The status.</returns>
+        /// <value>The status.</value>
         [BencodeConverter(typeof(BencodeStringEnumConverter<Status>))]
         public Status Status { get; set; }
     }
@@ -505,7 +505,7 @@ public class BencodeEnumConverterTests
         /// <summary>
         /// Gets or sets the flags.
         /// </summary>
-        /// <returns>The flags.</returns>
+        /// <value>The flags.</value>
         public FlagsEnum Flags { get; set; }
     }
 }

@@ -16,7 +16,7 @@ public static partial class ExchangeRateLookupResultExtensions
         /// Gets the calendar date of the observation actually selected by the lookup, as carried by
         /// <see cref="ExchangeRateLookupResult.Rate" />.
         /// </summary>
-        /// <returns>The date the resolved rate is observed on.</returns>
+        /// <value>The date the resolved rate is observed on.</value>
         public DateOnly ResolvedDate =>
             result.Rate.Date;
     }

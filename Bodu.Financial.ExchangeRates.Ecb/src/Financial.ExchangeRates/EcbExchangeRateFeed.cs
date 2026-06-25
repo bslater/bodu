@@ -56,34 +56,34 @@ public sealed class EcbExchangeRateFeed
     /// <summary>
     /// Gets the first date for which the ECB publishes euro reference rates.
     /// </summary>
-    /// <returns>4 January 1999, the start of the euro reference-rate series.</returns>
+    /// <value>4 January 1999, the start of the euro reference-rate series.</value>
     public static DateOnly Epoch { get; } = new(1999, 1, 4);
 
     /// <summary>
     /// Gets the latest-day feed (<c>eurofxref-daily.xml</c>), containing only the most recent published rates.
     /// </summary>
-    /// <returns>The latest-day feed, with a four-day look-back to tolerate weekends and holidays.</returns>
+    /// <value>The latest-day feed, with a four-day look-back to tolerate weekends and holidays.</value>
     public static EcbExchangeRateFeed Daily { get; } = new("daily", "eurofxref-daily.xml", 4);
 
     /// <summary>
     /// Gets the rolling ninety-day feed (<c>eurofxref-hist-90d.xml</c>).
     /// </summary>
-    /// <returns>The ninety-day feed.</returns>
+    /// <value>The ninety-day feed.</value>
     public static EcbExchangeRateFeed Last90Days { get; } = new("hist-90d", "eurofxref-hist-90d.xml", 90);
 
     /// <summary>
     /// Gets the full-history feed (<c>eurofxref-hist.xml</c>), containing every published day since
     /// <see cref="Epoch" />.
     /// </summary>
-    /// <returns>The full-history feed.</returns>
+    /// <value>The full-history feed.</value>
     public static EcbExchangeRateFeed Full { get; } = new("hist", "eurofxref-hist.xml", null);
 
     /// <summary>
     /// Gets the default catalogue of ECB feeds, ordered from the narrowest look-back to the widest.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// The ordered, immutable default feed catalogue: the ninety-day feed followed by the full-history feed.
-    /// </returns>
+    /// </value>
     /// <remarks>
     /// The latest-day feed is omitted from the default catalogue because the ninety-day feed already contains the most
     /// recent day; include <see cref="Daily" /> explicitly when a minimal latest-only download is preferred.
@@ -97,28 +97,28 @@ public sealed class EcbExchangeRateFeed
     /// <summary>
     /// Gets the feed label (for example, <c>hist-90d</c>).
     /// </summary>
-    /// <returns>The feed label.</returns>
+    /// <value>The feed label.</value>
     public string Name { get; }
 
     /// <summary>
     /// Gets the file name of the feed, relative to the provider's base URL.
     /// </summary>
-    /// <returns>The feed file name (for example, <c>eurofxref-hist.xml</c>).</returns>
+    /// <value>The feed file name (for example, <c>eurofxref-hist.xml</c>).</value>
     public string FileName { get; }
 
     /// <summary>
     /// Gets the number of days back from a reference date the feed is expected to cover.
     /// </summary>
-    /// <returns>The look-back window in days, or <see langword="null" /> for the full-history feed.</returns>
+    /// <value>The look-back window in days, or <see langword="null" /> for the full-history feed.</value>
     public int? LookbackDays { get; }
 
     /// <summary>
     /// Gets a value indicating whether the feed carries the full history rather than a bounded look-back window.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see langword="true" /> when <see cref="LookbackDays" /> is <see langword="null" />; otherwise
     /// <see langword="false" />.
-    /// </returns>
+    /// </value>
     public bool IsFullHistory => LookbackDays is null;
 
     /// <summary>

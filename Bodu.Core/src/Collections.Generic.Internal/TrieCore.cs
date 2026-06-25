@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TrieCore.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -49,10 +49,10 @@ internal static class TrieCore
     /// <returns>The node reached by the key, or <see langword="null" /> if the path does not exist.</returns>
     public static TrieNode<TValue>? Find<TValue>(TrieNode<TValue> root, ReadOnlySpan<char> key)
     {
-        var node = root;
-        foreach (var ch in key)
+        TrieNode<TValue> node = root;
+        foreach (char ch in key)
         {
-            if (node.Children is null || !node.Children.TryGetValue(ch, out var next))
+            if (node.Children is null || !node.Children.TryGetValue(ch, out TrieNode<TValue>? next))
                 return null;
 
             node = next;
@@ -71,11 +71,11 @@ internal static class TrieCore
     /// <returns>The node at which the key terminates.</returns>
     public static TrieNode<TValue> GetOrAddNode<TValue>(TrieNode<TValue> root, ReadOnlySpan<char> key, IEqualityComparer<char> comparer)
     {
-        var node = root;
-        foreach (var ch in key)
+        TrieNode<TValue> node = root;
+        foreach (char ch in key)
         {
             node.Children ??= new Dictionary<char, TrieNode<TValue>>(comparer);
-            if (!node.Children.TryGetValue(ch, out var next))
+            if (!node.Children.TryGetValue(ch, out TrieNode<TValue>? next))
             {
                 next = new TrieNode<TValue>();
                 node.Children.Add(ch, next);
@@ -96,12 +96,12 @@ internal static class TrieCore
     /// <returns><see langword="true" /> if a terminal key was removed; otherwise, <see langword="false" />.</returns>
     public static bool Remove<TValue>(TrieNode<TValue> root, ReadOnlySpan<char> key)
     {
-        var path = key.Length == 0 ? Array.Empty<(TrieNode<TValue> Parent, char Ch)>() : new (TrieNode<TValue> Parent, char Ch)[key.Length];
-        var node = root;
-        for (var i = 0; i < key.Length; i++)
+        (TrieNode<TValue> Parent, char Ch)[] path = key.Length == 0 ? Array.Empty<(TrieNode<TValue> Parent, char Ch)>() : new (TrieNode<TValue> Parent, char Ch)[key.Length];
+        TrieNode<TValue> node = root;
+        for (int i = 0; i < key.Length; i++)
         {
-            var ch = key[i];
-            if (node.Children is null || !node.Children.TryGetValue(ch, out var next))
+            char ch = key[i];
+            if (node.Children is null || !node.Children.TryGetValue(ch, out TrieNode<TValue>? next))
                 return false;
 
             path[i] = (node, ch);
@@ -116,10 +116,10 @@ internal static class TrieCore
         node.Value = default!;
 
         // Prune leaf-ward: drop any node that is no longer terminal and has no children.
-        for (var i = key.Length - 1; i >= 0; i--)
+        for (int i = key.Length - 1; i >= 0; i--)
         {
-            var (parent, ch) = path[i];
-            var child = parent.Children![ch];
+            (TrieNode<TValue>? parent, char ch) = path[i];
+            TrieNode<TValue> child = parent.Children![ch];
             if (child.IsTerminal || child.Children is { Count: > 0 })
                 break;
 
@@ -144,13 +144,13 @@ internal static class TrieCore
         stack.Push(node);
         while (stack.Count > 0)
         {
-            var current = stack.Pop();
+            TrieNode<TValue> current = stack.Pop();
             if (current.IsTerminal)
                 yield return new KeyValuePair<string, TValue>(current.Key!, current.Value);
 
             if (current.Children is not null)
             {
-                foreach (var child in current.Children)
+                foreach (KeyValuePair<char, TrieNode<TValue>> child in current.Children)
                     stack.Push(child.Value);
             }
         }

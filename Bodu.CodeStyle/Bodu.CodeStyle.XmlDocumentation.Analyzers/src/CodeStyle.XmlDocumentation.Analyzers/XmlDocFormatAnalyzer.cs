@@ -31,7 +31,7 @@ public sealed class XmlDocFormatAnalyzer : DiagnosticAnalyzer
     /// <summary>
     /// Gets the property key used to surface the canonical formatted text on the emitted diagnostic.
     /// </summary>
-    /// <returns>The property name consumed by the code fix provider.</returns>
+    /// <value>The property name consumed by the code fix provider.</value>
     public static string FormattedTextPropertyKey => "FormattedText";
 
     /// <inheritdoc />

@@ -72,25 +72,25 @@ public sealed class ConfigurationDiagnostic
     /// <summary>
     /// Gets the severity classification for this diagnostic.
     /// </summary>
-    /// <returns>The severity value supplied at construction.</returns>
+    /// <value>The severity value supplied at construction.</value>
     public ConfigurationDiagnosticSeverity Severity { get; }
 
     /// <summary>
     /// Gets the stable code that identifies the diagnostic category.
     /// </summary>
-    /// <returns>A <see cref="ConfigurationDiagnosticCode" /> value.</returns>
+    /// <value>A <see cref="ConfigurationDiagnosticCode" /> value.</value>
     public ConfigurationDiagnosticCode Code { get; }
 
     /// <summary>
     /// Gets the human-readable message that describes this diagnostic.
     /// </summary>
-    /// <returns>A non-null message string.</returns>
+    /// <value>A non-null message string.</value>
     public string Message { get; }
 
     /// <summary>
     /// Gets the location in the source document that produced this diagnostic.
     /// </summary>
-    /// <returns>The associated <see cref="ConfigurationSourceLocation" />.</returns>
+    /// <value>The associated <see cref="ConfigurationSourceLocation" />.</value>
     public ConfigurationSourceLocation Location { get; }
 
     /// <inheritdoc />

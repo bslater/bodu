@@ -99,9 +99,6 @@ public abstract class SymmetricStreamAlgorithm
     /// Gets or sets the key size, in bits.
     /// </summary>
     /// <value>The key size, in bits. The default is the cipher's default key size.</value>
-    /// <returns>
-    /// The number of bits the current <see cref="Key" /> contains, or will contain when next generated.
-    /// </returns>
     /// <exception cref="ObjectDisposedException">This instance has been disposed.</exception>
     /// <exception cref="CryptographicException">
     /// The assigned value is not one of the <see cref="LegalKeySizes" />.
@@ -141,7 +138,6 @@ public abstract class SymmetricStreamAlgorithm
     /// Gets the required nonce size, in bits.
     /// </summary>
     /// <value>The nonce size, in bits.</value>
-    /// <returns>The number of bits a valid <see cref="Nonce" /> must contain.</returns>
     /// <exception cref="ObjectDisposedException">This instance has been disposed.</exception>
     public int NonceSize
     {
@@ -156,7 +152,6 @@ public abstract class SymmetricStreamAlgorithm
     /// Gets the key sizes, in bits, that this cipher accepts.
     /// </summary>
     /// <value>A copy of the legal key-size descriptors.</value>
-    /// <returns>A new array describing the permitted key sizes; mutating it does not affect the cipher.</returns>
     /// <exception cref="ObjectDisposedException">This instance has been disposed.</exception>
     public KeySizes[] LegalKeySizes
     {
@@ -171,7 +166,6 @@ public abstract class SymmetricStreamAlgorithm
     /// Gets or sets the secret key.
     /// </summary>
     /// <value>A copy of the secret key bytes.</value>
-    /// <returns>A new array containing the key; the cipher retains its own private copy.</returns>
     /// <exception cref="ObjectDisposedException">This instance has been disposed.</exception>
     /// <exception cref="ArgumentNullException">The assigned value is <see langword="null" />.</exception>
     /// <exception cref="CryptographicException">
@@ -209,7 +203,6 @@ public abstract class SymmetricStreamAlgorithm
     /// Gets or sets the nonce.
     /// </summary>
     /// <value>A copy of the nonce bytes.</value>
-    /// <returns>A new array containing the nonce; the cipher retains its own private copy.</returns>
     /// <exception cref="ObjectDisposedException">This instance has been disposed.</exception>
     /// <exception cref="ArgumentNullException">The assigned value is <see langword="null" />.</exception>
     /// <exception cref="CryptographicException">
@@ -246,7 +239,6 @@ public abstract class SymmetricStreamAlgorithm
     /// Gets the required nonce length, in bytes.
     /// </summary>
     /// <value>The nonce length, in bytes.</value>
-    /// <returns>The number of bytes a valid nonce must contain.</returns>
     protected int NonceLengthInBytes => _nonceSizeBits / 8;
 
     /// <summary>

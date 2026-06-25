@@ -41,8 +41,13 @@ namespace Bodu.Collections.Generic.Graphs;
 [DebuggerDisplay("Count = {Count}, Sets = {SetCount}")]
 public sealed class DisjointSet
 {
+    /// <summary>The parent index of each element, forming the union-find forest; a root references itself.</summary>
     private readonly int[] _parent;
+
+    /// <summary>The size of the subtree rooted at each element; meaningful only for root elements.</summary>
     private readonly int[] _size;
+
+    /// <summary>The number of distinct disjoint sets currently represented.</summary>
     private int _setCount;
 
     /// <summary>
@@ -57,7 +62,7 @@ public sealed class DisjointSet
 
         _parent = new int[count];
         _size = new int[count];
-        for (var i = 0; i < count; i++)
+        for (int i = 0; i < count; i++)
         {
             _parent[i] = i;
             _size[i] = 1;
@@ -70,14 +75,12 @@ public sealed class DisjointSet
     /// Gets the total number of elements tracked by the structure.
     /// </summary>
     /// <value>The number of elements, equal to the <c>count</c> supplied at construction.</value>
-    /// <returns>The total number of elements.</returns>
     public int Count => _parent.Length;
 
     /// <summary>
     /// Gets the number of disjoint sets currently represented.
     /// </summary>
     /// <value>The count of distinct subsets, starting at <see cref="Count" /> and decreasing by one per merge.</value>
-    /// <returns>The number of disjoint sets.</returns>
     public int SetCount => _setCount;
 
     /// <summary>
@@ -115,8 +118,8 @@ public sealed class DisjointSet
     /// </exception>
     public bool Union(int a, int b)
     {
-        var rootA = Find(a);
-        var rootB = Find(b);
+        int rootA = Find(a);
+        int rootB = Find(b);
         if (rootA == rootB)
             return false;
 
@@ -160,7 +163,7 @@ public sealed class DisjointSet
     /// </summary>
     public void Reset()
     {
-        for (var i = 0; i < _parent.Length; i++)
+        for (int i = 0; i < _parent.Length; i++)
         {
             _parent[i] = i;
             _size[i] = 1;

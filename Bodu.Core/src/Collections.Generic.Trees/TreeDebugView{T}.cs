@@ -14,6 +14,7 @@ namespace Bodu.Collections.Generic.Trees;
 /// <typeparam name="T">The type of the values stored in the tree.</typeparam>
 internal sealed class TreeDebugView<T>
 {
+    /// <summary>The tree node whose value and children are surfaced in the debugger.</summary>
     private readonly Tree<T> _node;
 
     /// <summary>
@@ -29,13 +30,13 @@ internal sealed class TreeDebugView<T>
     /// <summary>
     /// Gets the value stored at the node.
     /// </summary>
-    /// <returns>The node's value.</returns>
+    /// <value>The node's value.</value>
     public T Value => _node.Value;
 
     /// <summary>
     /// Gets the node's immediate children.
     /// </summary>
-    /// <returns>An array of the node's children.</returns>
+    /// <value>An array of the node's children.</value>
     [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
     public Tree<T>[] Children => _node.Children.ToArray();
 }

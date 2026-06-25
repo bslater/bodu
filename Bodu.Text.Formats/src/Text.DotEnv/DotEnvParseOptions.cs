@@ -52,9 +52,9 @@ public readonly struct DotEnvParseOptions
     /// <summary>
     /// Gets a value indicating how the parser behaves when the same key appears more than once in the source.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// A <see cref="DuplicateKeyPolicy" /> value. The default is <see cref="DuplicateKeyPolicy.LastWins" />.
-    /// </returns>
+    /// </value>
     public DuplicateKeyPolicy DuplicateKeyBehavior { get; init; } = DuplicateKeyPolicy.LastWins;
 
     /// <summary>
@@ -62,10 +62,10 @@ public readonly struct DotEnvParseOptions
     /// <see langword="true" />, the literal word <c>export</c> followed by one or more spaces is stripped before the
     /// key is parsed. Only one level of <c>export</c> is consumed per line.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see langword="true" /> if <c>export </c> lines are accepted; otherwise, <see langword="false" />. The default
     /// is <see langword="true" />.
-    /// </returns>
+    /// </value>
     public bool AllowExportPrefix { get; init; } = true;
 
     /// <summary>
@@ -73,10 +73,10 @@ public readonly struct DotEnvParseOptions
     /// a <c>#</c> character that is preceded by at least one whitespace character truncates an unquoted value at that
     /// point; trailing whitespace is then also trimmed.
     /// </summary>
-    /// <returns>
+    /// <value>
     /// <see langword="true" /> if inline comments are stripped; otherwise, <see langword="false" />. The default is
     /// <see langword="true" />.
-    /// </returns>
+    /// </value>
     public bool AllowInlineComments { get; init; } = true;
 
     /// <summary>
@@ -92,9 +92,9 @@ public readonly struct DotEnvParseOptions
     /// data model.
     /// </para>
     /// </remarks>
-    /// <returns>
+    /// <value>
     /// <see langword="true" /> if leading comments are preserved on entries; otherwise, <see langword="false" />. The
     /// default is <see langword="true" />.
-    /// </returns>
+    /// </value>
     public bool PreserveComments { get; init; } = true;
 }

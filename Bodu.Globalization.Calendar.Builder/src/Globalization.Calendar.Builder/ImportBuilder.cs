@@ -33,13 +33,13 @@ public sealed class ImportBuilder
     /// <summary>
     /// Gets the name of the imported resource.
     /// </summary>
-    /// <returns>The resource name.</returns>
+    /// <value>The resource name.</value>
     internal string Resource { get; }
 
     /// <summary>
     /// Gets the selective <c>Use</c> directives.
     /// </summary>
-    /// <returns>The directives; empty when the import imports every concept.</returns>
+    /// <value>The directives; empty when the import imports every concept.</value>
     internal IReadOnlyList<ImportUseBuilder> Uses =>
         _uses;
 

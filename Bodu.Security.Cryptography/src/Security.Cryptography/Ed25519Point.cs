@@ -72,14 +72,14 @@ internal partial struct Ed25519Point
     /// <summary>
     /// Gets the Ed25519 base point B defined by RFC 8032.
     /// </summary>
-    /// <returns>The generator of the prime-order subgroup.</returns>
+    /// <value>The generator of the prime-order subgroup.</value>
     internal static Ed25519Point BasePoint =>
         s_basePoint;
 
     /// <summary>
     /// Gets the identity element (0, 1) of the curve group.
     /// </summary>
-    /// <returns>The neutral point in extended coordinates (0 : 1 : 1 : 0).</returns>
+    /// <value>The neutral point in extended coordinates (0 : 1 : 1 : 0).</value>
     internal static Ed25519Point Identity =>
         new(Curve25519FieldElement.Zero, Curve25519FieldElement.One, Curve25519FieldElement.One, Curve25519FieldElement.Zero);
 

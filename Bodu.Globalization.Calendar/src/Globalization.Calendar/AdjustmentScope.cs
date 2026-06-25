@@ -68,7 +68,7 @@ public sealed class AdjustmentScope
     /// <summary>
     /// Gets a shared <see cref="AdjustmentScope" /> that imposes no restriction.
     /// </summary>
-    /// <returns>An empty, global scope.</returns>
+    /// <value>An empty, global scope.</value>
     public static AdjustmentScope Global { get; } = new AdjustmentScope(
         [],
         [],
@@ -79,55 +79,55 @@ public sealed class AdjustmentScope
     /// <summary>
     /// Gets the territories the policy is limited to.
     /// </summary>
-    /// <returns>The scoped territory codes; empty when unrestricted.</returns>
+    /// <value>The scoped territory codes; empty when unrestricted.</value>
     public IReadOnlyList<string> Territories { get; }
 
     /// <summary>
     /// Gets the calendar systems the policy is limited to.
     /// </summary>
-    /// <returns>The scoped calendar systems; empty when unrestricted.</returns>
+    /// <value>The scoped calendar systems; empty when unrestricted.</value>
     public IReadOnlyList<CalendarSystem> Calendars { get; }
 
     /// <summary>
     /// Gets the categories the policy is limited to.
     /// </summary>
-    /// <returns>The scoped categories; empty when unrestricted.</returns>
+    /// <value>The scoped categories; empty when unrestricted.</value>
     public IReadOnlyList<NotableDateCategory> Categories { get; }
 
     /// <summary>
     /// Gets the notable-date concepts the policy is limited to.
     /// </summary>
-    /// <returns>The scoped notable-date identifiers; empty when unrestricted.</returns>
+    /// <value>The scoped notable-date identifiers; empty when unrestricted.</value>
     public IReadOnlyList<string> NotableDateRefs { get; }
 
     /// <summary>
     /// Gets the rules the policy is limited to.
     /// </summary>
-    /// <returns>The scoped rule identifiers; empty when unrestricted.</returns>
+    /// <value>The scoped rule identifiers; empty when unrestricted.</value>
     public IReadOnlyList<string> RuleRefs { get; }
 
     /// <summary>
     /// Gets the first year the policy applies.
     /// </summary>
-    /// <returns>The lower year bound, or <see langword="null" /> when unbounded.</returns>
+    /// <value>The lower year bound, or <see langword="null" /> when unbounded.</value>
     public int? FromYear { get; }
 
     /// <summary>
     /// Gets the last year the policy applies.
     /// </summary>
-    /// <returns>The upper year bound, or <see langword="null" /> when unbounded.</returns>
+    /// <value>The upper year bound, or <see langword="null" /> when unbounded.</value>
     public int? ToYear { get; }
 
     /// <summary>
     /// Gets the explicit inclusion years.
     /// </summary>
-    /// <returns>The years the policy is restricted to; empty when unrestricted.</returns>
+    /// <value>The years the policy is restricted to; empty when unrestricted.</value>
     public IReadOnlyList<int> OnlyYears { get; }
 
     /// <summary>
     /// Gets the explicit exclusion years.
     /// </summary>
-    /// <returns>The years the policy is suppressed for; empty when there are none.</returns>
+    /// <value>The years the policy is suppressed for; empty when there are none.</value>
     public IReadOnlyList<int> ExceptYears { get; }
 
     /// <summary>

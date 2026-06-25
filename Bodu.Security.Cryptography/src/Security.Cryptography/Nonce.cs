@@ -56,14 +56,14 @@ public readonly struct Nonce
     /// <summary>
     /// Gets a value indicating whether the nonce is empty.
     /// </summary>
-    /// <returns><see langword="true" /> if the nonce contains no bytes; otherwise, <see langword="false" />.</returns>
+    /// <value><see langword="true" /> if the nonce contains no bytes; otherwise, <see langword="false" />.</value>
     public bool IsEmpty =>
         Length == 0;
 
     /// <summary>
     /// Gets the number of bytes in the nonce.
     /// </summary>
-    /// <returns>The nonce length in bytes, or <c>0</c> for the empty value.</returns>
+    /// <value>The nonce length in bytes, or <c>0</c> for the empty value.</value>
     public int Length =>
         _value?.Length ?? 0;
 

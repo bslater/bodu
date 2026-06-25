@@ -30,13 +30,13 @@ public readonly struct TomlProperty
     /// <summary>
     /// Gets the property name, decoded from the table key.
     /// </summary>
-    /// <returns>The property name.</returns>
+    /// <value>The property name.</value>
     public string Name { get; }
 
     /// <summary>
     /// Gets the property value.
     /// </summary>
-    /// <returns>A <see cref="TomlElement" /> view of the value.</returns>
+    /// <value>A <see cref="TomlElement" /> view of the value.</value>
     public TomlElement Value { get; }
 
     /// <summary>

@@ -54,14 +54,14 @@ public readonly partial struct BencodeElement
         /// <summary>
         /// Gets the element at the enumerator's current position.
         /// </summary>
-        /// <returns>The current element.</returns>
+        /// <value>The current element.</value>
         public readonly BencodeElement Current =>
             new(_document, _currentRow);
 
         /// <summary>
         /// Gets the element at the enumerator's current position.
         /// </summary>
-        /// <returns>The current element, boxed.</returns>
+        /// <value>The current element, boxed.</value>
         readonly object IEnumerator.Current =>
             Current;
 

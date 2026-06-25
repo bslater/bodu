@@ -31,13 +31,13 @@ public readonly struct BencodeProperty
     /// <summary>
     /// Gets the property name, decoded from the dictionary key as UTF-8 text.
     /// </summary>
-    /// <returns>The property name.</returns>
+    /// <value>The property name.</value>
     public string Name { get; }
 
     /// <summary>
     /// Gets the property value.
     /// </summary>
-    /// <returns>A <see cref="BencodeElement" /> view of the value.</returns>
+    /// <value>A <see cref="BencodeElement" /> view of the value.</value>
     public BencodeElement Value { get; }
 
     /// <summary>
