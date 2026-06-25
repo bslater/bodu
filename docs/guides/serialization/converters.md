@@ -165,6 +165,94 @@ public override Point Read(ref TomlDocumentReader reader, Type typeToConvert, To
 
 Check the kind through `reader.TokenType` before calling a typed getter, and prefer `TryParse` plus an explicit throw over letting a `FormatException` escape — the serialization exception tells the caller *which contract* failed, in the exception family they already handle. Do not throw the format exception from a converter: that type is reserved for syntactically invalid documents.
 
+## Error recovery and partial deserialization
+
+Pattern 6 shows the strict default: a value that does not fit throws the
+serialization exception. Some inputs are better served by recovering — an
+optional field that may be absent, a feed where one bad record should not abort
+the batch, a UI that wants to report *every* problem at once. A converter is the
+right place to encode that policy, because it sees the raw token before any typed
+getter runs. The strategies below all live inside `Read`.
+
+**Validate the token kind before reading.** The first defence is to check
+`reader.TokenType` against the kind you expect (<xref:Bodu.Text.Toml.TomlTokenType>
+/ <xref:Bodu.Text.Bencode.BencodeTokenType>) and branch instead of letting a
+typed getter throw an opaque exception. This is what turns "wrong type" into a
+decision point rather than a failure.
+
+**Default on a missing or wrong-kind value.** When a field is optional, return a
+fallback instead of throwing — useful for forward-compatible schemas where older
+documents simply omit a key:
+
+```csharp
+public override TimeSpan Read(ref TomlDocumentReader reader, Type typeToConvert, TomlSerializerOptions options)
+{
+    // A non-string value (or an absent one the caller mapped to a default) yields Zero
+    // rather than aborting the whole object graph.
+    if (reader.TokenType != TomlTokenType.String)
+        return TimeSpan.Zero;
+
+    return TimeSpan.TryParse(reader.GetString(), CultureInfo.InvariantCulture, out TimeSpan value)
+        ? value
+        : TimeSpan.Zero;
+}
+```
+
+**Partial object construction.** A converter for a composite type can read the
+members it understands, skip what it does not, and return a usable instance —
+trading completeness for resilience. Read field by field, and substitute a
+default for any member that fails to parse rather than propagating the failure.
+
+**Collect multiple errors instead of failing fast.** To surface every problem in
+one pass (IDE-style validation), have the converter append to a shared sink kept
+in a `readonly` field set at construction, then return a sentinel:
+
+```csharp
+public sealed class CollectingPointConverter(List<string> errors) : TomlConverter<Point>
+{
+    private readonly List<string> _errors = errors;
+
+    public override Point Read(ref TomlDocumentReader reader, Type typeToConvert, TomlSerializerOptions options)
+    {
+        if (reader.TokenType != TomlTokenType.String)
+        {
+            _errors.Add($"Expected a string for Point but found '{reader.TokenType}'.");
+            return default;
+        }
+
+        string text = reader.GetString();
+        string[] parts = text.Split(',');
+        if (parts.Length != 2
+            || !int.TryParse(parts[0], CultureInfo.InvariantCulture, out int x)
+            || !int.TryParse(parts[1], CultureInfo.InvariantCulture, out int y))
+        {
+            _errors.Add($"'{text}' is not a valid Point ('x,y').");
+            return default;
+        }
+
+        return new Point(x, y);
+    }
+
+    public override void Write(Utf8TomlWriter writer, Point value, TomlSerializerOptions options) =>
+        writer.WriteString($"{value.X},{value.Y}");
+}
+```
+
+The error list is shared, unsynchronized state, so this pattern is for a
+single-threaded validation pass over one options instance, not concurrent
+deserialization. After the call returns, inspect `errors` to decide whether the
+result is trustworthy.
+
+**Where the two exception families fit.** Recovery only applies to *well-formed*
+documents — a syntactically broken document raises the format exception
+(<xref:Bodu.Text.Toml.TomlFormatException> / <xref:Bodu.Text.Bencode.BencodeFormatException>)
+during parsing, before any converter runs, and no converter can intercept it.
+Once `Read` is executing, the document parsed; from there you choose between
+recovering (default, partial, or collect) and rejecting with the serialization
+exception (<xref:Bodu.Text.Toml.TomlSerializationException> /
+<xref:Bodu.Text.Bencode.BencodeSerializationException>). Reserve the format
+exception for the parser; never throw it from a converter.
+
 ## Design notes — statelessness and caching
 
 **Write converters stateless.** The serializer resolves the converter for a type once, caches the result on the options instance, and reuses that single converter instance for every subsequent value of the type — across calls and across threads. Instance fields mutated during `Read` or `Write` are therefore shared, unsynchronized state. Keep configuration in `readonly` fields set at construction (the way the built-in string-enum converter takes its naming policy), and derive everything else from the arguments the serializer passes in.

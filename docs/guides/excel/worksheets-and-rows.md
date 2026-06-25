@@ -89,6 +89,68 @@ Opening a sheet seeks to its recorded byte offset, so readers from the same work
 - **Reach for the streaming reader** when you scan a sheet once — aggregations, exports, row-by-row transforms over a large worksheet — and want to bound allocation to a single cell.
 - **Reach for the materialized worksheet** when you need random access — looking up a cell by position, cross-referencing columns, or reading the same sheet more than once.
 
+## Tuning large-workbook reads
+
+On a small `.xls` the choice of surface barely matters; on a workbook with
+hundreds of thousands of cells it is the difference between a bounded read and
+holding the whole sheet in memory. The levers below all bound the working set
+without changing the values you read.
+
+**Prefer the streaming reader.** <xref:Bodu.Formats.Excel.ExcelWorksheetReader>
+decodes one <xref:Bodu.Formats.Excel.ExcelCell> at a time in record order, so its
+allocation is a single cell regardless of sheet size. The materialized
+<xref:Bodu.Formats.Excel.ExcelWorksheet> buffers every populated cell, so it
+scales with the sheet — use it only when you genuinely need random access, and
+let it fall out of scope as soon as the lookups are done.
+
+**Read one sheet at a time, and dispose between sheets.** Each reader seeks to its
+own substream and holds decode state until disposed. Open, drain, and dispose one
+reader before opening the next rather than holding several open across a workbook:
+
+```csharp
+using Bodu.Formats.Excel;
+
+using ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.OpenRead("big.xls");
+
+foreach (ExcelWorksheetInfo sheet in workbook.Worksheets)
+{
+    using ExcelWorksheetReader reader = workbook.OpenWorksheet(sheet.Index);
+    while (reader.TryReadCell(out ExcelCell cell))
+        Accumulate(cell);
+}   // each reader's decode state is released before the next opens
+```
+
+**Skip the metadata you do not use.** Pass an
+<xref:Bodu.Formats.Excel.ExcelBinaryReaderOptions> that clears the work you do
+not need — `ReadDocumentProperties = false` skips the summary-information
+property sets at open time, and `DetectDateFormats = false` skips the
+number-format classification on every numeric cell (leaving
+`ExcelCell.IsDateFormatted` always `false`):
+
+```csharp
+var options = new ExcelBinaryReaderOptions
+{
+    ReadDocumentProperties = false,   // no summary-information parse
+    DetectDateFormats      = false,   // no per-cell number-format lookup
+};
+
+using ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.OpenRead("big.xls", options);
+```
+
+**Avoid full materialization for one-pass work.** `ReadCells` and `ReadRows`
+stream lazily; `ReadRows` groups consecutive cells into an
+<xref:Bodu.Formats.Excel.ExcelRow> as the row index advances without buffering the
+whole sheet, because BIFF8 writes cells in row-major order. Reach for
+`ReadWorksheet` (which buffers) only when you must revisit cells.
+
+| Goal | Do | Avoid |
+|---|---|---|
+| Bound memory to one cell | `OpenWorksheet` + `TryReadCell` / `ReadCells` | `ReadWorksheet` |
+| Process row by row | `ReadRows` | materializing then iterating `Rows` |
+| Numeric / time-series only | `ReadDocumentProperties = false`, `DetectDateFormats = false` | default options |
+| Several sheets | one reader at a time, disposed between | holding many readers open |
+| Random lookups (small sheet) | `ReadWorksheet` + `TryGetCell` | streaming and re-scanning |
+
 ## Where to go next
 
 - [Cell values and dates](cell-values-and-dates.md) — interpret the `ExcelCell` values both surfaces yield.

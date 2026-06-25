@@ -229,6 +229,86 @@ configuration["logging:level"];   // "Debug" — the Bodu source is later
 
 Reverse the order to make the JSON file the override layer. Because both sources flatten to the same colon-delimited key space, no key translation is needed — a `logging.level` INI entry and a nested `"logging": { "level": … }` JSON property occupy the same key, `"logging:level"`.
 
+## ASP.NET Core and the Generic Host
+
+Because a Bodu source is an ordinary `IConfigurationSource`, it registers on the
+same `IConfigurationBuilder` that `WebApplicationBuilder` and `HostBuilder`
+already expose — there is no host-specific entry point to learn. The patterns
+above (file, stream, layering, `IOptions<T>` binding) all apply unchanged inside
+a hosted app; this section shows the wiring that is specific to the host.
+
+**Register on the host's configuration builder.** `WebApplicationBuilder.Configuration`
+and `IHostBuilder.ConfigureAppConfiguration` both hand you the builder the host
+will build into:
+
+```csharp
+using Bodu.Extensions.Configuration.Text;
+
+// Minimal hosting (ASP.NET Core / WebApplication)
+var builder = WebApplication.CreateBuilder(args);
+builder.Configuration.AddTextConfigurationFile(
+    "appsettings.boduconfig", optional: true, reloadOnChange: true);
+
+// Generic Host
+Host.CreateDefaultBuilder(args)
+    .ConfigureAppConfiguration((context, config) =>
+        config.AddTextConfigurationFile(
+            "appsettings.boduconfig", optional: true, reloadOnChange: true));
+```
+
+**Environment-based file selection** mirrors the host's own
+`appsettings.{Environment}.json` convention — layer a base file with an
+environment overlay, the later source winning on conflict:
+
+```csharp
+var builder = WebApplication.CreateBuilder(args);
+string env = builder.Environment.EnvironmentName;   // "Development", "Production", …
+
+builder.Configuration
+    .AddTextConfigurationFile("appsettings.boduconfig", optional: true, reloadOnChange: true)
+    .AddTextConfigurationFile($"appsettings.{env}.boduconfig", optional: true, reloadOnChange: true);
+```
+
+**Layering precedence is the host's, not the bridge's.** The host registers its
+own sources (JSON, environment variables, command line) before `Program.cs`
+runs, so a source you add lands *after* them and wins on conflicting keys; a
+later `AddEnvironmentVariables()` would in turn win over the Bodu source. The
+order is the registration order on the builder, exactly as in the
+[Layering with other providers](#layering-with-other-providers) section above.
+
+**`IOptions<T>` and `IOptionsMonitor<T>` binding in a hosted app.** Bind the
+flattened colon-delimited keys onto a typed options class through the host's DI
+container, then inject the bound options where you need them:
+
+```csharp
+builder.Services.AddConfigurationOptions<LoggingOptions>(
+    builder.Configuration, sectionName: "logging");
+
+WebApplication app = builder.Build();
+```
+
+```csharp
+public sealed class RequestLogger
+{
+    private readonly IOptionsMonitor<LoggingOptions> _monitor;
+
+    public RequestLogger(IOptionsMonitor<LoggingOptions> monitor) =>
+        _monitor = monitor;   // CurrentValue tracks the file across reloads
+
+    public void Log(string message) =>
+        Console.WriteLine($"[{_monitor.CurrentValue.Level}] {message}");
+}
+```
+
+Reload-on-change composes with the host the same way it does outside it: with
+`reloadOnChange: true` on a file source, the provider re-reads and re-resolves on
+a file edit, the configuration root's change token fires, and
+`IOptionsMonitor<T>.CurrentValue` re-binds — so a long-lived singleton sees the
+new values without a restart, while `IOptions<T>` stays the one-shot snapshot
+taken at first resolution. Stream and pre-parsed-document sources have no file to
+watch and never reload, so reserve them for configuration that is fixed for the
+process lifetime.
+
 ## When *not* to use the bridge
 
 - **You only need the codec.** Reach for [`Bodu.Text.Formats.Ini`](../formats/ini.md) for codec-only access without the bridge or the resolve layer.
