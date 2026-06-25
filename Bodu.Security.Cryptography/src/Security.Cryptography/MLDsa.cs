@@ -241,8 +241,9 @@ public abstract class MLDsa
     /// <param name="privateKey">The encoded private key ρ ‖ K ‖ tr ‖ s₁ ‖ s₂ ‖ t₀.</param>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="privateKey" /> does not have the exact parameter-set length, or its embedded tr hash does not
-    /// match the public key recomputed from the secret vectors.
+    /// <paramref name="privateKey" /> does not have the exact parameter-set length; encodes an s₁ or s₂ coefficient
+    /// outside its canonical [−η, η] range; carries a t₀ vector inconsistent with the low bits recomputed from the
+    /// secret vectors; or its embedded tr hash does not match the public key recomputed from those vectors.
     /// </exception>
     public void ImportPrivateKey(ReadOnlySpan<byte> privateKey)
     {

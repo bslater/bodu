@@ -171,6 +171,56 @@ public abstract class MLDsaContractTests<TTest, TDsa>
     }
 
     /// <summary>
+    /// Verifies that <see cref="MLDsa.ImportPrivateKey" /> rejects a private key whose t₀ vector has been corrupted,
+    /// even though its embedded tr hash still matches. The public key is reconstructed from t₁ alone, so a corrupted
+    /// t₀ leaves tr consistent; rejection therefore proves t₀ is validated by recomputation rather than only via tr.
+    /// </summary>
+    [TestMethod]
+    public void ImportPrivateKey_WhenEmbeddedT0IsCorrupted_ShouldThrowArgumentException()
+    {
+        using var donor = new TDsa();
+        donor.GenerateKey();
+
+        // t₀ occupies the trailing section of the encoded private key; flipping its final byte changes a single
+        // coefficient while leaving rho, K, tr, s1, and s2 — and thus the recomputed public key and its hash — intact.
+        byte[] corrupted = donor.ExportPrivateKey();
+        corrupted[^1] ^= 0x01;
+
+        using var dsa = new TDsa();
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            dsa.ImportPrivateKey(corrupted);
+        });
+
+        Assert.AreEqual("privateKey", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="MLDsa.ImportPrivateKey" /> rejects a private key whose first s₁ coefficient is packed
+    /// with a non-canonical code point outside the [−η, η] range, proving the import enforces strict canonical
+    /// decoding rather than folding out-of-range values modulo q.
+    /// </summary>
+    [TestMethod]
+    public void ImportPrivateKey_WhenS1PackingIsNonCanonical_ShouldThrowArgumentException()
+    {
+        using var donor = new TDsa();
+        donor.GenerateKey();
+
+        // s1 begins at byte 128 (after rho ‖ K ‖ tr). Forcing the first byte to 0xFF sets the leading η-bit code point
+        // to all ones, which exceeds 2η for every parameter set and is therefore non-canonical.
+        byte[] corrupted = donor.ExportPrivateKey();
+        corrupted[128] = 0xFF;
+
+        using var dsa = new TDsa();
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            dsa.ImportPrivateKey(corrupted);
+        });
+
+        Assert.AreEqual("privateKey", ex.ParamName);
+    }
+
+    /// <summary>
     /// Verifies that the exact-length span overload of <see cref="MLDsa.SignData(ReadOnlySpan{byte})" /> matches
     /// the allocating overload in deterministic mode and rejects destinations of any other length.
     /// </summary>

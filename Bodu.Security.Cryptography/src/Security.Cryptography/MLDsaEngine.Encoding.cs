@@ -96,14 +96,43 @@ internal static partial class MLDsaEngine
     /// <param name="bound">The upper bound b of the centered range.</param>
     /// <param name="source">The 32·bits source bytes.</param>
     /// <param name="destination">The span receiving the 256 coefficients in [0, q).</param>
-    private static void BitUnpackSigned(int bits, int bound, ReadOnlySpan<byte> source, Span<int> destination)
+    /// <remarks>
+    /// Used only for full-range packings (z at the γ₁ width, t₀ at the d width) where every <paramref name="bits" />-bit
+    /// code point maps to a valid coefficient; bounded fields use <see cref="TryBitUnpackSigned" /> to reject
+    /// non-canonical encodings.
+    /// </remarks>
+    private static void BitUnpackSigned(int bits, int bound, ReadOnlySpan<byte> source, Span<int> destination) =>
+        _ = TryBitUnpackSigned(bits, bound, (1 << bits) - 1, source, destination);
+
+    /// <summary>
+    /// Deserializes 32·bits bytes into 256 centered coefficients folded into [0, q) (FIPS 204 BitUnpack with b =
+    /// <paramref name="bound" />), rejecting any packed code point that exceeds <paramref name="maxEncoded" />.
+    /// </summary>
+    /// <param name="bits">The bit width of each packed value.</param>
+    /// <param name="bound">The upper bound b of the centered range.</param>
+    /// <param name="maxEncoded">The largest packed value that encodes a valid coefficient; larger code points are non-canonical.</param>
+    /// <param name="source">The 32·bits source bytes.</param>
+    /// <param name="destination">The span receiving the 256 coefficients in [0, q).</param>
+    /// <returns><see langword="true" /> when every packed value is within range; otherwise, <see langword="false" />.</returns>
+    /// <remarks>
+    /// The whole vector is unpacked regardless of any out-of-range code point so the running time reveals only that a
+    /// canonical-encoding check occurred, not which coefficient — if any — drove the rejection.
+    /// </remarks>
+    private static bool TryBitUnpackSigned(int bits, int bound, int maxEncoded, ReadOnlySpan<byte> source, Span<int> destination)
     {
         SimpleBitUnpack(bits, source, destination);
+
+        bool valid = true;
         for (int i = 0; i < N; i++)
         {
-            int centered = bound - destination[i];
+            int raw = destination[i];
+            valid &= raw <= maxEncoded;
+
+            int centered = bound - raw;
             destination[i] = ((centered % Q) + Q) % Q;
         }
+
+        return valid;
     }
 
     /// <summary>
