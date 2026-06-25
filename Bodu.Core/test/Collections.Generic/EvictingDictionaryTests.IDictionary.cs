@@ -246,7 +246,7 @@ public partial class EvictingDictionaryTests
         IDictionary dictionary = new EvictingDictionary<string, int>(3);
         dictionary.Add("key", 99);
 
-        Assert.Contains("key", dictionary);
+        Assert.IsTrue(dictionary.Contains("key"));
     }
 
     /// <summary>
@@ -258,7 +258,7 @@ public partial class EvictingDictionaryTests
     {
         IDictionary dictionary = new EvictingDictionary<string, int>(3);
 
-        Assert.DoesNotContain("missing", dictionary);
+        Assert.IsFalse(dictionary.Contains("missing"));
     }
 
     /// <summary>
@@ -271,7 +271,7 @@ public partial class EvictingDictionaryTests
         IDictionary dictionary = new EvictingDictionary<string, int>(3);
         dictionary.Add("exists", 1);
 
-        Assert.DoesNotContain(123, dictionary);
+        Assert.IsFalse(dictionary.Contains(123));
     }
 
 }
