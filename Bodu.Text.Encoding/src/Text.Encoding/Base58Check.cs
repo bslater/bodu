@@ -25,6 +25,7 @@ namespace Bodu.Text.Encoding;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Build a Bitcoin P2PKH address: 0x00 version byte + 20-byte hash160.
 /// byte[] payload = new byte[21];
@@ -36,6 +37,7 @@ namespace Bodu.Text.Encoding;
 /// // Decoder verifies the trailing checksum and strips it; throws on mismatch.
 /// byte[] decoded = Base58Check.Decode(address);               // 21 bytes — original version + hash160
 ///]]>
+/// </code>
 /// </example>
 public static class Base58Check
 {

@@ -21,11 +21,13 @@ namespace Bodu.Text.Delimited;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Parse a CSV document and round-trip back to text via the receiver-typed extensions.
 /// DelimitedDocument doc = "name,age\nAda,42".ParseDelimited();
 /// string text = doc.FormatDelimited();
 ///]]>
+/// </code>
 /// </example>
 public static class DelimitedExtensions
 {

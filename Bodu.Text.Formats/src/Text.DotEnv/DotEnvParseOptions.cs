@@ -21,6 +21,7 @@ namespace Bodu.Text.DotEnv;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Default behaviour — wide compatibility with .env conventions.
 /// DotEnvDocument doc = DotEnv.Parse(text);
@@ -34,6 +35,7 @@ namespace Bodu.Text.DotEnv;
 /// };
 /// DotEnvDocument strict = DotEnv.Parse(text, options);
 ///]]>
+/// </code>
 /// </example>
 public readonly struct DotEnvParseOptions
 {

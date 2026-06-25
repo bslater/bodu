@@ -80,6 +80,7 @@ namespace Bodu.IO.Hashing.Checksums;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// using Bodu.IO.Hashing.Checksums;
 ///
@@ -104,6 +105,7 @@ namespace Bodu.IO.Hashing.Checksums;
 ///     reflectOut:   false,
 ///     xOrOut:       0x000);
 ///]]>
+/// </code>
 /// </example>
 /// <seealso cref="Crc"/> <seealso cref="CrcStandards"/> <seealso cref="CrcLookupTableCache"/>
 [Serializable]

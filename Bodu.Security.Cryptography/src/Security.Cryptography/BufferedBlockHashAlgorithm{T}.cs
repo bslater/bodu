@@ -17,6 +17,7 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <typeparam name="T">The concrete hash algorithm derived from this class.</typeparam>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Consume a concrete derivative through the standard HashAlgorithm contract — the base
 /// // class drives the residual buffer and the block-aligned compression loop for you.
@@ -26,6 +27,7 @@ namespace Bodu.Security.Cryptography;
 /// using HashAlgorithm tiger = new Tiger();       // BlockHashAlgorithm<T>
 /// byte[] digest2 = tiger.ComputeHash("hello"u8.ToArray());
 ///]]>
+/// </code>
 /// </example>
 /// <remarks>
 /// <para>

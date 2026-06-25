@@ -39,6 +39,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// applications.</note>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Use a concrete derivative through the abstract surface — ISIN accepts a mix of
 /// // ASCII letters (the country code) and digits.
@@ -50,6 +51,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// CheckDigitInputAlphabet  inputs  = algo.InputAlphabet;
 /// CheckDigitOutputAlphabet outputs = algo.OutputAlphabet;
 ///]]>
+/// </code>
 /// </example>
 /// <seealso cref="CheckDigitAlgorithm" /> <seealso cref="MultiCharCheckDigitAlgorithm" />
 /// <seealso cref="System.IO.Hashing.NonCryptographicHashAlgorithm" />

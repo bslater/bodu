@@ -39,6 +39,7 @@ namespace Bodu.IO.Hashing.Checksums;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Build the lookup table for CRC-32/ISO-HDLC (the canonical CRC-32 used by Ethernet, PKZIP, gzip).
 /// CrcStandard isoHdlc = CrcStandard.CRC32_ISOHDLC;
@@ -51,6 +52,7 @@ namespace Bodu.IO.Hashing.Checksums;
 /// // direct XOR into the running CRC register.
 /// Console.WriteLine(table[0xFF]); // 0x...  the precomputed contribution for byte 0xFF
 ///]]>
+/// </code>
 /// </example>
 /// <seealso cref="Crc"/> <seealso cref="CrcStandard"/> <seealso cref="CrcLookupTableCache"/>
 public static class CrcLookupTableBuilder

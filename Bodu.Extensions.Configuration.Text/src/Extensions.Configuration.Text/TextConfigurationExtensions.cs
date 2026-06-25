@@ -61,6 +61,7 @@ namespace Bodu.Extensions.Configuration.Text;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // 1. Canonical ASP.NET / Generic Host registration in Program.cs.
 /// var builder = WebApplication.CreateBuilder(args);
@@ -93,6 +94,7 @@ namespace Bodu.Extensions.Configuration.Text;
 /// ConfigurationDocument doc = ConfigurationDocument.Parse(text);
 /// builder.Configuration.AddTextConfigurationDocument(doc, targetPath: "src/Foo.cs");
 ///]]>
+/// </code>
 /// </example>
 public static class TextConfigurationExtensions
 {

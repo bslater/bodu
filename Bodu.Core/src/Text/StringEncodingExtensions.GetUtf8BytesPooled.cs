@@ -24,12 +24,14 @@ public static partial class StringEncodingExtensions
     /// Thrown when <paramref name="text" /> is <see langword="null" />.
     /// </exception>
     /// <example>
+    /// <code language="csharp">
     ///<![CDATA[
     /// // Encode a large JSON document to UTF-8 without a permanent allocation, then hand the
     /// // pooled buffer to a network writer before disposal returns the array to the pool.
     /// using PooledBufferBuilder<byte> pooled = jsonText.GetUtf8BytesPooled();
     /// await socket.SendAsync(pooled.WrittenMemory, SocketFlags.None);
     ///]]>
+    /// </code>
     /// </example>
     public static PooledBufferBuilder<byte> GetUtf8BytesPooled(this string text)
     {

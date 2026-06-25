@@ -28,6 +28,7 @@ namespace Bodu.Text.Encoding;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Bitcoin/Flickr Base58 (default) — leading zero bytes encode as leading '1' characters.
 /// byte[] data = { 0x00, 0xDE, 0xAD, 0xBE, 0xEF };
@@ -39,6 +40,7 @@ namespace Bodu.Text.Encoding;
 /// // Round-trip.
 /// byte[] roundtrip = Base58.Decode(encoded);
 ///]]>
+/// </code>
 /// </example>
 public static partial class Base58
 {

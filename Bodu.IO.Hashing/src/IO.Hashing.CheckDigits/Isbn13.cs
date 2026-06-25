@@ -28,6 +28,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Single-call computation against the 12-digit body.
 /// char check = Isbn13.Compute("978030640615");   // '7'
@@ -40,6 +41,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// algo.Append("978030640615");
 /// char d = algo.GetCurrentCheckDigit();          // '7'
 ///]]>
+/// </code>
 /// </example>
 public sealed class Isbn13
     : CheckDigitAlgorithm

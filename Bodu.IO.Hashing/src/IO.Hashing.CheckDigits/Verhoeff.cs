@@ -28,6 +28,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Single-call computation against an in-memory body.
 /// char check = Verhoeff.Compute("236");   // '3'
@@ -40,6 +41,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// algo.Append("236");
 /// char d = algo.GetCurrentCheckDigit();   // '3'
 ///]]>
+/// </code>
 /// </example>
 public sealed partial class Verhoeff
     : CheckDigitAlgorithm

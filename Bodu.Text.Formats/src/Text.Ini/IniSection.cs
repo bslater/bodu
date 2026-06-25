@@ -23,6 +23,7 @@ namespace Bodu.Text.Ini;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// IniSection db = doc["database"];
 ///
@@ -38,6 +39,7 @@ namespace Bodu.Text.Ini;
 /// foreach (IniEntry entry in db.Entries)
 ///     Console.WriteLine($"{entry.Key} = {entry.Value}");
 ///]]>
+/// </code>
 /// </example>
 public sealed class IniSection
 {

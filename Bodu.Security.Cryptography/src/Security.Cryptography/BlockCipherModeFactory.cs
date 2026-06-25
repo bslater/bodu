@@ -31,6 +31,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// using IBlockCipher cipher = /* construct an IBlockCipher, e.g. an AES wrapper */;
 /// IBlockCipherModeTransform mode = BlockCipherModeFactory.Create(CipherBlockMode.CBC, cipher, iv);
@@ -40,6 +41,7 @@ namespace Bodu.Security.Cryptography;
 /// byte[] ciphertext = new byte[padded.Length];
 /// mode.Transform(padded, ciphertext, encrypt: true);
 ///]]>
+/// </code>
 /// </example>
 public static class BlockCipherModeFactory
 {

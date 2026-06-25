@@ -14,6 +14,7 @@ public static partial class EncodingExtensions
     /// invalid sequences.
     /// </summary>
     /// <example>
+    /// <code language="csharp">
     ///<![CDATA[
     /// // Configure a single call-site to fail fast on bad input without mutating the global default.
     /// System.Text.Encoding strictAscii = System.Text.Encoding.ASCII.WithExceptionFallbacks();
@@ -26,6 +27,7 @@ public static partial class EncodingExtensions
     ///     // Surface the offending character at ex.Index for diagnostics.
     /// }
     ///]]>
+    /// </code>
     /// </example>
     /// <param name="encoding">The source encoding to clone.</param>
     /// <returns>

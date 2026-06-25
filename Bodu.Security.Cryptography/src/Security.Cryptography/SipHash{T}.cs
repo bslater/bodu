@@ -58,6 +58,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// using var sipHash = new SipHash64
 /// {
@@ -67,6 +68,7 @@ namespace Bodu.Security.Cryptography;
 /// };
 /// byte[] tag = sipHash.ComputeHash(message);
 ///]]>
+/// </code>
 /// </example>
 /// <seealso cref="SipHash64"/> <seealso cref="SipHash128"/>
 public abstract class SipHash<T>

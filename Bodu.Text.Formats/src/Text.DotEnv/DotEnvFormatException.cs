@@ -23,6 +23,7 @@ namespace Bodu.Text.DotEnv;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// try
 /// {
@@ -33,6 +34,7 @@ namespace Bodu.Text.DotEnv;
 ///     Console.Error.WriteLine($"Line {ex.LineNumber}: {ex.Message}");
 /// }
 ///]]>
+/// </code>
 /// </example>
 public sealed class DotEnvFormatException
     : TextFormatException

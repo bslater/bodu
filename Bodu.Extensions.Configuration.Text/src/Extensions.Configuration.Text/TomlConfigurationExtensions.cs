@@ -18,12 +18,14 @@ namespace Bodu.Extensions.Configuration.Text;
 /// surface.
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// builder.Configuration.AddTomlFile("appsettings.toml", optional: true);
 ///
 /// using var stream = new MemoryStream(Encoding.UTF8.GetBytes("[logging]\nlevel = \"Debug\""));
 /// builder.Configuration.AddTomlStream(stream);
 ///]]>
+/// </code>
 /// </example>
 public static class TomlConfigurationExtensions
 {

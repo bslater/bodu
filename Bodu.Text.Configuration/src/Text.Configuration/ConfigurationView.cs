@@ -32,6 +32,7 @@ namespace Bodu.Text.Configuration;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// IniDocument           doc  = ConfigurationDocument.Parse(text);
 /// ConfigurationView view = doc.Resolve("src/Foo.cs");
@@ -47,6 +48,7 @@ namespace Bodu.Text.Configuration;
 /// foreach (KeyValuePair<string, string?> kv in view)
 ///     Console.WriteLine($"{kv.Key} = {kv.Value}");
 ///]]>
+/// </code>
 /// </example>
 public sealed partial class ConfigurationView
     : IEnumerable<KeyValuePair<string, string?>>, IReadOnlyDictionary<string, string?>

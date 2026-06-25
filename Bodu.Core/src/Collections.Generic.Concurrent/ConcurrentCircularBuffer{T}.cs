@@ -56,6 +56,7 @@ namespace Bodu.Collections.Generic.Concurrent;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// var buffer = new ConcurrentCircularBuffer<string>(capacity: 3, allowOverwrite: true);
 /// buffer.Enqueue("A");
@@ -68,6 +69,7 @@ namespace Bodu.Collections.Generic.Concurrent;
 ///
 /// Console.WriteLine(buffer.Dequeue()); // "B"
 ///]]>
+/// </code>
 /// </example>
 [DebuggerDisplay("Count ≈ {Count}, Capacity = {Capacity}")]
 [DebuggerTypeProxy(typeof(ConcurrentCircularBufferDebugView<>))]

@@ -17,11 +17,13 @@ public static partial class StringEncodingExtensions
     /// Thrown when <paramref name="text" /> is <see langword="null" />.
     /// </exception>
     /// <example>
+    /// <code language="csharp">
     ///<![CDATA[
     /// // Convert a configuration value to UTF-8 bytes for hashing.
     /// byte[] payload = "client-secret".ToUtf8Bytes();
     /// byte[] hash    = SHA256.HashData(payload);
     ///]]>
+    /// </code>
     /// </example>
     public static byte[] ToUtf8Bytes(this string text)
     {

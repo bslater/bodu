@@ -37,6 +37,7 @@ namespace Bodu.Text;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Encode a chunk of UTF-16 text to UTF-8 bytes via the span receiver.
 /// ReadOnlySpan<char> chars = "héllo".AsSpan();
@@ -52,6 +53,7 @@ namespace Bodu.Text;
 ///
 /// string decoded = encoded.DecodeToString(System.Text.Encoding.UTF8);
 ///]]>
+/// </code>
 /// </example>
 public static partial class EncodingExtensions
 {

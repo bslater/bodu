@@ -19,6 +19,7 @@ namespace Bodu.IO.Hashing.Checksums;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Consume through a concrete derivative — the shared 64-bit finalization layout
 /// // is identical across every Adler64Base subclass.
@@ -26,6 +27,7 @@ namespace Bodu.IO.Hashing.Checksums;
 /// hash.Append("Wikipedia"u8);
 /// byte[] digest = hash.GetCurrentHash();   // big-endian (B << 32) | A
 ///]]>
+/// </code>
 /// </example>
 public abstract class Adler64Base
     : Adler<ulong>

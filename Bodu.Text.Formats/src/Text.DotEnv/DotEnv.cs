@@ -45,6 +45,7 @@ namespace Bodu.Text.DotEnv;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// DotEnvDocument doc = DotEnv.Parse("""
 ///     # Server configuration
@@ -59,6 +60,7 @@ namespace Bodu.Text.DotEnv;
 /// // Direct lookup is O(1).
 /// string port = doc["PORT"];   // "8080"
 ///]]>
+/// </code>
 /// </example>
 public static partial class DotEnv
 {

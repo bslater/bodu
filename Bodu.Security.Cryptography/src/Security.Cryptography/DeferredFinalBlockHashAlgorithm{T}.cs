@@ -17,6 +17,7 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <typeparam name="T">The concrete hash algorithm derived from this class.</typeparam>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Consume through a concrete BLAKE-family derivative — the base class defers the final
 /// // block until HashFinal so the compression call can carry isFinal: true.
@@ -30,6 +31,7 @@ namespace Bodu.Security.Cryptography;
 /// streaming.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
 /// byte[] result = streaming.Hash!;
 ///]]>
+/// </code>
 /// </example>
 /// <remarks>
 /// <para>

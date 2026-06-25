@@ -26,6 +26,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Single-call computation against the 18-character body.
 /// string check = Lei.Compute("54930084UKLVMY22DS");   // "16"
@@ -38,6 +39,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// algo.Append("54930084UKLVMY22DS");
 /// string code = algo.GetCurrentCheckDigits();         // "16"
 ///]]>
+/// </code>
 /// </example>
 public sealed class Lei
     : MultiCharCheckDigitAlgorithm

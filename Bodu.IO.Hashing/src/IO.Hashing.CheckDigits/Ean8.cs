@@ -24,6 +24,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Single-call computation against the 7-digit body.
 /// char check = Ean8.Compute("7351353");   // '7'
@@ -36,6 +37,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// algo.Append("7351353");
 /// char d = algo.GetCurrentCheckDigit();   // '7'
 ///]]>
+/// </code>
 /// </example>
 public sealed class Ean8
     : CheckDigitAlgorithm

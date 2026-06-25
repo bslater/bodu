@@ -58,6 +58,7 @@ namespace Bodu.Collections.Generic;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Letter-frequency histogram.
 /// var histogram = new Multiset<char>();
@@ -75,6 +76,7 @@ namespace Bodu.Collections.Generic;
 /// var other = new Multiset<char> { 'i', 'i', 's' };
 /// Multiset<char> combined = histogram.Sum(other);
 ///]]>
+/// </code>
 /// </example>
 [DebuggerDisplay("Count = {Count}, DistinctCount = {DistinctCount}")]
 [DebuggerTypeProxy(typeof(MultisetDebugView<>))]

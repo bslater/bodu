@@ -45,6 +45,7 @@ namespace Bodu.Collections.Generic;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Dijkstra-style relaxation: the tentative cost of each node is its priority, and an improved
 /// // path arrives as a re-prioritization rather than a duplicate enqueue.
@@ -60,6 +61,7 @@ namespace Bodu.Collections.Generic;
 /// string next = queue.Dequeue();         // "C" — smallest priority
 /// bool hasD   = queue.TryGetPriority("D", out int priority); // true, priority == 7
 ///]]>
+/// </code>
 /// </example>
 [DebuggerDisplay("Count = {Count}")]
 [DebuggerTypeProxy(typeof(IndexedPriorityQueueDebugView<,>))]

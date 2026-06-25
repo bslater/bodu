@@ -24,6 +24,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Direct single-block use. For most workloads prefer the Twofish SymmetricAlgorithm wrapper.
 /// byte[] key = new byte[32];   // 128, 192, or 256 bits
@@ -39,6 +40,7 @@ namespace Bodu.Security.Cryptography;
 /// cipher.Decrypt(ciphertext, roundtrip);
 /// // roundtrip equals plaintext
 ///]]>
+/// </code>
 /// </example>
 /// <seealso cref="Twofish"/>
 public sealed class TwofishBlockCipher

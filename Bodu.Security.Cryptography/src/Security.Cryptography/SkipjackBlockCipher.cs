@@ -50,6 +50,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Direct single-block use. Skipjack is a legacy 80-bit-key cipher — use only for legacy
 /// // compatibility, never for new systems.
@@ -66,6 +67,7 @@ namespace Bodu.Security.Cryptography;
 /// cipher.Decrypt(ciphertext, roundtrip);
 /// // roundtrip equals plaintext
 ///]]>
+/// </code>
 /// </example>
 /// <seealso href="../guides/cryptography/composing-primitives.html">Composing primitives — direct use vs.
 /// SymmetricAlgorithm</seealso> <seealso cref="Skipjack"/>

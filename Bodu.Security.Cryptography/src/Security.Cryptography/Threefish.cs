@@ -53,6 +53,7 @@ namespace Bodu.Security.Cryptography;
 /// <see cref="Threefish512" />, or <see cref="Threefish1024" /> instead.</note>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Use the recommended general-purpose variant — Threefish-512 over a CTR mode.
 /// using TweakableSymmetricAlgorithm alg = new Threefish512();
@@ -66,6 +67,7 @@ namespace Bodu.Security.Cryptography;
 /// using (var cs = new CryptoStream(cipherText, encryptor, CryptoStreamMode.Write))
 ///     cs.Write(plaintext, 0, plaintext.Length);
 ///]]>
+/// </code>
 /// </example>
 /// <seealso cref="Threefish256"/> <seealso cref="Threefish512"/> <seealso cref="Threefish1024"/>
 /// <seealso cref="TweakableSymmetricAlgorithm"/> <seealso cref="Skein{T}"/>

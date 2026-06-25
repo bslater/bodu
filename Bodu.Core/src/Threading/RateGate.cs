@@ -28,6 +28,7 @@ namespace Bodu.Threading;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// var gate = new RateGate(TimeSpan.FromSeconds(1));
 ///
@@ -35,6 +36,7 @@ namespace Bodu.Threading;
 /// if (gate.TryInvoke())
 ///     _ = RefreshAsync();
 ///]]>
+/// </code>
 /// </example>
 [DebuggerDisplay("Interval = {_interval}, TimeUntilNext = {TimeUntilNext}")]
 public sealed class RateGate

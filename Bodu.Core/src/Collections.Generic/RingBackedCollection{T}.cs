@@ -78,6 +78,7 @@ namespace Bodu.Collections.Generic;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // The common surface is consumed through a concrete derivative — CircularBuffer<T> here.
 /// // The same Count, Capacity, IsEmpty, indexer, ToArray, and TrimExcess members are available
@@ -91,6 +92,7 @@ namespace Bodu.Collections.Generic;
 /// Console.WriteLine(ring[0]);       // 10 — head-relative indexer
 /// ring.TrimExcess();                // shrink Capacity towards Count
 ///]]>
+/// </code>
 /// </example>
 [Serializable]
 public abstract partial class RingBackedCollection<T>

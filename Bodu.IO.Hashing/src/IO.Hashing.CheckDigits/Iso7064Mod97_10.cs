@@ -32,6 +32,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Single-call computation — returns the two-digit check as a string.
 /// string check = Iso7064Mod97_10.Compute("794");   // "44"
@@ -44,6 +45,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// algo.Append("794");
 /// string code = algo.GetCurrentCheckDigits();      // "44"
 ///]]>
+/// </code>
 /// </example>
 public sealed class Iso7064Mod97_10
     : MultiCharCheckDigitAlgorithm

@@ -22,6 +22,7 @@ namespace Bodu.IO.Hashing.Checksums;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Consume through a concrete derivative — the shared 32-bit finalization layout
 /// // is identical across every Adler32Base subclass.
@@ -29,6 +30,7 @@ namespace Bodu.IO.Hashing.Checksums;
 /// hash.Append("Wikipedia"u8);
 /// byte[] digest = hash.GetCurrentHash();            // 0x11E60398 in big-endian byte order
 ///]]>
+/// </code>
 /// </example>
 public abstract class Adler32Base
     : Adler<uint>

@@ -88,6 +88,7 @@ namespace Bodu.Collections.Generic;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Growable double-ended queue (the default).
 /// var deque = new Deque<int>();
@@ -101,6 +102,7 @@ namespace Bodu.Collections.Generic;
 /// for (int i = 0; i < 8; i++) bounded.AddLast(i);
 /// bool added = bounded.TryAddLast(8); // false — bounded is full
 ///]]>
+/// </code>
 /// </example>
 [DebuggerDisplay("Count = {Count}, Capacity = {Capacity}, AllowGrow = {AllowGrow}")]
 [DebuggerTypeProxy(typeof(DequeDebugView<>))]

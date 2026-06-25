@@ -64,6 +64,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Most consumers never touch BlockCipherTransform directly — it is surfaced as the
 /// // ICryptoTransform returned by every Bodu SymmetricAlgorithm. Typical usage:
@@ -83,6 +84,7 @@ namespace Bodu.Security.Cryptography;
 ///
 /// // Reuse requires a fresh transform — BlockCipherTransform.CanReuseTransform is false.
 ///]]>
+/// </code>
 /// </example>
 /// <seealso cref="IBlockCipher"/> <seealso cref="IBlockCipherModeTransform"/> <seealso cref="IPaddingStrategy"/>
 public abstract class BlockCipherTransform

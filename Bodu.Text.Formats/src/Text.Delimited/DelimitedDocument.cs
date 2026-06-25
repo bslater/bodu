@@ -21,6 +21,7 @@ namespace Bodu.Text.Delimited;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// DelimitedDocument doc = Delimited.Parse(text);
 ///
@@ -32,6 +33,7 @@ namespace Bodu.Text.Delimited;
 /// foreach (DelimitedRow row in doc.Rows)
 ///     Console.WriteLine(row["name"]);
 ///]]>
+/// </code>
 /// </example>
 public sealed class DelimitedDocument
 {

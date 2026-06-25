@@ -50,6 +50,7 @@ namespace Bodu.Collections.Generic;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Multiple values under a single key — values are retained in insertion order.
 /// var map = new MultiValueDictionary<string, int>();
@@ -68,6 +69,7 @@ namespace Bodu.Collections.Generic;
 /// foreach (KeyValuePair<string, int> pair in map.Flatten())
 ///     Console.WriteLine($"{pair.Key}: {pair.Value}");
 ///]]>
+/// </code>
 /// </example>
 [DebuggerDisplay("KeyCount = {KeyCount}, Count = {Count}")]
 [DebuggerTypeProxy(typeof(MultiValueDictionaryDebugView<,>))]

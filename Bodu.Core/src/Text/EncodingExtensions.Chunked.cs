@@ -41,6 +41,7 @@ public static partial class EncodingExtensions
     /// contains a code point that cannot be represented.
     /// </exception>
     /// <example>
+    /// <code language="csharp">
     ///<![CDATA[
     /// // Encode a long string into a buffer writer one chunk at a time.
     /// ReadOnlySpan<char> source = text.AsSpan();
@@ -60,6 +61,7 @@ public static partial class EncodingExtensions
     ///     source = source.Slice(charsConsumed);
     /// }
     ///]]>
+    /// </code>
     /// </example>
     public static OperationStatus EncodeChunk(
         this System.Text.Encoder encoder,

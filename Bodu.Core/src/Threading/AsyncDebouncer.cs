@@ -36,6 +36,7 @@ namespace Bodu.Threading;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// var debouncer = new AsyncDebouncer(
 ///     TimeSpan.FromMilliseconds(300),
@@ -44,6 +45,7 @@ namespace Bodu.Threading;
 /// // Called on every keystroke; SaveAsync runs once, 300 ms after typing stops.
 /// textBox.TextChanged += (_, _) => debouncer.Invoke();
 ///]]>
+/// </code>
 /// </example>
 [DebuggerDisplay("Delay = {_delay}, Policy = {ExecutionPolicy}, Pending = {_pending}, Active = {ActiveCount}")]
 public sealed partial class AsyncDebouncer
@@ -189,10 +191,12 @@ public sealed partial class AsyncDebouncer
     /// <paramref name="cancellationToken" /> was canceled before the work drained.
     /// </exception>
     /// <example>
+    /// <code language="csharp">
     ///<![CDATA[
     /// // Run the pending callback now instead of waiting out the quiet period (e.g. on shutdown).
     /// await debouncer.FlushAsync();
     ///]]>
+    /// </code>
     /// </example>
     public ValueTask FlushAsync(CancellationToken cancellationToken = default)
     {
@@ -251,10 +255,12 @@ public sealed partial class AsyncDebouncer
     /// </summary>
     /// <exception cref="ObjectDisposedException">The debouncer has been disposed.</exception>
     /// <example>
+    /// <code language="csharp">
     ///<![CDATA[
     /// // Drop any queued invocation and signal in-flight callback work to stop.
     /// debouncer.Cancel();
     ///]]>
+    /// </code>
     /// </example>
     public void Cancel()
     {

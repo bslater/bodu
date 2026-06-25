@@ -23,6 +23,7 @@ namespace Bodu.Text.Toml;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// try
 /// {
@@ -33,6 +34,7 @@ namespace Bodu.Text.Toml;
 ///     Console.Error.WriteLine($"Malformed TOML at line {ex.LineNumber}, column {ex.ColumnNumber}: {ex.Message}");
 /// }
 ///]]>
+/// </code>
 /// </example>
 public sealed class TomlFormatException
     : FormatException

@@ -34,10 +34,12 @@ public static partial class StringExtensions
     /// Thrown when <paramref name="maxLength" /> is smaller than <paramref name="separator" />.Length.
     /// </exception>
     /// <example>
+    /// <code language="csharp">
     ///<![CDATA[
     /// "hello-world-foo-bar".TruncateMiddle(11);          // "hello…o-bar"
     /// "abcdefghij".TruncateMiddle(7, "...");             // "ab...ij"
     ///]]>
+    /// </code>
     /// </example>
     public static string TruncateMiddle(this string value, int maxLength, string separator = "…")
     {

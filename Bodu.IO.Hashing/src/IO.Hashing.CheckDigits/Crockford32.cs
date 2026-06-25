@@ -34,6 +34,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Single-call computation against an in-memory body.
 /// char check = Crockford32.Compute("16J");   // 'D'
@@ -46,6 +47,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// algo.Append("16J");
 /// char d = algo.GetCurrentCheckDigit();       // 'D'
 ///]]>
+/// </code>
 /// </example>
 public sealed class Crockford32
     : AlphanumericCheckDigitAlgorithm

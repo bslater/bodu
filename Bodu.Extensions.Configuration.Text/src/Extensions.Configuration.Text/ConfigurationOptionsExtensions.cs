@@ -32,6 +32,7 @@ namespace Bodu.Extensions.Configuration.Text;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Strongly-typed options bound to the "Logging" section produced by AddTextConfigurationFile.
 /// public sealed class LoggingOptions
@@ -55,6 +56,7 @@ namespace Bodu.Extensions.Configuration.Text;
 /// // Consumed via constructor injection.
 /// public sealed class HomeController(IOptions<LoggingOptions> options) { /* options.Value.Level */ }
 ///]]>
+/// </code>
 /// </example>
 public static class ConfigurationOptionsExtensions
 {

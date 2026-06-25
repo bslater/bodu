@@ -20,6 +20,7 @@ public static partial class GraphAlgorithms
     /// direction. The partition is computed with a <see cref="DisjointSet{T}" /> over the graph's edges.
     /// </remarks>
     /// <example>
+    /// <code language="csharp">
     ///<![CDATA[
     /// var graph = new Graph<int>(GraphKind.Undirected);
     /// graph.AddEdge(1, 2);
@@ -30,6 +31,7 @@ public static partial class GraphAlgorithms
     /// // Three components: { 1, 2, 3 }, { 10, 11 }, { 20 }.
     /// var components = GraphAlgorithms.ConnectedComponents(graph);
     ///]]>
+    /// </code>
     /// </example>
     public static IReadOnlyList<IReadOnlyList<T>> ConnectedComponents<T>(IReadOnlyGraph<T> graph)
         where T : notnull

@@ -29,6 +29,7 @@ namespace Bodu.Extensions.Configuration.Text;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Typical lambda registration via the IConfigurationBuilder extension.
 /// builder.Configuration.AddTextConfigurationFile(source =>
@@ -49,6 +50,7 @@ namespace Bodu.Extensions.Configuration.Text;
 /// };
 /// IConfigurationProvider provider = source.Build(builder);
 ///]]>
+/// </code>
 /// </example>
 public sealed class TextConfigurationSource
     : FileConfigurationSource

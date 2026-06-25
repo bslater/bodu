@@ -41,6 +41,7 @@ namespace Bodu.Sequences;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // A counted descending range.
 /// foreach (int n in SequenceGenerator.Range(start: 10, stop: 0, step: -2))
@@ -56,6 +57,7 @@ namespace Bodu.Sequences;
 /// foreach (long fib in SequenceGenerator.Fibonacci(min: 0, max: 100))
 ///     Console.WriteLine(fib); // 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89
 ///]]>
+/// </code>
 /// </example>
 public static partial class SequenceGenerator
 {

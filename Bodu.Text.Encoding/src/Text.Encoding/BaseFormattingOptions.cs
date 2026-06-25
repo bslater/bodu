@@ -23,6 +23,7 @@ namespace Bodu.Text.Encoding;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Compact lower-case hex (the default Base16 form).
 /// string compact = Base16.Encode(data);
@@ -36,6 +37,7 @@ namespace Bodu.Text.Encoding;
 /// // Padding-free Base64 — produces the same output as Base64Url.Encode.
 /// string unpadded = Base64.Encode(data, BaseFormattingOptions.OmitPadding);
 ///]]>
+/// </code>
 /// </example>
 [Flags]
 public enum BaseFormattingOptions : byte

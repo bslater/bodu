@@ -47,6 +47,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Construct via a concrete derivative — Threefish is the production tweakable cipher family.
 /// using TweakableSymmetricAlgorithm alg = new Threefish256();
@@ -64,6 +65,7 @@ namespace Bodu.Security.Cryptography;
 ///     using (safe) { /* encrypt */ }
 /// }
 ///]]>
+/// </code>
 /// </example>
 /// <seealso cref="Threefish256"/> <seealso cref="Threefish512"/> <seealso cref="Threefish1024"/>
 /// <seealso cref="Bodu.Security.Cryptography.Extensions.TweakableSymmetricAlgorithmExtensions"/>

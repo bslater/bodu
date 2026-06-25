@@ -39,6 +39,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// applications.</note>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Use a concrete derivative through the abstract surface.
 /// CheckDigitAlgorithm algo = new Luhn();
@@ -50,6 +51,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// algo.Append('1');
 /// algo.Append("7893729977");
 ///]]>
+/// </code>
 /// </example>
 /// <seealso cref="AlphanumericCheckDigitAlgorithm" /> <seealso cref="MultiCharCheckDigitAlgorithm" />
 /// <seealso cref="System.IO.Hashing.NonCryptographicHashAlgorithm" />

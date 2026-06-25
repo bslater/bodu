@@ -32,6 +32,7 @@ namespace Bodu.Text.Configuration;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Construct a location pointing at a specific span on line 12.
 /// var loc = new ConfigurationSourceLocation(
@@ -50,6 +51,7 @@ namespace Bodu.Text.Configuration;
 ///         Console.WriteLine($"{where}: {ex.Message}");
 /// }
 ///]]>
+/// </code>
 /// </example>
 [DebuggerDisplay("Line {LineNumber}, Col {LinePosition}, Len {Length}")]
 public readonly struct ConfigurationSourceLocation

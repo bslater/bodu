@@ -37,6 +37,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Single-call computation against an in-memory body.
 /// char check = Gumm.Compute("236");   // '9'
@@ -49,6 +50,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// algo.Append("236");
 /// char d = algo.GetCurrentCheckDigit();   // '9'
 ///]]>
+/// </code>
 /// </example>
 public sealed partial class Gumm
     : CheckDigitAlgorithm

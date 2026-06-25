@@ -37,6 +37,7 @@ namespace Bodu.Threading;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// private readonly AsyncSemaphore _throttle = new(initialCount: 4);
 ///
@@ -49,6 +50,7 @@ namespace Bodu.Threading;
 ///     }
 /// }
 ///]]>
+/// </code>
 /// </example>
 [DebuggerDisplay("CurrentCount = {CurrentCount}, MaxCount = {_maxCount}, Waiters = {WaiterCount}")]
 public sealed partial class AsyncSemaphore
@@ -134,6 +136,7 @@ public sealed partial class AsyncSemaphore
     /// The returned <see cref="ValueTask" /> must be awaited exactly once.
     /// </remarks>
     /// <example>
+    /// <code language="csharp">
     ///<![CDATA[
     /// // Manual permit management; pair every WaitAsync with a Release in a finally block.
     /// await _throttle.WaitAsync();
@@ -146,6 +149,7 @@ public sealed partial class AsyncSemaphore
     ///     _throttle.Release();
     /// }
     ///]]>
+    /// </code>
     /// </example>
     public ValueTask WaitAsync() =>
         WaitAsync(CancellationToken.None);

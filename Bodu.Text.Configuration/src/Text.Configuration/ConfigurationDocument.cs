@@ -36,6 +36,7 @@ namespace Bodu.Text.Configuration;
 /// </para>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Parse and resolve a configuration file for a specific target path.
 /// ConfigurationDocument doc  = ConfigurationDocument.Parse(text);
@@ -52,6 +53,7 @@ namespace Bodu.Text.Configuration;
 /// foreach (ConfigurationDiagnostic d in result.Diagnostics)
 ///     Console.WriteLine(d);
 ///]]>
+/// </code>
 /// </example>
 public sealed class ConfigurationDocument
     : IniDocumentBase

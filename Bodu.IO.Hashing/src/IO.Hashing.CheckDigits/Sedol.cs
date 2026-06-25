@@ -29,6 +29,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Single-call computation against the 6-character body (consonants and digits only).
 /// char check = Sedol.Compute("B0WNLY");   // '7'
@@ -41,6 +42,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// algo.Append("B0WNLY");
 /// char d = algo.GetCurrentCheckDigit();   // '7'
 ///]]>
+/// </code>
 /// </example>
 public sealed class Sedol
     : AlphanumericCheckDigitAlgorithm

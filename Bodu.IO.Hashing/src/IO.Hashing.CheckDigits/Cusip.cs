@@ -30,6 +30,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Apple Inc. — CUSIP body "03783310".
 /// char check = Cusip.Compute("03783310");   // '0'
@@ -42,6 +43,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// algo.Append("03783310");
 /// char d = algo.GetCurrentCheckDigit();     // '0'
 ///]]>
+/// </code>
 /// </example>
 public sealed class Cusip
     : AlphanumericCheckDigitAlgorithm

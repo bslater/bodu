@@ -33,6 +33,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
 /// </remarks>
 /// <example>
+/// <code language="csharp">
 ///<![CDATA[
 /// // Single-call computation — body is the country code followed by the BBAN.
 /// string check = Iban.Compute("GBWEST12345698765432");   // "82"
@@ -45,6 +46,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// algo.Append("GBWEST12345698765432");
 /// string code = algo.GetCurrentCheckDigits();            // "82"
 ///]]>
+/// </code>
 /// </example>
 public sealed class Iban
     : MultiCharCheckDigitAlgorithm
