@@ -16,6 +16,10 @@ Aggregate catalogue ($(@{Stem=global-all; ResourceId=common.global-all; Bundle=;
 | `global-anchors` |
 | `christian-western` |
 | `christian-orthodox` |
+| `catholic` |
+| `christian-protestant` |
+| `christian-anglican` |
+| `christian-oriental-orthodox` |
 | `global-cultural` |
 | `global-education` |
 | `global-environment` |
@@ -35,7 +39,11 @@ Aggregate catalogue ($(@{Stem=global-all; ResourceId=common.global-all; Bundle=;
 | `global-jewish` |
 | `global-hindu` |
 | `global-buddhist` |
+| `global-sikh` |
+| `global-jain` |
+| `global-bahai` |
 | `global-persian` |
+| `global-zoroastrian` |
 | `default-minimal` |
 
 _Observed by:_ [GB](region-europe.md)
@@ -49,9 +57,10 @@ _Observed by:_ [GB](region-europe.md)
 
 ---
 
-*Generated from the notable-date XML resources by `Bodu.Globalization.Calendar/Generate-NotableDateCatalogue.ps1`. Regenerated (UTC): 2026-06-05T03:58:56Z.* For the calculation recipes deliberately omitted here, see [Territories and regional composition](../territories.md), [Working with non-Gregorian calendars](../non-gregorian-calendars.md), and [Holiday patterns](../holiday-patterns.md); for the API, the <xref:Bodu.Globalization.Calendar> namespace.
+*Generated from the notable-date XML resources by `Bodu.Globalization.Calendar/Generate-NotableDateCatalogue.ps1`. Regenerated (UTC): 2026-06-25T01:30:35Z.* For the calculation recipes deliberately omitted here, see [Territories and regional composition](../territories.md), [Working with non-Gregorian calendars](../non-gregorian-calendars.md), and [Holiday patterns](../holiday-patterns.md); for the API, the <xref:Bodu.Globalization.Calendar> namespace.
 
 ## See also
 
 - **[Globalization & Calendars guides](../../topics/globalization-and-calendars.md)** — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.
 - **[Bodu.Globalization.Calendar guides](../index.md)** — the full guide index for the calendar runtime and its companions.
+

@@ -221,6 +221,10 @@
               href: calendar/catalogue/region-asia-pacific.md
             - name: Europe region packs
               href: calendar/catalogue/region-europe.md
+            - name: Middle East region packs
+              href: calendar/catalogue/region-middle-east.md
+            - name: Africa region packs
+              href: calendar/catalogue/region-africa.md
             - name: Cross-region comparison matrix
               href: calendar/catalogue/comparison-matrix.md
 - name: Text & Serialization

@@ -33,25 +33,28 @@ Concepts are authored once in a **shared catalogue** and a **region pack** impor
 
 | Page | Countries |
 |---|---|
-| [Americas region packs](region-americas.md) | CA, US |
-| [Asia-Pacific region packs](region-asia-pacific.md) | AU, CN, IN, JP, KR, MY, NZ, SG |
+| [Americas region packs](region-americas.md) | AR, BR, CA, CL, CO, MX, PE, US |
+| [Asia-Pacific region packs](region-asia-pacific.md) | AU, CN, HK, ID, IN, JP, KR, MY, NZ, PH, SG, TH, TW, VN |
 | [Europe region packs](region-europe.md) | AT, BE, BG, CY, CZ, DE, DK, EE, ES, FI, FR, GB, GR, HR, HU, IE, IT, LT, LU, LV, MT, NL, PL, PT, RO, SE, SI, SK |
+| [Middle East region packs](region-middle-east.md) | AE, IL, JO, QA, SA, TR |
+| [Africa region packs](region-africa.md) | EG, ET, GH, KE, MA, NG, ZA |
 
 See also the [cross-region comparison matrix](comparison-matrix.md).
 
 ## Coverage
 
-- **Catalogues:** 27
-- **Region packs:** 38
-- **Distinct concepts (catalogues):** 192
+- **Catalogues:** 38
+- **Region packs:** 63
+- **Distinct concepts (catalogues):** 308
 - **Comparison-matrix rows:** 18
-- **This page regenerated (UTC):** 2026-06-05T03:58:56Z
+- **This page regenerated (UTC):** 2026-06-25T01:30:35Z
 
 ---
 
-*Generated from the notable-date XML resources by `Bodu.Globalization.Calendar/Generate-NotableDateCatalogue.ps1`. Regenerated (UTC): 2026-06-05T03:58:56Z.* For the calculation recipes deliberately omitted here, see [Territories and regional composition](../territories.md), [Working with non-Gregorian calendars](../non-gregorian-calendars.md), and [Holiday patterns](../holiday-patterns.md); for the API, the <xref:Bodu.Globalization.Calendar> namespace.
+*Generated from the notable-date XML resources by `Bodu.Globalization.Calendar/Generate-NotableDateCatalogue.ps1`. Regenerated (UTC): 2026-06-25T01:30:35Z.* For the calculation recipes deliberately omitted here, see [Territories and regional composition](../territories.md), [Working with non-Gregorian calendars](../non-gregorian-calendars.md), and [Holiday patterns](../holiday-patterns.md); for the API, the <xref:Bodu.Globalization.Calendar> namespace.
 
 ## See also
 
 - **[Globalization & Calendars guides](../../topics/globalization-and-calendars.md)** — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.
 - **[Bodu.Globalization.Calendar guides](../index.md)** — the full guide index for the calendar runtime and its companions.
+

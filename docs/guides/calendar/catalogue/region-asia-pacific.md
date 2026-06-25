@@ -106,6 +106,61 @@ Notable dates observed by each country in the **AsiaPacific** data pack, grouped
 | Lantern Festival | — | National | Gregorian | inline | Lunar New Year +14 |
 | Qixi Festival | — | National | ChineseLunisolar | inline | 7 month 7 (ChineseLunisolar) |
 
+## HK
+
+### PublicHoliday
+
+| Concept | Non-working | Territory scope | Calendar | Source | When |
+|---|---|---|---|---|---|
+| New Year's Day | Yes | National | Gregorian | [← global-core](theme-civil-and-christian.md#global-core) | Fixed 1 Jan |
+| International Workers' Day | Yes | National | Gregorian | [← global-core](theme-civil-and-christian.md#global-core) | Fixed 1 May |
+| HKSAR Establishment Day | Yes | National | Gregorian | inline | Fixed 1 Jul |
+| National Day | Yes | National | Gregorian | inline | Fixed 1 Oct |
+| Christmas Day | Yes | National | Gregorian | [← christian-western](theme-civil-and-christian.md#christian-western) | Fixed 25 Dec |
+| Boxing Day | Yes | National | Gregorian | [← christian-western](theme-civil-and-christian.md#christian-western) | Fixed 26 Dec |
+| Ching Ming Festival | Yes | National | Gregorian | inline | Algorithm: qingming |
+| Chung Yeung Festival | Yes | National | ChineseLunisolar | inline | 9 month 9 (ChineseLunisolar) |
+| Easter Monday | Yes | National | Gregorian | [← christian-western](theme-civil-and-christian.md#christian-western) | Easter +1 |
+| Good Friday | Yes | National | Gregorian | [← christian-western](theme-civil-and-christian.md#christian-western) | Easter -2 |
+| Holy Saturday | Yes | National | Gregorian | [← christian-western](theme-civil-and-christian.md#christian-western) | Easter -1 |
+| Lunar New Year | Yes | National | ChineseLunisolar | inline | 1 month 1 (ChineseLunisolar) |
+| The Birthday of the Buddha | Yes | National | ChineseLunisolar | inline | 8 month 4 (ChineseLunisolar) |
+| The Day Following the Mid-Autumn Festival | Yes | National | ChineseLunisolar | inline | 16 month 8 (ChineseLunisolar) |
+| Tuen Ng Festival | Yes | National | ChineseLunisolar | inline | 5 month 5 (ChineseLunisolar) |
+
+### Religious
+
+| Concept | Non-working | Territory scope | Calendar | Source | When |
+|---|---|---|---|---|---|
+| Easter Sunday | — | National | Gregorian | [← christian-western](theme-civil-and-christian.md#christian-western) | Algorithm: western-easter |
+
+## ID
+
+### PublicHoliday
+
+| Concept | Non-working | Territory scope | Calendar | Source | When |
+|---|---|---|---|---|---|
+| New Year's Day | Yes | National | Gregorian | [← global-core](theme-civil-and-christian.md#global-core) | Fixed 1 Jan |
+| International Workers' Day | Yes | National | Gregorian | [← global-core](theme-civil-and-christian.md#global-core) | Fixed 1 May |
+| Pancasila Day | Yes | National | Gregorian | inline | Fixed 1 Jun |
+| Independence Day | Yes | National | Gregorian | inline | Fixed 17 Aug |
+| Christmas Day | Yes | National | Gregorian | [← christian-western](theme-civil-and-christian.md#christian-western) | Fixed 25 Dec |
+| Ascension Day | Yes | National | Gregorian | [← christian-western](theme-civil-and-christian.md#christian-western) | Easter +39 |
+| Chinese New Year | Yes | National | ChineseLunisolar | inline | 1 month 1 (ChineseLunisolar) |
+| Eid al-Adha | Yes | National | Hijri | [← global-islamic](theme-religious-non-gregorian.md#global-islamic) | 10 Dhu al-Hijja (Hijri) |
+| Eid al-Fitr | Yes | National | Hijri | [← global-islamic](theme-religious-non-gregorian.md#global-islamic) | 1 Shawwal (Hijri) |
+| Good Friday | Yes | National | Gregorian | [← christian-western](theme-civil-and-christian.md#christian-western) | Easter -2 |
+| Islamic New Year | Yes | National | Hijri | [← global-islamic](theme-religious-non-gregorian.md#global-islamic) | 1 Muharram (Hijri) |
+| Isra and Mi'raj | Yes | National | Hijri | inline | 27 Rajab (Hijri) |
+| Mawlid al-Nabi | Yes | National | Hijri | [← global-islamic](theme-religious-non-gregorian.md#global-islamic) | 12 Rabi I (Hijri) |
+| Vesak | Yes | National | Gregorian | [← global-buddhist](theme-religious-non-gregorian.md#global-buddhist) | Algorithm: vesak |
+
+### Religious
+
+| Concept | Non-working | Territory scope | Calendar | Source | When |
+|---|---|---|---|---|---|
+| Easter Sunday | — | National | Gregorian | [← christian-western](theme-civil-and-christian.md#christian-western) | Algorithm: western-easter |
+
 ## IN
 
 ### PublicHoliday
@@ -256,6 +311,50 @@ Notable dates observed by each country in the **AsiaPacific** data pack, grouped
 | Anzac Day | Yes | National | inline | Fixed 25 Apr |
 | Remembrance Day | — | National | inline | Fixed 11 Nov |
 
+## PH
+
+### PublicHoliday
+
+| Concept | Non-working | Territory scope | Calendar | Source | When |
+|---|---|---|---|---|---|
+| New Year's Day | Yes | National | Gregorian | [← global-core](theme-civil-and-christian.md#global-core) | Fixed 1 Jan |
+| Day of Valor | Yes | National | Gregorian | inline | Fixed 9 Apr |
+| International Workers' Day | Yes | National | Gregorian | [← global-core](theme-civil-and-christian.md#global-core) | Fixed 1 May |
+| Independence Day | Yes | National | Gregorian | inline | Fixed 12 Jun |
+| National Heroes' Day | Yes | National | Gregorian | inline | last Mon Aug |
+| All Saints' Day | Yes | National | Gregorian | [← christian-western](theme-civil-and-christian.md#christian-western) | Fixed 1 Nov |
+| Bonifacio Day | Yes | National | Gregorian | inline | Fixed 30 Nov |
+| Christmas Day | Yes | National | Gregorian | [← christian-western](theme-civil-and-christian.md#christian-western) | Fixed 25 Dec |
+| Rizal Day | Yes | National | Gregorian | inline | Fixed 30 Dec |
+| Chinese New Year | Yes | National | ChineseLunisolar | inline | 1 month 1 (ChineseLunisolar) |
+| Eid al-Adha | Yes | National | Hijri | [← global-islamic](theme-religious-non-gregorian.md#global-islamic) | 10 Dhu al-Hijja (Hijri) |
+| Eid al-Fitr | Yes | National | Hijri | [← global-islamic](theme-religious-non-gregorian.md#global-islamic) | 1 Shawwal (Hijri) |
+| Good Friday | Yes | National | Gregorian | [← christian-western](theme-civil-and-christian.md#christian-western) | Easter -2 |
+| Holy Saturday | Yes | National | Gregorian | [← christian-western](theme-civil-and-christian.md#christian-western) | Easter -1 |
+| Maundy Thursday | Yes | National | Gregorian | [← christian-western](theme-civil-and-christian.md#christian-western) | Easter -3 |
+
+### Religious
+
+| Concept | Non-working | Territory scope | Calendar | Source | When |
+|---|---|---|---|---|---|
+| All Souls' Day | — | National | Gregorian | [← christian-western](theme-civil-and-christian.md#christian-western) | Fixed 2 Nov |
+| Immaculate Conception | Yes | National | Gregorian | inline | Fixed 8 Dec |
+| Easter Sunday | — | National | Gregorian | [← christian-western](theme-civil-and-christian.md#christian-western) | Algorithm: western-easter |
+
+### Cultural
+
+| Concept | Non-working | Territory scope | Calendar | Source | When |
+|---|---|---|---|---|---|
+| Christmas Eve | — | National | Gregorian | [← christian-western](theme-civil-and-christian.md#christian-western) | Fixed 24 Dec |
+| New Year's Eve | — | National | Gregorian | [← global-core](theme-civil-and-christian.md#global-core) | Fixed 31 Dec |
+
+### Civic
+
+| Concept | Non-working | Territory scope | Calendar | Source | When |
+|---|---|---|---|---|---|
+| EDSA People Power Revolution Anniversary | — | National | Gregorian | inline | Fixed 25 Feb |
+| Ninoy Aquino Day | — | National | Gregorian | inline | Fixed 21 Aug |
+
 ## SG
 
 ### PublicHoliday
@@ -279,11 +378,68 @@ Notable dates observed by each country in the **AsiaPacific** data pack, grouped
 |---|---|---|---|---|---|
 | Easter Sunday | — | National | Gregorian | [← christian-western](theme-civil-and-christian.md#christian-western) | Algorithm: western-easter |
 
+## TH
+
+### PublicHoliday
+
+| Concept | Non-working | Territory scope | Source | When |
+|---|---|---|---|---|
+| New Year's Day | Yes | National | [← global-core](theme-civil-and-christian.md#global-core) | Fixed 1 Jan |
+| Chakri Memorial Day | Yes | National | inline | Fixed 6 Apr |
+| Songkran | Yes | National | inline | Fixed 13 Apr |
+| International Workers' Day | Yes | National | [← global-core](theme-civil-and-christian.md#global-core) | Fixed 1 May |
+| Coronation Day | Yes | National | inline | Fixed 4 May |
+| Queen Suthida's Birthday | Yes | National | inline | Fixed 3 Jun |
+| King Vajiralongkorn's Birthday | Yes | National | inline | Fixed 28 Jul |
+| The Queen Mother's Birthday | Yes | National | inline | Fixed 12 Aug |
+| King Bhumibol Memorial Day | Yes | National | inline | Fixed 13 Oct |
+| Chulalongkorn Day | Yes | National | inline | Fixed 23 Oct |
+| King Bhumibol's Birthday | Yes | National | inline | Fixed 5 Dec |
+| Constitution Day | Yes | National | inline | Fixed 10 Dec |
+| New Year's Eve | Yes | National | [← global-core](theme-civil-and-christian.md#global-core) | Fixed 31 Dec |
+| Vesak | Yes | National | [← global-buddhist](theme-religious-non-gregorian.md#global-buddhist) | Algorithm: vesak |
+
+## TW
+
+### PublicHoliday
+
+| Concept | Non-working | Territory scope | Calendar | Source | When |
+|---|---|---|---|---|---|
+| New Year's Day | Yes | National | Gregorian | [← global-core](theme-civil-and-christian.md#global-core) | Fixed 1 Jan |
+| Peace Memorial Day | Yes | National | Gregorian | inline | Fixed 28 Feb |
+| Children's Day | Yes | National | Gregorian | inline | Fixed 4 Apr |
+| International Workers' Day | Yes | National | Gregorian | [← global-core](theme-civil-and-christian.md#global-core) | Fixed 1 May |
+| National Day | Yes | National | Gregorian | inline | Fixed 10 Oct |
+| Dragon Boat Festival | Yes | National | ChineseLunisolar | inline | 5 month 5 (ChineseLunisolar) |
+| Lunar New Year | Yes | National | ChineseLunisolar | inline | 1 month 1 (ChineseLunisolar) |
+| Mid-Autumn Festival | Yes | National | ChineseLunisolar | inline | 15 month 8 (ChineseLunisolar) |
+| Tomb-Sweeping Day | Yes | National | Gregorian | inline | Algorithm: qingming |
+
+## VN
+
+### PublicHoliday
+
+| Concept | Non-working | Territory scope | Calendar | Source | When |
+|---|---|---|---|---|---|
+| New Year's Day | Yes | National | Gregorian | [← global-core](theme-civil-and-christian.md#global-core) | Fixed 1 Jan |
+| Reunification Day | Yes | National | Gregorian | inline | Fixed 30 Apr |
+| International Workers' Day | Yes | National | Gregorian | [← global-core](theme-civil-and-christian.md#global-core) | Fixed 1 May |
+| National Day | Yes | National | Gregorian | inline | Fixed 2 Sep |
+| Hùng Kings' Commemoration Day | Yes | National | ChineseLunisolar | inline | 10 month 3 (ChineseLunisolar) |
+| Tết Nguyên Đán | Yes | National | ChineseLunisolar | inline | 1 month 1 (ChineseLunisolar) |
+
+### Cultural
+
+| Concept | Non-working | Territory scope | Calendar | Source | When |
+|---|---|---|---|---|---|
+| Mid-Autumn Festival | — | National | ChineseLunisolar | inline | 15 month 8 (ChineseLunisolar) |
+
 ---
 
-*Generated from the notable-date XML resources by `Bodu.Globalization.Calendar/Generate-NotableDateCatalogue.ps1`. Regenerated (UTC): 2026-06-05T03:58:56Z.* For the calculation recipes deliberately omitted here, see [Territories and regional composition](../territories.md), [Working with non-Gregorian calendars](../non-gregorian-calendars.md), and [Holiday patterns](../holiday-patterns.md); for the API, the <xref:Bodu.Globalization.Calendar> namespace.
+*Generated from the notable-date XML resources by `Bodu.Globalization.Calendar/Generate-NotableDateCatalogue.ps1`. Regenerated (UTC): 2026-06-25T01:30:35Z.* For the calculation recipes deliberately omitted here, see [Territories and regional composition](../territories.md), [Working with non-Gregorian calendars](../non-gregorian-calendars.md), and [Holiday patterns](../holiday-patterns.md); for the API, the <xref:Bodu.Globalization.Calendar> namespace.
 
 ## See also
 
 - **[Globalization & Calendars guides](../../topics/globalization-and-calendars.md)** — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.
 - **[Bodu.Globalization.Calendar guides](../index.md)** — the full guide index for the calendar runtime and its companions.
+
