@@ -16,7 +16,7 @@ using Bodu.IO.Compound;
 using CompoundFile file = CompoundFile.Open(File.OpenRead("book.xls"));
 
 CompoundStream workbook = file.RootStorage.OpenStream("Workbook");
-ReadOnlyMemory<byte> bytes = workbook.ReadAllBytes();
+byte[] bytes = workbook.ReadAllBytes();
 ```
 
 `Open` reads the stream from its current position to the end. The returned `CompoundFile` is <xref:System.IDisposable> — the `using` declaration disposes it, which also closes the source stream unless `leaveOpen: true` was passed. `OpenStream` resolves a direct child of `RootStorage` by name and throws <xref:Bodu.IO.Compound.CompoundStreamNotFoundException> when no such stream exists.
@@ -70,7 +70,7 @@ using Bodu.IO.Compound;
 if (file.RootStorage.TryOpenStorage("ObjectPool", out CompoundStorage? pool) &&
     pool.TryOpenStream("Contents", out CompoundStream? contents))
 {
-    ReadOnlyMemory<byte> data = contents.ReadAllBytes();
+    byte[] data = contents.ReadAllBytes();
     Process(data);
 }
 ```
@@ -83,7 +83,7 @@ The <xref:Bodu.IO.Compound.CompoundStream> returned by `OpenStream` gives you tw
 
 | Member | Returns | Use when |
 |---|---|---|
-| `ReadAllBytes` | `ReadOnlyMemory<byte>` | The payload is small and consumed in one pass. |
+| `ReadAllBytes` | `byte[]` | The payload is small and consumed in one pass. |
 | the stream itself | a seekable <xref:System.IO.Stream> | The payload is large or read incrementally — `CompoundStream` is a seekable `Stream` cursor you can hand to `BinaryReader`, `StreamReader`, or `CopyTo`. |
 
 ```csharp

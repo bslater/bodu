@@ -22,7 +22,7 @@ using Bodu.IO.Compound;
 using CompoundFile file = CompoundFile.Open(File.OpenRead("book.xls"));
 
 CompoundStream workbook = file.RootStorage.OpenStream("Workbook");
-ReadOnlyMemory<byte> bytes = workbook.ReadAllBytes();
+byte[] bytes = workbook.ReadAllBytes();
 ```
 
 `CompoundFile.Open` reads the source from its current position to the end. The returned instance is <xref:System.IDisposable> — the `using` declaration disposes it and closes the source unless `leaveOpen: true` was passed.

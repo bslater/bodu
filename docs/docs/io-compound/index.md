@@ -52,7 +52,7 @@ foreach (CompoundEntryInfo info in file.RootStorage.EnumerateEntries())
     Console.WriteLine($"{info.EntryType}: {info.Name} ({info.Length} bytes)");
 
 CompoundStream workbook = file.RootStorage.OpenStream("Workbook");
-ReadOnlyMemory<byte> bytes = workbook.ReadAllBytes();
+byte[] bytes = workbook.ReadAllBytes();
 ```
 
 ## Common scenarios

@@ -70,7 +70,9 @@ In all three, set `PreserveComments: false` (DotEnv / INI) to treat the
 input strictly as data and drop trivia.
 
 ```csharp
-using Bodu.Text.Formats;
+using Bodu.Text.Delimited;
+using Bodu.Text.DotEnv;
+using Bodu.Text.Ini;
 
 // Delimited: values round-trip, layout does not.
 DelimitedDocument records = Delimited.Parse(csv);

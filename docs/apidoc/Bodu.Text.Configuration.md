@@ -62,7 +62,6 @@ Reach for this library when you need EditorConfig-style file-targeted configurat
 
 ```csharp
 using Bodu.Text.Configuration;
-using Bodu.Text.Formats;
 
 const string source = """
 # Bodu configuration sample
