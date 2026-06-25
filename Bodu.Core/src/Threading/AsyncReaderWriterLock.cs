@@ -338,7 +338,11 @@ public sealed partial class AsyncReaderWriterLock : IDisposable
             owner.CancelReader(waiter, token);
         }, (this, tcs, cancellationToken)))
         {
+            // The reader's task is completed by a writer release on this same lock, not work scheduled elsewhere, and the
+            // type uses no JoinableTaskFactory, so the foreign-task deadlock VSTHRD003 guards against cannot arise.
+#pragma warning disable VSTHRD003 // Avoid awaiting foreign Tasks
             return await tcs.Task.ConfigureAwait(false);
+#pragma warning restore VSTHRD003
         }
     }
 
@@ -356,7 +360,11 @@ public sealed partial class AsyncReaderWriterLock : IDisposable
             owner.CancelWriter(waiter, token);
         }, (this, node, cancellationToken)))
         {
+            // The writer's task is completed by a reader/writer release on this same lock, not work scheduled elsewhere,
+            // and the type uses no JoinableTaskFactory, so the foreign-task deadlock VSTHRD003 guards against cannot arise.
+#pragma warning disable VSTHRD003 // Avoid awaiting foreign Tasks
             return await node.Value.Task.ConfigureAwait(false);
+#pragma warning restore VSTHRD003
         }
     }
 
