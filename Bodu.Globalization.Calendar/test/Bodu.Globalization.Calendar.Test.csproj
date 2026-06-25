@@ -14,6 +14,19 @@
     <ProjectReference Include="..\src\Bodu.Globalization.Calendar.csproj" />
   </ItemGroup>
 
+  <!--
+    References to every regional data pack the solution ships. CalendarDataPackDiscoveryTests asserts the set is
+    built and loadable; referencing each pack here makes dropping one (as the Africa and MiddleEast packs once were,
+    via a bodu.slnx Build exclusion) a compile-time failure rather than a silent gap in the test/coverage surface.
+  -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\Bodu.Globalization.Calendar.Data\Bodu.Globalization.Calendar.Africa\src\Bodu.Globalization.Calendar.Africa.csproj" />
+    <ProjectReference Include="..\..\Bodu.Globalization.Calendar.Data\Bodu.Globalization.Calendar.Americas\src\Bodu.Globalization.Calendar.Americas.csproj" />
+    <ProjectReference Include="..\..\Bodu.Globalization.Calendar.Data\Bodu.Globalization.Calendar.AsiaPacific\src\Bodu.Globalization.Calendar.AsiaPacific.csproj" />
+    <ProjectReference Include="..\..\Bodu.Globalization.Calendar.Data\Bodu.Globalization.Calendar.Europe\src\Bodu.Globalization.Calendar.Europe.csproj" />
+    <ProjectReference Include="..\..\Bodu.Globalization.Calendar.Data\Bodu.Globalization.Calendar.MiddleEast\src\Bodu.Globalization.Calendar.MiddleEast.csproj" />
+  </ItemGroup>
+
   <ItemGroup>
     <EmbeddedResource Include="Globalization.Calendar\Fixtures\*.xml">
       <LogicalName>Bodu.Globalization.Calendar.Fixtures.%(Filename)%(Extension)</LogicalName>

@@ -53,6 +53,22 @@ jobs:
             exit 1
           fi
 
+          # Module-presence guard: assert every regional calendar test pack is a member of bodu.slnx. A pack
+          # silently dropped from the solution (as the Africa and MiddleEast packs once were) would otherwise
+          # shrink the test/coverage surface while the build stayed green. Fail fast if any expected pack is gone.
+          missing=""
+          for region in Africa Americas AsiaPacific Europe MiddleEast; do
+            expected="Bodu.Globalization.Calendar.$region.Test.csproj"
+            if ! echo "$projects" | grep -q "/$expected\$"; then
+              missing="$missing $expected"
+            fi
+          done
+
+          if [ -n "$missing" ]; then
+            echo "::error::Expected regional calendar test projects missing from bodu.slnx:$missing" >&2
+            exit 1
+          fi
+
           echo "Discovered test projects:"
           echo "$projects"
 
