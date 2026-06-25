@@ -31,6 +31,23 @@ namespace Bodu.Threading;
 /// completes, while a wait that begins after the reset observes the new unsignaled state.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// private readonly AsyncManualResetEvent _ready = new();
+///
+/// // Many callers await the same gate; one Set releases all of them.
+/// async Task UseServiceAsync()
+/// {
+///     await _ready.WaitAsync();
+///     CallService();
+/// }
+///
+/// void OnInitialized() => _ready.Set();    // open the gate for everyone
+/// void OnConnectionLost() => _ready.Reset(); // later waiters block again
+///]]>
+/// </code>
+/// </example>
 [DebuggerDisplay("IsSet = {IsSet}")]
 public sealed class AsyncManualResetEvent
 {

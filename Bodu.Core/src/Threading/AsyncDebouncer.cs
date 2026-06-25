@@ -171,6 +171,12 @@ public sealed partial class AsyncDebouncer : IDisposable
     /// <exception cref="OperationCanceledException">
     /// <paramref name="cancellationToken" /> was canceled before the work drained.
     /// </exception>
+    /// <example>
+    ///<![CDATA[
+    /// // Run the pending callback now instead of waiting out the quiet period (e.g. on shutdown).
+    /// await debouncer.FlushAsync();
+    ///]]>
+    /// </example>
     public ValueTask FlushAsync(CancellationToken cancellationToken = default)
     {
         lock (_gate)
@@ -222,6 +228,12 @@ public sealed partial class AsyncDebouncer : IDisposable
     /// Discards a pending invocation and cancels the token passed to any in-flight callback.
     /// </summary>
     /// <exception cref="ObjectDisposedException">The debouncer has been disposed.</exception>
+    /// <example>
+    ///<![CDATA[
+    /// // Drop any queued invocation and signal in-flight callback work to stop.
+    /// debouncer.Cancel();
+    ///]]>
+    /// </example>
     public void Cancel()
     {
         List<Run> active;
