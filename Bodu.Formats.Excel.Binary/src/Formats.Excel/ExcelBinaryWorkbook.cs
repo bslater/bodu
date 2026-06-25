@@ -31,6 +31,23 @@ namespace Bodu.Formats.Excel;
 /// The session owns the underlying container and, unless the caller opts to leave it open, the source stream; dispose
 /// the workbook when reading is complete.
 /// </para>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.Formats.Excel;
+///
+/// using var workbook = ExcelBinaryWorkbook.OpenRead("report.xls");
+/// foreach (ExcelWorksheetInfo info in workbook.Worksheets)
+/// {
+///     Console.WriteLine($"Sheet '{info.Name}' (#{info.Index})");
+///
+///     using ExcelWorksheetReader reader = workbook.OpenWorksheet(info.Index);
+///     while (reader.TryReadCell(out ExcelCell cell))
+///         Console.WriteLine($"  R{cell.RowIndex} C{cell.ColumnIndex}: {cell.Kind}");
+/// }
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public sealed class ExcelBinaryWorkbook
     : IDisposable
@@ -114,6 +131,16 @@ public sealed class ExcelBinaryWorkbook
     /// <exception cref="ExcelBinaryFormatException">Thrown when the workbook stream is not valid BIFF.</exception>
     /// <exception cref="ExcelBinaryUnsupportedException">Thrown when the workbook is not BIFF8.</exception>
     /// <exception cref="ExcelBinaryEncryptedWorkbookException">Thrown when the workbook is encrypted.</exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// using Bodu.Formats.Excel;
+    ///
+    /// using var workbook = ExcelBinaryWorkbook.OpenRead("report.xls");
+    /// Console.WriteLine($"{workbook.Worksheets.Count} sheet(s), date system: {workbook.DateSystem}");
+    ///]]>
+    /// </code>
+    /// </example>
     public static ExcelBinaryWorkbook OpenRead(string path) =>
         OpenRead(path, ExcelBinaryReaderOptions.Default);
 
@@ -126,6 +153,17 @@ public sealed class ExcelBinaryWorkbook
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="path" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// using Bodu.Formats.Excel;
+    ///
+    /// // Skip document properties and date-format detection for a fast, numeric-only read.
+    /// var options = new ExcelBinaryReaderOptions { ReadDocumentProperties = false, DetectDateFormats = false };
+    /// using var workbook = ExcelBinaryWorkbook.OpenRead("data.xls", options);
+    ///]]>
+    /// </code>
+    /// </example>
     public static ExcelBinaryWorkbook OpenRead(string path, ExcelBinaryReaderOptions options)
     {
         ThrowHelper.ThrowIfNull(path);
@@ -189,6 +227,18 @@ public sealed class ExcelBinaryWorkbook
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="stream" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// using Bodu.Formats.Excel;
+    ///
+    /// // Read from a stream that the caller continues to own.
+    /// using var source = File.OpenRead("report.xls");
+    /// var options = new ExcelBinaryReaderOptions { LeaveOpen = true };
+    /// using var workbook = ExcelBinaryWorkbook.Open(source, options);
+    ///]]>
+    /// </code>
+    /// </example>
     public static ExcelBinaryWorkbook Open(Stream stream, ExcelBinaryReaderOptions options)
     {
         ThrowHelper.ThrowIfNull(options);
@@ -206,6 +256,21 @@ public sealed class ExcelBinaryWorkbook
     /// </exception>
     /// <exception cref="ExcelBinaryFormatException">Thrown when the sheet substream is malformed.</exception>
     /// <exception cref="ObjectDisposedException">Thrown when the workbook has been disposed.</exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// using Bodu.Formats.Excel;
+    ///
+    /// using var workbook = ExcelBinaryWorkbook.OpenRead("report.xls");
+    /// using ExcelWorksheetReader reader = workbook.OpenWorksheet(0);
+    /// while (reader.TryReadCell(out ExcelCell cell))
+    /// {
+    ///     if (cell.Kind == ExcelCellKind.Number)
+    ///         Console.WriteLine($"R{cell.RowIndex} C{cell.ColumnIndex} = {cell.NumberValue}");
+    /// }
+    ///]]>
+    /// </code>
+    /// </example>
     public ExcelWorksheetReader OpenWorksheet(int worksheetIndex)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
@@ -239,6 +304,18 @@ public sealed class ExcelBinaryWorkbook
     /// </exception>
     /// <exception cref="ExcelBinaryFormatException">Thrown when the sheet substream is malformed.</exception>
     /// <exception cref="ObjectDisposedException">Thrown when the workbook has been disposed.</exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// using Bodu.Formats.Excel;
+    ///
+    /// using var workbook = ExcelBinaryWorkbook.OpenRead("report.xls");
+    /// ExcelWorksheet sheet = workbook.ReadWorksheet(0);
+    /// if (sheet.TryGetCell(0, 0, out ExcelCell a1))
+    ///     Console.WriteLine($"A1 = {a1.StringValue ?? a1.NumberValue?.ToString()}");
+    ///]]>
+    /// </code>
+    /// </example>
     public ExcelWorksheet ReadWorksheet(int worksheetIndex)
     {
         using ExcelWorksheetReader reader = OpenWorksheet(worksheetIndex);

@@ -169,6 +169,19 @@ public readonly partial struct Money<TCurrency>
     /// for retail-tax workflows) must be applied. The <c>*</c> operator forces banker's rounding because operator
     /// signatures cannot accept a rounding-mode parameter.
     /// </remarks>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// using Bodu.Financial;
+    /// using Bodu.Financial.Currencies;
+    ///
+    /// var price = new Money<USD>(2.125m);   // stored as 2.12 (banker's rounding)
+    ///
+    /// // Apply a retail-style 8.25% tax, rounding the product away from zero.
+    /// Money<USD> tax = price.Multiply(0.0825m, MidpointRounding.AwayFromZero);
+    ///]]>
+    /// </code>
+    /// </example>
     public Money<TCurrency> Multiply(decimal multiplier, MidpointRounding rounding) =>
         new(_amount * multiplier, rounding);
 

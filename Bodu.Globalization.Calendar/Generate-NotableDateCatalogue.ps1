@@ -4,7 +4,7 @@
 
 .DESCRIPTION
     Parses every notable-date XML resource (the common catalogues in Bodu.Globalization.Calendar plus the
-    three Calendar.Data.* region packs and the europe-common hub), resolves the import graph the same way the
+    five Calendar.Data.* region packs and the per-region common hubs), resolves the import graph the same way the
     runtime loader does (NotableDateResourceLoader.ResolveImports / SelectImportedConcepts / ApplyUse), and
     renders a small set of crisp DocFX markdown pages. The pages catalogue WHAT notable dates exist (by theme
     and by region) and HOW regions and territories differ — deliberately without restating the calculation
@@ -25,6 +25,12 @@
 
 .PARAMETER EuropePath
     Path to the Europe data-pack Resources directory (also hosts europe-common.xml).
+
+.PARAMETER MiddleEastPath
+    Path to the Middle East data-pack Resources directory (also hosts middleeast-common.xml).
+
+.PARAMETER AfricaPath
+    Path to the Africa data-pack Resources directory (also hosts africa-common.xml).
 
 .PARAMETER OutputDir
     Directory the generated catalogue markdown pages are written to.
@@ -54,6 +60,8 @@ param(
     [string]$AmericasPath        = (Join-Path $PSScriptRoot '..' 'Bodu.Globalization.Calendar.Data' 'Bodu.Globalization.Calendar.Americas'    'src' 'Resources'),
     [string]$AsiaPacificPath     = (Join-Path $PSScriptRoot '..' 'Bodu.Globalization.Calendar.Data' 'Bodu.Globalization.Calendar.AsiaPacific' 'src' 'Resources'),
     [string]$EuropePath          = (Join-Path $PSScriptRoot '..' 'Bodu.Globalization.Calendar.Data' 'Bodu.Globalization.Calendar.Europe'      'src' 'Resources'),
+    [string]$MiddleEastPath      = (Join-Path $PSScriptRoot '..' 'Bodu.Globalization.Calendar.Data' 'Bodu.Globalization.Calendar.MiddleEast' 'src' 'Resources'),
+    [string]$AfricaPath          = (Join-Path $PSScriptRoot '..' 'Bodu.Globalization.Calendar.Data' 'Bodu.Globalization.Calendar.Africa'     'src' 'Resources'),
     [string]$OutputDir           = (Join-Path $PSScriptRoot '..' 'docs' 'guides' 'calendar' 'catalogue'),
     [string]$TocPath             = (Join-Path $PSScriptRoot '..' 'docs' 'guides' 'toc.yml'),
     [string]$XsdPath             = (Join-Path $PSScriptRoot 'src' 'Globalization.Calendar' 'NotableDates.xsd'),
@@ -93,6 +101,8 @@ $RegionPages = @(
     @{ File = 'region-americas.md';     Title = 'Americas region packs';     Bundle = 'Americas' }
     @{ File = 'region-asia-pacific.md'; Title = 'Asia-Pacific region packs'; Bundle = 'AsiaPacific' }
     @{ File = 'region-europe.md';       Title = 'Europe region packs';       Bundle = 'Europe' }
+    @{ File = 'region-middle-east.md';  Title = 'Middle East region packs';  Bundle = 'MiddleEast' }
+    @{ File = 'region-africa.md';       Title = 'Africa region packs';        Bundle = 'Africa' }
 )
 
 # Category display order / rank for grouping within a region.
@@ -127,6 +137,8 @@ $ResourceDirs = [ordered]@{
     Americas    = $AmericasPath
     AsiaPacific = $AsiaPacificPath
     Europe      = $EuropePath
+    MiddleEast  = $MiddleEastPath
+    Africa      = $AfricaPath
 }
 foreach ($kv in $ResourceDirs.GetEnumerator()) {
     if (-not (Test-Path -LiteralPath $kv.Value)) {
@@ -136,7 +148,7 @@ foreach ($kv in $ResourceDirs.GetEnumerator()) {
 
 # stem -> [pscustomobject]{ Path; Dir; Bundle }
 $script:Index = @{}
-$BundleOfDir = @{ Common = $null; Americas = 'Americas'; AsiaPacific = 'AsiaPacific'; Europe = 'Europe' }
+$BundleOfDir = @{ Common = $null; Americas = 'Americas'; AsiaPacific = 'AsiaPacific'; Europe = 'Europe'; MiddleEast = 'MiddleEast'; Africa = 'Africa' }
 foreach ($kv in $ResourceDirs.GetEnumerator()) {
     foreach ($f in (Get-ChildItem -LiteralPath $kv.Value -Filter '*.xml' -File | Sort-Object Name)) {
         $stem = [System.IO.Path]::GetFileNameWithoutExtension($f.Name)
@@ -754,6 +766,8 @@ $tocEntries = @(
     [pscustomobject]@{ Name = 'Americas region packs'; Href = 'region-americas.md' }
     [pscustomobject]@{ Name = 'Asia-Pacific region packs'; Href = 'region-asia-pacific.md' }
     [pscustomobject]@{ Name = 'Europe region packs'; Href = 'region-europe.md' }
+    [pscustomobject]@{ Name = 'Middle East region packs'; Href = 'region-middle-east.md' }
+    [pscustomobject]@{ Name = 'Africa region packs'; Href = 'region-africa.md' }
     [pscustomobject]@{ Name = 'Cross-region comparison matrix'; Href = 'comparison-matrix.md' }
 )
 # The guides TOC nests libraries under topic nodes: the calendar library sits at 4-space indent below

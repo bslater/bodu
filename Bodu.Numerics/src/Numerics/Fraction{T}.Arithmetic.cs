@@ -19,6 +19,19 @@ public readonly partial struct Fraction<T>
     /// <exception cref="OverflowException">
     /// Thrown if the canonical result does not fit <typeparamref name="T" />.
     /// </exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// var a = Fraction<int>.Parse("1/2");
+    /// var b = Fraction<int>.Parse("1/4");
+    ///
+    /// var sum = Fraction<int>.Add(a, b);          // 3/4
+    /// var difference = Fraction<int>.Subtract(a, b);  // 1/4
+    /// var product = Fraction<int>.Multiply(a, b);     // 1/8
+    /// var quotient = Fraction<int>.Divide(a, b);      // 2
+    ///]]>
+    /// </code>
+    /// </example>
     public static Fraction<T> Add(Fraction<T> left, Fraction<T> right) =>
         left + right;
 
@@ -87,6 +100,14 @@ public readonly partial struct Fraction<T>
     /// <exception cref="OverflowException">
     /// Thrown if the reciprocal cannot be represented by <typeparamref name="T" />.
     /// </exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// var value = Fraction<int>.Parse("3/4");
+    /// var reciprocal = value.Reciprocal();    // 4/3
+    ///]]>
+    /// </code>
+    /// </example>
     public Fraction<T> Reciprocal()
     {
         return !IsZero
@@ -108,6 +129,17 @@ public readonly partial struct Fraction<T>
     /// Thrown if the canonical result does not fit <typeparamref name="T" />, or if the magnitude of a negative
     /// <paramref name="exponent" /> exceeds <see cref="int.MaxValue" />.
     /// </exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// var value = Fraction<int>.Parse("2/3");
+    ///
+    /// var cubed = value.Pow(3);       // 8/27
+    /// var inverse = value.Pow(-2);    // 9/4  (reciprocal raised to the magnitude)
+    /// var identity = value.Pow(0);    // 1
+    ///]]>
+    /// </code>
+    /// </example>
     public Fraction<T> Pow(int exponent)
     {
         if (exponent == 0)

@@ -18,6 +18,18 @@ public readonly partial struct Fraction<T>
     /// The continued-fraction coefficients <c>[a0; a1, a2, ...]</c>, where the leading coefficient carries the sign and
     /// every following coefficient is strictly positive.
     /// </returns>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// // 13/8 expands to [1; 1, 1, 1, 2].
+    /// var value = Fraction<int>.Parse("13/8");
+    /// int[] terms = value.ToContinuedFraction();      // [1, 1, 1, 1, 2]
+    ///
+    /// // The coefficients reconstruct the original value.
+    /// var roundTrip = Fraction<int>.FromContinuedFraction(terms);  // 13/8
+    ///]]>
+    /// </code>
+    /// </example>
     public T[] ToContinuedFraction()
     {
         var coefficients = new List<T>();
@@ -90,6 +102,15 @@ public readonly partial struct Fraction<T>
     /// rational value subject to the denominator bound, matching the behaviour of the best-approximation algorithm used
     /// by other rational-number libraries.
     /// </remarks>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// // Approximate pi (355/113) with a denominator no greater than 100.
+    /// var pi = Fraction<int>.Parse("355/113");
+    /// var approx = pi.LimitDenominator(100);      // 311/99
+    ///]]>
+    /// </code>
+    /// </example>
     public Fraction<T> LimitDenominator(T maxDenominator)
     {
         if (T.IsZero(maxDenominator) || T.IsNegative(maxDenominator))

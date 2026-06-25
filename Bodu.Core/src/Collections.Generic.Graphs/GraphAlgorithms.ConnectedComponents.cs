@@ -19,6 +19,18 @@ public static partial class GraphAlgorithms
     /// For a directed graph this yields the weakly connected components — vertices are grouped without regard to edge
     /// direction. The partition is computed with a <see cref="DisjointSet{T}" /> over the graph's edges.
     /// </remarks>
+    /// <example>
+    ///<![CDATA[
+    /// var graph = new Graph<int>(GraphKind.Undirected);
+    /// graph.AddEdge(1, 2);
+    /// graph.AddEdge(2, 3);
+    /// graph.AddEdge(10, 11);
+    /// graph.AddVertex(20);   // isolated vertex
+    ///
+    /// // Three components: { 1, 2, 3 }, { 10, 11 }, { 20 }.
+    /// var components = GraphAlgorithms.ConnectedComponents(graph);
+    ///]]>
+    /// </example>
     public static IReadOnlyList<IReadOnlyList<T>> ConnectedComponents<T>(IReadOnlyGraph<T> graph)
         where T : notnull
     {

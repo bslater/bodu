@@ -24,6 +24,24 @@ public readonly partial struct Interval<T> :
     /// <exception cref="FormatException">
     /// Thrown when <paramref name="s" /> is not a valid interval representation.
     /// </exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// // ISO 31-11 bracket notation; the bracket style selects endpoint inclusivity.
+    /// var closedOpen = Interval<int>.Parse("[1, 5)", null);   // closed lower, open upper
+    /// var open = Interval<int>.Parse("(0, 1)", null);         // both endpoints excluded
+    /// var empty = Interval<int>.Parse("∅", null);             // the empty interval
+    ///
+    /// // Round-trip: a parsed interval formats back to its bracket notation.
+    /// string text = closedOpen.ToString();                    // "[1, 5)"
+    ///
+    /// if (!Interval<int>.TryParse("1..5", null, out var parsed))
+    /// {
+    ///     // reached — "1..5" is not ISO 31-11 notation
+    /// }
+    ///]]>
+    /// </code>
+    /// </example>
     public static Interval<T> Parse(string s, IFormatProvider? provider)
     {
         ArgumentNullException.ThrowIfNull(s);

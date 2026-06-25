@@ -18,6 +18,17 @@ public static partial class GraphAlgorithms
     /// <returns>The vertices in an order where every edge points from an earlier vertex to a later one.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="graph" /> is <see langword="null" />.</exception>
     /// <exception cref="InvalidOperationException">The graph is undirected, or it contains a cycle.</exception>
+    /// <example>
+    ///<![CDATA[
+    /// var graph = new Graph<string>(GraphKind.Directed);
+    /// graph.AddEdge("a", "b");
+    /// graph.AddEdge("b", "c");
+    /// graph.AddEdge("c", "a");   // introduces a cycle
+    ///
+    /// // Throws InvalidOperationException because the graph is cyclic.
+    /// var order = GraphAlgorithms.TopologicalSort(graph);
+    ///]]>
+    /// </example>
     public static IReadOnlyList<T> TopologicalSort<T>(IReadOnlyGraph<T> graph)
         where T : notnull
     {
@@ -40,6 +51,18 @@ public static partial class GraphAlgorithms
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="graph" /> is <see langword="null" />.</exception>
     /// <exception cref="InvalidOperationException">The graph is undirected.</exception>
+    /// <example>
+    ///<![CDATA[
+    /// var graph = new Graph<string>(GraphKind.Directed);
+    /// graph.AddEdge("compile", "link");
+    /// graph.AddEdge("link", "run");
+    ///
+    /// if (GraphAlgorithms.TryTopologicalSort(graph, out var order))
+    /// {
+    ///     // order respects every edge, e.g. compile, link, run.
+    /// }
+    ///]]>
+    /// </example>
     public static bool TryTopologicalSort<T>(IReadOnlyGraph<T> graph, out IReadOnlyList<T> order)
         where T : notnull
     {

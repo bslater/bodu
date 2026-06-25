@@ -14,6 +14,19 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// Each child is registered as a keyed <see cref="IDatedExchangeRateProvider" /> (and resolvable by name through the
 /// service catalog) wrapped in its own <see cref="CachingExchangeRateProvider" />, so a specific source can be obtained
 /// directly while the aggregator applies the configured strategy and routing.
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// services.AddFinancialService()
+///         .AddAggregatedExchangeRateProvider(agg => agg
+///             .AddCachedChild<RbaExchangeRateProvider>("RBA")
+///             .AddCachedChild<EcbExchangeRateProvider>("ECB")
+///             .UseDefaultStrategy(new PriorityFallbackStrategy())
+///             .MapPair(new ExchangeRatePair("AUD", "USD"), "RBA", "ECB")
+///             .MapPair(new ExchangeRatePair("EUR", "USD"), new AverageStrategy(), "ECB", "RBA"));
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public interface IAggregatedExchangeRateBuilder
 {

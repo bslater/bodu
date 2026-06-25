@@ -25,6 +25,19 @@ namespace Bodu.Collections.Generic.Graphs;
 /// <see cref="DisjointSet{T}" /> for an element-keyed equivalent.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// var ds = new DisjointSet(5);   // elements 0..4, each in its own set
+/// ds.Union(0, 1);
+/// ds.Union(2, 3);
+///
+/// bool linked = ds.AreConnected(0, 1); // true
+/// bool apart = ds.AreConnected(0, 3);  // false
+/// int sets = ds.SetCount;              // 3 -> {0,1} {2,3} {4}
+///]]>
+/// </code>
+/// </example>
 [DebuggerDisplay("Count = {Count}, Sets = {SetCount}")]
 public sealed class DisjointSet
 {

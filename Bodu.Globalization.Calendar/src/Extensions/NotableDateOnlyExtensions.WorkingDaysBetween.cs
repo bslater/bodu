@@ -20,6 +20,16 @@ public static partial class NotableDateOnlyExtensions
     /// <exception cref="ArgumentNullException">
     /// <paramref name="service" /> or <paramref name="territory" /> is <see langword="null" />.
     /// </exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// INotableDateService service = AmericasCalendarData.CreateService("US");
+    ///
+    /// // Billable working days across a project window, excluding weekends and holidays.
+    /// int days = new DateOnly(2026, 7, 1).WorkingDaysBetween(new DateOnly(2026, 7, 31), service, "US");
+    ///]]>
+    /// </code>
+    /// </example>
     public static int WorkingDaysBetween(this DateOnly start, DateOnly end, INotableDateService service, string territory, WeekPattern? workingWeek = null)
     {
         ThrowHelper.ThrowIfNull(service);

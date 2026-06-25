@@ -33,6 +33,19 @@ public readonly partial struct Money<TCurrency> :
     /// <exception cref="FormatException">
     /// Thrown when <paramref name="format" /> is not a supported specifier.
     /// </exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// using Bodu.Financial;
+    /// using Bodu.Financial.Currencies;
+    ///
+    /// var amount = new Money<USD>(1234.56m);
+    /// string general = amount.ToString();        // "USD 1,234.56" (current culture grouping)
+    /// string bare = amount.ToString("F");        // "1234.56" (no designator, no grouping)
+    /// string roundTrip = amount.ToString("R");   // "USD 1234.56" (invariant, parser-friendly)
+    ///]]>
+    /// </code>
+    /// </example>
     public string ToString(string? format) =>
         Format(format, CultureInfo.CurrentCulture);
 

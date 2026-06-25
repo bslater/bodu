@@ -72,6 +72,11 @@ Parse, edit, and write structured documents — typed value models with streamin
   <p>The forward-only <code>CreateReader</code> / <code>CreateWriter</code> surface — sync and async, cancellation, and input-size limits.</p>
 </div>
 
+<div class="bodu-card">
+  <h3><a href="../formats/choosing-a-format.md">Choosing a text format</a></h3>
+  <p>Delimited vs. DotEnv vs. INI — the shape of data each format suits and how to pick between them.</p>
+</div>
+
 </div>
 
 ## Bodu.Text.Bencode and Bodu.Text.Toml — object serializers
@@ -103,6 +108,11 @@ POCO ⇄ wire format, `System.Text.Json`-shaped. Deliberate twins — everything
 <div class="bodu-card">
   <h3><a href="../serialization/attributes.md">Mapping attributes</a></h3>
   <p>Rename, ignore, order, require, and capture members with the <code>[Toml…]</code> / <code>[Bencode…]</code> attribute family.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="../serialization/polymorphic-converters.md">Polymorphic converters</a></h3>
+  <p>Serialize and round-trip type hierarchies — emitting a type discriminator and dispatching to the right derived type on read.</p>
 </div>
 
 </div>

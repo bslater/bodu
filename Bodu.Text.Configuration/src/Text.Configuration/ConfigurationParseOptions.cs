@@ -34,6 +34,22 @@ namespace Bodu.Text.Configuration;
 /// instance between parse and <see cref="ConfigurationResolveOptions" /> keeps the parsed model and the resolved view's
 /// lookups consistent. Instances are safe to cache and share across threads because every property is <c>init</c>-only.
 /// </para>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // Strict structure, but collect every diagnostic instead of failing fast.
+/// var options = new ConfigurationParseOptions
+/// {
+///     Profile        = ConfigurationProfile.Strict,
+///     DiagnosticMode = ConfigurationDiagnosticMode.Collect,
+/// };
+///
+/// ConfigurationParseResult result = ConfigurationDocument.ParseWithDiagnostics(text, options);
+/// foreach (ConfigurationDiagnostic d in result.Diagnostics)
+///     Console.WriteLine(d);
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public sealed partial class ConfigurationParseOptions
 {

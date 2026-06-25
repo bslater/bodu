@@ -133,6 +133,20 @@ public sealed partial class AsyncSemaphore
     /// <remarks>
     /// The returned <see cref="ValueTask" /> must be awaited exactly once.
     /// </remarks>
+    /// <example>
+    ///<![CDATA[
+    /// // Manual permit management; pair every WaitAsync with a Release in a finally block.
+    /// await _throttle.WaitAsync();
+    /// try
+    /// {
+    ///     await DoWorkAsync();
+    /// }
+    /// finally
+    /// {
+    ///     _throttle.Release();
+    /// }
+    ///]]>
+    /// </example>
     public ValueTask WaitAsync() =>
         WaitAsync(CancellationToken.None);
 

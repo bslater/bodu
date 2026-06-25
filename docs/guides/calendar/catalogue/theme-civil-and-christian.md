@@ -14,7 +14,7 @@ Concepts defined by the shared catalogues in this theme. A region pack imports t
 | International Workers' Day | PublicHoliday | Yes | Fixed 1 May |
 | New Year's Eve | Cultural | — | Fixed 31 Dec |
 
-_Observed by:_ [AU](region-asia-pacific.md), [CA](region-americas.md), [CN](region-asia-pacific.md), [JP](region-asia-pacific.md), [KR](region-asia-pacific.md), [NZ](region-asia-pacific.md), [SG](region-asia-pacific.md), [US](region-americas.md)
+_Observed by:_ [AU](region-asia-pacific.md), [CN](region-asia-pacific.md), [HK](region-asia-pacific.md), [ID](region-asia-pacific.md), [JP](region-asia-pacific.md), [KR](region-asia-pacific.md), [NZ](region-asia-pacific.md), [PH](region-asia-pacific.md), [SG](region-asia-pacific.md), [TH](region-asia-pacific.md), [TW](region-asia-pacific.md), [VN](region-asia-pacific.md)
 
 ## christian-western
 
@@ -42,7 +42,7 @@ _Observed by:_ [AU](region-asia-pacific.md), [CA](region-americas.md), [CN](regi
 | Whit Monday | PublicHoliday | Yes | Easter +50 |
 | Whit Sunday | Religious | — | Easter +49 |
 
-_Observed by:_ [AU](region-asia-pacific.md), [CA](region-americas.md), [DK](region-europe.md), [IN](region-asia-pacific.md), [KR](region-asia-pacific.md), [NZ](region-asia-pacific.md), [SG](region-asia-pacific.md), [US](region-americas.md)
+_Observed by:_ [AU](region-asia-pacific.md), [DK](region-europe.md), [HK](region-asia-pacific.md), [ID](region-asia-pacific.md), [IN](region-asia-pacific.md), [JO](region-middle-east.md), [KR](region-asia-pacific.md), [NZ](region-asia-pacific.md), [PH](region-asia-pacific.md), [SG](region-asia-pacific.md)
 
 ## christian-orthodox
 
@@ -88,9 +88,10 @@ _Observed by:_ [AT](region-europe.md), [BE](region-europe.md), [BG](region-europ
 
 ---
 
-*Generated from the notable-date XML resources by `Bodu.Globalization.Calendar/Generate-NotableDateCatalogue.ps1`. Regenerated (UTC): 2026-06-05T03:58:56Z.* For the calculation recipes deliberately omitted here, see [Territories and regional composition](../territories.md), [Working with non-Gregorian calendars](../non-gregorian-calendars.md), and [Holiday patterns](../holiday-patterns.md); for the API, the <xref:Bodu.Globalization.Calendar> namespace.
+*Generated from the notable-date XML resources by `Bodu.Globalization.Calendar/Generate-NotableDateCatalogue.ps1`. Regenerated (UTC): 2026-06-25T01:30:35Z.* For the calculation recipes deliberately omitted here, see [Territories and regional composition](../territories.md), [Working with non-Gregorian calendars](../non-gregorian-calendars.md), and [Holiday patterns](../holiday-patterns.md); for the API, the <xref:Bodu.Globalization.Calendar> namespace.
 
 ## See also
 
 - **[Globalization & Calendars guides](../../topics/globalization-and-calendars.md)** — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.
 - **[Bodu.Globalization.Calendar guides](../index.md)** — the full guide index for the calendar runtime and its companions.
+

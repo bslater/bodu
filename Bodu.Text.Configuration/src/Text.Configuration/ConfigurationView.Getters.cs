@@ -21,6 +21,18 @@ public sealed partial class ConfigurationView
     /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
     /// <exception cref="KeyNotFoundException">The key is absent from the resolved view.</exception>
     /// <exception cref="FormatException">The value cannot be parsed as <typeparamref name="T" />.</exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// ConfigurationView view = ConfigurationDocument.Parse(text).Resolve("src/Foo.cs");
+    ///
+    /// // Parse any ISpanParsable<T> directly from the resolved view.
+    /// int     port    = view.GetValue<int>("server:port");
+    /// double  ratio   = view.GetValue<double>("cache:fill:ratio");
+    /// Guid    tenant  = view.GetValue<Guid>("tenant:id");
+    ///]]>
+    /// </code>
+    /// </example>
     public T GetValue<T>(string key)
         where T : ISpanParsable<T>
     {
@@ -326,6 +338,19 @@ public sealed partial class ConfigurationView
     /// parsing should call <see cref="Enum.Parse(System.Type, string, bool)" /> against
     /// <see cref="GetString(string)" /> instead.
     /// </para>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// ConfigurationView view = ConfigurationDocument.Parse(text).Resolve("src/Foo.cs");
+    ///
+    /// // Names parse case-insensitively; undefined integers are rejected.
+    /// LogLevel level = view.GetEnum<LogLevel>("logging:level");
+    ///
+    /// // Fall back when the key is absent (a malformed value still throws).
+    /// LogLevel effective = view.GetEnum("logging:level", LogLevel.Information);
+    ///]]>
+    /// </code>
+    /// </example>
     /// </remarks>
     public TEnum GetEnum<TEnum>(string key)
         where TEnum : struct, Enum

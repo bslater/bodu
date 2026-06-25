@@ -36,6 +36,20 @@ namespace Bodu.Financial;
 /// <see cref="Money" />/<see cref="Money{TCurrency}" /> are rounded settlement values, <see cref="CalculatedMoney" />
 /// is deferred-rounding decimal, and the <c>Fraction</c> APIs are exact rational.
 /// </para>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.Financial;
+///
+/// // Carry full decimal precision through the calculation chain - no rounding per step.
+/// var principal = new CalculatedMoney(1000m, CurrencyCode.USD);
+/// CalculatedMoney withInterest = principal * 1.0525m * 1.0525m;   // compounded, unrounded
+///
+/// // Round exactly once, at the settlement boundary.
+/// Money settled = withInterest.RoundToMoney();                    // 1,107.76 USD
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 [DebuggerDisplay("{Amount} {IsoCodeOrEmpty,nq} (unrounded)")]
 public readonly partial struct CalculatedMoney

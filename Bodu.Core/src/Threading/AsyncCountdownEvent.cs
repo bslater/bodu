@@ -29,6 +29,23 @@ namespace Bodu.Threading;
 /// stays signaled and the count cannot be raised again. Create a new instance to count down a second time.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // Wait for a fixed number of parallel jobs to finish (fan-in).
+/// var remaining = new AsyncCountdownEvent(initialCount: 3);
+///
+/// foreach (var job in jobs)
+///     _ = Task.Run(async () =>
+///     {
+///         await job.RunAsync();
+///         remaining.Signal(); // last Signal drives the count to zero
+///     });
+///
+/// await remaining.WaitAsync(); // completes once all three have signaled
+///]]>
+/// </code>
+/// </example>
 [DebuggerDisplay("CurrentCount = {CurrentCount}")]
 public sealed class AsyncCountdownEvent
 {

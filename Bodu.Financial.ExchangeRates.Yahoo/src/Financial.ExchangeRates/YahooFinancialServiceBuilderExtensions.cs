@@ -58,6 +58,20 @@ public static class YahooFinancialServiceBuilderExtensions
     /// from <see cref="WebExchangeRateProviderOptions.HttpTimeout" />, the <see cref="HttpClient.Timeout" /> is set to
     /// <see cref="Timeout.InfiniteTimeSpan" /> so the two timeout mechanisms do not compete.
     /// </para>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// IServiceCollection services = new ServiceCollection();
+    ///
+    /// services
+    ///     .AddFinancialService(configuration)
+    ///     .AddYahooExchangeRates(
+    ///         configuration,
+    ///         configure: options => options.UserAgent = "my-app/1.0",
+    ///         configureResilience: resilience => resilience.Retry.MaxRetryAttempts = 2);
+    ///]]>
+    /// </code>
+    /// </example>
     /// </remarks>
     public static IFinancialServiceBuilder AddYahooExchangeRates(
         this IFinancialServiceBuilder builder,

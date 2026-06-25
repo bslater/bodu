@@ -30,6 +30,18 @@ public readonly partial struct CalculatedMoney
     /// scale because a settlement value must carry a concrete precision. When the resolved scale differs from the
     /// registered minor units (or the currency is unregistered) the result carries the resolved scale explicitly.
     /// </remarks>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// using Bodu.Financial;
+    ///
+    /// var calc = new CalculatedMoney(10m, CurrencyCode.USD).Divide(3m);   // 3.3333... USD, unrounded
+    ///
+    /// Money defaultRule = calc.RoundToMoney();                            // 3.33 USD (banker's rounding)
+    /// Money awayFromZero = calc.RoundToMoney(MidpointRounding.AwayFromZero);
+    ///]]>
+    /// </code>
+    /// </example>
     public Money RoundToMoney(MonetaryContext? context = null)
     {
         if (_code == CurrencyCode.None)

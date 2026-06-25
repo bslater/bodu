@@ -36,6 +36,21 @@ public static class BoeServiceCollectionExtensions
     /// <exception cref="ArgumentException">
     /// Thrown when <paramref name="sectionName" /> is empty or white space.
     /// </exception>
+    /// <remarks>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// IServiceCollection services = new ServiceCollection();
+    ///
+    /// // One call wires up the core financial services plus the Bank of England provider.
+    /// services.AddBoeReferenceRates(configuration);
+    ///
+    /// IServiceProvider provider = services.BuildServiceProvider();
+    /// var rates = provider.GetRequiredService<IDatedExchangeRateProvider>();
+    ///]]>
+    /// </code>
+    /// </example>
+    /// </remarks>
     public static IFinancialServiceBuilder AddBoeReferenceRates(
         this IServiceCollection services,
         IConfiguration? configuration = null,

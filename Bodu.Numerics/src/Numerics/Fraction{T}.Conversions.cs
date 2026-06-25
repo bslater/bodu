@@ -15,6 +15,22 @@ public readonly partial struct Fraction<T>
     /// </summary>
     /// <param name="value">The integer value to lift into a rational value.</param>
     /// <returns>A <see cref="Fraction{T}" /> with denominator one.</returns>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// // Integers lift implicitly to a whole-number fraction.
+    /// Fraction<int> whole = 5;                         // 5/1
+    ///
+    /// // double and decimal convert explicitly to their exact rational value.
+    /// var fromDouble = (Fraction<int>)0.25;            // 1/4
+    /// var fromDecimal = (Fraction<int>)1.5m;           // 3/2
+    ///
+    /// // Convert back to floating point or to the truncated integer part.
+    /// double approx = (double)fromDecimal;             // 1.5
+    /// int truncated = fromDecimal.ToInteger();         // 1
+    ///]]>
+    /// </code>
+    /// </example>
     public static implicit operator Fraction<T>(T value)
     {
         return new(value);

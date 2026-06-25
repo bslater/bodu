@@ -34,6 +34,27 @@ namespace Bodu.Financial;
 /// <see cref="Serialization.FinancialJsonSerializerOptionsExtensions.AddFinancialJsonConverters(System.Text.Json.JsonSerializerOptions, Serialization.FinancialJsonPolicy)" />
 /// .
 /// </para>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.Financial;
+/// using Bodu.Financial.Currencies;
+///
+/// // Every mutator returns a new bag; same-currency amounts are summed automatically.
+/// MoneyBag portfolio = MoneyBag.Empty
+///     .Add(new Money(1_000m, CurrencyCode.USD))
+///     .Add(new Money(250m, CurrencyCode.USD))      // folds into the USD slot -> 1,250.00 USD
+///     .Add<EUR>(new Money<EUR>(500m));             // typed overload
+///
+/// // Merge two bags, summing per currency.
+/// MoneyBag combined = portfolio.Combine(new MoneyBag([new Money(200m, CurrencyCode.GBP)]));
+///
+/// // Read a single currency back, typed and null-safe.
+/// Money<USD>? usd = combined.GetBalance<USD>();    // 1,250.00 USD
+/// int currencies = combined.Count;                 // 3 (USD, EUR, GBP)
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 [DebuggerDisplay("{Count} currencies")]
 [JsonConverter(typeof(MoneyBagJsonConverter))]

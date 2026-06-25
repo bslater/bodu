@@ -161,6 +161,84 @@ each leftover minor unit is handed to the share with the largest
 fractional remainder (here, one per share from the start), so the parts
 always sum back to the original amount with no penny lost or invented.
 
+## Allocation in depth
+
+The two `Allocate` overloads above cover the common cases; this section pins
+down the edge behaviour and how allocation interacts with `MoneyBag` and the
+`MonetaryContext`.
+
+**The residual rule is a fixed policy, not a parameter.** Both overloads
+distribute leftover minor units by the largest-remainder (Hamilton) method —
+each slot receives one extra unit in descending order of its fractional
+remainder, ties broken by ascending input order. That algorithm is the single
+member of <xref:Bodu.Financial.AllocationPolicy> (`LargestRemainder`), and it is
+also the value carried by <xref:Bodu.Financial.MonetaryContext> through its
+`Allocation` property. Note that `Allocate(int)` and
+`Allocate(ReadOnlySpan<decimal>)` do **not** take a `MonetaryContext` — they
+always round to the currency's own minor-unit precision and always sum back to
+the original. The context's `Allocation` policy documents the strategy the
+library applies; it is not a per-call knob on these methods today.
+
+**Sign is preserved; the residual flows in the amount's direction.** A negative
+total distributes its leftover units the same way a positive one does, so the
+parts still sum exactly:
+
+```csharp
+new Money<USD>(10m).Allocate(3);    // [3.34, 3.33, 3.33]  → 10.00
+new Money<USD>(-10m).Allocate(3);   // [-3.34, -3.33, -3.33] → -10.00
+```
+
+**Zero-ratio slots and small amounts.** A zero weight always produces a zero
+share and never receives a residual unit; a positive total with fewer minor
+units than parts fills the leading slots and leaves the rest at zero:
+
+```csharp
+decimal[] ratios = { 0m, 1m, 1m };
+new Money<USD>(0.03m).Allocate(ratios);   // [0.00, 0.02, 0.01]
+new Money<USD>(0.02m).Allocate(5);        // [0.01, 0.01, 0, 0, 0]
+```
+
+Ratios that are all zero, contain a negative weight, or are empty throw
+`ArgumentException`; `Allocate(0)` or a negative part count throws
+`ArgumentOutOfRangeException`.
+
+**`MoneyBag` aggregates across currencies but does not allocate them as a unit.**
+A <xref:Bodu.Financial.MoneyBag> tracks one balance per currency, so to split a
+multi-currency position you allocate each currency's slot independently — each
+`Allocate` call sums back exactly within its own currency:
+
+```csharp
+MoneyBag bag = MoneyBag.Empty
+    .Add(new Money<USD>(100m))
+    .Add(new Money<EUR>(99m));
+
+Money<USD>[] usdSplit = bag.GetBalance<USD>()!.Value.Allocate(3);   // [33.34, 33.33, 33.33]
+Money<EUR>[] eurSplit = bag.GetBalance<EUR>()!.Value.Allocate(3);   // [33.00, 33.00, 33.00]
+```
+
+**Where `MonetaryContext` does change rounding.** The context governs the
+*operation* boundaries — multiplication, division, conversion, and the
+settlement of a `CalculatedMoney` — not the residual distribution. So when you
+need a non-banker's rounding rule before splitting, apply it at the multiply step
+and allocate the rounded result, which then sums back exactly under the fixed
+largest-remainder rule:
+
+```csharp
+MonetaryContext awayFromZero = MonetaryContext.Default with
+{
+    Rounding = new MidpointRoundingStrategy(MidpointRounding.AwayFromZero),
+};
+
+Money<USD> commission = new Money<USD>(17m).Multiply(0.125m, awayFromZero);  // 2.13 USD (banker's → 2.12)
+Money<USD>[] shares = commission.Allocate(3);                                // sums to 2.13
+```
+
+`MoneyBag.ConvertTo<TTarget>` takes a related but separate
+<xref:Bodu.Financial.MoneyBagConversionRoundingPolicy> — `SumRawThenRound`
+(round once after summing every converted balance, the default) or
+`RoundEachCurrencyThenSum` (round each converted balance first) — which decides
+where the single rounding event lands when collapsing a bag to one currency.
+
 ## Exact arithmetic for long chains
 
 Every operation that needs to round (`*`, `/`, `Convert`) rounds at

@@ -326,6 +326,22 @@ public sealed partial class NotableDateDocumentBuilder
     /// <exception cref="NotSupportedException">
     /// A JSON target is requested but the document uses a feature the JSON subset cannot represent.
     /// </exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// NotableDateDocumentBuilder builder = NotableDateDocumentBuilder.Create("contoso-holidays")
+    ///     .AddNotableDate("new-year", "New Year's Day", NotableDateCategory.PublicHoliday, c => c
+    ///         .AddRule("fixed", r => r.Fixed(1, 1)));
+    ///
+    /// // The extension selects the format: .xml writes XML, .json writes JSON.
+    /// builder.Save("contoso-holidays.xml");
+    /// builder.Save("contoso-holidays.json");
+    ///
+    /// // Reload the document later and build a service over it.
+    /// NotableDateResource resource = NotableDateDocumentBuilder.Load("contoso-holidays.xml").Build();
+    ///]]>
+    /// </code>
+    /// </example>
     public void Save(string path)
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(path);

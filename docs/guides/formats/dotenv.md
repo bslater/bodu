@@ -13,7 +13,7 @@ For the vocabulary used below (document, entry, comment, parse options) see [Cor
 ## Pattern 1 — parse a `.env` file
 
 ```csharp
-using Bodu.Text.Formats;
+using Bodu.Text.DotEnv;
 
 string envText = """
 # Database connection
@@ -36,7 +36,7 @@ int     port = document.GetValue<int>("DB_PORT");
 ## Pattern 2 — typed lookup
 
 ```csharp
-using Bodu.Text.Formats;
+using Bodu.Text.DotEnv;
 
 int port    = document.GetValue<int>("DB_PORT");
 bool isDev  = document.TryGetValue("FEATURE_FLAGS", out string? flags)
@@ -51,7 +51,7 @@ if (document.TryGetValue<TimeSpan>("REQUEST_TIMEOUT", out TimeSpan timeout))
 ## Pattern 3 — non-throwing parse
 
 ```csharp
-using Bodu.Text.Formats;
+using Bodu.Text.DotEnv;
 
 if (DotEnv.TryParse(source, out DotEnvDocument? document))
 {
@@ -68,7 +68,7 @@ else
 ## Pattern 4 — preserved comments
 
 ```csharp
-using Bodu.Text.Formats;
+using Bodu.Text.DotEnv;
 
 foreach (DotEnvEntry entry in document.Entries)
 {
@@ -84,7 +84,7 @@ By default (`PreserveComments: true`), each full-line comment is attached as a l
 ## Pattern 5 — round-trip through `Format`
 
 ```csharp
-using Bodu.Text.Formats;
+using Bodu.Text.DotEnv;
 
 DotEnvDocument document = DotEnv.Parse(input);
 string roundTrip = DotEnv.Format(document);
@@ -137,7 +137,7 @@ Keys must match the regular expression `[A-Za-z_][A-Za-z0-9_]*` — strict ident
 The `DotEnvExtensions` helpers add fluent overloads:
 
 ```csharp
-using Bodu.Text.Formats;
+using Bodu.Text.DotEnv;
 
 DotEnvDocument doc = envText.ParseDotEnv();
 string output      = doc.FormatDotEnv();

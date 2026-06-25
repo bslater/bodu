@@ -96,6 +96,24 @@ public static class ServiceCollectionExtensions
     /// <exception cref="ArgumentNullException">
     /// <paramref name="services" /> or <paramref name="configure" /> is <see langword="null" />.
     /// </exception>
+    /// <remarks>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// IServiceCollection services = new ServiceCollection();
+    ///
+    /// services.AddFinancialService(builder => builder
+    ///     .AddCurrencyLookup<MyCurrencyLookup>()
+    ///     .AddMonetaryContext("invoicing", new MonetaryContext(CurrencyCode.USD))
+    ///     .AddDatedExchangeRateProvider<MyRateProvider>()
+    ///     .AddFinancialJson(FinancialJsonPolicy.Strict));
+    ///
+    /// // Promote the configured lookup to the ambient default after the provider is built.
+    /// services.BuildServiceProvider().UseCurrencyResolution();
+    ///]]>
+    /// </code>
+    /// </example>
+    /// </remarks>
     public static IFinancialServiceBuilder AddFinancialService(
         this IServiceCollection services,
         Action<IFinancialServiceBuilder> configure)

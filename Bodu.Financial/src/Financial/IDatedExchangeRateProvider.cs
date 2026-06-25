@@ -31,6 +31,25 @@ namespace Bodu.Financial;
 /// may fetch on demand, and the synchronous surface may block to do so (or serve only already-loaded data, at the
 /// implementation's discretion).
 /// </para>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.Financial;
+///
+/// IDatedExchangeRateProvider provider = new FixedDatedExchangeRateProvider(new[]
+/// {
+///     new ExchangeRate(CurrencyCode.USD, CurrencyCode.EUR, new DateOnly(2024, 3, 1), 0.92m, "ECB"),
+/// });
+///
+/// // TryGetRate signals a missing rate without throwing; GetRate throws KeyNotFoundException.
+/// var date = new DateOnly(2024, 3, 1);
+/// if (provider.TryGetRate("USD", "EUR", date, ExchangeRateLookupOptions.Exact, out var result))
+/// {
+///     decimal rate = result.Rate.Rate;   // 0.92
+/// }
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public interface IDatedExchangeRateProvider
 {

@@ -58,6 +58,29 @@ namespace Bodu.Financial;
 /// <see cref="Serialization.FinancialJsonSerializerOptionsExtensions.AddFinancialJsonConverters(System.Text.Json.JsonSerializerOptions, Serialization.FinancialJsonPolicy)" />
 /// .
 /// </para>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.Financial;
+/// using Bodu.Financial.Currencies;
+///
+/// // The currency is part of the type, so the compiler tracks it for you.
+/// var price = new Money<USD>(19.999m);            // 20.00 USD (banker's rounding on construction)
+/// var tax = new Money<USD>(1.60m);
+///
+/// // Same-currency arithmetic is checked at compile time.
+/// Money<USD> total = price + tax;                 // 21.60 USD
+/// bool isDearer = total > price;                  // true
+///
+/// // Scaling re-rounds the product to the minor unit.
+/// Money<USD> tripled = price * 3m;                // 60.00 USD
+///
+/// // Cross-currency mixing is a compile error - use Convert for an explicit FX conversion.
+/// var euros = price.Convert<EUR>(0.92m);          // 18.40 EUR
+/// // _ = total + new Money<EUR>(5m);              // does not compile
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 [DebuggerDisplay("{ToString(),nq}")]
 [JsonConverter(typeof(MoneyOfTCurrencyJsonConverterFactory))]

@@ -85,6 +85,22 @@ public readonly partial struct Money<TCurrency> :
     /// When this method returns <see langword="true" />, the parsed amount; otherwise the default value.
     /// </param>
     /// <returns><see langword="true" /> when parsing succeeded; otherwise <see langword="false" />.</returns>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// using System.Globalization;
+    /// using Bodu.Financial;
+    /// using Bodu.Financial.Currencies;
+    ///
+    /// // A bare decimal, or the ISO code at either end, all parse to the same value.
+    /// var a = Money<USD>.Parse("19.99", CultureInfo.InvariantCulture);
+    /// var b = Money<USD>.Parse("USD 19.99", CultureInfo.InvariantCulture);
+    ///
+    /// // TryParse rejects a mismatched ISO code instead of throwing.
+    /// bool ok = Money<USD>.TryParse("EUR 19.99", CultureInfo.InvariantCulture, out _);   // false
+    ///]]>
+    /// </code>
+    /// </example>
     public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider? provider, out Money<TCurrency> result)
     {
         result = default;

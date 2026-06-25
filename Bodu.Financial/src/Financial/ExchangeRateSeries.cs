@@ -29,6 +29,25 @@ namespace Bodu.Financial;
 /// Use <see cref="ExchangeRateSeriesBuilder" /> to construct or edit observations imperatively before producing a
 /// snapshot via <see cref="ExchangeRateSeriesBuilder.ToSeries" />.
 /// </para>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.Financial;
+///
+/// var series = new ExchangeRateSeries(
+///     new ExchangeRatePair(CurrencyCode.USD, CurrencyCode.EUR),
+///     "ECB",
+///     new[] { (new DateOnly(2024, 3, 1), 0.92m), (new DateOnly(2024, 3, 4), 0.93m) });
+///
+/// // Resolve a date that has no exact observation, falling back to the previous one.
+/// bool ok = series.TryGetRate(
+///     new DateOnly(2024, 3, 3),
+///     ExchangeRateLookupOptions.PreviousWithin(5),
+///     out DateOnly resolvedDate,   // 2024-03-01
+///     out decimal rate);           // 0.92
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 [DebuggerDisplay("{Pair.From,nq}/{Pair.To,nq} ({Provider,nq}) Count={Count}")]
 public sealed class ExchangeRateSeries

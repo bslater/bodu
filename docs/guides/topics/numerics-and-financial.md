@@ -39,6 +39,16 @@ Exact rational arithmetic and first-class numeric ranges over the .NET generic-m
   <p>Round-tripping <code>Fraction&lt;T&gt;</code> and <code>Interval&lt;T&gt;</code> through <code>System.Text.Json</code>.</p>
 </div>
 
+<div class="bodu-card">
+  <h3><a href="../numerics/interval-algebra.md">Interval algebra</a></h3>
+  <p>The set-algebra surface of <code>Interval&lt;T&gt;</code> — intersection, union, difference, adjacency, and the empty-interval rules.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="../numerics/generic-math-constraints.md">Generic math constraints</a></h3>
+  <p>Writing code generic over <code>Fraction&lt;T&gt;</code> and <code>Interval&lt;T&gt;</code> through the .NET <code>INumber&lt;T&gt;</code> / <code>IBinaryInteger&lt;T&gt;</code> abstractions.</p>
+</div>
+
 </div>
 
 [Bodu.Numerics API reference](xref:Bodu.Numerics)

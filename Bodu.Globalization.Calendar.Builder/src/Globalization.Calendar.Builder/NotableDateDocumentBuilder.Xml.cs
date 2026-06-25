@@ -84,6 +84,20 @@ public sealed partial class NotableDateDocumentBuilder
     /// <exception cref="FormatException">
     /// <paramref name="xml" /> is not well-formed or is not a notable-date document.
     /// </exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// // Round-trip a document through its XML form: serialize, then re-parse into an equivalent builder.
+    /// NotableDateDocumentBuilder original = NotableDateDocumentBuilder.Create("contoso-holidays")
+    ///     .AddNotableDate("new-year", "New Year's Day", NotableDateCategory.PublicHoliday, c => c
+    ///         .AddRule("fixed", r => r.Fixed(1, 1)));
+    /// string xml = original.ToXml();
+    ///
+    /// NotableDateDocumentBuilder reparsed = NotableDateDocumentBuilder.FromXml(xml);
+    /// NotableDateResource resource = reparsed.Build();
+    ///]]>
+    /// </code>
+    /// </example>
     public static NotableDateDocumentBuilder FromXml(string xml)
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(xml);

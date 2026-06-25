@@ -27,6 +27,20 @@ namespace Bodu.Text.Bencode.Nodes;
 /// Each node has at most one parent. Adding a node that already belongs to another container throws an
 /// <see cref="InvalidOperationException" />.
 /// </para>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // Parse, edit in place, and re-serialize to canonical Bencode.
+/// BencodeNode? root = BencodeNode.Parse("d3:cowi42ee"u8);
+/// BencodeObject dict = root!.AsObject();
+///
+/// long age = dict["cow"]!.AsValue().GetValue<long>();   // 42
+/// dict["pig"] = BencodeValue.Create("oink");
+///
+/// byte[] bytes = dict.ToByteArray();   // "d3:cow i42e 3:pig 4:oink e" (sorted)
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public abstract class BencodeNode
 {

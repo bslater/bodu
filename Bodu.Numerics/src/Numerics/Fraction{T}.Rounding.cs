@@ -14,6 +14,18 @@ public readonly partial struct Fraction<T>
     /// Returns the largest integer rational value less than or equal to this value.
     /// </summary>
     /// <returns>This value rounded toward negative infinity.</returns>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// var value = Fraction<int>.Parse("7/2");     // 3.5
+    ///
+    /// var floor = value.Floor();      // 3
+    /// var ceiling = value.Ceiling();  // 4
+    /// var truncated = value.Truncate();   // 3
+    /// var rounded = value.Round();    // 4 (ties resolved to the nearest even integer)
+    ///]]>
+    /// </code>
+    /// </example>
     public Fraction<T> Floor() =>
         FromBigInteger(FloorDivide(BigNumerator, BigDenominator), BigInteger.One);
 

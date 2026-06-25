@@ -34,6 +34,28 @@ namespace Bodu.IO.Compound;
 /// written only when <see cref="CompoundFile.Commit" /> is called. On a read-only storage those members throw
 /// <see cref="InvalidOperationException" />.
 /// </para>
+/// <example>
+/// The following example navigates a nested storage, enumerates its children, and reads a named stream from it.
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.IO.Compound;
+///
+/// using CompoundFile file = CompoundFile.OpenRead("message.msg");
+/// foreach (CompoundEntryInfo info in file.RootStorage.EnumerateEntries())
+///     Console.WriteLine($"{info.EntryType}: {info.Name} ({info.Length} bytes)");
+///
+/// if (file.RootStorage.TryOpenStorage("__attach_version1.0_#00000000", out CompoundStorage? attachment))
+/// {
+///     foreach (CompoundEntryInfo stream in attachment.EnumerateStreams())
+///         Console.WriteLine($"attachment stream: {stream.Name}");
+///
+///     if (attachment.TryOpenStream("__substg1.0_3707001F", out CompoundStream? data))
+///         using (data)
+///             data.CopyTo(Console.OpenStandardOutput());
+/// }
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public sealed class CompoundStorage
 {

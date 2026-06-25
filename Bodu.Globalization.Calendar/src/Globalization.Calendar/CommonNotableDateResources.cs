@@ -26,6 +26,22 @@ namespace Bodu.Globalization.Calendar;
 /// Resource names are the bare catalogue identifiers (for example <c>global-core</c> or <c>christian-western</c>),
 /// matching the file names without their extension. Lookups are case-insensitive and the resolved content is cached.
 /// </para>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // Load a territory document whose imports reference the shared catalogues, resolving those
+/// // imports against the bundled common resources.
+/// NotableDateResource resource = NotableDateResourceLoader.Load(
+///     documentXml,
+///     CommonNotableDateResources.Resolver);
+///
+/// NotableDateService service = new(resource);
+///
+/// // Resolve a single catalogue's raw XML directly when needed.
+/// string? christianWestern = CommonNotableDateResources.Resolve("christian-western");
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public static class CommonNotableDateResources
 {

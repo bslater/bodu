@@ -13,6 +13,23 @@ namespace Bodu.IO.Compound.PropertySets;
 /// <remarks>
 /// The summary-information set carries document metadata such as the title, author, and revision times. Each property
 /// is optional; a property that is absent or of an unexpected type is surfaced as <see langword="null" />.
+/// <example>
+/// The following example reads the standard summary-information set from a compound file and prints a few fields.
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.IO.Compound;
+/// using Bodu.IO.Compound.PropertySets;
+///
+/// using CompoundFile file = CompoundFile.OpenRead("book.xls");
+/// if (file.TryGetSummaryInformation(out SummaryInformation? summary))
+/// {
+///     Console.WriteLine($"Title:   {summary.Title}");
+///     Console.WriteLine($"Author:  {summary.Author}");
+///     Console.WriteLine($"Created: {summary.CreateTime:u}");
+/// }
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public sealed class SummaryInformation
 {

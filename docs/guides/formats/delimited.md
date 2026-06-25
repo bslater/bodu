@@ -11,7 +11,7 @@ For the vocabulary used below (document, row, header, field, parse options vs fo
 ## Pattern 1 — parse a string you already have
 
 ```csharp
-using Bodu.Text.Formats;
+using Bodu.Text.Delimited;
 
 string csv = """
 name,age,department
@@ -31,7 +31,7 @@ Console.WriteLine(document.Rows[1].Fields[2]); // "Mechanics"
 ## Pattern 2 — TSV and other delimiters
 
 ```csharp
-using Bodu.Text.Formats;
+using Bodu.Text.Delimited;
 
 DelimitedDocument tsv = Delimited.Parse(source, new DelimitedParseOptions { Delimiter = '\t' });
 DelimitedDocument psv = Delimited.Parse(source, new DelimitedParseOptions { Delimiter = '|' });
@@ -42,7 +42,7 @@ The delimiter is configurable per call. The default is `','`; switching to `'\t'
 ## Pattern 3 — non-throwing parse
 
 ```csharp
-using Bodu.Text.Formats;
+using Bodu.Text.Delimited;
 
 if (Delimited.TryParse(source, out DelimitedDocument? document))
 {
@@ -59,7 +59,7 @@ else
 ## Pattern 4 — typed field access
 
 ```csharp
-using Bodu.Text.Formats;
+using Bodu.Text.Delimited;
 
 DelimitedDocument document = Delimited.Parse(csv);
 foreach (DelimitedRow row in document.Rows)
@@ -78,7 +78,7 @@ foreach (DelimitedRow row in document.Rows)
 ## Pattern 5 — streaming over a large file
 
 ```csharp
-using Bodu.Text.Formats;
+using Bodu.Text.Delimited;
 
 using var reader = new StreamReader("transactions.csv");
 using var dlm = Delimited.CreateReader(reader, new DelimitedParseOptions { HasHeader = true });
@@ -110,7 +110,7 @@ dlm.WriteRow(new[] { "T-1002", "5.10"  });
 ## Pattern 6 — round-trip through `Format`
 
 ```csharp
-using Bodu.Text.Formats;
+using Bodu.Text.Delimited;
 
 DelimitedDocument document = Delimited.Parse(input);
 string roundTrip = Delimited.Format(document);
@@ -174,7 +174,7 @@ The headline `DelimitedParseOptions` fields control the format dialect:
 The `DelimitedExtensions` helpers add fluent overloads to strings and spans:
 
 ```csharp
-using Bodu.Text.Formats;
+using Bodu.Text.Delimited;
 
 DelimitedDocument doc = csv.ParseDelimited();
 string output         = doc.FormatDelimited();

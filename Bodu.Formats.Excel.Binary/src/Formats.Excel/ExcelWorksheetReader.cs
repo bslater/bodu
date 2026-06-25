@@ -25,6 +25,28 @@ namespace Bodu.Formats.Excel;
 /// For random access by position, materialize the worksheet instead with
 /// <see cref="ExcelBinaryWorkbook.ReadWorksheet(int)" />.
 /// </para>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.Formats.Excel;
+///
+/// using var workbook = ExcelBinaryWorkbook.OpenRead("report.xls");
+/// using ExcelWorksheetReader reader = workbook.OpenWorksheet(0);
+/// while (reader.TryReadCell(out ExcelCell cell))
+/// {
+///     string value = cell.Kind switch
+///     {
+///         ExcelCellKind.String => cell.StringValue ?? string.Empty,
+///         ExcelCellKind.Number => cell.NumberValue?.ToString() ?? string.Empty,
+///         ExcelCellKind.Boolean => cell.BooleanValue?.ToString() ?? string.Empty,
+///         ExcelCellKind.Error => cell.ErrorValue?.ToString() ?? string.Empty,
+///         _ => string.Empty,
+///     };
+///     Console.WriteLine($"R{cell.RowIndex} C{cell.ColumnIndex}: {value}");
+/// }
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public sealed class ExcelWorksheetReader
     : IDisposable

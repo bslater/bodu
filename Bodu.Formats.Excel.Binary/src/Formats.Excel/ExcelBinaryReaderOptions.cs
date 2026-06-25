@@ -15,6 +15,23 @@ namespace Bodu.Formats.Excel;
 /// caller-supplied stream with the workbook. For a numeric, time-series workload — where only row, column, and numeric
 /// value matter — clearing <see cref="ReadDocumentProperties" /> and <see cref="DetectDateFormats" /> skips the
 /// property sets and number-format interpretation.
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.Formats.Excel;
+///
+/// var options = new ExcelBinaryReaderOptions
+/// {
+///     LeaveOpen = true,               // do not dispose the caller's stream
+///     ReadDocumentProperties = false, // skip the summary-information property sets
+///     DetectDateFormats = false,      // skip number-format classification
+/// };
+///
+/// using var source = File.OpenRead("data.xls");
+/// using var workbook = ExcelBinaryWorkbook.Open(source, options);
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public sealed class ExcelBinaryReaderOptions
 {

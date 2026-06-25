@@ -268,6 +268,73 @@ The choice is one of reach and durability:
 | [`SqliteExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.SqliteExchangeRateCache) | durable single-host cache | a cache shared across hosts | strongest shipped local option; one transaction per write |
 | [`DistributedExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.DistributedExchangeRateCache) | a warm cache shared across processes/hosts | an authoritative multi-writer store | last-write-wins per pair across processes |
 
+## Cache backends in depth
+
+The earlier table picks a backend by reach and durability; this section goes
+one level down into the *semantics* each one commits to, so a choice survives
+the move from a single process to a fleet. Every backend implements the same
+[`IExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.IExchangeRateCache)
+contract and delegates its freshness, validity, merge, and coverage rules to
+the shared
+[`ExchangeRateCacheRules`](xref:Bodu.Financial.ExchangeRates.Caching.ExchangeRateCacheRules),
+so they differ only in *where the bytes live* and *how a concurrent write is
+ordered* — never in what counts as a hit.
+
+| | `Null` | `InMemory` | `TomlFile` | `Sqlite` | `Distributed` |
+|---|---|---|---|---|---|
+| Package | core | core | core | `.Caching.Sqlite` | `.Caching.Distributed` |
+| Scope | none | one process | one host | one host | many hosts |
+| Survives restart | n/a | no | yes | yes | yes (in the backing store) |
+| Shared across processes | n/a | no | through the file system | through the file | yes |
+| `StoreFetchedRange` atomicity | n/a | per-pair lock | temp-and-move per file | one transaction | one blob write |
+| Cross-process write race | n/a | n/a | last-write-wins per file | serialized rows, OS-level | last-write-wins per pair |
+| Construct | `Create(provider)` | `new(provider)` | `new(options)` | `AddSqliteRateCache` | `AddDistributedRateCache` / `AddRedisRateCache` |
+
+**Expiry, invalidation, and refresh are uniform.** None of the backends has a
+private eviction clock. A row is fresh while `asOf - CachedAtUtc < duration`
+(the resolved per-provider expiry), and freshness is evaluated on every read;
+stale rows are pruned on the next write. There is no explicit invalidate call —
+a value "refreshes" by being re-fetched on a miss and merged in, latest
+`CachedAtUtc` winning per date. This is why the same rules object is shared: an
+expired row in SQLite and an expired row in Redis disappear at the same instant
+relative to their own `CachedAtUtc`, with no backend-specific TTL drift. A
+distributed backend may *additionally* set an absolute expiration on its blob as
+a storage hint, but correctness never depends on it — the freshness filter still
+runs on read.
+
+**Atomicity is the axis that actually matters across processes.**
+`StoreFetchedRange` must persist the merged rows and the covered window together
+or neither, so a reader never sees coverage without its rows and reports a false
+range hit. Each backend honours that differently:
+
+- [`InMemoryExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.InMemoryExchangeRateCache)
+  and [`TomlFileExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.TomlFileExchangeRateCache)
+  serialize per-pair writes under an in-process lock; the file cache additionally
+  writes through a temp-and-move so a half-written file is never observed. Two
+  *processes* writing the same `AUDUSD.toml` are last-write-wins.
+- [`SqliteExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.SqliteExchangeRateCache)
+  wraps each `StoreFetchedRange` in a single transaction over its `rates` and
+  `coverage` tables, so the all-or-nothing guarantee holds even when several
+  processes on the host share the database file.
+- [`DistributedExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.DistributedExchangeRateCache)
+  stores the whole per-pair state as one JSON blob, so a `StoreFetchedRange` is
+  all-or-nothing *across processes* — but because `IDistributedCache` has no
+  atomic read-modify-write, the read-merge-write cycle of `Store` /
+  `RecordCoverage` is only same-process safe; cross-process writes to a pair are
+  last-write-wins.
+
+**When to use which.** Reach for `NullExchangeRateCache` to disable caching in a
+test without changing the composition. Use `InMemoryExchangeRateCache` for a
+single long-lived service that can afford a cold start after a restart. Pick
+`TomlFileExchangeRateCache` for a durable, inspectable local cache where write
+concurrency is low — the per-pair files are human-readable. Prefer
+`SqliteExchangeRateCache` when several processes on one host must share a warm,
+correct-under-concurrency cache. Choose `DistributedExchangeRateCache` only when
+the cache must span hosts and you accept its best-effort, last-write-wins
+nature as a performance hint rather than an authoritative store; when correctness
+under concurrent writers matters across a fleet, front a real database with your
+own [`IExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.IExchangeRateCache).
+
 ## Grouping providers with the aggregator
 
 [`AggregatingExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.Caching.AggregatingExchangeRateProvider)

@@ -130,6 +130,20 @@ public sealed partial class NotableDateDocumentBuilder
     /// <exception cref="FormatException">
     /// <paramref name="json" /> is not well-formed or is not a notable-date document.
     /// </exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// // Round-trip a document through its JSON-subset form, then materialize a resource.
+    /// NotableDateDocumentBuilder original = NotableDateDocumentBuilder.Create("contoso-holidays")
+    ///     .AddNotableDate("new-year", "New Year's Day", NotableDateCategory.PublicHoliday, c => c
+    ///         .AddRule("fixed", r => r.Fixed(1, 1)));
+    /// string json = original.ToJson();
+    ///
+    /// NotableDateDocumentBuilder reparsed = NotableDateDocumentBuilder.FromJson(json);
+    /// NotableDateResource resource = reparsed.Build();
+    ///]]>
+    /// </code>
+    /// </example>
     public static NotableDateDocumentBuilder FromJson(string json)
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(json);

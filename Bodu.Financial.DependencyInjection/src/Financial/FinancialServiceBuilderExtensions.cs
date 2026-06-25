@@ -17,6 +17,21 @@ namespace Bodu.Financial;
 /// Provides the fluent registration surface for <see cref="IFinancialServiceBuilder" />: currency lookup, named
 /// monetary contexts, exchange-rate providers, and JSON policy.
 /// </summary>
+/// <remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// IServiceCollection services = new ServiceCollection();
+///
+/// services.AddFinancialService(builder => builder
+///     .AddCurrencyLookup<MyCurrencyLookup>()
+///     .AddMonetaryContext("payroll", new MonetaryContext(CurrencyCode.EUR))
+///     .AddExchangeRateProvider<MyRateProvider>()
+///     .AddFinancialJson(FinancialJsonPolicy.Compact));
+///]]>
+/// </code>
+/// </example>
+/// </remarks>
 public static class FinancialServiceBuilderExtensions
 {
     /// <summary>The service key under which the configured financial <see cref="JsonSerializerOptions" /> is registered.</summary>

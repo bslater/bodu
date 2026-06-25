@@ -21,6 +21,20 @@ namespace Bodu.Financial;
 /// provider name, and inversion flag — for downstream auditability (for example, tax and accounting reports) without
 /// requiring the caller to reach back into the provider.
 /// </para>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.Financial;
+///
+/// // A single USD -> EUR observation published by "ECB" on a given day.
+/// var rate = new ExchangeRate(
+///     CurrencyCode.USD, CurrencyCode.EUR, new DateOnly(2024, 3, 1), 0.92m, "ECB");
+///
+/// // Apply it; rounding is deferred to the money boundary.
+/// decimal euros = rate.Convert(100m);   // 92.00
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 [DebuggerDisplay("{From,nq}->{To,nq} @ {Date,nq} = {Rate} ({Provider,nq})")]
 [JsonConverter(typeof(ExchangeRateJsonConverter))]

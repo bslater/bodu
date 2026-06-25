@@ -19,6 +19,16 @@ public static partial class NotableDateOnlyExtensions
     /// <exception cref="ArgumentNullException">
     /// <paramref name="service" /> or <paramref name="territory" /> is <see langword="null" />.
     /// </exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// INotableDateService service = AmericasCalendarData.CreateService("US");
+    ///
+    /// // Every notable date in December 2026, derived from any date within the month.
+    /// IReadOnlyList<NotableDate> month = new DateOnly(2026, 12, 15).GetNotableDatesInMonth(service, "US");
+    ///]]>
+    /// </code>
+    /// </example>
     public static IReadOnlyList<NotableDate> GetNotableDatesInMonth(this DateOnly date, INotableDateService service, string territory, NotableDateFilter? filter = null) =>
         new DateOnly(date.Year, date.Month, 1)
             .EnumerateNotableDates(new DateOnly(date.Year, date.Month, DateTime.DaysInMonth(date.Year, date.Month)), service, territory, filter);

@@ -14,6 +14,24 @@ namespace Bodu.IO.Compound.PropertySets;
 /// The document-summary-information set carries extended document metadata such as the category, company, and slide
 /// count, and may include a second, user-defined section whose properties are named by a dictionary. Each property is
 /// optional; a property that is absent or of an unexpected type is surfaced as <see langword="null" />.
+/// <example>
+/// The following example reads the extended metadata and enumerates any user-defined custom properties.
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.IO.Compound;
+/// using Bodu.IO.Compound.PropertySets;
+///
+/// using CompoundFile file = CompoundFile.OpenRead("report.doc");
+/// if (file.TryGetDocumentSummaryInformation(out DocumentSummaryInformation? info))
+/// {
+///     Console.WriteLine($"Company:  {info.Company}");
+///     Console.WriteLine($"Category: {info.Category}");
+///     foreach (KeyValuePair<string, OlePropertyValue> custom in info.CustomProperties)
+///         Console.WriteLine($"{custom.Key} = {custom.Value.Value}");
+/// }
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public sealed class DocumentSummaryInformation
 {

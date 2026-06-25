@@ -49,6 +49,27 @@ namespace Bodu.Threading;
 /// or grant overlapping access.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// private readonly AsyncReaderWriterLock _lock = new();
+///
+/// // Readers run concurrently with one another.
+/// async Task<int> CountAsync()
+/// {
+///     using (await _lock.ReaderAsync())
+///         return _cache.Count;
+/// }
+///
+/// // A writer runs exclusively, excluding all readers for its duration.
+/// async Task SetAsync(string key, int value)
+/// {
+///     using (await _lock.WriterAsync())
+///         _cache[key] = value;
+/// }
+///]]>
+/// </code>
+/// </example>
 [DebuggerDisplay("Readers = {_readersActive}, WriterActive = {_writerActive}, WaitingReaders = {WaitingReaderCount}, WaitingWriters = {WaitingWriterCount}")]
 public sealed partial class AsyncReaderWriterLock : IDisposable
 {

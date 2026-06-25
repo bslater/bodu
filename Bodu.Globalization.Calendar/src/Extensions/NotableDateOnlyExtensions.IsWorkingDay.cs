@@ -19,6 +19,16 @@ public static partial class NotableDateOnlyExtensions
     /// <exception cref="ArgumentNullException">
     /// <paramref name="service" /> or <paramref name="territory" /> is <see langword="null" />.
     /// </exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// INotableDateService service = AmericasCalendarData.CreateService("US");
+    ///
+    /// bool labourDay = new DateOnly(2026, 9, 7).IsWorkingDay(service, "US");   // false (Labor Day)
+    /// bool ordinary = new DateOnly(2026, 9, 8).IsWorkingDay(service, "US");    // true
+    ///]]>
+    /// </code>
+    /// </example>
     public static bool IsWorkingDay(this DateOnly date, INotableDateService service, string territory, WeekPattern? workingWeek = null) =>
         !date.IsNonWorkingDay(service, territory, workingWeek);
 }

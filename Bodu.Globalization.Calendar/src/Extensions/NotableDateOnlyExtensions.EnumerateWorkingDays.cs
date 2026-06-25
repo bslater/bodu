@@ -20,6 +20,17 @@ public static partial class NotableDateOnlyExtensions
     /// <exception cref="ArgumentNullException">
     /// <paramref name="service" /> or <paramref name="territory" /> is <see langword="null" />.
     /// </exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// INotableDateService service = AmericasCalendarData.CreateService("US");
+    ///
+    /// // Iterate the working days of July 2026, skipping weekends and holidays.
+    /// foreach (DateOnly day in new DateOnly(2026, 7, 1).EnumerateWorkingDays(new DateOnly(2026, 7, 31), service, "US"))
+    ///     Console.WriteLine(day);
+    ///]]>
+    /// </code>
+    /// </example>
     public static IEnumerable<DateOnly> EnumerateWorkingDays(this DateOnly start, DateOnly end, INotableDateService service, string territory, WeekPattern? workingWeek = null)
     {
         ThrowHelper.ThrowIfNull(service);

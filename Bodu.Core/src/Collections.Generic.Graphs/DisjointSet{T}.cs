@@ -27,6 +27,19 @@ namespace Bodu.Collections.Generic.Graphs;
 /// <see cref="EqualityComparer{T}.Default" /> when none is supplied.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// var groups = new DisjointSet<string>(new[] { "a", "b", "c", "d" });
+/// groups.Union("a", "b");
+/// groups.Union("c", "d");
+/// groups.Union("b", "c");                       // merges both pairs into one set
+///
+/// bool connected = groups.AreConnected("a", "d"); // true
+/// int sets = groups.SetCount;                     // 1
+///]]>
+/// </code>
+/// </example>
 [DebuggerDisplay("Count = {Count}, Sets = {SetCount}")]
 [DebuggerTypeProxy(typeof(DisjointSetDebugView<>))]
 public sealed class DisjointSet<T>

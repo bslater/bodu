@@ -209,6 +209,80 @@ To go from the parsed `ConfigurationDocument` to a resolved typed view — inclu
 - **`ConfigurationParseException`** — raised when `DiagnosticMode = Throw` hits the first recoverable error, or any time a non-recoverable error occurs. Carries the offending `ConfigurationDiagnostic` and source location.
 - **`ArgumentException`** / **`ArgumentNullException`** — input string null or stream not readable. Standard BCL contract.
 
+## Switching profiles at runtime
+
+A profile is not baked into the document — it is chosen per `Parse` call through
+the `ConfigurationParseOptions` argument. That makes profile selection an
+ordinary runtime decision: read the same source under whichever profile the
+context calls for, or re-parse an already-loaded source under a different one.
+
+**Per-environment selection.** Pick a profile from configuration or the host
+environment, then pass the matching cached preset:
+
+```csharp
+using Bodu.Text.Configuration;
+
+static ConfigurationParseOptions ProfileFor(string environment) => environment switch
+{
+    "Production"  => ConfigurationParseOptions.Strict,    // machine-emitted; ambiguity is a defect
+    "Development" => ConfigurationParseOptions.Relaxed,   // hand-edited; collect diagnostics, keep going
+    _             => ConfigurationParseOptions.Bodu,      // the default convention
+};
+
+ConfigurationDocument document = ConfigurationDocument.Parse(source, ProfileFor(environment));
+```
+
+Reach for the static presets (`ConfigurationParseOptions.Strict`, `.Relaxed`,
+`.Bodu`, `.EditorConfigCompatible`) rather than constructing fresh records — they
+are cached, and `ConfigurationParseOptions.For(profile)` is the data-driven
+factory when the profile itself is a value rather than a literal.
+
+**Sniffing the content.** When the source's dialect is not known up front, a
+cheap probe can choose the profile before the real parse. A `root = true`
+preamble, for instance, signals an EditorConfig file:
+
+```csharp
+bool looksLikeEditorConfig = source
+    .AsSpan()
+    .TrimStart()
+    .StartsWith("root", StringComparison.OrdinalIgnoreCase);
+
+ConfigurationParseOptions options = looksLikeEditorConfig
+    ? ConfigurationParseOptions.EditorConfigCompatible
+    : ConfigurationParseOptions.Bodu;
+
+ConfigurationDocument document = ConfigurationDocument.Parse(source, options);
+```
+
+**Re-parsing under a stricter profile.** Profiles differ in *what they reject*,
+not in the data model, so a document parsed leniently can be re-parsed strictly
+to validate it without changing how you consume it. A common shape is to ingest
+under `Relaxed` (collect every diagnostic, never throw), then re-run under
+`Strict` only when you need a hard gate:
+
+```csharp
+ConfigurationParseResult lenient = ConfigurationDocument.ParseWithDiagnostics(
+    source, ConfigurationParseOptions.Relaxed);
+
+if (lenient.Diagnostics.Count > 0 && deployGate)
+{
+    // Surface the failures as a single throw under the stricter profile.
+    ConfigurationDocument.Parse(source, ConfigurationParseOptions.Strict);
+}
+
+ConfigurationDocument document = lenient.Document;
+```
+
+**Trade-offs.** Re-parsing pays the parse cost twice and discards the first
+document, so reserve it for a deliberate validation step rather than the hot
+path. Switching profiles also switches *resolve* defaults bundled with each
+profile (duplicate handling, section-header strictness), so a value that resolved
+one way under `Bodu` can resolve differently under `EditorConfigCompatible` —
+choose the profile once per source and keep the consuming code reading the same
+`ConfigurationDocument` surface regardless. For fine-grained control without
+swapping the whole cohort, override individual fields on a single options record
+instead (see the field-by-field section above).
+
 ## When *not* to use `ConfigurationDocument`
 
 - **Tabular data.** Reach for [`Delimited`](../formats/delimited.md).

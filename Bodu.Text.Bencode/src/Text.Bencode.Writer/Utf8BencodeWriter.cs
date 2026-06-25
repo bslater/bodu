@@ -37,6 +37,21 @@ namespace Bodu.Text.Bencode.Writer;
 /// the bytes already emitted in the destination — discard the destination when any write throws, and assert
 /// <see cref="CurrentDepth" /> is zero before consuming it.
 /// </para>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// var output = new ArrayBufferWriter<byte>();
+/// var writer = new Utf8BencodeWriter(output);
+///
+/// writer.WriteStartDictionary();
+/// writer.WriteString("cow", "moo");   // keys are sorted on close
+/// writer.WriteInteger("age", 42);
+/// writer.WriteEndDictionary();
+///
+/// // output.WrittenSpan now holds canonical "d3:agei42e3:cow3:mooe".
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public ref struct Utf8BencodeWriter
 {

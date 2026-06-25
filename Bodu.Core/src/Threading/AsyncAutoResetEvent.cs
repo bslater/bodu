@@ -30,6 +30,26 @@ namespace Bodu.Threading;
 /// token is already canceled. A token only cancels a wait that cannot complete immediately.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// private readonly AsyncAutoResetEvent _itemReady = new();
+///
+/// // Producer: each Set releases exactly one waiter (or latches a single signal).
+/// void OnItemEnqueued() => _itemReady.Set();
+///
+/// // Consumer: wake once per signal and process a single item at a time.
+/// async Task ConsumeAsync(CancellationToken token)
+/// {
+///     while (!token.IsCancellationRequested)
+///     {
+///         await _itemReady.WaitAsync(token);
+///         ProcessNextItem();
+///     }
+/// }
+///]]>
+/// </code>
+/// </example>
 [DebuggerDisplay("Signaled = {_signaled}, Waiters = {WaiterCount}")]
 public sealed class AsyncAutoResetEvent
 {

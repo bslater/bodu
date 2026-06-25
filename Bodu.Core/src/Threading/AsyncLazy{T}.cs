@@ -153,6 +153,13 @@ public sealed class AsyncLazy<T>
     /// <remarks>
     /// Cancellation cancels only the returned wait; the shared initialization continues for other callers.
     /// </remarks>
+    /// <example>
+    ///<![CDATA[
+    /// // Abandon only this caller's wait on timeout; the shared factory keeps running for others.
+    /// using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+    /// Config config = await lazy.GetValueAsync(cts.Token);
+    ///]]>
+    /// </example>
     public Task<T> GetValueAsync(CancellationToken cancellationToken)
     {
         Task<T> task = GetSharedTask();

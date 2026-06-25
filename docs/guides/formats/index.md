@@ -29,6 +29,11 @@ Each format pairs a typed value model with a codec: parse turns a span of text i
 <div class="bodu-cards">
 
 <div class="bodu-card">
+  <h3><a href="choosing-a-format.md">Choosing a text format</a></h3>
+  <p>Delimited vs. DotEnv vs. INI — the shape of data each format suits, their round-trip and structural trade-offs, and how to pick between them.</p>
+</div>
+
+<div class="bodu-card">
   <h3><a href="delimited.md">Using delimited (CSV / TSV)</a></h3>
   <p>The <code>Delimited</code> codec — RFC 4180 quoting, delimiter selection, header handling, the streaming <code>DelimitedReader</code> / <code>DelimitedWriter</code>, and the strictness policies on <code>DelimitedParseOptions</code>.</p>
 </div>

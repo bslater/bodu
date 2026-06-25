@@ -27,6 +27,17 @@ namespace Bodu.Text.Bencode.Document;
 /// Call <see cref="Dispose" /> when finished to return the rented buffer to the pool. After disposal, any operation on
 /// an element belonging to the document throws <see cref="ObjectDisposedException" />.
 /// </para>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // Dispose returns the pooled buffer; elements are valid only until then.
+/// using BencodeDocument doc = BencodeDocument.Parse("d3:cowi42ee"u8);
+///
+/// BencodeElement root = doc.RootElement;
+/// long age = root.GetProperty("cow").GetInt64();   // 42
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public sealed partial class BencodeDocument
     : IDisposable

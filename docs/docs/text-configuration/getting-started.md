@@ -26,7 +26,6 @@ package on top.
 
 ```csharp
 using Bodu.Text.Configuration;
-using Bodu.Text.Formats;
 
 const string source = """
 # Bodu configuration sample
@@ -204,7 +203,6 @@ The view implements `IEnumerable<KeyValuePair<string, string?>>` and exposes the
 
 ```csharp
 using Bodu.Text.Configuration;
-using Bodu.Text.Formats;
 
 const string source = """
 root = true

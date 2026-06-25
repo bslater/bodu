@@ -34,6 +34,21 @@ public static class OfxServiceCollectionExtensions
     /// <exception cref="ArgumentException">
     /// Thrown when <paramref name="sectionName" /> is empty or white space.
     /// </exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// IServiceCollection services = new ServiceCollection();
+    ///
+    /// // Register the core financial services and the OFX provider in one call, tuning the
+    /// // OFX options inline rather than binding them from configuration.
+    /// services.AddOfxExchangeRates(configure: options =>
+    /// {
+    ///     options.UserAgent = "MyApp/1.0 (+https://example.com)";
+    ///     options.HttpTimeout = TimeSpan.FromSeconds(15);
+    /// });
+    ///]]>
+    /// </code>
+    /// </example>
     public static IFinancialServiceBuilder AddOfxExchangeRates(
         this IServiceCollection services,
         IConfiguration? configuration = null,

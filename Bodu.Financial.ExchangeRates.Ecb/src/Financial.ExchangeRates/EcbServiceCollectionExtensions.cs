@@ -34,6 +34,24 @@ public static class EcbServiceCollectionExtensions
     /// <exception cref="ArgumentException">
     /// Thrown when <paramref name="sectionName" /> is empty or white space.
     /// </exception>
+    /// <remarks>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// IServiceCollection services = new ServiceCollection();
+    ///
+    /// // One-call registration: core financial services plus the ECB provider.
+    /// services.AddEcbReferenceRates(configure: opts =>
+    /// {
+    ///     opts.EnableDiskCache = true;
+    /// });
+    ///
+    /// using ServiceProvider provider = services.BuildServiceProvider();
+    /// var rates = provider.GetRequiredService<IDatedExchangeRateProvider>();
+    ///]]>
+    /// </code>
+    /// </example>
+    /// </remarks>
     public static IFinancialServiceBuilder AddEcbReferenceRates(
         this IServiceCollection services,
         IConfiguration? configuration = null,

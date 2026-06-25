@@ -25,6 +25,19 @@ public readonly partial struct Interval<T> :
     /// <c>"[lower, upper)"</c> for closed-open intervals, <c>"(lower, upper]"</c> for open-closed intervals, or
     /// <c>"∅"</c> (the empty-set glyph) for any empty interval.
     /// </returns>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// Interval<int>.Closed(1, 5).ToString();        // "[1, 5]"
+    /// Interval<int>.ClosedOpen(1, 5).ToString();    // "[1, 5)"
+    /// Interval<int>.Open(0, 1).ToString();          // "(0, 1)"
+    /// Interval<int>.Empty.ToString();               // "∅"
+    ///
+    /// // The format specifier is applied to each endpoint.
+    /// Interval<double>.Closed(1, 5).ToString("F2"); // "[1.00, 5.00]"
+    ///]]>
+    /// </code>
+    /// </example>
     public override string ToString() =>
         Format(default, CultureInfo.CurrentCulture);
 

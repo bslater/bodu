@@ -82,6 +82,25 @@ public readonly partial struct Fraction<T> :
     /// <param name="s">The string to parse.</param>
     /// <param name="result">When this method returns, contains the parsed value, or zero on failure.</param>
     /// <returns><see langword="true" /> if parsing succeeded; otherwise, <see langword="false" />.</returns>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// // Parse a ratio, a mixed number, and a Unicode vulgar fraction.
+    /// var half = Fraction<int>.Parse("1/2");          // 1/2
+    /// var mixed = Fraction<int>.Parse("2 1/4");       // 9/4
+    /// var glyph = Fraction<int>.Parse("¾");           // 3/4
+    ///
+    /// // Round-trip: the parsed value formats back to the same canonical text.
+    /// var value = Fraction<int>.Parse("6/8");         // reduced to 3/4
+    /// string text = value.ToString();                 // "3/4"
+    ///
+    /// if (Fraction<int>.TryParse("not a fraction", out var parsed))
+    /// {
+    ///     // not reached
+    /// }
+    ///]]>
+    /// </code>
+    /// </example>
     public static bool TryParse(string? s, out Fraction<T> result) =>
         TryParse(s, null, out result);
 

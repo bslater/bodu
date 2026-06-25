@@ -34,6 +34,11 @@ The CFB container reader — the storage hierarchy, the stream cursor, and the O
   <p>The <code>SummaryInformation</code> and <code>DocumentSummaryInformation</code> metadata streams, the raw <code>OlePropertySet</code>, and the <code>TryGet*</code> convenience methods.</p>
 </div>
 
+<div class="bodu-card">
+  <h3><a href="../io-compound/office-format-nuances.md">Office format nuances</a></h3>
+  <p>How the legacy Office documents (<code>.xls</code>, <code>.doc</code>, <code>.ppt</code>, <code>.msg</code>) lay out their named streams inside the CFB envelope, and the quirks to expect when reading them.</p>
+</div>
+
 </div>
 
 ## Bodu.Formats.Excel.Binary guides

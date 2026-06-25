@@ -13,7 +13,7 @@ For the vocabulary used below (document, section, entry, comment, parse options)
 ## Pattern 1 — parse a configuration file
 
 ```csharp
-using Bodu.Text.Formats;
+using Bodu.Text.Ini;
 
 string ini = """
 # Application root
@@ -42,7 +42,7 @@ int port       = db?.GetValue<int>("port") ?? 0;       // 5432
 ## Pattern 2 — non-throwing parse
 
 ```csharp
-using Bodu.Text.Formats;
+using Bodu.Text.Ini;
 
 if (Ini.TryParse(source, out IniDocument? document))
 {
@@ -59,7 +59,7 @@ else
 ## Pattern 3 — preserved comments
 
 ```csharp
-using Bodu.Text.Formats;
+using Bodu.Text.Ini;
 
 foreach (IniSection section in document.Sections)
 {
@@ -84,7 +84,7 @@ By default (`PreserveComments: true`), full-line comments before a section heade
 ## Pattern 4 — programmatic mutation
 
 ```csharp
-using Bodu.Text.Formats;
+using Bodu.Text.Ini;
 
 IniDocument document = Ini.Parse(input);
 
@@ -122,7 +122,7 @@ Combine with `DuplicateKeyBehavior` to control the within-section semantics:
 ## Pattern 6 — round-trip through `Format`
 
 ```csharp
-using Bodu.Text.Formats;
+using Bodu.Text.Ini;
 
 IniDocument document = Ini.Parse(input);
 string roundTrip = Ini.Format(document);
@@ -156,7 +156,7 @@ The parser accepts both `=` and `:` as the key / value separator. Comment lines 
 The `IniExtensions` helpers add fluent overloads:
 
 ```csharp
-using Bodu.Text.Formats;
+using Bodu.Text.Ini;
 
 IniDocument doc = ini.ParseIni();
 string output    = doc.FormatIni();

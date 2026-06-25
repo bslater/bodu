@@ -58,6 +58,16 @@ public static class BoeFinancialServiceBuilderExtensions
     /// from <see cref="BoeEndpointOptions.HttpTimeout" />, the <see cref="HttpClient.Timeout" /> is set to
     /// <see cref="Timeout.InfiniteTimeSpan" /> so the two timeout mechanisms do not compete.
     /// </para>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// IServiceCollection services = new ServiceCollection();
+    ///
+    /// services.AddFinancialService(builder => builder
+    ///     .AddBoeReferenceRates(configuration, configure: opts => opts.Endpoint.HttpTimeout = TimeSpan.FromSeconds(15)));
+    ///]]>
+    /// </code>
+    /// </example>
     /// </remarks>
     public static IFinancialServiceBuilder AddBoeReferenceRates(
         this IFinancialServiceBuilder builder,

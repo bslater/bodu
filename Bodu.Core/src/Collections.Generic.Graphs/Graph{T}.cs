@@ -26,6 +26,22 @@ namespace Bodu.Collections.Generic.Graphs;
 /// concurrent mutation. Algorithms over the graph are provided by <see cref="GraphAlgorithms" />.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// var graph = new Graph<int>(GraphKind.Directed);
+/// graph.AddEdge(1, 2);          // referenced vertices are created on demand
+/// graph.AddEdge(1, 3);
+/// graph.AddEdge(2, 4, 2.5);     // weighted edge
+///
+/// foreach (int neighbor in graph.Neighbors(1))
+///     Console.WriteLine(neighbor);   // 2, 3
+///
+/// // Graph<T> is an IReadOnlyWeightedGraph<T, double>, accepted directly by GraphAlgorithms.
+/// var reachable = GraphAlgorithms.BreadthFirstSearch(graph, 1).ToList();
+///]]>
+/// </code>
+/// </example>
 [DebuggerDisplay("Vertices = {VertexCount}, Edges = {EdgeCount}, Directed = {IsDirected}")]
 [DebuggerTypeProxy(typeof(GraphDebugView<>))]
 public sealed partial class Graph<T>

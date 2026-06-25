@@ -17,6 +17,7 @@ Concepts defined by the shared catalogues in this theme. A region pack imports t
 | April Fool's Day | Cultural | — | Fixed 1 Apr |
 | International Jazz Day | Cultural | — | Fixed 30 Apr |
 | Star Wars Day | Cultural | — | Fixed 4 May |
+| Cinco de Mayo | Cultural | — | Fixed 5 May |
 | World Music Day | Cultural | — | Fixed 21 Jun |
 | International Friendship Day | Cultural | — | Fixed 30 Jul |
 | Halloween | Cultural | — | Fixed 31 Oct |
@@ -52,9 +53,10 @@ _Observed by:_ [AU](region-asia-pacific.md)
 
 ---
 
-*Generated from the notable-date XML resources by `Bodu.Globalization.Calendar/Generate-NotableDateCatalogue.ps1`. Regenerated (UTC): 2026-06-05T03:58:56Z.* For the calculation recipes deliberately omitted here, see [Territories and regional composition](../territories.md), [Working with non-Gregorian calendars](../non-gregorian-calendars.md), and [Holiday patterns](../holiday-patterns.md); for the API, the <xref:Bodu.Globalization.Calendar> namespace.
+*Generated from the notable-date XML resources by `Bodu.Globalization.Calendar/Generate-NotableDateCatalogue.ps1`. Regenerated (UTC): 2026-06-25T01:30:35Z.* For the calculation recipes deliberately omitted here, see [Territories and regional composition](../territories.md), [Working with non-Gregorian calendars](../non-gregorian-calendars.md), and [Holiday patterns](../holiday-patterns.md); for the API, the <xref:Bodu.Globalization.Calendar> namespace.
 
 ## See also
 
 - **[Globalization & Calendars guides](../../topics/globalization-and-calendars.md)** — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.
 - **[Bodu.Globalization.Calendar guides](../index.md)** — the full guide index for the calendar runtime and its companions.
+

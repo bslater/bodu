@@ -20,6 +20,22 @@ namespace Bodu.Globalization.Calendar;
 /// pack factory, or <c>NotableDateDocumentBuilder.Build</c>, then handed to a <see cref="NotableDateService" />. The
 /// public constructor exists for advanced code-first assembly; most consumers never call it directly.
 /// </para>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // Load a resource, then inspect its contents before building a service over it.
+/// NotableDateResource resource = NotableDateResourceLoader.Load(documentXml);
+///
+/// Console.WriteLine($"Resource {resource.ResourceId} (schema {resource.SchemaVersion})");
+/// Console.WriteLine($"Concepts: {resource.NotableDates.Count}, rules: {resource.RuleCount}");
+///
+/// // Look up a single concept by its identifier.
+/// NotableDateDefinition? christmas = resource.FindDefinition("christmas-day");
+///
+/// NotableDateService service = new(resource);
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 /// <seealso cref="NotableDateResourceLoader" /> <seealso cref="NotableDateService" />
 /// <seealso href="../guides/calendar/building-the-service.html">Building and extending the service (guide)</seealso>
