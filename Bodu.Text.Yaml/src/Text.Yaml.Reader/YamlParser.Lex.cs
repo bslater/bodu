@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Buffers;
 using System.Text;
 
 namespace Bodu.Text.Yaml.Reader;
@@ -129,12 +130,24 @@ internal sealed partial class YamlParser
     /// <summary>
     /// Advances past blank lines and comment-only lines, leaving the cursor at the first non-space content byte.
     /// </summary>
+    /// <remarks>
+    /// The leading whitespace of a structural content line is its indentation, which YAML requires to be spaces only.
+    /// A tab encountered before content is therefore rejected; tabs on blank or comment-only lines are immaterial and
+    /// pass through.
+    /// </remarks>
+    /// <exception cref="YamlFormatException">A tab is used to indent a structural content line.</exception>
     private void SkipBlankCommentLines()
     {
         while (!AtEnd)
         {
+            var tabOffset = -1;
             while (_pos < _length && _source[_pos] is (byte)' ' or (byte)'\t')
+            {
+                if (_source[_pos] == (byte)'\t' && tabOffset < 0)
+                    tabOffset = _pos;
+
                 _pos++;
+            }
 
             var c = Peek();
             if (c == (byte)'#')
@@ -158,8 +171,78 @@ internal sealed partial class YamlParser
                 continue;
             }
 
+            // Structural content begins here, so the leading whitespace is indentation and must not contain a tab.
+            if (tabOffset >= 0)
+                throw ErrorAt(tabOffset, YamlResourceStrings.Format_Invalid_YamlTabIndentation);
+
             return;
         }
+    }
+
+    /// <summary>
+    /// Validates that the source is well-formed UTF-8 containing only YAML-printable characters, rejecting invalid byte
+    /// sequences and non-printable control characters before structural parsing begins.
+    /// </summary>
+    /// <exception cref="YamlFormatException">
+    /// The source contains invalid UTF-8 or a non-printable control character.
+    /// </exception>
+    private void ValidateSource()
+    {
+        var span = _source.AsSpan(0, _length);
+        var offset = 0;
+        while (offset < span.Length)
+        {
+            var status = Rune.DecodeFromUtf8(span[offset..], out var rune, out var consumed);
+            if (status != OperationStatus.Done)
+                throw ErrorAt(offset, YamlResourceStrings.Format_Invalid_YamlInvalidUtf8);
+
+            if (!IsYamlPrintable(rune))
+                throw ErrorAt(offset, YamlResourceStrings.Format_Invalid_YamlControlCharacter);
+
+            offset += consumed;
+        }
+    }
+
+    /// <summary>
+    /// Determines whether a Unicode scalar value is permitted to appear literally in YAML source.
+    /// </summary>
+    /// <param name="rune">The decoded Unicode scalar value.</param>
+    /// <returns><see langword="true" /> when the character is a YAML-printable character.</returns>
+    /// <remarks>
+    /// Implements the YAML 1.2 <c>c-printable</c> production. Surrogate code points cannot occur because a
+    /// <see cref="Rune" /> only holds valid scalar values, so they are excluded implicitly.
+    /// </remarks>
+    private static bool IsYamlPrintable(Rune rune)
+    {
+        var v = rune.Value;
+        return v is 0x09 or 0x0A or 0x0D or 0x85
+            || (v >= 0x20 && v <= 0x7E)
+            || (v >= 0xA0 && v <= 0xD7FF)
+            || (v >= 0xE000 && v <= 0xFFFD)
+            || (v >= 0x10000 && v <= 0x10FFFF);
+    }
+
+    /// <summary>
+    /// Creates a format exception anchored at a specific byte offset, computing its line and column.
+    /// </summary>
+    /// <param name="offset">The zero-based byte offset of the error.</param>
+    /// <param name="message">The error message.</param>
+    /// <returns>The exception to throw.</returns>
+    private YamlFormatException ErrorAt(int offset, string message)
+    {
+        var line = 0;
+        var lineStart = 0;
+        var limit = Math.Min(offset, _length);
+        for (var i = 0; i < limit; i++)
+        {
+            if (_source[i] == (byte)'\n')
+            {
+                line++;
+                lineStart = i + 1;
+            }
+        }
+
+        return new YamlFormatException(message, line + 1, offset - lineStart + 1, offset);
     }
 
     /// <summary>

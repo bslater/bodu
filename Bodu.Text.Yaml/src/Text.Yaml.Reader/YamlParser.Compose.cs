@@ -34,8 +34,11 @@ internal sealed partial class YamlParser
         for (var i = 0; i < _rows.Count; i++)
         {
             var r = _rows[i];
-            if (r.Anchor is not null)
-                anchors[r.Anchor] = i;
+            if (r.Anchor is not null && !anchors.TryAdd(r.Anchor, i))
+            {
+                throw new YamlFormatException(string.Format(
+                    CultureInfo.CurrentCulture, YamlResourceStrings.Format_Invalid_YamlDuplicateAnchor, r.Anchor));
+            }
 
             if (r.Kind == YamlReaderNodeKind.Alias && r.Tag is not null)
             {

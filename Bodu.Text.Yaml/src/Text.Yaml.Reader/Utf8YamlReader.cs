@@ -62,7 +62,7 @@ public ref struct Utf8YamlReader
     public Utf8YamlReader(ReadOnlySpan<byte> utf8Yaml, YamlReaderOptions options)
     {
         var buffer = utf8Yaml.ToArray();
-        var parser = new YamlParser(buffer, buffer.Length, options.SpecVersion, options.EffectiveMaxDepth);
+        var parser = new YamlParser(buffer, buffer.Length, options.SpecVersion, options.EffectiveMaxDepth, options.DuplicateKeyBehavior);
         _rows = parser.Parse();
         _strings = parser.Strings.ToArray();
         _stack = new Frame[8];

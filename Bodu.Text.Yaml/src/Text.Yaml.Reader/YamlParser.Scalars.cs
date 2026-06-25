@@ -291,9 +291,9 @@ internal sealed partial class YamlParser
             case (byte)'_': AppendRune(buf, 0xA0); break;
             case (byte)'L': AppendRune(buf, 0x2028); break;
             case (byte)'P': AppendRune(buf, 0x2029); break;
-            case (byte)'x': AppendRune(buf, ReadHex(2)); break;
-            case (byte)'u': AppendRune(buf, ReadHex(4)); break;
-            case (byte)'U': AppendRune(buf, ReadHex(8)); break;
+            case (byte)'x': AppendRune(buf, ValidateEscapeCodePoint(ReadHex(2))); break;
+            case (byte)'u': AppendRune(buf, ValidateEscapeCodePoint(ReadHex(4))); break;
+            case (byte)'U': AppendRune(buf, ValidateEscapeCodePoint(ReadHex(8))); break;
             default: throw Error(YamlResourceStrings.Format_Invalid_YamlInvalidEscape);
         }
     }
@@ -326,6 +326,23 @@ internal sealed partial class YamlParser
         }
 
         return value;
+    }
+
+    /// <summary>
+    /// Validates that a Unicode escape resolves to a legal scalar value, rejecting surrogates and out-of-range code
+    /// points.
+    /// </summary>
+    /// <param name="codePoint">The decoded escape code point.</param>
+    /// <returns>The validated code point.</returns>
+    /// <exception cref="YamlFormatException">
+    /// The code point is a surrogate (<c>U+D800</c>–<c>U+DFFF</c>) or exceeds <c>U+10FFFF</c>.
+    /// </exception>
+    private int ValidateEscapeCodePoint(int codePoint)
+    {
+        if (codePoint > 0x10FFFF || codePoint is >= 0xD800 and <= 0xDFFF)
+            throw Error(YamlResourceStrings.Format_Invalid_YamlInvalidEscape);
+
+        return codePoint;
     }
 
     /// <summary>

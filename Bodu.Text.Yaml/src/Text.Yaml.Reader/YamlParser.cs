@@ -23,6 +23,7 @@ internal sealed partial class YamlParser
     private readonly int _length;
     private readonly YamlSpecVersion _version;
     private readonly int _maxDepth;
+    private readonly YamlDuplicateKeyBehavior _duplicateKeyBehavior;
     private List<YamlReaderRow> _rows = [];
 
     private int _pos;
@@ -37,12 +38,14 @@ internal sealed partial class YamlParser
     /// <param name="length">The number of valid bytes in <paramref name="source" />.</param>
     /// <param name="version">The specification version whose resolution rules apply.</param>
     /// <param name="maxDepth">The maximum container nesting depth permitted.</param>
-    internal YamlParser(byte[] source, int length, YamlSpecVersion version, int maxDepth)
+    /// <param name="duplicateKeyBehavior">The policy applied to duplicate mapping keys.</param>
+    internal YamlParser(byte[] source, int length, YamlSpecVersion version, int maxDepth, YamlDuplicateKeyBehavior duplicateKeyBehavior = YamlDuplicateKeyBehavior.Throw)
     {
         _source = source;
         _length = length;
         _version = version;
         _maxDepth = maxDepth;
+        _duplicateKeyBehavior = duplicateKeyBehavior;
     }
 
     /// <summary>
@@ -58,6 +61,7 @@ internal sealed partial class YamlParser
     /// <exception cref="YamlFormatException">The source is not valid YAML.</exception>
     internal List<YamlReaderRow> Parse()
     {
+        ValidateSource();
         SkipByteOrderMark();
         SkipDirectivesAndDocumentStart();
 
@@ -83,6 +87,7 @@ internal sealed partial class YamlParser
     internal List<(List<YamlReaderRow> Rows, string[] Strings)> ParseStream()
     {
         var documents = new List<(List<YamlReaderRow>, string[])>();
+        ValidateSource();
         SkipByteOrderMark();
 
         while (true)
@@ -263,6 +268,7 @@ internal sealed partial class YamlParser
     private int ParseBlockMapping(int indent, string? anchor, string? tag)
     {
         var mapping = NewContainer(YamlReaderNodeKind.Mapping, _pos, anchor, tag);
+        var keyIndex = new Dictionary<string, int>(StringComparer.Ordinal);
 
         while (true)
         {
@@ -280,10 +286,7 @@ internal sealed partial class YamlParser
 
             var valueRow = ParseMappingValue(indent);
 
-            var pair = _rows[valueRow];
-            pair.Key = keyText;
-            _rows[valueRow] = pair;
-            AppendChild(mapping, valueRow);
+            AddMappingChild(mapping, valueRow, keyText, keyIndex);
 
             _ = keyRow;
         }
@@ -463,7 +466,66 @@ internal sealed partial class YamlParser
                 _ => string.Empty,
             };
 
-        return string.Empty;
+        // A sequence, mapping, or alias used as a key cannot be represented in the JSON-compatible tree profile.
+        throw Error(YamlResourceStrings.Format_Invalid_YamlComplexKeyUnsupported);
+    }
+
+    /// <summary>
+    /// Adds a key/value entry to a mapping, applying the configured duplicate-key policy.
+    /// </summary>
+    /// <param name="mapping">The mapping row index.</param>
+    /// <param name="valueRow">The row index of the entry's value node.</param>
+    /// <param name="keyText">The decoded key text.</param>
+    /// <param name="index">The key-to-child index tracking the mapping's existing keys.</param>
+    /// <exception cref="YamlFormatException">
+    /// The key duplicates an existing key and the policy is <see cref="YamlDuplicateKeyBehavior.Throw" />.
+    /// </exception>
+    private void AddMappingChild(int mapping, int valueRow, string keyText, Dictionary<string, int> index)
+    {
+        var v = _rows[valueRow];
+        v.Key = keyText;
+        _rows[valueRow] = v;
+
+        if (index.TryGetValue(keyText, out var existing))
+        {
+            switch (_duplicateKeyBehavior)
+            {
+                case YamlDuplicateKeyBehavior.UseFirst:
+                    return;
+
+                case YamlDuplicateKeyBehavior.UseLast:
+                    RemoveChild(mapping, existing);
+                    break;
+
+                default:
+                    throw Error(YamlResourceStrings.Format_Invalid_YamlDuplicateKey);
+            }
+        }
+
+        AppendChild(mapping, valueRow);
+        index[keyText] = valueRow;
+    }
+
+    /// <summary>
+    /// Removes a child from a container by locating its predecessor and unlinking it.
+    /// </summary>
+    /// <param name="parent">The container row index.</param>
+    /// <param name="child">The child row index to remove.</param>
+    private void RemoveChild(int parent, int child)
+    {
+        var first = _rows[parent].FirstChild;
+        if (first == child)
+        {
+            UnlinkChild(parent, child, -1);
+            return;
+        }
+
+        var previous = first;
+        while (previous >= 0 && _rows[previous].NextSibling != child)
+            previous = _rows[previous].NextSibling;
+
+        if (previous >= 0)
+            UnlinkChild(parent, child, previous);
     }
 
     /// <summary>

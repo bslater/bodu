@@ -106,8 +106,14 @@ public static partial class YamlSerializer
                     writer.WriteString(ul.ToString(CultureInfo.InvariantCulture));
 
                 return;
-            case float or double or decimal:
+            case float or double:
                 writer.WriteDouble(Convert.ToDouble(value, CultureInfo.InvariantCulture));
+                return;
+            case decimal dec:
+
+                // A decimal carries more precision than a double, so it is written as its exact invariant text
+                // (quoted, because that text resolves as a float) to round-trip without precision loss.
+                writer.WriteString(dec.ToString(CultureInfo.InvariantCulture));
                 return;
             case Enum e:
                 if (options.WriteEnumsAsStrings)

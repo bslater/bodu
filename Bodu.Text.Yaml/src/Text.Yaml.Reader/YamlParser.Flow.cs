@@ -133,6 +133,7 @@ internal sealed partial class YamlParser
     private int ParseFlowMapping()
     {
         var mapping = NewContainer(YamlReaderNodeKind.Mapping, _pos, null, null);
+        var keyIndex = new Dictionary<string, int>(StringComparer.Ordinal);
         Advance(); // '{'
         SkipFlowWhitespace();
 
@@ -168,10 +169,7 @@ internal sealed partial class YamlParser
                 value = NewScalar(YamlValueKind.Null, 0, YamlScalarStyle.Plain, _pos, null, null);
             }
 
-            var v = _rows[value];
-            v.Key = key;
-            _rows[value] = v;
-            AppendChild(mapping, value);
+            AddMappingChild(mapping, value, key, keyIndex);
 
             SkipFlowWhitespace();
             var c = Peek();

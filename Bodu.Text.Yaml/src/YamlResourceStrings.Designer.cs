@@ -55,11 +55,27 @@ namespace Bodu {
             }
         }
         /// <summary>
+        ///   Looks up a localized string similar to A mapping key must resolve to a scalar; complex sequence, mapping, or alias keys are not supported by this profile..
+        /// </summary>
+        internal static string Format_Invalid_YamlComplexKeyUnsupported {
+            get {
+                return ResourceManager.GetString("Format_Invalid_YamlComplexKeyUnsupported", resourceCulture);
+            }
+        }
+        /// <summary>
         ///   Looks up a localized string similar to A control character is not permitted in this context..
         /// </summary>
         internal static string Format_Invalid_YamlControlCharacter {
             get {
                 return ResourceManager.GetString("Format_Invalid_YamlControlCharacter", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to The alias '{0}' forms a cycle, which is not supported by this profile..
+        /// </summary>
+        internal static string Format_Invalid_YamlCyclicAlias {
+            get {
+                return ResourceManager.GetString("Format_Invalid_YamlCyclicAlias", resourceCulture);
             }
         }
         /// <summary>
@@ -271,11 +287,43 @@ namespace Bodu {
             }
         }
         /// <summary>
+        ///   Looks up a localized string similar to A mapping cannot be closed while a property name is awaiting its value..
+        /// </summary>
+        internal static string Op_Invalid_WriterPropertyNameWithoutValue {
+            get {
+                return ResourceManager.GetString("Op_Invalid_WriterPropertyNameWithoutValue", resourceCulture);
+            }
+        }
+        /// <summary>
         ///   Looks up a localized string similar to The type '{0}' maps more than one member to the YAML key '{1}'..
         /// </summary>
         internal static string Op_Invalid_DuplicateWireName {
             get {
                 return ResourceManager.GetString("Op_Invalid_DuplicateWireName", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to The floating-point value '{0}' cannot be deserialized into an integer target without loss of precision..
+        /// </summary>
+        internal static string Op_Invalid_YamlFloatNotIntegral {
+            get {
+                return ResourceManager.GetString("Op_Invalid_YamlFloatNotIntegral", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to The numeric value '{0}' is outside the range of the target type '{1}'..
+        /// </summary>
+        internal static string Op_Invalid_YamlNumberOutOfRange {
+            get {
+                return ResourceManager.GetString("Op_Invalid_YamlNumberOutOfRange", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to The value '{0}' cannot be converted to a single character because it is not exactly one Unicode scalar value..
+        /// </summary>
+        internal static string Op_Invalid_YamlCharLength {
+            get {
+                return ResourceManager.GetString("Op_Invalid_YamlCharLength", resourceCulture);
             }
         }
         /// <summary>

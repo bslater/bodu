@@ -106,13 +106,19 @@ public static partial class YamlSerializer
             return element.GetBoolean();
 
         if (type == typeof(char))
-            return ElementToString(element) is { Length: > 0 } s ? s[0] : default(char);
+            return BindChar(element);
 
         if (IsIntegral(type))
-            return Convert.ChangeType(ReadInteger(element), type, CultureInfo.InvariantCulture);
+            return BindIntegral(element, type);
 
-        if (type == typeof(float) || type == typeof(double) || type == typeof(decimal))
-            return Convert.ChangeType(element.GetDouble(), type, CultureInfo.InvariantCulture);
+        if (type == typeof(float))
+            return float.Parse(ElementToString(element), NumberStyles.Float, CultureInfo.InvariantCulture);
+
+        if (type == typeof(double))
+            return double.Parse(ElementToString(element), NumberStyles.Float, CultureInfo.InvariantCulture);
+
+        if (type == typeof(decimal))
+            return decimal.Parse(ElementToString(element), NumberStyles.Float, CultureInfo.InvariantCulture);
 
         if (type == typeof(Guid))
             return Guid.Parse(ElementToString(element));
@@ -175,12 +181,56 @@ public static partial class YamlSerializer
     }
 
     /// <summary>
-    /// Reads the integer value of a numeric element, truncating a float when necessary.
+    /// Binds a scalar element to an integral target, rejecting a non-integral or out-of-range source rather than
+    /// silently truncating it.
     /// </summary>
     /// <param name="element">The element to read.</param>
-    /// <returns>The integer value.</returns>
-    private static long ReadInteger(YamlElement element) =>
-        element.ValueKind == YamlValueKind.Float ? (long)element.GetDouble() : element.GetInt64();
+    /// <param name="type">The integral target type.</param>
+    /// <returns>The bound integral value.</returns>
+    /// <exception cref="YamlSerializationException">
+    /// The source is a non-integral float, or its value is outside the range of <paramref name="type" />.
+    /// </exception>
+    private static object BindIntegral(YamlElement element, Type type)
+    {
+        if (element.ValueKind == YamlValueKind.Float)
+        {
+            var d = element.GetDouble();
+            if (!double.IsFinite(d) || Math.Floor(d) != d)
+            {
+                throw new YamlSerializationException(string.Format(
+                    CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_YamlFloatNotIntegral, d.ToString(CultureInfo.InvariantCulture)));
+            }
+        }
+
+        var text = ElementToString(element);
+        try
+        {
+            return Convert.ChangeType(text, type, CultureInfo.InvariantCulture);
+        }
+        catch (OverflowException ex)
+        {
+            throw new YamlSerializationException(string.Format(
+                CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_YamlNumberOutOfRange, text, type), ex);
+        }
+    }
+
+    /// <summary>
+    /// Binds a scalar element to a <see cref="char" />, requiring exactly one Unicode code unit.
+    /// </summary>
+    /// <param name="element">The element to read.</param>
+    /// <returns>The bound character.</returns>
+    /// <exception cref="YamlSerializationException">The source is not exactly one character.</exception>
+    private static char BindChar(YamlElement element)
+    {
+        var s = ElementToString(element);
+        if (s.Length != 1)
+        {
+            throw new YamlSerializationException(string.Format(
+                CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_YamlCharLength, s));
+        }
+
+        return s[0];
+    }
 
     /// <summary>
     /// Binds a scalar element to an enumeration value by name or number.

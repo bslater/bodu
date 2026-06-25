@@ -33,7 +33,7 @@ public sealed partial class YamlDocument
     public static IReadOnlyList<YamlDocument> ParseAllDocuments(ReadOnlySpan<byte> utf8Yaml, YamlDocumentOptions options)
     {
         var buffer = utf8Yaml.ToArray();
-        var parser = new YamlParser(buffer, buffer.Length, options.SpecVersion, options.EffectiveMaxDepth);
+        var parser = new YamlParser(buffer, buffer.Length, options.SpecVersion, options.EffectiveMaxDepth, options.DuplicateKeyBehavior);
         var documents = parser.ParseStream();
 
         var result = new List<YamlDocument>(documents.Count);

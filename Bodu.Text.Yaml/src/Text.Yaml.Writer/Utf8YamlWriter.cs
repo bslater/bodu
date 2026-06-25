@@ -93,11 +93,11 @@ public ref struct Utf8YamlWriter
     {
         Bodu.ThrowHelper.ThrowIfNull(name);
         if (_depth == 0 || !_stack[_depth - 1].IsMapping)
-            throw new InvalidOperationException();
+            throw new InvalidOperationException(YamlResourceStrings.Op_Invalid_WriterPropertyNameOutsideMapping);
 
         ref var frame = ref _stack[_depth - 1];
         if (frame.PendingKey is not null)
-            throw new InvalidOperationException();
+            throw new InvalidOperationException(YamlResourceStrings.Op_Invalid_WriterPropertyNamePending);
 
         frame.PendingKey = FormatScalar(name);
     }
@@ -146,7 +146,7 @@ public ref struct Utf8YamlWriter
         if (_depth == 0)
         {
             if (_rootWritten)
-                throw new InvalidOperationException();
+                throw new InvalidOperationException(YamlResourceStrings.Op_Invalid_WriterDocumentComplete);
 
             child = new Frame { IsMapping = isMapping, IsRoot = true, EntryIndent = 0 };
             _rootWritten = true;
@@ -164,7 +164,7 @@ public ref struct Utf8YamlWriter
 
             if (parent.IsMapping)
             {
-                child.LeadKey = parent.PendingKey ?? throw new InvalidOperationException();
+                child.LeadKey = parent.PendingKey ?? throw new InvalidOperationException(YamlResourceStrings.Op_Invalid_WriterValueWithoutKey);
                 parent.PendingKey = null;
             }
             else
@@ -182,8 +182,14 @@ public ref struct Utf8YamlWriter
     /// <param name="isMapping">Whether the expected container is a mapping.</param>
     private void CloseContainer(bool isMapping)
     {
-        if (_depth == 0 || _stack[_depth - 1].IsMapping != isMapping)
-            throw new InvalidOperationException();
+        if (_depth == 0)
+            throw new InvalidOperationException(YamlResourceStrings.Op_Invalid_WriterNoOpenContainer);
+
+        if (_stack[_depth - 1].IsMapping != isMapping)
+            throw new InvalidOperationException(YamlResourceStrings.Op_Invalid_WriterEndMismatch);
+
+        if (_stack[_depth - 1].PendingKey is not null)
+            throw new InvalidOperationException(YamlResourceStrings.Op_Invalid_WriterPropertyNameWithoutValue);
 
         var frame = _stack[_depth - 1];
         _depth--;
@@ -223,7 +229,7 @@ public ref struct Utf8YamlWriter
         if (_depth == 0)
         {
             if (_rootWritten)
-                throw new InvalidOperationException();
+                throw new InvalidOperationException(YamlResourceStrings.Op_Invalid_WriterDocumentComplete);
 
             _rootWritten = true;
             WriteRaw(text);
@@ -235,7 +241,7 @@ public ref struct Utf8YamlWriter
         ref var frame = ref _stack[_depth - 1];
         if (frame.IsMapping)
         {
-            var key = frame.PendingKey ?? throw new InvalidOperationException();
+            var key = frame.PendingKey ?? throw new InvalidOperationException(YamlResourceStrings.Op_Invalid_WriterValueWithoutKey);
             frame.PendingKey = null;
             WriteIndent(frame.EntryIndent);
             WriteRaw(key);
@@ -284,8 +290,36 @@ public ref struct Utf8YamlWriter
     /// </summary>
     /// <param name="value">The string value.</param>
     /// <returns>The scalar literal to emit.</returns>
-    private static string FormatScalar(string value) =>
-        IsPlainSafe(value) ? value : DoubleQuote(value);
+    /// <exception cref="ArgumentException"><paramref name="value" /> contains an unpaired surrogate.</exception>
+    private static string FormatScalar(string value)
+    {
+        ValidateNoUnpairedSurrogates(value);
+        return IsPlainSafe(value) ? value : DoubleQuote(value);
+    }
+
+    /// <summary>
+    /// Validates that a string contains no unpaired surrogate, which could not be encoded as valid UTF-8.
+    /// </summary>
+    /// <param name="value">The string value.</param>
+    /// <exception cref="ArgumentException"><paramref name="value" /> contains an unpaired surrogate.</exception>
+    private static void ValidateNoUnpairedSurrogates(string value)
+    {
+        for (var i = 0; i < value.Length; i++)
+        {
+            var c = value[i];
+            if (char.IsHighSurrogate(c))
+            {
+                if (i + 1 >= value.Length || !char.IsLowSurrogate(value[i + 1]))
+                    throw new ArgumentException(YamlResourceStrings.Arg_Invalid_YamlUnpairedSurrogate, nameof(value));
+
+                i++;
+            }
+            else if (char.IsLowSurrogate(c))
+            {
+                throw new ArgumentException(YamlResourceStrings.Arg_Invalid_YamlUnpairedSurrogate, nameof(value));
+            }
+        }
+    }
 
     /// <summary>
     /// Determines whether a string can be emitted as a plain scalar without changing its meaning.
@@ -309,7 +343,8 @@ public ref struct Utf8YamlWriter
 
         foreach (var c in value)
         {
-            if (c is '\n' or '\t' or '\r' or '\0')
+            // Non-printable characters (C0 controls, DEL, and C1 controls) force quoting so they can be escaped.
+            if (c < 0x20 || (c >= 0x7F && c <= 0x9F))
                 return false;
         }
 
@@ -344,7 +379,7 @@ public ref struct Utf8YamlWriter
                 case '\r': sb.Append("\\r"); break;
                 case '\0': sb.Append("\\0"); break;
                 default:
-                    if (c < 0x20)
+                    if (c < 0x20 || (c >= 0x7F && c <= 0x9F))
                         sb.Append("\\x").Append(((int)c).ToString("x2", CultureInfo.InvariantCulture));
                     else
                         sb.Append(c);

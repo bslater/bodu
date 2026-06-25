@@ -20,6 +20,12 @@ public struct YamlReaderOptions
     public YamlSpecVersion SpecVersion { get; set; }
 
     /// <summary>
+    /// Gets or sets the policy applied when a mapping declares the same key more than once.
+    /// </summary>
+    /// <value>The duplicate-key policy; the default is <see cref="YamlDuplicateKeyBehavior.Throw" />.</value>
+    public YamlDuplicateKeyBehavior DuplicateKeyBehavior { get; set; }
+
+    /// <summary>
     /// Gets or sets the maximum container nesting depth permitted while parsing.
     /// </summary>
     /// <value>
