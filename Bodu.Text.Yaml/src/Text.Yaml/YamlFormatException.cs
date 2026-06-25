@@ -23,6 +23,20 @@ namespace Bodu.Text.Yaml;
 /// when the error is not associated with a specific location.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// try
+/// {
+///     ServerConfig config = YamlSerializer.Deserialize<ServerConfig>(payload);
+/// }
+/// catch (YamlFormatException ex)
+/// {
+///     Console.Error.WriteLine($"Malformed YAML at line {ex.LineNumber}, column {ex.ColumnNumber}: {ex.Message}");
+/// }
+///]]>
+/// </code>
+/// </example>
 public sealed class YamlFormatException
     : FormatException
 {

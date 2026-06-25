@@ -129,6 +129,7 @@ jobs:
           Bodu.Globalization.Calendar \
           Bodu.Text.Encoding \
           Bodu.Text.Bencode \
+          Bodu.Text.Yaml \
           Bodu.Text.Configuration \
           Bodu.Extensions.Configuration.Text \
           Bodu.Text \

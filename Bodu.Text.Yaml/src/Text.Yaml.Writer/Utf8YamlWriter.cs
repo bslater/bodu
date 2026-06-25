@@ -25,6 +25,19 @@ namespace Bodu.Text.Yaml.Writer;
 /// The writer is a <see langword="ref struct" /> and cannot be boxed, stored on the heap, or captured by a lambda.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// var buffer = new ArrayBufferWriter<byte>();
+/// var writer = new Utf8YamlWriter(buffer);
+/// writer.WriteStartMapping();
+/// writer.WritePropertyName("host");
+/// writer.WriteString("localhost");
+/// writer.WriteEndMapping();
+/// string yaml = Encoding.UTF8.GetString(buffer.WrittenSpan);   // "host: localhost\n"
+///]]>
+/// </code>
+/// </example>
 public ref struct Utf8YamlWriter
 {
     private readonly IBufferWriter<byte> _output;

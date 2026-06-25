@@ -11,9 +11,10 @@ Add the package for the format you need. Each is self-contained — there is no 
 ```shell
 dotnet add package Bodu.Text.Toml
 dotnet add package Bodu.Text.Bencode
+dotnet add package Bodu.Text.Yaml
 ```
 
-Both target `net8.0`.
+All target `net8.0`.
 
 ## A first TOML round trip
 
@@ -53,6 +54,28 @@ byte[] payload = BencodeSerializer.Serialize(new FileEntry { Name = "ubuntu.iso"
 
 FileEntry entry = BencodeSerializer.Deserialize<FileEntry>(payload);
 ```
+
+## A first YAML round trip
+
+```csharp
+using Bodu.Text.Yaml;
+
+public sealed class ServiceConfig
+{
+    public string Name { get; set; } = "";
+    public int Replicas { get; set; }
+    public bool Enabled { get; set; }
+}
+
+string yaml = YamlSerializer.Serialize(new ServiceConfig { Name = "api", Replicas = 3, Enabled = true });
+// Name: api
+// Replicas: 3
+// Enabled: true
+
+ServiceConfig back = YamlSerializer.Deserialize<ServiceConfig>(yaml);
+```
+
+By default YAML uses the 1.2 core schema, so an unquoted `no` or `yes` stays a string — set `SpecVersion = YamlSpecVersion.V1_1` on the options to opt in to 1.1 Boolean typing.
 
 ## Rename members
 

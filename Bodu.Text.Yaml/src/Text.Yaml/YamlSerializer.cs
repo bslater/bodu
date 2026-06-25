@@ -23,6 +23,14 @@ namespace Bodu.Text.Yaml;
 /// types, dictionaries keyed by string, and enumerations. Mapping is reflection-based; custom behaviour is supplied
 /// through <see cref="YamlConverter{T}" /> instances registered on <see cref="YamlSerializerOptions" />.
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// string yaml = YamlSerializer.Serialize(new ServerConfig { Host = "localhost", Port = 8080 });
+/// ServerConfig config = YamlSerializer.Deserialize<ServerConfig>(yaml);
+///]]>
+/// </code>
+/// </example>
 public static partial class YamlSerializer
 {
     private static readonly YamlSerializerOptions s_defaultOptions = new();

@@ -17,6 +17,15 @@ namespace Bodu.Text.Yaml.Document;
 /// The document materializes a single YAML document from its source. Element views are lightweight structs that remain
 /// valid until the document is disposed. The type is not thread-safe for concurrent disposal with reads.
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// using YamlDocument doc = YamlDocument.Parse("server:\n  host: localhost\n  port: 8080\n");
+/// YamlElement port = doc.RootElement.GetProperty("server").GetProperty("port");
+/// long value = port.GetInt64();   // 8080
+///]]>
+/// </code>
+/// </example>
 public sealed partial class YamlDocument : IDisposable
 {
     private List<YamlReaderRow>? _rows;

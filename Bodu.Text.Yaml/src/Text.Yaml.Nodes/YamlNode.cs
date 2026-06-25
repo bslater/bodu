@@ -20,6 +20,15 @@ namespace Bodu.Text.Yaml.Nodes;
 /// scalars (<see cref="YamlValue" />) can be created, edited, and re-serialized. A node may appear at most once in a
 /// tree.
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// YamlNode node = YamlNode.Parse("server:\n  port: 8080\n")!;
+/// node["server"]!["port"] = YamlValue.Create(9090L);
+/// string yaml = node.ToYamlString();
+///]]>
+/// </code>
+/// </example>
 public abstract class YamlNode
 {
     /// <summary>

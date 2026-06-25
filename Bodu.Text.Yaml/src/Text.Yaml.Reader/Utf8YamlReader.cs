@@ -23,6 +23,21 @@ namespace Bodu.Text.Yaml.Reader;
 /// The reader is a <see langword="ref struct" /> and cannot be boxed, stored on the heap, or captured by a lambda.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// var reader = new Utf8YamlReader("host: localhost\nport: 8080"u8);
+/// while (reader.Read())
+/// {
+///     if (reader.TokenType == YamlTokenType.PropertyName && reader.ValueTextEquals("port"u8))
+///     {
+///         reader.Read();
+///         int port = (int)reader.GetInt64();
+///     }
+/// }
+///]]>
+/// </code>
+/// </example>
 public ref struct Utf8YamlReader
 {
     private readonly List<YamlReaderRow> _rows;

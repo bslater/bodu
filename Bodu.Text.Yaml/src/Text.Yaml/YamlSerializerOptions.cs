@@ -13,6 +13,18 @@ namespace Bodu.Text.Yaml;
 /// Provides options that configure <see cref="YamlSerializer" />, in the manner of
 /// <see cref="System.Text.Json.JsonSerializerOptions" />.
 /// </summary>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// var options = new YamlSerializerOptions
+/// {
+///     PropertyNamingPolicy = YamlNamingPolicy.SnakeCaseLower,
+///     SpecVersion = YamlSpecVersion.V1_1,
+/// };
+/// string yaml = YamlSerializer.Serialize(config, options);
+///]]>
+/// </code>
+/// </example>
 public sealed class YamlSerializerOptions
 {
     /// <summary>

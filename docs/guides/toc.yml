@@ -288,7 +288,7 @@
           items:
             - name: Streams and async I/O
               href: formats/streaming.md
-    - name: Bodu.Text.Bencode & Bodu.Text.Toml
+    - name: Bodu.Text.Bencode, Bodu.Text.Toml & Bodu.Text.Yaml
       items:
         - name: Overview
           href: serialization/index.md
@@ -296,6 +296,8 @@
           href: serialization/toml.md
         - name: Using Bencode
           href: serialization/bencode.md
+        - name: Using YAML
+          href: serialization/yaml.md
         - name: Mapping attributes
           href: serialization/attributes.md
         - name: Writing converters

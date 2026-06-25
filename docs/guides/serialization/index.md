@@ -4,9 +4,9 @@ title: Bodu serializers — Guides
 
 # Bodu serializer guides
 
-Recipe-style walk-throughs for the two Bodu serializers, **Bodu.Text.Bencode** (<xref:Bodu.Text.Bencode.BencodeSerializer>) and **Bodu.Text.Toml** (<xref:Bodu.Text.Toml.TomlSerializer>). The libraries are deliberate twins — the same `System.Text.Json`-aligned shape, member for member — so every guide below teaches both at once: each pattern is shown in one format and transfers to the other by swapping the `Bencode` / `Toml` prefix.
+Recipe-style walk-throughs for the Bodu serializers — **Bodu.Text.Bencode** (<xref:Bodu.Text.Bencode.BencodeSerializer>), **Bodu.Text.Toml** (<xref:Bodu.Text.Toml.TomlSerializer>), and **Bodu.Text.Yaml** (<xref:Bodu.Text.Yaml.YamlSerializer>). The libraries share the same `System.Text.Json`-aligned shape, member for member, so most patterns transfer by swapping the `Bencode` / `Toml` / `Yaml` prefix.
 
-If you are new to the family, start with the [introduction](../../docs/serialization/index.md) for the three-tier mental model (serializer, DOMs, reader/writer), the [core concepts](../../docs/serialization/concepts.md) for the shared vocabulary, and the per-format member introductions — [Bodu.Text.Bencode](../../docs/serialization/bencode.md) and [Bodu.Text.Toml](../../docs/serialization/toml.md) — for what is specific to each wire format.
+If you are new to the family, start with the [introduction](../../docs/serialization/index.md) for the four-tier mental model (serializer, DOMs, reader/writer), the [core concepts](../../docs/serialization/concepts.md) for the shared vocabulary, and the per-format member introductions — [Bodu.Text.Bencode](../../docs/serialization/bencode.md), [Bodu.Text.Toml](../../docs/serialization/toml.md), and [Bodu.Text.Yaml](../../docs/serialization/yaml.md) — for what is specific to each wire format.
 
 ## Guides
 
@@ -22,6 +22,11 @@ If you are new to the family, start with the [introduction](../../docs/serializa
 <div class="bodu-card">
   <h3><a href="bencode.md">Using Bencode</a></h3>
   <p><code>BencodeSerializer</code> — byte strings as first-class values, canonical key ordering, a torrent-style worked example, the kinds Bencode cannot represent, and error handling.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="yaml.md">Using YAML</a></h3>
+  <p><code>YamlSerializer</code> — round-tripping configuration types, implicit typing (1.1 / 1.2), anchors and merge keys, multi-document streams, both DOMs, and error handling.</p>
 </div>
 
 </div>

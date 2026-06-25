@@ -9,6 +9,19 @@ namespace Bodu.Text.Yaml.Serialization;
 /// <summary>
 /// Indicates that a property or field is excluded from YAML serialization and deserialization.
 /// </summary>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// public sealed class Config
+/// {
+///     public string? Host { get; set; }
+///
+///     [YamlIgnore]
+///     public string? Secret { get; set; }
+/// }
+///]]>
+/// </code>
+/// </example>
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
 public sealed class YamlIgnoreAttribute : Attribute
 {

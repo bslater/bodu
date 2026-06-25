@@ -14,6 +14,23 @@ namespace Bodu.Text.Yaml.Serialization;
 /// <typeparamref name="T" />.
 /// </summary>
 /// <typeparam name="T">The type handled by the converter.</typeparam>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// public sealed class UpperStringConverter : YamlConverter<string>
+/// {
+///     public override string Read(YamlElement element, YamlSerializerOptions options) =>
+///         element.GetString().ToUpperInvariant();
+///
+///     public override void Write(ref Utf8YamlWriter writer, string value, YamlSerializerOptions options) =>
+///         writer.WriteString(value.ToUpperInvariant());
+/// }
+///
+/// var options = new YamlSerializerOptions();
+/// options.Converters.Add(new UpperStringConverter());
+///]]>
+/// </code>
+/// </example>
 public abstract class YamlConverter<T> : YamlConverter
 {
     /// <summary>

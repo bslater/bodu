@@ -9,6 +9,17 @@ namespace Bodu.Text.Yaml.Serialization;
 /// <summary>
 /// Specifies the YAML key used for a property or field, overriding the member name and any naming policy.
 /// </summary>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// public sealed class Config
+/// {
+///     [YamlPropertyName("port")]
+///     public int ServerPort { get; set; }
+/// }
+///]]>
+/// </code>
+/// </example>
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
 public sealed class YamlPropertyNameAttribute : Attribute
 {

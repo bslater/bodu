@@ -13,6 +13,14 @@ namespace Bodu.Text.Yaml;
 /// Determines how a member name is converted to a YAML key during serialization, in the manner of
 /// <see cref="System.Text.Json.JsonNamingPolicy" />.
 /// </summary>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// var options = new YamlSerializerOptions { PropertyNamingPolicy = YamlNamingPolicy.SnakeCaseLower };
+/// // A "ServerHost" member is written as the key "server_host".
+///]]>
+/// </code>
+/// </example>
 public abstract class YamlNamingPolicy
 {
     /// <summary>
