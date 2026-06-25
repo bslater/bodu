@@ -64,4 +64,44 @@ public partial class SequencedDictionaryTests
         Assert.AreEqual(1, dictionary.Count);
         Assert.AreEqual(1, dictionary["a"]);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="SequencedDictionary{TKey, TValue}.Add(TKey, TValue)" /> accepts a default value-type value.
+    /// </summary>
+    [TestMethod]
+    public void Add_WhenValueIsDefault_ShouldStoreEntry()
+    {
+        var dictionary = new SequencedDictionary<string, int>();
+
+        dictionary.Add("a", 0);
+
+        Assert.IsTrue(dictionary.Contains(new KeyValuePair<string, int>("a", 0)));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="SequencedDictionary{TKey, TValue}.Add(TKey, TValue)" /> accepts a <see langword="null" /> reference-type value.
+    /// </summary>
+    [TestMethod]
+    public void Add_WhenValueIsNull_ShouldStoreEntry()
+    {
+        var dictionary = new SequencedDictionary<string, string?>();
+
+        dictionary.Add("a", null);
+
+        Assert.IsTrue(dictionary.TryGetValue("a", out string? value));
+        Assert.IsNull(value);
+    }
+
+    /// <summary>
+    /// Verifies that a default value-type key is a valid key for <see cref="SequencedDictionary{TKey, TValue}.Add(TKey, TValue)" />.
+    /// </summary>
+    [TestMethod]
+    public void Add_WhenKeyIsDefault_ShouldStoreEntry()
+    {
+        var dictionary = new SequencedDictionary<int, string>();
+
+        dictionary.Add(0, "zero");
+
+        Assert.IsTrue(dictionary.ContainsKey(0));
+    }
 }

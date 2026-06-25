@@ -96,4 +96,46 @@ public partial class SequencedDictionaryTests
         Assert.AreEqual("b", dictionary.First.Key);
         Assert.AreEqual("c", dictionary.Last.Key);
     }
+
+    /// <summary>
+    /// Verifies that insertion order is maintained consistently across a sequence of add, remove, re-add, and clear
+    /// operations, as observed through <see cref="SequencedDictionary{TKey, TValue}.Keys" />,
+    /// <see cref="SequencedDictionary{TKey, TValue}.Values" />, and direct enumeration.
+    /// </summary>
+    /// <remarks>
+    /// Adapted from the .NET runtime <c>OrderedDictionary</c> conformance test
+    /// <c>Ordering_AddInsertRemoveClear_ExpectedOrderResults</c> (positional insert is not part of this type's surface).
+    /// </remarks>
+    [TestMethod]
+    public void Ordering_WhenAddRemoveReaddClear_ShouldTrackInsertionOrderThroughout()
+    {
+        var dictionary = new SequencedDictionary<string, int>();
+
+        dictionary.Add("a", 1);
+        dictionary.Add("b", 2);
+        dictionary.Add("c", 3);
+        dictionary.Add("d", 4);
+        CollectionAssert.AreEqual(new[] { "a", "b", "c", "d" }, dictionary.Keys.ToArray());
+
+        // Removing a middle entry preserves the order of the rest.
+        dictionary.Remove("b");
+        CollectionAssert.AreEqual(new[] { "a", "c", "d" }, dictionary.Keys.ToArray());
+
+        // Re-adding a removed key appends it at the tail.
+        dictionary.Add("b", 20);
+        CollectionAssert.AreEqual(new[] { "a", "c", "d", "b" }, dictionary.Keys.ToArray());
+        CollectionAssert.AreEqual(new[] { 1, 3, 4, 20 }, dictionary.Values.ToArray());
+
+        // Direct enumeration agrees with the views.
+        var enumerated = new List<string>();
+        foreach (KeyValuePair<string, int> kvp in dictionary)
+            enumerated.Add(kvp.Key);
+        CollectionAssert.AreEqual(new[] { "a", "c", "d", "b" }, enumerated);
+
+        // Clear resets the sequence; subsequent adds start from empty.
+        dictionary.Clear();
+        dictionary.Add("x", 100);
+        dictionary.Add("y", 200);
+        CollectionAssert.AreEqual(new[] { "x", "y" }, dictionary.Keys.ToArray());
+    }
 }

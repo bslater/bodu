@@ -73,4 +73,50 @@ public partial class SequencedDictionaryTests
 
         CollectionAssert.AreEqual(new[] { "a", "b", "c" }, seen);
     }
+
+    /// <summary>
+    /// Verifies that enumerating an access-order dictionary is not treated as an access and does not reorder entries.
+    /// </summary>
+    /// <remarks>
+    /// Mirrors the OpenJDK <c>LinkedHashMap</c> contract that iteration over an access-ordered map does not promote the
+    /// visited entries.
+    /// </remarks>
+    [TestMethod]
+    public void AccessOrder_WhenEnumerated_ShouldNotReorderEntries()
+    {
+        var dictionary = CreateAccessOrdered();
+
+        foreach (KeyValuePair<string, int> _ in dictionary)
+        {
+            // Full enumeration must not promote any entry.
+        }
+
+        CollectionAssert.AreEqual(new[] { "a", "b", "c" }, dictionary.Keys.ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that, in access-order mode, the values view's <see cref="ICollection{T}.Contains" /> does not reorder entries.
+    /// </summary>
+    [TestMethod]
+    public void AccessOrder_WhenValuesContains_ShouldNotReorder()
+    {
+        var dictionary = CreateAccessOrdered();
+
+        _ = dictionary.Values.Contains(1);
+
+        CollectionAssert.AreEqual(new[] { "a", "b", "c" }, dictionary.Keys.ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that, in access-order mode, <see cref="SequencedDictionary{TKey, TValue}.Contains" /> over a key/value pair does not reorder entries.
+    /// </summary>
+    [TestMethod]
+    public void AccessOrder_WhenContainsPair_ShouldNotReorder()
+    {
+        var dictionary = CreateAccessOrdered();
+
+        _ = dictionary.Contains(new KeyValuePair<string, int>("a", 1));
+
+        CollectionAssert.AreEqual(new[] { "a", "b", "c" }, dictionary.Keys.ToArray());
+    }
 }

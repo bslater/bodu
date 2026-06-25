@@ -98,4 +98,38 @@ public partial class SequencedDictionaryTests
             values.Clear();
         });
     }
+
+    /// <summary>
+    /// Verifies that mutating the dictionary while enumerating the values view invalidates the enumerator.
+    /// </summary>
+    [TestMethod]
+    public void ValueCollection_WhenDictionaryMutatedDuringEnumeration_ShouldThrowExactly()
+    {
+        var dictionary = CreatePopulated();
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            foreach (int _ in dictionary.Values)
+                dictionary.Add("d", 4);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that the values view enumerator does not support <see cref="IEnumerator.Reset" />.
+    /// </summary>
+    /// <remarks>
+    /// The values view is exposed through a compiler-generated iterator, whose <see cref="IEnumerator.Reset" />
+    /// implementation throws <see cref="NotSupportedException" /> — unlike the BCL <c>Dictionary.ValueCollection</c>.
+    /// </remarks>
+    [TestMethod]
+    public void ValueCollection_WhenResetCalled_ShouldThrowExactly()
+    {
+        var dictionary = CreatePopulated();
+        IEnumerator<int> enumerator = dictionary.Values.GetEnumerator();
+
+        Assert.ThrowsExactly<NotSupportedException>(() =>
+        {
+            enumerator.Reset();
+        });
+    }
 }

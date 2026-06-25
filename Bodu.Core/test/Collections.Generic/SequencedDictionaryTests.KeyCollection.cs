@@ -125,4 +125,38 @@ public partial class SequencedDictionaryTests
             keys.Remove("a");
         });
     }
+
+    /// <summary>
+    /// Verifies that mutating the dictionary while enumerating the keys view invalidates the enumerator.
+    /// </summary>
+    [TestMethod]
+    public void KeyCollection_WhenDictionaryMutatedDuringEnumeration_ShouldThrowExactly()
+    {
+        var dictionary = CreatePopulated();
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            foreach (string _ in dictionary.Keys)
+                dictionary.Add("d", 4);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that the keys view enumerator does not support <see cref="IEnumerator.Reset" />.
+    /// </summary>
+    /// <remarks>
+    /// The keys view is exposed through a compiler-generated iterator, whose <see cref="IEnumerator.Reset" />
+    /// implementation throws <see cref="NotSupportedException" /> — unlike the BCL <c>Dictionary.KeyCollection</c>.
+    /// </remarks>
+    [TestMethod]
+    public void KeyCollection_WhenResetCalled_ShouldThrowExactly()
+    {
+        var dictionary = CreatePopulated();
+        IEnumerator<string> enumerator = dictionary.Keys.GetEnumerator();
+
+        Assert.ThrowsExactly<NotSupportedException>(() =>
+        {
+            enumerator.Reset();
+        });
+    }
 }

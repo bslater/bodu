@@ -57,4 +57,47 @@ public partial class SequencedDictionaryTests
 
         CollectionAssert.AreEqual(new[] { "a", "b", "c" }, seen);
     }
+
+    /// <summary>
+    /// Verifies that enumerating an empty dictionary yields no elements.
+    /// </summary>
+    [TestMethod]
+    public void Enumerator_WhenEmpty_ShouldYieldNoElements()
+    {
+        var dictionary = new SequencedDictionary<string, int>();
+
+        using IEnumerator<KeyValuePair<string, int>> enumerator = dictionary.GetEnumerator();
+
+        Assert.IsFalse(enumerator.MoveNext());
+    }
+
+    /// <summary>
+    /// Verifies that the non-generic dictionary enumerator yields no elements over an empty dictionary.
+    /// </summary>
+    [TestMethod]
+    public void Enumerator_WhenEmptyNonGeneric_ShouldYieldNoElements()
+    {
+        System.Collections.IDictionary dictionary = new SequencedDictionary<string, int>();
+
+        System.Collections.IDictionaryEnumerator enumerator = dictionary.GetEnumerator();
+
+        Assert.IsFalse(enumerator.MoveNext());
+    }
+
+    /// <summary>
+    /// Verifies that the dictionary enumerator reports no further elements once iteration is exhausted.
+    /// </summary>
+    [TestMethod]
+    public void Enumerator_WhenExhausted_ShouldReturnFalseFromMoveNext()
+    {
+        var dictionary = CreatePopulated();
+
+        using IEnumerator<KeyValuePair<string, int>> enumerator = dictionary.GetEnumerator();
+        while (enumerator.MoveNext())
+        {
+            // Drain the enumerator.
+        }
+
+        Assert.IsFalse(enumerator.MoveNext());
+    }
 }

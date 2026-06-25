@@ -72,4 +72,64 @@ public partial class SequencedDictionaryTests
             dictionary.CopyTo(array, 0);
         });
     }
+
+    /// <summary>
+    /// Verifies that <see cref="SequencedDictionary{TKey, TValue}.CopyTo" /> throws when the index is negative.
+    /// </summary>
+    [TestMethod]
+    public void CopyTo_WhenArrayIndexIsNegative_ShouldThrowExactly()
+    {
+        var dictionary = CreatePopulated();
+        var array = new KeyValuePair<string, int>[3];
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            dictionary.CopyTo(array, -1);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="SequencedDictionary{TKey, TValue}.CopyTo" /> throws when the index equals the array length and entries remain to copy.
+    /// </summary>
+    [TestMethod]
+    public void CopyTo_WhenArrayIndexEqualsLengthAndNotEmpty_ShouldThrowExactly()
+    {
+        var dictionary = CreatePopulated();
+        var array = new KeyValuePair<string, int>[3];
+
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            dictionary.CopyTo(array, 3);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that copying an empty dictionary at an index equal to the array length is a no-op.
+    /// </summary>
+    [TestMethod]
+    public void CopyTo_WhenEmptyAndIndexEqualsLength_ShouldCopyNothing()
+    {
+        var dictionary = new SequencedDictionary<string, int>();
+        var array = new KeyValuePair<string, int>[2];
+
+        dictionary.CopyTo(array, 2);
+
+        CollectionAssert.AreEqual(new KeyValuePair<string, int>[2], array);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="SequencedDictionary{TKey, TValue}.CopyTo" /> into a larger array leaves the trailing slots untouched.
+    /// </summary>
+    [TestMethod]
+    public void CopyTo_WhenArrayLargerThanCount_ShouldLeaveTrailingSlotsUntouched()
+    {
+        var dictionary = CreatePopulated();
+        var array = new KeyValuePair<string, int>[5];
+
+        dictionary.CopyTo(array, 0);
+
+        Assert.AreEqual(new KeyValuePair<string, int>("c", 3), array[2]);
+        Assert.AreEqual(default, array[3]);
+        Assert.AreEqual(default, array[4]);
+    }
 }
