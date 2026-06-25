@@ -46,9 +46,9 @@ namespace Bodu;
 /// ShuffleHelpers.Shuffle(bag, rng);
 ///]]>
 /// </example>
-public sealed class XorShiftRandom :
-    System.Random,
-    IRandomGenerator
+public sealed class XorShiftRandom
+    : System.Random
+    , IRandomGenerator
 {
     /// <summary>The delegate that produces the next 32 random bits, allowing the core generator to be overridden.</summary>
     private readonly Func<uint> _bitsSource;

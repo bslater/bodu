@@ -51,7 +51,8 @@ namespace Bodu.Threading;
 ///]]>
 /// </example>
 [DebuggerDisplay("Held = {_held}, Waiters = {WaiterCount}")]
-public sealed partial class AsyncLock : IDisposable
+public sealed partial class AsyncLock
+    : IDisposable
 {
     /// <summary>The synchronization object guarding the waiter queue and lock state.</summary>
     private readonly object _gate = new();

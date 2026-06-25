@@ -10,8 +10,8 @@ namespace Bodu.Test.IO;
 /// A stream wrapper that cancels a <see cref="CancellationTokenSource" /> after a specified number of successful reads,
 /// enabling deterministic cancellation testing without relying on timing.
 /// </summary>
-public sealed class CancellationTriggerStream :
-    System.IO.Stream
+public sealed class CancellationTriggerStream
+    : System.IO.Stream
 {
     private readonly Stream _inner;
     private readonly CancellationTokenSource _cts;

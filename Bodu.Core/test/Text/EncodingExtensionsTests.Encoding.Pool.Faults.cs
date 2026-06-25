@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EncodingExtensionsTests.Encoding.Pool.Faults.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -97,7 +97,8 @@ public sealed partial class EncodingExtensionsTests
     /// transcode methods, so the pooled and owner helpers rent a buffer and then fail mid-transcode. This drives the
     /// exception-cleanup paths that return the rented buffer to the pool or dispose the owner.
     /// </summary>
-    private sealed class CountThenThrowEncoding : System.Text.Encoding
+    private sealed class CountThenThrowEncoding
+        : System.Text.Encoding
     {
         public override int GetByteCount(char[] chars, int index, int count) => count;
 

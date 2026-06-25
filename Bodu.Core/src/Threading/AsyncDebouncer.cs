@@ -46,7 +46,8 @@ namespace Bodu.Threading;
 ///]]>
 /// </example>
 [DebuggerDisplay("Delay = {_delay}, Policy = {ExecutionPolicy}, Pending = {_pending}, Active = {ActiveCount}")]
-public sealed partial class AsyncDebouncer : IDisposable
+public sealed partial class AsyncDebouncer
+    : IDisposable
 {
     /// <summary>The synchronization object guarding all mutable scheduling state.</summary>
     private readonly object _gate = new();
