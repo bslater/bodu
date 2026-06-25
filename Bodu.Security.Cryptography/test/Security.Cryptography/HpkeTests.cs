@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -216,6 +217,84 @@ public sealed partial class HpkeTests
             byte[] receiverSecret = receiver.Export(context, 32);
 
             CollectionAssert.AreEqual(senderSecret, receiverSecret);
+        }
+        finally
+        {
+            sender.Dispose();
+            receiver.Dispose();
+        }
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="HpkeSender.Export" /> accepts lengths up to 255·Nh inclusive and rejects negative or
+    /// larger lengths with <see cref="ArgumentOutOfRangeException" />, enforcing the RFC 9180 §5.3 export bound at the
+    /// HPKE layer rather than relying on a lower KDF stage.
+    /// </summary>
+    [TestMethod]
+    public void Export_WhenLengthOutsideBounds_ShouldThrowArgumentOutOfRangeException()
+    {
+        var (sender, receiver) = CreatePair(HpkeSuite.X25519_HkdfSha256_Aes128Gcm, HpkeMode.Base);
+        try
+        {
+            byte[] context = Encoding.ASCII.GetBytes("exporter context");
+            const int maxLength = 255 * 32; // Nh = 32 for HKDF-SHA256.
+
+            Assert.AreEqual(0, sender.Export(context, 0).Length);
+            Assert.AreEqual(maxLength, sender.Export(context, maxLength).Length);
+
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => { _ = sender.Export(context, maxLength + 1); });
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => { _ = sender.Export(context, -1); });
+        }
+        finally
+        {
+            sender.Dispose();
+            receiver.Dispose();
+        }
+    }
+
+    /// <summary>
+    /// Verifies that a sender at the sequence-number limit refuses to seal and that the final usable sequence value
+    /// still succeeds exactly once before the limit is reached (RFC 9180 §5.2 <c>MessageLimitReached</c>).
+    /// </summary>
+    [TestMethod]
+    public void Seal_WhenSequenceLimitReached_ShouldThrowInvalidOperationException()
+    {
+        var (sender, receiver) = CreatePair(HpkeSuite.X25519_HkdfSha256_Aes128Gcm, HpkeMode.Base);
+        try
+        {
+            SetSequence(sender, ulong.MaxValue);
+            Assert.ThrowsExactly<InvalidOperationException>(() => { _ = sender.Seal(Aad, Plaintext); });
+
+            // The penultimate value is still usable; the increment that follows reaches the limit.
+            SetSequence(sender, ulong.MaxValue - 1);
+            byte[] ciphertext = sender.Seal(Aad, Plaintext);
+            Assert.IsNotNull(ciphertext);
+            Assert.ThrowsExactly<InvalidOperationException>(() => { _ = sender.Seal(Aad, Plaintext); });
+        }
+        finally
+        {
+            sender.Dispose();
+            receiver.Dispose();
+        }
+    }
+
+    /// <summary>
+    /// Verifies that a receiver at the sequence-number limit throws <see cref="InvalidOperationException" /> rather
+    /// than attempting authentication, proving the limit is checked before any AEAD work (RFC 9180 §5.2).
+    /// </summary>
+    [TestMethod]
+    public void Open_WhenSequenceLimitReached_ShouldThrowInvalidOperationExceptionBeforeAuthenticating()
+    {
+        var (sender, receiver) = CreatePair(HpkeSuite.X25519_HkdfSha256_Aes128Gcm, HpkeMode.Base);
+        try
+        {
+            byte[] ciphertext = sender.Seal(Aad, Plaintext);
+
+            SetSequence(receiver, ulong.MaxValue);
+
+            // A limit reached before AEAD surfaces as InvalidOperationException; a post-AEAD check would instead fail
+            // authentication (the nonce no longer matches) and throw CryptographicException.
+            Assert.ThrowsExactly<InvalidOperationException>(() => { _ = receiver.Open(Aad, ciphertext); });
         }
         finally
         {
@@ -445,5 +524,19 @@ public sealed partial class HpkeTests
         };
 
         return (sender, receiver);
+    }
+
+    /// <summary>
+    /// Forces the sequence counter of a sender's or receiver's underlying <c>HpkeContext</c> to a chosen value so the
+    /// message-limit boundary can be exercised without sealing 2⁶⁴ messages.
+    /// </summary>
+    /// <param name="endpoint">The <see cref="HpkeSender" /> or <see cref="HpkeReceiver" /> whose counter is set.</param>
+    /// <param name="value">The sequence value to assign.</param>
+    private static void SetSequence(object endpoint, ulong value)
+    {
+        FieldInfo contextField = endpoint.GetType().GetField("_context", BindingFlags.Instance | BindingFlags.NonPublic)!;
+        object context = contextField.GetValue(endpoint)!;
+        FieldInfo seqField = context.GetType().GetField("_seq", BindingFlags.Instance | BindingFlags.NonPublic)!;
+        seqField.SetValue(context, value);
     }
 }
