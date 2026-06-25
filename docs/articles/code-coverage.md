@@ -85,6 +85,43 @@ needs a single authoritative number should run the scalar pass on its build
 agents (which are typically not AVX512) and an intrinsic pass on capable
 hardware, then merge.
 
+## Stale paths across a folder or namespace refactor
+
+Coverage is keyed by source-file path. When a report is collected — or several
+runs are **merged** — across a commit that *moves or renames* source files, the
+result silently double-counts: the old paths linger as **phantom entries at 0%**
+that no longer exist on disk, sitting alongside the real entries for the renamed
+files. The phantom rows drag every module aggregate down even though the live
+code is well covered.
+
+The flatten in **#528** (`Bodu.Financial.ExchangeRates.<Provider>` →
+`Bodu.Financial.ExchangeRates`, moving `src/Financial.ExchangeRates.<Provider>/…`
+to `src/Financial.ExchangeRates/…`) is the worked example. A report spanning that
+commit listed the provider modules at 41–61% and every parser at 0%, when the
+real per-file coverage was already healthy:
+
+| File | Report (phantom path) | Actual (live path) |
+|---|---|---|
+| `EcbExchangeRateXmlParser` | 0% | 93.1% |
+| `BoeExchangeRateCsvParser` | 0% | 93.9% |
+| `RbaExchangeRateWorkbookParser` | 0% | 94.3% |
+| `YahooChartResponseParser` | 0% | 87.7% |
+| `OfxSpotRateHistoryResponseParser` | 0% | 94.6% |
+
+**Remedy:** re-collect on a clean post-refactor checkout, **per project**, and
+discard any row whose file path does not resolve on disk before computing a
+percentage. A path that exists under two different folder spellings is the
+tell-tale of a cross-refactor artifact, not a coverage gap.
+
+The genuinely low spots this re-measurement surfaced were narrow — the
+`OfxExchangeRateProvider` owned-client constructor path (now covered) and the
+file-system feed/response/workbook caches' best-effort I/O swallow blocks. The
+caches' `Store` `IOException` path is covered; their `UnauthorizedAccessException`
+catches and `TryGet` read-fault catches are left uncovered by design per
+[Reading the numbers](#reading-the-numbers) — the test process runs as root, so
+permission denial cannot be forced, and a mid-read I/O fault is not reproducible
+cross-platform.
+
 ## Generated catalogues
 
 Large generated catalogues are covered by a single reflective sweep rather than
