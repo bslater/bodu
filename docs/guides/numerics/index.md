@@ -52,6 +52,16 @@ that ship in .NET 8+.
   <p>Round-tripping <code>Fraction&lt;T&gt;</code> and <code>Interval&lt;T&gt;</code> through <code>System.Text.Json</code> — the <code>Strict</code>, <code>Lenient</code>, and <code>Compact</code> wire shapes and how to register them.</p>
 </div>
 
+<div class="bodu-card">
+  <h3><a href="interval-algebra.md">Interval algebra</a></h3>
+  <p>The set-algebra surface of <code>Interval&lt;T&gt;</code> — intersection, union, difference, adjacency, and the empty-interval rules that make the operations total.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="generic-math-constraints.md">Generic math constraints</a></h3>
+  <p>Writing code generic over <code>Fraction&lt;T&gt;</code> and <code>Interval&lt;T&gt;</code> through the .NET <code>INumber&lt;T&gt;</code> / <code>IBinaryInteger&lt;T&gt;</code> abstractions.</p>
+</div>
+
 </div>
 
 ## Reading path

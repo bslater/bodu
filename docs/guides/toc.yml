@@ -154,6 +154,18 @@
               href: cryptography/argon2.md
             - name: Using scrypt
               href: cryptography/scrypt.md
+        - name: Asymmetric algorithms
+          items:
+            - name: Asymmetric algorithms overview
+              href: cryptography/asymmetric-overview.md
+            - name: Key agreement with X25519
+              href: cryptography/key-agreement-x25519.md
+            - name: Signatures with Ed25519
+              href: cryptography/signatures-ed25519.md
+            - name: ML-KEM post-quantum key encapsulation
+              href: cryptography/ml-kem.md
+            - name: ML-DSA post-quantum signatures
+              href: cryptography/ml-dsa.md
 - name: Globalization & Calendars
   href: topics/globalization-and-calendars.md
   items:
@@ -264,6 +276,8 @@
           href: formats/index.md
         - name: Bodu.Text.Formats — Codec
           items:
+            - name: Choosing a text format
+              href: formats/choosing-a-format.md
             - name: Using delimited (CSV / TSV)
               href: formats/delimited.md
             - name: Using DotEnv
@@ -286,6 +300,8 @@
           href: serialization/attributes.md
         - name: Writing converters
           href: serialization/converters.md
+        - name: Polymorphic converters
+          href: serialization/polymorphic-converters.md
         - name: Serialization callbacks
           href: serialization/callbacks.md
         - name: Built-in converter catalog
@@ -324,6 +340,10 @@
           href: numerics/interval.md
         - name: JSON serialization
           href: numerics/json-serialization.md
+        - name: Interval algebra
+          href: numerics/interval-algebra.md
+        - name: Generic math constraints
+          href: numerics/generic-math-constraints.md
     - name: Bodu.Financial
       items:
         - name: Overview
@@ -355,6 +375,8 @@
           href: io-compound/streaming-and-buffering.md
         - name: Reading property sets
           href: io-compound/property-sets.md
+        - name: Office format nuances
+          href: io-compound/office-format-nuances.md
     - name: Bodu.Formats.Excel.Binary
       items:
         - name: Overview

@@ -41,6 +41,11 @@ If you are new to the family, start with the [introduction](../../docs/serializa
 </div>
 
 <div class="bodu-card">
+  <h3><a href="polymorphic-converters.md">Polymorphic converters</a></h3>
+  <p>Serialize and round-trip type hierarchies — emitting a type discriminator and dispatching to the right derived type on the read path.</p>
+</div>
+
+<div class="bodu-card">
   <h3><a href="callbacks.md">Serialization callbacks</a></h3>
   <p>Hook the lifecycle with the <code>I…OnSerializing</code> / <code>I…OnSerialized</code> / <code>I…OnDeserializing</code> / <code>I…OnDeserialized</code> interfaces — defaults, validation, derived state.</p>
 </div>

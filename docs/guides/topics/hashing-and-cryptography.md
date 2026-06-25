@@ -82,6 +82,31 @@ Primitives with a formal adversary model, on the BCL `SymmetricAlgorithm` / `Has
   <p>Argon2id / Argon2i / Argon2d per RFC 9106 — memory-hard password hashing and key derivation, with the parameter guidance.</p>
 </div>
 
+<div class="bodu-card">
+  <h3><a href="../cryptography/asymmetric-overview.md">Asymmetric algorithms overview</a></h3>
+  <p>The four families over <code>AsymmetricAlgorithm</code> — key agreement, signatures, and post-quantum KEM / signatures — with selection guidance and the shared key import / export shape.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="../cryptography/key-agreement-x25519.md">Key agreement with X25519</a></h3>
+  <p><code>X25519</code> (RFC 7748) — Diffie-Hellman over Curve25519 for deriving a shared secret between two parties.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="../cryptography/signatures-ed25519.md">Signatures with Ed25519</a></h3>
+  <p><code>Ed25519</code> (RFC 8032) — deterministic EdDSA signing and verification over Curve25519.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="../cryptography/ml-kem.md">ML-KEM post-quantum key encapsulation</a></h3>
+  <p><code>MLKem512</code> / <code>MLKem768</code> / <code>MLKem1024</code> (FIPS 203) — lattice-based key encapsulation resistant to quantum attack.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="../cryptography/ml-dsa.md">ML-DSA post-quantum signatures</a></h3>
+  <p><code>MLDsa44</code> / <code>MLDsa65</code> / <code>MLDsa87</code> (FIPS 204) — lattice-based digital signatures resistant to quantum attack.</p>
+</div>
+
 </div>
 
 ## Start here

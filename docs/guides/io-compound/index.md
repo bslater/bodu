@@ -46,6 +46,11 @@ By default the whole source is buffered into memory at open time, so the file is
   <p>The <code>\x05SummaryInformation</code> and <code>\x05DocumentSummaryInformation</code> metadata streams — typed accessors, the raw <code>OlePropertySet</code>, and the <code>TryGet*</code> convenience methods on <code>CompoundFile</code>.</p>
 </div>
 
+<div class="bodu-card">
+  <h3><a href="office-format-nuances.md">Office format nuances</a></h3>
+  <p>How the legacy Office documents (<code>.xls</code>, <code>.doc</code>, <code>.ppt</code>, <code>.msg</code>) lay out their named streams inside the CFB envelope, and the quirks to expect when reading them.</p>
+</div>
+
 </div>
 
 ## Suggested reading path
