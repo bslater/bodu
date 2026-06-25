@@ -995,5 +995,95 @@ namespace Bodu {
                 return ResourceManager.GetString("Op_NotSupported_Poly1305Padding", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The hash algorithm &apos;{0}&apos; is not supported for HKDF; supported algorithms are SHA-1, SHA-256, SHA-384, and SHA-512..
+        /// </summary>
+        internal static string Arg_Invalid_HkdfHashAlgorithm {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_HkdfHashAlgorithm", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The pseudorandom key must be at least {0} bytes for the selected hash algorithm..
+        /// </summary>
+        internal static string Arg_Invalid_HkdfPseudoRandomKeyLength {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_HkdfPseudoRandomKeyLength", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The HKDF output length must be between 1 and {0} bytes for the selected hash algorithm..
+        /// </summary>
+        internal static string Arg_OutOfRange_HkdfOutputLength {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_HkdfOutputLength", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The HPKE KEM identifier 0x{0:X4} is not a supported value..
+        /// </summary>
+        internal static string Arg_OutOfRange_HpkeKem {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_HpkeKem", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The HPKE KDF identifier 0x{0:X4} is not a supported value..
+        /// </summary>
+        internal static string Arg_OutOfRange_HpkeKdf {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_HpkeKdf", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The HPKE AEAD identifier 0x{0:X4} is not a supported value..
+        /// </summary>
+        internal static string Arg_OutOfRange_HpkeAead {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_HpkeAead", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to This HPKE cipher suite is export-only and does not support encryption or decryption..
+        /// </summary>
+        internal static string Op_NotSupported_HpkeExportOnly {
+            get {
+                return ResourceManager.GetString("Op_NotSupported_HpkeExportOnly", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The pre-shared key and its identifier must either both be supplied or both be omitted..
+        /// </summary>
+        internal static string Crypt_Invalid_HpkePskInputs {
+            get {
+                return ResourceManager.GetString("Crypt_Invalid_HpkePskInputs", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to A pre-shared key was supplied for an HPKE mode that does not use one, or omitted for a mode that requires one..
+        /// </summary>
+        internal static string Crypt_Invalid_HpkePskMode {
+            get {
+                return ResourceManager.GetString("Crypt_Invalid_HpkePskMode", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The HPKE message sequence number has reached its maximum; no further messages can be sealed or opened with this context..
+        /// </summary>
+        internal static string Op_Invalid_HpkeMessageLimitReached {
+            get {
+                return ResourceManager.GetString("Op_Invalid_HpkeMessageLimitReached", resourceCulture);
+            }
+        }
     }
 }

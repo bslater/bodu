@@ -370,4 +370,34 @@
   <data name="Arg_Invalid_ContextTooLong" xml:space="preserve">
     <value>The signature context must not exceed {0} bytes.</value>
   </data>
+  <data name="Arg_Invalid_HkdfHashAlgorithm" xml:space="preserve">
+    <value>The hash algorithm '{0}' is not supported for HKDF; supported algorithms are SHA-1, SHA-256, SHA-384, and SHA-512.</value>
+  </data>
+  <data name="Arg_Invalid_HkdfPseudoRandomKeyLength" xml:space="preserve">
+    <value>The pseudorandom key must be at least {0} bytes for the selected hash algorithm.</value>
+  </data>
+  <data name="Arg_OutOfRange_HkdfOutputLength" xml:space="preserve">
+    <value>The HKDF output length must be between 1 and {0} bytes for the selected hash algorithm.</value>
+  </data>
+  <data name="Arg_OutOfRange_HpkeKem" xml:space="preserve">
+    <value>The HPKE KEM identifier 0x{0:X4} is not a supported value.</value>
+  </data>
+  <data name="Arg_OutOfRange_HpkeKdf" xml:space="preserve">
+    <value>The HPKE KDF identifier 0x{0:X4} is not a supported value.</value>
+  </data>
+  <data name="Arg_OutOfRange_HpkeAead" xml:space="preserve">
+    <value>The HPKE AEAD identifier 0x{0:X4} is not a supported value.</value>
+  </data>
+  <data name="Op_NotSupported_HpkeExportOnly" xml:space="preserve">
+    <value>This HPKE cipher suite is export-only and does not support encryption or decryption.</value>
+  </data>
+  <data name="Crypt_Invalid_HpkePskInputs" xml:space="preserve">
+    <value>The pre-shared key and its identifier must either both be supplied or both be omitted.</value>
+  </data>
+  <data name="Crypt_Invalid_HpkePskMode" xml:space="preserve">
+    <value>A pre-shared key was supplied for an HPKE mode that does not use one, or omitted for a mode that requires one.</value>
+  </data>
+  <data name="Op_Invalid_HpkeMessageLimitReached" xml:space="preserve">
+    <value>The HPKE message sequence number has reached its maximum; no further messages can be sealed or opened with this context.</value>
+  </data>
 </root>

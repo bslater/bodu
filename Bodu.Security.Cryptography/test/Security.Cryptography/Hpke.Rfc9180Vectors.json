@@ -1,0 +1,397 @@
+{
+  "source": "RFC 9180 (Hybrid Public Key Encryption) Appendix A.1 / A.2, DHKEM(X25519, HKDF-SHA256) / HKDF-SHA256. The AES-128-GCM (A.1) vectors are taken from the user-supplied RFC 9180 Appendix A.1 export with RFC Errata 7121 applied to the X25519 private keys (skRm/skSm); the ChaCha20Poly1305 (A.2) vectors are from the canonical CFRG test-vector set (raw-key representation). Both representations interoperate because X25519 clamps the scalar at the point of use.",
+  "vectors": [
+    {
+      "name": "Base_Aes128Gcm",
+      "mode": 0,
+      "aead": 1,
+      "info": "4f6465206f6e2061204772656369616e2055726e",
+      "skRm": "4012c550263fc8ad58375df3f557aac531d26850903e55a9f23f21d8534e8a48",
+      "pkRm": "3948cfe0ad1ddb695d780e59077195da6c56506b027329794ab02bca80815c4d",
+      "enc": "37fda3567bdbd628e88668c3c8d7e97d1d1253b6d4ea6d44c150f741f1bf4431",
+      "key": "4531685d41d65f03dc48f6b8302c05b0",
+      "base_nonce": "56d890e5accaaf011cff4b7d",
+      "exporter_secret": "45ff1c2e220db587171952c0592d5f5ebe103f1561a2614e38f2ffd47e99e3f8",
+      "psk": "",
+      "psk_id": "",
+      "pkSm": "",
+      "encryptions": [
+        {
+          "aad": "436f756e742d30",
+          "pt": "4265617574792069732074727574682c20747275746820626561757479",
+          "ct": "f938558b5d72f1a23810b4be2ab4f84331acc02fc97babc53a52ae8218a355a96d8770ac83d07bea87e13c512a"
+        },
+        {
+          "aad": "436f756e742d31",
+          "pt": "4265617574792069732074727574682c20747275746820626561757479",
+          "ct": "af2d7e9ac9ae7e270f46ba1f975be53c09f8d875bdc8535458c2494e8a6eab251c03d0c22a56b8ca42c2063b84"
+        },
+        {
+          "aad": "436f756e742d32",
+          "pt": "4265617574792069732074727574682c20747275746820626561757479",
+          "ct": "498dfcabd92e8acedc281e85af1cb4e3e31c7dc394a1ca20e173cb72516491588d96a19ad4a683518973dcc180"
+        }
+      ],
+      "exports": [
+        {
+          "context": "",
+          "L": 32,
+          "value": "3853fe2b4035195a573ffc53856e77058e15d9ea064de3e59f4961d0095250ee"
+        },
+        {
+          "context": "00",
+          "L": 32,
+          "value": "2e8f0b54673c7029649d4eb9d5e33bf1872cf76d623ff164ac185da9e88c21a5"
+        },
+        {
+          "context": "54657374436f6e74657874",
+          "L": 32,
+          "value": "e9e43065102c3836401bed8c3c3c75ae46be1639869391d62c61f1ec7af54931"
+        }
+      ]
+    },
+    {
+      "name": "Psk_Aes128Gcm",
+      "mode": 1,
+      "aead": 1,
+      "info": "4f6465206f6e2061204772656369616e2055726e",
+      "skRm": "c0eb01eb457fe6c6f57577c5413b931550a162c71a03ac8d196babbd4e5ce07d",
+      "pkRm": "9fed7e8c17387560e92cc6462a68049657246a09bfa8ade7aefe589672016366",
+      "enc": "0ad0950d9fb9588e59690b74f1237ecdf1d775cd60be2eca57af5a4b0471c91b",
+      "key": "15026dba546e3ae05836fc7de5a7bb26",
+      "base_nonce": "9518635eba129d5ce0914555",
+      "exporter_secret": "3d76025dbbedc49448ec3f9080a1abab6b06e91c0b11ad23c912f043a0ee7655",
+      "psk": "0247fd33b913760fa1fa51e1892d9f307fbe65eb171e8132c2af18555a738b82",
+      "psk_id": "456e6e796e20447572696e206172616e204d6f726961",
+      "pkSm": "",
+      "encryptions": [
+        {
+          "aad": "436f756e742d30",
+          "pt": "4265617574792069732074727574682c20747275746820626561757479",
+          "ct": "e52c6fed7f758d0cf7145689f21bc1be6ec9ea097fef4e959440012f4feb73fb611b946199e681f4cfc34db8ea"
+        },
+        {
+          "aad": "436f756e742d31",
+          "pt": "4265617574792069732074727574682c20747275746820626561757479",
+          "ct": "49f3b19b28a9ea9f43e8c71204c00d4a490ee7f61387b6719db765e948123b45b61633ef059ba22cd62437c8ba"
+        },
+        {
+          "aad": "436f756e742d32",
+          "pt": "4265617574792069732074727574682c20747275746820626561757479",
+          "ct": "257ca6a08473dc851fde45afd598cc83e326ddd0abe1ef23baa3baa4dd8cde99fce2c1e8ce687b0b47ead1adc9"
+        }
+      ],
+      "exports": [
+        {
+          "context": "",
+          "L": 32,
+          "value": "dff17af354c8b41673567db6259fd6029967b4e1aad13023c2ae5df8f4f43bf6"
+        },
+        {
+          "context": "00",
+          "L": 32,
+          "value": "6a847261d8207fe596befb52928463881ab493da345b10e1dcc645e3b94e2d95"
+        },
+        {
+          "context": "54657374436f6e74657874",
+          "L": 32,
+          "value": "8aff52b45a1be3a734bc7a41e20b4e055ad4c4d22104b0c20285a7c4302401cd"
+        }
+      ]
+    },
+    {
+      "name": "Auth_Aes128Gcm",
+      "mode": 2,
+      "aead": 1,
+      "info": "4f6465206f6e2061204772656369616e2055726e",
+      "skRm": "f8ea67cf831f1ca98d8e27b1f6abeb5b7745e9d35348b80fa407ff6958f9137e",
+      "pkRm": "1632d5c2f71c2b38d0a8fcc359355200caa8b1ffdf28618080466c909cb69b2e",
+      "enc": "23fb952571a14a25e3d678140cd0e5eb47a0961bb18afcf85896e5453c312e76",
+      "key": "b062cb2c4dd4bca0ad7c7a12bbc341e6",
+      "base_nonce": "a1bc314c1942ade7051ffed0",
+      "exporter_secret": "ee1a093e6e1c393c162ea98fdf20560c75909653550540a2700511b65c88c6f1",
+      "psk": "",
+      "psk_id": "",
+      "pkSm": "8b0c70873dc5aecb7f9ee4e62406a397b350e57012be45cf53b7105ae731790b",
+      "encryptions": [
+        {
+          "aad": "436f756e742d30",
+          "pt": "4265617574792069732074727574682c20747275746820626561757479",
+          "ct": "5fd92cc9d46dbf8943e72a07e42f363ed5f721212cd90bcfd072bfd9f44e06b80fd17824947496e21b680c141b"
+        },
+        {
+          "aad": "436f756e742d31",
+          "pt": "4265617574792069732074727574682c20747275746820626561757479",
+          "ct": "d3736bb256c19bfa93d79e8f80b7971262cb7c887e35c26370cfed62254369a1b52e3d505b79dd699f002bc8ed"
+        },
+        {
+          "aad": "436f756e742d32",
+          "pt": "4265617574792069732074727574682c20747275746820626561757479",
+          "ct": "122175cfd5678e04894e4ff8789e85dd381df48dcaf970d52057df2c9acc3b121313a2bfeaa986050f82d93645"
+        }
+      ],
+      "exports": [
+        {
+          "context": "",
+          "L": 32,
+          "value": "28c70088017d70c896a8420f04702c5a321d9cbf0279fba899b59e51bac72c85"
+        },
+        {
+          "context": "00",
+          "L": 32,
+          "value": "25dfc004b0892be1888c3914977aa9c9bbaf2c7471708a49e1195af48a6f29ce"
+        },
+        {
+          "context": "54657374436f6e74657874",
+          "L": 32,
+          "value": "5a0131813abc9a522cad678eb6bafaabc43389934adb8097d23c5ff68059eb64"
+        }
+      ]
+    },
+    {
+      "name": "AuthPsk_Aes128Gcm",
+      "mode": 3,
+      "aead": 1,
+      "info": "4f6465206f6e2061204772656369616e2055726e",
+      "skRm": "c829a95649dc5656c2d054c1aa0d3df0493155e9d5da6d7e344ed8b6a64a9463",
+      "pkRm": "1d11a3cd247ae48e901939659bd4d79b6b959e1f3e7d66663fbc9412dd4e0976",
+      "enc": "820818d3c23993492cc5623ab437a48a0a7ca3e9639c140fe1e33811eb844b7c",
+      "key": "1364ead92c47aa7becfa95203037b19a",
+      "base_nonce": "99d8b5c54669807e9fc70df1",
+      "exporter_secret": "f048d55eacbf60f9c6154bd4021774d1075ebf963c6adc71fa846f183ab2dde6",
+      "psk": "0247fd33b913760fa1fa51e1892d9f307fbe65eb171e8132c2af18555a738b82",
+      "psk_id": "456e6e796e20447572696e206172616e204d6f726961",
+      "pkSm": "2bfb2eb18fcad1af0e4f99142a1c474ae74e21b9425fc5c589382c69b50cc57e",
+      "encryptions": [
+        {
+          "aad": "436f756e742d30",
+          "pt": "4265617574792069732074727574682c20747275746820626561757479",
+          "ct": "a84c64df1e11d8fd11450039d4fe64ff0c8a99fca0bd72c2d4c3e0400bc14a40f27e45e141a24001697737533e"
+        },
+        {
+          "aad": "436f756e742d31",
+          "pt": "4265617574792069732074727574682c20747275746820626561757479",
+          "ct": "4d19303b848f424fc3c3beca249b2c6de0a34083b8e909b6aa4c3688505c05ffe0c8f57a0a4c5ab9da127435d9"
+        },
+        {
+          "aad": "436f756e742d32",
+          "pt": "4265617574792069732074727574682c20747275746820626561757479",
+          "ct": "0c085a365fbfa63409943b00a3127abce6e45991bc653f182a80120868fc507e9e4d5e37bcc384fc8f14153b24"
+        }
+      ],
+      "exports": [
+        {
+          "context": "",
+          "L": 32,
+          "value": "08f7e20644bb9b8af54ad66d2067457c5f9fcb2a23d9f6cb4445c0797b330067"
+        },
+        {
+          "context": "00",
+          "L": 32,
+          "value": "52e51ff7d436557ced5265ff8b94ce69cf7583f49cdb374e6aad801fc063b010"
+        },
+        {
+          "context": "54657374436f6e74657874",
+          "L": 32,
+          "value": "a30c20370c026bbea4dca51cb63761695132d342bae33a6a11527d3e7679436d"
+        }
+      ]
+    },
+    {
+      "name": "Base_ChaCha20Poly1305",
+      "mode": 0,
+      "aead": 3,
+      "info": "4f6465206f6e2061204772656369616e2055726e",
+      "skRm": "8057991eef8f1f1af18f4a9491d16a1ce333f695d4db8e38da75975c4478e0fb",
+      "pkRm": "4310ee97d88cc1f088a5576c77ab0cf5c3ac797f3d95139c6c84b5429c59662a",
+      "enc": "1afa08d3dec047a643885163f1180476fa7ddb54c6a8029ea33f95796bf2ac4a",
+      "key": "ad2744de8e17f4ebba575b3f5f5a8fa1f69c2a07f6e7500bc60ca6e3e3ec1c91",
+      "base_nonce": "5c4d98150661b848853b547f",
+      "exporter_secret": "a3b010d4994890e2c6968a36f64470d3c824c8f5029942feb11e7a74b2921922",
+      "psk": "",
+      "psk_id": "",
+      "pkSm": "",
+      "encryptions": [
+        {
+          "aad": "436f756e742d30",
+          "pt": "4265617574792069732074727574682c20747275746820626561757479",
+          "ct": "1c5250d8034ec2b784ba2cfd69dbdb8af406cfe3ff938e131f0def8c8b60b4db21993c62ce81883d2dd1b51a28"
+        },
+        {
+          "aad": "436f756e742d31",
+          "pt": "4265617574792069732074727574682c20747275746820626561757479",
+          "ct": "6b53c051e4199c518de79594e1c4ab18b96f081549d45ce015be002090bb119e85285337cc95ba5f59992dc98c"
+        },
+        {
+          "aad": "436f756e742d32",
+          "pt": "4265617574792069732074727574682c20747275746820626561757479",
+          "ct": "71146bd6795ccc9c49ce25dda112a48f202ad220559502cef1f34271e0cb4b02b4f10ecac6f48c32f878fae86b"
+        }
+      ],
+      "exports": [
+        {
+          "context": "",
+          "L": 32,
+          "value": "4bbd6243b8bb54cec311fac9df81841b6fd61f56538a775e7c80a9f40160606e"
+        },
+        {
+          "context": "00",
+          "L": 32,
+          "value": "8c1df14732580e5501b00f82b10a1647b40713191b7c1240ac80e2b68808ba69"
+        },
+        {
+          "context": "54657374436f6e74657874",
+          "L": 32,
+          "value": "5acb09211139c43b3090489a9da433e8a30ee7188ba8b0a9a1ccf0c229283e53"
+        }
+      ]
+    },
+    {
+      "name": "Psk_ChaCha20Poly1305",
+      "mode": 1,
+      "aead": 3,
+      "info": "4f6465206f6e2061204772656369616e2055726e",
+      "skRm": "77d114e0212be51cb1d76fa99dd41cfd4d0166b08caa09074430a6c59ef17879",
+      "pkRm": "13640af826b722fc04feaa4de2f28fbd5ecc03623b317834e7ff4120dbe73062",
+      "enc": "2261299c3f40a9afc133b969a97f05e95be2c514e54f3de26cbe5644ac735b04",
+      "key": "600d2fdb0313a7e5c86a9ce9221cd95bed069862421744cfb4ab9d7203a9c019",
+      "base_nonce": "112e0465562045b7368653e7",
+      "exporter_secret": "73b506dc8b6b4269027f80b0362def5cbb57ee50eed0c2873dac9181f453c5ac",
+      "psk": "0247fd33b913760fa1fa51e1892d9f307fbe65eb171e8132c2af18555a738b82",
+      "psk_id": "456e6e796e20447572696e206172616e204d6f726961",
+      "pkSm": "",
+      "encryptions": [
+        {
+          "aad": "436f756e742d30",
+          "pt": "4265617574792069732074727574682c20747275746820626561757479",
+          "ct": "4a177f9c0d6f15cfdf533fb65bf84aecdc6ab16b8b85b4cf65a370e07fc1d78d28fb073214525276f4a89608ff"
+        },
+        {
+          "aad": "436f756e742d31",
+          "pt": "4265617574792069732074727574682c20747275746820626561757479",
+          "ct": "5c3cabae2f0b3e124d8d864c116fd8f20f3f56fda988c3573b40b09997fd6c769e77c8eda6cda4f947f5b704a8"
+        },
+        {
+          "aad": "436f756e742d32",
+          "pt": "4265617574792069732074727574682c20747275746820626561757479",
+          "ct": "14958900b44bdae9cbe5a528bf933c5c990dbb8e282e6e495adf8205d19da9eb270e3a6f1e0613ab7e757962a4"
+        }
+      ],
+      "exports": [
+        {
+          "context": "",
+          "L": 32,
+          "value": "813c1bfc516c99076ae0f466671f0ba5ff244a41699f7b2417e4c59d46d39f40"
+        },
+        {
+          "context": "00",
+          "L": 32,
+          "value": "2745cf3d5bb65c333658732954ee7af49eb895ce77f8022873a62a13c94cb4e1"
+        },
+        {
+          "context": "54657374436f6e74657874",
+          "L": 32,
+          "value": "ad40e3ae14f21c99bfdebc20ae14ab86f4ca2dc9a4799d200f43a25f99fa78ae"
+        }
+      ]
+    },
+    {
+      "name": "Auth_ChaCha20Poly1305",
+      "mode": 2,
+      "aead": 3,
+      "info": "4f6465206f6e2061204772656369616e2055726e",
+      "skRm": "3ca22a6d1cda1bb9480949ec5329d3bf0b080ca4c45879c95eddb55c70b80b82",
+      "pkRm": "1a478716d63cb2e16786ee93004486dc151e988b34b475043d3e0175bdb01c44",
+      "enc": "f7674cc8cd7baa5872d1f33dbaffe3314239f6197ddf5ded1746760bfc847e0e",
+      "key": "b071fd1136680600eb447a845a967d35e9db20749cdf9ce098bcc4deef4b1356",
+      "base_nonce": "d20577dff16d7cea2c4bf780",
+      "exporter_secret": "be2d93b82071318cdb88510037cf504344151f2f9b9da8ab48974d40a2251dd7",
+      "psk": "",
+      "psk_id": "",
+      "pkSm": "f0f4f9e96c54aeed3f323de8534fffd7e0577e4ce269896716bcb95643c8712b",
+      "encryptions": [
+        {
+          "aad": "436f756e742d30",
+          "pt": "4265617574792069732074727574682c20747275746820626561757479",
+          "ct": "ab1a13c9d4f01a87ec3440dbd756e2677bd2ecf9df0ce7ed73869b98e00c09be111cb9fdf077347aeb88e61bdf"
+        },
+        {
+          "aad": "436f756e742d31",
+          "pt": "4265617574792069732074727574682c20747275746820626561757479",
+          "ct": "3265c7807ffff7fdace21659a2c6ccffee52a26d270c76468ed74202a65478bfaedfff9c2b7634e24f10b71016"
+        },
+        {
+          "aad": "436f756e742d32",
+          "pt": "4265617574792069732074727574682c20747275746820626561757479",
+          "ct": "3aadee86ad2a05081ea860033a9d09dbccb4acac2ded0891da40f51d4df19925f7a767b076a5cbc9355c8fd35e"
+        }
+      ],
+      "exports": [
+        {
+          "context": "",
+          "L": 32,
+          "value": "070cffafd89b67b7f0eeb800235303a223e6ff9d1e774dce8eac585c8688c872"
+        },
+        {
+          "context": "00",
+          "L": 32,
+          "value": "2852e728568d40ddb0edde284d36a4359c56558bb2fb8837cd3d92e46a3a14a8"
+        },
+        {
+          "context": "54657374436f6e74657874",
+          "L": 32,
+          "value": "1df39dc5dd60edcbf5f9ae804e15ada66e885b28ed7929116f768369a3f950ee"
+        }
+      ]
+    },
+    {
+      "name": "AuthPsk_ChaCha20Poly1305",
+      "mode": 3,
+      "aead": 3,
+      "info": "4f6465206f6e2061204772656369616e2055726e",
+      "skRm": "7b36a42822e75bf3362dfabbe474b3016236408becb83b859a6909e22803cb0c",
+      "pkRm": "a5099431c35c491ec62ca91df1525d6349cb8aa170c51f9581f8627be6334851",
+      "enc": "656a2e00dc9990fd189e6e473459392df556e9a2758754a09db3f51179a3fc02",
+      "key": "49c7e6d7d2d257aded2a746fe6a9bf12d4de8007c4862b1fdffe8c35fb65054c",
+      "base_nonce": "abac79931e8c1bcb8a23960a",
+      "exporter_secret": "7c6cc1bb98993cd93e2599322247a58fd41fdecd3db895fb4c5fd8d6bbe606b5",
+      "psk": "0247fd33b913760fa1fa51e1892d9f307fbe65eb171e8132c2af18555a738b82",
+      "psk_id": "456e6e796e20447572696e206172616e204d6f726961",
+      "pkSm": "3ac5bd4dd66ff9f2740bef0d6ccb66daa77bff7849d7895182b07fb74d087c45",
+      "encryptions": [
+        {
+          "aad": "436f756e742d30",
+          "pt": "4265617574792069732074727574682c20747275746820626561757479",
+          "ct": "9aa52e29274fc6172e38a4461361d2342585d3aeec67fb3b721ecd63f059577c7fe886be0ede01456ebc67d597"
+        },
+        {
+          "aad": "436f756e742d31",
+          "pt": "4265617574792069732074727574682c20747275746820626561757479",
+          "ct": "59460bacdbe7a920ef2806a74937d5a691d6d5062d7daafcad7db7e4d8c649adffe575c1889c5c2e3a49af8e3e"
+        },
+        {
+          "aad": "436f756e742d32",
+          "pt": "4265617574792069732074727574682c20747275746820626561757479",
+          "ct": "5688ff6a03ba26ae936044a5c800f286fb5d1eccdd2a0f268f6ff9773b51169318d1a1466bb36263415071db00"
+        }
+      ],
+      "exports": [
+        {
+          "context": "",
+          "L": 32,
+          "value": "c23ebd4e7a0ad06a5dddf779f65004ce9481069ce0f0e6dd51a04539ddcbd5cd"
+        },
+        {
+          "context": "00",
+          "L": 32,
+          "value": "ed7ff5ca40a3d84561067ebc8e01702bc36cf1eb99d42a92004642b9dfaadd37"
+        },
+        {
+          "context": "54657374436f6e74657874",
+          "L": 32,
+          "value": "d3bae066aa8da27d527d85c040f7dd6ccb60221c902ee36a82f70bcd62a60ee4"
+        }
+      ]
+    }
+  ]
+}

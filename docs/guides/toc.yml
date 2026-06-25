@@ -150,6 +150,8 @@
               href: cryptography/ascon-aead.md
         - name: Key derivation
           items:
+            - name: Using HKDF
+              href: cryptography/hkdf.md
             - name: Using Argon2
               href: cryptography/argon2.md
             - name: Using scrypt
@@ -166,6 +168,8 @@
               href: cryptography/ml-kem.md
             - name: ML-DSA post-quantum signatures
               href: cryptography/ml-dsa.md
+            - name: Hybrid public key encryption with HPKE
+              href: cryptography/hpke.md
 - name: Globalization & Calendars
   href: topics/globalization-and-calendars.md
   items:

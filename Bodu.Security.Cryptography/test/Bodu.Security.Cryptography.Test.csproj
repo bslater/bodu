@@ -17,6 +17,7 @@
     <EmbeddedResource Include="Security.Cryptography\MLDsa.AcvpKeyGen.txt" />
     <EmbeddedResource Include="Security.Cryptography\MLDsa.AcvpSigGen.txt" />
     <EmbeddedResource Include="Security.Cryptography\MLDsa.AcvpSigVer.txt" />
+    <EmbeddedResource Include="Security.Cryptography\Hpke.Rfc9180Vectors.json" />
   </ItemGroup>
 
   <ItemGroup>
