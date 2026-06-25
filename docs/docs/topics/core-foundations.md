@@ -12,7 +12,7 @@ The package additionally ships the **`Bodu.Text`** namespace — character-encod
 
 | Package | Status | What it provides | Docs |
 |---|---|---|---|
-| **Bodu.Core** | Stable | Bounded collections (`CircularBuffer<T>`, `Deque<T>`, `EvictingDictionary<TKey,TValue>`), index-aware sets and priority queues, range-keyed lookups, the `WeekPattern` value type, `PooledBufferBuilder<T>`, date / numeric / span extensions, and the `ThrowHelper` validation catalogue. | [Introduction](../core/index.md) · [Concepts](../core/concepts.md) · [Getting started](../core/getting-started.md) |
+| **Bodu.Core** | Stable | Bounded collections (`CircularBuffer<T>`, `Deque<T>`, `EvictingDictionary<TKey,TValue>`), the insertion/access-ordered `SequencedDictionary<TKey,TValue>`, index-aware sets and priority queues, range-keyed lookups, the `WeekPattern` value type, `PooledBufferBuilder<T>`, date / numeric / span extensions, and the `ThrowHelper` validation catalogue. | [Introduction](../core/index.md) · [Concepts](../core/concepts.md) · [Getting started](../core/getting-started.md) |
 | **Bodu.Text** *(namespace — ships inside the `Bodu.Core` package)* | Stable | BOM-based `EncodingDetection`, plus `EncodingExtensions` and `StringEncodingExtensions` for span-, UTF-8-, and pooled-buffer-friendly transcoding, preamble handling, and validation over `System.Text.Encoding`. | [Introduction](../text/index.md) |
 
 ## The shape of the topic
@@ -20,7 +20,7 @@ The package additionally ships the **`Bodu.Text`** namespace — character-encod
 `Bodu.Core` is organized into focused namespaces, each with a clear responsibility. The four you will reach for most often:
 
 - **`Bodu`** — root-namespace primitives: <xref:Bodu.ThrowHelper> (the argument-validation catalogue every Bodu library calls into), <xref:Bodu.WeekPattern> (an immutable day-of-week bitmask), and the <xref:Bodu.IRandomGenerator> abstraction with its <xref:Bodu.XorShiftRandom> implementation.
-- **`Bodu.Collections.Generic`** (plus `.Concurrent`) — bounded ring-backed collections (<xref:Bodu.Collections.Generic.CircularBuffer`1>, <xref:Bodu.Collections.Generic.Deque`1>), the policy-driven <xref:Bodu.Collections.Generic.EvictingDictionary`2> cache, index-aware sets (<xref:Bodu.Collections.Generic.IndexedSet`1>, <xref:Bodu.Collections.Generic.OrderedSet`1>), the heap-backed <xref:Bodu.Collections.Generic.IndexedPriorityQueue`2>, multi-map / multi-set types, and range-keyed lookups. The thread-safe <xref:Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer`1> lives in the `.Concurrent` sub-namespace.
+- **`Bodu.Collections.Generic`** (plus `.Concurrent`) — bounded ring-backed collections (<xref:Bodu.Collections.Generic.CircularBuffer`1>, <xref:Bodu.Collections.Generic.Deque`1>), the policy-driven <xref:Bodu.Collections.Generic.EvictingDictionary`2> cache, the insertion/access-ordered <xref:Bodu.Collections.Generic.SequencedDictionary`2>, index-aware sets (<xref:Bodu.Collections.Generic.IndexedSet`1>, <xref:Bodu.Collections.Generic.OrderedSet`1>), the heap-backed <xref:Bodu.Collections.Generic.IndexedPriorityQueue`2>, multi-map / multi-set types, and range-keyed lookups. The thread-safe <xref:Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer`1> lives in the `.Concurrent` sub-namespace.
 - **`Bodu.Buffers`** — <xref:Bodu.Buffers.PooledBufferBuilder`1>, an `ArrayPool<T>`-backed builder that assembles byte or character spans without allocation and slots into standard `IBufferWriter<T>` pipelines.
 - **`Bodu.Text`** — <xref:Bodu.Text.EncodingDetection>, <xref:Bodu.Text.EncodingExtensions>, and <xref:Bodu.Text.StringEncodingExtensions>: the character-encoding surface that turns bytes into text and back through `System.Text.Encoding`, correctly and efficiently.
 
@@ -44,6 +44,7 @@ Because `ThrowHelper` is the sole dependency most packages take on `Bodu.Core`, 
 |---|---|---|
 | Fixed-capacity FIFO queue (sliding window or bounded-throw) | <xref:Bodu.Collections.Generic.CircularBuffer`1> | `AllowOverwrite` toggles between evict-the-oldest and throw-when-full. Thread-safe variant: <xref:Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer`1>. |
 | LRU / MRU / LFU / FIFO cache | <xref:Bodu.Collections.Generic.EvictingDictionary`2> | Six policies via <xref:Bodu.Collections.Generic.EvictingDictionaryPolicy>, including Random and Second-Chance. |
+| Insertion- or access-ordered dictionary with O(1) first/last access | <xref:Bodu.Collections.Generic.SequencedDictionary`2> | Java `LinkedHashMap` shape; unbounded. Access-order mode is the building block for a hand-rolled LRU over `TryRemoveFirst`. |
 | Double-ended queue with O(1) ends | <xref:Bodu.Collections.Generic.Deque`1> | `AllowGrow` toggles between auto-resize and fixed-capacity-throw modes. |
 | Priority queue with in-place priority updates | <xref:Bodu.Collections.Generic.IndexedPriorityQueue`2> | O(1) lookup-by-element plus `Update` / `EnqueueOrUpdate` — the operations Dijkstra, Prim, and A* require. |
 | Insertion-ordered set, indexable like a list | <xref:Bodu.Collections.Generic.IndexedSet`1> | O(1) `Contains`, `IndexOf`, and indexed read; duplicates rejected on add. |

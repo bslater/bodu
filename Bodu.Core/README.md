@@ -18,6 +18,7 @@ Targets `net8.0`.
 | `ConcurrentCircularBuffer<T>` | `Bodu.Collections.Generic.Concurrent` | Thread-safe bounded FIFO buffer with optional overwrite |
 | `Deque<T>` | `Bodu.Collections.Generic` | Double-ended queue over a circular array; O(1) at either end |
 | `EvictingDictionary<TKey,TValue>` | `Bodu.Collections.Generic` | Fixed-capacity dictionary with FIFO / LRU / LFU eviction |
+| `SequencedDictionary<TKey,TValue>` | `Bodu.Collections.Generic` | Insertion- or access-ordered dictionary with O(1) first/last access and removal |
 | `IndexedSet<T>` | `Bodu.Collections.Generic` | Insertion-ordered unique set with index-addressable `IList<T>` access |
 | `OrderedSet<T>` | `Bodu.Collections.Generic` | Insertion-ordered unique set implementing `ISet<T>` |
 | `IndexedPriorityQueue<TElement,TPriority>` | `Bodu.Collections.Generic` | Binary-heap priority queue with O(log n) re-prioritization and removal |

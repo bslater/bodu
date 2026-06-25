@@ -127,4 +127,75 @@ public partial class SequencedDictionaryTests
             _ = new SequencedDictionary<string, int>(source);
         });
     }
+
+    /// <summary>
+    /// Verifies that the capacity-and-access-order constructor records the access-order flag.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenCapacityAndAccessOrder_ShouldRecordAccessOrder()
+    {
+        var dictionary = new SequencedDictionary<string, int>(capacity: 8, accessOrder: true);
+
+        Assert.IsTrue(dictionary.AccessOrder);
+    }
+
+    /// <summary>
+    /// Verifies that the capacity argument is only an initial-size hint and does not bound the number of entries.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenMoreEntriesAddedThanCapacity_ShouldNotEvict()
+    {
+        var dictionary = new SequencedDictionary<int, int>(capacity: 2);
+
+        for (int i = 0; i < 10; i++)
+            dictionary.Add(i, i);
+
+        Assert.AreEqual(10, dictionary.Count);
+    }
+
+    /// <summary>
+    /// Verifies that the core capacity / access-order / comparer constructor honors all three arguments.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenCapacityAccessOrderAndComparer_ShouldHonorAllArguments()
+    {
+        var dictionary = new SequencedDictionary<string, int>(4, accessOrder: true, StringComparer.OrdinalIgnoreCase);
+        dictionary.Add("KEY", 1);
+
+        Assert.IsTrue(dictionary.AccessOrder);
+        Assert.IsTrue(dictionary.ContainsKey("key"));
+        Assert.AreSame(StringComparer.OrdinalIgnoreCase, dictionary.Comparer);
+    }
+
+    /// <summary>
+    /// Verifies that the collection-and-comparer constructor honors the supplied comparer when copying entries.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenSourceAndComparer_ShouldUseComparer()
+    {
+        var source = new[] { new KeyValuePair<string, int>("Key", 1) };
+
+        var dictionary = new SequencedDictionary<string, int>(source, StringComparer.OrdinalIgnoreCase);
+
+        Assert.IsTrue(dictionary.ContainsKey("key"));
+    }
+
+    /// <summary>
+    /// Verifies that the collection / access-order / comparer constructor copies entries and enables access ordering.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenSourceAccessOrderAndComparer_ShouldCopyAndReorderOnAccess()
+    {
+        var source = new[]
+        {
+            new KeyValuePair<string, int>("a", 1),
+            new KeyValuePair<string, int>("b", 2),
+        };
+
+        var dictionary = new SequencedDictionary<string, int>(source, accessOrder: true, comparer: null);
+        _ = dictionary["a"];
+
+        Assert.IsTrue(dictionary.AccessOrder);
+        CollectionAssert.AreEqual(new[] { "b", "a" }, dictionary.Keys.ToArray());
+    }
 }

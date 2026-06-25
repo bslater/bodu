@@ -10,6 +10,7 @@ Bodu.Core ships more than a dozen collection types. This page is the decision gu
 
 1. **Do you need a key-value store?**
    - Bounded with eviction (cache) → <xref:Bodu.Collections.Generic.EvictingDictionary`2>.
+   - Unbounded but iterate in insertion (or access) order, with O(1) first/last → <xref:Bodu.Collections.Generic.SequencedDictionary`2>.
    - Keys are ranges (`[start, end)`) → <xref:Bodu.Collections.Generic.RangeDictionary`2>.
    - One key maps to many values → <xref:Bodu.Collections.Generic.MultiValueDictionary`2>.
 2. **Do you need a sequence (FIFO / LIFO / two-ended)?**
@@ -42,6 +43,7 @@ The remainder of this page deepens that tree into per-axis tables, real-world sc
 | Range-keyed lookup (interval → value) | <xref:Bodu.Collections.Generic.RangeDictionary`2> | O(log n) lookup; rejects overlapping inserts. |
 | Range membership (in any interval?) | <xref:Bodu.Collections.Generic.RangeSet`1> | Merges adjacent and overlapping intervals on insertion. |
 | Cache with policy-driven eviction | <xref:Bodu.Collections.Generic.EvictingDictionary`2> | FIFO, LRU, LFU, MRU, Random, or Second-Chance. |
+| Ordered key-value store with O(1) first/last access | <xref:Bodu.Collections.Generic.SequencedDictionary`2> | Insertion order by default; opt into access order for LRU-style reordering. O(1) `First` / `Last` / `TryRemoveFirst` / `TryRemoveLast`. |
 | One key → many values | <xref:Bodu.Collections.Generic.MultiValueDictionary`2> | Indexer returns an empty live view, never `null`. |
 
 ### By capacity and lifecycle
@@ -76,6 +78,7 @@ The non-concurrent types are **not** thread-safe even for concurrent reads — <
 | Duplicates retained with count | <xref:Bodu.Collections.Generic.Multiset`1> | `Count` includes multiplicity; `DistinctCount` does not. |
 | Sorted by priority, unique elements, mutable priorities | <xref:Bodu.Collections.Generic.IndexedPriorityQueue`2> | `Enqueue` of an existing element throws — use `EnqueueOrUpdate`. |
 | Sorted by interval | <xref:Bodu.Collections.Generic.RangeSet`1> | Half-open intervals over any `IComparable<T>`. |
+| Key-value pairs, insertion- or access-ordered | <xref:Bodu.Collections.Generic.SequencedDictionary`2> | Preserves a stable encounter order; access-order mode moves an entry to the tail on read. Unbounded — does not evict. |
 
 ### By failure mode on overflow
 
@@ -85,7 +88,7 @@ The non-concurrent types are **not** thread-safe even for concurrent reads — <
 | Overwrites the oldest element. | <xref:Bodu.Collections.Generic.CircularBuffer`1> with `AllowOverwrite = true`. |
 | Doubles the backing array. | <xref:Bodu.Collections.Generic.Deque`1> with `AllowGrow = true`. |
 | Evicts a policy-selected entry. | <xref:Bodu.Collections.Generic.EvictingDictionary`2>. |
-| Cannot happen (collection always grows). | <xref:Bodu.Collections.Generic.SegmentedBuffer`1>, <xref:Bodu.Collections.Generic.IndexedSet`1>, <xref:Bodu.Collections.Generic.OrderedSet`1>, <xref:Bodu.Collections.Generic.MultiValueDictionary`2>, <xref:Bodu.Collections.Generic.Multiset`1>, <xref:Bodu.Collections.Generic.RangeDictionary`2>, <xref:Bodu.Collections.Generic.RangeSet`1>, <xref:Bodu.Collections.Generic.IndexedPriorityQueue`2>, <xref:Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1>. |
+| Cannot happen (collection always grows). | <xref:Bodu.Collections.Generic.SegmentedBuffer`1>, <xref:Bodu.Collections.Generic.IndexedSet`1>, <xref:Bodu.Collections.Generic.OrderedSet`1>, <xref:Bodu.Collections.Generic.SequencedDictionary`2>, <xref:Bodu.Collections.Generic.MultiValueDictionary`2>, <xref:Bodu.Collections.Generic.Multiset`1>, <xref:Bodu.Collections.Generic.RangeDictionary`2>, <xref:Bodu.Collections.Generic.RangeSet`1>, <xref:Bodu.Collections.Generic.IndexedPriorityQueue`2>, <xref:Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1>. |
 
 The `Try…` overloads on the bounded ring-backed types substitute a `false` return for the throw, so callers can stay non-throwing without changing the toggle.
 
@@ -103,6 +106,8 @@ The `Try…` overloads on the bounded ring-backed types substitute a `false` ret
 | Maintain a set of free disk extents that merges on insert. | <xref:Bodu.Collections.Generic.RangeSet`1>. |
 | Run Dijkstra's algorithm on a weighted graph. | <xref:Bodu.Collections.Generic.IndexedPriorityQueue`2>. |
 | Group log entries by correlation id. | <xref:Bodu.Collections.Generic.MultiValueDictionary`2>. |
+| Keep a dictionary you can iterate in insertion order. | <xref:Bodu.Collections.Generic.SequencedDictionary`2>. |
+| Build an unbounded LRU and evict the oldest yourself. | <xref:Bodu.Collections.Generic.SequencedDictionary`2> with `accessOrder: true` + `TryRemoveFirst`. |
 | Count occurrences of tokens in a corpus. | <xref:Bodu.Collections.Generic.Multiset`1>. |
 | Maintain a list of items in entry order while ensuring uniqueness. | <xref:Bodu.Collections.Generic.IndexedSet`1>. |
 | Track a thread-safe set of active correlation ids. | <xref:Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1>. |
@@ -111,7 +116,8 @@ The `Try…` overloads on the bounded ring-backed types substitute a `false` ret
 ## Anti-patterns
 
 - **Do not use <xref:Bodu.Collections.Generic.Deque`1> when you only need single-ended FIFO.** A `CircularBuffer<T>` with `AllowOverwrite = false` expresses the constraint more clearly and is the same shape under the hood — both inherit from <xref:Bodu.Collections.Generic.RingBackedCollection`1>.
-- **Do not use <xref:Bodu.Collections.Generic.EvictingDictionary`2> as a general dictionary.** It evicts on overflow even when you would prefer growth — choose the BCL `Dictionary<TKey,TValue>` when the working set is unbounded.
+- **Do not use <xref:Bodu.Collections.Generic.EvictingDictionary`2> as a general dictionary.** It evicts on overflow even when you would prefer growth — choose the BCL `Dictionary<TKey,TValue>` when the working set is unbounded, or <xref:Bodu.Collections.Generic.SequencedDictionary`2> when you also need a stable iteration order.
+- **Do not confuse <xref:Bodu.Collections.Generic.SequencedDictionary`2> with the BCL `OrderedDictionary<TKey,TValue>` (.NET 9+).** The BCL type is *positional* — index-addressable with `Insert`/`RemoveAt`. `SequencedDictionary<TKey,TValue>` has no positional surface; it gives O(1) ends and O(1) keyed removal instead, and adds an optional access-order (LRU) mode. (On `net8.0` the BCL type is unavailable regardless.)
 - **Do not assume the non-concurrent types are safe under concurrent reads.** Reads on <xref:Bodu.Collections.Generic.EvictingDictionary`2> mutate eviction metadata; reads on every collection rely on a structural-version counter that is not interlocked. Wrap with external synchronisation or pick the explicit concurrent variant.
 - **Do not pair <xref:Bodu.Collections.Generic.IndexedSet`1> with <xref:System.Collections.Generic.List`1> "to also enforce uniqueness".** `IndexedSet<T>` already implements `IList<T>` with O(1) `Contains` and `IndexOf` — keeping two structures in sync introduces drift bugs.
 - **Do not implement an LRU cache by hand around <xref:System.Collections.Generic.Dictionary`2> + <xref:Bodu.Collections.Generic.Deque`1>.** <xref:Bodu.Collections.Generic.EvictingDictionary`2> already provides LRU, LFU, FIFO, MRU, Random, and Second-Chance through a single `EvictingDictionaryPolicy` selector.

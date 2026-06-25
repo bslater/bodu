@@ -40,6 +40,7 @@ Bounded and ordered collections built around a shared ring-backed primitive.
 | <xref:Bodu.Collections.Generic.RingBackedCollection`1> | Abstract base shared by `CircularBuffer<T>` and `Deque<T>`. Extension point for new ring-backed collections. |
 | <xref:Bodu.Collections.Generic.EvictingDictionary`2> | Capacity-bounded dictionary with FIFO, LRU, LFU, MRU, Random, or Second-Chance eviction. Drop-in cache primitive with standard dictionary semantics. |
 | <xref:Bodu.Collections.Generic.EvictingDictionaryPolicy> | Enum selecting the eviction policy: `FirstInFirstOut`, `LeastRecentlyUsed`, `LeastFrequentlyUsed`, `MostRecentlyUsed`, `RandomReplacement`, `SecondChance`. |
+| <xref:Bodu.Collections.Generic.SequencedDictionary`2> | Unbounded insertion- or access-ordered dictionary (Java `LinkedHashMap` shape) with O(1) access to and removal of the first and last entries. Optional access-order mode underpins hand-built LRU caches. |
 | <xref:Bodu.Collections.Generic.IndexedSet`1>, <xref:Bodu.Collections.Generic.OrderedSet`1>, <xref:Bodu.Collections.Generic.IndexedPriorityQueue`2> | Index-aware set and priority-queue variants for lookup-by-position and key-based priority updates. |
 | <xref:Bodu.Collections.Generic.MultiValueDictionary`2>, <xref:Bodu.Collections.Generic.Multiset`1> | Multi-map and multi-set semantics over `IEqualityComparer<TKey>`. |
 | <xref:Bodu.Collections.Generic.Range`1>, <xref:Bodu.Collections.Generic.RangeDictionary`2>, <xref:Bodu.Collections.Generic.RangeSet`1> | Range-keyed lookups for ordered or interval-valued keys. |

@@ -18,8 +18,16 @@ namespace Bodu.Collections.Generic;
 /// <para>
 /// <see cref="SequencedDictionary{TKey, TValue}" /> is the .NET analogue of Java's <c>LinkedHashMap</c>: a hash-based
 /// dictionary that additionally maintains a doubly linked list across its entries so that enumeration follows a stable,
-/// predictable order. Unlike an index-based ordered dictionary, it does not expose positional insertion or reordering —
-/// it only preserves a traversal order and adds end-access operations.
+/// predictable order. It realizes the same <i>sequenced</i> (encounter-order) contract that Java's <c>SequencedMap</c>
+/// defines: a well-defined first and last entry with constant-time access to each.
+/// </para>
+/// <para>
+/// This differs from the BCL's <c>OrderedDictionary&lt;TKey, TValue&gt;</c> (.NET 9+), which is <i>positional</i> — it
+/// is index-addressable and supports inserting, overwriting, and removing at an arbitrary index, with O(1) random
+/// access by position but O(n) removal of a non-tail entry. <see cref="SequencedDictionary{TKey, TValue}" /> instead
+/// exposes <b>no</b> positional surface; it preserves a traversal order and adds O(1) access to and removal of either
+/// end, with O(1) removal of any entry by key. (On Bodu's <c>net8.0</c> target the BCL
+/// <c>OrderedDictionary&lt;TKey, TValue&gt;</c> is not available at all.)
 /// </para>
 /// <para>
 /// The dictionary supports two ordering modes, selected at construction:

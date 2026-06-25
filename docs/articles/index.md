@@ -9,7 +9,7 @@ If you are new to Bodu, start with the [project introduction](../docs/introducti
 Each top-level namespace has a landing page that introduces its purpose, lists its key types, and shows a minimal usage example before handing off to the auto-generated reference.
 
 - **[Bodu.Collections.Generic — Bodu.Core collections and utilities](xref:Bodu.Collections.Generic)**
-  Fixed-capacity circular buffers (single-threaded and lock-free), the `Deque<T>` value-and-reference type, the `EvictingDictionary<TKey, TValue>` with six eviction policies, range-keyed dictionaries, the `WeekPattern` value type, buffer conversion, base encoding, and centralized argument validation.
+  Fixed-capacity circular buffers (single-threaded and lock-free), the `Deque<T>` value-and-reference type, the `EvictingDictionary<TKey, TValue>` with six eviction policies, the `SequencedDictionary<TKey, TValue>` (Java `LinkedHashMap` shape) with insertion/access ordering and O(1) first/last access, range-keyed dictionaries, the `WeekPattern` value type, buffer conversion, base encoding, and centralized argument validation.
 
 - **[Bodu.IO.Hashing — fingerprints, checksums, and check digits](xref:Bodu.IO.Hashing)**
   Non-cryptographic hashes on `System.IO.Hashing.NonCryptographicHashAlgorithm` — the full CRC RevEng catalogue (widths 1–64 bits), the Fletcher 16 / 32 / 64 family, Adler-32 / 32C / 64, FNV-1 / 1a, CityHash, MurmurHash3, Pearson, classic string hashes — plus single- and multi-character check digits (Luhn, Damm, Verhoeff, EAN, GTIN, IBAN, ISBN, SEDOL, CUSIP, LEI).
