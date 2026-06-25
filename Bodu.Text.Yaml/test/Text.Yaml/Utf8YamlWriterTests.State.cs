@@ -92,6 +92,40 @@ public partial class Utf8YamlWriterTests
     }
 
     /// <summary>
+    /// Verifies that exceeding the configured writer depth throws <see cref="InvalidOperationException" />.
+    /// </summary>
+    [TestMethod]
+    public void WriteStartMapping_WhenExceedingMaxDepth_ShouldThrowInvalidOperationException()
+    {
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            var buffer = new ArrayBufferWriter<byte>();
+            var writer = new Utf8YamlWriter(buffer, new YamlWriterOptions { MaxDepth = 2 });
+            writer.WriteStartMapping();
+            writer.WritePropertyName("a");
+            writer.WriteStartMapping();
+            writer.WritePropertyName("b");
+            writer.WriteStartMapping();
+        });
+    }
+
+    /// <summary>
+    /// Verifies that the configured newline sequence is used between lines.
+    /// </summary>
+    [TestMethod]
+    public void Write_WhenCarriageReturnNewLine_ShouldUseConfiguredNewLine()
+    {
+        var buffer = new ArrayBufferWriter<byte>();
+        var writer = new Utf8YamlWriter(buffer, new YamlWriterOptions { NewLine = "\r\n" });
+        writer.WriteStartMapping();
+        writer.WritePropertyName("a");
+        writer.WriteInt64(1);
+        writer.WriteEndMapping();
+
+        Assert.AreEqual("a: 1\r\n", System.Text.Encoding.UTF8.GetString(buffer.WrittenSpan));
+    }
+
+    /// <summary>
     /// Verifies that a non-printable control character is emitted as a hex escape within a double-quoted scalar.
     /// </summary>
     [TestMethod]

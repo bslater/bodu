@@ -52,6 +52,9 @@
   <data name="Op_Invalid_YamlNumberOutOfRange" xml:space="preserve"><value>The numeric value '{0}' is outside the range of the target type '{1}'.</value></data>
   <data name="Op_Invalid_YamlCharLength" xml:space="preserve"><value>The value '{0}' cannot be converted to a single character because it is not exactly one Unicode scalar value.</value></data>
   <data name="Op_Invalid_DuplicateWireName" xml:space="preserve"><value>The type '{0}' maps more than one member to the YAML key '{1}'.</value></data>
+  <data name="Op_Invalid_OptionsReadOnly" xml:space="preserve"><value>Serializer options cannot be changed after the options instance has been used to serialize or deserialize.</value></data>
+  <data name="Op_Invalid_YamlUnmappedMember" xml:space="preserve"><value>The YAML key '{0}' does not map to any member of type '{1}'.</value></data>
+  <data name="Op_Invalid_YamlValueConversion" xml:space="preserve"><value>The scalar value cannot be converted to the requested type '{0}'.</value></data>
   <data name="Op_Invalid_ExtensionDataKeyCollision" xml:space="preserve"><value>The extension-data key '{0}' collides with a key already written for type '{1}'.</value></data>
   <data name="Arg_Invalid_ConverterAttributeType" xml:space="preserve"><value>The type '{0}' specified by a converter attribute is not a YamlConverter.</value></data>
   <data name="Arg_Invalid_YamlInvalidUtf8" xml:space="preserve"><value>The supplied bytes are not valid UTF-8.</value></data>

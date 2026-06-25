@@ -29,6 +29,8 @@ public ref struct Utf8YamlWriter
 {
     private readonly IBufferWriter<byte> _output;
     private readonly int _indentSize;
+    private readonly int _maxDepth;
+    private readonly string _newLine;
     private Frame[] _stack;
     private int _depth;
     private bool _rootWritten;
@@ -54,6 +56,8 @@ public ref struct Utf8YamlWriter
         Bodu.ThrowHelper.ThrowIfNull(output);
         _output = output;
         _indentSize = options.EffectiveIndentSize;
+        _maxDepth = options.EffectiveMaxDepth;
+        _newLine = options.EffectiveNewLine;
         _stack = new Frame[8];
         _depth = 0;
         _rootWritten = false;
@@ -153,6 +157,12 @@ public ref struct Utf8YamlWriter
         }
         else
         {
+            if (_depth >= _maxDepth)
+            {
+                throw new InvalidOperationException(string.Format(
+                    CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_WriterMaxDepthExceeded, _maxDepth));
+            }
+
             ref var parent = ref _stack[_depth - 1];
             EnsureStarted(_depth - 1);
             child = new Frame
@@ -200,7 +210,7 @@ public ref struct Utf8YamlWriter
             if (frame.IsRoot)
             {
                 WriteRaw(empty);
-                WriteRaw("\n");
+                WriteNewLine();
             }
             else if (frame.LeadKey is not null)
             {
@@ -208,14 +218,14 @@ public ref struct Utf8YamlWriter
                 WriteRaw(frame.LeadKey);
                 WriteRaw(": ");
                 WriteRaw(empty);
-                WriteRaw("\n");
+                WriteNewLine();
             }
             else
             {
                 WriteIndent(frame.LeadIndent);
                 WriteRaw("- ");
                 WriteRaw(empty);
-                WriteRaw("\n");
+                WriteNewLine();
             }
         }
     }
@@ -233,7 +243,7 @@ public ref struct Utf8YamlWriter
 
             _rootWritten = true;
             WriteRaw(text);
-            WriteRaw("\n");
+            WriteNewLine();
             return;
         }
 
@@ -247,14 +257,14 @@ public ref struct Utf8YamlWriter
             WriteRaw(key);
             WriteRaw(": ");
             WriteRaw(text);
-            WriteRaw("\n");
+            WriteNewLine();
         }
         else
         {
             WriteIndent(frame.EntryIndent);
             WriteRaw("- ");
             WriteRaw(text);
-            WriteRaw("\n");
+            WriteNewLine();
         }
     }
 
@@ -276,12 +286,14 @@ public ref struct Utf8YamlWriter
         {
             WriteIndent(frame.LeadIndent);
             WriteRaw(frame.LeadKey);
-            WriteRaw(":\n");
+            WriteRaw(":");
+            WriteNewLine();
         }
         else if (frame.LeadDash)
         {
             WriteIndent(frame.LeadIndent);
-            WriteRaw("-\n");
+            WriteRaw("-");
+            WriteNewLine();
         }
     }
 
@@ -424,6 +436,11 @@ public ref struct Utf8YamlWriter
         span[..count].Fill((byte)' ');
         _output.Advance(count);
     }
+
+    /// <summary>
+    /// Writes the configured line-break sequence to the output buffer.
+    /// </summary>
+    private readonly void WriteNewLine() => WriteRaw(_newLine);
 
     /// <summary>
     /// Writes a UTF-8 string to the output buffer.

@@ -303,6 +303,30 @@ namespace Bodu {
             }
         }
         /// <summary>
+        ///   Looks up a localized string similar to Serializer options cannot be changed after the options instance has been used to serialize or deserialize..
+        /// </summary>
+        internal static string Op_Invalid_OptionsReadOnly {
+            get {
+                return ResourceManager.GetString("Op_Invalid_OptionsReadOnly", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to The YAML key '{0}' does not map to any member of type '{1}'..
+        /// </summary>
+        internal static string Op_Invalid_YamlUnmappedMember {
+            get {
+                return ResourceManager.GetString("Op_Invalid_YamlUnmappedMember", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to The scalar value cannot be converted to the requested type '{0}'..
+        /// </summary>
+        internal static string Op_Invalid_YamlValueConversion {
+            get {
+                return ResourceManager.GetString("Op_Invalid_YamlValueConversion", resourceCulture);
+            }
+        }
+        /// <summary>
         ///   Looks up a localized string similar to The floating-point value '{0}' cannot be deserialized into an integer target without loss of precision..
         /// </summary>
         internal static string Op_Invalid_YamlFloatNotIntegral {

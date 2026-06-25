@@ -12,6 +12,8 @@ namespace Bodu.Text.Yaml.Writer;
 public struct YamlWriterOptions
 {
     private int _indentSize;
+    private int _maxDepth;
+    private string? _newLine;
 
     /// <summary>
     /// Gets or sets the number of spaces used for each level of block indentation.
@@ -24,8 +26,40 @@ public struct YamlWriterOptions
     }
 
     /// <summary>
+    /// Gets or sets the maximum container nesting depth permitted while writing.
+    /// </summary>
+    /// <value>The maximum depth. A value of zero or less selects the default of 64.</value>
+    public int MaxDepth
+    {
+        readonly get => _maxDepth;
+        set => _maxDepth = value;
+    }
+
+    /// <summary>
+    /// Gets or sets the line-break sequence written at the end of each line.
+    /// </summary>
+    /// <value>The newline string; the default is a single line feed (<c>\n</c>).</value>
+    public string? NewLine
+    {
+        readonly get => _newLine;
+        set => _newLine = value;
+    }
+
+    /// <summary>
     /// Gets the effective indentation width, applying the default.
     /// </summary>
     /// <value>The indentation width used by the writer.</value>
     internal readonly int EffectiveIndentSize => _indentSize <= 0 ? 2 : _indentSize;
+
+    /// <summary>
+    /// Gets the effective maximum write depth, applying the default.
+    /// </summary>
+    /// <value>The maximum nesting depth used by the writer.</value>
+    internal readonly int EffectiveMaxDepth => _maxDepth <= 0 ? 64 : _maxDepth;
+
+    /// <summary>
+    /// Gets the effective newline sequence, applying the default.
+    /// </summary>
+    /// <value>The newline string used by the writer.</value>
+    internal readonly string EffectiveNewLine => _newLine ?? "\n";
 }

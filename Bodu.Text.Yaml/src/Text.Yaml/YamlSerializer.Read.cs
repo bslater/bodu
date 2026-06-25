@@ -63,7 +63,13 @@ public static partial class YamlSerializer
     {
         ThrowHelper.ThrowIfNull(returnType);
         var o = options ?? s_defaultOptions;
-        using var document = YamlDocument.Parse(utf8Yaml, new YamlDocumentOptions { SpecVersion = o.SpecVersion });
+        o.MakeReadOnly();
+        using var document = YamlDocument.Parse(utf8Yaml, new YamlDocumentOptions
+        {
+            SpecVersion = o.SpecVersion,
+            DuplicateKeyBehavior = o.DuplicateKeyBehavior,
+            MaxDepth = o.MaxDepth,
+        });
         return BindValue(document.RootElement, returnType, o);
     }
 
@@ -109,7 +115,7 @@ public static partial class YamlSerializer
             return BindChar(element);
 
         if (IsIntegral(type))
-            return BindIntegral(element, type);
+            return BindIntegral(element, type, options);
 
         if (type == typeof(float))
             return float.Parse(ElementToString(element), NumberStyles.Float, CultureInfo.InvariantCulture);
@@ -186,15 +192,19 @@ public static partial class YamlSerializer
     /// </summary>
     /// <param name="element">The element to read.</param>
     /// <param name="type">The integral target type.</param>
+    /// <param name="options">The serializer options.</param>
     /// <returns>The bound integral value.</returns>
     /// <exception cref="YamlSerializationException">
     /// The source is a non-integral float, or its value is outside the range of <paramref name="type" />.
     /// </exception>
-    private static object BindIntegral(YamlElement element, Type type)
+    private static object BindIntegral(YamlElement element, Type type, YamlSerializerOptions options)
     {
         if (element.ValueKind == YamlValueKind.Float)
         {
             var d = element.GetDouble();
+            if (options.NumberHandling == YamlNumberHandling.AllowFloatToInteger)
+                return Convert.ChangeType(Math.Truncate(d), type, CultureInfo.InvariantCulture);
+
             if (!double.IsFinite(d) || Math.Floor(d) != d)
             {
                 throw new YamlSerializationException(string.Format(

@@ -51,6 +51,7 @@ public static partial class YamlSerializer
     {
         ThrowHelper.ThrowIfNull(inputType);
         var o = options ?? s_defaultOptions;
+        o.MakeReadOnly();
         var buffer = new ArrayBufferWriter<byte>();
         var writer = new Utf8YamlWriter(buffer);
         WriteValue(ref writer, value, inputType, o, 0);
@@ -74,8 +75,11 @@ public static partial class YamlSerializer
             return;
         }
 
-        if (depth > 64)
-            throw new YamlSerializationException("The object graph exceeds the maximum serialization depth.");
+        if (depth > options.EffectiveMaxDepth)
+        {
+            throw new YamlSerializationException(string.Format(
+                CultureInfo.CurrentCulture, YamlResourceStrings.Format_Invalid_YamlNestingTooDeep, options.EffectiveMaxDepth));
+        }
 
         var runtimeType = value.GetType();
         var converter = options.GetConverter(runtimeType) ?? options.GetConverter(declaredType);
@@ -204,8 +208,11 @@ public static partial class YamlSerializer
         YamlSerializerOptions options,
         int depth)
     {
+        var members = YamlMemberInfo.ForType(type, options.IncludeFields);
+        YamlMemberInfo.EnsureUniqueWireNames(members, options, type);
+
         writer.WriteStartMapping();
-        foreach (var member in YamlMemberInfo.ForType(type, options.IncludeFields))
+        foreach (var member in members)
         {
             var memberValue = member.Get(value);
             if (options.IgnoreNullValues && memberValue is null)
