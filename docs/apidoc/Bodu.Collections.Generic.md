@@ -14,7 +14,7 @@ Reach for this library when you need a fixed-capacity FIFO queue, a deque with O
 
 - **[Bodu.Core introduction](~/docs/core/index.md)** — namespaces, headline types, scenarios.
 - **[Bodu.Core getting started](~/docs/core/getting-started.md)** — install and minimal samples for the headline types.
-- **[Bodu.Core guides](~/guides/core/index.md)** — recipe-style walk-throughs: [choosing a collection](~/guides/core/choosing-a-collection.md), [circular buffer](~/guides/core/circular-buffer.md), [deque](~/guides/core/deque.md), [evicting dictionary](~/guides/core/evicting-dictionary.md), [indexed priority queue](~/guides/core/indexed-priority-queue.md), [indexed and ordered sets](~/guides/core/ordered-sets.md), [multiset](~/guides/core/multiset.md), [multi-value dictionary](~/guides/core/multi-value-dictionary.md), [range-keyed lookups](~/guides/core/range-dictionary.md), [segmented buffer](~/guides/core/segmented-buffer.md), [concurrent collections](~/guides/core/concurrent-collections.md), [`WeekPattern`](~/guides/core/week-pattern.md).
+- **[Bodu.Core guides](~/guides/core/index.md)** — recipe-style walk-throughs: [choosing a collection](~/guides/core/choosing-a-collection.md), [circular buffer](~/guides/core/circular-buffer.md), [deque](~/guides/core/deque.md), [evicting dictionary](~/guides/core/evicting-dictionary.md), [sequenced dictionary](~/guides/core/sequenced-dictionary.md), [indexed priority queue](~/guides/core/indexed-priority-queue.md), [indexed and ordered sets](~/guides/core/ordered-sets.md), [multiset](~/guides/core/multiset.md), [multi-value dictionary](~/guides/core/multi-value-dictionary.md), [range-keyed lookups](~/guides/core/range-dictionary.md), [segmented buffer](~/guides/core/segmented-buffer.md), [concurrent collections](~/guides/core/concurrent-collections.md), [`WeekPattern`](~/guides/core/week-pattern.md).
 
 ## Key types
 
@@ -30,6 +30,10 @@ Reach for this library when you need a fixed-capacity FIFO queue, a deque with O
 
 - <xref:Bodu.Collections.Generic.EvictingDictionary`2> — a fixed-capacity dictionary that evicts entries automatically when it fills up, under a policy of your choice.
 - <xref:Bodu.Collections.Generic.EvictingDictionaryPolicy> — the policy enum: `FirstInFirstOut`, `LeastRecentlyUsed`, `LeastFrequentlyUsed`, `MostRecentlyUsed`, `RandomReplacement`, `SecondChance`.
+
+**Ordered dictionaries**
+
+- <xref:Bodu.Collections.Generic.SequencedDictionary`2> — an unbounded dictionary that preserves a stable encounter order (Java `LinkedHashMap` shape), with O(1) access to and removal of the first and last entries (`First` / `Last` / `TryRemoveFirst` / `TryRemoveLast`). Defaults to insertion order; an opt-in access-order mode moves an entry to the tail on read, the building block for a hand-rolled LRU.
 
 **Sets, multisets, range-keyed collections**
 

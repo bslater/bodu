@@ -17,6 +17,8 @@
               href: core/deque.md
             - name: Evicting dictionary
               href: core/evicting-dictionary.md
+            - name: Sequenced dictionary
+              href: core/sequenced-dictionary.md
             - name: Indexed priority queue
               href: core/indexed-priority-queue.md
             - name: Indexed and ordered sets

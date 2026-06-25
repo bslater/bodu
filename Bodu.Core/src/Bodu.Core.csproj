@@ -7,7 +7,7 @@
     <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
     <IsAotCompatible Condition="'$(BoduTfmIsNetCore)' == 'true'">true</IsAotCompatible>
     <Title>Bodu — Core</Title>
-    <Description>Foundational building blocks for .NET 8: specialized generic collections (circular buffer, deque, evicting dictionary, indexed and ordered sets, indexed priority queue, multi-value dictionary, multiset, range set, concurrent hash set), ArrayPool-backed buffer builders, a broad extension-method surface over strings, dates, numerics, and spans, text-encoding utilities, the WeekPattern value type, and the ThrowHelper argument-validation catalogue the rest of the solution validates against. Every collection ships a struct enumerator for allocation-free iteration and implements the standard BCL collection interfaces.</Description>
+    <Description>Foundational building blocks for .NET 8: specialized generic collections (circular buffer, deque, evicting dictionary, sequenced dictionary, indexed and ordered sets, indexed priority queue, multi-value dictionary, multiset, range set, concurrent hash set), ArrayPool-backed buffer builders, a broad extension-method surface over strings, dates, numerics, and spans, text-encoding utilities, the WeekPattern value type, and the ThrowHelper argument-validation catalogue the rest of the solution validates against. Every collection ships a struct enumerator for allocation-free iteration and implements the standard BCL collection interfaces.</Description>
     <PackageTags>$(PackageTags);collections;buffers;extensions;circular-buffer;deque;priority-queue;throwhelper</PackageTags>
   </PropertyGroup>
 
