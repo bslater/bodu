@@ -14,7 +14,7 @@ namespace Bodu.Text.Yaml.Reader;
 /// </summary>
 internal sealed partial class YamlParser
 {
-    private readonly List<string> _strings = [];
+    private List<string> _strings = [];
 
     /// <summary>
     /// Gets the decoded-string side table referenced by string scalar rows.
@@ -570,7 +570,7 @@ internal sealed partial class YamlParser
     /// </summary>
     /// <param name="row">The scalar row.</param>
     /// <returns>The decoded string.</returns>
-    private string MaterializeString(in YamlReaderRow row) => _strings[(int)row.ScalarBits];
+    private string MaterializeString(YamlReaderRow row) => _strings[(int)row.ScalarBits];
 
     /// <summary>
     /// Decodes a UTF-8 span from the source into a string.

@@ -23,11 +23,12 @@ internal sealed partial class YamlParser
     private readonly int _length;
     private readonly YamlSpecVersion _version;
     private readonly int _maxDepth;
-    private readonly List<YamlReaderRow> _rows = [];
+    private List<YamlReaderRow> _rows = [];
 
     private int _pos;
     private int _line;
     private int _lineStart;
+    private int _depth;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="YamlParser" /> class over the specified source.
@@ -62,6 +63,67 @@ internal sealed partial class YamlParser
 
         SkipBlankCommentLines();
 
+        ParseDocumentBody();
+
+        // Trailing content after the first document (other than a document boundary) is not permitted here.
+        SkipBlankCommentLines();
+        if (!AtStreamEnd() && !AtDocumentBoundary())
+            throw Error(YamlResourceStrings.Format_Invalid_YamlContentAfterDocumentEnd);
+
+        Compose();
+        return _rows;
+    }
+
+    /// <summary>
+    /// Parses every document in a multi-document stream, returning each document's independent row store and
+    /// decoded-string table.
+    /// </summary>
+    /// <returns>The parsed documents, in stream order. An empty stream yields a single null document.</returns>
+    /// <exception cref="YamlFormatException">The source is not valid YAML.</exception>
+    internal List<(List<YamlReaderRow> Rows, string[] Strings)> ParseStream()
+    {
+        var documents = new List<(List<YamlReaderRow>, string[])>();
+        SkipByteOrderMark();
+
+        while (true)
+        {
+            SkipDirectivesAndDocumentStart();
+            SkipBlankCommentLines();
+
+            _rows = [];
+            _strings = [];
+
+            ParseDocumentBody();
+            Compose();
+            documents.Add((_rows, _strings.ToArray()));
+
+            SkipBlankCommentLines();
+
+            // Consume a document-end marker ('...') line so the next iteration starts cleanly.
+            if (!AtEnd && CurrentColumn() == 0 && Peek() == (byte)'.' && AtDocumentBoundary())
+            {
+                while (!IsBreakOrEnd(Peek()))
+                    _pos++;
+
+                if (!AtEnd)
+                    Advance();
+            }
+
+            SkipBlankCommentLines();
+            if (AtStreamEnd())
+                break;
+        }
+
+        return documents;
+    }
+
+    /// <summary>
+    /// Parses the body of a single document into the current row store, defaulting an empty body to null.
+    /// </summary>
+    private void ParseDocumentBody()
+    {
+        _depth = 0;
+
         if (AtStreamEnd() || AtDocumentBoundary())
         {
             // An empty document resolves to a single null root node at index zero.
@@ -72,13 +134,6 @@ internal sealed partial class YamlParser
             // The first node created becomes the root and therefore occupies index zero.
             ParseBlockNode(0);
         }
-
-        // Trailing content after the first document (other than a document boundary) is not permitted here.
-        SkipBlankCommentLines();
-        if (!AtStreamEnd() && !AtDocumentBoundary())
-            throw Error(YamlResourceStrings.Format_Invalid_YamlContentAfterDocumentEnd);
-
-        return _rows;
     }
 
     /// <summary>
@@ -88,6 +143,26 @@ internal sealed partial class YamlParser
     /// <param name="minIndent">The minimum column at which the node's content must appear.</param>
     /// <returns>The row index of the parsed node.</returns>
     private int ParseBlockNode(int minIndent)
+    {
+        if (++_depth > _maxDepth)
+            throw Error(string.Format(System.Globalization.CultureInfo.CurrentCulture, YamlResourceStrings.Format_Invalid_YamlNestingTooDeep, _maxDepth));
+
+        try
+        {
+            return ParseBlockNodeCore(minIndent);
+        }
+        finally
+        {
+            _depth--;
+        }
+    }
+
+    /// <summary>
+    /// Parses a block-context node after the depth guard has been applied.
+    /// </summary>
+    /// <param name="minIndent">The minimum column at which the node's content must appear.</param>
+    /// <returns>The row index of the parsed node.</returns>
+    private int ParseBlockNodeCore(int minIndent)
     {
         SkipBlankCommentLines();
 

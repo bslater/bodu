@@ -13,10 +13,29 @@ namespace Bodu.Text.Yaml.Reader;
 internal sealed partial class YamlParser
 {
     /// <summary>
-    /// Parses a flow node, dispatching to a flow sequence, flow mapping, alias, or flow scalar.
+    /// Parses a flow node, applying the nesting-depth guard before dispatching.
     /// </summary>
     /// <returns>The row index of the parsed node.</returns>
     private int ParseFlowNode()
+    {
+        if (++_depth > _maxDepth)
+            throw Error(string.Format(System.Globalization.CultureInfo.CurrentCulture, YamlResourceStrings.Format_Invalid_YamlNestingTooDeep, _maxDepth));
+
+        try
+        {
+            return ParseFlowNodeCore();
+        }
+        finally
+        {
+            _depth--;
+        }
+    }
+
+    /// <summary>
+    /// Parses a flow node, dispatching to a flow sequence, flow mapping, alias, or flow scalar.
+    /// </summary>
+    /// <returns>The row index of the parsed node.</returns>
+    private int ParseFlowNodeCore()
     {
         SkipFlowWhitespace();
         var anchor = TryReadAnchorAndTag(out var tag);
