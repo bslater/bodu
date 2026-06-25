@@ -23,15 +23,30 @@ public sealed class PluginMissingAttributeException
         AssemblyName = assemblyName;
     }
 
-    public PluginMissingAttributeException(string message) : base(message)
+    /// <summary>
+    /// Initializes a new instance of the <see cref="PluginMissingAttributeException" /> class.
+    /// </summary>
+    /// <param name="message">The message describing the failure.</param>
+    public PluginMissingAttributeException(string message)
+        : base(message)
     {
     }
 
-    public PluginMissingAttributeException(string message, Exception innerException) : base(message, innerException)
+    /// <summary>
+    /// Initializes a new instance of the <see cref="PluginMissingAttributeException" /> class with an inner exception.
+    /// </summary>
+    /// <param name="message">The message describing the failure.</param>
+    /// <param name="innerException">The underlying cause.</param>
+    public PluginMissingAttributeException(string message, Exception innerException)
+        : base(message, innerException)
     {
     }
 
-    public PluginMissingAttributeException() : base()
+    /// <summary>
+    /// Initializes a new instance of the <see cref="PluginMissingAttributeException" /> class.
+    /// </summary>
+    public PluginMissingAttributeException()
+        : base()
     {
     }
 

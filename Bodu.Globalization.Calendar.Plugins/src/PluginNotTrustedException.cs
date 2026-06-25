@@ -25,15 +25,30 @@ public sealed class PluginNotTrustedException
         Reason = reason;
     }
 
-    public PluginNotTrustedException(string message) : base(message)
+    /// <summary>
+    /// Initializes a new instance of the <see cref="PluginNotTrustedException" /> class.
+    /// </summary>
+    /// <param name="message">The message describing the rejection.</param>
+    public PluginNotTrustedException(string message)
+        : base(message)
     {
     }
 
-    public PluginNotTrustedException(string message, Exception innerException) : base(message, innerException)
+    /// <summary>
+    /// Initializes a new instance of the <see cref="PluginNotTrustedException" /> class with an inner exception.
+    /// </summary>
+    /// <param name="message">The message describing the rejection.</param>
+    /// <param name="innerException">The underlying cause.</param>
+    public PluginNotTrustedException(string message, Exception innerException)
+        : base(message, innerException)
     {
     }
 
-    public PluginNotTrustedException() : base()
+    /// <summary>
+    /// Initializes a new instance of the <see cref="PluginNotTrustedException" /> class.
+    /// </summary>
+    public PluginNotTrustedException()
+        : base()
     {
     }
 
