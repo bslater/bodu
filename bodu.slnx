@@ -14,6 +14,10 @@
     <Project Path="Bodu.Text.Toml/src/Bodu.Text.Toml.csproj" />
     <Project Path="Bodu.Text.Toml/test/Bodu.Text.Toml.Test.csproj" />
   </Folder>
+  <Folder Name="/Bodu.Text.Yaml/">
+    <Project Path="Bodu.Text.Yaml/src/Bodu.Text.Yaml.csproj" />
+    <Project Path="Bodu.Text.Yaml/test/Bodu.Text.Yaml.Test.csproj" />
+  </Folder>
   <Folder Name="/Solution Items/">
     <File Path="bld\Bodu.props" />
     <File Path="bld\CompanyDetails.props" />

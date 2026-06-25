@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata"><xsd:complexType><xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" /></xsd:sequence><xsd:attribute name="name" use="required" type="xsd:string" /><xsd:attribute name="type" type="xsd:string" /><xsd:attribute name="mimetype" type="xsd:string" /><xsd:attribute ref="xml:space" /></xsd:complexType></xsd:element>
+          <xsd:element name="assembly"><xsd:complexType><xsd:attribute name="alias" type="xsd:string" /><xsd:attribute name="name" type="xsd:string" /></xsd:complexType></xsd:element>
+          <xsd:element name="data"><xsd:complexType><xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" /><xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" /></xsd:sequence><xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" /><xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" /><xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" /><xsd:attribute ref="xml:space" /></xsd:complexType></xsd:element>
+          <xsd:element name="resheader"><xsd:complexType><xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" /></xsd:sequence><xsd:attribute name="name" type="xsd:string" use="required" /></xsd:complexType></xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Format_Invalid_YamlContentAfterDocumentEnd" xml:space="preserve"><value>Content is not permitted after the end of a document.</value></data>
+  <data name="Format_Invalid_YamlControlCharacter" xml:space="preserve"><value>A control character is not permitted in this context.</value></data>
+  <data name="Format_Invalid_YamlDuplicateAnchor" xml:space="preserve"><value>The anchor '{0}' is already defined in this document.</value></data>
+  <data name="Format_Invalid_YamlDuplicateKey" xml:space="preserve"><value>The mapping key is already defined.</value></data>
+  <data name="Format_Invalid_YamlExpectedKey" xml:space="preserve"><value>Expected a mapping key.</value></data>
+  <data name="Format_Invalid_YamlExpectedNode" xml:space="preserve"><value>Expected a node.</value></data>
+  <data name="Format_Invalid_YamlExpectedValue" xml:space="preserve"><value>Expected a node value.</value></data>
+  <data name="Format_Invalid_YamlInvalidAnchorName" xml:space="preserve"><value>The anchor name is not valid.</value></data>
+  <data name="Format_Invalid_YamlInvalidBlockScalar" xml:space="preserve"><value>The block scalar header is not valid.</value></data>
+  <data name="Format_Invalid_YamlInvalidDirective" xml:space="preserve"><value>The directive is not valid.</value></data>
+  <data name="Format_Invalid_YamlInvalidEscape" xml:space="preserve"><value>The escape sequence is not valid.</value></data>
+  <data name="Format_Invalid_YamlInvalidFlow" xml:space="preserve"><value>Expected a comma or closing delimiter in the flow collection.</value></data>
+  <data name="Format_Invalid_YamlInvalidIndentation" xml:space="preserve"><value>The indentation is not valid in this context.</value></data>
+  <data name="Format_Invalid_YamlInvalidTag" xml:space="preserve"><value>The tag is not valid.</value></data>
+  <data name="Format_Invalid_YamlInvalidUtf8" xml:space="preserve"><value>The input does not contain valid UTF-8 text.</value></data>
+  <data name="Format_Invalid_YamlMergeKeyTarget" xml:space="preserve"><value>A merge key value must be a mapping or a sequence of mappings.</value></data>
+  <data name="Format_Invalid_YamlNestingTooDeep" xml:space="preserve"><value>YAML node nesting exceeds the maximum permitted depth of {0}.</value></data>
+  <data name="Format_Invalid_YamlTabIndentation" xml:space="preserve"><value>A tab character cannot be used for indentation.</value></data>
+  <data name="Format_Invalid_YamlUndefinedAlias" xml:space="preserve"><value>The alias '{0}' does not refer to a defined anchor.</value></data>
+  <data name="Format_Invalid_YamlUnpairedSurrogate" xml:space="preserve"><value>The input contains an unpaired surrogate and is not valid UTF-8 text.</value></data>
+  <data name="Format_Invalid_YamlUnterminatedScalar" xml:space="preserve"><value>The quoted scalar is not terminated.</value></data>
+  <data name="Op_Invalid_WriterDocumentComplete" xml:space="preserve"><value>The YAML stream is complete; no further writes are permitted.</value></data>
+  <data name="Op_Invalid_WriterEndMismatch" xml:space="preserve"><value>The end call does not match the innermost open container.</value></data>
+  <data name="Op_Invalid_WriterMaxDepthExceeded" xml:space="preserve"><value>The maximum write depth of {0} has been exceeded.</value></data>
+  <data name="Op_Invalid_WriterNoOpenContainer" xml:space="preserve"><value>There is no open container to close.</value></data>
+  <data name="Op_Invalid_WriterPropertyNameOutsideMapping" xml:space="preserve"><value>A property name can only be written when the current container is a mapping.</value></data>
+  <data name="Op_Invalid_WriterPropertyNamePending" xml:space="preserve"><value>A property name is already pending; write its value before writing another property name.</value></data>
+  <data name="Op_Invalid_WriterValueWithoutKey" xml:space="preserve"><value>A value cannot be written to a mapping before a property name is written.</value></data>
+  <data name="Op_Invalid_DuplicateWireName" xml:space="preserve"><value>The type '{0}' maps more than one member to the YAML key '{1}'.</value></data>
+  <data name="Op_Invalid_ExtensionDataKeyCollision" xml:space="preserve"><value>The extension-data key '{0}' collides with a key already written for type '{1}'.</value></data>
+  <data name="Arg_Invalid_ConverterAttributeType" xml:space="preserve"><value>The type '{0}' specified by a converter attribute is not a YamlConverter.</value></data>
+  <data name="Arg_Invalid_YamlInvalidUtf8" xml:space="preserve"><value>The supplied bytes are not valid UTF-8.</value></data>
+  <data name="Arg_Invalid_YamlUnpairedSurrogate" xml:space="preserve"><value>The value contains an unpaired surrogate and cannot be encoded as UTF-8 YAML.</value></data>
+</root>

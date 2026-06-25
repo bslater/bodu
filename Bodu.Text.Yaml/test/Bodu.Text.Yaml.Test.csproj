@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>Bodu</RootNamespace>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Bodu.Test\test\Bodu.Test.csproj" />
+    <ProjectReference Include="..\src\Bodu.Text.Yaml.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The vendored yaml/yaml-test-suite conformance corpus, copied to the output for the Regression-tier suite. -->
+    <None Include="YamlTestCorpus\**" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

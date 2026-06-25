@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Build configuration and NuGet package metadata. -->
+  <PropertyGroup>
+    <TargetFrameworks>net8.0</TargetFrameworks>
+    <RootNamespace>Bodu</RootNamespace>
+    <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
+    <Title>Bodu — YAML</Title>
+    <Description>A self-contained YAML (1.1 / 1.2) library for .NET 8, shaped after System.Text.Json and matching the sibling Bodu.Text.Toml surface: the YamlSerializer POCO mapper (converters, the full attribute family, naming policies, callbacks), the ref-struct Utf8YamlReader/Utf8YamlWriter token surface, a mutable YamlNode DOM, and a read-only YamlDocument DOM. Defaults to the YAML 1.2 core schema (no implicit yes/no booleans) with opt-in 1.1 typing, and supports anchors, aliases, merge keys, tags, block scalars, and multi-document streams.</Description>
+    <PackageTags>$(PackageTags);text;yaml;configuration;serialization;serializer</PackageTags>
+  </PropertyGroup>
+
+  <!-- Per-framework compilation symbols. -->
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
+    <DefineConstants>$(DefineConstants);NET8_0_OR_GREATER</DefineConstants>
+  </PropertyGroup>
+
+  <!-- Grant the companion test project access to internal members. -->
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>Bodu.Text.Yaml.Test</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <!-- Bodu project dependencies. -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
+  </ItemGroup>
+
+  <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
+  <ItemGroup>
+    <EmbeddedResource Include="YamlResourceStrings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>YamlResourceStrings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <Compile Update="YamlResourceStrings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>YamlResourceStrings.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+</Project>
