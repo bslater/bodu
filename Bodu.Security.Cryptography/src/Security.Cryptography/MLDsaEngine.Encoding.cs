@@ -110,10 +110,14 @@ internal static partial class MLDsaEngine
     /// </summary>
     /// <param name="bits">The bit width of each packed value.</param>
     /// <param name="bound">The upper bound b of the centered range.</param>
-    /// <param name="maxEncoded">The largest packed value that encodes a valid coefficient; larger code points are non-canonical.</param>
+    /// <param name="maxEncoded">
+    /// The largest packed value that encodes a valid coefficient; larger code points are non-canonical.
+    /// </param>
     /// <param name="source">The 32·bits source bytes.</param>
     /// <param name="destination">The span receiving the 256 coefficients in [0, q).</param>
-    /// <returns><see langword="true" /> when every packed value is within range; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when every packed value is within range; otherwise, <see langword="false" />.
+    /// </returns>
     /// <remarks>
     /// The whole vector is unpacked regardless of any out-of-range code point so the running time reveals only that a
     /// canonical-encoding check occurred, not which coefficient — if any — drove the rejection.

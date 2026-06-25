@@ -598,8 +598,8 @@ internal static partial class MLDsaEngine
     /// <param name="t0">Receives the k decoded t₀ polynomials.</param>
     /// <returns>
     /// <see langword="true" /> when every s₁/s₂ coefficient is packed within its canonical [−η, η] range; otherwise,
-    /// <see langword="false" />. The t₀ packing spans the full d-bit range, so its consistency is validated separately by
-    /// recomputation in <see cref="TryDerivePublicKey" />.
+    /// <see langword="false" />. The t₀ packing spans the full d-bit range, so its consistency is validated separately
+    /// by recomputation in <see cref="TryDerivePublicKey" />.
     /// </returns>
     private static bool DecodePrivateKey(
         MLDsaParameters parameters,

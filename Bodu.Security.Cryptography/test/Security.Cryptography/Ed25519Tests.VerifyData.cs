@@ -39,4 +39,29 @@ public sealed partial class Ed25519Tests
 
         Assert.IsFalse(algorithm.VerifyData(message, malleated));
     }
+
+    /// <summary>
+    /// Verifies that a signature whose commitment R is a small-order point is rejected. Under the cofactorless
+    /// verification equation a small-order R could otherwise contribute a torsion component without changing the
+    /// arithmetic outcome, so the strict policy rejects it outright.
+    /// </summary>
+    [TestMethod]
+    [DataRow("order 1 (identity)", "0100000000000000000000000000000000000000000000000000000000000000")]
+    [DataRow("order 2", "ecffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f")]
+    [DataRow("order 8", "26e8958fc2b227b045c3f489f2ef98f0d5dfac05d3c63339b13802886d53fc05")]
+    public void VerifyData_WhenSignatureRIsSmallOrder_ShouldReturnFalse(string testName, string smallOrderRHex)
+    {
+        _ = testName;
+
+        using var algorithm = new Ed25519();
+        algorithm.GenerateKey();
+        byte[] message = new byte[] { 4, 2 };
+
+        // Replace R with a small-order encoding while keeping a canonical S, so rejection is driven by the
+        // small-order check rather than a malformed S or length error.
+        byte[] signature = algorithm.SignData(message);
+        Convert.FromHexString(smallOrderRHex).CopyTo(signature, 0);
+
+        Assert.IsFalse(algorithm.VerifyData(message, signature));
+    }
 }

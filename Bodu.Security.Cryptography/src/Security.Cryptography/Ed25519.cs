@@ -225,14 +225,15 @@ public sealed class Ed25519
     /// </exception>
     /// <remarks>
     /// The encoding is validated by fully decompressing the point; non-canonical y values and encodings without a
-    /// square x² candidate are rejected. Any private key previously held by the instance is zeroed and discarded,
-    /// leaving a verify-only instance.
+    /// square x² candidate are rejected, as are small-order points, which lie outside the prime-order subgroup and are
+    /// incompatible with Bodu's strict cofactorless verification policy (see <see cref="VerifyData" />). Any private
+    /// key previously held by the instance is zeroed and discarded, leaving a verify-only instance.
     /// </remarks>
     public void ImportPublicKey(ReadOnlySpan<byte> publicKey)
     {
         ThrowIfDisposed();
         CryptographyThrowHelper.ThrowIfInvalidRawKeyLength(publicKey, PublicKeySizeInBytes, "Ed25519 public");
-        if (!Ed25519Point.TryDecode(publicKey, out _))
+        if (!Ed25519Point.TryDecode(publicKey, out Ed25519Point point) || point.IsSmallOrder())
         {
             throw new ArgumentException(
                 string.Format(
@@ -330,9 +331,19 @@ public sealed class Ed25519
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     /// <exception cref="CryptographicException">The instance does not hold a public key.</exception>
     /// <remarks>
+    /// <para>
     /// Verification never throws for bad signature input: every failure mode — wrong length, S ≥ L, a non-canonical or
-    /// off-curve R — yields <see langword="false" />. Verification time may vary with the inputs, which is acceptable
-    /// because all inputs to verification are public.
+    /// off-curve R, or a small-order R or public key — yields <see langword="false" />. Verification time may vary with
+    /// the inputs, which is acceptable because all inputs to verification are public.
+    /// </para>
+    /// <para>
+    /// This is a deliberately strict policy. Bodu checks the <em>cofactorless</em> equation [S]B = R + [k]A rather than
+    /// the cofactored [8][S]B = [8]R + [8][k]A of RFC 8032 §5.1.7, and additionally rejects small-order R and public
+    /// keys. The accepted-signature set is therefore a strict subset of RFC 8032 cofactored verification: every
+    /// signature Bodu accepts is also accepted by a cofactored verifier, but a cofactored verifier may accept edge-case
+    /// signatures (those differing by a torsion component) that Bodu rejects. Callers requiring exact consensus with a
+    /// specific cofactored or ZIP-215 verifier must account for this difference.
+    /// </para>
     /// </remarks>
     public bool VerifyData(ReadOnlySpan<byte> data, ReadOnlySpan<byte> signature)
     {
@@ -353,6 +364,11 @@ public sealed class Ed25519
             return false;
 
         if (!Ed25519Point.TryDecode(_publicKey, out Ed25519Point publicPoint))
+            return false;
+
+        // Small-order R or A would let a torsion component be added without changing acceptance under the cofactorless
+        // equation; rejecting both keeps the strict policy self-consistent regardless of how the public key arrived.
+        if (rPoint.IsSmallOrder() || publicPoint.IsSmallOrder())
             return false;
 
         // k = SHA-512(R ‖ A ‖ M) mod L; accept when [S]B == R + [k]A (cofactorless).
