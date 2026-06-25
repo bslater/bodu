@@ -1,0 +1,16 @@
+{
+  "source": "https://github.com/yaml/yaml-test-suite",
+  "branch": "data",
+  "commit": "6ad3d2c62885d82fc349026c136ef560838fdf3d",
+  "license": "MIT",
+  "caseCount": 402,
+  "validCaseCount": 308,
+  "invalidCaseCount": 94,
+  "classification": {
+    "SupportedPass": 199,
+    "SupportedParseOnly": 11,
+    "SupportedFail": 42,
+    "UnsupportedFeatureRejected": 59,
+    "KnownGap": 91
+  }
+}
