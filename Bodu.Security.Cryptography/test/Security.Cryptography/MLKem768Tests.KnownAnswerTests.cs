@@ -53,7 +53,7 @@ public partial class MLKem768Tests
         nameof(KeyGenVectors),
         DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void ImportPrivateSeed_WhenGivenAcvpKeyGenVector_ShouldReproduceExpectedKeyPair(KemKeyGenKnownAnswer vector)
+    public void ImportPrivateSeed_WhenGivenAcvpKeyGenVector_ShouldReproduceExpectedKeyPair(KeyGenKnownAnswer vector)
     {
         using var kem = new MLKem768();
         MLKemAcvpVectors.AssertKeyGen(kem, vector);
@@ -70,7 +70,7 @@ public partial class MLKem768Tests
         nameof(EncapsulationVectors),
         DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void Encapsulate_WhenGivenAcvpVectorWithFixedRandomness_ShouldReproduceExpectedCiphertextAndSecret(KemEncapDecapKnownAnswer vector)
+    public void Encapsulate_WhenGivenAcvpVectorWithFixedRandomness_ShouldReproduceExpectedCiphertextAndSecret(KemKnownAnswer vector)
     {
         MLKemAcvpVectors.AssertEncapsulation(MLKemAcvpVectors.ResolveParameters("ML-KEM-768"), vector);
     }
@@ -86,7 +86,7 @@ public partial class MLKem768Tests
         nameof(DecapsulationVectors),
         DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void Decapsulate_WhenGivenAcvpVector_ShouldYieldExpectedSharedSecret(KemEncapDecapKnownAnswer vector)
+    public void Decapsulate_WhenGivenAcvpVector_ShouldYieldExpectedSharedSecret(KemKnownAnswer vector)
     {
         using var kem = new MLKem768();
         MLKemAcvpVectors.AssertDecapsulation(kem, vector);
@@ -102,7 +102,7 @@ public partial class MLKem768Tests
         nameof(KeyCheckVectors),
         DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void ImportKey_WhenGivenAcvpKeyCheckVector_ShouldAcceptOrRejectPerFips203(KemKeyCheckKnownAnswer vector)
+    public void ImportKey_WhenGivenAcvpKeyCheckVector_ShouldAcceptOrRejectPerFips203(KeyValidationKnownAnswer vector)
     {
         using var kem = new MLKem768();
         MLKemAcvpVectors.AssertKeyCheck(kem, vector);

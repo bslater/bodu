@@ -22,8 +22,26 @@ public static class MLKemAcvpVectors
     public static IEnumerable<object[]> KeyGen(string parameterSet)
     {
         using Stream stream = OpenResource("Bodu.Security.Cryptography.MLKem.AcvpKeyGen.txt");
-        foreach (KemKeyGenKnownAnswer vector in KemKeyGenKnownAnswer.Read(stream).Where(v => v.ParameterSet == parameterSet))
-            yield return new object[] { vector };
+        foreach (Dictionary<string, string> record in HexFieldKatReader.Read(stream))
+        {
+            if (HexFieldKatReader.GetRequired(record, "Set") != parameterSet)
+                continue;
+
+            byte[] d = Convert.FromHexString(HexFieldKatReader.GetRequired(record, "D"));
+            byte[] z = Convert.FromHexString(HexFieldKatReader.GetRequired(record, "Z"));
+
+            yield return new object[]
+            {
+                new KeyGenKnownAnswer
+                {
+                    Name = HexFieldKatReader.GetRequired(record, "Name"),
+                    ParameterSet = parameterSet,
+                    Seed = [.. d, .. z],
+                    ExpectedPublicKey = Convert.FromHexString(HexFieldKatReader.GetRequired(record, "Ek")),
+                    ExpectedPrivateKey = Convert.FromHexString(HexFieldKatReader.GetRequired(record, "Dk")),
+                },
+            };
+        }
     }
 
     /// <summary>
@@ -36,7 +54,7 @@ public static class MLKemAcvpVectors
     public static IEnumerable<object[]> EncapDecap(string parameterSet, string function)
     {
         using Stream stream = OpenResource("Bodu.Security.Cryptography.MLKem.AcvpEncapDecap.txt");
-        foreach (KemEncapDecapKnownAnswer vector in KemEncapDecapKnownAnswer.Read(stream)
+        foreach (KemKnownAnswer vector in KemKnownAnswer.Read(stream)
                      .Where(v => v.ParameterSet == parameterSet && v.Function == function))
         {
             yield return new object[] { vector };
@@ -51,7 +69,7 @@ public static class MLKemAcvpVectors
     public static IEnumerable<object[]> KeyCheck(string parameterSet)
     {
         using Stream stream = OpenResource("Bodu.Security.Cryptography.MLKem.AcvpKeyCheck.txt");
-        foreach (KemKeyCheckKnownAnswer vector in KemKeyCheckKnownAnswer.Read(stream).Where(v => v.ParameterSet == parameterSet))
+        foreach (KeyValidationKnownAnswer vector in KeyValidationKnownAnswer.Read(stream).Where(v => v.ParameterSet == parameterSet))
             yield return new object[] { vector };
     }
 
@@ -60,13 +78,12 @@ public static class MLKemAcvpVectors
     /// </summary>
     /// <param name="kem">A fresh instance of the parameter set under test.</param>
     /// <param name="vector">The KAT vector.</param>
-    public static void AssertKeyGen(MLKem kem, KemKeyGenKnownAnswer vector)
+    public static void AssertKeyGen(MLKem kem, KeyGenKnownAnswer vector)
     {
-        byte[] seed = vector.D.Concat(vector.Z).ToArray();
-        kem.ImportPrivateSeed(seed);
+        kem.ImportPrivateSeed(vector.Seed);
 
-        CollectionAssert.AreEqual(vector.ExpectedEncapsulationKey, kem.ExportEncapsulationKey());
-        CollectionAssert.AreEqual(vector.ExpectedDecapsulationKey, kem.ExportDecapsulationKey());
+        CollectionAssert.AreEqual(vector.ExpectedPublicKey, kem.ExportEncapsulationKey());
+        CollectionAssert.AreEqual(vector.ExpectedPrivateKey, kem.ExportDecapsulationKey());
     }
 
     /// <summary>
@@ -75,7 +92,7 @@ public static class MLKemAcvpVectors
     /// </summary>
     /// <param name="parameters">The engine parameter set.</param>
     /// <param name="vector">The KAT vector.</param>
-    internal static void AssertEncapsulation(MLKemParameters parameters, KemEncapDecapKnownAnswer vector)
+    internal static void AssertEncapsulation(MLKemParameters parameters, KemKnownAnswer vector)
     {
         Assert.IsNotNull(vector.M, $"{vector.Name}: encapsulation vectors must carry the fixed randomness m.");
 
@@ -93,7 +110,7 @@ public static class MLKemAcvpVectors
     /// </summary>
     /// <param name="kem">A fresh instance of the parameter set under test.</param>
     /// <param name="vector">The KAT vector.</param>
-    public static void AssertDecapsulation(MLKem kem, KemEncapDecapKnownAnswer vector)
+    public static void AssertDecapsulation(MLKem kem, KemKnownAnswer vector)
     {
         kem.ImportDecapsulationKey(vector.Key);
 
@@ -105,7 +122,7 @@ public static class MLKemAcvpVectors
     /// </summary>
     /// <param name="kem">A fresh instance of the parameter set under test.</param>
     /// <param name="vector">The KAT vector.</param>
-    public static void AssertKeyCheck(MLKem kem, KemKeyCheckKnownAnswer vector)
+    public static void AssertKeyCheck(MLKem kem, KeyValidationKnownAnswer vector)
     {
         void Import()
         {
