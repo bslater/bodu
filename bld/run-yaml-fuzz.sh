@@ -36,15 +36,31 @@ mkdir -p "$work" "$corpus" "$findings" "$tooldir"
 
 log() { printf '[run-yaml-fuzz] %s\n' "$*"; }
 
+# The pinned libfuzzer-dotnet release providing the prebuilt Ubuntu driver and the driver source.
+driver_release="${LIBFUZZER_DOTNET_RELEASE:-v2025.05.02.0904}"
+
 ensure_driver() {
     if [ -x "$driver" ]; then return 0; fi
-    log "Building the libfuzzer-dotnet driver with clang..."
+
+    # Prefer the prebuilt Ubuntu driver (statically linked with libFuzzer); it avoids needing the clang
+    # fuzzer runtime archives, which are not always installed.
+    log "Downloading the prebuilt libfuzzer-dotnet driver ($driver_release)..."
+    if curl -fsSL --max-time 180 \
+        "https://github.com/Metalnem/libfuzzer-dotnet/releases/download/$driver_release/libfuzzer-dotnet-ubuntu" \
+        -o "$driver" && [ -s "$driver" ]; then
+        chmod +x "$driver"
+        log "Driver downloaded: $driver"
+        return 0
+    fi
+
+    # Fallback: compile from source (requires the clang libFuzzer runtime).
+    log "Prebuilt download failed; compiling the driver from source with clang..."
     local td cc
     td="$(mktemp -d)"
-    curl -fsSL --max-time 180 "https://codeload.github.com/Metalnem/sharpfuzz/tar.gz/refs/heads/master" -o "$td/sharpfuzz.tgz"
-    tar -xzf "$td/sharpfuzz.tgz" -C "$td"
+    curl -fsSL --max-time 180 "https://codeload.github.com/Metalnem/libfuzzer-dotnet/tar.gz/refs/heads/master" -o "$td/libfuzzer-dotnet.tgz"
+    tar -xzf "$td/libfuzzer-dotnet.tgz" -C "$td"
     cc="$(find "$td" -name 'libfuzzer-dotnet.cc' | head -1)"
-    [ -n "$cc" ] || { log "ERROR: libfuzzer-dotnet.cc not found in the SharpFuzz source."; exit 1; }
+    [ -n "$cc" ] || { log "ERROR: libfuzzer-dotnet.cc not found."; exit 1; }
     clang -g -O2 -fsanitize=fuzzer "$cc" -o "$driver"
     rm -rf "$td"
     log "Driver built: $driver"
@@ -93,11 +109,15 @@ case "$mode" in
         ;;
     run)
         ensure_setup
-        log "Fuzzing for ${budget}s (FUZZ_TARGET=${FUZZ_TARGET:-all}); crashes land in $findings ..."
+        # FORK=1 keeps fuzzing past crashes (each input runs in a subprocess), collecting every distinct
+        # finding in one run instead of stopping at the first.
+        fork_args=()
+        [ "${FORK:-0}" = "1" ] && fork_args=(-fork=1 -ignore_crashes=1)
+        log "Fuzzing for ${budget}s (FUZZ_TARGET=${FUZZ_TARGET:-all}${FORK:+, fork}); crashes land in $findings ..."
         cd "$findings"
         # The first positional corpus dir accumulates interesting inputs; the seed dir is read-only seeds.
         "$driver" --target_path="$target_exe" "$corpus" "$seed" \
-            -timeout=10 -rss_limit_mb=2048 -max_total_time="$budget" -print_final_stats=1 \
+            -timeout=10 -rss_limit_mb=2048 -max_total_time="$budget" -print_final_stats=1 "${fork_args[@]}" \
             || log "libFuzzer exited non-zero (a crash was found, or the run was stopped)."
         log "Findings in $findings:"
         find "$findings" -maxdepth 1 -type f \( -name 'crash-*' -o -name 'oom-*' -o -name 'timeout-*' -o -name 'leak-*' \) -printf '  %f\n' || true

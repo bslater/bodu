@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Text.Json;
 using Bodu.Text.Yaml;
 using Bodu.Text.Yaml.Document;
 using Bodu.Text.Yaml.Reader;
@@ -45,6 +44,16 @@ internal static class Program
             case "deser": FuzzDeserialize(data); break;
             case "reader": FuzzReader(data); break;
             case "roundtrip": FuzzRoundTrip(data); break;
+
+            // "core" hunts crashes and DoS only (no round-trip invariant), so those findings are not masked by
+            // the louder round-trip mismatches.
+            case "core":
+                FuzzParse(data);
+                FuzzStream(data);
+                FuzzDeserialize(data);
+                FuzzReader(data);
+                break;
+
             default:
                 FuzzParse(data);
                 FuzzStream(data);
@@ -187,13 +196,84 @@ internal static class Program
         }
         catch (Exception ex)
         {
-            throw new FuzzInvariantException("re-emitted YAML failed to reparse", ex);
+            throw new FuzzInvariantException($"re-emitted YAML failed to reparse: {reemitted}", ex);
         }
 
-        var firstJson = JsonSerializer.Serialize(first);
-        var secondJson = JsonSerializer.Serialize(second);
-        if (!string.Equals(firstJson, secondJson, StringComparison.Ordinal))
-            throw new FuzzInvariantException($"round-trip value mismatch\n{firstJson}\n!=\n{secondJson}");
+        if (!GraphEquals(first, second))
+            throw new FuzzInvariantException($"round-trip value mismatch; re-emitted as: {reemitted}");
+    }
+
+    /// <summary>
+    /// Compares two loosely-typed value graphs for structural and value equality. Numbers compare by their
+    /// double value (so integer/float normalization, negative zero, and overflow-to-infinity are not flagged); the
+    /// invariant targets structural corruption — a value that round-trips to a different kind of node.
+    /// </summary>
+    /// <param name="a">The first graph.</param>
+    /// <param name="b">The second graph.</param>
+    /// <returns><see langword="true" /> when the graphs are equivalent.</returns>
+    private static bool GraphEquals(object? a, object? b)
+    {
+        if (a is null || b is null)
+            return a is null && b is null;
+
+        if (a is IDictionary<string, object?> mapA && b is IDictionary<string, object?> mapB)
+        {
+            if (mapA.Count != mapB.Count)
+                return false;
+
+            foreach (var entry in mapA)
+            {
+                if (!mapB.TryGetValue(entry.Key, out var other) || !GraphEquals(entry.Value, other))
+                    return false;
+            }
+
+            return true;
+        }
+
+        if (a is IList<object?> listA && b is IList<object?> listB)
+        {
+            if (listA.Count != listB.Count)
+                return false;
+
+            for (var i = 0; i < listA.Count; i++)
+            {
+                if (!GraphEquals(listA[i], listB[i]))
+                    return false;
+            }
+
+            return true;
+        }
+
+        if (a is bool boolA && b is bool boolB)
+            return boolA == boolB;
+
+        if (IsNumber(a, out var numberA) && IsNumber(b, out var numberB))
+            return numberA == numberB || (double.IsNaN(numberA) && double.IsNaN(numberB));
+
+        if (a is string stringA && b is string stringB)
+            return string.Equals(stringA, stringB, StringComparison.Ordinal);
+
+        // Different node kinds (for example a string that round-tripped into a null or a mapping) is corruption.
+        return false;
+    }
+
+    /// <summary>
+    /// Determines whether a graph node is a numeric scalar and yields its double value.
+    /// </summary>
+    /// <param name="value">The node to test.</param>
+    /// <param name="number">When the node is numeric, its value as a double.</param>
+    /// <returns><see langword="true" /> when the node is numeric.</returns>
+    private static bool IsNumber(object? value, out double number)
+    {
+        switch (value)
+        {
+            case long l: number = l; return true;
+            case int i: number = i; return true;
+            case ulong u: number = u; return true;
+            case double d: number = d; return true;
+            case decimal m: number = (double)m; return true;
+            default: number = 0; return false;
+        }
     }
 
     /// <summary>
