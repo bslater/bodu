@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Buffers;
 using System.Text;
 
 namespace Bodu.Text.Yaml.Reader;
@@ -118,8 +119,13 @@ internal sealed partial class YamlParser
         SkipSpaces();
         if (Peek() == (byte)'#')
         {
+            RequireCommentSpacing();
             while (!IsBreakOrEnd(Peek()))
                 _pos++;
+        }
+        else if (!IsBreakOrEnd(Peek()))
+        {
+            throw ErrorAt(_pos, YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
         }
 
         if (!AtEnd)
@@ -127,14 +133,36 @@ internal sealed partial class YamlParser
     }
 
     /// <summary>
+    /// Verifies that a comment indicator at the cursor is preceded by whitespace or begins the line.
+    /// </summary>
+    /// <exception cref="YamlFormatException">The comment is glued to preceding content.</exception>
+    private void RequireCommentSpacing()
+    {
+        if (_pos > _lineStart && _source[_pos - 1] is not ((byte)' ' or (byte)'\t'))
+            throw ErrorAt(_pos, YamlResourceStrings.Format_Invalid_YamlCommentSpacing);
+    }
+
+    /// <summary>
     /// Advances past blank lines and comment-only lines, leaving the cursor at the first non-space content byte.
     /// </summary>
+    /// <remarks>
+    /// The leading whitespace of a structural content line is its indentation, which YAML requires to be spaces only.
+    /// A tab encountered before content is therefore rejected; tabs on blank or comment-only lines are immaterial and
+    /// pass through.
+    /// </remarks>
+    /// <exception cref="YamlFormatException">A tab is used to indent a structural content line.</exception>
     private void SkipBlankCommentLines()
     {
         while (!AtEnd)
         {
+            var tabOffset = -1;
             while (_pos < _length && _source[_pos] is (byte)' ' or (byte)'\t')
+            {
+                if (_source[_pos] == (byte)'\t' && tabOffset < 0)
+                    tabOffset = _pos;
+
                 _pos++;
+            }
 
             var c = Peek();
             if (c == (byte)'#')
@@ -158,8 +186,78 @@ internal sealed partial class YamlParser
                 continue;
             }
 
+            // Structural content begins here, so the leading whitespace is indentation and must not contain a tab.
+            if (tabOffset >= 0)
+                throw ErrorAt(tabOffset, YamlResourceStrings.Format_Invalid_YamlTabIndentation);
+
             return;
         }
+    }
+
+    /// <summary>
+    /// Validates that the source is well-formed UTF-8 containing only YAML-printable characters, rejecting invalid byte
+    /// sequences and non-printable control characters before structural parsing begins.
+    /// </summary>
+    /// <exception cref="YamlFormatException">
+    /// The source contains invalid UTF-8 or a non-printable control character.
+    /// </exception>
+    private void ValidateSource()
+    {
+        var span = _source.AsSpan(0, _length);
+        var offset = 0;
+        while (offset < span.Length)
+        {
+            var status = Rune.DecodeFromUtf8(span[offset..], out var rune, out var consumed);
+            if (status != OperationStatus.Done)
+                throw ErrorAt(offset, YamlResourceStrings.Format_Invalid_YamlInvalidUtf8);
+
+            if (!IsYamlPrintable(rune))
+                throw ErrorAt(offset, YamlResourceStrings.Format_Invalid_YamlControlCharacter);
+
+            offset += consumed;
+        }
+    }
+
+    /// <summary>
+    /// Determines whether a Unicode scalar value is permitted to appear literally in YAML source.
+    /// </summary>
+    /// <param name="rune">The decoded Unicode scalar value.</param>
+    /// <returns><see langword="true" /> when the character is a YAML-printable character.</returns>
+    /// <remarks>
+    /// Implements the YAML 1.2 <c>c-printable</c> production. Surrogate code points cannot occur because a
+    /// <see cref="Rune" /> only holds valid scalar values, so they are excluded implicitly.
+    /// </remarks>
+    private static bool IsYamlPrintable(Rune rune)
+    {
+        var v = rune.Value;
+        return v is 0x09 or 0x0A or 0x0D or 0x85
+            || (v >= 0x20 && v <= 0x7E)
+            || (v >= 0xA0 && v <= 0xD7FF)
+            || (v >= 0xE000 && v <= 0xFFFD)
+            || (v >= 0x10000 && v <= 0x10FFFF);
+    }
+
+    /// <summary>
+    /// Creates a format exception anchored at a specific byte offset, computing its line and column.
+    /// </summary>
+    /// <param name="offset">The zero-based byte offset of the error.</param>
+    /// <param name="message">The error message.</param>
+    /// <returns>The exception to throw.</returns>
+    private YamlFormatException ErrorAt(int offset, string message)
+    {
+        var line = 0;
+        var lineStart = 0;
+        var limit = Math.Min(offset, _length);
+        for (var i = 0; i < limit; i++)
+        {
+            if (_source[i] == (byte)'\n')
+            {
+                line++;
+                lineStart = i + 1;
+            }
+        }
+
+        return new YamlFormatException(message, line + 1, offset - lineStart + 1, offset);
     }
 
     /// <summary>
@@ -196,21 +294,24 @@ internal sealed partial class YamlParser
     }
 
     /// <summary>
-    /// Skips leading <c>%YAML</c>/<c>%TAG</c> directive lines and a single leading <c>---</c> document-start marker.
+    /// Validates and applies the document's <c>%YAML</c>/<c>%TAG</c> directives, then consumes a single leading
+    /// <c>---</c> document-start marker.
     /// </summary>
+    /// <exception cref="YamlFormatException">A directive is malformed or repeated.</exception>
     private void SkipDirectivesAndDocumentStart()
     {
+        _tagHandles = null;
+        _documentStartConsumed = false;
+        var yamlDirectiveSeen = false;
+        var directiveSeen = false;
+
         while (true)
         {
             SkipBlankCommentLines();
             if (!AtEnd && CurrentColumn() == 0 && Peek() == (byte)'%')
             {
-                while (!IsBreakOrEnd(Peek()))
-                    _pos++;
-
-                if (!AtEnd)
-                    Advance();
-
+                directiveSeen = true;
+                ProcessDirective(ref yamlDirectiveSeen);
                 continue;
             }
 
@@ -223,7 +324,113 @@ internal sealed partial class YamlParser
             Advance();
             Advance();
             Advance();
+            _documentStartConsumed = true;
+
+            // A block mapping cannot begin on the document-start line.
+            SkipSpaces();
+            if (!IsBreakOrEnd(Peek()) && Peek() != (byte)'#' && TryDetectBlockMapping(0))
+                throw ErrorAt(_pos, YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
         }
+        else if (directiveSeen)
+        {
+            // A directive must be followed by an explicit '---' document-start marker.
+            throw ErrorAt(_pos, YamlResourceStrings.Format_Invalid_YamlInvalidDirective);
+        }
+    }
+
+    /// <summary>
+    /// Parses and validates a single directive line beginning at the cursor, applying <c>%TAG</c> handles and checking
+    /// <c>%YAML</c> version constraints. Unknown (reserved) directives are ignored per the specification.
+    /// </summary>
+    /// <param name="yamlDirectiveSeen">
+    /// Tracks whether a <c>%YAML</c> directive has already appeared in the current document.
+    /// </param>
+    /// <exception cref="YamlFormatException">The directive is malformed or repeated.</exception>
+    private void ProcessDirective(ref bool yamlDirectiveSeen)
+    {
+        var lineStart = _pos;
+        Advance(); // '%'
+
+        var nameStart = _pos;
+        while (!IsBlankOrBreakOrEnd(Peek()))
+            _pos++;
+
+        var name = Utf8(nameStart, _pos - nameStart);
+
+        if (name == "YAML")
+        {
+            if (yamlDirectiveSeen)
+                throw ErrorAt(lineStart, YamlResourceStrings.Format_Invalid_YamlInvalidDirective);
+
+            yamlDirectiveSeen = true;
+            var version = ReadDirectiveParameter();
+            if (version is not ("1.1" or "1.2"))
+                throw ErrorAt(lineStart, YamlResourceStrings.Format_Invalid_YamlInvalidDirective);
+        }
+        else if (name == "TAG")
+        {
+            var handle = ReadDirectiveParameter();
+            var prefix = ReadDirectiveParameter();
+            if (!IsValidTagHandle(handle) || prefix.Length == 0)
+                throw ErrorAt(lineStart, YamlResourceStrings.Format_Invalid_YamlInvalidDirective);
+
+            _tagHandles ??= new Dictionary<string, string>(StringComparer.Ordinal);
+            if (!_tagHandles.TryAdd(handle, prefix))
+                throw ErrorAt(lineStart, YamlResourceStrings.Format_Invalid_YamlInvalidDirective);
+        }
+
+        // A known directive permits only a trailing comment after its parameters.
+        if (name is "YAML" or "TAG")
+        {
+            SkipSpaces();
+            if (!IsBreakOrEnd(Peek()) && Peek() != (byte)'#')
+                throw ErrorAt(lineStart, YamlResourceStrings.Format_Invalid_YamlInvalidDirective);
+        }
+
+        // Consume the remainder of the directive line.
+        while (!IsBreakOrEnd(Peek()))
+            _pos++;
+
+        if (!AtEnd)
+            Advance();
+    }
+
+    /// <summary>
+    /// Reads the next whitespace-delimited parameter token on the current directive line.
+    /// </summary>
+    /// <returns>The parameter text, or the empty string when none remains on the line.</returns>
+    private string ReadDirectiveParameter()
+    {
+        SkipSpaces();
+        var start = _pos;
+        while (!IsBlankOrBreakOrEnd(Peek()))
+            _pos++;
+
+        return Utf8(start, _pos - start);
+    }
+
+    /// <summary>
+    /// Determines whether a tag handle is one of the three valid forms: the primary (<c>!</c>), secondary (<c>!!</c>),
+    /// or a named handle (<c>!name!</c>).
+    /// </summary>
+    /// <param name="handle">The handle text.</param>
+    /// <returns><see langword="true" /> when the handle is well-formed.</returns>
+    private static bool IsValidTagHandle(string handle)
+    {
+        if (handle is "!" or "!!")
+            return true;
+
+        if (handle.Length < 3 || handle[0] != '!' || handle[^1] != '!')
+            return false;
+
+        for (var i = 1; i < handle.Length - 1; i++)
+        {
+            var c = handle[i];
+            if (!char.IsLetterOrDigit(c) && c != '-')
+                return false;
+        }
+
+        return true;
     }
 
     /// <summary>
@@ -292,7 +499,7 @@ internal sealed partial class YamlParser
             if (Peek() == (byte)':' && IsBlankOrBreakOrEnd(PeekAt(1)))
                 return true;
 
-            if (Peek() == (byte)' ' && PeekAt(1) == (byte)'#')
+            if (Peek() is (byte)' ' or (byte)'\t' && PeekAt(1) == (byte)'#')
                 return false;
 
             _pos++;
@@ -348,12 +555,29 @@ internal sealed partial class YamlParser
     /// <returns>The decoded key text.</returns>
     private string ReadSimpleKey()
     {
-        var c = Peek();
-        if (c == (byte)'"')
-            return ReadDoubleQuoted();
+        // A simple key may carry leading anchor and tag node properties; they are consumed so the key text is clean.
+        if (Peek() is (byte)'&' or (byte)'!')
+        {
+            TryReadAnchorAndTag(out _);
+            SkipSpaces();
+        }
 
-        if (c == (byte)'\'')
-            return ReadSingleQuoted();
+        var c = Peek();
+
+        // An alias cannot serve as an implicit mapping key.
+        if (c == (byte)'*')
+            throw Error(YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
+        if (c == (byte)'"' || c == (byte)'\'')
+        {
+            var startLine = _line;
+            var quoted = c == (byte)'"' ? ReadDoubleQuoted(-1) : ReadSingleQuoted(-1);
+
+            // An implicit key must occupy a single line.
+            if (_line != startLine)
+                throw Error(YamlResourceStrings.Format_Invalid_YamlMultilineImplicitKey);
+
+            return quoted;
+        }
 
         var start = _pos;
         var end = _pos;
@@ -362,7 +586,7 @@ internal sealed partial class YamlParser
             if (Peek() == (byte)':' && IsBlankOrBreakOrEnd(PeekAt(1)))
                 break;
 
-            if (Peek() == (byte)' ' && PeekAt(1) == (byte)'#')
+            if (Peek() is (byte)' ' or (byte)'\t' && PeekAt(1) == (byte)'#')
                 break;
 
             _pos++;
@@ -374,28 +598,43 @@ internal sealed partial class YamlParser
     }
 
     /// <summary>
-    /// Reads an optional anchor (<c>&amp;name</c>) and tag (<c>!tag</c>) node-property prefix on the current line.
+    /// Reads an optional anchor (<c>&amp;name</c>) and tag (<c>!tag</c>) node-property prefix.
     /// </summary>
     /// <param name="tag">When the method returns, the captured tag, or <see langword="null" />.</param>
+    /// <param name="crossLines">
+    /// Whether the node properties may be separated from each other and the node by line breaks (block context).
+    /// </param>
     /// <returns>The captured anchor name, or <see langword="null" />.</returns>
-    private string? TryReadAnchorAndTag(out string? tag)
+    private string? TryReadAnchorAndTag(out string? tag, bool crossLines = false)
     {
         string? anchor = null;
         tag = null;
 
         while (true)
         {
-            SkipSpaces();
+            if (crossLines)
+                SkipBlankCommentLines();
+            else
+                SkipSpaces();
+
             var c = Peek();
+
+            // In block context, an anchor or tag that begins a mapping-entry line is the entry key's property, not a
+            // property of the node being read.
+            if (crossLines && c is (byte)'&' or (byte)'!' && TryDetectBlockMapping(0))
+                break;
+
             if (c == (byte)'&' && anchor is null)
             {
                 anchor = ReadName(1);
+                _lastPropertyLine = _line;
                 continue;
             }
 
             if (c == (byte)'!' && tag is null)
             {
                 tag = ReadTag();
+                _lastPropertyLine = _line;
                 continue;
             }
 

@@ -306,12 +306,22 @@ public sealed class YamlConformanceTests
 
     // ---- Document markers ----
 
-    /// <summary>Verifies inline content after a document-start marker parses.</summary>
+    /// <summary>Verifies an inline scalar after a document-start marker parses.</summary>
     [TestMethod]
-    public void Document_InlineAfterStartMarker()
+    public void Document_InlineScalarAfterStartMarker()
     {
-        using var d = Doc("--- key: value\n");
-        Assert.AreEqual("value", d.RootElement.GetProperty("key").GetString());
+        using var d = Doc("--- value\n");
+        Assert.AreEqual("value", d.RootElement.GetString());
+    }
+
+    /// <summary>Verifies that a block mapping beginning on the document-start line is rejected.</summary>
+    [TestMethod]
+    public void Document_InlineMappingAfterStartMarker_ShouldThrow()
+    {
+        Assert.ThrowsExactly<YamlFormatException>(() =>
+        {
+            using var _ = Doc("--- key: value\n");
+        });
     }
 
     /// <summary>Verifies a single document followed by a document-end marker parses.</summary>

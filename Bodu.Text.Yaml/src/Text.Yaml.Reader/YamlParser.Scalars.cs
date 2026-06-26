@@ -14,6 +14,8 @@ namespace Bodu.Text.Yaml.Reader;
 /// </summary>
 internal sealed partial class YamlParser
 {
+    private bool _plainCommentTerminated;
+
     /// <summary>
     /// Parses a scalar node in block context, dispatching to quoted or plain parsing, and resolves the implicit type of
     /// single-line plain scalars.
@@ -25,11 +27,23 @@ internal sealed partial class YamlParser
         var offset = _pos;
         var c = Peek();
 
+        // A plain scalar cannot begin with a flow-entry comma or a reserved indicator.
+        if (c is (byte)',' or (byte)'%' or (byte)'@' or (byte)'`')
+            throw ErrorAt(_pos, YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
+
         if (c == (byte)'"')
-            return NewString(ReadDoubleQuoted(), YamlScalarStyle.DoubleQuoted, offset, null, null);
+        {
+            var row = NewString(ReadDoubleQuoted(minIndent), YamlScalarStyle.DoubleQuoted, offset, null, null);
+            SkipLineTrailing();
+            return row;
+        }
 
         if (c == (byte)'\'')
-            return NewString(ReadSingleQuoted(), YamlScalarStyle.SingleQuoted, offset, null, null);
+        {
+            var row = NewString(ReadSingleQuoted(minIndent), YamlScalarStyle.SingleQuoted, offset, null, null);
+            SkipLineTrailing();
+            return row;
+        }
 
         return ReadPlainBlock(minIndent, offset);
     }
@@ -48,7 +62,8 @@ internal sealed partial class YamlParser
         var folded = false;
         StringBuilder? sb = null;
 
-        while (true)
+        // A trailing comment terminates a plain scalar; it cannot continue onto following lines.
+        while (!_plainCommentTerminated)
         {
             var savePos = _pos;
             var saveLine = _line;
@@ -112,6 +127,9 @@ internal sealed partial class YamlParser
             var contStart = _pos;
             var contEnd = ScanPlainLineEnd();
             sb.Append(Utf8(contStart, contEnd - contStart));
+
+            if (_plainCommentTerminated)
+                break;
         }
 
     done:
@@ -135,14 +153,21 @@ internal sealed partial class YamlParser
     /// <returns>The byte offset of the end of the trimmed content.</returns>
     private int ScanPlainLineEnd()
     {
+        _plainCommentTerminated = false;
         var end = _pos;
         while (!IsBreakOrEnd(Peek()))
         {
-            if (Peek() == (byte)' ' && PeekAt(1) == (byte)'#')
+            if (Peek() is (byte)' ' or (byte)'\t' && PeekAt(1) == (byte)'#')
+            {
+                _plainCommentTerminated = true;
                 break;
+            }
 
-            // A ' : ' value indicator does not occur here (mapping detection runs first), but a trailing ':' at
-            // end of line is preserved as content.
+            // A ' : ' mapping value indicator cannot appear inside a plain scalar; a trailing ':' at end of line is
+            // preserved as content.
+            if (Peek() == (byte)':' && PeekAt(1) is (byte)' ' or (byte)'\t')
+                throw ErrorAt(_pos, YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
+
             _pos++;
             if (_source[_pos - 1] is not ((byte)' ' or (byte)'\t'))
                 end = _pos;
@@ -160,7 +185,7 @@ internal sealed partial class YamlParser
     /// </summary>
     /// <returns>The decoded string.</returns>
     /// <exception cref="YamlFormatException">The scalar is not terminated.</exception>
-    private string ReadSingleQuoted()
+    private string ReadSingleQuoted(int minIndent)
     {
         Advance(); // opening quote
         var buf = new List<byte>();
@@ -183,14 +208,19 @@ internal sealed partial class YamlParser
                     continue;
                 }
 
+                FlushFold(buf, ref pendingBreaks);
                 Advance();
                 break;
             }
 
             if (b is (byte)'\n' or (byte)'\r')
             {
-                TrimTrailingInlineSpace(buf);
+                TrimTrailingInlineSpace(buf, 0);
                 Advance();
+                if (IsBoundaryAt(_pos))
+                    throw ErrorAt(_pos, YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
+
+                RequireQuotedContinuationIndent(minIndent);
                 pendingBreaks++;
                 SkipSpaces();
                 continue;
@@ -209,11 +239,15 @@ internal sealed partial class YamlParser
     /// </summary>
     /// <returns>The decoded string.</returns>
     /// <exception cref="YamlFormatException">The scalar is not terminated or contains an invalid escape.</exception>
-    private string ReadDoubleQuoted()
+    private string ReadDoubleQuoted(int minIndent)
     {
         Advance(); // opening quote
         var buf = new List<byte>();
         var pendingBreaks = 0;
+
+        // Bytes contributed by an escape are content and must survive trailing-whitespace folding; the protected length
+        // marks how far into the buffer such bytes reach.
+        var protectedLength = 0;
 
         while (true)
         {
@@ -223,6 +257,7 @@ internal sealed partial class YamlParser
             var b = Peek();
             if (b == (byte)'"')
             {
+                FlushFold(buf, ref pendingBreaks);
                 Advance();
                 break;
             }
@@ -243,13 +278,18 @@ internal sealed partial class YamlParser
                 FlushFold(buf, ref pendingBreaks);
                 Advance();
                 ReadEscape(buf);
+                protectedLength = buf.Count;
                 continue;
             }
 
             if (b is (byte)'\n' or (byte)'\r')
             {
-                TrimTrailingInlineSpace(buf);
+                TrimTrailingInlineSpace(buf, protectedLength);
                 Advance();
+                if (IsBoundaryAt(_pos))
+                    throw ErrorAt(_pos, YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
+
+                RequireQuotedContinuationIndent(minIndent);
                 pendingBreaks++;
                 SkipSpaces();
                 continue;
@@ -291,9 +331,9 @@ internal sealed partial class YamlParser
             case (byte)'_': AppendRune(buf, 0xA0); break;
             case (byte)'L': AppendRune(buf, 0x2028); break;
             case (byte)'P': AppendRune(buf, 0x2029); break;
-            case (byte)'x': AppendRune(buf, ReadHex(2)); break;
-            case (byte)'u': AppendRune(buf, ReadHex(4)); break;
-            case (byte)'U': AppendRune(buf, ReadHex(8)); break;
+            case (byte)'x': AppendRune(buf, ValidateEscapeCodePoint(ReadHex(2))); break;
+            case (byte)'u': AppendRune(buf, ValidateEscapeCodePoint(ReadHex(4))); break;
+            case (byte)'U': AppendRune(buf, ValidateEscapeCodePoint(ReadHex(8))); break;
             default: throw Error(YamlResourceStrings.Format_Invalid_YamlInvalidEscape);
         }
     }
@@ -326,6 +366,23 @@ internal sealed partial class YamlParser
         }
 
         return value;
+    }
+
+    /// <summary>
+    /// Validates that a Unicode escape resolves to a legal scalar value, rejecting surrogates and out-of-range code
+    /// points.
+    /// </summary>
+    /// <param name="codePoint">The decoded escape code point.</param>
+    /// <returns>The validated code point.</returns>
+    /// <exception cref="YamlFormatException">
+    /// The code point is a surrogate (<c>U+D800</c>–<c>U+DFFF</c>) or exceeds <c>U+10FFFF</c>.
+    /// </exception>
+    private int ValidateEscapeCodePoint(int codePoint)
+    {
+        if (codePoint > 0x10FFFF || codePoint is >= 0xD800 and <= 0xDFFF)
+            throw Error(YamlResourceStrings.Format_Invalid_YamlInvalidEscape);
+
+        return codePoint;
     }
 
     /// <summary>
@@ -382,13 +439,47 @@ internal sealed partial class YamlParser
         pendingBreaks = 0;
     }
 
+
     /// <summary>
-    /// Removes trailing inline space and tab bytes from the buffer before a folded line break.
+    /// Validates the indentation of a quoted-scalar continuation line: it must use spaces only and be indented more
+    /// than the scalar's parent node.
+    /// </summary>
+    /// <param name="minIndent">The minimum content column for a continuation line, or a negative value to skip the check.</param>
+    /// <exception cref="YamlFormatException">A continuation line uses a tab for indentation or is under-indented.</exception>
+    private void RequireQuotedContinuationIndent(int minIndent)
+    {
+        if (minIndent <= 0)
+            return;
+
+        var p = _pos;
+        var spaces = 0;
+        while (p < _length && spaces < minIndent && _source[p] == (byte)' ')
+        {
+            p++;
+            spaces++;
+        }
+
+        // A blank line imposes no indentation requirement.
+        if (p >= _length || _source[p] is (byte)'\n' or (byte)'\r')
+            return;
+
+        // A tab within the required indentation, or too few indentation spaces, under-indents the continuation.
+        if (_source[p] == (byte)'\t' && spaces < minIndent)
+            throw ErrorAt(p, YamlResourceStrings.Format_Invalid_YamlTabIndentation);
+
+        if (spaces < minIndent)
+            throw ErrorAt(_pos, YamlResourceStrings.Format_Invalid_YamlInvalidIndentation);
+    }
+
+    /// <summary>
+    /// Removes trailing literal space and tab bytes from the buffer before a folded line break, without trimming below
+    /// the protected length (which marks bytes contributed by an escape and therefore part of the content).
     /// </summary>
     /// <param name="buf">The output byte buffer.</param>
-    private static void TrimTrailingInlineSpace(List<byte> buf)
+    /// <param name="protectedLength">The buffer length below which trimming must not reach.</param>
+    private static void TrimTrailingInlineSpace(List<byte> buf, int protectedLength)
     {
-        while (buf.Count > 0 && buf[^1] is (byte)' ' or (byte)'\t')
+        while (buf.Count > protectedLength && buf[^1] is (byte)' ' or (byte)'\t')
             buf.RemoveAt(buf.Count - 1);
     }
 
@@ -434,7 +525,9 @@ internal sealed partial class YamlParser
 
         SkipLineTrailing(); // consume the rest of the header line and its break
 
-        var lines = new List<string>();
+        // Each raw line records whether it was blank and its leading-space count, so a blank line's content beyond the
+        // (possibly later-detected) content indentation can be preserved once that indentation is known.
+        var raw = new List<(bool Blank, int Start, int End, int Spaces)>();
         var contentIndent = explicitIndent > 0 ? parentIndent + explicitIndent : -1;
 
         while (!AtEnd)
@@ -444,37 +537,69 @@ internal sealed partial class YamlParser
             while (p < _length && _source[p] == (byte)' ')
                 p++;
 
+            var spaces = p - lineStart;
             var blank = p >= _length || _source[p] is (byte)'\n' or (byte)'\r';
+
+            // A tab at or below the parent indentation cannot serve as block-scalar indentation.
+            if (!blank && _source[p] == (byte)'\t' && spaces <= parentIndent)
+                throw ErrorAt(p, YamlResourceStrings.Format_Invalid_YamlTabIndentation);
+
             if (!blank)
             {
-                var col = p - lineStart;
-                if (col == 0 && IsBoundaryAt(p))
+                // A line no more indented than the parent (including a document marker) ends the block scalar.
+                if (spaces <= parentIndent || (spaces == 0 && IsBoundaryAt(p)))
+                {
+                    _pos = lineStart;
                     break;
+                }
 
                 if (contentIndent < 0)
-                    contentIndent = col;
+                    contentIndent = spaces;
 
-                if (col < contentIndent)
+                if (spaces < contentIndent)
+                {
+                    _pos = lineStart;
                     break;
+                }
             }
 
             var lineEnd = p;
             while (lineEnd < _length && _source[lineEnd] is not ((byte)'\n' or (byte)'\r'))
                 lineEnd++;
 
-            if (blank)
-            {
-                lines.Add(string.Empty);
-            }
-            else
-            {
-                var cstart = lineStart + contentIndent;
-                lines.Add(Utf8(cstart, lineEnd - cstart));
-            }
+            raw.Add((blank, lineStart, lineEnd, spaces));
 
             _pos = lineEnd;
             if (!AtEnd)
                 Advance();
+        }
+
+        // A leading empty line must not be more indented than the detected content indentation.
+        if (contentIndent >= 0)
+        {
+            foreach (var (blank, start, _, spaces) in raw)
+            {
+                if (!blank)
+                    break;
+
+                if (spaces > contentIndent)
+                    throw ErrorAt(start, YamlResourceStrings.Format_Invalid_YamlInvalidBlockScalar);
+            }
+        }
+
+        var lines = new List<(bool Blank, string Text)>(raw.Count);
+        foreach (var (blank, start, end, spaces) in raw)
+        {
+            if (blank)
+            {
+                var extra = contentIndent >= 0 && spaces > contentIndent ? new string(' ', spaces - contentIndent) : string.Empty;
+                lines.Add((true, extra));
+            }
+            else
+            {
+                var cstart = start + contentIndent;
+                lines.Add((false, Utf8(cstart, end - cstart)));
+            }
         }
 
         var text = folded ? AssembleFolded(lines, chomping) : AssembleLiteral(lines, chomping);
@@ -504,15 +629,15 @@ internal sealed partial class YamlParser
     /// <summary>
     /// Assembles the collected lines of a literal block scalar and applies the chomping indicator.
     /// </summary>
-    /// <param name="lines">The content lines, with blank lines represented as empty strings.</param>
+    /// <param name="lines">The content lines, each flagged as blank and carrying its indentation-stripped text.</param>
     /// <param name="chomping">The chomping mode from the header.</param>
     /// <returns>The assembled scalar text.</returns>
-    private static string AssembleLiteral(List<string> lines, YamlBlockChomping chomping)
+    private static string AssembleLiteral(List<(bool Blank, string Text)> lines, YamlBlockChomping chomping)
     {
         var sb = new StringBuilder();
-        foreach (var line in lines)
+        foreach (var (_, text) in lines)
         {
-            sb.Append(line);
+            sb.Append(text);
             sb.Append('\n');
         }
 
@@ -522,44 +647,47 @@ internal sealed partial class YamlParser
     /// <summary>
     /// Assembles the collected lines of a folded block scalar and applies the chomping indicator.
     /// </summary>
-    /// <param name="lines">The content lines, with blank lines represented as empty strings.</param>
+    /// <param name="lines">The content lines, each flagged as blank and carrying its indentation-stripped text.</param>
     /// <param name="chomping">The chomping mode from the header.</param>
     /// <returns>The assembled scalar text.</returns>
-    private static string AssembleFolded(List<string> lines, YamlBlockChomping chomping)
+    private static string AssembleFolded(List<(bool Blank, string Text)> lines, YamlBlockChomping chomping)
     {
         var sb = new StringBuilder();
         var pending = 0;
         var any = false;
-        var moreIndentedPrev = false;
+        var prevMoreIndented = false;
 
-        foreach (var line in lines)
+        foreach (var (blank, text) in lines)
         {
-            if (line.Length == 0)
+            if (blank)
             {
                 pending++;
                 continue;
             }
 
-            var moreIndented = line[0] is ' ' or '\t';
+            var moreIndented = text.Length > 0 && text[0] is ' ' or '\t';
             if (any)
             {
-                if (pending > 0)
-                    sb.Append('\n', pending);
-                else if (moreIndented || moreIndentedPrev)
-                    sb.Append('\n');
+                if (moreIndented || prevMoreIndented)
+                    sb.Append('\n', pending + 1); // breaks adjacent to a more-indented line are all preserved
+                else if (pending > 0)
+                    sb.Append('\n', pending); // a run of blank lines preserves that many breaks, folding the join
                 else
-                    sb.Append(' ');
+                    sb.Append(' '); // an ordinary single line break folds to a space
+            }
+            else if (pending > 0)
+            {
+                sb.Append('\n', pending); // leading blank lines before the first content line
             }
 
-            sb.Append(line);
+            sb.Append(text);
             pending = 0;
             any = true;
-            moreIndentedPrev = moreIndented;
+            prevMoreIndented = moreIndented;
         }
 
         // Re-attach trailing line breaks for chomping: one for the final content line plus any trailing blanks.
-        var body = sb.ToString();
-        var withTrailing = body + new string('\n', pending + (any ? 1 : 0));
+        var withTrailing = sb.ToString() + new string('\n', pending + (any ? 1 : 0));
         return ApplyChomping(withTrailing, chomping);
     }
 

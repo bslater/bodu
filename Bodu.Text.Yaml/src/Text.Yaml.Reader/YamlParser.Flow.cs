@@ -13,6 +13,26 @@ namespace Bodu.Text.Yaml.Reader;
 internal sealed partial class YamlParser
 {
     /// <summary>
+    /// Parses a flow node entered from block context, establishing the continuation-indentation floor for the duration
+    /// of the flow.
+    /// </summary>
+    /// <param name="parentIndent">The indentation of the block node that owns the flow collection.</param>
+    /// <returns>The row index of the parsed node.</returns>
+    private int ParseFlowNodeFromBlock(int parentIndent)
+    {
+        var previous = _flowIndent;
+        _flowIndent = parentIndent;
+        try
+        {
+            return ParseFlowNode();
+        }
+        finally
+        {
+            _flowIndent = previous;
+        }
+    }
+
+    /// <summary>
     /// Parses a flow node, applying the nesting-depth guard before dispatching.
     /// </summary>
     /// <returns>The row index of the parsed node.</returns>
@@ -74,12 +94,21 @@ internal sealed partial class YamlParser
 
         while (true)
         {
+            // A leading or consecutive comma denotes a missing (empty) element, which is not permitted.
+            if (Peek() == (byte)',')
+                throw Error(YamlResourceStrings.Format_Invalid_YamlInvalidFlow);
+
             var element = ParseFlowNode();
+            var elementLine = _line;
             SkipFlowWhitespace();
 
             // An implicit single-pair mapping element: `key: value` inside the sequence.
             if (Peek() == (byte)':' && IsFlowColonStop(PeekAt(1)))
             {
+                // An implicit key and its ':' indicator must be on the same line.
+                if (_line != elementLine)
+                    throw Error(YamlResourceStrings.Format_Invalid_YamlMultilineImplicitKey);
+
                 Advance();
                 SkipFlowWhitespace();
                 var pair = NewContainer(YamlReaderNodeKind.Mapping, _rows[element].Offset, null, null);
@@ -133,6 +162,7 @@ internal sealed partial class YamlParser
     private int ParseFlowMapping()
     {
         var mapping = NewContainer(YamlReaderNodeKind.Mapping, _pos, null, null);
+        var keyIndex = new Dictionary<string, int>(StringComparer.Ordinal);
         Advance(); // '{'
         SkipFlowWhitespace();
 
@@ -144,7 +174,8 @@ internal sealed partial class YamlParser
 
         while (true)
         {
-            if (Peek() == (byte)'?')
+            // '?' introduces an explicit key only when followed by a separator; otherwise it begins a plain scalar.
+            if (Peek() == (byte)'?' && IsFlowColonStop(PeekAt(1)))
             {
                 Advance();
                 SkipFlowWhitespace();
@@ -168,10 +199,7 @@ internal sealed partial class YamlParser
                 value = NewScalar(YamlValueKind.Null, 0, YamlScalarStyle.Plain, _pos, null, null);
             }
 
-            var v = _rows[value];
-            v.Key = key;
-            _rows[value] = v;
-            AppendChild(mapping, value);
+            AddMappingChild(mapping, value, key, keyIndex);
 
             SkipFlowWhitespace();
             var c = Peek();
@@ -209,10 +237,14 @@ internal sealed partial class YamlParser
         var offset = _pos;
         var c = Peek();
         if (c == (byte)'"')
-            return NewString(ReadDoubleQuoted(), YamlScalarStyle.DoubleQuoted, offset, null, null);
+            return NewString(ReadDoubleQuoted(-1), YamlScalarStyle.DoubleQuoted, offset, null, null);
 
         if (c == (byte)'\'')
-            return NewString(ReadSingleQuoted(), YamlScalarStyle.SingleQuoted, offset, null, null);
+            return NewString(ReadSingleQuoted(-1), YamlScalarStyle.SingleQuoted, offset, null, null);
+
+        // A plain scalar in flow context cannot consist of a bare '-' followed by a separator or flow indicator.
+        if (Peek() == (byte)'-' && (IsBlankOrBreakOrEnd(PeekAt(1)) || PeekAt(1) is (byte)',' or (byte)'[' or (byte)']' or (byte)'{' or (byte)'}'))
+            throw Error(YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
 
         var start = _pos;
         var end = _pos;
@@ -225,7 +257,7 @@ internal sealed partial class YamlParser
             if (b == (byte)':' && IsFlowColonStop(PeekAt(1)))
                 break;
 
-            if (b == (byte)' ' && PeekAt(1) == (byte)'#')
+            if (b is (byte)' ' or (byte)'\t' && PeekAt(1) == (byte)'#')
                 break;
 
             _pos++;
@@ -253,6 +285,7 @@ internal sealed partial class YamlParser
     /// </summary>
     private void SkipFlowWhitespace()
     {
+        var crossed = false;
         while (!AtEnd)
         {
             var b = Peek();
@@ -265,11 +298,25 @@ internal sealed partial class YamlParser
             if (b is (byte)'\n' or (byte)'\r')
             {
                 Advance();
+                crossed = true;
+
+                // A tab cannot indent a non-empty flow continuation line (a blank tab-only line is immaterial).
+                if (Peek() == (byte)'\t')
+                {
+                    var q = _pos;
+                    while (q < _length && _source[q] is (byte)' ' or (byte)'\t')
+                        q++;
+
+                    if (q < _length && _source[q] is not ((byte)'\n' or (byte)'\r'))
+                        throw ErrorAt(_pos, YamlResourceStrings.Format_Invalid_YamlTabIndentation);
+                }
+
                 continue;
             }
 
             if (b == (byte)'#')
             {
+                RequireCommentSpacing();
                 while (!IsBreakOrEnd(Peek()))
                     _pos++;
 
@@ -277,6 +324,18 @@ internal sealed partial class YamlParser
             }
 
             break;
+        }
+
+        // A document-start or document-end marker cannot appear inside a flow collection.
+        if (crossed && CurrentColumn() == 0 && AtDocumentBoundary())
+            throw ErrorAt(_pos, YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
+
+        // Flow content continued onto a new line must be indented more than the owning block node; a closing
+        // delimiter may sit at the parent indentation.
+        if (crossed && _flowIndent >= 0 && !AtEnd && CurrentColumn() <= _flowIndent
+            && Peek() is not ((byte)']' or (byte)'}'))
+        {
+            throw ErrorAt(_pos, YamlResourceStrings.Format_Invalid_YamlInvalidIndentation);
         }
     }
 }

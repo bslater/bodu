@@ -55,11 +55,27 @@ namespace Bodu {
             }
         }
         /// <summary>
+        ///   Looks up a localized string similar to A mapping key must resolve to a scalar; complex sequence, mapping, or alias keys are not supported by this profile..
+        /// </summary>
+        internal static string Format_Invalid_YamlComplexKeyUnsupported {
+            get {
+                return ResourceManager.GetString("Format_Invalid_YamlComplexKeyUnsupported", resourceCulture);
+            }
+        }
+        /// <summary>
         ///   Looks up a localized string similar to A control character is not permitted in this context..
         /// </summary>
         internal static string Format_Invalid_YamlControlCharacter {
             get {
                 return ResourceManager.GetString("Format_Invalid_YamlControlCharacter", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to The alias '{0}' forms a cycle, which is not supported by this profile..
+        /// </summary>
+        internal static string Format_Invalid_YamlCyclicAlias {
+            get {
+                return ResourceManager.GetString("Format_Invalid_YamlCyclicAlias", resourceCulture);
             }
         }
         /// <summary>
@@ -191,6 +207,38 @@ namespace Bodu {
             }
         }
         /// <summary>
+        ///   Looks up a localized string similar to Unexpected content was found in this context..
+        /// </summary>
+        internal static string Format_Invalid_YamlUnexpectedContent {
+            get {
+                return ResourceManager.GetString("Format_Invalid_YamlUnexpectedContent", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to A comment must be preceded by whitespace..
+        /// </summary>
+        internal static string Format_Invalid_YamlCommentSpacing {
+            get {
+                return ResourceManager.GetString("Format_Invalid_YamlCommentSpacing", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to An implicit mapping key cannot span multiple lines..
+        /// </summary>
+        internal static string Format_Invalid_YamlMultilineImplicitKey {
+            get {
+                return ResourceManager.GetString("Format_Invalid_YamlMultilineImplicitKey", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to A node cannot carry more than one anchor..
+        /// </summary>
+        internal static string Format_Invalid_YamlMultipleAnchors {
+            get {
+                return ResourceManager.GetString("Format_Invalid_YamlMultipleAnchors", resourceCulture);
+            }
+        }
+        /// <summary>
         ///   Looks up a localized string similar to The alias '{0}' does not refer to a defined anchor..
         /// </summary>
         internal static string Format_Invalid_YamlUndefinedAlias {
@@ -271,11 +319,67 @@ namespace Bodu {
             }
         }
         /// <summary>
+        ///   Looks up a localized string similar to A mapping cannot be closed while a property name is awaiting its value..
+        /// </summary>
+        internal static string Op_Invalid_WriterPropertyNameWithoutValue {
+            get {
+                return ResourceManager.GetString("Op_Invalid_WriterPropertyNameWithoutValue", resourceCulture);
+            }
+        }
+        /// <summary>
         ///   Looks up a localized string similar to The type '{0}' maps more than one member to the YAML key '{1}'..
         /// </summary>
         internal static string Op_Invalid_DuplicateWireName {
             get {
                 return ResourceManager.GetString("Op_Invalid_DuplicateWireName", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to Serializer options cannot be changed after the options instance has been used to serialize or deserialize..
+        /// </summary>
+        internal static string Op_Invalid_OptionsReadOnly {
+            get {
+                return ResourceManager.GetString("Op_Invalid_OptionsReadOnly", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to The YAML key '{0}' does not map to any member of type '{1}'..
+        /// </summary>
+        internal static string Op_Invalid_YamlUnmappedMember {
+            get {
+                return ResourceManager.GetString("Op_Invalid_YamlUnmappedMember", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to The scalar value cannot be converted to the requested type '{0}'..
+        /// </summary>
+        internal static string Op_Invalid_YamlValueConversion {
+            get {
+                return ResourceManager.GetString("Op_Invalid_YamlValueConversion", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to The floating-point value '{0}' cannot be deserialized into an integer target without loss of precision..
+        /// </summary>
+        internal static string Op_Invalid_YamlFloatNotIntegral {
+            get {
+                return ResourceManager.GetString("Op_Invalid_YamlFloatNotIntegral", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to The numeric value '{0}' is outside the range of the target type '{1}'..
+        /// </summary>
+        internal static string Op_Invalid_YamlNumberOutOfRange {
+            get {
+                return ResourceManager.GetString("Op_Invalid_YamlNumberOutOfRange", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to The value '{0}' cannot be converted to a single character because it is not exactly one Unicode scalar value..
+        /// </summary>
+        internal static string Op_Invalid_YamlCharLength {
+            get {
+                return ResourceManager.GetString("Op_Invalid_YamlCharLength", resourceCulture);
             }
         }
         /// <summary>

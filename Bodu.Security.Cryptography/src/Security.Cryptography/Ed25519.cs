@@ -368,6 +368,11 @@ public sealed partial class Ed25519
         if (rPoint.IsSmallOrder() || publicPoint.IsSmallOrder())
             return false;
 
+        // Small-order R or A would let a torsion component be added without changing acceptance under the cofactorless
+        // equation; rejecting both keeps the strict policy self-consistent regardless of how the public key arrived.
+        if (rPoint.IsSmallOrder() || publicPoint.IsSmallOrder())
+            return false;
+
         // k = SHA-512(R ‖ A ‖ M) mod L; accept when [S]B == R + [k]A (cofactorless).
         Span<byte> digest = stackalloc byte[64];
         using (var hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA512))

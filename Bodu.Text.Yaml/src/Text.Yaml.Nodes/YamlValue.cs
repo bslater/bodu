@@ -84,7 +84,8 @@ public sealed class YamlValue : YamlNode
         }
         catch (Exception ex) when (ex is InvalidCastException or FormatException or OverflowException)
         {
-            throw new InvalidOperationException();
+            throw new InvalidOperationException(
+                string.Format(CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_YamlValueConversion, typeof(T)), ex);
         }
     }
 
