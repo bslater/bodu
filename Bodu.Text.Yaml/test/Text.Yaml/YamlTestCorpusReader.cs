@@ -7,20 +7,27 @@
 namespace Bodu.Text.Yaml;
 
 /// <summary>
-/// Reads the vendored <c>yaml-test-suite</c> corpus, joining each vector directory with the repository's
-/// <c>classification.tsv</c> to produce a <see cref="YamlTestVector" /> the conformance run can execute.
+/// Reads the <c>yaml/yaml-test-suite</c> corpus — linked into the repository as the <c>yaml-test-suite</c> git
+/// submodule — joining each upstream vector directory with the repository's own <c>classification.tsv</c> to produce a
+/// <see cref="YamlTestVector" /> the conformance run can execute.
 /// </summary>
 /// <remarks>
-/// The corpus mirrors the upstream layout (a directory per vector containing <c>===</c>, <c>in.yaml</c>, and the
-/// optional <c>in.json</c> / <c>error</c> / <c>test.event</c> / <c>out.yaml</c> / <c>emit.yaml</c> files), copied to
-/// the test output by the project's <c>YamlTestCorpus\**</c> glob.
+/// The submodule mirrors the upstream layout (a directory per vector containing <c>===</c>, <c>in.yaml</c>, and the
+/// optional <c>in.json</c> / <c>error</c> / <c>test.event</c> / <c>out.yaml</c> / <c>emit.yaml</c> files). The submodule
+/// vectors and the Bodu classification manifest are copied to the test output by the project's <c>None</c> globs; run
+/// <c>git submodule update --init</c> to populate the submodule before the Regression tier.
 /// </remarks>
 internal static class YamlTestCorpusReader
 {
     /// <summary>
-    /// The root directory of the vendored corpus within the test output.
+    /// The root directory of the yaml-test-suite vectors (the submodule) within the test output.
     /// </summary>
-    internal static readonly string CorpusRoot = Path.Combine(AppContext.BaseDirectory, "YamlTestCorpus");
+    internal static readonly string VectorRoot = Path.Combine(AppContext.BaseDirectory, "yaml-test-suite");
+
+    /// <summary>
+    /// The directory holding the Bodu profile classification manifest within the test output.
+    /// </summary>
+    internal static readonly string ManifestRoot = Path.Combine(AppContext.BaseDirectory, "YamlTestCorpus");
 
     /// <summary>
     /// Reads the classification manifest rows.
@@ -28,7 +35,7 @@ internal static class YamlTestCorpusReader
     /// <returns>The manifest rows as identifier, suite kind, and classification triples.</returns>
     internal static IEnumerable<(string Id, string Kind, string Category)> ReadManifest()
     {
-        foreach (var line in File.ReadLines(Path.Combine(CorpusRoot, "classification.tsv")))
+        foreach (var line in File.ReadLines(Path.Combine(ManifestRoot, "classification.tsv")))
         {
             if (line.Length == 0)
                 continue;
@@ -53,6 +60,14 @@ internal static class YamlTestCorpusReader
     }
 
     /// <summary>
+    /// Returns the absolute directory of a vector within the submodule.
+    /// </summary>
+    /// <param name="id">The vector identifier (its path relative to the corpus root).</param>
+    /// <returns>The vector directory path.</returns>
+    internal static string VectorDirectory(string id) =>
+        Path.Combine(VectorRoot, id.Replace('/', Path.DirectorySeparatorChar));
+
+    /// <summary>
     /// Loads a single vector by identifier, reading its description, input, and expectation files.
     /// </summary>
     /// <param name="id">The vector identifier (its path relative to the corpus root).</param>
@@ -61,7 +76,7 @@ internal static class YamlTestCorpusReader
     /// <returns>The loaded vector.</returns>
     internal static YamlTestVector Load(string id, string kind, string category)
     {
-        var dir = Path.Combine(CorpusRoot, id.Replace('/', Path.DirectorySeparatorChar));
+        var dir = VectorDirectory(id);
 
         var descriptionPath = Path.Combine(dir, "===");
         var description = File.Exists(descriptionPath) ? File.ReadAllText(descriptionPath).Trim() : string.Empty;

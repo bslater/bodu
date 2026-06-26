@@ -54,7 +54,13 @@ This profile aligns with the Bodu TOML / Bencode and `System.Text.Json` architec
 
 ### Conformance corpus
 
-The Regression test tier runs the vendored `yaml/yaml-test-suite` (pinned to a released `data-YYYY-MM-DD` tag in `test/YamlTestCorpus/provenance.json`) under a classification manifest. Every case is classified `SupportedPass`, `SupportedParseOnly`, `SupportedFail`, or `UnsupportedFeatureRejected`; a governance suite asserts the classification stays exhaustive with **zero known gaps**, supported-pass cases match their JSON expectation and round-trip through the writer, and every profile-unsupported case is rejected for a specific, recognized reason. The corpus can be refreshed with `tools/Update-YamlTestCorpus.ps1`.
+The `yaml/yaml-test-suite` corpus is linked into the repository as the **`yaml-test-suite` git submodule** (under `Bodu.Text.Yaml/test/`, pinned to a released `data-YYYY-MM-DD` commit). Initialize it before running the Regression tier:
+
+```shell
+git submodule update --init Bodu.Text.Yaml/test/yaml-test-suite
+```
+
+The Regression test tier reads each upstream vector through `YamlTestCorpusReader`, which joins it with the repository's own `test/YamlTestCorpus/classification.tsv` into a `YamlTestVector` KAT. Every vector is classified `SupportedPass`, `SupportedParseOnly`, `SupportedFail`, or `UnsupportedFeatureRejected`; a governance suite asserts the classification stays exhaustive with **zero known gaps**, supported-pass vectors match their JSON expectation and round-trip through the writer, and every profile-unsupported vector is rejected for a specific, recognized reason. To move to a newer suite release, check out the new tag inside the submodule, commit the updated pointer, and reclassify any added vectors.
 
 > **Reader note.** `Utf8YamlReader` exposes a forward-only token surface like `System.Text.Json.Utf8JsonReader`, but it is **buffered**: the constructor parses the whole document into an in-memory node store and `Read()` walks it. It is the analogue of the TOML library's `TomlDocumentReader` cursor, not the streaming `Utf8TomlReader` scanner — YAML's indentation context, back-referencing aliases, and merge keys cannot be resolved in a single forward pass.
 

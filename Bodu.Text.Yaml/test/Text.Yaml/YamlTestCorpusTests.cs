@@ -20,11 +20,6 @@ namespace Bodu.Text.Yaml;
 public sealed partial class YamlTestCorpusTests
 {
     /// <summary>
-    /// The root directory of the vendored corpus within the test output.
-    /// </summary>
-    private static readonly string CorpusRoot = YamlTestCorpusReader.CorpusRoot;
-
-    /// <summary>
     /// Yields the corpus vectors classified as supported-valid with a JSON expectation.
     /// </summary>
     /// <returns>One row per supported-valid vector.</returns>
