@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Kat;
+
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -41,18 +43,54 @@ public sealed partial class Ed25519Tests
     }
 
     /// <summary>
+    /// Yields the known small-order Ed25519 R encodings, each paired with the expected
+    /// <see cref="Ed25519.VerifyData(ReadOnlySpan{byte}, ReadOnlySpan{byte})" /> result of <see langword="false" />.
+    /// </summary>
+    /// <returns>One <see cref="BinaryKat{TInput, TExpected}" /> row per small-order R encoding.</returns>
+    private static IEnumerable<object[]> SmallOrderRVectors()
+    {
+        (string Name, string Hex)[] points =
+        {
+            ("order 1 (identity)", "0100000000000000000000000000000000000000000000000000000000000000"),
+            ("order 2", "ecffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f"),
+            ("order 8", "26e8958fc2b227b045c3f489f2ef98f0d5dfac05d3c63339b13802886d53fc05"),
+        };
+
+        foreach ((string name, string hex) in points)
+        {
+            yield return new object[] { new BinaryKat<byte[], bool>(name, Convert.FromHexString(hex), false) };
+        }
+    }
+
+    /// <summary>
+    /// Yields the non-canonical Ed25519 S encodings at or above the group order L, each paired with the expected
+    /// <see cref="Ed25519.VerifyData(ReadOnlySpan{byte}, ReadOnlySpan{byte})" /> result of <see langword="false" />.
+    /// </summary>
+    /// <returns>One <see cref="BinaryKat{TInput, TExpected}" /> row per non-canonical S encoding.</returns>
+    private static IEnumerable<object[]> NonCanonicalSVectors()
+    {
+        (string Name, string Hex)[] values =
+        {
+            ("S = L", "edd3f55c1a631258d69cf7a2def9de1400000000000000000000000000000010"),
+            ("S = L + 1", "eed3f55c1a631258d69cf7a2def9de1400000000000000000000000000000010"),
+        };
+
+        foreach ((string name, string hex) in values)
+        {
+            yield return new object[] { new BinaryKat<byte[], bool>(name, Convert.FromHexString(hex), false) };
+        }
+    }
+
+    /// <summary>
     /// Verifies that a signature whose commitment R is a small-order point is rejected. Under the cofactorless
     /// verification equation a small-order R could otherwise contribute a torsion component without changing the
     /// arithmetic outcome, so the strict policy rejects it outright.
     /// </summary>
+    /// <param name="vector">The small-order R KAT vector under test.</param>
     [TestMethod]
-    [DataRow("order 1 (identity)", "0100000000000000000000000000000000000000000000000000000000000000")]
-    [DataRow("order 2", "ecffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f")]
-    [DataRow("order 8", "26e8958fc2b227b045c3f489f2ef98f0d5dfac05d3c63339b13802886d53fc05")]
-    public void VerifyData_WhenSignatureRIsSmallOrder_ShouldReturnFalse(string testName, string smallOrderRHex)
+    [DynamicData(nameof(SmallOrderRVectors), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void VerifyData_WhenSignatureRIsSmallOrder_ShouldReturnFalse(BinaryKat<byte[], bool> vector)
     {
-        _ = testName;
-
         using var algorithm = new Ed25519();
         algorithm.GenerateKey();
         byte[] message = new byte[] { 4, 2 };
@@ -60,32 +98,28 @@ public sealed partial class Ed25519Tests
         // Replace R with a small-order encoding while keeping a canonical S, so rejection is driven by the
         // small-order check rather than a malformed S or length error.
         byte[] signature = algorithm.SignData(message);
-        Convert.FromHexString(smallOrderRHex).CopyTo(signature, 0);
+        vector.Input.CopyTo(signature, 0);
 
-        Assert.IsFalse(algorithm.VerifyData(message, signature));
+        Assert.AreEqual(vector.Expected, algorithm.VerifyData(message, signature));
     }
 
     /// <summary>
     /// Verifies that a signature whose S component is replaced by a value at or above the group order L is rejected,
     /// because RFC 8032 requires 0 ≤ S &lt; L.
     /// </summary>
-    /// <param name="testName">The human-readable scenario name.</param>
-    /// <param name="sComponentHex">The 32-byte little-endian S value spliced into the signature.</param>
+    /// <param name="vector">The non-canonical S KAT vector under test.</param>
     [TestMethod]
-    [DataRow("S = L", "edd3f55c1a631258d69cf7a2def9de1400000000000000000000000000000010")]
-    [DataRow("S = L + 1", "eed3f55c1a631258d69cf7a2def9de1400000000000000000000000000000010")]
-    public void VerifyData_WhenSComponentIsAtOrAboveGroupOrder_ShouldReturnFalse(string testName, string sComponentHex)
+    [DynamicData(nameof(NonCanonicalSVectors), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void VerifyData_WhenSComponentIsAtOrAboveGroupOrder_ShouldReturnFalse(BinaryKat<byte[], bool> vector)
     {
-        _ = testName;
-
         using var algorithm = new Ed25519();
         algorithm.GenerateKey();
         byte[] message = new byte[] { 1, 2, 3 };
 
         byte[] signature = algorithm.SignData(message);
-        Convert.FromHexString(sComponentHex).CopyTo(signature, 32);
+        vector.Input.CopyTo(signature, 32);
 
-        Assert.IsFalse(algorithm.VerifyData(message, signature));
+        Assert.AreEqual(vector.Expected, algorithm.VerifyData(message, signature));
     }
 
     /// <summary>

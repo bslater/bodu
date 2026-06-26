@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Security.Cryptography;
+using Bodu.Test.Kat;
 
 namespace Bodu.Security.Cryptography;
 
@@ -16,11 +17,10 @@ namespace Bodu.Security.Cryptography;
 public sealed partial class X25519Tests
 {
     /// <summary>
-    /// Verifies that the span-writing overload produces the same shared secret as the allocating overload and
-    /// rejects destinations of any other length.
+    /// Verifies that the span-writing overload produces the same shared secret as the allocating overload.
     /// </summary>
     [TestMethod]
-    public void DeriveSharedSecret_WhenUsingSpanOverload_ShouldMatchAllocatingOverloadAndRejectWrongDestinationLengths()
+    public void DeriveSharedSecret_WhenUsingSpanOverload_ShouldMatchAllocatingOverload()
     {
         using var algorithm = new X25519();
         algorithm.ImportPrivateKey(Convert.FromHexString("77076d0a7318a57d3c16c17251b26645df4c2f87ebc0992ab177fba51db92c2a"));
@@ -29,10 +29,34 @@ public sealed partial class X25519Tests
         byte[] allocating = algorithm.DeriveSharedSecret(peer);
         byte[] spanResult = new byte[X25519.SharedSecretSizeInBytes];
         algorithm.DeriveSharedSecret(peer, spanResult);
-        CollectionAssert.AreEqual(allocating, spanResult);
 
-        Assert.ThrowsExactly<ArgumentException>(() => { algorithm.DeriveSharedSecret(peer, new byte[31]); });
-        Assert.ThrowsExactly<ArgumentException>(() => { algorithm.DeriveSharedSecret(peer, new byte[33]); });
+        CollectionAssert.AreEqual(allocating, spanResult);
+    }
+
+    /// <summary>
+    /// Verifies that the span-writing overload rejects a destination shorter than the shared-secret size.
+    /// </summary>
+    [TestMethod]
+    public void DeriveSharedSecret_WhenDestinationTooShort_ShouldThrowArgumentException()
+    {
+        using var algorithm = new X25519();
+        algorithm.ImportPrivateKey(Convert.FromHexString("77076d0a7318a57d3c16c17251b26645df4c2f87ebc0992ab177fba51db92c2a"));
+        byte[] peer = Convert.FromHexString("de9edb7d7b7dc1b4d35b61c2ece435373f8343c85b78674dadfc7e146f882b4f");
+
+        Assert.ThrowsExactly<ArgumentException>(() => { algorithm.DeriveSharedSecret(peer, new byte[X25519.SharedSecretSizeInBytes - 1]); });
+    }
+
+    /// <summary>
+    /// Verifies that the span-writing overload rejects a destination longer than the shared-secret size.
+    /// </summary>
+    [TestMethod]
+    public void DeriveSharedSecret_WhenDestinationTooLong_ShouldThrowArgumentException()
+    {
+        using var algorithm = new X25519();
+        algorithm.ImportPrivateKey(Convert.FromHexString("77076d0a7318a57d3c16c17251b26645df4c2f87ebc0992ab177fba51db92c2a"));
+        byte[] peer = Convert.FromHexString("de9edb7d7b7dc1b4d35b61c2ece435373f8343c85b78674dadfc7e146f882b4f");
+
+        Assert.ThrowsExactly<ArgumentException>(() => { algorithm.DeriveSharedSecret(peer, new byte[X25519.SharedSecretSizeInBytes + 1]); });
     }
 
     /// <summary>
@@ -76,28 +100,53 @@ public sealed partial class X25519Tests
     }
 
     /// <summary>
-    /// Verifies that <see cref="X25519.IsLowOrderPoint" /> flags every known low-order u-coordinate and that those same
-    /// coordinates are rejected by <see cref="X25519.DeriveSharedSecret(ReadOnlySpan{byte})" />, cross-checking the
-    /// screening table against the actual all-zero behaviour.
+    /// Yields the known low-order X25519 u-coordinates from RFC 7748 §6.1, each paired with the expected
+    /// <see cref="X25519.IsLowOrderPoint" /> result of <see langword="true" />.
     /// </summary>
-    [TestMethod]
-    [DataRow("u = 0", "0000000000000000000000000000000000000000000000000000000000000000")]
-    [DataRow("u = 1", "0100000000000000000000000000000000000000000000000000000000000000")]
-    [DataRow("order 8 (a)", "e0eb7a7c3b41b8ae1656e3faf19fc46ada098deb9c32b1fd866205165f49b800")]
-    [DataRow("order 8 (b)", "5f9c95bca3508c24b1d0b1559c83ef5b04445cc4581c8e86d8224eddd09f1157")]
-    [DataRow("p - 1", "ecffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f")]
-    [DataRow("p", "edffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f")]
-    [DataRow("p + 1", "eeffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f")]
-    public void IsLowOrderPoint_WhenPointIsLowOrder_ShouldReturnTrueAndDeriveRejects(string testName, string pointHex)
+    /// <returns>One <see cref="BinaryKat{TInput, TExpected}" /> row per known low-order coordinate.</returns>
+    private static IEnumerable<object[]> LowOrderPointVectors()
     {
-        _ = testName;
-        byte[] point = Convert.FromHexString(pointHex);
+        (string Name, string Hex)[] points =
+        {
+            ("u = 0", "0000000000000000000000000000000000000000000000000000000000000000"),
+            ("u = 1", "0100000000000000000000000000000000000000000000000000000000000000"),
+            ("order 8 (a)", "e0eb7a7c3b41b8ae1656e3faf19fc46ada098deb9c32b1fd866205165f49b800"),
+            ("order 8 (b)", "5f9c95bca3508c24b1d0b1559c83ef5b04445cc4581c8e86d8224eddd09f1157"),
+            ("p - 1", "ecffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f"),
+            ("p", "edffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f"),
+            ("p + 1", "eeffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f"),
+        };
 
-        Assert.IsTrue(X25519.IsLowOrderPoint(point));
+        foreach ((string name, string hex) in points)
+        {
+            yield return new object[] { new BinaryKat<byte[], bool>(name, Convert.FromHexString(hex), true) };
+        }
+    }
 
+    /// <summary>
+    /// Verifies that <see cref="X25519.IsLowOrderPoint" /> flags every known low-order u-coordinate.
+    /// </summary>
+    /// <param name="vector">The low-order point KAT vector under test.</param>
+    [TestMethod]
+    [DynamicData(nameof(LowOrderPointVectors), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void IsLowOrderPoint_WhenPointIsLowOrder_ShouldReturnTrue(BinaryKat<byte[], bool> vector)
+    {
+        Assert.AreEqual(vector.Expected, X25519.IsLowOrderPoint(vector.Input));
+    }
+
+    /// <summary>
+    /// Verifies that deriving a shared secret against every known low-order u-coordinate is rejected with
+    /// <see cref="CryptographicException" /> under the strict RFC 7748 §6.1 all-zero check.
+    /// </summary>
+    /// <param name="vector">The low-order point KAT vector under test.</param>
+    [TestMethod]
+    [DynamicData(nameof(LowOrderPointVectors), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void DeriveSharedSecret_WhenPeerKeyIsKnownLowOrderPoint_ShouldThrowCryptographicException(BinaryKat<byte[], bool> vector)
+    {
         using var algorithm = new X25519();
         algorithm.GenerateKey();
-        Assert.ThrowsExactly<CryptographicException>(() => { _ = algorithm.DeriveSharedSecret(point); });
+
+        Assert.ThrowsExactly<CryptographicException>(() => { _ = algorithm.DeriveSharedSecret(vector.Input); });
     }
 
     /// <summary>
