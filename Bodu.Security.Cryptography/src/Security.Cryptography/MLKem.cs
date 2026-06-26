@@ -58,7 +58,7 @@ namespace Bodu.Security.Cryptography;
 ///]]>
 /// </code>
 /// </example>
-public abstract class MLKem
+public abstract partial class MLKem
     : AsymmetricAlgorithm
 {
     /// <summary>The size, in bytes, of the shared secret produced by encapsulation and decapsulation.</summary>

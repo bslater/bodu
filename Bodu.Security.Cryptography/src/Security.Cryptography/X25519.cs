@@ -48,8 +48,8 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// <strong>Key formats.</strong> Only the raw RFC 7748 32-byte key encodings are supported via
 /// <see cref="ImportPrivateKey" />, <see cref="ImportPublicKey" />, <see cref="ExportPrivateKey" />, and
-/// <see cref="ExportPublicKey" />. The PKCS#8 / SubjectPublicKeyInfo import and export members inherited from
-/// <see cref="AsymmetricAlgorithm" /> are not implemented and retain their base (throwing) behavior.
+/// <see cref="ExportPublicKey" />. The PKCS#8 / SubjectPublicKeyInfo / PEM / XML import and export members inherited
+/// from <see cref="AsymmetricAlgorithm" /> are not supported and throw <see cref="NotSupportedException" />.
 /// </para>
 /// <para>
 /// Scalar multiplication runs in constant time with respect to the private key. Private key material is zeroed when the
@@ -71,7 +71,7 @@ namespace Bodu.Security.Cryptography;
 ///]]>
 /// </code>
 /// </example>
-public sealed class X25519
+public sealed partial class X25519
     : AsymmetricAlgorithm
 {
     /// <summary>The size, in bytes, of an X25519 private key and public key (32 bytes each).</summary>
@@ -85,6 +85,18 @@ public sealed class X25519
 
     /// <summary>The legal key sizes reported through <see cref="AsymmetricAlgorithm.LegalKeySizes" />, fixed at 256 bits.</summary>
     private static readonly KeySizes[] s_legalKeySizes = [new KeySizes(KeySizeBits, KeySizeBits, 0)];
+
+    /// <summary>The canonical encodings of the Curve25519 u-coordinates whose order divides the cofactor, in the form used by <see cref="IsLowOrderPoint" />. The ignored high bit of byte 31 is cleared in each entry so the check can mask the input identically; the list matches the small-order table used by reference implementations such as libsodium (0, 1, the two order-8 u-coordinates, and the non-reduced encodings of p − 1, p, and p + 1).</summary>
+    private static readonly byte[][] s_lowOrderPoints =
+    [
+        Convert.FromHexString("0000000000000000000000000000000000000000000000000000000000000000"),
+        Convert.FromHexString("0100000000000000000000000000000000000000000000000000000000000000"),
+        Convert.FromHexString("e0eb7a7c3b41b8ae1656e3faf19fc46ada098deb9c32b1fd866205165f49b800"),
+        Convert.FromHexString("5f9c95bca3508c24b1d0b1559c83ef5b04445cc4581c8e86d8224eddd09f1157"),
+        Convert.FromHexString("ecffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f"),
+        Convert.FromHexString("edffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f"),
+        Convert.FromHexString("eeffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f"),
+    ];
 
     /// <summary>The raw 32-byte private key, or <see langword="null" /> when no private key is set.</summary>
     private byte[]? _privateKey;
@@ -199,8 +211,17 @@ public sealed class X25519
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     /// <exception cref="ArgumentException"><paramref name="publicKey" /> is not exactly 32 bytes long.</exception>
     /// <remarks>
+    /// <para>
+    /// This import is purely syntactic: it validates only the 32-byte length and stores the u-coordinate verbatim. It
+    /// does not prove the point is contributory or reject low-order points — RFC 7748 defines X25519 over u-coordinates
+    /// and places the all-zero-output check at key-agreement time.
+    /// <see cref="DeriveSharedSecret(ReadOnlySpan{byte})" /> performs that mandatory rejection;
+    /// <see cref="IsLowOrderPoint" /> is available for callers that want to screen a peer key before agreement.
+    /// </para>
+    /// <para>
     /// Any private key previously held by the instance is zeroed and discarded, leaving a public-only instance whose
     /// key can be exported but that cannot derive shared secrets.
+    /// </para>
     /// </remarks>
     public void ImportPublicKey(ReadOnlySpan<byte> publicKey)
     {
@@ -209,6 +230,47 @@ public sealed class X25519
 
         CryptographyHelper.ClearAndNullify(ref _privateKey);
         _publicKey = publicKey.ToArray();
+    }
+
+    /// <summary>
+    /// Determines whether <paramref name="publicKey" /> is one of the known low-order Curve25519 u-coordinates, for
+    /// which X25519 yields an all-zero shared secret that an observer can predict without the private key.
+    /// </summary>
+    /// <param name="publicKey">The 32-byte peer u-coordinate to screen.</param>
+    /// <returns>
+    /// <see langword="true" /> when the encoding (ignoring its high bit, per RFC 7748) is a low-order point; otherwise,
+    /// <see langword="false" />.
+    /// </returns>
+    /// <exception cref="ArgumentException"><paramref name="publicKey" /> is not exactly 32 bytes long.</exception>
+    /// <remarks>
+    /// This is an optional preflight for callers that prefer to reject a peer key before agreement, for example to
+    /// avoid even attempting a derivation. It is not required for safety:
+    /// <see cref="DeriveSharedSecret(ReadOnlySpan{byte})" /> already rejects the all-zero result that these points
+    /// produce. The comparison clears the ignored bit 255 of the input so non-canonical high-bit-set encodings of the
+    /// same coordinate are also detected.
+    /// </remarks>
+    public static bool IsLowOrderPoint(ReadOnlySpan<byte> publicKey)
+    {
+        CryptographyThrowHelper.ThrowIfInvalidRawKeyLength(publicKey, KeySizeInBytes, "X25519 public");
+
+        Span<byte> masked = stackalloc byte[KeySizeInBytes];
+        publicKey.CopyTo(masked);
+        masked[31] &= 0x7f;
+
+        int found = 0;
+        foreach (byte[] point in s_lowOrderPoints)
+        {
+            int difference = 0;
+            for (int i = 0; i < KeySizeInBytes; i++)
+                difference |= masked[i] ^ point[i];
+
+            // difference == 0 → ((difference - 1) >> 31) is all ones; accumulate without a data-dependent branch.
+            found |= ((difference - 1) >> 31) & 1;
+        }
+
+        CryptographyHelper.Clear(masked);
+
+        return found != 0;
     }
 
     /// <summary>

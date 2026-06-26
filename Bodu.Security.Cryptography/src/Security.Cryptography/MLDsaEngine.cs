@@ -187,8 +187,13 @@ internal static partial class MLDsaEngine
             SampleInBall(parameters, commitmentHash, c);
             Ntt(c);
 
-            // z = y + NTT⁻¹(ĉ ∘ ŝ₁); reject when ‖z‖∞ ≥ γ₁ − β.
+            // Each restart attempt computes z, r₀, and the hints in full and makes a single accept-or-restart decision
+            // at the end. The number of restarts is public by design (FIPS 204 §3.5), but the work within one attempt is
+            // kept independent of which check ultimately fails so a failed attempt is not distinguishable, by the work it
+            // performs, from any other.
             bool rejected = false;
+
+            // z = y + NTT⁻¹(ĉ ∘ ŝ₁); reject when ‖z‖∞ ≥ γ₁ − β.
             for (int r = 0; r < l; r++)
             {
                 MultiplyNtt(c, s1Hat[r], product);
@@ -200,7 +205,7 @@ internal static partial class MLDsaEngine
             }
 
             // r₀ = LowBits(w − NTT⁻¹(ĉ ∘ ŝ₂)); reject when ‖r₀‖∞ ≥ γ₂ − β.
-            for (int i = 0; i < k && !rejected; i++)
+            for (int i = 0; i < k; i++)
             {
                 MultiplyNtt(c, s2Hat[i], product);
                 InvNtt(product);
@@ -217,12 +222,9 @@ internal static partial class MLDsaEngine
                 rejected |= lowNorm >= parameters.Gamma2 - parameters.Beta;
             }
 
-            if (rejected)
-                continue;
-
             // h = MakeHint(−⟨ĉ ∘ t̂₀⟩, w − cs₂ + ct₀); reject when ‖ct₀‖∞ ≥ γ₂ or the hint weight exceeds ω.
             int hintWeight = 0;
-            for (int i = 0; i < k && !rejected; i++)
+            for (int i = 0; i < k; i++)
             {
                 MultiplyNtt(c, t0Hat[i], product);
                 InvNtt(product);
@@ -382,7 +384,9 @@ internal static partial class MLDsaEngine
 
         int k = parameters.K;
 
-        DecodePrivateKey(
+        // s₁/s₂ are rejected here when packed outside [−η, η]; t₀ spans the full d-bit range, so it is validated below
+        // by comparing the decoded low bits against those recomputed from s₁/s₂.
+        bool valid = DecodePrivateKey(
             parameters, privateKey,
             out ReadOnlySpan<byte> rho, out _, out ReadOnlySpan<byte> tr, out int[][]? s1, out int[][]? s2, out int[][]? t0);
 
@@ -395,13 +399,24 @@ internal static partial class MLDsaEngine
         int[] t1 = new int[N];
         rho.CopyTo(publicKey[..32]);
 
+        bool t0Matches = true;
         for (int i = 0; i < k; i++)
         {
             InvNtt(t[i]);
             AddInto(t[i], s2[i]);
 
             for (int j = 0; j < N; j++)
-                Power2Round(t[i][j], out t1[j], out _);
+            {
+                Power2Round(t[i][j], out t1[j], out int recomputedT0);
+
+                // The encoded t₀ stores the centered low bits folded into [0, q); unfold before comparing. The scan has
+                // no early exit so a corrupted coefficient is not revealed by timing.
+                int decodedT0 = t0[i][j];
+                if (decodedT0 > (Q - 1) / 2)
+                    decodedT0 -= Q;
+
+                t0Matches &= decodedT0 == recomputedT0;
+            }
 
             SimpleBitPack(10, t1, publicKey.Slice(32 + (i * 320), 320));
         }
@@ -420,7 +435,7 @@ internal static partial class MLDsaEngine
         ClearPolyVector(t0);
         ClearPolyVector(t);
 
-        return matches;
+        return valid & t0Matches & matches;
     }
 
     /// <summary>
@@ -583,7 +598,12 @@ internal static partial class MLDsaEngine
     /// <param name="s1">Receives the ℓ decoded s₁ polynomials.</param>
     /// <param name="s2">Receives the k decoded s₂ polynomials.</param>
     /// <param name="t0">Receives the k decoded t₀ polynomials.</param>
-    private static void DecodePrivateKey(
+    /// <returns>
+    /// <see langword="true" /> when every s₁/s₂ coefficient is packed within its canonical [−η, η] range; otherwise,
+    /// <see langword="false" />. The t₀ packing spans the full d-bit range, so its consistency is validated separately
+    /// by recomputation in <see cref="TryDerivePublicKey" />.
+    /// </returns>
+    private static bool DecodePrivateKey(
         MLDsaParameters parameters,
         ReadOnlySpan<byte> privateKey,
         out ReadOnlySpan<byte> rho,
@@ -596,23 +616,28 @@ internal static partial class MLDsaEngine
         int k = parameters.K;
         int l = parameters.L;
         int etaBytes = 32 * parameters.EtaBits;
+        int maxEncoded = 2 * parameters.Eta;
 
         rho = privateKey[..32];
         capK = privateKey.Slice(32, 32);
         tr = privateKey.Slice(64, 64);
 
+        bool valid = true;
+
         s1 = CreatePolyVector(l);
         for (int r = 0; r < l; r++)
-            BitUnpackSigned(parameters.EtaBits, parameters.Eta, privateKey.Slice(128 + (r * etaBytes), etaBytes), s1[r]);
+            valid &= TryBitUnpackSigned(parameters.EtaBits, parameters.Eta, maxEncoded, privateKey.Slice(128 + (r * etaBytes), etaBytes), s1[r]);
 
         s2 = CreatePolyVector(k);
         for (int r = 0; r < k; r++)
-            BitUnpackSigned(parameters.EtaBits, parameters.Eta, privateKey.Slice(128 + ((l + r) * etaBytes), etaBytes), s2[r]);
+            valid &= TryBitUnpackSigned(parameters.EtaBits, parameters.Eta, maxEncoded, privateKey.Slice(128 + ((l + r) * etaBytes), etaBytes), s2[r]);
 
         t0 = CreatePolyVector(k);
         ReadOnlySpan<byte> t0Section = privateKey[(128 + ((k + l) * etaBytes)) ..];
         for (int r = 0; r < k; r++)
             BitUnpackSigned(13, 1 << (D - 1), t0Section.Slice(r * 32 * 13, 32 * 13), t0[r]);
+
+        return valid;
     }
 
     /// <summary>

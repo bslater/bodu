@@ -1085,5 +1085,14 @@ namespace Bodu {
                 return ResourceManager.GetString("Op_Invalid_HpkeMessageLimitReached", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} supports only its raw key encodings; the PKCS#8, SubjectPublicKeyInfo, PEM, and XML key formats are not supported. Use the dedicated Import/Export key methods instead..
+        /// </summary>
+        internal static string Op_NotSupported_RawKeyFormatOnly {
+            get {
+                return ResourceManager.GetString("Op_NotSupported_RawKeyFormatOnly", resourceCulture);
+            }
+        }
     }
 }

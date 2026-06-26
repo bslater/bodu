@@ -43,13 +43,19 @@ internal partial struct Ed25519Point
     }
 
     /// <summary>
-    /// Multiplies the Ed25519 base point by a 256-bit little-endian scalar in constant time.
+    /// Multiplies the Ed25519 base point by a 256-bit little-endian scalar in constant time, using the precomputed
+    /// fixed-base table.
     /// </summary>
     /// <param name="scalar">The 32-byte little-endian scalar.</param>
     /// <returns>The scalar multiple of the base point.</returns>
     /// <exception cref="ArgumentException"><paramref name="scalar" /> is not exactly 32 bytes.</exception>
+    /// <remarks>
+    /// Delegates to <see cref="ScalarMultBaseTable" />; the general
+    /// <see cref="ScalarMult(Ed25519Point, ReadOnlySpan{byte})" /> remains available as the reference implementation
+    /// that the table-based path is validated against.
+    /// </remarks>
     internal static Ed25519Point ScalarMultBase(ReadOnlySpan<byte> scalar) =>
-        ScalarMult(s_basePoint, scalar);
+        ScalarMultBaseTable(scalar);
 
     /// <summary>
     /// Copies <paramref name="source" /> into <paramref name="destination" /> when <paramref name="condition" /> is 1,
