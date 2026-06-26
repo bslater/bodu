@@ -127,6 +127,26 @@ public sealed partial class X25519Tests
     }
 
     /// <summary>
+    /// Verifies that <see cref="X25519.DeriveSharedSecret(ReadOnlySpan{byte}, Span{byte})" /> tolerates a destination
+    /// span that aliases the peer-key buffer, since the peer coordinate is fully decoded before any output is written.
+    /// </summary>
+    [TestMethod]
+    public void DeriveSharedSecret_WhenDestinationAliasesPeerKey_ShouldMatchNonAliasedResult()
+    {
+        using var algorithm = new X25519();
+        algorithm.ImportPrivateKey(Convert.FromHexString("77076d0a7318a57d3c16c17251b26645df4c2f87ebc0992ab177fba51db92c2a"));
+        byte[] peer = Convert.FromHexString("de9edb7d7b7dc1b4d35b61c2ece435373f8343c85b78674dadfc7e146f882b4f");
+
+        byte[] expected = algorithm.DeriveSharedSecret(peer);
+
+        // Use one buffer as both the peer key (input) and the shared-secret destination (output).
+        byte[] aliased = (byte[])peer.Clone();
+        algorithm.DeriveSharedSecret(aliased, aliased);
+
+        CollectionAssert.AreEqual(expected, aliased);
+    }
+
+    /// <summary>
     /// Verifies that the X25519 ladder ignores bit 255 of the peer u-coordinate, so a peer key with that bit set
     /// derives the same shared secret as the same key with it cleared (RFC 7748 §5).
     /// </summary>

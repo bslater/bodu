@@ -144,6 +144,40 @@ public class Curve25519Tests
         AssertIteratedLadder(1_000, "684cf59ba83309552800ef566f2f4d3c1c3887c49360e3875f2eb94d99532c51");
 
     /// <summary>
+    /// Verifies the optional 1,000,000-iteration result of the RFC 7748 §5.2 iterated test. Marked as a stress test
+    /// because the managed ladder runs for several minutes at this depth; it is excluded from the default and
+    /// regression runs.
+    /// </summary>
+    [TestMethod]
+    [TestCategory(TestCategories.Stress)]
+    public void ScalarMult_WhenIteratedOneMillionTimes_ShouldMatchRfc7748Result() =>
+        AssertIteratedLadder(1_000_000, "7c3911e0ab2586fd864497297e575e6f3bc601c0883c30df5f4dd2d24f665424");
+
+    /// <summary>
+    /// Verifies that <see cref="Curve25519.ScalarMult" /> reduces a non-canonical u-coordinate (one whose integer
+    /// value is at least p) modulo p, so the encoding of <c>2 + p</c> yields the same result as the canonical
+    /// encoding of <c>2</c>, per the RFC 7748 requirement that the input is decoded as a field element.
+    /// </summary>
+    [TestMethod]
+    public void ScalarMult_WhenUIsNonCanonical_ShouldMatchReducedCoordinate()
+    {
+        byte[] scalar = Convert.FromHexString("a546e36bf0527c9d3b16154b82465edd62144c0ac1fc5a18506a2244ba449ac4");
+
+        byte[] canonical = new byte[Curve25519.PointSizeInBytes];
+        canonical[0] = 2;
+
+        // 2 + p = 2 + (2^255 - 19) encoded little-endian; the low byte 0xED + 2 = 0xEF, the rest unchanged.
+        byte[] nonCanonical = Convert.FromHexString("efffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f");
+
+        byte[] fromCanonical = new byte[Curve25519.PointSizeInBytes];
+        byte[] fromNonCanonical = new byte[Curve25519.PointSizeInBytes];
+        _ = Curve25519.ScalarMult(scalar, canonical, fromCanonical);
+        _ = Curve25519.ScalarMult(scalar, nonCanonical, fromNonCanonical);
+
+        CollectionAssert.AreEqual(fromCanonical, fromNonCanonical);
+    }
+
+    /// <summary>
     /// Runs the RFC 7748 §5.2 iterated ladder, feeding each output back as the next scalar with the previous scalar
     /// as the u-coordinate, and asserts the final value.
     /// </summary>
