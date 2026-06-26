@@ -80,6 +80,24 @@ public sealed partial class YamlTestCorpusTests
     }
 
     /// <summary>
+    /// Verifies that no vendored case is classified <c>KnownGap</c>, enforcing the project's zero-gap conformance goal
+    /// independently of the pinned provenance counts (which a manual edit could otherwise mask).
+    /// </summary>
+    [TestMethod]
+    public void Corpus_HasNoKnownGaps()
+    {
+        var gaps = ReadManifest()
+            .Where(entry => string.Equals(entry.Category, "KnownGap", StringComparison.Ordinal))
+            .Select(entry => entry.Id)
+            .ToList();
+
+        Assert.AreEqual(
+            0,
+            gaps.Count,
+            $"The conformance corpus must have zero KnownGap cases, but found: {string.Join(", ", gaps)}.");
+    }
+
+    /// <summary>
     /// Verifies that the vendored and classified counts match the pinned <c>provenance.json</c>, catching accidental
     /// drift when the corpus or its classification is updated.
     /// </summary>

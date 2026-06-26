@@ -27,8 +27,8 @@ internal sealed partial class YamlParser
         var offset = _pos;
         var c = Peek();
 
-        // A plain scalar cannot begin with a flow-entry comma.
-        if (c == (byte)',')
+        // A plain scalar cannot begin with a flow-entry comma or a reserved indicator.
+        if (c is (byte)',' or (byte)'%' or (byte)'@' or (byte)'`')
             throw ErrorAt(_pos, YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
 
         if (c == (byte)'"')
@@ -539,6 +539,11 @@ internal sealed partial class YamlParser
 
             var spaces = p - lineStart;
             var blank = p >= _length || _source[p] is (byte)'\n' or (byte)'\r';
+
+            // A tab at or below the parent indentation cannot serve as block-scalar indentation.
+            if (!blank && _source[p] == (byte)'\t' && spaces <= parentIndent)
+                throw ErrorAt(p, YamlResourceStrings.Format_Invalid_YamlTabIndentation);
+
             if (!blank)
             {
                 // A line no more indented than the parent (including a document marker) ends the block scalar.

@@ -99,11 +99,16 @@ internal sealed partial class YamlParser
                 throw Error(YamlResourceStrings.Format_Invalid_YamlInvalidFlow);
 
             var element = ParseFlowNode();
+            var elementLine = _line;
             SkipFlowWhitespace();
 
             // An implicit single-pair mapping element: `key: value` inside the sequence.
             if (Peek() == (byte)':' && IsFlowColonStop(PeekAt(1)))
             {
+                // An implicit key and its ':' indicator must be on the same line.
+                if (_line != elementLine)
+                    throw Error(YamlResourceStrings.Format_Invalid_YamlMultilineImplicitKey);
+
                 Advance();
                 SkipFlowWhitespace();
                 var pair = NewContainer(YamlReaderNodeKind.Mapping, _rows[element].Offset, null, null);

@@ -182,7 +182,7 @@ DE56/05	valid	SupportedPass
 DFF7	valid-nojson	SupportedParseOnly
 DHP8	valid	SupportedPass
 DK3J	valid	SupportedPass
-DK4H	invalid	KnownGap
+DK4H	invalid	SupportedFail
 DK95/00	valid	UnsupportedFeatureRejected
 DK95/01	invalid	SupportedFail
 DK95/02	valid	SupportedPass
@@ -279,7 +279,7 @@ M7NX	valid	SupportedPass
 M9B4	valid	SupportedPass
 MJS9	valid	SupportedPass
 MUS6/00	invalid	SupportedFail
-MUS6/01	invalid	KnownGap
+MUS6/01	invalid	SupportedFail
 MUS6/02	valid	SupportedPass
 MUS6/03	valid	SupportedPass
 MUS6/04	valid	SupportedPass
@@ -377,7 +377,7 @@ XLQ9	valid	SupportedPass
 XV9V	valid	SupportedPass
 XW4D	valid-nojson	UnsupportedFeatureRejected
 Y2GN	valid	SupportedPass
-Y79Y/000	invalid	KnownGap
+Y79Y/000	invalid	SupportedFail
 Y79Y/001	valid	SupportedPass
 Y79Y/002	valid	SupportedPass
 Y79Y/003	invalid	SupportedFail

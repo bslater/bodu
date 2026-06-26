@@ -9,8 +9,8 @@
   "classification": {
     "SupportedPass": 225,
     "SupportedParseOnly": 12,
-    "SupportedFail": 91,
+    "SupportedFail": 94,
     "UnsupportedFeatureRejected": 71,
-    "KnownGap": 3
+    "KnownGap": 0
   }
 }
