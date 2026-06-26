@@ -66,17 +66,7 @@ public abstract partial class AsymmetricAlgorithmTests<TTest, TAlgorithm>
         Assert.IsNotNull(ex);
     }
 
-    /// <summary>
-    /// Verifies that the PKCS#8 / SubjectPublicKeyInfo export members inherited from
-    /// <see cref="AsymmetricAlgorithm" /> retain their unimplemented base behaviour, because the asymmetric types in
-    /// this library support only their raw specification key encodings.
-    /// </summary>
-    [TestMethod]
-    public void ExportDerEncodings_WhenCalled_ShouldThrowNotImplementedException()
-    {
-        using TAlgorithm algorithm = CreateAlgorithmWithGeneratedKey();
-
-        Assert.ThrowsExactly<NotImplementedException>(() => { _ = algorithm.ExportSubjectPublicKeyInfo(); });
-        Assert.ThrowsExactly<NotImplementedException>(() => { _ = algorithm.ExportPkcs8PrivateKey(); });
-    }
+    // The PKCS#8 / SubjectPublicKeyInfo / PEM / XML key-format members now throw a deliberate NotSupportedException
+    // rather than the inherited NotImplementedException; that contract is covered for every algorithm by the
+    // KeyFormats partial of this contract base.
 }

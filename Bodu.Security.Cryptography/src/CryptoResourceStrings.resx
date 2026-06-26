@@ -400,4 +400,7 @@
   <data name="Op_Invalid_HpkeMessageLimitReached" xml:space="preserve">
     <value>The HPKE message sequence number has reached its maximum; no further messages can be sealed or opened with this context.</value>
   </data>
+  <data name="Op_NotSupported_RawKeyFormatOnly" xml:space="preserve">
+    <value>{0} supports only its raw key encodings; the PKCS#8, SubjectPublicKeyInfo, PEM, and XML key formats are not supported. Use the dedicated Import/Export key methods instead.</value>
+  </data>
 </root>

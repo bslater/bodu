@@ -34,4 +34,32 @@ public sealed partial class Ed25519Tests
 
         Assert.AreEqual("publicKey", ex.ParamName);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Ed25519.ImportPublicKey" /> rejects each of the eight small-order points. These
+    /// decode as valid curve points but lie in the order-8 cofactor subgroup rather than the prime-order subgroup,
+    /// and are incompatible with Bodu's strict cofactorless verification policy.
+    /// </summary>
+    [TestMethod]
+    [DataRow("order 1 (identity)", "0100000000000000000000000000000000000000000000000000000000000000")]
+    [DataRow("order 2", "ecffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f")]
+    [DataRow("order 4 (x positive)", "0000000000000000000000000000000000000000000000000000000000000000")]
+    [DataRow("order 4 (x negative)", "0000000000000000000000000000000000000000000000000000000000000080")]
+    [DataRow("order 8 (a)", "26e8958fc2b227b045c3f489f2ef98f0d5dfac05d3c63339b13802886d53fc05")]
+    [DataRow("order 8 (b)", "c7176a703d4dd84fba3c0b760d10670f2a2053fa2c39ccc64ec7fd7792ac037a")]
+    [DataRow("order 8 (c)", "26e8958fc2b227b045c3f489f2ef98f0d5dfac05d3c63339b13802886d53fc85")]
+    [DataRow("order 8 (d)", "c7176a703d4dd84fba3c0b760d10670f2a2053fa2c39ccc64ec7fd7792ac03fa")]
+    public void ImportPublicKey_WhenKeyIsSmallOrder_ShouldThrowArgumentException(string testName, string encodedHex)
+    {
+        _ = testName;
+
+        using var algorithm = new Ed25519();
+
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            algorithm.ImportPublicKey(Convert.FromHexString(encodedHex));
+        });
+
+        Assert.AreEqual("publicKey", ex.ParamName);
+    }
 }

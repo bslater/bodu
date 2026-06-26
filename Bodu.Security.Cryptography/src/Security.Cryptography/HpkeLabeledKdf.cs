@@ -67,6 +67,10 @@ internal static class HpkeLabeledKdf
         if (output.Length == 0)
             return;
 
+        // L is encoded into a two-byte field, so a longer request cannot be represented and must be rejected before the
+        // truncating cast below rather than silently wrapping.
+        ThrowHelper.ThrowIfGreaterThan(output.Length, ushort.MaxValue);
+
         int length = 2 + VersionLabel.Length + suiteId.Length + label.Length + info.Length;
         byte[] buffer = ArrayPool<byte>.Shared.Rent(length);
 

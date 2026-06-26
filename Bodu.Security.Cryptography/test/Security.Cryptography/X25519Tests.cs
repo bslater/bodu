@@ -58,6 +58,14 @@ public sealed partial class X25519Tests
         algorithm.ExportPublicKey();
 
     /// <inheritdoc />
+    protected override string GetAlgorithmName(X25519 algorithm) =>
+        algorithm.AlgorithmName;
+
+    /// <inheritdoc />
+    protected override int GetSecurityStrengthBits(X25519 algorithm) =>
+        algorithm.SecurityStrengthBits;
+
+    /// <inheritdoc />
     protected override byte[] DeriveSharedSecret(X25519 algorithm, byte[] peerPublicKey) =>
         algorithm.DeriveSharedSecret(peerPublicKey);
 

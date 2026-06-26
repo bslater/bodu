@@ -49,6 +49,14 @@ public abstract class MLDsaContractTests<TTest, TDsa>
         algorithm.ExportPublicKey();
 
     /// <inheritdoc />
+    protected sealed override string GetAlgorithmName(TDsa algorithm) =>
+        algorithm.AlgorithmName;
+
+    /// <inheritdoc />
+    protected sealed override int GetSecurityStrengthBits(TDsa algorithm) =>
+        algorithm.SecurityStrengthBits;
+
+    /// <inheritdoc />
     protected sealed override byte[] SignData(TDsa algorithm, byte[] data) =>
         algorithm.SignData(data);
 
@@ -168,6 +176,147 @@ public abstract class MLDsaContractTests<TTest, TDsa>
         });
 
         Assert.AreEqual("privateKey", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="MLDsa.ImportPrivateKey" /> rejects a private key whose t₀ vector has been corrupted,
+    /// even though its embedded tr hash still matches. The public key is reconstructed from t₁ alone, so a corrupted
+    /// t₀ leaves tr consistent; rejection therefore proves t₀ is validated by recomputation rather than only via tr.
+    /// </summary>
+    [TestMethod]
+    public void ImportPrivateKey_WhenEmbeddedT0IsCorrupted_ShouldThrowArgumentException()
+    {
+        using var donor = new TDsa();
+        donor.GenerateKey();
+
+        // t₀ occupies the trailing section of the encoded private key; flipping its final byte changes a single
+        // coefficient while leaving rho, K, tr, s1, and s2 — and thus the recomputed public key and its hash — intact.
+        byte[] corrupted = donor.ExportPrivateKey();
+        corrupted[^1] ^= 0x01;
+
+        using var dsa = new TDsa();
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            dsa.ImportPrivateKey(corrupted);
+        });
+
+        Assert.AreEqual("privateKey", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="MLDsa.ImportPrivateKey" /> rejects a private key whose first s₁ coefficient is packed
+    /// with a non-canonical code point outside the [−η, η] range, proving the import enforces strict canonical
+    /// decoding rather than folding out-of-range values modulo q.
+    /// </summary>
+    [TestMethod]
+    public void ImportPrivateKey_WhenS1PackingIsNonCanonical_ShouldThrowArgumentException()
+    {
+        using var donor = new TDsa();
+        donor.GenerateKey();
+
+        // s1 begins at byte 128 (after rho ‖ K ‖ tr). Forcing the first byte to 0xFF sets the leading η-bit code point
+        // to all ones, which exceeds 2η for every parameter set and is therefore non-canonical.
+        byte[] corrupted = donor.ExportPrivateKey();
+        corrupted[128] = 0xFF;
+
+        using var dsa = new TDsa();
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            dsa.ImportPrivateKey(corrupted);
+        });
+
+        Assert.AreEqual("privateKey", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that a single-byte mutation anywhere in the signature — the commitment hash c̃, the response z, or the
+    /// hint section h — causes verification to fail, while the unmodified signature verifies.
+    /// </summary>
+    [TestMethod]
+    public void VerifyData_WhenAnyRegionIsMutated_ShouldReturnFalse()
+    {
+        using var dsa = new TDsa();
+        dsa.GenerateKey();
+        dsa.DeterministicSigning = true;
+        byte[] message = new byte[] { 1, 2, 3 };
+
+        byte[] signature = dsa.SignData(message);
+        Assert.IsTrue(dsa.VerifyData(message, signature));
+
+        // Byte 0 lies in the commitment hash, the midpoint in the response z, and the final byte in the hint section.
+        foreach (int index in new[] { 0, SignatureSizeBytes / 2, SignatureSizeBytes - 1 })
+        {
+            byte[] mutated = (byte[])signature.Clone();
+            mutated[index] ^= 0x01;
+            Assert.IsFalse(dsa.VerifyData(message, mutated), $"mutation at byte {index}");
+        }
+    }
+
+    /// <summary>
+    /// Verifies that the unbounded Fiat-Shamir-with-aborts signing loop always terminates and produces a verifiable
+    /// signature across a large number of hedged signatures, exercising the rejection-sampling restarts. The
+    /// rejection-count distribution itself is not asserted, as observing it would require instrumenting the production
+    /// signing path.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Stress")]
+    public void SignData_WhenManyHedgedSignaturesProduced_ShouldAlwaysTerminateAndVerify()
+    {
+        using var dsa = new TDsa();
+        dsa.GenerateKey();
+
+        var random = new Random(204);
+        byte[] message = new byte[64];
+
+        for (int iteration = 0; iteration < 2_000; iteration++)
+        {
+            random.NextBytes(message);
+            byte[] signature = dsa.SignData(message);
+            Assert.IsTrue(dsa.VerifyData(message, signature), $"iteration {iteration}");
+        }
+    }
+
+    /// <summary>
+    /// Verifies that a signature whose final hint count exceeds ω is rejected by the strict FIPS 204 hint decoding.
+    /// </summary>
+    [TestMethod]
+    public void VerifyData_WhenHintCountExceedsOmega_ShouldReturnFalse()
+    {
+        using var dsa = new TDsa();
+        dsa.GenerateKey();
+        dsa.DeterministicSigning = true;
+        byte[] message = new byte[] { 7 };
+
+        byte[] signature = dsa.SignData(message);
+
+        // The final signature byte is the cumulative hint count for the last polynomial; 0xFF = 255 exceeds ω
+        // (at most 80) for every parameter set, so HintBitUnpack must reject the encoding.
+        byte[] malformed = (byte[])signature.Clone();
+        malformed[^1] = 0xFF;
+
+        Assert.IsFalse(dsa.VerifyData(message, malformed));
+    }
+
+    /// <summary>
+    /// Verifies that signing and verifying round-trip for context strings at the length boundaries 0, 1, and the
+    /// FIPS 204 maximum of 255 bytes.
+    /// </summary>
+    /// <param name="contextLength">The context length to exercise.</param>
+    [TestMethod]
+    [DataRow(0)]
+    [DataRow(1)]
+    [DataRow(255)]
+    public void SignAndVerify_WhenContextLengthIsAtBoundary_ShouldRoundTrip(int contextLength)
+    {
+        using var dsa = new TDsa();
+        dsa.GenerateKey();
+        byte[] message = new byte[] { 9, 9 };
+        byte[] context = new byte[contextLength];
+        new Random(contextLength + 1).NextBytes(context);
+
+        byte[] signature = dsa.SignData(message, context);
+
+        Assert.IsTrue(dsa.VerifyData(message, signature, context));
     }
 
     /// <summary>

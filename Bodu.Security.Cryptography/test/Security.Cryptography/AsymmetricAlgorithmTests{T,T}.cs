@@ -89,6 +89,20 @@ public abstract partial class AsymmetricAlgorithmTests<TTest, TAlgorithm>
     protected abstract byte[] ExportPublicKey(TAlgorithm algorithm);
 
     /// <summary>
+    /// Returns the value of the algorithm's <c>AlgorithmName</c> property.
+    /// </summary>
+    /// <param name="algorithm">The instance to query.</param>
+    /// <returns>The algorithm or parameter-set name.</returns>
+    protected abstract string GetAlgorithmName(TAlgorithm algorithm);
+
+    /// <summary>
+    /// Returns the value of the algorithm's <c>SecurityStrengthBits</c> property.
+    /// </summary>
+    /// <param name="algorithm">The instance to query.</param>
+    /// <returns>The claimed security strength in bits.</returns>
+    protected abstract int GetSecurityStrengthBits(TAlgorithm algorithm);
+
+    /// <summary>
     /// Creates an algorithm instance populated with a freshly generated key pair.
     /// </summary>
     /// <returns>A new instance holding both private and public key material.</returns>

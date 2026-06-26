@@ -69,6 +69,7 @@ internal sealed class HpkeContext : IDisposable
     {
         ThrowIfDisposed();
         ThrowIfExportOnly();
+        ThrowIfMessageLimitReached();
 
         byte[] result = new byte[plaintext.Length + _suite.AeadTagSizeInBytes];
         Span<byte> nonce = stackalloc byte[_suite.AeadNonceSizeInBytes];
@@ -116,6 +117,7 @@ internal sealed class HpkeContext : IDisposable
     {
         ThrowIfDisposed();
         ThrowIfExportOnly();
+        ThrowIfMessageLimitReached();
         CryptographyThrowHelper.ThrowIfCiphertextTooShort(ciphertext, _suite.AeadTagSizeInBytes);
 
         int plaintextLength = ciphertext.Length - _suite.AeadTagSizeInBytes;
@@ -173,6 +175,7 @@ internal sealed class HpkeContext : IDisposable
     {
         ThrowIfDisposed();
         ThrowHelper.ThrowIfLessThan(length, 0);
+        ThrowHelper.ThrowIfGreaterThan(length, 255 * _suite.KdfHashLengthInBytes);
 
         byte[] output = new byte[length];
         HpkeLabeledKdf.LabeledExpand(_suite.KdfHashAlgorithm, _suite.SuiteId, _exporterSecret, "sec"u8, exporterContext, output);
@@ -212,18 +215,28 @@ internal sealed class HpkeContext : IDisposable
     }
 
     /// <summary>
-    /// Advances the message sequence number, refusing to wrap past its maximum (RFC 9180 §5.2 <c>MessageLimitReached</c>).
+    /// Throws when the sequence number has reached its maximum, before any AEAD work is performed (RFC 9180 §5.2
+    /// <c>MessageLimitReached</c>).
     /// </summary>
     /// <exception cref="InvalidOperationException">The sequence number has reached its maximum.</exception>
-    private void IncrementSequence()
+    /// <remarks>
+    /// With Nn = 12 the spec ceiling (2^96 − 1) is far above <see cref="ulong.MaxValue" />, so guarding the 64-bit
+    /// counter against overflow is both sufficient and conservative. The check runs before nonce computation and AEAD
+    /// processing so a context at the limit fails without producing or consuming a ciphertext.
+    /// </remarks>
+    private void ThrowIfMessageLimitReached()
     {
-        // With Nn = 12 the spec ceiling (2^96 - 1) is far above ulong.MaxValue, so guarding the 64-bit
-        // counter against overflow is both sufficient and conservative.
         if (_seq == ulong.MaxValue)
             throw new InvalidOperationException(CryptoResourceStrings.Op_Invalid_HpkeMessageLimitReached);
-
-        _seq++;
     }
+
+    /// <summary>
+    /// Advances the message sequence number after a successful seal or open. The pre-operation
+    /// <see cref="ThrowIfMessageLimitReached" /> guarantees the counter is below its maximum, so the increment cannot
+    /// wrap.
+    /// </summary>
+    private void IncrementSequence() =>
+        _seq++;
 
     /// <summary>
     /// Throws a <see cref="NotSupportedException" /> when the suite is export-only and cannot seal or open.

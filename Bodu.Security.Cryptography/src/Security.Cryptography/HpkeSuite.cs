@@ -59,6 +59,12 @@ public sealed class HpkeSuite
         Kdf = kdf;
         Aead = aead;
 
+        // The KEM identifier is validated above, so the resolution is total over the supported set.
+        KemAlgorithm = kem switch
+        {
+            _ => DhKemX25519.Instance,
+        };
+
         (KdfHashAlgorithm, KdfHashLengthInBytes) = kdf switch
         {
             HpkeKdf.HkdfSha256 => (HashAlgorithmName.SHA256, 32),
@@ -111,11 +117,11 @@ public sealed class HpkeSuite
 
     /// <summary>Gets the length, in bytes, of the KEM shared secret (<c>Nsecret</c>).</summary>
     /// <value>32 for the X25519 KEM.</value>
-    public int SharedSecretSizeInBytes => DhKemX25519.SharedSecretSizeInBytes;
+    public int SharedSecretSizeInBytes => KemAlgorithm.SharedSecretSizeInBytes;
 
     /// <summary>Gets the length, in bytes, of the KEM encapsulated key (<c>Nenc</c>).</summary>
     /// <value>32 for the X25519 KEM.</value>
-    public int EncapsulationSizeInBytes => DhKemX25519.EncapsulationSizeInBytes;
+    public int EncapsulationSizeInBytes => KemAlgorithm.EncapsulationSizeInBytes;
 
     /// <summary>Gets the length, in bytes, of the AEAD key (<c>Nk</c>).</summary>
     /// <value>The AEAD key length, or 0 for an export-only suite.</value>
@@ -132,6 +138,10 @@ public sealed class HpkeSuite
     /// <summary>Gets a value indicating whether this suite is export-only and rejects encryption and decryption.</summary>
     /// <value><see langword="true" /> when <see cref="Aead" /> is <see cref="HpkeAead.ExportOnly" />; otherwise <see langword="false" />.</value>
     public bool IsExportOnly => Aead == HpkeAead.ExportOnly;
+
+    /// <summary>Gets the key encapsulation mechanism implementation resolved from <see cref="Kem" />.</summary>
+    /// <value>The KEM that performs encapsulation and decapsulation for this suite.</value>
+    internal IHpkeKem KemAlgorithm { get; }
 
     /// <summary>Gets the HKDF hash algorithm corresponding to <see cref="Kdf" />.</summary>
     /// <value>The hash algorithm used by the suite's KDF.</value>
