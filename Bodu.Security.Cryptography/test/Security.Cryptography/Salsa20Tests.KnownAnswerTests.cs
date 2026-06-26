@@ -5,8 +5,10 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 
-using System.Reflection;
 using System.Security.Cryptography;
+using Bodu.Security.Cryptography.Infrastructure;
+using Bodu.Test.Kat;
+using static Bodu.Security.Cryptography.Infrastructure.KatBytes;
 
 namespace Bodu.Security.Cryptography;
 /// <summary>
@@ -27,62 +29,47 @@ public sealed partial class Salsa20Tests
             LegalKeySizesBits = [128, 256],
         };
 
-    /// <summary>
-    /// Represents one Salsa20 keystream known-answer test row, recovered as the ciphertext of an all-zero plaintext.
-    /// </summary>
-    private sealed record Salsa20KeystreamKat
-    {
-        public required string Name { get; init; }
-
-        public required string Source { get; init; }
-
-        public required int KeySizeBits { get; init; }
-
-        public required string KeyHex { get; init; }
-
-        public required string NonceHex { get; init; }
-
-        public required string KeystreamHex { get; init; }
-    }
-
     // ── eSTREAM / ECRYPT Salsa20/20 keystream known-answer tests ─────────────────────────────
     //
     // Sources: eSTREAM verified vectors (RustCrypto salsa20 corpus) and the Crypto++ TestVectors/salsa.txt
-    // ECRYPT set, all confirmed against this implementation.
-    private static readonly Salsa20KeystreamKat[] KeystreamKnownAnswers =
+    // ECRYPT set, all confirmed against this implementation. The key size is taken from the key length.
+    private static readonly StreamCipherKnownAnswer[] KeystreamKnownAnswers =
     [
-        new Salsa20KeystreamKat
+        new StreamCipherKnownAnswer
         {
             Name = "eSTREAM Salsa20/256 KEY1 IV0 (first 64 bytes)",
-            Source = "eSTREAM verified vectors",
-            KeySizeBits = 256,
-            KeyHex = "8000000000000000000000000000000000000000000000000000000000000000",
-            NonceHex = "0000000000000000",
-            KeystreamHex =
+            Provenance = KatProvenance.ReferenceImplementation("eSTREAM verified vectors"),
+            Key = Hex("8000000000000000000000000000000000000000000000000000000000000000"),
+            Nonce = Hex("0000000000000000"),
+            IsKeystream = true,
+            Plaintext = [],
+            Ciphertext = Hex(
                 "e3be8fdd8beca2e3ea8ef9475b29a6e7003951e1097a5c38d23b7a5fad9f6844" +
-                "b22c97559e2723c7cbbd3fe4fc8d9a0744652a83e72a9c461876af4d7ef1a117",
+                "b22c97559e2723c7cbbd3fe4fc8d9a0744652a83e72a9c461876af4d7ef1a117"),
         },
-        new Salsa20KeystreamKat
+        new StreamCipherKnownAnswer
         {
             Name = "eSTREAM Salsa20/256 KEY0 IV1 (first 64 bytes)",
-            Source = "eSTREAM verified vectors",
-            KeySizeBits = 256,
-            KeyHex = "0000000000000000000000000000000000000000000000000000000000000000",
-            NonceHex = "8000000000000000",
-            KeystreamHex =
+            Provenance = KatProvenance.ReferenceImplementation("eSTREAM verified vectors"),
+            Key = Hex("0000000000000000000000000000000000000000000000000000000000000000"),
+            Nonce = Hex("8000000000000000"),
+            IsKeystream = true,
+            Plaintext = [],
+            Ciphertext = Hex(
                 "2aba3dc45b4947007b14c851cd694456b303ad59a465662803006705673d6c3e" +
-                "29f1d3510dfc0405463c03414e0e07e359f1f1816c68b2434a19d3eee0464873",
+                "29f1d3510dfc0405463c03414e0e07e359f1f1816c68b2434a19d3eee0464873"),
         },
-        new Salsa20KeystreamKat
+        new StreamCipherKnownAnswer
         {
             Name = "ECRYPT Salsa20/128 Set 1 vector 0 (first 64 bytes)",
-            Source = "Crypto++ TestVectors/salsa.txt (ECRYPT Set 1 #0)",
-            KeySizeBits = 128,
-            KeyHex = "80000000000000000000000000000000",
-            NonceHex = "0000000000000000",
-            KeystreamHex =
+            Provenance = KatProvenance.ReferenceImplementation("Crypto++ TestVectors/salsa.txt (ECRYPT Set 1 #0)"),
+            Key = Hex("80000000000000000000000000000000"),
+            Nonce = Hex("0000000000000000"),
+            IsKeystream = true,
+            Plaintext = [],
+            Ciphertext = Hex(
                 "4dfa5e481da23ea09a31022050859936da52fcee218005164f267cb65f5cfd7f" +
-                "2b4f97e0ff16924a52df269515110a07f9e460bc65ef95da58f740b7d1dbb0aa",
+                "2b4f97e0ff16924a52df269515110a07f9e460bc65ef95da58f740b7d1dbb0aa"),
         },
     ];
 
@@ -92,43 +79,30 @@ public sealed partial class Salsa20Tests
     /// <returns>One row per vector.</returns>
     private static IEnumerable<object[]> Salsa20KeystreamKatData()
     {
-        foreach (Salsa20KeystreamKat kat in KeystreamKnownAnswers)
-            yield return new object[] { kat.KeySizeBits, kat.KeyHex, kat.NonceHex, kat.KeystreamHex, kat.Name };
+        foreach (StreamCipherKnownAnswer kat in KeystreamKnownAnswers)
+            yield return new object[] { kat };
     }
-
-    /// <summary>
-    /// Produces a human-readable display name for a Salsa20 KAT row.
-    /// </summary>
-    /// <param name="testMethod">The executing test method.</param>
-    /// <param name="data">The row data; the final element carries the scenario name.</param>
-    /// <returns>The test method name followed by the row's scenario label.</returns>
-    public static string GetKatDisplayName(MethodInfo testMethod, object[] data) =>
-        $"{testMethod.Name} — {data[^1]}";
 
     /// <summary>
     /// Verifies that <see cref="Salsa20" /> reproduces each published keystream vector, recovered as the ciphertext of
     /// an all-zero plaintext, for both 128-bit and 256-bit keys.
     /// </summary>
-    /// <param name="keySizeBits">The key size, in bits.</param>
-    /// <param name="keyHex">The key, in hex.</param>
-    /// <param name="nonceHex">The 64-bit nonce, in hex.</param>
-    /// <param name="keystreamHex">The expected keystream, in hex.</param>
-    /// <param name="displayName">The scenario label.</param>
+    /// <param name="vector">The keystream KAT vector under test.</param>
     [TestMethod]
-    [DynamicData(nameof(Salsa20KeystreamKatData), DynamicDataDisplayName = nameof(GetKatDisplayName))]
-    public void CreateEncryptor_WhenGivenKeystreamVector_ShouldMatchExpected(
-        int keySizeBits, string keyHex, string nonceHex, string keystreamHex, string displayName)
+    [DynamicData(
+        nameof(Salsa20KeystreamKatData),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void CreateEncryptor_WhenGivenKeystreamVector_ShouldMatchExpected(StreamCipherKnownAnswer vector)
     {
-        byte[] key = Convert.FromHexString(keyHex);
-        byte[] nonce = Convert.FromHexString(nonceHex);
-        byte[] expected = Convert.FromHexString(keystreamHex);
+        byte[] expected = vector.Ciphertext;
         byte[] zeros = new byte[expected.Length];
 
-        using var cipher = new Salsa20 { KeySize = keySizeBits };
-        using ICryptoTransform encryptor = cipher.CreateEncryptor(key, nonce);
+        using var cipher = new Salsa20 { KeySize = vector.Key.Length * 8 };
+        using ICryptoTransform encryptor = cipher.CreateEncryptor(vector.Key, vector.Nonce);
         byte[] keystream = encryptor.TransformFinalBlock(zeros, 0, zeros.Length);
 
-        CollectionAssert.AreEqual(expected, keystream, $"Salsa20 keystream mismatch for {displayName}.");
+        CollectionAssert.AreEqual(expected, keystream, $"Salsa20 keystream mismatch for {vector.Name}.");
     }
 
     /// <summary>
