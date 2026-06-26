@@ -29,8 +29,14 @@ namespace Bodu.CodeStyle.XmlDocumentation.CodeFixes;
 [Shared]
 public sealed class XmlDocFormatCodeFixProvider : CodeFixProvider
 {
+    /// <summary>
+    /// The equivalence key identifying the format fix for Fix All batching.
+    /// </summary>
     private const string EquivalenceKey = "BoduFormatXmlDocComment";
 
+    /// <summary>
+    /// The code-action title presented for the format fix.
+    /// </summary>
     private const string ActionTitle = "Format XML documentation comment";
 
     /// <inheritdoc />
@@ -106,6 +112,15 @@ public sealed class XmlDocFormatCodeFixProvider : CodeFixProvider
         }
     }
 
+    /// <summary>
+    /// Replaces the documentation-comment trivia with the canonical formatted text computed by the analyzer,
+    /// rebuilding the owning token's leading trivia around the replacement.
+    /// </summary>
+    /// <param name="document">The document to reformat.</param>
+    /// <param name="trivia">The documentation-comment trivia to replace.</param>
+    /// <param name="formattedText">The canonical formatted documentation-comment text.</param>
+    /// <param name="cancellationToken">A token that propagates notification that the operation should be canceled.</param>
+    /// <returns>The updated document, or the original document when the replacement cannot be applied.</returns>
     private static async Task<Document> ApplyFixAsync(Document document, SyntaxTrivia trivia, string formattedText, CancellationToken cancellationToken)
     {
         SyntaxNode? root = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);

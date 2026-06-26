@@ -16,9 +16,21 @@ namespace Bodu.CodeStyle.XmlDocumentation.Configuration;
 /// </summary>
 internal sealed class ConfigJsonValue
 {
+    /// <summary>The numeric content; meaningful only when <see cref="Kind" /> is <see cref="ConfigJsonValueKind.Number" />.</summary>
     private readonly double _number;
+
+    /// <summary>The boolean content; meaningful only when <see cref="Kind" /> is <see cref="ConfigJsonValueKind.Boolean" />.</summary>
     private readonly bool _boolean;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ConfigJsonValue" /> class.
+    /// </summary>
+    /// <param name="kind">The kind of value being created.</param>
+    /// <param name="stringValue">The string content, or <see langword="null" /> for non-string values.</param>
+    /// <param name="number">The numeric content, or zero for non-number values.</param>
+    /// <param name="boolean">The boolean content, or <see langword="false" /> for non-boolean values.</param>
+    /// <param name="members">The object member map, or <see langword="null" /> for non-object values.</param>
+    /// <param name="items">The array item list, or <see langword="null" /> for non-array values.</param>
     private ConfigJsonValue(
         ConfigJsonValueKind kind,
         string? stringValue,

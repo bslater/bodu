@@ -33,10 +33,15 @@ public sealed class XmlDocConfigurationAnalyzer : DiagnosticAnalyzer
 
         context.EnableConcurrentExecution();
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
-        context.RegisterCompilationStartAction(OnCompilationStart);
+        context.RegisterCompilationAction(OnCompilation);
     }
 
-    private static void OnCompilationStart(CompilationStartAnalysisContext context)
+    /// <summary>
+    /// Collects configuration errors from the additional files and reports a <c>BODU0001</c> diagnostic for each
+    /// once the compilation has completed.
+    /// </summary>
+    /// <param name="context">The compilation analysis context supplying the additional files and diagnostic sink.</param>
+    private static void OnCompilation(CompilationAnalysisContext context)
     {
         ImmutableArray<XmlDocConfigurationError> errors = XmlDocConfigurationLoader.CollectConfigurationErrors(
             context.Options.AdditionalFiles,
@@ -44,17 +49,12 @@ public sealed class XmlDocConfigurationAnalyzer : DiagnosticAnalyzer
 
         if (errors.IsDefaultOrEmpty) return;
 
-        // The errors are known at compilation start, but a diagnostic can only be reported from a registered
-        // action; emit them once at compilation end.
-        context.RegisterCompilationEndAction(endContext =>
+        foreach (XmlDocConfigurationError error in errors)
         {
-            foreach (XmlDocConfigurationError error in errors)
-            {
-                endContext.ReportDiagnostic(Diagnostic.Create(
-                    DiagnosticDescriptors.XmlDocConfigInvalid,
-                    error.Location,
-                    error.Message));
-            }
-        });
+            context.ReportDiagnostic(Diagnostic.Create(
+                DiagnosticDescriptors.XmlDocConfigInvalid,
+                error.Location,
+                error.Message));
+        }
     }
 }

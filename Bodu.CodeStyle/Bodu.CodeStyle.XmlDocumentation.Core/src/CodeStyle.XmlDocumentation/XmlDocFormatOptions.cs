@@ -340,6 +340,25 @@ public sealed class XmlDocFormatOptions
         return true;
     }
 
+    /// <summary>
+    /// Creates a copy of this instance, replacing only the policy values supplied as non-<see langword="null" />
+    /// arguments and carrying the remainder forward unchanged.
+    /// </summary>
+    /// <param name="maxLineLength">The replacement maximum line length, or <see langword="null" /> to keep the current value.</param>
+    /// <param name="documentationPrefix">The replacement documentation prefix, or <see langword="null" /> to keep the current value.</param>
+    /// <param name="indentText">The replacement indent unit, or <see langword="null" /> to keep the current value.</param>
+    /// <param name="collapseProseWhitespace">The replacement collapse-prose-whitespace setting, or <see langword="null" /> to keep the current value.</param>
+    /// <param name="preserveBlankLines">The replacement preserve-blank-lines setting, or <see langword="null" /> to keep the current value.</param>
+    /// <param name="preserveXmlTagAttributes">The replacement preserve-attribute-spacing setting, or <see langword="null" /> to keep the current value.</param>
+    /// <param name="preserveCrefText">The replacement preserve-cref-text setting, or <see langword="null" /> to keep the current value.</param>
+    /// <param name="keepFieldSummaryOnSingleLine">The replacement keep-field-summary-on-single-line setting, or <see langword="null" /> to keep the current value.</param>
+    /// <param name="blockTags">The replacement set of block tag names, or <see langword="null" /> to keep the current value.</param>
+    /// <param name="inlineTags">The replacement set of inline-atomic tag names, or <see langword="null" /> to keep the current value.</param>
+    /// <param name="forceMultilineTags">The replacement set of force-multiline tag names, or <see langword="null" /> to keep the current value.</param>
+    /// <param name="singleLineWhenShortTags">The replacement set of single-line-when-short tag names, or <see langword="null" /> to keep the current value.</param>
+    /// <param name="neverSplitTagContent">The replacement set of never-split tag names, or <see langword="null" /> to keep the current value.</param>
+    /// <param name="tagPolicies">The replacement per-tag policy dictionary, or <see langword="null" /> to keep the current value.</param>
+    /// <returns>A new instance with the requested overrides applied.</returns>
     private XmlDocFormatOptions With(
         int? maxLineLength = null,
         string? documentationPrefix = null,

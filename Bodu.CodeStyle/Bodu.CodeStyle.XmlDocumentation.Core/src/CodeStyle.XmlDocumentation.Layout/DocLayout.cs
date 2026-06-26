@@ -43,6 +43,18 @@ internal static class DocLayout
         return output;
     }
 
+    /// <summary>
+    /// Composes the tokens in the half-open range into content lines, recursing into force-multiline and
+    /// single-line-candidate tag bodies at the appropriate indent.
+    /// </summary>
+    /// <param name="tokens">The token stream being composed.</param>
+    /// <param name="start">The inclusive start index of the range to compose.</param>
+    /// <param name="end">The exclusive end index of the range to compose.</param>
+    /// <param name="options">The active formatting policy.</param>
+    /// <param name="contentBudget">The maximum content length per line, excluding the documentation prefix and base indent.</param>
+    /// <param name="currentIndent">The nesting indent to prepend to each emitted line.</param>
+    /// <param name="output">The list receiving the composed content lines.</param>
+    /// <returns>The index immediately after the last token consumed.</returns>
     private static int ComposeRange(IReadOnlyList<XmlDocToken> tokens, int start, int end, XmlDocFormatOptions options, int contentBudget, string currentIndent, List<string> output)
     {
         var currentRun = new List<XmlDocToken>();
@@ -159,6 +171,11 @@ internal static class DocLayout
         return position;
     }
 
+    /// <summary>
+    /// Emits each physical line of a multi-line CDATA section as a separate content line.
+    /// </summary>
+    /// <param name="cdataRawText">The raw CDATA section text, including delimiters, with logical lines separated by <c>'\n'</c>.</param>
+    /// <param name="output">The list receiving the emitted content lines.</param>
     private static void EmitCDataLines(string cdataRawText, List<string> output)
     {
         // Split on '\n' (the tokenizer's logical line marker after DocIndent.Strip). Each piece becomes one
@@ -184,6 +201,16 @@ internal static class DocLayout
         }
     }
 
+    /// <summary>
+    /// Locates the matching block-end token for an opening block token, honouring nesting of identically named
+    /// tags.
+    /// </summary>
+    /// <param name="tokens">The token stream being scanned.</param>
+    /// <param name="openIndex">The index of the opening block-start token.</param>
+    /// <param name="end">The exclusive upper bound of the search range.</param>
+    /// <param name="tagName">The element name whose matching close is sought.</param>
+    /// <param name="closeIndex">When this method returns, the index of the matching block-end token; otherwise <c>-1</c>.</param>
+    /// <returns><see langword="true" /> if a matching close was found; otherwise <see langword="false" />.</returns>
     private static bool TryFindMatchingEnd(IReadOnlyList<XmlDocToken> tokens, int openIndex, int end, string tagName, out int closeIndex)
     {
         var depth = 1;
@@ -209,6 +236,17 @@ internal static class DocLayout
         return false;
     }
 
+    /// <summary>
+    /// Attempts to render a single-line-when-short tag as one collapsed line, falling back to the expanded
+    /// multiline form when the joined content overflows or contains a multi-line atom.
+    /// </summary>
+    /// <param name="tokens">The token stream being composed.</param>
+    /// <param name="openIndex">The index of the opening block-start token.</param>
+    /// <param name="closeIndex">The index of the matching block-end token.</param>
+    /// <param name="options">The active formatting policy.</param>
+    /// <param name="contentBudget">The maximum content length per line, excluding the documentation prefix and base indent.</param>
+    /// <param name="currentIndent">The nesting indent to prepend to each emitted line.</param>
+    /// <param name="output">The list receiving the composed content lines.</param>
     private static void ComposeSingleLineCandidate(IReadOnlyList<XmlDocToken> tokens, int openIndex, int closeIndex, XmlDocFormatOptions options, int contentBudget, string currentIndent, List<string> output)
     {
         XmlDocToken openToken = tokens[openIndex];
@@ -291,6 +329,17 @@ internal static class DocLayout
         EmitExpandedSingleLineCandidate(tokens, openIndex, closeIndex, options, contentBudget, currentIndent, output);
     }
 
+    /// <summary>
+    /// Emits a tag in expanded form: the opening token on its own line, the body composed at the next indent
+    /// level, and the closing token on its own line.
+    /// </summary>
+    /// <param name="tokens">The token stream being composed.</param>
+    /// <param name="openIndex">The index of the opening block-start token.</param>
+    /// <param name="closeIndex">The index of the matching block-end token.</param>
+    /// <param name="options">The active formatting policy.</param>
+    /// <param name="contentBudget">The maximum content length per line, excluding the documentation prefix and base indent.</param>
+    /// <param name="currentIndent">The nesting indent to prepend to each emitted line.</param>
+    /// <param name="output">The list receiving the composed content lines.</param>
     private static void EmitExpandedSingleLineCandidate(IReadOnlyList<XmlDocToken> tokens, int openIndex, int closeIndex, XmlDocFormatOptions options, int contentBudget, string currentIndent, List<string> output)
     {
         // Expanded form: open on its own line, content on subsequent lines, close on its own line.
@@ -315,6 +364,15 @@ internal static class DocLayout
         output.Add(currentIndent + closeToken.RawText);
     }
 
+    /// <summary>
+    /// Joins the pending run of prose tokens into atoms, wraps them to the effective budget, and emits the
+    /// resulting lines. The run is cleared on return.
+    /// </summary>
+    /// <param name="run">The accumulated run of prose tokens to flush.</param>
+    /// <param name="options">The active formatting policy.</param>
+    /// <param name="contentBudget">The maximum content length per line, excluding the documentation prefix and base indent.</param>
+    /// <param name="currentIndent">The nesting indent to prepend to each emitted line.</param>
+    /// <param name="output">The list receiving the wrapped content lines.</param>
     private static void FlushRun(List<XmlDocToken> run, XmlDocFormatOptions options, int contentBudget, string currentIndent, List<string> output)
     {
         if (run.Count == 0)
@@ -384,6 +442,13 @@ internal static class DocLayout
         }
     }
 
+    /// <summary>
+    /// Returns the token's raw text, adjusting the trailing-space convention of a self-closing inline tag to
+    /// match its tag policy.
+    /// </summary>
+    /// <param name="token">The token whose raw text is normalized.</param>
+    /// <param name="options">The active formatting policy supplying the per-tag self-closing convention.</param>
+    /// <returns>The normalized raw text for the token.</returns>
     private static string NormalizeTagRaw(XmlDocToken token, XmlDocFormatOptions options)
     {
         if (token.Kind != XmlDocTokenKind.InlineXml || !token.IsSelfClosing || token.TagName is null)
@@ -401,6 +466,13 @@ internal static class DocLayout
         return NormalizeSelfClosingTrailingSpace(token.RawText, wantTrailingSpace.Value);
     }
 
+    /// <summary>
+    /// Rewrites a self-closing tag's closing delimiter to either <c>" /&gt;"</c> or <c>"/&gt;"</c> according to
+    /// the requested convention.
+    /// </summary>
+    /// <param name="rawText">The raw self-closing tag text.</param>
+    /// <param name="wantSpace">When <see langword="true" />, a single space precedes the <c>/&gt;</c>; otherwise no space is emitted.</param>
+    /// <returns>The tag text with its trailing-space convention applied.</returns>
     private static string NormalizeSelfClosingTrailingSpace(string rawText, bool wantSpace)
     {
         var length = rawText.Length;

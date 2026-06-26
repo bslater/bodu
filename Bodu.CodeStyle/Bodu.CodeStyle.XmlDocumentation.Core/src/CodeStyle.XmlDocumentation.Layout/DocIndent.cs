@@ -122,6 +122,11 @@ internal static class DocIndent
         return result.ToString();
     }
 
+    /// <summary>
+    /// Determines whether a content line is a CDATA open or close delimiter standing alone.
+    /// </summary>
+    /// <param name="content">The content line to test.</param>
+    /// <returns><see langword="true" /> if the line is exactly <c>&lt;![CDATA[</c> or <c>]]&gt;</c>; otherwise <see langword="false" />.</returns>
     private static bool IsCDataDelimiterLine(string content)
     {
         // Only treat a line as a CDATA delimiter when it's the open or close marker alone — anything else
@@ -131,6 +136,12 @@ internal static class DocIndent
             || string.Equals(content, "]]>", StringComparison.Ordinal);
     }
 
+    /// <summary>
+    /// Determines whether a content line begins with the CDATA opener, as happens when a multi-line CDATA body
+    /// has been reflowed onto a single line.
+    /// </summary>
+    /// <param name="content">The content line to test.</param>
+    /// <returns><see langword="true" /> if the line starts with <c>&lt;![CDATA[</c>; otherwise <see langword="false" />.</returns>
     private static bool StartsWithCDataOpener(string content)
     {
         // Treat a line as starting with the CDATA opener when `<![CDATA[` is at position 0 and the next
@@ -143,6 +154,12 @@ internal static class DocIndent
         return content.StartsWith(Opener, StringComparison.Ordinal);
     }
 
+    /// <summary>
+    /// Removes any trailing spaces or tabs from the documentation prefix, yielding the bare prefix without its
+    /// conventional trailing space.
+    /// </summary>
+    /// <param name="prefix">The documentation prefix to trim.</param>
+    /// <returns>The prefix with trailing horizontal whitespace removed.</returns>
     private static string TrimPrefixTrailingSpace(string prefix)
     {
         var end = prefix.Length;
@@ -154,6 +171,12 @@ internal static class DocIndent
         return prefix.Substring(0, end);
     }
 
+    /// <summary>
+    /// Finds the index of the next carriage-return or line-feed at or after the given position.
+    /// </summary>
+    /// <param name="text">The text to scan.</param>
+    /// <param name="start">The index at which to begin scanning.</param>
+    /// <returns>The index of the next line-ending character, or the text length if none remains.</returns>
     private static int FindLineEnd(string text, int start)
     {
         var position = start;
@@ -165,6 +188,14 @@ internal static class DocIndent
         return position;
     }
 
+    /// <summary>
+    /// Removes the base indent and documentation prefix (including a single optional trailing space) from a
+    /// single physical line.
+    /// </summary>
+    /// <param name="line">The physical line to strip.</param>
+    /// <param name="expectedIndent">The expected leading indent; any leading whitespace is tolerated when it does not match.</param>
+    /// <param name="prefixNoTrailingSpace">The documentation prefix without its trailing space.</param>
+    /// <returns>The line's prose content with the indent and prefix removed.</returns>
     private static string StripLine(string line, string expectedIndent, string prefixNoTrailingSpace)
     {
         var cursor = 0;

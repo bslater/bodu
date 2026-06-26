@@ -42,6 +42,13 @@ internal static class ConfigJsonParser
         return value;
     }
 
+    /// <summary>
+    /// Parses a single JSON value starting at the current position.
+    /// </summary>
+    /// <param name="json">The JSON document text.</param>
+    /// <param name="position">The current parse position; advanced past the parsed value.</param>
+    /// <returns>The parsed value.</returns>
+    /// <exception cref="FormatException">Thrown when no valid value begins at the current position.</exception>
     private static ConfigJsonValue ParseValue(string json, ref int position)
     {
         if (position >= json.Length)
@@ -74,6 +81,13 @@ internal static class ConfigJsonParser
         }
     }
 
+    /// <summary>
+    /// Parses a JSON object starting at the opening brace.
+    /// </summary>
+    /// <param name="json">The JSON document text.</param>
+    /// <param name="position">The current parse position; advanced past the closing brace.</param>
+    /// <returns>The parsed object value.</returns>
+    /// <exception cref="FormatException">Thrown when the object is malformed.</exception>
     private static ConfigJsonValue ParseObject(string json, ref int position)
     {
         position++; // consume '{'
@@ -116,6 +130,13 @@ internal static class ConfigJsonParser
         return ConfigJsonValue.ForObject(members);
     }
 
+    /// <summary>
+    /// Parses a JSON array starting at the opening bracket.
+    /// </summary>
+    /// <param name="json">The JSON document text.</param>
+    /// <param name="position">The current parse position; advanced past the closing bracket.</param>
+    /// <returns>The parsed array value.</returns>
+    /// <exception cref="FormatException">Thrown when the array is malformed.</exception>
     private static ConfigJsonValue ParseArray(string json, ref int position)
     {
         position++; // consume '['
@@ -149,6 +170,13 @@ internal static class ConfigJsonParser
         return ConfigJsonValue.ForArray(items);
     }
 
+    /// <summary>
+    /// Parses a JSON string literal starting at the opening quote, resolving escape sequences.
+    /// </summary>
+    /// <param name="json">The JSON document text.</param>
+    /// <param name="position">The current parse position; advanced past the closing quote.</param>
+    /// <returns>The decoded string content.</returns>
+    /// <exception cref="FormatException">Thrown when the string is unterminated or contains an invalid character.</exception>
     private static string ParseString(string json, ref int position)
     {
         position++; // consume opening quote
@@ -181,6 +209,13 @@ internal static class ConfigJsonParser
         }
     }
 
+    /// <summary>
+    /// Parses a single escape sequence following a backslash within a JSON string.
+    /// </summary>
+    /// <param name="json">The JSON document text.</param>
+    /// <param name="position">The current parse position, just past the backslash; advanced past the escape.</param>
+    /// <returns>The character represented by the escape sequence.</returns>
+    /// <exception cref="FormatException">Thrown when the escape sequence is invalid or unterminated.</exception>
     private static char ParseEscape(string json, ref int position)
     {
         if (position >= json.Length)
@@ -213,6 +248,13 @@ internal static class ConfigJsonParser
         }
     }
 
+    /// <summary>
+    /// Parses a JSON number starting at the current position.
+    /// </summary>
+    /// <param name="json">The JSON document text.</param>
+    /// <param name="position">The current parse position; advanced past the number token.</param>
+    /// <returns>The parsed numeric value.</returns>
+    /// <exception cref="FormatException">Thrown when the number token is not a valid JSON number.</exception>
     private static double ParseNumber(string json, ref int position)
     {
         var start = position;
@@ -228,6 +270,13 @@ internal static class ConfigJsonParser
         return value;
     }
 
+    /// <summary>
+    /// Parses a <c>true</c> or <c>false</c> literal starting at the current position.
+    /// </summary>
+    /// <param name="json">The JSON document text.</param>
+    /// <param name="position">The current parse position; advanced past the literal.</param>
+    /// <returns><see langword="true" /> for the <c>true</c> literal; otherwise <see langword="false" />.</returns>
+    /// <exception cref="FormatException">Thrown when the expected boolean literal is not present.</exception>
     private static bool ParseLiteralBoolean(string json, ref int position)
     {
         if (Peek(json, position) == 't')
@@ -240,6 +289,13 @@ internal static class ConfigJsonParser
         return false;
     }
 
+    /// <summary>
+    /// Consumes an expected keyword literal at the current position.
+    /// </summary>
+    /// <param name="json">The JSON document text.</param>
+    /// <param name="position">The current parse position; advanced past the literal on success.</param>
+    /// <param name="literal">The literal text expected at the current position.</param>
+    /// <exception cref="FormatException">Thrown when the expected literal is not present.</exception>
     private static void ParseLiteral(string json, ref int position, string literal)
     {
         if (position + literal.Length > json.Length ||
@@ -251,9 +307,19 @@ internal static class ConfigJsonParser
         position += literal.Length;
     }
 
+    /// <summary>
+    /// Determines whether a character can appear within a JSON number token.
+    /// </summary>
+    /// <param name="c">The character to test.</param>
+    /// <returns><see langword="true" /> when the character is a valid number character; otherwise <see langword="false" />.</returns>
     private static bool IsNumberChar(char c) =>
         (c >= '0' && c <= '9') || c == '.' || c == 'e' || c == 'E' || c == '+' || c == '-';
 
+    /// <summary>
+    /// Advances the parse position past any JSON whitespace.
+    /// </summary>
+    /// <param name="json">The JSON document text.</param>
+    /// <param name="position">The current parse position; advanced past contiguous whitespace.</param>
     private static void SkipWhitespace(string json, ref int position)
     {
         while (position < json.Length)
@@ -269,9 +335,22 @@ internal static class ConfigJsonParser
         }
     }
 
+    /// <summary>
+    /// Returns the character at the current position without advancing.
+    /// </summary>
+    /// <param name="json">The JSON document text.</param>
+    /// <param name="position">The position to inspect.</param>
+    /// <returns>The character at the position, or <c>'\0'</c> when the position is at or past the end.</returns>
     private static char Peek(string json, int position) =>
         position < json.Length ? json[position] : '\0';
 
+    /// <summary>
+    /// Returns the character at the current position and advances past it.
+    /// </summary>
+    /// <param name="json">The JSON document text.</param>
+    /// <param name="position">The current parse position; advanced by one.</param>
+    /// <returns>The character consumed at the current position.</returns>
+    /// <exception cref="FormatException">Thrown when the position is at or past the end of input.</exception>
     private static char NextOrThrow(string json, ref int position)
     {
         if (position >= json.Length)
@@ -282,6 +361,13 @@ internal static class ConfigJsonParser
         return json[position++];
     }
 
+    /// <summary>
+    /// Consumes the character at the current position and verifies it matches the expected character.
+    /// </summary>
+    /// <param name="json">The JSON document text.</param>
+    /// <param name="position">The current parse position; advanced by one.</param>
+    /// <param name="expected">The character required at the current position.</param>
+    /// <exception cref="FormatException">Thrown when the current character does not match <paramref name="expected" />.</exception>
     private static void Expect(string json, ref int position, char expected)
     {
         if (NextOrThrow(json, ref position) != expected)

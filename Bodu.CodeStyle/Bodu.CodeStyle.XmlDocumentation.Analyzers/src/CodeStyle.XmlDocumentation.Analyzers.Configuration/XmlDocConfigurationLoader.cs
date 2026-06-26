@@ -144,6 +144,15 @@ internal static class XmlDocConfigurationLoader
         return current;
     }
 
+    /// <summary>
+    /// Applies a single boolean <c>.editorconfig</c> override that adds or removes a tag from the
+    /// force-multiline set.
+    /// </summary>
+    /// <param name="options">The options to update.</param>
+    /// <param name="treeOptions">The Roslyn-supplied options for the syntax tree under analysis.</param>
+    /// <param name="key">The <c>.editorconfig</c> key carrying the boolean override.</param>
+    /// <param name="tagName">The tag name to add or remove from the force-multiline set.</param>
+    /// <returns>The updated options, or the original options when the key is absent or unchanged.</returns>
     private static XmlDocFormatOptions ApplyForceMultilineOverride(
         XmlDocFormatOptions options,
         AnalyzerConfigOptions treeOptions,
@@ -196,6 +205,14 @@ internal static class XmlDocConfigurationLoader
         return inferred ?? "\r\n";
     }
 
+    /// <summary>
+    /// Infers the line ending used by a source text from its first observed newline.
+    /// </summary>
+    /// <param name="text">The source text to inspect, or <see langword="null" />.</param>
+    /// <returns>
+    /// The first observed line ending (<c>"\r\n"</c>, <c>"\r"</c>, or <c>"\n"</c>), or <see langword="null" />
+    /// when the text is <see langword="null" /> or contains no newline.
+    /// </returns>
     private static string? InferLineEnding(SourceText? text)
     {
         if (text is null) return null;
@@ -218,12 +235,23 @@ internal static class XmlDocConfigurationLoader
         return null;
     }
 
+    /// <summary>
+    /// Determines whether the supplied path refers to the <c>bodu.xmldocstyle.json</c> configuration file.
+    /// </summary>
+    /// <param name="path">The additional file path to test.</param>
+    /// <returns><see langword="true" /> when the file name matches; otherwise <see langword="false" />.</returns>
     private static bool IsConfigFile(string path)
     {
         var fileName = Path.GetFileName(path);
         return string.Equals(fileName, "bodu.xmldocstyle.json", StringComparison.OrdinalIgnoreCase);
     }
 
+    /// <summary>
+    /// Creates a diagnostic location anchored to the start of a configuration file.
+    /// </summary>
+    /// <param name="path">The file path to attribute the diagnostic to.</param>
+    /// <param name="text">The source text of the file, used to resolve the line-position span.</param>
+    /// <returns>A location at the start of the file.</returns>
     private static Location CreateFileLocation(string path, SourceText text)
     {
         // Attribute the diagnostic to the start of the configuration file. The JSON reader does not surface a

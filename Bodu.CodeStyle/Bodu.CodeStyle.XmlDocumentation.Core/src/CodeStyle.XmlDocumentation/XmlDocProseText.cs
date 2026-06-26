@@ -111,6 +111,11 @@ public static class XmlDocProseText
         return CollapseWhitespace(joined.ToString());
     }
 
+    /// <summary>
+    /// Collapses every run of whitespace in the given text to a single space and trims a trailing space.
+    /// </summary>
+    /// <param name="text">The text to normalise.</param>
+    /// <returns>The text with whitespace runs collapsed to single spaces.</returns>
     private static string CollapseWhitespace(string text)
     {
         var result = new StringBuilder(text.Length);

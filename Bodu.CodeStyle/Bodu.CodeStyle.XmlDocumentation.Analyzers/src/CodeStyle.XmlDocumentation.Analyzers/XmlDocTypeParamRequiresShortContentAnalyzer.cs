@@ -42,8 +42,14 @@ namespace Bodu.CodeStyle.XmlDocumentation.Analyzers;
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public sealed class XmlDocTypeParamRequiresShortContentAnalyzer : DiagnosticAnalyzer
 {
+    /// <summary>
+    /// The local name of the documentation element this analyzer inspects.
+    /// </summary>
     private const string TypeParamTagName = "typeparam";
 
+    /// <summary>
+    /// The doc-comment line prefix used when reasoning about the canonical single-line rendering.
+    /// </summary>
     private const string DocCommentPrefix = "/// ";
 
     /// <inheritdoc />
@@ -60,6 +66,11 @@ public sealed class XmlDocTypeParamRequiresShortContentAnalyzer : DiagnosticAnal
         context.RegisterCompilationStartAction(OnCompilationStart);
     }
 
+    /// <summary>
+    /// Loads the compilation-wide formatting options and registers the per-element analysis for
+    /// <c>&lt;typeparam&gt;</c> documentation elements.
+    /// </summary>
+    /// <param name="compilationContext">The compilation-start analysis context used to read additional files and register the syntax-node action.</param>
     private static void OnCompilationStart(CompilationStartAnalysisContext compilationContext)
     {
         XmlDocFormatOptions compilationOptions = XmlDocConfigurationLoader.LoadCompilationOptions(
@@ -71,6 +82,12 @@ public sealed class XmlDocTypeParamRequiresShortContentAnalyzer : DiagnosticAnal
             SyntaxKind.XmlElement);
     }
 
+    /// <summary>
+    /// Inspects a <c>&lt;typeparam&gt;</c> documentation element and reports the diagnostic when its canonical
+    /// single-line rendering exceeds the configured budget and a first-sentence split would bring it under budget.
+    /// </summary>
+    /// <param name="context">The syntax-node analysis context for the <see cref="XmlElementSyntax" /> node.</param>
+    /// <param name="compilationOptions">The compilation-wide formatting options, before any per-tree overrides.</param>
     private static void AnalyzeXmlElement(SyntaxNodeAnalysisContext context, XmlDocFormatOptions compilationOptions)
     {
         var element = (XmlElementSyntax)context.Node;
@@ -100,10 +117,20 @@ public sealed class XmlDocTypeParamRequiresShortContentAnalyzer : DiagnosticAnal
             element.StartTag.GetLocation()));
     }
 
+    /// <summary>
+    /// Determines whether the supplied element name is an unprefixed <c>&lt;typeparam&gt;</c> tag.
+    /// </summary>
+    /// <param name="name">The XML element name to test.</param>
+    /// <returns><see langword="true" /> if the name is the unprefixed <c>typeparam</c> tag; otherwise, <see langword="false" />.</returns>
     private static bool IsTypeParamElement(XmlNameSyntax name) =>
         name.Prefix is null
         && string.Equals(name.LocalName.ValueText, TypeParamTagName, StringComparison.Ordinal);
 
+    /// <summary>
+    /// Computes the non-content width of the canonical single-line rendering for the supplied element.
+    /// </summary>
+    /// <param name="element">The <c>&lt;typeparam&gt;</c> element whose fixed overhead is measured.</param>
+    /// <returns>The combined width of the leading prefix and the canonicalized start and end tags.</returns>
     // Computes the non-content width of the canonical single-line rendering: the rendered prefix (indent plus
     // the "/// " doc-comment marker, taken as the start tag's column) plus the canonicalized start and end tags.
     private static int ComputeFixedOverhead(XmlElementSyntax element)
@@ -121,6 +148,11 @@ public sealed class XmlDocTypeParamRequiresShortContentAnalyzer : DiagnosticAnal
         return prefixWidth + startTagWidth + endTagWidth;
     }
 
+    /// <summary>
+    /// Concatenates the element's content nodes into a single string with whitespace preserved.
+    /// </summary>
+    /// <param name="element">The <c>&lt;typeparam&gt;</c> element whose content text is collected.</param>
+    /// <returns>The verbatim content text of the element.</returns>
     // Concatenates the element's content tokens into a single string. Inline child elements (e.g.
     // <see cref="…" />) contribute their verbatim source text; text tokens contribute their raw text.
     // Whitespace is preserved as-is so the first-sentence boundary detection can rely on the canonical
@@ -136,6 +168,11 @@ public sealed class XmlDocTypeParamRequiresShortContentAnalyzer : DiagnosticAnal
         return sb.ToString();
     }
 
+    /// <summary>
+    /// Determines whether the node under analysis belongs to a generated source file.
+    /// </summary>
+    /// <param name="context">The syntax-node analysis context to inspect.</param>
+    /// <returns><see langword="true" /> if the node resides in generated code; otherwise, <see langword="false" />.</returns>
     private static bool IsInGeneratedCode(SyntaxNodeAnalysisContext context) =>
         GeneratedCodeFilters.IsGenerated(context.Node.SyntaxTree);
 }

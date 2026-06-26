@@ -23,10 +23,13 @@ namespace Bodu.CodeStyle.XmlDocumentation.Analyzers.Diagnostics;
 /// </remarks>
 internal static class DiagnosticDescriptors
 {
+    /// <summary>The diagnostic category shared by the XML documentation formatting descriptors.</summary>
     private const string Category = "Documentation";
 
+    /// <summary>The diagnostic category used for configuration-file descriptors.</summary>
     private const string ConfigurationCategory = "BoduCodeStyle";
 
+    /// <summary>The base URL for the help links attached to each descriptor, anchored per rule.</summary>
     private const string HelpLinkBase = "https://github.com/bodu/bodu/blob/master/Bodu.CodeStyle/README.md";
 
     /// <summary>
@@ -192,6 +195,7 @@ internal static class DiagnosticDescriptors
         XmlDocCodeRequiresCData,
         XmlDocTypeParamRequiresShortContent);
 
+    /// <summary>Maps each supported XML doc tag name to its per-tag formatting descriptor.</summary>
     private static readonly Dictionary<string, DiagnosticDescriptor> s_byTagName =
         new(StringComparer.Ordinal)
         {
@@ -229,6 +233,12 @@ internal static class DiagnosticDescriptors
         return s_byTagName.TryGetValue(tagName, out DiagnosticDescriptor descriptor) ? descriptor : XmlDocCrossCutting;
     }
 
+    /// <summary>
+    /// Creates a per-tag formatting descriptor with the standard title, message, category, severity, and help link.
+    /// </summary>
+    /// <param name="id">The diagnostic identifier (e.g. <c>BODU1001</c>).</param>
+    /// <param name="tagName">The XML doc tag name the descriptor reports on.</param>
+    /// <returns>The constructed descriptor.</returns>
     private static DiagnosticDescriptor CreateTagDescriptor(string id, string tagName) =>
         new DiagnosticDescriptor(
             id: id,

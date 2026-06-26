@@ -22,6 +22,10 @@ namespace Bodu.CodeStyle.XmlDocumentation;
 /// </remarks>
 public static class XmlDocSentenceBoundary
 {
+    /// <summary>
+    /// The set of known abbreviations written without an internal period whose trailing period must not be treated
+    /// as a sentence boundary.
+    /// </summary>
     private static readonly HashSet<string> s_abbreviations = new(StringComparer.OrdinalIgnoreCase)
     {
         "e.g", "i.e", "etc", "vs", "cf", "al", "viz", "ca", "approx",
@@ -66,6 +70,12 @@ public static class XmlDocSentenceBoundary
         return -1;
     }
 
+    /// <summary>
+    /// Reads the run of non-whitespace characters ending immediately before the period at the given index.
+    /// </summary>
+    /// <param name="content">The prose being scanned.</param>
+    /// <param name="periodIndex">The index of the candidate sentence-terminating period.</param>
+    /// <returns>The token of non-whitespace characters preceding the period.</returns>
     private static string ReadPrecedingToken(string content, int periodIndex)
     {
         var start = periodIndex;
@@ -78,6 +88,11 @@ public static class XmlDocSentenceBoundary
         return content.Substring(start, periodIndex - start);
     }
 
+    /// <summary>
+    /// Determines whether the given character is horizontal or vertical whitespace.
+    /// </summary>
+    /// <param name="ch">The character to test.</param>
+    /// <returns><see langword="true" /> when the character is a space, tab, carriage return, or line feed; otherwise <see langword="false" />.</returns>
     private static bool IsWhitespace(char ch) =>
         ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n';
 }

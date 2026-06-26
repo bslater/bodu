@@ -135,6 +135,12 @@ public static class XmlDocFormatPolicyDefaults
             neverSplitTagContent: DefaultNeverSplitTagContent,
             tagPolicies: CreateDefaultTagPolicies());
 
+    /// <summary>
+    /// Builds the default per-tag policy dictionary, assigning each well-known tag a multiline, single-line, or
+    /// inline-atomic policy while leaving the layout at <see cref="XmlDocTagLayout.Auto" /> so the convenience sets
+    /// remain the authoritative layout source.
+    /// </summary>
+    /// <returns>The immutable dictionary of default per-tag policies keyed by element name.</returns>
     private static ImmutableDictionary<string, XmlDocTagPolicy> CreateDefaultTagPolicies()
     {
         ImmutableDictionary<string, XmlDocTagPolicy>.Builder builder =

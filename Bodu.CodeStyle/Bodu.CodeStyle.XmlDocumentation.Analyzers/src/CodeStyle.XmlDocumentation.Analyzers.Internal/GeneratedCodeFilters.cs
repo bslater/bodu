@@ -18,9 +18,11 @@ namespace Bodu.CodeStyle.XmlDocumentation.Analyzers.Internal;
 /// </summary>
 internal static class GeneratedCodeFilters
 {
-    // Caches the combined generated-code verdict per syntax tree so syntax-node analyzers that run once per XML
-    // element do not re-read and re-scan the file text for every node. Keys are weakly held, so trees are not
-    // kept alive and the cache spans compilations without leaking.
+    /// <summary>
+    /// Caches the combined generated-code verdict per syntax tree so syntax-node analyzers that run once per XML
+    /// element do not re-read and re-scan the file text for every node. Keys are weakly held, so trees are not
+    /// kept alive and the cache spans compilations without leaking.
+    /// </summary>
     private static readonly ConditionalWeakTable<SyntaxTree, StrongBox<bool>> s_generatedCache = new();
 
     /// <summary>

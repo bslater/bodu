@@ -104,6 +104,15 @@ internal static class DocWrapper
         return lines;
     }
 
+    /// <summary>
+    /// Appends an atom that itself contains line breaks, emitting its first segment on the current line, its
+    /// interior segments as standalone lines, and seeding the running line with its final segment.
+    /// </summary>
+    /// <param name="atom">The multi-line atom, with segments separated by <c>'\n'</c>.</param>
+    /// <param name="lines">The accumulated output lines.</param>
+    /// <param name="current">The builder for the line currently being assembled.</param>
+    /// <param name="currentHasContent">A reference flag indicating whether the running line already holds content; updated on return.</param>
+    /// <param name="pendingWhitespace">A reference to the pending separating whitespace, if any; cleared on return.</param>
     private static void AppendMultiLineAtom(string atom, List<string> lines, StringBuilder current, ref bool currentHasContent, ref string? pendingWhitespace)
     {
         var segments = atom.Split('\n');
@@ -131,6 +140,12 @@ internal static class DocWrapper
         currentHasContent = last.Length > 0;
     }
 
+    /// <summary>
+    /// Determines whether an atom consists solely of spaces and tabs and therefore represents a break
+    /// opportunity rather than content.
+    /// </summary>
+    /// <param name="atom">The atom to test.</param>
+    /// <returns><see langword="true" /> if the atom is empty or contains only horizontal whitespace; otherwise <see langword="false" />.</returns>
     private static bool IsWhitespaceAtom(string atom)
     {
         if (atom.Length == 0) return true;

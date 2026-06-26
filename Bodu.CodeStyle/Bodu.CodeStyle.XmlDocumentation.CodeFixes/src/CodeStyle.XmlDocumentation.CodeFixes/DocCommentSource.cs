@@ -16,6 +16,9 @@ namespace Bodu.CodeStyle.XmlDocumentation.CodeFixes;
 /// </summary>
 internal static class DocCommentSource
 {
+    /// <summary>
+    /// The canonical documentation-comment prefix used when a line carries no detectable <c>///</c> prefix.
+    /// </summary>
     private const string DefaultPrefix = "/// ";
 
     /// <summary>
