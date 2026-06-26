@@ -311,6 +311,7 @@ public sealed class Ed25519
             Span<byte> k = stackalloc byte[32];
             Ed25519Scalar.Reduce(digest, k);
             Ed25519Scalar.MulAdd(k, s, r, destination[32..]);
+            CryptographyHelper.Clear(k);
         }
 
         CryptographyHelper.Clear(expanded);

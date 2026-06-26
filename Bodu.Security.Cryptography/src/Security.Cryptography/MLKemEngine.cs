@@ -262,8 +262,14 @@ internal static partial class MLKemEngine
 
         rho.CopyTo(ekPke[(384 * k) ..]);
 
+        // Zero every scratch buffer before returning: sHat is the secret vector, and product/tHat are derived from it.
+        // aRow and tHat are ultimately public, but clearing them too keeps a single uniform rule for the method.
         CryptographyHelper.Clear(rhoSigma);
+        CryptographyHelper.Clear(aRow);
+        CryptographyHelper.Clear(product);
         foreach (int[] poly in sHat)
+            CryptographyHelper.Clear(poly);
+        foreach (int[] poly in tHat)
             CryptographyHelper.Clear(poly);
     }
 
@@ -339,8 +345,14 @@ internal static partial class MLKemEngine
 
         CompressEncode(parameters.Dv, v, ciphertext[(k * 32 * parameters.Du) ..]);
 
+        // yHat is the ephemeral encryption secret; product, u, and v are derived from it. aColumn and tRow are public
+        // but are cleared alongside for a uniform end-of-method rule.
         foreach (int[] poly in yHat)
             CryptographyHelper.Clear(poly);
+        CryptographyHelper.Clear(aColumn);
+        CryptographyHelper.Clear(product);
+        CryptographyHelper.Clear(u);
+        CryptographyHelper.Clear(tRow);
         CryptographyHelper.Clear(v);
         CryptographyHelper.Clear(noise);
         CryptographyHelper.Clear(message);
@@ -387,8 +399,13 @@ internal static partial class MLKemEngine
 
         ByteEncode(1, message, m);
 
+        // s is the secret vector and w/product are derived from it; u and v come from the public ciphertext but are
+        // cleared too so the method leaves no populated scratch behind.
         CryptographyHelper.Clear(w);
+        CryptographyHelper.Clear(u);
         CryptographyHelper.Clear(s);
+        CryptographyHelper.Clear(product);
+        CryptographyHelper.Clear(v);
         CryptographyHelper.Clear(message);
     }
 
