@@ -253,6 +253,30 @@ public abstract class MLDsaContractTests<TTest, TDsa>
     }
 
     /// <summary>
+    /// Verifies that the unbounded Fiat-Shamir-with-aborts signing loop always terminates and produces a verifiable
+    /// signature across a large number of hedged signatures, exercising the rejection-sampling restarts. The
+    /// rejection-count distribution itself is not asserted, as observing it would require instrumenting the production
+    /// signing path.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Stress")]
+    public void SignData_WhenManyHedgedSignaturesProduced_ShouldAlwaysTerminateAndVerify()
+    {
+        using var dsa = new TDsa();
+        dsa.GenerateKey();
+
+        var random = new Random(204);
+        byte[] message = new byte[64];
+
+        for (int iteration = 0; iteration < 2_000; iteration++)
+        {
+            random.NextBytes(message);
+            byte[] signature = dsa.SignData(message);
+            Assert.IsTrue(dsa.VerifyData(message, signature), $"iteration {iteration}");
+        }
+    }
+
+    /// <summary>
     /// Verifies that a signature whose final hint count exceeds ω is rejected by the strict FIPS 204 hint decoding.
     /// </summary>
     [TestMethod]
