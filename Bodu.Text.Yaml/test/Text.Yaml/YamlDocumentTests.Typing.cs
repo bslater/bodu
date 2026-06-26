@@ -105,6 +105,34 @@ public partial class YamlDocumentTests
         Assert.AreEqual("-0o7", doc.RootElement.GetProperty("v").GetString());
     }
 
+    /// <summary>Verifies that an integer just above 2^53 is preserved exactly rather than rounded through a double.</summary>
+    [TestMethod]
+    public void Parse_WhenIntegerAbovePow2_53_ShouldPreserveExactValue()
+    {
+        using var doc = YamlDocument.Parse("v: 9007199254740993\n");
+        Assert.AreEqual(YamlValueKind.Integer, doc.RootElement.GetProperty("v").ValueKind);
+        Assert.AreEqual(9007199254740993L, doc.RootElement.GetProperty("v").GetInt64());
+    }
+
+    /// <summary>Verifies that <see cref="long.MaxValue" /> resolves to an integer with its exact value.</summary>
+    [TestMethod]
+    public void Parse_WhenInt64MaxValue_ShouldResolveExactly()
+    {
+        using var doc = YamlDocument.Parse("v: 9223372036854775807\n");
+        Assert.AreEqual(YamlValueKind.Integer, doc.RootElement.GetProperty("v").ValueKind);
+        Assert.AreEqual(long.MaxValue, doc.RootElement.GetProperty("v").GetInt64());
+    }
+
+    /// <summary>
+    /// Verifies that an integer beyond the profile's 64-bit integer range is not silently coerced to a lossy integer.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenIntegerBeyondInt64Range_ShouldNotResolveToInteger()
+    {
+        using var doc = YamlDocument.Parse("v: 18446744073709551615\n");
+        Assert.AreNotEqual(YamlValueKind.Integer, doc.RootElement.GetProperty("v").ValueKind);
+    }
+
     /// <summary>Verifies that binary integers and underscore digit groups resolve under YAML 1.1.</summary>
     [TestMethod]
     [TestCategory("Regression")]

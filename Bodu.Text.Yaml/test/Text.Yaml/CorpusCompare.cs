@@ -91,13 +91,21 @@ internal static class CorpusCompare
 
     private static bool MatchesNumber(JsonElement expected, YamlElement actual)
     {
-        var target = expected.GetDouble();
-        return actual.ValueKind switch
+        // Compare by numeric category instead of forcing every value through double, which would mask differences for
+        // integers above 2^53 and other precision-sensitive cases. A YAML integer is compared exactly as a 64-bit
+        // integer; only genuine floating-point values (and integers too large for the profile's Int64 store, which
+        // resolve as floats) fall back to a double comparison.
+        switch (actual.ValueKind)
         {
-            YamlValueKind.Integer => actual.GetInt64() == target,
-            YamlValueKind.Float => NumbersEqual(actual.GetDouble(), target),
-            _ => false,
-        };
+            case YamlValueKind.Integer:
+                return expected.TryGetInt64(out var expectedInt) && actual.GetInt64() == expectedInt;
+
+            case YamlValueKind.Float:
+                return expected.TryGetDouble(out var expectedDouble) && NumbersEqual(actual.GetDouble(), expectedDouble);
+
+            default:
+                return false;
+        }
     }
 
     private static bool NumbersEqual(double a, double b) =>
