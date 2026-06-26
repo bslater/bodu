@@ -6,6 +6,7 @@
 
 using System.Reflection;
 using System.Security.Cryptography;
+using Bodu.Security.Cryptography.Infrastructure;
 using Bodu.Test;
 
 namespace Bodu.Security.Cryptography;
@@ -62,25 +63,27 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// Gets the expected hash result for an empty input using the default algorithm variant.
     /// </summary>
     /// <exception cref="InvalidOperationException">
-    /// Thrown if the default variant's <see cref="HashAlgorithmKnownAnswers.Empty" /> slot is unset.
+    /// Thrown if the default variant declares no <c>"Empty"</c> known-answer vector.
     /// </exception>
     /// <remarks>
     /// This property is used to verify that the algorithm under test produces the correct result when hashing
     /// an empty input. The expected hash is sourced from
-    /// <see cref="HashAlgorithmSpecification.KnownAnswers" /> for the <see cref="DefaultVariant" />.
+    /// <see cref="AlgorithmSpecification{TKat}.KnownAnswers" /> for the <see cref="DefaultVariant" />.
     /// </remarks>
-    protected virtual byte[] ExpectedEmptyInputHash
-    {
-        get
-        {
-            HashAlgorithmKnownAnswers knownAnswers = GetSpecification(DefaultVariant).KnownAnswers;
-            if (knownAnswers.Empty is { } hex)
-                return Convert.FromHexString(hex);
-
-            throw new InvalidOperationException(
+    protected virtual byte[] ExpectedEmptyInputHash =>
+        FindEmptyKnownAnswer(DefaultVariant)?.Digest
+            ?? throw new InvalidOperationException(
                 $"Expected hash for the empty input is not defined for variant '{DefaultVariant}'.");
-        }
-    }
+
+    /// <summary>
+    /// Returns the canonical <c>"Empty"</c> known-answer vector for the given <paramref name="variant" />, or
+    /// <see langword="null" /> when the variant does not declare one.
+    /// </summary>
+    /// <param name="variant">The variant whose specification is searched.</param>
+    /// <returns>The empty-input vector, or <see langword="null" /> when absent.</returns>
+    private MessageDigestKnownAnswer? FindEmptyKnownAnswer(TVariant variant) =>
+        GetSpecification(variant).KnownAnswers
+            .FirstOrDefault(kat => kat.Name == nameof(MessageDigestKnownAnswer.Empty));
 
     /// <summary>
     /// Gets additional hash sizes, in bits, that should be included in hash-size-driven tests.
@@ -187,18 +190,15 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// </summary>
     /// <param name="variant">The algorithm variant under test.</param>
     /// <remarks>
-    /// Reports inconclusive rather than failing when the variant intentionally omits the
-    /// <see cref="HashAlgorithmKnownAnswers.Empty" /> slot (for example, Skein publishes an
-    /// empty-input digest only for its canonical output size and supplies coverage for the
-    /// remaining digest sizes via per-row keyed KAT vectors).
+    /// Reports inconclusive rather than failing when the variant intentionally omits the <c>"Empty"</c> vector
+    /// (for example, Skein publishes an empty-input digest only for its canonical output size and supplies coverage
+    /// for the remaining digest sizes via per-row keyed KAT vectors).
     /// </remarks>
     [TestMethod]
     [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(VariantDisplayNameHelper.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(VariantDisplayNameHelper))]
     public void HashAlgorithm_TestData_EmptyKnownAnswer_ShouldBeDefined(TVariant variant)
     {
-        string? emptyHash = GetSpecification(variant).KnownAnswers.Empty;
-
-        if (emptyHash is null)
+        if (FindEmptyKnownAnswer(variant) is null)
         {
             Assert.Inconclusive($"No empty-input known answer is defined for variant '{variant}'.");
             return;
@@ -211,14 +211,14 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// <param name="variant">The algorithm variant under test.</param>
     /// <remarks>
     /// The first incremental hash corresponds to hashing zero bytes. This test ensures consistency between the
-    /// fixed <see cref="HashAlgorithmKnownAnswers.Empty" /> slot and the incremental output series.
+    /// fixed <c>"Empty"</c> known-answer vector and the incremental output series.
     /// </remarks>
     [TestMethod]
     [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(VariantDisplayNameHelper.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(VariantDisplayNameHelper))]
     public void HashAlgorithm_TestData_EmptyKnownAnswer_ShouldMatchFirstIncrementalHash(TVariant variant)
     {
         IReadOnlyList<string> incrementalHashes = GetExpectedHashesForIncrementalInput(variant);
-        string? emptyHash = GetSpecification(variant).KnownAnswers.Empty;
+        MessageDigestKnownAnswer? emptyKnownAnswer = FindEmptyKnownAnswer(variant);
 
         if (incrementalHashes.Count == 0)
         {
@@ -226,15 +226,15 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
             return;
         }
 
-        if (emptyHash is null)
+        if (emptyKnownAnswer is null)
         {
             Assert.Inconclusive($"No empty-input known answer is defined for variant '{variant}'.");
             return;
         }
 
-        Assert.AreEqual(
-            emptyHash,
-            incrementalHashes[0],
+        CollectionAssert.AreEqual(
+            Convert.FromHexString(incrementalHashes[0]),
+            emptyKnownAnswer.Digest,
             "Expected hash value for 'Empty' named input should equal the first item of incremental input.");
     }
 
@@ -361,50 +361,26 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
             excludeProperties: new TTest().GetExcludedWriteablePropertyNames()?.ToArray() ?? []);
 
     /// <summary>
-    /// Yields the known-answer vectors declared by the specification for the given <paramref name="variant" />:
-    /// each populated typed slot on <see cref="HashAlgorithmKnownAnswers" /> paired with its corresponding
-    /// shared input, followed by every algorithm-specific entry in
-    /// <see cref="HashAlgorithmKnownAnswers.Additional" />.
+    /// Yields the unkeyed known-answer vectors declared by the specification for the given <paramref name="variant" />.
+    /// Vectors that carry a per-row key are excluded — they are driven by the keyed-hash test path instead.
     /// </summary>
     /// <param name="variant">The variant to generate test vectors for.</param>
     /// <returns>A sequence of <see cref="KnownAnswerTest" /> instances driving named-input assertions.</returns>
     protected virtual IEnumerable<KnownAnswerTest> GetTestVectors(TVariant variant)
     {
-        HashAlgorithmKnownAnswers knownAnswers = GetSpecification(variant).KnownAnswers;
-
-        if (knownAnswers.Empty is { } empty)
-            yield return CreateVector(nameof(knownAnswers.Empty), HashAlgorithmSharedInputs.Empty, empty);
-
-        if (knownAnswers.Abc is { } abc)
-            yield return CreateVector(nameof(knownAnswers.Abc), HashAlgorithmSharedInputs.Abc, abc);
-
-        if (knownAnswers.QuickBrownFox is { } qbf)
-            yield return CreateVector(nameof(knownAnswers.QuickBrownFox), HashAlgorithmSharedInputs.QuickBrownFox, qbf);
-
-        if (knownAnswers.Zeros16 is { } zeros)
-            yield return CreateVector(nameof(knownAnswers.Zeros16), HashAlgorithmSharedInputs.Zeros16, zeros);
-
-        if (knownAnswers.Sequential0To255 is { } sequential)
-            yield return CreateVector(nameof(knownAnswers.Sequential0To255), HashAlgorithmSharedInputs.Sequential0To255, sequential);
-
-        foreach (HashAlgorithmKnownAnswer extra in knownAnswers.Additional)
+        foreach (MessageDigestKnownAnswer kat in GetSpecification(variant).KnownAnswers)
         {
+            if (kat.Key is not null)
+                continue;
+
             yield return new KnownAnswerTest
             {
-                Name = extra.Name,
-                Input = extra.Input,
-                ExpectedOutput = Convert.FromHexString(extra.ExpectedHex),
+                Name = kat.Name,
+                Input = kat.Message,
+                ExpectedOutput = kat.Digest,
             };
         }
     }
-
-    private static KnownAnswerTest CreateVector(string name, byte[] input, string expectedHex) =>
-        new()
-        {
-            Name = name,
-            Input = input,
-            ExpectedOutput = Convert.FromHexString(expectedHex),
-        };
 
     /// <summary>
     /// Defines the strategy used to invoke a hash algorithm against a buffered input

@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Security.Cryptography.Infrastructure;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -66,29 +67,29 @@ public partial class Blake2sTests
             {
                 HashSize = 128,
                 MinNonZeroBytesForLongInput = 14,
-                KnownAnswers = new() { Empty = "64550D6FFE2C0A01A14ABA1EADE0200C" },
+                KnownAnswers = [MessageDigestKnownAnswer.Empty("64550D6FFE2C0A01A14ABA1EADE0200C")],
             },
             Blake2sVariant.Blake2s_160 => BaseSpecification with
             {
                 HashSize = 160,
                 MinNonZeroBytesForLongInput = 18,
-                KnownAnswers = new() { Empty = "354C9C33F735962418BDACB9479873429C34916F" },
+                KnownAnswers = [MessageDigestKnownAnswer.Empty("354C9C33F735962418BDACB9479873429C34916F")],
             },
             Blake2sVariant.Blake2s_192 => BaseSpecification with
             {
                 HashSize = 192,
                 MinNonZeroBytesForLongInput = 22,
-                KnownAnswers = new() { Empty = "A847D26C2F966C5C4CC222B174918A56037CDEE34B3F872F" },
+                KnownAnswers = [MessageDigestKnownAnswer.Empty("A847D26C2F966C5C4CC222B174918A56037CDEE34B3F872F")],
             },
             Blake2sVariant.Blake2s_224 => BaseSpecification with
             {
                 HashSize = 224,
                 MinNonZeroBytesForLongInput = 26,
-                KnownAnswers = new() { Empty = "1FA1291E65248B37B3433475B2A0DD63D54A11ECC4E3E034E7BC1EF4" },
+                KnownAnswers = [MessageDigestKnownAnswer.Empty("1FA1291E65248B37B3433475B2A0DD63D54A11ECC4E3E034E7BC1EF4")],
             },
             Blake2sVariant.Blake2s_256 => BaseSpecification with
             {
-                KnownAnswers = new() { Empty = "69217A3079908094E11121D042354A7C1F55B6482CA1A51E1B250DFD1ED0EEF9" },
+                KnownAnswers = [MessageDigestKnownAnswer.Empty("69217A3079908094E11121D042354A7C1F55B6482CA1A51E1B250DFD1ED0EEF9")],
             },
             _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, null),
         };

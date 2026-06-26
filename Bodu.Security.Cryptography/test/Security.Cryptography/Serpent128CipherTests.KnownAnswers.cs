@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Security.Cryptography.Infrastructure;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -32,14 +33,14 @@ namespace Bodu.Security.Cryptography;
 /// <seealso href="https://www.cl.cam.ac.uk/~rja14/serpent.html">Serpent home page (Anderson / Biham / Knudsen)</seealso>
 internal sealed partial class Serpent128CipherTests
 {
-    private const string ProfileNessie = "Serpent NESSIE submission (Anderson / Biham / Knudsen)";
+    private static readonly KatProvenance ProfileNessie = KatProvenance.ReferenceImplementation("Serpent NESSIE submission (Anderson / Biham / Knudsen)");
 
     private static readonly BlockCipherKnownAnswer[] DefaultKnownAnswers =
     [
         new BlockCipherKnownAnswer
         {
             Name = "Serpent128_Nessie_Test0_ZeroKey_ZeroPlain",
-            Profile = ProfileNessie,
+            Provenance = ProfileNessie,
             Plaintext = Convert.FromHexString("00000000000000000000000000000000"),
             Ciphertext = Convert.FromHexString("3620B17AE6A993D09618B8768266BAE9"),
             Key = Convert.FromHexString("00000000000000000000000000000000"),
@@ -47,7 +48,7 @@ internal sealed partial class Serpent128CipherTests
         new BlockCipherKnownAnswer
         {
             Name = "Serpent128_Nessie_Test1_HighBitKey_ZeroPlain",
-            Profile = ProfileNessie,
+            Provenance = ProfileNessie,
             Plaintext = Convert.FromHexString("00000000000000000000000000000000"),
             Ciphertext = Convert.FromHexString("264E5481EFF42A4606ABDA06C0BFDA3D"),
             Key = Convert.FromHexString("80000000000000000000000000000000"),
@@ -55,7 +56,7 @@ internal sealed partial class Serpent128CipherTests
         new BlockCipherKnownAnswer
         {
             Name = "Serpent128_Nessie_Test2_RepeatingD9",
-            Profile = ProfileNessie,
+            Provenance = ProfileNessie,
             Plaintext = Convert.FromHexString("D9D9D9D9D9D9D9D9D9D9D9D9D9D9D9D9"),
             Ciphertext = Convert.FromHexString("20EA07F19C8E93FDA30F6B822AD5D486"),
             Key = Convert.FromHexString("D9D9D9D9D9D9D9D9D9D9D9D9D9D9D9D9"),
@@ -63,7 +64,7 @@ internal sealed partial class Serpent128CipherTests
         new BlockCipherKnownAnswer
         {
             Name = "Serpent128_Nessie_Test9_IncrementingKey_AesStdPlain",
-            Profile = ProfileNessie,
+            Provenance = ProfileNessie,
             Plaintext = Convert.FromHexString("33B3DC87EDDD9B0F6A1F407D14919365"),
             Ciphertext = Convert.FromHexString("00112233445566778899AABBCCDDEEFF"),
             Key = Convert.FromHexString("000102030405060708090A0B0C0D0E0F"),
@@ -71,7 +72,7 @@ internal sealed partial class Serpent128CipherTests
         new BlockCipherKnownAnswer
         {
             Name = "Serpent128_Nessie_Test10_AesStdCt",
-            Profile = ProfileNessie,
+            Provenance = ProfileNessie,
             Plaintext = Convert.FromHexString("BEB6C069393822D3BE73FF30525EC43E"),
             Ciphertext = Convert.FromHexString("EA024714AD5C4D84EA024714AD5C4D84"),
             Key = Convert.FromHexString("2BD6459F82C5B300952C49104881FF48"),
@@ -79,7 +80,7 @@ internal sealed partial class Serpent128CipherTests
         new BlockCipherKnownAnswer
         {
             Name = "Serpent128_IncrementingKey_AesStdPlaintext",
-            Profile = ProfileNessie,
+            Provenance = ProfileNessie,
             Plaintext = Convert.FromHexString("00112233445566778899AABBCCDDEEFF"),
             Ciphertext = Convert.FromHexString("563E2CF8740A27C164804560391E9B27"),
             Key = Convert.FromHexString("000102030405060708090A0B0C0D0E0F"),

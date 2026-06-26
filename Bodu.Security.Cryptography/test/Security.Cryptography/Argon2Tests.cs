@@ -29,7 +29,7 @@ public class Argon2Tests
         byte[] secret = Repeat(0x03, 8);
         byte[] associatedData = Repeat(0x04, 12);
 
-        yield return [new KdfKnownAnswerVector
+        yield return [new KdfKnownAnswer
         {
             Name = "RFC 9106 Section 5.1 (Argon2d)",
             Variant = "d",
@@ -37,7 +37,7 @@ public class Argon2Tests
             Memory = 32, Iterations = 3, Parallelism = 4, Version = 0x13, OutputLength = 32,
             ExpectedHex = "512b391b6f1162975371d30919734294f868e3be3984f3c1a13a4db9fabe4acb",
         }];
-        yield return [new KdfKnownAnswerVector
+        yield return [new KdfKnownAnswer
         {
             Name = "RFC 9106 Section 5.2 (Argon2i)",
             Variant = "i",
@@ -45,7 +45,7 @@ public class Argon2Tests
             Memory = 32, Iterations = 3, Parallelism = 4, Version = 0x13, OutputLength = 32,
             ExpectedHex = "c814d9d1dc7f37aa13f0d77f2494bda1c8de6b016dd388d29952a4c4672b6ce8",
         }];
-        yield return [new KdfKnownAnswerVector
+        yield return [new KdfKnownAnswer
         {
             Name = "RFC 9106 Section 5.3 (Argon2id)",
             Variant = "id",
@@ -62,7 +62,7 @@ public class Argon2Tests
     [TestMethod]
     [TestCategory("Regression")]
     [DynamicData(nameof(Rfc9106Vectors), DynamicDataDisplayName = nameof(GetVectorName))]
-    public void DeriveKey_WhenGivenRfc9106Vector_ShouldMatchExpectedTag(KdfKnownAnswerVector vector)
+    public void DeriveKey_WhenGivenRfc9106Vector_ShouldMatchExpectedTag(KdfKnownAnswer vector)
     {
         var parameters = new Argon2Parameters
         {
@@ -225,13 +225,13 @@ public class Argon2Tests
     }
 
     /// <summary>
-    /// Produces a friendly display name for a <see cref="KdfKnownAnswerVector" /> data row.
+    /// Produces a friendly display name for a <see cref="KdfKnownAnswer" /> data row.
     /// </summary>
     /// <param name="methodInfo">The test method being parameterized.</param>
     /// <param name="data">The data row.</param>
     /// <returns>The vector name, or the method name when unavailable.</returns>
     public static string GetVectorName(MethodInfo methodInfo, object[] data) =>
-        data[0] is KdfKnownAnswerVector vector ? vector.Name : methodInfo.Name;
+        data[0] is KdfKnownAnswer vector ? vector.Name : methodInfo.Name;
 
     /// <summary>
     /// Dispatches a derivation to the public type named by <paramref name="variant" />.

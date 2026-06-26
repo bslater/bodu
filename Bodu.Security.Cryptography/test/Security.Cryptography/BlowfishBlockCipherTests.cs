@@ -18,6 +18,7 @@ internal sealed partial class BlowfishBlockCipherTests
         BlockSize = 8,
         KeySize = 8,
         TestKey = TestHelpers.GenerateIncrementalByteSequence(0, 8),
+        KnownAnswers = KnownAnswersFor(variant),
     };
 
     /// <inerhitdocs/>
@@ -27,9 +28,6 @@ internal sealed partial class BlowfishBlockCipherTests
         return new BlowfishBlockCipher(specification.TestKey);
     }
 
-    /// <inheritdoc />
-    protected override IReadOnlyList<BlockCipherKnownAnswer> GetKnownAnswers(SingleTestVariant variant) =>
-        KnownAnswersFor(variant);
 
     /// <inheritdoc />
     protected override IBlockCipher CreateBlockCipherForAnswer(BlockCipherKnownAnswer answer) =>

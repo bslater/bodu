@@ -28,7 +28,7 @@ public partial class AsconAead128Tests
     /// Loads every AEAD known-answer vector embedded in the test assembly and yields them as
     /// <see cref="DynamicDataAttribute" />-compatible rows.
     /// </summary>
-    /// <returns>One row per KAT vector; each row contains a single <see cref="AeadKnownAnswerVector" /> object.</returns>
+    /// <returns>One row per KAT vector; each row contains a single <see cref="AeadKnownAnswer" /> object.</returns>
     /// <exception cref="InvalidOperationException">The embedded KAT resource cannot be located.</exception>
     private static IEnumerable<object[]> AsconAead128ReferenceVectors()
     {
@@ -37,7 +37,7 @@ public partial class AsconAead128Tests
                 $"Embedded resource '{KatResourceName}' is not present in the test assembly. " +
                 "Check the <EmbeddedResource> entry in Bodu.Security.Cryptography.Test.csproj.");
 
-        foreach (AeadKnownAnswerVector vector in NistLwcKatReader.Read(stream, tagLength: 16, source: KatSource))
+        foreach (AeadKnownAnswer vector in NistLwcKatReader.Read(stream, tagLength: 16, source: KatSource))
             yield return new object[] { vector };
     }
 
@@ -46,10 +46,10 @@ public partial class AsconAead128Tests
     /// failures can be traced back to a specific entry in the embedded KAT file.
     /// </summary>
     /// <param name="methodInfo">The test method's reflection info (provided by the test runner).</param>
-    /// <param name="data">The row data (a single <see cref="AeadKnownAnswerVector" />).</param>
+    /// <param name="data">The row data (a single <see cref="AeadKnownAnswer" />).</param>
     /// <returns>A short label that identifies this KAT vector.</returns>
     public static string GetKatVectorDisplayName(System.Reflection.MethodInfo methodInfo, object[] data) =>
-        data[0] is AeadKnownAnswerVector v ? v.ToString() : methodInfo.Name;
+        data[0] is AeadKnownAnswer v ? v.Name : methodInfo.Name;
 
     /// <summary>
     /// Verifies that <see cref="AsconAead128.Encrypt" /> and <see cref="AsconAead128.Decrypt" /> produce the
@@ -60,7 +60,7 @@ public partial class AsconAead128Tests
     [TestMethod]
     [DynamicData(nameof(AsconAead128ReferenceVectors), DynamicDataDisplayName = nameof(GetKatVectorDisplayName))]
     [TestCategory("Regression")]
-    public void EncryptAndDecrypt_WhenGivenNistKatVector_ShouldMatchExpectedCiphertextTagAndPlaintext(AeadKnownAnswerVector vector)
+    public void EncryptAndDecrypt_WhenGivenNistKatVector_ShouldMatchExpectedCiphertextTagAndPlaintext(AeadKnownAnswer vector)
     {
         // Encrypt
         byte[] ciphertextWithTag = new byte[vector.Plaintext.Length + AsconAead128.TagBytes];

@@ -4,6 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Security.Cryptography.Infrastructure;
+using static Bodu.Security.Cryptography.Infrastructure.KatBytes;
+
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -29,19 +32,16 @@ public partial class Snefru256Tests
         BoundaryLengths = [1, 8, 16, 64],
         HashSize = 256,
         MinNonZeroBytesForLongInput = 13,   // 32 output bytes; ~40% threshold, conservative for Snefru
-        KnownAnswers = new()
-        {
-            Empty = "A4DF4C0A4AF3DAD3B7E9F4200144F74D6F44F875AB32715F5664119D676F8D19",
-            Abc = "BB01E1770CFBC7D39187A068274E9553E552DEDD354C4EC35506E1559A3FD15B",
-            Zeros16 = "FD7F2B6794AF20F0BA2861A3155CF8E905811B2EA126A4C2B89D7D9FE9F70FB0",
-            QuickBrownFox = "674CAA75F9D8FD2089856B95E93A4FB42FA6C8702F8980E11D97A142D76CB358",
-            Sequential0To255 = "03216CBBB3014EBFA292F57DED01B93E2378D1001A03DA563A89B50F822140F0",
-            Additional =
-            [
-                new HashAlgorithmKnownAnswer { Name = "a", Input = SnefruLetterAInput, ExpectedHex = "45161589AC317BE0CEBA70DB2573DDDA6E668A31984B39BF65E4B664B584C63D" },
-                new HashAlgorithmKnownAnswer { Name = "1234567890", Input = SnefruRepeatedDigitsInput, ExpectedHex = "D5FCE38A152A2D9B83AB44C29306EE45AB0AED0E38C957EC431DAB6ED6BB71B8" },
-            ],
-        },
+        KnownAnswers =
+        [
+            MessageDigestKnownAnswer.Empty("A4DF4C0A4AF3DAD3B7E9F4200144F74D6F44F875AB32715F5664119D676F8D19"),
+            MessageDigestKnownAnswer.Abc("BB01E1770CFBC7D39187A068274E9553E552DEDD354C4EC35506E1559A3FD15B"),
+            MessageDigestKnownAnswer.Zeros16("FD7F2B6794AF20F0BA2861A3155CF8E905811B2EA126A4C2B89D7D9FE9F70FB0"),
+            MessageDigestKnownAnswer.QuickBrownFox("674CAA75F9D8FD2089856B95E93A4FB42FA6C8702F8980E11D97A142D76CB358"),
+            MessageDigestKnownAnswer.Sequential0To255("03216CBBB3014EBFA292F57DED01B93E2378D1001A03DA563A89B50F822140F0"),
+            new MessageDigestKnownAnswer { Name = "a", Message = SnefruLetterAInput, Digest = Hex("45161589AC317BE0CEBA70DB2573DDDA6E668A31984B39BF65E4B664B584C63D") },
+            new MessageDigestKnownAnswer { Name = "1234567890", Message = SnefruRepeatedDigitsInput, Digest = Hex("D5FCE38A152A2D9B83AB44C29306EE45AB0AED0E38C957EC431DAB6ED6BB71B8") },
+        ],
     };
 
     /// <inheritdoc />

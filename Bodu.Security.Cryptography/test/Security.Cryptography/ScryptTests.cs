@@ -22,21 +22,21 @@ public class ScryptTests
     /// </summary>
     public static IEnumerable<object[]> Rfc7914Vectors()
     {
-        yield return [new KdfKnownAnswerVector
+        yield return [new KdfKnownAnswer
         {
             Name = "RFC 7914 Section 12 (N=16, r=1, p=1)",
             Password = [], Salt = [], CostN = 16, BlockSizeR = 1, Parallelism = 1, OutputLength = 64,
             ExpectedHex = "77d6576238657b203b19ca42c18a0497f16b4844e3074ae8dfdffa3fede21442" +
                           "fcd0069ded0948f8326a753a0fc81f17e8d3e0fb2e0d3628cf35e20c38d18906",
         }];
-        yield return [new KdfKnownAnswerVector
+        yield return [new KdfKnownAnswer
         {
             Name = "RFC 7914 Section 12 (password/NaCl, N=1024, r=8, p=16)",
             Password = Ascii("password"), Salt = Ascii("NaCl"), CostN = 1024, BlockSizeR = 8, Parallelism = 16, OutputLength = 64,
             ExpectedHex = "fdbabe1c9d3472007856e7190d01e9fe7c6ad7cbc8237830e77376634b373162" +
                           "2eaf30d92e22a3886ff109279d9830dac727afb94a83ee6d8360cbdfa2cc0640",
         }];
-        yield return [new KdfKnownAnswerVector
+        yield return [new KdfKnownAnswer
         {
             Name = "RFC 7914 Section 12 (pleaseletmein/SodiumChloride, N=16384, r=8, p=1)",
             Password = Ascii("pleaseletmein"), Salt = Ascii("SodiumChloride"), CostN = 16384, BlockSizeR = 8, Parallelism = 1, OutputLength = 64,
@@ -52,7 +52,7 @@ public class ScryptTests
     [TestMethod]
     [TestCategory("Regression")]
     [DynamicData(nameof(Rfc7914Vectors), DynamicDataDisplayName = nameof(GetVectorName))]
-    public void DeriveKey_WhenGivenRfc7914Vector_ShouldMatchExpectedOutput(KdfKnownAnswerVector vector)
+    public void DeriveKey_WhenGivenRfc7914Vector_ShouldMatchExpectedOutput(KdfKnownAnswer vector)
     {
         byte[] derived = Scrypt.DeriveKey(vector.Password, vector.Salt, vector.CostN, vector.BlockSizeR, vector.Parallelism, vector.OutputLength);
 
@@ -157,13 +157,13 @@ public class ScryptTests
     }
 
     /// <summary>
-    /// Produces a friendly display name for a <see cref="KdfKnownAnswerVector" /> data row.
+    /// Produces a friendly display name for a <see cref="KdfKnownAnswer" /> data row.
     /// </summary>
     /// <param name="methodInfo">The test method being parameterized.</param>
     /// <param name="data">The data row.</param>
     /// <returns>The vector name, or the method name when unavailable.</returns>
     public static string GetVectorName(MethodInfo methodInfo, object[] data) =>
-        data[0] is KdfKnownAnswerVector vector ? vector.Name : methodInfo.Name;
+        data[0] is KdfKnownAnswer vector ? vector.Name : methodInfo.Name;
 
     /// <summary>
     /// Encodes an ASCII string to bytes.

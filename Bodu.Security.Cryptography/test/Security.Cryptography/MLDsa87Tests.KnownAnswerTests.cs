@@ -46,7 +46,7 @@ public partial class MLDsa87Tests
         nameof(KeyGenVectors),
         DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void ImportPrivateSeed_WhenGivenAcvpKeyGenVector_ShouldReproduceExpectedKeyPair(DsaKeyGenKnownAnswer vector)
+    public void ImportPrivateSeed_WhenGivenAcvpKeyGenVector_ShouldReproduceExpectedKeyPair(KeyGenKnownAnswer vector)
     {
         using var dsa = new MLDsa87();
         MLDsaAcvpVectors.AssertKeyGen(dsa, vector);
@@ -63,7 +63,7 @@ public partial class MLDsa87Tests
         nameof(SigGenVectors),
         DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void SignData_WhenGivenAcvpSigGenVector_ShouldReproduceExpectedSignature(DsaSigGenKnownAnswer vector)
+    public void SignData_WhenGivenAcvpSigGenVector_ShouldReproduceExpectedSignature(SignatureKnownAnswer vector)
     {
         using var dsa = new MLDsa87();
         MLDsaAcvpVectors.AssertSigGen(dsa, vector);
@@ -80,7 +80,7 @@ public partial class MLDsa87Tests
         nameof(SigVerVectors),
         DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void VerifyData_WhenGivenAcvpSigVerVector_ShouldReachMandatedVerdict(DsaSigVerKnownAnswer vector)
+    public void VerifyData_WhenGivenAcvpSigVerVector_ShouldReachMandatedVerdict(SignatureKnownAnswer vector)
     {
         using var dsa = new MLDsa87();
         MLDsaAcvpVectors.AssertSigVer(dsa, vector);

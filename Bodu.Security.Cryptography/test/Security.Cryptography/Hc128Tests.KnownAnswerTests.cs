@@ -6,8 +6,10 @@
 
 
 using System.Buffers.Binary;
-using System.Reflection;
 using System.Security.Cryptography;
+using Bodu.Security.Cryptography.Infrastructure;
+using Bodu.Test.Kat;
+using static Bodu.Security.Cryptography.Infrastructure.KatBytes;
 
 namespace Bodu.Security.Cryptography;
 /// <summary>
@@ -30,54 +32,50 @@ public sealed partial class Hc128Tests
             DefaultKeySizeBits = 128,
             NonceSizeBits = 128,
             LegalKeySizesBits = [128],
+            KnownAnswers = KeystreamKnownAnswers,
         };
-
-    /// <summary>
-    /// Represents one HC-128 keystream known-answer test row, recovered as the ciphertext of an all-zero plaintext.
-    /// </summary>
-    private sealed record Hc128KeystreamKat
-    {
-        public required string Name { get; init; }
-
-        public required string KeyHex { get; init; }
-
-        public required string IvHex { get; init; }
-
-        public required string KeystreamHex { get; init; }
-    }
 
     // ── HC-128 specification Appendix A keystream vectors (first 512 bits) ────────────────────
     //
     // Source: Hongjun Wu, "The Stream Cipher HC-128", Appendix A. Words are emitted little-endian per the spec, so
     // the byte keystream is the little-endian serialization of the printed 32-bit words.
-    private static readonly Hc128KeystreamKat[] KeystreamKnownAnswers =
+    private static readonly StreamCipherKnownAnswer[] KeystreamKnownAnswers =
     [
-        new Hc128KeystreamKat
+        new StreamCipherKnownAnswer
         {
             Name = "HC-128 Appendix A.1 key = 0, IV = 0",
-            KeyHex = "00000000000000000000000000000000",
-            IvHex = "00000000000000000000000000000000",
-            KeystreamHex =
+            Provenance = KatProvenance.ReferenceImplementation("Hongjun Wu, The Stream Cipher HC-128, Appendix A.1"),
+            Key = Hex("00000000000000000000000000000000"),
+            Nonce = Hex("00000000000000000000000000000000"),
+            IsKeystream = true,
+            Plaintext = [],
+            Ciphertext = Hex(
                 "82001573a003fd3b7fd72ffb0eaf63aac62f12deb629dca72785a66268ec758b" +
-                "1edb36900560898178e0ad009abf1f491330dc1c246e3d6cb264f6900271d59c",
+                "1edb36900560898178e0ad009abf1f491330dc1c246e3d6cb264f6900271d59c"),
         },
-        new Hc128KeystreamKat
+        new StreamCipherKnownAnswer
         {
             Name = "HC-128 Appendix A.2 key = 0, IV0 = 1",
-            KeyHex = "00000000000000000000000000000000",
-            IvHex = "01000000000000000000000000000000",
-            KeystreamHex =
+            Provenance = KatProvenance.ReferenceImplementation("Hongjun Wu, The Stream Cipher HC-128, Appendix A.2"),
+            Key = Hex("00000000000000000000000000000000"),
+            Nonce = Hex("01000000000000000000000000000000"),
+            IsKeystream = true,
+            Plaintext = [],
+            Ciphertext = Hex(
                 "d59318c058e9dbb798ec658f046617642467fc36ec6e2cc8a7381c1b952ab4c9" +
-                "23f13e328b906a0a687b75cebbf7149f11e0cde43f17b5ae948c6089ca46cfb5",
+                "23f13e328b906a0a687b75cebbf7149f11e0cde43f17b5ae948c6089ca46cfb5"),
         },
-        new Hc128KeystreamKat
+        new StreamCipherKnownAnswer
         {
             Name = "HC-128 Appendix A.3 K0 = 0x55, IV = 0",
-            KeyHex = "55000000000000000000000000000000",
-            IvHex = "00000000000000000000000000000000",
-            KeystreamHex =
+            Provenance = KatProvenance.ReferenceImplementation("Hongjun Wu, The Stream Cipher HC-128, Appendix A.3"),
+            Key = Hex("55000000000000000000000000000000"),
+            Nonce = Hex("00000000000000000000000000000000"),
+            IsKeystream = true,
+            Plaintext = [],
+            Ciphertext = Hex(
                 "a45182510a93b40431f92ab032f039067aa4b4bc0b482257729ff92b66e5c0cd" +
-                "560c0f31e883ccd3efb83d667fe0df6290173e599caacec56f8003aba0e5a6c9",
+                "560c0f31e883ccd3efb83d667fe0df6290173e599caacec56f8003aba0e5a6c9"),
         },
     ];
 
@@ -87,41 +85,29 @@ public sealed partial class Hc128Tests
     /// <returns>One row per vector.</returns>
     private static IEnumerable<object[]> Hc128KeystreamKatData()
     {
-        foreach (Hc128KeystreamKat kat in KeystreamKnownAnswers)
-            yield return new object[] { kat.KeyHex, kat.IvHex, kat.KeystreamHex, kat.Name };
+        foreach (StreamCipherKnownAnswer kat in new Hc128Tests().GetSpecification().KnownAnswers)
+            yield return new object[] { kat };
     }
-
-    /// <summary>
-    /// Produces a human-readable display name for an HC-128 KAT row.
-    /// </summary>
-    /// <param name="testMethod">The executing test method.</param>
-    /// <param name="data">The row data; the final element carries the scenario name.</param>
-    /// <returns>The test method name followed by the row's scenario label.</returns>
-    public static string GetKatDisplayName(MethodInfo testMethod, object[] data) =>
-        $"{testMethod.Name} — {data[^1]}";
 
     /// <summary>
     /// Verifies that <see cref="Hc128" /> reproduces each HC-128 specification Appendix A keystream vector, recovered as
     /// the ciphertext of an all-zero plaintext.
     /// </summary>
-    /// <param name="keyHex">The 128-bit key, in hex.</param>
-    /// <param name="ivHex">The 128-bit IV, in hex.</param>
-    /// <param name="keystreamHex">The expected keystream, in hex.</param>
-    /// <param name="displayName">The scenario label.</param>
+    /// <param name="vector">The keystream KAT vector under test.</param>
     [TestMethod]
-    [DynamicData(nameof(Hc128KeystreamKatData), DynamicDataDisplayName = nameof(GetKatDisplayName))]
-    public void CreateEncryptor_WhenGivenSpecificationVector_ShouldMatchExpected(
-        string keyHex, string ivHex, string keystreamHex, string displayName)
+    [DynamicData(
+        nameof(Hc128KeystreamKatData),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void CreateEncryptor_WhenGivenSpecificationVector_ShouldMatchExpected(StreamCipherKnownAnswer vector)
     {
-        byte[] key = Convert.FromHexString(keyHex);
-        byte[] iv = Convert.FromHexString(ivHex);
-        byte[] expected = Convert.FromHexString(keystreamHex);
+        byte[] expected = vector.Ciphertext;
 
         using var cipher = new Hc128();
-        using ICryptoTransform encryptor = cipher.CreateEncryptor(key, iv);
+        using ICryptoTransform encryptor = cipher.CreateEncryptor(vector.Key, vector.Nonce);
         byte[] keystream = encryptor.TransformFinalBlock(new byte[expected.Length], 0, expected.Length);
 
-        CollectionAssert.AreEqual(expected, keystream, $"HC-128 keystream mismatch for {displayName}.");
+        CollectionAssert.AreEqual(expected, keystream, $"HC-128 keystream mismatch for {vector.Name}.");
     }
 
     /// <summary>

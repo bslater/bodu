@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Security.Cryptography.Infrastructure;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -28,14 +29,14 @@ public sealed partial class AesBlockCipherTests
 
     private const string AesKey256Hex = AesKey192Hex + "18191A1B1C1D1E1F";
 
-    private const string ProfileFips197 = "FIPS-197 Appendix C";
+    private static readonly KatProvenance ProfileFips197 = KatProvenance.Standard("FIPS-197 Appendix C");
 
     private static readonly BlockCipherKnownAnswer[] Key128KnownAnswers =
     [
         new BlockCipherKnownAnswer
         {
             Name = "Aes128_Fips197_C1",
-            Profile = ProfileFips197,
+            Provenance = ProfileFips197,
             Plaintext = Convert.FromHexString(AesPlaintext),
             Ciphertext = Convert.FromHexString("69C4E0D86A7B0430D8CDB78070B4C55A"),
             Key = Convert.FromHexString(AesKey128Hex),
@@ -47,7 +48,7 @@ public sealed partial class AesBlockCipherTests
         new BlockCipherKnownAnswer
         {
             Name = "Aes192_Fips197_C2",
-            Profile = ProfileFips197,
+            Provenance = ProfileFips197,
             Plaintext = Convert.FromHexString(AesPlaintext),
             Ciphertext = Convert.FromHexString("DDA97CA4864CDFE06EAF70A0EC0D7191"),
             Key = Convert.FromHexString(AesKey192Hex),
@@ -59,7 +60,7 @@ public sealed partial class AesBlockCipherTests
         new BlockCipherKnownAnswer
         {
             Name = "Aes256_Fips197_C3",
-            Profile = ProfileFips197,
+            Provenance = ProfileFips197,
             Plaintext = Convert.FromHexString(AesPlaintext),
             Ciphertext = Convert.FromHexString("8EA2B7CA516745BFEAFC49904B496089"),
             Key = Convert.FromHexString(AesKey256Hex),

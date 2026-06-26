@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Security.Cryptography.Infrastructure;
+
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -20,23 +22,23 @@ public partial class AsconHashA256Tests
         LongInputLength = 256,
         BoundaryLengths = [1, 8, 16, 64],
         MinNonZeroBytesForLongInput = 28,
-        KnownAnswers = new()
-        {
-            // ASCON-HASHA256 is the round-reduced variant (Ascon-p8 absorption, Ascon-p12 squeeze
-            // initialisation) from the ASCON v1.2 LWC submission and is not formally standardised
-            // by NIST SP 800-232. The Empty slot and the GetExpectedHashesForIncrementalInput
-            // sequence below come from the ASCON reference implementation (ascon-c,
-            // LWC_HASH_KAT_128_256.txt of the v1.2 submission package). The remaining typed-slot
-            // digests are computed from the same reference algorithm applied to the canonical
-            // shared inputs declared in HashAlgorithmSharedInputs, and cross-checked against the
-            // published incremental KAT (the entries for input lengths 0..9 below) to confirm the
-            // permutation, IV, padding and round counts are bit-exact with the reference.
-            Empty = "19BF587ED2116F38D0FDD852ACE7C83C3DA1D70E2503A67F278C4C612F4ABC39",
-            Abc = "9F8F02FF7830BC2A909ED0C7C305CE34E56843FA09A3903C3F29AAE75A908AA2",
-            QuickBrownFox = "FFDA0FA068A0CE9A89488AA405B440653C15F94469BF56888D5067D8560C6537",
-            Zeros16 = "5B4AFD458D951EF0B2F62A82B02AEC05A001137AB285481DA245968D4D781664",
-            Sequential0To255 = "7428F1C34C936F691E4D32FE1731810E56F90F8CEF2C813321A8F6838A450ADE",
-        },
+        // ASCON-HASHA256 is the round-reduced variant (Ascon-p8 absorption, Ascon-p12 squeeze
+        // initialisation) from the ASCON v1.2 LWC submission and is not formally standardised
+        // by NIST SP 800-232. The Empty vector and the GetExpectedHashesForIncrementalInput
+        // sequence below come from the ASCON reference implementation (ascon-c,
+        // LWC_HASH_KAT_128_256.txt of the v1.2 submission package). The remaining canonical-input
+        // digests are computed from the same reference algorithm applied to the canonical shared
+        // inputs declared in CryptoKatInputs, and cross-checked against the published incremental
+        // KAT (the entries for input lengths 0..9 below) to confirm the permutation, IV, padding
+        // and round counts are bit-exact with the reference.
+        KnownAnswers =
+        [
+            MessageDigestKnownAnswer.Empty("19BF587ED2116F38D0FDD852ACE7C83C3DA1D70E2503A67F278C4C612F4ABC39"),
+            MessageDigestKnownAnswer.Abc("9F8F02FF7830BC2A909ED0C7C305CE34E56843FA09A3903C3F29AAE75A908AA2"),
+            MessageDigestKnownAnswer.QuickBrownFox("FFDA0FA068A0CE9A89488AA405B440653C15F94469BF56888D5067D8560C6537"),
+            MessageDigestKnownAnswer.Zeros16("5B4AFD458D951EF0B2F62A82B02AEC05A001137AB285481DA245968D4D781664"),
+            MessageDigestKnownAnswer.Sequential0To255("7428F1C34C936F691E4D32FE1731810E56F90F8CEF2C813321A8F6838A450ADE"),
+        ],
     };
 
     /// <summary>

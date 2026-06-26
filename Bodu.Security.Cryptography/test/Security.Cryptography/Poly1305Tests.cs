@@ -6,6 +6,7 @@
 
 using System.Text;
 
+using Bodu.Security.Cryptography.Infrastructure;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -48,14 +49,14 @@ public partial class Poly1305Tests
         MaxKeyLength = 32,
         CanReuseTransform = false,
         TestKey = Poly1305TestKey,
-        KnownAnswers = new()
-        {
-            Empty = "0103808AFB0DB2FD4ABFF6AF4149F51B",
-            Abc = "22701EA05B6B7BB59C6EFAF002047EF8",
-            Zeros16 = "268F6E95A4B8FA01E694DDC1D1D3FD25",
-            QuickBrownFox = "2458137FE7781FB38D3782CE0D70BCA6",
-            Sequential0To255 = "1212245DC231EF863720469237C5F17B",
-        },
+        KnownAnswers =
+        [
+            MessageDigestKnownAnswer.Empty("0103808AFB0DB2FD4ABFF6AF4149F51B"),
+            MessageDigestKnownAnswer.Abc("22701EA05B6B7BB59C6EFAF002047EF8"),
+            MessageDigestKnownAnswer.Zeros16("268F6E95A4B8FA01E694DDC1D1D3FD25"),
+            MessageDigestKnownAnswer.QuickBrownFox("2458137FE7781FB38D3782CE0D70BCA6"),
+            MessageDigestKnownAnswer.Sequential0To255("1212245DC231EF863720469237C5F17B"),
+        ],
     };
 
     /// <summary>

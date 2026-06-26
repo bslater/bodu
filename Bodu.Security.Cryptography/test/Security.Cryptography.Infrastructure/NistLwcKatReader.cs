@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using static Bodu.Security.Cryptography.Infrastructure.KatBytes;
+
 namespace Bodu.Security.Cryptography.Infrastructure;
 
 /// <summary>
@@ -29,7 +31,7 @@ public static class NistLwcKatReader
     /// <exception cref="FormatException">
     /// A record is missing one of the six required fields, or a value is malformed.
     /// </exception>
-    public static IEnumerable<AeadKnownAnswerVector> Read(Stream stream, int tagLength = 16, string? source = null)
+    public static IEnumerable<AeadKnownAnswer> Read(Stream stream, int tagLength = 16, string? source = null)
     {
         using var reader = new StreamReader(stream);
 
@@ -100,10 +102,11 @@ public static class NistLwcKatReader
     }
 
     /// <summary>
-    /// Assembles an <see cref="AeadKnownAnswerVector" /> from the captured field values of a single record, throwing
+    /// Assembles an <see cref="AeadKnownAnswer" /> from the captured field values of a single record, splitting the
+    /// trailing <paramref name="tagLength" /> bytes of the <c>CT</c> field off as the authentication tag and throwing
     /// when any required field is missing.
     /// </summary>
-    private static AeadKnownAnswerVector Build(int count, string? key, string? nonce, string? ad, string? pt, string? ct, int tagLength, string? source)
+    private static AeadKnownAnswer Build(int count, string? key, string? nonce, string? ad, string? pt, string? ct, int tagLength, string? source)
     {
         if (key is null) throw new FormatException($"KAT record Count={count} is missing the Key field.");
         if (nonce is null) throw new FormatException($"KAT record Count={count} is missing the Nonce field.");
@@ -111,6 +114,20 @@ public static class NistLwcKatReader
         if (ad is null) throw new FormatException($"KAT record Count={count} is missing the AD field.");
         if (ct is null) throw new FormatException($"KAT record Count={count} is missing the CT field.");
 
-        return AeadKnownAnswerVector.FromHex(count, key, nonce, ad, pt, ct, tagLength, source);
+        byte[] combined = Hex(ct);
+        byte[] ciphertext = combined.AsSpan(0, combined.Length - tagLength).ToArray();
+        byte[] tag = combined.AsSpan(combined.Length - tagLength).ToArray();
+
+        return new AeadKnownAnswer
+        {
+            Name = source is null ? $"Vector {count}" : $"{source} #{count}",
+            Provenance = source is null ? null : KatProvenance.ReferenceImplementation(source),
+            Key = Hex(key),
+            Nonce = Hex(nonce),
+            AssociatedData = Hex(ad),
+            Plaintext = Hex(pt),
+            Ciphertext = ciphertext,
+            Tag = tag,
+        };
     }
 }

@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Security.Cryptography.Infrastructure;
+
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -73,6 +75,14 @@ public abstract partial class SkeinTests<TTest, TAlgorithm, TVariant>
     /// <returns><see langword="true" /> if the variant selects the keyed MAC profile; otherwise <see langword="false" />.</returns>
     protected static bool IsMacVariant(TVariant variant) =>
         variant.ToString().StartsWith("Mac_", StringComparison.Ordinal);
+
+    /// <summary>
+    /// Returns the curated Skein 1.3 / NIST CD keyed known-answer corpus for <paramref name="variant" />. Each row may
+    /// carry its own per-row key; a <see langword="null" /> key defers to the variant's default construction.
+    /// </summary>
+    /// <param name="variant">The variant whose corpus is requested.</param>
+    /// <returns>The corpus vectors, or an empty list when the NIST CD KAT publishes none for the variant.</returns>
+    protected abstract IReadOnlyList<MessageDigestKnownAnswer> GetKeyedKnownAnswers(TVariant variant);
 
     /// <summary>
     /// Verifies that a MAC key longer than one Skein state block is correctly processed through the multi-block

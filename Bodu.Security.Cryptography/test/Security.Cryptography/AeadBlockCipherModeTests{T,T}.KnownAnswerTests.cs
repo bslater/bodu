@@ -5,11 +5,26 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Security.Cryptography;
+using Bodu.Security.Cryptography.Infrastructure;
 
 namespace Bodu.Security.Cryptography;
 
 public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
 {
+    /// <summary>
+    /// Encrypts the vector's plaintext and asserts the resulting ciphertext and tag match the vector.
+    /// </summary>
+    /// <param name="vector">The AEAD known-answer vector under test.</param>
+    protected void AssertKatEncrypt(AeadKnownAnswer vector) =>
+        AssertKatEncrypt(vector.Name, vector.Key, vector.Nonce, vector.AssociatedData, vector.Plaintext, vector.Ciphertext, vector.Tag);
+
+    /// <summary>
+    /// Decrypts the vector's ciphertext and tag and asserts the recovered plaintext matches the vector.
+    /// </summary>
+    /// <param name="vector">The AEAD known-answer vector under test.</param>
+    protected void AssertKatDecrypt(AeadKnownAnswer vector) =>
+        AssertKatDecrypt(vector.Name, vector.Key, vector.Nonce, vector.AssociatedData, vector.Plaintext, vector.Ciphertext, vector.Tag);
+
     // ── Real-cipher round-trip ────────────────────────────────────────────────────────────────
 
     /// <summary>

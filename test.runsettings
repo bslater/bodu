@@ -16,8 +16,8 @@
     <!--
       Legacy alias for regression.runsettings: runs the Smoke, BVT, and Regression tiers. The Stress tier is
       excluded because its long-running loops exceed the 10-minute session guard above; run those on demand via
-      stress.runsettings.
+      stress.runsettings. The on-demand Census artifact generator is likewise excluded.
     -->
-    <TestCaseFilter>TestCategory!=Stress</TestCaseFilter>
+    <TestCaseFilter>TestCategory!=Stress&amp;TestCategory!=Census</TestCaseFilter>
   </RunConfiguration>
 </RunSettings>

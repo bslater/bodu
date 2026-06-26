@@ -187,13 +187,14 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     /// <param name="variant">The variant whose vectors should be returned.</param>
     /// <returns>The KAT vectors for <paramref name="variant" />, or an empty list if none are published.</returns>
     /// <remarks>
-    /// This is the canonical hook for cipher families with static published vectors — Skipjack, Blowfish, Camellia,
-    /// Twofish, Threefish 256/512/1024, Serpent-128, AES, and so on. Override <see cref="GetKnownAnswerTests" />
-    /// directly only when the vectors are runtime-generated (for example the wide-block Serpent self-referential
-    /// regression rows).
+    /// The default reads the vectors carried on the variant's <see cref="BlockCipherSpecification" /> via the inherited
+    /// <see cref="AlgorithmSpecification{TKat}.KnownAnswers" /> slot — the canonical source for cipher families with
+    /// static published vectors (Skipjack, Blowfish, Camellia, Twofish, Threefish 256/512/1024, Serpent-128, AES, and
+    /// so on). Override <see cref="GetKnownAnswerTests" /> directly only when the vectors are runtime-generated (for
+    /// example the wide-block Serpent self-referential regression rows).
     /// </remarks>
     protected virtual IReadOnlyList<BlockCipherKnownAnswer> GetKnownAnswers(TVariant variant) =>
-        Array.Empty<BlockCipherKnownAnswer>();
+        GetSpecification(variant).KnownAnswers;
 
     /// <summary>
     /// Constructs an <see cref="IBlockCipher" /> instance configured for a single KAT vector — applying its

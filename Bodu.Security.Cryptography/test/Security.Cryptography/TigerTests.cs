@@ -5,6 +5,8 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Text;
+using Bodu.Security.Cryptography.Infrastructure;
+using static Bodu.Security.Cryptography.Infrastructure.KatBytes;
 
 namespace Bodu.Security.Cryptography;
 
@@ -92,7 +94,7 @@ public partial class TigerTests
 
     private static readonly byte[] TigerInput = Encoding.UTF8.GetBytes("Tiger");
 
-    private static HashAlgorithmKnownAnswers BuildKnownAnswers(TigerVariant variant)
+    private static IReadOnlyList<MessageDigestKnownAnswer> BuildKnownAnswers(TigerVariant variant)
     {
         (bool isTiger2, int hashBits) = GetTigerHashBits(variant);
 
@@ -112,23 +114,20 @@ public partial class TigerTests
                 "90908AF825C3CA8474CD9D8C4201E1A12E97630FF7D6E354",
                 "DD00230799F5009FEC6DEBC838BB6A27DF2B9D6F110C7937");
 
-        return new HashAlgorithmKnownAnswers
-        {
-            Empty = TruncateHex(full.Empty, hashBits),
-            Abc = TruncateHex(full.Abc, hashBits),
-            Zeros16 = TruncateHex(full.Zeros16, hashBits),
-            QuickBrownFox = TruncateHex(full.QuickBrownFox, hashBits),
-            Sequential0To255 = TruncateHex(full.Sequential0To255, hashBits),
-            Additional =
-            [
-                new HashAlgorithmKnownAnswer
-                {
-                    Name = "Tiger",
-                    Input = TigerInput,
-                    ExpectedHex = TruncateHex(full.Tiger, hashBits),
-                },
-            ],
-        };
+        return
+        [
+            MessageDigestKnownAnswer.Empty(TruncateHex(full.Empty, hashBits)),
+            MessageDigestKnownAnswer.Abc(TruncateHex(full.Abc, hashBits)),
+            MessageDigestKnownAnswer.Zeros16(TruncateHex(full.Zeros16, hashBits)),
+            MessageDigestKnownAnswer.QuickBrownFox(TruncateHex(full.QuickBrownFox, hashBits)),
+            MessageDigestKnownAnswer.Sequential0To255(TruncateHex(full.Sequential0To255, hashBits)),
+            new MessageDigestKnownAnswer
+            {
+                Name = "Tiger",
+                Message = TigerInput,
+                Digest = Hex(TruncateHex(full.Tiger, hashBits)),
+            },
+        ];
     }
 
     /// <inheritdoc />

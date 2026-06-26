@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Security.Cryptography.Infrastructure;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -22,16 +23,16 @@ internal sealed partial class SkipjackBlockCipherTests
 {
     private const string AllZeroPlaintext = "0000000000000000";
 
-    private const string ProfileNsaReference = "NSA Skipjack reference (declassified 1998)";
+    private static readonly KatProvenance ProfileNsaReference = KatProvenance.ReferenceImplementation("NSA Skipjack reference (declassified 1998)");
 
-    private const string ProfileFips185 = "FIPS PUB 185 Section 8";
+    private static readonly KatProvenance ProfileFips185 = KatProvenance.Standard("FIPS PUB 185 Section 8");
 
     private static readonly BlockCipherKnownAnswer[] DefaultKnownAnswers =
     [
         new BlockCipherKnownAnswer
         {
             Name = "AllZeroPlaintext_KeyBit0Set",
-            Profile = ProfileNsaReference,
+            Provenance = ProfileNsaReference,
             Plaintext = Convert.FromHexString(AllZeroPlaintext),
             Ciphertext = Convert.FromHexString("E378FE4157A66452"),
             Key = Convert.FromHexString("80000000000000000000"),
@@ -39,7 +40,7 @@ internal sealed partial class SkipjackBlockCipherTests
         new BlockCipherKnownAnswer
         {
             Name = "AllZeroPlaintext_KeyBit1Set",
-            Profile = ProfileNsaReference,
+            Provenance = ProfileNsaReference,
             Plaintext = Convert.FromHexString(AllZeroPlaintext),
             Ciphertext = Convert.FromHexString("61CE4785762E8980"),
             Key = Convert.FromHexString("40000000000000000000"),
@@ -47,7 +48,7 @@ internal sealed partial class SkipjackBlockCipherTests
         new BlockCipherKnownAnswer
         {
             Name = "AllZeroPlaintext_KeyByte1HighBitSet",
-            Profile = ProfileNsaReference,
+            Provenance = ProfileNsaReference,
             Plaintext = Convert.FromHexString(AllZeroPlaintext),
             Ciphertext = Convert.FromHexString("F76307829359FC11"),
             Key = Convert.FromHexString("00800000000000000000"),
@@ -55,7 +56,7 @@ internal sealed partial class SkipjackBlockCipherTests
         new BlockCipherKnownAnswer
         {
             Name = "Fips185_Section8_CanonicalVector",
-            Profile = ProfileFips185,
+            Provenance = ProfileFips185,
             Plaintext = Convert.FromHexString("33221100DDCCBBAA"),
             Ciphertext = Convert.FromHexString("2587CAE27A12D300"),
             Key = Convert.FromHexString("00998877665544332211"),

@@ -1,22 +1,24 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="HashAlgorithmSharedInputs.cs" company="Bodu Pty. Ltd.">
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="CryptoKatInputs.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Text;
 
-namespace Bodu.Security.Cryptography;
+namespace Bodu.Security.Cryptography.Infrastructure;
 
 /// <summary>
-/// Provides the canonical byte payloads that back the typed slots on <see cref="HashAlgorithmKnownAnswers" />.
+/// Provides the canonical byte payloads reused as known-answer test inputs across cryptographic families — the empty
+/// input, the strings <c>"ABC"</c> and the quick-brown-fox pangram, sixteen zero bytes, and the <c>0x00..0xFE</c>
+/// sequence.
 /// </summary>
 /// <remarks>
 /// Arrays are allocated once and shared across all test runs. Test code must treat them as immutable even though
-/// <see cref="byte" /> arrays are mutable by the CLR — mutating a shared input would corrupt every other variant
-/// relying on the same payload.
+/// <see cref="byte" /> arrays are mutable by the CLR — mutating a shared input would corrupt every other vector relying
+/// on the same payload.
 /// </remarks>
-internal static class HashAlgorithmSharedInputs
+public static class CryptoKatInputs
 {
     /// <summary>The empty input (zero bytes).</summary>
     public static readonly byte[] Empty = [];

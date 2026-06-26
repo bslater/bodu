@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Security.Cryptography.Infrastructure;
+
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -40,15 +42,14 @@ public partial class Skein512Tests
             MaxKeyLength = Skein<Skein512>.MaxKeySize / 8,
             ValidKeyLengths = [0, 16, 32, 64, 128, 256, Skein<Skein512>.MaxKeySize / 8],
             TestKey = SkeinTestKey,
-            KnownAnswers = new HashAlgorithmKnownAnswers
-            {
-                Empty = variant == Skein512TestVariant.Hash_512 ? Skein512_512_EmptyHash : null,
-            },
-            KeyedAnswers = new KeyedHashAlgorithmKnownAnswers
-            {
-                Vectors = Skein512KnownAnswers.For(variant),
-            },
+            KnownAnswers = variant == Skein512TestVariant.Hash_512
+                ? [MessageDigestKnownAnswer.Empty(Skein512_512_EmptyHash)]
+                : [],
         };
+
+    /// <inheritdoc />
+    protected override IReadOnlyList<MessageDigestKnownAnswer> GetKeyedKnownAnswers(Skein512TestVariant variant) =>
+        Skein512KnownAnswers.For(variant);
 
     /// <inheritdoc />
     protected override Skein512 CreateAlgorithm(Skein512TestVariant variant)

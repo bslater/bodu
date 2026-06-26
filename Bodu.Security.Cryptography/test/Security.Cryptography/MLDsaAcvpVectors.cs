@@ -22,8 +22,23 @@ public static class MLDsaAcvpVectors
     public static IEnumerable<object[]> KeyGen(string parameterSet)
     {
         using Stream stream = OpenResource("Bodu.Security.Cryptography.MLDsa.AcvpKeyGen.txt");
-        foreach (DsaKeyGenKnownAnswer vector in DsaKeyGenKnownAnswer.Read(stream).Where(v => v.ParameterSet == parameterSet))
-            yield return new object[] { vector };
+        foreach (Dictionary<string, string> record in HexFieldKatReader.Read(stream))
+        {
+            if (HexFieldKatReader.GetRequired(record, "Set") != parameterSet)
+                continue;
+
+            yield return new object[]
+            {
+                new KeyGenKnownAnswer
+                {
+                    Name = HexFieldKatReader.GetRequired(record, "Name"),
+                    ParameterSet = parameterSet,
+                    Seed = Convert.FromHexString(HexFieldKatReader.GetRequired(record, "Seed")),
+                    ExpectedPublicKey = Convert.FromHexString(HexFieldKatReader.GetRequired(record, "Pk")),
+                    ExpectedPrivateKey = Convert.FromHexString(HexFieldKatReader.GetRequired(record, "Sk")),
+                },
+            };
+        }
     }
 
     /// <summary>
@@ -35,8 +50,27 @@ public static class MLDsaAcvpVectors
     public static IEnumerable<object[]> SigGen(string parameterSet)
     {
         using Stream stream = OpenResource("Bodu.Security.Cryptography.MLDsa.AcvpSigGen.txt");
-        foreach (DsaSigGenKnownAnswer vector in DsaSigGenKnownAnswer.Read(stream).Where(v => v.ParameterSet == parameterSet))
-            yield return new object[] { vector };
+        foreach (Dictionary<string, string> record in HexFieldKatReader.Read(stream))
+        {
+            if (HexFieldKatReader.GetRequired(record, "Set") != parameterSet)
+                continue;
+
+            yield return new object[]
+            {
+                new SignatureKnownAnswer
+                {
+                    Name = HexFieldKatReader.GetRequired(record, "Name"),
+                    ParameterSet = parameterSet,
+                    Deterministic = bool.Parse(HexFieldKatReader.GetRequired(record, "Deterministic")),
+                    PrivateKey = Convert.FromHexString(HexFieldKatReader.GetRequired(record, "Sk")),
+                    PublicKey = Convert.FromHexString(HexFieldKatReader.GetRequired(record, "Pk")),
+                    Context = Convert.FromHexString(HexFieldKatReader.GetRequired(record, "Context")),
+                    Message = Convert.FromHexString(HexFieldKatReader.GetRequired(record, "Message")),
+                    Rnd = record.TryGetValue("Rnd", out string? rnd) ? Convert.FromHexString(rnd) : null,
+                    Signature = Convert.FromHexString(HexFieldKatReader.GetRequired(record, "Signature")),
+                },
+            };
+        }
     }
 
     /// <summary>
@@ -47,8 +81,25 @@ public static class MLDsaAcvpVectors
     public static IEnumerable<object[]> SigVer(string parameterSet)
     {
         using Stream stream = OpenResource("Bodu.Security.Cryptography.MLDsa.AcvpSigVer.txt");
-        foreach (DsaSigVerKnownAnswer vector in DsaSigVerKnownAnswer.Read(stream).Where(v => v.ParameterSet == parameterSet))
-            yield return new object[] { vector };
+        foreach (Dictionary<string, string> record in HexFieldKatReader.Read(stream))
+        {
+            if (HexFieldKatReader.GetRequired(record, "Set") != parameterSet)
+                continue;
+
+            yield return new object[]
+            {
+                new SignatureKnownAnswer
+                {
+                    Name = HexFieldKatReader.GetRequired(record, "Name"),
+                    ParameterSet = parameterSet,
+                    PublicKey = Convert.FromHexString(HexFieldKatReader.GetRequired(record, "Pk")),
+                    Context = Convert.FromHexString(HexFieldKatReader.GetRequired(record, "Context")),
+                    Message = Convert.FromHexString(HexFieldKatReader.GetRequired(record, "Message")),
+                    Signature = Convert.FromHexString(HexFieldKatReader.GetRequired(record, "Signature")),
+                    ExpectedValid = bool.Parse(HexFieldKatReader.GetRequired(record, "Valid")),
+                },
+            };
+        }
     }
 
     /// <summary>
@@ -56,7 +107,7 @@ public static class MLDsaAcvpVectors
     /// </summary>
     /// <param name="dsa">A fresh instance of the parameter set under test.</param>
     /// <param name="vector">The KAT vector.</param>
-    public static void AssertKeyGen(MLDsa dsa, DsaKeyGenKnownAnswer vector)
+    public static void AssertKeyGen(MLDsa dsa, KeyGenKnownAnswer vector)
     {
         dsa.ImportPrivateSeed(vector.Seed);
 
@@ -70,8 +121,9 @@ public static class MLDsaAcvpVectors
     /// </summary>
     /// <param name="dsa">A fresh instance of the parameter set under test.</param>
     /// <param name="vector">The KAT vector.</param>
-    public static void AssertSigGen(MLDsa dsa, DsaSigGenKnownAnswer vector)
+    public static void AssertSigGen(MLDsa dsa, SignatureKnownAnswer vector)
     {
+        Assert.IsNotNull(vector.PrivateKey, $"{vector.Name}: signature-generation vectors must carry the private key.");
         dsa.ImportPrivateKey(vector.PrivateKey);
         CollectionAssert.AreEqual(vector.PublicKey, dsa.ExportPublicKey());
 
@@ -87,7 +139,7 @@ public static class MLDsaAcvpVectors
             signature = dsa.SignDataInternal(vector.Message, vector.Context, vector.Rnd);
         }
 
-        CollectionAssert.AreEqual(vector.ExpectedSignature, signature);
+        CollectionAssert.AreEqual(vector.Signature, signature);
         Assert.IsTrue(dsa.VerifyData(vector.Message, signature, vector.Context));
     }
 
@@ -96,7 +148,7 @@ public static class MLDsaAcvpVectors
     /// </summary>
     /// <param name="dsa">A fresh instance of the parameter set under test.</param>
     /// <param name="vector">The KAT vector.</param>
-    public static void AssertSigVer(MLDsa dsa, DsaSigVerKnownAnswer vector)
+    public static void AssertSigVer(MLDsa dsa, SignatureKnownAnswer vector)
     {
         dsa.ImportPublicKey(vector.PublicKey);
 

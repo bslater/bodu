@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Security.Cryptography.Infrastructure;
+
 namespace Bodu.Security.Cryptography;
 
 public abstract partial class SkeinTests<TTest, TAlgorithm, TVariant>
@@ -25,19 +27,16 @@ public abstract partial class SkeinTests<TTest, TAlgorithm, TVariant>
         var instance = new TTest();
         foreach (TVariant variant in instance.GetHashAlgorithmVariants())
         {
-            if (instance.GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
-                continue;
-
-            foreach (KeyedHashAlgorithmKnownAnswer vector in specification.KeyedAnswers.Vectors)
+            foreach (MessageDigestKnownAnswer vector in instance.GetKeyedKnownAnswers(variant))
             {
                 yield return new object[]
                 {
                     variant,
                     vector.Name,
-                    vector.Profile ?? string.Empty,
+                    vector.Provenance?.Citation ?? string.Empty,
                     (object?)vector.Key ?? string.Empty,
-                    vector.Input,
-                    Convert.FromHexString(vector.ExpectedHex),
+                    vector.Message,
+                    vector.Digest,
                 };
             }
         }

@@ -7,6 +7,7 @@
 using System.Reflection;
 using System.Security.Cryptography;
 using Bodu.Security.Cryptography.Infrastructure;
+using static Bodu.Security.Cryptography.Infrastructure.KatBytes;
 
 namespace Bodu.Security.Cryptography;
 
@@ -54,47 +55,51 @@ public class StreamAeadKnownAnswerTests
     {
         yield return new object[]
         {
-            new StreamAeadKnownAnswerVector(
-                Id: "XCHACHA20-POLY1305-DRAFT-IRTF-CFRG-XCHACHA-03-A.3.1",
-                Algorithm: AlgorithmXChaCha20Poly1305,
-                DisplayName: "XChaCha20-Poly1305 (draft-irtf-cfrg-xchacha-03 Appendix A.3.1)",
-                SourceKind: AeadKatSourceKind.InternetDraft,
-                Source: "draft-irtf-cfrg-xchacha-03 Appendix A.3.1, AEAD_XCHACHA20_POLY1305",
-                KeyHex: SunscreenKeyHex,
-                NonceHex: SunscreenNonce24Hex,
-                AadHex: SunscreenAadHex,
-                PlaintextHex: SunscreenPlaintextHex,
-                CiphertextHex:
+            new AeadKnownAnswer
+            {
+                Name = "XChaCha20-Poly1305 (draft-irtf-cfrg-xchacha-03 Appendix A.3.1)",
+                Algorithm = AlgorithmXChaCha20Poly1305,
+                Provenance = new KatProvenance(
+                    KatSourceKind.InternetDraft,
+                    "draft-irtf-cfrg-xchacha-03 Appendix A.3.1, AEAD_XCHACHA20_POLY1305",
+                    "Internet-Draft vector (not an RFC). Matches libsodium crypto_aead_xchacha20poly1305_ietf."),
+                Key = Hex(SunscreenKeyHex),
+                Nonce = Hex(SunscreenNonce24Hex),
+                AssociatedData = Hex(SunscreenAadHex),
+                Plaintext = Hex(SunscreenPlaintextHex),
+                Ciphertext = Hex(
                     "bd6d179d3e83d43b9576579493c0e939572a1700252bfaccbed2902c21396cbb731c7f1b0b4aa6440bf3a82f4eda7" +
                     "e39ae64c6708c54c216cb96b72e1213b4522f8c9ba40db5d945b11b69b982c1bb9e3f3fac2bc369488f76b238356" +
-                    "5d3fff921f9664c97637da9768812f615c68b13b52e",
-                TagHex: "c0875924c1c7987947deafd8780acf49",
-                SourceOutputLayout: AeadKatOutputLayout.DetachedTag,
-                Notes: "Internet-Draft vector (not an RFC). Matches libsodium crypto_aead_xchacha20poly1305_ietf."),
+                    "5d3fff921f9664c97637da9768812f615c68b13b52e"),
+                Tag = Hex("c0875924c1c7987947deafd8780acf49"),
+                Layout = AeadKatOutputLayout.DetachedTag,
+            },
         };
 
         yield return new object[]
         {
-            new StreamAeadKnownAnswerVector(
-                Id: "LIBSODIUM-SECRETBOX-XSALSA20-POLY1305-DEFAULT",
-                Algorithm: AlgorithmXSalsa20Poly1305Secretbox,
-                DisplayName: "XSalsa20-Poly1305 secretbox (libsodium reference)",
-                SourceKind: AeadKatSourceKind.ReferenceImplementation,
-                Source: "libsodium test/default/secretbox.c and secretbox.exp",
-                KeyHex: "1b27556473e985d462cd51197a9a46c76009549eac6474f206c4ee0844f68389",
-                NonceHex: "69696ee955b62b73cd62bda875fc73d68219e0036b7a0b37",
-                AadHex: string.Empty,
-                PlaintextHex:
+            new AeadKnownAnswer
+            {
+                Name = "XSalsa20-Poly1305 secretbox (libsodium reference)",
+                Algorithm = AlgorithmXSalsa20Poly1305Secretbox,
+                Provenance = new KatProvenance(
+                    KatSourceKind.ReferenceImplementation,
+                    "libsodium test/default/secretbox.c and secretbox.exp",
+                    "Reference-implementation vector. libsodium emits tag || ciphertext; Bodu emits ciphertext || tag."),
+                Key = Hex("1b27556473e985d462cd51197a9a46c76009549eac6474f206c4ee0844f68389"),
+                Nonce = Hex("69696ee955b62b73cd62bda875fc73d68219e0036b7a0b37"),
+                AssociatedData = [],
+                Plaintext = Hex(
                     "be075fc53c81f2d5cf141316ebeb0c7b5228c52a4c62cbd44b66849b64244ffce5ecbaaf33bd751a1ac728d45e6c" +
                     "61296cdc3c01233561f41db66cce314adb310e3be8250c46f06dceea3a7fa1348057e2f6556ad6b1318a024a838f" +
-                    "21af1fde048977eb48f59ffd4924ca1c60902e52f0a089bc76897040e082f937763848645e0705",
-                CiphertextHex:
+                    "21af1fde048977eb48f59ffd4924ca1c60902e52f0a089bc76897040e082f937763848645e0705"),
+                Ciphertext = Hex(
                     "8e993b9f48681273c29650ba32fc76ce48332ea7164d96a4476fb8c531a1186ac0dfc17c98dce87b4da7f011ec48" +
                     "c97271d2c20f9b928fe2270d6fb863d51738b48eeee314a7cc8ab932164548e526ae90224368517acfeabd6bb37" +
-                    "32bc0e9da99832b61ca01b6de56244a9e88d5f9b37973f622a43d14a6599b1f654cb45a74e355a5",
-                TagHex: "f3ffc7703f9400e52a7dfb4b3d3305d9",
-                SourceOutputLayout: AeadKatOutputLayout.TagThenCiphertext,
-                Notes: "Reference-implementation vector. libsodium emits tag || ciphertext; Bodu emits ciphertext || tag."),
+                    "32bc0e9da99832b61ca01b6de56244a9e88d5f9b37973f622a43d14a6599b1f654cb45a74e355a5"),
+                Tag = Hex("f3ffc7703f9400e52a7dfb4b3d3305d9"),
+                Layout = AeadKatOutputLayout.TagThenCiphertext,
+            },
         };
     }
 
@@ -102,11 +107,11 @@ public class StreamAeadKnownAnswerTests
     /// Produces a provenance-preserving display name for a known-answer row.
     /// </summary>
     /// <param name="methodInfo">The test method's reflection info.</param>
-    /// <param name="data">The row data (a single <see cref="StreamAeadKnownAnswerVector" />).</param>
+    /// <param name="data">The row data (a single <see cref="AeadKnownAnswer" />).</param>
     /// <returns>A label that identifies the vector and its provenance.</returns>
     public static string GetVectorDisplayName(MethodInfo methodInfo, object[] data) =>
-        data is [StreamAeadKnownAnswerVector vector, ..]
-            ? $"{vector.DisplayName} [{vector.SourceKind}]"
+        data is [AeadKnownAnswer vector, ..]
+            ? $"{vector.Name} [{vector.Provenance?.Kind}]"
             : methodInfo.Name;
 
     /// <summary>
@@ -115,7 +120,7 @@ public class StreamAeadKnownAnswerTests
     /// <param name="vector">The known-answer vector under test.</param>
     [TestMethod]
     [DynamicData(nameof(ExternalVectors), DynamicDataDisplayName = nameof(GetVectorDisplayName))]
-    public void Encrypt_WhenGivenExternalVector_ShouldMatchExpectedCiphertextAndTag(StreamAeadKnownAnswerVector vector)
+    public void Encrypt_WhenGivenExternalVector_ShouldMatchExpectedCiphertextAndTag(AeadKnownAnswer vector)
     {
         byte[] plaintext = vector.Plaintext;
         byte[] output = new byte[plaintext.Length + 16];
@@ -123,13 +128,13 @@ public class StreamAeadKnownAnswerTests
         using (IStreamAeadTransform enc = CreateTransform(vector))
         {
             int written = enc.Encrypt(plaintext, output, vector.AssociatedData);
-            Assert.AreEqual(output.Length, written, $"{vector}: unexpected written length.");
+            Assert.AreEqual(output.Length, written, $"{vector.Name}: unexpected written length.");
         }
 
         CollectionAssert.AreEqual(vector.Ciphertext, output.AsSpan(0, plaintext.Length).ToArray(),
-            $"{vector}: ciphertext mismatch.");
+            $"{vector.Name}: ciphertext mismatch.");
         CollectionAssert.AreEqual(vector.Tag, output.AsSpan(plaintext.Length).ToArray(),
-            $"{vector}: tag mismatch.");
+            $"{vector.Name}: tag mismatch.");
     }
 
     /// <summary>
@@ -139,7 +144,7 @@ public class StreamAeadKnownAnswerTests
     /// <param name="vector">The known-answer vector under test.</param>
     [TestMethod]
     [DynamicData(nameof(ExternalVectors), DynamicDataDisplayName = nameof(GetVectorDisplayName))]
-    public void Decrypt_WhenGivenExternalVector_ShouldRecoverPlaintext(StreamAeadKnownAnswerVector vector)
+    public void Decrypt_WhenGivenExternalVector_ShouldRecoverPlaintext(AeadKnownAnswer vector)
     {
         byte[] ciphertextWithTag = vector.CiphertextWithTag;
         byte[] output = new byte[ciphertextWithTag.Length - 16];
@@ -147,10 +152,10 @@ public class StreamAeadKnownAnswerTests
         using (IStreamAeadTransform dec = CreateTransform(vector))
         {
             int written = dec.Decrypt(ciphertextWithTag, output, vector.AssociatedData);
-            Assert.AreEqual(output.Length, written, $"{vector}: unexpected written length.");
+            Assert.AreEqual(output.Length, written, $"{vector.Name}: unexpected written length.");
         }
 
-        CollectionAssert.AreEqual(vector.Plaintext, output, $"{vector}: recovered plaintext mismatch.");
+        CollectionAssert.AreEqual(vector.Plaintext, output, $"{vector.Name}: recovered plaintext mismatch.");
     }
 
     /// <summary>
@@ -160,7 +165,7 @@ public class StreamAeadKnownAnswerTests
     /// <param name="vector">The known-answer vector under test.</param>
     [TestMethod]
     [DynamicData(nameof(ExternalVectors), DynamicDataDisplayName = nameof(GetVectorDisplayName))]
-    public void Decrypt_WhenExternalVectorTagTampered_ShouldThrowCryptographicException(StreamAeadKnownAnswerVector vector)
+    public void Decrypt_WhenExternalVectorTagTampered_ShouldThrowCryptographicException(AeadKnownAnswer vector)
     {
         byte[] ciphertextWithTag = vector.CiphertextWithTag;
         ciphertextWithTag[^1] ^= 0x01;
@@ -181,7 +186,7 @@ public class StreamAeadKnownAnswerTests
     [TestMethod]
     public void Encrypt_WhenSecretboxVectorConvertedToLibsodiumLayout_ShouldMatchTagThenCiphertext()
     {
-        StreamAeadKnownAnswerVector vector = SecretboxVector();
+        AeadKnownAnswer vector = SecretboxVector();
 
         byte[] boduCombined = new byte[vector.Plaintext.Length + 16];
         using (var enc = new XSalsa20Poly1305(vector.Key, vector.Nonce))
@@ -195,7 +200,7 @@ public class StreamAeadKnownAnswerTests
         vector.Tag.CopyTo(expected, 0);
         vector.Ciphertext.CopyTo(expected, vector.Tag.Length);
 
-        Assert.AreEqual(AeadKatOutputLayout.TagThenCiphertext, vector.SourceOutputLayout);
+        Assert.AreEqual(AeadKatOutputLayout.TagThenCiphertext, vector.Layout);
         CollectionAssert.AreEqual(expected, libsodiumCombined);
     }
 
@@ -257,10 +262,10 @@ public class StreamAeadKnownAnswerTests
     /// <summary>
     /// Creates the AEAD transform that an external vector targets.
     /// </summary>
-    /// <param name="vector">The vector whose <see cref="StreamAeadKnownAnswerVector.Algorithm" /> selects the type.</param>
+    /// <param name="vector">The vector whose <see cref="AeadKnownAnswer.Algorithm" /> selects the type.</param>
     /// <returns>A transform bound to the vector's key and nonce.</returns>
     /// <exception cref="NotSupportedException">The vector names an unrecognised algorithm.</exception>
-    private static IStreamAeadTransform CreateTransform(StreamAeadKnownAnswerVector vector) =>
+    private static IStreamAeadTransform CreateTransform(AeadKnownAnswer vector) =>
         vector.Algorithm switch
         {
             AlgorithmXChaCha20Poly1305 => new XChaCha20Poly1305(vector.Key, vector.Nonce),
@@ -272,10 +277,10 @@ public class StreamAeadKnownAnswerTests
     /// Returns the libsodium secretbox reference vector from <see cref="ExternalVectors" />.
     /// </summary>
     /// <returns>The secretbox known-answer vector.</returns>
-    private static StreamAeadKnownAnswerVector SecretboxVector() =>
-        (StreamAeadKnownAnswerVector)ExternalVectors()
+    private static AeadKnownAnswer SecretboxVector() =>
+        (AeadKnownAnswer)ExternalVectors()
             .Select(row => row[0])
-            .First(v => ((StreamAeadKnownAnswerVector)v).Algorithm == AlgorithmXSalsa20Poly1305Secretbox);
+            .First(v => ((AeadKnownAnswer)v).Algorithm == AlgorithmXSalsa20Poly1305Secretbox);
 
     /// <summary>
     /// Computes the expected XSalsa20-Poly1305 (RFC 8439 framing) ciphertext and tag by composing the public

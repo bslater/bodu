@@ -5,8 +5,10 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 
-using System.Reflection;
 using System.Security.Cryptography;
+using Bodu.Security.Cryptography.Infrastructure;
+using Bodu.Test.Kat;
+using static Bodu.Security.Cryptography.Infrastructure.KatBytes;
 
 namespace Bodu.Security.Cryptography;
 /// <summary>
@@ -24,27 +26,8 @@ public sealed partial class ChaCha20Tests
             DefaultKeySizeBits = 256,
             NonceSizeBits = 96,
             LegalKeySizesBits = [256],
+            KnownAnswers = KnownAnswerTests,
         };
-
-    /// <summary>
-    /// Represents one ChaCha20 encryption known-answer test row, expressed as continuous hex strings.
-    /// </summary>
-    private sealed record ChaCha20EncryptionKat
-    {
-        public required string Name { get; init; }
-
-        public required string Source { get; init; }
-
-        public required string KeyHex { get; init; }
-
-        public required string NonceHex { get; init; }
-
-        public required uint Counter { get; init; }
-
-        public required string PlaintextHex { get; init; }
-
-        public required string CiphertextHex { get; init; }
-    }
 
     // ── RFC 8439 — ChaCha20 cipher known-answer tests ────────────────────────────────────────
     //
@@ -52,111 +35,86 @@ public sealed partial class ChaCha20Tests
     //   §2.4.2 ChaCha20 encryption (the "sunscreen" plaintext).
     //   §2.3.2 ChaCha20 block function (counter 1 keystream, recovered here as the ciphertext of a
     //          64-byte all-zero plaintext under the §2.3.2 key/nonce).
-    private static readonly ChaCha20EncryptionKat[] KnownAnswerTests =
+    private static readonly StreamCipherKnownAnswer[] KnownAnswerTests =
     [
-        new ChaCha20EncryptionKat
+        new StreamCipherKnownAnswer
         {
             Name = "RFC8439 2.4.2 ChaCha20 encryption",
-            Source = "RFC8439 Section 2.4.2",
-            KeyHex = "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
-            NonceHex = "000000000000004a00000000",
+            Provenance = KatProvenance.Rfc("RFC 8439 Section 2.4.2"),
+            Key = Hex("000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"),
+            Nonce = Hex("000000000000004a00000000"),
             Counter = 1,
-            PlaintextHex =
+            Plaintext = Hex(
                 "4c616469657320616e642047656e746c656d656e206f662074686520636c6173" +
                 "73206f66202739393a204966204920636f756c64206f6666657220796f75206f" +
                 "6e6c79206f6e652074697020666f7220746865206675747572652c2073756e73" +
-                "637265656e20776f756c642062652069742e",
-            CiphertextHex =
+                "637265656e20776f756c642062652069742e"),
+            Ciphertext = Hex(
                 "6e2e359a2568f98041ba0728dd0d6981e97e7aec1d4360c20a27afccfd9fae0b" +
                 "f91b65c5524733ab8f593dabcd62b3571639d624e65152ab8f530c359f0861d8" +
                 "07ca0dbf500d6a6156a38e088a22b65e52bc514d16ccf806818ce91ab7793736" +
-                "5af90bbf74a35be6b40b8eedf2785e42874d",
+                "5af90bbf74a35be6b40b8eedf2785e42874d"),
         },
-        new ChaCha20EncryptionKat
+        new StreamCipherKnownAnswer
         {
             Name = "RFC8439 2.3.2 ChaCha20 block function (counter 1 keystream)",
-            Source = "RFC8439 Section 2.3.2",
-            KeyHex = "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
-            NonceHex = "000000090000004a00000000",
+            Provenance = KatProvenance.Rfc("RFC 8439 Section 2.3.2"),
+            Key = Hex("000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"),
+            Nonce = Hex("000000090000004a00000000"),
             Counter = 1,
-            PlaintextHex =
-                "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-            CiphertextHex =
+            Plaintext = Hex(
+                "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"),
+            Ciphertext = Hex(
                 "10f1e7e4d13b5915500fdd1fa32071c4c7d1f4c733c068030422aa9ac3d46c4e" +
-                "d2826446079faa0914c2d705d98b02a2b5129cd1de164eb9cbd083e8a2503c4e",
+                "d2826446079faa0914c2d705d98b02a2b5129cd1de164eb9cbd083e8a2503c4e"),
         },
     ];
 
     /// <summary>
     /// Yields the ChaCha20 known-answer vectors as <see cref="DynamicDataAttribute" /> rows.
     /// </summary>
-    /// <returns>One row per vector, carrying the hex inputs and expected ciphertext.</returns>
+    /// <returns>One row per vector.</returns>
     private static IEnumerable<object[]> ChaCha20KatData()
     {
-        foreach (ChaCha20EncryptionKat kat in KnownAnswerTests)
-            yield return new object[] { kat.KeyHex, kat.NonceHex, kat.Counter, kat.PlaintextHex, kat.CiphertextHex, kat.Name };
+        foreach (StreamCipherKnownAnswer kat in new ChaCha20Tests().GetSpecification().KnownAnswers)
+            yield return new object[] { kat };
     }
-
-    /// <summary>
-    /// Produces a human-readable display name for a ChaCha20 KAT row.
-    /// </summary>
-    /// <param name="testMethod">The executing test method.</param>
-    /// <param name="data">The row data; index 5 carries the scenario name.</param>
-    /// <returns>The test method name followed by the row's scenario label.</returns>
-    public static string GetKatDisplayName(MethodInfo testMethod, object[] data) =>
-        $"{testMethod.Name} — {data[5]}";
 
     /// <summary>
     /// Verifies that <see cref="ChaCha20" /> encrypts each RFC 8439 plaintext to the published ciphertext.
     /// </summary>
-    /// <param name="keyHex">The 256-bit key, in hex.</param>
-    /// <param name="nonceHex">The 96-bit nonce, in hex.</param>
-    /// <param name="counter">The initial block counter.</param>
-    /// <param name="plaintextHex">The plaintext, in hex.</param>
-    /// <param name="ciphertextHex">The expected ciphertext, in hex.</param>
-    /// <param name="displayName">The scenario label.</param>
+    /// <param name="vector">The known-answer vector under test.</param>
     [TestMethod]
-    [DynamicData(nameof(ChaCha20KatData), DynamicDataDisplayName = nameof(GetKatDisplayName))]
-    public void CreateEncryptor_WhenGivenRfc8439Vector_ShouldMatchExpectedCiphertext(
-        string keyHex, string nonceHex, uint counter, string plaintextHex, string ciphertextHex, string displayName)
+    [DynamicData(
+        nameof(ChaCha20KatData),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void CreateEncryptor_WhenGivenRfc8439Vector_ShouldMatchExpectedCiphertext(StreamCipherKnownAnswer vector)
     {
-        byte[] key = Convert.FromHexString(keyHex);
-        byte[] nonce = Convert.FromHexString(nonceHex);
-        byte[] plaintext = Convert.FromHexString(plaintextHex);
-        byte[] expected = Convert.FromHexString(ciphertextHex);
+        using var cipher = new ChaCha20 { InitialCounter = vector.Counter };
+        using ICryptoTransform encryptor = cipher.CreateEncryptor(vector.Key, vector.Nonce);
+        byte[] actual = encryptor.TransformFinalBlock(vector.Plaintext, 0, vector.Plaintext.Length);
 
-        using var cipher = new ChaCha20 { InitialCounter = counter };
-        using ICryptoTransform encryptor = cipher.CreateEncryptor(key, nonce);
-        byte[] actual = encryptor.TransformFinalBlock(plaintext, 0, plaintext.Length);
-
-        CollectionAssert.AreEqual(expected, actual, $"ChaCha20 ciphertext mismatch for {displayName}.");
+        CollectionAssert.AreEqual(vector.Ciphertext, actual, $"ChaCha20 ciphertext mismatch for {vector.Name}.");
     }
 
     /// <summary>
     /// Verifies that <see cref="ChaCha20" /> decrypts each RFC 8439 ciphertext back to the published plaintext,
     /// confirming the cipher is self-inverse.
     /// </summary>
-    /// <param name="keyHex">The 256-bit key, in hex.</param>
-    /// <param name="nonceHex">The 96-bit nonce, in hex.</param>
-    /// <param name="counter">The initial block counter.</param>
-    /// <param name="plaintextHex">The expected plaintext, in hex.</param>
-    /// <param name="ciphertextHex">The ciphertext, in hex.</param>
-    /// <param name="displayName">The scenario label.</param>
+    /// <param name="vector">The known-answer vector under test.</param>
     [TestMethod]
-    [DynamicData(nameof(ChaCha20KatData), DynamicDataDisplayName = nameof(GetKatDisplayName))]
-    public void CreateDecryptor_WhenGivenRfc8439Vector_ShouldRecoverPlaintext(
-        string keyHex, string nonceHex, uint counter, string plaintextHex, string ciphertextHex, string displayName)
+    [DynamicData(
+        nameof(ChaCha20KatData),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void CreateDecryptor_WhenGivenRfc8439Vector_ShouldRecoverPlaintext(StreamCipherKnownAnswer vector)
     {
-        byte[] key = Convert.FromHexString(keyHex);
-        byte[] nonce = Convert.FromHexString(nonceHex);
-        byte[] ciphertext = Convert.FromHexString(ciphertextHex);
-        byte[] expected = Convert.FromHexString(plaintextHex);
+        using var cipher = new ChaCha20 { InitialCounter = vector.Counter };
+        using ICryptoTransform decryptor = cipher.CreateDecryptor(vector.Key, vector.Nonce);
+        byte[] actual = decryptor.TransformFinalBlock(vector.Ciphertext, 0, vector.Ciphertext.Length);
 
-        using var cipher = new ChaCha20 { InitialCounter = counter };
-        using ICryptoTransform decryptor = cipher.CreateDecryptor(key, nonce);
-        byte[] actual = decryptor.TransformFinalBlock(ciphertext, 0, ciphertext.Length);
-
-        CollectionAssert.AreEqual(expected, actual, $"ChaCha20 plaintext recovery mismatch for {displayName}.");
+        CollectionAssert.AreEqual(vector.Plaintext, actual, $"ChaCha20 plaintext recovery mismatch for {vector.Name}.");
     }
 
     /// <summary>

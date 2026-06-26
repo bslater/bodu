@@ -35,6 +35,7 @@ public sealed partial class AesBlockCipherTests
             BlockSize = 16,
             KeySize = keySize,
             TestKey = TestHelpers.GenerateIncrementalByteSequence(0, keySize),
+            KnownAnswers = KnownAnswersFor(variant),
         };
     }
 
@@ -44,10 +45,6 @@ public sealed partial class AesBlockCipherTests
         BlockCipherSpecification spec = GetSpecification(variant);
         return new AesBlockCipher(spec.TestKey!);
     }
-
-    /// <inheritdoc />
-    protected override IReadOnlyList<BlockCipherKnownAnswer> GetKnownAnswers(BlockCipherKeyVariant variant) =>
-        KnownAnswersFor(variant);
 
     /// <inheritdoc />
     protected override IBlockCipher CreateBlockCipherForAnswer(BlockCipherKnownAnswer answer) =>
