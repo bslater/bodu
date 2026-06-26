@@ -212,7 +212,7 @@ FRK4	valid-nojson	SupportedParseOnly
 FTA2	valid	SupportedPass
 FUP4	valid	SupportedPass
 G4RS	valid	SupportedPass
-G5U8	invalid	KnownGap
+G5U8	invalid	SupportedFail
 G7JE	invalid	SupportedFail
 G992	valid	SupportedPass
 G9HC	invalid	SupportedFail
@@ -274,7 +274,7 @@ M2N8/01	valid-nojson	UnsupportedFeatureRejected
 M5C3	valid	UnsupportedFeatureRejected
 M5DY	valid-nojson	UnsupportedFeatureRejected
 M6YH	valid	UnsupportedFeatureRejected
-M7A3	valid	KnownGap
+M7A3	valid	SupportedPass
 M7NX	valid	SupportedPass
 M9B4	valid	SupportedPass
 MJS9	valid	SupportedPass
@@ -289,7 +289,7 @@ MXS3	valid	SupportedPass
 MYW6	valid	SupportedPass
 MZX3	valid	SupportedPass
 N4JP	invalid	SupportedFail
-N782	invalid	KnownGap
+N782	invalid	SupportedFail
 NAT4	valid	SupportedPass
 NB6Z	valid	SupportedPass
 NHX8	valid-nojson	SupportedParseOnly
@@ -380,16 +380,16 @@ Y2GN	valid	SupportedPass
 Y79Y/000	invalid	KnownGap
 Y79Y/001	valid	SupportedPass
 Y79Y/002	valid	SupportedPass
-Y79Y/003	invalid	KnownGap
-Y79Y/004	invalid	KnownGap
-Y79Y/005	invalid	KnownGap
+Y79Y/003	invalid	SupportedFail
+Y79Y/004	invalid	SupportedFail
+Y79Y/005	invalid	SupportedFail
 Y79Y/006	invalid	SupportedFail
 Y79Y/007	invalid	SupportedFail
 Y79Y/008	invalid	SupportedFail
 Y79Y/009	invalid	SupportedFail
 Y79Y/010	valid	SupportedPass
 YD5X	valid	SupportedPass
-YJV2	invalid	KnownGap
+YJV2	invalid	SupportedFail
 Z67P	valid	UnsupportedFeatureRejected
 Z9M4	valid	UnsupportedFeatureRejected
 ZCZ6	invalid	SupportedFail

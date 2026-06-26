@@ -237,6 +237,10 @@ internal sealed partial class YamlParser
         if (c == (byte)'\'')
             return NewString(ReadSingleQuoted(-1), YamlScalarStyle.SingleQuoted, offset, null, null);
 
+        // A plain scalar in flow context cannot consist of a bare '-' followed by a separator or flow indicator.
+        if (Peek() == (byte)'-' && (IsBlankOrBreakOrEnd(PeekAt(1)) || PeekAt(1) is (byte)',' or (byte)'[' or (byte)']' or (byte)'{' or (byte)'}'))
+            throw Error(YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
+
         var start = _pos;
         var end = _pos;
         while (!IsBreakOrEnd(Peek()))
@@ -290,6 +294,18 @@ internal sealed partial class YamlParser
             {
                 Advance();
                 crossed = true;
+
+                // A tab cannot indent a non-empty flow continuation line (a blank tab-only line is immaterial).
+                if (Peek() == (byte)'\t')
+                {
+                    var q = _pos;
+                    while (q < _length && _source[q] is (byte)' ' or (byte)'\t')
+                        q++;
+
+                    if (q < _length && _source[q] is not ((byte)'\n' or (byte)'\r'))
+                        throw ErrorAt(_pos, YamlResourceStrings.Format_Invalid_YamlTabIndentation);
+                }
+
                 continue;
             }
 
@@ -304,6 +320,10 @@ internal sealed partial class YamlParser
 
             break;
         }
+
+        // A document-start or document-end marker cannot appear inside a flow collection.
+        if (crossed && CurrentColumn() == 0 && AtDocumentBoundary())
+            throw ErrorAt(_pos, YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
 
         // Flow content continued onto a new line must be indented more than the owning block node; a closing
         // delimiter may sit at the parent indentation.

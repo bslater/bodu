@@ -34,6 +34,7 @@ internal sealed partial class YamlParser
     private Dictionary<string, string>? _tagHandles;
     private int _flowIndent = -1;
     private int _lastPropertyLine = -1;
+    private bool _documentStartConsumed;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="YamlParser" /> class over the specified source.
@@ -117,6 +118,25 @@ internal sealed partial class YamlParser
         {
             SkipDirectivesAndDocumentStart();
             SkipBlankCommentLines();
+
+            // An empty region with no explicit '---' start and no content is not a document.
+            if (!_documentStartConsumed && (AtStreamEnd() || (CurrentColumn() == 0 && Peek() == (byte)'.' && AtDocumentBoundary())))
+            {
+                if (!AtEnd && Peek() == (byte)'.')
+                {
+                    while (!IsBreakOrEnd(Peek()))
+                        _pos++;
+
+                    if (!AtEnd)
+                        Advance();
+                }
+
+                SkipBlankCommentLines();
+                if (AtStreamEnd())
+                    break;
+
+                continue;
+            }
 
             _rows = [];
             _strings = [];
@@ -467,7 +487,19 @@ internal sealed partial class YamlParser
 
             Advance(); // consume '-'
             var entryColumn = CurrentColumn();
-            SkipSpaces();
+
+            var separationHasTab = false;
+            while (Peek() is (byte)' ' or (byte)'\t')
+            {
+                if (Peek() == (byte)'\t')
+                    separationHasTab = true;
+
+                _pos++;
+            }
+
+            // A tab cannot indent a nested block sequence entry that begins on the dash's line.
+            if (separationHasTab && Peek() == (byte)'-' && IsBlankOrBreakOrEnd(PeekAt(1)))
+                throw ErrorAt(_pos, YamlResourceStrings.Format_Invalid_YamlTabIndentation);
 
             int element;
             if (IsBreakOrEnd(Peek()) || Peek() == (byte)'#')

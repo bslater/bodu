@@ -301,6 +301,7 @@ internal sealed partial class YamlParser
     private void SkipDirectivesAndDocumentStart()
     {
         _tagHandles = null;
+        _documentStartConsumed = false;
         var yamlDirectiveSeen = false;
         var directiveSeen = false;
 
@@ -323,6 +324,7 @@ internal sealed partial class YamlParser
             Advance();
             Advance();
             Advance();
+            _documentStartConsumed = true;
 
             // A block mapping cannot begin on the document-start line.
             SkipSpaces();
