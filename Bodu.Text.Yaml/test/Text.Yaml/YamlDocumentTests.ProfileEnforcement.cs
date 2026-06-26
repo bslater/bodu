@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="YamlProfileEnforcementTests.cs" company="Bodu Pty. Ltd.">
+// <copyright file="YamlDocumentTests.ProfileEnforcement.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -12,10 +12,9 @@ namespace Bodu.Text.Yaml;
 /// <summary>
 /// Verifies that the parser enforces the library's YAML 1.2 core, JSON-compatible tree profile by rejecting the
 /// constructs that the profile excludes: duplicate keys, complex keys, duplicate anchors, tabs in indentation, invalid
-/// UTF-8, non-printable control characters, and invalid Unicode escapes.
+/// UTF-8, non-printable control characters, invalid Unicode escapes, and nesting beyond the configured depth.
 /// </summary>
-[TestClass]
-public sealed class YamlProfileEnforcementTests
+public partial class YamlDocumentTests
 {
     /// <summary>
     /// Verifies that a block mapping which repeats a key is rejected with <see cref="YamlFormatException" /> under the
@@ -182,6 +181,17 @@ public sealed class YamlProfileEnforcementTests
         Assert.ThrowsExactly<YamlFormatException>(() =>
         {
             using var _ = YamlDocument.Parse("a: \"\\U00110000\"\n");
+        });
+    }
+
+    /// <summary>Verifies that nesting beyond the configured maximum depth is rejected.</summary>
+    [TestMethod]
+    public void Parse_WhenNestingExceedsMaxDepth_ShouldThrow()
+    {
+        var deep = string.Concat(Enumerable.Repeat("[", 200)) + "x" + string.Concat(Enumerable.Repeat("]", 200));
+        Assert.ThrowsExactly<YamlFormatException>(() =>
+        {
+            using var doc = YamlDocument.Parse("root: " + deep + "\n");
         });
     }
 }

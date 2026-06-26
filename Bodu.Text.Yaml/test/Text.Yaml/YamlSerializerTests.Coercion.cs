@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="YamlSerializerCoercionTests.cs" company="Bodu Pty. Ltd.">
+// <copyright file="YamlSerializerTests.Coercion.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -10,8 +10,7 @@ namespace Bodu.Text.Yaml;
 /// Verifies that <see cref="YamlSerializer" /> applies strict numeric and scalar coercions, rejecting lossy
 /// conversions and round-tripping <see cref="decimal" /> and large <see cref="ulong" /> values without corruption.
 /// </summary>
-[TestClass]
-public sealed class YamlSerializerCoercionTests
+public partial class YamlSerializerTests
 {
     /// <summary>
     /// Verifies that deserializing a non-integral float into an integer target throws

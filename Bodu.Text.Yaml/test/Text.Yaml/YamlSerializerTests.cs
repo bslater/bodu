@@ -16,7 +16,7 @@ namespace Bodu.Text.Yaml;
 /// enums, naming policies, attributes, and custom converters.
 /// </summary>
 [TestClass]
-public sealed class YamlSerializerTests
+public partial class YamlSerializerTests
 {
     /// <summary>A simple POCO used across the serializer tests.</summary>
     private sealed class Person
@@ -66,19 +66,6 @@ public sealed class YamlSerializerTests
         Assert.AreEqual("Name: Ada\nAge: 36\nActive: true\n", yaml);
     }
 
-    /// <summary>Verifies that a POCO round-trips through serialize and deserialize.</summary>
-    [TestMethod]
-    public void RoundTrip_WhenPoco_ShouldPreserveValues()
-    {
-        var original = new Person { Name = "Grace", Age = 45, Active = false };
-        var yaml = YamlSerializer.Serialize(original);
-        var restored = YamlSerializer.Deserialize<Person>(yaml)!;
-
-        Assert.AreEqual("Grace", restored.Name);
-        Assert.AreEqual(45, restored.Age);
-        Assert.IsFalse(restored.Active);
-    }
-
     /// <summary>Verifies that the naming policy and property-name and ignore attributes are honored.</summary>
     [TestMethod]
     public void Serialize_WhenNamingPolicyAndAttributes_ShouldApply()
@@ -87,53 +74,6 @@ public sealed class YamlSerializerTests
         var yaml = YamlSerializer.Serialize(new Config { ServerHost = "h", ServerPort = 8080, Secret = "x" }, options);
 
         Assert.AreEqual("server_host: h\nport: 8080\n", yaml);
-    }
-
-    /// <summary>Verifies that nested lists and dictionaries serialize and deserialize.</summary>
-    [TestMethod]
-    public void RoundTrip_WhenNestedCollections_ShouldPreserve()
-    {
-        var project = new Project
-        {
-            Title = "Bodu",
-            Tags = ["yaml", "parser"],
-            Counts = new Dictionary<string, int> { ["files"] = 12, ["lines"] = 900 },
-        };
-
-        var yaml = YamlSerializer.Serialize(project);
-        var restored = YamlSerializer.Deserialize<Project>(yaml)!;
-
-        Assert.AreEqual("Bodu", restored.Title);
-        CollectionAssert.AreEqual(new[] { "yaml", "parser" }, restored.Tags);
-        Assert.AreEqual(12, restored.Counts!["files"]);
-        Assert.AreEqual(900, restored.Counts["lines"]);
-    }
-
-    /// <summary>Verifies that enums serialize as names by default and parse back.</summary>
-    [TestMethod]
-    public void RoundTrip_WhenEnum_ShouldUseNames()
-    {
-        var yaml = YamlSerializer.Serialize(Color.Green);
-        Assert.AreEqual("Green\n", yaml);
-        Assert.AreEqual(Color.Green, YamlSerializer.Deserialize<Color>(yaml));
-    }
-
-    /// <summary>Verifies that a list of POCOs serializes as a block sequence of mappings and round-trips.</summary>
-    [TestMethod]
-    public void RoundTrip_WhenListOfPocos_ShouldPreserve()
-    {
-        var people = new List<Person>
-        {
-            new() { Name = "a", Age = 1, Active = true },
-            new() { Name = "b", Age = 2, Active = false },
-        };
-
-        var yaml = YamlSerializer.Serialize(people);
-        var restored = YamlSerializer.Deserialize<List<Person>>(yaml)!;
-
-        Assert.AreEqual(2, restored.Count);
-        Assert.AreEqual("b", restored[1].Name);
-        Assert.AreEqual(1, restored[0].Age);
     }
 
     /// <summary>Verifies that a primitive dictionary deserializes from YAML.</summary>

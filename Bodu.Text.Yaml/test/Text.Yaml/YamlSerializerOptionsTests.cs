@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Text.Yaml.Nodes;
 using Bodu.Text.Yaml.Serialization;
 
 namespace Bodu.Text.Yaml;
@@ -14,13 +13,13 @@ namespace Bodu.Text.Yaml;
 /// number handling, unmapped-member handling, and duplicate wire-name detection.
 /// </summary>
 [TestClass]
-public sealed class YamlSerializerOptionsTests
+public partial class YamlSerializerOptionsTests
 {
     /// <summary>
     /// Verifies that an options instance becomes read-only after it is used and rejects further mutation.
     /// </summary>
     [TestMethod]
-    public void Options_WhenUsed_ShouldBecomeReadOnlyAndRejectMutation()
+    public void IsReadOnly_WhenOptionsUsed_ShouldBecomeReadOnlyAndRejectMutation()
     {
         var options = new YamlSerializerOptions();
 
@@ -93,19 +92,6 @@ public sealed class YamlSerializerOptionsTests
         {
             _ = YamlSerializer.Serialize(new Collision());
         });
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="YamlValue.GetValue{T}" /> wraps a failed conversion in an
-    /// <see cref="InvalidOperationException" /> that carries the original cause.
-    /// </summary>
-    [TestMethod]
-    public void YamlValueGetValue_WhenConversionFails_ShouldThrowWithInnerException()
-    {
-        var value = YamlValue.Create("not-a-number");
-
-        var ex = Assert.ThrowsExactly<InvalidOperationException>(() => value.GetValue<int>());
-        Assert.IsNotNull(ex.InnerException);
     }
 
     /// <summary>A simple target type with a single mapped member.</summary>

@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="YamlDirectiveAndAliasTests.cs" company="Bodu Pty. Ltd.">
+// <copyright file="YamlDocumentTests.DirectivesAndAliases.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -13,8 +13,7 @@ namespace Bodu.Text.Yaml;
 /// Verifies the parser's handling of directives, tag-handle expansion, the merge key, and alias cycles under the
 /// library's YAML profile.
 /// </summary>
-[TestClass]
-public sealed class YamlDirectiveAndAliasTests
+public partial class YamlDocumentTests
 {
     /// <summary>
     /// Verifies that a valid <c>%YAML 1.2</c> directive is accepted.
