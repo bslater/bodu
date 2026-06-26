@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Security.Cryptography.Infrastructure;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -30,14 +31,14 @@ internal sealed partial class TwofishBlockCipherTests
 
     private const string TwofishZeroKey256 = "0000000000000000000000000000000000000000000000000000000000000000";
 
-    private const string ProfileAesSubmission = "Twofish AES submission ecb_ival.txt";
+    private static readonly KatProvenance ProfileAesSubmission = KatProvenance.ReferenceImplementation("Twofish AES submission ecb_ival.txt");
 
     private static readonly BlockCipherKnownAnswer[] Key128KnownAnswers =
     [
         new BlockCipherKnownAnswer
         {
             Name = "Twofish128_I1_ZeroKeyZeroPlaintext",
-            Profile = ProfileAesSubmission,
+            Provenance = ProfileAesSubmission,
             Plaintext = Convert.FromHexString(TwofishZeroBlock),
             Ciphertext = Convert.FromHexString("9F589F5CF6122C32B6BFEC2F2AE8C35A"),
             Key = Convert.FromHexString(TwofishZeroKey128),
@@ -45,7 +46,7 @@ internal sealed partial class TwofishBlockCipherTests
         new BlockCipherKnownAnswer
         {
             Name = "Twofish128_I2",
-            Profile = ProfileAesSubmission,
+            Provenance = ProfileAesSubmission,
             Plaintext = Convert.FromHexString("9F589F5CF6122C32B6BFEC2F2AE8C35A"),
             Ciphertext = Convert.FromHexString("D491DB16E7B1C39E86CB086B789F5419"),
             Key = Convert.FromHexString(TwofishZeroKey128),
@@ -53,7 +54,7 @@ internal sealed partial class TwofishBlockCipherTests
         new BlockCipherKnownAnswer
         {
             Name = "Twofish128_I3",
-            Profile = ProfileAesSubmission,
+            Provenance = ProfileAesSubmission,
             Plaintext = Convert.FromHexString("D491DB16E7B1C39E86CB086B789F5419"),
             Ciphertext = Convert.FromHexString("019F9809DE1711858FAAC3A3BA20FBC3"),
             Key = Convert.FromHexString("9F589F5CF6122C32B6BFEC2F2AE8C35A"),
@@ -61,7 +62,7 @@ internal sealed partial class TwofishBlockCipherTests
         new BlockCipherKnownAnswer
         {
             Name = "Twofish128_I4",
-            Profile = ProfileAesSubmission,
+            Provenance = ProfileAesSubmission,
             Plaintext = Convert.FromHexString("019F9809DE1711858FAAC3A3BA20FBC3"),
             Ciphertext = Convert.FromHexString("6363977DE839486297E661C6C9D668EB"),
             Key = Convert.FromHexString("D491DB16E7B1C39E86CB086B789F5419"),
@@ -69,7 +70,7 @@ internal sealed partial class TwofishBlockCipherTests
         new BlockCipherKnownAnswer
         {
             Name = "Twofish128_I5",
-            Profile = ProfileAesSubmission,
+            Provenance = ProfileAesSubmission,
             Plaintext = Convert.FromHexString("6363977DE839486297E661C6C9D668EB"),
             Ciphertext = Convert.FromHexString("816D5BD0FAE35342BF2A7412C246F752"),
             Key = Convert.FromHexString("019F9809DE1711858FAAC3A3BA20FBC3"),
@@ -77,7 +78,7 @@ internal sealed partial class TwofishBlockCipherTests
         new BlockCipherKnownAnswer
         {
             Name = "Twofish128_I10",
-            Profile = ProfileAesSubmission,
+            Provenance = ProfileAesSubmission,
             Plaintext = Convert.FromHexString("28530B358C1B42EF277DE6D4407FC591"),
             Ciphertext = Convert.FromHexString("8A8AB983310ED78C8C0ECDE030B8DCA4"),
             Key = Convert.FromHexString("34C8A5FB2D3D08A170D120AC6D26DBFA"),
@@ -89,7 +90,7 @@ internal sealed partial class TwofishBlockCipherTests
         new BlockCipherKnownAnswer
         {
             Name = "Twofish192_I1_ZeroKeyZeroPlaintext",
-            Profile = ProfileAesSubmission,
+            Provenance = ProfileAesSubmission,
             Plaintext = Convert.FromHexString(TwofishZeroBlock),
             Ciphertext = Convert.FromHexString("EFA71F788965BD4453F860178FC19101"),
             Key = Convert.FromHexString(TwofishZeroKey192),
@@ -97,7 +98,7 @@ internal sealed partial class TwofishBlockCipherTests
         new BlockCipherKnownAnswer
         {
             Name = "Twofish192_I2",
-            Profile = ProfileAesSubmission,
+            Provenance = ProfileAesSubmission,
             Plaintext = Convert.FromHexString("EFA71F788965BD4453F860178FC19101"),
             Ciphertext = Convert.FromHexString("88B2B2706B105E36B446BB6D731A1E88"),
             Key = Convert.FromHexString(TwofishZeroKey192),
@@ -105,7 +106,7 @@ internal sealed partial class TwofishBlockCipherTests
         new BlockCipherKnownAnswer
         {
             Name = "Twofish192_I3",
-            Profile = ProfileAesSubmission,
+            Provenance = ProfileAesSubmission,
             Plaintext = Convert.FromHexString("88B2B2706B105E36B446BB6D731A1E88"),
             Ciphertext = Convert.FromHexString("39DA69D6BA4997D585B6DC073CA341B2"),
             Key = Convert.FromHexString("EFA71F788965BD4453F860178FC191010000000000000000"),
@@ -113,7 +114,7 @@ internal sealed partial class TwofishBlockCipherTests
         new BlockCipherKnownAnswer
         {
             Name = "Twofish192_I4",
-            Profile = ProfileAesSubmission,
+            Provenance = ProfileAesSubmission,
             Plaintext = Convert.FromHexString("39DA69D6BA4997D585B6DC073CA341B2"),
             Ciphertext = Convert.FromHexString("182B02D81497EA45F9DAACDC29193A65"),
             Key = Convert.FromHexString("88B2B2706B105E36B446BB6D731A1E88EFA71F788965BD44"),
@@ -121,7 +122,7 @@ internal sealed partial class TwofishBlockCipherTests
         new BlockCipherKnownAnswer
         {
             Name = "Twofish192_I5",
-            Profile = ProfileAesSubmission,
+            Provenance = ProfileAesSubmission,
             Plaintext = Convert.FromHexString("182B02D81497EA45F9DAACDC29193A65"),
             Ciphertext = Convert.FromHexString("7AFF7A70CA2FF28AC31DD8AE5DAAAB63"),
             Key = Convert.FromHexString("39DA69D6BA4997D585B6DC073CA341B288B2B2706B105E36"),
@@ -129,7 +130,7 @@ internal sealed partial class TwofishBlockCipherTests
         new BlockCipherKnownAnswer
         {
             Name = "Twofish192_I10",
-            Profile = ProfileAesSubmission,
+            Provenance = ProfileAesSubmission,
             Plaintext = Convert.FromHexString("893FD67B98C550073571BD631263FC78"),
             Ciphertext = Convert.FromHexString("16434FC9C8841A63D58700B5578E8F67"),
             Key = Convert.FromHexString("AE8109BFDA85C1F2C5038B34ED691BFF3AF6F7CE5BD35EF1"),
@@ -141,7 +142,7 @@ internal sealed partial class TwofishBlockCipherTests
         new BlockCipherKnownAnswer
         {
             Name = "Twofish256_I1_ZeroKeyZeroPlaintext",
-            Profile = ProfileAesSubmission,
+            Provenance = ProfileAesSubmission,
             Plaintext = Convert.FromHexString(TwofishZeroBlock),
             Ciphertext = Convert.FromHexString("57FF739D4DC92C1BD7FC01700CC8216F"),
             Key = Convert.FromHexString(TwofishZeroKey256),
@@ -149,7 +150,7 @@ internal sealed partial class TwofishBlockCipherTests
         new BlockCipherKnownAnswer
         {
             Name = "Twofish256_I2",
-            Profile = ProfileAesSubmission,
+            Provenance = ProfileAesSubmission,
             Plaintext = Convert.FromHexString("57FF739D4DC92C1BD7FC01700CC8216F"),
             Ciphertext = Convert.FromHexString("D43BB7556EA32E46F2A282B7D45B4E0D"),
             Key = Convert.FromHexString(TwofishZeroKey256),
@@ -157,7 +158,7 @@ internal sealed partial class TwofishBlockCipherTests
         new BlockCipherKnownAnswer
         {
             Name = "Twofish256_I3",
-            Profile = ProfileAesSubmission,
+            Provenance = ProfileAesSubmission,
             Plaintext = Convert.FromHexString("D43BB7556EA32E46F2A282B7D45B4E0D"),
             Ciphertext = Convert.FromHexString("90AFE91BB288544F2C32DC239B2635E6"),
             Key = Convert.FromHexString("57FF739D4DC92C1BD7FC01700CC8216F00000000000000000000000000000000"),
@@ -165,7 +166,7 @@ internal sealed partial class TwofishBlockCipherTests
         new BlockCipherKnownAnswer
         {
             Name = "Twofish256_I4",
-            Profile = ProfileAesSubmission,
+            Provenance = ProfileAesSubmission,
             Plaintext = Convert.FromHexString("90AFE91BB288544F2C32DC239B2635E6"),
             Ciphertext = Convert.FromHexString("6CB4561C40BF0A9705931CB6D408E7FA"),
             Key = Convert.FromHexString("D43BB7556EA32E46F2A282B7D45B4E0D57FF739D4DC92C1BD7FC01700CC8216F"),
@@ -173,7 +174,7 @@ internal sealed partial class TwofishBlockCipherTests
         new BlockCipherKnownAnswer
         {
             Name = "Twofish256_I5",
-            Profile = ProfileAesSubmission,
+            Provenance = ProfileAesSubmission,
             Plaintext = Convert.FromHexString("6CB4561C40BF0A9705931CB6D408E7FA"),
             Ciphertext = Convert.FromHexString("3059D6D61753B958D92F4781C8640E58"),
             Key = Convert.FromHexString("90AFE91BB288544F2C32DC239B2635E6D43BB7556EA32E46F2A282B7D45B4E0D"),
@@ -181,7 +182,7 @@ internal sealed partial class TwofishBlockCipherTests
         new BlockCipherKnownAnswer
         {
             Name = "Twofish256_I10",
-            Profile = ProfileAesSubmission,
+            Provenance = ProfileAesSubmission,
             Plaintext = Convert.FromHexString("C5A3E7CEE0F1B7260528A68FB4EA05F2"),
             Ciphertext = Convert.FromHexString("43D5CEC327B24AB90AD34A79D0469151"),
             Key = Convert.FromHexString("DC096BCD99FC72F79936D4C748E75AF75AB67A5F8539A4A5FD9F0373BA463466"),

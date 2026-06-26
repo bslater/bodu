@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Test.Kat;
+using Bodu.Security.Cryptography.Infrastructure;
 
 namespace Bodu.Security.Cryptography;
 
@@ -51,7 +51,7 @@ namespace Bodu.Security.Cryptography;
 /// <item>
 /// <description>
 /// One row sourced from a published reference (RFC, NIST, AES submission, vendor) where vectors are available. Set
-/// <see cref="Profile" /> to identify the source.
+/// <see cref="CryptoKnownAnswer.Provenance" /> to identify the source.
 /// </description>
 /// </item>
 /// <item>
@@ -69,44 +69,11 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// </remarks>
 public sealed record BlockCipherKnownAnswer
-    : IKat
+    : SymmetricCipherKnownAnswer
 {
     /// <summary>
-    /// Gets the semantic name of this test vector used in diagnostic messages.
-    /// </summary>
-    public required string Name { get; init; }
-
-    /// <summary>
-    /// Gets the plaintext input bytes — the value fed to <c>Encrypt</c> and the value expected from <c>Decrypt</c> when
-    /// applied to <see cref="Ciphertext" />.
-    /// </summary>
-    public required byte[] Plaintext { get; init; }
-
-    /// <summary>
-    /// Gets the ciphertext expected from <c>Encrypt</c>(<see cref="Plaintext" />), which is also the value fed to
-    /// <c>Decrypt</c> during the round-trip assertion.
-    /// </summary>
-    public required byte[] Ciphertext { get; init; }
-
-    /// <summary>
-    /// Gets the per-row key applied to the cipher before encrypting <see cref="Plaintext" />, or
-    /// <see langword="null" /> when the variant's default <c>TestKey</c> from <see cref="BlockCipherSpecification" />
-    /// should be used.
-    /// </summary>
-    /// <value>The key bytes, or <see langword="null" /> to defer to the variant default.</value>
-    public byte[]? Key { get; init; }
-
-    /// <summary>
-    /// Gets the per-row tweak applied to the cipher before encrypting <see cref="Plaintext" />, or
-    /// <see langword="null" /> for non-tweakable ciphers and for tweakable ciphers that should fall back to the
-    /// variant's default <c>TestTweak</c>.
+    /// Gets the per-row tweak applied to the cipher before encrypting the plaintext, or <see langword="null" /> for
+    /// non-tweakable ciphers and for tweakable ciphers that should fall back to the variant's default <c>TestTweak</c>.
     /// </summary>
     public byte[]? Tweak { get; init; }
-
-    /// <summary>
-    /// Gets an optional free-form profile tag describing the source or category of this vector — for example
-    /// <c>"RFC 3713 Appendix A"</c>, <c>"NIST AES KAT"</c>, or <c>"NESSIE submission"</c>. Surfaced in failure
-    /// diagnostics so a test report makes the provenance obvious.
-    /// </summary>
-    public string? Profile { get; init; }
 }

@@ -51,6 +51,15 @@ public sealed record KatProvenance(KatSourceKind Kind, string Citation, string? 
         new(KatSourceKind.ReferenceImplementation, citation);
 
     /// <summary>
+    /// Creates a provenance record for a vector composed from independently-tested primitives or an independent
+    /// implementation rather than taken from a single external published source.
+    /// </summary>
+    /// <param name="citation">A description of how the vector was derived or cross-validated.</param>
+    /// <returns>A <see cref="KatProvenance" /> with <see cref="Kind" /> set to <see cref="KatSourceKind.DerivedOracle" />.</returns>
+    public static KatProvenance DerivedOracle(string citation) =>
+        new(KatSourceKind.DerivedOracle, citation);
+
+    /// <summary>
     /// Creates a provenance record for an in-tree regression baseline captured from this library's own output.
     /// </summary>
     /// <param name="citation">A short description of the baseline and any tracking issue.</param>

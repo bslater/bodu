@@ -6,6 +6,7 @@
 
 using Bodu.Test;
 
+using Bodu.Security.Cryptography.Infrastructure;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -24,14 +25,14 @@ namespace Bodu.Security.Cryptography;
 /// </remarks>
 internal sealed partial class Threefish256CipherTests
 {
-    private const string ProfileInTreeRegression = "Skein 1.3 / NIST SHA-3 reference (verified equivalent)";
+    private static readonly KatProvenance ProfileInTreeRegression = KatProvenance.InternalRegression("Skein 1.3 / NIST SHA-3 reference (verified equivalent)");
 
     private static readonly BlockCipherKnownAnswer[] ZeroedKeyAndTweakKnownAnswers =
     [
         new BlockCipherKnownAnswer
         {
             Name = "Threefish256_ZeroKeyZeroTweak_ZeroPlaintext",
-            Profile = ProfileInTreeRegression,
+            Provenance = ProfileInTreeRegression,
             Plaintext = new byte[32],
             Ciphertext = Convert.FromHexString("84DA2A1F8BEAEE947066AE3E3103F1AD536DB1F4A1192495116B9F3CE6133FD8"),
             Key = new byte[32],
@@ -44,7 +45,7 @@ internal sealed partial class Threefish256CipherTests
         new BlockCipherKnownAnswer
         {
             Name = "Threefish256_IncrementalKey_IncrementalTweak_DescendingPlaintext",
-            Profile = ProfileInTreeRegression,
+            Provenance = ProfileInTreeRegression,
             Plaintext = Convert.FromHexString(
                 "FFFEFDFCFBFAF9F8F7F6F5F4F3F2F1F0EFEEEDECEBEAE9E8E7E6E5E4E3E2E1E0"),
             Ciphertext = Convert.FromHexString(

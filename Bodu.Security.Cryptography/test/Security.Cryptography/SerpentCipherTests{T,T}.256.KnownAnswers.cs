@@ -6,6 +6,7 @@
 
 using Bodu.Test;
 
+using Bodu.Security.Cryptography.Infrastructure;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -30,15 +31,15 @@ namespace Bodu.Security.Cryptography;
 /// </remarks>
 internal sealed partial class Serpent256CipherTests
 {
-    private const string ProfileCrossValidated =
-        "Cross-validated against tools/cipher-vectors/wide_serpent.py (independent Python port)";
+    private static readonly KatProvenance ProfileCrossValidated =
+        KatProvenance.DerivedOracle("Cross-validated against tools/cipher-vectors/wide_serpent.py (independent Python port)");
 
     private static readonly BlockCipherKnownAnswer[] ZeroedKeyAndTweakKnownAnswers =
     [
         new BlockCipherKnownAnswer
         {
             Name = "Serpent256_ZeroKeyZeroTweak_ZeroPlaintext",
-            Profile = ProfileCrossValidated,
+            Provenance = ProfileCrossValidated,
             Plaintext = new byte[32],
             Ciphertext = Convert.FromHexString(
                 "79A23C5889F070C99DEDC6CC9806A29A98A3F2B854B61D719C1FA832ADF900D0"),
@@ -52,7 +53,7 @@ internal sealed partial class Serpent256CipherTests
         new BlockCipherKnownAnswer
         {
             Name = "Serpent256_IncrementalKey_IncrementalTweak_DescendingPlaintext",
-            Profile = ProfileCrossValidated,
+            Provenance = ProfileCrossValidated,
             Plaintext = Convert.FromHexString(
                 "FFFEFDFCFBFAF9F8F7F6F5F4F3F2F1F0EFEEEDECEBEAE9E8E7E6E5E4E3E2E1E0"),
             Ciphertext = Convert.FromHexString(

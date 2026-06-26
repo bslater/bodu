@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Security.Cryptography.Infrastructure;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -19,14 +20,14 @@ namespace Bodu.Security.Cryptography;
 /// <seealso href="https://www.schneier.com/wp-content/uploads/2015/12/vectors-2.txt">vectors-2.txt — Eric Young Blowfish vectors</seealso>
 internal sealed partial class BlowfishBlockCipherTests
 {
-    private const string ProfileSchneierVectors = "Eric Young / Schneier vectors-2.txt";
+    private static readonly KatProvenance ProfileSchneierVectors = KatProvenance.ReferenceImplementation("Eric Young / Schneier vectors-2.txt");
 
     private static readonly BlockCipherKnownAnswer[] DefaultKnownAnswers =
     [
         new BlockCipherKnownAnswer
         {
             Name = "Key_AllZero_Plaintext_AllZero",
-            Profile = ProfileSchneierVectors,
+            Provenance = ProfileSchneierVectors,
             Plaintext = Convert.FromHexString("0000000000000000"),
             Ciphertext = Convert.FromHexString("4EF997456198DD78"),
             Key = Convert.FromHexString("0000000000000000"),
@@ -34,7 +35,7 @@ internal sealed partial class BlowfishBlockCipherTests
         new BlockCipherKnownAnswer
         {
             Name = "Key_AllOnes_Plaintext_AllOnes",
-            Profile = ProfileSchneierVectors,
+            Provenance = ProfileSchneierVectors,
             Plaintext = Convert.FromHexString("FFFFFFFFFFFFFFFF"),
             Ciphertext = Convert.FromHexString("51866FD5B85ECB8A"),
             Key = Convert.FromHexString("FFFFFFFFFFFFFFFF"),
@@ -42,7 +43,7 @@ internal sealed partial class BlowfishBlockCipherTests
         new BlockCipherKnownAnswer
         {
             Name = "Key_0123456789ABCDEF_Plaintext_AllOnesNibbles",
-            Profile = ProfileSchneierVectors,
+            Provenance = ProfileSchneierVectors,
             Plaintext = Convert.FromHexString("1111111111111111"),
             Ciphertext = Convert.FromHexString("61F9C3802281B096"),
             Key = Convert.FromHexString("0123456789ABCDEF"),
@@ -50,7 +51,7 @@ internal sealed partial class BlowfishBlockCipherTests
         new BlockCipherKnownAnswer
         {
             Name = "Key_AllOnesNibbles_Plaintext_0123456789ABCDEF",
-            Profile = ProfileSchneierVectors,
+            Provenance = ProfileSchneierVectors,
             Plaintext = Convert.FromHexString("0123456789ABCDEF"),
             Ciphertext = Convert.FromHexString("7D0CC630AFDA1EC7"),
             Key = Convert.FromHexString("1111111111111111"),
@@ -58,7 +59,7 @@ internal sealed partial class BlowfishBlockCipherTests
         new BlockCipherKnownAnswer
         {
             Name = "Key_FEDCBA9876543210_Plaintext_0123456789ABCDEF",
-            Profile = ProfileSchneierVectors,
+            Provenance = ProfileSchneierVectors,
             Plaintext = Convert.FromHexString("0123456789ABCDEF"),
             Ciphertext = Convert.FromHexString("0ACEAB0FC6A0A28D"),
             Key = Convert.FromHexString("FEDCBA9876543210"),
@@ -66,7 +67,7 @@ internal sealed partial class BlowfishBlockCipherTests
         new BlockCipherKnownAnswer
         {
             Name = "Key_7CA110454A1A6E57_Plaintext_01A1D6D039776742",
-            Profile = ProfileSchneierVectors,
+            Provenance = ProfileSchneierVectors,
             Plaintext = Convert.FromHexString("01A1D6D039776742"),
             Ciphertext = Convert.FromHexString("59C68245EB05282B"),
             Key = Convert.FromHexString("7CA110454A1A6E57"),
