@@ -4,10 +4,10 @@
     Bodu.Text.Yaml/test/YamlTestCorpus tree that drives the CorpusKat-based regression run.
 
 .DESCRIPTION
-    Fetches a released yaml-test-suite data branch (or tag) as a source archive, then vendors the
-    files the Bodu YAML conformance harness consumes for each test case:
+    Fetches a released yaml-test-suite data branch (or tag) as a source archive, then vendors each test
+    case in the same directory layout as the upstream repository:
 
-        name        (upstream '===' description)
+        ===         (the test description)
         in.yaml     (the input document)
         in.json     (the canonical JSON expectation, when published)
         error       (empty marker present for error cases)
@@ -123,7 +123,7 @@ if (Test-Path -LiteralPath $manifestPath) {
 # Walk every upstream case (a directory containing in.yaml) and vendor its files.
 # ----------------------------------------------------------------------------------------------------
 
-$vendorFiles = @('in.yaml', 'in.json', 'error', 'test.event', 'out.yaml', 'emit.yaml')
+$vendorFiles = @('===', 'in.yaml', 'in.json', 'error', 'test.event', 'out.yaml', 'emit.yaml')
 $rows = [System.Collections.Generic.List[object]]::new()
 $upstreamIds = [System.Collections.Generic.HashSet[string]]::new()
 $added = [System.Collections.Generic.List[string]]::new()
@@ -135,12 +135,6 @@ foreach ($input in Get-ChildItem -LiteralPath $dataRoot -Recurse -File -Filter '
 
     $destDir = Join-Path $CorpusRoot ($id -replace '/', [System.IO.Path]::DirectorySeparatorChar)
     New-Item -ItemType Directory -Path $destDir -Force | Out-Null
-
-    # The description file is '===' upstream and 'name' in the vendored tree.
-    $nameSource = Join-Path $caseDir '==='
-    if (Test-Path -LiteralPath $nameSource) {
-        Copy-Item -LiteralPath $nameSource -Destination (Join-Path $destDir 'name') -Force
-    }
 
     foreach ($file in $vendorFiles) {
         $src = Join-Path $caseDir $file

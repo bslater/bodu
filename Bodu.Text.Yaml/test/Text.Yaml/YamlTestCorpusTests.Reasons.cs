@@ -44,19 +44,17 @@ public partial class YamlTestCorpusTests
     [TestMethod]
     [DynamicData(nameof(UnsupportedFeatureCases), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     [TestCategory("Regression")]
-    public void Parse_WhenUnsupportedFeatureCase_ShouldRejectForRecognizedReason(CorpusKat kat)
+    public void Parse_WhenUnsupportedFeatureCase_ShouldRejectForRecognizedReason(YamlTestVector kat)
     {
-        var yaml = File.ReadAllBytes(Path.Combine(CorpusRoot, kat.RelativePath, "in.yaml"));
-
         var ex = Assert.ThrowsExactly<YamlFormatException>(() =>
         {
-            using var _ = YamlDocument.Parse(yaml);
+            using var _ = YamlDocument.Parse(kat.Yaml);
         });
 
         var reason = DeriveUnsupportedReason(ex.Message);
         Assert.IsTrue(
             KnownUnsupportedReasons.Contains(reason),
-            $"{kat.RelativePath}: rejection reason '{reason}' is not a recognized profile reason (message: {ex.Message}).");
+            $"{kat.Id}: rejection reason '{reason}' is not a recognized profile reason (message: {ex.Message}).");
     }
 
     /// <summary>
