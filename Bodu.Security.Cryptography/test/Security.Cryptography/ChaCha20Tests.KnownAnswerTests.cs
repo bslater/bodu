@@ -26,6 +26,7 @@ public sealed partial class ChaCha20Tests
             DefaultKeySizeBits = 256,
             NonceSizeBits = 96,
             LegalKeySizesBits = [256],
+            KnownAnswers = KnownAnswerTests,
         };
 
     // ── RFC 8439 — ChaCha20 cipher known-answer tests ────────────────────────────────────────
@@ -75,7 +76,7 @@ public sealed partial class ChaCha20Tests
     /// <returns>One row per vector.</returns>
     private static IEnumerable<object[]> ChaCha20KatData()
     {
-        foreach (StreamCipherKnownAnswer kat in KnownAnswerTests)
+        foreach (StreamCipherKnownAnswer kat in new ChaCha20Tests().GetSpecification().KnownAnswers)
             yield return new object[] { kat };
     }
 

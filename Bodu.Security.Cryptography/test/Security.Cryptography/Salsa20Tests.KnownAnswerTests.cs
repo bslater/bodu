@@ -27,6 +27,7 @@ public sealed partial class Salsa20Tests
             DefaultKeySizeBits = 256,
             NonceSizeBits = 64,
             LegalKeySizesBits = [128, 256],
+            KnownAnswers = KeystreamKnownAnswers,
         };
 
     // ── eSTREAM / ECRYPT Salsa20/20 keystream known-answer tests ─────────────────────────────
@@ -79,7 +80,7 @@ public sealed partial class Salsa20Tests
     /// <returns>One row per vector.</returns>
     private static IEnumerable<object[]> Salsa20KeystreamKatData()
     {
-        foreach (StreamCipherKnownAnswer kat in KeystreamKnownAnswers)
+        foreach (StreamCipherKnownAnswer kat in new Salsa20Tests().GetSpecification().KnownAnswers)
             yield return new object[] { kat };
     }
 

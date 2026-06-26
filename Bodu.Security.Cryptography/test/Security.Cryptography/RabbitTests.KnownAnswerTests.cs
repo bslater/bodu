@@ -33,6 +33,7 @@ public sealed partial class RabbitTests
             DefaultKeySizeBits = 128,
             NonceSizeBits = 64,
             LegalKeySizesBits = [128],
+            KnownAnswers = KeystreamKnownAnswers,
         };
 
     // ── RFC 4503 Appendix A keystream conformance vectors (I2OSP / big-endian) ────────────────
@@ -127,7 +128,7 @@ public sealed partial class RabbitTests
     /// <returns>One row per vector.</returns>
     private static IEnumerable<object[]> RabbitKeystreamKatData()
     {
-        foreach (StreamCipherKnownAnswer kat in KeystreamKnownAnswers)
+        foreach (StreamCipherKnownAnswer kat in new RabbitTests().GetSpecification().KnownAnswers)
             yield return new object[] { kat };
     }
 

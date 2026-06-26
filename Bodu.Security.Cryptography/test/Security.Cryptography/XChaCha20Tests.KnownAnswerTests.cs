@@ -28,6 +28,7 @@ public sealed partial class XChaCha20Tests
             DefaultKeySizeBits = 256,
             NonceSizeBits = 192,
             LegalKeySizesBits = [256],
+            KnownAnswers = KeystreamKnownAnswers,
         };
 
     /// <summary>
@@ -144,7 +145,7 @@ public sealed partial class XChaCha20Tests
     /// <returns>One row per vector.</returns>
     private static IEnumerable<object[]> XChaCha20KeystreamKatData()
     {
-        foreach (StreamCipherKnownAnswer kat in KeystreamKnownAnswers)
+        foreach (StreamCipherKnownAnswer kat in new XChaCha20Tests().GetSpecification().KnownAnswers)
             yield return new object[] { kat };
     }
 

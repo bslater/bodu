@@ -4,13 +4,17 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Security.Cryptography.Infrastructure;
+
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Describes the expected observable properties of a single <see cref="SymmetricStreamAlgorithm" /> implementation for
-/// use in constructor and behavioural tests.
+/// use in constructor and behavioural tests, and carries the algorithm's known-answer vectors through the inherited
+/// <see cref="AlgorithmSpecification{TKat}.KnownAnswers" /> slot.
 /// </summary>
 public record SymmetricStreamAlgorithmSpecification
+    : AlgorithmSpecification<StreamCipherKnownAnswer>
 {
     /// <summary>
     /// Gets the expected default <see cref="SymmetricStreamAlgorithm.KeySize" /> in bits on a freshly constructed

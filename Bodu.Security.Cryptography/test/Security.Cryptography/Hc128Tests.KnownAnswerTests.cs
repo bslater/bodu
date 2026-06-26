@@ -32,6 +32,7 @@ public sealed partial class Hc128Tests
             DefaultKeySizeBits = 128,
             NonceSizeBits = 128,
             LegalKeySizesBits = [128],
+            KnownAnswers = KeystreamKnownAnswers,
         };
 
     // ── HC-128 specification Appendix A keystream vectors (first 512 bits) ────────────────────
@@ -84,7 +85,7 @@ public sealed partial class Hc128Tests
     /// <returns>One row per vector.</returns>
     private static IEnumerable<object[]> Hc128KeystreamKatData()
     {
-        foreach (StreamCipherKnownAnswer kat in KeystreamKnownAnswers)
+        foreach (StreamCipherKnownAnswer kat in new Hc128Tests().GetSpecification().KnownAnswers)
             yield return new object[] { kat };
     }
 
