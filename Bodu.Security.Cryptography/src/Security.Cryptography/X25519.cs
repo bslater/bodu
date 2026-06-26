@@ -98,11 +98,8 @@ public sealed partial class X25519
         Convert.FromHexString("eeffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f"),
     ];
 
-    /// <summary>The raw 32-byte private key, or <see langword="null" /> when no private key is set.</summary>
-    private byte[]? _privateKey;
-
-    /// <summary>The raw 32-byte public key, or <see langword="null" /> when no public key is set.</summary>
-    private byte[]? _publicKey;
+    /// <summary>The instance's key material, or <see langword="null" /> when no key is set.</summary>
+    private X25519KeyMaterial? _keyMaterial;
 
     /// <summary>Indicates whether this instance has been disposed.</summary>
     private bool _disposed;
@@ -149,7 +146,7 @@ public sealed partial class X25519
         get
         {
             ThrowIfDisposed();
-            return _privateKey is not null;
+            return _keyMaterial?.HasPrivateKey ?? false;
         }
     }
 
@@ -163,7 +160,7 @@ public sealed partial class X25519
         get
         {
             ThrowIfDisposed();
-            return _publicKey is not null;
+            return _keyMaterial is not null;
         }
     }
 
@@ -228,8 +225,7 @@ public sealed partial class X25519
         ThrowIfDisposed();
         CryptographyThrowHelper.ThrowIfInvalidRawKeyLength(publicKey, KeySizeInBytes, "X25519 public");
 
-        CryptographyHelper.ClearAndNullify(ref _privateKey);
-        _publicKey = publicKey.ToArray();
+        ReplaceKeyMaterial(X25519KeyMaterial.ForPublicKey(publicKey.ToArray()));
     }
 
     /// <summary>
@@ -282,9 +278,9 @@ public sealed partial class X25519
     public byte[] ExportPrivateKey()
     {
         ThrowIfDisposed();
-        CryptographyThrowHelper.ThrowIfNoPrivateKey(_privateKey is not null);
+        CryptographyThrowHelper.ThrowIfNoPrivateKey(_keyMaterial?.HasPrivateKey ?? false);
 
-        return (byte[])_privateKey!.Clone();
+        return (byte[])_keyMaterial!.PrivateKey!.Clone();
     }
 
     /// <summary>
@@ -296,9 +292,9 @@ public sealed partial class X25519
     public byte[] ExportPublicKey()
     {
         ThrowIfDisposed();
-        CryptographyThrowHelper.ThrowIfNoPublicKey(_publicKey is not null);
+        CryptographyThrowHelper.ThrowIfNoPublicKey(_keyMaterial is not null);
 
-        return (byte[])_publicKey!.Clone();
+        return (byte[])_keyMaterial!.PublicKey.Clone();
     }
 
     /// <summary>
@@ -341,9 +337,9 @@ public sealed partial class X25519
         ThrowIfDisposed();
         CryptographyThrowHelper.ThrowIfInvalidRawKeyLength(peerPublicKey, KeySizeInBytes, "X25519 public");
         CryptographyThrowHelper.ThrowIfInvalidDestinationLength(destination, SharedSecretSizeInBytes);
-        CryptographyThrowHelper.ThrowIfNoPrivateKey(_privateKey is not null);
+        CryptographyThrowHelper.ThrowIfNoPrivateKey(_keyMaterial?.HasPrivateKey ?? false);
 
-        bool allZero = Curve25519.ScalarMult(_privateKey, peerPublicKey, destination);
+        bool allZero = Curve25519.ScalarMult(_keyMaterial!.PrivateKey!, peerPublicKey, destination);
 
         // RFC 7748 §6.1 strict check: a low-order peer point collapses the secret to a value any observer can
         // predict; reject it rather than hand the caller attacker-known key material.
@@ -371,8 +367,8 @@ public sealed partial class X25519
 
         if (disposing)
         {
-            CryptographyHelper.ClearAndNullify(ref _privateKey);
-            _publicKey = null;
+            _keyMaterial?.Clear();
+            _keyMaterial = null;
         }
 
         _disposed = true;
@@ -389,9 +385,17 @@ public sealed partial class X25519
         byte[] publicKey = new byte[KeySizeInBytes];
         Curve25519.ScalarMultBase(privateKey, publicKey);
 
-        CryptographyHelper.ClearAndNullify(ref _privateKey);
-        _privateKey = privateKey;
-        _publicKey = publicKey;
+        ReplaceKeyMaterial(X25519KeyMaterial.ForKeyPair(publicKey, privateKey));
+    }
+
+    /// <summary>
+    /// Replaces the instance's key material, zeroizing any previously held private key first.
+    /// </summary>
+    /// <param name="keyMaterial">The new key material to take ownership of.</param>
+    private void ReplaceKeyMaterial(X25519KeyMaterial keyMaterial)
+    {
+        _keyMaterial?.Clear();
+        _keyMaterial = keyMaterial;
     }
 
     /// <summary>

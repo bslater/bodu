@@ -58,6 +58,10 @@ public sealed partial class X25519Tests
         algorithm.ExportPublicKey();
 
     /// <inheritdoc />
+    protected override bool SupportsStandardKeyContainers =>
+        true;
+
+    /// <inheritdoc />
     protected override string GetAlgorithmName(X25519 algorithm) =>
         algorithm.AlgorithmName;
 

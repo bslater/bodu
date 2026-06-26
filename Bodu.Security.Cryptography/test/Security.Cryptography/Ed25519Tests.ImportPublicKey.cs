@@ -4,6 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Assertions;
+using Bodu.Test.Kat;
+
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -36,30 +39,44 @@ public sealed partial class Ed25519Tests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Ed25519.ImportPublicKey" /> rejects each of the eight small-order points. These
-    /// decode as valid curve points but lie in the order-8 cofactor subgroup rather than the prime-order subgroup,
-    /// and are incompatible with Bodu's strict cofactorless verification policy.
+    /// Yields the eight small-order Ed25519 points as <see cref="InvalidKat{TInput}" /> rows. They decode as valid
+    /// curve points but lie in the order-8 cofactor subgroup, so import must reject them with
+    /// <see cref="ArgumentException" />.
     /// </summary>
-    [TestMethod]
-    [DataRow("order 1 (identity)", "0100000000000000000000000000000000000000000000000000000000000000")]
-    [DataRow("order 2", "ecffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f")]
-    [DataRow("order 4 (x positive)", "0000000000000000000000000000000000000000000000000000000000000000")]
-    [DataRow("order 4 (x negative)", "0000000000000000000000000000000000000000000000000000000000000080")]
-    [DataRow("order 8 (a)", "26e8958fc2b227b045c3f489f2ef98f0d5dfac05d3c63339b13802886d53fc05")]
-    [DataRow("order 8 (b)", "c7176a703d4dd84fba3c0b760d10670f2a2053fa2c39ccc64ec7fd7792ac037a")]
-    [DataRow("order 8 (c)", "26e8958fc2b227b045c3f489f2ef98f0d5dfac05d3c63339b13802886d53fc85")]
-    [DataRow("order 8 (d)", "c7176a703d4dd84fba3c0b760d10670f2a2053fa2c39ccc64ec7fd7792ac03fa")]
-    public void ImportPublicKey_WhenKeyIsSmallOrder_ShouldThrowArgumentException(string testName, string encodedHex)
+    /// <returns>One row per small-order encoding.</returns>
+    private static IEnumerable<object[]> SmallOrderPublicKeys()
     {
-        _ = testName;
+        (string Name, string Hex)[] points =
+        {
+            ("order 1 (identity)", "0100000000000000000000000000000000000000000000000000000000000000"),
+            ("order 2", "ecffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f"),
+            ("order 4 (x positive)", "0000000000000000000000000000000000000000000000000000000000000000"),
+            ("order 4 (x negative)", "0000000000000000000000000000000000000000000000000000000000000080"),
+            ("order 8 (a)", "26e8958fc2b227b045c3f489f2ef98f0d5dfac05d3c63339b13802886d53fc05"),
+            ("order 8 (b)", "c7176a703d4dd84fba3c0b760d10670f2a2053fa2c39ccc64ec7fd7792ac037a"),
+            ("order 8 (c)", "26e8958fc2b227b045c3f489f2ef98f0d5dfac05d3c63339b13802886d53fc85"),
+            ("order 8 (d)", "c7176a703d4dd84fba3c0b760d10670f2a2053fa2c39ccc64ec7fd7792ac03fa"),
+        };
 
+        foreach ((string name, string hex) in points)
+            yield return new object[] { new InvalidKat<byte[]>(name, Convert.FromHexString(hex), typeof(ArgumentException), "publicKey") };
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Ed25519.ImportPublicKey" /> rejects a small-order point, which is incompatible with
+    /// Bodu's strict cofactorless verification policy.
+    /// </summary>
+    /// <param name="vector">The small-order KAT vector under test.</param>
+    [TestMethod]
+    [DynamicData(nameof(SmallOrderPublicKeys), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void ImportPublicKey_WhenKeyIsSmallOrder_ShouldThrowArgumentException(InvalidKat<byte[]> vector)
+    {
         using var algorithm = new Ed25519();
 
-        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
-        {
-            algorithm.ImportPublicKey(Convert.FromHexString(encodedHex));
-        });
-
-        Assert.AreEqual("publicKey", ex.ParamName);
+        ExceptionAssert.AssertGuard(
+            vector.Name,
+            () => algorithm.ImportPublicKey(vector.Input),
+            vector.ExceptionType,
+            vector.ParamName);
     }
 }
