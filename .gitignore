@@ -183,3 +183,6 @@ slnx.sqlite
 # supply it from a secret at release time, ideally to a path outside the working tree.
 *.snk
 !bld/Bodu.public.snk
+
+# Bodu.Text.Yaml SharpFuzz run artifacts (driver, seeds, corpus, crashes)
+Bodu.Text.Yaml/fuzz/.work/
