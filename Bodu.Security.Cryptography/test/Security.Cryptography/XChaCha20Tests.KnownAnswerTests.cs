@@ -7,6 +7,9 @@
 
 using System.Reflection;
 using System.Security.Cryptography;
+using Bodu.Security.Cryptography.Infrastructure;
+using Bodu.Test.Kat;
+using static Bodu.Security.Cryptography.Infrastructure.KatBytes;
 
 namespace Bodu.Security.Cryptography;
 /// <summary>
@@ -41,24 +44,6 @@ public sealed partial class XChaCha20Tests
         public required string Nonce16Hex { get; init; }
 
         public required string SubkeyHex { get; init; }
-    }
-
-    /// <summary>
-    /// Represents one XChaCha20 keystream known-answer test row, recovered as the ciphertext of an all-zero plaintext.
-    /// </summary>
-    private sealed record XChaCha20KeystreamKat
-    {
-        public required string Name { get; init; }
-
-        public required string Source { get; init; }
-
-        public required string KeyHex { get; init; }
-
-        public required string Nonce24Hex { get; init; }
-
-        public required uint Counter { get; init; }
-
-        public required string KeystreamHex { get; init; }
     }
 
     // ── draft-irtf-cfrg-xchacha §2.2.1 — HChaCha20 block function ─────────────────────────────
@@ -97,16 +82,18 @@ public sealed partial class XChaCha20Tests
     //
     // The first 304 keystream bytes for counter 0 and counter 1.
     // Source: draft-irtf-cfrg-xchacha Appendix A.2.1 / A.2.2.
-    private static readonly XChaCha20KeystreamKat[] KeystreamKnownAnswers =
+    private static readonly StreamCipherKnownAnswer[] KeystreamKnownAnswers =
     [
-        new XChaCha20KeystreamKat
+        new StreamCipherKnownAnswer
         {
             Name = "draft-irtf-cfrg-xchacha A.2.1 XChaCha20 keystream counter 0",
-            Source = "draft-irtf-cfrg-xchacha Appendix A.2.1",
-            KeyHex = "808182838485868788898a8b8c8d8e8f909192939495969798999a9b9c9d9e9f",
-            Nonce24Hex = "404142434445464748494a4b4c4d4e4f5051525354555658",
+            Provenance = KatProvenance.InternetDraft("draft-irtf-cfrg-xchacha Appendix A.2.1"),
+            Key = Hex("808182838485868788898a8b8c8d8e8f909192939495969798999a9b9c9d9e9f"),
+            Nonce = Hex("404142434445464748494a4b4c4d4e4f5051525354555658"),
             Counter = 0,
-            KeystreamHex =
+            IsKeystream = true,
+            Plaintext = [],
+            Ciphertext = Hex(
                 "1131ce9a2a20ae0d67c8935c7789fa1025c9e5bb720fb96f11354fb97af0bd9a" +
                 "adec0863ba60cac8582c48f86cdfc48edd46a48642c5de62ccf11c7b21bf337d" +
                 "29624b4b1b140ace53740e405b2168540fd7d630c1f536fecd722fc3cddba7f4" +
@@ -116,16 +103,18 @@ public sealed partial class XChaCha20Tests
                 "7cd8026fba548604f1b6072d91bc91243a5b845f7fd171b02edc5a0a84cf28dd" +
                 "241146bc376e3f48df5e7fee1d11048c190a3d3deb0feb64b42d9c6fdeee290f" +
                 "a0e6ae2c26c0249ea8c181f7e2ffd100cbe5fd3c4f8271d62b15330cb8fdcf00" +
-                "b3df507ca8c924f7017b7e712d15a2eb",
+                "b3df507ca8c924f7017b7e712d15a2eb"),
         },
-        new XChaCha20KeystreamKat
+        new StreamCipherKnownAnswer
         {
             Name = "draft-irtf-cfrg-xchacha A.2.2 XChaCha20 keystream counter 1",
-            Source = "draft-irtf-cfrg-xchacha Appendix A.2.2",
-            KeyHex = "808182838485868788898a8b8c8d8e8f909192939495969798999a9b9c9d9e9f",
-            Nonce24Hex = "404142434445464748494a4b4c4d4e4f5051525354555658",
+            Provenance = KatProvenance.InternetDraft("draft-irtf-cfrg-xchacha Appendix A.2.2"),
+            Key = Hex("808182838485868788898a8b8c8d8e8f909192939495969798999a9b9c9d9e9f"),
+            Nonce = Hex("404142434445464748494a4b4c4d4e4f5051525354555658"),
             Counter = 1,
-            KeystreamHex =
+            IsKeystream = true,
+            Plaintext = [],
+            Ciphertext = Hex(
                 "29624b4b1b140ace53740e405b2168540fd7d630c1f536fecd722fc3cddba7f4" +
                 "cca98cf9e47e5e64d115450f9b125b54449ff76141ca620a1f9cfcab2a1a8a25" +
                 "5e766a5266b878846120ea64ad99aa479471e63befcbd37cd1c22a221fe46221" +
@@ -135,7 +124,7 @@ public sealed partial class XChaCha20Tests
                 "a0e6ae2c26c0249ea8c181f7e2ffd100cbe5fd3c4f8271d62b15330cb8fdcf00" +
                 "b3df507ca8c924f7017b7e712d15a2eb5c50484451e54e1b4b995bd8fdd94597" +
                 "bb94d7af0b2c04df10ba0890899ed9293a0f55b8bafa999264035f1d4fbe7fe0" +
-                "aafa109a62372027e50e10cdfecca127",
+                "aafa109a62372027e50e10cdfecca127"),
         },
     ];
 
@@ -155,8 +144,8 @@ public sealed partial class XChaCha20Tests
     /// <returns>One row per vector.</returns>
     private static IEnumerable<object[]> XChaCha20KeystreamKatData()
     {
-        foreach (XChaCha20KeystreamKat kat in KeystreamKnownAnswers)
-            yield return new object[] { kat.KeyHex, kat.Nonce24Hex, kat.Counter, kat.KeystreamHex, kat.Name };
+        foreach (StreamCipherKnownAnswer kat in KeystreamKnownAnswers)
+            yield return new object[] { kat };
     }
 
     /// <summary>
@@ -194,26 +183,22 @@ public sealed partial class XChaCha20Tests
     /// Verifies that <see cref="XChaCha20" /> reproduces each published keystream vector, recovered as the ciphertext
     /// of an all-zero plaintext.
     /// </summary>
-    /// <param name="keyHex">The 256-bit key, in hex.</param>
-    /// <param name="nonce24Hex">The 192-bit extended nonce, in hex.</param>
-    /// <param name="counter">The initial block counter.</param>
-    /// <param name="keystreamHex">The expected keystream, in hex.</param>
-    /// <param name="displayName">The scenario label.</param>
+    /// <param name="vector">The keystream KAT vector under test.</param>
     [TestMethod]
-    [DynamicData(nameof(XChaCha20KeystreamKatData), DynamicDataDisplayName = nameof(GetKatDisplayName))]
-    public void CreateEncryptor_WhenGivenDraftKeystreamVector_ShouldMatchExpected(
-        string keyHex, string nonce24Hex, uint counter, string keystreamHex, string displayName)
+    [DynamicData(
+        nameof(XChaCha20KeystreamKatData),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void CreateEncryptor_WhenGivenDraftKeystreamVector_ShouldMatchExpected(StreamCipherKnownAnswer vector)
     {
-        byte[] key = Convert.FromHexString(keyHex);
-        byte[] nonce = Convert.FromHexString(nonce24Hex);
-        byte[] expected = Convert.FromHexString(keystreamHex);
+        byte[] expected = vector.Ciphertext;
         byte[] zeros = new byte[expected.Length];
 
-        using var cipher = new XChaCha20 { InitialCounter = counter };
-        using ICryptoTransform encryptor = cipher.CreateEncryptor(key, nonce);
+        using var cipher = new XChaCha20 { InitialCounter = vector.Counter };
+        using ICryptoTransform encryptor = cipher.CreateEncryptor(vector.Key, vector.Nonce);
         byte[] keystream = encryptor.TransformFinalBlock(zeros, 0, zeros.Length);
 
-        CollectionAssert.AreEqual(expected, keystream, $"XChaCha20 keystream mismatch for {displayName}.");
+        CollectionAssert.AreEqual(expected, keystream, $"XChaCha20 keystream mismatch for {vector.Name}.");
     }
 
     /// <summary>
