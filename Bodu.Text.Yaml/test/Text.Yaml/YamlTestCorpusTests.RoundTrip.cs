@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Text;
+using System.Text.Json;
 using Bodu.Test.Kat;
 using Bodu.Text.Yaml.Document;
 using Bodu.Text.Yaml.Reader;
@@ -76,5 +77,27 @@ public partial class YamlTestCorpusTests
         }
 
         Assert.AreEqual(0, depth, $"{kat.RelativePath}: unbalanced container tokens.");
+    }
+
+    /// <summary>
+    /// Verifies that a parse-only case (one without a JSON expectation) round-trips to a stable value graph, giving it
+    /// a semantic check stronger than merely parsing without error.
+    /// </summary>
+    /// <param name="kat">The corpus case under test.</param>
+    [TestMethod]
+    [DynamicData(nameof(SupportedParseOnlyCases), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    [TestCategory("Regression")]
+    public void RoundTrip_WhenParseOnlyCase_ShouldProduceStableGraph(CorpusKat kat)
+    {
+        var yaml = File.ReadAllBytes(Path.Combine(CorpusRoot, kat.RelativePath, "in.yaml"));
+
+        var first = YamlSerializer.Deserialize<object>(yaml);
+        var reemitted = YamlSerializer.Serialize(first);
+        var second = YamlSerializer.Deserialize<object>(reemitted);
+
+        Assert.AreEqual(
+            JsonSerializer.Serialize(first),
+            JsonSerializer.Serialize(second),
+            $"{kat.RelativePath}\n--- re-emitted ---\n{reemitted}");
     }
 }
