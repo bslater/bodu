@@ -21,49 +21,53 @@ using Microsoft.CodeAnalysis.Text;
 namespace Bodu.CodeStyle.XmlDocumentation.CodeFixes;
 
 /// <summary>
-/// Provides code fixes for <c>BODU1405</c> — repairs <c>&lt;code&gt;</c> documentation elements so they
-/// begin with a <c>&lt;![CDATA[…]]&gt;</c> section flush against the <c>///</c> doc-comment prefix.
+/// Provides code fixes for <c>BODU1405</c> — repairs <c>&lt;code&gt;</c> documentation elements so they begin with a
+/// <c>&lt;![CDATA[…]]&gt;</c> section flush against the <c>///</c> doc-comment prefix.
 /// </summary>
 /// <remarks>
 /// Three fixes are registered depending on the violating shape:
 /// <list type="bullet">
-///   <item><description>Removes stray whitespace between <c>///</c> and <c>&lt;![CDATA[</c> when the CDATA is present but offset by a space or tab.</description></item>
-///   <item><description>Rewrites a self-closing <c>&lt;code /&gt;</c> as a multi-line <c>&lt;code&gt;</c> element whose body is an empty <c>&lt;![CDATA[…]]&gt;</c> block, with the opener and closer each on their own line flush against <c>///</c>.</description></item>
-///   <item><description>Wraps the existing body of a non-empty <c>&lt;code&gt;</c> element in a multi-line <c>&lt;![CDATA[…]]&gt;</c> block, placing the opener and closer on their own lines flush against <c>///</c> and preserving the existing body content between them.</description></item>
+/// <item>
+/// <description>
+/// Removes stray whitespace between <c>///</c> and <c>&lt;![CDATA[</c> when the CDATA is present but offset by a space
+/// or tab.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Rewrites a self-closing <c>&lt;code /&gt;</c> as a multi-line <c>&lt;code&gt;</c> element whose body is an empty
+/// <c>&lt;![CDATA[…]]&gt;</c> block, with the opener and closer each on their own line flush against <c>///</c>.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Wraps the existing body of a non-empty <c>&lt;code&gt;</c> element in a multi-line <c>&lt;![CDATA[…]]&gt;</c> block,
+/// placing the opener and closer on their own lines flush against <c>///</c> and preserving the existing body content
+/// between them.
+/// </description>
+/// </item>
 /// </list>
 /// </remarks>
 [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(XmlDocCodeRequiresCDataCodeFixProvider))]
 [Shared]
 public sealed class XmlDocCodeRequiresCDataCodeFixProvider : CodeFixProvider
 {
-    /// <summary>
-    /// The code-action title for the fix that removes whitespace between <c>///</c> and <c>&lt;![CDATA[</c>.
-    /// </summary>
+    /// <summary>The code-action title for the fix that removes whitespace between <c>///</c> and <c>&lt;![CDATA[</c>.</summary>
     private const string RemoveSpaceTitle = "Remove space between /// and <![CDATA[";
 
-    /// <summary>
-    /// The code-action title for the fixes that wrap a <c>&lt;code&gt;</c> body in a <c>&lt;![CDATA[…]]&gt;</c> block.
-    /// </summary>
+    /// <summary>The code-action title for the fixes that wrap a <c>&lt;code&gt;</c> body in a <c>&lt;![CDATA[…]]&gt;</c> block.</summary>
     private const string WrapTitle = "Wrap <code> body in <![CDATA[…]]>";
 
-    /// <summary>
-    /// The equivalence key identifying the remove-leading-whitespace fix for Fix All batching.
-    /// </summary>
+    /// <summary>The equivalence key identifying the remove-leading-whitespace fix for Fix All batching.</summary>
     private const string RemoveSpaceEquivalenceKey = "BoduRemoveSpaceBeforeXmlDocCData";
 
-    /// <summary>
-    /// The equivalence key identifying the wrap-body-in-CDATA fixes for Fix All batching.
-    /// </summary>
+    /// <summary>The equivalence key identifying the wrap-body-in-CDATA fixes for Fix All batching.</summary>
     private const string WrapEquivalenceKey = "BoduWrapXmlDocCodeBodyInCData";
 
-    /// <summary>
-    /// The documentation-comment prefix, including the trailing space, used when emitting body lines.
-    /// </summary>
+    /// <summary>The documentation-comment prefix, including the trailing space, used when emitting body lines.</summary>
     private const string DocCommentPrefix = "/// ";
 
-    /// <summary>
-    /// The documentation-comment prefix without a trailing space, used for blank body lines and flush markers.
-    /// </summary>
+    /// <summary>The documentation-comment prefix without a trailing space, used for blank body lines and flush markers.</summary>
     private const string DocCommentPrefixNoSpace = "///";
 
     /// <inheritdoc />
@@ -117,12 +121,14 @@ public sealed class XmlDocCodeRequiresCDataCodeFixProvider : CodeFixProvider
     }
 
     /// <summary>
-    /// Removes the run of whitespace between the <c>///</c> prefix and an existing <c>&lt;![CDATA[</c> section so
-    /// the CDATA opener sits flush against the doc-comment prefix.
+    /// Removes the run of whitespace between the <c>///</c> prefix and an existing <c>&lt;![CDATA[</c> section so the
+    /// CDATA opener sits flush against the doc-comment prefix.
     /// </summary>
     /// <param name="document">The document to repair.</param>
     /// <param name="cdata">The CDATA section that is offset from the prefix.</param>
-    /// <param name="cancellationToken">A token that propagates notification that the operation should be canceled.</param>
+    /// <param name="cancellationToken">
+    /// A token that propagates notification that the operation should be canceled.
+    /// </param>
     /// <returns>The updated document, or the original document when there is no whitespace to remove.</returns>
     private static async Task<Document> RemoveLeadingWhitespaceAsync(Document document, XmlCDataSectionSyntax cdata, CancellationToken cancellationToken)
     {
@@ -143,12 +149,14 @@ public sealed class XmlDocCodeRequiresCDataCodeFixProvider : CodeFixProvider
 
     /// <summary>
     /// Rewrites a self-closing <c>&lt;code /&gt;</c> element as a multi-line <c>&lt;code&gt;</c> element whose body is
-    /// an empty <c>&lt;![CDATA[…]]&gt;</c> block, with the opener and closer each on their own line flush against
-    /// the <c>///</c> prefix.
+    /// an empty <c>&lt;![CDATA[…]]&gt;</c> block, with the opener and closer each on their own line flush against the
+    /// <c>///</c> prefix.
     /// </summary>
     /// <param name="document">The document to repair.</param>
     /// <param name="element">The self-closing element to rewrite.</param>
-    /// <param name="cancellationToken">A token that propagates notification that the operation should be canceled.</param>
+    /// <param name="cancellationToken">
+    /// A token that propagates notification that the operation should be canceled.
+    /// </param>
     /// <returns>The updated document containing the expanded multi-line element.</returns>
     private static async Task<Document> ReplaceSelfClosingWithCDataAsync(Document document, XmlEmptyElementSyntax element, CancellationToken cancellationToken)
     {
@@ -173,12 +181,14 @@ public sealed class XmlDocCodeRequiresCDataCodeFixProvider : CodeFixProvider
 
     /// <summary>
     /// Wraps the existing body of a non-empty <c>&lt;code&gt;</c> element in a multi-line <c>&lt;![CDATA[…]]&gt;</c>
-    /// block, placing the opener and closer on their own lines flush against the <c>///</c> prefix and re-emitting
-    /// each logical body line under the standard prefix.
+    /// block, placing the opener and closer on their own lines flush against the <c>///</c> prefix and re-emitting each
+    /// logical body line under the standard prefix.
     /// </summary>
     /// <param name="document">The document to repair.</param>
     /// <param name="element">The <c>&lt;code&gt;</c> element whose body is wrapped.</param>
-    /// <param name="cancellationToken">A token that propagates notification that the operation should be canceled.</param>
+    /// <param name="cancellationToken">
+    /// A token that propagates notification that the operation should be canceled.
+    /// </param>
     /// <returns>The updated document, or the original document when the element body span is degenerate.</returns>
     private static async Task<Document> WrapElementBodyInCDataAsync(Document document, XmlElementSyntax element, CancellationToken cancellationToken)
     {

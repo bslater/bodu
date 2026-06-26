@@ -18,17 +18,15 @@ namespace Bodu.CodeStyle.XmlDocumentation.Analyzers;
 
 /// <summary>
 /// Reports <c>BODU1405</c> when a <c>&lt;code&gt;</c> documentation element does not begin with a
-/// <c>&lt;![CDATA[…]]&gt;</c> section, or when that section's opener has whitespace separating it from the
-/// preceding <c>///</c> doc-comment prefix. Wrapping the body in CDATA preserves XML-significant characters
-/// and language samples verbatim; emitting <c>&lt;![CDATA[</c> immediately after <c>///</c> keeps the
-/// rendered example flush-left without an accidental leading space.
+/// <c>&lt;![CDATA[…]]&gt;</c> section, or when that section's opener has whitespace separating it from the preceding
+/// <c>///</c> doc-comment prefix. Wrapping the body in CDATA preserves XML-significant characters and language samples
+/// verbatim; emitting <c>&lt;![CDATA[</c> immediately after <c>///</c> keeps the rendered example flush-left without an
+/// accidental leading space.
 /// </summary>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public sealed class XmlDocCodeRequiresCDataAnalyzer : DiagnosticAnalyzer
 {
-    /// <summary>
-    /// The local name of the documentation element this analyzer inspects.
-    /// </summary>
+    /// <summary>The local name of the documentation element this analyzer inspects.</summary>
     private const string CodeTagName = "code";
 
     /// <inheritdoc />
@@ -47,9 +45,9 @@ public sealed class XmlDocCodeRequiresCDataAnalyzer : DiagnosticAnalyzer
     }
 
     /// <summary>
-    /// Inspects a <c>&lt;code&gt;</c> documentation element and reports the diagnostic when its first
-    /// non-whitespace child is not a CDATA section, or when the CDATA opener is separated from the
-    /// preceding <c>///</c> prefix by stray whitespace.
+    /// Inspects a <c>&lt;code&gt;</c> documentation element and reports the diagnostic when its first non-whitespace
+    /// child is not a CDATA section, or when the CDATA opener is separated from the preceding <c>///</c> prefix by
+    /// stray whitespace.
     /// </summary>
     /// <param name="context">The syntax-node analysis context for the <see cref="XmlElementSyntax" /> node.</param>
     private static void AnalyzeXmlElement(SyntaxNodeAnalysisContext context)
@@ -94,10 +92,12 @@ public sealed class XmlDocCodeRequiresCDataAnalyzer : DiagnosticAnalyzer
     }
 
     /// <summary>
-    /// Reports the diagnostic for a self-closing <c>&lt;code/&gt;</c> documentation element, which can
-    /// never contain the required CDATA child.
+    /// Reports the diagnostic for a self-closing <c>&lt;code/&gt;</c> documentation element, which can never contain
+    /// the required CDATA child.
     /// </summary>
-    /// <param name="context">The syntax-node analysis context for the <see cref="XmlEmptyElementSyntax" /> node.</param>
+    /// <param name="context">
+    /// The syntax-node analysis context for the <see cref="XmlEmptyElementSyntax" /> node.
+    /// </param>
     private static void AnalyzeXmlEmptyElement(SyntaxNodeAnalysisContext context)
     {
         var element = (XmlEmptyElementSyntax)context.Node;
@@ -114,7 +114,9 @@ public sealed class XmlDocCodeRequiresCDataAnalyzer : DiagnosticAnalyzer
     /// Determines whether the supplied element name is an unprefixed <c>&lt;code&gt;</c> tag.
     /// </summary>
     /// <param name="name">The XML element name to test.</param>
-    /// <returns><see langword="true" /> if the name is the unprefixed <c>code</c> tag; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if the name is the unprefixed <c>code</c> tag; otherwise, <see langword="false" />.
+    /// </returns>
     private static bool IsCodeElement(XmlNameSyntax name) =>
         name.Prefix is null
         && string.Equals(name.LocalName.ValueText, CodeTagName, StringComparison.Ordinal);
@@ -123,7 +125,10 @@ public sealed class XmlDocCodeRequiresCDataAnalyzer : DiagnosticAnalyzer
     /// Determines whether the supplied content node consists solely of whitespace and newline tokens.
     /// </summary>
     /// <param name="node">The XML content node to test.</param>
-    /// <returns><see langword="true" /> if the node is a text node containing only whitespace; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if the node is a text node containing only whitespace; otherwise,
+    /// <see langword="false" />.
+    /// </returns>
     private static bool IsWhitespaceOnly(XmlNodeSyntax node)
     {
         if (node is not XmlTextSyntax text) return false;
@@ -140,11 +145,14 @@ public sealed class XmlDocCodeRequiresCDataAnalyzer : DiagnosticAnalyzer
     }
 
     /// <summary>
-    /// Determines whether the CDATA opener is separated from its preceding <c>///</c> doc-comment prefix
-    /// by stray whitespace on the same line.
+    /// Determines whether the CDATA opener is separated from its preceding <c>///</c> doc-comment prefix by stray
+    /// whitespace on the same line.
     /// </summary>
     /// <param name="cdata">The CDATA section whose opener position is examined.</param>
-    /// <returns><see langword="true" /> if a stray space or tab sits between the <c>///</c> prefix and the opener; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if a stray space or tab sits between the <c>///</c> prefix and the opener; otherwise,
+    /// <see langword="false" />.
+    /// </returns>
     // Walks backward from the CDATA opener through space / tab characters on the same line. When those
     // whitespace characters are immediately preceded by exactly "///" (the doc-comment prefix), the opener
     // sits on its own /// line with a stray separating space — exactly the layout the rule forbids.
@@ -177,7 +185,9 @@ public sealed class XmlDocCodeRequiresCDataAnalyzer : DiagnosticAnalyzer
     /// Determines whether the node under analysis belongs to a generated source file.
     /// </summary>
     /// <param name="context">The syntax-node analysis context to inspect.</param>
-    /// <returns><see langword="true" /> if the node resides in generated code; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if the node resides in generated code; otherwise, <see langword="false" />.
+    /// </returns>
     private static bool IsInGeneratedCode(SyntaxNodeAnalysisContext context) =>
         GeneratedCodeFilters.IsGenerated(context.Node.SyntaxTree);
 }

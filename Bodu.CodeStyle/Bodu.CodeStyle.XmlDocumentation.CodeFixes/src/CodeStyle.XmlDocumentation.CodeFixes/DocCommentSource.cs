@@ -9,16 +9,14 @@ using Microsoft.CodeAnalysis.Text;
 namespace Bodu.CodeStyle.XmlDocumentation.CodeFixes;
 
 /// <summary>
-/// Provides the shared, position-oriented <see cref="SourceText" /> primitives used by the documentation
-/// code fixes — resolving the document line ending, locating line boundaries, and recovering the indentation
-/// and <c>///</c> prefix of a doc-comment line. Centralizing them keeps every fix reading and re-emitting the
-/// surrounding doc-comment layout the same way.
+/// Provides the shared, position-oriented <see cref="SourceText" /> primitives used by the documentation code fixes —
+/// resolving the document line ending, locating line boundaries, and recovering the indentation and <c>///</c> prefix
+/// of a doc-comment line. Centralizing them keeps every fix reading and re-emitting the surrounding doc-comment layout
+/// the same way.
 /// </summary>
 internal static class DocCommentSource
 {
-    /// <summary>
-    /// The canonical documentation-comment prefix used when a line carries no detectable <c>///</c> prefix.
-    /// </summary>
+    /// <summary>The canonical documentation-comment prefix used when a line carries no detectable <c>///</c> prefix.</summary>
     private const string DefaultPrefix = "/// ";
 
     /// <summary>
@@ -68,7 +66,9 @@ internal static class DocCommentSource
     /// </summary>
     /// <param name="text">The document text.</param>
     /// <param name="position">A character offset within the line.</param>
-    /// <returns>The offset immediately after the line's terminator, or the document length when the line is unterminated.</returns>
+    /// <returns>
+    /// The offset immediately after the line's terminator, or the document length when the line is unterminated.
+    /// </returns>
     public static int FindLineEndIncludingTerminator(SourceText text, int position)
     {
         var index = position;
@@ -113,13 +113,15 @@ internal static class DocCommentSource
     }
 
     /// <summary>
-    /// Recovers the documentation-comment prefix actually used on the line that contains the supplied position —
-    /// the <c>///</c> run plus a single following space when present — so synthesized blocks match the source
-    /// style instead of assuming a hardcoded prefix.
+    /// Recovers the documentation-comment prefix actually used on the line that contains the supplied position — the
+    /// <c>///</c> run plus a single following space when present — so synthesized blocks match the source style instead
+    /// of assuming a hardcoded prefix.
     /// </summary>
     /// <param name="text">The document text.</param>
     /// <param name="position">A character offset within the line.</param>
-    /// <returns>The detected prefix, or the canonical <c>"/// "</c> when the line carries no <c>///</c> prefix.</returns>
+    /// <returns>
+    /// The detected prefix, or the canonical <c>"/// "</c> when the line carries no <c>///</c> prefix.
+    /// </returns>
     public static string DetectPrefix(SourceText text, int position)
     {
         var lineStart = FindLineStart(text, position);

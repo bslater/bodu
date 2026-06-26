@@ -20,36 +20,31 @@ using Microsoft.CodeAnalysis.Text;
 namespace Bodu.CodeStyle.XmlDocumentation.Analyzers;
 
 /// <summary>
-/// Reports <c>BODU1406</c> when a <c>&lt;typeparam&gt;</c> documentation element's single-line rendering
-/// exceeds the configured line budget and the content can be split at the first sentence boundary so the
-/// trailing prose moves to a <c>&lt;remarks&gt;&lt;para&gt;…&lt;/para&gt;&lt;/remarks&gt;</c> block.
+/// Reports <c>BODU1406</c> when a <c>&lt;typeparam&gt;</c> documentation element's single-line rendering exceeds the
+/// configured line budget and the content can be split at the first sentence boundary so the trailing prose moves to a
+/// <c>&lt;remarks&gt;&lt;para&gt;…&lt;/para&gt;&lt;/remarks&gt;</c> block.
 /// </summary>
 /// <remarks>
 /// <para>
-/// The rule fires when all three conditions hold: (1) the element is <c>&lt;typeparam&gt;</c>; (2) the
-/// rendered source line — leading indent, <c>///</c> prefix, start tag, content, end tag — exceeds
-/// <see cref="XmlDocFormatOptions.MaxLineLength" />; (3) the content contains at least one period-space
-/// boundary where splitting the first sentence would bring the line under budget. The third condition
-/// guarantees the companion code fix can always succeed when the diagnostic fires.
+/// The rule fires when all three conditions hold: (1) the element is <c>&lt;typeparam&gt;</c>; (2) the rendered source
+/// line — leading indent, <c>///</c> prefix, start tag, content, end tag — exceeds
+/// <see cref="XmlDocFormatOptions.MaxLineLength" />; (3) the content contains at least one period-space boundary where
+/// splitting the first sentence would bring the line under budget. The third condition guarantees the companion code
+/// fix can always succeed when the diagnostic fires.
 /// </para>
 /// <para>
-/// Multi-line authoring of <c>&lt;typeparam&gt;</c> is governed by the regular format analyzer
-/// (<c>BODU1011</c>), which is content-shape agnostic. Single-line authoring is the canonical Bodu form, so
-/// this content-quality rule measures the source span and the first-sentence split candidate using that
-/// canonical layout.
+/// Multi-line authoring of <c>&lt;typeparam&gt;</c> is governed by the regular format analyzer (<c>BODU1011</c>), which
+/// is content-shape agnostic. Single-line authoring is the canonical Bodu form, so this content-quality rule measures
+/// the source span and the first-sentence split candidate using that canonical layout.
 /// </para>
 /// </remarks>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public sealed class XmlDocTypeParamRequiresShortContentAnalyzer : DiagnosticAnalyzer
 {
-    /// <summary>
-    /// The local name of the documentation element this analyzer inspects.
-    /// </summary>
+    /// <summary>The local name of the documentation element this analyzer inspects.</summary>
     private const string TypeParamTagName = "typeparam";
 
-    /// <summary>
-    /// The doc-comment line prefix used when reasoning about the canonical single-line rendering.
-    /// </summary>
+    /// <summary>The doc-comment line prefix used when reasoning about the canonical single-line rendering.</summary>
     private const string DocCommentPrefix = "/// ";
 
     /// <inheritdoc />
@@ -70,7 +65,9 @@ public sealed class XmlDocTypeParamRequiresShortContentAnalyzer : DiagnosticAnal
     /// Loads the compilation-wide formatting options and registers the per-element analysis for
     /// <c>&lt;typeparam&gt;</c> documentation elements.
     /// </summary>
-    /// <param name="compilationContext">The compilation-start analysis context used to read additional files and register the syntax-node action.</param>
+    /// <param name="compilationContext">
+    /// The compilation-start analysis context used to read additional files and register the syntax-node action.
+    /// </param>
     private static void OnCompilationStart(CompilationStartAnalysisContext compilationContext)
     {
         XmlDocFormatOptions compilationOptions = XmlDocConfigurationLoader.LoadCompilationOptions(
@@ -121,7 +118,9 @@ public sealed class XmlDocTypeParamRequiresShortContentAnalyzer : DiagnosticAnal
     /// Determines whether the supplied element name is an unprefixed <c>&lt;typeparam&gt;</c> tag.
     /// </summary>
     /// <param name="name">The XML element name to test.</param>
-    /// <returns><see langword="true" /> if the name is the unprefixed <c>typeparam</c> tag; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if the name is the unprefixed <c>typeparam</c> tag; otherwise, <see langword="false" />.
+    /// </returns>
     private static bool IsTypeParamElement(XmlNameSyntax name) =>
         name.Prefix is null
         && string.Equals(name.LocalName.ValueText, TypeParamTagName, StringComparison.Ordinal);
@@ -172,7 +171,9 @@ public sealed class XmlDocTypeParamRequiresShortContentAnalyzer : DiagnosticAnal
     /// Determines whether the node under analysis belongs to a generated source file.
     /// </summary>
     /// <param name="context">The syntax-node analysis context to inspect.</param>
-    /// <returns><see langword="true" /> if the node resides in generated code; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if the node resides in generated code; otherwise, <see langword="false" />.
+    /// </returns>
     private static bool IsInGeneratedCode(SyntaxNodeAnalysisContext context) =>
         GeneratedCodeFilters.IsGenerated(context.Node.SyntaxTree);
 }

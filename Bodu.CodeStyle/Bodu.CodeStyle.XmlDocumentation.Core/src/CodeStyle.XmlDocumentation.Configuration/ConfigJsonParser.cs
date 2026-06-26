@@ -16,9 +16,9 @@ namespace Bodu.CodeStyle.XmlDocumentation.Configuration;
 /// </summary>
 /// <remarks>
 /// This is a minimal, allocation-light recursive-descent parser that supports the JSON grammar (objects, arrays,
-/// strings with escapes, numbers, <c>true</c>/<c>false</c>/<c>null</c>). It exists so the configuration reader —
-/// and therefore the analyzer package — does not depend on <c>System.Text.Json</c>, which is not guaranteed to be
-/// present in every analyzer host. Malformed input throws <see cref="FormatException" />.
+/// strings with escapes, numbers, <c>true</c>/<c>false</c>/<c>null</c>). It exists so the configuration reader — and
+/// therefore the analyzer package — does not depend on <c>System.Text.Json</c>, which is not guaranteed to be present
+/// in every analyzer host. Malformed input throws <see cref="FormatException" />.
 /// </remarks>
 internal static class ConfigJsonParser
 {
@@ -176,7 +176,9 @@ internal static class ConfigJsonParser
     /// <param name="json">The JSON document text.</param>
     /// <param name="position">The current parse position; advanced past the closing quote.</param>
     /// <returns>The decoded string content.</returns>
-    /// <exception cref="FormatException">Thrown when the string is unterminated or contains an invalid character.</exception>
+    /// <exception cref="FormatException">
+    /// Thrown when the string is unterminated or contains an invalid character.
+    /// </exception>
     private static string ParseString(string json, ref int position)
     {
         position++; // consume opening quote
@@ -311,7 +313,9 @@ internal static class ConfigJsonParser
     /// Determines whether a character can appear within a JSON number token.
     /// </summary>
     /// <param name="c">The character to test.</param>
-    /// <returns><see langword="true" /> when the character is a valid number character; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the character is a valid number character; otherwise <see langword="false" />.
+    /// </returns>
     private static bool IsNumberChar(char c) =>
         (c >= '0' && c <= '9') || c == '.' || c == 'e' || c == 'E' || c == '+' || c == '-';
 
@@ -367,7 +371,9 @@ internal static class ConfigJsonParser
     /// <param name="json">The JSON document text.</param>
     /// <param name="position">The current parse position; advanced by one.</param>
     /// <param name="expected">The character required at the current position.</param>
-    /// <exception cref="FormatException">Thrown when the current character does not match <paramref name="expected" />.</exception>
+    /// <exception cref="FormatException">
+    /// Thrown when the current character does not match <paramref name="expected" />.
+    /// </exception>
     private static void Expect(string json, ref int position, char expected)
     {
         if (NextOrThrow(json, ref position) != expected)

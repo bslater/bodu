@@ -22,43 +22,37 @@ using Microsoft.CodeAnalysis.Text;
 namespace Bodu.CodeStyle.XmlDocumentation.CodeFixes;
 
 /// <summary>
-/// Provides the code fix for <c>BODU1406</c> — shortens a <c>&lt;typeparam&gt;</c> element to its first
-/// sentence and relocates the trailing prose into a <c>&lt;para&gt;</c> appended to the existing
-/// <c>&lt;remarks&gt;</c> block (or wrapped in a new <c>&lt;remarks&gt;</c> block inserted immediately after
-/// the <c>&lt;typeparam&gt;</c>).
+/// Provides the code fix for <c>BODU1406</c> — shortens a <c>&lt;typeparam&gt;</c> element to its first sentence and
+/// relocates the trailing prose into a <c>&lt;para&gt;</c> appended to the existing <c>&lt;remarks&gt;</c> block (or
+/// wrapped in a new <c>&lt;remarks&gt;</c> block inserted immediately after the <c>&lt;typeparam&gt;</c>).
 /// </summary>
 /// <remarks>
 /// <para>
-/// The fix preserves the original surface text verbatim — no rephrasing or grammar adjustment is attempted.
-/// The author may re-word the relocated <c>&lt;para&gt;</c> by hand if the standalone reading is awkward.
+/// The fix preserves the original surface text verbatim — no rephrasing or grammar adjustment is attempted. The author
+/// may re-word the relocated <c>&lt;para&gt;</c> by hand if the standalone reading is awkward.
 /// </para>
 /// <para>
-/// When the source already contains a type-level <c>&lt;remarks&gt;</c> block, the new <c>&lt;para&gt;</c>
-/// is appended as the final paragraph so the original reading order is preserved. When no
-/// <c>&lt;remarks&gt;</c> exists, a fresh block is synthesized immediately after the last
-/// <c>&lt;typeparam&gt;</c> line, matching the canonical Bodu doc-tag ordering of summary → typeparam →
-/// remarks.
+/// When the source already contains a type-level <c>&lt;remarks&gt;</c> block, the new <c>&lt;para&gt;</c> is appended
+/// as the final paragraph so the original reading order is preserved. When no <c>&lt;remarks&gt;</c> exists, a fresh
+/// block is synthesized immediately after the last <c>&lt;typeparam&gt;</c> line, matching the canonical Bodu doc-tag
+/// ordering of summary → typeparam → remarks.
 /// </para>
 /// <para>
-/// Fix All is served by a dedicated <see cref="DocumentBasedFixAllProvider" /> that groups all diagnostics by
-/// their containing documentation comment and emits a single coherent transformation per comment — one
-/// <c>&lt;remarks&gt;</c> block carrying every relocated paragraph in source order. This avoids the
-/// overlapping / duplicate <c>&lt;remarks&gt;</c> insertions that a batch merge of independently-computed
-/// fixes would otherwise produce when a generic type declares several overflowing type parameters.
+/// Fix All is served by a dedicated <see cref="DocumentBasedFixAllProvider" /> that groups all diagnostics by their
+/// containing documentation comment and emits a single coherent transformation per comment — one <c>&lt;remarks&gt;</c>
+/// block carrying every relocated paragraph in source order. This avoids the overlapping / duplicate
+/// <c>&lt;remarks&gt;</c> insertions that a batch merge of independently-computed fixes would otherwise produce when a
+/// generic type declares several overflowing type parameters.
 /// </para>
 /// </remarks>
 [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(XmlDocTypeParamRequiresShortContentCodeFixProvider))]
 [Shared]
 public sealed class XmlDocTypeParamRequiresShortContentCodeFixProvider : CodeFixProvider
 {
-    /// <summary>
-    /// The code-action title for the fix that relocates trailing <c>&lt;typeparam&gt;</c> prose into <c>&lt;remarks&gt;</c>.
-    /// </summary>
+    /// <summary>The code-action title for the fix that relocates trailing <c>&lt;typeparam&gt;</c> prose into <c>&lt;remarks&gt;</c>.</summary>
     private const string MoveProseTitle = "Move trailing prose to <remarks>";
 
-    /// <summary>
-    /// The equivalence key identifying the move-prose-to-remarks fix for Fix All batching.
-    /// </summary>
+    /// <summary>The equivalence key identifying the move-prose-to-remarks fix for Fix All batching.</summary>
     private const string MoveProseEquivalenceKey = "BoduMoveTypeParamProseToRemarks";
 
     /// <inheritdoc />
@@ -113,7 +107,9 @@ public sealed class XmlDocTypeParamRequiresShortContentCodeFixProvider : CodeFix
     /// </summary>
     /// <param name="document">The document to repair.</param>
     /// <param name="typeParam">The <c>&lt;typeparam&gt;</c> element whose trailing prose is relocated.</param>
-    /// <param name="cancellationToken">A token that propagates notification that the operation should be canceled.</param>
+    /// <param name="cancellationToken">
+    /// A token that propagates notification that the operation should be canceled.
+    /// </param>
     /// <returns>The updated document, or the original document when there is no prose to relocate.</returns>
     private static async Task<Document> MoveProseToRemarksAsync(Document document, XmlElementSyntax typeParam, CancellationToken cancellationToken)
     {
@@ -140,9 +136,9 @@ public sealed class XmlDocTypeParamRequiresShortContentCodeFixProvider : CodeFix
     /// <param name="typeParams">The overflowing <c>&lt;typeparam&gt;</c> elements to shorten and relocate.</param>
     /// <param name="lineEnding">The line ending to emit between synthesized lines.</param>
     /// <returns>
-    /// The ordered list of text changes: each element shortened to its first sentence in place, plus the
-    /// collected paragraphs appended to the comment's existing <c>&lt;remarks&gt;</c> block — or, when none
-    /// exists, wrapped in one fresh <c>&lt;remarks&gt;</c> block inserted after the last <c>&lt;typeparam&gt;</c> line.
+    /// The ordered list of text changes: each element shortened to its first sentence in place, plus the collected
+    /// paragraphs appended to the comment's existing <c>&lt;remarks&gt;</c> block — or, when none exists, wrapped in
+    /// one fresh <c>&lt;remarks&gt;</c> block inserted after the last <c>&lt;typeparam&gt;</c> line.
     /// </returns>
     private static List<TextChange> BuildChangesForDocComment(
         SourceText text,
@@ -221,7 +217,9 @@ public sealed class XmlDocTypeParamRequiresShortContentCodeFixProvider : CodeFix
     /// insertion anchor for a synthesized <c>&lt;remarks&gt;</c> block.
     /// </summary>
     /// <param name="docComment">The documentation comment to search.</param>
-    /// <returns>The last <c>&lt;typeparam&gt;</c> element, or <see langword="null" /> when the comment has none.</returns>
+    /// <returns>
+    /// The last <c>&lt;typeparam&gt;</c> element, or <see langword="null" /> when the comment has none.
+    /// </returns>
     private static XmlElementSyntax? FindLastTypeParam(DocumentationCommentTriviaSyntax docComment)
     {
         return docComment.Content
@@ -273,12 +271,16 @@ public sealed class XmlDocTypeParamRequiresShortContentCodeFixProvider : CodeFix
     /// Determines whether a character is treated as trailing whitespace when trimming relocated prose.
     /// </summary>
     /// <param name="ch">The character to test.</param>
-    /// <returns><see langword="true" /> when the character is a space, tab, carriage return, or line feed; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the character is a space, tab, carriage return, or line feed; otherwise
+    /// <see langword="false" />.
+    /// </returns>
     private static bool IsTrailingTrim(char ch) =>
         ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n';
 
     /// <summary>
-    /// Builds the concatenated <c>&lt;para&gt;</c> blocks for prose appended to an existing <c>&lt;remarks&gt;</c> body.
+    /// Builds the concatenated <c>&lt;para&gt;</c> blocks for prose appended to an existing <c>&lt;remarks&gt;</c>
+    /// body.
     /// </summary>
     /// <param name="indent">The leading indentation applied to each emitted line.</param>
     /// <param name="prefix">The documentation-comment prefix applied to each emitted line.</param>
@@ -333,10 +335,9 @@ public sealed class XmlDocTypeParamRequiresShortContentCodeFixProvider : CodeFix
     }
 
     /// <summary>
-    /// Provides a <see cref="DocumentBasedFixAllProvider" /> that applies <c>BODU1406</c> fixes one
-    /// documentation comment at a time, coalescing every relocated paragraph into a single
-    /// <c>&lt;remarks&gt;</c> block so concurrently-computed fixes never produce overlapping or duplicate
-    /// insertions.
+    /// Provides a <see cref="DocumentBasedFixAllProvider" /> that applies <c>BODU1406</c> fixes one documentation
+    /// comment at a time, coalescing every relocated paragraph into a single <c>&lt;remarks&gt;</c> block so
+    /// concurrently-computed fixes never produce overlapping or duplicate insertions.
     /// </summary>
     private sealed class TypeParamFixAllProvider : DocumentBasedFixAllProvider
     {

@@ -15,22 +15,22 @@ namespace Bodu.CodeStyle.XmlDocumentation;
 
 /// <summary>
 /// Compares the raw input and the formatter's output trivia text and produces a list of
-/// <see cref="XmlDocFormattingChange" /> records attributing each difference to the responsible XML doc tag
-/// (or to cross-cutting prose / prefix / indent when no tag is implicated).
+/// <see cref="XmlDocFormattingChange" /> records attributing each difference to the responsible XML doc tag (or to
+/// cross-cutting prose / prefix / indent when no tag is implicated).
 /// </summary>
 /// <remarks>
 /// <para>
-/// Attribution model: at the top level of the doc comment, each block-tag scope whose rendered text differs
-/// from input to output emits one per-tag change record. Inside any such scope the walker only looks for
-/// inline-XML token differences (<c>&lt;see /&gt;</c>, <c>&lt;c&gt;…&lt;/c&gt;</c>, <c>&lt;paramref /&gt;</c>,
-/// <c>&lt;typeparamref /&gt;</c>) and attributes those to the inline tag. Nested block tags inside a top-level
-/// scope are deliberately not separately attributed in this version — suppressing the enclosing block tag
-/// silences the whole subtree, which matches the user-suppression model expressed in <c>.editorconfig</c>.
+/// Attribution model: at the top level of the doc comment, each block-tag scope whose rendered text differs from input
+/// to output emits one per-tag change record. Inside any such scope the walker only looks for inline-XML token
+/// differences (<c>&lt;see /&gt;</c>, <c>&lt;c&gt;…&lt;/c&gt;</c>, <c>&lt;paramref /&gt;</c>,
+/// <c>&lt;typeparamref /&gt;</c>) and attributes those to the inline tag. Nested block tags inside a top-level scope
+/// are deliberately not separately attributed in this version — suppressing the enclosing block tag silences the whole
+/// subtree, which matches the user-suppression model expressed in <c>.editorconfig</c>.
 /// </para>
 /// <para>
-/// Prose differences outside any top-level scope (line prefix, indent, text between tags) collapse into a
-/// single cross-cutting change (<c>tagName: null</c>) so consumers can silence the cross-cutting bucket
-/// independently of any tag.
+/// Prose differences outside any top-level scope (line prefix, indent, text between tags) collapse into a single
+/// cross-cutting change (<c>tagName: null</c>) so consumers can silence the cross-cutting bucket independently of any
+/// tag.
 /// </para>
 /// </remarks>
 internal static class XmlDocChangeAttributor
@@ -86,7 +86,8 @@ internal static class XmlDocChangeAttributor
 
     /// <summary>
     /// Scans the raw input and output content for inline-tag occurrences whose raw text differs and attributes each
-    /// such difference to the responsible inline tag, catching whitespace-only attribute changes the token-level walk misses.
+    /// such difference to the responsible inline tag, catching whitespace-only attribute changes the token-level walk
+    /// misses.
     /// </summary>
     /// <param name="inputContent">The prefix-stripped raw input content.</param>
     /// <param name="outputContent">The prefix-stripped canonical output content.</param>
@@ -195,8 +196,8 @@ internal static class XmlDocChangeAttributor
     }
 
     /// <summary>
-    /// Finds the index of the <c>&gt;</c> that closes a tag, honouring quoted attribute values so a <c>&gt;</c>
-    /// inside an attribute string does not terminate the scan.
+    /// Finds the index of the <c>&gt;</c> that closes a tag, honouring quoted attribute values so a <c>&gt;</c> inside
+    /// an attribute string does not terminate the scan.
     /// </summary>
     /// <param name="content">The content being scanned.</param>
     /// <param name="searchStart">The index at which to begin searching, after the tag name.</param>
@@ -231,7 +232,9 @@ internal static class XmlDocChangeAttributor
     /// Determines whether the given character is valid within an XML element name.
     /// </summary>
     /// <param name="ch">The character to test.</param>
-    /// <returns><see langword="true" /> when the character may appear in an element name; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the character may appear in an element name; otherwise <see langword="false" />.
+    /// </returns>
     private static bool IsNameChar(char ch) =>
         (ch >= 'A' && ch <= 'Z') ||
         (ch >= 'a' && ch <= 'z') ||
@@ -239,8 +242,8 @@ internal static class XmlDocChangeAttributor
         ch == '-' || ch == '_' || ch == '.' || ch == ':';
 
     /// <summary>
-    /// Represents a single inline-tag occurrence found in raw doc-comment content, pairing the element name with
-    /// its original source text.
+    /// Represents a single inline-tag occurrence found in raw doc-comment content, pairing the element name with its
+    /// original source text.
     /// </summary>
     private readonly struct RawInlineOccurrence
     {
@@ -274,7 +277,9 @@ internal static class XmlDocChangeAttributor
     /// <param name="outputTokens">The tokenized canonical output content.</param>
     /// <param name="builder">The builder accumulating attributed changes.</param>
     /// <param name="seenTags">The set of tag names already attributed, used to deduplicate.</param>
-    /// <param name="crossCuttingEmitted">A flag tracking whether the single cross-cutting change has already been emitted.</param>
+    /// <param name="crossCuttingEmitted">
+    /// A flag tracking whether the single cross-cutting change has already been emitted.
+    /// </param>
     private static void WalkTopLevel(ImmutableArray<XmlDocToken> inputTokens, ImmutableArray<XmlDocToken> outputTokens, ImmutableArray<XmlDocFormattingChange>.Builder builder, HashSet<string> seenTags, ref bool crossCuttingEmitted)
     {
         List<TagScope> inputScopes = FindTopLevelScopes(inputTokens, 0, inputTokens.Length);
@@ -325,8 +330,8 @@ internal static class XmlDocChangeAttributor
     }
 
     /// <summary>
-    /// Compares the concatenated raw text of the input and output token spans that precede a scope and emits a
-    /// single cross-cutting change when they differ.
+    /// Compares the concatenated raw text of the input and output token spans that precede a scope and emits a single
+    /// cross-cutting change when they differ.
     /// </summary>
     /// <param name="inputTokens">The tokenized raw input content.</param>
     /// <param name="inputStart">The inclusive start index of the input span.</param>
@@ -335,7 +340,9 @@ internal static class XmlDocChangeAttributor
     /// <param name="outputStart">The inclusive start index of the output span.</param>
     /// <param name="outputEnd">The inclusive end index of the output span.</param>
     /// <param name="builder">The builder accumulating attributed changes.</param>
-    /// <param name="crossCuttingEmitted">A flag tracking whether the single cross-cutting change has already been emitted.</param>
+    /// <param name="crossCuttingEmitted">
+    /// A flag tracking whether the single cross-cutting change has already been emitted.
+    /// </param>
     private static void ComparePreScopeProse(ImmutableArray<XmlDocToken> inputTokens, int inputStart, int inputEnd, ImmutableArray<XmlDocToken> outputTokens, int outputStart, int outputEnd, ImmutableArray<XmlDocFormattingChange>.Builder builder, ref bool crossCuttingEmitted)
     {
         var inputProse = ConcatRawText(inputTokens, inputStart, inputEnd);
@@ -348,14 +355,16 @@ internal static class XmlDocChangeAttributor
     }
 
     /// <summary>
-    /// Determines whether the token structure of the input and output scopes differs, ignoring raw-text changes
-    /// inside inline-XML tokens (which are attributed separately by the raw-scan pass).
+    /// Determines whether the token structure of the input and output scopes differs, ignoring raw-text changes inside
+    /// inline-XML tokens (which are attributed separately by the raw-scan pass).
     /// </summary>
     /// <param name="inputTokens">The tokenized raw input content.</param>
     /// <param name="inScope">The input scope to compare.</param>
     /// <param name="outputTokens">The tokenized canonical output content.</param>
     /// <param name="outScope">The output scope to compare.</param>
-    /// <returns><see langword="true" /> when the scopes differ structurally; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the scopes differ structurally; otherwise <see langword="false" />.
+    /// </returns>
     private static bool ScopeStructureDiffers(ImmutableArray<XmlDocToken> inputTokens, TagScope inScope, ImmutableArray<XmlDocToken> outputTokens, TagScope outScope)
     {
         var inLen = inScope.CloseIndex - inScope.OpenIndex + 1;
@@ -384,7 +393,9 @@ internal static class XmlDocChangeAttributor
     /// Emits the single cross-cutting change at most once, marking it as emitted so subsequent calls are no-ops.
     /// </summary>
     /// <param name="builder">The builder accumulating attributed changes.</param>
-    /// <param name="crossCuttingEmitted">A flag tracking whether the cross-cutting change has already been emitted.</param>
+    /// <param name="crossCuttingEmitted">
+    /// A flag tracking whether the cross-cutting change has already been emitted.
+    /// </param>
     private static void EmitCrossCutting(ImmutableArray<XmlDocFormattingChange>.Builder builder, ref bool crossCuttingEmitted)
     {
         if (crossCuttingEmitted) return;
@@ -393,8 +404,8 @@ internal static class XmlDocChangeAttributor
     }
 
     /// <summary>
-    /// Creates the canonical cross-cutting change that attributes a prose, prefix, or indent difference to no
-    /// specific tag.
+    /// Creates the canonical cross-cutting change that attributes a prose, prefix, or indent difference to no specific
+    /// tag.
     /// </summary>
     /// <returns>A new untagged <see cref="XmlDocFormattingChange" /> describing the cross-cutting difference.</returns>
     private static XmlDocFormattingChange CreateCrossCutting() =>
@@ -404,8 +415,8 @@ internal static class XmlDocChangeAttributor
             description: "Documentation comment prose, prefix, or indent updated to project policy.");
 
     /// <summary>
-    /// Identifies the top-level block-tag scopes within the given token range, pairing each opening block tag with
-    /// its matching close at depth zero.
+    /// Identifies the top-level block-tag scopes within the given token range, pairing each opening block tag with its
+    /// matching close at depth zero.
     /// </summary>
     /// <param name="tokens">The token stream to scan.</param>
     /// <param name="start">The inclusive start index of the range.</param>

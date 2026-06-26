@@ -17,8 +17,8 @@ namespace Bodu.CodeStyle.XmlDocumentation.Configuration;
 /// <see cref="XmlDocFormatPolicyDefaults.CreateDefaults" />.
 /// </summary>
 /// <remarks>
-/// Parsing uses the dependency-free <see cref="ConfigJsonParser" /> rather than <c>System.Text.Json</c> so the
-/// analyzer package needs no external runtime assembly in the analyzer host.
+/// Parsing uses the dependency-free <see cref="ConfigJsonParser" /> rather than <c>System.Text.Json</c> so the analyzer
+/// package needs no external runtime assembly in the analyzer host.
 /// </remarks>
 public static class XmlDocConfigJsonReader
 {
@@ -310,7 +310,9 @@ public static class XmlDocConfigJsonReader
     /// <param name="name">The property name, used in error messages.</param>
     /// <param name="value">The JSON value carrying the layout name.</param>
     /// <returns>The parsed layout.</returns>
-    /// <exception cref="XmlDocConfigException">Thrown when the value is not a string or names an unknown layout.</exception>
+    /// <exception cref="XmlDocConfigException">
+    /// Thrown when the value is not a string or names an unknown layout.
+    /// </exception>
     private static XmlDocTagLayout ParseLayout(string name, ConfigJsonValue value)
     {
         var raw = ReadString(name, value);

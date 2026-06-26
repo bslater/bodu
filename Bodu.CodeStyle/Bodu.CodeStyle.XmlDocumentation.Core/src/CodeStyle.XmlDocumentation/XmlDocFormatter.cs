@@ -20,12 +20,12 @@ namespace Bodu.CodeStyle.XmlDocumentation;
 /// <remarks>
 /// <para>
 /// The formatter takes the raw <c>///</c> trivia text, the per-comment <see cref="XmlDocFormatContext" />, and an
-/// <see cref="XmlDocFormatOptions" /> policy and returns a canonical replacement. The operation is idempotent:
-/// running the formatter on its own output returns byte-identical text.
+/// <see cref="XmlDocFormatOptions" /> policy and returns a canonical replacement. The operation is idempotent: running
+/// the formatter on its own output returns byte-identical text.
 /// </para>
 /// <para>
-/// The formatter is intentionally Roslyn-free so it can be reused by future CLI, VSIX, and unit-test scenarios
-/// without taking a dependency on <c>Microsoft.CodeAnalysis</c>.
+/// The formatter is intentionally Roslyn-free so it can be reused by future CLI, VSIX, and unit-test scenarios without
+/// taking a dependency on <c>Microsoft.CodeAnalysis</c>.
 /// </para>
 /// </remarks>
 public sealed class XmlDocFormatter
@@ -40,13 +40,13 @@ public sealed class XmlDocFormatter
     /// <summary>
     /// Formats the given XML documentation comment trivia to the configured Bodu policy.
     /// </summary>
-    /// <param name="triviaText">The raw documentation comment trivia text, including the <c>"/// "</c> prefix on every line.</param>
+    /// <param name="triviaText">
+    /// The raw documentation comment trivia text, including the <c>"/// "</c> prefix on every line.
+    /// </param>
     /// <param name="context">The per-comment context describing indentation, line ending, and member-kind hint.</param>
     /// <param name="options">The active formatting policy.</param>
     /// <returns>The formatting result describing whether the input changed and exposing the canonical text.</returns>
-    /// <exception cref="ArgumentNullException">
-    /// Thrown when any argument is <see langword="null" />.
-    /// </exception>
+    /// <exception cref="ArgumentNullException">Thrown when any argument is <see langword="null" />.</exception>
     [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Instance method by API design; future versions may carry per-instance state.")]
     public XmlDocFormatResult FormatTrivia(string triviaText, XmlDocFormatContext context, XmlDocFormatOptions options)
     {
@@ -70,8 +70,8 @@ public sealed class XmlDocFormatter
     }
 
     /// <summary>
-    /// Performs a single formatting pass over the given trivia, producing the canonical text and the set of
-    /// attributed formatting changes.
+    /// Performs a single formatting pass over the given trivia, producing the canonical text and the set of attributed
+    /// formatting changes.
     /// </summary>
     /// <param name="triviaText">The raw documentation comment trivia text.</param>
     /// <param name="context">The per-comment context describing indentation, line ending, and member-kind hint.</param>
@@ -147,7 +147,9 @@ public sealed class XmlDocFormatter
     /// Determines whether the token stream contains only whitespace and line breaks, with no documentable content.
     /// </summary>
     /// <param name="tokens">The tokenized doc-comment content.</param>
-    /// <returns><see langword="true" /> when every token is whitespace or a line break; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when every token is whitespace or a line break; otherwise <see langword="false" />.
+    /// </returns>
     private static bool HasNoMeaningfulTokens(ImmutableArray<XmlDocToken> tokens)
     {
         foreach (XmlDocToken token in tokens)
@@ -164,11 +166,13 @@ public sealed class XmlDocFormatter
     }
 
     /// <summary>
-    /// Determines whether every block-start tag in the token stream is paired with a correctly nested block-end
-    /// tag, indicating well-formed XML the formatter may safely rewrite.
+    /// Determines whether every block-start tag in the token stream is paired with a correctly nested block-end tag,
+    /// indicating well-formed XML the formatter may safely rewrite.
     /// </summary>
     /// <param name="tokens">The tokenized doc-comment content.</param>
-    /// <returns><see langword="true" /> when all block tags are matched and balanced; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when all block tags are matched and balanced; otherwise <see langword="false" />.
+    /// </returns>
     private static bool HasMatchedTags(ImmutableArray<XmlDocToken> tokens)
     {
         var openTags = new Stack<string>();

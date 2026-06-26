@@ -14,18 +14,15 @@ namespace Bodu.CodeStyle.XmlDocumentation;
 /// content-quality analyzer and its code fix so they always agree on where (and whether) prose may be split.
 /// </summary>
 /// <remarks>
-/// The detector deliberately refuses ambiguous cases. A boundary is a period followed by horizontal whitespace
-/// where the preceding token is an ordinary word — not a known abbreviation (<c>e.g.</c>, <c>i.e.</c>,
-/// <c>etc.</c>, …), not a dotted qualified name (<c>System.String</c>), not a decimal or version number, and not
-/// part of an ellipsis. When no unambiguous boundary exists the detector returns <c>-1</c>, so the rule does not
-/// fire and the code fix never performs a questionable split.
+/// The detector deliberately refuses ambiguous cases. A boundary is a period followed by horizontal whitespace where
+/// the preceding token is an ordinary word — not a known abbreviation (<c>e.g.</c>, <c>i.e.</c>, <c>etc.</c>, …), not a
+/// dotted qualified name (<c>System.String</c>), not a decimal or version number, and not part of an ellipsis. When no
+/// unambiguous boundary exists the detector returns <c>-1</c>, so the rule does not fire and the code fix never
+/// performs a questionable split.
 /// </remarks>
 public static class XmlDocSentenceBoundary
 {
-    /// <summary>
-    /// The set of known abbreviations written without an internal period whose trailing period must not be treated
-    /// as a sentence boundary.
-    /// </summary>
+    /// <summary>The set of known abbreviations written without an internal period whose trailing period must not be treated as a sentence boundary.</summary>
     private static readonly HashSet<string> s_abbreviations = new(StringComparer.OrdinalIgnoreCase)
     {
         "e.g", "i.e", "etc", "vs", "cf", "al", "viz", "ca", "approx",
@@ -36,8 +33,12 @@ public static class XmlDocSentenceBoundary
     /// Finds the index of the period that ends the first sentence in the supplied prose.
     /// </summary>
     /// <param name="content">The prose to scan.</param>
-    /// <returns>The zero-based index of the terminating period, or <c>-1</c> when no unambiguous boundary exists.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="content" /> is <see langword="null" />.</exception>
+    /// <returns>
+    /// The zero-based index of the terminating period, or <c>-1</c> when no unambiguous boundary exists.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="content" /> is <see langword="null" />.
+    /// </exception>
     public static int FindFirstSentenceBoundary(string content)
     {
         if (content is null) throw new ArgumentNullException(nameof(content));
@@ -92,7 +93,10 @@ public static class XmlDocSentenceBoundary
     /// Determines whether the given character is horizontal or vertical whitespace.
     /// </summary>
     /// <param name="ch">The character to test.</param>
-    /// <returns><see langword="true" /> when the character is a space, tab, carriage return, or line feed; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the character is a space, tab, carriage return, or line feed; otherwise
+    /// <see langword="false" />.
+    /// </returns>
     private static bool IsWhitespace(char ch) =>
         ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n';
 }

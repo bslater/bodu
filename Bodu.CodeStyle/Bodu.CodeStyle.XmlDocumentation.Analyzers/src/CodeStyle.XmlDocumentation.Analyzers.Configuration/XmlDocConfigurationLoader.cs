@@ -17,14 +17,14 @@ using Microsoft.CodeAnalysis.Text;
 namespace Bodu.CodeStyle.XmlDocumentation.Analyzers.Configuration;
 
 /// <summary>
-/// Loads the XML documentation formatting policy from defaults, the optional
-/// <c>bodu.xmldocstyle.json</c> additional file, and per-tree <c>.editorconfig</c> scalar overrides.
+/// Loads the XML documentation formatting policy from defaults, the optional <c>bodu.xmldocstyle.json</c> additional
+/// file, and per-tree <c>.editorconfig</c> scalar overrides.
 /// </summary>
 internal static class XmlDocConfigurationLoader
 {
     /// <summary>
-    /// Computes the base options for a compilation by overlaying the JSON additional file (when present) on top
-    /// of the Bodu defaults.
+    /// Computes the base options for a compilation by overlaying the JSON additional file (when present) on top of the
+    /// Bodu defaults.
     /// </summary>
     /// <param name="additionalFiles">The compilation's additional files.</param>
     /// <param name="cancellationToken">The cancellation token to observe.</param>
@@ -67,8 +67,8 @@ internal static class XmlDocConfigurationLoader
     }
 
     /// <summary>
-    /// Re-reads each <c>bodu.xmldocstyle.json</c> additional file and collects the errors that prevented it from
-    /// being applied, so a diagnostic analyzer can surface them instead of failing silently.
+    /// Re-reads each <c>bodu.xmldocstyle.json</c> additional file and collects the errors that prevented it from being
+    /// applied, so a diagnostic analyzer can surface them instead of failing silently.
     /// </summary>
     /// <param name="additionalFiles">The compilation's additional files.</param>
     /// <param name="cancellationToken">The cancellation token to observe.</param>
@@ -145,8 +145,7 @@ internal static class XmlDocConfigurationLoader
     }
 
     /// <summary>
-    /// Applies a single boolean <c>.editorconfig</c> override that adds or removes a tag from the
-    /// force-multiline set.
+    /// Applies a single boolean <c>.editorconfig</c> override that adds or removes a tag from the force-multiline set.
     /// </summary>
     /// <param name="options">The options to update.</param>
     /// <param name="treeOptions">The Roslyn-supplied options for the syntax tree under analysis.</param>
@@ -181,8 +180,8 @@ internal static class XmlDocConfigurationLoader
     /// <returns>The resolved line ending.</returns>
     /// <remarks>
     /// Resolution order: the <c>.editorconfig</c> <c>end_of_line</c> key when present; otherwise the file's first
-    /// observed newline; otherwise <c>"\r\n"</c>. Inferring from the file avoids introducing CRLF into an
-    /// otherwise-LF file when no explicit policy is configured.
+    /// observed newline; otherwise <c>"\r\n"</c>. Inferring from the file avoids introducing CRLF into an otherwise-LF
+    /// file when no explicit policy is configured.
     /// </remarks>
     public static string ResolveLineEnding(AnalyzerConfigOptions treeOptions, SourceText? text = null)
     {
@@ -210,8 +209,8 @@ internal static class XmlDocConfigurationLoader
     /// </summary>
     /// <param name="text">The source text to inspect, or <see langword="null" />.</param>
     /// <returns>
-    /// The first observed line ending (<c>"\r\n"</c>, <c>"\r"</c>, or <c>"\n"</c>), or <see langword="null" />
-    /// when the text is <see langword="null" /> or contains no newline.
+    /// The first observed line ending (<c>"\r\n"</c>, <c>"\r"</c>, or <c>"\n"</c>), or <see langword="null" /> when the
+    /// text is <see langword="null" /> or contains no newline.
     /// </returns>
     private static string? InferLineEnding(SourceText? text)
     {
