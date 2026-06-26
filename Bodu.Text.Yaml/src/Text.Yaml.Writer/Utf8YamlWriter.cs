@@ -349,9 +349,14 @@ public ref struct Utf8YamlWriter
         if (value != value.Trim())
             return false;
 
-        // A scalar equal to a document marker would be misread as that marker when emitted plain on its own line.
-        if (value is "---" or "...")
+        // A scalar that is, or begins with, a document marker (the marker optionally followed by content after a
+        // space) would be misread as that marker when emitted plain at the start of a line.
+        if (value is "---" or "..."
+            || value.StartsWith("--- ", StringComparison.Ordinal)
+            || value.StartsWith("... ", StringComparison.Ordinal))
+        {
             return false;
+        }
 
         var first = value[0];
         if (first is '-' or '?' or ':' or ',' or '[' or ']' or '{' or '}' or '#' or '&' or '*'
