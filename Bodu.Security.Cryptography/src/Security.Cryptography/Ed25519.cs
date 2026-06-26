@@ -38,8 +38,8 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// <strong>Scope.</strong> Only pure Ed25519 is implemented. The pre-hash (Ed25519ph) and context (Ed25519ctx) variants
 /// of RFC 8032 are deliberately out of scope for this version. Only the raw RFC 8032 32-byte key encodings are
-/// supported; the PKCS#8 / SubjectPublicKeyInfo members inherited from <see cref="AsymmetricAlgorithm" /> are not
-/// implemented and retain their base (throwing) behavior.
+/// supported; the PKCS#8 / SubjectPublicKeyInfo / PEM / XML members inherited from <see cref="AsymmetricAlgorithm" />
+/// are not supported and throw <see cref="NotSupportedException" />.
 /// </para>
 /// <para>
 /// <strong>Verification policy.</strong> <see cref="VerifyData(ReadOnlySpan{byte}, ReadOnlySpan{byte})" /> applies the
@@ -66,7 +66,7 @@ namespace Bodu.Security.Cryptography;
 ///]]>
 /// </code>
 /// </example>
-public sealed class Ed25519
+public sealed partial class Ed25519
     : AsymmetricAlgorithm
 {
     /// <summary>The size, in bytes, of an Ed25519 private key seed.</summary>

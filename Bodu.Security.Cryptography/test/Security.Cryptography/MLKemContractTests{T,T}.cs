@@ -52,6 +52,14 @@ public abstract class MLKemContractTests<TTest, TKem>
         algorithm.ExportEncapsulationKey();
 
     /// <inheritdoc />
+    protected sealed override string GetAlgorithmName(TKem algorithm) =>
+        algorithm.AlgorithmName;
+
+    /// <inheritdoc />
+    protected sealed override int GetSecurityStrengthBits(TKem algorithm) =>
+        algorithm.SecurityStrengthBits;
+
+    /// <inheritdoc />
     protected sealed override (byte[] Ciphertext, byte[] SharedSecret) Encapsulate(TKem algorithm) =>
         algorithm.Encapsulate();
 

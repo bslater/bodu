@@ -60,7 +60,7 @@ namespace Bodu.Security.Cryptography;
 ///]]>
 /// </code>
 /// </example>
-public abstract class MLDsa
+public abstract partial class MLDsa
     : AsymmetricAlgorithm
 {
     /// <summary>The maximum length, in bytes, of the signature context string.</summary>

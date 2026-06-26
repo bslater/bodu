@@ -49,6 +49,14 @@ public abstract class MLDsaContractTests<TTest, TDsa>
         algorithm.ExportPublicKey();
 
     /// <inheritdoc />
+    protected sealed override string GetAlgorithmName(TDsa algorithm) =>
+        algorithm.AlgorithmName;
+
+    /// <inheritdoc />
+    protected sealed override int GetSecurityStrengthBits(TDsa algorithm) =>
+        algorithm.SecurityStrengthBits;
+
+    /// <inheritdoc />
     protected sealed override byte[] SignData(TDsa algorithm, byte[] data) =>
         algorithm.SignData(data);
 
