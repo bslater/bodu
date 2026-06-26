@@ -32,6 +32,8 @@ internal sealed partial class YamlParser
     private int _lineStart;
     private int _depth;
     private Dictionary<string, string>? _tagHandles;
+    private int _flowIndent = -1;
+    private int _lastPropertyLine = -1;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="YamlParser" /> class over the specified source.
@@ -208,12 +210,18 @@ internal sealed partial class YamlParser
 
         // A block sequence entry: '-' followed by a space, a line break, or end of input.
         if (c == (byte)'-' && IsBlankOrBreakOrEnd(PeekAt(1)))
+        {
+            // A block sequence cannot begin on the same line as the node's anchor or tag.
+            if ((anchor is not null || tag is not null) && _line == _lastPropertyLine)
+                throw Error(YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
+
             return Finish(ParseBlockSequence(col, anchor, tag), anchor);
+        }
 
         // A flow collection introducer.
         if (c == (byte)'[' || c == (byte)'{')
         {
-            var flow = ParseFlowNode();
+            var flow = ParseFlowNodeFromBlock(-1);
             ApplyProperties(flow, anchor, tag);
             SkipLineTrailing();
             return Finish(flow, anchor);
@@ -413,7 +421,7 @@ internal sealed partial class YamlParser
 
         if (c == (byte)'[' || c == (byte)'{')
         {
-            var flow = ParseFlowNode();
+            var flow = ParseFlowNodeFromBlock(keyIndent);
             ApplyProperties(flow, anchor, tag);
             SkipLineTrailing();
             return Finish(flow, anchor);

@@ -27,16 +27,20 @@ internal sealed partial class YamlParser
         var offset = _pos;
         var c = Peek();
 
+        // A plain scalar cannot begin with a flow-entry comma.
+        if (c == (byte)',')
+            throw ErrorAt(_pos, YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
+
         if (c == (byte)'"')
         {
-            var row = NewString(ReadDoubleQuoted(), YamlScalarStyle.DoubleQuoted, offset, null, null);
+            var row = NewString(ReadDoubleQuoted(minIndent), YamlScalarStyle.DoubleQuoted, offset, null, null);
             SkipLineTrailing();
             return row;
         }
 
         if (c == (byte)'\'')
         {
-            var row = NewString(ReadSingleQuoted(), YamlScalarStyle.SingleQuoted, offset, null, null);
+            var row = NewString(ReadSingleQuoted(minIndent), YamlScalarStyle.SingleQuoted, offset, null, null);
             SkipLineTrailing();
             return row;
         }
@@ -181,7 +185,7 @@ internal sealed partial class YamlParser
     /// </summary>
     /// <returns>The decoded string.</returns>
     /// <exception cref="YamlFormatException">The scalar is not terminated.</exception>
-    private string ReadSingleQuoted()
+    private string ReadSingleQuoted(int minIndent)
     {
         Advance(); // opening quote
         var buf = new List<byte>();
@@ -216,6 +220,7 @@ internal sealed partial class YamlParser
                 if (IsBoundaryAt(_pos))
                     throw ErrorAt(_pos, YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
 
+                RequireQuotedContinuationIndent(minIndent);
                 pendingBreaks++;
                 SkipSpaces();
                 continue;
@@ -234,7 +239,7 @@ internal sealed partial class YamlParser
     /// </summary>
     /// <returns>The decoded string.</returns>
     /// <exception cref="YamlFormatException">The scalar is not terminated or contains an invalid escape.</exception>
-    private string ReadDoubleQuoted()
+    private string ReadDoubleQuoted(int minIndent)
     {
         Advance(); // opening quote
         var buf = new List<byte>();
@@ -284,6 +289,7 @@ internal sealed partial class YamlParser
                 if (IsBoundaryAt(_pos))
                     throw ErrorAt(_pos, YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
 
+                RequireQuotedContinuationIndent(minIndent);
                 pendingBreaks++;
                 SkipSpaces();
                 continue;
@@ -431,6 +437,38 @@ internal sealed partial class YamlParser
         }
 
         pendingBreaks = 0;
+    }
+
+
+    /// <summary>
+    /// Validates the indentation of a quoted-scalar continuation line: it must use spaces only and be indented more
+    /// than the scalar's parent node.
+    /// </summary>
+    /// <param name="minIndent">The minimum content column for a continuation line, or a negative value to skip the check.</param>
+    /// <exception cref="YamlFormatException">A continuation line uses a tab for indentation or is under-indented.</exception>
+    private void RequireQuotedContinuationIndent(int minIndent)
+    {
+        if (minIndent <= 0)
+            return;
+
+        var p = _pos;
+        var spaces = 0;
+        while (p < _length && spaces < minIndent && _source[p] == (byte)' ')
+        {
+            p++;
+            spaces++;
+        }
+
+        // A blank line imposes no indentation requirement.
+        if (p >= _length || _source[p] is (byte)'\n' or (byte)'\r')
+            return;
+
+        // A tab within the required indentation, or too few indentation spaces, under-indents the continuation.
+        if (_source[p] == (byte)'\t' && spaces < minIndent)
+            throw ErrorAt(p, YamlResourceStrings.Format_Invalid_YamlTabIndentation);
+
+        if (spaces < minIndent)
+            throw ErrorAt(_pos, YamlResourceStrings.Format_Invalid_YamlInvalidIndentation);
     }
 
     /// <summary>

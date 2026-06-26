@@ -15,7 +15,7 @@ public sealed class _ClassifierGen
     [TestMethod]
     public void Debug()
     {
-        foreach (var id in new[] { "JHB9", "6XDY", "S4JQ" })
+        foreach (var id in new[] { "TL85", "3RLN/02", "4ZYM" })
         {
             var dir = Path.Combine(CorpusRoot, id);
             var yaml = File.ReadAllBytes(Path.Combine(dir, "in.yaml"));

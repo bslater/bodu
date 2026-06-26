@@ -119,7 +119,7 @@
 96NN/01	valid	SupportedPass
 98YD	valid	SupportedPass
 9BXH	valid	SupportedPass
-9C9N	invalid	KnownGap
+9C9N	invalid	SupportedFail
 9CWY	invalid	SupportedFail
 9DXL	valid	SupportedPass
 9FMG	valid	SupportedPass
@@ -184,7 +184,7 @@ DHP8	valid	SupportedPass
 DK3J	valid	SupportedPass
 DK4H	invalid	KnownGap
 DK95/00	valid	UnsupportedFeatureRejected
-DK95/01	invalid	KnownGap
+DK95/01	invalid	SupportedFail
 DK95/02	valid	SupportedPass
 DK95/03	valid	SupportedPass
 DK95/04	valid	SupportedPass
@@ -309,7 +309,7 @@ Q5MG	valid	UnsupportedFeatureRejected
 Q88A	valid	SupportedPass
 Q8AD	valid	SupportedPass
 Q9WF	valid-nojson	UnsupportedFeatureRejected
-QB6E	invalid	KnownGap
+QB6E	invalid	SupportedFail
 QF4Y	valid	SupportedPass
 QLJ7	invalid	SupportedFail
 QT73	valid	SupportedPass
@@ -337,8 +337,8 @@ SM9W/01	valid-nojson	SupportedParseOnly
 SR86	invalid	SupportedFail
 SSW6	valid	SupportedPass
 SU5Z	invalid	SupportedFail
-SU74	invalid	KnownGap
-SY6V	invalid	KnownGap
+SU74	invalid	SupportedFail
+SY6V	invalid	SupportedFail
 SYW4	valid	SupportedPass
 T26H	valid	SupportedPass
 T4YY	valid	SupportedPass
@@ -351,7 +351,7 @@ TS54	valid	SupportedPass
 U3C3	valid	SupportedPass
 U3XV	valid	SupportedPass
 U44R	invalid	SupportedFail
-U99R	invalid	KnownGap
+U99R	invalid	SupportedFail
 U9NS	valid	SupportedPass
 UDM2	valid	SupportedPass
 UDR7	valid	SupportedPass
@@ -363,7 +363,7 @@ UT92	valid	UnsupportedFeatureRejected
 UV7Q	valid	SupportedPass
 V55R	valid	SupportedPass
 V9D5	valid-nojson	UnsupportedFeatureRejected
-VJP3/00	invalid	KnownGap
+VJP3/00	invalid	SupportedFail
 VJP3/01	valid	SupportedPass
 W42U	valid	UnsupportedFeatureRejected
 W4TN	valid	SupportedPass

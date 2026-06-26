@@ -13,6 +13,26 @@ namespace Bodu.Text.Yaml.Reader;
 internal sealed partial class YamlParser
 {
     /// <summary>
+    /// Parses a flow node entered from block context, establishing the continuation-indentation floor for the duration
+    /// of the flow.
+    /// </summary>
+    /// <param name="parentIndent">The indentation of the block node that owns the flow collection.</param>
+    /// <returns>The row index of the parsed node.</returns>
+    private int ParseFlowNodeFromBlock(int parentIndent)
+    {
+        var previous = _flowIndent;
+        _flowIndent = parentIndent;
+        try
+        {
+            return ParseFlowNode();
+        }
+        finally
+        {
+            _flowIndent = previous;
+        }
+    }
+
+    /// <summary>
     /// Parses a flow node, applying the nesting-depth guard before dispatching.
     /// </summary>
     /// <returns>The row index of the parsed node.</returns>
@@ -212,10 +232,10 @@ internal sealed partial class YamlParser
         var offset = _pos;
         var c = Peek();
         if (c == (byte)'"')
-            return NewString(ReadDoubleQuoted(), YamlScalarStyle.DoubleQuoted, offset, null, null);
+            return NewString(ReadDoubleQuoted(-1), YamlScalarStyle.DoubleQuoted, offset, null, null);
 
         if (c == (byte)'\'')
-            return NewString(ReadSingleQuoted(), YamlScalarStyle.SingleQuoted, offset, null, null);
+            return NewString(ReadSingleQuoted(-1), YamlScalarStyle.SingleQuoted, offset, null, null);
 
         var start = _pos;
         var end = _pos;
@@ -256,6 +276,7 @@ internal sealed partial class YamlParser
     /// </summary>
     private void SkipFlowWhitespace()
     {
+        var crossed = false;
         while (!AtEnd)
         {
             var b = Peek();
@@ -268,6 +289,7 @@ internal sealed partial class YamlParser
             if (b is (byte)'\n' or (byte)'\r')
             {
                 Advance();
+                crossed = true;
                 continue;
             }
 
@@ -281,6 +303,14 @@ internal sealed partial class YamlParser
             }
 
             break;
+        }
+
+        // Flow content continued onto a new line must be indented more than the owning block node; a closing
+        // delimiter may sit at the parent indentation.
+        if (crossed && _flowIndent >= 0 && !AtEnd && CurrentColumn() <= _flowIndent
+            && Peek() is not ((byte)']' or (byte)'}'))
+        {
+            throw ErrorAt(_pos, YamlResourceStrings.Format_Invalid_YamlInvalidIndentation);
         }
     }
 }

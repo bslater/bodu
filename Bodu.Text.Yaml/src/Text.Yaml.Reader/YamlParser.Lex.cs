@@ -561,10 +561,14 @@ internal sealed partial class YamlParser
         }
 
         var c = Peek();
+
+        // An alias cannot serve as an implicit mapping key.
+        if (c == (byte)'*')
+            throw Error(YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
         if (c == (byte)'"' || c == (byte)'\'')
         {
             var startLine = _line;
-            var quoted = c == (byte)'"' ? ReadDoubleQuoted() : ReadSingleQuoted();
+            var quoted = c == (byte)'"' ? ReadDoubleQuoted(-1) : ReadSingleQuoted(-1);
 
             // An implicit key must occupy a single line.
             if (_line != startLine)
@@ -621,12 +625,14 @@ internal sealed partial class YamlParser
             if (c == (byte)'&' && anchor is null)
             {
                 anchor = ReadName(1);
+                _lastPropertyLine = _line;
                 continue;
             }
 
             if (c == (byte)'!' && tag is null)
             {
                 tag = ReadTag();
+                _lastPropertyLine = _line;
                 continue;
             }
 
