@@ -124,17 +124,28 @@ public static partial class YamlSerializer
             ?? throw new YamlSerializationException($"The type '{type}' could not be instantiated.");
 
         var members = YamlMemberInfo.ForType(type, options.IncludeFields);
+        YamlMemberInfo.EnsureUniqueWireNames(members, options, type);
         var comparison = options.PropertyNameCaseInsensitive ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
 
         foreach (var pair in element.EnumerateMapping())
         {
+            var matched = false;
             foreach (var member in members)
             {
-                if (member.Set is null || !string.Equals(member.WireName(options), pair.Name, comparison))
+                if (!string.Equals(member.WireName(options), pair.Name, comparison))
                     continue;
 
-                member.Set(instance, BindValue(pair.Value, member.Type, options));
+                matched = true;
+                if (member.Set is not null)
+                    member.Set(instance, BindValue(pair.Value, member.Type, options));
+
                 break;
+            }
+
+            if (!matched && options.UnmappedMemberHandling == YamlUnmappedMemberHandling.Disallow)
+            {
+                throw new YamlSerializationException(string.Format(
+                    CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_YamlUnmappedMember, pair.Name, type));
             }
         }
 

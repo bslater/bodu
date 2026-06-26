@@ -6,6 +6,7 @@
 
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Reflection;
 
 namespace Bodu.Text.Yaml.Serialization;
@@ -55,6 +56,26 @@ internal sealed class YamlMemberInfo
     /// <returns>The YAML key.</returns>
     public string WireName(YamlSerializerOptions options) =>
         ExplicitName ?? options.PropertyNamingPolicy?.ConvertName(MemberName) ?? MemberName;
+
+    /// <summary>
+    /// Verifies that no two members resolve to the same YAML key under the given options.
+    /// </summary>
+    /// <param name="members">The members to validate.</param>
+    /// <param name="options">The serializer options.</param>
+    /// <param name="type">The owning type, used in the failure message.</param>
+    /// <exception cref="InvalidOperationException">Two members map to the same YAML key.</exception>
+    public static void EnsureUniqueWireNames(YamlMemberInfo[] members, YamlSerializerOptions options, Type type)
+    {
+        var seen = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var member in members)
+        {
+            if (!seen.Add(member.WireName(options)))
+            {
+                throw new InvalidOperationException(string.Format(
+                    CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_DuplicateWireName, type, member.WireName(options)));
+            }
+        }
+    }
 
     /// <summary>
     /// Gets the cached, serializable members of a type, discovering them on first use.

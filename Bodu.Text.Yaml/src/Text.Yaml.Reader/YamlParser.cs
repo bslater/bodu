@@ -23,12 +23,18 @@ internal sealed partial class YamlParser
     private readonly int _length;
     private readonly YamlSpecVersion _version;
     private readonly int _maxDepth;
+    private readonly YamlDuplicateKeyBehavior _duplicateKeyBehavior;
+    private readonly YamlMergeKeyBehavior _mergeKeyBehavior;
     private List<YamlReaderRow> _rows = [];
 
     private int _pos;
     private int _line;
     private int _lineStart;
     private int _depth;
+    private Dictionary<string, string>? _tagHandles;
+    private int _flowIndent = -1;
+    private int _lastPropertyLine = -1;
+    private bool _documentStartConsumed;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="YamlParser" /> class over the specified source.
@@ -37,12 +43,22 @@ internal sealed partial class YamlParser
     /// <param name="length">The number of valid bytes in <paramref name="source" />.</param>
     /// <param name="version">The specification version whose resolution rules apply.</param>
     /// <param name="maxDepth">The maximum container nesting depth permitted.</param>
-    internal YamlParser(byte[] source, int length, YamlSpecVersion version, int maxDepth)
+    /// <param name="duplicateKeyBehavior">The policy applied to duplicate mapping keys.</param>
+    /// <param name="mergeKeyBehavior">The policy applied to the merge key.</param>
+    internal YamlParser(
+        byte[] source,
+        int length,
+        YamlSpecVersion version,
+        int maxDepth,
+        YamlDuplicateKeyBehavior duplicateKeyBehavior = YamlDuplicateKeyBehavior.Throw,
+        YamlMergeKeyBehavior mergeKeyBehavior = YamlMergeKeyBehavior.Expand)
     {
         _source = source;
         _length = length;
         _version = version;
         _maxDepth = maxDepth;
+        _duplicateKeyBehavior = duplicateKeyBehavior;
+        _mergeKeyBehavior = mergeKeyBehavior;
     }
 
     /// <summary>
@@ -58,6 +74,7 @@ internal sealed partial class YamlParser
     /// <exception cref="YamlFormatException">The source is not valid YAML.</exception>
     internal List<YamlReaderRow> Parse()
     {
+        ValidateSource();
         SkipByteOrderMark();
         SkipDirectivesAndDocumentStart();
 
@@ -69,6 +86,17 @@ internal sealed partial class YamlParser
         SkipBlankCommentLines();
         if (!AtStreamEnd() && !AtDocumentBoundary())
             throw Error(YamlResourceStrings.Format_Invalid_YamlContentAfterDocumentEnd);
+
+        // A document-end marker line may carry only a trailing comment.
+        if (!AtStreamEnd() && Peek() == (byte)'.')
+        {
+            Advance();
+            Advance();
+            Advance();
+            SkipSpaces();
+            if (!IsBreakOrEnd(Peek()) && Peek() != (byte)'#')
+                throw ErrorAt(_pos, YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
+        }
 
         Compose();
         return _rows;
@@ -83,12 +111,32 @@ internal sealed partial class YamlParser
     internal List<(List<YamlReaderRow> Rows, string[] Strings)> ParseStream()
     {
         var documents = new List<(List<YamlReaderRow>, string[])>();
+        ValidateSource();
         SkipByteOrderMark();
 
         while (true)
         {
             SkipDirectivesAndDocumentStart();
             SkipBlankCommentLines();
+
+            // An empty region with no explicit '---' start and no content is not a document.
+            if (!_documentStartConsumed && (AtStreamEnd() || (CurrentColumn() == 0 && Peek() == (byte)'.' && AtDocumentBoundary())))
+            {
+                if (!AtEnd && Peek() == (byte)'.')
+                {
+                    while (!IsBreakOrEnd(Peek()))
+                        _pos++;
+
+                    if (!AtEnd)
+                        Advance();
+                }
+
+                SkipBlankCommentLines();
+                if (AtStreamEnd())
+                    break;
+
+                continue;
+            }
 
             _rows = [];
             _strings = [];
@@ -166,7 +214,8 @@ internal sealed partial class YamlParser
     {
         SkipBlankCommentLines();
 
-        var anchor = TryReadAnchorAndTag(out var tag);
+        // In block context the anchor and tag node properties may be spread across line breaks before the node.
+        var anchor = TryReadAnchorAndTag(out var tag, crossLines: true);
 
         SkipBlankCommentLines();
 
@@ -181,12 +230,18 @@ internal sealed partial class YamlParser
 
         // A block sequence entry: '-' followed by a space, a line break, or end of input.
         if (c == (byte)'-' && IsBlankOrBreakOrEnd(PeekAt(1)))
+        {
+            // A block sequence cannot begin on the same line as the node's anchor or tag.
+            if ((anchor is not null || tag is not null) && _line == _lastPropertyLine)
+                throw Error(YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
+
             return Finish(ParseBlockSequence(col, anchor, tag), anchor);
+        }
 
         // A flow collection introducer.
         if (c == (byte)'[' || c == (byte)'{')
         {
-            var flow = ParseFlowNode();
+            var flow = ParseFlowNodeFromBlock(-1);
             ApplyProperties(flow, anchor, tag);
             SkipLineTrailing();
             return Finish(flow, anchor);
@@ -195,14 +250,18 @@ internal sealed partial class YamlParser
         // An alias node.
         if (c == (byte)'*')
         {
+            if (anchor is not null || tag is not null)
+                throw Error(YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
+
             var alias = ParseAlias();
             SkipLineTrailing();
             return Finish(alias, anchor);
         }
 
-        // A block scalar (literal or folded).
+        // A block scalar (literal or folded). The floor is the parent node's indentation (one less than the column at
+        // which this node's content must appear), so a less-indented following line ends the scalar.
         if (c == (byte)'|' || c == (byte)'>')
-            return Finish(ParseBlockScalar(col, anchor, tag), anchor);
+            return Finish(ParseBlockScalar(minIndent - 1, anchor, tag), anchor);
 
         // Otherwise the node is either a block mapping or a single scalar. Decide by probing for a key indicator.
         if (TryDetectBlockMapping(col))
@@ -224,6 +283,11 @@ internal sealed partial class YamlParser
         if (anchor is not null)
         {
             var r = _rows[row];
+
+            // A node already carrying a different anchor would mean two anchors were written for one node.
+            if (r.Anchor is not null && !string.Equals(r.Anchor, anchor, StringComparison.Ordinal))
+                throw Error(YamlResourceStrings.Format_Invalid_YamlMultipleAnchors);
+
             r.Anchor = anchor;
             r.Flags |= YamlReaderRowFlags.Anchored;
             _rows[row] = r;
@@ -263,6 +327,7 @@ internal sealed partial class YamlParser
     private int ParseBlockMapping(int indent, string? anchor, string? tag)
     {
         var mapping = NewContainer(YamlReaderNodeKind.Mapping, _pos, anchor, tag);
+        var keyIndex = new Dictionary<string, int>(StringComparer.Ordinal);
 
         while (true)
         {
@@ -280,10 +345,7 @@ internal sealed partial class YamlParser
 
             var valueRow = ParseMappingValue(indent);
 
-            var pair = _rows[valueRow];
-            pair.Key = keyText;
-            _rows[valueRow] = pair;
-            AppendChild(mapping, valueRow);
+            AddMappingChild(mapping, valueRow, keyText, keyIndex);
 
             _ = keyRow;
         }
@@ -373,9 +435,13 @@ internal sealed partial class YamlParser
             return Finish(ParseBlockNode(keyIndent + 1), anchor);
         }
 
+        // A block sequence cannot begin on the same line as the mapping value indicator.
+        if (c == (byte)'-' && IsBlankOrBreakOrEnd(PeekAt(1)))
+            throw Error(YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
+
         if (c == (byte)'[' || c == (byte)'{')
         {
-            var flow = ParseFlowNode();
+            var flow = ParseFlowNodeFromBlock(keyIndent);
             ApplyProperties(flow, anchor, tag);
             SkipLineTrailing();
             return Finish(flow, anchor);
@@ -383,6 +449,9 @@ internal sealed partial class YamlParser
 
         if (c == (byte)'*')
         {
+            if (anchor is not null || tag is not null)
+                throw Error(YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
+
             var alias = ParseAlias();
             SkipLineTrailing();
             return Finish(alias, anchor);
@@ -418,7 +487,19 @@ internal sealed partial class YamlParser
 
             Advance(); // consume '-'
             var entryColumn = CurrentColumn();
-            SkipSpaces();
+
+            var separationHasTab = false;
+            while (Peek() is (byte)' ' or (byte)'\t')
+            {
+                if (Peek() == (byte)'\t')
+                    separationHasTab = true;
+
+                _pos++;
+            }
+
+            // A tab cannot indent a nested block sequence entry that begins on the dash's line.
+            if (separationHasTab && Peek() == (byte)'-' && IsBlankOrBreakOrEnd(PeekAt(1)))
+                throw ErrorAt(_pos, YamlResourceStrings.Format_Invalid_YamlTabIndentation);
 
             int element;
             if (IsBreakOrEnd(Peek()) || Peek() == (byte)'#')
@@ -463,7 +544,66 @@ internal sealed partial class YamlParser
                 _ => string.Empty,
             };
 
-        return string.Empty;
+        // A sequence, mapping, or alias used as a key cannot be represented in the JSON-compatible tree profile.
+        throw Error(YamlResourceStrings.Format_Invalid_YamlComplexKeyUnsupported);
+    }
+
+    /// <summary>
+    /// Adds a key/value entry to a mapping, applying the configured duplicate-key policy.
+    /// </summary>
+    /// <param name="mapping">The mapping row index.</param>
+    /// <param name="valueRow">The row index of the entry's value node.</param>
+    /// <param name="keyText">The decoded key text.</param>
+    /// <param name="index">The key-to-child index tracking the mapping's existing keys.</param>
+    /// <exception cref="YamlFormatException">
+    /// The key duplicates an existing key and the policy is <see cref="YamlDuplicateKeyBehavior.Throw" />.
+    /// </exception>
+    private void AddMappingChild(int mapping, int valueRow, string keyText, Dictionary<string, int> index)
+    {
+        var v = _rows[valueRow];
+        v.Key = keyText;
+        _rows[valueRow] = v;
+
+        if (index.TryGetValue(keyText, out var existing))
+        {
+            switch (_duplicateKeyBehavior)
+            {
+                case YamlDuplicateKeyBehavior.UseFirst:
+                    return;
+
+                case YamlDuplicateKeyBehavior.UseLast:
+                    RemoveChild(mapping, existing);
+                    break;
+
+                default:
+                    throw Error(YamlResourceStrings.Format_Invalid_YamlDuplicateKey);
+            }
+        }
+
+        AppendChild(mapping, valueRow);
+        index[keyText] = valueRow;
+    }
+
+    /// <summary>
+    /// Removes a child from a container by locating its predecessor and unlinking it.
+    /// </summary>
+    /// <param name="parent">The container row index.</param>
+    /// <param name="child">The child row index to remove.</param>
+    private void RemoveChild(int parent, int child)
+    {
+        var first = _rows[parent].FirstChild;
+        if (first == child)
+        {
+            UnlinkChild(parent, child, -1);
+            return;
+        }
+
+        var previous = first;
+        while (previous >= 0 && _rows[previous].NextSibling != child)
+            previous = _rows[previous].NextSibling;
+
+        if (previous >= 0)
+            UnlinkChild(parent, child, previous);
     }
 
     /// <summary>

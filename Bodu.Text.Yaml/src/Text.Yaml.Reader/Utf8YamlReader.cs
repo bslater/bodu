@@ -9,15 +9,23 @@ using System.Text;
 namespace Bodu.Text.Yaml.Reader;
 
 /// <summary>
-/// Provides a forward-only, read-only reader over a YAML document, surfacing its nodes as a stream of structural and
-/// scalar tokens in document order, in the manner of <see cref="System.Text.Json.Utf8JsonReader" />.
+/// Provides a forward-only, read-only token cursor over a parsed YAML document, surfacing its nodes as structural and
+/// scalar tokens in document order. The token surface mirrors <see cref="System.Text.Json.Utf8JsonReader" />, but the
+/// underlying reader is buffered rather than a single-pass streaming scanner.
 /// </summary>
 /// <remarks>
 /// <para>
-/// YAML cannot be tokenized by a pure forward-only single-pass reader because indentation context, back-referencing
-/// aliases, and document boundaries all require look-ahead. This reader therefore parses the source into a buffered
-/// node store on construction and then presents a forward-only token view over that store, so the public surface
-/// matches the sibling <c>Utf8TomlReader</c> while the buffering remains an internal detail.
+/// Unlike <see cref="System.Text.Json.Utf8JsonReader" />, this type is not a low-allocation single-pass streaming
+/// reader. YAML cannot be tokenized in a single forward pass because indentation context, back-referencing aliases,
+/// merge keys, and document boundaries all require look-ahead and composition. The constructor therefore copies the
+/// source and fully parses it into an in-memory node store; <see cref="Read" /> then walks that store in document
+/// order. In that respect the reader is the analogue of the sibling <c>TomlDocumentReader</c> cursor rather than the
+/// streaming <c>Utf8TomlReader</c> scanner.
+/// </para>
+/// <para>
+/// The reader honors the library's YAML 1.2 core, JSON-compatible tree profile: mapping keys must resolve to scalar
+/// strings, mapping keys must be unique, anchors must be unique and acyclic, and tabs are not permitted as
+/// indentation. Inputs that violate the profile are rejected with <see cref="YamlFormatException" />.
 /// </para>
 /// <para>
 /// The reader is a <see langword="ref struct" /> and cannot be boxed, stored on the heap, or captured by a lambda.
@@ -54,7 +62,7 @@ public ref struct Utf8YamlReader
     public Utf8YamlReader(ReadOnlySpan<byte> utf8Yaml, YamlReaderOptions options)
     {
         var buffer = utf8Yaml.ToArray();
-        var parser = new YamlParser(buffer, buffer.Length, options.SpecVersion, options.EffectiveMaxDepth);
+        var parser = new YamlParser(buffer, buffer.Length, options.SpecVersion, options.EffectiveMaxDepth, options.DuplicateKeyBehavior, options.MergeKeyBehavior);
         _rows = parser.Parse();
         _strings = parser.Strings.ToArray();
         _stack = new Frame[8];

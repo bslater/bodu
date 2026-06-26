@@ -17,8 +17,10 @@
   <resheader name="version"><value>2.0</value></resheader>
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Format_Invalid_YamlComplexKeyUnsupported" xml:space="preserve"><value>A mapping key must resolve to a scalar; complex sequence, mapping, or alias keys are not supported by this profile.</value></data>
   <data name="Format_Invalid_YamlContentAfterDocumentEnd" xml:space="preserve"><value>Content is not permitted after the end of a document.</value></data>
   <data name="Format_Invalid_YamlControlCharacter" xml:space="preserve"><value>A control character is not permitted in this context.</value></data>
+  <data name="Format_Invalid_YamlCyclicAlias" xml:space="preserve"><value>The alias '{0}' forms a cycle, which is not supported by this profile.</value></data>
   <data name="Format_Invalid_YamlDuplicateAnchor" xml:space="preserve"><value>The anchor '{0}' is already defined in this document.</value></data>
   <data name="Format_Invalid_YamlDuplicateKey" xml:space="preserve"><value>The mapping key is already defined.</value></data>
   <data name="Format_Invalid_YamlExpectedKey" xml:space="preserve"><value>Expected a mapping key.</value></data>
@@ -35,6 +37,10 @@
   <data name="Format_Invalid_YamlMergeKeyTarget" xml:space="preserve"><value>A merge key value must be a mapping or a sequence of mappings.</value></data>
   <data name="Format_Invalid_YamlNestingTooDeep" xml:space="preserve"><value>YAML node nesting exceeds the maximum permitted depth of {0}.</value></data>
   <data name="Format_Invalid_YamlTabIndentation" xml:space="preserve"><value>A tab character cannot be used for indentation.</value></data>
+  <data name="Format_Invalid_YamlUnexpectedContent" xml:space="preserve"><value>Unexpected content was found in this context.</value></data>
+  <data name="Format_Invalid_YamlCommentSpacing" xml:space="preserve"><value>A comment must be preceded by whitespace.</value></data>
+  <data name="Format_Invalid_YamlMultilineImplicitKey" xml:space="preserve"><value>An implicit mapping key cannot span multiple lines.</value></data>
+  <data name="Format_Invalid_YamlMultipleAnchors" xml:space="preserve"><value>A node cannot carry more than one anchor.</value></data>
   <data name="Format_Invalid_YamlUndefinedAlias" xml:space="preserve"><value>The alias '{0}' does not refer to a defined anchor.</value></data>
   <data name="Format_Invalid_YamlUnpairedSurrogate" xml:space="preserve"><value>The input contains an unpaired surrogate and is not valid UTF-8 text.</value></data>
   <data name="Format_Invalid_YamlUnterminatedScalar" xml:space="preserve"><value>The quoted scalar is not terminated.</value></data>
@@ -45,7 +51,14 @@
   <data name="Op_Invalid_WriterPropertyNameOutsideMapping" xml:space="preserve"><value>A property name can only be written when the current container is a mapping.</value></data>
   <data name="Op_Invalid_WriterPropertyNamePending" xml:space="preserve"><value>A property name is already pending; write its value before writing another property name.</value></data>
   <data name="Op_Invalid_WriterValueWithoutKey" xml:space="preserve"><value>A value cannot be written to a mapping before a property name is written.</value></data>
+  <data name="Op_Invalid_WriterPropertyNameWithoutValue" xml:space="preserve"><value>A mapping cannot be closed while a property name is awaiting its value.</value></data>
+  <data name="Op_Invalid_YamlFloatNotIntegral" xml:space="preserve"><value>The floating-point value '{0}' cannot be deserialized into an integer target without loss of precision.</value></data>
+  <data name="Op_Invalid_YamlNumberOutOfRange" xml:space="preserve"><value>The numeric value '{0}' is outside the range of the target type '{1}'.</value></data>
+  <data name="Op_Invalid_YamlCharLength" xml:space="preserve"><value>The value '{0}' cannot be converted to a single character because it is not exactly one Unicode scalar value.</value></data>
   <data name="Op_Invalid_DuplicateWireName" xml:space="preserve"><value>The type '{0}' maps more than one member to the YAML key '{1}'.</value></data>
+  <data name="Op_Invalid_OptionsReadOnly" xml:space="preserve"><value>Serializer options cannot be changed after the options instance has been used to serialize or deserialize.</value></data>
+  <data name="Op_Invalid_YamlUnmappedMember" xml:space="preserve"><value>The YAML key '{0}' does not map to any member of type '{1}'.</value></data>
+  <data name="Op_Invalid_YamlValueConversion" xml:space="preserve"><value>The scalar value cannot be converted to the requested type '{0}'.</value></data>
   <data name="Op_Invalid_ExtensionDataKeyCollision" xml:space="preserve"><value>The extension-data key '{0}' collides with a key already written for type '{1}'.</value></data>
   <data name="Arg_Invalid_ConverterAttributeType" xml:space="preserve"><value>The type '{0}' specified by a converter attribute is not a YamlConverter.</value></data>
   <data name="Arg_Invalid_YamlInvalidUtf8" xml:space="preserve"><value>The supplied bytes are not valid UTF-8.</value></data>

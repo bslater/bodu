@@ -58,7 +58,7 @@ public sealed partial class YamlDocument : IDisposable
     public static YamlDocument Parse(ReadOnlySpan<byte> utf8Yaml, YamlDocumentOptions options)
     {
         var buffer = utf8Yaml.ToArray();
-        var parser = new YamlParser(buffer, buffer.Length, options.SpecVersion, options.EffectiveMaxDepth);
+        var parser = new YamlParser(buffer, buffer.Length, options.SpecVersion, options.EffectiveMaxDepth, options.DuplicateKeyBehavior, options.MergeKeyBehavior);
         var rows = parser.Parse();
         return new YamlDocument(rows, parser.Strings.ToArray());
     }
