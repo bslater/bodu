@@ -13,9 +13,10 @@
     <!--
       Build verification (BVT): runs every test that is NOT tagged Regression or Stress. This is the default
       build/CI run: structural, exception, property, and contract tests stay in; exhaustive known-answer
-      catalogues, multi-decade calendar tables, large parameter sweeps, and long stress loops stay out.
+      catalogues, multi-decade calendar tables, large parameter sweeps, long stress loops, and the on-demand
+      Census artifact generator stay out.
       Pass this file via the dotnet test settings switch, e.g. /p:RunSettingsFilePath=bvt.runsettings.
     -->
-    <TestCaseFilter>TestCategory!=Regression&amp;TestCategory!=Stress</TestCaseFilter>
+    <TestCaseFilter>TestCategory!=Regression&amp;TestCategory!=Stress&amp;TestCategory!=Census</TestCaseFilter>
   </RunConfiguration>
 </RunSettings>

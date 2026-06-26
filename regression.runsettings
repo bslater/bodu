@@ -14,9 +14,10 @@
       Full regression: runs the Smoke, BVT, and Regression tiers — every test except the Stress tier. Stress
       loops (e.g. the RFC 7748 §5.2 one-million-iteration ladder) run for tens of minutes and exceed the
       10-minute session guard above, so they are excluded here and run on demand via stress.runsettings.
+      The Census artifact generator is likewise on-demand only and excluded here.
       This is the comprehensive run executed before a release or on-demand.
       Pass this file via the dotnet test settings switch, e.g. /p:RunSettingsFilePath=regression.runsettings.
     -->
-    <TestCaseFilter>TestCategory!=Stress</TestCaseFilter>
+    <TestCaseFilter>TestCategory!=Stress&amp;TestCategory!=Census</TestCaseFilter>
   </RunConfiguration>
 </RunSettings>
