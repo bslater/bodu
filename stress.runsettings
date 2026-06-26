@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+  <RunConfiguration>
+    <!-- Use all available logical processors -->
+    <MaxCpuCount>0</MaxCpuCount>
+
+    <!-- Optional: Disable app domain creation to improve test performance -->
+    <DisableAppDomain>true</DisableAppDomain>
+
+    <!--
+      Stress loops run for tens of minutes (e.g. the RFC 7748 §5.2 one-million-iteration ladder), so the
+      10-minute per-session guard used by the other tiers does not apply. Allow up to 60 minutes per assembly.
+    -->
+    <TestSessionTimeout>3600000</TestSessionTimeout>
+
+    <!--
+      Stress run: only the tests tagged [TestCategory("Stress")] — long-running, high-iteration loops kept out
+      of the regular tiers because they exceed the standard session timeout. Run on demand.
+      Pass this file via the dotnet test settings switch, e.g. /p:RunSettingsFilePath=stress.runsettings.
+    -->
+    <TestCaseFilter>TestCategory=Stress</TestCaseFilter>
+  </RunConfiguration>
+</RunSettings>
