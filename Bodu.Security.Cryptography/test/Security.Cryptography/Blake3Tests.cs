@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Security.Cryptography.Infrastructure;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -20,14 +21,14 @@ public partial class Blake3Tests
         HashBlockSize = 1024,
         BoundaryLengths = [1, 512, 1024, 1025, 2047, 2048, 2049, 4095, 4096, 4097],
         MinNonZeroBytesForLongInput = 28,
-        KnownAnswers = new()
-        {
+        KnownAnswers =
+        [
             // Known-answer test vectors from the official BLAKE3 test_vectors.json (seed = 0, 256-bit output).
-            Empty = "AF1349B9F5F9A1A6A0404DEA36DCC9499BCB25C9ADC112B7CC9A93CAE41F3262",
-            Abc = "D1717274597CF0289694F75D96D444B992A096F1AFD8E7BBFA6EBB1D360FEDFC",
-            Zeros16 = "E572DFF82304700B856A555AC3A4558D0DF3646A3727816500270A93C66AAC1E",
-            Sequential0To255 = "EF2017870B6890925E1CF4DB3C3E9FB300C4CA325BA6B1400A41DE3630524C1A",
-        },
+            MessageDigestKnownAnswer.Empty("AF1349B9F5F9A1A6A0404DEA36DCC9499BCB25C9ADC112B7CC9A93CAE41F3262"),
+            MessageDigestKnownAnswer.Abc("D1717274597CF0289694F75D96D444B992A096F1AFD8E7BBFA6EBB1D360FEDFC"),
+            MessageDigestKnownAnswer.Zeros16("E572DFF82304700B856A555AC3A4558D0DF3646A3727816500270A93C66AAC1E"),
+            MessageDigestKnownAnswer.Sequential0To255("EF2017870B6890925E1CF4DB3C3E9FB300C4CA325BA6B1400A41DE3630524C1A"),
+        ],
     };
 
     /// <inheritdoc />

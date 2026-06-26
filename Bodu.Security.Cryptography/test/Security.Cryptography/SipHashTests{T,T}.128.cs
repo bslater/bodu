@@ -5,6 +5,8 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Text;
+using Bodu.Security.Cryptography.Infrastructure;
+using static Bodu.Security.Cryptography.Infrastructure.KatBytes;
 
 namespace Bodu.Security.Cryptography;
 
@@ -39,31 +41,28 @@ public partial class SipHash128Tests
         TestKey = SipHashTestKey,
         KnownAnswers = variant switch
         {
-            SipHashVariant.SipHash_2_4 => new HashAlgorithmKnownAnswers
-            {
-                Empty = "A3817F04BA25A8E66DF67214C7550293",
-                Abc = "6EDFC93C6A8C85920C6D1BFE0413F575",
-                Zeros16 = "D60D3284A18EBD5AF3D0F02A078007CD",
-                QuickBrownFox = "7628C9301AA4412555E65227CD31964E",
-                Sequential0To255 = "1C9BB67528165F8E468248E3799B0EAB",
-                Additional =
-                [
-                    new HashAlgorithmKnownAnswer
-                    {
-                        Name = "Hello",
-                        Input = HelloInput,
-                        ExpectedHex = "C9E2FA57B43C46560D0F6C0657D05731",
-                    },
-                ],
-            },
-            SipHashVariant.SipHash_4_8 => new HashAlgorithmKnownAnswers
-            {
-                Empty = "1F64CE586DA904E9CFECE85483A70A6C",
-                Abc = "2A74871B2DB4FB6B7F7167F798A760BD",
-                Zeros16 = "2393F374C9F5E28B5CEC1E15B0D61114",
-                QuickBrownFox = "3DEDE5965E71E3A16C7231C2A12B244F",
-                Sequential0To255 = "C7BF2FFE16C9026C3FE93166ABD4D257",
-            },
+            SipHashVariant.SipHash_2_4 =>
+            [
+                MessageDigestKnownAnswer.Empty("A3817F04BA25A8E66DF67214C7550293"),
+                MessageDigestKnownAnswer.Abc("6EDFC93C6A8C85920C6D1BFE0413F575"),
+                MessageDigestKnownAnswer.Zeros16("D60D3284A18EBD5AF3D0F02A078007CD"),
+                MessageDigestKnownAnswer.QuickBrownFox("7628C9301AA4412555E65227CD31964E"),
+                MessageDigestKnownAnswer.Sequential0To255("1C9BB67528165F8E468248E3799B0EAB"),
+                new MessageDigestKnownAnswer
+                {
+                    Name = "Hello",
+                    Message = HelloInput,
+                    Digest = Hex("C9E2FA57B43C46560D0F6C0657D05731"),
+                },
+            ],
+            SipHashVariant.SipHash_4_8 =>
+            [
+                MessageDigestKnownAnswer.Empty("1F64CE586DA904E9CFECE85483A70A6C"),
+                MessageDigestKnownAnswer.Abc("2A74871B2DB4FB6B7F7167F798A760BD"),
+                MessageDigestKnownAnswer.Zeros16("2393F374C9F5E28B5CEC1E15B0D61114"),
+                MessageDigestKnownAnswer.QuickBrownFox("3DEDE5965E71E3A16C7231C2A12B244F"),
+                MessageDigestKnownAnswer.Sequential0To255("C7BF2FFE16C9026C3FE93166ABD4D257"),
+            ],
             _ => throw new ArgumentOutOfRangeException(nameof(variant)),
         },
     };

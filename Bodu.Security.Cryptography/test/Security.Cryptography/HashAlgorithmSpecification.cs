@@ -4,13 +4,17 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Security.Cryptography.Infrastructure;
+
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Describes the expected observable properties of a single <typeparamref name="TAlgorithm" /> variant for use in
-/// constructor and behavioural tests.
+/// constructor and behavioural tests, and carries the variant's curated message-digest known-answer vectors through the
+/// inherited <see cref="AlgorithmSpecification{TKat}.KnownAnswers" /> slot.
 /// </summary>
 public record HashAlgorithmSpecification
+    : AlgorithmSpecification<MessageDigestKnownAnswer>
 {
     /// <summary>
     /// Gets the expected <see cref="HashAlgorithm.HashSize" /> in bits.
@@ -82,14 +86,4 @@ public record HashAlgorithmSpecification
     /// ensure correctness across reinitialization and partial block input. Defaults to <see langword="false" />.
     /// </summary>
     public bool IsStateless { get; init; } = false;
-
-    /// <summary>
-    /// Gets the known-answer test vectors associated with this variant.
-    /// </summary>
-    /// <value>
-    /// A <see cref="HashAlgorithmKnownAnswers" /> record carrying the expected digests for the shared inputs and any
-    /// algorithm-specific extension vectors. Defaults to an empty record, in which case the harness emits no
-    /// named-input assertions for this variant.
-    /// </value>
-    public HashAlgorithmKnownAnswers KnownAnswers { get; init; } = new();
 }

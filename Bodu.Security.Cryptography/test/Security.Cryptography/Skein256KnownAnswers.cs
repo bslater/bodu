@@ -4,6 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Security.Cryptography.Infrastructure;
+using static Bodu.Security.Cryptography.Infrastructure.KatBytes;
+
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -19,13 +22,15 @@ namespace Bodu.Security.Cryptography;
 /// </remarks>
 internal static class Skein256KnownAnswers
 {
-    private static readonly KeyedHashAlgorithmKnownAnswer[] Empty = [];
+    private static readonly KatProvenance NistCd = KatProvenance.ReferenceImplementation("NIST CD KAT");
+
+    private static readonly MessageDigestKnownAnswer[] Empty = [];
 
     /// <summary>
     /// Returns the curated KAT vectors for <paramref name="variant" />, or an empty array when the NIST CD KAT
     /// publishes no vectors for that (output, mode) combination.
     /// </summary>
-    public static IReadOnlyList<KeyedHashAlgorithmKnownAnswer> For(Skein256TestVariant variant) => variant switch
+    public static IReadOnlyList<MessageDigestKnownAnswer> For(Skein256TestVariant variant) => variant switch
     {
         Skein256TestVariant.Hash_160 => Hash160,
         Skein256TestVariant.Mac_160 => Mac160,
@@ -64,101 +69,101 @@ internal static class Skein256KnownAnswers
         "F45FF579A72287743102E7766C35CA5ABC5DFE2F63A1E726CE5FBD2926DB03A2" +
         "DD18B03FC1508A9AAC45EB362440203A323E09EDEE6324EE2E37B4432C1867ED";
 
-    private static readonly KeyedHashAlgorithmKnownAnswer[] Hash160 =
+    private static readonly MessageDigestKnownAnswer[] Hash160 =
     [
-        new KeyedHashAlgorithmKnownAnswer
+        new MessageDigestKnownAnswer
         {
             Name = "Hash_NistKat1024",
-            Profile = "NIST CD KAT",
-            Input = Convert.FromHexString(Incrementing1024Bits),
-            ExpectedHex = "1FD30886A2C315DE86F67FFE66EDDDCF73BE4FE4",
+            Provenance = NistCd,
+            Message = Hex(Incrementing1024Bits),
+            Digest = Hex("1FD30886A2C315DE86F67FFE66EDDDCF73BE4FE4"),
         },
     ];
 
-    private static readonly KeyedHashAlgorithmKnownAnswer[] Mac160 =
+    private static readonly MessageDigestKnownAnswer[] Mac160 =
     [
-        new KeyedHashAlgorithmKnownAnswer
+        new MessageDigestKnownAnswer
         {
             Name = "Mac_NistKat1024",
-            Profile = "NIST CD KAT",
-            Input = Convert.FromHexString(Mac1024BitsSkein256),
+            Provenance = NistCd,
+            Message = Hex(Mac1024BitsSkein256),
             Key = [],
-            ExpectedHex = "4982E9E281C13F1117134816A7B858E8F12FB729",
+            Digest = Hex("4982E9E281C13F1117134816A7B858E8F12FB729"),
         },
     ];
 
-    private static readonly KeyedHashAlgorithmKnownAnswer[] Hash224 =
+    private static readonly MessageDigestKnownAnswer[] Hash224 =
     [
-        new KeyedHashAlgorithmKnownAnswer
+        new MessageDigestKnownAnswer
         {
             Name = "Hash_NistKat1024",
-            Profile = "NIST CD KAT",
-            Input = Convert.FromHexString(Incrementing1024Bits),
-            ExpectedHex = "FAE243AB76B414FC4883EE73102FDCF51C2D74B98DF185A0BE9045F6",
+            Provenance = NistCd,
+            Message = Hex(Incrementing1024Bits),
+            Digest = Hex("FAE243AB76B414FC4883EE73102FDCF51C2D74B98DF185A0BE9045F6"),
         },
     ];
 
-    private static readonly KeyedHashAlgorithmKnownAnswer[] Mac224 =
+    private static readonly MessageDigestKnownAnswer[] Mac224 =
     [
-        new KeyedHashAlgorithmKnownAnswer
+        new MessageDigestKnownAnswer
         {
             Name = "Mac_NistKat1024",
-            Profile = "NIST CD KAT",
-            Input = Convert.FromHexString(Mac1024BitsSkein256),
-            Key = Convert.FromHexString("CB41F1706CDE09651203C2D0EFBADDF8"),
-            ExpectedHex = "A097340709B443ED2C0A921F5DCEFEF3EAD65C4F0BCD5F13DA54D7ED",
+            Provenance = NistCd,
+            Message = Hex(Mac1024BitsSkein256),
+            Key = Hex("CB41F1706CDE09651203C2D0EFBADDF8"),
+            Digest = Hex("A097340709B443ED2C0A921F5DCEFEF3EAD65C4F0BCD5F13DA54D7ED"),
         },
     ];
 
-    private static readonly KeyedHashAlgorithmKnownAnswer[] Hash256 =
+    private static readonly MessageDigestKnownAnswer[] Hash256 =
     [
-        new KeyedHashAlgorithmKnownAnswer
+        new MessageDigestKnownAnswer
         {
             Name = "Hash_Empty",
-            Profile = "NIST CD KAT",
-            Input = [],
-            ExpectedHex = "C8877087DA56E072870DAA843F176E9453115929094C3A40C463A196C29BF7BA",
+            Provenance = NistCd,
+            Message = [],
+            Digest = Hex("C8877087DA56E072870DAA843F176E9453115929094C3A40C463A196C29BF7BA"),
         },
-        new KeyedHashAlgorithmKnownAnswer
+        new MessageDigestKnownAnswer
         {
             Name = "Hash_OneByte",
-            Profile = "NIST CD KAT",
-            Input = Convert.FromHexString("FF"),
-            ExpectedHex = "0B98DCD198EA0E50A7A244C444E25C23DA30C10FC9A1F270A6637F1F34E67ED2",
+            Provenance = NistCd,
+            Message = Hex("FF"),
+            Digest = Hex("0B98DCD198EA0E50A7A244C444E25C23DA30C10FC9A1F270A6637F1F34E67ED2"),
         },
-        new KeyedHashAlgorithmKnownAnswer
+        new MessageDigestKnownAnswer
         {
             Name = "Hash_OneBlock",
-            Profile = "NIST CD KAT",
-            Input = Convert.FromHexString(IncrementingOneBlockSkein256),
-            ExpectedHex = "8D0FA4EF777FD759DFD4044E6F6A5AC3C774AEC943DCFC07927B723B5DBF408B",
+            Provenance = NistCd,
+            Message = Hex(IncrementingOneBlockSkein256),
+            Digest = Hex("8D0FA4EF777FD759DFD4044E6F6A5AC3C774AEC943DCFC07927B723B5DBF408B"),
         },
-        new KeyedHashAlgorithmKnownAnswer
+        new MessageDigestKnownAnswer
         {
             Name = "Hash_TwoBlocks",
-            Profile = "NIST CD KAT",
-            Input = Convert.FromHexString(IncrementingTwoBlocksSkein256),
-            ExpectedHex = "DF28E916630D0B44C4A849DC9A02F07A07CB30F732318256B15D865AC4AE162F",
+            Provenance = NistCd,
+            Message = Hex(IncrementingTwoBlocksSkein256),
+            Digest = Hex("DF28E916630D0B44C4A849DC9A02F07A07CB30F732318256B15D865AC4AE162F"),
         },
     ];
 
-    private static readonly KeyedHashAlgorithmKnownAnswer[] Mac256 =
+    private static readonly MessageDigestKnownAnswer[] Mac256 =
     [
-        new KeyedHashAlgorithmKnownAnswer
+        new MessageDigestKnownAnswer
         {
             Name = "Mac_OneBlock",
-            Profile = "NIST CD KAT",
-            Input = Convert.FromHexString(MacOneBlockSkein256),
-            Key = Convert.FromHexString("CB41F1706CDE09651203C2D0EFBADDF847A0D315CB2E53FF8BAC41DA0002672E"),
-            ExpectedHex = "9E9980FCC16EE082CF164A5147D0E0692AEFFE3DCB8D620E2BB542091162E2E9",
+            Provenance = NistCd,
+            Message = Hex(MacOneBlockSkein256),
+            Key = Hex("CB41F1706CDE09651203C2D0EFBADDF847A0D315CB2E53FF8BAC41DA0002672E"),
+            Digest = Hex("9E9980FCC16EE082CF164A5147D0E0692AEFFE3DCB8D620E2BB542091162E2E9"),
         },
-        new KeyedHashAlgorithmKnownAnswer
+        new MessageDigestKnownAnswer
         {
             Name = "Mac_TwoBlocks",
-            Profile = "NIST CD KAT",
-            Input = Convert.FromHexString(MacTwoBlocksSkein256),
-            Key = Convert.FromHexString("CB41F1706CDE09651203C2D0EFBADDF8"),
-            ExpectedHex = "B1B8C18188E69A6ECAE0B6018E6B638C6A91E6DE6881E32A60858468C17B520D",
+            Provenance = NistCd,
+            Message = Hex(MacTwoBlocksSkein256),
+            Key = Hex("CB41F1706CDE09651203C2D0EFBADDF8"),
+            Digest = Hex("B1B8C18188E69A6ECAE0B6018E6B638C6A91E6DE6881E32A60858468C17B520D"),
         },
     ];
 }

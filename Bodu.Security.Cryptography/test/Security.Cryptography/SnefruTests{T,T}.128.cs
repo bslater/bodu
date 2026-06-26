@@ -4,6 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Security.Cryptography.Infrastructure;
+using static Bodu.Security.Cryptography.Infrastructure.KatBytes;
+
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -28,19 +31,16 @@ public partial class Snefru128Tests
         BoundaryLengths = [1, 8, 16, 64],
         HashSize = 128,
         MinNonZeroBytesForLongInput = 6,    // 16 output bytes; conservative given Snefru's weaker diffusion
-        KnownAnswers = new()
-        {
-            Empty = "AA2532A1422095F6E8DBFF85FD6EF2BC",
-            Abc = "26C6CC5A5789D5F737335B305DE80218",
-            Zeros16 = "F2DDD3750BE35F20E0557F47E8B59C39",
-            QuickBrownFox = "59D9539D0DD96D635B5BDBD1395BB86C",
-            Sequential0To255 = "9FBED4C571EF6E8EEFA0B7F8353C6540",
-            Additional =
-            [
-                new HashAlgorithmKnownAnswer { Name = "a", Input = SnefruLetterAInput, ExpectedHex = "BF5CE540AE51BC50399F96746C5A15BD" },
-                new HashAlgorithmKnownAnswer { Name = "1234567890", Input = SnefruRepeatedDigitsInput, ExpectedHex = "D9204ED80BB8430C0B9C244FE485814A" },
-            ],
-        },
+        KnownAnswers =
+        [
+            MessageDigestKnownAnswer.Empty("AA2532A1422095F6E8DBFF85FD6EF2BC"),
+            MessageDigestKnownAnswer.Abc("26C6CC5A5789D5F737335B305DE80218"),
+            MessageDigestKnownAnswer.Zeros16("F2DDD3750BE35F20E0557F47E8B59C39"),
+            MessageDigestKnownAnswer.QuickBrownFox("59D9539D0DD96D635B5BDBD1395BB86C"),
+            MessageDigestKnownAnswer.Sequential0To255("9FBED4C571EF6E8EEFA0B7F8353C6540"),
+            new MessageDigestKnownAnswer { Name = "a", Message = SnefruLetterAInput, Digest = Hex("BF5CE540AE51BC50399F96746C5A15BD") },
+            new MessageDigestKnownAnswer { Name = "1234567890", Message = SnefruRepeatedDigitsInput, Digest = Hex("D9204ED80BB8430C0B9C244FE485814A") },
+        ],
     };
 
     /// <inheritdoc />

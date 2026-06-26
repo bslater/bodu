@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Security.Cryptography.Infrastructure;
 namespace Bodu.Security.Cryptography;
 
 [TestClass]
@@ -18,13 +19,13 @@ public partial class MonitoringHashAlgorithmTests
         InputBlockSize = 1,
         OutputBlockSize = 1,
         MinNonZeroBytesForLongInput = 2,
-        KnownAnswers = new()
-        {
-            Empty = "00000000",
-            Abc = "C6000000",
-            Zeros16 = "00000000",
-            QuickBrownFox = "D90F0000",
-        },
+        KnownAnswers =
+        [
+            MessageDigestKnownAnswer.Empty("00000000"),
+            MessageDigestKnownAnswer.Abc("C6000000"),
+            MessageDigestKnownAnswer.Zeros16("00000000"),
+            MessageDigestKnownAnswer.QuickBrownFox("D90F0000"),
+        ],
     };
 
     /// <inheritdoc />

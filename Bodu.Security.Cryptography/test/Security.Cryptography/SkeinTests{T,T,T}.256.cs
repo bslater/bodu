@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Security.Cryptography.Infrastructure;
+
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -39,15 +41,14 @@ public partial class Skein256Tests
             MaxKeyLength = Skein<Skein256>.MaxKeySize / 8,
             ValidKeyLengths = [0, 16, 32, 64, 128, 256, Skein<Skein256>.MaxKeySize / 8],
             TestKey = SkeinTestKey,
-            KnownAnswers = new HashAlgorithmKnownAnswers
-            {
-                Empty = variant == Skein256TestVariant.Hash_256 ? Skein256_256_EmptyHash : null,
-            },
-            KeyedAnswers = new KeyedHashAlgorithmKnownAnswers
-            {
-                Vectors = Skein256KnownAnswers.For(variant),
-            },
+            KnownAnswers = variant == Skein256TestVariant.Hash_256
+                ? [MessageDigestKnownAnswer.Empty(Skein256_256_EmptyHash)]
+                : [],
         };
+
+    /// <inheritdoc />
+    protected override IReadOnlyList<MessageDigestKnownAnswer> GetKeyedKnownAnswers(Skein256TestVariant variant) =>
+        Skein256KnownAnswers.For(variant);
 
     /// <inheritdoc />
     protected override Skein256 CreateAlgorithm(Skein256TestVariant variant)
