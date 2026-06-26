@@ -75,11 +75,8 @@ public abstract partial class MLDsa
     /// <summary>Indicates whether this instance has been disposed.</summary>
     private bool _disposed;
 
-    /// <summary>The encoded private key, or <see langword="null" /> when no private key is set.</summary>
-    private byte[]? _privateKey;
-
-    /// <summary>The encoded public key, or <see langword="null" /> when no public key is set.</summary>
-    private byte[]? _publicKey;
+    /// <summary>The instance's key material, or <see langword="null" /> when no key is set.</summary>
+    private MLDsaKeyMaterial? _keyMaterial;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MLDsa" /> class for a specific FIPS 204 parameter set.
@@ -117,7 +114,7 @@ public abstract partial class MLDsa
         get
         {
             ThrowIfDisposed();
-            return _privateKey is not null;
+            return _keyMaterial?.HasPrivateKey ?? false;
         }
     }
 
@@ -131,7 +128,7 @@ public abstract partial class MLDsa
         get
         {
             ThrowIfDisposed();
-            return _publicKey is not null;
+            return _keyMaterial is not null;
         }
     }
 
@@ -196,9 +193,9 @@ public abstract partial class MLDsa
     public byte[] ExportPrivateKey()
     {
         ThrowIfDisposed();
-        CryptographyThrowHelper.ThrowIfNoPrivateKey(_privateKey is not null);
+        CryptographyThrowHelper.ThrowIfNoPrivateKey(_keyMaterial?.HasPrivateKey ?? false);
 
-        return (byte[])_privateKey!.Clone();
+        return (byte[])_keyMaterial!.PrivateKey!.Clone();
     }
 
     /// <summary>
@@ -210,9 +207,9 @@ public abstract partial class MLDsa
     public byte[] ExportPublicKey()
     {
         ThrowIfDisposed();
-        CryptographyThrowHelper.ThrowIfNoPublicKey(_publicKey is not null);
+        CryptographyThrowHelper.ThrowIfNoPublicKey(_keyMaterial is not null);
 
-        return (byte[])_publicKey!.Clone();
+        return (byte[])_keyMaterial!.PublicKey.Clone();
     }
 
     /// <summary>
@@ -263,9 +260,7 @@ public abstract partial class MLDsa
                 nameof(privateKey));
         }
 
-        CryptographyHelper.ClearAndNullify(ref _privateKey);
-        _privateKey = privateKey.ToArray();
-        _publicKey = publicKey;
+        ReplaceKeyMaterial(MLDsaKeyMaterial.ForKeyPair(publicKey, privateKey.ToArray()));
     }
 
     /// <summary>
@@ -300,8 +295,7 @@ public abstract partial class MLDsa
         CryptographyThrowHelper.ThrowIfInvalidRawKeyLength(
             publicKey, _parameters.PublicKeySize, $"{_parameters.Name} public");
 
-        CryptographyHelper.ClearAndNullify(ref _privateKey);
-        _publicKey = publicKey.ToArray();
+        ReplaceKeyMaterial(MLDsaKeyMaterial.ForPublicKey(publicKey.ToArray()));
     }
 
     /// <summary>
@@ -353,13 +347,13 @@ public abstract partial class MLDsa
         ThrowIfDisposed();
         ThrowIfContextTooLong(context);
         CryptographyThrowHelper.ThrowIfInvalidDestinationLength(destination, _parameters.SignatureSize);
-        CryptographyThrowHelper.ThrowIfNoPrivateKey(_privateKey is not null);
+        CryptographyThrowHelper.ThrowIfNoPrivateKey(_keyMaterial?.HasPrivateKey ?? false);
 
         Span<byte> rnd = stackalloc byte[32];
         if (!DeterministicSigning)
             CryptographyHelper.FillWithRandomBytes(rnd);
 
-        MLDsaEngine.Sign(_parameters, _privateKey, context, data, rnd, destination);
+        MLDsaEngine.Sign(_parameters, _keyMaterial!.PrivateKey!, context, data, rnd, destination);
         CryptographyHelper.Clear(rnd);
     }
 
@@ -394,9 +388,9 @@ public abstract partial class MLDsa
     {
         ThrowIfDisposed();
         ThrowIfContextTooLong(context);
-        CryptographyThrowHelper.ThrowIfNoPublicKey(_publicKey is not null);
+        CryptographyThrowHelper.ThrowIfNoPublicKey(_keyMaterial is not null);
 
-        return MLDsaEngine.Verify(_parameters, _publicKey, context, data, signature);
+        return MLDsaEngine.Verify(_parameters, _keyMaterial!.PublicKey, context, data, signature);
     }
 
     /// <summary>
@@ -414,10 +408,10 @@ public abstract partial class MLDsa
     {
         ThrowIfDisposed();
         ThrowIfContextTooLong(context);
-        CryptographyThrowHelper.ThrowIfNoPrivateKey(_privateKey is not null);
+        CryptographyThrowHelper.ThrowIfNoPrivateKey(_keyMaterial?.HasPrivateKey ?? false);
 
         byte[] signature = new byte[_parameters.SignatureSize];
-        MLDsaEngine.Sign(_parameters, _privateKey, context, data, rnd, signature);
+        MLDsaEngine.Sign(_parameters, _keyMaterial!.PrivateKey!, context, data, rnd, signature);
 
         return signature;
     }
@@ -439,8 +433,8 @@ public abstract partial class MLDsa
 
         if (disposing)
         {
-            CryptographyHelper.ClearAndNullify(ref _privateKey);
-            _publicKey = null;
+            _keyMaterial?.Clear();
+            _keyMaterial = null;
         }
 
         _disposed = true;
@@ -475,9 +469,17 @@ public abstract partial class MLDsa
         byte[] privateKey = new byte[_parameters.PrivateKeySize];
         MLDsaEngine.KeyGen(_parameters, seed, publicKey, privateKey);
 
-        CryptographyHelper.ClearAndNullify(ref _privateKey);
-        _privateKey = privateKey;
-        _publicKey = publicKey;
+        ReplaceKeyMaterial(MLDsaKeyMaterial.ForKeyPair(publicKey, privateKey));
+    }
+
+    /// <summary>
+    /// Replaces the instance's key material, zeroizing any previously held private key first.
+    /// </summary>
+    /// <param name="keyMaterial">The new key material to take ownership of.</param>
+    private void ReplaceKeyMaterial(MLDsaKeyMaterial keyMaterial)
+    {
+        _keyMaterial?.Clear();
+        _keyMaterial = keyMaterial;
     }
 
     /// <summary>

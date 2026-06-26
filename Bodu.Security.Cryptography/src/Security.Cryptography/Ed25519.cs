@@ -87,11 +87,8 @@ public sealed partial class Ed25519
     /// <summary>Indicates whether this instance has been disposed.</summary>
     private bool _disposed;
 
-    /// <summary>The 32-byte RFC 8032 private key seed, or <see langword="null" /> when no private key is held.</summary>
-    private byte[]? _privateKey;
-
-    /// <summary>The 32-byte RFC 8032 public key, or <see langword="null" /> when no public key is held.</summary>
-    private byte[]? _publicKey;
+    /// <summary>The instance's key material, or <see langword="null" /> when no key is set.</summary>
+    private Ed25519KeyMaterial? _keyMaterial;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Ed25519" /> class with no key material.
@@ -118,7 +115,7 @@ public sealed partial class Ed25519
         get
         {
             ThrowIfDisposed();
-            return _privateKey is not null;
+            return _keyMaterial?.HasPrivateKey ?? false;
         }
     }
 
@@ -132,7 +129,7 @@ public sealed partial class Ed25519
         get
         {
             ThrowIfDisposed();
-            return _publicKey is not null;
+            return _keyMaterial is not null;
         }
     }
 
@@ -162,9 +159,9 @@ public sealed partial class Ed25519
     public byte[] ExportPrivateKey()
     {
         ThrowIfDisposed();
-        CryptographyThrowHelper.ThrowIfNoPrivateKey(_privateKey is not null);
+        CryptographyThrowHelper.ThrowIfNoPrivateKey(_keyMaterial?.HasPrivateKey ?? false);
 
-        return (byte[])_privateKey!.Clone();
+        return (byte[])_keyMaterial!.PrivateKey!.Clone();
     }
 
     /// <summary>
@@ -176,9 +173,9 @@ public sealed partial class Ed25519
     public byte[] ExportPublicKey()
     {
         ThrowIfDisposed();
-        CryptographyThrowHelper.ThrowIfNoPublicKey(_publicKey is not null);
+        CryptographyThrowHelper.ThrowIfNoPublicKey(_keyMaterial is not null);
 
-        return (byte[])_publicKey!.Clone();
+        return (byte[])_keyMaterial!.PublicKey.Clone();
     }
 
     /// <summary>
@@ -244,8 +241,7 @@ public sealed partial class Ed25519
                 nameof(publicKey));
         }
 
-        CryptographyHelper.ClearAndNullify(ref _privateKey);
-        _publicKey = publicKey.ToArray();
+        ReplaceKeyMaterial(Ed25519KeyMaterial.ForPublicKey(publicKey.ToArray()));
     }
 
     /// <summary>
@@ -276,11 +272,11 @@ public sealed partial class Ed25519
     {
         ThrowIfDisposed();
         CryptographyThrowHelper.ThrowIfInvalidDestinationLength(destination, SignatureSizeInBytes);
-        CryptographyThrowHelper.ThrowIfNoPrivateKey(_privateKey is not null);
+        CryptographyThrowHelper.ThrowIfNoPrivateKey(_keyMaterial?.HasPrivateKey ?? false);
 
         // RFC 8032 §5.1.6: expand the seed into the clamped scalar s and the deterministic-nonce prefix.
         Span<byte> expanded = stackalloc byte[64];
-        SHA512.HashData(_privateKey, expanded);
+        SHA512.HashData(_keyMaterial!.PrivateKey!, expanded);
 
         Span<byte> s = stackalloc byte[32];
         expanded[..32].CopyTo(s);
@@ -304,7 +300,7 @@ public sealed partial class Ed25519
 
             // S = (r + SHA-512(R ‖ A ‖ M) · s) mod L.
             hash.AppendData(rEncoded);
-            hash.AppendData(_publicKey!);
+            hash.AppendData(_keyMaterial!.PublicKey);
             hash.AppendData(data);
             hash.GetHashAndReset(digest);
 
@@ -349,7 +345,7 @@ public sealed partial class Ed25519
     public bool VerifyData(ReadOnlySpan<byte> data, ReadOnlySpan<byte> signature)
     {
         ThrowIfDisposed();
-        CryptographyThrowHelper.ThrowIfNoPublicKey(_publicKey is not null);
+        CryptographyThrowHelper.ThrowIfNoPublicKey(_keyMaterial is not null);
 
         if (signature.Length != SignatureSizeInBytes)
             return false;
@@ -364,7 +360,7 @@ public sealed partial class Ed25519
         if (!Ed25519Point.TryDecode(rEncoded, out Ed25519Point rPoint))
             return false;
 
-        if (!Ed25519Point.TryDecode(_publicKey, out Ed25519Point publicPoint))
+        if (!Ed25519Point.TryDecode(_keyMaterial!.PublicKey, out Ed25519Point publicPoint))
             return false;
 
         // Small-order R or A would let a torsion component be added without changing acceptance under the cofactorless
@@ -377,7 +373,7 @@ public sealed partial class Ed25519
         using (var hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA512))
         {
             hash.AppendData(rEncoded);
-            hash.AppendData(_publicKey!);
+            hash.AppendData(_keyMaterial!.PublicKey);
             hash.AppendData(data);
             hash.GetHashAndReset(digest);
         }
@@ -412,8 +408,8 @@ public sealed partial class Ed25519
 
         if (disposing)
         {
-            CryptographyHelper.ClearAndNullify(ref _privateKey);
-            _publicKey = null;
+            _keyMaterial?.Clear();
+            _keyMaterial = null;
         }
 
         _disposed = true;
@@ -439,9 +435,17 @@ public sealed partial class Ed25519
         Ed25519Point.ScalarMultBase(scalar).Encode(publicKey);
         CryptographyHelper.Clear(expanded);
 
-        CryptographyHelper.ClearAndNullify(ref _privateKey);
-        _privateKey = privateKey;
-        _publicKey = publicKey;
+        ReplaceKeyMaterial(Ed25519KeyMaterial.ForKeyPair(publicKey, privateKey));
+    }
+
+    /// <summary>
+    /// Replaces the instance's key material, zeroizing any previously held private key first.
+    /// </summary>
+    /// <param name="keyMaterial">The new key material to take ownership of.</param>
+    private void ReplaceKeyMaterial(Ed25519KeyMaterial keyMaterial)
+    {
+        _keyMaterial?.Clear();
+        _keyMaterial = keyMaterial;
     }
 
     /// <summary>
