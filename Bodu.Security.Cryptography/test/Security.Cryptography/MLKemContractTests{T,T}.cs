@@ -151,6 +151,83 @@ public abstract class MLKemContractTests<TTest, TKem>
     }
 
     /// <summary>
+    /// Verifies that <see cref="MLKem.ImportDecapsulationKey" /> rejects a decapsulation key whose embedded
+    /// encapsulation key carries a non-reduced coefficient, even when its H(ek) digest has been regenerated to match.
+    /// This proves the §7.3 check validates the embedded ek's modulus and is not satisfied by the hash alone.
+    /// </summary>
+    [TestMethod]
+    public void ImportDecapsulationKey_WhenEmbeddedKeyNonCanonicalButHashConsistent_ShouldThrowArgumentException()
+    {
+        using var donor = new TKem();
+        donor.GenerateKey();
+
+        int encapsulationKeySize = donor.EncapsulationKeySizeInBytes;
+        int k = (encapsulationKeySize - 32) / 384;
+        int ekOffset = 384 * k;
+        int hashOffset = ekOffset + encapsulationKeySize;
+
+        byte[] corrupted = donor.ExportDecapsulationKey();
+
+        // Force the embedded ek's first packed coefficient to 0xFFF = 4095 >= q = 3329.
+        corrupted[ekOffset] = 0xFF;
+        corrupted[ekOffset + 1] |= 0x0F;
+
+        // Regenerate H(ek) over the modified ek so the hash check would pass, isolating the modulus check.
+        Span<byte> regeneratedHash = stackalloc byte[32];
+        KeccakSponge.Sha3_256(corrupted.AsSpan(ekOffset, encapsulationKeySize), regeneratedHash);
+        regeneratedHash.CopyTo(corrupted.AsSpan(hashOffset, 32));
+
+        using var kem = new TKem();
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            kem.ImportDecapsulationKey(corrupted);
+        });
+
+        Assert.AreEqual("decapsulationKey", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="MLKem.Decapsulate(ReadOnlySpan{byte})" /> rejects a ciphertext of any length other
+    /// than the parameter set's exact size.
+    /// </summary>
+    [TestMethod]
+    public void Decapsulate_WhenCiphertextLengthIsWrong_ShouldThrowArgumentException()
+    {
+        using var kem = new TKem();
+        kem.GenerateKey();
+
+        Assert.ThrowsExactly<ArgumentException>(() => { _ = kem.Decapsulate(Array.Empty<byte>()); });
+        Assert.ThrowsExactly<ArgumentException>(() => { _ = kem.Decapsulate(new byte[CiphertextSizeBytes - 1]); });
+        Assert.ThrowsExactly<ArgumentException>(() => { _ = kem.Decapsulate(new byte[CiphertextSizeBytes + 1]); });
+    }
+
+    /// <summary>
+    /// Verifies the FIPS 203 implicit-rejection contract: decapsulating a tampered ciphertext of the correct length
+    /// does not throw and yields a shared secret unrelated to the encapsulated one.
+    /// </summary>
+    [TestMethod]
+    public void Decapsulate_WhenCiphertextIsTampered_ShouldReturnDifferentSecretWithoutThrowing()
+    {
+        using var receiver = new TKem();
+        receiver.GenerateKey();
+
+        using var sender = new TKem();
+        sender.ImportEncapsulationKey(receiver.ExportEncapsulationKey());
+
+        (byte[] ciphertext, byte[] senderSecret) = sender.Encapsulate();
+
+        byte[] genuine = receiver.Decapsulate(ciphertext);
+        CollectionAssert.AreEqual(senderSecret, genuine);
+
+        byte[] tampered = (byte[])ciphertext.Clone();
+        tampered[0] ^= 0x01;
+        byte[] implicitSecret = receiver.Decapsulate(tampered);
+
+        Assert.AreEqual(MLKem.SharedSecretSizeInBytes, implicitSecret.Length);
+        CollectionAssert.AreNotEqual(genuine, implicitSecret);
+    }
+
+    /// <summary>
     /// Verifies that the exact-length span overloads of <see cref="MLKem.Encapsulate()" /> and
     /// <see cref="MLKem.Decapsulate(ReadOnlySpan{byte})" /> round-trip correctly and reject destinations of any
     /// other length.
