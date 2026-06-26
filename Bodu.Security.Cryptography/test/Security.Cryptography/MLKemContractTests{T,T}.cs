@@ -187,44 +187,78 @@ public abstract class MLKemContractTests<TTest, TKem>
     }
 
     /// <summary>
-    /// Verifies that <see cref="MLKem.Decapsulate(ReadOnlySpan{byte})" /> rejects a ciphertext of any length other
-    /// than the parameter set's exact size.
+    /// Verifies that <see cref="MLKem.Decapsulate(ReadOnlySpan{byte})" /> rejects an empty ciphertext.
     /// </summary>
     [TestMethod]
-    public void Decapsulate_WhenCiphertextLengthIsWrong_ShouldThrowArgumentException()
+    public void Decapsulate_WhenCiphertextIsEmpty_ShouldThrowArgumentException()
     {
         using var kem = new TKem();
         kem.GenerateKey();
 
         Assert.ThrowsExactly<ArgumentException>(() => { _ = kem.Decapsulate(Array.Empty<byte>()); });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="MLKem.Decapsulate(ReadOnlySpan{byte})" /> rejects a ciphertext one byte shorter than
+    /// the parameter set's exact size.
+    /// </summary>
+    [TestMethod]
+    public void Decapsulate_WhenCiphertextIsOneByteTooShort_ShouldThrowArgumentException()
+    {
+        using var kem = new TKem();
+        kem.GenerateKey();
+
         Assert.ThrowsExactly<ArgumentException>(() => { _ = kem.Decapsulate(new byte[CiphertextSizeBytes - 1]); });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="MLKem.Decapsulate(ReadOnlySpan{byte})" /> rejects a ciphertext one byte longer than
+    /// the parameter set's exact size.
+    /// </summary>
+    [TestMethod]
+    public void Decapsulate_WhenCiphertextIsOneByteTooLong_ShouldThrowArgumentException()
+    {
+        using var kem = new TKem();
+        kem.GenerateKey();
+
         Assert.ThrowsExactly<ArgumentException>(() => { _ = kem.Decapsulate(new byte[CiphertextSizeBytes + 1]); });
     }
 
     /// <summary>
     /// Verifies the FIPS 203 implicit-rejection contract: decapsulating a tampered ciphertext of the correct length
-    /// does not throw and yields a shared secret unrelated to the encapsulated one.
+    /// does not throw.
     /// </summary>
     [TestMethod]
-    public void Decapsulate_WhenCiphertextIsTampered_ShouldReturnDifferentSecretWithoutThrowing()
+    public void Decapsulate_WhenCiphertextIsTampered_ShouldNotThrow()
     {
-        using var receiver = new TKem();
-        receiver.GenerateKey();
+        using var kem = new TKem();
+        kem.GenerateKey();
 
-        using var sender = new TKem();
-        sender.ImportEncapsulationKey(receiver.ExportEncapsulationKey());
+        (byte[] ciphertext, _) = kem.Encapsulate();
+        ciphertext[0] ^= 0x01;
 
-        (byte[] ciphertext, byte[] senderSecret) = sender.Encapsulate();
+        byte[] implicitSecret = kem.Decapsulate(ciphertext);
 
-        byte[] genuine = receiver.Decapsulate(ciphertext);
-        CollectionAssert.AreEqual(senderSecret, genuine);
+        Assert.AreEqual(MLKem.SharedSecretSizeInBytes, implicitSecret.Length);
+    }
+
+    /// <summary>
+    /// Verifies the FIPS 203 implicit-rejection contract: a tampered ciphertext yields a shared secret unrelated to
+    /// the one bound to the genuine ciphertext.
+    /// </summary>
+    [TestMethod]
+    public void Decapsulate_WhenCiphertextIsTampered_ShouldReturnDifferentSecret()
+    {
+        using var kem = new TKem();
+        kem.GenerateKey();
+
+        (byte[] ciphertext, _) = kem.Encapsulate();
+        byte[] genuine = kem.Decapsulate(ciphertext);
 
         byte[] tampered = (byte[])ciphertext.Clone();
         tampered[0] ^= 0x01;
-        byte[] implicitSecret = receiver.Decapsulate(tampered);
 
-        Assert.AreEqual(MLKem.SharedSecretSizeInBytes, implicitSecret.Length);
-        CollectionAssert.AreNotEqual(genuine, implicitSecret);
+        CollectionAssert.AreNotEqual(genuine, kem.Decapsulate(tampered));
     }
 
     /// <summary>

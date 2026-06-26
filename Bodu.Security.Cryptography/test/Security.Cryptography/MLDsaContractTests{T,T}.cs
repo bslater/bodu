@@ -229,11 +229,40 @@ public abstract class MLDsaContractTests<TTest, TDsa>
     }
 
     /// <summary>
-    /// Verifies that a single-byte mutation anywhere in the signature — the commitment hash c̃, the response z, or the
-    /// hint section h — causes verification to fail, while the unmodified signature verifies.
+    /// Verifies that a single-byte mutation in the commitment hash c̃ (the first signature byte) causes verification
+    /// to fail.
     /// </summary>
     [TestMethod]
-    public void VerifyData_WhenAnyRegionIsMutated_ShouldReturnFalse()
+    public void VerifyData_WhenCommitmentHashIsMutated_ShouldReturnFalse()
+    {
+        AssertMutatedSignatureFailsVerification(0);
+    }
+
+    /// <summary>
+    /// Verifies that a single-byte mutation in the response z (a mid-signature byte) causes verification to fail.
+    /// </summary>
+    [TestMethod]
+    public void VerifyData_WhenResponseIsMutated_ShouldReturnFalse()
+    {
+        AssertMutatedSignatureFailsVerification(SignatureSizeBytes / 2);
+    }
+
+    /// <summary>
+    /// Verifies that a single-byte mutation in the hint section h (the final signature byte) causes verification to
+    /// fail.
+    /// </summary>
+    [TestMethod]
+    public void VerifyData_WhenHintSectionIsMutated_ShouldReturnFalse()
+    {
+        AssertMutatedSignatureFailsVerification(SignatureSizeBytes - 1);
+    }
+
+    /// <summary>
+    /// Signs a fixed message deterministically, flips the bit at <paramref name="byteIndex" />, and asserts the
+    /// mutated signature fails verification.
+    /// </summary>
+    /// <param name="byteIndex">The signature byte to mutate.</param>
+    private void AssertMutatedSignatureFailsVerification(int byteIndex)
     {
         using var dsa = new TDsa();
         dsa.GenerateKey();
@@ -241,15 +270,9 @@ public abstract class MLDsaContractTests<TTest, TDsa>
         byte[] message = new byte[] { 1, 2, 3 };
 
         byte[] signature = dsa.SignData(message);
-        Assert.IsTrue(dsa.VerifyData(message, signature));
+        signature[byteIndex] ^= 0x01;
 
-        // Byte 0 lies in the commitment hash, the midpoint in the response z, and the final byte in the hint section.
-        foreach (int index in new[] { 0, SignatureSizeBytes / 2, SignatureSizeBytes - 1 })
-        {
-            byte[] mutated = (byte[])signature.Clone();
-            mutated[index] ^= 0x01;
-            Assert.IsFalse(dsa.VerifyData(message, mutated), $"mutation at byte {index}");
-        }
+        Assert.IsFalse(dsa.VerifyData(message, signature));
     }
 
     /// <summary>
