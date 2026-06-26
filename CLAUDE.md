@@ -166,15 +166,16 @@ The suite is partitioned into tiers via `[TestCategory(...)]` so the build can r
 | **Smoke** | `[TestCategory("Smoke")]` | One happy-path test per primary public type. Catches catastrophic breakage. |
 | **BVT** *(default)* | *(no category)* | Structural, exception, property, and contract tests. |
 | **Regression** | `[TestCategory("Regression")]` | Exhaustive vector tables, full algorithm catalogues, large parameter sweeps, multi-decade calendar tables. Excluded from BVT. |
-| **Stress** | `[TestCategory("Stress")]` | Long-running, high-iteration loops. Excluded from BVT. |
+| **Stress** | `[TestCategory("Stress")]` | Long-running, high-iteration loops that exceed the standard 10-minute session guard. Excluded from BVT **and** Regression; run on demand via `stress.runsettings`. |
 
-Run-settings files at the repository root drive each tier:
+Run-settings files at the repository root drive each tier. Every file except `stress.runsettings` caps the session at 10 minutes per assembly (`TestSessionTimeout`); `stress.runsettings` relaxes this to 60 minutes because the stress loops (e.g. the RFC 7748 §5.2 one-million-iteration ladder) run for tens of minutes:
 
 ```bash
 dotnet test bodu.slnx --settings smoke.runsettings        # Smoke only
 dotnet test bodu.slnx --settings bvt.runsettings          # BVT (default build run)
-dotnet test bodu.slnx --settings regression.runsettings   # Everything
-dotnet test bodu.slnx --settings test.runsettings         # Everything (legacy alias)
+dotnet test bodu.slnx --settings regression.runsettings   # Smoke + BVT + Regression (excludes Stress)
+dotnet test bodu.slnx --settings test.runsettings         # legacy alias for regression.runsettings
+dotnet test bodu.slnx --settings stress.runsettings       # Stress only (60-minute session guard)
 ```
 
 Conventions:

@@ -12,5 +12,12 @@
 
     <!-- Optional: Set results directory -->
     <!-- <ResultsDirectory>.\TestResults</ResultsDirectory> -->
+
+    <!--
+      Legacy alias for regression.runsettings: runs the Smoke, BVT, and Regression tiers. The Stress tier is
+      excluded because its long-running loops exceed the 10-minute session guard above; run those on demand via
+      stress.runsettings.
+    -->
+    <TestCaseFilter>TestCategory!=Stress</TestCaseFilter>
   </RunConfiguration>
 </RunSettings>
