@@ -20,7 +20,9 @@ namespace Bodu.Security.Cryptography;
 /// the message sequence number, so messages must be opened in the order they were sealed. Dispose the instance to zero
 /// the derived key material.
 /// </para>
-/// <para>For one-off decryption of a single message, prefer the single-shot <see cref="Hpke" /> façade.</para>
+/// <para>
+/// For one-off decryption of a single message, prefer the single-shot <see cref="Hpke" /> façade.
+/// </para>
 /// <para>
 /// Like the rest of the library, this implementation offers best-effort side-channel resistance and has not been
 /// independently audited.
@@ -60,9 +62,9 @@ public sealed class HpkeReceiver : IDisposable
     {
         ThrowHelper.ThrowIfNull(suite);
         ThrowHelper.ThrowIfNull(recipientKey);
-        CryptographyThrowHelper.ThrowIfInvalidRawKeyLength(encapsulation, DhKemX25519.EncapsulationSizeInBytes, "X25519 public", nameof(encapsulation));
+        CryptographyThrowHelper.ThrowIfInvalidRawKeyLength(encapsulation, suite.KemAlgorithm.EncapsulationSizeInBytes, "X25519 public", nameof(encapsulation));
 
-        byte[] sharedSecret = DhKemX25519.Decap(encapsulation, recipientKey);
+        byte[] sharedSecret = Decapsulate(suite, encapsulation, recipientKey);
 
         try
         {
@@ -96,9 +98,9 @@ public sealed class HpkeReceiver : IDisposable
     {
         ThrowHelper.ThrowIfNull(suite);
         ThrowHelper.ThrowIfNull(recipientKey);
-        CryptographyThrowHelper.ThrowIfInvalidRawKeyLength(encapsulation, DhKemX25519.EncapsulationSizeInBytes, "X25519 public", nameof(encapsulation));
+        CryptographyThrowHelper.ThrowIfInvalidRawKeyLength(encapsulation, suite.KemAlgorithm.EncapsulationSizeInBytes, "X25519 public", nameof(encapsulation));
 
-        byte[] sharedSecret = DhKemX25519.Decap(encapsulation, recipientKey);
+        byte[] sharedSecret = Decapsulate(suite, encapsulation, recipientKey);
 
         try
         {
@@ -133,10 +135,10 @@ public sealed class HpkeReceiver : IDisposable
     {
         ThrowHelper.ThrowIfNull(suite);
         ThrowHelper.ThrowIfNull(recipientKey);
-        CryptographyThrowHelper.ThrowIfInvalidRawKeyLength(encapsulation, DhKemX25519.EncapsulationSizeInBytes, "X25519 public", nameof(encapsulation));
-        CryptographyThrowHelper.ThrowIfInvalidRawKeyLength(senderPublicKey, DhKemX25519.PublicKeySizeInBytes, "X25519 public", nameof(senderPublicKey));
+        CryptographyThrowHelper.ThrowIfInvalidRawKeyLength(encapsulation, suite.KemAlgorithm.EncapsulationSizeInBytes, "X25519 public", nameof(encapsulation));
+        CryptographyThrowHelper.ThrowIfInvalidRawKeyLength(senderPublicKey, suite.KemAlgorithm.PublicKeySizeInBytes, "X25519 public", nameof(senderPublicKey));
 
-        byte[] sharedSecret = DhKemX25519.AuthDecap(encapsulation, recipientKey, senderPublicKey);
+        byte[] sharedSecret = AuthDecapsulate(suite, encapsulation, recipientKey, senderPublicKey);
 
         try
         {
@@ -174,10 +176,10 @@ public sealed class HpkeReceiver : IDisposable
     {
         ThrowHelper.ThrowIfNull(suite);
         ThrowHelper.ThrowIfNull(recipientKey);
-        CryptographyThrowHelper.ThrowIfInvalidRawKeyLength(encapsulation, DhKemX25519.EncapsulationSizeInBytes, "X25519 public", nameof(encapsulation));
-        CryptographyThrowHelper.ThrowIfInvalidRawKeyLength(senderPublicKey, DhKemX25519.PublicKeySizeInBytes, "X25519 public", nameof(senderPublicKey));
+        CryptographyThrowHelper.ThrowIfInvalidRawKeyLength(encapsulation, suite.KemAlgorithm.EncapsulationSizeInBytes, "X25519 public", nameof(encapsulation));
+        CryptographyThrowHelper.ThrowIfInvalidRawKeyLength(senderPublicKey, suite.KemAlgorithm.PublicKeySizeInBytes, "X25519 public", nameof(senderPublicKey));
 
-        byte[] sharedSecret = DhKemX25519.AuthDecap(encapsulation, recipientKey, senderPublicKey);
+        byte[] sharedSecret = AuthDecapsulate(suite, encapsulation, recipientKey, senderPublicKey);
 
         try
         {
@@ -197,7 +199,9 @@ public sealed class HpkeReceiver : IDisposable
     /// <returns>The recovered plaintext.</returns>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     /// <exception cref="NotSupportedException">The suite is export-only.</exception>
-    /// <exception cref="ArgumentException"><paramref name="ciphertext" /> is shorter than the authentication tag.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="ciphertext" /> is shorter than the authentication tag.
+    /// </exception>
     /// <exception cref="CryptographicException">Authentication failed.</exception>
     /// <exception cref="InvalidOperationException">The message sequence number has reached its maximum.</exception>
     public byte[] Open(ReadOnlySpan<byte> associatedData, ReadOnlySpan<byte> ciphertext)
@@ -232,5 +236,50 @@ public sealed class HpkeReceiver : IDisposable
 
         _context.Dispose();
         _disposed = true;
+    }
+
+    /// <summary>
+    /// Performs the suite KEM's decapsulation, exporting the recipient's key material as raw bytes for the duration of
+    /// the call and zeroing the exported private key afterward.
+    /// </summary>
+    /// <param name="suite">The cipher suite supplying the KEM.</param>
+    /// <param name="encapsulation">The encapsulated key received from the sender.</param>
+    /// <param name="recipientKey">The recipient's key holding the private key.</param>
+    /// <returns>The shared secret.</returns>
+    private static byte[] Decapsulate(HpkeSuite suite, ReadOnlySpan<byte> encapsulation, X25519 recipientKey)
+    {
+        byte[] recipientPrivateKey = recipientKey.ExportPrivateKey();
+
+        try
+        {
+            return suite.KemAlgorithm.Decapsulate(encapsulation, recipientPrivateKey, recipientKey.ExportPublicKey());
+        }
+        finally
+        {
+            CryptographyHelper.Clear(recipientPrivateKey);
+        }
+    }
+
+    /// <summary>
+    /// Performs the suite KEM's authenticated decapsulation, exporting the recipient's key material as raw bytes for
+    /// the duration of the call and zeroing the exported private key afterward.
+    /// </summary>
+    /// <param name="suite">The cipher suite supplying the KEM.</param>
+    /// <param name="encapsulation">The encapsulated key received from the sender.</param>
+    /// <param name="recipientKey">The recipient's key holding the private key.</param>
+    /// <param name="senderPublicKey">The sender's static public key.</param>
+    /// <returns>The shared secret.</returns>
+    private static byte[] AuthDecapsulate(HpkeSuite suite, ReadOnlySpan<byte> encapsulation, X25519 recipientKey, ReadOnlySpan<byte> senderPublicKey)
+    {
+        byte[] recipientPrivateKey = recipientKey.ExportPrivateKey();
+
+        try
+        {
+            return suite.KemAlgorithm.AuthDecapsulate(encapsulation, recipientPrivateKey, recipientKey.ExportPublicKey(), senderPublicKey);
+        }
+        finally
+        {
+            CryptographyHelper.Clear(recipientPrivateKey);
+        }
     }
 }

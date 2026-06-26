@@ -10,17 +10,19 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Represents the sender side of an HPKE exchange (RFC 9180 §5.2): a session that encapsulates a shared secret to a
-/// recipient once and then seals any number of messages and exports any number of secrets under that secret. This
-/// class cannot be inherited.
+/// recipient once and then seals any number of messages and exports any number of secrets under that secret. This class
+/// cannot be inherited.
 /// </summary>
 /// <remarks>
 /// <para>
-/// Obtain an instance from one of the <c>Setup*</c> factory methods, which return the sender and yield the
-/// encapsulated key that the recipient needs to reconstruct the matching context. Each <see cref="Seal" /> call
-/// advances the message sequence number, so the recipient's <see cref="HpkeReceiver.Open" /> calls must occur in the
-/// same order. Dispose the instance to zero the derived key material.
+/// Obtain an instance from one of the <c>Setup*</c> factory methods, which return the sender and yield the encapsulated
+/// key that the recipient needs to reconstruct the matching context. Each <see cref="Seal" /> call advances the message
+/// sequence number, so the recipient's <see cref="HpkeReceiver.Open" /> calls must occur in the same order. Dispose the
+/// instance to zero the derived key material.
 /// </para>
-/// <para>For one-off encryption of a single message, prefer the single-shot <see cref="Hpke" /> façade.</para>
+/// <para>
+/// For one-off encryption of a single message, prefer the single-shot <see cref="Hpke" /> façade.
+/// </para>
 /// <para>
 /// Like the rest of the library, this implementation offers best-effort side-channel resistance and has not been
 /// independently audited.
@@ -51,13 +53,15 @@ public sealed class HpkeSender : IDisposable
     /// <returns>A sender context ready to seal messages.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="suite" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException"><paramref name="recipientPublicKey" /> is not exactly 32 bytes.</exception>
-    /// <exception cref="CryptographicException"><paramref name="recipientPublicKey" /> is a low-order point.</exception>
+    /// <exception cref="CryptographicException">
+    /// <paramref name="recipientPublicKey" /> is a low-order point.
+    /// </exception>
     public static HpkeSender SetupBase(HpkeSuite suite, ReadOnlySpan<byte> recipientPublicKey, ReadOnlySpan<byte> info, out byte[] encapsulation)
     {
         ThrowHelper.ThrowIfNull(suite);
-        CryptographyThrowHelper.ThrowIfInvalidRawKeyLength(recipientPublicKey, DhKemX25519.PublicKeySizeInBytes, "X25519 public", nameof(recipientPublicKey));
+        CryptographyThrowHelper.ThrowIfInvalidRawKeyLength(recipientPublicKey, suite.KemAlgorithm.PublicKeySizeInBytes, "X25519 public", nameof(recipientPublicKey));
 
-        var (sharedSecret, enc) = DhKemX25519.Encap(recipientPublicKey);
+        var (sharedSecret, enc) = suite.KemAlgorithm.Encapsulate(recipientPublicKey);
 
         try
         {
@@ -89,9 +93,9 @@ public sealed class HpkeSender : IDisposable
     public static HpkeSender SetupPsk(HpkeSuite suite, ReadOnlySpan<byte> recipientPublicKey, ReadOnlySpan<byte> info, ReadOnlySpan<byte> psk, ReadOnlySpan<byte> pskId, out byte[] encapsulation)
     {
         ThrowHelper.ThrowIfNull(suite);
-        CryptographyThrowHelper.ThrowIfInvalidRawKeyLength(recipientPublicKey, DhKemX25519.PublicKeySizeInBytes, "X25519 public", nameof(recipientPublicKey));
+        CryptographyThrowHelper.ThrowIfInvalidRawKeyLength(recipientPublicKey, suite.KemAlgorithm.PublicKeySizeInBytes, "X25519 public", nameof(recipientPublicKey));
 
-        var (sharedSecret, enc) = DhKemX25519.Encap(recipientPublicKey);
+        var (sharedSecret, enc) = suite.KemAlgorithm.Encapsulate(recipientPublicKey);
 
         try
         {
@@ -119,15 +123,16 @@ public sealed class HpkeSender : IDisposable
     /// </exception>
     /// <exception cref="ArgumentException"><paramref name="recipientPublicKey" /> is not exactly 32 bytes.</exception>
     /// <exception cref="CryptographicException">
-    /// <paramref name="senderKey" /> has no private key, or <paramref name="recipientPublicKey" /> is a low-order point.
+    /// <paramref name="senderKey" /> has no private key, or <paramref name="recipientPublicKey" /> is a low-order
+    /// point.
     /// </exception>
     public static HpkeSender SetupAuth(HpkeSuite suite, ReadOnlySpan<byte> recipientPublicKey, ReadOnlySpan<byte> info, X25519 senderKey, out byte[] encapsulation)
     {
         ThrowHelper.ThrowIfNull(suite);
         ThrowHelper.ThrowIfNull(senderKey);
-        CryptographyThrowHelper.ThrowIfInvalidRawKeyLength(recipientPublicKey, DhKemX25519.PublicKeySizeInBytes, "X25519 public", nameof(recipientPublicKey));
+        CryptographyThrowHelper.ThrowIfInvalidRawKeyLength(recipientPublicKey, suite.KemAlgorithm.PublicKeySizeInBytes, "X25519 public", nameof(recipientPublicKey));
 
-        var (sharedSecret, enc) = DhKemX25519.AuthEncap(recipientPublicKey, senderKey);
+        var (sharedSecret, enc) = AuthEncapsulate(suite, recipientPublicKey, senderKey);
 
         try
         {
@@ -165,9 +170,9 @@ public sealed class HpkeSender : IDisposable
     {
         ThrowHelper.ThrowIfNull(suite);
         ThrowHelper.ThrowIfNull(senderKey);
-        CryptographyThrowHelper.ThrowIfInvalidRawKeyLength(recipientPublicKey, DhKemX25519.PublicKeySizeInBytes, "X25519 public", nameof(recipientPublicKey));
+        CryptographyThrowHelper.ThrowIfInvalidRawKeyLength(recipientPublicKey, suite.KemAlgorithm.PublicKeySizeInBytes, "X25519 public", nameof(recipientPublicKey));
 
-        var (sharedSecret, enc) = DhKemX25519.AuthEncap(recipientPublicKey, senderKey);
+        var (sharedSecret, enc) = AuthEncapsulate(suite, recipientPublicKey, senderKey);
 
         try
         {
@@ -222,5 +227,27 @@ public sealed class HpkeSender : IDisposable
 
         _context.Dispose();
         _disposed = true;
+    }
+
+    /// <summary>
+    /// Performs the suite KEM's authenticated encapsulation, exporting the sender's static key material as raw bytes
+    /// for the duration of the call and zeroing the exported private key afterward.
+    /// </summary>
+    /// <param name="suite">The cipher suite supplying the KEM.</param>
+    /// <param name="recipientPublicKey">The recipient's serialized public key.</param>
+    /// <param name="senderKey">The sender's static key holding the private key.</param>
+    /// <returns>The shared secret and the encapsulated key.</returns>
+    private static (byte[] SharedSecret, byte[] Encapsulation) AuthEncapsulate(HpkeSuite suite, ReadOnlySpan<byte> recipientPublicKey, X25519 senderKey)
+    {
+        byte[] senderPrivateKey = senderKey.ExportPrivateKey();
+
+        try
+        {
+            return suite.KemAlgorithm.AuthEncapsulate(recipientPublicKey, senderPrivateKey, senderKey.ExportPublicKey());
+        }
+        finally
+        {
+            CryptographyHelper.Clear(senderPrivateKey);
+        }
     }
 }

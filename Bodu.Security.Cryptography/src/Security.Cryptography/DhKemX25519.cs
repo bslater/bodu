@@ -13,31 +13,56 @@ namespace Bodu.Security.Cryptography;
 /// X25519 and HKDF-SHA256, providing the base <c>Encap</c>/<c>Decap</c> operations and the authenticated
 /// <c>AuthEncap</c>/<c>AuthDecap</c> operations used by HPKE's Auth and AuthPSK modes.
 /// </summary>
-internal static class DhKemX25519
+internal sealed class DhKemX25519
+    : IHpkeKem
 {
+    /// <summary>The shared instance; the KEM holds no mutable state.</summary>
+    public static readonly DhKemX25519 Instance = new();
+
     /// <summary>The length, in bytes, of the KEM shared secret (<c>Nsecret</c>).</summary>
-    public const int SharedSecretSizeInBytes = 32;
+    public const int SharedSecretSize = 32;
 
     /// <summary>The length, in bytes, of the encapsulated key (<c>Nenc</c>).</summary>
-    public const int EncapsulationSizeInBytes = 32;
+    public const int EncapsulationSize = 32;
 
     /// <summary>The length, in bytes, of a serialized public key (<c>Npk</c>).</summary>
-    public const int PublicKeySizeInBytes = 32;
+    public const int PublicKeySize = 32;
 
-    /// <summary>DHKEM(X25519, …) fixes HKDF-SHA256 as the KEM's KDF, independent of the HPKE suite KDF.</summary>
-    private static HashAlgorithmName KemHash => HashAlgorithmName.SHA256;
+    /// <summary>The IANA KEM identifier for DHKEM(X25519, HKDF-SHA256).</summary>
+    private const ushort DhKemX25519HkdfSha256Id = 0x0020;
 
-    /// <summary>The KEM suite identifier <c>"KEM" ‖ I2OSP(0x0020, 2)</c>.</summary>
-    private static ReadOnlySpan<byte> KemSuiteId => [(byte)'K', (byte)'E', (byte)'M', 0x00, 0x20];
+    private DhKemX25519()
+    {
+    }
+
+    /// <inheritdoc />
+    public ushort KemId =>
+        DhKemX25519HkdfSha256Id;
+
+    /// <inheritdoc />
+    public int SharedSecretSizeInBytes =>
+        SharedSecretSize;
+
+    /// <inheritdoc />
+    public int EncapsulationSizeInBytes =>
+        EncapsulationSize;
+
+    /// <inheritdoc />
+    public int PublicKeySizeInBytes =>
+        PublicKeySize;
 
     /// <summary>
-    /// Encapsulates a fresh shared secret to the recipient public key (RFC 9180 base <c>Encap</c>).
+    /// DHKEM(X25519, …) fixes HKDF-SHA256 as the KEM's KDF, independent of the HPKE suite KDF.
     /// </summary>
-    /// <param name="recipientPublicKey">The recipient's 32-byte X25519 public key.</param>
-    /// <returns>The 32-byte shared secret and the 32-byte encapsulated key (the ephemeral public key).</returns>
-    /// <exception cref="ArgumentException"><paramref name="recipientPublicKey" /> is not exactly 32 bytes.</exception>
-    /// <exception cref="CryptographicException"><paramref name="recipientPublicKey" /> is a low-order point.</exception>
-    public static (byte[] SharedSecret, byte[] Encapsulation) Encap(ReadOnlySpan<byte> recipientPublicKey)
+    private static HashAlgorithmName KemHash => HashAlgorithmName.SHA256;
+
+    /// <summary>
+    /// The KEM suite identifier <c>"KEM" ‖ I2OSP(0x0020, 2)</c>.
+    /// </summary>
+    private static ReadOnlySpan<byte> KemSuiteId => [(byte)'K', (byte)'E', (byte)'M', 0x00, 0x20];
+
+    /// <inheritdoc />
+    public (byte[] SharedSecret, byte[] Encapsulation) Encapsulate(ReadOnlySpan<byte> recipientPublicKey)
     {
         using var ephemeral = new X25519();
         ephemeral.GenerateKey();
@@ -57,25 +82,17 @@ internal static class DhKemX25519
         }
     }
 
-    /// <summary>
-    /// Decapsulates the shared secret from an encapsulated key using the recipient private key (RFC 9180 base
-    /// <c>Decap</c>).
-    /// </summary>
-    /// <param name="encapsulation">The 32-byte encapsulated key produced by <see cref="Encap" />.</param>
-    /// <param name="recipientKey">The recipient's X25519 key holding the private key.</param>
-    /// <returns>The 32-byte shared secret.</returns>
-    /// <exception cref="ArgumentException"><paramref name="encapsulation" /> is not exactly 32 bytes.</exception>
-    /// <exception cref="CryptographicException">
-    /// <paramref name="recipientKey" /> has no private key, or <paramref name="encapsulation" /> is a low-order point.
-    /// </exception>
-    public static byte[] Decap(ReadOnlySpan<byte> encapsulation, X25519 recipientKey)
+    /// <inheritdoc />
+    public byte[] Decapsulate(ReadOnlySpan<byte> encapsulation, ReadOnlySpan<byte> recipientPrivateKey, ReadOnlySpan<byte> recipientPublicKey)
     {
-        byte[] dh = recipientKey.DeriveSharedSecret(encapsulation);
+        using var recipient = new X25519();
+        recipient.ImportPrivateKey(recipientPrivateKey);
+
+        byte[] dh = recipient.DeriveSharedSecret(encapsulation);
 
         try
         {
-            byte[] pkRm = recipientKey.ExportPublicKey();
-            byte[] kemContext = Concat(encapsulation, pkRm);
+            byte[] kemContext = Concat(encapsulation, recipientPublicKey);
             return ExtractAndExpand(dh, kemContext);
         }
         finally
@@ -84,31 +101,23 @@ internal static class DhKemX25519
         }
     }
 
-    /// <summary>
-    /// Encapsulates a fresh shared secret to the recipient while authenticating the sender with its static private key
-    /// (RFC 9180 <c>AuthEncap</c>).
-    /// </summary>
-    /// <param name="recipientPublicKey">The recipient's 32-byte X25519 public key.</param>
-    /// <param name="senderKey">The sender's X25519 key holding the static private key.</param>
-    /// <returns>The 32-byte shared secret and the 32-byte encapsulated key.</returns>
-    /// <exception cref="ArgumentException"><paramref name="recipientPublicKey" /> is not exactly 32 bytes.</exception>
-    /// <exception cref="CryptographicException">
-    /// <paramref name="senderKey" /> has no private key, or <paramref name="recipientPublicKey" /> is a low-order point.
-    /// </exception>
-    public static (byte[] SharedSecret, byte[] Encapsulation) AuthEncap(ReadOnlySpan<byte> recipientPublicKey, X25519 senderKey)
+    /// <inheritdoc />
+    public (byte[] SharedSecret, byte[] Encapsulation) AuthEncapsulate(ReadOnlySpan<byte> recipientPublicKey, ReadOnlySpan<byte> senderPrivateKey, ReadOnlySpan<byte> senderPublicKey)
     {
         using var ephemeral = new X25519();
         ephemeral.GenerateKey();
 
+        using var sender = new X25519();
+        sender.ImportPrivateKey(senderPrivateKey);
+
         byte[] enc = ephemeral.ExportPublicKey();
         byte[] dhEphemeral = ephemeral.DeriveSharedSecret(recipientPublicKey);
-        byte[] dhStatic = senderKey.DeriveSharedSecret(recipientPublicKey);
+        byte[] dhStatic = sender.DeriveSharedSecret(recipientPublicKey);
         byte[] dh = Concat(dhEphemeral, dhStatic);
 
         try
         {
-            byte[] pkSm = senderKey.ExportPublicKey();
-            byte[] kemContext = Concat(enc, recipientPublicKey, pkSm);
+            byte[] kemContext = Concat(enc, recipientPublicKey, senderPublicKey);
             byte[] sharedSecret = ExtractAndExpand(dh, kemContext);
             return (sharedSecret, enc);
         }
@@ -120,30 +129,19 @@ internal static class DhKemX25519
         }
     }
 
-    /// <summary>
-    /// Decapsulates the shared secret and verifies the sender's authentication using the sender's public key (RFC 9180
-    /// <c>AuthDecap</c>).
-    /// </summary>
-    /// <param name="encapsulation">The 32-byte encapsulated key produced by <see cref="AuthEncap" />.</param>
-    /// <param name="recipientKey">The recipient's X25519 key holding the private key.</param>
-    /// <param name="senderPublicKey">The sender's 32-byte X25519 public key.</param>
-    /// <returns>The 32-byte shared secret.</returns>
-    /// <exception cref="ArgumentException">
-    /// <paramref name="encapsulation" /> or <paramref name="senderPublicKey" /> is not exactly 32 bytes.
-    /// </exception>
-    /// <exception cref="CryptographicException">
-    /// <paramref name="recipientKey" /> has no private key, or an input is a low-order point.
-    /// </exception>
-    public static byte[] AuthDecap(ReadOnlySpan<byte> encapsulation, X25519 recipientKey, ReadOnlySpan<byte> senderPublicKey)
+    /// <inheritdoc />
+    public byte[] AuthDecapsulate(ReadOnlySpan<byte> encapsulation, ReadOnlySpan<byte> recipientPrivateKey, ReadOnlySpan<byte> recipientPublicKey, ReadOnlySpan<byte> senderPublicKey)
     {
-        byte[] dhEphemeral = recipientKey.DeriveSharedSecret(encapsulation);
-        byte[] dhStatic = recipientKey.DeriveSharedSecret(senderPublicKey);
+        using var recipient = new X25519();
+        recipient.ImportPrivateKey(recipientPrivateKey);
+
+        byte[] dhEphemeral = recipient.DeriveSharedSecret(encapsulation);
+        byte[] dhStatic = recipient.DeriveSharedSecret(senderPublicKey);
         byte[] dh = Concat(dhEphemeral, dhStatic);
 
         try
         {
-            byte[] pkRm = recipientKey.ExportPublicKey();
-            byte[] kemContext = Concat(encapsulation, pkRm, senderPublicKey);
+            byte[] kemContext = Concat(encapsulation, recipientPublicKey, senderPublicKey);
             return ExtractAndExpand(dh, kemContext);
         }
         finally
@@ -167,7 +165,7 @@ internal static class DhKemX25519
 
         try
         {
-            byte[] sharedSecret = new byte[SharedSecretSizeInBytes];
+            byte[] sharedSecret = new byte[SharedSecretSize];
             HpkeLabeledKdf.LabeledExpand(KemHash, KemSuiteId, eaePrk, "shared_secret"u8, kemContext, sharedSecret);
             return sharedSecret;
         }
@@ -197,7 +195,9 @@ internal static class DhKemX25519
     /// <param name="a">The first sequence.</param>
     /// <param name="b">The second sequence.</param>
     /// <param name="c">The third sequence.</param>
-    /// <returns>A new array containing <paramref name="a" />, <paramref name="b" />, then <paramref name="c" />.</returns>
+    /// <returns>
+    /// A new array containing <paramref name="a" />, <paramref name="b" />, then <paramref name="c" />.
+    /// </returns>
     private static byte[] Concat(ReadOnlySpan<byte> a, ReadOnlySpan<byte> b, ReadOnlySpan<byte> c)
     {
         byte[] result = new byte[a.Length + b.Length + c.Length];

@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Security.Cryptography;
 
@@ -19,6 +20,7 @@ public sealed partial class Ed25519
     /// Gets the algorithm name <c>"Ed25519"</c>.
     /// </summary>
     /// <value>The constant string <c>"Ed25519"</c>.</value>
+    [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Instance property for parity with the parameter-set algorithms, where the value is instance-dependent.")]
     public string AlgorithmName =>
         "Ed25519";
 
@@ -26,6 +28,7 @@ public sealed partial class Ed25519
     /// Gets the approximate classical security strength of Ed25519, in bits.
     /// </summary>
     /// <value>The value 128.</value>
+    [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Instance property for parity with the parameter-set algorithms, where the value is instance-dependent.")]
     public int SecurityStrengthBits =>
         128;
 
