@@ -462,7 +462,7 @@ internal sealed partial class YamlParser
             if (Peek() == (byte)':' && IsBlankOrBreakOrEnd(PeekAt(1)))
                 return true;
 
-            if (Peek() == (byte)' ' && PeekAt(1) == (byte)'#')
+            if (Peek() is (byte)' ' or (byte)'\t' && PeekAt(1) == (byte)'#')
                 return false;
 
             _pos++;
@@ -518,6 +518,13 @@ internal sealed partial class YamlParser
     /// <returns>The decoded key text.</returns>
     private string ReadSimpleKey()
     {
+        // A simple key may carry leading anchor and tag node properties; they are consumed so the key text is clean.
+        if (Peek() is (byte)'&' or (byte)'!')
+        {
+            TryReadAnchorAndTag(out _);
+            SkipSpaces();
+        }
+
         var c = Peek();
         if (c == (byte)'"')
             return ReadDoubleQuoted();
@@ -532,7 +539,7 @@ internal sealed partial class YamlParser
             if (Peek() == (byte)':' && IsBlankOrBreakOrEnd(PeekAt(1)))
                 break;
 
-            if (Peek() == (byte)' ' && PeekAt(1) == (byte)'#')
+            if (Peek() is (byte)' ' or (byte)'\t' && PeekAt(1) == (byte)'#')
                 break;
 
             _pos++;
@@ -544,18 +551,25 @@ internal sealed partial class YamlParser
     }
 
     /// <summary>
-    /// Reads an optional anchor (<c>&amp;name</c>) and tag (<c>!tag</c>) node-property prefix on the current line.
+    /// Reads an optional anchor (<c>&amp;name</c>) and tag (<c>!tag</c>) node-property prefix.
     /// </summary>
     /// <param name="tag">When the method returns, the captured tag, or <see langword="null" />.</param>
+    /// <param name="crossLines">
+    /// Whether the node properties may be separated from each other and the node by line breaks (block context).
+    /// </param>
     /// <returns>The captured anchor name, or <see langword="null" />.</returns>
-    private string? TryReadAnchorAndTag(out string? tag)
+    private string? TryReadAnchorAndTag(out string? tag, bool crossLines = false)
     {
         string? anchor = null;
         tag = null;
 
         while (true)
         {
-            SkipSpaces();
+            if (crossLines)
+                SkipBlankCommentLines();
+            else
+                SkipSpaces();
+
             var c = Peek();
             if (c == (byte)'&' && anchor is null)
             {

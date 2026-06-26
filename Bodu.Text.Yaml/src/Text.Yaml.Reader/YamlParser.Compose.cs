@@ -254,12 +254,46 @@ internal sealed partial class YamlParser
         for (var i = 0; i < _rows.Count; i++)
         {
             var r = _rows[i];
-            if (r.Kind != YamlReaderNodeKind.Scalar || r.Tag is null)
+
+            // Alias rows reuse the tag field to carry the alias name, so they are never tag-coerced.
+            if (r.Tag is null || r.Kind == YamlReaderNodeKind.Alias)
                 continue;
 
-            var tag = NormalizeCoreTag(ExpandTagHandle(r.Tag));
+            var expanded = ExpandTagHandle(r.Tag);
+            var tag = NormalizeCoreTag(expanded);
+
             if (tag is null)
+            {
+                // The non-specific tag '!' forces a non-plain (string) resolution on a scalar and is a no-op on a
+                // collection. Any other unrecognized tag is outside the JSON-compatible profile.
+                if (expanded == "!")
+                {
+                    if (r.Kind == YamlReaderNodeKind.Scalar)
+                    {
+                        SetString(ref r, ScalarText(r));
+                        _rows[i] = r;
+                    }
+
+                    continue;
+                }
+
+                throw ErrorAt(r.Offset, YamlResourceStrings.Format_Invalid_YamlInvalidTag);
+            }
+
+            if (r.Kind != YamlReaderNodeKind.Scalar)
+            {
+                // A collection accepts only its matching core collection tag.
+                var matches = (tag == "map" && r.Kind == YamlReaderNodeKind.Mapping)
+                    || (tag == "seq" && r.Kind == YamlReaderNodeKind.Sequence);
+                if (!matches)
+                    throw ErrorAt(r.Offset, YamlResourceStrings.Format_Invalid_YamlInvalidTag);
+
                 continue;
+            }
+
+            // A collection tag applied to a scalar is invalid.
+            if (tag is "map" or "seq")
+                throw ErrorAt(r.Offset, YamlResourceStrings.Format_Invalid_YamlInvalidTag);
 
             var text = ScalarText(r);
             switch (tag)
@@ -387,6 +421,8 @@ internal sealed partial class YamlParser
             "!!bool" or "tag:yaml.org,2002:bool" or "!<tag:yaml.org,2002:bool>" => "bool",
             "!!int" or "tag:yaml.org,2002:int" or "!<tag:yaml.org,2002:int>" => "int",
             "!!float" or "tag:yaml.org,2002:float" or "!<tag:yaml.org,2002:float>" => "float",
+            "!!map" or "tag:yaml.org,2002:map" or "!<tag:yaml.org,2002:map>" => "map",
+            "!!seq" or "tag:yaml.org,2002:seq" or "!<tag:yaml.org,2002:seq>" => "seq",
             _ => null,
         };
 

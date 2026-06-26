@@ -145,7 +145,8 @@ internal sealed partial class YamlParser
 
         while (true)
         {
-            if (Peek() == (byte)'?')
+            // '?' introduces an explicit key only when followed by a separator; otherwise it begins a plain scalar.
+            if (Peek() == (byte)'?' && IsFlowColonStop(PeekAt(1)))
             {
                 Advance();
                 SkipFlowWhitespace();
@@ -223,7 +224,7 @@ internal sealed partial class YamlParser
             if (b == (byte)':' && IsFlowColonStop(PeekAt(1)))
                 break;
 
-            if (b == (byte)' ' && PeekAt(1) == (byte)'#')
+            if (b is (byte)' ' or (byte)'\t' && PeekAt(1) == (byte)'#')
                 break;
 
             _pos++;

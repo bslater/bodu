@@ -103,4 +103,69 @@ internal static class CorpusCompare
     private static bool NumbersEqual(double a, double b) =>
         a == b || (double.IsNaN(a) && double.IsNaN(b)) ||
         string.Equals(a.ToString("R", CultureInfo.InvariantCulture), b.ToString("R", CultureInfo.InvariantCulture), StringComparison.Ordinal);
+
+    /// <summary>
+    /// Splits a buffer that may contain several concatenated top-level JSON values into one detached element per value.
+    /// </summary>
+    /// <param name="utf8Json">The UTF-8 JSON buffer.</param>
+    /// <returns>The top-level values, in order.</returns>
+    public static List<JsonElement> SplitJsonValues(byte[] utf8Json)
+    {
+        var result = new List<JsonElement>();
+        var remaining = new ReadOnlySpan<byte>(utf8Json);
+
+        while (true)
+        {
+            var skip = 0;
+            while (skip < remaining.Length && remaining[skip] is (byte)' ' or (byte)'\t' or (byte)'\n' or (byte)'\r')
+                skip++;
+
+            remaining = remaining[skip..];
+            if (remaining.IsEmpty)
+                break;
+
+            var consumed = MeasureFirstValue(remaining);
+
+            using var document = JsonDocument.Parse(remaining[..consumed].ToArray());
+            result.Add(document.RootElement.Clone());
+            remaining = remaining[consumed..];
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// Measures the byte length of the first complete JSON value at the start of a buffer that may hold more values.
+    /// </summary>
+    /// <param name="buffer">The buffer positioned at the first value's first byte.</param>
+    /// <returns>The number of bytes the first value occupies.</returns>
+    private static int MeasureFirstValue(ReadOnlySpan<byte> buffer)
+    {
+        var reader = new Utf8JsonReader(buffer, isFinalBlock: false, state: default);
+        if (!reader.Read())
+        {
+            reader = new Utf8JsonReader(buffer, isFinalBlock: true, state: default);
+            reader.Read();
+        }
+
+        var depth = 0;
+        do
+        {
+            switch (reader.TokenType)
+            {
+                case JsonTokenType.StartObject:
+                case JsonTokenType.StartArray:
+                    depth++;
+                    break;
+
+                case JsonTokenType.EndObject:
+                case JsonTokenType.EndArray:
+                    depth--;
+                    break;
+            }
+        }
+        while (depth > 0 && reader.Read());
+
+        return (int)reader.BytesConsumed;
+    }
 }

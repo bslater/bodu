@@ -67,16 +67,26 @@ public sealed partial class YamlTestCorpusTests
         var yaml = File.ReadAllBytes(Path.Combine(CorpusRoot, kat.RelativePath, "in.yaml"));
         var jsonBytes = File.ReadAllBytes(Path.Combine(CorpusRoot, kat.RelativePath, "in.json"));
 
-        using var doc = YamlDocument.Parse(yaml);
-
+        // An empty JSON expectation denotes an empty document, which resolves to a null root.
         if (Encoding.UTF8.GetString(jsonBytes).Trim().Length == 0)
         {
-            Assert.AreEqual(YamlValueKind.Null, doc.RootElement.ValueKind, kat.RelativePath);
+            using var emptyDoc = YamlDocument.Parse(yaml);
+            Assert.AreEqual(YamlValueKind.Null, emptyDoc.RootElement.ValueKind, kat.RelativePath);
             return;
         }
 
-        using var expected = JsonDocument.Parse(jsonBytes);
-        Assert.IsTrue(CorpusCompare.Matches(expected.RootElement, doc.RootElement), kat.RelativePath);
+        var expectedValues = CorpusCompare.SplitJsonValues(jsonBytes);
+        if (expectedValues.Count == 1)
+        {
+            using var doc = YamlDocument.Parse(yaml);
+            Assert.IsTrue(CorpusCompare.Matches(expectedValues[0], doc.RootElement), kat.RelativePath);
+            return;
+        }
+
+        var documents = YamlDocument.ParseAllDocuments(yaml);
+        Assert.AreEqual(expectedValues.Count, documents.Count, $"{kat.RelativePath}: document count.");
+        for (var i = 0; i < documents.Count; i++)
+            Assert.IsTrue(CorpusCompare.Matches(expectedValues[i], documents[i].RootElement), $"{kat.RelativePath}[{i}]");
     }
 
     /// <summary>

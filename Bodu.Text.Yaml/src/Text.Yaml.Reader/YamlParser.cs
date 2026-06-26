@@ -181,7 +181,8 @@ internal sealed partial class YamlParser
     {
         SkipBlankCommentLines();
 
-        var anchor = TryReadAnchorAndTag(out var tag);
+        // In block context the anchor and tag node properties may be spread across line breaks before the node.
+        var anchor = TryReadAnchorAndTag(out var tag, crossLines: true);
 
         SkipBlankCommentLines();
 
@@ -215,9 +216,10 @@ internal sealed partial class YamlParser
             return Finish(alias, anchor);
         }
 
-        // A block scalar (literal or folded).
+        // A block scalar (literal or folded). The floor is the parent node's indentation (one less than the column at
+        // which this node's content must appear), so a less-indented following line ends the scalar.
         if (c == (byte)'|' || c == (byte)'>')
-            return Finish(ParseBlockScalar(col, anchor, tag), anchor);
+            return Finish(ParseBlockScalar(minIndent - 1, anchor, tag), anchor);
 
         // Otherwise the node is either a block mapping or a single scalar. Decide by probing for a key indicator.
         if (TryDetectBlockMapping(col))

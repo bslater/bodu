@@ -138,7 +138,7 @@ internal sealed partial class YamlParser
         var end = _pos;
         while (!IsBreakOrEnd(Peek()))
         {
-            if (Peek() == (byte)' ' && PeekAt(1) == (byte)'#')
+            if (Peek() is (byte)' ' or (byte)'\t' && PeekAt(1) == (byte)'#')
                 break;
 
             // A ' : ' value indicator does not occur here (mapping detection runs first), but a trailing ':' at
@@ -183,13 +183,14 @@ internal sealed partial class YamlParser
                     continue;
                 }
 
+                FlushFold(buf, ref pendingBreaks);
                 Advance();
                 break;
             }
 
             if (b is (byte)'\n' or (byte)'\r')
             {
-                TrimTrailingInlineSpace(buf);
+                TrimTrailingInlineSpace(buf, 0);
                 Advance();
                 pendingBreaks++;
                 SkipSpaces();
@@ -215,6 +216,10 @@ internal sealed partial class YamlParser
         var buf = new List<byte>();
         var pendingBreaks = 0;
 
+        // Bytes contributed by an escape are content and must survive trailing-whitespace folding; the protected length
+        // marks how far into the buffer such bytes reach.
+        var protectedLength = 0;
+
         while (true)
         {
             if (AtEnd)
@@ -223,6 +228,7 @@ internal sealed partial class YamlParser
             var b = Peek();
             if (b == (byte)'"')
             {
+                FlushFold(buf, ref pendingBreaks);
                 Advance();
                 break;
             }
@@ -243,12 +249,13 @@ internal sealed partial class YamlParser
                 FlushFold(buf, ref pendingBreaks);
                 Advance();
                 ReadEscape(buf);
+                protectedLength = buf.Count;
                 continue;
             }
 
             if (b is (byte)'\n' or (byte)'\r')
             {
-                TrimTrailingInlineSpace(buf);
+                TrimTrailingInlineSpace(buf, protectedLength);
                 Advance();
                 pendingBreaks++;
                 SkipSpaces();
@@ -400,12 +407,14 @@ internal sealed partial class YamlParser
     }
 
     /// <summary>
-    /// Removes trailing inline space and tab bytes from the buffer before a folded line break.
+    /// Removes trailing literal space and tab bytes from the buffer before a folded line break, without trimming below
+    /// the protected length (which marks bytes contributed by an escape and therefore part of the content).
     /// </summary>
     /// <param name="buf">The output byte buffer.</param>
-    private static void TrimTrailingInlineSpace(List<byte> buf)
+    /// <param name="protectedLength">The buffer length below which trimming must not reach.</param>
+    private static void TrimTrailingInlineSpace(List<byte> buf, int protectedLength)
     {
-        while (buf.Count > 0 && buf[^1] is (byte)' ' or (byte)'\t')
+        while (buf.Count > protectedLength && buf[^1] is (byte)' ' or (byte)'\t')
             buf.RemoveAt(buf.Count - 1);
     }
 
@@ -451,7 +460,9 @@ internal sealed partial class YamlParser
 
         SkipLineTrailing(); // consume the rest of the header line and its break
 
-        var lines = new List<string>();
+        // Each raw line records whether it was blank and its leading-space count, so a blank line's content beyond the
+        // (possibly later-detected) content indentation can be preserved once that indentation is known.
+        var raw = new List<(bool Blank, int Start, int End, int Spaces)>();
         var contentIndent = explicitIndent > 0 ? parentIndent + explicitIndent : -1;
 
         while (!AtEnd)
@@ -461,37 +472,51 @@ internal sealed partial class YamlParser
             while (p < _length && _source[p] == (byte)' ')
                 p++;
 
+            var spaces = p - lineStart;
             var blank = p >= _length || _source[p] is (byte)'\n' or (byte)'\r';
             if (!blank)
             {
-                var col = p - lineStart;
-                if (col == 0 && IsBoundaryAt(p))
+                // A line no more indented than the parent (including a document marker) ends the block scalar.
+                if (spaces <= parentIndent || (spaces == 0 && IsBoundaryAt(p)))
+                {
+                    _pos = lineStart;
                     break;
+                }
 
                 if (contentIndent < 0)
-                    contentIndent = col;
+                    contentIndent = spaces;
 
-                if (col < contentIndent)
+                if (spaces < contentIndent)
+                {
+                    _pos = lineStart;
                     break;
+                }
             }
 
             var lineEnd = p;
             while (lineEnd < _length && _source[lineEnd] is not ((byte)'\n' or (byte)'\r'))
                 lineEnd++;
 
-            if (blank)
-            {
-                lines.Add(string.Empty);
-            }
-            else
-            {
-                var cstart = lineStart + contentIndent;
-                lines.Add(Utf8(cstart, lineEnd - cstart));
-            }
+            raw.Add((blank, lineStart, lineEnd, spaces));
 
             _pos = lineEnd;
             if (!AtEnd)
                 Advance();
+        }
+
+        var lines = new List<(bool Blank, string Text)>(raw.Count);
+        foreach (var (blank, start, end, spaces) in raw)
+        {
+            if (blank)
+            {
+                var extra = contentIndent >= 0 && spaces > contentIndent ? new string(' ', spaces - contentIndent) : string.Empty;
+                lines.Add((true, extra));
+            }
+            else
+            {
+                var cstart = start + contentIndent;
+                lines.Add((false, Utf8(cstart, end - cstart)));
+            }
         }
 
         var text = folded ? AssembleFolded(lines, chomping) : AssembleLiteral(lines, chomping);
@@ -521,15 +546,15 @@ internal sealed partial class YamlParser
     /// <summary>
     /// Assembles the collected lines of a literal block scalar and applies the chomping indicator.
     /// </summary>
-    /// <param name="lines">The content lines, with blank lines represented as empty strings.</param>
+    /// <param name="lines">The content lines, each flagged as blank and carrying its indentation-stripped text.</param>
     /// <param name="chomping">The chomping mode from the header.</param>
     /// <returns>The assembled scalar text.</returns>
-    private static string AssembleLiteral(List<string> lines, YamlBlockChomping chomping)
+    private static string AssembleLiteral(List<(bool Blank, string Text)> lines, YamlBlockChomping chomping)
     {
         var sb = new StringBuilder();
-        foreach (var line in lines)
+        foreach (var (_, text) in lines)
         {
-            sb.Append(line);
+            sb.Append(text);
             sb.Append('\n');
         }
 
@@ -539,44 +564,47 @@ internal sealed partial class YamlParser
     /// <summary>
     /// Assembles the collected lines of a folded block scalar and applies the chomping indicator.
     /// </summary>
-    /// <param name="lines">The content lines, with blank lines represented as empty strings.</param>
+    /// <param name="lines">The content lines, each flagged as blank and carrying its indentation-stripped text.</param>
     /// <param name="chomping">The chomping mode from the header.</param>
     /// <returns>The assembled scalar text.</returns>
-    private static string AssembleFolded(List<string> lines, YamlBlockChomping chomping)
+    private static string AssembleFolded(List<(bool Blank, string Text)> lines, YamlBlockChomping chomping)
     {
         var sb = new StringBuilder();
         var pending = 0;
         var any = false;
-        var moreIndentedPrev = false;
+        var prevMoreIndented = false;
 
-        foreach (var line in lines)
+        foreach (var (blank, text) in lines)
         {
-            if (line.Length == 0)
+            if (blank)
             {
                 pending++;
                 continue;
             }
 
-            var moreIndented = line[0] is ' ' or '\t';
+            var moreIndented = text.Length > 0 && text[0] is ' ' or '\t';
             if (any)
             {
-                if (pending > 0)
-                    sb.Append('\n', pending);
-                else if (moreIndented || moreIndentedPrev)
-                    sb.Append('\n');
+                if (moreIndented || prevMoreIndented)
+                    sb.Append('\n', pending + 1); // breaks adjacent to a more-indented line are all preserved
+                else if (pending > 0)
+                    sb.Append('\n', pending); // a run of blank lines preserves that many breaks, folding the join
                 else
-                    sb.Append(' ');
+                    sb.Append(' '); // an ordinary single line break folds to a space
+            }
+            else if (pending > 0)
+            {
+                sb.Append('\n', pending); // leading blank lines before the first content line
             }
 
-            sb.Append(line);
+            sb.Append(text);
             pending = 0;
             any = true;
-            moreIndentedPrev = moreIndented;
+            prevMoreIndented = moreIndented;
         }
 
         // Re-attach trailing line breaks for chomping: one for the final content line plus any trailing blanks.
-        var body = sb.ToString();
-        var withTrailing = body + new string('\n', pending + (any ? 1 : 0));
+        var withTrailing = sb.ToString() + new string('\n', pending + (any ? 1 : 0));
         return ApplyChomping(withTrailing, chomping);
     }
 

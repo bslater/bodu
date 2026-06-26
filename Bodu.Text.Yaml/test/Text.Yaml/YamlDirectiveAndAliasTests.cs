@@ -76,16 +76,16 @@ public sealed class YamlDirectiveAndAliasTests
     }
 
     /// <summary>
-    /// Verifies that redefining the secondary handle with <c>%TAG</c> makes <c>!!str</c> a non-core tag, so the scalar
-    /// keeps its implicitly resolved integer type.
+    /// Verifies that redefining the secondary handle with <c>%TAG</c> makes <c>!!str</c> resolve to a non-core tag,
+    /// which the profile rejects as an unsupported tag.
     /// </summary>
     [TestMethod]
-    public void Parse_WhenSecondaryHandleRedefined_ShouldNotApplyCoreTag()
+    public void Parse_WhenSecondaryHandleRedefined_ShouldRejectUnknownTag()
     {
-        using var doc = YamlDocument.Parse("%TAG !! tag:example.com,2000:\n---\n!!str 123\n");
-
-        Assert.AreEqual(YamlValueKind.Integer, doc.RootElement.ValueKind);
-        Assert.AreEqual(123L, doc.RootElement.GetInt64());
+        Assert.ThrowsExactly<YamlFormatException>(() =>
+        {
+            using var _ = YamlDocument.Parse("%TAG !! tag:example.com,2000:\n---\n!!str 123\n");
+        });
     }
 
     /// <summary>
