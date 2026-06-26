@@ -12,28 +12,55 @@ Targets `net8.0`.
 
 ## Conformance profile
 
-Bodu.Text.Yaml implements a **YAML 1.2 core, JSON-compatible tree profile**. It is a predictable configuration- and document-mapping library, not a full YAML 1.2 graph processor. The profile is enforced: inputs that fall outside it are rejected with `YamlFormatException` rather than silently degraded.
+Bodu.Text.Yaml implements the **Bodu YAML Core Tree Profile**: a YAML 1.2 core-schema, JSON-compatible tree model for configuration data. It is a predictable configuration- and document-mapping library, not a full YAML 1.2 representation-graph processor. The profile is enforced — inputs that fall outside it are rejected with `YamlFormatException` rather than silently degraded — and the enforcement is gated by the vendored `yaml-test-suite` conformance corpus (see [Conformance corpus](#conformance-corpus)).
 
 **Supported**
 
 - Block and flow sequences and mappings.
 - Plain, single-quoted, double-quoted, literal (`|`), and folded (`>`) scalars, with chomping and indentation indicators.
 - Comments, the `---` / `...` document markers, and multi-document streams.
-- Implicit typing under the YAML 1.2 core schema by default (only `true`/`false` are booleans — no "Norway problem"), with opt-in YAML 1.1 typing via `SpecVersion` (`yes`/`no`, `on`/`off`, `y`/`n`, sexagesimal numbers).
+- Implicit typing under the YAML 1.2 core schema by default (only `true`/`false` are booleans — no "Norway problem"), with opt-in YAML 1.1 typing via `SpecVersion` (`yes`/`no`, `on`/`off`, `y`/`n`, sexagesimal numbers). A document's `%YAML` directive is honored for scalar resolution, overriding the configured `SpecVersion` for that document.
 - Anchors and aliases, subject to **acyclic** tree resolution.
-- The core tags (`!!str`, `!!null`, `!!bool`, `!!int`, `!!float`) and `%TAG` handle expansion.
-- The YAML 1.1 merge key (`<<`) as an **opt-in** compatibility feature (`YamlMergeKeyBehavior`).
+- The core tags (`!!str`, `!!null`, `!!bool`, `!!int`, `!!float`) and `%TAG` handle expansion. An explicit core tag whose content is invalid for the tag (for example `!!int abc`) is rejected, not silently degraded.
+- The YAML 1.1 merge key (`<<`) as an **opt-in** compatibility feature (`YamlMergeKeyBehavior`, on the reader, document, and serializer options).
 
 **Rejected** (each throws `YamlFormatException`)
 
 - **Complex (non-scalar) mapping keys** — keys must resolve to scalar strings. A sequence or mapping used as a key is rejected, not coerced.
 - **Duplicate mapping keys** — by default (configurable via `YamlDuplicateKeyBehavior`).
-- **Duplicate or cyclic anchors / aliases.**
+- **Duplicate / overriding anchors and cyclic aliases.** A repeated anchor name is rejected: anchor override is a YAML representation-graph feature outside this tree profile.
 - **Tabs used as indentation** (tabs remain legal as separation whitespace).
 - **Invalid UTF-8, unpaired surrogates, invalid Unicode escapes, and non-printable control characters.**
-- **Malformed or unsupported directives** and unknown non-core tags.
+- **Malformed or unsupported directives** and **unknown non-core tags**.
 
 This profile aligns with the Bodu TOML / Bencode and `System.Text.Json` architectural family. Broader YAML graph support (complex keys, anchor identity, a streaming event reader, richer tag resolution) is a deliberate future extension, not a silent partial behavior of this release.
+
+### Compliance matrix
+
+| Feature | Profile support | Behavior |
+|---|---|---|
+| Block / flow collections | Supported | Parsed to mappings and sequences. |
+| Scalar styles (plain, quoted, literal, folded) | Supported | Decoded with chomping and indentation indicators. |
+| Core-schema typing (`null`/`bool`/`int`/`float`/`str`) | Supported | YAML 1.2 core by default; YAML 1.1 via `SpecVersion` or a `%YAML 1.1` directive. |
+| Anchors / aliases | Supported (acyclic) | Resolved into tree nodes; cycles and anchor override rejected. |
+| Merge key `<<` | Opt-in | Controlled by `YamlMergeKeyBehavior` (expand by default). |
+| Core tags + `%TAG` | Supported | Expanded and validated; invalid tagged content rejected. |
+| Multi-document streams | Supported | `YamlDocument.ParseAllDocuments`. |
+| Complex (non-scalar) keys | Rejected | `YamlFormatException`. |
+| Duplicate mapping keys | Rejected by default | Configurable via `YamlDuplicateKeyBehavior`. |
+| Anchor override, cyclic graphs | Rejected | Outside the tree profile. |
+| Unknown / non-core tags | Rejected | Outside the core schema. |
+| Tabs in indentation, invalid UTF-8, control chars | Rejected | Source validation. |
+
+### Conformance corpus
+
+The `yaml/yaml-test-suite` corpus is linked into the repository as the **`yaml-test-suite` git submodule** (under `Bodu.Text.Yaml/test/`, pinned to a released `data-YYYY-MM-DD` commit). Initialize it before running the Regression tier:
+
+```shell
+git submodule update --init Bodu.Text.Yaml/test/yaml-test-suite
+```
+
+The Regression test tier reads each upstream vector through `YamlTestCorpusReader`, which joins it with the repository's own `test/YamlTestCorpus/classification.tsv` into a `YamlTestVector` KAT. Every vector is classified `SupportedPass`, `SupportedParseOnly`, `SupportedFail`, or `UnsupportedFeatureRejected`; a governance suite asserts the classification stays exhaustive with **zero known gaps**, supported-pass vectors match their JSON expectation, round-trip through the writer, and produce a reader token stream whose structural shape matches the vector's `test.event` file (over the alias-free, single-document subset), and every profile-unsupported vector is rejected for a specific, recognized reason. To move to a newer suite release, check out the new tag inside the submodule, commit the updated pointer, and reclassify any added vectors.
 
 > **Reader note.** `Utf8YamlReader` exposes a forward-only token surface like `System.Text.Json.Utf8JsonReader`, but it is **buffered**: the constructor parses the whole document into an in-memory node store and `Read()` walks it. It is the analogue of the TOML library's `TomlDocumentReader` cursor, not the streaming `Utf8TomlReader` scanner — YAML's indentation context, back-referencing aliases, and merge keys cannot be resolved in a single forward pass.
 

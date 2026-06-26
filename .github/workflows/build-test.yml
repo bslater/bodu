@@ -22,6 +22,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # The Bodu.Text.Yaml Regression tier reads the yaml/yaml-test-suite conformance corpus, linked as the
+          # 'yaml-test-suite' git submodule; check it out so those tests have their vectors.
+          submodules: recursive
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4

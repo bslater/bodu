@@ -4,13 +4,14 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Text.Yaml;
 using Bodu.Text.Yaml.Document;
 
 namespace Bodu.Text.Yaml;
 
 /// <summary>
-/// Verifies parsing of YAML source into the read-only <see cref="YamlDocument" /> object model.
+/// Verifies parsing of YAML source into the read-only <see cref="YamlDocument" /> object model. Scalar typing,
+/// quoting, block scalars, flow collections, anchors, merge keys, tags, multi-document streams, and profile
+/// enforcement are covered in the subject-specific partial files.
 /// </summary>
 [TestClass]
 public partial class YamlDocumentTests
@@ -83,74 +84,6 @@ public partial class YamlDocumentTests
         Assert.AreEqual(2L, root[1].GetProperty("age").GetInt64());
     }
 
-    /// <summary>Verifies that flow collections are parsed.</summary>
-    [TestMethod]
-    public void Parse_WhenFlowCollections_ShouldParse()
-    {
-        using var doc = YamlDocument.Parse("nums: [1, 2, 3]\npoint: {x: 10, y: 20}\n");
-        var root = doc.RootElement;
-
-        var nums = root.GetProperty("nums");
-        Assert.AreEqual(3, nums.GetSequenceLength());
-        Assert.AreEqual(2L, nums[1].GetInt64());
-
-        var point = root.GetProperty("point");
-        Assert.AreEqual(10L, point.GetProperty("x").GetInt64());
-        Assert.AreEqual(20L, point.GetProperty("y").GetInt64());
-    }
-
-    /// <summary>Verifies that double-quoted escapes are decoded.</summary>
-    [TestMethod]
-    public void Parse_WhenDoubleQuotedEscapes_ShouldDecode()
-    {
-        using var doc = YamlDocument.Parse("text: \"line1\\nline2\\ttab\\u0041\"\n");
-        Assert.AreEqual("line1\nline2\ttabA", doc.RootElement.GetProperty("text").GetString());
-    }
-
-    /// <summary>Verifies that single-quoted scalars decode doubled quotes and are never type-resolved.</summary>
-    [TestMethod]
-    public void Parse_WhenSingleQuoted_ShouldDecodeDoubledQuoteAndStayString()
-    {
-        using var doc = YamlDocument.Parse("a: 'it''s 42'\nb: '123'\n");
-        Assert.AreEqual("it's 42", doc.RootElement.GetProperty("a").GetString());
-        Assert.AreEqual(YamlValueKind.String, doc.RootElement.GetProperty("b").ValueKind);
-        Assert.AreEqual("123", doc.RootElement.GetProperty("b").GetString());
-    }
-
-    /// <summary>Verifies that a literal block scalar preserves line breaks with clip chomping.</summary>
-    [TestMethod]
-    public void Parse_WhenLiteralBlockScalar_ShouldPreserveLineBreaks()
-    {
-        using var doc = YamlDocument.Parse("text: |\n  line1\n  line2\n");
-        Assert.AreEqual("line1\nline2\n", doc.RootElement.GetProperty("text").GetString());
-    }
-
-    /// <summary>Verifies that a folded block scalar folds line breaks into spaces with strip chomping.</summary>
-    [TestMethod]
-    public void Parse_WhenFoldedBlockScalarStripped_ShouldFold()
-    {
-        using var doc = YamlDocument.Parse("text: >-\n  line1\n  line2\n");
-        Assert.AreEqual("line1 line2", doc.RootElement.GetProperty("text").GetString());
-    }
-
-    /// <summary>Verifies that the YAML 1.2 core schema does not treat <c>no</c> as a boolean (the Norway problem).</summary>
-    [TestMethod]
-    public void Parse_WhenNorwayUnderV12_ShouldStayString()
-    {
-        using var doc = YamlDocument.Parse("country: no\n");
-        Assert.AreEqual(YamlValueKind.String, doc.RootElement.GetProperty("country").ValueKind);
-        Assert.AreEqual("no", doc.RootElement.GetProperty("country").GetString());
-    }
-
-    /// <summary>Verifies that the YAML 1.1 schema treats <c>no</c> as the boolean false.</summary>
-    [TestMethod]
-    public void Parse_WhenNorwayUnderV11_ShouldBeBoolean()
-    {
-        using var doc = YamlDocument.Parse("country: no\n", new YamlDocumentOptions { SpecVersion = YamlSpecVersion.V1_1 });
-        Assert.AreEqual(YamlValueKind.Boolean, doc.RootElement.GetProperty("country").ValueKind);
-        Assert.IsFalse(doc.RootElement.GetProperty("country").GetBoolean());
-    }
-
     /// <summary>Verifies that comments and blank lines are ignored.</summary>
     [TestMethod]
     public void Parse_WhenCommentsAndBlankLines_ShouldIgnore()
@@ -160,40 +93,12 @@ public partial class YamlDocumentTests
         Assert.AreEqual(2L, doc.RootElement.GetProperty("b").GetInt64());
     }
 
-    /// <summary>Verifies that a multi-line plain scalar folds continuation lines into spaces.</summary>
-    [TestMethod]
-    public void Parse_WhenMultiLinePlain_ShouldFold()
-    {
-        using var doc = YamlDocument.Parse("text: this is\n  a long value\n");
-        Assert.AreEqual("this is a long value", doc.RootElement.GetProperty("text").GetString());
-    }
-
     /// <summary>Verifies that a leading document-start marker is accepted.</summary>
     [TestMethod]
     public void Parse_WhenDocumentStartMarker_ShouldParseBody()
     {
         using var doc = YamlDocument.Parse("---\nkey: value\n");
         Assert.AreEqual("value", doc.RootElement.GetProperty("key").GetString());
-    }
-
-    /// <summary>Verifies that hexadecimal and negative integers resolve.</summary>
-    [TestMethod]
-    public void Parse_WhenHexAndNegativeIntegers_ShouldResolve()
-    {
-        using var doc = YamlDocument.Parse("hex: 0x1F\nneg: -42\n");
-        Assert.AreEqual(31L, doc.RootElement.GetProperty("hex").GetInt64());
-        Assert.AreEqual(-42L, doc.RootElement.GetProperty("neg").GetInt64());
-    }
-
-    /// <summary>Verifies that float special forms resolve.</summary>
-    [TestMethod]
-    public void Parse_WhenFloatSpecials_ShouldResolve()
-    {
-        using var doc = YamlDocument.Parse("inf: .inf\nninf: -.Inf\nnan: .nan\nexp: 1e3\n");
-        Assert.IsTrue(double.IsPositiveInfinity(doc.RootElement.GetProperty("inf").GetDouble()));
-        Assert.IsTrue(double.IsNegativeInfinity(doc.RootElement.GetProperty("ninf").GetDouble()));
-        Assert.IsTrue(double.IsNaN(doc.RootElement.GetProperty("nan").GetDouble()));
-        Assert.AreEqual(1000.0, doc.RootElement.GetProperty("exp").GetDouble());
     }
 
     /// <summary>Verifies that mapping enumeration yields all pairs in order.</summary>

@@ -28,6 +28,7 @@ public sealed class YamlSerializerOptions
     private bool _propertyNameCaseInsensitive;
     private YamlSpecVersion _specVersion;
     private YamlDuplicateKeyBehavior _duplicateKeyBehavior;
+    private YamlMergeKeyBehavior _mergeKeyBehavior;
     private YamlNumberHandling _numberHandling;
     private YamlUnmappedMemberHandling _unmappedMemberHandling;
     private int _maxDepth;
@@ -38,7 +39,7 @@ public sealed class YamlSerializerOptions
     /// </summary>
     public YamlSerializerOptions()
     {
-        Converters = new Collection<YamlConverter>();
+        Converters = new YamlConverterCollection(this);
     }
 
     /// <summary>
@@ -134,6 +135,17 @@ public sealed class YamlSerializerOptions
     }
 
     /// <summary>
+    /// Gets or sets the policy applied to the YAML merge key (<c>&lt;&lt;</c>) during deserialization.
+    /// </summary>
+    /// <value>The merge-key policy; the default is <see cref="YamlMergeKeyBehavior.Expand" />.</value>
+    /// <exception cref="InvalidOperationException">The options instance is read-only.</exception>
+    public YamlMergeKeyBehavior MergeKeyBehavior
+    {
+        get => _mergeKeyBehavior;
+        set { VerifyMutable(); _mergeKeyBehavior = value; }
+    }
+
+    /// <summary>
     /// Gets or sets the policy applied when coercing numeric scalars to integral targets.
     /// </summary>
     /// <value>The number-handling policy; the default is <see cref="YamlNumberHandling.Strict" />.</value>
@@ -198,7 +210,7 @@ public sealed class YamlSerializerOptions
     /// Throws when the options instance has been frozen.
     /// </summary>
     /// <exception cref="InvalidOperationException">The options instance is read-only.</exception>
-    private void VerifyMutable()
+    internal void VerifyMutable()
     {
         if (_isReadOnly)
             throw new InvalidOperationException(YamlResourceStrings.Op_Invalid_OptionsReadOnly);

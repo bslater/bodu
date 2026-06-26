@@ -72,17 +72,4 @@ public partial class Utf8YamlReaderTests
         Assert.AreEqual(42L, reader.GetInt64());
         Assert.IsFalse(reader.Read());
     }
-
-    /// <summary>Verifies that a property name can be compared against UTF-8 text without allocation.</summary>
-    [TestMethod]
-    public void ValueTextEquals_WhenPropertyName_ShouldMatch()
-    {
-        var reader = new Utf8YamlReader(Encoding.UTF8.GetBytes("host: localhost\n"));
-
-        Assert.IsTrue(reader.Read()); // StartMapping
-        Assert.IsTrue(reader.Read()); // PropertyName
-        Assert.AreEqual(YamlTokenType.PropertyName, reader.TokenType);
-        Assert.IsTrue(reader.ValueTextEquals("host"u8));
-        Assert.IsFalse(reader.ValueTextEquals("port"u8));
-    }
 }

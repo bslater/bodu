@@ -52,6 +52,51 @@ repair_dnceng_plugin() {
 }
 repair_dnceng_plugin || true
 
+# ---------------------------------------------------------------------------
+# yaml-test-suite submodule
+#
+# Bodu.Text.Yaml links the yaml/yaml-test-suite conformance corpus as the
+# 'yaml-test-suite' git submodule. The Regression test tier needs its vectors
+# present in the working tree. A normal `git submodule update --init` works
+# wherever GitHub is reachable, but the remote Claude Code on the web git proxy
+# only serves the in-scope repository and returns 403 for external clones, so
+# fall back to fetching the pinned release tarball over the HTTPS proxy and
+# populating the submodule working tree. Idempotent and never blocks startup.
+# ---------------------------------------------------------------------------
+ensure_yaml_test_suite() {
+    local repo_root sub_path ref
+    repo_root="$(git -C "$(dirname "${BASH_SOURCE[0]}")" rev-parse --show-toplevel 2>/dev/null)" || return 0
+    sub_path="$repo_root/Bodu.Text.Yaml/test/yaml-test-suite"
+    ref="data-2022-01-17"
+
+    # Already populated.
+    [ -f "$sub_path/229Q/in.yaml" ] && return 0
+
+    # Preferred path: a real submodule checkout where the upstream is reachable.
+    if git -C "$repo_root" submodule update --init Bodu.Text.Yaml/test/yaml-test-suite >/dev/null 2>&1 \
+        && [ -f "$sub_path/229Q/in.yaml" ]; then
+        echo "[session-start] Initialized yaml-test-suite submodule."
+        return 0
+    fi
+
+    # Fallback: fetch the pinned release tarball over HTTPS and populate the tree.
+    local tmp src
+    tmp="$(mktemp -d)"
+    if curl -fsSL --max-time 120 "https://codeload.github.com/yaml/yaml-test-suite/tar.gz/refs/tags/$ref" -o "$tmp/corpus.tgz" \
+        && tar -xzf "$tmp/corpus.tgz" -C "$tmp"; then
+        src="$(find "$tmp" -maxdepth 1 -type d -name 'yaml-test-suite-*' | head -1)"
+        if [ -n "$src" ]; then
+            mkdir -p "$sub_path"
+            cp -a "$src"/. "$sub_path"/
+            echo "[session-start] Populated yaml-test-suite from the $ref release tarball (submodule clone unavailable)."
+        fi
+    else
+        echo "[session-start] Could not populate yaml-test-suite; the Regression corpus tier will be unavailable." >&2
+    fi
+    rm -rf "$tmp"
+}
+ensure_yaml_test_suite || true
+
 # Fast path: a .NET 10 SDK is already installed. Checking for the 10.x band
 # specifically (rather than merely `dotnet` on PATH) ensures we still upgrade
 # a container image that ships only an older SDK such as 8.0.

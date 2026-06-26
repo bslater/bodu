@@ -34,14 +34,14 @@ public sealed partial class YamlTestCorpusTests
     public void Corpus_EveryCaseIsClassifiedOnce()
     {
         var classified = new HashSet<string>(StringComparer.Ordinal);
-        foreach (var (id, _, _) in ReadManifest())
+        foreach (var (id, _, _) in YamlTestCorpusReader.ReadManifest())
         {
             Assert.IsTrue(classified.Add(id), $"The case '{id}' is classified more than once.");
         }
 
-        foreach (var file in Directory.EnumerateFiles(CorpusRoot, "in.yaml", SearchOption.AllDirectories))
+        foreach (var file in Directory.EnumerateFiles(YamlTestCorpusReader.VectorRoot, "in.yaml", SearchOption.AllDirectories))
         {
-            var id = Path.GetRelativePath(CorpusRoot, Path.GetDirectoryName(file)!).Replace('\\', '/');
+            var id = Path.GetRelativePath(YamlTestCorpusReader.VectorRoot, Path.GetDirectoryName(file)!).Replace('\\', '/');
             Assert.IsTrue(classified.Contains(id), $"The vendored case '{id}' is not classified in classification.tsv.");
         }
     }
@@ -52,11 +52,11 @@ public sealed partial class YamlTestCorpusTests
     [TestMethod]
     public void Corpus_EveryManifestEntryResolvesAndIsRecognized()
     {
-        foreach (var (id, _, category) in ReadManifest())
+        foreach (var (id, _, category) in YamlTestCorpusReader.ReadManifest())
         {
             Assert.IsTrue(
-                File.Exists(Path.Combine(CorpusRoot, id.Replace('/', Path.DirectorySeparatorChar), "in.yaml")),
-                $"The classification lists '{id}', which is not present in the vendored corpus.");
+                File.Exists(Path.Combine(YamlTestCorpusReader.VectorRoot, id.Replace('/', Path.DirectorySeparatorChar), "in.yaml")),
+                $"The classification lists '{id}', which is not present in the corpus submodule.");
 
             Assert.IsTrue(KnownCategories.Contains(category), $"The case '{id}' uses an unrecognized category '{category}'.");
         }
@@ -68,14 +68,29 @@ public sealed partial class YamlTestCorpusTests
     [TestMethod]
     public void Corpus_EverySupportedValidCaseHasAJsonExpectation()
     {
-        foreach (var (id, _, category) in ReadManifest())
+        foreach (var (id, _, category) in YamlTestCorpusReader.ReadManifest())
         {
             if (!string.Equals(category, "SupportedPass", StringComparison.Ordinal))
                 continue;
 
             Assert.IsTrue(
-                File.Exists(Path.Combine(CorpusRoot, id.Replace('/', Path.DirectorySeparatorChar), "in.json")),
+                File.Exists(Path.Combine(YamlTestCorpusReader.VectorRoot, id.Replace('/', Path.DirectorySeparatorChar), "in.json")),
                 $"The supported-valid case '{id}' has no in.json expectation.");
+        }
+    }
+
+    /// <summary>
+    /// Verifies that every vendored case mirrors the upstream layout by carrying its <c>===</c> description file, so
+    /// the corpus stays a faithful structural copy of the yaml-test-suite repository.
+    /// </summary>
+    [TestMethod]
+    public void Corpus_EveryCaseHasUpstreamDescriptionFile()
+    {
+        foreach (var (id, _, _) in YamlTestCorpusReader.ReadManifest())
+        {
+            Assert.IsTrue(
+                File.Exists(Path.Combine(YamlTestCorpusReader.VectorRoot, id.Replace('/', Path.DirectorySeparatorChar), "===")),
+                $"The case '{id}' is missing its upstream '===' description file.");
         }
     }
 
@@ -86,7 +101,7 @@ public sealed partial class YamlTestCorpusTests
     [TestMethod]
     public void Corpus_HasNoKnownGaps()
     {
-        var gaps = ReadManifest()
+        var gaps = YamlTestCorpusReader.ReadManifest()
             .Where(entry => string.Equals(entry.Category, "KnownGap", StringComparison.Ordinal))
             .Select(entry => entry.Id)
             .ToList();
@@ -104,14 +119,14 @@ public sealed partial class YamlTestCorpusTests
     [TestMethod]
     public void Corpus_MatchesPinnedProvenance()
     {
-        using var provenance = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(CorpusRoot, "provenance.json")));
+        using var provenance = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(YamlTestCorpusReader.ManifestRoot, "provenance.json")));
         var root = provenance.RootElement;
 
-        var actualCases = Directory.EnumerateFiles(CorpusRoot, "in.yaml", SearchOption.AllDirectories).Count();
+        var actualCases = Directory.EnumerateFiles(YamlTestCorpusReader.VectorRoot, "in.yaml", SearchOption.AllDirectories).Count();
         Assert.AreEqual(root.GetProperty("caseCount").GetInt32(), actualCases, "The vendored case count drifted from the pinned provenance.");
 
         var counts = new Dictionary<string, int>(StringComparer.Ordinal);
-        foreach (var (_, _, category) in ReadManifest())
+        foreach (var (_, _, category) in YamlTestCorpusReader.ReadManifest())
             counts[category] = counts.GetValueOrDefault(category) + 1;
 
         var pinned = root.GetProperty("classification");

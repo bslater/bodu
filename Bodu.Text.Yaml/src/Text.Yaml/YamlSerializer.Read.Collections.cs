@@ -31,8 +31,9 @@ public static partial class YamlSerializer
         RequireSequence(element);
 
         var items = new List<object?>();
+        var index = 0;
         foreach (var item in element.EnumerateSequence())
-            items.Add(BindValue(item, elementType, options));
+            items.Add(BindChild(item, elementType, options, $"[{index++}]"));
 
         var array = Array.CreateInstance(elementType, items.Count);
         for (var i = 0; i < items.Count; i++)
@@ -60,8 +61,9 @@ public static partial class YamlSerializer
 
         var listType = typeof(List<>).MakeGenericType(elementType);
         var list = (IList)Activator.CreateInstance(listType)!;
+        var index = 0;
         foreach (var item in element.EnumerateSequence())
-            list.Add(BindValue(item, elementType, options));
+            list.Add(BindChild(item, elementType, options, $"[{index++}]"));
 
         if (type.IsAssignableFrom(listType))
             return list;
@@ -99,7 +101,7 @@ public static partial class YamlSerializer
                     ? Enum.Parse(keyType, pair.Name, ignoreCase: true)
                     : Convert.ChangeType(pair.Name, keyType, CultureInfo.InvariantCulture);
 
-            dict[key] = BindValue(pair.Value, valueType, options);
+            dict[key] = BindChild(pair.Value, valueType, options, pair.Name);
         }
 
         return dict;
@@ -137,7 +139,7 @@ public static partial class YamlSerializer
 
                 matched = true;
                 if (member.Set is not null)
-                    member.Set(instance, BindValue(pair.Value, member.Type, options));
+                    member.Set(instance, BindChild(pair.Value, member.Type, options, member.WireName(options)));
 
                 break;
             }

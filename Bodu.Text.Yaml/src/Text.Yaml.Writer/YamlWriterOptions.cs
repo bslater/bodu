@@ -52,14 +52,34 @@ public struct YamlWriterOptions
     internal readonly int EffectiveIndentSize => _indentSize <= 0 ? 2 : _indentSize;
 
     /// <summary>
-    /// Gets the effective maximum write depth, applying the default.
+    /// Gets the effective maximum write depth, applying the default and the implementation ceiling.
     /// </summary>
-    /// <value>The maximum nesting depth used by the writer.</value>
-    internal readonly int EffectiveMaxDepth => _maxDepth <= 0 ? 64 : _maxDepth;
+    /// <value>The clamped maximum nesting depth used by the writer.</value>
+    internal readonly int EffectiveMaxDepth =>
+        _maxDepth <= 0 ? YamlLimits.DefaultMaxDepth : Math.Min(_maxDepth, YamlLimits.AbsoluteMaxDepth);
 
     /// <summary>
     /// Gets the effective newline sequence, applying the default.
     /// </summary>
     /// <value>The newline string used by the writer.</value>
     internal readonly string EffectiveNewLine => _newLine ?? "\n";
+
+    /// <summary>
+    /// The largest indentation width the writer accepts.
+    /// </summary>
+    private const int MaxIndentSize = 16;
+
+    /// <summary>
+    /// Validates the configured options, rejecting an unsupported newline string or an out-of-range indentation width.
+    /// </summary>
+    /// <exception cref="ArgumentException">The newline is not <see langword="null" />, a line feed, or a carriage-return line feed.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">The indentation width is greater than 16.</exception>
+    internal readonly void Validate()
+    {
+        if (_newLine is not (null or "\n" or "\r\n"))
+            throw new ArgumentException(YamlResourceStrings.Arg_Invalid_YamlWriterNewLine, nameof(NewLine));
+
+        if (_indentSize > MaxIndentSize)
+            throw new ArgumentOutOfRangeException(nameof(IndentSize), _indentSize, YamlResourceStrings.Arg_OutOfRange_YamlWriterIndentSize);
+    }
 }

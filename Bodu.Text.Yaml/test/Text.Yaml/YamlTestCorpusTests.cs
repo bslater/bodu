@@ -5,176 +5,128 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Text;
-using System.Text.Json;
 using Bodu.Test.Kat;
 using Bodu.Text.Yaml.Document;
 
 namespace Bodu.Text.Yaml;
 
 /// <summary>
-/// Runs the vendored <c>yaml/yaml-test-suite</c> conformance corpus against the library's YAML 1.2 core,
-/// JSON-compatible tree profile. Every vendored case carries a classification in <c>classification.tsv</c>, and each
-/// classification is asserted: supported-valid cases parse and match their JSON expectation, supported-invalid and
-/// profile-unsupported cases are rejected, and documented known gaps are skipped by the run but pinned by the
-/// governance suite.
+/// Runs the vendored <c>yaml/yaml-test-suite</c> conformance corpus against the library's Bodu YAML Core Tree Profile.
+/// Each vector is loaded by <see cref="YamlTestCorpusReader" /> into a <see cref="YamlTestVector" /> KAT carrying its
+/// classification: supported-valid vectors parse and match their JSON expectation, supported-invalid and
+/// profile-unsupported vectors are rejected, and the governance suite keeps the classification exhaustive and pinned.
 /// </summary>
-/// <remarks>
-/// The corpus and its classification are copied to the test output by the project's <c>YamlTestCorpus\**</c> glob. The
-/// classification was produced once against this library and is checked in; the governance suite guarantees it stays
-/// exhaustive and matches the pinned provenance.
-/// </remarks>
 [TestClass]
 public sealed partial class YamlTestCorpusTests
 {
     /// <summary>
-    /// The root directory of the vendored corpus within the test output.
+    /// Yields the corpus vectors classified as supported-valid with a JSON expectation.
     /// </summary>
-    private static readonly string CorpusRoot = Path.Combine(AppContext.BaseDirectory, "YamlTestCorpus");
+    /// <returns>One row per supported-valid vector.</returns>
+    public static IEnumerable<object[]> SupportedPassCases() => VectorsIn("SupportedPass");
 
     /// <summary>
-    /// Yields the corpus cases classified as supported-valid with a JSON expectation.
+    /// Yields the corpus vectors classified as supported-valid without a JSON expectation.
     /// </summary>
-    /// <returns>One row per supported-valid case.</returns>
-    public static IEnumerable<object[]> SupportedPassCases() => CasesIn("SupportedPass");
+    /// <returns>One row per parse-only vector.</returns>
+    public static IEnumerable<object[]> SupportedParseOnlyCases() => VectorsIn("SupportedParseOnly");
 
     /// <summary>
-    /// Yields the corpus cases classified as supported-valid without a JSON expectation.
+    /// Yields the corpus vectors classified as supported-invalid (the suite expects a parse error).
     /// </summary>
-    /// <returns>One row per parse-only case.</returns>
-    public static IEnumerable<object[]> SupportedParseOnlyCases() => CasesIn("SupportedParseOnly");
+    /// <returns>One row per supported-invalid vector.</returns>
+    public static IEnumerable<object[]> SupportedFailCases() => VectorsIn("SupportedFail");
 
     /// <summary>
-    /// Yields the corpus cases classified as supported-invalid (the suite expects a parse error).
+    /// Yields the corpus vectors classified as valid YAML that the profile deliberately rejects.
     /// </summary>
-    /// <returns>One row per supported-invalid case.</returns>
-    public static IEnumerable<object[]> SupportedFailCases() => CasesIn("SupportedFail");
+    /// <returns>One row per profile-unsupported vector.</returns>
+    public static IEnumerable<object[]> UnsupportedFeatureCases() => VectorsIn("UnsupportedFeatureRejected");
 
     /// <summary>
-    /// Yields the corpus cases classified as valid YAML that the profile deliberately rejects.
+    /// Verifies that every supported-valid corpus vector parses and matches its JSON expectation.
     /// </summary>
-    /// <returns>One row per profile-unsupported case.</returns>
-    public static IEnumerable<object[]> UnsupportedFeatureCases() => CasesIn("UnsupportedFeatureRejected");
-
-    /// <summary>
-    /// Verifies that every supported-valid corpus document parses and matches its JSON expectation.
-    /// </summary>
-    /// <param name="kat">The corpus case under test.</param>
+    /// <param name="kat">The corpus vector under test.</param>
     [TestMethod]
     [DynamicData(nameof(SupportedPassCases), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     [TestCategory("Regression")]
-    public void Parse_WhenSupportedValidCorpusDocument_ShouldMatchExpectation(CorpusKat kat)
+    public void Parse_WhenSupportedValidCorpusDocument_ShouldMatchExpectation(YamlTestVector kat)
     {
-        var yaml = File.ReadAllBytes(Path.Combine(CorpusRoot, kat.RelativePath, "in.yaml"));
-        var jsonBytes = File.ReadAllBytes(Path.Combine(CorpusRoot, kat.RelativePath, "in.json"));
-
         // An empty JSON expectation denotes an empty document, which resolves to a null root.
-        if (Encoding.UTF8.GetString(jsonBytes).Trim().Length == 0)
+        if (Encoding.UTF8.GetString(kat.Json!).Trim().Length == 0)
         {
-            using var emptyDoc = YamlDocument.Parse(yaml);
-            Assert.AreEqual(YamlValueKind.Null, emptyDoc.RootElement.ValueKind, kat.RelativePath);
+            using var emptyDoc = YamlDocument.Parse(kat.Yaml);
+            Assert.AreEqual(YamlValueKind.Null, emptyDoc.RootElement.ValueKind, kat.Id);
             return;
         }
 
-        var expectedValues = CorpusCompare.SplitJsonValues(jsonBytes);
+        var expectedValues = CorpusCompare.SplitJsonValues(kat.Json!);
         if (expectedValues.Count == 1)
         {
-            using var doc = YamlDocument.Parse(yaml);
-            Assert.IsTrue(CorpusCompare.Matches(expectedValues[0], doc.RootElement), kat.RelativePath);
+            using var doc = YamlDocument.Parse(kat.Yaml);
+            Assert.IsTrue(CorpusCompare.Matches(expectedValues[0], doc.RootElement), kat.Id);
             return;
         }
 
-        var documents = YamlDocument.ParseAllDocuments(yaml);
-        Assert.AreEqual(expectedValues.Count, documents.Count, $"{kat.RelativePath}: document count.");
+        var documents = YamlDocument.ParseAllDocuments(kat.Yaml);
+        Assert.AreEqual(expectedValues.Count, documents.Count, $"{kat.Id}: document count.");
         for (var i = 0; i < documents.Count; i++)
-            Assert.IsTrue(CorpusCompare.Matches(expectedValues[i], documents[i].RootElement), $"{kat.RelativePath}[{i}]");
+            Assert.IsTrue(CorpusCompare.Matches(expectedValues[i], documents[i].RootElement), $"{kat.Id}[{i}]");
     }
 
     /// <summary>
-    /// Verifies that every parse-only corpus document parses without error.
+    /// Verifies that every parse-only corpus vector parses without error.
     /// </summary>
-    /// <param name="kat">The corpus case under test.</param>
+    /// <param name="kat">The corpus vector under test.</param>
     [TestMethod]
     [DynamicData(nameof(SupportedParseOnlyCases), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     [TestCategory("Regression")]
-    public void Parse_WhenSupportedParseOnlyCorpusDocument_ShouldParse(CorpusKat kat)
+    public void Parse_WhenSupportedParseOnlyCorpusDocument_ShouldParse(YamlTestVector kat)
     {
-        var yaml = File.ReadAllBytes(Path.Combine(CorpusRoot, kat.RelativePath, "in.yaml"));
-
-        using var doc = YamlDocument.Parse(yaml);
+        using var doc = YamlDocument.Parse(kat.Yaml);
         Assert.IsNotNull(doc);
     }
 
     /// <summary>
-    /// Verifies that every supported-invalid corpus document is rejected with <see cref="YamlFormatException" />.
+    /// Verifies that every supported-invalid corpus vector is rejected with <see cref="YamlFormatException" />.
     /// </summary>
-    /// <param name="kat">The corpus case under test.</param>
+    /// <param name="kat">The corpus vector under test.</param>
     [TestMethod]
     [DynamicData(nameof(SupportedFailCases), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     [TestCategory("Regression")]
-    public void Parse_WhenInvalidCorpusDocument_ShouldThrowYamlFormatException(CorpusKat kat) =>
+    public void Parse_WhenInvalidCorpusDocument_ShouldThrowYamlFormatException(YamlTestVector kat) =>
         AssertRejected(kat);
 
     /// <summary>
-    /// Verifies that every profile-unsupported corpus document is rejected with <see cref="YamlFormatException" />.
+    /// Verifies that every profile-unsupported corpus vector is rejected with <see cref="YamlFormatException" />.
     /// </summary>
-    /// <param name="kat">The corpus case under test.</param>
+    /// <param name="kat">The corpus vector under test.</param>
     [TestMethod]
     [DynamicData(nameof(UnsupportedFeatureCases), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     [TestCategory("Regression")]
-    public void Parse_WhenUnsupportedFeatureCorpusDocument_ShouldThrowYamlFormatException(CorpusKat kat) =>
+    public void Parse_WhenUnsupportedFeatureCorpusDocument_ShouldThrowYamlFormatException(YamlTestVector kat) =>
         AssertRejected(kat);
 
     /// <summary>
-    /// Asserts that a corpus document is rejected with <see cref="YamlFormatException" />.
+    /// Asserts that a corpus vector is rejected with <see cref="YamlFormatException" />.
     /// </summary>
-    /// <param name="kat">The corpus case under test.</param>
-    private static void AssertRejected(CorpusKat kat)
+    /// <param name="kat">The corpus vector under test.</param>
+    private static void AssertRejected(YamlTestVector kat)
     {
-        var yaml = File.ReadAllBytes(Path.Combine(CorpusRoot, kat.RelativePath, "in.yaml"));
-
         Assert.ThrowsExactly<YamlFormatException>(() =>
         {
-            using var _ = YamlDocument.Parse(yaml);
+            using var _ = YamlDocument.Parse(kat.Yaml);
         });
     }
 
     /// <summary>
-    /// Reads the classification manifest and yields the cases in the requested category.
+    /// Loads the vectors in the requested classification category as <see cref="DynamicDataAttribute" /> rows.
     /// </summary>
     /// <param name="category">The classification category to select.</param>
-    /// <returns>One row per case in the category.</returns>
-    private static IEnumerable<object[]> CasesIn(string category)
+    /// <returns>One row per vector in the category.</returns>
+    private static IEnumerable<object[]> VectorsIn(string category)
     {
-        foreach (var (id, _, cat) in ReadManifest())
-        {
-            if (string.Equals(cat, category, StringComparison.Ordinal))
-                yield return [new CorpusKat(id)];
-        }
-    }
-
-    /// <summary>
-    /// Reads the classification manifest rows.
-    /// </summary>
-    /// <returns>The manifest rows as identifier, suite kind, and classification triples.</returns>
-    internal static IEnumerable<(string Id, string Kind, string Category)> ReadManifest()
-    {
-        foreach (var line in File.ReadLines(Path.Combine(CorpusRoot, "classification.tsv")))
-        {
-            if (line.Length == 0)
-                continue;
-
-            var parts = line.Split('\t');
-            yield return (parts[0], parts[1], parts[2]);
-        }
-    }
-
-    /// <summary>
-    /// A corpus case row identified by its path relative to the corpus root.
-    /// </summary>
-    /// <param name="RelativePath">The case path relative to the corpus root.</param>
-    public sealed record CorpusKat(string RelativePath) : IKat
-    {
-        /// <inheritdoc />
-        public string Name => RelativePath;
+        foreach (var vector in YamlTestCorpusReader.LoadByCategory(category))
+            yield return [vector];
     }
 }
