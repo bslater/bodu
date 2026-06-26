@@ -26,10 +26,18 @@ internal sealed partial class YamlParser
         var c = Peek();
 
         if (c == (byte)'"')
-            return NewString(ReadDoubleQuoted(), YamlScalarStyle.DoubleQuoted, offset, null, null);
+        {
+            var row = NewString(ReadDoubleQuoted(), YamlScalarStyle.DoubleQuoted, offset, null, null);
+            SkipLineTrailing();
+            return row;
+        }
 
         if (c == (byte)'\'')
-            return NewString(ReadSingleQuoted(), YamlScalarStyle.SingleQuoted, offset, null, null);
+        {
+            var row = NewString(ReadSingleQuoted(), YamlScalarStyle.SingleQuoted, offset, null, null);
+            SkipLineTrailing();
+            return row;
+        }
 
         return ReadPlainBlock(minIndent, offset);
     }
@@ -502,6 +510,19 @@ internal sealed partial class YamlParser
             _pos = lineEnd;
             if (!AtEnd)
                 Advance();
+        }
+
+        // A leading empty line must not be more indented than the detected content indentation.
+        if (contentIndent >= 0)
+        {
+            foreach (var (blank, start, _, spaces) in raw)
+            {
+                if (!blank)
+                    break;
+
+                if (spaces > contentIndent)
+                    throw ErrorAt(start, YamlResourceStrings.Format_Invalid_YamlInvalidBlockScalar);
+            }
         }
 
         var lines = new List<(bool Blank, string Text)>(raw.Count);

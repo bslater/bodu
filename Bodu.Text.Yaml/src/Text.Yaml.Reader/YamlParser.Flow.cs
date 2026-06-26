@@ -74,6 +74,10 @@ internal sealed partial class YamlParser
 
         while (true)
         {
+            // A leading or consecutive comma denotes a missing (empty) element, which is not permitted.
+            if (Peek() == (byte)',')
+                throw Error(YamlResourceStrings.Format_Invalid_YamlInvalidFlow);
+
             var element = ParseFlowNode();
             SkipFlowWhitespace();
 
@@ -269,6 +273,7 @@ internal sealed partial class YamlParser
 
             if (b == (byte)'#')
             {
+                RequireCommentSpacing();
                 while (!IsBreakOrEnd(Peek()))
                     _pos++;
 

@@ -207,6 +207,38 @@ namespace Bodu {
             }
         }
         /// <summary>
+        ///   Looks up a localized string similar to Unexpected content was found in this context..
+        /// </summary>
+        internal static string Format_Invalid_YamlUnexpectedContent {
+            get {
+                return ResourceManager.GetString("Format_Invalid_YamlUnexpectedContent", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to A comment must be preceded by whitespace..
+        /// </summary>
+        internal static string Format_Invalid_YamlCommentSpacing {
+            get {
+                return ResourceManager.GetString("Format_Invalid_YamlCommentSpacing", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to An implicit mapping key cannot span multiple lines..
+        /// </summary>
+        internal static string Format_Invalid_YamlMultilineImplicitKey {
+            get {
+                return ResourceManager.GetString("Format_Invalid_YamlMultilineImplicitKey", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to A node cannot carry more than one anchor..
+        /// </summary>
+        internal static string Format_Invalid_YamlMultipleAnchors {
+            get {
+                return ResourceManager.GetString("Format_Invalid_YamlMultipleAnchors", resourceCulture);
+            }
+        }
+        /// <summary>
         ///   Looks up a localized string similar to The alias '{0}' does not refer to a defined anchor..
         /// </summary>
         internal static string Format_Invalid_YamlUndefinedAlias {

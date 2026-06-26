@@ -7,10 +7,10 @@
   "validCaseCount": 308,
   "invalidCaseCount": 94,
   "classification": {
-    "SupportedPass": 221,
-    "SupportedParseOnly": 11,
-    "SupportedFail": 44,
-    "UnsupportedFeatureRejected": 74,
-    "KnownGap": 52
+    "SupportedPass": 223,
+    "SupportedParseOnly": 12,
+    "SupportedFail": 61,
+    "UnsupportedFeatureRejected": 71,
+    "KnownGap": 35
   }
 }

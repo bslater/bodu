@@ -119,12 +119,27 @@ internal sealed partial class YamlParser
         SkipSpaces();
         if (Peek() == (byte)'#')
         {
+            RequireCommentSpacing();
             while (!IsBreakOrEnd(Peek()))
                 _pos++;
+        }
+        else if (!IsBreakOrEnd(Peek()))
+        {
+            throw ErrorAt(_pos, YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
         }
 
         if (!AtEnd)
             Advance();
+    }
+
+    /// <summary>
+    /// Verifies that a comment indicator at the cursor is preceded by whitespace or begins the line.
+    /// </summary>
+    /// <exception cref="YamlFormatException">The comment is glued to preceding content.</exception>
+    private void RequireCommentSpacing()
+    {
+        if (_pos > _lineStart && _source[_pos - 1] is not ((byte)' ' or (byte)'\t'))
+            throw ErrorAt(_pos, YamlResourceStrings.Format_Invalid_YamlCommentSpacing);
     }
 
     /// <summary>
@@ -287,12 +302,14 @@ internal sealed partial class YamlParser
     {
         _tagHandles = null;
         var yamlDirectiveSeen = false;
+        var directiveSeen = false;
 
         while (true)
         {
             SkipBlankCommentLines();
             if (!AtEnd && CurrentColumn() == 0 && Peek() == (byte)'%')
             {
+                directiveSeen = true;
                 ProcessDirective(ref yamlDirectiveSeen);
                 continue;
             }
@@ -306,6 +323,11 @@ internal sealed partial class YamlParser
             Advance();
             Advance();
             Advance();
+        }
+        else if (directiveSeen)
+        {
+            // A directive must be followed by an explicit '---' document-start marker.
+            throw ErrorAt(_pos, YamlResourceStrings.Format_Invalid_YamlInvalidDirective);
         }
     }
 
@@ -347,6 +369,14 @@ internal sealed partial class YamlParser
 
             _tagHandles ??= new Dictionary<string, string>(StringComparer.Ordinal);
             if (!_tagHandles.TryAdd(handle, prefix))
+                throw ErrorAt(lineStart, YamlResourceStrings.Format_Invalid_YamlInvalidDirective);
+        }
+
+        // A known directive permits only a trailing comment after its parameters.
+        if (name is "YAML" or "TAG")
+        {
+            SkipSpaces();
+            if (!IsBreakOrEnd(Peek()) && Peek() != (byte)'#')
                 throw ErrorAt(lineStart, YamlResourceStrings.Format_Invalid_YamlInvalidDirective);
         }
 
@@ -571,6 +601,12 @@ internal sealed partial class YamlParser
                 SkipSpaces();
 
             var c = Peek();
+
+            // In block context, an anchor or tag that begins a mapping-entry line is the entry key's property, not a
+            // property of the node being read.
+            if (crossLines && c is (byte)'&' or (byte)'!' && TryDetectBlockMapping(0))
+                break;
+
             if (c == (byte)'&' && anchor is null)
             {
                 anchor = ReadName(1);

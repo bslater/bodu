@@ -211,6 +211,9 @@ internal sealed partial class YamlParser
         // An alias node.
         if (c == (byte)'*')
         {
+            if (anchor is not null || tag is not null)
+                throw Error(YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
+
             var alias = ParseAlias();
             SkipLineTrailing();
             return Finish(alias, anchor);
@@ -241,6 +244,11 @@ internal sealed partial class YamlParser
         if (anchor is not null)
         {
             var r = _rows[row];
+
+            // A node already carrying a different anchor would mean two anchors were written for one node.
+            if (r.Anchor is not null && !string.Equals(r.Anchor, anchor, StringComparison.Ordinal))
+                throw Error(YamlResourceStrings.Format_Invalid_YamlMultipleAnchors);
+
             r.Anchor = anchor;
             r.Flags |= YamlReaderRowFlags.Anchored;
             _rows[row] = r;
@@ -398,6 +406,9 @@ internal sealed partial class YamlParser
 
         if (c == (byte)'*')
         {
+            if (anchor is not null || tag is not null)
+                throw Error(YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
+
             var alias = ParseAlias();
             SkipLineTrailing();
             return Finish(alias, anchor);
