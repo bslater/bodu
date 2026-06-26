@@ -27,6 +27,36 @@ public partial class YamlDocumentTests
     }
 
     /// <summary>
+    /// Verifies that a <c>%YAML 1.1</c> directive is honored for scalar resolution even when the configured option
+    /// requests version 1.2, so <c>on</c> resolves to a boolean.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenYaml11DirectiveOverridesV12Option_ShouldResolveUnder11()
+    {
+        using var doc = YamlDocument.Parse(
+            "%YAML 1.1\n---\nvalue: on\n",
+            new YamlDocumentOptions { SpecVersion = YamlSpecVersion.V1_2 });
+
+        Assert.AreEqual(YamlValueKind.Boolean, doc.RootElement.GetProperty("value").ValueKind);
+        Assert.IsTrue(doc.RootElement.GetProperty("value").GetBoolean());
+    }
+
+    /// <summary>
+    /// Verifies that a <c>%YAML 1.2</c> directive is honored for scalar resolution even when the configured option
+    /// requests version 1.1, so <c>on</c> stays a string.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenYaml12DirectiveOverridesV11Option_ShouldResolveUnder12()
+    {
+        using var doc = YamlDocument.Parse(
+            "%YAML 1.2\n---\nvalue: on\n",
+            new YamlDocumentOptions { SpecVersion = YamlSpecVersion.V1_1 });
+
+        Assert.AreEqual(YamlValueKind.String, doc.RootElement.GetProperty("value").ValueKind);
+        Assert.AreEqual("on", doc.RootElement.GetProperty("value").GetString());
+    }
+
+    /// <summary>
     /// Verifies that an unsupported YAML version directive is rejected with <see cref="YamlFormatException" />.
     /// </summary>
     [TestMethod]

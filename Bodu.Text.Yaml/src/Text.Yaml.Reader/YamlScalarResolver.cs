@@ -138,27 +138,30 @@ internal static class YamlScalarResolver
             return false;
 
         var negative = false;
+        var hasSign = false;
         var body = s;
         if (s[0] == '+' || s[0] == '-')
         {
+            hasSign = true;
             negative = s[0] == '-';
             body = s.Substring(1);
             if (body.Length == 0)
                 return false;
         }
 
-        // Hexadecimal and binary forms carry no sign in the core schema; they are parsed unsigned.
-        if (body.StartsWith("0x", StringComparison.Ordinal))
+        // Non-decimal radix forms carry no sign in either schema; a signed radix literal is not an integer and falls
+        // through to remain a string.
+        if (!hasSign && body.StartsWith("0x", StringComparison.Ordinal))
             return TryParseRadix(body.Substring(2), 16, negative, out value);
 
-        if (version == YamlSpecVersion.V1_1 && body.StartsWith("0b", StringComparison.Ordinal))
+        if (!hasSign && version == YamlSpecVersion.V1_1 && body.StartsWith("0b", StringComparison.Ordinal))
             return TryParseRadix(body.Substring(2), 2, negative, out value);
 
-        if (body.StartsWith("0o", StringComparison.Ordinal))
+        if (!hasSign && body.StartsWith("0o", StringComparison.Ordinal))
             return TryParseRadix(body.Substring(2), 8, negative, out value);
 
         // YAML 1.1 octal uses a leading zero (0NNN); the 1.2 core schema does not.
-        if (version == YamlSpecVersion.V1_1 && body.Length > 1 && body[0] == '0' && IsAllDigits(body, 8))
+        if (!hasSign && version == YamlSpecVersion.V1_1 && body.Length > 1 && body[0] == '0' && IsAllDigits(body, 8))
             return TryParseRadix(body.Substring(1), 8, negative, out value);
 
         if (!IsAllDigits(body, 10))

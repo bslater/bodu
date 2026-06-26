@@ -21,7 +21,8 @@ internal sealed partial class YamlParser
 {
     private readonly byte[] _source;
     private readonly int _length;
-    private readonly YamlSpecVersion _version;
+    private readonly YamlSpecVersion _optionVersion;
+    private YamlSpecVersion _version;
     private readonly int _maxDepth;
     private readonly YamlDuplicateKeyBehavior _duplicateKeyBehavior;
     private readonly YamlMergeKeyBehavior _mergeKeyBehavior;
@@ -55,6 +56,7 @@ internal sealed partial class YamlParser
     {
         _source = source;
         _length = length;
+        _optionVersion = version;
         _version = version;
         _maxDepth = maxDepth;
         _duplicateKeyBehavior = duplicateKeyBehavior;

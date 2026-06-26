@@ -68,6 +68,7 @@ public static partial class YamlSerializer
         {
             SpecVersion = o.SpecVersion,
             DuplicateKeyBehavior = o.DuplicateKeyBehavior,
+            MergeKeyBehavior = o.MergeKeyBehavior,
             MaxDepth = o.MaxDepth,
         });
         return BindValue(document.RootElement, returnType, o);

@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using System.Text;
 
 namespace Bodu.Text.Yaml.Reader;
 
@@ -308,28 +309,47 @@ internal sealed partial class YamlParser
                     break;
 
                 case "bool":
-                    if (bool.TryParse(text, out var b))
+                    if (ResolveTagged(text) is (YamlValueKind.Boolean, var boolBits))
                     {
                         r.ValueKind = YamlValueKind.Boolean;
-                        r.ScalarBits = b ? 1 : 0;
+                        r.ScalarBits = boolBits;
+                    }
+                    else
+                    {
+                        throw ErrorAt(r.Offset, YamlResourceStrings.Format_Invalid_YamlInvalidTag);
                     }
 
                     break;
 
                 case "int":
-                    if (long.TryParse(text, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out var l))
+                    if (ResolveTagged(text) is (YamlValueKind.Integer, var intBits))
                     {
                         r.ValueKind = YamlValueKind.Integer;
-                        r.ScalarBits = l;
+                        r.ScalarBits = intBits;
+                    }
+                    else
+                    {
+                        throw ErrorAt(r.Offset, YamlResourceStrings.Format_Invalid_YamlInvalidTag);
                     }
 
                     break;
 
                 case "float":
-                    if (double.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out var d))
+                    var resolved = ResolveTagged(text);
+                    if (resolved.Kind == YamlValueKind.Float)
                     {
                         r.ValueKind = YamlValueKind.Float;
-                        r.ScalarBits = BitConverter.DoubleToInt64Bits(d);
+                        r.ScalarBits = resolved.Bits;
+                    }
+                    else if (resolved.Kind == YamlValueKind.Integer)
+                    {
+                        // An integral literal under an explicit !!float tag widens to a floating-point value.
+                        r.ValueKind = YamlValueKind.Float;
+                        r.ScalarBits = BitConverter.DoubleToInt64Bits(resolved.Bits);
+                    }
+                    else
+                    {
+                        throw ErrorAt(r.Offset, YamlResourceStrings.Format_Invalid_YamlInvalidTag);
                     }
 
                     break;
@@ -337,6 +357,19 @@ internal sealed partial class YamlParser
 
             _rows[i] = r;
         }
+    }
+
+    /// <summary>
+    /// Resolves the scalar text of an explicitly tagged scalar under the active schema, so that tagged content is
+    /// validated consistently with implicit typing (for example <c>!!int 0x2A</c> and <c>!!float .inf</c>).
+    /// </summary>
+    /// <param name="text">The decoded scalar content.</param>
+    /// <returns>The resolved value kind and its packed payload.</returns>
+    private (YamlValueKind Kind, long Bits) ResolveTagged(string text)
+    {
+        var bytes = Encoding.UTF8.GetBytes(text);
+        var kind = YamlScalarResolver.Resolve(bytes, _version, out var bits);
+        return (kind, bits);
     }
 
     /// <summary>

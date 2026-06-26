@@ -51,9 +51,12 @@ public ref struct Utf8YamlWriter
     /// <param name="output">The buffer to which UTF-8 YAML is written.</param>
     /// <param name="options">The writer options.</param>
     /// <exception cref="ArgumentNullException"><paramref name="output" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentException">The options specify an unsupported newline string.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">The options specify an out-of-range indentation width.</exception>
     public Utf8YamlWriter(IBufferWriter<byte> output, YamlWriterOptions options)
     {
         Bodu.ThrowHelper.ThrowIfNull(output);
+        options.Validate();
         _output = output;
         _indentSize = options.EffectiveIndentSize;
         _maxDepth = options.EffectiveMaxDepth;

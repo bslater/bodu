@@ -166,9 +166,17 @@ public static partial class YamlSerializer
     private static void WriteDictionary(ref Utf8YamlWriter writer, IDictionary dictionary, YamlSerializerOptions options, int depth)
     {
         writer.WriteStartMapping();
+        var seen = new HashSet<string>(StringComparer.Ordinal);
         foreach (DictionaryEntry entry in dictionary)
         {
-            writer.WritePropertyName(Convert.ToString(entry.Key, CultureInfo.InvariantCulture) ?? string.Empty);
+            var key = Convert.ToString(entry.Key, CultureInfo.InvariantCulture) ?? string.Empty;
+            if (!seen.Add(key))
+            {
+                throw new YamlSerializationException(string.Format(
+                    CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_YamlDuplicateDictionaryKey, key));
+            }
+
+            writer.WritePropertyName(key);
             WriteValue(ref writer, entry.Value, entry.Value?.GetType() ?? typeof(object), options, depth + 1);
         }
 

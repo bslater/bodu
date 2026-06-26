@@ -216,8 +216,11 @@ public ref struct Utf8YamlReader
         if (_tokenType != YamlTokenType.PropertyName || _key is null)
             return false;
 
-        return Encoding.UTF8.GetByteCount(_key) == utf8Text.Length
-            && Encoding.UTF8.GetString(utf8Text) == _key;
+        // The decoded UTF-16 length never exceeds the UTF-8 byte length, so a property name of typical size is compared
+        // without allocating; only an unusually long key falls back to the heap.
+        Span<char> chars = utf8Text.Length <= 256 ? stackalloc char[256] : new char[utf8Text.Length];
+        var written = Encoding.UTF8.GetChars(utf8Text, chars);
+        return _key.AsSpan().SequenceEqual(chars[..written]);
     }
 
     /// <summary>

@@ -414,5 +414,29 @@ namespace Bodu {
                 return ResourceManager.GetString("Arg_Invalid_YamlUnpairedSurrogate", resourceCulture);
             }
         }
+        /// <summary>
+        ///   Looks up a localized string similar to The dictionary maps more than one entry to the YAML key '{0}'..
+        /// </summary>
+        internal static string Op_Invalid_YamlDuplicateDictionaryKey {
+            get {
+                return ResourceManager.GetString("Op_Invalid_YamlDuplicateDictionaryKey", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to The writer indentation size must be between 1 and 16..
+        /// </summary>
+        internal static string Arg_OutOfRange_YamlWriterIndentSize {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_YamlWriterIndentSize", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to The writer newline must be null, a line feed, or a carriage-return line feed..
+        /// </summary>
+        internal static string Arg_Invalid_YamlWriterNewLine {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_YamlWriterNewLine", resourceCulture);
+            }
+        }
     }
 }

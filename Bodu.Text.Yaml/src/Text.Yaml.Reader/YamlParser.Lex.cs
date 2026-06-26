@@ -302,6 +302,10 @@ internal sealed partial class YamlParser
     {
         _tagHandles = null;
         _documentStartConsumed = false;
+
+        // Each document starts from the requested baseline version; a %YAML directive then overrides it for this
+        // document only (the directive is honored over the configured option).
+        _version = _optionVersion;
         var yamlDirectiveSeen = false;
         var directiveSeen = false;
 
@@ -366,6 +370,9 @@ internal sealed partial class YamlParser
             var version = ReadDirectiveParameter();
             if (version is not ("1.1" or "1.2"))
                 throw ErrorAt(lineStart, YamlResourceStrings.Format_Invalid_YamlInvalidDirective);
+
+            // Honor the document's declared version for scalar resolution, overriding the configured option.
+            _version = version == "1.1" ? YamlSpecVersion.V1_1 : YamlSpecVersion.V1_2;
         }
         else if (name == "TAG")
         {

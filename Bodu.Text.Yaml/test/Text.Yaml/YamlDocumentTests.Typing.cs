@@ -78,6 +78,33 @@ public partial class YamlDocumentTests
         Assert.AreEqual(10L, doc.RootElement.GetProperty("oct").GetInt64());
     }
 
+    /// <summary>Verifies that an unsigned hexadecimal literal resolves to an integer under the core schema.</summary>
+    [TestMethod]
+    public void Parse_WhenUnsignedHexLiteral_ForV12_ShouldResolveInteger()
+    {
+        using var doc = YamlDocument.Parse("v: 0xF\n");
+        Assert.AreEqual(YamlValueKind.Integer, doc.RootElement.GetProperty("v").ValueKind);
+        Assert.AreEqual(15L, doc.RootElement.GetProperty("v").GetInt64());
+    }
+
+    /// <summary>Verifies that a signed hexadecimal literal is not an integer and stays a string under the core schema.</summary>
+    [TestMethod]
+    public void Parse_WhenSignedHexLiteral_ForV12_ShouldStayString()
+    {
+        using var doc = YamlDocument.Parse("v: -0xF\n");
+        Assert.AreEqual(YamlValueKind.String, doc.RootElement.GetProperty("v").ValueKind);
+        Assert.AreEqual("-0xF", doc.RootElement.GetProperty("v").GetString());
+    }
+
+    /// <summary>Verifies that a signed octal literal is not an integer and stays a string under YAML 1.1.</summary>
+    [TestMethod]
+    public void Parse_WhenSignedOctalLiteral_ForV11_ShouldStayString()
+    {
+        using var doc = YamlDocument.Parse("v: -0o7\n", new YamlDocumentOptions { SpecVersion = YamlSpecVersion.V1_1 });
+        Assert.AreEqual(YamlValueKind.String, doc.RootElement.GetProperty("v").ValueKind);
+        Assert.AreEqual("-0o7", doc.RootElement.GetProperty("v").GetString());
+    }
+
     /// <summary>Verifies that binary integers and underscore digit groups resolve under YAML 1.1.</summary>
     [TestMethod]
     [TestCategory("Regression")]
