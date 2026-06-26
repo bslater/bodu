@@ -66,32 +66,42 @@ public sealed partial class Ed25519Tests
     }
 
     /// <summary>
-    /// Verifies the canonical-S boundary: a signature whose S component equals the group order L, exceeds it by one,
-    /// or has bit 255 set is non-canonical (S must satisfy 0 ≤ S &lt; L) and is rejected, while the unmodified
-    /// signature still verifies.
+    /// Verifies that a signature whose S component is replaced by a value at or above the group order L is rejected,
+    /// because RFC 8032 requires 0 ≤ S &lt; L.
+    /// </summary>
+    /// <param name="testName">The human-readable scenario name.</param>
+    /// <param name="sComponentHex">The 32-byte little-endian S value spliced into the signature.</param>
+    [TestMethod]
+    [DataRow("S = L", "edd3f55c1a631258d69cf7a2def9de1400000000000000000000000000000010")]
+    [DataRow("S = L + 1", "eed3f55c1a631258d69cf7a2def9de1400000000000000000000000000000010")]
+    public void VerifyData_WhenSComponentIsAtOrAboveGroupOrder_ShouldReturnFalse(string testName, string sComponentHex)
+    {
+        _ = testName;
+
+        using var algorithm = new Ed25519();
+        algorithm.GenerateKey();
+        byte[] message = new byte[] { 1, 2, 3 };
+
+        byte[] signature = algorithm.SignData(message);
+        Convert.FromHexString(sComponentHex).CopyTo(signature, 32);
+
+        Assert.IsFalse(algorithm.VerifyData(message, signature));
+    }
+
+    /// <summary>
+    /// Verifies that a signature whose S component has bit 255 set is rejected, because such a value is at least
+    /// 2^255 and therefore far above the group order L.
     /// </summary>
     [TestMethod]
-    public void VerifyData_WhenSComponentIsAtOrAboveGroupOrder_ShouldReturnFalse()
+    public void VerifyData_WhenSComponentHighBitIsSet_ShouldReturnFalse()
     {
         using var algorithm = new Ed25519();
         algorithm.GenerateKey();
         byte[] message = new byte[] { 1, 2, 3 };
+
         byte[] signature = algorithm.SignData(message);
-        Assert.IsTrue(algorithm.VerifyData(message, signature));
+        signature[63] |= 0x80;
 
-        // S = L exactly: equal to the order, so not strictly less than L.
-        byte[] sEqualsOrder = (byte[])signature.Clone();
-        Convert.FromHexString("edd3f55c1a631258d69cf7a2def9de1400000000000000000000000000000010").CopyTo(sEqualsOrder, 32);
-        Assert.IsFalse(algorithm.VerifyData(message, sEqualsOrder));
-
-        // S = L + 1 (low byte 0xed + 1 = 0xee, no carry).
-        byte[] sAboveOrder = (byte[])sEqualsOrder.Clone();
-        sAboveOrder[32] = 0xee;
-        Assert.IsFalse(algorithm.VerifyData(message, sAboveOrder));
-
-        // S with bit 255 set is at least 2^255, far above L.
-        byte[] sHighBitSet = (byte[])signature.Clone();
-        sHighBitSet[63] |= 0x80;
-        Assert.IsFalse(algorithm.VerifyData(message, sHighBitSet));
+        Assert.IsFalse(algorithm.VerifyData(message, signature));
     }
 }

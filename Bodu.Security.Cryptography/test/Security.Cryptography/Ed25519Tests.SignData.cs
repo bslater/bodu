@@ -15,20 +15,31 @@ namespace Bodu.Security.Cryptography;
 public sealed partial class Ed25519Tests
 {
     /// <summary>
-    /// Verifies that only pure Ed25519 (RFC 8032) is exposed: no public member surfaces a context or prehash
-    /// parameter, so callers cannot mistakenly assume the unimplemented Ed25519ctx or Ed25519ph behavior.
+    /// Verifies that no public Ed25519 method exposes a context parameter, so callers cannot assume the unimplemented
+    /// Ed25519ctx behavior.
     /// </summary>
     [TestMethod]
-    public void Ed25519_WhenInspected_ShouldNotExposeContextOrPrehashApi()
+    public void PublicMethods_WhenInspected_ShouldNotExposeContextParameter()
     {
-        foreach (MethodInfo method in typeof(Ed25519).GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly))
-        {
-            foreach (ParameterInfo parameter in method.GetParameters())
-                Assert.IsFalse(parameter.Name!.Contains("context", StringComparison.OrdinalIgnoreCase), $"{method.Name} exposes a context parameter");
-        }
+        IEnumerable<ParameterInfo> parameters = typeof(Ed25519)
+            .GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+            .SelectMany(method => method.GetParameters());
 
-        Assert.IsNull(typeof(Ed25519).GetMethod("SignDataPrehash"));
-        Assert.IsNull(typeof(Ed25519).GetMethod("VerifyDataPrehash"));
+        Assert.IsFalse(parameters.Any(parameter => parameter.Name!.Contains("context", StringComparison.OrdinalIgnoreCase)));
+    }
+
+    /// <summary>
+    /// Verifies that no public prehash signing or verification method is exposed, so callers cannot assume the
+    /// unimplemented Ed25519ph behavior.
+    /// </summary>
+    [TestMethod]
+    public void PublicMethods_WhenInspected_ShouldNotExposePrehashVariants()
+    {
+        bool exposesPrehash = typeof(Ed25519)
+            .GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+            .Any(method => method.Name.Contains("prehash", StringComparison.OrdinalIgnoreCase));
+
+        Assert.IsFalse(exposesPrehash);
     }
 
     /// <summary>

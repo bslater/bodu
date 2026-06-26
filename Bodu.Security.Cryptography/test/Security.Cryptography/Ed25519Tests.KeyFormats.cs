@@ -5,64 +5,113 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Security.Cryptography;
+using Bodu.Test.Assertions;
+using Bodu.Test.Kat;
 
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Contains Ed25519-specific tests for the RFC 8410 PKCS#8 / SubjectPublicKeyInfo key-format support, pinned against
-/// the published RFC 8410 §10.3 vector; the cross-algorithm round-trip and unsupported-format contracts are inherited
-/// from the asymmetric base.
+/// Contains Ed25519-specific known-answer tests for the RFC 8410 PKCS#8 key format, driven by
+/// <see cref="RoundTripKat{TValue, TWire}" /> (raw seed ↔ DER) and <see cref="InvalidKat{TInput}" /> rows. The valid
+/// vector is the published RFC 8410 §10.3 example.
 /// </summary>
 public sealed partial class Ed25519Tests
 {
     /// <summary>
-    /// Verifies that importing the RFC 8410 §10.3 Ed25519 PKCS#8 example extracts the published seed and re-exports the
-    /// identical DER, pinning the exact OneAsymmetricKey encoding (OID 1.3.101.112, version 0).
+    /// Yields the valid Ed25519 PKCS#8 round-trip vector: the RFC 8410 §10.3 example seed against its DER encoding
+    /// (OID 1.3.101.112, version 0).
     /// </summary>
-    [TestMethod]
-    public void ImportPkcs8PrivateKey_WhenGivenRfc8410Vector_ShouldExtractSeedAndReExportIdentically()
+    /// <returns>One row pairing the raw seed with its DER wire form.</returns>
+    private static IEnumerable<object[]> ValidPkcs8Vectors()
     {
-        byte[] pkcs8 = Convert.FromHexString("302e020100300506032b657004220420d4ee72dbf913584ad5b6d8f1f769f8ad3afe7c28cbf1d4fbe097a88f44755842");
-        byte[] expectedSeed = Convert.FromHexString("d4ee72dbf913584ad5b6d8f1f769f8ad3afe7c28cbf1d4fbe097a88f44755842");
-
-        using var ed25519 = new Ed25519();
-        ed25519.ImportPkcs8PrivateKey(pkcs8, out int bytesRead);
-
-        Assert.AreEqual(pkcs8.Length, bytesRead);
-        CollectionAssert.AreEqual(expectedSeed, ed25519.ExportPrivateKey());
-        CollectionAssert.AreEqual(pkcs8, ed25519.ExportPkcs8PrivateKey());
+        yield return new object[]
+        {
+            new RoundTripKat<byte[], byte[]>(
+                "RFC 8410 §10.3 Ed25519 PKCS#8",
+                Convert.FromHexString("d4ee72dbf913584ad5b6d8f1f769f8ad3afe7c28cbf1d4fbe097a88f44755842"),
+                Convert.FromHexString("302e020100300506032b657004220420d4ee72dbf913584ad5b6d8f1f769f8ad3afe7c28cbf1d4fbe097a88f44755842")),
+        };
     }
 
     /// <summary>
-    /// Verifies that a structurally valid RFC 8410 structure declaring a different algorithm OID (X25519) is rejected
-    /// with <see cref="CryptographicException" />.
+    /// Yields invalid Ed25519 key-format vectors that the importers must reject.
     /// </summary>
-    [TestMethod]
-    public void ImportPkcs8PrivateKey_WhenAlgorithmOidIsWrong_ShouldThrowCryptographicException()
+    /// <returns>One row per rejected encoding.</returns>
+    private static IEnumerable<object[]> InvalidPkcs8Vectors()
     {
-        // Same structure as the RFC 8410 vector but with the X25519 OID (1.3.101.110) substituted for Ed25519.
-        byte[] wrongOid = Convert.FromHexString("302e020100300506032b656e04220420d4ee72dbf913584ad5b6d8f1f769f8ad3afe7c28cbf1d4fbe097a88f44755842");
-
-        using var ed25519 = new Ed25519();
-
-        Assert.ThrowsExactly<CryptographicException>(() =>
+        yield return new object[]
         {
-            ed25519.ImportPkcs8PrivateKey(wrongOid, out _);
-        });
+            new InvalidKat<byte[]>(
+                "wrong algorithm OID (X25519)",
+                Convert.FromHexString("302e020100300506032b656e04220420d4ee72dbf913584ad5b6d8f1f769f8ad3afe7c28cbf1d4fbe097a88f44755842"),
+                typeof(CryptographicException)),
+        };
+
+        yield return new object[]
+        {
+            new InvalidKat<byte[]>(
+                "malformed DER",
+                new byte[] { 0x30, 0x05, 0x01, 0x02, 0x03 },
+                typeof(CryptographicException)),
+        };
     }
 
     /// <summary>
-    /// Verifies that malformed DER passed to <see cref="Ed25519.ImportSubjectPublicKeyInfo" /> throws
-    /// <see cref="CryptographicException" /> rather than an ASN.1 parser exception.
+    /// Verifies that importing a valid Ed25519 PKCS#8 structure extracts the embedded raw seed.
     /// </summary>
+    /// <param name="vector">The round-trip KAT vector under test.</param>
     [TestMethod]
-    public void ImportSubjectPublicKeyInfo_WhenDerIsMalformed_ShouldThrowCryptographicException()
+    [DynamicData(nameof(ValidPkcs8Vectors), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void ImportPkcs8PrivateKey_WhenGivenValidVector_ShouldExtractRawSeed(RoundTripKat<byte[], byte[]> vector)
+    {
+        using var ed25519 = new Ed25519();
+        ed25519.ImportPkcs8PrivateKey(vector.Wire, out _);
+
+        CollectionAssert.AreEqual(vector.Value, ed25519.ExportPrivateKey());
+    }
+
+    /// <summary>
+    /// Verifies that re-exporting a valid Ed25519 PKCS#8 structure reproduces the identical DER.
+    /// </summary>
+    /// <param name="vector">The round-trip KAT vector under test.</param>
+    [TestMethod]
+    [DynamicData(nameof(ValidPkcs8Vectors), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void ExportPkcs8PrivateKey_WhenSeedImportedFromValidVector_ShouldReproduceWire(RoundTripKat<byte[], byte[]> vector)
+    {
+        using var ed25519 = new Ed25519();
+        ed25519.ImportPkcs8PrivateKey(vector.Wire, out _);
+
+        CollectionAssert.AreEqual(vector.Wire, ed25519.ExportPkcs8PrivateKey());
+    }
+
+    /// <summary>
+    /// Verifies that importing a valid Ed25519 PKCS#8 structure reports the full structure length as consumed.
+    /// </summary>
+    /// <param name="vector">The round-trip KAT vector under test.</param>
+    [TestMethod]
+    [DynamicData(nameof(ValidPkcs8Vectors), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void ImportPkcs8PrivateKey_WhenGivenValidVector_ShouldReportBytesRead(RoundTripKat<byte[], byte[]> vector)
+    {
+        using var ed25519 = new Ed25519();
+        ed25519.ImportPkcs8PrivateKey(vector.Wire, out int bytesRead);
+
+        Assert.AreEqual(vector.Wire.Length, bytesRead);
+    }
+
+    /// <summary>
+    /// Verifies that importing an invalid Ed25519 PKCS#8 structure throws the row's expected exception.
+    /// </summary>
+    /// <param name="vector">The invalid KAT vector under test.</param>
+    [TestMethod]
+    [DynamicData(nameof(InvalidPkcs8Vectors), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void ImportPkcs8PrivateKey_WhenGivenInvalidVector_ShouldThrowExpectedException(InvalidKat<byte[]> vector)
     {
         using var ed25519 = new Ed25519();
 
-        Assert.ThrowsExactly<CryptographicException>(() =>
-        {
-            ed25519.ImportSubjectPublicKeyInfo(new byte[] { 0x30, 0x05, 0x01, 0x02, 0x03 }, out _);
-        });
+        ExceptionAssert.AssertGuard(
+            vector.Name,
+            () => ed25519.ImportPkcs8PrivateKey(vector.Input, out _),
+            vector.ExceptionType,
+            vector.ParamName);
     }
 }
