@@ -1094,5 +1094,23 @@ namespace Bodu {
                 return ResourceManager.GetString("Op_NotSupported_RawKeyFormatOnly", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The key is not a valid RFC 8410 structure for this algorithm..
+        /// </summary>
+        internal static string Crypt_Invalid_Rfc8410KeyFormat {
+            get {
+                return ResourceManager.GetString("Crypt_Invalid_Rfc8410KeyFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} supports the raw and RFC 8410 PKCS#8 / SubjectPublicKeyInfo key formats; the XML and encrypted-PKCS#8 formats are not supported..
+        /// </summary>
+        internal static string Op_NotSupported_XmlAndEncryptedKeyFormat {
+            get {
+                return ResourceManager.GetString("Op_NotSupported_XmlAndEncryptedKeyFormat", resourceCulture);
+            }
+        }
     }
 }

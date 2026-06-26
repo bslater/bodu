@@ -403,4 +403,10 @@
   <data name="Op_NotSupported_RawKeyFormatOnly" xml:space="preserve">
     <value>{0} supports only its raw key encodings; the PKCS#8, SubjectPublicKeyInfo, PEM, and XML key formats are not supported. Use the dedicated Import/Export key methods instead.</value>
   </data>
+  <data name="Crypt_Invalid_Rfc8410KeyFormat" xml:space="preserve">
+    <value>The key is not a valid RFC 8410 structure for this algorithm.</value>
+  </data>
+  <data name="Op_NotSupported_XmlAndEncryptedKeyFormat" xml:space="preserve">
+    <value>{0} supports the raw and RFC 8410 PKCS#8 / SubjectPublicKeyInfo key formats; the XML and encrypted-PKCS#8 formats are not supported.</value>
+  </data>
 </root>
