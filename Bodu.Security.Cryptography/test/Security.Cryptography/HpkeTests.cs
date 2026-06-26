@@ -445,6 +445,96 @@ public sealed partial class HpkeTests
     }
 
     /// <summary>
+    /// Verifies that PSK setup with a PSK identifier but no pre-shared key throws <see cref="CryptographicException" />,
+    /// completing the PSK input matrix (the key and its identifier must be supplied or omitted together).
+    /// </summary>
+    [TestMethod]
+    public void SetupPsk_WhenPskIdSuppliedWithoutPsk_ShouldThrowCryptographicException()
+    {
+        using var recipient = X25519.Create();
+        recipient.GenerateKey();
+
+        Assert.ThrowsExactly<CryptographicException>(() =>
+        {
+            _ = HpkeSender.SetupPsk(HpkeSuite.X25519_HkdfSha256_Aes128Gcm, recipient.ExportPublicKey(), Info, ReadOnlySpan<byte>.Empty, PskId, out _);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that suites using HKDF-SHA384 and HKDF-SHA512 seal/open round-trip and derive matching exported
+    /// secrets. These KDFs have no RFC 9180 known-answer vectors for the X25519 KEM, so coverage is by
+    /// self-consistency rather than external vectors.
+    /// </summary>
+    /// <param name="kdf">The KDF to exercise.</param>
+    [TestMethod]
+    [DataRow(HpkeKdf.HkdfSha384)]
+    [DataRow(HpkeKdf.HkdfSha512)]
+    public void SealOpenAndExport_WhenKdfIsSha384OrSha512_ShouldRoundTripAndAgree(HpkeKdf kdf)
+    {
+        var suite = new HpkeSuite(HpkeKem.X25519HkdfSha256, kdf, HpkeAead.Aes256Gcm);
+
+        var (sender, receiver) = CreatePair(suite, HpkeMode.Base);
+        try
+        {
+            byte[] ciphertext = sender.Seal(Aad, Plaintext);
+            CollectionAssert.AreEqual(Plaintext, receiver.Open(Aad, ciphertext));
+
+            byte[] context = Encoding.ASCII.GetBytes("exporter context");
+            CollectionAssert.AreEqual(sender.Export(context, 64), receiver.Export(context, 64));
+        }
+        finally
+        {
+            sender.Dispose();
+            receiver.Dispose();
+        }
+    }
+
+    /// <summary>
+    /// Verifies that sealing and opening round-trip for empty plaintext, empty associated data, empty info, and
+    /// large associated data and plaintext.
+    /// </summary>
+    [TestMethod]
+    public void SealAndOpen_WhenDataValuesAreEmptyOrLarge_ShouldRoundTrip()
+    {
+        var (sender, receiver) = CreatePair(HpkeSuite.X25519_HkdfSha256_Aes128Gcm, HpkeMode.Base);
+        try
+        {
+            // Empty plaintext and empty associated data (sequence 0).
+            byte[] emptyCiphertext = sender.Seal(ReadOnlySpan<byte>.Empty, ReadOnlySpan<byte>.Empty);
+            CollectionAssert.AreEqual(Array.Empty<byte>(), receiver.Open(ReadOnlySpan<byte>.Empty, emptyCiphertext));
+
+            // Large associated data and large plaintext (sequence 1).
+            byte[] largeAad = new byte[4096];
+            byte[] largePlaintext = new byte[8192];
+            new Random(91).NextBytes(largeAad);
+            new Random(92).NextBytes(largePlaintext);
+            byte[] largeCiphertext = sender.Seal(largeAad, largePlaintext);
+            CollectionAssert.AreEqual(largePlaintext, receiver.Open(largeAad, largeCiphertext));
+        }
+        finally
+        {
+            sender.Dispose();
+            receiver.Dispose();
+        }
+
+        // Empty info on both sides.
+        using var recipientKey = X25519.Create();
+        recipientKey.GenerateKey();
+        HpkeSender emptyInfoSender = HpkeSender.SetupBase(HpkeSuite.X25519_HkdfSha256_Aes128Gcm, recipientKey.ExportPublicKey(), ReadOnlySpan<byte>.Empty, out byte[] encapsulation);
+        HpkeReceiver emptyInfoReceiver = HpkeReceiver.SetupBase(HpkeSuite.X25519_HkdfSha256_Aes128Gcm, recipientKey, encapsulation, ReadOnlySpan<byte>.Empty);
+        try
+        {
+            byte[] ciphertext = emptyInfoSender.Seal(Aad, Plaintext);
+            CollectionAssert.AreEqual(Plaintext, emptyInfoReceiver.Open(Aad, ciphertext));
+        }
+        finally
+        {
+            emptyInfoSender.Dispose();
+            emptyInfoReceiver.Dispose();
+        }
+    }
+
+    /// <summary>
     /// Verifies that sealing through a disposed sender throws <see cref="ObjectDisposedException" />.
     /// </summary>
     [TestMethod]
