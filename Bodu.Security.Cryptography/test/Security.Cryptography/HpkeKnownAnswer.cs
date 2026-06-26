@@ -5,7 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Text.Json;
-using Bodu.Test.Kat;
+using Bodu.Security.Cryptography.Infrastructure;
 
 namespace Bodu.Security.Cryptography;
 
@@ -13,31 +13,63 @@ namespace Bodu.Security.Cryptography;
 /// Represents a single RFC 9180 HPKE known-answer vector for the DHKEM(X25519, HKDF-SHA256) / HKDF-SHA256 suites,
 /// carrying the recipient material, the sealed messages, and the exported secrets published in Appendix A.
 /// </summary>
-/// <param name="Name">The human-readable vector name surfaced in test output.</param>
-/// <param name="Mode">The HPKE establishment mode.</param>
-/// <param name="Aead">The AEAD function of the suite.</param>
-/// <param name="Info">The application <c>info</c> binding the exchange.</param>
-/// <param name="RecipientPrivateKey">The recipient's X25519 private key (<c>skRm</c>).</param>
-/// <param name="Encapsulation">The encapsulated key (<c>enc</c>).</param>
-/// <param name="Psk">The pre-shared key, or empty when the mode does not use one.</param>
-/// <param name="PskId">The pre-shared key identifier, or empty when the mode does not use one.</param>
-/// <param name="SenderPublicKey">The sender's X25519 public key (<c>pkSm</c>), or empty for non-auth modes.</param>
-/// <param name="Encryptions">The sealed messages, in sequence order.</param>
-/// <param name="Exports">The exported secrets.</param>
-public sealed record HpkeKnownAnswer(
-    string Name,
-    HpkeMode Mode,
-    HpkeAead Aead,
-    byte[] Info,
-    byte[] RecipientPrivateKey,
-    byte[] Encapsulation,
-    byte[] Psk,
-    byte[] PskId,
-    byte[] SenderPublicKey,
-    IReadOnlyList<HpkeKnownAnswer.Encryption> Encryptions,
-    IReadOnlyList<HpkeKnownAnswer.Export> Exports)
-    : IKat
+/// <remarks>
+/// HPKE is a composite construction, so this leaf sits directly on the shared <see cref="CryptoKnownAnswer" /> root
+/// rather than collapsing into one of the operation-shaped leaves: it gains the common <see cref="CryptoKnownAnswer.Name" />
+/// and <see cref="CryptoKnownAnswer.Provenance" /> while keeping its own suite, key, sealed-message, and export fields.
+/// </remarks>
+public sealed record HpkeKnownAnswer : CryptoKnownAnswer
 {
+    /// <summary>
+    /// Gets the HPKE establishment mode.
+    /// </summary>
+    public required HpkeMode Mode { get; init; }
+
+    /// <summary>
+    /// Gets the AEAD function of the suite.
+    /// </summary>
+    public required HpkeAead Aead { get; init; }
+
+    /// <summary>
+    /// Gets the application <c>info</c> binding the exchange.
+    /// </summary>
+    public required byte[] Info { get; init; }
+
+    /// <summary>
+    /// Gets the recipient's X25519 private key (<c>skRm</c>).
+    /// </summary>
+    public required byte[] RecipientPrivateKey { get; init; }
+
+    /// <summary>
+    /// Gets the encapsulated key (<c>enc</c>).
+    /// </summary>
+    public required byte[] Encapsulation { get; init; }
+
+    /// <summary>
+    /// Gets the pre-shared key, or empty when the mode does not use one.
+    /// </summary>
+    public required byte[] Psk { get; init; }
+
+    /// <summary>
+    /// Gets the pre-shared key identifier, or empty when the mode does not use one.
+    /// </summary>
+    public required byte[] PskId { get; init; }
+
+    /// <summary>
+    /// Gets the sender's X25519 public key (<c>pkSm</c>), or empty for non-auth modes.
+    /// </summary>
+    public required byte[] SenderPublicKey { get; init; }
+
+    /// <summary>
+    /// Gets the sealed messages, in sequence order.
+    /// </summary>
+    public required IReadOnlyList<Encryption> Encryptions { get; init; }
+
+    /// <summary>
+    /// Gets the exported secrets.
+    /// </summary>
+    public required IReadOnlyList<Export> Exports { get; init; }
+
     /// <summary>
     /// Gets the cipher suite under test, which always uses the X25519 KEM and HKDF-SHA256 KDF.
     /// </summary>
@@ -63,18 +95,21 @@ public sealed record HpkeKnownAnswer(
                 .Select(x => new Export(Hex(x, "context"), x.GetProperty("L").GetInt32(), Hex(x, "value")))
                 .ToList();
 
-            yield return new HpkeKnownAnswer(
-                vector.GetProperty("name").GetString()!,
-                (HpkeMode)vector.GetProperty("mode").GetByte(),
-                (HpkeAead)vector.GetProperty("aead").GetUInt16(),
-                Hex(vector, "info"),
-                Hex(vector, "skRm"),
-                Hex(vector, "enc"),
-                Hex(vector, "psk"),
-                Hex(vector, "psk_id"),
-                Hex(vector, "pkSm"),
-                encryptions,
-                exports);
+            yield return new HpkeKnownAnswer
+            {
+                Name = vector.GetProperty("name").GetString()!,
+                Provenance = KatProvenance.Rfc("RFC 9180 Appendix A"),
+                Mode = (HpkeMode)vector.GetProperty("mode").GetByte(),
+                Aead = (HpkeAead)vector.GetProperty("aead").GetUInt16(),
+                Info = Hex(vector, "info"),
+                RecipientPrivateKey = Hex(vector, "skRm"),
+                Encapsulation = Hex(vector, "enc"),
+                Psk = Hex(vector, "psk"),
+                PskId = Hex(vector, "psk_id"),
+                SenderPublicKey = Hex(vector, "pkSm"),
+                Encryptions = encryptions,
+                Exports = exports,
+            };
         }
     }
 

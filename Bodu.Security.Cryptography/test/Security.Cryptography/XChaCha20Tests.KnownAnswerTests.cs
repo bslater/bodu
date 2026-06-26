@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 
-using System.Reflection;
 using System.Security.Cryptography;
 using Bodu.Security.Cryptography.Infrastructure;
 using Bodu.Test.Kat;
@@ -31,51 +30,43 @@ public sealed partial class XChaCha20Tests
             KnownAnswers = KeystreamKnownAnswers,
         };
 
-    /// <summary>
-    /// Represents one HChaCha20 block-function known-answer test row.
-    /// </summary>
-    private sealed record HChaCha20Kat
-    {
-        public required string Name { get; init; }
-
-        public required string Source { get; init; }
-
-        public required string KeyHex { get; init; }
-
-        public required string Nonce16Hex { get; init; }
-
-        public required string SubkeyHex { get; init; }
-    }
-
     // ── draft-irtf-cfrg-xchacha §2.2.1 — HChaCha20 block function ─────────────────────────────
     //
-    // The canonical draft vector plus the libsodium tv_hchacha20 corpus.
+    // The canonical draft vector plus the libsodium tv_hchacha20 corpus. The HChaCha20 sub-primitive maps
+    // key × nonce16 → subkey, so each row carries the input nonce in Nonce and the derived 256-bit subkey in
+    // Ciphertext (IsKeystream marks the output as derived material rather than encrypted plaintext).
     // Source: draft-irtf-cfrg-xchacha §2.2.1; libsodium test/default/xchacha20.c.
-    private static readonly HChaCha20Kat[] HChaCha20KnownAnswers =
+    private static readonly StreamCipherKnownAnswer[] HChaCha20KnownAnswers =
     [
-        new HChaCha20Kat
+        new StreamCipherKnownAnswer
         {
             Name = "draft-irtf-cfrg-xchacha 2.2.1 HChaCha20",
-            Source = "draft-irtf-cfrg-xchacha Section 2.2.1",
-            KeyHex = "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
-            Nonce16Hex = "000000090000004a0000000031415927",
-            SubkeyHex = "82413b4227b27bfed30e42508a877d73a0f9e4d58a74a853c12ec41326d3ecdc",
+            Provenance = KatProvenance.InternetDraft("draft-irtf-cfrg-xchacha Section 2.2.1"),
+            Key = Hex("000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"),
+            Nonce = Hex("000000090000004a0000000031415927"),
+            IsKeystream = true,
+            Plaintext = [],
+            Ciphertext = Hex("82413b4227b27bfed30e42508a877d73a0f9e4d58a74a853c12ec41326d3ecdc"),
         },
-        new HChaCha20Kat
+        new StreamCipherKnownAnswer
         {
             Name = "libsodium hchacha20 vector 1",
-            Source = "libsodium tv_hchacha20",
-            KeyHex = "24f11cce8a1b3d61e441561a696c1c1b7e173d084fd4812425435a8896a013dc",
-            Nonce16Hex = "d9660c5900ae19ddad28d6e06e45fe5e",
-            SubkeyHex = "5966b3eec3bff1189f831f06afe4d4e3be97fa9235ec8c20d08acfbbb4e851e3",
+            Provenance = KatProvenance.ReferenceImplementation("libsodium tv_hchacha20"),
+            Key = Hex("24f11cce8a1b3d61e441561a696c1c1b7e173d084fd4812425435a8896a013dc"),
+            Nonce = Hex("d9660c5900ae19ddad28d6e06e45fe5e"),
+            IsKeystream = true,
+            Plaintext = [],
+            Ciphertext = Hex("5966b3eec3bff1189f831f06afe4d4e3be97fa9235ec8c20d08acfbbb4e851e3"),
         },
-        new HChaCha20Kat
+        new StreamCipherKnownAnswer
         {
             Name = "libsodium hchacha20 vector 2",
-            Source = "libsodium tv_hchacha20",
-            KeyHex = "80a5f6272031e18bb9bcd84f3385da65e7731b7039f13f5e3d475364cd4d42f7",
-            Nonce16Hex = "c0eccc384b44c88e92c57eb2d5ca4dfa",
-            SubkeyHex = "6ed11741f724009a640a44fce7320954c46e18e0d7ae063bdbc8d7cf372709df",
+            Provenance = KatProvenance.ReferenceImplementation("libsodium tv_hchacha20"),
+            Key = Hex("80a5f6272031e18bb9bcd84f3385da65e7731b7039f13f5e3d475364cd4d42f7"),
+            Nonce = Hex("c0eccc384b44c88e92c57eb2d5ca4dfa"),
+            IsKeystream = true,
+            Plaintext = [],
+            Ciphertext = Hex("6ed11741f724009a640a44fce7320954c46e18e0d7ae063bdbc8d7cf372709df"),
         },
     ];
 
@@ -135,8 +126,8 @@ public sealed partial class XChaCha20Tests
     /// <returns>One row per vector.</returns>
     private static IEnumerable<object[]> HChaCha20KatData()
     {
-        foreach (HChaCha20Kat kat in HChaCha20KnownAnswers)
-            yield return new object[] { kat.KeyHex, kat.Nonce16Hex, kat.SubkeyHex, kat.Name };
+        foreach (StreamCipherKnownAnswer kat in HChaCha20KnownAnswers)
+            yield return new object[] { kat };
     }
 
     /// <summary>
@@ -150,34 +141,22 @@ public sealed partial class XChaCha20Tests
     }
 
     /// <summary>
-    /// Produces a human-readable display name for a KAT row whose scenario label is the last element.
-    /// </summary>
-    /// <param name="testMethod">The executing test method.</param>
-    /// <param name="data">The row data; the final element carries the scenario name.</param>
-    /// <returns>The test method name followed by the row's scenario label.</returns>
-    public static string GetKatDisplayName(MethodInfo testMethod, object[] data) =>
-        $"{testMethod.Name} — {data[^1]}";
-
-    /// <summary>
     /// Verifies that the internal HChaCha20 subkey-derivation core reproduces each published subkey vector.
     /// </summary>
-    /// <param name="keyHex">The 256-bit key, in hex.</param>
-    /// <param name="nonce16Hex">The 128-bit HChaCha20 input nonce, in hex.</param>
-    /// <param name="subkeyHex">The expected 256-bit subkey, in hex.</param>
-    /// <param name="displayName">The scenario label.</param>
+    /// <param name="vector">The HChaCha20 subkey-derivation vector under test; <c>Ciphertext</c> carries the expected subkey.</param>
     [TestMethod]
-    [DynamicData(nameof(HChaCha20KatData), DynamicDataDisplayName = nameof(GetKatDisplayName))]
-    public void HChaCha20_WhenGivenKnownVector_ShouldDeriveExpectedSubkey(
-        string keyHex, string nonce16Hex, string subkeyHex, string displayName)
+    [DynamicData(
+        nameof(HChaCha20KatData),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void HChaCha20_WhenGivenKnownVector_ShouldDeriveExpectedSubkey(StreamCipherKnownAnswer vector)
     {
-        byte[] key = Convert.FromHexString(keyHex);
-        byte[] nonce = Convert.FromHexString(nonce16Hex);
-        byte[] expected = Convert.FromHexString(subkeyHex);
+        byte[] expected = vector.Ciphertext;
 
         byte[] subkey = new byte[32];
-        ChaCha20StreamCipher.HChaCha20(key, nonce, subkey);
+        ChaCha20StreamCipher.HChaCha20(vector.Key, vector.Nonce, subkey);
 
-        CollectionAssert.AreEqual(expected, subkey, $"HChaCha20 subkey mismatch for {displayName}.");
+        CollectionAssert.AreEqual(expected, subkey, $"HChaCha20 subkey mismatch for {vector.Name}.");
     }
 
     /// <summary>
