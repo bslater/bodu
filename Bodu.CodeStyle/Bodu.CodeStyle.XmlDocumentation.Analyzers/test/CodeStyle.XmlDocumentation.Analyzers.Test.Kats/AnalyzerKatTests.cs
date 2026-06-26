@@ -39,7 +39,7 @@ public sealed class AnalyzerKatTests
     /// <see cref="XmlDocFormatAnalyzer" />, including configured additional files and editor-config overrides.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(Kats), DynamicDataSourceType.Method, DynamicDataDisplayName = nameof(GetDisplayName))]
+    [DynamicData(nameof(Kats), DynamicDataDisplayName = nameof(GetDisplayName))]
     public async Task Analyze_ShouldMatchKatExpectation(CodeStyleKat kat)
     {
         if (kat is null) throw new ArgumentNullException(nameof(kat));

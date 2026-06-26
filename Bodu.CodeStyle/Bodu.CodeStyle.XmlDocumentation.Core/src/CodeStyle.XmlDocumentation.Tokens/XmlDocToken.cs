@@ -9,8 +9,8 @@ using System;
 namespace Bodu.CodeStyle.XmlDocumentation.Tokens;
 
 /// <summary>
-/// Represents a single token produced by <see cref="XmlDocTokenizer" /> when decomposing the prose content of an
-/// XML documentation comment.
+/// Represents a single token produced by <see cref="XmlDocTokenizer" /> when decomposing the prose content of an XML
+/// documentation comment.
 /// </summary>
 internal sealed class XmlDocToken
 {
@@ -19,8 +19,12 @@ internal sealed class XmlDocToken
     /// </summary>
     /// <param name="kind">The token kind.</param>
     /// <param name="rawText">The verbatim text the token represents.</param>
-    /// <param name="tagName">The tag name when <paramref name="kind" /> identifies a block or inline tag; otherwise <see langword="null" />.</param>
-    /// <param name="isSelfClosing">Indicates whether an inline token was emitted in self-closing form (<c>&lt;tag /&gt;</c>).</param>
+    /// <param name="tagName">
+    /// The tag name when <paramref name="kind" /> identifies a block or inline tag; otherwise <see langword="null" />.
+    /// </param>
+    /// <param name="isSelfClosing">
+    /// Indicates whether an inline token was emitted in self-closing form (<c>&lt;tag /&gt;</c>).
+    /// </param>
     public XmlDocToken(XmlDocTokenKind kind, string rawText, string? tagName, bool isSelfClosing)
     {
         if (rawText is null) throw new ArgumentNullException(nameof(rawText));
@@ -52,7 +56,9 @@ internal sealed class XmlDocToken
     /// <summary>
     /// Gets a value indicating whether an inline token was emitted in self-closing form.
     /// </summary>
-    /// <value><see langword="true" /> when the source used the <c>&lt;tag /&gt;</c> form; otherwise <see langword="false" />.</value>
+    /// <value>
+    /// <see langword="true" /> when the source used the <c>&lt;tag /&gt;</c> form; otherwise <see langword="false" />.
+    /// </value>
     public bool IsSelfClosing { get; }
 
     /// <summary>
@@ -81,7 +87,9 @@ internal sealed class XmlDocToken
     /// <summary>
     /// Returns a token representing a <c>&lt;![CDATA[...]]&gt;</c> section captured verbatim.
     /// </summary>
-    /// <param name="rawText">The full CDATA literal, including the open and close delimiters and any internal newlines.</param>
+    /// <param name="rawText">
+    /// The full CDATA literal, including the open and close delimiters and any internal newlines.
+    /// </param>
     /// <returns>A new CData token.</returns>
     public static XmlDocToken CData(string rawText) =>
         new XmlDocToken(XmlDocTokenKind.CData, rawText, tagName: null, isSelfClosing: false);

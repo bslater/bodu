@@ -11,8 +11,8 @@ namespace Bodu.CodeStyle.XmlDocumentation;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The hint is purely informational; the formatter does not currently change layout based on the member kind. It
-/// is reserved for future rules (for example, requiring <c>&lt;returns&gt;</c> on methods with non-void return).
+/// The hint is purely informational; the formatter does not currently change layout based on the member kind. It is
+/// reserved for future rules (for example, requiring <c>&lt;returns&gt;</c> on methods with non-void return).
 /// </para>
 /// </remarks>
 public enum XmlDocMemberKindHint

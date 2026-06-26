@@ -11,8 +11,8 @@ using System.Collections.Immutable;
 namespace Bodu.CodeStyle.XmlDocumentation;
 
 /// <summary>
-/// Provides the canonical Bodu XML documentation formatting policy and the well-known tag-set constants used to
-/// build it.
+/// Provides the canonical Bodu XML documentation formatting policy and the well-known tag-set constants used to build
+/// it.
 /// </summary>
 public static class XmlDocFormatPolicyDefaults
 {
@@ -32,8 +32,8 @@ public static class XmlDocFormatPolicyDefaults
     /// Gets the default indent unit applied beneath block tags.
     /// </summary>
     /// <value>
-    /// The empty string. The canonical Bodu layout keeps nested block content flush with its enclosing tag, so
-    /// no per-level indentation is applied by default; set a non-empty indent to indent nested content.
+    /// The empty string. The canonical Bodu layout keeps nested block content flush with its enclosing tag, so no
+    /// per-level indentation is applied by default; set a non-empty indent to indent nested content.
     /// </value>
     public static string DefaultIndentText => string.Empty;
 
@@ -42,10 +42,10 @@ public static class XmlDocFormatPolicyDefaults
     /// </summary>
     /// <value>The ordinal immutable set of block tag names.</value>
     /// <remarks>
-    /// This set matches <see cref="DefaultForceMultilineTags" />: every default block tag is also forced
-    /// multiline. <c>term</c> and <c>description</c> are intentionally excluded — they are
-    /// single-line-when-short (see <see cref="DefaultSingleLineWhenShortTags" />) so each row of a
-    /// <c>&lt;list&gt;</c> reads as one line, wrapping only when its content overflows.
+    /// This set matches <see cref="DefaultForceMultilineTags" />: every default block tag is also forced multiline.
+    /// <c>term</c> and <c>description</c> are intentionally excluded — they are single-line-when-short (see
+    /// <see cref="DefaultSingleLineWhenShortTags" />) so each row of a <c>&lt;list&gt;</c> reads as one line, wrapping
+    /// only when its content overflows.
     /// </remarks>
     public static ImmutableHashSet<string> DefaultBlockTags { get; } = ImmutableHashSet.Create(
         StringComparer.Ordinal,
@@ -89,9 +89,9 @@ public static class XmlDocFormatPolicyDefaults
     /// </summary>
     /// <value>The ordinal immutable set of single-line-when-short tag names.</value>
     /// <remarks>
-    /// <c>term</c> and <c>description</c> are single-line-when-short so each row of a <c>&lt;list&gt;</c> renders
-    /// as one line — <c>&lt;term&gt;Combination&lt;/term&gt;</c>, <c>&lt;description&gt;Yield&lt;/description&gt;</c>
-    /// — and expands to the multiline block form only when the content overflows the line budget.
+    /// <c>term</c> and <c>description</c> are single-line-when-short so each row of a <c>&lt;list&gt;</c> renders as
+    /// one line — <c>&lt;term&gt;Combination&lt;/term&gt;</c>, <c>&lt;description&gt;Yield&lt;/description&gt;</c> —
+    /// and expands to the multiline block form only when the content overflows the line budget.
     /// </remarks>
     public static ImmutableHashSet<string> DefaultSingleLineWhenShortTags { get; } = ImmutableHashSet.Create(
         StringComparer.Ordinal,
@@ -135,6 +135,12 @@ public static class XmlDocFormatPolicyDefaults
             neverSplitTagContent: DefaultNeverSplitTagContent,
             tagPolicies: CreateDefaultTagPolicies());
 
+    /// <summary>
+    /// Builds the default per-tag policy dictionary, assigning each well-known tag a multiline, single-line, or
+    /// inline-atomic policy while leaving the layout at <see cref="XmlDocTagLayout.Auto" /> so the convenience sets
+    /// remain the authoritative layout source.
+    /// </summary>
+    /// <returns>The immutable dictionary of default per-tag policies keyed by element name.</returns>
     private static ImmutableDictionary<string, XmlDocTagPolicy> CreateDefaultTagPolicies()
     {
         ImmutableDictionary<string, XmlDocTagPolicy>.Builder builder =

@@ -17,8 +17,8 @@ namespace Bodu.CodeStyle.XmlDocumentation.Configuration;
 /// <see cref="XmlDocFormatPolicyDefaults.CreateDefaults" />.
 /// </summary>
 /// <remarks>
-/// Parsing uses the dependency-free <see cref="ConfigJsonParser" /> rather than <c>System.Text.Json</c> so the
-/// analyzer package needs no external runtime assembly in the analyzer host.
+/// Parsing uses the dependency-free <see cref="ConfigJsonParser" /> rather than <c>System.Text.Json</c> so the analyzer
+/// package needs no external runtime assembly in the analyzer host.
 /// </remarks>
 public static class XmlDocConfigJsonReader
 {
@@ -153,6 +153,13 @@ public static class XmlDocConfigJsonReader
             tagPolicies);
     }
 
+    /// <summary>
+    /// Reads a property value as a 32-bit integer.
+    /// </summary>
+    /// <param name="name">The property name, used in error messages.</param>
+    /// <param name="value">The JSON value to interpret.</param>
+    /// <returns>The integer value.</returns>
+    /// <exception cref="XmlDocConfigException">Thrown when the value is not an integer.</exception>
     private static int ReadInt32(string name, ConfigJsonValue value)
     {
         if (!value.TryGetInt32(out var result))
@@ -163,6 +170,13 @@ public static class XmlDocConfigJsonReader
         return result;
     }
 
+    /// <summary>
+    /// Reads a property value as a string.
+    /// </summary>
+    /// <param name="name">The property name, used in error messages.</param>
+    /// <param name="value">The JSON value to interpret.</param>
+    /// <returns>The string content, or an empty string when the content is absent.</returns>
+    /// <exception cref="XmlDocConfigException">Thrown when the value is not a string.</exception>
     private static string ReadString(string name, ConfigJsonValue value)
     {
         if (value.Kind != ConfigJsonValueKind.String)
@@ -173,6 +187,13 @@ public static class XmlDocConfigJsonReader
         return value.StringValue ?? string.Empty;
     }
 
+    /// <summary>
+    /// Reads a property value as a boolean.
+    /// </summary>
+    /// <param name="name">The property name, used in error messages.</param>
+    /// <param name="value">The JSON value to interpret.</param>
+    /// <returns>The boolean content.</returns>
+    /// <exception cref="XmlDocConfigException">Thrown when the value is not a boolean.</exception>
     private static bool ReadBoolean(string name, ConfigJsonValue value)
     {
         if (value.Kind != ConfigJsonValueKind.Boolean)
@@ -183,6 +204,13 @@ public static class XmlDocConfigJsonReader
         return value.BooleanValue;
     }
 
+    /// <summary>
+    /// Reads a property value as an immutable set of non-empty strings.
+    /// </summary>
+    /// <param name="name">The property name, used in error messages.</param>
+    /// <param name="value">The JSON value to interpret.</param>
+    /// <returns>The set of string entries, with empty entries discarded.</returns>
+    /// <exception cref="XmlDocConfigException">Thrown when the value is not an array of strings.</exception>
     private static ImmutableHashSet<string> ReadStringSet(string name, ConfigJsonValue value)
     {
         if (value.Kind != ConfigJsonValueKind.Array || value.Items is null)
@@ -208,6 +236,14 @@ public static class XmlDocConfigJsonReader
         return builder.ToImmutable();
     }
 
+    /// <summary>
+    /// Reads the <c>tagPolicies</c> object, overlaying each per-tag policy on top of the supplied defaults.
+    /// </summary>
+    /// <param name="name">The property name, used in error messages.</param>
+    /// <param name="value">The JSON value to interpret.</param>
+    /// <param name="defaults">The default tag policies to overlay the JSON entries onto.</param>
+    /// <returns>The merged tag policy map.</returns>
+    /// <exception cref="XmlDocConfigException">Thrown when the value is not an object.</exception>
     private static ImmutableDictionary<string, XmlDocTagPolicy> ReadTagPolicies(string name, ConfigJsonValue value, ImmutableDictionary<string, XmlDocTagPolicy> defaults)
     {
         if (value.Kind != ConfigJsonValueKind.Object || value.Members is null)
@@ -224,6 +260,13 @@ public static class XmlDocConfigJsonReader
         return builder.ToImmutable();
     }
 
+    /// <summary>
+    /// Reads a single per-tag policy object.
+    /// </summary>
+    /// <param name="name">The tag name the policy applies to, used in error messages.</param>
+    /// <param name="value">The JSON value to interpret.</param>
+    /// <returns>The parsed tag policy.</returns>
+    /// <exception cref="XmlDocConfigException">Thrown when the value is not an object.</exception>
     private static XmlDocTagPolicy ReadTagPolicy(string name, ConfigJsonValue value)
     {
         if (value.Kind != ConfigJsonValueKind.Object || value.Members is null)
@@ -261,6 +304,15 @@ public static class XmlDocConfigJsonReader
         return new XmlDocTagPolicy(layout, maxSingleLineLength, allowLineBreakInside, selfClosingTrailingSpace);
     }
 
+    /// <summary>
+    /// Parses a tag layout name into the corresponding <see cref="XmlDocTagLayout" /> value.
+    /// </summary>
+    /// <param name="name">The property name, used in error messages.</param>
+    /// <param name="value">The JSON value carrying the layout name.</param>
+    /// <returns>The parsed layout.</returns>
+    /// <exception cref="XmlDocConfigException">
+    /// Thrown when the value is not a string or names an unknown layout.
+    /// </exception>
     private static XmlDocTagLayout ParseLayout(string name, ConfigJsonValue value)
     {
         var raw = ReadString(name, value);

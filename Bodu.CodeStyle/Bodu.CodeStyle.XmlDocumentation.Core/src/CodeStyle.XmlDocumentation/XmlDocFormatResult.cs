@@ -11,7 +11,8 @@ using System.Collections.Immutable;
 namespace Bodu.CodeStyle.XmlDocumentation;
 
 /// <summary>
-/// Represents the outcome of a call to <see cref="XmlDocFormatter.FormatTrivia(string, XmlDocFormatContext, XmlDocFormatOptions)" />.
+/// Represents the outcome of a call to
+/// <see cref="XmlDocFormatter.FormatTrivia(string, XmlDocFormatContext, XmlDocFormatOptions)" />.
 /// </summary>
 public sealed class XmlDocFormatResult
 {
@@ -34,12 +35,13 @@ public sealed class XmlDocFormatResult
     /// <summary>
     /// Gets a value indicating whether the formatter produced output that differs from its input.
     /// </summary>
-    /// <value><see langword="true" /> when the formatted text differs from the input; otherwise <see langword="false" />.</value>
+    /// <value>
+    /// <see langword="true" /> when the formatted text differs from the input; otherwise <see langword="false" />.
+    /// </value>
     public bool Changed { get; }
 
     /// <summary>
-    /// Gets the formatted documentation comment text, including the documentation prefix and base indent on
-    /// every line.
+    /// Gets the formatted documentation comment text, including the documentation prefix and base indent on every line.
     /// </summary>
     /// <value>The complete formatted trivia text.</value>
     public string FormattedText { get; }
@@ -47,6 +49,8 @@ public sealed class XmlDocFormatResult
     /// <summary>
     /// Gets the ordered list of changes applied by the formatter.
     /// </summary>
-    /// <value>The immutable array of formatting changes; empty when <see cref="Changed" /> is <see langword="false" />.</value>
+    /// <value>
+    /// The immutable array of formatting changes; empty when <see cref="Changed" /> is <see langword="false" />.
+    /// </value>
     public ImmutableArray<XmlDocFormattingChange> Changes { get; }
 }

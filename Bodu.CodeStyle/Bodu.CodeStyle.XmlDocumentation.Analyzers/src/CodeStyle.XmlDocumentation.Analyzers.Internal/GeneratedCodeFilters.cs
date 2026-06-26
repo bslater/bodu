@@ -18,9 +18,7 @@ namespace Bodu.CodeStyle.XmlDocumentation.Analyzers.Internal;
 /// </summary>
 internal static class GeneratedCodeFilters
 {
-    // Caches the combined generated-code verdict per syntax tree so syntax-node analyzers that run once per XML
-    // element do not re-read and re-scan the file text for every node. Keys are weakly held, so trees are not
-    // kept alive and the cache spans compilations without leaking.
+    /// <summary>Caches the combined generated-code verdict per syntax tree so syntax-node analyzers that run once per XML element do not re-read and re-scan the file text for every node. Keys are weakly held, so trees are not kept alive and the cache spans compilations without leaking.</summary>
     private static readonly ConditionalWeakTable<SyntaxTree, StrongBox<bool>> s_generatedCache = new();
 
     /// <summary>
@@ -28,8 +26,12 @@ internal static class GeneratedCodeFilters
     /// auto-generated-marker checks and caching the result per tree.
     /// </summary>
     /// <param name="tree">The syntax tree under analysis.</param>
-    /// <returns><see langword="true" /> when the tree is recognised as generated; otherwise <see langword="false" />.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="tree" /> is <see langword="null" />.</exception>
+    /// <returns>
+    /// <see langword="true" /> when the tree is recognised as generated; otherwise <see langword="false" />.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="tree" /> is <see langword="null" />.
+    /// </exception>
     public static bool IsGenerated(SyntaxTree tree)
     {
         if (tree is null) throw new ArgumentNullException(nameof(tree));
@@ -45,7 +47,9 @@ internal static class GeneratedCodeFilters
     /// Returns whether the supplied syntax tree should be skipped because its filename indicates generated code.
     /// </summary>
     /// <param name="tree">The syntax tree under analysis.</param>
-    /// <returns><see langword="true" /> when the filename matches a generated-code pattern; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the filename matches a generated-code pattern; otherwise <see langword="false" />.
+    /// </returns>
     public static bool IsGeneratedFileName(SyntaxTree tree)
     {
         if (tree is null) throw new ArgumentNullException(nameof(tree));
@@ -62,8 +66,8 @@ internal static class GeneratedCodeFilters
     }
 
     /// <summary>
-    /// Returns whether the supplied syntax tree contains the standard <c>&lt;auto-generated /&gt;</c> marker in
-    /// its first few lines.
+    /// Returns whether the supplied syntax tree contains the standard <c>&lt;auto-generated /&gt;</c> marker in its
+    /// first few lines.
     /// </summary>
     /// <param name="tree">The syntax tree under analysis.</param>
     /// <returns><see langword="true" /> when the marker is found; otherwise <see langword="false" />.</returns>

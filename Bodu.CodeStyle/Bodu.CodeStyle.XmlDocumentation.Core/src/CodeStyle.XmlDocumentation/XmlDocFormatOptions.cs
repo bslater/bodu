@@ -11,8 +11,8 @@ namespace Bodu.CodeStyle.XmlDocumentation;
 
 /// <summary>
 /// Provides the immutable policy that drives <see cref="XmlDocFormatter" /> output. Use
-/// <see cref="XmlDocFormatPolicyDefaults.CreateDefaults" /> for the standard Bodu profile or
-/// construct a custom instance to override individual rules.
+/// <see cref="XmlDocFormatPolicyDefaults.CreateDefaults" /> for the standard Bodu profile or construct a custom
+/// instance to override individual rules.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -25,18 +25,27 @@ public sealed class XmlDocFormatOptions
     /// <summary>
     /// Initializes a new instance of the <see cref="XmlDocFormatOptions" /> class with the given policy.
     /// </summary>
-    /// <param name="maxLineLength">The maximum physical line length, including the documentation prefix and indent.</param>
+    /// <param name="maxLineLength">
+    /// The maximum physical line length, including the documentation prefix and indent.
+    /// </param>
     /// <param name="documentationPrefix">The prefix emitted at the start of every doc-comment line.</param>
     /// <param name="indentText">The indent unit used for content beneath block tags.</param>
-    /// <param name="collapseProseWhitespace">Whether sequences of prose whitespace are collapsed to a single space.</param>
+    /// <param name="collapseProseWhitespace">
+    /// Whether sequences of prose whitespace are collapsed to a single space.
+    /// </param>
     /// <param name="preserveBlankLines">Whether existing blank documentation lines are preserved.</param>
     /// <param name="preserveXmlTagAttributes">Whether attribute spacing inside XML tags is preserved verbatim.</param>
     /// <param name="preserveCrefText">Whether <c>cref</c> attribute values are preserved verbatim.</param>
-    /// <param name="keepFieldSummaryOnSingleLine">Whether a field's single-line <c>&lt;summary&gt;</c> is kept on one line even when its content overflows the line budget.</param>
+    /// <param name="keepFieldSummaryOnSingleLine">
+    /// Whether a field's single-line <c>&lt;summary&gt;</c> is kept on one line even when its content overflows the
+    /// line budget.
+    /// </param>
     /// <param name="blockTags">The set of element names treated as block tags.</param>
     /// <param name="inlineTags">The set of element names treated as inline-atomic tags.</param>
     /// <param name="forceMultilineTags">The set of element names that must always emit on their own lines.</param>
-    /// <param name="singleLineWhenShortTags">The set of element names that may stay single-line when short enough.</param>
+    /// <param name="singleLineWhenShortTags">
+    /// The set of element names that may stay single-line when short enough.
+    /// </param>
     /// <param name="neverSplitTagContent">The set of element names whose content must never wrap.</param>
     /// <param name="tagPolicies">The per-tag fine-grained policy overrides.</param>
     public XmlDocFormatOptions(
@@ -108,13 +117,17 @@ public sealed class XmlDocFormatOptions
     /// <summary>
     /// Gets a value indicating whether existing blank documentation lines are preserved.
     /// </summary>
-    /// <value><see langword="true" /> when blank lines inside the comment are preserved; otherwise <see langword="false" />.</value>
+    /// <value>
+    /// <see langword="true" /> when blank lines inside the comment are preserved; otherwise <see langword="false" />.
+    /// </value>
     public bool PreserveBlankLines { get; }
 
     /// <summary>
     /// Gets a value indicating whether attribute spacing inside XML tags is preserved verbatim.
     /// </summary>
-    /// <value><see langword="true" /> when attribute formatting is preserved; otherwise <see langword="false" />.</value>
+    /// <value>
+    /// <see langword="true" /> when attribute formatting is preserved; otherwise <see langword="false" />.
+    /// </value>
     public bool PreserveXmlTagAttributes { get; }
 
     /// <summary>
@@ -124,14 +137,16 @@ public sealed class XmlDocFormatOptions
     public bool PreserveCrefText { get; }
 
     /// <summary>
-    /// Gets a value indicating whether a field's single-line <c>&lt;summary&gt;</c> is kept on one line even when
-    /// its content overflows the line budget.
+    /// Gets a value indicating whether a field's single-line <c>&lt;summary&gt;</c> is kept on one line even when its
+    /// content overflows the line budget.
     /// </summary>
-    /// <value><see langword="true" /> when a field summary is never wrapped; otherwise <see langword="false" />.</value>
+    /// <value>
+    /// <see langword="true" /> when a field summary is never wrapped; otherwise <see langword="false" />.
+    /// </value>
     /// <remarks>
-    /// When enabled, a field's <c>&lt;summary&gt;</c> is treated as single-line content whose wrapping is
-    /// forbidden, so it stays on one physical line regardless of length rather than expanding to the multiline
-    /// block form. Other member kinds, and summaries that contain genuinely multi-line content, are unaffected.
+    /// When enabled, a field's <c>&lt;summary&gt;</c> is treated as single-line content whose wrapping is forbidden, so
+    /// it stays on one physical line regardless of length rather than expanding to the multiline block form. Other
+    /// member kinds, and summaries that contain genuinely multi-line content, are unaffected.
     /// </remarks>
     public bool KeepFieldSummaryOnSingleLine { get; }
 
@@ -291,11 +306,11 @@ public sealed class XmlDocFormatOptions
     /// <remarks>
     /// <para>
     /// An explicit per-tag policy whose <see cref="XmlDocTagPolicy.Layout" /> is not
-    /// <see cref="XmlDocTagLayout.Auto" /> wins outright; this makes <c>tagPolicies</c> the single authoritative
-    /// layout source. The convenience sets act as shorthand consulted only when no explicit policy layout
-    /// applies, in precedence order: <see cref="ForceMultilineTags" /> (block), <see cref="SingleLineWhenShortTags" />,
-    /// <see cref="InlineTags" /> (inline atomic), then <see cref="BlockTags" /> (block). When none match the tag
-    /// flows inline with the surrounding prose (<see cref="XmlDocTagLayout.Auto" />).
+    /// <see cref="XmlDocTagLayout.Auto" /> wins outright; this makes <c>tagPolicies</c> the single authoritative layout
+    /// source. The convenience sets act as shorthand consulted only when no explicit policy layout applies, in
+    /// precedence order: <see cref="ForceMultilineTags" /> (block), <see cref="SingleLineWhenShortTags" />,
+    /// <see cref="InlineTags" /> (inline atomic), then <see cref="BlockTags" /> (block). When none match the tag flows
+    /// inline with the surrounding prose (<see cref="XmlDocTagLayout.Auto" />).
     /// </para>
     /// </remarks>
     public XmlDocTagLayout ResolveLayout(string tagName)
@@ -321,11 +336,12 @@ public sealed class XmlDocFormatOptions
     /// <param name="tagName">The element name to test.</param>
     /// <returns>
     /// <see langword="false" /> when the tag is in <see cref="NeverSplitTagContent" /> or its per-tag policy sets
-    /// <see cref="XmlDocTagPolicy.AllowLineBreakInside" /> to <see langword="false" />; otherwise <see langword="true" />.
+    /// <see cref="XmlDocTagPolicy.AllowLineBreakInside" /> to <see langword="false" />; otherwise
+    /// <see langword="true" />.
     /// </returns>
     /// <remarks>
-    /// When wrapping is forbidden, a single-line-when-short tag whose content overflows the budget is emitted on
-    /// one line rather than expanded to a multiline block, keeping the element intact.
+    /// When wrapping is forbidden, a single-line-when-short tag whose content overflows the budget is emitted on one
+    /// line rather than expanded to a multiline block, keeping the element intact.
     /// </remarks>
     public bool AllowsContentWrapping(string tagName)
     {
@@ -340,6 +356,53 @@ public sealed class XmlDocFormatOptions
         return true;
     }
 
+    /// <summary>
+    /// Creates a copy of this instance, replacing only the policy values supplied as non-<see langword="null" />
+    /// arguments and carrying the remainder forward unchanged.
+    /// </summary>
+    /// <param name="maxLineLength">
+    /// The replacement maximum line length, or <see langword="null" /> to keep the current value.
+    /// </param>
+    /// <param name="documentationPrefix">
+    /// The replacement documentation prefix, or <see langword="null" /> to keep the current value.
+    /// </param>
+    /// <param name="indentText">
+    /// The replacement indent unit, or <see langword="null" /> to keep the current value.
+    /// </param>
+    /// <param name="collapseProseWhitespace">
+    /// The replacement collapse-prose-whitespace setting, or <see langword="null" /> to keep the current value.
+    /// </param>
+    /// <param name="preserveBlankLines">
+    /// The replacement preserve-blank-lines setting, or <see langword="null" /> to keep the current value.
+    /// </param>
+    /// <param name="preserveXmlTagAttributes">
+    /// The replacement preserve-attribute-spacing setting, or <see langword="null" /> to keep the current value.
+    /// </param>
+    /// <param name="preserveCrefText">
+    /// The replacement preserve-cref-text setting, or <see langword="null" /> to keep the current value.
+    /// </param>
+    /// <param name="keepFieldSummaryOnSingleLine">
+    /// The replacement keep-field-summary-on-single-line setting, or <see langword="null" /> to keep the current value.
+    /// </param>
+    /// <param name="blockTags">
+    /// The replacement set of block tag names, or <see langword="null" /> to keep the current value.
+    /// </param>
+    /// <param name="inlineTags">
+    /// The replacement set of inline-atomic tag names, or <see langword="null" /> to keep the current value.
+    /// </param>
+    /// <param name="forceMultilineTags">
+    /// The replacement set of force-multiline tag names, or <see langword="null" /> to keep the current value.
+    /// </param>
+    /// <param name="singleLineWhenShortTags">
+    /// The replacement set of single-line-when-short tag names, or <see langword="null" /> to keep the current value.
+    /// </param>
+    /// <param name="neverSplitTagContent">
+    /// The replacement set of never-split tag names, or <see langword="null" /> to keep the current value.
+    /// </param>
+    /// <param name="tagPolicies">
+    /// The replacement per-tag policy dictionary, or <see langword="null" /> to keep the current value.
+    /// </param>
+    /// <returns>A new instance with the requested overrides applied.</returns>
     private XmlDocFormatOptions With(
         int? maxLineLength = null,
         string? documentationPrefix = null,

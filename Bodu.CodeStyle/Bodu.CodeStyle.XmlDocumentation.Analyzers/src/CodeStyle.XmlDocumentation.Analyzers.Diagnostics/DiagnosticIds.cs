@@ -10,19 +10,16 @@ namespace Bodu.CodeStyle.XmlDocumentation.Analyzers.Diagnostics;
 /// Provides the well-known Roslyn diagnostic identifiers reported by this analyzer assembly.
 /// </summary>
 /// <remarks>
-/// Diagnostic IDs follow the <c>BODU####</c> scheme — the thousands digit denotes the analyzer family; the
-/// remaining digits identify a specific rule. The XML-documentation family is <c>BODU1xxx</c> and is laid out
-/// as follows: <c>BODU1001</c>–<c>BODU1018</c> per-tag formatting; <c>BODU1040</c> cross-cutting formatting;
-/// <c>BODU1041</c>–<c>BODU1099</c> reserved for future granular cross-cutting splits; <c>BODU1100</c>+ reserved
-/// for required-tag rules; <c>BODU1200</c>+ for ordering; <c>BODU1300</c>+ for cref validity; <c>BODU1400</c>+
-/// for content quality. See <c>Bodu.CodeStyle/README.md#diagnostic-ids</c> for the canonical range table.
+/// Diagnostic IDs follow the <c>BODU####</c> scheme — the thousands digit denotes the analyzer family; the remaining
+/// digits identify a specific rule. The XML-documentation family is <c>BODU1xxx</c> and is laid out as follows:
+/// <c>BODU1001</c>–<c>BODU1018</c> per-tag formatting; <c>BODU1040</c> cross-cutting formatting; <c>BODU1041</c>–<c>BODU1099</c>
+/// reserved for future granular cross-cutting splits; <c>BODU1100</c>+ reserved for required-tag rules; <c>BODU1200</c>+
+/// for ordering; <c>BODU1300</c>+ for cref validity; <c>BODU1400</c>+ for content quality. See
+/// <c>Bodu.CodeStyle/README.md#diagnostic-ids</c> for the canonical range table.
 /// </remarks>
 internal static class DiagnosticIds
 {
-    /// <summary>
-    /// The infrastructure diagnostic identifier reported when a <c>bodu.xmldocstyle.json</c> configuration file
-    /// is invalid and cannot be applied.
-    /// </summary>
+    /// <summary>The infrastructure diagnostic identifier reported when a <c>bodu.xmldocstyle.json</c> configuration file is invalid and cannot be applied.</summary>
     public const string XmlDocConfigInvalid = "BODU0001";
 
     /// <summary>The diagnostic identifier for <c>&lt;summary&gt;</c> formatting issues.</summary>
@@ -79,22 +76,12 @@ internal static class DiagnosticIds
     /// <summary>The diagnostic identifier for <c>&lt;typeparamref&gt;</c> inline formatting issues.</summary>
     public const string XmlDocTypeParamRef = "BODU1018";
 
-    /// <summary>
-    /// The diagnostic identifier reported when the formatter changes documentation prose, prefix, indent, or
-    /// any other content that does not belong to a specific tag scope.
-    /// </summary>
+    /// <summary>The diagnostic identifier reported when the formatter changes documentation prose, prefix, indent, or any other content that does not belong to a specific tag scope.</summary>
     public const string XmlDocCrossCutting = "BODU1040";
 
-    /// <summary>
-    /// The diagnostic identifier reported when a <c>&lt;code&gt;</c> documentation element does not contain a
-    /// <c>&lt;![CDATA[…]]&gt;</c> section as its first non-whitespace child.
-    /// </summary>
+    /// <summary>The diagnostic identifier reported when a <c>&lt;code&gt;</c> documentation element does not contain a <c>&lt;![CDATA[…]]&gt;</c> section as its first non-whitespace child.</summary>
     public const string XmlDocCodeRequiresCData = "BODU1405";
 
-    /// <summary>
-    /// The diagnostic identifier reported when a <c>&lt;typeparam&gt;</c> documentation element carries
-    /// explanatory prose that overflows the single-line budget and should be relocated into a
-    /// <c>&lt;remarks&gt;&lt;para&gt;…&lt;/para&gt;&lt;/remarks&gt;</c> block.
-    /// </summary>
+    /// <summary>The diagnostic identifier reported when a <c>&lt;typeparam&gt;</c> documentation element carries explanatory prose that overflows the single-line budget and should be relocated into a <c>&lt;remarks&gt;&lt;para&gt;…&lt;/para&gt;&lt;/remarks&gt;</c> block.</summary>
     public const string XmlDocTypeParamRequiresShortContent = "BODU1406";
 }

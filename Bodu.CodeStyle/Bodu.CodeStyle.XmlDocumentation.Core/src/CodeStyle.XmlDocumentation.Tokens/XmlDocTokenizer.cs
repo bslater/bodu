@@ -12,8 +12,8 @@ using System.Text;
 namespace Bodu.CodeStyle.XmlDocumentation.Tokens;
 
 /// <summary>
-/// Decomposes the prose content of an XML documentation comment (with the documentation prefix already stripped)
-/// into a flat token stream.
+/// Decomposes the prose content of an XML documentation comment (with the documentation prefix already stripped) into a
+/// flat token stream.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -27,10 +27,16 @@ internal static class XmlDocTokenizer
     /// <summary>
     /// Tokenizes the prose content of a documentation comment.
     /// </summary>
-    /// <param name="content">The doc-comment content with the <c>"/// "</c> prefix already stripped from each line.</param>
+    /// <param name="content">
+    /// The doc-comment content with the <c>"/// "</c> prefix already stripped from each line.
+    /// </param>
     /// <param name="inlineTags">The set of element names treated as inline atomic tokens.</param>
-    /// <param name="preserveTagAttributes">When <see langword="true" />, inter-attribute spacing in a reflowed tag is preserved rather than collapsed.</param>
-    /// <param name="preserveCrefText">When <see langword="true" />, whitespace inside attribute values is preserved rather than collapsed.</param>
+    /// <param name="preserveTagAttributes">
+    /// When <see langword="true" />, inter-attribute spacing in a reflowed tag is preserved rather than collapsed.
+    /// </param>
+    /// <param name="preserveCrefText">
+    /// When <see langword="true" />, whitespace inside attribute values is preserved rather than collapsed.
+    /// </param>
     /// <returns>The ordered list of tokens produced from the input.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="content" /> or <paramref name="inlineTags" /> is <see langword="null" />.
@@ -116,6 +122,11 @@ internal static class XmlDocTokenizer
         return builder.ToImmutable();
     }
 
+    /// <summary>
+    /// Emits any buffered text run as a text token and clears the buffer.
+    /// </summary>
+    /// <param name="builder">The token builder receiving the emitted token.</param>
+    /// <param name="textRun">The accumulated text run; emptied when non-empty.</param>
     private static void FlushText(ImmutableArray<XmlDocToken>.Builder builder, StringBuilder textRun)
     {
         if (textRun.Length == 0) return;
@@ -124,6 +135,11 @@ internal static class XmlDocTokenizer
         textRun.Clear();
     }
 
+    /// <summary>
+    /// Emits any buffered whitespace run as a whitespace token and clears the buffer.
+    /// </summary>
+    /// <param name="builder">The token builder receiving the emitted token.</param>
+    /// <param name="whitespaceRun">The accumulated whitespace run; emptied when non-empty.</param>
     private static void FlushWhitespace(ImmutableArray<XmlDocToken>.Builder builder, StringBuilder whitespaceRun)
     {
         if (whitespaceRun.Length == 0) return;
@@ -132,6 +148,20 @@ internal static class XmlDocTokenizer
         whitespaceRun.Clear();
     }
 
+    /// <summary>
+    /// Attempts to read a CDATA section beginning at the given position.
+    /// </summary>
+    /// <param name="content">The content being tokenized.</param>
+    /// <param name="start">The index of the candidate <c>&lt;![CDATA[</c> opener.</param>
+    /// <param name="end">
+    /// When this method returns, the index immediately after the closing <c>]]&gt;</c>; otherwise zero.
+    /// </param>
+    /// <param name="text">
+    /// When this method returns, the full CDATA section text including delimiters; otherwise an empty string.
+    /// </param>
+    /// <returns>
+    /// <see langword="true" /> if a complete CDATA section was read; otherwise <see langword="false" />.
+    /// </returns>
     private static bool TryReadCData(string content, int start, out int end, out string text)
     {
         const string OpenSequence = "<![CDATA[";
@@ -158,6 +188,20 @@ internal static class XmlDocTokenizer
         return true;
     }
 
+    /// <summary>
+    /// Attempts to read an XML comment beginning at the given position.
+    /// </summary>
+    /// <param name="content">The content being tokenized.</param>
+    /// <param name="start">The index of the candidate <c>&lt;!--</c> opener.</param>
+    /// <param name="end">
+    /// When this method returns, the index immediately after the closing <c>--&gt;</c>; otherwise zero.
+    /// </param>
+    /// <param name="text">
+    /// When this method returns, the full comment text including delimiters; otherwise an empty string.
+    /// </param>
+    /// <returns>
+    /// <see langword="true" /> if a complete XML comment was read; otherwise <see langword="false" />.
+    /// </returns>
     private static bool TryReadXmlComment(string content, int start, out int end, out string text)
     {
         const string OpenSequence = "<!--";
@@ -184,6 +228,22 @@ internal static class XmlDocTokenizer
         return true;
     }
 
+    /// <summary>
+    /// Attempts to read an XML tag beginning at the given position and classify it as a block start, block end, or
+    /// inline atomic token.
+    /// </summary>
+    /// <param name="content">The content being tokenized.</param>
+    /// <param name="start">The index of the candidate <c>&lt;</c> opener.</param>
+    /// <param name="inlineTags">The set of element names treated as inline atomic tokens.</param>
+    /// <param name="preserveTagAttributes">
+    /// When <see langword="true" />, inter-attribute spacing in a reflowed tag is preserved rather than collapsed.
+    /// </param>
+    /// <param name="preserveCrefText">
+    /// When <see langword="true" />, whitespace inside attribute values is preserved rather than collapsed.
+    /// </param>
+    /// <param name="end">When this method returns, the index immediately after the parsed tag; otherwise zero.</param>
+    /// <param name="token">When this method returns, the produced token; otherwise <see langword="null" />.</param>
+    /// <returns><see langword="true" /> if a well-formed tag was read; otherwise <see langword="false" />.</returns>
     private static bool TryReadTag(string content, int start, ImmutableHashSet<string> inlineTags, bool preserveTagAttributes, bool preserveCrefText, out int end, out XmlDocToken? token)
     {
         // Parse: < [/] name [attrs ...] [ /] >
@@ -331,6 +391,18 @@ internal static class XmlDocTokenizer
         return true;
     }
 
+    /// <summary>
+    /// Normalizes whitespace within a raw tag, joining a multi-line tag onto a single line for the line-based composer
+    /// unless attribute or cref preservation is requested.
+    /// </summary>
+    /// <param name="raw">The raw tag text as captured from the source.</param>
+    /// <param name="preserveTagAttributes">
+    /// When <see langword="true" />, the tag is returned verbatim including internal line breaks and alignment.
+    /// </param>
+    /// <param name="preserveCrefText">
+    /// When <see langword="true" />, whitespace inside attribute values is preserved rather than collapsed.
+    /// </param>
+    /// <returns>The whitespace-normalized tag text.</returns>
     private static string NormalizeTagWhitespace(string raw, bool preserveTagAttributes, bool preserveCrefText)
     {
         if (preserveTagAttributes)
@@ -370,6 +442,13 @@ internal static class XmlDocTokenizer
         return result.ToString();
     }
 
+    /// <summary>
+    /// Scans forward from the given position to the closing <c>&gt;</c> of the opening tag, skipping over quoted
+    /// attribute values.
+    /// </summary>
+    /// <param name="raw">The raw tag text.</param>
+    /// <param name="start">The index at which to begin scanning.</param>
+    /// <returns>The index of the closing <c>&gt;</c>, or <c>-1</c> if none is found.</returns>
     private static int ScanToTagEnd(string raw, int start)
     {
         var inQuote = false;
@@ -403,6 +482,13 @@ internal static class XmlDocTokenizer
         return -1;
     }
 
+    /// <summary>
+    /// Finds the start index of the last closing tag (<c>&lt;/</c>) in the raw text, skipping over quoted attribute
+    /// values.
+    /// </summary>
+    /// <param name="raw">The raw tag text.</param>
+    /// <param name="start">The index at which to begin scanning.</param>
+    /// <returns>The index of the last <c>&lt;/</c> sequence, or <c>-1</c> if none is found.</returns>
     private static int FindClosingTagStart(string raw, int start)
     {
         var inQuote = false;
@@ -437,6 +523,13 @@ internal static class XmlDocTokenizer
         return lastClosingTagStart;
     }
 
+    /// <summary>
+    /// Appends the characters in the given range to the builder, dropping any carriage-return or line-feed characters.
+    /// </summary>
+    /// <param name="builder">The destination builder.</param>
+    /// <param name="raw">The source text.</param>
+    /// <param name="start">The inclusive start index of the range to copy.</param>
+    /// <param name="end">The exclusive end index of the range to copy.</param>
     private static void AppendBodyWithoutNewlines(StringBuilder builder, string raw, int start, int end)
     {
         for (var i = start; i < end; i++)
@@ -451,6 +544,20 @@ internal static class XmlDocTokenizer
         }
     }
 
+    /// <summary>
+    /// Collapses whitespace within a section of a tag, applying separate rules for whitespace inside and outside quoted
+    /// attribute values.
+    /// </summary>
+    /// <param name="raw">The raw tag text.</param>
+    /// <param name="start">The inclusive start index of the section to normalize.</param>
+    /// <param name="end">The exclusive end index of the section to normalize.</param>
+    /// <param name="collapseOutsideQuotes">
+    /// When <see langword="true" />, horizontal whitespace runs outside quotes collapse to a single space.
+    /// </param>
+    /// <param name="collapseInsideQuotes">
+    /// When <see langword="true" />, horizontal whitespace inside quoted values collapses to a single space.
+    /// </param>
+    /// <returns>The whitespace-normalized section text.</returns>
     private static string NormalizeAttributeSection(string raw, int start, int end, bool collapseOutsideQuotes, bool collapseInsideQuotes)
     {
         var result = new StringBuilder(end - start);
@@ -534,17 +641,39 @@ internal static class XmlDocTokenizer
         return result.ToString();
     }
 
+    /// <summary>
+    /// Determines whether the given character is valid within an XML element name.
+    /// </summary>
+    /// <param name="ch">The character to test.</param>
+    /// <returns>
+    /// <see langword="true" /> if the character may appear within a name; otherwise <see langword="false" />.
+    /// </returns>
     private static bool IsNameChar(char ch) =>
         (ch >= 'A' && ch <= 'Z') ||
         (ch >= 'a' && ch <= 'z') ||
         (ch >= '0' && ch <= '9') ||
         ch == '-' || ch == '_' || ch == '.' || ch == ':';
 
+    /// <summary>
+    /// Determines whether the given character is valid as the first character of an XML element name.
+    /// </summary>
+    /// <param name="ch">The character to test.</param>
+    /// <returns>
+    /// <see langword="true" /> if the character may begin a name; otherwise <see langword="false" />.
+    /// </returns>
     private static bool IsNameStartChar(char ch) =>
         (ch >= 'A' && ch <= 'Z') ||
         (ch >= 'a' && ch <= 'z') ||
         ch == '_' || ch == ':';
 
+    /// <summary>
+    /// Determines whether the given character terminates an element name within a closing tag (that is, ends the name
+    /// rather than continuing it).
+    /// </summary>
+    /// <param name="ch">The character to test.</param>
+    /// <returns>
+    /// <see langword="true" /> if the character forms a close-tag name boundary; otherwise <see langword="false" />.
+    /// </returns>
     private static bool IsCloseTagNameBoundary(char ch) =>
         ch == '>' || ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n';
 }
