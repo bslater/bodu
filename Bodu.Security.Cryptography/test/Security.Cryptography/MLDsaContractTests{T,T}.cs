@@ -229,6 +229,73 @@ public abstract class MLDsaContractTests<TTest, TDsa>
     }
 
     /// <summary>
+    /// Verifies that a single-byte mutation anywhere in the signature — the commitment hash c̃, the response z, or the
+    /// hint section h — causes verification to fail, while the unmodified signature verifies.
+    /// </summary>
+    [TestMethod]
+    public void VerifyData_WhenAnyRegionIsMutated_ShouldReturnFalse()
+    {
+        using var dsa = new TDsa();
+        dsa.GenerateKey();
+        dsa.DeterministicSigning = true;
+        byte[] message = new byte[] { 1, 2, 3 };
+
+        byte[] signature = dsa.SignData(message);
+        Assert.IsTrue(dsa.VerifyData(message, signature));
+
+        // Byte 0 lies in the commitment hash, the midpoint in the response z, and the final byte in the hint section.
+        foreach (int index in new[] { 0, SignatureSizeBytes / 2, SignatureSizeBytes - 1 })
+        {
+            byte[] mutated = (byte[])signature.Clone();
+            mutated[index] ^= 0x01;
+            Assert.IsFalse(dsa.VerifyData(message, mutated), $"mutation at byte {index}");
+        }
+    }
+
+    /// <summary>
+    /// Verifies that a signature whose final hint count exceeds ω is rejected by the strict FIPS 204 hint decoding.
+    /// </summary>
+    [TestMethod]
+    public void VerifyData_WhenHintCountExceedsOmega_ShouldReturnFalse()
+    {
+        using var dsa = new TDsa();
+        dsa.GenerateKey();
+        dsa.DeterministicSigning = true;
+        byte[] message = new byte[] { 7 };
+
+        byte[] signature = dsa.SignData(message);
+
+        // The final signature byte is the cumulative hint count for the last polynomial; 0xFF = 255 exceeds ω
+        // (at most 80) for every parameter set, so HintBitUnpack must reject the encoding.
+        byte[] malformed = (byte[])signature.Clone();
+        malformed[^1] = 0xFF;
+
+        Assert.IsFalse(dsa.VerifyData(message, malformed));
+    }
+
+    /// <summary>
+    /// Verifies that signing and verifying round-trip for context strings at the length boundaries 0, 1, and the
+    /// FIPS 204 maximum of 255 bytes.
+    /// </summary>
+    /// <param name="contextLength">The context length to exercise.</param>
+    [TestMethod]
+    [DataRow(0)]
+    [DataRow(1)]
+    [DataRow(255)]
+    public void SignAndVerify_WhenContextLengthIsAtBoundary_ShouldRoundTrip(int contextLength)
+    {
+        using var dsa = new TDsa();
+        dsa.GenerateKey();
+        byte[] message = new byte[] { 9, 9 };
+        byte[] context = new byte[contextLength];
+        new Random(contextLength + 1).NextBytes(context);
+
+        byte[] signature = dsa.SignData(message, context);
+
+        Assert.IsTrue(dsa.VerifyData(message, signature, context));
+    }
+
+    /// <summary>
     /// Verifies that the exact-length span overload of <see cref="MLDsa.SignData(ReadOnlySpan{byte})" /> matches
     /// the allocating overload in deterministic mode and rejects destinations of any other length.
     /// </summary>
