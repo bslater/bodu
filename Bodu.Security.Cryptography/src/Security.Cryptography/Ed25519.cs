@@ -385,10 +385,12 @@ public sealed partial class Ed25519
         Span<byte> k = stackalloc byte[32];
         Ed25519Scalar.Reduce(digest, k);
 
+        // [S]B == R + [k]A  ⇔  [S]B + [k](−A) == R. The single variable-time double-scalar multiplication shares its
+        // doublings between the two terms; every input here is public, so variable-time evaluation is acceptable.
         Span<byte> left = stackalloc byte[32];
         Span<byte> right = stackalloc byte[32];
-        Ed25519Point.ScalarMultBase(sEncoded).Encode(left);
-        rPoint.Add(Ed25519Point.ScalarMult(publicPoint, k)).Encode(right);
+        Ed25519Point.DoubleScalarMultBaseVartime(sEncoded, k, publicPoint.Negate()).Encode(left);
+        rPoint.Encode(right);
 
         return left.SequenceEqual(right);
     }

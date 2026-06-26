@@ -110,4 +110,88 @@ public class Ed25519PointTests
             CollectionAssert.AreEqual(encoded, roundTrip);
         }
     }
+
+    /// <summary>
+    /// Verifies that the precomputed fixed-base <see cref="Ed25519Point.ScalarMultBase" /> agrees with the general
+    /// reference <see cref="Ed25519Point.ScalarMult" /> over the base point for boundary and pseudo-random scalars.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void ScalarMultBase_ForVariousScalars_ShouldMatchReferenceScalarMult()
+    {
+        var random = new Random(8032);
+        byte[] scalar = new byte[32];
+
+        for (int iteration = 0; iteration < 256; iteration++)
+        {
+            SetScalar(scalar, iteration, random);
+
+            byte[] expected = new byte[Ed25519Point.EncodedSizeInBytes];
+            byte[] actual = new byte[Ed25519Point.EncodedSizeInBytes];
+            Ed25519Point.ScalarMult(Ed25519Point.BasePoint, scalar).Encode(expected);
+            Ed25519Point.ScalarMultBase(scalar).Encode(actual);
+
+            CollectionAssert.AreEqual(expected, actual, $"iteration {iteration}");
+        }
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Ed25519Point.DoubleScalarMultBaseVartime" /> equals the reference
+    /// [a]B + [b]P computed with two separate scalar multiplications, over pseudo-random scalars and points.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void DoubleScalarMultBaseVartime_ForVariousInputs_ShouldMatchSeparateScalarMults()
+    {
+        var random = new Random(80322);
+        byte[] a = new byte[32];
+        byte[] b = new byte[32];
+        byte[] pointScalar = new byte[32];
+
+        for (int iteration = 0; iteration < 128; iteration++)
+        {
+            SetScalar(a, iteration, random);
+            SetScalar(b, iteration + 1, random);
+            random.NextBytes(pointScalar);
+
+            // Derive an arbitrary prime-order point P = [pointScalar]B as the variable point.
+            Ed25519Point point = Ed25519Point.ScalarMultBase(pointScalar);
+
+            byte[] expected = new byte[Ed25519Point.EncodedSizeInBytes];
+            byte[] actual = new byte[Ed25519Point.EncodedSizeInBytes];
+            Ed25519Point.ScalarMultBase(a).Add(Ed25519Point.ScalarMult(point, b)).Encode(expected);
+            Ed25519Point.DoubleScalarMultBaseVartime(a, b, point).Encode(actual);
+
+            CollectionAssert.AreEqual(expected, actual, $"iteration {iteration}");
+        }
+    }
+
+    /// <summary>
+    /// Sets <paramref name="scalar" /> to a boundary value for the first few iterations and a pseudo-random value
+    /// thereafter, to exercise the fixed-base and double-scalar routines at their edges.
+    /// </summary>
+    /// <param name="scalar">The 32-byte buffer to populate.</param>
+    /// <param name="iteration">The iteration index selecting a boundary case.</param>
+    /// <param name="random">The pseudo-random source for non-boundary iterations.</param>
+    private static void SetScalar(byte[] scalar, int iteration, Random random)
+    {
+        Array.Clear(scalar);
+        switch (iteration)
+        {
+            case 0:
+                break; // all zero
+            case 1:
+                scalar[0] = 1;
+                break;
+            case 2:
+                scalar[0] = 2;
+                break;
+            case 3:
+                Array.Fill(scalar, (byte)0xFF);
+                break;
+            default:
+                random.NextBytes(scalar);
+                break;
+        }
+    }
 }
