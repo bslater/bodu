@@ -64,4 +64,34 @@ public sealed partial class Ed25519Tests
 
         Assert.IsFalse(algorithm.VerifyData(message, signature));
     }
+
+    /// <summary>
+    /// Verifies the canonical-S boundary: a signature whose S component equals the group order L, exceeds it by one,
+    /// or has bit 255 set is non-canonical (S must satisfy 0 ≤ S &lt; L) and is rejected, while the unmodified
+    /// signature still verifies.
+    /// </summary>
+    [TestMethod]
+    public void VerifyData_WhenSComponentIsAtOrAboveGroupOrder_ShouldReturnFalse()
+    {
+        using var algorithm = new Ed25519();
+        algorithm.GenerateKey();
+        byte[] message = new byte[] { 1, 2, 3 };
+        byte[] signature = algorithm.SignData(message);
+        Assert.IsTrue(algorithm.VerifyData(message, signature));
+
+        // S = L exactly: equal to the order, so not strictly less than L.
+        byte[] sEqualsOrder = (byte[])signature.Clone();
+        Convert.FromHexString("edd3f55c1a631258d69cf7a2def9de1400000000000000000000000000000010").CopyTo(sEqualsOrder, 32);
+        Assert.IsFalse(algorithm.VerifyData(message, sEqualsOrder));
+
+        // S = L + 1 (low byte 0xed + 1 = 0xee, no carry).
+        byte[] sAboveOrder = (byte[])sEqualsOrder.Clone();
+        sAboveOrder[32] = 0xee;
+        Assert.IsFalse(algorithm.VerifyData(message, sAboveOrder));
+
+        // S with bit 255 set is at least 2^255, far above L.
+        byte[] sHighBitSet = (byte[])signature.Clone();
+        sHighBitSet[63] |= 0x80;
+        Assert.IsFalse(algorithm.VerifyData(message, sHighBitSet));
+    }
 }

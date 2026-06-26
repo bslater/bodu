@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Reflection;
+
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -12,6 +14,23 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 public sealed partial class Ed25519Tests
 {
+    /// <summary>
+    /// Verifies that only pure Ed25519 (RFC 8032) is exposed: no public member surfaces a context or prehash
+    /// parameter, so callers cannot mistakenly assume the unimplemented Ed25519ctx or Ed25519ph behavior.
+    /// </summary>
+    [TestMethod]
+    public void Ed25519_WhenInspected_ShouldNotExposeContextOrPrehashApi()
+    {
+        foreach (MethodInfo method in typeof(Ed25519).GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly))
+        {
+            foreach (ParameterInfo parameter in method.GetParameters())
+                Assert.IsFalse(parameter.Name!.Contains("context", StringComparison.OrdinalIgnoreCase), $"{method.Name} exposes a context parameter");
+        }
+
+        Assert.IsNull(typeof(Ed25519).GetMethod("SignDataPrehash"));
+        Assert.IsNull(typeof(Ed25519).GetMethod("VerifyDataPrehash"));
+    }
+
     /// <summary>
     /// Verifies that signing is deterministic per RFC 8032: the same message under the same key yields the
     /// identical signature.
