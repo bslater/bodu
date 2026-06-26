@@ -187,8 +187,13 @@ internal static partial class MLDsaEngine
             SampleInBall(parameters, commitmentHash, c);
             Ntt(c);
 
-            // z = y + NTT⁻¹(ĉ ∘ ŝ₁); reject when ‖z‖∞ ≥ γ₁ − β.
+            // Each restart attempt computes z, r₀, and the hints in full and makes a single accept-or-restart decision
+            // at the end. The number of restarts is public by design (FIPS 204 §3.5), but the work within one attempt is
+            // kept independent of which check ultimately fails so a failed attempt is not distinguishable, by the work it
+            // performs, from any other.
             bool rejected = false;
+
+            // z = y + NTT⁻¹(ĉ ∘ ŝ₁); reject when ‖z‖∞ ≥ γ₁ − β.
             for (int r = 0; r < l; r++)
             {
                 MultiplyNtt(c, s1Hat[r], product);
@@ -200,7 +205,7 @@ internal static partial class MLDsaEngine
             }
 
             // r₀ = LowBits(w − NTT⁻¹(ĉ ∘ ŝ₂)); reject when ‖r₀‖∞ ≥ γ₂ − β.
-            for (int i = 0; i < k && !rejected; i++)
+            for (int i = 0; i < k; i++)
             {
                 MultiplyNtt(c, s2Hat[i], product);
                 InvNtt(product);
@@ -217,12 +222,9 @@ internal static partial class MLDsaEngine
                 rejected |= lowNorm >= parameters.Gamma2 - parameters.Beta;
             }
 
-            if (rejected)
-                continue;
-
             // h = MakeHint(−⟨ĉ ∘ t̂₀⟩, w − cs₂ + ct₀); reject when ‖ct₀‖∞ ≥ γ₂ or the hint weight exceeds ω.
             int hintWeight = 0;
-            for (int i = 0; i < k && !rejected; i++)
+            for (int i = 0; i < k; i++)
             {
                 MultiplyNtt(c, t0Hat[i], product);
                 InvNtt(product);
