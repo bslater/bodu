@@ -152,6 +152,42 @@ public static partial class YamlSerializer
     }
 
     /// <summary>
+    /// Binds a child element, attaching the child's path segment to any binding failure so the reported
+    /// <see cref="YamlSerializationException.Path" /> identifies the offending member, index, or key.
+    /// </summary>
+    /// <param name="element">The child element to bind.</param>
+    /// <param name="type">The target type.</param>
+    /// <param name="options">The serializer options.</param>
+    /// <param name="segment">The path segment for this child (a member or key name, or a <c>[index]</c>).</param>
+    /// <returns>The bound value.</returns>
+    /// <exception cref="YamlSerializationException">The child cannot be bound to the target type.</exception>
+    [RequiresUnreferencedCode("Reflection-based YAML deserialization may require types that trimming cannot statically determine.")]
+    private static object? BindChild(
+        YamlElement element,
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type type,
+        YamlSerializerOptions options,
+        string segment)
+    {
+        try
+        {
+            return BindValue(element, type, options);
+        }
+        catch (YamlSerializationException ex)
+        {
+            ex.Path = YamlSerializationException.CombinePath(segment, ex.Path);
+            throw;
+        }
+        catch (Exception ex) when (ex is FormatException or OverflowException or InvalidCastException or ArgumentException)
+        {
+            throw new YamlSerializationException(
+                string.Format(CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_YamlValueConversion, type), ex)
+            {
+                Path = segment,
+            };
+        }
+    }
+
+    /// <summary>
     /// Binds a YAML element to a loosely-typed object graph of dictionaries, lists, and primitives.
     /// </summary>
     /// <param name="element">The element to bind.</param>
