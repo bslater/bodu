@@ -70,4 +70,22 @@ public abstract partial class AsymmetricAlgorithmTests<TTest, TAlgorithm>
         firstPrivate[0] ^= 0xFF;
         CollectionAssert.AreEqual(referencePrivate, ExportPrivateKey(algorithm));
     }
+
+    /// <summary>
+    /// Verifies the import trust-boundary gate: the raw public-key and private-key import adapters reject empty and
+    /// clearly-too-short inputs with <see cref="ArgumentException" />. This is the structural floor every asymmetric
+    /// algorithm must satisfy; algorithm-specific canonical and consistency checks are tested per type.
+    /// </summary>
+    [TestMethod]
+    public void ImportMembers_WhenGivenMalformedInput_ShouldReject()
+    {
+        using TAlgorithm algorithm = CreateAlgorithm();
+
+        // Every asymmetric key in scope is at least 32 bytes, so 0/1/3-byte inputs are invalid for all of them.
+        foreach (byte[] malformed in new[] { Array.Empty<byte>(), new byte[1], new byte[3] })
+        {
+            Assert.ThrowsExactly<ArgumentException>(() => ImportPublicKey(algorithm, malformed));
+            Assert.ThrowsExactly<ArgumentException>(() => ImportPrivateKey(algorithm, malformed));
+        }
+    }
 }
