@@ -28,6 +28,7 @@ internal sealed partial class TwofishBlockCipherTests
             BlockSize = 16,
             KeySize = keySize,
             TestKey = TestHelpers.GenerateIncrementalByteSequence(0, keySize),
+            KnownAnswers = KnownAnswersFor(variant),
         };
     }
 
@@ -38,9 +39,6 @@ internal sealed partial class TwofishBlockCipherTests
         return new TwofishBlockCipher(specification.TestKey);
     }
 
-    /// <inheritdoc />
-    protected override IReadOnlyList<BlockCipherKnownAnswer> GetKnownAnswers(BlockCipherKeyVariant variant) =>
-        KnownAnswersFor(variant);
 
     /// <inheritdoc />
     protected override IBlockCipher CreateBlockCipherForAnswer(BlockCipherKnownAnswer answer) =>

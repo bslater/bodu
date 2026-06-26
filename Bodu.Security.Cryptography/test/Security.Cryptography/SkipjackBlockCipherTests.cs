@@ -18,6 +18,7 @@ internal sealed partial class SkipjackBlockCipherTests
         BlockSize = 8,
         KeySize = 10,
         TestKey = TestHelpers.GenerateIncrementalByteSequence(0, 10),
+        KnownAnswers = KnownAnswersFor(variant),
     };
 
     /// <inheritdocs/>
@@ -27,9 +28,6 @@ internal sealed partial class SkipjackBlockCipherTests
         return new SkipjackBlockCipher(specification.TestKey);
     }
 
-    /// <inheritdoc />
-    protected override IReadOnlyList<BlockCipherKnownAnswer> GetKnownAnswers(SingleTestVariant variant) =>
-        KnownAnswersFor(variant);
 
     /// <inheritdoc />
     protected override IBlockCipher CreateBlockCipherForAnswer(BlockCipherKnownAnswer answer) =>

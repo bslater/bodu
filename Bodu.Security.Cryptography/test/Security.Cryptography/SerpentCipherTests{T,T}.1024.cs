@@ -34,6 +34,7 @@ internal sealed partial class Serpent1024CipherTests
                 KeySize = 128,
                 TweakSize = 16,
                 TestKey = new byte[128],
+                KnownAnswers = KnownAnswersFor(variant),
                 TestTweak = new byte[16],
             },
             TweakableBlockCipherVariant.DefaultKeyAndTweak => new()
@@ -42,6 +43,7 @@ internal sealed partial class Serpent1024CipherTests
                 KeySize = 128,
                 TweakSize = 16,
                 TestKey = TestHelpers.GenerateIncrementalByteSequence(0x10, 128),
+                KnownAnswers = KnownAnswersFor(variant),
                 TestTweak = TestHelpers.GenerateIncrementalByteSequence(0, 16),
             },
             _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, null),
@@ -51,7 +53,4 @@ internal sealed partial class Serpent1024CipherTests
     protected override Serpent1024Cipher CreateCipher(byte[] key, byte[] tweak) =>
         new(key, tweak);
 
-    /// <inheritdoc />
-    protected override IReadOnlyList<BlockCipherKnownAnswer> GetKnownAnswers(TweakableBlockCipherVariant variant) =>
-        KnownAnswersFor(variant);
 }

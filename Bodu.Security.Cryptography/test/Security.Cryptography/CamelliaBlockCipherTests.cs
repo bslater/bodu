@@ -32,6 +32,7 @@ internal sealed partial class CamelliaBlockCipherTests
             BlockSize = 16,
             KeySize = keySize,
             TestKey = TestHelpers.GenerateIncrementalByteSequence(0, keySize),
+            KnownAnswers = KnownAnswersFor(variant),
         };
     }
 
@@ -42,9 +43,6 @@ internal sealed partial class CamelliaBlockCipherTests
         return new CamelliaBlockCipher(spec.TestKey!);
     }
 
-    /// <inheritdoc />
-    protected override IReadOnlyList<BlockCipherKnownAnswer> GetKnownAnswers(BlockCipherKeyVariant variant) =>
-        KnownAnswersFor(variant);
 
     /// <inheritdoc />
     protected override IBlockCipher CreateBlockCipherForAnswer(BlockCipherKnownAnswer answer) =>

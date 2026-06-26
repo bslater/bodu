@@ -29,6 +29,7 @@ internal sealed partial class Serpent128CipherTests
         BlockSize = 16,
         KeySize = 16,
         TestKey = TestHelpers.GenerateIncrementalByteSequence(0x00, 16),
+        KnownAnswers = KnownAnswersFor(variant),
     };
 
     /// <inheritdoc />
@@ -38,9 +39,6 @@ internal sealed partial class Serpent128CipherTests
         return new Serpent128Cipher(specification.TestKey);
     }
 
-    /// <inheritdoc />
-    protected override IReadOnlyList<BlockCipherKnownAnswer> GetKnownAnswers(SingleTestVariant variant) =>
-        KnownAnswersFor(variant);
 
     /// <inheritdoc />
     protected override IBlockCipher CreateBlockCipherForAnswer(BlockCipherKnownAnswer answer) =>
