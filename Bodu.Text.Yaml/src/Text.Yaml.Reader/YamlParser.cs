@@ -84,6 +84,17 @@ internal sealed partial class YamlParser
         if (!AtStreamEnd() && !AtDocumentBoundary())
             throw Error(YamlResourceStrings.Format_Invalid_YamlContentAfterDocumentEnd);
 
+        // A document-end marker line may carry only a trailing comment.
+        if (!AtStreamEnd() && Peek() == (byte)'.')
+        {
+            Advance();
+            Advance();
+            Advance();
+            SkipSpaces();
+            if (!IsBreakOrEnd(Peek()) && Peek() != (byte)'#')
+                throw ErrorAt(_pos, YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
+        }
+
         Compose();
         return _rows;
     }
@@ -395,6 +406,10 @@ internal sealed partial class YamlParser
 
             return Finish(ParseBlockNode(keyIndent + 1), anchor);
         }
+
+        // A block sequence cannot begin on the same line as the mapping value indicator.
+        if (c == (byte)'-' && IsBlankOrBreakOrEnd(PeekAt(1)))
+            throw Error(YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
 
         if (c == (byte)'[' || c == (byte)'{')
         {

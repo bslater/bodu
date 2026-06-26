@@ -14,6 +14,8 @@ namespace Bodu.Text.Yaml.Reader;
 /// </summary>
 internal sealed partial class YamlParser
 {
+    private bool _plainCommentTerminated;
+
     /// <summary>
     /// Parses a scalar node in block context, dispatching to quoted or plain parsing, and resolves the implicit type of
     /// single-line plain scalars.
@@ -56,7 +58,8 @@ internal sealed partial class YamlParser
         var folded = false;
         StringBuilder? sb = null;
 
-        while (true)
+        // A trailing comment terminates a plain scalar; it cannot continue onto following lines.
+        while (!_plainCommentTerminated)
         {
             var savePos = _pos;
             var saveLine = _line;
@@ -120,6 +123,9 @@ internal sealed partial class YamlParser
             var contStart = _pos;
             var contEnd = ScanPlainLineEnd();
             sb.Append(Utf8(contStart, contEnd - contStart));
+
+            if (_plainCommentTerminated)
+                break;
         }
 
     done:
@@ -143,14 +149,21 @@ internal sealed partial class YamlParser
     /// <returns>The byte offset of the end of the trimmed content.</returns>
     private int ScanPlainLineEnd()
     {
+        _plainCommentTerminated = false;
         var end = _pos;
         while (!IsBreakOrEnd(Peek()))
         {
             if (Peek() is (byte)' ' or (byte)'\t' && PeekAt(1) == (byte)'#')
+            {
+                _plainCommentTerminated = true;
                 break;
+            }
 
-            // A ' : ' value indicator does not occur here (mapping detection runs first), but a trailing ':' at
-            // end of line is preserved as content.
+            // A ' : ' mapping value indicator cannot appear inside a plain scalar; a trailing ':' at end of line is
+            // preserved as content.
+            if (Peek() == (byte)':' && PeekAt(1) is (byte)' ' or (byte)'\t')
+                throw ErrorAt(_pos, YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
+
             _pos++;
             if (_source[_pos - 1] is not ((byte)' ' or (byte)'\t'))
                 end = _pos;
@@ -200,6 +213,9 @@ internal sealed partial class YamlParser
             {
                 TrimTrailingInlineSpace(buf, 0);
                 Advance();
+                if (IsBoundaryAt(_pos))
+                    throw ErrorAt(_pos, YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
+
                 pendingBreaks++;
                 SkipSpaces();
                 continue;
@@ -265,6 +281,9 @@ internal sealed partial class YamlParser
             {
                 TrimTrailingInlineSpace(buf, protectedLength);
                 Advance();
+                if (IsBoundaryAt(_pos))
+                    throw ErrorAt(_pos, YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
+
                 pendingBreaks++;
                 SkipSpaces();
                 continue;

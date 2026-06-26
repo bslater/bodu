@@ -323,6 +323,11 @@ internal sealed partial class YamlParser
             Advance();
             Advance();
             Advance();
+
+            // A block mapping cannot begin on the document-start line.
+            SkipSpaces();
+            if (!IsBreakOrEnd(Peek()) && Peek() != (byte)'#' && TryDetectBlockMapping(0))
+                throw ErrorAt(_pos, YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
         }
         else if (directiveSeen)
         {
@@ -556,11 +561,17 @@ internal sealed partial class YamlParser
         }
 
         var c = Peek();
-        if (c == (byte)'"')
-            return ReadDoubleQuoted();
+        if (c == (byte)'"' || c == (byte)'\'')
+        {
+            var startLine = _line;
+            var quoted = c == (byte)'"' ? ReadDoubleQuoted() : ReadSingleQuoted();
 
-        if (c == (byte)'\'')
-            return ReadSingleQuoted();
+            // An implicit key must occupy a single line.
+            if (_line != startLine)
+                throw Error(YamlResourceStrings.Format_Invalid_YamlMultilineImplicitKey);
+
+            return quoted;
+        }
 
         var start = _pos;
         var end = _pos;
