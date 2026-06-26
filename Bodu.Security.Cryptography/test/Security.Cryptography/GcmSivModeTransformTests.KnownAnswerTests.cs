@@ -5,6 +5,9 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Security.Cryptography;
+using Bodu.Security.Cryptography.Infrastructure;
+using Bodu.Test.Kat;
+using static Bodu.Security.Cryptography.Infrastructure.KatBytes;
 
 namespace Bodu.Security.Cryptography;
 
@@ -25,32 +28,44 @@ public sealed partial class GcmSivModeTransformTests
     //   PT    = (empty)
     //   Output= dc20e2d83f25705bb49e439eca56de25  (tag only, 16 bytes)
 
+    private static readonly AeadKnownAnswer[] KnownAnswers =
+    [
+        new AeadKnownAnswer
+        {
+            Name = "RFC 8452 C.1 — AES-128-GCM-SIV (empty plaintext, empty AAD)",
+            Provenance = KatProvenance.Rfc("RFC 8452 Appendix C.1"),
+            Key = Hex("01000000000000000000000000000000"),
+            Nonce = Hex("030000000000000000000000"),
+            AssociatedData = [],
+            Plaintext = [],
+            Ciphertext = [],
+            Tag = Hex("dc20e2d83f25705bb49e439eca56de25"),
+            Layout = AeadKatOutputLayout.CiphertextThenTag,
+        },
+    ];
+
+    /// <summary>
+    /// Yields the RFC 8452 AES-128-GCM-SIV known-answer vectors as <see cref="DynamicDataAttribute" /> rows.
+    /// </summary>
+    /// <returns>One row per vector.</returns>
     private static IEnumerable<object[]> GcmSivRfc8452Vectors()
     {
-        yield return new object[]
-        {
-            "01000000000000000000000000000000",  // master key
-            "030000000000000000000000",          // 12-byte nonce
-string.Empty,                                  // AAD (hex)
-string.Empty,                                  // plaintext (hex)
-            "dc20e2d83f25705bb49e439eca56de25"   // expected Encrypt() output: CT(0 bytes) || Tag(16 bytes)
-        };
+        foreach (AeadKnownAnswer kat in KnownAnswers)
+            yield return new object[] { kat };
     }
 
     // ── Helper ─────────────────────────────────────────────────────────────────────────────────
 
-    private static GcmSivModeTransform MakeGcmSiv(string keyHex, string nonceHex, string aadHex)
+    private static GcmSivModeTransform MakeGcmSiv(AeadKnownAnswer vector)
     {
-        byte[] masterKey = Convert.FromHexString(keyHex);
-        byte[] nonce12 = Convert.FromHexString(nonceHex);
         byte[] iv = new byte[16];
-        nonce12.CopyTo(iv, 0);
+        vector.Nonce.CopyTo(iv, 0);
 
         var t = new GcmSivModeTransform(
-            new AesBlockCipherFixture(masterKey),
+            new AesBlockCipherFixture(vector.Key),
             k => new AesBlockCipherFixture(k),
             iv);
-        if (aadHex.Length > 0) t.ProcessAssociatedData(Convert.FromHexString(aadHex));
+        if (vector.AssociatedData.Length > 0) t.ProcessAssociatedData(vector.AssociatedData);
         return t;
     }
 
@@ -59,43 +74,45 @@ string.Empty,                                  // plaintext (hex)
     /// <summary>
     /// Verifies that <see cref="GcmSivModeTransform.Encrypt" />, with Rfc8452 Vector, matches Expected.
     /// </summary>
+    /// <param name="vector">The AES-128-GCM-SIV known-answer vector under test.</param>
     [TestMethod]
-
-    [DynamicData(nameof(GcmSivRfc8452Vectors))]
-    public void Encrypt_WithRfc8452Vector_ShouldMatchExpected(
-        string keyHex, string nonceHex, string aadHex, string ptHex, string expectedOutputHex)
+    [DynamicData(
+        nameof(GcmSivRfc8452Vectors),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void Encrypt_WithRfc8452Vector_ShouldMatchExpected(AeadKnownAnswer vector)
     {
-        byte[] plaintext = Convert.FromHexString(ptHex);
-        byte[] expected = Convert.FromHexString(expectedOutputHex);
+        byte[] expected = vector.CiphertextWithTag;
 
-        GcmSivModeTransform transform = MakeGcmSiv(keyHex, nonceHex, aadHex);
-        byte[] output = new byte[plaintext.Length + (transform.TagSize / 8)];
-        transform.Encrypt(plaintext, output);
+        GcmSivModeTransform transform = MakeGcmSiv(vector);
+        byte[] output = new byte[vector.Plaintext.Length + (transform.TagSize / 8)];
+        transform.Encrypt(vector.Plaintext, output);
 
         CollectionAssert.AreEqual(expected, output,
-            $"GCM-SIV encrypt mismatch for RFC 8452 C.1 (nonce={nonceHex}).");
+            $"GCM-SIV encrypt mismatch for {vector.Name}.");
     }
 
     /// <summary>
     /// Verifies that <see cref="GcmSivModeTransform.Decrypt" />, with Rfc8452Vector, returns the expected value.
     /// </summary>
+    /// <param name="vector">The AES-128-GCM-SIV known-answer vector under test.</param>
     [TestMethod]
-
-    [DynamicData(nameof(GcmSivRfc8452Vectors))]
-    public void Decrypt_WithRfc8452Vector_ShouldRecoverPlaintext(
-        string keyHex, string nonceHex, string aadHex, string ptHex, string expectedOutputHex)
+    [DynamicData(
+        nameof(GcmSivRfc8452Vectors),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void Decrypt_WithRfc8452Vector_ShouldRecoverPlaintext(AeadKnownAnswer vector)
     {
-        byte[] expectedPt = Convert.FromHexString(ptHex);
-        byte[] ciphertextTag = Convert.FromHexString(expectedOutputHex);
+        byte[] ciphertextTag = vector.CiphertextWithTag;
 
-        GcmSivModeTransform transform = MakeGcmSiv(keyHex, nonceHex, aadHex);
+        GcmSivModeTransform transform = MakeGcmSiv(vector);
         int plaintextLength = ciphertextTag.Length - (transform.TagSize / 8);
         byte[] output = new byte[plaintextLength];
         int written = transform.Decrypt(ciphertextTag, output);
 
         Assert.AreEqual(plaintextLength, written);
-        CollectionAssert.AreEqual(expectedPt, output,
-            $"GCM-SIV decrypt mismatch for RFC 8452 C.1 (nonce={nonceHex}).");
+        CollectionAssert.AreEqual(vector.Plaintext, output,
+            $"GCM-SIV decrypt mismatch for {vector.Name}.");
     }
 
     // ── Structural tests ───────────────────────────────────────────────────────────────────────
