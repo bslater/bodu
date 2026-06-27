@@ -9,21 +9,10 @@ using Bodu.Text.Yaml.Nodes;
 namespace Bodu.Text.Yaml;
 
 /// <summary>
-/// Verifies the mutable <see cref="YamlValue" /> node, including its typed value conversion behavior.
+/// Verifies the mutable <see cref="YamlValue" /> node. Test methods live in the member-specific partial files (for
+/// example <c>YamlValueTests.GetValue.cs</c>).
 /// </summary>
 [TestClass]
-public sealed class YamlValueTests
+public partial class YamlValueTests
 {
-    /// <summary>
-    /// Verifies that <see cref="YamlValue.GetValue{T}" /> wraps a failed conversion in an
-    /// <see cref="InvalidOperationException" /> that carries the original cause.
-    /// </summary>
-    [TestMethod]
-    public void GetValue_WhenConversionFails_ShouldThrowWithInnerException()
-    {
-        var value = YamlValue.Create("not-a-number");
-
-        var ex = Assert.ThrowsExactly<InvalidOperationException>(() => value.GetValue<int>());
-        Assert.IsNotNull(ex.InnerException);
-    }
 }
