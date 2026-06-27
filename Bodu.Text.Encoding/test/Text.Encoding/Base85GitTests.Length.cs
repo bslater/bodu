@@ -28,8 +28,8 @@ public sealed partial class Base85GitTests
     {
         byte[] zeros = new byte[byteCount];
 
-        int reported = Base85.GetEncodedLength(zeros, Base85Variant.Git);
-        string encoded = Base85.Encode(zeros, Base85Variant.Git);
+        int reported = Base85.GetEncodedLength(zeros, Base85Variant.GitCompact);
+        string encoded = Base85.Encode(zeros, Base85Variant.GitCompact);
 
         Assert.AreEqual(encoded.Length, reported);
     }
@@ -43,10 +43,10 @@ public sealed partial class Base85GitTests
     public void GetEncodedLength_ForGit_ShouldEqualTryEncodeCharsWritten()
     {
         byte[] bytes = Ascii("hello world");
-        int reported = Base85.GetEncodedLength(bytes, Base85Variant.Git);
+        int reported = Base85.GetEncodedLength(bytes, Base85Variant.GitCompact);
 
-        Span<char> destination = new char[Base85.GetMaxEncodedLength(bytes.Length, Base85Variant.Git)];
-        Base85.TryEncode(bytes, destination, out int charsWritten, Base85Variant.Git);
+        Span<char> destination = new char[Base85.GetMaxEncodedLength(bytes.Length, Base85Variant.GitCompact)];
+        Base85.TryEncode(bytes, destination, out int charsWritten, Base85Variant.GitCompact);
 
         Assert.AreEqual(charsWritten, reported);
     }

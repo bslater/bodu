@@ -79,7 +79,7 @@ and [Bech32](../../guides/text-encoding/bech32.md).
 | Base32 | <xref:Bodu.Text.Encoding.Base32Variant> | Standard (RFC 4648 §6), HexExtended (RFC 4648 §7), Crockford, ZBase32 |
 | Base64 | <xref:Bodu.Text.Encoding.Base64Variant> | Standard (RFC 4648 §4), UrlSafe (RFC 4648 §5), Mime (RFC 2045 with 76-char wrap) |
 | Base58 | <xref:Bodu.Text.Encoding.Base58Variant> | BitcoinFlickr (default), Ripple |
-| Base85 | <xref:Bodu.Text.Encoding.Base85Variant> | Ascii85 (Adobe), Z85 (RFC 32 ZeroMQ), Git (Git `base85.c`) |
+| Base85 | <xref:Bodu.Text.Encoding.Base85Variant> | Ascii85 (Adobe), Z85 (RFC 32 ZeroMQ), GitCompact (Git `base85.c`) |
 | Base45 | (none) | RFC 9285 |
 | Base62 | (none) | GMP-style (`0-9 A-Z a-z`) |
 | Bech32 | <xref:Bodu.Text.Encoding.Bech32Encoding> | Bech32 (BIP 173, default), Bech32m (BIP 350) |

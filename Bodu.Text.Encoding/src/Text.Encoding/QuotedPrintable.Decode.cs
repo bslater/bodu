@@ -22,7 +22,7 @@ public static partial class QuotedPrintable
 
         byte[] buffer = new byte[GetMaxDecodedLength(source.Length)];
 
-        if (!TryDecodeCore(source, options, buffer, measureOnly: false, out int written))
+        if (!TryDecodeCore(source, options, buffer, measureOnly: false, requireCanonical: false, out int written))
             throw new FormatException(EncodingResourceStrings.Format_Invalid_QuotedPrintable);
 
         if (written == buffer.Length)
@@ -45,7 +45,7 @@ public static partial class QuotedPrintable
     /// too small.
     /// </returns>
     public static bool TryDecode(ReadOnlySpan<char> source, Span<byte> destination, out int bytesWritten, QuotedPrintableDecodingOptions options = QuotedPrintableDecodingOptions.None) =>
-        TryDecodeCore(source, options, destination, measureOnly: false, out bytesWritten);
+        TryDecodeCore(source, options, destination, measureOnly: false, requireCanonical: false, out bytesWritten);
 
     /// <summary>
     /// Decodes <paramref name="chars" /> into <paramref name="destination" />, or measures the decoded byte count when
@@ -57,12 +57,16 @@ public static partial class QuotedPrintable
     /// <param name="measureOnly">
     /// When <see langword="true" />, only the byte count is computed and no output is written.
     /// </param>
+    /// <param name="requireCanonical">
+    /// When <see langword="true" />, enforce the RFC 2045 76-character encoded-line limit (canonical validation); when
+    /// <see langword="false" />, line length is ignored (lenient recovery).
+    /// </param>
     /// <param name="bytesWritten">When this method returns, contains the byte count, or <c>0</c> on failure.</param>
     /// <returns>
     /// <see langword="true" /> when the input is well-formed and (when writing) fits; otherwise
     /// <see langword="false" />.
     /// </returns>
-    private static bool TryDecodeCore(ReadOnlySpan<char> chars, QuotedPrintableDecodingOptions options, Span<byte> destination, bool measureOnly, out int bytesWritten)
+    private static bool TryDecodeCore(ReadOnlySpan<char> chars, QuotedPrintableDecodingOptions options, Span<byte> destination, bool measureOnly, bool requireCanonical, out int bytesWritten)
     {
         bool allowLowercaseHex = (options & QuotedPrintableDecodingOptions.AllowLowercaseHex) != 0;
         bool ignoreTrailingWhitespace = (options & QuotedPrintableDecodingOptions.IgnoreTrailingWhitespace) != 0;
@@ -70,6 +74,10 @@ public static partial class QuotedPrintable
 
         int pos = 0;
         bool overflow = false;
+
+        // Encoded-line length is tracked only for canonical validation (the RFC 2045 76-character limit, with the
+        // soft-break '=' counted and the CRLF terminator not). Lenient decode ignores it entirely.
+        int lineLength = 0;
 
         int n = chars.Length;
         int i = 0;
@@ -91,6 +99,13 @@ public static partial class QuotedPrintable
                 {
                     if (i + 2 < n && chars[i + 2] == '\n')
                     {
+                        if (requireCanonical && ++lineLength > MaxCanonicalLineLength)
+                        {
+                            bytesWritten = 0;
+                            return false;
+                        }
+
+                        lineLength = 0;
                         i += 3;
                         continue;
                     }
@@ -103,6 +118,13 @@ public static partial class QuotedPrintable
                 {
                     if (allowBareLineFeed)
                     {
+                        if (requireCanonical && ++lineLength > MaxCanonicalLineLength)
+                        {
+                            bytesWritten = 0;
+                            return false;
+                        }
+
+                        lineLength = 0;
                         i += 2;
                         continue;
                     }
@@ -119,6 +141,12 @@ public static partial class QuotedPrintable
                     return false;
                 }
 
+                if (requireCanonical && (lineLength += 3) > MaxCanonicalLineLength)
+                {
+                    bytesWritten = 0;
+                    return false;
+                }
+
                 EmitByte(destination, measureOnly, (byte)((high << 4) | low), ref pos, ref overflow);
                 i += 3;
                 continue;
@@ -130,6 +158,7 @@ public static partial class QuotedPrintable
                 {
                     EmitByte(destination, measureOnly, 0x0D, ref pos, ref overflow);
                     EmitByte(destination, measureOnly, 0x0A, ref pos, ref overflow);
+                    lineLength = 0;
                     i += 2;
                     continue;
                 }
@@ -143,6 +172,7 @@ public static partial class QuotedPrintable
                 if (allowBareLineFeed)
                 {
                     EmitByte(destination, measureOnly, 0x0A, ref pos, ref overflow);
+                    lineLength = 0;
                     i++;
                     continue;
                 }
@@ -156,6 +186,12 @@ public static partial class QuotedPrintable
                 int j = i;
                 while (j < n && (chars[j] == ' ' || chars[j] == '\t'))
                     j++;
+
+                if (requireCanonical && (lineLength += j - i) > MaxCanonicalLineLength)
+                {
+                    bytesWritten = 0;
+                    return false;
+                }
 
                 if (IsTrailingAfterWhitespace(chars, j, allowBareLineFeed))
                 {
@@ -178,6 +214,12 @@ public static partial class QuotedPrintable
 
             if (c >= 0x21 && c <= 0x7E)
             {
+                if (requireCanonical && ++lineLength > MaxCanonicalLineLength)
+                {
+                    bytesWritten = 0;
+                    return false;
+                }
+
                 EmitByte(destination, measureOnly, (byte)c, ref pos, ref overflow);
                 i++;
                 continue;

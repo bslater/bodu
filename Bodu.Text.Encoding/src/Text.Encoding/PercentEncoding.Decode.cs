@@ -29,7 +29,7 @@ public static partial class PercentEncoding
 
         byte[] buffer = new byte[GetMaxDecodedLength(source.Length)];
 
-        if (!TryDecodeCore(source, mode, options, buffer, measureOnly: false, out int written))
+        if (!TryDecodeCore(source, mode, options, buffer, measureOnly: false, requireCanonical: false, out int written))
             throw new FormatException(EncodingResourceStrings.Format_Invalid_PercentEncoding);
 
         if (written == buffer.Length)
@@ -56,6 +56,11 @@ public static partial class PercentEncoding
     /// <exception cref="System.Text.DecoderFallbackException">
     /// Thrown when the decoded bytes are invalid for <paramref name="textEncoding" /> and it uses a throwing fallback.
     /// </exception>
+    /// <remarks>
+    /// The default <see cref="System.Text.Encoding.UTF8" /> uses a <em>replacement</em> decoder fallback, so invalid
+    /// UTF-8 byte sequences become the U+FFFD replacement character rather than failing. Pass a throwing encoding (for
+    /// example <c>new UTF8Encoding(false, throwOnInvalidBytes: true)</c>) to reject invalid sequences instead.
+    /// </remarks>
     public static string DecodeString(ReadOnlySpan<char> source, System.Text.Encoding? textEncoding = null, PercentEncodingMode mode = PercentEncodingMode.UriComponent, PercentDecodingOptions options = PercentDecodingOptions.None)
     {
         byte[] bytes = Decode(source, mode, options);
@@ -82,7 +87,7 @@ public static partial class PercentEncoding
             return false;
         }
 
-        return TryDecodeCore(source, mode, options, destination, measureOnly: false, out bytesWritten);
+        return TryDecodeCore(source, mode, options, destination, measureOnly: false, requireCanonical: false, out bytesWritten);
     }
 
     /// <summary>
@@ -96,15 +101,20 @@ public static partial class PercentEncoding
     /// <param name="measureOnly">
     /// When <see langword="true" />, only the byte count is computed and no output is written.
     /// </param>
+    /// <param name="requireCanonical">
+    /// When <see langword="true" />, literal characters the mode would percent-encode are rejected (canonical
+    /// validation); when <see langword="false" />, any ASCII literal is accepted (lenient recovery).
+    /// </param>
     /// <param name="bytesWritten">When this method returns, contains the byte count, or <c>0</c> on failure.</param>
     /// <returns>
     /// <see langword="true" /> when the input is well-formed and (when writing) fits; otherwise
     /// <see langword="false" />.
     /// </returns>
-    private static bool TryDecodeCore(ReadOnlySpan<char> chars, PercentEncodingMode mode, PercentDecodingOptions options, Span<byte> destination, bool measureOnly, out int bytesWritten)
+    private static bool TryDecodeCore(ReadOnlySpan<char> chars, PercentEncodingMode mode, PercentDecodingOptions options, Span<byte> destination, bool measureOnly, bool requireCanonical, out int bytesWritten)
     {
         bool allowInvalid = (options & PercentDecodingOptions.AllowInvalidPercentLiterals) != 0;
         bool form = mode == PercentEncodingMode.FormUrlEncoded;
+        bool[] table = s_passThrough[(int)mode];
 
         int pos = 0;
         bool overflow = false;
@@ -147,6 +157,14 @@ public static partial class PercentEncoding
                 EmitByte(destination, measureOnly, 0x20, ref pos, ref overflow);
                 i++;
                 continue;
+            }
+
+            // Canonical validation rejects literal characters the selected mode would have percent-encoded. A
+            // percent-escaped octet (handled above) is always accepted; only bare literals are constrained.
+            if (requireCanonical && !table[c])
+            {
+                bytesWritten = 0;
+                return false;
             }
 
             EmitByte(destination, measureOnly, (byte)c, ref pos, ref overflow);

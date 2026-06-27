@@ -15,7 +15,7 @@ public static partial class Base85
     /// <param name="source">The bytes to encode.</param>
     /// <returns>The Git-padded Base85 string. Returns <see cref="string.Empty" /> for empty input.</returns>
     /// <remarks>
-    /// Unlike the compact <see cref="Base85Variant.Git" /> mode used by
+    /// Unlike the compact <see cref="Base85Variant.GitCompact" /> mode used by
     /// <see cref="Encode(ReadOnlySpan{byte}, Base85Variant, BaseFormattingOptions)" />, this primitive never trims the
     /// trailing group: a final remainder of one, two, or three bytes is zero-padded internally and still produces five
     /// characters. The output is therefore not self-delimiting — decoding requires the original byte count, which Git

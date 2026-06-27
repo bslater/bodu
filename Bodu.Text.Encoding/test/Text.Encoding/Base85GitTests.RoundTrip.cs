@@ -32,8 +32,8 @@ public sealed partial class Base85GitTests
         for (int i = 0; i < byteCount; i++)
             original[i] = (byte)((i * 17) + 3);
 
-        string encoded = Base85.Encode(original, Base85Variant.Git);
-        byte[] decoded = Base85.Decode(encoded, Base85Variant.Git);
+        string encoded = Base85.Encode(original, Base85Variant.GitCompact);
+        byte[] decoded = Base85.Decode(encoded, Base85Variant.GitCompact);
 
         CollectionAssert.AreEqual(original, decoded, $"Git round trip failed for length={byteCount}.");
     }
@@ -52,8 +52,8 @@ public sealed partial class Base85GitTests
             byte[] original = new byte[length];
             random.NextBytes(original);
 
-            string encoded = Base85.Encode(original, Base85Variant.Git);
-            byte[] decoded = Base85.Decode(encoded, Base85Variant.Git);
+            string encoded = Base85.Encode(original, Base85Variant.GitCompact);
+            byte[] decoded = Base85.Decode(encoded, Base85Variant.GitCompact);
 
             CollectionAssert.AreEqual(original, decoded, $"Git round trip failed for length={length}.");
         }
@@ -66,11 +66,11 @@ public sealed partial class Base85GitTests
     public void RoundTrip_WhenSpanTryPathForGit_ShouldRecoverOriginal()
     {
         byte[] original = new byte[] { 0xDE, 0xAD, 0xBE, 0xEF, 0xCA, 0xFE };
-        char[] charBuffer = new char[Base85.GetMaxEncodedLength(original.Length, Base85Variant.Git)];
+        char[] charBuffer = new char[Base85.GetMaxEncodedLength(original.Length, Base85Variant.GitCompact)];
         byte[] byteBuffer = new byte[Base85.GetMaxDecodedLength(charBuffer.Length)];
 
-        bool encOk = Base85.TryEncode(original.AsSpan(), charBuffer, out int charsWritten, Base85Variant.Git);
-        bool decOk = Base85.TryDecode(charBuffer.AsSpan(0, charsWritten), byteBuffer, out int bytesWritten, Base85Variant.Git);
+        bool encOk = Base85.TryEncode(original.AsSpan(), charBuffer, out int charsWritten, Base85Variant.GitCompact);
+        bool decOk = Base85.TryDecode(charBuffer.AsSpan(0, charsWritten), byteBuffer, out int bytesWritten, Base85Variant.GitCompact);
 
         Assert.IsTrue(encOk);
         Assert.IsTrue(decOk);

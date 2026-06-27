@@ -198,4 +198,22 @@ public sealed partial class Base85GitTests
     {
         Assert.AreEqual(expected, Base85.GetGitPaddedEncodedLength(byteCount));
     }
+
+    /// <summary>
+    /// Verifies that the compact <see cref="Base85Variant.GitCompact" /> output and the padded Git binary-patch
+    /// primitive are intentionally distinct for a partial final group: compact trims the tail (1 byte → 2 chars)
+    /// while padded always emits five characters per group.
+    /// </summary>
+    [TestMethod]
+    public void GitCompact_AndGitPadded_ShouldDiffer_ForPartialFinalGroup()
+    {
+        byte[] source = { 0x41 };
+
+        string compact = Base85.Encode(source, Base85Variant.GitCompact);
+        string padded = Base85.EncodeGitPadded(source);
+
+        Assert.AreNotEqual(compact, padded);
+        Assert.AreEqual(2, compact.Length);
+        Assert.AreEqual(5, padded.Length);
+    }
 }

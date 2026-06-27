@@ -104,6 +104,30 @@ public sealed partial class PercentEncodingTests
     }
 
     /// <summary>
+    /// Verifies that lenient decoding still recovers escaped reserved characters even when the literal form would be
+    /// non-canonical for the mode (<c>%2F</c> under <see cref="PercentEncodingMode.PathSegment" /> → <c>/</c>).
+    /// </summary>
+    [TestMethod]
+    public void Decode_ShouldDecodeEscapedReservedCharacters_WhenLiteralWouldBeInvalid()
+    {
+        byte[] decoded = PercentEncoding.Decode("%2F".AsSpan(), PercentEncodingMode.PathSegment);
+
+        CollectionAssert.AreEqual(new byte[] { (byte)'/' }, decoded);
+    }
+
+    /// <summary>
+    /// Verifies that lenient decoding accepts a literal reserved character that canonical validation would reject.
+    /// </summary>
+    [TestMethod]
+    public void Decode_ShouldAcceptLiteralReservedCharacters_ThatIsValidRejects()
+    {
+        byte[] decoded = PercentEncoding.Decode("a#b".AsSpan(), PercentEncodingMode.UriComponent);
+
+        CollectionAssert.AreEqual(Ascii("a#b"), decoded);
+        Assert.IsFalse(PercentEncoding.IsValid("a#b".AsSpan(), PercentEncodingMode.UriComponent));
+    }
+
+    /// <summary>
     /// Verifies that empty input decodes to an empty array.
     /// </summary>
     [TestMethod]

@@ -17,19 +17,19 @@ public sealed class Base85GitContractTests
 {
     /// <inheritdoc />
     protected override string Encode(byte[] input) =>
-        Base85.Encode(input, Base85Variant.Git);
+        Base85.Encode(input, Base85Variant.GitCompact);
 
     /// <inheritdoc />
     protected override byte[] Decode(string text) =>
-        Base85.Decode(text, Base85Variant.Git);
+        Base85.Decode(text, Base85Variant.GitCompact);
 
     /// <inheritdoc />
     protected override bool TryEncode(byte[] input, Span<char> destination, out int charsWritten) =>
-        Base85.TryEncode(input.AsSpan(), destination, out charsWritten, Base85Variant.Git);
+        Base85.TryEncode(input.AsSpan(), destination, out charsWritten, Base85Variant.GitCompact);
 
     /// <inheritdoc />
     protected override bool TryDecode(string text, Span<byte> destination, out int bytesWritten) =>
-        Base85.TryDecode(text.AsSpan(), destination, out bytesWritten, Base85Variant.Git);
+        Base85.TryDecode(text.AsSpan(), destination, out bytesWritten, Base85Variant.GitCompact);
 
     /// <inheritdoc />
     protected override IReadOnlyList<BinaryEncodingKat> KnownAnswers { get; } =

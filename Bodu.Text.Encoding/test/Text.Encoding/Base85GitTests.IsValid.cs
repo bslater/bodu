@@ -28,7 +28,7 @@ public sealed partial class Base85GitTests
     public void IsBase85Digit_WhenGitAlphabetCharacter_ShouldReturnTrue()
     {
         foreach (char c in GitAlphabet)
-            Assert.IsTrue(Base85.IsBase85Digit(c, Base85Variant.Git), $"'{c}' should be a Git digit.");
+            Assert.IsTrue(Base85.IsBase85Digit(c, Base85Variant.GitCompact), $"'{c}' should be a Git digit.");
     }
 
     /// <summary>
@@ -49,7 +49,7 @@ public sealed partial class Base85GitTests
     [DataRow(']')]
     public void IsBase85Digit_WhenNotGitAlphabetCharacter_ShouldReturnFalse(char value)
     {
-        Assert.IsFalse(Base85.IsBase85Digit(value, Base85Variant.Git));
+        Assert.IsFalse(Base85.IsBase85Digit(value, Base85Variant.GitCompact));
     }
 
     /// <summary>
@@ -59,7 +59,7 @@ public sealed partial class Base85GitTests
     [TestMethod]
     public void IsValid_WhenGitInputContainsZ_ShouldTreatAsDigit()
     {
-        Assert.IsTrue(Base85.IsValid("zzzzz".AsSpan(), Base85Variant.Git));
+        Assert.IsTrue(Base85.IsValid("zzzzz".AsSpan(), Base85Variant.GitCompact));
     }
 
     /// <summary>
@@ -70,9 +70,9 @@ public sealed partial class Base85GitTests
     [TestMethod]
     public void Decode_WhenAdobeDelimitersForGit_ShouldNotStripAndTreatAsData()
     {
-        byte[] withDelimiters = Base85.Decode("<~0RjUA~>".AsSpan(), Base85Variant.Git, BaseFormatStyles.AllowPrefix);
-        byte[] withoutPrefixStyle = Base85.Decode("<~0RjUA~>".AsSpan(), Base85Variant.Git);
-        byte[] payloadOnly = Base85.Decode("0RjUA".AsSpan(), Base85Variant.Git);
+        byte[] withDelimiters = Base85.Decode("<~0RjUA~>".AsSpan(), Base85Variant.GitCompact, BaseFormatStyles.AllowPrefix);
+        byte[] withoutPrefixStyle = Base85.Decode("<~0RjUA~>".AsSpan(), Base85Variant.GitCompact);
+        byte[] payloadOnly = Base85.Decode("0RjUA".AsSpan(), Base85Variant.GitCompact);
 
         // AllowPrefix has no effect for Git — the delimiter characters are decoded as data either way ...
         CollectionAssert.AreEqual(withoutPrefixStyle, withDelimiters);
@@ -88,7 +88,7 @@ public sealed partial class Base85GitTests
     [TestMethod]
     public void IsValid_WhenSingleTrailingCharacterForGit_ShouldReturnFalse()
     {
-        Assert.IsFalse(Base85.IsValid("0RjUA0".AsSpan(), Base85Variant.Git));
+        Assert.IsFalse(Base85.IsValid("0RjUA0".AsSpan(), Base85Variant.GitCompact));
     }
 
     /// <summary>
@@ -109,9 +109,9 @@ public sealed partial class Base85GitTests
     public void IsValid_ShouldAgreeWithTryDecodeForGit(string encoded)
     {
         Span<byte> destination = new byte[encoded.Length + 4];
-        bool tryDecode = Base85.TryDecode(encoded.AsSpan(), destination, out _, Base85Variant.Git);
+        bool tryDecode = Base85.TryDecode(encoded.AsSpan(), destination, out _, Base85Variant.GitCompact);
 
-        bool isValid = Base85.IsValid(encoded.AsSpan(), Base85Variant.Git);
+        bool isValid = Base85.IsValid(encoded.AsSpan(), Base85Variant.GitCompact);
 
         Assert.AreEqual(isValid, tryDecode, $"IsValid disagreed with TryDecode for '{encoded}'.");
     }

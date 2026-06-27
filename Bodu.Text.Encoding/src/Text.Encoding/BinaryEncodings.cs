@@ -124,7 +124,7 @@ public static class BinaryEncodings
     /// Gets the Git-style Base85 encoding (Git binary-patch alphabet with compact, self-delimiting partial groups; no
     /// <c>z</c> shortcut or Adobe delimiters).
     /// </summary>
-    public static IBinaryEncoding Base85Git { get; } = new Base85VariantAdapter(Base85Variant.Git, "base85-git", "Git-style Base85 alphabet with compact self-delimiting partial groups.");
+    public static IBinaryEncoding Base85Git { get; } = new Base85VariantAdapter(Base85Variant.GitCompact, "base85-git", "Git-style Base85 alphabet with compact self-delimiting partial groups.");
 
     /// <summary>
     /// Gets the ZeroMQ Z85 encoding (RFC 32; shell-safe alphabet; input must be a multiple of four bytes).

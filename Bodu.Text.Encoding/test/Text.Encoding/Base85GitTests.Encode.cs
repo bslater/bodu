@@ -21,7 +21,7 @@ public sealed partial class Base85GitTests
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void Encode_ForGitCompactKnownAnswerVector_ShouldMatch(EncodingKnownAnswerVector vector)
     {
-        string actual = Base85.Encode(vector.DecodedBytes, Base85Variant.Git);
+        string actual = Base85.Encode(vector.DecodedBytes, Base85Variant.GitCompact);
 
         Assert.AreEqual(vector.Encoded, actual);
     }
@@ -33,7 +33,7 @@ public sealed partial class Base85GitTests
     [TestMethod]
     public void Encode_WhenAllZeroGroupForGit_ShouldNotEmitShortcut()
     {
-        string actual = Base85.Encode(new byte[] { 0x00, 0x00, 0x00, 0x00 }, Base85Variant.Git);
+        string actual = Base85.Encode(new byte[] { 0x00, 0x00, 0x00, 0x00 }, Base85Variant.GitCompact);
 
         Assert.AreEqual("00000", actual);
     }
@@ -59,7 +59,7 @@ public sealed partial class Base85GitTests
         for (int i = 0; i < byteCount; i++)
             bytes[i] = (byte)(i + 1);
 
-        string actual = Base85.Encode(bytes, Base85Variant.Git);
+        string actual = Base85.Encode(bytes, Base85Variant.GitCompact);
 
         Assert.AreEqual(expectedLength, actual.Length);
     }
@@ -80,8 +80,8 @@ public sealed partial class Base85GitTests
         for (int i = 0; i < size; i++)
             bytes[i] = (byte)((i * 11) ^ 0x9C);
 
-        string fromArray = Base85.Encode(bytes, Base85Variant.Git);
-        string fromSpan = Base85.Encode(bytes.AsSpan(), Base85Variant.Git);
+        string fromArray = Base85.Encode(bytes, Base85Variant.GitCompact);
+        string fromSpan = Base85.Encode(bytes.AsSpan(), Base85Variant.GitCompact);
 
         Assert.AreEqual(fromArray, fromSpan);
     }
@@ -94,10 +94,10 @@ public sealed partial class Base85GitTests
     public void TryEncode_WhenDestinationTooSmallForGit_ShouldReturnFalseAndWriteZero()
     {
         byte[] bytes = Ascii("hello");
-        int exact = Base85.GetEncodedLength(bytes, Base85Variant.Git);
+        int exact = Base85.GetEncodedLength(bytes, Base85Variant.GitCompact);
         Span<char> destination = new char[exact - 1];
 
-        bool success = Base85.TryEncode(bytes, destination, out int charsWritten, Base85Variant.Git);
+        bool success = Base85.TryEncode(bytes, destination, out int charsWritten, Base85Variant.GitCompact);
 
         Assert.IsFalse(success);
         Assert.AreEqual(0, charsWritten);

@@ -7,7 +7,7 @@
 namespace Bodu.Text.Encoding;
 
 /// <summary>
-/// Provides Known Answer Test vectors for the Git-style Base85 variant (<see cref="Base85Variant.Git" />). The compact
+/// Provides Known Answer Test vectors for the Git-style Base85 variant (<see cref="Base85Variant.GitCompact" />). The compact
 /// vectors are generated with the reference Python <c>base64.b85encode(..., pad=False)</c> using the Git alphabet, and
 /// the two pinned boundary vectors (<c>00 00 00 00</c> → <c>00000</c>, <c>FF FF FF FF</c> → <c>|NsC0</c>) match Git's
 /// <c>base85.c</c>.

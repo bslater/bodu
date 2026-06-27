@@ -24,6 +24,11 @@ namespace Bodu.Text.Encoding;
 /// This type is not a URL parser: it does not resolve relative URLs, normalise hosts, paths, dot-segments, or scheme
 /// casing, implement IDNA or IRI processing, accept the obsolete <c>%uXXXX</c> syntax, or depend on <c>System.Web</c>.
 /// </para>
+/// <para>
+/// Because correct use depends on the component mode and decoding options, this is a static type and is intentionally
+/// not registered in <see cref="BinaryEncodings" /> — the parameterless <see cref="IBinaryEncoding" /> contract cannot
+/// carry that information.
+/// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">
@@ -78,21 +83,30 @@ public static partial class PercentEncoding
     }
 
     /// <summary>
-    /// Indicates whether <paramref name="source" /> is well-formed percent-encoded text under the supplied mode and
-    /// options.
+    /// Indicates whether <paramref name="source" /> is the <em>canonical</em> percent-encoded form for the supplied
+    /// mode — every literal character is one the mode leaves unescaped, and every percent sequence is well-formed.
     /// </summary>
     /// <param name="source">The input characters.</param>
     /// <param name="mode">The component mode.</param>
     /// <param name="options">The decoding options.</param>
     /// <returns>
-    /// <see langword="true" /> when the input decodes without error; otherwise <see langword="false" />.
+    /// <see langword="true" /> when the input is canonical for the mode; otherwise <see langword="false" />.
     /// </returns>
+    /// <remarks>
+    /// This is stricter than <see cref="Decode(ReadOnlySpan{char}, PercentEncodingMode, PercentDecodingOptions)" />,
+    /// which performs lenient recovery: a literal character the mode would have percent-encoded (for example <c>#</c>
+    /// in <see cref="PercentEncodingMode.UriComponent" />, or a literal space) makes <c>IsValid</c> return
+    /// <see langword="false" /> even though <c>Decode</c> would still accept it. A percent-escaped octet such as
+    /// <c>%2F</c> is always canonical, so <c>IsValid</c> accepts it even when a literal <c>/</c> would not be allowed.
+    /// <see cref="IsValid(ReadOnlySpan{char}, PercentEncodingMode, PercentDecodingOptions)" /> returning
+    /// <see langword="true" /> implies <c>Decode</c> succeeds, but not the converse.
+    /// </remarks>
     public static bool IsValid(ReadOnlySpan<char> source, PercentEncodingMode mode = PercentEncodingMode.UriComponent, PercentDecodingOptions options = PercentDecodingOptions.None)
     {
         if (!IsDefinedMode(mode))
             return false;
 
-        return TryDecodeCore(source, mode, options, Span<byte>.Empty, measureOnly: true, out _);
+        return TryDecodeCore(source, mode, options, Span<byte>.Empty, measureOnly: true, requireCanonical: true, out _);
     }
 
     /// <summary>
@@ -106,7 +120,13 @@ public static partial class PercentEncoding
     /// </param>
     /// <param name="mode">The component mode.</param>
     /// <param name="options">The decoding options.</param>
-    /// <returns><see langword="true" /> when the input is well-formed; otherwise <see langword="false" />.</returns>
+    /// <returns><see langword="true" /> when the input is decodable; otherwise <see langword="false" />.</returns>
+    /// <remarks>
+    /// This mirrors <see cref="Decode(ReadOnlySpan{char}, PercentEncodingMode, PercentDecodingOptions)" /> (lenient
+    /// recovery), not <see cref="IsValid(ReadOnlySpan{char}, PercentEncodingMode, PercentDecodingOptions)" />
+    /// (canonical conformance): it returns the exact length <c>Decode</c> would write, so the result can size a decode
+    /// buffer even for decodable-but-non-canonical input.
+    /// </remarks>
     public static bool TryGetDecodedLength(ReadOnlySpan<char> source, out int byteCount, PercentEncodingMode mode = PercentEncodingMode.UriComponent, PercentDecodingOptions options = PercentDecodingOptions.None)
     {
         if (!IsDefinedMode(mode))
@@ -115,7 +135,7 @@ public static partial class PercentEncoding
             return false;
         }
 
-        return TryDecodeCore(source, mode, options, Span<byte>.Empty, measureOnly: true, out byteCount);
+        return TryDecodeCore(source, mode, options, Span<byte>.Empty, measureOnly: true, requireCanonical: false, out byteCount);
     }
 
     /// <summary>
