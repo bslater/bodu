@@ -4,7 +4,7 @@ title: Binary Formats & I/O — Guides
 
 # Binary Formats & I/O — Guides
 
-Recipe-style walk-throughs for the **Binary Formats & I/O** topic — the read-only readers for legacy binary container and document formats. The packages form a strictly layered stack: a general-purpose container reader at the bottom, with narrower format readers built on top.
+Recipe-style walk-throughs for the **Binary Formats & I/O** topic — readers (and, for `Bodu.IO.Compound`, a CFB writer) for legacy binary container and document formats. The packages form a strictly layered stack: a general-purpose container reader and writer at the bottom, with narrower format readers built on top.
 
 `Bodu.IO.Compound` reads the OLE2 / Compound File Binary (CFB) envelope — the structured-storage "file system in a file" used by legacy Microsoft Office documents — and exposes the embedded named streams with no application-format knowledge. `Bodu.Formats.Excel.Binary` builds on it to surface raw worksheet cell values from BIFF8 `.xls` workbooks.
 

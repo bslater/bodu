@@ -6,13 +6,13 @@ uid: Bodu.IO.Hashing.CheckDigits
 
 ## Purpose
 
-**Bodu.IO.Hashing.CheckDigits** ships the catalogue of single-character and multi-character check-digit algorithms — Luhn, Damm, Verhoeff, Pearson, plus the standard catalogues used by financial, retail, securities, and publishing identifiers (IBAN, LEI, EAN, GTIN, UPC, ISBN, ISIN, SEDOL, CUSIP, ABA routing, …). Every algorithm derives from <xref:Bodu.IO.Hashing.CheckDigits.CheckDigitAlgorithm>, <xref:Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm>, or <xref:Bodu.IO.Hashing.CheckDigits.AlphanumericCheckDigitAlgorithm>.
+**Bodu.IO.Hashing.CheckDigits** ships the catalogue of single-character and multi-character check-digit algorithms — Luhn, Damm, Verhoeff, plus the standard catalogues used by financial, retail, securities, and publishing identifiers (IBAN, LEI, EAN, GTIN, UPC, ISBN, ISIN, SEDOL, CUSIP, ABA routing, …). Every algorithm derives from <xref:Bodu.IO.Hashing.CheckDigits.CheckDigitAlgorithm>, <xref:Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm>, or <xref:Bodu.IO.Hashing.CheckDigits.AlphanumericCheckDigitAlgorithm>.
 
 ## Key types
 
 **Generic algorithms** — applicable to any identifier shape:
 
-- <xref:Bodu.IO.Hashing.CheckDigits.Luhn>, <xref:Bodu.IO.Hashing.CheckDigits.Damm>, <xref:Bodu.IO.Hashing.CheckDigits.Verhoeff>, <xref:Bodu.IO.Hashing.Pearson>, <xref:Bodu.IO.Hashing.CheckDigits.Gumm>
+- <xref:Bodu.IO.Hashing.CheckDigits.Luhn>, <xref:Bodu.IO.Hashing.CheckDigits.Damm>, <xref:Bodu.IO.Hashing.CheckDigits.Verhoeff>, <xref:Bodu.IO.Hashing.CheckDigits.Gumm>
 
 **Financial / banking identifiers:**
 

@@ -257,9 +257,8 @@ catch (BencodeSerializationException ex)
 
 ## See also
 
-- [Using TOML](toml.md) — the twin library; every pattern above transfers with the `Toml` prefix.
 - [Mapping attributes](attributes.md), [Writing converters](converters.md), [Serialization callbacks](callbacks.md), [Built-in converter catalog](builtin-converters.md) — the customization guides.
-- [Bodu.Text.Bencode introduction](../../docs/serialization/bencode.md) — what is specific to the Bencode format, including the canonical-output guarantees.
-- [Bodu serializers introduction](../../docs/serialization/index.md) and [core concepts](../../docs/serialization/concepts.md) — the family shape and vocabulary.
-- [Text & Serialization guides](../topics/text-and-serialization.md) and the [topic overview](../../docs/topics/text-and-serialization.md).
+- [Bodu.Text.Bencode introduction](../../../docs/serialization/bencode/index.md) — what is specific to the Bencode format, including the canonical-output guarantees.
+- [Bodu serializers introduction](../../../docs/serialization/index.md) and [core concepts](../../../docs/serialization/bencode/concepts.md) — the family shape and the Bencode vocabulary.
+- [Text & Serialization guides](../../topics/text-and-serialization.md) and the [topic overview](../../../docs/topics/text-and-serialization.md).
 - API reference — <xref:Bodu.Text.Bencode.BencodeSerializer>, <xref:Bodu.Text.Bencode.BencodeSerializerOptions>, <xref:Bodu.Text.Bencode.Nodes.BencodeNode>, <xref:Bodu.Text.Bencode.Document.BencodeDocument>.

@@ -55,7 +55,7 @@ Every **core** encoding type (Base16, Base32, Base64, Base58, Base85) exposes th
 | **BCL-style aliases** | `ToBase{N}String(...)`, `FromBase{N}String(...)`, `TryToBase{N}String(...)` |
 | **UTF-8 path** | `EncodeToUtf8(span)`, `TryEncodeToUtf8(span, span, out int)`, `DecodeFromUtf8(span, span, out int, out int)` returning `OperationStatus` |
 | **Streaming decode** | `FromBase{N}String(span char/byte, span byte, out int, out int)` returning `OperationStatus` |
-| **Sizing** | `GetEncodedLength(int)`, `GetMaxDecodedLength(int)`, `GetDecodedLength(span)`, `TryGetDecodedLength(span, out int)` |
+| **Sizing** | `GetEncodedLength(int)`, `GetMaxDecodedLength(int)`, `GetDecodedLength(span)`, `TryGetDecodedLength(span, out int)` — variable-ratio encodings (Base58, Base85) expose `GetMaxEncodedLength(int)` in place of the exact `GetEncodedLength` / `GetDecodedLength` / `TryGetDecodedLength` forms |
 | **Validation** | `IsValid(span)`, `IsBase{N}Digit(char)` |
 
 For runtime-selected encoding choice, see the **[IBinaryEncoding](../../guides/text-encoding/binary-encodings-interface.md)** interface and the
@@ -75,7 +75,7 @@ and [Bech32](../../guides/text-encoding/bech32.md).
 
 | Encoding | Variant enum | Variants |
 |---|---|---|
-| Base16 | (none — case controlled by `BaseFormattingOptions.UpperCase`) | lower (default), upper |
+| Base16 | <xref:Bodu.Text.Encoding.Base16Variant> | Lower (default), Upper |
 | Base32 | <xref:Bodu.Text.Encoding.Base32Variant> | Standard (RFC 4648 §6), HexExtended (RFC 4648 §7), Crockford, ZBase32 |
 | Base64 | <xref:Bodu.Text.Encoding.Base64Variant> | Standard (RFC 4648 §4), UrlSafe (RFC 4648 §5), Mime (RFC 2045 with 76-char wrap) |
 | Base58 | <xref:Bodu.Text.Encoding.Base58Variant> | BitcoinFlickr (default), Ripple |

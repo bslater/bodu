@@ -44,7 +44,7 @@ Three different jobs that all sound like "text": binary-to-text codecs, document
 |---|---|---|
 | **[Bodu.Text.Encoding](text-encoding/index.md)** | Binary-to-text encoders for Base16, Base32, Base64, Base58, and Base85 with every common variant (RFC 4648 standard / hex-extended / URL-safe / MIME, Crockford, z-base-32, Bitcoin/Flickr / Ripple, Ascii85 / Z85). Each encoding exposes the same modern API shape: span- and UTF-8-friendly overloads, `OperationStatus` streaming, length-prediction helpers, validation predicates, plus a unified `IBinaryEncoding` interface for runtime-pluggable encoding choice. | `net8.0` |
 | **[Bodu.Text.Formats](formats/index.md)** | Self-framing text document formats with strongly-typed value models and span- and stream-friendly codecs. Ships three sibling namespaces — **Delimited** (CSV / TSV), **DotEnv**, and **Ini** — each with `Parse` / `Format` and `Try*` overloads, a typed value model, and strict invariant enforcement. | `net8.0` |
-| **[Bodu.Text.Bencode](serialization/bencode.md)** · **[Bodu.Text.Toml](serialization/toml.md)** | Two self-contained serializers that map your own types to and from a format. Deliberate twins — the same shape, member for member — each shipping a `…Serializer`, a mutable `…Node` and a read-only `…Document` DOM, and a low-level `Utf8…Reader` / `Utf8…Writer` pair, with the full converter / attribute / naming-policy surface. **Bencode** covers BitTorrent BEP 3; **TOML** covers v1.0.0 / v1.1.0. See the [shared family introduction](serialization/index.md). | `net8.0` |
+| **[Bodu.Text.Bencode](serialization/bencode/index.md)** · **[Bodu.Text.Toml](serialization/toml/index.md)** · **[Bodu.Text.Yaml](serialization/yaml/index.md)** | Three self-contained serializers that map your own types to and from a format — a shared architecture and `System.Text.Json`-aligned shape, each shipping a `…Serializer`, a mutable `…Node` and a read-only `…Document` DOM, and a low-level `Utf8…Reader` / `Utf8…Writer` pair. **Bencode** covers BitTorrent BEP 3; **TOML** covers v1.0.0 / v1.1.0; **YAML** the 1.2 core schema with block / flow collections, anchors, and multi-document streams. See the [shared family introduction](serialization/index.md). | `net8.0` |
 
 ### [Configuration](topics/configuration.md)
 
@@ -175,13 +175,13 @@ Each library has a dedicated introduction page that explains its namespaces, the
 </div>
 
 <div class="bodu-card">
-  <h3><a href="serialization/index.md">Bodu.Text.Bencode &amp; Bodu.Text.Toml</a></h3>
-  <p>Two self-contained serializers — POCO ↔ format — for Bencode (BEP 3) and TOML. Deliberate twins, each with a serializer, a mutable and a read-only DOM, and a low-level <code>Utf8…Reader</code> / <code>Utf8…Writer</code> pair.</p>
+  <h3><a href="serialization/index.md">Bodu serializers — Bencode, TOML &amp; YAML</a></h3>
+  <p>Three self-contained serializers — POCO ↔ format — for Bencode (BEP 3), TOML, and YAML. A shared architecture, each with a serializer, a mutable and a read-only DOM, and a low-level <code>Utf8…Reader</code> / <code>Utf8…Writer</code> pair.</p>
   <div class="bodu-card-links">
     <a href="serialization/index.md">Introduction</a>
-    <a href="serialization/bencode.md">Bencode</a>
-    <a href="serialization/toml.md">TOML</a>
-    <a href="serialization/getting-started.md">Getting started</a>
+    <a href="serialization/bencode/index.md">Bencode</a>
+    <a href="serialization/toml/index.md">TOML</a>
+    <a href="serialization/yaml/index.md">YAML</a>
     <a href="../guides/serialization/index.md">Guides</a>
   </div>
 </div>
@@ -290,5 +290,5 @@ The solution uses **MSTest** with a partial-class test layout that mirrors the s
 - **Topic overviews:** [Core Foundations](topics/core-foundations.md) · [Hashing & Cryptography](topics/hashing-and-cryptography.md) · [Globalization & Calendars](topics/globalization-and-calendars.md) · [Text & Serialization](topics/text-and-serialization.md) · [Configuration](topics/configuration.md) · [Numerics & Financial](topics/numerics-and-financial.md) · [Binary Formats & I/O](topics/binary-formats.md).
 - **[Getting started](getting-started.md)** — prerequisites, install commands, and a one-minute sample from each library.
 - **[Package matrix](package-matrix.md)** — the authoritative package list with status, dependencies, and install commands.
-- **Library introductions:** [Bodu.Core](core/index.md) · [Bodu.IO.Hashing](io-hashing/index.md) · [Bodu.Security.Cryptography](cryptography/index.md) · [Bodu.Globalization.Calendar](calendar/index.md) · [Bodu.Text.Encoding](text-encoding/index.md) · [Bodu.Text.Formats](formats/index.md) · [Bodu.Text.Bencode](serialization/bencode.md) · [Bodu.Text.Toml](serialization/toml.md) · [Bodu.Text.Configuration](text-configuration/index.md) · [Bodu.Extensions.Configuration.Text](extensions-configuration-text/index.md) · [Bodu.Text](text/index.md) · [Bodu.Numerics](numerics/index.md) · [Bodu.Financial](financial/index.md) · [Bodu.IO.Compound](io-compound/index.md) · [Bodu.Formats.Excel.Binary](excel/index.md).
+- **Library introductions:** [Bodu.Core](core/index.md) · [Bodu.IO.Hashing](io-hashing/index.md) · [Bodu.Security.Cryptography](cryptography/index.md) · [Bodu.Globalization.Calendar](calendar/index.md) · [Bodu.Text.Encoding](text-encoding/index.md) · [Bodu.Text.Formats](formats/index.md) · [Bodu.Text.Bencode](serialization/bencode/index.md) · [Bodu.Text.Toml](serialization/toml/index.md) · [Bodu.Text.Yaml](serialization/yaml/index.md) · [Bodu.Text.Configuration](text-configuration/index.md) · [Bodu.Extensions.Configuration.Text](extensions-configuration-text/index.md) · [Bodu.Text](text/index.md) · [Bodu.Numerics](numerics/index.md) · [Bodu.Financial](financial/index.md) · [Bodu.IO.Compound](io-compound/index.md) · [Bodu.Formats.Excel.Binary](excel/index.md).
 - **API references:** [Bodu.Collections.Generic](xref:Bodu.Collections.Generic) · [Bodu.IO.Hashing](xref:Bodu.IO.Hashing) · [Bodu.Security.Cryptography](xref:Bodu.Security.Cryptography) · [Bodu.Globalization.Calendar](xref:Bodu.Globalization.Calendar) · [Bodu.Text](xref:Bodu.Text) · [Bodu.Numerics](xref:Bodu.Numerics) · [Bodu.Financial](xref:Bodu.Financial) · [Bodu.IO.Compound](xref:Bodu.IO.Compound) · [Bodu.Formats.Excel](xref:Bodu.Formats.Excel).

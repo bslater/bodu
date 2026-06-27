@@ -79,40 +79,30 @@ Parse, edit, and write structured documents — typed value models with streamin
 
 </div>
 
-## Bodu.Text.Bencode and Bodu.Text.Toml — object serializers
+## Bodu.Text.Bencode, Bodu.Text.Toml, and Bodu.Text.Yaml — object serializers
 
-POCO ⇄ wire format, `System.Text.Json`-shaped. Deliberate twins — everything learned for one transfers to the other.
+POCO ⇄ wire format, `System.Text.Json`-shaped. The three libraries share an architecture and vocabulary — everything learned for one transfers to the next by swapping the prefix. Each has its own guide set.
 
 <div class="bodu-cards">
 
 <div class="bodu-card">
   <h3><a href="../serialization/index.md">Overview</a></h3>
-  <p>The two libraries, the three tiers (serializer, DOMs, reader / writer), and the full guide list.</p>
+  <p>The three libraries, the shared tiers (serializer, DOMs, reader / writer), how to choose a format, and the per-library guide hubs.</p>
 </div>
 
 <div class="bodu-card">
-  <h3><a href="../serialization/toml.md">Using TOML</a></h3>
-  <p><code>TomlSerializer</code>, the type mapping, spec-version selection, the mutable and read-only DOMs, and streams.</p>
+  <h3><a href="../serialization/toml/index.md">TOML guides</a></h3>
+  <p><code>TomlSerializer</code> — type mapping, spec-version selection, both DOMs, the full attribute family, converters, callbacks, and the built-in catalog.</p>
 </div>
 
 <div class="bodu-card">
-  <h3><a href="../serialization/bencode.md">Using Bencode</a></h3>
-  <p><code>BencodeSerializer</code>, byte strings, canonical key ordering, and the kinds Bencode cannot represent.</p>
+  <h3><a href="../serialization/bencode/index.md">Bencode guides</a></h3>
+  <p><code>BencodeSerializer</code> — byte strings, canonical key ordering, the kinds Bencode cannot represent, attributes, converters, callbacks, and the catalog.</p>
 </div>
 
 <div class="bodu-card">
-  <h3><a href="../serialization/converters.md">Writing converters</a></h3>
-  <p>Custom shapes with <code>BencodeConverter&lt;T&gt;</code> / <code>TomlConverter&lt;T&gt;</code>, factories, and converter resolution order.</p>
-</div>
-
-<div class="bodu-card">
-  <h3><a href="../serialization/attributes.md">Mapping attributes</a></h3>
-  <p>Rename, ignore, order, require, and capture members with the <code>[Toml…]</code> / <code>[Bencode…]</code> attribute family.</p>
-</div>
-
-<div class="bodu-card">
-  <h3><a href="../serialization/polymorphic-converters.md">Polymorphic converters</a></h3>
-  <p>Serialize and round-trip type hierarchies — emitting a type discriminator and dispatching to the right derived type on read.</p>
+  <h3><a href="../serialization/yaml/index.md">YAML guides</a></h3>
+  <p><code>YamlSerializer</code> — type mapping, the 1.2 core schema, both DOMs, multi-document streams, <code>[Yaml…]</code> attributes, custom converters, and the catalog.</p>
 </div>
 
 </div>
@@ -121,8 +111,8 @@ POCO ⇄ wire format, `System.Text.Json`-shaped. Deliberate twins — everything
 
 1. **[Topic overview](../../docs/topics/text-and-serialization.md)** — settle which of the three jobs you have.
 2. The matching **overview guide** — [encodings](../text-encoding/index.md), [formats](../formats/index.md), or [serializers](../serialization/index.md).
-3. The **per-type walk-through** for your format or encoding — e.g. [Base64](../text-encoding/base64.md), [INI](../formats/ini.md), or [TOML](../serialization/toml.md).
-4. For the serializers, the customization guides — **[attributes](../serialization/attributes.md)**, then **[converters](../serialization/converters.md)**.
+3. The **per-type walk-through** for your format or encoding — e.g. [Base64](../text-encoding/base64.md), [INI](../formats/ini.md), or [Using TOML](../serialization/toml/using.md).
+4. For the serializers, the customization guides — e.g. TOML's **[attributes](../serialization/toml/attributes.md)**, then **[converters](../serialization/toml/converters.md)** (Bencode and YAML carry the same guides under their own hubs).
 
 ## Where to go next
 

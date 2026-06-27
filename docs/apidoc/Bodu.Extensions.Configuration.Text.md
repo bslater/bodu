@@ -28,6 +28,9 @@ Once added, the source loads the file (or stream, or pre-parsed document), parse
     - `AddTextConfiguration(builder, bool optional, bool reloadOnChange)` — conventional file probe (`.boduconfig` → `bodu.config`).
     - `AddTextConfigurationStream(builder, Stream)` — stream source (no reload-on-change).
     - `AddTextConfigurationDocument(builder, IniDocumentBase, string? targetPath)` — pre-parsed document source (e.g. a `ConfigurationDocument`).
+- <xref:Bodu.Extensions.Configuration.Text.TomlConfigurationExtensions> — TOML provider entry points that bridge <xref:Bodu.Text.Toml> into the configuration pipeline, mirroring the `AddJsonFile` / `AddJsonStream` shape:
+    - `AddTomlFile(builder, string path, bool optional = false)` — read-once, read-only file source.
+    - `AddTomlStream(builder, Stream stream)` — read-once, read-only stream source (UTF-8 TOML text).
 
 **Sources and providers**
 
@@ -36,6 +39,8 @@ Once added, the source loads the file (or stream, or pre-parsed document), parse
 - <xref:Bodu.Extensions.Configuration.Text.TextStreamConfigurationSource> — stream-backed configuration source. Subclasses <xref:Microsoft.Extensions.Configuration.StreamConfigurationSource>; adds the same `TargetPath` / `ParseOptions` / `ResolveOptions` triple. One-shot — no reload-on-change.
 - <xref:Bodu.Extensions.Configuration.Text.TextStreamConfigurationProvider> — the matching `StreamConfigurationProvider`.
 - <xref:Bodu.Extensions.Configuration.Text.TextConfigurationLoader> — internal helper shared by both providers that parses a stream into a `ConfigurationDocument`, resolves it for `TargetPath`, and flattens the resolved view into `Dictionary<string, string?>`.
+- <xref:Bodu.Extensions.Configuration.Text.TomlConfigurationSource> — TOML configuration source backed by either a one-shot `Stream` or a file `Path`. Implements `IConfigurationSource`; exposes `Stream`, `Path`, and `Optional` (a set `Stream` takes precedence over `Path`). Read once when the configuration is built — no reload-on-change machinery.
+- <xref:Bodu.Extensions.Configuration.Text.TomlConfigurationProvider> — the matching read-only provider. Implements `IConfigurationProvider` directly (rather than deriving from the mutable `ConfigurationProvider` base) and consumes <xref:Bodu.Text.Toml>'s read-only document model, flattening it into the colon-delimited configuration key space; `Set` is rejected with `NotSupportedException`, and `GetReloadToken` returns a non-firing token.
 
 **Options binding**
 

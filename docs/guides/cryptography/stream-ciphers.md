@@ -6,7 +6,7 @@ title: Using stream ciphers
 
 A **stream cipher** generates a key- and nonce-dependent keystream and XORs it with the plaintext. Unlike the block ciphers elsewhere in this library, there is no cipher block, no block mode, and no padding: any byte length is encrypted directly. All of Bodu's stream ciphers derive from <xref:Bodu.Security.Cryptography.SymmetricStreamAlgorithm> (itself a <xref:System.Security.Cryptography.SymmetricAlgorithm>), so they flow through `CreateEncryptor()` / `CreateDecryptor()`, a `CryptoStream`, and the `Encrypt` / `Decrypt` extension methods exactly like the block ciphers.
 
-Because the keystream is XORed in, every stream cipher here is **self-inverse**: encryption and decryption are the same operation, and `CreateEncryptor()` and `CreateDecryptor()` are interchangeable. The nonce / IV is supplied as the <xref:System.Security.Cryptography.SymmetricAlgorithm.IV> property.
+Because the keystream is XORed in, every stream cipher here is **self-inverse**: encryption and decryption are the same operation, and `CreateEncryptor()` and `CreateDecryptor()` are interchangeable. These ciphers derive from `SymmetricStreamAlgorithm`, not `SymmetricAlgorithm`, so the per-message nonce is supplied through the `Nonce` property (generated with `GenerateNonce()`) rather than a block-cipher `IV`.
 
 > [!WARNING]
 > These are **raw, confidentiality-only** ciphers — they provide no authentication. A given `(key, nonce)` pair must encrypt **at most one message**: reusing it XORs two keystreams together and reveals the XOR of the plaintexts. For most applications, prefer an **AEAD** construction (see the [AEAD modes guide](aead-modes.md) and [ASCON AEAD](ascon-aead.md)) so that tampering is detected; if you use a raw stream cipher, pair it with a MAC such as [Poly1305](poly1305.md) (encrypt-then-MAC).
@@ -42,16 +42,16 @@ byte[] key, nonce, ciphertext;
 using (var alg = new ChaCha20())
 {
     alg.GenerateKey();    // 32 bytes (256-bit)
-    alg.GenerateIV();     // 12 bytes (96-bit nonce) — unique per message
+    alg.GenerateNonce();     // 12 bytes (96-bit nonce) — unique per message
 
     key   = alg.Key;
-    nonce = alg.IV;
+    nonce = alg.Nonce;
 
     ciphertext = alg.Encrypt(plaintext);
 }
 
 byte[] recovered;
-using (var alg = new ChaCha20 { Key = key, IV = nonce })
+using (var alg = new ChaCha20 { Key = key, Nonce = nonce })
 {
     recovered = alg.Decrypt(ciphertext);   // self-inverse — Encrypt would work too
 }
@@ -70,10 +70,10 @@ using Bodu.Security.Cryptography;
 
 using var alg = new XChaCha20();
 alg.GenerateKey();
-alg.GenerateIV();                       // 24-byte nonce — safe to choose at random
+alg.GenerateNonce();                       // 24-byte nonce — safe to choose at random
 
 using var output = new MemoryStream();
-using (var crypto = new CryptoStream(output, alg.CreateEncryptor(alg.Key, alg.IV), CryptoStreamMode.Write))
+using (var crypto = new CryptoStream(output, alg.CreateEncryptor(alg.Key, alg.Nonce), CryptoStreamMode.Write))
 {
     crypto.Write(firstChunk);
     crypto.Write(secondChunk);          // any lengths; the keystream carries across calls
@@ -92,7 +92,7 @@ using Bodu.Security.Cryptography.Extensions;
 
 using var alg = new Salsa20 { KeySize = 128 };   // default is 256
 alg.GenerateKey();                               // 16 bytes
-alg.GenerateIV();                                // 8-byte nonce
+alg.GenerateNonce();                                // 8-byte nonce
 
 byte[] ciphertext = alg.Encrypt(plaintext);
 ```
@@ -104,7 +104,7 @@ ChaCha20, XChaCha20, Salsa20, and XSalsa20 expose an `InitialCounter` that sets 
 ```csharp
 using var alg = new ChaCha20 { InitialCounter = 1 };
 alg.GenerateKey();
-alg.GenerateIV();
+alg.GenerateNonce();
 
 byte[] ciphertext = alg.Encrypt(plaintext);
 ```

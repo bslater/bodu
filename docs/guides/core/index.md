@@ -16,6 +16,10 @@ Bodu.Core anchors the **Core Foundations** topic: the [topic guide landing](../t
 |---|---|---|
 | `Bodu.Collections.Generic` | Bounded ring-backed collections, sets, multisets, and range-keyed lookups — `CircularBuffer<T>`, `Deque<T>`, `EvictingDictionary<TKey,TValue>`, `SequencedDictionary<TKey,TValue>`, `IndexedPriorityQueue<TElement,TPriority>`, `IndexedSet<T>`, `OrderedSet<T>`, `Multiset<T>`, `MultiValueDictionary<TKey,TValue>`, `RangeDictionary<TKey,TValue>`, `RangeSet<T>`, `SegmentedBuffer<T>`, `RingBackedCollection<T>` base. | [Choosing a collection](choosing-a-collection.md) · [Circular buffer](circular-buffer.md) · [Deque](deque.md) · [Evicting dictionary](evicting-dictionary.md) · [Sequenced dictionary](sequenced-dictionary.md) · [Indexed priority queue](indexed-priority-queue.md) · [Indexed and ordered sets](ordered-sets.md) · [Multiset](multiset.md) · [Multi-value dictionary](multi-value-dictionary.md) · [Range-keyed lookups](range-dictionary.md) · [Segmented buffer](segmented-buffer.md) |
 | `Bodu.Collections.Generic.Concurrent` | Thread-safe collection variants — `ConcurrentCircularBuffer<T>`, `ConcurrentHashSet<T>`. | [Concurrent collections](concurrent-collections.md) |
+| `Bodu.Collections.Generic.Graphs` | Graphs and graph algorithms — `Graph<T>`, the read-only `IReadOnlyGraph<T>` / `IReadOnlyWeightedGraph<T,T>` views, `GraphAlgorithms` (BFS/DFS, shortest path, topological sort, connected components), `ShortestPathResult<T>`, and the `DisjointSet` / `DisjointSet<T>` union-find. | [Graphs and graph algorithms](graphs.md) |
+| `Bodu.Collections.Generic.Trees` | Prefix trees and an n-ary tree — `Trie`, `Trie<TValue>`, and `Tree<T>`. | [Trie (prefix tree)](trie.md) |
+| `Bodu.Threading` | Async coordination primitives — `AsyncLock`, `AsyncSemaphore`, `AsyncReaderWriterLock`, `AsyncAutoResetEvent` / `AsyncManualResetEvent` / `AsyncCountdownEvent`, `AsyncLazy<T>`, `AsyncDebouncer`, and `RateGate`. | [Async coordination primitives](async-primitives.md) |
+| `Bodu.Functional` | Functional helpers — `Memoizer`. | [Memoization](memoization.md) |
 | `Bodu` | Root namespace primitives — `WeekPattern`, `IRandomGenerator`, `XorShiftRandom`, `ThrowHelper`. | [WeekPattern](week-pattern.md) |
 | `Bodu.Buffers` | Pooled buffer infrastructure — `PooledBufferBuilder<T>`. | [Pooled buffer builder](pooled-buffer-builder.md) |
 | `Bodu.Extensions` | Date, numeric, span, array, and comparable extension methods — `DateTimeExtensions`, `DateOnlyExtensions`, `NumericExtensions`, `ArrayExtensions`, `BufferConverter`, `SpanExtensions`, `IComparableExtensions`. | (no dedicated guide yet — see API reference) |
@@ -91,6 +95,50 @@ Bodu.Core anchors the **Core Foundations** topic: the [topic guide landing](../t
 <div class="bodu-card">
   <h3><a href="concurrent-collections.md">Concurrent collections</a></h3>
   <p>Thread-safe peers — lock-free <code>ConcurrentCircularBuffer&lt;T&gt;</code> (Vyukov MPMC ring) and lock-striped <code>ConcurrentHashSet&lt;T&gt;</code>.</p>
+</div>
+
+</div>
+
+### `Bodu.Collections.Generic.Graphs`
+
+<div class="bodu-cards">
+
+<div class="bodu-card">
+  <h3><a href="graphs.md">Graphs and graph algorithms</a></h3>
+  <p>Directed and undirected <code>Graph&lt;T&gt;</code> with optional edge weights; <code>GraphAlgorithms</code> for BFS/DFS, shortest path, topological sort, and connected components; plus <code>DisjointSet&lt;T&gt;</code> union-find.</p>
+</div>
+
+</div>
+
+### `Bodu.Collections.Generic.Trees`
+
+<div class="bodu-cards">
+
+<div class="bodu-card">
+  <h3><a href="trie.md">Trie (prefix tree)</a></h3>
+  <p>The <code>Trie</code> string set and <code>Trie&lt;TValue&gt;</code> map with prefix queries (autocomplete-style), plus the n-ary <code>Tree&lt;T&gt;</code> with stack-safe traversals.</p>
+</div>
+
+</div>
+
+### `Bodu.Threading`
+
+<div class="bodu-cards">
+
+<div class="bodu-card">
+  <h3><a href="async-primitives.md">Async coordination primitives</a></h3>
+  <p><code>AsyncLock</code>, <code>AsyncSemaphore</code>, <code>AsyncReaderWriterLock</code>, the async reset/countdown events, <code>AsyncLazy&lt;T&gt;</code>, <code>AsyncDebouncer</code>, and the <code>RateGate</code> rate limiter — the async-friendly peers of the BCL synchronization types.</p>
+</div>
+
+</div>
+
+### `Bodu.Functional`
+
+<div class="bodu-cards">
+
+<div class="bodu-card">
+  <h3><a href="memoization.md">Memoization</a></h3>
+  <p><code>Memoizer</code> wraps a pure function in a thread-safe caching delegate — single- and multi-argument, with an optional key comparer.</p>
 </div>
 
 </div>

@@ -81,18 +81,34 @@
           href: formats/getting-started.md
         - name: Parser policies
           href: formats/parser-policies.md
-    - name: Bodu.Text.Bencode & Bodu.Text.Toml
+    - name: Bodu serializers (Bencode · TOML · YAML)
       items:
         - name: Serializers introduction
           href: serialization/index.md
-        - name: Bodu.Text.Bencode
-          href: serialization/bencode.md
         - name: Bodu.Text.Toml
-          href: serialization/toml.md
-        - name: Core concepts
-          href: serialization/concepts.md
-        - name: Getting started
-          href: serialization/getting-started.md
+          items:
+            - name: Introduction
+              href: serialization/toml/index.md
+            - name: Core concepts
+              href: serialization/toml/concepts.md
+            - name: Getting started
+              href: serialization/toml/getting-started.md
+        - name: Bodu.Text.Bencode
+          items:
+            - name: Introduction
+              href: serialization/bencode/index.md
+            - name: Core concepts
+              href: serialization/bencode/concepts.md
+            - name: Getting started
+              href: serialization/bencode/getting-started.md
+        - name: Bodu.Text.Yaml
+          items:
+            - name: Introduction
+              href: serialization/yaml/index.md
+            - name: Core concepts
+              href: serialization/yaml/concepts.md
+            - name: Getting started
+              href: serialization/yaml/getting-started.md
 - name: Configuration
   href: topics/configuration.md
   items:

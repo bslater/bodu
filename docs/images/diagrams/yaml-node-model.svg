@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 360" role="img" aria-labelledby="ynm-t ynm-d">
+  <title id="ynm-t">YAML node model — seven value kinds over a mutable node tree</title>
+  <desc id="ynm-d">Every node in the mutable Bodu.Text.Yaml DOM derives from YamlNode and resolves to a YamlValueKind. The five scalar kinds are String (backed by string), Integer (long), Float (double), Boolean (bool), and Null. The two container kinds are Sequence, materialized as YamlArray (an ordered IList of YamlNode), and Mapping, materialized as YamlObject (an insertion-ordered string key to YamlNode map). Scalars are immutable values; containers are mutable so a document can be authored programmatically. Presentation detail — plain, quoted, literal, or folded scalar style, block or flow collection layout, and anchors and aliases — is resolved by the reader and chosen by the writer rather than stored as distinct kinds.</desc>
+
+  <defs>
+    <style>
+      .bg    { fill: #0F172A; }
+      .pan   { fill: #1E293B; stroke: #334155; stroke-width: 1; }
+      .hdr   { fill: #111827; stroke: #334155; stroke-width: 1; }
+      .ttl   { fill: #F8FAFC; font: 700 15px/1 "Segoe UI",Arial,sans-serif; }
+      .lbl   { fill: #F8FAFC; font: 700 12px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .mut   { fill: #94A3B8; font: 400 10px/1.25 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .sect  { font: 700 11px/1 "Segoe UI",Arial,sans-serif; text-anchor: start; letter-spacing: 0.5px; }
+      .mono  { font: 700 12px/1 "Consolas","Menlo",monospace; fill: #E2E8F0; text-anchor: middle; }
+      .b1    { fill: #06281F; stroke: #34D399; stroke-width: 1.5; }
+      .b2    { fill: #1E3A5F; stroke: #60A5FA; stroke-width: 1.5; }
+      .b3    { fill: #2A1B54; stroke: #A78BFA; stroke-width: 1.5; }
+      .b4    { fill: #431407; stroke: #FBBF24; stroke-width: 1.5; }
+      .note  { fill: #15212F; stroke: #334155; stroke-width: 1; }
+    </style>
+  </defs>
+
+  <rect class="bg" width="820" height="360"/>
+
+  <g transform="translate(10 10)">
+    <rect class="pan" width="800" height="340" rx="8"/>
+    <rect class="hdr" width="800" height="30" rx="8"/>
+    <rect class="hdr" y="22" width="800" height="8"/>
+    <text class="ttl" x="16" y="20">YAML node model — seven kinds over a mutable node tree</text>
+
+    <!-- ============ Row 1 — SCALARS ============ -->
+    <text class="sect" fill="#34D399" x="28" y="50">SCALARS  ·  YamlValue  ·  immutable</text>
+
+    <g transform="translate(28 56)">
+      <rect class="b1" width="143" height="52" y="8" rx="6"/>
+      <text class="lbl" fill="#34D399" x="71" y="30">String</text>
+      <text class="mono" x="71" y="50">name: Tom</text>
+      <text class="mut" x="71" y="78">string</text>
+    </g>
+
+    <g transform="translate(187 56)">
+      <rect class="b2" width="143" height="52" y="8" rx="6"/>
+      <text class="lbl" fill="#93C5FD" x="71" y="30">Integer</text>
+      <text class="mono" x="71" y="50">port: 8000</text>
+      <text class="mut" x="71" y="78">long</text>
+    </g>
+
+    <g transform="translate(346 56)">
+      <rect class="b3" width="143" height="52" y="8" rx="6"/>
+      <text class="lbl" fill="#C4B5FD" x="71" y="30">Float</text>
+      <text class="mono" x="71" y="50">ratio: 3.14</text>
+      <text class="mut" x="71" y="78">double</text>
+    </g>
+
+    <g transform="translate(505 56)">
+      <rect class="b4" width="143" height="52" y="8" rx="6"/>
+      <text class="lbl" fill="#FBBF24" x="71" y="30">Boolean</text>
+      <text class="mono" x="71" y="50">secure: true</text>
+      <text class="mut" x="71" y="78">bool</text>
+    </g>
+
+    <g transform="translate(664 56)">
+      <rect class="b1" width="108" height="52" y="8" rx="6"/>
+      <text class="lbl" fill="#34D399" x="54" y="30">Null</text>
+      <text class="mono" x="54" y="50">x: ~</text>
+      <text class="mut" x="54" y="78">null</text>
+    </g>
+
+    <!-- ============ Row 2 — CONTAINERS ============ -->
+    <text class="sect" fill="#A78BFA" x="28" y="150">CONTAINERS  ·  mutable</text>
+
+    <g transform="translate(28 156)">
+      <rect class="b1" width="300" height="56" y="8" rx="6"/>
+      <text class="lbl" fill="#34D399" x="150" y="30">YamlArray  ·  Sequence</text>
+      <text class="mono" x="150" y="50">[8000, 8001]  /  block "- item"</text>
+      <text class="mut" x="150" y="80">IList&lt;YamlNode?&gt;</text>
+    </g>
+
+    <g transform="translate(348 156)">
+      <rect class="b3" width="300" height="56" y="8" rx="6"/>
+      <text class="lbl" fill="#C4B5FD" x="150" y="30">YamlObject  ·  Mapping</text>
+      <text class="mono" x="150" y="50">{ k: v }  /  block "key: value"</text>
+      <text class="mut" x="150" y="80">insertion-ordered string → YamlNode?</text>
+    </g>
+
+    <!-- ============ Row 3 — NOTES ============ -->
+    <g transform="translate(28 250)">
+      <rect class="note" width="744" height="74" y="8" rx="6"/>
+      <text class="sect" fill="#F8FAFC" x="16" y="32">switch on ValueKind, or AsObject() / AsArray() / AsValue()</text>
+      <text class="mut" x="16" y="52" style="text-anchor:start">Every node derives from <tspan fill="#E2E8F0" font-weight="700">YamlNode</tspan> and resolves to a <tspan fill="#E2E8F0" font-weight="700">YamlValueKind</tspan>; the read-only DOM exposes the same kinds through <tspan fill="#E2E8F0" font-weight="700">YamlElement</tspan>.</text>
+      <text class="mut" x="16" y="68" style="text-anchor:start">Scalar style (plain / quoted / literal / folded), block vs. flow layout, and anchors &amp; aliases are presentation — resolved on read, chosen on write — not extra kinds.</text>
+    </g>
+  </g>
+</svg>

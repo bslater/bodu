@@ -32,6 +32,8 @@ Reach for this library when you need monetary arithmetic that the compiler valid
 - <xref:Bodu.Financial.CurrencyLookupService> — the `ICurrencyLookup` implementation that resolves ISO codes to metadata (the service registered by `AddFinancialService`).
 - <xref:Bodu.Financial.CurrencyDisplay> — currency symbol / display-name formatting for presenting an amount's currency.
 - <xref:Bodu.Financial.Currencies.CurrencyCode> — the closed enum that identifies a currency on <xref:Bodu.Financial.Money> and the exchange types; one member per shipped ISO 4217 code, valued by its ISO numeric code.
+- <xref:Bodu.Financial.Currencies.CurrencyCodeExtensions> — catalogue helpers over `CurrencyCode`: `GetStatus`, `IsActive`, `IsHistoric`, resolving each member's lifecycle status from its declarative attribute (cached at type initialization).
+- <xref:Bodu.Financial.Currencies.CurrencyStatusAttribute> — the `[CurrencyStatus(...)]` annotation on each `CurrencyCode` member that is the declarative source of truth for a currency's lifecycle status.
 - The shipped tag types live in <xref:Bodu.Financial.Currencies> (one sealed class per ISO code).
 
 **Rounding, allocation, formatting, and parsing**
@@ -51,6 +53,11 @@ Reach for this library when you need monetary arithmetic that the compiler valid
 - <xref:Bodu.Financial.ExchangeRateLookupOptions>, <xref:Bodu.Financial.ExchangeRateLookupResult>, <xref:Bodu.Financial.ExchangeRateDateResolution> — resolution policy options and the audit-grade lookup result.
 - <xref:Bodu.Financial.FixedExchangeRateTable>, <xref:Bodu.Financial.FixedDatedExchangeRateProvider>, <xref:Bodu.Financial.DatedExchangeRateProviderAdapter> — in-memory provider implementations and an adapter that pins a date to a dated provider for codebases that don't need the dated surface. Grouping several providers (prioritised fallback, averaging, per-FX-pair routing) and read-through caching live in [`Bodu.Financial.ExchangeRates.Caching`](Bodu.Financial.ExchangeRates.Caching.md).
 - <xref:Bodu.Financial.MoneyConversionResult`2> — audit record bundling source and target money with the full lookup result.
+- <xref:Bodu.Financial.WebExchangeRateProvider>, <xref:Bodu.Financial.WebExchangeRateProviderOptions> — the abstract base for HTTP-backed dated providers (accumulates fetched observations into an immutable book / snapshot, coalesces concurrent loads, owns its `HttpClient`) and the abstract options carrying `BaseAddress`, `HttpTimeout`, `UserAgent`, `DefaultLookback`, `CurrencyAliases`, and per-stage log levels. The per-source provider packages live in [`Bodu.Financial.ExchangeRates`](Bodu.Financial.ExchangeRates.md).
+- <xref:Bodu.Financial.SingleFlightCoordinator`1> — keyed single-flight coordinator that coalesces concurrent loads of the same key onto one in-flight operation (`RunAsync` / `RunAsync<TResult>`), used internally by `WebExchangeRateProvider` to deduplicate endpoint fetches.
+- <xref:Bodu.Financial.ExchangeRateProvenance> — readonly-record-struct recording where a rate came from (provider, optional backend, cached-at / as-of instants), with `Live` and `FromCache` factories.
+- <xref:Bodu.Financial.IExchangeRatePairSource`1>, <xref:Bodu.Financial.ExchangeRatePairRequest>, <xref:Bodu.Financial.PairRateData`1> — the pair-based fetch contract (`GetPairAsync`), the request struct (pair + inclusive date range), and the result record (pair, observations, source-specific series metadata).
+- <xref:Bodu.Financial.ExchangeRateFormatException> (a `FormatException`), <xref:Bodu.Financial.ExchangeRateSeriesNotFoundException> (a `KeyNotFoundException`) — feed-parse and missing-series failures raised by the provider stack.
 
 **Related namespaces**
 

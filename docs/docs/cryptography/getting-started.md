@@ -64,7 +64,7 @@ using Bodu.Security.Cryptography.Extensions;
 
 using var cipher = new ChaCha20();
 cipher.GenerateKey();               // 32-byte key
-cipher.GenerateIV();                // 12-byte nonce — unique per message
+cipher.GenerateNonce();                // 12-byte nonce — unique per message
 
 byte[] ciphertext = cipher.Encrypt(plaintext);
 byte[] roundtrip  = cipher.Decrypt(ciphertext);   // self-inverse

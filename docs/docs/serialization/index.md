@@ -2,63 +2,66 @@
 title: Bodu serializers — Introduction
 ---
 
-# Bodu serializers (Bencode and TOML)
+# Bodu serializers (Bencode, TOML, and YAML)
 
-**Bodu.Text.Bencode** and **Bodu.Text.Toml** are two self-contained libraries that map your own types (POCOs, records, collections) to and from a document format. Part of the **[Text & Serialization](../topics/text-and-serialization.md)** topic, each is a standalone package with no shared engine — every type a serializer needs lives inside its own assembly:
+**Bodu.Text.Bencode**, **Bodu.Text.Toml**, and **Bodu.Text.Yaml** are three self-contained libraries that map your own types (POCOs, records, collections) to and from a document format. Part of the **[Text & Serialization](../topics/text-and-serialization.md)** topic, each is a standalone package with no shared engine — every type a serializer needs lives inside its own assembly:
 
 | Package | Namespace | Format | Entry point |
 |---|---|---|---|
 | **Bodu.Text.Bencode** | <xref:Bodu.Text.Bencode> | [Bencode (BEP 3)](https://www.bittorrent.org/beps/bep_0003.html) (binary) | <xref:Bodu.Text.Bencode.BencodeSerializer> |
 | **Bodu.Text.Toml** | <xref:Bodu.Text.Toml> | [TOML](https://toml.io/) v1.0.0 / v1.1.0 (text) | <xref:Bodu.Text.Toml.TomlSerializer> |
+| **Bodu.Text.Yaml** | <xref:Bodu.Text.Yaml> | [YAML](https://yaml.org/) 1.2 core schema (text) | <xref:Bodu.Text.Yaml.YamlSerializer> |
 
-The two libraries are deliberate twins: they expose the same shape, member for member, so anything you learn for one transfers directly to the other — the only adjustment is the `Bencode` / `Toml` prefix.
+The libraries are built to the **same architecture**: the same three-tier layering, the same `System.Text.Json`-aligned vocabulary, and the same naming so that what you learn for one transfers to the next. They are *not* identical surfaces — Bencode and TOML are member-for-member twins, while YAML tunes its serializer surface to the format (more on this below) — but the mental model is shared across all three.
 
-## The two members
+## The three members
 
-This page is the family parent: it describes everything the twins share. What is *specific* to each format lives on its own introduction:
+This page is the family parent: it describes the architecture the libraries share. What is *specific* to each format lives on its own introduction:
 
 | Library | Introduction | In one line |
 |---|---|---|
-| **Bodu.Text.Bencode** | [Bodu.Text.Bencode](bencode.md) | The binary BEP 3 format — byte strings as first-class values, canonical dictionary ordering, and the converter bridge for the kinds Bencode cannot represent. |
-| **Bodu.Text.Toml** | [Bodu.Text.Toml](toml.md) | The human-readable configuration format — a rich native value model (floats, Booleans, RFC 3339 date-times), spec-version selection (v1.0.0 / v1.1.0), and positional parse diagnostics. |
+| **Bodu.Text.Bencode** | [Bodu.Text.Bencode](bencode/index.md) | The binary BEP 3 format — byte strings as first-class values, canonical dictionary ordering, and the converter bridge for the kinds Bencode cannot represent. |
+| **Bodu.Text.Toml** | [Bodu.Text.Toml](toml/index.md) | The human-readable configuration format — a rich native value model (floats, Booleans, RFC 3339 date-times), spec-version selection (v1.0.0 / v1.1.0), and positional parse diagnostics. |
+| **Bodu.Text.Yaml** | [Bodu.Text.Yaml](yaml/index.md) | The indentation-structured format — block and flow collections, quoted and block scalars, anchors and aliases, multi-document streams, and the 1.2 core schema (opt-in 1.1 typing). |
+
+Each library's introduction is backed by its own **core concepts** and **getting-started** pages, linked at the foot of this page.
 
 ## Core mental model
 
 Each library layers three surfaces over one format:
 
-| Tier | Bodu.Text.Bencode | Bodu.Text.Toml |
-|---|---|---|
-| **Serializer** (POCO ↔ format) | <xref:Bodu.Text.Bencode.BencodeSerializer> | <xref:Bodu.Text.Toml.TomlSerializer> |
-| **Mutable DOM** | <xref:Bodu.Text.Bencode.Nodes.BencodeNode> | <xref:Bodu.Text.Toml.Nodes.TomlNode> |
-| **Read-only DOM** | <xref:Bodu.Text.Bencode.Document.BencodeDocument> | <xref:Bodu.Text.Toml.Document.TomlDocument> |
-| **Low-level reader / writer** | <xref:Bodu.Text.Bencode.Reader.Utf8BencodeReader> / <xref:Bodu.Text.Bencode.Writer.Utf8BencodeWriter> | <xref:Bodu.Text.Toml.Reader.Utf8TomlReader> / <xref:Bodu.Text.Toml.Writer.Utf8TomlWriter> |
+| Tier | Bodu.Text.Bencode | Bodu.Text.Toml | Bodu.Text.Yaml |
+|---|---|---|---|
+| **Serializer** (POCO ↔ format) | <xref:Bodu.Text.Bencode.BencodeSerializer> | <xref:Bodu.Text.Toml.TomlSerializer> | <xref:Bodu.Text.Yaml.YamlSerializer> |
+| **Mutable DOM** | <xref:Bodu.Text.Bencode.Nodes.BencodeNode> | <xref:Bodu.Text.Toml.Nodes.TomlNode> | <xref:Bodu.Text.Yaml.Nodes.YamlNode> |
+| **Read-only DOM** | <xref:Bodu.Text.Bencode.Document.BencodeDocument> | <xref:Bodu.Text.Toml.Document.TomlDocument> | <xref:Bodu.Text.Yaml.Document.YamlDocument> |
+| **Low-level reader / writer** | <xref:Bodu.Text.Bencode.Reader.Utf8BencodeReader> / <xref:Bodu.Text.Bencode.Writer.Utf8BencodeWriter> | <xref:Bodu.Text.Toml.Reader.Utf8TomlReader> / <xref:Bodu.Text.Toml.Writer.Utf8TomlWriter> | <xref:Bodu.Text.Yaml.Reader.Utf8YamlReader> / <xref:Bodu.Text.Yaml.Writer.Utf8YamlWriter> |
 
-Reach for the **serializer** for object mapping, a **DOM** to inspect or edit a document without a model, and the **`Utf8…Reader` / `Utf8…Writer`** ref-struct pair for allocation-free, forward-only token processing. The serializer is built on the reader/writer pair; a custom converter receives them directly.
+Reach for the **serializer** for object mapping, a **DOM** to inspect or edit a document without a model, and the **`Utf8…Reader` / `Utf8…Writer`** pair for forward-only token processing. The serializer is built on the reader/writer pair; a custom converter receives them directly.
 
-## Headline types
+## Choosing a format
 
-### Serializers
-
-| Type | Purpose |
+| Reach for… | When you want… |
 |---|---|
-| <xref:Bodu.Text.Bencode.BencodeSerializer> | `Serialize` / `Deserialize<T>` for Bencode (`byte[]`, `ReadOnlySpan<byte>`, `IBufferWriter<byte>`, `Stream`). |
-| <xref:Bodu.Text.Toml.TomlSerializer> | `Serialize` / `Deserialize<T>` for TOML (`string`, `ReadOnlySpan<byte>`, `IBufferWriter<byte>`, `Stream`). |
-| <xref:Bodu.Text.Bencode.BencodeSerializerOptions> · <xref:Bodu.Text.Toml.TomlSerializerOptions> | Serializer configuration: converters, naming policy, ignore conditions, depth. |
-| <xref:Bodu.Text.Bencode.Serialization.BencodeConverter`1> · <xref:Bodu.Text.Toml.Serialization.TomlConverter`1> | Base for a custom converter that controls how one type is read and written. |
-| <xref:Bodu.Text.Bencode.BencodeNamingPolicy> · <xref:Bodu.Text.Toml.TomlNamingPolicy> | Camel, snake, and kebab casing policies. |
+| **TOML** | A configuration file a human will edit, with typed scalars and tables and exact parse positions. |
+| **YAML** | An indentation-structured document — multi-document streams, anchors and aliases, or interop with an existing YAML toolchain. |
+| **Bencode** | A compact, deterministic binary envelope — `.torrent` metadata, content-addressed payloads, byte strings as first-class values. |
 
-### Document object models
+## Surface differences at a glance
 
-| Type | Purpose |
-|---|---|
-| <xref:Bodu.Text.Bencode.Nodes.BencodeNode> · <xref:Bodu.Text.Toml.Nodes.TomlNode> | Mutable, editable tree — `Parse`, index, mutate, write back. |
-| <xref:Bodu.Text.Bencode.Document.BencodeDocument> · <xref:Bodu.Text.Toml.Document.TomlDocument> | Read-only, low-allocation tree over a parsed buffer; walked through `RootElement`. |
+The architecture is shared, but the serializer surfaces differ where the format warrants it:
+
+- **Bencode and TOML** expose the full `System.Text.Json`-style surface — converters and converter factories, the complete attribute family, serialization callbacks, naming policies, and the string/number enum converters.
+- **YAML** keeps the serializer, both DOMs, and the reader/writer pair, and shapes members through naming policies, the `[YamlPropertyName]` / `[YamlIgnore]` attributes, options flags, and custom `YamlConverter<T>` converters. It adds YAML-specific richness instead — anchors and aliases, block and flow collections, block scalars, opt-in 1.1 merge keys, and multi-document streams.
+
+Each library's own pages document its exact surface.
 
 ## Common scenarios
 
 | You want to… | Use |
 |---|---|
 | Map a config record to and from TOML | `TomlSerializer.Serialize` / `Deserialize<T>` |
+| Round-trip an object through YAML | `YamlSerializer.Serialize` / `Deserialize<T>` |
 | Encode a torrent-style object to Bencode bytes | `BencodeSerializer.Serialize` / `Deserialize<T>` |
 | Rename members on the wire | a `[…PropertyName]` attribute or a naming policy |
 | Control how a tricky type is written | a `…Converter<T>` |
@@ -68,8 +71,6 @@ Reach for the **serializer** for object mapping, a **DOM** to inspect or edit a 
 
 ## Where to go next
 
-- **Member introductions** — [Bodu.Text.Bencode](bencode.md) and [Bodu.Text.Toml](toml.md) for what is specific to each format.
-- **[Core concepts](concepts.md)** — the serializer, the converter model, the two DOMs, and the reader/writer seam.
-- **[Getting started](getting-started.md)** — install and the first round trip in each format.
-- **Guides** — [Using TOML](../../guides/serialization/toml.md), [Using Bencode](../../guides/serialization/bencode.md), and [writing converters](../../guides/serialization/converters.md).
+- **Member introductions** — [Bodu.Text.Bencode](bencode/index.md), [Bodu.Text.Toml](toml/index.md), and [Bodu.Text.Yaml](yaml/index.md) for what is specific to each format, each with its own **core concepts** and **getting-started** pages.
+- **Guides** — the [serializer guides hub](../../guides/serialization/index.md), with a full set of recipes per library.
 - **[Text & Serialization topic](../topics/text-and-serialization.md)** — how the serializers sit alongside `Bodu.Text.Encoding` and `Bodu.Text.Formats`.

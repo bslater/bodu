@@ -6,7 +6,7 @@ title: Bodu.Text.Formats — Getting started
 
 Unfamiliar with terms like *self-framing format*, *value model*, *codec*, or *round-trip rules*? Read [Core concepts](concepts.md) first.
 
-> Looking for **TOML**, **Bencode**, or a POCO serializer? Those live in the standalone <xref:Bodu.Text.Toml> and <xref:Bodu.Text.Bencode> packages — see the [Bodu serializers getting started](../serialization/getting-started.md).
+> Looking for **TOML**, **YAML**, **Bencode**, or a POCO serializer? Those live in the standalone <xref:Bodu.Text.Toml>, <xref:Bodu.Text.Yaml>, and <xref:Bodu.Text.Bencode> packages — see the [Bodu serializers introduction](../serialization/index.md).
 
 ## Install
 

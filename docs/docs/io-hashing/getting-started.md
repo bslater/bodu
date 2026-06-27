@@ -27,7 +27,7 @@ crc.Append(data);
 string hex = Convert.ToHexString(crc.GetCurrentHash());
 ```
 
-`CRC32_ISOHDLC` is the canonical zlib / PNG / Ethernet CRC-32. Swap it for `CRC32_ISCSI`, `CRC16_MODBUS`, `CRC64_XZ`, or any of the 113 entries in the [CRC catalogue](../../guides/io-hashing/crc-catalogue.md).
+`CRC32_ISOHDLC` is the canonical zlib / PNG / Ethernet CRC-32. Swap it for `CRC32_ISCSI`, `CRC16_MODBUS`, `CRC64_XZ`, or any of the 112 entries in the [CRC catalogue](../../guides/io-hashing/crc-catalogue.md).
 
 ### Checksum — Fletcher-32
 
@@ -85,7 +85,7 @@ Other check-digit types follow the same `IsValid` / `ComputeCheckDigit` contract
 ### Check digit — IBAN (multi-character)
 
 ```csharp
-using Bodu.IO.Hashing.Checksums;
+using Bodu.IO.Hashing.CheckDigits;
 
 bool valid = Iban.IsValid("GB82WEST12345698765432");
 ```

@@ -2,9 +2,11 @@
 title: Bodu.Text.Bencode — Introduction
 ---
 
+![Bodu.Text.Bencode](../../../images/hero-bencode.svg)
+
 # Bodu.Text.Bencode
 
-**Bodu.Text.Bencode** is a self-contained library for [Bencode (BEP 3)](https://www.bittorrent.org/beps/bep_0003.html), the compact binary encoding used by BitTorrent for `.torrent` metadata and tracker responses. It is one of the two [Bodu serializer twins](index.md) — it shares its shape member-for-member with [Bodu.Text.Toml](toml.md), so everything on the [family introduction](index.md) (the serializer / DOM / reader-writer tiers, converters, attributes, naming policies) applies here unchanged. This page covers what is *specific* to Bencode.
+**Bodu.Text.Bencode** is a self-contained library for [Bencode (BEP 3)](https://www.bittorrent.org/beps/bep_0003.html), the compact binary encoding used by BitTorrent for `.torrent` metadata and tracker responses. It is one of the three [Bodu serializers](../index.md) and shares the architecture described in the [family introduction](../index.md) (the serializer / DOM / reader-writer tiers, converters, attributes, naming policies) member-for-member with its siblings [Bodu.Text.Toml](../toml/index.md) and [Bodu.Text.Yaml](../yaml/index.md). This page covers what is *specific* to Bencode.
 
 ## The format in one paragraph
 
@@ -22,7 +24,7 @@ This makes Bencode a natural fit for payloads that mix identifiers with raw hash
 
 ## Canonical output
 
-The writer always emits canonical BEP 3: dictionary entries appear in ascending bytewise key order regardless of member declaration order, integers carry no leading or negative zeros, and a `null` member is omitted. The reader is equally strict — it accepts only canonical input (unique ascending keys, a single root, no trailing bytes), so a successful round trip is byte-identical. The library's conformance is audited in the [BEP 3 compliance review](../../reviews/bencode-bep3-compliance-review.md).
+The writer always emits canonical BEP 3: dictionary entries appear in ascending bytewise key order regardless of member declaration order, integers carry no leading or negative zeros, and a `null` member is omitted. The reader is equally strict — it accepts only canonical input (unique ascending keys, a single root, no trailing bytes), so a successful round trip is byte-identical. The library's conformance is audited in the [BEP 3 compliance review](../../../reviews/bencode-bep3-compliance-review.md).
 
 ## What Bencode cannot represent
 
@@ -30,7 +32,7 @@ Because the format has only four kinds, several everyday .NET types have **no na
 
 | .NET kind | Native form | Bridge |
 |---|---|---|
-| `bool` | none | a [custom converter](../../guides/serialization/converters.md) — e.g. map to `i0e` / `i1e` |
+| `bool` | none | a [custom converter](../../../guides/serialization/bencode/converters.md) — e.g. map to `i0e` / `i1e` |
 | `double` / `float` / `decimal` | none | a custom converter — e.g. a scaled integer or a byte string |
 | `DateTime` / `DateTimeOffset` / `DateOnly` / `TimeOnly` | none | a custom converter — e.g. Unix seconds as an integer |
 | `null` values | none | omitted on write by design |
@@ -58,13 +60,13 @@ The library never invents a lossy representation on your behalf; the choice of e
 | Edit one dictionary entry and write the document back | <xref:Bodu.Text.Bencode.Nodes.BencodeNode> |
 | Carry raw hashes alongside text fields | `byte[]` members — they map straight to byte strings |
 | Produce deterministic bytes for hashing or signing | the canonical writer — output order is independent of member order |
-| Represent a `bool` or timestamp on the wire | a [custom converter](../../guides/serialization/converters.md) |
+| Represent a `bool` or timestamp on the wire | a [custom converter](../../../guides/serialization/bencode/converters.md) |
 
 ## Where to go next
 
-- **[Bodu serializers introduction](index.md)** — the shared shape: tiers, converters, attributes, callbacks, naming policies.
-- **[Core concepts](concepts.md)** — the family vocabulary, including the full Bencode value-mapping table.
+- **[Bodu serializers introduction](../index.md)** — the shared shape: tiers, converters, attributes, callbacks, naming policies.
+- **[Core concepts](concepts.md)** — the Bencode vocabulary, including the full Bencode value-mapping table.
 - **[Getting started](getting-started.md)** — install and the first round trip.
-- **[Using Bencode](../../guides/serialization/bencode.md)** — worked patterns: type mapping, converters for unrepresentable kinds, both DOMs, raw tokens.
-- **[BEP 3 compliance review](../../reviews/bencode-bep3-compliance-review.md)** — the standards audit behind the canonical-output claims.
+- **[Using Bencode](../../../guides/serialization/bencode/using.md)** — worked patterns: type mapping, converters for unrepresentable kinds, both DOMs, raw tokens.
+- **[BEP 3 compliance review](../../../reviews/bencode-bep3-compliance-review.md)** — the standards audit behind the canonical-output claims.
 - **API reference** — <xref:Bodu.Text.Bencode>.

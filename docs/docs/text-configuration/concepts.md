@@ -191,8 +191,8 @@ section.
 | `TreatAsLiteral` (default) | The string `"unset"` is preserved verbatim in the view. |
 | `RemoveEffectiveValue` | The key is removed from the working dictionary; it does not appear in the view. |
 
-`Bodu` and `Strict` profiles default to `TreatAsLiteral` so the literal text is not silently dropped. The
-`EditorConfigCompatible` profile defaults to `RemoveEffectiveValue` to match the specification.
+`Bodu` and `Relaxed` profiles default to `TreatAsLiteral` so the literal text is not silently dropped. The
+`EditorConfigCompatible` and `Strict` profiles default to `RemoveEffectiveValue`.
 
 ## Typed accessors
 

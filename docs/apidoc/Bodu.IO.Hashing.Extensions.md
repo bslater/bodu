@@ -11,7 +11,7 @@ uid: Bodu.IO.Hashing.Extensions
 ## Key types
 
 - <xref:Bodu.IO.Hashing.Checksums.CrcLookupTableBuilder> — builds the precomputed lookup table for a given CRC standard. The same table is cached process-wide by <xref:Bodu.IO.Hashing.Checksums.CrcLookupTableCache>; reach for the builder directly only when you need to compute a table for a non-standard CRC variant.
-- <xref:Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions> — convenience methods on `System.IO.Hashing.NonCryptographicHashAlgorithm` — `GetCurrentHashAsUInt32`, `GetCurrentHashAsUInt64`, stream / span overloads, and helpers that fit between the BCL surface and the Bodu hash algorithms.
+- <xref:Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions> — convenience methods on `System.IO.Hashing.NonCryptographicHashAlgorithm` — `ComputeHash`, `AppendData`, and `VerifyHash` / `TryVerifyHash` (with stream-based async overloads) that fit between the BCL surface and the Bodu hash algorithms.
 
 ## Example
 
@@ -19,11 +19,10 @@ uid: Bodu.IO.Hashing.Extensions
 using Bodu.IO.Hashing;
 using Bodu.IO.Hashing.Extensions;
 
-var crc = new Crc(CrcStandard.Crc32);
-crc.Append("123456789"u8);
+var crc = new Crc(CrcStandard.CRC32_ISOHDLC);
 
-// Convenience accessor instead of materialising bytes.
-uint value = crc.GetCurrentHashAsUInt32();
+// ComputeHash extension: one-shot digest over a span, no manual Append / reset.
+byte[] digest = crc.ComputeHash("123456789"u8);
 ```
 
 ## Notes
