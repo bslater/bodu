@@ -223,9 +223,9 @@ The parsed model retains comments, ordering, and whitespace, so a `Parse` → mu
 
 → **[Introduction](formats/index.md)** · **[Getting started](formats/getting-started.md)** · **[Guides](../guides/formats/index.md)**
 
-### Bodu.Text.Bencode and Bodu.Text.Toml (serializers)
+### Bodu.Text.Bencode, Bodu.Text.Toml, and Bodu.Text.Yaml (serializers)
 
-**Bodu.Text.Bencode** and **Bodu.Text.Toml** are two self-contained libraries that map your own types to and from a format. They are deliberate twins — the same shape, member for member — and each ships a serializer, two document object models, and a low-level `Utf8…Reader` / `Utf8…Writer` pair.
+**Bodu.Text.Bencode**, **Bodu.Text.Toml**, and **Bodu.Text.Yaml** are three self-contained libraries that map your own types to and from a format. They share an architecture and a `System.Text.Json`-aligned shape, and each ships a serializer, two document object models, and a low-level `Utf8…Reader` / `Utf8…Writer` pair.
 
 ```csharp
 using Bodu.Text.Toml;
@@ -240,9 +240,9 @@ string toml = TomlSerializer.Serialize(new ServerConfig { Host = "localhost", Po
 ServerConfig config = TomlSerializer.Deserialize<ServerConfig>(toml);
 ```
 
-Swap `Toml` for `Bencode` (and `string` for `byte[]`) for the Bencode equivalent. Bencode (BEP 3) object mapping lives here, not in `Bodu.Text.Formats`.
+Swap `Toml` for `Bencode` (and `string` for `byte[]`) for the Bencode equivalent, or for `Yaml` for a YAML document. Bencode (BEP 3) object mapping lives here, not in `Bodu.Text.Formats`.
 
-→ **[Introduction](serialization/index.md)** · **[Bencode](serialization/bencode.md)** · **[TOML](serialization/toml.md)** · **[Getting started](serialization/getting-started.md)** · **[Guides](../guides/serialization/index.md)**
+→ **[Introduction](serialization/index.md)** · **[Bencode](serialization/bencode/index.md)** · **[TOML](serialization/toml/index.md)** · **[YAML](serialization/yaml/index.md)** · **[Guides](../guides/serialization/index.md)**
 
 ## Configuration
 
@@ -374,5 +374,5 @@ Open with `buffered: false` to read sectors on demand for large files; `OpenStre
 
 - **[Introduction](introduction.md)** — what each library is for and how they fit together.
 - **Topic overviews:** [Core Foundations](topics/core-foundations.md) · [Hashing & Cryptography](topics/hashing-and-cryptography.md) · [Globalization & Calendars](topics/globalization-and-calendars.md) · [Text & Serialization](topics/text-and-serialization.md) · [Configuration](topics/configuration.md) · [Numerics & Financial](topics/numerics-and-financial.md).
-- **Library introductions:** [Bodu.Core](core/index.md) · [Bodu.IO.Hashing](io-hashing/index.md) · [Bodu.Security.Cryptography](cryptography/index.md) · [Bodu.Globalization.Calendar](calendar/index.md) · [Bodu.Text.Encoding](text-encoding/index.md) · [Bodu.Text.Formats](formats/index.md) · [Bodu.Text.Bencode](serialization/bencode.md) · [Bodu.Text.Toml](serialization/toml.md) · [Bodu.Text.Configuration](text-configuration/index.md) · [Bodu.Extensions.Configuration.Text](extensions-configuration-text/index.md) · [Bodu.Text](text/index.md) · [Bodu.Numerics](numerics/index.md) · [Bodu.Financial](financial/index.md).
+- **Library introductions:** [Bodu.Core](core/index.md) · [Bodu.IO.Hashing](io-hashing/index.md) · [Bodu.Security.Cryptography](cryptography/index.md) · [Bodu.Globalization.Calendar](calendar/index.md) · [Bodu.Text.Encoding](text-encoding/index.md) · [Bodu.Text.Formats](formats/index.md) · [Bodu.Text.Bencode](serialization/bencode/index.md) · [Bodu.Text.Toml](serialization/toml/index.md) · [Bodu.Text.Yaml](serialization/yaml/index.md) · [Bodu.Text.Configuration](text-configuration/index.md) · [Bodu.Extensions.Configuration.Text](extensions-configuration-text/index.md) · [Bodu.Text](text/index.md) · [Bodu.Numerics](numerics/index.md) · [Bodu.Financial](financial/index.md).
 - **API references:** [Bodu.Collections.Generic](xref:Bodu.Collections.Generic) · [Bodu.IO.Hashing](xref:Bodu.IO.Hashing) · [Bodu.Security.Cryptography](xref:Bodu.Security.Cryptography) · [Bodu.Globalization.Calendar](xref:Bodu.Globalization.Calendar) · [Bodu.Text](xref:Bodu.Text) · [Bodu.Numerics](xref:Bodu.Numerics) · [Bodu.Financial](xref:Bodu.Financial).

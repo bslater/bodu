@@ -4,7 +4,7 @@ title: Serialization callbacks
 
 # Serialization callbacks
 
-Both serializers let a type participate in its own serialization lifecycle by implementing one or more callback interfaces. Each format exposes the same four hooks — TOML as <xref:Bodu.Text.Toml.Serialization.ITomlOnSerializing>, <xref:Bodu.Text.Toml.Serialization.ITomlOnSerialized>, <xref:Bodu.Text.Toml.Serialization.ITomlOnDeserializing>, and <xref:Bodu.Text.Toml.Serialization.ITomlOnDeserialized>; Bencode as the like-named `IBencodeOn…` interfaces. The serializer detects the interfaces on the value's type and invokes them at the matching point in the pipeline — no registration or attribute is required.
+The TOML serializer lets a type participate in its own serialization lifecycle by implementing one or more callback interfaces. TOML exposes four hooks — <xref:Bodu.Text.Toml.Serialization.ITomlOnSerializing>, <xref:Bodu.Text.Toml.Serialization.ITomlOnSerialized>, <xref:Bodu.Text.Toml.Serialization.ITomlOnDeserializing>, and <xref:Bodu.Text.Toml.Serialization.ITomlOnDeserialized>. The serializer detects the interfaces on the value's type and invokes them at the matching point in the pipeline — no registration or attribute is required. The sibling libraries ([Bodu.Text.Bencode](../bencode/index.md), [Bodu.Text.Yaml](../yaml/index.md)) expose the same hooks with their own prefix.
 
 | Hook | Runs | Typical use |
 |---|---|---|
@@ -12,8 +12,6 @@ Both serializers let a type participate in its own serialization lifecycle by im
 | `OnSerialized` | After the value's table/dictionary has been closed. | Release or restore state; count or log completed writes. |
 | `OnDeserializing` | After the instance is constructed, before any member is assigned. | Establish defaults that survive omitted keys. |
 | `OnDeserialized` | After every member and any extension data has been assigned. | Validate or finalize the materialized object. |
-
-Each pattern below shows the TOML form; the Bencode form is identical with the `Bencode` prefix.
 
 ## Pattern 1 — Apply defaults that survive omitted keys
 
@@ -68,9 +66,6 @@ public sealed class Snapshot : ITomlOnSerializing
         SavedAt = DateTime.UtcNow;
 }
 ```
-
-> [!NOTE]
-> Bencode has no native date-time kind, so the Bencode form of this pattern stores a `long` instead — for example `SavedAt = DateTimeOffset.UtcNow.ToUnixTimeSeconds();`.
 
 ## Pattern 4 — Observe a completed write
 
@@ -150,7 +145,7 @@ Two consequences worth noting. On read, the member *converters* run before `OnDe
 
 ## Interplay with custom converters
 
-The four hooks are invoked by the object-mapping converter — the catch-all that writes a plain class or struct as a table/dictionary. A type claimed by a *custom* converter (via `[TomlConverter]` / `[BencodeConverter]` or `options.Converters`) bypasses that path entirely: the serializer hands the value to your converter and never enters the member-mapping phase, so **none of the callbacks fire for that type, even when it implements the interfaces**. If a converter-handled type needs lifecycle behavior, perform it inside the converter's `Read` / `Write`.
+The four hooks are invoked by the object-mapping converter — the catch-all that writes a plain class or struct as a table/dictionary. A type claimed by a *custom* converter (via `[TomlConverter]` or `options.Converters`) bypasses that path entirely: the serializer hands the value to your converter and never enters the member-mapping phase, so **none of the callbacks fire for that type, even when it implements the interfaces**. If a converter-handled type needs lifecycle behavior, perform it inside the converter's `Read` / `Write`.
 
 Member-level converters and callbacks compose, however: a callback-bearing type whose *members* use custom converters still fires all four hooks — the custom converters simply do the per-member reading and writing in phases 1 and 4 above.
 
@@ -161,13 +156,11 @@ Member-level converters and callbacks compose, however: a callback-bearing type 
 - Within one instance the order is always construct → `OnDeserializing` → member assignment → `OnDeserialized`, and `OnSerializing` → member writing → `OnSerialized`.
 - The hooks pair naturally: state established in `OnSerializing` can be torn down in `OnSerialized`, and defaults set in `OnDeserializing` can be validated in `OnDeserialized`.
 
-The same four hooks with the same semantics exist for Bencode: <xref:Bodu.Text.Bencode.Serialization.IBencodeOnSerializing>, <xref:Bodu.Text.Bencode.Serialization.IBencodeOnSerialized>, <xref:Bodu.Text.Bencode.Serialization.IBencodeOnDeserializing>, and <xref:Bodu.Text.Bencode.Serialization.IBencodeOnDeserialized>.
-
 ## See also
 
 - [Mapping attributes](attributes.md) — `[TomlRequired]` and friends; declarative presence checks that the callbacks complement with value validation.
 - [Writing converters](converters.md) — the customization seam that *replaces* the object mapping (and with it, the callbacks) for a type.
-- [Using TOML](toml.md) and [Using Bencode](bencode.md) — the per-format walk-throughs, including the error-handling pattern that catches the exception thrown from `OnDeserialized`.
-- [Core concepts](../../docs/serialization/concepts.md) — where the callbacks sit in the family vocabulary.
-- [Text & Serialization guides](../topics/text-and-serialization.md) and the [topic overview](../../docs/topics/text-and-serialization.md).
+- [Using TOML](using.md) — the format walk-through, including the error-handling pattern that catches the exception thrown from `OnDeserialized`.
+- [Core concepts](../../../docs/serialization/toml/concepts.md) — where the callbacks sit in the family vocabulary.
+- [Text & Serialization guides](../../topics/text-and-serialization.md) and the [topic overview](../../../docs/topics/text-and-serialization.md).
 - API reference — <xref:Bodu.Text.Toml.Serialization.ITomlOnSerializing>, <xref:Bodu.Text.Toml.Serialization.ITomlOnSerialized>, <xref:Bodu.Text.Toml.Serialization.ITomlOnDeserializing>, <xref:Bodu.Text.Toml.Serialization.ITomlOnDeserialized>.

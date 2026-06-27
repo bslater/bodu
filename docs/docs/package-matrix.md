@@ -18,9 +18,9 @@ For the high-level shape of each library, follow the **Intro** link in the table
 | **Calendar runtime** | `Bodu.Globalization.Calendar` | Stable | `Bodu.Core` | [Bodu.Globalization.Calendar](calendar/index.md) | [Get started](calendar/getting-started.md) |
 | **Text encoding** | `Bodu.Text.Encoding` | Stable | `Bodu.Core` | [Bodu.Text.Encoding](text-encoding/index.md) | [Get started](text-encoding/getting-started.md) |
 | **Text formats** | `Bodu.Text.Formats` | Stable | `Bodu.Core` | [Bodu.Text.Formats](formats/index.md) | [Get started](formats/getting-started.md) |
-| **TOML serializer** | `Bodu.Text.Toml` | Stable | `Bodu.Core` | [Bodu serializers](serialization/index.md) | [Get started](serialization/getting-started.md) |
-| **Bencode serializer** | `Bodu.Text.Bencode` | Stable | `Bodu.Core` | [Bodu serializers](serialization/index.md) | [Get started](serialization/getting-started.md) |
-| **YAML serializer** | `Bodu.Text.Yaml` | Preview | `Bodu.Core` | [Bodu serializers](serialization/index.md) | [Get started](serialization/getting-started.md) |
+| **TOML serializer** | `Bodu.Text.Toml` | Stable | `Bodu.Core` | [Bodu.Text.Toml](serialization/toml/index.md) | [Get started](serialization/toml/getting-started.md) |
+| **Bencode serializer** | `Bodu.Text.Bencode` | Stable | `Bodu.Core` | [Bodu.Text.Bencode](serialization/bencode/index.md) | [Get started](serialization/bencode/getting-started.md) |
+| **YAML serializer** | `Bodu.Text.Yaml` | Preview | `Bodu.Core` | [Bodu.Text.Yaml](serialization/yaml/index.md) | [Get started](serialization/yaml/getting-started.md) |
 | **Text configuration** | `Bodu.Text.Configuration` | Stable | `Bodu.Core`, `Bodu.Text.Formats` | [Bodu.Text.Configuration](text-configuration/index.md) | [Get started](text-configuration/getting-started.md) |
 | **Configuration bridge** | `Bodu.Extensions.Configuration.Text` | Stable | `Bodu.Text.Configuration`, `Microsoft.Extensions.Configuration` | [Bodu.Extensions.Configuration.Text](extensions-configuration-text/index.md) | [Get started](extensions-configuration-text/getting-started.md) |
 | **Numerics** | `Bodu.Numerics` | Stable | `Bodu.Core` | [Bodu.Numerics](numerics/index.md) | [Get started](numerics/getting-started.md) |

@@ -142,13 +142,14 @@ A family of focused primary libraries organized into **seven topics** — alongs
 </div>
 
 <div class="bodu-card">
-  <img src="images/hero-toml.svg" alt="Bodu.Text.Bencode and Bodu.Text.Toml" />
-  <h3>Bodu.Text.Bencode &amp; Bodu.Text.Toml</h3>
-  <p>Two self-contained serializers that map your own types to and from a format — deliberate twins with the same shape, member for member. Each ships a <code>…Serializer</code>, a mutable <code>…Node</code> and a read-only <code>…Document</code> DOM, and a low-level <code>Utf8…Reader</code> / <code>Utf8…Writer</code> pair, with the full converter / attribute / naming-policy surface. <strong>Bencode</strong> covers BitTorrent BEP 3; <strong>TOML</strong> covers v1.0.0 / v1.1.0.</p>
+  <img src="images/hero-yaml.svg" alt="Bodu.Text.Bencode, Bodu.Text.Toml, and Bodu.Text.Yaml" />
+  <h3>Bodu serializers — Bencode, TOML &amp; YAML</h3>
+  <p>Three self-contained serializers that map your own types to and from a format — a shared architecture and <code>System.Text.Json</code>-aligned shape. Each ships a <code>…Serializer</code>, a mutable <code>…Node</code> and a read-only <code>…Document</code> DOM, and a low-level <code>Utf8…Reader</code> / <code>Utf8…Writer</code> pair. <strong>Bencode</strong> covers BitTorrent BEP 3; <strong>TOML</strong> covers v1.0.0 / v1.1.0; <strong>YAML</strong> the 1.2 core schema with block and flow collections, anchors, and multi-document streams.</p>
   <div class="bodu-card-links">
     <a href="docs/serialization/index.md">Introduction</a>
-    <a href="docs/serialization/bencode.md">Bencode</a>
-    <a href="docs/serialization/toml.md">TOML</a>
+    <a href="docs/serialization/bencode/index.md">Bencode</a>
+    <a href="docs/serialization/toml/index.md">TOML</a>
+    <a href="docs/serialization/yaml/index.md">YAML</a>
     <a href="guides/serialization/index.md">Guides</a>
     <a href="xref:Bodu.Text.Toml">API reference</a>
   </div>

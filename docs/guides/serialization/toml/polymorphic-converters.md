@@ -7,9 +7,7 @@ title: Polymorphic converters
 A converter factory dispatches over a *family* of types rather than a
 single type. Where a [hand-written converter](converters.md) handles one
 fixed `T`, a `TomlConverterFactory`
-(<xref:Bodu.Text.Toml.Serialization.TomlConverterFactory>) or
-`BencodeConverterFactory`
-(<xref:Bodu.Text.Bencode.Serialization.BencodeConverterFactory>) decides
+(<xref:Bodu.Text.Toml.Serialization.TomlConverterFactory>) decides
 *at resolution time* whether it applies to a requested type and builds the
 right concrete converter for it. This is the mechanism behind two common
 shapes:
@@ -21,8 +19,9 @@ shapes:
 
 This guide builds on [Writing converters](converters.md); read that first
 for the single-type `Read` / `Write` pattern, the precedence ladder, and
-the statelessness rules. Everything here is TOML, but the Bencode shape is
-identical with the `Bencode` prefix and that format's reader/writer pair.
+the statelessness rules. Everything here is TOML; the sibling libraries
+([Bodu.Text.Bencode](../bencode/index.md), [Bodu.Text.Yaml](../yaml/index.md))
+follow the identical shape with their own prefix and reader/writer pair.
 
 ## How a factory participates in resolution
 
@@ -248,7 +247,7 @@ Three ordering consequences are worth keeping in mind:
   (`Money<Usd>`, `Money<Eur>`, …), each cached independently on the
   options.
 - **Register before first use.** As with all converters, a
-  `…SerializerOptions` instance freezes the first time it is used (or via
+  `TomlSerializerOptions` instance freezes the first time it is used (or via
   `MakeReadOnly()`); add factories before then, and reuse one options
   instance so the resolution and reflection work is paid once.
 
@@ -256,6 +255,6 @@ Three ordering consequences are worth keeping in mind:
 
 - [Writing converters](converters.md) — the single-type `Read` / `Write` pattern, the precedence ladder, and converter statelessness.
 - [Built-in converter catalog](builtin-converters.md) — the families that already have a factory (nullable, enum, collection, dictionary) and their wire forms.
-- [Mapping attributes](attributes.md) — `[…Converter]` placement and the precedence ladder in detail.
-- API reference — <xref:Bodu.Text.Toml.Serialization.TomlConverterFactory>, <xref:Bodu.Text.Bencode.Serialization.BencodeConverterFactory>, <xref:Bodu.Text.Toml.Serialization.TomlConverter`1>, <xref:Bodu.Text.Bencode.Serialization.BencodeConverter`1>.
-- **[Text & Serialization guides](../topics/text-and-serialization.md)** — every guide in this topic.
+- [Mapping attributes](attributes.md) — `[TomlConverter]` placement and the precedence ladder in detail.
+- API reference — <xref:Bodu.Text.Toml.Serialization.TomlConverterFactory>, <xref:Bodu.Text.Toml.Serialization.TomlConverter`1>.
+- **[Text & Serialization guides](../../topics/text-and-serialization.md)** — every guide in this topic.

@@ -69,4 +69,6 @@ The serializers concentrate configuration on a single reusable object: `BencodeS
 |---|---|
 | `Bodu.Text.Encoding` | [Core concepts](../text-encoding/concepts.md) — alphabet, variant, terminal quantum, padding, shortcut, decoration. |
 | `Bodu.Text.Formats` | [Core concepts](../formats/concepts.md) — self-framing format, value model, codec, round-trip rules, format exception. |
-| `Bodu.Text.Bencode` / `Bodu.Text.Toml` | [Core concepts](../serialization/concepts.md) — the serializer, options, converters and resolution, the DOMs, value mapping, errors. |
+| `Bodu.Text.Bencode` | [Core concepts](../serialization/bencode/concepts.md) — the serializer, options, converters and resolution, the DOMs, value mapping, errors. |
+| `Bodu.Text.Toml` | [Core concepts](../serialization/toml/concepts.md) — the serializer, options, converters and resolution, the DOMs, value mapping, errors. |
+| `Bodu.Text.Yaml` | [Core concepts](../serialization/yaml/concepts.md) — the serializer, options, converters and resolution, the DOMs, value mapping, multi-document streams, errors. |

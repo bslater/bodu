@@ -446,31 +446,32 @@ invariant enforcement and `Try*` overloads.
 
 </div>
 
-### Bodu.Text.Bencode and Bodu.Text.Toml (serializers)
+### Bodu.Text.Bencode, Bodu.Text.Toml, and Bodu.Text.Yaml (serializers)
 
-Two self-contained serializers that map your own types to and from a format.
-Deliberate twins — the same shape, member for member — for Bencode (BEP 3) and TOML.
+Three self-contained serializers that map your own types to and from a format.
+They share an architecture and a `System.Text.Json`-aligned shape — what you learn
+for one transfers to the next — and each has its own guide set.
 
 <div class="bodu-cards">
 
 <div class="bodu-card">
   <h3><a href="serialization/index.md">Overview</a></h3>
-  <p>The two libraries and the three tiers (serializer, DOMs, reader/writer).</p>
+  <p>The three libraries, the shared tiers (serializer, DOMs, reader/writer), and how to choose a format.</p>
 </div>
 
 <div class="bodu-card">
-  <h3><a href="serialization/toml.md">Using TOML</a></h3>
-  <p><code>TomlSerializer</code>, the type mapping, spec-version selection, the mutable and read-only DOMs, and streams.</p>
+  <h3><a href="serialization/toml/index.md">TOML guides</a></h3>
+  <p><code>TomlSerializer</code>, the type mapping, spec-version selection, both DOMs, converters, callbacks, and the built-in catalog.</p>
 </div>
 
 <div class="bodu-card">
-  <h3><a href="serialization/bencode.md">Using Bencode</a></h3>
-  <p><code>BencodeSerializer</code>, byte strings, canonical key ordering, the DOMs, and the kinds Bencode cannot represent.</p>
+  <h3><a href="serialization/bencode/index.md">Bencode guides</a></h3>
+  <p><code>BencodeSerializer</code>, byte strings, canonical key ordering, both DOMs, and the kinds Bencode cannot represent.</p>
 </div>
 
 <div class="bodu-card">
-  <h3><a href="serialization/converters.md">Writing converters</a></h3>
-  <p>Custom shapes with <code>BencodeConverter&lt;T&gt;</code> / <code>TomlConverter&lt;T&gt;</code>, factories, and converter resolution order.</p>
+  <h3><a href="serialization/yaml/index.md">YAML guides</a></h3>
+  <p><code>YamlSerializer</code>, the 1.2 core schema, both DOMs, multi-document streams, <code>[Yaml…]</code> attributes, and custom converters.</p>
 </div>
 
 </div>

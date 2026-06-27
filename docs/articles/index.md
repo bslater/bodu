@@ -42,7 +42,7 @@ Each top-level namespace has a landing page that introduces its purpose, lists i
 - **[Bodu.Security.Cryptography guides](../guides/cryptography/index.md)** — encryption basics, cipher block modes, AEAD, padding, composing primitives, keyed and cryptographic hashing, the ASCON family.
 - **[Bodu.Globalization.Calendar guides](../guides/calendar/index.md)** — `NotableDateService`, built-in date-calculation algorithms, rule authoring (XML / JSON / [fluent builder](../guides/calendar/notable-date-builder.md)), working-day arithmetic, and [data packs](../guides/calendar/data-packs.md).
 - **[Bodu.Text.Formats guides](../guides/formats/index.md)** — the [Delimited](../guides/formats/delimited.md) (CSV / TSV), [DotEnv](../guides/formats/dotenv.md), and [INI](../guides/formats/ini.md) codecs, and [streaming](../guides/formats/streaming.md) support.
-- **[Bodu.Text.Bencode & Bodu.Text.Toml serializer guides](../guides/serialization/index.md)** — [Using TOML](../guides/serialization/toml.md), [Using Bencode](../guides/serialization/bencode.md), and [writing converters](../guides/serialization/converters.md).
+- **[Bodu serializer guides](../guides/serialization/index.md)** — [Using TOML](../guides/serialization/toml/using.md), [Using Bencode](../guides/serialization/bencode/using.md), [Using YAML](../guides/serialization/yaml/using.md), and writing converters.
 - **[Bodu.Numerics guides](../guides/numerics/index.md)** — [`Fraction<T>`](../guides/numerics/fraction.md), [`Interval<T>`](../guides/numerics/interval.md).
 - **[Bodu.Financial guides](../guides/financial/index.md)** — [`Money<TCurrency>`](../guides/financial/money.md).
 

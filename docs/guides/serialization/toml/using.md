@@ -225,9 +225,8 @@ catch (TomlSerializationException ex)
 
 ## See also
 
-- [Using Bencode](bencode.md) — the twin library; every pattern above transfers with the `Bencode` prefix.
 - [Mapping attributes](attributes.md), [Writing converters](converters.md), [Serialization callbacks](callbacks.md), [Built-in converter catalog](builtin-converters.md) — the customization guides.
-- [Bodu.Text.Toml introduction](../../docs/serialization/toml.md) — what is specific to the TOML format, including the value model and spec versions.
-- [Bodu serializers introduction](../../docs/serialization/index.md) and [core concepts](../../docs/serialization/concepts.md) — the family shape and vocabulary.
-- [Text & Serialization guides](../topics/text-and-serialization.md) and the [topic overview](../../docs/topics/text-and-serialization.md).
+- [Bodu.Text.Toml introduction](../../../docs/serialization/toml/index.md) — what is specific to the TOML format, including the value model and spec versions.
+- [Bodu serializers introduction](../../../docs/serialization/index.md) and [core concepts](../../../docs/serialization/toml/concepts.md) — the family shape and the TOML vocabulary.
+- [Text & Serialization guides](../../topics/text-and-serialization.md) and the [topic overview](../../../docs/topics/text-and-serialization.md).
 - API reference — <xref:Bodu.Text.Toml.TomlSerializer>, <xref:Bodu.Text.Toml.TomlSerializerOptions>, <xref:Bodu.Text.Toml.Nodes.TomlNode>, <xref:Bodu.Text.Toml.Document.TomlDocument>.
