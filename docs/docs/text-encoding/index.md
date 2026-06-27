@@ -79,7 +79,7 @@ and [Bech32](../../guides/text-encoding/bech32.md).
 | Base32 | <xref:Bodu.Text.Encoding.Base32Variant> | Standard (RFC 4648 §6), HexExtended (RFC 4648 §7), Crockford, ZBase32 |
 | Base64 | <xref:Bodu.Text.Encoding.Base64Variant> | Standard (RFC 4648 §4), UrlSafe (RFC 4648 §5), Mime (RFC 2045 with 76-char wrap) |
 | Base58 | <xref:Bodu.Text.Encoding.Base58Variant> | BitcoinFlickr (default), Ripple |
-| Base85 | <xref:Bodu.Text.Encoding.Base85Variant> | Ascii85 (Adobe), Z85 (RFC 32 ZeroMQ) |
+| Base85 | <xref:Bodu.Text.Encoding.Base85Variant> | Ascii85 (Adobe), Z85 (RFC 32 ZeroMQ), Git (Git `base85.c`) |
 | Base45 | (none) | RFC 9285 |
 | Base62 | (none) | GMP-style (`0-9 A-Z a-z`) |
 | Bech32 | <xref:Bodu.Text.Encoding.Bech32Encoding> | Bech32 (BIP 173, default), Bech32m (BIP 350) |
@@ -96,6 +96,9 @@ and [Bech32](../../guides/text-encoding/bech32.md).
 | "Validate a UUID-like hex string" | `Base16.IsValid(s)` |
 | "Stream-decode hex from a network buffer" | `Base16.DecodeFromUtf8(buffer, dst, out int read, out int wrote, BaseFormatStyles.None, isFinalBlock: false)` |
 | "Pick the encoding from configuration at runtime" | `var enc = BinaryEncodings.Get(configName); enc.Encode(bytes);` |
+| "Encode a MIME message body" | `QuotedPrintable.Encode(body)` |
+| "Escape a value for a URL query" | `PercentEncoding.EncodeString(value, mode: PercentEncodingMode.UriComponent)` |
+| "Decode an `application/x-www-form-urlencoded` field" | `PercentEncoding.DecodeString(field, mode: PercentEncodingMode.FormUrlEncoded)` |
 
 ## Main types
 
@@ -107,12 +110,22 @@ and [Bech32](../../guides/text-encoding/bech32.md).
 | <xref:Bodu.Text.Encoding.Base32> | Base32 — 5 bits per symbol; four variants (Standard, HexExtended, Crockford, Z-Base32); padding control |
 | <xref:Bodu.Text.Encoding.Base64> | Base64 — 6 bits per symbol; three variants (Standard, UrlSafe, Mime); delegates inner conversion to BCL for SIMD speed |
 | <xref:Bodu.Text.Encoding.Base58> | Base58 — non-power-of-two radix using big-integer arithmetic; preserves leading zeros |
-| <xref:Bodu.Text.Encoding.Base85> | Base85 — 4-byte block → 5 chars; Ascii85 with <c>z</c> shortcut and partial groups; Z85 with 4-byte alignment |
+| <xref:Bodu.Text.Encoding.Base85> | Base85 — 4-byte block → 5 chars; Ascii85 with <c>z</c> shortcut and partial groups; Z85 with 4-byte alignment; Git binary-patch alphabet (compact and padded) |
 | <xref:Bodu.Text.Encoding.Base45> | Base45 — RFC 9285; 2 bytes → 3 chars; QR-code Alphanumeric-mode alphabet; no padding |
 | <xref:Bodu.Text.Encoding.Base62> | Base62 — GMP-style `0-9 A-Z a-z`; big-integer arithmetic; preserves leading zeros |
 | <xref:Bodu.Text.Encoding.Bech32> | Bech32 / Bech32m — HRP + `1` separator + 5-bit data + 6-symbol checksum; scheme via <xref:Bodu.Text.Encoding.Bech32Encoding> |
 | <xref:Bodu.Text.Encoding.Base58Check> | Base58 plus the Bitcoin four-byte double-SHA-256 checksum, verified on decode |
 | <xref:Bodu.Text.Encoding.Base64Url> | RFC 4648 §5 URL-safe Base64 as a first-class type; padding omitted by default; UTF-8 path |
+
+### Escape-based encodings
+
+These escape a *subset* of octets (`=HH` or `%HH`) while leaving most printable ASCII literal, so their output is
+content-dependent and mode-driven. They are intentionally **not** <xref:Bodu.Text.Encoding.IBinaryEncoding> members.
+
+| Type | Purpose |
+|---|---|
+| <xref:Bodu.Text.Encoding.QuotedPrintable> | MIME Quoted-Printable body encoding (RFC 2045 §6.7); binary / text mode; 76-column soft wrapping; strict-vs-relaxed decode |
+| <xref:Bodu.Text.Encoding.PercentEncoding> | URI / form percent-encoding (RFC 3986 §2.1 + WHATWG form rules); UriComponent / PathSegment / Query / FormUrlEncoded modes; string helpers |
 
 ### Runtime selection
 
@@ -136,5 +149,6 @@ and [Bech32](../../guides/text-encoding/bech32.md).
 - **[Bodu.Text.Encoding guides](../../guides/text-encoding/index.md)** — using each encoding, choosing variants, streaming, the `IBinaryEncoding` interface.
 - **[Bodu.Text.Encoding API reference](xref:Bodu.Text.Encoding)** — full type-by-type docs.
 - **Special-purpose guides** — [Base45](../../guides/text-encoding/base45.md) (QR codes), [Base62](../../guides/text-encoding/base62.md) (compact IDs), [Bech32](../../guides/text-encoding/bech32.md) (checksummed addresses).
+- **Escape-encoding guides** — [Quoted-Printable](../../guides/text-encoding/quoted-printable.md) (MIME bodies), [Percent-encoding](../../guides/text-encoding/percent-encoding.md) (URIs and forms).
 - **For structured document formats** (Bencode, INI, TOML) with their own self-describing grammar, see [Bodu.Text.Formats](../formats/index.md).
 - **[Text & Serialization topic](../topics/text-and-serialization.md)** — this package alongside its siblings Bodu.Text.Formats and the Bencode / TOML serializers.
