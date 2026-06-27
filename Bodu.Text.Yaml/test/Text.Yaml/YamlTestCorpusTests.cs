@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlTestCorpusTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -16,6 +16,22 @@ namespace Bodu.Text.Yaml;
 /// classification: supported-valid vectors parse and match their JSON expectation, supported-invalid and
 /// profile-unsupported vectors are rejected, and the governance suite keeps the classification exhaustive and pinned.
 /// </summary>
+/// <remarks>
+/// <para>
+/// The YAML conformance corpus is vendored as a Git submodule and is not populated by a normal source checkout unless
+/// submodules are explicitly initialised.
+/// </para>
+/// <para>
+/// From the repository root, run:
+/// </para>
+/// <code>
+/// git submodule update --init --recursive Bodu.Text.Yaml/test/yaml-test-suite
+/// </code>
+/// <para>
+/// This fetches the pinned <c>yaml/yaml-test-suite</c> revision used by the tests. Do not use <c>--remote</c> unless
+/// intentionally advancing and reclassifying the pinned corpus.
+/// </para>
+/// </remarks>
 [TestClass]
 public sealed partial class YamlTestCorpusTests
 {
