@@ -30,7 +30,7 @@
   </PropertyGroup>
 
   <ItemGroup Condition="'$(BoduCodeStyleAnalyzers)' == 'true'">
-    <PackageReference Include="Bodu.CodeStyle.XmlDocumentation" Version="1.0.0" PrivateAssets="all" />
+    <PackageReference Include="Bodu.CodeStyle.XmlDocumentation" PrivateAssets="all" />
   </ItemGroup>
 
   <!--

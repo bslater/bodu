@@ -1,0 +1,95 @@
+<Project>
+
+  <!--
+    Central Package Management for the bodu.slnx solution. Every external package version lives here
+    as a <PackageVersion>; project files and the shared build logic (Directory.Build.targets and
+    bld/Analyzers.props) carry version-less <PackageReference> entries that inherit the version from
+    the matching <PackageVersion> below. This is the single place a dependency version changes, and
+    it removes the drift that arose while the same package was pinned independently across many
+    csproj files — most visibly the Microsoft.Extensions.* family, which had spread across the
+    8.0.0 / 8.0.1 / 8.0.2 patch levels. Where a package was pinned at more than one version, the
+    highest is taken below.
+
+    The Bodu.CodeStyle subtree is an independent unit: it builds on its own pinned SDK
+    (Bodu.CodeStyle/global.json) and carries its own Bodu.CodeStyle/Directory.Packages.props, so it
+    does not draw from this file.
+  -->
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+
+  <!--
+    ============================================================================================
+    Runtime dependency wave.
+
+    External packages referenced by the production, benchmark, and runtime-facing test projects.
+    These move on the dependency's own release cadence, independently of the test/analyzer tooling
+    wave below.
+    ============================================================================================
+  -->
+  <ItemGroup>
+    <!-- Benchmark harness. -->
+    <PackageVersion Include="BenchmarkDotNet" Version="0.15.2" />
+
+    <!-- Data access. -->
+    <PackageVersion Include="Microsoft.Data.Sqlite" Version="8.0.11" />
+
+    <!-- Roslyn (consumed as a runtime dependency by the caching test-support surface). -->
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.8.0" />
+
+    <!-- Microsoft.Extensions.* configuration / dependency-injection / caching / HTTP family. -->
+    <PackageVersion Include="Microsoft.Extensions.Caching.Abstractions" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Caching.Memory" Version="8.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="8.0.28" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.2" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.FileExtensions" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Ini" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2" />
+    <PackageVersion Include="Microsoft.Extensions.FileProviders.Physical" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Http" Version="8.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="8.10.0" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2" />
+    <PackageVersion Include="Microsoft.Extensions.Options" Version="8.0.2" />
+    <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Primitives" Version="8.0.0" />
+
+    <!-- BCL out-of-band package. -->
+    <PackageVersion Include="System.IO.Hashing" Version="10.0.7" />
+  </ItemGroup>
+
+  <!--
+    ============================================================================================
+    Test & analyzer tooling wave.
+
+    Packages injected by the shared build logic — the Directory.Build.targets analyzer stack and
+    test harness, plus the Bodu XML-documentation analyzer from bld/Analyzers.props — together with
+    the few test projects that reference a tooling package directly. Kept separate from the runtime
+    wave so the two can be bumped independently.
+    ============================================================================================
+  -->
+  <ItemGroup>
+    <!-- Bodu's own XML-documentation analyzer (restored from the bodu-local source). -->
+    <PackageVersion Include="Bodu.CodeStyle.XmlDocumentation" Version="1.0.0" />
+
+    <!-- Source-analyzer stack (Directory.Build.targets: full coverage + formatting). -->
+    <PackageVersion Include="AsyncFixer" Version="2.1.0" />
+    <PackageVersion Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.14.15" />
+    <PackageVersion Include="Roslynator.Analyzers" Version="4.15.0" />
+    <PackageVersion Include="Roslynator.Formatting.Analyzers" Version="4.15.0" />
+    <PackageVersion Include="StyleCop.Analyzers" Version="1.1.118" />
+
+    <!-- MSTest analyzer for test projects. -->
+    <PackageVersion Include="MSTest.Analyzers" Version="4.2.2" />
+
+    <!-- Test harness (Directory.Build.targets). -->
+    <PackageVersion Include="coverlet.collector" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.5.0" />
+    <PackageVersion Include="MSTest.TestAdapter" Version="4.2.1" />
+    <PackageVersion Include="MSTest.TestFramework" Version="4.2.1" />
+  </ItemGroup>
+
+</Project>
