@@ -17,7 +17,7 @@
       host, so configuration JSON is parsed by the dependency-free ConfigJsonParser instead. This keeps the
       analyzer package self-contained (only the three Bodu assemblies need to ship).
     -->
-    <PackageReference Include="System.Collections.Immutable" Version="7.0.0" PrivateAssets="all" />
+    <PackageReference Include="System.Collections.Immutable" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
