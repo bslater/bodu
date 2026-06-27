@@ -4,14 +4,13 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Text.Json;
-
 namespace Bodu.Text.Yaml;
 
 /// <summary>
 /// Governs the integrity of the vendored conformance corpus independently of the conformance run: every vendored case
-/// is classified exactly once, every classification entry resolves to a vendored case, every classification category
-/// is recognized, and the vendored and classified counts match the pinned provenance.
+/// resolves to exactly one recognized classification, every by-name profile classification refers to a real case, the
+/// derived structure is consistent, and the case and category counts match the values pinned in
+/// <see cref="YamlTestCorpusReader" />.
 /// </summary>
 public sealed partial class YamlTestCorpusTests
 {
@@ -24,41 +23,38 @@ public sealed partial class YamlTestCorpusTests
         "SupportedParseOnly",
         "SupportedFail",
         "UnsupportedFeatureRejected",
-        "KnownGap",
     };
 
     /// <summary>
-    /// Verifies that every vendored case (a directory containing <c>in.yaml</c>) is classified exactly once.
+    /// Verifies that every vendored case (a directory containing <c>in.yaml</c>) resolves to exactly one recognized
+    /// category, leaving no case unattributed (the zero-gap conformance goal).
     /// </summary>
     [TestMethod]
-    public void Corpus_EveryCaseIsClassifiedOnce()
+    public void Corpus_EveryCaseResolvesToExactlyOneKnownCategory()
     {
-        var classified = new HashSet<string>(StringComparer.Ordinal);
-        foreach (var (id, _, _) in YamlTestCorpusReader.ReadManifest())
+        var seen = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var (id, _, category) in YamlTestCorpusReader.EnumerateCases())
         {
-            Assert.IsTrue(classified.Add(id), $"The case '{id}' is classified more than once.");
-        }
-
-        foreach (var file in Directory.EnumerateFiles(YamlTestCorpusReader.VectorRoot, "in.yaml", SearchOption.AllDirectories))
-        {
-            var id = Path.GetRelativePath(YamlTestCorpusReader.VectorRoot, Path.GetDirectoryName(file)!).Replace('\\', '/');
-            Assert.IsTrue(classified.Contains(id), $"The vendored case '{id}' is not classified in classification.tsv.");
+            Assert.IsTrue(seen.Add(id), $"The case '{id}' was enumerated more than once.");
+            Assert.IsTrue(
+                KnownCategories.Contains(category),
+                $"The case '{id}' resolved to an unrecognized category '{category}'.");
         }
     }
 
     /// <summary>
-    /// Verifies that every classification entry refers to a vendored case and uses a recognized category.
+    /// Verifies that every identifier the profile classifies by name still refers to a vendored case, so a corpus
+    /// update that renames or removes a case cannot leave a stale entry silently classifying nothing.
     /// </summary>
     [TestMethod]
-    public void Corpus_EveryManifestEntryResolvesAndIsRecognized()
+    public void Corpus_EveryProfileClassifiedIdResolvesToACase()
     {
-        foreach (var (id, _, category) in YamlTestCorpusReader.ReadManifest())
+        var corpus = new HashSet<string>(YamlTestCorpusReader.EnumerateCaseIds(), StringComparer.Ordinal);
+        foreach (var id in YamlTestCorpusReader.ProfileClassifiedIds)
         {
             Assert.IsTrue(
-                File.Exists(Path.Combine(YamlTestCorpusReader.VectorRoot, id.Replace('/', Path.DirectorySeparatorChar), "in.yaml")),
-                $"The classification lists '{id}', which is not present in the corpus submodule.");
-
-            Assert.IsTrue(KnownCategories.Contains(category), $"The case '{id}' uses an unrecognized category '{category}'.");
+                corpus.Contains(id),
+                $"The by-name profile classification lists '{id}', which is not present in the corpus submodule.");
         }
     }
 
@@ -68,13 +64,13 @@ public sealed partial class YamlTestCorpusTests
     [TestMethod]
     public void Corpus_EverySupportedValidCaseHasAJsonExpectation()
     {
-        foreach (var (id, _, category) in YamlTestCorpusReader.ReadManifest())
+        foreach (var (id, _, category) in YamlTestCorpusReader.EnumerateCases())
         {
             if (!string.Equals(category, "SupportedPass", StringComparison.Ordinal))
                 continue;
 
             Assert.IsTrue(
-                File.Exists(Path.Combine(YamlTestCorpusReader.VectorRoot, id.Replace('/', Path.DirectorySeparatorChar), "in.json")),
+                File.Exists(Path.Combine(YamlTestCorpusReader.VectorDirectory(id), "in.json")),
                 $"The supported-valid case '{id}' has no in.json expectation.");
         }
     }
@@ -86,56 +82,37 @@ public sealed partial class YamlTestCorpusTests
     [TestMethod]
     public void Corpus_EveryCaseHasUpstreamDescriptionFile()
     {
-        foreach (var (id, _, _) in YamlTestCorpusReader.ReadManifest())
+        foreach (var id in YamlTestCorpusReader.EnumerateCaseIds())
         {
             Assert.IsTrue(
-                File.Exists(Path.Combine(YamlTestCorpusReader.VectorRoot, id.Replace('/', Path.DirectorySeparatorChar), "===")),
+                File.Exists(Path.Combine(YamlTestCorpusReader.VectorDirectory(id), "===")),
                 $"The case '{id}' is missing its upstream '===' description file.");
         }
     }
 
     /// <summary>
-    /// Verifies that no vendored case is classified <c>KnownGap</c>, enforcing the project's zero-gap conformance goal
-    /// independently of the pinned provenance counts (which a manual edit could otherwise mask).
+    /// Verifies that the vendored case count and the per-category counts match the values pinned in
+    /// <see cref="YamlTestCorpusReader" />, catching accidental drift when the corpus or its classification changes.
     /// </summary>
     [TestMethod]
-    public void Corpus_HasNoKnownGaps()
+    public void Corpus_MatchesPinnedCounts()
     {
-        var gaps = YamlTestCorpusReader.ReadManifest()
-            .Where(entry => string.Equals(entry.Category, "KnownGap", StringComparison.Ordinal))
-            .Select(entry => entry.Id)
-            .ToList();
-
-        Assert.AreEqual(
-            0,
-            gaps.Count,
-            $"The conformance corpus must have zero KnownGap cases, but found: {string.Join(", ", gaps)}.");
-    }
-
-    /// <summary>
-    /// Verifies that the vendored and classified counts match the pinned <c>provenance.json</c>, catching accidental
-    /// drift when the corpus or its classification is updated.
-    /// </summary>
-    [TestMethod]
-    public void Corpus_MatchesPinnedProvenance()
-    {
-        using var provenance = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(YamlTestCorpusReader.ManifestRoot, "provenance.json")));
-        var root = provenance.RootElement;
-
-        var actualCases = Directory.EnumerateFiles(YamlTestCorpusReader.VectorRoot, "in.yaml", SearchOption.AllDirectories).Count();
-        Assert.AreEqual(root.GetProperty("caseCount").GetInt32(), actualCases, "The vendored case count drifted from the pinned provenance.");
-
         var counts = new Dictionary<string, int>(StringComparer.Ordinal);
-        foreach (var (_, _, category) in YamlTestCorpusReader.ReadManifest())
+        var total = 0;
+        foreach (var (_, _, category) in YamlTestCorpusReader.EnumerateCases())
+        {
             counts[category] = counts.GetValueOrDefault(category) + 1;
+            total++;
+        }
 
-        var pinned = root.GetProperty("classification");
-        foreach (var category in KnownCategories)
+        Assert.AreEqual(YamlTestCorpusReader.ExpectedCaseCount, total, "The vendored case count drifted from the pinned expectation.");
+
+        foreach (var (category, expected) in YamlTestCorpusReader.ExpectedCategoryCounts)
         {
             Assert.AreEqual(
-                pinned.GetProperty(category).GetInt32(),
+                expected,
                 counts.GetValueOrDefault(category),
-                $"The '{category}' count drifted from the pinned provenance.");
+                $"The '{category}' count drifted from the pinned expectation.");
         }
     }
 }

@@ -7,52 +7,197 @@
 namespace Bodu.Text.Yaml;
 
 /// <summary>
-/// Reads the <c>yaml/yaml-test-suite</c> corpus — linked into the repository as the <c>yaml-test-suite</c> git
-/// submodule — joining each upstream vector directory with the repository's own <c>classification.tsv</c> to produce a
-/// <see cref="YamlTestVector" /> the conformance run can execute.
+/// Reads the <c>yaml/yaml-test-suite</c> corpus — mirrored into the repository as the <c>yaml-test-suite</c> git
+/// submodule — by walking its directory structure and classifying each case against the Bodu YAML Core Tree Profile in
+/// code, producing a <see cref="YamlTestVector" /> the conformance run can execute.
 /// </summary>
 /// <remarks>
-/// The submodule mirrors the upstream layout (a directory per vector containing <c>===</c>, <c>in.yaml</c>, and the
-/// optional <c>in.json</c> / <c>error</c> / <c>test.event</c> / <c>out.yaml</c> / <c>emit.yaml</c> files). The submodule
-/// vectors and the Bodu classification manifest are copied to the test output by the project's <c>None</c> globs; run
-/// <c>git submodule update --init</c> to populate the submodule before the Regression tier.
+/// <para>
+/// The submodule mirrors the upstream layout (a directory per case containing <c>===</c>, <c>in.yaml</c>, and the
+/// optional <c>in.json</c> / <c>error</c> / <c>test.event</c> / <c>out.yaml</c> / <c>emit.yaml</c> files). Run
+/// <c>git submodule update --init</c> to populate it, and the project's <c>None</c> glob copies it to the test output.
+/// </para>
+/// <para>
+/// Classification is derived from the case's own files — a case carrying an <c>error</c> file is one the suite expects
+/// to fail (<c>SupportedFail</c>); a case carrying an <c>in.json</c> expectation is supported-valid
+/// (<c>SupportedPass</c>). The only cases that cannot be derived from structure are the valid upstream cases the Bodu
+/// profile deliberately rejects (<c>UnsupportedFeatureRejected</c>) or parses without a value comparison
+/// (<c>SupportedParseOnly</c>); their identifiers are the source of truth held in the two sets below.
+/// </para>
 /// </remarks>
 internal static class YamlTestCorpusReader
 {
     /// <summary>
-    /// The root directory of the yaml-test-suite vectors (the submodule) within the test output.
+    /// The root directory of the yaml-test-suite cases (the submodule) within the test output.
     /// </summary>
-    internal static readonly string VectorRoot = Path.Combine(AppContext.BaseDirectory, "yaml-test-suite");
+    internal static readonly string CorpusRoot = Path.Combine(AppContext.BaseDirectory, "yaml-test-suite");
 
     /// <summary>
-    /// The directory holding the Bodu profile classification manifest within the test output.
+    /// The total number of vendored cases at the pinned submodule commit.
     /// </summary>
-    internal static readonly string ManifestRoot = Path.Combine(AppContext.BaseDirectory, "YamlTestCorpus");
+    internal const int ExpectedCaseCount = 402;
 
     /// <summary>
-    /// Reads the classification manifest rows.
+    /// The expected number of cases in each classification category at the pinned submodule commit. Pinned in code so a
+    /// corpus or classification change that shifts the balance is caught by governance.
     /// </summary>
-    /// <returns>The manifest rows as identifier, suite kind, and classification triples.</returns>
-    internal static IEnumerable<(string Id, string Kind, string Category)> ReadManifest()
-    {
-        foreach (var line in File.ReadLines(Path.Combine(ManifestRoot, "classification.tsv")))
+    internal static readonly IReadOnlyDictionary<string, int> ExpectedCategoryCounts =
+        new Dictionary<string, int>(StringComparer.Ordinal)
         {
-            if (line.Length == 0)
-                continue;
+            ["SupportedPass"] = 225,
+            ["SupportedParseOnly"] = 12,
+            ["SupportedFail"] = 94,
+            ["UnsupportedFeatureRejected"] = 71,
+        };
 
-            var parts = line.Split('\t');
-            yield return (parts[0], parts[1], parts[2]);
+    /// <summary>
+    /// The identifiers of valid upstream cases the Bodu profile deliberately rejects. These cannot be derived from the
+    /// case structure (the suite publishes them as valid, often with an <c>in.json</c>), so the profile decision is
+    /// recorded here as the source of truth.
+    /// </summary>
+    private static readonly HashSet<string> UnsupportedFeatureRejectedIds = new(StringComparer.Ordinal)
+    {
+        "26DV",
+        "2JQS",
+        "2SXE",
+        "2XXW",
+        "3GZX",
+        "3RLN/01",
+        "3RLN/04",
+        "4FJ6",
+        "4QFQ",
+        "565N",
+        "57H4",
+        "5TYM",
+        "5WE3",
+        "6CA3",
+        "6CK3",
+        "6PBE",
+        "6WLZ",
+        "735Y",
+        "7FWL",
+        "7W2P",
+        "7ZZ5",
+        "8KB6",
+        "8UDB",
+        "9MMW",
+        "9WXW",
+        "A2M4",
+        "AB8U",
+        "AZ63",
+        "BEC7",
+        "C4HZ",
+        "CC74",
+        "CT4Q",
+        "CUP7",
+        "D83L",
+        "DE56/02",
+        "DE56/03",
+        "DK95/00",
+        "E76Z",
+        "HMQ5",
+        "J7PZ",
+        "JTV5",
+        "KH5V/01",
+        "KK5P",
+        "LX3P",
+        "M2N8/00",
+        "M2N8/01",
+        "M5C3",
+        "M5DY",
+        "M6YH",
+        "NJ66",
+        "P2AD",
+        "P76L",
+        "PW8X",
+        "Q5MG",
+        "Q9WF",
+        "R4YG",
+        "RLU9",
+        "RZP5",
+        "S3PD",
+        "S9E8",
+        "SBG9",
+        "SKE5",
+        "UGM3",
+        "UT92",
+        "V9D5",
+        "W42U",
+        "X38W",
+        "XW4D",
+        "Z67P",
+        "Z9M4",
+        "ZWK4",
+    };
+
+    /// <summary>
+    /// The identifiers of valid upstream cases the profile parses but cannot value-compare (the suite publishes no
+    /// <c>in.json</c> for them).
+    /// </summary>
+    private static readonly HashSet<string> SupportedParseOnlyIds = new(StringComparer.Ordinal)
+    {
+        "4ABK",
+        "6BFJ",
+        "6M2F",
+        "CFD4",
+        "DFF7",
+        "FH7J",
+        "FRK4",
+        "NHX8",
+        "NKF9",
+        "SM9W/01",
+        "UKK6/00",
+        "UKK6/02",
+    };
+
+    /// <summary>
+    /// Gets the identifiers the profile classifies by name rather than by structure, for governance against the corpus.
+    /// </summary>
+    /// <value>The union of the profile-rejected and parse-only identifiers.</value>
+    internal static IEnumerable<string> ProfileClassifiedIds =>
+        UnsupportedFeatureRejectedIds.Concat(SupportedParseOnlyIds);
+
+    /// <summary>
+    /// Returns the absolute directory of a case within the corpus.
+    /// </summary>
+    /// <param name="id">The case identifier (its path relative to the corpus root).</param>
+    /// <returns>The case directory path.</returns>
+    internal static string VectorDirectory(string id) =>
+        Path.Combine(CorpusRoot, id.Replace('/', Path.DirectorySeparatorChar));
+
+    /// <summary>
+    /// Enumerates every case identifier in the corpus (a directory containing an <c>in.yaml</c>), ordered.
+    /// </summary>
+    /// <returns>The case identifiers, ordinal-ordered.</returns>
+    internal static IEnumerable<string> EnumerateCaseIds() =>
+        Directory.EnumerateFiles(CorpusRoot, "in.yaml", SearchOption.AllDirectories)
+            .Select(path => Path.GetRelativePath(CorpusRoot, Path.GetDirectoryName(path)!).Replace('\\', '/'))
+            .OrderBy(id => id, StringComparer.Ordinal);
+
+    /// <summary>
+    /// Enumerates every corpus case with its derived suite kind and profile classification.
+    /// </summary>
+    /// <returns>One tuple per case: identifier, suite kind, and classification category.</returns>
+    internal static IEnumerable<(string Id, string Kind, string Category)> EnumerateCases()
+    {
+        foreach (var id in EnumerateCaseIds())
+        {
+            var dir = VectorDirectory(id);
+            var hasError = File.Exists(Path.Combine(dir, "error"));
+            var hasJson = File.Exists(Path.Combine(dir, "in.json"));
+
+            yield return (id, KindOf(hasError, hasJson), Classify(id, hasError, hasJson));
         }
     }
 
     /// <summary>
-    /// Loads every classified vector in the requested category into a <see cref="YamlTestVector" />.
+    /// Loads every case in the requested classification category into a <see cref="YamlTestVector" />.
     /// </summary>
     /// <param name="category">The classification category to select.</param>
-    /// <returns>One vector per classified case in the category.</returns>
+    /// <returns>One vector per case in the category.</returns>
     internal static IEnumerable<YamlTestVector> LoadByCategory(string category)
     {
-        foreach (var (id, kind, cat) in ReadManifest())
+        foreach (var (id, kind, cat) in EnumerateCases())
         {
             if (string.Equals(cat, category, StringComparison.Ordinal))
                 yield return Load(id, kind, cat);
@@ -60,19 +205,45 @@ internal static class YamlTestCorpusReader
     }
 
     /// <summary>
-    /// Returns the absolute directory of a vector within the submodule.
+    /// Derives the suite kind of a case from the expectation files present.
     /// </summary>
-    /// <param name="id">The vector identifier (its path relative to the corpus root).</param>
-    /// <returns>The vector directory path.</returns>
-    internal static string VectorDirectory(string id) =>
-        Path.Combine(VectorRoot, id.Replace('/', Path.DirectorySeparatorChar));
+    /// <param name="hasError">Whether the case carries an upstream <c>error</c> file.</param>
+    /// <param name="hasJson">Whether the case carries an <c>in.json</c> expectation.</param>
+    /// <returns>The suite kind: <c>invalid</c>, <c>valid</c>, or <c>valid-nojson</c>.</returns>
+    private static string KindOf(bool hasError, bool hasJson) =>
+        hasError ? "invalid" : hasJson ? "valid" : "valid-nojson";
 
     /// <summary>
-    /// Loads a single vector by identifier, reading its description, input, and expectation files.
+    /// Classifies a case under the Bodu profile: the by-name profile sets take precedence, then the case structure
+    /// (<c>error</c> file then <c>in.json</c>) decides.
     /// </summary>
-    /// <param name="id">The vector identifier (its path relative to the corpus root).</param>
-    /// <param name="kind">The suite kind from the manifest.</param>
-    /// <param name="category">The classification category from the manifest.</param>
+    /// <param name="id">The case identifier.</param>
+    /// <param name="hasError">Whether the case carries an upstream <c>error</c> file.</param>
+    /// <param name="hasJson">Whether the case carries an <c>in.json</c> expectation.</param>
+    /// <returns>The classification category, or <c>Unknown</c> when the case cannot be attributed.</returns>
+    private static string Classify(string id, bool hasError, bool hasJson)
+    {
+        if (UnsupportedFeatureRejectedIds.Contains(id))
+            return "UnsupportedFeatureRejected";
+
+        if (hasError)
+            return "SupportedFail";
+
+        if (SupportedParseOnlyIds.Contains(id))
+            return "SupportedParseOnly";
+
+        if (hasJson)
+            return "SupportedPass";
+
+        return "Unknown";
+    }
+
+    /// <summary>
+    /// Loads a single case by identifier, reading its description, input, and expectation files.
+    /// </summary>
+    /// <param name="id">The case identifier (its path relative to the corpus root).</param>
+    /// <param name="kind">The derived suite kind.</param>
+    /// <param name="category">The profile classification category.</param>
     /// <returns>The loaded vector.</returns>
     internal static YamlTestVector Load(string id, string kind, string category)
     {
