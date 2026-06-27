@@ -6,9 +6,9 @@ title: Bodu.Core — Introduction
 
 **Bodu.Core** is the foundation package of the Bodu suite and of the **[Core Foundations](../topics/core-foundations.md)** topic — a collection of high-performance, framework-style building blocks for .NET applications. Several other Bodu packages share its primitives: `Bodu.IO.Hashing`, `Bodu.Security.Cryptography`, `Bodu.Globalization.Calendar`, `Bodu.Numerics`, and `Bodu.Financial` all reference `Bodu.Core` for shared types like `ThrowHelper`, `WeekPattern`, the calendar-shape enums, and pooled buffers. See the [package matrix](../package-matrix.md) for the full dependency map.
 
-The library is organized around eight focused namespaces, each with a clear responsibility.
+The library is organized around a family of focused namespaces, each with a clear responsibility.
 
-![Bodu.Core namespace map — eight focused namespaces and their headline types](../../images/diagrams/core-namespace-map.svg)
+![Bodu.Core namespace map — focused namespaces and their headline types](../../images/diagrams/core-namespace-map.svg)
 
 ## Namespaces and headline types
 
@@ -51,6 +51,39 @@ Lock-free / thread-safe variants.
 | Type | Purpose |
 |---|---|
 | <xref:Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer`1> | Thread-safe variant of `CircularBuffer<T>`; implements `IProducerConsumerCollection<T>` over the Vyukov MPMC algorithm. |
+
+### `Bodu.Collections.Generic.Graphs`
+Graphs and graph algorithms. See the [Graphs and graph algorithms](../../guides/core/graphs.md) guide and the <xref:Bodu.Collections.Generic.Graphs> overview.
+
+| Type | Purpose |
+|---|---|
+| <xref:Bodu.Collections.Generic.Graphs.Graph`1> | Directed or undirected graph with optional non-negative edge weights. |
+| <xref:Bodu.Collections.Generic.Graphs.GraphAlgorithms> | BFS / DFS traversal, shortest path, topological sort, and connected components over the read-only graph views. |
+| <xref:Bodu.Collections.Generic.Graphs.DisjointSet`1> | Union-find (disjoint-set) with path compression for connectivity and components. |
+
+### `Bodu.Collections.Generic.Trees`
+Prefix trees and an n-ary tree. See the [Trie (prefix tree)](../../guides/core/trie.md) guide and the <xref:Bodu.Collections.Generic.Trees> overview.
+
+| Type | Purpose |
+|---|---|
+| <xref:Bodu.Collections.Generic.Trees.Trie>, <xref:Bodu.Collections.Generic.Trees.Trie`1> | A string set and a string-keyed map with prefix queries (`StartsWith`, `KeysWithPrefix`). |
+| <xref:Bodu.Collections.Generic.Trees.Tree`1> | A mutable n-ary tree node with stack-safe pre-/post-/level-order traversals. |
+
+### `Bodu.Threading`
+Async coordination primitives — the async-friendly peers of the BCL synchronization types. See the [Async coordination primitives](../../guides/core/async-primitives.md) guide and the <xref:Bodu.Threading> overview.
+
+| Type | Purpose |
+|---|---|
+| <xref:Bodu.Threading.AsyncLock>, <xref:Bodu.Threading.AsyncSemaphore>, <xref:Bodu.Threading.AsyncReaderWriterLock> | Awaitable mutual-exclusion and bounded-concurrency gates. |
+| <xref:Bodu.Threading.AsyncManualResetEvent>, <xref:Bodu.Threading.AsyncAutoResetEvent>, <xref:Bodu.Threading.AsyncCountdownEvent> | Awaitable signalling events. |
+| <xref:Bodu.Threading.AsyncLazy`1>, <xref:Bodu.Threading.AsyncDebouncer>, <xref:Bodu.Threading.RateGate> | One-time async initialization, trailing-edge debouncing, and rate limiting. |
+
+### `Bodu.Functional`
+Functional helpers. See the [Memoization](../../guides/core/memoization.md) guide and the <xref:Bodu.Functional> overview.
+
+| Type | Purpose |
+|---|---|
+| <xref:Bodu.Functional.Memoizer> | Wraps a pure function in a thread-safe caching delegate (single- and multi-argument). |
 
 ### `Bodu.Collections.Extensions` and `Bodu.Collections.Generic.Extensions`
 Sequence-shaping helpers that compose on top of `IEnumerable<T>` and `IList<T>`.

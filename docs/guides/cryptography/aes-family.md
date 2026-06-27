@@ -56,8 +56,8 @@ using Bodu.Security.Cryptography;
 using var twofish = Twofish.Create();
 twofish.KeySize    = 256;
 twofish.Key        = RandomNumberGenerator.GetBytes(32);
-twofish.BlockMode  = CipherModeKind.Cbc;
-twofish.BlockPadding = PaddingModeKind.Pkcs7;
+twofish.BlockMode  = CipherModeKind.CBC;
+twofish.BlockPadding = PaddingModeKind.PKCS7;
 twofish.GenerateIV();
 
 using ICryptoTransform encryptor = twofish.CreateEncryptor();
@@ -92,8 +92,8 @@ using Bodu.Security.Cryptography;
 using var serpent = Serpent128.Create();
 serpent.KeySize     = 256;
 serpent.Key         = RandomNumberGenerator.GetBytes(32);
-serpent.BlockMode   = CipherModeKind.Cbc;
-serpent.BlockPadding = PaddingModeKind.Pkcs7;
+serpent.BlockMode   = CipherModeKind.CBC;
+serpent.BlockPadding = PaddingModeKind.PKCS7;
 serpent.GenerateIV();
 
 using ICryptoTransform encryptor = serpent.CreateEncryptor();
@@ -110,8 +110,8 @@ Every cipher above wraps with the standard `CipherModeKind` / `PaddingModeKind` 
 using var cipher = Twofish.Create();
 cipher.Key          = key;
 cipher.IV           = iv;
-cipher.BlockMode    = CipherModeKind.Ctr;
-cipher.BlockPadding = PaddingModeKind.NoPadding;   // CTR doesn't need padding
+cipher.BlockMode    = CipherModeKind.CTR;
+cipher.BlockPadding = PaddingModeKind.None;   // CTR doesn't need padding
 
 using ICryptoTransform t = cipher.CreateEncryptor();
 byte[] ciphertext = t.TransformFinalBlock(plaintext, 0, plaintext.Length);

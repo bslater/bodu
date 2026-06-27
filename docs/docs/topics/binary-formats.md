@@ -4,7 +4,7 @@ title: Binary Formats & I/O — Overview
 
 # Binary Formats & I/O
 
-The **Binary Formats & I/O** topic covers read-only readers for legacy binary container and document formats. The packages form a strictly layered stack: a general-purpose container reader at the bottom, with narrower format readers built on top, so each layer carries only the concepts it needs.
+The **Binary Formats & I/O** topic covers readers — and, for `Bodu.IO.Compound`, a writer — for legacy binary container and document formats. The packages form a strictly layered stack: a general-purpose container reader at the bottom, with narrower format readers built on top, so each layer carries only the concepts it needs.
 
 [`Bodu.IO.Compound`](../io-compound/index.md) reads the OLE2 / Compound File Binary (CFB) envelope — the structured-storage "file system in a file" used by legacy Microsoft Office documents — and exposes the embedded named streams with no application-format knowledge. [`Bodu.Formats.Excel.Binary`](../excel/index.md) builds on it to surface raw worksheet cell values from BIFF8 `.xls` workbooks.
 
@@ -16,7 +16,7 @@ The dependency runs one way: `Bodu.Formats.Excel.Binary` references `Bodu.IO.Com
 
 | Package | Status | What it provides | Docs |
 |---|---|---|---|
-| `Bodu.IO.Compound` | Stable | A read-only CFB container reader: the `CompoundFile` entry point, the `CompoundStorage` / `CompoundStream` hierarchy, the seekable `CompoundStream` cursor, and OLE property-set readers. | [Intro](../io-compound/index.md) · [Concepts](../io-compound/concepts.md) · [Get started](../io-compound/getting-started.md) |
+| `Bodu.IO.Compound` | Stable | A CFB container reader and writer: the `CompoundFile` open/create entry points, the builder API for authoring containers, the `CompoundStorage` / `CompoundStream` hierarchy, the seekable `CompoundStream` cursor, and OLE property-set readers. | [Intro](../io-compound/index.md) · [Concepts](../io-compound/concepts.md) · [Get started](../io-compound/getting-started.md) |
 | `Bodu.Formats.Excel.Binary` | Stable | A narrow, read-only BIFF8 (`.xls`) reader that surfaces raw worksheet cell values — strings, numbers, booleans, and errors — without formula evaluation, styling, or higher-level interpretation. | [Intro](../excel/index.md) · [Concepts](../excel/concepts.md) · [Get started](../excel/getting-started.md) |
 
 ## Why a layered reader
@@ -40,7 +40,7 @@ A consumer that only needs the container — to pull an embedded thumbnail, a pr
 
 ## Scope
 
-Both readers are **read-only** in the current release. `Bodu.IO.Compound` is read with `FileMode.Open` and `FileAccess.Read`; `Bodu.Formats.Excel.Binary` surfaces raw cell values without evaluating formulas, applying styles, or interpreting higher-level workbook structure.
+`Bodu.Formats.Excel.Binary` is **read-only** — it surfaces raw cell values without evaluating formulas, applying styles, or interpreting higher-level workbook structure. `Bodu.IO.Compound` reads existing containers and additionally **authors** new ones (`CompoundFile.Create`, the `Builders` API, and the OLE property-set writers).
 
 ## Install
 

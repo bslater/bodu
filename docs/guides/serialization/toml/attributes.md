@@ -4,7 +4,7 @@ title: Mapping attributes
 
 # Mapping attributes
 
-Both serializers expose the same attribute family for shaping how a type maps to the wire: every TOML attribute derives <xref:Bodu.Text.Toml.Serialization.TomlAttribute> and every Bencode attribute derives <xref:Bodu.Text.Bencode.Serialization.BencodeAttribute>. The two families mirror each other exactly — each pattern below shows the TOML form and its output; the Bencode form is the same shape with the `Bencode` prefix, with the wire form noted where it differs in an interesting way.
+The TOML serializer exposes an attribute family for shaping how a type maps to the wire: every TOML attribute derives <xref:Bodu.Text.Toml.Serialization.TomlAttribute>. The sibling libraries ([Bodu.Text.Bencode](../bencode/index.md), [Bodu.Text.Yaml](../yaml/index.md)) mirror this family with their own prefix — see the [serializer guides hub](../index.md). Each pattern below shows the TOML form and its output.
 
 ## Pattern 1 — Rename a member
 
@@ -21,8 +21,6 @@ public sealed class Profile
 ```toml
 display-name = "Ada"
 ```
-
-Bencode (`[BencodePropertyName("display-name")]`) writes the dictionary entry `12:display-name3:Ada`.
 
 ## Pattern 2 — Apply a naming policy per type
 
@@ -102,9 +100,6 @@ Version = 3
 Name = "demo"
 ```
 
-> [!NOTE]
-> In Bencode the attribute governs only the order members are *presented to the writer* — the writer re-sorts dictionary entries into canonical ascending key order when the dictionary closes, so the example above still emits `d4:Name4:demo7:Versioni3ee` regardless of `[BencodePropertyOrder]`.
-
 ## Pattern 6 — Require a key
 
 <xref:Bodu.Text.Toml.Serialization.TomlRequiredAttribute> makes deserialization fail when the key is absent, with the same effect as declaring the member with the C# `required` keyword:
@@ -152,7 +147,7 @@ public sealed class ServerConfig
 }
 ```
 
-The member must be a `TomlObject` or an `(I)Dictionary<string, TomlNode>` (Bencode: `BencodeObject` / `(I)Dictionary<string, BencodeNode>`), and a type may declare at most one.
+The member must be a `TomlObject` or an `(I)Dictionary<string, TomlNode>`, and a type may declare at most one.
 
 ## Pattern 9 — Reject unknown keys
 
@@ -231,9 +226,8 @@ When several settings could govern the same member, the closest one wins:
 2. a type-level attribute (`[TomlNamingPolicy]`, `[TomlConverter]`, `[TomlUnmappedMemberHandling]`, `[TomlObjectCreationHandling]`);
 3. the serializer options (`PropertyNamingPolicy`, `Converters`, `UnmappedMemberHandling`, `PreferredObjectCreationHandling`, `IncludeFields`).
 
-The same ladder applies to the `Bencode` family.
-
 ## See also
 
-- **[Text & Serialization guides](../topics/text-and-serialization.md)** — every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.
-- **[Bodu serializer guides](index.md)** — the full guide index for the Bencode and TOML serializers.
+- **[Using TOML](using.md)**, **[Writing converters](converters.md)**, **[Serialization callbacks](callbacks.md)**, **[Built-in converter catalog](builtin-converters.md)** — the other TOML guides.
+- **[Text & Serialization guides](../../topics/text-and-serialization.md)** — every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the serializers.
+- **[TOML guides](index.md)** — the full guide index for Bodu.Text.Toml.

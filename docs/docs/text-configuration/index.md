@@ -92,7 +92,7 @@ The package contains five concept groups, all in the `Bodu.Text.Configuration` n
 |---|---|---|---|---|---|
 | `Bodu` (default) | WhitespaceIntroduced | LastWins | Throw | Applied | Literal |
 | `EditorConfigCompatible` | Disabled | LastWins | Throw | Only `root` | Removes value |
-| `Strict` | Disabled | Disallowed | Throw | Applied | Literal |
+| `Strict` | Disabled | Disallowed | Throw | Applied | Removes value |
 | `Relaxed` | WhitespaceIntroduced | LastWins | Collect | Applied | Literal |
 
 Profiles are not exclusive — every option type is fully mutable through `init` properties, so the presets are

@@ -6,7 +6,7 @@ title: Circular buffer
 
 `CircularBuffer<T>` is a fixed-capacity, first-in first-out (FIFO) ring buffer. It is allocation-free after construction: elements overwrite the oldest slot when the buffer is full (if overwrite is enabled), or throw / return `false` when the buffer is full and overwrite is disabled.
 
-For concurrent access, use `ConcurrentCircularBuffer<T>` — a thread-safe wrapper that uses a `ReaderWriterLockSlim` internally.
+For concurrent access, use `ConcurrentCircularBuffer<T>` — a thread-safe variant that uses a lock-free multi-producer/multi-consumer (Vyukov) algorithm internally.
 
 ![CircularBuffer ring with Head, Tail, and overwrite/reject behavior](../../images/diagrams/circular-buffer.svg)
 
@@ -29,7 +29,6 @@ int next   = buffer.Peek();      // 2, non-destructive
 
 ## Pattern 2 — bounded buffer that rejects excess
 
-By default, `AllowOverwrite` is `false` — enqueueing into a full buffer throws `InvalidOperationException`. Use `TryEnqueue` to avoid exceptions:
 The capacity-only and default constructors set `AllowOverwrite = true` (sliding-window semantics — see Pattern 3). Pass `allowOverwrite: false` to flip the buffer into bounded mode, where `Enqueue` into a full buffer throws `InvalidOperationException`. Use `TryEnqueue` to avoid exceptions:
 
 ```csharp
@@ -78,7 +77,7 @@ if (buffer.TryPeek(out int first))
 
 ## Pattern 5 — concurrent access with ConcurrentCircularBuffer
 
-`ConcurrentCircularBuffer<T>` provides the same `Enqueue` / `Dequeue` / `Peek` API but synchronizes all operations using a `ReaderWriterLockSlim`. Use it when multiple threads read or write the buffer concurrently:
+`ConcurrentCircularBuffer<T>` provides the same `Enqueue` / `Dequeue` / `Peek` API but coordinates all operations with a lock-free multi-producer/multi-consumer (Vyukov) protocol. Use it when multiple threads read or write the buffer concurrently:
 
 ```csharp
 using Bodu.Collections.Generic.Concurrent;

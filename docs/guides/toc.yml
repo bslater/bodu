@@ -21,6 +21,8 @@
               href: core/sequenced-dictionary.md
             - name: Indexed priority queue
               href: core/indexed-priority-queue.md
+            - name: Graphs and graph algorithms
+              href: core/graphs.md
             - name: Indexed and ordered sets
               href: core/ordered-sets.md
             - name: Multiset
@@ -31,10 +33,22 @@
               href: core/segmented-buffer.md
             - name: Range-keyed lookups
               href: core/range-dictionary.md
+        - name: Bodu.Collections.Generic.Trees
+          items:
+            - name: Trie (prefix tree)
+              href: core/trie.md
+        - name: Bodu.Functional
+          items:
+            - name: Memoization
+              href: core/memoization.md
         - name: Bodu.Collections.Generic.Concurrent
           items:
             - name: Concurrent collections
               href: core/concurrent-collections.md
+        - name: Bodu.Threading
+          items:
+            - name: Async coordination primitives
+              href: core/async-primitives.md
         - name: Bodu.Buffers
           items:
             - name: Pooled buffer builder
@@ -294,24 +308,54 @@
           items:
             - name: Streams and async I/O
               href: formats/streaming.md
-    - name: Bodu.Text.Bencode & Bodu.Text.Toml
+    - name: Bodu serializers (Bencode · TOML · YAML)
       items:
-        - name: Overview
+        - name: Guides overview
           href: serialization/index.md
-        - name: Using TOML
-          href: serialization/toml.md
-        - name: Using Bencode
-          href: serialization/bencode.md
-        - name: Mapping attributes
-          href: serialization/attributes.md
-        - name: Writing converters
-          href: serialization/converters.md
-        - name: Polymorphic converters
-          href: serialization/polymorphic-converters.md
-        - name: Serialization callbacks
-          href: serialization/callbacks.md
-        - name: Built-in converter catalog
-          href: serialization/builtin-converters.md
+        - name: Bodu.Text.Toml
+          items:
+            - name: TOML guides overview
+              href: serialization/toml/index.md
+            - name: Using TOML
+              href: serialization/toml/using.md
+            - name: Mapping attributes
+              href: serialization/toml/attributes.md
+            - name: Writing converters
+              href: serialization/toml/converters.md
+            - name: Polymorphic converters
+              href: serialization/toml/polymorphic-converters.md
+            - name: Serialization callbacks
+              href: serialization/toml/callbacks.md
+            - name: Built-in converter catalog
+              href: serialization/toml/builtin-converters.md
+        - name: Bodu.Text.Bencode
+          items:
+            - name: Bencode guides overview
+              href: serialization/bencode/index.md
+            - name: Using Bencode
+              href: serialization/bencode/using.md
+            - name: Mapping attributes
+              href: serialization/bencode/attributes.md
+            - name: Writing converters
+              href: serialization/bencode/converters.md
+            - name: Polymorphic converters
+              href: serialization/bencode/polymorphic-converters.md
+            - name: Serialization callbacks
+              href: serialization/bencode/callbacks.md
+            - name: Built-in converter catalog
+              href: serialization/bencode/builtin-converters.md
+        - name: Bodu.Text.Yaml
+          items:
+            - name: YAML guides overview
+              href: serialization/yaml/index.md
+            - name: Using YAML
+              href: serialization/yaml/using.md
+            - name: Mapping attributes
+              href: serialization/yaml/attributes.md
+            - name: Writing converters
+              href: serialization/yaml/converters.md
+            - name: Built-in converter catalog
+              href: serialization/yaml/builtin-converters.md
 - name: Configuration
   href: topics/configuration.md
   items:
@@ -381,6 +425,8 @@
           href: io-compound/streaming-and-buffering.md
         - name: Reading property sets
           href: io-compound/property-sets.md
+        - name: Authoring compound files
+          href: io-compound/authoring-compound-files.md
         - name: Office format nuances
           href: io-compound/office-format-nuances.md
     - name: Bodu.Formats.Excel.Binary

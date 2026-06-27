@@ -119,5 +119,5 @@ An **export-only** suite (`new HpkeSuite(HpkeKem.X25519HkdfSha256, HpkeKdf.HkdfS
 - [Key agreement with X25519](key-agreement-x25519.md) — the KEM HPKE builds on.
 - [Using HKDF](hkdf.md) — the key-derivation stage inside HPKE's key schedule.
 - [Asymmetric algorithms overview](asymmetric-overview.md) — where HPKE sits in the public-key family.
-- <xref:Bodu.Security.Cryptography.Hpke>, <xref:Bodu.Security.Cryptography.HpkeSuite>, <xref:Bodu.Security.Cryptography.HpkeSender>, <xref:Bodu.Security.Cryptography.HpkeReceiver> — API reference.
+- <xref:Bodu.Security.Cryptography.Hpke>, <xref:Bodu.Security.Cryptography.HpkeSuite>, <xref:Bodu.Security.Cryptography.HpkeMode> (`Base` / `Psk` / `Auth` / `AuthPsk`), <xref:Bodu.Security.Cryptography.HpkeSender>, <xref:Bodu.Security.Cryptography.HpkeReceiver> — API reference.
 - **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic.

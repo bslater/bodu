@@ -14,11 +14,11 @@ The types are organised into folders/namespaces by surface (`Reader`, `Writer`, 
 
 ## Static documentation
 
-- **[Bodu serializers introduction](~/docs/serialization/index.md)** — the two libraries, the three tiers, scenarios.
-- **[Core concepts](~/docs/serialization/concepts.md)** — the serializer, the converter model, the two DOMs, and the reader/writer seam.
-- **[Getting started](~/docs/serialization/getting-started.md)** — install and the first round trip.
-- **[Using TOML](~/guides/serialization/toml.md)** — type mapping, spec-version selection, the DOMs, and streams.
-- **[Writing converters](~/guides/serialization/converters.md)** — custom shapes with `TomlConverter<T>`.
+- **[Bodu serializers introduction](~/docs/serialization/index.md)** — the three libraries, the shared tiers, and how to choose a format.
+- **[Core concepts](~/docs/serialization/toml/concepts.md)** — the serializer, the converter model, the two DOMs, and the reader/writer seam.
+- **[Getting started](~/docs/serialization/toml/getting-started.md)** — install and the first round trip.
+- **[Using TOML](~/guides/serialization/toml/using.md)** — type mapping, spec-version selection, the DOMs, and streams.
+- **[Writing converters](~/guides/serialization/toml/converters.md)** — custom shapes with `TomlConverter<T>`.
 
 ## Key types
 
@@ -39,8 +39,8 @@ The types are organised into folders/namespaces by surface (`Reader`, `Writer`, 
 
 **Document object models**
 
-- <xref:Bodu.Text.Toml.Nodes.TomlNode> / <xref:Bodu.Text.Toml.Nodes.TomlObject> / <xref:Bodu.Text.Toml.Nodes.TomlArray> / <xref:Bodu.Text.Toml.Nodes.TomlValue> — the mutable, editable DOM.
-- <xref:Bodu.Text.Toml.Document.TomlDocument> / <xref:Bodu.Text.Toml.Document.TomlElement> / <xref:Bodu.Text.Toml.Document.TomlProperty> — the read-only, low-allocation DOM.
+- <xref:Bodu.Text.Toml.Nodes.TomlNode> / <xref:Bodu.Text.Toml.Nodes.TomlObject> / <xref:Bodu.Text.Toml.Nodes.TomlArray> / <xref:Bodu.Text.Toml.Nodes.TomlValue> — the mutable, editable DOM (parsing tuned by <xref:Bodu.Text.Toml.Nodes.TomlNodeOptions>).
+- <xref:Bodu.Text.Toml.Document.TomlDocument> / <xref:Bodu.Text.Toml.Document.TomlElement> / <xref:Bodu.Text.Toml.Document.TomlProperty> — the read-only, low-allocation DOM (parsing tuned by <xref:Bodu.Text.Toml.Document.TomlDocumentOptions>).
 
 **Converters and attributes (`Bodu.Text.Toml.Serialization`)**
 
@@ -73,9 +73,9 @@ byte[] back = node.ToUtf8Bytes();
 ## Notes
 
 - **Full serializer surface.** The converter, attribute, callback, naming-policy (and `TomlSerializerDefaults.Web`), and enum-converter surfaces are all present.
-- **Self-contained.** The library has no shared engine dependency — everything the serializer needs lives in this assembly. Its twin, <xref:Bodu.Text.Bencode>, mirrors it type for type for Bencode.
-- **Value mapping.** `string` / `char` / `Guid` / `Uri` / `Version` → string, `TimeSpan` → the invariant `"c"`-format string, the integer family (including `Int128` / `UInt128` within the i64 range) → integer, `double` / `float` / `Half` → float, `decimal` → float or a lossless string via <xref:Bodu.Text.Toml.TomlDecimalHandling>, `bool` → boolean, and `DateTimeOffset` / `DateTime` / `DateOnly` / `TimeOnly` → the four RFC 3339 date-time forms; `byte[]` and memory-of-byte → an integer array (or a Base64 string via <xref:Bodu.Text.Toml.TomlByteArrayHandling>); enums → member-name strings. Collections (arrays, lists, sets, queues, stacks, and the concurrent collections) map to arrays, with a `Stack<T>` round-trip reversing the stack (the writer emits pop order). Dictionaries map to tables in insertion order; keys may be strings, integers, enums, `Guid`, `bool`, or `char`, written as bare or quoted table keys. An `object`-typed member writes its runtime type and reads back as a <xref:Bodu.Text.Toml.Document.TomlElement>; the read-only DOM types participate directly. Public fields participate via `IncludeFields` or `[TomlInclude]`. The full per-type list is in the [built-in converter catalog](~/guides/serialization/builtin-converters.md).
+- **Self-contained.** The library has no shared engine dependency — everything the serializer needs lives in this assembly. Its twin, <xref:Bodu.Text.Bencode>, mirrors it type for type for Bencode; <xref:Bodu.Text.Yaml> shares the architecture with a YAML-tuned surface.
+- **Value mapping.** `string` / `char` / `Guid` / `Uri` / `Version` → string, `TimeSpan` → the invariant `"c"`-format string, the integer family (including `Int128` / `UInt128` within the i64 range) → integer, `double` / `float` / `Half` → float, `decimal` → float or a lossless string via <xref:Bodu.Text.Toml.TomlDecimalHandling>, `bool` → boolean, and `DateTimeOffset` / `DateTime` / `DateOnly` / `TimeOnly` → the four RFC 3339 date-time forms; `byte[]` and memory-of-byte → an integer array (or a Base64 string via <xref:Bodu.Text.Toml.TomlByteArrayHandling>); enums → member-name strings. Collections (arrays, lists, sets, queues, stacks, and the concurrent collections) map to arrays, with a `Stack<T>` round-trip reversing the stack (the writer emits pop order). Dictionaries map to tables in insertion order; keys may be strings, integers, enums, `Guid`, `bool`, or `char`, written as bare or quoted table keys. An `object`-typed member writes its runtime type and reads back as a <xref:Bodu.Text.Toml.Document.TomlElement>; the read-only DOM types participate directly. Public fields participate via `IncludeFields` or `[TomlInclude]`. The full per-type list is in the [built-in converter catalog](~/guides/serialization/toml/builtin-converters.md).
 - **Table root.** A TOML document root must map to a table, so a top-level scalar or array throws. Output is canonical TOML in document order, so `[TomlPropertyOrder]` is honored.
 - **Spec-version selection.** Parsing defaults to strict v1.0.0; setting `SpecVersion` to `V1_1` accepts the v1.1.0 additions (`\e` and `\xHH` escapes, seconds-less times, multi-line / trailing-comma inline tables). The writer always emits output valid under both versions.
 - **Errors.** Malformed input surfaces through <xref:Bodu.Text.Toml.TomlFormatException> (with line, column, and offset); binding failures through <xref:Bodu.Text.Toml.TomlSerializationException>.
-- **See also:** the [introduction](~/docs/serialization/index.md), [core concepts](~/docs/serialization/concepts.md), and [getting-started](~/docs/serialization/getting-started.md); the [Using TOML](~/guides/serialization/toml.md) and [writing converters](~/guides/serialization/converters.md) guides; and the twin [Bencode](xref:Bodu.Text.Bencode) library.
+- **See also:** the [introduction](~/docs/serialization/index.md), [core concepts](~/docs/serialization/toml/concepts.md), and [getting-started](~/docs/serialization/toml/getting-started.md); the [Using TOML](~/guides/serialization/toml/using.md) and [writing converters](~/guides/serialization/toml/converters.md) guides; and the sibling [Bencode](xref:Bodu.Text.Bencode) and [YAML](xref:Bodu.Text.Yaml) libraries.

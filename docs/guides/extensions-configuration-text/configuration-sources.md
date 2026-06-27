@@ -110,7 +110,58 @@ IConfiguration configuration = new ConfigurationBuilder()
 
 The delegate overload mirrors the `AddJsonFile(source => …)` pattern from `Microsoft.Extensions.Configuration.Json`. Set every property up front rather than choosing the right `AddTextConfiguration*` overload for the combination you need.
 
-## Pattern 7 — binding to `IOptions<T>`
+## Pattern 7 — TOML file or stream source
+
+Alongside the Bodu INI bridge, the package ships a read-only TOML bridge that surfaces [`Bodu.Text.Toml`](../serialization/toml/index.md) through the same `IConfiguration` pipeline, mirroring the `AddJsonFile` / `AddJsonStream` shape:
+
+```csharp
+using Bodu.Extensions.Configuration.Text;
+using Microsoft.Extensions.Configuration;
+
+IConfiguration configuration = new ConfigurationBuilder()
+    .AddTomlFile("appsettings.toml", optional: true)
+    .Build();
+
+string? level = configuration["logging:level"];
+```
+
+`AddTomlFile(path, optional)` registers a `TomlConfigurationSource`. The source is **read once** when the configuration is built — the TOML bridge is read-only and attaches no reload-on-change watcher, so there is no `reloadOnChange` parameter (unlike the file-backed INI source in Pattern 1). With `optional: true` a missing file yields an empty source; with `optional: false` it throws `FileNotFoundException`.
+
+For configuration that arrives as a stream rather than a file path, use the stream overload — the UTF-8 TOML text is consumed once during `Build()`:
+
+```csharp
+using Bodu.Extensions.Configuration.Text;
+using System.Text;
+
+using var ms = new MemoryStream(Encoding.UTF8.GetBytes("[logging]\nlevel = \"Debug\""));
+
+IConfiguration configuration = new ConfigurationBuilder()
+    .AddTomlStream(ms)
+    .Build();
+```
+
+### How TOML keys map to configuration keys
+
+The provider flattens the TOML document's table hierarchy into the canonical colon-delimited form `IConfiguration` consumers expect. A TOML table dotted-path becomes a colon-delimited key:
+
+```toml
+[logging]
+level = "Debug"
+
+[logging.console]
+includeScopes = true
+```
+
+flattens to:
+
+```
+logging:level            = Debug
+logging:console:includeScopes = true
+```
+
+Keys are matched case-insensitively, exactly as the BCL JSON and INI providers behave, so `configuration["Logging:Level"]` and `configuration["logging:level"]` resolve to the same value. Because the TOML bridge surfaces the same colon-delimited key space, it layers and binds to `IOptions<T>` exactly like the INI sources described below; the only difference is that, being read-only, it never participates in reload-on-change.
+
+## Pattern 8 — binding to `IOptions<T>`
 
 Because the bridge surfaces standard colon-delimited keys, the values bind to typed options classes through the ordinary `Microsoft.Extensions.Options` pipeline. `ConfigurationOptionsExtensions.AddConfigurationOptions<TOptions>` is a discoverable shim over `services.Configure<TOptions>(section)` — either call produces the same registration:
 

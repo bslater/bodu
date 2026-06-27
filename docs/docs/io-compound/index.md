@@ -4,7 +4,7 @@ title: Bodu.IO.Compound — Introduction
 
 # Bodu.IO.Compound
 
-**Bodu.IO.Compound** is a read-only reader for the OLE2 / Compound File Binary (CFB) container format — the structured-storage envelope used by legacy Microsoft Office documents (`.xls`, `.doc`, `.ppt`, `.msg`) and other technologies. Part of the **[Binary Formats & I/O](../topics/binary-formats.md)** topic, it exposes the container's embedded storage hierarchy and the raw byte payload of each named stream, with no application-format knowledge of its own.
+**Bodu.IO.Compound** is a reader and writer for the OLE2 / Compound File Binary (CFB) container format — the structured-storage envelope used by legacy Microsoft Office documents (`.xls`, `.doc`, `.ppt`, `.msg`) and other technologies. Part of the **[Binary Formats & I/O](../topics/binary-formats.md)** topic, it opens existing containers — exposing the embedded storage hierarchy and the raw byte payload of each named stream — and authors new ones through `CompoundFile.Create` and the `Bodu.IO.Compound.Builders` API, with no application-format knowledge of its own.
 
 A compound file is effectively a small file system embedded in a single file. <xref:Bodu.IO.Compound.CompoundFile> is the managed counterpart of the COM `StgOpenStorage` entry point: navigation begins at the root storage and descends through nested storages to stream leaves.
 
@@ -30,7 +30,7 @@ For the full glossary, see [Core concepts](concepts.md).
 
 ## Scope and limitations
 
-- **Read-only.** Only read access (`FileMode.Open` with `FileAccess.Read`) is covered here; creation and mutation are out of scope for this introduction.
+- **Reading and writing.** This introduction focuses on the read path; the library also **authors** CFB containers — `CompoundFile.Create` plus `Commit`, the detached `CompoundStorageBuilder`, and the property-set builders. See the [Authoring compound files](../../guides/io-compound/authoring-compound-files.md) guide.
 - **No format interpretation.** The reader surfaces named streams and their bytes; understanding a `Workbook` or `WordDocument` stream is the caller's job. The narrow BIFF8 `.xls` reader in [Bodu.Formats.Excel.Binary](../excel/index.md) is the worked example of a format reader layered on top.
 
 ## Worked example — open, navigate, read
@@ -67,12 +67,13 @@ byte[] bytes = workbook.ReadAllBytes();
 | Read a stream incrementally | `OpenStream(name).Open()` → a `CompoundStream` cursor |
 | Look up a stream that may be absent | `TryOpenStream(name, out entry)` |
 | Read authored document metadata | `file.TryGetSummaryInformation(out summary)` |
+| Author a container | `CompoundStorageBuilder.CreateRoot()` → `AddStream` → `Save` (or `CompoundFile.Create` + `Commit`) |
 
 ## Headline types — <xref:Bodu.IO.Compound>
 
 | Type | Purpose |
 |---|---|
-| <xref:Bodu.IO.Compound.CompoundFile> | Opens a CFB container and anchors the hierarchy; static `Open` / `IsCompoundFile` factories. |
+| <xref:Bodu.IO.Compound.CompoundFile> | Opens or creates a CFB container and anchors the hierarchy; static `Open` / `OpenRead` / `IsCompoundFile` readers and the `Create` writer (finalized by `Commit`). |
 | <xref:Bodu.IO.Compound.CompoundStorage> | A storage node — enumerates children and resolves child storages and streams by name. |
 | <xref:Bodu.IO.Compound.CompoundStream> | A stream node and read-only, seekable `Stream` cursor in one — `ReadAllBytes` for the whole payload, `AsMemory` for a whole-payload view, `Stat` for metadata. |
 | <xref:Bodu.IO.Compound.CompoundEntryInfo> | An immutable metadata snapshot — name, entry type, length, class id, timestamps. |

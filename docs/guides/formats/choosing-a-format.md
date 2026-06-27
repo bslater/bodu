@@ -40,8 +40,8 @@ Read it as three questions:
 
 If you need *deeper* nesting than INI's single section level, none of these
 three is the right tool — reach for the hierarchical serializers
-([TOML](../serialization/toml.md) or
-[Bencode](../serialization/bencode.md)) instead.
+([TOML](../serialization/toml/index.md), [YAML](../serialization/yaml/index.md), or
+[Bencode](../serialization/bencode/index.md)) instead.
 
 ## Round-tripping and mutation
 

@@ -59,7 +59,7 @@ All policies share the same `IDictionary<TKey, TValue>` surface and the same ove
 <xref:Bodu.WeekPattern> is an immutable `readonly struct` that represents a set of days within a seven-day week, packed into a 7-bit bitmask. It supports:
 
 - **Composition** — `With(DayOfWeek)` and `Without(DayOfWeek)` return new patterns; the bitwise operators `|`, `&`, `^`, `~` compose set union, intersection, symmetric difference, and complement.
-- **Parsing** — `WeekPattern.Parse("MTuWThF")` produces the weekday set; the format uses two-letter abbreviations for Tuesday, Thursday, and Sunday to disambiguate. Presets `WeekPattern.Empty`, `WeekPattern.Weekdays`, `WeekPattern.Weekend`, and `WeekPattern.AllDays` cover the common cases.
+- **Parsing** — `WeekPattern.Parse("MTuWThF")` produces the weekday set; the format uses two-letter abbreviations for Tuesday, Thursday, and Sunday to disambiguate. Presets `WeekPattern.Empty`, `WeekPattern.Weekdays`, and `WeekPattern.Weekend` cover the common cases (use `Weekdays | Weekend` for all seven days).
 - **Enumeration** — implements `IEnumerable<DayOfWeek>`, yielding selected days in `DayOfWeek` order.
 
 Because the receiver is a value type, every mutation returns a new instance. <xref:Bodu.WorkingDaysOfWeek> is the companion enum naming the common working-week patterns; conversion to and from `WeekPattern` is via the extension methods on <xref:Bodu.Extensions.WorkingDaysOfWeekExtensions>.
