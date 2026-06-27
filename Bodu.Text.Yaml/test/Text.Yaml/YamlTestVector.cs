@@ -14,8 +14,8 @@ namespace Bodu.Text.Yaml;
 /// </summary>
 /// <remarks>
 /// The vector mirrors the upstream layout — <c>in.yaml</c> is the input document and <c>in.json</c> is the canonical
-/// JSON expectation when the suite publishes one. The <see cref="Category" /> comes from the repository's
-/// <c>classification.tsv</c>, which remains the source of truth for how the profile treats each vector.
+/// JSON expectation when the suite publishes one. The <see cref="Category" /> is derived by
+/// <see cref="YamlTestCorpusReader" /> from the case structure and the profile's by-name classification sets.
 /// </remarks>
 public sealed record YamlTestVector : IKat
 {
@@ -38,7 +38,7 @@ public sealed record YamlTestVector : IKat
     public required string Kind { get; init; }
 
     /// <summary>
-    /// Gets the profile classification of the vector from <c>classification.tsv</c>.
+    /// Gets the profile classification of the vector as derived by <see cref="YamlTestCorpusReader" />.
     /// </summary>
     /// <value>The classification category, for example <c>SupportedPass</c>.</value>
     public required string Category { get; init; }
