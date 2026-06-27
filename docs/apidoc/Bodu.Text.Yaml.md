@@ -40,7 +40,7 @@ Bodu.Text.Yaml implements the **Bodu YAML Core Tree Profile**: a YAML 1.2 core-s
 **Document object models**
 
 - <xref:Bodu.Text.Yaml.Nodes.YamlNode> / <xref:Bodu.Text.Yaml.Nodes.YamlObject> / <xref:Bodu.Text.Yaml.Nodes.YamlArray> / <xref:Bodu.Text.Yaml.Nodes.YamlValue> — the mutable, editable DOM.
-- <xref:Bodu.Text.Yaml.Document.YamlDocument> / <xref:Bodu.Text.Yaml.Document.YamlElement> / <xref:Bodu.Text.Yaml.Document.YamlProperty> — the read-only, low-allocation DOM; `ParseAllDocuments` returns every document in a multi-document stream.
+- <xref:Bodu.Text.Yaml.Document.YamlDocument> / <xref:Bodu.Text.Yaml.Document.YamlElement> / <xref:Bodu.Text.Yaml.Document.YamlProperty> — the read-only, low-allocation DOM; `ParseAllDocuments` returns every document in a multi-document stream (parsing tuned by <xref:Bodu.Text.Yaml.Document.YamlDocumentOptions>).
 
 **Converters and attributes (`Bodu.Text.Yaml.Serialization`)**
 

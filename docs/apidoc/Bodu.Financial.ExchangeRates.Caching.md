@@ -35,6 +35,10 @@ All dependency-injection registration lives in the `Bodu.Financial.ExchangeRates
 - <xref:Bodu.Financial.ExchangeRates.Caching.NullExchangeRateCache> — the no-op cache (`NullExchangeRateCache.Create(provider)`), for when caching is disabled.
 - <xref:Bodu.Financial.ExchangeRates.Caching.ExchangeRateCacheOptions>, <xref:Bodu.Financial.ExchangeRates.Caching.FileExchangeRateCacheOptions> — the storage-agnostic options (bound `Provider`) and the file options (adds `CacheDirectory`).
 - <xref:Bodu.Financial.ExchangeRates.Caching.CachedExchangeRate> — one cached row: observation `Date`, `Rate`, and the `CachedAtUtc` instant that drives expiry.
+- <xref:Bodu.Financial.ExchangeRates.Caching.ExchangeRateCacheEntry> — the serializable on-disk row model: observation `Date`, `Rate`, `CachedAtUtc`, and optional `ObservedAtUtc`.
+- <xref:Bodu.Financial.ExchangeRates.Caching.ExchangeRateCacheCoverageEntry> — a persisted coverage window: the inclusive `Start` / `End` dates fetched and the `FetchedAtUtc` instant they were retrieved.
+- <xref:Bodu.Financial.ExchangeRates.Caching.ExchangeRateCacheFile> — the per-pair file document the file backends serialize: an `Entries` list of rows plus a `Coverage` list of fetched windows.
+- <xref:Bodu.Financial.ExchangeRates.Caching.ExchangeRateCacheWriteStatus> — the outcome of a cache write (`Stored`, `Skipped`, `Failed`).
 
 **Read-through caching decorator**
 
@@ -50,6 +54,7 @@ All dependency-injection registration lives in the `Bodu.Financial.ExchangeRates
 - <xref:Bodu.Financial.ExchangeRates.Caching.AverageStrategy> — arithmetic mean of every child that resolves, tagged with a synthetic provider label.
 - <xref:Bodu.Financial.ExchangeRates.Caching.ExchangeRatePairRoute>, <xref:Bodu.Financial.ExchangeRates.Caching.ExchangeRateAggregationOptions> — a per-pair ordered child list (with an optional pair-specific strategy) and the aggregator options that hold the default strategy, default order, and the route map.
 - <xref:Bodu.Financial.ExchangeRates.Caching.NamedDatedExchangeRateProvider> — pairs a child provider with the name it is referenced by in routing and diagnostics.
+- <xref:Bodu.Financial.ExchangeRates.Caching.IAggregatedExchangeRateBuilder> — the fluent builder surface for composing an aggregator in DI: `AddCachedChild` (by provider type or factory), `UseDefaultStrategy`, and `MapPair` for per-pair provider ordering and optional pair-specific strategies.
 
 ## Minimal sample
 

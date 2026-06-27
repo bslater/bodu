@@ -18,6 +18,11 @@ Each provider ships its own dependency-injection registration in the `Bodu.Finan
 
 ## Key types
 
+**Shared base and registration machinery**
+
+- <xref:Bodu.Financial.WebExchangeRateProvider> — the abstract HTTP-backed dated-provider base (in the [`Bodu.Financial`](Bodu.Financial.md) namespace) that every provider here derives from: it accumulates fetched observations into an immutable book / snapshot, coalesces concurrent loads, and owns or borrows its `HttpClient`. The pair-serving providers (Yahoo, OFX) build on its `PairWebExchangeRateProvider<TSeries>` specialisation.
+- <xref:Bodu.Financial.ExchangeRates.WebExchangeRateProviderExtensions> — the shared `AddWebExchangeRateProvider<TProvider, TOptions>(...)` registration machinery (named `HttpClient` plus Polly resilience) that every provider's `Add<Source>...` method delegates to. Lives in the `Bodu.Financial.ExchangeRates.DependencyInjection` package and is exposed in the flattened `Bodu.Financial.ExchangeRates` namespace.
+
 **Bank of England (GBP base; daily spot, CSV export)**
 
 - <xref:Bodu.Financial.ExchangeRates.BoeExchangeRateProvider> — the provider; warm it with `LoadRangeAsync`, then resolve through the dated or timeless surface. Registered with `AddBoeReferenceRates`.

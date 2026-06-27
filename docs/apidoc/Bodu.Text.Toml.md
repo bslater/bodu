@@ -39,8 +39,8 @@ The types are organised into folders/namespaces by surface (`Reader`, `Writer`, 
 
 **Document object models**
 
-- <xref:Bodu.Text.Toml.Nodes.TomlNode> / <xref:Bodu.Text.Toml.Nodes.TomlObject> / <xref:Bodu.Text.Toml.Nodes.TomlArray> / <xref:Bodu.Text.Toml.Nodes.TomlValue> — the mutable, editable DOM.
-- <xref:Bodu.Text.Toml.Document.TomlDocument> / <xref:Bodu.Text.Toml.Document.TomlElement> / <xref:Bodu.Text.Toml.Document.TomlProperty> — the read-only, low-allocation DOM.
+- <xref:Bodu.Text.Toml.Nodes.TomlNode> / <xref:Bodu.Text.Toml.Nodes.TomlObject> / <xref:Bodu.Text.Toml.Nodes.TomlArray> / <xref:Bodu.Text.Toml.Nodes.TomlValue> — the mutable, editable DOM (parsing tuned by <xref:Bodu.Text.Toml.Nodes.TomlNodeOptions>).
+- <xref:Bodu.Text.Toml.Document.TomlDocument> / <xref:Bodu.Text.Toml.Document.TomlElement> / <xref:Bodu.Text.Toml.Document.TomlProperty> — the read-only, low-allocation DOM (parsing tuned by <xref:Bodu.Text.Toml.Document.TomlDocumentOptions>).
 
 **Converters and attributes (`Bodu.Text.Toml.Serialization`)**
 

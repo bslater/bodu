@@ -38,7 +38,7 @@ Output is always canonical Bencode: dictionary entries are emitted in ascending 
 
 **Document object models**
 
-- <xref:Bodu.Text.Bencode.Nodes.BencodeNode> / <xref:Bodu.Text.Bencode.Nodes.BencodeObject> / <xref:Bodu.Text.Bencode.Nodes.BencodeArray> / <xref:Bodu.Text.Bencode.Nodes.BencodeValue> — the mutable, editable DOM.
+- <xref:Bodu.Text.Bencode.Nodes.BencodeNode> / <xref:Bodu.Text.Bencode.Nodes.BencodeObject> / <xref:Bodu.Text.Bencode.Nodes.BencodeArray> / <xref:Bodu.Text.Bencode.Nodes.BencodeValue> — the mutable, editable DOM (parsing tuned by <xref:Bodu.Text.Bencode.Nodes.BencodeNodeOptions>).
 - <xref:Bodu.Text.Bencode.Document.BencodeDocument> / <xref:Bodu.Text.Bencode.Document.BencodeElement> / <xref:Bodu.Text.Bencode.Document.BencodeProperty> — the read-only, low-allocation DOM.
 
 **Converters and attributes (`Bodu.Text.Bencode.Serialization`)**

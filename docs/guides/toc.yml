@@ -21,6 +21,8 @@
               href: core/sequenced-dictionary.md
             - name: Indexed priority queue
               href: core/indexed-priority-queue.md
+            - name: Graphs and graph algorithms
+              href: core/graphs.md
             - name: Indexed and ordered sets
               href: core/ordered-sets.md
             - name: Multiset
@@ -31,10 +33,22 @@
               href: core/segmented-buffer.md
             - name: Range-keyed lookups
               href: core/range-dictionary.md
+        - name: Bodu.Collections.Generic.Trees
+          items:
+            - name: Trie (prefix tree)
+              href: core/trie.md
+        - name: Bodu.Functional
+          items:
+            - name: Memoization
+              href: core/memoization.md
         - name: Bodu.Collections.Generic.Concurrent
           items:
             - name: Concurrent collections
               href: core/concurrent-collections.md
+        - name: Bodu.Threading
+          items:
+            - name: Async coordination primitives
+              href: core/async-primitives.md
         - name: Bodu.Buffers
           items:
             - name: Pooled buffer builder
