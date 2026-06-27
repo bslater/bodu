@@ -101,8 +101,6 @@ dotnet test Bodu.Text.Yaml/test/Bodu.Text.Yaml.Test.csproj --settings bvt.runset
 dotnet test Bodu.Text.Yaml/test/Bodu.Text.Yaml.Test.csproj --settings regression.runsettings
 ```
 
-The Regression tier also replays `test/YamlFuzzCorpus` — minimized inputs discovered by fuzzing the parser, kept as permanent regression vectors and run by `YamlFuzzCorpusTests` (a `RoundTrips` vector must survive a parse → serialize → reparse cycle; a `Throws` vector must be rejected with `YamlFormatException`).
-
 ## License
 
 MIT. © Bodu Pty. Ltd.
