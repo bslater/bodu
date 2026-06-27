@@ -183,4 +183,3 @@ slnx.sqlite
 # supply it from a secret at release time, ideally to a path outside the working tree.
 *.snk
 !bld/Bodu.public.snk
-
