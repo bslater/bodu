@@ -175,6 +175,24 @@ namespace Bodu {
 
 
         /// <summary>
+        ///   Looks up a localized string similar to The Git Base85 decoded length {0} is not consistent with the number of encoded groups..
+        /// </summary>
+        internal static string Arg_Invalid_GitBase85DecodedLength {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_GitBase85DecodedLength", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Git Base85 padded input length must be a multiple of five characters..
+        /// </summary>
+        internal static string Arg_Invalid_GitBase85InputLength {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_GitBase85InputLength", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Unknown encoding name: '{0}'..
         /// </summary>
         internal static string Arg_Invalid_UnknownEncodingName {

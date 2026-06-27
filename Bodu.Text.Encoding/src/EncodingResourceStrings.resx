@@ -97,6 +97,12 @@
   <data name="Arg_Invalid_DestinationTooSmallForTranscoded" xml:space="preserve">
     <value>Destination is too small to receive the transcoded bytes.</value>
   </data>
+  <data name="Arg_Invalid_GitBase85DecodedLength" xml:space="preserve">
+    <value>The Git Base85 decoded length {0} is not consistent with the number of encoded groups.</value>
+  </data>
+  <data name="Arg_Invalid_GitBase85InputLength" xml:space="preserve">
+    <value>Git Base85 padded input length must be a multiple of five characters.</value>
+  </data>
   <data name="Arg_Invalid_UnknownEncodingName" xml:space="preserve">
     <value>Unknown encoding name: '{0}'.</value>
   </data>
