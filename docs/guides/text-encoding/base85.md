@@ -1,8 +1,8 @@
 ---
-title: Using Base85 (Ascii85 and Z85)
+title: Using Base85 (Ascii85, Z85, and Git)
 ---
 
-# Using Base85 (Ascii85 and Z85)
+# Using Base85 (Ascii85, Z85, and Git)
 
 `Base85` packs four input bytes into a 32-bit unsigned integer, then divides by 85 four times to emit five output
 characters. The payload expansion is **25 %** — the smallest of any encoding the library ships, but at the cost
@@ -46,6 +46,7 @@ byte[] back = Base85.Decode(a);
 |---|---|---|---|---|
 | `Ascii85` (Adobe Tech Note 5045) | `!` (33) through `u` (117) — 85 contiguous ASCII characters | Yes — `z` represents 4 zero bytes | **Yes** — 1, 2, or 3-byte tails permitted | Any length |
 | `Z85` (RFC 32 — ZeroMQ) | `0-9 a-z A-Z .-:+=^!/*?&<>()[]{}@%$#` — shell-safe, no quote or backslash | No | **No** | **Multiple of 4 bytes** |
+| `Git` (Git `base85.c`) | `0-9 A-Z a-z !#$%&()*+-;<=>?@^_` `` ` `` `{|}~` — Git binary-patch alphabet | No | **Yes** — compact 1, 2, or 3-byte tails | Any length |
 
 ### When to pick each
 
@@ -53,6 +54,7 @@ byte[] back = Base85.Decode(a);
 |---|---|
 | `Ascii85` | PDF / PostScript embedded binary, Adobe Tech Note 5045-compatible streams, dense Base85 with shortcut |
 | `Z85` | ZeroMQ wire keys, shell-pasted binary keys (alphabet avoids quote / backslash / semicolon) |
+| `Git` | The Git binary-patch Base85 alphabet — round-trip-safe compact output, or the exact padded line primitive |
 
 ## The `z` shortcut (Ascii85 only)
 
@@ -125,6 +127,44 @@ need to escape:
 Notice the absence of `"`, `'`, `\`, `;`, `|`, `` ` `` — exactly the characters that would require escaping in
 shell commands or in JSON / XML string literals. This makes Z85 a popular choice for binary keys that need to be
 pasted into shell sessions or embedded directly in configuration files.
+
+## Git Base85
+
+`Base85Variant.Git` adds the alphabet Git uses for binary patch payloads (`base85.c`). It shares the Ascii85 partial-group
+behaviour but uses Git's alphabet, and it has **no** `z` shortcut and **no** Adobe `<~`/`~>` delimiters — those
+characters (`<`, `=`, `>`, `~`) are ordinary Git digits.
+
+> [!NOTE]
+> `Base85Variant.Git` implements the Git Base85 **alphabet** only. It does not parse Git binary patches — literal/delta
+> sections, zlib payloads, line-length prefixes, and patch application are out of scope.
+
+### Compact mode (default, round-trip safe)
+
+`Base85.Encode(..., Base85Variant.Git)` emits a **compact, self-delimiting** tail following Python's
+`base64.b85encode(..., pad=False)`: a final remainder of 1, 2, or 3 bytes becomes 2, 3, or 4 characters. This makes
+`Decode(Encode(bytes, Git), Git) == bytes` for any byte length, so the variant is registered as an
+[`IBinaryEncoding`](binary-encodings-interface.md) (`base85-git` / `git-base85` / `b85`).
+
+```csharp
+Base85.Encode(new byte[] { 0x00, 0x00, 0x00, 0x00 }, Base85Variant.Git); // "00000" (no shortcut)
+Base85.Encode(new byte[] { 0xFF, 0xFF, 0xFF, 0xFF }, Base85Variant.Git); // "|NsC0"
+Base85.Encode("hello"u8, Base85Variant.Git);                              // "Xk~0{Zv" (5 bytes → 7 chars)
+```
+
+An encoded length of `len % 5 == 1` is invalid (a single trailing character cannot represent a byte), exactly as
+Ascii85.
+
+### Padded mode (exact Git line primitive)
+
+Git's binary-patch line format is **not** self-delimiting: it always emits five characters per group and carries the
+decoded byte count in the line prefix. The `EncodeGitPadded` / `DecodeGitPadded` helpers expose that primitive — the
+caller supplies the decoded length on decode. They are **not** registered as `IBinaryEncoding`, because the interface
+cannot carry that length.
+
+```csharp
+string padded = Base85.EncodeGitPadded(new byte[] { 0x01 });             // "0RR91" (1 byte → 5 chars)
+byte[] back   = Base85.DecodeGitPadded(padded, decodedLength: 1);        // { 0x01 }
+```
 
 ## Lenient parsing
 

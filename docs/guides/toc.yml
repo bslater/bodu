@@ -276,7 +276,7 @@
               href: text-encoding/base64.md
             - name: Using Base58
               href: text-encoding/base58.md
-            - name: Using Base85 (Ascii85 and Z85)
+            - name: Using Base85 (Ascii85, Z85, and Git)
               href: text-encoding/base85.md
             - name: Using Base45 (QR codes)
               href: text-encoding/base45.md
@@ -284,6 +284,12 @@
               href: text-encoding/base62.md
             - name: Using Bech32 and Bech32m
               href: text-encoding/bech32.md
+        - name: Bodu.Text.Encoding — Escape encodings
+          items:
+            - name: Using Quoted-Printable (MIME bodies)
+              href: text-encoding/quoted-printable.md
+            - name: Using percent-encoding (URIs and forms)
+              href: text-encoding/percent-encoding.md
         - name: Bodu.Text.Encoding — Patterns
           items:
             - name: The IBinaryEncoding interface
