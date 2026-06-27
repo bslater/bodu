@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Hkdf.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -27,8 +27,8 @@ namespace Bodu.Security.Cryptography;
 /// The surface mirrors the BCL's <see cref="System.Security.Cryptography.HKDF" /> so the two are interchangeable. The
 /// supported hash algorithms are <see cref="HashAlgorithmName.SHA1" />, <see cref="HashAlgorithmName.SHA256" />,
 /// <see cref="HashAlgorithmName.SHA384" />, and <see cref="HashAlgorithmName.SHA512" />. Prefer the platform
-/// <see cref="System.Security.Cryptography.HKDF" /> where it covers your need; this type exists to give the rest of
-/// the library a self-contained HKDF surface (for example, the HPKE labeled KDF).
+/// <see cref="System.Security.Cryptography.HKDF" /> where it covers your need; this type exists to give the rest of the
+/// library a self-contained HKDF surface (for example, the HPKE labeled KDF).
 /// </para>
 /// <para>
 /// Like the rest of the library, this implementation offers best-effort side-channel resistance and has not been
@@ -57,7 +57,9 @@ public static class Hkdf
     /// <param name="inputKeyingMaterial">The input keying material to extract entropy from.</param>
     /// <param name="salt">The optional non-secret salt. When empty, a string of hash-length zero bytes is used.</param>
     /// <returns>The pseudorandom key (PRK), one hash length long.</returns>
-    /// <exception cref="ArgumentException"><paramref name="hashAlgorithm" /> is not a supported HKDF hash algorithm.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="hashAlgorithm" /> is not a supported HKDF hash algorithm.
+    /// </exception>
     public static byte[] Extract(HashAlgorithmName hashAlgorithm, ReadOnlySpan<byte> inputKeyingMaterial, ReadOnlySpan<byte> salt = default)
     {
         int hashLength = GetHashLengthInBytes(hashAlgorithm);
@@ -74,7 +76,9 @@ public static class Hkdf
     /// <param name="hashAlgorithm">The HMAC hash algorithm to use.</param>
     /// <param name="inputKeyingMaterial">The input keying material to extract entropy from.</param>
     /// <param name="salt">The optional non-secret salt. When empty, a string of hash-length zero bytes is used.</param>
-    /// <param name="destination">The span that receives the pseudorandom key; must be exactly one hash length long.</param>
+    /// <param name="destination">
+    /// The span that receives the pseudorandom key; must be exactly one hash length long.
+    /// </param>
     /// <returns>The number of bytes written to <paramref name="destination" />, equal to the hash length.</returns>
     /// <exception cref="ArgumentException">
     /// <paramref name="hashAlgorithm" /> is not a supported HKDF hash algorithm, or <paramref name="destination" /> is
@@ -93,7 +97,10 @@ public static class Hkdf
     /// <paramref name="outputLength" /> bytes of output keying material.
     /// </summary>
     /// <param name="hashAlgorithm">The HMAC hash algorithm to use.</param>
-    /// <param name="pseudoRandomKey">The pseudorandom key produced by <see cref="Extract(HashAlgorithmName, ReadOnlySpan{byte}, ReadOnlySpan{byte})" />.</param>
+    /// <param name="pseudoRandomKey">
+    /// The pseudorandom key produced by
+    /// <see cref="Extract(HashAlgorithmName, ReadOnlySpan{byte}, ReadOnlySpan{byte})" />.
+    /// </param>
     /// <param name="outputLength">The number of bytes to produce.</param>
     /// <param name="info">The optional context and application-specific information.</param>
     /// <returns>The output keying material, <paramref name="outputLength" /> bytes long.</returns>
@@ -119,8 +126,13 @@ public static class Hkdf
     /// Performs the RFC 5869 expand stage, writing the output keying material into <paramref name="output" />.
     /// </summary>
     /// <param name="hashAlgorithm">The HMAC hash algorithm to use.</param>
-    /// <param name="pseudoRandomKey">The pseudorandom key produced by <see cref="Extract(HashAlgorithmName, ReadOnlySpan{byte}, ReadOnlySpan{byte})" />.</param>
-    /// <param name="output">The span that receives the output keying material; its length determines how many bytes are produced.</param>
+    /// <param name="pseudoRandomKey">
+    /// The pseudorandom key produced by
+    /// <see cref="Extract(HashAlgorithmName, ReadOnlySpan{byte}, ReadOnlySpan{byte})" />.
+    /// </param>
+    /// <param name="output">
+    /// The span that receives the output keying material; its length determines how many bytes are produced.
+    /// </param>
     /// <param name="info">The optional context and application-specific information.</param>
     /// <exception cref="ArgumentException">
     /// <paramref name="hashAlgorithm" /> is not a supported HKDF hash algorithm, or <paramref name="pseudoRandomKey" />
@@ -147,7 +159,9 @@ public static class Hkdf
     /// <param name="salt">The optional non-secret salt. When empty, a string of hash-length zero bytes is used.</param>
     /// <param name="info">The optional context and application-specific information.</param>
     /// <returns>The output keying material, <paramref name="outputLength" /> bytes long.</returns>
-    /// <exception cref="ArgumentException"><paramref name="hashAlgorithm" /> is not a supported HKDF hash algorithm.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="hashAlgorithm" /> is not a supported HKDF hash algorithm.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="outputLength" /> is not between 1 and 255 times the hash length.
     /// </exception>
@@ -168,10 +182,14 @@ public static class Hkdf
     /// </summary>
     /// <param name="hashAlgorithm">The HMAC hash algorithm to use.</param>
     /// <param name="inputKeyingMaterial">The input keying material to derive from.</param>
-    /// <param name="output">The span that receives the output keying material; its length determines how many bytes are produced.</param>
+    /// <param name="output">
+    /// The span that receives the output keying material; its length determines how many bytes are produced.
+    /// </param>
     /// <param name="salt">The optional non-secret salt. When empty, a string of hash-length zero bytes is used.</param>
     /// <param name="info">The optional context and application-specific information.</param>
-    /// <exception cref="ArgumentException"><paramref name="hashAlgorithm" /> is not a supported HKDF hash algorithm.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="hashAlgorithm" /> is not a supported HKDF hash algorithm.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="output" /> is empty or longer than 255 times the hash length.
     /// </exception>
@@ -216,7 +234,9 @@ public static class Hkdf
     /// <param name="pseudoRandomKey">The pseudorandom key.</param>
     /// <param name="output">The span that receives the output keying material.</param>
     /// <param name="info">The optional context and application-specific information.</param>
-    /// <exception cref="ArgumentException"><paramref name="pseudoRandomKey" /> is shorter than one hash length.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="pseudoRandomKey" /> is shorter than one hash length.
+    /// </exception>
     private static void ExpandCore(HashAlgorithmName hashAlgorithm, int hashLength, ReadOnlySpan<byte> pseudoRandomKey, Span<byte> output, ReadOnlySpan<byte> info)
     {
         if (pseudoRandomKey.Length < hashLength)
@@ -275,7 +295,9 @@ public static class Hkdf
     /// <param name="source">The data to authenticate.</param>
     /// <param name="destination">The span that receives the HMAC.</param>
     /// <returns>The number of bytes written to <paramref name="destination" />.</returns>
-    /// <exception cref="ArgumentException"><paramref name="hashAlgorithm" /> is not a supported HKDF hash algorithm.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="hashAlgorithm" /> is not a supported HKDF hash algorithm.
+    /// </exception>
     private static int Hmac(HashAlgorithmName hashAlgorithm, ReadOnlySpan<byte> key, ReadOnlySpan<byte> source, Span<byte> destination)
     {
         if (hashAlgorithm == HashAlgorithmName.SHA256)
@@ -295,7 +317,9 @@ public static class Hkdf
     /// </summary>
     /// <param name="hashAlgorithm">The hash algorithm to measure.</param>
     /// <returns>The hash length in bytes.</returns>
-    /// <exception cref="ArgumentException"><paramref name="hashAlgorithm" /> is not a supported HKDF hash algorithm.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="hashAlgorithm" /> is not a supported HKDF hash algorithm.
+    /// </exception>
     private static int GetHashLengthInBytes(HashAlgorithmName hashAlgorithm)
     {
         if (hashAlgorithm == HashAlgorithmName.SHA256)

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="KemKnownAnswer.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -37,8 +37,8 @@ public sealed record KemKnownAnswer : AsymmetricKnownAnswer
     public required byte[] SharedSecret { get; init; }
 
     /// <summary>
-    /// Reads all encapsulation/decapsulation vectors from a <c>Field = value</c> KAT stream with the fields
-    /// <c>Name</c>, <c>Set</c>, <c>Function</c>, <c>Ek</c> or <c>Dk</c>, optional <c>M</c>, <c>C</c>, and <c>K</c>.
+    /// Reads all encapsulation/decapsulation vectors from a <c>Field = value</c> KAT stream with the fields <c>Name</c>,
+    /// <c>Set</c>, <c>Function</c>, <c>Ek</c> or <c>Dk</c>, optional <c>M</c>, <c>C</c>, and <c>K</c>.
     /// </summary>
     /// <param name="stream">A readable text stream containing the KAT data.</param>
     /// <returns>The parsed vectors in source order.</returns>

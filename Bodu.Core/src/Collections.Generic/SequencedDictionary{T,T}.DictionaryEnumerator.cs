@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SequencedDictionary{T,T}.DictionaryEnumerator.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -11,8 +11,8 @@ namespace Bodu.Collections.Generic;
 public partial class SequencedDictionary<TKey, TValue>
 {
     /// <summary>
-    /// Enumerates the elements of a <see cref="SequencedDictionary{TKey, TValue}" /> as
-    /// <see cref="DictionaryEntry" /> values.
+    /// Enumerates the elements of a <see cref="SequencedDictionary{TKey, TValue}" /> as <see cref="DictionaryEntry" />
+    /// values.
     /// </summary>
     /// <remarks>
     /// <para>

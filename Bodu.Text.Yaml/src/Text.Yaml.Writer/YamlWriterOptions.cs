@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlWriterOptions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -64,15 +64,15 @@ public struct YamlWriterOptions
     /// <value>The newline string used by the writer.</value>
     internal readonly string EffectiveNewLine => _newLine ?? "\n";
 
-    /// <summary>
-    /// The largest indentation width the writer accepts.
-    /// </summary>
+    /// <summary>The largest indentation width the writer accepts.</summary>
     private const int MaxIndentSize = 16;
 
     /// <summary>
     /// Validates the configured options, rejecting an unsupported newline string or an out-of-range indentation width.
     /// </summary>
-    /// <exception cref="ArgumentException">The newline is not <see langword="null" />, a line feed, or a carriage-return line feed.</exception>
+    /// <exception cref="ArgumentException">
+    /// The newline is not <see langword="null" />, a line feed, or a carriage-return line feed.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">The indentation width is greater than 16.</exception>
     internal readonly void Validate()
     {

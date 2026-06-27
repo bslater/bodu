@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlConverterCollection.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -14,8 +14,8 @@ namespace Bodu.Text.Yaml.Serialization;
 /// used or frozen.
 /// </summary>
 /// <remarks>
-/// Mirrors the guarded converter list of <see cref="System.Text.Json.JsonSerializerOptions" />: once the owning
-/// options instance is read-only, every mutating operation throws <see cref="InvalidOperationException" />, which keeps
+/// Mirrors the guarded converter list of <see cref="System.Text.Json.JsonSerializerOptions" />: once the owning options
+/// instance is read-only, every mutating operation throws <see cref="InvalidOperationException" />, which keeps
 /// serializer behavior deterministic when the same instance is shared across threads.
 /// </remarks>
 internal sealed class YamlConverterCollection : Collection<YamlConverter>

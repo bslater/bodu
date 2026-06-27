@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="KeyGenKnownAnswer.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -12,9 +12,9 @@ namespace Bodu.Security.Cryptography.Infrastructure;
 /// </summary>
 /// <remarks>
 /// <see cref="Seed" /> is the full private seed consumed by key generation: the 32-byte ξ for ML-DSA, or the
-/// concatenated <c>d ‖ z</c> (64 bytes) for ML-KEM. <see cref="ExpectedPublicKey" /> / <see cref="ExpectedPrivateKey" />
-/// are the encapsulation/decapsulation keys for ML-KEM and the public/private keys for ML-DSA. Vectors are constructed
-/// by the per-family ACVP loaders, which map each file's field set onto this shape.
+/// concatenated <c>d ‖ z</c> (64 bytes) for ML-KEM. <see cref="ExpectedPublicKey" /> /
+/// <see cref="ExpectedPrivateKey" /> are the encapsulation/decapsulation keys for ML-KEM and the public/private keys
+/// for ML-DSA. Vectors are constructed by the per-family ACVP loaders, which map each file's field set onto this shape.
 /// </remarks>
 public sealed record KeyGenKnownAnswer : AsymmetricKnownAnswer
 {

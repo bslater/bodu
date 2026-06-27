@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HpkeAead.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -12,13 +12,19 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 public enum HpkeAead : ushort
 {
-    /// <summary>AES-128-GCM, AEAD identifier <c>0x0001</c>.</summary>
+    /// <summary>
+    /// AES-128-GCM, AEAD identifier <c>0x0001</c>.
+    /// </summary>
     Aes128Gcm = 0x0001,
 
-    /// <summary>AES-256-GCM, AEAD identifier <c>0x0002</c>.</summary>
+    /// <summary>
+    /// AES-256-GCM, AEAD identifier <c>0x0002</c>.
+    /// </summary>
     Aes256Gcm = 0x0002,
 
-    /// <summary>ChaCha20Poly1305, AEAD identifier <c>0x0003</c>.</summary>
+    /// <summary>
+    /// ChaCha20Poly1305, AEAD identifier <c>0x0003</c>.
+    /// </summary>
     ChaCha20Poly1305 = 0x0003,
 
     /// <summary>

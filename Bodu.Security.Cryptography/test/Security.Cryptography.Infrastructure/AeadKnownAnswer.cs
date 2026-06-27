@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AeadKnownAnswer.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -11,10 +11,10 @@ namespace Bodu.Security.Cryptography.Infrastructure;
 /// plaintext) and the expected outputs (ciphertext and authentication tag) for one AEAD trial.
 /// </summary>
 /// <remarks>
-/// The ciphertext and tag are stored detached. <see cref="Layout" /> records how the originating source combined them so
-/// a test can reconstruct the source's wire ordering when needed; <see cref="CiphertextWithTag" /> yields the Bodu
-/// convention of ciphertext followed by tag. <see cref="Algorithm" /> optionally selects the construction under test for
-/// suites that drive several AEAD algorithms from one vector list.
+/// The ciphertext and tag are stored detached. <see cref="Layout" /> records how the originating source combined them
+/// so a test can reconstruct the source's wire ordering when needed; <see cref="CiphertextWithTag" /> yields the Bodu
+/// convention of ciphertext followed by tag. <see cref="Algorithm" /> optionally selects the construction under test
+/// for suites that drive several AEAD algorithms from one vector list.
 /// </remarks>
 public sealed record AeadKnownAnswer : NoncedCipherKnownAnswer
 {

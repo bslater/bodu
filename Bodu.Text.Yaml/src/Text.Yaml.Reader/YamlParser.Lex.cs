@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlParser.Lex.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -146,8 +146,8 @@ internal sealed partial class YamlParser
     /// Advances past blank lines and comment-only lines, leaving the cursor at the first non-space content byte.
     /// </summary>
     /// <remarks>
-    /// The leading whitespace of a structural content line is its indentation, which YAML requires to be spaces only.
-    /// A tab encountered before content is therefore rejected; tabs on blank or comment-only lines are immaterial and
+    /// The leading whitespace of a structural content line is its indentation, which YAML requires to be spaces only. A
+    /// tab encountered before content is therefore rejected; tabs on blank or comment-only lines are immaterial and
     /// pass through.
     /// </remarks>
     /// <exception cref="YamlFormatException">A tab is used to indent a structural content line.</exception>

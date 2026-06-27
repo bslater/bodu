@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HpkeKnownAnswer.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -15,8 +15,9 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// HPKE is a composite construction, so this leaf sits directly on the shared <see cref="CryptoKnownAnswer" /> root
-/// rather than collapsing into one of the operation-shaped leaves: it gains the common <see cref="CryptoKnownAnswer.Name" />
-/// and <see cref="CryptoKnownAnswer.Provenance" /> while keeping its own suite, key, sealed-message, and export fields.
+/// rather than collapsing into one of the operation-shaped leaves: it gains the common
+/// <see cref="CryptoKnownAnswer.Name" /> and <see cref="CryptoKnownAnswer.Provenance" /> while keeping its own suite,
+/// key, sealed-message, and export fields.
 /// </remarks>
 public sealed record HpkeKnownAnswer : CryptoKnownAnswer
 {

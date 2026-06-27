@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="KatSourceKind.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -7,13 +7,13 @@
 namespace Bodu.Security.Cryptography.Infrastructure;
 
 /// <summary>
-/// Identifies the provenance of a cryptographic known-answer test vector so that test names and reports do not overstate
-/// the authority of a vector — for example, distinguishing a published standard from an Internet-Draft, a value taken
-/// from a reference implementation, or an in-tree regression baseline.
+/// Identifies the provenance of a cryptographic known-answer test vector so that test names and reports do not
+/// overstate the authority of a vector — for example, distinguishing a published standard from an Internet-Draft, a
+/// value taken from a reference implementation, or an in-tree regression baseline.
 /// </summary>
 /// <remarks>
-/// This is the single provenance taxonomy shared by every known-answer family (digest, cipher, AEAD, key-derivation, and
-/// the asymmetric operations). It supersedes the family-specific <c>AeadKatSourceKind</c> and the free-form
+/// This is the single provenance taxonomy shared by every known-answer family (digest, cipher, AEAD, key-derivation,
+/// and the asymmetric operations). It supersedes the family-specific <c>AeadKatSourceKind</c> and the free-form
 /// <c>Profile</c> / <c>Source</c> string tags that earlier KAT records carried.
 /// </remarks>
 public enum KatSourceKind

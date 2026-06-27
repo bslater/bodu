@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MessageDigestKnownAnswer.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -15,10 +15,10 @@ namespace Bodu.Security.Cryptography.Infrastructure;
 /// </summary>
 /// <remarks>
 /// <para>
-/// When <see cref="KeyedKnownAnswer.Key" /> is <see langword="null" /> the digest is produced with whatever key (if any)
-/// the variant's algorithm instance is constructed with; a populated key applies that key per row (for example the Skein
-/// 1.3 / NIST CD <c>random+MAC</c> vectors, where every row carries its own MAC key), and an empty array selects the
-/// canonical unkeyed mode for algorithms that accept one.
+/// When <see cref="KeyedKnownAnswer.Key" /> is <see langword="null" /> the digest is produced with whatever key (if
+/// any) the variant's algorithm instance is constructed with; a populated key applies that key per row (for example the
+/// Skein 1.3 / NIST CD <c>random+MAC</c> vectors, where every row carries its own MAC key), and an empty array selects
+/// the canonical unkeyed mode for algorithms that accept one.
 /// </para>
 /// <para>
 /// Use the <see cref="Empty(string)" />, <see cref="Abc(string)" />, <see cref="QuickBrownFox(string)" />,
@@ -40,8 +40,8 @@ public sealed record MessageDigestKnownAnswer : KeyedKnownAnswer
     public required byte[] Digest { get; init; }
 
     /// <summary>
-    /// Gets the async/streaming buffer size used when exercising the streamed hashing extension methods. Defaults to the
-    /// .NET <c>Stream.CopyToAsync</c> default of 81920 bytes.
+    /// Gets the async/streaming buffer size used when exercising the streamed hashing extension methods. Defaults to
+    /// the .NET <c>Stream.CopyToAsync</c> default of 81920 bytes.
     /// </summary>
     public int BufferSize { get; init; } = 81920;
 

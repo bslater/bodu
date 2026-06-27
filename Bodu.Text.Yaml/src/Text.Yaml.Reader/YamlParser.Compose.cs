@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlParser.Compose.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -402,8 +402,8 @@ internal sealed partial class YamlParser
     };
 
     /// <summary>
-    /// Expands a tag's handle to its full prefix using the active <c>%TAG</c> directive table, resolving secondary
-    /// (<c>!!</c>) and named (<c>!name!</c>) handles. Verbatim and already-resolved tags pass through unchanged.
+    /// Expands a tag's handle to its full prefix using the active <c>%TAG</c> directive table, resolving secondary (<c>!!</c>)
+    /// and named (<c>!name!</c>) handles. Verbatim and already-resolved tags pass through unchanged.
     /// </summary>
     /// <param name="tag">The captured tag text.</param>
     /// <returns>The tag with its handle expanded, when applicable.</returns>
@@ -478,13 +478,19 @@ internal sealed partial class YamlParser
     /// </summary>
     private enum AliasVisitState
     {
-        /// <summary>The node has not yet been visited.</summary>
+        /// <summary>
+        /// The node has not yet been visited.
+        /// </summary>
         Unvisited = 0,
 
-        /// <summary>The node is currently on the traversal stack.</summary>
+        /// <summary>
+        /// The node is currently on the traversal stack.
+        /// </summary>
         Visiting = 1,
 
-        /// <summary>The node and its descendants have been fully visited.</summary>
+        /// <summary>
+        /// The node and its descendants have been fully visited.
+        /// </summary>
         Visited = 2,
     }
 }

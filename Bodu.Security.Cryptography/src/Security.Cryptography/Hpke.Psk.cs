@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Hpke.Psk.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -7,10 +7,6 @@
 using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
-
-/// <content>
-/// Single-shot operations for PSK mode (RFC 9180 §6.1), which augments base mode with a pre-shared key.
-/// </content>
 public static partial class Hpke
 {
     /// <summary>

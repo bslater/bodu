@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CryptoKnownAnswer.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -17,8 +17,9 @@ namespace Bodu.Security.Cryptography.Infrastructure;
 /// <para>
 /// Concrete vectors derive from this root through a small, operation-shaped hierarchy rather than defining a bespoke
 /// record per algorithm: secret-key operations extend <see cref="KeyedKnownAnswer" />; asymmetric operations extend
-/// <see cref="AsymmetricKnownAnswer" />. Every leaf record uses object-initializer (<c>required</c> property) construction
-/// so the shared <see cref="Name" /> and <see cref="Provenance" /> compose uniformly with the family-specific fields.
+/// <see cref="AsymmetricKnownAnswer" />. Every leaf record uses object-initializer (<c>required</c> property)
+/// construction so the shared <see cref="Name" /> and <see cref="Provenance" /> compose uniformly with the
+/// family-specific fields.
 /// </para>
 /// <para>
 /// Vector bytes are stored decoded (<see cref="byte" /> arrays). Declare literals tersely with the

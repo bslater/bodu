@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HpkeContext.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -110,7 +110,9 @@ internal sealed class HpkeContext : IDisposable
     /// <returns>The recovered plaintext.</returns>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     /// <exception cref="NotSupportedException">The suite is export-only.</exception>
-    /// <exception cref="ArgumentException"><paramref name="ciphertext" /> is shorter than the authentication tag.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="ciphertext" /> is shorter than the authentication tag.
+    /// </exception>
     /// <exception cref="CryptographicException">Authentication failed.</exception>
     /// <exception cref="InvalidOperationException">The sequence number has reached its maximum.</exception>
     public byte[] Open(ReadOnlySpan<byte> associatedData, ReadOnlySpan<byte> ciphertext)

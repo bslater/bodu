@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="KatProvenance.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -37,8 +37,12 @@ public sealed record KatProvenance(KatSourceKind Kind, string Citation, string? 
     /// <summary>
     /// Creates a provenance record for a vector published in an Internet-Draft.
     /// </summary>
-    /// <param name="citation">The draft reference, for example <c>"draft-irtf-cfrg-xchacha-03 Appendix A.3.1"</c>.</param>
-    /// <returns>A <see cref="KatProvenance" /> with <see cref="Kind" /> set to <see cref="KatSourceKind.InternetDraft" />.</returns>
+    /// <param name="citation">
+    /// The draft reference, for example <c>"draft-irtf-cfrg-xchacha-03 Appendix A.3.1"</c>.
+    /// </param>
+    /// <returns>
+    /// A <see cref="KatProvenance" /> with <see cref="Kind" /> set to <see cref="KatSourceKind.InternetDraft" />.
+    /// </returns>
     public static KatProvenance InternetDraft(string citation) =>
         new(KatSourceKind.InternetDraft, citation);
 

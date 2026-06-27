@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Hpke.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -55,7 +55,9 @@ public static partial class Hpke
     /// <exception cref="ArgumentNullException"><paramref name="suite" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException"><paramref name="recipientPublicKey" /> is not exactly 32 bytes.</exception>
     /// <exception cref="NotSupportedException">The suite is export-only.</exception>
-    /// <exception cref="CryptographicException"><paramref name="recipientPublicKey" /> is a low-order point.</exception>
+    /// <exception cref="CryptographicException">
+    /// <paramref name="recipientPublicKey" /> is a low-order point.
+    /// </exception>
     public static (byte[] Encapsulation, byte[] Ciphertext) Seal(
         HpkeSuite suite, ReadOnlySpan<byte> recipientPublicKey, ReadOnlySpan<byte> info, ReadOnlySpan<byte> associatedData, ReadOnlySpan<byte> plaintext)
     {

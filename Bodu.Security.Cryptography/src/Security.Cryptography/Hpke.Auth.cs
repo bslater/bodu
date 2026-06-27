@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Hpke.Auth.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -8,9 +8,6 @@ using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
 
-/// <content>
-/// Single-shot operations for auth mode (RFC 9180 §6.1), which authenticates the sender with its static private key.
-/// </content>
 public static partial class Hpke
 {
     /// <summary>
@@ -30,7 +27,8 @@ public static partial class Hpke
     /// <exception cref="ArgumentException"><paramref name="recipientPublicKey" /> is not exactly 32 bytes.</exception>
     /// <exception cref="NotSupportedException">The suite is export-only.</exception>
     /// <exception cref="CryptographicException">
-    /// <paramref name="senderKey" /> has no private key, or <paramref name="recipientPublicKey" /> is a low-order point.
+    /// <paramref name="senderKey" /> has no private key, or <paramref name="recipientPublicKey" /> is a low-order
+    /// point.
     /// </exception>
     public static (byte[] Encapsulation, byte[] Ciphertext) SealAuth(
         HpkeSuite suite, ReadOnlySpan<byte> recipientPublicKey, ReadOnlySpan<byte> info, X25519 senderKey, ReadOnlySpan<byte> associatedData, ReadOnlySpan<byte> plaintext)

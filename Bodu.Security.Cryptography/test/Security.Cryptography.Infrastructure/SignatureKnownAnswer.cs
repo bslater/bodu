@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SignatureKnownAnswer.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -63,8 +63,9 @@ public sealed record SignatureKnownAnswer : AsymmetricKnownAnswer
 
     /// <summary>
     /// Reads all signature vectors from a <c>Field = value</c> KAT stream with the fields <c>Name</c>, <c>Public</c>,
-    /// <c>Msg</c>, <c>Sig</c>, and <c>Valid</c>, plus an optional <c>Private</c> field. This is the Ed25519 / Wycheproof
-    /// verification format; the ML-DSA ACVP loaders construct vectors of this type directly from their own field set.
+    /// <c>Msg</c>, <c>Sig</c>, and <c>Valid</c>, plus an optional <c>Private</c> field. This is the Ed25519 /
+    /// Wycheproof verification format; the ML-DSA ACVP loaders construct vectors of this type directly from their own
+    /// field set.
     /// </summary>
     /// <param name="stream">A readable text stream containing the KAT data.</param>
     /// <returns>The parsed vectors in source order.</returns>

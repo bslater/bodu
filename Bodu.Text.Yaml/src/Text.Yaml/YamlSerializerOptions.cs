@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlSerializerOptions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -51,7 +51,9 @@ public sealed class YamlSerializerOptions
     /// <summary>
     /// Gets a value indicating whether the options instance is read-only.
     /// </summary>
-    /// <value><see langword="true" /> once the instance has been used or frozen; otherwise <see langword="false" />.</value>
+    /// <value>
+    /// <see langword="true" /> once the instance has been used or frozen; otherwise <see langword="false" />.
+    /// </value>
     public bool IsReadOnly => _isReadOnly;
 
     /// <summary>
@@ -168,8 +170,7 @@ public sealed class YamlSerializerOptions
     }
 
     /// <summary>
-    /// Gets or sets the maximum depth allowed when serializing an object graph and when parsing during
-    /// deserialization.
+    /// Gets or sets the maximum depth allowed when serializing an object graph and when parsing during deserialization.
     /// </summary>
     /// <value>The maximum depth. A value of zero or less selects the default of 64.</value>
     /// <exception cref="InvalidOperationException">The options instance is read-only.</exception>

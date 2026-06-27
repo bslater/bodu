@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Utf8YamlReader.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -24,8 +24,8 @@ namespace Bodu.Text.Yaml.Reader;
 /// </para>
 /// <para>
 /// The reader honors the library's YAML 1.2 core, JSON-compatible tree profile: mapping keys must resolve to scalar
-/// strings, mapping keys must be unique, anchors must be unique and acyclic, and tabs are not permitted as
-/// indentation. Inputs that violate the profile are rejected with <see cref="YamlFormatException" />.
+/// strings, mapping keys must be unique, anchors must be unique and acyclic, and tabs are not permitted as indentation.
+/// Inputs that violate the profile are rejected with <see cref="YamlFormatException" />.
 /// </para>
 /// <para>
 /// The reader is a <see langword="ref struct" /> and cannot be boxed, stored on the heap, or captured by a lambda.

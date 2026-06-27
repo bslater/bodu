@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Hpke.AuthPsk.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -8,9 +8,6 @@ using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
 
-/// <content>
-/// Single-shot operations for auth-PSK mode (RFC 9180 §6.1), which combines sender authentication with a pre-shared key.
-/// </content>
 public static partial class Hpke
 {
     /// <summary>

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SequencedDictionary{T,T}.IDictionary.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -55,7 +55,8 @@ public partial class SequencedDictionary<TKey, TValue> :
     /// <inheritdoc cref="System.Collections.Generic.IDictionary{TKey, TValue}.this" />
     /// <remarks>
     /// In access-order mode, both reading and assigning through the indexer move the affected entry to the end of the
-    /// iteration order. Assigning a new key appends it to the end; assigning an existing key updates its value in place.
+    /// iteration order. Assigning a new key appends it to the end; assigning an existing key updates its value in
+    /// place.
     /// </remarks>
     public TValue this[TKey key]
     {
@@ -106,8 +107,9 @@ public partial class SequencedDictionary<TKey, TValue> :
     /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException">An element with the same key already exists in the dictionary.</exception>
     /// <remarks>
-    /// This method follows the strict <see cref="System.Collections.Generic.Dictionary{TKey, TValue}.Add(TKey, TValue)" />
-    /// contract and throws on a duplicate key. To insert or overwrite without throwing, assign through the indexer.
+    /// This method follows the strict
+    /// <see cref="System.Collections.Generic.Dictionary{TKey, TValue}.Add(TKey, TValue)" /> contract and throws on a
+    /// duplicate key. To insert or overwrite without throwing, assign through the indexer.
     /// </remarks>
     public void Add(TKey key, TValue value)
     {
@@ -142,7 +144,9 @@ public partial class SequencedDictionary<TKey, TValue> :
         _store.TryGetValue(item.Key, out Entry? entry) && EqualityComparer<TValue>.Default.Equals(entry.Value, item.Value);
 
     /// <inheritdoc />
-    /// <remarks>This method never changes the iteration order, even in access-order mode.</remarks>
+    /// <remarks>
+    /// This method never changes the iteration order, even in access-order mode.
+    /// </remarks>
     public bool ContainsKey(TKey key) => _store.ContainsKey(key);
 
     /// <inheritdoc />

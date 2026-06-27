@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StreamCipherKnownAnswer.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -11,10 +11,10 @@ namespace Bodu.Security.Cryptography.Infrastructure;
 /// an optional initial block counter.
 /// </summary>
 /// <remarks>
-/// When <see cref="IsKeystream" /> is <see langword="true" />, the vector pins the raw keystream: <see cref="SymmetricCipherKnownAnswer.Ciphertext" />
-/// carries the expected keystream bytes and <see cref="SymmetricCipherKnownAnswer.Plaintext" /> is empty. Otherwise the
-/// vector is an encryption trial mapping <see cref="SymmetricCipherKnownAnswer.Plaintext" /> to
-/// <see cref="SymmetricCipherKnownAnswer.Ciphertext" />.
+/// When <see cref="IsKeystream" /> is <see langword="true" />, the vector pins the raw keystream:
+/// <see cref="SymmetricCipherKnownAnswer.Ciphertext" /> carries the expected keystream bytes and
+/// <see cref="SymmetricCipherKnownAnswer.Plaintext" /> is empty. Otherwise the vector is an encryption trial mapping
+/// <see cref="SymmetricCipherKnownAnswer.Plaintext" /> to <see cref="SymmetricCipherKnownAnswer.Ciphertext" />.
 /// </remarks>
 public sealed record StreamCipherKnownAnswer : NoncedCipherKnownAnswer
 {

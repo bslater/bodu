@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="KatCensus.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -20,17 +20,17 @@ namespace Bodu.Security.Cryptography.Infrastructure;
 /// <list type="number">
 /// <item>
 /// <description>
-/// <b>Specification-carried.</b> Every concrete test class exposing a <c>GetSpecification</c> method whose result derives
-/// from <see cref="AlgorithmSpecification{TKat}" /> is instantiated and queried; its <c>KnownAnswers</c> are read for each
-/// algorithm variant. This captures the hash, block-cipher, and stream-cipher curated sets together with their variant
-/// labels.
+/// <b>Specification-carried.</b> Every concrete test class exposing a <c>GetSpecification</c> method whose result
+/// derives from <see cref="AlgorithmSpecification{TKat}" /> is instantiated and queried; its <c>KnownAnswers</c> are
+/// read for each algorithm variant. This captures the hash, block-cipher, and stream-cipher curated sets together with
+/// their variant labels.
 /// </description>
 /// </item>
 /// <item>
 /// <description>
-/// <b><see cref="DynamicDataAttribute" />-carried.</b> Every test method's dynamic-data provider is invoked and each row
-/// scanned for <see cref="CryptoKnownAnswer" /> elements. This captures families with no specification object (AEAD modes)
-/// and the file-loaded / inline asymmetric corpora that flow directly into <c>[DynamicData]</c> sites.
+/// <b><see cref="DynamicDataAttribute" />-carried.</b> Every test method's dynamic-data provider is invoked and each
+/// row scanned for <see cref="CryptoKnownAnswer" /> elements. This captures families with no specification object (AEAD
+/// modes) and the file-loaded / inline asymmetric corpora that flow directly into <c>[DynamicData]</c> sites.
 /// </description>
 /// </item>
 /// </list>
@@ -40,9 +40,7 @@ public static class KatCensus
     private const char FieldSeparator = '|';
     private const string PairSeparator = "‖";
 
-    /// <summary>
-    /// The census header line, written first and excluded from the sorted body.
-    /// </summary>
+    /// <summary>The census header line, written first and excluded from the sorted body.</summary>
     public const string Header = "family|class|variant|name|key|input|output";
 
     /// <summary>
@@ -50,9 +48,13 @@ public static class KatCensus
     /// keying material, primary input, and primary output rendered as lowercase hex (or a short token for boolean and
     /// rejection outcomes).
     /// </summary>
-    /// <param name="Family">The KAT family, for example <c>digest</c>, <c>block-cipher</c>, or <c>signature</c>.</param>
+    /// <param name="Family">
+    /// The KAT family, for example <c>digest</c>, <c>block-cipher</c>, or <c>signature</c>.
+    /// </param>
     /// <param name="ClassName">The declaring test class.</param>
-    /// <param name="Variant">The algorithm variant label, or an empty string when the family has no variant axis.</param>
+    /// <param name="Variant">
+    /// The algorithm variant label, or an empty string when the family has no variant axis.
+    /// </param>
     /// <param name="Name">The vector's <see cref="CryptoKnownAnswer.Name" />.</param>
     /// <param name="Key">The keying material, hex-encoded, or an empty string.</param>
     /// <param name="Input">The primary input, hex-encoded, or an empty string.</param>
@@ -110,8 +112,8 @@ public static class KatCensus
     }
 
     /// <summary>
-    /// Enumerates the vectors carried on every <see cref="AlgorithmSpecification{TKat}" />-derived specification reachable
-    /// from a concrete test class.
+    /// Enumerates the vectors carried on every <see cref="AlgorithmSpecification{TKat}" />-derived specification
+    /// reachable from a concrete test class.
     /// </summary>
     /// <param name="assembly">The test assembly to scan.</param>
     /// <returns>One entry per specification-carried vector.</returns>
@@ -244,9 +246,13 @@ public static class KatCensus
     /// Resolves and invokes one dynamic-data provider, projecting any known-answer rows it yields.
     /// </summary>
     /// <param name="declaringType">The test class carrying the <see cref="DynamicDataAttribute" />.</param>
-    /// <param name="testMethod">The decorated test method, supplying the resolution context for the provider member.</param>
+    /// <param name="testMethod">
+    /// The decorated test method, supplying the resolution context for the provider member.
+    /// </param>
     /// <param name="attribute">The attribute identifying the provider member.</param>
-    /// <returns>One entry per <see cref="CryptoKnownAnswer" /> found, or nothing when the provider cannot be invoked.</returns>
+    /// <returns>
+    /// One entry per <see cref="CryptoKnownAnswer" /> found, or nothing when the provider cannot be invoked.
+    /// </returns>
     private static IEnumerable<CensusEntry> ReadDynamicData(Type declaringType, MethodInfo testMethod, DynamicDataAttribute attribute)
     {
         IEnumerable<object[]>? rows;

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlParser.Scalars.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -444,8 +444,12 @@ internal sealed partial class YamlParser
     /// Validates the indentation of a quoted-scalar continuation line: it must use spaces only and be indented more
     /// than the scalar's parent node.
     /// </summary>
-    /// <param name="minIndent">The minimum content column for a continuation line, or a negative value to skip the check.</param>
-    /// <exception cref="YamlFormatException">A continuation line uses a tab for indentation or is under-indented.</exception>
+    /// <param name="minIndent">
+    /// The minimum content column for a continuation line, or a negative value to skip the check.
+    /// </param>
+    /// <exception cref="YamlFormatException">
+    /// A continuation line uses a tab for indentation or is under-indented.
+    /// </exception>
     private void RequireQuotedContinuationIndent(int minIndent)
     {
         if (minIndent <= 0)

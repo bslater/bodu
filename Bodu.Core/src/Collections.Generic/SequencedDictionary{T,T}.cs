@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SequencedDictionary{T,T}.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -55,8 +55,8 @@ namespace Bodu.Collections.Generic;
 /// </para>
 /// <para>
 /// Keys must be non-null (the type parameter is constrained by <see langword="notnull" />). Values may be
-/// <see langword="null" /> when <typeparamref name="TValue" /> is a reference type. Custom key equality is supported via
-/// <see cref="System.Collections.Generic.IEqualityComparer{T}" />.
+/// <see langword="null" /> when <typeparamref name="TValue" /> is a reference type. Custom key equality is supported
+/// via <see cref="System.Collections.Generic.IEqualityComparer{T}" />.
 /// </para>
 /// <para>
 /// <see cref="SequencedDictionary{TKey, TValue}" /> is not thread-safe. In access-order mode reads mutate the iteration
@@ -177,8 +177,8 @@ public partial class SequencedDictionary<TKey, TValue>
         : this(capacity, false, comparer) { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="SequencedDictionary{TKey, TValue}" /> class that is empty and has the
-    /// specified initial capacity, ordering mode, and key comparer.
+    /// Initializes a new instance of the <see cref="SequencedDictionary{TKey, TValue}" /> class that is empty and has
+    /// the specified initial capacity, ordering mode, and key comparer.
     /// </summary>
     /// <param name="capacity">The initial number of entries the internal hash table can hold without resizing.</param>
     /// <param name="accessOrder">
@@ -202,31 +202,35 @@ public partial class SequencedDictionary<TKey, TValue>
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="SequencedDictionary{TKey, TValue}" /> class with elements copied from
-    /// the specified sequence, using insertion ordering and the default key comparer.
+    /// Initializes a new instance of the <see cref="SequencedDictionary{TKey, TValue}" /> class with elements copied
+    /// from the specified sequence, using insertion ordering and the default key comparer.
     /// </summary>
     /// <param name="collection">The sequence of key/value pairs to copy. Must not be <see langword="null" />.</param>
     /// <exception cref="ArgumentNullException"><paramref name="collection" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentException"><paramref name="collection" /> contains one or more duplicate keys.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="collection" /> contains one or more duplicate keys.
+    /// </exception>
     public SequencedDictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection)
         : this(collection, false, null) { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="SequencedDictionary{TKey, TValue}" /> class with elements copied from
-    /// the specified sequence, using insertion ordering and the specified key comparer.
+    /// Initializes a new instance of the <see cref="SequencedDictionary{TKey, TValue}" /> class with elements copied
+    /// from the specified sequence, using insertion ordering and the specified key comparer.
     /// </summary>
     /// <param name="collection">The sequence of key/value pairs to copy. Must not be <see langword="null" />.</param>
     /// <param name="comparer">
     /// The equality comparer to use for keys, or <see langword="null" /> to use the default comparer.
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="collection" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentException"><paramref name="collection" /> contains one or more duplicate keys.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="collection" /> contains one or more duplicate keys.
+    /// </exception>
     public SequencedDictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection, IEqualityComparer<TKey>? comparer)
         : this(collection, false, comparer) { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="SequencedDictionary{TKey, TValue}" /> class with elements copied from
-    /// the specified sequence, using the specified ordering mode and key comparer.
+    /// Initializes a new instance of the <see cref="SequencedDictionary{TKey, TValue}" /> class with elements copied
+    /// from the specified sequence, using the specified ordering mode and key comparer.
     /// </summary>
     /// <param name="collection">The sequence of key/value pairs to copy. Must not be <see langword="null" />.</param>
     /// <param name="accessOrder">
@@ -237,7 +241,9 @@ public partial class SequencedDictionary<TKey, TValue>
     /// The equality comparer to use for keys, or <see langword="null" /> to use the default comparer.
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="collection" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentException"><paramref name="collection" /> contains one or more duplicate keys.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="collection" /> contains one or more duplicate keys.
+    /// </exception>
     public SequencedDictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection, bool accessOrder, IEqualityComparer<TKey>? comparer)
         : this(0, accessOrder, comparer)
     {
@@ -310,8 +316,12 @@ public partial class SequencedDictionary<TKey, TValue>
     /// When this method returns, contains the entry at the head of the iteration order if the dictionary is non-empty;
     /// otherwise, the default value.
     /// </param>
-    /// <returns><see langword="true" /> if the dictionary contains at least one entry; otherwise, <see langword="false" />.</returns>
-    /// <remarks>This is an O(1) operation and never changes the iteration order, even in access-order mode.</remarks>
+    /// <returns>
+    /// <see langword="true" /> if the dictionary contains at least one entry; otherwise, <see langword="false" />.
+    /// </returns>
+    /// <remarks>
+    /// This is an O(1) operation and never changes the iteration order, even in access-order mode.
+    /// </remarks>
     public bool TryGetFirst(out KeyValuePair<TKey, TValue> entry)
     {
         if (_order.First is { } node)
@@ -331,8 +341,12 @@ public partial class SequencedDictionary<TKey, TValue>
     /// When this method returns, contains the entry at the tail of the iteration order if the dictionary is non-empty;
     /// otherwise, the default value.
     /// </param>
-    /// <returns><see langword="true" /> if the dictionary contains at least one entry; otherwise, <see langword="false" />.</returns>
-    /// <remarks>This is an O(1) operation and never changes the iteration order, even in access-order mode.</remarks>
+    /// <returns>
+    /// <see langword="true" /> if the dictionary contains at least one entry; otherwise, <see langword="false" />.
+    /// </returns>
+    /// <remarks>
+    /// This is an O(1) operation and never changes the iteration order, even in access-order mode.
+    /// </remarks>
     public bool TryGetLast(out KeyValuePair<TKey, TValue> entry)
     {
         if (_order.Last is { } node)
@@ -353,7 +367,9 @@ public partial class SequencedDictionary<TKey, TValue>
     /// value.
     /// </param>
     /// <returns><see langword="true" /> if an entry was removed; otherwise, <see langword="false" />.</returns>
-    /// <remarks>This is an O(1) operation. In an access-order dictionary this removes the least recently used entry.</remarks>
+    /// <remarks>
+    /// This is an O(1) operation. In an access-order dictionary this removes the least recently used entry.
+    /// </remarks>
     public bool TryRemoveFirst(out KeyValuePair<TKey, TValue> entry)
     {
         if (_order.First is { } node)
@@ -378,7 +394,9 @@ public partial class SequencedDictionary<TKey, TValue>
     /// value.
     /// </param>
     /// <returns><see langword="true" /> if an entry was removed; otherwise, <see langword="false" />.</returns>
-    /// <remarks>This is an O(1) operation. In an access-order dictionary this removes the most recently used entry.</remarks>
+    /// <remarks>
+    /// This is an O(1) operation. In an access-order dictionary this removes the most recently used entry.
+    /// </remarks>
     public bool TryRemoveLast(out KeyValuePair<TKey, TValue> entry)
     {
         if (_order.Last is { } node)
@@ -414,11 +432,12 @@ public partial class SequencedDictionary<TKey, TValue>
     }
 
     /// <summary>
-    /// Returns the dictionary entries in iteration order, failing fast if the dictionary is modified during enumeration.
+    /// Returns the dictionary entries in iteration order, failing fast if the dictionary is modified during
+    /// enumeration.
     /// </summary>
     /// <returns>
-    /// An <see cref="IEnumerable{T}" /> of <see cref="KeyValuePair{TKey, TValue}" /> in insertion order, or access order
-    /// when access ordering is enabled.
+    /// An <see cref="IEnumerable{T}" /> of <see cref="KeyValuePair{TKey, TValue}" /> in insertion order, or access
+    /// order when access ordering is enabled.
     /// </returns>
     /// <exception cref="InvalidOperationException">The dictionary was modified during enumeration.</exception>
     private IEnumerable<KeyValuePair<TKey, TValue>> GetOrderedItems()
@@ -437,7 +456,9 @@ public partial class SequencedDictionary<TKey, TValue>
     /// current <see cref="_version" />, signaling that the dictionary was modified during enumeration.
     /// </summary>
     /// <param name="capturedVersion">The version observed at the start of enumeration.</param>
-    /// <exception cref="InvalidOperationException">The dictionary was modified since <paramref name="capturedVersion" /> was captured.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// The dictionary was modified since <paramref name="capturedVersion" /> was captured.
+    /// </exception>
     private void ThrowIfVersionChanged(int capturedVersion)
     {
         if (_version != capturedVersion)

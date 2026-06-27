@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HpkeSuite.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -88,70 +88,105 @@ public sealed class HpkeSuite
         BinaryPrimitives.WriteUInt16BigEndian(_suiteId.AsSpan(8), (ushort)aead);
     }
 
-    /// <summary>Gets the DHKEM(X25519, HKDF-SHA256) / HKDF-SHA256 / AES-128-GCM suite.</summary>
+    /// <summary>
+    /// Gets the DHKEM(X25519, HKDF-SHA256) / HKDF-SHA256 / AES-128-GCM suite.
+    /// </summary>
     /// <value>The pre-configured suite <c>0x0020, 0x0001, 0x0001</c>.</value>
     public static HpkeSuite X25519_HkdfSha256_Aes128Gcm { get; } =
         new(HpkeKem.X25519HkdfSha256, HpkeKdf.HkdfSha256, HpkeAead.Aes128Gcm);
 
-    /// <summary>Gets the DHKEM(X25519, HKDF-SHA256) / HKDF-SHA256 / AES-256-GCM suite.</summary>
+    /// <summary>
+    /// Gets the DHKEM(X25519, HKDF-SHA256) / HKDF-SHA256 / AES-256-GCM suite.
+    /// </summary>
     /// <value>The pre-configured suite <c>0x0020, 0x0001, 0x0002</c>.</value>
     public static HpkeSuite X25519_HkdfSha256_Aes256Gcm { get; } =
         new(HpkeKem.X25519HkdfSha256, HpkeKdf.HkdfSha256, HpkeAead.Aes256Gcm);
 
-    /// <summary>Gets the DHKEM(X25519, HKDF-SHA256) / HKDF-SHA256 / ChaCha20Poly1305 suite.</summary>
+    /// <summary>
+    /// Gets the DHKEM(X25519, HKDF-SHA256) / HKDF-SHA256 / ChaCha20Poly1305 suite.
+    /// </summary>
     /// <value>The pre-configured suite <c>0x0020, 0x0001, 0x0003</c>.</value>
     public static HpkeSuite X25519_HkdfSha256_ChaCha20Poly1305 { get; } =
         new(HpkeKem.X25519HkdfSha256, HpkeKdf.HkdfSha256, HpkeAead.ChaCha20Poly1305);
 
-    /// <summary>Gets the key encapsulation mechanism of this suite.</summary>
+    /// <summary>
+    /// Gets the key encapsulation mechanism of this suite.
+    /// </summary>
     /// <value>The KEM identifier.</value>
     public HpkeKem Kem { get; }
 
-    /// <summary>Gets the key derivation function of this suite.</summary>
+    /// <summary>
+    /// Gets the key derivation function of this suite.
+    /// </summary>
     /// <value>The KDF identifier.</value>
     public HpkeKdf Kdf { get; }
 
-    /// <summary>Gets the authenticated-encryption function of this suite.</summary>
+    /// <summary>
+    /// Gets the authenticated-encryption function of this suite.
+    /// </summary>
     /// <value>The AEAD identifier.</value>
     public HpkeAead Aead { get; }
 
-    /// <summary>Gets the length, in bytes, of the KEM shared secret (<c>Nsecret</c>).</summary>
+    /// <summary>
+    /// Gets the length, in bytes, of the KEM shared secret (<c>Nsecret</c>).
+    /// </summary>
     /// <value>32 for the X25519 KEM.</value>
     public int SharedSecretSizeInBytes => KemAlgorithm.SharedSecretSizeInBytes;
 
-    /// <summary>Gets the length, in bytes, of the KEM encapsulated key (<c>Nenc</c>).</summary>
+    /// <summary>
+    /// Gets the length, in bytes, of the KEM encapsulated key (<c>Nenc</c>).
+    /// </summary>
     /// <value>32 for the X25519 KEM.</value>
     public int EncapsulationSizeInBytes => KemAlgorithm.EncapsulationSizeInBytes;
 
-    /// <summary>Gets the length, in bytes, of the AEAD key (<c>Nk</c>).</summary>
+    /// <summary>
+    /// Gets the length, in bytes, of the AEAD key (<c>Nk</c>).
+    /// </summary>
     /// <value>The AEAD key length, or 0 for an export-only suite.</value>
     public int AeadKeySizeInBytes { get; }
 
-    /// <summary>Gets the length, in bytes, of the AEAD nonce (<c>Nn</c>).</summary>
+    /// <summary>
+    /// Gets the length, in bytes, of the AEAD nonce (<c>Nn</c>).
+    /// </summary>
     /// <value>The AEAD nonce length, or 0 for an export-only suite.</value>
     public int AeadNonceSizeInBytes { get; }
 
-    /// <summary>Gets the length, in bytes, of the AEAD authentication tag (<c>Nt</c>).</summary>
+    /// <summary>
+    /// Gets the length, in bytes, of the AEAD authentication tag (<c>Nt</c>).
+    /// </summary>
     /// <value>The AEAD tag length, or 0 for an export-only suite.</value>
     public int AeadTagSizeInBytes { get; }
 
-    /// <summary>Gets a value indicating whether this suite is export-only and rejects encryption and decryption.</summary>
-    /// <value><see langword="true" /> when <see cref="Aead" /> is <see cref="HpkeAead.ExportOnly" />; otherwise <see langword="false" />.</value>
+    /// <summary>
+    /// Gets a value indicating whether this suite is export-only and rejects encryption and decryption.
+    /// </summary>
+    /// <value>
+    /// <see langword="true" /> when <see cref="Aead" /> is <see cref="HpkeAead.ExportOnly" />; otherwise
+    /// <see langword="false" />.
+    /// </value>
     public bool IsExportOnly => Aead == HpkeAead.ExportOnly;
 
-    /// <summary>Gets the key encapsulation mechanism implementation resolved from <see cref="Kem" />.</summary>
+    /// <summary>
+    /// Gets the key encapsulation mechanism implementation resolved from <see cref="Kem" />.
+    /// </summary>
     /// <value>The KEM that performs encapsulation and decapsulation for this suite.</value>
     internal IHpkeKem KemAlgorithm { get; }
 
-    /// <summary>Gets the HKDF hash algorithm corresponding to <see cref="Kdf" />.</summary>
+    /// <summary>
+    /// Gets the HKDF hash algorithm corresponding to <see cref="Kdf" />.
+    /// </summary>
     /// <value>The hash algorithm used by the suite's KDF.</value>
     internal HashAlgorithmName KdfHashAlgorithm { get; }
 
-    /// <summary>Gets the length, in bytes, of the suite's KDF hash output (<c>Nh</c>).</summary>
+    /// <summary>
+    /// Gets the length, in bytes, of the suite's KDF hash output (<c>Nh</c>).
+    /// </summary>
     /// <value>32, 48, or 64 for HKDF-SHA256, HKDF-SHA384, or HKDF-SHA512 respectively.</value>
     internal int KdfHashLengthInBytes { get; }
 
-    /// <summary>Gets the 10-byte HPKE suite identifier used to bind the labeled KDF to this suite.</summary>
+    /// <summary>
+    /// Gets the 10-byte HPKE suite identifier used to bind the labeled KDF to this suite.
+    /// </summary>
     /// <value>The suite identifier <c>"HPKE" ‖ I2OSP(kem,2) ‖ I2OSP(kdf,2) ‖ I2OSP(aead,2)</c>.</value>
     internal ReadOnlySpan<byte> SuiteId => _suiteId;
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="KeyAgreementKnownAnswer.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -29,7 +29,8 @@ public sealed record KeyAgreementKnownAnswer : AsymmetricKnownAnswer
 
     /// <summary>
     /// Gets a value indicating whether the derivation must be rejected (for X25519, the strict RFC 7748 §6.1 all-zero
-    /// shared-secret check). When <see langword="false" /> the derivation must produce <see cref="ExpectedSharedSecret" />.
+    /// shared-secret check). When <see langword="false" /> the derivation must produce
+    /// <see cref="ExpectedSharedSecret" />.
     /// </summary>
     public required bool ExpectRejection { get; init; }
 

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExcelWorksheetDimensions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -23,8 +23,8 @@ namespace Bodu.Formats.Excel;
 public readonly record struct ExcelWorksheetDimensions
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="ExcelWorksheetDimensions"/> class.
-    /// Initializes a new instance of the <see cref="ExcelWorksheetDimensions" /> struct.
+    /// Initializes a new instance of the <see cref="ExcelWorksheetDimensions" /> class. Initializes a new instance of
+    /// the <see cref="ExcelWorksheetDimensions" /> struct.
     /// </summary>
     /// <param name="firstRowIndex">The zero-based index of the first used row.</param>
     /// <param name="rowCount">The number of rows in the used range.</param>
