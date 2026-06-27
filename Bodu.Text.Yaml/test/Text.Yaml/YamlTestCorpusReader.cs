@@ -166,13 +166,23 @@ internal static class YamlTestCorpusReader
         Path.Combine(CorpusRoot, id.Replace('/', Path.DirectorySeparatorChar));
 
     /// <summary>
-    /// Enumerates every case identifier in the corpus (a directory containing an <c>in.yaml</c>), ordered.
+    /// Gets a value indicating whether the corpus submodule is present in the test output. It is absent when the
+    /// <c>yaml-test-suite</c> submodule has not been initialized (<c>git submodule update --init</c>).
+    /// </summary>
+    /// <value><see langword="true" /> when the corpus directory exists; otherwise <see langword="false" />.</value>
+    internal static bool IsAvailable => Directory.Exists(CorpusRoot);
+
+    /// <summary>
+    /// Enumerates every case identifier in the corpus (a directory containing an <c>in.yaml</c>), ordered. Returns an
+    /// empty sequence when the corpus submodule is not present, so callers degrade gracefully rather than throwing.
     /// </summary>
     /// <returns>The case identifiers, ordinal-ordered.</returns>
     internal static IEnumerable<string> EnumerateCaseIds() =>
-        Directory.EnumerateFiles(CorpusRoot, "in.yaml", SearchOption.AllDirectories)
-            .Select(path => Path.GetRelativePath(CorpusRoot, Path.GetDirectoryName(path)!).Replace('\\', '/'))
-            .OrderBy(id => id, StringComparer.Ordinal);
+        IsAvailable
+            ? Directory.EnumerateFiles(CorpusRoot, "in.yaml", SearchOption.AllDirectories)
+                .Select(path => Path.GetRelativePath(CorpusRoot, Path.GetDirectoryName(path)!).Replace('\\', '/'))
+                .OrderBy(id => id, StringComparer.Ordinal)
+            : Enumerable.Empty<string>();
 
     /// <summary>
     /// Enumerates every corpus case with its derived suite kind and profile classification.

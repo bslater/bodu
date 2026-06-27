@@ -120,13 +120,45 @@ public sealed partial class YamlTestCorpusTests
     }
 
     /// <summary>
-    /// Loads the vectors in the requested classification category as <see cref="DynamicDataAttribute" /> rows.
+    /// Skips every corpus test with a clear, actionable message when the <c>yaml-test-suite</c> submodule has not been
+    /// initialized, so a fresh clone reports an instruction instead of a path-not-found failure.
+    /// </summary>
+    [TestInitialize]
+    public void SkipWhenCorpusSubmoduleMissing()
+    {
+        if (!YamlTestCorpusReader.IsAvailable)
+            Assert.Inconclusive("The yaml-test-suite submodule is not initialized. Run: git submodule update --init Bodu.Text.Yaml/test/yaml-test-suite");
+    }
+
+    /// <summary>
+    /// Loads the vectors in the requested classification category as <see cref="DynamicDataAttribute" /> rows. When the
+    /// corpus submodule is absent, yields a single placeholder row so the data source is non-empty; the
+    /// <see cref="SkipWhenCorpusSubmoduleMissing" /> initializer then skips the test with an actionable message.
     /// </summary>
     /// <param name="category">The classification category to select.</param>
-    /// <returns>One row per vector in the category.</returns>
+    /// <returns>One row per vector in the category, or a single placeholder row when the corpus is absent.</returns>
     private static IEnumerable<object[]> VectorsIn(string category)
     {
+        if (!YamlTestCorpusReader.IsAvailable)
+        {
+            yield return [CorpusUnavailablePlaceholder];
+            yield break;
+        }
+
         foreach (var vector in YamlTestCorpusReader.LoadByCategory(category))
             yield return [vector];
     }
+
+    /// <summary>
+    /// A placeholder vector yielded when the corpus submodule is absent, keeping the <see cref="DynamicDataAttribute" />
+    /// source non-empty so the test runs and is skipped by the initializer rather than failing as no-data.
+    /// </summary>
+    private static readonly YamlTestVector CorpusUnavailablePlaceholder = new()
+    {
+        Id = "(yaml-test-suite submodule not initialized)",
+        Description = string.Empty,
+        Kind = "n/a",
+        Category = "n/a",
+        Yaml = [],
+    };
 }
