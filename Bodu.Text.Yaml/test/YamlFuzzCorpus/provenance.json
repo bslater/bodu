@@ -1,9 +1,0 @@
-{
-  "source": "SharpFuzz (libFuzzer) over YamlDocument.Parse, ParseAllDocuments, the serializer, the reader, and a parse-serialize-reparse round-trip invariant, seeded from the yaml-test-suite corpus",
-  "driver": "Metalnem/libfuzzer-dotnet",
-  "caseCount": 2,
-  "classification": {
-    "RoundTrips": 2,
-    "Throws": 0
-  }
-}

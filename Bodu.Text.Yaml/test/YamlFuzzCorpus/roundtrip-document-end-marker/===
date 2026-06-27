@@ -1,1 +1,0 @@
-A plain string scalar equal to the "..." document-end marker must round-trip through the writer; SharpFuzz found it was emitted unquoted and reparsed as a marker.

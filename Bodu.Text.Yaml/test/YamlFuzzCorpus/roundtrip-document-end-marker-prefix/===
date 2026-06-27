@@ -1,1 +1,0 @@
-A folded plain scalar beginning with the "..." document-end marker followed by a space ("... n") must round-trip; SharpFuzz found it was emitted unquoted and the re-emitted line was misread as a marker.
