@@ -127,6 +127,9 @@
   <data name="Arg_OutOfRange_QuotedPrintableMaxLineLength" xml:space="preserve">
     <value>The Quoted-Printable maximum line length must be at least four characters.</value>
   </data>
+  <data name="Arg_OutOfRange_PercentEncodingMode" xml:space="preserve">
+    <value>Unknown percent-encoding mode.</value>
+  </data>
   <data name="Arg_Invalid_QuotedPrintableNewLine" xml:space="preserve">
     <value>The Quoted-Printable newline must be a carriage-return/line-feed pair or a single line feed.</value>
   </data>
@@ -135,6 +138,9 @@
   </data>
   <data name="Format_Invalid_QuotedPrintable" xml:space="preserve">
     <value>Input is not valid Quoted-Printable.</value>
+  </data>
+  <data name="Format_Invalid_PercentEncoding" xml:space="preserve">
+    <value>Input is not valid percent-encoded text.</value>
   </data>
   <data name="Format_Invalid_Base32CharacterNotInAlphabet" xml:space="preserve">
     <value>Input contains a character outside the variant alphabet: '{0}'.</value>

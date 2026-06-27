@@ -265,6 +265,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Unknown percent-encoding mode..
+        /// </summary>
+        internal static string Arg_OutOfRange_PercentEncodingMode {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_PercentEncodingMode", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The Quoted-Printable newline must be a carriage-return/line-feed pair or a single line feed..
         /// </summary>
         internal static string Arg_Invalid_QuotedPrintableNewLine {
@@ -288,6 +297,15 @@ namespace Bodu {
         internal static string Format_Invalid_QuotedPrintable {
             get {
                 return ResourceManager.GetString("Format_Invalid_QuotedPrintable", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Input is not valid percent-encoded text..
+        /// </summary>
+        internal static string Format_Invalid_PercentEncoding {
+            get {
+                return ResourceManager.GetString("Format_Invalid_PercentEncoding", resourceCulture);
             }
         }
 
