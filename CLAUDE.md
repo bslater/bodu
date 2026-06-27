@@ -117,6 +117,8 @@ Local developer machines are untouched (the hook short-circuits when `CLAUDE_COD
 
 Default to grouping tests by the member under test. For a type `Foo`, use partial files named after the public method, property, constructor group, operator, or interface surface being validated.
 
+**Every test type must carry member-named backbone partials for its primary public methods and properties.** This is the rule that `Bodu.Core` and `Bodu.Security.Cryptography` set (e.g. `Blake2bTests.Ctor.cs` / `.HashSize.cs` / `.Key.cs`, `TigerTests.ComputeHash.cs` / `.Variant.cs`) and it is the bar for every test project. A test type is **not** allowed to be organised purely by feature/concern with no member backbone. Beyond the backbone, two — and only two — kinds of non-member partials are permitted: (1) **subject-based** partials for genuinely cross-cutting behavioural contracts that span multiple members (below), and (2) **corpus / vector / spec / fixture** files that are inherently data-driven rather than member-shaped. When a member has a single dominant operation (for example a forward-only reader whose one public method is `Read`), splitting that operation's many concerns into subject partials *is* the member-aligned shape — do not collapse them into one giant file.
+
 Examples:
 
 ```text
@@ -132,6 +134,8 @@ FooTests.IReadOnlyCollection.cs
 Use member-based files for the majority of tests because they make it easy to locate coverage for a specific API. Put tests for a method or property in that member's file when the scenario is primarily about that member's contract, including normal behaviour, boundary cases, exception behaviour, and simple state transitions.
 
 Use subject-based partial files for cross-cutting behavioural contracts that span multiple members or would otherwise be duplicated across many member files. These files should still be specific, narrow, and named for the semantic contract being validated.
+
+**`System.Text.Json`-shaped serializers** (`TomlSerializer`, `BencodeSerializer`, `YamlSerializer`, and any future peer) follow this rule explicitly: the backbone is the public operations — `<Type>SerializerTests.Serialize.cs`, `.Deserialize.cs`, and the `.SerializeAsync.cs` / `.DeserializeAsync.cs` overloads — plus `.RoundTrip.cs` as the home for `SerializeDeserialize_*` (round-trip) tests. A method's tests are routed to its backbone file by the test-method name prefix (`Serialize_*` → `.Serialize.cs`, `Deserialize_*` → `.Deserialize.cs`, and so on). Feature areas (`.NamingPolicy.cs`, `.Required.cs`, `.Nullables.cs`, `.ExtensionData.cs`, enum converters, `.Collections.cs`, `.Dictionaries.cs`, object-construction/creation handling, …) are **subject** partials layered on top of that backbone — they are not a substitute for it. Shared model POCOs, `[DynamicData]` providers, and bespoke KAT records live in the root `<Type>SerializerTests.cs`.
 
 Common subject-based groups:
 

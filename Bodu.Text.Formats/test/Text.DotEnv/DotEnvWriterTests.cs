@@ -16,7 +16,7 @@ public sealed class DotEnvWriterTests
     /// <see cref="DotEnv.Format(DotEnvDocument)" />, such that the output re-parses to the original key/value pairs.
     /// </summary>
     [TestMethod]
-    public void Write_ShouldRoundTripThroughParse()
+    public void RoundTrip_WhenWrittenThenParsed_ShouldMatch()
     {
         StringWriter sw = new();
         using (DotEnvWriter writer = new(sw))
@@ -40,7 +40,7 @@ public sealed class DotEnvWriterTests
     /// same entries that were written, including a value that requires quoting.
     /// </summary>
     [TestMethod]
-    public void Write_ShouldRoundTripThroughDotEnvReader()
+    public void RoundTrip_WhenWrittenThenRead_ShouldMatch()
     {
         StringWriter sw = new();
         using (DotEnvWriter writer = new(sw))
