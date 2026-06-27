@@ -13,6 +13,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- The fuzz-crash corpus: minimized SharpFuzz findings kept as permanent regression guards. -->
+    <None Include="YamlFuzzCorpus\**" CopyToOutputDirectory="PreserveNewest" />
+
     <!-- The yaml/yaml-test-suite conformance corpus, linked as the 'yaml-test-suite' git submodule and copied to the
          output. Each case is classified in code by YamlTestCorpusReader. Initialize the submodule (git submodule
          update, init flag) to populate it before the Regression tier. -->
