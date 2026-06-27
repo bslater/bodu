@@ -247,11 +247,47 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Unknown Quoted-Printable encoding mode..
+        /// </summary>
+        internal static string Arg_OutOfRange_QuotedPrintableEncodingMode {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_QuotedPrintableEncodingMode", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The Quoted-Printable maximum line length must be at least four characters..
+        /// </summary>
+        internal static string Arg_OutOfRange_QuotedPrintableMaxLineLength {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_QuotedPrintableMaxLineLength", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The Quoted-Printable newline must be a carriage-return/line-feed pair or a single line feed..
+        /// </summary>
+        internal static string Arg_Invalid_QuotedPrintableNewLine {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_QuotedPrintableNewLine", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Input is not valid Ascii85..
         /// </summary>
         internal static string Format_Invalid_Ascii85 {
             get {
                 return ResourceManager.GetString("Format_Invalid_Ascii85", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Input is not valid Quoted-Printable..
+        /// </summary>
+        internal static string Format_Invalid_QuotedPrintable {
+            get {
+                return ResourceManager.GetString("Format_Invalid_QuotedPrintable", resourceCulture);
             }
         }
 
