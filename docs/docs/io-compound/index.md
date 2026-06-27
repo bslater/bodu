@@ -30,7 +30,7 @@ For the full glossary, see [Core concepts](concepts.md).
 
 ## Scope and limitations
 
-- **Read-only.** Only read access (`FileMode.Open` with `FileAccess.Read`) is covered here; creation and mutation are out of scope for this introduction.
+- **Reading and writing.** This introduction focuses on the read path; the library also **authors** CFB containers — `CompoundFile.Create` plus `Commit`, the detached `CompoundStorageBuilder`, and the property-set builders. See the [Authoring compound files](../../guides/io-compound/authoring-compound-files.md) guide.
 - **No format interpretation.** The reader surfaces named streams and their bytes; understanding a `Workbook` or `WordDocument` stream is the caller's job. The narrow BIFF8 `.xls` reader in [Bodu.Formats.Excel.Binary](../excel/index.md) is the worked example of a format reader layered on top.
 
 ## Worked example — open, navigate, read
@@ -67,12 +67,13 @@ byte[] bytes = workbook.ReadAllBytes();
 | Read a stream incrementally | `OpenStream(name).Open()` → a `CompoundStream` cursor |
 | Look up a stream that may be absent | `TryOpenStream(name, out entry)` |
 | Read authored document metadata | `file.TryGetSummaryInformation(out summary)` |
+| Author a container | `CompoundStorageBuilder.CreateRoot()` → `AddStream` → `Save` (or `CompoundFile.Create` + `Commit`) |
 
 ## Headline types — <xref:Bodu.IO.Compound>
 
 | Type | Purpose |
 |---|---|
-| <xref:Bodu.IO.Compound.CompoundFile> | Opens a CFB container and anchors the hierarchy; static `Open` / `IsCompoundFile` factories. |
+| <xref:Bodu.IO.Compound.CompoundFile> | Opens or creates a CFB container and anchors the hierarchy; static `Open` / `OpenRead` / `IsCompoundFile` readers and the `Create` writer (finalized by `Commit`). |
 | <xref:Bodu.IO.Compound.CompoundStorage> | A storage node — enumerates children and resolves child storages and streams by name. |
 | <xref:Bodu.IO.Compound.CompoundStream> | A stream node and read-only, seekable `Stream` cursor in one — `ReadAllBytes` for the whole payload, `AsMemory` for a whole-payload view, `Stat` for metadata. |
 | <xref:Bodu.IO.Compound.CompoundEntryInfo> | An immutable metadata snapshot — name, entry type, length, class id, timestamps. |

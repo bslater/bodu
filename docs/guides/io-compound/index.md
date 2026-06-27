@@ -18,14 +18,15 @@ A compound file is effectively a small file system embedded in a single file. <x
 
 By default the whole source is buffered into memory at open time, so the file is read-only and safe to share across threads. Opening with `buffered: false` reads sectors on demand from a seekable stream instead, bounding memory for large files.
 
-> These guides cover the read path — opening with `FileMode.Open` and `FileAccess.Read`.
+> Most of these guides cover the read path. For writing — building a container from scratch, editing one, or embedding property sets — see [Authoring compound files](authoring-compound-files.md).
 
 ## Namespace map
 
 | Namespace | What lives here | Guides |
 |---|---|---|
-| <xref:Bodu.IO.Compound> | The `CompoundFile` reader, the `CompoundStorage` / `CompoundStream` hierarchy, the `CompoundStream` cursor, `CompoundEntryInfo` metadata, and the `CompoundFileFormatException` / `CompoundStreamNotFoundException` errors. | [Reading compound files](reading-compound-files.md) · [Buffered vs streaming access](streaming-and-buffering.md) |
-| <xref:Bodu.IO.Compound.PropertySets> | The OLE property-set readers — `SummaryInformation`, `DocumentSummaryInformation`, and the underlying `OlePropertySet`. | [Reading property sets](property-sets.md) |
+| <xref:Bodu.IO.Compound> | The `CompoundFile` reader and writer, the `CompoundStorage` / `CompoundStream` hierarchy, the `CompoundStream` cursor, `CompoundEntryInfo` metadata, and the `CompoundFileFormatException` / `CompoundStreamNotFoundException` / `CompoundFileSerializationException` errors. | [Reading compound files](reading-compound-files.md) · [Buffered vs streaming access](streaming-and-buffering.md) · [Authoring compound files](authoring-compound-files.md) |
+| <xref:Bodu.IO.Compound.Builders> | The detached authoring object model — `CompoundStorageBuilder`, `CompoundStreamBuilder`, and the `CompoundBuildOptions` serialization options. | [Authoring compound files](authoring-compound-files.md) |
+| <xref:Bodu.IO.Compound.PropertySets> | The OLE property-set readers and writers — `SummaryInformation`, `DocumentSummaryInformation`, their `…Builder` authors, and the underlying `OlePropertySet`. | [Reading property sets](property-sets.md) · [Authoring compound files](authoring-compound-files.md) |
 
 ## Guides
 
@@ -34,6 +35,11 @@ By default the whole source is buffered into memory at open time, so the file is
 <div class="bodu-card">
   <h3><a href="reading-compound-files.md">Reading compound files</a></h3>
   <p>Open a file, probe the signature, walk the storage hierarchy with the enumerate and <code>TryOpen</code> surfaces, and read a named stream's bytes — the end-to-end navigation recipe.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="authoring-compound-files.md">Authoring compound files</a></h3>
+  <p>Write a container from scratch with <code>CompoundStorageBuilder</code>, mutate one in place via <code>CompoundFile.Create</code> and <code>Commit</code>, edit an existing file, and embed summary-information property sets.</p>
 </div>
 
 <div class="bodu-card">
@@ -58,9 +64,10 @@ By default the whole source is buffered into memory at open time, so the file is
 1. **[Reading compound files](reading-compound-files.md)** — the core open → navigate → read recipe that every other use builds on.
 2. **[Buffered vs streaming access](streaming-and-buffering.md)** — once the file is too large to hold whole, or you need to control the source's lifetime.
 3. **[Reading property sets](property-sets.md)** — when you want the authored document metadata (title, author, timestamps) rather than the format payload.
+4. **[Authoring compound files](authoring-compound-files.md)** — when you need to *write* a container rather than read one.
 
 ## Where to go next
 
-- [Bodu.IO.Compound API reference](xref:Bodu.IO.Compound) — every type and member.
+- [Bodu.IO.Compound API reference](xref:Bodu.IO.Compound) — every type and member, including the [Bodu.IO.Compound.Builders](xref:Bodu.IO.Compound.Builders) authoring types.
 - [Bodu.Formats.Excel.Binary](../excel/index.md) — the BIFF8 `.xls` reader built on this package.
 - [Package matrix](../../docs/package-matrix.md) — where Bodu.IO.Compound sits in the suite and its dependency stack.

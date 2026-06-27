@@ -411,6 +411,8 @@
           href: io-compound/streaming-and-buffering.md
         - name: Reading property sets
           href: io-compound/property-sets.md
+        - name: Authoring compound files
+          href: io-compound/authoring-compound-files.md
         - name: Office format nuances
           href: io-compound/office-format-nuances.md
     - name: Bodu.Formats.Excel.Binary
