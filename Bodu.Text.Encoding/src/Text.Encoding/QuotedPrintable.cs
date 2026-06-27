@@ -28,6 +28,11 @@ namespace Bodu.Text.Encoding;
 /// encoded-word <c>Q</c> header encoding (which has different syntax and underscore-for-space handling), and it does
 /// not parse MIME messages, headers, multiparts, charsets, or content-transfer-encoding declarations.
 /// </para>
+/// <para>
+/// Because correct use depends on the mode and decoding options, this is a static type and is intentionally not
+/// registered in <see cref="BinaryEncodings" /> — the parameterless <see cref="IBinaryEncoding" /> contract cannot
+/// carry that information.
+/// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">
@@ -46,6 +51,9 @@ public static partial class QuotedPrintable
 {
     /// <summary>The RFC 2045 default maximum encoded line length.</summary>
     private const int DefaultMaxLineLength = 76;
+
+    /// <summary>The RFC 2045 canonical encoded-line limit enforced by <see cref="IsValid" /> regardless of encode width.</summary>
+    private const int MaxCanonicalLineLength = 76;
 
     /// <summary>The smallest permitted line length: one escape plus a soft-break marker.</summary>
     private const int MinMaxLineLength = 4;
@@ -126,15 +134,21 @@ public static partial class QuotedPrintable
     }
 
     /// <summary>
-    /// Indicates whether <paramref name="source" /> is well-formed Quoted-Printable under the supplied options.
+    /// Indicates whether <paramref name="source" /> is <em>canonical</em> RFC 2045 Quoted-Printable under the supplied
+    /// options, including the 76-character encoded-line limit.
     /// </summary>
     /// <param name="source">The input characters.</param>
     /// <param name="options">The decoding options.</param>
-    /// <returns>
-    /// <see langword="true" /> when the input decodes without error; otherwise <see langword="false" />.
-    /// </returns>
+    /// <returns><see langword="true" /> when the input is canonical; otherwise <see langword="false" />.</returns>
+    /// <remarks>
+    /// This is stricter than <see cref="Decode(ReadOnlySpan{char}, QuotedPrintableDecodingOptions)" />, which performs
+    /// lenient recovery and accepts encoded lines longer than 76 characters. <c>IsValid</c> enforces the fixed RFC 2045
+    /// limit (the soft-break <c>=</c> counted within it, the CRLF terminator not) regardless of any custom encode
+    /// <see cref="QuotedPrintableEncodingOptions.MaxLineLength" />. <c>IsValid</c> returning <see langword="true" />
+    /// implies <c>Decode</c> succeeds, but not the converse.
+    /// </remarks>
     public static bool IsValid(ReadOnlySpan<char> source, QuotedPrintableDecodingOptions options = QuotedPrintableDecodingOptions.None) =>
-        TryDecodeCore(source, options, Span<byte>.Empty, measureOnly: true, out _);
+        TryDecodeCore(source, options, Span<byte>.Empty, measureOnly: true, requireCanonical: true, out _);
 
     /// <summary>
     /// Attempts to determine the exact number of bytes that
@@ -145,9 +159,14 @@ public static partial class QuotedPrintable
     /// When this method returns, contains the decoded byte count, or <c>0</c> on failure.
     /// </param>
     /// <param name="options">The decoding options.</param>
-    /// <returns><see langword="true" /> when the input is well-formed; otherwise <see langword="false" />.</returns>
+    /// <returns><see langword="true" /> when the input is decodable; otherwise <see langword="false" />.</returns>
+    /// <remarks>
+    /// This mirrors <see cref="Decode(ReadOnlySpan{char}, QuotedPrintableDecodingOptions)" /> (lenient recovery), not
+    /// <see cref="IsValid(ReadOnlySpan{char}, QuotedPrintableDecodingOptions)" /> (canonical conformance): it does not
+    /// enforce the 76-character line limit, so the result can size a decode buffer even for overlong input.
+    /// </remarks>
     public static bool TryGetDecodedLength(ReadOnlySpan<char> source, out int byteCount, QuotedPrintableDecodingOptions options = QuotedPrintableDecodingOptions.None) =>
-        TryDecodeCore(source, options, Span<byte>.Empty, measureOnly: true, out byteCount);
+        TryDecodeCore(source, options, Span<byte>.Empty, measureOnly: true, requireCanonical: false, out byteCount);
 
     /// <summary>
     /// Normalizes <paramref name="options" /> (filling defaults for a zero line length or null newline) and validates

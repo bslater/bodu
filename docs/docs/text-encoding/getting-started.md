@@ -209,8 +209,8 @@ byte[] decoded = Base58Check.Decode(encoded);   // verifies the checksum, then s
 using Bodu.Text.Encoding;
 
 // Compact, self-delimiting — round-trips without external metadata.
-string compact = Base85.Encode("hello"u8.ToArray(), Base85Variant.Git);   // "Xk~0{Zv"
-byte[] back    = Base85.Decode(compact, Base85Variant.Git);
+string compact = Base85.Encode("hello"u8.ToArray(), Base85Variant.GitCompact);   // "Xk~0{Zv"
+byte[] back    = Base85.Decode(compact, Base85Variant.GitCompact);
 
 // Exact Git line primitive — always five characters per group; caller tracks the length.
 string padded  = Base85.EncodeGitPadded(new byte[] { 0x01 });             // "0RR91"

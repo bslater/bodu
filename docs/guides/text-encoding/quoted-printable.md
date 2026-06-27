@@ -97,14 +97,17 @@ characters, and stray control characters.
 ```csharp
 QuotedPrintable.IsValid("abc=\r\ndef");                  // true (soft break)
 QuotedPrintable.IsValid("=GG");                          // false
+QuotedPrintable.IsValid(new string('A', 77));            // false — exceeds the 76-char line limit
 
 QuotedPrintable.GetEncodedLength(data);                  // exact encoded length (scans the data)
 QuotedPrintable.GetMaxEncodedLength(data.Length);        // worst-case upper bound
 QuotedPrintable.TryGetDecodedLength(text, out int n);    // exact decoded length, false if malformed
 ```
 
-`IsValid` agrees with `TryDecode`: a buffer sized with `GetMaxDecodedLength` decodes exactly when `IsValid` returns
-`true`.
+`IsValid` checks **canonical** RFC 2045 conformance — including the 76-character encoded-line limit (the soft-break
+`=` counted, the CRLF not). `Decode` is more lenient: it recovers overlong lines that `IsValid` rejects, so
+`IsValid(x) == true` implies `Decode(x)` succeeds but not the reverse. `TryGetDecodedLength` mirrors `Decode` (it
+ignores the line limit), so it can always size a decode buffer.
 
 ## Span path
 

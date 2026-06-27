@@ -18,11 +18,11 @@ namespace Bodu.Text.Encoding;
 /// The Adobe Ascii85 variant recognises the character <c>z</c> as a shortcut for four zero bytes and permits partial
 /// trailing groups of one, two, or three bytes (output grows by one character per byte plus one). The Z85 variant
 /// requires the input to be a whole multiple of four bytes and does not use any shortcut. The
-/// <see cref="Base85Variant.Git" /> variant uses the Git binary-patch alphabet with the same compact partial-tail
-/// behaviour as Ascii85 but without the <c>z</c> shortcut or the Adobe delimiters; it implements only the alphabet and
-/// does not parse Git binary patches. The exact Git binary-patch line primitive (always five characters per group, with
-/// the decoded length carried out of band) is available through the <c>EncodeGitPadded</c> / <c>DecodeGitPadded</c>
-/// helpers.
+/// <see cref="Base85Variant.GitCompact" /> variant uses the Git binary-patch alphabet with the same compact
+/// partial-tail behaviour as Ascii85 but without the <c>z</c> shortcut or the Adobe delimiters; it implements only the
+/// alphabet and does not parse Git binary patches. The exact Git binary-patch line primitive (always five characters
+/// per group, with the decoded length carried out of band) is available through the <c>EncodeGitPadded</c> /
+/// <c>DecodeGitPadded</c> helpers.
 /// </para>
 /// <para>
 /// Base85 has no padding character. The <see cref="BaseFormattingOptions.UpperCase" />,
@@ -128,7 +128,7 @@ public static partial class Base85
                 : (source.Length / 4) * 5;
         }
 
-        if (variant == Base85Variant.Git)
+        if (variant == Base85Variant.GitCompact)
         {
             // Git compact mode is deterministic: full groups are five characters and a trailing remainder of one,
             // two, or three bytes becomes two, three, or four characters. There is no 'z' shortcut, so the length
@@ -327,7 +327,7 @@ public static partial class Base85
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     private static void EnsureValidVariant(Base85Variant variant)
     {
-        if (variant is not(Base85Variant.Ascii85 or Base85Variant.Z85 or Base85Variant.Git))
+        if (variant is not(Base85Variant.Ascii85 or Base85Variant.Z85 or Base85Variant.GitCompact))
             throw new ArgumentOutOfRangeException(nameof(variant), variant, EncodingResourceStrings.Arg_OutOfRange_Base85Variant);
     }
 
@@ -342,7 +342,7 @@ public static partial class Base85
         {
             Base85Variant.Ascii85 => Ascii85Alphabet,
             Base85Variant.Z85 => Z85Alphabet,
-            Base85Variant.Git => GitBase85Alphabet,
+            Base85Variant.GitCompact => GitBase85Alphabet,
             _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, EncodingResourceStrings.Arg_OutOfRange_Base85Variant),
         };
 
@@ -357,7 +357,7 @@ public static partial class Base85
         {
             Base85Variant.Ascii85 => s_ascii85Lookup,
             Base85Variant.Z85 => s_z85Lookup,
-            Base85Variant.Git => s_gitBase85Lookup,
+            Base85Variant.GitCompact => s_gitBase85Lookup,
             _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, EncodingResourceStrings.Arg_OutOfRange_Base85Variant),
         };
 

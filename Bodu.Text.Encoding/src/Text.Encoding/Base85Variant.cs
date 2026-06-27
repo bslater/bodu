@@ -30,18 +30,18 @@ public enum Base85Variant : byte
     Z85 = 1,
 
     /// <summary>
-    /// The Git-style Base85 alphabet used by Git binary patch payloads.
+    /// The Git binary-patch Base85 alphabet with compact, self-delimiting partial-tail framing.
     /// </summary>
     /// <remarks>
     /// Uses the alphabet <c>0-9 A-Z a-z ! # $ % &amp; ( ) * + - ; &lt; = &gt; ? @ ^ _ ` { | } ~</c>. It does not use
-    /// the Adobe <c>z</c> zero shortcut and does not use the Adobe <c>&lt;~</c> / <c>~&gt;</c> delimiters. By default
+    /// the Adobe <c>z</c> zero shortcut and does not use the Adobe <c>&lt;~</c> / <c>~&gt;</c> delimiters.
     /// <see cref="Base85" /> emits a compact, self-delimiting partial tail (a final remainder of one, two, or three
     /// bytes becomes two, three, or four characters), which round-trips through
     /// <see cref="Base85.Decode(System.ReadOnlySpan{char}, Base85Variant, BaseFormatStyles)" /> without external
-    /// metadata. The exact Git binary-patch line primitive — which always emits five characters per group and carries
-    /// the decoded byte count out of band — is provided separately by the <c>EncodeGitPadded</c> /
-    /// <c>DecodeGitPadded</c> helpers. This variant implements only the Git alphabet; it does not parse Git binary
-    /// patches.
+    /// metadata — this is <b>not</b> the exact Git binary-patch line encoding, which always emits five characters per
+    /// group and carries the decoded byte count out of band. Use the <c>EncodeGitPadded</c> / <c>DecodeGitPadded</c>
+    /// helpers for that patch-compatible primitive. This variant implements only the Git alphabet; it does not parse
+    /// Git binary patches.
     /// </remarks>
-    Git = 2,
+    GitCompact = 2,
 }

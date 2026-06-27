@@ -27,7 +27,7 @@ For self-framing document formats (CSV / TSV, DotEnv, INI, TOML), see the compan
 - <xref:Bodu.Text.Encoding.Base32> — 5 bits per symbol; four variants via <xref:Bodu.Text.Encoding.Base32Variant>: Standard (RFC 4648 §6), HexExtended (RFC 4648 §7), Crockford, ZBase32; padding control.
 - <xref:Bodu.Text.Encoding.Base64> — 6 bits per symbol; three variants via <xref:Bodu.Text.Encoding.Base64Variant>: Standard (RFC 4648 §4), UrlSafe (RFC 4648 §5), Mime (RFC 2045 with 76-char wrap). Delegates inner conversion to the BCL for SIMD speed.
 - <xref:Bodu.Text.Encoding.Base58> — non-power-of-two radix using big-integer divmod; two variants via <xref:Bodu.Text.Encoding.Base58Variant>: BitcoinFlickr (default), Ripple. Preserves leading zeros.
-- <xref:Bodu.Text.Encoding.Base85> — 4-byte block → 5 chars; three variants via <xref:Bodu.Text.Encoding.Base85Variant>: Ascii85 (Adobe, with `z` shortcut), Z85 (RFC 32 ZeroMQ; 4-byte alignment), Git (Git `base85.c` alphabet; compact self-delimiting tail plus the `EncodeGitPadded` / `DecodeGitPadded` line primitive).
+- <xref:Bodu.Text.Encoding.Base85> — 4-byte block → 5 chars; three variants via <xref:Bodu.Text.Encoding.Base85Variant>: Ascii85 (Adobe, with `z` shortcut), Z85 (RFC 32 ZeroMQ; 4-byte alignment), GitCompact (Git `base85.c` alphabet; compact self-delimiting tail plus the `EncodeGitPadded` / `DecodeGitPadded` line primitive).
 
 **Special-purpose encodings**
 
@@ -88,7 +88,7 @@ string ascii85 = Base85.Encode(new byte[] { 0, 0, 0, 0 }, Base85Variant.Ascii85)
 // ascii85 → "z"
 
 // --- Base85 Git: compact, self-delimiting binary-patch alphabet -------------
-string gitB85 = Base85.Encode("hello"u8.ToArray(), Base85Variant.Git);   // → "Xk~0{Zv"
+string gitB85 = Base85.Encode("hello"u8.ToArray(), Base85Variant.GitCompact);   // → "Xk~0{Zv"
 
 // --- Quoted-Printable: MIME message body ------------------------------------
 string qp = QuotedPrintable.Encode("café = møney"u8.ToArray());   // printable + =HH escapes

@@ -45,6 +45,14 @@ public readonly record struct QuotedPrintableEncodingOptions
         new(QuotedPrintableEncodingMode.Binary, 76, "\r\n");
 
     /// <summary>
+    /// Gets canonical MIME text options: <see cref="QuotedPrintableEncodingMode.Text" />, a 76-character line limit,
+    /// and a CRLF newline.
+    /// </summary>
+    /// <value>The canonical MIME text encoding options.</value>
+    public static QuotedPrintableEncodingOptions Text =>
+        new(QuotedPrintableEncodingMode.Text, 76, "\r\n");
+
+    /// <summary>
     /// Gets the line-break treatment applied to the source.
     /// </summary>
     /// <value>The encoding mode.</value>
@@ -60,5 +68,11 @@ public readonly record struct QuotedPrintableEncodingOptions
     /// Gets the newline sequence inserted for soft and hard line breaks.
     /// </summary>
     /// <value>The newline string, or <see langword="null" /> to select CRLF.</value>
+    /// <remarks>
+    /// Only <c>"\r\n"</c> and <c>"\n"</c> are accepted. CRLF is the MIME canonical line ending; <c>"\n"</c> is a
+    /// non-canonical convenience profile for local text processing and should not be used for MIME transport. Output
+    /// using <c>"\n"</c> round-trips only when decoded with
+    /// <see cref="QuotedPrintableDecodingOptions.AllowBareLineFeed" />.
+    /// </remarks>
     public string? NewLine { get; init; }
 }

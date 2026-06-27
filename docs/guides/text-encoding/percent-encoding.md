@@ -105,13 +105,20 @@ The byte-oriented `Decode` / `TryDecode` reject non-ASCII source characters — 
 ## Validation and sizing
 
 ```csharp
-PercentEncoding.IsValid("a%2Fb");                        // true
-PercentEncoding.IsValid("%GG");                          // false
+PercentEncoding.IsValid("a%2Fb");                            // true
+PercentEncoding.IsValid("%GG");                              // false
+PercentEncoding.IsValid("a b");                              // false — literal space is not canonical
+PercentEncoding.IsValid("a/b?c", PercentEncodingMode.Query); // true — '/' and '?' are allowed in a query
 
 PercentEncoding.GetEncodedLength(value, mode);           // exact encoded length
 PercentEncoding.GetMaxEncodedLength(value.Length);       // worst case = length * 3
 PercentEncoding.TryGetDecodedLength(text, out int n, mode); // exact decoded length, false if malformed
 ```
+
+`IsValid` checks **canonical** conformance for the mode: a literal character the mode would percent-encode (a space, or
+`#` in a URI component) makes it return `false`, while a percent-escaped octet such as `%2F` is always accepted.
+`Decode` is more lenient — it still recovers a literal reserved character — so `IsValid(x) == true` implies `Decode(x)`
+succeeds, but not the reverse. `TryGetDecodedLength` mirrors `Decode`, so it can size a buffer for any decodable input.
 
 ## Span path
 

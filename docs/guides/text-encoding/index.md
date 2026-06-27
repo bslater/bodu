@@ -27,7 +27,7 @@ Base16 / Base32 / Base64, the big-integer arithmetic for Base58, and the 4-byte 
 | **[Base32](base32.md)** | 60 % | Standard, HexExtended, Crockford, Z-Base-32 | TOTP secrets, NSEC3 DNS labels, human-spoken IDs |
 | **[Base64](base64.md)** | 33 % | Standard, URL-safe, MIME | MIME / SMTP, JWT, certificates, generic binary-in-text |
 | **[Base58](base58.md)** | ≈ 37 % | Bitcoin/Flickr, Ripple | Bitcoin addresses, IPFS CIDs, Solana, Stellar |
-| **[Base85](base85.md)** | 25 % | Ascii85 (Adobe), Z85 (ZeroMQ), Git | PDF / PostScript, ZeroMQ wire keys, Git binary patches |
+| **[Base85](base85.md)** | 25 % | Ascii85 (Adobe), Z85 (ZeroMQ), GitCompact | PDF / PostScript, ZeroMQ wire keys, Git binary patches |
 | **[Base45](base45.md)** | 50 % | RFC 9285 | QR-code payloads, EU Digital COVID Certificate |
 | **[Base62](base62.md)** | ≈ 35 % | GMP-style | Short URLs, compact identifiers, slugs |
 | **[Bech32](bech32.md)** | data + checksum | Bech32 (BIP 173), Bech32m (BIP 350) | Bitcoin SegWit addresses, Lightning invoices |
@@ -60,7 +60,7 @@ interface cannot express).
 | Compact URL-safe identifier or slug | Base62 |
 | Embedded in PostScript / PDF | Base85 Ascii85 |
 | Shell-safe binary key transport | Base85 Z85 |
-| Git binary-patch payload alphabet | Base85 Git |
+| Git binary-patch payload alphabet | Base85 GitCompact |
 | MIME message body (mostly-readable text) | Quoted-Printable |
 | URI component / query / form field | Percent-encoding |
 

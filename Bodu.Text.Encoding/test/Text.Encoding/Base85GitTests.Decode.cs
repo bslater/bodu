@@ -21,7 +21,7 @@ public sealed partial class Base85GitTests
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void Decode_ForGitCompactKnownAnswerVector_ShouldRecoverBytes(EncodingKnownAnswerVector vector)
     {
-        byte[] actual = Base85.Decode(vector.Encoded, Base85Variant.Git);
+        byte[] actual = Base85.Decode(vector.Encoded, Base85Variant.GitCompact);
 
         CollectionAssert.AreEqual(vector.DecodedBytes, actual);
     }
@@ -40,7 +40,7 @@ public sealed partial class Base85GitTests
         Exception? actual = null;
         try
         {
-            _ = Base85.Decode(vector.MalformedInput, Base85Variant.Git);
+            _ = Base85.Decode(vector.MalformedInput, Base85Variant.GitCompact);
         }
         catch (Exception ex)
         {
@@ -64,7 +64,7 @@ public sealed partial class Base85GitTests
     {
         Span<byte> destination = new byte[vector.MalformedInput.Length + 32];
 
-        bool success = Base85.TryDecode(vector.MalformedInput.AsSpan(), destination, out _, Base85Variant.Git);
+        bool success = Base85.TryDecode(vector.MalformedInput.AsSpan(), destination, out _, Base85Variant.GitCompact);
 
         Assert.IsFalse(success);
     }
@@ -76,7 +76,7 @@ public sealed partial class Base85GitTests
     [TestMethod]
     public void Decode_WhenWhitespaceAndIgnoreWhitespaceForGit_ShouldRecoverBytes()
     {
-        byte[] decoded = Base85.Decode("0Rj UA", Base85Variant.Git, BaseFormatStyles.IgnoreWhitespace);
+        byte[] decoded = Base85.Decode("0Rj UA", Base85Variant.GitCompact, BaseFormatStyles.IgnoreWhitespace);
 
         CollectionAssert.AreEqual(new byte[] { 0x01, 0x02, 0x03, 0x04 }, decoded);
     }
@@ -90,7 +90,7 @@ public sealed partial class Base85GitTests
     {
         Span<byte> destination = new byte[4];
 
-        bool success = Base85.TryDecode("Xk~0{Zv".AsSpan(), destination, out int bytesWritten, Base85Variant.Git);
+        bool success = Base85.TryDecode("Xk~0{Zv".AsSpan(), destination, out int bytesWritten, Base85Variant.GitCompact);
 
         Assert.IsFalse(success);
         Assert.AreEqual(0, bytesWritten);

@@ -7,7 +7,7 @@
 namespace Bodu.Text.Encoding;
 
 /// <summary>
-/// Behavioural tests for the Git-style Base85 variant (<see cref="Base85Variant.Git" />) and the
+/// Behavioural tests for the Git-style Base85 variant (<see cref="Base85Variant.GitCompact" />) and the
 /// <c>EncodeGitPadded</c> / <c>DecodeGitPadded</c> helpers. Partial files split coverage by member or subject contract.
 /// </summary>
 [TestClass]
