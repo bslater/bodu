@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Utf8YamlWriterTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -6,6 +6,7 @@
 
 using System.Buffers;
 using System.Text;
+using Bodu.Text.Yaml.Document;
 using Bodu.Text.Yaml.Writer;
 
 namespace Bodu.Text.Yaml;
@@ -31,4 +32,5 @@ public partial class Utf8YamlWriterTests
         write(ref writer);
         return Encoding.UTF8.GetString(buffer.WrittenSpan);
     }
+
 }

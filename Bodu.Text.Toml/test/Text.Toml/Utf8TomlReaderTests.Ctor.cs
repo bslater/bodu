@@ -1,15 +1,19 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Utf8TomlReaderTests.Sequence.cs" company="Bodu Pty. Ltd.">
+// <copyright file="Utf8TomlReaderTests.Ctor.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Buffers;
+using System.Globalization;
 using System.Text;
 using Bodu.Text.Toml.Reader;
 
 namespace Bodu.Text.Toml;
 
+/// <summary>
+/// Verifies the <see cref="Utf8TomlReader" /> constructors, including single- and multi-segment sequence input.
+/// </summary>
 public sealed partial class Utf8TomlReaderTests
 {
     /// <summary>
@@ -78,48 +82,4 @@ public sealed partial class Utf8TomlReaderTests
         }
     }
 
-    /// <summary>
-    /// Builds a <see cref="ReadOnlySequence{T}" /> over <paramref name="data" /> split into segments of
-    /// <paramref name="segmentSize" /> bytes.
-    /// </summary>
-    /// <param name="data">The bytes to wrap.</param>
-    /// <param name="segmentSize">The maximum size of each segment.</param>
-    /// <returns>The multi-segment sequence.</returns>
-    private static ReadOnlySequence<byte> BuildMultiSegmentSequence(byte[] data, int segmentSize)
-    {
-        var first = new ByteSegment(data.AsMemory(0, Math.Min(segmentSize, data.Length)));
-        ByteSegment last = first;
-        for (int offset = first.Memory.Length; offset < data.Length; offset += segmentSize)
-            last = last.Append(data.AsMemory(offset, Math.Min(segmentSize, data.Length - offset)));
-
-        return new ReadOnlySequence<byte>(first, 0, last, last.Memory.Length);
-    }
-
-    /// <summary>
-    /// A minimal <see cref="ReadOnlySequenceSegment{T}" /> for building multi-segment test sequences.
-    /// </summary>
-    private sealed class ByteSegment
-        : ReadOnlySequenceSegment<byte>
-    {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ByteSegment" /> class over the supplied memory.
-        /// </summary>
-        /// <param name="memory">The segment bytes.</param>
-        internal ByteSegment(ReadOnlyMemory<byte> memory)
-        {
-            Memory = memory;
-        }
-
-        /// <summary>
-        /// Appends a segment holding <paramref name="memory" /> after this one.
-        /// </summary>
-        /// <param name="memory">The next segment's bytes.</param>
-        /// <returns>The appended segment.</returns>
-        internal ByteSegment Append(ReadOnlyMemory<byte> memory)
-        {
-            var next = new ByteSegment(memory) { RunningIndex = RunningIndex + Memory.Length };
-            Next = next;
-            return next;
-        }
-    }
 }

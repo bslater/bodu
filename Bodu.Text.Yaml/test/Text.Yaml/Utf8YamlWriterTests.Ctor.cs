@@ -1,17 +1,18 @@
-// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Utf8YamlWriterTests.Options.cs" company="Bodu Pty. Ltd.">
+﻿// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="Utf8YamlWriterTests.Ctor.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Buffers;
+using System.Text;
+using Bodu.Text.Yaml.Document;
 using Bodu.Text.Yaml.Writer;
 
 namespace Bodu.Text.Yaml;
 
 /// <summary>
-/// Verifies that <see cref="Utf8YamlWriter" /> validates its <see cref="YamlWriterOptions" /> at construction,
-/// rejecting an unsupported newline string or an out-of-range indentation width.
+/// Verifies the <see cref="Utf8YamlWriter" /> constructors, including option validation.
 /// </summary>
 public partial class Utf8YamlWriterTests
 {
@@ -48,4 +49,5 @@ public partial class Utf8YamlWriterTests
 
         Assert.IsTrue(buffer.WrittenCount > 0);
     }
+
 }
