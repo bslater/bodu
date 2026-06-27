@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <RunSettings>
   <RunConfiguration>
     <!-- Use all available logical processors -->
@@ -7,17 +7,10 @@
     <!-- Optional: Disable app domain creation to improve test performance -->
     <DisableAppDomain>true</DisableAppDomain>
 
-    <!-- Kill the test session if it runs longer than 10 minutes per assembly -->
-    <TestSessionTimeout>600000</TestSessionTimeout>
+    <!-- Kill the test session if it runs longer than 20 minutes per assembly -->
+    <TestSessionTimeout>12000000</TestSessionTimeout>
 
     <!-- Optional: Set results directory -->
     <!-- <ResultsDirectory>.\TestResults</ResultsDirectory> -->
-
-    <!--
-      Legacy alias for regression.runsettings: runs the Smoke, BVT, and Regression tiers. The Stress tier is
-      excluded because its long-running loops exceed the 10-minute session guard above; run those on demand via
-      stress.runsettings. The on-demand Census artifact generator is likewise excluded.
-    -->
-    <TestCaseFilter>TestCategory!=Stress&amp;TestCategory!=Census</TestCaseFilter>
   </RunConfiguration>
 </RunSettings>

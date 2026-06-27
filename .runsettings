@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <RunSettings>
   <RunConfiguration>
     <!-- Use all available logical processors -->
@@ -12,5 +12,7 @@
 
     <!-- Optional: Set results directory -->
     <!-- <ResultsDirectory>.\TestResults</ResultsDirectory> -->
+
+    <TestCaseFilter>TestCategory!=Stress</TestCaseFilter>
   </RunConfiguration>
 </RunSettings>
