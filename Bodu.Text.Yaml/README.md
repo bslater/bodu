@@ -60,7 +60,7 @@ The `yaml/yaml-test-suite` corpus is linked into the repository as the **`yaml-t
 git submodule update --init Bodu.Text.Yaml/test/yaml-test-suite
 ```
 
-The Regression test tier reads each upstream vector through `YamlTestCorpusReader`, which joins it with the repository's own `test/YamlTestCorpus/classification.tsv` into a `YamlTestVector` KAT. Every vector is classified `SupportedPass`, `SupportedParseOnly`, `SupportedFail`, or `UnsupportedFeatureRejected`; a governance suite asserts the classification stays exhaustive with **zero known gaps**, supported-pass vectors match their JSON expectation, round-trip through the writer, and produce a reader token stream whose structural shape matches the vector's `test.event` file (over the alias-free, single-document subset), and every profile-unsupported vector is rejected for a specific, recognized reason. To move to a newer suite release, check out the new tag inside the submodule, commit the updated pointer, and reclassify any added vectors.
+The Regression test tier reads each upstream case through `YamlTestCorpusReader`, which walks the submodule directory tree and classifies each case in code into a `YamlTestVector` KAT — `SupportedPass`, `SupportedParseOnly`, `SupportedFail`, or `UnsupportedFeatureRejected`. Classification is derived from the case's own files (an `error` file marks an expected failure; an `in.json` marks a supported-valid case); the valid upstream cases the profile deliberately rejects or parses without value comparison are held by identifier in `YamlTestCorpusReader`'s two profile sets. A governance suite asserts every case resolves to exactly one category (**zero known gaps**), the by-name profile identifiers all resolve to real cases, the case and category counts match the values pinned in `YamlTestCorpusReader`, supported-pass vectors match their JSON expectation, round-trip through the writer, and produce a reader token stream whose structural shape matches the vector's `test.event` file (over the alias-free, single-document subset), and every profile-unsupported vector is rejected for a specific, recognized reason. To move to a newer suite release, check out the new tag inside the submodule, commit the updated pointer, update the pinned counts, and classify any added cases.
 
 > **Reader note.** `Utf8YamlReader` exposes a forward-only token surface like `System.Text.Json.Utf8JsonReader`, but it is **buffered**: the constructor parses the whole document into an in-memory node store and `Read()` walks it. It is the analogue of the TOML library's `TomlDocumentReader` cursor, not the streaming `Utf8TomlReader` scanner — YAML's indentation context, back-referencing aliases, and merge keys cannot be resolved in a single forward pass.
 
@@ -94,7 +94,7 @@ byte[] back = node.ToUtf8Bytes();
 
 ## Testing
 
-Tests live in `test/` as MSTest classes mirroring `src/`. The Regression tier runs the vendored `yaml/yaml-test-suite` conformance corpus under a classification manifest. Run tiers via the runsettings files at the solution root:
+Tests live in `test/` as MSTest classes mirroring `src/`. The Regression tier runs the vendored `yaml/yaml-test-suite` conformance corpus, classified in code by `YamlTestCorpusReader`. Run tiers via the runsettings files at the solution root:
 
 ```bash
 dotnet test Bodu.Text.Yaml/test/Bodu.Text.Yaml.Test.csproj --settings bvt.runsettings

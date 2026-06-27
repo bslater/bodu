@@ -30,8 +30,8 @@ public sealed class XmlDocConfigException : Exception
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="XmlDocConfigException" /> class with a descriptive message
-    /// and an inner exception that triggered the failure.
+    /// Initializes a new instance of the <see cref="XmlDocConfigException" /> class with a descriptive message and an
+    /// inner exception that triggered the failure.
     /// </summary>
     /// <param name="message">The descriptive error message.</param>
     /// <param name="innerException">The exception that caused this exception.</param>

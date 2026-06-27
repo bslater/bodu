@@ -21,9 +21,9 @@ using Microsoft.CodeAnalysis.Text;
 namespace Bodu.CodeStyle.XmlDocumentation.Analyzers;
 
 /// <summary>
-/// Reports one of the <c>BODU1001</c>–<c>BODU1040</c> diagnostics when an XML documentation comment's
-/// formatting differs from the active project policy. Each per-tag rule has its own diagnostic ID so that
-/// individual tags can be silenced or re-targeted in <c>.editorconfig</c> independently.
+/// Reports one of the <c>BODU1001</c>–<c>BODU1040</c> diagnostics when an XML documentation comment's formatting
+/// differs from the active project policy. Each per-tag rule has its own diagnostic ID so that individual tags can be
+/// silenced or re-targeted in <c>.editorconfig</c> independently.
 /// </summary>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public sealed class XmlDocFormatAnalyzer : DiagnosticAnalyzer
@@ -48,6 +48,12 @@ public sealed class XmlDocFormatAnalyzer : DiagnosticAnalyzer
         context.RegisterCompilationStartAction(OnCompilationStart);
     }
 
+    /// <summary>
+    /// Loads the compilation-wide formatting options and registers the per-tree formatting analysis.
+    /// </summary>
+    /// <param name="compilationContext">
+    /// The compilation-start analysis context used to read additional files and register the tree action.
+    /// </param>
     private static void OnCompilationStart(CompilationStartAnalysisContext compilationContext)
     {
         XmlDocFormatOptions compilationOptions = XmlDocConfigurationLoader.LoadCompilationOptions(
@@ -60,6 +66,13 @@ public sealed class XmlDocFormatAnalyzer : DiagnosticAnalyzer
             AnalyzeTree(treeContext, compilationOptions, formatter));
     }
 
+    /// <summary>
+    /// Formats every documentation-comment trivia in the syntax tree and emits one diagnostic per attributed formatting
+    /// change so each tag and the cross-cutting bucket can be silenced independently.
+    /// </summary>
+    /// <param name="treeContext">The syntax-tree analysis context for the source file under analysis.</param>
+    /// <param name="compilationOptions">The compilation-wide formatting options, before any per-tree overrides.</param>
+    /// <param name="formatter">The formatter that produces the canonical rendering of each doc-comment trivia.</param>
     private static void AnalyzeTree(
         SyntaxTreeAnalysisContext treeContext,
         XmlDocFormatOptions compilationOptions,
@@ -116,6 +129,14 @@ public sealed class XmlDocFormatAnalyzer : DiagnosticAnalyzer
         }
     }
 
+    /// <summary>
+    /// Resolves the member-kind hint for the member that the supplied documentation trivia documents.
+    /// </summary>
+    /// <param name="trivia">The documentation-comment trivia whose owning member is classified.</param>
+    /// <returns>
+    /// The <see cref="XmlDocMemberKindHint" /> matching the owning member, or
+    /// <see cref="XmlDocMemberKindHint.Unknown" /> when no member is found.
+    /// </returns>
     private static XmlDocMemberKindHint ResolveMemberKind(SyntaxTrivia trivia)
     {
         SyntaxNode? owner = trivia.Token.Parent?.FirstAncestorOrSelf<MemberDeclarationSyntax>();
@@ -134,6 +155,13 @@ public sealed class XmlDocFormatAnalyzer : DiagnosticAnalyzer
         };
     }
 
+    /// <summary>
+    /// Resolves the leading whitespace indentation that precedes the supplied documentation trivia on its line.
+    /// </summary>
+    /// <param name="trivia">The documentation-comment trivia whose base indent is resolved.</param>
+    /// <returns>
+    /// The whitespace indent string, or an empty string when the trivia is not preceded by whitespace trivia.
+    /// </returns>
     private static string ResolveBaseIndent(SyntaxTrivia trivia)
     {
         SyntaxToken token = trivia.Token;

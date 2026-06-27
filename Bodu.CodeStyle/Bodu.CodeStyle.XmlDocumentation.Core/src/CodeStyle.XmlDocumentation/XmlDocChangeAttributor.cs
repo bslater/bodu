@@ -15,22 +15,22 @@ namespace Bodu.CodeStyle.XmlDocumentation;
 
 /// <summary>
 /// Compares the raw input and the formatter's output trivia text and produces a list of
-/// <see cref="XmlDocFormattingChange" /> records attributing each difference to the responsible XML doc tag
-/// (or to cross-cutting prose / prefix / indent when no tag is implicated).
+/// <see cref="XmlDocFormattingChange" /> records attributing each difference to the responsible XML doc tag (or to
+/// cross-cutting prose / prefix / indent when no tag is implicated).
 /// </summary>
 /// <remarks>
 /// <para>
-/// Attribution model: at the top level of the doc comment, each block-tag scope whose rendered text differs
-/// from input to output emits one per-tag change record. Inside any such scope the walker only looks for
-/// inline-XML token differences (<c>&lt;see /&gt;</c>, <c>&lt;c&gt;…&lt;/c&gt;</c>, <c>&lt;paramref /&gt;</c>,
-/// <c>&lt;typeparamref /&gt;</c>) and attributes those to the inline tag. Nested block tags inside a top-level
-/// scope are deliberately not separately attributed in this version — suppressing the enclosing block tag
-/// silences the whole subtree, which matches the user-suppression model expressed in <c>.editorconfig</c>.
+/// Attribution model: at the top level of the doc comment, each block-tag scope whose rendered text differs from input
+/// to output emits one per-tag change record. Inside any such scope the walker only looks for inline-XML token
+/// differences (<c>&lt;see /&gt;</c>, <c>&lt;c&gt;…&lt;/c&gt;</c>, <c>&lt;paramref /&gt;</c>,
+/// <c>&lt;typeparamref /&gt;</c>) and attributes those to the inline tag. Nested block tags inside a top-level scope
+/// are deliberately not separately attributed in this version — suppressing the enclosing block tag silences the whole
+/// subtree, which matches the user-suppression model expressed in <c>.editorconfig</c>.
 /// </para>
 /// <para>
-/// Prose differences outside any top-level scope (line prefix, indent, text between tags) collapse into a
-/// single cross-cutting change (<c>tagName: null</c>) so consumers can silence the cross-cutting bucket
-/// independently of any tag.
+/// Prose differences outside any top-level scope (line prefix, indent, text between tags) collapse into a single
+/// cross-cutting change (<c>tagName: null</c>) so consumers can silence the cross-cutting bucket independently of any
+/// tag.
 /// </para>
 /// </remarks>
 internal static class XmlDocChangeAttributor
@@ -84,6 +84,16 @@ internal static class XmlDocChangeAttributor
         return builder.ToImmutable();
     }
 
+    /// <summary>
+    /// Scans the raw input and output content for inline-tag occurrences whose raw text differs and attributes each
+    /// such difference to the responsible inline tag, catching whitespace-only attribute changes the token-level walk
+    /// misses.
+    /// </summary>
+    /// <param name="inputContent">The prefix-stripped raw input content.</param>
+    /// <param name="outputContent">The prefix-stripped canonical output content.</param>
+    /// <param name="inlineTags">The set of element names treated as inline-atomic tags.</param>
+    /// <param name="builder">The builder accumulating attributed changes.</param>
+    /// <param name="seenTags">The set of tag names already attributed, used to deduplicate.</param>
     private static void ScanRawInlineTagDifferences(string inputContent, string outputContent, ImmutableHashSet<string> inlineTags, ImmutableArray<XmlDocFormattingChange>.Builder builder, HashSet<string> seenTags)
     {
         List<RawInlineOccurrence> inputInlines = FindInlineTagsInRawContent(inputContent, inlineTags);
@@ -106,6 +116,13 @@ internal static class XmlDocChangeAttributor
         }
     }
 
+    /// <summary>
+    /// Locates every inline-tag occurrence in the raw content, returning each tag name together with its original
+    /// (un-normalised) source text so attribute-spacing differences remain observable.
+    /// </summary>
+    /// <param name="content">The prefix-stripped raw content to scan.</param>
+    /// <param name="inlineTags">The set of element names treated as inline-atomic tags.</param>
+    /// <returns>The ordered list of inline-tag occurrences found in <paramref name="content" />.</returns>
     private static List<RawInlineOccurrence> FindInlineTagsInRawContent(string content, ImmutableHashSet<string> inlineTags)
     {
         var result = new List<RawInlineOccurrence>();
@@ -178,6 +195,13 @@ internal static class XmlDocChangeAttributor
         return result;
     }
 
+    /// <summary>
+    /// Finds the index of the <c>&gt;</c> that closes a tag, honouring quoted attribute values so a <c>&gt;</c> inside
+    /// an attribute string does not terminate the scan.
+    /// </summary>
+    /// <param name="content">The content being scanned.</param>
+    /// <param name="searchStart">The index at which to begin searching, after the tag name.</param>
+    /// <returns>The zero-based index of the closing <c>&gt;</c>, or <c>-1</c> when none is found.</returns>
     private static int FindTagEnd(string content, int searchStart)
     {
         var inQuote = false;
@@ -204,25 +228,58 @@ internal static class XmlDocChangeAttributor
         return -1;
     }
 
+    /// <summary>
+    /// Determines whether the given character is valid within an XML element name.
+    /// </summary>
+    /// <param name="ch">The character to test.</param>
+    /// <returns>
+    /// <see langword="true" /> when the character may appear in an element name; otherwise <see langword="false" />.
+    /// </returns>
     private static bool IsNameChar(char ch) =>
         (ch >= 'A' && ch <= 'Z') ||
         (ch >= 'a' && ch <= 'z') ||
         (ch >= '0' && ch <= '9') ||
         ch == '-' || ch == '_' || ch == '.' || ch == ':';
 
+    /// <summary>
+    /// Represents a single inline-tag occurrence found in raw doc-comment content, pairing the element name with its
+    /// original source text.
+    /// </summary>
     private readonly struct RawInlineOccurrence
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RawInlineOccurrence" /> struct.
+        /// </summary>
+        /// <param name="tagName">The element name of the inline tag.</param>
+        /// <param name="rawText">The original source text spanning the tag.</param>
         public RawInlineOccurrence(string tagName, string rawText)
         {
             this.TagName = tagName;
             this.RawText = rawText;
         }
 
+        /// <summary>
+        /// Gets the element name of the inline tag.
+        /// </summary>
         public string TagName { get; }
 
+        /// <summary>
+        /// Gets the original source text spanning the tag.
+        /// </summary>
         public string RawText { get; }
     }
 
+    /// <summary>
+    /// Walks the top-level block-tag scopes of the input and output token streams in lockstep, emitting a per-tag
+    /// change for each restructured scope and a single cross-cutting change for any prose difference between scopes.
+    /// </summary>
+    /// <param name="inputTokens">The tokenized raw input content.</param>
+    /// <param name="outputTokens">The tokenized canonical output content.</param>
+    /// <param name="builder">The builder accumulating attributed changes.</param>
+    /// <param name="seenTags">The set of tag names already attributed, used to deduplicate.</param>
+    /// <param name="crossCuttingEmitted">
+    /// A flag tracking whether the single cross-cutting change has already been emitted.
+    /// </param>
     private static void WalkTopLevel(ImmutableArray<XmlDocToken> inputTokens, ImmutableArray<XmlDocToken> outputTokens, ImmutableArray<XmlDocFormattingChange>.Builder builder, HashSet<string> seenTags, ref bool crossCuttingEmitted)
     {
         List<TagScope> inputScopes = FindTopLevelScopes(inputTokens, 0, inputTokens.Length);
@@ -272,6 +329,20 @@ internal static class XmlDocChangeAttributor
         ComparePreScopeProse(inputTokens, inputCursor, inputTokens.Length - 1, outputTokens, outputCursor, outputTokens.Length - 1, builder, ref crossCuttingEmitted);
     }
 
+    /// <summary>
+    /// Compares the concatenated raw text of the input and output token spans that precede a scope and emits a single
+    /// cross-cutting change when they differ.
+    /// </summary>
+    /// <param name="inputTokens">The tokenized raw input content.</param>
+    /// <param name="inputStart">The inclusive start index of the input span.</param>
+    /// <param name="inputEnd">The inclusive end index of the input span.</param>
+    /// <param name="outputTokens">The tokenized canonical output content.</param>
+    /// <param name="outputStart">The inclusive start index of the output span.</param>
+    /// <param name="outputEnd">The inclusive end index of the output span.</param>
+    /// <param name="builder">The builder accumulating attributed changes.</param>
+    /// <param name="crossCuttingEmitted">
+    /// A flag tracking whether the single cross-cutting change has already been emitted.
+    /// </param>
     private static void ComparePreScopeProse(ImmutableArray<XmlDocToken> inputTokens, int inputStart, int inputEnd, ImmutableArray<XmlDocToken> outputTokens, int outputStart, int outputEnd, ImmutableArray<XmlDocFormattingChange>.Builder builder, ref bool crossCuttingEmitted)
     {
         var inputProse = ConcatRawText(inputTokens, inputStart, inputEnd);
@@ -283,6 +354,17 @@ internal static class XmlDocChangeAttributor
         }
     }
 
+    /// <summary>
+    /// Determines whether the token structure of the input and output scopes differs, ignoring raw-text changes inside
+    /// inline-XML tokens (which are attributed separately by the raw-scan pass).
+    /// </summary>
+    /// <param name="inputTokens">The tokenized raw input content.</param>
+    /// <param name="inScope">The input scope to compare.</param>
+    /// <param name="outputTokens">The tokenized canonical output content.</param>
+    /// <param name="outScope">The output scope to compare.</param>
+    /// <returns>
+    /// <see langword="true" /> when the scopes differ structurally; otherwise <see langword="false" />.
+    /// </returns>
     private static bool ScopeStructureDiffers(ImmutableArray<XmlDocToken> inputTokens, TagScope inScope, ImmutableArray<XmlDocToken> outputTokens, TagScope outScope)
     {
         var inLen = inScope.CloseIndex - inScope.OpenIndex + 1;
@@ -307,6 +389,13 @@ internal static class XmlDocChangeAttributor
         return false;
     }
 
+    /// <summary>
+    /// Emits the single cross-cutting change at most once, marking it as emitted so subsequent calls are no-ops.
+    /// </summary>
+    /// <param name="builder">The builder accumulating attributed changes.</param>
+    /// <param name="crossCuttingEmitted">
+    /// A flag tracking whether the cross-cutting change has already been emitted.
+    /// </param>
     private static void EmitCrossCutting(ImmutableArray<XmlDocFormattingChange>.Builder builder, ref bool crossCuttingEmitted)
     {
         if (crossCuttingEmitted) return;
@@ -314,12 +403,25 @@ internal static class XmlDocChangeAttributor
         crossCuttingEmitted = true;
     }
 
+    /// <summary>
+    /// Creates the canonical cross-cutting change that attributes a prose, prefix, or indent difference to no specific
+    /// tag.
+    /// </summary>
+    /// <returns>A new untagged <see cref="XmlDocFormattingChange" /> describing the cross-cutting difference.</returns>
     private static XmlDocFormattingChange CreateCrossCutting() =>
         new XmlDocFormattingChange(
             tagName: null,
             kind: XmlDocFormatRangeKind.WhitespaceNormalisation,
             description: "Documentation comment prose, prefix, or indent updated to project policy.");
 
+    /// <summary>
+    /// Identifies the top-level block-tag scopes within the given token range, pairing each opening block tag with its
+    /// matching close at depth zero.
+    /// </summary>
+    /// <param name="tokens">The token stream to scan.</param>
+    /// <param name="start">The inclusive start index of the range.</param>
+    /// <param name="end">The exclusive end index of the range.</param>
+    /// <returns>The ordered list of top-level scopes found in the range.</returns>
     private static List<TagScope> FindTopLevelScopes(ImmutableArray<XmlDocToken> tokens, int start, int end)
     {
         var scopes = new List<TagScope>();
@@ -356,6 +458,13 @@ internal static class XmlDocChangeAttributor
         return scopes;
     }
 
+    /// <summary>
+    /// Concatenates the raw text of the tokens in the given inclusive index range.
+    /// </summary>
+    /// <param name="tokens">The token stream to read.</param>
+    /// <param name="startInclusive">The inclusive start index.</param>
+    /// <param name="endInclusive">The inclusive end index.</param>
+    /// <returns>The concatenated raw text, or the empty string when the range is empty.</returns>
     private static string ConcatRawText(ImmutableArray<XmlDocToken> tokens, int startInclusive, int endInclusive)
     {
         if (startInclusive > endInclusive) return string.Empty;
@@ -369,8 +478,17 @@ internal static class XmlDocChangeAttributor
         return sb.ToString();
     }
 
+    /// <summary>
+    /// Represents a top-level block-tag scope as the index range of its opening and closing tokens.
+    /// </summary>
     private readonly struct TagScope
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TagScope" /> struct.
+        /// </summary>
+        /// <param name="tagName">The element name of the scope's block tag.</param>
+        /// <param name="openIndex">The token index of the opening block tag.</param>
+        /// <param name="closeIndex">The token index of the matching closing block tag.</param>
         public TagScope(string tagName, int openIndex, int closeIndex)
         {
             this.TagName = tagName;
@@ -378,10 +496,19 @@ internal static class XmlDocChangeAttributor
             this.CloseIndex = closeIndex;
         }
 
+        /// <summary>
+        /// Gets the element name of the scope's block tag.
+        /// </summary>
         public string TagName { get; }
 
+        /// <summary>
+        /// Gets the token index of the opening block tag.
+        /// </summary>
         public int OpenIndex { get; }
 
+        /// <summary>
+        /// Gets the token index of the matching closing block tag.
+        /// </summary>
         public int CloseIndex { get; }
     }
 }

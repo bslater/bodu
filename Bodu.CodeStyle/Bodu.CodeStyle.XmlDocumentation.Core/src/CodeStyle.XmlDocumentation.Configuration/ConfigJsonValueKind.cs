@@ -11,21 +11,33 @@ namespace Bodu.CodeStyle.XmlDocumentation.Configuration;
 /// </summary>
 internal enum ConfigJsonValueKind
 {
-    /// <summary>A JSON object with named members.</summary>
+    /// <summary>
+    /// A JSON object with named members.
+    /// </summary>
     Object = 0,
 
-    /// <summary>A JSON array of values.</summary>
+    /// <summary>
+    /// A JSON array of values.
+    /// </summary>
     Array = 1,
 
-    /// <summary>A JSON string.</summary>
+    /// <summary>
+    /// A JSON string.
+    /// </summary>
     String = 2,
 
-    /// <summary>A JSON number.</summary>
+    /// <summary>
+    /// A JSON number.
+    /// </summary>
     Number = 3,
 
-    /// <summary>A JSON boolean (<c>true</c> or <c>false</c>).</summary>
+    /// <summary>
+    /// A JSON boolean (<c>true</c> or <c>false</c>).
+    /// </summary>
     Boolean = 4,
 
-    /// <summary>A JSON <c>null</c> literal.</summary>
+    /// <summary>
+    /// A JSON <c>null</c> literal.
+    /// </summary>
     Null = 5,
 }

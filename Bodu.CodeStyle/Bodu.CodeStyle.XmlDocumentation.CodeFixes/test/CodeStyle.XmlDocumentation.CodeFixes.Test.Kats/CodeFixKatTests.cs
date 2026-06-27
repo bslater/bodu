@@ -54,7 +54,7 @@ public sealed class CodeFixKatTests
     /// Verifies that each code-fix KAT applies the analyzer + code fix and produces the expected source.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(Kats), DynamicDataSourceType.Method, DynamicDataDisplayName = nameof(GetDisplayName))]
+    [DynamicData(nameof(Kats), DynamicDataDisplayName = nameof(GetDisplayName))]
     public async Task CodeFix_ShouldMatchKatExpectation(CodeStyleKat kat)
     {
         if (kat is null) throw new ArgumentNullException(nameof(kat));
