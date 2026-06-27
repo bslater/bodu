@@ -1,0 +1,53 @@
+<Project>
+
+  <!--
+    Central Package Management for the independent Bodu.CodeStyle solution. This subtree builds on
+    its own pinned SDK (Bodu.CodeStyle/global.json) and deliberately keeps older, Roslyn-compatible
+    package versions, so it carries this self-contained version list rather than drawing from the
+    repository-root Directory.Packages.props. Its presence also stops Central Package Management
+    discovery from walking up into the root file.
+
+    The subtree still inherits the repository-root Directory.Build.targets, which injects the shared
+    analyzer stack as version-less <PackageReference> entries; the analyzer versions below satisfy
+    those. The managed test harness is opted out (BoduManagedTestDependencies=false in
+    Bodu.CodeStyle/Directory.Build.props), so each test project keeps its own MSTest / test-SDK /
+    coverage references — pinned here, with a per-project VersionOverride where one project tracks a
+    newer MSTest line.
+  -->
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+
+  <!-- Shared analyzer stack inherited from the repository-root Directory.Build.targets. -->
+  <ItemGroup>
+    <PackageVersion Include="AsyncFixer" Version="2.1.0" />
+    <PackageVersion Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.14.15" />
+    <PackageVersion Include="Roslynator.Analyzers" Version="4.15.0" />
+    <PackageVersion Include="Roslynator.Formatting.Analyzers" Version="4.15.0" />
+    <PackageVersion Include="StyleCop.Analyzers" Version="1.1.118" />
+    <PackageVersion Include="MSTest.Analyzers" Version="4.2.2" />
+  </ItemGroup>
+
+  <!-- Analyzer / code-fix authoring dependencies (Roslyn-compatible pins). -->
+  <ItemGroup>
+    <PackageVersion Include="System.Collections.Immutable" Version="7.0.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="3.11.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.8.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.8.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Analyzer.Testing.MSTest" Version="1.1.2" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.CodeFix.Testing.MSTest" Version="1.1.2" />
+  </ItemGroup>
+
+  <!--
+    Per-project test harness (the shared managed harness is opted out for this subtree). MSTest
+    defaults to the 3.11.1 line used by the analyzer and code-fix test projects; the Core test
+    project tracks 4.2.1 through a VersionOverride in its own csproj.
+  -->
+  <ItemGroup>
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageVersion Include="MSTest.TestAdapter" Version="3.11.1" />
+    <PackageVersion Include="MSTest.TestFramework" Version="3.11.1" />
+    <PackageVersion Include="coverlet.collector" Version="6.0.2" />
+  </ItemGroup>
+
+</Project>
