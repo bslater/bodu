@@ -34,7 +34,7 @@ using Bodu;
 
 WeekPattern workweek  = WeekPattern.Weekdays;           // Mon–Fri
 WeekPattern weekend   = WeekPattern.Weekend;            // Sat–Sun
-WeekPattern allDays   = WeekPattern.AllDays;            // Mon–Sun
+WeekPattern allDays   = WeekPattern.Weekdays | WeekPattern.Weekend;  // Mon–Sun
 WeekPattern empty     = WeekPattern.Empty;              // no days
 ```
 
@@ -121,7 +121,6 @@ for (DateOnly d = start; d <= end; d = d.AddDays(1))
 | Member | Description |
 |---|---|
 | `Empty` | Static field — no days selected. |
-| `AllDays` | Static field — all seven days selected. |
 | `Weekdays` | Static field — Mon–Fri. |
 | `Weekend` | Static field — Sat–Sun. |
 | `With(DayOfWeek)` | Returns a new pattern with the day added. |

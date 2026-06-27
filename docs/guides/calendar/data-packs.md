@@ -10,13 +10,15 @@ Each pack is a thin static facade: it loads a territory's embedded `region-<cc>.
 
 ## Available packs
 
-All three packs live in the `Bodu.Globalization.Calendar.Data` namespace and expose the same shape.
+All five packs ship as `Bodu.Globalization.Calendar.Data.*` packages (their factory types live in the `Bodu.Globalization.Calendar` namespace) and expose the same shape.
 
 | Package | Type | Territories |
 |---|---|---|
-| **Bodu.Globalization.Calendar.Americas** | <xref:Bodu.Globalization.Calendar.AmericasCalendarData> | Canada (`CA`), United States (`US`) |
-| **Bodu.Globalization.Calendar.AsiaPacific** | <xref:Bodu.Globalization.Calendar.AsiaPacificCalendarData> | Australia (`AU`), China (`CN`), India (`IN`), Japan (`JP`), South Korea (`KR`), Malaysia (`MY`), New Zealand (`NZ`), Singapore (`SG`) |
+| **Bodu.Globalization.Calendar.Americas** | <xref:Bodu.Globalization.Calendar.AmericasCalendarData> | Argentina (`AR`), Brazil (`BR`), Canada (`CA`), Chile (`CL`), Colombia (`CO`), Mexico (`MX`), Peru (`PE`), United States (`US`) |
+| **Bodu.Globalization.Calendar.AsiaPacific** | <xref:Bodu.Globalization.Calendar.AsiaPacificCalendarData> | Australia (`AU`), China (`CN`), Hong Kong (`HK`), Indonesia (`ID`), India (`IN`), Japan (`JP`), South Korea (`KR`), Malaysia (`MY`), New Zealand (`NZ`), Philippines (`PH`), Singapore (`SG`), Thailand (`TH`), Taiwan (`TW`), Vietnam (`VN`) |
 | **Bodu.Globalization.Calendar.Europe** | <xref:Bodu.Globalization.Calendar.EuropeCalendarData> | 28 EU/EEA territories: `AT`, `BE`, `BG`, `CY`, `CZ`, `DE`, `DK`, `EE`, `ES`, `FI`, `FR`, `GB`, `GR`, `HR`, `HU`, `IE`, `IT`, `LT`, `LU`, `LV`, `MT`, `NL`, `PL`, `PT`, `RO`, `SE`, `SI`, `SK` |
+| **Bodu.Globalization.Calendar.MiddleEast** | <xref:Bodu.Globalization.Calendar.MiddleEastCalendarData> | United Arab Emirates (`AE`), Israel (`IL`), Jordan (`JO`), Qatar (`QA`), Saudi Arabia (`SA`), Turkey (`TR`) |
+| **Bodu.Globalization.Calendar.Africa** | <xref:Bodu.Globalization.Calendar.AfricaCalendarData> | Egypt (`EG`), Ethiopia (`ET`), Ghana (`GH`), Kenya (`KE`), Morocco (`MA`), Nigeria (`NG`), South Africa (`ZA`) |
 
 Each pack depends on `Bodu.Globalization.Calendar` and embeds only the `region-<cc>.xml` files for its territories. National rules are authored at the country level (`AU`, `US`, `GB`); state / province / region variants use the canonical ISO 3166-2 subdivision suffix (`AU-NSW`, `US-CA`, `GB-SCT`). See [Territories and regional composition](territories.md) for the parsing, containment, and composition rules that govern how these codes interact at query time.
 
@@ -30,6 +32,8 @@ dotnet add package Bodu.Globalization.Calendar
 dotnet add package Bodu.Globalization.Calendar.Americas
 dotnet add package Bodu.Globalization.Calendar.AsiaPacific
 dotnet add package Bodu.Globalization.Calendar.Europe
+dotnet add package Bodu.Globalization.Calendar.MiddleEast
+dotnet add package Bodu.Globalization.Calendar.Africa
 ```
 
 ## The pack surface

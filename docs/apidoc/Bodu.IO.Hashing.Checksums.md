@@ -19,15 +19,15 @@ using Bodu.IO.Hashing;
 using Bodu.IO.Hashing.Checksums;
 
 // CRC-32 (the standard variant used by Ethernet, ZIP, PNG).
-var crc32 = new Crc(CrcStandard.Crc32);
+var crc32 = new Crc(CrcStandard.CRC32_ISOHDLC);
 ReadOnlySpan<byte> data = "123456789"u8;
 crc32.Append(data);
-uint result = (uint)crc32.GetCurrentHashAsUInt64();
+byte[] digest = crc32.GetCurrentHash();
 // 0xCBF43926 — the canonical CRC-32 check value
 ```
 
 ## Notes
 
-- **Auto-generated catalogue.** The standards are produced from the RevEng database; consumers reference them by name (`CrcStandard.Crc32`, `CrcStandard.Crc16Modbus`, …) rather than constructing the configuration manually.
+- **Auto-generated catalogue.** The standards are produced from the RevEng database; consumers reference them by name (`CrcStandard.CRC32_ISOHDLC`, `CrcStandard.CRC16_MODBUS`, …) rather than constructing the configuration manually.
 - **Resumable.** `Crc` implements <xref:Bodu.IO.Hashing.IResumableHashAlgorithm>, so a long input stream can be hashed across multiple `Append` calls.
 - **See also:** the [CRC guide](~/guides/io-hashing/crc.md), the [CRC catalogue guide](~/guides/io-hashing/crc-catalogue.md), and the parent <xref:Bodu.IO.Hashing> landing page.

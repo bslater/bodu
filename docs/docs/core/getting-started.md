@@ -71,7 +71,7 @@ WeekPattern weekdays = WeekPattern.Parse("MTuWThF");
 WeekPattern weekend  = WeekPattern.Parse("SaSu");
 WeekPattern allDays  = weekdays | weekend;
 
-bool monday = weekdays.Includes(DayOfWeek.Monday); // true
+bool monday = weekdays.Contains(DayOfWeek.Monday); // true
 ```
 
 ### Date arithmetic (`DateTimeExtensions`)

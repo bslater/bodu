@@ -35,7 +35,7 @@ Reach for this library when you need a fast, deterministic checksum for error de
 
 - <xref:Bodu.IO.Hashing.Checksums.Crc> — the single CRC engine. Configured with a <xref:Bodu.IO.Hashing.Checksums.CrcStandard>, it handles widths from 1 to 64 bits, honors polynomial, initial value, input / output reflection, and final XOR, and ships with a shared lookup-table cache.
 - <xref:Bodu.IO.Hashing.Checksums.CrcStandard> — an immutable parameter set: name, width, polynomial, initial value, reflect-in, reflect-out, XOR-out. Exposes common standards as named properties (`CRC32_ISOHDLC`, `CRC32_ISCSI`, `CRC16_MODBUS`, `CRC64_XZ`, …) and provides `FromName` / `TryFromName` over canonical names and published aliases.
-- <xref:Bodu.IO.Hashing.Checksums.CrcStandards> — an enum covering every canonical CRC RevEng entry (113 standards as of the last catalogue fetch).
+- <xref:Bodu.IO.Hashing.Checksums.CrcStandards> — an enum covering every canonical CRC RevEng entry (112 standards as of the last catalogue fetch).
 - <xref:Bodu.IO.Hashing.Checksums.CrcLookupTableCache> — thread-safe cache of 256-entry lookup tables, keyed by (width, polynomial, reflect-in), shared process-wide through <xref:Bodu.IO.Hashing.Checksums.Crc.GlobalCache>.
 - <xref:Bodu.IO.Hashing.Checksums.CrcLookupTableBuilder> — builds a lookup table from parameters; used by the cache on first miss.
 - <xref:Bodu.IO.Hashing.Checksums.Fletcher16> / <xref:Bodu.IO.Hashing.Checksums.Fletcher32> / <xref:Bodu.IO.Hashing.Checksums.Fletcher64> — twin-accumulator position-dependent checksums.

@@ -4,7 +4,7 @@ title: Bodu.IO.Compound guides
 
 # Bodu.IO.Compound guides
 
-Recipe-style walk-throughs for **Bodu.IO.Compound**, the read-only reader for the OLE2 / Compound File Binary (CFB) container format — the structured-storage envelope used by legacy Microsoft Office files (`.xls`, `.doc`, `.ppt`, `.msg`) and other technologies.
+Recipe-style walk-throughs for **Bodu.IO.Compound**, the reader and writer for the OLE2 / Compound File Binary (CFB) container format — the structured-storage envelope used by legacy Microsoft Office files (`.xls`, `.doc`, `.ppt`, `.msg`) and other technologies.
 
 The library has no application-format knowledge: it exposes the embedded storage hierarchy and the raw byte payload of each named stream, and leaves interpretation to the caller. The narrow BIFF8 `.xls` reader in [Bodu.Formats.Excel.Binary](../excel/index.md) is built directly on top of it.
 
