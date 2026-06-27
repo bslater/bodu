@@ -4,8 +4,16 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Buffers;
+using System.Collections.Concurrent;
+using System.Collections.ObjectModel;
+using System.Reflection;
 using System.Text;
+using Bodu.Test.Assertions;
+using Bodu.Test.IO;
 using Bodu.Test.Kat;
+using Bodu.Text.Bencode.Document;
+using Bodu.Text.Bencode.Nodes;
 using Bodu.Text.Bencode.Reader;
 using Bodu.Text.Bencode.Serialization;
 using Bodu.Text.Bencode.Writer;
@@ -352,4 +360,381 @@ public partial class BencodeSerializerTests
         public override void Write(Utf8BencodeWriter writer, bool value, BencodeSerializerOptions options) =>
             writer.WriteInteger(value ? 1 : 0);
     }
+
+    /// <summary>
+    /// Gets the integer round-trip cases spanning each fixed-width integer type at its minimum, maximum, zero, and a
+    /// typical value.
+    /// </summary>
+    /// <returns>The integer round-trip rows.</returns>
+    public static IEnumerable<object[]> IntegerCases()
+    {
+        yield return Row(new SByteModel { Value = sbyte.MinValue }, "d5:Valuei-128ee", "sbyte min");
+        yield return Row(new SByteModel { Value = sbyte.MaxValue }, "d5:Valuei127ee", "sbyte max");
+        yield return Row(new SByteModel { Value = 0 }, "d5:Valuei0ee", "sbyte zero");
+        yield return Row(new ByteModel { Value = byte.MinValue }, "d5:Valuei0ee", "byte min");
+        yield return Row(new ByteModel { Value = byte.MaxValue }, "d5:Valuei255ee", "byte max");
+        yield return Row(new ByteModel { Value = 42 }, "d5:Valuei42ee", "byte typical");
+        yield return Row(new ShortModel { Value = short.MinValue }, "d5:Valuei-32768ee", "short min");
+        yield return Row(new ShortModel { Value = short.MaxValue }, "d5:Valuei32767ee", "short max");
+        yield return Row(new ShortModel { Value = 0 }, "d5:Valuei0ee", "short zero");
+        yield return Row(new UShortModel { Value = ushort.MaxValue }, "d5:Valuei65535ee", "ushort max");
+        yield return Row(new UShortModel { Value = 0 }, "d5:Valuei0ee", "ushort zero");
+        yield return Row(new IntModel { Value = int.MinValue }, "d5:Valuei-2147483648ee", "int min");
+        yield return Row(new IntModel { Value = int.MaxValue }, "d5:Valuei2147483647ee", "int max");
+        yield return Row(new IntModel { Value = 0 }, "d5:Valuei0ee", "int zero");
+        yield return Row(new IntModel { Value = -7 }, "d5:Valuei-7ee", "int typical");
+        yield return Row(new UIntModel { Value = uint.MaxValue }, "d5:Valuei4294967295ee", "uint max");
+        yield return Row(new UIntModel { Value = 0 }, "d5:Valuei0ee", "uint zero");
+        yield return Row(new LongModel { Value = long.MinValue }, "d5:Valuei-9223372036854775808ee", "long min");
+        yield return Row(new LongModel { Value = long.MaxValue }, "d5:Valuei9223372036854775807ee", "long max");
+        yield return Row(new LongModel { Value = 0 }, "d5:Valuei0ee", "long zero");
+        yield return Row(new ULongModel { Value = 0 }, "d5:Valuei0ee", "ulong zero");
+        yield return Row(new ULongModel { Value = (ulong)long.MaxValue }, "d5:Valuei9223372036854775807ee", "ulong int64-max");
+        yield return Row(new ULongModel { Value = ulong.MaxValue }, "d5:Valuei18446744073709551615ee", "ulong max");
+
+        static object[] Row(object model, string expected, string name) =>
+            [new BinaryKat<object, string>(name, model, expected)];
+    }
+
+    /// <summary>
+    /// Gets the unsupported-type scenarios: a model per type Bencode cannot natively represent without a converter.
+    /// </summary>
+    /// <returns>The unsupported-type rows.</returns>
+    public static IEnumerable<object[]> UnsupportedTypeCases()
+    {
+        yield return Row<bool>("bool", "d5:Valuei1ee");
+        yield return Row<double>("double", "d5:Value3:1.5e");
+        yield return Row<float>("float", "d5:Value3:1.5e");
+        yield return Row<decimal>("decimal", "d5:Value3:1.5e");
+        yield return Row<char>("char", "d5:Value1:ae");
+        yield return Row<Guid>("Guid", "d5:Value1:xe");
+        yield return Row<Uri>("Uri", "d5:Value1:xe");
+        yield return Row<DateTime>("DateTime", "d5:Value1:xe");
+        yield return Row<DateTimeOffset>("DateTimeOffset", "d5:Value1:xe");
+        yield return Row<TimeSpan>("TimeSpan", "d5:Value1:xe");
+
+        // Each row captures strongly-typed serialize/deserialize actions over a model whose single member is of the
+        // unsupported type, so the exception surfaces directly rather than wrapped by reflection.
+        static object[] Row<T>(string name, string encoded)
+        {
+            byte[] document = Encoding.Latin1.GetBytes(encoded);
+            return
+            [
+                new UnsupportedTypeKat(
+                    name,
+                    () => _ = BencodeSerializer.Serialize(new SingleValueModel<T>()),
+                    () => _ = BencodeSerializer.Deserialize<SingleValueModel<T>>(document)),
+            ];
+        }
+    }
+
+    /// <summary>
+    /// Serializes a boxed model by its runtime type, so a single data-driven test can cover many model types.
+    /// </summary>
+    /// <param name="model">The model to serialize.</param>
+    /// <returns>The Bencode encoding of <paramref name="model" />.</returns>
+    private static byte[] SerializeBoxed(object model)
+    {
+        MethodInfo method = typeof(BencodeSerializer)
+            .GetMethods()
+            .First(m => m.Name == nameof(BencodeSerializer.Serialize) && m.IsGenericMethod && m.GetParameters().Length == 2 && m.GetParameters()[0].ParameterType.IsGenericParameter)
+            .MakeGenericMethod(model.GetType());
+        return (byte[])method.Invoke(null, [model, null])!;
+    }
+
+    /// <summary>
+    /// Deserializes a model of the specified runtime type from Bencode bytes.
+    /// </summary>
+    /// <param name="type">The model type.</param>
+    /// <param name="bytes">The Bencode bytes to read.</param>
+    /// <returns>The deserialized model.</returns>
+    private static object DeserializeBoxed(Type type, byte[] bytes)
+    {
+        MethodInfo method = typeof(BencodeSerializer)
+            .GetMethods()
+            .First(m => m.Name == nameof(BencodeSerializer.Deserialize) && m.IsGenericMethod && m.GetParameters().Length == 2 && m.GetParameters()[0].ParameterType == typeof(byte[]))
+            .MakeGenericMethod(type);
+        return method.Invoke(null, [bytes, null])!;
+    }
+
+    /// <summary>
+    /// A model with a single <see cref="string" /> member.
+    /// </summary>
+    private sealed class StringModel
+    {
+        /// <summary>
+        /// Gets or sets the string value.
+        /// </summary>
+        /// <value>The value.</value>
+        public string Value { get; set; } = string.Empty;
+    }
+
+    /// <summary>
+    /// A model with a single <see cref="byte" /> array member.
+    /// </summary>
+    private sealed class BytesModel
+    {
+        /// <summary>
+        /// Gets or sets the byte-array value.
+        /// </summary>
+        /// <value>The value.</value>
+        public byte[] Value { get; set; } = [];
+    }
+
+    /// <summary>
+    /// A model with a single <see cref="sbyte" /> member.
+    /// </summary>
+    private sealed class SByteModel
+    {
+        /// <summary>
+        /// Gets or sets the value.
+        /// </summary>
+        /// <value>The value.</value>
+        public sbyte Value { get; set; }
+    }
+
+    /// <summary>
+    /// A model with a single <see cref="byte" /> member.
+    /// </summary>
+    private sealed class ByteModel
+    {
+        /// <summary>
+        /// Gets or sets the value.
+        /// </summary>
+        /// <value>The value.</value>
+        public byte Value { get; set; }
+    }
+
+    /// <summary>
+    /// A model with a single <see cref="short" /> member.
+    /// </summary>
+    private sealed class ShortModel
+    {
+        /// <summary>
+        /// Gets or sets the value.
+        /// </summary>
+        /// <value>The value.</value>
+        public short Value { get; set; }
+    }
+
+    /// <summary>
+    /// A model with a single <see cref="ushort" /> member.
+    /// </summary>
+    private sealed class UShortModel
+    {
+        /// <summary>
+        /// Gets or sets the value.
+        /// </summary>
+        /// <value>The value.</value>
+        public ushort Value { get; set; }
+    }
+
+    /// <summary>
+    /// A model with a single <see cref="int" /> member.
+    /// </summary>
+    private sealed class IntModel
+    {
+        /// <summary>
+        /// Gets or sets the value.
+        /// </summary>
+        /// <value>The value.</value>
+        public int Value { get; set; }
+    }
+
+    /// <summary>
+    /// A model with a single <see cref="uint" /> member.
+    /// </summary>
+    private sealed class UIntModel
+    {
+        /// <summary>
+        /// Gets or sets the value.
+        /// </summary>
+        /// <value>The value.</value>
+        public uint Value { get; set; }
+    }
+
+    /// <summary>
+    /// A model with a single <see cref="long" /> member.
+    /// </summary>
+    private sealed class LongModel
+    {
+        /// <summary>
+        /// Gets or sets the value.
+        /// </summary>
+        /// <value>The value.</value>
+        public long Value { get; set; }
+    }
+
+    /// <summary>
+    /// A model with a single <see cref="ulong" /> member.
+    /// </summary>
+    private sealed class ULongModel
+    {
+        /// <summary>
+        /// Gets or sets the value.
+        /// </summary>
+        /// <value>The value.</value>
+        public ulong Value { get; set; }
+    }
+
+    /// <summary>
+    /// A model with a single <see cref="double" /> member, served only by a user converter.
+    /// </summary>
+    private sealed class RatioModel
+    {
+        /// <summary>
+        /// Gets or sets the ratio.
+        /// </summary>
+        /// <value>The ratio.</value>
+        public double Ratio { get; set; }
+    }
+
+    /// <summary>
+    /// A model carrying a <see cref="Color" /> enumeration value.
+    /// </summary>
+    private sealed class ColorModel
+    {
+        /// <summary>
+        /// Gets or sets the color.
+        /// </summary>
+        /// <value>The color.</value>
+        public Color Color { get; set; }
+    }
+
+    /// <summary>
+    /// A model carrying a <see cref="Permissions" /> flags enumeration value.
+    /// </summary>
+    private sealed class PermissionModel
+    {
+        /// <summary>
+        /// Gets or sets the permissions.
+        /// </summary>
+        /// <value>The permissions.</value>
+        public Permissions Permissions { get; set; }
+    }
+
+    /// <summary>
+    /// A simple enumeration whose members map to their byte-string names.
+    /// </summary>
+    private enum Color
+    {
+        /// <summary>The red member.</summary>
+        Red = 0,
+
+        /// <summary>The green member.</summary>
+        Green = 1,
+
+        /// <summary>The blue member.</summary>
+        Blue = 2,
+    }
+
+    /// <summary>
+    /// A flags enumeration used to exercise combined-flag serialization.
+    /// </summary>
+    [Flags]
+    private enum Permissions
+    {
+        /// <summary>No permission.</summary>
+        None = 0,
+
+        /// <summary>The read permission.</summary>
+        Read = 1,
+
+        /// <summary>The write permission.</summary>
+        Write = 2,
+
+        /// <summary>The execute permission.</summary>
+        Execute = 4,
+    }
+
+    /// <summary>
+    /// A custom converter mapping <see cref="double" /> to and from a Bencode byte string using the invariant culture.
+    /// </summary>
+    private sealed class DoubleConverter
+        : BencodeConverter<double>
+    {
+        /// <inheritdoc />
+        public override double Read(ref Utf8BencodeReader reader, Type typeToConvert, BencodeSerializerOptions options) =>
+            double.Parse(reader.GetString(), System.Globalization.CultureInfo.InvariantCulture);
+
+        /// <inheritdoc />
+        public override void Write(Utf8BencodeWriter writer, double value, BencodeSerializerOptions options) =>
+            writer.WriteString(value.ToString(System.Globalization.CultureInfo.InvariantCulture));
+    }
+
+    /// <summary>
+    /// A known-answer row describing a type Bencode cannot natively represent, carrying strongly-typed actions that
+    /// serialize and deserialize a model whose single member is of that type.
+    /// </summary>
+    public sealed class UnsupportedTypeKat
+        : IKat
+    {
+        /// <summary>
+        /// The action that serializes a model whose member is of the unsupported type.
+        /// </summary>
+        private readonly Action _serialize;
+
+        /// <summary>
+        /// The action that deserializes a model whose member is of the unsupported type.
+        /// </summary>
+        private readonly Action _deserialize;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UnsupportedTypeKat" /> class.
+        /// </summary>
+        /// <param name="name">The scenario label.</param>
+        /// <param name="serialize">The action that serializes a model whose member is of the unsupported type.</param>
+        /// <param name="deserialize">
+        /// The action that deserializes a model whose member is of the unsupported type.
+        /// </param>
+        public UnsupportedTypeKat(string name, Action serialize, Action deserialize)
+        {
+            Name = name;
+            _serialize = serialize;
+            _deserialize = deserialize;
+        }
+
+        /// <inheritdoc />
+        public string Name { get; }
+
+        /// <summary>
+        /// Serializes a default-valued model whose member is of the row's unsupported type.
+        /// </summary>
+        public void Serialize() =>
+            _serialize();
+
+        /// <summary>
+        /// Deserializes a sample document into a model whose member is of the row's unsupported type.
+        /// </summary>
+        public void Deserialize() =>
+            _deserialize();
+    }
+
+    /// <summary>
+    /// A model with a single member of an arbitrary type, used to exercise unsupported-type behavior generically.
+    /// </summary>
+    /// <typeparam name="T">The member type.</typeparam>
+    public sealed class SingleValueModel<T>
+    {
+        /// <summary>
+        /// Gets or sets the value.
+        /// </summary>
+        /// <value>The value.</value>
+        public T? Value { get; set; }
+    }
+
+    /// <summary>
+    /// A small model used by the stream overload tests.
+    /// </summary>
+    private sealed class StreamModel
+    {
+        /// <summary>Gets or sets the identifier.</summary>
+        /// <value>The identifier.</value>
+        public int Id { get; set; }
+
+        /// <summary>Gets or sets the label.</summary>
+        /// <value>The label.</value>
+        public string Label { get; set; } = string.Empty;
+    }
+
 }
