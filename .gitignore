@@ -184,5 +184,3 @@ slnx.sqlite
 *.snk
 !bld/Bodu.public.snk
 
-# Bodu.Text.Yaml SharpFuzz run artifacts (driver, seeds, corpus, crashes)
-Bodu.Text.Yaml/fuzz/.work/

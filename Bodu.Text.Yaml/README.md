@@ -101,19 +101,7 @@ dotnet test Bodu.Text.Yaml/test/Bodu.Text.Yaml.Test.csproj --settings bvt.runset
 dotnet test Bodu.Text.Yaml/test/Bodu.Text.Yaml.Test.csproj --settings regression.runsettings
 ```
 
-### Fuzzing
-
-The parser is fuzzed with [SharpFuzz] (libFuzzer for .NET). The harness in `fuzz/` drives `YamlDocument.Parse` (and a full document walk), `ParseAllDocuments`, `YamlSerializer.Deserialize<object>`, and the `Utf8YamlReader` token loop, swallowing only the contracted `YamlFormatException` / `YamlSerializationException`, plus a parse → serialize → reparse round-trip invariant. Any other exception, hang, runaway memory, or invariant break is a finding. Run it (Linux, with clang and network access; the yaml-test-suite corpus seeds it):
-
-```bash
-bld/run-yaml-fuzz.sh                 # set up and fuzz for ~25 minutes
-FUZZ_TARGET=core bld/run-yaml-fuzz.sh   # hunt crashes/DoS only (no round-trip invariant)
-bld/run-yaml-fuzz.sh triage <input>  # replay one input and print the managed exception
-```
-
-Every confirmed finding is minimized and committed to `test/YamlFuzzCorpus/` as a permanent regression vector, replayed by `YamlFuzzCorpusTests` (a `RoundTrips` vector must survive a round-trip; a `Throws` vector must be rejected with `YamlFormatException`). The fuzz harness itself is not part of `bodu.slnx`, so it never runs in the `dotnet test` tiers.
-
-[SharpFuzz]: https://github.com/Metalnem/sharpfuzz
+The Regression tier also replays `test/YamlFuzzCorpus` — minimized inputs discovered by fuzzing the parser, kept as permanent regression vectors and run by `YamlFuzzCorpusTests` (a `RoundTrips` vector must survive a parse → serialize → reparse cycle; a `Throws` vector must be rejected with `YamlFormatException`).
 
 ## License
 
