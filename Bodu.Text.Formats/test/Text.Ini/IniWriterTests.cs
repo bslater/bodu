@@ -16,7 +16,7 @@ public sealed class IniWriterTests
     /// by <see cref="Ini.Format(IniDocument)" />, such that the output re-parses to an equivalent document.
     /// </summary>
     [TestMethod]
-    public void Write_ShouldRoundTripThroughParse()
+    public void RoundTrip_WhenWrittenThenParsed_ShouldMatch()
     {
         StringWriter sw = new();
         using (IniWriter writer = new(sw))
@@ -39,7 +39,7 @@ public sealed class IniWriterTests
     /// section/key/value entries that were written.
     /// </summary>
     [TestMethod]
-    public void Write_ShouldRoundTripThroughIniReader()
+    public void RoundTrip_WhenWrittenThenRead_ShouldMatch()
     {
         StringWriter sw = new();
         using (IniWriter writer = new(sw))
