@@ -20,7 +20,9 @@ This guide covers all three on one page. For the broader "which hash do I pick?"
 | **BLAKE2s** | 128–256 bits | 0–32 bytes | 64 bytes | 10 | Lightweight, 32-bit platforms / embedded |
 | **BLAKE3** | 256 bits (fixed; XOF can extend) | None (in this implementation) | 64-byte blocks, 1024-byte chunks | 7 (chunk), 7 (parent) | Tree-structured; parallel-friendly |
 
-All three derive from RFC 7693 (BLAKE2) and the BLAKE3 spec respectively. None are known to be broken.
+All three derive from RFC 7693 (BLAKE2) and the BLAKE3 spec respectively. None are known to be broken. BLAKE2b / BLAKE2s are *plain digests* (fixed output chosen at construction); BLAKE3 is *tree-structured* internally but still presents a fixed 256-bit digest here — for a true extendable output reach for [SHAKE](shake.md). As with any digest, an n-bit output gives ≈ n-bit pre-image resistance and ≈ n/2-bit collision resistance.
+
+`Blake2b` and `Blake2s` sit on Bodu's `KeyedDeferredFinalBlockHashAlgorithm<T>` (the `Key` property drives MAC mode); `Blake3` sits on `DeferredFinalBlockHashAlgorithm<Blake3>` (no key surface). All three are <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType> instances, so the standard `ComputeHash` / `TransformBlock` lifecycle and the <xref:Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions> helpers apply.
 
 ## When to pick which
 

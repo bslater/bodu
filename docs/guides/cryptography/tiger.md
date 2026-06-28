@@ -91,6 +91,20 @@ byte[] digest = tiger.ComputeHash(stream);
 
 For larger files where you want to verify ranges of the file without rehashing the whole thing, pair Tiger with <xref:Bodu.Security.Cryptography.MerkleTreeHash> to build a Tiger Tree Hash — see the [Merkle trees guide](merkle-trees.md).
 
+To feed several discontiguous spans into one digest, use the `TransformBlock` / `TransformFinalBlock` pair, or the <xref:Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions> `AppendData` helper (which takes a `ReadOnlySpan<byte>`):
+
+```csharp
+using Bodu.Security.Cryptography;
+using Bodu.Security.Cryptography.Extensions;
+
+using var tiger = new Tiger();
+tiger.AppendData(header);
+tiger.AppendData(body);
+tiger.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+
+byte[] digest = tiger.Hash!;
+```
+
 ## Pattern 5 — verifying a digest
 
 Compare digests in constant time. The `VerifyHash` helper in `Bodu.Security.Cryptography.Extensions` wraps `CryptographicOperations.FixedTimeEquals`:
@@ -106,6 +120,12 @@ bool ok = tiger.VerifyHash(fileBytes, expected);
 ```
 
 A plain `SequenceEqual` leaks timing information and is unsafe when the result drives an authentication decision.
+
+## Security caveats
+
+- **Status.** Tiger is unbroken for pre-image and second-pre-image resistance. A 1-bit-rotation collision attack on reduced-round Tiger exists in the literature, and the 192-bit width gives only 96-bit collision resistance by the birthday bound — comfortably above brute force today, but below the 128-bit collision margin a 256-bit hash provides. For long-lived collision-critical commitments prefer SHA-256 or wider.
+- **Output width vs security level.** An n-bit digest gives ≈ n-bit pre-image resistance and ≈ n/2-bit collision resistance. The 128- and 160-bit truncations are correspondingly weaker against collisions — choose them only when an external protocol fixes the width.
+- **Length extension.** Tiger is a Merkle–Damgård design and inherits the length-extension property. Do **not** authenticate with `key ‖ message`; use HMAC-Tiger, or reach for a native keyed hash ([Skein](skein.md), [BLAKE2b](blake.md)) or a MAC ([SipHash](siphash.md), [Poly1305](poly1305.md)).
 
 ## When to use Tiger
 

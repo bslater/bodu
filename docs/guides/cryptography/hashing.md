@@ -6,7 +6,7 @@ title: Using hashes and checksums
 
 **Bodu.Security.Cryptography** ships the library's keyed hashes (SipHash), one-time authenticators (Poly1305), cryptographic digests (Tiger, Snefru, CubeHash, ASCON-HASH256, ASCON-HASHA256), and Merkle-tree hashing. All of them plug into the standard <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType> contract.
 
-This page is the cross-cutting overview — how the families relate, which to choose for which job, and how to verify a digest safely. For the full per-algorithm walk-throughs, see:
+This page is the cross-cutting overview — what guarantee a cryptographic hash actually makes, how the structural shapes (digest / XOF / tree) differ, which to choose for which job, and how to verify a digest safely. For the full per-algorithm walk-throughs, see:
 
 - [Using SipHash](siphash.md) — keyed short-input PRF.
 - [Using Poly1305](poly1305.md) — one-time authenticator.
@@ -17,6 +17,43 @@ This page is the cross-cutting overview — how the families relate, which to ch
 - [Using Merkle trees](merkle-trees.md) — tree-structured streaming integrity.
 
 > **Looking for CRC, Fletcher, Adler, FNV, CityHash, Pearson, Bernstein, BKDR, SDBM, JSHash, Elf64, ApHash, or Pjw32?** Those non-cryptographic families live in the companion <xref:Bodu.IO.Hashing> package, built on <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType>. See the [Bodu.IO.Hashing guides](../io-hashing/index.md).
+
+## What a cryptographic hash guarantees
+
+A cryptographic hash is a **one-way** function: cheap to compute forwards, computationally infeasible to invert. Three named resistance properties define the contract, and the security level of each is bounded by the digest width:
+
+- **Pre-image resistance** — given a digest `h`, no efficient way to find any input `m` with `hash(m) = h`. Costs ≈ 2ⁿ for an n-bit digest.
+- **Second-pre-image resistance** — given an input `m₁`, no efficient way to find a *different* `m₂` with the same digest. Costs ≈ 2ⁿ.
+- **Collision resistance** — no efficient way to find *any* pair `m₁ ≠ m₂` with the same digest. Costs ≈ 2^(n/2) by the birthday bound — so a 256-bit digest gives only 128-bit collision resistance, and truncating a digest halves the collision exponent with it.
+
+This is the line between this package and the non-cryptographic <xref:Bodu.IO.Hashing> fingerprints: those carry **no adversary model** and fail every property above against an attacker who can choose the input. A cryptographic digest provides **integrity only when the digest itself reaches the verifier over an authenticated channel** — on its own it is not authentication. For integrity *and* authenticity against an active attacker, reach for a keyed hash / MAC (below) or an AEAD mode.
+
+## The three structural shapes
+
+The cryptographic hashes here share the <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType> base but differ in what they produce:
+
+| Shape | Output | Types | Use |
+|---|---|---|---|
+| **Plain digest** | Fixed width chosen at construction | <xref:Bodu.Security.Cryptography.Tiger>, <xref:Bodu.Security.Cryptography.Whirlpool>, <xref:Bodu.Security.Cryptography.CubeHash>, <xref:Bodu.Security.Cryptography.Snefru128>, <xref:Bodu.Security.Cryptography.Blake2b>, <xref:Bodu.Security.Cryptography.Skein512>, <xref:Bodu.Security.Cryptography.AsconHash256> | Content addressing, signature inputs, fingerprints. |
+| **Extendable output (XOF)** | Any requested length | <xref:Bodu.Security.Cryptography.Shake>, <xref:Bodu.Security.Cryptography.AsconXof128> | Squeeze arbitrary-length key material or deterministic randomness from a seed. |
+| **Tree** | Root digest over parallel leaves | <xref:Bodu.Security.Cryptography.MerkleTreeHash>, <xref:Bodu.Security.Cryptography.ParallelMerkleTreeHash> | Verifiable per-chunk inclusion proofs; partial re-verification. |
+
+Two families on this page take a **secret key** in addition to the message and produce an authentication tag — and they split on a critical axis:
+
+| Subtype | Type | Key reuse |
+|---|---|---|
+| **Reusable PRF** | <xref:Bodu.Security.Cryptography.SipHash64>, <xref:Bodu.Security.Cryptography.SipHash128> | One key authenticates **many** messages. |
+| **One-time authenticator** | <xref:Bodu.Security.Cryptography.Poly1305> | The key authenticates **exactly one** message — reuse is a complete break. |
+
+## The HashAlgorithm lifecycle
+
+Every cryptographic hash here is a <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType>, so the BCL contract applies unchanged:
+
+- **One-shot** — `ComputeHash(byte[])`, `ComputeHash(ReadOnlySpan<byte>)`, or `ComputeHash(Stream)`. The instance is auto-reinitialised afterwards, so the same instance can hash the next message.
+- **Streaming** — `TransformBlock(...)` repeatedly, then `TransformFinalBlock(...)`; read the digest from the `Hash` property. Call `Initialize()` to reset between messages.
+- `CanReuseTransform` reports whether the instance survives a finalisation — `true` for the digests and for SipHash, **`false` for `Poly1305`** (its way of refusing key reuse at the API level).
+
+The <xref:Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions> helpers add `AppendData`, `VerifyHash`, and `TryVerifyHash` (and their async overloads) on top of that base.
 
 ## Pick the right tool
 
@@ -51,24 +88,28 @@ The same shape works for `Adler32`, `Adler64`, `Fletcher16`, `Fletcher32`, `Flet
 
 ## Pattern 2 — a keyed hash (SipHash)
 
-SipHash was designed to keep hash tables safe from collision-DoS attacks. It takes a secret key, and even an adversary who knows the algorithm cannot produce collisions efficiently without the key.
+SipHash was designed to keep hash tables safe from collision-DoS attacks. It is a **reusable PRF** — one secret key authenticates many messages, and even an adversary who knows the algorithm cannot produce collisions efficiently without the key.
 
 ```csharp
 using System.Security.Cryptography;
 using Bodu.Security.Cryptography;
 
-// 128-bit key — generated once, stored in your process / vault.
-byte[] key = new byte[16];
+// 128-bit key (SipHash64.KeySize == 128) — generated once, stored in your process / vault.
+byte[] key = new byte[SipHash64.KeySize / 8];   // 16 bytes
 RandomNumberGenerator.Fill(key);
 
+byte[] message = "the quick brown fox"u8.ToArray();
+
 using var sip = new SipHash64 { Key = key };
-byte[] digest = sip.ComputeHash(keyBytes);
+byte[] digest = sip.ComputeHash(message);
 ulong slotHash = BitConverter.ToUInt64(digest);
 
 // Use the output as a stable 64-bit hash for routing / bucketing.
 ```
 
-`SipHash128` gives you a 128-bit output for use cases that care about longer collision resistance. Both types expose `CompressionRounds` and `FinalizationRounds` if you need to trade speed for margin (defaults are the standard SipHash-2-4 parameterization).
+The key is exactly 16 bytes; a shorter or longer key is rejected at configuration time. `SipHash128` gives you a 128-bit output for use cases that care about longer collision resistance. Both types expose `CompressionRounds` (default 2) and `FinalizationRounds` (default 4) if you need to trade speed for margin — the defaults are the standard **SipHash-2-4** parameterization. See [Using SipHash](siphash.md).
+
+> **PRF vs one-time authenticator.** SipHash is safe to reuse under one key. <xref:Bodu.Security.Cryptography.Poly1305> is *not* — its forgery bound holds only while the 32-byte key is used exactly once, which is why its `CanReuseTransform` is `false`. See [Using Poly1305](poly1305.md).
 
 ## Pattern 3 — a cryptographic digest
 
@@ -81,7 +122,24 @@ using var tiger = new Tiger();     // 192-bit default; set HashSize for 128/160
 byte[] digest = tiger.ComputeHash(data);
 ```
 
-For brand-new work, prefer the BCL's `System.Security.Cryptography.SHA256` or `System.Security.Cryptography.SHA512` — they are hardware-accelerated on most modern CPUs.
+For brand-new work, prefer the BCL's `System.Security.Cryptography.SHA256` or `System.Security.Cryptography.SHA512` — they are hardware-accelerated on most modern CPUs. The package also ships <xref:Bodu.Security.Cryptography.Whirlpool> (512-bit, ISO/IEC 10118-3), <xref:Bodu.Security.Cryptography.CubeHash> (tunable), <xref:Bodu.Security.Cryptography.Skein512> (Threefish-based, with a built-in MAC mode), and <xref:Bodu.Security.Cryptography.Blake2b> / <xref:Bodu.Security.Cryptography.Blake3>.
+
+> [!WARNING]
+> <xref:Bodu.Security.Cryptography.Snefru128> / <xref:Bodu.Security.Cryptography.Snefru256> are **cryptographically broken** — practical collisions are known. They ship for interoperability and research only; never use them to protect real data. See [Using Snefru](snefru.md).
+
+## Pattern 3b — an extendable-output function (XOF)
+
+When you need *more* output than a fixed digest supplies — arbitrary-length key material, deterministic randomness from a seed — reach for a XOF instead of a plain digest. <xref:Bodu.Security.Cryptography.Shake> squeezes any positive multiple of 8 bits at a chosen 128- or 256-bit security level:
+
+```csharp
+using Bodu.Security.Cryptography;
+
+// SHAKE256, squeezing 1024 bits (128 bytes) from the seed.
+using var shake = new Shake(outputBits: 1024, securityLevel: 256);
+byte[] output = shake.ComputeHash(seed);   // 128 bytes
+```
+
+Unlike a Merkle–Damgård digest, a sponge XOF is immune to length extension and truncating its output is safe down to the security target. See [Using SHAKE](shake.md).
 
 ## Pattern 4 — verifying a hash
 

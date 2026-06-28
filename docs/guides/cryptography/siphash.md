@@ -6,6 +6,8 @@ title: Using SipHash
 
 SipHash is a family of **keyed** pseudo-random functions designed by Aumasson and Bernstein for one specific job: defeating hash-flooding attacks on hash tables. It takes a 128-bit secret key and a message of any length, and produces a fixed-size digest that is prohibitively expensive to collide without knowledge of the key.
 
+Unlike a one-time authenticator such as <xref:Bodu.Security.Cryptography.Poly1305>, SipHash is a **reusable PRF**: a single key authenticates an unbounded number of messages, and `CanReuseTransform` is `true`. That is the property that makes it a drop-in keyed hash for routing, sharding, and DoS-resistant hash tables.
+
 ![SipHash SipRound — the add-rotate-XOR network over the four 64-bit state words](../../images/diagrams/siphash-round.svg)
 
 **Bodu.Security.Cryptography** ships two widths:
@@ -15,13 +17,13 @@ SipHash is a family of **keyed** pseudo-random functions designed by Aumasson an
 | <xref:Bodu.Security.Cryptography.SipHash64> | 64 bits | SipHash-2-4 | The standard choice — hash-table keys, sharding, short fingerprints. |
 | <xref:Bodu.Security.Cryptography.SipHash128> | 128 bits | SipHash-2-4 | Longer output for content-addressing or de-duplication where 64 bits is uncomfortable. |
 
-Both derive from a shared `SipHash<T>` base and inherit from <xref:System.Security.Cryptography.KeyedHashAlgorithm?displayProperty=nameWithType>. The key is exactly **16 bytes** (the `SipHash<T>.KeySize` constant) — shorter or longer keys are rejected at configuration time.
+Both derive from a shared `SipHash<T>` base, which sits on Bodu's `KeyedBlockHashAlgorithm<T>` — itself a <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType> that adds a `Key` property (this package does not route through the BCL `KeyedHashAlgorithm`). The key is exactly **16 bytes** (the `SipHash<T>.KeySize` constant, 128 bits) — shorter or longer keys are rejected at configuration time.
 
 ## Fixed sizes at a glance
 
 | Parameter | Size | Notes |
 |---|---|---|
-| `Key` | 128 bits (16 bytes) | Fixed by `SipHash<T>.KeySize`. Generate once, store in your process / vault. |
+| `Key` | 128 bits (16 bytes) | Fixed; `SipHash<T>.KeySize` is the length in *bits* (128). Generate once, store in your process / vault. |
 | Output (`SipHash64`) | 64 bits (8 bytes) | — |
 | Output (`SipHash128`) | 128 bits (16 bytes) | — |
 | `CompressionRounds` | `>= 2` (default 2) | Inner rounds per 8-byte block. |
@@ -35,7 +37,8 @@ using System.Text;
 using Bodu.Security.Cryptography;
 
 // 128-bit key — generated once, stored in your process / vault.
-byte[] key = new byte[SipHash64.KeySize];
+// SipHash64.KeySize is the key length in *bits* (128), so divide by 8 for the byte count.
+byte[] key = new byte[SipHash64.KeySize / 8];   // 16 bytes
 RandomNumberGenerator.Fill(key);
 
 byte[] message = Encoding.UTF8.GetBytes("the quick brown fox");

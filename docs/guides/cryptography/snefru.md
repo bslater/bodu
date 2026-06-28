@@ -11,10 +11,10 @@ Snefru is a 1990 cryptographic hash by Ralph Merkle, named after the Egyptian ph
 | <xref:Bodu.Security.Cryptography.Snefru128> | 128 bits | 48 bytes |
 | <xref:Bodu.Security.Cryptography.Snefru256> | 256 bits | 32 bytes |
 
-Both derive from a shared `Snefru<T>` base, which in turn derives from <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType>.
+Both derive from a shared `Snefru<T>` base, which in turn derives from <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType>. Each input block runs through 8 rounds of S-box substitution and word-wise rotation; the low half of the 512-bit working buffer becomes the next chaining value, and the final chaining value is the digest.
 
-> [!IMPORTANT]
-> Snefru is **cryptographically broken**. Eli Biham showed practical collisions on Snefru-2 (the published 2-pass variant) in 2008. The implementation in this package is provided for **interoperability with legacy systems and for research**, not for protecting real data. For any new work where you need a cryptographic hash, use the BCL's `System.Security.Cryptography.SHA256` / `System.Security.Cryptography.SHA512`, or <xref:Bodu.Security.Cryptography.Tiger> if you need 192-bit output.
+> [!WARNING]
+> Snefru is **cryptographically broken** — it satisfies none of the resistance properties a cryptographic hash is supposed to provide. Eli Biham published practical collisions against both the 2-pass and 4-pass variants. The implementation in this package is provided for **interoperability with legacy systems and for research**, not for protecting real data. An attacker who can choose part of the input can forge a colliding message at negligible cost, so Snefru must never sit on a security boundary — no password hashing, no signature input, no integrity check that an adversary can influence. For any new work where you need a cryptographic hash, use the BCL's `System.Security.Cryptography.SHA256` / `System.Security.Cryptography.SHA512`, or <xref:Bodu.Security.Cryptography.Tiger> if you need 192-bit output.
 
 ## Pattern 1 — compute a digest
 
@@ -67,6 +67,6 @@ For everything else, pick a modern digest. The [hashing overview](hashing.md) li
 
 - [Hashing overview](hashing.md) — how Snefru compares to the other hashes in this package.
 - [Using Tiger](tiger.md) — another classic cryptographic hash with wider deployment.
-- [Using CubeHash](cubehash.md) — a modern, highly tunable cryptographic hash (SHA-3 finalist).
+- [Using CubeHash](cubehash.md) — a modern, highly tunable cryptographic hash (SHA-3 first-round submission).
 - [Bodu.Security.Cryptography namespace page](xref:Bodu.Security.Cryptography).
 - **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.

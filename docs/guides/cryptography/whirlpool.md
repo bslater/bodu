@@ -6,7 +6,7 @@ title: Whirlpool hashing
 
 `Whirlpool` is the ISO/IEC 10118-3 standardised hash designed by Vincent Rijmen and Paulo Barreto. It is a Merkle–Damgård construction wrapping an internal 512-bit block cipher (W) with Rijndael-inspired wide-trail design — large S-boxes (8 × 8 over GF(2⁸)), an MDS-based diffusion layer, 10 rounds.
 
-The hash has had three formal revisions, all of which are supported by `Bodu.Security.Cryptography` through the `WhirlpoolVersion` enum.
+The hash has had three formal revisions, all of which are supported by `Bodu.Security.Cryptography` through the `WhirlpoolVersion` enum. It is a *plain digest* — a fixed 512-bit output, the widest fixed digest in the package — and a <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType>, so the standard `ComputeHash` / `TransformBlock` lifecycle and the <xref:Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions> helpers apply unchanged. The 512-bit width gives ≈ 512-bit pre-image resistance and ≈ 256-bit collision resistance.
 
 For the broader "which hash do I pick?" framing, see [Hashing](hashing.md).
 
