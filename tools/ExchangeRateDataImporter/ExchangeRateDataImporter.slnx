@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="../../Bodu.Financial.ExchangeRates.Caching/src/Bodu.Financial.ExchangeRates.Caching.csproj" />
+  <Project Path="ExchangeRateDataImporter.csproj" />
+</Solution>

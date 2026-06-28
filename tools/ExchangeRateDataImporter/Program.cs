@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Program.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -37,6 +37,7 @@ internal static class Program
 
     private static int Main(string[] args)
     {
+        args = new[] { "--out", @"c:\temp\output-fx", @"\\vault\c$\ProfileData\Shares\Home\SharePotfolioManager\Cache\FxRates\" };
         if (!TryParseArgs(args, out string outputDirectory, out DateTimeOffset stamp, out List<string> inputFiles))
             return 1;
 
@@ -62,6 +63,7 @@ internal static class Program
             try
             {
                 // 1. Load the JSON dump.
+                Console.WriteLine($"Loading {Path.GetFileName(inputFile)}");
                 RateDump dump = ReadDump(inputFile);
 
                 // 2. Build the rates in Bodu.
