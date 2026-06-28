@@ -66,7 +66,7 @@ A <xref:Bodu.Formats.Excel.ExcelDateSystem> names the epoch a serial number is m
 The two systems differ by 1,462 days, so a serial number paired with the wrong system lands four-plus years off. The workbook's own system is exposed through <xref:Bodu.Formats.Excel.ExcelBinaryWorkbook.DateSystem> (read from the `DATEMODE` record) — pass it to the converter rather than assuming the 1900 default.
 
 > [!IMPORTANT]
-> The 1900 epoch is `1899-12-30`, not `1900-01-01`, because Excel deliberately preserves a historical bug: it treats 1900 as a leap year and counts a non-existent `1900-02-29`. <xref:Bodu.Formats.Excel.ExcelSerialDate> reproduces Excel's own arithmetic (it delegates to <xref:System.DateTime.FromOADate(System.Double)>), so serial numbers round-trip with Excel for all dates from `1900-03-01` onward. Serial numbers before that boundary are outside the range this converter handles faithfully.
+> The 1900 epoch is `1899-12-30`, not `1900-01-01`, because Excel deliberately preserves a historical bug: it treats 1900 as a leap year and counts a non-existent `1900-02-29`. <xref:Bodu.Formats.Excel.ExcelSerialDate> reproduces Excel's own arithmetic (it delegates to `DateTime.FromOADate`), so serial numbers round-trip with Excel for all dates from `1900-03-01` onward. Serial numbers before that boundary are outside the range this converter handles faithfully.
 
 ## Sheet descriptor, type, and visibility
 
