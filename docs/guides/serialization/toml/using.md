@@ -125,7 +125,9 @@ var options = new TomlSerializerOptions
 };
 ```
 
-Naming policies cover `CamelCase`, `SnakeCaseLower` / `SnakeCaseUpper`, and `KebabCaseLower` / `KebabCaseUpper`. Pin a single member's name with `[TomlPropertyName("…")]`, which always wins over the policy. Start from a scenario preset by constructing the options from <xref:Bodu.Text.Toml.TomlSerializerDefaults> (for example `TomlSerializerDefaults.Web`).
+Naming policies cover `CamelCase`, `SnakeCaseLower` / `SnakeCaseUpper`, and `KebabCaseLower` / `KebabCaseUpper`. Pin a single member's name with `[TomlPropertyName("…")]`, which always wins over the policy. Start from a scenario preset by constructing the options from <xref:Bodu.Text.Toml.TomlSerializerDefaults> (for example `TomlSerializerDefaults.Web`, which also turns on case-insensitive matching).
+
+On *read*, key matching is case-sensitive by default; set `PropertyNameCaseInsensitive = true` (or use the `Web` preset) to bind a key to a member regardless of case. The setting governs matching only — it does not change the name a member is *written* under.
 
 Properties are mapped by default; public fields join in when `IncludeFields` is set on the options, or individually with `[TomlInclude]` on the field. Fields follow the same naming-policy, ordering, ignore, required, and converter rules as properties — including `[TomlPropertyOrder]`, which reorders the emitted lines. The full attribute family is catalogued in [Mapping attributes](attributes.md).
 
@@ -161,6 +163,22 @@ Port = 9090
 
 `Parse` takes UTF-8 bytes (`ReadOnlySpan<byte>`); for a `string` in hand, convert with `Encoding.UTF8.GetBytes(text)` first.
 
+A <xref:Bodu.Text.Toml.Nodes.TomlNode> reads and writes through several conveniences: implicit conversions build a value node from a `string`, `long`, `int`, `double`, `bool`, or any of the four date-time types; explicit conversions (`(int)node`, `(string)node`, …) and the generic `node.GetValue<T>()` pull a scalar back out; and `AsObject()` / `AsArray()` / `AsValue()` narrow to the concrete node type. `TomlObject` is an ordered string-keyed map (`Add`, `Remove`, `TryGetValue`, `ContainsKey`) and `TomlArray` an ordered list (`Add`, `Insert`, `RemoveAt`, `IndexOf`); both preserve insertion order on write. `DeepClone()` copies a subtree and `TomlNode.DeepEquals(a, b)` compares two by structure.
+
+```csharp
+using Bodu.Text.Toml.Nodes;
+
+var server = new TomlObject
+{
+    ["host"] = "localhost",   // implicit string → TomlValue
+    ["port"] = 8080,          // implicit long → TomlValue
+};
+var root = new TomlObject { ["server"] = server };
+
+int port = root["server"]!["port"]!.GetValue<int>();   // 8080
+byte[] bytes = root.ToUtf8Bytes();
+```
+
 ## Pattern 7 — Inspect a document with the read-only DOM
 
 The read-only counterpart is a low-allocation view walked through `RootElement`:
@@ -173,7 +191,20 @@ TomlElement port = doc.RootElement.GetProperty("Server").GetProperty("Port");
 // port.GetInt64() → 8080
 ```
 
-`TomlDocument.Parse` accepts a `string` as well as UTF-8 bytes. A document you parse (or deserialize as a member) is caller-owned — dispose it (the `using` above) when finished. Typed access goes through `GetString` / `GetInt64` / `GetDouble` / `GetBoolean` / `GetDateTimeOffset` and friends on <xref:Bodu.Text.Toml.Document.TomlElement>.
+`TomlDocument.Parse` accepts a `string` as well as UTF-8 bytes. A document you parse (or deserialize as a member) is caller-owned — dispose it (the `using` above) when finished. Typed access goes through `GetString` / `GetInt64` / `GetDouble` / `GetBoolean` / `GetDateTimeOffset` / `GetDateTime` / `GetDateOnly` / `GetTimeOnly` on <xref:Bodu.Text.Toml.Document.TomlElement>, each of which throws if the element's `ValueKind` does not match. Walk structure with `GetProperty` / `TryGetProperty`, the integer indexer and `GetArrayLength` for arrays, and the allocation-light `EnumerateObject()` / `EnumerateArray()` enumerators:
+
+```csharp
+using Bodu.Text.Toml.Document;
+
+using TomlDocument doc = TomlDocument.Parse(utf8Toml);
+
+foreach (TomlProperty property in doc.RootElement.EnumerateObject())
+{
+    Console.WriteLine($"{property.Name} → {property.Value.ValueKind}");
+}
+```
+
+Branch on <xref:Bodu.Text.Toml.TomlValueKind> (`String`, `Integer`, `Float`, `Boolean`, the four date-time kinds, `Array`, `Table`) before calling a typed getter when the shape is not known ahead of time.
 
 ## Pattern 8 — Streams and async
 
@@ -193,14 +224,76 @@ The synchronous `Deserialize<T>(Stream, …)` overload has the same shape withou
 
 ## Pattern 9 — Process tokens by hand
 
-For full control with no allocations, drive the <xref:Bodu.Text.Toml.Reader.Utf8TomlReader> / <xref:Bodu.Text.Toml.Writer.Utf8TomlWriter> ref-struct pair directly. This is the same surface a [converter](converters.md) receives.
+For full control with no allocations, drive the reader/writer ref-struct machines directly. There are two readers, and which one you reach for depends on whether you care about the document's *surface syntax* or only its *logical shape*.
+
+The **source-order** <xref:Bodu.Text.Toml.Reader.Utf8TomlReader> lexes the document as written — headers, dotted-key segments, inline tables, and comments all surface as their own tokens. Each `Read()` advances one token; the typed getters decode the current value, and `LineNumber` / `ColumnNumber` / `BytesConsumed` track position as byte-true offsets:
+
+```csharp
+using Bodu.Text.Toml;
+using Bodu.Text.Toml.Reader;
+
+var reader = new Utf8TomlReader("port = 8080 # listen\n"u8);
+
+while (reader.Read())
+{
+    switch (reader.TokenType)
+    {
+        case TomlTokenType.Key:     Console.Write($"{reader.GetString()} = "); break;
+        case TomlTokenType.Integer: Console.WriteLine(reader.GetInt64()); break;
+        case TomlTokenType.Comment: Console.WriteLine($"// {reader.GetComment()}"); break;
+    }
+}
+```
+
+The **normalized** <xref:Bodu.Text.Toml.Reader.TomlDocumentReader> — the cursor a [converter](converters.md) receives — collapses every way of spelling a table onto a uniform `StartTable` / `PropertyName` / value / `EndTable` stream, so one read loop handles inline and header-defined tables alike. `Skip()` steps over a whole value, including nested tables and arrays:
+
+```csharp
+using Bodu.Text.Toml;
+using Bodu.Text.Toml.Reader;
+
+var reader = new TomlDocumentReader("""
+    [server]
+    host = "localhost"
+    port = 8080
+    """u8);
+
+while (reader.Read())
+{
+    if (reader.TokenType == TomlTokenType.PropertyName && reader.GetString() == "port")
+    {
+        reader.Read();                       // advance onto the value
+        Console.WriteLine(reader.GetInt64()); // 8080
+    }
+}
+```
+
+To emit tokens, drive the <xref:Bodu.Text.Toml.Writer.Utf8TomlWriter> over an `IBufferWriter<byte>` or a `Stream`. Write a structural skeleton with `WriteStartTable` / `WritePropertyName` / a typed `Write*` per value, and `Flush` (or `Dispose`) when streaming:
+
+```csharp
+using Bodu.Text.Toml.Writer;
+
+var buffer = new ArrayBufferWriter<byte>();
+var writer = new Utf8TomlWriter(buffer);
+
+writer.WriteStartTable("server");
+writer.WriteString("host", "localhost");
+writer.WriteInteger("port", 8080);
+writer.WriteEndTable();
+// buffer.WrittenSpan now holds the UTF-8 bytes of:
+//   [server]
+//   host = "localhost"
+//   port = 8080
+```
+
+> [!TIP]
+> The `Utf8TomlReader` also parses **incrementally**: construct it with `isFinalBlock: false` and a <xref:Bodu.Text.Toml.Reader.TomlReaderState>, and when `Read()` returns `false` mid-token it rewinds wholly so you can resume over the next block carrying `CurrentState`. Use it to tokenize a document that arrives in chunks without buffering the whole thing first.
 
 ## Error handling
 
 Two exception types separate "the text is not TOML" from "the TOML does not fit your type":
 
 - <xref:Bodu.Text.Toml.TomlFormatException> — malformed input. Because TOML files are edited by hand, the exception carries the position: `LineNumber`, `ColumnNumber`, and byte `Offset`.
-- <xref:Bodu.Text.Toml.TomlSerializationException> — the document parsed, but a value cannot bind: a kind mismatch, a missing required member, or a value the format cannot represent on write.
+- <xref:Bodu.Text.Toml.TomlSerializationException> — the document parsed, but a value cannot bind: a kind mismatch, a missing required member, or a value the format cannot represent on write. It exposes the same `LineNumber` / `ColumnNumber` / `Offset` position where known, plus a `Path` naming the member that failed.
 
 ```csharp
 try

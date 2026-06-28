@@ -25,11 +25,17 @@ TOML has no null, so a `null` member is omitted on write by default. The full pe
 
 ## Spec versions
 
-<xref:Bodu.Text.Toml.TomlSpecVersion> on the options selects the grammar the reader enforces. The default is strict **v1.0.0**; opting in to **v1.1.0** additionally accepts the `\e` and `\xHH` escapes, time values without seconds, and multi-line and trailing-comma inline tables. The writer always emits output valid under *both* versions, so produced documents never lock consumers into the newer grammar.
+<xref:Bodu.Text.Toml.TomlSpecVersion> on the options selects the grammar the reader enforces. The default is strict **v1.0.0**; opting in to **v1.1.0** additionally accepts:
+
+- the `\e` (escape, U+001B) and `\xHH` (two-hex-digit) string escapes;
+- time values written without seconds (`09:30` rather than `09:30:00`);
+- inline tables that span multiple lines and carry a trailing comma.
+
+The version affects *parsing only*. The writer always emits output valid under *both* versions, so produced documents never lock consumers into the newer grammar — the `SpecVersion` property on the writer options is obsolete and ignored.
 
 ## Diagnostics with positions
 
-TOML files are edited by hand, so parse failures must point at the offending line. A malformed document raises <xref:Bodu.Text.Toml.TomlFormatException> carrying the **line, column, and byte offset**; a document that parses but cannot bind to your type raises <xref:Bodu.Text.Toml.TomlSerializationException>.
+TOML files are edited by hand, so parse failures must point at the offending line. A malformed document raises <xref:Bodu.Text.Toml.TomlFormatException> carrying the **line, column, and byte offset** (`LineNumber`, `ColumnNumber`, `Offset`); a document that parses but cannot bind to your type raises <xref:Bodu.Text.Toml.TomlSerializationException>, which carries the same positions where known plus a `Path` naming the member that failed to bind.
 
 ## Headline types
 
@@ -41,7 +47,7 @@ TOML files are edited by hand, so parse failures must point at the offending lin
 | <xref:Bodu.Text.Toml.Serialization.TomlConverter`1> | Base class for a custom converter over the reader/writer pair; attach one to a member or type with <xref:Bodu.Text.Toml.Serialization.TomlConverterAttribute>. Built-in enum converters: <xref:Bodu.Text.Toml.Serialization.TomlStringEnumConverter> and <xref:Bodu.Text.Toml.Serialization.TomlNumberEnumConverter`1>. |
 | <xref:Bodu.Text.Toml.Nodes.TomlNode> | Mutable DOM — `Parse`, index, mutate, write back. |
 | <xref:Bodu.Text.Toml.Document.TomlDocument> | Read-only, low-allocation DOM walked through `RootElement`. |
-| <xref:Bodu.Text.Toml.Reader.Utf8TomlReader> / <xref:Bodu.Text.Toml.Writer.Utf8TomlWriter> | Forward-only, allocation-free `ref struct` token machines. |
+| <xref:Bodu.Text.Toml.Reader.Utf8TomlReader> / <xref:Bodu.Text.Toml.Reader.TomlDocumentReader> / <xref:Bodu.Text.Toml.Writer.Utf8TomlWriter> | Forward-only, allocation-free `ref struct` token machines: the source-order lexer, the normalized structural cursor a converter receives, and the writer. |
 | <xref:Bodu.Text.Toml.TomlFormatException> / <xref:Bodu.Text.Toml.TomlSerializationException> | Malformed input (with line/column/offset) vs a value that cannot bind. |
 
 ## Common scenarios
