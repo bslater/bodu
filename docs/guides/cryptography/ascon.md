@@ -34,6 +34,18 @@ all known distinguishing attacks and has a well-studied, wide peer-reviewed secu
 
 When in doubt: reach for `AsconHash256` for hashing and `AsconAead128` for authenticated encryption.
 
+## One permutation, four roles
+
+The defining feature of the family is that hashing, extendable output, and authenticated encryption are all built from the **same** sponge — a 320-bit state and the Ascon-p permutation — rather than from three unrelated primitives. The role is determined entirely by how the sponge is initialised and which phases (absorb, squeeze, key injection, domain separation) are applied:
+
+| Role | Type(s) | What the sponge does |
+|---|---|---|
+| **Hash** | `AsconHash256`, `AsconHashA256` | Absorb the message, then squeeze a fixed 256-bit digest. |
+| **XOF** | `AsconXof128`, `AsconCxof128` | Absorb the message, then squeeze an arbitrary number of output bytes. |
+| **AEAD** | `AsconAead128` | Inject key and nonce, absorb AAD, encrypt by XORing the rate, then squeeze a tag. |
+
+The practical payoff is a single, small implementation surface: one permutation to audit, one state layout, one round function. A device that already ships ASCON for authenticated encryption gets hashing and key derivation for free. NIST SP 800-232 specifies all of these under one umbrella, so they share a common security analysis.
+
 ## The shared permutation
 
 All five types use the same Ascon-p permutation. Each call applies a configurable number of
@@ -89,26 +101,22 @@ using System.Security.Cryptography;
 using System.Text;
 using Bodu.Security.Cryptography;
 
-byte[] key       = RandomNumberGenerator.GetBytes(AsconAead128.KeyBytes);
-byte[] nonce     = RandomNumberGenerator.GetBytes(AsconAead128.NonceBytes);
+byte[] key       = RandomNumberGenerator.GetBytes(AsconAead128.KeySize / 8);    // 16 bytes
+byte[] nonce     = RandomNumberGenerator.GetBytes(AsconAead128.NonceSize / 8);  // 16 bytes
 byte[] plaintext = Encoding.UTF8.GetBytes("secret payload");
 byte[] aad       = Encoding.UTF8.GetBytes("request-id:abc123");
 
 // Encrypt — output is ciphertext || 16-byte tag
-byte[] cipherWithTag = new byte[plaintext.Length + AsconAead128.TagBytes];
-using (var enc = new AsconAead128(key, nonce))
-{
-    enc.ProcessAssociatedData(aad);
-    enc.Encrypt(plaintext, cipherWithTag);
-}
+using var enc = new AsconAead128(key, nonce);
+byte[] cipherWithTag = new byte[plaintext.Length + enc.TagSize / 8];
+enc.ProcessAssociatedData(aad);
+enc.Encrypt(plaintext, cipherWithTag);
 
 // Decrypt — throws CryptographicException if tampered
+using var dec = new AsconAead128(key, nonce);
 byte[] recovered = new byte[plaintext.Length];
-using (var dec = new AsconAead128(key, nonce))
-{
-    dec.ProcessAssociatedData(aad);
-    dec.Decrypt(cipherWithTag, recovered);
-}
+dec.ProcessAssociatedData(aad);
+dec.Decrypt(cipherWithTag, recovered);
 ```
 
 ## When to reach for ASCON
