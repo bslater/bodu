@@ -244,7 +244,8 @@ it through the DI extension method that ships inside the backend's own package (
   (`Bodu.Financial.ExchangeRates.Caching.Distributed`) stores each pair as a JSON blob
   in any `IDistributedCache` (Redis, SQL Server, in-memory), so several processes share
   one warm cache. Register it with `AddDistributedRateCache("RBA")` or
-  `AddRedisRateCache("RBA", redis => …)`.
+  `AddRedisRateCache(redis => …, "RBA")` — the Redis configurator is the first
+  argument, the provider name the second.
 
 Every backend shares the same freshness, merge, and coverage semantics — the same
 `ExchangeRateCacheContractTests`.

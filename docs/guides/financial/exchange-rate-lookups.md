@@ -34,13 +34,14 @@ three-day gap at the end:
 
 ```csharp
 using Bodu.Financial;
+using Bodu.Financial.Currencies;
 
 ExchangeRate[] observations =
 {
-    new("USD", "EUR", new DateOnly(2024, 6, 10), 0.9250m, "ECB"),
-    new("USD", "EUR", new DateOnly(2024, 6, 14), 0.9280m, "ECB"),
-    new("USD", "EUR", new DateOnly(2024, 6, 18), 0.9300m, "ECB"),
-    new("USD", "EUR", new DateOnly(2024, 6, 21), 0.9330m, "ECB"),
+    new(CurrencyCode.USD, CurrencyCode.EUR, new DateOnly(2024, 6, 10), 0.9250m, "ECB"),
+    new(CurrencyCode.USD, CurrencyCode.EUR, new DateOnly(2024, 6, 14), 0.9280m, "ECB"),
+    new(CurrencyCode.USD, CurrencyCode.EUR, new DateOnly(2024, 6, 18), 0.9300m, "ECB"),
+    new(CurrencyCode.USD, CurrencyCode.EUR, new DateOnly(2024, 6, 21), 0.9330m, "ECB"),
 };
 
 FixedDatedExchangeRateProvider provider = new(observations);

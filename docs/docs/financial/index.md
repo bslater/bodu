@@ -4,7 +4,7 @@ title: Bodu.Financial — Introduction
 
 # Bodu.Financial
 
-**Bodu.Financial** is the monetary-primitives package of the Bodu suite. It ships type-parameter-tagged and runtime-tagged money types, a shipped catalogue of ~185 ISO 4217 currencies, an exchange-rate provider stack with both timeless and dated lookup, and JSON converters with three policy shapes for ledger-style, lenient-import, and compact-wire integrations. Part of the **[Numerics & Financial](../topics/numerics-and-financial.md)** topic.
+**Bodu.Financial** is the monetary-primitives package of the Bodu suite. It ships type-parameter-tagged and runtime-tagged money types, a shipped catalogue of 184 ISO 4217 currencies (155 active and 29 historic), an exchange-rate provider stack with both timeless and dated lookup, and JSON converters with three policy shapes for ledger-style, lenient-import, and compact-wire integrations. Part of the **[Numerics & Financial](../topics/numerics-and-financial.md)** topic.
 
 The package depends on `Bodu.Numerics` so `Money<TCurrency>` can round-trip through `Fraction<BigInteger>` for sub-minor-unit-precise intermediate calculations — interest accumulation, percentage-of-percentage, and other chains where deferred rounding matters.
 
@@ -29,16 +29,16 @@ The package depends on `Bodu.Numerics` so `Money<TCurrency>` can round-trip thro
 
 ### `Bodu.Financial.Currencies`
 
-Sealed tag types — one class per ISO 4217 code — each implementing `ICurrency`. Includes:
+Sealed tag types — one class per ISO 4217 code — each implementing `ICurrency`. The catalogue ships 184 codes:
 
-- **~150 active currencies** — USD, EUR, GBP, JPY, AUD, CAD, CHF, CNY, …
-- **~30 historic currencies** — all twenty Euro-zone predecessors (ATS, BEF, DEM, ESP, FRF, GRD, IEP, ITL, NLG, PTE, …) plus other notable replacements (AZM, GHC, MZM, ROL, SRG, TMM, VEB, VEF, ZWL). Each declares `IsHistoric`, `DemonetizedOn`, `SuccessorIsoCode`.
+- **155 active currencies** — USD, EUR, GBP, JPY, AUD, CAD, CHF, CNY, …
+- **29 historic currencies** — the Euro-zone predecessors (ATS, BEF, CYP, DEM, EEK, ESP, FIM, FRF, GRD, HRK, IEP, ITL, LTL, LUF, LVL, MTL, NLG, PTE, SIT, SKK) plus other notable replacements (AZM, GHC, MZM, ROL, SRG, TMM, VEB, VEF, ZWL). Each declares `IsHistoric => true`, `DemonetizedOn`, and `SuccessorIsoCode`.
 
-The tag types only ever exist statically — every one has a `private` constructor — so `Money<USD>` is the only way to materialise a value.
+Each tag is source-generated from `currencies.json` and exposes get-only `static` members — `IsoCode`, `NumericCode`, `MinorUnits`, and (where they differ from the interface defaults) `CashRoundingIncrement`, `EnglishName`, `IsHistoric`, `DemonetizedOn`, `SuccessorIsoCode`. The tag types only ever exist statically — every one has a `private` constructor — so `Money<USD>` is the only way to materialise a value. The runtime <xref:Bodu.Financial.Currencies.CurrencyCode> enum carries the same 184 codes plus a `None = 0` sentinel (185 members), keyed by ISO 4217 numeric code and tagged with each currency's `CurrencyStatus` (`Active` / `Historic`).
 
 ### `Bodu.Financial.Serialization`
 
-`System.Text.Json` converters and the <xref:Bodu.Financial.Serialization.FinancialJsonPolicy> enum (`Strict`, `Lenient`, `Compact`). Register all converters at once via `FinancialJsonSerializerOptionsExtensions.AddFinancialJsonConverters(options, policy)`.
+`System.Text.Json` converters and the <xref:Bodu.Financial.Serialization.FinancialJsonPolicy> enum (`Strict = 0`, `Lenient = 1`, `Compact = 2`). `FinancialJsonSerializerOptionsExtensions.AddFinancialJsonConverters(options, policy)` registers all five converters at once — for `Money<TCurrency>` (via a `JsonConverterFactory`), `Money`, `MoneyBag`, <xref:Bodu.Financial.ExchangeRate>, and <xref:Bodu.Financial.ExchangeRatePair> — under the chosen policy, and returns the same `JsonSerializerOptions` for chaining. Each converter also has a parameterless constructor that defaults to `Strict`, which is what the type-level `[JsonConverter]` attributes use when no converter is registered explicitly.
 
 ## Exchange-rate providers and caching
 
@@ -51,6 +51,8 @@ The exchange-rate core (`IExchangeRateProvider` / `IDatedExchangeRateProvider`, 
 | Bank of England (`…ExchangeRates.Boe`) | <xref:Bodu.Financial.ExchangeRates.BoeExchangeRateProvider> | base GBP, reference | `AddBoeReferenceRates()` |
 | Yahoo (`…ExchangeRates.Yahoo`) | <xref:Bodu.Financial.ExchangeRates.YahooExchangeRateProvider> | any pair | `AddYahooExchangeRates()` |
 | OFX (`…ExchangeRates.Ofx`) | <xref:Bodu.Financial.ExchangeRates.OfxExchangeRateProvider> | any pair | `AddOfxExchangeRates()` |
+
+RBA, ECB, and BoE quote one base currency against many others and extend <xref:Bodu.Financial.WebExchangeRateProvider> directly; Yahoo and OFX fetch a distinct series per pair and extend <xref:Bodu.Financial.PairWebExchangeRateProvider`1>. Each provider exposes two public constructors — an options-only form that builds and owns its `HttpClient`, and a form that takes a caller-supplied `HttpClient` (the shape the DI registration uses, backed by `IHttpClientFactory`). The shared `Bodu.Financial.ExchangeRates.DependencyInjection` package supplies the generic `AddWebExchangeRateProvider<TProvider, TOptions>` machinery every provider's `Add<Source>...` method delegates to: it binds the options from a configuration section, registers a named `HttpClient` with the standard Polly resilience handler (`AddStandardResilienceHandler`), and exposes the provider as both <xref:Bodu.Financial.IDatedExchangeRateProvider> and <xref:Bodu.Financial.IExchangeRateProvider>. Each `Add<Source>...` method binds a default section (`Financial:Rba`, `Financial:Ecb`, `Financial:Boe`, `Financial:Yahoo`, `Financial:Ofx`) and returns the <xref:Bodu.Financial.IFinancialServiceBuilder> for chaining.
 
 A provider-agnostic caching layer in `Bodu.Financial.ExchangeRates.Caching` wraps any of these. <xref:Bodu.Financial.ExchangeRates.Caching.CachingExchangeRateProvider> is a read-through decorator over an `IExchangeRateCache`, and <xref:Bodu.Financial.ExchangeRates.Caching.AggregatingExchangeRateProvider> fronts several sources at once (priority / average strategies, per-pair routing). The core caching package ships in-memory and TOML-file caches; durable backends add on as <xref:Bodu.Financial.ExchangeRates.Caching.SqliteExchangeRateCache> (`…Caching.Sqlite`) and <xref:Bodu.Financial.ExchangeRates.Caching.DistributedExchangeRateCache> (`…Caching.Distributed`, e.g. Redis through `IDistributedCache`). Each package ships its own registration extensions — `AddCachedExchangeRateProvider`, `AddAggregatedExchangeRateProvider`, `AddSqliteRateCache`, and `AddDistributedRateCache` / `AddRedisRateCache` — all declared in the root `Bodu.Financial.ExchangeRates` namespace.
 
@@ -137,7 +139,7 @@ The companion **`Bodu.Financial.DependencyInjection`** package — a separate, S
 dotnet add package Bodu.Financial.DependencyInjection
 ```
 
-The entry point is `AddFinancialService(...)`, an `IServiceCollection` extension method in the `Bodu.Financial` namespace. Both overloads register the default <xref:Bodu.Financial.ICurrency> lookup and return a fluent <xref:Bodu.Financial.IFinancialServiceBuilder> on which you compose the rest of the stack: a replacement currency lookup, named monetary contexts, timeless and dated exchange-rate providers, and the JSON converters under a chosen policy. Passing an `IConfiguration` additionally binds <xref:Bodu.Financial.FinancialOptions> (`JsonPolicy`, `UnknownCurrency`) from a configuration section (default `"Financial"`).
+The entry point is `AddFinancialService(...)`, an `IServiceCollection` extension method in the `Bodu.Financial` namespace. Both overloads register the default <xref:Bodu.Financial.ICurrency> lookup and return a fluent <xref:Bodu.Financial.IFinancialServiceBuilder> on which you compose the rest of the stack: a replacement currency lookup, named monetary contexts, timeless and dated exchange-rate providers, and the JSON converters under a chosen policy. Passing an `IConfiguration` additionally binds <xref:Bodu.Financial.FinancialOptions> (its single `JsonPolicy` property) from a configuration section (default `"Financial"`).
 
 ```csharp
 using Bodu.Financial;
