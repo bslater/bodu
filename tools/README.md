@@ -3,6 +3,33 @@
 Maintenance scripts for the library. CRC scripts are PowerShell; cipher-vector
 scripts are Python. All scripts are intended to be run from the repository root.
 
+## ExchangeRateDataImporter (.NET console app)
+
+Transforms provider exchange-rate JSON dumps (one file per year-month-provider,
+shaped `{ Id, Provider, BaseCurrency, TargetCurrency, Rates: { "yyyy-MM-dd": rate } }`)
+into the TOML file-cache layout consumed by the `Bodu.Financial` exchange-rate
+provider infrastructure. Each input file is loaded, its rates are built into
+`CachedExchangeRate` rows for the file's currency pair, and the rows are saved
+through the production `TomlFileExchangeRateCache` — so the emitted
+`<out>/<Provider>/<From><To>.toml` files cannot drift from what the cache reads
+back, and files sharing a provider and pair merge into a single file.
+
+```bash
+dotnet run --project tools/ExchangeRateDataImporter -- \
+    --out <cache-dir> [--as-of <iso8601>] <file1.json> [file2.json ...]
+```
+
+- `--out <dir>` (required) — cache root directory; files are written under
+  `<dir>/<Provider>/<From><To>.toml`.
+- `--as-of <iso8601>` (optional) — the import instant stamped as each row's
+  `CachedAtUtc` and the coverage window's `FetchedAtUtc`; defaults to now. The
+  source carries no timestamps, so `ObservedAtUtc` is left unset.
+- A directory argument is expanded to its top-level `*.json` children.
+
+The resulting directory can be pointed at a `TomlFileExchangeRateCache` /
+`CachingExchangeRateProvider` (or aggregated across providers via
+`AggregatingExchangeRateProvider`) to serve the imported rates.
+
 ## CRC subsystem (PowerShell 7+)
 
 ### Scripts
