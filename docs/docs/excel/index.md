@@ -29,11 +29,18 @@ An `.xls` file is a BIFF8 record stream stored *inside* the `Workbook` stream of
 
 For the full glossary, see [Core concepts](concepts.md).
 
+## How opening a workbook works
+
+`OpenRead` / `Open` parse the **workbook globals** once — the date system, the shared string table, the number-format table, and the sheet directory — then keep the compound-file container open. No sheet body is read at open: each sheet is read on demand by seeking to the byte offset its directory entry records, so a single sheet can be read without parsing the others and the whole workbook is never materialised in memory. The session owns the container and, unless `LeaveOpen` is set, the source stream, so dispose it (a `using` declaration suffices) when reading is complete.
+
 ## Scope and limitations
 
 - **Read-only.** The reader surfaces values; it never writes, evaluates formulas, applies styles, or interprets charts and macros.
 - **Raw values.** A formula cell yields its *cached* result (the value Excel last stored), not a recomputation. Numbers are raw `double` values with no date interpretation applied.
 - **BIFF8 only.** Earlier BIFF versions are reported through <xref:Bodu.Formats.Excel.ExcelBinaryUnsupportedException> rather than mis-parsed; encrypted workbooks raise <xref:Bodu.Formats.Excel.ExcelBinaryEncryptedWorkbookException>.
+
+> [!IMPORTANT]
+> A formula cell is surfaced as whichever <xref:Bodu.Formats.Excel.ExcelCellKind> its cached result holds — there is no distinct "formula" kind, and the cached value is the one Excel last stored, not a recomputation. Treat a numeric cell as a date only when <xref:Bodu.Formats.Excel.ExcelCell.IsDateFormatted> says so, and convert it with the workbook's own <xref:Bodu.Formats.Excel.ExcelBinaryWorkbook.DateSystem>.
 
 ## Worked example — open, list, read
 

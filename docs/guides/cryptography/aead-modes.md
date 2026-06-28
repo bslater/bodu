@@ -12,12 +12,32 @@ title: Using AEAD modes
 |---|---|---|---|
 | **GCM** | <xref:Bodu.Security.Cryptography.GcmModeTransform> | NIST SP 800-38D | Single-pass; fastest with CLMUL hardware. IV reuse is catastrophic. |
 | **CCM** | <xref:Bodu.Security.Cryptography.CcmModeTransform> | NIST SP 800-38C | Two-pass (CTR + CBC-MAC). Fixed 12-byte nonce and 16-byte tag in this implementation. |
-| **OCB3** | <xref:Bodu.Security.Cryptography.OcbModeTransform> | RFC 7253 | Single-pass with offsets; configurable tag length (8 / 12 / 16 bytes). |
+| **OCB3** | <xref:Bodu.Security.Cryptography.OcbModeTransform> | RFC 7253 | Single-pass with offsets; configurable tag length (`tagSize` in bits — 64 / 96 / 128). |
 | **EAX** | <xref:Bodu.Security.Cryptography.EaxModeTransform> | Bellare/Rogaway/Wagner (FSE 2004) | Two-pass (CTR + OMAC); arbitrary nonce length, no length-extension limits. |
 | **SIV** | <xref:Bodu.Security.Cryptography.SivModeTransform> | RFC 5297 | Misuse-resistant — same message encrypts to the same ciphertext, but confidentiality is preserved. Needs two independent AES keys. |
 | **GCM-SIV** | <xref:Bodu.Security.Cryptography.GcmSivModeTransform> | RFC 8452 | Misuse-resistant successor to GCM; POLYVAL-based. |
 
 ![Generic AEAD mode data flow — encryption, associated data, and authentication tag](../../images/diagrams/aead-mode.svg)
+
+## The AEAD contract
+
+An AEAD construction delivers all three classical security properties in a single pass:
+
+- **Confidentiality** — the ciphertext reveals nothing about the plaintext without the key.
+- **Integrity** — any modification of the ciphertext, the tag, or the AAD is detected on decryption.
+- **Authenticity** — a valid tag could only have been produced by a holder of the key.
+
+A raw cipher (CBC, CTR, …) gives confidentiality *only*: a flipped ciphertext byte still decrypts, just to corrupted plaintext, with nothing to flag the tampering. AEAD folds the authentication step into the same operation that produces the ciphertext, so there is no "decrypt, then check the tag separately" path that a caller can mis-sequence — `Decrypt` either returns the plaintext or throws.
+
+Three inputs shape every call:
+
+| Input | Role | Constraint |
+|---|---|---|
+| **Key** | The shared secret. | Secret; the only value that must never be disclosed. |
+| **Nonce / IV** | Per-message public input that keeps identical plaintexts from encrypting identically. | **Unique** per message under a given key — see the per-mode notes for size and reuse consequences. |
+| **AAD** | Associated data — headers or framing authenticated but **not** encrypted. | Public; must match byte-for-byte at decrypt time or the tag check fails. |
+
+The output is the ciphertext (same length as the plaintext) followed by a fixed-size **tag**. Decryption recomputes the tag over the ciphertext and AAD and compares it in constant time; a mismatch throws and releases no plaintext.
 
 ## Prerequisites — an AES `IBlockCipher`
 
@@ -40,9 +60,9 @@ If you need authenticated encryption with one of the *non-128-bit* ciphers (Skip
 Calling an `IAeadBlockCipherModeTransform` directly requires four steps:
 
 1. Call `ProcessAssociatedData(aad)` (even if the AAD is empty).
-2. Size the output buffer to `plaintext.Length + TagSize`.
+2. Size the output buffer to `plaintext.Length + TagSize / 8` (`TagSize` is in bits).
 3. Call `Encrypt(plaintext, output)` and inspect the returned byte count.
-4. For decrypt, size the output to `ciphertextWithTag.Length - TagSize` and call `Decrypt`.
+4. For decrypt, size the output to `ciphertextWithTag.Length - TagSize / 8` and call `Decrypt`.
 
 The `Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions` class collapses all of that into a single call that returns a correctly sized `byte[]`:
 
@@ -121,7 +141,8 @@ RandomNumberGenerator.Fill(iv.AsSpan(0, 12));  // first 12 bytes are the OCB3 no
 
 byte[] cipherWithTag;
 using (var cipher = new AesBlockCipher(key))
-    // Default tag length of 16 bytes; pass `tagLen: 12` or 8 for the smaller RFC 7253 variants.
+    // tagSize is in *bits*; default 128. Pass `tagSize: 96` or `tagSize: 64`
+    // for the smaller RFC 7253 variants — it must be a multiple of 8 in [8, 128].
     cipherWithTag = new OcbModeTransform(cipher, iv).Encrypt(plaintext, aad);
 
 byte[] recovered;
@@ -246,6 +267,52 @@ catch (CryptographicException)
 ```
 
 On the wire, a failed tag check is indistinguishable from an attack; treat every failure as adversarial.
+
+## A full round trip with tamper handling
+
+This self-contained example encrypts, flips a single ciphertext byte, and shows the tag check rejecting the modified message. Each direction builds its own `AesBlockCipher` and `GcmModeTransform` because both are single-use (see [One-transform, one-message](#one-transform-one-message)):
+
+```csharp
+using System.Security.Cryptography;
+using Bodu.Security.Cryptography;
+using Bodu.Security.Cryptography.Extensions;
+
+byte[] key = RandomNumberGenerator.GetBytes(32);   // AES-256
+byte[] iv  = new byte[16];
+RandomNumberGenerator.Fill(iv.AsSpan(0, 12));
+iv[15] = 0x01;                                       // 96-bit nonce → J0
+
+byte[] plaintext = System.Text.Encoding.UTF8.GetBytes("transfer £250 to account 9921");
+byte[] aad       = System.Text.Encoding.UTF8.GetBytes("txn-id:7f3a");
+
+// Encrypt — ciphertext || 16-byte tag.
+byte[] sealed_;
+using (var cipher = new AesBlockCipher(key))
+    sealed_ = new GcmModeTransform(cipher, iv).Encrypt(plaintext, aad);
+
+// Honest decrypt — recovers the original plaintext.
+using (var cipher = new AesBlockCipher(key))
+{
+    byte[] recovered = new GcmModeTransform(cipher, iv).Decrypt(sealed_, aad);
+    // recovered.SequenceEqual(plaintext) == true
+}
+
+// Tampered decrypt — flip one ciphertext byte and watch the tag reject it.
+sealed_[0] ^= 0x01;
+using (var cipher = new AesBlockCipher(key))
+{
+    try
+    {
+        _ = new GcmModeTransform(cipher, iv).Decrypt(sealed_, aad);
+    }
+    catch (CryptographicException)
+    {
+        // Expected — reject the message; never act on partial output.
+    }
+}
+```
+
+Modifying the AAD instead of the ciphertext fails identically: pass a different `aad` to `Decrypt` and the tag check throws even though every ciphertext byte is intact.
 
 ## Where to go next
 

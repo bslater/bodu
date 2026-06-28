@@ -23,7 +23,7 @@ Pick by the *shape of your data* first; the format follows.
 | Data shape | Tabular — many rows, one column schema | Flat — a single list of `KEY=value` pairs | Hierarchical — keys grouped into named `[section]`s |
 | Nesting | None (rectangular grid) | None (one level) | One level (section → key); no deeper nesting |
 | Repetition | Many rows of the same columns | One value per key | One value per key per section |
-| Comments | Optional (`#`), discarded on parse unless enabled | `#` full-line and inline, preservable as trivia | `#` / `;` full-line, preservable as trivia |
+| Comments | Optional (`#`), discarded on parse unless enabled | `#` full-line (preservable as trivia) and inline (truncates an unquoted value) | `#` / `;` full-line, preservable as trivia (no inline-comment parsing) |
 | Mutation | Immutable document | Read-only document | Mutable document (add / remove sections and entries) |
 | Round-trip fidelity | Values round-trip; layout does not | Values plus leading comments round-trip | Values, sections, and leading comments round-trip |
 | Typical use | Exports, datasets, spreadsheets, bulk records | Environment / `.env` config for a process | Application or tool configuration with grouped settings |
@@ -176,7 +176,7 @@ INI has both a key-level and a section-level ambiguity. Keys share the same
 | Anomaly | Option | Default | Other choices |
 |---|---|---|---|
 | Repeated key within a section | `DuplicateKeyBehavior` (`DuplicateKeyPolicy`) | `LastWins` | `FirstWins`, `Disallowed` |
-| Repeated section name | `DuplicateSectionBehavior` (`IniDuplicateSectionBehavior`) | `Merge` | `MergeAll` (alias), `MergeAdjacent`, `Preserve`, `Disallowed` |
+| Repeated section name | `DuplicateSectionBehavior` (`IniDuplicateSectionBehavior`) | `Merge` | `MergeAdjacent`, `Preserve`, `Disallowed` |
 | Keys before the first section | `AllowGlobalSection` | `true` — collected into the global section | `false` — throws on the first such key |
 
 ```csharp

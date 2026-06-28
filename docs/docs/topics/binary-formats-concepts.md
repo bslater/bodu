@@ -22,9 +22,9 @@ Within the container, a stream's bytes are stored as a linked chain of fixed-siz
 
 The Excel 97–2003 binary format (**BIFF8**) stores a worksheet as a flat sequence of **records** inside the container's `Workbook` stream. Each record has a two-byte type, a two-byte length, and a typed body — a cell value, a shared-string-table entry, a sheet boundary. `Bodu.Formats.Excel.Binary` reads this record stream and surfaces the cell values; it does not evaluate formulas or apply styling. The container reader supplies the `Workbook` stream's bytes; the format reader interprets them.
 
-## Read-only
+## Read-only vs. authoring
 
-Every reader in this topic is **read-only**. The container reader opens a file for read access (`FileMode.Open` with `FileAccess.Read`) in these topics — and the Excel reader surfaces values without mutating anything. This keeps the surface small and the threading story simple: a buffered container is safe to share across threads.
+The *format* layer is strictly **read-only**: `Bodu.Formats.Excel.Binary` surfaces cell values without mutating anything, which keeps its surface small and the threading story simple — a buffered workbook is safe to share across threads. The *container* layer is asymmetric. Opened with `FileAccess.Read` (`CompoundFile.OpenRead`), `Bodu.IO.Compound` is read-only too; but it additionally **authors** new containers — `CompoundFile.Create`, the builder API, and the OLE property-set writers — and can open an existing file `FileAccess.ReadWrite`. So when a workflow needs to *produce* a compound file rather than just read one, that capability lives in the container layer alone; nothing in the Excel reader writes.
 
 ## Where to go next
 

@@ -78,17 +78,31 @@ using Bodu.Extensions.Configuration.Text;
 using Bodu.Text.Configuration;
 using Bodu.Text.Ini;
 
+// Already-parsed document, shared across builders.
 ConfigurationDocument doc = ConfigurationDocument.Parse(iniText);
-
-// Mutate the document programmatically.
-doc.GetOrAddSection("logging").SetEntry("level", "Debug");
 
 IConfiguration configuration = new ConfigurationBuilder()
     .AddTextConfigurationDocument(doc, targetPath: null)
     .Build();
 ```
 
-When you already have an `IniDocument` in hand — built programmatically, mutated at runtime, or shared across multiple builders — pass it directly. The bridge flattens the resolved view into an in-memory collection before handing it to the configuration root, so the source is captured by value; later mutations to the document do not flow into the configuration.
+`AddTextConfigurationDocument` accepts any <xref:Bodu.Text.Ini.IniDocumentBase> — including a
+<xref:Bodu.Text.Configuration.ConfigurationDocument>. The bridge resolves the document once and flattens the view into an
+in-memory collection before handing it to the configuration root, so the source is captured **by value**: later mutations to the document do not flow into the configuration, and there is no reload-on-change.
+
+To author or mutate a document in code rather than parsing one, build an <xref:Bodu.Text.Ini.IniDocument> through its public surface (`GetOrAddSection`, `AddEntry`) and pass it the same way:
+
+```csharp
+using Bodu.Extensions.Configuration.Text;
+using Bodu.Text.Ini;
+
+IniDocument doc = Ini.Parse(iniText);
+doc.GetOrAddSection("logging").AddEntry(new IniEntry("level", "Debug"));
+
+IConfiguration configuration = new ConfigurationBuilder()
+    .AddTextConfigurationDocument(doc)
+    .Build();
+```
 
 ## Pattern 6 — fluent source configuration
 
@@ -205,16 +219,16 @@ So an INI source containing `logging.level = Debug` flattens to the key `"loggin
 ## How the bridge surfaces values
 
 ```
-ConfigurationDocument.Parse
-    ↓ → IniDocument
-ConfigurationExtensions.Resolve(targetPath?, resolveOptions?)
+ConfigurationDocument.Load(stream, ParseOptions)
+    ↓ → IniDocumentBase
+document.Resolve(TargetPath, ResolveOptions)
     ↓ → ConfigurationView
-Flatten to IDictionary<string, string?>
+Flatten to Dictionary<string, string?> (OrdinalIgnoreCase)
     ↓
-IConfigurationProvider → AddInMemoryCollection → IConfiguration
+provider.Data → IConfiguration["key:subkey"]
 ```
 
-Every key is reachable in the same colon-delimited form `IConfiguration` consumers already use. The values come from the resolved view, so the EditorConfig glob behaviour, preamble handling, key mapping, and unset-value treatment from [Views and resolution](../text-configuration/views-and-resolution.md) all apply.
+The file and stream providers assign the flattened map straight to the inherited `Data` dictionary; only the pre-parsed-document overload (Pattern 5) routes through `AddInMemoryCollection`. Either way, every key is reachable in the same colon-delimited form `IConfiguration` consumers already use. The values come from the resolved view, so the EditorConfig glob behaviour, preamble handling, key mapping, and unset-value treatment from [Views and resolution](../text-configuration/views-and-resolution.md) all apply.
 
 ## Source types
 
@@ -230,7 +244,16 @@ The bridge exposes two source types directly:
   - `Stream` — inherited from the BCL base; consumed during `Build()`.
   - `TargetPath`, `ParseOptions`, `ResolveOptions` — as above.
 
-Both build provider classes (`TextConfigurationProvider`, `TextStreamConfigurationProvider`) are internal — they implement `IConfigurationProvider` and flatten the resolved view into the in-memory backing store. Consumers do not interact with them directly; they configure the source and the provider handles the rest.
+Both build provider classes — <xref:Bodu.Extensions.Configuration.Text.TextConfigurationProvider> (a `FileConfigurationProvider`) and <xref:Bodu.Extensions.Configuration.Text.TextStreamConfigurationProvider> (a `StreamConfigurationProvider`) — flatten the resolved view into the inherited `Data` dictionary. They are public but rarely constructed directly; you configure the source and the provider handles the rest. Each exposes a typed `TextSource` accessor for diagnostic introspection — locate the provider on `IConfigurationRoot.Providers` and read back the originating source:
+
+```csharp
+IConfigurationRoot root = builder.Build();
+TextConfigurationProvider? bodu = root.Providers
+    .OfType<TextConfigurationProvider>()
+    .FirstOrDefault();
+
+string? loadedFrom = bodu?.TextSource.Path;
+```
 
 ## Reload-on-change behaviour
 
@@ -374,5 +397,5 @@ process lifetime.
 - [Views and resolution](../text-configuration/views-and-resolution.md) — the resolve-time options surfaced via `ResolveOptions` and `TargetPath`.
 - [Configuration topic guides](../topics/configuration.md) — every guide in the Configuration topic.
 - [Configuration topic overview](../../docs/topics/configuration.md) — the pipeline and package boundaries.
-- [`TextConfigurationSource`](xref:Bodu.Extensions.Configuration.Text.TextConfigurationSource) · [`TextStreamConfigurationSource`](xref:Bodu.Extensions.Configuration.Text.TextStreamConfigurationSource) · [`ConfigurationOptionsExtensions`](xref:Bodu.Extensions.Configuration.Text.ConfigurationOptionsExtensions)
+- [`TextConfigurationSource`](xref:Bodu.Extensions.Configuration.Text.TextConfigurationSource) · [`TextStreamConfigurationSource`](xref:Bodu.Extensions.Configuration.Text.TextStreamConfigurationSource) · [`TomlConfigurationExtensions`](xref:Bodu.Extensions.Configuration.Text.TomlConfigurationExtensions) · [`ConfigurationOptionsExtensions`](xref:Bodu.Extensions.Configuration.Text.ConfigurationOptionsExtensions)
 - [`Bodu.Extensions.Configuration.Text` API reference](xref:Bodu.Extensions.Configuration.Text).

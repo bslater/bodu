@@ -116,6 +116,44 @@ diagnostics.WriteTo(Console.Out);
 
 Diagnostics are optional; pass `null` when you don't need them and the pipeline avoids the book-keeping overhead entirely. For strict equivalence checks, `diagnostics.Validate(() => SHA256.Create(), out var errors)` re-derives each internal node from its children and reports any that don't match.
 
+## Inclusion proofs
+
+The reason to build a tree rather than a flat digest is the **inclusion proof** (a.k.a. Merkle / audit proof): a logarithmic-size witness that one leaf belongs under a known root, without revealing or rehashing the rest of the input. For a leaf at position `i`, the proof is the sequence of *sibling* hashes encountered on the path from that leaf up to the root — `fanOut − 1` siblings per level, so the proof size grows as `(fanOut − 1) · log_fanOut(leafCount)`. A verifier recomputes each parent by hashing the concatenation of the node and its siblings in order, level by level, and accepts only if the final value equals the trusted root.
+
+This package does not expose a one-call `GetProof(i)` API, but every hash the tree builds is available through <xref:Bodu.Security.Cryptography.MerkleTreeDiagnostics>, so you can assemble a proof yourself. Each captured <xref:Bodu.Security.Cryptography.MerkleTreeDiagnosticNode> records its `Level`, `Index`, produced `Hash`, and the ordered `ChildHashes` it was built from — enough to walk a leaf's path and collect the siblings:
+
+```csharp
+using System.Security.Cryptography;
+using Bodu.Security.Cryptography;
+
+var diagnostics = new MerkleTreeDiagnostics();
+
+using var merkle = new ParallelMerkleTreeHash(
+    algorithmFactory: () => SHA256.Create(),
+    blockSize:        4096,
+    fanOut:           2);
+
+byte[] root = await merkle.ComputeHashAsync(stream, diagnostics, CancellationToken.None);
+
+// Walk level 0 → root, collecting the sibling hash beside each node on leaf 5's path.
+int index = 5;
+var proof = new List<byte[]>();
+for (int level = 0; level < diagnostics.GetLevelCount() - 1; level++)
+{
+    IReadOnlyList<MerkleTreeDiagnosticNode> nodes = diagnostics.GetLevel(level);
+    int siblingIndex = index ^ 1;                       // binary-tree sibling
+    if (siblingIndex < nodes.Count)
+        proof.Add(nodes[siblingIndex].Hash);
+    index /= 2;                                          // move to the parent
+}
+```
+
+To re-derive every internal node from its children and confirm the whole tree is self-consistent, call `diagnostics.Validate(() => SHA256.Create(), out var errors)` — it returns `false` and populates `errors` if any parent does not match the hash of its recorded children.
+
+## Parallel construction
+
+<xref:Bodu.Security.Cryptography.ParallelMerkleTreeHash> produces the **same root** as the sequential <xref:Bodu.Security.Cryptography.MerkleTreeHash> for the same `(algorithmFactory, blockSize, fanOut)` — the parallelism changes *how* the tree is built, not *what* tree results, so a root computed in parallel verifies against a proof checked sequentially and vice versa. The dispatcher reads the input in chunks and feeds leaves into a producer/consumer pipeline while level-workers reduce completed groups into parents concurrently; a short tail block is zero-padded to a full `blockSize` so every leaf is the same width. See [Pattern 4](#pattern-4--the-parallel-pipeline) above and the class documentation's swim-lane diagram.
+
 ## When to use a Merkle tree
 
 - **Partial verification.** You want to prove that byte range `[N, M)` of a large file matches the original, without rehashing the whole file. The Merkle tree lets you do that with a logarithmic-size proof.

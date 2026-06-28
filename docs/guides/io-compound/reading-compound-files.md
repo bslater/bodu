@@ -6,7 +6,7 @@ title: Reading compound files
 
 <xref:Bodu.IO.Compound.CompoundFile> opens an OLE2 / Compound File Binary container and exposes its storage hierarchy and stream payloads. This guide covers the end-to-end recipe: probe the input, open the file, walk the directory, and read a named stream's bytes.
 
-The mental model is a file system in a single file — storages are directories, streams are files. Navigation starts at `RootStorage` and is scoped to each storage's direct children, compared with ordinal (case-sensitive) names.
+The mental model is a file system in a single file — storages are directories, streams are files. Navigation starts at `RootStorage` and is scoped to each storage's direct children; there is no path syntax, so you descend one storage at a time. Names are matched with the **case-insensitive** compound-file relationship, so a request for `workbook` resolves the `Workbook` stream. Each entry's name is stored as UTF-16 in a 64-byte field, capping it at 31 characters, and control prefixes are kept verbatim — the `\x05` on summary-information streams, the `__substg1.0_` on `.msg` streams — so a lookup must pass the exact name.
 
 ## Pattern 1 — open a file and read a known stream
 
@@ -96,15 +96,53 @@ ushort recordSize = reader.ReadUInt16();
 
 See [Buffered vs streaming access](streaming-and-buffering.md) for how the cursor behaves under buffered and streaming files, and how to bound memory for large payloads.
 
+## Pattern 5 — choose a validation level
+
+```csharp
+using Bodu.IO.Compound;
+
+// Strict rejects malformed directory entries and unsorted siblings that the
+// default (Compatible) silently tolerates.
+var options = new CompoundFileOptions { ValidationLevel = CompoundValidationLevel.Strict };
+using CompoundFile file = CompoundFile.Open(File.OpenRead("book.xls"), options);
+```
+
+<xref:Bodu.IO.Compound.CompoundFileOptions> carries both the read strategy and the <xref:Bodu.IO.Compound.CompoundValidationLevel>. Every level still enforces the memory-safety invariants (signature, sector sizes, allocation-table bounds, a root storage); the level only governs how the reader treats recoverable inconsistencies. `Strict` is the choice for validating a trusted corpus, `Minimal` for best-effort recovery from corruption — it stops a broken chain and yields what it has rather than throwing.
+
 ## Error handling
 
-| Exception | Cause |
-|---|---|
-| <xref:System.ArgumentNullException> | The stream passed to `Open` is `null`. |
-| <xref:System.ArgumentException> | `buffered: false` was requested over a non-seekable stream, or `IsCompoundFile` was given a non-seekable stream. |
-| <xref:System.NotSupportedException> | An unsupported `FileMode` / `FileAccess` combination was requested. |
-| <xref:Bodu.IO.Compound.CompoundFileFormatException> | The content is not a well-formed compound file, or a stream's sector chain is malformed. |
-| <xref:Bodu.IO.Compound.CompoundStreamNotFoundException> | `OpenStream` / `OpenStorage` named an entry that does not exist. |
+A failed open or a malformed stream raises a <xref:Bodu.IO.Compound.CompoundFileException> subclass. <xref:Bodu.IO.Compound.CompoundFileFormatException> additionally carries a message-independent <xref:Bodu.IO.Compound.CompoundFileError> on its <xref:Bodu.IO.Compound.CompoundFileFormatException.Category> property, so you can branch on the structural cause without parsing the message:
+
+```csharp
+try
+{
+    using CompoundFile file = CompoundFile.OpenRead(path);
+    CompoundStream workbook = file.RootStorage.OpenStream("Workbook");
+}
+catch (CompoundFileFormatException ex) when (ex.Category == CompoundFileError.InvalidSignature)
+{
+    // Not an OLE2 file at all — e.g. a .xlsx (ZIP) was handed in.
+}
+catch (CompoundFileFormatException ex)
+{
+    log.Warn($"Corrupt compound file: {ex.Category}");   // e.g. FatCycle, StreamChainTooShort
+}
+catch (CompoundStreamNotFoundException ex)
+{
+    log.Warn($"Missing stream: {ex.StreamName}");
+}
+```
+
+| Exception | `Category` (when applicable) | Cause |
+|---|---|---|
+| <xref:System.ArgumentNullException> | — | The stream passed to `Open` is `null`. |
+| <xref:System.ArgumentException> | — | `buffered: false` was requested over a non-seekable stream, or `IsCompoundFile` was given a non-seekable stream. |
+| <xref:System.NotSupportedException> | — | An unsupported `FileMode` / `FileAccess` combination was requested. |
+| <xref:Bodu.IO.Compound.CompoundFileFormatException> | `InvalidSignature`, `InvalidHeader`, `TruncatedFile`, `SectorOutOfRange`, `FatCycle`, `InvalidMiniFat`, `StreamChainTooShort`, `DirectoryCycle`, `InvalidRootStorage`, … | The content is not a well-formed compound file, or a stream's sector chain is malformed. |
+| <xref:Bodu.IO.Compound.CompoundStreamNotFoundException> | — | `OpenStream` / `OpenStorage` named an entry that does not exist; `StreamName` names it. |
+
+> [!TIP]
+> Catch the base <xref:Bodu.IO.Compound.CompoundFileException> when you want to handle every compound-file failure uniformly, then inspect the concrete type or `Category` only where the distinction matters.
 
 ## Where to go next
 

@@ -46,7 +46,10 @@ if (ring.TryPeek(out Message? p)) { … }     // Safe variant
 ring.Clear();                                // Acquires all slots; expensive
 ```
 
-Single-element operations (`Enqueue`, `Dequeue`, `Peek`, and their `Try…` variants) are individually atomic and lock-free on the hot path. Multi-element operations (`Count`, `Clear`, `ToArray`) acquire every slot and observe a coherent point-in-time state — useful for diagnostics or shutdown drain, but expensive enough to keep off the hot path.
+Single-element operations (`Enqueue`, `Dequeue`, `Peek`, and their `Try…` variants) are individually atomic and lock-free on the hot path. The buffer also implements <xref:System.Collections.Concurrent.IProducerConsumerCollection`1> (`TryAdd` / `TryTake` forward to `TryEnqueue` / `TryDequeue`), so it can back a `BlockingCollection<T>`.
+
+> [!IMPORTANT]
+> `Count` is **approximate** under concurrency — the head and tail positions are read independently (no lock), so the value is a point-in-time estimate that can momentarily disagree with the true contents. `ToArray` is the way to obtain a *coherent* FIFO snapshot: it uses a per-slot seqlock that restarts on churn, falling back to a sequence-validated best-effort snapshot only after an internal retry budget is exhausted. `Clear` drains at most the count observed at the call (bounded so a continuous producer cannot livelock it) and does **not** raise `ItemEvicted`.
 
 ### Overwrite semantics
 
@@ -73,16 +76,17 @@ The enumerator is a true snapshot captured at the moment `GetEnumerator()` runs 
 
 ### Observable consistency
 
-| Method | Atomic? | Locks? |
+| Method | Consistency | Cost |
 |---|---|---|
-| `Enqueue`, `TryEnqueue` | Per-element atomic | None on the hot path |
-| `Dequeue`, `TryDequeue` | Per-element atomic | None on the hot path |
-| `Peek`, `TryPeek` | Per-element atomic | None |
-| `Count` | Point-in-time | Acquires all slots |
-| `Clear` | Point-in-time | Acquires all slots |
-| `ToArray`, enumeration | Point-in-time | Acquires all slots (once) |
+| `Enqueue`, `TryEnqueue` | Per-element atomic | Lock-free hot path |
+| `Dequeue`, `TryDequeue` | Per-element atomic | Lock-free hot path |
+| `Peek`, `TryPeek` | Per-element atomic | Lock-free |
+| `Count` | **Approximate** | Two independent position reads |
+| `this[int]` | Single-slot, sequence-validated | Lock-free; two index reads are *not* jointly atomic |
+| `Clear` | Bounded drain at observed count | No `ItemEvicted` raised |
+| `ToArray`, enumeration | Coherent snapshot (seqlock) | Restarts on churn; best-effort after retry budget |
 
-For lightweight throughput sampling, prefer `TryDequeue` / `TryPeek` over reading `Count`.
+For lightweight throughput sampling, prefer `TryDequeue` / `TryPeek` over reading `Count`. The explicit `ICollection.SyncRoot` **throws `NotSupportedException`** — matching the BCL `ConcurrentQueue<T>`, there is no lock object to expose — so do not attempt to `lock` on the buffer.
 
 ## `ConcurrentHashSet<T>`
 

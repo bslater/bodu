@@ -45,7 +45,7 @@ IReadOnlyList<NotableDate> adjusted = service.Resolve(2027, "AU", NotableDateFil
 Two jurisdictional styles dominate real-world public-holiday law, and the policy model supports both through the `<Emission>` element:
 
 - **Adjust in place — the nominal date is gone.** The single occurrence moves to the observed date. There is one `NotableDate` for the year; `Date` holds the observed date and `ActualDate` records the nominal. This is `<Emission mode="ObservedOnly" />` and is typical of Australian / New Zealand public holidays.
-- **Emit an additional observed date — keep the nominal *and* the substitute.** The pipeline returns two `NotableDate` instances for the year: the nominal occurrence and the substitute. This is `<Emission mode="ObservedAsAdditional" />` (or `ActualAndObserved`) and is typical of UK bank holidays, where the nominal date retains its religious / cultural significance and the substitute is a separate working-day closure.
+- **Emit an additional observed date — keep the nominal *and* the substitute.** The pipeline returns two `NotableDate` instances for the year: the nominal occurrence and the substitute. This is `<Emission mode="ActualAndObserved" />` and is typical of UK bank holidays, where the nominal date retains its religious / cultural significance and the substitute is a separate working-day closure. (The legacy `ObservedAsAdditional` mode is `[Obsolete]` and behaves identically — it is normalised to `ActualAndObserved` at load time, so author `ActualAndObserved` in new documents.)
 
 Use adjust-in-place when the authority treats the holiday as *moved*; emit-additional when the nominal date keeps its own weight. The data packs follow each jurisdiction's prevailing convention. The full list of emission modes is in [Emission modes](#emission-modes) below.
 
@@ -144,6 +144,8 @@ The weekend-related triggers (`IfWeekend`, `IfWeekday`, `IfNonWorkingDay`, `IfWo
 
 `MoveToNextWeekday` / `MoveToPreviousWeekday` care only about the working week (weekends). `MoveToNextWorkingDay` / `MoveToPreviousWorkingDay` additionally skip other non-working occurrences — the right choice when a substitute must not land on another holiday — and accept `maxSearchDays` to cap how far they scan.
 
+The companion attributes have defaults when omitted: `skipWeekends` defaults to `true`, `skipNonWorkingDates` to `false`, and `days` (for `AddDays`) to `0`. `maxSearchDays` is unbounded when unset. So a bare `<Action type="MoveToNextWorkingDay" />` rolls past weekends but *not* past other holidays — set `skipNonWorkingDates="true"` for the Boxing-Day-style "skip past the Christmas substitute too" behaviour.
+
 ```xml
 <!-- Skip forward past weekends and any other non-working dates, searching at most 7 days. -->
 <AdjustmentPolicy id="skip-to-working" priority="20">
@@ -170,18 +172,18 @@ The weekend-related triggers (`IfWeekend`, `IfWeekday`, `IfNonWorkingDay`, `IfWo
 |---|---|
 | `ActualOnly` | Only the nominal date; the computed substitute is discarded. |
 | `ObservedOnly` *(adjust-in-place)* | Only the observed date; the nominal date is not emitted separately. |
-| `ActualAndObserved` | Both the nominal and the observed dates, as two occurrences. |
-| `ObservedAsAdditional` | The nominal date plus an *additional* observed occurrence (the substitute), keeping both. |
+| `ActualAndObserved` *(keep-both)* | Both the nominal and the observed dates, as two occurrences. |
+| `ObservedAsAdditional` | **`[Obsolete]`** — behaves identically to `ActualAndObserved` and is normalised to it at load time. Prefer `ActualAndObserved`. |
 | `Suppress` | Nothing — the occurrence is dropped for the year. |
 
-`ObservedOnly` is the AU/NZ "the holiday moved" style; `ObservedAsAdditional` is the UK "keep the nominal, add a bank-holiday substitute" style. Which of the emitted occurrences governs inclusion in a *range* query is a separate, resource-level decision — the <xref:Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy> — covered in [Rule identity, priority, and observed-date resolution](identity-and-resolution.md).
+`ObservedOnly` is the AU/NZ "the holiday moved" style; `ActualAndObserved` is the UK "keep the nominal, add a bank-holiday substitute" style. Which of the emitted occurrences governs inclusion in a *range* query is a separate, resource-level decision — the <xref:Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy> — covered in [Rule identity, priority, and observed-date resolution](identity-and-resolution.md).
 
 ```xml
 <!-- UK bank-holiday style: keep 25 December, add a working-day substitute when it is a weekend. -->
 <AdjustmentPolicy id="uk-substitute" priority="10">
   <Trigger type="IfWeekend" />
   <Action type="MoveToNextWorkingDay" />
-  <Emission mode="ObservedAsAdditional" reason="Substitute bank holiday" nonWorking="true" />
+  <Emission mode="ActualAndObserved" reason="Substitute bank holiday" nonWorking="true" />
 </AdjustmentPolicy>
 ```
 
@@ -326,17 +328,16 @@ var handlers = new AdjustmentHandlerRegistry()
 
 ### Wiring the registries into the service
 
-Both registries are passed to the <xref:Bodu.Globalization.Calendar.NotableDateService> constructor. The constructor parameter order is `resource`, then the optional `algorithms`, `collisionResolver`, `handlers` (action), `triggerHandlers`, `providers`:
+Both registries are carried on a <xref:Bodu.Globalization.Calendar.NotableDateServiceOptions> object passed to the second <xref:Bodu.Globalization.Calendar.NotableDateService> constructor. The options object exposes five `init`-only collaborator slots — `Algorithms`, `CollisionResolver`, `Handlers` (action), `TriggerHandlers`, and `Providers` — each independently optional:
 
 ```csharp
 using Bodu.Globalization.Calendar;
 
-var service = new NotableDateService(
-    resource,
-    algorithms:        null,
-    collisionResolver: null,
-    handlers:          handlers,         // IAdjustmentHandlerRegistry — custom actions
-    triggerHandlers:   triggerHandlers); // IAdjustmentTriggerHandlerRegistry — custom triggers
+var service = new NotableDateService(resource, new NotableDateServiceOptions
+{
+    Handlers        = handlers,         // IAdjustmentHandlerRegistry — custom actions
+    TriggerHandlers = triggerHandlers,  // IAdjustmentTriggerHandlerRegistry — custom triggers
+});
 ```
 
 The `handlerKey` on `<Trigger>` is looked up in the trigger registry; the `handlerKey` on `<Action>` is looked up in the action registry. A policy may use a custom trigger with a built-in action, a built-in trigger with a custom action, or both.

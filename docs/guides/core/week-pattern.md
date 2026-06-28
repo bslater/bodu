@@ -56,6 +56,18 @@ WeekPattern safeSchedule = monFri & WeekPattern.Weekdays;
 WeekPattern nonWorking = ~WeekPattern.Weekdays;  // Sat–Sun
 ```
 
+All four bitwise operators are defined: `|` (union), `&` (intersection), `^` (symmetric difference — days in exactly one operand), and `~` (complement within the seven-day week). Symmetric difference is handy for "which days changed" between two schedules:
+
+```csharp
+WeekPattern oldShift = WeekPattern.Parse("MTuW");
+WeekPattern newShift = WeekPattern.Parse("TuWTh");
+WeekPattern changed  = oldShift ^ newShift;   // Mon and Thu — the days that differ
+```
+
+## Comparing patterns
+
+`WeekPattern` implements `IEquatable<WeekPattern>` and `IComparable<WeekPattern>`, and defines `==`, `!=`, `<`, `<=`, `>`, `>=`. Two patterns are equal when they select the same days; the ordering operators compare the underlying bitmask, so they give a total order suitable for sorting or use as a dictionary key — they are *not* a subset relation. Use `&`/`==` to test containment (`(a & b) == b` means "a contains all of b").
+
 ## Pattern 4 — parse from a compact string
 
 `WeekPattern.Parse` accepts standard abbreviations (case-insensitive):
@@ -116,6 +128,18 @@ for (DateOnly d = start; d <= end; d = d.AddDays(1))
 }
 ```
 
+## Pattern 8 — bridge to and from WorkingDaysOfWeek
+
+<xref:Bodu.WorkingDaysOfWeek> is the companion enum naming the common working-week presets (`MondayToFriday`, `SaturdayToThursday`, …). Convert between the two through the extension methods on <xref:Bodu.Extensions.WorkingDaysOfWeekExtensions> — useful when an API takes the named preset but you need the raw day set (or vice versa):
+
+```csharp
+using Bodu;
+using Bodu.Extensions;
+
+WeekPattern saudiWeek = WorkingDaysOfWeek.SaturdayToWednesday.ToWeekPattern();
+WorkingDaysOfWeek back = WeekPattern.Weekdays.ToWorkingDaysOfWeek();   // MondayToFriday
+```
+
 ## API summary
 
 | Member | Description |
@@ -130,7 +154,8 @@ for (DateOnly d = start; d <= end; d = d.AddDays(1))
 | `Parse(string)` | Parses a compact abbreviation string. Throws on invalid input. |
 | `TryParse(string, out WeekPattern)` | Parses without throwing. |
 | `ToString()` | Returns the compact abbreviation string. |
-| `\|`, `&`, `~` | Union, intersection, complement operators. |
+| `\|`, `&`, `^`, `~` | Union, intersection, symmetric-difference, complement operators. |
+| `==`, `!=`, `<`, `<=`, `>`, `>=` | Equality (same day set) and total-order comparison of the bitmask. |
 | `IEnumerable<DayOfWeek>` | Enumerates selected days in `DayOfWeek` order. |
 
 ## Where to go next

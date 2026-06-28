@@ -27,7 +27,7 @@ For self-framing document formats (CSV / TSV, DotEnv, INI, TOML), see the compan
 - <xref:Bodu.Text.Encoding.Base32> — 5 bits per symbol; four variants via <xref:Bodu.Text.Encoding.Base32Variant>: Standard (RFC 4648 §6), HexExtended (RFC 4648 §7), Crockford, ZBase32; padding control.
 - <xref:Bodu.Text.Encoding.Base64> — 6 bits per symbol; three variants via <xref:Bodu.Text.Encoding.Base64Variant>: Standard (RFC 4648 §4), UrlSafe (RFC 4648 §5), Mime (RFC 2045 with 76-char wrap). Delegates inner conversion to the BCL for SIMD speed.
 - <xref:Bodu.Text.Encoding.Base58> — non-power-of-two radix using big-integer divmod; two variants via <xref:Bodu.Text.Encoding.Base58Variant>: BitcoinFlickr (default), Ripple. Preserves leading zeros.
-- <xref:Bodu.Text.Encoding.Base85> — 4-byte block → 5 chars; two variants via <xref:Bodu.Text.Encoding.Base85Variant>: Ascii85 (Adobe, with `z` shortcut), Z85 (RFC 32 ZeroMQ; 4-byte alignment).
+- <xref:Bodu.Text.Encoding.Base85> — 4-byte block → 5 chars; three variants via <xref:Bodu.Text.Encoding.Base85Variant>: Ascii85 (Adobe, with `z` shortcut), Z85 (RFC 32 ZeroMQ; 4-byte alignment), GitCompact (Git `base85.c` alphabet; compact self-delimiting tail plus the `EncodeGitPadded` / `DecodeGitPadded` line primitive).
 
 **Special-purpose encodings**
 
@@ -37,10 +37,17 @@ For self-framing document formats (CSV / TSV, DotEnv, INI, TOML), see the compan
 - <xref:Bodu.Text.Encoding.Base58Check> — Base58 with the Bitcoin-style four-byte double-SHA-256 checksum appended on encode and verified on decode. The right entry point for address- and key-style payloads.
 - <xref:Bodu.Text.Encoding.Base64Url> — the RFC 4648 §5 URL- and filename-safe Base64 as a first-class type (mirrors `System.Buffers.Text.Base64Url`), with padding omitted by default and a UTF-8 byte path.
 
+**Escape-based encodings**
+
+These escape a subset of octets (`=HH` / `%HH`) while passing most printable ASCII through literally, so their output is content-dependent and mode-driven. They are intentionally not <xref:Bodu.Text.Encoding.IBinaryEncoding> members.
+
+- <xref:Bodu.Text.Encoding.QuotedPrintable> — MIME Quoted-Printable body encoding (RFC 2045 §6.7) with <xref:Bodu.Text.Encoding.QuotedPrintableEncodingMode> (Binary / Text) and <xref:Bodu.Text.Encoding.QuotedPrintableEncodingOptions> (line length, newline); strict-by-default decoding with opt-in lowercase-hex, bare-LF, and trailing-whitespace relaxations via <xref:Bodu.Text.Encoding.QuotedPrintableDecodingOptions>. Not RFC 2047 `Q` header encoding; not a MIME message parser.
+- <xref:Bodu.Text.Encoding.PercentEncoding> — URI / form percent-encoding (RFC 3986 §2.1 plus the WHATWG `application/x-www-form-urlencoded` rules) with <xref:Bodu.Text.Encoding.PercentEncodingMode> (UriComponent / PathSegment / Query / FormUrlEncoded) and the <xref:Bodu.Text.Encoding.PercentEncoding.EncodeString*> / <xref:Bodu.Text.Encoding.PercentEncoding.DecodeString*> text helpers; uppercase hex emit, both-case accept, opt-in relaxed literals via <xref:Bodu.Text.Encoding.PercentDecodingOptions>. Not a URL parser.
+
 **Runtime selection**
 
 - <xref:Bodu.Text.Encoding.IBinaryEncoding> — unified contract for runtime-pluggable encoding choice. `Encode`, `Decode`, `GetMaxEncodedLength`, `GetMaxDecodedLength`, `IsValid`, `TryEncode`, `TryDecode`, plus `Name` and `Description`.
-- <xref:Bodu.Text.Encoding.BinaryEncodings> — pre-configured singleton instances (`Base16Lower`, `Base16Upper`, `Base32`, `Base32Hex`, `Base32Crockford`, `Base32ZBase32`, `Base45`, `Base58`, `Base58Ripple`, `Base62`, `Base64`, `Base64Mime`, `Base64UrlSafe`, `Ascii85`, `Z85`) plus the `Get(name)` lookup for configuration-driven selection. (Bech32 and Base58Check require an HRP / checksum and so are not surfaced through `IBinaryEncoding`.)
+- <xref:Bodu.Text.Encoding.BinaryEncodings> — pre-configured singleton instances (`Base16Lower`, `Base16Upper`, `Base32`, `Base32Hex`, `Base32Crockford`, `Base32ZBase32`, `Base45`, `Base58`, `Base58Ripple`, `Base62`, `Base64`, `Base64Mime`, `Base64UrlSafe`, `Ascii85`, `Base85Git`, `Z85`) plus the `Get(name)` lookup for configuration-driven selection. (Bech32 and Base58Check require an HRP / checksum, and the escape-based Quoted-Printable / percent-encoding carry mode information, so none are surfaced through `IBinaryEncoding`.)
 - <xref:Bodu.Text.Encoding.BinaryEncodingExtensions> — fluent extension methods on `byte[]`, `ReadOnlySpan<byte>`, and `string` (`ToBase16String`, `FromBase64String`, `ToBase64UrlString`, `Encode(IBinaryEncoding)`, …).
 
 **Shared option types**
@@ -79,6 +86,17 @@ byte[] payload = Base58.Decode("1NS17iag9jJgTHD1VXjvLCEnZuQ3rJDE9L");
 // --- Base85 Ascii85 with the z shortcut -------------------------------------
 string ascii85 = Base85.Encode(new byte[] { 0, 0, 0, 0 }, Base85Variant.Ascii85);
 // ascii85 → "z"
+
+// --- Base85 Git: compact, self-delimiting binary-patch alphabet -------------
+string gitB85 = Base85.Encode("hello"u8.ToArray(), Base85Variant.GitCompact);   // → "Xk~0{Zv"
+
+// --- Quoted-Printable: MIME message body ------------------------------------
+string qp = QuotedPrintable.Encode("café = møney"u8.ToArray());   // printable + =HH escapes
+byte[] qpBack = QuotedPrintable.Decode(qp);
+
+// --- Percent-encoding: URI component and form field -------------------------
+string component = PercentEncoding.EncodeString("a/b?c=d");                       // → "a%2Fb%3Fc%3Dd"
+string formField = PercentEncoding.EncodeString("a b+c", mode: PercentEncodingMode.FormUrlEncoded); // → "a+b%2Bc"
 
 // --- Base45: encode a payload for a QR code (RFC 9285) -----------------------
 string qrPayload = Base45.Encode("AB"u8.ToArray());   // → "BB8"
@@ -122,4 +140,5 @@ OperationStatus status = Base16.DecodeFromUtf8(
 - **Decoder strictness.** Decoders are **strict** by default — only the canonical alphabet, padding, and quantum length are accepted — and **lenient** when one or more <xref:Bodu.Text.Encoding.BaseFormatStyles> flags are set: `AllowPrefix` accepts a `0x` / `0X` prefix; `IgnoreWhitespace` strips ASCII space, tab, CR, LF anywhere; `AllowMissingPadding` accepts inputs without trailing `=`. `Decode` throws `FormatException` on validation failure; `TryDecode` returns `false`.
 - **Determinism and portability.** Encoders are deterministic — given a byte sequence and an option set they always produce the same canonical output across platforms and architectures. The `Pearson` family's permutation tables are bit-identical to the published references; the same applies to the BCL-delegated Base64 path.
 - **No coupling to other Bodu packages at the consumer surface.** The only dependency is `Bodu.Core` for shared throw helpers. The package has no external NuGet references.
-- **See also:** the [introduction](~/docs/text-encoding/index.md), [core concepts](~/docs/text-encoding/concepts.md), and [getting-started](~/docs/text-encoding/getting-started.md); the per-encoding guides under [Bodu.Text.Encoding guides](~/guides/text-encoding/index.md); and the [`IBinaryEncoding` interface](~/guides/text-encoding/binary-encodings-interface.md) for runtime selection.
+- **Escape-based encodings are not `IBinaryEncoding` members.** <xref:Bodu.Text.Encoding.QuotedPrintable> and <xref:Bodu.Text.Encoding.PercentEncoding> escape only a subset of octets and select behaviour through a mode / options object, so their output length is content-dependent and the parameterless <xref:Bodu.Text.Encoding.IBinaryEncoding> contract cannot represent them. Like the radix encodings they are stateless `static class`es with span-first `Try*` methods that never throw for malformed input or an undersized destination, throwing `Encode` / `Decode` wrappers, and deterministic length helpers. Quoted-Printable guarantees round-trip-safe output (it never emits decoder-rejected trailing whitespace); percent-encoding always emits uppercase hex and accepts both cases on decode.
+- **See also:** the [introduction](~/docs/text-encoding/index.md), [core concepts](~/docs/text-encoding/concepts.md), and [getting-started](~/docs/text-encoding/getting-started.md); the per-encoding guides under [Bodu.Text.Encoding guides](~/guides/text-encoding/index.md) — including [Quoted-Printable](~/guides/text-encoding/quoted-printable.md) and [percent-encoding](~/guides/text-encoding/percent-encoding.md); and the [`IBinaryEncoding` interface](~/guides/text-encoding/binary-encodings-interface.md) for runtime selection.

@@ -79,7 +79,7 @@ foreach (DotEnvEntry entry in document.Entries)
 }
 ```
 
-By default (`PreserveComments: true`), each full-line comment is attached as a leading-comment trivia entry on the next `DotEnvEntry`. The `DotEnvComment` value struct carries the prefix (`'#'`), the text, and the 1-based `LineNumber`. Inline comments — a `#` preceded by whitespace inside an *unquoted* value — truncate the value when `AllowInlineComments: true` (the default).
+By default (`PreserveComments: true`), each full-line comment is attached as a leading-comment trivia entry on the next `DotEnvEntry`. The `DotEnvComment` value struct carries the prefix (`'#'`), the text, and the 1-based `LineNumber`. Inline comments — a `#` preceded by a space or tab inside an *unquoted* value — truncate the value when `AllowInlineComments: true` (the default); the discarded tail is **not** retained as trivia. A `#` inside a quoted value, or one not preceded by whitespace (for example `KEY=a#b`), is part of the value.
 
 ## Pattern 5 — round-trip through `Format`
 
@@ -91,7 +91,7 @@ string roundTrip = DotEnv.Format(document);
 File.WriteAllText("app.env", roundTrip);
 ```
 
-`Format` writes the document back to text. Quoting follows a conservative rule: empty values render as `KEY=` (unquoted), values containing only "safe ASCII" (`[A-Za-z0-9_.,:/@+\-]`) render unquoted, and everything else is double-quoted with `"`, `\`, `$`, newline, tab, and carriage return escaped (`\"`, `\\`, `\$`, `\n`, `\t`, `\r`). Round-tripping preserves keys, values, and comment attachment, but bare blank lines from the source are not retained.
+`Format` writes the document back to text. Quoting follows a conservative rule: empty values render as `KEY=` (unquoted), values containing only "safe ASCII" (`[A-Za-z0-9_.,:/@+\-]`) render unquoted, and everything else is double-quoted with `"`, `\`, `$`, newline, tab, and carriage return escaped (`\"`, `\\`, `\$`, `\n`, `\t`, `\r`). Each line is terminated with the platform `Environment.NewLine`. Round-tripping preserves keys, values, and comment attachment, but bare blank lines from the source — and the original single-quoted form — are not retained.
 
 ## Behaviour options
 
@@ -120,7 +120,10 @@ Three forms of quoting are recognised on input:
 
 - **Unquoted** — `KEY=value`. The value runs to the first inline-comment boundary, end-of-line, or end-of-input. Leading and trailing whitespace are trimmed.
 - **Single-quoted** — `KEY='value'`. The value is literal; no escape sequences are processed, and the value cannot span lines.
-- **Double-quoted** — `KEY="value"`. The value supports escape sequences (`\"`, `\\`, `\n`, `\t`, `\r`, `\$`, and `\xHH` hex escapes) and may span multiple source lines when no intervening comment line separates them.
+- **Double-quoted** — `KEY="value"`. The value supports the escape sequences `\"`, `\\`, `\n`, `\t`, `\r`, and `\$`, plus a `\`-at-end-of-line **line continuation** (the backslash and the following newline are both discarded). Literal embedded newlines are preserved, so a double-quoted value may span multiple source lines.
+
+> [!NOTE]
+> The escape set is exactly those six sequences plus the line continuation. There is **no** `\xHH` or `\uHHHH` numeric escape, and an unrecognised escape such as `\q` is preserved verbatim as `\q` — the backslash is not stripped. A double quote left open at end-of-line or end-of-input raises `DotEnvFormatException`.
 
 `Format` always uses unquoted form for safe values and double-quoted form otherwise — single-quoted output is not emitted. If you need byte-stable round trips with single-quoted input, hold on to the original bytes.
 

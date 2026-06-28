@@ -44,7 +44,7 @@ The **nominal date** (`NotableDate.ActualDate`) is what the resolution strategy 
 
 The **observed date** (`NotableDate.Date`) is what the adjustment pipeline emits — e.g. *Monday 27 December* when Christmas falls on a Saturday and a weekend-rollover policy relocates it.
 
-Most occurrences have `Date == ActualDate` and `IsObserved == false`. When an adjustment fires, `IsObserved` is `true` and `AdjustmentPolicyId` / `AdjustmentReason` record which policy moved it. Whether the service emits the observed day alone, the nominal day alone, or *both* is governed by the policy's <xref:Bodu.Globalization.Calendar.RangeResolution.EmissionMode> (`ObservedOnly`, `ActualOnly`, `ActualAndObserved`, `ObservedAsAdditional`, `Suppress`); which occurrence controls range-query inclusion is governed by the resource's <xref:Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy>. See [Identity, priority, and observed dates](../../guides/calendar/identity-and-resolution.md) and [Observance adjustment rules](../../guides/calendar/adjustment-rules.md).
+Most occurrences have `Date == ActualDate` and `IsObserved == false`. When an adjustment fires, `IsObserved` is `true` and `AdjustmentPolicyId` / `AdjustmentReason` record which policy moved it. Whether the service emits the observed day alone, the nominal day alone, or *both* is governed by the policy's <xref:Bodu.Globalization.Calendar.RangeResolution.EmissionMode> (`ObservedOnly`, `ActualOnly`, `ActualAndObserved`, `Suppress` — plus the `[Obsolete]` `ObservedAsAdditional`, which is normalised to `ActualAndObserved`); which occurrence controls range-query inclusion is governed by the resource's <xref:Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy>. See [Identity, priority, and observed dates](../../guides/calendar/identity-and-resolution.md) and [Observance adjustment rules](../../guides/calendar/adjustment-rules.md).
 
 ## Resolution strategy
 
@@ -79,7 +79,7 @@ A **collision** occurs when two distinct rules resolve to the same date for the 
 
 ![TerritoryCode containment hierarchy](../../images/diagrams/calendar-territory-containment.svg)
 
-A <xref:Bodu.Globalization.Calendar.TerritoryCode> is an ISO 3166 country code with an optional subdivision — `AU`, `AU-NSW`, `GB-ENG`, `US-CA`. Territory codes are **hierarchical**: a country contains all of its subdivisions. Queries take a plain `string` territory (the struct converts implicitly).
+A <xref:Bodu.Globalization.Calendar.TerritoryCode> is an ISO 3166 country code with an optional subdivision — `AU`, `AU-NSW`, `GB-ENG`, `US-CA`. Territory codes are **hierarchical**: a country contains all of its subdivisions (`Contains`), and the struct decomposes into `Country`, `Subdivision`, `IsSubdivision`, and `Parent`. Queries take a plain `string` territory; the `TerritoryCode → string` conversion is *implicit* (a code feeds the resolution surface directly), while `string → TerritoryCode` is an *explicit* cast or `TerritoryCode.Parse` / `TryParse` / `ParseList`.
 
 - A rule authored for `AU` applies to every Australian subdivision.
 - A query for `AU-NSW` returns rules authored at `AU` *and* at `AU-NSW`.

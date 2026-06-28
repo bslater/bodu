@@ -76,11 +76,11 @@ byte[] digest = hash.GetCurrentHash(); // 32 bytes
 ```csharp
 using Bodu.IO.Hashing.CheckDigits;
 
-bool valid = Luhn.IsValid("4539 1488 0343 6467".Replace(" ", ""));
-char digit  = Luhn.ComputeCheckDigit("453914880343646");
+bool valid = Luhn.IsValid("4539148803436467");   // payload includes the check digit
+char digit = Luhn.Compute("453914880343646");    // payload excludes it — returns the digit to append
 ```
 
-Other check-digit types follow the same `IsValid` / `ComputeCheckDigit` contract. For multi-character checksums, see <xref:Bodu.IO.Hashing.CheckDigits.Iban>, <xref:Bodu.IO.Hashing.CheckDigits.Isbn13>, <xref:Bodu.IO.Hashing.CheckDigits.Cusip>, and <xref:Bodu.IO.Hashing.CheckDigits.Lei>.
+Every single-character scheme exposes the same pair: `Compute(ReadOnlySpan<char>)` returns the `char` to append to a payload that does *not* yet carry the check; `IsValid(ReadOnlySpan<char>)` validates a payload that *does*. Substitute `Damm`, `Verhoeff`, `Ean13`, `Gtin14`, `UpcA`, `Isin`, or `AbaRoutingNumber` — the contract is identical. The multi-character schemes (<xref:Bodu.IO.Hashing.CheckDigits.Iban>, <xref:Bodu.IO.Hashing.CheckDigits.Lei>) return a `string` from `Compute` instead.
 
 ### Check digit — IBAN (multi-character)
 
@@ -97,11 +97,29 @@ using Bodu.IO.Hashing;
 using Bodu.IO.Hashing.Extensions;
 
 using var hash = new Fnv1a64();
-byte[] digest = hash.ComputeHash(data);   // Append + GetCurrentHash + Reset
-bool   match  = hash.VerifyHash(data, expected);
+byte[] digest   = hash.ComputeHash(data);            // Append + GetCurrentHash + Reset, in one call
+bool   match    = hash.VerifyHash(data, digest);     // recompute and compare against the byte[]
+bool   matchHex = hash.VerifyHash(data, Convert.ToHexString(digest)); // or compare against a stored hex string
 ```
 
-`AppendDataAsync`, `ComputeHashAsync`, and `VerifyHashAsync` provide the streaming-friendly equivalents over a `Stream`.
+`ComputeHash` resets the instance and returns the one-shot digest, so the same instance is immediately reusable. `VerifyHash` has overloads taking either a `byte[]` digest or a hex `string`, and `Stream`-based forms that hash the stream first. `TryVerifyHash` returns `false` instead of throwing when the candidate is malformed (wrong length, non-hex characters) — the safer choice over user-supplied input.
+
+> [!IMPORTANT]
+> `VerifyHash` compares with `SequenceEqual` and short-circuits on the first mismatching byte — it is **not** constant-time and must not be used to check an authenticator supplied by an untrusted caller. These are error-detection comparisons. For constant-time verification of a keyed digest, use the `Bodu.Security.Cryptography` `VerifyHash` overloads, which call `CryptographicOperations.FixedTimeEquals`.
+
+### Async streaming over a `Stream`
+
+```csharp
+using Bodu.IO.Hashing;
+using Bodu.IO.Hashing.Extensions;
+
+await using FileStream fs = File.OpenRead("archive.bin");
+
+using var hash = new Crc(CrcStandard.CRC32_ISOHDLC);
+byte[] digest = await hash.ComputeHashAsync(fs);     // rents a pooled buffer, appends in chunks
+```
+
+`AppendDataAsync`, `ComputeHashAsync`, `VerifyHashAsync`, and `TryVerifyHashAsync` are the streaming-friendly equivalents; each accepts an optional `bufferSize` and a `CancellationToken`. They rent the working buffer from `ArrayPool<byte>.Shared`, so hashing a large file allocates only the final digest.
 
 ## Where to go next
 

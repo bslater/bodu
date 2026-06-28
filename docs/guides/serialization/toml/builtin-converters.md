@@ -6,7 +6,17 @@ title: Built-in converter catalog
 
 Every type that <xref:Bodu.Text.Toml.TomlSerializer> handles without a user converter is served by a **built-in converter** — internally an ordinary <xref:Bodu.Text.Toml.Serialization.TomlConverter`1>. This page catalogs that set — which .NET types are provisioned, how each is represented on the wire, and what the read path accepts. Resolution order and the rules for overriding a built-in with your own converter are covered in [Writing converters](converters.md). The sibling libraries ([Bodu.Text.Bencode](../bencode/index.md), [Bodu.Text.Yaml](../yaml/index.md)) ship their own catalog over the same machinery.
 
-The design is: exact-type scalar converters first, factories for open type families (nullables, enums, dictionaries, collections, plain objects) last, with the document object model bridges ahead of everything so a DOM value is never claimed by a structural factory.
+The design is: exact-type scalar converters first, factories for open type families (nullables, enums, dictionaries, collections, plain objects) last, with the document object model bridges ahead of everything so a DOM value is never claimed by a structural factory. The full ordering, top to bottom, is:
+
+1. the **DOM bridges** — `TomlNode`, `TomlElement`, `TomlDocument` — so a DOM value always flows through its own bridge rather than the dictionary or object factory;
+2. the **exact-type scalar converters** (`string`, `bool`, `char`, `Guid`, `Uri`, `Version`, `TimeSpan`, `double`, `float`, `Half`, `decimal`, and the four date-time types), so a scalar is never captured by the object factory;
+3. the **byte-array and memory-of-byte converters**, ahead of the collection factory so binary data maps by its dedicated converter rather than as a sequence of integers;
+4. the **integer**, **enum**, and **nullable** factories;
+5. the **dictionary factory** ahead of the **collection factory**, so a string-keyed dictionary becomes a table rather than a collection;
+6. the **`object` converter**, so an `object`-typed member dispatches on its runtime type instead of mapping to an empty table;
+7. the **object factory** last, as the catch-all that writes a plain class or struct as a table.
+
+A user converter, or a converter named by a `[TomlConverter]` attribute, is consulted ahead of this entire list — see [Writing converters](converters.md) for the precedence ladder.
 
 ## Scalars
 

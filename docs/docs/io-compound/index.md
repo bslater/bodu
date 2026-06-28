@@ -21,9 +21,9 @@ A compound file is effectively a small file system embedded in a single file. <x
 | Concept | Plain-language meaning |
 |---|---|
 | **Compound file** | A single physical file beginning with the OLE2 signature `D0 CF 11 E0` that holds a header, allocation tables, a directory, and sectors. |
-| **Storage / stream** | The directory tree: storages are folders, streams are files. Names are matched with ordinal (case-sensitive) equality, scoped to direct children. |
-| **Sector chain** | A stream's bytes are stored as a linked chain of fixed-size sectors; the reader follows the chain to assemble or stream the payload. |
-| **Buffered vs streaming** | The whole file is read into memory at open time by default, or sectors are read on demand from a seekable source for large files. |
+| **Storage / stream** | The directory tree: storages are folders, streams are files. Names are matched **case-insensitively** by the compound-file relationship, scoped to a storage's direct children. |
+| **Sector chain** | A stream's bytes are stored as a linked chain of fixed-size sectors indexed by the FAT (or, for streams under the mini-stream cutoff, the mini-FAT); the reader follows the chain to assemble or stream the payload. |
+| **Buffered vs streaming** | The whole file is read into memory at open time by default, or sectors are read on demand from a seekable source for large files; a third `Auto` strategy picks per source size. |
 | **Property set** | An OLE metadata stream (`\x05SummaryInformation`, `\x05DocumentSummaryInformation`) mapping integer property IDs to typed values. |
 
 For the full glossary, see [Core concepts](concepts.md).
@@ -62,6 +62,8 @@ byte[] bytes = workbook.ReadAllBytes();
 | Test whether a file is a compound file | `CompoundFile.IsCompoundFile(stream)` |
 | Open a small file fully in memory | `CompoundFile.Open(stream)` |
 | Bound memory for a large file | `CompoundFile.Open(stream, buffered: false)` |
+| Tune the read strategy or validation level | `CompoundFile.Open(stream, options)` with a `CompoundFileOptions` |
+| Classify why a file was rejected | `catch (CompoundFileFormatException ex)` → `ex.Category` |
 | List a storage's children | `EnumerateEntries` / `EnumerateStorages` / `EnumerateStreams` |
 | Read a required stream's bytes | `OpenStream(name).ReadAllBytes()` |
 | Read a stream incrementally | `OpenStream(name).Open()` → a `CompoundStream` cursor |
@@ -76,8 +78,9 @@ byte[] bytes = workbook.ReadAllBytes();
 | <xref:Bodu.IO.Compound.CompoundFile> | Opens or creates a CFB container and anchors the hierarchy; static `Open` / `OpenRead` / `IsCompoundFile` readers and the `Create` writer (finalized by `Commit`). |
 | <xref:Bodu.IO.Compound.CompoundStorage> | A storage node — enumerates children and resolves child storages and streams by name. |
 | <xref:Bodu.IO.Compound.CompoundStream> | A stream node and read-only, seekable `Stream` cursor in one — `ReadAllBytes` for the whole payload, `AsMemory` for a whole-payload view, `Stat` for metadata. |
-| <xref:Bodu.IO.Compound.CompoundEntryInfo> | An immutable metadata snapshot — name, entry type, length, class id, timestamps. |
-| <xref:Bodu.IO.Compound.CompoundFileFormatException>, <xref:Bodu.IO.Compound.CompoundStreamNotFoundException> | Malformed-container and missing-entry errors. |
+| <xref:Bodu.IO.Compound.CompoundEntryInfo> | An immutable metadata snapshot — name, <xref:Bodu.IO.Compound.CompoundEntryType>, length, class id, timestamps, and red-black <xref:Bodu.IO.Compound.CompoundEntryColor>. |
+| <xref:Bodu.IO.Compound.CompoundFileOptions> | Read options — <xref:Bodu.IO.Compound.CompoundReadStrategy> (buffered / streaming / auto) and <xref:Bodu.IO.Compound.CompoundValidationLevel> (strict / compatible / minimal). |
+| <xref:Bodu.IO.Compound.CompoundFileException> | The common base for every compound-file failure; `CompoundFileFormatException` (with a <xref:Bodu.IO.Compound.CompoundFileError> `Category`) and `CompoundStreamNotFoundException` derive from it. |
 
 ## Property sets — <xref:Bodu.IO.Compound.PropertySets>
 

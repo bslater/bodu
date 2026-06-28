@@ -261,18 +261,26 @@ Trust is decided by an <xref:Bodu.Globalization.Calendar.Plugins.IPluginTrustPol
 | Policy | Behaviour |
 |---|---|
 | <xref:Bodu.Globalization.Calendar.Plugins.AllowAllPluginTrustPolicy> | Trusts every assembly. Development / tests only. |
-| <xref:Bodu.Globalization.Calendar.Plugins.StrongNamePluginTrustPolicy> | Allow-list by strong-name public-key token. |
-| <xref:Bodu.Globalization.Calendar.Plugins.FileHashPluginTrustPolicy> | Allow-list by SHA-256 file hash. |
-| <xref:Bodu.Globalization.Calendar.Plugins.CompositePluginTrustPolicy> | Combines policies with AND / short-circuit semantics. |
+| <xref:Bodu.Globalization.Calendar.Plugins.StrongNamePluginTrustPolicy> | Allow-list by strong-name public-key token. Constructor takes `IEnumerable<string> allowedPublicKeyTokens`. |
+| <xref:Bodu.Globalization.Calendar.Plugins.FileHashPluginTrustPolicy> | Allow-list by SHA-256 file hash. Constructor takes `IReadOnlyDictionary<string, byte[]>` keyed by assembly name. |
+| <xref:Bodu.Globalization.Calendar.Plugins.CompositePluginTrustPolicy> | Combines policies with AND / short-circuit semantics: `CompositePluginTrustPolicy(params IPluginTrustPolicy[])`. |
 | <xref:Bodu.Globalization.Calendar.Plugins.DelegatingPluginTrustPolicy> | Decides with a `Func<PluginTrustContext, PluginTrustResult>` delegate. |
+
+A trust policy is evaluated against a <xref:Bodu.Globalization.Calendar.Plugins.PluginTrustContext> (the assembly name, path, file hash, and public-key token), so a `DelegatingPluginTrustPolicy` can apply any custom rule:
 
 ```csharp
 using Bodu.Globalization.Calendar.Plugins;
 
 // Must pass both a hash check AND a strong-name check.
 IPluginTrustPolicy policy = new CompositePluginTrustPolicy(
-    new FileHashPluginTrustPolicy(allowedHashes),
+    new FileHashPluginTrustPolicy(allowedHashesByAssemblyName),
     new StrongNamePluginTrustPolicy(allowedPublicKeyTokens));
+
+// A bespoke rule over the context.
+IPluginTrustPolicy custom = new DelegatingPluginTrustPolicy(ctx =>
+    ctx.AssemblyName.StartsWith("Contoso.", StringComparison.Ordinal)
+        ? PluginTrustResult.Trusted()
+        : PluginTrustResult.Rejected("assembly is not from the Contoso namespace"));
 ```
 
 > [!WARNING]

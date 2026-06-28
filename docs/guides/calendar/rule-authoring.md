@@ -217,7 +217,7 @@ A document with **no** `<Imports>` loads with the single-argument overload, `Not
 </Overrides>
 ```
 
-Overrides run during loading and produce a normal immutable resource. *Runtime* change (swapping the rule set after the service is built) is a separate mechanism: load a new resource and hand it to a <xref:Bodu.Globalization.Calendar.MutableNotableDateResourceProvider>, then resolve through a <xref:Bodu.Globalization.Calendar.ReloadableNotableDateService>. See [Using NotableDateService](notable-dates.md#pattern-8--swap-the-rule-set-at-runtime).
+Overrides run during loading and produce a normal immutable resource. *Runtime* change (swapping the rule set after the service is built) is a separate mechanism: load a new resource and hand it to a <xref:Bodu.Globalization.Calendar.MutableNotableDateResourceProvider>, then resolve through a <xref:Bodu.Globalization.Calendar.ReloadableNotableDateService>. See [Using NotableDateService](notable-dates.md#pattern-9--swap-the-rule-set-at-runtime).
 
 ---
 
@@ -251,6 +251,56 @@ using Bodu.Globalization.Calendar;
 
 NotableDateResource resource = NotableDateResourceLoader.LoadJson(json, CommonNotableDateResources.Resolver);
 ```
+
+The larger sections map the same way: `<AdjustmentPolicies>` → `adjustmentPolicies`, with `<Trigger>` / `<Action>` / `<Emission>` becoming the nested `trigger` / `action` / `emission` objects; `<Adjustments>` becomes an `adjustments` array of policy-id strings; and `<Imports>` becomes `imports`, each entry a `resource` plus a `uses` array:
+
+```json
+{
+  "schemaVersion": "1.0",
+  "resourceId": "data.au",
+  "adjustmentPolicies": [
+    {
+      "id": "weekend-roll",
+      "priority": 100,
+      "trigger": { "type": "IfWeekend" },
+      "action": { "type": "MoveToNextWorkingDay", "maxSearchDays": 7 },
+      "emission": { "mode": "ObservedOnly", "reason": "Substitute public holiday" }
+    }
+  ],
+  "imports": [
+    {
+      "resource": "global-core",
+      "uses": [
+        { "notableDateRef": "new-years-day", "territory": "AU", "adjustments": ["weekend-roll"] }
+      ]
+    }
+  ],
+  "notableDates": [
+    {
+      "id": "australia-day",
+      "displayName": "Australia Day",
+      "category": "PublicHoliday",
+      "defaultNonWorkingDay": true,
+      "rules": [
+        {
+          "id": "au",
+          "applicability": { "calendar": "Gregorian", "territories": ["AU"] },
+          "strategy": { "fixed": { "month": "January", "day": 26 } },
+          "adjustments": ["weekend-roll"]
+        }
+      ]
+    }
+  ]
+}
+```
+
+JSON and XML are accepted by separate loader entry points — `LoadJson` for JSON, `Load` for XML — and produce identical resources; there is no auto-detection.
+
+---
+
+## Year periodicity
+
+Beyond `fromYear` / `toYear` bounds, `<Applicability>` supports a periodicity pair for rules that recur every *n*th year: `everyYears` sets the period and `anchorYear` the reference year it is counted from. A quadrennial civic day active from a known base year is `everyYears="4"` with `anchorYear="2024"`. They surface on the loaded <xref:Bodu.Globalization.Calendar.NotableDateRule>'s applicability alongside `OnlyYears` / `ExceptYears`. See [NotableDateRule and adjustment-policy reference](rule-reference.md#applicability--calendar-year-and-territory-filtering).
 
 ---
 

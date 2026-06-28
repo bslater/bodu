@@ -163,6 +163,105 @@ tree.AppendData(largeFile);
 byte[] root = tree.GetHashAndReset();
 ```
 
+### Digital signature — Ed25519
+
+```csharp
+using System.Text;
+using Bodu.Security.Cryptography;
+
+byte[] message = Encoding.UTF8.GetBytes("transfer 100 to account 42");
+
+using var signer = Ed25519.Create();
+signer.GenerateKey();
+
+byte[] signature = signer.SignData(message);          // 64 bytes
+bool valid       = signer.VerifyData(message, signature);   // true
+```
+
+Swap `Ed25519` for `MLDsa65` for a post-quantum (FIPS 204) signature — the lifecycle is identical, only the key and signature sizes differ.
+
+### Key agreement — X25519
+
+```csharp
+using Bodu.Security.Cryptography;
+
+using var alice = X25519.Create();
+using var bob   = X25519.Create();
+alice.GenerateKey();
+bob.GenerateKey();
+
+// Each side publishes its public key, then derives the secret from the peer's.
+byte[] aliceShared = alice.DeriveSharedSecret(bob.ExportPublicKey());
+byte[] bobShared   = bob.DeriveSharedSecret(alice.ExportPublicKey());
+
+// aliceShared and bobShared are identical (32 bytes each).
+```
+
+Swap `X25519` for `MLKem768` when you need post-quantum (FIPS 203) key establishment — the receiver publishes an encapsulation key and the sender calls `Encapsulate()`.
+
+### Hybrid public-key encryption — HPKE
+
+```csharp
+using Bodu.Security.Cryptography;
+
+using var recipient = X25519.Create();
+recipient.GenerateKey();
+byte[] recipientPublicKey = recipient.ExportPublicKey();   // published, 32 bytes
+
+HpkeSuite suite = HpkeSuite.X25519_HkdfSha256_Aes128Gcm;
+byte[] info = "myapp v1"u8.ToArray();   // binds the exchange to a context
+byte[] aad  = "headers"u8.ToArray();    // authenticated, not encrypted
+
+// Sender — needs only the recipient's public key.
+var (enc, ciphertext) = Hpke.Seal(suite, recipientPublicKey, info, aad, "secret message"u8);
+
+// Recipient — needs its private key, the encapsulated key, and the same info / aad.
+byte[] plaintext = Hpke.Open(suite, recipient, enc, info, aad, ciphertext);
+```
+
+### Password hashing — Argon2id
+
+```csharp
+using System.Security.Cryptography;
+using System.Text;
+using Bodu.Security.Cryptography;
+
+byte[] password = Encoding.UTF8.GetBytes("correct horse battery staple");
+byte[] salt     = RandomNumberGenerator.GetBytes(16);
+
+var parameters = new Argon2Parameters
+{
+    MemoryKiB   = 65536,   // 64 MiB
+    Iterations  = 3,
+    Parallelism = 4,
+    TagLength   = 32,
+};
+
+byte[] key = Argon2id.DeriveKey(password, salt, parameters);   // 32 bytes
+```
+
+Swap `Argon2id` for `Scrypt` (`Scrypt.DeriveKey(password, salt, costN: 16384, blockSizeR: 8, parallelization: 1, length: 32)`) for RFC 7914 interoperability.
+
+### Key derivation — HKDF
+
+```csharp
+using System.Security.Cryptography;
+using Bodu.Security.Cryptography;
+
+byte[] sharedSecret = GetSharedSecret();   // high-entropy, but not uniform
+
+byte[] sessionKey = Hkdf.DeriveKey(
+    HashAlgorithmName.SHA256,
+    inputKeyingMaterial: sharedSecret,
+    outputLength: 32,
+    salt: salt,                            // optional, non-secret; binds the derivation
+    info: "myapp v1 traffic key"u8);       // optional context / label
+
+CryptographicOperations.ZeroMemory(sharedSecret);   // wipe the raw secret once stretched
+```
+
+HKDF is for *high-entropy* inputs only — for passwords reach for Argon2id or scrypt above.
+
 ## Where to go next
 
 - **[Bodu.Security.Cryptography introduction](index.md)** — namespaces, headline types, scenarios.

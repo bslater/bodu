@@ -38,6 +38,8 @@ bool valid = signer.VerifyData(message, signature);   // true
 
 The same instance can both sign and verify while it holds the private key, but the typical deployment splits the two roles across machines.
 
+`SignData` and `VerifyData` each have a span overload — `SignData(data, destination)` writes the 64-byte signature into a caller-supplied buffer with no allocation — for hot paths or pooled buffers. Query `HasPrivateKey` / `HasPublicKey` to see which halves an instance currently holds: a signer holds both, a verifier holds only the public half.
+
 ## Key distribution
 
 The signer keeps the private seed secret; the public key is distributed to every party that needs to verify. The public key carries no secret and can be embedded in config, served over the network, or pinned in source.
@@ -92,6 +94,17 @@ if (!ok)
 
 Because all inputs to verification are public, verification time may vary with the inputs; that is acceptable and expected.
 
+## Recording the signature's wire format
+
+An Ed25519 signature is the raw 64-byte `R ‖ S` string with no framing — `SignatureFormat.Raw`. That is unambiguous on its own, but when a signature travels through a layer that also handles ECDSA (which circulates as both ASN.1 DER and fixed-width P1363), wrap it in a <xref:Bodu.Security.Cryptography.SignatureValue> so the consumer reads the encoding instead of inferring it:
+
+```csharp
+SignatureValue value = SignatureValue.FromBytes(signature, SignatureFormat.Raw);
+
+// 'value.FixedTimeEquals(other)' compares the bytes in constant time;
+// 'value.Format' tells a polymorphic verifier this is a raw EdDSA signature, not DER or P1363.
+```
+
 ## Determinism
 
 Ed25519 signatures are deterministic by design: identical key and message always produce identical output. This is a feature — there is no signing randomness to mismanage — but it means you cannot distinguish two signings of the same message. If you need each signing to differ, include a unique element (timestamp, counter, nonce) in the signed message itself.
@@ -107,4 +120,4 @@ Ed25519 signatures are deterministic by design: identical key and message always
 - [Asymmetric algorithms overview](asymmetric-overview.md) — where Ed25519 sits in the family.
 - [Key agreement with X25519](key-agreement-x25519.md) — the companion curve algorithm for shared secrets.
 - [ML-DSA post-quantum signatures](ml-dsa.md) — the quantum-resistant signature scheme.
-- <xref:Bodu.Security.Cryptography.Ed25519> — API reference.
+- <xref:Bodu.Security.Cryptography.Ed25519>, <xref:Bodu.Security.Cryptography.SignatureValue> — API reference.

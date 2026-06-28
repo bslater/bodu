@@ -100,7 +100,30 @@ Fraction<int> reconstructed = Fraction<int>.FromContinuedFraction(coeffs);
 ```
 
 The leading coefficient carries the sign; subsequent coefficients are
-strictly positive.
+strictly positive. `FromContinuedFraction` enforces this on input:
+
+- A `null` coefficient array throws <xref:System.ArgumentNullException>.
+- An empty array throws <xref:System.ArgumentException>.
+- A coefficient after the first that is zero or negative throws
+  <xref:System.ArgumentOutOfRangeException>.
+
+`LimitDenominator(maxDenominator)` returns the value unchanged when its
+denominator already fits the bound, and throws
+<xref:System.ArgumentOutOfRangeException> when `maxDenominator` is less
+than one. The `Approximate(value, maxDenominator)` overloads
+(`double`, `decimal`, `string`) share the same bound contract; the
+`double` overload additionally throws <xref:System.ArgumentException>
+on non-finite input, and the `string` overload throws
+<xref:System.FormatException> on non-numeric text. Both
+`Approximate` and `LimitDenominator` evaluate the search at
+`BigInteger` precision and narrow only the final result, so an exact
+value too large for `T` is bounded *before* it is narrowed.
+
+```csharp
+var pi = Fraction<int>.Create(355, 113);
+pi.LimitDenominator(100);                    // 311/99 — closest with denominator ≤ 100
+Fraction<int>.Approximate(0.1, 1000);        // 1/10 — recovers the intended rational from a double
+```
 
 ## Canonical form
 
@@ -133,9 +156,17 @@ representation `(numerator: 0, denominator: 0)` is interpreted as
 | `Numerator` | Signed canonical numerator. |
 | `Denominator` | Strictly positive canonical denominator (interprets default-init zero as one). |
 | `Sign` | `-1`, `0`, or `1`. |
-| `IsZero`, `IsInteger`, `IsProper`, `IsImproper`, `IsUnit`, `IsNegative`, `IsPositive` | Classification flags. |
-| `IsEvenInteger`, `IsOddInteger` | Integer-specific parity flags. |
+| `IsZero` | Numerator is zero. |
+| `IsInteger` / `IsWhole` | Canonical denominator is one. `IsWhole` is an alias for `IsInteger`. |
+| `IsProper` | Magnitude strictly less than one (`|numerator| < denominator`). |
+| `IsImproper` | Magnitude at least one — the negation of `IsProper`. |
+| `IsUnit` | Numerator magnitude is one (a unit fraction such as `1/7` or `-1/7`). |
+| `IsNegative` / `IsPositive` | Sign classification; both are `false` for zero. |
+| `IsEvenInteger` / `IsOddInteger` | `true` only when the value is an integer *and* the numerator has the stated parity. A non-integer is neither even nor odd. |
 | `IsCanonical` | Always `true` — the type maintains the invariant. |
+| `IsReducible` | Always `false` — there is no unreduced form to reduce. |
+
+`Reduce()` returns the value unchanged for the same reason `IsReducible` is `false`: reduction already happened at construction. It exists so generic code that expects a `Reduce` step compiles and behaves correctly.
 
 ## Static constants
 
@@ -174,10 +205,19 @@ Convenience methods cover the common patterns:
 a.Abs();                       // magnitude
 a.Negate();                    // unary negation
 a.Reciprocal();                // 3/1 — throws DivideByZeroException on 0
+a.Invert();                    // alias for Reciprocal()
 a.Pow(3);                      // 1/27 — negative exponents allowed via reciprocal
-a.Squared();                   // 1/9
-a.Cubed();                     // 1/27
+a.Squared();                   // 1/9 — alias for a * a
+a.Cubed();                     // 1/27 — alias for a * a * a
+a.Remainder(b);                // alias for a % b
 ```
+
+`Pow` is defined for the whole `int` exponent range:
+
+- `Pow(0)` returns `One` for every value, **including** `Fraction<T>.Zero` (the conventional `0⁰ = 1`).
+- A negative exponent raises the *reciprocal* to the corresponding magnitude, so `Fraction<int>.Create(2, 3).Pow(-2)` is `9/4`. Applying a negative exponent to zero throws <xref:System.DivideByZeroException>, and an exponent magnitude exceeding `int.MaxValue` throws <xref:System.OverflowException>.
+
+The `%` operator (and its `Remainder` alias) returns the remainder of the *floored-quotient* division and carries the **sign of the dividend** — so `Fraction<int>.Create(7, 2) % Fraction<int>.Create(1, 1)` is `1/2`. Dividing by zero throws <xref:System.DivideByZeroException>.
 
 ### Overflow handling
 
@@ -253,6 +293,19 @@ Fraction<BigInteger> bigHalf = Fraction<int>.Create(1, 2).As<BigInteger>();
 `As<TOther>()` rejects values whose canonical components do not fit
 in `TOther` with `OverflowException`.
 
+The conversion surface divides cleanly into *exact* and *approximate* directions:
+
+| Conversion | Direction | Exactness | Failure mode |
+|---|---|---|---|
+| `FromDecimal` / `(Fraction<T>)decimal` | in | exact (mantissa × 10⁻ˢᶜᵃˡᵉ) | `OverflowException` if the canonical components exceed `T` |
+| `FromDouble` / `(Fraction<T>)double` | in | exact in the IEEE-754 sense (mantissa × 2ᵉˣᵖ) | `ArgumentException` on non-finite input; `OverflowException` on narrowing |
+| `ToDecimal` / `(decimal)` | out | rounded to `decimal` precision | `OverflowException` outside `decimal` range |
+| `ToDouble` / `ToSingle` | out | rounded to `double` / `float` | never throws — `TryToDouble` / `TryToSingle` always return `true` |
+| `ToInteger` / `ToBigInteger` / `GetWholePart` | out | truncated **toward zero** | `ToInteger` / `GetWholePart` may overflow `T` for an out-of-range integer part |
+| `As<TOther>` | re-backing | exact (same canonical value) | `OverflowException` if a component does not fit `TOther` |
+
+Truncation toward zero is the rule for the integer-extraction members: `Fraction<int>.Create(-7, 3).ToInteger()` is `-2`, not `-3`. Use `Floor()` / `Ceiling()` / `Round()` (below) when you need a different rounding direction.
+
 ## Rounding and mixed parts
 
 ```csharp
@@ -298,6 +351,26 @@ This means `Fraction<T>` slots into algorithms written against the
 `INumber` abstractions — `Sum`, `Aggregate`, generic linear-algebra
 routines — without special-casing.
 
+`MaxMagnitude` / `MinMagnitude` compare absolute values and break a tie
+by sign, mirroring the BCL convention: `MaxMagnitude` prefers the
+positive operand on a magnitude tie, `MinMagnitude` the negative one.
+`Clamp`, `CopySign`, `Max` / `MaxNumber`, and `Min` / `MinNumber` are
+all present; because `Fraction<T>` is never `NaN`, the `*Number`
+variants behave identically to their plain counterparts.
+
+`Fraction<T>` also participates in generic cross-type conversion via
+`TSelf.CreateChecked` / `CreateSaturating` / `CreateTruncating`. Integer
+and `decimal` sources convert exactly; other finite sources convert
+through their nearest `double`; non-finite sources fail. The checked
+path overflows to <xref:System.OverflowException>, the saturating /
+truncating paths clamp to `MinValue` / `MaxValue` instead.
+
+```csharp
+Fraction<int>.CreateChecked(42);            // 42/1 — exact integer source
+Fraction<int>.CreateChecked(0.25m);         // 1/4  — exact decimal source
+Fraction<int>.CreateSaturating(1e30);       // MaxValue — clamps instead of throwing
+```
+
 The backing type is constrained as `where T : IBinaryInteger<T>`.
 
 ## Parsing and formatting
@@ -333,8 +406,8 @@ Fraction<int>.TryParse("nope", out var _); // false
 |---|---|
 | `null`, `""`, `"G"` | `"numerator/denominator"` or bare integer if denominator is 1 |
 | `"M"` | Mixed-number form: `"2 1/3"` |
-| `"U"` | Unicode vulgar where a glyph exists (denominator ≤ 10), otherwise mixed |
-| `"P"` | Percentage form: scales by 100 and appends `%` |
+| `"U"` | Unicode vulgar where a glyph exists (denominator ≤ 16), otherwise mixed |
+| `"P"` | Percentage form: scales by 100, re-reduces, renders as `numerator/denominator%` (bare `numerator%` when whole) |
 
 ```csharp
 var x = Fraction<int>.Create(7, 3);
@@ -342,8 +415,10 @@ var x = Fraction<int>.Create(7, 3);
 x.ToString();         // "7/3"
 x.ToString("M");      // "2 1/3"
 x.ToString("U");      // "2⅓"
-x.ToString("P");      // "233 1/3%"
+x.ToString("P");      // "700/3%" — 7/3 × 100 = 700/3, already in lowest terms
 ```
+
+The percentage form is a *ratio*, not a mixed number: `Fraction<int>.Create(7, 4).ToString("P")` is `"175%"` (700/4 reduces to 175/1) and `Fraction<int>.Create(3, 4).ToString("P")` is `"75%"`. Any specifier other than `G`/`M`/`U`/`P` (case-insensitive) throws <xref:System.FormatException>.
 
 Helper convenience methods:
 `ToUnicodeString(provider)`,
@@ -355,26 +430,43 @@ Helper convenience methods:
 
 `Fraction<T>` carries
 `[JsonConverter(typeof(FractionJsonConverterFactory))]`, so
-`System.Text.Json` round-trips without registration. The wire shape is
-the string form, written under the invariant culture:
+`System.Text.Json` round-trips without registration. The attribute
+path defaults to the `Strict` policy, which emits the canonical
+**object** form:
 
 ```csharp
 using System.Text.Json;
 
 string json = JsonSerializer.Serialize(Fraction<int>.Create(3, 4));
-// "3/4"
+// {"numerator":3,"denominator":4}
 
 Fraction<int> r = JsonSerializer.Deserialize<Fraction<int>>(json);
 ```
 
-The converter reads a JSON string token and parses it via
-`Fraction<T>.Parse(text, CultureInfo.InvariantCulture)`; non-string
-tokens, null strings, and malformed text raise `JsonException`.
+Each component is written as a *raw* JSON number, so a
+`Fraction<BigInteger>` round-trips at any magnitude without losing
+precision through the writer's `Int64` / `decimal` primitives. On read,
+a component may be either a JSON number or a numeric string token.
+
+To switch to the compact single-string form `"3/4"`, register the
+converters with `AddNumericsJsonConverters(NumericsJsonPolicy.Compact)`
+on a `JsonSerializerOptions`; the `Compact` read path delegates to
+`Fraction<T>.TryParse(text, CultureInfo.InvariantCulture, …)`. See
+[JSON serialization](json-serialization.md) for the full policy table
+and failure modes.
 
 Instance helpers `ToJson()` and `Fraction<T>.FromJson(string)`
-delegate to `JsonSerializer`. Equivalent XML helpers `ToXml()` /
-`FromXml(string)` wrap the formatted value in
+delegate to `JsonSerializer` under the default (`Strict`) policy.
+Equivalent XML helpers `ToXml()` / `FromXml(string)` wrap the
+invariant-culture *general* text form in
 `<fraction>numerator/denominator</fraction>`.
+
+> [!NOTE]
+> `ToJson()` / `FromJson()` use the reflection-based `JsonSerializer`
+> and are annotated `RequiresUnreferencedCode` / `RequiresDynamicCode`.
+> For trimming or AOT, register the converters via
+> `AddNumericsJsonConverters` against a source-generated
+> `JsonSerializerContext` instead.
 
 ## Equality, hashing, and `Equals(object?)`
 

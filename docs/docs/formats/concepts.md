@@ -28,11 +28,14 @@ A **document** is the whole parsed model — a <xref:Bodu.Text.Delimited.Delimit
 
 ## Typed value access
 
-The decoded values are strings on the wire, but every model exposes the same **typed accessor** pair: `GetValue<T>` (throwing) and `TryGetValue<T>` (non-throwing) — on a `DelimitedRow` by ordinal or column name, on a `DotEnvDocument` by key, and on an `IniSection` or `IniEntry`. Parsing goes through `ISpanParsable<T>` under `CultureInfo.InvariantCulture`, so `int`, `decimal`, `TimeSpan`, `DateTime`, `Guid`, and any consumer-defined `ISpanParsable<T>` type work uniformly across all three formats.
+The decoded values are strings on the wire, but every model exposes the same **typed accessor** pair: `GetValue<T>` (throwing) and `TryGetValue<T>` (non-throwing) — on a <xref:Bodu.Text.Delimited.DelimitedRow> by ordinal or column name, on a <xref:Bodu.Text.DotEnv.DotEnvDocument> by key (and on a <xref:Bodu.Text.DotEnv.DotEnvEntry> directly), and on an <xref:Bodu.Text.Ini.IniSection> by key (and on an <xref:Bodu.Text.Ini.IniEntry> directly). The accessor is generically constrained to `where T : ISpanParsable<T>` and dispatches to `T.Parse` / `T.TryParse` under `CultureInfo.InvariantCulture`, so `int`, `decimal`, `TimeSpan`, `DateTime`, `Guid`, and any consumer-defined `ISpanParsable<T>` type work uniformly across all three formats.
+
+> [!NOTE]
+> The accessor is `ISpanParsable<T>`-only — there are no per-type convenience methods (`GetInt32`, `GetDouble`, …); call `GetValue<int>` / `GetValue<double>` instead. `GetValue<T>` raises the standard `T.Parse` `FormatException` on an unparseable value; `TryGetValue<T>` returns `false`. A missing key or column raises `KeyNotFoundException` (`GetValue`) or returns `false` (`TryGetValue`). The invariant culture is deliberate: a value authored as `3.14` parses identically regardless of the host machine's locale.
 
 ## Framing and grammar
 
-Each format announces structure inline. Line-oriented formats (DotEnv, INI) split on line breaks and section headers. Delimited splits on a single-character delimiter with RFC 4180 quoting.
+Each format announces structure inline. Line-oriented formats (DotEnv, INI) split on line breaks and section headers; Delimited splits on a single-character delimiter with RFC 4180 quoting. All three accept any of the three common line terminators — `\n`, `\r`, or `\r\n` — interchangeably as a record/line break, with `\r\n` treated as a single break. The grammars are single-character throughout: the Delimited delimiter and quote, the INI section brackets and `=` / `:` separators, and the DotEnv `=` are all one character — multi-character delimiters and separators are not supported.
 
 ## Parse options and strictness policies
 
@@ -69,9 +72,12 @@ The full streaming surface is covered in the [streams and async I/O guide](../..
 
 **Trivia** is the content that carries no data but carries meaning for humans: comments, blank lines, ordering, and incidental whitespace. The codecs preserve trivia where the format's consumers expect it:
 
-- **INI** attaches full-line comments as `LeadingComments` on the next section or entry and same-line comments as the entry's `InlineComment`, preserving the original `#` / `;` prefix. Sections and entries round-trip in source order.
+- **INI** attaches full-line `#` / `;` comments as `LeadingComments` on the next section or entry, preserving the original prefix character. Sections and entries round-trip in source order.
 - **DotEnv** attaches full-line comments as `LeadingComments` on the next entry and preserves entry order.
 - **Delimited** retains field values, field order, and header order, but comment lines and blank lines are not part of the document model.
+
+> [!IMPORTANT]
+> INI's `InlineComment` property on <xref:Bodu.Text.Ini.IniEntry> is a **write-side** feature only. The parser does not split a same-line trailing `;` / `#` out of a value — everything after the first `=` / `:` separator (trimmed) becomes the entry's `Value`, so `host = localhost ; primary` parses to the value `localhost ; primary`. `InlineComment` is settable so you can attach a trailing comment programmatically; <xref:Bodu.Text.Ini.Ini>'s `Format` then emits it on the entry's line. DotEnv is different — there, an inline `#` (preceded by whitespace, in an *unquoted* value) genuinely truncates the value on parse when `AllowInlineComments` is on.
 
 Preservation is structural, not byte-for-byte: INI trims whitespace around keys and values and drops blank lines, DotEnv does not retain bare blank lines or single-quoted form on output, and Delimited discards blank lines and unquoted padding. A `Parse` → `Format` cycle reproduces the *authored structure* — keys, values, comments, ordering — not the exact source bytes. When byte-stable round-tripping matters, keep the original bytes.
 
@@ -79,11 +85,14 @@ Preservation is structural, not byte-for-byte: INI trims whitespace around keys 
 
 Writing a document back always produces **canonical** output for its format:
 
-- **Delimited** emits deterministic RFC 4180 quoting under the configured <xref:Bodu.Text.Delimited.DelimitedParseOptions> — fields containing the delimiter, the quote character, or a line terminator are quoted with embedded quotes doubled.
-- **DotEnv** applies a conservative quoting rule — safe-ASCII values render unquoted, everything else is double-quoted with escapes; single-quoted form is never emitted.
-- **INI** writes global entries first, then each section separated by a blank line, with leading comments ahead of their owner and inline comments on the entry's line.
+- **Delimited** emits deterministic RFC 4180 quoting under the configured <xref:Bodu.Text.Delimited.DelimitedParseOptions> — a field is quoted when it is empty or contains the delimiter, the quote character, `\n`, or `\r`; embedded quote characters are doubled. (Empty fields are quoted as `""` so that a leading/trailing empty field survives a round trip through the parser.)
+- **DotEnv** applies a conservative quoting rule — values matching `[A-Za-z0-9_.,:/@+-]` render unquoted, everything else is double-quoted with `"`, `\`, `$`, `\n`, `\t`, and `\r` escaped; single-quoted form is never emitted.
+- **INI** writes global entries first (when present), then each named section separated by a blank line, with leading comments ahead of their owner and any programmatically set inline comment appended on the entry's line. Entries are written as `key = value` (a single space either side of `=`).
 
 Canonical output means two semantically equal documents format to the same text, which makes diffs and snapshot tests stable.
+
+> [!NOTE]
+> Line terminators differ between the in-memory `Format` and the streaming writers. `Delimited.Format` and **all three streaming writers** emit a bare line feed (`\n`). `Ini.Format` and `DotEnv.Format` use the platform `Environment.NewLine` instead. If a downstream tool requires a specific terminator, normalise the formatted string yourself.
 
 ## Defensive parsing and input size
 
@@ -91,13 +100,15 @@ Strict-by-default policies are the first line of defense; input size is the seco
 
 ## Format exception
 
-Every format raises a typed `*FormatException` that derives from <xref:Bodu.Text.TextFormatException> (itself a <xref:System.FormatException>), so a single `catch (TextFormatException)` handles parse failures across all three formats. The exception carries the location it can identify — a 1-based `LineNumber` and `ColumnNumber` and a 0-based `Offset` (each `0` / `null` when not tracked for that format). The line-oriented formats report a line and, where tracked, a column.
+Every format raises a typed `*FormatException` that derives from <xref:Bodu.Text.TextFormatException> (itself a `System.FormatException`), so a single `catch (TextFormatException)` handles parse failures across all three formats. The base carries the location it can identify: a 1-based `LineNumber`, a 1-based `ColumnNumber`, and a 0-based `Offset` — each `0` / `null` when not tracked for that failure. In practice these parsers track the line; the column and offset are reserved and commonly `0` / `null`, so treat the location as advisory and key user-facing diagnostics on the line number plus the message.
 
 | Exception | Format |
 |---|---|
 | <xref:Bodu.Text.Delimited.DelimitedFormatException> | Delimited |
 | <xref:Bodu.Text.DotEnv.DotEnvFormatException> | DotEnv |
 | <xref:Bodu.Text.Ini.IniFormatException> | INI |
+
+Because `*FormatException` is a `FormatException`, code that already filters on the BCL base type keeps working; the Bodu hierarchy only narrows it. The `Try*` overloads (`Delimited.TryParse`, `DotEnv.TryParse`, `Ini.TryParse`) catch the format-specific exception internally and return `false` instead — they do **not** swallow unrelated exceptions such as `ArgumentNullException` from a `null` source.
 
 ## Where to go next
 

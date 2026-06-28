@@ -121,6 +121,12 @@ public static class BinaryEncodings
     public static IBinaryEncoding Base64UrlSafe { get; } = new Base64VariantAdapter(Base64Variant.UrlSafe, "base64-urlsafe", "RFC 4648 §5 URL- and filename-safe Base64 (-, _; no padding).");
 
     /// <summary>
+    /// Gets the Git-style Base85 encoding (Git binary-patch alphabet with compact, self-delimiting partial groups; no
+    /// <c>z</c> shortcut or Adobe delimiters).
+    /// </summary>
+    public static IBinaryEncoding Base85Git { get; } = new Base85VariantAdapter(Base85Variant.GitCompact, "base85-git", "Git-style Base85 alphabet with compact self-delimiting partial groups.");
+
+    /// <summary>
     /// Gets the ZeroMQ Z85 encoding (RFC 32; shell-safe alphabet; input must be a multiple of four bytes).
     /// </summary>
     public static IBinaryEncoding Z85 { get; } = new Base85VariantAdapter(Base85Variant.Z85, "z85", "ZeroMQ Z85 (RFC 32 shell-safe alphabet, 4-byte aligned).");
@@ -130,7 +136,7 @@ public static class BinaryEncodings
     /// each instance's <see cref="IBinaryEncoding.Name" />: <c>"base16"</c>, <c>"base16-lower"</c>,
     /// <c>"base16-upper"</c>, <c>"base32"</c>, <c>"base32hex"</c>, <c>"base32-crockford"</c>, <c>"z-base-32"</c>,
     /// <c>"base45"</c>, <c>"base64"</c>, <c>"base64-urlsafe"</c>, <c>"base64-mime"</c>, <c>"base58"</c>,
-    /// <c>"base58-ripple"</c>, <c>"base62"</c>, <c>"ascii85"</c>, <c>"z85"</c>.
+    /// <c>"base58-ripple"</c>, <c>"base62"</c>, <c>"ascii85"</c>, <c>"base85-git"</c>, <c>"z85"</c>.
     /// </summary>
     /// <param name="name">The encoding name.</param>
     /// <returns>The matching <see cref="IBinaryEncoding" /> instance.</returns>
@@ -158,6 +164,7 @@ public static class BinaryEncodings
             "base58-ripple" => Base58Ripple,
             "base62" => Base62,
             "ascii85" or "base85" => Ascii85,
+            "base85-git" or "git-base85" or "b85" => Base85Git,
             "z85" => Z85,
             _ => throw new ArgumentException(string.Format(System.Globalization.CultureInfo.CurrentCulture, EncodingResourceStrings.Arg_Invalid_UnknownEncodingName, name), nameof(name)),
         };

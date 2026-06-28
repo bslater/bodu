@@ -174,6 +174,22 @@ string id = Base62.Encode(random);
 byte[] bytes = Base62.Decode(id);
 ```
 
+### Encode a GUID as a compact token
+
+```csharp
+using Bodu.Text.Encoding;
+
+// Each core family (Base16/32/58/64/85) encodes a Guid directly — no manual 16-byte buffer.
+Guid id = Guid.NewGuid();
+
+string b58 = Base58.Encode(id);                  // ~22 chars, no 0/O/I/l ambiguity
+string b64 = Base64.Encode(id, Base64Variant.UrlSafe); // 22 chars, URL-safe, unpadded
+
+Guid back = Base58.DecodeGuid(b58);              // FormatException unless it decodes to 16 bytes
+bool ok   = Base64.TryDecodeGuid(b64, out Guid parsed,
+                Base64Variant.UrlSafe, BaseFormatStyles.AllowMissingPadding);
+```
+
 ### Encode an address with Bech32 / Bech32m
 
 ```csharp
@@ -201,6 +217,45 @@ using Bodu.Text.Encoding;
 
 string encoded = Base58Check.Encode(payload);   // payload + 4-byte double-SHA-256 checksum
 byte[] decoded = Base58Check.Decode(encoded);   // verifies the checksum, then strips it
+```
+
+### Encode a Git binary-patch payload (Base85 Git)
+
+```csharp
+using Bodu.Text.Encoding;
+
+// Compact, self-delimiting — round-trips without external metadata.
+string compact = Base85.Encode("hello"u8.ToArray(), Base85Variant.GitCompact);   // "Xk~0{Zv"
+byte[] back    = Base85.Decode(compact, Base85Variant.GitCompact);
+
+// Exact Git line primitive — always five characters per group; caller tracks the length.
+string padded  = Base85.EncodeGitPadded(new byte[] { 0x01 });             // "0RR91"
+byte[] bytes   = Base85.DecodeGitPadded(padded, decodedLength: 1);
+```
+
+### Encode a MIME message body (Quoted-Printable)
+
+```csharp
+using Bodu.Text.Encoding;
+
+byte[] body = "café = møney"u8.ToArray();
+
+string encoded = QuotedPrintable.Encode(body);   // printable run + =HH escapes, 76-column wrapping
+byte[] decoded = QuotedPrintable.Decode(encoded);
+```
+
+### Escape a value for a URL (percent-encoding)
+
+```csharp
+using Bodu.Text.Encoding;
+
+// URI component (default).
+string component = PercentEncoding.EncodeString("a/b?c=d");   // "a%2Fb%3Fc%3Dd"
+
+// HTML form field — space becomes '+'.
+string field = PercentEncoding.EncodeString("a b+c", mode: PercentEncodingMode.FormUrlEncoded); // "a+b%2Bc"
+
+string value = PercentEncoding.DecodeString("a%2Fb");         // "a/b"
 ```
 
 ## Round-trip example with whitespace tolerance

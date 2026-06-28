@@ -7,7 +7,7 @@
 namespace Bodu.Text.Encoding;
 
 /// <summary>
-/// Provides Base85 encoding and decoding of binary data using the Adobe Ascii85 or ZeroMQ Z85 alphabets.
+/// Provides Base85 encoding and decoding of binary data using the Adobe Ascii85, ZeroMQ Z85, or Git-style alphabets.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -17,7 +17,12 @@ namespace Bodu.Text.Encoding;
 /// <para>
 /// The Adobe Ascii85 variant recognises the character <c>z</c> as a shortcut for four zero bytes and permits partial
 /// trailing groups of one, two, or three bytes (output grows by one character per byte plus one). The Z85 variant
-/// requires the input to be a whole multiple of four bytes and does not use any shortcut.
+/// requires the input to be a whole multiple of four bytes and does not use any shortcut. The
+/// <see cref="Base85Variant.GitCompact" /> variant uses the Git binary-patch alphabet with the same compact
+/// partial-tail behaviour as Ascii85 but without the <c>z</c> shortcut or the Adobe delimiters; it implements only the
+/// alphabet and does not parse Git binary patches. The exact Git binary-patch line primitive (always five characters
+/// per group, with the decoded length carried out of band) is available through the <c>EncodeGitPadded</c> /
+/// <c>DecodeGitPadded</c> helpers.
 /// </para>
 /// <para>
 /// Base85 has no padding character. The <see cref="BaseFormattingOptions.UpperCase" />,
@@ -67,6 +72,9 @@ public static partial class Base85
     /// <summary>The Adobe Ascii85 leading delimiter emitted when <see cref="BaseFormattingOptions.IncludePrefix" /> is set.</summary>
     private const string Ascii85DelimiterStart = "<~";
 
+    /// <summary>The 85-character Git-style Base85 alphabet used by Git binary patch payloads.</summary>
+    private const string GitBase85Alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#$%&()*+-;<=>?@^_`{|}~";
+
     /// <summary>The 85-character ZeroMQ Z85 alphabet, composed of shell-safe characters.</summary>
     private const string Z85Alphabet = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.-:+=^!/*?&<>()[]{}@%$#";
 
@@ -75,6 +83,9 @@ public static partial class Base85
 
     /// <summary>The reverse lookup table mapping each ASCII character to its value for the Ascii85 alphabet.</summary>
     private static readonly sbyte[] s_ascii85Lookup = BuildLookup(Ascii85Alphabet);
+
+    /// <summary>The reverse lookup table mapping each ASCII character to its value for the Git-style Base85 alphabet.</summary>
+    private static readonly sbyte[] s_gitBase85Lookup = BuildLookup(GitBase85Alphabet);
 
     /// <summary>The reverse lookup table mapping each ASCII character to its value for the Z85 alphabet.</summary>
     private static readonly sbyte[] s_z85Lookup = BuildLookup(Z85Alphabet);
@@ -115,6 +126,15 @@ public static partial class Base85
             return (source.Length & 3) != 0
                 ? throw new ArgumentException(EncodingResourceStrings.Arg_Invalid_Z85InputMultipleOfFour, nameof(source))
                 : (source.Length / 4) * 5;
+        }
+
+        if (variant == Base85Variant.GitCompact)
+        {
+            // Git compact mode is deterministic: full groups are five characters and a trailing remainder of one,
+            // two, or three bytes becomes two, three, or four characters. There is no 'z' shortcut, so the length
+            // does not depend on the data and equals GetMaxEncodedLength.
+            int gitRemainder = source.Length & 3;
+            return ((source.Length / 4) * 5) + (gitRemainder == 0 ? 0 : gitRemainder + 1);
         }
 
         // Ascii85: scan for the 'z' shortcut. Four consecutive zero bytes encode to a single 'z'; otherwise the
@@ -307,7 +327,7 @@ public static partial class Base85
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     private static void EnsureValidVariant(Base85Variant variant)
     {
-        if (variant is not(Base85Variant.Ascii85 or Base85Variant.Z85))
+        if (variant is not(Base85Variant.Ascii85 or Base85Variant.Z85 or Base85Variant.GitCompact))
             throw new ArgumentOutOfRangeException(nameof(variant), variant, EncodingResourceStrings.Arg_OutOfRange_Base85Variant);
     }
 
@@ -322,6 +342,7 @@ public static partial class Base85
         {
             Base85Variant.Ascii85 => Ascii85Alphabet,
             Base85Variant.Z85 => Z85Alphabet,
+            Base85Variant.GitCompact => GitBase85Alphabet,
             _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, EncodingResourceStrings.Arg_OutOfRange_Base85Variant),
         };
 
@@ -336,6 +357,7 @@ public static partial class Base85
         {
             Base85Variant.Ascii85 => s_ascii85Lookup,
             Base85Variant.Z85 => s_z85Lookup,
+            Base85Variant.GitCompact => s_gitBase85Lookup,
             _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, EncodingResourceStrings.Arg_OutOfRange_Base85Variant),
         };
 

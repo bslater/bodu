@@ -96,7 +96,7 @@ ConfigurationDocument.Save(document, new StreamWriter(path), options: writeOptio
 
 ## The four profiles
 
-`ConfigurationProfile` is the headline behaviour switch. Each profile is a curated set of parse and resolve defaults — there is also a `ConfigurationProfile.For(profile)` factory if you want a clean starting point for fine-grained tuning.
+`ConfigurationProfile` is the headline behaviour switch. Each profile is a curated set of parse *and* resolve defaults. Materialise a clean starting point for a profile with the `For(profile)` factory that each option type exposes — `ConfigurationParseOptions.For(profile)`, `ConfigurationResolveOptions.For(profile)`, `ConfigurationWriteOptions.For(profile)` — then override individual fields for fine-grained tuning.
 
 | Profile | When to use |
 |---|---|
@@ -115,9 +115,12 @@ The full per-profile table:
 | `SectionHeaderMode` | `Lenient` | `Strict` | `Strict` | `Lenient` |
 | `DiagnosticMode` | `Throw` | `Throw` | `Throw` | `Collect` |
 
+> [!NOTE]
+> The same four profiles also drive *resolve* defaults through <xref:Bodu.Text.Configuration.ConfigurationResolveOptions> — `ApplyPreambleProperties`, `MissingPathRootMode`, and `UnsetValueMode`. Selecting a profile at parse time does not automatically apply its resolve defaults; pass the matching `ConfigurationResolveOptions` (or its `For(profile)` result) to `Resolve` so both halves of the pipeline agree. See [Views and resolution](views-and-resolution.md#pattern-5--resolve-options).
+
 ## `ConfigurationParseOptions` field-by-field
 
-Construct a custom option set when none of the four profiles fits. Every field is `init`-only on a readonly struct.
+Construct a custom option set when none of the four profiles fits. `ConfigurationParseOptions` is a sealed class with `init`-only properties, so an object initialiser builds an immutable, thread-safe instance you can cache and reuse.
 
 ### Profile and presets
 
@@ -139,8 +142,8 @@ Construct a custom option set when none of the four profiles fits. Every field i
 
 ### Duplicate handling
 
-- `DuplicateKeyMode` (`DuplicateKeyPolicy`, default per profile) — `LastWins`, `FirstWins`, or `Disallowed`. See [INI duplicate-key policies](../formats/ini.md#pattern-5--duplicate-section-policies).
-- `DuplicateSectionMode` (`IniDuplicateSectionBehavior`, default per profile) — `Preserve`, `Merge`, `MergeAdjacent`, or `Disallowed`.
+- `DuplicateKeyMode` (<xref:Bodu.Text.DuplicateKeyPolicy>, default per profile) — `LastWins`, `FirstWins`, or `Disallowed`. See [INI duplicate-key policies](../formats/ini.md#pattern-5--duplicate-section-policies).
+- `DuplicateSectionMode` (<xref:Bodu.Text.Ini.IniDuplicateSectionBehavior>, default per profile) — `Preserve`, `Merge`, `MergeAdjacent`, or `Disallowed` (`MergeAll` is an alias for `Merge`).
 
 ### Diagnostic handling
 
@@ -206,7 +209,7 @@ To go from the parsed `ConfigurationDocument` to a resolved typed view — inclu
 
 ## Exceptions
 
-- **`ConfigurationParseException`** — raised when `DiagnosticMode = Throw` hits the first recoverable error, or any time a non-recoverable error occurs. Carries the offending `ConfigurationDiagnostic` and source location.
+- **`ConfigurationParseException`** (derives from `FormatException`) — raised when `DiagnosticMode = Throw` hits the first recoverable error, or any time a non-recoverable error occurs. The primary diagnostic is exposed on `Diagnostic`, every diagnostic gathered before the failure on the `Diagnostics` array, and `Location` forwards to the primary diagnostic's source location (or `ConfigurationSourceLocation.None`).
 - **`ArgumentException`** / **`ArgumentNullException`** — input string null or stream not readable. Standard BCL contract.
 
 ## Switching profiles at runtime
@@ -264,7 +267,7 @@ under `Relaxed` (collect every diagnostic, never throw), then re-run under
 ConfigurationParseResult lenient = ConfigurationDocument.ParseWithDiagnostics(
     source, ConfigurationParseOptions.Relaxed);
 
-if (lenient.Diagnostics.Count > 0 && deployGate)
+if (lenient.Diagnostics.Length > 0 && deployGate)
 {
     // Surface the failures as a single throw under the stricter profile.
     ConfigurationDocument.Parse(source, ConfigurationParseOptions.Strict);

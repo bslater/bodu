@@ -6,7 +6,7 @@ uid: Bodu.Financial.Currencies
 
 ## Purpose
 
-**Bodu.Financial.Currencies** is the shipped catalogue of ~185 ISO 4217 currency tag types used as the `TCurrency` parameter on <xref:Bodu.Financial.Money`1>. Each currency is a sealed class with only static members — there is no instance to create, and the tag exists solely to carry the static metadata (`IsoCode`, `MinorUnits`, `CashRoundingIncrement`, and historic flags where applicable) that `Money<TCurrency>` needs.
+**Bodu.Financial.Currencies** is the shipped catalogue of 184 ISO 4217 currency tag types used as the `TCurrency` parameter on <xref:Bodu.Financial.Money`1>. Each currency is a sealed class with only static members — there is no instance to create, and the tag exists solely to carry the static metadata (`IsoCode`, `MinorUnits`, `CashRoundingIncrement`, and historic flags where applicable) that `Money<TCurrency>` needs.
 
 ## Static documentation
 
@@ -56,7 +56,7 @@ public sealed class DEM : ICurrency
 
 The shipped catalogue covers every active ISO 4217 currency plus a curated set of historic / demonetised currencies for legacy ledger processing.
 
-**Active currencies (~150)** — including all G20 currencies and every minor-unit category:
+**Active currencies (155)** — including all G20 currencies and every minor-unit category:
 
 - `MinorUnits = 0` — `JPY`, `KRW`, `CLP`, `ISK`, `VND`, `XAF`, `XOF`, `XPF`, `BIF`, `DJF`, `GNF`, `KMF`, `MGA`, `PYG`, `RWF`, `UGX`, `UYI`, `VUV`.
 - `MinorUnits = 2` — `USD`, `EUR`, `GBP`, `AUD`, `CAD`, `CHF`, `CNY`, `HKD`, `INR`, `MXN`, `NZD`, `SEK`, `SGD`, …

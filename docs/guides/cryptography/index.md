@@ -30,17 +30,22 @@ For the auto-generated API reference, see the [Bodu.Security.Cryptography namesp
 
 <div class="bodu-card">
   <h3><a href="cipher-modes.md">Cipher block modes</a></h3>
-  <p>ECB, CBC, CFB, OFB, CTR — one worked round-trip per mode, with notes on when each is appropriate and when it is not.</p>
+  <p>ECB, CBC, CFB, OFB, CTR, CTS, and XTS — one worked round-trip per mode, with the IV rules, the encrypt-vs-decrypt-primitive table, and when each is appropriate.</p>
 </div>
 
 <div class="bodu-card">
   <h3><a href="padding.md">Padding</a></h3>
-  <p>PKCS7, Zeros, None — how each one pads, when it round-trips cleanly, and when it silently loses bytes.</p>
+  <p>PKCS7, ANSI X.923, ISO 10126, ISO/IEC 7816-4, Zeros, None — how each one pads, when it round-trips cleanly, and the padding-oracle caveat.</p>
 </div>
 
 <div class="bodu-card">
   <h3><a href="composing-primitives.md">Composing primitives</a></h3>
   <p>The two patterns side by side — manual <code>IBlockCipher</code> + <code>BlockCipherModeFactory</code> + <code>PaddingFactory</code>, and the equivalent through the <code>SymmetricAlgorithm</code> wrappers.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="aes-family.md">AES-family block ciphers</a></h3>
+  <p>AES, Twofish, Camellia, Serpent-128 — the four 128-bit-block ciphers compared, with selection guidance and BCL-vs-Bodu trade-offs.</p>
 </div>
 
 </div>
@@ -51,9 +56,10 @@ For the auto-generated API reference, see the [Bodu.Security.Cryptography namesp
 |---|---|---|---|
 | `Skipjack` | 64 bits (8 B) | 80 bits (10 B) | [Using Skipjack](skipjack.md) |
 | `Blowfish` | 64 bits (8 B) | 32–448 bits, 8-bit steps | [Using Blowfish](blowfish.md) |
-| `Camellia` | 128 bits (16 B) | 128 / 192 / 256 bits | (no dedicated guide — see API reference) |
-| `Twofish` | 128 bits (16 B) | 128 / 192 / 256 bits | (no dedicated guide — see API reference) |
-| `Serpent128` | 128 bits (16 B) | 128 / 192 / 256 bits | (no dedicated guide — see API reference) |
+| `Camellia` | 128 bits (16 B) | 128 / 192 / 256 bits | [AES-family block ciphers](aes-family.md) |
+| `Twofish` | 128 bits (16 B) | 128 / 192 / 256 bits | [AES-family block ciphers](aes-family.md) |
+| `Serpent128` | 128 bits (16 B) | 128 / 192 / 256 bits | [AES-family block ciphers](aes-family.md) |
+| `AesBlockCipher` | 128 bits (16 B) | 128 / 192 / 256 bits | [AES-family block ciphers](aes-family.md) (raw `IBlockCipher` over the BCL `Aes`) |
 
 ## Symmetric ciphers — Tweakable
 

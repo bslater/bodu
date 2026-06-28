@@ -22,7 +22,7 @@ The entry point is the `AddFinancialService` `IServiceCollection` extension (in 
 
 | Method | Registers |
 |---|---|
-| `AddFinancialService(IServiceCollection, IConfiguration?, string sectionName = "Financial")` | The currency lookup, and binds <xref:Bodu.Financial.FinancialOptions> from the named configuration section. |
+| `AddFinancialService(IServiceCollection, IConfiguration?, string sectionName = "Financial")` | The currency lookup, and binds <xref:Bodu.Financial.FinancialOptions> (its single `JsonPolicy` property) from the named configuration section. The `sectionName` constant is `ServiceCollectionExtensions.DefaultConfigurationSection`. |
 | `AddFinancialService(IServiceCollection, Action<IFinancialServiceBuilder> configure)` | The same, with the builder configured imperatively by the delegate. |
 
 ## Composing the builder
@@ -123,17 +123,18 @@ string payload = JsonSerializer.Serialize(new Money<USD>(19.99m), financialJson)
 
 ## Binding options from configuration
 
-Passing an `IConfiguration` binds <xref:Bodu.Financial.FinancialOptions> — `JsonPolicy` and `UnknownCurrency` — from the named section (default `"Financial"`):
+Passing an `IConfiguration` binds <xref:Bodu.Financial.FinancialOptions> — which carries the single `JsonPolicy` property — from the named section (default `"Financial"`):
 
 ```jsonc
 // appsettings.json
 {
   "Financial": {
-    "JsonPolicy": "Strict",
-    "UnknownCurrency": "Throw"
+    "JsonPolicy": "Strict"
   }
 }
 ```
+
+`JsonPolicy` is a <xref:Bodu.Financial.Serialization.FinancialJsonPolicy> value (`Strict`, `Lenient`, or `Compact`), which `AddFinancialJson()` reads when registering the converters.
 
 ```csharp
 builder.Services.AddFinancialService(builder.Configuration);
@@ -203,12 +204,16 @@ Swapping the fixed table for a live feed later means changing one registration; 
 Because consumers depend on <xref:Bodu.Financial.IDatedExchangeRateProvider> rather than a concrete feed, tests substitute a deterministic table — <xref:Bodu.Financial.FixedDatedExchangeRateProvider> over hand-written observations is usually all the fake you need:
 
 ```csharp
+using Bodu.Financial;
+using Bodu.Financial.Currencies;
+using Microsoft.Extensions.DependencyInjection;
+
 ServiceCollection services = new();
 services.AddFinancialService(financial =>
 {
     financial.AddDatedExchangeRateProvider(new FixedDatedExchangeRateProvider(new ExchangeRate[]
     {
-        new("USD", "EUR", new DateOnly(2024, 6, 14), 0.928m, "Test"),
+        new(CurrencyCode.USD, CurrencyCode.EUR, new DateOnly(2024, 6, 14), 0.928m, "Test"),
     }));
 });
 services.AddSingleton<SettlementService>();

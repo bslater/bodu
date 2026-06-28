@@ -27,6 +27,11 @@ foreach (ExcelWorksheetInfo sheet in workbook.Worksheets)
 
 `OpenRead` parses the workbook globals — the date system, shared strings, number formats, and sheet directory — and lists the sheets without reading any of their cells. The returned workbook is <xref:System.IDisposable>; the `using` declaration disposes it and closes the source unless `leaveOpen: true` was passed.
 
+There are four open factories: `OpenRead(string path)`, `OpenRead(FileInfo file)`, `OpenRead(Stream stream, bool leaveOpen = false)`, and `Open(Stream stream, ExcelBinaryReaderOptions options)`. The path and `FileInfo` overloads always own the file they open; the stream overloads read from the stream's current position and let you keep it open.
+
+> [!TIP]
+> The source must be seekable, because the reader seeks to each sheet's recorded byte offset. When you have a non-seekable source (a network or compressed stream), copy it into a `MemoryStream` first and open over that.
+
 ## Stream a sheet's cells
 
 ```csharp

@@ -97,6 +97,12 @@
   <data name="Arg_Invalid_DestinationTooSmallForTranscoded" xml:space="preserve">
     <value>Destination is too small to receive the transcoded bytes.</value>
   </data>
+  <data name="Arg_Invalid_GitBase85DecodedLength" xml:space="preserve">
+    <value>The Git Base85 decoded length {0} is not consistent with the number of encoded groups.</value>
+  </data>
+  <data name="Arg_Invalid_GitBase85InputLength" xml:space="preserve">
+    <value>Git Base85 padded input length must be a multiple of five characters.</value>
+  </data>
   <data name="Arg_Invalid_UnknownEncodingName" xml:space="preserve">
     <value>Unknown encoding name: '{0}'.</value>
   </data>
@@ -115,8 +121,26 @@
   <data name="Arg_OutOfRange_Base85Variant" xml:space="preserve">
     <value>Unknown Base85 variant.</value>
   </data>
+  <data name="Arg_OutOfRange_QuotedPrintableEncodingMode" xml:space="preserve">
+    <value>Unknown Quoted-Printable encoding mode.</value>
+  </data>
+  <data name="Arg_OutOfRange_QuotedPrintableMaxLineLength" xml:space="preserve">
+    <value>The Quoted-Printable maximum line length must be at least four characters.</value>
+  </data>
+  <data name="Arg_OutOfRange_PercentEncodingMode" xml:space="preserve">
+    <value>Unknown percent-encoding mode.</value>
+  </data>
+  <data name="Arg_Invalid_QuotedPrintableNewLine" xml:space="preserve">
+    <value>The Quoted-Printable newline must be a carriage-return/line-feed pair or a single line feed.</value>
+  </data>
   <data name="Format_Invalid_Ascii85" xml:space="preserve">
     <value>Input is not valid Ascii85.</value>
+  </data>
+  <data name="Format_Invalid_QuotedPrintable" xml:space="preserve">
+    <value>Input is not valid Quoted-Printable.</value>
+  </data>
+  <data name="Format_Invalid_PercentEncoding" xml:space="preserve">
+    <value>Input is not valid percent-encoded text.</value>
   </data>
   <data name="Format_Invalid_Base32CharacterNotInAlphabet" xml:space="preserve">
     <value>Input contains a character outside the variant alphabet: '{0}'.</value>

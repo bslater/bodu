@@ -74,20 +74,20 @@ A single `IfWeekend` trigger covers both weekend days; `MoveToNextWorkingDay` ad
 
 ```csharp
 // 26 January 2025 is a Sunday → observed on Monday 27 January.
-NotableDate auDay = service.Resolve(2025, "AU").Single(d => d.RuleId == "australia-day");
+NotableDate auDay = service.Resolve(2025, "AU").Single(d => d.NotableDateId == "australia-day");
 Console.WriteLine($"{auDay.Date} observed={auDay.IsObserved} (actual {auDay.ActualDate})");
 ```
 
 ### UK — Saturday and Sunday each get their own substitute
 
-UK bank-holiday law gives Saturday and Sunday different outcomes. A general weekend roll already lands both on the next working day, but where the law keeps the nominal day *and* grants an additional substitute, use `ObservedAsAdditional` so both occurrences are emitted.
+UK bank-holiday law gives Saturday and Sunday different outcomes. A general weekend roll already lands both on the next working day, but where the law keeps the nominal day *and* grants an additional substitute, use `ActualAndObserved` so both occurrences are emitted.
 
 ```xml
 <AdjustmentPolicy id="uk-substitute" priority="100"
                   description="Grant an additional substitute public holiday when the day falls on a weekend.">
   <Trigger type="IfWeekend" />
   <Action type="MoveToNextWorkingDay" skipWeekends="true" skipNonWorkingDates="true" maxSearchDays="7" />
-  <Emission mode="ObservedAsAdditional" reason="Substitute bank holiday" />
+  <Emission mode="ActualAndObserved" reason="Substitute bank holiday" />
 </AdjustmentPolicy>
 ```
 
@@ -105,7 +105,7 @@ UK bank-holiday law gives Saturday and Sunday different outcomes. A general week
 
 ```csharp
 IReadOnlyList<NotableDate> gbXmas = service.Resolve(2027, "GB")
-    .Where(d => d.RuleId == "christmas-day").ToList();   // 25 Dec 2027 is a Saturday → nominal + substitute Monday
+    .Where(d => d.NotableDateId == "christmas-day").ToList();   // 25 Dec 2027 is a Saturday → nominal + substitute Monday
 ```
 
 ### US — Saturday moves to Friday, Sunday moves to Monday
@@ -147,7 +147,7 @@ The federal US convention shifts Saturday holidays to the preceding Friday and S
 
 ```csharp
 // 4 July 2026 is a Saturday → observed on Friday 3 July.
-NotableDate july4 = service.Resolve(2026, "US").Single(d => d.RuleId == "independence-day");
+NotableDate july4 = service.Resolve(2026, "US").Single(d => d.NotableDateId == "independence-day");
 Console.WriteLine($"{july4.Date} (actual {july4.ActualDate})");
 ```
 
@@ -171,7 +171,7 @@ A holiday defined as the *n*th occurrence of a weekday in a month uses `<DayOfWe
 ```
 
 ```csharp
-NotableDate thanksgiving = service.Resolve(2026, "US").Single(d => d.RuleId == "thanksgiving");
+NotableDate thanksgiving = service.Resolve(2026, "US").Single(d => d.NotableDateId == "thanksgiving");
 Console.WriteLine(thanksgiving.Date);   // 26 November 2026
 ```
 
@@ -209,7 +209,7 @@ Easter Sunday is computed by the `<Algorithm key="western-easter">` strategy (or
 
 ```csharp
 IReadOnlyList<NotableDate> easter = service.Resolve(2026, "AU")
-    .Where(d => d.Tags.Count == 0 && d.RuleId is "good-friday" or "easter-sunday" or "easter-monday").ToList();
+    .Where(d => d.NotableDateId is "good-friday" or "easter-sunday" or "easter-monday").ToList();
 // Good Friday 3 Apr, Easter Sunday 5 Apr, Easter Monday 6 Apr 2026.
 ```
 
@@ -233,7 +233,7 @@ Lunisolar festivals cannot be expressed as calendar arithmetic, so they use `<Al
 ```
 
 ```csharp
-NotableDate vesak = service.Resolve(2026, "MY").Single(d => d.RuleId == "vesak");
+NotableDate vesak = service.Resolve(2026, "MY").Single(d => d.NotableDateId == "vesak");
 Console.WriteLine($"{vesak.Date}  {vesak.DisplayName}");
 ```
 
@@ -260,7 +260,7 @@ Set `durationDays` (on the rule, or `defaultDurationDays` on the concept) to the
 ```csharp
 // A single-day query for any day inside the span returns the occurrence.
 NotableDate week = service.Resolve(new DateOnly(2026, 5, 30), "AU")
-    .Single(d => d.RuleId == "national-reconciliation-week");
+    .Single(d => d.NotableDateId == "national-reconciliation-week");
 Console.WriteLine($"{week.Date} – {week.EndDate} ({week.DurationDays} days)");
 ```
 
@@ -292,7 +292,7 @@ When sub-regions observe a holiday on different dates, declare one concept with 
 ```
 
 ```csharp
-NotableDate vicLabour = service.Resolve(2026, "AU-VIC").Single(d => d.RuleId == "labour-day");
+NotableDate vicLabour = service.Resolve(2026, "AU-VIC").Single(d => d.NotableDateId == "labour-day");
 Console.WriteLine($"{vicLabour.Date}  {vicLabour.DisplayName} (Victoria)");
 ```
 
@@ -314,6 +314,53 @@ Combine `<Territory>` with `fromYear` / `toYear` (or `<OnlyYear>` / `<ExceptYear
 IReadOnlyList<NotableDate> nsw2026 = service.Resolve(2026, "AU-NSW");   // includes the trial rule
 IReadOnlyList<NotableDate> nsw2030 = service.Resolve(2030, "AU-NSW");   // outside the window — excluded
 ```
+
+---
+
+## A periodic (every-n-years) event
+
+For an event that recurs every *n*th year — a quadrennial census day, a leap-year-aligned civic observance — pair `everyYears` with `anchorYear` on `<Applicability>`. The rule is active only in years congruent to `anchorYear` modulo `everyYears`.
+
+```xml
+<NotableDate id="census-day" displayName="Census Day" category="Civic" defaultNonWorkingDay="false">
+  <Rules>
+    <Rule id="au">
+      <Applicability calendar="Gregorian" everyYears="5" anchorYear="2021"><Territory code="AU" /></Applicability>
+      <Strategy><Fixed month="August" day="10" /></Strategy>
+    </Rule>
+  </Rules>
+</NotableDate>
+```
+
+```csharp
+IReadOnlyList<NotableDate> in2026 = service.Resolve(2026, "AU");   // 2026 ≡ 2021 (mod 5) → Census Day present
+IReadOnlyList<NotableDate> in2027 = service.Resolve(2027, "AU");   // off-cycle → absent
+```
+
+`everyYears` combines with `fromYear` / `toYear` and `<OnlyYear>` / `<ExceptYear>` — every applicability constraint must hold for the rule to fire in a given year.
+
+---
+
+## An offset from an algorithmic anchor
+
+Movable feasts that hang off Easter at a longer offset use the same `<OffsetFromRule>` shape as Good Friday — the anchor is computed once by its `<Algorithm>` rule and every dependant tracks it. Corpus Christi is Easter Sunday + 60 days:
+
+```xml
+<NotableDate id="corpus-christi" displayName="Corpus Christi" category="Religious" defaultNonWorkingDay="true">
+  <Rules>
+    <Rule id="default">
+      <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="default" offsetDays="60" /></Strategy>
+    </Rule>
+  </Rules>
+</NotableDate>
+```
+
+```csharp
+NotableDate corpus = service.Resolve(2026, "DE-BY").Single(d => d.NotableDateId == "corpus-christi");
+Console.WriteLine($"{corpus.Date}  {corpus.DisplayName}");   // tracks the western-easter anchor
+```
+
+When the anchor rule produces no occurrence for the year, the offset rule produces none either; references are resolved cycle-safely within the resource.
 
 ---
 

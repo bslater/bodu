@@ -97,10 +97,24 @@ byte[] ciphertext = alg.Encrypt(plaintext);
 
 For anything else, reach for AES or Threefish.
 
+## Two security limits, not one
+
+Skipjack fails the modern bar on **two independent axes**, and both are structural — no mode or padding choice fixes them:
+
+- **80-bit key.** The key space is 2⁸⁰. That was defensible in 1998 but is now within reach of a well-resourced adversary; modern designs use 128-bit keys as the floor. There is no longer-key Skipjack variant.
+- **64-bit block.** Like Blowfish, the 8-byte block triggers the SWEET32 birthday bound: after roughly 2³² blocks (~32 GB) under one key, collisions in CBC/CTR ciphertext begin to leak plaintext relationships. `CtrModeTransform` throws if the counter actually wraps, but that guard fires long after the statistical danger zone begins.
+
+Treat Skipjack strictly as an interop and research cipher. For confidentiality use the BCL <xref:System.Security.Cryptography.Aes?displayProperty=nameWithType> or [Threefish](threefish-256.md); for confidentiality plus integrity use an [AEAD mode](aead-modes.md).
+
+## Dropping to the raw primitive
+
+`Skipjack` is the `SymmetricAlgorithm` wrapper; `SkipjackBlockCipher` is the underlying raw <xref:Bodu.Security.Cryptography.IBlockCipher>. Use it when composing a pipeline by hand — both paths yield identical ciphertext. See [Composing primitives](composing-primitives.md), which uses Skipjack as its worked example.
+
 ## Where to go next
 
 - [Encryption basics](encryption-basics.md) — the Key/IV lifecycle.
 - [Cipher block modes](cipher-modes.md) — CFB, OFB, ECB also work with Skipjack.
 - [Padding](padding.md) — which padding scheme pairs with which mode.
+- [Composing primitives](composing-primitives.md) — `SkipjackBlockCipher` + mode + padding by hand.
 - [Using Blowfish](blowfish.md) — another 64-bit-block cipher with a variable key size.
 - **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.

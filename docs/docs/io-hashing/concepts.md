@@ -62,6 +62,24 @@ In a CRC, the **polynomial** is the divisor of a long polynomial division perfor
 
 Polynomials are written as their coefficient bit pattern. The CRC-32/ISO-HDLC polynomial `0x04C11DB7` encodes the polynomial `x^32 + x^26 + x^23 + x^22 + …` — bit 26 set, bit 23 set, and so on. The choice of polynomial dictates which error patterns the CRC is guaranteed to detect; a well-chosen 32-bit polynomial catches every burst error of length 32 or fewer and every odd number of bit-flips.
 
+## CRC error-detection guarantees
+
+A CRC of width *w* with a well-chosen generator polynomial gives concrete, provable guarantees over the error patterns a transmission or storage channel introduces. These are the properties that make CRC the checksum of choice for wire formats, and they are what a fingerprint or twin-accumulator checksum does *not* promise:
+
+| Error pattern | Guarantee |
+|---|---|
+| Any single bit-flip | Always detected. |
+| Any odd number of bit-flips | Always detected, *provided* the polynomial has `(x + 1)` as a factor (true of most catalogue entries). |
+| Any burst error of length ≤ *w* | Always detected — the burst is shorter than the register, so it cannot divide cleanly. |
+| A burst of length *w* + 1 | Detected with probability `1 − 2^−(w−1)`. |
+| A longer burst | Detected with probability `1 − 2^−w`. |
+| Two-bit errors anywhere in the message | Detected as long as the message is shorter than the polynomial's *period* (for a primitive polynomial, `2^w − 1` bits). |
+
+The width is the dominant lever: a 32-bit CRC leaves only one undetected error pattern in roughly four billion for an unstructured corruption, a 16-bit CRC one in 65 536. The polynomial choice is the second lever — the catalogue entries pair each name with a polynomial whose published *Hamming distance* tables state, for a given message length, the smallest number of bit-flips that can slip through undetected. Match the standard to the channel rather than picking a width in the abstract.
+
+> [!NOTE]
+> These guarantees describe *accidental* corruption only. A CRC carries no adversary model — an attacker who can edit the payload can recompute the CRC, or craft a change that lands on a CRC collision, in constant time. CRC protects a channel against noise, never against tampering.
+
 ## CRC parameters
 
 The CRC family is one engine with five free parameters. The RevEng catalogue (Greg Cook's *Catalogue of parametrised CRC algorithms*) names them as follows; <xref:Bodu.IO.Hashing.Checksums.CrcStandard> exposes them with the same semantics:
@@ -108,6 +126,16 @@ Both Fletcher and Adler reduce their accumulators **modulo** some value after ea
 | <xref:Bodu.IO.Hashing.Checksums.Adler64> | Largest prime ≤ `2^32` | Wider variant of the same idea. |
 
 Adler-32 is the canonical zlib trailer checksum.
+
+## Twin-accumulator error coverage
+
+Both Fletcher and Adler catch every single-bit error and every adjacent transposition, and at far lower per-byte cost than a CRC. What they do **not** match is the CRC's burst guarantee or its uniform behaviour across the whole digest space — and both carry documented blind spots a CRC does not:
+
+- **Fletcher's `2^k − 1` modulus** means the value `0` and the value `2^k − 1` (here, `M`) are congruent, so a byte that should push an accumulator to `M` instead leaves it at `0`. A run of bytes that sums to a multiple of `M` can therefore go undetected, and a block of all-`0x00` bytes followed by an all-`0xFF` block of the right length can collide.
+- **Adler's weakness on short inputs.** Each byte first lands in accumulator `A`; `B` only accumulates the *running* `A`. For a short message `A` stays small, so `B` grows slowly and the high bits of the digest barely move — the effective digest space is much narrower than 32 bits until the message is a few hundred bytes long. This is the well-known reason Adler-32 is a poor checksum for very short payloads, and why CRC-32 is preferred there.
+- **Neither catches a reordering of equal-sum blocks** the way a polynomial CRC does, and neither gives a per-position burst guarantee.
+
+The trade is deliberate: reach for Fletcher or Adler when you control both endpoints, the channel is benign, and throughput matters; reach for CRC when you need the published burst-error guarantee or must match a wire format.
 
 ## Table-driven evaluation
 
@@ -160,14 +188,44 @@ bool   ok    = Iban.IsValid(ibanWithCheck);           // full IBAN including the
 
 The streaming instance API (`Append` plus `GetCurrentCheckDigit` / `GetCurrentCheckDigits`) is available on every derivative of the base classes when you need to feed the payload in chunks.
 
+## Transcription error classes
+
+A check digit is judged by which of the documented human keying errors it catches. The four that matter, in roughly descending order of frequency, are:
+
+| Error class | Example | Description |
+|---|---|---|
+| **Single-digit substitution** | `1234` → `1284` | One character mistyped. The most common error and the floor every scheme must clear. |
+| **Adjacent transposition** | `1234` → `1324` | Two neighbouring characters swapped. |
+| **Twin error** | `1**2**2` → `1**3**3` | A repeated digit changed to a different repeated digit. |
+| **Jump transposition** | `1**2**3 → 3**2**1` | Two characters one position apart swapped, across an intervening character. |
+
+How each Bodu scheme fares — grounded in the algorithm each one implements:
+
+| Scheme | Single substitution | Adjacent transposition | Twin | Notes |
+|---|---|---|---|---|
+| <xref:Bodu.IO.Hashing.CheckDigits.Luhn> (mod 10) | All | All **except** `09 ↔ 90` | No | The `09 ↔ 90` swap preserves the Luhn sum and slips through. |
+| <xref:Bodu.IO.Hashing.CheckDigits.Damm> (quasigroup) | All | **All**, including `09 ↔ 90` | Many | Closes the one gap Luhn leaves, with a single character. |
+| <xref:Bodu.IO.Hashing.CheckDigits.Verhoeff> (dihedral D₅) | All | All | All | The widest coverage of any single decimal check digit. |
+| Mod 11 — <xref:Bodu.IO.Hashing.CheckDigits.Isbn10>, <xref:Bodu.IO.Hashing.CheckDigits.Sedol>, <xref:Bodu.IO.Hashing.CheckDigits.Cusip> | All | Most | Some | A check value of 10 needs an extra symbol (ISBN-10 uses `X`). |
+| Mod 97-10 — <xref:Bodu.IO.Hashing.CheckDigits.Iban>, <xref:Bodu.IO.Hashing.CheckDigits.Lei> | Effectively all | Effectively all | Effectively all | Two check digits over a large modulus catch essentially every realistic transcription error. |
+
+Damm and Verhoeff buy strictly better coverage than Luhn from the *same* single character; the price is a small lookup table rather than a weighted sum. Reach for Luhn only when an existing standard mandates it (payment cards, IMEI). For a free choice of a general decimal identifier, Damm is the better default, and Verhoeff better still where the table cost is acceptable.
+
 ## Endianness
 
 Two different bit-order questions arise in this library and they are easy to confuse:
 
 - **CRC bit reflection** — controlled by the `ReflectIn` and `ReflectOut` parameters on a `CrcStandard`. `ReflectIn = true` means every input byte is bit-reversed before being fed into the CRC register; `ReflectOut = true` means the final register is bit-reversed before the XOR-out step. The two together capture whether a channel transmits its bytes least-significant-bit-first (Ethernet, MODBUS, USB) or most-significant-bit-first. They are part of the algorithm, not a presentation choice — `CRC-32/ISO-HDLC` and `CRC-32/BZIP2` differ exactly here.
-- **Digest byte order on the wire** — the order in which the final hash word is serialized into the byte array returned by `GetCurrentHash`. Bodu's fingerprints (FNV, CityHash, MurmurHash3, …) emit their hash word in **little-endian** byte order, matching `BitConverter.ToUInt32` / `ToUInt64` on little-endian platforms. `Crc.GetCurrentHash` emits the width-byte CRC in the same little-endian order.
+- **Digest byte order on the wire** — the order in which the final hash word is serialized into the byte array returned by `GetCurrentHash`. This is **not** uniform across the library, so it is the detail most likely to trip up a cross-tool comparison:
 
-When you compare digests across platforms or against published test vectors, confirm both: that the algorithm parameters match (for CRC, the reflection bits) and that the byte order on the wire matches the source you are comparing to.
+| Family | Byte order of the digest | Matches |
+|---|---|---|
+| Fingerprints — FNV, CityHash, MurmurHash3, Pearson, the classic string hashes | **Little-endian** | `BitConverter.ToUInt32` / `ToUInt64` on a little-endian platform. |
+| <xref:Bodu.IO.Hashing.Checksums.Crc> | **Little-endian** | the width-byte register, low byte first. |
+| <xref:Bodu.IO.Hashing.Checksums.Fletcher16> / `Fletcher32` / `Fletcher64` | **Big-endian**, `B ‖ A` | the high accumulator `B` precedes `A`. |
+| <xref:Bodu.IO.Hashing.Checksums.Adler32> / `Adler32C` / `Adler64` | **Big-endian**, `(B << k) | A` | RFC 1950 §2.2 — the zlib trailer is written big-endian directly. |
+
+When you compare digests across platforms or against published test vectors, confirm both: that the algorithm parameters match (for CRC, the reflection bits) and that the byte order on the wire matches the source you are comparing to. The Adler and Fletcher big-endian layout is what makes `GetCurrentHash` drop straight into a zlib trailer without a byte swap.
 
 ## Where to go next
 

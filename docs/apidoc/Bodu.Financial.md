@@ -6,7 +6,7 @@ uid: Bodu.Financial
 
 ## Purpose
 
-**Bodu.Financial** is the monetary-primitives package: type-safe money (`Money<TCurrency>`), runtime-tagged money (`Money`), multi-currency portfolios (`MoneyBag`), a shipped catalogue of ~185 ISO 4217 currencies, an exchange-rate provider stack with both timeless and dated lookup, and JSON converters with strict / lenient / compact policy shapes.
+**Bodu.Financial** is the monetary-primitives package: type-safe money (`Money<TCurrency>`), runtime-tagged money (`Money`), multi-currency portfolios (`MoneyBag`), a shipped catalogue of 184 ISO 4217 currencies, an exchange-rate provider stack with both timeless and dated lookup, and JSON converters with strict / lenient / compact policy shapes.
 
 Reach for this library when you need monetary arithmetic that the compiler validates — adding USD to JPY should fail the build, not run with the wrong unit — and when you need audit-grade FX conversion that records which date, which provider, and which fallback policy produced a given rate.
 
@@ -61,7 +61,7 @@ Reach for this library when you need monetary arithmetic that the compiler valid
 
 **Related namespaces**
 
-- <xref:Bodu.Financial.Currencies> — ~185 sealed ISO 4217 tag types (active plus ~30 historic / demonetised).
+- <xref:Bodu.Financial.Currencies> — 184 sealed ISO 4217 tag types (155 active plus 29 historic / demonetised).
 - <xref:Bodu.Financial.Serialization> — JSON converters and the `FinancialJsonPolicy` enum (`Strict`, `Lenient`, `Compact`).
 
 ## Example

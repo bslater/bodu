@@ -36,6 +36,10 @@ File sources are the common case — they layer naturally with `appsettings.json
 same path-based options every provider does. Stream sources are useful for tests, embedded resources, or in-memory
 fixtures where the configuration data does not live on disk.
 
+A third source, <xref:Bodu.Extensions.Configuration.Text.TomlConfigurationSource>, backs the read-only TOML bridge
+(`AddTomlFile` / `AddTomlStream`). It carries `Path`, `Optional`, and `Stream` but no `TargetPath`, `ParseOptions`,
+`ResolveOptions`, or `ReloadOnChange` — TOML has no glob-anchored resolution layer and the bridge is read-once.
+
 ## Target path
 
 `TargetPath` is the value the source hands to `ConfigurationDocument.Resolve(targetPath)`. It anchors glob
@@ -100,7 +104,14 @@ The probe runs against the builder's default file provider and looks for two fil
 2. **`bodu.config`** — the plain form, common on Windows where dotfiles need explicit attribute toggles.
 
 The first file found is added; if neither is present and `optional` is `true`, the helper returns the builder
-unchanged. The probe is cheap (it consults `IFileProvider.GetFileInfo(name).Exists`) and runs once per `Build` call.
+unchanged (it registers a `.boduconfig` source marked optional so the slot still exists). When neither is present and
+`optional` is `false`, the helper throws `FileNotFoundException`. The probe consults
+`IFileProvider.GetFileInfo(name).Exists` and runs once, at registration time.
+
+> [!NOTE]
+> A default `PhysicalFileProvider` filters dot-prefixed files via its `ExclusionFilters` (`Sensitive` by default), so
+> `.boduconfig` will not resolve unless you register a `PhysicalFileProvider` constructed with `ExclusionFilters.None`.
+> The plain `bodu.config` fallback is resolvable without that change.
 
 ## Reload-on-change
 
@@ -167,9 +178,27 @@ logging.level.default = Information
 ```
 
 surfaces as `configuration["service:name"]`, `configuration["service:port"]`,
-`configuration["logging:level:default"]`. Switching to `ConfigurationKeyMapping.Identity` preserves the original
-delimiter — useful when the file is also consumed by tools that interpret dots as path separators (e.g. AppSettings
-patches).
+`configuration["logging:level:default"]`. The mapping is the `Mapping` property on
+<xref:Bodu.Text.Configuration.ConfigurationKeyOptions>; switching it to
+<xref:Bodu.Text.Configuration.ConfigurationKeyMapping.Identity> emits keys unchanged — useful when the file is also
+consumed by tools that interpret dots as path separators (e.g. AppSettings patches).
+
+The projection is **lossy** by design. The flatten step in
+<xref:Bodu.Extensions.Configuration.Text.TextConfigurationLoader> keeps only the resolved key/value pairs; comments,
+source locations, and duplicate-section provenance present on the parsed
+<xref:Bodu.Text.Configuration.ConfigurationDocument> do not survive. Keys are stored case-insensitively
+(`StringComparer.OrdinalIgnoreCase`), and a literal colon inside a key segment is interpreted as a hierarchy boundary
+once flattened. Reach for <xref:Bodu.Text.Configuration.ConfigurationDocument> directly when you need any of that
+discarded metadata.
+
+## Pre-parsed document source
+
+<xref:Bodu.Extensions.Configuration.Text.TextConfigurationExtensions.AddTextConfigurationDocument*> takes an
+already-parsed <xref:Bodu.Text.Ini.IniDocumentBase> — such as a <xref:Bodu.Text.Configuration.ConfigurationDocument> —
+resolves it once against `targetPath`, and adds the flattened pairs via the in-memory provider. It is a **one-shot
+snapshot**: the document is captured by value when the method is called, so later edits to the document (or its backing
+file) are not reflected. Use it to share a single parse across several builders, or to feed a document built or mutated
+in code. There is no reload-on-change for this overload.
 
 ## Where to go next
 

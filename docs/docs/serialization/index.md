@@ -56,6 +56,17 @@ The architecture is shared, but the serializer surfaces differ where the format 
 
 Each library's own pages document its exact surface.
 
+## Shared behaviours
+
+Three contracts hold identically across all three libraries, so they are worth learning once:
+
+- **Options are frozen on first use.** A `…SerializerOptions` instance is mutable only until the first serialize or deserialize call binds it; after that it is read-only and further mutation throws. Configure an options object fully, then reuse the *same frozen instance* across calls — it caches per-type metadata, so a shared instance is both correct and faster than a fresh one per call.
+- **Two exception types, two failure stages.** Malformed *input* — bytes or text that do not parse — raises a `…FormatException` (<xref:Bodu.Text.Bencode.BencodeFormatException>, <xref:Bodu.Text.Toml.TomlFormatException>, <xref:Bodu.Text.Yaml.YamlFormatException>). Input that parses but cannot *bind* to your type raises a `…SerializationException` (<xref:Bodu.Text.Bencode.BencodeSerializationException>, <xref:Bodu.Text.Toml.TomlSerializationException>, <xref:Bodu.Text.Yaml.YamlSerializationException>). The text formats carry line / column / offset on the format exception; catch the two separately when you need to distinguish a syntactically broken document from a schema mismatch.
+- **UTF-8 is the native encoding.** Every `Utf8…Reader` / `Utf8…Writer` operates on UTF-8 bytes, and the serializers accept `ReadOnlySpan<byte>` and write to `IBufferWriter<byte>` without a string detour.
+
+> [!NOTE]
+> Async stream surfaces differ by format: <xref:Bodu.Text.Bencode.BencodeSerializer> and <xref:Bodu.Text.Toml.TomlSerializer> add `SerializeAsync` / `DeserializeAsync` over a `Stream`, whereas <xref:Bodu.Text.Yaml.YamlSerializer> is synchronous over a `string` or a UTF-8 `ReadOnlySpan<byte>` (its reader is buffered, so there is no incremental async path).
+
 ## Common scenarios
 
 | You want to… | Use |

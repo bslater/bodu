@@ -95,7 +95,7 @@ The rule's single <xref:Bodu.Globalization.Calendar.Algorithms.IDateCalculationS
 
 ### Stage 7 — Adjustment policies → observed date
 
-Each policy the rule references (`<Adjustment policyRef="…" />`) is considered in ascending `priority`. A policy is skipped when its `<Scope>` does not match the resolution context; otherwise its <xref:Bodu.Globalization.Calendar.AdjustmentTrigger> is evaluated against the nominal date. The **first** policy whose trigger fires applies its <xref:Bodu.Globalization.Calendar.AdjustmentAction>, producing the observed date; the rest are skipped. The occurrence's `<Emission>` decides what is emitted (`ObservedOnly`, `ActualAndObserved`, `ObservedAsAdditional`, …) and sets `IsObserved`, `AdjustmentPolicyId`, and `AdjustmentReason`. See [Observance adjustment rules](adjustment-rules.md).
+Each policy the rule references (`<Adjustment policyRef="…" />`) is considered in ascending `priority`. A policy is skipped when its `<Scope>` does not match the resolution context; otherwise its <xref:Bodu.Globalization.Calendar.AdjustmentTrigger> is evaluated against the nominal date. The **first** policy whose trigger fires applies its <xref:Bodu.Globalization.Calendar.AdjustmentAction>, producing the observed date; the rest are skipped. The occurrence's `<Emission>` decides what is emitted (`ObservedOnly`, `ActualAndObserved`, `ActualOnly`, `Suppress`) and sets `IsObserved`, `AdjustmentPolicyId`, and `AdjustmentReason`. See [Observance adjustment rules](adjustment-rules.md).
 
 Triggers such as `IfNonWorkingDay` consult the non-working dates already settled for the year, so a higher-priority anchor rule (Christmas) is visible to a lower-priority dependent rule (Boxing Day).
 
@@ -111,6 +111,16 @@ Under `CollisionPolicy.Custom`, the supplied <xref:Bodu.Globalization.Calendar.R
 ### Stage 9 — Emission and range inclusion
 
 The settled occurrences are emitted. For a range query, the resource's <xref:Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy> decides which occurrence date controls inclusion: the observed date (`ObservedOccurrenceControlsInclusion`), the nominal date (`ActualOccurrenceControlsInclusion`), or either (`BothOccurrencesControlInclusion`). A supplied `NotableDateFilter` is applied last as a predicate over the resolved occurrences (`Matches(NotableDate)`), and the surviving set is returned.
+
+---
+
+## Two-phase resolution and the year-window scan
+
+Two implementation details of the query path explain results that otherwise look surprising.
+
+**Two phases per query.** Resolution runs in two passes. The first pass computes every rule's *actual* (nominal) occurrence purely, and seeds an occupied-day set with the actual dates of the non-working occurrences. The second pass places observed dates in an explicit precedence order — earliest actual date first, then higher `Priority`, then stable rule identity — so that an action which opts in to `skipNonWorkingDates` advances past days already claimed by other holidays. This ordering is why a higher-priority anchor (Christmas) is visible to a lower-priority dependent (Boxing Day) within the same year, as traced below.
+
+**One civil year either side.** Inclusion is decided by the emitted (observed) date, so a single-day query and a range query covering the same span return consistent results. To capture an occurrence whose *actual* date lies just outside the requested window but whose *observed* date rolls inside it (or vice versa under `ActualOccurrenceControlsInclusion`), the service scans one civil year either side of the window before applying the `ObservedDateRangePolicy`. A late-December holiday whose substitute rolls into early January is therefore found by a January range query without the caller widening the window.
 
 ---
 

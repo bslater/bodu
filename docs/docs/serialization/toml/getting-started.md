@@ -36,6 +36,41 @@ string text = TomlSerializer.Serialize(config);
 ServerConfig back = TomlSerializer.Deserialize<ServerConfig>(text);
 ```
 
+## The native value model in action
+
+TOML carries real scalar kinds, so the common BCL types land on the right wire form with no string conventions to invent. The four RFC 3339 date-time types and the float specials are the clearest illustration:
+
+```csharp
+using Bodu.Text.Toml;
+
+public sealed class Telemetry
+{
+    public DateTimeOffset CapturedAt { get; set; }    // offset date-time
+    public DateOnly Day { get; set; }                 // local date
+    public TimeOnly At { get; set; }                  // local time
+    public double Ratio { get; set; }                 // float (incl. inf / nan)
+    public long Samples { get; set; }                 // integer (signed 64-bit)
+}
+
+var telemetry = new Telemetry
+{
+    CapturedAt = new DateTimeOffset(2026, 6, 28, 9, 30, 0, TimeSpan.FromHours(10)),
+    Day = new DateOnly(2026, 6, 28),
+    At = new TimeOnly(9, 30, 0),
+    Ratio = double.PositiveInfinity,
+    Samples = 4096,
+};
+
+string text = TomlSerializer.Serialize(telemetry);
+// CapturedAt = 2026-06-28T09:30:00+10:00
+// Day = 2026-06-28
+// At = 09:30:00
+// Ratio = inf
+// Samples = 4096
+```
+
+`DateTimeOffset`, `DateTime` (`Unspecified`), `DateOnly`, and `TimeOnly` map one-to-one onto offset date-time, local date-time, local date, and local time. The full per-type catalogue, including the `decimal` and `byte[]` representation choices, is in the [type-mapping table](../../../guides/serialization/toml/using.md#pattern-2--know-the-type-mapping) and the [built-in converter catalog](../../../guides/serialization/toml/builtin-converters.md).
+
 ## Rename members
 
 ```csharp

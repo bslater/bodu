@@ -47,17 +47,19 @@ ConfigurationDocument document = result.Document;  // still populated, on a best
 
 The severity is fixed per diagnostic code — there is no "promote warnings to errors" knob.
 
-## The `ConfigurationDiagnostic` record
+## The `ConfigurationDiagnostic` type
+
+<xref:Bodu.Text.Configuration.ConfigurationDiagnostic> is an immutable `sealed class` with four read-only properties, constructed from severity, code, message, and location:
 
 ```csharp
-public sealed record ConfigurationDiagnostic(
-    ConfigurationDiagnosticSeverity Severity,
-    ConfigurationDiagnosticCode     Code,
-    string                          Message,
-    ConfigurationSourceLocation     Location);
+var diagnostic = new ConfigurationDiagnostic(
+    ConfigurationDiagnosticSeverity.Warning,
+    ConfigurationDiagnosticCode.DuplicateKey,
+    "Key 'indent_size' is declared twice.",
+    new ConfigurationSourceLocation(lineNumber: 12, linePosition: 1, length: 11));
 ```
 
-Source locations carry the 1-based line number and column for the offending token. The default `ToString()` returns `"{Severity} {Code} at {Location}: {Message}"`, suitable for log lines and IDE diagnostics.
+`Location` is a <xref:Bodu.Text.Configuration.ConfigurationSourceLocation> carrying the 1-based `LineNumber` and `LinePosition` (only `LineNumber` is reliably populated; position and length are approximate) plus an optional `Path` set when the document was loaded from a file. The default `ToString()` returns `"{Severity} {Code} at {Location}: {Message}"`, suitable for log lines and IDE diagnostics.
 
 ## The `ConfigurationDiagnosticCode` catalogue
 
@@ -109,9 +111,9 @@ These fire when a section header is compiled as a `ConfigurationPattern`:
 
 The parser raises three kinds of exception:
 
-1. **`ConfigurationParseException`** — raised when `DiagnosticMode = Throw` hits the first recoverable error, or for any non-recoverable error. Carries a single `ConfigurationDiagnostic`.
+1. **`ConfigurationParseException`** (a `FormatException`) — raised when `DiagnosticMode = Throw` hits the first recoverable error, or for any non-recoverable error. Exposes the primary `Diagnostic` and the full `Diagnostics` array of everything gathered before the failure; `Location` forwards to the primary diagnostic.
 2. **`ArgumentException` / `ArgumentNullException`** — for invalid inputs (null source, unreadable stream). Standard BCL contract.
-3. **`InvalidOperationException`** — for state violations that are not recoverable diagnostic codes (e.g. `Resolve` against a null view target).
+3. **`InvalidOperationException`** — raised by `Resolve` when the options require a path root (`MissingPathRootMode.Throw`), the document carries none, and no target path is supplied.
 
 Diagnostics under `Collect` and `Ignore` modes never throw — the parser carries on, populates the result document on a best-effort basis, and emits the diagnostic list for the caller to inspect.
 
@@ -130,13 +132,13 @@ foreach (ConfigurationDiagnostic d in result.Diagnostics)
     switch (d.Severity)
     {
         case ConfigurationDiagnosticSeverity.Info:
-            log.Info($"{d.Code} at line {d.Location.Line}: {d.Message}");
+            log.Info($"{d.Code} at line {d.Location.LineNumber}: {d.Message}");
             break;
         case ConfigurationDiagnosticSeverity.Warning:
-            log.Warn($"{d.Code} at line {d.Location.Line}: {d.Message}");
+            log.Warn($"{d.Code} at line {d.Location.LineNumber}: {d.Message}");
             break;
         case ConfigurationDiagnosticSeverity.Error:
-            log.Error($"{d.Code} at line {d.Location.Line}: {d.Message}");
+            log.Error($"{d.Code} at line {d.Location.LineNumber}: {d.Message}");
             break;
     }
 }

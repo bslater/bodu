@@ -6,7 +6,7 @@ title: Bodu.Text.Formats — Getting started
 
 Unfamiliar with terms like *self-framing format*, *value model*, *codec*, or *round-trip rules*? Read [Core concepts](concepts.md) first.
 
-> Looking for **TOML**, **YAML**, **Bencode**, or a POCO serializer? Those live in the standalone <xref:Bodu.Text.Toml>, <xref:Bodu.Text.Yaml>, and <xref:Bodu.Text.Bencode> packages — see the [Bodu serializers introduction](../serialization/index.md).
+> Looking for **TOML**, **Bencode**, or a POCO serializer? Those live in the standalone <xref:Bodu.Text.Toml> and <xref:Bodu.Text.Bencode> packages — see the [Bodu serializers introduction](../serialization/index.md).
 
 ## Install
 
@@ -14,7 +14,7 @@ Unfamiliar with terms like *self-framing format*, *value model*, *codec*, or *ro
 dotnet add package Bodu.Text.Formats
 ```
 
-Targets `net8.0`. The package depends on `Bodu.Core` for shared throw-helpers and on `Bodu.Text.Encoding` for the embedded `Base16` helpers used in test vectors; no other NuGet references.
+Targets `net8.0`. The only package dependency is `Bodu.Core` (for the shared `ThrowHelper` argument validators). No reflection, no `dynamic`, and no third-party NuGet references.
 
 ## Read and write delimited (CSV / TSV)
 
@@ -59,8 +59,25 @@ IniDocument ini = Ini.Parse("""
     """);
 
 ini.GetOrAddSection("database").SetEntry("port", "5433");
-string text = Ini.Format(ini);   // comments, ordering, and whitespace preserved
+string text = Ini.Format(ini);   // comments and section/entry ordering preserved
 ```
+
+`IniDocument` is the one mutable model — `GetOrAddSection` / `SetEntry` edit it in place. `DelimitedDocument` and `DotEnvDocument` are read-only; produce edited output through their writers instead. Note that `Format` re-emits authored structure (keys, values, comments, ordering) but normalises incidental whitespace — keys and values are trimmed, and entries are written as `key = value`.
+
+## Read a typed value
+
+```csharp
+using Bodu.Text.Ini;
+
+IniDocument cfg = Ini.Parse(source);
+IniSection db = cfg.GetOrAddSection("database");
+
+int port = db.GetValue<int>("port");                 // ISpanParsable<int>, invariant culture
+if (db.TryGetValue<TimeSpan>("timeout", out var t))  // false on missing key or bad value
+    Configure(t);
+```
+
+`GetValue<T>` / `TryGetValue<T>` are available on `DelimitedRow` (by ordinal or column), `DotEnvDocument` / `DotEnvEntry`, and `IniSection` / `IniEntry`. They are constrained to `where T : ISpanParsable<T>` and always parse under `CultureInfo.InvariantCulture` — there are no per-type `GetInt32`-style helpers.
 
 ## Decode without throwing
 

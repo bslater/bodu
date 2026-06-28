@@ -25,6 +25,8 @@ and ASCON-CXOF128 are the XOF members of the ASCON family, standardized in NIST 
 | Absorption rounds | 8 (Ascon-p8) | Applied after each absorbed block. |
 | Transition permutation | 12 (Ascon-p12) | Always applied once when switching from absorb to squeeze. |
 | Squeeze permutation | 8 (Ascon-p8) | Applied between successive squeeze blocks. |
+| Output | Variable | Any positive multiple of 8 bits. |
+| Security level | 128 bits | For outputs of at least 32 bytes. Shorter outputs cap collision resistance at half the output length, as with any XOF. |
 
 ## The absorb-then-squeeze lifecycle
 
